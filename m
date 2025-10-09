@@ -1,134 +1,159 @@
-Return-Path: <bpf+bounces-70698-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70691-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A8F6BCACEA
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 22:29:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69722BCAC17
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 22:10:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D4F448331E
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 20:29:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22BA53A6AC4
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 20:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C312737E8;
-	Thu,  9 Oct 2025 20:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 682D0263C69;
+	Thu,  9 Oct 2025 20:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=email-od.com header.i=@email-od.com header.b="JIoAowX0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OW0oHiy3"
 X-Original-To: bpf@vger.kernel.org
-Received: from s1-ba86.socketlabs.email-od.com (s1-ba86.socketlabs.email-od.com [142.0.186.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF65271440
-	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 20:29:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=142.0.186.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FCC726159E
+	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 20:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760041753; cv=none; b=eab1XngEe4YTRzR+bnD0VY00VgnMH38O3+8ksCsp1t0SZ7u6VVF4XoViCwSw/CLK23FX/aBM0U5dgtLyzPJsg7NUXdwl4FUaAQ6ThPnA65os9SuhXyOQbAlTGezqndZQP0cgK7ve0g/skOymJf4aGfl61Bt9YZYsn/IZQQDbuGU=
+	t=1760040623; cv=none; b=T8sBx1DQvOdyZR5yH05OtOxNxRifWXaH+re4fR0Y61e3jmCI3mbnBKqSp5q1uEDj3K6fuCDkTbTNefTfIEsInoFRA1AHhhP+OaVyaC5YnZor574wBdSFWUvo+aa+FSZFghR8tct5MJCi3v7fMbp3FKPMisnyKJMlqE6pT2SZghs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760041753; c=relaxed/simple;
-	bh=RX1K5KPSFGA72/LrpHxaAbZJRQpoejZVuU8GJ1Oylko=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kA/Hx3zWNSyKr6PXXWZyFxQFl/eg2eELP9P+W3DPZpIe2r4BJAtf2pSpv0fhqqfIkNXh7ihQ0hDNAe5E9MLw3RwULiA/56mfHDx1rkbERzfnrthnymINZziAZe5cdIt0DRdqIkWge+bOYhR19o7wfZbLttL1QhH9ChukBFLLigo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nalramli.com; spf=pass smtp.mailfrom=email-od.com; dkim=pass (1024-bit key) header.d=email-od.com header.i=@email-od.com header.b=JIoAowX0; arc=none smtp.client-ip=142.0.186.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nalramli.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=email-od.com
-DKIM-Signature: v=1; a=rsa-sha256; d=email-od.com;i=@email-od.com;s=dkim;
-	c=relaxed/relaxed; q=dns/txt; t=1760041752; x=1762633752;
-	h=content-transfer-encoding:mime-version:references:in-reply-to:message-id:date:subject:cc:to:from:x-thread-info:subject:to:from:cc:reply-to;
-	bh=ofx1rW2+30KvORCW7saFUEf3E1N+8nsWWjpSDi6TtgA=;
-	b=JIoAowX0+u6HnepSQykeV6sU4m98QjTaFIjNilulit2woNAVfwa5F7rsTWOIg+nW1EE4PFna2xpN58Au7ey64mtkYwFqjQTmU4simmEILctoVNkDIIo6Wdi1E1paLPWo7Zi47KnWgl06Be+oJHyr9L20WBXhp65PtpyZzUeoHIA=
-X-Thread-Info: NDUwNC4xMi43MGEyMTAwMDBiMDc0NjYuYnBmPXZnZXIua2VybmVsLm9yZw==
-x-xsSpam: eyJTY29yZSI6MCwiRGV0YWlscyI6bnVsbH0=
-Received: from nalramli-fst-tp.. (d4-50-191-215.clv.wideopenwest.com [50.4.215.191])
-	by nalramli.com (Postfix) with ESMTPSA id 2AA012CE05A3;
-	Thu,  9 Oct 2025 15:28:41 -0400 (EDT)
-From: "Nabil S. Alramli" <dev@nalramli.com>
-To: anthony.l.nguyen@intel.com,
-	przemyslaw.kitszel@intel.com
-Cc: andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	lishujin@kuaishou.com,
-	xingwanli@kuaishou.com,
-	intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	team-kernel@fastly.com,
-	khubert@fastly.com,
-	nalramli@fastly.com,
-	dev@nalramli.com
-Subject: [RFC ixgbe 2/2] ixgbe: Fix CPU to ring assignment
-Date: Thu,  9 Oct 2025 15:28:31 -0400
-Message-ID: <20251009192831.3333763-3-dev@nalramli.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20251009192831.3333763-1-dev@nalramli.com>
-References: <20251009192831.3333763-1-dev@nalramli.com>
+	s=arc-20240116; t=1760040623; c=relaxed/simple;
+	bh=v/w9JZegeF4ZExl/FXlLBFupZGwUnsZ0ne7Ix8FGV7E=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=A+/h5cYMl3SXVZD5k/b2ZgEWQGMV1kcf8fT03dKs/zZTwWPvuHGj27oNRgObY0ahKWF1+w3hhCJgEDIOcdf4Z7qu3eg0ZYtCHlL9TwK7QRWtA008reGtBu/fTQjSXSFVHHVQ9RR/mFx2bCa0e2kVuMJeG4FPix0u+PRlcSx9dZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OW0oHiy3; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-46e47cca387so13422645e9.3
+        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 13:10:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760040620; x=1760645420; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JrfLoENyZjdzYeixQAT3LIyNq6WGQce8UCljQUgmreE=;
+        b=OW0oHiy36v2Y2s7c1iMRK5RzS5zQZ0HGb2GbvojwMBCMn9UgXx2gZVeA60LXRIGQgS
+         7RllLdk4sR++YZ3FIOE93hGwHgpvmDAc8Y9P8tLzCzQP1mo/0Wbf+sDlU2Qw4fD0swyD
+         CCjLUErwbXrbwoSSGkFhMLaEOJdj7vU96FIJC9p9kr9Jk51L2nUk/LkTUnmKEOuy72mh
+         CYROCbHoQk+EbwgApmjFncBr0+wKMLrEksogqAhP8vnceMom+AY229+SZTuSSDqIYjPY
+         DwjczOX6pp2YNxtw5o8KFQ0aKrLqhZJPnBtqszNI460h2lRJpULdhBxIW+TY4trJ7wwl
+         jHfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760040620; x=1760645420;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JrfLoENyZjdzYeixQAT3LIyNq6WGQce8UCljQUgmreE=;
+        b=mxyF6PzrNP/M12YLH3p3wUiWdBfVtD7se9rul6hA0icyeEx9oPOJyLatXExR/d4Foa
+         3Yul+pglG6yG+1LY4q2M03O0I7o4itoNHSmGShPeH3+PEfrzyx7BWJYgfFRM0MrhF1hP
+         /sTcLbctvAoX/n8LaWHPCexRE9dSZVzbmjvG2XB0qc79mjMtyU/VTqOj6hn4/NrC/TgV
+         DD0w4dnu8erHT+YZvj1+U2Ga94WlEN9yC6/3zgG5K5G4PFvDqUhtuJi3BR9LDR7TLXKh
+         QXGl8JJMf6bv3sEfRSeO/ku67ko83GmtGbxlU1RCMut5C+sy6MiEyqwtFXfNsEx5YwrB
+         mrFQ==
+X-Gm-Message-State: AOJu0Yy+Q1s+Cf4t1/GSNe0Sy2wTAATCQZfbJxkj92jQvpygwqVVwZKh
+	xKI31xfsyOXzyvmE12Dq3UDNgHtpGMiuNtWm6hgA2ssWxa5YGhlDQDnBFaGdFw==
+X-Gm-Gg: ASbGncs5fYToN5IMzThHLsuhpQ5Fjaw0yd14StIaVvkdCsIEb6+uW3Qe1ZimgPjv/AL
+	ZLaEzgAZCpaJFjY+Nk0mu18Allpizo/vryTfO/I56Y2qSRDO1M01AL/XqXE1J351+nR3R18ntCx
+	DRRWrHnFhFFVhWMKwMK8ZZuZtuKRNnpSNdfhYpQcJ76/1JtNriHM+Q/iKW2lK8yzT1MJvDNNwxA
+	ftGRKyVUMOlMWfAg9iewm3mNd4DuM7yLPQkgqXn9Bwbd3U27qkUWZN7/AMf/9w63ZggUGRWEoIH
+	qEhuowwykYy1A3j2bD3/x33uN2tBgGRzfC8dkzs+UNosJ/Ac/eIJZIgXS5TORTcgmdAk7L5dq9G
+	pYk8Et7Tbpgn2Xtsp+yjCHfM+8ZcQPAYJ8aOZzBoV2dCRQn2OTdvtN2l+sQX0tKTCiuTj4gbD7W
+	grHqRA+18YoapgH6o7NmiKUUf/wkKKWTSwFQow0j67yvLL8YTs/85ZZ4kI
+X-Google-Smtp-Source: AGHT+IHBamQWa0VnDSrAqIEVEEDYzTZ4eMjWVDVMGq+Dn5e7bcdw4I5dv9xtdeQsf2XlLBVrB7hIyg==
+X-Received: by 2002:a05:6000:2010:b0:402:4142:c7a7 with SMTP id ffacd0b85a97d-42666ac6f35mr6420527f8f.16.1760040620172;
+        Thu, 09 Oct 2025 13:10:20 -0700 (PDT)
+Received: from mail.gmail.com (2a01cb0889497e00b81184fd69385167.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:b811:84fd:6938:5167])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce5e7e44sm579065f8f.46.2025.10.09.13.10.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Oct 2025 13:10:19 -0700 (PDT)
+Date: Thu, 9 Oct 2025 22:10:17 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Amery Hung <ameryhung@gmail.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>
+Subject: [PATCH bpf-next v8 0/5] Support non-linear skbs for BPF_PROG_TEST_RUN
+Message-ID: <cover.1760037899.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The ixgbe driver uses ixgbe_determine_*_ring to determine the CPU mapping
-of transmit rings. Those helper functions have a hard-coded number of
-rings equal to IXGBE_MAX_XDP_QS, which is set to 64. However, this does
-not take into account the number of actual rings configured, which could
-be lower. This results in NULL being returned, if the modulus operation
-falls into a ring that is not configured. Instead, use the actual number
-of configured rings.
+This patchset adds support for non-linear skbs when running tc programs
+with BPF_PROG_TEST_RUN.
 
-Signed-off-by: Nabil S. Alramli <dev@nalramli.com>
-Fixes: 4fe815850bdc ("ixgbe: let the xdpdrv work with more than 64 cpus")
----
- drivers/net/ethernet/intel/ixgbe/ixgbe.h | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+We've had multiple bugs in the past few years in Cilium caused by
+missing calls to bpf_skb_pull_data(). Daniel suggested this new
+BPF_PROG_TEST_RUN flag as a way to uncover these bugs in our BPF tests.
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ether=
-net/intel/ixgbe/ixgbe.h
-index 26c378853755..e2c09545bad1 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-@@ -830,18 +830,10 @@ struct ixgbe_adapter {
- 	spinlock_t vfs_lock;
- };
-=20
--static inline int ixgbe_determine_xdp_q_idx(int cpu)
--{
--	if (static_key_enabled(&ixgbe_xdp_locking_key))
--		return cpu % IXGBE_MAX_XDP_QS;
--	else
--		return cpu;
--}
--
- static inline
- struct ixgbe_ring *ixgbe_determine_xdp_ring(struct ixgbe_adapter *adapte=
-r)
- {
--	int index =3D ixgbe_determine_xdp_q_idx(smp_processor_id());
-+	int index =3D smp_processor_id() % adapter->num_xdp_queues;
-=20
- 	return adapter->xdp_ring[index];
- }
-@@ -849,7 +841,7 @@ struct ixgbe_ring *ixgbe_determine_xdp_ring(struct ix=
-gbe_adapter *adapter)
- static inline
- struct ixgbe_ring *ixgbe_determine_tx_ring(struct ixgbe_adapter *adapter=
-)
- {
--	int index =3D ixgbe_determine_xdp_q_idx(smp_processor_id());
-+	int index =3D smp_processor_id() % adapter->num_tx_queues;
-=20
- 	return adapter->tx_ring[index];
- }
---=20
+Changes in v8:
+  - Fix uninitialized data pointer spotted by Martin.
+  - Error out in test_loader if __linear_size tag is used on unsupported
+    program types.
+Changes in v7:
+  - Refactor use of 'size' variable as suggested by Martin.
+  - Support copying back the non-linear area to data_out.
+  - Minor code changes for readability, suggested by Martin.
+Changes in v6:
+  - Disallow non-linear skb in prog_run_skb only for LWT programs
+    instead of all non-L2 program types, on suggestion from Martin.
+  - Reject non-null ctx->data and ctx->data_meta, as suggested by Amery.
+  - Bound linear_size to 'PAGE_SIZE - headroom - tailroom' to be
+    consistent with prog_run_xdp, as suggested by Martin.
+  - Allocate exactly linear_size bytes in bpf_test_init, spotted by
+    Martin.
+  - Fix wrong conflict resolution on double-free fix, spotted by Amery.
+  - Rebased.
+Changes in v5:
+  - Fix double free on data in first patch.
+Changes in v4:
+  - Per Martin's suggestion, follow the XDP code pattern and use
+    bpf_test_init only to initialize the linear area. That way data is
+    directly copied to the right areas and we avoid the call to
+    __pskb_pull_tail.
+  - Fixed outdated commit descriptions.
+  - Rebased.
+Changes in v3:
+  - Dropped BPF_F_TEST_SKB_NON_LINEAR and used the ctx->data_end to
+    determine if the user wants non-linear skb, as suggested by Amery.
+  - Introduced a second commit with a bit of refactoring to allow for
+    the above requested change.
+  - Fix bug found by syzkaller on third commit.
+  - Rebased.
+Changes in v2:
+  - Made the linear size configurable via ctx->data_end, as suggested
+    by Amery.
+  - Reworked the selftests to allow testing the configurable linear
+    size.
+  - Fix warnings reported by kernel test robot on first commit.
+  - Rebased.
+
+Paul Chaignon (5):
+  bpf: Refactor cleanup of bpf_prog_test_run_skb
+  bpf: Reorder bpf_prog_test_run_skb initialization
+  bpf: Craft non-linear skbs in BPF_PROG_TEST_RUN
+  selftests/bpf: Support non-linear flag in test loader
+  selftests/bpf: Test direct packet access on non-linear skbs
+
+ net/bpf/test_run.c                            | 143 +++++++++++++-----
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |   4 +
+ .../bpf/progs/verifier_direct_packet_access.c |  59 ++++++++
+ tools/testing/selftests/bpf/test_loader.c     |  29 +++-
+ 4 files changed, 193 insertions(+), 42 deletions(-)
+
+-- 
 2.43.0
 
 
