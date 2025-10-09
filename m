@@ -1,184 +1,194 @@
-Return-Path: <bpf+bounces-70660-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70661-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADCEDBC969D
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 16:03:25 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A30FBC975D
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 16:15:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61B283B69E2
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 14:03:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AE6244EFDEC
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 14:15:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB462EA474;
-	Thu,  9 Oct 2025 14:03:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE992EA472;
+	Thu,  9 Oct 2025 14:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d5uBDoOy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jK64JsLv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF6872EA164
-	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 14:03:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02516260590
+	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 14:15:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760018585; cv=none; b=ZW0I70hzHVcTtsmOJgiwTzMXe5SHpshFGFWJ0qKQB/9frPWzz5dH1NnGujuNc45qIc/vikOfxqNgYTDH2j/nGgX0bdsBWJEdBDCiEBWdij5d5RyotwcYQn32UzR5e+dUV/s/vk+YiI3ytfrMn8LtZyfTNK9wJU6FQNRACqJyjf8=
+	t=1760019350; cv=none; b=PAS96zOOcWaCn365Ymx3RdjzoPdyU5LmT2ytVwHEgEceSve8gWG1FO6mlrcFEFgCmsQc0JgpXEOMj5MjxRSM2AKMnlxRuiL7C79y8yo0cU4HY1BHMN0ktcUwlc0jM2Qgrgw8KZb5mat9jUD2ZmgzVuOAEqHu5M03oA70fLWsNMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760018585; c=relaxed/simple;
-	bh=qF+q351/t/xrZduAHpMQsZMKAFdKzG2Q3E8DIUWyUxY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MavkL8vPaY0gS4klBEGZZfqLZSHYQfkHF6UpUAxiz6RyfBRE1uDGIZIScLC/ol8rT54B6JEZHCpkKmM/EVO/8uijd5n7aCyELwow0HeROWmzYNCP6GEkfV/4WjmgW5uQMisGzP7naucYBFP7L4rPyXDuNmGZuSSrcgSjOl3ng+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d5uBDoOy; arc=none smtp.client-ip=209.85.128.45
+	s=arc-20240116; t=1760019350; c=relaxed/simple;
+	bh=PscVuWbDY5Tey7C1/LRHtZVsPLJIK/L06l4kRlXD7cI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cl3Jz/FtsGZc0/EdAZpuc2/E1aBpEFT+vL/WQEN4HYL/qRnRfadJl7Vkye84z2AS78lIrx5IMboZSwJomY8AmZnH1W3NpMELLufWLGpQQdvro1UT2xSfO75yNkzzBnbuSvbkL6395tFFKPfUIWUPW4EAXaHXq71DitcnA6ZD+Fo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jK64JsLv; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-46e37d6c21eso6433945e9.0
-        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 07:03:03 -0700 (PDT)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-27eceb38eb1so11109535ad.3
+        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 07:15:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760018582; x=1760623382; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4SGP5+JpnsHXkwuHaDpAZFmdqDhOWMSL3V0B4ToFXNo=;
-        b=d5uBDoOyttzouxDyhkCXzdQ0VEwAqnwqGE8VdRfIiui7VYb30E81bhaUewmghta9CD
-         o4j4CLFllnx2CLe4Q2VDmQvZgxQpBCOo3ThRAsjVJ4c+YiwXjYVEh/G+6TD0xFR9W+/F
-         1qzYwTfiE5Ze24pVU82BnKujA7HeoBRkhnGZ7RWrHT4ohZ/66XY6g2wUxnHDgB7td5GZ
-         gKDP4Tns2r+FZNWVfh56SX80wYOpO9TXnL9Y0lOyCdTYB65jAEQmy3iH78bXnYP57JZy
-         OUNE5Y8do7LMPaSDvK0XBTiNegeMbc1UuncD/tLKdEdoBsI8YQ9rnmhrC5jVADkunF5Q
-         C8yA==
+        d=gmail.com; s=20230601; t=1760019347; x=1760624147; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=x/LQvNA1YWUI5q9qNOI8bo009IJa0hh1gjwEZQ8TVg8=;
+        b=jK64JsLvHEsDt/vMFjU1YlG6MpS7JrD9vbTdSj75MaHr6CoB593E9F2SpFpYZ4Zkfs
+         za7k1woge8FLyhc4kj5XO0xMSCubb3ble+XazYPdnQuDjZwh297na+3ej6dTeAYuD0t0
+         m8Ij590/JuT4jdK0eIdI2pTVmtmbpnQvOIY6fW8ro9goJHSxs9gYSW8XMKGTeJe8/hU5
+         6IRx/Zq0Fh6NdEuOnBloHNF/KI8Zeaqj8slHkJPcnk1GJBWNdytwfZOw8h1ODguaV/eK
+         VBJtxjSRQOMxJdOOyVHGhgF3KgD16T6mwVR0r5H/DmKrZbm6b6F9IsVPA/DXWVW5dvOC
+         mSNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760018582; x=1760623382;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4SGP5+JpnsHXkwuHaDpAZFmdqDhOWMSL3V0B4ToFXNo=;
-        b=LCPcrv1Bn4QZ0lzs6BO/N/7TcRIoDYdmF5knbJW74SbKaVwk6pkeuySrj2ZoopGyq0
-         4adDgybdaSkFyfctomjj+xDHSOw6QjPT/RTymIqAgSnaLpiXpn+7v+uPpr+0eG60tNll
-         0/ZyOfqVZ1EIC9iX6HIarzwps9Sqwy0zHYbcKnXZUnsTTR7W/j1uykE7q8Z5qRySVRcn
-         KH4nVvTKb6yAAz9ydXRUdKAfatR+kQVXsChxcIgo52+xQfGYGv2DRoB2CkCOLVtHSGn5
-         63IiBEh89kzG0GI3Svg1DrIVrXvBIkemKHMCXljX7gDWTY9aAx3PHXYIzNWQhRC4EYqF
-         D2WA==
-X-Gm-Message-State: AOJu0YzEUIEfpEbyUbFxbeqiJk8hcu5maCM6ZilBeIcMWB/wO6wyjL6S
-	YvHt8Fz58mBvUKSZBKcSe1VFbfdfsQ29Kp9FYg2B1GbBytfdd9qXeINOO/s52g==
-X-Gm-Gg: ASbGnctQ29B42vZarDauw3V13RFFlVhy8CFW+WFa3UxXfky0Q1YULzYz85aGQ6l2bXw
-	QSq6V8VXv+sQUJ2rSOn/DEGw6Ym5mzQ5xPPY5jqFsNkuUdtQ3MIi/BB/hlvtt38UrN5ud2c72Ho
-	GR9XNvd92d8A5BBFyLmDrl4rqnwfVo3a1AOkwyO43/vb7u0OZVMkUSmom0KfWOEtJaic/griuZ+
-	di+SagrjMNTGS5IDWhVR2yN++xr+85ykzUpKe5uN6GZcyUrXvId5fnCfQgxuARKuoJfNzHAgZ89
-	9ON94w81yO/9GNWM8/CgmlqadUwprYc+qZK6gP7amLDBYEvogf/L8GWZHrstHTnPUCiDPtgACp6
-	M1VndLAcUJrM5QXwEEgEjXPbuiX9dkKez8//kGssZdtKRN53z3u0WlZSNECBLqWfKv22byPJ/dM
-	JY40FjcRn3/gdWKmsQ+m1djtcEw3EeyFDDHGsyuske0oH5ZW6bJWa7zVjj
-X-Google-Smtp-Source: AGHT+IH1Fx+PUjXMorKsFafHIvGZmQ7PBIKQqTjaIWPI2JAMatIqZaWKVR8guqbHEYCJvyAOJjLQ1g==
-X-Received: by 2002:a05:600c:c4a8:b0:46e:4921:9443 with SMTP id 5b1f17b1804b1-46fa9b1b277mr51107045e9.37.1760018581952;
-        Thu, 09 Oct 2025 07:03:01 -0700 (PDT)
-Received: from mail.gmail.com (2a01cb0889497e00b81184fd69385167.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:b811:84fd:6938:5167])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4255d8f0846sm35676206f8f.45.2025.10.09.07.03.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Oct 2025 07:03:01 -0700 (PDT)
-Date: Thu, 9 Oct 2025 16:02:58 +0200
-From: Paul Chaignon <paul.chaignon@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Amery Hung <ameryhung@gmail.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>
-Subject: [PATCH bpf-next v7 5/5] selftests/bpf: Test direct packet access on
- non-linear skbs
-Message-ID: <f7dff83678b7c979a8a967dd30cb7db569320e50.1760015985.git.paul.chaignon@gmail.com>
-References: <cover.1760015985.git.paul.chaignon@gmail.com>
+        d=1e100.net; s=20230601; t=1760019347; x=1760624147;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x/LQvNA1YWUI5q9qNOI8bo009IJa0hh1gjwEZQ8TVg8=;
+        b=vp7buuolsI91l5z0ywlbD7fzp2hGgWCLTbOdjWP3RGvsd+JSUP8QXSAArbLM0IwB66
+         CWbP/A0DxbZLbjVT+7UMuTl162JDukM0m8hyfDaA/mhBYliRmMCjzzEfS5dmI9gaeRZU
+         qV2SLeFz42FsgfN3qyJg5o0fqa1r00VyU/HQXhclcIdrcHW4FtVDCE6PXZ9IuPVD1Xwo
+         qrF+K6QDu7BgAjOYFLPpbD1oSlOnR9w1nGNLdQJQAbsbNR+hMP6ai4ko0Gevw22RcGDO
+         RI7iQ4VMBrpllA5pTwKJD+azDv4ht4FFdWVHxj756Zv0O3FrS8lXkOwkCgTH+GahFpOr
+         owFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWsKJucoPAnwVrugyPqJkX2cWBir7a8jfkcLrLnht+IAAbOEEA5FLnWctiJllgZ6LHADSM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKwNpXr7Y6wXOttsWJGatFX6qb8JcOyUlBtW0U6IbD379J5YwI
+	hOeWXQ0mTyDS6ZpMW4vMN/pQn2/BUBwcqJR0NHdB9hSER9dxEcLFfKFI
+X-Gm-Gg: ASbGncvscXe9rpiihgVVafgvWTqU/JLaYW18onxwY4qT6V+5NbMAZXRkAqazwHy+0fY
+	oKzh+Cvu+9T40xflXYouyJ9NoSXiPsZ8v9TMBVpem0AGQooCR+W4vl+xBVr77LFE1EPiVJA1/wo
+	n4VWrj2ZeZxFlTSEM+HEPA8XvcmoqDHwoowEnLWs4vmu5XUt1aIq3D78k3+hwtdcFWtbo2cwav9
+	rYtDYciseMVWQUES+IhQQixELNSk/C1emAN3V92thuiN2NktVhFyCUY6GHYwob63+QZ6BKwqgrj
+	+3JCSnutWNaHQ6CkkIHWHj+476BfJvsJwgMwHm9SdjrMZ4cBU8CdlBehzLUjjnUFJ5gkkpiwzV6
+	vQbCul1ZR9pnmbElN69j6Lpn4tm+Bp+TDIjDwa5jK1+jg/Sq7YziSi49zMVI=
+X-Google-Smtp-Source: AGHT+IHBBobTahYvaG84K3u2cRlq7Kyd8joS3YBPhCwvTmS1PRGSMWiLL+j+NCjFMod+mD0mklz8ww==
+X-Received: by 2002:a17:902:f612:b0:277:9193:f2ca with SMTP id d9443c01a7336-290273564e8mr77424185ad.9.1760019346826;
+        Thu, 09 Oct 2025 07:15:46 -0700 (PDT)
+Received: from [172.20.10.4] ([117.20.154.54])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29034f0726asm30309915ad.72.2025.10.09.07.15.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Oct 2025 07:15:45 -0700 (PDT)
+Message-ID: <405caf71-315d-46a4-af35-c1fd53470b91@gmail.com>
+Date: Thu, 9 Oct 2025 22:15:34 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1760015985.git.paul.chaignon@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: bpf_errno. Was: [PATCH RFC bpf-next 1/3] bpf: report probe fault
+ to BPF stderr
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Menglong Dong <menglong.dong@linux.dev>,
+ Menglong Dong <menglong8.dong@gmail.com>, Alexei Starovoitov
+ <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, jiang.biao@linux.dev
+References: <20250927061210.194502-1-menglong.dong@linux.dev>
+ <20250927061210.194502-2-menglong.dong@linux.dev>
+ <CAADnVQJAdAxEOWT6avzwq6ZrXhEdovhx3yibgA6T8wnMEnnAjg@mail.gmail.com>
+ <3571660.QJadu78ljV@7950hx> <7f28937c-121a-4ea8-b66a-9da3be8bccad@gmail.com>
+ <CAADnVQLxpUmjbsHeNizRMDkY1a4_gLD0VBFWS8QMYHzpYBs4EQ@mail.gmail.com>
+Content-Language: en-US
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <CAADnVQLxpUmjbsHeNizRMDkY1a4_gLD0VBFWS8QMYHzpYBs4EQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-This patch adds new selftests in the direct packet access suite, to
-cover the non-linear case. The first six tests cover the behavior of
-the bounds check with a non-linear skb. The last test adds a call to
-bpf_skb_pull_data() to be able to access the packet.
 
-Note that the size of the linear area includes the L2 header, but for
-some program types like cgroup_skb, ctx->data points to the L3 header.
-Therefore, a linear area of 22 bytes will have only 8 bytes accessible
-to the BPF program (22 - ETH_HLEN). For that reason, the cgroup_skb test
-cases access the packet at an offset of 8 bytes.
 
-Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
----
- .../bpf/progs/verifier_direct_packet_access.c | 58 +++++++++++++++++++
- 1 file changed, 58 insertions(+)
+On 2025/10/9 00:27, Alexei Starovoitov wrote:
+> On Wed, Oct 8, 2025 at 7:41 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
+>>
+>>
+>>
+>> On 2025/10/7 14:14, Menglong Dong wrote:
+>>> On 2025/10/2 10:03, Alexei Starovoitov wrote:
+>>>> On Fri, Sep 26, 2025 at 11:12 PM Menglong Dong <menglong8.dong@gmail.com> wrote:
+>>>>>
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c b/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c
-index a61897e01a50..911caa8fd1b7 100644
---- a/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c
-@@ -801,4 +801,62 @@ l0_%=:	/* exit(0) */					\
- 	: __clobber_all);
- }
- 
-+#define access_test_non_linear(name, type, desc, retval, linear_sz, off)			\
-+	SEC(type)										\
-+	__description("direct packet access: " #name " (non-linear, " type ", " desc ")")	\
-+	__success __retval(retval)								\
-+	__linear_size(linear_sz)								\
-+	__naked void access_non_linear_##name(void)						\
-+	{											\
-+		asm volatile ("									\
-+		r2 = *(u32*)(r1 + %[skb_data]);							\
-+		r3 = *(u32*)(r1 + %[skb_data_end]);						\
-+		r0 = r2;									\
-+		r0 += %[offset];								\
-+		if r0 > r3 goto l0_%=;								\
-+		r0 = *(u8*)(r0 - 1);								\
-+		r0 = 0;										\
-+		exit;										\
-+	l0_%=:	r0 = 1;										\
-+		exit;										\
-+	"	:										\
-+		: __imm_const(skb_data, offsetof(struct __sk_buff, data)),			\
-+		  __imm_const(skb_data_end, offsetof(struct __sk_buff, data_end)),		\
-+		  __imm_const(offset, off)							\
-+		: __clobber_all);								\
-+	}
-+
-+access_test_non_linear(test31, "tc", "too short eth", 1, ETH_HLEN, 22);
-+access_test_non_linear(test32, "tc", "too short 1", 1, 1, 22);
-+access_test_non_linear(test33, "tc", "long enough", 0, 22, 22);
-+access_test_non_linear(test34, "cgroup_skb/ingress", "too short eth", 1, ETH_HLEN, 8);
-+access_test_non_linear(test35, "cgroup_skb/ingress", "too short 1", 1, 1, 8);
-+access_test_non_linear(test36, "cgroup_skb/ingress", "long enough", 0, 22, 8);
-+
-+SEC("tc")
-+__description("direct packet access: test37 (non-linear, linearized)")
-+__success __retval(0)
-+__linear_size(ETH_HLEN)
-+__naked void access_non_linear_linearized(void)
-+{
-+	asm volatile ("				\
-+	r6 = r1;				\
-+	r2 = 22;				\
-+	call %[bpf_skb_pull_data];		\
-+	r2 = *(u32*)(r6 + %[skb_data]);		\
-+	r3 = *(u32*)(r6 + %[skb_data_end]);	\
-+	r0 = r2;				\
-+	r0 += 22;				\
-+	if r0 > r3 goto l0_%=;			\
-+	r0 = *(u8*)(r0 - 1);			\
-+	exit;					\
-+l0_%=:	r0 = 1;					\
-+	exit;					\
-+"	:
-+	: __imm(bpf_skb_pull_data),
-+	  __imm_const(skb_data, offsetof(struct __sk_buff, data)),
-+	  __imm_const(skb_data_end, offsetof(struct __sk_buff, data_end))
-+	: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.43.0
+[...]
 
+>>>
+>>> Leon suggested to add a global errno for each BPF programs,
+>>> and I haven't dig deeply on this idea yet.
+>>>
+>>
+>> Yeah, as we discussed, a global errno would be a much more lightweight
+>> approach for handling such faults.
+>>
+>> The idea would look like this:
+>>
+>> DEFINE_PER_CPU(int, bpf_errno);
+>>
+>> __bpf_kfunc void bpf_errno_clear(void);
+>> __bpf_kfunc void bpf_errno_set(int errno);
+>> __bpf_kfunc int bpf_errno_get(void);
+>>
+>> When a fault occurs, the kernel can simply call
+>> 'bpf_errno_set(-EFAULT);'.
+>>
+>> If users want to detect whether a fault happened, they can do:
+>>
+>> bpf_errno_clear();
+>> header = READ_ONCE(skb->network_header);
+>> if (header == 0 && bpf_errno_get() == -EFAULT)
+>>         /* handle fault */;
+>>
+>> This way, users can identify faults immediately and handle them gracefully.
+>>
+>> Furthermore, these kfuncs can be inlined by the verifier, so there would
+>> be no runtime function call overhead.
+>
+> Interesting idea, but errno as-is doesn't quite fit,
+> since we only have 2 (or 3 ?) cases without explicit error return:
+> probe_read_kernel above, arena read, arena write.
+> I guess we can add may_goto to this set as well.
+> But in all these cases we'll struggle to find an appropriate errno code,
+> so it probably should be a custom enum and not called "errno".
+
+To avoid introducing a global errno, here's a more lightweight approach:
+
+1. Introduce an internal BPF_REG_AUX and a helper
+   'bpf_jit_supports_reg_aux()'.
+2. Introduce a kfunc 'int bpf_reg_aux(void)'.
+
+When a fault occurs, we can set 'BPF_REG_AUX = -EFAULT;' in
+'ex_handler_bpf()'.
+Otherwise, 'BPF_REG_AUX = 0;'.
+
+(Alternatively, BPF_REG_AUX can use a custom enum instead of '-EFAULT'.)
+
+If users want to check whether a fault happened, they can do:
+
+header = READ_ONCE(skb->network_header);
+if (header == 0 && bpf_reg_aux() == -EFAULT)
+        /* handle fault */;
+
+This allows users to detect faults immediately without any extra global
+state.
+
+The verifier can rewrite 'bpf_reg_aux()' into the following instructions:
+
+dst_reg = BPF_REG_AUX;
+BPF_REG_AUX = 0; /* clear BPF_REG_AUX */
+
+As for the architecture-specific implementation, BPF_REG_AUX can be
+mapped to an appropriate register per arch — for example, r11 on x86_64.
+The verifier would ensure that BPF_REG_AUX is not clobbered after a
+probe read.
+
+As a result, this avoids the need for a global errno and introduces no
+runtime function call overhead.
+
+Thanks,
+Leon
 
