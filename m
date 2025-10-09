@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-70695-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70696-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EAE0BCAC4A
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 22:12:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CCFDBCAC50
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 22:12:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 98343353537
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 20:12:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBA73480C5A
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 20:12:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0523264A7F;
-	Thu,  9 Oct 2025 20:12:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FAC1264FB5;
+	Thu,  9 Oct 2025 20:12:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RCOmyOyE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SroCfluA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78237264619
-	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 20:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DCC9266EFC
+	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 20:12:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760040724; cv=none; b=VDamF9sJnfo2CBqUJCnf4HaPkNat4j6eeoAGqWc5MhyEv3CSVrCKTogITAoxhlcDtoYFIqzhQBtRpCyhueX5iBoUAOVyS+6ZX1hTz3PY2NEP/8hmLCZtzD6X6IqZbr2z8Ysq7S9CJWy/OXgVPoHGQKys1/ksvYM7IWTWAKh8zfo=
+	t=1760040744; cv=none; b=SxdcWvMtYNaqeqQQvQhRULFqact3++Pg5QYnYU9L8aCajqLPHzrffObaIx8FD1bt0tVWwNKueu4irK1LX5fLKV0aHbRcjulUSau+WzhvLS09u0K+tMTSoDBpuKz44DlOGe7XhNU3oeX5uy/4Xw1uUw6yPmijjowE8rpYMchpnoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760040724; c=relaxed/simple;
-	bh=qscwDyuxuArD0LugcbclR7EMndgMiifQsOv329VVpcQ=;
+	s=arc-20240116; t=1760040744; c=relaxed/simple;
+	bh=qF+q351/t/xrZduAHpMQsZMKAFdKzG2Q3E8DIUWyUxY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nTbrOFUtr4yTMdHkJ0GW1debeN0yB2GPC9UtQjwFeEemkkdmH0geIPP392lqz+PbG4bIWiLOvTlI2I7Y5Q/V8TxHa8WjoPJzjCHYDXwBrG1JvGZ59On3VklAAK/BfAy5WRk1yUIhAafl17hTuvsZSggrL4HgpjrlM3wwmiVYhLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RCOmyOyE; arc=none smtp.client-ip=209.85.221.49
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lk2E3rVF5n03emL4jAx9n467ML3mKZWt19oMnxIIfhvkkYTmOF6g0QXsfKIIdzLpcoiEGyFV7ckp4F5spYcLB4U/LP8bt2f+Aa0qXauq09gF59wMuSQPD0DQgU9hbmHONWoSyex6wAIEKyzNaP8B5E34svWjBsSmXe6O0FC+VoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SroCfluA; arc=none smtp.client-ip=209.85.221.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3ee12332f3dso109815f8f.2
-        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 13:12:02 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-4256866958bso802580f8f.1
+        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 13:12:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760040721; x=1760645521; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760040740; x=1760645540; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bh716rRoqAtspxmpt1DV/WxEDSiF98ZZB/p6o3fNybI=;
-        b=RCOmyOyE+33VAYgeaCKvgAFCALEp6+uNV7w0BLFdWngFokN4ABAg961yXtD2zfU67p
-         05drY09GlkqD1yVIpjuQ7zz0HGGx3qwJoC13N/p11aeuhQeZVfcZ3Tsa2CvV8w22phOu
-         xilK2sg5rkzJTB/i5RTpVK3JXsu0VHh0+rIgsv2PlyAVyEX7ii4ms7Nkh1S9bJh1dlnY
-         lWhFzr+l2mqgdTBkGVCd6Tu4sAWIYWuLajCg0yJ+r8tdhpb39GjE8j6x2+yBX7fUtCza
-         Od7/JrAS1tlpyExlgEfMlPdxG/1zOwnfIXikxI/ujL7Tj6yAvPK8/JPY0JE7ptFdarKK
-         nCzg==
+        bh=4SGP5+JpnsHXkwuHaDpAZFmdqDhOWMSL3V0B4ToFXNo=;
+        b=SroCfluA8dqaDQrR4KdUF22ZqFTWo3UJnKk8sA+ohBQB/KEbJN+3vlL/bhm19QcSe0
+         JDYdYdqz9ywRmF9lWQ/D8n7a/zwI3ZYDNDMH8XwjlM23eduUJD8YAxH9vo/i3LG/lmKr
+         lWh304T14NzYw2OKsNKEekIJ9espW+yzrcVZyUJZEpYTkR1HA3wEGphrMy485T8yJ72G
+         FwIx0cVZj0j4n7g3Xq6kbjjPekVLMD3JxgWIJrSXdj6qoYI/tRu5BRwYr8qLRzeyxqcm
+         +PY8pRls+Pb4QqmmNJEalpa1lVXv3AI+g2Hga3lk/PvQ+my7zc6JboESAcrtj1/MZ8Km
+         mfRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760040721; x=1760645521;
+        d=1e100.net; s=20230601; t=1760040740; x=1760645540;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bh716rRoqAtspxmpt1DV/WxEDSiF98ZZB/p6o3fNybI=;
-        b=ErAMeq+Wj27bCUb1xt99jDHaZxMY5l/pOzxtUBrtxmMWOCkOLS0cxTjMLL3r/dMrIC
-         AVt3ImrJcPYdNQyOr1wKG6nM/0NN2jR/jx+cFy6FZxHkQwW93tTeIwPyn+pmXAIFrCBj
-         iyzq+AiFYguysuKNsd2CL5aQH/D0dARsjmgEqajdPoQY5SI1uBVQb8I+NnSBb1VOerlp
-         uQidxr9Xq9vezWSfRD/J2HzkLaL//5JCam/gZ502VxnkjR6ieKuMtGukq48N50b8LhEF
-         61NJjjaPp54SV0zPlYKfWRsBrTynJ8Cck1u7FH2Gk1oROX8NsatdSPT1omEckg0uizjN
-         wHcQ==
-X-Gm-Message-State: AOJu0YykBPf6VwnBfSJHJIRKX5iCPJfZHL2S4tcGWDrWcTufxCPLu94t
-	LaR2yr/zlvCE2tfMMpYC0WnFaT7QhEKwgmh8JIWmJTzykzYPd6vGHPCAK+jwvQ==
-X-Gm-Gg: ASbGncu8XU09b5LflPxKtvIifE3QJ6l8YpR/DGkUpS4JkaxwFbpGpm/HHs361A4axGS
-	/jjbCTEzGo46I74OfazZgbej7R/b/5e/jdnCWaSiJyZx+37ZfmKKdvyM9BOHU33AAGKZg1lJ3Rc
-	B3afDead6Zy4A7VXldAgjFW7pU8N8YmH3p8PzMN/D4ToB6SntlatHJolELn029LpCcivBrXpWhh
-	qjDt+DXcDlxyMvC2btIjaAt6b2HzrJxWP/eQdv8mnsleUJYf6jREVMhAORQLvUg/StZFhkDiKbE
-	K1SAWmCrdTYN0L8FMSOCxr60tE2utRkLoeyVYS/YsFSjL89b16TFQ+fXqyh3Gb6PuEv5Yszd8XW
-	K93dkFns/ec0pYLxTpSVyHBsfeEvhh8y2cnUb6WyXG9r7dA6hE/jds5aP8+Npyse7vQ7vOLCTSV
-	voycVd5uLEHyvsWrJVJqf0mZrZ9q9BzbT4R/wjhOA3Z8I7gA==
-X-Google-Smtp-Source: AGHT+IGCqTZ3XUfG6Z8oNghXlQovWTBmpBik3Sq54tNQ4IsBzm303H5CR/aR+cDTUaKe4kZjcSi5JA==
-X-Received: by 2002:a05:6000:2505:b0:3ee:1279:6e68 with SMTP id ffacd0b85a97d-42672425b82mr5757379f8f.47.1760040720669;
-        Thu, 09 Oct 2025 13:12:00 -0700 (PDT)
+        bh=4SGP5+JpnsHXkwuHaDpAZFmdqDhOWMSL3V0B4ToFXNo=;
+        b=QDBAwxB2SD6eeKHla1g0pLIy85bf2gDwIRK4fhMwKWendyrryVm2ME7vTMa6Wg5/kZ
+         Bm6p+FfQr4yF0jZtK6oUsCp1IAMzcdjx2FqJM9IhsVI8ISwg7QllvbJ4NLQIMAFmv473
+         MClUPtwwElUNEYCuLailo8JHt3LvFBdoOFdWJNR25CrBKFWb53225Ks6+Drwp8oBIDx3
+         MbEVKaCzwJS2jbRelnl/SeuryuhTEnELAuaUZCpCBW52NWZYhahkq1eW4xextcPc6ULk
+         OMJvoEMjCZvpht4yAHpqTS3C8zJeUmyFVDkW35JuYN3bppdcdox3nU27UeyDecCN6sLI
+         5uHw==
+X-Gm-Message-State: AOJu0Yz5BvasGdmLfqPuH2j3DgGqv2+PRP4bLPVFbKwrJVH+rEJ0k1SG
+	BMdD/+Ev304xBvCCXkPxE7dfumTDvnNIu9gw/wPkq5gf/BV4hvq6hcm4ooRJOQ==
+X-Gm-Gg: ASbGncuG6K8J0JBR/91XGRbn0wRDEjwjFmwmq2hWgFNx1qylff9Lq0oy8zlaSn/TDx+
+	amndEIojdyM9iGMmy28QiEION9ka2hHT+n4J1Gg30cALvAtJS3NPdr6rQXW0xTTrJdRYw6Tn8u2
+	0LUlDNzk8viCbAepFnN9ZATnH3LI4kAYMB0d3GIoiux4HZwTKnNIMx7n/4UfavjEGODSRpv12/x
+	bvMltiWDkbwELDu6Hz6ddLapT/QvlyRacyCjw0EPOOkdR+ROqVqAtrEKIp5t/NDlw5tz7YeOQ3p
+	K/zM42R7UKOzEWukaZx9b19hX+3FkZ3iOTBzRBBD1D/axYVHACqWyh1b6kutAPN0fr5NIGdtUng
+	QjwrrNK1WMhMl5cWHUH101bsxoDCG3tPE9abp3uSzLeu+Uv+klptrHKwOa/FcH/UcyumqCrNirC
+	Jfsryi7yLM6nA0y2RvuJuWIPfcdOzyRxV3zB7zbso0FV/GyX24tcvzCTve
+X-Google-Smtp-Source: AGHT+IEpYNmYBa43fs8cRRwVQcsTcH7quIkXlO+65tqGhtClfx57jxJXihZFl7o4zQgIZVfKXcs7ng==
+X-Received: by 2002:a5d:5f93:0:b0:3e7:4893:f9be with SMTP id ffacd0b85a97d-42666abb485mr5273588f8f.12.1760040740374;
+        Thu, 09 Oct 2025 13:12:20 -0700 (PDT)
 Received: from mail.gmail.com (2a01cb0889497e00b81184fd69385167.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:b811:84fd:6938:5167])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce582b44sm613335f8f.16.2025.10.09.13.11.59
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46fb497af18sm10819435e9.3.2025.10.09.13.12.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Oct 2025 13:12:00 -0700 (PDT)
-Date: Thu, 9 Oct 2025 22:11:58 +0200
+        Thu, 09 Oct 2025 13:12:19 -0700 (PDT)
+Date: Thu, 9 Oct 2025 22:12:18 +0200
 From: Paul Chaignon <paul.chaignon@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -81,9 +81,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Amery Hung <ameryhung@gmail.com>,
 	Martin KaFai Lau <martin.lau@linux.dev>
-Subject: [PATCH bpf-next v8 4/5] selftests/bpf: Support non-linear flag in
- test loader
-Message-ID: <7ad928ec7591daef4f1b84032aeb86c918b3e5a7.1760037899.git.paul.chaignon@gmail.com>
+Subject: [PATCH bpf-next v8 5/5] selftests/bpf: Test direct packet access on
+ non-linear skbs
+Message-ID: <ceedbfd719e58f0d49dcceb8592f5e6bd38ce5fe.1760037899.git.paul.chaignon@gmail.com>
 References: <cover.1760037899.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -95,129 +95,89 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1760037899.git.paul.chaignon@gmail.com>
 
-This patch adds support for a new tag __linear_size in the test loader,
-to specify the size of the linear area in case of non-linear skbs. If
-the tag is absent or null, a linear skb is crafted.
+This patch adds new selftests in the direct packet access suite, to
+cover the non-linear case. The first six tests cover the behavior of
+the bounds check with a non-linear skb. The last test adds a call to
+bpf_skb_pull_data() to be able to access the packet.
+
+Note that the size of the linear area includes the L2 header, but for
+some program types like cgroup_skb, ctx->data points to the L3 header.
+Therefore, a linear area of 22 bytes will have only 8 bytes accessible
+to the BPF program (22 - ETH_HLEN). For that reason, the cgroup_skb test
+cases access the packet at an offset of 8 bytes.
 
 Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 ---
- tools/testing/selftests/bpf/progs/bpf_misc.h  |  4 +++
- .../bpf/progs/verifier_direct_packet_access.c |  1 +
- tools/testing/selftests/bpf/test_loader.c     | 29 +++++++++++++++++--
- 3 files changed, 32 insertions(+), 2 deletions(-)
+ .../bpf/progs/verifier_direct_packet_access.c | 58 +++++++++++++++++++
+ 1 file changed, 58 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-index a7a1a684eed1..c9bfbe1bafc1 100644
---- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-@@ -126,6 +126,9 @@
-  *                   Several __arch_* annotations could be specified at once.
-  *                   When test case is not run on current arch it is marked as skipped.
-  * __caps_unpriv     Specify the capabilities that should be set when running the test.
-+ *
-+ * __linear_size     Specify the size of the linear area of non-linear skbs, or
-+ *                   0 for linear skbs.
-  */
- #define __msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_msg=" XSTR(__COUNTER__) "=" msg)))
- #define __not_msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_not_msg=" XSTR(__COUNTER__) "=" msg)))
-@@ -159,6 +162,7 @@
- #define __stderr_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_stderr_unpriv=" XSTR(__COUNTER__) "=" msg)))
- #define __stdout(msg)		__attribute__((btf_decl_tag("comment:test_expect_stdout=" XSTR(__COUNTER__) "=" msg)))
- #define __stdout_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_stdout_unpriv=" XSTR(__COUNTER__) "=" msg)))
-+#define __linear_size(sz)	__attribute__((btf_decl_tag("comment:test_linear_size=" XSTR(sz))))
- 
- /* Define common capabilities tested using __caps_unpriv */
- #define CAP_NET_ADMIN		12
 diff --git a/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c b/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c
-index 28b602ac9cbe..a61897e01a50 100644
+index a61897e01a50..911caa8fd1b7 100644
 --- a/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c
 +++ b/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Converted from tools/testing/selftests/bpf/verifier/direct_packet_access.c */
- 
-+#include <linux/if_ether.h>
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-index 74ecc281bb8c..338c035c3688 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -43,6 +43,7 @@
- #define TEST_TAG_EXPECT_STDERR_PFX_UNPRIV "comment:test_expect_stderr_unpriv="
- #define TEST_TAG_EXPECT_STDOUT_PFX "comment:test_expect_stdout="
- #define TEST_TAG_EXPECT_STDOUT_PFX_UNPRIV "comment:test_expect_stdout_unpriv="
-+#define TEST_TAG_LINEAR_SIZE "comment:test_linear_size="
- 
- /* Warning: duplicated in bpf_misc.h */
- #define POINTER_VALUE	0xbadcafe
-@@ -89,6 +90,7 @@ struct test_spec {
- 	int mode_mask;
- 	int arch_mask;
- 	int load_mask;
-+	int linear_sz;
- 	bool auxiliary;
- 	bool valid;
- };
-@@ -633,6 +635,21 @@ static int parse_test_spec(struct test_loader *tester,
- 					      &spec->unpriv.stdout);
- 			if (err)
- 				goto cleanup;
-+		} else if (str_has_pfx(s, TEST_TAG_LINEAR_SIZE)) {
-+			switch (bpf_program__type(prog)) {
-+			case BPF_PROG_TYPE_SCHED_ACT:
-+			case BPF_PROG_TYPE_SCHED_CLS:
-+			case BPF_PROG_TYPE_CGROUP_SKB:
-+				val = s + sizeof(TEST_TAG_LINEAR_SIZE) - 1;
-+				err = parse_int(val, &spec->linear_sz, "test linear size");
-+				if (err)
-+					goto cleanup;
-+				break;
-+			default:
-+				PRINT_FAIL("__linear_size for unsupported program type");
-+				err = -EINVAL;
-+				goto cleanup;
-+			}
- 		}
- 	}
- 
-@@ -1007,10 +1024,11 @@ static bool is_unpriv_capable_map(struct bpf_map *map)
- 	}
+@@ -801,4 +801,62 @@ l0_%=:	/* exit(0) */					\
+ 	: __clobber_all);
  }
  
--static int do_prog_test_run(int fd_prog, int *retval, bool empty_opts)
-+static int do_prog_test_run(int fd_prog, int *retval, bool empty_opts, int linear_sz)
- {
- 	__u8 tmp_out[TEST_DATA_LEN << 2] = {};
- 	__u8 tmp_in[TEST_DATA_LEN] = {};
-+	struct __sk_buff ctx = {};
- 	int err, saved_errno;
- 	LIBBPF_OPTS(bpf_test_run_opts, topts,
- 		.data_in = tmp_in,
-@@ -1020,6 +1038,12 @@ static int do_prog_test_run(int fd_prog, int *retval, bool empty_opts)
- 		.repeat = 1,
- 	);
- 
-+	if (linear_sz) {
-+		ctx.data_end = linear_sz;
-+		topts.ctx_in = &ctx;
-+		topts.ctx_size_in = sizeof(ctx);
++#define access_test_non_linear(name, type, desc, retval, linear_sz, off)			\
++	SEC(type)										\
++	__description("direct packet access: " #name " (non-linear, " type ", " desc ")")	\
++	__success __retval(retval)								\
++	__linear_size(linear_sz)								\
++	__naked void access_non_linear_##name(void)						\
++	{											\
++		asm volatile ("									\
++		r2 = *(u32*)(r1 + %[skb_data]);							\
++		r3 = *(u32*)(r1 + %[skb_data_end]);						\
++		r0 = r2;									\
++		r0 += %[offset];								\
++		if r0 > r3 goto l0_%=;								\
++		r0 = *(u8*)(r0 - 1);								\
++		r0 = 0;										\
++		exit;										\
++	l0_%=:	r0 = 1;										\
++		exit;										\
++	"	:										\
++		: __imm_const(skb_data, offsetof(struct __sk_buff, data)),			\
++		  __imm_const(skb_data_end, offsetof(struct __sk_buff, data_end)),		\
++		  __imm_const(offset, off)							\
++		: __clobber_all);								\
 +	}
 +
- 	if (empty_opts) {
- 		memset(&topts, 0, sizeof(struct bpf_test_run_opts));
- 		topts.sz = sizeof(struct bpf_test_run_opts);
-@@ -1269,7 +1293,8 @@ void run_subtest(struct test_loader *tester,
- 		}
- 
- 		err = do_prog_test_run(bpf_program__fd(tprog), &retval,
--				       bpf_program__type(tprog) == BPF_PROG_TYPE_SYSCALL ? true : false);
-+				       bpf_program__type(tprog) == BPF_PROG_TYPE_SYSCALL ? true : false,
-+				       spec->linear_sz);
- 		if (!err && retval != subspec->retval && subspec->retval != POINTER_VALUE) {
- 			PRINT_FAIL("Unexpected retval: %d != %d\n", retval, subspec->retval);
- 			goto tobj_cleanup;
++access_test_non_linear(test31, "tc", "too short eth", 1, ETH_HLEN, 22);
++access_test_non_linear(test32, "tc", "too short 1", 1, 1, 22);
++access_test_non_linear(test33, "tc", "long enough", 0, 22, 22);
++access_test_non_linear(test34, "cgroup_skb/ingress", "too short eth", 1, ETH_HLEN, 8);
++access_test_non_linear(test35, "cgroup_skb/ingress", "too short 1", 1, 1, 8);
++access_test_non_linear(test36, "cgroup_skb/ingress", "long enough", 0, 22, 8);
++
++SEC("tc")
++__description("direct packet access: test37 (non-linear, linearized)")
++__success __retval(0)
++__linear_size(ETH_HLEN)
++__naked void access_non_linear_linearized(void)
++{
++	asm volatile ("				\
++	r6 = r1;				\
++	r2 = 22;				\
++	call %[bpf_skb_pull_data];		\
++	r2 = *(u32*)(r6 + %[skb_data]);		\
++	r3 = *(u32*)(r6 + %[skb_data_end]);	\
++	r0 = r2;				\
++	r0 += 22;				\
++	if r0 > r3 goto l0_%=;			\
++	r0 = *(u8*)(r0 - 1);			\
++	exit;					\
++l0_%=:	r0 = 1;					\
++	exit;					\
++"	:
++	: __imm(bpf_skb_pull_data),
++	  __imm_const(skb_data, offsetof(struct __sk_buff, data)),
++	  __imm_const(skb_data_end, offsetof(struct __sk_buff, data_end))
++	: __clobber_all);
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.43.0
 
