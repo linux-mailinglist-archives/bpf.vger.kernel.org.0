@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-70706-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70707-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A782BCB2CA
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 01:11:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9017BCB2E2
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 01:13:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77A2C4257AE
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 23:11:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BB37425526
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 23:13:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04364285CBC;
-	Thu,  9 Oct 2025 23:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63188287275;
+	Thu,  9 Oct 2025 23:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="S78UxCbs"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UJsaYFwk"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579B972625
-	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 23:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A43285C81
+	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 23:13:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760051506; cv=none; b=Qv3wqPJfMn6efpGmnc0W+YsApzmQn4NhlUvNzAf6SXdvkqvRFkfh2fmMQwRWhZTmnyxtNu84YhS+yBb27UgDQNaBll1Tq+nrzzVicI+AWusW1vuAKv3igZbzg8hFqai+TVsX91uIvhAkK2nuls4X4rPh+LRzCvebP/sx8ByOC7w=
+	t=1760051635; cv=none; b=DmF0TXF32SkYh/1FWe3e91PONmrnt0JuZQt+bpn/cWpw7RaZUuwH1CpTb/zXCXsNtDHFzcWfLwUcp2rnJQi2hkaEYVdoOFarCEHYKlBtcQ0TJ8/IhxF5JnP7jEA50hCo3lFrDNhHLqiQBhl3hwl5K5OExfIRZAc9K/30OhsZrvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760051506; c=relaxed/simple;
-	bh=qRzFJiBKd1i6/Bq+yUhx5ijKeoY1BejnZfIlGYN05aM=;
+	s=arc-20240116; t=1760051635; c=relaxed/simple;
+	bh=2Y0woEVwkK7zUi85xgMTPid34hQ9lUkcWc6b5sXKuMc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PfgtxuWKrvkgeczcqTO9rEbJg1wKXEgnw6CNBwVa6QREplGRXVcMh+r1HOW/aK4btyZHwxEUHSOucYU/X9eikq4ww8ef0Io5hgVPz9T8Dq+A/VG3qXIlY14b3I5Gd73/VthUoLbCmrAFjduczbwQH1tNV5uISwwPGxX8ChK0XHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=S78UxCbs; arc=none smtp.client-ip=91.218.175.186
+	 Content-Type:Content-Disposition:In-Reply-To; b=UR0TXV+nRyztxQu9rexJtoToH4bOXwdxTKw01Q/Zuuq/mPnHxlVxR0Ek7dLEG+vp/HBF4pX8FLCTcM7GhDABCqfeoPkf+mxE3MaK+We5s76o7HoPKtlCKViRMrw5vW94Ehhbx1nHZDi1PQJF/sz6ROjhYF/Jw+tXeajcxP+07iY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UJsaYFwk; arc=none smtp.client-ip=95.215.58.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 9 Oct 2025 16:11:25 -0700
+Date: Thu, 9 Oct 2025 16:13:36 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1760051492;
+	t=1760051622;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=llralkTgPwhfJAuFmat258iRIRj3a5VJ7susO8Cvbv8=;
-	b=S78UxCbsa6Ny4XUSoa3koj30HGvcxzQ3TFLNeBYSW7hNyEzVkbkzkVhaKLxKoXVK7T23SK
-	MDxegkF7S200tfdVNixxQhohhacX+Tw+YAJCAgAqAfcPFBTKQyIn+A3C+ayd59PbWK9/AN
-	c5YlgHPahpjtlHF96ETAVSoIN5mpWFw=
+	bh=DQjiBqehILJ3vCh8LnmqIJaTLowKlfThsD3H8p1fN3k=;
+	b=UJsaYFwkL9rS2+AlemnXK/put4W99dsmzVmz34fbv0+I8AtfpBmAq+JOdygCqczwEE/PuA
+	w2C5QFvIhKy1E5YRRWilWBaPGzZfC9FkMeKynTYmL9xlj1yDBhE3hKYwykC450HnxrsQ2K
+	65x0LksMHRwvvl326p1YmqKGgdgEzRs=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Kuniyuki Iwashima <kuniyu@google.com>
@@ -53,11 +53,11 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Willem de Bruijn <willemb@google.com>, Mina Almasry <almasrymina@google.com>, 
 	Roman Gushchin <roman.gushchin@linux.dev>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, 
 	netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next/net 2/6] net: Allow opt-out from global protocol
- memory accounting.
-Message-ID: <o2m3gexuta2xbf6a62y22lzqhejw4xbs7diu2bu2rfvrf7xqvx@lkdymq576v5a>
+Subject: Re: [PATCH bpf-next/net 3/6] net: Introduce net.core.bypass_prot_mem
+ sysctl.
+Message-ID: <25xfv3p3nwr3isf46jcqhgawkgnbks7u4qofk3g43m6pctriss@35fwcsurb2i6>
 References: <20251007001120.2661442-1-kuniyu@google.com>
- <20251007001120.2661442-3-kuniyu@google.com>
+ <20251007001120.2661442-4-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,36 +66,60 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251007001120.2661442-3-kuniyu@google.com>
+In-Reply-To: <20251007001120.2661442-4-kuniyu@google.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Oct 07, 2025 at 12:07:27AM +0000, Kuniyuki Iwashima wrote:
-> Some protocols (e.g., TCP, UDP) implement memory accounting for socket
-> buffers and charge memory to per-protocol global counters pointed to by
-> sk->sk_proto->memory_allocated.
+On Tue, Oct 07, 2025 at 12:07:28AM +0000, Kuniyuki Iwashima wrote:
+> If a socket has sk->sk_bypass_prot_mem flagged, the socket opts out
+> of the global protocol memory accounting.
 > 
-> Sometimes, system processes do not want that limitation.  For a similar
-> purpose, there is SO_RESERVE_MEM for sockets under memcg.
+> Let's control the flag by a new sysctl knob.
 > 
-> Also, by opting out of the per-protocol accounting, sockets under memcg
-> can avoid paying costs for two orthogonal memory accounting mechanisms.
-> A microbenchmark result is in the subsequent bpf patch.
+> The flag is written once during socket(2) and is inherited to child
+> sockets.
 > 
-> Let's allow opt-out from the per-protocol memory accounting if
-> sk->sk_bypass_prot_mem is true.
+> Tested with a script that creates local socket pairs and send()s a
+> bunch of data without recv()ing.
 > 
-> sk->sk_bypass_prot_mem and sk->sk_prot are placed in the same cache
-> line, and sk_has_account() always fetches sk->sk_prot before accessing
-> sk->sk_bypass_prot_mem, so there is no extra cache miss for this patch.
+> Setup:
 > 
-> The following patches will set sk->sk_bypass_prot_mem to true, and
-> then, the per-protocol memory accounting will be skipped.
+>   # mkdir /sys/fs/cgroup/test
+>   # echo $$ >> /sys/fs/cgroup/test/cgroup.procs
+>   # sysctl -q net.ipv4.tcp_mem="1000 1000 1000"
+>   # ulimit -n 524288
 > 
-> Note that this does NOT disable memcg, but rather the per-protocol one.
+> Without net.core.bypass_prot_mem, charged to tcp_mem & memcg
 > 
-> Another option not to use the hole in struct sock_common is create
-> sk_prot variants like tcp_prot_bypass, but this would complicate
-> SOCKMAP logic, tcp_bpf_prots etc.
+>   # python3 pressure.py &
+>   # cat /sys/fs/cgroup/test/memory.stat | grep sock
+>   sock 22642688 <-------------------------------------- charged to memcg
+>   # cat /proc/net/sockstat| grep TCP
+>   TCP: inuse 2006 orphan 0 tw 0 alloc 2008 mem 5376 <-- charged to tcp_mem
+>   # ss -tn | head -n 5
+>   State Recv-Q Send-Q Local Address:Port  Peer Address:Port
+>   ESTAB 2000   0          127.0.0.1:34479    127.0.0.1:53188
+>   ESTAB 2000   0          127.0.0.1:34479    127.0.0.1:49972
+>   ESTAB 2000   0          127.0.0.1:34479    127.0.0.1:53868
+>   ESTAB 2000   0          127.0.0.1:34479    127.0.0.1:53554
+>   # nstat | grep Pressure || echo no pressure
+>   TcpExtTCPMemoryPressures        1                  0.0
+> 
+> With net.core.bypass_prot_mem=1, charged to memcg only:
+> 
+>   # sysctl -q net.core.bypass_prot_mem=1
+>   # python3 pressure.py &
+>   # cat /sys/fs/cgroup/test/memory.stat | grep sock
+>   sock 2757468160 <------------------------------------ charged to memcg
+>   # cat /proc/net/sockstat | grep TCP
+>   TCP: inuse 2006 orphan 0 tw 0 alloc 2008 mem 0 <- NOT charged to tcp_mem
+>   # ss -tn | head -n 5
+>   State Recv-Q Send-Q  Local Address:Port  Peer Address:Port
+>   ESTAB 111000 0           127.0.0.1:36019    127.0.0.1:49026
+>   ESTAB 110000 0           127.0.0.1:36019    127.0.0.1:45630
+>   ESTAB 110000 0           127.0.0.1:36019    127.0.0.1:44870
+>   ESTAB 111000 0           127.0.0.1:36019    127.0.0.1:45274
+>   # nstat | grep Pressure || echo no pressure
+>   no pressure
 > 
 > Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
 
