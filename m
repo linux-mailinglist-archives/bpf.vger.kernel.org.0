@@ -1,125 +1,162 @@
-Return-Path: <bpf+bounces-70636-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70637-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B3CCBC71FB
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 03:39:11 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD818BC72DB
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 04:10:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4BCB54E7761
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 01:39:09 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9443A4EBA9D
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 02:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC7719047A;
-	Thu,  9 Oct 2025 01:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DCB419FA93;
+	Thu,  9 Oct 2025 02:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="K48ecD6u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UqlipTji"
 X-Original-To: bpf@vger.kernel.org
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3CDC154BE2;
-	Thu,  9 Oct 2025 01:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BBC13774D
+	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 02:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759973943; cv=none; b=jKeZd4PxKGSh/1u8N996vm8wGuf7MtldTG7oZVnBuiBu4MQVo3GGWVsey8zvOafxPu7Bjkjg2zRsLeQLsgdr75DDntlLDYYaM4KBusaQ77wPmw4nk0fzZpYtMv6EPO1XKnJhTVkHp7KXpRPlvWpvuFaY90z3bL6aRzGmFuUY0e4=
+	t=1759975827; cv=none; b=f3QQVgl2XLG/HAwKoNN5zs4/ShETO5n6jww+DhZiOGBUAORbeibTqEQGueVMiTXBier9kJXoYngGlep+Uz1Xy19ud3zP3s3V7zM9O25v1XjGL624cOXegyjEqNw7Qjc0jtXLqLblcOjYMDZyFt9duHaOuKtxiNncojOEiGCMhx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759973943; c=relaxed/simple;
-	bh=apOQAZW6AWoaMslvlgsDKl/iISVpw2hHZmBdcUhzQsI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HaIZe5DqN1ysG8CtLfFwHF+ZONTUzKl4+Yi28b6i9K44SZxx4Sa0/Mejr6l+JDS7LA819GoRPGhbNMOK1vXPAJUxPBJvZ9VL3KUamn/Ra2SXDb2AwqP7BVU2D+iuVcNVf9APQ2Ag/jOCHyqlThNMBX8VVLuzq4jRqJx2kZkPJFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=K48ecD6u; arc=none smtp.client-ip=43.163.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1759973931;
-	bh=tjd5N9A70oCjhg5VLw+85IbzLuTB3dBZOhfwR1b228Q=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=K48ecD6uLVMldpdkxPx2fqQelrOA1q333YT00i1oQXbsRletydUXFCHlhZx+oSdTn
-	 teKkX08s4bl3Jo+ty+GzVnFkbG2B+diXQSkIIRV5QBFnKdBcG9hz5axJCL3Cnb2loh
-	 2hBLz7AwZEqZ2fuT/LYG+8QX2wr/0OwaqqsSQd0o=
-Received: from [10.56.52.9] ([39.156.73.10])
-	by newxmesmtplogicsvrsza36-0.qq.com (NewEsmtp) with SMTP
-	id 9B0016B4; Thu, 09 Oct 2025 09:38:48 +0800
-X-QQ-mid: xmsmtpt1759973928tgk1z43m2
-Message-ID: <tencent_339E2EE755D05F67478310C70DD6843AB209@qq.com>
-X-QQ-XMAILINFO: No7DFzN00JnRbjY0trYmAOGRc/Y1F6YVrc2aqn/UnjYvdTuaEA+Beo5vlbPBCg
-	 S94YFJ8tT2hdcmZWF+PF8CJLnVEgUaEy9xO7MN/0zGsWJ2AKzEJyB2yIppeCfY3XItCtlhJnv3oF
-	 jJnGPDSy6WlJkHx2Cb9TFRI1HhpaxlXWMs6B828RqQlC+TCsgeEowCraE3SvPM/xsZ4hpWldhr70
-	 uKHCwY5Wjbks2YZk8FzM7u83ITbWydy2jUF14zZlOqfRq2+gXnRguCDkIQqGNZyn3lE8NXifZF6x
-	 LPZ99QqQShaFAMUPRFYZ89ykJpxeFH7CrdLUuLBDuaE3fhwMHmcGDqgCqCOchYvLsQdbV6jGwTYR
-	 xSrDF+3hz03inf50G/tYuOzwGBSA39CP9M5W//o7cGueAIKFsUKwAdb4bfbphCuLKXyzfNChqeE7
-	 v5WWgOP1BBWrsqBrQM3B9q0oQSkkGxLtImKpMDLJxPsEYFS/BG6ki6rawsuG5u9LhHrFVRok7GEW
-	 YLbXB2wIVBjmY499mNAkwWYVfep02CT43U1FCCvV+svomxQanwqnAUuVBy2uDqJIHCQjBFbhx+jv
-	 DzhRF7qJnCUziNeaTD16HJMeHOJDXX/ix0x39HhXAuJe4jGuzlyCgjRqOzajekgToyHuK2sdnFAV
-	 PMKqdcrW6k4QRHiNeuB8hu5ymZhdRGBOl/GjVI5tMQZteggFaueLk+EnJdKKtSYrp4lYI0h9hYZU
-	 6mOQmbuSygHAzCvba5ZiU6XJDQD/8C/t6uFrY9qFxX84vL9JgW60wJC6vhH0swaYMhoQfIhqGf5l
-	 RwEpBIFDECcSStJ7MxCW+OmnbIHZnxv9siPaJlY3uQoQrYnk01BTRgv0rsTYvQpqVpV9xW4QYVBA
-	 NPBUJNfSL5GTnFIaY+hAy/7V6q2uhzCqkN0plZDnuSqmMRbmleQ5RXan5sU7grzMMsdrFZFUt0E7
-	 Prl8a2YMR0eNRSbyaCOjsfjmfDnT7qJJeqHCDv+/vkJdLD/Sq3h5cyvWbaimLIRz65IhwmfmssKF
-	 3cTzYDpw==
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-X-OQ-MSGID: <88fc6ea7-157f-4bb8-b725-739b2be0409c@foxmail.com>
-Date: Thu, 9 Oct 2025 09:38:47 +0800
+	s=arc-20240116; t=1759975827; c=relaxed/simple;
+	bh=UsphcAlBr+S2PNdLor0CBPJpMS317Bf37KWc9NojufY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CxgbPO51P0M0bcH9QeJ9uhei+h6dEqrf/n1OSvq3bkr7NWoLnfsb8m94QFVL2/R+DUqfu7Q1T6Omfu01yJDsVNA9cf2K/MBZo+oTLMGGsg48WuPEILWtRj2rkkA/1RHJuHjND4oBJTK/glbNdWzXNjC2ZCHlTB9MWKIN3uzt0dU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UqlipTji; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3ee1381b835so426956f8f.1
+        for <bpf@vger.kernel.org>; Wed, 08 Oct 2025 19:10:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759975824; x=1760580624; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I8GzvFR6CGlZo09XYMPTCFUeNcSQI8ZtZkJiYSRu+iM=;
+        b=UqlipTjiLUj101xDX5T9dctIDy9tM48KPUK2833DoHMj7JN4CaT2sWv+hAHltlOC99
+         0i7tXNVcthX9GUDm3E8TLCh2bIY/W1Wsp/WkKOwLL4Dokz2qkSx9wAH2BUfASd5ZtiA4
+         3SFe1Y/rgwpVHvxHMP76BQUDtIVPzOo6/6wj37vpprfzizUfoZ0m5DT+vncBq3Hb+K1j
+         DglfMMyowLBZMW9rP7AS+2uQnH9wRQvPCwVbl6Sybrjdq5uDML826SqXgReeLSQcgJZ0
+         Qc6s2sB1bVFjkQ9QRj46KyGSsK/eMW1DoyFp7frOWPXWKnAbNG3jjEwI5ib/O957HIi/
+         VhbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759975824; x=1760580624;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I8GzvFR6CGlZo09XYMPTCFUeNcSQI8ZtZkJiYSRu+iM=;
+        b=AsU+mnZ2nCUDV/M/jZMGdezYm2JCG6HIuULjmiSkIsFo7qrDaE+0GoDZB14IKiNUc6
+         nnXpqdeFnghrbIRwL4uBA6osOQWYWb2fTSFh9rThHR6XO0vF7sUd6YiixP/EoP5+A2Qj
+         JLDRaHfnOtoZvCnXcH0ztxE6tgMdsAXqf3u7YD0zZTTDe52K39yD3tyFOm31sfJpKwpL
+         vDlObC3bCnEFGipeTXUxtYrV+sVLFosZmHc5HSY4ArpCWAhx6FcQS/gM2C0BYff9zSyR
+         XPOj/hAXpGgCdl5HPIuDvYTOeVoWKZKU8DL0ZAjnEj/UkObJ39Ef4yy/OBTf6KrV68B9
+         ExYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV4u4BPBZ1PoZQ+5i5Hu1T9l6h8fFwduTHXHzpfs/N1WuEX2EpzdRS3azuepbucxuWGsPE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxlprv1Tbo78D5L162b9gOMCG+VWyh8CWJEgBmDehabIyZWhO1F
+	ezoPyOA0FZcsiHd9itwtXyejpOSAx+OpBDT/6FgI1mfgk71urbCNQX2/DFID/6VABpi+OXzTV1o
+	xkuLo4TZfxGiAm5ByJA0GQIasnz5f6q0=
+X-Gm-Gg: ASbGncsMJHsxMbJA7v6vAztDsgRuYzAnjaXW/rucxEeguGgyFVAmSwN+UncuGSRWOvv
+	+y8TmfAZ50rIS+Qx5ujnPMSRYb3FirY/A63/PRit1kMfpcp2bziNcFuQ6aK0fbUc9Sb2SFGUmW/
+	ntQnpqOv8qA3K7Lm1gXAztb3EMCKMkVu9v2LPXKfLtop6pqDd65yLRFi+O/QfAI5kGQWji+vmYK
+	DdiOuRV6JBIMlD43MvQFEPqvUox4U9G/+u5xGVABodzJQJwnVMms+umPC+4o4Ub
+X-Google-Smtp-Source: AGHT+IHUyjygXotyw6ah99ayuf0MSKvceh9le+qsaRqcmfDUOI3HEIlsJDYmsBHuydizQMzuabarjvIlam8AoeAXSgw=
+X-Received: by 2002:a05:6000:18a6:b0:40f:5eb7:f234 with SMTP id
+ ffacd0b85a97d-4266e7cea15mr3454730f8f.5.1759975824081; Wed, 08 Oct 2025
+ 19:10:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: add bpf_strcasestr,bpf_strncasestr
- kfuncs
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Viktor Malik <vmalik@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- Eduard <eddyz87@gmail.com>, Rong Tao <rongtao@cestc.cn>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)"
- <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-References: <cover.1759804822.git.rongtao@cestc.cn>
- <tencent_6E59062E4249590597452A06AFCDA3098808@qq.com>
- <CAADnVQJFBR5ecewWdDhTqyXTMWH_QVEPCm2PXxV_3j1wa+tWMQ@mail.gmail.com>
-Content-Language: en-US
-From: Rong Tao <rtoax@foxmail.com>
-In-Reply-To: <CAADnVQJFBR5ecewWdDhTqyXTMWH_QVEPCm2PXxV_3j1wa+tWMQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <cover.1759875560.git.fthain@linux-m68k.org> <807cfee43bbcb34cdc6452b083ccdc754344d624.1759875560.git.fthain@linux-m68k.org>
+In-Reply-To: <807cfee43bbcb34cdc6452b083ccdc754344d624.1759875560.git.fthain@linux-m68k.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 8 Oct 2025 19:10:13 -0700
+X-Gm-Features: AS18NWDCubbh5qDnKeyx-bfbRiwy5wk-S7mU0B8RrK8RiyXWwNZsCaohYxj9EfE
+Message-ID: <CAADnVQLOQq5m3yN4hqqrx4n1hagY73rV03d7g5Wm9OwVwR_0fA@mail.gmail.com>
+Subject: Re: [RFC v3 2/5] bpf: Explicitly align bpf_res_spin_lock
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 10/7/25 12:08, Alexei Starovoitov wrote:
-> On Mon, Oct 6, 2025 at 8:00 PM Rong Tao <rtoax@foxmail.com> wrote:
->> +/**
->> + * bpf_strnstr - Find the first substring in a length-limited string, ignoring
->> + *               the case of the characters
->> + * @s1__ign: The string to be searched
->> + * @s2__ign: The string to search for
->> + * @len: the maximum number of characters to search
->> + *
->> + * Return:
->> + * * >=0      - Index of the first character of the first occurrence of @s2__ign
->> + *              within the first @len characters of @s1__ign
->> + * * %-ENOENT - @s2__ign not found in the first @len characters of @s1__ign
->> + * * %-EFAULT - Cannot read one of the strings
->> + * * %-E2BIG  - One of the strings is too large
->> + * * %-ERANGE - One of the strings is outside of kernel address space
->> + */
->> +__bpf_kfunc int bpf_strncasestr(const char *s1__ign, const char *s2__ign,
->> +                                                               size_t len)
-> See AI review for the above part.
-
-
-I just submit the v4, please review, thanks :)
-
-Rong Tao
-
-
+On Tue, Oct 7, 2025 at 4:50=E2=80=AFPM Finn Thain <fthain@linux-m68k.org> w=
+rote:
 >
-> pw-bot: cr
+> Align bpf_res_spin_lock to avoid a BUILD_BUG_ON() when the alignment
+> changes, as it will do on m68k when, in a subsequent patch, the minimum
+> alignment of the atomic_t member of struct rqspinlock gets increased.
+> Drop the BUILD_BUG_ON() as it is now redundant.
+>
+> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> Cc: Song Liu <song@kernel.org>
+> Cc: Yonghong Song <yonghong.song@linux.dev>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: KP Singh <kpsingh@kernel.org>
+> Cc: Stanislav Fomichev <sdf@fomichev.me>
+> Cc: Hao Luo <haoluo@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  include/asm-generic/rqspinlock.h | 2 +-
+>  kernel/bpf/rqspinlock.c          | 1 -
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/include/asm-generic/rqspinlock.h b/include/asm-generic/rqspi=
+nlock.h
+> index 6d4244d643df..eac2dcd31b83 100644
+> --- a/include/asm-generic/rqspinlock.h
+> +++ b/include/asm-generic/rqspinlock.h
+> @@ -28,7 +28,7 @@ struct rqspinlock {
+>   */
+>  struct bpf_res_spin_lock {
+>         u32 val;
+> -};
+> +} __aligned(__alignof__(struct rqspinlock));
 
+I don't follow.
+In the next patch you do:
+
+typedef struct {
+- int counter;
++ int __aligned(sizeof(int)) counter;
+} atomic_t;
+
+so it was 4 and still 4 ?
+Are you saying 'int' on m68k is not 4 byte aligned by default,
+so you have to force 4 byte align?
+
+>  struct qspinlock;
+>  #ifdef CONFIG_QUEUED_SPINLOCKS
+> diff --git a/kernel/bpf/rqspinlock.c b/kernel/bpf/rqspinlock.c
+> index 338305c8852c..a88a0e9749d7 100644
+> --- a/kernel/bpf/rqspinlock.c
+> +++ b/kernel/bpf/rqspinlock.c
+> @@ -671,7 +671,6 @@ __bpf_kfunc int bpf_res_spin_lock(struct bpf_res_spin=
+_lock *lock)
+>         int ret;
+>
+>         BUILD_BUG_ON(sizeof(rqspinlock_t) !=3D sizeof(struct bpf_res_spin=
+_lock));
+> -       BUILD_BUG_ON(__alignof__(rqspinlock_t) !=3D __alignof__(struct bp=
+f_res_spin_lock));
+
+Why delete it? Didn't you make them equal in the above hunk?
 
