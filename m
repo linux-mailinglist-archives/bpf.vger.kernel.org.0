@@ -1,87 +1,88 @@
-Return-Path: <bpf+bounces-70646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70647-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E192FBC7D6E
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 09:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 82EFEBC8413
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 11:19:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 985804E4AA2
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 07:59:23 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CBF0E4F65E6
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 09:19:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88DF2D12E2;
-	Thu,  9 Oct 2025 07:59:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF84729A309;
+	Thu,  9 Oct 2025 09:19:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iaFeIjlp"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PLpDn2Tk"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86064222586
-	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 07:59:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D4B27602C
+	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 09:19:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759996756; cv=none; b=WOuh8CB0HCRnddoJa+bh3mTdkudqpccHcXw9LcFTg6ifSPjGJSF05PshVAh6QBRgMQDeyOAKz9q8dsNgmdTbVSHqliYHDRq0e7XkQ6tI0IQa2oOStUbYTQmPFuwmdNM5F7oxQb7A/jysyQd7plwNMNC56MEledOosKpxrXYwt3M=
+	t=1760001552; cv=none; b=eN7YZe+oUt3P+gKLbDMOC7tCdh4OpJ1Ub8InHKVOi3Vj41z/B9FLr61Sfr7F5//z+Nerw4fuvCNsQqYXEl1JwGYJmxqs1dDhkbxmPs2lNQ8Sd3gQSqkutluv83l1zo8s9aTOA8eVywlueU0oi7BKbNl+194eAHnbqksz49tVlSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759996756; c=relaxed/simple;
-	bh=DmoHCKA9QRZ6fagdRrHcExT4WkF9ThbvgfbABd/Nju0=;
+	s=arc-20240116; t=1760001552; c=relaxed/simple;
+	bh=iAbbBMOs6KgHnQbdcFFLs+hJKFOpiHY/OWCzq6L2+2k=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VAMTyxnYPS2E27dLX3wqeDMWDlW+OP4XEJzUSFBSg7BOm3zMkgrccU4Qmx/SF/koL1ax/C3l1PvFhfAfmxUgDSZC9oorRB5NMQGqjcKHSUDtz10+t6BJNZsy9oQhRPrqyTym84xsrMoOn65c5f/xFheJSxh4LOjdiJ0CKix9O0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iaFeIjlp; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=hc3JctmOkTSnHCLkFZWYunh83la5kulZ48AGdMSMcJQvasO4pxxGhiv0SIeDHrANMYCkPcKbV7oaw/udECWgAJUs1zh9zXS8uJq07cs34PcWETHJA8RNRU36gYTH9kc8Exf/RN/2/g3LbFkMF2BeT2FADalvTZOa+zwEbZCXCxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PLpDn2Tk; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1759996753;
+	s=mimecast20190719; t=1760001549;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rNvHCFmqH/PxFbRPiws/BcWGB5k9JVo7ax3HwuCgdPw=;
-	b=iaFeIjlpvS4VarLGkE+p1RVMW/Zt4llj7MAq7MqMDPsBnrh8P6OZiaPPGhEoRLgveQ0DgU
-	hAWCu61LNJ7ji+UxfmMAq3Jp9o/QnXVIgepeXd3bbbzhWIPK6gMwAHyDcLDBeD77oNkTQ8
-	d1wGIno2lR5WsBFG4yOHTIKQh3mlijM=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=ym+DdkcmRG4wvpfz5ykb6s+kf1elRde6oG+aT4Hjw8w=;
+	b=PLpDn2TkF0qR74dNg4w+tzTok33vhEtBc+D3bSiW9sQjBSq2nG0GQ26usONRw12kME0ON+
+	gTDVvuONLHJCTHM4wpR2V1Pa/dDaRUh6omXllTfVh+RGleH61gG2iO8dB9eFiYFMqbz9k3
+	Wv+zvwT0kZIBRdyij2BAeKpqme3+Jg8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-681-_7dQ9boTO3y5a99qC5AFpw-1; Thu, 09 Oct 2025 03:59:11 -0400
-X-MC-Unique: _7dQ9boTO3y5a99qC5AFpw-1
-X-Mimecast-MFC-AGG-ID: _7dQ9boTO3y5a99qC5AFpw_1759996750
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3ece0fd841cso691285f8f.0
-        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 00:59:11 -0700 (PDT)
+ us-mta-551-NBjKbt3COyae-u0KcjZrsw-1; Thu, 09 Oct 2025 05:19:08 -0400
+X-MC-Unique: NBjKbt3COyae-u0KcjZrsw-1
+X-Mimecast-MFC-AGG-ID: NBjKbt3COyae-u0KcjZrsw_1760001547
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-46e44b9779eso3667625e9.1
+        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 02:19:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759996750; x=1760601550;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rNvHCFmqH/PxFbRPiws/BcWGB5k9JVo7ax3HwuCgdPw=;
-        b=KVIvBDGGK6UoFaG9fnkAqhQSQjqK37oWmvgpWCyq9gEvJG+7ddOvHUaMab/+By66Kq
-         WtMpHoXEm6OBD4X/LDuHtX7hE3uckq48aiq0hJIuNdZCLDdEWMwocSpDfe7o67EYf8fv
-         EslL8e1V3UNWlYWKVMd7VGTnmocIovG1ucH3tWYQkWVDcgen8waoW2iazShAulTYbOtF
-         G4PTQ+YC+n7ENxAG2Z1iJCXJ+lE1OWtp3ieEaLBs1fsLqqWrhYWxDipJQU0ZbnkxwmRS
-         Sts1FWNsQJ0+mgPluIzcLYhJ9kuxpZ27K9+e83ffQrndPc0U0RBX3VXjJ1k6OfyF28LF
-         4LzA==
-X-Forwarded-Encrypted: i=1; AJvYcCUYKF/MYyjZ+HcRC9tD6fSy5/vBDVMa0y3Jyj4N0BWbi17MWxcrQSCyca8rPyXmgqtx26s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKq5a/deomMut7t6vL6lSrgh/3ey4NE1KxwxpbAyAlmwuacMc9
-	/2Nk2zcvDTV6VlofHjvmC4N3oD7r7zodDeMdvnNbqcvrMEgwxmnhFAL4LQk8Zh5MXLsVbvbof6q
-	LmChMtPlgVBzJauI+GpGnICIJFzahD2b/ABby5DcrE96lrW2fFWv+XQ==
-X-Gm-Gg: ASbGncvD3HgSRFy7BT0PzC9/NdQmwWcvTuZkjrFylLA2gXdrI9Yy3zQ6/+G5Uy31V6S
-	WGz+1uunCLzUI43hoTaAXCSvEx6PWtNMjWlXsofrE7hrHsFRUrgQk/9yOU/ENuFuA4/1Es3dpaw
-	hYqBD1Hpm8W6V4Ha8IE6AngYZ//ej3xUX1wydCdttmntXTH++IVhQsMRFQoYCGgDkkTTwpjseER
-	aV09W2vo/3m12AyhV8UTMjH/FqEZWw7ZABdDD3eeeAcP84aMfkIrcOlD+U5Qn6ADKjkWbTL9tll
-	nLpGBNwMbtcOe5rQed4PRXgxKyti8m0smej5DyUO8NOn4TuZAJpf5P5DScay3PSbW/xpHL80ZED
-	rNxeK4hzoDK2q2CWhzA==
-X-Received: by 2002:a05:6000:4014:b0:3ec:e152:e2ce with SMTP id ffacd0b85a97d-4266e7e0149mr4118841f8f.32.1759996750012;
-        Thu, 09 Oct 2025 00:59:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE2Ne9LNH5ThjILsmk10mm9vW/PMkSzQqs9OomnIOh7VVzCbkr8uET7wMOcyPA3GmuKzSE5nA==
-X-Received: by 2002:a05:6000:4014:b0:3ec:e152:e2ce with SMTP id ffacd0b85a97d-4266e7e0149mr4118816f8f.32.1759996749610;
-        Thu, 09 Oct 2025 00:59:09 -0700 (PDT)
-Received: from ?IPV6:2a0d:3344:2712:7e10:4d59:d956:544f:d65c? ([2a0d:3344:2712:7e10:4d59:d956:544f:d65c])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4255d8e9719sm34106869f8f.31.2025.10.09.00.59.08
+        d=1e100.net; s=20230601; t=1760001547; x=1760606347;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ym+DdkcmRG4wvpfz5ykb6s+kf1elRde6oG+aT4Hjw8w=;
+        b=V6wzISzPap8GrENqtKbS6Oyy389jTfAM3xqn9g+Zk759iz013mwnc5T6tYfgiScRnc
+         ou1tj6NC3L3Gf+eXUf/GqW7kkeQ2z7OtbJ6f9GXGfFiuQa2hoeooc8zKdOG8zOc2sp1F
+         A1L+C0ItqdUwisYGlZbmv6u7ICNxecuSVF6wwWFH+lRagWQzj7mopZM/A/l7Wjeqx3Yr
+         OxNUQhrPRhnPTaO+gYj6vlFzLSaRmt031ZaSLuaeRTqa3hs0drvB3ufAu3u5qTGGZBgG
+         jBxI6kXbSm1ogPH8RcrhUSPNmLIo5Kj68uLO/zXX8MPmGuCB6o0vhs674JW+va7U2rEZ
+         GFow==
+X-Forwarded-Encrypted: i=1; AJvYcCVjbcX51dGdcejzcv3dSuAQA/9ilTLb1ml8rA/jCe/X0pHEYgmwC0yKH4naZHTnS6Iz2bI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/cAiuNjwPFdCDCg0eYblHH6A2uFulwjhUn0nXGVyAGlegbP13
+	2KfhyGShImqUbBSJ3cNObExinvjrtIbC08VrSXa017w+4yXMFOx3C0DDjLhu3gsYDYoZ42bHZsj
+	n6xncNLexjDdfpcCs4eoFEaKb1O0b/mbPyQX0cjUNXsel1fRq9Gv6nQ==
+X-Gm-Gg: ASbGnctietiXXdBC3jwdZwdB/pfSzCqNMA0Yk/6oAMPSmFv4TsWwH9I2vF+UeE2E3D3
+	wfT75mHrY9+po2iczkok6x4nTTzNpqeQRh2/c8NYbc2/rW6cOgGwWvCZ6KtzsS13y2wXP5AtUdp
+	XmWwQw/m15VXUIFcKaAYULQ4rZuuyIiRum9rrhi3JzLY+RTLhlKbNxrTPBM1fvn6qkjAOkfILkT
+	Q3O/GhAVyDiVBFqTv6u52NtGG33Qk/xlzhjp0czxnXZDRwGtBxQ766OqAxxls0obHgJSUnbhczF
+	6bDiLIgl8WcQ7ynvx4CZLTJg6y0PKWQ0mY1q9lPEO9TZnu9zLgqg1gJuyG+tptP8ljkesZvaiBB
+	SanTgAIzi
+X-Received: by 2002:a05:600c:c4a3:b0:46e:1fc2:f9ac with SMTP id 5b1f17b1804b1-46fa9a98fc7mr50624095e9.10.1760001547015;
+        Thu, 09 Oct 2025 02:19:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFReIJdkF3acFZPAnWeL0i3BOZQC/foYxEC2R8ZxnsgKIO/Vq2BUJi9cBf7+x2XtZK2O/u2OA==
+X-Received: by 2002:a05:600c:c4a3:b0:46e:1fc2:f9ac with SMTP id 5b1f17b1804b1-46fa9a98fc7mr50623665e9.10.1760001546471;
+        Thu, 09 Oct 2025 02:19:06 -0700 (PDT)
+Received: from [192.168.3.141] (tmo-083-189.customers.d1-online.com. [80.187.83.189])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4255d8a6daasm34080730f8f.7.2025.10.09.02.19.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Oct 2025 00:59:09 -0700 (PDT)
-Message-ID: <6ea5bc8e-5d77-4a9a-9a8d-72a8dc71ac38@redhat.com>
-Date: Thu, 9 Oct 2025 09:59:07 +0200
+        Thu, 09 Oct 2025 02:19:05 -0700 (PDT)
+Message-ID: <129379f6-18c7-4d10-8241-8c6c5596d6d5@redhat.com>
+Date: Thu, 9 Oct 2025 11:19:02 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,159 +90,233 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpf, sockmap: Update tp->rcv_nxt in sk_psock_skb_ingress
-To: zhengguoyong <zhenggy@chinatelecom.cn>, john.fastabend@gmail.com,
- jakub@cloudflare.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <3b78ca04-f4b9-4d12-998d-4e21a3a8397f@chinatelecom.cn>
+Subject: Re: [PATCH v9 mm-new 03/11] mm: thp: add support for BPF based THP
+ order selection
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: Zi Yan <ziy@nvidia.com>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>, baolin.wang@linux.alibaba.com,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Liam Howlett <Liam.Howlett@oracle.com>, npache@redhat.com,
+ ryan.roberts@arm.com, dev.jain@arm.com, usamaarif642@gmail.com,
+ gutierrez.asier@huawei-partners.com, Matthew Wilcox <willy@infradead.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Amery Hung <ameryhung@gmail.com>,
+ David Rientjes <rientjes@google.com>, Jonathan Corbet <corbet@lwn.net>,
+ 21cnbao@gmail.com, Shakeel Butt <shakeel.butt@linux.dev>,
+ Tejun Heo <tj@kernel.org>, lance.yang@linux.dev,
+ Randy Dunlap <rdunlap@infradead.org>, bpf <bpf@vger.kernel.org>,
+ linux-mm <linux-mm@kvack.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <20250930055826.9810-1-laoar.shao@gmail.com>
+ <20250930055826.9810-4-laoar.shao@gmail.com>
+ <CAADnVQJtrJZOCWZKH498GBA8M0mYVztApk54mOEejs8Wr3nSiw@mail.gmail.com>
+ <27e002e3-b39f-40f9-b095-52da0fbd0fc7@redhat.com>
+ <CALOAHbBFNNXHdzp1zNuD530r9ZjpQF__wGWyAdR7oDLvemYSMw@mail.gmail.com>
+ <7723a2c7-3750-44f7-9eb5-4ef64b64fbb8@redhat.com>
+ <CALOAHbD_tRSyx1LXKfFrUriH6BcRS6Hw9N1=KddCJpgXH8vZug@mail.gmail.com>
+ <96AE1C18-3833-4EB8-9145-202517331DF5@nvidia.com>
+ <f743cfcd-2467-42c5-9a3c-3dceb6ff7aa8@redhat.com>
+ <CALOAHbAY9sjG-M=nwWRdbp3_m2cx_YJCb7DToaXn-kHNV+A5Zg@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <3b78ca04-f4b9-4d12-998d-4e21a3a8397f@chinatelecom.cn>
-Content-Type: text/plain; charset=UTF-8
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZoEEwEIAEQCGwMCF4ACGQEFCwkIBwICIgIG
+ FQoJCAsCBBYCAwECHgcWIQQb2cqtc1xMOkYN/MpN3hD3AP+DWgUCaJzangUJJlgIpAAKCRBN
+ 3hD3AP+DWhAxD/9wcL0A+2rtaAmutaKTfxhTP0b4AAp1r/eLxjrbfbCCmh4pqzBhmSX/4z11
+ opn2KqcOsueRF1t2ENLOWzQu3Roiny2HOU7DajqB4dm1BVMaXQya5ae2ghzlJN9SIoopTWlR
+ 0Af3hPj5E2PYvQhlcqeoehKlBo9rROJv/rjmr2x0yOM8qeTroH/ZzNlCtJ56AsE6Tvl+r7cW
+ 3x7/Jq5WvWeudKrhFh7/yQ7eRvHCjd9bBrZTlgAfiHmX9AnCCPRPpNGNedV9Yty2Jnxhfmbv
+ Pw37LA/jef8zlCDyUh2KCU1xVEOWqg15o1RtTyGV1nXV2O/mfuQJud5vIgzBvHhypc3p6VZJ
+ lEf8YmT+Ol5P7SfCs5/uGdWUYQEMqOlg6w9R4Pe8d+mk8KGvfE9/zTwGg0nRgKqlQXrWRERv
+ cuEwQbridlPAoQHrFWtwpgYMXx2TaZ3sihcIPo9uU5eBs0rf4mOERY75SK+Ekayv2ucTfjxr
+ Kf014py2aoRJHuvy85ee/zIyLmve5hngZTTe3Wg3TInT9UTFzTPhItam6dZ1xqdTGHZYGU0O
+ otRHcwLGt470grdiob6PfVTXoHlBvkWRadMhSuG4RORCDpq89vu5QralFNIf3EysNohoFy2A
+ LYg2/D53xbU/aa4DDzBb5b1Rkg/udO1gZocVQWrDh6I2K3+cCs7BTQRVy5+RARAA59fefSDR
+ 9nMGCb9LbMX+TFAoIQo/wgP5XPyzLYakO+94GrgfZjfhdaxPXMsl2+o8jhp/hlIzG56taNdt
+ VZtPp3ih1AgbR8rHgXw1xwOpuAd5lE1qNd54ndHuADO9a9A0vPimIes78Hi1/yy+ZEEvRkHk
+ /kDa6F3AtTc1m4rbbOk2fiKzzsE9YXweFjQvl9p+AMw6qd/iC4lUk9g0+FQXNdRs+o4o6Qvy
+ iOQJfGQ4UcBuOy1IrkJrd8qq5jet1fcM2j4QvsW8CLDWZS1L7kZ5gT5EycMKxUWb8LuRjxzZ
+ 3QY1aQH2kkzn6acigU3HLtgFyV1gBNV44ehjgvJpRY2cC8VhanTx0dZ9mj1YKIky5N+C0f21
+ zvntBqcxV0+3p8MrxRRcgEtDZNav+xAoT3G0W4SahAaUTWXpsZoOecwtxi74CyneQNPTDjNg
+ azHmvpdBVEfj7k3p4dmJp5i0U66Onmf6mMFpArvBRSMOKU9DlAzMi4IvhiNWjKVaIE2Se9BY
+ FdKVAJaZq85P2y20ZBd08ILnKcj7XKZkLU5FkoA0udEBvQ0f9QLNyyy3DZMCQWcwRuj1m73D
+ sq8DEFBdZ5eEkj1dCyx+t/ga6x2rHyc8Sl86oK1tvAkwBNsfKou3v+jP/l14a7DGBvrmlYjO
+ 59o3t6inu6H7pt7OL6u6BQj7DoMAEQEAAcLBfAQYAQgAJgIbDBYhBBvZyq1zXEw6Rg38yk3e
+ EPcA/4NaBQJonNqrBQkmWAihAAoJEE3eEPcA/4NaKtMQALAJ8PzprBEXbXcEXwDKQu+P/vts
+ IfUb1UNMfMV76BicGa5NCZnJNQASDP/+bFg6O3gx5NbhHHPeaWz/VxlOmYHokHodOvtL0WCC
+ 8A5PEP8tOk6029Z+J+xUcMrJClNVFpzVvOpb1lCbhjwAV465Hy+NUSbbUiRxdzNQtLtgZzOV
+ Zw7jxUCs4UUZLQTCuBpFgb15bBxYZ/BL9MbzxPxvfUQIPbnzQMcqtpUs21CMK2PdfCh5c4gS
+ sDci6D5/ZIBw94UQWmGpM/O1ilGXde2ZzzGYl64glmccD8e87OnEgKnH3FbnJnT4iJchtSvx
+ yJNi1+t0+qDti4m88+/9IuPqCKb6Stl+s2dnLtJNrjXBGJtsQG/sRpqsJz5x1/2nPJSRMsx9
+ 5YfqbdrJSOFXDzZ8/r82HgQEtUvlSXNaXCa95ez0UkOG7+bDm2b3s0XahBQeLVCH0mw3RAQg
+ r7xDAYKIrAwfHHmMTnBQDPJwVqxJjVNr7yBic4yfzVWGCGNE4DnOW0vcIeoyhy9vnIa3w1uZ
+ 3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
+ CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
+ qIws/H2t
+In-Reply-To: <CALOAHbAY9sjG-M=nwWRdbp3_m2cx_YJCb7DToaXn-kHNV+A5Zg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-
-
-On 10/9/25 5:07 AM, zhengguoyong wrote:
-> When using sockmap to forward TCP traffic to the application
-> layer of the peer socket, the peer socket's tcp_bpf_recvmsg_parser
-> processing flow will synchronously update the tp->copied_seq field.
-> This causes tp->rcv_nxt to become less than tp->copied_seq.
+On 08.10.25 15:11, Yafang Shao wrote:
+> On Wed, Oct 8, 2025 at 8:07 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 08.10.25 13:27, Zi Yan wrote:
+>>> On 8 Oct 2025, at 5:04, Yafang Shao wrote:
+>>>
+>>>> On Wed, Oct 8, 2025 at 4:28 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>
+>>>>> On 08.10.25 10:18, Yafang Shao wrote:
+>>>>>> On Wed, Oct 8, 2025 at 4:08 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>>>
+>>>>>>> On 03.10.25 04:18, Alexei Starovoitov wrote:
+>>>>>>>> On Mon, Sep 29, 2025 at 10:59 PM Yafang Shao <laoar.shao@gmail.com> wrote:
+>>>>>>>>>
+>>>>>>>>> +unsigned long bpf_hook_thp_get_orders(struct vm_area_struct *vma,
+>>>>>>>>> +                                     enum tva_type type,
+>>>>>>>>> +                                     unsigned long orders)
+>>>>>>>>> +{
+>>>>>>>>> +       thp_order_fn_t *bpf_hook_thp_get_order;
+>>>>>>>>> +       int bpf_order;
+>>>>>>>>> +
+>>>>>>>>> +       /* No BPF program is attached */
+>>>>>>>>> +       if (!test_bit(TRANSPARENT_HUGEPAGE_BPF_ATTACHED,
+>>>>>>>>> +                     &transparent_hugepage_flags))
+>>>>>>>>> +               return orders;
+>>>>>>>>> +
+>>>>>>>>> +       rcu_read_lock();
+>>>>>>>>> +       bpf_hook_thp_get_order = rcu_dereference(bpf_thp.thp_get_order);
+>>>>>>>>> +       if (WARN_ON_ONCE(!bpf_hook_thp_get_order))
+>>>>>>>>> +               goto out;
+>>>>>>>>> +
+>>>>>>>>> +       bpf_order = bpf_hook_thp_get_order(vma, type, orders);
+>>>>>>>>> +       orders &= BIT(bpf_order);
+>>>>>>>>> +
+>>>>>>>>> +out:
+>>>>>>>>> +       rcu_read_unlock();
+>>>>>>>>> +       return orders;
+>>>>>>>>> +}
+>>>>>>>>
+>>>>>>>> I thought I explained it earlier.
+>>>>>>>> Nack to a single global prog approach.
+>>>>>>>
+>>>>>>> I agree. We should have the option to either specify a policy globally,
+>>>>>>> or more refined for cgroups/processes.
+>>>>>>>
+>>>>>>> It's an interesting question if a program would ever want to ship its
+>>>>>>> own policy: I can see use cases for that.
+>>>>>>>
+>>>>>>> So I agree that we should make it more flexible right from the start.
+>>>>>>
+>>>>>> To achieve per-process granularity, the struct-ops must be embedded
+>>>>>> within the mm_struct as follows:
+>>>>>>
+>>>>>> +#ifdef CONFIG_BPF_MM
+>>>>>> +struct bpf_mm_ops {
+>>>>>> +#ifdef CONFIG_BPF_THP
+>>>>>> +       struct bpf_thp_ops bpf_thp;
+>>>>>> +#endif
+>>>>>> +};
+>>>>>> +#endif
+>>>>>> +
+>>>>>>     /*
+>>>>>>      * Opaque type representing current mm_struct flag state. Must be accessed via
+>>>>>>      * mm_flags_xxx() helper functions.
+>>>>>> @@ -1268,6 +1281,10 @@ struct mm_struct {
+>>>>>>     #ifdef CONFIG_MM_ID
+>>>>>>                    mm_id_t mm_id;
+>>>>>>     #endif /* CONFIG_MM_ID */
+>>>>>> +
+>>>>>> +#ifdef CONFIG_BPF_MM
+>>>>>> +               struct bpf_mm_ops bpf_mm;
+>>>>>> +#endif
+>>>>>>            } __randomize_layout;
+>>>>>>
+>>>>>> We should be aware that this will involve extensive changes in mm/.
+>>>>>
+>>>>> That's what we do on linux-mm :)
+>>>>>
+>>>>> It would be great to use Alexei's feedback/experience to come up with
+>>>>> something that is flexible for various use cases.
+>>>>
+>>>> I'm still not entirely convinced that allowing individual processes or
+>>>> cgroups to run independent progs is a valid use case. However, since
+>>>> we have a consensus that this is the right direction, I will proceed
+>>>> with this approach.
+>>>>
+>>>>>
+>>>>> So I think this is likely the right direction.
+>>>>>
+>>>>> It would be great to evaluate which scenarios we could unlock with this
+>>>>> (global vs. per-process vs. per-cgroup) approach, and how
+>>>>> extensive/involved the changes will be.
+>>>>
+>>>> 1. Global Approach
+>>>>      - Pros:
+>>>>        Simple;
+>>>>        Can manage different THP policies for different cgroups or processes.
+>>>>     - Cons:
+>>>>        Does not allow individual processes to run their own BPF programs.
+>>>>
+>>>> 2. Per-Process Approach
+>>>>       - Pros:
+>>>>         Enables each process to run its own BPF program.
+>>>>       - Cons:
+>>>>         Introduces significant complexity, as it requires handling the
+>>>> BPF program's lifecycle (creation, destruction, inheritance) within
+>>>> every mm_struct.
+>>>>
+>>>> 3. Per-Cgroup Approach
+>>>>       - Pros:
+>>>>          Allows individual cgroups to run their own BPF programs.
+>>>>          Less complex than the per-process model, as it can leverage the
+>>>> existing cgroup operations structure.
+>>>>       - Cons:
+>>>>          Creates a dependency on the cgroup subsystem.
+>>>>          might not be easy to control at the per-process level.
+>>>
+>>> Another issue is that how and who to deal with hierarchical cgroup, where one
+>>> cgroup is a parent of another. Should bpf program to do that or mm code
+>>> to do that? I remember hierarchical cgroup is the main reason THP control
+>>> at cgroup level is rejected. If we do per-cgroup bpf control, wouldn't we
+>>> get the same rejection from cgroup folks?
+>>
+>> Valid point.
+>>
+>> I do wonder if that problem was already encountered elsewhere with bpf
+>> and if there is already a solution.
 > 
-> Later, when this socket receives SKB packets from the protocol stack,
-> in the call chain tcp_data_ready → tcp_epollin_ready, the function
-> tcp_epollin_ready will return false, preventing the socket from being
-> woken up to receive new packets.
+> Our standard is to run only one instance of a BPF program type
+> system-wide to avoid conflicts. For example, we can't have both
+> systemd and a container runtime running bpf-thp simultaneously.
+
+Right, it's a good question how to combine policies, or "who wins".
+
 > 
-> Therefore, it is necessary to synchronously update the tp->rcv_nxt
-> information in sk_psock_skb_ingress.
-> 
-> Signed-off-by: GuoYong Zheng <zhenggy@chinatelecom.cn>
-> ---
->  net/core/skmsg.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index 9becadd..e9d841c 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -576,6 +576,7 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb,
->  	struct sock *sk = psock->sk;
->  	struct sk_msg *msg;
->  	int err;
-> +	u32 seq;
-> 
->  	/* If we are receiving on the same sock skb->sk is already assigned,
->  	 * skip memory accounting and owner transition seeing it already set
-> @@ -595,8 +596,15 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb,
->  	 */
->  	skb_set_owner_r(skb, sk);
->  	err = sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, msg, true);
-> -	if (err < 0)
-> +	if (err < 0) {
->  		kfree(msg);
-> +	} else {
-> +		bh_lock_sock_nested(sk);
+> Perhaps Alexei can enlighten us, though we'd need to read between his
+> characteristically brief lines. ;-)
 
-Apparently this is triggering deadlock in our CI:
+There might be some insights to be had in the bpf OOM discussion at
 
-  WARNING: inconsistent lock state
-  6.17.0-gb9bdadc5b6ca-dirty #8 Tainted: G           OE
-  --------------------------------
-  inconsistent {IN-SOFTIRQ-W} -> {SOFTIRQ-ON-W} usage.
-  kworker/1:36/3777 [HC0[0]:SC0[0]:HE1:SE1] takes:
-  00000000b80163e8 (slock-AF_INET/1){+.?.}-{2:2}, at:
-sk_psock_backlog+0x656/0xf18
-  {IN-SOFTIRQ-W} state was registered at:
-    __lock_acquire+0x4dc/0xd58
-    lock_acquire.part.0+0x114/0x278
-    lock_acquire+0x9c/0x160
-    _raw_spin_lock_nested+0x58/0xa8
-    tcp_v4_rcv+0x23a0/0x32a8
-    ip_protocol_deliver_rcu+0x6c/0x418
-    ip_local_deliver_finish+0x364/0x5d0
-    ip_local_deliver+0x17a/0x3f8
-    ip_rcv+0xd6/0x318
-    __netif_receive_skb_one_core+0x11c/0x158
-    process_backlog+0x58c/0x1618
-    __napi_poll+0x86/0x488
-    net_rx_action+0x482/0xb08
-    handle_softirqs+0x3cc/0xc88
-    do_softirq+0x1fc/0x248
-    __local_bh_enable_ip+0x332/0x3a0
-    __dev_queue_xmit+0x90a/0x1738
-    neigh_resolve_output+0x4c4/0x848
-    ip_finish_output2+0x728/0x1bc8
-    ip_output+0x1ea/0x5d0
-    __ip_queue_xmit+0x71a/0x1088
-    __tcp_transmit_skb+0x118c/0x2470
-    tcp_connect+0x10ca/0x18b8
-    tcp_v4_connect+0x11cc/0x1788
-    __inet_stream_connect+0x324/0xc00
-    inet_stream_connect+0x70/0xb8
-    __sys_connect+0xea/0x148
-    __do_sys_socketcall+0x2b4/0x4c0
-    __do_syscall+0x138/0x3e0
-    system_call+0x6e/0x90
-  irq event stamp: 531707
-  hardirqs last  enabled at (531707): [<0008bdf65ac55ad2>]
-__local_bh_enable_ip+0x23a/0x3a0
-  hardirqs last disabled at (531705): [<0008bdf65ac55b6a>]
-__local_bh_enable_ip+0x2d2/0x3a0
-  softirqs last  enabled at (531706): [<0008bdf65c31f142>]
-sk_psock_skb_ingress_enqueue+0x2aa/0x468
-  softirqs last disabled at (531704): [<0008bdf65c31f112>]
-sk_psock_skb_ingress_enqueue+0x27a/0x468
+https://lkml.kernel.org/r/CAEf4BzafXv-PstSAP6krers=S74ri1+zTB4Y2oT6f+33yznqsA@mail.gmail.com
 
-  other info that might help us debug this:
-   Possible unsafe locking scenario:
+I didn't completely read through that, but that discussion also seems to 
+be about interaction between cgroups and bpd programs.
 
-         CPU0
-         ----
-    lock(slock-AF_INET/1);
-    <Interrupt>
-      lock(slock-AF_INET/1);
+-- 
+Cheers
 
-   *** DEADLOCK ***
-
-  3 locks held by kworker/1:36/3777:
-   #0: 0000000080042158 ((wq_completion)events){+.+.}-{0:0}, at:
-process_one_work+0x766/0x15e0
-   #1: 0008bd765cbffba8
-((work_completion)(&(&psock->work)->work)){+.+.}-{0:0}, at:
-process_one_work+0x794/0x15e0
-   #2: 000000008eb583c8 (&psock->work_mutex){+.+.}-{3:3}, at:
-sk_psock_backlog+0x198/0xf18
-
-  stack backtrace:
-  CPU: 1 UID: 0 PID: 3777 Comm: kworker/1:36 Tainted: G           OE
-  6.17.0-gb9bdadc5b6ca-dirty #8 NONE
-  Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-  Hardware name: IBM 8561 LT1 400 (KVM/Linux)
-  Workqueue: events sk_psock_backlog
-  Call Trace:
-   [<0008bdf65aaca9de>] dump_stack_lvl+0x106/0x168
-   [<0008bdf65adb5990>] print_usage_bug.part.0+0x2e8/0x398
-   [<0008bdf65adb616a>] mark_lock_irq+0x72a/0x9c0
-   [<0008bdf65adb670e>] mark_lock+0x30e/0x7c0
-   [<0008bdf65adb6f38>] mark_usage+0xc8/0x178
-   [<0008bdf65adb819c>] __lock_acquire+0x4dc/0xd58
-   [<0008bdf65adb8b2c>] lock_acquire.part.0+0x114/0x278
-   [<0008bdf65adb8d2c>] lock_acquire+0x9c/0x160
-   [<0008bdf65cbc6498>] _raw_spin_lock_nested+0x58/0xa8
-   [<0008bdf65c323716>] sk_psock_backlog+0x656/0xf18
-   [<0008bdf65ac9b236>] process_one_work+0x83e/0x15e0
-   [<0008bdf65ac9c790>] worker_thread+0x7b8/0x1020
-   [<0008bdf65acbb0f8>] kthread+0x3c0/0x6e8
-   [<0008bdf65aad02f4>] __ret_from_fork+0xdc/0x800
-   [<0008bdf65cbc7fd2>] ret_from_fork+0xa/0x30
-  INFO: lockdep is turned off.
-
-More details at:
-
-https://github.com/kernel-patches/bpf/actions/runs/18367014116/job/52322106520
-
-/P
+David / dhildenb
 
 
