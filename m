@@ -1,68 +1,59 @@
-Return-Path: <bpf+bounces-70675-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70676-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6823BCA05F
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 18:12:07 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35885BCA038
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 18:10:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 380D71A647CF
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 16:06:06 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8FA0D4FF15B
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 16:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DD222F9D83;
-	Thu,  9 Oct 2025 15:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3C52F291E;
+	Thu,  9 Oct 2025 15:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GgQvjLTe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMn5za8D"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BCC62264D3;
-	Thu,  9 Oct 2025 15:59:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28DC222688C;
+	Thu,  9 Oct 2025 15:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760025547; cv=none; b=s/45o5ZICHUj5JzUTDofSqu1/htD4aBGy7/44YI6mt+ZT9jekVG/PDtMki/8XAKumWriK4HztGS/SfSdV9ZPZJTrHZ/N0hKpnA05bHv0hwaQxsnOMTapZkj3Y+fbNbmgegvrQMPBjeN29+tPjciopfaeUL0NSaOn6SAFPsWdWqg=
+	t=1760025563; cv=none; b=Wp8yc47teR/b4BEsQB03sNIwm0mlYmSIc4xZW0LoSL5epvH/TnFri1oscWsUiDGQ9nwY5bx6GDEtHtrkFfwJSn0KG0MzSBrTHpBGhsWODET/zzG09Kwz9tSDLcEIiaJMsxah1pmLcI6yEWVVdz7zCDIYBFslGaUHHAqPniGNnuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760025547; c=relaxed/simple;
-	bh=HO4+Tz4jqsYdxeLaF83ztinV6zh0jqaeIA+sMbiq7lI=;
+	s=arc-20240116; t=1760025563; c=relaxed/simple;
+	bh=TpkvX25yGwR/JxwIpFijDFZ154Awx6hGAs5N9knz/8I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XObbmA/TsA87cZN+xE3buNrvN4xrBKedLRVLPMUkvzAxOYqMN7jPlt7MpqjYt8G7lb6IHsh/6kXO86Mko527m6SA2dl/PEoEdFVQvp/UweynYJJ45r23cq2ybQ9roU+6R6Dl+XRQrf8ul0V9Fq34lestUHnSldNqvYo8twFyYg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GgQvjLTe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A2C3C4CEF8;
-	Thu,  9 Oct 2025 15:59:04 +0000 (UTC)
+	 MIME-Version:Content-Type; b=M7W1Isux0VMWwgBE/2kx8Lyd/pTcWLWR69OsiT4p7ewXIB/Z+MgyxqX+UMq9aiECOsTi+4MwL2SHYAYOglW1yQI+/1KOAVlstsj/R+/HdBxZA/m7+utzxFcyFphOuSV3vB0lSZ2WCC7tAPrnt/XVWMcdQoCPjhOG7PLL3rZvl7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kMn5za8D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F50EC4CEE7;
+	Thu,  9 Oct 2025 15:59:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760025546;
-	bh=HO4+Tz4jqsYdxeLaF83ztinV6zh0jqaeIA+sMbiq7lI=;
+	s=k20201202; t=1760025563;
+	bh=TpkvX25yGwR/JxwIpFijDFZ154Awx6hGAs5N9knz/8I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GgQvjLTeICefoY6klw103aff944WF6zlyHIkctkguQq2tYPlkcKy6D/u7MVsMPK1t
-	 uO8PkYMacQD2F785YQ0iee6pDN6MaDS3zQBME7piNKs2SN/bmL4aUHvcOpe/jDglg+
-	 OR2NKuLGI+RAbtZPHmYiZUVFMNXDriyTI+0Fah5M9NPkG3T+K4czv/owYQQIsc6yNj
-	 zUmLK/0OIn9FYFyOf996bCLBjlO9kQqiMfollCxVAsrK2euS1is79Nvny7lRKjq1df
-	 7/hNNjlJape19ZpmUtCxAKbblzcnpc69JSORzmQnjaZLoV3F8BL/4zbW8UgsF0Zire
-	 GQhHQ58FYKATA==
+	b=kMn5za8Dlddpmd1vkzV989ByBIlp+C3WZEiyjPVkPPu9uncJn0lNSqhiQJQpA5ryw
+	 Gv1OyD1Fp3yoJX67me5fm0v/Gh+ObB6bwd2rRFGmrjqpI2DMKEE+A6m3z0x7Lvl6pJ
+	 1HabGBCj0gMDa9zmELPu2sP0JiJZVIwOiRNIVezcp4cZ/jkwf45qrewSvYVbUPDS27
+	 kifhphZb7rwh4/OPHU6PLIpkHVVNoOc66yOgSN4y9/kUbzZ5WD7PhEiBSWwVIIccEv
+	 AUJeVo+ljpp/CQIBzJ7gpQxT+WirJ0BjEOSaTd9PGILKuP11kBv9U3olmyhtJvyG/p
+	 0crVWE0IKI81g==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Amery Hung <ameryhung@gmail.com>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+Cc: =?UTF-8?q?Ricardo=20B=2E=20Marli=C3=A8re?= <rbm@suse.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	eddyz87@gmail.com,
 	ast@kernel.org,
 	daniel@iogearbox.net,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.17-6.1] bpf: Clear pfmemalloc flag when freeing all fragments
-Date: Thu,  9 Oct 2025 11:55:05 -0400
-Message-ID: <20251009155752.773732-39-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.17-5.4] selftests/bpf: Fix bpf_prog_detach2 usage in test_lirc_mode2
+Date: Thu,  9 Oct 2025 11:55:14 -0400
+Message-ID: <20251009155752.773732-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251009155752.773732-1-sashal@kernel.org>
 References: <20251009155752.773732-1-sashal@kernel.org>
@@ -72,136 +63,166 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.17.1
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Amery Hung <ameryhung@gmail.com>
+From: Ricardo B. Marlière <rbm@suse.com>
 
-[ Upstream commit 8f12d1137c2382c80aada8e05d7cc650cd4e403c ]
+[ Upstream commit 98857d111c53954aa038fcbc4cf48873e4240f7c ]
 
-It is possible for bpf_xdp_adjust_tail() to free all fragments. The
-kfunc currently clears the XDP_FLAGS_HAS_FRAGS bit, but not
-XDP_FLAGS_FRAGS_PF_MEMALLOC. So far, this has not caused a issue when
-building sk_buff from xdp_buff since all readers of xdp_buff->flags
-use the flag only when there are fragments. Clear the
-XDP_FLAGS_FRAGS_PF_MEMALLOC bit as well to make the flags correct.
+Commit e9fc3ce99b34 ("libbpf: Streamline error reporting for high-level
+APIs") redefined the way that bpf_prog_detach2() returns. Therefore, adapt
+the usage in test_lirc_mode2_user.c.
 
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Link: https://patch.msgid.link/20250922233356.3356453-2-ameryhung@gmail.com
+Signed-off-by: Ricardo B. Marlière <rbm@suse.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20250828-selftests-bpf-v1-1-c7811cd8b98c@suse.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
 LLM Generated explanations, may be completely bogus:
 
-YES
+## Analysis Complete
 
-- What it fixes
-  - When shrinking non-linear XDP buffers, bpf_xdp_adjust_tail() can
-    free all frags but previously only cleared the HAS_FRAGS bit,
-    leaving XDP_FLAGS_FRAGS_PF_MEMALLOC set. This makes xdp_buff->flags
-    inconsistent: “no frags, but pfmemalloc set”.
-  - The fix adds an explicit clear for the pfmemalloc-frags bit when the
-    last frag is freed, ensuring flags correctly reflect state.
+**Backport Status: YES**
 
-- Precise code changes
-  - Adds an inline helper to clear the pfmemalloc-frags bit:
-    - include/net/xdp.h:139: xdp_buff_clear_frag_pfmemalloc(struct
-      xdp_buff *xdp) clears XDP_FLAGS_FRAGS_PF_MEMALLOC by masking it
-      off.
-  - Invokes the helper when all fragments are freed in the shrink path:
-    - net/core/filter.c: in bpf_xdp_frags_shrink_tail(), after computing
-      that all frags are gone, it previously did:
-      - xdp_buff_clear_frags_flag(xdp);
-      - xdp->data_end -= offset;
-      Now it also does:
-      - xdp_buff_clear_frag_pfmemalloc(xdp);
-    - Concretely, in this tree: net/core/filter.c:4198 starts
-      bpf_xdp_frags_shrink_tail; when sinfo->nr_frags drops to zero, it
-      now calls both xdp_buff_clear_frags_flag(xdp) and
-      xdp_buff_clear_frag_pfmemalloc(xdp) before adjusting data_end.
+### Extensive Technical Explanation
 
-- Why it matters
-  - pfmemalloc indicates frags came from memory under pressure. With no
-    frags, the flag must be false; leaving it set is incorrect state.
-  - Current skb-build paths only read the pfmemalloc flag when there are
-    frags (e.g., xdp_build_skb_from_buff uses pfmemalloc bit only if
-    xdp_buff_has_frags is true; see net/core/xdp.c:666-667, 720, 826 in
-    this tree). That’s why this hasn’t caused user-visible bugs yet.
-    However, correctness of flags avoids subtle future regressions and
-    makes the state coherent for any readers that don’t gate on
-    HAS_FRAGS.
+#### The Bug and Its Context
 
-- Scope and risk assessment
-  - Small, contained change: one new inline helper in a header and one
-    extra call in a single function.
-  - No API or ABI changes; no architectural refactoring.
-  - Touches BPF/XDP fast path but only modifies a bit when
-    sinfo->nr_frags becomes zero, which is the correct behavior by
-    definition.
-  - Extremely low regression risk; clearing a now-irrelevant bit cannot
-    break consumers and only improves state consistency.
+This commit fixes a **broken selftest** in `test_lirc_mode2_user.c` that
+has been failing since Linux kernel v6.0 (June 2022) - a period of
+approximately **3 years**.
 
-- Backport considerations
-  - The bug and code paths exist in stable lines which support non-
-    linear XDP buffers:
-    - v6.1.y and v6.6.y have XDP_FLAGS_FRAGS_PF_MEMALLOC and the same
-      shrink path which only clears HAS_FRAGS, not PF_MEMALLOC (e.g.,
-      v6.6.99 net/core/filter.c shows only xdp_buff_clear_frags_flag();
-      include/net/xdp.h lacks the clear helper).
-  - The backport is trivial: add the inline clear helper to
-    include/net/xdp.h and invoke it in bpf_xdp_frags_shrink_tail()
-    alongside the existing HAS_FRAGS clear.
-  - No dependencies on recent infrastructure beyond the
-    FRAGS_PF_MEMALLOC flag (present since the XDP frags work was
-    introduced).
+#### Historical Timeline of the API Change
 
-- Stable criteria fit
-  - Fixes a correctness bug that could lead to subtle misbehavior.
-  - Minimal and surgical; not a feature.
-  - No behavioral surprises or architectural changes.
-  - Applies cleanly to affected stable branches that have non-linear XDP
-    and the FRAGS_PF_MEMALLOC flag.
+**Phase 1 - May 2021 (v5.14)**: Commit e9fc3ce99b34 ("libbpf: Streamline
+error reporting for high-level APIs") introduced a new error handling
+model for libbpf:
 
-Conclusion: This is a low-risk correctness fix in BPF/XDP flag handling
-and should be backported to stable.
+- **Legacy mode (default before v6.0)**: Integer-returning functions
+  like `bpf_prog_detach2()` returned `-1` on error and set `errno`
+- **Strict mode (LIBBPF_STRICT_DIRECT_ERRS)**: Functions return negative
+  error codes directly (e.g., `-ENOENT` instead of `-1`)
 
- include/net/xdp.h | 5 +++++
- net/core/filter.c | 1 +
- 2 files changed, 6 insertions(+)
+The implementation in `libbpf_internal.h` showed:
+```c
+static inline int libbpf_err_errno(int ret)
+{
+    if (libbpf_mode & LIBBPF_STRICT_DIRECT_ERRS)
+        return ret < 0 ? -errno : ret;  // New behavior
+    return ret;  // Legacy: return -1
+}
+```
 
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index b40f1f96cb117..f288c348a6c13 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -115,6 +115,11 @@ static __always_inline void xdp_buff_set_frag_pfmemalloc(struct xdp_buff *xdp)
- 	xdp->flags |= XDP_FLAGS_FRAGS_PF_MEMALLOC;
- }
+**Phase 2 - June 2022 (v6.0)**: Commit bd054102a8c7f ("libbpf: enforce
+strict libbpf 1.0 behaviors") **made strict mode the mandatory default**
+by removing the conditional logic:
+
+```c
+static inline int libbpf_err_errno(int ret)
+{
+    /* errno is already assumed to be set on error */
+    return ret < 0 ? -errno : ret;  // Always strict mode now
+}
+```
+
+This change is in all stable branches from **v6.0 onwards** (6.0.y,
+6.1.y, 6.6.y, 6.12.y, 6.17.y, etc.).
+
+#### The Actual Code Problem
+(tools/testing/selftests/bpf/test_lirc_mode2_user.c:77)
+
+**Before the fix** (broken since v6.0):
+```c
+ret = bpf_prog_detach2(progfd, lircfd, BPF_LIRC_MODE2);
+if (ret != -1 || errno != ENOENT) {  // WRONG: expects ret == -1
+    printf("bpf_prog_detach2 not attached should fail: %m\n");
+    return 1;
+}
+```
+
+**After the fix**:
+```c
+ret = bpf_prog_detach2(progfd, lircfd, BPF_LIRC_MODE2);
+if (ret != -ENOENT) {  // CORRECT: expects ret == -ENOENT
+    printf("bpf_prog_detach2 not attached should fail: %m\n");
+    return 1;
+}
+```
+
+#### Why The Test Was Broken
+
+**Execution flow in v6.0+**:
+1. `bpf_prog_detach2()` calls `sys_bpf(BPF_PROG_DETACH, ...)`
+2. `sys_bpf()` → `syscall(__NR_bpf, ...)` returns `-1`, sets `errno =
+   ENOENT`
+3. `libbpf_err_errno(-1)` converts: `ret < 0 ? -errno : ret` → returns
+   `-ENOENT` (value: -2)
+4. Test checks `if (ret != -1 || errno != ENOENT)`:
+   - `ret` is `-2` (not `-1`) ✗
+   - Condition evaluates to `TRUE`
+   - **Test incorrectly fails**
+
+#### Why This Should Be Backported
+
+1. **Fixes a Real Problem**: The test has been incorrectly failing for 3
+   years on all v6.0+ kernels, potentially misleading developers who run
+   BPF selftests
+
+2. **Minimal Risk**: This is a **1-line change** in a selftest (not
+   kernel code), changing only the expected return value check from `-1`
+   to `-ENOENT`
+
+3. **Meets Stable Criteria**:
+   - ✅ Small (1 line changed)
+   - ✅ Obviously correct (adapts test to match documented API behavior)
+   - ✅ Fixes a genuine bug (broken test)
+   - ✅ Already in mainline (v6.18)
+
+4. **Selftest Policy**: My research shows selftests ARE regularly
+   backported to stable kernels. Example commits in stable/linux-6.1.y:
+   - `138749a8ff619 selftests/bpf: Fix a user_ringbuf failure with arm64
+     64KB page size`
+   - `5f3d693861c71 selftests/bpf: Mitigate sockmap_ktls
+     disconnect_after_delete failure`
+
+5. **Affects All Active Stable Branches**: Every stable kernel from v6.0
+   onwards (including LTS 6.1, 6.6, and 6.12) has the broken test
+
+#### Scope of Backport
+
+This fix should be backported to **all stable kernels v6.0 and later**
+that contain commit bd054102a8c7f (libbpf 1.0 enforcement). This
+includes:
+- linux-6.0.y
+- linux-6.1.y (LTS)
+- linux-6.6.y (LTS)
+- linux-6.12.y (LTS)
+- linux-6.13.y through linux-6.17.y
+
+Kernels v5.19 and earlier do NOT need this fix because they still use
+legacy mode where `bpf_prog_detach2()` returns `-1`.
+
+ tools/testing/selftests/bpf/test_lirc_mode2_user.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/test_lirc_mode2_user.c b/tools/testing/selftests/bpf/test_lirc_mode2_user.c
+index 4694422aa76c3..88e4aeab21b7b 100644
+--- a/tools/testing/selftests/bpf/test_lirc_mode2_user.c
++++ b/tools/testing/selftests/bpf/test_lirc_mode2_user.c
+@@ -74,7 +74,7 @@ int main(int argc, char **argv)
  
-+static __always_inline void xdp_buff_clear_frag_pfmemalloc(struct xdp_buff *xdp)
-+{
-+	xdp->flags &= ~XDP_FLAGS_FRAGS_PF_MEMALLOC;
-+}
-+
- static __always_inline void
- xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
- {
-diff --git a/net/core/filter.c b/net/core/filter.c
-index da391e2b0788d..43408bd3a87a4 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4210,6 +4210,7 @@ static int bpf_xdp_frags_shrink_tail(struct xdp_buff *xdp, int offset)
- 
- 	if (unlikely(!sinfo->nr_frags)) {
- 		xdp_buff_clear_frags_flag(xdp);
-+		xdp_buff_clear_frag_pfmemalloc(xdp);
- 		xdp->data_end -= offset;
+ 	/* Let's try detach it before it was ever attached */
+ 	ret = bpf_prog_detach2(progfd, lircfd, BPF_LIRC_MODE2);
+-	if (ret != -1 || errno != ENOENT) {
++	if (ret != -ENOENT) {
+ 		printf("bpf_prog_detach2 not attached should fail: %m\n");
+ 		return 1;
  	}
- 
 -- 
 2.51.0
 
