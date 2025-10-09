@@ -1,60 +1,64 @@
-Return-Path: <bpf+bounces-70683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FC18BCA176
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 18:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10007BCA1A1
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 18:17:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0121D541196
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 16:09:15 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 942834FD5F7
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 16:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BECBD2FC02B;
-	Thu,  9 Oct 2025 16:00:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41572FD1A3;
+	Thu,  9 Oct 2025 16:01:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ENp15NjW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tKXOtb6n"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EEEC235045;
-	Thu,  9 Oct 2025 16:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F7C2FCBF7;
+	Thu,  9 Oct 2025 16:01:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760025646; cv=none; b=DGc6YQ7DutHDPGKxnLhJRpvm+ygAYYc/+M6T77y0RMdDw9zPhwBy31c94CSbVVtLDlF9tDlaRSP/b+Q0f7FYHqKea7sc8RNRYzuxo3UK8JFXtAD2l3YtqJaHvQ0eHSoxaHiNsyZjA5JDGLygnM2ust4rwKQGxLTMP05yylfBKz8=
+	t=1760025678; cv=none; b=YW9DOGxRgAYkdYWDPO1QBuXjkRQN5x95wUlSzVgAZUdQO4arHS/3H50CR5K2tc1PnqqrQQm6hJw/ryBdnfQv86qFWkOgIJHxDiLtg96QuRBhH74mcKZ0oC+h8sbxH1/9ZFP7dLjkXyDOdEx2cyM2wAFodkP+Tk2Nbm3HGd9jbeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760025646; c=relaxed/simple;
-	bh=3ddmq0SpXLemPFO6TxFKmdptKIsO1mwPG/RIEq8UZao=;
+	s=arc-20240116; t=1760025678; c=relaxed/simple;
+	bh=bihbgTF2TGoEjbEUqXNjtSwj7Jb47wUUHQ4FbuwxonM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=I75Kct7+IWzFpNym27fIwwk9UE1TGaUtwHff0gbgZ7JpVUcHhbEgY7s9Bf0d1teq4CitrY75n5FafYQoKWrHe+vhNxu59SHt64lceyJV8lV5mFRnkqtGT8qw9LT9kQJAc7dgUsq/v+1dEJNZsK9snPkMIflwIdgLmYGVXj8Ofsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ENp15NjW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1954C4CEF7;
-	Thu,  9 Oct 2025 16:00:44 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Gu/3oC/AewPy9FegZNAyInA37OAVV/VR7mMd6wgkC7t3LDx4nGq8sicmu1XWrSQdnN/ngliZDKMZ01jO0zNUgeTYxiimtecRyljQfPxmX3MaPY8Pu13m8JTVryw1aFRKmIu24XGNTegzzZe8ghYR9LoCjQemHk1WfBi4DJZMs2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tKXOtb6n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D032C4CEE7;
+	Thu,  9 Oct 2025 16:01:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760025645;
-	bh=3ddmq0SpXLemPFO6TxFKmdptKIsO1mwPG/RIEq8UZao=;
+	s=k20201202; t=1760025678;
+	bh=bihbgTF2TGoEjbEUqXNjtSwj7Jb47wUUHQ4FbuwxonM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ENp15NjWZ7c3r/ooTpZPWuysh+hJs9E5LY+4KDecmDTRISkEmDS9GFPv/SMFD9kZg
-	 J4ZxI23GW9yhQVB5jJwPPp692oWZ7InwoDv2NwyPCgjaTscyw2k3kWLD8wwrVnjKk8
-	 7OdPY7ZwGwvLbD7U+URS7AlZFMn37Guh/1nhbBaC1iABRrAWkuC0eGcU1odgq9zVNg
-	 6e05ex80CAIYjQCMhA8N6it/iB4aTX5qjB2Skyijgy4XSF9sSCeunSHaaf3OK6JwyG
-	 7eeWGZ3ZugK21CJXYknXzVdcVO0vVBov3FXyM9dAjoWxhrj6g5ycCmakE85EczSf/e
-	 62TJenjaLC3jw==
+	b=tKXOtb6nZrffDbmZT2j2Y88POvOYV/cdH4HiXEsFJV5CKq8kL8Kbszq4lUnxjpsS3
+	 GgOlTRSBQuK3WmqsfU8UY6JvFOKyh3syZ00aoQ3qNVi+NqT18w5I1WdRDclbKrU69I
+	 ubIzbVC+cXVFsrYdfqPDjurVmQkysRgtbNueXF9Plhc6s4V8xdIzxeq390/QZaxCkm
+	 0r5hzDAQkvr4hCGxbSvo6p7lQH9aOzMQL9uXx1vrLhIa6kg5kHmA+IelOahz8zzwqq
+	 vBLCQk9XOW6NeqnCmQ+9GJtQHzx6jjfDFO2v1NZqDgUwIXjzF2kdYWbHlCR+GxG9Ne
+	 LvQiJETAWt8tA==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Saket Kumar Bhaskar <skb99@linux.ibm.com>,
-	Venkat Rao Bagalkote <venkat88@linux.ibm.com>,
+Cc: Chenghao Duan <duanchenghao@kylinos.cn>,
+	Pu Lehui <pulehui@huawei.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	memxor@gmail.com,
-	iii@linux.ibm.com,
+	daniel@iogearbox.net,
 	andrii@kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.17-6.16] selftests/bpf: Fix arena_spin_lock selftest failure
-Date: Thu,  9 Oct 2025 11:55:58 -0400
-Message-ID: <20251009155752.773732-92-sashal@kernel.org>
+	bjorn@kernel.org,
+	pjw@kernel.org,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	bpf@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.17-6.6] riscv: bpf: Fix uninitialized symbol 'retval_off'
+Date: Thu,  9 Oct 2025 11:56:16 -0400
+Message-ID: <20251009155752.773732-110-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251009155752.773732-1-sashal@kernel.org>
 References: <20251009155752.773732-1-sashal@kernel.org>
@@ -70,20 +74,23 @@ X-stable-base: Linux 6.17.1
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+From: Chenghao Duan <duanchenghao@kylinos.cn>
 
-[ Upstream commit a9d4e9f0e871352a48a82da11a50df7196fe567a ]
+[ Upstream commit d0bf7cd5df18466d969bb60e8890b74cf96081ca ]
 
-For systems having CONFIG_NR_CPUS set to > 1024 in kernel config
-the selftest fails as arena_spin_lock_irqsave() returns EOPNOTSUPP.
-(eg - incase of powerpc default value for CONFIG_NR_CPUS is 8192)
+In the __arch_prepare_bpf_trampoline() function, retval_off is only
+meaningful when save_ret is true, so the current logic is correct.
+However, in the original logic, retval_off is only initialized under
+certain conditions; for example, in the fmod_ret logic, the compiler is
+not aware that the flags of the fmod_ret program (prog) have set
+BPF_TRAMP_F_CALL_ORIG, which results in an uninitialized symbol
+compilation warning.
 
-The selftest is skipped incase bpf program returns EOPNOTSUPP,
-with a descriptive message logged.
+So initialize retval_off unconditionally to fix it.
 
-Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-Link: https://lore.kernel.org/r/20250913091337.1841916-1-skb99@linux.ibm.com
+Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
+Reviewed-by: Pu Lehui <pulehui@huawei.com>
+Link: https://lore.kernel.org/r/20250922062244.822937-2-duanchenghao@kylinos.cn
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
@@ -91,92 +98,94 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
 LLM Generated explanations, may be completely bogus:
 
 YES
-- `arena_spin_lock` returns `-EOPNOTSUPP` once `CONFIG_NR_CPUS` exceeds
-  1024 (`tools/testing/selftests/bpf/progs/bpf_arena_spin_lock.h:497`),
-  so on platforms like powerpc (default 8192 CPUs) every test run exits
-  early and the user space harness currently asserts that the retval
-  must be zero
-  (`tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c:41-47`
-  before this change), causing the subtests to fail outright.
-- The patch teaches the harness to recognize that specific failure mode:
-  `spin_lock_thread()` now short‑circuits when it sees `-EOPNOTSUPP`
-  instead of tripping the ASSERT
-  (`tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c:44-50`),
-  and the BPF program annotates the condition by setting `test_skip = 3`
-  before returning
-  (`tools/testing/selftests/bpf/progs/arena_spin_lock.c:40-44`).
-- After all worker threads complete, the host test checks that flag,
-  prints an explicit skip message, and marks the subtest as skipped
-  instead of comparing the counter and failing
-  (`tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c:94-101`).
-  This lets kselftest succeed on high-NR_CPUS systems while still
-  reporting the unsupported configuration.
-- The change is entirely confined to selftests, has no runtime or ABI
-  impact, and aligns the tests with the documented hardware limitation,
-  making it a low-risk fix for a real, reproducible failure on existing
-  platforms.
 
- .../selftests/bpf/prog_tests/arena_spin_lock.c      | 13 +++++++++++++
- tools/testing/selftests/bpf/progs/arena_spin_lock.c |  5 ++++-
- 2 files changed, 17 insertions(+), 1 deletion(-)
+- What changed: The patch moves `retval_off = stack_size;` out of the
+  `if (save_ret)` block so it’s always initialized. Previously
+  `retval_off` was only assigned when `save_ret` was true.
+  - Before: `retval_off` assigned only inside `if (save_ret) { ... }`
+  - After: `retval_off` assigned unconditionally immediately after the
+    optional `stack_size += 16`
+  - Reference: arch/riscv/net/bpf_jit_comp64.c:1066
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
-index 0223fce4db2bc..693fd86fbde62 100644
---- a/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
-+++ b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
-@@ -40,8 +40,13 @@ static void *spin_lock_thread(void *arg)
+- Why it matters: `retval_off` is used in code paths not explicitly
+  guarded by `save_ret`, which makes compilers think it can be used
+  uninitialized and emit a warning (e.g., -Wmaybe-uninitialized), even
+  though, logically, those paths only occur with flags that imply
+  `save_ret` must be true.
+  - Unconditional uses in fmod_ret path:
+    - Zeroing return value slot: arch/riscv/net/bpf_jit_comp64.c:1157
+    - Loading return value: arch/riscv/net/bpf_jit_comp64.c:1163
+  - Unconditional uses in call-orig path:
+    - Store original function’s return in reserved slot:
+      arch/riscv/net/bpf_jit_comp64.c:1176
+    - Store BPF R0: arch/riscv/net/bpf_jit_comp64.c:1177
+  - Final restore guarded by `save_ret`, confirming the semantic intent:
+    arch/riscv/net/bpf_jit_comp64.c:1209
+
+- Bug scope and user impact:
+  - This is a build correctness fix that eliminates spurious “maybe-
+    uninitialized” warnings that can be promoted to errors in some
+    configurations or toolchains. It does not change runtime behavior
+    because the only meaningful use of `retval_off` (e.g., restoring
+    return values) is already guarded by `save_ret`. When `save_ret` is
+    false, `retval_off`’s value is ignored by the logic that matters.
+  - The warning can affect users building with stricter warning settings
+    or newer compilers; resolving it improves build reliability for
+    RISC-V with BPF trampolines.
+
+- Containment and risk:
+  - The change is tiny and contained to a single file/function in the
+    RISC-V BPF JIT trampoline.
+  - No new features, APIs, or architectural changes; no functional logic
+    changed for valid flag combinations.
+  - Safe even if misused flags were ever passed: `retval_off` now has a
+    defined value, avoiding UB from uninitialized use.
+
+- Applicability to stable trees:
+  - The affected pattern exists in stable series that have the RISC-V
+    BPF trampoline (e.g., v6.6 shows the same conditional
+    initialization, with unconditional uses later). See v6.6 code where
+    `retval_off` is only set under `if (save_ret)` and is used in the
+    fmod_ret block and call-orig sequence without an explicit `save_ret`
+    guard, mirroring the warning scenario.
+  - Mainline commit: d0bf7cd5df184 (“riscv: bpf: Fix uninitialized
+    symbol 'retval_off'”).
+  - Likely Fixes: 25ad10658dc10 (“riscv, bpf: Adapt bpf trampoline to
+    optimized riscv ftrace framework”), which introduced the trampoline
+    structure that uses `retval_off` this way.
+
+- Stable criteria check:
+  - Fixes a real build issue (warnings that can become errors).
+  - Small, self-contained change in one function and one file.
+  - No functional side effects; does not alter behavior except removing
+    undefined initialization state.
+  - Not a feature or refactor; low regression risk; localized to RISC-V
+    BPF trampoline.
+
+Conclusion: This is a good and safe candidate for backporting to all
+stable trees that include the RISC-V BPF trampoline code path (e.g.,
+6.6.y and newer where applicable).
+
+ arch/riscv/net/bpf_jit_comp64.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 9883a55d61b5b..8475a8ab57151 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -1079,10 +1079,9 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
+ 	stack_size += 16;
  
- 	err = bpf_prog_test_run_opts(prog_fd, &topts);
- 	ASSERT_OK(err, "test_run err");
-+
-+	if (topts.retval == -EOPNOTSUPP)
-+		goto end;
-+
- 	ASSERT_EQ((int)topts.retval, 0, "test_run retval");
+ 	save_ret = flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RET);
+-	if (save_ret) {
++	if (save_ret)
+ 		stack_size += 16; /* Save both A5 (BPF R0) and A0 */
+-		retval_off = stack_size;
+-	}
++	retval_off = stack_size;
  
-+end:
- 	pthread_exit(arg);
- }
- 
-@@ -63,6 +68,7 @@ static void test_arena_spin_lock_size(int size)
- 	skel = arena_spin_lock__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "arena_spin_lock__open_and_load"))
- 		return;
-+
- 	if (skel->data->test_skip == 2) {
- 		test__skip();
- 		goto end;
-@@ -86,6 +92,13 @@ static void test_arena_spin_lock_size(int size)
- 			goto end_barrier;
- 	}
- 
-+	if (skel->data->test_skip == 3) {
-+		printf("%s:SKIP: CONFIG_NR_CPUS exceed the maximum supported by arena spinlock\n",
-+		       __func__);
-+		test__skip();
-+		goto end_barrier;
-+	}
-+
- 	ASSERT_EQ(skel->bss->counter, repeat * nthreads, "check counter value");
- 
- end_barrier:
-diff --git a/tools/testing/selftests/bpf/progs/arena_spin_lock.c b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
-index c4500c37f85e0..086b57a426cf5 100644
---- a/tools/testing/selftests/bpf/progs/arena_spin_lock.c
-+++ b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
-@@ -37,8 +37,11 @@ int prog(void *ctx)
- #if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CAST)
- 	unsigned long flags;
- 
--	if ((ret = arena_spin_lock_irqsave(&lock, flags)))
-+	if ((ret = arena_spin_lock_irqsave(&lock, flags))) {
-+		if (ret == -EOPNOTSUPP)
-+			test_skip = 3;
- 		return ret;
-+	}
- 	if (counter != limit)
- 		counter++;
- 	bpf_repeat(cs_count);
+ 	stack_size += nr_arg_slots * 8;
+ 	args_off = stack_size;
 -- 
 2.51.0
 
