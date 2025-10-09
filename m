@@ -1,62 +1,68 @@
-Return-Path: <bpf+bounces-70674-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70675-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7001DBC9F7B
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 18:07:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6823BCA05F
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 18:12:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4D5CB4FE162
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 16:05:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 380D71A647CF
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 16:06:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B722F8BFA;
-	Thu,  9 Oct 2025 15:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DD222F9D83;
+	Thu,  9 Oct 2025 15:59:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RCKWNiRJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GgQvjLTe"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0B42EF64C;
-	Thu,  9 Oct 2025 15:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BCC62264D3;
+	Thu,  9 Oct 2025 15:59:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760025515; cv=none; b=XJorkoIbgGP5OznXd6KrHZckO3TwS0x3ak3AVzTWC+VwY44Ukv+y9UVpHzZOTBJki9BMw2Zv2mGh8G7+Tma9aA8LuZsd6hmznDA9OKsMh542UXgZMtm7UNB1gHntncYWZ2UOmtZPRxD0OKrbgu3fYidPs5c507oR1xfpcmc5tHY=
+	t=1760025547; cv=none; b=s/45o5ZICHUj5JzUTDofSqu1/htD4aBGy7/44YI6mt+ZT9jekVG/PDtMki/8XAKumWriK4HztGS/SfSdV9ZPZJTrHZ/N0hKpnA05bHv0hwaQxsnOMTapZkj3Y+fbNbmgegvrQMPBjeN29+tPjciopfaeUL0NSaOn6SAFPsWdWqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760025515; c=relaxed/simple;
-	bh=1iRDjH71Xort7nzuEJ/Yj6ipa0Fw7mhO9+8jp/KYEQM=;
+	s=arc-20240116; t=1760025547; c=relaxed/simple;
+	bh=HO4+Tz4jqsYdxeLaF83ztinV6zh0jqaeIA+sMbiq7lI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Fhs7a5WsJKLGmQCbtqcDUj+e5TMEWIeKZKeWdpdh+JitiqXVTOZGdC/8OWIC4dYGxfsdW0sV2GZMkVY3xLLtd0tiqUPBi/iuFdQKRbEe9P1NvTPIP27oITsKzFlx4iWZL+uG3eTgmEXRfFA0yhYJn+6A9G+cxDSXf9r9X2iBKO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RCKWNiRJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A65E7C4CEF7;
-	Thu,  9 Oct 2025 15:58:33 +0000 (UTC)
+	 MIME-Version:Content-Type; b=XObbmA/TsA87cZN+xE3buNrvN4xrBKedLRVLPMUkvzAxOYqMN7jPlt7MpqjYt8G7lb6IHsh/6kXO86Mko527m6SA2dl/PEoEdFVQvp/UweynYJJ45r23cq2ybQ9roU+6R6Dl+XRQrf8ul0V9Fq34lestUHnSldNqvYo8twFyYg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GgQvjLTe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A2C3C4CEF8;
+	Thu,  9 Oct 2025 15:59:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760025515;
-	bh=1iRDjH71Xort7nzuEJ/Yj6ipa0Fw7mhO9+8jp/KYEQM=;
+	s=k20201202; t=1760025546;
+	bh=HO4+Tz4jqsYdxeLaF83ztinV6zh0jqaeIA+sMbiq7lI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RCKWNiRJENLlbumPe7yr1G0RGPArbzW3csd8f7F0pVj3VqJIKTH+ZgRUDBPPUZiyV
-	 q6xSZj8/XoDDEkvYKvq8YYkyCGCF0r3D8Tz22ZuKD2RTJFnn37ZtWVuaxE0ANI5WZu
-	 uM00EMya8K51lRv+QTjimtwnwc0Eoh3OKB80hNgXGB4Q2x5GALt0Qo2V3tlhoOqOMe
-	 wjdL21LUTlHdlXU1W5qjTenTLPA/hqsjcqfUcaCtgN+YhQp6ozECicAM+vj+QEbILf
-	 T1TeaPH9NpqhVyQA5VheNIVt85/vOF8gLVDkYZXXWgDEIzEAaVl+KgilUP0HZYxkzg
-	 fTdJRxKLDfx+w==
+	b=GgQvjLTeICefoY6klw103aff944WF6zlyHIkctkguQq2tYPlkcKy6D/u7MVsMPK1t
+	 uO8PkYMacQD2F785YQ0iee6pDN6MaDS3zQBME7piNKs2SN/bmL4aUHvcOpe/jDglg+
+	 OR2NKuLGI+RAbtZPHmYiZUVFMNXDriyTI+0Fah5M9NPkG3T+K4czv/owYQQIsc6yNj
+	 zUmLK/0OIn9FYFyOf996bCLBjlO9kQqiMfollCxVAsrK2euS1is79Nvny7lRKjq1df
+	 7/hNNjlJape19ZpmUtCxAKbblzcnpc69JSORzmQnjaZLoV3F8BL/4zbW8UgsF0Zire
+	 GQhHQ58FYKATA==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Amery Hung <ameryhung@gmail.com>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	nathan@kernel.org,
-	memxor@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	edumazet@google.com,
+	pabeni@redhat.com,
 	andrii@kernel.org,
-	emil@etsalapatis.com,
-	bpf@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.17-6.12] selftests/bpf: Fix selftest verifier_arena_large failure
-Date: Thu,  9 Oct 2025 11:54:50 -0400
-Message-ID: <20251009155752.773732-24-sashal@kernel.org>
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.17-6.1] bpf: Clear pfmemalloc flag when freeing all fragments
+Date: Thu,  9 Oct 2025 11:55:05 -0400
+Message-ID: <20251009155752.773732-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251009155752.773732-1-sashal@kernel.org>
 References: <20251009155752.773732-1-sashal@kernel.org>
@@ -72,64 +78,21 @@ X-stable-base: Linux 6.17.1
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Yonghong Song <yonghong.song@linux.dev>
+From: Amery Hung <ameryhung@gmail.com>
 
-[ Upstream commit 5a427fddec5e76360725a0f03df3a2a003efbe2e ]
+[ Upstream commit 8f12d1137c2382c80aada8e05d7cc650cd4e403c ]
 
-With latest llvm22, I got the following verification failure:
+It is possible for bpf_xdp_adjust_tail() to free all fragments. The
+kfunc currently clears the XDP_FLAGS_HAS_FRAGS bit, but not
+XDP_FLAGS_FRAGS_PF_MEMALLOC. So far, this has not caused a issue when
+building sk_buff from xdp_buff since all readers of xdp_buff->flags
+use the flag only when there are fragments. Clear the
+XDP_FLAGS_FRAGS_PF_MEMALLOC bit as well to make the flags correct.
 
-  ...
-  ; int big_alloc2(void *ctx) @ verifier_arena_large.c:207
-  0: (b4) w6 = 1                        ; R6_w=1
-  ...
-  ; if (err) @ verifier_arena_large.c:233
-  53: (56) if w6 != 0x0 goto pc+62      ; R6=0
-  54: (b7) r7 = -4                      ; R7_w=-4
-  55: (18) r8 = 0x7f4000000000          ; R8_w=scalar()
-  57: (bf) r9 = addr_space_cast(r8, 0, 1)       ; R8_w=scalar() R9_w=arena
-  58: (b4) w6 = 5                       ; R6_w=5
-  ; pg = page[i]; @ verifier_arena_large.c:238
-  59: (bf) r1 = r7                      ; R1_w=-4 R7_w=-4
-  60: (07) r1 += 4                      ; R1_w=0
-  61: (79) r2 = *(u64 *)(r9 +0)         ; R2_w=scalar() R9_w=arena
-  ; if (*pg != i) @ verifier_arena_large.c:239
-  62: (bf) r3 = addr_space_cast(r2, 0, 1)       ; R2_w=scalar() R3_w=arena
-  63: (71) r3 = *(u8 *)(r3 +0)          ; R3_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff))
-  64: (5d) if r1 != r3 goto pc+51       ; R1_w=0 R3_w=0
-  ; bpf_arena_free_pages(&arena, (void __arena *)pg, 2); @ verifier_arena_large.c:241
-  65: (18) r1 = 0xff11000114548000      ; R1_w=map_ptr(map=arena,ks=0,vs=0)
-  67: (b4) w3 = 2                       ; R3_w=2
-  68: (85) call bpf_arena_free_pages#72675      ;
-  69: (b7) r1 = 0                       ; R1_w=0
-  ; page[i + 1] = NULL; @ verifier_arena_large.c:243
-  70: (7b) *(u64 *)(r8 +8) = r1
-  R8 invalid mem access 'scalar'
-  processed 61 insns (limit 1000000) max_states_per_insn 0 total_states 6 peak_states 6 mark_read 2
-  =============
-  #489/5   verifier_arena_large/big_alloc2:FAIL
-
-The main reason is that 'r8' in insn '70' is not an arena pointer.
-Further debugging at llvm side shows that llvm commit ([1]) caused
-the failure. For the original code:
-  page[i] = NULL;
-  page[i + 1] = NULL;
-the llvm transformed it to something like below at source level:
-  __builtin_memset(&page[i], 0, 16)
-Such transformation prevents llvm BPFCheckAndAdjustIR pass from
-generating proper addr_space_cast insns ([2]).
-
-Adding support in llvm BPFCheckAndAdjustIR pass should work, but
-not sure that such a pattern exists or not in real applications.
-At the same time, simply adding a memory barrier between two 'page'
-assignment can fix the issue.
-
-  [1] https://github.com/llvm/llvm-project/pull/155415
-  [2] https://github.com/llvm/llvm-project/pull/84410
-
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-Link: https://lore.kernel.org/r/20250920045805.3288551-1-yonghong.song@linux.dev
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Amery Hung <ameryhung@gmail.com>
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Link: https://patch.msgid.link/20250922233356.3356453-2-ameryhung@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
@@ -137,97 +100,108 @@ LLM Generated explanations, may be completely bogus:
 
 YES
 
-**Why this matters**
-- Fixes a real, reproducible selftest failure with LLVM 22 where two
-  adjacent pointer stores get optimized into a memset, breaking BPF
-  verifier expectations and causing “R8 invalid mem access 'scalar'”
-  during big_alloc2.
-- Keeps BPF selftests reliable across toolchains without changing
-  kernel/runtime behavior.
+- What it fixes
+  - When shrinking non-linear XDP buffers, bpf_xdp_adjust_tail() can
+    free all frags but previously only cleared the HAS_FRAGS bit,
+    leaving XDP_FLAGS_FRAGS_PF_MEMALLOC set. This makes xdp_buff->flags
+    inconsistent: “no frags, but pfmemalloc set”.
+  - The fix adds an explicit clear for the pfmemalloc-frags bit when the
+    last frag is freed, ensuring flags correctly reflect state.
 
-**What changed**
-- Adds a single compiler barrier between two consecutive NULL
-  assignments to break LLVM’s store-combining optimization:
-  - Before: `page[i] = NULL;` immediately followed by `page[i + 1] =
-    NULL;`
-  - After: inserts `barrier();` between them to prevent transformation
-    into `__builtin_memset(...)`.
-- Location in tree:
-  `tools/testing/selftests/bpf/progs/verifier_arena_large.c`
-  - In the “Free pairs of pages” loop: after freeing 2 pages
-    (`bpf_arena_free_pages`), the code does:
-    - `page[i] = NULL;` at
-      tools/testing/selftests/bpf/progs/verifier_arena_large.c:242
-    - [PATCH] `barrier();` added between the two stores
-    - `page[i + 1] = NULL;` at
-      tools/testing/selftests/bpf/progs/verifier_arena_large.c:243
-- The barrier macro is available via the already-included
-  `bpf/bpf_helpers.h` (`barrier()` is defined as an empty inline asm
-  memory clobber), used elsewhere in BPF selftests, and is safe for BPF.
+- Precise code changes
+  - Adds an inline helper to clear the pfmemalloc-frags bit:
+    - include/net/xdp.h:139: xdp_buff_clear_frag_pfmemalloc(struct
+      xdp_buff *xdp) clears XDP_FLAGS_FRAGS_PF_MEMALLOC by masking it
+      off.
+  - Invokes the helper when all fragments are freed in the shrink path:
+    - net/core/filter.c: in bpf_xdp_frags_shrink_tail(), after computing
+      that all frags are gone, it previously did:
+      - xdp_buff_clear_frags_flag(xdp);
+      - xdp->data_end -= offset;
+      Now it also does:
+      - xdp_buff_clear_frag_pfmemalloc(xdp);
+    - Concretely, in this tree: net/core/filter.c:4198 starts
+      bpf_xdp_frags_shrink_tail; when sinfo->nr_frags drops to zero, it
+      now calls both xdp_buff_clear_frags_flag(xdp) and
+      xdp_buff_clear_frag_pfmemalloc(xdp) before adjusting data_end.
 
-**Root cause and effect**
-- LLVM 22 transforms two adjacent stores into a 16-byte memset when it
-  sees:
-  - `page[i] = NULL;`
-  - `page[i + 1] = NULL;`
-- This prevents LLVM’s BPFCheckAndAdjustIR pass from inserting necessary
-  `addr_space_cast` for arena pointers, leading to the verifier seeing a
-  scalar pointer (R8) on the subsequent store and rejecting the program.
-- The inserted `barrier()` prevents that transformation, ensuring LLVM
-  keeps separate stores and the IR pass emits `addr_space_cast`, fixing
-  the verifier error.
+- Why it matters
+  - pfmemalloc indicates frags came from memory under pressure. With no
+    frags, the flag must be false; leaving it set is incorrect state.
+  - Current skb-build paths only read the pfmemalloc flag when there are
+    frags (e.g., xdp_build_skb_from_buff uses pfmemalloc bit only if
+    xdp_buff_has_frags is true; see net/core/xdp.c:666-667, 720, 826 in
+    this tree). That’s why this hasn’t caused user-visible bugs yet.
+    However, correctness of flags avoids subtle future regressions and
+    makes the state coherent for any readers that don’t gate on
+    HAS_FRAGS.
 
-**Risk and scope**
-- Minimal risk:
-  - Single-line change in a selftest program.
-  - No ABI changes, no functional changes to kernel subsystems.
-  - Barrier only affects compiler optimization; runtime semantics remain
-    identical.
-- Selftest-only change:
-  - Does not affect production kernel behavior.
-  - Improves test robustness across compilers.
+- Scope and risk assessment
+  - Small, contained change: one new inline helper in a header and one
+    extra call in a single function.
+  - No API or ABI changes; no architectural refactoring.
+  - Touches BPF/XDP fast path but only modifies a bit when
+    sinfo->nr_frags becomes zero, which is the correct behavior by
+    definition.
+  - Extremely low regression risk; clearing a now-irrelevant bit cannot
+    break consumers and only improves state consistency.
 
-**Stable criteria fit**
-- Important bugfix: prevents a deterministic selftest failure with a
-  widely used toolchain (LLVM 22).
-- Small and contained: one-line addition in a single selftest file.
-- No architectural changes and no cross-subsystem impact.
-- No side effects beyond keeping IR and verifier expectations aligned
-  for this test.
-- Even without an explicit “Cc: stable”, selftest fixes like this are
-  commonly accepted to keep CI and developer workflows healthy across
-  toolchains.
+- Backport considerations
+  - The bug and code paths exist in stable lines which support non-
+    linear XDP buffers:
+    - v6.1.y and v6.6.y have XDP_FLAGS_FRAGS_PF_MEMALLOC and the same
+      shrink path which only clears HAS_FRAGS, not PF_MEMALLOC (e.g.,
+      v6.6.99 net/core/filter.c shows only xdp_buff_clear_frags_flag();
+      include/net/xdp.h lacks the clear helper).
+  - The backport is trivial: add the inline clear helper to
+    include/net/xdp.h and invoke it in bpf_xdp_frags_shrink_tail()
+    alongside the existing HAS_FRAGS clear.
+  - No dependencies on recent infrastructure beyond the
+    FRAGS_PF_MEMALLOC flag (present since the XDP frags work was
+    introduced).
 
-**Dependencies and compatibility**
-- The code path is guarded by `__BPF_FEATURE_ADDR_SPACE_CAST` (see block
-  starting at
-  tools/testing/selftests/bpf/progs/verifier_arena_large.c:168), so it
-  only builds where the feature is available, reducing risk on older
-  compilers.
-- `barrier()` is already defined for BPF programs via `bpf_helpers.h`,
-  which is included at
-  tools/testing/selftests/bpf/progs/verifier_arena_large.c:6, ensuring
-  portability across supported clang versions.
+- Stable criteria fit
+  - Fixes a correctness bug that could lead to subtle misbehavior.
+  - Minimal and surgical; not a feature.
+  - No behavioral surprises or architectural changes.
+  - Applies cleanly to affected stable branches that have non-linear XDP
+    and the FRAGS_PF_MEMALLOC flag.
 
-Given the above, this is a low-risk, self-contained fix for a real
-breakage in selftests caused by a compiler change. It should be
-backported to stable trees that contain this selftest.
+Conclusion: This is a low-risk correctness fix in BPF/XDP flag handling
+and should be backported to stable.
 
- tools/testing/selftests/bpf/progs/verifier_arena_large.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/net/xdp.h | 5 +++++
+ net/core/filter.c | 1 +
+ 2 files changed, 6 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_large.c b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
-index 9dbdf123542d3..f19e15400b3e1 100644
---- a/tools/testing/selftests/bpf/progs/verifier_arena_large.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
-@@ -240,6 +240,7 @@ int big_alloc2(void *ctx)
- 			return 5;
- 		bpf_arena_free_pages(&arena, (void __arena *)pg, 2);
- 		page[i] = NULL;
-+		barrier();
- 		page[i + 1] = NULL;
- 		cond_break;
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index b40f1f96cb117..f288c348a6c13 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -115,6 +115,11 @@ static __always_inline void xdp_buff_set_frag_pfmemalloc(struct xdp_buff *xdp)
+ 	xdp->flags |= XDP_FLAGS_FRAGS_PF_MEMALLOC;
+ }
+ 
++static __always_inline void xdp_buff_clear_frag_pfmemalloc(struct xdp_buff *xdp)
++{
++	xdp->flags &= ~XDP_FLAGS_FRAGS_PF_MEMALLOC;
++}
++
+ static __always_inline void
+ xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
+ {
+diff --git a/net/core/filter.c b/net/core/filter.c
+index da391e2b0788d..43408bd3a87a4 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4210,6 +4210,7 @@ static int bpf_xdp_frags_shrink_tail(struct xdp_buff *xdp, int offset)
+ 
+ 	if (unlikely(!sinfo->nr_frags)) {
+ 		xdp_buff_clear_frags_flag(xdp);
++		xdp_buff_clear_frag_pfmemalloc(xdp);
+ 		xdp->data_end -= offset;
  	}
+ 
 -- 
 2.51.0
 
