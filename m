@@ -1,63 +1,62 @@
-Return-Path: <bpf+bounces-70681-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70682-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C27EEBCA0C7
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 18:13:49 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 252A3BCA16D
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 18:16:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADD55188BA89
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 16:08:17 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5F452540D46
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 16:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D8123BCF7;
-	Thu,  9 Oct 2025 16:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C872FB98B;
+	Thu,  9 Oct 2025 16:00:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vQ6Y2Nc3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bHaL1wtJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BCCA230BEC;
-	Thu,  9 Oct 2025 16:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7AF91A267;
+	Thu,  9 Oct 2025 16:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760025612; cv=none; b=Y9agvMkqhtpnCUC2Fb7hRjVfdOjnijWz7MBiMrWGaH25wI0qmNVv0WFHoigJ79vVRsB0fPIQq7RVoxmZ0+mO7oxltcGY3bEglmrovdq5Gy/4zqnJabLPp4Q3yQieMEZPm6ajlGMh2+vr3zEjSMU4zgxIVRTIbVs/SwJBtonr1TU=
+	t=1760025634; cv=none; b=mOyqzpPErSZCDtRyKeqzIxnZbwMyA94Tu8TrUQbFXTfyONKrNSHCml9710dEpsHbCJ5CINJCfqc9dsnPAMC9zUK+URiHh1PX1LsXOq77d1FYlUyJXfB2sstWw4qEOPcMxxLRI7mk06T18qctb5jnEVeO/ZSlAtyERvnqUbX95ME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760025612; c=relaxed/simple;
-	bh=NMWhqpztKsNMnHx4nh4GQe9VPNSbedFScB58mPNOEKA=;
+	s=arc-20240116; t=1760025634; c=relaxed/simple;
+	bh=Fi7bHxwuG0E5jp8GLYg02fCOE2rLCCy8GclI9WMQB70=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KIB5kHNZKVuiblWOjdGFS5SuNJIJqmfEer2ceQmYVjelwK32Yq2oNnDh7qnb/MicTg7Gez2boMZvNkt9qSqiTtxx60u9stRFjlGggCheqhqBs+/C8/59PHBq60/OcSs3iT3+azvI/r8YvMkGy+HANznsMcmB5nvVkE4DBYKcAgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vQ6Y2Nc3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9691BC4CEF7;
-	Thu,  9 Oct 2025 16:00:10 +0000 (UTC)
+	 MIME-Version:Content-Type; b=CWDLpH/GHekRAmoIrhmcNLRnvlAqjShLQkHKrEOLwMWLVI3FV/DmLp9vjh6t4XjgOfrCXV47ZyOM2ksDLAYUbsjjvSlAKsLbXIas01+i0fneV+T1ocQtGN/pvZGOM+s+uE6nYwXdhIM16RM+KnvU5ICpXLTn/oYnnOVDtlqRvYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bHaL1wtJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7473CC4CEE7;
+	Thu,  9 Oct 2025 16:00:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760025612;
-	bh=NMWhqpztKsNMnHx4nh4GQe9VPNSbedFScB58mPNOEKA=;
+	s=k20201202; t=1760025634;
+	bh=Fi7bHxwuG0E5jp8GLYg02fCOE2rLCCy8GclI9WMQB70=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vQ6Y2Nc3E5Ker5SrKnQcpTm/0pxfnVziosQKN71skA0fbcTOMC/UX8wN6aVSHbpRb
-	 tFAqYQcwV9Qh4Jb6hJzHfIgN5eJaV6A2xOWzPUq1T1JffduBWxjc6VwL78T6QESs8M
-	 RqagDqo7IksaEvodbezhi/hwnSyyaIKBvm+76GbFvMlLzE2rR+0HXxjNTCS/0wHCcS
-	 LJChqPJsTjr5qys7U872ZpVVauSddl6bhPwYyDlFX224Zuwk93oLdvazJj3qhxSC/L
-	 EqgRSBAmMa0Als1VWWsCKRPOQkE2FozJzPhwBlOvoV9Z7wVu/avzWJ0wEdhG3TcxB5
-	 2SB3Ig4BxsKtQ==
+	b=bHaL1wtJBwAyQmcOl6WAOz6FmLioyMfBR5vqH4zZr88PQuWFFIbunnP/tgsNhN181
+	 zlKOhdr7VidEeBbYc39YZ9z4G0+1Jnfnwo1BTbXTDJHvqByWzGLLTaurziMYJTG0D7
+	 Htr7ZhoAHgWCDgeEYyV/7w524BPJFtbog0+SjSROQT+qoeWA+4Wcx240o7RxLEg/Jp
+	 NUsjFxEDtvlGI3wFShRqG2rRVHYIoidAULOPt4U1SdN4jam43RGSaEZzmmLnBKKUou
+	 zOlEPz9zdcUhkaeTHBj886wNijdoGvixeAJLibOHzoUKB+CMRdkqb1CDHbZ0XYAhEI
+	 5hpDN2glqe+Yw==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Dan Schatzberg <dschatzberg@meta.com>,
-	Tejun Heo <tj@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: =?UTF-8?q?Ricardo=20B=2E=20Marli=C3=A8re?= <rbm@suse.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
+	maciej.fijalkowski@intel.com,
+	ast@kernel.org,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
-	cgroups@vger.kernel.org,
+	eddyz87@gmail.com,
+	netdev@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.17-6.6] bpf: Do not limit bpf_cgroup_from_id to current's namespace
-Date: Thu,  9 Oct 2025 11:55:40 -0400
-Message-ID: <20251009155752.773732-74-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.17-6.1] selftests/bpf: Upon failures, exit with code 1 in test_xsk.sh
+Date: Thu,  9 Oct 2025 11:55:53 -0400
+Message-ID: <20251009155752.773732-87-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251009155752.773732-1-sashal@kernel.org>
 References: <20251009155752.773732-1-sashal@kernel.org>
@@ -67,170 +66,101 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.17.1
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+From: Ricardo B. Marlière <rbm@suse.com>
 
-[ Upstream commit 2c895133950646f45e5cf3900b168c952c8dbee8 ]
+[ Upstream commit 2a912258c90e895363c0ffc0be8a47f112ab67b7 ]
 
-The bpf_cgroup_from_id kfunc relies on cgroup_get_from_id to obtain the
-cgroup corresponding to a given cgroup ID. This helper can be called in
-a lot of contexts where the current thread can be random. A recent
-example was its use in sched_ext's ops.tick(), to obtain the root cgroup
-pointer. Since the current task can be whatever random user space task
-preempted by the timer tick, this makes the behavior of the helper
-unreliable.
+Currently, even if some subtests fails, the end result will still yield
+"ok 1 selftests: bpf: test_xsk.sh". Fix it by exiting with 1 if there are
+any failures.
 
-Refactor out __cgroup_get_from_id as the non-namespace aware version of
-cgroup_get_from_id, and change bpf_cgroup_from_id to make use of it.
-
-There is no compatibility breakage here, since changing the namespace
-against which the lookup is being done to the root cgroup namespace only
-permits a wider set of lookups to succeed now. The cgroup IDs across
-namespaces are globally unique, and thus don't need to be retranslated.
-
-Reported-by: Dan Schatzberg <dschatzberg@meta.com>
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Link: https://lore.kernel.org/r/20250915032618.1551762-2-memxor@gmail.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Ricardo B. Marlière <rbm@suse.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Link: https://lore.kernel.org/bpf/20250828-selftests-bpf-test_xsk_ret-v1-1-e6656c01f397@suse.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
 LLM Generated explanations, may be completely bogus:
 
-YES - This patch fixes a real functional bug in `bpf_cgroup_from_id()`
-that breaks sched_ext and other BPF users when the helper runs from
-contexts where `current` lives in an unrelated cgroup namespace.
+Based on my comprehensive analysis, here is my determination:
 
-**Bug Details**
-- Today `bpf_cgroup_from_id()` simply calls `cgroup_get_from_id()`
-  (`kernel/bpf/helpers.c:2539`), and that helper rejects IDs not visible
-  from `current`’s namespace via the `cgroup_is_descendant()` check
-  (`kernel/cgroup/cgroup.c:6407`). When the kfunc is invoked from timer
-  and irq contexts (e.g. sched_ext `ops.tick()`), `current` is just
-  whatever user task was interrupted, so the lookup spuriously returns
-  `NULL` and the BPF scheduler treats valid cgroups as gone.
-- Documentation already describes the ID lookup as global
-  (`Documentation/bpf/kfuncs.rst:653`), so current behaviour contradicts
-  the documented contract and leads to unpredictable failures for BPF
-  programs that cache cgroup IDs.
+**Backport Status: YES**
 
-**Fix Mechanics**
-- The patch factors the namespace-agnostic portion of the lookup into a
-  new `__cgroup_get_from_id()` placed directly above the existing helper
-  in `kernel/cgroup/cgroup.c` (~6376 after applying the change). That
-  routine mirrors the old code path but returns as soon as the
-  refcounted `struct cgroup` is acquired, skipping the namespace filter.
-- `bpf_cgroup_from_id()` is switched to call the new helper
-  (`kernel/bpf/helpers.c:2539` post-patch), so BPF programs always see
-  the globally unique ID mapping they rely on. The public declaration in
-  `include/linux/cgroup.h:653` is added so other in-kernel users can opt
-  into the unrestricted lookup if they intentionally need it.
-- The original `cgroup_get_from_id()` continues to enforce namespace
-  visibility for existing callers (block layer, memcg, BPF iterators),
-  so their semantics are unchanged.
+## Analysis
 
-**Risk Assessment**
-- Behaviour only widens the set of IDs that succeed for this BPF kfunc;
-  no kernel data structures or locking rules change. The lookup and
-  refcount handling remain identical, so regression risk is low.
-- The broader visibility is acceptable because accessing kfuncs of this
-  class already requires privileged BPF programs; the cgroup maintainers
-  (Acked-by: Tejun Heo) agreed the helper should operate on the global
-  namespace.
-- No new exports or user-visible ABI are introduced—the change is
-  confined to in-kernel helpers and a single BPF kfunc.
+### Code Change
+The commit adds a simple 2-line fix to ensure the test script exits with
+code 1 when failures occur:
+```bash
++else
++       exit 1
+```
 
-**Stable Backport Notes**
-- The patch is self-contained and applies cleanly as long as commit
-  332ea1f697be (“bpf: Add bpf_cgroup_from_id() kfunc”) is present, which
-  is true for current stable lines. No follow-up fixes are required.
-- Without it, sched_ext BPF schedulers and other consumers that cache
-  cgroup IDs will continue to misbehave whenever executed from
-  asynchronous contexts, so backporting is warranted.
+### Rationale for Backporting
 
- include/linux/cgroup.h |  1 +
- kernel/bpf/helpers.c   |  2 +-
- kernel/cgroup/cgroup.c | 24 ++++++++++++++++++++----
- 3 files changed, 22 insertions(+), 5 deletions(-)
+**1. Pattern of Similar Backports**
+My research shows that similar test exit code fixes have been
+consistently backported to stable kernels:
+- `selftests/net: have gro.sh -t return a correct exit code` (commit
+  784e6abd99f24) was backported by AUTOSEL
+- `selftests: ksft: Fix finished() helper exit code on skipped tests`
+  (commit 170c966cbe274) was backported by AUTOSEL
+- `selftests: xsk: fix reporting of failed tests` (commit 895b62eed2ab4)
+  was backported to stable 6.1 branches
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index b18fb5fcb38e2..b08c8e62881cd 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -650,6 +650,7 @@ static inline void cgroup_kthread_ready(void)
- }
+**2. Critical for Testing Infrastructure**
+This fix addresses a real bug in test reporting that affects:
+- **CI/Automated Testing**: Systems running selftests on stable kernels
+  rely on correct exit codes to detect regressions
+- **False Positives**: The current behavior reports "ok" even when tests
+  fail, masking real problems
+- **Quality Assurance**: Proper exit codes are essential for stable
+  kernel validation
+
+**3. Meets Stable Kernel Rules**
+According to Documentation/process/stable-kernel-rules.rst:
+- ✅ **Obviously correct**: Trivial 2-line addition with clear intent
+- ✅ **Small and contained**: Only 2 lines in a single shell script
+- ✅ **Fixes a real bug**: Test infrastructure incorrectly reporting
+  success on failures
+- ✅ **Already in mainline**: Commit 2a912258c90e exists in upstream
+- ✅ **Minimal risk**: Changes only test infrastructure, cannot affect
+  kernel runtime
+- ✅ **Benefits users**: Helps developers and organizations running tests
+  on stable kernels
+
+**4. Historical Evidence**
+The commit 8f610b24a1a44 shows this has already been selected by AUTOSEL
+for backporting, with the marker `[ Upstream commit
+2a912258c90e895363c0ffc0be8a47f112ab67b7 ]` and signed by Sasha Levin.
+
+### Conclusion
+This is a clear candidate for stable backporting. It fixes test
+infrastructure that provides critical validation for stable kernels,
+follows established backporting patterns for similar fixes, and meets
+all stable kernel rules criteria.
+
+ tools/testing/selftests/bpf/test_xsk.sh | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
+index 65aafe0003db0..62db060298a4a 100755
+--- a/tools/testing/selftests/bpf/test_xsk.sh
++++ b/tools/testing/selftests/bpf/test_xsk.sh
+@@ -241,4 +241,6 @@ done
  
- void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen);
-+struct cgroup *__cgroup_get_from_id(u64 id);
- struct cgroup *cgroup_get_from_id(u64 id);
- #else /* !CONFIG_CGROUPS */
- 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 8af62cb243d9e..0bde01edf5e6e 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2540,7 +2540,7 @@ __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
- {
- 	struct cgroup *cgrp;
- 
--	cgrp = cgroup_get_from_id(cgid);
-+	cgrp = __cgroup_get_from_id(cgid);
- 	if (IS_ERR(cgrp))
- 		return NULL;
- 	return cgrp;
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 77d02f87f3f12..c62b98f027f99 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -6373,15 +6373,15 @@ void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen)
- }
- 
- /*
-- * cgroup_get_from_id : get the cgroup associated with cgroup id
-+ * __cgroup_get_from_id : get the cgroup associated with cgroup id
-  * @id: cgroup id
-  * On success return the cgrp or ERR_PTR on failure
-- * Only cgroups within current task's cgroup NS are valid.
-+ * There are no cgroup NS restrictions.
-  */
--struct cgroup *cgroup_get_from_id(u64 id)
-+struct cgroup *__cgroup_get_from_id(u64 id)
- {
- 	struct kernfs_node *kn;
--	struct cgroup *cgrp, *root_cgrp;
-+	struct cgroup *cgrp;
- 
- 	kn = kernfs_find_and_get_node_by_id(cgrp_dfl_root.kf_root, id);
- 	if (!kn)
-@@ -6403,6 +6403,22 @@ struct cgroup *cgroup_get_from_id(u64 id)
- 
- 	if (!cgrp)
- 		return ERR_PTR(-ENOENT);
-+	return cgrp;
-+}
-+
-+/*
-+ * cgroup_get_from_id : get the cgroup associated with cgroup id
-+ * @id: cgroup id
-+ * On success return the cgrp or ERR_PTR on failure
-+ * Only cgroups within current task's cgroup NS are valid.
-+ */
-+struct cgroup *cgroup_get_from_id(u64 id)
-+{
-+	struct cgroup *cgrp, *root_cgrp;
-+
-+	cgrp = __cgroup_get_from_id(id);
-+	if (IS_ERR(cgrp))
-+		return cgrp;
- 
- 	root_cgrp = current_cgns_cgroup_dfl();
- 	if (!cgroup_is_descendant(cgrp, root_cgrp)) {
+ if [ $failures -eq 0 ]; then
+         echo "All tests successful!"
++else
++	exit 1
+ fi
 -- 
 2.51.0
 
