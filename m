@@ -1,238 +1,331 @@
-Return-Path: <bpf+bounces-70659-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70657-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 366C6BC969A
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 16:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD443BC968B
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 16:02:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 232EA19E7565
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 14:03:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B30A7189C76F
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 14:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0482EA171;
-	Thu,  9 Oct 2025 14:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11502E9759;
+	Thu,  9 Oct 2025 14:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hx1cpHeP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bJtJa/kC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 260711E47A3
-	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 14:03:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61FC516EB42
+	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 14:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760018583; cv=none; b=txJC/HDUAnXrSc7gY8yKnmouzzjRdTlulWgSnOcWgfvnl+5mBCm87UU0R0ezW1KkltGWN7K0VGgPeZGUEABrRPP2b4LDIGyPTpbEp1z5fVBK5fTbhj2JMuA3LxVzZXZXhsWuyFikGNMkUAu47ALxcj5dyVRz09F+FwGV9BYOLo0=
+	t=1760018552; cv=none; b=i7fPFL3g8MjVwNHnoWH7lmDjyGeLsbW5/cy7bqSRkv/cIML10ZhB5mJmbVp/44krRJP7EWIVI38gQuxnPJZImSxwRSUqBoiB98tZVEi6lti3OUMOtndpaM5nwIyqAe2kSE5rbBad+v8dAkyi5w+zjB+xHIuBkO7vX2yBQksDCPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760018583; c=relaxed/simple;
-	bh=sY/gtgf7NBozOjwc2EeRJ+KgsNPbK5kep4ypL81cuJQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G6rl7Ee2rN6XK1zuj5leGSvaVxOdEP62MMu/Cnnfbn+ewR5QZ5Q2rV8FLYZJtFN0Yh3mbq9898Roi+b8KevZSrThVuCVnl22pMkzwVTLSFOOssH3aHZOz5GLqutOfeh6J7aRhJdg6jbH2bZ1yL9VB2QXHqokSk/nG2q4HuGYZSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hx1cpHeP; arc=none smtp.client-ip=209.85.166.179
+	s=arc-20240116; t=1760018552; c=relaxed/simple;
+	bh=EADblMD3axsSq2+8swyZve20VzxVA/OW+40Q4zyWm3k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S0fF2zj1zo8cB8cKJzsiPbTmpAbliGbkanviMafrNUoEWLSWbz79C0M+BwbngBQsqHA1wBFBdXCSdIHH/OAfoR4MplfAcC+p4kKNKBlvG/yy0ploMI9UiV3lxqBFpnnsShFvRQbvsgxwNEwmpmQdJKmP/AkLDlvn/hVK+yFpPAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bJtJa/kC; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-42d7ef9a402so7831895ab.0
-        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 07:03:01 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-46e6ba26c50so5583295e9.2
+        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 07:02:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760018580; x=1760623380; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lfk2bfyqFX2yPC1pilpdm6kUPU4T4/Dvd4LObp2un+E=;
-        b=hx1cpHeP97IWTfCT66W1ey8BmgdueE/D7jc6vp7ykfiYizvyc/GsfcLOSLM6TXLhgj
-         iWW0DwTWqTMlJQbjl0jgrp7SDTEQGQDXDURN1N6/+i/cZ5sXdwvJJkXzGVXOcfaOI2D7
-         36u8V4bRl1U6piKJ9JqjusCQcJlCOk32W3ITClBZCzYmr1q+2ZscngIlBzpnnLao2Qxr
-         vPwpCbLtuvfHpmE4G8DJOCiWi0vsOCKe8awit8HDZj9PoQVtjeB4SGuW7WoVVN8nJpl8
-         XRJQoC/m7LDM1puM9HBFRMuSMcRaRftNpF60Pmdoui9AVYvyztxWlOEBXpT6MTImiZmc
-         y8OQ==
+        d=gmail.com; s=20230601; t=1760018548; x=1760623348; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RMHBFa+3hxjvZxp5G7tZtVK9yFyPHPM5m8EVrVrNl8s=;
+        b=bJtJa/kCBkuHoGYsIvnh6VMiTNzTgObkcY1/TQ/XqHUJoNGAsXkysYWIPubT6SLZGX
+         Qxnm+KK/bq/LralQDXr6wLGRW5s94uqONiH5CxCIr/OvsnLVcEjmDMksjUSyc4BtKVKF
+         OIIfwhr+8Q7P616e+er2g9TsHTpeSU43ajJKyICM0BTDEFvzG2e9LLccbjTmCjHnHERy
+         gz73jijcyjicCc01qwocKHnCEknLKMxUylIfFY+/IB4usX6SvnozZP+s6/Ike+kRVujS
+         b/ViXoh1mjdfMsXnNgOkyLgYH0QYK9PR7Mj54tGA16v3ibWQmvURslACuEl9mb+ZPlZR
+         0cXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760018580; x=1760623380;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lfk2bfyqFX2yPC1pilpdm6kUPU4T4/Dvd4LObp2un+E=;
-        b=eY85t0AzkOkUgZxGbPo9Uwiu8ljsjCd13qGLp2iKrOU7EmNkvJ7A/po8zxFVtzVp8O
-         l8E5G1nUvxN8G1TmZ3d8bu8OU2IO1H6U4Zi338tsHcYlLdERrSUrC/xYy4ihYkM/HlRV
-         1EUSE6TKbCLfyvQl2c8fv8/5Klzgykw2khBcPG+lPWx7EsTM+x8r0xL0zyGgg1Z5EUhz
-         HpEaJD0n/oobrV5Topdxrn28tFjASkuMT8wt4D9KCzaHyw9Jev2y8ZQj2qi9hX0uIPcV
-         nz83hKPLxKb/xLdE0jpXefoxRkTH/qZQ0v0jAsH9o2sgT/eu2cMvoiSnR/skqdST2HVN
-         Im2w==
-X-Forwarded-Encrypted: i=1; AJvYcCWfXYz6GFRhMefS6uPIhC3yroSs3g4DG1wdLnDbv9e8KQGHqDyxEDuXiIgKAHDxeSXwES8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzYtAbXyiUujGWL21u04+vPp+MIMYUG2IKZP/Q6W03qe0XAwDRS
-	6uSq/RPA/hIaYu6eKWNH98y5YBVy1/lHJ+6E8KwFVVRc/44MPRwIMgrkD9aW6iRByztD4hp5UDc
-	xldp9WC7FRuejqZ8DkyLAi74TNEbHPzubrmEyS5OGQg==
-X-Gm-Gg: ASbGncvgGySZyoizPATBJ4Tjl3jf1AJ/3ASZQIEdY5XckhKPCFPKCT5m6j3nZndZSdc
-	fLpgc1/nQpSYdi7Z0DnuuV08GRbkDVv+8hQsyPcmYNGDn3rnSOTCJDBUCwFrhuRkM9RbbxFDrrB
-	nJEly1TvTpBgBbBHK82m1NL1EyZ+Vvi2JWZA3Qks0ASfxF3ARAc8CsLHh6NCsgcauAbvqA6nwsD
-	tmFLJCogw8LyE4oJem1tYJcuDfAFhQ=
-X-Google-Smtp-Source: AGHT+IGFUh+yxdaAwOY01QTdDPRzmkqga8JwC7gVQ8hdE1VZLzwP/yHjfQX0w+P+lGz62g/ohriduN1YX1Cx7jhB7TA=
-X-Received: by 2002:a05:6e02:4405:20b0:42f:9888:48f1 with SMTP id
- e9e14a558f8ab-42f98884980mr2655225ab.1.1760018579842; Thu, 09 Oct 2025
- 07:02:59 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1760018548; x=1760623348;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RMHBFa+3hxjvZxp5G7tZtVK9yFyPHPM5m8EVrVrNl8s=;
+        b=CY0mlw3RZ5SYKj8G7HIGKjNWrIs3Lx2Ae3uO6jsFjSsFdCMxLWYKTimm1GFZw9XgPb
+         VyQFGrBhkg6GTNDOAqlUbNU04TIpYHAMSip4JEFuAqOlf9sH2oDJKLoWld0KwGN19vCz
+         datTPB9E7YM5LpKEOkfdJ6P/glbM7BrMCqSiaPE/jqdVdAkSNMS/isGE03aEFmyCDnae
+         +xLqnDOz0wRjJ4V3ETuyYGsPMgzWKbVG1bTBeqGJwBVJajW1VApdPpwTKzMeHGbsjLoV
+         4fxwq3ssoY1INMXzN8r2VWz53Bqs5pNs7J0CkkqAQR7WikCJbRSsZgZvwF5YatPVuQZL
+         VMYg==
+X-Gm-Message-State: AOJu0Yx/6izd6fIMMnuFOEf5us1wU+/2s0nWXt19JypCbrGjIiMg2iBP
+	m8XuAF5tvbT73aGh4qJ7f6CePQJZN8mmTGAgeCRGO+1M/WV4mqI3pDTX5vVFUg==
+X-Gm-Gg: ASbGncvlpUHtyVnJoPyluc8eYehki7D0cBzOEorbfcPXPcMAoiHjqYdLR35ojworZ71
+	Z0FAiPPENzAZKKBWxctvA3sd/R8hSPuwqK8tKsV2Vw+CgyIMfnRdmJCrMtC5OWuIhYSAO7s9em0
+	4+2CLTrZittF+eKOOeUKAOkqMNM1KUp2CxTxt6GYLeAdTBezliW61VXFXBlRK8wjc4C49TtpbE8
+	L/H06aAnWIxUIQPR8McaEepZ9Yt5H+LVmoHbXxN5LFitxxDZC4IcxH+fbgev/wVAhHECA9nHXt3
+	kngpiHkcBJ74lQq8I2QDpyWtJqJR538sflnhDAlBmF8jO5NXTQxEEPWUDjkKtt9fCG1oaRcO1Do
+	+DCqkzcQGZ92PkYxFIEfRth906AoACnvwklT3kptwMcMTkDDEZVGc/Dq1YWYsyiq4JlSj3h/ZUs
+	3MBS2hAhaZ0Q9gAGToFMasmFU5hImBf27ptiOpRgHwWB1DujgyuSGcZuti
+X-Google-Smtp-Source: AGHT+IHxiyFk2Dj8+sO018m8rAOwCaX949godfDhrxXw6Yc2s1DOKm1KUN1gxh4383q141EyRGHqPw==
+X-Received: by 2002:a05:600c:1384:b0:46e:45f7:34f3 with SMTP id 5b1f17b1804b1-46fa9a863cfmr47311125e9.8.1760018547314;
+        Thu, 09 Oct 2025 07:02:27 -0700 (PDT)
+Received: from mail.gmail.com (2a01cb0889497e00b81184fd69385167.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:b811:84fd:6938:5167])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4255d8ab8fdsm34455468f8f.15.2025.10.09.07.02.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Oct 2025 07:02:26 -0700 (PDT)
+Date: Thu, 9 Oct 2025 16:02:23 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Amery Hung <ameryhung@gmail.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>
+Subject: [PATCH bpf-next v7 3/5] bpf: Craft non-linear skbs in
+ BPF_PROG_TEST_RUN
+Message-ID: <8bf24a59c3cfc7cc70c6bc272a039149cc8202b7.1760015985.git.paul.chaignon@gmail.com>
+References: <cover.1760015985.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251008165659.4141318-1-aleksander.lobakin@intel.com>
-In-Reply-To: <20251008165659.4141318-1-aleksander.lobakin@intel.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 9 Oct 2025 22:02:23 +0800
-X-Gm-Features: AS18NWAnZSobSr21rzMet2NXYBsUZ-tOijH1hdSEoiMgzrgWiOgQX5AxwPD-zdc
-Message-ID: <CAL+tcoAWf4sNkQzCBTE8S7VgH12NPyqwiYDiig+jv0KGYAhFTA@mail.gmail.com>
-Subject: Re: [PATCH bpf] xsk: harden userspace-supplied &xdp_desc validation
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Magnus Karlsson <magnus.karlsson@intel.com>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Kees Cook <kees@kernel.org>, nxne.cnse.osdt.itp.upstreaming@intel.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1760015985.git.paul.chaignon@gmail.com>
 
-On Thu, Oct 9, 2025 at 12:59=E2=80=AFAM Alexander Lobakin
-<aleksander.lobakin@intel.com> wrote:
->
-> Turned out certain clearly invalid values passed in &xdp_desc from
-> userspace can pass xp_{,un}aligned_validate_desc() and then lead
-> to UBs or just invalid frames to be queued for xmit.
->
-> desc->len close to ``U32_MAX`` with a non-zero pool->tx_metadata_len
-> can cause positive integer overflow and wraparound, the same way low
-> enough desc->addr with a non-zero pool->tx_metadata_len can cause
-> negative integer overflow. Both scenarios can then pass the
-> validation successfully.
-> This doesn't happen with valid XSk applications, but can be used
-> to perform attacks.
->
-> Always promote desc->len to ``u64`` first to exclude positive
-> overflows of it. Use explicit check_{add,sub}_overflow() when
-> validating desc->addr (which is ``u64`` already).
->
-> bloat-o-meter reports a little growth of the code size:
->
-> add/remove: 0/0 grow/shrink: 2/1 up/down: 60/-16 (44)
-> Function                                     old     new   delta
-> xskq_cons_peek_desc                          299     330     +31
-> xsk_tx_peek_release_desc_batch               973    1002     +29
-> xsk_generic_xmit                            3148    3132     -16
->
-> but hopefully this doesn't hurt the performance much.
+This patch adds support for crafting non-linear skbs in BPF test runs
+for tc programs. The size of the linear area is given by ctx->data_end,
+with a minimum of ETH_HLEN always pulled in the linear area. If ctx or
+ctx->data_end are null, a linear skb is used.
 
-I don't see an evident point that might affect the performance. Since
-you said that, I tested by running './xdpsock -i eth1 -t -S -s 64' and
-didn't spot any degradation.
+This is particularly useful to test support for non-linear skbs in large
+codebases such as Cilium. We've had multiple bugs in the past few years
+where we were missing calls to bpf_skb_pull_data(). This support in
+BPF_PROG_TEST_RUN would allow us to automatically cover this case in our
+BPF tests.
 
->
-> Fixes: 341ac980eab9 ("xsk: Support tx_metadata_len")
-> Cc: stable@vger.kernel.org # 6.8+
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+LWT program types are currently excluded in this patch. Allowing
+non-linear skbs for these programs would require a bit more care because
+they are able to call helpers (ex., bpf_clone_redirect, bpf_redirect)
+that themselves call eth_type_trans(). eth_type_trans() assumes there
+are at least ETH_HLEN bytes in the linear area. That may not be true
+for LWT programs as we already pulled the L2 header via the
+eth_type_trans() call in bpf_prog_test_run_skb().
 
-Thanks for the fix!
+In addition to the selftests introduced later in the series, this patch
+was tested by enabling non-linear skbs for all tc selftests programs
+and checking test failures were expected.
 
-Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
+Tested-by: syzbot@syzkaller.appspotmail.com
+Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+---
+ net/bpf/test_run.c | 101 ++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 81 insertions(+), 20 deletions(-)
 
-> ---
->  net/xdp/xsk_queue.h | 45 +++++++++++++++++++++++++++++++++++----------
->  1 file changed, 35 insertions(+), 10 deletions(-)
->
-> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> index f16f390370dc..1eb8d9f8b104 100644
-> --- a/net/xdp/xsk_queue.h
-> +++ b/net/xdp/xsk_queue.h
-> @@ -143,14 +143,24 @@ static inline bool xp_unused_options_set(u32 option=
-s)
->  static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
->                                             struct xdp_desc *desc)
->  {
-> -       u64 addr =3D desc->addr - pool->tx_metadata_len;
-> -       u64 len =3D desc->len + pool->tx_metadata_len;
-> -       u64 offset =3D addr & (pool->chunk_size - 1);
-> +       u64 len =3D desc->len;
-> +       u64 addr, offset;
->
-> -       if (!desc->len)
-> +       if (!len)
->                 return false;
->
-> -       if (offset + len > pool->chunk_size)
-> +       /* Can overflow if desc->addr < pool->tx_metadata_len */
-> +       if (check_sub_overflow(desc->addr, pool->tx_metadata_len, &addr))
-> +               return false;
-> +
-> +       offset =3D addr & (pool->chunk_size - 1);
-> +
-> +       /*
-> +        * Can't overflow: @offset is guaranteed to be < ``U32_MAX``
-> +        * (pool->chunk_size is ``u32``), @len is guaranteed
-> +        * to be <=3D ``U32_MAX``.
-> +        */
-> +       if (offset + len + pool->tx_metadata_len > pool->chunk_size)
->                 return false;
->
->         if (addr >=3D pool->addrs_cnt)
-> @@ -158,27 +168,42 @@ static inline bool xp_aligned_validate_desc(struct =
-xsk_buff_pool *pool,
->
->         if (xp_unused_options_set(desc->options))
->                 return false;
-> +
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index b9b49d0c7014..6ac393c95962 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -447,7 +447,7 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
+ 
+ static int bpf_test_finish(const union bpf_attr *kattr,
+ 			   union bpf_attr __user *uattr, const void *data,
+-			   struct skb_shared_info *sinfo, u32 size,
++			   struct skb_shared_info *sinfo, u32 size, u32 frag_size,
+ 			   u32 retval, u32 duration)
+ {
+ 	void __user *data_out = u64_to_user_ptr(kattr->test.data_out);
+@@ -464,7 +464,7 @@ static int bpf_test_finish(const union bpf_attr *kattr,
+ 	}
+ 
+ 	if (data_out) {
+-		int len = sinfo ? copy_size - sinfo->xdp_frags_size : copy_size;
++		int len = sinfo ? copy_size - frag_size : copy_size;
+ 
+ 		if (len < 0) {
+ 			err = -ENOSPC;
+@@ -910,6 +910,12 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+ 	/* cb is allowed */
+ 
+ 	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, cb),
++			   offsetof(struct __sk_buff, data_end)))
++		return -EINVAL;
++
++	/* data_end is allowed, but not copied to skb */
++
++	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, data_end),
+ 			   offsetof(struct __sk_buff, tstamp)))
+ 		return -EINVAL;
+ 
+@@ -984,10 +990,12 @@ static struct proto bpf_dummy_proto = {
+ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 			  union bpf_attr __user *uattr)
+ {
+-	bool is_l2 = false, is_direct_pkt_access = false;
++	bool is_l2 = false, is_direct_pkt_access = false, is_lwt = false;
++	u32 tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+ 	struct net *net = current->nsproxy->net_ns;
+ 	struct net_device *dev = net->loopback_dev;
+-	u32 size = kattr->test.data_size_in;
++	u32 headroom = NET_SKB_PAD + NET_IP_ALIGN;
++	u32 linear_sz = kattr->test.data_size_in;
+ 	u32 repeat = kattr->test.repeat;
+ 	struct __sk_buff *ctx = NULL;
+ 	struct sk_buff *skb = NULL;
+@@ -1001,17 +1009,20 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 	    kattr->test.cpu || kattr->test.batch_size)
+ 		return -EINVAL;
+ 
+-	if (size < ETH_HLEN)
++	if (kattr->test.data_size_in < ETH_HLEN)
+ 		return -EINVAL;
+ 
+ 	switch (prog->type) {
+ 	case BPF_PROG_TYPE_SCHED_CLS:
+ 	case BPF_PROG_TYPE_SCHED_ACT:
++		is_direct_pkt_access = true;
+ 		is_l2 = true;
+-		fallthrough;
++		break;
+ 	case BPF_PROG_TYPE_LWT_IN:
+ 	case BPF_PROG_TYPE_LWT_OUT:
+ 	case BPF_PROG_TYPE_LWT_XMIT:
++		is_lwt = true;
++		fallthrough;
+ 	case BPF_PROG_TYPE_CGROUP_SKB:
+ 		is_direct_pkt_access = true;
+ 		break;
+@@ -1023,9 +1034,24 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 	if (IS_ERR(ctx))
+ 		return PTR_ERR(ctx);
+ 
+-	data = bpf_test_init(kattr, kattr->test.data_size_in,
+-			     size, NET_SKB_PAD + NET_IP_ALIGN,
+-			     SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
++	if (ctx) {
++		if (ctx->data_end > kattr->test.data_size_in || ctx->data || ctx->data_meta) {
++			ret = -EINVAL;
++			goto out;
++		}
++		if (ctx->data_end) {
++			/* Non-linear LWT test_run is unsupported for now. */
++			if (is_lwt) {
++				ret = -EINVAL;
++				goto out;
++			}
++			linear_sz = max(ETH_HLEN, ctx->data_end);
++		}
++	}
++
++	linear_sz = min_t(u32, linear_sz, PAGE_SIZE - headroom - tailroom);
++
++	data = bpf_test_init(kattr, linear_sz, linear_sz, headroom, tailroom);
+ 	if (IS_ERR(data)) {
+ 		ret = PTR_ERR(data);
+ 		data = NULL;
+@@ -1049,7 +1075,43 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 	data = NULL; /* data released via kfree_skb */
+ 
+ 	skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
+-	__skb_put(skb, size);
++	__skb_put(skb, linear_sz);
++
++	if (unlikely(kattr->test.data_size_in > linear_sz)) {
++		void __user *data_in = u64_to_user_ptr(kattr->test.data_in);
++		struct skb_shared_info *sinfo = skb_shinfo(skb);
++		u32 copied = linear_sz;
++
++		while (copied < kattr->test.data_size_in) {
++			struct page *page;
++			u32 data_len;
++
++			if (sinfo->nr_frags == MAX_SKB_FRAGS) {
++				ret = -ENOMEM;
++				goto out;
++			}
++
++			page = alloc_page(GFP_KERNEL);
++			if (!page) {
++				ret = -ENOMEM;
++				goto out;
++			}
++
++			data_len = min_t(u32, kattr->test.data_size_in - copied,
++					 PAGE_SIZE);
++			skb_fill_page_desc(skb, sinfo->nr_frags, page, 0, data_len);
++
++			if (copy_from_user(page_address(page), data_in + copied,
++					   data_len)) {
++				ret = -EFAULT;
++				goto out;
++			}
++			skb->data_len += data_len;
++			skb->truesize += PAGE_SIZE;
++			skb->len += data_len;
++			copied += data_len;
++		}
++	}
+ 
+ 	if (ctx && ctx->ifindex > 1) {
+ 		dev = dev_get_by_index(net, ctx->ifindex);
+@@ -1129,12 +1191,11 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 
+ 	convert_skb_to___skb(skb, ctx);
+ 
+-	size = skb->len;
+-	/* bpf program can never convert linear skb to non-linear */
+-	if (WARN_ON_ONCE(skb_is_nonlinear(skb)))
+-		size = skb_headlen(skb);
+-	ret = bpf_test_finish(kattr, uattr, skb->data, NULL, size, retval,
+-			      duration);
++	if (skb_is_nonlinear(skb))
++		/* bpf program can never convert linear skb to non-linear */
++		WARN_ON_ONCE(linear_sz == kattr->test.data_size_in);
++	ret = bpf_test_finish(kattr, uattr, skb->data, skb_shinfo(skb), skb->len,
++			      skb->data_len, retval, duration);
+ 	if (!ret)
+ 		ret = bpf_ctx_finish(kattr, uattr, ctx,
+ 				     sizeof(struct __sk_buff));
+@@ -1342,7 +1403,7 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 		goto out;
+ 
+ 	size = xdp.data_end - xdp.data_meta + sinfo->xdp_frags_size;
+-	ret = bpf_test_finish(kattr, uattr, xdp.data_meta, sinfo, size,
++	ret = bpf_test_finish(kattr, uattr, xdp.data_meta, sinfo, size, sinfo->xdp_frags_size,
+ 			      retval, duration);
+ 	if (!ret)
+ 		ret = bpf_ctx_finish(kattr, uattr, ctx,
+@@ -1433,7 +1494,7 @@ int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
+ 		goto out;
+ 
+ 	ret = bpf_test_finish(kattr, uattr, &flow_keys, NULL,
+-			      sizeof(flow_keys), retval, duration);
++			      sizeof(flow_keys), 0, retval, duration);
+ 	if (!ret)
+ 		ret = bpf_ctx_finish(kattr, uattr, user_ctx,
+ 				     sizeof(struct bpf_flow_keys));
+@@ -1534,7 +1595,7 @@ int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog, const union bpf_attr *kat
+ 		user_ctx->cookie = sock_gen_cookie(ctx.selected_sk);
+ 	}
+ 
+-	ret = bpf_test_finish(kattr, uattr, NULL, NULL, 0, retval, duration);
++	ret = bpf_test_finish(kattr, uattr, NULL, NULL, 0, 0, retval, duration);
+ 	if (!ret)
+ 		ret = bpf_ctx_finish(kattr, uattr, user_ctx, sizeof(*user_ctx));
+ 
+@@ -1734,7 +1795,7 @@ int bpf_prog_test_run_nf(struct bpf_prog *prog,
+ 	if (ret)
+ 		goto out;
+ 
+-	ret = bpf_test_finish(kattr, uattr, NULL, NULL, 0, retval, duration);
++	ret = bpf_test_finish(kattr, uattr, NULL, NULL, 0, 0, retval, duration);
+ 
+ out:
+ 	kfree(user_ctx);
+-- 
+2.43.0
 
-nit?
-
->         return true;
->  }
->
->  static inline bool xp_unaligned_validate_desc(struct xsk_buff_pool *pool=
-,
->                                               struct xdp_desc *desc)
->  {
-> -       u64 addr =3D xp_unaligned_add_offset_to_addr(desc->addr) - pool->=
-tx_metadata_len;
-> -       u64 len =3D desc->len + pool->tx_metadata_len;
-> +       u64 len =3D desc->len;
-> +       u64 addr, end;
->
-> -       if (!desc->len)
-> +       if (!len)
->                 return false;
->
-> +       /* Can't overflow: @len is guaranteed to be <=3D ``U32_MAX`` */
-> +       len +=3D pool->tx_metadata_len;
->         if (len > pool->chunk_size)
->                 return false;
->
-> -       if (addr >=3D pool->addrs_cnt || addr + len > pool->addrs_cnt ||
-> -           xp_desc_crosses_non_contig_pg(pool, addr, len))
-> +       /* Can overflow if desc->addr is close to 0 */
-> +       if (check_sub_overflow(xp_unaligned_add_offset_to_addr(desc->addr=
-),
-> +                              pool->tx_metadata_len, &addr))
-> +               return false;
-> +
-> +       if (addr >=3D pool->addrs_cnt)
-> +               return false;
-> +
-> +       /* Can overflow if pool->addrs_cnt is high enough */
-> +       if (check_add_overflow(addr, len, &end) || end > pool->addrs_cnt)
-> +               return false;
-> +
-> +       if (xp_desc_crosses_non_contig_pg(pool, addr, len))
->                 return false;
->
->         if (xp_unused_options_set(desc->options))
->                 return false;
-> +
->         return true;
->  }
->
-> --
-> 2.51.0
->
->
 
