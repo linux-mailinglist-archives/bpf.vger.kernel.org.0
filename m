@@ -1,45 +1,82 @@
-Return-Path: <bpf+bounces-70720-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70721-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAC43BCBDBA
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 09:07:55 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8237DBCBE5D
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 09:19:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6856334F5B0
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 07:07:55 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id BBBD1352F90
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 07:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3C3246BD7;
-	Fri, 10 Oct 2025 07:07:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E943274650;
+	Fri, 10 Oct 2025 07:19:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SeM57uc8"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8ABDB67E;
-	Fri, 10 Oct 2025 07:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04B2E1D6193;
+	Fri, 10 Oct 2025 07:19:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760080068; cv=none; b=FBpGu5+ui4K5puTK+HHXYs8l9zyexzRvpHrU5KCxVRofkzJH8QFPN111XYUBpXggueWB4dXylGQ7OrlkRDI57sKtJhI7rb0w9zMGoffogXsFphTri6T9BHi/jnf0lSWaLb/bHcY6YyNyGtJ2OeoHr99UJcZHdC6iAZ1m386c3NU=
+	t=1760080758; cv=none; b=TsRwX0uA9hqq4HXyCGyMTKXrqeCt3SV7oMMigz8IKxUBJ/kmiC5fdJMHpAMU/iVwLSVRHYgfxA07X7Bc81x+eF4NGU3i9GAKTBEO6sVq2kPRcsHYgMrgjOvwvz8B0UsMxB7eZ+pErHMf9JSDBKjzTtvsWcEK4kUxo1zjsHp68Ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760080068; c=relaxed/simple;
-	bh=3B12KGGhAlOd0GlihLhSw6KP5qCwjnEKbJg6kEXHEZ8=;
+	s=arc-20240116; t=1760080758; c=relaxed/simple;
+	bh=dZmPVpX92Pj11sLiBzxN+17J/+bOnrKtfahRS7r2Y1M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iNNgQtuYeB1h6LVybSJfT72Rf5AUcafGm3+bnSyu3NZkE0JW2u1qSOI19N5plKf66VHvSd14+OPn8fGb7GAOX6GhBttZXYlIFbDsRdDRUPN1k42jA1wUxwrlKdzG3YTArLVjb4yH4dp55UypakOwvUsce0zoMeLh1ZbbBJ5y1t0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cjd8x15PMzKHMZd;
-	Fri, 10 Oct 2025 15:07:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 1FCAB1A084E;
-	Fri, 10 Oct 2025 15:07:43 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP3 (Coremail) with SMTP id _Ch0CgD33Du9sOhosTB7CQ--.60335S2;
-	Fri, 10 Oct 2025 15:07:43 +0800 (CST)
-Message-ID: <c1829ab5-2c33-4445-911e-9e72bbbfe079@huaweicloud.com>
-Date: Fri, 10 Oct 2025 15:07:41 +0800
+	 In-Reply-To:Content-Type; b=urn2Mz9mkR3Nktm4tHIui7+NwGuI2blaPQ5ZKR/dnrFCZrQwKYXNJwAdg4jrJaUBmOqdTPjxnnAM1l/yVh37LizGeul3on4Kqt/QVKaq9yUeWFefGkFWJOp+IXRXMbgbx38pE4xZKXl6WWzkYEmLy4tFV4pwtx6rfshMW9Xin4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SeM57uc8; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 599JTYvg012205;
+	Fri, 10 Oct 2025 07:17:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=8NSNiF
+	sBW58bMpvfBw6u6e82XSmQJRrNFyDoqKUgEsc=; b=SeM57uc8bnAoZNCI9CTzrP
+	wJ3mf6WRZD1xbN/V9Mk6cg5TI/q1z7ZTagbbrKY4dW8+hbKA4O2T2jWXCamHLn15
+	boxTYcHL1aiX2qmLk0Zwz3siRTkZ/bTjRF8vu0KX/VdhD1RSCDrtYDJSMTEVe4H+
+	S70t7nkoNzG3b69kH5CYk9fyTOpVrxeFJnN0lMo2mLBEz52zP8uyXl+lHG5e7y9U
+	Uvy1mi9EwkA5oHeiWzVZr4DLHdj5GSyyFWL+kck0jkIaZ9609kxc3vD8I9CbIuWM
+	v4SQX+GnGVvkjjZD7iWF43xwVC8TvDMGsmuGlVaaGFyuOzwxpLz2AjXeThKZEjIw
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49nv7yhaa4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 10 Oct 2025 07:17:42 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 59A7Aceb025936;
+	Fri, 10 Oct 2025 07:17:41 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49nv7yha9y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 10 Oct 2025 07:17:41 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 59A3bR1l020971;
+	Fri, 10 Oct 2025 07:17:40 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 49nv9n0nbp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 10 Oct 2025 07:17:40 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 59A7HcGO51183908
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 10 Oct 2025 07:17:38 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CF75020204;
+	Fri, 10 Oct 2025 07:17:26 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9D6C920206;
+	Fri, 10 Oct 2025 07:17:22 +0000 (GMT)
+Received: from [9.78.106.240] (unknown [9.78.106.240])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 10 Oct 2025 07:17:22 +0000 (GMT)
+Message-ID: <79946463-4742-4919-9d56-927a0a6f1c7c@linux.ibm.com>
+Date: Fri, 10 Oct 2025 12:47:21 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -47,264 +84,127 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: Add overwrite mode for bpf ring
- buffer
+Subject: Re: [PATCH] powerpc64/bpf: support direct_call on livepatch function
+To: Naveen N Rao <naveen@kernel.org>
+Cc: Madhavan Srinivasan <maddy@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>, Viktor Malik <vmalik@redhat.com>,
+        live-patching@vger.kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joe Lawrence
+ <joe.lawrence@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, linux-trace-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>
+References: <20251002192755.86441-1-hbathini@linux.ibm.com>
+ <amwerofvasp7ssmq3zlrjakqj5aygyrgplcqzweno4ef42tiav@uex2ildqjvx2>
+ <17f49a63-eccb-4075-91dd-b1f37aa762c7@linux.ibm.com>
+ <unegysw3bihg32od7aham3npsdpm5govboo3uglorwsrjqfqfk@pbyzwwztmqtc>
+ <42d72061-3d23-43db-bb02-d5f75333c924@linux.ibm.com>
+ <dvvv5cytyak2iquer7d6g57ttum3qcckupyahsqsmvpzfjbyni@wbsr77swnrcl>
 Content-Language: en-US
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>, Song Liu <song@kernel.org>
-References: <20250905150641.2078838-1-xukuohai@huaweicloud.com>
- <20250905150641.2078838-2-xukuohai@huaweicloud.com>
- <CAEf4BzaSEjQzF47BZeh0de9pFbKpaB8JqCs629hV9xZDhMyTgw@mail.gmail.com>
- <63272c95-9669-41c1-8e77-575ec37d36c0@huaweicloud.com>
- <CAEf4BzbYtaPf0jjoiv16iKWRKkv9ZTH_hBiZMUF+PkjVGOC53A@mail.gmail.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <CAEf4BzbYtaPf0jjoiv16iKWRKkv9ZTH_hBiZMUF+PkjVGOC53A@mail.gmail.com>
+From: Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <dvvv5cytyak2iquer7d6g57ttum3qcckupyahsqsmvpzfjbyni@wbsr77swnrcl>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgD33Du9sOhosTB7CQ--.60335S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xw18tF1fWFW8Aw4xCr1xKrg_yoW3KryUpF
-	WjkayfCrs7JwnxWFyvva18ArW2vr1Iv3W8XFyftFy7Zwn5W3ZIqryUC3yYk345G34kA3WI
-	vw18Ar9xCr15JrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: pYLSquh4ZIkQZb5wIRM6lSn3LVYuqdhV
+X-Proofpoint-ORIG-GUID: qHtgOYHeiHKhlNUjhBuOnuAh19VFb8xY
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDA4MDEyMSBTYWx0ZWRfX6yj8xu1EemA4
+ RvjxPaq881ftUtrEBrFFd6UU/nqT5VtIxgwqFfHn/TiKxXbt1sNYDAqQ0uEUDIojvMZ43wx/awU
+ G2UuB1aW4fXCCFr6g9Q2SPqZfJsnLiEvScre/OWxoLqhiZokkjWImMq9GYElMf8Uj/PqmAlNjWq
+ 6VdzamwAzocAMTad0PFJptUiSb76JMXu9HvWDrsC9pPukpIUJCX4GxERqfunur2nIF1Dwqygqz1
+ toszBQwqSgemd/WaVSnseQn3TAzy8mcVTLJPk9Z5syrekQNxCME9U7DNHOdaJuRCfZgkLqBfTaF
+ I4wa6ZAvLx/g9g7EIGzWuh5D7BX4UZDpcWxGy4x4FiCFYQwdcPUwaKkLc59fH34bgZVyQorFKrP
+ WHj9DgGBCRwCiDVZMgtdpEv0U7g92w==
+X-Authority-Analysis: v=2.4 cv=FtwIPmrq c=1 sm=1 tr=0 ts=68e8b316 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=S1Tq6YvCFwAA3lmGF84A:9
+ a=QEXdDO2ut3YA:10 a=nl4s5V0KI7Kw-pW0DWrs:22 a=pHzHmUro8NiASowvMSCR:22
+ a=xoEH_sTeL_Rfw54TyV31:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-10-10_01,2025-10-06_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 malwarescore=0 clxscore=1015 phishscore=0 spamscore=0
+ bulkscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510020000 definitions=main-2510080121
 
-On 10/7/2025 6:10 AM, Andrii Nakryiko wrote:
 
-[...]
 
->>>> +
->>>> +       over_pos = READ_ONCE(rb->overwrite_pos);
->>>> +       return min(prod_pos - max(cons_pos, over_pos), rb->mask + 1);
->>>
->>> I'm trying to understand why you need to min with `rb->mask + 1`, can
->>> you please elaborate?
+On 09/10/25 4:57 pm, Naveen N Rao wrote:
+> On Thu, Oct 09, 2025 at 11:19:45AM +0530, Hari Bathini wrote:
 >>
 >>
->> We need the min because rb->producer_pos and rb->overwrite_pos are read
->> at different times. During this gap, a fast producer may wrap once or
->> more, making over_pos larger than prod_pos.
->>
-> 
-> what if you read overwrite_pos before reading producer_pos? Then it
-> can't be larger than producer_pos and available data would be
-> producer_pos - max(consumer_pos, overwrite_pos)? would that work?
->
-
-No, it won’t work. Between reading overwrite_pos and producer_pos, producer
-on a different CPU may have already moved producer_pos forward by more than
-one ring buffer size, causing prod_pos - max(cons_pos, over_pos) to exceed
-the ring buffer size.
-
-> 
->>> And also, at least for consistency, use smp_load_acquire() for overwrite_pos?
->>>
->>
->> Using READ_ONCE here is to stay symmetric with __bpf_ringbuf_reserve(),
->> where overwrite_pos is WRITE_ONCE first, followed by smp_store_release(producer_pos).
->> So here we do smp_load_acquire(producer_pos) first, then READ_ONCE(overwrite_pos)
->> to ensure a consistent view of the ring buffer.
->>
->> For consistency when reading consumer_pos and producer_pos, I’m fine with
->> switching READ_ONCE to smp_load_acquire for overwrite_pos.
->>
-> 
-> I'm not sure it matters much, but this function is called outside of
-> rb->spinlock, while __bpf_ringbuf_reserve() does hold a lock while
-> doing that WRITE_ONCE(). So it might not make any difference, but I
-> have mild preference for smp_load_acquire() here.
->
-
-OK, I'll switch to smp_load_acquire.
-
->>>>    }
+>> On 08/10/25 1:43 pm, Naveen N Rao wrote:
+>>> On Mon, Oct 06, 2025 at 06:50:20PM +0530, Hari Bathini wrote:
 >>>>
->>>>    static u32 ringbuf_total_data_sz(const struct bpf_ringbuf *rb)
->>>> @@ -402,11 +419,43 @@ bpf_ringbuf_restore_from_rec(struct bpf_ringbuf_hdr *hdr)
->>>>           return (void*)((addr & PAGE_MASK) - off);
->>>>    }
 >>>>
->>>> +
-> 
-> [...]
-> 
->>>> +       /* In overwrite mode, move overwrite_pos to the next record to be
->>>> +        * overwritten if the ring buffer is full
->>>> +        */
+>>>> On 06/10/25 1:22 pm, Naveen N Rao wrote:
+>>>>> On Fri, Oct 03, 2025 at 12:57:54AM +0530, Hari Bathini wrote:
+>>>>>> Today, livepatch takes precedence over direct_call. Instead, save the
+>>>>>> state and make direct_call before handling livepatch.
+>>>>>
+>>>>> If we call into the BPF trampoline first and if we have
+>>>>> BPF_TRAMP_F_CALL_ORIG set, does this result in the BPF trampoline
+>>>>> calling the new copy of the live-patched function or the old one?
+>>>>
+>>>> Naveen, calls the new copy of the live-patched function..
 >>>
->>> hm... here I think the important point is that we search for the next
->>> record boundary until which we need to overwrite data such that it
->>> fits newly reserved record. "next record to be overwritten" isn't that
->>> important (we might never need to overwrite it). Important are those
->>> aspects of a) staying on record boundary and b) consuming enough
->>> records to reserve the new one.
+>>> Hmm... I'm probably missing something.
 >>>
->>> Can you please update the comment to mention the above points?
->>>
+>>> With ftrace OOL stubs, what I recall is that BPF trampoline derives the
+>>> original function address from the OOL stub (which would be associated
+>>> with the original function, not the livepatch one).
 >>
->> Sure, I'll update the comment to:
->>
->> In overwrite mode, advance overwrite_pos when the ring buffer is full.
->> The key points are to stay on record boundaries and consume enough
->> records to fit the new one.
->>
+>> Trampoline derives the address from LR.
 > 
-> ok
-> 
-> [...]
-> 
->>
->>>> +                          unsigned long rec_pos,
->>>> +                          unsigned long cons_pos,
->>>> +                          u32 len, u64 flags)
->>>> +{
->>>> +       unsigned long rec_end;
->>>> +
->>>> +       if (flags & BPF_RB_FORCE_WAKEUP)
->>>> +               return true;
->>>> +
->>>> +       if (flags & BPF_RB_NO_WAKEUP)
->>>> +               return false;
->>>> +
->>>> +       /* for non-overwrite mode, if consumer caught up and is waiting for
->>>> +        * our record, notify about new data availability
->>>> +        */
->>>> +       if (likely(!rb->overwrite_mode))
->>>> +               return cons_pos == rec_pos;
->>>> +
->>>> +       /* for overwrite mode, to give the consumer a chance to catch up
->>>> +        * before being overwritten, wake up consumer every half a round
->>>> +        * ahead.
->>>> +        */
->>>> +       rec_end = rec_pos + ringbuf_round_up_hdr_len(len);
->>>> +
->>>> +       cons_pos &= (rb->mask >> 1);
->>>> +       rec_pos &= (rb->mask >> 1);
->>>> +       rec_end &= (rb->mask >> 1);
->>>> +
->>>> +       if (cons_pos == rec_pos)
->>>> +               return true;
->>>> +
->>>> +       if (rec_pos < cons_pos && cons_pos < rec_end)
->>>> +               return true;
->>>> +
->>>> +       if (rec_end < rec_pos && (cons_pos > rec_pos || cons_pos < rec_end))
->>>> +               return true;
->>>> +
->>>
->>> hm... ok, let's discuss this. Why do we need to do some half-round
->>> heuristic for overwrite mode? If a consumer is falling behind it
->>> should be actively trying to catch up and they don't need notification
->>> (that's the non-overwrite mode logic already).
->>>
->>> So there is more to this than a brief comment you left, can you please
->>> elaborate?
->>>
->>
->> The half-round wakeup was originally intended to work with libbpf in the
->> v1 version. In that version, libbpf used a retry loop to safely copy data
->> from the ring buffer that hadn’t been overwritten. By waking the consumer
->> once every half round, there was always a period where the consumer and
->> producer did not overlap, which helped reduce the number of retries.
-> 
-> I can't say I completely grok the logic here, but do you think we
-> should still keep this half-round wakeup? It looks like an arbitrary
-> heuristic, so I'd rather not have it.
->
+> Does it? I'm referring to BPF_TRAMP_F_CALL_ORIG handling in
+> __arch_prepare_bpf_trampoline().
 
-Sure, since the related libbpf code is no longer present, I’ll remove this
-logic in the next version.
 
->>
->>> pw-bot: cr
->>>
->>>> +       return false;
->>>> +}
->>>> +
->>>> +static __always_inline
->>>
->>> we didn't have always_inline before, any strong reason to add it now?
->>>
->>
->> I just wanted to avoid introducing any performance regression. Before this
->> patch, bpf_ringbuf_commit() was automatically inlined by the compiler, but
->> after the patch it wasn’t, so I added always_inline explicitly to keep it
->> inlined.
-> 
-> how big of a difference was it in benchmarks? It's generally frowned
-> upon using __always_inline without a good reason.
->
+> LR at BPF trampoline entry points at
+> the ftrace OOL stub. We recover the "real LR" pointing to the function
+> being traced from there so that we can call into it from within the BPF
+> trampoline.
 
-The difference is not noticeable on my arm64 test machine, but it is on my
-amd machine.
+Naveen, from the snippet in livepatch_handler code shared below,
+the LR at BPF trmapoline entry points at the 'nop' after the call
+to trampoline with 'bnectrl cr1' in the updated livepatch_handler.
 
-Below is the benchmark data on AMD EPYC 9654, with and without always_inline
-attribute.
+Mimic'ing ftrace OOL branch instruction in livepatch_handler
+with 'b	1f' (the instruction after nop) to ensure the trmapoline
+derives the real LR to '1f' and jumps back into the livepatch_handler..
 
-- With always_inline
++       /* Jump to the direct_call */
++       bnectrl cr1
++
++       /*
++        * The address to jump after direct call is deduced based on 
+ftrace OOL stub sequence.
++        * The seemingly insignificant couple of instructions below is 
+to mimic that here to
++        * jump back to the livepatch handler code below.
++        */
++       nop
++       b       1f
++
++       /*
++        * Restore the state for livepatching from the livepatch stack.
++        * Before that, check if livepatch stack is intact. Use r0 for it.
++        */
++1:     mtctr   r0
 
-Ringbuf, multi-producer contention
-==================================
-rb-libbpf nr_prod 1  13.070 ± 0.158M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 2  15.440 ± 0.017M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 3  7.860 ± 0.003M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 4  6.444 ± 0.003M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 8  3.788 ± 0.005M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 12 2.802 ± 0.007M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 16 2.560 ± 0.003M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 20 2.227 ± 0.006M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 24 2.141 ± 0.007M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 28 1.960 ± 0.003M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 32 1.913 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 36 1.854 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 40 1.818 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 44 1.779 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 48 1.758 ± 0.003M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 52 1.812 ± 0.003M/s (drops 0.000 ± 0.000M/s)
 
-- Without always_inline
+I should probably improve my comments for better readability..
 
-Ringbuf, multi-producer contention
-==================================
-rb-libbpf nr_prod 1  10.550 ± 0.032M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 2  14.661 ± 0.024M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 3  7.616 ± 0.002M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 4  6.476 ± 0.002M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 8  3.806 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 12 2.814 ± 0.001M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 16 2.608 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 20 2.337 ± 0.005M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 24 2.270 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 28 1.977 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 32 1.921 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 36 1.862 ± 0.002M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 40 1.827 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 44 1.912 ± 0.002M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 48 1.860 ± 0.002M/s (drops 0.000 ± 0.000M/s)
-rb-libbpf nr_prod 52 1.824 ± 0.001M/s (drops 0.000 ± 0.000M/s)
-
-When nr_prod=1, the performance regression is significant, dropping from
-13.070 ± 0.158 M/s with always_inline to 10.550 ± 0.032 M/s without it.
-
-However, since the half-round wakeup logic will be removed in the next
-version, the changes to bpf_ringbuf_commit, including always_inline, will
-also be removed.
-
-> [...]
-
+- Hari
 
