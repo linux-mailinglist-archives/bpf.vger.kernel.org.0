@@ -1,74 +1,75 @@
-Return-Path: <bpf+bounces-70771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60B3ABCE68F
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 21:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5300BBCEBD2
+	for <lists+bpf@lfdr.de>; Sat, 11 Oct 2025 01:06:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71A0519E079E
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 19:40:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 463EE19A4707
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 23:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14BC130149F;
-	Fri, 10 Oct 2025 19:40:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5702367D7;
+	Fri, 10 Oct 2025 23:06:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="fvH+mQlM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bbmz8voW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB5F289E36
-	for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 19:40:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807DF27B4E4
+	for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 23:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760125212; cv=none; b=Z4CPOEDDQk5Z4JPEwbGVWDiXGrP67auzhPH5gUcbSKUDXTzzZ1zIlHdUr5rVT/6rtOjzAaVdaSgJC/sEhLvDEUVv/dFyMTNSZRx5iWx2c2Ugko6TAmHw/vKGR2NZMbBoHnhF4YpIlQKrGQdUmR3dIey3mwi9C6WsUyVRJQxCXo0=
+	t=1760137593; cv=none; b=OcFkUQSS7FOCLXmRTEl2iA64JXN5qAAS4jhDTps7Sr6X8COwAeLPPG9NMrosIxev1xPPecYrFLcXhGtUDd3KvaWNmQ5mp72WvxexMfwWe5DDjGpubKK4kOumjppo61LrbF4LSG+dUuDgBdw8RDk6CCe1Xsgva3xhdxmYuTvHESo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760125212; c=relaxed/simple;
-	bh=hrUSn+ceAo+GDbSa1VXTf4EuSMfDG3/UBPjYHHpRlXA=;
+	s=arc-20240116; t=1760137593; c=relaxed/simple;
+	bh=hCloG0Y93a0M9tkJ3ZDB55IPaaeolLL8R7dD98P47qk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TNrd3E9SbxBzL9REsM29zW2aUzqqqein61anoFBrXqjFX2hZQmW1UF+fDPre44ray3r5tIzR+pYdKIE0eecbhN5pNpYA4L9+8J7j33w/PQyC9pvuhuo9CBprTp2h4oYRkrQ4iTyrOnIuj6lJSdlNHTCZr041Y6ckmiw+3df7sYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=fvH+mQlM; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-b4755f37c3eso2084866a12.3
-        for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 12:40:11 -0700 (PDT)
+	 To:Cc:Content-Type; b=L/or+ARK+wvPZ1Qt38GgmvFekU7/HbBJDwkXCSiAQ9lWMvnoOGuEp74lKumU9s8IGeaGcPev6GbnpNlEkvzqbJnal2nGf4v+22gk176FAEi8DAitDPTXrMKsS+vSrLGy/vtV12jx280bwT0wJ0ewmmn11ZfQsoj5t1dReuSgO8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bbmz8voW; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3f0134ccc0cso1849734f8f.1
+        for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 16:06:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1760125210; x=1760730010; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760137590; x=1760742390; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1spZuaYn2ibXuyFhDGwY3YmGssLxNzwFenv1C1bnCyw=;
-        b=fvH+mQlMyodIhAHG0OiGgWTJreP4jDvCHhbQtIzqdrV/uRidTE3H4b7LH005Ce6aLo
-         PgWbPj/ejx04/0HcU7cEuwMJ1qOGNK8psjTjdoQ2gKdQlJGFd7hQlCXRHKvGrn1OBING
-         lE/qDIr/dqzBifMqcXS48eAfaU2DABLcYCoh8vmVjQSpOt9+mdZYTGthXuuwpKvFNXIu
-         D13Q72ge/T0BKNhV6wv2+2RcBg0PGawDf/y2ZxiCXWpDqGRm0gHS/EplPE6y09ouGntE
-         Kx5ziGAONnxZeKV56F6dm6cZtXydwjA3ET0f+pP+3DdW6BZs0MrfCEa9ejtPzvnCPcZl
-         LmrQ==
+        bh=/jyuZL+/MDOZjAb6IRfhgTHKVHN22swRIR7driYUFLs=;
+        b=bbmz8voWp3XzjD5iljvDEPwF+PMsj1L1Szbhi4rom6r2v9ozDOhbKFpATyjWOrVMfH
+         B66w7GVI+Ntcb28xUBUQ/AGoPdr92sudp+CxHyLZGXUApYnzOULKD6eayp0oBvrksaZt
+         sb7PODwXMgjyFDNWzDiEtON9xeVhyM+N9A3UA5yGQzz/gXedNO9hipUGlxEVgpeO5xyU
+         t0YIdUE/6OJN22oAI0DlcW8ejrzyH307OSxAFTl+J1K7j99OPdN7nQGy0QL7WYtrXi2s
+         zZkYgHocr++twKR3PUvLrexDdovcA5T9V/SPTdY3B4K/zSoKY1R0TlPOf8IJNIq60KD+
+         fACw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760125210; x=1760730010;
+        d=1e100.net; s=20230601; t=1760137590; x=1760742390;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1spZuaYn2ibXuyFhDGwY3YmGssLxNzwFenv1C1bnCyw=;
-        b=YrLWhemfAXkwGiIEdi1t6NhLmlorTS67uOlKI2W/ORqOAcgGGGzMmc/qpfXsTDzquS
-         vh7JNFmOMLnPXIK5aVIEiChvZCIOqitJFBtUGbGrlAXOFrNrreY8GOPSw9NbIKZuSIXp
-         bOPqOZzLHyvAEl9bqDgPxBw8uMU5fdBqAHcOFtJl9JDR1QqxyDJ6c3YjXsxF/XsSuKnh
-         b+jRPNPS0ipxJS4u9M6RadmSDjj+3eHzFKnRK3ikVH9ZY7SnicIq/ZG05IMqf3o8GUjB
-         cqjV9v1bVKAiEKFEE2FipII3kAJX5gHt8VPkoLR/0QH768BTlbr3XTDpp4DFBt0yiHAy
-         rKFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWafvOm83/5doTi3u/OXb5QfHdRrUHbz6Gap+/+JzjvE3ca1OdORHSwyLA62nORYTSxqfw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzIx3gWwfPBSUylUcjeHMxX09MR7+k3FjDhOAv944lWv4kE1pa+
-	8Cd9AH6m3Z6PGHSqpbsc+0ZlFt6KyWhfrD6NN5drjUW14weGXneigaRCmNTXOTgv630L7EAGNEw
-	R5s1h+OW1Ye5rMQInLfgEMTC6IuXQJZjqvLRlvK+w
-X-Gm-Gg: ASbGncsiuxW/C9IEs6RFmKUUH9e1LAfqpsvKNhNyHnx46AbtgFtxiathPSD/FuYAW3H
-	CvrkTQR6ZiXA30Ol2C1XN1HRcWrIT88yMdN3JjVOvVkw+gcYgBjZ3eh7lKfuBRBLyGZxJSkVDb0
-	YKnp8LwNDIE8T8BUUY29xxOmN8AFl6xiDm7oAdT38RNJEIJMO0VwbmAVJb6tycmBzZle9fofbQ1
-	yP9AwGkhqQY1X+5c/k00ntOiTHtd99Lzm85
-X-Google-Smtp-Source: AGHT+IH1v4yTYh9hFY+GZYHVajE4mnFPafvC6wr8o3AHmTWAx1ZS9PvQ3QIG9cYTfrwrKhnmpqBf4NbUq72+A7lGSng=
-X-Received: by 2002:a17:903:198b:b0:280:fe18:847b with SMTP id
- d9443c01a7336-290273ef0c1mr155175175ad.33.1760125210321; Fri, 10 Oct 2025
- 12:40:10 -0700 (PDT)
+        bh=/jyuZL+/MDOZjAb6IRfhgTHKVHN22swRIR7driYUFLs=;
+        b=N/2+ZAFa69y9Vpq06gSxfhVjKlrIezqavppfs7aiihI6khBY4ns2eXMtYqxp7kpL+o
+         /GIWbOgqIKnK9FKsuPb2quVvhBRxPVIA5oswu4X/OC85ZDKHs6Zgojkkm9a4fuWitzqB
+         bqY06YN4/JUqXxBtsOzyOPZSBjI7lWIO0GzN3I9yLrIN66O3UjeoGGELN1wkyVwaOrwD
+         UWRIvtKRb+vWfNj/zaCR1sabqyIGEHOlDQ/yU/EDarzy3Kvg1IZY5BFYTztkEEOFLjr9
+         7OFpwUGwusBzjagMjzYM4duKJaXAtTqOnYlgUkWi1B4IxrGCQwlddApXINVx/cc8mQpW
+         xdcA==
+X-Forwarded-Encrypted: i=1; AJvYcCVj4mjw9qRLj6rEWeRCHHRRodvH3tBLxZNIfEUs4vgTnYInTsOfWZrev8cFRxjJ6Q5aCQs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywk3bJJ0637ciCqdXrCKmZ7tnTtswwXmxfrkdDC/PxKLnEMv17P
+	H2maqfpb3P3FV++9GTwCFxJK1GRBYjZsUozGZuPaj9Sc09cRInr0purRUlgpsNzrV7aujuKP2Zq
+	6sI5LTh97B9jyOkZoNog8OEVTNUEZWvY=
+X-Gm-Gg: ASbGncvnu5btVxc2/FNRo8aNLEMgGG+R6wmoAFCmPaMPJ3voTv6JDijQya7ZKiaDOaK
+	RddO/Cxt5Vw7UAeqOs667Bz2axM0dd8eVCJDLdniAUvsuRekxFVrKXy7lF1veRQyDg7Yo7bUKJN
+	qBYf+emabYCHETtN9PFF3w8XciWnN1IR6OIxutVSsgnij1ohXEdmMma5Ha8WUX9X6W3/wDocemZ
+	Dq3ZNTTqXXkC2Rpx4jfTCjoI6/tdJaZla0iCHOEiEbp+8pE4YdgaQE+TFiBmWZbV+oSq3gbkVYI
+	f8H0
+X-Google-Smtp-Source: AGHT+IFOyAwQQsRvhlctebtwsHlWP0aszVMJ1pSOfGIMa+JIUTffYCFVVZaO9CiunaGlcSGKBfr4a2TCh0qC9gaN/sw=
+X-Received: by 2002:a05:6000:4308:b0:3e7:ff32:1ab with SMTP id
+ ffacd0b85a97d-4266e8dd2bcmr8103640f8f.50.1760137589493; Fri, 10 Oct 2025
+ 16:06:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,14 +86,14 @@ References: <20250929213520.1821223-1-bboscaccy@linux.microsoft.com>
  <CAHC9VhRyG9ooMz6wVA17WKA9xkDy=UEPVkD4zOJf5mqrANMR9g@mail.gmail.com>
  <CAADnVQLfyh=qby02AFe+MfJYr2sPExEU0YGCLV9jJk=cLoZoaA@mail.gmail.com> <88703f00d5b7a779728451008626efa45e42db3d.camel@HansenPartnership.com>
 In-Reply-To: <88703f00d5b7a779728451008626efa45e42db3d.camel@HansenPartnership.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 10 Oct 2025 15:39:58 -0400
-X-Gm-Features: AS18NWDiHVbVvupnRrZkUxOiLJEK77lzoTL3P5996ZGup2QQARPuOxF1njKIzL8
-Message-ID: <CAHC9VhTY=K6oQPgAHuj3rRm2+9sBwLvDjdZtM+cUfSeuiW8jMg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 10 Oct 2025 16:06:18 -0700
+X-Gm-Features: AS18NWCINWZW_B_u9VdJ_nUTVc2tFIhkn7DWZ4gOvpV35oDwWvRLL4ekSbSipYU
+Message-ID: <CAADnVQKdsF5_9Vb_J+z27y5Of3P6J3gPNZ=hXKFi=APm6AHX3w@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v2 0/3] BPF signature hash chains
 To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
+Cc: Paul Moore <paul@paul-moore.com>, Alexei Starovoitov <ast@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, 
 	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, bpf <bpf@vger.kernel.org>, 
 	LSM List <linux-security-module@vger.kernel.org>, 
 	"K. Y. Srinivasan" <kys@microsoft.com>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -101,8 +102,9 @@ Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Alexei Starovoitov <ast@k
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 10, 2025 at 11:53=E2=80=AFAM James Bottomley
+On Fri, Oct 10, 2025 at 8:53=E2=80=AFAM James Bottomley
 <James.Bottomley@hansenpartnership.com> wrote:
+>
 > On Thu, 2025-10-09 at 18:00 -0700, Alexei Starovoitov wrote:
 > [...]
 > > James's concern is valid though:
@@ -127,30 +129,70 @@ On Fri, Oct 10, 2025 at 11:53=E2=80=AFAM James Bottomley
 > verification of the ELF object signature is sufficient to guarantee
 > integrity of the module because the integrity of the ELF loader is
 > already checked.
->
+
+"integrity of ELF loader" is _not_ checked. It's part of the kernel
+and you trust that the kernel is valid, because you trust the
+build tools that compiled that kernel.
+The kmod signature only covers the contents of the kmod.
+Now, kmods are typically targeted one specific kernel version
+compiled with a specific config, but some folks do load the same
+kmod on different kernels. So by checking integrity of kmod only
+you're skipping on the loader. If symbols are not versioned
+and crc checked bad things can happen (obviously no one should
+be doing that), but signature doesn't protect against that.
+Compare that with the bpf signature. The whole package is signed.
+The loader and what it is loading with one signature.
+I argue that this is a more secure approach than kmod signatures.
+
+Think of it as a self-extracting zip archive.
+The whole .zip is covered by one signature. Inside it has the code
+to self extract plus all the files inside.
+The extracting code is a loader prog. Which is a normal bpf
+prog that is subject to the same verification rules.
+The files are other bpf progs that are also subject to the verification.
+
 > The eBPF loader, by contrast, because it contains all the relocations,
 > is different for every eBPF light skeleton.  This means it's not a
 > trusted part of the kernel and has to be integrity checked as well.
+
+...and the existing mechanism already does that.
+
 > Thus for eBPF, the integrity check must be over both the loader and the
 > program; integrity checking is not complete until the integrity of both
-> has been verified.  If you sign only the loader and embed the hash  of
+> has been verified.
+
+The signature covers all components: loader, the map that assists
+the loading and all progs and maps that are encoded inside that
+loader/map tuple.
+
+> If you sign only the loader and embed the hash  of
 > the program into the loader that is a different way of doing things,
-> but the integrity check is not complete until the loader does the hash
-> verification which, as has been stated many times before, is *after*
-> the load LSM hook has run.
->
+
+That's simply not true.
+Please read the current code more carefully. There is cover letter
+that describes what's happening. There are no hashes of programs.
+
 > There are two potential solutions to this: complete the integrity check
-> before running the load hook (Blaise's patch) or add a LSM hook to
+> before running the load hook (Blaise's patch)
+
+That's not what it's doing! Read his patch. It's adding pointless
+signature to the loader/map tuple. It does nothing to progs, maps,
+relocations that will be created at the end when loader completes.
+
+You need to realize that single loader plus single map is
+an implementation choice of tools/lib/bpf/gen_loader.c.
+It can do the same job with a single prog and no additional map.
+Hence any kinda hard coded extra map signature makes no sense.
+We're not going to burden the kernel with one specific implementation
+detail of gen_loader.
+Tomorrow we might change the gen_loader to use a triple:
+prog+map+btf or any other form.
+The existing approach allows all that extensibility and freedom
+to change the gen_loader.
+
+> or add a LSM hook to
 > collect the integrity information from the run of the loader.  Neither
 > of these is present in the scheme you put upstream.
 
-As a bit of background for those who weren't following the related
-threads earlier this year, the idea of an additional hook was
-discussed this spring and it was rejected by Alexei.
-
-https://lore.kernel.org/linux-security-module/CAADnVQ+wE5cGhy6tgmWgUwkNutue=
-Esrhh6UR8N2fzrZjt-vb4g@mail.gmail.com/
-
---=20
-paul-moore.com
+Neither is in cards as was explained countless times.
 
