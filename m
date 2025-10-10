@@ -1,223 +1,190 @@
-Return-Path: <bpf+bounces-70747-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70748-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95E53BCDC1B
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 17:16:03 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F2AFBCDCBE
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 17:28:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECD44544706
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 15:11:17 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 977B54E4AC7
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 15:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D830E2ED854;
-	Fri, 10 Oct 2025 15:11:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7D92F90DB;
+	Fri, 10 Oct 2025 15:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Jaqr4IG6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MJ8CHehq"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E04EC2F83BB
-	for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 15:11:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6FA235044
+	for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 15:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760109070; cv=none; b=eT56QPIqotnkTryWmWd9bUuifJHsLZXTaYn0gilORSKkJxjj6S4W2r208d+bymqESaJdL2yRD84xg8Jn9xheKQplCNPmo2AFlaJtmcxihyl4fHAqgy1NQNDNVxVBg8qW14DqF2S6CGmj2g0S8RHXleWsvBRLweM1SswmgNq0WvQ=
+	t=1760110107; cv=none; b=lyUO4fT9NwVKeanaS3PD3aiSL6NmEYmR3m4MMkxtgQlXOZ35iXBMwQbDpkLk+R0XEJk/fRb82G/gADAUOKWsNJZV07gBEvYGopQt04Oepx5L9ejVPADSe+ng4ji2xJbihZd3ulLgOrHIECJ4JAQvSGo6/grGs++wMEVKip1U2F8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760109070; c=relaxed/simple;
-	bh=OufjMV7n9C333+rJytXkSYUZuipa6ORADmGGGWWRiLI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WAJKb+802ZQ3ToE/qJDLnun0B55/eMJXFMDJjODBJrtzmnUdCUFVBCLtw7wASQf4erSxKyCRuZXXj/+i8yu43B3LCZwUMaPGBplVjUjrQDUmWB/Q5CIx4/hEbvu54TbQ7Hdpd1xSxASW9ijao5/yFge+kdQUHUTuSwYD7XUsOGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Jaqr4IG6; arc=none smtp.client-ip=91.218.175.172
+	s=arc-20240116; t=1760110107; c=relaxed/simple;
+	bh=YiIOv1FrYRHAOigDer5NhDZfgGWnuEe3aZ1JEt1bh68=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pKdamC5z6Y2LaABsy7sqI/bYryC+4ca8A8uKb2DueAGgahNeAI5dIF3BeBgsmSFfjJlpGJzYOaXBAtJs0bPd4/iuD1Oeh+ZldoJgMr08QRvwQ33kvEImt9ZubMER8BC2OI3d68GcgrZd4D9DgG47QR9YeymYCDeW961vRWEgTJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MJ8CHehq; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+Message-ID: <cb3b5d30-d232-4eb8-af31-2a1518ed8966@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1760109065;
+	t=1760110093;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=n2WIDIQGrfvJR6KEY/O1u4w6eW9kKtDSQxyS2Lc5ggQ=;
-	b=Jaqr4IG6pufJjrp/2SyboMGXVzdlJIKgiojREsycVdzBLeXyNSDAZEbCE7CBcRt3kjJjcO
-	naj4rdtWA+AqtJUJa0RXpya/lGbE9t7Uj3rnmRjJDge8Qm7rwFY9QHan5cTzq8ANMF7bfP
-	7GBuN2LgteddFPnQLus/W1qf0qerFm8=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Leon Hwang <hffilwlqm@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
- Menglong Dong <menglong8.dong@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, jiang.biao@linux.dev
-Subject:
- Re: bpf_errno. Was: [PATCH RFC bpf-next 1/3] bpf: report probe fault to BPF
- stderr
-Date: Fri, 10 Oct 2025 23:10:56 +0800
-Message-ID: <1983718.CQOukoFCf9@7950hx>
-In-Reply-To: <3349652.5fSG56mABF@7950hx>
-References:
- <20250927061210.194502-1-menglong.dong@linux.dev>
- <CAP01T77agpqQWY7zaPt9kb6+EmbUucGkgJ_wEwkPFpFNfxweBg@mail.gmail.com>
- <3349652.5fSG56mABF@7950hx>
+	bh=r8gKcoOaYYdHXMbG9Fq/8pPdJ3EoFkEGz2jidWyUbww=;
+	b=MJ8CHehqhqPZ/TlpiHIHzCAq5xmszw+OLW1wu7/qt2FN4p/jZZfC3vJcQFqVridBTRFT9G
+	LkmgnIoLYoJDby9NyK4FQNGPVG7SleY6sojFdC1QosRG1ZfPYnh9iqcHQagzjdIqbtvmNr
+	zY1m1N7w5oI2SBSCyWK5XYj/07UDnl0=
+Date: Fri, 10 Oct 2025 08:28:04 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [PATCH v2] bpf: test_run: Use migrate_enable()/disable()
+ universally
+Content-Language: en-GB
+To: Sahil Chandna <chandna.linuxkernel@gmail.com>, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, john.fastabend@gmail.com, haoluo@google.com,
+ jolsa@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc: david.hunter.linux@gmail.com, skhan@linuxfoundation.org,
+ khalid@kernel.org, syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
+References: <20251010075923.408195-1-chandna.linuxkernel@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20251010075923.408195-1-chandna.linuxkernel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On 2025/10/10 20:05, Menglong Dong wrote:
-> On 2025/10/9 04:08, Kumar Kartikeya Dwivedi wrote:
-> > On Wed, 8 Oct 2025 at 21:34, Eduard Zingerman <eddyz87@gmail.com> wrote:
-> > >
-> > > On Wed, 2025-10-08 at 19:08 +0200, Kumar Kartikeya Dwivedi wrote:
-> > > > On Wed, 8 Oct 2025 at 18:27, Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Wed, Oct 8, 2025 at 7:41=E2=80=AFAM Leon Hwang <hffilwlqm@gmai=
-l.com> wrote:
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > > On 2025/10/7 14:14, Menglong Dong wrote:
-> > > > > > > On 2025/10/2 10:03, Alexei Starovoitov wrote:
-> > > > > > > > On Fri, Sep 26, 2025 at 11:12=E2=80=AFPM Menglong Dong <men=
-glong8.dong@gmail.com> wrote:
-> > > > > > > > >
-> > > > > > > > > Introduce the function bpf_prog_report_probe_violation(),=
- which is used
-> > > > > > > > > to report the memory probe fault to the user by the BPF s=
-tderr.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Menglong Dong <menglong.dong@linux.dev>
-> > > > > >
-> > > > > > [...]
-> > > > > >
-> [......]
-> > > >
-> > > > Yeah, agreed that this would be useful, particularly in this case. =
-I'm
-> > > > wondering how we'll end up implementing this.
-> > > > Sounds like it needs to be tied to the program's invocation, so it
-> > > > cannot be per-cpu per-program, since they nest. Most likely should =
-be
-> > > > backed by run_ctx, but that is unavailable in all program types. Ne=
-xt
-> > > > best thing that comes to mind is reserving some space in the stack
-> > > > frame at a known offset in each subprog that invokes this helper, a=
-nd
-> > > > use that to signal (by finding the program's bp and writing to the
-> > > > stack), the downside being it likely becomes yet-another arch-speci=
-fic
-> > > > thing. Any other better ideas?
-> > >
-> > > Another option is to lower probe_read to a BPF_PROBE_MEM instruction
-> > > and generate a special kind of exception handler, that would set r0 to
-> > > -EFAULT. (We don't do this already, right? Don't see anything like th=
-at
-> > > in verifier.c or x86/../bpf_jit_comp.c).
-> > >
-> > > This would avoid any user-visible changes and address performance
-> > > concern. Not so convenient for a chain of dereferences a->b->c->d,
-> > > though.
-> >=20
-> > Since we're piling on ideas, one of the other things that I think
-> > could be useful in general (and maybe should be done orthogonally to
-> > bpf_errno)
-> > is making some empty nop function and making it not traceable reliably
-> > across arches and invoke it in the bpf exception handler.
-> > Then if we expose prog_stream_dump_stack() as a kfunc (should be
-> > trivial), the user can write anything to stderr that is relevant to
-> > get more information on the fault.
->=20
-> Thanks for all the ideas! So we have following approaches
-> on this problem:
->=20
-> may_goto(Kumar)
-> --------------------------
-> Hmm......I haven't figure how this work on this problem yet.
->=20
-> "may_goto" is a condition break, does it mean that we introduce
-> a "condition_fault"? Will it need the supporting of the compiler?
->=20
-> I'm not sure if this is the right understanding: save the fault
-> type(PROBE_FAULT, AREA_READ_FAULT, AREA_WRITE_FAULT) to
-> the stack or the run_ctx, and the "if (condition_fault)" will be
-> replace with "if (__stack or run_ctx)".
->=20
-> save errno to r0(Eduard)
-> -----------------------------------
-> Save the errno to r0 in the exception handler of BPF_PROBE_MEM,
-> and read r0 with a __kfun in BPF program. (Not sure if I understand
-> it correctly).
->=20
-> This sounds effective, but won't this break the usage of r0? I mean,
-> the r0 can be used by the BPF program somewhere.
-
-I think I'm a little understand it:
-
-int a, *b;
-
-b =3D xxx;
-a =3D *b; // insert "r0 =3D 0" before this insn in verifier
-             // if fault happen, r0 will become -EFAULT
-if (bpf_probe_fault()) // change it to if (r0) in verifier
-   return;
-
-Am I right?
-
-Thanks!
-Menglong Dong
-
->=20
-> trace error event(Kumar)
-> ------------------------------------
-> Call a empty and traceable function in the exception handler.
->=20
-> This maybe the simplest way, and I think the only shortcoming
-> is that there may be some noise, as the the BPF program can
-> receive the fault event from other BPF users.
->=20
-> And maybe it's better to pass the bpf prog to the arguments of
-> the empty function, therefore users can do some filter. Or, we
-> can introduce a tracepoint for this propose.
->=20
-> And I think this is the similar way that Leon suggested later.
->=20
-> bpf errno(Leon)
-> ----------------------
-> introduce a percpu variable, save the -EFAULT to it in the
-> exception handler. Introduce the __kfunc to read, set and
-> clear the errno.
->=20
-> output the error information directly to STDERR(Menglong)
-> -------------------------------------------------------------------------=
-=2D------------
-> As it described.
->=20
-> Ah......it seems we have many approaches here, and most
-> of them work. Do we have any ideas on these ideas?
->=20
-> Thanks!
-> Menglong Dong
->=20
-> >=20
-> > It is then up to the user to decide the rate of messages for such
-> > faults etc. and get more information if needed.
-> >=20
->=20
->=20
->=20
->=20
->=20
->=20
 
 
+On 10/10/25 12:59 AM, Sahil Chandna wrote:
+> The timer context can safely use migrate_disable()/migrate_enable()
+> universally instead of conditional preemption or migration disabling.
+> Previously, the timer was initialized in NO_PREEMPT mode by default,
+> which disabled preemption and forced execution in atomic context.
+> This caused issues on PREEMPT_RT configurations when invoking
+> spin_lock_bh() — a sleeping lock — leading to the following warning:
+>
+> BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
+> in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 6107, name: syz.0.17
+> preempt_count: 1, expected: 0
+> RCU nest depth: 1, expected: 1
+> Preemption disabled at:
+> [<ffffffff891fce58>] bpf_test_timer_enter+0xf8/0x140 net/bpf/test_run.c:42
+>
+> Reported-by: syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=1f1fbecb9413cdbfbef8
+> Tested-by: syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
+> Signed-off-by: Sahil Chandna <chandna.linuxkernel@gmail.com>
+>
+> ---
+> Link to v1: https://lore.kernel.org/all/20251006054320.159321-1-chandna.linuxkernel@gmail.com/
+>
+> Changes since v1:
+> - Dropped `enum { NO_PREEMPT, NO_MIGRATE } mode` from `struct bpf_test_timer`.
+> - Removed all conditional preempt/migrate disable logic.
+> - Unified timer handling to use `migrate_disable()` / `migrate_enable()` universally.
+>
+> Testing:
+> - Reproduced syzbot bug locally using the provided reproducer.
+> - Observed `BUG: sleeping function called from invalid context` on v1.
+> - Confirmed bug disappears after applying this patch.
+> - Validated normal functionality of `bpf_prog_test_run_*` helpers with C
+>    reproducer.
+> ---
+>   net/bpf/test_run.c | 20 ++++++--------------
+>   1 file changed, 6 insertions(+), 14 deletions(-)
+>
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index dfb03ee0bb62..b23bc93e738e 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -29,7 +29,6 @@
+>   #include <trace/events/bpf_test_run.h>
+>   
+>   struct bpf_test_timer {
+> -	enum { NO_PREEMPT, NO_MIGRATE } mode;
+>   	u32 i;
+>   	u64 time_start, time_spent;
+>   };
+> @@ -38,10 +37,7 @@ static void bpf_test_timer_enter(struct bpf_test_timer *t)
+>   	__acquires(rcu)
+>   {
+>   	rcu_read_lock();
+> -	if (t->mode == NO_PREEMPT)
+> -		preempt_disable();
+> -	else
+> -		migrate_disable();
+> +	migrate_disable();
+>   
+>   	t->time_start = ktime_get_ns();
+>   }
+> @@ -50,11 +46,7 @@ static void bpf_test_timer_leave(struct bpf_test_timer *t)
+>   	__releases(rcu)
+>   {
+>   	t->time_start = 0;
+> -
+> -	if (t->mode == NO_PREEMPT)
+> -		preempt_enable();
+> -	else
+> -		migrate_enable();
+> +	migrate_enable();
+>   	rcu_read_unlock();
+>   }
+>   
+> @@ -374,7 +366,7 @@ static int bpf_test_run_xdp_live(struct bpf_prog *prog, struct xdp_buff *ctx,
+>   
+>   {
+>   	struct xdp_test_data xdp = { .batch_size = batch_size };
+> -	struct bpf_test_timer t = { .mode = NO_MIGRATE };
+> +	struct bpf_test_timer t;
 
+We still need to initialize 'struct bpf_test_timer t' with t.time_spent = 0 like
+	struct bpf_test_timer t = {};
+since time_spent is used like
+         t->time_spent += ktime_get_ns() - t->time_start;
+
+
+>   	int ret;
+>   
+>   	if (!repeat)
+> @@ -404,7 +396,7 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
+>   	struct bpf_prog_array_item item = {.prog = prog};
+>   	struct bpf_run_ctx *old_ctx;
+>   	struct bpf_cg_run_ctx run_ctx;
+> -	struct bpf_test_timer t = { NO_MIGRATE };
+> +	struct bpf_test_timer t;
+>   	enum bpf_cgroup_storage_type stype;
+>   	int ret;
+>   
+> @@ -1377,7 +1369,7 @@ int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
+>   				     const union bpf_attr *kattr,
+>   				     union bpf_attr __user *uattr)
+>   {
+> -	struct bpf_test_timer t = { NO_PREEMPT };
+> +	struct bpf_test_timer t;
+>   	u32 size = kattr->test.data_size_in;
+>   	struct bpf_flow_dissector ctx = {};
+>   	u32 repeat = kattr->test.repeat;
+> @@ -1445,7 +1437,7 @@ int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
+>   int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog, const union bpf_attr *kattr,
+>   				union bpf_attr __user *uattr)
+>   {
+> -	struct bpf_test_timer t = { NO_PREEMPT };
+> +	struct bpf_test_timer t;
+>   	struct bpf_prog_array *progs = NULL;
+>   	struct bpf_sk_lookup_kern ctx = {};
+>   	u32 repeat = kattr->test.repeat;
 
 
