@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-70756-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70757-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EB97BCE0A9
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 19:10:30 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAC46BCE0B2
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 19:10:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8D311A6605A
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 17:10:53 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EF10C4E5830
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 17:10:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BA28212550;
-	Fri, 10 Oct 2025 17:10:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D779F204F93;
+	Fri, 10 Oct 2025 17:10:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P5uqWnVt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vQovkJdY"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F58842049;
-	Fri, 10 Oct 2025 17:10:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9F8201278
+	for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 17:10:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760116219; cv=none; b=MY7pgXs6lXgjUciayNsqxPKKqWEEDkuTr1cQwlZV6ymnbM1mPxVPZJ13u8yU/5d3N0UhuGmwgcK6texwEe04rrb3Xy8eNS3k2a3TuKwF0fzokQ/vOsB4bXUCpf+I3lK3bdt8ccSQkCsiZFnuzheromSS8BxJOR4rNzr1bs/+uNo=
+	t=1760116230; cv=none; b=BtuLFZheJCQXoO+femkALGhtX1ekmDb4N6tLHyK2eOSU0qgX6esM1oRSAEmXGHmtGx0keIVmxre7BXdSJNew11j2WygEU7zBJjUzTWADzymXKHiWrnvnViHiF/r3o9Fg1O2MewoGOIXoThslN0VU8NRXannlis0rCXy+o1h7DhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760116219; c=relaxed/simple;
-	bh=7N5j4MPGCNhqbzofGJ6iM7pLlyWv4XqbzW+i8bDy0VQ=;
+	s=arc-20240116; t=1760116230; c=relaxed/simple;
+	bh=gKwl9XIeJ5X+AFfIwivGFUAXJEsZe8+/Pq8GglnjHlc=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=i8jPQog1WkRLuJszdVcQBjS0tDW/0BXQTtnZRun6/2AfSbrN46qvyR/ZAMrpRvdQP2S08/+JJwR59PLssT/oNw5Wqi+S33umbJQyJqDtj67OddGuACAq+v01zKJVpvnOrPzHZs8d/WTQAiSfTAhmMql2iGM2QRQg2/HSSvPnfuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P5uqWnVt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BDE3C4CEF1;
-	Fri, 10 Oct 2025 17:10:19 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=OTsj5LXCjszJZz5uoRO3XHnfEegk9DUvh3Qn7qqgImmAMWZwY2ian6hi6Rw7bICXqmtXrjQ3XFxMperJbDrtqjYZ+nwrcGarWCodBz2jkK2xCZZxCBK/afwCPZpmEaNPAg6l0krlHdMCvb8+NDHPnweAmhwWVhFTz+NriblRnV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vQovkJdY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 383B3C4CEF1;
+	Fri, 10 Oct 2025 17:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760116219;
-	bh=7N5j4MPGCNhqbzofGJ6iM7pLlyWv4XqbzW+i8bDy0VQ=;
+	s=k20201202; t=1760116230;
+	bh=gKwl9XIeJ5X+AFfIwivGFUAXJEsZe8+/Pq8GglnjHlc=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=P5uqWnVt2YhV8yR6U0oE6I66EmWmGnEXLDTvOWY0j5tCcUkTkDfu7mG2rqsZ122kF
-	 3Jx226etWzqawljDd+vzOKRd1EeGR2ADlKDMPq79+pFkNY1XYBcsK3O3956fMfTKVk
-	 OVufiCAtHpwzx4kzV3kKN5RDfgFr2bXEsUAwNmPWgKGr7mg75Eeqc9mDs6AAvZbV25
-	 rlQIv7SoG7FZymaien3CIl/W6GtUHH8pyOuAD6EPG5DO78bMTiBDB4wiuTJUFCCDea
-	 uDnu3f2dWpIK2GNFhIFj7RzHFhEgEa03rOY85lR//GR/IsNJ2gqLAWkW7Uw1fxb+47
-	 5Vrpsx/Heijvg==
+	b=vQovkJdYgZutdUsV7WgGqLoqARYRvl0/NHCRjNt/13MX4H1AClzEz2lQSelR4zxd4
+	 pjHgw427ifb2G5NZwtxOPsFlXzvcZLjcj3gWXzzQk6qgeYfaTXL6rpjh66cWjP+W3X
+	 IwW3lHvi+4/EA4lYbeUb5KEz57yhyb06ooHqNWLWYpBt1kxIue8MO85ShoUKJYBn3h
+	 1KdyoNsNEgjpukAupgC/wQoibO1pfcOmDjJjM76K4z0th+FQyAHx47Ksk34RFiF/yg
+	 B5WUlFNRsO3DI0BXFWLRI6jWGwXyFr9jXLXLJfSuE/hXePLCAbMVOZz76FEoz+U51N
+	 X0wEBLAdIm/Rw==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE1543809A00;
-	Fri, 10 Oct 2025 17:10:07 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAF9E3809A00;
+	Fri, 10 Oct 2025 17:10:18 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,45 +52,41 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] xsk: harden userspace-supplied &xdp_desc validation
+Subject: Re: [PATCH bpf-next v2 0/3] Fix sleepable context tracking for async
+ callbacks
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176011620657.1050631.4250868223272428117.git-patchwork-notify@kernel.org>
-Date: Fri, 10 Oct 2025 17:10:06 +0000
-References: <20251008165659.4141318-1-aleksander.lobakin@intel.com>
-In-Reply-To: <20251008165659.4141318-1-aleksander.lobakin@intel.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, sdf@fomichev.me,
- ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, kees@kernel.org,
- nxne.cnse.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org,
- netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
- stable@vger.kernel.org, linux-kernel@vger.kernel.org
+ <176011621774.1050631.14348659219233302229.git-patchwork-notify@kernel.org>
+Date: Fri, 10 Oct 2025 17:10:17 +0000
+References: <20251007220349.3852807-1-memxor@gmail.com>
+In-Reply-To: <20251007220349.3852807-1-memxor@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com, kkd@meta.com,
+ kernel-team@meta.com
 
 Hello:
 
-This patch was applied to bpf/bpf.git (master)
+This series was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Wed,  8 Oct 2025 18:56:59 +0200 you wrote:
-> Turned out certain clearly invalid values passed in &xdp_desc from
-> userspace can pass xp_{,un}aligned_validate_desc() and then lead
-> to UBs or just invalid frames to be queued for xmit.
-> 
-> desc->len close to ``U32_MAX`` with a non-zero pool->tx_metadata_len
-> can cause positive integer overflow and wraparound, the same way low
-> enough desc->addr with a non-zero pool->tx_metadata_len can cause
-> negative integer overflow. Both scenarios can then pass the
-> validation successfully.
-> This doesn't happen with valid XSk applications, but can be used
-> to perform attacks.
+On Tue,  7 Oct 2025 22:03:46 +0000 you wrote:
+> Currently, asynchronous execution primitives set up their callback
+> execution simulation using push_async_cb, which will end up inheriting
+> the sleepable or non-sleepable bit from the program triggering the
+> simulation of the callback. This is incorrect, as the actual execution
+> context of the asynchronous callback has nothing to do with the program
+> arming its execution.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf] xsk: harden userspace-supplied &xdp_desc validation
-    https://git.kernel.org/bpf/bpf/c/07ca98f906a4
+  - [bpf-next,v2,1/3] bpf: Fix sleepable context for async callbacks
+    https://git.kernel.org/bpf/bpf-next/c/469d638d1520
+  - [bpf-next,v2,2/3] bpf: Refactor storage_get_func_atomic to generic non_sleepable flag
+    https://git.kernel.org/bpf/bpf-next/c/f233d4855918
+  - [bpf-next,v2,3/3] selftests/bpf: Add tests for async cb context
+    https://git.kernel.org/bpf/bpf-next/c/5b1b5d380ac7
 
 You are awesome, thank you!
 -- 
