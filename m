@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-70757-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70758-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAC46BCE0B2
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 19:10:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23F2FBCE0B9
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 19:10:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EF10C4E5830
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 17:10:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BE933B7C02
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 17:10:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D779F204F93;
-	Fri, 10 Oct 2025 17:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72C04221546;
+	Fri, 10 Oct 2025 17:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vQovkJdY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j/ZLFkrk"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9F8201278
-	for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 17:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCAD820FA9C;
+	Fri, 10 Oct 2025 17:10:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760116230; cv=none; b=BtuLFZheJCQXoO+femkALGhtX1ekmDb4N6tLHyK2eOSU0qgX6esM1oRSAEmXGHmtGx0keIVmxre7BXdSJNew11j2WygEU7zBJjUzTWADzymXKHiWrnvnViHiF/r3o9Fg1O2MewoGOIXoThslN0VU8NRXannlis0rCXy+o1h7DhE=
+	t=1760116232; cv=none; b=Y7TzxsGwBNQ77Bk4wvUQ6tmsr0+LeHzljuYEnnD7P4U9AN0XeNBCYR9x45fw+ZW1dHQHjce2Z+m396342AsPA8VPpsrqfK4bME1+NF0k8II7uc/iQkYRkPKxlu0GgxoYKEPbgjVxbKuUgviP/DKIvO6ES0kegrWjiU7R5hC8IMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760116230; c=relaxed/simple;
-	bh=gKwl9XIeJ5X+AFfIwivGFUAXJEsZe8+/Pq8GglnjHlc=;
+	s=arc-20240116; t=1760116232; c=relaxed/simple;
+	bh=MTOUQJOaFYT9wm2KcVznCUdjNkH1CcP2WC4l4j/5iAU=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=OTsj5LXCjszJZz5uoRO3XHnfEegk9DUvh3Qn7qqgImmAMWZwY2ian6hi6Rw7bICXqmtXrjQ3XFxMperJbDrtqjYZ+nwrcGarWCodBz2jkK2xCZZxCBK/afwCPZpmEaNPAg6l0krlHdMCvb8+NDHPnweAmhwWVhFTz+NriblRnV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vQovkJdY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 383B3C4CEF1;
-	Fri, 10 Oct 2025 17:10:30 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=B/fG7GdQvCddoQEdRJBp69sW7kLwxXZEcSlFwmRkUG1tqbTl9Qf5s9gdgHlY2AVYVgCtxPbp2iYNaRj07rMa3zMKFafgnNW+Q/8o/4eFqnc0rpzaI2cpNZI+InQsSNSeXaea2iE2JY5AGPFG7iehOfDcU9YZk9B+j71sVJVjNEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j/ZLFkrk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB6DAC4CEF1;
+	Fri, 10 Oct 2025 17:10:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760116230;
-	bh=gKwl9XIeJ5X+AFfIwivGFUAXJEsZe8+/Pq8GglnjHlc=;
+	s=k20201202; t=1760116231;
+	bh=MTOUQJOaFYT9wm2KcVznCUdjNkH1CcP2WC4l4j/5iAU=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=vQovkJdYgZutdUsV7WgGqLoqARYRvl0/NHCRjNt/13MX4H1AClzEz2lQSelR4zxd4
-	 pjHgw427ifb2G5NZwtxOPsFlXzvcZLjcj3gWXzzQk6qgeYfaTXL6rpjh66cWjP+W3X
-	 IwW3lHvi+4/EA4lYbeUb5KEz57yhyb06ooHqNWLWYpBt1kxIue8MO85ShoUKJYBn3h
-	 1KdyoNsNEgjpukAupgC/wQoibO1pfcOmDjJjM76K4z0th+FQyAHx47Ksk34RFiF/yg
-	 B5WUlFNRsO3DI0BXFWLRI6jWGwXyFr9jXLXLJfSuE/hXePLCAbMVOZz76FEoz+U51N
-	 X0wEBLAdIm/Rw==
+	b=j/ZLFkrkyd1EZkqglwJS9yMmoWxN3tf1hF9Vl87PX83LRjHZLGmHd8hwqB+UcB1jX
+	 3bUpxjWp2YhRfR1xrJh2GYM/fV30QLYWb3fXYVO95g/O9ocXWlU6aNKisBQmvbcgGs
+	 UcxfNHEhDutLj7l4G0pfk/RPSZ04PjlEQLVLEHMlXLsMQgD5QOWGR9vsjyxFUBMkZW
+	 LJReCLWBffImiVEM6wQ1fknsi9QGf/1vUou7AEypdzXGPLYrl/f6nwy8+7SvvSUXyd
+	 90DbWC0bN/aApvznCDt9j/CbwafN4PUVBwNhgJkp7KUkX92IPFSuCJwNmbWnPp8RyL
+	 0ogRKpUmNDefw==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAF9E3809A00;
-	Fri, 10 Oct 2025 17:10:18 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 71C853809A00;
+	Fri, 10 Oct 2025 17:10:20 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,41 +52,44 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/3] Fix sleepable context tracking for async
- callbacks
+Subject: Re: [PATCH bpf-next v4 0/2] Add kfuncs bpf_strcasestr and
+ bpf_strncasestr
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176011621774.1050631.14348659219233302229.git-patchwork-notify@kernel.org>
-Date: Fri, 10 Oct 2025 17:10:17 +0000
-References: <20251007220349.3852807-1-memxor@gmail.com>
-In-Reply-To: <20251007220349.3852807-1-memxor@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com, kkd@meta.com,
- kernel-team@meta.com
+ <176011621899.1050631.5241409064469976369.git-patchwork-notify@kernel.org>
+Date: Fri, 10 Oct 2025 17:10:18 +0000
+References: <tencent_98ABC9680EA2A20198904316DAE5A84AD906@qq.com>
+In-Reply-To: <tencent_98ABC9680EA2A20198904316DAE5A84AD906@qq.com>
+To: Rong Tao <rtoax@foxmail.com>
+Cc: vmalik@redhat.com, ast@kernel.org, eddyz87@gmail.com, rongtao@cestc.cn,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ shuah@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
 
 Hello:
 
 This series was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Tue,  7 Oct 2025 22:03:46 +0000 you wrote:
-> Currently, asynchronous execution primitives set up their callback
-> execution simulation using push_async_cb, which will end up inheriting
-> the sleepable or non-sleepable bit from the program triggering the
-> simulation of the callback. This is incorrect, as the actual execution
-> context of the asynchronous callback has nothing to do with the program
-> arming its execution.
+On Thu,  9 Oct 2025 09:20:14 +0800 you wrote:
+> From: Rong Tao <rongtao@cestc.cn>
+> 
+> Add kfuncs bpf_strcasestr and bpf_strncasestr, which are extensions of
+> bpf_strstr and bpf_strnstr, suitable for more scenarios.
+> 
+> Rong Tao (2):
+>   bpf: add bpf_strcasestr,bpf_strncasestr kfuncs
+>   selftests/bpf: Test bpf_strcasestr,bpf_strncasestr kfuncs
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v2,1/3] bpf: Fix sleepable context for async callbacks
-    https://git.kernel.org/bpf/bpf-next/c/469d638d1520
-  - [bpf-next,v2,2/3] bpf: Refactor storage_get_func_atomic to generic non_sleepable flag
-    https://git.kernel.org/bpf/bpf-next/c/f233d4855918
-  - [bpf-next,v2,3/3] selftests/bpf: Add tests for async cb context
-    https://git.kernel.org/bpf/bpf-next/c/5b1b5d380ac7
+  - [bpf-next,v4,1/2] bpf: add bpf_strcasestr,bpf_strncasestr kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/b5b693f73589
+  - [bpf-next,v4,2/2] selftests/bpf: Test bpf_strcasestr,bpf_strncasestr kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/eca0b643efc9
 
 You are awesome, thank you!
 -- 
