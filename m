@@ -1,268 +1,310 @@
-Return-Path: <bpf+bounces-70719-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70720-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F8C1BCBD18
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 08:51:54 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC43BCBDBA
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 09:07:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15D4019E4FC3
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 06:52:14 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6856334F5B0
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 07:07:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05D3271450;
-	Fri, 10 Oct 2025 06:51:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pgc0SajS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3C3246BD7;
+	Fri, 10 Oct 2025 07:07:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D99572AD16
-	for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 06:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8ABDB67E;
+	Fri, 10 Oct 2025 07:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760079100; cv=none; b=awryNPYYqtmONJFdk4QsSZ0TIKMfXnYePGN9baRW7SNJ3WcqRFt53I3RBo6KUWXOA96f8xeIZ2RAodb0f7jG9LRj9EycejRugE3EU5PoD7FFqCBqGvSyeUccCQMcv6jDI/4BGRi/F8P/l8ACEnGv4aPFOLUoC1oicfLJHODWapM=
+	t=1760080068; cv=none; b=FBpGu5+ui4K5puTK+HHXYs8l9zyexzRvpHrU5KCxVRofkzJH8QFPN111XYUBpXggueWB4dXylGQ7OrlkRDI57sKtJhI7rb0w9zMGoffogXsFphTri6T9BHi/jnf0lSWaLb/bHcY6YyNyGtJ2OeoHr99UJcZHdC6iAZ1m386c3NU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760079100; c=relaxed/simple;
-	bh=JO89qedHC2MDzQioik5FsYyMVGDN4miABxDc+zrHX0Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bI6r9EnSlF7y7sB+XwtkTOwN/dSJNBKDpsgYQcgV2nhlv0nETrKGyvOrEyLBn/r996Jb0GMbDykpq3jYIjLd5Gm3ma4n8mq3qGjlaTUchSuB81CLUNuljWzI+oyoxwGRQEByABfCzC9FWlCXEq66WF6i6seeElNedbVmtRPDBo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pgc0SajS; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-92c781fd73aso167865739f.1
-        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 23:51:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760079097; x=1760683897; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yg0e0l77VG71toCseTjv4ZWJcNOrsHbf0eyR2Vr6uWs=;
-        b=Pgc0SajS1Ybg2z6ik8kF0tAmXPhN1FnxZFTw5bc7cZ+nbSFWR8yturj4Weeo9aRqLY
-         ihNdsPN+jdOzCD6QQKHC7tnvQXqPsjOEq4TGtB8zNZzuSlUtxO5cnqVfSTUJtL3v/zcD
-         J+VaWO+tyKzMZdSMasxcgIUaYPIWa6vI8ZUNMa76ZE1EDoL5RVlfdPfnn3T17DWjXm3Z
-         ks687f9vxNO0Td82+b+yOOGTGY50n1+9H/KQ8D6U75lRLN53DkCW2Cx3HMv3I+hbLu04
-         AiGbG16s8QPa5iZZqFbFriwOs0Pd9uKuu5dZLFZ9Od4wq0cg120qDo/eCehHZ1j3niln
-         4/Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760079097; x=1760683897;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yg0e0l77VG71toCseTjv4ZWJcNOrsHbf0eyR2Vr6uWs=;
-        b=aNAH/Wbb+1sQd67u9gVrmFZbnvHHL4Qhmo3TJebJDdAi8TsXayf6A1jeGGpaqn6Vb/
-         QyuGEbNk2HQH00ZenVYHiSLmpALlblJeobcgG0ZOYdgIooCmteoUwfKLq3gQ5XktkvsN
-         SNowGJgJ5S9irC07bGvRu1dDobOdFgrinV5xxO7Xk7MMuvfEHT3YBLinU+Symgagqkhm
-         qCRtzt7IkkOAp4pLfBdqZVyLfqsxUSfiDsFH3qyWdIT8/OP6qjQAV4zpDZkwWya24hc5
-         L/ZxkjEvU5BwzTFNkcg4Fc6bLOPJ9cGuDdRSS3wcUR8HGBu1gdMDwXyGb5BM+Sx+a4Zo
-         erCg==
-X-Forwarded-Encrypted: i=1; AJvYcCVlS8+uhXxjNRADIMyqjAu/ztMmlnjztqQd+0rGuQO0RydHbKTgCGjqjo5NpdibmRk6O/g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyalXg5WFVDvclmtCy0ym27PRp89M2OyHl0Z2gO0fKQKZEQBvyo
-	/jkIokzycsWHuScRTzFyF5m6GYxJnpFs7rx4qww5TAEw7uEsUe8iL45hc+NH97S1HpF2Q9kolhz
-	69hSBhyECA081S9Xu4QUyyTGtfXxNjp0=
-X-Gm-Gg: ASbGncvVVfADD4aw2l17P0zMPGpyE2zHfmgacTkj7bi1pXyHuQh4X1XEBa1vxrGdktU
-	+iVMRq4/zd5feFIiifyFYH2znl/FuCJxkqWj2+c0/qR1ArYvkeB2UIDK/4dfzxsu2fpPP4DGblE
-	5ejgrnDNE/q2qxsApyDEIKWHqNYpq+JedeWV3x8LAibK2NPzZjWzg7V140Rn/6uRCKUMErTS4z8
-	mo7RVK+lnJtUNHZbnCwpXKtsA==
-X-Google-Smtp-Source: AGHT+IEe8F2GZmi5p86X92Kgz6J3805Z1eNiHbQlhbqzs7s2OMXo54wa5LJlt3BYavvWRhltuJ3GA7pYmIhnRcbz9Fk=
-X-Received: by 2002:a05:6e02:471c:b0:42f:91aa:50df with SMTP id
- e9e14a558f8ab-42f91aa5224mr58051315ab.30.1760079096925; Thu, 09 Oct 2025
- 23:51:36 -0700 (PDT)
+	s=arc-20240116; t=1760080068; c=relaxed/simple;
+	bh=3B12KGGhAlOd0GlihLhSw6KP5qCwjnEKbJg6kEXHEZ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iNNgQtuYeB1h6LVybSJfT72Rf5AUcafGm3+bnSyu3NZkE0JW2u1qSOI19N5plKf66VHvSd14+OPn8fGb7GAOX6GhBttZXYlIFbDsRdDRUPN1k42jA1wUxwrlKdzG3YTArLVjb4yH4dp55UypakOwvUsce0zoMeLh1ZbbBJ5y1t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cjd8x15PMzKHMZd;
+	Fri, 10 Oct 2025 15:07:13 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 1FCAB1A084E;
+	Fri, 10 Oct 2025 15:07:43 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP3 (Coremail) with SMTP id _Ch0CgD33Du9sOhosTB7CQ--.60335S2;
+	Fri, 10 Oct 2025 15:07:43 +0800 (CST)
+Message-ID: <c1829ab5-2c33-4445-911e-9e72bbbfe079@huaweicloud.com>
+Date: Fri, 10 Oct 2025 15:07:41 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251008165659.4141318-1-aleksander.lobakin@intel.com> <aOfGZvSxC8X2h8Zb@boxer>
-In-Reply-To: <aOfGZvSxC8X2h8Zb@boxer>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Fri, 10 Oct 2025 14:51:00 +0800
-X-Gm-Features: AS18NWDlKhy58lp8knSTyrYulXCXM8f_V3QUHqfkuv613BZKEyP79qxM1IO6OTw
-Message-ID: <CAL+tcoDJ3fCtgtrxwUnkgCPXkg9Zy6MKw-tNCuVEW2V1-yjvNw@mail.gmail.com>
-Subject: Re: [PATCH bpf] xsk: harden userspace-supplied &xdp_desc validation
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, 
-	Magnus Karlsson <magnus.karlsson@intel.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Kees Cook <kees@kernel.org>, nxne.cnse.osdt.itp.upstreaming@intel.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: Add overwrite mode for bpf ring
+ buffer
+Content-Language: en-US
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>, Song Liu <song@kernel.org>
+References: <20250905150641.2078838-1-xukuohai@huaweicloud.com>
+ <20250905150641.2078838-2-xukuohai@huaweicloud.com>
+ <CAEf4BzaSEjQzF47BZeh0de9pFbKpaB8JqCs629hV9xZDhMyTgw@mail.gmail.com>
+ <63272c95-9669-41c1-8e77-575ec37d36c0@huaweicloud.com>
+ <CAEf4BzbYtaPf0jjoiv16iKWRKkv9ZTH_hBiZMUF+PkjVGOC53A@mail.gmail.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <CAEf4BzbYtaPf0jjoiv16iKWRKkv9ZTH_hBiZMUF+PkjVGOC53A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_Ch0CgD33Du9sOhosTB7CQ--.60335S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xw18tF1fWFW8Aw4xCr1xKrg_yoW3KryUpF
+	WjkayfCrs7JwnxWFyvva18ArW2vr1Iv3W8XFyftFy7Zwn5W3ZIqryUC3yYk345G34kA3WI
+	vw18Ar9xCr15JrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On Thu, Oct 9, 2025 at 10:28=E2=80=AFPM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> On Wed, Oct 08, 2025 at 06:56:59PM +0200, Alexander Lobakin wrote:
-> > Turned out certain clearly invalid values passed in &xdp_desc from
-> > userspace can pass xp_{,un}aligned_validate_desc() and then lead
-> > to UBs or just invalid frames to be queued for xmit.
-> >
-> > desc->len close to ``U32_MAX`` with a non-zero pool->tx_metadata_len
-> > can cause positive integer overflow and wraparound, the same way low
-> > enough desc->addr with a non-zero pool->tx_metadata_len can cause
-> > negative integer overflow. Both scenarios can then pass the
-> > validation successfully.
->
-> Hmm, when underflow happens the addr would be enormous, passing
-> existing validation would really be rare. However let us fix it while at
-> it.
->
-> > This doesn't happen with valid XSk applications, but can be used
-> > to perform attacks.
-> >
-> > Always promote desc->len to ``u64`` first to exclude positive
-> > overflows of it. Use explicit check_{add,sub}_overflow() when
-> > validating desc->addr (which is ``u64`` already).
-> >
-> > bloat-o-meter reports a little growth of the code size:
-> >
-> > add/remove: 0/0 grow/shrink: 2/1 up/down: 60/-16 (44)
-> > Function                                     old     new   delta
-> > xskq_cons_peek_desc                          299     330     +31
-> > xsk_tx_peek_release_desc_batch               973    1002     +29
-> > xsk_generic_xmit                            3148    3132     -16
-> >
-> > but hopefully this doesn't hurt the performance much.
->
-> Let us be fully transparent and link the previous discussion here?
->
-> I was commenting that breaking up single statement to multiple branches
-> might affect subtly performance as this code is executed per each
-> descriptor. Jason tested copy+aligned mode, let us see if zc+unaligned
-> mode is affected.
->
-> <rant>
-> I am also thinking about test side, but xsk tx metadata came with a
-> separate test (xdp_hw_metadata), which was rather about testing positive
-> cases. That is probably a separate discussion, but metadata negative
-> tests should appear somewhere, I suppose xskxceiver would be a good fit,
-> but then, should we merge the existing logic from xdp_hw_metadata?
-> </rant>
->
-> >
-> > Fixes: 341ac980eab9 ("xsk: Support tx_metadata_len")
-> > Cc: stable@vger.kernel.org # 6.8+
-> > Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> > ---
-> >  net/xdp/xsk_queue.h | 45 +++++++++++++++++++++++++++++++++++----------
-> >  1 file changed, 35 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> > index f16f390370dc..1eb8d9f8b104 100644
-> > --- a/net/xdp/xsk_queue.h
-> > +++ b/net/xdp/xsk_queue.h
-> > @@ -143,14 +143,24 @@ static inline bool xp_unused_options_set(u32 opti=
-ons)
-> >  static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool=
-,
-> >                                           struct xdp_desc *desc)
-> >  {
-> > -     u64 addr =3D desc->addr - pool->tx_metadata_len;
-> > -     u64 len =3D desc->len + pool->tx_metadata_len;
-> > -     u64 offset =3D addr & (pool->chunk_size - 1);
-> > +     u64 len =3D desc->len;
-> > +     u64 addr, offset;
-> >
-> > -     if (!desc->len)
-> > +     if (!len)
->
-> This is yet another thing being fixed here as for non-zero tx_metadata_le=
-n
-> we were allowing 0 length descriptors... :< overall feels like we relied
-> too much on contract with userspace WRT descriptor layout.
->
-> If zc perf is fine, then:
+On 10/7/2025 6:10 AM, Andrii Nakryiko wrote:
 
-Testing on IXGBE that can reach 10Gb/sec line rate, I didn't see any
-impact either. This time I used -u to cover the unaligned case.
+[...]
 
-What I did was just like below:
-# sysctl -w vm.nr_hugepages=3D1024
-# taskset -c 1 ./xdpsock -i eth1 -t -z -u -s 64
-
-Thanks,
-Jason
-
-> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+>>>> +
+>>>> +       over_pos = READ_ONCE(rb->overwrite_pos);
+>>>> +       return min(prod_pos - max(cons_pos, over_pos), rb->mask + 1);
+>>>
+>>> I'm trying to understand why you need to min with `rb->mask + 1`, can
+>>> you please elaborate?
+>>
+>>
+>> We need the min because rb->producer_pos and rb->overwrite_pos are read
+>> at different times. During this gap, a fast producer may wrap once or
+>> more, making over_pos larger than prod_pos.
+>>
+> 
+> what if you read overwrite_pos before reading producer_pos? Then it
+> can't be larger than producer_pos and available data would be
+> producer_pos - max(consumer_pos, overwrite_pos)? would that work?
 >
-> >               return false;
-> >
-> > -     if (offset + len > pool->chunk_size)
-> > +     /* Can overflow if desc->addr < pool->tx_metadata_len */
-> > +     if (check_sub_overflow(desc->addr, pool->tx_metadata_len, &addr))
-> > +             return false;
-> > +
-> > +     offset =3D addr & (pool->chunk_size - 1);
-> > +
-> > +     /*
-> > +      * Can't overflow: @offset is guaranteed to be < ``U32_MAX``
-> > +      * (pool->chunk_size is ``u32``), @len is guaranteed
-> > +      * to be <=3D ``U32_MAX``.
-> > +      */
-> > +     if (offset + len + pool->tx_metadata_len > pool->chunk_size)
-> >               return false;
-> >
-> >       if (addr >=3D pool->addrs_cnt)
-> > @@ -158,27 +168,42 @@ static inline bool xp_aligned_validate_desc(struc=
-t xsk_buff_pool *pool,
-> >
-> >       if (xp_unused_options_set(desc->options))
-> >               return false;
-> > +
-> >       return true;
-> >  }
-> >
-> >  static inline bool xp_unaligned_validate_desc(struct xsk_buff_pool *po=
-ol,
-> >                                             struct xdp_desc *desc)
-> >  {
-> > -     u64 addr =3D xp_unaligned_add_offset_to_addr(desc->addr) - pool->=
-tx_metadata_len;
-> > -     u64 len =3D desc->len + pool->tx_metadata_len;
-> > +     u64 len =3D desc->len;
-> > +     u64 addr, end;
-> >
-> > -     if (!desc->len)
-> > +     if (!len)
-> >               return false;
-> >
-> > +     /* Can't overflow: @len is guaranteed to be <=3D ``U32_MAX`` */
-> > +     len +=3D pool->tx_metadata_len;
-> >       if (len > pool->chunk_size)
-> >               return false;
-> >
-> > -     if (addr >=3D pool->addrs_cnt || addr + len > pool->addrs_cnt ||
-> > -         xp_desc_crosses_non_contig_pg(pool, addr, len))
-> > +     /* Can overflow if desc->addr is close to 0 */
-> > +     if (check_sub_overflow(xp_unaligned_add_offset_to_addr(desc->addr=
-),
-> > +                            pool->tx_metadata_len, &addr))
-> > +             return false;
-> > +
-> > +     if (addr >=3D pool->addrs_cnt)
-> > +             return false;
-> > +
-> > +     /* Can overflow if pool->addrs_cnt is high enough */
-> > +     if (check_add_overflow(addr, len, &end) || end > pool->addrs_cnt)
-> > +             return false;
-> > +
-> > +     if (xp_desc_crosses_non_contig_pg(pool, addr, len))
-> >               return false;
-> >
-> >       if (xp_unused_options_set(desc->options))
-> >               return false;
-> > +
-> >       return true;
-> >  }
-> >
-> > --
-> > 2.51.0
-> >
+
+No, it won’t work. Between reading overwrite_pos and producer_pos, producer
+on a different CPU may have already moved producer_pos forward by more than
+one ring buffer size, causing prod_pos - max(cons_pos, over_pos) to exceed
+the ring buffer size.
+
+> 
+>>> And also, at least for consistency, use smp_load_acquire() for overwrite_pos?
+>>>
+>>
+>> Using READ_ONCE here is to stay symmetric with __bpf_ringbuf_reserve(),
+>> where overwrite_pos is WRITE_ONCE first, followed by smp_store_release(producer_pos).
+>> So here we do smp_load_acquire(producer_pos) first, then READ_ONCE(overwrite_pos)
+>> to ensure a consistent view of the ring buffer.
+>>
+>> For consistency when reading consumer_pos and producer_pos, I’m fine with
+>> switching READ_ONCE to smp_load_acquire for overwrite_pos.
+>>
+> 
+> I'm not sure it matters much, but this function is called outside of
+> rb->spinlock, while __bpf_ringbuf_reserve() does hold a lock while
+> doing that WRITE_ONCE(). So it might not make any difference, but I
+> have mild preference for smp_load_acquire() here.
 >
+
+OK, I'll switch to smp_load_acquire.
+
+>>>>    }
+>>>>
+>>>>    static u32 ringbuf_total_data_sz(const struct bpf_ringbuf *rb)
+>>>> @@ -402,11 +419,43 @@ bpf_ringbuf_restore_from_rec(struct bpf_ringbuf_hdr *hdr)
+>>>>           return (void*)((addr & PAGE_MASK) - off);
+>>>>    }
+>>>>
+>>>> +
+> 
+> [...]
+> 
+>>>> +       /* In overwrite mode, move overwrite_pos to the next record to be
+>>>> +        * overwritten if the ring buffer is full
+>>>> +        */
+>>>
+>>> hm... here I think the important point is that we search for the next
+>>> record boundary until which we need to overwrite data such that it
+>>> fits newly reserved record. "next record to be overwritten" isn't that
+>>> important (we might never need to overwrite it). Important are those
+>>> aspects of a) staying on record boundary and b) consuming enough
+>>> records to reserve the new one.
+>>>
+>>> Can you please update the comment to mention the above points?
+>>>
+>>
+>> Sure, I'll update the comment to:
+>>
+>> In overwrite mode, advance overwrite_pos when the ring buffer is full.
+>> The key points are to stay on record boundaries and consume enough
+>> records to fit the new one.
+>>
+> 
+> ok
+> 
+> [...]
+> 
+>>
+>>>> +                          unsigned long rec_pos,
+>>>> +                          unsigned long cons_pos,
+>>>> +                          u32 len, u64 flags)
+>>>> +{
+>>>> +       unsigned long rec_end;
+>>>> +
+>>>> +       if (flags & BPF_RB_FORCE_WAKEUP)
+>>>> +               return true;
+>>>> +
+>>>> +       if (flags & BPF_RB_NO_WAKEUP)
+>>>> +               return false;
+>>>> +
+>>>> +       /* for non-overwrite mode, if consumer caught up and is waiting for
+>>>> +        * our record, notify about new data availability
+>>>> +        */
+>>>> +       if (likely(!rb->overwrite_mode))
+>>>> +               return cons_pos == rec_pos;
+>>>> +
+>>>> +       /* for overwrite mode, to give the consumer a chance to catch up
+>>>> +        * before being overwritten, wake up consumer every half a round
+>>>> +        * ahead.
+>>>> +        */
+>>>> +       rec_end = rec_pos + ringbuf_round_up_hdr_len(len);
+>>>> +
+>>>> +       cons_pos &= (rb->mask >> 1);
+>>>> +       rec_pos &= (rb->mask >> 1);
+>>>> +       rec_end &= (rb->mask >> 1);
+>>>> +
+>>>> +       if (cons_pos == rec_pos)
+>>>> +               return true;
+>>>> +
+>>>> +       if (rec_pos < cons_pos && cons_pos < rec_end)
+>>>> +               return true;
+>>>> +
+>>>> +       if (rec_end < rec_pos && (cons_pos > rec_pos || cons_pos < rec_end))
+>>>> +               return true;
+>>>> +
+>>>
+>>> hm... ok, let's discuss this. Why do we need to do some half-round
+>>> heuristic for overwrite mode? If a consumer is falling behind it
+>>> should be actively trying to catch up and they don't need notification
+>>> (that's the non-overwrite mode logic already).
+>>>
+>>> So there is more to this than a brief comment you left, can you please
+>>> elaborate?
+>>>
+>>
+>> The half-round wakeup was originally intended to work with libbpf in the
+>> v1 version. In that version, libbpf used a retry loop to safely copy data
+>> from the ring buffer that hadn’t been overwritten. By waking the consumer
+>> once every half round, there was always a period where the consumer and
+>> producer did not overlap, which helped reduce the number of retries.
+> 
+> I can't say I completely grok the logic here, but do you think we
+> should still keep this half-round wakeup? It looks like an arbitrary
+> heuristic, so I'd rather not have it.
+>
+
+Sure, since the related libbpf code is no longer present, I’ll remove this
+logic in the next version.
+
+>>
+>>> pw-bot: cr
+>>>
+>>>> +       return false;
+>>>> +}
+>>>> +
+>>>> +static __always_inline
+>>>
+>>> we didn't have always_inline before, any strong reason to add it now?
+>>>
+>>
+>> I just wanted to avoid introducing any performance regression. Before this
+>> patch, bpf_ringbuf_commit() was automatically inlined by the compiler, but
+>> after the patch it wasn’t, so I added always_inline explicitly to keep it
+>> inlined.
+> 
+> how big of a difference was it in benchmarks? It's generally frowned
+> upon using __always_inline without a good reason.
+>
+
+The difference is not noticeable on my arm64 test machine, but it is on my
+amd machine.
+
+Below is the benchmark data on AMD EPYC 9654, with and without always_inline
+attribute.
+
+- With always_inline
+
+Ringbuf, multi-producer contention
+==================================
+rb-libbpf nr_prod 1  13.070 ± 0.158M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 2  15.440 ± 0.017M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 3  7.860 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 4  6.444 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 8  3.788 ± 0.005M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 12 2.802 ± 0.007M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 16 2.560 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 20 2.227 ± 0.006M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 24 2.141 ± 0.007M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 28 1.960 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 32 1.913 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 36 1.854 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 40 1.818 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 44 1.779 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 48 1.758 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 52 1.812 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+
+- Without always_inline
+
+Ringbuf, multi-producer contention
+==================================
+rb-libbpf nr_prod 1  10.550 ± 0.032M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 2  14.661 ± 0.024M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 3  7.616 ± 0.002M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 4  6.476 ± 0.002M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 8  3.806 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 12 2.814 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 16 2.608 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 20 2.337 ± 0.005M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 24 2.270 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 28 1.977 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 32 1.921 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 36 1.862 ± 0.002M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 40 1.827 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 44 1.912 ± 0.002M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 48 1.860 ± 0.002M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 52 1.824 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+
+When nr_prod=1, the performance regression is significant, dropping from
+13.070 ± 0.158 M/s with always_inline to 10.550 ± 0.032 M/s without it.
+
+However, since the half-round wakeup logic will be removed in the next
+version, the changes to bpf_ringbuf_commit, including always_inline, will
+also be removed.
+
+> [...]
+
 
