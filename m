@@ -1,117 +1,140 @@
-Return-Path: <bpf+bounces-70741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB053BCD805
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 16:23:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85547BCD7F8
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 16:22:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7F1604FFA1D
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 14:20:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A23CD18891F3
+	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 14:23:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3834D2AD0D;
-	Fri, 10 Oct 2025 14:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E902F2617;
+	Fri, 10 Oct 2025 14:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mgcdt5nb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i0pDKvYp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B882F549F
-	for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 14:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C37146A66
+	for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 14:22:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760105963; cv=none; b=PI/aqg/+18NNAZotla424Z38VLt6uUHR84VWCgGGbnjhCfIHt7GjwSN/9j/o7aedvr0A3n95YDH+/uJ3HvfHS1d7hO54UeN92HsWsBz7laonNrPuc2WXytwdOX9Z0maM9M5LIoLptdxW40aSLE6TParrQ1E1bEtZChhrYz47H0k=
+	t=1760106154; cv=none; b=Y65fOdwOuRQzD7XFSeFMWBbmo4DR8JrKf8abSoWmMeWWT7PFGcnl3wiEMWCv+odb968iboJwK3o7XVzHrFBMvH7L8pp50snfhGPu1fpVCLRLlWwLjZivcT16k7VTZybnZK3SFyhoWPMjSvuSvfhIdb04wfyC7CiAhlw0A2GblVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760105963; c=relaxed/simple;
-	bh=FdLxE7Lm30nhyAzpTObSV2SsmYXiyE6njXvC6pEK/ss=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gdlu2RzPmoW4cGgmcSq50WzsQM8zMe5QzjM26lk5zJHTBIzChTUn/Az11lNzfd76b6c4WXBJrz1Bx/WuYx9l7alB/DjjmvUQ3snAj2tGTiG1IZ1sHOFI/yiJ7nTGKNmaoLsMj/Xl8GsJ0v9r16DkNZbDXKDMa9OR4qQNM2hNdPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mgcdt5nb; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-71d6051aeafso22134217b3.2
-        for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 07:19:21 -0700 (PDT)
+	s=arc-20240116; t=1760106154; c=relaxed/simple;
+	bh=7dndPtRevbITE9ffdTBKfJlBf/TdoDeFhl4O+Fj03Os=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CiY4zVTnD43Vh9LnOY62jL3/SlqC1uxICX4lv7OG2INd+so4l6MV7EnTGOp8etjkoy4MK/8hZnpou4E7I5jQQV4f1O9oQcM0lrz+fkq1oe1k2ucZJVPO9ag+V2M0Hf7C/+Fi5UEjTD2MQ6Gv9gRYtlw7ZuQYWA/F8FfTGUJgEwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i0pDKvYp; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-b631b435d59so1375799a12.0
+        for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 07:22:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1760105961; x=1760710761; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FdLxE7Lm30nhyAzpTObSV2SsmYXiyE6njXvC6pEK/ss=;
-        b=mgcdt5nbX1LLUaGdnUPLUImPENVMbDBZ/LIBH4nO6BbtnVPuj8xQF++g6WRLpevd9u
-         nQNz4U6c5mLeiUazjtzOJfUDLN6RBUPm2934+fnbqyxYCK640jwZ8YdS5ua/b1g5r+7G
-         iedrPck8PskE12I+Bpw1Yq/hP+b+KHWaxyjsmtlkvMJrGVu0ritCRfA+ESqZ4fE035XU
-         3U0JUz3LaPiJckH/vh7wDwrKh6V9uvmtAOHBe4Un+G0XQGcyeRSxd9VO+qb8HlElyAd1
-         CzOTaYPoVYmVJk1zb+4P5RVGJlztoex7DUOtgfOtcLnxs2SvImjz8upUTUMZh14y4Cfo
-         uYFw==
+        d=gmail.com; s=20230601; t=1760106152; x=1760710952; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9CuwuYd6rsM2ZdZipwD4GPWKHOfizRXrtv5NCir+9FI=;
+        b=i0pDKvYprOqKTUOvlTb0+Kwemaf4fSwtBs0seoQFE0Utg5Sr+RMW8UILA/0c3A98ji
+         9RNY51cIh+lXObvmkLfZC+62DbEOQudHH3I3jzbC8KlAK3cRYauXcUQJwUz/UY+HLSGG
+         cfjAWYUZ/ptTnnqO1stxYZq/fQzxSncXvVJkPS+WgeWpkeTFif7vkbrzjBYNnps3/x/Y
+         zahLYrbRNKe4zU6dUP9d1IfRGImscJ6QkWvi6zdUjKBZp2ftW3uZjkyjSObad42b8syh
+         JF8Av+bJcGJqs8/9LZQbbGeAgI6kdKS2WKtk3WY62/MqRJ1Tow3yv/MLHFGmD5SAEYeC
+         BI3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760105961; x=1760710761;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FdLxE7Lm30nhyAzpTObSV2SsmYXiyE6njXvC6pEK/ss=;
-        b=UCO80ODVi9pKM4kl+lHClGaerzTgVoJ7eHJnqxJKRYIxqz639Gc6C7TjBuBLTfIjwO
-         ueGbhhYltHMqSU9Wphin7D737DlKy6KnO4RsKqbrk0krj6Pk4zofoUVei8W+Sfe+2zQk
-         ku0qn6M88uPTCalf5cj/RHQzog3UcxMV0yjeoJ4kmqH7/ewRVfx+X9aiki7wzHPZcUhD
-         Ob28TTheFl1sjLl1p/F/0qVH8WkiCydFDMFOHPV/i/Ceenz0yoWOTxYHTZSvRa1wvvjX
-         n6Yv1Ichrkay/pudFmPsWg9YVcGZ6bYVcWhY3z22Bbtxl+8kizCExiDBl1RVQtlDqJsZ
-         aXDg==
-X-Forwarded-Encrypted: i=1; AJvYcCUrDdQCHRWZJVSzbzI5PDMKYlJoQMi/09xjkw24SkSCX9Glp62lxsqRIJ70sP/4vE0/uNU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3+PETVKQczp0ZCwoMEWLpjkYDuZEZ57FJIuJ9tksECG32Ms+C
-	L5CcWDgOppYaDXISa3ZouJsqKu9jNdCO+rAuGTdzZlVHvan/1Yo0J6Vlk2NW3RSmBaYaMFLzaZb
-	nHIubXU/jzNnyLja/KL9+BaXuN+3e554EN5XNZCQh
-X-Gm-Gg: ASbGncvYTd+FX8PeDETFSISmZXcsA8LQ4n2PIDNlfjF294KDDkbXNS4X1dBo1/jecaK
-	f/X2/BNZCdWyNGUWwkSeWsytHWEa4gj5JtXUbfV+WC2gBFCEcXKkT1d/rO68x2/ApB3h08EF3Nj
-	qYOeXZFUGMKLdp/k2ULGVKky0KHVR7DE61R3zxJxcIhmAQRameMDh11tHCJOCu1wA79wV2WasaD
-	OTBrXZ2YWPaiUbg/3MlMDKvQMcEXdBZu7S0ppqohtJf
-X-Google-Smtp-Source: AGHT+IH5jygwKiKj8iWh7NXNa5aupSDxyDfR+khBSnZcImv7vqxxqCrpmKSorFziFLH513QVJf/OcUBtXZUfZcpK4oU=
-X-Received: by 2002:a53:b6cd:0:b0:636:d4ab:a507 with SMTP id
- 956f58d0204a3-63ccb85e07emr8088258d50.16.1760105960542; Fri, 10 Oct 2025
- 07:19:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1760106152; x=1760710952;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9CuwuYd6rsM2ZdZipwD4GPWKHOfizRXrtv5NCir+9FI=;
+        b=lmnzW4mTkjgp0x1LdIeeo+mpwEqTQVB9XeboEZ1lEi2yzo+Nc0Q568sF4hfbou1KNj
+         DvOg6CyoAm5c1N16U3A1waUaj0vph4eULcoWNeFXP5crX4qxyQA8VEGR7uWikH8dKXq/
+         yboKcwg+mTQNm9HcrqqABvXxBD4X7Ha9q49GRJ1/AgJB1QISSLQ2yhibV8uEcnybrX6C
+         xTBPLp5Vd9wwXF1iwxl7W5oxb5jvzZUDP52wodkQ5maPjWkdPp1FuIWD1fAh42tyU9AE
+         u6SAUV3ZJj+Z1JoURJTbaBya9o7iY7CdVk2jKn+GVAzCLdu3lrKNGY7DYYJ4uAzZJ71B
+         I4Bw==
+X-Forwarded-Encrypted: i=1; AJvYcCU9/KqqmIwTblAhabLqW6Sl7nuvcP4PMruDfAvEojG5yAveE22uFzcATTb4B49sBysojYQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyPOLIinptEdbAq6hElMXfmO17zvJKCNt2RGtqyI2rgEPduURw8
+	wrC0NWFchlGd2g6OT6uwh6oWc8XCcMdCg1lLacRK8bsdE7uaqJzUVfa+
+X-Gm-Gg: ASbGncv6JM75bc35IhR1WFhp6HYARuvWl/dEsCpuMUjXX1hw2v/308Zbq3cNWq0b+zI
+	fdm2WBapOH5YehrJwl0yLbPGqhekkVHVzA56eOmmv7h//TizOZQDWXtblEiRqvSgB+R/zz6dNWq
+	ST2NUqrw0iCrVzVsNHOkmWrdu9wHz9E2P1AI++VeIM1biScMwrQsdpBlGfT7WOG9tJCwcs+aPk8
+	1pR+d+J/xLC5EP0AEEcYLS++rSL4QM/0l9HJuKCnM9o82qtgXIIEG1ughjXq3D1PLWrqtjEU74D
+	ueNo2JTh037iE3kurQB58jVA1FWOvZ2XqZzC9lmGOosG/QU2zFEkonAfNZhrYYXZTpKcRsUQEu/
+	cMzEglBYA8fKjDxYcUsT1oElfwQFXrNoMJ35o3twtz4NFGr9PGnCp6/99XdpQ063exQjiB1Z0wl
+	M=
+X-Google-Smtp-Source: AGHT+IH1+iBy8nFHwk58M7adbDk6CNfAFBIzVimB+kebnYyWU9N7MoWT9usmV/V05WE/d2nIHvMYkQ==
+X-Received: by 2002:a17:903:4b50:b0:246:a543:199 with SMTP id d9443c01a7336-2902741e471mr151973715ad.54.1760106152226;
+        Fri, 10 Oct 2025 07:22:32 -0700 (PDT)
+Received: from [172.20.10.4] ([117.20.154.54])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29034f8f9bbsm58596885ad.121.2025.10.10.07.22.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Oct 2025 07:22:31 -0700 (PDT)
+Message-ID: <5c68715e-d851-44cc-ba14-0886e515ef45@gmail.com>
+Date: Fri, 10 Oct 2025 22:22:18 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251007001120.2661442-1-kuniyu@google.com> <20251007001120.2661442-2-kuniyu@google.com>
-In-Reply-To: <20251007001120.2661442-2-kuniyu@google.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 10 Oct 2025 07:19:07 -0700
-X-Gm-Features: AS18NWANXiYqX9j9t6ZkUl82Zdn7j6m_ZQHBRWnadmG5JVnbTEP8rqhXa70_KeA
-Message-ID: <CANn89i+=V0Pr4B0C9NH4vLf4kRdQAhpT53UyVPEPxQavvZ6FCQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next/net 1/6] tcp: Save lock_sock() for memcg in inet_csk_accept().
-To: Kuniyuki Iwashima <kuniyu@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Mina Almasry <almasrymina@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Shakeel Butt <shakeel.butt@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: bpf_errno. Was: [PATCH RFC bpf-next 1/3] bpf: report probe fault
+ to BPF stderr
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+ Menglong Dong <menglong.dong@linux.dev>,
+ Menglong Dong <menglong8.dong@gmail.com>, Alexei Starovoitov
+ <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, jiang.biao@linux.dev
+References: <20250927061210.194502-1-menglong.dong@linux.dev>
+ <20250927061210.194502-2-menglong.dong@linux.dev>
+ <CAADnVQJAdAxEOWT6avzwq6ZrXhEdovhx3yibgA6T8wnMEnnAjg@mail.gmail.com>
+ <3571660.QJadu78ljV@7950hx> <7f28937c-121a-4ea8-b66a-9da3be8bccad@gmail.com>
+ <CAADnVQLxpUmjbsHeNizRMDkY1a4_gLD0VBFWS8QMYHzpYBs4EQ@mail.gmail.com>
+ <405caf71-315d-46a4-af35-c1fd53470b91@gmail.com>
+ <CAADnVQK8Rw19Z6ib0CfK0cMHUsYBuhEv8_464knZ4qFZ6Gfv2g@mail.gmail.com>
+Content-Language: en-US
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <CAADnVQK8Rw19Z6ib0CfK0cMHUsYBuhEv8_464knZ4qFZ6Gfv2g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Oct 6, 2025 at 5:11=E2=80=AFPM Kuniyuki Iwashima <kuniyu@google.com=
-> wrote:
->
-> If memcg is enabled, accept() acquires lock_sock() twice for each new
-> TCP/MPTCP socket in inet_csk_accept() and __inet_accept().
->
-> Let's move memcg operations from inet_csk_accept() to __inet_accept().
->
-> Note that SCTP somehow allocates a new socket by sk_alloc() in
-> sk->sk_prot->accept() and clones fields manually, instead of using
-> sk_clone_lock().
->
-> mem_cgroup_sk_alloc() is called for SCTP before __inet_accept(),
-> so I added the protocol check in __inet_accept(), but this can be
-> removed once SCTP uses sk_clone_lock().
->
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
-> Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+
+On 2025/10/9 22:45, Alexei Starovoitov wrote:
+> On Thu, Oct 9, 2025 at 7:15 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
+>>
+>>
+>> The verifier can rewrite 'bpf_reg_aux()' into the following instructions:
+>>
+>> dst_reg = BPF_REG_AUX;
+>> BPF_REG_AUX = 0; /* clear BPF_REG_AUX */
+>>
+>> As for the architecture-specific implementation, BPF_REG_AUX can be
+>> mapped to an appropriate register per arch — for example, r11 on x86_64.
+> 
+> it's taken. There are no free registers.
+
+Understood.
+
+It would certainly be beneficial if there were available registers on
+x86_64, as that would enable certain optimizations and improvements.
+
+In a similar direction, I have been exploring the idea of introducing a
+dedicated BPF_REG_TAIL_CALL register to unify the handling of
+tail_call_cnt in the verifier. This could help standardize the logic
+across architectures, particularly for those that already employ a
+dedicated register for tail calls, and allow JIT backends to simplify
+their tail call implementations accordingly.
+
+Thanks,
+Leon
+
 
