@@ -1,237 +1,136 @@
-Return-Path: <bpf+bounces-70782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F3CDBCF84A
-	for <lists+bpf@lfdr.de>; Sat, 11 Oct 2025 18:25:30 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04765BCF859
+	for <lists+bpf@lfdr.de>; Sat, 11 Oct 2025 18:32:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E4D23A3E91
-	for <lists+bpf@lfdr.de>; Sat, 11 Oct 2025 16:25:28 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A6A0D4E43B8
+	for <lists+bpf@lfdr.de>; Sat, 11 Oct 2025 16:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D9927F00E;
-	Sat, 11 Oct 2025 16:25:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4060027E7F0;
+	Sat, 11 Oct 2025 16:31:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ce6+TVFK"
 X-Original-To: bpf@vger.kernel.org
-Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4495B1548C;
-	Sat, 11 Oct 2025 16:25:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1132AD0D
+	for <bpf@vger.kernel.org>; Sat, 11 Oct 2025 16:31:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760199923; cv=none; b=H8iM+fypwZFrMIhPCYdqo3SbajYW7BzQ+Vg76EFS6xUuc9dIX0gZmyIvCWzNvWVcu5z/vG5QLW3S0MSH524lJYj6PdSfQCgBaNnJ32XlD1SlSYLarqPC+MZhGlfqLNSrDuWfVA7aCglSlZfjBSa1Jof1FaUw3xg89OidkRdYNuI=
+	t=1760200313; cv=none; b=n0geg0MqbjqJwdY38v02x27ZZzEztOg+s4PFpKU8SO2YCr61gTvlVHPh7XOUKe4QuXhaQE/tLphbOQVxrrriHnn3F1phpYMddLQ3N5Sq8D/IBBWj1R9XiAqt8hDrBoCgQGrxRPZiEMIYoZ0J7nBU/L3af3apJDkb8rOdLrdkc/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760199923; c=relaxed/simple;
-	bh=dbeHMQ5/T17YbKYvubrvV7NlkXNqFlPgtItSYlStG4U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rjvfpCxVx23fNGsRREX2otPY4ajv6FEmotDEYZl9owlqgXFctnUdc2AN3zQ5F5ac9lI4a7uksIsD3U5lIh6Cc8yBIkRDMFBhIMhTZtL/a9VDaa8Yuvp9AHbY7fBtxEcrF5hrFtXpPGz4Sv4EOZGX7LMvtVZHmcrQJgtEplyBR/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
-Received: from [10.5.62.16] (unknown [89.100.17.9])
-	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id 1ABEA40A76;
-	Sat, 11 Oct 2025 16:25:11 +0000 (UTC)
-Authentication-Results: Plesk;
-        spf=pass (sender IP is 89.100.17.9) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=[10.5.62.16]
-Received-SPF: pass (Plesk: connection is authenticated)
-Message-ID: <1169f4ac-c28a-442f-bcbc-2cf8e2beb3f5@arnaud-lcm.com>
-Date: Sat, 11 Oct 2025 17:25:10 +0100
+	s=arc-20240116; t=1760200313; c=relaxed/simple;
+	bh=lrO38iizk7wcb60GtWW7Ez8BBgT1YYBpDU8DRQBxMlg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pZ26ZAbvRdHSZAfCJCLYrFjhKB6lG7WBzHM7fv0VAY0GasGiTw7ggSLFcxBt5gD2dreoajhT4S4TftJ1/leWpYMewY3pXF6vagB6dIXk53ePci/Dxz7bAr62P9dgUNCB/WWIJIlaaMwfu0VSIAaFJan+LKutm8Pv/kzEU5TKiOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ce6+TVFK; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-42568669606so2160448f8f.2
+        for <bpf@vger.kernel.org>; Sat, 11 Oct 2025 09:31:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760200310; x=1760805110; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lrO38iizk7wcb60GtWW7Ez8BBgT1YYBpDU8DRQBxMlg=;
+        b=ce6+TVFK8A1SQ2AFHCH3TzRKM08YXJLDNIirmQoL1DNG4cA/TkCaBjQAt+dcQ/wDwV
+         n/BLAHCgtOGNEZigOBSJbHJlRnTKqfR0eEBh73tgslry5ZfiJgFk0HsCMzScJtmU0Nxe
+         1mF4IWMAep5maZDxhNwI4nS5ZetmfLF0kcg1KBNkcjYilacG6bvlE6K/4YQsuxDzqmjJ
+         HG8bLZuCTn9Na077/KcCHBU9iaADMDM5iIlwJLR75rqsj4aG5i6kSfk64wfvpHAFmKlP
+         EvDl/Y7iMku4XTAJEHQry7i5yyuC2dtZLi3d8XYhJm+aGAu1+k0E2jGJj9Lm5hJ/aoxJ
+         N0BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760200310; x=1760805110;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lrO38iizk7wcb60GtWW7Ez8BBgT1YYBpDU8DRQBxMlg=;
+        b=P9m3kxHeHndd054RHYh0bd8+6X0pvjeBg6Lg97tqcr/g8wWWf5ERm1cN/U3MwzaNO7
+         7AsMKVMuVjzd3x5udc89BNEjJapkdmf3Yl080wVH8DuAPWcLSyPENmOMkeIPcOcwyr6E
+         KgDPo19dbq1QAxnyuS6v73HALMlmPKTw6LR79/3SQrN4khIw6YW22AkiU4itue6pojjt
+         4E0xhgDu1Dut9ASVuMb/1VguvKP61KMgGrNwDfAqHwqhfaZkOp8JuIFDIzHH/V2Fm42W
+         GUIwaez7CBZCzwiFuZObIIdaQmxB5Cwy6Nc+RwzcPQwM3FmpQpeWRn1lp7c9XwuX7hru
+         UMHg==
+X-Forwarded-Encrypted: i=1; AJvYcCWPtm5rlKXtnxKy7e+B9uumjOrTvcX4bgeM4zwzRHRB/7GZcIjecnTkDJGPi8byTsXJ3/4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YypuopGtOqVEkOQL5zVgdg5lxBVsNNjzxNIMUsTUPxQA64t7s73
+	O/jTVdo5Vgltk/pHe9/mkhqUAo1sFz73uoFqwcFj/zqVWYGHjhV/ffxflg91aqe/uEHZUQWG47l
+	ZTTzXAsj446wkYnM3rIEaksCPwouJElE=
+X-Gm-Gg: ASbGncvKaFRxI1/DHmlLh+/W5cRpYEO+fphoOfipKPTIhpu3Cny7o7BTQjk+mIeCjQp
+	hayb4JOfjfGKUiyXADEK4NWhkTrPZjRA2xMm5qtGOH0ujgpa8coL4JuZJhfkksZNgKzpvGmHy1p
+	SHrmBI5d/KYWyY43p2yLiWBsFVyEpYP7+1bMiG3HiETNuDu68L0nxuhFZ2rrAoRdB271MjxIIDj
+	CLBhookzWAlco7goGxASFdb8IYQJNClP+WOAcFkIEfHycO62J81mv6E4FU=
+X-Google-Smtp-Source: AGHT+IFVktQDOHQUp45HLbylL/L1w5pNMbDmebDxa1LOU0GO1YCl7c+TW2wjKLQi1lKbRufqpRFVi7GVoYl4plbBD0U=
+X-Received: by 2002:a05:6000:26c9:b0:425:74e1:25f7 with SMTP id
+ ffacd0b85a97d-4266e8e6d0amr9983408f8f.62.1760200310238; Sat, 11 Oct 2025
+ 09:31:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v9 1/3] bpf: refactor max_depth computation in
- bpf_get_stack()
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: alexei.starovoitov@gmail.com, yonghong.song@linux.dev, song@kernel.org,
- andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
- john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
- linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me,
- syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
- syzkaller-bugs@googlegroups.com
-References: <20250912233409.74900-1-contact@arnaud-lcm.com>
- <CAEf4BzZ-ovqXqLJ5oJ95n9prFnXsLOkO1UvdycUcON77=Akv-w@mail.gmail.com>
- <60553783-125a-4628-bd17-a7c40841d0ae@arnaud-lcm.com>
- <CAEf4BzbBR7GBnWCA4E-RuEkbYJ7bUEfmJ5nd0g8G_bV0MG5tAA@mail.gmail.com>
-Content-Language: en-US
-From: "Lecomte, Arnaud" <contact@arnaud-lcm.com>
-In-Reply-To: 
- <CAEf4BzbBR7GBnWCA4E-RuEkbYJ7bUEfmJ5nd0g8G_bV0MG5tAA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-PPP-Message-ID: <176019991194.20205.3023393961942335238@Plesk>
-X-PPP-Vhost: arnaud-lcm.com
+References: <20250929213520.1821223-1-bboscaccy@linux.microsoft.com>
+ <CAHC9VhTQ_DR=ANzoDBjcCtrimV7XcCZVUsANPt=TjcvM4d-vjg@mail.gmail.com>
+ <CACYkzJ4yG1d8ujZ8PVzsRr_PWpyr6goD9DezQTu8ydaf-skn6g@mail.gmail.com>
+ <CAHC9VhR2Ab8Rw8RBm9je9-Ss++wufstxh4fB3zrZXnBoZpSi_Q@mail.gmail.com>
+ <CACYkzJ7u_wRyknFjhkzRxgpt29znoTWzz+ZMwmYEE-msc2GSUw@mail.gmail.com>
+ <CAHC9VhSDkwGgPfrBUh7EgBKEJj_JjnY68c0YAmuuLT_i--GskQ@mail.gmail.com>
+ <CACYkzJ4mJ6eJBzTLgbPG9A6i_dN2e0B=1WNp6XkAr-WmaEyzkA@mail.gmail.com>
+ <CAHC9VhRyG9ooMz6wVA17WKA9xkDy=UEPVkD4zOJf5mqrANMR9g@mail.gmail.com>
+ <CAADnVQLfyh=qby02AFe+MfJYr2sPExEU0YGCLV9jJk=cLoZoaA@mail.gmail.com>
+ <88703f00d5b7a779728451008626efa45e42db3d.camel@HansenPartnership.com>
+ <CAADnVQKdsF5_9Vb_J+z27y5Of3P6J3gPNZ=hXKFi=APm6AHX3w@mail.gmail.com> <42bc677e031ed3df4f379cd3d6c9b3e1e8fadd87.camel@HansenPartnership.com>
+In-Reply-To: <42bc677e031ed3df4f379cd3d6c9b3e1e8fadd87.camel@HansenPartnership.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 11 Oct 2025 09:31:39 -0700
+X-Gm-Features: AS18NWAkyavqKGn5fC6sLEvcq-QIRJm3Tkt5oPLRbq6OvYCP9hqMJkQoQjx0Eo0
+Message-ID: <CAADnVQ+M+_zLaqmd6As0z95A5BwGR8n8oFto-X-i4BgMvuhrXQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/3] BPF signature hash chains
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: Paul Moore <paul@paul-moore.com>, Alexei Starovoitov <ast@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, 
+	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, bpf <bpf@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, 
+	"K. Y. Srinivasan" <kys@microsoft.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, wufan@linux.microsoft.com, 
+	Quentin Monnet <qmo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sat, Oct 11, 2025 at 7:52=E2=80=AFAM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> It doesn't need to, once we check both the loader and the map, the
+> integrity is verified and the loader can be trusted to run and relocate
+> the map into the bpf program
 
-On 22/09/2025 23:38, Andrii Nakryiko wrote:
-> On Sat, Sep 20, 2025 at 12:32 PM Lecomte, Arnaud <contact@arnaud-lcm.com> wrote:
->>
->> On 19/09/2025 23:50, Andrii Nakryiko wrote:
->>
->> On Fri, Sep 12, 2025 at 4:34 PM Arnaud Lecomte <contact@arnaud-lcm.com> wrote:
->>
->> A new helper function stack_map_calculate_max_depth() that
->> computes the max depth for a stackmap.
->>
->> Acked-by: Yonghong Song <yonghong.song@linux.dev>
->> Acked-by: Song Liu <song@kernel.org>
->> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
->> ---
->> Changes in v2:
->>   - Removed the checking 'map_size % map_elem_size' from
->>     stack_map_calculate_max_depth
->>   - Changed stack_map_calculate_max_depth params name to be more generic
->>
->> Changes in v3:
->>   - Changed map size param to size in max depth helper
->>
->> Changes in v4:
->>   - Fixed indentation in max depth helper for args
->>
->> Changes in v5:
->>   - Bound back trace_nr to num_elem in __bpf_get_stack
->>   - Make a copy of sysctl_perf_event_max_stack
->>     in stack_map_calculate_max_depth
->>
->> Changes in v6:
->>   - Restrained max_depth computation only when required
->>   - Additional cleanup from Song in __bpf_get_stack
->>
->> Changes in v7:
->>   - Removed additional cleanup from v6
->>
->> Changes in v9:
->>   - Fixed incorrect removal of num_elem in get stack
->>
->> Link to v8: https://lore.kernel.org/all/20250905134625.26531-1-contact@arnaud-lcm.com/
->> ---
->> ---
->>   kernel/bpf/stackmap.c | 39 +++++++++++++++++++++++++++------------
->>   1 file changed, 27 insertions(+), 12 deletions(-)
->>
->> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
->> index 3615c06b7dfa..a794e04f5ae9 100644
->> --- a/kernel/bpf/stackmap.c
->> +++ b/kernel/bpf/stackmap.c
->> @@ -42,6 +42,28 @@ static inline int stack_map_data_size(struct bpf_map *map)
->>                  sizeof(struct bpf_stack_build_id) : sizeof(u64);
->>   }
->>
->> +/**
->> + * stack_map_calculate_max_depth - Calculate maximum allowed stack trace depth
->> + * @size:  Size of the buffer/map value in bytes
->> + * @elem_size:  Size of each stack trace element
->> + * @flags:  BPF stack trace flags (BPF_F_USER_STACK, BPF_F_USER_BUILD_ID, ...)
->> + *
->> + * Return: Maximum number of stack trace entries that can be safely stored
->> + */
->> +static u32 stack_map_calculate_max_depth(u32 size, u32 elem_size, u64 flags)
->> +{
->> +       u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
->> +       u32 max_depth;
->> +       u32 curr_sysctl_max_stack = READ_ONCE(sysctl_perf_event_max_stack);
->> +
->> +       max_depth = size / elem_size;
->> +       max_depth += skip;
->> +       if (max_depth > curr_sysctl_max_stack)
->> +               return curr_sysctl_max_stack;
->> +
->> +       return max_depth;
->> +}
->> +
->>   static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
->>   {
->>          u64 elem_size = sizeof(struct stack_map_bucket) +
->> @@ -300,20 +322,17 @@ static long __bpf_get_stackid(struct bpf_map *map,
->>   BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
->>             u64, flags)
->>   {
->> -       u32 max_depth = map->value_size / stack_map_data_size(map);
->> -       u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
->> +       u32 elem_size = stack_map_data_size(map);
->>          bool user = flags & BPF_F_USER_STACK;
->>          struct perf_callchain_entry *trace;
->>          bool kernel = !user;
->> +       u32 max_depth;
->>
->>          if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
->>                                 BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
->>                  return -EINVAL;
->>
->> -       max_depth += skip;
->> -       if (max_depth > sysctl_perf_event_max_stack)
->> -               max_depth = sysctl_perf_event_max_stack;
->> -
->> +       max_depth = stack_map_calculate_max_depth(map->value_size, elem_size, flags);
->>          trace = get_perf_callchain(regs, 0, kernel, user, max_depth,
->>                                     false, false);
->>
->> @@ -406,7 +425,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
->>                              struct perf_callchain_entry *trace_in,
->>                              void *buf, u32 size, u64 flags, bool may_fault)
->>   {
->> -       u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
->> +       u32 trace_nr, copy_len, elem_size, max_depth;
->>          bool user_build_id = flags & BPF_F_USER_BUILD_ID;
->>          bool crosstask = task && task != current;
->>          u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
->> @@ -438,10 +457,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
->>                  goto clear;
->>          }
->>
->> -       num_elem = size / elem_size;
->> -       max_depth = num_elem + skip;
->> -       if (sysctl_perf_event_max_stack < max_depth)
->> -               max_depth = sysctl_perf_event_max_stack;
->> +       max_depth = stack_map_calculate_max_depth(size, elem_size, flags);
->>
->>          if (may_fault)
->>                  rcu_read_lock(); /* need RCU for perf's callchain below */
->> @@ -461,7 +477,6 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
->>          }
->>
->>          trace_nr = trace->nr - skip;
->> -       trace_nr = (trace_nr <= num_elem) ? trace_nr : num_elem;
->>
->> Is this also part of refactoring? If yes, it deserves a mention on why
->> it's ok to just drop this.
->>
->> pw-bot: cr
->>
->> Yes it is also part of the refactoring as stack_map_calculate_max_depth now already curtains the trace->nr to the max possible number of elements, there is no need to do the clamping twice. This is valid assuming that get_perf_callchain and get_callchain_entry_for_task correctly set this limit.
->>
-> What about that third case:
+You should read KP's cover letter again and then research trusted
+hash chains. Here is a quote from the first googled link:
+
+"A trusted hash chain is a cryptographic process used to verify the
+integrity and authenticity of data by creating a sequence of hash
+values, where each hash is linked to the next".
+
+In addition KP's algorithm was vetted by various security teams.
+There is nothing novel here. It's a classic algorithm used
+to verify integrity and that's what was implemented.
+
+> > You need to realize that single loader plus single map is
+> > an implementation choice of tools/lib/bpf/gen_loader.c.
+> > It can do the same job with a single prog and no additional map.
 >
-> if (trace_in)
->      trace = trace_in;
->
-> Did you analyze if that gets its trace->nr set properly as well (as of
-> this patch, without taking into account changes in the follow up
-> patches). Because it looks like this removal belongs in patch #2, no?
->
-> In either case, all the other changes in this patch except the removal
-> of this line is refactoring and as far as I can tell don't change the
-> logic. This line removal does (potentially) change the logic, so it
-> would be good to do it separately, explaining why you think it's the
-> correct thing to do.
-Back from holidays, catching up now :)
-You are indeed totally right Andrii, thanks for pointing it out.
-We should squash the 2 first patch together.
->
->
->>          copy_len = trace_nr * elem_size;
->>
->>          ips = trace->ip + skip;
->> --
->> 2.43.0
->>
->> Thanks,
->> Arnaud
-Thanks,
-Arnaud
+> Yes, and if the light skeleton scheme embedded the relocation and the
+> program itself into prog->insnsi then we wouldn't need the additional
+> map verification before the load hook because the pkcs7 signature check
+> would fully verify the integrity.
+
+I'm fine if you want to hack gen_loader.c to produce the loader prog
+without a map, but we're not going to pollute the kernel with
+pointless apis, because you don't understand hash chains.
 
