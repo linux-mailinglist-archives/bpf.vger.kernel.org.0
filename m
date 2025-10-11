@@ -1,198 +1,151 @@
-Return-Path: <bpf+bounces-70772-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70773-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5300BBCEBD2
-	for <lists+bpf@lfdr.de>; Sat, 11 Oct 2025 01:06:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3075DBCED51
+	for <lists+bpf@lfdr.de>; Sat, 11 Oct 2025 02:47:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 463EE19A4707
-	for <lists+bpf@lfdr.de>; Fri, 10 Oct 2025 23:07:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52F2119E2223
+	for <lists+bpf@lfdr.de>; Sat, 11 Oct 2025 00:47:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5702367D7;
-	Fri, 10 Oct 2025 23:06:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55F42CCC5;
+	Sat, 11 Oct 2025 00:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bbmz8voW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lJfDQHqU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807DF27B4E4
-	for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 23:06:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBB5529CE1
+	for <bpf@vger.kernel.org>; Sat, 11 Oct 2025 00:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760137593; cv=none; b=OcFkUQSS7FOCLXmRTEl2iA64JXN5qAAS4jhDTps7Sr6X8COwAeLPPG9NMrosIxev1xPPecYrFLcXhGtUDd3KvaWNmQ5mp72WvxexMfwWe5DDjGpubKK4kOumjppo61LrbF4LSG+dUuDgBdw8RDk6CCe1Xsgva3xhdxmYuTvHESo=
+	t=1760143647; cv=none; b=hO4Z73Nd9MduzlopeSfF9wPiAkYT6ddPeSLrVhO7PSEYJzddmmCQdl8GDjW8g6Bdjaq5rAHmrOxZaQdoxEe6t1hsGuXYx/ikBZXZXLDikFYdTjIa4ddihEHn21sIDFP5dQCWsEyL89Kus08+Mb6vm0SUKKN0iYw4hym+xyOOiV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760137593; c=relaxed/simple;
-	bh=hCloG0Y93a0M9tkJ3ZDB55IPaaeolLL8R7dD98P47qk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L/or+ARK+wvPZ1Qt38GgmvFekU7/HbBJDwkXCSiAQ9lWMvnoOGuEp74lKumU9s8IGeaGcPev6GbnpNlEkvzqbJnal2nGf4v+22gk176FAEi8DAitDPTXrMKsS+vSrLGy/vtV12jx280bwT0wJ0ewmmn11ZfQsoj5t1dReuSgO8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bbmz8voW; arc=none smtp.client-ip=209.85.221.44
+	s=arc-20240116; t=1760143647; c=relaxed/simple;
+	bh=IzZwqQlJmdFgvIfSo90c57b6XMhjEuThr1Pzx0MCdlg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=siSS86c+18omxGCgtWKhvQmdhoNk/kUhnIXcEcXepIo8RCdZveMsquN47AIpXwPTGNmmj3pZtEBD6+USLYvAc/f02y1ED83C99BTw/8yH5t33W8/paB4FFNqJTXWVL0jn7wBGMBfecaiMpRg9Av8R6ztHCmcmJhIO1joOB6vDpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lJfDQHqU; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3f0134ccc0cso1849734f8f.1
-        for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 16:06:31 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7811a02316bso1882142b3a.3
+        for <bpf@vger.kernel.org>; Fri, 10 Oct 2025 17:47:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760137590; x=1760742390; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/jyuZL+/MDOZjAb6IRfhgTHKVHN22swRIR7driYUFLs=;
-        b=bbmz8voWp3XzjD5iljvDEPwF+PMsj1L1Szbhi4rom6r2v9ozDOhbKFpATyjWOrVMfH
-         B66w7GVI+Ntcb28xUBUQ/AGoPdr92sudp+CxHyLZGXUApYnzOULKD6eayp0oBvrksaZt
-         sb7PODwXMgjyFDNWzDiEtON9xeVhyM+N9A3UA5yGQzz/gXedNO9hipUGlxEVgpeO5xyU
-         t0YIdUE/6OJN22oAI0DlcW8ejrzyH307OSxAFTl+J1K7j99OPdN7nQGy0QL7WYtrXi2s
-         zZkYgHocr++twKR3PUvLrexDdovcA5T9V/SPTdY3B4K/zSoKY1R0TlPOf8IJNIq60KD+
-         fACw==
+        d=gmail.com; s=20230601; t=1760143645; x=1760748445; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=05i/RZmvfNgYX6pYfdtCIi7ufvv1hAR0P/892TqUbb8=;
+        b=lJfDQHqUXeKPjzzZ9Foy5suhD/ak8PFcak+PeZdCddB8corwe+8krW425WyivJlWY/
+         n1Uw23lgfzXCGLfEYHQzYJorZG41ugf5bX6ICEQXlucysvWICC0pomyeGvbaA4lwstc4
+         qORdQ4hgH/j9JxGO85lc5dBt2SxjBQa9Rst25xfArBacL6eJKdHYKs0HkpZqgDVuv8hd
+         CTW/teF08mvWNSHzdv+BNJ/QoCi2nP/elMWwXXGaQWGxfOoSCMNsnziMQSIboTZOat+y
+         YumItVMt+15thKqy3yfzc7pjx/QF/wu9EuucwdVWBF7b5mNk98M6AscHcqFKQxQg4Ux0
+         JdYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760137590; x=1760742390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/jyuZL+/MDOZjAb6IRfhgTHKVHN22swRIR7driYUFLs=;
-        b=N/2+ZAFa69y9Vpq06gSxfhVjKlrIezqavppfs7aiihI6khBY4ns2eXMtYqxp7kpL+o
-         /GIWbOgqIKnK9FKsuPb2quVvhBRxPVIA5oswu4X/OC85ZDKHs6Zgojkkm9a4fuWitzqB
-         bqY06YN4/JUqXxBtsOzyOPZSBjI7lWIO0GzN3I9yLrIN66O3UjeoGGELN1wkyVwaOrwD
-         UWRIvtKRb+vWfNj/zaCR1sabqyIGEHOlDQ/yU/EDarzy3Kvg1IZY5BFYTztkEEOFLjr9
-         7OFpwUGwusBzjagMjzYM4duKJaXAtTqOnYlgUkWi1B4IxrGCQwlddApXINVx/cc8mQpW
-         xdcA==
-X-Forwarded-Encrypted: i=1; AJvYcCVj4mjw9qRLj6rEWeRCHHRRodvH3tBLxZNIfEUs4vgTnYInTsOfWZrev8cFRxjJ6Q5aCQs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywk3bJJ0637ciCqdXrCKmZ7tnTtswwXmxfrkdDC/PxKLnEMv17P
-	H2maqfpb3P3FV++9GTwCFxJK1GRBYjZsUozGZuPaj9Sc09cRInr0purRUlgpsNzrV7aujuKP2Zq
-	6sI5LTh97B9jyOkZoNog8OEVTNUEZWvY=
-X-Gm-Gg: ASbGncvnu5btVxc2/FNRo8aNLEMgGG+R6wmoAFCmPaMPJ3voTv6JDijQya7ZKiaDOaK
-	RddO/Cxt5Vw7UAeqOs667Bz2axM0dd8eVCJDLdniAUvsuRekxFVrKXy7lF1veRQyDg7Yo7bUKJN
-	qBYf+emabYCHETtN9PFF3w8XciWnN1IR6OIxutVSsgnij1ohXEdmMma5Ha8WUX9X6W3/wDocemZ
-	Dq3ZNTTqXXkC2Rpx4jfTCjoI6/tdJaZla0iCHOEiEbp+8pE4YdgaQE+TFiBmWZbV+oSq3gbkVYI
-	f8H0
-X-Google-Smtp-Source: AGHT+IFOyAwQQsRvhlctebtwsHlWP0aszVMJ1pSOfGIMa+JIUTffYCFVVZaO9CiunaGlcSGKBfr4a2TCh0qC9gaN/sw=
-X-Received: by 2002:a05:6000:4308:b0:3e7:ff32:1ab with SMTP id
- ffacd0b85a97d-4266e8dd2bcmr8103640f8f.50.1760137589493; Fri, 10 Oct 2025
- 16:06:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1760143645; x=1760748445;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=05i/RZmvfNgYX6pYfdtCIi7ufvv1hAR0P/892TqUbb8=;
+        b=GNwE/muzlCXuNzNJK8dA9T3kYNs9fLhrPuxW0U4LjLlu9i1GosGRUzLAeMnExzPqdn
+         Gi+sZal8bKgsZ99CT9Q8f1Y5S/OcvBw8boVk70HkdoiysP6gf9UbFhbnsPkLA1yTERUE
+         dYQlQV3xGMOSM2mRiYs7ehpY5j/yCuw23oY0IkLLdT8DUGxKD43eMk9/Sv4EmM+sj+Xd
+         6TEHadbeiHThzKZBnORbd9PMgrPYOuicaYIE5jaDZDUnw4UDO0ig4OT5IlH4vFPr8W4M
+         oCz9X258x5BfMnKf1OHVrmmZLmHFe6INKOUo+dFX3bFasQbiylHlTD+hF7rBz2Qs5cZD
+         RQlA==
+X-Gm-Message-State: AOJu0Yzi8/sA7Tp0l4A0BTFR5iXDQJHUS8wVmTqbZPqG/ZkGliNYsfCv
+	GC4UdtRGQn6EpYECECfyMubfZECQuBAz+DjNeFIuOEldbgPVGLdyMTOtlHc8tA==
+X-Gm-Gg: ASbGncuMnzsqlyTUrtO1uYrGPpKGLS/doPSbg0q/jNr2QkkW+UBrcYlJXZAaMxRNxRG
+	ie1NIiDGHHMIM595FOTfZ/EoqkefZTrz1EMCZpLOsVm4pp0L1auNshWaUu/eXz7jK/KMCKUMw6K
+	VW09/isbvSa62Lr9/k7cgZTWUXuq8KtlKJK8KoIOQfCy0eBmAuexwehMVeffirTdsDIw2y4ytFN
+	Oh+YgW4byp3sUam4LoY91El4fwPjuVsX1oJzn+r4CzMXPv6ieu/5DpPT+Kmor2hZNQ2WUyAwslW
+	6K/bX+AINPLA1Npe9COs8shJqyPEQtPEL3+HeSHpn2djlJMH38V3mF9HSnfzWbVwDbwonVfHHkz
+	rwmWCM9LP5Nmc5aAY/XpTH4mMrU+osHj9xePfsLwQb6fJwKt1BbTVpHcF0DESTjNfvehmCtXsQc
+	c4TGprQJghaTuoy/GMfBci
+X-Google-Smtp-Source: AGHT+IFZL7uHCvmIyUTsrsHRVHWCccP9V2g+EBYfkeUcgB4vuaWc/slpC40MFav4lOTbFSfuMZPGjQ==
+X-Received: by 2002:a05:6a00:2e96:b0:781:d163:ce41 with SMTP id d2e1a72fcca58-79385ce7bfcmr15164602b3a.11.1760143644884;
+        Fri, 10 Oct 2025 17:47:24 -0700 (PDT)
+Received: from localhost.localdomain ([2601:600:837e:3c50:1021:a424:7dd1:a498])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7992b060c4esm4329077b3a.14.2025.10.10.17.47.24
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 10 Oct 2025 17:47:24 -0700 (PDT)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: torvalds@linux-foundation.org
+Cc: bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@kernel.org
+Subject: [GIT PULL] BPF fixes for 6.18-rc1
+Date: Fri, 10 Oct 2025 17:47:22 -0700
+Message-ID: <20251011004722.81978-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250929213520.1821223-1-bboscaccy@linux.microsoft.com>
- <CAHC9VhTQ_DR=ANzoDBjcCtrimV7XcCZVUsANPt=TjcvM4d-vjg@mail.gmail.com>
- <CACYkzJ4yG1d8ujZ8PVzsRr_PWpyr6goD9DezQTu8ydaf-skn6g@mail.gmail.com>
- <CAHC9VhR2Ab8Rw8RBm9je9-Ss++wufstxh4fB3zrZXnBoZpSi_Q@mail.gmail.com>
- <CACYkzJ7u_wRyknFjhkzRxgpt29znoTWzz+ZMwmYEE-msc2GSUw@mail.gmail.com>
- <CAHC9VhSDkwGgPfrBUh7EgBKEJj_JjnY68c0YAmuuLT_i--GskQ@mail.gmail.com>
- <CACYkzJ4mJ6eJBzTLgbPG9A6i_dN2e0B=1WNp6XkAr-WmaEyzkA@mail.gmail.com>
- <CAHC9VhRyG9ooMz6wVA17WKA9xkDy=UEPVkD4zOJf5mqrANMR9g@mail.gmail.com>
- <CAADnVQLfyh=qby02AFe+MfJYr2sPExEU0YGCLV9jJk=cLoZoaA@mail.gmail.com> <88703f00d5b7a779728451008626efa45e42db3d.camel@HansenPartnership.com>
-In-Reply-To: <88703f00d5b7a779728451008626efa45e42db3d.camel@HansenPartnership.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 10 Oct 2025 16:06:18 -0700
-X-Gm-Features: AS18NWCINWZW_B_u9VdJ_nUTVc2tFIhkn7DWZ4gOvpV35oDwWvRLL4ekSbSipYU
-Message-ID: <CAADnVQKdsF5_9Vb_J+z27y5Of3P6J3gPNZ=hXKFi=APm6AHX3w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/3] BPF signature hash chains
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Paul Moore <paul@paul-moore.com>, Alexei Starovoitov <ast@kernel.org>, KP Singh <kpsingh@kernel.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, 
-	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, bpf <bpf@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, wufan@linux.microsoft.com, 
-	Quentin Monnet <qmo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 10, 2025 at 8:53=E2=80=AFAM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> On Thu, 2025-10-09 at 18:00 -0700, Alexei Starovoitov wrote:
-> [...]
-> > James's concern is valid though:
-> >
-> > > However, the rub for LSM is that the verification of the program
-> > > map by the loader happens *after* the security_bpf_prog_load() hook
-> > > has been called.
-> >
-> > I understand the discomfort, but that's what the kernel module
-> > loading process is doing as well, so you should be concerned with
-> > both. Since both are doing pretty much the same work.
->
-> OK, so let me push on this one point because I don't agree with what
-> you say here.  The way kernel modules and eBPF load is not equivalent.
-> The kernel module signatures go over a relocateable elf binary which is
-> subsequently relocated after signature verification in the kernel by
-> the ELF loader.  You can regard the ELF loader as being equivalent to
-> the eBPF loader in terms of function, absolutely.  However for security
-> purposes the ELF loader is a trusted part of the kernel security
-> envelope and its integrity is part of the kernel integrity and we have
-> a this single trusted loader for every module.  In security terms
-> verification of the ELF object signature is sufficient to guarantee
-> integrity of the module because the integrity of the ELF loader is
-> already checked.
+Hi Linus,
 
-"integrity of ELF loader" is _not_ checked. It's part of the kernel
-and you trust that the kernel is valid, because you trust the
-build tools that compiled that kernel.
-The kmod signature only covers the contents of the kmod.
-Now, kmods are typically targeted one specific kernel version
-compiled with a specific config, but some folks do load the same
-kmod on different kernels. So by checking integrity of kmod only
-you're skipping on the loader. If symbols are not versioned
-and crc checked bad things can happen (obviously no one should
-be doing that), but signature doesn't protect against that.
-Compare that with the bpf signature. The whole package is signed.
-The loader and what it is loading with one signature.
-I argue that this is a more secure approach than kmod signatures.
+The following changes since commit cbf33b8e0b360f667b17106c15d9e2aac77a76a1:
 
-Think of it as a self-extracting zip archive.
-The whole .zip is covered by one signature. Inside it has the code
-to self extract plus all the files inside.
-The extracting code is a loader prog. Which is a normal bpf
-prog that is subject to the same verification rules.
-The files are other bpf progs that are also subject to the verification.
+  Merge tag 'bpf-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf (2025-10-03 19:38:19 -0700)
 
-> The eBPF loader, by contrast, because it contains all the relocations,
-> is different for every eBPF light skeleton.  This means it's not a
-> trusted part of the kernel and has to be integrity checked as well.
+are available in the Git repository at:
 
-...and the existing mechanism already does that.
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
 
-> Thus for eBPF, the integrity check must be over both the loader and the
-> program; integrity checking is not complete until the integrity of both
-> has been verified.
+for you to fetch changes up to ffce84bccb4d95c7922b44897b6f0ffcda5061b7:
 
-The signature covers all components: loader, the map that assists
-the loading and all progs and maps that are encoded inside that
-loader/map tuple.
+  Merge branch 'bpf-avoid-rcu-context-warning-when-unpinning-htab-with-internal-structs' (2025-10-10 10:10:09 -0700)
 
-> If you sign only the loader and embed the hash  of
-> the program into the loader that is a different way of doing things,
+----------------------------------------------------------------
+- Finish constification of 1st parameter of bpf_d_path() (Rong Tao)
 
-That's simply not true.
-Please read the current code more carefully. There is cover letter
-that describes what's happening. There are no hashes of programs.
+- Harden userspace-supplied xdp_desc validation (Alexander Lobakin)
 
-> There are two potential solutions to this: complete the integrity check
-> before running the load hook (Blaise's patch)
+- Fix metadata_dst leak in __bpf_redirect_neigh_v{4,6}() (Daniel Borkmann)
 
-That's not what it's doing! Read his patch. It's adding pointless
-signature to the loader/map tuple. It does nothing to progs, maps,
-relocations that will be created at the end when loader completes.
+- Fix undefined behavior in {get,put}_unaligned_be32() (Eric Biggers)
 
-You need to realize that single loader plus single map is
-an implementation choice of tools/lib/bpf/gen_loader.c.
-It can do the same job with a single prog and no additional map.
-Hence any kinda hard coded extra map signature makes no sense.
-We're not going to burden the kernel with one specific implementation
-detail of gen_loader.
-Tomorrow we might change the gen_loader to use a triple:
-prog+map+btf or any other form.
-The existing approach allows all that extensibility and freedom
-to change the gen_loader.
+- Use correct context to unpin bpf hash map with special types (KaFai Wan)
 
-> or add a LSM hook to
-> collect the integrity information from the run of the loader.  Neither
-> of these is present in the scheme you put upstream.
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+----------------------------------------------------------------
+Alexander Lobakin (1):
+      xsk: Harden userspace-supplied xdp_desc validation
 
-Neither is in cards as was explained countless times.
+Alexei Starovoitov (1):
+      Merge branch 'bpf-avoid-rcu-context-warning-when-unpinning-htab-with-internal-structs'
+
+Daniel Borkmann (1):
+      bpf: Fix metadata_dst leak __bpf_redirect_neigh_v{4,6}
+
+Eric Biggers (1):
+      libbpf: Fix undefined behavior in {get,put}_unaligned_be32()
+
+KaFai Wan (2):
+      bpf: Avoid RCU context warning when unpinning htab with internal structs
+      selftests/bpf: Add test for unpinning htab with internal timer struct
+
+Rong Tao (1):
+      bpf: Finish constification of 1st parameter of bpf_d_path()
+
+ include/uapi/linux/bpf.h                           |  2 +-
+ kernel/bpf/inode.c                                 |  4 +-
+ net/core/filter.c                                  |  2 +
+ net/xdp/xsk_queue.h                                | 45 +++++++++++++++++-----
+ scripts/bpf_doc.py                                 |  1 +
+ tools/include/uapi/linux/bpf.h                     |  2 +-
+ tools/lib/bpf/libbpf_utils.c                       | 24 +++++++-----
+ .../selftests/bpf/prog_tests/pinning_htab.c        | 36 +++++++++++++++++
+ .../selftests/bpf/progs/test_pinning_htab.c        | 25 ++++++++++++
+ .../selftests/bpf/progs/verifier_vfs_accept.c      |  2 +-
+ 10 files changed, 118 insertions(+), 25 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning_htab.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_pinning_htab.c
 
