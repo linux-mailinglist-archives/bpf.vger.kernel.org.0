@@ -1,88 +1,137 @@
-Return-Path: <bpf+bounces-70834-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70835-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91799BD59A2
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 19:51:14 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CB4CBD5BDE
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 20:36:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8AF6B4E8DE3
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 17:51:13 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 79F804F36C6
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 18:36:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EEA4299AAA;
-	Mon, 13 Oct 2025 17:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 479202D73B6;
+	Mon, 13 Oct 2025 18:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ESdzC60b"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983E72522BE
-	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 17:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6CBF1DED7B
+	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 18:35:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760377868; cv=none; b=mHePoduk/sMITo4HxNSENmcoUP39/o/17YcLErZpUKs+kLpEJGJfAdIw2vRgbK8vyICtnANhsISU6DIXK4QnIp4dhQy98mgs2YBsfGffT/qCgOAuR6c/Vnnt8ul2fu6he7FG2loKwlGKdr+uk1oaJaAtJjxczYlEUjUum/HSesI=
+	t=1760380558; cv=none; b=DLYtTclpbk1hpPCn/3hvvZTJQCEe2pCoG2n9qiwg6g6oWXKjBV/SeCTvk3MufbBwIIYfsZxkDbSm7SbiFs0w/jjiN7WADCOpYbMeIxu7ed8D9UX1pEFAehvADjAHtoOm394tSB0c9Vls9vurm2/t8/YoYC0gzvJ3yISBs573M/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760377868; c=relaxed/simple;
-	bh=ESmH6PDf/y025GTVQd9tAUQWKrM82DPTtOLdH3WIVbI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=jJ28Qa4Ri365UqcXQyXuMozbgqbPFrpljc9peIehd1Yw6NMeHspokFQcJRvMZng+qaaeWSefIAXiuQYi+VQ5oc+XWRuhrfylY9kIEJaBh2by4xDMcmJ3ROR1nkc9RCi/Xc3f+zA9k797uHGHqxfJR539waOs4aGMGzkzFsMnwLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-9374627bb7eso1390158939f.1
-        for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 10:51:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760377865; x=1760982665;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zpBMfdidBE3O+0BxDMwBE/bLozZX3gjRZnFgwoDa/2w=;
-        b=LRA60nMW1Z/IVSTDxnqPA5UqxBGAeIrzCplO7xCNg+Bz5S5EPGcv+bi9L80QduiAxN
-         Kzq5OYKou7YYmZOSt4pLyXsBb1XOJ6dtdSUgxL0ZMkATjm7O+tp7ErSWbsJsZoQs24SN
-         9monwFEyPiPLUHrumyLE+Iu/Uj5MR6zDQoVOzTYzCa4u7GNlBKWg7tLN+K5aex0M8OGb
-         Y7SEhOtw1Y3uoHEvgRJVOrMxd2/GdgnL3/MThX71VQrQfE59HeSqY9FVFKYw4o8lcTfW
-         r69rkh7n/1KpoJJMtBcrQb71lfaziXyz5zzmRghAXxg0uim3vldMTuHuQeQWOR53JSwv
-         AdSg==
-X-Gm-Message-State: AOJu0Yw20XhPiwQdJDwe7Np987aPu0G7GfHWkW9WqA9ubQSkM3pqsGqv
-	nIoEH8JJWRPYNU5TB4+WSJHPrL8AxNKHhrN0T88MAuCXR8aAbSlwSPKH7MkAAARFZKpOMVbtihp
-	9FKgw4faoG9Ztaf433wh9mot5cvXUnD3QnQsrkd8tZPqUswhNdtfwyfR00EE=
-X-Google-Smtp-Source: AGHT+IF0mRRqrrYbDkimSP3HVk6dixhTQT3Lv9MBcrqNeYt5SAiNW0Gr6ZCjlr87h57RmW7I20aL5cO0VXaaf/3qxAKYHl6kXh0n
+	s=arc-20240116; t=1760380558; c=relaxed/simple;
+	bh=UEna29x+bZvM/HBkGwx99n7Do7hLh1lgHFSn0I3czRI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Jbzy3JAqZU/lwX4oCNQIhcEDVyk/HNmh3pGaVmOANvNaJjUjG9Khzbnpo+K0bbpp9ykIcLjEvJHsg6S669wlrXtfDwC5cdM16gTNfgCLfroB26TbylJlsw4bMj6qnNTcaWow7DFHMH9bFgOr/xtx1SX/bqv5RTwX005RJd0Fxjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ESdzC60b; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b7fa9c76-f343-42d0-9c47-6a1af0deea2c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1760380545;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2SDPG4mzl5kKo6OO5wGMHX9VYrTxfUd0YtlJcr3KpwQ=;
+	b=ESdzC60bmzAURLxbLw6YswPogINrWqARFYPhTfV9D8OD4JwnlV/yKsn5a+R3l7N1rJYqBz
+	WFIbob8oV2fgIL3XvFz+W4nqbNBElvdrKy1XFLsHkmhdP5CTwV15kdwZVOtrMwZFJ9Cefg
+	vXfs0gDkAOHhS0xoTp2ImFAa8WgwBSk=
+Date: Mon, 13 Oct 2025 11:35:35 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1688:b0:424:7128:a06a with SMTP id
- e9e14a558f8ab-42f87417ff1mr260568725ab.7.1760377865528; Mon, 13 Oct 2025
- 10:51:05 -0700 (PDT)
-Date: Mon, 13 Oct 2025 10:51:05 -0700
-In-Reply-To: <20251013162906.1265465-1-listout@listout.xyz>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68ed3c09.a70a0220.b3ac9.001b.GAE@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] BUG: sleeping function called from invalid
- context in sock_map_delete_elem
-From: syzbot <syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com>
-To: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, listout@listout.xyz, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v3] bpf: test_run: fix atomic context in timer path
+ causing sleep-in-atomic BUG
+Content-Language: en-GB
+To: Sahil Chandna <chandna.linuxkernel@gmail.com>, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, john.fastabend@gmail.com, haoluo@google.com,
+ jolsa@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc: david.hunter.linux@gmail.com, skhan@linuxfoundation.org, khalid@kernel.org
+References: <20251013171104.493153-1-chandna.linuxkernel@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20251013171104.493153-1-chandna.linuxkernel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Reported-by: syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
-Tested-by: syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
+On 10/13/25 10:11 AM, Sahil Chandna wrote:
+> The timer mode is initialized to NO_PREEMPT mode by default,
+> this disable preemption and force execution in atomic context
+> causing issue on PREEMPT_RT configurations when invoking
+> spin_lock_bh(), leading to the following warning:
+>
+> BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
+> in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 6107, name: syz.0.17
+> preempt_count: 1, expected: 0
+> RCU nest depth: 1, expected: 1
+> Preemption disabled at:
+> [<ffffffff891fce58>] bpf_test_timer_enter+0xf8/0x140 net/bpf/test_run.c:42
+>
+> Fix this, by removing NO_PREEMPT/NO_MIGRATE mode check.
+> Also, the test timer context no longer needs explicit calls to
+> migrate_disable()/migrate_enable() with rcu_read_lock()/rcu_read_unlock().
+> Use helpers rcu_read_lock_dont_migrate() and rcu_read_unlock_migrate()
+> instead.
+>
+> Reported-by: syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=1f1fbecb9413cdbfbef8
+> Tested-by: syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
+> Signed-off-by: Sahil Chandna <chandna.linuxkernel@gmail.com>
 
-Tested on:
+You have multiple versions in CI:
+   [PATCH v2] bpf: avoid sleeping in invalid context during sock_map_delete_elem path
+   [PATCH v3] bpf: test_run: fix atomic context in timer path causing sleep-in-atomic BUG
 
-commit:         3a866087 Linux 6.18-rc1
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1017867c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b1620e3721dc97c0
-dashboard link: https://syzkaller.appspot.com/bug?extid=1f1fbecb9413cdbfbef8
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=12fd652f980000
+In the future, please submit new patch set only after some reviews on the old patch.
 
-Note: testing is done by a robot and is best-effort only.
+I also recommend to replace e.g. [PATCH v3] to [PATCH bpf v3] (or [PATCH bpf-next v3])
+so CI can do proper testing for either bpf or bpf-next.
+
+For the title:
+   bpf: test_run: fix atomic context in timer path causing sleep-in-atomic BUG
+Change to:
+   bpf: Fix sleep-in-atomic BUG in timer path with RT kernel
+
+The code change LGTM.
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
+>
+> ---
+> Changes since v2:
+> - Fix uninitialized struct bpf_test_timer
+>
+> Changes since v1:
+> - Dropped `enum { NO_PREEMPT, NO_MIGRATE } mode` from `struct bpf_test_timer`.
+> - Removed all conditional preempt/migrate disable logic.
+> - Unified timer handling to use `migrate_disable()` / `migrate_enable()` universally.
+>
+> Link to v2: https://lore.kernel.org/all/20251010075923.408195-1-chandna.linuxkernel@gmail.com/
+> Link to v1: https://lore.kernel.org/all/20251006054320.159321-1-chandna.linuxkernel@gmail.com/
+>
+> Testing:
+> - Reproduced syzbot bug locally using the provided reproducer.
+> - Observed `BUG: sleeping function called from invalid context` on v1.
+> - Confirmed bug disappears after applying this patch.
+> - Validated normal functionality of `bpf_prog_test_run_*` helpers with C
+>    reproducer.
+> ---
+>   net/bpf/test_run.c | 23 ++++++-----------------
+>   1 file changed, 6 insertions(+), 17 deletions(-)
+
+[...]
+
 
