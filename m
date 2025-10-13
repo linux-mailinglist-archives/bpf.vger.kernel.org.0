@@ -1,156 +1,88 @@
-Return-Path: <bpf+bounces-70833-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70834-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0198ABD59A5
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 19:51:39 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91799BD59A2
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 19:51:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F2BA3B2C71
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 17:50:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8AF6B4E8DE3
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 17:51:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70E262C235D;
-	Mon, 13 Oct 2025 17:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vLiNPVXC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EEA4299AAA;
+	Mon, 13 Oct 2025 17:51:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0D649659
-	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 17:48:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983E72522BE
+	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 17:51:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760377727; cv=none; b=CoGiGe64eY8obZPgTXS0B4EG3XiM5Rxmzx6pqIjEG4S/dzjBqcU4P//zPr+D4oMjsepkZ2rffsf9nYJ1SLBHHihTgXdth+gxYJviTOVc5fp4dH90GwI9LVsGLvXU4iU9dUsygt9245a9tSihkbRyVK/A68W6jTJUXoWML/MgE80=
+	t=1760377868; cv=none; b=mHePoduk/sMITo4HxNSENmcoUP39/o/17YcLErZpUKs+kLpEJGJfAdIw2vRgbK8vyICtnANhsISU6DIXK4QnIp4dhQy98mgs2YBsfGffT/qCgOAuR6c/Vnnt8ul2fu6he7FG2loKwlGKdr+uk1oaJaAtJjxczYlEUjUum/HSesI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760377727; c=relaxed/simple;
-	bh=JZ3RCEqrx9zVV7MZr9JKbsHGFEy/s3pgNDFLa15OMyk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Zm52wr0tRQXwWhebk4qNMorB1MDWb4IRNGvJU7ZPbRbbgT0gXX5Wrn8rCpMAav8sZ+jQcL0sE3jHZlJQTnJxmXYZ0y2wzBpgeMb0h3OyVQU9or3uCQw/V6sd61hck3Iqxh+Wa0Bg50v8onJGjhKHvxTZhggypzFiNzlYjMdW+js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vLiNPVXC; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1760377713;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7WmnP6ICbEec27+qyu/CiHrrXy+wQUjaQxBTOOdzmdE=;
-	b=vLiNPVXCYKIdbovrJm/KfG9lusZ7EzIPIrmZDWtPqLWh1Mf3MhswaTlD6Yxu4nUtuu2AGZ
-	4+Xm0sq5jF8eDtmDopOviMJJgttQsxs2qzVEauY3O71Kg4Sp+w+BV8p4Oz1++JDINztbTk
-	FzaGCHEmIxGUjFlv9RP+nJb66DmOivM=
-From: Tao Chen <chen.dylane@linux.dev>
-To: peterz@infradead.org,
-	mingo@redhat.com,
-	acme@kernel.org,
-	namhyung@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	kan.liang@linux.intel.com,
-	song@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com
-Cc: linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next RFC 2/2] bpf: Pass external callchain entry to get_perf_callchain
-Date: Tue, 14 Oct 2025 01:47:21 +0800
-Message-ID: <20251013174721.2681091-3-chen.dylane@linux.dev>
-In-Reply-To: <20251013174721.2681091-1-chen.dylane@linux.dev>
-References: <20251013174721.2681091-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1760377868; c=relaxed/simple;
+	bh=ESmH6PDf/y025GTVQd9tAUQWKrM82DPTtOLdH3WIVbI=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=jJ28Qa4Ri365UqcXQyXuMozbgqbPFrpljc9peIehd1Yw6NMeHspokFQcJRvMZng+qaaeWSefIAXiuQYi+VQ5oc+XWRuhrfylY9kIEJaBh2by4xDMcmJ3ROR1nkc9RCi/Xc3f+zA9k797uHGHqxfJR539waOs4aGMGzkzFsMnwLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-9374627bb7eso1390158939f.1
+        for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 10:51:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760377865; x=1760982665;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zpBMfdidBE3O+0BxDMwBE/bLozZX3gjRZnFgwoDa/2w=;
+        b=LRA60nMW1Z/IVSTDxnqPA5UqxBGAeIrzCplO7xCNg+Bz5S5EPGcv+bi9L80QduiAxN
+         Kzq5OYKou7YYmZOSt4pLyXsBb1XOJ6dtdSUgxL0ZMkATjm7O+tp7ErSWbsJsZoQs24SN
+         9monwFEyPiPLUHrumyLE+Iu/Uj5MR6zDQoVOzTYzCa4u7GNlBKWg7tLN+K5aex0M8OGb
+         Y7SEhOtw1Y3uoHEvgRJVOrMxd2/GdgnL3/MThX71VQrQfE59HeSqY9FVFKYw4o8lcTfW
+         r69rkh7n/1KpoJJMtBcrQb71lfaziXyz5zzmRghAXxg0uim3vldMTuHuQeQWOR53JSwv
+         AdSg==
+X-Gm-Message-State: AOJu0Yw20XhPiwQdJDwe7Np987aPu0G7GfHWkW9WqA9ubQSkM3pqsGqv
+	nIoEH8JJWRPYNU5TB4+WSJHPrL8AxNKHhrN0T88MAuCXR8aAbSlwSPKH7MkAAARFZKpOMVbtihp
+	9FKgw4faoG9Ztaf433wh9mot5cvXUnD3QnQsrkd8tZPqUswhNdtfwyfR00EE=
+X-Google-Smtp-Source: AGHT+IF0mRRqrrYbDkimSP3HVk6dixhTQT3Lv9MBcrqNeYt5SAiNW0Gr6ZCjlr87h57RmW7I20aL5cO0VXaaf/3qxAKYHl6kXh0n
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:1688:b0:424:7128:a06a with SMTP id
+ e9e14a558f8ab-42f87417ff1mr260568725ab.7.1760377865528; Mon, 13 Oct 2025
+ 10:51:05 -0700 (PDT)
+Date: Mon, 13 Oct 2025 10:51:05 -0700
+In-Reply-To: <20251013162906.1265465-1-listout@listout.xyz>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68ed3c09.a70a0220.b3ac9.001b.GAE@google.com>
+Subject: Re: [syzbot] [bpf?] [net?] BUG: sleeping function called from invalid
+ context in sock_map_delete_elem
+From: syzbot <syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com>
+To: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, listout@listout.xyz, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-As Alexei noted, get_perf_callchain() return values may be reused
-if a task is preempted after the BPF program enters migrate disable
-mode. Drawing on the per-cpu design of bpf_perf_callchain_entries,
-stack-allocated memory of bpf_perf_callchain_entry is used here.
+Hello,
 
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- kernel/bpf/stackmap.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index e6e40f22826..1a51a2ea159 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -31,6 +31,11 @@ struct bpf_stack_map {
- 	struct stack_map_bucket *buckets[] __counted_by(n_buckets);
- };
- 
-+struct bpf_perf_callchain_entry {
-+	u64 nr;
-+	u64 ip[PERF_MAX_STACK_DEPTH];
-+};
-+
- static inline bool stack_map_use_build_id(struct bpf_map *map)
- {
- 	return (map->map_flags & BPF_F_STACK_BUILD_ID);
-@@ -305,6 +310,7 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
- 	bool user = flags & BPF_F_USER_STACK;
- 	struct perf_callchain_entry *trace;
- 	bool kernel = !user;
-+	struct bpf_perf_callchain_entry entry = { 0 };
- 
- 	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
- 			       BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
-@@ -314,12 +320,8 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
- 	if (max_depth > sysctl_perf_event_max_stack)
- 		max_depth = sysctl_perf_event_max_stack;
- 
--	trace = get_perf_callchain(regs, NULL, 0, kernel, user, max_depth,
--				   false, false);
--
--	if (unlikely(!trace))
--		/* couldn't fetch the stack trace */
--		return -EFAULT;
-+	trace = get_perf_callchain(regs, (struct perf_callchain_entry *)&entry, 0,
-+				   kernel, user, max_depth, false, false);
- 
- 	return __bpf_get_stackid(map, trace, flags);
- }
-@@ -412,6 +414,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
- 	bool user = flags & BPF_F_USER_STACK;
- 	struct perf_callchain_entry *trace;
-+	struct bpf_perf_callchain_entry entry = { 0 };
- 	bool kernel = !user;
- 	int err = -EINVAL;
- 	u64 *ips;
-@@ -451,8 +454,8 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 	else if (kernel && task)
- 		trace = get_callchain_entry_for_task(task, max_depth);
- 	else
--		trace = get_perf_callchain(regs, NULL, 0, kernel, user, max_depth,
--					   crosstask, false);
-+		trace = get_perf_callchain(regs, (struct perf_callchain_entry *)&entry, 0,
-+					   kernel, user, max_depth, crosstask, false);
- 
- 	if (unlikely(!trace) || trace->nr < skip) {
- 		if (may_fault)
--- 
-2.48.1
+Reported-by: syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
+Tested-by: syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
 
+Tested on:
+
+commit:         3a866087 Linux 6.18-rc1
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1017867c580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b1620e3721dc97c0
+dashboard link: https://syzkaller.appspot.com/bug?extid=1f1fbecb9413cdbfbef8
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12fd652f980000
+
+Note: testing is done by a robot and is best-effort only.
 
