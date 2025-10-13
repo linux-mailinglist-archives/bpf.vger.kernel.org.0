@@ -1,181 +1,326 @@
-Return-Path: <bpf+bounces-70794-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70795-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16484BD0DA0
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 01:45:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18ECDBD1024
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 03:00:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D2DF1893EAB
-	for <lists+bpf@lfdr.de>; Sun, 12 Oct 2025 23:46:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EEF9188F786
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 01:00:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F121F0995;
-	Sun, 12 Oct 2025 23:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ASrPrayS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8971DED42;
+	Mon, 13 Oct 2025 01:00:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E575F4C97
-	for <bpf@vger.kernel.org>; Sun, 12 Oct 2025 23:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422DB4C97
+	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 00:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760312737; cv=none; b=rkXehZBHhlREBeDuVTogUE7HZ55eBozip2TVQhywM1b9Re+HuDbfSxqOAs/zyjJ2scEgzvOF5Wh6JtHBJAaFp3jN5LWdltVHejxiaf8aB7suT++S3x8RFwoD8H+03GthKzQVhpnyFenTySgmNdYYj2eIlKHatkiSs/V7FIXOxdE=
+	t=1760317200; cv=none; b=fko89Vm0gkEOzhI25DccQPFRHG+XBm2lDOT/9OqxG3nK7Hqa3yF4KeuXKKPzkgyMaBldIMwPuW/cguYnyAZ3vMZb1BzEiLcLePYuWUPNxq9bx40u/zkVsf0H1bKdV6zJE1b+dy4lBOKlhE/XhU5vHAmKTULK0WyzV5n3pwzNbXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760312737; c=relaxed/simple;
-	bh=MuAnMand/nvwUHqF24iFeEjQdKXib/dWOLfBLA65Sd4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OFuLoiuVmvGOezoe0MwWB8kEvZ+5dKUkjZ54MSZDcFIVLSIORg6nDhU4PrQgUG0nC9971kXCAPXq9ScTEJDXYlhNhkbjGATqJnQtYnqvttpspgzMXe7SB/nMNUPh960cOZ2fdxzQgeGI++/sG2VePJ2WZjnoCkyptNfg4hUvuYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ASrPrayS; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3ee15505cdeso3051415f8f.0
-        for <bpf@vger.kernel.org>; Sun, 12 Oct 2025 16:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760312734; x=1760917534; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FuRe6cpi3iO7soDacnjgBBBFRXF8dJtWFuE+tuasCXY=;
-        b=ASrPraySxvl4zwstjJTpx1fNzxeV2gMyb/0YPMqynjG5p2KmaPyrjm6z2cKwLpL2nt
-         SQqth5o6rGE1CZ7eO5tZG2a0v6RxWqpLwB7/oJAOvM85homHjPQrsE2eMCNoue70/LsA
-         2LYbDHZcogZa3bN7LBTcel6SWQ0SEOqsICa/mnAVqtyUR+CZ3V7MKUtV5WRVQVb0Bk43
-         p1WP0dY59pw7iUkFfvEwj+PmvXuWO0mNC3DUvuXUg+n0cozA2610ngZSdsUduKcnzSPe
-         H4e9LQ0/Fvp/IkDKZR72Tch6zTK4yB1R37ieyRnlrmoUUjGzzXOXA8X+60FDf5iP/LBy
-         jDIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760312734; x=1760917534;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FuRe6cpi3iO7soDacnjgBBBFRXF8dJtWFuE+tuasCXY=;
-        b=P7nVfP34qM/LpTBuiCSThfMdIpFbGGP0bhE6Qw8cvaC4gEjid2QCmhovLSPjcbOk3i
-         rZ3HaWWQMIb+l0DgwtOOJwmyfdZ4zFhOp76/DPDJko7zKdkvKrGkQGE5LDnbsekAYkY6
-         Q7ThczI5V6vfoclKGX0FA2iU15Z56okUkIdFxVyOB8lA9ZxFoERb9H82VxYNwHpU9Kbg
-         efwyBAvuSCwmk/ISz8bNQW3jl/0dqpbZVMz0B7Rvp+BHqdbfRgCl1Q7zFzICRwIRukmj
-         8tDcUyXxVucYbo9FKUBt/h49d1OI3mbWifM1+KptDdAvGBcCl/ENtBFSnDMJzYoHIJyw
-         3CYA==
-X-Forwarded-Encrypted: i=1; AJvYcCVKobKWZ/cNsHrPsR1gE+x2OtfbjSmslDi30dZ4Xt+y1R4Vr16O3ILSdQDFTMmqnuaHPM8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzg+1SM6w1rOE/oDvvau2RHfKWaKx0ZfK+WKBggNqGlGT2CcdOh
-	UyZPU2Wyb2zZlBMpss/J23ZBozbAFtzlx5xF0LBKmJo4LwjxIEJClKhD3dIcugh6LssogviJiCg
-	lqqFnBU3AK/UwIdzuW+nbJvd0uWKGilo=
-X-Gm-Gg: ASbGncuqx1Y8pvYyjmoc05wMFlu4TuGqmaq9Zl4UQezTMh/aQzwF91SmhBaUFKILU1R
-	93U3bK+eO26HLdEK22Aby38k5xPsvhXL8Uvs5959JxjKOQPk9RtfOasnAFnN8f91tNEt8IU46ul
-	IlTbcaRHxjCfo+zVUjJz/VrOEfTwpDbBHg/yYF9ZiGX25nswPVLhMOj7SYXbmdbD2YWtF24OnvR
-	bIXruQy4HxiO3UYOn+MPvMvYnN2zYnOL5U0G+yokbVSOGYMfRrZWPvN/Ig=
-X-Google-Smtp-Source: AGHT+IHLKIRHhnjYr1zhh88d6IC6Sp7r2YVECtLfhRoavF2b8ODcTYZDXh9HG/SyrDLJQhRqUxpad+f1GeaaVDHxfNk=
-X-Received: by 2002:a05:6000:2386:b0:425:6fb5:2ad4 with SMTP id
- ffacd0b85a97d-425829e78f4mr14753484f8f.15.1760312733915; Sun, 12 Oct 2025
- 16:45:33 -0700 (PDT)
+	s=arc-20240116; t=1760317200; c=relaxed/simple;
+	bh=9lof18WPlILx5onjoWz3e74b1MCfrxBpxl0VmC97158=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=pNoXbOINbY2ZK7MStTz67/P/rX6S3XsQtAztiP4RVh9+1c1UDf7GOnzXfsswCnw+vcluD9jankQdS/plDqzzTGg1nPVqrzgalEEf4JQvP9h58i8l934oiMIRJfsneixDkG6+rxak2+z/midfUeq91st3pKM/ENBrATYDZwNXjbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4clJrz4VZrzKHMKV
+	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 08:59:15 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id A70BD1A0F4C
+	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 08:59:49 +0800 (CST)
+Received: from [10.174.179.156] (unknown [10.174.179.156])
+	by APP2 (Coremail) with SMTP id Syh0CgAnfUX_TuxogNG2AA--.12203S2;
+	Mon, 13 Oct 2025 08:59:47 +0800 (CST)
+Subject: Re: [PATCH bpf v3 6/9] bpf: Switch to bpf mem allocator for LPM trie
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?Q?Thomas_Wei=c3=9fschuh?=
+ <linux@weissschuh.net>, houtao1@huawei.com, xukuohai@huawei.com
+References: <20241206110622.1161752-1-houtao@huaweicloud.com>
+ <20241206110622.1161752-7-houtao@huaweicloud.com>
+ <CAEf4BzaSbd2kKWL7ZT0WctsdiWq7wJG5NXT3TGxJzBGnP91T3A@mail.gmail.com>
+ <acebb5f8-d669-5fa7-aad5-41f6ec508609@huaweicloud.com>
+ <CAEf4BzaoP-aL1EABf9G=StReMxhVL=5JUJNDKOPDOg-9=+-m5A@mail.gmail.com>
+ <CAEf4Bza_QBPpxE-OX03eCo0+r1hC9iNVXW91cRzSmOr-qnh99A@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <6e513e88-747b-e0b1-3c43-b2491830a764@huaweicloud.com>
+Date: Mon, 13 Oct 2025 08:59:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251008173512.731801-1-alan.maguire@oracle.com>
-In-Reply-To: <20251008173512.731801-1-alan.maguire@oracle.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 12 Oct 2025 16:45:22 -0700
-X-Gm-Features: AS18NWCl0e9gsbLecYflTZeFq0uME46gCGpf85LQWfva1hSLKrQsgMP4lZ0ojXg
-Message-ID: <CAADnVQLN3jQLfkjs-AG2GqsG5Ffw_nefYczvSVmiZZm5X9sd=A@mail.gmail.com>
-Subject: Re: [RFC bpf-next 00/15] support inline tracing with BTF
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Thierry Treyer <ttreyer@meta.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Quentin Monnet <qmo@kernel.org>, Ihor Solodrai <ihor.solodrai@linux.dev>, 
-	David Faust <david.faust@oracle.com>, "Jose E. Marchesi" <jose.marchesi@oracle.com>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAEf4Bza_QBPpxE-OX03eCo0+r1hC9iNVXW91cRzSmOr-qnh99A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgAnfUX_TuxogNG2AA--.12203S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gr4xZFWDCF4DXw1fXr1rtFb_yoWfuFWDpF
+	W3KaySkr4DJryUurn2qFnrArWjy3y8Kr1UWF93Xr18ZF90vr17Gr1UAF48uFyUZry8Cr15
+	tF1Ut347ur1DA3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUIa0PDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Wed, Oct 8, 2025 at 10:35=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
+Hi Andrii,
+
+On 10/11/2025 1:04 AM, Andrii Nakryiko wrote:
+> On Wed, Sep 24, 2025 at 4:31 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>> On Mon, Sep 22, 2025 at 6:33 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>>>
+>>>
+>>> On 9/20/2025 5:28 AM, Andrii Nakryiko wrote:
+>>>> On Fri, Dec 6, 2024 at 2:54 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>>>>> From: Hou Tao <houtao1@huawei.com>
+>>>>>
+>>>>> Multiple syzbot warnings have been reported. These warnings are mainly
+>>>>> about the lock order between trie->lock and kmalloc()'s internal lock.
+>>>>> See report [1] as an example:
+>>>>>
+>>>>> ======================================================
+>>>>> WARNING: possible circular locking dependency detected
+>>>>> 6.10.0-rc7-syzkaller-00003-g4376e966ecb7 #0 Not tainted
+>>>>> ------------------------------------------------------
+>>>>> syz.3.2069/15008 is trying to acquire lock:
+>>>>> ffff88801544e6d8 (&n->list_lock){-.-.}-{2:2}, at: get_partial_node ...
+>>>>>
+>>>>> but task is already holding lock:
+>>>>> ffff88802dcc89f8 (&trie->lock){-.-.}-{2:2}, at: trie_update_elem ...
+>>>>>
+>>>>> which lock already depends on the new lock.
+>>>>>
+>>>>> the existing dependency chain (in reverse order) is:
+>>>>>
+>>>>> -> #1 (&trie->lock){-.-.}-{2:2}:
+>>>>>        __raw_spin_lock_irqsave
+>>>>>        _raw_spin_lock_irqsave+0x3a/0x60
+>>>>>        trie_delete_elem+0xb0/0x820
+>>>>>        ___bpf_prog_run+0x3e51/0xabd0
+>>>>>        __bpf_prog_run32+0xc1/0x100
+>>>>>        bpf_dispatcher_nop_func
+>>>>>        ......
+>>>>>        bpf_trace_run2+0x231/0x590
+>>>>>        __bpf_trace_contention_end+0xca/0x110
+>>>>>        trace_contention_end.constprop.0+0xea/0x170
+>>>>>        __pv_queued_spin_lock_slowpath+0x28e/0xcc0
+>>>>>        pv_queued_spin_lock_slowpath
+>>>>>        queued_spin_lock_slowpath
+>>>>>        queued_spin_lock
+>>>>>        do_raw_spin_lock+0x210/0x2c0
+>>>>>        __raw_spin_lock_irqsave
+>>>>>        _raw_spin_lock_irqsave+0x42/0x60
+>>>>>        __put_partials+0xc3/0x170
+>>>>>        qlink_free
+>>>>>        qlist_free_all+0x4e/0x140
+>>>>>        kasan_quarantine_reduce+0x192/0x1e0
+>>>>>        __kasan_slab_alloc+0x69/0x90
+>>>>>        kasan_slab_alloc
+>>>>>        slab_post_alloc_hook
+>>>>>        slab_alloc_node
+>>>>>        kmem_cache_alloc_node_noprof+0x153/0x310
+>>>>>        __alloc_skb+0x2b1/0x380
+>>>>>        ......
+>>>>>
+>>>>> -> #0 (&n->list_lock){-.-.}-{2:2}:
+>>>>>        check_prev_add
+>>>>>        check_prevs_add
+>>>>>        validate_chain
+>>>>>        __lock_acquire+0x2478/0x3b30
+>>>>>        lock_acquire
+>>>>>        lock_acquire+0x1b1/0x560
+>>>>>        __raw_spin_lock_irqsave
+>>>>>        _raw_spin_lock_irqsave+0x3a/0x60
+>>>>>        get_partial_node.part.0+0x20/0x350
+>>>>>        get_partial_node
+>>>>>        get_partial
+>>>>>        ___slab_alloc+0x65b/0x1870
+>>>>>        __slab_alloc.constprop.0+0x56/0xb0
+>>>>>        __slab_alloc_node
+>>>>>        slab_alloc_node
+>>>>>        __do_kmalloc_node
+>>>>>        __kmalloc_node_noprof+0x35c/0x440
+>>>>>        kmalloc_node_noprof
+>>>>>        bpf_map_kmalloc_node+0x98/0x4a0
+>>>>>        lpm_trie_node_alloc
+>>>>>        trie_update_elem+0x1ef/0xe00
+>>>>>        bpf_map_update_value+0x2c1/0x6c0
+>>>>>        map_update_elem+0x623/0x910
+>>>>>        __sys_bpf+0x90c/0x49a0
+>>>>>        ...
+>>>>>
+>>>>> other info that might help us debug this:
+>>>>>
+>>>>>  Possible unsafe locking scenario:
+>>>>>
+>>>>>        CPU0                    CPU1
+>>>>>        ----                    ----
+>>>>>   lock(&trie->lock);
+>>>>>                                lock(&n->list_lock);
+>>>>>                                lock(&trie->lock);
+>>>>>   lock(&n->list_lock);
+>>>>>
+>>>>>  *** DEADLOCK ***
+>>>>>
+>>>>> [1]: https://syzkaller.appspot.com/bug?extid=9045c0a3d5a7f1b119f7
+>>>>>
+>>>>> A bpf program attached to trace_contention_end() triggers after
+>>>>> acquiring &n->list_lock. The program invokes trie_delete_elem(), which
+>>>>> then acquires trie->lock. However, it is possible that another
+>>>>> process is invoking trie_update_elem(). trie_update_elem() will acquire
+>>>>> trie->lock first, then invoke kmalloc_node(). kmalloc_node() may invoke
+>>>>> get_partial_node() and try to acquire &n->list_lock (not necessarily the
+>>>>> same lock object). Therefore, lockdep warns about the circular locking
+>>>>> dependency.
+>>>>>
+>>>>> Invoking kmalloc() before acquiring trie->lock could fix the warning.
+>>>>> However, since BPF programs call be invoked from any context (e.g.,
+>>>>> through kprobe/tracepoint/fentry), there may still be lock ordering
+>>>>> problems for internal locks in kmalloc() or trie->lock itself.
+>>>>>
+>>>>> To eliminate these potential lock ordering problems with kmalloc()'s
+>>>>> internal locks, replacing kmalloc()/kfree()/kfree_rcu() with equivalent
+>>>>> BPF memory allocator APIs that can be invoked in any context. The lock
+>>>>> ordering problems with trie->lock (e.g., reentrance) will be handled
+>>>>> separately.
+>>>>>
+>>>>> Three aspects of this change require explanation:
+>>>>>
+>>>>> 1. Intermediate and leaf nodes are allocated from the same allocator.
+>>>>> Since the value size of LPM trie is usually small, using a single
+>>>>> alocator reduces the memory overhead of the BPF memory allocator.
+>>>>>
+>>>>> 2. Leaf nodes are allocated before disabling IRQs. This handles cases
+>>>>> where leaf_size is large (e.g., > 4KB - 8) and updates require
+>>>>> intermediate node allocation. If leaf nodes were allocated in
+>>>>> IRQ-disabled region, the free objects in BPF memory allocator would not
+>>>>> be refilled timely and the intermediate node allocation may fail.
+>>>>>
+>>>>> 3. Paired migrate_{disable|enable}() calls for node alloc and free. The
+>>>>> BPF memory allocator uses per-CPU struct internally, these paired calls
+>>>>> are necessary to guarantee correctness.
+>>>>>
+>>>>> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
+>>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>>>>> ---
+>>>>>  kernel/bpf/lpm_trie.c | 71 +++++++++++++++++++++++++++++--------------
+>>>>>  1 file changed, 48 insertions(+), 23 deletions(-)
+>>>>>
+>>>>> diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
+>>>>> index 9ba6ae145239..f850360e75ce 100644
+>>>>> --- a/kernel/bpf/lpm_trie.c
+>>>>> +++ b/kernel/bpf/lpm_trie.c
+>>>>> @@ -15,6 +15,7 @@
+>>>>>  #include <net/ipv6.h>
+>>>>>  #include <uapi/linux/btf.h>
+>>>>>  #include <linux/btf_ids.h>
+>>>>> +#include <linux/bpf_mem_alloc.h>
+>>>>>
+>>>>>  /* Intermediate node */
+>>>>>  #define LPM_TREE_NODE_FLAG_IM BIT(0)
+>>>>> @@ -22,7 +23,6 @@
+>>>>>  struct lpm_trie_node;
+>>>>>
+>>>>>  struct lpm_trie_node {
+>>>>> -       struct rcu_head rcu;
+>>>>>         struct lpm_trie_node __rcu      *child[2];
+>>>>>         u32                             prefixlen;
+>>>>>         u32                             flags;
+>>>>> @@ -32,6 +32,7 @@ struct lpm_trie_node {
+>>>>>  struct lpm_trie {
+>>>>>         struct bpf_map                  map;
+>>>>>         struct lpm_trie_node __rcu      *root;
+>>>>> +       struct bpf_mem_alloc            ma;
+>>>>>         size_t                          n_entries;
+>>>>>         size_t                          max_prefixlen;
+>>>>>         size_t                          data_size;
+>>>>> @@ -287,17 +288,18 @@ static void *trie_lookup_elem(struct bpf_map *map, void *_key)
+>>>> Hey Hao,
+>>> Hi Andrii,
+>>>
+>>> Actually my name is Hou Tao :)
+>> Oops, I'm sorry for butchering your name, Hou!
+>>
+>>>> We recently got a warning from trie_lookup_elem() triggered by
+>>>>
+>>>> rcu_dereference_check(trie->root, rcu_read_lock_bh_held())
+>>>>
+>>>> check in trie_lookup_elem, when LPM trie map was used from a sleepable
+>>>> BPF program.
+>>>>
+>>>> It seems like it can be just converted to bpf_rcu_lock_held(), because
+>>>> with your switch to bpf_mem_alloc all the nodes are now both RCU and
+>>>> RCU Tasks Trace protected, is my thinking correct?
+>>>>
+>>>> Can you please double check? Thanks!
+>>> No. Although the node is freed after one RCU GP and one RCU Task Trace
+>>> GP, the reuse of node happens after one RCU GP. Therefore, for the
+>>> sleepable program when it looks up the trie, it may find and try to read
+>>> a reused node, the returned result will be unexpected due to the reuse.
+>>>
+
+Sorry for the delayed response.
+>> That's two different things, no? Because we do lookup without lock,
+>> it's possible for (non-sleepable or sleepable, doesn't matter) BPF
+>> program to update/delete trie node while some other BPF program looks
+>> it up without locking. I don't think anything fundamentally changes
+>> here. We have similar behavior for other BPF maps (hashmap, for
+>> example), regardless of sleepable or not.
+>>
+>> But the problem here is specifically about overly eager
+>> rcu_dereference_check check. That memory is not going to be freed, so
+>> it's "safe" to dereference it, even if it might be reused for another
+>> node.
+>>
+>> Either that, or we need to disable LPM trie map for sleepable until we
+>> somehow fix this memory reuse, no?
+> Hey Hou,
 >
-> In terms of BTF encoding, we wind up with 12010 LOC_PARAM which are
-> referenced in various combinations from 37061 LOC_PROTO. We see that
-> given that there are over 400,000 inline sites, deduplication has
-> considerably cut down on the overhead of representing this information.
-
-Looking at loc_param and loc_proto... they could have been 8 bytes
-smaller easily. So the math there is (12k+37k) * 8 ~=3D 400k byte
-is not worth saving, since locsec dominates the size anyway ?
-Having a common struct btf_type for all of them also helps dedup, I guess ?
-A bit uncomfortable choice, but probably ok.
-
-> LOCSEC will be 443354*16 bytes, i.e. 6.76 Mb. Between extra FUNC_PROTO,
-> LOC_PROTO, LOC_PARAM and LOCSECs we wind up adding 9.2Mb to accommodate
-> 443354 inline sites and all their metadata. This works out as
-> approximately 22 bytes to fully represent each inline site, so we can
-> see the benefits of deduplication of LOC_PARAM and LOC_PROTOs in this sch=
-eme.
+> So, it's actually more interesting than what I initially thought.
+> LPM_TRIE is not currently allowed for sleepable programs, but we have
+> a bug in the verifier where you can sneak in such map into a sleepable
+> program through map-in-map. It seems like we are missing checking the
+> inner map for sleepable compatibility.
 >
-> When vmlinux BTF inline-related info (FUNC_PROTO, LOC_PARAM, LOC_PROTO
-> and LOCSECs are delivered via a module (btf_extra.ko.gz), the on-disk
-> size of that module with compression drops from 9.2Mb to 2.8Mb.
->
-> Modules also provide .BTF.extra info in their .BTF.extra sections; we
-> can see the stats for these as follows:
->
-> $ find . -name *.ko|xargs objdump -h |grep ".BTF.extra"|awk '{ sum +=3D s=
-trtonum("0x"$3); count++ } END { print "total (kbytes): " sum/1024 " num mo=
-dules: " count " average(kbytes): " sum/1024/count}'
-> total (kbytes): 46653.5 num modules: 3044 average(kbytes): 15.3264
->
-> So we add 46Mb of .BTF.extra data in total across 3044 modules, averaging
-> 15kbytes per module.
->
-> Future work/questions
->
-> - the same scheme could be used to represent functions with optimized-out
->   parameters (which we leave out of BTF encoding), hence the more general
->   "location" term (as opposed to calling them inlines)
-> - perhaps we should have a separate CONFIG_DEBUG_INFO_BTF_EXTRA_MODULES=
-=3Dy|n
->   as we do with CONFIG_DEBUG_INFO_BTF_MODULES?
-> - .BTF.extra is probably a bad name, given that we have .BTF.ext already.=
-..
+> The question for you is how hard is it to make LPM_TRIE support
+> sleepable program? You mentioned some unintended memory reused, can
+> that be fixed/changed? Can you please take a look? Thanks!
 
-yeah. 'extra' doesn't really fit. Especially since that will be a hard code=
-d
-name of the special module.
-Maybe "BTF.inline_info" for section name and "btf_inline_info.ko" ?
+Instead of updating LPM_TRIE to handle memory reuse, why not use
+bpf_rcu_read_lock/bpf_rcu_read_unlock to ensure the reuse will not
+happen during the lookup ?
+>
+>>>> [...]
+> .
 
-The partially inlined functions were the biggest footgun so far.
-Missing fully inlined is painful, but it's not a footgun.
-So I think doing "kloc" and usdt-like bpf_loc_arg() completely in
-user space is not enough. It's great and, probably, can be supported,
-but the kernel should use this "BTF.inline_info" as well to
-preserve "backward compatibility" for functions that were
-not-inlined in an older kernel and got partially inlined in a new kernel.
-
-If we could use kprobe-multi then usdt-like bpf_loc_arg() would
-make a lot of sense, but since libbpf has to attach a bunch
-of regular kprobes it seems to me the kernel support is more appropriate
-for the whole thing.
-I mean when the kernel processes SEC("fentry/foo") into partially
-inlined function "foo" it should use fentry for "foo" and
-automatically add kprobe into inlined callsites and automatically
-generated code that collects arguments from appropriate registers
-and make "fentry/foo" behave like "foo" was not inlined at all.
-Arguably, we can use a new attach type.
-If we teach the kernel to do that then doing bpf_loc_arg() and a bunch
-of regular kprobes from libbpf is unnecessary.
-The kernel can do the same transparently and prepare the args
-depending on location.
-If some of the callsites are missing args it can fail the whole operation.
-Of course, doing the whole thing from libbpf feels good,
-since we're burdening the kernel with extra complexity,
-but lack of kprobe-multi changes the way to think about this trade off.
-
-Whether we decide that the kernel should do it or stay with bpf_loc_arg()
-the first few patches and pahole support can/should be landed first.
-
-Just .02 so far. Need to understand the whole thing better.
 
