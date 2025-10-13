@@ -1,397 +1,213 @@
-Return-Path: <bpf+bounces-70801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A5A0BD211A
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 10:33:33 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2816CBD3061
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 14:42:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AC7D18992C8
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 08:33:56 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 61BD74E3C3C
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 12:42:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441612F60BC;
-	Mon, 13 Oct 2025 08:33:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B551E21C19D;
+	Mon, 13 Oct 2025 12:42:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fSi/Sinh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37FE2EB867
-	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 08:33:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B355B262FCB
+	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 12:42:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760344407; cv=none; b=LqYemNJkf1DvlACXEhSvMEE0Pixn/UOIr/Pbafmd7jczvnTb1Ob/fkwFPb+2/I9Lfa0Sgq8jFuh3HpIQ4/nkOaeHeIXLfQbFEtAHbr0K+PpIuH6zttDtzYIMBsO5zMDUEQW6kawcYZOu7fCRsXrSSJ4qoYp//BK3hiUMmnu34/E=
+	t=1760359328; cv=none; b=ktv5Gv1KpGMgUdABqP5Zg0YsEx8QudTJXk7cisB++uYNi5UkOi/StOIEW+QYnzIoK2n1J5n1760FVcaeb9sMHdQ1wBywi+HbBRsmdhzbyb8LMsJWJ7TrrYw68t9kdpWU5oEk8nMQatw1E1iWtv6iHUplLk26CyqCrH1Pqt2gGH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760344407; c=relaxed/simple;
-	bh=wXQZLc1odkcf6QcU9vPPSZuObkLbPZG6b5Ao9isTL/s=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ctH96HLLiz1AIoa1SL0IY2WN5FUbvODL1W4kC3qoRg73LiPziRge7CmLSAGMPPAhtR0jPpQcT+Yj5TSBAYbULDmm524N5bpvDQgMpXXogzzDooHbWwtAcqIVrfDGLfOx5ASJX/+Daf4WISCFZ7XV/Ti6hNRPwBT5+2Anz7knjCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-42d7e4abc61so129795305ab.3
-        for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 01:33:24 -0700 (PDT)
+	s=arc-20240116; t=1760359328; c=relaxed/simple;
+	bh=UtC3ud1uDkWBT2eatRa4V31cwvWr8x1KM9nA7kHeLro=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MMWQcpGfDzrTs62AQ0w9vy7SGMQ/xkPmn2pLoCisnZy3ZaGsDPEIReOINfqpYdap4lJkot//IMeishigBdLODmm6TtEFfkJzQMwpx4zTpET5qjqzK8Spu7WJ/01QhVanESP4pH7eOuoL5PoAHq001hVR+91sEwHBrlxG8JJa2wY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fSi/Sinh; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1760359325;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=GV6V42eNmRofCKO2ajQk2DVZzbVn5SWQi1G7vlqlVt0=;
+	b=fSi/Sinh1FxlFchbwfTnXvKg5q7TU78HtIIstJVntj1KfHMDc7Gan/EtfIsUSFskJ+8MCz
+	q/1ybPh/Quox0qWr/1zbrNvJjenzFKI44/O+GIea8Tz4lSvZstJsq1JLnsNYM1T3EChX50
+	pTHNv/Ao+/DCK69pBfn8ETpsk8NO7nE=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-487-gxJTbvN5PK-n0sz2LozsRg-1; Mon, 13 Oct 2025 08:42:04 -0400
+X-MC-Unique: gxJTbvN5PK-n0sz2LozsRg-1
+X-Mimecast-MFC-AGG-ID: gxJTbvN5PK-n0sz2LozsRg_1760359323
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-46e7a2c3773so21880275e9.0
+        for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 05:42:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760344404; x=1760949204;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uCv209PCyXrgwvMWYxejYyi6NbJpRieHlPfmxnoDizI=;
-        b=URH2Vd7nbpNJrFR2c87SboOKT8jvH0YLs7z6x3uDOWg4IpaaV3xMGfouyzYb5Vovs6
-         /L7zFWbSRBl/zabvcSUM/wC6kPZ1sPC4Z7a1FYkyDoxR1MWTXgvmX8tf0hhDMOPLfwmZ
-         Ibw4Ofhh1RUreZqtaediK/Aw2xLDkgaqoCU6QATl0hqjqIf0w5b5rBTMPiiQbs62iYPm
-         4rwL0MZgSeXdA8Oky/GbdLuTFZIf2BOnd8txu+yK+dA4gBmAhkieKu7ageQwTlJgZZX1
-         v0Ec4sGcqQZ1znIPXUctBvFRNCyTsshAJ4lHpxCbV4i/O7jJj16cO3oVQcm8ji/lFh3j
-         2Dhw==
-X-Forwarded-Encrypted: i=1; AJvYcCX+XDTKBTLIO9Tr3JDZbknLWt3nlUQL7ofVMiu10BrIXVNXJiFMoT6eneLuHlyyoEEln5U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEdHC+7tG+o4r1EpvLtjJppK907QlwjPQTm/mA/PaZA4Ehzacp
-	hbVG+lPzCYl4vMfJAfNLAuDbgKlzUKeVEuIJfVlUjD0wqFT/0biaN/tM/kWmnTzIcc8F6o2DZce
-	srjn1wFYPgTErx1KOLvG8SMxeXYeGY8zsh1k7qiGux8mA6iBtTpFq4eGRqi4=
-X-Google-Smtp-Source: AGHT+IHTMsch5aV2Nu9FAhOlJb4LF1SyaXjozUu+X+wE98mO8iFxI/LxleuilPnXweOu1amGGyU4obKifDUtObUBs73PkaPnPO08
+        d=1e100.net; s=20230601; t=1760359323; x=1760964123;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GV6V42eNmRofCKO2ajQk2DVZzbVn5SWQi1G7vlqlVt0=;
+        b=ZsBSAXDD9IfFXIOhsALw2e0qydnAJMTnAuo+FafIoicpoEz6wSk1vVhGrhzOp4s2+c
+         Ky/zinLhxHkiFBXUlYDdOuL5a3SwTvkLrF2SX6r846CBkM7NzIWC5hDMVQIGNr8cXpOV
+         VZuXUEElgPQRb5dIvGzyQlvtqS7zjHndYdusWJeLzqBwyBsnkAhdPsI64nELoBC7lcEV
+         DgSeo1Kza0opp434Y4tLgSWHh8E3QjHL/WTNlNhWoSsdcTgKLTL7TWEOE7S0D0OKjVLJ
+         b3KV+RqyUhHZMldbzIeE0C/t/D/vf1iy6MmuTpfnTgatiuXJZHSQ43MDSYfnu/Pgi/ap
+         R3kA==
+X-Forwarded-Encrypted: i=1; AJvYcCV/AcT0gohfHwuqpcXQsk87A5tNXlj/O/ubQgRERvi3sIrOfdNmJjN3fTPtgWW4I2dGlsE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzhTL1f5Da+YYnTbFmo3MJ60uUOq4u206skxUfhJ+AIX1u49Z8p
+	vuWHlCNl/HdGEh7zM6hyH4B+eKYAmZofMARN+T1sDZT/VjwXH3hr/h5xbeLsEvMJ8m0FFrTHaf6
+	TocxZ+56cu2E/DUYDVt3Wv5xiQoA4XAl2le1XutCIO424uzhNSRHtsg==
+X-Gm-Gg: ASbGnctosIaQ2Bs10P0wmGg5nijlArOQnmd49aTzvZTSx9udwdIL1o5Wz0U1G350IpF
+	Xw+XuxpXUPGYbSGURYHEzuWZ8a4UHVoJVe1yPvvLZrnam5fLAW7AgKAvm21Gi+LF6Wqlct1QDWb
+	jLMY/onbQLwqxJ4NSeDU45D2b1bjvyBcSfrmDEUUA6StGFZpgEcsf9VpM2OXVwOQioijVuiOtNK
+	WWuvIFSqKqc2Ip/aod9qYE7B3eO8ddH8C+mtXaoTbc6JtsgWC7FczQ9B4wvv49zVHR13ftJmAFI
+	L8j+ztyc/lghn7TKa9mvVxdyv/cvGlE0X0biJv8UYeVXGC3oWhRMgudlFPMsjxYnLR8SVYuRl4q
+	qg1E=
+X-Received: by 2002:a05:600c:674a:b0:45c:b6d3:a11d with SMTP id 5b1f17b1804b1-46fa9e8dc8bmr158955185e9.1.1760359323085;
+        Mon, 13 Oct 2025 05:42:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHauSt6ruiV5Kk8L/+gHwRrp8105EYALDJNBUwgBgUbnyLWlMo37UXqi0DKsbi3Tl2D4kwzpA==
+X-Received: by 2002:a05:600c:674a:b0:45c:b6d3:a11d with SMTP id 5b1f17b1804b1-46fa9e8dc8bmr158954865e9.1.1760359322699;
+        Mon, 13 Oct 2025 05:42:02 -0700 (PDT)
+Received: from [192.168.3.141] (tmo-083-189.customers.d1-online.com. [80.187.83.189])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46fc78559c8sm29186175e9.4.2025.10.13.05.41.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Oct 2025 05:42:02 -0700 (PDT)
+Message-ID: <7176597b-006f-40ad-9421-860d80d7e696@redhat.com>
+Date: Mon, 13 Oct 2025 14:41:59 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:378a:b0:42f:7fcc:35a8 with SMTP id
- e9e14a558f8ab-42f8736c28bmr229535705ab.12.1760344404060; Mon, 13 Oct 2025
- 01:33:24 -0700 (PDT)
-Date: Mon, 13 Oct 2025 01:33:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68ecb954.050a0220.ac43.0018.GAE@google.com>
-Subject: [syzbot] [bpf?] [trace?] BUG: stack guard page was hit in br_handle_frame
-From: syzbot <syzbot+593efacb260a29c44abc@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, mathieu.desnoyers@efficios.com, 
-	mattbobrowski@google.com, mhiramat@kernel.org, netdev@vger.kernel.org, 
-	rostedt@goodmis.org, sdf@fomichev.me, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 mm-new 03/11] mm: thp: add support for BPF based THP
+ order selection
+To: Yafang Shao <laoar.shao@gmail.com>, Tejun Heo <tj@kernel.org>,
+ Michal Hocko <mhocko@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Zi Yan <ziy@nvidia.com>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>, baolin.wang@linux.alibaba.com,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Liam Howlett <Liam.Howlett@oracle.com>, npache@redhat.com,
+ ryan.roberts@arm.com, dev.jain@arm.com, usamaarif642@gmail.com,
+ gutierrez.asier@huawei-partners.com, Matthew Wilcox <willy@infradead.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Amery Hung <ameryhung@gmail.com>,
+ David Rientjes <rientjes@google.com>, Jonathan Corbet <corbet@lwn.net>,
+ 21cnbao@gmail.com, Shakeel Butt <shakeel.butt@linux.dev>,
+ lance.yang@linux.dev, Randy Dunlap <rdunlap@infradead.org>,
+ bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <20250930055826.9810-1-laoar.shao@gmail.com>
+ <20250930055826.9810-4-laoar.shao@gmail.com>
+ <CAADnVQJtrJZOCWZKH498GBA8M0mYVztApk54mOEejs8Wr3nSiw@mail.gmail.com>
+ <27e002e3-b39f-40f9-b095-52da0fbd0fc7@redhat.com>
+ <CALOAHbBFNNXHdzp1zNuD530r9ZjpQF__wGWyAdR7oDLvemYSMw@mail.gmail.com>
+ <7723a2c7-3750-44f7-9eb5-4ef64b64fbb8@redhat.com>
+ <CALOAHbD_tRSyx1LXKfFrUriH6BcRS6Hw9N1=KddCJpgXH8vZug@mail.gmail.com>
+ <96AE1C18-3833-4EB8-9145-202517331DF5@nvidia.com>
+ <f743cfcd-2467-42c5-9a3c-3dceb6ff7aa8@redhat.com>
+ <CALOAHbAY9sjG-M=nwWRdbp3_m2cx_YJCb7DToaXn-kHNV+A5Zg@mail.gmail.com>
+ <129379f6-18c7-4d10-8241-8c6c5596d6d5@redhat.com>
+ <CALOAHbD8ko104PEFHPYjvnhKL50XTtpbHL_ehTLCCwSX0HG3-A@mail.gmail.com>
+ <3577f7fd-429a-49c5-973b-38174a67be15@redhat.com>
+ <CALOAHbAeS2HzQN96UZNOCuME098=GvXBUh1P4UwUJr0U-bB5EQ@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <CALOAHbAeS2HzQN96UZNOCuME098=GvXBUh1P4UwUJr0U-bB5EQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
+>> I came to the same conclusion. At least it's a valid start.
+>>
+>> Maybe we would later want a global fallback BPF-THP prog if none was
+>> enabled for a specific MM.
+> 
+> good idea. We can fallback to the global model when attaching pid 1.
+> 
+>>
+>> But I would expect to start with a per MM way of doing it, it gives you
+>> way more flexibility in the long run.
+> 
+> THP, such as shmem and file-backed THP, are shareable across multiple
+> processes and cgroups. If we allow different BPF-THP policies to be
+> applied to these shared resources, it could lead to policy
+> inconsistencies.
 
-syzbot found the following issue on:
+Sure, but nothing new about that (e.g., VM_HUGEPAGE, VM_NOHUGEPAGE, 
+PR_GET_THP_DISABLE).
 
-HEAD commit:    0db4941d9dae bpf: Use rcu_read_lock_dont_migrate in bpf_sk..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=107ef92f980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e0e0bf7e51565cd
-dashboard link: https://syzkaller.appspot.com/bug?extid=593efacb260a29c44abc
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+I'd expect that we focus on anon THP as the first step either way.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Skimming over this series, anon memory seems to be the main focus.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/692372caac28/disk-0db4941d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5518b9303204/vmlinux-0db4941d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/606bc80ec5b8/bzImage-0db4941d.xz
+> This would ultimately recreate a long-standing issue
+> in memcg, which still lacks a robust solution for this problem [0].
+> 
+> This suggests that applying SCOPED policies to SHAREABLE memory may be
+> fundamentally flawed ;-)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+593efacb260a29c44abc@syzkaller.appspotmail.com
+Yeah, shared memory is usually more tricky: see mempolicy handling for 
+shmem. There, the policy is much rather glued to a file than to a process.
 
-bridge0: received packet on team0 with own address as source address (addr:aa:aa:aa:aa:aa:17, vlan:0)
-bridge0: received packet on team0 with own address as source address (addr:aa:aa:aa:aa:aa:17, vlan:0)
-bridge0: received packet on team0 with own address as source address (addr:aa:aa:aa:aa:aa:17, vlan:0)
-BUG: IRQ stack guard page was hit at ffffc90000a00ff8 (stack is ffffc90000a01000..ffffc90000a09000)
-Oops: stack guard page: 0000 [#1] SMP KASAN PTI
-CPU: 1 UID: 0 PID: 12957 Comm: syz.8.2194 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
-RIP: 0010:strlen+0xa/0x70 lib/string.c:417
-Code: 07 38 c1 7c db e8 b6 ea e1 f6 eb d4 90 0f 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 41 57 41 56 41 54 <53> 48 c7 c0 ff ff ff ff 49 be 00 00 00 00 00 fc ff df 48 89 fb 49
-RSP: 0018:ffffc90000a01000 EFLAGS: 00010082
-RAX: ffffffff8b6bd780 RBX: ffffffff8e13b278 RCX: ffff88805b39dac0
-RDX: ffffffff81ca8977 RSI: ffffffff8e13b260 RDI: ffffffff8b6bd780
-RBP: ffffc90000a01108 R08: ffffc90000a0122f R09: 0000000000000000
-R10: ffffc90000a01220 R11: ffffffffa02017d4 R12: 1ffff9200014020c
-R13: ffffffff81ca8977 R14: ffffffff8e00a0c0 R15: dffffc0000000000
-FS:  000055556b813500(0000) GS:ffff888125e27000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90000a00ff8 CR3: 000000003c5ce000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-Call Trace:
- <IRQ>
- __fortify_strlen include/linux/fortify-string.h:268 [inline]
- trace_event_get_offsets_lock include/trace/events/lock.h:50 [inline]
- do_perf_trace_lock include/trace/events/lock.h:50 [inline]
- perf_trace_lock+0xc2/0x3b0 include/trace/events/lock.h:50
- __do_trace_lock_release include/trace/events/lock.h:69 [inline]
- trace_lock_release include/trace/events/lock.h:69 [inline]
- lock_release+0x3b2/0x3e0 kernel/locking/lockdep.c:5879
- rcu_lock_release include/linux/rcupdate.h:341 [inline]
- rcu_read_unlock include/linux/rcupdate.h:871 [inline]
- trace_call_bpf+0x79e/0xb50 kernel/trace/bpf_trace.c:147
- perf_trace_run_bpf_submit+0x78/0x170 kernel/events/core.c:10931
- do_perf_trace_preemptirq_template include/trace/events/preemptirq.h:14 [inline]
- perf_trace_preemptirq_template+0x280/0x340 include/trace/events/preemptirq.h:14
- __do_trace_irq_enable include/trace/events/preemptirq.h:40 [inline]
- trace_irq_enable+0xee/0x110 include/trace/events/preemptirq.h:40
- trace_hardirqs_on+0x18/0x40 kernel/trace/trace_preemptirq.c:73
- __local_bh_enable_ip+0x12d/0x1c0 kernel/softirq.c:455
- local_bh_enable include/linux/bottom_half.h:33 [inline]
- ipt_do_table+0x13dd/0x1640 net/ipv4/netfilter/ip_tables.c:357
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_slow+0xc5/0x220 net/netfilter/core.c:623
- nf_hook include/linux/netfilter.h:273 [inline]
- NF_HOOK+0x53e/0x6b0 include/linux/netfilter.h:316
- br_nf_post_routing+0xb66/0xfe0 net/bridge/br_netfilter_hooks.c:966
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_slow+0xc5/0x220 net/netfilter/core.c:623
- nf_hook include/linux/netfilter.h:273 [inline]
- NF_HOOK+0x215/0x3c0 include/linux/netfilter.h:316
- br_forward_finish+0xd3/0x130 net/bridge/br_forward.c:66
- br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
- br_nf_forward_finish+0xa40/0xe60 net/bridge/br_netfilter_hooks.c:662
- NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
- br_nf_forward_ip+0x647/0x7e0 net/bridge/br_netfilter_hooks.c:716
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_slow+0xc5/0x220 net/netfilter/core.c:623
- nf_hook include/linux/netfilter.h:273 [inline]
- NF_HOOK+0x215/0x3c0 include/linux/netfilter.h:316
- __br_forward+0x41e/0x600 net/bridge/br_forward.c:115
- deliver_clone net/bridge/br_forward.c:131 [inline]
- maybe_deliver+0xb5/0x160 net/bridge/br_forward.c:191
- br_flood+0x31a/0x6a0 net/bridge/br_forward.c:238
- br_handle_frame_finish+0x15a3/0x1c50 net/bridge/br_input.c:229
- br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
- br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
- NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
- br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
- br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
- __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
- __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
- __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
- netif_receive_skb_internal net/core/dev.c:6278 [inline]
- netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
- NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
- br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
- br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
- br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
- NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
- br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
- br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
- __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
- __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
- __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
- netif_receive_skb_internal net/core/dev.c:6278 [inline]
- netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
- NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
- br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
- br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
- br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
- NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
- br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
- br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
- __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
- __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
- __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
- netif_receive_skb_internal net/core/dev.c:6278 [inline]
- netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
- NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
- br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
- br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
- br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
- NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
- br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
- br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
- __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
- __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
- __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
- netif_receive_skb_internal net/core/dev.c:6278 [inline]
- netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
- NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
- br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
- br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
- br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
- NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
- br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
- br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
- __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
- __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
- __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
- netif_receive_skb_internal net/core/dev.c:6278 [inline]
- netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
- NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
- br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
- br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
- br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
- NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
- br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
- br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
- __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
- __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
- __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
- netif_receive_skb_internal net/core/dev.c:6278 [inline]
- netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
- NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
- br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
- br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
- br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
- NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
- br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
- br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
- __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
- __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
- __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
- netif_receive_skb_internal net/core/dev.c:6278 [inline]
- netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
- NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
- br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
- br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
- br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
- NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
- br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
- br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
- __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
- __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
- __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
- netif_receive_skb_internal net/core/dev.c:6278 [inline]
- netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
- NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
- br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
- br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
- br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
- NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
- br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
- br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
- __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
- __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
- __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
- netif_receive_skb_internal net/core/dev.c:6278 [inline]
- netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
- NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
- br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
- br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
- br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
- NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
- br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
- br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
- __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
- __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
- __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
- process_backlog+0x60e/0x14f0 net/core/dev.c:6544
- __napi_poll+0xc7/0x360 net/core/dev.c:7594
- napi_poll net/core/dev.c:7657 [inline]
- net_rx_action+0x5f7/0xdf0 net/core/dev.c:7784
- handle_softirqs+0x283/0x870 kernel/softirq.c:622
- do_softirq+0xec/0x180 kernel/softirq.c:523
- </IRQ>
- <TASK>
- __local_bh_enable_ip+0x17d/0x1c0 kernel/softirq.c:450
- local_bh_enable include/linux/bottom_half.h:33 [inline]
- fpregs_unlock arch/x86/include/asm/fpu/api.h:77 [inline]
- fpu_clone+0x53f/0xbb0 arch/x86/kernel/fpu/core.c:692
- copy_thread+0x3f5/0x9a0 arch/x86/kernel/process.c:216
- copy_process+0x18ae/0x3c00 kernel/fork.c:2190
- kernel_clone+0x21e/0x840 kernel/fork.c:2609
- __do_sys_clone3 kernel/fork.c:2911 [inline]
- __se_sys_clone3+0x256/0x2d0 kernel/fork.c:2890
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f5f291c3609
-Code: d7 08 00 48 8d 3d 9c d7 08 00 e8 e2 28 f6 ff 66 90 b8 ea ff ff ff 48 85 ff 74 2c 48 85 d2 74 27 49 89 c8 b8 b3 01 00 00 0f 05 <48> 85 c0 7c 18 74 01 c3 31 ed 48 83 e4 f0 4c 89 c7 ff d2 48 89 c7
-RSP: 002b:00007fffae254858 EFLAGS: 00000206 ORIG_RAX: 00000000000001b3
-RAX: ffffffffffffffda RBX: 00007f5f291459f0 RCX: 00007f5f291c3609
-RDX: 00007f5f291459f0 RSI: 0000000000000058 RDI: 00007fffae2548a0
-RBP: 00007f5f26fb26c0 R08: 00007f5f26fb26c0 R09: 00007fffae254987
-R10: 0000000000000008 R11: 0000000000000206 R12: ffffffffffffffa8
-R13: 000000000000006e R14: 00007fffae2548a0 R15: 00007fffae254988
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:strlen+0xa/0x70 lib/string.c:417
-Code: 07 38 c1 7c db e8 b6 ea e1 f6 eb d4 90 0f 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 41 57 41 56 41 54 <53> 48 c7 c0 ff ff ff ff 49 be 00 00 00 00 00 fc ff df 48 89 fb 49
-RSP: 0018:ffffc90000a01000 EFLAGS: 00010082
+-- 
+Cheers
 
-RAX: ffffffff8b6bd780 RBX: ffffffff8e13b278 RCX: ffff88805b39dac0
-RDX: ffffffff81ca8977 RSI: ffffffff8e13b260 RDI: ffffffff8b6bd780
-RBP: ffffc90000a01108 R08: ffffc90000a0122f R09: 0000000000000000
-R10: ffffc90000a01220 R11: ffffffffa02017d4 R12: 1ffff9200014020c
-R13: ffffffff81ca8977 R14: ffffffff8e00a0c0 R15: dffffc0000000000
-FS:  000055556b813500(0000) GS:ffff888125e27000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90000a00ff8 CR3: 000000003c5ce000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	38 c1                	cmp    %al,%cl
-   2:	7c db                	jl     0xffffffdf
-   4:	e8 b6 ea e1 f6       	call   0xf6e1eabf
-   9:	eb d4                	jmp    0xffffffdf
-   b:	90                   	nop
-   c:	0f 0b                	ud2
-   e:	90                   	nop
-   f:	90                   	nop
-  10:	90                   	nop
-  11:	90                   	nop
-  12:	90                   	nop
-  13:	90                   	nop
-  14:	90                   	nop
-  15:	90                   	nop
-  16:	90                   	nop
-  17:	90                   	nop
-  18:	90                   	nop
-  19:	90                   	nop
-  1a:	90                   	nop
-  1b:	90                   	nop
-  1c:	90                   	nop
-  1d:	90                   	nop
-  1e:	90                   	nop
-  1f:	f3 0f 1e fa          	endbr64
-  23:	41 57                	push   %r15
-  25:	41 56                	push   %r14
-  27:	41 54                	push   %r12
-* 29:	53                   	push   %rbx <-- trapping instruction
-  2a:	48 c7 c0 ff ff ff ff 	mov    $0xffffffffffffffff,%rax
-  31:	49 be 00 00 00 00 00 	movabs $0xdffffc0000000000,%r14
-  38:	fc ff df
-  3b:	48 89 fb             	mov    %rdi,%rbx
-  3e:	49                   	rex.WB
+David / dhildenb
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
