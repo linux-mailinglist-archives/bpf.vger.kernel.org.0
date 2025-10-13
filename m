@@ -1,64 +1,81 @@
-Return-Path: <bpf+bounces-70806-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3828BBD5464
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 18:55:04 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A76F2BD5653
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 19:11:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CD106503CAC
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 16:29:51 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4596350105E
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 16:52:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17E0243969;
-	Mon, 13 Oct 2025 16:29:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CEE229BDAD;
+	Mon, 13 Oct 2025 16:51:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="YvA3pS87"
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="sUr4Q2S/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F3E23F294
-	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 16:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B54296BD4;
+	Mon, 13 Oct 2025 16:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760372972; cv=none; b=XdyO1F+LwKkuv3ptkNQVdOZN1DVl6u9Zx+5pnqn9/KxIrbUpRrmu460N3icyzzQAJqSoKxANvNOqC9NiGr58460yEeKhgvGgF4mQG+dosBoKegh3F6pMMaMtLPTnddaYOZ0ZPf/+uO9gE57UTP/jYdySioGH9Lo/CpuPkAmpvdU=
+	t=1760374308; cv=none; b=qAiMwLoyL8ySCdJbXMHSq6m7O7S0S2Ef5Ng3NA7/hCOstsKmOVD0mxHyJYnJ2KkK39KAcd7uTGotrKSViXXEyrFA5RKyjsbLe2s+dpICoOqIljK/Rc0ARAezRK/6glGo6V4kIoFvrK63WT2JALpe3yaA/rbdgfBiUUVEI7lWoqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760372972; c=relaxed/simple;
-	bh=NPqeS/xgQ+ugsO2vUERndaewe+g4Zf/7Lb3soxYdxXM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KlPrDQmXWZpjS67F3xchODtvmLj9bpSGZ7dUjjrsJNHMpOOhE/Fp8Fm30/A0CsapULZh+6j9hlEF9wHM/54wl1oyOzWss7IAx9I50+cP/izA/EbhACrSI8H4fx9657thE9d65fnCIZYeG/cxvqgfhbOB/fLsRazGEclSPoM4p3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=YvA3pS87; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4cljV710Wcz9thc;
-	Mon, 13 Oct 2025 18:29:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
-	t=1760372959;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=woMg1csc5fex2jKsP23OCBUOiPYc9j/3r+xuaOIhYOM=;
-	b=YvA3pS87x9WYXOT+IwZi3FBpDWHEexqeaEQ0dmmtI8GK+sMeZ+fPjvnzsZVXju+8/IGiOz
-	FlI1Q1Ts9YEFTaI9DMqffAyd+JOuVc4x6BN7HCfejqFE7Mz9AjG0x/onvjFuV/DlMBj1OX
-	W56z0bs4hczvpxoN+LE3agi0g34t63QNyGrlvqG66o7pXiNnsteOWNIvjivnyJQCf5Ch6K
-	b0UTp+gUf/f0egKfdi77nmjGDidqVkebosJ2dfG1slP7hoeU/BY+gwubIVFNSZtLmuyE1v
-	EehN8T2KTk09rz6MNUEAGhG4My6nC++qLcSiPF+RRUS++vyQK/5SgHbmJLOeMg==
-From: Brahmajit Das <listout@listout.xyz>
-To: syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
-Cc: bpf@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: [PATCH] bpf: avoid sleeping in invalid context during sock_map_delete_elem path
-Date: Mon, 13 Oct 2025 21:59:06 +0530
-Message-ID: <20251013162906.1265465-1-listout@listout.xyz>
-In-Reply-To: <68af9b2b.a00a0220.2929dc.0008.GAE@google.com>
-References: <68af9b2b.a00a0220.2929dc.0008.GAE@google.com>
+	s=arc-20240116; t=1760374308; c=relaxed/simple;
+	bh=etctfT5bJS7hMdWOBeKKV/EXgbxxnq1nm3ffRaajVQ4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oU4D8zfoMuxKzGVx6Euhl9liftxQsKdv6NLyYbct3EsDSBO2fStRy49bwbQKSFUyJ1cTC1J1X9LYSZy9PxFXaGvZvsvTvogG4IcxwEiWP2sSU8B2WvXI+Oi3YDuI1quomqD8Y9yNcKuuDNN4ujumROUj/qdD06Luxyl29PqnyaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=sUr4Q2S/; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1760374303;
+	bh=etctfT5bJS7hMdWOBeKKV/EXgbxxnq1nm3ffRaajVQ4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sUr4Q2S/PPM/95hQPr5I57QevO5qM/XqZH6T5QJz2/fRkiUoefmK7iRp2hUgHmH0M
+	 mhFpfl2qq0Wjdf1g73UJ4X5ejEdihoZvS57TU+YoJcJMDmIklUbStAVPHzmlLEJbu/
+	 JK5wjCqqQeTuOegDplsrZtaoB6bLipoMl1Y5XQR1zDgbJBJWdzKtQ8PUqWaBgqZrUF
+	 yAaT0JWQbvV+LKK1uGN4lo/MbSx+aymi90xs5iBX6VXgYXLcH/i5flO5cU8S4E4jkQ
+	 O+YWuHlObDE2VXWK4Qbspf1eultdq9g94uec1diMdOdCHO8laObbFgkRJYorfeO1uW
+	 XZtLhKPFNO04g==
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 9C60F60075;
+	Mon, 13 Oct 2025 16:50:35 +0000 (UTC)
+Received: by x201s (Postfix, from userid 1000)
+	id 836782011CC; Mon, 13 Oct 2025 16:50:18 +0000 (UTC)
+From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Daniel Zahka <daniel.zahka@gmail.com>,
+	Donald Hunter <donald.hunter@gmail.com>,
+	Jacob Keller <jacob.e.keller@intel.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Joe Damato <jdamato@fastly.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Simon Horman <horms@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	Willem de Bruijn <willemb@google.com>,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/6] tools: ynl-gen: generate flags better
+Date: Mon, 13 Oct 2025 16:49:57 +0000
+Message-ID: <20251013165005.83659-1-ast@fiberby.net>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,114 +85,32 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-#syz test
+This series focusses on increasing the quality of
+the C code generated by ynl-gen for flags.
 
-The syzkaller report exposed a BUG: “sleeping function called from
-invalid context” in sock_map_delete_elem, which happens when
-`bpf_test_timer_enter()` disables preemption but the delete path later
-invokes a sleeping function while still in that context. Specifically:
+NB: I included a note in patch 6, on usage of the private
+NETDEV_XDP_ACT_MASK in user-space.
 
-- The crash trace shows `bpf_test_timer_enter()` acquiring a
-  preempt_disable path (via t->mode == NO_PREEMPT), but the symmetric
-  release path always calls migrate_enable(), mismatching the earlier
-  disable.
-- As a result, preemption remains disabled across the
-  sock_map_delete_elem path, leading to a sleeping call under an invalid
-  context. :contentReference[oaicite:0]{index=0}
+Asbjørn Sloth Tønnesen (6):
+  tools: ynl-gen: bitshift the flag values in the generated code
+  tools: ynl-gen: refactor render-max enum generation
+  tools: ynl-gen: use uapi mask definition in NLA_POLICY_MASK
+  tools: ynl-gen: add generic p_wrap() helper
+  tools: ynl-gen: construct bitflag masks in generated headers
+  tools: ynl-gen: allow custom naming of render-max definitions
 
-To fix this, normalize the disable/enable pairing: always use
-migrate_disable()/migrate_enable() regardless of t->mode. This ensures
-that we never remain with preemption disabled unintentionally when
-entering the delete path, and avoids invalid-context sleeping.
+ Documentation/netlink/genetlink-c.yaml        |  3 +
+ Documentation/netlink/genetlink-legacy.yaml   |  3 +
+ .../userspace-api/netlink/c-code-gen.rst      |  7 +-
+ include/uapi/linux/dpll.h                     |  6 +-
+ .../uapi/linux/ethtool_netlink_generated.h    | 20 ++---
+ include/uapi/linux/netdev.h                   | 34 ++++----
+ net/psp/psp-nl-gen.h                          |  4 +-
+ tools/include/uapi/linux/netdev.h             | 34 ++++----
+ tools/net/ynl/pyynl/lib/nlspec.py             |  7 +-
+ tools/net/ynl/pyynl/ynl_gen_c.py              | 79 +++++++++++--------
+ 10 files changed, 117 insertions(+), 80 deletions(-)
 
-Reported-by: syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
-Signed-off-by: Brahmajit Das <listout@listout.xyz>
----
- net/bpf/test_run.c | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
-
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index dfb03ee0bb62..92ff05821003 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /* Copyright (c) 2017 Facebook
-  */
-+#include "linux/rcupdate.h"
- #include <linux/bpf.h>
- #include <linux/btf.h>
- #include <linux/btf_ids.h>
-@@ -29,7 +30,6 @@
- #include <trace/events/bpf_test_run.h>
- 
- struct bpf_test_timer {
--	enum { NO_PREEMPT, NO_MIGRATE } mode;
- 	u32 i;
- 	u64 time_start, time_spent;
- };
-@@ -38,10 +38,8 @@ static void bpf_test_timer_enter(struct bpf_test_timer *t)
- 	__acquires(rcu)
- {
- 	rcu_read_lock();
--	if (t->mode == NO_PREEMPT)
--		preempt_disable();
--	else
--		migrate_disable();
-+	/*migrate_disable();*/
-+	rcu_read_lock_dont_migrate();
- 
- 	t->time_start = ktime_get_ns();
- }
-@@ -51,10 +49,8 @@ static void bpf_test_timer_leave(struct bpf_test_timer *t)
- {
- 	t->time_start = 0;
- 
--	if (t->mode == NO_PREEMPT)
--		preempt_enable();
--	else
--		migrate_enable();
-+	/*migrate_enable();*/
-+	rcu_read_unlock_migrate();
- 	rcu_read_unlock();
- }
- 
-@@ -374,7 +370,7 @@ static int bpf_test_run_xdp_live(struct bpf_prog *prog, struct xdp_buff *ctx,
- 
- {
- 	struct xdp_test_data xdp = { .batch_size = batch_size };
--	struct bpf_test_timer t = { .mode = NO_MIGRATE };
-+	struct bpf_test_timer t = {};
- 	int ret;
- 
- 	if (!repeat)
-@@ -404,7 +400,7 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
- 	struct bpf_prog_array_item item = {.prog = prog};
- 	struct bpf_run_ctx *old_ctx;
- 	struct bpf_cg_run_ctx run_ctx;
--	struct bpf_test_timer t = { NO_MIGRATE };
-+	struct bpf_test_timer t = {};
- 	enum bpf_cgroup_storage_type stype;
- 	int ret;
- 
-@@ -1377,7 +1373,7 @@ int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
- 				     const union bpf_attr *kattr,
- 				     union bpf_attr __user *uattr)
- {
--	struct bpf_test_timer t = { NO_PREEMPT };
-+	struct bpf_test_timer t = {};
- 	u32 size = kattr->test.data_size_in;
- 	struct bpf_flow_dissector ctx = {};
- 	u32 repeat = kattr->test.repeat;
-@@ -1445,7 +1441,7 @@ int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
- int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog, const union bpf_attr *kattr,
- 				union bpf_attr __user *uattr)
- {
--	struct bpf_test_timer t = { NO_PREEMPT };
-+	struct bpf_test_timer t = {};
- 	struct bpf_prog_array *progs = NULL;
- 	struct bpf_sk_lookup_kern ctx = {};
- 	u32 repeat = kattr->test.repeat;
 -- 
 2.51.0
 
