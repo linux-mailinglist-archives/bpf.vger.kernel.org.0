@@ -1,124 +1,182 @@
-Return-Path: <bpf+bounces-70805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65166BD3BA0
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 16:55:25 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3828BBD5464
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 18:55:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 532DC3C7667
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 14:43:23 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CD106503CAC
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 16:29:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59EC130E824;
-	Mon, 13 Oct 2025 14:36:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17E0243969;
+	Mon, 13 Oct 2025 16:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FwCcQnEN"
+	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="YvA3pS87"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2307E30E0F9
-	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 14:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F3E23F294
+	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 16:29:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760366171; cv=none; b=HEqYh0i119COSHWZybcIBQu4hSjROyJLXHgukhEZO/fw+HDiGvdfcdszf8Fnj3lnObrsIlAl5vv9ZGfkWcsXWhuw4XqSePL20XpQClG35hQlGICVmm2uDLmP9qjr7hEiJA9SqMFlB02m3BfbJM1f0RioOLsjYlFibPIzGRB+IN8=
+	t=1760372972; cv=none; b=XdyO1F+LwKkuv3ptkNQVdOZN1DVl6u9Zx+5pnqn9/KxIrbUpRrmu460N3icyzzQAJqSoKxANvNOqC9NiGr58460yEeKhgvGgF4mQG+dosBoKegh3F6pMMaMtLPTnddaYOZ0ZPf/+uO9gE57UTP/jYdySioGH9Lo/CpuPkAmpvdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760366171; c=relaxed/simple;
-	bh=x5cR/bWZX4q4NmLZideyvdFIjgN6iJuAET2ETwNeMGk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X1y5uhXg4DFJxznjEAEJOt/SgkwZCFQfwlTbs/oyq9DVKfyKvAzi+csT/WmLVBk32/Q2WGQYCaXuGpXhnsfs7kKdyK5Z+GvcNP9+8hI6vo9NJ+7E+892y+pCzAr2lPYm+xSpcBK7Xy0ygkfyacZLsOXHLx6ZDo8SIVbQI86P648=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FwCcQnEN; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-afcb7322da8so170707566b.0
-        for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 07:36:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760366168; x=1760970968; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=L8bp7JJD4tNO45pMRU9GuVCvWfU7WngDRput1R9LznU=;
-        b=FwCcQnENF8wnyyhYNqZVDpyXcSDcU8niCWrlvWkNPePEieXpRYly3z0cWbSvyBIQzP
-         1v8js7Ftd/gVKl0+/XODpF+5U5CrEvoIC6Ldxrd27DpHSjE4AFCBcimzeyFXEVGhmJM5
-         87ZYh2AN8Yx9bpxbzzJIlS1hCNsU39QPsSjffV81q/66xbgho/PPqrJgwB81mcRD3m0F
-         fY/1MdZllluAc3J83SJxzICrwd/i61Q9on63hIshSh9dAohYJX3rJQfuFf3nOSkRSH/F
-         uyqK9+ZmTK80MUV8sar+L3hna97j/s/+JeqDFntYWcV0rHfeUzEqzo9dvtviByg+mqKS
-         iaig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760366168; x=1760970968;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L8bp7JJD4tNO45pMRU9GuVCvWfU7WngDRput1R9LznU=;
-        b=Fs3Mm+UMAmORDclDPBKSGTLeMaXH2sbET9rYDNcG1f5lHr8BIg+OWzikVtm+QknsKb
-         FaurSCRTHXqzR5RE2CeS7HSIkoAZTIp3+oIg/CfFcIJDJObFREroBcWR9rsoC2PUgVw2
-         ECVyrozIRgTJF0X4tvvUCrxS9t62i0WGGEmWKha7rshsFpd4MscX8jPK2mEqeb/EiAxM
-         ljHtj1vSkMkA6QPlGgWzDz5kU/ipINhqX98rEJrRVpIKc0KFWvYJ4ZsNlZicvwoJY6J1
-         BVI4C/KY40SbPA8zov+nNB+VAYRMw607e5qRXuQXJyRnNIPlMWVIWivlH4Bnn3fWvaJU
-         IMpg==
-X-Forwarded-Encrypted: i=1; AJvYcCXhR220u1XvdenzQ0EOReuf7bwvHuHtyOJK2pr+X4YbqhjA2/NSDPSG3x76OVqW3iHv9oM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2BvmWzSTp8LxFAAATk4Js6iVRJBH72C/o0GI0weTxieSqnC+d
-	tLNK4jBj/ztDJPL/N63RbsMtnyY22ikZubpPBTbumOdjGE6cq5RGLVK3
-X-Gm-Gg: ASbGncuy9ZViga+y6YBaK1VKweU71kDS9fz0YnBf5s3LLkIim7vDkq6cJZLLI//+VPH
-	byWo/ShRVH7HPEwrd3sYudgkjep0PqHQKfaMCm1JDSL8eHnJVhBargrQF3UPWSdelEfU4Z4ED1n
-	6BbxG77HIH0VRPra/TYISq0W6i4VOLO2D8GFuKjL0Bz9O1G+BYG6SyexacLSbSd0/oAvTPs5sfe
-	7wNz+cWM65z1sq1pdOPqlM8Gt/HjWTyDmnskS0p2EeDFXFlWomPEVQTbGPAssvkMeV99x8xJxD3
-	Aro0+rIXxZSVm5/utxHWuA0AC23y0q+tQcGQ/PAwqqp0xC0WrPV+pWpgtF/WWzwJ90nNOeT3PYS
-	K5jCZhqfnT5aKuPkadDwHWHhchmC9/vPDRQy/1DL6
-X-Google-Smtp-Source: AGHT+IHkgr8MUe7DN7d82dgADvSgzkYPwDabRlFEQQq/C/tyKiLifrmlOII1t+fib5ZHhhZ6qnmJhw==
-X-Received: by 2002:a17:906:ef04:b0:b3c:8b25:ab74 with SMTP id a640c23a62f3a-b50aa393c32mr2417040266b.10.1760366168174;
-        Mon, 13 Oct 2025 07:36:08 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b55d5cad8adsm955648966b.7.2025.10.13.07.36.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Oct 2025 07:36:07 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 13 Oct 2025 16:36:06 +0200
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	Yonghong Song <yhs@fb.com>
-Subject: Re: [BUG] no ORC stacktrace from kretprobe.multi bpf program
-Message-ID: <aO0OVlfH-wVQvy0c@krava>
-References: <aObSyt3qOnS_BMcy@krava>
- <20251012130931.f2ffee08b23b6c1b17dc7af5@kernel.org>
+	s=arc-20240116; t=1760372972; c=relaxed/simple;
+	bh=NPqeS/xgQ+ugsO2vUERndaewe+g4Zf/7Lb3soxYdxXM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KlPrDQmXWZpjS67F3xchODtvmLj9bpSGZ7dUjjrsJNHMpOOhE/Fp8Fm30/A0CsapULZh+6j9hlEF9wHM/54wl1oyOzWss7IAx9I50+cP/izA/EbhACrSI8H4fx9657thE9d65fnCIZYeG/cxvqgfhbOB/fLsRazGEclSPoM4p3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=YvA3pS87; arc=none smtp.client-ip=80.241.56.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4cljV710Wcz9thc;
+	Mon, 13 Oct 2025 18:29:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
+	t=1760372959;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=woMg1csc5fex2jKsP23OCBUOiPYc9j/3r+xuaOIhYOM=;
+	b=YvA3pS87x9WYXOT+IwZi3FBpDWHEexqeaEQ0dmmtI8GK+sMeZ+fPjvnzsZVXju+8/IGiOz
+	FlI1Q1Ts9YEFTaI9DMqffAyd+JOuVc4x6BN7HCfejqFE7Mz9AjG0x/onvjFuV/DlMBj1OX
+	W56z0bs4hczvpxoN+LE3agi0g34t63QNyGrlvqG66o7pXiNnsteOWNIvjivnyJQCf5Ch6K
+	b0UTp+gUf/f0egKfdi77nmjGDidqVkebosJ2dfG1slP7hoeU/BY+gwubIVFNSZtLmuyE1v
+	EehN8T2KTk09rz6MNUEAGhG4My6nC++qLcSiPF+RRUS++vyQK/5SgHbmJLOeMg==
+From: Brahmajit Das <listout@listout.xyz>
+To: syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
+Cc: bpf@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	yonghong.song@linux.dev
+Subject: [PATCH] bpf: avoid sleeping in invalid context during sock_map_delete_elem path
+Date: Mon, 13 Oct 2025 21:59:06 +0530
+Message-ID: <20251013162906.1265465-1-listout@listout.xyz>
+In-Reply-To: <68af9b2b.a00a0220.2929dc.0008.GAE@google.com>
+References: <68af9b2b.a00a0220.2929dc.0008.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251012130931.f2ffee08b23b6c1b17dc7af5@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, Oct 12, 2025 at 01:09:31PM +0900, Masami Hiramatsu wrote:
-> On Wed, 8 Oct 2025 23:08:26 +0200
-> Jiri Olsa <olsajiri@gmail.com> wrote:
-> 
-> > hi,
-> > I'm getting no stacktrace from bpf program attached on kretprobe.multi probe
-> > (which means on top of return fprobe) on x86.
-> > 
-> > I think we need some kind of treatment we do for rethook, AFAICS the ORC unwind
-> > stops on return_to_handler, because the stack and the function itself are not
-> > adjusted for unwind_recover_ret_addr call
-> > 
-> > If it's any help I pushed the bpf/selftest for that in here:
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/log/?h=stacktrace_test
-> > 
-> > just execute:
-> >   # test_progs -t stacktrace_map/kretprobe_multi
-> 
-> Hmm, curious. as far as we are using fgraph, stacktrace should work.
-> May this happen if function-graph tracer is enabled too?
+#syz test
 
-that tests is just simple kretprobe so there should be no function-graph
-tracer in the way.. I plan to check on this again later this week
+The syzkaller report exposed a BUG: “sleeping function called from
+invalid context” in sock_map_delete_elem, which happens when
+`bpf_test_timer_enter()` disables preemption but the delete path later
+invokes a sleeping function while still in that context. Specifically:
 
-jirka
+- The crash trace shows `bpf_test_timer_enter()` acquiring a
+  preempt_disable path (via t->mode == NO_PREEMPT), but the symmetric
+  release path always calls migrate_enable(), mismatching the earlier
+  disable.
+- As a result, preemption remains disabled across the
+  sock_map_delete_elem path, leading to a sleeping call under an invalid
+  context. :contentReference[oaicite:0]{index=0}
+
+To fix this, normalize the disable/enable pairing: always use
+migrate_disable()/migrate_enable() regardless of t->mode. This ensures
+that we never remain with preemption disabled unintentionally when
+entering the delete path, and avoids invalid-context sleeping.
+
+Reported-by: syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
+Signed-off-by: Brahmajit Das <listout@listout.xyz>
+---
+ net/bpf/test_run.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
+
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index dfb03ee0bb62..92ff05821003 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /* Copyright (c) 2017 Facebook
+  */
++#include "linux/rcupdate.h"
+ #include <linux/bpf.h>
+ #include <linux/btf.h>
+ #include <linux/btf_ids.h>
+@@ -29,7 +30,6 @@
+ #include <trace/events/bpf_test_run.h>
+ 
+ struct bpf_test_timer {
+-	enum { NO_PREEMPT, NO_MIGRATE } mode;
+ 	u32 i;
+ 	u64 time_start, time_spent;
+ };
+@@ -38,10 +38,8 @@ static void bpf_test_timer_enter(struct bpf_test_timer *t)
+ 	__acquires(rcu)
+ {
+ 	rcu_read_lock();
+-	if (t->mode == NO_PREEMPT)
+-		preempt_disable();
+-	else
+-		migrate_disable();
++	/*migrate_disable();*/
++	rcu_read_lock_dont_migrate();
+ 
+ 	t->time_start = ktime_get_ns();
+ }
+@@ -51,10 +49,8 @@ static void bpf_test_timer_leave(struct bpf_test_timer *t)
+ {
+ 	t->time_start = 0;
+ 
+-	if (t->mode == NO_PREEMPT)
+-		preempt_enable();
+-	else
+-		migrate_enable();
++	/*migrate_enable();*/
++	rcu_read_unlock_migrate();
+ 	rcu_read_unlock();
+ }
+ 
+@@ -374,7 +370,7 @@ static int bpf_test_run_xdp_live(struct bpf_prog *prog, struct xdp_buff *ctx,
+ 
+ {
+ 	struct xdp_test_data xdp = { .batch_size = batch_size };
+-	struct bpf_test_timer t = { .mode = NO_MIGRATE };
++	struct bpf_test_timer t = {};
+ 	int ret;
+ 
+ 	if (!repeat)
+@@ -404,7 +400,7 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
+ 	struct bpf_prog_array_item item = {.prog = prog};
+ 	struct bpf_run_ctx *old_ctx;
+ 	struct bpf_cg_run_ctx run_ctx;
+-	struct bpf_test_timer t = { NO_MIGRATE };
++	struct bpf_test_timer t = {};
+ 	enum bpf_cgroup_storage_type stype;
+ 	int ret;
+ 
+@@ -1377,7 +1373,7 @@ int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
+ 				     const union bpf_attr *kattr,
+ 				     union bpf_attr __user *uattr)
+ {
+-	struct bpf_test_timer t = { NO_PREEMPT };
++	struct bpf_test_timer t = {};
+ 	u32 size = kattr->test.data_size_in;
+ 	struct bpf_flow_dissector ctx = {};
+ 	u32 repeat = kattr->test.repeat;
+@@ -1445,7 +1441,7 @@ int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
+ int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 				union bpf_attr __user *uattr)
+ {
+-	struct bpf_test_timer t = { NO_PREEMPT };
++	struct bpf_test_timer t = {};
+ 	struct bpf_prog_array *progs = NULL;
+ 	struct bpf_sk_lookup_kern ctx = {};
+ 	u32 repeat = kattr->test.repeat;
+-- 
+2.51.0
+
 
