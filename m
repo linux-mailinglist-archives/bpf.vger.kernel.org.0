@@ -1,202 +1,397 @@
-Return-Path: <bpf+bounces-70800-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70801-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D077BD1F1F
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 10:11:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A5A0BD211A
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 10:33:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6F8834ED6E5
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 08:11:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AC7D18992C8
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 08:33:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59A072EC0BF;
-	Mon, 13 Oct 2025 08:11:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hN5ZU1ai";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JHQYgRZP";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hN5ZU1ai";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JHQYgRZP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441612F60BC;
+	Mon, 13 Oct 2025 08:33:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 002F42EC08A
-	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 08:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37FE2EB867
+	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 08:33:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760343063; cv=none; b=I7B5bssSeRK6o7bTS8IiuHmg78F+SoE2bdnXrDv/cOlySaCq61e2K+iiQHpEDuiWPyZpr22nxroZTNy+FGCvhxVJLp0Xb9qZRYigMnW6PJLEXjxkI0ZPP1RMmlZJDyZHSAhpABpEsKYT/HpvdTuiPdh9G4mC2UItHdGmt/bHYsY=
+	t=1760344407; cv=none; b=LqYemNJkf1DvlACXEhSvMEE0Pixn/UOIr/Pbafmd7jczvnTb1Ob/fkwFPb+2/I9Lfa0Sgq8jFuh3HpIQ4/nkOaeHeIXLfQbFEtAHbr0K+PpIuH6zttDtzYIMBsO5zMDUEQW6kawcYZOu7fCRsXrSSJ4qoYp//BK3hiUMmnu34/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760343063; c=relaxed/simple;
-	bh=lopXj8e6aKPDNo7SHBuieYj+hSmgFkgij2+xbxnVH6Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uzrkvO+Eiq4Gq8dWsG/cs1/j/zkf7uSpovp+nCDE9W3crKgh6+VXXZxinXZSouaCArX6AmisOX/ClSQ3orryhJU1b+SUcvSvvtgd8i3iSMKy2jrv0gxKgCGnjXRwRXU/Bk715RdEz6Wt5rvg9fAxbSBSgtH7N5Q8OWSjDFKpyaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hN5ZU1ai; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JHQYgRZP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hN5ZU1ai; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JHQYgRZP; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2C75A21275;
-	Mon, 13 Oct 2025 08:11:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760343060; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=8ps41zUy95kfjQbWRm26qwDq0kcKNrKkfDkWwXUzHQk=;
-	b=hN5ZU1aiAETszeTISSACxTrVIT4FIDiNbwSCadcQjU4eLVyGNFACm9vuYpGaOt0InVZNYF
-	szhIRF9tldJ1NwWFm8eqsrCUfMokc9koSOXtaSXzh9Tfg7bk2O1UIS3FelNv/ocXg9fGon
-	kKzk2SaMRc8dAI2b8h6uN4JKW2kfZkI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760343060;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=8ps41zUy95kfjQbWRm26qwDq0kcKNrKkfDkWwXUzHQk=;
-	b=JHQYgRZPJtqz/rhmxOsmYlzT6tBnNajUWKDitVayTk3qrf1RZRnHzc1oNPW45ivTr/4mvk
-	UhSMUJHtTLjeCRCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760343060; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=8ps41zUy95kfjQbWRm26qwDq0kcKNrKkfDkWwXUzHQk=;
-	b=hN5ZU1aiAETszeTISSACxTrVIT4FIDiNbwSCadcQjU4eLVyGNFACm9vuYpGaOt0InVZNYF
-	szhIRF9tldJ1NwWFm8eqsrCUfMokc9koSOXtaSXzh9Tfg7bk2O1UIS3FelNv/ocXg9fGon
-	kKzk2SaMRc8dAI2b8h6uN4JKW2kfZkI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760343060;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=8ps41zUy95kfjQbWRm26qwDq0kcKNrKkfDkWwXUzHQk=;
-	b=JHQYgRZPJtqz/rhmxOsmYlzT6tBnNajUWKDitVayTk3qrf1RZRnHzc1oNPW45ivTr/4mvk
-	UhSMUJHtTLjeCRCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1039213874;
-	Mon, 13 Oct 2025 08:11:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id HCp0AxS07GiGHQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 13 Oct 2025 08:11:00 +0000
-Message-ID: <32a23856-ffaa-4d41-b77f-fa0306042621@suse.cz>
-Date: Mon, 13 Oct 2025 10:10:59 +0200
+	s=arc-20240116; t=1760344407; c=relaxed/simple;
+	bh=wXQZLc1odkcf6QcU9vPPSZuObkLbPZG6b5Ao9isTL/s=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ctH96HLLiz1AIoa1SL0IY2WN5FUbvODL1W4kC3qoRg73LiPziRge7CmLSAGMPPAhtR0jPpQcT+Yj5TSBAYbULDmm524N5bpvDQgMpXXogzzDooHbWwtAcqIVrfDGLfOx5ASJX/+Daf4WISCFZ7XV/Ti6hNRPwBT5+2Anz7knjCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-42d7e4abc61so129795305ab.3
+        for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 01:33:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760344404; x=1760949204;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uCv209PCyXrgwvMWYxejYyi6NbJpRieHlPfmxnoDizI=;
+        b=URH2Vd7nbpNJrFR2c87SboOKT8jvH0YLs7z6x3uDOWg4IpaaV3xMGfouyzYb5Vovs6
+         /L7zFWbSRBl/zabvcSUM/wC6kPZ1sPC4Z7a1FYkyDoxR1MWTXgvmX8tf0hhDMOPLfwmZ
+         Ibw4Ofhh1RUreZqtaediK/Aw2xLDkgaqoCU6QATl0hqjqIf0w5b5rBTMPiiQbs62iYPm
+         4rwL0MZgSeXdA8Oky/GbdLuTFZIf2BOnd8txu+yK+dA4gBmAhkieKu7ageQwTlJgZZX1
+         v0Ec4sGcqQZ1znIPXUctBvFRNCyTsshAJ4lHpxCbV4i/O7jJj16cO3oVQcm8ji/lFh3j
+         2Dhw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+XDTKBTLIO9Tr3JDZbknLWt3nlUQL7ofVMiu10BrIXVNXJiFMoT6eneLuHlyyoEEln5U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxEdHC+7tG+o4r1EpvLtjJppK907QlwjPQTm/mA/PaZA4Ehzacp
+	hbVG+lPzCYl4vMfJAfNLAuDbgKlzUKeVEuIJfVlUjD0wqFT/0biaN/tM/kWmnTzIcc8F6o2DZce
+	srjn1wFYPgTErx1KOLvG8SMxeXYeGY8zsh1k7qiGux8mA6iBtTpFq4eGRqi4=
+X-Google-Smtp-Source: AGHT+IHTMsch5aV2Nu9FAhOlJb4LF1SyaXjozUu+X+wE98mO8iFxI/LxleuilPnXweOu1amGGyU4obKifDUtObUBs73PkaPnPO08
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [mm?] WARNING: locking bug in __set_page_owner (2)
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: syzbot <syzbot+8259e1d0e3ae8ed0c490@syzkaller.appspotmail.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Brendan Jackman <jackmanb@google.com>,
- LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
- Michal Hocko <mhocko@suse.com>, Network Development
- <netdev@vger.kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- syzkaller-bugs <syzkaller-bugs@googlegroups.com>, ziy@nvidia.com,
- bpf <bpf@vger.kernel.org>
-References: <68e7e6ad.a70a0220.126b66.0043.GAE@google.com>
- <20251009165241.4d78dc5d9fa5525d988806b5@linux-foundation.org>
- <CAADnVQK_8bNYEA7TJYgwTYR57=TTFagsvRxp62pFzS_z129eTg@mail.gmail.com>
- <20251009174108.ad6fea5b1e4bb84b8e2e223b@linux-foundation.org>
- <CAADnVQKkLyJ0cbLet3q3X+X70FPAejcqTxP66d82WTO82c16rw@mail.gmail.com>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <CAADnVQKkLyJ0cbLet3q3X+X70FPAejcqTxP66d82WTO82c16rw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TAGGED_RCPT(0.00)[8259e1d0e3ae8ed0c490];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,linux-foundation.org];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo,linux-foundation.org:email];
-	RCVD_COUNT_TWO(0.00)[2];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
+X-Received: by 2002:a05:6e02:378a:b0:42f:7fcc:35a8 with SMTP id
+ e9e14a558f8ab-42f8736c28bmr229535705ab.12.1760344404060; Mon, 13 Oct 2025
+ 01:33:24 -0700 (PDT)
+Date: Mon, 13 Oct 2025 01:33:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68ecb954.050a0220.ac43.0018.GAE@google.com>
+Subject: [syzbot] [bpf?] [trace?] BUG: stack guard page was hit in br_handle_frame
+From: syzbot <syzbot+593efacb260a29c44abc@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	martin.lau@linux.dev, mathieu.desnoyers@efficios.com, 
+	mattbobrowski@google.com, mhiramat@kernel.org, netdev@vger.kernel.org, 
+	rostedt@goodmis.org, sdf@fomichev.me, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On 10/10/25 03:02, Alexei Starovoitov wrote:
-> On Thu, Oct 9, 2025 at 5:41 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->> Seems 6.18 will need this.  Do you think it is needed in earlier kernel
->> versions?
-> 
-> Maybe. I need to study the git history of that code to see
-> whether it's a new path or I simply missed it earlier.
+Hello,
 
-I would add the following, which means 6.15. Maybe there were no users
-immediately that would trigger it, but should be proper. The only non-EOL
-stable is 6.17 anyway, but might help others backporting.
+syzbot found the following issue on:
 
-Fixes: 97769a53f117 ("mm, bpf: Introduce try_alloc_pages() for opportunistic
-page allocation")
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+HEAD commit:    0db4941d9dae bpf: Use rcu_read_lock_dont_migrate in bpf_sk..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=107ef92f980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e0e0bf7e51565cd
+dashboard link: https://syzkaller.appspot.com/bug?extid=593efacb260a29c44abc
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/692372caac28/disk-0db4941d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5518b9303204/vmlinux-0db4941d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/606bc80ec5b8/bzImage-0db4941d.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+593efacb260a29c44abc@syzkaller.appspotmail.com
+
+bridge0: received packet on team0 with own address as source address (addr:aa:aa:aa:aa:aa:17, vlan:0)
+bridge0: received packet on team0 with own address as source address (addr:aa:aa:aa:aa:aa:17, vlan:0)
+bridge0: received packet on team0 with own address as source address (addr:aa:aa:aa:aa:aa:17, vlan:0)
+BUG: IRQ stack guard page was hit at ffffc90000a00ff8 (stack is ffffc90000a01000..ffffc90000a09000)
+Oops: stack guard page: 0000 [#1] SMP KASAN PTI
+CPU: 1 UID: 0 PID: 12957 Comm: syz.8.2194 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
+RIP: 0010:strlen+0xa/0x70 lib/string.c:417
+Code: 07 38 c1 7c db e8 b6 ea e1 f6 eb d4 90 0f 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 41 57 41 56 41 54 <53> 48 c7 c0 ff ff ff ff 49 be 00 00 00 00 00 fc ff df 48 89 fb 49
+RSP: 0018:ffffc90000a01000 EFLAGS: 00010082
+RAX: ffffffff8b6bd780 RBX: ffffffff8e13b278 RCX: ffff88805b39dac0
+RDX: ffffffff81ca8977 RSI: ffffffff8e13b260 RDI: ffffffff8b6bd780
+RBP: ffffc90000a01108 R08: ffffc90000a0122f R09: 0000000000000000
+R10: ffffc90000a01220 R11: ffffffffa02017d4 R12: 1ffff9200014020c
+R13: ffffffff81ca8977 R14: ffffffff8e00a0c0 R15: dffffc0000000000
+FS:  000055556b813500(0000) GS:ffff888125e27000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffc90000a00ff8 CR3: 000000003c5ce000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ <IRQ>
+ __fortify_strlen include/linux/fortify-string.h:268 [inline]
+ trace_event_get_offsets_lock include/trace/events/lock.h:50 [inline]
+ do_perf_trace_lock include/trace/events/lock.h:50 [inline]
+ perf_trace_lock+0xc2/0x3b0 include/trace/events/lock.h:50
+ __do_trace_lock_release include/trace/events/lock.h:69 [inline]
+ trace_lock_release include/trace/events/lock.h:69 [inline]
+ lock_release+0x3b2/0x3e0 kernel/locking/lockdep.c:5879
+ rcu_lock_release include/linux/rcupdate.h:341 [inline]
+ rcu_read_unlock include/linux/rcupdate.h:871 [inline]
+ trace_call_bpf+0x79e/0xb50 kernel/trace/bpf_trace.c:147
+ perf_trace_run_bpf_submit+0x78/0x170 kernel/events/core.c:10931
+ do_perf_trace_preemptirq_template include/trace/events/preemptirq.h:14 [inline]
+ perf_trace_preemptirq_template+0x280/0x340 include/trace/events/preemptirq.h:14
+ __do_trace_irq_enable include/trace/events/preemptirq.h:40 [inline]
+ trace_irq_enable+0xee/0x110 include/trace/events/preemptirq.h:40
+ trace_hardirqs_on+0x18/0x40 kernel/trace/trace_preemptirq.c:73
+ __local_bh_enable_ip+0x12d/0x1c0 kernel/softirq.c:455
+ local_bh_enable include/linux/bottom_half.h:33 [inline]
+ ipt_do_table+0x13dd/0x1640 net/ipv4/netfilter/ip_tables.c:357
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_slow+0xc5/0x220 net/netfilter/core.c:623
+ nf_hook include/linux/netfilter.h:273 [inline]
+ NF_HOOK+0x53e/0x6b0 include/linux/netfilter.h:316
+ br_nf_post_routing+0xb66/0xfe0 net/bridge/br_netfilter_hooks.c:966
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_slow+0xc5/0x220 net/netfilter/core.c:623
+ nf_hook include/linux/netfilter.h:273 [inline]
+ NF_HOOK+0x215/0x3c0 include/linux/netfilter.h:316
+ br_forward_finish+0xd3/0x130 net/bridge/br_forward.c:66
+ br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
+ br_nf_forward_finish+0xa40/0xe60 net/bridge/br_netfilter_hooks.c:662
+ NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
+ br_nf_forward_ip+0x647/0x7e0 net/bridge/br_netfilter_hooks.c:716
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_slow+0xc5/0x220 net/netfilter/core.c:623
+ nf_hook include/linux/netfilter.h:273 [inline]
+ NF_HOOK+0x215/0x3c0 include/linux/netfilter.h:316
+ __br_forward+0x41e/0x600 net/bridge/br_forward.c:115
+ deliver_clone net/bridge/br_forward.c:131 [inline]
+ maybe_deliver+0xb5/0x160 net/bridge/br_forward.c:191
+ br_flood+0x31a/0x6a0 net/bridge/br_forward.c:238
+ br_handle_frame_finish+0x15a3/0x1c50 net/bridge/br_input.c:229
+ br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
+ br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
+ NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
+ br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
+ br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
+ __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
+ __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
+ __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
+ netif_receive_skb_internal net/core/dev.c:6278 [inline]
+ netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
+ NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
+ br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
+ br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
+ br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
+ NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
+ br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
+ br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
+ __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
+ __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
+ __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
+ netif_receive_skb_internal net/core/dev.c:6278 [inline]
+ netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
+ NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
+ br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
+ br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
+ br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
+ NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
+ br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
+ br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
+ __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
+ __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
+ __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
+ netif_receive_skb_internal net/core/dev.c:6278 [inline]
+ netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
+ NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
+ br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
+ br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
+ br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
+ NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
+ br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
+ br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
+ __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
+ __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
+ __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
+ netif_receive_skb_internal net/core/dev.c:6278 [inline]
+ netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
+ NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
+ br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
+ br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
+ br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
+ NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
+ br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
+ br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
+ __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
+ __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
+ __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
+ netif_receive_skb_internal net/core/dev.c:6278 [inline]
+ netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
+ NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
+ br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
+ br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
+ br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
+ NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
+ br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
+ br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
+ __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
+ __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
+ __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
+ netif_receive_skb_internal net/core/dev.c:6278 [inline]
+ netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
+ NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
+ br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
+ br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
+ br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
+ NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
+ br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
+ br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
+ __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
+ __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
+ __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
+ netif_receive_skb_internal net/core/dev.c:6278 [inline]
+ netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
+ NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
+ br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
+ br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
+ br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
+ NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
+ br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
+ br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
+ __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
+ __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
+ __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
+ netif_receive_skb_internal net/core/dev.c:6278 [inline]
+ netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
+ NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
+ br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
+ br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
+ br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
+ NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
+ br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
+ br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
+ __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
+ __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
+ __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
+ netif_receive_skb_internal net/core/dev.c:6278 [inline]
+ netif_receive_skb+0x1cb/0x790 net/core/dev.c:6337
+ NF_HOOK+0x9d/0x390 include/linux/netfilter.h:319
+ br_handle_frame_finish+0x15c6/0x1c50 net/bridge/br_input.c:235
+ br_nf_hook_thresh net/bridge/br_netfilter_hooks.c:-1 [inline]
+ br_nf_pre_routing_finish+0x1364/0x1af0 net/bridge/br_netfilter_hooks.c:425
+ NF_HOOK+0x61b/0x6b0 include/linux/netfilter.h:318
+ br_nf_pre_routing+0xeb7/0x1470 net/bridge/br_netfilter_hooks.c:534
+ nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
+ nf_hook_bridge_pre net/bridge/br_input.c:291 [inline]
+ br_handle_frame+0x97f/0x14c0 net/bridge/br_input.c:442
+ __netif_receive_skb_core+0x10b9/0x4380 net/core/dev.c:5966
+ __netif_receive_skb_one_core net/core/dev.c:6077 [inline]
+ __netif_receive_skb+0x72/0x380 net/core/dev.c:6192
+ process_backlog+0x60e/0x14f0 net/core/dev.c:6544
+ __napi_poll+0xc7/0x360 net/core/dev.c:7594
+ napi_poll net/core/dev.c:7657 [inline]
+ net_rx_action+0x5f7/0xdf0 net/core/dev.c:7784
+ handle_softirqs+0x283/0x870 kernel/softirq.c:622
+ do_softirq+0xec/0x180 kernel/softirq.c:523
+ </IRQ>
+ <TASK>
+ __local_bh_enable_ip+0x17d/0x1c0 kernel/softirq.c:450
+ local_bh_enable include/linux/bottom_half.h:33 [inline]
+ fpregs_unlock arch/x86/include/asm/fpu/api.h:77 [inline]
+ fpu_clone+0x53f/0xbb0 arch/x86/kernel/fpu/core.c:692
+ copy_thread+0x3f5/0x9a0 arch/x86/kernel/process.c:216
+ copy_process+0x18ae/0x3c00 kernel/fork.c:2190
+ kernel_clone+0x21e/0x840 kernel/fork.c:2609
+ __do_sys_clone3 kernel/fork.c:2911 [inline]
+ __se_sys_clone3+0x256/0x2d0 kernel/fork.c:2890
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f5f291c3609
+Code: d7 08 00 48 8d 3d 9c d7 08 00 e8 e2 28 f6 ff 66 90 b8 ea ff ff ff 48 85 ff 74 2c 48 85 d2 74 27 49 89 c8 b8 b3 01 00 00 0f 05 <48> 85 c0 7c 18 74 01 c3 31 ed 48 83 e4 f0 4c 89 c7 ff d2 48 89 c7
+RSP: 002b:00007fffae254858 EFLAGS: 00000206 ORIG_RAX: 00000000000001b3
+RAX: ffffffffffffffda RBX: 00007f5f291459f0 RCX: 00007f5f291c3609
+RDX: 00007f5f291459f0 RSI: 0000000000000058 RDI: 00007fffae2548a0
+RBP: 00007f5f26fb26c0 R08: 00007f5f26fb26c0 R09: 00007fffae254987
+R10: 0000000000000008 R11: 0000000000000206 R12: ffffffffffffffa8
+R13: 000000000000006e R14: 00007fffae2548a0 R15: 00007fffae254988
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:strlen+0xa/0x70 lib/string.c:417
+Code: 07 38 c1 7c db e8 b6 ea e1 f6 eb d4 90 0f 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 41 57 41 56 41 54 <53> 48 c7 c0 ff ff ff ff 49 be 00 00 00 00 00 fc ff df 48 89 fb 49
+RSP: 0018:ffffc90000a01000 EFLAGS: 00010082
+
+RAX: ffffffff8b6bd780 RBX: ffffffff8e13b278 RCX: ffff88805b39dac0
+RDX: ffffffff81ca8977 RSI: ffffffff8e13b260 RDI: ffffffff8b6bd780
+RBP: ffffc90000a01108 R08: ffffc90000a0122f R09: 0000000000000000
+R10: ffffc90000a01220 R11: ffffffffa02017d4 R12: 1ffff9200014020c
+R13: ffffffff81ca8977 R14: ffffffff8e00a0c0 R15: dffffc0000000000
+FS:  000055556b813500(0000) GS:ffff888125e27000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffc90000a00ff8 CR3: 000000003c5ce000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	38 c1                	cmp    %al,%cl
+   2:	7c db                	jl     0xffffffdf
+   4:	e8 b6 ea e1 f6       	call   0xf6e1eabf
+   9:	eb d4                	jmp    0xffffffdf
+   b:	90                   	nop
+   c:	0f 0b                	ud2
+   e:	90                   	nop
+   f:	90                   	nop
+  10:	90                   	nop
+  11:	90                   	nop
+  12:	90                   	nop
+  13:	90                   	nop
+  14:	90                   	nop
+  15:	90                   	nop
+  16:	90                   	nop
+  17:	90                   	nop
+  18:	90                   	nop
+  19:	90                   	nop
+  1a:	90                   	nop
+  1b:	90                   	nop
+  1c:	90                   	nop
+  1d:	90                   	nop
+  1e:	90                   	nop
+  1f:	f3 0f 1e fa          	endbr64
+  23:	41 57                	push   %r15
+  25:	41 56                	push   %r14
+  27:	41 54                	push   %r12
+* 29:	53                   	push   %rbx <-- trapping instruction
+  2a:	48 c7 c0 ff ff ff ff 	mov    $0xffffffffffffffff,%rax
+  31:	49 be 00 00 00 00 00 	movabs $0xdffffc0000000000,%r14
+  38:	fc ff df
+  3b:	48 89 fb             	mov    %rdi,%rbx
+  3e:	49                   	rex.WB
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
