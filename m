@@ -1,198 +1,296 @@
-Return-Path: <bpf+bounces-70842-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70843-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17DEEBD6B78
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 01:18:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80FE7BD6B7E
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 01:19:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35F3D18A80B0
-	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 23:18:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1F9118A65E0
+	for <lists+bpf@lfdr.de>; Mon, 13 Oct 2025 23:19:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D287C26F467;
-	Mon, 13 Oct 2025 23:18:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12368270EA3;
+	Mon, 13 Oct 2025 23:19:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fuj4kURb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="meRyBmh4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5AD7242D90
-	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 23:18:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02ECE211F
+	for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 23:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760397495; cv=none; b=tSi+yZw2Qgkkfpb57mGcfXWHgPrXqXp/NFKQnnWEeRCak6AZp9FW+wYp3R3OfJcVd2uyU7AqGHYiH/LjG5twvueqdlRa6CeLghC3HmWZsyF69zt2vUGrJY1WX3Fj4i0taNH3+Vd5/XwwAuneyIw68SCR6f24vmaOV9oOgk3G1MU=
+	t=1760397545; cv=none; b=Qf72gTP6vIFnDVQe27Vw0IWc89p97wpev4+I5XVhF3vfrb8+H5vFDreRQ0c7xMPo76saev3ZowwaTYBLAYue0c35EUpwFfdJ5H6keXy7G+AX0ahRdeUU11Wgg838w2kgvfQdlg956uBSxZ5gdTeVZ/lFxzpyRFSbMoxB1ywFolU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760397495; c=relaxed/simple;
-	bh=GCLZffwGz4YBEhQAonwBTNfEf7CYnGocJJWi/jlkvSA=;
+	s=arc-20240116; t=1760397545; c=relaxed/simple;
+	bh=tyWh5AmdL3AbZirCAWiUEYkSS3AFAV8lPRjWrZmIJoc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GpETjpNjTYd4Ibpe7YlhH93dIoqk/Oe1vnOh1XkgNRrqV6bHK+VOlMXnJUNRwkrN197Ka6auX0AdZ0wQ//aBnsOAqtRfMXitvY1nYo4AFiPyAwjTxK2gMCzG6ZZe2maWVn9QSfRtmtt8SccIABonWxJw8HTCa8DeVzsfZJjchpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fuj4kURb; arc=none smtp.client-ip=209.85.216.54
+	 To:Cc:Content-Type; b=lwlXZC4t6k3BjcJkLiEDFlyWUD7MuuGmYnwv27jDfs9zMUnoZJ8/42/7fZdWxv3gn0dJ+/ws/GSNOreW9FY7DeD/Ft1xCnMqPEJNky4MeN8ImjhGec3xjIPDoW8ZZe4VVxlblxXRKIVfcTk6BpF0aTKriFbb8FCh4JNnCjg2vIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=meRyBmh4; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-3324523dfb2so4581395a91.0
-        for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 16:18:11 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-339d7c4039aso4252031a91.0
+        for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 16:19:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760397491; x=1761002291; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760397543; x=1761002343; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Dp1PUmL65nKd6p585F3DbBM0gR/guHowQUXUUR7pexA=;
-        b=fuj4kURblrSfnCipJPiRut4Nw4SSKFTk7p7gEEfcH+FrBkMCAxZdrHbx8LmLUqotQX
-         6d5rv4GgkVB0OoT6uu5JEUWoU6OvxMEZV/yh4KOb6t4Yc/ULEfrupnoQRTUFwJj0lrw0
-         TKtEX958nBu15yh2p+7bnkhwuKHwMcOirvhvm4KVmEVa8rltYOn+kXpmvO/LgO9Dfwbk
-         gYDKl7gJzXN16MF+JqvsHqDPTjg2EejknC+aeWHsogFp0dtO3b3qji+3NLkZrttEN4iB
-         K219GX3ASOVYmvP9R1sN4eQfv9QDIuwX6aB4IA7p//ErLlW21LszI16EhUCDrnsXPMon
-         1NYA==
+        bh=N9kwn/z4eiW99q0345zsDUdwEvyJUhhZMdbh1VxiHFo=;
+        b=meRyBmh4TpPJBIkgaKC7T5/OHAD0Tb1T5vS+FXRYVltSkX48EXYCCjxE+lOm9fGFlr
+         JPI0DFpvyIxtDr/fMwN9BrDNFn6s1x6UrZW8rE8AVhXGVD9n2BnzpgH2j8jyCgNUf2ol
+         kPHBOU8ZZMFvOMLjJEkJlySm5ig4FYNEKkXGJGPyes3KYhVSXEhSUoYCVCFqL6B/ULPx
+         2B3pdMcbw3HsNh4mTqEut/O7bR/WFYfjrTHgq+alMpoGHOLmBF/zyQmFeKl1Uh3soHjP
+         G7JW47LfbeElUAZU2DvFup0CdMF/sNhvjal0c4xE5x/I99gzZBRVD5whtbob5UTByX5b
+         5Ozw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760397491; x=1761002291;
+        d=1e100.net; s=20230601; t=1760397543; x=1761002343;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Dp1PUmL65nKd6p585F3DbBM0gR/guHowQUXUUR7pexA=;
-        b=ZMEM87ouKrAmoCMcnKX+nmwpQXTLSW3X6lMs0xvfZ0xBMjXzJNM/PwzL/dxR3noJI5
-         uh4M4LU1r+/917fhw5vUcsxhJfuErNghbN3r/yIpNfrDAf8e3yBC/BJjjoIy30czaaV4
-         +3yaYFHDUXPCfQF6ytPiyb+i3+CVDKnqwGRIMMyTRLahCB3Fw4isqZLuHT44ZbZNd2C6
-         UnWPKgVJi6ZROlKNpxUpvDb+5MzWZT9yBIgJiAYYm9HTxJQnIzIpAdJ5MSDLm3Fwg0gh
-         YoqAoJ2aDdRJhd1V+f8DoO2TgSGffi3Woe4jYuFGiTkdNsT78aTgngDr5e9OTfw4+ABv
-         a1vQ==
-X-Gm-Message-State: AOJu0YzUA2Q1/fvJbqEZ15Pm+m3v3oQ0QgTV9QQKSV0zD/03VkU6XdWc
-	aF25ww/rhLYzzwTwOAIUAKW3fovEBTW1MSx/5PP27seoD/s5gGOr/h+hnNPl/G4dhbTIjux13Tp
-	6THA6lWhlHc2/NUA7CW0JsOU6RBuj1aU=
-X-Gm-Gg: ASbGncvjLfoUmkI4E6Y0R1hkWsHoIaR01tyah+HVkq4pvqwDWfxJdraDmSih1jajfXv
-	vfWxYdzzJJ/+/PVCwK0ImRSuIPvBKy+aP4Ln61fXyzm17v/8L1kh53fLXX9QxqtEhBtX5hAnhr0
-	yexpbzGUouZu0OOJPg376KGt1R7o8KFfG/77EKTSNV67CtxHF6/JPnyblSF3o2bqZMy4VRvxkJg
-	4twm/hXdU3Wu/ZXFF4Qz0bS8uQ9h/qkvXrjRtDbfFAfx0duugug
-X-Google-Smtp-Source: AGHT+IFSyuDkZwiQVWc6ScaUaUZBUx2ywYXS4MuRRFzfTRNRmYREdxVaQuhIdLjl0mcJEET59qR+k52ER8ClZ1mKXFo=
-X-Received: by 2002:a17:90b:17c2:b0:327:734a:ae7a with SMTP id
- 98e67ed59e1d1-33b5114ac35mr34971585a91.11.1760397491124; Mon, 13 Oct 2025
- 16:18:11 -0700 (PDT)
+        bh=N9kwn/z4eiW99q0345zsDUdwEvyJUhhZMdbh1VxiHFo=;
+        b=QAbvdTw3Y5TtsVQXY466yk6ZxVRc00TpAn5gsWU494P2+Pm0Bjxkxi9FvaARmdNJ1s
+         t/aQUnQN9lwwLX2SOGY3zCxgOZO6Fu+tQoItAosMkRHvhBEtMLf5BCNT+47tGLW1vjMA
+         0ti6rp3NZZ4R/lfNrQWeaM1At1rWFWxH1WGEO0GglUxpV8iD2cVV7yvxO+Fz+qvqQ7MN
+         Sf291MmYYxzoCX8VF3ZvYWAACTLhxIIyvJxKMaTIxuqSuTON1zSN5OuiAHIjrtQxdC1r
+         VFs35Xu0JZWTII5OOXdbKOxxWypcQB9iF7oNUBcGaoq1ha3UBXUCXvqwvSa8QFvfFt10
+         E8HA==
+X-Gm-Message-State: AOJu0YzJa+K+zx4GX7pmmb5OO8kjxPI7mRmhZaxBw2C7XvIFfP22HDyz
+	cPVyLKI3C5ju669TIzD6C/qRQ+FqG361q6rellMGNeSqz40LwIthZijgMwUa0n8aljJdaLpnGT9
+	AXSa7RbTJZ8qaEBg/8iUauIZmeCxgySY=
+X-Gm-Gg: ASbGncs0UmOR2p+P+xVntmIosGm8BmAfCO6Zx6xXSyoK7D32au+lun8z72PgdM0qfqA
+	N9bnifkSR+BO23SRBoGPmn8Xr6/NWzExzF0mftfsPmcvSGGBs6X/HPhKbANSQi5tFnw1qdXu9nX
+	BFP6rVlvl3Fd6jrOHWffyvi5hA2Yhs6gP+iGIo0sEDy32T1NNQYff/aEuy/QrGxuYkekzZAxPnF
+	iJX/wGwNekUsdwfyH/UJopBsfRY2x4ubc9pTev4Og==
+X-Google-Smtp-Source: AGHT+IGG/O9RdaGWYDIiSAYiqnVRBhMjljaB4XzLVYwruOGlBwLZQlZXkCJ8VIyPjbohdef06nl1pEZhQJfULoP3l9Q=
+X-Received: by 2002:a17:90b:1d10:b0:330:84c8:92d7 with SMTP id
+ 98e67ed59e1d1-33b5112973dmr33002571a91.12.1760397543073; Mon, 13 Oct 2025
+ 16:19:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250930153942.41781-1-leon.hwang@linux.dev> <20250930153942.41781-5-leon.hwang@linux.dev>
- <CAEf4Bzb5Md09meboYPvdBUPZP3V2ET0AafbQFi89U8Wa3zVfGw@mail.gmail.com> <f87450f9-f748-428f-8d5e-842cd96303c0@linux.dev>
-In-Reply-To: <f87450f9-f748-428f-8d5e-842cd96303c0@linux.dev>
+References: <20251007220349.3852807-1-memxor@gmail.com> <20251007220349.3852807-4-memxor@gmail.com>
+ <CAEf4Bzbe9f7VD-6NqMjfismR0dSEUCEoqo6jOZXEDis-f9zQpw@mail.gmail.com> <CAP01T75YR4xXTc57AHgEE4eG6P+3UFdw+0-L1D+au3QZPFQyzw@mail.gmail.com>
+In-Reply-To: <CAP01T75YR4xXTc57AHgEE4eG6P+3UFdw+0-L1D+au3QZPFQyzw@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 13 Oct 2025 16:17:57 -0700
-X-Gm-Features: AS18NWAZl1mjFOoRQ6pCMQEaYAcf_iXw66Cv1JGuEr4QxmplbedUIhJ5snxPfoA
-Message-ID: <CAEf4BzajBGOSPKXhW1r+wyPTrgjOU4AJA3Kdx4h0nuxLOC1PHQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 4/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS
- flags support for percpu_hash and lru_percpu_hash maps
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, jolsa@kernel.org, yonghong.song@linux.dev, 
-	song@kernel.org, eddyz87@gmail.com, dxu@dxuuu.xyz, deso@posteo.net, 
-	kernel-patches-bot@fb.com
+Date: Mon, 13 Oct 2025 16:18:48 -0700
+X-Gm-Features: AS18NWBH23WNJwcUh8RVjtfWDqXh96T2xGwRbdPAyaiGo4ggsTSfECloXD8imks
+Message-ID: <CAEf4BzaFVNmnsO2xVdMN_c3M7dG8=UrAfwdROuMurRByC7hk8A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/3] selftests/bpf: Add tests for async cb context
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, Eduard Zingerman <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, kkd@meta.com, 
+	kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 7, 2025 at 9:48=E2=80=AFPM Leon Hwang <leon.hwang@linux.dev> wr=
-ote:
+On Fri, Oct 10, 2025 at 8:15=E2=80=AFPM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
->
->
-> On 7/10/25 06:29, Andrii Nakryiko wrote:
-> > On Tue, Sep 30, 2025 at 8:40=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
-v> wrote:
-> >>
-> >> Introduce BPF_F_ALL_CPUS flag support for percpu_hash and lru_percpu_h=
-ash
-> >> maps to allow updating values for all CPUs with a single value for bot=
-h
-> >> update_elem and update_batch APIs.
-> >>
-> >> Introduce BPF_F_CPU flag support for percpu_hash and lru_percpu_hash
-> >> maps to allow:
-> >>
-> >> * update value for specified CPU for both update_elem and update_batch
-> >> APIs.
-> >> * lookup value for specified CPU for both lookup_elem and lookup_batch
-> >> APIs.
-> >>
-> >> The BPF_F_CPU flag is passed via:
-> >>
-> >> * map_flags along with embedded cpu info.
-> >> * elem_flags along with embedded cpu info.
-> >>
-> >> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> >> ---
->
-> [...]
->
-> >>
-> >>                 for_each_possible_cpu(cpu) {
-> >> -                       copy_map_value_long(&htab->map, per_cpu_ptr(pp=
-tr, cpu), value + off);
-> >> -                       off +=3D size;
-> >> +                       ptr =3D (map_flags & BPF_F_ALL_CPUS) ? value :=
- value + size * cpu;
-> >> +                       memcpy(per_cpu_ptr(pptr, cpu), ptr, size);
+> On Fri, 10 Oct 2025 at 19:01, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
+ wrote:
 > >
-> > ok, so you fixed the value_size problem and at the same time
-> > introduced blind memcpy() problem?.. Per-CPU maps are allowed to have
-> > some special fields (see BPF_REFCOUNT and BPF_KPTR_* checks in
-> > map_check_btf()), which have to be handled specially inside
-> > copy_map_value[_long](), we cannot just memcpy() blindly
+> > On Tue, Oct 7, 2025 at 3:03=E2=80=AFPM Kumar Kartikeya Dwivedi <memxor@=
+gmail.com> wrote:
+> > >
+> > > Add tests to verify that async callback's sleepable attribute is
+> > > correctly determined by the callback type, not the arming program's
+> > > context, reflecting its true execution context.
+> > >
+> > > Introduce verifier_async_cb_context.c with tests for all three async
+> > > callback primitives: bpf_timer, bpf_wq, and bpf_task_work. Each
+> > > primitive is tested when armed from both sleepable (lsm.s/file_open) =
+and
+> > > non-sleepable (fentry) programs.
+> > >
+> > > Test coverage:
+> > > - bpf_timer callbacks: Verify they are never sleepable, even when arm=
+ed
+> > >   from sleepable programs. Both tests should fail when attempting to =
+use
+> > >   sleepable helper bpf_copy_from_user() in the callback.
+> > >
+> > > - bpf_wq callbacks: Verify they are always sleepable, even when armed
+> > >   from non-sleepable programs. Both tests should succeed when using
+> > >   sleepable helpers in the callback.
+> > >
+> > > - bpf_task_work callbacks: Verify they are always sleepable, even whe=
+n
+> > >   armed from non-sleepable programs. Both tests should succeed when
+> > >   using sleepable helpers in the callback.
+> > >
+> > > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > ---
+> > >  .../selftests/bpf/prog_tests/verifier.c       |   2 +
+> > >  .../bpf/progs/verifier_async_cb_context.c     | 181 ++++++++++++++++=
+++
+> > >  2 files changed, 183 insertions(+)
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/verifier_async_=
+cb_context.c
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tool=
+s/testing/selftests/bpf/prog_tests/verifier.c
+> > > index 28e81161e6fc..c0e8ffdaa484 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+> > > @@ -7,6 +7,7 @@
+> > >  #include "verifier_arena.skel.h"
+> > >  #include "verifier_arena_large.skel.h"
+> > >  #include "verifier_array_access.skel.h"
+> > > +#include "verifier_async_cb_context.skel.h"
+> > >  #include "verifier_basic_stack.skel.h"
+> > >  #include "verifier_bitfield_write.skel.h"
+> > >  #include "verifier_bounds.skel.h"
+> > > @@ -280,6 +281,7 @@ void test_verifier_array_access(void)
+> > >                       verifier_array_access__elf_bytes,
+> > >                       init_array_access_maps);
+> > >  }
+> > > +void test_verifier_async_cb_context(void)    { RUN(verifier_async_cb=
+_context); }
+> > >
+> > >  static int init_value_ptr_arith_maps(struct bpf_object *obj)
+> > >  {
+> > > diff --git a/tools/testing/selftests/bpf/progs/verifier_async_cb_cont=
+ext.c b/tools/testing/selftests/bpf/progs/verifier_async_cb_context.c
+> > > new file mode 100644
+> > > index 000000000000..96ff6749168b
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/progs/verifier_async_cb_context.c
+> > > @@ -0,0 +1,181 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
+> > > +
+> > > +#include <vmlinux.h>
+> > > +#include <bpf/bpf_helpers.h>
+> > > +#include <bpf/bpf_tracing.h>
+> > > +#include "bpf_misc.h"
+> > > +#include "bpf_experimental.h"
+> > > +
+> > > +char _license[] SEC("license") =3D "GPL";
+> > > +
+> > > +/* Timer tests */
+> > > +
+> > > +struct timer_elem {
+> > > +       struct bpf_timer t;
+> > > +};
+> > > +
+> > > +struct {
+> > > +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> > > +       __uint(max_entries, 1);
+> > > +       __type(key, int);
+> > > +       __type(value, struct timer_elem);
+> > > +} timer_map SEC(".maps");
+> > > +
+> > > +static int timer_cb(void *map, int *key, struct bpf_timer *timer)
+> > > +{
+> > > +       u32 data;
+> > > +       /* Timer callbacks are never sleepable, even from non-sleepab=
+le programs */
+> > > +       bpf_copy_from_user(&data, sizeof(data), NULL);
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +SEC("fentry/bpf_fentry_test1")
+> > > +__failure __msg("helper call might sleep in a non-sleepable prog")
+> > > +int timer_non_sleepable_prog(void *ctx)
+> > > +{
+> > > +       struct timer_elem *val;
+> > > +       int key =3D 0;
+> > > +
+> > > +       val =3D bpf_map_lookup_elem(&timer_map, &key);
+> > > +       if (!val)
+> > > +               return 0;
+> > > +
+> > > +       bpf_timer_init(&val->t, &timer_map, 0);
+> > > +       bpf_timer_set_callback(&val->t, timer_cb);
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +SEC("lsm.s/file_open")
+> > > +__failure __msg("helper call might sleep in a non-sleepable prog")
+> > > +int timer_sleepable_prog(void *ctx)
+> > > +{
+> > > +       struct timer_elem *val;
+> > > +       int key =3D 0;
+> > > +
+> > > +       val =3D bpf_map_lookup_elem(&timer_map, &key);
+> > > +       if (!val)
+> > > +               return 0;
+> > > +
+> > > +       bpf_timer_init(&val->t, &timer_map, 0);
+> > > +       bpf_timer_set_callback(&val->t, timer_cb);
+> > > +       return 0;
+> > > +}
 > >
-> > all the other places use copy_map_value[_long](), why did you decide
-> > to switch to memcpy here?
+> > can you please also add (as a follow up is fine) this case:
 > >
+> > static noinline int mixed_mode_subprog(void)
+> > {
+> >     /* use one of is_storage_get_function() helpers here */
+> > }
+> >
+> > static int timer_cb(void *map, int *key, struct bpf_timer *timer)
+> > {
+> >     mixed_mode_subprog();
+> >     return 0;
+> > }
+> >
+> > SEC("lsm.s/file_open") /* sleepable entry program */
+> > int sleepable(void *ctx) {
+> >     ...
+> >     bpf_timer_set_callback(&val->t, timer_cb);
+> >
+> >     /* !!! important to call it here */
+> >     mixed_mode_subprog();
+> > }
+> >
+> > Idea being that we have a subprog that is called in both sleepable and
+> > non-sleepable modes. It should be rejected.
+> >
+> > Let's do the same the other way, when the entry program is
+> > non-sleepable but an async callback is sleepable, ok?
+> >
+> >
+> > Note also that noinline part is important, we need to make sure it
+> > doesn't get inline anywhere. If necessary, we can do __weak __hidden
+> > to make this happen.
 >
-> You=E2=80=99re right =E2=80=94 using memcpy() here is incorrect. I should=
- be using
-> copy_map_value() instead.
+> I didn't get why it needs to be rejected.
+> That seems like something that is bound to trip up users.
+> Shouldn't we instead allow this, but choose the most restrictive
+> context when setting any necessary flags etc.?
+> E.g. if it's both sleepable and non-sleepable, we should simply always
+> do GFP_ATOMIC.
 >
-> When comparing this path with bpf_percpu_array_update(), I noticed that
-> bpf_obj_free_fields() is missing here. That was why I initially switched
-> to memcpy().
->
-> To clarify:
->
-> 1. If those special fields (like BPF_REFCOUNT or BPF_KPTR_*) are
->    *not* supported here, memcpy() behaves the same as
->    copy_map_value().
->
-> static inline void bpf_obj_memcpy(struct btf_record *rec,
->                                   void *dst, void *src, u32 size,
->                                   bool long_memcpy)
-> {
->         u32 curr_off =3D 0;
->         int i;
->
->         if (IS_ERR_OR_NULL(rec)) {
->                 if (long_memcpy)
->                         bpf_long_memcpy(dst, src, round_up(size, 8));
->                 else
->                         memcpy(dst, src, size);
->                 return;
->         }
->
->         ...
-> }
->
-> static inline void copy_map_value(struct bpf_map *map, void *dst, void *s=
-rc)
-> {
->         bpf_obj_memcpy(map->record, dst, src, map->value_size, false);
-> }
->
-> 2. However, if those special fields *are* supported here, then missing
->    bpf_obj_free_fields() seems like a real issue.
->    In that case, I=E2=80=99d like to send a separate patch set to add
->    bpf_obj_free_fields() properly.
->    Does that sound reasonable?
 
-Add a test and we'll know for sure? But it looks like yes, you can use
-*some* special fields for per-CPU maps.
+Most restrictive context differs based on exactly what functionality
+is being used.
 
->
-> Thanks,
-> Leon
->
-> [...]
+E.g., for KF_RCU the most conservative approach is to assume sleepable
+context and require explicit bpf_rcu_read_{lock,unlock}().
+
+For memory allocation flags, the most conservative approach would be
+to assume non-sleepable and use GFP_ATOMIC.
+
+It might be ok to mix sleepable and non-sleepable treatment for
+different instructions within the same subprog, but that seems like a
+bit of a hairy approach.
+
+Either way, let's add tests and make sure they don't do the wrong
+thing. Whether we reject such subprogs or manage to wrangle them to be
+always correct and safe regardless of sleepable/non-sleepable context,
+that's something to think through and decide.
+
+Does it make sense?
+
+
+> >
+> > [...]
 
