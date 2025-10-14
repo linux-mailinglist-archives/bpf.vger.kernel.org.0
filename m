@@ -1,191 +1,220 @@
-Return-Path: <bpf+bounces-70943-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70944-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5916EBDBB8C
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 01:04:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08744BDBB92
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 01:09:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00C46423AED
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 23:04:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C61B18A2244
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 23:09:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ACBA2C1599;
-	Tue, 14 Oct 2025 23:04:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD23D2DCC1A;
+	Tue, 14 Oct 2025 23:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lqT2XILz"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iV86aDRd"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0CE4438B
-	for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 23:04:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5F717A2EA
+	for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 23:09:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760483081; cv=none; b=o4V8S1UP7admSKi56e0bkQxnKnX6qppMX4gXa22QG7CqU7jExOjkmssWWliZx2/RTRhGLiW0PdjyTqEe4NEZhvMM0/l2wC9nVXwvJUQUnAeQF+e250yinlwQ+ohRaYb+mFaqokW7UFL++/U49NVSvS1EYNvMI8U4D5SFcP8VGNA=
+	t=1760483369; cv=none; b=fmN5iPurUCs2lUKxz7EJIHdxg79arI1tMi1XUZB5kQfh4wWg+/cUJAtSrqssEOELaNzr5OL2WsxEYpG1sr9lNBcuVqwC/fdxURkJCh0uCjcz8Ti2JnH8QuMDiVV/VxvXaYkR28r8LJ1JLtYsWnm+PL26Nx5t098nsSkL7qu9/Kc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760483081; c=relaxed/simple;
-	bh=/gaJR8hM7fS+7Stl9MPt3DNcP/y33WBsW/aXjuiJE/s=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=HtHA7X+XX+nzhCJ47wlA6dIbQTx6j8TaXNKnnX0EP2d5UebumdnYr3xAyZS5YI+MgZMlZc1xXS4W81RggqhjLP697VjsFPHJagSBQ00jm2dkdsWtN3CRk09EsdEpzo+5KvjeERC5uJpOLQouTP5ogeaKcLOkuqjfa3eWd/19qDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lqT2XILz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85D97C4CEE7;
-	Tue, 14 Oct 2025 23:04:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760483080;
-	bh=/gaJR8hM7fS+7Stl9MPt3DNcP/y33WBsW/aXjuiJE/s=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lqT2XILzj9dTANRzWhDkd7rZFNiQ6qYzkHP3moesTPlO21Z7SuPxVX79kaTsw9MTG
-	 Q9ygy56FcHvZzcFrx9NBdGvaXGvUdU9cPwkbgcflPjV3kpuTla9XvdVaEcDAYqpQBq
-	 EXmAvJBrbNVdCy1cdNUxbsbxPjnJ/ZFqx/aA4lsJ1t90GLQhRW7TSJ8+fEmKtdJrkW
-	 mJsSaxoH04oqeMlwcuSZPnHsBm2s+ZsQ3L4duvSGZodRP8+jtkC3eaM7qZ1XQEmuKn
-	 fZ9e1Zvd+N5nj0/WgpVOTTJVNUr62PBxFEfp6Bn++xsQPUUDbwDf2XyDXETrnfjWIM
-	 6wLhToh4kDhvA==
-Date: Wed, 15 Oct 2025 08:04:32 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Arnaldo Carvalho de Melo
- <acme@kernel.org>, Thierry Treyer <ttreyer@meta.com>, Yonghong Song
- <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Quentin Monnet
- <qmo@kernel.org>, Ihor Solodrai <ihor.solodrai@linux.dev>, David Faust
- <david.faust@oracle.com>, "Jose E. Marchesi" <jose.marchesi@oracle.com>,
- bpf <bpf@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Steven
- Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC bpf-next 00/15] support inline tracing with BTF
-Message-Id: <20251015080432.8d883079d9904a1f32dc150d@kernel.org>
-In-Reply-To: <6a3dfd7d-00de-4215-9bdb-f6ffab899730@oracle.com>
-References: <20251008173512.731801-1-alan.maguire@oracle.com>
-	<CAADnVQLN3jQLfkjs-AG2GqsG5Ffw_nefYczvSVmiZZm5X9sd=A@mail.gmail.com>
-	<b4cd1254-59b4-4bac-9742-49968109c8af@oracle.com>
-	<CAADnVQ+yYeX7G--X4eCSW_cyK_DH3xnS-s2tyQLeBYf=NnzUEQ@mail.gmail.com>
-	<aO45ZjLlUM0O5NAe@krava>
-	<6a3dfd7d-00de-4215-9bdb-f6ffab899730@oracle.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1760483369; c=relaxed/simple;
+	bh=vu4nw3WfFop+3BzE1QhLywGaWk937F1FIkK9sJLlHE0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PfGBgou0bg2+BN8etvsj2zb5DjggPbmgskEqAk1LvrzCc2s7BH+Nc678su6vyFhrhg1crmUW6vWq3Q4/Mr9kDPUdg98/k2Sl8hwZbv9Mwq+Fjfest3WVfKaqubi/vlQwHOwb7lCiJsGQcHC0eyWnleGvi8Y97NIcl5jNxdjUlBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iV86aDRd; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6e790a70-bb02-47d2-9330-f2eb9078c671@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1760483355;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nMZ0tOuQFw64RjaBh1c7+1IgZYvZYBxMu7v4FXEnQN8=;
+	b=iV86aDRdppgZQ/WU9jXSXqShVzK2luXQE4yXHNRZgnZER6MIr+lUj34Ro8z6cbdzLLheAU
+	mgjofJUcKZ7i4aIKrpo6ICf66xoqS5+8y7pWx5ex9ThsIW4N8w22qCg0jp7Nk1yNqHhlXV
+	PEd9fvo+MAW6ffmFPeqBRedAO7TVO5c=
+Date: Tue, 14 Oct 2025 16:09:08 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next/net 6/6] selftest: bpf: Add test for
+ sk->sk_bypass_prot_mem.
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>,
+ Mina Almasry <almasrymina@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20251007001120.2661442-1-kuniyu@google.com>
+ <20251007001120.2661442-7-kuniyu@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20251007001120.2661442-7-kuniyu@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 14 Oct 2025 15:55:53 +0100
-Alan Maguire <alan.maguire@oracle.com> wrote:
+On 10/6/25 5:07 PM, Kuniyuki Iwashima wrote:
+> +static int tcp_create_sockets(struct test_case *test_case, int sk[], int len)
+> +{
+> +	int server, i;
+> +
+> +	server = start_server(test_case->family, test_case->type, NULL, 0, 0);
+> +	ASSERT_GE(server, 0, "start_server_str");
+> +
+> +	/* Keep for-loop so we can change NR_SOCKETS easily. */
+> +	for (i = 0; i < len; i += 2) {
+> +		sk[i] = connect_to_fd(server, 0);
+> +		if (sk[i] < 0) {
+> +			ASSERT_GE(sk[i], 0, "connect_to_fd");
+> +			return sk[i];
 
-> On 14/10/2025 12:52, Jiri Olsa wrote:
-> > On Mon, Oct 13, 2025 at 05:12:45PM -0700, Alexei Starovoitov wrote:
-> >> On Mon, Oct 13, 2025 at 12:38 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> >>>
-> >>>
-> >>> I was trying to avoid being specific about inlines since the same
-> >>> approach works for function sites with optimized-out parameters and they
-> >>> could be easily added to the representation (and probably should be in a
-> >>> future version of this series). Another "extra" source of info
-> >>> potentially is the (non per-cpu) global variables that Stephen sent
-> >>> patches for a while back and the feeling was it was too big to add to
-> >>> vmlinux BTF proper.
-> >>>
-> >>> But extra is a terrible name. .BTF.aux for auxiliary info perhaps?
-> >>
-> >> aux is too abstract and doesn't convey any meaning.
-> >> How about "BTF.func_info" ? It will cover inlined and optimized funcs.
-> >>
-> >> Thinking more about reuse of struct btf_type for these...
-> >> After sleeping on it it feels a bit awkward today, since if they're
-> >> types they suppose to be in one table with other types,
-> >> searchable and so on, but we actually don't want them there.
-> >> btf_find_*() isn't fast and people are trying to optimize it.
-> >> Also if we teach the kernel to use these loc-s they probably
-> >> should be in a separate table.
-> >>
-> >> global non per-cpu vars fit into current BTF's datasec concept,
-> >> so they can be another kernel module with a different name.
-> >>
-> >> I guess one can argue that LOCSEC is similar to DATASEC.
-> >> Both need their own search tables separate from the main type table.
-> >>
-> >>>
-> >>>> The partially inlined functions were the biggest footgun so far.
-> >>>> Missing fully inlined is painful, but it's not a footgun.
-> >>>> So I think doing "kloc" and usdt-like bpf_loc_arg() completely in
-> >>>> user space is not enough. It's great and, probably, can be supported,
-> >>>> but the kernel should use this "BTF.inline_info" as well to
-> >>>> preserve "backward compatibility" for functions that were
-> >>>> not-inlined in an older kernel and got partially inlined in a new kernel.
-> >>>>
-> >>>
-> >>> That would be great; we'd need to teach the kernel to handle multi-split
-> >>> BTF but I would hope that wouldn't be too tricky.
-> >>>
-> >>>> If we could use kprobe-multi then usdt-like bpf_loc_arg() would
-> >>>> make a lot of sense, but since libbpf has to attach a bunch
-> >>>> of regular kprobes it seems to me the kernel support is more appropriate
-> >>>> for the whole thing.
-> >>>
-> >>> I'm happy with either a userspace or kernel-based approach; the main aim
-> >>> is to provide this functionality in as straightforward a form as
-> >>> possible to tracers/libbpf. I have to confess I didn't follow the whole
-> >>> kprobe multi progress, but at one stage that was more kprobe-based
-> >>> right? Would there be any value in exploring a flavour of kprobe-multi
-> >>> that didn't use fprobe and might work for this sort of use case? As you
-> >>> say if we had that keeping a user-space based approach might be more
-> >>> attractive as an option.
-> >>
-> >> Agree.
-> >>
-> >> Jiri,
-> >> how hard would it be to make multi-kprobe work on arbitrary IPs ?
-> > 
-> > multi-kprobe uses fprobe which uses ftrace/fgraph fast api to attach,
-> > but it can do that only on the entry of ftrace-able functions which
-> > have nop5 hooks at the entry
-> > 
-> > attaching anywhere else requires standard kprobe and the attach time
-> > (and execution time) will be bad
-> > 
-> > would be great if inlined functions kept the nop5/fentry hooks ;-)
-> > but that's probably not that simple
-> >
-> 
-> Yeah, if it was doable - and with metadata about inline sites it
-> certainly _seems_ possible - it does seem to work against the reason we
-> inline stuff (saving overheads). Steve mentioned this as a possibility
-> at GNU cauldron too if I remember, so worth discussing of course!
+The "server" fd is leaked, and...
 
-IMHO, it may be hard to insert nop (actually it is mcount call) to the
-inlined function, because the inlined function code is optimized with
-the caller code. In this case, it is hard to find where is the original
-entry code. For example, a specific entry code can be skipped even if
-a part of its body is used. Thus we need to put mcount calls for each
-(but there can be a code which calls both entry and the body).
+> +		}
+> +
+> +		sk[i + 1] = accept(server, NULL, NULL);
+> +		if (sk[i + 1] < 0) {
+> +			ASSERT_GE(sk[i + 1], 0, "accept");
+> +			return sk[i + 1];
 
-But if we can work with compilers, since it knows how it optimizes the
-code, it may be possible.
+same here.
 
-> 
-> I was thinking about something simpler to be honest; a flavour of kprobe
-> multi that used kprobes under the hood in kernel to be suitable for
-> inline sites without any tweaking of the sites. So there is a kprobe
-> performance penalty if you're tracing, but none otherwise.
-
-It is possible if we can find the actual entry points. Of course using
-kprobes means it will take a time (overhead) to insert the sw
-breakpoints and to sync the code.
-
-Thank you,
-
-> 
-> Thanks!
-> 
-> Alan
+> +		}
+> +	}
+> +
+> +	close(server);
+> +
+> +	return 0;
+> +}
+> +
+> +static int udp_create_sockets(struct test_case *test_case, int sk[], int len)
+> +{
+> +	int i, j, err, rcvbuf = BUF_TOTAL;
+> +
+> +	/* Keep for-loop so we can change NR_SOCKETS easily. */
+> +	for (i = 0; i < len; i += 2) {
+> +		sk[i] = start_server(test_case->family, test_case->type, NULL, 0, 0);
+> +		if (sk[i] < 0) {
+> +			ASSERT_GE(sk[i], 0, "start_server");
+> +			return sk[i];
+> +		}
+> +
+> +		sk[i + 1] = connect_to_fd(sk[i], 0);
+> +		if (sk[i + 1] < 0) {
+> +			ASSERT_GE(sk[i + 1], 0, "connect_to_fd");
+> +			return sk[i + 1];
+> +		}
+> +
+> +		err = connect_fd_to_fd(sk[i], sk[i + 1], 0);
+> +		if (err) {
+> +			ASSERT_EQ(err, 0, "connect_fd_to_fd");
+> +			return err;
+> +		}
+> +
+> +		for (j = 0; j < 2; j++) {
+> +			err = setsockopt(sk[i + j], SOL_SOCKET, SO_RCVBUF, &rcvbuf, sizeof(int));
+> +			if (err) {
+> +				ASSERT_EQ(err, 0, "setsockopt(SO_RCVBUF)");
+> +				return err;
+> +			}
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> +
+> +static int check_bypass(struct test_case *test_case,
+> +			struct sk_bypass_prot_mem *skel, bool bypass)
+> +{
+> +	char buf[BUF_SINGLE] = {};
+> +	long memory_allocated[2];
+> +	int sk[NR_SOCKETS] = {};
+> +	int err, i, j;
+> +
+> +	err = test_case->create_sockets(test_case, sk, ARRAY_SIZE(sk));
+> +	if (err)
+> +		goto close;
+> +
+> +	memory_allocated[0] = test_case->get_memory_allocated(test_case, skel);
+> +
+> +	/* allocate pages >= NR_PAGES */
+> +	for (i = 0; i < ARRAY_SIZE(sk); i++) {
+> +		for (j = 0; j < NR_SEND; j++) {
+> +			int bytes = send(sk[i], buf, sizeof(buf), 0);
+> +
+> +			/* Avoid too noisy logs when something failed. */
+> +			if (bytes != sizeof(buf)) {
+> +				ASSERT_EQ(bytes, sizeof(buf), "send");
+> +				if (bytes < 0) {
+> +					err = bytes;
+> +					goto drain;
+> +				}
+> +			}
+> +		}
+> +	}
+> +
+> +	memory_allocated[1] = test_case->get_memory_allocated(test_case, skel);
+> +
+> +	if (bypass)
+> +		ASSERT_LE(memory_allocated[1], memory_allocated[0] + 10, "bypass");
+> +	else
+> +		ASSERT_GT(memory_allocated[1], memory_allocated[0] + NR_PAGES, "no bypass");
+> +
+> +drain:
+> +	if (test_case->type == SOCK_DGRAM) {
+> +		/* UDP starts purging sk->sk_receive_queue after one RCU
+> +		 * grace period, then udp_memory_allocated goes down,
+> +		 * so drain the queue before close().
+> +		 */
+> +		for (i = 0; i < ARRAY_SIZE(sk); i++) {
+> +			for (j = 0; j < NR_SEND; j++) {
+> +				int bytes = recv(sk[i], buf, 1, MSG_DONTWAIT | MSG_TRUNC);
+> +
+> +				if (bytes == sizeof(buf))
+> +					continue;
+> +				if (bytes != -1 || errno != EAGAIN)
+> +					PRINT_FAIL("bytes: %d, errno: %s\n", bytes, strerror(errno));
+> +				break;
+> +			}
+> +		}
+> +	}
+> +
+> +close:
+> +	for (i = 0; i < ARRAY_SIZE(sk); i++)
+> +		close(sk[i]);
+
+It could close(0) here depending on how the "->create_sockets()" above has 
+failed. The fd 0 could be something useful for the test_progs.
+
+Other than that, the set lgtm. Please re-spin and carry the review/ack tags.
+
+pw-bot: cr
+
+> +
+> +	return err;
+> +}
+> +
 
