@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-70920-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70921-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0040DBDB0CF
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 21:24:50 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 797DCBDB0E1
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 21:26:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FEAF1928507
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 19:25:14 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 462583567C3
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 19:26:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946ED2C08A1;
-	Tue, 14 Oct 2025 19:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3182C0F70;
+	Tue, 14 Oct 2025 19:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c1hFUaec"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XT64Sr2v"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B5D235072;
-	Tue, 14 Oct 2025 19:24:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4EE21F63F9;
+	Tue, 14 Oct 2025 19:26:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760469884; cv=none; b=M2OCaSmYDhAe3dc6fztLUgGoIUZ9p2wADgn0K5nO+Bf7Xaic2Z+u4EOZtp3lC+lICre9aFCKfhbBxmOVYMHVA7Pj4N5aN8TeXSukbnhY6nG847zzZQ9Y61+cciaCFsY3J9eU4VMqFwN5D0dsyyvlFZj8c4PX1KX/ItOY5qXX+XI=
+	t=1760469966; cv=none; b=hDZEosLzhPSqlnYe2nkwJPLUza4JhI46MjtEGubUjAjHUXc8uyba+/mPNn0m9RzijGa7WE+TmiROP4fuK5VEndMuQmWZSkSx03wKU5lo9SxJuVHSFOi94U1pfwvxX2IZOIuibca8veLbTCNRCOonnkXrL3hBySKnmUlWzeE2lxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760469884; c=relaxed/simple;
-	bh=QGe+pGQFHQbcVEStq8maDcz98J92lr2mU5ZxO9m81Ic=;
+	s=arc-20240116; t=1760469966; c=relaxed/simple;
+	bh=o+wwp6IjOSEDNpKADFKUpT3S4jbIVkhAPLG7zoNAIqM=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JA0JcWin9QyTEOEi6hTCOIwCsatFStGiCmQwmpM9cafwUaxzWniR6Xo2KdFBsncsb6N3691zMSg7cYhdmTYYeRZ8ZFlYBFpevmJO0Wt4pNKTPh5ScgkrPRSy8M4AEg8ZCilTDCH7x9Su1AtjrSxM/M5JfbGskHEeJKFD2ioKZ6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c1hFUaec; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55FA8C4CEE7;
-	Tue, 14 Oct 2025 19:24:42 +0000 (UTC)
+	 MIME-Version:Content-Type; b=U7KG0+Hj0jIW5FgPLgAm6RELCpXEWc1aBIAf1c+GDEtmUty9bgY0GN4qE97BZsnD9xYBt46znMQPCCatzrsYL/2hciLnWadFJ+PFUX0wAjSeuViqoR0gGZdKjzf28jT+oLyogOOVZBaDK6uI0wOq4VY5mxeP7Ms1Gq6YbxeJhuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XT64Sr2v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0737CC4CEE7;
+	Tue, 14 Oct 2025 19:26:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760469883;
-	bh=QGe+pGQFHQbcVEStq8maDcz98J92lr2mU5ZxO9m81Ic=;
+	s=k20201202; t=1760469963;
+	bh=o+wwp6IjOSEDNpKADFKUpT3S4jbIVkhAPLG7zoNAIqM=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=c1hFUaecXpGdRIVnyNf6AJezyzSHTo+5Ej+80A7exJEqoYR364SYaCcz7LnJ+QSk1
-	 F9WDSbc4bmJ+MQ+TFd4enzMBwZSi5517S/NSoGsDgAR57IIoXBqzHsIN+yDl1LBt5/
-	 jpm7gsg7M1sTw4UyMjEpl/MrcEfbHdgFKMYCm6hT4q9JY2XmPGHJwm3kDpZS4cRCGd
-	 9YKGVEHdWOQOctFV9BMWUUOk93VtoyppcLex8yls5DBzRBEDx26Q/gOW2NR6CHV/SY
-	 pVDHjgmPgo2r/upnopBU2sDSLn23RYrMOg30dm25/WiQY4nUBlmBN8Xo48Vg39AZ+I
-	 Q9oh3urG2S0FQ==
-Date: Tue, 14 Oct 2025 12:24:41 -0700
+	b=XT64Sr2vFmARywIxifSZhgSjBV70Jp/cQCdfLth0BrBiwBJkOl4X/AUthefUrRmr6
+	 NGcZ39MRuFCV3lB6yyAkwYgZTZBj3RR1hKv3uFC5Vda+GNPK6TLTDgdoP82HNFv+ZD
+	 3BnwWI/f2RPC9k5zJMqGpOqhB8g+RaTa4LkCtnfvEE0fj0WB6QNk382GVUudL2P/n6
+	 KlKsxfs5IXdmDVV+Pta+bEbWC06SzC+IFTkfUFLnJLKZEJvFMflF/mMnB7FDnXPz2/
+	 woCrQBPyVatqXz/IfagkwabVwX5aXEYuGvpFcsp8KdlmRZsWxVTfBDlg3H2h2OlHpW
+	 VfM/t5DnSNjaA==
+Date: Tue, 14 Oct 2025 12:26:01 -0700
 From: Jakub Kicinski <kuba@kernel.org>
 To: =?UTF-8?B?QXNiasO4cm4=?= Sloth =?UTF-8?B?VMO4bm5lc2Vu?=
  <ast@fiberby.net>
@@ -59,14 +59,14 @@ Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
  <vadim.fedorenko@linux.dev>, Willem de Bruijn <willemb@google.com>,
  bpf@vger.kernel.org, netdev@vger.kernel.org, linux-doc@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/6] tools: ynl-gen: bitshift the flag values
- in the generated code
-Message-ID: <20251014122441.27e2d267@kernel.org>
-In-Reply-To: <d3f1427f-e8bc-4ab0-bf15-171b701325b9@fiberby.net>
+Subject: Re: [PATCH net-next 2/6] tools: ynl-gen: refactor render-max enum
+ generation
+Message-ID: <20251014122601.3ebcbf5a@kernel.org>
+In-Reply-To: <5c944395-141c-415b-b29a-8f70cafaa24d@fiberby.net>
 References: <20251013165005.83659-1-ast@fiberby.net>
-	<20251013165005.83659-2-ast@fiberby.net>
-	<20251013175331.281ec43e@kernel.org>
-	<d3f1427f-e8bc-4ab0-bf15-171b701325b9@fiberby.net>
+	<20251013165005.83659-3-ast@fiberby.net>
+	<20251013175826.6dbf6c78@kernel.org>
+	<5c944395-141c-415b-b29a-8f70cafaa24d@fiberby.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,43 +76,26 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 14 Oct 2025 16:49:22 +0000 Asbj=C3=B8rn Sloth T=C3=B8nnesen wrote:
-> On 10/14/25 12:53 AM, Jakub Kicinski wrote:
-> > On Mon, 13 Oct 2025 16:49:58 +0000 Asbj=C3=B8rn Sloth T=C3=B8nnesen wro=
+On Tue, 14 Oct 2025 17:04:14 +0000 Asbj=C3=B8rn Sloth T=C3=B8nnesen wrote:
+> On 10/14/25 12:58 AM, Jakub Kicinski wrote:
+> > On Mon, 13 Oct 2025 16:49:59 +0000 Asbj=C3=B8rn Sloth T=C3=B8nnesen wro=
 te: =20
-> >> Instead of pre-computing the flag values within the code generator,
-> >> then move the bitshift operation into the generated code.
-> >>
-> >> This IMHO makes the generated code read more like handwritten code. =20
+> >> +        suffix =3D yaml['type'] =3D=3D 'flags' and 'mask' or 'max' =20
 > >=20
-> > I like it the way it is. The values are irrelevant. =20
+> > This construct looks highly non-pythonic to me =20
 >=20
-> Bit-shifting seams like the preferred way across the uAPI headers.
+> I don't mind changing it to it's multi-line form, but this line might go
+> away (see below).
 >=20
-> Would you be open to hexadecimal notation, if not bit-shifting?
+> >> +        self.enum_max_name =3D f'{self.value_pfx}{suffix}' =20
+> >=20
+> > sometimes its max sometimes is mask, so we shouldn't call it max always=
+ =20
 >=20
-> Currently NLA_POLICY_MASK() is generated with a hexadecimal mask, and
-> with these patches, if render-max is not set. If using literal values
-> then we should properly consistently generate them as either decimal
-> or hexadecimal. I prefer hexadecimal over decimal.
+> I'm fine with splitting them to render-max, enum-max-name, render-mask and
+> enum-mask-name. I was just following along the current lines in the code,
+> as started in commit 96a611b6b60c.
 
-Hm, hex could do. For the bit/1 << x i really don't like that the values
-are not aligned to columns, so they visually mix in with the names.=20
-But aligning them would be more LoC than it's worth.
-
-hex could be a reasonable compromise, but I make no promise that I will
-like it once I see the result :)
-
-> > And returning a string from user_value() is quite ugly. =20
-> It only returns a string, when as_c is set, I am happy to duplicate
-> some code instead, and add a dedicated method always returning a string,
-> but can we please agree on the generated output, before implementation?
-
-nlspec.py was supposed to be a library that abstracts away things like
-default values not being present, and simplifies indexing. So having a
-"give me a format for C as result" arg is not great for layering.
-That kind of logic belongs in the caller.=20
-
-Regarding LoC - great code is concise, but that doesn't mean that
-making code shorter always makes it better.
+Ideally we'd find a general noun to describe both max and mask..
+I don't have any great suggestions tho
 
