@@ -1,153 +1,335 @@
-Return-Path: <bpf+bounces-70903-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70904-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AE85BD9611
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 14:39:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93E53BD9C2C
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 15:37:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 90AB43542CA
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 12:39:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7034B1886A08
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 13:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ABDA313543;
-	Tue, 14 Oct 2025 12:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WbEmLxNY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B73331354E;
+	Tue, 14 Oct 2025 13:35:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E97B29DB88
-	for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 12:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB852C11E8;
+	Tue, 14 Oct 2025 13:35:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760445579; cv=none; b=LSmv5pTIgZE1AL1KCdhEHyTLT8brQi6YEhOBn1I3wRw9Ek7Zv4AtsMpSdK7C4jQekehYFy9h+KrilMgrRkWnf2Nfxu0onaFq8TIrkr7iT9M+IXSsoAa7wPdrirqJyBK/moe6bLffbX2O94TPCa/gwtYM+mdh8p5v7v7Vjxbs0m0=
+	t=1760448925; cv=none; b=ksUMDqHPpb/KofQVGKTaXDA0iwgJ/LrLdDRv2ijSLMg1WJLO+egb7094SjS4d+NGMUSQ0t7qmWbULvNUeBwPIFUAm7e/vx8RgIEE2D8nnOjp5c9AkGaL4j734KcMjBm5XnOWk6mhUPtq7fvqnUd+aGJepuJ1yfGP0MSQQZOcRQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760445579; c=relaxed/simple;
-	bh=Nh8d18yC3F1kVol5wJ2x8b4hEbrylXUjjaWq7mzK5pU=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dGox1RX/Cwj33B2V0Ifxe5PnHZ71tas1HT1rLUE1WoF9sKnAedBBtOVXgwVFYqAGMbnptbD+CluxjgBaE+HAj/F1oHDmmwUD5RhMyw2NIsqwIcvo7ms9w1gVC6/0LLzJxtvumlBRlHvPSvBamYb+qJjKrwobF94mxieDLWdhu04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WbEmLxNY; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b3d5088259eso788289066b.1
-        for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 05:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760445576; x=1761050376; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iOKsSRK0fMY53Nno3tXGDrP+nfAG/MScFpySFc8rN2Q=;
-        b=WbEmLxNYEeVpBmJQNFGLvmO8pi3NWaNjeh6F6rAwtXlkmC5Zq0y8HvuxTu72loa3Qk
-         0DPqZHspoSktweJ5z4WdeAOZO7kqV9gEE4vt/fJyhAL/yIkWd0fnkPp+TqSaqlRh08Xp
-         f1cSecJ53U1r5nHoE7cJ2OFKWeCv0184VJ73HAO6ySVdd6V9jWy67k4oJqMk0brNpFHU
-         LgUy44vgJFjCkUdFZm3HUWrbYAAHsDPOoFtazbJcRe5w6P8miNArs3IYwkLSUiXbH86+
-         EC+Yd3cjwYO1/d05ixrBm2l6q/dSuBrY1EAdOt15gOoPPQBKl22FW8Xl66QJtxeDvYqb
-         nnZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760445576; x=1761050376;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iOKsSRK0fMY53Nno3tXGDrP+nfAG/MScFpySFc8rN2Q=;
-        b=i7kXXvmr+EftRVY/gveearLsG3THy6IZk6saUd5AXyHD67umPWnufvTkjhPOXGM6lJ
-         y4t7MdEQKuyG2xcf201vhd+s8sUwSmJ65Oy5spHFk8mv/NwLaZZLHR+Zjw2h5ykzwN7L
-         25ydoujvOazjUshgN18Ix8Qh/Lbv51Su1qabsR3JV7Qvt1dzCjMXsO+4oRHe8AV7pVdz
-         KFr3B9ICKtXHTqR+ls7fSABAaq42+UT0WGpJWdb+HZkvl5dItuLn1RaThtEAGXaULM2Y
-         c5IUClocRajzvf3d8LFilbojdKInLWMflSBc3x3e2Zfk+V5U3USGYTpWI0+XVq3dY8T8
-         FEdQ==
-X-Gm-Message-State: AOJu0YxWA+Qpn7f/ZO7PPnHHqKgptFHsQqL6vl3B6+IEeepN/8n6d6u5
-	hPmzjRX8hts/wzAR1kN+Ua5JebPAUCA/7bu4/KG8G5RCnwUU3/TCpJBk
-X-Gm-Gg: ASbGncsmAQ74Jd9pYLcBTrA/BOR9H/b84TZFwHEusaGwlclYib5MHcST524Qf9bbnWp
-	uf2cCyV+zLB1Fw1o9tu3kywCZWoEaQObVnvm+H/qyGcWegrzh439hEFvhlxr9Dt7D2er6QMF/eQ
-	sOOoK2W490r8so0YND50dBE/GmT5Db1TcHI+Tm3/2vsU+ZX7V3zReE4U0Liz2X1fWipLc1rmVwK
-	eTBHA09GUtliVewM/htPFSkEAGfWU5RNITGJHv9gKwonV2rB7/qEsIz1yv4//9zesEex8OlF04Y
-	te/kz8F+55E7jAXmxbcqiro4LUHytXjOoAS3JA8zmGaYCvnELO7D+2VWbQNGzAwht+ZYXaS7nUW
-	O0n5WIljzkCOZWp0=
-X-Google-Smtp-Source: AGHT+IF+gfoV6etSNY7UeTP7Wc3+ofAlLWgPgvHBVhEL5oHqglkksCzccfY0Fb9cv0GW9CsFU/0Fqg==
-X-Received: by 2002:a17:907:25c9:b0:b45:a88e:d6de with SMTP id a640c23a62f3a-b50ad132c58mr2337451366b.65.1760445575586;
-        Tue, 14 Oct 2025 05:39:35 -0700 (PDT)
-Received: from krava ([2a02:8308:a00c:e200::31e0])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-63a5c134141sm11098458a12.34.2025.10.14.05.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Oct 2025 05:39:35 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 14 Oct 2025 14:39:33 +0200
-To: Xing Guo <higuoxing@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, ast@kernel.org,
-	sveiss@meta.com, andrii@kernel.org
-Subject: Re: [PATCH] selftests: arg_parsing: Ensure data is flushed to disk
- before reading.
-Message-ID: <aO5EhTBn9Oq_MP2C@krava>
-References: <20251014080323.1660391-1-higuoxing@gmail.com>
+	s=arc-20240116; t=1760448925; c=relaxed/simple;
+	bh=mVK39WP3LkJmeaNBGmPhaE2tMTk6V/3l97N7PYaBwy8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cNVwjX1oxjDH5jky0+8dGDNvrmdTZ1ieGBb+jek+GeyTR3QfIlRZ7RXAfMlr5AVUKlMc0KNLLV0/QbSmrWugmjhAoEQcSNKU0XS1HJHetOwDiB8zAeclDNtM0Kk6y1a2Wxe9Xyh2cNBKv+SLkJ+ZJ9PCI26yXiRzUMx7sNF3x5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cmFZ65lTlzYQtsl;
+	Tue, 14 Oct 2025 21:34:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id DD40D1A13AC;
+	Tue, 14 Oct 2025 21:35:19 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP4 (Coremail) with SMTP id gCh0CgBHSj+WUe5oZ09jAQ--.31322S2;
+	Tue, 14 Oct 2025 21:35:19 +0800 (CST)
+Message-ID: <445861b0-b79b-425f-b230-707c17093e70@huaweicloud.com>
+Date: Tue, 14 Oct 2025 21:35:18 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251014080323.1660391-1-higuoxing@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: Add overwrite mode for bpf ring
+ buffer
+Content-Language: en-US
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>, Song Liu <song@kernel.org>
+References: <20250905150641.2078838-1-xukuohai@huaweicloud.com>
+ <20250905150641.2078838-2-xukuohai@huaweicloud.com>
+ <CAEf4BzaSEjQzF47BZeh0de9pFbKpaB8JqCs629hV9xZDhMyTgw@mail.gmail.com>
+ <63272c95-9669-41c1-8e77-575ec37d36c0@huaweicloud.com>
+ <CAEf4BzbYtaPf0jjoiv16iKWRKkv9ZTH_hBiZMUF+PkjVGOC53A@mail.gmail.com>
+ <c1829ab5-2c33-4445-911e-9e72bbbfe079@huaweicloud.com>
+ <CAEf4BzYAUDFH7z9x-+vkzkHD0pSG6M264yQoMCGkJxg3mFvcYA@mail.gmail.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <CAEf4BzYAUDFH7z9x-+vkzkHD0pSG6M264yQoMCGkJxg3mFvcYA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgBHSj+WUe5oZ09jAQ--.31322S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3JrWrGw4rCFWktryDArWrKrg_yoWfKw1kpF
+	WjkayfCrs7Jw13XF1vv3W8ArW2vr1IvF1UXryftF17Zwn5K3ZIqryUA3yYk34UGryDAw1I
+	v348Ar9Ikrn8JrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On Tue, Oct 14, 2025 at 04:03:23PM +0800, Xing Guo wrote:
-> Recently, I noticed a selftest failure in my local environment. The
-> test_parse_test_list_file writes some data to
-> /tmp/bpf_arg_parsing_test.XXXXXX and parse_test_list_file() will read
-> the data back.  However, after writing data to that file, we forget to
-> call fsync() and it's causing testing failure in my laptop.  This patch
-> helps fix it by adding the missing fsync() call.
+On 10/14/2025 7:22 AM, Andrii Nakryiko wrote:
+> On Fri, Oct 10, 2025 at 12:07 AM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+>>
+>> On 10/7/2025 6:10 AM, Andrii Nakryiko wrote:
+>>
+>> [...]
+>>
+>>>>>> +
+>>>>>> +       over_pos = READ_ONCE(rb->overwrite_pos);
+>>>>>> +       return min(prod_pos - max(cons_pos, over_pos), rb->mask + 1);
+>>>>>
+>>>>> I'm trying to understand why you need to min with `rb->mask + 1`, can
+>>>>> you please elaborate?
+>>>>
+>>>>
+>>>> We need the min because rb->producer_pos and rb->overwrite_pos are read
+>>>> at different times. During this gap, a fast producer may wrap once or
+>>>> more, making over_pos larger than prod_pos.
+>>>>
+>>>
+>>> what if you read overwrite_pos before reading producer_pos? Then it
+>>> can't be larger than producer_pos and available data would be
+>>> producer_pos - max(consumer_pos, overwrite_pos)? would that work?
+>>>
+>>
+>> No, it won’t work. Between reading overwrite_pos and producer_pos, producer
+>> on a different CPU may have already moved producer_pos forward by more than
+>> one ring buffer size, causing prod_pos - max(cons_pos, over_pos) to exceed
+>> the ring buffer size.
 > 
-> Signed-off-by: Xing Guo <higuoxing@gmail.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/arg_parsing.c | 1 +
->  1 file changed, 1 insertion(+)
+> True, but that was the case with this function before as well.
+> ringbuf_avail_data_sz() is giving an estimate, we just need to make
+> sure to not return a negative value. We didn't artificially cap the
+> return to ring buf size before, why starting now? All of this
+> calculation is done outside of the lock anyways, so it can never be
+> relied upon for exactness.
+>
+
+Makes sense, will switch to producer_pos - max(consumer_pos, overwrite_pos).
+
+>>
+>>>
+>>>>> And also, at least for consistency, use smp_load_acquire() for overwrite_pos?
+>>>>>
+>>>>
+>>>> Using READ_ONCE here is to stay symmetric with __bpf_ringbuf_reserve(),
+>>>> where overwrite_pos is WRITE_ONCE first, followed by smp_store_release(producer_pos).
+>>>> So here we do smp_load_acquire(producer_pos) first, then READ_ONCE(overwrite_pos)
+>>>> to ensure a consistent view of the ring buffer.
+>>>>
+>>>> For consistency when reading consumer_pos and producer_pos, I’m fine with
+>>>> switching READ_ONCE to smp_load_acquire for overwrite_pos.
+>>>>
+>>>
+>>> I'm not sure it matters much, but this function is called outside of
+>>> rb->spinlock, while __bpf_ringbuf_reserve() does hold a lock while
+>>> doing that WRITE_ONCE(). So it might not make any difference, but I
+>>> have mild preference for smp_load_acquire() here.
+>>>
+>>
+>> OK, I'll switch to smp_load_acquire.
+>>
+>>>>>>     }
+>>>>>>
+>>>>>>     static u32 ringbuf_total_data_sz(const struct bpf_ringbuf *rb)
+>>>>>> @@ -402,11 +419,43 @@ bpf_ringbuf_restore_from_rec(struct bpf_ringbuf_hdr *hdr)
+>>>>>>            return (void*)((addr & PAGE_MASK) - off);
+>>>>>>     }
+>>>>>>
+>>>>>> +
+>>>
+>>> [...]
+>>>
+>>>>>> +       /* In overwrite mode, move overwrite_pos to the next record to be
+>>>>>> +        * overwritten if the ring buffer is full
+>>>>>> +        */
+>>>>>
+>>>>> hm... here I think the important point is that we search for the next
+>>>>> record boundary until which we need to overwrite data such that it
+>>>>> fits newly reserved record. "next record to be overwritten" isn't that
+>>>>> important (we might never need to overwrite it). Important are those
+>>>>> aspects of a) staying on record boundary and b) consuming enough
+>>>>> records to reserve the new one.
+>>>>>
+>>>>> Can you please update the comment to mention the above points?
+>>>>>
+>>>>
+>>>> Sure, I'll update the comment to:
+>>>>
+>>>> In overwrite mode, advance overwrite_pos when the ring buffer is full.
+>>>> The key points are to stay on record boundaries and consume enough
+>>>> records to fit the new one.
+>>>>
+>>>
+>>> ok
+>>>
+>>> [...]
+>>>
+>>>>
+>>>>>> +                          unsigned long rec_pos,
+>>>>>> +                          unsigned long cons_pos,
+>>>>>> +                          u32 len, u64 flags)
+>>>>>> +{
+>>>>>> +       unsigned long rec_end;
+>>>>>> +
+>>>>>> +       if (flags & BPF_RB_FORCE_WAKEUP)
+>>>>>> +               return true;
+>>>>>> +
+>>>>>> +       if (flags & BPF_RB_NO_WAKEUP)
+>>>>>> +               return false;
+>>>>>> +
+>>>>>> +       /* for non-overwrite mode, if consumer caught up and is waiting for
+>>>>>> +        * our record, notify about new data availability
+>>>>>> +        */
+>>>>>> +       if (likely(!rb->overwrite_mode))
+>>>>>> +               return cons_pos == rec_pos;
+>>>>>> +
+>>>>>> +       /* for overwrite mode, to give the consumer a chance to catch up
+>>>>>> +        * before being overwritten, wake up consumer every half a round
+>>>>>> +        * ahead.
+>>>>>> +        */
+>>>>>> +       rec_end = rec_pos + ringbuf_round_up_hdr_len(len);
+>>>>>> +
+>>>>>> +       cons_pos &= (rb->mask >> 1);
+>>>>>> +       rec_pos &= (rb->mask >> 1);
+>>>>>> +       rec_end &= (rb->mask >> 1);
+>>>>>> +
+>>>>>> +       if (cons_pos == rec_pos)
+>>>>>> +               return true;
+>>>>>> +
+>>>>>> +       if (rec_pos < cons_pos && cons_pos < rec_end)
+>>>>>> +               return true;
+>>>>>> +
+>>>>>> +       if (rec_end < rec_pos && (cons_pos > rec_pos || cons_pos < rec_end))
+>>>>>> +               return true;
+>>>>>> +
+>>>>>
+>>>>> hm... ok, let's discuss this. Why do we need to do some half-round
+>>>>> heuristic for overwrite mode? If a consumer is falling behind it
+>>>>> should be actively trying to catch up and they don't need notification
+>>>>> (that's the non-overwrite mode logic already).
+>>>>>
+>>>>> So there is more to this than a brief comment you left, can you please
+>>>>> elaborate?
+>>>>>
+>>>>
+>>>> The half-round wakeup was originally intended to work with libbpf in the
+>>>> v1 version. In that version, libbpf used a retry loop to safely copy data
+>>>> from the ring buffer that hadn’t been overwritten. By waking the consumer
+>>>> once every half round, there was always a period where the consumer and
+>>>> producer did not overlap, which helped reduce the number of retries.
+>>>
+>>> I can't say I completely grok the logic here, but do you think we
+>>> should still keep this half-round wakeup? It looks like an arbitrary
+>>> heuristic, so I'd rather not have it.
+>>>
+>>
+>> Sure, since the related libbpf code is no longer present, I’ll remove this
+>> logic in the next version.
+>>
+>>>>
+>>>>> pw-bot: cr
+>>>>>
+>>>>>> +       return false;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static __always_inline
+>>>>>
+>>>>> we didn't have always_inline before, any strong reason to add it now?
+>>>>>
+>>>>
+>>>> I just wanted to avoid introducing any performance regression. Before this
+>>>> patch, bpf_ringbuf_commit() was automatically inlined by the compiler, but
+>>>> after the patch it wasn’t, so I added always_inline explicitly to keep it
+>>>> inlined.
+>>>
+>>> how big of a difference was it in benchmarks? It's generally frowned
+>>> upon using __always_inline without a good reason.
+>>>
+>>
+>> The difference is not noticeable on my arm64 test machine, but it is on my
+>> amd machine.
+>>
+>> Below is the benchmark data on AMD EPYC 9654, with and without always_inline
+>> attribute.
+>>
+>> - With always_inline
+>>
+>> Ringbuf, multi-producer contention
+>> ==================================
+>> rb-libbpf nr_prod 1  13.070 ± 0.158M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 2  15.440 ± 0.017M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 3  7.860 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 4  6.444 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 8  3.788 ± 0.005M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 12 2.802 ± 0.007M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 16 2.560 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 20 2.227 ± 0.006M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 24 2.141 ± 0.007M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 28 1.960 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 32 1.913 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 36 1.854 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 40 1.818 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 44 1.779 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 48 1.758 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 52 1.812 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+>>
+>> - Without always_inline
+>>
+>> Ringbuf, multi-producer contention
+>> ==================================
+>> rb-libbpf nr_prod 1  10.550 ± 0.032M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 2  14.661 ± 0.024M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 3  7.616 ± 0.002M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 4  6.476 ± 0.002M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 8  3.806 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 12 2.814 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 16 2.608 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 20 2.337 ± 0.005M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 24 2.270 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 28 1.977 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 32 1.921 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 36 1.862 ± 0.002M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 40 1.827 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 44 1.912 ± 0.002M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 48 1.860 ± 0.002M/s (drops 0.000 ± 0.000M/s)
+>> rb-libbpf nr_prod 52 1.824 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+>>
+>> When nr_prod=1, the performance regression is significant, dropping from
+>> 13.070 ± 0.158 M/s with always_inline to 10.550 ± 0.032 M/s without it.
+>>
+>> However, since the half-round wakeup logic will be removed in the next
+>> version, the changes to bpf_ringbuf_commit, including always_inline, will
+>> also be removed.
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/arg_parsing.c b/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
-> index bb143de68875..4f071943ffb0 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
-> @@ -140,6 +140,7 @@ static void test_parse_test_list_file(void)
->  	fprintf(fp, "testA/subtest2\n");
->  	fprintf(fp, "testC_no_eof_newline");
->  	fflush(fp);
-> +	fsync(fd);
+> Ok, thanks for the data! Please send an updated version of the code,
+> and let's have another round of review, thanks!
+>
 
+Sure, I’ll send the next version later this week.
 
-could we just close the fp stream instead flushing it twice?
+>>
+>>> [...]
+>>
+> 
 
-maybe something like below, but not sure ferror will work
-after the fclose call
-
-jirka
-
-
----
-diff --git a/tools/testing/selftests/bpf/prog_tests/arg_parsing.c b/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
-index bb143de68875..5a4c1bca2a1e 100644
---- a/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
-+++ b/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
-@@ -139,10 +139,10 @@ static void test_parse_test_list_file(void)
- 	fprintf(fp, "testA/subtest # subtest duplicate\n");
- 	fprintf(fp, "testA/subtest2\n");
- 	fprintf(fp, "testC_no_eof_newline");
--	fflush(fp);
-+	fclose(fp);
- 
- 	if (!ASSERT_OK(ferror(fp), "prepare tmp"))
--		goto out_fclose;
-+		goto out_remove;
- 
- 	init_test_filter_set(&set);
- 
-@@ -160,8 +160,6 @@ static void test_parse_test_list_file(void)
- 
- 	free_test_filter_set(&set);
- 
--out_fclose:
--	fclose(fp);
- out_remove:
- 	remove(tmpfile);
- }
 
