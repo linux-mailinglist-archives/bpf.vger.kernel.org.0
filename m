@@ -1,309 +1,187 @@
-Return-Path: <bpf+bounces-70898-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70899-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 012AFBD9147
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 13:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1765CBD91F5
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 13:52:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EF0F3E5A5E
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 11:44:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C85AE54156B
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 11:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDBD730FC29;
-	Tue, 14 Oct 2025 11:44:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1A4F3101C1;
+	Tue, 14 Oct 2025 11:52:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tUyiWoyl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FXeNG+mU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9C430E849
-	for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 11:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F5030E849
+	for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 11:52:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760442286; cv=none; b=ZrvtIIe6b/+QM2/ttWRZbuIGHsPKl5orf3+zTsv2X7vC+ZVwuhdlc9Xr+WPWXA5uERvFx9VTIK1zSMO7Uu+KjtxULqY2NhegowAd5e6LcjO764+rx/ZjvDD+FsllI8GJlDWSEZvSCZATYLgQGr7zLxnKvNcd+X3ZNbQQA9dWcaQ=
+	t=1760442733; cv=none; b=T+s/tA9BDnuVajaU6IzLbTnis2TZKIAYNeeBHF4GXi1nJ8IFPxxyOy0IJA8A3x4eJgwvCA2kJ0bSOXZvkQBUdJpeUedkTbF+bQY+un37/pRzH461aIHIsnEXGSuP3vw2dzeuFmMRNtoPFKdNs+OZJNhJxzz8KdEb7pH50yikV70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760442286; c=relaxed/simple;
-	bh=hfahCY27limKIRliXlbrcCNzQkVZ+dtcWauUhXG8Mcg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qO8+udoA/l3SPKhoFiw/PbfBRsHJAJAKqin86Bt6zO5BuBE2JIMJS8qWm4elf6OUySDAZf32RHJ/ADS2xkybIc8lQIz4vpZqx5ec8oEY7t0aEWXVVrCMvNCYuNoGtfaJwxzLEydDhKQJ7nz7wA2GcZ0E2JmIe4qS1nZ5NyWGwJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tUyiWoyl; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-27eec33b737so78673685ad.1
-        for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 04:44:44 -0700 (PDT)
+	s=arc-20240116; t=1760442733; c=relaxed/simple;
+	bh=KXD6lIQwVkLd7ZcK6ILaDshE1SsxFvKHZfXlcPfWtyg=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ee1SfBu0w0YTFEAhX7xkTDfc/fdTQ9i2MpqgmhhAym+4dDV1r/B/OBBm7W4gDxR64zB2UuNm3priPs3yWBr9YEpdTgESue8EHf7eH6FhftsPS4jkwe6gIYmDAlAHKmqlcXkF48ww6vgcuFmWJU08LMEB5EwkOAetUkaRJR2ephY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FXeNG+mU; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-634b774f135so8355772a12.2
+        for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 04:52:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1760442284; x=1761047084; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oQ9uK3Kf8jfSaZ6zDVviWmBEyuzg21Wd4ByP3R0vGQ0=;
-        b=tUyiWoylNG0d5nrTYnkM14lslYGXGl3lJ6NoGa99/wizEusCp0/QsBQ+xTpYv+xdvF
-         wU+CsQ74GbIYuLzFUbL2RYZNb7BhK70VpiaHMeJ6Pd1+AW7S/x6HA7I9Ev81UFQ63UPR
-         VKbGpjTluqnqIFupP91uED4sYH4FrAmgwmYzon8dBH40qQgqTzne6cdjewv47RXoREbX
-         JdM32KIYd+t6O62gbsEnpKKG7jleG6jvHxt9mDVRW4iSHoh4e4yzj7XIs3eMNIHZDW5m
-         bQOWyEFixnPodLPfAvPZElP8lIvcBifRLKO5OJRdGkTgtgWxplh6ywY+j+kroy/Qy/j+
-         iORA==
+        d=gmail.com; s=20230601; t=1760442730; x=1761047530; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jfnFB6tlrkef7QWh+7DYSXqb+k34xK9HrotTFeuXFxk=;
+        b=FXeNG+mUopagfRT7gLQdkYBgVfnvClrIpmsg7K4a5BM8/JT0qGCbMNjtdTp7k+5AXd
+         Bwnd5HKzrR0vfbrhxGUhZCIxRR2n7gYU0uIgjP081V3y3T1jS/9oazFRshYrIZ7fgl+P
+         QU6pIHrNrD10yNjXS+25IZOdcJ5fHx5UHanKEG9ZomIiV56c1XsifuhvFxyyQdOYHv6e
+         lkcuXvuWI8oJWrAWm2YDyXm7fwlyYvSto2Lp8Hbg8O2XV9zE5MJH0OzWszmNqMrPcX/1
+         GTrwM7827qQN9C4CwjTBJJ53cr9db+feNaJjFCm5EniyIWhrLdcg2HXAtuulw2de8/Va
+         Ik3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760442284; x=1761047084;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oQ9uK3Kf8jfSaZ6zDVviWmBEyuzg21Wd4ByP3R0vGQ0=;
-        b=VgfurGZ3hx99gkwiUn8ALF3BJGN5wwLlYKYL+PxQj9nVcnCui4XAxapvvqZeeWofjF
-         7n4hY2WwNewLc+wO3PvQf6LZqUytwl1DBa2ejqCXHDmenKngO1d4mOd2r4uLMcoEfcJp
-         CkuNn0f8LXQW2IcaTVgH5sk4os+rEvfECnnkHIhIwZzRedm1epzOmLSK8/1V34ZWLbu+
-         SEwgp3LqQDEG/OXb/t1levx4nTpKfFGg9SnUXaNQLWPwNlit4E+j1hGD2bODNwiYuXvB
-         omTl76z1mbFDbkbkdCh/7BOR4TvuGSQToRxV5LOaZ95mbRNas1UKWa+9JAT445sgzqLt
-         kh6g==
-X-Forwarded-Encrypted: i=1; AJvYcCVvOEzynDyKLWfOhKl5mtFHILWHK/UOdhl3OPkroOFPLOYs+2tCLqR1FLYVoWVr87WXxwo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzLJX4RWgJ2JluvV5zkUXZ0laF+kJvSH7iMQKjb/rF0xVqVJhxd
-	1js4ntMPeixzEw6rAYoqY2MlKAa1EA3b6xqtgYO0MSVK6YtkfbiusnIuHWMPFlJPkzlzSmjZVBJ
-	mVesB++U6XWXULOUAFvnTsn0n15AHYX6mbLBsE8dSpg==
-X-Gm-Gg: ASbGncsixrQnfCX4NPEKpZPyi3uDYPPTR3mO4itsUXkFvLej+qt28wTlhy74g8l5rk4
-	3qmGo0QnNxqu29Pw1siQpypjW2SjBdhT6QeM89A3/oBTN9FqvlTFIU+DwbhCB4+TXcZQlSI3PgZ
-	zlOoQuvfEhLwG6eNAiQOTQpuFN29o/oADq1gA8S3X4c0PedgOPsQJbsOvvxaNV7EZiHSqhG8nkk
-	35kM/I6diDgw1loxs+AjYz+OjsyqinP6YDVf0/f4RtBkQ5wGvrI8jGWvIuAoYdcZL7ga4vw+iLH
-	fLv7y2INUNsKAE0hkqo=
-X-Google-Smtp-Source: AGHT+IFbZ/y6NT5ea9IDQYQSQTzRLXABcHqTVM3gxucF4K4llB2C5gXZ26odu6Mkc0GD85/tFvvstkrHCeTXD2iVOSs=
-X-Received: by 2002:a17:903:298e:b0:27e:eea6:dffc with SMTP id
- d9443c01a7336-290272e3120mr301473205ad.41.1760442283616; Tue, 14 Oct 2025
- 04:44:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1760442730; x=1761047530;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jfnFB6tlrkef7QWh+7DYSXqb+k34xK9HrotTFeuXFxk=;
+        b=xEhLypMjWPzc5NF7t5NJCWPpGWsMGjteBPteazj1J/uBOtr20QK95QKeMIbnb6Xqop
+         GGhcumMtV6dyu8wM30I7pnpFOEpIzww57SjtEPprShN87px10N9RbMZI5c7F2wJXvjAZ
+         7dZ1prA6u+x7/52Xy1Ab3f+uaX/y6/6m/uEWwHn7ijN1BM/p9VpZhTFAxAUoxBQIRVB0
+         2daqyI2kgFPS7N/pUrrkHuG7TFt/h8VjDPev81jGx3hUMuEbmBWYA/hp4eFOF3ONKj5E
+         +G+5AM0tU3kdN9pOgaB7Xg0K6pwEsEOYAOBZ0m5aa6pwkhA/Yu/iOPSydiKKQNoKouLq
+         hSVA==
+X-Forwarded-Encrypted: i=1; AJvYcCX51xraLdbb0jTz4Ompop2YTZgl3ODcxpJvu4GHn/85RsCnd6qyaeNQtQEgBK4eap9fDyU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx0GgcR2CxBArIAekuGAHu0B6gTMc5moxlEX+d8mzRO+1UAUUFt
+	V9nHwNHUgMUm2hqbaFFv0itdUcJFAkB+xJCvzV2lrEXy3EGDbYey3kme
+X-Gm-Gg: ASbGncsPacGhpJvE0dtU2ebUDdjXpEq3lVy6AwqN/fOoO6oC/S5ayJc1Rl6nNARzZYJ
+	QcWEdHO7qZ+lg4r5n+tVxhBKV/x/OykIqWyf0V1ZlzHH+5TRLw0fv8midNoFyOBYslv9Z09QKl7
+	ZMB3+mEqyY+Vsg50m0jqsGQ+9ke0V0jFfLqI5OeLRydffN05WXb7mUaAKKak1LTNldwLHtursH3
+	78c+9ku1sjlPQ4dJEcKorw1DBOTv4Y6L31elHxO46Cae4odu1L9OKwpE68EouJ9SvA6DcpettIy
+	rqJQmzTjIZcGl6iHU0cajzfUC+skY2EuCglhXlP/Hx0wb1fdKtLDBpme3Mv5k3POnbnoQ4rN9PQ
+	UCNNHJ4tEwyYZoNo=
+X-Google-Smtp-Source: AGHT+IGfuM+b+VLTgr7jcPhwZCW7g9vur9iezaNzNEsypu7zUGa/aWX9OrN/j6v75hNefKHiQVvKhA==
+X-Received: by 2002:a17:907:9621:b0:b49:86ac:9004 with SMTP id a640c23a62f3a-b50ac7e7a34mr2854019566b.48.1760442729166;
+        Tue, 14 Oct 2025 04:52:09 -0700 (PDT)
+Received: from krava ([2a02:8308:a00c:e200::31e0])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b55d69dbd99sm1133813766b.40.2025.10.14.04.52.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Oct 2025 04:52:08 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 14 Oct 2025 13:52:06 +0200
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Thierry Treyer <ttreyer@meta.com>,
+	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Quentin Monnet <qmo@kernel.org>,
+	Ihor Solodrai <ihor.solodrai@linux.dev>,
+	David Faust <david.faust@oracle.com>,
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>,
+	bpf <bpf@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC bpf-next 00/15] support inline tracing with BTF
+Message-ID: <aO45ZjLlUM0O5NAe@krava>
+References: <20251008173512.731801-1-alan.maguire@oracle.com>
+ <CAADnVQLN3jQLfkjs-AG2GqsG5Ffw_nefYczvSVmiZZm5X9sd=A@mail.gmail.com>
+ <b4cd1254-59b4-4bac-9742-49968109c8af@oracle.com>
+ <CAADnVQ+yYeX7G--X4eCSW_cyK_DH3xnS-s2tyQLeBYf=NnzUEQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251013144315.184275491@linuxfoundation.org>
-In-Reply-To: <20251013144315.184275491@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 14 Oct 2025 17:14:30 +0530
-X-Gm-Features: AS18NWBlDyPq4hVEQ-J5018eNoHovic3dklSVWqWWI4TEgdRGPz-I4T3A5-jiaM
-Message-ID: <CA+G9fYvRj41__1beAtYvsGcoeqZfu=chpk4sjHC96+wCrbdWiQ@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/196] 6.6.112-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	rwarsow@gmx.de, conor@kernel.org, hargar@microsoft.com, broonie@kernel.org, 
-	achill@achill.org, linux-s390@vger.kernel.org, bpf <bpf@vger.kernel.org>, 
-	Netdev <netdev@vger.kernel.org>, Ilya Leoshkevich <iii@linux.ibm.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Arnd Bergmann <arnd@arndb.de>, 
-	Ben Copeland <benjamin.copeland@linaro.org>, Anders Roxell <anders.roxell@linaro.org>, 
-	Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ+yYeX7G--X4eCSW_cyK_DH3xnS-s2tyQLeBYf=NnzUEQ@mail.gmail.com>
 
-On Mon, 13 Oct 2025 at 20:28, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.112 release.
-> There are 196 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 15 Oct 2025 14:42:41 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.112-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Mon, Oct 13, 2025 at 05:12:45PM -0700, Alexei Starovoitov wrote:
+> On Mon, Oct 13, 2025 at 12:38 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+> >
+> >
+> > I was trying to avoid being specific about inlines since the same
+> > approach works for function sites with optimized-out parameters and they
+> > could be easily added to the representation (and probably should be in a
+> > future version of this series). Another "extra" source of info
+> > potentially is the (non per-cpu) global variables that Stephen sent
+> > patches for a while back and the feeling was it was too big to add to
+> > vmlinux BTF proper.
+> >
+> > But extra is a terrible name. .BTF.aux for auxiliary info perhaps?
+> 
+> aux is too abstract and doesn't convey any meaning.
+> How about "BTF.func_info" ? It will cover inlined and optimized funcs.
+> 
+> Thinking more about reuse of struct btf_type for these...
+> After sleeping on it it feels a bit awkward today, since if they're
+> types they suppose to be in one table with other types,
+> searchable and so on, but we actually don't want them there.
+> btf_find_*() isn't fast and people are trying to optimize it.
+> Also if we teach the kernel to use these loc-s they probably
+> should be in a separate table.
+> 
+> global non per-cpu vars fit into current BTF's datasec concept,
+> so they can be another kernel module with a different name.
+> 
+> I guess one can argue that LOCSEC is similar to DATASEC.
+> Both need their own search tables separate from the main type table.
+> 
+> >
+> > > The partially inlined functions were the biggest footgun so far.
+> > > Missing fully inlined is painful, but it's not a footgun.
+> > > So I think doing "kloc" and usdt-like bpf_loc_arg() completely in
+> > > user space is not enough. It's great and, probably, can be supported,
+> > > but the kernel should use this "BTF.inline_info" as well to
+> > > preserve "backward compatibility" for functions that were
+> > > not-inlined in an older kernel and got partially inlined in a new kernel.
+> > >
+> >
+> > That would be great; we'd need to teach the kernel to handle multi-split
+> > BTF but I would hope that wouldn't be too tricky.
+> >
+> > > If we could use kprobe-multi then usdt-like bpf_loc_arg() would
+> > > make a lot of sense, but since libbpf has to attach a bunch
+> > > of regular kprobes it seems to me the kernel support is more appropriate
+> > > for the whole thing.
+> >
+> > I'm happy with either a userspace or kernel-based approach; the main aim
+> > is to provide this functionality in as straightforward a form as
+> > possible to tracers/libbpf. I have to confess I didn't follow the whole
+> > kprobe multi progress, but at one stage that was more kprobe-based
+> > right? Would there be any value in exploring a flavour of kprobe-multi
+> > that didn't use fprobe and might work for this sort of use case? As you
+> > say if we had that keeping a user-space based approach might be more
+> > attractive as an option.
+> 
+> Agree.
+> 
+> Jiri,
+> how hard would it be to make multi-kprobe work on arbitrary IPs ?
 
-The S390 defconfig builds failed on the Linux stable-rc 6.6.112-rc1
-and 6.12.53-rc1 tag build due to following build warnings / errors
-with gcc and clang toolchains.
+multi-kprobe uses fprobe which uses ftrace/fgraph fast api to attach,
+but it can do that only on the entry of ftrace-able functions which
+have nop5 hooks at the entry
 
-Also seen on 6.12.53-rc1
+attaching anywhere else requires standard kprobe and the attach time
+(and execution time) will be bad
 
-First seen on 6.6.112-rc1
-Good: v6.6.111
-Bad: 6.6.112-rc1 also seen on 6.12.53-rc1
+would be great if inlined functions kept the nop5/fentry hooks ;-)
+but that's probably not that simple
 
-Regression Analysis:
-- New regression? Yes
-- Reproducibility? Yes
-
-Build regressions: arch/s390/net/bpf_jit_comp.c:1463:49: error:
-'struct bpf_jit' has no member named 'frame_off'
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-# Build error
-arch/s390/net/bpf_jit_comp.c: In function 'bpf_jit_insn':
-arch/s390/net/bpf_jit_comp.c:1463:49: error: 'struct bpf_jit' has no
-member named 'frame_off'
- 1463 |                         _EMIT6(0xd203f000 | (jit->frame_off +
-      |                                                 ^~
-arch/s390/net/bpf_jit_comp.c:208:55: note: in definition of macro '_EMIT6'
-  208 |                 *(u32 *) (jit->prg_buf + jit->prg) = (op1);     \
-      |                                                       ^~~
-include/linux/stddef.h:16:33: error: invalid use of undefined type
-'struct prog_frame'
-   16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
-      |                                 ^~~~~~~~~~~~~~~~~~
-arch/s390/net/bpf_jit_comp.c:208:55: note: in definition of macro '_EMIT6'
-  208 |                 *(u32 *) (jit->prg_buf + jit->prg) = (op1);     \
-      |                                                       ^~~
-arch/s390/net/bpf_jit_comp.c:1464:46: note: in expansion of macro 'offsetof'
- 1464 |                                              offsetof(struct prog_frame,
-      |                                              ^~~~~~~~
-include/linux/stddef.h:16:33: error: invalid use of undefined type
-'struct prog_frame'
-   16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
-      |                                 ^~~~~~~~~~~~~~~~~~
-arch/s390/net/bpf_jit_comp.c:209:59: note: in definition of macro '_EMIT6'
-  209 |                 *(u16 *) (jit->prg_buf + jit->prg + 4) = (op2); \
-      |                                                           ^~~
-arch/s390/net/bpf_jit_comp.c:1466:41: note: in expansion of macro 'offsetof'
- 1466 |                                0xf000 | offsetof(struct prog_frame,
-      |                                         ^~~~~~~~
-arch/s390/net/bpf_jit_comp.c: In function '__arch_prepare_bpf_trampoline':
-include/linux/stddef.h:16:33: error: invalid use of undefined type
-'struct prog_frame'
-   16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
-      |                                 ^~~~~~~~~~~~~~~~~~
-arch/s390/net/bpf_jit_comp.c:209:59: note: in definition of macro '_EMIT6'
-  209 |                 *(u16 *) (jit->prg_buf + jit->prg + 4) = (op2); \
-      |                                                           ^~~
-arch/s390/net/bpf_jit_comp.c:2447:33: note: in expansion of macro 'offsetof'
- 2447 |                        0xf000 | offsetof(struct prog_frame,
-tail_call_cnt));
-      |                                 ^~~~~~~~
-make[5]: *** [scripts/Makefile.build:243: arch/s390/net/bpf_jit_comp.o] Error 1
-
-The git blame is pointing to,
- $ git blame -L 1463 arch/s390/net/bpf_jit_comp.c
-   987b48ef91346f Ilya Leoshkevich _EMIT6(0xd203f000 | (jit->frame_off +
-
-Commit pointing to,
-   s390/bpf: Write back tail call counter for BPF_PSEUDO_CALL
-   [ Upstream commit c861a6b147137d10b5ff88a2c492ba376cd1b8b0 ]
-
-## Build
-* kernel: 6.6.112-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-* git commit: 07c1c4215e9202defca86827ce9e9c920c3596b9
-* git describe: v6.6.111-197-g07c1c4215e92
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.111-197-g07c1c4215e92
-
-## Test Regressions (compared to v6.6.109-37-g65af00078567)
-
-* s390, build
-  - clang-21-defconfig
-  - clang-nightly-defconfig
-  - gcc-14-allmodconfig
-  - gcc-14-defconfig
-  - gcc-8-defconfig-fe40093d
-
-## Metric Regressions (compared to v6.6.109-37-g65af00078567)
-
-## Test Fixes (compared to v6.6.109-37-g65af00078567)
-
-## Metric Fixes (compared to v6.6.109-37-g65af00078567)
-
-## Test result summary
-total: 131194, pass: 109732, fail: 4948, skip: 16043, xfail: 471
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 129 total, 128 passed, 1 failed
-* arm64: 44 total, 40 passed, 4 failed
-* i386: 23 total, 23 passed, 0 failed
-* mips: 26 total, 25 passed, 1 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 32 total, 31 passed, 1 failed
-* riscv: 15 total, 14 passed, 1 failed
-* s390: 14 total, 8 passed, 6 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 7 total, 7 passed, 0 failed
-* x86_64: 37 total, 34 passed, 3 failed
-
-## Test suites summary
-* boot
-* commands
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-mincore
-* kselftest-mm
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-mptcp
-* kselftest-openat2
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tc-testing
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-x86
-* kunit
-* kvm-unit-tests
-* lava
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-build-clang
-* log-parser-build-gcc
-* log-parser-test
-* ltp-capability
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+jirka
 
