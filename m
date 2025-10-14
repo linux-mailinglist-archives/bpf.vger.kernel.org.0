@@ -1,165 +1,213 @@
-Return-Path: <bpf+bounces-70853-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66E12BD6D74
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 02:11:25 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF600BD6DD5
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 02:21:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B70431890446
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 00:11:45 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D9C7C4EA877
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 00:21:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90C36F305;
-	Tue, 14 Oct 2025 00:11:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 510BA1C75E2;
+	Tue, 14 Oct 2025 00:13:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FeWSkgCn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jYC5o+3p"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFFB82C181
-	for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 00:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179591A9F86
+	for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 00:12:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760400676; cv=none; b=lRQbmFVUW1NueqK5dIeEkugbIYdSY3TAt7b45+iBy2TNmB/0KoHrVcd5ZJZ5O00hVVlGwfYARrrSNTu1ShKcZIpiysQqqWHDyXDHNeP/7cQM309SZaVQb6KNcL0EBIJgAA6yhb6xdWKXwPTc6Nvoy4FXHBbdogmlFm7VWqnldkM=
+	t=1760400779; cv=none; b=uDY4P33XmVi6SLfeDTzMK4hbGJJx4xihwBQOgZC5Fx5LV72GPTnREZe6ryCDwaXX2joIpnpbjhBCDAWHcP92rkRTsa5ozVVHASuOJxOcNucmJlU7j8LMRNbaciFhxMP5EUUcCtG/pBIHBsP+gTXBYppzkPGxW8GVep3TvAZ/Lwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760400676; c=relaxed/simple;
-	bh=oT6BIqSCXvVZg4wf8LhNiuknVaFfgx/opCT/JGn0Jqw=;
+	s=arc-20240116; t=1760400779; c=relaxed/simple;
+	bh=fhj4q5a3LiVQAS6kcTUZWVnd8uOlRAzVTfCdkxjri7A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U3KP2QUhjSMUzGLb/abDpe03rPI6zBqspldEzpz/XXx07PjRGIdOixt7nSSANfbB5bh0AwdRXlU+lk83RjUMQAZO9+hmU6L7Dwy84PZaWqZ6g4lZckCoBs6T0m64jYEgbzjIl1+Y2LgLIUdNNn4k0B3kOpTAmAo11r7wu4PQ8VI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FeWSkgCn; arc=none smtp.client-ip=209.85.216.46
+	 To:Cc:Content-Type; b=WrkxrQygmlesb3zjqN+xIb7VAnBnkICmG7PHHcdcd0HYv53IbCoCk9FHLQuvTI/m6Kt8a9mckX3UfBMZPz4lFQuaX8nshQ4uPBxphLL98EfII1htkE/sgTkvCJtunquGGPXOorRZM+6wEWNzVnswetbr5FJBshG4SqXM1qBgFG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jYC5o+3p; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-32eb45ab7a0so5074284a91.0
-        for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 17:11:12 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3f2ae6fadb4so5441912f8f.1
+        for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 17:12:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760400672; x=1761005472; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760400776; x=1761005576; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ga6LtzXrkuwBiLFUJI3I332GgLVKaXY6PMLfMN7rmXo=;
-        b=FeWSkgCnZ+achn8cSXD6UYb7vtCjj9vnoVPtE8izS+t7aWnXjUCJ01F2Qwz5tO6DOi
-         iozj8TOupqeqeVmR7H5j6J7SSPP5aPTY7PqqOHK0ZAH64ue1bKlqpdBlidSfzMUn1KFB
-         xcKVxV7MVqKU4OoHtuO6QUgAVXaPfEC4TcVZhWYzsrTF2qj3fbAXB/V2xDQCZPGIGhHj
-         N5Q1dSPA6EYlcWuXWGzNq51/Vx8WYhfkZJEHherTplRpEZnWr5Jxt6yl/50CL8HlPW5Q
-         4ETpy/QEg8Kwl74uyjCzd5o1PSBcC0X58nIyQUkWnV4H4WPY3q0LCQkdGUuYEriJzHfd
-         9zkg==
+        bh=fhj4q5a3LiVQAS6kcTUZWVnd8uOlRAzVTfCdkxjri7A=;
+        b=jYC5o+3p6LKm6ovfAAmgmS2rXiUufy8NxTTuCNnr+ZWGgquDFnabt/HItPQ1/DtekM
+         zXfCCLpBhruLmjImIqyvwik97/RGJNYIY0uG0Y4bxA2Bo9BZZUGryznK+Vc+0LnyzqEQ
+         I0BllT3fgXYEKZyhoQD33WR2v9Az/cM4902OHzPRMweUK2p1oRPFX1yVE8JvGNdJq1Xv
+         1G5O4JWBi6gt2dmQeyqjXk3+Vnfc01qtFz6yc6hU4SM7JsQ7ZzJ9l49v5aOb8QiQ7R6V
+         O3XzXuXBX7s7qUcnAuxlW1lXZAl6OWjTcvlWS8CIzFrg4gguix6qWWOFJtyD/aKgJiFo
+         rLdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760400672; x=1761005472;
+        d=1e100.net; s=20230601; t=1760400776; x=1761005576;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ga6LtzXrkuwBiLFUJI3I332GgLVKaXY6PMLfMN7rmXo=;
-        b=hvnnCiBXEVf39aBv/Ayny8wK8u3cL/qyWo2LmazdVZGXbsUbKN1Z2ciFu9osyO/16O
-         p94GO+wBPpIo/RRppJBI+cU2iyVd6v6UXE1vJ3mEArhoouGV2B14RMNxG8Ur590S9npP
-         6lqtlJmjqwpZIDG9PQkv3AhqdQczU+NKlA1QKzYY2oCf57Qq+X0dUhNfNEqSF2sX6bAa
-         AqfgB5LtwBN6VtUitgWQqjcBTNjdtA1q4rlI1degOMqEO0wcbEC6AgXX3mK4Ft7JmlI3
-         1fWLaRMmCYJTKgoTmir5OSuTiUTJs2Gi/KJ8DjJLuttQ3IHz0OCEbdEZQgY8UQ463K9u
-         c8iA==
-X-Gm-Message-State: AOJu0Yyn96dvbrJlxNMQIZdMuNuOCRvCtalg/52ZhJuC5p0EzHNp9YNt
-	JIF7MZvZQwEwxO7JCEAifonyRitzR+Fxnbu5JwArXRShFOt9c6GRTPepP0knXe5cf23Jg46+J1R
-	dznBVJJbeFGp+JWS+KkK1ebd5pqbb3zg=
-X-Gm-Gg: ASbGncup+AhMJFuuveGNcw9ZufO6X4Ip3Wc7rrO7zrln7xToIMeuLAnXnNUmv8f5shn
-	heQ0C0Bj7VroLvln6OkHoyUlEyPSYwWZqtVViSPtMoQ8SX9aLR5TkUgUcd2nuR9AbQLrumDe4c0
-	QZeOjjM7iBrPDn89hPLUQNOfN2i0q2SdPSrqOW4b8t39zbpnOXgbBdlWjnEnWKXfDMBxdj7bwaE
-	JtoJ1e7k/GZxhH2790U7dC4R5S8yH/Q8ZcrQe/STA==
-X-Google-Smtp-Source: AGHT+IHNzGcpeJ0qJsv8CxRS18TR3PDrOsBiaXfpxwC+CGNWj24f0/m0ufYeFsAVElIeU4O/uNkQWnGqnno9eKCYJQE=
-X-Received: by 2002:a17:90b:3e8e:b0:31e:d4e3:4002 with SMTP id
- 98e67ed59e1d1-33b5114b653mr28792584a91.2.1760400672051; Mon, 13 Oct 2025
- 17:11:12 -0700 (PDT)
+        bh=fhj4q5a3LiVQAS6kcTUZWVnd8uOlRAzVTfCdkxjri7A=;
+        b=nY5KQ2boNZoa+d+pmY1CDh9/6dvL2NQrfziEze9cLN79/yu/ntFm3WwS3Ahii1tJT7
+         wkyZlWGiuQYNS00mChLDI/WigGHyLPlSEJtYAoLYNP6VRlNU/T+lVAA+KvkwTHM8UTLa
+         8EF163zfstWh6kETI/eOQzA6foBtym2swt3DCWF/1aP0wjyP8cmRuTbxJXcDevZVpPPP
+         Nf8BlEDqqRuXm3vNzI8BYLhRO9lYguoXpi2lVWpqfZcH9LuKZtjfhLGNRltM80fVWRxh
+         +U/rn1RUgkXpu8t3SfQBr1fyS4aj4yOysS+Mx8uSY87M7kAORxamvv+gwZ8u8IFnvSe8
+         ccUg==
+X-Forwarded-Encrypted: i=1; AJvYcCWHR8J55etf21Oa2NuZgt3Ma+m94va2qMRoVt/tA1YEd65ZSo/t0LcEztlgrPzQ3u0snp0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzT5+WskK7o+FSHZ4R/2O2yFhc0gW3Nx5g8lyIqrjhp3S8BrtKP
+	JQD3gHTd8t/SUJ7Kvt5P5lPXKqk2vXrA4YXuRWAM1ew5/8+MSn7swFGRtKGkwhOL38mehAlQC/w
+	x7NYR9dpT5zeay2EWLOZ8A+sBxKBaNS0=
+X-Gm-Gg: ASbGncvEjPHiTO58n/uTC35SJXFaUMt5k6mNSHufHUDNcQsBkY+xNUkgFWWhe/jH6jz
+	k5RKPJ14TEE6O8H1nOU8I1fdYBWv5tV+hF6g7lbs/5pG3HXaBiCziPnTYT60VeJbbk7H5MS73gq
+	Jg775Wb2qGQt3G2Xvnsq32RZhnaKfICSJQ9cjC9ygR+UEsEv9sHb4DlpO6gDrhmVIuFF4lPwP1C
+	WJ1zjPzDd4ZAttDijVMBQX56f2t0E6Cvl50y4z7d1TOmhAf50Dbs3ecoi4myAGOdPrJuw==
+X-Google-Smtp-Source: AGHT+IEvGmKRV6HqrIpH4NP4kNszwlWCFUyMx/5JiaFAQqQOJMm0HyT9svi40DITYrOVxV2V93qqHWvXyBCRpIM0n0Q=
+X-Received: by 2002:a05:6000:26c2:b0:3e1:9b75:f0b8 with SMTP id
+ ffacd0b85a97d-4266e8dc01amr15056258f8f.47.1760400776245; Mon, 13 Oct 2025
+ 17:12:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251010174953.2884682-1-ameryhung@gmail.com>
-In-Reply-To: <20251010174953.2884682-1-ameryhung@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 13 Oct 2025 17:10:56 -0700
-X-Gm-Features: AS18NWDS7ccZYHKBu5pn8axn9X5cjmb7uFf288riz8z3_M8ZXSXxCydQVzsGBz8
-Message-ID: <CAEf4BzZhRtswXo_x0Oks-VvcmCLHUdKPKGtELPSECDtxyAEoKg@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 bpf-next 0/4] Support associating BPF programs with struct_ops
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, tj@kernel.org, martin.lau@kernel.org, 
-	kernel-team@meta.com
+References: <20251008173512.731801-1-alan.maguire@oracle.com>
+ <CAADnVQLN3jQLfkjs-AG2GqsG5Ffw_nefYczvSVmiZZm5X9sd=A@mail.gmail.com> <b4cd1254-59b4-4bac-9742-49968109c8af@oracle.com>
+In-Reply-To: <b4cd1254-59b4-4bac-9742-49968109c8af@oracle.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 13 Oct 2025 17:12:45 -0700
+X-Gm-Features: AS18NWBHzXxwZpdslcFpj98pbcJj_S06vGcx22qcvSgisfm5Hrcmr2DSitDj2X0
+Message-ID: <CAADnVQ+yYeX7G--X4eCSW_cyK_DH3xnS-s2tyQLeBYf=NnzUEQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next 00/15] support inline tracing with BTF
+To: Alan Maguire <alan.maguire@oracle.com>, Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Thierry Treyer <ttreyer@meta.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Quentin Monnet <qmo@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, David Faust <david.faust@oracle.com>, 
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 10, 2025 at 10:49=E2=80=AFAM Amery Hung <ameryhung@gmail.com> w=
-rote:
+On Mon, Oct 13, 2025 at 12:38=E2=80=AFAM Alan Maguire <alan.maguire@oracle.=
+com> wrote:
 >
-> This patchset adds a new BPF command BPF_STRUCT_OPS_ASSOCIATE_PROG to
-> the bpf() syscall to allow associating a BPF program with a struct_ops.
-> The command is introduced to address a emerging need from struct_ops
-> users. As the number of subsystems adopting struct_ops grows, more
-> users are building their struct_ops-based solution with some help from
-> other BPF programs. For exmample, scx_layer uses a syscall program as
-> a user space trigger to refresh layers [0]. It also uses tracing program
-> to infer whether a task is using GPU and needs to be prioritized [1]. In
-> these use cases, when there are multiple struct_ops instances, the
-> struct_ops kfuncs called from different BPF programs, whether struct_ops
-> or not needs to be able to refer to a specific one, which currently is
-> not possible.
 >
-> The new BPF command will allow users to explicitly associate a BPF
-> program with a struct_ops map. The libbpf wrapper can be called after
-> loading programs and before attaching programs and struct_ops.
+> I was trying to avoid being specific about inlines since the same
+> approach works for function sites with optimized-out parameters and they
+> could be easily added to the representation (and probably should be in a
+> future version of this series). Another "extra" source of info
+> potentially is the (non per-cpu) global variables that Stephen sent
+> patches for a while back and the feeling was it was too big to add to
+> vmlinux BTF proper.
 >
-> Internally, it will set prog->aux->st_ops_assoc to the struct_ops
-> struct (i.e., kdata). struct_ops kfuncs can then get the associated
-> struct_ops by adding a "__prog" argument. The value of the speical
-> argument will be fixed up by the verifier during verification.
->
-> The command conceptually associates the implementation of BPF programs
-> with struct_ops map, not the attachment. A program associated with the
-> map will take a refcount of it so that st_ops_assoc always points to a
-> valid struct_ops struct. However, the struct_ops can be in an
-> uninitialized or unattached state. The struct_ops implementer will be
-> responsible to maintain and check the state of the associated
-> struct_ops before accessing it.
->
-> We can also consider support associating struct_ops link with BPF
-> programs, which on one hand make struct_ops implementer's job easier,
-> but might complicate libbpf workflow and does not apply to legacy
-> struct_ops attachment.
->
-> [0] https://github.com/sched-ext/scx/blob/main/scheds/rust/scx_layered/sr=
-c/bpf/main.bpf.c#L557
-> [1] https://github.com/sched-ext/scx/blob/main/scheds/rust/scx_layered/sr=
-c/bpf/main.bpf.c#L754
->
-> Amery Hung (4):
->   bpf: Allow verifier to fixup kernel module kfuncs
->   bpf: Support associating BPF program with struct_ops
->   libbpf: Add bpf_struct_ops_associate_prog() API
->   selftests/bpf: Test BPF_STRUCT_OPS_ASSOCIATE_PROG command
->
+> But extra is a terrible name. .BTF.aux for auxiliary info perhaps?
 
-please also drop RFC from the next revision
+aux is too abstract and doesn't convey any meaning.
+How about "BTF.func_info" ? It will cover inlined and optimized funcs.
 
->  include/linux/bpf.h                           |  11 ++
->  include/uapi/linux/bpf.h                      |  16 +++
->  kernel/bpf/bpf_struct_ops.c                   |  32 ++++++
->  kernel/bpf/core.c                             |   6 +
->  kernel/bpf/syscall.c                          |  38 +++++++
->  kernel/bpf/verifier.c                         |   3 +-
->  tools/include/uapi/linux/bpf.h                |  16 +++
->  tools/lib/bpf/bpf.c                           |  18 +++
->  tools/lib/bpf/bpf.h                           |  19 ++++
->  tools/lib/bpf/libbpf.map                      |   1 +
->  .../bpf/prog_tests/test_struct_ops_assoc.c    |  76 +++++++++++++
->  .../selftests/bpf/progs/struct_ops_assoc.c    | 105 ++++++++++++++++++
->  .../selftests/bpf/test_kmods/bpf_testmod.c    |  17 +++
->  .../bpf/test_kmods/bpf_testmod_kfunc.h        |   1 +
->  14 files changed, 357 insertions(+), 2 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_op=
-s_assoc.c
->  create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_assoc.c
+Thinking more about reuse of struct btf_type for these...
+After sleeping on it it feels a bit awkward today, since if they're
+types they suppose to be in one table with other types,
+searchable and so on, but we actually don't want them there.
+btf_find_*() isn't fast and people are trying to optimize it.
+Also if we teach the kernel to use these loc-s they probably
+should be in a separate table.
+
+global non per-cpu vars fit into current BTF's datasec concept,
+so they can be another kernel module with a different name.
+
+I guess one can argue that LOCSEC is similar to DATASEC.
+Both need their own search tables separate from the main type table.
+
 >
-> --
-> 2.47.3
+> > The partially inlined functions were the biggest footgun so far.
+> > Missing fully inlined is painful, but it's not a footgun.
+> > So I think doing "kloc" and usdt-like bpf_loc_arg() completely in
+> > user space is not enough. It's great and, probably, can be supported,
+> > but the kernel should use this "BTF.inline_info" as well to
+> > preserve "backward compatibility" for functions that were
+> > not-inlined in an older kernel and got partially inlined in a new kerne=
+l.
+> >
 >
+> That would be great; we'd need to teach the kernel to handle multi-split
+> BTF but I would hope that wouldn't be too tricky.
+>
+> > If we could use kprobe-multi then usdt-like bpf_loc_arg() would
+> > make a lot of sense, but since libbpf has to attach a bunch
+> > of regular kprobes it seems to me the kernel support is more appropriat=
+e
+> > for the whole thing.
+>
+> I'm happy with either a userspace or kernel-based approach; the main aim
+> is to provide this functionality in as straightforward a form as
+> possible to tracers/libbpf. I have to confess I didn't follow the whole
+> kprobe multi progress, but at one stage that was more kprobe-based
+> right? Would there be any value in exploring a flavour of kprobe-multi
+> that didn't use fprobe and might work for this sort of use case? As you
+> say if we had that keeping a user-space based approach might be more
+> attractive as an option.
+
+Agree.
+
+Jiri,
+how hard would it be to make multi-kprobe work on arbitrary IPs ?
+
+>
+> > I mean when the kernel processes SEC("fentry/foo") into partially
+> > inlined function "foo" it should use fentry for "foo" and
+> > automatically add kprobe into inlined callsites and automatically
+> > generated code that collects arguments from appropriate registers
+> > and make "fentry/foo" behave like "foo" was not inlined at all.
+> > Arguably, we can use a new attach type.
+> > If we teach the kernel to do that then doing bpf_loc_arg() and a bunch
+> > of regular kprobes from libbpf is unnecessary.
+> > The kernel can do the same transparently and prepare the args
+> > depending on location.
+> > If some of the callsites are missing args it can fail the whole operati=
+on.
+>
+> There's a few options here but I think having attach modes which are
+> selectable - either best effort or all-or-none would both be needed I
+> think.
+
+Exactly. For partially inlined we would need all-or-none,
+but I see a case where somebody would want to say:
+"pls attach to all places where foo() is called and since
+it's inlined the actual entry point may not be accurate and it's ok".
+
+The latter would probably need a flag in tracing tools like bpftrace.
+I think all-or-none is a better default.
+
+> > Of course, doing the whole thing from libbpf feels good,
+> > since we're burdening the kernel with extra complexity,
+> > but lack of kprobe-multi changes the way to think about this trade off.
+> >
+> > Whether we decide that the kernel should do it or stay with bpf_loc_arg=
+()
+> > the first few patches and pahole support can/should be landed first.
+> >
+>
+> Sounds great! Having patches 1-10 would be useful as that would allow us
+> in turn to update pahole's libbpf submodule commit to generate location
+> data, which would then allow us to update kbuild and start using it for
+> attach. So we can focus on generating the inline info first, and then
+> think about how we want to present that info to consumers.
+
+Yep. Please post pahole patches for review. I doubt folks
+will look into your git tree ;)
+
+> Sure, thanks for the feedback! BTW the GNU cauldron videos are online
+> already so the presentation [1] about this is available now for folks
+> who missed it. I'd be happy to do a BPF office hours too of course if
+> that would be helpful in ironing out the details.
+
+Can you share the slides too ?
 
