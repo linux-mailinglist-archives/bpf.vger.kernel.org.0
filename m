@@ -1,161 +1,227 @@
-Return-Path: <bpf+bounces-70923-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70924-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C426DBDB245
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 22:00:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53B3DBDB2FF
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 22:14:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F377E18A6F14
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 20:01:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B1BA545494
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 20:14:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAF03054DE;
-	Tue, 14 Oct 2025 20:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B5B7306488;
+	Tue, 14 Oct 2025 20:14:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b="mObzBgaj";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Y5OeRJOU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qv7gxPfz"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF2F270576;
-	Tue, 14 Oct 2025 20:00:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934B01946BC
+	for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 20:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760472043; cv=none; b=ZRZnECFZxgsgm3quQ4kRCAUvMq6vGU5CARst21klmOVhoqIrEfSuUC0ALKz09iVsNGmUvGvlcuMHe8f1GkmcYJI4MkAYBXtTuUdX5hLBGR5WbcbogzksVKiTWZ7b+X3MMLBHjw1PGPIpu+01t9NcLJ51Pszk+P9RkRp9W2iKlr4=
+	t=1760472848; cv=none; b=oVauiz7cvx+jVuOBRAZCYT+mjLjr19YJekeVFMMtSWV0JjrWGaMxIlZARyDxUDGstgennodu+j6D5KQB/chYia9ZGdHhLaQBSCm/dBaFcFQwD4EJCK9bpQDTgyyuasvAgHcOGdIPsTyucjgZ4rE7ik5u6vCfoOi7BsPdRLDqVyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760472043; c=relaxed/simple;
-	bh=RPTDAXRUH48H3AuOqxa0FeN3HigldSnpntB2oGFh6IE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lXUUHzuP97zBxGvO1SUCGmPhOWTt3d4JO1BKWhp0VZ+NrjgpV+ImLZ0I6ZxhRxwd2sXHVCzHScU+EiLNqp37hb8hodi48Qjge5bYFm2HZpwUqZdLzy5U0GVouvbdMo166P9x2vrCQHS5lFa0LPuT6GALjU4tyZo60ik8//bnYD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org; spf=pass smtp.mailfrom=shazbot.org; dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b=mObzBgaj; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Y5OeRJOU; arc=none smtp.client-ip=103.168.172.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shazbot.org
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfout.phl.internal (Postfix) with ESMTP id 4D121EC0979;
-	Tue, 14 Oct 2025 16:00:40 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Tue, 14 Oct 2025 16:00:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shazbot.org; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1760472040;
-	 x=1760558440; bh=nAxl708qa6gSnRG8kCG0KKh+WEJSc1Rsjsj0CGW+qi4=; b=
-	mObzBgajVP+Z4+HkmAJ54WcoMzfqCD9UcX65GSCNYUHmLmANNouhyS8twNIy83Ry
-	xh4s3IVeNox2LSbZSk+Slw/r655vZaB82na+F/kY9ihval8GEw270ILbkxLzq475
-	/9ysnopWzO8fKtT3HwAZsjo1mRNY2pAWhrRDTHhQRsLR6kpBKpoRJYqzk+WGWbFu
-	LlfLLlQTEh4gFqX6FI1+lHGNwsJhDgSGkWa4w8Yl6VUlxWl2xFW5MTENShTASvGt
-	T2KDgAit8AJ5kwifVl/1NziqZ/1hd+TPCws5iARQf09yKdoQtUgOhesc61kSvYga
-	dvQXtyiwKJWjQ/g1wMJ5yA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1760472040; x=
-	1760558440; bh=nAxl708qa6gSnRG8kCG0KKh+WEJSc1Rsjsj0CGW+qi4=; b=Y
-	5OeRJOU4fqHMnQdlVW/TadlCpvcAwkXzT8UhAa8d7gp5A/zo5VMwjFG2baNBC4FA
-	TSU7CHCxQwKDVdNtNgxjzO2xxNRbKJCRWdKys49n8x/Qjg/qWRyhfbPawlSikNVc
-	8IzgHQ+IoLdo/Ux4SDWij3/fa5ZAfngSGeNxsJArtrvsUPUADIfqAa/A/4vcKGDU
-	SCcEiMfNWX9aVhwq7C7/KFhQBL4rMDz46+U6I26nHf5D6VPOrjVHjoYLtMzx12Py
-	qhoSc/52017ftfd5oT0iN9agcHsFw+jU+pzEFW8wfnDlJJ9Xd2iHQYpBg0rw7Z7Z
-	u54KcAYf7vgwx6pjYZXLQ==
-X-ME-Sender: <xms:5qvuaAdDrpWEwv-u-aasXbY69cKBjfSBzqzJ_WxRn9ZxklWtthOv2Q>
-    <xme:5qvuaDJSF2Qgr8uRZodgNq3LsERt-1rY16PQMI_MP2zwUOjdDxnmPtjPhYZTzsP9o
-    LxEYc_eKyfsudzGmIEk2UHjNAW2fCUUR2On27RiIEiXEUldqG-wZg>
-X-ME-Received: <xmr:5qvuaB3xi5KjXdLTdGvsgyXlEbXgSYDvkDAVztKJlkdU0Y08HwxT5Imdud0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduvddugeefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkjghfgggtgfesthejredttddtvdenucfhrhhomheptehlvgigucgh
-    ihhllhhirghmshhonhcuoegrlhgvgiesshhhrgiisghothdrohhrgheqnecuggftrfgrth
-    htvghrnhepteetudelgeekieegudegleeuvdffgeehleeivddtfeektdekkeehffehudet
-    hffhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hlvgigsehshhgriigsohhtrdhorhhgpdhnsggprhgtphhtthhopedujedpmhhouggvpehs
-    mhhtphhouhhtpdhrtghpthhtoheptghhuhhguhgrnhhgqhhinhhgsehinhhsphhurhdrtg
-    homhdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghn
-    ihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrnhgurhhiiheskhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghv
-    pdhrtghpthhtohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehsoh
-    hngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephihonhhghhhonhhgrdhsohhnghes
-    lhhinhhugidruggvvhdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrg
-    hilhdrtghomh
-X-ME-Proxy: <xmx:56vuaEaBczoypXRgxQ2vwcOpEatc8EpKuldURGbBn3iF7RZMksgdLA>
-    <xmx:56vuaDiR0EORGA6YSEoXACvx5T7iLGBZZ2SuWLJiexmr8x9XTRB7LA>
-    <xmx:56vuaL_jKvtp3aIGw3Dn9g_3HofzU__XjJuAmJZxhpSOOPIFv8CLoQ>
-    <xmx:56vuaJMu1tKSW7wt6ouQtZh0Tf_6X3JRL0BSCBLFkdvP3X_KTD-xzQ>
-    <xmx:6KvuaIOjQkDPfSTH2nx6Cw-5jE5I72Hkc0pO-Cbe1al3NqYjPBbEc2wc>
-Feedback-ID: i03f14258:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Oct 2025 16:00:37 -0400 (EDT)
-Date: Tue, 14 Oct 2025 14:00:35 -0600
-From: Alex Williamson <alex@shazbot.org>
-To: Chu Guangqing <chuguangqing@inspur.com>
-Cc: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
- <martin.lau@linux.dev>, <eddyz87@gmail.com>, <song@kernel.org>,
- <yonghong.song@linux.dev>, <john.fastabend@gmail.com>,
- <kpsingh@kernel.org>, <sdf@fomichev.me>, <haoluo@google.com>,
- <jolsa@kernel.org>, <kwankhede@nvidia.com>, <bpf@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] samples/bpf: Fix spelling typo in samples/bpf
-Message-ID: <20251014140035.31bd9154@shazbot.org>
-In-Reply-To: <20251014060849.3074-2-chuguangqing@inspur.com>
-References: <20251014060849.3074-1-chuguangqing@inspur.com>
-	<20251014060849.3074-2-chuguangqing@inspur.com>
+	s=arc-20240116; t=1760472848; c=relaxed/simple;
+	bh=JlnXqeNzKB+8YTZWvZ8/i4H6EN1DVQTu71T6iHgvvtk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L72CSvkUDXZMjn0nFiBpjCC2E/8zVrSKaheJ/AiOUZrgEZrhoX8qT+gz4/3IFkhbc5dia79UNK92dM4+DH+8ycZOROQlD8PH7vmR2CCSHc0X5kcVVnxz/OstmX30iYNWwFOrJfK+/ZwsD2/xDChd5hYGso+LjEJkgCH4adUJfc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qv7gxPfz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCB47C4CEE7;
+	Tue, 14 Oct 2025 20:14:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760472847;
+	bh=JlnXqeNzKB+8YTZWvZ8/i4H6EN1DVQTu71T6iHgvvtk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qv7gxPfzzus3iXEHsTFGUI56WDmhjMOC0sLk6GFo5ApSvGurBD/fHXgGC1gfp2ji6
+	 v2raZMG0nm62P1DSDdfgw8Uo44TTGTcZmSdkj/woCQH/tYTi9w4xTEyFy2zYGYIrC4
+	 OHdY7ummOI70yq2q5jbxuTTO2NnNUCGegNAqtyCkc/HAYedbW6Ye5E5itcj/IbfGAs
+	 5lXYIwFr9HHUUi86BpJs1EV70EGovgiP47cJE0xGrj5GFWrMXnkzP7tgLmxuCjALnj
+	 5HLoq1ApuJqqyAO10dNL9j0yqLbrslNlUHFwqYGhPG9aYGvMchNNW88wCO1MTjURJV
+	 XqkfniMImeTqQ==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org
+Cc: andrii@kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH v2 bpf-next] bpf: consistently use bpf_rcu_lock_held() everywhere
+Date: Tue, 14 Oct 2025 13:14:03 -0700
+Message-ID: <20251014201403.4104511-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Tue, 14 Oct 2025 14:08:49 +0800
-Chu Guangqing <chuguangqing@inspur.com> wrote:
+We have many places which open-code what's now is bpf_rcu_lock_held()
+macro, so replace all those places with a clean and short macro invocation.
+For that, move bpf_rcu_lock_held() macro into include/linux/bpf.h.
 
-> do_hbm_test.sh:
-> The comment incorrectly used "upcomming" instead of "upcoming".
-> 
-> hbm.c
-> The comment incorrectly used "Managment" instead of "Management".
-> The comment incorrectly used "Currrently" instead of "Currently".
-> 
-> tcp_cong_kern.c
-> The comment incorrectly used "deteremined" instead of "determined".
-> 
-> tracex1.bpf.c
-> The comment incorrectly used "loobpack" instead of "loopback".
-> 
-> mtty.c
-> The comment incorrectly used "atleast" instead of "at least".
-> 
-> Signed-off-by: Chu Guangqing <chuguangqing@inspur.com>
-> ---
->  samples/bpf/do_hbm_test.sh  | 2 +-
->  samples/bpf/hbm.c           | 4 ++--
->  samples/bpf/tcp_cong_kern.c | 2 +-
->  samples/bpf/tracex1.bpf.c   | 2 +-
->  samples/vfio-mdev/mtty.c    | 2 +-
->  5 files changed, 6 insertions(+), 6 deletions(-)
-> 
-...
-> diff --git a/samples/vfio-mdev/mtty.c b/samples/vfio-mdev/mtty.c
-> index 59eefe2fed10..6cb3e5974990 100644
-> --- a/samples/vfio-mdev/mtty.c
-> +++ b/samples/vfio-mdev/mtty.c
-> @@ -624,7 +624,7 @@ static void handle_bar_read(unsigned int index, struct mdev_state *mdev_state,
->  		u8 lsr = 0;
->  
->  		mutex_lock(&mdev_state->rxtx_lock);
-> -		/* atleast one char in FIFO */
-> +		/* at least one char in FIFO */
->  		if (mdev_state->s[index].rxtx.head !=
->  				 mdev_state->s[index].rxtx.tail)
->  			lsr |= UART_LSR_DR;
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+v1->v2:
+  - move bpf_rcu_lock_held() outside of #ifdef CONFIG_BPF_SYSCALL area (kernel
+    test robot).
 
-I'd suggest this go through bpf since it touches more there.  For mtty,
+ include/linux/bpf.h               |  3 +++
+ include/linux/bpf_local_storage.h |  3 ---
+ kernel/bpf/hashtab.c              | 21 +++++++--------------
+ kernel/bpf/helpers.c              | 12 ++++--------
+ 4 files changed, 14 insertions(+), 25 deletions(-)
 
-Acked-by: Alex Williamson <alex@shazbot.org>
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index f87fb203aaae..86afd9ac6848 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2381,6 +2381,9 @@ bpf_prog_run_array_uprobe(const struct bpf_prog_array *array,
+ bool bpf_jit_bypass_spec_v1(void);
+ bool bpf_jit_bypass_spec_v4(void);
+ 
++#define bpf_rcu_lock_held() \
++	(rcu_read_lock_held() || rcu_read_lock_trace_held() || rcu_read_lock_bh_held())
++
+ #ifdef CONFIG_BPF_SYSCALL
+ DECLARE_PER_CPU(int, bpf_prog_active);
+ extern struct mutex bpf_stats_enabled_mutex;
+diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
+index ab7244d8108f..782f58feea35 100644
+--- a/include/linux/bpf_local_storage.h
++++ b/include/linux/bpf_local_storage.h
+@@ -18,9 +18,6 @@
+ 
+ #define BPF_LOCAL_STORAGE_CACHE_SIZE	16
+ 
+-#define bpf_rcu_lock_held()                                                    \
+-	(rcu_read_lock_held() || rcu_read_lock_trace_held() ||                 \
+-	 rcu_read_lock_bh_held())
+ struct bpf_local_storage_map_bucket {
+ 	struct hlist_head list;
+ 	raw_spinlock_t lock;
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index e7a6ba04dc82..f876f09355f0 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -657,8 +657,7 @@ static void *__htab_map_lookup_elem(struct bpf_map *map, void *key)
+ 	struct htab_elem *l;
+ 	u32 hash, key_size;
+ 
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
+-		     !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
+ 
+ 	key_size = map->key_size;
+ 
+@@ -1086,8 +1085,7 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+ 		/* unknown flags */
+ 		return -EINVAL;
+ 
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
+-		     !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
+ 
+ 	key_size = map->key_size;
+ 
+@@ -1194,8 +1192,7 @@ static long htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value
+ 		/* unknown flags */
+ 		return -EINVAL;
+ 
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
+-		     !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
+ 
+ 	key_size = map->key_size;
+ 
+@@ -1263,8 +1260,7 @@ static long htab_map_update_elem_in_place(struct bpf_map *map, void *key,
+ 		/* unknown flags */
+ 		return -EINVAL;
+ 
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
+-		     !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
+ 
+ 	key_size = map->key_size;
+ 
+@@ -1326,8 +1322,7 @@ static long __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+ 		/* unknown flags */
+ 		return -EINVAL;
+ 
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
+-		     !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
+ 
+ 	key_size = map->key_size;
+ 
+@@ -1404,8 +1399,7 @@ static long htab_map_delete_elem(struct bpf_map *map, void *key)
+ 	u32 hash, key_size;
+ 	int ret;
+ 
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
+-		     !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
+ 
+ 	key_size = map->key_size;
+ 
+@@ -1440,8 +1434,7 @@ static long htab_lru_map_delete_elem(struct bpf_map *map, void *key)
+ 	u32 hash, key_size;
+ 	int ret;
+ 
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
+-		     !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
+ 
+ 	key_size = map->key_size;
+ 
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index dea8443f782c..825280c953be 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -42,8 +42,7 @@
+  */
+ BPF_CALL_2(bpf_map_lookup_elem, struct bpf_map *, map, void *, key)
+ {
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
+-		     !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
+ 	return (unsigned long) map->ops->map_lookup_elem(map, key);
+ }
+ 
+@@ -59,8 +58,7 @@ const struct bpf_func_proto bpf_map_lookup_elem_proto = {
+ BPF_CALL_4(bpf_map_update_elem, struct bpf_map *, map, void *, key,
+ 	   void *, value, u64, flags)
+ {
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
+-		     !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
+ 	return map->ops->map_update_elem(map, key, value, flags);
+ }
+ 
+@@ -77,8 +75,7 @@ const struct bpf_func_proto bpf_map_update_elem_proto = {
+ 
+ BPF_CALL_2(bpf_map_delete_elem, struct bpf_map *, map, void *, key)
+ {
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
+-		     !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
+ 	return map->ops->map_delete_elem(map, key);
+ }
+ 
+@@ -134,8 +131,7 @@ const struct bpf_func_proto bpf_map_peek_elem_proto = {
+ 
+ BPF_CALL_3(bpf_map_lookup_percpu_elem, struct bpf_map *, map, void *, key, u32, cpu)
+ {
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
+-		     !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
+ 	return (unsigned long) map->ops->map_lookup_percpu_elem(map, key, cpu);
+ }
+ 
+-- 
+2.47.3
+
 
