@@ -1,187 +1,242 @@
-Return-Path: <bpf+bounces-70870-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70871-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C668FBD7538
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 06:53:59 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49BA4BD7656
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 07:17:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE62318A6657
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 04:54:22 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A3D834F7E65
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 05:17:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFEBA30CDAA;
-	Tue, 14 Oct 2025 04:53:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aznXbLcg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E25296BBC;
+	Tue, 14 Oct 2025 05:16:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72FD30BBAB
-	for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 04:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40797291C07
+	for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 05:16:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760417634; cv=none; b=dmvJ8AJ6HCZvqYohOW71PNKxsdcPlVdWD/bs18N8a9qBt0N8253bzYQ19J3KkjhqhrrSIPKM5BAq1YZmV5ZMsFwkIO+iHezPZmVdkfZpWUjkLPXRjQccW0s56CBFxzmZEOP5P89IsXnsvEJomRyIg+blXypl/KYy8E/3KQoekBA=
+	t=1760419015; cv=none; b=VY6H7oBcQiiyJI2AWoFaYbrQuXNXzDhE3QN2jEdq8KTTaFd702Jv8r6f86MNJRQkhIlpL+60cEhXMbnlPUCQvQU+D2HlRzdldv7bQ1mn4hbHNdgyNd9DRTcY/v1Qe/mem+hqyx5/UcOJ1LLgYn4dwGMI9RgP/qRSggyDhGfW1BA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760417634; c=relaxed/simple;
-	bh=a4xoUFMwYk684k5JYg2VpNN7CFXbHuQ0VdyeOTINjuw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EnnrHxNOeKMdx2z525yH2UQCGkPgcBOrWQ1/aNy4v2WH+jfqzlka0rwN7+H+CoVLsNafXQL/hn0aJPvZmOSQog2xI4877+CbzfTSBLSf3OrzAGEonIaW8BuFafzheljfMBVeLhAq0JgeK8x0KcYaLaSbuGlGn5MTv4bkcZV2hR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aznXbLcg; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-639fb035066so7672278a12.0
-        for <bpf@vger.kernel.org>; Mon, 13 Oct 2025 21:53:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760417631; x=1761022431; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KfQyCyE+XPfPYrrByTwKDtcCs6GmIeb9aW4FmXsJ1IU=;
-        b=aznXbLcgXjHxPtXEW5ecJk+ZyMPLyVdCJoBMWGzWXF+AJO0LGO96KOWl9mM/ok2sbT
-         bgxldsiqlSyJmSLIxYvBhzbsWxeqvyZ/nqZtHl/cOCgpwIMJzz4G5jlFv6cRaV/nIrGS
-         Xmf2WL4PcetmZcLtNSgnF2T0TkJhmnsVVITrOrpeNk0BQUHomytLzTPE/eO4VG4/7gr2
-         R6HTScfgjjstN2R4/tc0gEjE1r3MII0ab5XJg5rhB8/JJdOiWUyvl4Uqbj7D44JGJHYm
-         6Xs7bYWkHqigveaGGr/jQMX9VF4967cf1nW9DkNc18ZgnBARtjAqd8uyA5v3MNhvycCN
-         7SAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760417631; x=1761022431;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KfQyCyE+XPfPYrrByTwKDtcCs6GmIeb9aW4FmXsJ1IU=;
-        b=Cjyr2yrZ3XdoxOxS+fFy2TAeUGiCgLjtotU3Gxm3AjcAzfi2rdIrmFtNp1Sb3Exl6+
-         4JXfabjpB7Qdxt5AFTuPTqhc7Rt5OzZCqjiOZoFdRpstMFKSxXN8cGrdElpuWDe1If8X
-         SXKrehUtffwI0+SIrsc9g13AXa6sPUu1f1XT9yeizlIfS8C40sOk6Glgih2enEK0yVCT
-         W0ybKbkSVTT9OJ06ypmhtapVKI6Pfrz2kh3pcArmJvEv8B2KevheZhlzWNJIp82pDBUb
-         bGUNUbxU+kt0Efewpjf6y28m31kBS1tjhCCrrQ+IAgD7YyAuRNWbneh1wJl9Hb0V7fJE
-         /AeA==
-X-Forwarded-Encrypted: i=1; AJvYcCUwXAejJCS71qxASW4WgpYcf7rg5X7ZUozmJnMheTZ+nW8h59Sv9lv1DquCSw/AmGLdFn4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxjf18yUGvqoO+51hqLmhoLfzCForhS52B4LjIeHRt0fdnfS3bF
-	zwcYgSsjQKKzZAfduzuYKFO8ynzTwuS3UABz9LX46+k/JRNb11ebXAiZcMie0Ntc3NrEKu3YuAK
-	AkIW5PCiYBHB9c5fZhk3pk/A0VA+J3AA=
-X-Gm-Gg: ASbGncvxl8HU6CUvO45twWJCX2iahKc3WZGwJJDaRJmGht10hKkcg7vHiaJmJ9QiK1j
-	IBRdLe5esgamG0vRiRIwSfr82LyWDs1b+o30/9rjPXv0YtHJ4mg4ZDphraa0ZdTyUqWA5AY1ySy
-	vuDcjRoRzVl0WC0qOQoL/Fxecz46zSeK4Lq5FiQrfZdJxy0Zu6asDZ4eBVfqoWFVhQOi2St4W/F
-	WFpP2XykcZOj2DD4qC8GNHLkl52yBL3o/PwhQ==
-X-Google-Smtp-Source: AGHT+IHycdhxq/9uyp9yKAAL3r9oERFUtH+HAFOLwQI4pevZSkF66rxnEvWd1Bw49lAHp9HOueRaVLiXkkjNr0qGtHc=
-X-Received: by 2002:a05:6402:2744:b0:637:dfb1:33a8 with SMTP id
- 4fb4d7f45d1cf-639d5b64901mr22616488a12.3.1760417630759; Mon, 13 Oct 2025
- 21:53:50 -0700 (PDT)
+	s=arc-20240116; t=1760419015; c=relaxed/simple;
+	bh=87z87/XnQoPyB/lAylIyA4Zx72uJkuB4BFtgCggXmHs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m4f67F14Rqpp3H8Clhclzx2z8gBfSnQHmOi3awJaLy/03uq+5YO6kSuKZeqeUSexz+b67cBknkECH1JMrEseuOZJ2XPNnMYTw6vCITzkkdzLhI4+ni7oZryWHTRCda4oEvWOJYKXKywPyF+CwAR7XhIt81viOjP6OnnTZhtykdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id DABD21268D146; Mon, 13 Oct 2025 22:16:39 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next] selftests/bpf: Fix selftest verif_scale_strobemeta failure with llvm22
+Date: Mon, 13 Oct 2025 22:16:39 -0700
+Message-ID: <20251014051639.1996331-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251013131537.1927035-1-dolinux.peng@gmail.com>
- <CAEf4BzbABZPNJL6_rtpEhMmHFdO5pNbFTGzL7sXudqb5qkmjpg@mail.gmail.com>
- <CAADnVQJN7TA-HNSOV3LLEtHTHTNeqWyBWb+-Gwnj0+MLeF73TQ@mail.gmail.com>
- <CAEf4BzaZ=UC9Hx_8gUPmJm-TuYOouK7M9i=5nTxA_3+=H5nEiQ@mail.gmail.com>
- <CAADnVQLC22-RQmjH3F+m3bQKcbEH_i_ukRULnu_dWvtN+2=E-Q@mail.gmail.com>
- <CAErzpmtCxPvWU03fn1+1abeCXf8KfGA+=O+7ZkMpQd-RtpM6UA@mail.gmail.com> <CAADnVQ+2JSxb7Uca4hOm7UQjfP48RDTXf=g1a4syLpRjWRx9qg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+2JSxb7Uca4hOm7UQjfP48RDTXf=g1a4syLpRjWRx9qg@mail.gmail.com>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Tue, 14 Oct 2025 12:53:39 +0800
-X-Gm-Features: AS18NWBzhlnxQ9UDKq0PMeKLqmLwp_jZVc21fUyToJv8XAqRPenRlWCmVKYbt5s
-Message-ID: <CAErzpmu0Zjo0+_r-iBWoAOUiqbC9=sJmJDtLtAANVRU9P-pytg@mail.gmail.com>
-Subject: Re: [RFC PATCH v1] btf: Sort BTF types by name and kind to optimize
- btf_find_by_name_kind lookup
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	pengdonglin <pengdonglin@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 14, 2025 at 10:48=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Oct 13, 2025 at 6:54=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.=
-com> wrote:
-> >
-> > On Tue, Oct 14, 2025 at 8:22=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Oct 13, 2025 at 5:15=E2=80=AFPM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Mon, Oct 13, 2025 at 4:53=E2=80=AFPM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Mon, Oct 13, 2025 at 4:40=E2=80=AFPM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > Just a few observations (if we decide to do the sorting of BTF =
-by name
-> > > > > > in the kernel):
-> > > > >
-> > > > > iirc we discussed it in the past and decided to do sorting in pah=
-ole
-> > > > > and let the kernel verify whether it's sorted or not.
-> > > > > Then no extra memory is needed.
-> > > > > Or was that idea discarded for some reason?
-> > > >
-> > > > Don't really remember at this point, tbh. Pre-sorting should work
-> > > > (though I'd argue that then we should only sort by name to make thi=
-s
-> > > > sorting universally useful, doing linear search over kinds is fast,
-> > > > IMO). Pre-sorting won't work for program BTFs, don't know how
-> > > > important that is. This indexing on demand approach would be
-> > > > universal. =C2=AF\_(=E3=83=84)_/=C2=AF
-> > > >
-> > > > Overall, paying 300KB for sorted index for vmlinux BTF for cases wh=
-ere
-> > > > we repeatedly need this seems ok to me, tbh.
-> > >
-> > > If pahole sorting works I don't see why consuming even 300k is ok.
-> > > kallsyms are sorted during the build too.
-> >
-> > Thanks. We did discuss pre-sorting in pahole in the threads:
-> >
-> > https://lore.kernel.org/all/CAADnVQLMHUNE95eBXdy6=3D+gHoFHRsihmQ75GZvGy=
--hSuHoaT5A@mail.gmail.com/
-> > https://lore.kernel.org/all/CAEf4BzaXHrjoEWmEcvK62bqKuT3de__+juvGctR3=
-=3De8avRWpMQ@mail.gmail.com/
-> >
-> > However, since that approach depends on newer pahole features and
-> > btf_find_by_name_kind is already being called quite frequently, I sugge=
-st
-> > we first implement sorting within the kernel, and subsequently add pre-=
-sorting
-> > support in pahole.
->
-> and then what? Remove it from the kernel when pahole is newer?
-> I'd rather not do this churn in the first place.
+With latest llvm22, I hit the verif_scale_strobemeta selftest failure
+below:
+  $ ./test_progs -n 618
+  libbpf: prog 'on_event': BPF program load failed: -E2BIG
+  libbpf: prog 'on_event': -- BEGIN PROG LOAD LOG --
+  BPF program is too large. Processed 1000001 insn
+  verification time 7019091 usec
+  stack depth 488
+  processed 1000001 insns (limit 1000000) max_states_per_insn 28 total_st=
+ates 33927 peak_states 12813 mark_read 0
+  -- END PROG LOAD LOG --
+  libbpf: prog 'on_event': failed to load: -E2BIG
+  libbpf: failed to load object 'strobemeta.bpf.o'
+  scale_test:FAIL:expect_success unexpected error: -7 (errno 7)
+  #618     verif_scale_strobemeta:FAIL
 
-Apologies for the formatting issues in my previous email=E2=80=94sending th=
-is again
- for clarity.
+But if I increase the verificaiton insn limit from 1M to 10M, the above
+test_progs run actually will succeed. The below is the result from verist=
+at:
+  $ ./veristat strobemeta.bpf.o
+  Processing 'strobemeta.bpf.o'...
+  File              Program   Verdict  Duration (us)    Insns  States  Pr=
+ogram size  Jited size
+  ----------------  --------  -------  -------------  -------  ------  --=
+----------  ----------
+  strobemeta.bpf.o  on_event  success       90250893  9777685  358230    =
+     15954       80794
+  ----------------  --------  -------  -------------  -------  ------  --=
+----------  ----------
+  Done. Processed 1 files, 0 programs. Skipped 1 files, 0 programs.
 
-Thank you for your feedback. Your concerns are completely valid.
+Further debugging shows the llvm commit [1] is responsible for the verifi=
+caiton
+failure as it tries to convert certain switch statement to if-condition. =
+Such
+change may cause different transformation compared to original switch sta=
+tement.
 
-I=E2=80=99d like to suggest a dual-mechanism approach:
-1. If BTF is generated by a newer pahole (with pre-sorting support), the
-    kernel would use the pre-sorted data directly.
-2. For BTF from older pahole versions, the kernel would handle sorting
-    at load time or later.
+In bpf program strobemeta.c case, the initial llvm ir for read_int_var() =
+function is
+  define internal void @read_int_var(ptr noundef %0, i64 noundef %1, ptr =
+noundef %2,
+      ptr noundef %3, ptr noundef %4) #2 !dbg !535 {
+    %6 =3D alloca ptr, align 8
+    %7 =3D alloca i64, align 8
+    %8 =3D alloca ptr, align 8
+    %9 =3D alloca ptr, align 8
+    %10 =3D alloca ptr, align 8
+    %11 =3D alloca ptr, align 8
+    %12 =3D alloca i32, align 4
+    ...
+    %20 =3D icmp ne ptr %19, null, !dbg !561
+    br i1 %20, label %22, label %21, !dbg !562
 
-This would provide performance benefits immediately while preserving
- backward compatibility. The kernel-side sorting would remain intact
-moving forward, avoiding future churn.
+  21:                                               ; preds =3D %5
+    store i32 1, ptr %12, align 4
+    br label %48, !dbg !563
 
->
-> Since you revived that thread from 2024 and did not
-> follow up with pahole changes since then, I don't believe that
-> you will do them if we land kernel changes first.
+  22:
+    %23 =3D load ptr, ptr %9, align 8, !dbg !564
+    ...
 
-Regarding the pahole changes: this is now my highest priority. I=E2=80=99ve
-already incorporated it into my development plan and will begin
-working on the patches shortly.
+  47:                                               ; preds =3D %38, %22
+    store i32 0, ptr %12, align 4, !dbg !588
+    br label %48, !dbg !588
 
-What do you think about this approach? Would this be acceptable?
+  48:                                               ; preds =3D %47, %21
+    call void @llvm.lifetime.end.p0(ptr %11) #4, !dbg !588
+    %49 =3D load i32, ptr %12, align 4
+    switch i32 %49, label %51 [
+      i32 0, label %50
+      i32 1, label %50
+    ]
+
+  50:                                               ; preds =3D %48, %48
+    ret void, !dbg !589
+
+  51:                                               ; preds =3D %48
+    unreachable
+  }
+
+Note that the above 'switch' statement is added by clang frontend.
+Without [1], the switch statement will survive until SelectionDag,
+so the switch statement acts like a 'barrier' and prevents some
+transformation involved with both 'before' and 'after' the switch stateme=
+nt.
+
+But with [1], the switch statement will be removed during middle end
+optimization and later middle end passes (esp. after inlining) have more
+freedom to reorder the code.
+
+The following is the related source code:
+
+  static void *calc_location(struct strobe_value_loc *loc, void *tls_base=
+):
+        bpf_probe_read_user(&tls_ptr, sizeof(void *), dtv);
+        /* if pointer has (void *)-1 value, then TLS wasn't initialized y=
+et */
+        return tls_ptr && tls_ptr !=3D (void *)-1
+                ? tls_ptr + tls_index.offset
+                : NULL;
+
+  In read_int_var() func, we have:
+        void *location =3D calc_location(&cfg->int_locs[idx], tls_base);
+        if (!location)
+                return;
+
+        bpf_probe_read_user(value, sizeof(struct strobe_value_generic), l=
+ocation);
+        ...
+
+The static func calc_location() is called inside read_int_var(). The asm =
+code
+without [1]:
+     77: .123....89 (85) call bpf_probe_read_user#112
+     78: ........89 (79) r1 =3D *(u64 *)(r10 -368)
+     79: .1......89 (79) r2 =3D *(u64 *)(r10 -8)
+     80: .12.....89 (bf) r3 =3D r2
+     81: .123....89 (0f) r3 +=3D r1
+     82: ..23....89 (07) r2 +=3D 1
+     83: ..23....89 (79) r4 =3D *(u64 *)(r10 -464)
+     84: ..234...89 (a5) if r2 < 0x2 goto pc+13
+     85: ...34...89 (15) if r3 =3D=3D 0x0 goto pc+12
+     86: ...3....89 (bf) r1 =3D r10
+     87: .1.3....89 (07) r1 +=3D -400
+     88: .1.3....89 (b4) w2 =3D 16
+In this case, 'r2 < 0x2' and 'r3 =3D=3D 0x0' go to null 'locaiton' place,
+so the verifier actually prefers to do verification first at 'r1 =3D r10'=
+ etc.
+
+The asm code with [1]:
+    119: .123....89 (85) call bpf_probe_read_user#112
+    120: ........89 (79) r1 =3D *(u64 *)(r10 -368)
+    121: .1......89 (79) r2 =3D *(u64 *)(r10 -8)
+    122: .12.....89 (bf) r3 =3D r2
+    123: .123....89 (0f) r3 +=3D r1
+    124: ..23....89 (07) r2 +=3D -1
+    125: ..23....89 (a5) if r2 < 0xfffffffe goto pc+6
+    126: ........89 (05) goto pc+17
+    ...
+    144: ........89 (b4) w1 =3D 0
+    145: .1......89 (6b) *(u16 *)(r8 +80) =3D r1
+In this case, if 'r2 < 0xfffffffe' is true, the control will go to
+non-null 'location' branch, so 'goto pc+17' will actually go to
+null 'location' branch. This seems causing tremendous amount of
+verificaiton state.
+
+To fix the issue, rewrite the following code
+  return tls_ptr && tls_ptr !=3D (void *)-1
+                ? tls_ptr + tls_index.offset
+                : NULL;
+to if/then statement and hopefully these explicit if/then statements
+are sticky during middle-end optimizations.
+
+Test with llvm20 and llvm21 as well and all strobemeta related selftests
+are passed.
+
+  [1] https://github.com/llvm/llvm-project/pull/161000
+
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ tools/testing/selftests/bpf/progs/strobemeta.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+NOTE: I will also check whether we can make changes in llvm to automatica=
+lly
+ adjust branch statements to minimize verification insns/states.=20
+
+diff --git a/tools/testing/selftests/bpf/progs/strobemeta.h b/tools/testi=
+ng/selftests/bpf/progs/strobemeta.h
+index a5c74d31a244..6e1918deaf26 100644
+--- a/tools/testing/selftests/bpf/progs/strobemeta.h
++++ b/tools/testing/selftests/bpf/progs/strobemeta.h
+@@ -330,9 +330,9 @@ static void *calc_location(struct strobe_value_loc *l=
+oc, void *tls_base)
+ 	}
+ 	bpf_probe_read_user(&tls_ptr, sizeof(void *), dtv);
+ 	/* if pointer has (void *)-1 value, then TLS wasn't initialized yet */
+-	return tls_ptr && tls_ptr !=3D (void *)-1
+-		? tls_ptr + tls_index.offset
+-		: NULL;
++	if (!tls_ptr || tls_ptr =3D=3D (void *)-1)
++		return NULL;
++	return tls_ptr + tls_index.offset;
+ }
+=20
+ #ifdef SUBPROGS
+--=20
+2.47.3
+
 
