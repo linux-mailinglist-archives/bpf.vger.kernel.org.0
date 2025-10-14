@@ -1,78 +1,81 @@
-Return-Path: <bpf+bounces-70948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D556BDBD61
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 01:56:19 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C4CDBDBD64
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 01:56:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02B9C192181A
-	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 23:56:41 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 486A3352891
+	for <lists+bpf@lfdr.de>; Tue, 14 Oct 2025 23:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417BB2E7199;
-	Tue, 14 Oct 2025 23:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2DBF2ED86F;
+	Tue, 14 Oct 2025 23:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ob2dd6O9"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="soFqo+Ci"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FAD72459E7
-	for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 23:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C355B29E0E5
+	for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 23:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760486169; cv=none; b=pGzx04nlGO1hhSBAm6+0F8ryw1pSnBuLUF9XEsjMydWSFPCM1eNdgiB+6BgdGbEpnqzI2usNndkLkacfrFhbCDe8tmtQv3AUX6YNarFb3IC9RApFhZKUvDeM4yqmj4qMELYBxZ2i9VcUJo7Wu4cc5ym6HNDdPQgLp6f7g70iVdE=
+	t=1760486171; cv=none; b=q3OKWscfHukm29326iu7Ro4ZLNAj5Utv5s/2HtMFzjTWerVkNq4AeOjjSFCHmvJeLwamNQuGUgd8nV9dCyNLZqMnz+5K+Bxpvkxc8fzK3vYPwFBGlC4UaqtEue4SWUw8/oofM1nVSFr+zFe4rGlTkXUrqgb30d8sHnl59ycco70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760486169; c=relaxed/simple;
-	bh=sYSwbOepeC2HBUqzQoCBldYsMSX/QG1XcPhz8TbBoJ0=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=nXJroHJtAJAGHfxnny2imCW8Lc7vSNk/zU+y2YvZOVuRpGK0gJT2Bf1137Q+MOYjnOf2TIHgZz6csDi7D0YJwWVxXa/fKo22KGhpAKhaC36BjtuhvISOrC4FnH557ZyAdztyf+/vZzu/rPOEuplqz1s8aGPKbR7eb3XtnS+8fAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ob2dd6O9; arc=none smtp.client-ip=209.85.215.201
+	s=arc-20240116; t=1760486171; c=relaxed/simple;
+	bh=MRGpKykJxOpTlzndR3QGSRcL1wBXhTwFuH2YVz+eOBE=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=DPmPAH6uabhi3H64nZlBCY6H+rXUUWwuAzjIGQPrN54P5kRQsQhTbAOOpA6UYi/HnthoG0unM0vAb6pGEr+nlEfUOtc6Q+Sx1GHabd3P/7uBv6xhfROQ7x9jzrQM+MGOOv8YgMZr0hgeNuXziIkzTJglH6p7UibFSNqpZYDkj7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=soFqo+Ci; arc=none smtp.client-ip=209.85.210.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-b609c0f6522so16507965a12.3
-        for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 16:56:07 -0700 (PDT)
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-7811e063dceso8926214b3a.2
+        for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 16:56:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1760486167; x=1761090967; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yeQPu6kQ816hQcFR7LQIi6/9F5Pify18YOjgMFMW6ig=;
-        b=Ob2dd6O9Sy3ZMyX+1BOOzWT4qPYYzoj0JY67bufbwAMWMHFW1Ge4H5z+09eME4P1r1
-         5wJgjDZ7Mb6I7nua71P2IbKA3o7l3Yxmrg3QY4iwkRbH0G3S06JiAyEGLXQhmjr9I9Ab
-         xTNNVzcLkZJhyV3A+HUHROVUPF2jQJgcFAJ2Y/luU2dLpNbP/Wpu/n9vyXATM4eqIO11
-         g2p5WuQbeW8HW8V5BMqESWSQKvFBZEVch26AKeJ6wd5ENF3p25kB5yXZMI2N0zz831cP
-         Dsuoj9nrZuPDfXM2dg6Qfvu+8JxjKnTt8Yx+h8FBpo5mLNLmCrehbOZCck2IymP88TpE
-         iprg==
+        d=google.com; s=20230601; t=1760486169; x=1761090969; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ob2YpgXK89qud9yI7+fPx6sALJDXvpuhZCZOK6qu6oo=;
+        b=soFqo+CiS5CCw0j6odBqe+pmQeAtc+sZ+JcsoiNg0GbQ9ngUe4FhkxS6aTzsgNKXEX
+         TrNBag+ReOlwcio71ZqirByby2Psx53br6+1FbUhzh12S+OHcFVsmg1azlb9XWy4Vifn
+         +48oqaO7tiqdG7uydFsDLa0F9Zh2AtjoSOdSX5JuljMn4Nd5Zvj4blWQRcxNB10axxc0
+         ZUP17/FsHzwJ6d3N0saID4WmQ0FuwGRXS+ILHrrRt9hTEg0Z8NpBSh4v8WPavoSLJRxq
+         XCuz0Uc0j9QiBXSAPI7bj+hagjlvTA4ev5FOgr6yNgQUdSTpXIgj6pGqfVGmANEbxEcy
+         w0Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760486167; x=1761090967;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yeQPu6kQ816hQcFR7LQIi6/9F5Pify18YOjgMFMW6ig=;
-        b=VZYKhM+ebFPjdJn0VK1mqZqS0Nn/XbAzRnJqHijyqhfUxfzIGe85CZSwx+9ClK7Itl
-         eTreBZDjS5gp/rzZVMU7Rmyv2TdsAgBTgg821RsqH35JnbbpSOJUeh8XNK8m1UNj64J7
-         2BTFIeBVXSgpWpklHPP2B0KvgWDX+yyNNZHoU5RHhNdzRURJWrFyGOqFbT6O7BOASpF3
-         idsxRudJxJ8+GTTIL2QHlD9hNlzLNzjtTxCoxm4/GitFMjgzy3VOVqFE3nYw5qKKAJm6
-         Qk2gx+/e+uxV0X3PIe02ynkNB0m1iwCvYXvQBxtbegZt5OzCI3CGFNDW1zC6TcaLNvzO
-         0rWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUxYiTw6MlNazqusDLDljQe87q+JnmvpE7+7O5gT/OauBCKl0HcTqrUq+ljo8no2ppuii0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxV1BbwY8ji34hagmjDfr7MfRIup0v9FXGVzMNKyBqOj3hN5XO1
-	O3nS5SQqil8ejHyg0XF6/7fKtCBD9q0wKbRl39h7IUk+xGfQFf6QYbWZLB36/w5bgt9ST+3dOYE
-	PaprTgA==
-X-Google-Smtp-Source: AGHT+IGNAgMuXVn5V3vDoVPP1uN2RVg9SI68TDlVSJLmjtKcgR+k7LVMUCplVpq0j2+dLZGWEgQbOcZ2eVo=
-X-Received: from pfbbm22.prod.google.com ([2002:a05:6a00:3216:b0:772:13b2:f328])
- (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a21:7e0b:b0:32b:7000:9ed
- with SMTP id adf61e73a8af0-32da845e7cemr30060957637.48.1760486167322; Tue, 14
- Oct 2025 16:56:07 -0700 (PDT)
-Date: Tue, 14 Oct 2025 23:54:53 +0000
+        d=1e100.net; s=20230601; t=1760486169; x=1761090969;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ob2YpgXK89qud9yI7+fPx6sALJDXvpuhZCZOK6qu6oo=;
+        b=ZUFyvHT8fDKbOkPueJ+fufjuIlZIwQgc3BNlyXMKyuBucdC+Uto0Xx1/3khRTwGuPi
+         vWobXTMFIQVK1UdiMNmqbkxDwKoEQoyuIO+4FvvE/R+DJcJtDgdHZVSGTwWcmiqrHm1l
+         oKLCswU7MGgek5BTLSiVz1bp2ayDjRXxqBxBB9mgF8Z8CsQ2F4YOY9TTpUwFOwV7VH3s
+         zpbuRcSh1/PgLUg/BqTP9JyU5lLyGgNF2jEcNTORWZrZCo1M0xSYRjnH8o7PPJK5+i07
+         1iFGkG2xt6tSwLacMivFB2a6BzJPDCMlZQnXmxkQ/WVjDH1Z7Vv6HFlgxZNNmOkb0dGv
+         ACyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX7M0vubeVTHgga8RbD5of7BYaujSdeOLaHkr6/AyANCkOwtPqxTEp2p6u0JtdqyYxW9CY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YytIL0iwF6PllE/Xoc7M8anY8husHAVa/B2U36lIKlaB/X+tPnj
+	2rT4Pvdkn+LO8qT5slVtaJ6nQdh1fNFO+60BRSVfFIQxGudZ2eRyOAcBUaj2g/HWN0/49MU8dJR
+	kvuACbA==
+X-Google-Smtp-Source: AGHT+IFhFt4sdvKgBJbACG84ZSkCiCL+FOvevB4G641zJgNbUcJh1yaPlhDNOS8U9sgQYl0Fjqj1lWzP/HY=
+X-Received: from pfbfc13.prod.google.com ([2002:a05:6a00:2e0d:b0:77f:61e8:fabd])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:4b8b:b0:79a:fd01:dfa9
+ with SMTP id d2e1a72fcca58-79afd01f231mr13158691b3a.6.1760486168845; Tue, 14
+ Oct 2025 16:56:08 -0700 (PDT)
+Date: Tue, 14 Oct 2025 23:54:54 +0000
+In-Reply-To: <20251014235604.3057003-1-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20251014235604.3057003-1-kuniyu@google.com>
 X-Mailer: git-send-email 2.51.0.788.g6d19910ace-goog
-Message-ID: <20251014235604.3057003-1-kuniyu@google.com>
-Subject: [PATCH v2 bpf-next/net 0/6] bpf: Allow opt-out from sk->sk_prot->memory_allocated.
+Message-ID: <20251014235604.3057003-2-kuniyu@google.com>
+Subject: [PATCH v2 bpf-next/net 1/6] tcp: Save lock_sock() for memcg in inet_csk_accept().
 From: Kuniyuki Iwashima <kuniyu@google.com>
 To: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>
@@ -85,75 +88,97 @@ Cc: John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.
 	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-This series allows opting out of the global per-protocol memory
-accounting if socket is configured as such by sysctl or BPF prog.
+If memcg is enabled, accept() acquires lock_sock() twice for each new
+TCP/MPTCP socket in inet_csk_accept() and __inet_accept().
 
-This series is the successor of the series below [0], but the changes
-now fall in net and bpf subsystems only.
+Let's move memcg operations from inet_csk_accept() to __inet_accept().
 
-I discussed with Roman Gushchin offlist, and he suggested not mixing
-two independent subsystems and it would be cleaner not to depend on
-memcg.
+Note that SCTP somehow allocates a new socket by sk_alloc() in
+sk->sk_prot->accept() and clones fields manually, instead of using
+sk_clone_lock().
 
-So, sk->sk_memcg and memcg code are no longer touched, and instead we
-use another hole near sk->sk_prot to store a flag for the pure net
-opt-out feature.
+mem_cgroup_sk_alloc() is called for SCTP before __inet_accept(),
+so I added the protocol check in __inet_accept(), but this can be
+removed once SCTP uses sk_clone_lock().
 
-Overview of the series:
+Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
+Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+---
+ net/ipv4/af_inet.c              | 22 ++++++++++++++++++++++
+ net/ipv4/inet_connection_sock.c | 25 -------------------------
+ 2 files changed, 22 insertions(+), 25 deletions(-)
 
-  patch 1 is misc cleanup
-  patch 2 allows opt-out from sk->sk_prot->memory_allocated
-  patch 3 introduces net.core.bypass_prot_mem
-  patch 4 & 5 supports flagging sk->sk_bypass_prot_mem via bpf_setsockopt()
-  patch 6 is selftest
-
-Thank you very much for all your help, Shakeel, Roman, Martin, and Eric!
-
-
-[0]: https://lore.kernel.org/bpf/20250920000751.2091731-1-kuniyu@google.com/
-
-
-Changes:
-  v2:
-    * Patch 2:
-      * Fill kdoc for skc_bypass_prot_mem
-    * Patch 6
-      * Fix server fd leak in tcp_create_sockets()
-      * Avoid close(0) in check_bypass()
-
-  v1: https://lore.kernel.org/bpf/20251007001120.2661442-1-kuniyu@google.com/
-
-
-Kuniyuki Iwashima (6):
-  tcp: Save lock_sock() for memcg in inet_csk_accept().
-  net: Allow opt-out from global protocol memory accounting.
-  net: Introduce net.core.bypass_prot_mem sysctl.
-  bpf: Support bpf_setsockopt() for BPF_CGROUP_INET_SOCK_CREATE.
-  bpf: Introduce SK_BPF_BYPASS_PROT_MEM.
-  selftest: bpf: Add test for sk->sk_bypass_prot_mem.
-
- Documentation/admin-guide/sysctl/net.rst      |   8 +
- include/net/netns/core.h                      |   1 +
- include/net/proto_memory.h                    |   3 +
- include/net/sock.h                            |   3 +
- include/net/tcp.h                             |   3 +
- include/uapi/linux/bpf.h                      |   2 +
- net/core/filter.c                             |  79 +++++
- net/core/sock.c                               |  37 ++-
- net/core/sysctl_net_core.c                    |   9 +
- net/ipv4/af_inet.c                            |  22 ++
- net/ipv4/inet_connection_sock.c               |  25 --
- net/ipv4/tcp.c                                |   3 +-
- net/ipv4/tcp_output.c                         |   7 +-
- net/mptcp/protocol.c                          |   7 +-
- net/tls/tls_device.c                          |   3 +-
- tools/include/uapi/linux/bpf.h                |   1 +
- .../bpf/prog_tests/sk_bypass_prot_mem.c       | 289 ++++++++++++++++++
- .../selftests/bpf/progs/sk_bypass_prot_mem.c  | 104 +++++++
- 18 files changed, 568 insertions(+), 38 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_bypass_prot_mem.c
- create mode 100644 tools/testing/selftests/bpf/progs/sk_bypass_prot_mem.c
-
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index 3109c5ec38f39..e8771faa5bbfd 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -755,6 +755,28 @@ EXPORT_SYMBOL(inet_stream_connect);
+ 
+ void __inet_accept(struct socket *sock, struct socket *newsock, struct sock *newsk)
+ {
++	/* TODO: use sk_clone_lock() in SCTP and remove protocol checks */
++	if (mem_cgroup_sockets_enabled &&
++	    (!IS_ENABLED(CONFIG_IP_SCTP) || sk_is_tcp(newsk))) {
++		gfp_t gfp = GFP_KERNEL | __GFP_NOFAIL;
++
++		mem_cgroup_sk_alloc(newsk);
++
++		if (mem_cgroup_from_sk(newsk)) {
++			int amt;
++
++			/* The socket has not been accepted yet, no need
++			 * to look at newsk->sk_wmem_queued.
++			 */
++			amt = sk_mem_pages(newsk->sk_forward_alloc +
++					   atomic_read(&newsk->sk_rmem_alloc));
++			if (amt)
++				mem_cgroup_sk_charge(newsk, amt, gfp);
++		}
++
++		kmem_cache_charge(newsk, gfp);
++	}
++
+ 	sock_rps_record_flow(newsk);
+ 	WARN_ON(!((1 << newsk->sk_state) &
+ 		  (TCPF_ESTABLISHED | TCPF_SYN_RECV |
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index cdd1e12aac8c0..3b83b66b2284c 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -712,31 +712,6 @@ struct sock *inet_csk_accept(struct sock *sk, struct proto_accept_arg *arg)
+ 
+ 	release_sock(sk);
+ 
+-	if (mem_cgroup_sockets_enabled) {
+-		gfp_t gfp = GFP_KERNEL | __GFP_NOFAIL;
+-		int amt = 0;
+-
+-		/* atomically get the memory usage, set and charge the
+-		 * newsk->sk_memcg.
+-		 */
+-		lock_sock(newsk);
+-
+-		mem_cgroup_sk_alloc(newsk);
+-		if (mem_cgroup_from_sk(newsk)) {
+-			/* The socket has not been accepted yet, no need
+-			 * to look at newsk->sk_wmem_queued.
+-			 */
+-			amt = sk_mem_pages(newsk->sk_forward_alloc +
+-					   atomic_read(&newsk->sk_rmem_alloc));
+-		}
+-
+-		if (amt)
+-			mem_cgroup_sk_charge(newsk, amt, gfp);
+-		kmem_cache_charge(newsk, gfp);
+-
+-		release_sock(newsk);
+-	}
+-
+ 	if (req)
+ 		reqsk_put(req);
+ 
 -- 
 2.51.0.788.g6d19910ace-goog
 
