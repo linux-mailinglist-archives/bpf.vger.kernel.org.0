@@ -1,179 +1,127 @@
-Return-Path: <bpf+bounces-70962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AB0ABDC0E6
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 03:52:30 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F318BDC149
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 03:55:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DB8319A2BAF
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 01:52:48 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D5DDB4FB7A4
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 01:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D97D3090CB;
-	Wed, 15 Oct 2025 01:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66D83090E0;
+	Wed, 15 Oct 2025 01:54:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="czvnqr0N"
 X-Original-To: bpf@vger.kernel.org
-Received: from unicom145.biz-email.net (unicom145.biz-email.net [210.51.26.145])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C8AA308F26;
-	Wed, 15 Oct 2025 01:51:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.51.26.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63922308F24
+	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 01:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760493090; cv=none; b=OLjeGMcDg7wNJGl7sdh8wi7vmhs4d+hD4yonTJDyK4Ay1NATANctt2WicsCwVA1Hu+i/aguHpJio3AFsNgVFkbt6TXOmmd/Zw5vRVmsxUsk89SMNUNASCLiPXvq2zSFKLc16Zy/UqU9BHLdshhMFVCf4Q8Pr3MtDUGfMW8WVnS8=
+	t=1760493298; cv=none; b=pOYO8dcQwIkKvlltC1BADZ6ej5o0xgOX3MjMOhpDvtFL77pCsCt0/KnNSVlJMVyz0Q5CchihMyKNsUTQSpuTs/5yfH3JZ0Rqql7GfsX4m6FbNA+CDgDYMpN71wqzP6hsoVF1NxXY3r+mxGuXfvtHdSVc3JxvIukK6maUTuEIIeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760493090; c=relaxed/simple;
-	bh=rFwCqzQTLiU/uOXOqo0/NGD9Qs3i0/V+TxtzJ9f05OA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EgW5VKYmYWaEqSNxklEZah6dqSaGwj39hJm9UySEy7kdX3S0vbfhiD0ap9zDGHDb+x+T6Vy3s0VnDxkfm3Dqv2bWr+FaIXpau0t2zD4MzTVx9JBxhMfrfzHP4Ndyr8umZ2XIxpojKxhLBAQjpCmi2Iiu41i1xRZH8luqdUuTag0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inspur.com; spf=pass smtp.mailfrom=inspur.com; arc=none smtp.client-ip=210.51.26.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inspur.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inspur.com
-Received: from Jtjnmail201615.home.langchao.com
-        by unicom145.biz-email.net ((D)) with ASMTP (SSL) id 202510150951143115;
-        Wed, 15 Oct 2025 09:51:14 +0800
-Received: from jtjnmailAR01.home.langchao.com (10.100.2.42) by
- Jtjnmail201615.home.langchao.com (10.100.2.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.58; Wed, 15 Oct 2025 09:51:12 +0800
-Received: from inspur.com (10.100.2.108) by jtjnmailAR01.home.langchao.com
- (10.100.2.42) with Microsoft SMTP Server id 15.1.2507.58 via Frontend
- Transport; Wed, 15 Oct 2025 09:51:12 +0800
-Received: from localhost.localdomain.com (unknown [10.94.16.205])
-	by app4 (Coremail) with SMTP id bAJkCsDwybQO_u5o8rwJAA--.1663S5;
-	Wed, 15 Oct 2025 09:51:12 +0800 (CST)
-From: Chu Guangqing <chuguangqing@inspur.com>
-To: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-	<martin.lau@linux.dev>, <eddyz87@gmail.com>, <song@kernel.org>,
-	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-	<sdf@fomichev.me>, <haoluo@google.com>, <jolsa@kernel.org>
-CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Chu Guangqing
-	<chuguangqing@inspur.com>
-Subject: [PATCH v3 1/1] samples/bpf: Fix spelling typo in samples/bpf
-Date: Wed, 15 Oct 2025 09:50:24 +0800
-Message-ID: <20251015015024.2212-2-chuguangqing@inspur.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20251015015024.2212-1-chuguangqing@inspur.com>
-References: <20251015015024.2212-1-chuguangqing@inspur.com>
+	s=arc-20240116; t=1760493298; c=relaxed/simple;
+	bh=XurOG7TpFv0gfvogsJdszOTmGbj6A3F6k9kfoi2F3GA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qgv++HytTexxwoyJfkG4nvw/7xa8GOMnNjwu9hipqH8mzh4+PMBMxK1wdeajHqw87yeHw+ZtAvMcd71LeNNihS2prQm/g9ZwJgYi3nYDruJu/ctByhtr4EvTWR6iOe4CLzt4lIMbuskxEecEMgCXL++8JcmPw+3iuwxzAdHjKPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=czvnqr0N; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-46e504975dbso35713975e9.1
+        for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 18:54:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760493292; x=1761098092; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=26KQWOidOOOMncfnnCBb0/0PyMIloM67l5dPnBfFpNI=;
+        b=czvnqr0N+eerJQJje/D9zgReXoCqNulL2VXNWGCfXQVudLbXRhpBBF7YmuXQPPZsX/
+         gwqPz+dRamW8b0IrM7qXvag9sTtTB2Kinrl5LVOlkK0Pd410p1o083PYQyoRp7Hyik5Y
+         6IzUg42K36rOajl5Mo72GBm0excCb2CflRNcpQVCAxGzfeId4zFPyKW9uJG7w5ktjiEl
+         UTBQyVVaNNzheeSZe7o7Z+7c5JNRTT8cT0FEptwWGE/WsANYHPdXXxbuy9IM7NAMw6cX
+         Oy8MR0Snt33xXmbduFw6CcYDhWw5eO2VPXkGnZL0zTdrkDrv6hUWxeXQsmLhBf3RDocf
+         bfrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760493292; x=1761098092;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=26KQWOidOOOMncfnnCBb0/0PyMIloM67l5dPnBfFpNI=;
+        b=ASonx1y5Wpr889lm6ucj7wT4hT3++E/pGjpV274gZTcrdBiMSWKqKmZynf2PJY5jso
+         hklvYOnkpCGHJzxla/88X57B0wl1f3j0mCtD+TaZ2JgW2ff7x9RVimyawdZNZTfefj11
+         WXMIvJcgz8ATKh85DHqX8/2Wc5i2bd5ywkrIGACG07bRZBrVLo1jw33DgE0m0V+j3MxV
+         ESrBbRDF/4oGEPxqWHe8wQNtZzF6IsG/1wigj2zIQ+66JsP+cS5z9QOcB3d+9V1RlmAL
+         X2QOpJm0FDXFaQdraOGkIV1HLKx2Frjb7Vn+NyMo1LM4+HdkaEDEHvTGsMy6jz4M/wdm
+         pEjw==
+X-Forwarded-Encrypted: i=1; AJvYcCWxCqPtZz6wf0ezb0LSzRIgjmbbJDihRgMQf83HNjBAX0zCOgpzqNaRNZATpDvht1Wwe54=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyq6VYuWeMDw4lSEOUm2jTm9pBA3XQjP2iyZF32JZdkVqYbnwqf
+	LAKT6j+8+9Suz6Rdu1W6G0mWmdajV6fAGjOVJeulT9DyaFHGilsWNkdXrSY7f3QG4tiSTTUyqEd
+	GeyNsZ+vXbtIPUUh9WcZyxXWuvB1cZjw=
+X-Gm-Gg: ASbGncuoGBqkkgJysORTI9t/P9cVp6AWzxZ+vwjx6SoNzOC0SML50HseJGQT4++wIBr
+	hHbdK3ytTv23J+XY4EZW6KPCuFk7gaxcpyyzGslf5ltjmOXFaVMunM/5lVruXHwIIISyrV3+rsQ
+	/Ac3txytTUxfnBlz9pcrcAtPZkSNnM3HABtuLk03VtHmsiK2+BMzMtJR5Qpe1hhGxj8HVNbpzl5
+	+BzygJ0hj8LhSp6/TYHqpXndOvyfiEO1m6ehb6n32BpgJagKFqe5ls2Pdyhd7Dh+cKb81Ru0fvb
+	jOHC
+X-Google-Smtp-Source: AGHT+IFwtktUuLWBY0+rVfzsz1di7iWK0c6AtHOqKHIJNThUvRz/7fvIWwgTANA7fSwebNkxx9UvlZXTBs5LRF3356I=
+X-Received: by 2002:a05:600c:529a:b0:46e:4912:d02a with SMTP id
+ 5b1f17b1804b1-46fa9aef4cbmr167355365e9.23.1760493291529; Tue, 14 Oct 2025
+ 18:54:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: bAJkCsDwybQO_u5o8rwJAA--.1663S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxCr4rGF17Xw4UJw1fKrW3Jrb_yoW5CFW5pF
-	WkW343tr1Fvry3WF9rXay8Ww1av3s5WFy7JF4FqryfJ3ZIgF95JrW3tFyYqrs8trW3Za9I
-	vF4qk345W3WrW37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUQS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_GcCE3s1l84
-	ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I2
-	62IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcV
-	AFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG
-	0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI
-	1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4c8EcI0Ec7CjxVAaw2AFwI0_
-	Jw0_GFyl4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-	7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU8XdbUUUUU
-X-CM-SenderInfo: 5fkxw35dqj1xlqj6x0hvsx2hhfrp/
-X-CM-DELIVERINFO: =?B?dkyjQZRRTeOiUs3aOqHZ50hzsfHKF9Ds6CbXmDm38RucXu3DYXJR7Zlh9zE0nt/Iac
-	D+KWAwL8U5dyr1fkifcC2mKowIlzJi/LbWIEZLlrl94anxLMUtIcfI5+ZXyQtcyso7qgZv
-	QT+yZWdHj3JddvZ8RS0=
-Content-Type: text/plain
-tUid: 202510150951158fd4b44b6bb3dcd184a09b3328be24ef
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
+References: <20251013131537.1927035-1-dolinux.peng@gmail.com>
+ <CAEf4BzbABZPNJL6_rtpEhMmHFdO5pNbFTGzL7sXudqb5qkmjpg@mail.gmail.com>
+ <CAADnVQJN7TA-HNSOV3LLEtHTHTNeqWyBWb+-Gwnj0+MLeF73TQ@mail.gmail.com>
+ <CAEf4BzaZ=UC9Hx_8gUPmJm-TuYOouK7M9i=5nTxA_3+=H5nEiQ@mail.gmail.com>
+ <CAADnVQLC22-RQmjH3F+m3bQKcbEH_i_ukRULnu_dWvtN+2=E-Q@mail.gmail.com>
+ <CAErzpmtCxPvWU03fn1+1abeCXf8KfGA+=O+7ZkMpQd-RtpM6UA@mail.gmail.com>
+ <CAADnVQ+2JSxb7Uca4hOm7UQjfP48RDTXf=g1a4syLpRjWRx9qg@mail.gmail.com> <CAErzpmu0Zjo0+_r-iBWoAOUiqbC9=sJmJDtLtAANVRU9P-pytg@mail.gmail.com>
+In-Reply-To: <CAErzpmu0Zjo0+_r-iBWoAOUiqbC9=sJmJDtLtAANVRU9P-pytg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 14 Oct 2025 18:54:40 -0700
+X-Gm-Features: AS18NWCKhuwcHSlUElwUIAzX8T7zdY15gvsdXmPJO09MLBADQKHWSXQwuUBXyho
+Message-ID: <CAADnVQLr0iSzV24Cyis0pconxyhZJKAuw-YQVoahxy-AvdNTvQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v1] btf: Sort BTF types by name and kind to optimize
+ btf_find_by_name_kind lookup
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	pengdonglin <pengdonglin@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-do_hbm_test.sh:
-The comment incorrectly used "upcomming" instead of "upcoming".
+On Mon, Oct 13, 2025 at 9:53=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.co=
+m> wrote:
+>
+> I=E2=80=99d like to suggest a dual-mechanism approach:
+> 1. If BTF is generated by a newer pahole (with pre-sorting support), the
+>     kernel would use the pre-sorted data directly.
+> 2. For BTF from older pahole versions, the kernel would handle sorting
+>     at load time or later.
 
-hbm.c
-The comment incorrectly used "Managment" instead of "Management".
-The comment incorrectly used "Currrently" instead of "Currently".
+The problem with 2 is extra memory consumption for narrow
+use case. The "time cat trace" example shows that search
+is in critical path, but I suspect ftrace can do it differently.
+I don't know why it's doing the search so much.
+Everyelse in bpf we don't call it that often.
+So optimizing the search is nice, but not at the expense
+of so much extra memory.
+Hence I don't think 2 is worth doing.
 
-tcp_cong_kern.c
-The comment incorrectly used "deteremined" instead of "determined".
+> Regarding the pahole changes: this is now my highest priority. I=E2=80=99=
+ve
+> already incorporated it into my development plan and will begin
+> working on the patches shortly.
 
-tracex1.bpf.c
-The comment incorrectly used "loobpack" instead of "loopback".
-
-Signed-off-by: Chu Guangqing <chuguangqing@inspur.com>
----
- samples/bpf/do_hbm_test.sh  | 2 +-
- samples/bpf/hbm.c           | 4 ++--
- samples/bpf/tcp_cong_kern.c | 2 +-
- samples/bpf/tracex1.bpf.c   | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/samples/bpf/do_hbm_test.sh b/samples/bpf/do_hbm_test.sh
-index 38e4599350db..7f4f722787d5 100755
---- a/samples/bpf/do_hbm_test.sh
-+++ b/samples/bpf/do_hbm_test.sh
-@@ -112,7 +112,7 @@ function start_hbm () {
- processArgs () {
-   for i in $args ; do
-     case $i in
--    # Support for upcomming ingress rate limiting
-+    # Support for upcoming ingress rate limiting
-     #in)         # support for upcoming ingress rate limiting
-     #  dir="-i"
-     #  dir_name="in"
-diff --git a/samples/bpf/hbm.c b/samples/bpf/hbm.c
-index bf66277115e2..fc88d4dbdf48 100644
---- a/samples/bpf/hbm.c
-+++ b/samples/bpf/hbm.c
-@@ -5,7 +5,7 @@
-  * modify it under the terms of version 2 of the GNU General Public
-  * License as published by the Free Software Foundation.
-  *
-- * Example program for Host Bandwidth Managment
-+ * Example program for Host Bandwidth Management
-  *
-  * This program loads a cgroup skb BPF program to enforce cgroup output
-  * (egress) or input (ingress) bandwidth limits.
-@@ -24,7 +24,7 @@
-  *		beyond the rate limit specified while there is available
-  *		bandwidth. Current implementation assumes there is only
-  *		NIC (eth0), but can be extended to support multiple NICs.
-- *		Currrently only supported for egress.
-+ *		Currently only supported for egress.
-  *    -h	Print this info
-  *    prog	BPF program file name. Name defaults to hbm_out_kern.o
-  */
-diff --git a/samples/bpf/tcp_cong_kern.c b/samples/bpf/tcp_cong_kern.c
-index 2311fc9dde85..339415eac477 100644
---- a/samples/bpf/tcp_cong_kern.c
-+++ b/samples/bpf/tcp_cong_kern.c
-@@ -5,7 +5,7 @@
-  * License as published by the Free Software Foundation.
-  *
-  * BPF program to set congestion control to dctcp when both hosts are
-- * in the same datacenter (as deteremined by IPv6 prefix).
-+ * in the same datacenter (as determined by IPv6 prefix).
-  *
-  * Use "bpftool cgroup attach $cg sock_ops $prog" to load this BPF program.
-  */
-diff --git a/samples/bpf/tracex1.bpf.c b/samples/bpf/tracex1.bpf.c
-index 0ab39d76ff8f..ceedf0b1d479 100644
---- a/samples/bpf/tracex1.bpf.c
-+++ b/samples/bpf/tracex1.bpf.c
-@@ -20,7 +20,7 @@ SEC("kprobe.multi/__netif_receive_skb_core*")
- int bpf_prog1(struct pt_regs *ctx)
- {
- 	/* attaches to kprobe __netif_receive_skb_core,
--	 * looks for packets on loobpack device and prints them
-+	 * looks for packets on loopback device and prints them
- 	 * (wildcard is used for avoiding symbol mismatch due to optimization)
- 	 */
- 	char devname[IFNAMSIZ];
--- 
-2.43.7
-
+let's land pahole changes first.
 
