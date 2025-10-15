@@ -1,94 +1,87 @@
-Return-Path: <bpf+bounces-71014-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71015-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB9C9BDF681
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 17:35:25 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9916ABDF8B6
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 18:06:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73F5D1A61CBC
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 15:33:55 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 195DB3550A6
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 16:06:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A5D303CBB;
-	Wed, 15 Oct 2025 15:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D9A2BDC13;
+	Wed, 15 Oct 2025 16:06:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ggR2uwoB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JL42Blju"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C64C304BDD
-	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 15:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79EC0251793;
+	Wed, 15 Oct 2025 16:06:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760542363; cv=none; b=cjq0aqd41yUGKLB4q6yt4lsjCfR1AWWK8P5fk6jZnKjclXMc7SbOdjg8sLxgbRXJXwm4zNY5Q5mjnkElfNadN6RjhcV1G3CdqE3X6+Z/bWEUYvOsRiWjc3U/2ymJFY7DCkthf9/A2jT/RIyOxWbjJvCKiPK0Lu2YjwRCzbCbU+E=
+	t=1760544376; cv=none; b=ILrQ//4u67GSdjd460WTmeF1VWuyLstS8NRJ5JffnZ9YGJMmuoRNxAkXljb1zZQ8BH+WdyoR0GfqnDTc1xG21v/tUqlSXm9b811qiZOLjUxXTt3t5t4qOaC+onuEbnAtzMW0RgWFTia3Qewi2T/kJwBvPAXCGMrtwUEDcc9uCfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760542363; c=relaxed/simple;
-	bh=/ZjHxso9M04afjNHZcYfVpG71gB8O+fLlELffXcXTjs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ufXEVmb+zs/A5tLx9lSDaK94k7lMYGMr8jIGDh/qSmZ9gHFdeD7UhXg8D43PGspoqcx3KLHCtS540Lp7Hp+XednMPrElh7aM1MBIfZA3jbV9qjrACByNMu314ItN7xovXd4mKwnovSvHGxHHlDjRdNjy71EW92zykm53oWOJw+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ggR2uwoB; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4a536cda-0ba5-437f-82ae-60468a75a62c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1760542359;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7co2+GVkunDlGbA/lLYZB50l9c9o08xR3WHNq6fJk1w=;
-	b=ggR2uwoB7sqMWPSonQlcS60VeStSN53twip0URACczYQ4A7yuLYH5hwqcx7T9WoL9HD+Kl
-	o3t13XKL04rRr5gmsKX7HOfjrrpQO1SJSTf86djq925stiCzElqABSp9Run6jVAkbRvSyk
-	Xa8xrJz+t171QsqMWTE9jVzB9GQrvwM=
-Date: Wed, 15 Oct 2025 08:32:32 -0700
+	s=arc-20240116; t=1760544376; c=relaxed/simple;
+	bh=C/N/NtfPmuyxAj5lAzPLaqfB56MOMHHwsLP7fdrBHU8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HlaXJGXS0hPA7iqhT8rknVyD9Mr4qbQ27xH+e8Ts733c3j1obR/cUwFmeiM+MMwWfXQm49yJvdosOVo6TJ56v6EHmo3C1Q+k3/Sc7nioDp/LSQZJ+pketkYkYh0d/SePTCV00eN1H2bWlozFiKV/XBz3wvpV64zo3Bi6XJ86cIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JL42Blju; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 461DAC4CEF8;
+	Wed, 15 Oct 2025 16:06:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760544376;
+	bh=C/N/NtfPmuyxAj5lAzPLaqfB56MOMHHwsLP7fdrBHU8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JL42BljuSYvWrT4+9nK+FJZJ6TDUarvYIdGnoZByI/qGSxbGKjoT2shkuqIdrY2IG
+	 0uxT9+CH0+8LRjWq0Ih5G2gWSVXI+ijQwbe3LBqSXZxvs2pftEUU5VEysUuqAcIG1J
+	 g5IpPcRNkNCwk7SxHeshQ3bHm1XKf1lJ5aFD2piqiPbnppyXhDR6CTT7eIEiPLBRHe
+	 YWnzTMVm2ynjGGYsRmnGli3Y5YIvi0eRy97fcHdO8xOmcBsmGr2Quo1HAo0AXokGOv
+	 EZQv40IQ2PNkDh+bJBhSKisbZjCTtX3yxBFhJHZJ09Rz8bzdcfXO4lIid5dnbItj39
+	 cCVQf9z5FA28Q==
+Date: Wed, 15 Oct 2025 09:06:12 -0700
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org, Yonghong Song <yhs@fb.com>
+Subject: Re: [BUG] no ORC stacktrace from kretprobe.multi bpf program
+Message-ID: <wh4eq2iw3qwiuaivz67ygyd2zvafaqrq7i6eakvbdurrbbrcg5@jjfbagedoybk>
+References: <aObSyt3qOnS_BMcy@krava>
+ <20251013131055.441e7d08@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 bpf-next 13/15] libbpf: support llvm-generated indirect
- jumps
-Content-Language: en-GB
-To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Anton Protopopov <aspsk@isovalent.com>,
- Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman
- <eddyz87@gmail.com>, Quentin Monnet <qmo@kernel.org>
-References: <20250930125111.1269861-1-a.s.protopopov@gmail.com>
- <20250930125111.1269861-14-a.s.protopopov@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20250930125111.1269861-14-a.s.protopopov@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20251013131055.441e7d08@gandalf.local.home>
 
+On Mon, Oct 13, 2025 at 01:10:55PM -0400, Steven Rostedt wrote:
+> On Wed, 8 Oct 2025 23:08:26 +0200
+> Jiri Olsa <olsajiri@gmail.com> wrote:
+> 
+> > hi,
+> > I'm getting no stacktrace from bpf program attached on kretprobe.multi probe
+> > (which means on top of return fprobe) on x86.
+> > 
+> > I think we need some kind of treatment we do for rethook, AFAICS the ORC unwind
+> > stops on return_to_handler, because the stack and the function itself are not
+> > adjusted for unwind_recover_ret_addr call
+> 
+> Hmm, we do have a way to retrieve the actual return caller from a location
+> for return_to_handler:
+> 
+>   See kernel/trace/fgraph.c: ftrace_graph_get_ret_stack()
+> 
+> Hmm, I think the x86 ORC unwinder needs to use this.
 
+I'm confused, is that not what ftrace_graph_ret_addr() already does?
 
-On 9/30/25 5:51 AM, Anton Protopopov wrote:
-> For v5 instruction set LLVM is allowed to generate indirect jumps for
-
-FYI. The llvm jump table support is still cpu v4.
-
-> switch statements and for 'goto *rX' assembly. Every such a jump will
-> be accompanied by necessary metadata, e.g. (`llvm-objdump -Sr ...`):
->
->         0:       r2 = 0x0 ll
->                  0000000000000030:  R_BPF_64_64  BPF.JT.0.0
->
-> Here BPF.JT.1.0 is a symbol residing in the .jumptables section:
->
->      Symbol table:
->         4: 0000000000000000   240 OBJECT  GLOBAL DEFAULT     4 BPF.JT.0.0
->
-> The -bpf-min-jump-table-entries llvm option may be used to control the
-> minimal size of a switch which will be converted to an indirect jumps.
->
-> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-
-[...]
-
+-- 
+Josh
 
