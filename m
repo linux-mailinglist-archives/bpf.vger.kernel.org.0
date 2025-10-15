@@ -1,269 +1,249 @@
-Return-Path: <bpf+bounces-70999-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71001-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3271BDEEC6
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 16:06:53 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1FE5BDEF4E
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 16:17:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84D5B483CCF
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 14:04:04 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6AE8A4F2BA1
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 14:17:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D83482874ED;
-	Wed, 15 Oct 2025 14:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D4025B69F;
+	Wed, 15 Oct 2025 14:17:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="aO0+Qm/c"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G3WYbOLY"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A76C8281370;
-	Wed, 15 Oct 2025 14:02:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D7921CC6A
+	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 14:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760536939; cv=none; b=USufrnTfvAlpghJd1HlDMnvYJ6XCq2U+h/WyqmIYxtq5kzHYEYEusLqAuLQXeCRynHlQ4cwAlH7SbIUqvUYR0J7x5xaMbckdHxrrV4qXw/Qh21qVXwnqUXKrbZ8KPxo7Q9auVeqcWJxRQBcmJB+3KWlX3AbKrTKZW6swVVdZm64=
+	t=1760537854; cv=none; b=L5FRMIkMDRtZlDmIuIUcTrjXWqgjad1NsdhAto3rvJ7h+qvmNA8J/SlM0u47Qza5TWhtyB0AmzWxaqjw393E6UReHsjP+828L1bwUN33YpZkbNlwgfMvRgUeDp6YGsGnuk931oS1clDhYPTQ/3iuBJdX2BxFadmaAWopqSNfObY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760536939; c=relaxed/simple;
-	bh=vDuddxKDKfuRa5uZb2BTTgdzpnwGbouQzlPO+IFBaQ8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CGu6WLgRI2GwZ3OUiirV6EZz3HCoZHepA9PLnBjdGoj4EiQ+hE9MPLkNKh3Dz6UlVma1Ru+aE94B1Xh5UqK1HRpbDIJ51DvDgVzeKAM32EfND2mWBHVd8bqx0697FtCiTq1XwVeWg53GgjjwsI4lOgRi4IJzG9BDodEbtsDC5P0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=aO0+Qm/c; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=o31ouC9o8L0ZOuDXmkhH3liZxZE3/bUFbGm/4K5bh+s=; b=aO0+Qm/cyxlHcyX/7HDANQ+Rlf
-	hSTVgC/y4/LJ3HwkoEzmAlyxbf1QGvH4nCX2DFiGYcKp7Awlr5U25p8DSDwO9ni5jkQmzZtj4t2pX
-	fOQjJnMFK+Ksguhx/I4Z5ydDrixN1r7BQYTbNRgcQTetpvvSNINjpegl/OINihFRS22lAuodraz1x
-	EzbbSrxQRDhkFoSj1/IcKU/xn3pw2ldN3QeSpHO6SeD0w/wRm0xfv8USKAwzjNvoUh7ZysYtd7Cbu
-	J0e2zy5nFW/c4KyG3JLbJeKOp3McWqzxSUXb2MEyM2iQBLvd10Ym7CvyoGZ+a9DzpyA26xLBIFpI9
-	pK1mQt9w==;
-Received: from localhost ([127.0.0.1])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1v924l-000H9K-00;
-	Wed, 15 Oct 2025 16:01:59 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: netdev@vger.kernel.org
+	s=arc-20240116; t=1760537854; c=relaxed/simple;
+	bh=5cKqMqFoVXJgzuoUMbhn1bUDKikb6EWtrIsRBQEYw8s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=BFQAXphgUvgVUxIuixHW9Z3QZ+FCDle+LJVHnT926FlQGqN7kigxeluggGUNEFOawqKXlWeAtWwH4xe4IIO/7ovhLXuOC8heLb1bD+vMvqwcdw5V7JvG53m9MO2dc7q/aAGlGcDESC56hJT0NItFQb25slSFuO81t5+YYzzcDMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G3WYbOLY; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-271d1305ad7so104061095ad.2
+        for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 07:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760537851; x=1761142651; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Oj+ydMXRn5MLbgkqPocjemDIu7tpHUxcEZr4FaQqDcI=;
+        b=G3WYbOLYLPSzDSIz1IGjkEEYQib1MFNBI7u9QI+4wS7HA6A3XApuwRGM4I8dY6i4TK
+         m1ggfoW6ahqZm39GAyEOJF8nvr/6WBe7hX2AdNJJ5CGYGiQF0I+z3A97r5i1gJkaIyVv
+         ThxSfRTPQE3NmAV/AIIynY8s/wvywZapsMgSZZCW8+FcHud2MnsJvhuWSMfx9Ts+o0nz
+         4tYnIDQD1W+ZPj1qy2ozYklB8SsYkVHe/x197cd6QsYS2PCxf819B9XPJg+4lwffsArb
+         C01DjLfxSG/sAL30Cc0rHxjCsyEHiV0LapCzM7bWcJWTTGRztOzQmOZ0rLbU2ABe+lhA
+         oDyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760537851; x=1761142651;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Oj+ydMXRn5MLbgkqPocjemDIu7tpHUxcEZr4FaQqDcI=;
+        b=QbsPDd3sLgKt6xzYfPLDjwLqULCzWtyNDQB04y9RWVWQO1LFdWIvWxGCyRkvOpl1NA
+         rpSTJjuLmfh48dKv/DmpYwvQgGszCr3CEQqSo8mEVp9io1cy7F1WZB4/kg7Xi/hsRyp8
+         44LVkZa5S0C6qa654hNINSjkJbmOPqT2kwSO9dWnvmeD53LkbZEvWS2yZrQlkaHOdx0X
+         W/KZWLWdJHAVvdRfh96B8OYNldzN/X3Im707qBML5Z6LkOas1RSkTSe/P1AhakqN8VuP
+         V5K9NQECj572kyYT8HtE+MuZTqa62vcAdRsn7+8ImamMhxxZF4CUDEWXMUt+cIaQsCDJ
+         otZg==
+X-Gm-Message-State: AOJu0YzGcDYeVZ83dn/lcj0NInu8aasGwbLKukhoR8l77GvDEqmLKNud
+	+VyiZQX4XUgZzg3/Mhdd5akQipDrRau9JIQhtMe3ZhYviGmeBmtK9oPv
+X-Gm-Gg: ASbGncvfvfnpcAIIgHEHZwMhKeXYQGDNwZUKmuCCFMLW3d6LyYhHyeuXt6CqMW4N1D0
+	65Y3XyecdHyiffRuWSIbeww8BWTj3aF+FPeGYplGi8+K+sb0IYCK2NvQss9eGCWhIzek4E+3Mgw
+	/7KEXptXX3CJzpcKVBQQF/UqDjzd1fWahsJSrjjcgs0PD/JGXAoUoYfsX9EVzSRq+Aw2I5e/XA+
+	FwhkX80AqHK70Lf2PuNEbS7Vi9RXxrIZgeGklBHsz0hAD0Mw/zY3AF1PgW940neIuoqQmHhMD6q
+	h5yO1gs4m3ORdXAMykBdecJkMG1czVCFgrVJck5wMcfkM6thk91wMCM9Ay9BGts6jue32kboC9P
+	7so1uPsFBvVBbaCRxS6BxJ+inbBbLQg+KnC4IETY/8+mNdB/DzAqbdJKD6PgAWCSugfoAwlvFp3
+	8YOVfvDsWQjnDJobN6
+X-Google-Smtp-Source: AGHT+IGuJx98l40hIZg5dUMNPdMQulw8HXVOdNxJ7NPVkMrPiNcWb89bHsacFna+VcftnBNkDQpvBw==
+X-Received: by 2002:a17:903:4b08:b0:27e:f005:7d0f with SMTP id d9443c01a7336-290273ffc50mr333828565ad.44.1760537850713;
+        Wed, 15 Oct 2025 07:17:30 -0700 (PDT)
+Received: from localhost.localdomain ([2409:891f:1b80:80c6:cd21:3ff9:2bca:36d1])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29034f32d6fsm199561445ad.96.2025.10.15.07.17.22
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 15 Oct 2025 07:17:29 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: akpm@linux-foundation.org,
+	david@redhat.com,
+	ziy@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com,
+	npache@redhat.com,
+	ryan.roberts@arm.com,
+	dev.jain@arm.com,
+	hannes@cmpxchg.org,
+	usamaarif642@gmail.com,
+	gutierrez.asier@huawei-partners.com,
+	willy@infradead.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	ameryhung@gmail.com,
+	rientjes@google.com,
+	corbet@lwn.net,
+	21cnbao@gmail.com,
+	shakeel.butt@linux.dev,
+	tj@kernel.org,
+	lance.yang@linux.dev,
+	rdunlap@infradead.org
 Cc: bpf@vger.kernel.org,
-	kuba@kernel.org,
-	davem@davemloft.net,
-	razor@blackwall.org,
-	pabeni@redhat.com,
-	willemb@google.com,
-	sdf@fomichev.me,
-	john.fastabend@gmail.com,
-	martin.lau@kernel.org,
-	jordan@jrife.io,
-	maciej.fijalkowski@intel.com,
-	magnus.karlsson@intel.com,
-	dw@davidwei.uk,
-	toke@redhat.com,
-	yangzhenze@bytedance.com,
-	wangdongdong.6@bytedance.com
-Subject: [PATCH net-next v2 15/15] netkit: Add xsk support for af_xdp applications
-Date: Wed, 15 Oct 2025 16:01:40 +0200
-Message-ID: <20251015140140.62273-16-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20251015140140.62273-1-daniel@iogearbox.net>
-References: <20251015140140.62273-1-daniel@iogearbox.net>
+	linux-mm@kvack.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [RFC PATCH v10 mm-new 0/9] mm, bpf: BPF-MM, BPF-THP 
+Date: Wed, 15 Oct 2025 22:17:07 +0800
+Message-Id: <20251015141716.887-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: Clear (ClamAV 1.0.9/27793/Wed Oct 15 11:29:40 2025)
 
-Enable support for AF_XDP applications to operate on a netkit device.
-The goal is that AF_XDP applications can natively consume AF_XDP
-from network namespaces. The use-case from Cilium side is to support
-Kubernetes KubeVirt VMs through QEMU's AF_XDP backend. KubeVirt is a
-virtual machine management add-on for Kubernetes which aims to provide
-a common ground for virtualization. KubeVirt spawns the VMs inside
-Kubernetes Pods which reside in their own network namespace just like
-regular Pods.
+History
+=======
 
-Raw QEMU AF_XDP backend example with eth0 being a physical device with
-16 queues where netkit is bound to the last queue (for multi-queue RSS
-context can be used if supported by the driver):
+RFC v1: fmod_ret based BPF-THP hook
+        https://lore.kernel.org/linux-mm/20250429024139.34365-1-laoar.shao@gmail.com/
 
-  # ethtool -X eth0 start 0 equal 15
-  # ethtool -X eth0 start 15 equal 1 context new
-  # ethtool --config-ntuple eth0 flow-type ether \
-            src 00:00:00:00:00:00 \
-            src-mask ff:ff:ff:ff:ff:ff \
-            dst $mac dst-mask 00:00:00:00:00:00 \
-            proto 0 proto-mask 0xffff action 15
-  [ ... setup BPF/XDP prog on eth0 to steer into shared xsk map ... ]
-  # ip netns add foo
-  # ip link add numrxqueues 2 nk type netkit single
-  # ./pyynl/cli.py --spec ~/netlink/specs/netdev.yaml \
-                   --do bind-queue \
-                   --json "{"src-ifindex": $(ifindex eth0), "src-queue-id": 15, \
-                            "dst-ifindex": $(ifindex nk), "queue-type": "rx"}"
-  {'dst-queue-id': 1}
-  # ip link set nk netns foo
-  # ip netns exec foo ip link set lo up
-  # ip netns exec foo ip link set nk up
-  # ip netns exec foo qemu-system-x86_64 \
-          -kernel $kernel \
-          -drive file=${image_name},index=0,media=disk,format=raw \
-          -append "root=/dev/sda rw console=ttyS0" \
-          -cpu host \
-          -m $memory \
-          -enable-kvm \
-          -device virtio-net-pci,netdev=net0,mac=$mac \
-          -netdev af-xdp,ifname=nk,id=net0,mode=native,queues=1,start-queue=1,inhibit=on,map-path=$dir/xsks_map \
-          -nographic
+RFC v2: struct_ops based BPF-THP hook
+        https://lore.kernel.org/linux-mm/20250520060504.20251-1-laoar.shao@gmail.com/
 
-We have tested the above against a dual-port Nvidia ConnectX-6 (mlx5)
-100G NIC with successful network connectivity out of QEMU. An earlier
-iteration of this work was presented at LSF/MM/BPF [0].
+RFC v4: Get THP order with interface get_suggested_order()
+        https://lore.kernel.org/linux-mm/20250729091807.84310-1-laoar.shao@gmail.com/
 
-For getting to a first starting point to connect all things with
-KubeVirt, bind mounting the xsk map from Cilium into the VM launcher
-Pod which acts as a regular Kubernetes Pod while not perfect, is not
-a big problem given its out of reach from the application sitting
-inside the VM (and some of the control plane aspects are baked in
-the launcher Pod already), so the isolation barrier is still the VM.
-Eventually the goal is to have a XDP/XSK redirect extension where
-there is no need to have the xsk map, and the BPF program can just
-derive the target xsk through the queue where traffic was received
-on.
+v4->v9: Simplify the interface to:
 
-The exposure through netkit is because Cilium should not act as a
-proxy handing out xsk sockets. Existing applications expect a netdev
-from kernel side and should not need to rewrite just to implement
-against a CNI's protocol. Also, all the memory should not be accounted
-against Cilium but rather the application Pod itself which is consuming
-AF_XDP. Further, on up/downgrades we expect the data plane to being
-completely decoupled from the control plane; if Cilium would own the
-sockets that would be disruptive. Another use-case which opens up and
-is regularly asked from users would be to have DPDK applications on
-top of AF_XDP in regular Kubernetes Pods.
+        unsigned long
+        bpf_hook_thp_get_orders(struct vm_area_struct *vma, enum tva_type type,
+                                unsigned long orders);
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Co-developed-by: David Wei <dw@davidwei.uk>
-Signed-off-by: David Wei <dw@davidwei.uk>
-Link: https://bpfconf.ebpf.io/bpfconf2025/bpfconf2025_material/lsfmmbpf_2025_netkit_borkmann.pdf [0]
----
- drivers/net/netkit.c | 71 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 70 insertions(+), 1 deletion(-)
+        https://lore.kernel.org/linux-mm/20250930055826.9810-1-laoar.shao@gmail.com/
 
-diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-index 2f591d1ac61d..f6a73c828e2e 100644
---- a/drivers/net/netkit.c
-+++ b/drivers/net/netkit.c
-@@ -11,6 +11,7 @@
- 
- #include <net/netdev_queues.h>
- #include <net/netdev_rx_queue.h>
-+#include <net/xdp_sock_drv.h>
- #include <net/netkit.h>
- #include <net/dst.h>
- #include <net/tcx.h>
-@@ -234,6 +235,71 @@ static void netkit_get_stats(struct net_device *dev,
- 	stats->tx_dropped = DEV_STATS_READ(dev, tx_dropped);
- }
- 
-+static bool netkit_xsk_supported_at_phys(const struct net_device *dev)
-+{
-+	if (!dev->netdev_ops->ndo_bpf ||
-+	    !dev->netdev_ops->ndo_xdp_xmit ||
-+	    !dev->netdev_ops->ndo_xsk_wakeup)
-+		return false;
-+	if ((dev->xdp_features & NETDEV_XDP_ACT_XSK) != NETDEV_XDP_ACT_XSK)
-+		return false;
-+	return true;
-+}
-+
-+static int netkit_xsk(struct net_device *dev, struct netdev_bpf *xdp)
-+{
-+	struct netkit *nk = netkit_priv(dev);
-+	struct netdev_bpf xdp_lower;
-+	struct netdev_rx_queue *rxq;
-+	struct net_device *phys;
-+
-+	switch (xdp->command) {
-+	case XDP_SETUP_XSK_POOL:
-+		if (nk->pair == NETKIT_DEVICE_PAIR)
-+			return -EOPNOTSUPP;
-+		if (xdp->xsk.queue_id >= dev->real_num_rx_queues)
-+			return -EINVAL;
-+
-+		rxq = __netif_get_rx_queue(dev, xdp->xsk.queue_id);
-+		if (!rxq->peer)
-+			return -EOPNOTSUPP;
-+
-+		phys = rxq->peer->dev;
-+		if (!netkit_xsk_supported_at_phys(phys))
-+			return -EOPNOTSUPP;
-+
-+		memcpy(&xdp_lower, xdp, sizeof(xdp_lower));
-+		xdp_lower.xsk.queue_id = get_netdev_rx_queue_index(rxq->peer);
-+		break;
-+	case XDP_SETUP_PROG:
-+		return -EPERM;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return phys->netdev_ops->ndo_bpf(phys, &xdp_lower);
-+}
-+
-+static int netkit_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags)
-+{
-+	struct netdev_rx_queue *rxq;
-+	struct net_device *phys;
-+
-+	if (queue_id >= dev->real_num_rx_queues)
-+		return -EINVAL;
-+
-+	rxq = __netif_get_rx_queue(dev, queue_id);
-+	if (!rxq->peer)
-+		return -EOPNOTSUPP;
-+
-+	phys = rxq->peer->dev;
-+	if (!netkit_xsk_supported_at_phys(phys))
-+		return -EOPNOTSUPP;
-+
-+	return phys->netdev_ops->ndo_xsk_wakeup(phys,
-+			get_netdev_rx_queue_index(rxq->peer), flags);
-+}
-+
- static void netkit_uninit(struct net_device *dev);
- 
- static const struct net_device_ops netkit_netdev_ops = {
-@@ -247,6 +313,8 @@ static const struct net_device_ops netkit_netdev_ops = {
- 	.ndo_get_peer_dev	= netkit_peer_dev,
- 	.ndo_get_stats64	= netkit_get_stats,
- 	.ndo_uninit		= netkit_uninit,
-+	.ndo_bpf		= netkit_xsk,
-+	.ndo_xsk_wakeup		= netkit_xsk_wakeup,
- 	.ndo_features_check	= passthru_features_check,
- };
- 
-@@ -401,10 +469,11 @@ static void netkit_setup(struct net_device *dev)
- 	dev->hw_enc_features = netkit_features;
- 	dev->mpls_features = NETIF_F_HW_CSUM | NETIF_F_GSO_SOFTWARE;
- 	dev->vlan_features = dev->features & ~netkit_features_hw_vlan;
--
- 	dev->needs_free_netdev = true;
- 
- 	netif_set_tso_max_size(dev, GSO_MAX_SIZE);
-+
-+	xdp_set_features_flag_locked(dev, NETDEV_XDP_ACT_XSK);
- }
- 
- static struct net *netkit_get_link_net(const struct net_device *dev)
+v9->RFC v10: Scope BPF-THP to individual processes
+
+
+The Design
+==========
+
+Scoping BPF-THP to cgroup is rejected
+-------------------------------------
+
+As explained by Gutierrez:
+
+1. It breaks the cgroup hierarchy when 2 siblings have different THP policies
+2. Cgroup was designed for resource management not for grouping processes and
+   tune those processes
+3. We set a precedent for other people adding new flags to cgroup and
+   potentially polluting cgroups. We may end up with cgroups having tens of
+   different flags, making sysadmin's job more complex
+
+The related links are:
+
+  https://lore.kernel.org/linux-mm/1940d681-94a6-48fb-b889-cd8f0b91b330@huawei-partners.com/
+  https://lore.kernel.org/linux-mm/20241030150851.GB706616@cmpxchg.org/
+
+So we has to scope it to process.
+
+Scoping BPF-THP to process
+--------------------------
+
+To eliminate potential conflicts among competing BPF-THP instances, we
+enforce that each process is exclusively managed by a single BPF-THP. This
+approach has received agreement from David. For context, see:
+
+  https://lore.kernel.org/linux-mm/3577f7fd-429a-49c5-973b-38174a67be15@redhat.com/
+
+When registering a BPF-THP, we specify the PID of a target task. The
+BPF-THP is then installed in the task's `mm_struct`
+
+  struct mm_struct {
+      struct bpf_thp_ops __rcu *thp_thp;
+  };
+
+Inheritance Behavior:
+
+- Existing child processes are unaffected
+- Newly forked children inherit the BPF-THP from their parent
+- The BPF-THP persists across execve() calls
+
+A new linked list tracks all tasks managed by each BPF-THP instance:
+
+- Newly managed tasks are added to the list
+- Exiting tasks are automatically removed from the list
+- During BPF-THP unregistration (e.g., when the BPF link is removed), all
+  managed tasks have their bpf_thp pointer set to NULL
+- BPF-THP instances can be dynamically updated, with all tracked tasks
+  automatically migrating to the new version.
+
+This design simplifies BPF-THP management in production environments by
+providing clear lifecycle management and preventing conflicts between
+multiple BPF-THP instances.
+
+Any feedback is welcomed.
+
+Future Work
+===========
+
+Introduce a global fallback mechanism to address shared resource management
+limitations in process and cgroup-based methods:
+
+  https://lore.kernel.org/linux-mm/YwNold0GMOappUxc@slm.duckdns.org/
+
+Yafang Shao (9):
+  mm: thp: remove vm_flags parameter from khugepaged_enter_vma()
+  mm: thp: remove vm_flags parameter from thp_vma_allowable_order()
+  mm: thp: add support for BPF based THP order selection
+  mm: thp: decouple THP allocation between swap and page fault paths
+  mm: thp: enable THP allocation exclusively through khugepaged
+  bpf: mark mm->owner as __safe_rcu_or_null
+  bpf: mark vma->vm_mm as __safe_trusted_or_null
+  selftests/bpf: add a simple BPF based THP policy
+  Documentation: add BPF-based THP policy management
+
+ Documentation/admin-guide/mm/transhuge.rst    |  39 +++
+ MAINTAINERS                                   |   3 +
+ fs/exec.c                                     |   1 +
+ fs/proc/task_mmu.c                            |   3 +-
+ include/linux/huge_mm.h                       |  59 +++-
+ include/linux/khugepaged.h                    |  10 +-
+ include/linux/mm_types.h                      |  18 ++
+ kernel/bpf/verifier.c                         |   8 +
+ kernel/fork.c                                 |   1 +
+ mm/Kconfig                                    |  22 ++
+ mm/Makefile                                   |   1 +
+ mm/huge_memory.c                              |   7 +-
+ mm/huge_memory_bpf.c                          | 306 ++++++++++++++++++
+ mm/khugepaged.c                               |  35 +-
+ mm/madvise.c                                  |   7 +
+ mm/memory.c                                   |  22 +-
+ mm/mmap.c                                     |   1 +
+ mm/shmem.c                                    |   2 +-
+ mm/vma.c                                      |   6 +-
+ tools/testing/selftests/bpf/config            |   3 +
+ .../selftests/bpf/prog_tests/thp_adjust.c     | 245 ++++++++++++++
+ tools/testing/selftests/bpf/progs/lsm.c       |   8 +-
+ .../selftests/bpf/progs/test_thp_adjust.c     |  23 ++
+ 23 files changed, 777 insertions(+), 53 deletions(-)
+ create mode 100644 mm/huge_memory_bpf.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
+
 -- 
-2.43.0
+2.47.3
 
 
