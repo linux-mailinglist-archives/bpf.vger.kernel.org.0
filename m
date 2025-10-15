@@ -1,93 +1,85 @@
-Return-Path: <bpf+bounces-71016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71017-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C96DBDF940
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 18:10:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 317B7BDF988
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 18:13:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D287F5028A1
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 16:10:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF8214861FA
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 16:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36D73335BC2;
-	Wed, 15 Oct 2025 16:10:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="de33f1g4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94DE335BC0;
+	Wed, 15 Oct 2025 16:11:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15FE186E40;
-	Wed, 15 Oct 2025 16:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C59DA262D0C;
+	Wed, 15 Oct 2025 16:11:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760544621; cv=none; b=qFjyLZ/2TqjNhjNvtkqfaXSUo/3F+esVrXsN1sY7zTl51qpWHzee9dDs1bbovnD3HknsMr2JumQU46UgO20lcYANoRrskoRyhxbIpkwCv3EZsyNt3odMSGSiCPqqNGQT/6ke2Sb0lh2VXOALoWqXfVJL3u/RX1rD8vtFlAXPy4I=
+	t=1760544702; cv=none; b=LljTWWOCUQwfB4H7NmPkaFB70Z7CJSwS52YaVWz0qptTDTXh/5/xV7j1FcXIQuH88u8QHQMLGFQ+TfBIqP/hgOQAOfDSeydVkP2T4CPOtDOjweCl3FjN/M19hkAmNGIddW8ndMaOctL5G5hHa00DPemhicmSDHm5N5/434Ih10s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760544621; c=relaxed/simple;
-	bh=ZkMJxnD7i+PX1B2a2WXmajNSuDANnptfpfJF02+EnhE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Z+ieNtklAIbEmYAXWELttlVfKbTJIezCl+EzyX0ggI/vJ/RpW1991jhvNNtxCCVNp12XeAodK3TaV6ldzHlkQ279o2oFJatAq11Co153nIW58F4d7X/fqaeTruRUp0Rlft51AuZGhsO4VjuwVkFSzoATjSyaxfcj3WwSwLGt1Pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=de33f1g4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A9EAC4CEF8;
-	Wed, 15 Oct 2025 16:10:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760544621;
-	bh=ZkMJxnD7i+PX1B2a2WXmajNSuDANnptfpfJF02+EnhE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=de33f1g4w1DxVUrrkiWW8urDQfEDynrjl5AgUlWnXvKy+2A0sIJQL24dJcUsRi8U6
-	 uzPEBJ9aakRXMGTlLsbMR/sUl68kwI+487u8xQ/0zmMNq36GDIrSwgfxG3h5eb45ez
-	 0y9fpcKA8e1RJ+G1jal03N+IXeNNdCK1Zn40SiFVaBqx8dJXajXP+XSBWT2TCTdf75
-	 Zl2tUeTqF8aS6UswAy+X9O//44zgBMPChNl4GyFApliS9k+BkOxktMSvxHOZ7r37nD
-	 apXj3vjNY08qChtSatMLclXlvD7wZ9h8dhoXXLqS1nnqsUEUpyJLOL6K3WyT/klp7S
-	 7qyKm9LprBlQg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 71744380CFFF;
-	Wed, 15 Oct 2025 16:10:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1760544702; c=relaxed/simple;
+	bh=DOXXYnej07dW90ExuDFSCFYSCaWcO+Qy7hgGb5jV9y0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=svCl0IY4XBElScnvzn2+ujoMNOCOMhAji/ky9dhuPeW7DU09KU63m74fzw+tmeWjnLIYyKL7elymZtFwFzM3ympPBNxGWFVEMHwGvBUgE0qorrwmuy1L+SnkSN5pvbbRBct48h6gJALQyDZGRd6rF5w7Ofgp0rbQgOfKgMxPmuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf04.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay07.hostedemail.com (Postfix) with ESMTP id A1ADD160201;
+	Wed, 15 Oct 2025 16:11:32 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf04.hostedemail.com (Postfix) with ESMTPA id 560C420023;
+	Wed, 15 Oct 2025 16:11:30 +0000 (UTC)
+Date: Wed, 15 Oct 2025 12:11:38 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>,
+ bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org, x86@kernel.org,
+ Yonghong Song <yhs@fb.com>
+Subject: Re: [BUG] no ORC stacktrace from kretprobe.multi bpf program
+Message-ID: <20251015121138.4190d046@gandalf.local.home>
+In-Reply-To: <wh4eq2iw3qwiuaivz67ygyd2zvafaqrq7i6eakvbdurrbbrcg5@jjfbagedoybk>
+References: <aObSyt3qOnS_BMcy@krava>
+	<20251013131055.441e7d08@gandalf.local.home>
+	<wh4eq2iw3qwiuaivz67ygyd2zvafaqrq7i6eakvbdurrbbrcg5@jjfbagedoybk>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] selftests: arg_parsing: Ensure data is flushed to disk
- before reading.
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176054460627.940684.18292912943742394253.git-patchwork-notify@kernel.org>
-Date: Wed, 15 Oct 2025 16:10:06 +0000
-References: <20251015025049.9492-1-higuoxing@gmail.com>
-In-Reply-To: <20251015025049.9492-1-higuoxing@gmail.com>
-To: Xing Guo <higuoxing@gmail.com>
-Cc: alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
- andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, olsajiri@gmail.com, sveiss@meta.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: tx1yy63e9uekhgdr1ypgqwiqzj7jopqg
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 560C420023
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19y642y/S3K/jzPPZcu1FbaPfAZ5Lj7MHw=
+X-HE-Tag: 1760544690-730455
+X-HE-Meta: U2FsdGVkX1//HB9Drl7RLVeKWELp4GwvT6wiL7JQsYLqu4N8PeRuEaqUhbP7wvWfskTUpkY4hjIzmisdY4yN23gq1tUnF+5GmqND52E4FMWZI0QmtFD8YUN3xPHY/1mKK9OKnJUdhqutfllsoOQyDC7Ovfbbj/imt4sji57VwxALtHCeSHqSaclh6MDL3Cj3dd3n9OqlK6ddJd2JBqQhm/Sl3DU334CAOebyudVJ5/m88/AhCdh+8g3ImdgttJfqlci3oyxP0bS3QxKEZySH6kt4irLfCgGIkxf2TpCdD8hoTusBtDGkzs9Ls5e2xh0tsvSS58SEYwGieGfkSPv67xJtgbF2nNOS
 
-Hello:
+On Wed, 15 Oct 2025 09:06:12 -0700
+Josh Poimboeuf <jpoimboe@kernel.org> wrote:
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Wed, 15 Oct 2025 10:50:49 +0800 you wrote:
-> Recently, I noticed a selftest failure in my local environment. The
-> test_parse_test_list_file writes some data to
-> /tmp/bpf_arg_parsing_test.XXXXXX and parse_test_list_file() will read
-> the data back.  However, after writing data to that file, we forget to
-> call fsync() and it's causing testing failure in my laptop.  This patch
-> helps fix it by adding the missing fsync() call.
+> > Hmm, we do have a way to retrieve the actual return caller from a location
+> > for return_to_handler:
+> > 
+> >   See kernel/trace/fgraph.c: ftrace_graph_get_ret_stack()
+> > 
+> > Hmm, I think the x86 ORC unwinder needs to use this.  
 > 
-> [...]
+> I'm confused, is that not what ftrace_graph_ret_addr() already does?
 
-Here is the summary with links:
-  - [v2] selftests: arg_parsing: Ensure data is flushed to disk before reading.
-    https://git.kernel.org/bpf/bpf-next/c/27aab47b347e
+Ah yeah, that does it too. I just searched for the first function that did
+the look up ;-)
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Now I guess the question is, why is this not working?
 
-
+-- Steve
 
