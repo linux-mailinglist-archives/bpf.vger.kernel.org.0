@@ -1,177 +1,206 @@
-Return-Path: <bpf+bounces-71010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71000-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBB7EBDEF84
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 16:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 008E2BDEF45
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 16:17:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 145CA19C5325
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 14:20:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32A50189FED0
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 14:17:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53230263C8E;
-	Wed, 15 Oct 2025 14:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7378525949A;
+	Wed, 15 Oct 2025 14:17:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E2wH7hDz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xu1DiAwM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A01275864
-	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 14:18:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82552205E2F
+	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 14:17:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760537934; cv=none; b=c31efcxGqP9fo43S3H1ncfykBGXlY584VLw9bSc9S3mjCPO/NdXnjpBiWyn7X60DIPYlVnOLOmMHh+h9rA1spi8QTVDMxumam2EDHVjywsYcyr3As8OVb8arkDwFBJqYTdm+DN5CFP9h8zC7waIRF0AiOijjs6uDXXUzg9axlT4=
+	t=1760537845; cv=none; b=s8cFwup6L7LrLzpTeVHSbSFUKdbI6tulUTxx81KWVwXMuQwaiWPAPmufc5xK3MKr9fh7CqEytWQNaG9vkjtMwcGHzeEWnPCFTcRxouZYRqO9J85TWjIH6VObkfUOUNw3RI1zuj8uWn0Ot3OGIC0u7nUxTKck8jDlGp59NzDLY44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760537934; c=relaxed/simple;
-	bh=M3JDOPbFjkClAC4UX2vhrNDOfN9b6bNYa0hiNAn1emM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NNxIyOvfMPuH2ZVxEQKhY1vrR2V3yxnYQPjqgCd/GqiH71CgQ4KBIdBH8QNkGQXnX/zoXxZK1F+JAIZckl4wQWTVQMPOcsyYoifQZVb/dtzyp0SRskXzCP74VyZ+ubtTEsWJXxC+LPfT+4of0WcfkRLQAoHnGrDdZ4YMsArihxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E2wH7hDz; arc=none smtp.client-ip=209.85.215.177
+	s=arc-20240116; t=1760537845; c=relaxed/simple;
+	bh=PMPgjaM4tai1aH3RrEPvEhgN2mlK6u4/6DtXqiPaths=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WM8AFqn6ethChusXPm5TJdiA7rOG72V6gjEoySQWNlFkEno6a0/Mpfd8HmNL11vejFDMRRIXWKVWua1FGjiN1T+ZjFXXtDSSoOB3uRNroXiyP3whS639he7724PXHHVWx1xGGXuf3qZUHqWZN7wacWDedwDDwrX0vJZhiU/Rr0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xu1DiAwM; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-b57bffc0248so796867a12.0
-        for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 07:18:52 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-b4f323cf89bso1196595666b.2
+        for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 07:17:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760537932; x=1761142732; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SHmEXjchUo7p5MNeEkw3mVcK0Ae4ArUpPhVglZardsE=;
-        b=E2wH7hDzkRL8PDMBeI58qq8pdyGWoikElGN309zi0u6ZTb1JapYfMPznTFuqZRZ2UB
-         3mZ/Qs/+Io1RctJyUUxKvqV+D7EQCmcWS/6E3fFjkEw+jQl7Rmtvs7BrmPy5evCmmiGJ
-         jxeNVba1Oa3GYxFYXVaT96nevEw5qc9H64tU0Rc4VsyExhps/G4PhgMZACV90vBxWSP4
-         VYRSw5kqiQwpy6A96SoU597khVuy13j0taQh4ZM3OoYMYYon8qfPhm27AyncFFUHZAza
-         EIheK9S9Wypf2cyAlr88lDViKiap4eAtW8mRWX0GK+1PcKH9/5yi41ZSYagXDhMBXacG
-         dt2g==
+        d=gmail.com; s=20230601; t=1760537842; x=1761142642; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=pR4zRJs6D7uKpxqX7s0BAvh2cnecIUAOMCtEFFIOH70=;
+        b=Xu1DiAwMoJ6VRPuaSqh92AxKNTJu/jIpGjAphmG+6deq1x7b2D7mphI+AAH8irVfbw
+         2mRe7FsSdOsw1enjwGZBSRdoNJjuySGHPmElmomWp5lvHKeKPun8za6JMsUorqPrtko9
+         lsL0W3adgsdlSP76w7ohhXIvyWLd4vPrZ7SF0VbcsI6nGETcjuer5XgrlSI1L7O/OBya
+         ObJw2tMB46keCii9s70yoJ39M8Nd2q5wotclfhfyDNisHiPTJxrEwugx1sZbkjbtE+bT
+         0NCv+9HLS0NQQrIPQ9MjX3U0PB1sFal7Bby006pINklSHjJr77YFTOVBW6XJWgTaxZC+
+         /0Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760537932; x=1761142732;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SHmEXjchUo7p5MNeEkw3mVcK0Ae4ArUpPhVglZardsE=;
-        b=MiKJq7HWvL01wvFvQC+10Jhre0+6yr5FXBczN/OnpWeAEcdZr9UPSfMQvXbF25KwMo
-         IVxvkcbbuesxrj6WEt/ikc2GgMF8L8ehci7a0XpnnqE2WAIESe+4gZ0bJ1+k0qpkbZxY
-         +MCw1jm7vNyNUQvBnOp3C8Y6rser4gWyC0hf/SLx0Z2y+w1t0NiNw2kLy2a2H8QDTjhx
-         lF1BX7bfQpbqcPpgKqBXMN/Jnd9/16qqWGdPABNK3MdsqkhOPZ+bNvR9Lh5vXXpEtM7f
-         cI3KlJKvPhCgE06rUX2LehrvKr5CRdvUTdHsG7RFNdYiZt2Y5yQIvcXvrshf65hddQTC
-         Uicw==
-X-Gm-Message-State: AOJu0YxPhvynL9aWc0VyEgXWMCYuJtyXSteUqbkK5uACWzyIyCP7WAsC
-	BQWq+MSfG84+AUpYy5zmfjNj/cZTdCAmLpK5NEAXAyQRDgL+H0sWyUSH
-X-Gm-Gg: ASbGncvmOuUPjTkUj4ODcsvCmo2GmdZ5FeUZ+OGCuoqlP4jTbSS6RNdLMb4b4D1KNiQ
-	IOzv2sMWfmxMDjLNnYz6DnmQKPyMsh1tx+ZRyHgHEcZmCDCrAV9Kn1MogFacA2nNREFPGAGMfl7
-	Prgi2SP/oJtPDWJKko4zeOuowiIlBL92o0QQuHzQod6+pmye4n80k1T7Cgq/+nkYzH5BtG6HCfw
-	VORdSPNqDhX1JKbstQjDBwLrZ38HyJZtP6Dtdetk7lKT0OuPNxyvPn8ihmX+1m4mb2jOGJmEJ5z
-	Tb/wiHHfVF5RVhqug9+KrGNhG/JKETaLnXTk6Y9fnjLHcIaGe4atm0QFeZPf2bInNbujgIMHE0U
-	ZkXUtBR6vNqRHUrrOoqsHSC5wgY4UllzLKbKROaCABuAbocVgOI0k3yn1DuHjPTSOzp5HaLfhQs
-	B2DDzQVw==
-X-Google-Smtp-Source: AGHT+IGPkoQEyym4vrrdjP+BNzpJr8ZiqPYTLWrM9emXz1prPZyu27GMgJiwVA1OnHpVqgCC5eI05A==
-X-Received: by 2002:a17:902:cece:b0:27d:6cb6:f7c2 with SMTP id d9443c01a7336-29091b162f4mr3433615ad.17.1760537931868;
-        Wed, 15 Oct 2025 07:18:51 -0700 (PDT)
-Received: from localhost.localdomain ([2409:891f:1b80:80c6:cd21:3ff9:2bca:36d1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29034f32d6fsm199561445ad.96.2025.10.15.07.18.41
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 15 Oct 2025 07:18:50 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: akpm@linux-foundation.org,
-	david@redhat.com,
-	ziy@nvidia.com,
-	baolin.wang@linux.alibaba.com,
-	lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com,
-	npache@redhat.com,
-	ryan.roberts@arm.com,
-	dev.jain@arm.com,
-	hannes@cmpxchg.org,
-	usamaarif642@gmail.com,
-	gutierrez.asier@huawei-partners.com,
-	willy@infradead.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	ameryhung@gmail.com,
-	rientjes@google.com,
-	corbet@lwn.net,
-	21cnbao@gmail.com,
-	shakeel.butt@linux.dev,
-	tj@kernel.org,
-	lance.yang@linux.dev,
-	rdunlap@infradead.org
-Cc: bpf@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH v10 mm-new 9/9] Documentation: add BPF-based THP policy management
-Date: Wed, 15 Oct 2025 22:17:16 +0800
-Message-Id: <20251015141716.887-10-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20251015141716.887-1-laoar.shao@gmail.com>
-References: <20251015141716.887-1-laoar.shao@gmail.com>
+        d=1e100.net; s=20230601; t=1760537842; x=1761142642;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pR4zRJs6D7uKpxqX7s0BAvh2cnecIUAOMCtEFFIOH70=;
+        b=SF7OPt4057pBKn0lq9gIkZYw+gRB41Ge7O4rwqJn70OROvMIVVJHzkaNhWis6eaWuz
+         BJgQ8lttl+UG63SZKkltqinkkDJHHjz8nYLTxbZZj71Ii+btLnvqzb+4Tp+9DYOcZhcE
+         G2aTvZ5AdCi8JBsT15lTnK+WTO0nKv/KHavmvQatLsWPipM5ReaaAMgf4vTnmhEbYnZT
+         6txJAAdfFQA8i7LkmHdyoOshIFRz3uo+9bSV8sOTKyvxJrvH8YE1JXv6K2wtU0FnV4A7
+         t6o6oXVdOYNHv9ISKkhAxOqVEvR+MqWgCmSm3wJkRHV3JSfLBT3v/PghzCLsMnfz7a96
+         WQng==
+X-Forwarded-Encrypted: i=1; AJvYcCU6RFtab8CIXtKfHRzyr3i4iwIDvJwYQSOPdgwnE4rbvRdxHcAEz0bx2dUlXwihKhuuJJQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzR4ioLpPWWnyf9zZMGQVX+adRNnrQldaMsS8/8cKStz395tYfH
+	DTrYmDL1QnwWH5dZlgMEL90nPnYfGLbuU5Fed6jxW+XN6mWktwvtgAjd
+X-Gm-Gg: ASbGncta7f7b6qeGanBH0u/3im4/pJYQ970IRlbBQASvivohz0n9xNRnikJCxRO/xNQ
+	ygGdFVaXKXbbScB+ik6li0oy5gUkXcVHBVbyhcoyIjlzAbJm7JSE6ssoS9OBpJPMkIX+yxRQkUb
+	6v1UUM1JF5U8gQam8ibg1LRTKg3/hOkWmq878vAIsu8ZC/eorrD9NrlHLdZck9ig3lAgzkZe73Y
+	YsogBO236a11rXwLkPZdylD9qQ3QpZCe6hsjauo4bT5S7kwMEib/8zd7McdI8NuueqiQTn6whIp
+	EiivXhVfucGc78KhIliZ617fbzwC4ePyD2hF3EJbZlCkk8KajBOQfNaLFWko/RXnWhGGizqCPFh
+	ur547R37KSzOTvYpl27ooVSbwK4m+3Njbf94xhvCy
+X-Google-Smtp-Source: AGHT+IEg8evgXEvgVB8TMjd2Jcb4HDR/qE4VXC+23ha7vInJk55WwPoZ9gmeErGGrCvzZGOQZWjmSw==
+X-Received: by 2002:a17:907:2da3:b0:b46:11fc:c9c9 with SMTP id a640c23a62f3a-b50abaacf2emr2612626366b.42.1760537841358;
+        Wed, 15 Oct 2025 07:17:21 -0700 (PDT)
+Received: from krava ([176.74.159.170])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b5ccd6b95bdsm237091266b.79.2025.10.15.07.17.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Oct 2025 07:17:20 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 15 Oct 2025 16:17:19 +0200
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Thierry Treyer <ttreyer@meta.com>,
+	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Quentin Monnet <qmo@kernel.org>,
+	Ihor Solodrai <ihor.solodrai@linux.dev>,
+	David Faust <david.faust@oracle.com>,
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>,
+	bpf <bpf@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC bpf-next 00/15] support inline tracing with BTF
+Message-ID: <aO-s74SN8YDqoEWQ@krava>
+References: <20251008173512.731801-1-alan.maguire@oracle.com>
+ <CAADnVQLN3jQLfkjs-AG2GqsG5Ffw_nefYczvSVmiZZm5X9sd=A@mail.gmail.com>
+ <b4cd1254-59b4-4bac-9742-49968109c8af@oracle.com>
+ <CAADnVQ+yYeX7G--X4eCSW_cyK_DH3xnS-s2tyQLeBYf=NnzUEQ@mail.gmail.com>
+ <aO45ZjLlUM0O5NAe@krava>
+ <6a3dfd7d-00de-4215-9bdb-f6ffab899730@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <6a3dfd7d-00de-4215-9bdb-f6ffab899730@oracle.com>
 
-Add the documentation.
+On Tue, Oct 14, 2025 at 03:55:53PM +0100, Alan Maguire wrote:
+> On 14/10/2025 12:52, Jiri Olsa wrote:
+> > On Mon, Oct 13, 2025 at 05:12:45PM -0700, Alexei Starovoitov wrote:
+> >> On Mon, Oct 13, 2025 at 12:38 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+> >>>
+> >>>
+> >>> I was trying to avoid being specific about inlines since the same
+> >>> approach works for function sites with optimized-out parameters and they
+> >>> could be easily added to the representation (and probably should be in a
+> >>> future version of this series). Another "extra" source of info
+> >>> potentially is the (non per-cpu) global variables that Stephen sent
+> >>> patches for a while back and the feeling was it was too big to add to
+> >>> vmlinux BTF proper.
+> >>>
+> >>> But extra is a terrible name. .BTF.aux for auxiliary info perhaps?
+> >>
+> >> aux is too abstract and doesn't convey any meaning.
+> >> How about "BTF.func_info" ? It will cover inlined and optimized funcs.
+> >>
+> >> Thinking more about reuse of struct btf_type for these...
+> >> After sleeping on it it feels a bit awkward today, since if they're
+> >> types they suppose to be in one table with other types,
+> >> searchable and so on, but we actually don't want them there.
+> >> btf_find_*() isn't fast and people are trying to optimize it.
+> >> Also if we teach the kernel to use these loc-s they probably
+> >> should be in a separate table.
+> >>
+> >> global non per-cpu vars fit into current BTF's datasec concept,
+> >> so they can be another kernel module with a different name.
+> >>
+> >> I guess one can argue that LOCSEC is similar to DATASEC.
+> >> Both need their own search tables separate from the main type table.
+> >>
+> >>>
+> >>>> The partially inlined functions were the biggest footgun so far.
+> >>>> Missing fully inlined is painful, but it's not a footgun.
+> >>>> So I think doing "kloc" and usdt-like bpf_loc_arg() completely in
+> >>>> user space is not enough. It's great and, probably, can be supported,
+> >>>> but the kernel should use this "BTF.inline_info" as well to
+> >>>> preserve "backward compatibility" for functions that were
+> >>>> not-inlined in an older kernel and got partially inlined in a new kernel.
+> >>>>
+> >>>
+> >>> That would be great; we'd need to teach the kernel to handle multi-split
+> >>> BTF but I would hope that wouldn't be too tricky.
+> >>>
+> >>>> If we could use kprobe-multi then usdt-like bpf_loc_arg() would
+> >>>> make a lot of sense, but since libbpf has to attach a bunch
+> >>>> of regular kprobes it seems to me the kernel support is more appropriate
+> >>>> for the whole thing.
+> >>>
+> >>> I'm happy with either a userspace or kernel-based approach; the main aim
+> >>> is to provide this functionality in as straightforward a form as
+> >>> possible to tracers/libbpf. I have to confess I didn't follow the whole
+> >>> kprobe multi progress, but at one stage that was more kprobe-based
+> >>> right? Would there be any value in exploring a flavour of kprobe-multi
+> >>> that didn't use fprobe and might work for this sort of use case? As you
+> >>> say if we had that keeping a user-space based approach might be more
+> >>> attractive as an option.
+> >>
+> >> Agree.
+> >>
+> >> Jiri,
+> >> how hard would it be to make multi-kprobe work on arbitrary IPs ?
+> > 
+> > multi-kprobe uses fprobe which uses ftrace/fgraph fast api to attach,
+> > but it can do that only on the entry of ftrace-able functions which
+> > have nop5 hooks at the entry
+> > 
+> > attaching anywhere else requires standard kprobe and the attach time
+> > (and execution time) will be bad
+> > 
+> > would be great if inlined functions kept the nop5/fentry hooks ;-)
+> > but that's probably not that simple
+> >
+> 
+> Yeah, if it was doable - and with metadata about inline sites it
+> certainly _seems_ possible - it does seem to work against the reason we
+> inline stuff (saving overheads). Steve mentioned this as a possibility
+> at GNU cauldron too if I remember, so worth discussing of course!
+> 
+> I was thinking about something simpler to be honest; a flavour of kprobe
+> multi that used kprobes under the hood in kernel to be suitable for
+> inline sites without any tweaking of the sites. So there is a kprobe
+> performance penalty if you're tracing, but none otherwise.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- Documentation/admin-guide/mm/transhuge.rst | 39 ++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+so you mean we'd still use kprobe_multi api and its code would use fprobe
+for ftrace-able functions and standard kprobe for the rest?
 
-diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
-index 1654211cc6cf..f6991c674329 100644
---- a/Documentation/admin-guide/mm/transhuge.rst
-+++ b/Documentation/admin-guide/mm/transhuge.rst
-@@ -738,3 +738,42 @@ support enabled just fine as always. No difference can be noted in
- hugetlbfs other than there will be less overall fragmentation. All
- usual features belonging to hugetlbfs are preserved and
- unaffected. libhugetlbfs will also work fine as usual.
-+
-+BPF THP
-+=======
-+
-+Overview
-+--------
-+
-+When the system is configured with "always" or "madvise" THP mode, a BPF program
-+can be used to adjust THP allocation policies dynamically. This enables
-+fine-grained control over THP decisions based on various factors including
-+workload identity, allocation context, and system memory pressure.
-+
-+Program Interface
-+-----------------
-+
-+This feature implements a struct_ops BPF program with the following interface::
-+
-+  int thp_get_order(struct vm_area_struct *vma,
-+                    enum tva_type type,
-+                    unsigned long orders);
-+
-+Parameters::
-+
-+  @vma: vm_area_struct associated with the THP allocation
-+  @type: TVA type for current @vma
-+  @orders: Bitmask of available THP orders for this allocation
-+
-+Return value::
-+
-+  The suggested THP order for allocation from the BPF program. Must be
-+  a valid, available order.
-+
-+Implementation Notes
-+--------------------
-+
-+This is currently an experimental feature. CONFIG_BPF_THP (EXPERIMENTAL) must be
-+enabled to use it. Only one BPF program can be attached at a time, but the
-+program can be updated dynamically to adjust policies without requiring affected
-+tasks to be restarted.
--- 
-2.47.3
-
+jirka
 
