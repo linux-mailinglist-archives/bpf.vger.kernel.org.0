@@ -1,157 +1,286 @@
-Return-Path: <bpf+bounces-71045-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71046-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 015E0BE07D1
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 21:41:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36792BE08EB
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 21:56:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1F58C560CFE
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 19:38:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E947407D48
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 19:56:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E035309EF2;
-	Wed, 15 Oct 2025 19:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36162305042;
+	Wed, 15 Oct 2025 19:56:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dYdViN0X"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SDz5XSLj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92B3627E05F
-	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 19:36:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6161D90DF
+	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 19:56:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760556996; cv=none; b=RAhrHYKw/whddSZb/VCuYq1z28fwQZdq41N5laSD0fpcP+nnIvLGu3zi8P0ekbMsJ1nr8/AVzKoNHBAA/zz5CZ0/pmvlS5he35JBfMFYTrtVeeFsjoIblDyJRWN78+2V3aoB5d3jNXaVJ5npqtyrZiEd4Bt2/KzLA53UIA5DSCI=
+	t=1760558178; cv=none; b=aDxd4Q/9GMaP8Zyl10CR3xiPG0sGthqnt4e7Fey1zU3DbRzf0LFqbO0xjZ4AfnNHXC8XjOLCQg6ai2sD/KPfsB32hZv4mwUWnvVM4v8vUPGYJ9po2FnXKtiewb/IT5AAZIzo8LXIy3cq/dlog3FKDZtFBhygkZxDU5gVHgeRleQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760556996; c=relaxed/simple;
-	bh=Y9eNmtF86psMoRKbxIKrZM1sPxOTcn3ogsk03u3aSbg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=OyID4SYMvYTEHh5HrzzUSJ58obRCjnZawN+CUZduBBkj3Cm/TLlTIffUtBzZVtVE9H8hzjQS46jkVdqyEwZh3SjhyNu4y6w7E5JJyJ7ceheeC0uwSy3xddehn7pn2q/get/OMp32bDTS7l+5DJut2GjpYZQeYTcwLTmnmT4Zky8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dYdViN0X; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-267f0fe72a1so52136715ad.2
-        for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 12:36:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760556993; x=1761161793; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SZxqyzlhLnM+F/4mmpcRNwDC0vzPO2Zs4WusVwF+Sv4=;
-        b=dYdViN0XG6kkirQB4Vyfs2mMkaIl9+erG9d+DO4dUZmUG9gemybVbTt8vqun1U0QXK
-         4U47dpqGbV9aCzTJuXvX31uWsG+Fd54Zf5hZQUsi9vt3r1SntYGvNVUSZ9SP8NQswmhM
-         ZbcR9uhBj11MCKsD96nx77twdVGhsPBMdzNrcDLV9hYAQfmtey09adyHX7Efvx9ujFg6
-         4d7lwr9DV0ZnddvKsyKCy+HTRkl/BrIiS1zY2/vQDJcA6Iqxrz8mmPqrNPPcgIuba1jU
-         6D3hMgrX49f3aHjTTwRbNE1n9rQ3IFCHBumKPpSAElDVkOzVkNI/GFXeBRnOZbfzLGFS
-         ofBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760556993; x=1761161793;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SZxqyzlhLnM+F/4mmpcRNwDC0vzPO2Zs4WusVwF+Sv4=;
-        b=ckqnZxc2tBEHj6qodKxiMTCiGh777L6hjldDoCo3ofgUazXs1O7aoa8v1HGnJou02i
-         NUEMXJ60ZxEQHg0Wf8VAhpNVw0e+LTjY6Ym2Ln7W89wJhuYEV1O/pinscXXYGFZ7avaU
-         m4Gmr9pvNidv65kVwXGcxQd9e6WLU666MonYiHstqxr4HwVtSYq7qEQG9kVjIE9lH5//
-         SLH4RD761X0ORC+jXQo3ls0gmbn8OkZvPxgoOuN+ZbbXTFOTZ/aHBWDFRkfY5BwamXrs
-         x5/m9KxFAKAwsGO5zMxWlu2mQnvRwB3bemDObYcZpTSbX+YsCIMHoaybHOkaumA4BNp5
-         X8fw==
-X-Forwarded-Encrypted: i=1; AJvYcCUzggWfRz9mNrqLx5az14CIyGtEQJbnAQdHLii6fpHwNHQfN9EdBtE7BhA/7umig0kz5pk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxCcn1NqVSXjXZkigWNmgyBkG26pd8tOlcyvr6BCJE6JgHQ3121
-	YX3AtUW1iEKud0qDi262Zp24ZHJtL3XQCLTdXKC5mefpaQCEe9DbzVxW
-X-Gm-Gg: ASbGncvpScr8nWdXW2bkOV4p/cFSWWwejbIILe0wNAkEm9GQlA4QtKN9icPEsKKJfrK
-	NL2B41dZbEDB//C0UwzlEud7K049eW2FMhLfT5isuvEwuRFskLD32g88WRlieCglYJAnLuhKmiy
-	JqvtaX8pE8m+GiMqiWxuTJ2IuGNz19ZX2bi5AK2XvW4bkxBadO8q7b/VP3NPL8eYCQh9aAC3372
-	JhkrXSVIXj1HIgbdisJxEJ2TTrHrMvobao+Zz13w79K1luGK4ftKJIkkwsyIwmLcK9hdxb4Mwoj
-	OKpL9uW8ZJY5bUYXNXQLn6O9EKfW4VAJdb9HbbzNWiijKlHj4Pm9ID4FsIN5fVLq6qcKY5ciZ1/
-	OQK7Eji94/g6ncSNlPRuFXfCpbt9M/XjTseAqb5FMYwT8CpdZNsEz/ej4QqaXAXkAvoeoUHxLEQ
-	==
-X-Google-Smtp-Source: AGHT+IF7tF1Au4ExdVOw+1AmcRoStF0uGWfIdp9/Z9Y65El0yFk+aPH2cRCBPaVEzhDh4nfOWLYuyw==
-X-Received: by 2002:a17:902:e851:b0:26d:58d6:3fb2 with SMTP id d9443c01a7336-2902729031cmr418941515ad.12.1760556992598;
-        Wed, 15 Oct 2025 12:36:32 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29099ab9fadsm4219755ad.97.2025.10.15.12.36.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Oct 2025 12:36:32 -0700 (PDT)
-Message-ID: <1cde9d18eaa6ae135c2c6b03c3e97c4d00293aa5.camel@gmail.com>
-Subject: Re: [RFC PATCH v2 06/11] bpf: mark vm_area_struct as trusted
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com, memxor@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Wed, 15 Oct 2025 12:36:29 -0700
-In-Reply-To: <20251015161155.120148-7-mykyta.yatsenko5@gmail.com>
-References: <20251015161155.120148-1-mykyta.yatsenko5@gmail.com>
-	 <20251015161155.120148-7-mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1760558178; c=relaxed/simple;
+	bh=My3jIMa2gIgOvz8Ig+rN4pm3Tin19Xa5NTQ8ZaTQT+U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aA11OPgfRce3PtIy/kTwFjvOm+lcIe5ajOfONXiYS9l9yPMzqJxEW35l/uRv5ygKptX2g1kZ3jZvuC59ddgC4dLwBsWN0bHITGy1255elofRerlypCTu8vLp9LoWsIdm8h2jNdEUKlkvvqoxrrumwQISASaCDPbHdpGAg2PcuKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SDz5XSLj; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <93fc2f1c-c5d3-4260-9a83-1a7300ff73cc@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1760558172;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P/bBVOOEh4oaGes3NUlHMoR3iVpGvZqmIq7y1ZhSq60=;
+	b=SDz5XSLj41P9fi72BV/SOralMp09Smwrperq3CiUFOfUuFixmvPrMS6jUFDJ0wm3zLhT+t
+	4pXkWFRFcQcS5RiwWatTlAs9f0aun2tjKilAVMVZ79WnLbTCBJgIXyKfKBE/2fGqOGaMZn
+	vWbVwsAeFqD5/4e1IHAsapnNkZ9GWYs=
+Date: Wed, 15 Oct 2025 12:56:05 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix selftest
+ verif_scale_strobemeta failure with llvm22
+Content-Language: en-GB
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20251014051639.1996331-1-yonghong.song@linux.dev>
+ <CAEf4BzaNATrMLU6SpbFAJn8er+0ouGg1Q8RRv589=opgZ8QM5A@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAEf4BzaNATrMLU6SpbFAJn8er+0ouGg1Q8RRv589=opgZ8QM5A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 2025-10-15 at 17:11 +0100, Mykyta Yatsenko wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
+
+
+On 10/15/25 9:45 AM, Andrii Nakryiko wrote:
+> On Mon, Oct 13, 2025 at 10:16 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> With latest llvm22, I hit the verif_scale_strobemeta selftest failure
+>> below:
+>>    $ ./test_progs -n 618
+>>    libbpf: prog 'on_event': BPF program load failed: -E2BIG
+>>    libbpf: prog 'on_event': -- BEGIN PROG LOAD LOG --
+>>    BPF program is too large. Processed 1000001 insn
+>>    verification time 7019091 usec
+>>    stack depth 488
+>>    processed 1000001 insns (limit 1000000) max_states_per_insn 28 total_states 33927 peak_states 12813 mark_read 0
+>>    -- END PROG LOAD LOG --
+>>    libbpf: prog 'on_event': failed to load: -E2BIG
+>>    libbpf: failed to load object 'strobemeta.bpf.o'
+>>    scale_test:FAIL:expect_success unexpected error: -7 (errno 7)
+>>    #618     verif_scale_strobemeta:FAIL
+>>
+>> But if I increase the verificaiton insn limit from 1M to 10M, the above
+>> test_progs run actually will succeed. The below is the result from veristat:
+>>    $ ./veristat strobemeta.bpf.o
+>>    Processing 'strobemeta.bpf.o'...
+>>    File              Program   Verdict  Duration (us)    Insns  States  Program size  Jited size
+>>    ----------------  --------  -------  -------------  -------  ------  ------------  ----------
+>>    strobemeta.bpf.o  on_event  success       90250893  9777685  358230         15954       80794
+>>    ----------------  --------  -------  -------------  -------  ------  ------------  ----------
+>>    Done. Processed 1 files, 0 programs. Skipped 1 files, 0 programs.
+>>
+>> Further debugging shows the llvm commit [1] is responsible for the verificaiton
+>> failure as it tries to convert certain switch statement to if-condition. Such
+>> change may cause different transformation compared to original switch statement.
+>>
+>> In bpf program strobemeta.c case, the initial llvm ir for read_int_var() function is
+>>    define internal void @read_int_var(ptr noundef %0, i64 noundef %1, ptr noundef %2,
+>>        ptr noundef %3, ptr noundef %4) #2 !dbg !535 {
+>>      %6 = alloca ptr, align 8
+>>      %7 = alloca i64, align 8
+>>      %8 = alloca ptr, align 8
+>>      %9 = alloca ptr, align 8
+>>      %10 = alloca ptr, align 8
+>>      %11 = alloca ptr, align 8
+>>      %12 = alloca i32, align 4
+>>      ...
+>>      %20 = icmp ne ptr %19, null, !dbg !561
+>>      br i1 %20, label %22, label %21, !dbg !562
+>>
+>>    21:                                               ; preds = %5
+>>      store i32 1, ptr %12, align 4
+>>      br label %48, !dbg !563
+>>
+>>    22:
+>>      %23 = load ptr, ptr %9, align 8, !dbg !564
+>>      ...
+>>
+>>    47:                                               ; preds = %38, %22
+>>      store i32 0, ptr %12, align 4, !dbg !588
+>>      br label %48, !dbg !588
+>>
+>>    48:                                               ; preds = %47, %21
+>>      call void @llvm.lifetime.end.p0(ptr %11) #4, !dbg !588
+>>      %49 = load i32, ptr %12, align 4
+>>      switch i32 %49, label %51 [
+>>        i32 0, label %50
+>>        i32 1, label %50
+>>      ]
+>>
+>>    50:                                               ; preds = %48, %48
+>>      ret void, !dbg !589
+>>
+>>    51:                                               ; preds = %48
+>>      unreachable
+>>    }
+>>
+>> Note that the above 'switch' statement is added by clang frontend.
+>> Without [1], the switch statement will survive until SelectionDag,
+>> so the switch statement acts like a 'barrier' and prevents some
+>> transformation involved with both 'before' and 'after' the switch statement.
+>>
+>> But with [1], the switch statement will be removed during middle end
+>> optimization and later middle end passes (esp. after inlining) have more
+>> freedom to reorder the code.
+>>
+>> The following is the related source code:
+>>
+>>    static void *calc_location(struct strobe_value_loc *loc, void *tls_base):
+>>          bpf_probe_read_user(&tls_ptr, sizeof(void *), dtv);
+>>          /* if pointer has (void *)-1 value, then TLS wasn't initialized yet */
+>>          return tls_ptr && tls_ptr != (void *)-1
+>>                  ? tls_ptr + tls_index.offset
+>>                  : NULL;
+>>
+>>    In read_int_var() func, we have:
+>>          void *location = calc_location(&cfg->int_locs[idx], tls_base);
+>>          if (!location)
+>>                  return;
+>>
+>>          bpf_probe_read_user(value, sizeof(struct strobe_value_generic), location);
+>>          ...
+>>
+>> The static func calc_location() is called inside read_int_var(). The asm code
+>> without [1]:
+>>       77: .123....89 (85) call bpf_probe_read_user#112
+>>       78: ........89 (79) r1 = *(u64 *)(r10 -368)
+>>       79: .1......89 (79) r2 = *(u64 *)(r10 -8)
+>>       80: .12.....89 (bf) r3 = r2
+>>       81: .123....89 (0f) r3 += r1
+>>       82: ..23....89 (07) r2 += 1
+>>       83: ..23....89 (79) r4 = *(u64 *)(r10 -464)
+>>       84: ..234...89 (a5) if r2 < 0x2 goto pc+13
+>>       85: ...34...89 (15) if r3 == 0x0 goto pc+12
+>>       86: ...3....89 (bf) r1 = r10
+>>       87: .1.3....89 (07) r1 += -400
+>>       88: .1.3....89 (b4) w2 = 16
+>> In this case, 'r2 < 0x2' and 'r3 == 0x0' go to null 'locaiton' place,
+>> so the verifier actually prefers to do verification first at 'r1 = r10' etc.
+>>
+>> The asm code with [1]:
+>>      119: .123....89 (85) call bpf_probe_read_user#112
+>>      120: ........89 (79) r1 = *(u64 *)(r10 -368)
+>>      121: .1......89 (79) r2 = *(u64 *)(r10 -8)
+>>      122: .12.....89 (bf) r3 = r2
+>>      123: .123....89 (0f) r3 += r1
+>>      124: ..23....89 (07) r2 += -1
+>>      125: ..23....89 (a5) if r2 < 0xfffffffe goto pc+6
+>>      126: ........89 (05) goto pc+17
+>>      ...
+>>      144: ........89 (b4) w1 = 0
+>>      145: .1......89 (6b) *(u16 *)(r8 +80) = r1
+>> In this case, if 'r2 < 0xfffffffe' is true, the control will go to
+>> non-null 'location' branch, so 'goto pc+17' will actually go to
+>> null 'location' branch. This seems causing tremendous amount of
+>> verificaiton state.
+>>
+>> To fix the issue, rewrite the following code
+>>    return tls_ptr && tls_ptr != (void *)-1
+>>                  ? tls_ptr + tls_index.offset
+>>                  : NULL;
+>> to if/then statement and hopefully these explicit if/then statements
+>> are sticky during middle-end optimizations.
+> this is so fragile and non-obvious... Just looking at the patch, it's
+> an equivalent transformation, so as a user I'd have no clue that doing
+> something like that can even matter...
+
+You are correct. The llvm generate different codes due to compiler internal
+changes, and in this case the change caused the verification failure.
+
 >
-> Mark vm_area_struct in bpf_find_vma callback as trusted, also mark its
-> field struct file *vm_file as trusted or NULL.
+> Have you tried adding likely() around non-NULL case? Does it change
+> generated code, while leaving ternary as is?
 
-This is because this struct is only returned by:
+I tried the following:
 
-  BTF_ID_FLAGS(func, bpf_iter_task_vma_next, KF_ITER_NEXT | KF_RET_NULL)
-
-and task iterator is RCU protected:
-
-  BTF_ID_FLAGS(func, bpf_iter_task_vma_new, KF_ITER_NEW | KF_RCU)
-
-or passed to a callback inside bpf_find_vma with a lock being held,
-
-right?
-
-[...]
-
-> @@ -7133,6 +7137,7 @@ static bool type_is_trusted(struct bpf_verifier_env=
- *env,
->  	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED(struct bpf_iter__task));
->  	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED(struct linux_binprm));
->  	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED(struct file));
-> +	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED(struct vm_area_struct));
->
->  	return btf_nested_type_is_trusted(&env->log, reg, field_name, btf_id, "=
-__safe_trusted");
->  }
-> @@ -7143,6 +7148,7 @@ static bool type_is_trusted_or_null(struct bpf_veri=
-fier_env *env,
->  {
->  	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket));
->  	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct dentry));
-> +	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct vm_area_struct));
->
->  	return btf_nested_type_is_trusted(&env->log, reg, field_name, btf_id,
->  					  "__safe_trusted_or_null");
-
-Why changing both type_is_trusted() and type_is_trusted_or_null()?
-The only place where type_is_trusted_or_null() is called is here:
-
-
-  static int check_ptr_to_btf_access(...)
+diff --git a/tools/testing/selftests/bpf/progs/strobemeta.h b/tools/testing/selftests/bpf/progs/strobemeta.h
+index a5c74d31a244..6c0ec8794d3e 100644
+--- a/tools/testing/selftests/bpf/progs/strobemeta.h
++++ b/tools/testing/selftests/bpf/progs/strobemeta.h
+@@ -346,13 +346,12 @@ static void read_int_var(struct strobemeta_cfg *cfg,
+                          struct strobemeta_payload *data)
   {
-		...
-                if (type_is_trusted(env, reg, field_name, btf_id)) {
-                        flag |=3D PTR_TRUSTED;
-                } else if (type_is_trusted_or_null(env, reg, field_name, bt=
-f_id)) {
-                        flag |=3D PTR_TRUSTED | PTR_MAYBE_NULL;
-		...
+         void *location = calc_location(&cfg->int_locs[idx], tls_base);
+-       if (!location)
+-               return;
+-
+-       bpf_probe_read_user(value, sizeof(struct strobe_value_generic), location);
+-       data->int_vals[idx] = value->val;
+-       if (value->header.len)
+-               data->int_vals_set_mask |= (1 << idx);
++       if (likely(location)) {
++               bpf_probe_read_user(value, sizeof(struct strobe_value_generic), location);
++               data->int_vals[idx] = value->val;
++               if (value->header.len)
++                       data->int_vals_set_mask |= (1 << idx);
++       }
   }
 
-So, it seems that type_is_trusted() will always return true before
-type_is_trusted_or_null() is called.
 
-[...]
+and the verification still failed (exceeding 1000000 insns).
+
+I think that we can leave patch for a while. I will do some investigation
+in llvm side to see whether I can come up with some heuristics to benefit
+verifier in terms of verified insns.
+
+>
+>> Test with llvm20 and llvm21 as well and all strobemeta related selftests
+>> are passed.
+>>
+>>    [1] https://github.com/llvm/llvm-project/pull/161000
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   tools/testing/selftests/bpf/progs/strobemeta.h | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> NOTE: I will also check whether we can make changes in llvm to automatically
+>>   adjust branch statements to minimize verification insns/states.
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/strobemeta.h b/tools/testing/selftests/bpf/progs/strobemeta.h
+>> index a5c74d31a244..6e1918deaf26 100644
+>> --- a/tools/testing/selftests/bpf/progs/strobemeta.h
+>> +++ b/tools/testing/selftests/bpf/progs/strobemeta.h
+>> @@ -330,9 +330,9 @@ static void *calc_location(struct strobe_value_loc *loc, void *tls_base)
+>>          }
+>>          bpf_probe_read_user(&tls_ptr, sizeof(void *), dtv);
+>>          /* if pointer has (void *)-1 value, then TLS wasn't initialized yet */
+>> -       return tls_ptr && tls_ptr != (void *)-1
+>> -               ? tls_ptr + tls_index.offset
+>> -               : NULL;
+>> +       if (!tls_ptr || tls_ptr == (void *)-1)
+>> +               return NULL;
+>> +       return tls_ptr + tls_index.offset;
+>>   }
+>>
+>>   #ifdef SUBPROGS
+>> --
+>> 2.47.3
+>>
+
 
