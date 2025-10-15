@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-71028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69F88BDF994
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 18:14:02 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19A49BDF97D
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 18:12:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CDC254242E
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 16:12:41 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 92E64357BF5
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 16:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3607335BDE;
-	Wed, 15 Oct 2025 16:12:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 098213375A2;
+	Wed, 15 Oct 2025 16:12:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GV30P9iT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z6DfkiPL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA943375D7
-	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 16:12:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93FCF335BC7
+	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 16:12:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760544732; cv=none; b=KxIMaIPHerlFJziwMJWbcPKxcM+w4Pt8nxlMQaqBu2sb+j8g7stIW8Engj8OL9oarWqLb8C8gXTS0ZsJn3ki+KXbHNE0C+3NsjisrbtYemQ1lPYAUSBU5OYAoz/Cmn5LpdZGiKQ8K6yxpngdvG0y5CShIyegLc+zxyVz59KJLfk=
+	t=1760544733; cv=none; b=b23/udkYZlVg6xw+peZeNuGW//7DElZnIPMQsQlJdV4CHQ1w1klQbxdM8koqeNKCvf8fA8dlDgRk2Vu46+RPsUNkWLKWgLpLYugwipU+3tDrg8HepV6AQLbGDTlGLmPkvoGebolpPH6jb7GSYOk8p1gl42w5fOde8zv6OHupim8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760544732; c=relaxed/simple;
-	bh=/615i2pw1YFMvUMLR0DgSVv80VGF1v3z0OrbKcksrvU=;
+	s=arc-20240116; t=1760544733; c=relaxed/simple;
+	bh=EMGSzEyk1jG30EqsbUWJXOo06IFaKhW6GTX6I6gxho4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TgcCsTCG0vLVaJYFrigBRwcXGMj73ZkBF5dvzTusq3Ag8sHXi7gJlYg1mTaRwys1jIRqVJN9vnXOPjASD3se85F70Ik83FYclr+IfSa6AWuXqQC4IDSpP1GyUyadx24GogxrF76gX4yuqeVEWK1mlwLZajoocFrqHT6DlpnSaP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GV30P9iT; arc=none smtp.client-ip=209.85.221.45
+	 MIME-Version; b=a5gLk1yFayvGpINaSP3BphOqQlwzeyfHzKtmsIkrvftpovC4RPO4ouFdhPE8fDYrrnhtj2AtAxrmk/wVb0OA4oGBu08lNfKlun3UrTarQqf6r0ARtIjdGd4eA86nDrmnwLolzFH52vOXgRkveJzcIEopREf9IgfFDjTCgDXnA2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z6DfkiPL; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3ee12a63af1so4069960f8f.1
-        for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 09:12:10 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-46b303f7469so47104095e9.1
+        for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 09:12:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760544729; x=1761149529; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760544730; x=1761149530; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dtPL9lkVxbDp3+1W56aqYHsEbyn++VoHj0R7799hYUQ=;
-        b=GV30P9iTYKZ1ghz23yNoLVbULKImPf9sgOMsYkAJeprRPattUbNe1Y8CnSs7A9wDcN
-         PV8HRFM4U3LPEkULUvt+gncyQZd7pt+9GgkZLi42tNizw0o/eEYJOKHBQO6jY/7Hkp4F
-         iBLiwew8uBrOXo+/BdawZ5JrHhYF/rMd+TGtD/IDI9HrsCykOfpiqnbSTAh+4hOs5sBy
-         R1PKLHqW2lMp6dVB025Ggo8JjBEyhSTCVgcEfhjxMS1smsTJvkB7S82xkCopOuz13TIK
-         uDq7qHOYPbbMZuQvMOuYYZo4Mdxia6qfhDYQ9AzWBDS5dqcE9Up3ADfXYhPeeuHQE2Eu
-         dccQ==
+        bh=vFoEHEzMHX3evbH5+YpE4UuVmXP7bc57MNVAuBp7bz4=;
+        b=Z6DfkiPL1XWc5GIFi35QQE9Ya8VPKrg2DzGz+MRcFGpIHSzK3xyM1KXTgmKj5oJVwh
+         YluBKyFH4UbPtihPOERN1cTWDYokqdwcBg733N/+bPJGDHzmPZ+fw4ykC5or52wMAQLc
+         OD58Jq9al3bY7w3EFbCnm3OMxrldEjCS7vXQW4lqi/jjQV29YWNOYrOZx9ex+Pw0/E35
+         dFHeRYGzGMm0hpmPoTYDzaZtK+p4hyrkHOt/m2A8qRKBxKBbFRlMeWY7LdMJPzj1ouRK
+         o9iP1IMDGkArR5tE5xCv46q6zTqa7/XOEViFZopp1Il4kGOUk5iPNWZ6x9ufYmiRQDIw
+         d/ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760544729; x=1761149529;
+        d=1e100.net; s=20230601; t=1760544730; x=1761149530;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dtPL9lkVxbDp3+1W56aqYHsEbyn++VoHj0R7799hYUQ=;
-        b=ID6n+iGbi7dSnppYAtdqW/HrHfYR5zjg1c+NE8/eA/ykIWO+Ugz21w4ErRZg76eLaC
-         mIHMZxSkOi+mUbQQH8yYmC723rRFLxHHZXVp7WFgcZ/d/T882eVAuBtHzvrr74FW9CVw
-         NX1ZBRXruntiW0UfT6qkXFklT880jo0pr0gy27AD9NcRT+TeGI8AZBCgERl7AhkKkAdN
-         QtAQ7t6GHLaJ+4geGqEzwXMg2rgQKBQj3VohG8INpVHOr+/pyxM7rZz0Pt46q3KY/lif
-         A1mktAiBDDwCSYlhSRg2diAKREfjdaw9/WQ1nyPRiYAa2phOEn4HvAVD9W06J6JUWBt7
-         wNdQ==
-X-Gm-Message-State: AOJu0YzcARH8f5Va365x3L0PUl9j12dcb2GDv018I+NGn/5ek9xuv1th
-	w0zi0XaTKmpsHMjPts3NDcmKM8DfQja1Lzt/AyCAMaLVt+nWERI4y/0gpbYemg==
-X-Gm-Gg: ASbGncs2bBoCLG7ft7wlJdqkBflDjG7O+O31Sn8pnums2W9j6RrrKLwXtN/rZSR/KYC
-	M51YZ7WTqo6d3WXxWQopvXpPxjT8QvwJP9RaXEQBGJhgem/LjY/YtBs2JQ+bhvQ0voq8nHEfd3o
-	606vbzgEoDrSxbzh2J8AuxptRzBxfNgeAT8R7aC+2KpOJ9YMb1ikSckTS4lAzPrOuFuYYHEJg7B
-	Np+WKRK4UYBoiKROGVcnm7mTAmIxAjopxFq+oJFbzHVL7u902Ds6iahOZ1Rri2HbtR4QQea8t/5
-	RAP9sDSlDtTXCf4jyPmt+3veiMzSQzFLIDQIoxMXjs7BnVcQosgFn5K+2uL2oKYhfJrDoAwFgnb
-	REz3xXJZYzitaSpRO9mkTUKHQY9v9GunBof9V16skwcKg
-X-Google-Smtp-Source: AGHT+IF/ZubuzQmiEF4Aac/InZ3aE1/4RKtFM6hzQWeSKN+tfMux7WeUqKgq2mpnoTOTmsYJIL3d5A==
-X-Received: by 2002:a05:6000:2f83:b0:414:6fe6:8fa1 with SMTP id ffacd0b85a97d-4266e7dfdbemr19570386f8f.38.1760544727268;
-        Wed, 15 Oct 2025 09:12:07 -0700 (PDT)
+        bh=vFoEHEzMHX3evbH5+YpE4UuVmXP7bc57MNVAuBp7bz4=;
+        b=fM7abkh1ySP3z1LK+ch6eMlg0RjfF/HYdQ4FFU3czSDB7/ne2kHRfan4mUOJuDhXWq
+         4W63izGwu3Z4v14/70fLSEg7vTCJ4On2RGl5/J2cw/ez9Q6q0tM9KK8x0ynzJNZE7L07
+         gn1REdqUhKcB78USmQlpVTBJxgngnL2HLL4cfyMbh8zdZR2CRoz7H9N7g462enVAjRWh
+         WSBizHh5f795Ty2uF8UQAGQ1ts+s0fhCxmGcYiLAhFr5kvbE9NRzSgTMRPDRVjSZS9xE
+         hpj9ECPH7rqR5jYey64tyK/2oClDc9Pt7kuFUsQqMhu69nxq0KcO+HO85wwVGkLp+/4m
+         MQow==
+X-Gm-Message-State: AOJu0YzQ2lvjqe1Mn5XB5E5blZykoKelnYFOdXnNe9q8QBYv6gxxsaij
+	81W0waoKSIHF2eGNKI69cr+wHnX/F3iDrxOW6PO1OtMld/3sGrd3HeIsjBnnhw==
+X-Gm-Gg: ASbGncvsDodaTYTELFTdPL2qonbMdY0jFJJkhaQDVSkSrGnkLiDjC83YxHKsoEE7H9/
+	2FbU84I4jGUR27vcgGoXGZhxqOMgrw9p75gLrwy03usP72NVV/hfS+cBBce0MKY4FXFIb2VV4km
+	pZg08X+3iThir7mz2A785uuoI+HxN8hKnN2sYgyz5vKf4D7bKLoPZNVrVsykDWGA91dGn6vM4hX
+	2mzKCb0GZxyZRwHIwFBnxJ8xRJ6a3R+G3ShlY6rfPeHdFD5kji+Oi4C619OdU4Yd8YslHVbouho
+	NtFMn2Jc4N/PyDeWT0TyF8d3PxnXZSLCq0MOs2GtSs0JXHTI+7KA7M7hS0/5menEidtgqOarMHC
+	xIXa3D3v7L4xiE3zkIgsDyzOUR7gWCCKtk7popIaYV9UR3Fvfaqv522Rk/LofQ5BSYw==
+X-Google-Smtp-Source: AGHT+IFiclgoGHys6O4aLoq+5kJW2skr3rbtv+IGei5tHeoCAdVInhg5qkztJkY7bF/Opjj5Xh6WCg==
+X-Received: by 2002:a05:600c:314b:b0:46e:2109:f435 with SMTP id 5b1f17b1804b1-46fa9a966f6mr190234855e9.11.1760544729801;
+        Wed, 15 Oct 2025 09:12:09 -0700 (PDT)
 Received: from localhost ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46fab3cc939sm184743975e9.1.2025.10.15.09.12.06
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46fb483bcf9sm312853095e9.6.2025.10.15.09.12.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Oct 2025 09:12:06 -0700 (PDT)
+        Wed, 15 Oct 2025 09:12:09 -0700 (PDT)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -82,9 +82,9 @@ To: bpf@vger.kernel.org,
 	eddyz87@gmail.com,
 	memxor@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [RFC PATCH v2 10/11] bpf: dispatch to sleepable file dynptr
-Date: Wed, 15 Oct 2025 17:11:54 +0100
-Message-ID: <20251015161155.120148-11-mykyta.yatsenko5@gmail.com>
+Subject: [RFC PATCH v2 11/11] selftests/bpf: add file dynptr tests
+Date: Wed, 15 Oct 2025 17:11:55 +0100
+Message-ID: <20251015161155.120148-12-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251015161155.120148-1-mykyta.yatsenko5@gmail.com>
 References: <20251015161155.120148-1-mykyta.yatsenko5@gmail.com>
@@ -98,97 +98,303 @@ Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-File dynptr reads may sleep when the requested folios are not in
-the page cache. To avoid sleeping in non-sleepable contexts while still
-supporting valid sleepable use, given that dynptrs are non-sleepable by
-default, enable sleeping only when bpf_dynptr_from_file() is invoked
-from a sleepable context.
-
-This change:
-  * Introduces a sleepable constructor: bpf_dynptr_from_file_sleepable()
-  * Override non-sleepable constructor with sleepable if it's always
-  called in sleepable context
+Introducing selftests for validating file-backed dynptr works as
+expected.
+ * validate implementation supports dynptr slice and read operations
+ * validate destructors should be paired with initializers
+ * validate sleepable progs can page in.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- include/linux/bpf.h   |  3 +++
- kernel/bpf/helpers.c  |  5 +++++
- kernel/bpf/verifier.c | 11 ++++++++---
- 3 files changed, 16 insertions(+), 3 deletions(-)
+ .../selftests/bpf/prog_tests/file_reader.c    | 114 +++++++++++++
+ .../testing/selftests/bpf/progs/file_reader.c | 157 ++++++++++++++++++
+ 2 files changed, 271 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/file_reader.c
+ create mode 100644 tools/testing/selftests/bpf/progs/file_reader.c
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 1d7d50d0c587..73fca44a3dfa 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -670,6 +670,9 @@ static inline bool bpf_map_has_internal_structs(struct bpf_map *map)
- 
- void bpf_map_free_internal_structs(struct bpf_map *map, void *obj);
- 
-+int bpf_dynptr_from_file_sleepable(struct file *file, u32 flags,
-+				   struct bpf_dynptr *ptr__uninit);
+diff --git a/tools/testing/selftests/bpf/prog_tests/file_reader.c b/tools/testing/selftests/bpf/prog_tests/file_reader.c
+new file mode 100644
+index 000000000000..f4f52dfcb2a5
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/file_reader.c
+@@ -0,0 +1,114 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
 +
- extern const struct bpf_map_ops bpf_map_offload_ops;
- 
- /* bpf_type_flag contains a set of flags that are applicable to the values of
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index da83298bf916..42e2add35589 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -4337,6 +4337,11 @@ __bpf_kfunc int bpf_dynptr_from_file(struct file *file, u32 flags, struct bpf_dy
- 	return make_file_dynptr(file, flags, false, (struct bpf_dynptr_kern *)ptr__uninit);
- }
- 
-+int bpf_dynptr_from_file_sleepable(struct file *file, u32 flags, struct bpf_dynptr *ptr__uninit)
++#include <test_progs.h>
++#include <network_helpers.h>
++#include "file_reader.skel.h"
++#include <dlfcn.h>
++#include <sys/mman.h>
++
++const char *user_ptr = "hello world";
++char file_contents[256000];
++
++void *get_executable_base_addr(void)
 +{
-+	return make_file_dynptr(file, flags, true, (struct bpf_dynptr_kern *)ptr__uninit);
++	Dl_info info;
++
++	if (!dladdr((void *)&get_executable_base_addr, &info)) {
++		fprintf(stderr, "dladdr failed\n");
++		return NULL;
++	}
++
++	return info.dli_fbase;
 +}
 +
- __bpf_kfunc int bpf_dynptr_file_discard(struct bpf_dynptr *dynptr)
- {
- 	struct bpf_dynptr_kern *ptr = (struct bpf_dynptr_kern *)dynptr;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index f9f7151eaf1f..673923ecd465 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3126,7 +3126,8 @@ struct bpf_kfunc_btf_tab {
- 
- static unsigned long kfunc_call_imm(unsigned long func_addr, u32 func_id);
- 
--static void specialize_kfunc(struct bpf_verifier_env *env, struct bpf_kfunc_desc *desc);
-+static void specialize_kfunc(struct bpf_verifier_env *env, struct bpf_kfunc_desc *desc,
-+			     int insn_idx);
- 
- static int kfunc_desc_cmp_by_id_off(const void *a, const void *b)
- {
-@@ -21870,7 +21871,8 @@ static unsigned long kfunc_call_imm(unsigned long func_addr, u32 func_id)
- }
- 
- /* replace a generic kfunc with a specialized version if necessary */
--static void specialize_kfunc(struct bpf_verifier_env *env, struct bpf_kfunc_desc *desc)
-+static void specialize_kfunc(struct bpf_verifier_env *env, struct bpf_kfunc_desc *desc,
-+			     int insn_idx)
- {
- 	struct bpf_prog *prog = env->prog;
- 	bool seen_direct_write;
-@@ -21905,6 +21907,9 @@ static void specialize_kfunc(struct bpf_verifier_env *env, struct bpf_kfunc_desc
- 	} else if (func_id == special_kfunc_list[KF_bpf_remove_dentry_xattr]) {
- 		if (bpf_lsm_has_d_inode_locked(prog))
- 			addr = (unsigned long)bpf_remove_dentry_xattr_locked;
-+	} else if (func_id == special_kfunc_list[KF_bpf_dynptr_from_file]) {
-+		if (!env->insn_aux_data[insn_idx].non_sleepable)
-+			addr = (unsigned long)bpf_dynptr_from_file_sleepable;
- 	}
- 
- 	if (!addr) /* Nothing to patch with */
-@@ -21954,7 +21959,7 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 		return -EFAULT;
- 	}
- 
--	specialize_kfunc(env, desc);
-+	specialize_kfunc(env, desc, insn_idx);
- 
- 	if (!bpf_jit_supports_far_kfunc_call())
- 		insn->imm = BPF_CALL_IMM(desc->addr);
++static int initialize_file_contents(void)
++{
++	int fd, page_sz = sysconf(_SC_PAGESIZE);
++	ssize_t n = 0, cur, off;
++	void *addr;
++
++	fd = open("/proc/self/exe", O_RDONLY);
++	if (!ASSERT_GT(fd, 0, "Open /proc/self/exe\n"))
++		return 1;
++
++	do {
++		cur = read(fd, file_contents + n, sizeof(file_contents) - n);
++		if (!ASSERT_GT(cur, 0, "read success"))
++			break;
++		n += cur;
++	} while (n < sizeof(file_contents));
++
++	close(fd);
++
++	if (!ASSERT_EQ(n, sizeof(file_contents), "Read /proc/self/exe\n"))
++		return 1;
++
++	addr = get_executable_base_addr();
++	if (!ASSERT_NEQ(addr, NULL, "get executable address"))
++		return 1;
++
++	/* page-align base file address */
++	addr = (void *)((unsigned long)addr & ~(page_sz - 1));
++
++	for (off = 0; off < sizeof(file_contents); off += page_sz) {
++		if (!ASSERT_OK(madvise(addr + off, page_sz, MADV_PAGEOUT),
++			       "madvise pageout"))
++			return errno;
++	}
++
++	return 0;
++}
++
++static void run_test(const char *prog_name)
++{
++	struct file_reader *skel;
++	struct bpf_program *prog;
++	int err;
++	char data[256];
++	LIBBPF_OPTS(bpf_test_run_opts, opts, .data_in = &data, .repeat = 1,
++		    .data_size_in = sizeof(data));
++
++	err = initialize_file_contents();
++	if (!ASSERT_OK(err, "initialize file contents"))
++		return;
++
++	skel = file_reader__open();
++	if (!ASSERT_OK_PTR(skel, "file_reader__open"))
++		return;
++
++	bpf_object__for_each_program(prog, skel->obj) {
++		if (strcmp(bpf_program__name(prog), prog_name) == 0)
++			bpf_program__set_autoload(prog, true);
++		else
++			bpf_program__set_autoload(prog, false);
++	}
++
++	skel->bss->user_buf = file_contents;
++	skel->rodata->user_buf_sz = sizeof(file_contents);
++	skel->bss->pid = getpid();
++	skel->bss->user_ptr = (char *)user_ptr;
++
++	err = file_reader__load(skel);
++	if (!ASSERT_OK(err, "file_reader__load"))
++		goto cleanup;
++
++	err = file_reader__attach(skel);
++	if (!ASSERT_OK(err, "file_reader__attach"))
++		goto cleanup;
++
++	getpid();
++
++	ASSERT_EQ(skel->bss->err, 0, "err");
++cleanup:
++	file_reader__destroy(skel);
++}
++
++void test_file_reader(void)
++{
++	if (test__start_subtest("on_getpid_expect_fault"))
++		run_test("on_getpid_expect_fault");
++
++	if (test__start_subtest("on_getpid_validate_file_read"))
++		run_test("on_getpid_validate_file_read");
++}
+diff --git a/tools/testing/selftests/bpf/progs/file_reader.c b/tools/testing/selftests/bpf/progs/file_reader.c
+new file mode 100644
+index 000000000000..fce0b40367fe
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/file_reader.c
+@@ -0,0 +1,157 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++
++#include <vmlinux.h>
++#include <string.h>
++#include <stdbool.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++#include "errno.h"
++
++char _license[] SEC("license") = "GPL";
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct elem);
++} arrmap SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++	__uint(max_entries, 10000000);
++} ringbuf SEC(".maps");
++
++struct elem {
++	struct file *file;
++	struct bpf_task_work tw;
++};
++
++int pid = 0;
++int err;
++char *user_buf;
++const char *user_ptr;
++volatile const __u32 user_buf_sz;
++
++static int validate_file_read(struct task_struct *task, struct vm_area_struct *vma, void *data);
++static int task_work_callback(struct bpf_map *map, void *key, void *value);
++static int dynptr_file_read_fault(struct task_struct *task, struct vm_area_struct *vma, void *data);
++
++SEC("raw_tp/sys_enter")
++int on_getpid_expect_fault(void *c)
++{
++	struct task_struct *task = bpf_get_current_task_btf();
++
++	if (bpf_get_current_pid_tgid() >> 32 != pid)
++		return 1;
++
++	/* Verify that in non-sleepable context read faults */
++	bpf_find_vma(task, (unsigned long)user_ptr, dynptr_file_read_fault, NULL, 0);
++	return 0;
++}
++
++/* Tries to read user_buf_sz bytes from file dynptr, returns read error */
++static int dynptr_file_read_fault(struct task_struct *task, struct vm_area_struct *vma, void *data)
++{
++	struct bpf_dynptr dynptr;
++	struct file *file = vma->vm_file;
++	char *rbuf = NULL;
++	int local_err = 1;
++
++	if (!file) {
++		err = 1;
++		return 0;
++	}
++
++	if (bpf_dynptr_from_file(file, 0, &dynptr))
++		goto out;
++
++	rbuf = bpf_ringbuf_reserve(&ringbuf, user_buf_sz, 0);
++	if (!rbuf)
++		goto out;
++
++	local_err = bpf_dynptr_read(rbuf, user_buf_sz, &dynptr, 0, 0);
++	local_err = local_err == -EFAULT ? 0 : 1; /* Expect page fault */
++out:
++	if (rbuf)
++		bpf_ringbuf_discard(rbuf, 0);
++	bpf_dynptr_file_discard(&dynptr);
++	if (local_err)
++		err = local_err;
++	return 0;
++}
++
++SEC("raw_tp/sys_enter")
++int on_getpid_validate_file_read(void *c)
++{
++	struct task_struct *task = bpf_get_current_task_btf();
++	struct elem *work;
++	int key = 0;
++
++	if (bpf_get_current_pid_tgid() >> 32 != pid)
++		return 1;
++
++	work = bpf_map_lookup_elem(&arrmap, &key);
++	if (!work) {
++		err = 1;
++		return 0;
++	}
++	bpf_task_work_schedule_signal(task, &work->tw, &arrmap, task_work_callback, NULL);
++	return 0;
++}
++
++/* Called in a sleepable context, read 256K bytes, cross check with user space read data */
++static int task_work_callback(struct bpf_map *map, void *key, void *value)
++{
++	struct task_struct *task = bpf_get_current_task_btf();
++
++	bpf_find_vma(task, (unsigned long)user_ptr, validate_file_read, NULL, 0);
++	return 0;
++}
++
++static int validate_file_read(struct task_struct *task, struct vm_area_struct *vma, void *data)
++{
++	struct bpf_dynptr dynptr;
++	int local_err = 1, i;
++	char *rbuf1 = NULL, *rbuf2 = NULL;
++	struct file *file = vma->vm_file;
++
++	if (!file) {
++		err = 1;
++		return 1;
++	}
++
++	if (bpf_dynptr_from_file(file, 0, &dynptr))
++		goto cleanup_file;
++
++	rbuf1 = bpf_ringbuf_reserve(&ringbuf, user_buf_sz, 0);
++	if (!rbuf1)
++		goto cleanup_file;
++
++	rbuf2 = bpf_ringbuf_reserve(&ringbuf, user_buf_sz, 0);
++	if (!rbuf2)
++		goto cleanup_all;
++
++	if (bpf_dynptr_read(rbuf1, user_buf_sz, &dynptr, 0, 0))
++		goto cleanup_all;
++
++	bpf_copy_from_user(rbuf2, user_buf_sz, user_buf);
++	/* Verify file contents read from BPF is the same as the one read from userspace */
++	bpf_for(i, 0, user_buf_sz)
++	{
++		if (i >= 256000 || rbuf1[i] != rbuf2[i])
++			goto cleanup_all;
++	}
++	local_err = 0;
++
++cleanup_all:
++	if (rbuf1)
++		bpf_ringbuf_discard(rbuf1, 0);
++	if (rbuf2)
++		bpf_ringbuf_discard(rbuf2, 0);
++cleanup_file:
++	bpf_dynptr_file_discard(&dynptr);
++	if (local_err)
++		err = local_err;
++	return 0;
++}
 -- 
 2.51.0
 
