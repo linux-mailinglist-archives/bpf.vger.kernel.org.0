@@ -1,521 +1,138 @@
-Return-Path: <bpf+bounces-71041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71042-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52A0ABE04FF
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 21:09:15 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4358CBE0547
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 21:13:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B7BC426B2F
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 19:09:06 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 245B14EB5A6
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 19:13:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 048A7309DB0;
-	Wed, 15 Oct 2025 19:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED40303A10;
+	Wed, 15 Oct 2025 19:13:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fe2hnpX1"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="nmA9wUyY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9516A304BC1
-	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 19:08:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D444325480;
+	Wed, 15 Oct 2025 19:13:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760555320; cv=none; b=Qaz1WP/ZDERP5kzc8IJSDD044RDOtxq3/QJXlb6AYnQ6rn+YnBZN17VnhO5W+psQu91+CYhiOugt3oIAppiL4KAcdjl8Ej4eRJplzjvfrEiB4T5gQGipES0dYOPGTynpBPJxpViFlubUZQ8nf9b20m1U8c2/aWwNiickI2nz1h4=
+	t=1760555623; cv=none; b=gY10llcy/+D8p0HgW7RYgr2bipP1wWf4Ddy/UamhP0enskIcN7aiOlBP8Bg8KrjNkZ702WLM+syBAKmwtQGH6f4z7dGVjreQSNwOfIGxKW+Xppia69S+BR2oUfAd79WhJ+NOD8vmxElRvBRmeethZ0aNkTLY4VgIpBODzq67U6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760555320; c=relaxed/simple;
-	bh=dy/nxHNfK9JLsq/wUJoJjg9iuGlOj2VZFEhQ/YFK11s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KM9okez4ejOH/LyVMFGRKTUGVIlRuEIotoO8acgKjk10nXrpOFrsHBSBJxyK0S3UON8sXazvjZ+FSahNqWCtpuycCrA8183mJJpo0ld+UnECIEs3l25teAixZDFoB6HLh2RAupmY9hBANUdN8a6cK9JeL3WkVGIINl0QON1XVZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fe2hnpX1; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-782023ca359so7035703b3a.2
-        for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 12:08:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760555318; x=1761160118; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6jtTseR4AzpCPkYXmfSeMBcpg1TsK/YhbPk71+4USG4=;
-        b=Fe2hnpX1twzorIGhR5kZ9ppyDDFQXWoLEitED8PkXw96zvGQ5dzq96hcIbE5Ozwejk
-         e1JpNrIfvCa+BU3IhPn2HdhltkRuCqdZhR3UQ1fNMZgruGRelMGChRtwmzpgNlcMv5TC
-         V498tWpxaBg4rN6o3g+fx2slIhdE5sAyTOmPLiuQp8froTnJHlvhBxt6jDBgHWW49sIU
-         igugNQzKNVu+Ax6NEo29Tc5RGMzYBiDiu4potmKxrZXDNkPAzSRcym8XxRazYLWvuiWM
-         Juaz1uBnyaREGSPkH9buyYqkhAUaxHbVR18N/QIc8k2tiWgdmuNJLC21zCo0wEkjujdV
-         DUzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760555318; x=1761160118;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6jtTseR4AzpCPkYXmfSeMBcpg1TsK/YhbPk71+4USG4=;
-        b=orlJ1MKdk37zCvkG6fAAWScdQ/kP0b9K7UDGmhWpXmV1avu9QO4oUsY8kKAk4kLyGd
-         ItxBcy3oGcPTqfQZu4gAM7511eou8ZSvJYmvH74LQmsse1/09MXOjxy713Do0filxkfO
-         gFaT8ZJnP4qaTO43vFWWpFJxUJSt8iQTPUX09jd2pXYAZayf9E9rrTEdHo4byYAS4g2w
-         885mZPUclCc/uWLaARzpmgCGPe7VeZ9yRonyLG2oLz7QYTEQLd5xA+vK481jvOLTgreT
-         l4G4jCAqtX+He8oi5e4dO9k7tI1evX2OFaWtDgFUXSJc1eLbzPsX9b0eBwnzpFOgbOyj
-         e7LQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU9LHecHfAyZ7QsNROj/1WPHiDUW0vaq2FCaG4m6W9e++Bp+Goppcjv+LKUZbFY0GDuzJw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxnCON/CKuvjvCdF3pcLIhh28U21ezBfav08lwc7ItCoFRuDGaS
-	tdMzSH7bU3pxou2zy3kOIoFKVwJN6SDDySCAtAXGYTKohbnr0msICUB5
-X-Gm-Gg: ASbGncuiQoWygK8bzCthhIwnKbZ+oVqq9UyD3fTf7s1xLxl3SW4K+ZK3ONr6y9pWpBU
-	yCyuZNx4HQEHkDuuEDOe/Z3RFgq5lLlPclCbXXdyHJxcSO6Sn0yH/Gj/iv6CFvl3LFe4wJj7/Uy
-	XMZ9aGZ0awDLEtpQVyxxbhEBvmeqe5JeXFlEEQy6Pz3uPBQv/bCGidEI0CZTtdh8E+jIyttVQOp
-	hAjJxUP26uc4Lr+NaXJD1rb8f6GO5Sb7UOUHvewDgSWqOnKLSyK0HM9knWvztr1HEZi4TuEXnj6
-	wDwwaC3IMtX9WmC65Ld4hNdFVcaYiMtMj8ilFVHdqWdRxmNkv9Nm7DlGZwarMDSovUs0Nl4qZLb
-	Q1hoUvsTfhZ6HHO89UyCXM7WQfD/INc2jP0aJGm09Nf4IA7grLR7Ctb4OEQ+Gb5eVqDSmSdmDLt
-	KRFwY/
-X-Google-Smtp-Source: AGHT+IFk0KEOhu/r0D+eCv5Ze6uXH3k3mw8nLse3HDIgRrBhuzKLo4na23l7qUwdjNYl5QryCDzGtg==
-X-Received: by 2002:a05:6a00:14c1:b0:78c:994a:fc87 with SMTP id d2e1a72fcca58-793853254c5mr39312586b3a.6.1760555317735;
-        Wed, 15 Oct 2025 12:08:37 -0700 (PDT)
-Received: from jpkobryn-fedora-PF5CFKNC.thefacebook.com ([2620:10d:c090:500::7:1069])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7992d5b8672sm19483106b3a.69.2025.10.15.12.08.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Oct 2025 12:08:37 -0700 (PDT)
-From: JP Kobryn <inwardvessel@gmail.com>
-To: shakeel.butt@linux.dev,
-	andrii@kernel.org,
-	ast@kernel.org,
-	mkoutny@suse.com,
-	yosryahmed@google.com,
-	hannes@cmpxchg.org,
-	tj@kernel.org,
-	akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH v2 2/2] memcg: selftests for memcg stat kfuncs
-Date: Wed, 15 Oct 2025 12:08:13 -0700
-Message-ID: <20251015190813.80163-3-inwardvessel@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251015190813.80163-1-inwardvessel@gmail.com>
-References: <20251015190813.80163-1-inwardvessel@gmail.com>
+	s=arc-20240116; t=1760555623; c=relaxed/simple;
+	bh=vSb4mrhFemKGqe3wwEhmxVv3m7IlnmCRLSwmub2K9+g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LUC9Eop+kqb/wyZojPA4GgNyz/dwBUgqx21FXM/mjojqVSUZLlMUtx4A3hABksneDiUbDfCrPPfkN1FKqeBZ5flGexkiA8HM/9BNxQn8cqThOmLFIF4EREl62GwZaK5ghfx7lk9E6Zhg9GwM5yBF7PxmLhxi6JjCv1AmQr5UVM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=nmA9wUyY; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=XG6SLsUlqGKped8qznvDiJBkM1uZY8YiRJu4fS2D3rs=; b=nmA9wUyYRUbdz8ASRiRlXirT4A
+	PomfmYDjTJNuz1tKbGZTCRUINIAQ+3LNjGwcGaMBrn+0voFeOePQ5ltSe+ywqNeAt/U1UjfopH2WQ
+	ozVEIHNztLNCEipRanG3voLhimH5tFVDgD0P4Qt1MBpZ9dR9d19F7FECntBkCrTrCvTRN+j7Km/0g
+	sGl4gpCphsgaN17t5KdNdEByzVuQ9LC5cXYj2iM2tCnXxrJCtKOkpks+hB2/Krl2gs4AOuRH6JOz1
+	vN6hDuwVOZETHYIpbfcwMtDtQTNuTjpN2sa45NsKSwUy9p7Q5wE8q+qyewWNQ8qDV6rQmTSPUCEe2
+	VZ/6TBeg==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1v96wC-0009kC-1y;
+	Wed, 15 Oct 2025 21:13:28 +0200
+Received: from localhost ([127.0.0.1])
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1v96wB-0007So-1e;
+	Wed, 15 Oct 2025 21:13:27 +0200
+Message-ID: <90793a62-83c2-4a49-adbb-ab45dced76fc@iogearbox.net>
+Date: Wed, 15 Oct 2025 21:13:26 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot ci] Re: netkit: Support for io_uring zero-copy and AF_XDP
+To: syzbot ci <syzbot+ci7c73a60f40f79ce2@syzkaller.appspotmail.com>,
+ bpf@vger.kernel.org, davem@davemloft.net, dw@davidwei.uk,
+ john.fastabend@gmail.com, jordan@jrife.io, kuba@kernel.org,
+ maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+ martin.lau@kernel.org, netdev@vger.kernel.org, pabeni@redhat.com,
+ razor@blackwall.org, sdf@fomichev.me, toke@redhat.com,
+ wangdongdong.6@bytedance.com, willemb@google.com, yangzhenze@bytedance.com
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+References: <68efec17.050a0220.91a22.02ca.GAE@google.com>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ xsFNBGNAkI0BEADiPFmKwpD3+vG5nsOznvJgrxUPJhFE46hARXWYbCxLxpbf2nehmtgnYpAN
+ 2HY+OJmdspBntWzGX8lnXF6eFUYLOoQpugoJHbehn9c0Dcictj8tc28MGMzxh4aK02H99KA8
+ VaRBIDhmR7NJxLWAg9PgneTFzl2lRnycv8vSzj35L+W6XT7wDKoV4KtMr3Szu3g68OBbp1TV
+ HbJH8qe2rl2QKOkysTFRXgpu/haWGs1BPpzKH/ua59+lVQt3ZupePpmzBEkevJK3iwR95TYF
+ 06Ltpw9ArW/g3KF0kFUQkGXYXe/icyzHrH1Yxqar/hsJhYImqoGRSKs1VLA5WkRI6KebfpJ+
+ RK7Jxrt02AxZkivjAdIifFvarPPu0ydxxDAmgCq5mYJ5I/+BY0DdCAaZezKQvKw+RUEvXmbL
+ 94IfAwTFA1RAAuZw3Rz5SNVz7p4FzD54G4pWr3mUv7l6dV7W5DnnuohG1x6qCp+/3O619R26
+ 1a7Zh2HlrcNZfUmUUcpaRPP7sPkBBLhJfqjUzc2oHRNpK/1mQ/+mD9CjVFNz9OAGD0xFzNUo
+ yOFu/N8EQfYD9lwntxM0dl+QPjYsH81H6zw6ofq+jVKcEMI/JAgFMU0EnxrtQKH7WXxhO4hx
+ 3DFM7Ui90hbExlFrXELyl/ahlll8gfrXY2cevtQsoJDvQLbv7QARAQABzSZEYW5pZWwgQm9y
+ a21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0PsLBkQQTAQoAOxYhBCrUdtCTcZyapV2h+93z
+ cY/jfzlXBQJjQJCNAhsDBQkHhM4ACAsJCAcNDAsKBRUKCQgLAh4BAheAAAoJEN3zcY/jfzlX
+ dkUQAIFayRgjML1jnwKs7kvfbRxf11VI57EAG8a0IvxDlNKDcz74mH66HMyhMhPqCPBqphB5
+ ZUjN4N5I7iMYB/oWUeohbuudH4+v6ebzzmgx/EO+jWksP3gBPmBeeaPv7xOvN/pPDSe/0Ywp
+ dHpl3Np2dS6uVOMnyIsvmUGyclqWpJgPoVaXrVGgyuer5RpE/a3HJWlCBvFUnk19pwDMMZ8t
+ 0fk9O47HmGh9Ts3O8pGibfdREcPYeGGqRKRbaXvcRO1g5n5x8cmTm0sQYr2xhB01RJqWrgcj
+ ve1TxcBG/eVMmBJefgCCkSs1suriihfjjLmJDCp9XI/FpXGiVoDS54TTQiKQinqtzP0jv+TH
+ 1Ku+6x7EjLoLH24ISGyHRmtXJrR/1Ou22t0qhCbtcT1gKmDbTj5TcqbnNMGWhRRTxgOCYvG0
+ 0P2U6+wNj3HFZ7DePRNQ08bM38t8MUpQw4Z2SkM+jdqrPC4f/5S8JzodCu4x80YHfcYSt+Jj
+ ipu1Ve5/ftGlrSECvy80ZTKinwxj6lC3tei1bkI8RgWZClRnr06pirlvimJ4R0IghnvifGQb
+ M1HwVbht8oyUEkOtUR0i0DMjk3M2NoZ0A3tTWAlAH8Y3y2H8yzRrKOsIuiyKye9pWZQbCDu4
+ ZDKELR2+8LUh+ja1RVLMvtFxfh07w9Ha46LmRhpCzsFNBGNAkI0BEADJh65bNBGNPLM7cFVS
+ nYG8tqT+hIxtR4Z8HQEGseAbqNDjCpKA8wsxQIp0dpaLyvrx4TAb/vWIlLCxNu8Wv4W1JOST
+ wI+PIUCbO/UFxRy3hTNlb3zzmeKpd0detH49bP/Ag6F7iHTwQQRwEOECKKaOH52tiJeNvvyJ
+ pPKSKRhmUuFKMhyRVK57ryUDgowlG/SPgxK9/Jto1SHS1VfQYKhzMn4pWFu0ILEQ5x8a0RoX
+ k9p9XkwmXRYcENhC1P3nW4q1xHHlCkiqvrjmWSbSVFYRHHkbeUbh6GYuCuhqLe6SEJtqJW2l
+ EVhf5AOp7eguba23h82M8PC4cYFl5moLAaNcPHsdBaQZznZ6NndTtmUENPiQc2EHjHrrZI5l
+ kRx9hvDcV3Xnk7ie0eAZDmDEbMLvI13AvjqoabONZxra5YcPqxV2Biv0OYp+OiqavBwmk48Z
+ P63kTxLddd7qSWbAArBoOd0wxZGZ6mV8Ci/ob8tV4rLSR/UOUi+9QnkxnJor14OfYkJKxot5
+ hWdJ3MYXjmcHjImBWplOyRiB81JbVf567MQlanforHd1r0ITzMHYONmRghrQvzlaMQrs0V0H
+ 5/sIufaiDh7rLeZSimeVyoFvwvQPx5sXhjViaHa+zHZExP9jhS/WWfFE881fNK9qqV8pi+li
+ 2uov8g5yD6hh+EPH6wARAQABwsF8BBgBCgAmFiEEKtR20JNxnJqlXaH73fNxj+N/OVcFAmNA
+ kI0CGwwFCQeEzgAACgkQ3fNxj+N/OVfFMhAA2zXBUzMLWgTm6iHKAPfz3xEmjtwCF2Qv/TT3
+ KqNUfU3/0VN2HjMABNZR+q3apm+jq76y0iWroTun8Lxo7g89/VDPLSCT0Nb7+VSuVR/nXfk8
+ R+OoXQgXFRimYMqtP+LmyYM5V0VsuSsJTSnLbJTyCJVu8lvk3T9B0BywVmSFddumv3/pLZGn
+ 17EoKEWg4lraXjPXnV/zaaLdV5c3Olmnj8vh+14HnU5Cnw/dLS8/e8DHozkhcEftOf+puCIl
+ Awo8txxtLq3H7KtA0c9kbSDpS+z/oT2S+WtRfucI+WN9XhvKmHkDV6+zNSH1FrZbP9FbLtoE
+ T8qBdyk//d0GrGnOrPA3Yyka8epd/bXA0js9EuNknyNsHwaFrW4jpGAaIl62iYgb0jCtmoK/
+ rCsv2dqS6Hi8w0s23IGjz51cdhdHzkFwuc8/WxI1ewacNNtfGnorXMh6N0g7E/r21pPeMDFs
+ rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
+ DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
+ owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
+In-Reply-To: <68efec17.050a0220.91a22.02ca.GAE@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: Clear (ClamAV 1.0.9/27793/Wed Oct 15 11:29:40 2025)
 
-Add test coverage for the kfuncs that fetch memcg stats. Using some common
-stats, test before and after scenarios ensuring that the given stat
-increases by some arbitrary amount. The stats selected cover the three
-categories represented by the enums: node_stat_item, memcg_stat_item,
-vm_event_item.
+On 10/15/25 8:46 PM, syzbot ci wrote:
+> syzbot ci has tested the following series
+[...]
+> WARNING: CPU: 1 PID: 5959 at ./include/net/netdev_lock.h:17 netdev_assert_locked include/net/netdev_lock.h:17 [inline]
+> WARNING: CPU: 1 PID: 5959 at ./include/net/netdev_lock.h:17 netif_get_rx_queue_peer_locked+0x2f1/0x3a0 net/core/netdev_rx_queue.c:71
+[...]
+>   <TASK>
+>   xsk_reg_pool_at_qid+0x20b/0x630 net/xdp/xsk.c:159
 
-Since only a subset of all stats are queried, use a static struct made up
-of fields for each stat. Write to the struct with the fetched values when
-the bpf program is invoked and read the fields in the user mode program for
-verification.
-
-Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
----
- .../testing/selftests/bpf/cgroup_iter_memcg.h |  18 ++
- .../bpf/prog_tests/cgroup_iter_memcg.c        | 295 ++++++++++++++++++
- .../selftests/bpf/progs/cgroup_iter_memcg.c   |  61 ++++
- 3 files changed, 374 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/cgroup_iter_memcg.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_iter_memcg.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_iter_memcg.c
-
-diff --git a/tools/testing/selftests/bpf/cgroup_iter_memcg.h b/tools/testing/selftests/bpf/cgroup_iter_memcg.h
-new file mode 100644
-index 000000000000..5f4c6502d9f1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/cgroup_iter_memcg.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#ifndef __CGROUP_ITER_MEMCG_H
-+#define __CGROUP_ITER_MEMCG_H
-+
-+struct memcg_query {
-+	/* some node_stat_item's */
-+	long nr_anon_mapped;
-+	long nr_shmem;
-+	long nr_file_pages;
-+	long nr_file_mapped;
-+	/* some memcg_stat_item */
-+	long memcg_kmem;
-+	/* some vm_event_item */
-+	long pgfault;
-+};
-+
-+#endif /* __CGROUP_ITER_MEMCG_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_iter_memcg.c b/tools/testing/selftests/bpf/prog_tests/cgroup_iter_memcg.c
-new file mode 100644
-index 000000000000..264dc3c9ec30
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_iter_memcg.c
-@@ -0,0 +1,295 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include <bpf/libbpf.h>
-+#include <bpf/btf.h>
-+#include <fcntl.h>
-+#include <sys/mman.h>
-+#include <unistd.h>
-+#include "cgroup_helpers.h"
-+#include "cgroup_iter_memcg.h"
-+#include "cgroup_iter_memcg.skel.h"
-+
-+int read_stats(struct bpf_link *link)
-+{
-+	int fd, ret = 0;
-+	ssize_t bytes;
-+
-+	fd = bpf_iter_create(bpf_link__fd(link));
-+	if (!ASSERT_OK_FD(fd, "bpf_iter_create"))
-+		return 1;
-+
-+	/*
-+	 * Invoke iter program by reading from its fd. We're not expecting any
-+	 * data to be written by the bpf program so the result should be zero.
-+	 * Results will be read directly through the custom data section
-+	 * accessible through skel->data_query.memcg_query.
-+	 */
-+	bytes = read(fd, NULL, 0);
-+	if (!ASSERT_EQ(bytes, 0, "read fd"))
-+		ret = 1;
-+
-+	close(fd);
-+	return ret;
-+}
-+
-+static void test_anon(struct bpf_link *link,
-+		struct memcg_query *memcg_query)
-+{
-+	void *map;
-+	size_t len;
-+	long val;
-+
-+	len = sysconf(_SC_PAGESIZE) * 1024;
-+
-+	if (!ASSERT_OK(read_stats(link), "read stats"))
-+		return;
-+
-+	val = memcg_query->nr_anon_mapped;
-+	if (!ASSERT_GE(val, 0, "initial anon mapped val"))
-+		return;
-+
-+	/*
-+	 * Increase memcg anon usage by mapping and writing
-+	 * to a new anon region.
-+	 */
-+	map = mmap(NULL, len, PROT_READ | PROT_WRITE,
-+			MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-+	if (!ASSERT_NEQ(map, MAP_FAILED, "mmap anon"))
-+		return;
-+
-+	memset(map, 1, len);
-+
-+	if (!ASSERT_OK(read_stats(link), "read stats"))
-+		goto cleanup;
-+
-+	ASSERT_GT(memcg_query->nr_anon_mapped, val, "final anon mapped val");
-+
-+cleanup:
-+	munmap(map, len);
-+}
-+
-+static void test_file(struct bpf_link *link,
-+		struct memcg_query *memcg_query)
-+{
-+	void *map;
-+	size_t len;
-+	long val_pages, val_mapped;
-+	FILE *f;
-+	int fd;
-+
-+	len = sysconf(_SC_PAGESIZE) * 1024;
-+
-+	if (!ASSERT_OK(read_stats(link), "read stats"))
-+		return;
-+
-+	val_pages = memcg_query->nr_file_pages;
-+	if (!ASSERT_GE(val_pages, 0, "initial file val"))
-+		return;
-+	val_mapped = memcg_query->nr_file_mapped;
-+	if (!ASSERT_GE(val_mapped, 0, "initial file mapped val"))
-+		return;
-+
-+	/*
-+	 * Increase memcg file usage by creating and writing
-+	 * to a temoprary mapped file.
-+	 */
-+	f = tmpfile();
-+	if (!ASSERT_OK_PTR(f, "tmpfile"))
-+		return;
-+	fd = fileno(f);
-+	if (!ASSERT_OK_FD(fd, "open fd"))
-+		return;
-+	if (!ASSERT_OK(ftruncate(fd, len), "ftruncate"))
-+		goto cleanup_fd;
-+
-+	map = mmap(NULL, len, PROT_READ | PROT_WRITE,
-+			MAP_SHARED, fd, 0);
-+	if (!ASSERT_NEQ(map, MAP_FAILED, "mmap file"))
-+		goto cleanup_fd;
-+
-+	memset(map, 1, len);
-+
-+	if (!ASSERT_OK(read_stats(link), "read stats"))
-+		goto cleanup_map;
-+
-+	ASSERT_GT(memcg_query->nr_file_pages, val_pages, "final file value");
-+	ASSERT_GT(memcg_query->nr_file_mapped, val_mapped,
-+			"final file mapped value");
-+
-+cleanup_map:
-+	munmap(map, len);
-+cleanup_fd:
-+	close(fd);
-+}
-+
-+static void test_shmem(struct bpf_link *link,
-+		struct memcg_query *memcg_query)
-+{
-+	size_t len;
-+	int fd;
-+	void *map;
-+	long val;
-+
-+	len = sysconf(_SC_PAGESIZE) * 1024;
-+
-+	if (!ASSERT_OK(read_stats(link), "read stats"))
-+		return;
-+
-+	val = memcg_query->nr_shmem;
-+	if (!ASSERT_GE(val, 0, "init shmem val"))
-+		return;
-+
-+	/*
-+	 * Increase memcg shmem usage by creating and writing
-+	 * to a shmem object.
-+	 */
-+	fd = shm_open("/tmp_shmem", O_CREAT | O_RDWR, 0644);
-+	if (!ASSERT_OK_FD(fd, "shm_open"))
-+		return;
-+
-+	if (!ASSERT_OK(ftruncate(fd, len), "ftruncate"))
-+		goto cleanup_fd;
-+
-+	map = mmap(NULL, len, PROT_READ | PROT_WRITE,
-+			MAP_SHARED, fd, 0);
-+	if (!ASSERT_NEQ(map, MAP_FAILED, "mmap shmem"))
-+		goto cleanup_fd;
-+
-+	memset(map, 1, len);
-+
-+	if (!ASSERT_OK(read_stats(link), "read stats"))
-+		goto cleanup_map;
-+
-+	ASSERT_GT(memcg_query->nr_shmem, val, "final shmem value");
-+
-+cleanup_map:
-+	munmap(map, len);
-+cleanup_fd:
-+	close(fd);
-+	shm_unlink("/tmp_shmem");
-+}
-+
-+static void test_kmem(struct bpf_link *link,
-+		struct memcg_query *memcg_query)
-+{
-+	int fds[2];
-+	int err;
-+	ssize_t bytes;
-+	size_t len;
-+	char *buf;
-+	long val;
-+
-+	len = sysconf(_SC_PAGESIZE) * 1024;
-+
-+	if (!ASSERT_OK(read_stats(link), "read stats"))
-+		return;
-+
-+	val = memcg_query->memcg_kmem;
-+	if (!ASSERT_GE(val, 0, "initial kmem val"))
-+		return;
-+
-+	err = pipe2(fds, O_NONBLOCK);
-+	if (!ASSERT_OK(err, "pipe"))
-+		return;
-+
-+	buf = malloc(len);
-+	memset(buf, 1, len);
-+	bytes = write(fds[1], buf, len);
-+	if (!ASSERT_GT(bytes, 0, "write"))
-+		goto cleanup;
-+
-+	if (!ASSERT_OK(read_stats(link), "read stats"))
-+		goto cleanup;
-+
-+	ASSERT_GT(memcg_query->memcg_kmem, val, "kmem value");
-+
-+cleanup:
-+	free(buf);
-+	close(fds[0]);
-+	close(fds[1]);
-+}
-+
-+static void test_pgfault(struct bpf_link *link,
-+		struct memcg_query *memcg_query)
-+{
-+	void *map;
-+	size_t len;
-+	long val;
-+
-+	len = sysconf(_SC_PAGESIZE) * 1024;
-+
-+	if (!ASSERT_OK(read_stats(link), "read stats"))
-+		return;
-+
-+	val = memcg_query->pgfault;
-+	if (!ASSERT_GE(val, 0, "initial pgfault val"))
-+		return;
-+
-+	/* Create region to use for triggering a page fault. */
-+	map = mmap(NULL, len, PROT_READ | PROT_WRITE,
-+			MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-+	if (!ASSERT_NEQ(map, MAP_FAILED, "mmap anon"))
-+		return;
-+
-+	/* Trigger page fault. */
-+	memset(map, 1, len);
-+
-+	if (!ASSERT_OK(read_stats(link), "read stats"))
-+		goto cleanup;
-+
-+	ASSERT_GT(memcg_query->pgfault, val, "final pgfault val");
-+
-+cleanup:
-+	munmap(map, len);
-+}
-+
-+void test_cgroup_iter_memcg(void)
-+{
-+	char *cgroup_rel_path = "/cgroup_iter_memcg_test";
-+	struct cgroup_iter_memcg *skel;
-+	struct bpf_link *link;
-+	int cgroup_fd, err;
-+
-+	cgroup_fd = cgroup_setup_and_join(cgroup_rel_path);
-+	if (!ASSERT_OK_FD(cgroup_fd, "cgroup_setup_and_join"))
-+		return;
-+
-+	skel = cgroup_iter_memcg__open();
-+	if (!ASSERT_OK_PTR(skel, "cgroup_iter_memcg__open"))
-+		goto cleanup_cgroup_fd;
-+
-+	err = cgroup_iter_memcg__load(skel);
-+	if (!ASSERT_OK(err, "cgroup_iter_memcg__load"))
-+		goto cleanup_skel;
-+
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo = {
-+		.cgroup.cgroup_fd = cgroup_fd,
-+		.cgroup.order = BPF_CGROUP_ITER_SELF_ONLY,
-+	};
-+	opts.link_info = &linfo;
-+	opts.link_info_len = sizeof(linfo);
-+
-+	link = bpf_program__attach_iter(skel->progs.cgroup_memcg_query, &opts);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_iter"))
-+		goto cleanup_cgroup_fd;
-+
-+	if (test__start_subtest("cgroup_iter_memcg__anon"))
-+		test_anon(link, &skel->data_query->memcg_query);
-+	if (test__start_subtest("cgroup_iter_memcg__shmem"))
-+		test_shmem(link, &skel->data_query->memcg_query);
-+	if (test__start_subtest("cgroup_iter_memcg__file"))
-+		test_file(link, &skel->data_query->memcg_query);
-+	if (test__start_subtest("cgroup_iter_memcg__kmem"))
-+		test_kmem(link, &skel->data_query->memcg_query);
-+	if (test__start_subtest("cgroup_iter_memcg__pgfault"))
-+		test_pgfault(link, &skel->data_query->memcg_query);
-+
-+	bpf_link__destroy(link);
-+cleanup_skel:
-+	cgroup_iter_memcg__destroy(skel);
-+cleanup_cgroup_fd:
-+	close(cgroup_fd);
-+	cleanup_cgroup_environment();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_iter_memcg.c b/tools/testing/selftests/bpf/progs/cgroup_iter_memcg.c
-new file mode 100644
-index 000000000000..0d913d72b68d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_iter_memcg.c
-@@ -0,0 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <vmlinux.h>
-+#include <bpf/bpf_core_read.h>
-+#include "cgroup_iter_memcg.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+extern void memcg_flush_stats(struct cgroup *cgrp) __ksym;
-+extern unsigned long memcg_stat_fetch(struct cgroup *cgrp,
-+		enum memcg_stat_item item) __ksym;
-+extern unsigned long memcg_node_stat_fetch(struct cgroup *cgrp,
-+		enum node_stat_item item) __ksym;
-+extern unsigned long memcg_vm_event_fetch(struct cgroup *cgrp,
-+		enum vm_event_item item) __ksym;
-+
-+/* The latest values read are stored here. */
-+struct memcg_query memcg_query SEC(".data.query");
-+
-+/*
-+ * Helpers for fetching any of the three different types of memcg stats.
-+ * BPF core macros are used to ensure an enumerator is present in the given
-+ * kernel. Falling back on -1 indicates its absence.
-+ */
-+#define node_stat_fetch_if_exists(cgrp, item) \
-+	bpf_core_enum_value_exists(enum node_stat_item, item) ? \
-+		memcg_node_stat_fetch((cgrp), bpf_core_enum_value( \
-+					 enum node_stat_item, item)) : -1
-+
-+#define memcg_stat_fetch_if_exists(cgrp, item) \
-+	bpf_core_enum_value_exists(enum memcg_stat_item, item) ? \
-+		memcg_node_stat_fetch((cgrp), bpf_core_enum_value( \
-+					 enum memcg_stat_item, item)) : -1
-+
-+#define vm_event_fetch_if_exists(cgrp, item) \
-+	bpf_core_enum_value_exists(enum vm_event_item, item) ? \
-+		memcg_vm_event_fetch((cgrp), bpf_core_enum_value( \
-+					 enum vm_event_item, item)) : -1
-+
-+SEC("iter.s/cgroup")
-+int cgroup_memcg_query(struct bpf_iter__cgroup *ctx)
-+{
-+	struct cgroup *cgrp = ctx->cgroup;
-+
-+	if (!cgrp)
-+		return 1;
-+
-+	memcg_flush_stats(cgrp);
-+
-+	memcg_query.nr_anon_mapped = node_stat_fetch_if_exists(cgrp,
-+			NR_ANON_MAPPED);
-+	memcg_query.nr_shmem = node_stat_fetch_if_exists(cgrp, NR_SHMEM);
-+	memcg_query.nr_file_pages = node_stat_fetch_if_exists(cgrp,
-+			NR_FILE_PAGES);
-+	memcg_query.nr_file_mapped = node_stat_fetch_if_exists(cgrp,
-+			NR_FILE_MAPPED);
-+	memcg_query.memcg_kmem = memcg_stat_fetch_if_exists(cgrp, MEMCG_KMEM);
-+	memcg_query.pgfault = vm_event_fetch_if_exists(cgrp, PGFAULT);
-+
-+	return 0;
-+}
--- 
-2.47.3
-
+Hmm, looks like syzkaller tried using batman_adv interface. The lock in the
+xsk path uses netdev_lock_ops() which is why the assert hits. I'll change
+netif_get_rx_queue_peer_locked() to check for netdev_need_ops_lock() in v3.
 
