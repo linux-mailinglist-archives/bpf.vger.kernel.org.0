@@ -1,134 +1,198 @@
-Return-Path: <bpf+bounces-70959-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70960-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52D2BBDBF3A
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 03:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 365AFBDBF67
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 03:13:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA5781926257
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 01:06:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8227E192812F
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 01:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492A62F60B6;
-	Wed, 15 Oct 2025 01:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C9F2F7463;
+	Wed, 15 Oct 2025 01:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b="KbOEu2aL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YXwQfgR6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FSbdghoN"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C221A9F90;
-	Wed, 15 Oct 2025 01:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA0A2F60B6
+	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 01:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760490339; cv=none; b=QRt75/KWcuxq9NBtGCPVwhg2T7t0+zMENbeB/+aV+XtZA4fmCwzUUhDL4d0l42b9V9wGW/gWfEEQRJYdiIHqvYZZxm0AXYGRkLK3bMBW1QKHnHmG1yON9F7gDEZyfkrDAksADyBapny7XQfznvv2+jUTrSNTpirNmX2q3ELGEdI=
+	t=1760490782; cv=none; b=RbnIkbAjV3eBsWnycpIwNR8qeAyRZk9h8q0tPBg8ueZyXtqeoHJ5z9eMiwMvOBpXudIkuA2nan8bYA4w7eUSMe+i0kxi9ntWLM3yOcoM46o23x72outL3J/3IaInyREwwvMvVMEOR6CiAqEjxAwLXQPweOYuRwMRhc1TJJ/E+C0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760490339; c=relaxed/simple;
-	bh=Vpdwz1lvoMPnezfHpwJ1w3Peea0Y3Rl3f/UeHuTQoj8=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=EbwsTLU0pTTDf02XIKbaiie+VzmB3OVqU4WLrkgDcWUN+z+JVdnLMFmtKBXv6L12Th8WaJ+k0TQMXL+Z6DcR2FKaXxcWuih3GgvkHCZCh+CfoRBHS+2iMEneg+1gw2w8xOAD8EeyvP8JzPsqiprW2rgb/zuyZYNY7GUfbIG96Hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org; spf=pass smtp.mailfrom=shazbot.org; dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b=KbOEu2aL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YXwQfgR6; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shazbot.org
-Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id A14BF14000DE;
-	Tue, 14 Oct 2025 21:05:35 -0400 (EDT)
-Received: from phl-imap-18 ([10.202.2.89])
-  by phl-compute-11.internal (MEProxy); Tue, 14 Oct 2025 21:05:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shazbot.org; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1760490335;
-	 x=1760576735; bh=6WfOttKuFa3XxhnHEnOBF2NhU4+rEVKwvQn8bW9SNbE=; b=
-	KbOEu2aLT/UfzvDu0SSJUOtZjPVshuyykVkae2aOdYK7SV2xvwOLVLCTysHFNJrn
-	B1iHoAwrDYRqM2wIMxv7jrrKfuBCouHfVVlffouZ+OWIqNoUW4nSt4uqYZ2knuyD
-	Ofyv9CkxvZORWkT4GffrSMR7i/yTqnnGWOJEBmOgUMLXnXPwurVQXsLl1ZZedRsW
-	eq03ZIN7Red3958ho+UMH4rcGexVB5EnPwmk8xEOjwRrlpOJFXv1RV15hxw6oqUv
-	+QlGqV5XfxwPr/f9cAkpsrPYBuT/gd+fhYXPtejI0FohtEM/jzIrpxF+opuWaEek
-	HvzhjJjCOXOGuFLQPs9VZw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1760490335; x=
-	1760576735; bh=6WfOttKuFa3XxhnHEnOBF2NhU4+rEVKwvQn8bW9SNbE=; b=Y
-	XwQfgR6MVRkFKJPnBPd6gYi6NAyK5nkAVXXlUbfCUdQlo2WN9uZC/2WwMWz0D9UR
-	2vBmMCjuTK0cPHTQGGKTNUxHZr6vZbsOXxUg2iZ2kq3u5oaVWheU2kSqGiOTub4B
-	Vly7BcFUR6v8cLK9DYEISIRmpPBP+UOxz4TqTaZmnamui77K5r1feGMjsODapogY
-	NDv4ARn7n1AFhQDfgAUNPd0b8y4407Iu7viuT8OtJhiwtw+SD7V7u0YuFeh8DWJj
-	LhiUbK/ima0/toKxNtk4AiF1gspMQD+71uzeEyAgMjT3IwZW+OwMBXDbn1RAz779
-	NL9VCru5mngUGZsN337aw==
-X-ME-Sender: <xms:XvPuaHvn4AyIwceeC9gm4GXEYVo189WkwzAqOGnFZXXSHUpAG1IPxQ>
-    <xme:XvPuaDTlrXbVap0JafZMpHrVFJwiNx8hwITaFooaLaX38QF84_85N4_-6j3ZHuoga
-    OknLq3G4_OZlwo9IM8ujpTPthmuPszDNVLWjYEntwsZ7L2_JhPn>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduvddvtdehucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucenucfjughrpefoggffhffvvefkjghfufgtgfesthhqre
-    dtredtjeenucfhrhhomhepfdetlhgvgicuhghilhhlihgrmhhsohhnfdcuoegrlhgvgies
-    shhhrgiisghothdrohhrgheqnecuggftrfgrthhtvghrnhepuefgtdefheeiheethfeggf
-    fhteduiefhfffhieeljeeijeegieffleevjeeiuefgnecuvehluhhsthgvrhfuihiivgep
-    tdenucfrrghrrghmpehmrghilhhfrhhomheprghlvgigsehshhgriigsohhtrdhorhhgpd
-    hnsggprhgtphhtthhopedujedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepshgu
-    fhesfhhomhhitghhvghvrdhmvgdprhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrd
-    gtohhmpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhm
-    pdhrtghpthhtohephhgrohhluhhosehgohhoghhlvgdrtghomhdprhgtphhtthhopegthh
-    hughhurghnghhqihhnghesihhnshhpuhhrrdgtohhmpdhrtghpthhtohepuggrnhhivghl
-    sehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlh
-    drohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehj
-    ohhlshgrsehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:XvPuaPPK_nfwU05sQbeRi6eCvQvvO0fgsxrldnNp4mkh5TF8h5tfPg>
-    <xmx:XvPuaGSFWIFmFL3ErefrsSfPFZhT1EFvyjjMQzjA3TE7-XxSwlHRYQ>
-    <xmx:XvPuaP5FrgSic4bZdhG7ww9dDaX32Ia5671iW_3F37PL4mIvckzc3w>
-    <xmx:XvPuaA3AgqRfY0Hl18GCKZid99UDv5zQrtHd605OrFI6HPXfKhSsKQ>
-    <xmx:X_PuaLHQcBg_5ojt7hqTtKRSNaJb5oBCmWf2f94XXoClZ_EtrVL2iZ4c>
-Feedback-ID: i03f14258:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 9EBB515C0053; Tue, 14 Oct 2025 21:05:34 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1760490782; c=relaxed/simple;
+	bh=5W2+85pd06ZV1M+prtFXZf89M0U1ODNJHDrAbYVfZbU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KalsxMaqrqdNg5fEF9o6ckM3QkYxFTpA8UpP5OVVv0nXZu/cQoKGzGGhz1j2WkTXwkK3g4m+xGs4noU+WBanIojKzdx7S8OHbULYVTDHLgOKzW21Mk3tPEqpjm3bYgY0PU/HBSqKW5X3lkud0BDdwh8tdPpYlAm6Bdty+kTKd8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FSbdghoN; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-636de696e18so3321473a12.3
+        for <bpf@vger.kernel.org>; Tue, 14 Oct 2025 18:13:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760490779; x=1761095579; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HIFg9Y651C6jYHMRNt/SIA9hUcF2F84+cqC9exRdD80=;
+        b=FSbdghoNHTUpCFOAMeJqrcZqqJDgr9P1/ErK4bPUmj01c9dLJPOWedDg8DQQnsqpwd
+         Kz8riTAL5TbjEWkDHmsqw9CL922KYh4POKILk3Laraycb9/+0Cf/sg3IbhypxKXorpmb
+         vJ9Lo8QwghHDO0j/vy9nzAO8WvPpwi8BcMLcj4fa60FP8enUP3RgDaN+azHSRTddS3nl
+         Y+coSrkz7GpE+oQl+MIOOtebmgH7Vvpn/FdWjRdlJogrZ+bo+Pt7iWqvSMjfuVU5rzMf
+         +7M2K82tngIJLbhNO3/32pevBDfwO9tfuf9stJhHc/M5R8yresTwewLaiA6aFmNe7sS5
+         li8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760490779; x=1761095579;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HIFg9Y651C6jYHMRNt/SIA9hUcF2F84+cqC9exRdD80=;
+        b=InDW/ztVIVxN9j0aNTuJXXVZgAis2wAZCC7IAjTV/aLkVw2fitJof+Db/wI0d807me
+         ytLW2H8EQHm0A/vM1A3bGnsk4JjEvFeoTDSodHVQU69+VG1U4YoRIhF2Zv8W3Lqh04QD
+         EELFoZl8DYeesIGsFkIKnlsefs2cozdI6tfnGjNkqCJIeEzaGbwA5NZ4fMSgLBbXKFET
+         +R1YWhk0HKz/sNAyp0SkTLFuhjYNWvGVKvQj64AUE3NqbxH7aS8ZI2UngsAQL9aVzLBY
+         Ie8nhAZZd9x3c6PlaWGNfswDiNhahNI82uoI7u1QSxynkZg3NdlqMfFwuIDTpLhsSgY/
+         kGHA==
+X-Forwarded-Encrypted: i=1; AJvYcCVB9V9LlsPKOE8c1c4jgmz9IQLDIZY5zkBiyqjn7wBAYsZemtB+5EvlDG76Wjf8mQBN9fM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx02BFkGbSkuEhP/im25NtKrbNFMJFIHPUse/PJ4QdjBn6Ul9F6
+	WWRCnj2+Efk56ClMvMr9o45H+GoAURQ0d3wIqP4lsa8vqbLq/u+Gmqnh5IMmoosTpjgFYT4EY8N
+	D52n44VN9zXg/FudJ4rvBaGBiyFU5SNh+F6ZbIFE=
+X-Gm-Gg: ASbGncslz2bons9nVGAkjWAF5r068NPF+GmF6ylf6tVi/krjMiHNKWe48+th4Uy6cnZ
+	lQyGpihiYu6FpG0vtF+gHLpL63Emwso3d5T4hsKzy4WmHbANvm7vPZ8JAJyzqOozRmVsqVvZYff
+	OMVFFN99gdegxdYGQoMywgXgZ+QE57wrQcknYUCxMeg8sK5GbSFv/tbGUCdbG+oVPZ2fySkCOQC
+	vLdCLzlVdd8hViNKHDhPW7pwC41MzJvNa3qZGZV5RKNvALq
+X-Google-Smtp-Source: AGHT+IEMqjPapD9eRQP/uxVQXUUIw7oKODkqd8+sXPMIUZbAd8hTgbXCVRklJtg/rXMz7OFgPnLe7Y2s5OJF7DIXxLc=
+X-Received: by 2002:a05:6402:13d1:b0:626:4774:2420 with SMTP id
+ 4fb4d7f45d1cf-639d5c320c0mr24548232a12.20.1760490778582; Tue, 14 Oct 2025
+ 18:12:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AauiaLfHrCWk
-Date: Tue, 14 Oct 2025 19:05:14 -0600
-From: "Alex Williamson" <alex@shazbot.org>
-To: 
- =?UTF-8?Q?Gary_Chu=28=E6=A5=9A=E5=85=89=E5=BA=86=29?= <chuguangqing@inspur.com>
-Cc: ast <ast@kernel.org>, daniel <daniel@iogearbox.net>,
- andrii <andrii@kernel.org>, "martin.lau" <martin.lau@linux.dev>,
- eddyz87 <eddyz87@gmail.com>, song <song@kernel.org>,
- "yonghong.song" <yonghong.song@linux.dev>,
- "john.fastabend" <john.fastabend@gmail.com>, kpsingh <kpsingh@kernel.org>,
- sdf <sdf@fomichev.me>, haoluo <haoluo@google.com>, jolsa <jolsa@kernel.org>,
- kwankhede <kwankhede@nvidia.com>, bpf <bpf@vger.kernel.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
-Message-Id: <7514bbaa-3ae1-4041-b5aa-9d5b790c7778@app.fastmail.com>
-In-Reply-To: <68eef1b8.1.4heY4R8JIaj5heY4@inspur.com>
-References: 
- <3e4b2ac992da27b6aeafed9553a7fa9d15-10-25shazbot.org@g.corp-email.com>
- <20251014140035.31bd9154@shazbot.org>
- <68eef1b8.1.4heY4R8JIaj5heY4@inspur.com>
-Subject: Re: [PATCH v2 1/1] samples/bpf: Fix spelling typo in samples/bpf
-Content-Type: text/plain; charset=utf-8
+References: <20251013131537.1927035-1-dolinux.peng@gmail.com>
+ <CAEf4BzbABZPNJL6_rtpEhMmHFdO5pNbFTGzL7sXudqb5qkmjpg@mail.gmail.com>
+ <CAADnVQJN7TA-HNSOV3LLEtHTHTNeqWyBWb+-Gwnj0+MLeF73TQ@mail.gmail.com>
+ <CAEf4BzaZ=UC9Hx_8gUPmJm-TuYOouK7M9i=5nTxA_3+=H5nEiQ@mail.gmail.com>
+ <CAADnVQLC22-RQmjH3F+m3bQKcbEH_i_ukRULnu_dWvtN+2=E-Q@mail.gmail.com>
+ <CAErzpmtCxPvWU03fn1+1abeCXf8KfGA+=O+7ZkMpQd-RtpM6UA@mail.gmail.com>
+ <CAADnVQ+2JSxb7Uca4hOm7UQjfP48RDTXf=g1a4syLpRjWRx9qg@mail.gmail.com>
+ <CAErzpmu0Zjo0+_r-iBWoAOUiqbC9=sJmJDtLtAANVRU9P-pytg@mail.gmail.com> <7f770a27-6ca6-463f-9145-5c795e0b3f40@oracle.com>
+In-Reply-To: <7f770a27-6ca6-463f-9145-5c795e0b3f40@oracle.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Date: Wed, 15 Oct 2025 09:12:47 +0800
+X-Gm-Features: AS18NWC2l2vIG6SIpnIJhDffpTLpm2QvUXu3kXYxlJNoEm_ngJOG4oOMkQlG3Ic
+Message-ID: <CAErzpmvKtM5Abb9jKUg4KV0zwOpJL5Yy4nWEnxUpjRFUeeci3Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v1] btf: Sort BTF types by name and kind to optimize
+ btf_find_by_name_kind lookup
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	pengdonglin <pengdonglin@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 14, 2025, at 6:59 PM, Gary Chu(=E6=A5=9A=E5=85=89=E5=BA=86) =
-wrote:
->>I'd suggest this go through bpf since it touches more there.  For mtty,
->>
->>Acked-by: Alex Williamson <alex@shazbot.org>
-> Can I understand this as splitting into two separate threads: one for=20
-> BPF and one for mtty?
+On Tue, Oct 14, 2025 at 4:06=E2=80=AFPM Alan Maguire <alan.maguire@oracle.c=
+om> wrote:
+>
+> On 14/10/2025 05:53, Donglin Peng wrote:
+> > On Tue, Oct 14, 2025 at 10:48=E2=80=AFAM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >>
+> >> On Mon, Oct 13, 2025 at 6:54=E2=80=AFPM Donglin Peng <dolinux.peng@gma=
+il.com> wrote:
+> >>>
+> >>> On Tue, Oct 14, 2025 at 8:22=E2=80=AFAM Alexei Starovoitov
+> >>> <alexei.starovoitov@gmail.com> wrote:
+> >>>>
+> >>>> On Mon, Oct 13, 2025 at 5:15=E2=80=AFPM Andrii Nakryiko
+> >>>> <andrii.nakryiko@gmail.com> wrote:
+> >>>>>
+> >>>>> On Mon, Oct 13, 2025 at 4:53=E2=80=AFPM Alexei Starovoitov
+> >>>>> <alexei.starovoitov@gmail.com> wrote:
+> >>>>>>
+> >>>>>> On Mon, Oct 13, 2025 at 4:40=E2=80=AFPM Andrii Nakryiko
+> >>>>>> <andrii.nakryiko@gmail.com> wrote:
+> >>>>>>>
+> >>>>>>> Just a few observations (if we decide to do the sorting of BTF by=
+ name
+> >>>>>>> in the kernel):
+> >>>>>>
+> >>>>>> iirc we discussed it in the past and decided to do sorting in paho=
+le
+> >>>>>> and let the kernel verify whether it's sorted or not.
+> >>>>>> Then no extra memory is needed.
+> >>>>>> Or was that idea discarded for some reason?
+> >>>>>
+> >>>>> Don't really remember at this point, tbh. Pre-sorting should work
+> >>>>> (though I'd argue that then we should only sort by name to make thi=
+s
+> >>>>> sorting universally useful, doing linear search over kinds is fast,
+> >>>>> IMO). Pre-sorting won't work for program BTFs, don't know how
+> >>>>> important that is. This indexing on demand approach would be
+> >>>>> universal. =C2=AF\_(=E3=83=84)_/=C2=AF
+> >>>>>
+> >>>>> Overall, paying 300KB for sorted index for vmlinux BTF for cases wh=
+ere
+> >>>>> we repeatedly need this seems ok to me, tbh.
+> >>>>
+> >>>> If pahole sorting works I don't see why consuming even 300k is ok.
+> >>>> kallsyms are sorted during the build too.
+> >>>
+> >>> Thanks. We did discuss pre-sorting in pahole in the threads:
+> >>>
+> >>> https://lore.kernel.org/all/CAADnVQLMHUNE95eBXdy6=3D+gHoFHRsihmQ75GZv=
+Gy-hSuHoaT5A@mail.gmail.com/
+> >>> https://lore.kernel.org/all/CAEf4BzaXHrjoEWmEcvK62bqKuT3de__+juvGctR3=
+=3De8avRWpMQ@mail.gmail.com/
+> >>>
+> >>> However, since that approach depends on newer pahole features and
+> >>> btf_find_by_name_kind is already being called quite frequently, I sug=
+gest
+> >>> we first implement sorting within the kernel, and subsequently add pr=
+e-sorting
+> >>> support in pahole.
+> >>
+> >> and then what? Remove it from the kernel when pahole is newer?
+> >> I'd rather not do this churn in the first place.
+> >
+> > Apologies for the formatting issues in my previous email=E2=80=94sendin=
+g this again
+> >  for clarity.
+> >
+> > Thank you for your feedback. Your concerns are completely valid.
+> >
+> > I=E2=80=99d like to suggest a dual-mechanism approach:
+> > 1. If BTF is generated by a newer pahole (with pre-sorting support), th=
+e
+> >     kernel would use the pre-sorted data directly.
+> > 2. For BTF from older pahole versions, the kernel would handle sorting
+> >     at load time or later.
+> >
+> > This would provide performance benefits immediately while preserving
+> >  backward compatibility. The kernel-side sorting would remain intact
+> > moving forward, avoiding future churn.
+> >
+>
+> If you're taking the approach of doing both - which is best I think -
+> I'd suggest it might be helpful to look at the bpf_relocate.c code; it's
+> shared between libbpf and kernel, so you could potentially add shared
+> code to do sorting in libbpf (which pahole would use) and the kernel
+> would use too; this would help ensure the behaviour is identical.
+>
+> Maybe for pahole/libbpf sorting could be done via a new BTF dedup()
+> option, since dedup is the time we finalize the BTF representation?
 
-It might have been a bit of an over correction to roll 5 patches into 1,
-one for vfio/mtty and one for bpf would have been easier to split between
-maintainers, but I'm providing my ack so it can go through the bpf folks
-since this is fairly inconsequential.  Thanks,
-
-Alex
+Thanks for the suggestion. I'll look into that.
+>
+> Alan
 
