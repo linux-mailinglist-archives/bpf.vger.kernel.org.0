@@ -1,160 +1,242 @@
-Return-Path: <bpf+bounces-70974-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70975-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 363E7BDD76D
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 10:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5440BDD815
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 10:49:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 414124E5AFE
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 08:41:37 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 77C4F4FDF68
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 08:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 728CA306B35;
-	Wed, 15 Oct 2025 08:41:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE1431A05E;
+	Wed, 15 Oct 2025 08:47:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lactOngR"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="2GajTWI6"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B55CD31618E
-	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 08:41:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C015316904;
+	Wed, 15 Oct 2025 08:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760517680; cv=none; b=MqFsJAwBf/h4EEhK9g3qGlooib0ROqpNAdlS26jVKrqYOiFSYVx9zppotRDJpcVKPr2OwpZIiwUOa0YcItT4OHjlqwqYtfVDBJNyE69ZVzYvBsTJBpD8zQ7ZmIbRfX7blE3xKBZe9JVuiCDTdhb16kY90EVfWaQ3+i0gN+lp7yI=
+	t=1760518021; cv=none; b=ioYl7bgnqT+IQc1eamLIKONxjJ26fEvFDVc1Tk+4BbkvZ+K4la6fF2YuojM0mXEeuik27ck4EPicBMLlXcyzlCMZq80/lMw6Vl0WLc67h0maIclKxS3K+tE5mOy6vXPElbyPqJOR4hoXf+Rz3SFYaMtodtQoYcL2SV4ADgSGu+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760517680; c=relaxed/simple;
-	bh=f6hvt/NkFdxn6Xx1792HgfmUP0Dn5MOAPtACW0y82Ic=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IRTET3s+T25EueRS4chjANMP1kxqNCwa+vVqnhgJhosZaToM0JIGoCrvsz5DwG5oOE7oN8JZYp6n/pXtab2jcyiF1XRb08kUW++zy1biYIq4SYK17zm8EDF7G9q+lN5sWHChbsBmMy9mON9zToypzjQLXAsqWmwhw/Z0xW60bUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lactOngR; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1760517665;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0VSjbHQDh1+KgRk8wHE69Ht5wW5omcZP6fXsOpT7LvU=;
-	b=lactOngR0mxUFc31b0rRqonkdWF9lUr/ALYGH20EDawQY1vG2NicmD4EN1klJa/rpZHl9h
-	sGEHIf29iB3GfkwFz7RyP9Jru6Lls81qN6qefJSGBzCIpHvbGsGS/YarYMzg+ylIC1qYrT
-	IEvX/Pss8uE2T7X6SqgH5PjbHmI1Qvg=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: Menglong Dong <menglong8.dong@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Jakub Sitnicki <jakub@cloudflare.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, jiang.biao@linux.dev,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Network Development <netdev@vger.kernel.org>
-Subject:
- Re: [PATCH bpf-next 1/4] rcu: factor out migrate_enable_rcu and
- migrate_disable_rcu
-Date: Wed, 15 Oct 2025 16:40:43 +0800
-Message-ID: <2239372.irdbgypaU6@7950hx>
-In-Reply-To:
- <CAADnVQJygR6Pb1SQq=tJUpHVx7wwnSX1A78mXGha+bQArowtHQ@mail.gmail.com>
-References:
- <20251014112640.261770-1-dongml2@chinatelecom.cn>
- <20251014112640.261770-2-dongml2@chinatelecom.cn>
- <CAADnVQJygR6Pb1SQq=tJUpHVx7wwnSX1A78mXGha+bQArowtHQ@mail.gmail.com>
+	s=arc-20240116; t=1760518021; c=relaxed/simple;
+	bh=FrHWepJ+8TvdR3frU07jDniqnzcYnUTc9jm9aMDPuzQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LlrenK62kf0m5jQwJpETxfBXil7IKL9ahZVW9lW5W6tADTjb9wOX6XURmm7KMHgymS1jrMJ61lf69BwJKgHgifs1vOJ69X0VrWOOPZ6adPZMHw6zhsezaRG6iwQ7QkJ5StsqUcqPy5izgMOntKjoOlGNAYX9VkqKV+T90j6Kn5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=2GajTWI6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84504C4CEF8;
+	Wed, 15 Oct 2025 08:47:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1760518021;
+	bh=FrHWepJ+8TvdR3frU07jDniqnzcYnUTc9jm9aMDPuzQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=2GajTWI6IShclxIK3xp+QleHTNrLdlEHd6vrHatCgHl0HTYmNECTWKuF7S288sa/a
+	 bWWN8awwPQ+19AGfaigECrxqmT6SyLHf8RoxLJzhi/lmUhIHogltc2IBHr+GtMqx2u
+	 zx+bw0eGEF3F1UgnTV1KKzNl1afJWCPlC37qgrts=
+Date: Wed, 15 Oct 2025 10:46:58 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>, stable@vger.kernel.org,
+	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, rwarsow@gmx.de,
+	conor@kernel.org, hargar@microsoft.com, broonie@kernel.org,
+	achill@achill.org, Daniel Borkmann <daniel@iogearbox.net>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Anders Roxell <anders.roxell@linaro.org>,
+	Ben Copeland <benjamin.copeland@linaro.org>,
+	linux-s390@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH 6.12 000/262] 6.12.53-rc1 review
+Message-ID: <2025101523-foster-impotent-6649@gregkh>
+References: <20251013144326.116493600@linuxfoundation.org>
+ <CA+G9fYsdErtgqKuyPfFhMS9haGKavBVCHQnipv2EeXM3OK0-UQ@mail.gmail.com>
+ <CA+G9fYuV-J7N0cAy30X+rLCRrER071nMkk9JC6kjDw1U0gEzJg@mail.gmail.com>
+ <69b2bf4c5d3aa7fd9c5b6822a03666f616eafe13.camel@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <69b2bf4c5d3aa7fd9c5b6822a03666f616eafe13.camel@linux.ibm.com>
 
-On 2025/10/14 22:59, Alexei Starovoitov wrote:
-> On Tue, Oct 14, 2025 at 4:27=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
-il.com> wrote:
-> >
-> > Factor out migrate_enable_rcu/migrate_disable_rcu from
-> > rcu_read_lock_dont_migrate/rcu_read_unlock_migrate.
-> >
-> > These functions will be used in the following patches.
-> >
-> > It's a little weird to define them in rcupdate.h. Maybe we should move
-> > them to sched.h?
-> >
-> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> > ---
-> >  include/linux/rcupdate.h | 20 +++++++++++++++++---
-> >  1 file changed, 17 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > index c5b30054cd01..43626ccc07e2 100644
-> > --- a/include/linux/rcupdate.h
-> > +++ b/include/linux/rcupdate.h
-> > @@ -988,18 +988,32 @@ static inline notrace void rcu_read_unlock_sched_=
-notrace(void)
-> >         preempt_enable_notrace();
-> >  }
-> >
-> > -static __always_inline void rcu_read_lock_dont_migrate(void)
-> > +/* This can only be used with rcu_read_lock held */
-> > +static inline void migrate_enable_rcu(void)
-> > +{
-> > +       WARN_ON_ONCE(!rcu_read_lock_held());
-> > +       if (IS_ENABLED(CONFIG_PREEMPT_RCU))
-> > +               migrate_enable();
-> > +}
-> > +
-> > +/* This can only be used with rcu_read_lock held */
-> > +static inline void migrate_disable_rcu(void)
-> >  {
-> > +       WARN_ON_ONCE(!rcu_read_lock_held());
-> >         if (IS_ENABLED(CONFIG_PREEMPT_RCU))
-> >                 migrate_disable();
-> > +}
-> > +
-> > +static __always_inline void rcu_read_lock_dont_migrate(void)
-> > +{
-> >         rcu_read_lock();
-> > +       migrate_disable_rcu();
-> >  }
-> >
-> >  static inline void rcu_read_unlock_migrate(void)
-> >  {
-> > +       migrate_enable_rcu();
-> >         rcu_read_unlock();
-> > -       if (IS_ENABLED(CONFIG_PREEMPT_RCU))
-> > -               migrate_enable();
-> >  }
->=20
-> Sorry. I don't like any of it. It obfuscates the code
-> without adding any benefits.
+On Tue, Oct 14, 2025 at 04:45:11PM +0200, Ilya Leoshkevich wrote:
+> On Tue, 2025-10-14 at 19:38 +0530, Naresh Kamboju wrote:
+> > On Tue, 14 Oct 2025 at 16:56, Naresh Kamboju
+> > <naresh.kamboju@linaro.org> wrote:
+> > > 
+> > > On Mon, 13 Oct 2025 at 20:38, Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > > 
+> > > > This is the start of the stable review cycle for the 6.12.53
+> > > > release.
+> > > > There are 262 patches in this series, all will be posted as a
+> > > > response
+> > > > to this one.  If anyone has any issues with these being applied,
+> > > > please
+> > > > let me know.
+> > > > 
+> > > > Responses should be made by Wed, 15 Oct 2025 14:42:41 +0000.
+> > > > Anything received after that time might be too late.
+> > > > 
+> > > > The whole patch series can be found in one patch at:
+> > > >        
+> > > > https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.12.53-rc1.gz
+> > > > or in the git tree and branch at:
+> > > >        
+> > > > git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
+> > > > stable-rc.git linux-6.12.y
+> > > > and the diffstat can be found below.
+> > > > 
+> > > > thanks,
+> > > > 
+> > > > greg k-h
+> > > 
+> > > The S390 defconfig builds failed on the Linux stable-rc 6.12.53-rc1
+> > > and 6.6.112-rc1 tag build due to following build warnings / errors
+> > > with gcc and clang toolchains.
+> > > 
+> > > Also seen on 6.6.112-rc1.
+> > > 
+> > > * s390, build
+> > >   - clang-21-defconfig
+> > >   - clang-nightly-defconfig
+> > >   - clang-nightly-lkftconfig-hardening
+> > >   - clang-nightly-lkftconfig-lto-full
+> > >   - clang-nightly-lkftconfig-lto-thing
+> > >   - gcc-14-allmodconfig
+> > >   - gcc-14-defconfig
+> > >   - gcc-14-lkftconfig-hardening
+> > >   - gcc-8-defconfig-fe40093d
+> > >   - gcc-8-lkftconfig-hardening
+> > >   - korg-clang-21-lkftconfig-hardening
+> > >   - korg-clang-21-lkftconfig-lto-full
+> > >   - korg-clang-21-lkftconfig-lto-thing
+> > > 
+> > > First seen on 6.12.53-rc1
+> > > Good: v6.12.52
+> > > Bad: 6.12.53-rc1 also seen on 6.6.112-rc1
+> > > 
+> > > Regression Analysis:
+> > > - New regression? yes
+> > > - Reproducibility? yes
+> > > 
+> > > Build regressions: arch/s390/net/bpf_jit_comp.c:1813:49: error:
+> > > 'struct bpf_jit' has no member named 'frame_off'
+> > > 
+> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > > 
+> > > # Build error
+> > > arch/s390/net/bpf_jit_comp.c: In function 'bpf_jit_insn':
+> > > arch/s390/net/bpf_jit_comp.c:1813:49: error: 'struct bpf_jit' has
+> > > no
+> > > member named 'frame_off'
+> > >  1813 |                         _EMIT6(0xd203f000 | (jit->frame_off
+> > > +
+> > >       |                                                 ^~
+> > > arch/s390/net/bpf_jit_comp.c:211:55: note: in definition of macro
+> > > '_EMIT6'
+> > >   211 |                 *(u32 *) (jit->prg_buf + jit->prg) =
+> > > (op1);     \
+> > >       |                                                       ^~~
+> > > include/linux/stddef.h:16:33: error: invalid use of undefined type
+> > > 'struct prog_frame'
+> > >    16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE,
+> > > MEMBER)
+> > >       |                                 ^~~~~~~~~~~~~~~~~~
+> > > arch/s390/net/bpf_jit_comp.c:211:55: note: in definition of macro
+> > > '_EMIT6'
+> > >   211 |                 *(u32 *) (jit->prg_buf + jit->prg) =
+> > > (op1);     \
+> > >       |                                                       ^~~
+> > > arch/s390/net/bpf_jit_comp.c:1814:46: note: in expansion of macro
+> > > 'offsetof'
+> > >  1814 |                                             
+> > > offsetof(struct prog_frame,
+> > >       |                                              ^~~~~~~~
+> > > include/linux/stddef.h:16:33: error: invalid use of undefined type
+> > > 'struct prog_frame'
+> > >    16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE,
+> > > MEMBER)
+> > >       |                                 ^~~~~~~~~~~~~~~~~~
+> > > arch/s390/net/bpf_jit_comp.c:212:59: note: in definition of macro
+> > > '_EMIT6'
+> > >   212 |                 *(u16 *) (jit->prg_buf + jit->prg + 4) =
+> > > (op2); \
+> > >       |                                                          
+> > > ^~~
+> > > arch/s390/net/bpf_jit_comp.c:1816:41: note: in expansion of macro
+> > > 'offsetof'
+> > >  1816 |                                0xf000 | offsetof(struct
+> > > prog_frame,
+> > >       |                                         ^~~~~~~~
+> > > arch/s390/net/bpf_jit_comp.c: In function
+> > > '__arch_prepare_bpf_trampoline':
+> > > include/linux/stddef.h:16:33: error: invalid use of undefined type
+> > > 'struct prog_frame'
+> > >    16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE,
+> > > MEMBER)
+> > >       |                                 ^~~~~~~~~~~~~~~~~~
+> > > arch/s390/net/bpf_jit_comp.c:212:59: note: in definition of macro
+> > > '_EMIT6'
+> > >   212 |                 *(u16 *) (jit->prg_buf + jit->prg + 4) =
+> > > (op2); \
+> > >       |                                                          
+> > > ^~~
+> > > arch/s390/net/bpf_jit_comp.c:2813:33: note: in expansion of macro
+> > > 'offsetof'
+> > >  2813 |                        0xf000 | offsetof(struct prog_frame,
+> > > tail_call_cnt));
+> > >       |                                 ^~~~~~~~
+> > > make[5]: *** [scripts/Makefile.build:229:
+> > > arch/s390/net/bpf_jit_comp.o] Error 1
+> > > 
+> > > The git blame is pointing to,
+> > >  $ git blame -L 1813  arch/s390/net/bpf_jit_comp.c
+> > >    162513d7d81487 (Ilya Leoshkevich)    _EMIT6(0xd203f000 | (jit-
+> > > >frame_off +
+> > > 
+> > > Commit pointing to,
+> > >    s390/bpf: Write back tail call counter for BPF_PSEUDO_CALL
+> > >    [ Upstream commit c861a6b147137d10b5ff88a2c492ba376cd1b8b0 ]
+> > 
+> > Anders bisected reported regressions and also suggested the missing
+> > patches.
+> > 
+> > Ilya Leoshkevich,
+> > Is it a good idea to backport / cherry pick these two patches on the
+> > 6.12 branch ?
+> > 
+> > b2268d550d20 ("s390/bpf: Centralize frame offset calculations")
+> > e26d523edf2a ("s390/bpf: Describe the frame using a struct instead of
+> > constants")
+> 
+> Thank you for the report and the investigation!
+> 
+> I think it would be a good idea to backport these.
+> Both are NFC changes that went into v6.17 and there were no complaints.
+> 
+> For v6.6 we also need this one (also NFC):
+> 
+> 67aed27bcd46 ("s390/bpf: Change seen_reg to a mask")
 
-It has a slight performance improving for some BPF type, such as
-SK_SKB, SK_MSG.
+Thanks for the info, I'll go drop the original offending commit from
+both queues.  Can someone please resubmit all of the needed changes for
+us to apply so that I am sure to get them all correctly?
 
-Hmm, after we make migrate_disable() inline, the performance
-improving here is extremely slight. And you are right, it do obfuscate
-the code :/
+thanks,
 
-Thanks!
-Menglong Dong
-
->=20
-> pw-bot: cr
->=20
->=20
-
-
-
-
+greg k-h
 
