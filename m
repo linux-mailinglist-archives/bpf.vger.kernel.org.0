@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-70980-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70981-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89329BDE05A
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 12:34:58 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69FA1BDE03C
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 12:34:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 973B7480741
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 10:33:59 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1BD7A4FEFE3
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 10:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DED31D734;
-	Wed, 15 Oct 2025 10:31:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5986A31D74A;
+	Wed, 15 Oct 2025 10:31:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gMYDJoas"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NyBv1bJB"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A2B307AE1
-	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 10:31:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE1E6307AE1
+	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 10:31:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760524285; cv=none; b=SC+ZdWB0/DRN+OszColN3SIv87xvn7CdOhV2PQRazbRkzxbe9FcN6xq0ypfqg46DLmGODGNz2zbCd88amW2y/h2zr8MU8hdrfwP1m2a2gPhgFV9mhFdEzV+yWMbbRXs6T3UxQSusPshIhy4OUIIcT5ifttKe0I/6+tucxb3qMbs=
+	t=1760524289; cv=none; b=RI9l+Y8woc5LtdwN5a6Hd5McJSoi2R3+FdNd6SEns5gFz5EhJhDC/AgJJB3Ix9t5Y5/NJhpctohoi8sMSwS2SSRyzAh8puB+ewBoyaruW46on8fJVpiDWQkE3vNJwB4ffW0YDYJOoFFMz5EyXlpUf4/pJ3fuEfE9X37qnfH9EC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760524285; c=relaxed/simple;
-	bh=1n+bUnxTbBE8EknqcnxMtqsgtSOAIFCgs/K/zO4CNUo=;
+	s=arc-20240116; t=1760524289; c=relaxed/simple;
+	bh=Aqk7Nfhpsw1f7aZwOwFj13tGEh3Eqw+P6Q8KBNyCvz8=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=QGAJEdhLMFUtuEuzxaFECy8ACMMbCTTH7p+x3PaMmiK9iXbZyV00vRKXxa7GShnLhK4nzC2X5uf8H42TY9hJ9xzEG3yJbnVtvuO0fXip7c8aF4WX+mBZ7DoNh51m10Ufs3xcpvkaXoFXBzrXi01Zey+xvT0P204vcvyolLOzIps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gMYDJoas; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54BA9C4CEF8;
-	Wed, 15 Oct 2025 10:31:25 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=uq7g8x3LZqhY/24YpZuF/OFmjJaYNoHRVzFPRbcaBtR764L9Or9B/i6jVVGc9OFZS74Q1MTpDiW4UUwbUH4YE39gQARair560+3ay61FQCWUc1OxWKEF99RCL0ClzEDCzAuEECgzaqxEzgIaoMir6Lh7u6a9XoK55YUxOQqsvzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NyBv1bJB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57D07C4CEF8;
+	Wed, 15 Oct 2025 10:31:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760524285;
-	bh=1n+bUnxTbBE8EknqcnxMtqsgtSOAIFCgs/K/zO4CNUo=;
+	s=k20201202; t=1760524289;
+	bh=Aqk7Nfhpsw1f7aZwOwFj13tGEh3Eqw+P6Q8KBNyCvz8=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=gMYDJoasKXL641lJV252CoiQMlV0VXd+PyD2mGkm8s1VtldzzSQ7wvKM7H5Z56f1C
-	 1spl9dRmpoJNyVdm6c2e1IHhtWUOcCb5vSL+m6vw2OOSaf5UsB09OZ2M2tEsZ1SDTQ
-	 evHr+DUegmE2FWgtBGh8CyD+/3gebei2z31DuO+2+tYyjiQRdSn9USRjga5do/Xy5n
-	 UHKGsgjc6S/QZf3ZL5IpXxaqPI46SnflsWlXaZlV/AftP8izua555ToGFkzYhIOuov
-	 QISHsMebADcRebGxZou/J+YQChJv/menrjqL9GkFh1y99AUGA6DIxoroVW3MP8t+Cv
-	 tUOuJLZyha9zw==
+	b=NyBv1bJBRzMaDO50WqkBa/RiX5Vip7/hNEyzeqXTu1i5x1r+VMqtbNrsoMeR4yHqA
+	 EqhZICP0bljilL3I8jLiau+nlv8jVBuEnjlLE4srrWElo862HYt9K1ggH0QdgEgjEk
+	 xhIKwN7m2Ux1Z5MgDogy/Hn/A6eMVGMiEm4PGYHMzFuPxpoesl+gOT0v0tXR5nOPq+
+	 6TRev4IF12gPrK8vPNh8rOT1qJxcDIFW/Cfy98INc/77n9xQTkmouXXOEi6NDo+JGu
+	 g3kP1yKKrU1pyAycDjm7kyEK+mqSJZ0ZsvXUtVHnoxOT3RMvUDGTvP0uWqbC1hF2Cs
+	 5bPtW8DVgKa5A==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 6ECAD380CFDE;
-	Wed, 15 Oct 2025 10:31:11 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 74343380CFDE;
+	Wed, 15 Oct 2025 10:31:15 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,46 +52,39 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf] bpf: Replace bpf_map_kmalloc_node() with
- kmalloc_nolock() to allocate bpf_async_cb structures.
+Subject: Re: [PATCH v2 bpf-next] bpf: consistently use bpf_rcu_lock_held()
+ everywhere
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176052427024.282100.959584197933795259.git-patchwork-notify@kernel.org>
-Date: Wed, 15 Oct 2025 10:31:10 +0000
-References: <20251015000700.28988-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20251015000700.28988-1-alexei.starovoitov@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@kernel.org, shakeel.butt@linux.dev, vbabka@suse.cz,
- harry.yoo@oracle.com, yepeilin@google.com, linux-mm@kvack.org,
- kernel-team@fb.com
+ <176052427424.282100.8035714898138837243.git-patchwork-notify@kernel.org>
+Date: Wed, 15 Oct 2025 10:31:14 +0000
+References: <20251014201403.4104511-1-andrii@kernel.org>
+In-Reply-To: <20251014201403.4104511-1-andrii@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@kernel.org, kernel-team@meta.com
 
 Hello:
 
-This patch was applied to bpf/bpf.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Tue, 14 Oct 2025 17:07:00 -0700 you wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+On Tue, 14 Oct 2025 13:14:03 -0700 you wrote:
+> We have many places which open-code what's now is bpf_rcu_lock_held()
+> macro, so replace all those places with a clean and short macro invocation.
+> For that, move bpf_rcu_lock_held() macro into include/linux/bpf.h.
 > 
-> The following kmemleak splat:
-> [    8.105530] kmemleak: Trying to color unknown object at 0xff11000100e918c0 as Black
-> [    8.106521] Call Trace:
-> [    8.106521]  <TASK>
-> [    8.106521]  dump_stack_lvl+0x4b/0x70
-> [    8.106521]  kvfree_call_rcu+0xcb/0x3b0
-> [    8.106521]  ? hrtimer_cancel+0x21/0x40
-> [    8.106521]  bpf_obj_free_fields+0x193/0x200
-> [    8.106521]  htab_map_update_elem+0x29c/0x410
-> [    8.106521]  bpf_prog_cfc8cd0f42c04044_overwrite_cb+0x47/0x4b
-> [    8.106521]  bpf_prog_8c30cd7c4db2e963_overwrite_timer+0x65/0x86
-> [    8.106521]  bpf_prog_test_run_syscall+0xe1/0x2a0
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+> v1->v2:
+>   - move bpf_rcu_lock_held() outside of #ifdef CONFIG_BPF_SYSCALL area (kernel
+>     test robot).
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,bpf] bpf: Replace bpf_map_kmalloc_node() with kmalloc_nolock() to allocate bpf_async_cb structures.
-    https://git.kernel.org/bpf/bpf/c/5fb750e8a9ae
+  - [v2,bpf-next] bpf: consistently use bpf_rcu_lock_held() everywhere
+    https://git.kernel.org/bpf/bpf-next/c/48a97ffc6c82
 
 You are awesome, thank you!
 -- 
