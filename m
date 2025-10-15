@@ -1,130 +1,165 @@
-Return-Path: <bpf+bounces-71035-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71036-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A60D7BE038D
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 20:40:40 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3D4BBE03EA
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 20:46:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 908CF3B37D9
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 18:40:37 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5D8514FF817
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 18:46:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45C6C2C11D4;
-	Wed, 15 Oct 2025 18:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g4lMorw1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92E2E26B942;
+	Wed, 15 Oct 2025 18:46:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 686913254A6
-	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 18:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EA71DDC07
+	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 18:46:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760553634; cv=none; b=FLQEwX8uYRX0IjUeSAQYP+NlS1wa/B+YvnAHi4fDlYvi0nbu9SX5Pd2z4ZdAvUAxZRPClWCMhSeC9CcsxrtLw2pr1eG7bjKptQ8oZ7fJWv8whlYRSV7fCbs6ZDCQb5K/zgdu3nST9uPTjMCZCiV9KjrWs5QXSBLg6I/cNdatasA=
+	t=1760554009; cv=none; b=DCX8IHKUusU8j+U0Edj5p1Zb8mGpAv1gJO6TULEtXtU4YrvyYDGbyoiSyZWLm2pVHqtaufIWJBIu06CIQnDyNPOuGAbSebjwuHOFX92xgs3uV90Ls598FB0rFEuezIHvSMfR4xHW7gVFbv2Bfx4QrCak5nK3DF+utyIt7sxSxvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760553634; c=relaxed/simple;
-	bh=HyXy9JyVqtyq39vQXqfBYlJIImY88Fnsw/Xg5RMIIqE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TAWWl5TD+bhe4BF2B5BvsBitf4HBcv7N9ZGNbvhu6hgkQEJq8Qnr+Gc0YNWJrOKHx3N2x2L174byrBmR5Ac3y74BJUAbfQEIz7/k2gQ3vTF9a0hxzJ4wnqLSvxnV42Scr2DdNpl1HjzmmH8E4wd4fBtRP3sgKivjVPw78wmhqRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g4lMorw1; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-76e2ea933b7so1447644b3a.1
-        for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 11:40:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760553632; x=1761158432; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hchKK86+KgVfirLf74vk3FqzNCUxs81/b/j60tbNRSU=;
-        b=g4lMorw1vI64Ne228V9Rp+dga65UgIUZ0E7AZb7aSkgc2ZdKXwBGj8cumU0/Z3m7Y+
-         VYLtPg5BExNUt3m949lIQP8Nfz22fpECvEPcRn6jYWIVARDHLBlOr9c6Z8oLChRRNEqb
-         /VKQenERl1egKPdcOqLidtOdfTLzzTzPHH+3ferfoxJN5qxL2B3FhrAHIvGv6JsmWbYl
-         ISb05z0qquybevUspeH8YAeyh4CdvAaT/2GzKKgNqdnGJ7CDORUspHKMgBUtH5wAgZ80
-         K5npHm6HME3lCo2L1xkFisODiGEr18y03JjW1Lux80J2Fb7wIn2uJstTdfZFDgllEJNc
-         mEVg==
+	s=arc-20240116; t=1760554009; c=relaxed/simple;
+	bh=2DaIaoIXWN56Be8bR2S9RRLT3aBPlvYLWdZ9/CV3OeQ=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=OTTkTP8DqSzJ2qmR5EKx8CC23HGW/olEwecil9sGHmPL2jbp9gR8nZJ/BkKfhF7/5JlTyJ3ps9d+ZssJA5HaP+PCWWxT+TRcl7xFAQpT4UmIysKlOntataYMnp9VnXPV/Vgrq1f5dAf0ueGyFRUMYBMbc9ZjKJCZ/qrqHHNgvjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-927b19c5023so1298822639f.1
+        for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 11:46:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760553632; x=1761158432;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hchKK86+KgVfirLf74vk3FqzNCUxs81/b/j60tbNRSU=;
-        b=L3g6RkZjCFoBvSXB0BN8HXW3Emdj77qHLOvhKDPX/eqxIxl5LceUfj/BU4GQfXXHZU
-         2nxMTthdATl9XDvV//AejvhGkWscs9DR1ubIeDdrFvVbA8HStfaFLp8AeChNboI2aJhf
-         7BhmsU2xiXiIdK/SDnYUeT/fNee4567IuIiU/qc23YahCuILAj1sYog6x9QLH4Kur2kW
-         7TX+2iFxECyI0PGHBxGAvNBMY7YK6g331p1Zeg29JbJg496J7cezhJc2lAhrvrkA11Z+
-         eK72KX5sFXMNY1WaTByRIv6Ifz4ZqKXZtwCwsm10gSM9VCft9sn5jq6HXyvhfAH2YFvr
-         1TqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUF/6GjdMReB9xBX3/5yK5Ut55qxPY22ZumSYu5EdSm99oeqbo69+isjZjMAtd55kvEDoo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YynIn+Dx9gWerSdano5lU+gDtIfVNBgvpBDrZJ/qi/YQmoSJwA5
-	40KoC8AJgW8feKYwE+YrUgm2Yeyvn7EgFRlT42N08r34uf5NtDkDm78k
-X-Gm-Gg: ASbGncu4l9JZysKxmcxVjCwoGKK9LXAUNWWNb2PA5BcnF3nCzo6Wa+P3Vpyt337V4+m
-	RFP8Yt5ICp2jvK3A/xXlxjfBuBJGglTMPg+glzv3NjebXGvtWoJxQfwIPxa8v5wsLmVN7tkkduB
-	S0+u7DioVGl3Q/MlEUX8VXothDA/yaTu/C717Zvr5T1mtRxXpsA0OxPTZihgb8SU7jiiQ8/AY/f
-	DcYKg4AHA9cEzGct8ijAGqmDQ6c2LltUy1on0/dwBbg6iNQMVBhe6Aa4LBzGYrqMUBolLs8Cc1M
-	MI60jwFZhCSrgY7xE9J6qPuRRc5z/rcoQgqQYbza7fBegp5SmWXR/687znTfwk+G3Pw/AiMXJVS
-	UllKVrETVv8LVAYEZxQCE/6FXBAJGKXjdCTopbxI=
-X-Google-Smtp-Source: AGHT+IHSqc+hkjTVpSEHmw0zHlWgwD2yxQPTUM5JuVcSvW0k2XqZQTEnEirn1I9k9wrsXFzHRwnKSA==
-X-Received: by 2002:a05:6a00:2286:b0:77f:df:5c3b with SMTP id d2e1a72fcca58-7a210fdcb76mr1371875b3a.16.1760553631419;
-        Wed, 15 Oct 2025 11:40:31 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7992d0e135asm19610557b3a.56.2025.10.15.11.40.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Oct 2025 11:40:31 -0700 (PDT)
-Message-ID: <066d090c7f0b9e2f3ba815b366396a96146ae5cc.camel@gmail.com>
-Subject: Re: [RFC PATCH v2 00/11] bpf: Introduce file dynptr
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com, memxor@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Wed, 15 Oct 2025 11:40:28 -0700
-In-Reply-To: <20251015161155.120148-1-mykyta.yatsenko5@gmail.com>
-References: <20251015161155.120148-1-mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1760554007; x=1761158807;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DS4Sxr0k4RTUlUgBlQ5Ey66j42nijDvXrm5qaLRzbiU=;
+        b=Y7HiB8/7w3KizBepmxfObyyXGkYTc6DweI8gsG6LWvl4iwZaoxnAj5o7zp5fHGmDNV
+         Y4QWVsceRRUdEmssh91tvBGgLQK7dbuVzXGPWNi58h3syXbp5yqSDLa3oTSIz2sVpgfK
+         U1UWSILhaEcZL2AqxxUuHXH/aACTlg+vgmWQ7nd6MnrbhEnhqxafwj5rSiCW/FVrcxLK
+         TDslI8c0mD8UJDM3zaAbf7lWGkRWP9m5ThLjqLu4zIyx93mZ5srYtMQdSWAbzCX+B29j
+         pLqsip7O9HnTbD3AVj6E58s3BE3vHtRuLbsUqqLAn5Gn3/jtFuKKvhomKIv93qTY4G2c
+         Frng==
+X-Gm-Message-State: AOJu0YzPzfMvGtJQLOo/xASSXVcYzvTxsls6EbJHS8KmEhtB1yrZeT92
+	LWVPF/653jJibJurullaXW4r1ZGRxltVG329AqUJfIrtiVpvUCuyqP1tD3g/KZKG+fZwujQOeET
+	NJq8luWOz4UnbtWQn+zTnqFyBb0xUyHMOI8Rm6K09q/XwRH4CnaLPJuXJbtA=
+X-Google-Smtp-Source: AGHT+IF1Nhhx8xlXgwy7bHy4Bj/MouB5mfv4Es/HoDZfRYkKDe+frFhndkYR8i0znrnn8O5rkHCRZqvTVzzaQoFlCeUPsA0/6JQL
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:160d:b0:42f:991f:60a9 with SMTP id
+ e9e14a558f8ab-42f991f6190mr218827185ab.7.1760554007102; Wed, 15 Oct 2025
+ 11:46:47 -0700 (PDT)
+Date: Wed, 15 Oct 2025 11:46:47 -0700
+In-Reply-To: <20251015140140.62273-1-daniel@iogearbox.net>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68efec17.050a0220.91a22.02ca.GAE@google.com>
+Subject: [syzbot ci] Re: netkit: Support for io_uring zero-copy and AF_XDP
+From: syzbot ci <syzbot+ci7c73a60f40f79ce2@syzkaller.appspotmail.com>
+To: bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net, 
+	dw@davidwei.uk, john.fastabend@gmail.com, jordan@jrife.io, kuba@kernel.org, 
+	maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, 
+	martin.lau@kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	razor@blackwall.org, sdf@fomichev.me, toke@redhat.com, 
+	wangdongdong.6@bytedance.com, willemb@google.com, yangzhenze@bytedance.com
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 2025-10-15 at 17:11 +0100, Mykyta Yatsenko wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
->=20
-> This series adds a new dynptr kind, file dynptr, which enables BPF
-> programs to perform safe reads from files in a structured way.
-> Initial motivations include:
->  * Parsing the executable=E2=80=99s ELF to locate thread-local variable s=
-ymbols
->  * Capturing stack traces when frame pointers are disabled
->=20
-> By leveraging the existing dynptr abstraction, we reuse the verifier=E2=
-=80=99s
-> lifetime/size checks and keep the API consistent with existing dynptr
-> read helpers.
->=20
-> Technical details:
-> 1. Reuses the existing freader library to read files a folio at a time.
-> 2. bpf_dynptr_slice() and bpf_dynptr_read() always copy data from folios
-> into a program-provided buffer; zero-copy access is intentionally not
-> supported to keep it simple.
-> 3. Reads may sleep if the requested folios are not in the page cache.
-> 4. Few verifier changes required:
->   * Support dynptr destruction in kfuncs
->   * Add kfunc address substitution based on whether the program runs in
->   a sleepable or non-sleepable context.
->=20
-> Testing:
-> The final patch adds a selftest that parses the executable=E2=80=99s ELF =
-to
-> locate thread-local symbol information, demonstrating the file dynptr
-> workflow end-to-end.
+syzbot ci has tested the following series
 
-Nit: could you please include summary of changes between patch-set
-     versions in the cover letter?
+[v2] netkit: Support for io_uring zero-copy and AF_XDP
+https://lore.kernel.org/all/20251015140140.62273-1-daniel@iogearbox.net
+* [PATCH net-next v2 01/15] net: Add bind-queue operation
+* [PATCH net-next v2 02/15] net: Implement netdev_nl_bind_queue_doit
+* [PATCH net-next v2 03/15] net: Add peer info to queue-get response
+* [PATCH net-next v2 04/15] net, ethtool: Disallow peered real rxqs to be resized
+* [PATCH net-next v2 05/15] net: Proxy net_mp_{open,close}_rxq for mapped queues
+* [PATCH net-next v2 06/15] xsk: Move NETDEV_XDP_ACT_ZC into generic header
+* [PATCH net-next v2 07/15] xsk: Move pool registration into single function
+* [PATCH net-next v2 08/15] xsk: Add small helper xp_pool_bindable
+* [PATCH net-next v2 09/15] xsk: Change xsk_rcv_check to check netdev/queue_id from pool
+* [PATCH net-next v2 10/15] xsk: Proxy pool management for mapped queues
+* [PATCH net-next v2 11/15] netkit: Add single device mode for netkit
+* [PATCH net-next v2 12/15] netkit: Document fast vs slowpath members via macros
+* [PATCH net-next v2 13/15] netkit: Implement rtnl_link_ops->alloc and ndo_queue_create
+* [PATCH net-next v2 14/15] netkit: Add io_uring zero-copy support for TCP
+* [PATCH net-next v2 15/15] netkit: Add xsk support for af_xdp applications
+
+and found the following issue:
+WARNING in netif_get_rx_queue_peer_locked
+
+Full report is available here:
+https://ci.syzbot.org/series/19b5990a-1eef-44da-a6f0-ffb03bd8adff
+
+***
+
+WARNING in netif_get_rx_queue_peer_locked
+
+tree:      net-next
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/netdev/net-next.git
+base:      18a7e218cfcdca6666e1f7356533e4c988780b57
+arch:      amd64
+compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+config:    https://ci.syzbot.org/builds/7583f7f3-9e92-4fe2-85f2-761655062852/config
+C repro:   https://ci.syzbot.org/findings/75520448-5da8-4fc1-817b-a6c9e4d487e1/c_repro
+syz repro: https://ci.syzbot.org/findings/75520448-5da8-4fc1-817b-a6c9e4d487e1/syz_repro
+
+UDPLite6: UDP-Lite is deprecated and scheduled to be removed in 2025, please contact the netdev mailing list
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5959 at ./include/net/netdev_lock.h:17 netdev_assert_locked include/net/netdev_lock.h:17 [inline]
+WARNING: CPU: 1 PID: 5959 at ./include/net/netdev_lock.h:17 netif_get_rx_queue_peer_locked+0x2f1/0x3a0 net/core/netdev_rx_queue.c:71
+Modules linked in:
+CPU: 1 UID: 0 PID: 5959 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:netdev_assert_locked include/net/netdev_lock.h:17 [inline]
+RIP: 0010:netif_get_rx_queue_peer_locked+0x2f1/0x3a0 net/core/netdev_rx_queue.c:71
+Code: 6c 7e f8 eb 08 e8 3f 6c 7e f8 45 31 f6 4c 89 f0 48 83 c4 38 5b 41 5c 41 5d 41 5e 41 5f 5d e9 c6 1c 0d 02 cc e8 20 6c 7e f8 90 <0f> 0b 90 e9 a9 fd ff ff 48 c7 c1 90 44 9e 8f 80 e1 07 80 c1 03 38
+RSP: 0018:ffffc90003f17ab0 EFLAGS: 00010293
+RAX: ffffffff894127e0 RBX: ffffc90003f17b60 RCX: ffff8881709cba00
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff8f4df8a7 R09: 1ffffffff1e9bf14
+R10: dffffc0000000000 R11: fffffbfff1e9bf15 R12: dffffc0000000000
+R13: 0000000000000001 R14: 1ffff920007e2f6c R15: ffff8881b1832000
+FS:  0000555580884500(0000) GS:ffff8882a9d0f000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555580884808 CR3: 00000001ba58c000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ xsk_reg_pool_at_qid+0x20b/0x630 net/xdp/xsk.c:159
+ xp_assign_dev+0x115/0x760 net/xdp/xsk_buff_pool.c:181
+ xsk_bind+0x473/0xf90 net/xdp/xsk.c:1407
+ __sys_bind_socket net/socket.c:1874 [inline]
+ __sys_bind+0x2c6/0x3e0 net/socket.c:1905
+ __do_sys_bind net/socket.c:1910 [inline]
+ __se_sys_bind net/socket.c:1908 [inline]
+ __x64_sys_bind+0x7a/0x90 net/socket.c:1908
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fb19bd8eec9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd789e00a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 00007fb19bfe5fa0 RCX: 00007fb19bd8eec9
+RDX: 0000000000000010 RSI: 0000200000000180 RDI: 0000000000000003
+RBP: 00007fb19be11f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fb19bfe5fa0 R14: 00007fb19bfe5fa0 R15: 0000000000000003
+ </TASK>
+
+
+***
+
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
+
+---
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
