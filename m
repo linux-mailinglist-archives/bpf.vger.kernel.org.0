@@ -1,224 +1,181 @@
-Return-Path: <bpf+bounces-71049-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71050-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AD14BE0AB6
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 22:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 930B8BE0AEC
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 22:46:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55F5F19A7030
-	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 20:41:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E935719A51BA
+	for <lists+bpf@lfdr.de>; Wed, 15 Oct 2025 20:46:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B4430CD8D;
-	Wed, 15 Oct 2025 20:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86B7029E0F8;
+	Wed, 15 Oct 2025 20:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lqAhSq63"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Lc/RRzVh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 610022046BA
-	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 20:41:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997B72D29C4
+	for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 20:46:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760560886; cv=none; b=b/ke9POTHzEHRhBPrUiBdAMrlZcn0Hsb4bWSME0it3QLd5PyjVbpg2MIlXDrpzWEUiS24C8S4GcAx6SUHIg+O6sqWnHaAu/KVrUfJt+p+5FuW6LbB3oPqakMZhdTTlrZBR8NE+/Kib8cyg0dxaj3LZor1WAdgzTZb2Sq9Cfw8IU=
+	t=1760561187; cv=none; b=Zzwc/t3x8EveVjnZfCkW+YUFJulbuj4OGU76AeD4nxBQOTLu1ImX5s5Slfu95qwOZGsA+V/9EVC0bagDGCRh7FBCs/wMgovHxlZ+XCl0oEvW0cMsLpU7wAEsj7EjrDtQTfjoA2/a9gcjm670JAhN5o8Sd1J8rn5DY0CWlC/DJcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760560886; c=relaxed/simple;
-	bh=TO62kgHWAJogfqthzQuEdhjyqSf0Knw+0u56RFKCWLA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=enu5mq5Q6qunDEapQYWu7uaLEr4uaS2mjq57Y9H1+YRexpMRv2Qk4+tA85G54uBflCY9nOMCSQDZDFhVaRWUlqxEeSiuBv5MCFSYfsXQ+wcovtSYuvgNxxTdTxfAb/1czJbgPLT83smcAOoBXCvR0oK4qUDhdmP7b+Tkn5RhAuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lqAhSq63; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-63bee26c7d2so1837919a12.0
-        for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 13:41:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1760560883; x=1761165683; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x4SkHnSxaTY1A0hm6Dgf/9uSLFR76gbsoH7lLnef4XM=;
-        b=lqAhSq63bYQ3yZeHYZ/UfaN2cSYM083VsgyBMdXdoSzo29raRd6Dvtqp7E2CrTC3Vm
-         oPVqhJD4SZQZhc7LXJF1u81GOt6vI8GJN6QVkUnAWD53NcgI29QedZlbECL5kyCySAOL
-         aCmFmg/QGIIM0sy/UzadyF9M3Wr9IuMT+ynyD0YOJ++H3nimDPau+NDfnvwc8wDTp3hk
-         x8IYdzx+rgfA3CTS0UzTzmecu36NocmOJonWT8e+nfFC7XeH8199uZsLgvQ7e6KcbRT4
-         BkSrrgTI4O++v+aHu5zWvt1ie5La4+Og7seNYTj/Nk5z9Zp9cW8/7TWL0jzzaVUSD+Fx
-         BjHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760560883; x=1761165683;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x4SkHnSxaTY1A0hm6Dgf/9uSLFR76gbsoH7lLnef4XM=;
-        b=lRXWp6RS2MkfcC3mB/q/aH84vLCRINsiRc4Lp1Tn5fjeDdSuvB+RuAPKPVNwHmSWW9
-         WGGzDqGGVsBcyvZYVDPZYqC3a3uzsWJt+twoBWsXYkYjRJDI0E29em/snrKgl9gCgDIX
-         dFFwuD7w06VAx1wgwDhNlx+vNED7GSeEXMXs7xrG5HgF9kPqv6pYZcXpi5dY9e/3ZVB8
-         tNRrNXG0QWwEGv8w5xj7kdFVjmVXj5oVLwBnufqnLeBElGYW955stRJPcs+qsFTst64x
-         0yjdcpjdZPPc5ixMyieJsPDwmWQjMjMfh9uwTJ+T44JIO+QfxilAUHRCwuWaZZ291xqD
-         34/g==
-X-Forwarded-Encrypted: i=1; AJvYcCW3Q+t3L/0x67oY190A1+ykqpqpDFsopPXmznd1BfkQiWWg7Lgs/2Hgi8XDWGtvwD17hKE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLBZ/nE1jE7UqpQ4mA/L3rfiKBLBKVyLnjVhNEDLewHbGoUTpf
-	rpoTAIhhb3ihHFD7UGVQSmM3z/a93BUNE/ak2HewYpGS01vakgdUVHfn+KOhJMoM1GADmmZ5v2l
-	Ho+SP8oayxELC7+tKQy/FQyvQpW895xifISkBqUtU
-X-Gm-Gg: ASbGnct/Rg1IRgIb8r97uDnus7TuuXvYPuG10/luKviUvVGTtXHRrjCKiJpB+t0xvy3
-	z5L22inyse2rDePPKHpaNjyy8Kv0nOhoyCXr+7tMxHnD3VHJlNopl64425wVrXQmY3oaFRnaAQX
-	jGj0KkYF1z8ZA5X1cC2/fC6Uq3NvXaraS3qs23tAnqQra/QDhw1DdEd7PUe6PhH+CWm3ZkWFNI2
-	hxCzZggRTOZvn+ARn3rZSFI3ZSeT8rmUQP3BFzQqphuGFZdMF7dkr1s9MuVBs0=
-X-Google-Smtp-Source: AGHT+IEyIxFaGj5K0QoKX1UlKomoKcT+vrcyw05X0GgkG4XlTuFiMLuSu0Z3D0b7QJBSsC9LXmWhsW3j6bf7UAc7IMk=
-X-Received: by 2002:a05:6402:8cb:b0:634:9acf:f33f with SMTP id
- 4fb4d7f45d1cf-63bfde982b0mr1073168a12.16.1760560882454; Wed, 15 Oct 2025
- 13:41:22 -0700 (PDT)
+	s=arc-20240116; t=1760561187; c=relaxed/simple;
+	bh=Ejw/H1Qkf/Ij8udtsLD4+jTQjoLBNkVZ+VaR9c95Dug=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iwzoec6Hcc/yzUUwfjPMHAq0NN8LNEk/drfxoinmaD5ALsVCi8bxAYvhj0ANHNslrP8EGle7mkhr4V1Wbt601yofZBs1xWn2NuAR8p7zOVgzJAnmvxvAMWpfRTz5sPrM/NWUfXQzk8eLsqt6md/CDhhNauTc6OG6I3Nns6OIfg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Lc/RRzVh; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 15 Oct 2025 13:46:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1760561170;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qLsontaXNMVQKPHfGbAAEY3guiak8DJs9osRf8Re/hc=;
+	b=Lc/RRzVhCca2HURiHaH2zb+dCgSPEKV4/LU3ySTM6zRMTXik4BlvlJOQgpkx5pojkqUQG/
+	Vj6JrSoHjsKYJJE5sJMq4B1LSX6kS0GBA/nd8e+3vAkHKUu7E7udLhUnGX8XjyG9N1xVTT
+	MHgR6FS8Y2uD2FLBqZQYxc3OTdpbIiQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: JP Kobryn <inwardvessel@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, mkoutny@suse.com, 
+	yosryahmed@google.com, hannes@cmpxchg.org, tj@kernel.org, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org, 
+	kernel-team@meta.com, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	muchun.song@linux.dev
+Subject: Re: [PATCH v2 0/2] memcg: reading memcg stats more efficiently
+Message-ID: <uxpsukgoj5y4ex2sj57ujxxcnu7siez2hslf7ftoy6liifv6v5@jzehpby6h2ps>
+References: <20251015190813.80163-1-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251014235604.3057003-1-kuniyu@google.com> <20251014235604.3057003-7-kuniyu@google.com>
- <fa80d5a7-790d-4f10-bef3-f5c708218f83@linux.dev>
-In-Reply-To: <fa80d5a7-790d-4f10-bef3-f5c708218f83@linux.dev>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Wed, 15 Oct 2025 13:41:09 -0700
-X-Gm-Features: AS18NWDyZRhG6Af-rwDk7wCdbtSwcuv6uguz17phGgky8w6XA8MQHqsYXcH-7qw
-Message-ID: <CAAVpQUB_ME3bteNW07gCz-Ao3jZ7HzsLY9FiSy9TWecF7LiUOQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next/net 6/6] selftest: bpf: Add test for sk->sk_bypass_prot_mem.
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Mina Almasry <almasrymina@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251015190813.80163-1-inwardvessel@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Oct 15, 2025 at 12:07=E2=80=AFPM Martin KaFai Lau <martin.lau@linux=
-.dev> wrote:
->
-> On 10/14/25 4:54 PM, Kuniyuki Iwashima wrote:
-> > +static int tcp_create_sockets(struct test_case *test_case, int sk[], i=
-nt len)
-> > +{
-> > +     int server, i, err =3D 0;
-> > +
-> > +     server =3D start_server(test_case->family, test_case->type, NULL,=
- 0, 0);
-> > +     if (!ASSERT_GE(server, 0, "start_server_str"))
-> > +             return server;
-> > +
-> > +     /* Keep for-loop so we can change NR_SOCKETS easily. */
-> > +     for (i =3D 0; i < len; i +=3D 2) {
-> > +             sk[i] =3D connect_to_fd(server, 0);
-> > +             if (sk[i] < 0) {
-> > +                     ASSERT_GE(sk[i], 0, "connect_to_fd");
-> > +                     err =3D sk[i];
-> > +                     break;
-> > +             }
-> > +
-> > +             sk[i + 1] =3D accept(server, NULL, NULL);
-> > +             if (sk[i + 1] < 0) {
-> > +                     ASSERT_GE(sk[i + 1], 0, "accept");
-> > +                     err =3D sk[i + 1];
-> > +                     break;
-> > +             }
-> > +     }
-> > +
-> > +     close(server);
-> > +
-> > +     return err;
-> > +}
-> > +
->
-> > +static int check_bypass(struct test_case *test_case,
-> > +                     struct sk_bypass_prot_mem *skel, bool bypass)
-> > +{
-> > +     char buf[BUF_SINGLE] =3D {};
-> > +     long memory_allocated[2];
-> > +     int sk[NR_SOCKETS] =3D {};
-> > +     int err, i, j;
-> > +
-> > +     err =3D test_case->create_sockets(test_case, sk, ARRAY_SIZE(sk));
-> > +     if (err)
-> > +             goto close;
-> > +
-> > +     memory_allocated[0] =3D test_case->get_memory_allocated(test_case=
-, skel);
-> > +
-> > +     /* allocate pages >=3D NR_PAGES */
-> > +     for (i =3D 0; i < ARRAY_SIZE(sk); i++) {
-> > +             for (j =3D 0; j < NR_SEND; j++) {
-> > +                     int bytes =3D send(sk[i], buf, sizeof(buf), 0);
-> > +
-> > +                     /* Avoid too noisy logs when something failed. */
-> > +                     if (bytes !=3D sizeof(buf)) {
-> > +                             ASSERT_EQ(bytes, sizeof(buf), "send");
-> > +                             if (bytes < 0) {
-> > +                                     err =3D bytes;
-> > +                                     goto drain;
-> > +                             }
-> > +                     }
-> > +             }
-> > +     }
-> > +
-> > +     memory_allocated[1] =3D test_case->get_memory_allocated(test_case=
-, skel);
-> > +
-> > +     if (bypass)
-> > +             ASSERT_LE(memory_allocated[1], memory_allocated[0] + 10, =
-"bypass");
-> > +     else
-> > +             ASSERT_GT(memory_allocated[1], memory_allocated[0] + NR_P=
-AGES, "no bypass");
-> > +
-> > +drain:
-> > +     if (test_case->type =3D=3D SOCK_DGRAM) {
-> > +             /* UDP starts purging sk->sk_receive_queue after one RCU
-> > +              * grace period, then udp_memory_allocated goes down,
-> > +              * so drain the queue before close().
-> > +              */
-> > +             for (i =3D 0; i < ARRAY_SIZE(sk); i++) {
-> > +                     for (j =3D 0; j < NR_SEND; j++) {
-> > +                             int bytes =3D recv(sk[i], buf, 1, MSG_DON=
-TWAIT | MSG_TRUNC);
-> > +
-> > +                             if (bytes =3D=3D sizeof(buf))
-> > +                                     continue;
-> > +                             if (bytes !=3D -1 || errno !=3D EAGAIN)
-> > +                                     PRINT_FAIL("bytes: %d, errno: %s\=
-n", bytes, strerror(errno));
-> > +                             break;
-> > +                     }
-> > +             }
-> > +     }
-> > +
-> > +close:
-> > +     for (i =3D 0; i < ARRAY_SIZE(sk); i++) {
-> > +             if (sk[i] <=3D 0)
->
-> Theoretically, 0 is a legit fd. The tcp_create_sockets above is also test=
-ing
-> ASSERT_GE(sk[i], 0, ...). I changed to test "< 0" here and initialize all=
- sk[]
-> to -1 at the beginning of this function.
->
-> > +                     break;
-> > +
-> > +             close(sk[i]);
-> > +     }
-> > +
-> > +     return err;
-> > +}
-> > +
->
->
-> > +struct test_case test_cases[] =3D {
->
-> Added static.
->
-> Applied. Thanks.
+Cc memcg maintainers.
 
-Thank you for fixups, Martin !
+On Wed, Oct 15, 2025 at 12:08:11PM -0700, JP Kobryn wrote:
+> When reading cgroup memory.stat files there is significant kernel overhead
+> in the formatting and encoding of numeric data into a string buffer. Beyond
+> that, the given user mode program must decode this data and possibly
+> perform filtering to obtain the desired stats. This process can be
+> expensive for programs that periodically sample this data over a large
+> enough fleet.
+> 
+> As an alternative to reading memory.stat, introduce new kfuncs that allow
+> fetching specific memcg stats from within cgroup iterator based bpf
+> programs. This approach allows for numeric values to be transferred
+> directly from the kernel to user mode via the mapped memory of the bpf
+> program's elf data section. Reading stats this way effectively eliminates
+> the numeric conversion work needed to be performed in both kernel and user
+> mode. It also eliminates the need for filtering in a user mode program.
+> i.e. where reading memory.stat returns all stats, this new approach allows
+> returning only select stats.
+> 
+> An experiment was setup to compare the performance of a program using these
+> new kfuncs vs a program that uses the traditional method of reading
+> memory.stat. On the experimental side, a libbpf based program was written
+> which sets up a link to the bpf program once in advance and then reuses
+> this link to create and read from a bpf iterator program for 1M iterations.
+
+I am getting a bit confused on the terminology. You mentioned libbpf
+program, bpf program, link. Can you describe each of them? Think of
+explaining this to someone with no bpf background.
+
+(BTW Yonghong already explained to me these details but I wanted the
+commit message to be self explanatory).
+
+> Meanwhile on the control side, a program was written to open the root
+> memory.stat file
+
+How much activity was on the system? I imagine none because I don't see
+flushing in the perf profile. This experiment focuses on the
+non-flushing part of the memcg stats which is fine.
+
+> and repeatedly read 1M times from the associated file
+> descriptor (while seeking back to zero before each subsequent read). Note
+> that the program does not bother to decode or filter any data in user mode.
+> The reason for this is because the experimental program completely removes
+> the need for this work.
+
+Hmm in your experiment is the control program doing the decode and/or
+filter or no? The last sentence in above para is confusing. Yes, the
+experiment program does not need to do the parsing or decoding in
+userspace but the control program needs to do that. If your control
+program is not doing it then you are under-selling your work.
+
+> 
+> The results showed a significant perf benefit on the experimental side,
+> outperforming the control side by a margin of 80% elapsed time in kernel
+> mode. The kernel overhead of numeric conversion on the control side is
+> eliminated on the experimental side since the values are read directly
+> through mapped memory of the bpf program. The experiment data is shown
+> here:
+> 
+> control: elapsed time
+> real    0m13.062s
+> user    0m0.147s
+> sys     0m12.876s
+> 
+> experiment: elapsed time
+> real    0m2.717s
+> user    0m0.175s
+> sys     0m2.451s
+
+These numbers are really awesome.
+
+> 
+> control: perf data
+> 22.23% a.out [kernel.kallsyms] [k] vsnprintf
+> 18.83% a.out [kernel.kallsyms] [k] format_decode
+> 12.05% a.out [kernel.kallsyms] [k] string
+> 11.56% a.out [kernel.kallsyms] [k] number
+>  7.71% a.out [kernel.kallsyms] [k] strlen
+>  4.80% a.out [kernel.kallsyms] [k] memcpy_orig
+>  4.67% a.out [kernel.kallsyms] [k] memory_stat_format
+>  4.63% a.out [kernel.kallsyms] [k] seq_buf_printf
+>  2.22% a.out [kernel.kallsyms] [k] widen_string
+>  1.65% a.out [kernel.kallsyms] [k] put_dec_trunc8
+>  0.95% a.out [kernel.kallsyms] [k] put_dec_full8
+>  0.69% a.out [kernel.kallsyms] [k] put_dec
+>  0.69% a.out [kernel.kallsyms] [k] memcpy
+> 
+> experiment: perf data
+> 10.04% memcgstat bpf_prog_.._query [k] bpf_prog_527781c811d5b45c_query
+>  7.85% memcgstat [kernel.kallsyms] [k] memcg_node_stat_fetch
+>  4.03% memcgstat [kernel.kallsyms] [k] __memcg_slab_post_alloc_hook
+>  3.47% memcgstat [kernel.kallsyms] [k] _raw_spin_lock
+>  2.58% memcgstat [kernel.kallsyms] [k] memcg_vm_event_fetch
+>  2.58% memcgstat [kernel.kallsyms] [k] entry_SYSRETQ_unsafe_stack
+>  2.32% memcgstat [kernel.kallsyms] [k] kmem_cache_free
+>  2.19% memcgstat [kernel.kallsyms] [k] __memcg_slab_free_hook
+>  2.13% memcgstat [kernel.kallsyms] [k] mutex_lock
+>  2.12% memcgstat [kernel.kallsyms] [k] get_page_from_freelist
+> 
+> Aside from the perf gain, the kfunc/bpf approach provides flexibility in
+> how memcg data can be delivered to a user mode program. As seen in the
+> second patch which contains the selftests, it is possible to use a struct
+> with select memory stat fields. But it is completely up to the programmer
+> on how to lay out the data.
+
+I remember you plan to convert couple of open source program to use this
+new feature. I think below [1] and oomd [2]. Adding that information
+would further make your case strong. cAdvisor[3] is another open source
+tool which can take benefit from this work.
+
+[1] https://github.com/facebookincubator/below
+[2] https://github.com/facebookincubator/oomd
+[3] https://github.com/google/cadvisor
+
 
