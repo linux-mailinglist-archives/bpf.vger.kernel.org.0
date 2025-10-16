@@ -1,157 +1,143 @@
-Return-Path: <bpf+bounces-71163-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71164-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85264BE5A0E
-	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 00:01:11 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DA74BE5AF9
+	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 00:29:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1462519A6C58
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 22:01:35 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C94FD35A1FA
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 22:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051302DE6F4;
-	Thu, 16 Oct 2025 22:01:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 557262E62AC;
+	Thu, 16 Oct 2025 22:28:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CAzl8d9i"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bU0brkBc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CECC8207A38
-	for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 22:01:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CFD42E1F01;
+	Thu, 16 Oct 2025 22:28:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760652064; cv=none; b=RwZyahyn81YuO6hypbzeSXD4/OIpY67fUPaPugHpTyg+CaZ9cRO7tO/gHE0/uxqMCUI1CK8sG8xlXGQDaUOlXSMAO9Ui413mn3VCK5pCww67x3ltAAVURY6Yp1cfd7Yv/AnVvfF8SkBdANdqmWdYw2EWsiRgLyUd1kQTQzx33UA=
+	t=1760653727; cv=none; b=iAA7cv4X0Eb+YLVaa8Gr6n31zQxuxNlRdo9SvbMQaVrriZRmAhLdborEQWfsJ06jqqFV5FxrlolQc3oJJefNFUpXNgO0QTjjpJyW0JEj+fiys6LQfqMWHuSB5Bu/wTkzap5S3wFmgm+L5MHUy1fB53rXDs7z2UxThR1tdHcHq7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760652064; c=relaxed/simple;
-	bh=xe+NhIdEtxHmjm8xKeTWO4uHKEZpiSROQTAIPoHNfLk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HnMcH0NZfYJKt1WYEOdsnXt3CrgBOT5Fjp68xx2VmZf6x9N4GbUl82IRHpGBhPBNfnMSkGc5i0lykUjwZAd4opDvkEQeaxgecGaCXr4HjB2hVWQKdFpiYwqotMq+Qy/19T1WTyxQ+o1mlaDr2eZVtpTqHAbApK7ahA6FWBsbeQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CAzl8d9i; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-471076f819bso9808905e9.3
-        for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 15:01:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760652061; x=1761256861; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vd1m5oh/C2ya5fQFeC4TaY27qKH8o+UGJB/7+qbAmZI=;
-        b=CAzl8d9ijSTZT6yca5qFmjZ/CflinBT1zNNYI8WJ0DFV5PPFObRsDvPHGoUL1q8yPM
-         9IMbu5hb1oIKhIRWjjFJHWmHsttphYow+oZ8/95+mmZi9zPgHTZfwgJ4avglc1vbZBe7
-         1PtOL7aOdc3ShYneXOPlEbiCue8UGrEJFMYhc/OGr58MQLm6JGUAIQoXUcKQ9+uvL2Z7
-         ydnXiRMmgwhRz1KA3bfP7qUgvtZtaqVP9M5lqxTXiq523xwLt+stJRNVlEBR4CeZ3QPi
-         es9+24YO1nkjekXG559Ev5o+Ym6btqS/FUolB3p2MmDPl1+gvKas3jq+Dms12Tk4aMRy
-         SF1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760652061; x=1761256861;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vd1m5oh/C2ya5fQFeC4TaY27qKH8o+UGJB/7+qbAmZI=;
-        b=G8OvAgUrf91u1aygeKhHjSyXv9T2FiXqXHMOfOntDG7DXoJ9IUjPEuGGCrh/GC3zK+
-         Y3REcg2QI2sRqRWsV/bC2WzIBwBYyGqypcjMbrnOzT272dOfC/Jbyqe3qS5+SdZkYINy
-         kazEJ0rvVllo29ZQ2W4hRbUr3FLUaNJ+1LEVSIu/ZR8NFYGhzWslfxQ6+1m6iGeNStqj
-         YSQcaaBymx5TQ+cbvA+BXecid/Ym1Awfd+vG57Crj8sN66AQrQoHtH2reM+2Ji3AZI+R
-         Li+H4Padtt/2zT/LZJG0YGo2Jrcx67egSYsbo3RM+vzCNF3zDg0W1eTjpAGpUaekO+vE
-         IyXA==
-X-Forwarded-Encrypted: i=1; AJvYcCVyQYaGsjBul6r0B564ZpBQE6yirJXv3R6VVdDvELOSw3tIqHZzahc/9zGA0OS0Il7EdRU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzJmoUTPBfaOzUEIn+jv+c8yK9FG/568R9Xq72+71a3YzB9mu63
-	fFh5cw5/7BZ6LC7Tb/vi8fnqkPZFID0xpdM5Q7MUmbLklYTqlAJsQDwBlYVRPpUB9oQukKJb7eg
-	6o3BuUh0UiRUpdNuPU8ZmyAZ9PsNCVOk=
-X-Gm-Gg: ASbGncs+YT+/IbToTKIP5BB/ytv//MFkyXzt9kENTBJfEWOn88+/OSyZA7KsH3fjKDz
-	SHND60NdTbIC00WvICgr8eWpSnsDdsqFBPmou+O2T82OpkxOwl0F/KoW1OHGCrMIisdBWuYJFdG
-	o1eGfTW6DV5Tp7t7Nqzbf9QNBW6TQP3xyWBSFVN72oG/qgIB7uKNEc9Wnk41dUQQaqCgfL97C24
-	U3Le2ohnkQ7D0NSdD33ofFSWujVAQwUkwklj9qtS3V9ZBs4DV5KwpiPRu11VMYdI+5Gt16zO7fI
-	CU/PVP66v812gTXqZN3sGZxMzIHd
-X-Google-Smtp-Source: AGHT+IHbckAP3ar0ENCksvvYMo69hZUNmT2OQZntJCuLluBEpqZzCD99uKlti0PkUVTDNjC56Tqj5+4gtBrE/tA0m6w=
-X-Received: by 2002:a05:6000:184d:b0:3e7:5f26:f1e8 with SMTP id
- ffacd0b85a97d-42704d9cfefmr1186928f8f.5.1760652060968; Thu, 16 Oct 2025
- 15:01:00 -0700 (PDT)
+	s=arc-20240116; t=1760653727; c=relaxed/simple;
+	bh=ciKQIk52+iRfgjCWilAdkX6YNbNDCJyfo9BtEuwQYqQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=coIomgA/9D2l6X6Fmp69knMt04p/cG30HFXO4dDAPp4h+eLjmg7/EjaBY9XC4569vwhtPqDoY1LcFwzLcP7IGY7uEEA9jQwkVv5l49zmp89xqCkFblYqh0tT7Nid5XhsfBJlJ59CSG9VKy2MXBjXe3CHlZmcBhx24A7dqIsKovA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bU0brkBc; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1760653726; x=1792189726;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ciKQIk52+iRfgjCWilAdkX6YNbNDCJyfo9BtEuwQYqQ=;
+  b=bU0brkBcVi/UuQSMcCxobLlxbuQ9Wy4msCdCg+X+ArFG+xYC16YRQv8s
+   vLw4+62ulFfwAqM6k55NFNkz3k29B2HxrgCO5GTL+mKT1QEZ2Sd/tQmj5
+   426xncBiIDuP2hMMcDXmbCdhCgcnAR2uuyi1+aBdy4RZVjzl7A+B272kD
+   8vwWU0222GHNapAwL4TYbg/YYynz7iK6AOXFwDYSTcnQ73fBSiOcwQzTH
+   DYwZ+DbrRtjefP5yyXamxqc1aPRAwtNw5EQ4+a7GWE4538s5GHmq98J3s
+   hOU2pcU8CWOi/O3AnG1V9zy1kUFJXgxARLt9m1avh8bC6ePQ6Fi8HWFNJ
+   Q==;
+X-CSE-ConnectionGUID: soHQ0f4pQjSpEDhpda6WFw==
+X-CSE-MsgGUID: e7hCY9d6R2KBbvL/UD6s0A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11584"; a="62071723"
+X-IronPort-AV: E=Sophos;i="6.19,234,1754982000"; 
+   d="scan'208";a="62071723"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2025 15:28:45 -0700
+X-CSE-ConnectionGUID: /2MsaDmgTJmh3x2o1fWcuQ==
+X-CSE-MsgGUID: 4Xm1/v/rTaScrK/tKgO49Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,234,1754982000"; 
+   d="scan'208";a="182132113"
+Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
+  by orviesa009.jf.intel.com with ESMTP; 16 Oct 2025 15:28:41 -0700
+Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1v9WSd-0005J9-0C;
+	Thu, 16 Oct 2025 22:28:39 +0000
+Date: Fri, 17 Oct 2025 06:28:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: JP Kobryn <inwardvessel@gmail.com>, shakeel.butt@linux.dev,
+	andrii@kernel.org, ast@kernel.org, mkoutny@suse.com,
+	yosryahmed@google.com, hannes@cmpxchg.org, tj@kernel.org,
+	akpm@linux-foundation.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH v2 1/2] memcg: introduce kfuncs for fetching memcg stats
+Message-ID: <202510170654.s2j4GuCs-lkp@intel.com>
+References: <20251015190813.80163-2-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250929213520.1821223-1-bboscaccy@linux.microsoft.com>
- <CAHC9VhTQ_DR=ANzoDBjcCtrimV7XcCZVUsANPt=TjcvM4d-vjg@mail.gmail.com>
- <CACYkzJ4yG1d8ujZ8PVzsRr_PWpyr6goD9DezQTu8ydaf-skn6g@mail.gmail.com>
- <CAHC9VhR2Ab8Rw8RBm9je9-Ss++wufstxh4fB3zrZXnBoZpSi_Q@mail.gmail.com>
- <CACYkzJ7u_wRyknFjhkzRxgpt29znoTWzz+ZMwmYEE-msc2GSUw@mail.gmail.com>
- <CAHC9VhSDkwGgPfrBUh7EgBKEJj_JjnY68c0YAmuuLT_i--GskQ@mail.gmail.com>
- <CACYkzJ4mJ6eJBzTLgbPG9A6i_dN2e0B=1WNp6XkAr-WmaEyzkA@mail.gmail.com>
- <CAHC9VhRyG9ooMz6wVA17WKA9xkDy=UEPVkD4zOJf5mqrANMR9g@mail.gmail.com>
- <CAADnVQLfyh=qby02AFe+MfJYr2sPExEU0YGCLV9jJk=cLoZoaA@mail.gmail.com>
- <88703f00d5b7a779728451008626efa45e42db3d.camel@HansenPartnership.com>
- <CAADnVQKdsF5_9Vb_J+z27y5Of3P6J3gPNZ=hXKFi=APm6AHX3w@mail.gmail.com>
- <42bc677e031ed3df4f379cd3d6c9b3e1e8fadd87.camel@HansenPartnership.com>
- <CAADnVQ+M+_zLaqmd6As0z95A5BwGR8n8oFto-X-i4BgMvuhrXQ@mail.gmail.com>
- <fe538d3d723b161ee5354bb2de8e3a2ac7cf8255.camel@HansenPartnership.com>
- <CAHC9VhSU0UCHW9ApHsVQLX9ar6jTEfAW4b4bBi5-fbbsOaashg@mail.gmail.com> <CAHC9VhTvxgufmxHZFBd023xgkOyp9Cmq-hA-Gv8sJF1xYQBFSA@mail.gmail.com>
-In-Reply-To: <CAHC9VhTvxgufmxHZFBd023xgkOyp9Cmq-hA-Gv8sJF1xYQBFSA@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 16 Oct 2025 15:00:49 -0700
-X-Gm-Features: AS18NWCHYVxF7GSfIutVNDKmCB7FqGua0rnVce6zETEX8aqYgOptdQU3tKPf6ho
-Message-ID: <CAADnVQJw_B-T6=TauUdyMLOxcfMDZ1hdHUFVnk59NmeWDBnEtw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/3] BPF signature hash chains
-To: Paul Moore <paul@paul-moore.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Blaise Boscaccy <bboscaccy@linux.microsoft.com>, 
-	James Bottomley <james.bottomley@hansenpartnership.com>, bpf <bpf@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, wufan@linux.microsoft.com, 
-	Quentin Monnet <qmo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251015190813.80163-2-inwardvessel@gmail.com>
 
-On Thu, Oct 16, 2025 at 1:51=E2=80=AFPM Paul Moore <paul@paul-moore.com> wr=
-ote:
->
-> On Sun, Oct 12, 2025 at 10:12=E2=80=AFPM Paul Moore <paul@paul-moore.com>=
- wrote:
-> > On Sat, Oct 11, 2025 at 1:09=E2=80=AFPM James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
-> > > On Sat, 2025-10-11 at 09:31 -0700, Alexei Starovoitov wrote:
-> > > > On Sat, Oct 11, 2025 at 7:52=E2=80=AFAM James Bottomley
-> > > > <James.Bottomley@hansenpartnership.com> wrote:
-> > > > >
-> > > > > It doesn't need to, once we check both the loader and the map, th=
-e
-> > > > > integrity is verified and the loader can be trusted to run and
-> > > > > relocate the map into the bpf program
-> > > >
-> > > > You should read KP's cover letter again and then research trusted
-> > > > hash chains. Here is a quote from the first googled link:
-> > > >
-> > > > "A trusted hash chain is a cryptographic process used to verify the
-> > > > integrity and authenticity of data by creating a sequence of hash
-> > > > values, where each hash is linked to the next".
-> > > >
-> > > > In addition KP's algorithm was vetted by various security teams.
-> > > > There is nothing novel here. It's a classic algorithm used
-> > > > to verify integrity and that's what was implemented.
-> > >
-> > > Both KP and Blaise's patch sets are implementations of trusted hash
-> > > chains.  The security argument isn't about whether the hash chain
-> > > algorithm works, it's about where, in relation to the LSM hook, the
-> > > hash chain verification completes.
+Hi JP,
 
-Not true. Blaise's patch is a trusted hash chain denial.
+kernel test robot noticed the following build warnings:
 
-> >
-> > Alexei, considering the discussion from the past few days, and the
-> > responses to all of your objections, I'm not seeing a clear reason why
-> > you are opposed to sending Blaise's patchset up to Linus.  What is
-> > preventing you from sending Blaise's patch up to Linus?
->
-> With the merge window behind us, and the link tag discussion winding
-> down ;) , I thought it might be worthwhile to bubble this thread back
-> up to the top of everyone's inbox.
+[auto build test WARNING on bpf-next/net]
+[also build test WARNING on bpf-next/master bpf/master akpm-mm/mm-everything linus/master v6.18-rc1 next-20251016]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Please stop this spam. The reasons for rejection were explained
-multiple times.
+url:    https://github.com/intel-lab-lkp/linux/commits/JP-Kobryn/memcg-introduce-kfuncs-for-fetching-memcg-stats/20251016-030920
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
+patch link:    https://lore.kernel.org/r/20251015190813.80163-2-inwardvessel%40gmail.com
+patch subject: [PATCH v2 1/2] memcg: introduce kfuncs for fetching memcg stats
+config: x86_64-randconfig-121-20251016 (https://download.01.org/0day-ci/archive/20251017/202510170654.s2j4GuCs-lkp@intel.com/config)
+compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251017/202510170654.s2j4GuCs-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202510170654.s2j4GuCs-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   mm/memcontrol.c:4236:52: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   mm/memcontrol.c:4236:52: sparse:    struct task_struct [noderef] __rcu *
+   mm/memcontrol.c:4236:52: sparse:    struct task_struct *
+>> mm/memcontrol.c:876:55: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct cgroup_subsys_state *css @@     got struct cgroup_subsys_state [noderef] __rcu * @@
+   mm/memcontrol.c:876:55: sparse:     expected struct cgroup_subsys_state *css
+   mm/memcontrol.c:876:55: sparse:     got struct cgroup_subsys_state [noderef] __rcu *
+>> mm/memcontrol.c:876:55: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct cgroup_subsys_state *css @@     got struct cgroup_subsys_state [noderef] __rcu * @@
+   mm/memcontrol.c:876:55: sparse:     expected struct cgroup_subsys_state *css
+   mm/memcontrol.c:876:55: sparse:     got struct cgroup_subsys_state [noderef] __rcu *
+>> mm/memcontrol.c:876:55: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct cgroup_subsys_state *css @@     got struct cgroup_subsys_state [noderef] __rcu * @@
+   mm/memcontrol.c:876:55: sparse:     expected struct cgroup_subsys_state *css
+   mm/memcontrol.c:876:55: sparse:     got struct cgroup_subsys_state [noderef] __rcu *
+>> mm/memcontrol.c:876:55: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct cgroup_subsys_state *css @@     got struct cgroup_subsys_state [noderef] __rcu * @@
+   mm/memcontrol.c:876:55: sparse:     expected struct cgroup_subsys_state *css
+   mm/memcontrol.c:876:55: sparse:     got struct cgroup_subsys_state [noderef] __rcu *
+   mm/memcontrol.c: note: in included file:
+   include/linux/memcontrol.h:729:9: sparse: sparse: context imbalance in 'folio_lruvec_lock' - wrong count at exit
+   include/linux/memcontrol.h:729:9: sparse: sparse: context imbalance in 'folio_lruvec_lock_irq' - wrong count at exit
+   include/linux/memcontrol.h:729:9: sparse: sparse: context imbalance in 'folio_lruvec_lock_irqsave' - wrong count at exit
+
+vim +876 mm/memcontrol.c
+
+   873	
+   874	static inline struct mem_cgroup *memcg_from_cgroup(struct cgroup *cgrp)
+   875	{
+ > 876		return cgrp ? mem_cgroup_from_css(cgrp->subsys[memory_cgrp_id]) : NULL;
+   877	}
+   878	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
