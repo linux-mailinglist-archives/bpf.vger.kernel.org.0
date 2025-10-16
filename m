@@ -1,87 +1,87 @@
-Return-Path: <bpf+bounces-71149-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71150-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73D49BE5678
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 22:28:57 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B64CBE567B
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 22:29:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id EB249357667
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 20:28:56 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7DE9E4EAA87
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 20:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D2852DEA9E;
-	Thu, 16 Oct 2025 20:28:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF4C1A9F93;
+	Thu, 16 Oct 2025 20:29:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iPmtlvPx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lUeV8xAs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE7D218FDDB
-	for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 20:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C60AC2641C6
+	for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 20:29:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760646533; cv=none; b=W0XQdk9umnFkIh0N36I7hcaWhP4Dx9pUvDaXC+b/uGOjsHlM0Fq3Mgn+mK8kmdS3HXvKhhv1H0PS/MANsqD1HsVZwMoDv0r9wkgZfvvBVlK1aXVIr43yI7E46iykSpqj9FDOu9JkqXhYS374qrQYMvSd13rgF7Fc3I613Nj6yos=
+	t=1760646548; cv=none; b=fExos2Gy+MGRdRJggcZLya3iH8DPw7RQFvMSUwbvVemnTGMwuKItbHbvqhmJ/wyJft/ixpGrDYW1XST6EIXHHsf3XwkuUNGaxdoNROqAoWgXIJiBTBwSLGSB31HxY/avTsiv5Y5Q26PcF+CoDemVBHkcKC2CoIilal6QIcIU9Ao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760646533; c=relaxed/simple;
-	bh=pAwHmuJGCE37w9BILfTJEkXNbacr6XtoS56A4wL/GnM=;
+	s=arc-20240116; t=1760646548; c=relaxed/simple;
+	bh=s42gRDSS1AHQhpajXq/hT4tCUJe0h7sFdMuSEGi/WFs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F34nPCniKwD8MeLJ8ZLdgiITzYP+2Biei6Wzqf012jn4DOm3B8GN7MN+o95E8XjsnNOxQDdbwsnSa0GWP9CQCY4SOf3ja2esKXJkPEkpFJhF3a3KkzEcK4M7ZMhPFxOLOyw3TT/GICWCDFkrvZ1ekKWOsBm8a3Z1YmOy+S3VXnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iPmtlvPx; arc=none smtp.client-ip=209.85.216.50
+	 To:Cc:Content-Type; b=fFTqL2uck11DV2BmUoAfXPgQQbynBxrpFqpYblG/N8s+dnNHf6UHzKFMg0AnqJ7CC+l5f0Dg6cXhcBbV1q8xlaxil+daFeFdGt57DNWKNXCfMPvUbhJbOFqZ+MnlP5epeWMt/O7Ej7fKqUmCMjlnDOUnVSks4d9w64WMdxVdcXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lUeV8xAs; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-33ba2f134f1so1199078a91.2
-        for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 13:28:50 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2909448641eso11330875ad.1
+        for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 13:29:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760646530; x=1761251330; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760646544; x=1761251344; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IJlkoIkmRdqWWwkmBk5yAznPiL2zm9nsSbO1CJbC2uY=;
-        b=iPmtlvPxqiHASsDfyXe2cEJFe1oaRJR22l57/MM4ZEVv/QaVv3DETPKOvvfcmojZnH
-         PDduYmTJTYLpN3VB1G0zhNYl98nvNL0x4Y8QW2ESrktT42apxwn2VntK+Vl5ReQU89tW
-         lbpB1eBia/XS56VKYaEUWyrv6WS6GocihRr+HFfMqBGQKNlqts9KAL8dS5AnEpsamNDP
-         VHaaRSYxRrLv76eTEEd/63Uek9a6RMPoPrjxR0vbwn5qh4vHohkURrptUR//SRfh5i4P
-         XkmMiGRgiD65Vsyg0lLdof0LYdU44jZDJaFcPxmoy6QFQpPz8qfRThpFK/UG6T5rt+mC
-         U2kg==
+        bh=bz/E7D6smIxHWgBRM5rMEkJi2bJI3GlkSmO1rEJ3GQk=;
+        b=lUeV8xAsWwH0Ft2lZWV0pp6lZnwLUhtuK7ctzp9eBVM7TqzEQx97kBeuc7bzjRVDxo
+         CglA5pW4FAu2YSDCCBoKvG+jJKMzdUz58svANLfNznvnmY4w2P7vz6VDv7jej8JngsgF
+         qMpizXh0UkgYSboWeHYaOJKUzDlkOe8bjQsmFYx65n3w1fTXgzv6+pLsiOeQm9Nzuwgu
+         hjBLiymMP7BnsuL6gnVe9XVPAz5xYn+aR3bO9rXvEO8mojUPxTmTD0eBSNwy+7AgrS6g
+         o3PozBlo4bmLyEcQa2NzhJYXVsHjDm+zSxH0G75QOxrcZsXbxrG0zwBtwuduqdQvbZCF
+         fVdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760646530; x=1761251330;
+        d=1e100.net; s=20230601; t=1760646544; x=1761251344;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IJlkoIkmRdqWWwkmBk5yAznPiL2zm9nsSbO1CJbC2uY=;
-        b=H3RtFgVPQ03L7S9XfGi7w368TRL7HiVgaIkRwx/flDVyWBwf6QdqPaNwvi/N9Yz3zq
-         VNA8KmJGGUd9yiSKHAzLyscnM6cMa7GRhg49Zj14pvrv0aTFfCXzWQcDxljGTe8MTSpW
-         DMtr5jTSPDJGZTjDIIWRewqrxtB2iuVb8bIdbCDxqf192RpXj8f7s63BVBzMNYjvIe6l
-         WwSNptB9vzoWNi9LqlL7q0lEFlEnmg/Wwg95pCIQfKPlDIIKuQhWF4m8pC6kRdaRTi+X
-         MA/tzNPL89MFlAAJbs5cVWzB+ZpLMRvAyNptLJPA92NFBCxUaCJbmxQwzNwk8M2E3mhv
-         GyKg==
-X-Gm-Message-State: AOJu0YwpnaHsHK8H2Hc5XgnUf/gfEcXDsV/pj+AE47EH09ZB+w3G+pmB
-	Pv/humuiLNGMghNyYpQSpTaMh/oEifZg/j4ZlFWG0Jwo2X300xIsI/TZ93nMyqztL6b+fCve7iy
-	keAfLCrjwn55Dn2T+TZdJU6ut8AVaLlY=
-X-Gm-Gg: ASbGnctgRFVFOpPTvMF/Om4q5CMoI+ehJy8AQdzU09jzpTPW8l/awXAapYTTjA1y1fq
-	le2wJ3VcTqXNGFjJdd80BfPbl0oxiFzC9rRo3LnnEUmffyZjtLrYNUQYQ86fFuRv26uNyngKVWE
-	36cBFHlulkTDC1QRCpTOTebAZPZx3HeF9YtfNvqhqvzVk4Os/4wsnSpm5TuNfnGRWjKksWKRk6f
-	4+4I6SrMjTBOMG3iLcOOB4ciIKbigsKVn/5YrCv+aDtGmxGRgO579G1jh8jZRUb/w2n8t/3sNek
-	BCbDP/OE4grHZrRUK7tfrw==
-X-Google-Smtp-Source: AGHT+IG8qw0KRau9xEmwLhJYlo25wjP4fthLOXRPbeGaYHGBcHxu9ZQ3bZv8lM7TBrguH6hVpl2MdHAn4nPVbYoV3So=
-X-Received: by 2002:a17:90b:1dd2:b0:327:9e88:7714 with SMTP id
- 98e67ed59e1d1-33bcf926c1bmr1217823a91.37.1760646530040; Thu, 16 Oct 2025
- 13:28:50 -0700 (PDT)
+        bh=bz/E7D6smIxHWgBRM5rMEkJi2bJI3GlkSmO1rEJ3GQk=;
+        b=VSpyZH3RnyANaQ544dHKozaSWGblqlCLbmd4tuvNU3pMyTInH6Cs23GEdoJJ+7bzgE
+         uKy1UQFgw+WFIeEsPGy+Xy9dNbyFFcBrG/Y312HYn3Dd2F+n9n3NjzupIw0mndooTA7k
+         t2gUZD6PVxXIRFVZ2BiBciRMRFuuMZepxht8Txj6S0BvoCQnJsP3aoF6voOLDAPakb2h
+         tmWI67JWSkwp6FzHTaNR9djAPRXZ8muII3jsM4ok1K+RGi80gko2a03XR+Iv3FnF+Wlj
+         +n+SSpUapcUW37CsKB7cm+j5vmTnEsmqDZt+g0hErnCX1nNcjMJknbHga1N9eHHJKMiX
+         XrkA==
+X-Gm-Message-State: AOJu0YwAwdIPmt06sDwY9gkcbX4mJ+gsoCYayeAZcKpwa+xB6GiWVb6q
+	LM/bstua6Z8Hy6XcPfbNrS0OCc3b3tGspZU7fTnGcsMpIk+yfysHShno0vMKjSGol8hynIHPUk2
+	4MjlbE1TKfRrnlmFDgjXtPUfPFFTBC9I=
+X-Gm-Gg: ASbGncs58D8u/JOh2Le9DBpkG4mcUCjNgEzNgv7qtDGLjzDhSlQ51ADw2JtAsQmXd+l
+	RQ7sRAjl7+cQ8DKQabyLFeYpq82wfu6kfW5F69H3sc1Owy67w0UnJIOz18yjXAYl8Bgl+cBB6PN
+	I0Z8E17A+9O3TajgFqIJZ2NliPvUvtF74ocYMeIzqHnP1zDFESXQls9Vz3VzeBouvtkVGst67zq
+	RA1JZbD/AdhMoTm+rHtZB4m6ymswMxTnAuVBkCj5EZRJDuft/5yrI11qwztrKaaRZlZwGWlvl61
+	e7szhiK6DIM=
+X-Google-Smtp-Source: AGHT+IFOEPsineS2STfpzMvDXew7DNDDB3ollw0aTnkx328MoQ/l6Njs7fpx+NLJ6VOzOPcYcXKUhytnNihmXA3A6Gw=
+X-Received: by 2002:a17:903:3205:b0:267:8b4f:df36 with SMTP id
+ d9443c01a7336-29091be7fb3mr64028605ad.29.1760646543934; Thu, 16 Oct 2025
+ 13:29:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251015161155.120148-1-mykyta.yatsenko5@gmail.com> <20251015161155.120148-5-mykyta.yatsenko5@gmail.com>
-In-Reply-To: <20251015161155.120148-5-mykyta.yatsenko5@gmail.com>
+References: <20251015161155.120148-1-mykyta.yatsenko5@gmail.com> <20251015161155.120148-8-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20251015161155.120148-8-mykyta.yatsenko5@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 16 Oct 2025 13:28:35 -0700
-X-Gm-Features: AS18NWDP7WaXX9RfaAxvBFIoxaIhK5vLgptqpGGn0JquEuVmxx9QvRmXfAOpVM8
-Message-ID: <CAEf4BzbbZrfEi_tWKvD4f2et0gN1s3seZMguROsgTSqtnW5=SA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 04/11] lib/freader: support reading more than 2 folios
+Date: Thu, 16 Oct 2025 13:28:46 -0700
+X-Gm-Features: AS18NWAjeCjQ4mpiaa2BW1WUyEAn-8RHvAA2UlqMAm0Pqd_SugUFkWwbcxBlZyY
+Message-ID: <CAEf4BzYFKDsrRWGoj4+_dj_nQ_U9MFDCwaUOLbyYfUq0POPOyA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 07/11] bpf: add plumbing for file-backed dynptr
 To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
 	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
@@ -94,64 +94,89 @@ On Wed, Oct 15, 2025 at 9:12=E2=80=AFAM Mykyta Yatsenko
 >
 > From: Mykyta Yatsenko <yatsenko@meta.com>
 >
-> freader_fetch currently reads from at most two folios. When a read spans
-> into a third folio, the overflow bytes are copied adjacent to the second
-> folio=E2=80=99s data instead of being handled as a separate folio.
-> This patch modifies fetch algorithm to support reading from many folios.
+> Add the necessary verifier plumbing for the new file-backed dynptr type.
+> Introduce two kfuncs for its lifecycle management:
+>  * bpf_dynptr_from_file() for initialization
+>  * bpf_dynptr_file_discard() for destruction
+>
+> Currently there is no mechanism for kfunc to release dynptr, this patch
+> add one:
+>  * Dynptr release function sets meta->release_regno
+>  * Call unmark_stack_slots_dynptr() if meta->release_regno is set and
+>  dynptr ref_obj_id is set as well.
 >
 > Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 > ---
->  lib/buildid.c | 26 ++++++++++++++------------
->  1 file changed, 14 insertions(+), 12 deletions(-)
+>  include/linux/bpf.h   |  7 ++++++-
+>  kernel/bpf/helpers.c  | 12 ++++++++++++
+>  kernel/bpf/log.c      |  2 ++
+>  kernel/bpf/verifier.c | 25 +++++++++++++++++++++++--
+>  4 files changed, 43 insertions(+), 3 deletions(-)
+
+[...]
+
+>  static void bpf_task_work_cancel_scheduled(struct irq_work *irq_work)
+> @@ -4430,6 +4440,8 @@ BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
+>  BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS)
+>  BTF_ID_FLAGS(func, bpf_task_work_schedule_signal, KF_TRUSTED_ARGS)
+>  BTF_ID_FLAGS(func, bpf_task_work_schedule_resume, KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_dynptr_from_file, KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_dynptr_file_discard, KF_TRUSTED_ARGS)
+
+do we need KF_TRUSTED_ARGS for this one? dynptr passed into kfunc
+always has to be correct, so KF_TRUSTED_ARGS serves no purpose?
+
+>  BTF_KFUNCS_END(common_btf_ids)
 >
+>  static const struct btf_kfunc_id_set common_kfunc_set =3D {
 
-LGTM
+[...]
 
-Reviewed-by: Andrii Nakryiko <andrii@kernel.org>
-
-
-> diff --git a/lib/buildid.c b/lib/buildid.c
-> index df06e492810d..ade01d7ff682 100644
-> --- a/lib/buildid.c
-> +++ b/lib/buildid.c
-> @@ -108,18 +108,20 @@ const void *freader_fetch(struct freader *r, loff_t=
- file_off, size_t sz)
+> @@ -13323,6 +13331,11 @@ static int check_kfunc_args(struct bpf_verifier_=
+env *env, struct bpf_kfunc_call_
+>                                 dynptr_arg_type |=3D DYNPTR_TYPE_XDP;
+>                         } else if (meta->func_id =3D=3D special_kfunc_lis=
+t[KF_bpf_dynptr_from_skb_meta]) {
+>                                 dynptr_arg_type |=3D DYNPTR_TYPE_SKB_META=
+;
+> +                       } else if (meta->func_id =3D=3D special_kfunc_lis=
+t[KF_bpf_dynptr_from_file]) {
+> +                               dynptr_arg_type |=3D DYNPTR_TYPE_FILE;
+> +                       } else if (meta->func_id =3D=3D special_kfunc_lis=
+t[KF_bpf_dynptr_file_discard]) {
+> +                               dynptr_arg_type |=3D DYNPTR_TYPE_FILE;
+> +                               meta->release_regno =3D regno;
+>                         } else if (meta->func_id =3D=3D special_kfunc_lis=
+t[KF_bpf_dynptr_clone] &&
+>                                    (dynptr_arg_type & MEM_UNINIT)) {
+>                                 enum bpf_dynptr_type parent_type =3D meta=
+->initialized_dynptr.type;
+> @@ -14003,7 +14016,15 @@ static int check_kfunc_call(struct bpf_verifier_=
+env *env, struct bpf_insn *insn,
+>          * PTR_TO_BTF_ID in bpf_kfunc_arg_meta, do the release now.
 >          */
->         folio_sz =3D folio_size(r->folio);
->         if (file_off + sz > r->folio_off + folio_sz) {
-> -               int part_sz =3D r->folio_off + folio_sz - file_off;
-> -
-> -               /* copy the part that resides in the current folio */
-> -               memcpy(r->buf, r->addr + (file_off - r->folio_off), part_=
-sz);
-> -
-> -               /* fetch next folio */
-> -               r->err =3D freader_get_folio(r, r->folio_off + folio_sz);
-> -               if (r->err)
-> -                       return NULL;
-> -
-> -               /* copy the rest of requested data */
-> -               memcpy(r->buf + part_sz, r->addr, sz - part_sz);
-> +               u64 part_sz =3D r->folio_off + folio_sz - file_off, off;
+>         if (meta.release_regno) {
+> -               err =3D release_reference(env, regs[meta.release_regno].r=
+ef_obj_id);
+> +               struct bpf_reg_state *reg =3D &regs[meta.release_regno];
 > +
-> +               memcpy(r->buf, r->addr + file_off - r->folio_off, part_sz=
-);
-> +               off =3D part_sz;
-> +
-> +               while (off < sz) {
-> +                       /* fetch next folio */
-> +                       r->err =3D freader_get_folio(r, r->folio_off + fo=
-lio_sz);
-> +                       if (r->err)
-> +                               return NULL;
-> +                       part_sz =3D min_t(u64, sz - off, folio_size(r->fo=
-lio));
-> +                       memcpy(r->buf + off, r->addr, part_sz);
-> +                       off +=3D part_sz;
+> +               if (meta.initialized_dynptr.ref_obj_id) {
+> +                       err =3D unmark_stack_slots_dynptr(env, reg);
+> +                       if (err)
+> +                               return err;
+> +               } else {
+> +                       err =3D release_reference(env, reg->ref_obj_id);
 > +               }
->
->                 return r->buf;
->         }
+
+um... error handling is asymmetrical for no good reason. Move below if
+(err) verbose inside the else branch above, as it's
+release_reference-specific?
+
+
+>                 if (err) {
+>                         verbose(env, "kfunc %s#%d reference has not been =
+acquired before\n",
+>                                 func_name, meta.func_id);
 > --
 > 2.51.0
 >
