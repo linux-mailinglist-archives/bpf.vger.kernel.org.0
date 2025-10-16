@@ -1,138 +1,165 @@
-Return-Path: <bpf+bounces-71146-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71147-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB45CBE5645
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 22:27:00 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0B81BE565A
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 22:27:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C1F1188B2C0
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 20:27:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id ED70A506158
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 20:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2F7F2DF148;
-	Thu, 16 Oct 2025 20:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4481B2DF14C;
+	Thu, 16 Oct 2025 20:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SoQK19Z7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uko6yZo/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924CB28CF49
-	for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 20:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A70831A9F93;
+	Thu, 16 Oct 2025 20:27:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760646413; cv=none; b=axgeSqJEjYO/9uX96mXZiNwIlGhdqL5Us7r51bEXXzp1tWyChhazNkkDTeQXtOmXrEf0oYP9eDHya5fMARPCqmgLPF0fyxvG0EXvWy687Wb5deiV9y2rvKgf7Pwh/1tWmRZt5/qDNTs+h/bJa3WMiN8RerSqzzRFH4galIft9do=
+	t=1760646424; cv=none; b=XjAYbgyy8SG0XMWzzDl/9iQ/GtzOarBLmXrhIlxIEywMSuFfTvQ6vxrhezX2DrLA4sGJlngziXDPvzM5zIgNzhq4Hv8y14kE+BWWH6xjF1wKFyiOGP0wq9I6GSjpxBtNWP2v+yhIIW2OcAlMNlkl3Kyk7EL02qNVSvAhg/YFHFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760646413; c=relaxed/simple;
-	bh=xdxf4bGgZ3b0nAJDzpJIh8oNb3BVl6MHHNAqkvbVLn8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mSuskE4krU2D6P1f8qQueFHRLQkqtmNJMh3xsRSkXyiwH4XLeb+E64E8gmKmEd9q0ntxMZl287P71z6myHq8ml2dKzToITzyoaAtjCne+wFYEk7XXgJd/h2YgCO/u06Bu+kWqrQTQkt5smCnb1vEwmjlYf5XOh5u10HE2Q5uqvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SoQK19Z7; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-33bc2178d6aso520940a91.0
-        for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 13:26:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760646411; x=1761251211; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bo5Pb4pEnCN8Qp9wO+FXoUs/VjBU1u60no/MUECaFf8=;
-        b=SoQK19Z7A9eR9ukTH8+3c4LN+x14wDqjGqoyVh+5sugwUg+ZjfXBol1okUTDeA25en
-         vwOTU9K/nct0pKJVYj1rNFFUh7iI1UDRCJPK0Y1w8B/k5808oxRfnXWAKjI852FgNJlS
-         syNot3sqCqg+Q/UjdZyQu+uPooBhVnnBs6VArKrhCuM/VzhJr+5QszH0X7iYKcDHRETR
-         f2t6aL3fIFgFP45cbDWpuMMwngk7CTeTMVm99qXKczJCsDpLbSEYZmztrZGrh9R/YunG
-         pI6WamFvdZmFhA70F4yT+yurmZyeabfVa1rQ3HpO6bzo7NMWosAsomOfDahcVHAijaX2
-         mSHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760646411; x=1761251211;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bo5Pb4pEnCN8Qp9wO+FXoUs/VjBU1u60no/MUECaFf8=;
-        b=OQT1SfGdBrYeil0tMqqq5Bz9wITs+Ad8VB1znCwvvLq72N6swi+a2mp8HH5kbP7MbR
-         Wi8XPPFKhtTXl0uBrp4k7EXCKFM2+2h2o3CzmjfIHJFJp4bVujX4+Vy/9EDgfH+9Mp65
-         zsQBkdHmUIxSlCCclmZW02Nk0mm9PU3rYL2ynoyME6M/BNXzOcUA2P1YT9nny4qs3Gfk
-         LAstNmFNFzSC5pP1LvBHsDMEbVi4Abzj2KKZcHOPhqvyir99BK3tyUcXVNlJXtaUNku1
-         d2FLqUd2Gu905zjoyk49N2avjkicr0T5u8qrSVsnaUnIu/6HIAKYfpvK1fpr6B7MOZi5
-         1vIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWefHu4NtyX3wV/WBZVZqdUVw1NUlybHmgKMN8iAMmytMwz/iFIQpPiYvEkIbc6ib9BZas=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+qeiTjeuzASje5HaP3Bx0Ybob74i1UbVmFfiMRsGZW07HYfHG
-	WVPMWF4S+V/0/X9cuswAGTRgHK/LN0+qaqeB5tPeB2jydpAu50/0COv5
-X-Gm-Gg: ASbGncsijJzxFEzWVuoc8UuvnjA0vWxyfNnreEEmoverVMOVPUISO0JyH1EAuRDr3Pn
-	gxtFYpKXfRuQsQdYa0nCuw59M7EoesUkeejxPRnbITr5VCteQA33LeMm4pRPUGfdwOVgqz/4Xk6
-	v837wi3EWb96KcXF62O/lsq8AIib8wPOBelUzkuQ0OS0a7k6+Ns3qFKGXk3XCqUODOdqwtBC0uF
-	FyresuSIAHUaIsJKdqdqmkFi3kOn2igX6cSoUMPJ3b8E2HmhRSB+criOfUwm5YItKeveSHFCy2d
-	BvZa8u+p8vPq2HwIktyGe+Dls+JsJvZRwMaIynW33sYAA+trXxFgGZiYrGx7j9RBOIIX4leorj5
-	aPnR2Les3zWMqrWW/lo+lgZ8+BCsvM1QmXRtcZpzKjSZL8Gnp7dyGRJtaUEE/VR9SzXF0+yxxoG
-	KkdOByzlVzopr3k/ABqcwnSyItbUkgTfxyxoJW00C4Fbo6boo3p5tOaTQ=
-X-Google-Smtp-Source: AGHT+IE9B5Vdk4petXHg7AQwUSLZThEnOzKfYaaM8uzg+9wXXauMcXrMjeybYvp0mkVR/VZkAIO0fw==
-X-Received: by 2002:a17:90b:28c4:b0:338:2c90:1540 with SMTP id 98e67ed59e1d1-33bcf8e7174mr1148401a91.20.1760646410655;
-        Thu, 16 Oct 2025 13:26:50 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1151:15:6028:a61a:a132:9634? ([2620:10d:c090:500::5:e774])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33bd7b3da16sm314131a91.18.2025.10.16.13.26.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Oct 2025 13:26:50 -0700 (PDT)
-Message-ID: <2fa573e6-bd9a-46b9-a2a6-bfb233d0389a@gmail.com>
-Date: Thu, 16 Oct 2025 13:26:44 -0700
+	s=arc-20240116; t=1760646424; c=relaxed/simple;
+	bh=xxvesUj/77OAj0Ah3EU6upE1SK/vnUKpxtya594I4DM=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=iRctQAvACmgKzw/NJHkmuhdPTQw95M6l/teW/pxvn2gI8O3JmUwa8LSb9icGmDwhcwF+YLRsBfnUTZW4phjlD14ETv8at2slJU9IVMB4RVGKwTEmnUndMom6Wzntx08UY5EBg5vTLTEvgiMN9bQZ926RSwrTKLMPidOs7nUb0gQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uko6yZo/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86ED7C4CEF1;
+	Thu, 16 Oct 2025 20:27:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760646422;
+	bh=xxvesUj/77OAj0Ah3EU6upE1SK/vnUKpxtya594I4DM=;
+	h=From:Date:To:cc:Subject:In-Reply-To:References:From;
+	b=Uko6yZo/whJf0nUbs6gMeHcSM30hY6D9x6Bdg/s8Kb4BsvdbgBnlZY+kUs1XPquHw
+	 qATNi7E3UYCq9W8Ev4hgil5cEdsOhSCMw/U7owlZ+e5ptwu5tsYErsqDu/PNa2C5eQ
+	 xySzY2MO0uKaxasLyKZKZhguMtaHSqyod0JGmRcmndGf9FMLcoqnMShRQ69xabafs7
+	 b1yG9y8OFEZ3hpH8Ot33XSJkJUVu7nrZqYxf7JFK27I+OQx2JVu0YTVvFb3q3A4euA
+	 VDgR4qQCKChlx1Z4UYvz5HN8wN8sS3/EgLC6M6WOIGf0oWcLBuj/p97MsyahxKeThm
+	 mGjgrPlTMYUfQ==
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ij@kernel.org>
+Date: Thu, 16 Oct 2025 23:26:57 +0300 (EEST)
+To: Paolo Abeni <pabeni@redhat.com>
+cc: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com, 
+    linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org, 
+    dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org, 
+    netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com, 
+    kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com, 
+    jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch, 
+    donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com, 
+    shuah@kernel.org, linux-kselftest@vger.kernel.org, ncardwell@google.com, 
+    koen.de_schepper@nokia-bell-labs.com, g.white@cablelabs.com, 
+    ingemar.s.johansson@ericsson.com, mirja.kuehlewind@ericsson.com, 
+    cheshire@apple.com, rs.ietf@gmx.at, Jason_Livingood@comcast.com, 
+    vidhi_goel@apple.com
+Subject: Re: [PATCH v4 net-next 02/13] gro: flushing when CWR is set negatively
+ affects AccECN
+In-Reply-To: <98342f21-08c8-46de-9309-d58dfc44d0a0@redhat.com>
+Message-ID: <24bc44a8-6045-9565-c798-a9d4597366e8@kernel.org>
+References: <20251013170331.63539-1-chia-yu.chang@nokia-bell-labs.com> <20251013170331.63539-3-chia-yu.chang@nokia-bell-labs.com> <98342f21-08c8-46de-9309-d58dfc44d0a0@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] memcg: reading memcg stats more efficiently
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, andrii@kernel.org, ast@kernel.org,
- mkoutny@suse.com, yosryahmed@google.com, hannes@cmpxchg.org, tj@kernel.org,
- akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
- kernel-team@meta.com, mhocko@kernel.org, muchun.song@linux.dev
-References: <20251015190813.80163-1-inwardvessel@gmail.com>
- <uxpsukgoj5y4ex2sj57ujxxcnu7siez2hslf7ftoy6liifv6v5@jzehpby6h2ps>
- <e102f50a-efa5-49b9-927a-506b7353bac0@gmail.com> <87wm4v7isj.fsf@linux.dev>
-Content-Language: en-US
-From: JP Kobryn <inwardvessel@gmail.com>
-In-Reply-To: <87wm4v7isj.fsf@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="8323328-1306421146-1760646417=:6153"
 
-On 10/15/25 6:10 PM, Roman Gushchin wrote:
-> JP Kobryn <inwardvessel@gmail.com> writes:
-> 
->> On 10/15/25 1:46 PM, Shakeel Butt wrote:
->>> Cc memcg maintainers.
->>> On Wed, Oct 15, 2025 at 12:08:11PM -0700, JP Kobryn wrote:
->>>> When reading cgroup memory.stat files there is significant kernel overhead
->>>> in the formatting and encoding of numeric data into a string buffer. Beyond
->>>> that, the given user mode program must decode this data and possibly
->>>> perform filtering to obtain the desired stats. This process can be
->>>> expensive for programs that periodically sample this data over a large
->>>> enough fleet.
->>>>
->>>> As an alternative to reading memory.stat, introduce new kfuncs that allow
->>>> fetching specific memcg stats from within cgroup iterator based bpf
->>>> programs. This approach allows for numeric values to be transferred
->>>> directly from the kernel to user mode via the mapped memory of the bpf
->>>> program's elf data section. Reading stats this way effectively eliminates
->>>> the numeric conversion work needed to be performed in both kernel and user
->>>> mode. It also eliminates the need for filtering in a user mode program.
->>>> i.e. where reading memory.stat returns all stats, this new approach allows
->>>> returning only select stats.
-> 
-> It seems like I've most of these functions implemented as part of
-> bpfoom: https://lkml.org/lkml/2025/8/18/1403
-> 
-> So I definitely find them useful. Would be nice to merge our efforts.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Sounds great. I see in your series that you allow the kfuncs to accept
-integers as item numbers. Would my approach of using typed enums work
-for you? I wanted to take advantage of libbpf core so that the bpf
-program could gracefully handle cases where a given enumerator is not
-present in a given kernel version. I made use of this in the selftests.
+--8323328-1306421146-1760646417=:6153
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-I'm planning on sending out a v3 so let me know if you would like to see
-any alterations that would align with bpfoom.
+On Thu, 16 Oct 2025, Paolo Abeni wrote:
+> On 10/13/25 7:03 PM, chia-yu.chang@nokia-bell-labs.com wrote:
+> > From: Ilpo J=C3=A4rvinen <ij@kernel.org>
+> >=20
+> > As AccECN may keep CWR bit asserted due to different
+> > interpretation of the bit, flushing with GRO because of
+> > CWR may effectively disable GRO until AccECN counter
+> > field changes such that CWR-bit becomes 0.
+> >=20
+> > There is no harm done from not immediately forwarding the
+> > CWR'ed segment with RFC3168 ECN.
+>=20
+> I guess this change could introduce additional latency for RFC3168
+> notification, which sounds not good.
+>=20
+> @Eric: WDYT?
+
+I'm not Eric but I want to add I foresaw somebody making this argument=20
+and thus wanted to not hide this change into some other patch so it can be=
+=20
+properly discussed and rejected if so preferred, either way it's not a=20
+correctness issue.
+
+I agree it's possible for some delay be added but the question is why=20
+would that matter? "CWR" tells sender did already reduce its sending rate=
+=20
+which is where congestion control aims to. So the reaction to congestion=20
+is already done when GRO sees CWR (some might have a misconception that
+delivering CWR causes sender to reduce sending rate but that's not the=20
+case). With RFC 3168 ECN, CWR only tells the receiving end to stop sending=
+=20
+ECE. Why does it matter if that information arrives a bit later?
+
+If there are other segments, they normally don't have CWR with RFC 3168=20
+ECN which normally set CWR once per RTT. A non-CWR'ed segment results in=20
+flush after an inter-packet delay due to flags difference. That delay is=20
+nothing compared to GRO aggregating non-CWR segments en masse which is=20
+in n times the inter-packet delay (simplification, ignores burstiness,=20
+etc.).
+
+If there are no other segments, the receiver won't be sending any ECEs=20
+either, so the extra delay does not seem that impactful.
+
+Some might argue that with this "special delivery" for CWR the segment=20
+could trigger an ACK "sooner", but GRO shouldn't hold the segment forever=
+=20
+either (though I don't recall the details anymore). But if we make that=20
+argument (which is no longer ECN signalling related at all, BTW), why use=
+=20
+GRO at all as it add delay for other segments too delaying other ACKs, why=
+=20
+is this CWR'ed segment so special that it in particular must elicit ACK=20
+ASAP? It's hard to justify that distinction/CWR speciality, unless one has=
+=20
+that misconception CWR must arrive ASAP to expedite congestion reaction=20
+which is based on misunderstanding how RFC 3168 ECN works.
+
+Thus, what I wrote to the changelog about the delay not being harmful=20
+seems well justified.
+
+> On the flip side adding too much
+> AccECN logic to GRO (i.e. to allow aggregation only for AccECN enabled
+> flows) looks overkill.
+
+The usual aggregation works on header bits remaining identical which=20
+just happens to also suit AccECN better here. The RFC 3168 CWR trickery is=
+=20
+what is an expection to the rule, and as explained above, it does not seem=
+=20
+even that useful.
+
+This CWR special delivery rule, on the other hand, is clearly harmful for=
+=20
+aggregating AccECN segments which may have long row of CWR flagged=20
+segments if ACE field remains unchanging. None of them can be aggregated=20
+by GRO if this particular change is not accepted. Not an end of the world=
+=20
+but if we weight the pros and cons, it seems to clearly favor not keeping=
+=20
+this special delivery rule.
+
+
+--=20
+ i.
+
+--8323328-1306421146-1760646417=:6153--
 
