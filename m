@@ -1,57 +1,57 @@
-Return-Path: <bpf+bounces-71086-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71088-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15238BE1FC2
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 09:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 26218BE1FC9
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 09:47:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A715A19C7AD2
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 07:47:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D56341A60ABA
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 07:47:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4150530148A;
-	Thu, 16 Oct 2025 07:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD004302CBD;
+	Thu, 16 Oct 2025 07:46:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SIrod47S"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="iZI7KniK"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D07A62FFDCF
-	for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 07:45:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9CE2BAF9;
+	Thu, 16 Oct 2025 07:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760600758; cv=none; b=P3qwtll1HTPjdHhod+FYug3qlmWGEOcHRhw28IswjuGB1wRr5aUjZ+HAnfla2EmlXcy8CBAMnV+f+8m/beG2vTX9mnlBHv7gEXDrTdoz4/Ycgo5wxe542qnoBAtcuIJKqK9RVgGqwVh+mSnRT49uZH6Ci8tIWFoCykKsrZ6oxus=
+	t=1760600760; cv=none; b=BS1vQ8Fd9SQBm0LEp2HfKkINJ6lurfhC6RxgVZRfKoMDmvRvmD42EZLCptE2bJFBDggH5aIeBsGRbfomjcNzLArLXiZnU0f7VgdddXhrd47i65+1UXFOlv9nOqkXRCJlA6F5srK8265BGvwt4kL35JstOCAjmvzRPouZc1jOSTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760600758; c=relaxed/simple;
-	bh=NmnFd273B1++/96Wgc9NGu0f7rRSh30SrDhu6B794fM=;
+	s=arc-20240116; t=1760600760; c=relaxed/simple;
+	bh=QrlqFGzpjZmAoE0WhzSb3xJxJEZ4ob+vvZgBRHaTTSU=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jAqvAIqibQ9R7TD7xKYvg3ZZ+VUyckjIoJr8ZkRP7rhZE5B2u78LaK4eHn8GHlLuqXLS7ExhFJfsYe25mDcAoaiC1Q8ROtJmVYAlQj6nvzqEt6t6C0v4vrT7AN6LTBZgch3u2oVB9aec6xddO1lz/Cl0M71JMArPoZXml7Z+ex8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SIrod47S; arc=none smtp.client-ip=185.171.202.116
+	 In-Reply-To:To:Cc; b=kX9fT0oEm+9ID70N5UnSYG3/f8l+wTQmp3YyzdUM/1oWl5+WZ5Pif+aaGmm0U10JhWJp4oomGKWrLYquuT2rdzENthF2rys0WS7nFBxBaSSf3Y0XK2yDCoT6dmxiFkZkXRHmOn17Zw0BK7OaXajU+tFbQCSr0FGbJbcD7o1AEfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=iZI7KniK; arc=none smtp.client-ip=185.171.202.116
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 51061C03598;
-	Thu, 16 Oct 2025 07:45:35 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id B2529C03599;
+	Thu, 16 Oct 2025 07:45:37 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 7F6DD6062C;
-	Thu, 16 Oct 2025 07:45:54 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 23CB2102F22AA;
-	Thu, 16 Oct 2025 09:45:51 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id E2C3F6062C;
+	Thu, 16 Oct 2025 07:45:56 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 753CB102F22B9;
+	Thu, 16 Oct 2025 09:45:53 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1760600753; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1760600755; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=t78orrvBumS1q2Y+FbZ/Ic91n45UYCSTBLa81LdYwMs=;
-	b=SIrod47Sr/jeNrtmvivifXwVasCFlg8csihjmd+ho/c+fAsSqqlY9kG1BZDdwmIgdOfJkp
-	PcxieL7soK5JaJIZ8xGE0gbmIfm8qh2V78S+mptskvgrktNu4S7qZ3uwKpUP28mgyftfaL
-	i32z0D/O0z2BdVFiteYpbodRhbAeLbAZbmXFwx7TFVrBn75m12w/f+xr5rcRRD/s62UW9t
-	4kv8odW0AstAEUwSYRkjHB9/FsM23WSs13/XA7cXIqkhj2qcefllVX8RufSSsn2ZQkBvp6
-	Nv78hHY4e5cX6NwspDLbUSBh+EjSqgBzK1qg6SWnQxNz1lrgRWMPhyQpVugrSQ==
+	bh=eFjsOb3LsDj9nnNF55g5hT7ZyqAX/4ssZuJigX1uMXI=;
+	b=iZI7KniKPAjXyDoDiCClLQwEFjjLhCfLGuRZDh07c3q1LCBlN3mbZjxgoyFxOQyQ51ghJw
+	yalZU4C30VD7ofYyPkuxd2HdapFZ7wUrNwuDJSCeUZgEuSwAPkGF7oyIDT97hgBRnt9z3d
+	0ikVDI2Kt727KU4q6ru40NMoOf7qfoHgvR9rZjvra1Sdyjfr7QSF176P8mzQFvNP5PFa3Q
+	dmVWbgXnRTRaBi30hjUZZz934ByrGEL7nWfW0k4vN6HDDMre8WvmrIsscbkpcwLPOtDB36
+	4woDl/PVthiq3RNYew781DY1QDJ8+ej5FhlNmUq5RWxkWi6ORp78fC7FvZZ+mQ==
 From: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
-Date: Thu, 16 Oct 2025 09:45:32 +0200
-Subject: [PATCH bpf-next v5 03/15] selftests/bpf: test_xsk: Fix
- __testapp_validate_traffic()'s return value
+Date: Thu, 16 Oct 2025 09:45:33 +0200
+Subject: [PATCH bpf-next v5 04/15] selftests/bpf: test_xsk: fix memory leak
+ in testapp_stats_rx_dropped()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,7 +60,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251016-xsk-v5-3-662c95eb8005@bootlin.com>
+Message-Id: <20251016-xsk-v5-4-662c95eb8005@bootlin.com>
 References: <20251016-xsk-v5-0-662c95eb8005@bootlin.com>
 In-Reply-To: <20251016-xsk-v5-0-662c95eb8005@bootlin.com>
 To: =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>, 
@@ -85,36 +85,37 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.2
 X-Last-TLS-Session-Version: TLSv1.3
 
-__testapp_validate_traffic is supposed to return an integer value that
-tells if the test passed (0), failed (-1) or was skiped (2). It actually
-returns a boolean in the end. This doesn't harm when the test is
-successful but can lead to misinterpretation in case of failure as 1
-will be returned instead of -1.
+testapp_stats_rx_dropped() generates pkt_stream twice. The last
+generated is released by pkt_stream_restore_default() at the end of the
+test but we lose the pointer of the first pkt_stream.
 
-Return TEST_FAILURE (-1) in case of failure, TEST_PASS (0) otherwise.
+Release the 'middle' pkt_stream when it's getting replaced to prevent
+memory leaks.
 
 Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
 ---
- tools/testing/selftests/bpf/test_xsk.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/test_xsk.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/test_xsk.c b/tools/testing/selftests/bpf/test_xsk.c
-index 679491b6b9dd80ccb2b92729141fb8715b874c6d..8d7c38eb32ca3537cb019f120c3350ebd9f8c6bc 100644
+index 8d7c38eb32ca3537cb019f120c3350ebd9f8c6bc..eb18288ea1e4aa1c9337d16333b7174ecaed0999 100644
 --- a/tools/testing/selftests/bpf/test_xsk.c
 +++ b/tools/testing/selftests/bpf/test_xsk.c
-@@ -1725,7 +1725,10 @@ static int __testapp_validate_traffic(struct test_spec *test, struct ifobject *i
- 			testapp_clean_xsk_umem(ifobj2);
- 	}
+@@ -536,6 +536,13 @@ static void pkt_stream_receive_half(struct test_spec *test)
+ 	struct pkt_stream *pkt_stream = test->ifobj_tx->xsk->pkt_stream;
+ 	u32 i;
  
--	return !!test->fail;
-+	if (test->fail)
-+		return TEST_FAILURE;
++	if (test->ifobj_rx->xsk->pkt_stream != test->rx_pkt_stream_default)
++		/* Packet stream has already been replaced so we have to release this one.
++		 * The newly created one will be freed by the restore_default() at the
++		 * end of the test
++		 */
++		pkt_stream_delete(test->ifobj_rx->xsk->pkt_stream);
 +
-+	return TEST_PASS;
- }
- 
- static int testapp_validate_traffic(struct test_spec *test)
+ 	test->ifobj_rx->xsk->pkt_stream = pkt_stream_generate(pkt_stream->nb_pkts,
+ 							      pkt_stream->pkts[0].len);
+ 	pkt_stream = test->ifobj_rx->xsk->pkt_stream;
 
 -- 
 2.51.0
