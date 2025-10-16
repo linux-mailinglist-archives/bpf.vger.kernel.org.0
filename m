@@ -1,111 +1,138 @@
-Return-Path: <bpf+bounces-71115-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71116-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB376BE4209
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 17:10:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F130BE49C4
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 18:37:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DD7858865F
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 15:07:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59F654055DF
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 16:37:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B9934572B;
-	Thu, 16 Oct 2025 15:07:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D470932D0CA;
+	Thu, 16 Oct 2025 16:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="j/hTt3uq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XiOzHBmv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96F43451CD
-	for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 15:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B63A32D0EA
+	for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 16:36:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760627247; cv=none; b=WH3BBOFNKmPUb7dFXAFgu/0PFQM/SMDzAghyfjmW9wgj9PZKKCRDpL84OcXE1DA9hibFagbqjR20/2FGVU8dDasUWTgPY+2U2If5QOADK651MQXJbarQrZcf3TIkzFyKpwB6P3Q9A5pICY3LjIJ2eMInE20oBw6EHKllwttiIV0=
+	t=1760632620; cv=none; b=Tz8rFJJdASqBj0MjIBMqJX/6ITJieflyrlksmSE8zhQuIr6X/MsXKx4EJl6h5CX46IjUqzZjcBfU322eRnuxki76ypDn8waeQfV5Ihcy7DhHkcaHF5b6jRHfQF+uF8hX9np0Ea9X1dtAQPzsyzAnFzAinDxSSbXTWde1sFHUTTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760627247; c=relaxed/simple;
-	bh=4Kv+Q//f68Xkwsporcq2AyDXgJ8e4LcpwNVEwpp7yDk=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Content-Type; b=WxD64EciNGxh6gDvO0/JyamkJF0yWY7VhkUk2DD3ohAW8JQaAHkvBg4aD2u31dGa3KAqZllf/xOonqxqLY6dW8L9TAnWIcCZu2RZTuR2Kzgjvltkknub6SkLremB44cELXl38egQAmHo4HxUXCSzUfFj9Jj4zQa+pjT3N+hxK8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=j/hTt3uq; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-28bd8b3fa67so8991855ad.2
-        for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 08:07:25 -0700 (PDT)
+	s=arc-20240116; t=1760632620; c=relaxed/simple;
+	bh=R+TmdbdFcByyR8U2OeOUMQReG8RavVd6Am6yeRrUOuA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EMeaSLrAe+WOtvg39vEe1Z7UJLKeyh3S6smeviLtWyQhAq5jkqp5QWkcKq8/Fts/BihuMHIXRHYVGbBHou496TnA93HnqRJxmXlZivjvkoI3ZGu2Pr/MkxAHZ9oTeNJSfxA4nIO76RJwdxxMRDKqY1WvjfcfsyzvaYuScXuYpzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XiOzHBmv; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-782a77b5ec7so960457b3a.1
+        for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 09:36:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1760627245; x=1761232045; darn=vger.kernel.org;
-        h=to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Kqpf0Fu0OCWR1YlBKGJvnIsofgUkQfFS/TDp/NjRK2I=;
-        b=j/hTt3uqt/b4DdHBKWPKsfW1yFJVG049GvAkag/t/rLtpcv2N4SknuSvkYV5TRiAMy
-         wYVljTuI4yc6rRw0xVbDPPrCE3XoxIoJ4/dhCl3k5sAAYsOukic7+7rrtBVY0QWA77BY
-         dO69E+iqRhhANnp52nE4PfIs45f9rHLPhln8E1oMIprZPL1+F81Nz2pjEbThcRrIRL1c
-         4BgjFBXJPkPqOVQ76+QVRyjfE2TgfcjmEI58rz0jBB+KJL4jtuBE4jmbGdkU9yhiF3ZT
-         G1p2WCJyr7CFJUbFPa2yEb1QYlJw3OopufHhp7HK2Ls8jEbXUlAT/azdaSUHKyYI/OsS
-         du2A==
+        d=gmail.com; s=20230601; t=1760632618; x=1761237418; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IFn3CxIRAg7TBQF7TKjze6YhjZQwRMlhpuXzgCf3Zco=;
+        b=XiOzHBmv3ecamlyqBoD9+qWdO+mDgw2tBi7+g6pTyX7KztyH9ndY1Dsu3Zh2J23YcE
+         vmeLCuVFa9bdrXcSoNf+48Fsn5wQTckrTuGRCWLbRIIHbt+wA6f3Ny21L6nnAmy4q9Aa
+         uCV7dOMjKZ9H507WyzJL3v55sUPQgb/80fu0jbPZtbyR5eSXYJ/300V/XtkTftRSCCXS
+         cPzdFKYEypKPNnw2nV26S7hTcbhp+CN1ZcPflihSZkZFNZg2aMFrkyCwkU0FT7ukcwVg
+         eVLtj6AD14Rtk+Ri+ChV2DPSsA1kLnFh7+Abz4AiaEV4dAl0yuDJcjEkHUKbwrgNkNdn
+         0elA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760627245; x=1761232045;
-        h=to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Kqpf0Fu0OCWR1YlBKGJvnIsofgUkQfFS/TDp/NjRK2I=;
-        b=J7XMdZaApleWZPWYNYemRUeiOG5g+hV1LH5PSJjbPDxtWMHEydPqRY74t9Ssjw8TOz
-         bxgRyW5WDVeJ4L21bUPaIghUx/4HaoB9sDqNxYsyc96VCizJVzsGOm9qt5u1YA5J3a+y
-         eVXwItLLPAp93NM25+u3Mt5/FI4GNBBGzF4vOIdQ2Yk0DmriIpF4g+TvPy8v1O8W4dcn
-         0LvnmzYgFiZtTcdtq6tlrwAhbQ91aDA40r77ZnSBaHdIINMwLYCMDWT7xf2H9gDbRUL9
-         OR2R5MpY2pAGzII01WK64u/hIIbBRvi4ZxC3GrGqDJLpTku/+zHGATpgkVBPvqk/0ceY
-         ui+A==
-X-Forwarded-Encrypted: i=1; AJvYcCUBmxFMnUq50QyHnm3LtsOKtbiYhcoNNVKMk2sdYmhi9rcds5Cxy8G7xUtiPyIPS8ID0ew=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3wpe6hdOmGnf+Uy64SWBOwNxS+80R3QLr3icc/oCjXou69wmi
-	qbPhHtwSlxXbl2S+5O0ifWhZTQGaznVz9J9Hlra+KV3ilPI4XCMaTiGLFPLc3YYoGqqNVyZ3kqV
-	zAabK3cI/9A==
-X-Google-Smtp-Source: AGHT+IHqYPhC2qOdi+vpE2OyTisfl6js/3CJd2u9/Vb8VK0aQflkqpoBI99mXrkhamaij8CCRoww5vvQZ8Ow
-X-Received: from plma24.prod.google.com ([2002:a17:902:7d98:b0:290:28e2:ce55])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:94e:b0:290:533b:25c9
- with SMTP id d9443c01a7336-290c9c8ae4dmr3441075ad.2.1760627244753; Thu, 16
- Oct 2025 08:07:24 -0700 (PDT)
-Date: Thu, 16 Oct 2025 08:07:18 -0700
+        d=1e100.net; s=20230601; t=1760632618; x=1761237418;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IFn3CxIRAg7TBQF7TKjze6YhjZQwRMlhpuXzgCf3Zco=;
+        b=J1NsDNlf8fyX9WMMOqrqtDOMZDKUM3hdL42Ouy+bvLNNUu8Pg5TyIo1dCuavSHNYYA
+         bnmPCgwwuwIRw4BBoZ+pnSl12tzYFWe7Tvaf7UfozD2VaT8jKy9SiVOiw5F8j9c9zO4Q
+         9N+NyiJz0NdvoGP5LMWCIVR7Y6HL/RbetVTerpA82qYsJh+jchV1rO+rQkx+Ciy8Mo6S
+         kytIB0xeL95Z9jpimxC2FBFiS5g5NO/f8jqG1cLbd9cgzhQ7qglD7VsbOhRYaoBRngoW
+         h+2ruXyEaIGP+txS/mPsUjCwGlK9mJLiXa0XjfCCtqxXs6tqPSfWtCN9Vv1uTEwE0w6T
+         4cjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUYe79vlBCYNtwcB1S1YswZsxdM3TNqLYW4XkeOR17I9c9lgr3G3XCqP36B12y9zPb0KGM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwlghNvvdS1lNP+DoyUs5RHMnC2aAifawkaweKCkBshZ9ZZhxza
+	2w4Ji+HyiFccIfIHbtbJC1rSFigrnlJDy9r29ATxAg6MJ/Kjdn6aV1nEna4Wd3BY4nrKfAo7nDZ
+	1USENrvUOq7UOJl0Er4pVzfuVxXgLgh8=
+X-Gm-Gg: ASbGncusudSRK7LvCppckDZrvAKRqxR/2MLUFYQKK+SVSHZwd2wz+/YZCixg1Qn7CLE
+	H+Bmb0lxrqjlpCwyhsVNauWtyweWCyBMnVd0/pVibAaxTe8oUMOLF2Dleyh2kp6QtuWd1H0eF5I
+	+OZGhxzn9S4fNQnlpDYZPY8qdKQUjfyWeuTc4TwB6Fpc0L7ofUIYAK9iSjVfL+b8juQfUEaaUEs
+	KDW25rbqfF8qEwbohRoI4miVabCgBukUbpjooZ/9+MY7a1S6gbOzUp3L7CMvM7Lej7vVA2FOX9q
+X-Google-Smtp-Source: AGHT+IG4Pi7+5kQaId3168O2QuS6sO1obTUjZYf1MfpJ7lJKxUT2dFX5euSiQERud9lKX8hESnvYvmCDV4ltJEyaoQ0=
+X-Received: by 2002:a05:6a20:12c9:b0:2ea:41f1:d54a with SMTP id
+ adf61e73a8af0-334a862e49cmr754323637.55.1760632618018; Thu, 16 Oct 2025
+ 09:36:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.51.0.788.g6d19910ace-goog
-Message-ID: <20251016150718.2778187-1-irogers@google.com>
-Subject: [PATCH v1] perf stat bperf cgroup: Increase MAX_EVENTS from 32 to 1024
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
+MIME-Version: 1.0
+References: <CAEf4BzaSPbsWGw9XiFq7qt7P0m0Yoquuxca39QrvorKFeS+LAg@mail.gmail.com>
+ <20251016035330.3217145-1-higuoxing@gmail.com>
+In-Reply-To: <20251016035330.3217145-1-higuoxing@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 16 Oct 2025 09:36:44 -0700
+X-Gm-Features: AS18NWCD1B8sBmTDmPEqjvwbEypUX3tay_n3fTnUJgZ8sEXeKcejJDl53myxC5c
+Message-ID: <CAEf4Bza6ynjUHanEEqQZ_mke3oBCzSitxBt9Jb5tx8rxt8q4vg@mail.gmail.com>
+Subject: Re: [PATCH bpf v6] selftests: arg_parsing: Ensure data is flushed to
+ disk before reading.
+To: Xing Guo <higuoxing@gmail.com>
+Cc: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, olsajiri@gmail.com, 
+	sveiss@meta.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The MAX_EVENTS value ensured a counted loop presumably to satisfy the
-BPF verifier. It is possible to go past 32 events when gathering
-uncore events. Increase the amount to 1024 as that should provide some
-amount of headroom.
+On Wed, Oct 15, 2025 at 8:53=E2=80=AFPM Xing Guo <higuoxing@gmail.com> wrot=
+e:
+>
+> test_parse_test_list_file writes some data to
+> /tmp/bpf_arg_parsing_test.XXXXXX and parse_test_list_file() will read
+> the data back.  However, after writing data to that file, we forget to
+> call fsync() and it's causing testing failure in my laptop.  This patch
+> helps fix it by adding the missing fsync() call.
+>
+> Fixes: 64276f01dce8 ("selftests/bpf: Test_progs can read test lists from =
+file")
+> Signed-off-by: Xing Guo <higuoxing@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/arg_parsing.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+applied to bpf, thanks!
 
-diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-index 57cab7647a9a..18ab4d9b49ff 100644
---- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-+++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-@@ -7,7 +7,7 @@
- #include <bpf/bpf_core_read.h>
- 
- #define MAX_LEVELS  10  // max cgroup hierarchy level: arbitrary
--#define MAX_EVENTS  32  // max events per cgroup: arbitrary
-+#define MAX_EVENTS  1024  // max events per cgroup: arbitrary
- 
- // NOTE: many of map and global data will be modified before loading
- //       from the userspace (perf tool) using the skeleton helpers.
--- 
-2.51.0.788.g6d19910ace-goog
+Given you can reproduce this issue locally, do you mind capturing
+strace log before the fix, with fsync fix, and also with fclose, which
+you say also fixes the issue. But that makes little sense to me, so
+I'd like to compare what's going on at syscall level to try to get
+some idea. Thanks!
 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/arg_parsing.c b/tools=
+/testing/selftests/bpf/prog_tests/arg_parsing.c
+> index fbf0d9c2f58b..e27d66b75fb1 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
+> @@ -144,6 +144,9 @@ static void test_parse_test_list_file(void)
+>         if (!ASSERT_OK(ferror(fp), "prepare tmp"))
+>                 goto out_fclose;
+>
+> +       if (!ASSERT_OK(fsync(fileno(fp)), "fsync tmp"))
+> +               goto out_fclose;
+> +
+>         init_test_filter_set(&set);
+>
+>         if (!ASSERT_OK(parse_test_list_file(tmpfile, &set, true), "parse =
+file"))
+> --
+> 2.51.0
+>
 
