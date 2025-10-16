@@ -1,152 +1,158 @@
-Return-Path: <bpf+bounces-71148-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71149-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07407BE5669
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 22:28:28 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73D49BE5678
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 22:28:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BE205E55C8
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 20:28:25 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id EB249357667
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 20:28:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 274302DF14C;
-	Thu, 16 Oct 2025 20:28:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D2852DEA9E;
+	Thu, 16 Oct 2025 20:28:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y5pWjFNo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iPmtlvPx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56AE914F112
-	for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 20:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE7D218FDDB
+	for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 20:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760646500; cv=none; b=b6A8+NOMSkB6UidPO7xP56vA6PHowKQ55Q6BLvqVH/G6pBEeqBMLW6uq1hr6g2IRM1gqnDxvH7FS+9NMFzZC8AmNCSaoP9yD2snxcu9iub5YAt++xPWM0LqkxGqOq233HSuFzAAcaHMHfZ5Gr/PXmU1xx8TeKgxCg5NyJPVqMfE=
+	t=1760646533; cv=none; b=W0XQdk9umnFkIh0N36I7hcaWhP4Dx9pUvDaXC+b/uGOjsHlM0Fq3Mgn+mK8kmdS3HXvKhhv1H0PS/MANsqD1HsVZwMoDv0r9wkgZfvvBVlK1aXVIr43yI7E46iykSpqj9FDOu9JkqXhYS374qrQYMvSd13rgF7Fc3I613Nj6yos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760646500; c=relaxed/simple;
-	bh=st8CE9lSuHr+S9UOZSYikJT8QbGSDyWDzzQM1KcjVRA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NcSj2h7H9cwmivtQcx//e3BDAPe7hNhFQ0i2z7+/VGDtjfnsvs7Vxi0jUTgNCfgrH9TFDrH/0P1Ci7s3AQ7Cr1W30xefIf0nGOycTe8UVd/cWEQYUsyER0yBMvRtjUMqET3MSyiVTY4wCs5s4Y2I7woYshfCLNCUEzqgrk2tWRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y5pWjFNo; arc=none smtp.client-ip=209.85.210.177
+	s=arc-20240116; t=1760646533; c=relaxed/simple;
+	bh=pAwHmuJGCE37w9BILfTJEkXNbacr6XtoS56A4wL/GnM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F34nPCniKwD8MeLJ8ZLdgiITzYP+2Biei6Wzqf012jn4DOm3B8GN7MN+o95E8XjsnNOxQDdbwsnSa0GWP9CQCY4SOf3ja2esKXJkPEkpFJhF3a3KkzEcK4M7ZMhPFxOLOyw3TT/GICWCDFkrvZ1ekKWOsBm8a3Z1YmOy+S3VXnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iPmtlvPx; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-78118e163e5so2117992b3a.0
-        for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 13:28:19 -0700 (PDT)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-33ba2f134f1so1199078a91.2
+        for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 13:28:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760646499; x=1761251299; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3jY39mXgVcMN9xXBrEeHr/JB2nDeThDXcp+1mm32IdM=;
-        b=Y5pWjFNoMFuga+piOB20DKpQqJSOgtBUvga9OwP/+NdW1PyKmFNIE5b1ajws+2AVe1
-         K6yFsKzxjO8OpiCoaYUSG6XCWrOGDkzIJGNH0Z5dyV5D4cDey1Eegc6Sos/RlztDOXLz
-         M/x9ZvO67bjp+DXLtUN/R0I3YeYW/k9Xh6pLJgWyyam0qUYRBz+TkOLFqrLjCUVzBWih
-         LgLtvg4qG2eSZtMpCJy2YzWkRvPTXV0wZKF7SsW5J+ZNw5Zynd6mNJP++i9DxwD7oemi
-         /XZ9kSL6jy/B9ikPgaBlF0nLIWZcbg1wvYpjyuqAHsdlzuIlzLvWN+kKawIZKdyQdY9d
-         OjGQ==
+        d=gmail.com; s=20230601; t=1760646530; x=1761251330; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IJlkoIkmRdqWWwkmBk5yAznPiL2zm9nsSbO1CJbC2uY=;
+        b=iPmtlvPxqiHASsDfyXe2cEJFe1oaRJR22l57/MM4ZEVv/QaVv3DETPKOvvfcmojZnH
+         PDduYmTJTYLpN3VB1G0zhNYl98nvNL0x4Y8QW2ESrktT42apxwn2VntK+Vl5ReQU89tW
+         lbpB1eBia/XS56VKYaEUWyrv6WS6GocihRr+HFfMqBGQKNlqts9KAL8dS5AnEpsamNDP
+         VHaaRSYxRrLv76eTEEd/63Uek9a6RMPoPrjxR0vbwn5qh4vHohkURrptUR//SRfh5i4P
+         XkmMiGRgiD65Vsyg0lLdof0LYdU44jZDJaFcPxmoy6QFQpPz8qfRThpFK/UG6T5rt+mC
+         U2kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760646499; x=1761251299;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3jY39mXgVcMN9xXBrEeHr/JB2nDeThDXcp+1mm32IdM=;
-        b=irgEvbtD09UcgjszHVnDB9pVKW/K26A9Sl9aT3fSbB3U0qLqgWBn40sJigT7Hihnc1
-         QCsmWFgJdEhqIlk4QcGMMxQDSrHL88WGtWOx/u1YyXiAFCaJKJ8FfFSVDiT5WQbJnryx
-         2O3CYyc9RGgz3rm1E1B+NzS0tF+4b+BJUlFklLXvyed9LATsVxzU3vinDkx8OwlTnhDw
-         9AKYECh1e0RSHssopWT14twsZ739MTdTrlbaBAn16DscAQWNt01rd3ibWRkZk6pHU9c0
-         Y8aY4tekblLSRE9/OMD2tVgHlkvmxKEn5czKCuiTzzr4ORom2jkPh+nyRzlI47mBfMU+
-         VomA==
-X-Forwarded-Encrypted: i=1; AJvYcCWcnQCDaWSZ6RbV4eSGU88RbXpP3YtpeRRNy6jeUYTMcZT6xbQiTZWGEZtiG692rrvS73M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzKg4zz7wG91lSA0hNDGlQiRL4YDisT/jUK3x7tSv0Becwl9hhW
-	bk0VGZo3gY9GDRDrSp5rM35Avb56YbUtY3H0zhRnp4Z5lvJIP0P8FxKW
-X-Gm-Gg: ASbGnct/FtIo/zpHuD3HW6wMkqWbBlA7jPD0DPzC+PE/mnK/qEQZMNa/MnpLsLjf/Fh
-	22qEFZOAYxciTNvIyey6tkbuf4/btG4EWmgka25EneqKhH+Lgr0t1y+jBetFu/FSCoZU5cEsIYJ
-	9NRxIOPcFSNcvtBNIWVgV1z5lRoTauYQB4XMRxUo352tu+lU+38kdXgGSZyDxwvhNkzlBlwdC83
-	ye3rvno0QiXcRncwqFDFzgPlY4yWFiXg/GU7Jf6/FRwVYhIoHkoQlAUfpVpW/GQhp7iO4j7uxzX
-	b+mZpPrp0hrJfDabA83jyxn4uP94ckFyPk+qPBLCi0A0M/SX0ZXqHoPNAJCvnU+YhL8l+jh3jN5
-	ptZVa3iW9H3lzbl6/YydeWPTWbHcU00eCUiQMH31L1urq30fCSMC4SswC99R9ZidlTwTJ89Hnp8
-	U8sXh/tDKB9n+C/vwzTKrV8S7qMCza4WOyQYRFIrEHe/r8
-X-Google-Smtp-Source: AGHT+IGWLWyH0AABkRz6alBvUVzPFctljtKTWRYOwESGtF7UJb7utW5OdfjqyV+JPgqFQydchn8xQQ==
-X-Received: by 2002:a17:90b:3f0e:b0:327:c583:add with SMTP id 98e67ed59e1d1-33b9e0a4c2dmr5398538a91.6.1760646498534;
-        Thu, 16 Oct 2025 13:28:18 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1151:15:6028:a61a:a132:9634? ([2620:10d:c090:500::5:e774])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33bd79dda6fsm337108a91.10.2025.10.16.13.28.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Oct 2025 13:28:17 -0700 (PDT)
-Message-ID: <b4418948-61ce-4cf1-a3d2-a4208e73d5b3@gmail.com>
-Date: Thu, 16 Oct 2025 13:28:15 -0700
+        d=1e100.net; s=20230601; t=1760646530; x=1761251330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IJlkoIkmRdqWWwkmBk5yAznPiL2zm9nsSbO1CJbC2uY=;
+        b=H3RtFgVPQ03L7S9XfGi7w368TRL7HiVgaIkRwx/flDVyWBwf6QdqPaNwvi/N9Yz3zq
+         VNA8KmJGGUd9yiSKHAzLyscnM6cMa7GRhg49Zj14pvrv0aTFfCXzWQcDxljGTe8MTSpW
+         DMtr5jTSPDJGZTjDIIWRewqrxtB2iuVb8bIdbCDxqf192RpXj8f7s63BVBzMNYjvIe6l
+         WwSNptB9vzoWNi9LqlL7q0lEFlEnmg/Wwg95pCIQfKPlDIIKuQhWF4m8pC6kRdaRTi+X
+         MA/tzNPL89MFlAAJbs5cVWzB+ZpLMRvAyNptLJPA92NFBCxUaCJbmxQwzNwk8M2E3mhv
+         GyKg==
+X-Gm-Message-State: AOJu0YwpnaHsHK8H2Hc5XgnUf/gfEcXDsV/pj+AE47EH09ZB+w3G+pmB
+	Pv/humuiLNGMghNyYpQSpTaMh/oEifZg/j4ZlFWG0Jwo2X300xIsI/TZ93nMyqztL6b+fCve7iy
+	keAfLCrjwn55Dn2T+TZdJU6ut8AVaLlY=
+X-Gm-Gg: ASbGnctgRFVFOpPTvMF/Om4q5CMoI+ehJy8AQdzU09jzpTPW8l/awXAapYTTjA1y1fq
+	le2wJ3VcTqXNGFjJdd80BfPbl0oxiFzC9rRo3LnnEUmffyZjtLrYNUQYQ86fFuRv26uNyngKVWE
+	36cBFHlulkTDC1QRCpTOTebAZPZx3HeF9YtfNvqhqvzVk4Os/4wsnSpm5TuNfnGRWjKksWKRk6f
+	4+4I6SrMjTBOMG3iLcOOB4ciIKbigsKVn/5YrCv+aDtGmxGRgO579G1jh8jZRUb/w2n8t/3sNek
+	BCbDP/OE4grHZrRUK7tfrw==
+X-Google-Smtp-Source: AGHT+IG8qw0KRau9xEmwLhJYlo25wjP4fthLOXRPbeGaYHGBcHxu9ZQ3bZv8lM7TBrguH6hVpl2MdHAn4nPVbYoV3So=
+X-Received: by 2002:a17:90b:1dd2:b0:327:9e88:7714 with SMTP id
+ 98e67ed59e1d1-33bcf926c1bmr1217823a91.37.1760646530040; Thu, 16 Oct 2025
+ 13:28:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] memcg: introduce kfuncs for fetching memcg stats
-To: Song Liu <song@kernel.org>
-Cc: shakeel.butt@linux.dev, andrii@kernel.org, ast@kernel.org,
- mkoutny@suse.com, yosryahmed@google.com, hannes@cmpxchg.org, tj@kernel.org,
- akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
- kernel-team@meta.com
-References: <20251015190813.80163-1-inwardvessel@gmail.com>
- <20251015190813.80163-2-inwardvessel@gmail.com>
- <CAHzjS_s3L7f=Rgux_Y3NQ7tz+Jmec5T8hLyQCxseLJ9-T-9xuQ@mail.gmail.com>
-Content-Language: en-US
-From: JP Kobryn <inwardvessel@gmail.com>
-In-Reply-To: <CAHzjS_s3L7f=Rgux_Y3NQ7tz+Jmec5T8hLyQCxseLJ9-T-9xuQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20251015161155.120148-1-mykyta.yatsenko5@gmail.com> <20251015161155.120148-5-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20251015161155.120148-5-mykyta.yatsenko5@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 16 Oct 2025 13:28:35 -0700
+X-Gm-Features: AS18NWDP7WaXX9RfaAxvBFIoxaIhK5vLgptqpGGn0JquEuVmxx9QvRmXfAOpVM8
+Message-ID: <CAEf4BzbbZrfEi_tWKvD4f2et0gN1s3seZMguROsgTSqtnW5=SA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 04/11] lib/freader: support reading more than 2 folios
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	memxor@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10/15/25 4:12 PM, Song Liu wrote:
-> On Wed, Oct 15, 2025 at 12:08 PM JP Kobryn <inwardvessel@gmail.com> wrote:
->>
-> [...]
->> ---
->>   mm/memcontrol.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 67 insertions(+)
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 4deda33625f4..6547c27d4430 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -871,6 +871,73 @@ unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
->>   }
->>   #endif
->>
->> +static inline struct mem_cgroup *memcg_from_cgroup(struct cgroup *cgrp)
->> +{
->> +       return cgrp ? mem_cgroup_from_css(cgrp->subsys[memory_cgrp_id]) : NULL;
->> +}
->> +
-> 
-> We should add __bpf_kfunc_start_defs() here, and __bpf_kfunc_end_defs()
-> after all the kfuncs.
+On Wed, Oct 15, 2025 at 9:12=E2=80=AFAM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
+>
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>
+> freader_fetch currently reads from at most two folios. When a read spans
+> into a third folio, the overflow bytes are copied adjacent to the second
+> folio=E2=80=99s data instead of being handled as a separate folio.
+> This patch modifies fetch algorithm to support reading from many folios.
+>
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
+>  lib/buildid.c | 26 ++++++++++++++------------
+>  1 file changed, 14 insertions(+), 12 deletions(-)
+>
 
-Good call.
+LGTM
 
-> 
->> +__bpf_kfunc static void memcg_flush_stats(struct cgroup *cgrp)
-> 
-> We mostly do not make kfunc static, but it seems to also work.
-> 
->> +{
->> +       struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
->> +
->> +       if (!memcg)
->> +               return;
-> 
-> Maybe we can let memcg_flush_stats return int, and return -EINVAL
-> on memcg == NULL cases?
+Reviewed-by: Andrii Nakryiko <andrii@kernel.org>
 
-Sure, I'll do that in v3.
 
-> 
->> +
->> +       mem_cgroup_flush_stats(memcg);
->> +}
->> +
-> [...]
-
+> diff --git a/lib/buildid.c b/lib/buildid.c
+> index df06e492810d..ade01d7ff682 100644
+> --- a/lib/buildid.c
+> +++ b/lib/buildid.c
+> @@ -108,18 +108,20 @@ const void *freader_fetch(struct freader *r, loff_t=
+ file_off, size_t sz)
+>          */
+>         folio_sz =3D folio_size(r->folio);
+>         if (file_off + sz > r->folio_off + folio_sz) {
+> -               int part_sz =3D r->folio_off + folio_sz - file_off;
+> -
+> -               /* copy the part that resides in the current folio */
+> -               memcpy(r->buf, r->addr + (file_off - r->folio_off), part_=
+sz);
+> -
+> -               /* fetch next folio */
+> -               r->err =3D freader_get_folio(r, r->folio_off + folio_sz);
+> -               if (r->err)
+> -                       return NULL;
+> -
+> -               /* copy the rest of requested data */
+> -               memcpy(r->buf + part_sz, r->addr, sz - part_sz);
+> +               u64 part_sz =3D r->folio_off + folio_sz - file_off, off;
+> +
+> +               memcpy(r->buf, r->addr + file_off - r->folio_off, part_sz=
+);
+> +               off =3D part_sz;
+> +
+> +               while (off < sz) {
+> +                       /* fetch next folio */
+> +                       r->err =3D freader_get_folio(r, r->folio_off + fo=
+lio_sz);
+> +                       if (r->err)
+> +                               return NULL;
+> +                       part_sz =3D min_t(u64, sz - off, folio_size(r->fo=
+lio));
+> +                       memcpy(r->buf + off, r->addr, part_sz);
+> +                       off +=3D part_sz;
+> +               }
+>
+>                 return r->buf;
+>         }
+> --
+> 2.51.0
+>
 
