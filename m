@@ -1,130 +1,124 @@
-Return-Path: <bpf+bounces-71073-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71074-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60BF7BE1646
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 05:53:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 900ADBE16BA
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 06:19:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E198486FA4
-	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 03:53:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1148419A2B2A
+	for <lists+bpf@lfdr.de>; Thu, 16 Oct 2025 04:19:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981B0156F20;
-	Thu, 16 Oct 2025 03:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD13421B9F6;
+	Thu, 16 Oct 2025 04:19:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="caIVXEoP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pvVkZIX8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0EE4B67A
-	for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 03:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92BA22A1CF
+	for <bpf@vger.kernel.org>; Thu, 16 Oct 2025 04:19:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760586819; cv=none; b=MkjbnzvdWufv5dHgqEQ/W1K3XxiYYW3d6WEvQPCoIGuI0zz2vg/lXU4ZmdsDA0TXqw3TWvl6N4UdEi7QTD3uPwWJNzHa2K/nVsIzUO0G1v8kzkVgxEVeKPCAiM4enpoMAWaOf71Yqgpgu1tqk6Ml2MszUUxE3niAY3fHBBqGpgw=
+	t=1760588350; cv=none; b=AmIZdXUF3RTeEaLDJ0r7ALo/NNqOjRmltcWZImyZgeAu3X1fyZaaLu/wqTy5P8eI97gwfidkqmwpY0wki80OsV81Cg4yNUNcbCub6fsyM50z2uxi70JZL7Ios3loklB2d7oOUsgln+UuemsdZGG0umLlGu8mKprR2O0yIXWiJak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760586819; c=relaxed/simple;
-	bh=+Bi0k7yeEVhElVYsr9bEFjVbio42J+whEdTcbqgJylY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gfIanjOqtD4/gyfoRNmjcxAfpT8KEQ24gip+i2Vew7pCIU3kESWhJkrNvElRWNBz6KEWkKQQ5Lqt+Xw4JqORXGgGJYWZ5UbzhaQxlVCi4wFm6uUfESM5OCRqThMh+/1zMQ0f3kW9bzmDH5ftdIIPy7hCz/Dbg4dfeuyIzru9BrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=caIVXEoP; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-78118e163e5so1434571b3a.0
-        for <bpf@vger.kernel.org>; Wed, 15 Oct 2025 20:53:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760586817; x=1761191617; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BjH/Xk+Vw9IhbcZ1lknKGKFAYoqovFnR+/YWG7tmcfk=;
-        b=caIVXEoP5MWayTqnL+Mr1J4qxOaPiRdidDy2At10CWfnKdI9njcVZVtLN7Hk20A9m9
-         VQNCR+pw5aM14/Ty6UpG42LoAyBSU3DPhAMu4uWRF3yvfqDaU5Fv5rXCvGaH/orznudO
-         7PoeM7Lm6wRY8NdEF9xioiXQsyb1xOCRg4hxttcNFCIjRb9RJfqHIom8nkJZB0bEsoA/
-         meTdJIbNgcwOGVh3iOyCC/I0o0OPMyZOr9zJggPeZrepn/3+NHC1t/PuC8w35qt2Skq0
-         fMHHreFkw8rvVbOjnjCLjY3S4p02REXTsKiLwhQiq9RPW+AJ9KKX/i1t/A8EKVGJ62RP
-         ri/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760586817; x=1761191617;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BjH/Xk+Vw9IhbcZ1lknKGKFAYoqovFnR+/YWG7tmcfk=;
-        b=iQAvs8SVoFo3oanePl0P+H/fN+n6z4am83wzAp4PBPXoz6s+jfI1lvo/RMBNQMOKaW
-         hBdsL/P6v/wWBXva1iMfY7o6GxyeX4kHRLKGVr4iqZLQx6XDRRJoDkObrLitrHtp0GUD
-         yUL/v1O2mTKOgOuKGEdBL5/+CZz2OTCn2cB+XddOejVUxjyTQeVS/3X/JzjWGqpEKF7l
-         WjSsWlNTHd1yOdpSOxSRYYj1bTJaftAqtN0jWg0H8CnmuSKiAns9aGTUYqtRRUQR26DX
-         IZ2odx0HWnBXB5RU2kMbf1CuE41YUKfvSeLUI32hA59zll0pLFBRY8lCWcu3Zko3hBwH
-         08fw==
-X-Forwarded-Encrypted: i=1; AJvYcCWUJsnF5/XmNrXFatt8bAzqC9/3qAFzKw9aSoaAlMNjIm8Oof9Ta5q+Pn5kIm8E0BSTdSM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx29pIgiZKwqokaCmO8GVVUenzzb1tw5K/WT1nuJ5Bc7sOBOvRw
-	xKkBW8nw0BYUnqs5fXM3ve7n7Qafqzplyfxx5JhVNp4zfL87Hp2pxePY
-X-Gm-Gg: ASbGncutWbqq9khehjfaPfecpd5SdGO1j1y0ouap6whFdmDVKWNBULpAOKs1BXk/dZG
-	wc9P92tB8IXjhtE8bH4abe/o0o1cldD+yOHQaX7Yg2hTsicecswo4CgsRf604B/H5gJbhce1Rgy
-	adjddlpJLOc8uoxNtk4rJwyAwQ8Ky5fjewP9tdrMsLB8ml97uIKdRTGHv8XCvAIvVyJj5w4j8by
-	3QLZSY4XsqExdXawc00S13dUdWArvkwL2kUOtO+rP1zzwf2/Z+qmuO/Z2sfaTXHFo48SQ2X2+GO
-	iKSHMVYLNoXwEFHRMdzwdef526Vz5pzHDkhs+tNOqxC3yNivjxL3W72wYzP/scwTObDLe9Vsq7g
-	Y+7YvtWBxiwcUFd50m6MPLg30c5fdUOg6fz9ud4oFCnXPTF4NcHR2Im5XDpqEvCaCuxeDXmAEHL
-	cKLj8CsUaQyP12mipdAfTS03COhg7d9lYGdobNi9mw6HlrJyGncw==
-X-Google-Smtp-Source: AGHT+IF5L3KREyHjFSPQncpJROTSoshms/ZTe2ibdM8WJ0gkfy/b4DYL+CIu7RSZ9C1y3z7bKhMfXA==
-X-Received: by 2002:a05:6a20:938c:b0:2b9:6b0b:66be with SMTP id adf61e73a8af0-33495d82c1dmr3487745637.14.1760586816941;
-        Wed, 15 Oct 2025 20:53:36 -0700 (PDT)
-Received: from laptop.dhcp.broadcom.net ([192.19.38.250])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33bb6632e72sm16065a91.19.2025.10.15.20.53.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Oct 2025 20:53:36 -0700 (PDT)
-From: Xing Guo <higuoxing@gmail.com>
-To: andrii.nakryiko@gmail.com
-Cc: alexei.starovoitov@gmail.com,
-	andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	higuoxing@gmail.com,
-	linux-kselftest@vger.kernel.org,
-	olsajiri@gmail.com,
-	sveiss@meta.com
-Subject: [PATCH bpf v6] selftests: arg_parsing: Ensure data is flushed to disk before reading.
-Date: Thu, 16 Oct 2025 11:53:30 +0800
-Message-ID: <20251016035330.3217145-1-higuoxing@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <CAEf4BzaSPbsWGw9XiFq7qt7P0m0Yoquuxca39QrvorKFeS+LAg@mail.gmail.com>
-References: <CAEf4BzaSPbsWGw9XiFq7qt7P0m0Yoquuxca39QrvorKFeS+LAg@mail.gmail.com>
+	s=arc-20240116; t=1760588350; c=relaxed/simple;
+	bh=iWyh5tgjEeMnhxeipX44mO0VXx2Xk41sBqaFgRoaWyw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MxMCMRbHv6LunfY8ke6lhB0ZHHRWN1d/h4sXLpMG5kbddEkLuri87qlZuHK5AI04WTH1q+i3MeqVa1aA7O5g8PyTwTPWLuEsDTcJa/Mqr0wEw1itP8Vz0u8hoCG1yZXQ94Eht7SvRAOzD7HR3zMmLoRLlq6SYEHEwUHN8ofYQJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pvVkZIX8; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <987ef44e-55ef-4e6c-92e8-daaf005701b2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1760588335;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j74IkFY/9p07YTv56+MgM3TYZlLX13fwYDRNS0UGDp4=;
+	b=pvVkZIX83jiJ/l+3B/CwdBQUhQL29T6Aj19njZ+XX6q1LWoomT7wZsh5h1ncbJVRXdf4vr
+	gjEhpT8HhNyc47WmdOIbHNdqLpCbpbnhoMkVsax9ENfy7QAqeeLTOp0dsGdFxAPjfwPVBX
+	yv6tpCQoAyeGEWWTPOZGCcRpcgwqZPQ=
+Date: Wed, 15 Oct 2025 21:18:42 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH v2 1/2] memcg: introduce kfuncs for fetching memcg stats
+Content-Language: en-GB
+To: Song Liu <song@kernel.org>, JP Kobryn <inwardvessel@gmail.com>
+Cc: shakeel.butt@linux.dev, andrii@kernel.org, ast@kernel.org,
+ mkoutny@suse.com, yosryahmed@google.com, hannes@cmpxchg.org, tj@kernel.org,
+ akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+ kernel-team@meta.com
+References: <20251015190813.80163-1-inwardvessel@gmail.com>
+ <20251015190813.80163-2-inwardvessel@gmail.com>
+ <CAHzjS_s3L7f=Rgux_Y3NQ7tz+Jmec5T8hLyQCxseLJ9-T-9xuQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAHzjS_s3L7f=Rgux_Y3NQ7tz+Jmec5T8hLyQCxseLJ9-T-9xuQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-test_parse_test_list_file writes some data to
-/tmp/bpf_arg_parsing_test.XXXXXX and parse_test_list_file() will read
-the data back.  However, after writing data to that file, we forget to
-call fsync() and it's causing testing failure in my laptop.  This patch
-helps fix it by adding the missing fsync() call.
 
-Fixes: 64276f01dce8 ("selftests/bpf: Test_progs can read test lists from file")
-Signed-off-by: Xing Guo <higuoxing@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/arg_parsing.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/arg_parsing.c b/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
-index fbf0d9c2f58b..e27d66b75fb1 100644
---- a/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
-+++ b/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
-@@ -144,6 +144,9 @@ static void test_parse_test_list_file(void)
- 	if (!ASSERT_OK(ferror(fp), "prepare tmp"))
- 		goto out_fclose;
- 
-+	if (!ASSERT_OK(fsync(fileno(fp)), "fsync tmp"))
-+		goto out_fclose;
-+
- 	init_test_filter_set(&set);
- 
- 	if (!ASSERT_OK(parse_test_list_file(tmpfile, &set, true), "parse file"))
--- 
-2.51.0
+On 10/15/25 4:12 PM, Song Liu wrote:
+> On Wed, Oct 15, 2025 at 12:08 PM JP Kobryn <inwardvessel@gmail.com> wrote:
+> [...]
+>> ---
+>>   mm/memcontrol.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 67 insertions(+)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 4deda33625f4..6547c27d4430 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -871,6 +871,73 @@ unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
+>>   }
+>>   #endif
+>>
+>> +static inline struct mem_cgroup *memcg_from_cgroup(struct cgroup *cgrp)
+>> +{
+>> +       return cgrp ? mem_cgroup_from_css(cgrp->subsys[memory_cgrp_id]) : NULL;
+>> +}
+>> +
+> We should add __bpf_kfunc_start_defs() here, and __bpf_kfunc_end_defs()
+> after all the kfuncs.
+>
+>> +__bpf_kfunc static void memcg_flush_stats(struct cgroup *cgrp)
+> We mostly do not make kfunc static, but it seems to also work.
+
+Let us remove 'static' in __bpf_kfunc functions in order to be consistent
+with other existing kfuncs.
+
+
+The __bpf_kfunc macro is
+    linux/btf.h:#define __bpf_kfunc __used __retain __noclone noinline
+
+__used and __retain attributes ensure the function won't be removed
+by compiler/linker.
+
+>
+>> +{
+>> +       struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
+>> +
+>> +       if (!memcg)
+>> +               return;
+> Maybe we can let memcg_flush_stats return int, and return -EINVAL
+> on memcg == NULL cases?
+>
+>> +
+>> +       mem_cgroup_flush_stats(memcg);
+>> +}
+>> +
+> [...]
+>
 
 
