@@ -1,94 +1,190 @@
-Return-Path: <bpf+bounces-71264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BBFBBEBF60
-	for <lists+bpf@lfdr.de>; Sat, 18 Oct 2025 00:57:23 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BC47BEBFE8
+	for <lists+bpf@lfdr.de>; Sat, 18 Oct 2025 01:27:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BEEC408028
-	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 22:57:16 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B95044E51ED
+	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 23:26:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B49633128C6;
-	Fri, 17 Oct 2025 22:57:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EFC82D77F7;
+	Fri, 17 Oct 2025 23:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="v8XrcFLf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF44F3126B8
-	for <bpf@vger.kernel.org>; Fri, 17 Oct 2025 22:57:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE342354AE7
+	for <bpf@vger.kernel.org>; Fri, 17 Oct 2025 23:26:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760741827; cv=none; b=X9hnOHISExyXZlm5yG2hWHUqiaP3cG2UdQFFoVyMYOUpzA6qLd+exWkL6XS6M2zqe36GUFaNGAN3WleIYD+KFWPMAZsLou1x9ecnWKghQbq7hLgF4KgyUutC7LBxeJe6abG362/b660Oe4YrDpUWBbMehpKeZtY7Ge39PF/SE7A=
+	t=1760743614; cv=none; b=LG+uQ4IN9G/e658j/+G6FHZbiPvAt+FzgbXyyO4SQe1VOXos7aXKuxijQ7lwDKVaU73xuSehQRLJHd4n8Xhyn7KuC/c9RHaQuAmNL6ZTCKsjFgjSHxH2sxPVjETd9sT6SlQ6GElMe/MIrKgOlAiticrhwt2ppWcVqmLMWvVItaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760741827; c=relaxed/simple;
-	bh=f7KvCyEDTyzOxXZjve5/fBxv3fhXq88Wg/v716HQCy4=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Kpubr3KnoNV0wccoRqArJLWl8j2RNZfQjOyLqPpNpN/w0SDZIM8t8b8MxL5P8IunvIXDvKVvqolvjhPGuQZVU7Ede5wGQ4jM3lvlhbKOceMftdsNnLUSZDJybaR2XaFB1Qf0VWjD7mvHh3uhvv8iKhdbyqoUESdilTjRn1KlV9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-430cf6c6e20so8622905ab.2
-        for <bpf@vger.kernel.org>; Fri, 17 Oct 2025 15:57:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760741824; x=1761346624;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sJpgDBAxLccAhUteGLabQLlE9rHnlPNcTGhEEI8GY10=;
-        b=sxtizGm9pD/rDvA11F74R7YKyDfYn5Tzca0MoCTU59VIsQymFKm3kkzJ9FU1nou3ff
-         YWyqaPXS+hoVm8G6JYCkZ9YDUgTgPDbR+NoozwatFyp0pR+GPV8bkskg2zMLWSxxGZO6
-         tj4DHMHEkV7gRh6WsG+V3yOX7e+i+2hfSKZW5qJNA1s//OoOTOlGiiJwywNCY28Ldf7F
-         71SV/VeWeHRkcXUlLKfoOirdaTils83CboYDCdgNk+Jn8nLpCfArEeVWZquiPMyetiQL
-         a+YfsnmXAkrOtHz7mIhRGBFaHajGvI2WSlasyYTPuLfqISOOOv5c1XrfMlrc7bHDNaKK
-         J8eA==
-X-Forwarded-Encrypted: i=1; AJvYcCVVj0YDqdT5X6fAmY6CAJTwX/MQJ1L69qlunCAC39T3pMaE/cxJHPFDN2jFTssE33O0Jzg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMfGjjKMk4gYSqbU43u0rvsCBdrpfUOc+BhHG8KI8yEJ6Jt7GQ
-	fs+8T8zr8IiHxEc8smaICnTFrhHshMhpCTTeQomhIN+BdzRQ8t3rB14+1vwn/M4VSbvNUiIUCjJ
-	tJA6GaYSSI6nxyZ15Ks90il2Olwj8bXzlBzHVBa2bm8jOD9hfvwo456NzGtE=
-X-Google-Smtp-Source: AGHT+IF+DUySWarTjVDbax0WipWnWUmr3IAi8Ismsyh5rLjk7lt5iY6vnww0yV3GZ+Fljwql2QmO8PvAs1Uull9sCzlzd2U19Y0H
+	s=arc-20240116; t=1760743614; c=relaxed/simple;
+	bh=9gqUxbSHcGE0nLXNi/sjXzi8nXQVY/mBieoF65QdSzg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HABgSMeTcnJSkwkhXcwwqqw9Pjg5MLizAtZYaGhwKKpJO7ptH6KVhpT9hMY5JMr4VKxKtUE2NxataL/xFTH3k+MiSOdF5QK+l25g87GqR/SU0bua1JYXh95SGiLmRvKyDslZdVFVCE/cztQDncFlNr7ga2VP//JBuEj8ykmU8K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=v8XrcFLf; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a49ebaad-cc79-4ade-aa4a-ad37fcf81dee@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1760743605;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H2aonym/zh/ZnIWdTwYFx2WcEyaxpP4oBGysUwcVhRw=;
+	b=v8XrcFLfiMN3zwc6Y81v62BEUZVImYgn5nj77fGkfh7XVFL1IzClBcWXQpbE3quuOB6Rzj
+	ZJBi8QplSEIiS6YLvFdXcfCTXEazaO0ZNFyaFWVaIyJ9fCSruA0npw3fCRG78XdAg3quD4
+	hmgn48qMEqgCVGdxEIiomvfW1Fbyi2w=
+Date: Fri, 17 Oct 2025 16:26:01 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cda3:0:b0:3f3:4562:ca92 with SMTP id
- e9e14a558f8ab-430c525f51dmr87920195ab.10.1760741823800; Fri, 17 Oct 2025
- 15:57:03 -0700 (PDT)
-Date: Fri, 17 Oct 2025 15:57:03 -0700
-In-Reply-To: <000000000000ae5aca05e68a7748@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68f2c9bf.050a0220.1186a4.051b.GAE@google.com>
-Subject: Re: [syzbot] [bpf?] INFO: rcu detected stall in watchdog
-From: syzbot <syzbot+0bab26cf3949891fb534@syzkaller.appspotmail.com>
-To: andrii@kernel.org, anna-maria@linutronix.de, ast@kernel.org, 
-	bpf@vger.kernel.org, daniel@iogearbox.net, frederic@kernel.org, 
-	gregkh@linuxfoundation.org, hdanton@sina.com, hverkuil+cisco@kernel.org, 
-	linux-kernel@vger.kernel.org, penguin-kernel@I-love.SAKURA.ne.jp, 
-	penguin-kernel@i-love.sakura.ne.jp, rafael@kernel.org, sean@mess.org, 
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH bpf-next 2/5] selftests/bpf: add tc helpers
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?=
+ <alexis.lothore@bootlin.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Bastien Curutchet <bastien.curutchet@bootlin.com>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20251017-tc_tunnel-v1-0-2d86808d86b2@bootlin.com>
+ <20251017-tc_tunnel-v1-2-2d86808d86b2@bootlin.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20251017-tc_tunnel-v1-2-2d86808d86b2@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-syzbot suspects this issue was fixed by commit:
 
-commit eecd203ada43a4693ce6fdd3a58ae10c7819252c
-Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Date:   Thu Jul 17 14:21:55 2025 +0000
 
-    media: imon: make send_packet() more robust
+On 10/17/25 7:29 AM, Alexis Lothoré (eBPF Foundation) wrote:
+> diff --git a/tools/testing/selftests/bpf/tc_helpers.c b/tools/testing/selftests/bpf/tc_helpers.c
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..d668e10e3ebad8f8e04862f5c2b3ccd487fe8fa6
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/tc_helpers.c
+> @@ -0,0 +1,87 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#define _GNU_SOURCE
+> +
+> +#include <net/if.h>
+> +#include "tc_helpers.h"
+> +#include "test_progs.h"
+> +
+> +static int attach_tc_prog(int ifindex, int igr_fd, int egr_fd)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=154d6734580000
-start commit:   e32cde8d2bd7 Merge tag 'sched_ext-for-6.12-rc1-fixes-1' of..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=286b31f2cf1c36b5
-dashboard link: https://syzkaller.appspot.com/bug?extid=0bab26cf3949891fb534
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11646580580000
+This one looks good but change it to "int tc_prog_attach(const char 
+*dev, int ingress_fd, int egress_fd)". Remove static. Take "const char 
+*dev" as the arg. Add it to network_helpers.[ch] instead of creating a 
+new source file.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+> +{
+> +	DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .ifindex = ifindex,
+> +			    .attach_point = BPF_TC_INGRESS | BPF_TC_EGRESS);
+> +	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts1, .handle = 1,
+> +			    .priority = 1, .prog_fd = igr_fd);
+> +	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts2, .handle = 1,
+> +			    .priority = 1, .prog_fd = egr_fd);
+> +	int ret;
+> +
+> +	ret = bpf_tc_hook_create(&hook);
+> +	if (!ASSERT_OK(ret, "create tc hook"))
+> +		return ret;
+> +
+> +	if (igr_fd >= 0) {
+> +		hook.attach_point = BPF_TC_INGRESS;
+> +		ret = bpf_tc_attach(&hook, &opts1);
+> +		if (!ASSERT_OK(ret, "bpf_tc_attach")) {
+> +			bpf_tc_hook_destroy(&hook);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	if (egr_fd >= 0) {
+> +		hook.attach_point = BPF_TC_EGRESS;
+> +		ret = bpf_tc_attach(&hook, &opts2);
+> +		if (!ASSERT_OK(ret, "bpf_tc_attach")) {
+> +			bpf_tc_hook_destroy(&hook);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int generic_attach(const char *dev, int igr_fd, int egr_fd)
+> +{
+> +	int ifindex;
+> +
+> +	if (!ASSERT_OK_FD(igr_fd, "check ingress fd"))
+> +		return -1;
+> +	if (!ASSERT_OK_FD(egr_fd, "check egress fd"))
+> +		return -1;
+> +
+> +	ifindex = if_nametoindex(dev);
+> +	if (!ASSERT_NEQ(ifindex, 0, "get ifindex"))
+> +		return -1;
+> +
+> +	return attach_tc_prog(ifindex, igr_fd, egr_fd);
+> +}
+> +
+> +int generic_attach_igr(const char *dev, int igr_fd)
+> +{
+> +	int ifindex;
+> +
+> +	if (!ASSERT_OK_FD(igr_fd, "check ingress fd"))
+> +		return -1;
+> +
+> +	ifindex = if_nametoindex(dev);
+> +	if (!ASSERT_NEQ(ifindex, 0, "get ifindex"))
+> +		return -1;
+> +
+> +	return attach_tc_prog(ifindex, igr_fd, -1);
+> +}
+> +
+> +int generic_attach_egr(const char *dev, int egr_fd)
+> +{
+> +	int ifindex;
+> +
+> +	if (!ASSERT_OK_FD(egr_fd, "check egress fd"))
+> +		return -1;
+> +
+> +	ifindex = if_nametoindex(dev);
+> +	if (!ASSERT_NEQ(ifindex, 0, "get ifindex"))
+> +		return -1;
+> +
+> +	return attach_tc_prog(ifindex, -1, egr_fd);
+> +}
 
-#syz fix: media: imon: make send_packet() more robust
+These three generic_attach_* is a bit overkill for network_helpers.c.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Change test_tunnel.c to directly use tc_prog_attach().
+
+> +
+> +
+> diff --git a/tools/testing/selftests/bpf/tc_helpers.h b/tools/testing/selftests/bpf/tc_helpers.h
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..d31abe33f9d80dadd8f829bcf9a68cfd744c3b99
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/tc_helpers.h
+
+This new file is not needed also. Use the network_helpers.h.
+
 
