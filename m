@@ -1,84 +1,72 @@
-Return-Path: <bpf+bounces-71215-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71218-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1885BE9381
-	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 16:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 57E16BEA29F
+	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 17:48:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 15A475647CC
-	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 14:31:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C845E583CBC
+	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 15:30:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03562F692E;
-	Fri, 17 Oct 2025 14:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2FC82F692B;
+	Fri, 17 Oct 2025 15:30:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SvJFtNov"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="xQPa0+TW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDB132E12F;
-	Fri, 17 Oct 2025 14:31:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F3C31946C8;
+	Fri, 17 Oct 2025 15:30:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760711493; cv=none; b=DIun2ekv78K+rpOUTyNvwDPWgOwhrPBt9WjrpjlZKq7WvbIaYakugcOmVn8YgzDD6v4lJX2x+M9ro5zEWV6w9xUfYLfsLLM2P7W8eD79283gvOQMWyvzFcSTzbnStNxZ4i/qug0PjRYb0R+UKhFu5TKQAPizBB3+h1qyzpjeaic=
+	t=1760715016; cv=none; b=FClpBazV8+egeVw+kE7o2rnPZETIk7gWcZw5jjUMoB0RqRezotbhhEHpErr/gTni4oLutUcEvdjqQE7jjyQtFDRMHp7hfrh01IyUujin4DnoAHWBwV7q3XUs/2o1pByO5AKZXL+no8za5EjrbIYOJ8/D4vhRrlIxj4zT0Yv1ndU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760711493; c=relaxed/simple;
-	bh=txNWmQS8i9uxa4N3xWd9T2eLiVGPrpRhWhh5bWunauI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=t1yG+86Nq0rcuAVY/DcavWNQ3gbvRMsm8Naw0dWIMwQVLn6WcLYOViv/jMyQOs0pqLVpt3uyhMSFl5rillvveF/VZ2TQVWWhVoCO3g2mx1yulYNX56XN5sV87wtAVTzlTpHPzcd0jL2scjDvekt5wCPkJUqyeoGVJhDjDXA3syM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SvJFtNov; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1760711492; x=1792247492;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=txNWmQS8i9uxa4N3xWd9T2eLiVGPrpRhWhh5bWunauI=;
-  b=SvJFtNov6dyQwYpFaap6VFO/PHecn33kTYuWlPoAg2OpssggZo59mupb
-   3OZsrO+qKVVPDI48AS+/iG7HCgohbyH/6/ROI9cqtfUsVfWMwI4SH/0iB
-   TahLdtqJ44Us4xZU8pmEw+euABWWE7zCv7vWYaZhQvS4RDpYWUuJCx5l/
-   8+zeImRaaOE51RYwhXIBLZi/1Fs+xLVMh1LLB40cAvWX7MH+6KkiRpxNN
-   0FZm5FCZ2/KB29ZuXAQhVqidgsPV4GUIFU4dt96og4F3VDweH4gIwyHBL
-   yCYjr6/yQaUuhgiNs0uK6Mzezf5vziluXzRqnRnNR7yrItDl8tt+jKbfR
-   w==;
-X-CSE-ConnectionGUID: zSeBPdCdTteJEbPZyoBAVw==
-X-CSE-MsgGUID: z3fjQEPFTpeh5fMnDXwpZA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11585"; a="73208042"
-X-IronPort-AV: E=Sophos;i="6.19,236,1754982000"; 
-   d="scan'208";a="73208042"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 07:31:32 -0700
-X-CSE-ConnectionGUID: EQl1zbSSSnKd9UXq2/9w5g==
-X-CSE-MsgGUID: cPH4YwbLQWq5hBY6hGr1og==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,236,1754982000"; 
-   d="scan'208";a="213717414"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by fmviesa001.fm.intel.com with ESMTP; 17 Oct 2025 07:31:28 -0700
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	ilias.apalodimas@linaro.org,
-	toke@redhat.com,
-	lorenzo@kernel.org,
-	kuba@kernel.org
-Cc: netdev@vger.kernel.org,
-	magnus.karlsson@intel.com,
-	andrii@kernel.org,
-	stfomichev@gmail.com,
-	aleksander.lobakin@intel.com,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH v2 bpf 2/2] veth: update mem type in xdp_buff
-Date: Fri, 17 Oct 2025 16:31:03 +0200
-Message-Id: <20251017143103.2620164-3-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20251017143103.2620164-1-maciej.fijalkowski@intel.com>
-References: <20251017143103.2620164-1-maciej.fijalkowski@intel.com>
+	s=arc-20240116; t=1760715016; c=relaxed/simple;
+	bh=uowemTQlJiYgMGrbUDmHstGZHrwBihs94XchgZk6xHs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tGiQDWvPWOauVYNCaCnbqEMRCu8xwlsDGQrJ37wxpqek/j8VVDM8ywOesuWR78y+D+43FFyJc892OooJs1SNILl6J+pmMb7QLhqScC58EMtmPwyxLMmrr5gvohjBwfmjTld2x1Hs0J6ib5YVsFNktdGLVhRmY4WG4G2hBmmdoKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=xQPa0+TW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D4EBC4CEE7;
+	Fri, 17 Oct 2025 15:30:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1760715016;
+	bh=uowemTQlJiYgMGrbUDmHstGZHrwBihs94XchgZk6xHs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=xQPa0+TW0xXQ7b6GUESetvOUAXBdmfDlwHkCX4B8KSvlc4vaZv8SOd+4vkeL0rqSO
+	 JMwaMY9nTBvHWEVBwBS2jBVBeBW1SQhF9sbdPEj8fvpSdtbIRaH0V9xmufQru2msAB
+	 3MIgE4aA++zQdtVlPEeaCuexf7kHJLjEdsnTuSkE=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Ian Rogers <irogers@google.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	bpf@vger.kernel.org,
+	Hao Ge <gehao@kylinos.cn>,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.17 069/371] perf bpf-filter: Fix opts declaration on older libbpfs
+Date: Fri, 17 Oct 2025 16:50:44 +0200
+Message-ID: <20251017145204.432766505@linuxfoundation.org>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251017145201.780251198@linuxfoundation.org>
+References: <20251017145201.780251198@linuxfoundation.org>
+User-Agent: quilt/0.69
+X-stable: review
+X-Patchwork-Hint: ignore
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,182 +75,74 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Veth calls skb_pp_cow_data() which makes the underlying memory to
-originate from system page_pool. For CONFIG_DEBUG_VM=y and XDP program
-that uses bpf_xdp_adjust_tail(), following splat was observed:
+6.17-stable review patch.  If anyone has any objections, please let me know.
 
-[   32.204881] BUG: Bad page state in process test_progs  pfn:11c98b
-[   32.207167] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11c98b
-[   32.210084] flags: 0x1fffe0000000000(node=0|zone=1|lastcpupid=0x7fff)
-[   32.212493] raw: 01fffe0000000000 dead000000000040 ff11000123c9b000 0000000000000000
-[   32.218056] raw: 0000000000000000 0000000000000001 00000000ffffffff 0000000000000000
-[   32.220900] page dumped because: page_pool leak
-[   32.222636] Modules linked in: bpf_testmod(O) bpf_preload
-[   32.224632] CPU: 6 UID: 0 PID: 3612 Comm: test_progs Tainted: G O        6.17.0-rc5-gfec474d29325 #6969 PREEMPT
-[   32.224638] Tainted: [O]=OOT_MODULE
-[   32.224639] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-[   32.224641] Call Trace:
-[   32.224644]  <IRQ>
-[   32.224646]  dump_stack_lvl+0x4b/0x70
-[   32.224653]  bad_page.cold+0xbd/0xe0
-[   32.224657]  __free_frozen_pages+0x838/0x10b0
-[   32.224660]  ? skb_pp_cow_data+0x782/0xc30
-[   32.224665]  bpf_xdp_shrink_data+0x221/0x530
-[   32.224668]  ? skb_pp_cow_data+0x6d1/0xc30
-[   32.224671]  bpf_xdp_adjust_tail+0x598/0x810
-[   32.224673]  ? xsk_destruct_skb+0x321/0x800
-[   32.224678]  bpf_prog_004ac6bb21de57a7_xsk_xdp_adjust_tail+0x52/0xd6
-[   32.224681]  veth_xdp_rcv_skb+0x45d/0x15a0
-[   32.224684]  ? get_stack_info_noinstr+0x16/0xe0
-[   32.224688]  ? veth_set_channels+0x920/0x920
-[   32.224691]  ? get_stack_info+0x2f/0x80
-[   32.224693]  ? unwind_next_frame+0x3af/0x1df0
-[   32.224697]  veth_xdp_rcv.constprop.0+0x38a/0xbe0
-[   32.224700]  ? common_startup_64+0x13e/0x148
-[   32.224703]  ? veth_xdp_rcv_one+0xcd0/0xcd0
-[   32.224706]  ? stack_trace_save+0x84/0xa0
-[   32.224709]  ? stack_depot_save_flags+0x28/0x820
-[   32.224713]  ? __resched_curr.constprop.0+0x332/0x3b0
-[   32.224716]  ? timerqueue_add+0x217/0x320
-[   32.224719]  veth_poll+0x115/0x5e0
-[   32.224722]  ? veth_xdp_rcv.constprop.0+0xbe0/0xbe0
-[   32.224726]  ? update_load_avg+0x1cb/0x12d0
-[   32.224730]  ? update_cfs_group+0x121/0x2c0
-[   32.224733]  __napi_poll+0xa0/0x420
-[   32.224736]  net_rx_action+0x901/0xe90
-[   32.224740]  ? run_backlog_napi+0x50/0x50
-[   32.224743]  ? clockevents_program_event+0x1cc/0x280
-[   32.224746]  ? hrtimer_interrupt+0x31e/0x7c0
-[   32.224749]  handle_softirqs+0x151/0x430
-[   32.224752]  do_softirq+0x3f/0x60
-[   32.224755]  </IRQ>
+------------------
 
-It's because xdp_rxq with mem model set to MEM_TYPE_PAGE_SHARED was used
-when initializing xdp_buff.
+From: Ian Rogers <irogers@google.com>
 
-Fix this by using new helper xdp_convert_skb_to_buff() that, besides
-init/prepare xdp_buff, will check if page used for linear part of
-xdp_buff comes from page_pool. We assume that linear data and frags will
-have same memory provider as currently XDP API does not provide us a way
-to distinguish it (the mem model is registered for *whole* Rx queue and
-here we speak about single buffer granularity).
+[ Upstream commit 3a0f56d72a7575f03187a85b7869c76a862b40ab ]
 
-In order to meet expected skb layout by new helper, pull the mac header
-before conversion from skb to xdp_buff.
+Building perf with LIBBPF_DYNAMIC (ie not the default static linking of
+libbpf with perf) is breaking as the libbpf isn't version 1.7 or newer,
+where dont_enable is added to bpf_perf_event_opts.
 
-However, that is not enough as before releasing xdp_buff out of veth via
-XDP_{TX,REDIRECT}, mem type on xdp_rxq associated with xdp_buff is
-restored to its original model. We need to respect previous setting at
-least until buff is converted to frame, as frame carries the mem_type.
-Add a page_pool variant of veth_xdp_get() so that we avoid refcount
-underflow when draining page frag.
+To avoid this breakage add a compile time version check and don't
+declare the variable when not present.
 
-Fixes: 0ebab78cbcbf ("net: veth: add page_pool for page recycling")
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Closes: https://lore.kernel.org/bpf/CAADnVQ+bBofJDfieyOYzSmSujSfJwDTQhiz3aJw7hE+4E2_iPA@mail.gmail.com/
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Fixes: 5e2ac8e8571df54d ("perf bpf-filter: Enable events manually")
+Signed-off-by: Ian Rogers <irogers@google.com>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: bpf@vger.kernel.org
+Cc: Hao Ge <gehao@kylinos.cn>
+Cc: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Richter <tmricht@linux.ibm.com>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/veth.c | 43 +++++++++++++++++++++++++++----------------
- 1 file changed, 27 insertions(+), 16 deletions(-)
+ tools/perf/util/bpf-filter.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index a3046142cb8e..eeeee7bba685 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -733,7 +733,7 @@ static void veth_xdp_rcv_bulk_skb(struct veth_rq *rq, void **frames,
- 	}
+diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
+index a0b11f35395f8..92308c38fbb56 100644
+--- a/tools/perf/util/bpf-filter.c
++++ b/tools/perf/util/bpf-filter.c
+@@ -443,6 +443,10 @@ static int create_idx_hash(struct evsel *evsel, struct perf_bpf_filter_entry *en
+ 	return -1;
  }
  
--static void veth_xdp_get(struct xdp_buff *xdp)
-+static void veth_xdp_get_shared(struct xdp_buff *xdp)
++#define LIBBPF_CURRENT_VERSION_GEQ(major, minor)			\
++	(LIBBPF_MAJOR_VERSION > (major) ||				\
++	 (LIBBPF_MAJOR_VERSION == (major) && LIBBPF_MINOR_VERSION >= (minor)))
++
+ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
  {
- 	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
- 	int i;
-@@ -746,12 +746,33 @@ static void veth_xdp_get(struct xdp_buff *xdp)
- 		__skb_frag_ref(&sinfo->frags[i]);
- }
+ 	int i, x, y, fd, ret;
+@@ -451,8 +455,12 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+ 	struct bpf_link *link;
+ 	struct perf_bpf_filter_entry *entry;
+ 	bool needs_idx_hash = !target__has_cpu(target);
++#if LIBBPF_CURRENT_VERSION_GEQ(1, 7)
+ 	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts,
+ 			    .dont_enable = true);
++#else
++	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
++#endif
  
-+static void veth_xdp_get_pp(struct xdp_buff *xdp)
-+{
-+	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-+	int i;
-+
-+	page_pool_ref_page(virt_to_page(xdp->data));
-+	if (likely(!xdp_buff_has_frags(xdp)))
-+		return;
-+
-+	for (i = 0; i < sinfo->nr_frags; i++) {
-+		skb_frag_t *frag = &sinfo->frags[i];
-+
-+		page_pool_ref_page(netmem_to_page(frag->netmem));
-+	}
-+}
-+
-+static void veth_xdp_get(struct xdp_buff *xdp)
-+{
-+	xdp->rxq->mem.type == MEM_TYPE_PAGE_POOL ?
-+		veth_xdp_get_pp(xdp) : veth_xdp_get_shared(xdp);
-+}
-+
- static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 					struct xdp_buff *xdp,
- 					struct sk_buff **pskb)
- {
- 	struct sk_buff *skb = *pskb;
--	u32 frame_sz;
- 
- 	if (skb_shared(skb) || skb_head_is_locked(skb) ||
- 	    skb_shinfo(skb)->nr_frags ||
-@@ -762,19 +783,9 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 		skb = *pskb;
- 	}
- 
--	/* SKB "head" area always have tailroom for skb_shared_info */
--	frame_sz = skb_end_pointer(skb) - skb->head;
--	frame_sz += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
--	xdp_init_buff(xdp, frame_sz, &rq->xdp_rxq);
--	xdp_prepare_buff(xdp, skb->head, skb_headroom(skb),
--			 skb_headlen(skb), true);
-+	__skb_pull(*pskb, skb->data - skb_mac_header(skb));
- 
--	if (skb_is_nonlinear(skb)) {
--		skb_shinfo(skb)->xdp_frags_size = skb->data_len;
--		xdp_buff_set_frags_flag(xdp);
--	} else {
--		xdp_buff_clear_frags_flag(xdp);
--	}
-+	xdp_convert_skb_to_buff(skb, xdp, &rq->xdp_rxq);
- 	*pskb = skb;
- 
- 	return 0;
-@@ -822,24 +833,24 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
- 	case XDP_TX:
- 		veth_xdp_get(xdp);
- 		consume_skb(skb);
--		xdp->rxq->mem = rq->xdp_mem;
- 		if (unlikely(veth_xdp_tx(rq, xdp, bq) < 0)) {
- 			trace_xdp_exception(rq->dev, xdp_prog, act);
- 			stats->rx_drops++;
- 			goto err_xdp;
- 		}
- 		stats->xdp_tx++;
-+		rq->xdp_rxq.mem = rq->xdp_mem;
- 		rcu_read_unlock();
- 		goto xdp_xmit;
- 	case XDP_REDIRECT:
- 		veth_xdp_get(xdp);
- 		consume_skb(skb);
--		xdp->rxq->mem = rq->xdp_mem;
- 		if (xdp_do_redirect(rq->dev, xdp, xdp_prog)) {
- 			stats->rx_drops++;
- 			goto err_xdp;
- 		}
- 		stats->xdp_redirect++;
-+		rq->xdp_rxq.mem = rq->xdp_mem;
- 		rcu_read_unlock();
- 		goto xdp_xmit;
- 	default:
+ 	entry = calloc(MAX_FILTERS, sizeof(*entry));
+ 	if (entry == NULL)
 -- 
-2.43.0
+2.51.0
+
+
 
 
