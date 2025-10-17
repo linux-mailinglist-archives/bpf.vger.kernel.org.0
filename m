@@ -1,75 +1,78 @@
-Return-Path: <bpf+bounces-71257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71258-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3F2FBEBDC7
-	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 23:56:38 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BE7ABEBDD0
+	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 23:56:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06D0C420A71
-	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 21:56:36 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 469104F2992
+	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 21:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA05D2E6CA8;
-	Fri, 17 Oct 2025 21:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C6CA2D97B9;
+	Fri, 17 Oct 2025 21:56:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CQwf/HkJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jOy3pr5N"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25712D5A16
-	for <bpf@vger.kernel.org>; Fri, 17 Oct 2025 21:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82C22D59E8
+	for <bpf@vger.kernel.org>; Fri, 17 Oct 2025 21:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760738191; cv=none; b=P7OnmK2A+HzOsZNBAGG7I8o2qrQ45wXD5Iek7zkSSMusvKCotp9PmP6O0CHJ1ji3hTvlL1hjuHEgkT26GZcXzEPGO5mI6tppqDCyL9dPw591sW9xgGiKAMeBOSUpYuEaTpck439LaxjpiEnPLCEC6OL86pnb7wVUDqT4pnTV+hM=
+	t=1760738192; cv=none; b=r0LVeMyozzPNs5ISn4aM03JqmCVXlA4UaUyGfjGlZE6ZdzKowar+Gv10dg0Cf02ZvtzqBM81j8L0MoBDF6U9WUcqyaEpLaNhKvdBSD9sekP80NxFProUdIQXs0rW6Q0rPajEI8cmnsENjQ1WwfEmz3tLVEIudwBvH/co1BJOyqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760738191; c=relaxed/simple;
-	bh=CwdBOHbnfQp54yp83Iesr/EkQSpVDG5TMVeKPc6Kg4I=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mJgOgoGIJIWDPgj3Y8anrNYzlkmvdM41IxPLeMZga2/y+CmEySKFrNO4476zAgGVRVrkWoxYx1MIk6QIfiVDsq4rKKQNVlCYwSIzr5h7vRiJZ67QnvXSMekPYWh3tN1gpMyraF3x4xX+oIdrJ3DUJ2vC9u0QPSBOEYnfp0oeKAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CQwf/HkJ; arc=none smtp.client-ip=209.85.210.172
+	s=arc-20240116; t=1760738192; c=relaxed/simple;
+	bh=n0G0Z+92IypGH3eawej6SXwPonZZG9VIFFNWrEFNd3A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Nn4X3EyoW2QaNQag2O4RxHO3WKpBafBgEyz+7d2pVPbqrisrjo5843NCL/WKlWJ/gnqb+k6Xyohjob7y0CZo6RRyOwVWfuAucaRiVthKnl9xw41glj2/sxKfJhOKt5GaHJ5v2c53NEXFB0ba8NZ+XzLgW33fGNROsCF3MpodAHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jOy3pr5N; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-77f67ba775aso3319003b3a.3
-        for <bpf@vger.kernel.org>; Fri, 17 Oct 2025 14:56:29 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-3327f8ed081so2971992a91.1
+        for <bpf@vger.kernel.org>; Fri, 17 Oct 2025 14:56:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760738189; x=1761342989; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=j4XzmmP5uMUtzltCj1EVDEYlv3Qmwi6jWCsmvSAFdsc=;
-        b=CQwf/HkJsl87FmH6InbPp0FjE6+tsFDoKoFMcIwDdHYHdGZ6cia3Q7WfYvqsYofN7n
-         GEu97JZJ6ETmwHx0jGnUKS8+RN1e7Rtiyef3CMVwpEaNjkdF4EUEdjhq301mA7GMx46Q
-         Il4z9XaV8AbQ7Ul2mawGhcQwhXKyFLdKtFyAwjG03MS++hKcu/N7NxJyNxsgigCe/htn
-         qjdaz3xxwl9TVpZmG6QYjwI5xXw1DxqClrPQXdS+CwrpO+B9+K5SIMN4mQP/RX2ixwei
-         GFrP12uRZLgdrFK0Kna4L1Z6Vkmllkzh+9dFSiOm9FN9z7tBxRupaUNbWSC6Es+Zqn9d
-         vv7w==
+        d=gmail.com; s=20230601; t=1760738190; x=1761342990; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bSNp2i4w9S/UuwRxxUx4tJy96Wj8Kx1e17mXUe1U+I4=;
+        b=jOy3pr5N38GOl4O0uekM/C8yTaOG/e6k9oFLPr8+P71No8jFigXhd0zE2bSg0m7/5P
+         YyMpsun/WFrR2MJClYMjtdX8iMLIINcmk1al/ubvRAO51eTaodmDbIxoCOMumOt7wP3/
+         UME5Tn6EoXtPt8fdoDh4aaUTvzRGjS3vw+3PpY1EbJ5r33MygPAFPMp64Fsw0ihBZgjx
+         f4H/Ty1HNdgxCRqKXkPUgGDxijvb2lZQ8ayz/AnoBDJml41NNwAFUaqeriIf1U8y239I
+         c2K7nn4dRUrJitpUmheWp4umZfhzH9QA73Eb/IKusI94qdoGS0Q2gn2CbaqKsOjVjlOI
+         R5/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760738189; x=1761342989;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=j4XzmmP5uMUtzltCj1EVDEYlv3Qmwi6jWCsmvSAFdsc=;
-        b=aXJgZxaJsTv2RY9DrUE0xvE+T59AHxNy/GIdaccgA3GSpyzXGw9igrI2W3NE3Ok3lv
-         YWYx+xHTuJlqFQ98bCImE2YBz7/0bqrAos1ViUa4V+deFWz0wvVksMcF9qjryGngdPc+
-         oIvtRyg/+H7Ci9KGc6zCqD1Wxn39ViPDZyupfcVs/16BRsQ6Arh5awQIks9NlLAodKhl
-         /rqtidVDoOmu6gJidzo1q+wW31/JoSRUDSDQ6tQiHwPydAi3HUgHnqoJ/QoaMSfMguwR
-         HIwfCZTqJhSbcmpmq4Wvivlhpqld6b25T6Y1RfGUym0IKIJJH7GPfhHw2LmIdFragx1C
-         6A+w==
-X-Gm-Message-State: AOJu0YxJPXdiDdY7kgyQVNQ1/qnTleCbXoEI7eWUbz+lE3KCoHjasECi
-	i2Yi3IUdOGHbkbKhn0hNUmZJf8w1Q0D51vauXB8HXkXzr4Iwl8y6/1lL44hcyg==
-X-Gm-Gg: ASbGncs+A1SKk0onEIPecRiTJVSwT/67hP3kbJYq+KpU3iczkjxa+BNgfpoGslaTuDM
-	NmbhO4QvZqkDiWofb/FPiRTixGtZVAcIlpF6aB0hDTH13AvIUnxyYQpeXXPkzmBD/R3vezHEQdn
-	+Tuts0MMgvAmieDyUhUMRlCqdvi1l+qxZ3IPO5pmABU9w62Varn2ed+qr/6WtbYMF5COrM4Ap27
-	t+N3CwOT2Sx/0NuQ/+dN2aTxN5Igi1BmeJlDgymKUg1HnNDmkGYQtpG7Wy5XPYuh/xPrk/QvnaE
-	xj4UHnUHxJ8LAXHQYC1e0D2JMYskvFq0kQYk75y+ZG/nJChOnYyHp+NmsL6iEPmJnBtfVeoQzHu
-	L5eGiHY+ULCekXIDwbHmt8/6jOwsXsl5h2Vtl5gSVEmJTM8fOLqqRd7u23boFxUqX9pg=
-X-Google-Smtp-Source: AGHT+IE4NZqMADAnyuoGjyQj6J3b9zaUy12Wyelj+CeVqumNvPm9sY9/PIZU+Yw7ddHh3ds6GjADJQ==
-X-Received: by 2002:a05:6a20:7351:b0:334:a72c:806a with SMTP id adf61e73a8af0-334a8616f0bmr7112232637.34.1760738188907;
-        Fri, 17 Oct 2025 14:56:28 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:52::])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6a76673e8asm759559a12.11.2025.10.17.14.56.28
+        d=1e100.net; s=20230601; t=1760738190; x=1761342990;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bSNp2i4w9S/UuwRxxUx4tJy96Wj8Kx1e17mXUe1U+I4=;
+        b=kecpbTGz0J4DN3G52iBNGzxLrcXMR1riU7oDFfCA0xLV/ovYajCDc811pQgOcafxv3
+         a+/9o2so1VYkg+uogoW4Gt0QXEZ8q/iIbh/uh7tYsTntoA4kwhz2lctlRAArwNhDwHVJ
+         xIAiGiejfNA0pMTJVUQ4mJWPFB5QmHVapwrjpcbW6utKuelD2lcp9mVCtnTsl3yhXqjC
+         vYo8MxxggrtcMdyXqbUVyCeTiY4t1gInq5tVQ2QDhvMqbY6sNwaDk5o2aTkVH/mLiTK0
+         1/Sv9s0T0kaBit4HRGey7gJRYlcI35lNg2VN6CEP3AD/pXc1z6u0bqNA+qCdNmNLlr7g
+         6rlg==
+X-Gm-Message-State: AOJu0YyDoqjTtZlsHjVkoJVKoz/LV/47JxASPV42Gc1ZrOiVC655YmVV
+	HF+XhDj1F1ltjax9E4ZUkRmKPJQJvtlrrlf30/gruKsfCWkDsfqAJeYF06MIeg==
+X-Gm-Gg: ASbGncv7uHwtgS6z5Wwjx9PT25udJdLVbl3QTdiGxxEZ+nlbmjY27AhJdn95W7QQ3tM
+	xXQebeF6lqHgZS/tZn0kkBC32/KADXirCHqIxWtRvYAbuHcxrVMo19m4/tQl+yGB5GkdFPpS7lP
+	bFBMOsmn4GxkUEM7yDVDseA5R3631fXsfxLWwZjuxh876BpwP7TXoGZMd/Q7m0GmIVZ3sMFpFOY
+	RxRBrphzmpxi0lY3FEnfrUnnkUmecTRf7qbymW+wwhMnBXmMmW3iy6DgEpyzI/hEk7CvFo7kxc8
+	JcTbUslyeVNSEAMWGq+5+l3MqRTJjaLUxEBP5uWclWn2snqPbMb6I5p8+y1jd0azez8xzhjAoij
+	RhgE/bDV3FiZf/obq2GOjIqq1MCpLJObDg/XSusLnwqxcxT+irbOCD7eY7xWYOvzCaIi5dIURQr
+	LLvA==
+X-Google-Smtp-Source: AGHT+IGPkqtgYtMfBK5D3xvy6izkNvXdeJo/NsVEO9qJIPTFdmDTYo0zlfoGaIeGBJ7loNYCRgR7XQ==
+X-Received: by 2002:a17:90b:1c0d:b0:32e:70f5:6988 with SMTP id 98e67ed59e1d1-33bcf90c0b5mr5233779a91.32.1760738189992;
+        Fri, 17 Oct 2025 14:56:29 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:47::])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33bcfc12f82sm1722511a91.12.2025.10.17.14.56.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Oct 2025 14:56:28 -0700 (PDT)
+        Fri, 17 Oct 2025 14:56:29 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 To: bpf@vger.kernel.org
 Cc: netdev@vger.kernel.org,
@@ -80,10 +83,12 @@ Cc: netdev@vger.kernel.org,
 	martin.lau@kernel.org,
 	ameryhung@gmail.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v3 0/4] Support associating BPF programs with struct_ops
-Date: Fri, 17 Oct 2025 14:56:23 -0700
-Message-ID: <20251017215627.722338-1-ameryhung@gmail.com>
+Subject: [PATCH bpf-next v3 1/4] bpf: Allow verifier to fixup kernel module kfuncs
+Date: Fri, 17 Oct 2025 14:56:24 -0700
+Message-ID: <20251017215627.722338-2-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251017215627.722338-1-ameryhung@gmail.com>
+References: <20251017215627.722338-1-ameryhung@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,96 +97,31 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-v2 -> v3
-   - Change the type of st_ops_assoc from void* (i.e., kdata) to bpf_map
-     (Andrii)
-   - Fix a bug that clears BPF_PTR_POISON when a struct_ops map is freed
-     (Andrii)
-   - Return NULL if the map is not fully initialized (Martin)
-   - Move struct_ops map refcount inc/dec into internal helpers (Martin)
-   - Add libbpf API, bpf_program__assoc_struct_ops (Andrii)
-   Link: https://lore.kernel.org/bpf/20251016204503.3203690-1-ameryhung@gmail.com/
+Allow verifier to fixup kfuncs in kernel module to support kfuncs with
+__prog arguments. Currently, special kfuncs and kfuncs with __prog
+arguments are kernel kfuncs. Allowing kernel module kfuncs should not
+affect existing kfunc fixup as kernel module kfuncs have BTF IDs greater
+than kernel kfuncs' BTF IDs.
 
-v1 -> v2
-   - Poison st_ops_assoc when reusing the program in more than one
-     struct_ops maps and add a helper to access the pointer (Andrii)
-   - Minor style and naming changes (Andrii)
-   Link: https://lore.kernel.org/bpf/20251010174953.2884682-1-ameryhung@gmail.com/
-
+Signed-off-by: Amery Hung <ameryhung@gmail.com>
 ---
+ kernel/bpf/verifier.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Hi,
-
-This patchset adds a new BPF command BPF_PROG_ASSOC_STRUCT_OPS to
-the bpf() syscall to allow associating a BPF program with a struct_ops.
-The command is introduced to address a emerging need from struct_ops
-users. As the number of subsystems adopting struct_ops grows, more
-users are building their struct_ops-based solution with some help from
-other BPF programs. For exmample, scx_layer uses a syscall program as
-a user space trigger to refresh layers [0]. It also uses tracing program
-to infer whether a task is using GPU and needs to be prioritized [1]. In
-these use cases, when there are multiple struct_ops instances, the
-struct_ops kfuncs called from different BPF programs, whether struct_ops
-or not needs to be able to refer to a specific one, which currently is
-not possible.
-
-The new BPF command will allow users to explicitly associate a BPF
-program with a struct_ops map. The libbpf wrapper can be called after
-loading programs and before attaching programs and struct_ops.
-
-Internally, it will set prog->aux->st_ops_assoc to the struct_ops
-map. struct_ops kfuncs can then get the associated struct_ops struct
-by calling bpf_prog_get_assoc_struct_ops() with prog->aux, which can
-be acquired from a "__prog" argument. The value of the speical
-argument will be fixed up by the verifier during verification.
-
-The command conceptually associates the implementation of BPF programs
-with struct_ops map, not the attachment. A program associated with the
-map will take a refcount of it so that st_ops_assoc always points to a
-valid struct_ops struct. struct_ops implementers can use the helper,
-bpf_prog_get_assoc_struct_ops to get the pointer. The returned
-struct_ops if not NULL is guaranteed to be valid and initialized.
-However, it is not guarantted that the struct_ops is attached. The
-struct_ops implementer still need to take stepis to track and check the
-state of the struct_ops in kdata, if the use case demand the struct_ops
-to be attached.
-
-We can also consider support associating struct_ops link with BPF
-programs, which on one hand make struct_ops implementer's job easier,
-but might complicate libbpf workflow and does not apply to legacy
-struct_ops attachment.
-
-[0] https://github.com/sched-ext/scx/blob/main/scheds/rust/scx_layered/src/bpf/main.bpf.c#L557
-[1] https://github.com/sched-ext/scx/blob/main/scheds/rust/scx_layered/src/bpf/main.bpf.c#L754
-
----
-
-Amery Hung (4):
-  bpf: Allow verifier to fixup kernel module kfuncs
-  bpf: Support associating BPF program with struct_ops
-  libbpf: Add support for associating BPF program with struct_ops
-  selftests/bpf: Test BPF_PROG_ASSOC_STRUCT_OPS command
-
- include/linux/bpf.h                           |  16 +++
- include/uapi/linux/bpf.h                      |  17 +++
- kernel/bpf/bpf_struct_ops.c                   |  70 ++++++++++++
- kernel/bpf/core.c                             |   3 +
- kernel/bpf/syscall.c                          |  46 ++++++++
- kernel/bpf/verifier.c                         |   3 +-
- tools/include/uapi/linux/bpf.h                |  17 +++
- tools/lib/bpf/bpf.c                           |  19 ++++
- tools/lib/bpf/bpf.h                           |  21 ++++
- tools/lib/bpf/libbpf.c                        |  30 +++++
- tools/lib/bpf/libbpf.h                        |  16 +++
- tools/lib/bpf/libbpf.map                      |   2 +
- .../bpf/prog_tests/test_struct_ops_assoc.c    |  72 ++++++++++++
- .../selftests/bpf/progs/struct_ops_assoc.c    | 105 ++++++++++++++++++
- .../selftests/bpf/test_kmods/bpf_testmod.c    |  17 +++
- .../bpf/test_kmods/bpf_testmod_kfunc.h        |   1 +
- 16 files changed, 453 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_assoc.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_assoc.c
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index e892df386eed..d5f1046d08b7 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -21889,8 +21889,7 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 
+ 	if (!bpf_jit_supports_far_kfunc_call())
+ 		insn->imm = BPF_CALL_IMM(desc->addr);
+-	if (insn->off)
+-		return 0;
++
+ 	if (desc->func_id == special_kfunc_list[KF_bpf_obj_new_impl] ||
+ 	    desc->func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
+ 		struct btf_struct_meta *kptr_struct_meta = env->insn_aux_data[insn_idx].kptr_struct_meta;
 -- 
 2.47.3
 
