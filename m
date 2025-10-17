@@ -1,255 +1,127 @@
-Return-Path: <bpf+bounces-71226-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71227-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCDE1BEAD7F
-	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 18:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1713BBEAE42
+	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 18:52:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A7922587223
-	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 16:34:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E38EA588631
+	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 16:39:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 356A929D26C;
-	Fri, 17 Oct 2025 16:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D39BE2BE7CC;
+	Fri, 17 Oct 2025 16:39:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gw/FkZO6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LHxhV5TA"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE40330B1C
-	for <bpf@vger.kernel.org>; Fri, 17 Oct 2025 16:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63922BEFF1
+	for <bpf@vger.kernel.org>; Fri, 17 Oct 2025 16:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760718842; cv=none; b=m8cjnMG1f4W/Lh0UNCgajYAXUnEm0sop+6uWYez6WofBEDhqajRRVvut0Bx6pive7M5p+OVwy3WC40+LDWQcdCWdBQE/zzSXClLZWFMs6+E8rCUYtuuhCUOp3ol+ZzUNKUIJ4fRJbAziuZqhKnEdkDMlilDkxdQhjTmFDEEu1aA=
+	t=1760719149; cv=none; b=EwIlo1D/yT7FqLrA26YfVKP7uJmz6UvPR3LiH81nMH5ILUXgxC6tLfJnXdnx8TYI7UFzQVVgKlFKCziuxajYj8Bj3fTweb4cpk5pDWVm+/Fgt9NsZIuwun25V3HsRVsyruxb35cxP7tuuHhRIjq0uKCaO8K4l6iLabLLuaXP/aA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760718842; c=relaxed/simple;
-	bh=8OCmvtNkd7Eow8L2/KW/Fg31hKh2w7x/BItWTOBoXLo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FmQj1h2A2KMCXJUn9lqLrYS2j/a6UVZxJFkID5quNYjygVZPL25MVjv+SOvNU4QjOXDvswpr6q7DX/KiOHdQ/PqutTMKaKKIxKVvDf1LPCsCRydGaNSVj0e0rS/LsJlbD904kKKcTiwJ+/HBenHugpjoSLTLblIxM+i4efgM3S0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gw/FkZO6; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1760718839;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+YDWYvS8eBPU3JM3GQnucQBR2NLzws8qvq5TorPP6xY=;
-	b=gw/FkZO68PI+nRhmF6Y/eXIJvj3UHCbUX1GwiUMYOMWOXsyz0c460M+0DOatM3g+fTsAt0
-	7w+NwyZ3T+VmAnm8EG1ESFrTO8F9sms79VhX2klWh3xe1FCmdslSSrO5HLTdnvLWxbScul
-	ynhQH7GlDkATqjF8EvaDLDmASvF24yc=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-624-30QxS3l2NCmPlW52QRSdog-1; Fri, 17 Oct 2025 12:33:58 -0400
-X-MC-Unique: 30QxS3l2NCmPlW52QRSdog-1
-X-Mimecast-MFC-AGG-ID: 30QxS3l2NCmPlW52QRSdog_1760718837
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-6349af0e766so3363661a12.3
-        for <bpf@vger.kernel.org>; Fri, 17 Oct 2025 09:33:58 -0700 (PDT)
+	s=arc-20240116; t=1760719149; c=relaxed/simple;
+	bh=97XYlrfPPPA7pnAqGbv+sCxS9B2VLhK7sUi4Yt5EBjQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Bg5L5vH7enweGshWkFKKNvajzKCAeJ2W5NAJGfyld4UT9ufMcHmI7xm0hX6RpxUxFGqyx7uoWxJ/lmPL7dtDECguze21sWm4ODhNyq+pSl8G7NfSEislh9ZiKgbA7eFOhf+I+PJx7cM7GvQ0wdcl10ieNH8yQSkOJ3ytvpJZ9F0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LHxhV5TA; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-7501c24a731so26623797b3.3
+        for <bpf@vger.kernel.org>; Fri, 17 Oct 2025 09:39:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760719145; x=1761323945; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=97XYlrfPPPA7pnAqGbv+sCxS9B2VLhK7sUi4Yt5EBjQ=;
+        b=LHxhV5TAP2kVXGJs4GlrbJT7AoDoQ0dVd9kHOHEP3pEc3tRujHq1cmBArDtcFsz1SO
+         J3kOUYr3e6Ccu0fIhZewO+8bHZ2rP9byOK6wvC4RpuaJ3zFsL1ALZguHh86m2lyuTeOb
+         Wt9y7etXQ7ym6zjJfhy4ZiuCVruS3rOuc2vwFKAoNMtHZJNCZ68D5sv17xo/gwbB28WW
+         cC3ItkBUlNI4OfoNbHy8+DgEkUPV6VFknwjHmxT0wsKfqXw1rO5mkIshm5sn6qitTXrI
+         kBuPrCblU5VpgNnI1Sn9OirgSpt94Bc2F7Xjdmx/QO7h8jsNBUz+UFWaf6+/wGd0W9mg
+         n3uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760718837; x=1761323637;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+YDWYvS8eBPU3JM3GQnucQBR2NLzws8qvq5TorPP6xY=;
-        b=Eg52ts3A8OUwbOhnHUf2dQqfpjBILSAUyq07EmBEjsTNjk4mNDNEXwUGZ2E/L/rRkg
-         MLgrinQeSmt7d6rg+rvWFdAEplabAAG/9kpZQ6W3HGanYAFhk2IKpaiEj6Yw0cWNCTyC
-         1NAOeftK1zRvVlM4jUwBgOCdxNj+A0M49Vhz+3Iq0C50jjpMfYYvUHpyuJWBhso9tbKa
-         kjR3mhkCSzXVt5V6OYjf2RWjChdBmLKml0IkaW3RT66ukgvmW4ltHq2xZq/ljX1AvIBp
-         b1EIYEBn4ymKAh2QvyaPpzR+P3qxJD7V4jyFdZZU7R0crpKm+f81K9DvnNSw8wNalqOR
-         LQHA==
-X-Forwarded-Encrypted: i=1; AJvYcCUYNiZpSF4qTECKvdvPT8CKeUBCOewN2s1DLbk7Np5sr/4KZJbRLQsOYxd+kHa+ajfKI/0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzf9xvFMLpuSIeSs/2oYE4r0/uKsPwkFayUdMq37ebdggK8tfSn
-	tgeL5HuPjr+1WBynt1j25XZVpkyJgubNv5rbXAxBTJSWk448SlXh8BwydzHaGe0s3xp5MsJA3P4
-	8lRtBGaWIjuNHjwmx2iJrzuSGVZ+neVDixGAo1+ZiAH9ARWsjT6TkPw==
-X-Gm-Gg: ASbGncu+hOYDORpCo284rzcpAd2fHwnoZE0m7KCKXt/dOncmGxqDsMBSw2ZOLQQk8C9
-	9aG+7VZDAOGNm5TTYWlDOuYyD6Q41dd6RWZOY9lpAjpyjVVmmKs4AyqyQP+W9HFvSVvaAyh/ZYq
-	8HPD2BdAnJyG9EjlXVNSmWesWH9Umxe0h3b8sVFAC7KZ4SgOzbx6VWmmxAwkc08tTzRBrlfr9E0
-	V5mbxN1VNwsqAglzupbUu6YnyxUvjP7+lUvXD86Y+aGLyqxDMWeWZvPVpvdM+0uOzv5rozVqrQQ
-	34c9PMY/adRZ1aspqI354sPNNLxfyJiAF6ZjEzgLJFWBv8huzVFKAMhFylmzY/E3WdsWrcP0GCt
-	UdmSBE9LeJMZMvZ5C+3xEeHeaoA==
-X-Received: by 2002:a05:6402:34c5:b0:63c:1e15:b9fb with SMTP id 4fb4d7f45d1cf-63c1f6b4d28mr4374155a12.22.1760718837166;
-        Fri, 17 Oct 2025 09:33:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFNpLqb8nw2QG39h9VMR7dwTaI3xyg+sVDICol+as0GRxDqwZKl5FzHWzdkyc9bYkzcltZa2Q==
-X-Received: by 2002:a05:6402:34c5:b0:63c:1e15:b9fb with SMTP id 4fb4d7f45d1cf-63c1f6b4d28mr4374124a12.22.1760718836587;
-        Fri, 17 Oct 2025 09:33:56 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (alrua-x1.borgediget.toke.dk. [2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-63c4945efebsm94791a12.32.2025.10.17.09.33.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Oct 2025 09:33:55 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 0DD802E9D1A; Fri, 17 Oct 2025 18:33:54 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
- ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- ilias.apalodimas@linaro.org, lorenzo@kernel.org, kuba@kernel.org
-Cc: netdev@vger.kernel.org, magnus.karlsson@intel.com, andrii@kernel.org,
- stfomichev@gmail.com, aleksander.lobakin@intel.com, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>
-Subject: Re: [PATCH v2 bpf 2/2] veth: update mem type in xdp_buff
-In-Reply-To: <20251017143103.2620164-3-maciej.fijalkowski@intel.com>
-References: <20251017143103.2620164-1-maciej.fijalkowski@intel.com>
- <20251017143103.2620164-3-maciej.fijalkowski@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Fri, 17 Oct 2025 18:33:54 +0200
-Message-ID: <87a51pij2l.fsf@toke.dk>
+        d=1e100.net; s=20230601; t=1760719145; x=1761323945;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=97XYlrfPPPA7pnAqGbv+sCxS9B2VLhK7sUi4Yt5EBjQ=;
+        b=aZM16gNCWyWBkryFoue8EsSqBSVUk+BWmsarb2E/eqYz/c2pmGXspKwgnxctlI+ksj
+         LyzJf0oPdjPACXuOdouTvrxiwf5UP9dtFpEgyppIFqxptF2igjO4YgLFirWho1SML8Fr
+         lAqu0vTu4ptitg2M97oC58ImcuUSpt6jYJj4U2UZiKcI7ZPCh/rc7/toOdldFarcEIth
+         5BxZFijFkPKAFG/FmqeZpqlmAZ7M/xh+so8arHbODmESnwVIDh5d7VBmzotf4j8Eh9W6
+         W/sTjYRwhU2pBAbXgai24RWeY7qgyQNAxc8ru+C5bM4TOC1bEvl4oSl53w14u9c+DhpL
+         qMrw==
+X-Forwarded-Encrypted: i=1; AJvYcCWDqPCk9ew7JzT1oSsV0BYDtqVp3eDbksx4XJ9ZPXvzG1+RvmvMu2s7Dtqlk1z2hcQ8ahE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyA9uPHGa47pQoPw5AtzuyMb0iUPvLR+pUIL/kUvPaZ6Exn/++8
+	K5pYpkDzYDaCxxIuvUMMR31WaYhxcPwRF6dhl1ZerhrZqoxPRj7dj2IMBcMs9gU4rhtDzKGRZ36
+	X4AuHBZFZ0hDvIoZQSCgPlbpwp0fP0DU=
+X-Gm-Gg: ASbGncvNNj4Yc9yOLW5/jaf8+FabucvdK6eOsS668eTPOA6f1T+F4It9ZTqJkAZ0CX1
+	ZCUpwvNYV9iqhDtVyENCRZ0X4loZebz0tSv3GOzK1qBJN9ZrbK7BrKyz49u7MM9Vq1x5ov7GLu2
+	W2eDQ0evYd/YhwQ4iSUp6DMgGl/Ijfwyj153UesdSV/f8mYz7ZhfAR4I9+MabcToSoP+0cIayeK
+	urzI7QMJ63xmRaA4wLoitippfTPCfxUvpTBvkSIie9iEZ2cPdbg00BYIZBZ
+X-Google-Smtp-Source: AGHT+IGbF6Or7zlWoTGIZ3h/T94KL+7kZLzqMPfqm7CoucFcvNehwFJ6VWsVmkFUfXKEHkC2JdQO2xKHcy1NPY44Rw8=
+X-Received: by 2002:a05:690e:d50:b0:636:1fd9:d64c with SMTP id
+ 956f58d0204a3-63e161763ffmr3546513d50.8.1760719144583; Fri, 17 Oct 2025
+ 09:39:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20251016204503.3203690-1-ameryhung@gmail.com> <20251016204503.3203690-3-ameryhung@gmail.com>
+ <285ba391-1d23-41be-8cc4-e2874fbcb1af@linux.dev>
+In-Reply-To: <285ba391-1d23-41be-8cc4-e2874fbcb1af@linux.dev>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Fri, 17 Oct 2025 09:38:53 -0700
+X-Gm-Features: AS18NWAw3Wa9xG7OOim-ssXyDjv46PnkgVJRXa0CnpA0NmMXrefKEagBOxvLPI0
+Message-ID: <CAMB2axO9GN=EMK2uLxqDLFkNk-V8sA7Rdb9LH3u6xx7fpCTyRA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/4] bpf: Support associating BPF program with struct_ops
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: netdev@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org, 
+	daniel@iogearbox.net, tj@kernel.org, martin.lau@kernel.org, 
+	kernel-team@meta.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+On Thu, Oct 16, 2025 at 5:19=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
+>
+>
+>
+> On 10/16/25 1:45 PM, Amery Hung wrote:
+> > Each associated programs except struct_ops programs of the map will tak=
+e
+> > a refcount on the map to pin it so that prog->aux->st_ops_assoc, if set=
+,
+> > is always valid. However, it is not guaranteed whether the map members
+> > are fully updated nor is it attached or not. For example, a BPF program
+> > can be associated with a struct_ops map before map_update. The
+>
+> Forgot to ask this, should it at least ensure the map is fully updated
+> or it does not help in the use case?
 
-> Veth calls skb_pp_cow_data() which makes the underlying memory to
-> originate from system page_pool. For CONFIG_DEBUG_VM=y and XDP program
-> that uses bpf_xdp_adjust_tail(), following splat was observed:
->
-> [   32.204881] BUG: Bad page state in process test_progs  pfn:11c98b
-> [   32.207167] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11c98b
-> [   32.210084] flags: 0x1fffe0000000000(node=0|zone=1|lastcpupid=0x7fff)
-> [   32.212493] raw: 01fffe0000000000 dead000000000040 ff11000123c9b000 0000000000000000
-> [   32.218056] raw: 0000000000000000 0000000000000001 00000000ffffffff 0000000000000000
-> [   32.220900] page dumped because: page_pool leak
-> [   32.222636] Modules linked in: bpf_testmod(O) bpf_preload
-> [   32.224632] CPU: 6 UID: 0 PID: 3612 Comm: test_progs Tainted: G O        6.17.0-rc5-gfec474d29325 #6969 PREEMPT
-> [   32.224638] Tainted: [O]=OOT_MODULE
-> [   32.224639] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> [   32.224641] Call Trace:
-> [   32.224644]  <IRQ>
-> [   32.224646]  dump_stack_lvl+0x4b/0x70
-> [   32.224653]  bad_page.cold+0xbd/0xe0
-> [   32.224657]  __free_frozen_pages+0x838/0x10b0
-> [   32.224660]  ? skb_pp_cow_data+0x782/0xc30
-> [   32.224665]  bpf_xdp_shrink_data+0x221/0x530
-> [   32.224668]  ? skb_pp_cow_data+0x6d1/0xc30
-> [   32.224671]  bpf_xdp_adjust_tail+0x598/0x810
-> [   32.224673]  ? xsk_destruct_skb+0x321/0x800
-> [   32.224678]  bpf_prog_004ac6bb21de57a7_xsk_xdp_adjust_tail+0x52/0xd6
-> [   32.224681]  veth_xdp_rcv_skb+0x45d/0x15a0
-> [   32.224684]  ? get_stack_info_noinstr+0x16/0xe0
-> [   32.224688]  ? veth_set_channels+0x920/0x920
-> [   32.224691]  ? get_stack_info+0x2f/0x80
-> [   32.224693]  ? unwind_next_frame+0x3af/0x1df0
-> [   32.224697]  veth_xdp_rcv.constprop.0+0x38a/0xbe0
-> [   32.224700]  ? common_startup_64+0x13e/0x148
-> [   32.224703]  ? veth_xdp_rcv_one+0xcd0/0xcd0
-> [   32.224706]  ? stack_trace_save+0x84/0xa0
-> [   32.224709]  ? stack_depot_save_flags+0x28/0x820
-> [   32.224713]  ? __resched_curr.constprop.0+0x332/0x3b0
-> [   32.224716]  ? timerqueue_add+0x217/0x320
-> [   32.224719]  veth_poll+0x115/0x5e0
-> [   32.224722]  ? veth_xdp_rcv.constprop.0+0xbe0/0xbe0
-> [   32.224726]  ? update_load_avg+0x1cb/0x12d0
-> [   32.224730]  ? update_cfs_group+0x121/0x2c0
-> [   32.224733]  __napi_poll+0xa0/0x420
-> [   32.224736]  net_rx_action+0x901/0xe90
-> [   32.224740]  ? run_backlog_napi+0x50/0x50
-> [   32.224743]  ? clockevents_program_event+0x1cc/0x280
-> [   32.224746]  ? hrtimer_interrupt+0x31e/0x7c0
-> [   32.224749]  handle_softirqs+0x151/0x430
-> [   32.224752]  do_softirq+0x3f/0x60
-> [   32.224755]  </IRQ>
->
-> It's because xdp_rxq with mem model set to MEM_TYPE_PAGE_SHARED was used
-> when initializing xdp_buff.
->
-> Fix this by using new helper xdp_convert_skb_to_buff() that, besides
-> init/prepare xdp_buff, will check if page used for linear part of
-> xdp_buff comes from page_pool. We assume that linear data and frags will
-> have same memory provider as currently XDP API does not provide us a way
-> to distinguish it (the mem model is registered for *whole* Rx queue and
-> here we speak about single buffer granularity).
->
-> In order to meet expected skb layout by new helper, pull the mac header
-> before conversion from skb to xdp_buff.
->
-> However, that is not enough as before releasing xdp_buff out of veth via
-> XDP_{TX,REDIRECT}, mem type on xdp_rxq associated with xdp_buff is
-> restored to its original model. We need to respect previous setting at
-> least until buff is converted to frame, as frame carries the mem_type.
-> Add a page_pool variant of veth_xdp_get() so that we avoid refcount
-> underflow when draining page frag.
->
-> Fixes: 0ebab78cbcbf ("net: veth: add page_pool for page recycling")
-> Reported-by: Alexei Starovoitov <ast@kernel.org>
-> Closes: https://lore.kernel.org/bpf/CAADnVQ+bBofJDfieyOYzSmSujSfJwDTQhiz3aJw7hE+4E2_iPA@mail.gmail.com/
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
->  drivers/net/veth.c | 43 +++++++++++++++++++++++++++----------------
->  1 file changed, 27 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> index a3046142cb8e..eeeee7bba685 100644
-> --- a/drivers/net/veth.c
-> +++ b/drivers/net/veth.c
-> @@ -733,7 +733,7 @@ static void veth_xdp_rcv_bulk_skb(struct veth_rq *rq, void **frames,
->  	}
->  }
->  
-> -static void veth_xdp_get(struct xdp_buff *xdp)
-> +static void veth_xdp_get_shared(struct xdp_buff *xdp)
->  {
->  	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
->  	int i;
-> @@ -746,12 +746,33 @@ static void veth_xdp_get(struct xdp_buff *xdp)
->  		__skb_frag_ref(&sinfo->frags[i]);
->  }
->  
-> +static void veth_xdp_get_pp(struct xdp_buff *xdp)
-> +{
-> +	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-> +	int i;
-> +
-> +	page_pool_ref_page(virt_to_page(xdp->data));
-> +	if (likely(!xdp_buff_has_frags(xdp)))
-> +		return;
-> +
-> +	for (i = 0; i < sinfo->nr_frags; i++) {
-> +		skb_frag_t *frag = &sinfo->frags[i];
-> +
-> +		page_pool_ref_page(netmem_to_page(frag->netmem));
-> +	}
-> +}
-> +
-> +static void veth_xdp_get(struct xdp_buff *xdp)
-> +{
-> +	xdp->rxq->mem.type == MEM_TYPE_PAGE_POOL ?
-> +		veth_xdp_get_pp(xdp) : veth_xdp_get_shared(xdp);
-> +}
-> +
->  static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
->  					struct xdp_buff *xdp,
->  					struct sk_buff **pskb)
->  {
->  	struct sk_buff *skb = *pskb;
-> -	u32 frame_sz;
->  
->  	if (skb_shared(skb) || skb_head_is_locked(skb) ||
->  	    skb_shinfo(skb)->nr_frags ||
-> @@ -762,19 +783,9 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
->  		skb = *pskb;
->  	}
->  
-> -	/* SKB "head" area always have tailroom for skb_shared_info */
-> -	frame_sz = skb_end_pointer(skb) - skb->head;
-> -	frame_sz += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-> -	xdp_init_buff(xdp, frame_sz, &rq->xdp_rxq);
-> -	xdp_prepare_buff(xdp, skb->head, skb_headroom(skb),
-> -			 skb_headlen(skb), true);
-> +	__skb_pull(*pskb, skb->data - skb_mac_header(skb));
+It makes sense and is necessary. Originally, I thought we don't need
+to make any promise about the state of the map since the struct_ops
+implementers have to track the state of the struct_ops themselves
+anyways. However, checking the state stored in kdata that may be
+incomplete does not look right.
 
-veth_xdp_rcv_skb() does:
+I will only return kdata from bpf_prog_get_assoc_struct_ops () when
+kvalue->common.state =3D=3D READY or INUSE.
 
-	__skb_push(skb, skb->data - skb_mac_header(skb));
-	if (veth_convert_skb_to_xdp_buff(rq, xdp, &skb))
+If tracking the state in struct_ops kdata is overly complicated for
+struct_ops implementers, then we might need to consider changing the
+associated struct_ops from map to link.
 
-so how about just getting rid of that push instead of doing the opposite
-pull straight after? :)
-
--Toke
-
+>
+> > struct_ops implementer will be responsible for maintaining and checking
+> > the state of the associated struct_ops map before accessing it.
+>
 
