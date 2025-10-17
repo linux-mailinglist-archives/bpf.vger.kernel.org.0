@@ -1,178 +1,151 @@
-Return-Path: <bpf+bounces-71206-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71207-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6624BE92C9
-	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 16:24:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6321FBE930E
+	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 16:29:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EF3D35678AF
-	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 14:19:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B61741AA25F8
+	for <lists+bpf@lfdr.de>; Fri, 17 Oct 2025 14:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9E10339718;
-	Fri, 17 Oct 2025 14:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45F22D24B6;
+	Fri, 17 Oct 2025 14:29:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NVk30zMH"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="CxA/B1gW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 211D83396F2;
-	Fri, 17 Oct 2025 14:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C5E3396E4
+	for <bpf@vger.kernel.org>; Fri, 17 Oct 2025 14:29:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760710746; cv=none; b=ZskXosZvmi5Sr+9T77jcrHeNvaW4dGD8W20ggQHkmTeqFQUgZfg6F/YiYdFJ4PgURzBBeaaUeARbakVPwpkkxQWAL7M1ZHQ9JPs/qFp4yRsEiHuyuhseaseIdqyXWezuB8QChUIXXAyJOh4Kl4AT4cdKDIe6MxX7BTkdcy2MjPc=
+	t=1760711369; cv=none; b=VHX5afmZiDaC0kdV0Od+Kxfiu+MXYkChPCmcwNhqRrkfdqCTBWPCs+p+iNKnrXFVLujc3kmU6fQsTAxPmsP0AQILLxZngMxLMdj61eQWL6edgBbDQB0bUoHn2XkH9cOj6Y5SRw5LGbzEfImApAwX+ohGKKz3463wwnS+9IVJfpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760710746; c=relaxed/simple;
-	bh=dS3H2BszcPyjXxTOMoARMa6IIdLRr87QG3FqfTPUkWg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZtpD277LgbGas9J5+enEyisC6Wgd9F8oPcM6uoidPyZAojx6e4Ha3UoeWflnBE9TSUh4GywaDYvLsIFNiwbkQMVeB50PN4x7aD1GBEp2lhcVbpP+s0T5Kg/yEdJERQyYf3cNT76Q9jcsXqBr+195MDx02a5VW1ZlzBcE1LFCOn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NVk30zMH; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1760710743; x=1792246743;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=dS3H2BszcPyjXxTOMoARMa6IIdLRr87QG3FqfTPUkWg=;
-  b=NVk30zMHv9uY+lfhWmNtS5SJ70npokA/H1FsQBNziioBJYywXq39MTfo
-   CJRy44QL0cxfv1bxa/FdQOBKwpXYvAHv8Im4SKGGU1qqAcQXvn4urhhDb
-   HiCwRzOm1DRdKekb5tG18pLPkvGJHJquoO8TFJ39Wmm/Hjzg0M3w5CX57
-   ASa1oRsbLUgFgHgAwxAye7OLqJqgcX9a+8ynSz+kRgFuYqpJeEpuytJsN
-   iGXb9ovqqYe/BqVaG7bEq6DVdbTJ8IBBpK/KUF/L+Jsf+uks8HJhcoXc2
-   ME/7YaM/yUy32m1eRDO1jMAeaHPLtV7bkVW6Sa8TeNPTjdBEZdrQ//dDX
-   g==;
-X-CSE-ConnectionGUID: OL1PGb54R7+DWqxdXjjkhA==
-X-CSE-MsgGUID: IvS69FE6QYqMmnEm33YTIA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11585"; a="63068249"
-X-IronPort-AV: E=Sophos;i="6.19,236,1754982000"; 
-   d="scan'208";a="63068249"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 07:18:53 -0700
-X-CSE-ConnectionGUID: E7MZLNxZQAGtX0NAsL7lhA==
-X-CSE-MsgGUID: jriKbGgcQJK1fPAkCyr7dw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,236,1754982000"; 
-   d="scan'208";a="187003969"
-Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
-  by orviesa004.jf.intel.com with ESMTP; 17 Oct 2025 07:18:49 -0700
-Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1v9lI7-00063n-0X;
-	Fri, 17 Oct 2025 14:18:47 +0000
-Date: Fri, 17 Oct 2025 22:18:44 +0800
-From: kernel test robot <lkp@intel.com>
-To: Amery Hung <ameryhung@gmail.com>, bpf@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	netdev@vger.kernel.org, alexei.starovoitov@gmail.com,
-	andrii@kernel.org, daniel@iogearbox.net, tj@kernel.org,
-	martin.lau@kernel.org, ameryhung@gmail.com, kernel-team@meta.com
-Subject: Re: [PATCH v2 bpf-next 2/4] bpf: Support associating BPF program
- with struct_ops
-Message-ID: <202510172107.6Yh2tFCb-lkp@intel.com>
-References: <20251016204503.3203690-3-ameryhung@gmail.com>
+	s=arc-20240116; t=1760711369; c=relaxed/simple;
+	bh=cMoPyBzHOOaYdy9c7FZ3cUwc3wSS3fmKj9pGVJ5s8mY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=bxlRB1ahCNNI9Rdy/SFBTxlhkKTM+Nb6uUAmizdmL42T5tsaSLjihi7VKz1266PkkYxoLJXCiwKiElAw7NZCwVdJjCsuC+fEovZFYU6SDOQhXDQVhT9tqp9BMcgrNOAs9Gi1FS9FQVQTL3A8Trh4MMkMpTC4dKXvoRNeDf03FyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=CxA/B1gW; arc=none smtp.client-ip=185.246.85.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 0E6AF4E41145;
+	Fri, 17 Oct 2025 14:29:26 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id D365F606DB;
+	Fri, 17 Oct 2025 14:29:25 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CDE5D102F235A;
+	Fri, 17 Oct 2025 16:29:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1760711364; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=znCzD/kYw9OFiZjrwKyfivodrcDqa/97QljZggg0Y8o=;
+	b=CxA/B1gWazID7ZBY4UgZ0MfMTAzqqK24wsPeX890YvWid3Y+ya50Sav9IGG40GIoCRjap+
+	/pMMBp4NCEI3/yhyb2QeTkHrkYG1LtwLTcj6qr8ydePmV3SSu7JWR3YvgSYepQuAvgN4C/
+	RqyJT6x2ngr07AJwXHrTxQ/jT9a3udJiJrj3uqXg/8cjl+4u/4X0A5Ifywm/RXvphYiscT
+	9pMw5S7Hm9F93jH2jgrGjJIsUn4dzWon1woyntqWRzT02Oiu9EygCH4qyR/ahWEFlQGfZX
+	Bq5kfWrJFdkDndBvoYvbEpYy1lyasqSNwnLFZjzJtsk17PilXEpKgKmdisNKwg==
+From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+Subject: [PATCH bpf-next 0/5] selftests/bpf: convert test_tc_tunnel.sh to
+ test_progs
+Date: Fri, 17 Oct 2025 16:29:00 +0200
+Message-Id: <20251017-tc_tunnel-v1-0-2d86808d86b2@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251016204503.3203690-3-ameryhung@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAKxS8mgC/x3MSwqAMAwA0atI1hZM/VC8iohoTTUgUdoqgnh3i
+ 8sHwzwQyDMFaLMHPF0ceJcEzDOw6ygLKZ6TQRe6LgyiinaIpwhtyjZYVroxpUMDqT88Ob7/Vwf
+ T4ZTQHaF/3w9oO2VjZQAAAA==
+X-Change-ID: 20250811-tc_tunnel-c61342683f18
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc: ebpf@linuxfoundation.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Bastien Curutchet <bastien.curutchet@bootlin.com>, bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+X-Mailer: b4 0.14.2
+X-Last-TLS-Session-Version: TLSv1.3
 
-Hi Amery,
+Hello,
+this series aims to convert another test to the test_progs framework to
+make sure that it is executed in CI for series sent on the mailing list.
+test_tc_tunnel.sh tests a variety of tunnels based on BPF: packets are
+encapsulated by a BPF program on the client egress. We then check that
+those packets can be decapsulated on server ingress side, either thanks
+to kernel-based or BPF-based decapsulation. Those tests are run thanks
+to two veths in two dedicated namespaces.
 
-kernel test robot noticed the following build warnings:
+- patches 1 to 3 are preparatory patches
+- patch 4 introduce tc_tunnel test into test_progs
+- patch 5 gets rid of the test_tc_tunnel.sh script
 
-[auto build test WARNING on bpf-next/master]
+The new test has been executed both in some x86 local qemu machine, as
+well as in CI:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Amery-Hung/bpf-Allow-verifier-to-fixup-kernel-module-kfuncs/20251017-044703
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20251016204503.3203690-3-ameryhung%40gmail.com
-patch subject: [PATCH v2 bpf-next 2/4] bpf: Support associating BPF program with struct_ops
-config: sparc64-defconfig (https://download.01.org/0day-ci/archive/20251017/202510172107.6Yh2tFCb-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251017/202510172107.6Yh2tFCb-lkp@intel.com/reproduce)
+  # ./test_progs -a tc_tunnel
+  #454/1   tc_tunnel/ipip_none:OK
+  #454/2   tc_tunnel/ipip6_none:OK
+  #454/3   tc_tunnel/ip6tnl_none:OK
+  #454/4   tc_tunnel/sit_none:OK
+  #454/5   tc_tunnel/vxlan_eth:OK
+  #454/6   tc_tunnel/ip6vxlan_eth:OK
+  #454/7   tc_tunnel/gre_none:OK
+  #454/8   tc_tunnel/gre_eth:OK
+  #454/9   tc_tunnel/gre_mpls:OK
+  #454/10  tc_tunnel/ip6gre_none:OK
+  #454/11  tc_tunnel/ip6gre_eth:OK
+  #454/12  tc_tunnel/ip6gre_mpls:OK
+  #454/13  tc_tunnel/udp_none:OK
+  #454/14  tc_tunnel/udp_eth:OK
+  #454/15  tc_tunnel/udp_mpls:OK
+  #454/16  tc_tunnel/ip6udp_none:OK
+  #454/17  tc_tunnel/ip6udp_eth:OK
+  #454/18  tc_tunnel/ip6udp_mpls:OK
+  #454     tc_tunnel:OK
+  Summary: 1/18 PASSED, 0 SKIPPED, 0 FAILED
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202510172107.6Yh2tFCb-lkp@intel.com/
+Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+---
+Alexis Lothoré (eBPF Foundation) (5):
+      testing/selftests: rename tc_helpers.h to tcx_helpers.h
+      selftests/bpf: add tc helpers
+      selftests/bpf: make test_tc_tunnel.bpf.c compatible with big endian platforms
+      selftests/bpf: integrate test_tc_tunnel.sh tests into test_progs
+      selftests/bpf: remove test_tc_tunnel.sh
 
-All warnings (new ones prefixed by >>):
+ tools/testing/selftests/bpf/Makefile               |   2 +-
+ tools/testing/selftests/bpf/prog_tests/tc_links.c  |  46 +-
+ tools/testing/selftests/bpf/prog_tests/tc_netkit.c |  22 +-
+ tools/testing/selftests/bpf/prog_tests/tc_opts.c   |  40 +-
+ .../bpf/prog_tests/{tc_helpers.h => tcx_helpers.h} |   6 +-
+ .../selftests/bpf/prog_tests/test_tc_tunnel.c      | 684 +++++++++++++++++++++
+ .../testing/selftests/bpf/prog_tests/test_tunnel.c |  80 +--
+ tools/testing/selftests/bpf/progs/test_tc_tunnel.c |  99 ++-
+ tools/testing/selftests/bpf/tc_helpers.c           |  87 +++
+ tools/testing/selftests/bpf/tc_helpers.h           |   9 +
+ tools/testing/selftests/bpf/test_tc_tunnel.sh      | 320 ----------
+ 11 files changed, 884 insertions(+), 511 deletions(-)
+---
+base-commit: 22267893b8c7f2773896e814800bbe693f206e0c
+change-id: 20250811-tc_tunnel-c61342683f18
 
-   kernel/bpf/core.c:2881:3: error: call to undeclared function 'bpf_struct_ops_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    2881 |                 bpf_struct_ops_put(aux->st_ops_assoc);
-         |                 ^
-   kernel/bpf/core.c:2881:3: note: did you mean 'bpf_struct_ops_find'?
-   include/linux/btf.h:538:49: note: 'bpf_struct_ops_find' declared here
-     538 | static inline const struct bpf_struct_ops_desc *bpf_struct_ops_find(struct btf *btf, u32 type_id)
-         |                                                 ^
-   In file included from kernel/bpf/core.c:3240:
-   In file included from include/linux/bpf_trace.h:5:
-   In file included from include/trace/events/xdp.h:384:
-   In file included from include/trace/define_trace.h:132:
-   In file included from include/trace/trace_events.h:21:
-   In file included from include/linux/trace_events.h:6:
-   In file included from include/linux/ring_buffer.h:7:
->> include/linux/poll.h:134:27: warning: division by zero is undefined [-Wdivision-by-zero]
-     134 |                 M(RDNORM) | M(RDBAND) | M(WRNORM) | M(WRBAND) |
-         |                                         ^~~~~~~~~
-   include/linux/poll.h:132:32: note: expanded from macro 'M'
-     132 | #define M(X) (__force __poll_t)__MAP(val, POLL##X, (__force __u16)EPOLL##X)
-         |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/poll.h:118:51: note: expanded from macro '__MAP'
-     118 |         (from < to ? (v & from) * (to/from) : (v & from) / (from/to))
-         |                                                          ^ ~~~~~~~~~
-   include/linux/poll.h:134:39: warning: division by zero is undefined [-Wdivision-by-zero]
-     134 |                 M(RDNORM) | M(RDBAND) | M(WRNORM) | M(WRBAND) |
-         |                                                     ^~~~~~~~~
-   include/linux/poll.h:132:32: note: expanded from macro 'M'
-     132 | #define M(X) (__force __poll_t)__MAP(val, POLL##X, (__force __u16)EPOLL##X)
-         |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/poll.h:118:51: note: expanded from macro '__MAP'
-     118 |         (from < to ? (v & from) * (to/from) : (v & from) / (from/to))
-         |                                                          ^ ~~~~~~~~~
-   include/linux/poll.h:135:12: warning: division by zero is undefined [-Wdivision-by-zero]
-     135 |                 M(HUP) | M(RDHUP) | M(MSG);
-         |                          ^~~~~~~~
-   include/linux/poll.h:132:32: note: expanded from macro 'M'
-     132 | #define M(X) (__force __poll_t)__MAP(val, POLL##X, (__force __u16)EPOLL##X)
-         |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/poll.h:118:51: note: expanded from macro '__MAP'
-     118 |         (from < to ? (v & from) * (to/from) : (v & from) / (from/to))
-         |                                                          ^ ~~~~~~~~~
-   include/linux/poll.h:135:23: warning: division by zero is undefined [-Wdivision-by-zero]
-     135 |                 M(HUP) | M(RDHUP) | M(MSG);
-         |                                     ^~~~~~
-   include/linux/poll.h:132:32: note: expanded from macro 'M'
-     132 | #define M(X) (__force __poll_t)__MAP(val, POLL##X, (__force __u16)EPOLL##X)
-         |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/poll.h:118:51: note: expanded from macro '__MAP'
-     118 |         (from < to ? (v & from) * (to/from) : (v & from) / (from/to))
-         |                                                          ^ ~~~~~~~~~
-   4 warnings and 1 error generated.
-
-
-vim +134 include/linux/poll.h
-
-7a163b2195cda0c Al Viro 2018-02-01  129  
-7a163b2195cda0c Al Viro 2018-02-01  130  static inline __poll_t demangle_poll(u16 val)
-7a163b2195cda0c Al Viro 2018-02-01  131  {
-7a163b2195cda0c Al Viro 2018-02-01  132  #define M(X) (__force __poll_t)__MAP(val, POLL##X, (__force __u16)EPOLL##X)
-7a163b2195cda0c Al Viro 2018-02-01  133  	return M(IN) | M(OUT) | M(PRI) | M(ERR) | M(NVAL) |
-7a163b2195cda0c Al Viro 2018-02-01 @134  		M(RDNORM) | M(RDBAND) | M(WRNORM) | M(WRBAND) |
-7a163b2195cda0c Al Viro 2018-02-01  135  		M(HUP) | M(RDHUP) | M(MSG);
-7a163b2195cda0c Al Viro 2018-02-01  136  #undef M
-7a163b2195cda0c Al Viro 2018-02-01  137  }
-7a163b2195cda0c Al Viro 2018-02-01  138  #undef __MAP
-7a163b2195cda0c Al Viro 2018-02-01  139  
-7a163b2195cda0c Al Viro 2018-02-01  140  
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
