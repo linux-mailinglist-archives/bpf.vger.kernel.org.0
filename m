@@ -1,164 +1,120 @@
-Return-Path: <bpf+bounces-71274-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71275-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC38CBEC993
-	for <lists+bpf@lfdr.de>; Sat, 18 Oct 2025 09:51:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DC43BEC9E9
+	for <lists+bpf@lfdr.de>; Sat, 18 Oct 2025 10:28:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B4E7D4E06DF
-	for <lists+bpf@lfdr.de>; Sat, 18 Oct 2025 07:51:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E295619A5369
+	for <lists+bpf@lfdr.de>; Sat, 18 Oct 2025 08:28:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD41287247;
-	Sat, 18 Oct 2025 07:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y2qR6SgL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899B228A72B;
+	Sat, 18 Oct 2025 08:28:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B511282EB
-	for <bpf@vger.kernel.org>; Sat, 18 Oct 2025 07:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FDD91F418D;
+	Sat, 18 Oct 2025 08:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760773905; cv=none; b=P2Wj9ymgKFprP3L8gd1UHxVlNLGdogrF8PHC6tEaPEkMRJIKl8OIKeQH9xyxDtwF1k4xhSpPeFhX/q/lQ5Xr9KdQdPNU+qQQ5I2sv/pveIiHSYi+aOxJXFwL4DM3DtKf2HbayVE1RKgZU5piCCZilMTEhQkpDgfOo8yM7dIDGmA=
+	t=1760776107; cv=none; b=LRW4V5d35ggG67Mzy3zuNYb6ban8INM7kN11hO+PEbnm1CYyRLJDrc5QqYf4X2ITKQMbK+7K3IsSk1EPGMh6C75Rah/xSFlr52xr06fmk2xqZT1oWkns5VOIwsQv0l6snnR0cq4/mHVmZU9/EBKdeQWocq87dXoqyG9tQJgZlZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760773905; c=relaxed/simple;
-	bh=YDaatv130rfc9YWd+DrPk6GZoVEeS24QutfZ+cuZR60=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i9TEUu/9zekqi26eIjsaiPjKqrmSd13729JT0eZFrqjDDnMSMHV980ZQUTwIrARUXOFXy8p8ZI478Yc6r3u5+KS4ct2Zh+n74mD2RifrgM3QQOuGihESmnQHHF7wbOzoOGi1+8t95CPV8YfJ9xQOHO0x3lza8dQTMs3+gPt5ie0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y2qR6SgL; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <abd75aed-9ff2-4e6d-8fec-2b118264efa9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1760773898;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UzIpLxhpXHd7W2m8i5xoFIEHI3nftwPx3RFrt+zivx4=;
-	b=Y2qR6SgLX/fevxvhax5l9j1nNiPMyAzIjswtZ/PyI81C4v9mK2TYwh/cGOx+r8/PD575cP
-	vitqOxHpHWSIzpZLxeUAdGLJM6bCqNLwnJBf+o9RFFeqoGY6q5+qrIuuZhs7G4kAsmvxPR
-	1WK48uBsFzLbfw89fu9B2z4A+aLy83s=
-Date: Sat, 18 Oct 2025 15:51:22 +0800
+	s=arc-20240116; t=1760776107; c=relaxed/simple;
+	bh=G+w33CURobdsrVCx32sB35QIpXZKy5qGGsojw7FPWiA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QWlstqDxf2fyY/7kibQnWU4U4SRBbYeRrCud+Coo2kFWjy752WLLUzsW/mZJHz0aVypfGm1AmU/PDLM5LBK6esqmcHMBgjQAdnsbFnJUpxz84YLwycccQB3fkaL8J2+K1ua3fUJLXSbbt/dIKkVLiww8l4hIjSn+46v9sGB8Eus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8Dxfb+hT_NokaMXAA--.49100S3;
+	Sat, 18 Oct 2025 16:28:18 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+	by front1 (Coremail) with SMTP id qMiowJAxfcGgT_NorKPxAA--.18841S2;
+	Sat, 18 Oct 2025 16:28:16 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf v2] selftests/bpf: Fix set but not used build errors
+Date: Sat, 18 Oct 2025 16:28:15 +0800
+Message-ID: <20251018082815.20622-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next v2 2/2] bpf: Pass external callchain entry to
- get_perf_callchain
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Kan Liang <kan.liang@linux.intel.com>, Song Liu <song@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- "linux-perf-use." <linux-perf-users@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <20251014100128.2721104-1-chen.dylane@linux.dev>
- <20251014100128.2721104-3-chen.dylane@linux.dev> <aO4-jAA5RIUY2yxc@krava>
- <CAADnVQLoF49pu8CT81FV1ddvysQzvYT4UO1P21fVxnafnO5vrQ@mail.gmail.com>
- <CAEf4BzbAt_3co0s-+DspnHuJryG2DKPLP9OwsN0bWWnbd5zsmQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAEf4BzbAt_3co0s-+DspnHuJryG2DKPLP9OwsN0bWWnbd5zsmQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:qMiowJAxfcGgT_NorKPxAA--.18841S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7ur15KF1DKF1xGw4kKr1ruFX_yoW8uFyfp3
+	48J3Z5t3yIqF4UJ3WkGrZFqF1rC3ykZ3yFg3W8J3ZxWw1DJ3Z3ur1IgFW5WF9rurWYvan3
+	A3yxWr95Ww18ArgCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUvKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	GcCE3s1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2
+	x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17
+	McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr4
+	1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_
+	JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17
+	CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0
+	I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I
+	8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU
+	0xZFpf9x07jjwZcUUUUU=
 
-在 2025/10/17 04:39, Andrii Nakryiko 写道:
-> On Tue, Oct 14, 2025 at 8:02 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->>
->> On Tue, Oct 14, 2025 at 5:14 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->>>
->>> On Tue, Oct 14, 2025 at 06:01:28PM +0800, Tao Chen wrote:
->>>> As Alexei noted, get_perf_callchain() return values may be reused
->>>> if a task is preempted after the BPF program enters migrate disable
->>>> mode. Drawing on the per-cpu design of bpf_perf_callchain_entries,
->>>> stack-allocated memory of bpf_perf_callchain_entry is used here.
->>>>
->>>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->>>> ---
->>>>   kernel/bpf/stackmap.c | 19 +++++++++++--------
->>>>   1 file changed, 11 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
->>>> index 94e46b7f340..acd72c021c0 100644
->>>> --- a/kernel/bpf/stackmap.c
->>>> +++ b/kernel/bpf/stackmap.c
->>>> @@ -31,6 +31,11 @@ struct bpf_stack_map {
->>>>        struct stack_map_bucket *buckets[] __counted_by(n_buckets);
->>>>   };
->>>>
->>>> +struct bpf_perf_callchain_entry {
->>>> +     u64 nr;
->>>> +     u64 ip[PERF_MAX_STACK_DEPTH];
->>>> +};
->>>> +
-> 
-> we shouldn't introduce another type, there is perf_callchain_entry in
-> linux/perf_event.h, what's the problem with using that?
+There are some set but not used build errors when compiling bpf selftests
+with the latest upstream mainline GCC, at the beginning add the attribute
+__maybe_unused for the variables, but it is better to just add the option
+-Wno-unused-but-set-variable to CFLAGS in Makefile to disable the errors
+instead of hacking the tests.
 
-perf_callchain_entry uses flexible array, DEFINE_PER_CPU seems do not
-create buffer for this, for ease of use, the size of the ip array has 
-been explicitly defined.
+  tools/testing/selftests/bpf/map_tests/lpm_trie_map_basic_ops.c:229:36:
+  error: variable ‘n_matches_after_delete’ set but not used [-Werror=unused-but-set-variable=]
 
-struct perf_callchain_entry {
-         u64                             nr;
-         u64                             ip[]; /* 
-/proc/sys/kernel/perf_event_max_stack */
-};
+  tools/testing/selftests/bpf/map_tests/lpm_trie_map_basic_ops.c:229:25:
+  error: variable ‘n_matches’ set but not used [-Werror=unused-but-set-variable=]
 
-> 
->>>>   static inline bool stack_map_use_build_id(struct bpf_map *map)
->>>>   {
->>>>        return (map->map_flags & BPF_F_STACK_BUILD_ID);
->>>> @@ -305,6 +310,7 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
->>>>        bool user = flags & BPF_F_USER_STACK;
->>>>        struct perf_callchain_entry *trace;
->>>>        bool kernel = !user;
->>>> +     struct bpf_perf_callchain_entry entry = { 0 };
->>>
->>> so IIUC having entries on stack we do not need to do preempt_disable
->>> you had in the previous version, right?
->>>
->>> I saw Andrii's justification to have this on the stack, I think it's
->>> fine, but does it have to be initialized? it seems that only used
->>> entries are copied to map
->>
->> No. We're not adding 1k stack consumption.
-> 
-> Right, and I thought we concluded as much last time, so it's a bit
-> surprising to see this in this patch.
-> 
+  tools/testing/selftests/bpf/prog_tests/bpf_cookie.c:426:22:
+  error: variable ‘j’ set but not used [-Werror=unused-but-set-variable=]
 
-Ok, I feel like I'm missing some context from our previous exchange.
+  tools/testing/selftests/bpf/prog_tests/find_vma.c:52:22:
+  error: variable ‘j’ set but not used [-Werror=unused-but-set-variable=]
 
-> Tao, you should go with 3 entries per CPU used in a stack-like
-> fashion. And then passing that entry into get_perf_callchain() (to
-> avoid one extra copy).
->
+  tools/testing/selftests/bpf/prog_tests/perf_branches.c:67:22:
+  error: variable ‘j’ set but not used [-Werror=unused-but-set-variable=]
 
-Got it. It is more clearer, will change it in v3.
+  tools/testing/selftests/bpf/prog_tests/perf_link.c:15:22:
+  error: variable ‘j’ set but not used [-Werror=unused-but-set-variable=]
 
->>
->> pw-bot: cr
+Cc: stable@vger.kernel.org
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ tools/testing/selftests/bpf/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index f00587d4ede6..7437c325179e 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -46,6 +46,7 @@ endif
+ 
+ CFLAGS += -g $(OPT_FLAGS) -rdynamic -std=gnu11				\
+ 	  -Wall -Werror -fno-omit-frame-pointer				\
++	  -Wno-unused-but-set-variable					\
+ 	  $(GENFLAGS) $(SAN_CFLAGS) $(LIBELF_CFLAGS)			\
+ 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
+ 	  -I$(TOOLSINCDIR) -I$(TOOLSARCHINCDIR) -I$(APIDIR) -I$(OUTPUT)
 -- 
-Best Regards
-Tao Chen
+2.42.0
+
 
