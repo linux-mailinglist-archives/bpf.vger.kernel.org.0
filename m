@@ -1,74 +1,74 @@
-Return-Path: <bpf+bounces-71323-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71324-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6187BEEC13
-	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 22:16:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE209BEEC0F
+	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 22:16:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E6D2C4E7871
-	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 20:15:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57A693BCC80
+	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 20:15:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD1C2EC572;
-	Sun, 19 Oct 2025 20:15:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235311E00A0;
+	Sun, 19 Oct 2025 20:15:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dbsnrU5M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BBQqTVcd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14FCD2EC0BB
-	for <bpf@vger.kernel.org>; Sun, 19 Oct 2025 20:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC55A2E54CC
+	for <bpf@vger.kernel.org>; Sun, 19 Oct 2025 20:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760904934; cv=none; b=aRpdl6pKyTMoBHvl0C0NEKVqoFGTTbB/aBO5K30APYOfDoYI7NkEd3qPbCQNhosnD1osgyqrMxaKEgvLKFLi6m9pH5al5xQ3vNQKw7nyu1yAIcOlr3CtyfN54IdCynWn9Tl38X1/eVvERuSJ0mXC4IMPPjFT4BXv5TwEf3Lf+rg=
+	t=1760904935; cv=none; b=miJdUGhQS9HJWl/IGQUR/lWyldqAm1nQ4ltIIwTaS7/xYdM54jLbWAQDlUF/CzV1v6XLEDvehBEAwtdBvqaVEQRWsGTPwX5ou1SNaWFEZPUH/6EUjrc5mPh88hpt6SQ3HnjvmiUl2fyWx7nLzLctylfs37lD8fubqRhhhjOKkWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760904934; c=relaxed/simple;
-	bh=nVmvTrl0B11Wv8bBU3jd6jIM12dZFcKhYf3aYLP/dxQ=;
+	s=arc-20240116; t=1760904935; c=relaxed/simple;
+	bh=Ue/I7XieoFHlxvBtqAqnDCqSeksLI8Tq9PBiJb8OHlA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ISxc94rQIR9x9ASRZty3XdFK5Qw1DCa7ejPORq83G7d5O07M4imlb9655GiOOlkwldu+Zm+fPPF5bF9lAg9NRJquG5UKB5wHpH1NDDg+mcvW82dYxMHk9Luudjr0khZahda0SKLa56ogxAyLXUwy9bjOvrnK+Xgn51Bim1p0gc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dbsnrU5M; arc=none smtp.client-ip=209.85.128.50
+	 MIME-Version:Content-Type; b=HDoHkZzTK6nl+Q9zSPr663l3PqRW4cXYmmtG4yA9BAM5wBeT1Umnvpc9LdvXVBWPJlUMASMjfF60ySkZyCnlOdlP2X338P4XlOYZ/5rhkmTXt9S1hbAkfSKVwWHCTuISx0avp1XpuK8r2klIdytUxsIE9i8TijTkNsbc+VYCtzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BBQqTVcd; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-471193a9d9eso30742395e9.2
-        for <bpf@vger.kernel.org>; Sun, 19 Oct 2025 13:15:32 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-47106fc51faso42958605e9.0
+        for <bpf@vger.kernel.org>; Sun, 19 Oct 2025 13:15:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760904931; x=1761509731; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760904932; x=1761509732; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j5BQrWI9PfslovtOJnhbl7Xnkk8cb6Rf5mpObpUMQVc=;
-        b=dbsnrU5MaF8hZ8Mui1eQ3ja/a50NlKPMZPrwFFDXvD9rPygB4AHGgbD4/bLkXHuRc2
-         RTIfcuXaZyCYdm4S9Uk9mnGmId+BOMVGDhg4V5CmocfPLILwaF3E8/AqOZGJEB+iAOdK
-         V+wQC24PigrlG1KQ7khAUqlEBLO1AekujQjk9ZjqR5HsSYWdiq0l8oJRsNrfJVIeno1L
-         C0wTRLxj6DCrEOa7/0hwiZb8uOdHgaiutLqRuh2FmoNw8qLvpcuEuTywAKd4xmDYRkza
-         fTnUKllJxuH1QdqQDw5PXbbgWNh9SDqcCqSgKHwEj0Nq0bwCQVnAjEC4dly+4d/Yn2kw
-         bhHA==
+        bh=ATm9q5iUk5umsmKM4X7RoStF/oxKLUtnwhp7RXdqlbg=;
+        b=BBQqTVcdXP4X4B338Cfw1M2Rr9XysrvajCdNgIbHCOWrGZidJVEjblL95oyGeDrT3S
+         uRacT6s9UAK5SscUYmLl1WIu4ArOe2rZfbgPSTjcWm01QNPHj/9ThDABthiyXwx3djxG
+         h3dXaardkZJUZYysSFUyJxPIu5KeeyCFahROQ1DtBO+Fjw6XU9hr3+yx0tdw25QMJFdy
+         ai7f+v/HzRoFBBPpViFedn8D/7438ISh9xrdwa7t0bNHi0BRUPwWTLhOhegml38GwzXJ
+         SUObLiP9VOQ+vx4GLiWvxK3XygVvlK2KxybOo5DsyJKif5WU0pYs4z8At3yNFfVxW0sG
+         LQyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760904931; x=1761509731;
+        d=1e100.net; s=20230601; t=1760904932; x=1761509732;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=j5BQrWI9PfslovtOJnhbl7Xnkk8cb6Rf5mpObpUMQVc=;
-        b=LCv8CO7rL0pl+/Hh69pBPsj9hyHyfVLZsOHmEdGo2REQwTNPLLitAQW5QnqC56vtir
-         Gtp/bZYGHMKYp5ETA7DnyZp/4cGQrC271bvNDI/gX9kLCipgyfUAOF5ppwh39K/jCklc
-         mDOK3lPOuj1PN5wYkrdpvkWWRR2JlUZe2fSScX6bIiw9D+XCtDY1LHyRLPntg7NjQo9m
-         YzWC+du45R4zSwGPVcK+bQICJq+AIKownFx8ZOeGAcM2ezwgc5hi6q7CIZyIsEDXb8sc
-         Ja4eE1X7nt8Libqt72txFjZGdwnXeQuV4rtk/JAqDO5fMoBejDNf/KqmcHV4sGdv1Rdg
-         SNFg==
-X-Gm-Message-State: AOJu0YwkRvBaXGILQtMwKLrtqp4oA2Wscfk2V/i+B3D+IKrBWo5OO6aU
-	jzwcZxBueAoWbaAABT3Ifv2LSb5JauZ9hxxoHx7VNwMeUwCX9ylyfWKTxsV9PQ==
-X-Gm-Gg: ASbGncuOlDP4i5wkfjzrvUBKtxYsfghDPsPq4D3yLr7LtWMOkmd7SI6CsNCjYXlVavN
-	pgFDujFK8Pp146aa32OKZgqtiBVrV5j6/IAYkxUGnu7FlMF8fSrweSAZz6YysKYC105X+eTQpe8
-	BwO53+n2oOZ5Oio/hJCS89dh3+9JbHb5pw5jLQ+Zbs2++OUqVWqJTdEinWGV6XglFn+tagQjWOn
-	2EkhzSeJeM8ZEcEhoNPAzAbqU7YDA+QyHMG/N0Xi6L/0B2D+lqCoPe183ilyBc6jiKj6S3dDch3
-	JEQs+7vXlEA5pAlAihofgrz8YxdE2+1A1xTSh9jpR988F9igzZwCGPbFFmUCB0Ygmk3qLpfz41b
-	dJ1YU3TJsvEni40cSQhwkozx/WGmway9NTDSsZLnKM3lAPLC5/WSZZOueLYguwE0pP+iRLDgEJX
-	ql33Jv3SCF6Ze+U0+0dBSgw+Q5w3MaTA==
-X-Google-Smtp-Source: AGHT+IEnLpzR/og/1CTW1cNv+Y+WJlut9RGKERAPsHD7g5EB09bqJfOeSLetwnwrCSguXEy7bPGWMQ==
-X-Received: by 2002:a05:6000:4389:b0:3ee:1461:1654 with SMTP id ffacd0b85a97d-42704dc9aa1mr8026954f8f.50.1760904930619;
-        Sun, 19 Oct 2025 13:15:30 -0700 (PDT)
+        bh=ATm9q5iUk5umsmKM4X7RoStF/oxKLUtnwhp7RXdqlbg=;
+        b=g4tgF7jP2mPTIvWTfWBdWqWfhCWSUcNyJbmlzkpZiXini74Z9hdd/+rYDK0/BKhcUr
+         hbnh0yD6QpDkI/UlepBkEvPyvTL7eh7u+y8VwmCgqCSDHSAuT8rf820gQdwNTGuLjTL/
+         YtjSkeLlnUBu45aZNaDLQUVNiU75RZ1IUkBdk/xi/t8hU4xldFDkQzDfWgX9KtWjF6gq
+         XJ37XCEP5HWyvxh98/s6qKrN6A4OUAjrBzgv1WsArTN3/mSmj5nFkOiNtvtuVLVzs5Bw
+         UpC98HdJXHvl3YQ3ahmBQ9IpHsp1/TbFHWF/0+DxSsJJeadPAznIe/sAeBF2AFeZNFlF
+         fvpg==
+X-Gm-Message-State: AOJu0YyNzM7XpHUIXyZ0ZafnuoQwspWXptPvBVF0Cb/q8/umWf7A+eP4
+	3cvGcDK5ZxfzM8yLcTvqfjyUVkTEB/mgFEK8zyhy8g/uyy7I9V2IKWsDGpP/pA==
+X-Gm-Gg: ASbGncvPAtyn0uqhvbkJKlnpLyo0NRqkOlY+EQl1B9MXK7TKlS4QdNoIcm24Eg86TSi
+	ByAFpaurU2TxwsPHxsszqn4ykAakcKyjKWfUjyV/8rZZNIhnl6ODH45sAAGCgqXz9XZurZc5Kqa
+	ZjhaFI6hFZQtG1RVDqc6spc2P2eaO8k7NsvkxUP1FWX56e1LvHcwgXYce9/Oxy69DJFda3lg4gM
+	7LsHxqGXXCwbWEBj4bwW3vno4Th8bu757Y749y0Dyl9qQRRh4us3K5CIG7XG1nJHRhPthVZx08n
+	wwn6JGaPJSKCu9/LeIPasdApRw26U8VE0aHQk6q+uF7WGMQ/EHWkUlONgp7iLyZBbKoQtUVG1ZA
+	8VAly+s/pmYo7OjL2GVmTVy1kWAB6JeRlGKjqRgBq3EAiQXTn/+bhTT8hS2HKmz2nRmjDjaIirU
+	S2ttESjQgPQxvGxIwkYz2a/vRGOIFAiw==
+X-Google-Smtp-Source: AGHT+IEQzwbPniks7jYIQWr9VPhemV84nWofE3jacurW3dlajCNll0mFGkI6RLD8Av6cuAanNR7MWQ==
+X-Received: by 2002:a05:600c:46c9:b0:471:747:2116 with SMTP id 5b1f17b1804b1-471179303d0mr78391555e9.41.1760904931500;
+        Sun, 19 Oct 2025 13:15:31 -0700 (PDT)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
         by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-471144c831asm190460105e9.13.2025.10.19.13.15.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -83,9 +83,9 @@ To: bpf@vger.kernel.org,
 	Quentin Monnet <qmo@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>
 Cc: Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH v6 bpf-next 08/17] bpf, x86: allow indirect jumps to r8...r15
-Date: Sun, 19 Oct 2025 20:21:36 +0000
-Message-Id: <20251019202145.3944697-9-a.s.protopopov@gmail.com>
+Subject: [PATCH v6 bpf-next 09/17] bpf: make bpf_insn_successors to return a pointer
+Date: Sun, 19 Oct 2025 20:21:37 +0000
+Message-Id: <20251019202145.3944697-10-a.s.protopopov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251019202145.3944697-1-a.s.protopopov@gmail.com>
 References: <20251019202145.3944697-1-a.s.protopopov@gmail.com>
@@ -95,86 +95,293 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Currently the emit_indirect_jump() function only accepts one of the
-RAX, RCX, ..., RBP registers as the destination. Make it to accept
-R8, R9, ..., R15 as well, and make callers to pass BPF registers, not
-native registers. This is required to enable indirect jumps support
-in eBPF.
+The bpf_insn_successors() function is used to return successors
+to a BPF instruction. So far, an instruction could have 0, 1 or 2
+successors. Prepare the verifier code to introduction of instructions
+with more than 2 successors (namely, indirect jumps).
+
+To do this, introduce a new struct, struct bpf_iarray, containing
+an array of bpf instruction indexes and make bpf_insn_successors
+to return a pointer of that type. The storage for all instructions
+is allocated in the env->succ, which holds an array of size 2,
+to be used for all instructions.
 
 Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- arch/x86/net/bpf_jit_comp.c | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
+ include/linux/bpf_verifier.h | 12 +++++++-
+ kernel/bpf/liveness.c        | 36 ++++++++++++++--------
+ kernel/bpf/verifier.c        | 60 ++++++++++++++++++++++++------------
+ 3 files changed, 75 insertions(+), 33 deletions(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index c8e628410d2c..7443465ce9a4 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -660,24 +660,38 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 142030e7e857..6b820d8d77af 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -509,6 +509,15 @@ struct bpf_map_ptr_state {
+ #define BPF_ALU_SANITIZE		(BPF_ALU_SANITIZE_SRC | \
+ 					 BPF_ALU_SANITIZE_DST)
  
- #define EMIT_LFENCE()	EMIT3(0x0F, 0xAE, 0xE8)
++/*
++ * An array of BPF instructions.
++ * Primary usage: return value of bpf_insn_successors.
++ */
++struct bpf_iarray {
++	int cnt;
++	u32 items[];
++};
++
+ struct bpf_insn_aux_data {
+ 	union {
+ 		enum bpf_reg_type ptr_type;	/* pointer type for load/store insns */
+@@ -830,6 +839,7 @@ struct bpf_verifier_env {
+ 	/* array of pointers to bpf_scc_info indexed by SCC id */
+ 	struct bpf_scc_info **scc_info;
+ 	u32 scc_cnt;
++	struct bpf_iarray *succ;
+ };
  
--static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
-+static void __emit_indirect_jump(u8 **pprog, int reg, bool ereg)
+ static inline struct bpf_func_info_aux *subprog_aux(struct bpf_verifier_env *env, int subprog)
+@@ -1052,7 +1062,7 @@ void print_insn_state(struct bpf_verifier_env *env, const struct bpf_verifier_st
+ 
+ struct bpf_subprog_info *bpf_find_containing_subprog(struct bpf_verifier_env *env, int off);
+ int bpf_jmp_offset(struct bpf_insn *insn);
+-int bpf_insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2]);
++struct bpf_iarray *bpf_insn_successors(struct bpf_verifier_env *env, u32 idx);
+ void bpf_fmt_stack_mask(char *buf, ssize_t buf_sz, u64 stack_mask);
+ bool bpf_calls_callback(struct bpf_verifier_env *env, int insn_idx);
+ 
+diff --git a/kernel/bpf/liveness.c b/kernel/bpf/liveness.c
+index 1e6538f59a78..78fbde2d2b96 100644
+--- a/kernel/bpf/liveness.c
++++ b/kernel/bpf/liveness.c
+@@ -34,7 +34,7 @@
+  *   - read and write marks propagation.
+  * - The propagation phase is a textbook live variable data flow analysis:
+  *
+- *     state[cc, i].live_after = U [state[cc, s].live_before for s in insn_successors(i)]
++ *     state[cc, i].live_after = U [state[cc, s].live_before for s in bpf_insn_successors(i)]
+  *     state[cc, i].live_before =
+  *       (state[cc, i].live_after / state[cc, i].must_write) U state[i].may_read
+  *
+@@ -54,7 +54,7 @@
+  *   The equation for "must_write_acc" propagation looks as follows:
+  *
+  *     state[cc, i].must_write_acc =
+- *       ∩ [state[cc, s].must_write_acc for s in insn_successors(i)]
++ *       ∩ [state[cc, s].must_write_acc for s in bpf_insn_successors(i)]
+  *       U state[cc, i].must_write
+  *
+  *   (An intersection of all "must_write_acc" for instruction successors
+@@ -447,7 +447,12 @@ int bpf_jmp_offset(struct bpf_insn *insn)
+ __diag_push();
+ __diag_ignore_all("-Woverride-init", "Allow field initialization overrides for opcode_info_tbl");
+ 
+-inline int bpf_insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2])
++/*
++ * Returns an array of instructions succ, with succ->items[0], ...,
++ * succ->items[n-1] with successor instructions, where n=succ->cnt
++ */
++inline struct bpf_iarray *
++bpf_insn_successors(struct bpf_verifier_env *env, u32 idx)
  {
- 	u8 *prog = *pprog;
+ 	static const struct opcode_info {
+ 		bool can_jump;
+@@ -474,19 +479,25 @@ inline int bpf_insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2])
+ 		_J(BPF_JSET,  {.can_jump = true,  .can_fallthrough = true}),
+ 	#undef _J
+ 	};
++	struct bpf_prog *prog = env->prog;
+ 	struct bpf_insn *insn = &prog->insnsi[idx];
+ 	const struct opcode_info *opcode_info;
+-	int i = 0, insn_sz;
++	struct bpf_iarray *succ;
++	int insn_sz;
++
++	/* pre-allocated array of size up to 2; reset cnt, as it may have been used already */
++	succ = env->succ;
++	succ->cnt = 0;
  
-+	if (ereg)
-+		EMIT1(0x41);
+ 	opcode_info = &opcode_info_tbl[BPF_CLASS(insn->code) | BPF_OP(insn->code)];
+ 	insn_sz = bpf_is_ldimm64(insn) ? 2 : 1;
+ 	if (opcode_info->can_fallthrough)
+-		succ[i++] = idx + insn_sz;
++		succ->items[succ->cnt++] = idx + insn_sz;
+ 
+ 	if (opcode_info->can_jump)
+-		succ[i++] = idx + bpf_jmp_offset(insn) + 1;
++		succ->items[succ->cnt++] = idx + bpf_jmp_offset(insn) + 1;
+ 
+-	return i;
++	return succ;
+ }
+ 
+ __diag_pop();
+@@ -546,11 +557,12 @@ static inline bool update_insn(struct bpf_verifier_env *env,
+ 	struct bpf_insn_aux_data *aux = env->insn_aux_data;
+ 	u64 new_before, new_after, must_write_acc;
+ 	struct per_frame_masks *insn, *succ_insn;
+-	u32 succ_num, s, succ[2];
++	struct bpf_iarray *succ;
++	u32 s;
+ 	bool changed;
+ 
+-	succ_num = bpf_insn_successors(env->prog, insn_idx, succ);
+-	if (unlikely(succ_num == 0))
++	succ = bpf_insn_successors(env, insn_idx);
++	if (succ->cnt == 0)
+ 		return false;
+ 
+ 	changed = false;
+@@ -562,8 +574,8 @@ static inline bool update_insn(struct bpf_verifier_env *env,
+ 	 * of successors plus all "must_write" slots of instruction itself.
+ 	 */
+ 	must_write_acc = U64_MAX;
+-	for (s = 0; s < succ_num; ++s) {
+-		succ_insn = get_frame_masks(instance, frame, succ[s]);
++	for (s = 0; s < succ->cnt; ++s) {
++		succ_insn = get_frame_masks(instance, frame, succ->items[s]);
+ 		new_after |= succ_insn->live_before;
+ 		must_write_acc &= succ_insn->must_write_acc;
+ 	}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 4add3c778f02..ae017c032944 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -17807,6 +17807,22 @@ static int mark_fastcall_patterns(struct bpf_verifier_env *env)
+ 	return 0;
+ }
+ 
++static struct bpf_iarray *iarray_realloc(struct bpf_iarray *old, size_t n_elem)
++{
++	size_t new_size = sizeof(struct bpf_iarray) + n_elem * sizeof(old->items[0]);
++	struct bpf_iarray *new;
 +
-+	EMIT2(0xFF, 0xE0 + reg);
++	new = kvrealloc(old, new_size, GFP_KERNEL_ACCOUNT);
++	if (!new) {
++		/* this is what callers always want, so simplify the call site */
++		kvfree(old);
++		return NULL;
++	}
 +
-+	*pprog = prog;
++	new->cnt = n_elem;
++	return new;
 +}
 +
-+static void emit_indirect_jump(u8 **pprog, int bpf_reg, u8 *ip)
-+{
-+	u8 *prog = *pprog;
-+	int reg = reg2hex[bpf_reg];
-+	bool ereg = is_ereg(bpf_reg);
-+
- 	if (cpu_feature_enabled(X86_FEATURE_INDIRECT_THUNK_ITS)) {
- 		OPTIMIZER_HIDE_VAR(reg);
- 		emit_jump(&prog, its_static_thunk(reg), ip);
- 	} else if (cpu_feature_enabled(X86_FEATURE_RETPOLINE_LFENCE)) {
- 		EMIT_LFENCE();
--		EMIT2(0xFF, 0xE0 + reg);
-+		__emit_indirect_jump(&prog, reg, ereg);
- 	} else if (cpu_feature_enabled(X86_FEATURE_RETPOLINE)) {
- 		OPTIMIZER_HIDE_VAR(reg);
- 		if (cpu_feature_enabled(X86_FEATURE_CALL_DEPTH))
--			emit_jump(&prog, &__x86_indirect_jump_thunk_array[reg], ip);
-+			emit_jump(&prog, &__x86_indirect_jump_thunk_array[reg + 8*ereg], ip);
- 		else
--			emit_jump(&prog, &__x86_indirect_thunk_array[reg], ip);
-+			emit_jump(&prog, &__x86_indirect_thunk_array[reg + 8*ereg], ip);
- 	} else {
--		EMIT2(0xFF, 0xE0 + reg);	/* jmp *%\reg */
-+		__emit_indirect_jump(&prog, reg, ereg);
- 		if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) || IS_ENABLED(CONFIG_MITIGATION_SLS))
- 			EMIT1(0xCC);		/* int3 */
- 	}
-@@ -797,7 +811,7 @@ static void emit_bpf_tail_call_indirect(struct bpf_prog *bpf_prog,
- 	 * rdi == ctx (1st arg)
- 	 * rcx == prog->bpf_func + X86_TAIL_CALL_OFFSET
- 	 */
--	emit_indirect_jump(&prog, 1 /* rcx */, ip + (prog - start));
-+	emit_indirect_jump(&prog, BPF_REG_4 /* R4 -> rcx */, ip + (prog - start));
+ /* Visits the instruction at index t and returns one of the following:
+  *  < 0 - an error occurred
+  *  DONE_EXPLORING - the instruction was fully explored
+@@ -18027,8 +18043,9 @@ static int check_cfg(struct bpf_verifier_env *env)
+  */
+ static int compute_postorder(struct bpf_verifier_env *env)
+ {
+-	u32 cur_postorder, i, top, stack_sz, s, succ_cnt, succ[2];
++	u32 cur_postorder, i, top, stack_sz, s;
+ 	int *stack = NULL, *postorder = NULL, *state = NULL;
++	struct bpf_iarray *succ;
  
- 	/* out: */
- 	ctx->tail_call_indirect_label = prog - start;
-@@ -3551,7 +3565,7 @@ static int emit_bpf_dispatcher(u8 **pprog, int a, int b, s64 *progs, u8 *image,
- 		if (err)
- 			return err;
+ 	postorder = kvcalloc(env->prog->len, sizeof(int), GFP_KERNEL_ACCOUNT);
+ 	state = kvcalloc(env->prog->len, sizeof(int), GFP_KERNEL_ACCOUNT);
+@@ -18052,11 +18069,11 @@ static int compute_postorder(struct bpf_verifier_env *env)
+ 				stack_sz--;
+ 				continue;
+ 			}
+-			succ_cnt = bpf_insn_successors(env->prog, top, succ);
+-			for (s = 0; s < succ_cnt; ++s) {
+-				if (!state[succ[s]]) {
+-					stack[stack_sz++] = succ[s];
+-					state[succ[s]] |= DISCOVERED;
++			succ = bpf_insn_successors(env, top);
++			for (s = 0; s < succ->cnt; ++s) {
++				if (!state[succ->items[s]]) {
++					stack[stack_sz++] = succ->items[s];
++					state[succ->items[s]] |= DISCOVERED;
+ 				}
+ 			}
+ 			state[top] |= EXPLORED;
+@@ -24363,14 +24380,13 @@ static int compute_live_registers(struct bpf_verifier_env *env)
+ 		for (i = 0; i < env->cfg.cur_postorder; ++i) {
+ 			int insn_idx = env->cfg.insn_postorder[i];
+ 			struct insn_live_regs *live = &state[insn_idx];
+-			int succ_num;
+-			u32 succ[2];
++			struct bpf_iarray *succ;
+ 			u16 new_out = 0;
+ 			u16 new_in = 0;
  
--		emit_indirect_jump(&prog, 2 /* rdx */, image + (prog - buf));
-+		emit_indirect_jump(&prog, BPF_REG_3 /* R3 -> rdx */, image + (prog - buf));
+-			succ_num = bpf_insn_successors(env->prog, insn_idx, succ);
+-			for (int s = 0; s < succ_num; ++s)
+-				new_out |= state[succ[s]].in;
++			succ = bpf_insn_successors(env, insn_idx);
++			for (int s = 0; s < succ->cnt; ++s)
++				new_out |= state[succ->items[s]].in;
+ 			new_in = (new_out & ~live->def) | live->use;
+ 			if (new_out != live->out || new_in != live->in) {
+ 				live->in = new_in;
+@@ -24423,11 +24439,11 @@ static int compute_scc(struct bpf_verifier_env *env)
+ 	const u32 insn_cnt = env->prog->len;
+ 	int stack_sz, dfs_sz, err = 0;
+ 	u32 *stack, *pre, *low, *dfs;
+-	u32 succ_cnt, i, j, t, w;
++	u32 i, j, t, w;
+ 	u32 next_preorder_num;
+ 	u32 next_scc_id;
+ 	bool assign_scc;
+-	u32 succ[2];
++	struct bpf_iarray *succ;
  
- 		*pprog = prog;
- 		return 0;
+ 	next_preorder_num = 1;
+ 	next_scc_id = 1;
+@@ -24534,12 +24550,12 @@ static int compute_scc(struct bpf_verifier_env *env)
+ 				stack[stack_sz++] = w;
+ 			}
+ 			/* Visit 'w' successors */
+-			succ_cnt = bpf_insn_successors(env->prog, w, succ);
+-			for (j = 0; j < succ_cnt; ++j) {
+-				if (pre[succ[j]]) {
+-					low[w] = min(low[w], low[succ[j]]);
++			succ = bpf_insn_successors(env, w);
++			for (j = 0; j < succ->cnt; ++j) {
++				if (pre[succ->items[j]]) {
++					low[w] = min(low[w], low[succ->items[j]]);
+ 				} else {
+-					dfs[dfs_sz++] = succ[j];
++					dfs[dfs_sz++] = succ->items[j];
+ 					goto dfs_continue;
+ 				}
+ 			}
+@@ -24556,8 +24572,8 @@ static int compute_scc(struct bpf_verifier_env *env)
+ 			 * or if component has a self reference.
+ 			 */
+ 			assign_scc = stack[stack_sz - 1] != w;
+-			for (j = 0; j < succ_cnt; ++j) {
+-				if (succ[j] == w) {
++			for (j = 0; j < succ->cnt; ++j) {
++				if (succ->items[j] == w) {
+ 					assign_scc = true;
+ 					break;
+ 				}
+@@ -24619,6 +24635,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+ 		goto err_free_env;
+ 	for (i = 0; i < len; i++)
+ 		env->insn_aux_data[i].orig_idx = i;
++	env->succ = iarray_realloc(NULL, 2);
++	if (!env->succ)
++		goto err_free_env;
+ 	env->prog = *prog;
+ 	env->ops = bpf_verifier_ops[env->prog->type];
+ 
+@@ -24869,6 +24888,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+ 	bpf_stack_liveness_free(env);
+ 	kvfree(env->cfg.insn_postorder);
+ 	kvfree(env->scc_info);
++	kvfree(env->succ);
+ 	kvfree(env);
+ 	return ret;
+ }
 -- 
 2.34.1
 
