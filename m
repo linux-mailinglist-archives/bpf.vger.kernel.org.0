@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-71288-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71289-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFB66BEDDC2
-	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 04:30:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F01D7BEDDC5
+	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 04:30:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B6FAA4E20B8
-	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 02:30:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96B5218A1239
+	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 02:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A4813774D;
-	Sun, 19 Oct 2025 02:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1CF61E1A17;
+	Sun, 19 Oct 2025 02:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KwR86TUV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="odKRCAAg"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DCB1354AE8
-	for <bpf@vger.kernel.org>; Sun, 19 Oct 2025 02:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20C09354AE8
+	for <bpf@vger.kernel.org>; Sun, 19 Oct 2025 02:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760841031; cv=none; b=KzDe75ijz3AL2oP1nvJlA/KyvH9WLdzfRhwl8Yf3tIRxWkY+nNX1Pcffgrq2JnaOjF6v4oX2qkqlpOMnX1DNZFfVbu6bP5m13azajMllIh5BdGv717HHZK32uE394+1AxfNqFTk7Ny22FMHU2MgH/lWrSjnMq2DXPnSGBfs+hF8=
+	t=1760841033; cv=none; b=TNYDSMl/l/4IAzWctASOR3qrZ4RXOkYB9xvOivpgOaXe7YAJjj4z9ctqgk0Wlu4QEdMy9M7iKd3bGSPz14JcO8WSzxCZcjt8Z7zDwCJG8arRjl7a+rehZ0Jry6EJrG6ZTZonY+6B9Dn42YjIBUj1ysH27eb661JzF6sd1YpA9YM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760841031; c=relaxed/simple;
-	bh=0qVFoHQo2yjBLNpYoXs4/kA5nVD1EKKdm52aSMvUiGw=;
+	s=arc-20240116; t=1760841033; c=relaxed/simple;
+	bh=vS85EYqXhdHh64V6dSfxJGjWvW/ifHT4jBdmIi3zwEA=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=AEh+XDKflV7RzqKgmTDIX2mVzk+eP8/Qf860kMaLn8G3MzIKYsxORuHAL3+G8insLWbpIj31t3iezlSgTZw0U6fyb+qUtM9TDzWMHH8N5i8zjiAXr09Og9hsZXorIb7hNQaiJXnK5cKbvOORxoxcUvnsNmgg10Ewo9N/u6BycsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KwR86TUV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14F57C4CEF8;
-	Sun, 19 Oct 2025 02:30:31 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=GS4podQAEHZluLfohZDS8L2GzjlE4+WOz9u0+V7Fuq6U9ubomB8WXR4xKvi8/wyGsOgHJL6INzEeHxHrIMZ7Un5k6A/Ac0/aJQ2b+pqMSiKLFw2sN5LPHSGOBJkhBHPmAStS/0jdVl53em99yY/90r/aZL6+wX2o7eOEXrkxqGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=odKRCAAg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97EBAC4CEF8;
+	Sun, 19 Oct 2025 02:30:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760841031;
-	bh=0qVFoHQo2yjBLNpYoXs4/kA5nVD1EKKdm52aSMvUiGw=;
+	s=k20201202; t=1760841032;
+	bh=vS85EYqXhdHh64V6dSfxJGjWvW/ifHT4jBdmIi3zwEA=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=KwR86TUV9EGFVS2J473hRYlIJMOvn96/YOO0mcFHQ4ldU4bV7a65lkSDi4f5Q01EY
-	 XCZf2f+Jb5qXbWH+Jhu9JfzoPYryR+p7p+jzGCEJaGh3axR5UFgm/bwmtQO6lAXqIq
-	 RmtwD7wa61ma5g/PelQOfa2eBCZNhlDM4aZ8dTWkRjnBu4jjFmvU7Zt7xNUbeT9HbE
-	 XH33YqyOKxD/q3dpTC2Nl7aHCKMI217LTFBr/Y0ID3MR2YhfCgsPZsiA7ep78r/kMP
-	 Sa8YSG5amA9m8m0STdH8AbOUYd3vpSfmJh8+uUNIXdfWv8KGD0mfLesu3JoE3sfM8T
-	 bru1ifl4z+KUw==
+	b=odKRCAAgb6EBh0r+2yBnLjqvrDb23ahVcxXzhQN+1WxnmGK2uFNWVe6uN2ZrQ4PH5
+	 nJZUsJRZVKjP5WSEBWlazvaShOXiDSoE2hCP0cTfqH2n5cD9WkBoqbdQYgKUjnYKfJ
+	 PZ1C1chpQ4TVjLWvoXscqRSfR8iOsDpVmN4Npjv9qfEhIB4VHH1YoIsug24EP6TsH2
+	 wfFlnh7j80X/WKnA9M9SeLZn1t8gZqUhZ2KZJoWSKLXuaMmMy9FcKNb+SC2ps62O1I
+	 Mw6h+5lpFYH5Ybp5cRkk6FBlAkkqWi0cVNXBb6iYzqNUymQdMRUUvv0aL1LRX0TcUo
+	 0Fsp0qecvER+w==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 3644139EFBBF;
-	Sun, 19 Oct 2025 02:30:15 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AEA7239EFBBF;
+	Sun, 19 Oct 2025 02:30:16 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,40 +52,38 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/2] bpf: MM related minor changes 
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix list_del() in arena list
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176084101401.3155740.15408477033569481420.git-patchwork-notify@kernel.org>
-Date: Sun, 19 Oct 2025 02:30:14 +0000
-References: <20251016063929.13830-1-laoar.shao@gmail.com>
-In-Reply-To: <20251016063929.13830-1-laoar.shao@gmail.com>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-mm@kvack.org, root@localhost.localdomain
+ <176084101529.3155740.2422703832168893238.git-patchwork-notify@kernel.org>
+Date: Sun, 19 Oct 2025 02:30:15 +0000
+References: <20251017141727.51355-1-puranjay@kernel.org>
+In-Reply-To: <20251017141727.51355-1-puranjay@kernel.org>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com, kkd@meta.com,
+ kernel-team@meta.com
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Thu, 16 Oct 2025 14:39:27 +0800 you wrote:
-> From: root <root@localhost.localdomain>
+On Fri, 17 Oct 2025 14:17:25 +0000 you wrote:
+> The __list_del fuction doesn't set the previous node's next pointer to
+> the next node of the node to be deleted. It just updates the local variable
+> and not the actual pointer in the previous node.
 > 
-> These two minor patches were developed during the implementation of
-> BPF-THP:
-> 
->   https://lwn.net/Articles/1042138/
+> The test was passing up till now because the bpf code is doing bpf_free()
+> after list_del and therfore reading head->first from the userspace will
+> read all zeroes. But after arena_list_del() is finished, head->first should
+> point to NULL;
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,1/2] bpf: mark mm->owner as __safe_rcu_or_null
-    https://git.kernel.org/bpf/bpf-next/c/ec8e3e27a140
-  - [bpf-next,2/2] bpf: mark vma->{vm_mm,vm_file} as __safe_trusted_or_null
-    https://git.kernel.org/bpf/bpf-next/c/7484e7cd8ab1
+  - [bpf-next] selftests/bpf: fix list_del() in arena list
+    https://git.kernel.org/bpf/bpf-next/c/7361c864852f
 
 You are awesome, thank you!
 -- 
