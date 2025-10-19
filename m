@@ -1,99 +1,152 @@
-Return-Path: <bpf+bounces-71292-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71293-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E79EBEDDD1
-	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 04:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 246CDBEE134
+	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 10:51:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1CED84E5085
-	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 02:30:53 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 678464E6AF7
+	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 08:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEA01F584C;
-	Sun, 19 Oct 2025 02:30:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 475B02248A3;
+	Sun, 19 Oct 2025 08:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V4lv73f6"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="IJVgo4VR"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA081F3BAC;
-	Sun, 19 Oct 2025 02:30:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B3B19D074;
+	Sun, 19 Oct 2025 08:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760841037; cv=none; b=cX3bKspzYWXUg0BJie06gjXig+o0odTZjGCcKhO9lEmBb2t0RL/GBk1HZqQLm/qZt+eHDG49q92UtIvH+JHv7Yag8+KBIwXMha4GPTg7rPqV6wso0pRxdQOQT64gpmItYaJXvZjDSIUhjLNd6LKmkzssw42Vw6n4aluKhUiyAMw=
+	t=1760863886; cv=none; b=VJslqvHtTHEtRIGQxap0c8JTbcDvMf1SYRFMH99otkJCOoPJlUKzGtCSSFfCFHaAGd2yazLYOfshmpqxFV+UEgg0E8wE+b0vFV5+mD9Fulz8U0gKZ8D8/UHoBhH3yn0nnAHBVCOMcnWcN3LueQrIOPWXuwVq2IYO2t2LTPPLPus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760841037; c=relaxed/simple;
-	bh=ymhIaiUZAClSPxIV2c/U4kBXKBs+Dr4086x/9efKUqg=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=QJOjJ6bMMV2623UQVwIUFov4n2oAFFQ/beDQlSzQvm0e1Dh2YaY/UMruIUJAibW2f2eqIiJdaxHzzeQ1DjYEBprryHtai9qoM0CzfGNE8ZSGxcB6SxNLRavuyEf9o1qlh0q3O3qe0UU4qUqe5d7Ys2gynQnY1pRtyM5SVT6HnvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V4lv73f6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C68DCC4CEFE;
-	Sun, 19 Oct 2025 02:30:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760841036;
-	bh=ymhIaiUZAClSPxIV2c/U4kBXKBs+Dr4086x/9efKUqg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=V4lv73f6DNIba3cLSHAMnFRYFoBZr00ycaCs2B17W+UjX4ySnhHssIO8QTlIwUO3X
-	 /e5sb6vSL9E1fVd4MCg9Op2tEfu4PrCw/KbTiQ9xA50b3upJcWnToHSYk7572cuYCq
-	 Sr/ZC8yEkE/iUX7qe6/i59Z/xCE3+4r5kka0e1sSVEd9gtQR23SHsvRRH22IpRuGbU
-	 NpWLkuVFogWNutWvhLbnjotbwOT4W+1k+rTupWCkcBjcNeErdOC+1ZHIg4VHn1nvs1
-	 RqKR/kXyKQd92noQiZLevU7K+3DSwKdeEdM/lvNcM9ColdYD2d4ahCJ99CPrPmqQ0g
-	 SLgxmvDJE+aqA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAE3139EFBBF;
-	Sun, 19 Oct 2025 02:30:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1760863886; c=relaxed/simple;
+	bh=Y0pWpuDrYmI4OMUjMbc/jTMaeVXhpIIYiTNqLlufnk8=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:From:To:Subject:
+	 References:In-Reply-To; b=tw935j5X1ZV2SMF9h1xYECwqxrMbzBiqUqHob9UZKSww/37nlkQeuhLCTq6zU6qkPLaq1q81KrHLO1E21UCXLYREunrBX5QmYmdeCXsz3DiOVRkZsG3IIMULCDFF1769HKM4bgYaFcbqifEu9GbHWdWGTGZZQjft7SHqZNBLdIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=IJVgo4VR; arc=none smtp.client-ip=185.171.202.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 77B9FC09A03;
+	Sun, 19 Oct 2025 08:45:27 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id B06B3606D5;
+	Sun, 19 Oct 2025 08:45:46 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6FBC1102F238D;
+	Sun, 19 Oct 2025 10:45:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1760863543; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=Jyv8Ny3eYcuzCA4QCGmdA/mqKgQJfhy3966PAg5VYa4=;
+	b=IJVgo4VRUdHkSOpbpwbI4i3XQUiKYBTZbjOnqcTfBFPYwedIkVoTNmOoOLwUNgNqslwEpl
+	HoNbo4pVnSZtX0VkqX7Ztqd9rvSv4nn3E9r41u3YWvBLY7CS1ys2HSmtC0Ua0l4Zy9V5oG
+	yFX0WhKjsXmmAaeoEuYOVx7zcv1Y0KWm09SdA2cbpgjgObfBNxAXW/zHL+0w5SK/O2sEm2
+	vGeo0SLjcN+hZWGLDT3w9+ZaVSYEXXEte+8Zsv5Hs5DGFMJufsz3POym+NFXp0niX1upx/
+	ZQG/jSrBhI6FItdxYjf4zN586DDvBw7SPY9prcBP7uFVjrJUg9g5EQBsY0SmvA==
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 0/1] Fix spelling typo in samples/bpf
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176084101974.3155740.5721967178192419536.git-patchwork-notify@kernel.org>
-Date: Sun, 19 Oct 2025 02:30:19 +0000
-References: <20251015015024.2212-1-chuguangqing@inspur.com>
-In-Reply-To: <20251015015024.2212-1-chuguangqing@inspur.com>
-To: Chu Guangqing <chuguangqing@inspur.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Sun, 19 Oct 2025 10:45:28 +0200
+Message-Id: <DDM60XIK0NUQ.S2QMK9E7HQ2U@bootlin.com>
+Cc: "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
+ <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>, "Eduard
+ Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong
+ Song" <yonghong.song@linux.dev>, "John Fastabend"
+ <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
+ Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
+ <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>,
+ <ebpf@linuxfoundation.org>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Bastien Curutchet"
+ <bastien.curutchet@bootlin.com>, <bpf@vger.kernel.org>,
+ <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+To: "Martin KaFai Lau" <martin.lau@linux.dev>,
+ =?utf-8?b?QWxleGlzIExvdGhvcsOpIChlQlBGIEZvdW5kYXRpb24p?=
+ <alexis.lothore@bootlin.com>
+Subject: Re: [PATCH bpf-next 4/5] selftests/bpf: integrate test_tc_tunnel.sh
+ tests into test_progs
+X-Mailer: aerc 0.21.0-0-g5549850facc2
+References: <20251017-tc_tunnel-v1-0-2d86808d86b2@bootlin.com>
+ <20251017-tc_tunnel-v1-4-2d86808d86b2@bootlin.com>
+ <2477894b-3325-4bc2-9d3c-a066b3cbb8f6@linux.dev>
+In-Reply-To: <2477894b-3325-4bc2-9d3c-a066b3cbb8f6@linux.dev>
+X-Last-TLS-Session-Version: TLSv1.3
 
-Hello:
+Hello Martin,
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+On Sat Oct 18, 2025 at 2:18 AM CEST, Martin KaFai Lau wrote:
+> On 10/17/25 7:29 AM, Alexis Lothor=C3=A9 (eBPF Foundation) wrote:
+>> The test_tc_tunnel.sh script checks that a large variety of tunneling
+>> mechanisms handled by the kernel can be handled as well by eBPF
+>> programs. While this test shares similarities with test_tunnel.c (which
+>> is already integrated in test_progs), those are testing slightly
+>> different things:
+>> - test_tunnel.c creates a tunnel interface, and then get and set tunnel
+>>    keys in packet metadata, from BPF programs.
+>> - test_tc_tunnels.sh manually parses/crafts packets content
+>>=20
+>> Bring the tests covered by test_tc_tunnel.sh into the test_progs
+>> framework, by creating a dedicated test_tc_tunnel.sh. This new test
+>> defines a "generic" runner which, for each test configuration:
+>> - will bring the relevant veth pair, each of those isolated in a
+>>    dedicated namespace
+>> - will check that traffic will fail if there is only an encapsulating
+>>    program attached to one veth egress
+>> - will check that traffic succeed if we enable some decapsulation module
+>>    on kernel side
+>> - will check that traffic still succeeds if we replace the kernel
+>>    decapsulation with some eBPF ingress decapsulation.
+>>=20
+>> Example of the new test execution:
+>>=20
+>>    # ./test_progs -a tc_tunnel
+>>    #447/1   tc_tunnel/ipip_none:OK
+>>    #447/2   tc_tunnel/ipip6_none:OK
+>>    #447/3   tc_tunnel/ip6tnl_none:OK
+>>    #447/4   tc_tunnel/sit_none:OK
+>>    #447/5   tc_tunnel/vxlan_eth:OK
+>>    #447/6   tc_tunnel/ip6vxlan_eth:OK
+>>    #447/7   tc_tunnel/gre_none:OK
+>>    #447/8   tc_tunnel/gre_eth:OK
+>>    #447/9   tc_tunnel/gre_mpls:OK
+>>    #447/10  tc_tunnel/ip6gre_none:OK
+>>    #447/11  tc_tunnel/ip6gre_eth:OK
+>>    #447/12  tc_tunnel/ip6gre_mpls:OK
+>>    #447/13  tc_tunnel/udp_none:OK
+>>    #447/14  tc_tunnel/udp_eth:OK
+>>    #447/15  tc_tunnel/udp_mpls:OK
+>>    #447/16  tc_tunnel/ip6udp_none:OK
+>>    #447/17  tc_tunnel/ip6udp_eth:OK
+>>    #447/18  tc_tunnel/ip6udp_mpls:OK
+>>    #447     tc_tunnel:OK
+>>    Summary: 1/18 PASSED, 0 SKIPPED, 0 FAILED
+>
+> Thanks for working on this!
 
-On Wed, 15 Oct 2025 09:50:23 +0800 you wrote:
-> Fixes for some spelling errors in samples/bpf
-> 
-> v3:
->  - The BPF module patch as a separate thread
-> 
-> v2:
->  - Merge into a single commit
->  (https://lore.kernel.org/all/20251014060849.3074-1-chuguangqing@inspur.com/
-> )
-> v1:
->  (https://lore.kernel.org/all/20251014023450.1023-1-chuguangqing@inspur.com/)
-> 
-> [...]
+Thanks for the prompt and detailed review !
+>
+> One high level comment is to minimize switching netns to make the test=20
+> easier to follow.
 
-Here is the summary with links:
-  - [v3,1/1] samples/bpf: Fix spelling typo in samples/bpf
-    https://git.kernel.org/bpf/bpf-next/c/b74938a3bd37
+Yeah, all the NS switches make the overall setup a bit tedious. I'll give a
+try to your suggestions and see if we can reduce the number of NS
+open/close pairs.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Alexis
 
+--=20
+Alexis Lothor=C3=A9, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
