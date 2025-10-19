@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-71322-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71323-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D10ABEEC0C
-	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 22:15:57 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6187BEEC13
+	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 22:16:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62333189A414
-	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 20:16:17 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E6D2C4E7871
+	for <lists+bpf@lfdr.de>; Sun, 19 Oct 2025 20:15:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F572EC559;
-	Sun, 19 Oct 2025 20:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD1C2EC572;
+	Sun, 19 Oct 2025 20:15:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P4l8hqtJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dbsnrU5M"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD7E2EB5D4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14FCD2EC0BB
 	for <bpf@vger.kernel.org>; Sun, 19 Oct 2025 20:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760904934; cv=none; b=m0DSB7dPA1Mzy3chi5833L6tTRSvsAfBUite9VzQx6G4QSOhpd+BXEx9djX2aQG/oSUro7g+yBuf96+v309JJhoSWczQQco3YTAYD8KxntJ8Ho4qF7qiOdQg9Obr1zn1DmpP5fiAZcGBg+lKhQa4u03bWhrRLtvTfJ3uOp2ARek=
+	t=1760904934; cv=none; b=aRpdl6pKyTMoBHvl0C0NEKVqoFGTTbB/aBO5K30APYOfDoYI7NkEd3qPbCQNhosnD1osgyqrMxaKEgvLKFLi6m9pH5al5xQ3vNQKw7nyu1yAIcOlr3CtyfN54IdCynWn9Tl38X1/eVvERuSJ0mXC4IMPPjFT4BXv5TwEf3Lf+rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1760904934; c=relaxed/simple;
-	bh=/R779rxMpaEFZpDO2t/0BGq9G02XmMFolHpjZXhB0lg=;
+	bh=nVmvTrl0B11Wv8bBU3jd6jIM12dZFcKhYf3aYLP/dxQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FOoQpQ13H2D23c/dg5T1I9iaH4M650SqlT3SrNn0e85x28nm+oBaXSNmLjg1iYjhEM5hb6Vjutgh22MWrxT/oUMu+x0fnNxnIYTLQEw+SoNmbgllbdN6hg4zPcYuggjNsu1+1sdLsEDjgrwiJZW9RRtBnr7AfzLJJYrJ6uc2b3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P4l8hqtJ; arc=none smtp.client-ip=209.85.128.46
+	 MIME-Version; b=ISxc94rQIR9x9ASRZty3XdFK5Qw1DCa7ejPORq83G7d5O07M4imlb9655GiOOlkwldu+Zm+fPPF5bF9lAg9NRJquG5UKB5wHpH1NDDg+mcvW82dYxMHk9Luudjr0khZahda0SKLa56ogxAyLXUwy9bjOvrnK+Xgn51Bim1p0gc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dbsnrU5M; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-471b80b994bso14665155e9.3
-        for <bpf@vger.kernel.org>; Sun, 19 Oct 2025 13:15:31 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-471193a9d9eso30742395e9.2
+        for <bpf@vger.kernel.org>; Sun, 19 Oct 2025 13:15:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760904930; x=1761509730; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760904931; x=1761509731; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=abMdxTHz4mnM65Ksd/VEIUAZrfx+v2elsO+gicoW6G0=;
-        b=P4l8hqtJvPWuLRlmq/RqD5GJoolkUhJdpfV14ewBERfSO/QDlCSIzJtJLWYjL4HoMr
-         Ios7thDIpecrJyGJioQdlhYvJfoRf++GsE25o2L1eKYSDDKOqL+daloVtrf3I6SMiw6c
-         Sj2TxdJKgYHrUPeycEoOPFwl7gw/PQxHoFFLZi8NHXsO1CWeubgErCaBWlkbc2nBAWJm
-         8LUZRw6x/jXvl+jm1HcaPU8QEf38C7U5xCc5Sr7wrVywyKxD8e9mPMJiFsrm8h91BEdk
-         K7lC751SAFpYQuYcw8de174iAwcRTrwop5iWQKmumN0qcKiKcmHc02dlLH+OYLQUSAzy
-         a+Xw==
+        bh=j5BQrWI9PfslovtOJnhbl7Xnkk8cb6Rf5mpObpUMQVc=;
+        b=dbsnrU5MaF8hZ8Mui1eQ3ja/a50NlKPMZPrwFFDXvD9rPygB4AHGgbD4/bLkXHuRc2
+         RTIfcuXaZyCYdm4S9Uk9mnGmId+BOMVGDhg4V5CmocfPLILwaF3E8/AqOZGJEB+iAOdK
+         V+wQC24PigrlG1KQ7khAUqlEBLO1AekujQjk9ZjqR5HsSYWdiq0l8oJRsNrfJVIeno1L
+         C0wTRLxj6DCrEOa7/0hwiZb8uOdHgaiutLqRuh2FmoNw8qLvpcuEuTywAKd4xmDYRkza
+         fTnUKllJxuH1QdqQDw5PXbbgWNh9SDqcCqSgKHwEj0Nq0bwCQVnAjEC4dly+4d/Yn2kw
+         bhHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760904930; x=1761509730;
+        d=1e100.net; s=20230601; t=1760904931; x=1761509731;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=abMdxTHz4mnM65Ksd/VEIUAZrfx+v2elsO+gicoW6G0=;
-        b=ebXklWUuWHJMkj/f89fJ6xfQAEAoWeyCYB2QRQJx8kMzeukN2lPUi7vemf6BvW38VM
-         LyH8FM8+X6RKVT2zQ/gukA+b4RxAnWzqTv/8DcqMWVg2Wzr77SODH713zryAUuKj1k+x
-         MkQbg1dKwh+cuRf/CzYCpeKoQvZV4+OKIjsUDl4y2yvX4DgFU+GAJeaau87EhvZ0bGj1
-         hGXmPlYhFDjElPxy8BJ/bYGZgpcInpMsPpDYgmqpsEIZC6XdeusIfiW1qyaz+9V82ObU
-         DRL9ygMvLYBgpWEaHNE4rnLgHDgpDBqvxc4X4N64WMkc49UfBRtOyc501ijBt9nzPaD9
-         WBoA==
-X-Gm-Message-State: AOJu0YxgazUVi1wm8GNTw3tKehj4CrYd8WRfVP2gV4y0ZvT4mS0tB5k3
-	sj0JVU/9+rGns/vT/uWLdtTSqn32gjKE+3OrW3Hu3tIzp2yqDwAlF2VcyFem+w==
-X-Gm-Gg: ASbGnctLc9SBv2nIIrByYpSJGK+9lnQZlOJEc556H9KpurHSrcNsQwd6P8bEJejxgZk
-	6fGsqjJNPFM0wvq1A4szdF0+AJ6GCo+A1FQFipg0NMNXYQes0IKDY/0XNKpLr6Xu5efYCsaFDJ1
-	C9QRzwooo/pQVyGTPtq/CvrXm/6rgf+b5Ix/V5DU/WlnuVw3JyEy1JzruIjxLu9s/WIvcZILDqe
-	sOdOt1+Mk204haZ/pqqLdU7wxxvtHfnvHFGbiCK7qn9KaVyB9MjgAK13q6JwF0bKAEuRFDcST5l
-	DY8rh46MOz+ZKNSw8BbJ0A83qmrZUbvuPp3kwpz8Y0hl3aO86wtDsR/xOsrDvfYy3MxMg9UGe/c
-	txAoojTYc6MBsT/28THB5Yr1fw518y3cXFnB2VoKkVrugyOrir/+DKiM/J+gLcC96ZosLJPCt8s
-	c6Y4byJ/t62TmL22JDZ1Tbkos6AIiLeg==
-X-Google-Smtp-Source: AGHT+IE1EYHpy7s2Av1T2g8t3SeCRIwG1gVYjxA9RL1O+K8mh9idTyxI0L92gDe4XQpSQlok8Koblw==
-X-Received: by 2002:a05:600c:444d:b0:46d:45e:3514 with SMTP id 5b1f17b1804b1-471178b13c6mr70832425e9.17.1760904929880;
-        Sun, 19 Oct 2025 13:15:29 -0700 (PDT)
+        bh=j5BQrWI9PfslovtOJnhbl7Xnkk8cb6Rf5mpObpUMQVc=;
+        b=LCv8CO7rL0pl+/Hh69pBPsj9hyHyfVLZsOHmEdGo2REQwTNPLLitAQW5QnqC56vtir
+         Gtp/bZYGHMKYp5ETA7DnyZp/4cGQrC271bvNDI/gX9kLCipgyfUAOF5ppwh39K/jCklc
+         mDOK3lPOuj1PN5wYkrdpvkWWRR2JlUZe2fSScX6bIiw9D+XCtDY1LHyRLPntg7NjQo9m
+         YzWC+du45R4zSwGPVcK+bQICJq+AIKownFx8ZOeGAcM2ezwgc5hi6q7CIZyIsEDXb8sc
+         Ja4eE1X7nt8Libqt72txFjZGdwnXeQuV4rtk/JAqDO5fMoBejDNf/KqmcHV4sGdv1Rdg
+         SNFg==
+X-Gm-Message-State: AOJu0YwkRvBaXGILQtMwKLrtqp4oA2Wscfk2V/i+B3D+IKrBWo5OO6aU
+	jzwcZxBueAoWbaAABT3Ifv2LSb5JauZ9hxxoHx7VNwMeUwCX9ylyfWKTxsV9PQ==
+X-Gm-Gg: ASbGncuOlDP4i5wkfjzrvUBKtxYsfghDPsPq4D3yLr7LtWMOkmd7SI6CsNCjYXlVavN
+	pgFDujFK8Pp146aa32OKZgqtiBVrV5j6/IAYkxUGnu7FlMF8fSrweSAZz6YysKYC105X+eTQpe8
+	BwO53+n2oOZ5Oio/hJCS89dh3+9JbHb5pw5jLQ+Zbs2++OUqVWqJTdEinWGV6XglFn+tagQjWOn
+	2EkhzSeJeM8ZEcEhoNPAzAbqU7YDA+QyHMG/N0Xi6L/0B2D+lqCoPe183ilyBc6jiKj6S3dDch3
+	JEQs+7vXlEA5pAlAihofgrz8YxdE2+1A1xTSh9jpR988F9igzZwCGPbFFmUCB0Ygmk3qLpfz41b
+	dJ1YU3TJsvEni40cSQhwkozx/WGmway9NTDSsZLnKM3lAPLC5/WSZZOueLYguwE0pP+iRLDgEJX
+	ql33Jv3SCF6Ze+U0+0dBSgw+Q5w3MaTA==
+X-Google-Smtp-Source: AGHT+IEnLpzR/og/1CTW1cNv+Y+WJlut9RGKERAPsHD7g5EB09bqJfOeSLetwnwrCSguXEy7bPGWMQ==
+X-Received: by 2002:a05:6000:4389:b0:3ee:1461:1654 with SMTP id ffacd0b85a97d-42704dc9aa1mr8026954f8f.50.1760904930619;
+        Sun, 19 Oct 2025 13:15:30 -0700 (PDT)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-471144c831asm190460105e9.13.2025.10.19.13.15.28
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-471144c831asm190460105e9.13.2025.10.19.13.15.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Oct 2025 13:15:29 -0700 (PDT)
+        Sun, 19 Oct 2025 13:15:30 -0700 (PDT)
 From: Anton Protopopov <a.s.protopopov@gmail.com>
 To: bpf@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -83,9 +83,9 @@ To: bpf@vger.kernel.org,
 	Quentin Monnet <qmo@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>
 Cc: Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH v6 bpf-next 07/17] selftests/bpf: test instructions arrays with blinding
-Date: Sun, 19 Oct 2025 20:21:35 +0000
-Message-Id: <20251019202145.3944697-8-a.s.protopopov@gmail.com>
+Subject: [PATCH v6 bpf-next 08/17] bpf, x86: allow indirect jumps to r8...r15
+Date: Sun, 19 Oct 2025 20:21:36 +0000
+Message-Id: <20251019202145.3944697-9-a.s.protopopov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251019202145.3944697-1-a.s.protopopov@gmail.com>
 References: <20251019202145.3944697-1-a.s.protopopov@gmail.com>
@@ -97,127 +97,84 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a specific test for instructions arrays with blinding enabled.
+Currently the emit_indirect_jump() function only accepts one of the
+RAX, RCX, ..., RBP registers as the destination. Make it to accept
+R8, R9, ..., R15 as well, and make callers to pass BPF registers, not
+native registers. This is required to enable indirect jumps support
+in eBPF.
 
 Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- .../selftests/bpf/prog_tests/bpf_insn_array.c | 95 +++++++++++++++++++
- 1 file changed, 95 insertions(+)
+ arch/x86/net/bpf_jit_comp.c | 28 +++++++++++++++++++++-------
+ 1 file changed, 21 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c b/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
-index a4304ef5be13..bab55ae7687e 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
-@@ -227,6 +227,98 @@ static void check_incorrect_index(void)
- 	check_mid_insn_index();
- }
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index c8e628410d2c..7443465ce9a4 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -660,24 +660,38 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
  
-+static int set_bpf_jit_harden(char *level)
-+{
-+	char old_level;
-+	int err = -1;
-+	int fd = -1;
-+
-+	fd = open("/proc/sys/net/core/bpf_jit_harden", O_RDWR | O_NONBLOCK);
-+	if (fd < 0) {
-+		ASSERT_FAIL("open .../bpf_jit_harden returned %d (errno=%d)", fd, errno);
-+		return -1;
-+	}
-+
-+	err = read(fd, &old_level, 1);
-+	if (err != 1) {
-+		ASSERT_FAIL("read from .../bpf_jit_harden returned %d (errno=%d)", err, errno);
-+		err = -1;
-+		goto end;
-+	}
-+
-+	lseek(fd, 0, SEEK_SET);
-+
-+	err = write(fd, level, 1);
-+	if (err != 1) {
-+		ASSERT_FAIL("write to .../bpf_jit_harden returned %d (errno=%d)", err, errno);
-+		err = -1;
-+		goto end;
-+	}
-+
-+	err = 0;
-+	*level = old_level;
-+end:
-+	if (fd >= 0)
-+		close(fd);
-+	return err;
-+}
-+
-+static void check_blindness(void)
-+{
-+	struct bpf_insn insns[] = {
-+		BPF_MOV64_IMM(BPF_REG_0, 4),
-+		BPF_MOV64_IMM(BPF_REG_0, 3),
-+		BPF_MOV64_IMM(BPF_REG_0, 2),
-+		BPF_MOV64_IMM(BPF_REG_0, 1),
-+		BPF_EXIT_INSN(),
-+	};
-+	int prog_fd = -1, map_fd;
-+	struct bpf_insn_array_value val = {};
-+	char bpf_jit_harden = '@'; /* non-exizsting value */
-+	int i;
-+
-+	map_fd = map_create(BPF_MAP_TYPE_INSN_ARRAY, ARRAY_SIZE(insns));
-+	if (!ASSERT_GE(map_fd, 0, "map_create"))
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(insns); i++) {
-+		val.orig_off = i;
-+		if (!ASSERT_EQ(bpf_map_update_elem(map_fd, &i, &val, 0), 0, "bpf_map_update_elem"))
-+			goto cleanup;
-+	}
-+
-+	if (!ASSERT_EQ(bpf_map_freeze(map_fd), 0, "bpf_map_freeze"))
-+		goto cleanup;
-+
-+	bpf_jit_harden = '2';
-+	if (set_bpf_jit_harden(&bpf_jit_harden)) {
-+		bpf_jit_harden = '@'; /* open, read or write failed => no write was done */
-+		goto cleanup;
-+	}
-+
-+	prog_fd = prog_load(insns, ARRAY_SIZE(insns), &map_fd, 1);
-+	if (!ASSERT_GE(prog_fd, 0, "bpf(BPF_PROG_LOAD)"))
-+		goto cleanup;
-+
-+	for (i = 0; i < ARRAY_SIZE(insns); i++) {
-+		char fmt[32];
-+
-+		if (!ASSERT_EQ(bpf_map_lookup_elem(map_fd, &i, &val), 0, "bpf_map_lookup_elem"))
-+			goto cleanup;
-+
-+		snprintf(fmt, sizeof(fmt), "val should be equal 3*%d", i);
-+		ASSERT_EQ(val.xlated_off, i * 3, fmt);
-+	}
-+
-+cleanup:
-+	/* restore the old one */
-+	if (bpf_jit_harden != '@')
-+		set_bpf_jit_harden(&bpf_jit_harden);
-+
-+	close(prog_fd);
-+	close(map_fd);
-+}
-+
- /* Once map was initialized, it should be frozen */
- static void check_load_unfrozen_map(void)
+ #define EMIT_LFENCE()	EMIT3(0x0F, 0xAE, 0xE8)
+ 
+-static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
++static void __emit_indirect_jump(u8 **pprog, int reg, bool ereg)
  {
-@@ -382,6 +474,9 @@ void test_bpf_insn_array(void)
- 	if (test__start_subtest("deletions-with-functions"))
- 		check_deletions_with_functions();
+ 	u8 *prog = *pprog;
  
-+	if (test__start_subtest("blindness"))
-+		check_blindness();
++	if (ereg)
++		EMIT1(0x41);
 +
- 	/* Check all kinds of operations and related restrictions */
++	EMIT2(0xFF, 0xE0 + reg);
++
++	*pprog = prog;
++}
++
++static void emit_indirect_jump(u8 **pprog, int bpf_reg, u8 *ip)
++{
++	u8 *prog = *pprog;
++	int reg = reg2hex[bpf_reg];
++	bool ereg = is_ereg(bpf_reg);
++
+ 	if (cpu_feature_enabled(X86_FEATURE_INDIRECT_THUNK_ITS)) {
+ 		OPTIMIZER_HIDE_VAR(reg);
+ 		emit_jump(&prog, its_static_thunk(reg), ip);
+ 	} else if (cpu_feature_enabled(X86_FEATURE_RETPOLINE_LFENCE)) {
+ 		EMIT_LFENCE();
+-		EMIT2(0xFF, 0xE0 + reg);
++		__emit_indirect_jump(&prog, reg, ereg);
+ 	} else if (cpu_feature_enabled(X86_FEATURE_RETPOLINE)) {
+ 		OPTIMIZER_HIDE_VAR(reg);
+ 		if (cpu_feature_enabled(X86_FEATURE_CALL_DEPTH))
+-			emit_jump(&prog, &__x86_indirect_jump_thunk_array[reg], ip);
++			emit_jump(&prog, &__x86_indirect_jump_thunk_array[reg + 8*ereg], ip);
+ 		else
+-			emit_jump(&prog, &__x86_indirect_thunk_array[reg], ip);
++			emit_jump(&prog, &__x86_indirect_thunk_array[reg + 8*ereg], ip);
+ 	} else {
+-		EMIT2(0xFF, 0xE0 + reg);	/* jmp *%\reg */
++		__emit_indirect_jump(&prog, reg, ereg);
+ 		if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) || IS_ENABLED(CONFIG_MITIGATION_SLS))
+ 			EMIT1(0xCC);		/* int3 */
+ 	}
+@@ -797,7 +811,7 @@ static void emit_bpf_tail_call_indirect(struct bpf_prog *bpf_prog,
+ 	 * rdi == ctx (1st arg)
+ 	 * rcx == prog->bpf_func + X86_TAIL_CALL_OFFSET
+ 	 */
+-	emit_indirect_jump(&prog, 1 /* rcx */, ip + (prog - start));
++	emit_indirect_jump(&prog, BPF_REG_4 /* R4 -> rcx */, ip + (prog - start));
  
- 	if (test__start_subtest("incorrect-index"))
+ 	/* out: */
+ 	ctx->tail_call_indirect_label = prog - start;
+@@ -3551,7 +3565,7 @@ static int emit_bpf_dispatcher(u8 **pprog, int a, int b, s64 *progs, u8 *image,
+ 		if (err)
+ 			return err;
+ 
+-		emit_indirect_jump(&prog, 2 /* rdx */, image + (prog - buf));
++		emit_indirect_jump(&prog, BPF_REG_3 /* R3 -> rdx */, image + (prog - buf));
+ 
+ 		*pprog = prog;
+ 		return 0;
 -- 
 2.34.1
 
