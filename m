@@ -1,229 +1,179 @@
-Return-Path: <bpf+bounces-71449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71450-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B399BF3AB1
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 23:11:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 402C0BF3AA2
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 23:10:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F290A3A9C96
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 21:09:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DF4418C4FB5
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 21:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DCE52E2EF2;
-	Mon, 20 Oct 2025 21:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QJeNF0/g"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795062EC55E;
+	Mon, 20 Oct 2025 21:08:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B79F2D061C
-	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 21:07:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166B12E6CAB
+	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 21:08:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760994480; cv=none; b=HRC9S/vqvaRr8nNHzJvaGS9dgom4CbbTrW/htvf1HMoW13Onj57nG+FlqyY4vdsEiPR0WbdTfCEkvDeE5vlaWo435IcsL7votC2Kbo3yvI8MvKOl+EjjthASxoPbV8bMoN9h/NSp/fch5+EKNZTVhOwzm2GPhLPv20YhgbYQ/W8=
+	t=1760994507; cv=none; b=My3QS138blWENSsBJUxxPWDtecbHFXss1DSC5RI7cfwMDWL+5WTiN8O3qm9P5SUXRHeIAztPdSMixKTFqmdi7/OiDANsW+4S20w62kPMu2ZgHHRe76qxlXJSWclnzR0AvouBIffopRJZ+XN1CIjM6yS7Ik1b/88Ns3rxofTISaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760994480; c=relaxed/simple;
-	bh=ZWrqJyDvIDg2LD0dgF/C+wHsQhPZnS6RElBjzy9dJSE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=of17teK8v1miFhn6x8E4kVFUm71hpioFNE/+WpqgDqYGj1kYAOdYkrTJ9Tlqy/S6i6NUwf9OWoS9hiciAx4+0XHVbIvdwhJYy13ce7ORARhXr0PwzCq8VVVz1jOU9LOfuqIpQ6h5oBwYCKHqxAOkRfU55aS9+1K8Egi3vKren78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QJeNF0/g; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-78125ed4052so5971963b3a.0
-        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 14:07:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760994468; x=1761599268; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dvn+vrsKw5XSlxeW29aeMY9MH6dfWC3aPx/eGlTqx28=;
-        b=QJeNF0/gVci4TDLomAqNKC4I1xtltetVJOtcOYXOMPjBfRzTjzvFzI4EtIzB8dSd2C
-         jDK7CEWdurYxzZKUPBcyQ50UjDEzJXy+n8Y5Olk0iC7E1Zf/p4hqSeaeONoMi10ca/T+
-         J2zZM0Gj2I8fk1KUaK7i/TrVMEKppGqoQRuRDsQlFSl5uTUpfnpaAOC/TdHOdRylplAL
-         TqRXtzUHQDvq/TWAaYxkr2jUC67v2TwxOew1HLw0JucMXZ225Xxp4wB++uReFuMcU5qC
-         nhEHkOIfJRtzuknfDnVvWhPrpm7IlY37gxN8TuCYYh2zxNu+IS/cufU1QtnM5VY02RpN
-         7Jqg==
+	s=arc-20240116; t=1760994507; c=relaxed/simple;
+	bh=hxhjLCBZfNBCCzqgf9QcOOR3d4nK6IBdQqW32aYBurE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Nl6VRl7betdGOBHVJwDH6NOYMvG8nBE+5je2RxXCBBeJA6Y/uwW/PYB6ykN9A2MikyvssF6cDuUNVs1VPQXgcy5aVV2rOymTr8+pK/K8n1Oz2FXKY2HZyLqaoYaP2MbGndY8qsqAUoYc/3wCsfI2qJYxnShO7VE3NEmzvQb5YIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-430db6d36c6so62599605ab.2
+        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 14:08:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760994468; x=1761599268;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dvn+vrsKw5XSlxeW29aeMY9MH6dfWC3aPx/eGlTqx28=;
-        b=Yj2AQQkCZCGDMCMNGt+vWUqtOZKamwDUaT5jaQLY4ZraBOc7u4wgKCJW2Oc8nrWEw5
-         KBC+03RFT7Zo5rRBJGTMvK1fIZawhlVzev7ntrIAb3+0dYTgu3e0cnyNZffwMClnXt62
-         bUIsrcBFwZEnA4RabqBZ82g6bzLfzsLc48qOHesR77QkB6g/lgoj/z/1JCzlp45Wfd7G
-         QUZl87Zj0cGtOZR3s17tCmhQROzUxTEmCNjk6PoQ/xwFgsXQZvmKi5LUo+AuQsvYyFOC
-         2cZghcjIzVj2Ihm5Kin8ghlOGFWEJAN662G6qFLSqUeX3cEep8ALLrCWCLqC1RAPQvj1
-         yMPg==
-X-Forwarded-Encrypted: i=1; AJvYcCUs8pKpLmP9tBODWdneXlwjtIRuqkFX/9jeVe5iET/Nb15TLUx04/KrXT9iyoDd+oSN6uM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxXAKz+mZf0kB2OQYG6JZSyxHlMhrUr3Qpn8luBnDdnuakaiB1k
-	5Ib/INv16sv5MAxwH8X5XVTqo7GuqauckyTLCXXB5s5xsbFYq7ima3F7UY8xAK7d+/noOAQkk0g
-	7VGqanZUBPNHr7XxfJvNg6dZazzBHSHI=
-X-Gm-Gg: ASbGncuAVjnbaxeCgIoAg3NbyuJpnM2wGI7/pYq0jrYU5w4eJjMavXU5cX42BP7qiZ3
-	mLO0+ybbUxo4vQzILnH07wNPOqy+8f0E8eNoNE55IjUb1CnQQfQQrLcGxlTJ3tHPgwMg8p1zLQ4
-	b6jZ4qlKoxTqHen/Ocn6g2TNSgGaxReFBA52b+mzoSMUUf7qgsyxMSNpBQ1FhCQpkwrmpOfASwS
-	YfLpa1tyeNsKQv65R8oobr1yIc7+YpT/W5A8sPxjl+ameaR0g2ljgdSDO3Y6g/kipIR4sJ/TEuD
-	DXzZ36tM4RM=
-X-Google-Smtp-Source: AGHT+IHJUsRDRnpRSxe1003HNcktdrqLiZyGbAI+Gojc1lcs3iZjP+3giXQdokcAFAcyvQonnIwRnHE+A9BI3i5W0sw=
-X-Received: by 2002:a17:90b:3c0d:b0:332:50e7:9d00 with SMTP id
- 98e67ed59e1d1-33bcf86b347mr19293614a91.11.1760994468297; Mon, 20 Oct 2025
- 14:07:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1760994504; x=1761599304;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Bu7UmFKZwYM7EYVrujSk24G85KpdWniCmCnGeTN1CEw=;
+        b=RvpO5EpoXz3F6kS4peRS/9Mv2gLetXlI2b8Wf45TcJ412OkJri+XwIPy7YRiAAEdRI
+         y44oaJbu2bZKLXwxGea/5rxomiJLT5kBUkE6Sj9nTa2jn8Me0X6ggRY4RHx/+ef6I12h
+         AKVXdtvwueKNa+7sWXbUuq49wwmtPx+7QnXR8WHvc+LAS6lgZDjRRDL/EnP/WIxT5CAG
+         xVYYnBrEEWpdhk+5SMn0GGJEpI06ImeXdLz9CtHMt40qRldnmw1mPvvhfLk5NDXnF6sL
+         xA1NBOl/gA/4S1lnF+WKtivWHPzzMyOme3vPjMlG8gg0oy9vp6waNlJG9ntbujAYdy0m
+         dKaw==
+X-Forwarded-Encrypted: i=1; AJvYcCX9E/sbXGSguXgSlDd1x9QNdi+yifYAra+g2uJdREZKdf6ZKpxvrFUMOhdT9jEUQt6O5OI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzFiDyAGHi7kdNV6p0dzuZT/fbeEY3uSvX5jSxhImOnmKH4fvV3
+	wrNECXOg6vaIWWx5USGDoubqEJTpHJbjyPVk12c3I5aqN2YJxy0wWQD+pZ5dd1uMlFdQ3TaDfr5
+	fsvpPRlwaHEVmISxnioVXB61F8xMLdM1iKzeXi9vLGJkeIX4iDj9yDasqj5k=
+X-Google-Smtp-Source: AGHT+IHwFfnjoIwpmNlUmVtUUXMe0VJy0ObADhZw4QPUWijMCBpDpKIyDlCxEVFHJY+z7r9ICr7Ir+ld2d8LJquRMzrwpZyjcYvG
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251008173512.731801-1-alan.maguire@oracle.com>
- <20251008173512.731801-15-alan.maguire@oracle.com> <CAEf4Bzanp4fSOLZp5a5bifXh3447-rjScPRVwf2xDsA_pNmizA@mail.gmail.com>
- <73e5248e-80d9-4440-92d9-864112d4e53b@oracle.com>
-In-Reply-To: <73e5248e-80d9-4440-92d9-864112d4e53b@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 20 Oct 2025 14:07:33 -0700
-X-Gm-Features: AS18NWBD8BA51R9HhUfj2iNSq_U5KJQuj8DTxVHbEh3Z-AcFc7iTw7ojC56tNL4
-Message-ID: <CAEf4BzYj7JKksxLG7_75Rm4ZTHeeAkJc5n8E5PRWSps0VWBU_w@mail.gmail.com>
-Subject: Re: [RFC bpf-next 14/15] libbpf: add support for BTF location attachment
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, acme@kernel.org, ttreyer@meta.com, 
-	yonghong.song@linux.dev, song@kernel.org, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	qmo@kernel.org, ihor.solodrai@linux.dev, david.faust@oracle.com, 
-	jose.marchesi@oracle.com, bpf@vger.kernel.org
+X-Received: by 2002:a92:c265:0:b0:430:af8f:1d28 with SMTP id
+ e9e14a558f8ab-430c5223e4cmr232929755ab.11.1760994504129; Mon, 20 Oct 2025
+ 14:08:24 -0700 (PDT)
+Date: Mon, 20 Oct 2025 14:08:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68f6a4c8.050a0220.1be48.0011.GAE@google.com>
+Subject: [syzbot] [bpf?] WARNING in bpf_bprintf_prepare (3)
+From: syzbot <syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	chandna.sahil@gmail.com, daniel@iogearbox.net, eddyz87@gmail.com, 
+	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org, 
+	kpsingh@kernel.org, linux-kernel@vger.kernel.org, listout@listout.xyz, 
+	martin.lau@linux.dev, netdev@vger.kernel.org, sdf@fomichev.me, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 17, 2025 at 7:02=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
->
-> On 16/10/2025 19:36, Andrii Nakryiko wrote:
-> > On Wed, Oct 8, 2025 at 10:36=E2=80=AFAM Alan Maguire <alan.maguire@orac=
-le.com> wrote:
-> >>
-> >> Add support for BTF-based location attachment via multiple kprobes
-> >> attaching to each instance of an inline site. Note this is not kprobe
-> >> multi attach since that requires fprobe on entry and sites are within
-> >> functions. Implementation similar to USDT manager where we use BTF
-> >> to create a location manager and populate expected arg values with
-> >> metadata based upon BTF_KIND_LOC_PARAM/LOC_PROTOs.
-> >>
-> >> Add new auto-attach SEC("kloc/module:name") where the module is
-> >> vmlinux/kernel module and the name is the name of the associated
-> >> location; all sites associated with that name will be attached via
-> >> kprobes for tracing.
-> >>
-> >
-> > If kernel ends up supporting something like this natively, then all
-> > this is irrelevant.
-> >
-> > But I'd test-drive this in a purpose-built tracing tool like bpftrace
-> > before committing to baking this into libbpf from the get-go.
-> >
-> > Generally speaking, I feel like we need a tracing-focused companion
-> > library to libbpf for stuff like this. And it can take care of extra
-> > utilities like parsing DWARF, kallsyms, ELF symbols, etc. All the
-> > different stuff that is required for powerful BPF-based kernel and
-> > user space tracing, but is not per se BPF itself. libbpf' USDT support
-> > is sort of on the edge of what I'd consider acceptable to be provided
-> > by libbpf, and that's mostly because USDT is stable and
-> > well-established technology that people coming from BCC assume should
-> > be baked into BPF library.
-> >
->
-> Yeah, that makes total sense; the implementation is really just there to
-> facilitate in-tree testing. We could move it to selftests and have
-> custom ELF section handling there to support it though without adding to
-> libbpf. It would definitely be good to have some in-tree facilities for
-> testing to ensure the metadata about inlines is not broken though.
-> Ideally this would be done by adding inline sites to bpf_testmod but the
-> RFC series did not support distilled/relocated BTF (which is what
-> bpf_testmod uses). Next round should hopefully have that support so we
-> can exercise inline sites more fully.
+Hello,
 
-TBH, for selftests we don't really need to invent BPF_USDT()-style
-macros and such. I'd keep it simple and have some explicit global
-variables-based approach to lookup a few values at correct locations.
-No need to be really fancy here, IMO.
+syzbot found the following issue on:
 
->
-> >
-> >> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> >> ---
-> >>  tools/lib/bpf/Build             |   2 +-
-> >>  tools/lib/bpf/Makefile          |   2 +-
-> >>  tools/lib/bpf/libbpf.c          |  76 +++-
-> >>  tools/lib/bpf/libbpf.h          |  27 ++
-> >>  tools/lib/bpf/libbpf.map        |   1 +
-> >>  tools/lib/bpf/libbpf_internal.h |   7 +
-> >>  tools/lib/bpf/loc.bpf.h         | 297 +++++++++++++++
-> >>  tools/lib/bpf/loc.c             | 653 +++++++++++++++++++++++++++++++=
-+
-> >>  8 files changed, 1062 insertions(+), 3 deletions(-)
-> >>  create mode 100644 tools/lib/bpf/loc.bpf.h
-> >>  create mode 100644 tools/lib/bpf/loc.c
-> >>
-> >
-> > [...]
-> >
-> >> diff --git a/tools/lib/bpf/loc.bpf.h b/tools/lib/bpf/loc.bpf.h
-> >> new file mode 100644
-> >> index 000000000000..65dcff3ea513
-> >> --- /dev/null
-> >> +++ b/tools/lib/bpf/loc.bpf.h
-> >> @@ -0,0 +1,297 @@
-> >> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-> >> +/* Copyright (c) 2025, Oracle and/or its affiliates. */
-> >> +#ifndef __LOC_BPF_H__
-> >> +#define __LOC_BPF_H__
-> >> +
-> >> +#include <linux/errno.h>
-> >> +#include "bpf_helpers.h"
-> >> +#include "bpf_tracing.h"
-> >> +
-> >> +/* Below types and maps are internal implementation details of libbpf=
-'s loc
-> >> + * support and are subjects to change. Also, bpf_loc_xxx() API helper=
-s should
-> >> + * be considered an unstable API as well and might be adjusted based =
-on user
-> >> + * feedback from using libbpf's location support in production.
-> >> + *
-> >> + * This is based heavily upon usdt.bpf.h.
-> >> + */
-> >> +
-> >> +/* User can override BPF_LOC_MAX_SPEC_CNT to change default size of i=
-nternal
-> >> + * map that keeps track of location argument specifications. This mig=
-ht be
-> >> + * necessary if there are a lot of location attachments.
-> >> + */
-> >> +#ifndef BPF_LOC_MAX_SPEC_CNT
-> >> +#define BPF_LOC_MAX_SPEC_CNT 256
-> >> +#endif
-> >> +/* User can override BPF_LOC_MAX_IP_CNT to change default size of int=
-ernal
-> >> + * map that keeps track of IP (memory address) mapping to loc argumen=
-t
-> >> + * specification.
-> >> + * Note, if kernel supports BPF cookies, this map is not used and cou=
-ld be
-> >> + * resized all the way to 1 to save a bit of memory.
-> >
-> > is this just a copy/paste of really we will try to support kernels
-> > without BPF cookies for something bleeding edge like this?..
-> >
->
-> Yeah, copy-paste; it seems unlikely that a kernel would have location
-> data and not have BPF cookie support. Even given the fact distros
-> backport stuff it's generally fixes not features like this. If we end up
-> moving some testing code to selftests I'll simplify removing no-cookie
-> workarounds. Thanks!
+HEAD commit:    a1e83d4c0361 selftests/bpf: Fix redefinition of 'off' as d..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=12d21de2580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9ad7b090a18654a7
+dashboard link: https://syzkaller.appspot.com/bug?extid=b0cff308140f79a9c4cb
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=160cf542580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=128d5c58580000
 
-yeah, going forward we can assume BPF cookies are available, they are
-pretty fundamental
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2f6a7a0cd1b7/disk-a1e83d4c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/873984cfc71e/vmlinux-a1e83d4c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/16711d84070c/bzImage-a1e83d4c.xz
 
->
-> Alan
+The issue was bisected to:
+
+commit 7c33e97a6ef5d84e98b892c3e00c6d1678d20395
+Author: Sahil Chandna <chandna.sahil@gmail.com>
+Date:   Tue Oct 14 18:56:35 2025 +0000
+
+    bpf: Do not disable preemption in bpf_test_run().
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=172fe492580000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14afe492580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10afe492580000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com
+Fixes: 7c33e97a6ef5 ("bpf: Do not disable preemption in bpf_test_run().")
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6145 at kernel/bpf/helpers.c:781 bpf_try_get_buffers kernel/bpf/helpers.c:781 [inline]
+WARNING: CPU: 1 PID: 6145 at kernel/bpf/helpers.c:781 bpf_bprintf_prepare+0x12cf/0x13a0 kernel/bpf/helpers.c:834
+Modules linked in:
+CPU: 1 UID: 0 PID: 6145 Comm: syz.4.53 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/02/2025
+RIP: 0010:bpf_try_get_buffers kernel/bpf/helpers.c:781 [inline]
+RIP: 0010:bpf_bprintf_prepare+0x12cf/0x13a0 kernel/bpf/helpers.c:834
+Code: ff e9 ce fe ff ff e8 10 ec e0 ff e9 be fe ff ff e8 06 ec e0 ff e9 b4 fe ff ff e8 fc eb e0 ff e9 aa fe ff ff e8 f2 eb e0 ff 90 <0f> 0b 90 65 ff 0d 27 fd b2 10 b8 f0 ff ff ff e9 17 ff ff ff e8 d8
+RSP: 0018:ffffc90003797840 EFLAGS: 00010293
+RAX: ffffffff81df57fe RBX: ffffc90003797a10 RCX: ffff888026493c80
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000003
+RBP: ffffc90003797970 R08: 0000000000585870 R09: 0000000000000005
+R10: dffffc0000000000 R11: fffff520006f2f20 R12: dffffc0000000000
+R13: 0000000000000004 R14: 0000000000000003 R15: 1ffff920006f2f42
+FS:  00005555805f5500(0000) GS:ffff888125e0c000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000007c04e000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ ____bpf_trace_printk kernel/trace/bpf_trace.c:372 [inline]
+ bpf_trace_printk+0xdb/0x190 kernel/trace/bpf_trace.c:362
+ bpf_prog_bfbd7bf4bf171090+0x41/0x5a
+ bpf_dispatcher_nop_func include/linux/bpf.h:1350 [inline]
+ __bpf_prog_run include/linux/filter.h:721 [inline]
+ bpf_prog_run include/linux/filter.h:728 [inline]
+ bpf_prog_run_pin_on_cpu include/linux/filter.h:745 [inline]
+ bpf_flow_dissect+0x225/0x720 net/core/flow_dissector.c:1024
+ bpf_prog_test_run_flow_dissector+0x37c/0x5c0 net/bpf/test_run.c:1414
+ bpf_prog_test_run+0x2c7/0x340 kernel/bpf/syscall.c:4688
+ __sys_bpf+0x562/0x860 kernel/bpf/syscall.c:6167
+ __do_sys_bpf kernel/bpf/syscall.c:6259 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6257 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6257
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f25b0f8efc9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe036cd5e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f25b11e5fa0 RCX: 00007f25b0f8efc9
+RDX: 0000000000000050 RSI: 0000200000000180 RDI: 000000000000000a
+RBP: 00007f25b1011f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f25b11e5fa0 R14: 00007f25b11e5fa0 R15: 0000000000000003
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
