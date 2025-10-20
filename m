@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-71467-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47D0DBF3E30
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 00:25:56 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C508BF3E36
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 00:26:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0E2C18A6237
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 22:26:19 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AC68B4EA95D
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 22:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607D22F12C6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB8D2F25F2;
 	Mon, 20 Oct 2025 22:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I3k+Haii"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QFVoctVG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0722EFDBB
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E202F1FCA
 	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 22:25:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760999151; cv=none; b=LbjXNJ38RjwtYJMw0SeWMZWKoSm14liPrvIzfG4VsVdImCc6Ytg0qwyBsV0Cm8l8K0gv/f8NpLEJ3NQBQwO8xg+5yIxlw8dBU+ZDiEQFGeCTzhvwqjNJm3NyW+J6T1/sM1y+HYHeJjXy5hOynjxOGePFIGA9R9sAL+QZfcPUDyM=
+	t=1760999151; cv=none; b=fvf5A2ej+fPhp4EpejMs0l8e5F8xrk2FbpvUFgsoVgDxybucikwbkf1mTLmhr2II77WcKTns46M1bLHrT3r8X6f6nMOldAdFsmXO9ikM6q4tq7wforzWnadFLBIWNaMcjhCPikfUV5Cu4RJjkQQzz0t+L9kEEnqqyN6r66sIVRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1760999151; c=relaxed/simple;
-	bh=wgFOn1zI0MUR8j28UDT7mmSmoVevhzCVZ4vZ3wqJrIo=;
+	bh=uEftEbXwvp8w9flWvBB+7yaSoLMlfedOsaB9YYBtIiw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qciPa0AxR/LZxIZKJ7UX+fviNqVmdlk9swVkO6pjHpDBaa3vepOsaD0vu6/vDL0dfzq+D8TIuKL+dQ6XdcBSH1Jtw3VNz2ecjzHYzrcmyQdwGuwg5w5VVFXV44Hq4Q21a4Vc7y7KAOsOzmUmfmNEKl63B5K8Qnac55CR+pSIjVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I3k+Haii; arc=none smtp.client-ip=209.85.128.50
+	 MIME-Version; b=as6nEB/RyatVhJgBF+3blauP5ipxUGH774EBPjs32hCBdAj7V3DYLpAx3/Zis+sTkhvQ7vFwZ6zXihL5C9Na/scrxBGNr83OJwrvwPpqnDeft6dqlCPzlpJcBSOFSOEWqhKkT2Pk80jn0YY1IZw411kViG162U6CCBbgQG2ClqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QFVoctVG; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-471bde1e8f8so9374435e9.0
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-471191ac79dso40027905e9.3
         for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 15:25:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760999147; x=1761603947; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760999148; x=1761603948; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YUO0L32DdT/+R4N4Yh1t5zaNHDs1QribjweU6iUTZK4=;
-        b=I3k+HaiicCb71T/2k7+dgEZUWflKQUCvJXALeI/wZ0ewVpsN4LAeigcY5kM7Su1uiM
-         LaPokJWkIkKpKvBXG1iFDhV3MvSfdgBFZm9p5XKZNlR+NGHIq+fIuyVHyIZbwXsRUg6S
-         InCblvOFl9ZuvPcfKlPGJHi1/WS30Xduf5WkFPtyMBCX7YUbYnQJWKzo2fozYtXywt01
-         tfb9sYA/KKX67bmDASj+DURQoCP/TBR2hDZyVhlmNQ9LU68TWxUlcPLLBEk47nXEtna1
-         1X/wKrAquvs9E3jOtSAnB2QiaY6BPfrx6bIxmZdz84gkiFcn6avWBW1rpTda+xkdxawJ
-         xP1w==
+        bh=1O4jMfEotJt0uEpRkTiHUBTteoE/4zTKfKOJ6aa25R4=;
+        b=QFVoctVGuBYDZF30t+YbkAJOp++GFojkaNK/zA/HjluGXngPOU3h4xr5m20V6WeTmS
+         wCmbrs2X7reje71Wimfm1Ei/ktzqq6HS1czmIEmQvlTGqxOuiE9LwFIw5pjhfosLv9KW
+         1hkIfAWBGExDFP2nzYXzNstYLANC+R5U9isGttENcBgmd8O3mjoeEBVJV63AzBav4/FA
+         7omQQF9M/p5VmFyG4ANl5G4Q/HMvQsiSiFqbsVAkuem1TuvoghgCVHTe/hag93wRxvS9
+         rDxhOb0w05aKmH8lnw8YuK9n5Apz1bTxNBerrPLN5aPoEEmIFBcBoog3LCvpIUEHposY
+         1RXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760999147; x=1761603947;
+        d=1e100.net; s=20230601; t=1760999148; x=1761603948;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YUO0L32DdT/+R4N4Yh1t5zaNHDs1QribjweU6iUTZK4=;
-        b=YAOgq4d/8pOPh/aUoGjpwqctWBcmpj+1Ck2DyFXNjRkViFxtQyJqwqoGTOM4U5iFlQ
-         qLr/Q6PiIRMQfaVYd87eilNuIB+uFUmhuTmC8279o4o45lWvyFGK5L3cuxZp64AO8wcP
-         SGyP9ZeTm+cZQQUESNLMpyBhhLRI9XRaDPzG/qUAccpeDl2hp5ZcV2OH+LaE7m71LPsh
-         BXB9iZikWgEph3LV0VzQR4vRWV5ksU8ELmeG57MUboekp6C2uUxq/AkOfuCb6n2HNAXu
-         mVIzF62THy5AwmDs0mNraE/CA1yJ0POrxz7GfiuIFMVm8/iVRHRmcI57/CPpPi2sa0MO
-         JDVg==
-X-Gm-Message-State: AOJu0Yx0ZKFGZnnecXKnXr4hp0rSE6edBGPFMb3sx+Rgq+/m0ykPNhpw
-	+BTamytUt6JiKgwFsP0lVJGHNmEVm9pgvcl7pf5Bk4ps8SdJrfoty9EUAAP/9Q==
-X-Gm-Gg: ASbGncs0YFH11CTua0LJ0IbZ2cPSDfNoKA0jIO8dP035H6DYhac5HiUjmXTLmHewU1i
-	mrVSZ5cfqCrV0sx/EGl2dYead2SzuUOxj/8r92rhFzw0aq4nJwCjrKqR99jOuHxnuXIv0f/eyA5
-	m06HxqBoOun/gy5UzqKHaaIOcqzQFQ1GIjzA5iY3KR1NEXGc/AL5X+ClUBMFqD7X8MgVszFG1zu
-	3NjTugfAAiAVW4CJYBqezc9hl+PIHWxXJy5zwE/eCPDEo0J7UTnjprlf/39xWHgU1t5EMw37j4f
-	6Y+46K49QpLHXbZrYyCUe+GozqVAUcpKjMqNpc0zHMLIv5QaYj40sp63+lRR3O5mAyxrIj45yrd
-	zT2YLPWxRmvnzH937179SadRF3fYlLc1T7dvKQrxiWW6uZGxZ1BjtT9bD7Qg=
-X-Google-Smtp-Source: AGHT+IF9+sLg/uLu+sFj/edzyjv6vRyKZ2tvmy+kLyMcPW76mUGzCWCJad6oKmn0jgsmoHf+3W2cDg==
-X-Received: by 2002:a05:600c:3512:b0:471:12c2:201f with SMTP id 5b1f17b1804b1-471179134f0mr123494645e9.32.1760999147299;
-        Mon, 20 Oct 2025 15:25:47 -0700 (PDT)
+        bh=1O4jMfEotJt0uEpRkTiHUBTteoE/4zTKfKOJ6aa25R4=;
+        b=cRMQj7AS8jjs9tngCJHhO3uhViGfKHm5wkQ1IFWSr2bXFbFECpWSnE3+vOkYa9xImS
+         AXAaqgS7LOQxy3Zbh1j0OHYurRSn3zhFOVhLTTlgGqjlF593JonZd+O6xLoUnjk+A2Oc
+         mGGJ2D2xGzy6oLjJa3flh/+WpH/C6MAPJJ9/pu7JoIcdz8IlkYHUG/iDaB9GL1wO7YI7
+         NzXfAVAWZ2Rb+M5hlGUpOkeSh2CS9jbDktT/i2r2SP6jQ5kSzGId4jUkrRXfl/5uWiFW
+         vTNhAM76bM7jotVhma3e2o/mai9vSc/vvhWMmM3QAtHbjgIspmDxphaRk5s+u9ImDScd
+         KZwQ==
+X-Gm-Message-State: AOJu0Yyy2d5bm7rH4VIcK75KxYCi+aLulZaUcIW5nNBHErpOikFad4tq
+	GDJPps15Q9KFPnr6EA4v+F+uBhsw+Dagfnf6RzvkGnSDmufYDOoVEz7qwkCo6g==
+X-Gm-Gg: ASbGncs5c4NOyY/H+P1jGIm2XGFdqKewKI0RqqScQuGGbc+uKIVEZg11HGkgcjNRPsr
+	dYHPYrFPCo285wNb3no0Yucx+RyoPzVKTRWExaz72PZNv+ECHwrUqI5WaazwGDX2Iito4IFyeE2
+	exu42tgBUynVddwRnBddcvd112yYWfkvu8oqHTmu/tjzKaCIHmGPAz6PeLemS0BfVENEr5El1uf
+	uZwks5ewE6LThvUFxuR9kz4heS21bsc/pMMoWv+46FU8NUVPAfTgPoKnqbLg1yAkEJIDjDen3EH
+	PCilKJB+58dJZjBeNU0TshMSxGwm37iu074UoYoWS4zoatkWQyPL/HWMYQa8hR9JANv8lHvCC2y
+	/Do9Z4mKjPGEamI7+Ubr2PAM7QMfN8R5sDKUJMEEjPsd0jkONzueGcee1TD3Z2E8ztiyg+Q==
+X-Google-Smtp-Source: AGHT+IFvVd/4Tj+9zSuc4oil7yRkPEU6Fu8P3IA6uuZj2vi0YUV4MnalzcSOuRW/jZfi9TGr5k251w==
+X-Received: by 2002:a05:6000:2889:b0:428:3fbb:83fd with SMTP id ffacd0b85a97d-4283fbb8f3dmr6192792f8f.38.1760999148165;
+        Mon, 20 Oct 2025 15:25:48 -0700 (PDT)
 Received: from localhost ([2620:10d:c092:400::5:2617])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-471144c900asm251457385e9.16.2025.10.20.15.25.46
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-471144b5c91sm248850095e9.11.2025.10.20.15.25.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Oct 2025 15:25:46 -0700 (PDT)
+        Mon, 20 Oct 2025 15:25:47 -0700 (PDT)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -82,9 +82,9 @@ To: bpf@vger.kernel.org,
 	eddyz87@gmail.com,
 	memxor@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v3 02/10] bpf: widen dynptr size/offset to 64 bit
-Date: Mon, 20 Oct 2025 23:25:30 +0100
-Message-ID: <20251020222538.932915-3-mykyta.yatsenko5@gmail.com>
+Subject: [PATCH bpf-next v3 03/10] lib: move freader into buildid.h
+Date: Mon, 20 Oct 2025 23:25:31 +0100
+Message-ID: <20251020222538.932915-4-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251020222538.932915-1-mykyta.yatsenko5@gmail.com>
 References: <20251020222538.932915-1-mykyta.yatsenko5@gmail.com>
@@ -94,560 +94,130 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Dynptr currently caps size and offset at 24 bits, which isn’t sufficient
-for file-backed use cases; even 32 bits can be limiting. Refactor dynptr
-helpers/kfuncs to use 64-bit size and offset, ensuring consistency
-across the APIs.
+Move struct freader and prototypes of the functions operating on it into
+the buildid.h.
 
-This change does not affect internals of xdp, skb or other dynptrs,
-which continue to behave as before, and does not break binary
-compatibility.
-
-The widening enables large-file access support via dynptr, implemented
-in the next patches.
+This allows reusing freader outside buildid, e.g. for file dynptr
+support added later.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- include/linux/bpf.h                           | 20 +++---
- include/uapi/linux/bpf.h                      |  8 +--
- kernel/bpf/helpers.c                          | 66 +++++++++----------
- kernel/trace/bpf_trace.c                      | 46 ++++++-------
- tools/include/uapi/linux/bpf.h                |  8 +--
- tools/testing/selftests/bpf/bpf_kfuncs.h      | 12 ++--
- .../selftests/bpf/progs/dynptr_success.c      | 12 ++--
- 7 files changed, 86 insertions(+), 86 deletions(-)
+ MAINTAINERS             |  1 +
+ include/linux/buildid.h | 25 +++++++++++++++++++++++++
+ lib/buildid.c           | 29 +++++------------------------
+ 3 files changed, 31 insertions(+), 24 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 204f9c759a41..349bc933fa17 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1387,19 +1387,19 @@ enum bpf_dynptr_type {
- 	BPF_DYNPTR_TYPE_SKB_META,
- };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 545a4776795e..7564692f2f3c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4648,6 +4648,7 @@ F:	Documentation/userspace-api/ebpf/
+ F:	arch/*/net/*
+ F:	include/linux/bpf*
+ F:	include/linux/btf*
++F:	include/linux/buildid.h
+ F:	include/linux/filter.h
+ F:	include/trace/events/xdp.h
+ F:	include/uapi/linux/bpf*
+diff --git a/include/linux/buildid.h b/include/linux/buildid.h
+index 014a88c41073..831c1b4b626c 100644
+--- a/include/linux/buildid.h
++++ b/include/linux/buildid.h
+@@ -18,4 +18,29 @@ void init_vmlinux_build_id(void);
+ static inline void init_vmlinux_build_id(void) { }
+ #endif
  
--int bpf_dynptr_check_size(u32 size);
--u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
--const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 len);
--void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len);
-+int bpf_dynptr_check_size(u64 size);
-+u64 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
-+const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u64 len);
-+void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u64 len);
- bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr);
--int __bpf_dynptr_write(const struct bpf_dynptr_kern *dst, u32 offset,
--		       void *src, u32 len, u64 flags);
--void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *p, u32 offset,
--			    void *buffer__opt, u32 buffer__szk);
-+int __bpf_dynptr_write(const struct bpf_dynptr_kern *dst, u64 offset,
-+		       void *src, u64 len, u64 flags);
-+void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *p, u64 offset,
-+			    void *buffer__opt, u64 buffer__szk);
++struct freader {
++	void *buf;
++	u32 buf_sz;
++	int err;
++	union {
++		struct {
++			struct file *file;
++			struct folio *folio;
++			void *addr;
++			loff_t folio_off;
++			bool may_fault;
++		};
++		struct {
++			const char *data;
++			u64 data_sz;
++		};
++	};
++};
++
++void freader_init_from_file(struct freader *r, void *buf, u32 buf_sz,
++			    struct file *file, bool may_fault);
++void freader_init_from_mem(struct freader *r, const char *data, u64 data_sz);
++const void *freader_fetch(struct freader *r, loff_t file_off, size_t sz);
++void freader_cleanup(struct freader *r);
++
+ #endif
+diff --git a/lib/buildid.c b/lib/buildid.c
+index c4b0f376fb34..df06e492810d 100644
+--- a/lib/buildid.c
++++ b/lib/buildid.c
+@@ -11,27 +11,8 @@
  
--static inline int bpf_dynptr_check_off_len(const struct bpf_dynptr_kern *ptr, u32 offset, u32 len)
-+static inline int bpf_dynptr_check_off_len(const struct bpf_dynptr_kern *ptr, u64 offset, u64 len)
+ #define MAX_PHDR_CNT 256
+ 
+-struct freader {
+-	void *buf;
+-	u32 buf_sz;
+-	int err;
+-	union {
+-		struct {
+-			struct file *file;
+-			struct folio *folio;
+-			void *addr;
+-			loff_t folio_off;
+-			bool may_fault;
+-		};
+-		struct {
+-			const char *data;
+-			u64 data_sz;
+-		};
+-	};
+-};
+-
+-static void freader_init_from_file(struct freader *r, void *buf, u32 buf_sz,
+-				   struct file *file, bool may_fault)
++void freader_init_from_file(struct freader *r, void *buf, u32 buf_sz,
++			    struct file *file, bool may_fault)
  {
--	u32 size = __bpf_dynptr_size(ptr);
-+	u64 size = __bpf_dynptr_size(ptr);
- 
- 	if (len > size || offset > size - len)
- 		return -E2BIG;
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 6829936d33f5..77edd0253989 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5618,7 +5618,7 @@ union bpf_attr {
-  *	Return
-  *		*sk* if casting is valid, or **NULL** otherwise.
-  *
-- * long bpf_dynptr_from_mem(void *data, u32 size, u64 flags, struct bpf_dynptr *ptr)
-+ * long bpf_dynptr_from_mem(void *data, u64 size, u64 flags, struct bpf_dynptr *ptr)
-  *	Description
-  *		Get a dynptr to local memory *data*.
-  *
-@@ -5661,7 +5661,7 @@ union bpf_attr {
-  *	Return
-  *		Nothing. Always succeeds.
-  *
-- * long bpf_dynptr_read(void *dst, u32 len, const struct bpf_dynptr *src, u32 offset, u64 flags)
-+ * long bpf_dynptr_read(void *dst, u64 len, const struct bpf_dynptr *src, u64 offset, u64 flags)
-  *	Description
-  *		Read *len* bytes from *src* into *dst*, starting from *offset*
-  *		into *src*.
-@@ -5671,7 +5671,7 @@ union bpf_attr {
-  *		of *src*'s data, -EINVAL if *src* is an invalid dynptr or if
-  *		*flags* is not 0.
-  *
-- * long bpf_dynptr_write(const struct bpf_dynptr *dst, u32 offset, void *src, u32 len, u64 flags)
-+ * long bpf_dynptr_write(const struct bpf_dynptr *dst, u64 offset, void *src, u64 len, u64 flags)
-  *	Description
-  *		Write *len* bytes from *src* into *dst*, starting from *offset*
-  *		into *dst*.
-@@ -5692,7 +5692,7 @@ union bpf_attr {
-  *		is a read-only dynptr or if *flags* is not correct. For skb-type dynptrs,
-  *		other errors correspond to errors returned by **bpf_skb_store_bytes**\ ().
-  *
-- * void *bpf_dynptr_data(const struct bpf_dynptr *ptr, u32 offset, u32 len)
-+ * void *bpf_dynptr_data(const struct bpf_dynptr *ptr, u64 offset, u64 len)
-  *	Description
-  *		Get a pointer to the underlying dynptr data.
-  *
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index b9ec6ee21c94..a2ce17ea5edb 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1684,19 +1684,19 @@ static enum bpf_dynptr_type bpf_dynptr_get_type(const struct bpf_dynptr_kern *pt
- 	return (ptr->size & ~(DYNPTR_RDONLY_BIT)) >> DYNPTR_TYPE_SHIFT;
+ 	memset(r, 0, sizeof(*r));
+ 	r->buf = buf;
+@@ -40,7 +21,7 @@ static void freader_init_from_file(struct freader *r, void *buf, u32 buf_sz,
+ 	r->may_fault = may_fault;
  }
  
--u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr)
-+u64 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr)
+-static void freader_init_from_mem(struct freader *r, const char *data, u64 data_sz)
++void freader_init_from_mem(struct freader *r, const char *data, u64 data_sz)
  {
- 	return ptr->size & DYNPTR_SIZE_MASK;
- }
- 
--static void bpf_dynptr_set_size(struct bpf_dynptr_kern *ptr, u32 new_size)
-+static void bpf_dynptr_set_size(struct bpf_dynptr_kern *ptr, u64 new_size)
- {
- 	u32 metadata = ptr->size & ~DYNPTR_SIZE_MASK;
- 
--	ptr->size = new_size | metadata;
-+	ptr->size = (u32)new_size | metadata;
- }
- 
--int bpf_dynptr_check_size(u32 size)
-+int bpf_dynptr_check_size(u64 size)
- {
- 	return size > DYNPTR_MAX_SIZE ? -E2BIG : 0;
- }
-@@ -1715,7 +1715,7 @@ void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr)
- 	memset(ptr, 0, sizeof(*ptr));
- }
- 
--BPF_CALL_4(bpf_dynptr_from_mem, void *, data, u32, size, u64, flags, struct bpf_dynptr_kern *, ptr)
-+BPF_CALL_4(bpf_dynptr_from_mem, void *, data, u64, size, u64, flags, struct bpf_dynptr_kern *, ptr)
- {
- 	int err;
- 
-@@ -1750,8 +1750,8 @@ static const struct bpf_func_proto bpf_dynptr_from_mem_proto = {
- 	.arg4_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL | MEM_UNINIT | MEM_WRITE,
- };
- 
--static int __bpf_dynptr_read(void *dst, u32 len, const struct bpf_dynptr_kern *src,
--			     u32 offset, u64 flags)
-+static int __bpf_dynptr_read(void *dst, u64 len, const struct bpf_dynptr_kern *src,
-+			     u64 offset, u64 flags)
- {
- 	enum bpf_dynptr_type type;
- 	int err;
-@@ -1787,8 +1787,8 @@ static int __bpf_dynptr_read(void *dst, u32 len, const struct bpf_dynptr_kern *s
- 	}
- }
- 
--BPF_CALL_5(bpf_dynptr_read, void *, dst, u32, len, const struct bpf_dynptr_kern *, src,
--	   u32, offset, u64, flags)
-+BPF_CALL_5(bpf_dynptr_read, void *, dst, u64, len, const struct bpf_dynptr_kern *, src,
-+	   u64, offset, u64, flags)
- {
- 	return __bpf_dynptr_read(dst, len, src, offset, flags);
- }
-@@ -1804,8 +1804,8 @@ static const struct bpf_func_proto bpf_dynptr_read_proto = {
- 	.arg5_type	= ARG_ANYTHING,
- };
- 
--int __bpf_dynptr_write(const struct bpf_dynptr_kern *dst, u32 offset, void *src,
--		       u32 len, u64 flags)
-+int __bpf_dynptr_write(const struct bpf_dynptr_kern *dst, u64 offset, void *src,
-+		       u64 len, u64 flags)
- {
- 	enum bpf_dynptr_type type;
- 	int err;
-@@ -1848,8 +1848,8 @@ int __bpf_dynptr_write(const struct bpf_dynptr_kern *dst, u32 offset, void *src,
- 	}
- }
- 
--BPF_CALL_5(bpf_dynptr_write, const struct bpf_dynptr_kern *, dst, u32, offset, void *, src,
--	   u32, len, u64, flags)
-+BPF_CALL_5(bpf_dynptr_write, const struct bpf_dynptr_kern *, dst, u64, offset, void *, src,
-+	   u64, len, u64, flags)
- {
- 	return __bpf_dynptr_write(dst, offset, src, len, flags);
- }
-@@ -1865,7 +1865,7 @@ static const struct bpf_func_proto bpf_dynptr_write_proto = {
- 	.arg5_type	= ARG_ANYTHING,
- };
- 
--BPF_CALL_3(bpf_dynptr_data, const struct bpf_dynptr_kern *, ptr, u32, offset, u32, len)
-+BPF_CALL_3(bpf_dynptr_data, const struct bpf_dynptr_kern *, ptr, u64, offset, u64, len)
- {
- 	enum bpf_dynptr_type type;
- 	int err;
-@@ -2680,12 +2680,12 @@ __bpf_kfunc struct task_struct *bpf_task_from_vpid(s32 vpid)
-  * provided buffer, with its contents containing the data, if unable to obtain
-  * direct pointer)
-  */
--__bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr *p, u32 offset,
--				   void *buffer__opt, u32 buffer__szk)
-+__bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr *p, u64 offset,
-+				   void *buffer__opt, u64 buffer__szk)
- {
- 	const struct bpf_dynptr_kern *ptr = (struct bpf_dynptr_kern *)p;
- 	enum bpf_dynptr_type type;
--	u32 len = buffer__szk;
-+	u64 len = buffer__szk;
- 	int err;
- 
- 	if (!ptr->data)
-@@ -2767,8 +2767,8 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr *p, u32 offset,
-  * provided buffer, with its contents containing the data, if unable to obtain
-  * direct pointer)
-  */
--__bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *p, u32 offset,
--					void *buffer__opt, u32 buffer__szk)
-+__bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *p, u64 offset,
-+					void *buffer__opt, u64 buffer__szk)
- {
- 	const struct bpf_dynptr_kern *ptr = (struct bpf_dynptr_kern *)p;
- 
-@@ -2800,10 +2800,10 @@ __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *p, u32 offset,
- 	return bpf_dynptr_slice(p, offset, buffer__opt, buffer__szk);
- }
- 
--__bpf_kfunc int bpf_dynptr_adjust(const struct bpf_dynptr *p, u32 start, u32 end)
-+__bpf_kfunc int bpf_dynptr_adjust(const struct bpf_dynptr *p, u64 start, u64 end)
- {
- 	struct bpf_dynptr_kern *ptr = (struct bpf_dynptr_kern *)p;
--	u32 size;
-+	u64 size;
- 
- 	if (!ptr->data || start > end)
- 		return -EINVAL;
-@@ -2836,7 +2836,7 @@ __bpf_kfunc bool bpf_dynptr_is_rdonly(const struct bpf_dynptr *p)
- 	return __bpf_dynptr_is_rdonly(ptr);
- }
- 
--__bpf_kfunc __u32 bpf_dynptr_size(const struct bpf_dynptr *p)
-+__bpf_kfunc u64 bpf_dynptr_size(const struct bpf_dynptr *p)
- {
- 	struct bpf_dynptr_kern *ptr = (struct bpf_dynptr_kern *)p;
- 
-@@ -2873,14 +2873,14 @@ __bpf_kfunc int bpf_dynptr_clone(const struct bpf_dynptr *p,
-  * Copies data from source dynptr to destination dynptr.
-  * Returns 0 on success; negative error, otherwise.
-  */
--__bpf_kfunc int bpf_dynptr_copy(struct bpf_dynptr *dst_ptr, u32 dst_off,
--				struct bpf_dynptr *src_ptr, u32 src_off, u32 size)
-+__bpf_kfunc int bpf_dynptr_copy(struct bpf_dynptr *dst_ptr, u64 dst_off,
-+				struct bpf_dynptr *src_ptr, u64 src_off, u64 size)
- {
- 	struct bpf_dynptr_kern *dst = (struct bpf_dynptr_kern *)dst_ptr;
- 	struct bpf_dynptr_kern *src = (struct bpf_dynptr_kern *)src_ptr;
- 	void *src_slice, *dst_slice;
- 	char buf[256];
--	u32 off;
-+	u64 off;
- 
- 	src_slice = bpf_dynptr_slice(src_ptr, src_off, NULL, size);
- 	dst_slice = bpf_dynptr_slice_rdwr(dst_ptr, dst_off, NULL, size);
-@@ -2902,7 +2902,7 @@ __bpf_kfunc int bpf_dynptr_copy(struct bpf_dynptr *dst_ptr, u32 dst_off,
- 
- 	off = 0;
- 	while (off < size) {
--		u32 chunk_sz = min_t(u32, sizeof(buf), size - off);
-+		u64 chunk_sz = min_t(u64, sizeof(buf), size - off);
- 		int err;
- 
- 		err = __bpf_dynptr_read(buf, chunk_sz, src, src_off + off, 0);
-@@ -2928,10 +2928,10 @@ __bpf_kfunc int bpf_dynptr_copy(struct bpf_dynptr *dst_ptr, u32 dst_off,
-  * at @offset with the constant byte @val.
-  * Returns 0 on success; negative error, otherwise.
-  */
-- __bpf_kfunc int bpf_dynptr_memset(struct bpf_dynptr *p, u32 offset, u32 size, u8 val)
-- {
-+__bpf_kfunc int bpf_dynptr_memset(struct bpf_dynptr *p, u64 offset, u64 size, u8 val)
-+{
- 	struct bpf_dynptr_kern *ptr = (struct bpf_dynptr_kern *)p;
--	u32 chunk_sz, write_off;
-+	u64 chunk_sz, write_off;
- 	char buf[256];
- 	void* slice;
- 	int err;
-@@ -2950,11 +2950,11 @@ __bpf_kfunc int bpf_dynptr_copy(struct bpf_dynptr *dst_ptr, u32 dst_off,
- 		return err;
- 
- 	/* Non-linear data under the dynptr, write from a local buffer */
--	chunk_sz = min_t(u32, sizeof(buf), size);
-+	chunk_sz = min_t(u64, sizeof(buf), size);
- 	memset(buf, val, chunk_sz);
- 
- 	for (write_off = 0; write_off < size; write_off += chunk_sz) {
--		chunk_sz = min_t(u32, sizeof(buf), size - write_off);
-+		chunk_sz = min_t(u64, sizeof(buf), size - write_off);
- 		err = __bpf_dynptr_write(ptr, offset + write_off, buf, chunk_sz, 0);
- 		if (err)
- 			return err;
-@@ -4469,7 +4469,7 @@ late_initcall(kfunc_init);
- /* Get a pointer to dynptr data up to len bytes for read only access. If
-  * the dynptr doesn't have continuous data up to len bytes, return NULL.
-  */
--const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 len)
-+const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u64 len)
- {
- 	const struct bpf_dynptr *p = (struct bpf_dynptr *)ptr;
- 
-@@ -4480,7 +4480,7 @@ const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 len)
-  * the dynptr doesn't have continuous data up to len bytes, or the dynptr
-  * is read only, return NULL.
-  */
--void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len)
-+void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u64 len)
- {
- 	if (__bpf_dynptr_is_rdonly(ptr))
- 		return NULL;
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 4f87c16d915a..a795f7afbf3d 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3372,13 +3372,13 @@ typedef int (*copy_fn_t)(void *dst, const void *src, u32 size, struct task_struc
-  * direct calls into all the specific callback implementations
-  * (copy_user_data_sleepable, copy_user_data_nofault, and so on)
-  */
--static __always_inline int __bpf_dynptr_copy_str(struct bpf_dynptr *dptr, u32 doff, u32 size,
-+static __always_inline int __bpf_dynptr_copy_str(struct bpf_dynptr *dptr, u64 doff, u64 size,
- 						 const void *unsafe_src,
- 						 copy_fn_t str_copy_fn,
- 						 struct task_struct *tsk)
- {
- 	struct bpf_dynptr_kern *dst;
--	u32 chunk_sz, off;
-+	u64 chunk_sz, off;
- 	void *dst_slice;
- 	int cnt, err;
- 	char buf[256];
-@@ -3392,7 +3392,7 @@ static __always_inline int __bpf_dynptr_copy_str(struct bpf_dynptr *dptr, u32 do
- 		return -E2BIG;
- 
- 	for (off = 0; off < size; off += chunk_sz - 1) {
--		chunk_sz = min_t(u32, sizeof(buf), size - off);
-+		chunk_sz = min_t(u64, sizeof(buf), size - off);
- 		/* Expect str_copy_fn to return count of copied bytes, including
- 		 * zero terminator. Next iteration increment off by chunk_sz - 1 to
- 		 * overwrite NUL.
-@@ -3409,14 +3409,14 @@ static __always_inline int __bpf_dynptr_copy_str(struct bpf_dynptr *dptr, u32 do
- 	return off;
- }
- 
--static __always_inline int __bpf_dynptr_copy(const struct bpf_dynptr *dptr, u32 doff,
--					     u32 size, const void *unsafe_src,
-+static __always_inline int __bpf_dynptr_copy(const struct bpf_dynptr *dptr, u64 doff,
-+					     u64 size, const void *unsafe_src,
- 					     copy_fn_t copy_fn, struct task_struct *tsk)
- {
- 	struct bpf_dynptr_kern *dst;
- 	void *dst_slice;
- 	char buf[256];
--	u32 off, chunk_sz;
-+	u64 off, chunk_sz;
- 	int err;
- 
- 	dst_slice = bpf_dynptr_slice_rdwr(dptr, doff, NULL, size);
-@@ -3428,7 +3428,7 @@ static __always_inline int __bpf_dynptr_copy(const struct bpf_dynptr *dptr, u32
- 		return -E2BIG;
- 
- 	for (off = 0; off < size; off += chunk_sz) {
--		chunk_sz = min_t(u32, sizeof(buf), size - off);
-+		chunk_sz = min_t(u64, sizeof(buf), size - off);
- 		err = copy_fn(buf, unsafe_src + off, chunk_sz, tsk);
- 		if (err)
- 			return err;
-@@ -3514,58 +3514,58 @@ __bpf_kfunc int bpf_send_signal_task(struct task_struct *task, int sig, enum pid
- 	return bpf_send_signal_common(sig, type, task, value);
- }
- 
--__bpf_kfunc int bpf_probe_read_user_dynptr(struct bpf_dynptr *dptr, u32 off,
--					   u32 size, const void __user *unsafe_ptr__ign)
-+__bpf_kfunc int bpf_probe_read_user_dynptr(struct bpf_dynptr *dptr, u64 off,
-+					   u64 size, const void __user *unsafe_ptr__ign)
- {
- 	return __bpf_dynptr_copy(dptr, off, size, (const void *)unsafe_ptr__ign,
- 				 copy_user_data_nofault, NULL);
- }
- 
--__bpf_kfunc int bpf_probe_read_kernel_dynptr(struct bpf_dynptr *dptr, u32 off,
--					     u32 size, const void *unsafe_ptr__ign)
-+__bpf_kfunc int bpf_probe_read_kernel_dynptr(struct bpf_dynptr *dptr, u64 off,
-+					     u64 size, const void *unsafe_ptr__ign)
- {
- 	return __bpf_dynptr_copy(dptr, off, size, unsafe_ptr__ign,
- 				 copy_kernel_data_nofault, NULL);
- }
- 
--__bpf_kfunc int bpf_probe_read_user_str_dynptr(struct bpf_dynptr *dptr, u32 off,
--					       u32 size, const void __user *unsafe_ptr__ign)
-+__bpf_kfunc int bpf_probe_read_user_str_dynptr(struct bpf_dynptr *dptr, u64 off,
-+					       u64 size, const void __user *unsafe_ptr__ign)
- {
- 	return __bpf_dynptr_copy_str(dptr, off, size, (const void *)unsafe_ptr__ign,
- 				     copy_user_str_nofault, NULL);
- }
- 
--__bpf_kfunc int bpf_probe_read_kernel_str_dynptr(struct bpf_dynptr *dptr, u32 off,
--						 u32 size, const void *unsafe_ptr__ign)
-+__bpf_kfunc int bpf_probe_read_kernel_str_dynptr(struct bpf_dynptr *dptr, u64 off,
-+						 u64 size, const void *unsafe_ptr__ign)
- {
- 	return __bpf_dynptr_copy_str(dptr, off, size, unsafe_ptr__ign,
- 				     copy_kernel_str_nofault, NULL);
- }
- 
--__bpf_kfunc int bpf_copy_from_user_dynptr(struct bpf_dynptr *dptr, u32 off,
--					  u32 size, const void __user *unsafe_ptr__ign)
-+__bpf_kfunc int bpf_copy_from_user_dynptr(struct bpf_dynptr *dptr, u64 off,
-+					  u64 size, const void __user *unsafe_ptr__ign)
- {
- 	return __bpf_dynptr_copy(dptr, off, size, (const void *)unsafe_ptr__ign,
- 				 copy_user_data_sleepable, NULL);
- }
- 
--__bpf_kfunc int bpf_copy_from_user_str_dynptr(struct bpf_dynptr *dptr, u32 off,
--					      u32 size, const void __user *unsafe_ptr__ign)
-+__bpf_kfunc int bpf_copy_from_user_str_dynptr(struct bpf_dynptr *dptr, u64 off,
-+					      u64 size, const void __user *unsafe_ptr__ign)
- {
- 	return __bpf_dynptr_copy_str(dptr, off, size, (const void *)unsafe_ptr__ign,
- 				     copy_user_str_sleepable, NULL);
- }
- 
--__bpf_kfunc int bpf_copy_from_user_task_dynptr(struct bpf_dynptr *dptr, u32 off,
--					       u32 size, const void __user *unsafe_ptr__ign,
-+__bpf_kfunc int bpf_copy_from_user_task_dynptr(struct bpf_dynptr *dptr, u64 off,
-+					       u64 size, const void __user *unsafe_ptr__ign,
- 					       struct task_struct *tsk)
- {
- 	return __bpf_dynptr_copy(dptr, off, size, (const void *)unsafe_ptr__ign,
- 				 copy_user_data_sleepable, tsk);
- }
- 
--__bpf_kfunc int bpf_copy_from_user_task_str_dynptr(struct bpf_dynptr *dptr, u32 off,
--						   u32 size, const void __user *unsafe_ptr__ign,
-+__bpf_kfunc int bpf_copy_from_user_task_str_dynptr(struct bpf_dynptr *dptr, u64 off,
-+						   u64 size, const void __user *unsafe_ptr__ign,
- 						   struct task_struct *tsk)
- {
- 	return __bpf_dynptr_copy_str(dptr, off, size, (const void *)unsafe_ptr__ign,
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 6829936d33f5..77edd0253989 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5618,7 +5618,7 @@ union bpf_attr {
-  *	Return
-  *		*sk* if casting is valid, or **NULL** otherwise.
-  *
-- * long bpf_dynptr_from_mem(void *data, u32 size, u64 flags, struct bpf_dynptr *ptr)
-+ * long bpf_dynptr_from_mem(void *data, u64 size, u64 flags, struct bpf_dynptr *ptr)
-  *	Description
-  *		Get a dynptr to local memory *data*.
-  *
-@@ -5661,7 +5661,7 @@ union bpf_attr {
-  *	Return
-  *		Nothing. Always succeeds.
-  *
-- * long bpf_dynptr_read(void *dst, u32 len, const struct bpf_dynptr *src, u32 offset, u64 flags)
-+ * long bpf_dynptr_read(void *dst, u64 len, const struct bpf_dynptr *src, u64 offset, u64 flags)
-  *	Description
-  *		Read *len* bytes from *src* into *dst*, starting from *offset*
-  *		into *src*.
-@@ -5671,7 +5671,7 @@ union bpf_attr {
-  *		of *src*'s data, -EINVAL if *src* is an invalid dynptr or if
-  *		*flags* is not 0.
-  *
-- * long bpf_dynptr_write(const struct bpf_dynptr *dst, u32 offset, void *src, u32 len, u64 flags)
-+ * long bpf_dynptr_write(const struct bpf_dynptr *dst, u64 offset, void *src, u64 len, u64 flags)
-  *	Description
-  *		Write *len* bytes from *src* into *dst*, starting from *offset*
-  *		into *dst*.
-@@ -5692,7 +5692,7 @@ union bpf_attr {
-  *		is a read-only dynptr or if *flags* is not correct. For skb-type dynptrs,
-  *		other errors correspond to errors returned by **bpf_skb_store_bytes**\ ().
-  *
-- * void *bpf_dynptr_data(const struct bpf_dynptr *ptr, u32 offset, u32 len)
-+ * void *bpf_dynptr_data(const struct bpf_dynptr *ptr, u64 offset, u64 len)
-  *	Description
-  *		Get a pointer to the underlying dynptr data.
-  *
-diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
-index 794d44d19c88..e0189254bb6e 100644
---- a/tools/testing/selftests/bpf/bpf_kfuncs.h
-+++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
-@@ -28,8 +28,8 @@ extern int bpf_dynptr_from_skb_meta(struct __sk_buff *skb, __u64 flags,
-  *  Either a direct pointer to the dynptr data or a pointer to the user-provided
-  *  buffer if unable to obtain a direct pointer
-  */
--extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, __u32 offset,
--			      void *buffer, __u32 buffer__szk) __ksym __weak;
-+extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, __u64 offset,
-+			      void *buffer, __u64 buffer__szk) __ksym __weak;
- 
- /* Description
-  *  Obtain a read-write pointer to the dynptr's data
-@@ -37,13 +37,13 @@ extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, __u32 offset,
-  *  Either a direct pointer to the dynptr data or a pointer to the user-provided
-  *  buffer if unable to obtain a direct pointer
-  */
--extern void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *ptr, __u32 offset,
--			      void *buffer, __u32 buffer__szk) __ksym __weak;
-+extern void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *ptr, __u64 offset, void *buffer,
-+				   __u64 buffer__szk) __ksym __weak;
- 
--extern int bpf_dynptr_adjust(const struct bpf_dynptr *ptr, __u32 start, __u32 end) __ksym __weak;
-+extern int bpf_dynptr_adjust(const struct bpf_dynptr *ptr, __u64 start, __u64 end) __ksym __weak;
- extern bool bpf_dynptr_is_null(const struct bpf_dynptr *ptr) __ksym __weak;
- extern bool bpf_dynptr_is_rdonly(const struct bpf_dynptr *ptr) __ksym __weak;
--extern __u32 bpf_dynptr_size(const struct bpf_dynptr *ptr) __ksym __weak;
-+extern __u64 bpf_dynptr_size(const struct bpf_dynptr *ptr) __ksym __weak;
- extern int bpf_dynptr_clone(const struct bpf_dynptr *ptr, struct bpf_dynptr *clone__init) __ksym __weak;
- 
- /* Description
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/testing/selftests/bpf/progs/dynptr_success.c
-index 127dea342e5a..e0d672d93adf 100644
---- a/tools/testing/selftests/bpf/progs/dynptr_success.c
-+++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
-@@ -914,8 +914,8 @@ void *user_ptr;
- char expected_str[384];
- __u32 test_len[7] = {0/* placeholder */, 0, 1, 2, 255, 256, 257};
- 
--typedef int (*bpf_read_dynptr_fn_t)(struct bpf_dynptr *dptr, u32 off,
--				    u32 size, const void *unsafe_ptr);
-+typedef int (*bpf_read_dynptr_fn_t)(struct bpf_dynptr *dptr, u64 off,
-+				    u64 size, const void *unsafe_ptr);
- 
- /* Returns the offset just before the end of the maximum sized xdp fragment.
-  * Any write larger than 32 bytes will be split between 2 fragments.
-@@ -1106,16 +1106,16 @@ int test_copy_from_user_str_dynptr(void *ctx)
+ 	memset(r, 0, sizeof(*r));
+ 	r->data = data;
+@@ -92,7 +73,7 @@ static int freader_get_folio(struct freader *r, loff_t file_off)
  	return 0;
  }
  
--static int bpf_copy_data_from_user_task(struct bpf_dynptr *dptr, u32 off,
--					u32 size, const void *unsafe_ptr)
-+static int bpf_copy_data_from_user_task(struct bpf_dynptr *dptr, u64 off,
-+					u64 size, const void *unsafe_ptr)
+-static const void *freader_fetch(struct freader *r, loff_t file_off, size_t sz)
++const void *freader_fetch(struct freader *r, loff_t file_off, size_t sz)
  {
- 	struct task_struct *task = bpf_get_current_task_btf();
+ 	size_t folio_sz;
  
- 	return bpf_copy_from_user_task_dynptr(dptr, off, size, unsafe_ptr, task);
+@@ -147,7 +128,7 @@ static const void *freader_fetch(struct freader *r, loff_t file_off, size_t sz)
+ 	return r->addr + (file_off - r->folio_off);
  }
  
--static int bpf_copy_data_from_user_task_str(struct bpf_dynptr *dptr, u32 off,
--					    u32 size, const void *unsafe_ptr)
-+static int bpf_copy_data_from_user_task_str(struct bpf_dynptr *dptr, u64 off,
-+					    u64 size, const void *unsafe_ptr)
+-static void freader_cleanup(struct freader *r)
++void freader_cleanup(struct freader *r)
  {
- 	struct task_struct *task = bpf_get_current_task_btf();
- 
+ 	if (!r->buf)
+ 		return; /* non-file-backed mode */
 -- 
 2.51.0
 
