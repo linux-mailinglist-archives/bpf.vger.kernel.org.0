@@ -1,139 +1,161 @@
-Return-Path: <bpf+bounces-71372-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71374-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABB5CBF0119
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 11:00:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48903BF01D0
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 11:13:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 564603B0D01
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 09:00:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD3823BC07C
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 09:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE522D0637;
-	Mon, 20 Oct 2025 09:00:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919B32ED14C;
+	Mon, 20 Oct 2025 09:12:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OUkqiCBL"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dudGMQ8F"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A142ECEA8
-	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 09:00:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05CD929ACC3
+	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 09:12:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760950817; cv=none; b=nvhRMlKH10ET+TwWyyVg77zVtmqfa+GaHPQ3WkPqFGFB5daeSiUgIcF5U7vjRk0ACO8B/fJdk7hQjOhMBACdapn2XwS4+kQMYsgnB+2z5d+2BzJJD9Wt/a+IjM7g3K0RVNnBnbWwdPyJz3ybuZdvdbfXfD5CtEFXzmQL3Dd0JA4=
+	t=1760951539; cv=none; b=goDBzEjc8wzZfaMyrHPrePdt7ORV9odwkD+YoH1vhhk0r4/d7gUlYEczenKCyS1uHPkjqle7InQ9512X9DSUDT+0wWjNwoRxVGfh/5t5R443VPvF0N0dC7871GF1vWvncD5aQUTICKUTrH281lrW0zo2xlTZq35LXRESv8XaAdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760950817; c=relaxed/simple;
-	bh=zvaY8lf7qWqGy0iOB/oaVzQo+PIYm5LFANizKettLc4=;
+	s=arc-20240116; t=1760951539; c=relaxed/simple;
+	bh=ta6LSkk+9A3FVM3mm3iDzNK4zuCKnQq6jaHDvp/Xdvk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RivS2HzNPJcw9yPwfSeWItS9eLPRGQ1/64NvTmgmj5Knpke7aPfU+r519NtUgowL1hcyDPPIq39opr2jtushAs80EAYuwRT6M6jgsRkY4igvJ4A2y68lGuJWkkofPbaNC1HReUYrTnU+7Oi3pWGeru9UO1gbyhj2bxTY+mAgCOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OUkqiCBL; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47112edf9f7so16397335e9.0
-        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 02:00:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760950813; x=1761555613; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=nR9vTvm7ILndkvrr9eMtht4nb0L6F+CVXBeLHtxdVM8=;
-        b=OUkqiCBL7w99OG2SMqmSnOLPeJ8DsUsS04H59f9ivKwAPjvGUW+4K6TX8TX9oflqa2
-         rsx2P1qKuJshMempdpZWnGdXtz4HhwrdH/uNyj0LS7INqvYjVQ1Nkr+mDeMkBiIAg9Fd
-         qIBPmMZ5XUiyh1incStnYDRAiF64peSBihJk8zwNNo/2+tSkTLlQT750QDIg9wrq3DrP
-         WAvXoJOW3o20sp04cnn85qQcnZiYJSwoh63eeqKaxVvYfD1wfJhr0R1kTGq0VVpYIbHs
-         lVLxQ9RnGizaduNRZRCaCiX8AKJPa7+DPmSixO5qF6gtKWL9muMbU9x2bvhGnXeiDy+V
-         XEUQ==
+	 Content-Type:Content-Disposition:In-Reply-To; b=bNqPY4K6ClCJIY6SIld3YW59tbm0TPPHsJnr4E110htMFZzVUqwYTeJn+162+ynT4N6AT4xyK6aMsr7c9zF33CvsTAlIhQJ623STXvR0dKRJO5HJmwAUpni79BOc/CMhett9FqeAd+qneb5W+IzG4987kK/2k1K0PReLBYvf2O8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dudGMQ8F; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1760951536;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7ubitj5/uevHZU/7Ly6xrweyvQaOv3M8jgDaIwUyJNQ=;
+	b=dudGMQ8FDeCvDo6Vn73Y4xcyXO5FdozszhSIlmSr2UfXJ1C7TobBFoNTWEEOrLIWjkzxnX
+	W+7R0evqvRckwLTxfKo8GMXgIwkHf5b5/3BpAA2PF/Z4HrOL/wrtk782e1aoh0DY3dPHdk
+	bp7pfeDmIPzt5ETfZOyGKlf6FV2ZYnc=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-255-Fn2vuB3IPO2MiY96HCMZGQ-1; Mon, 20 Oct 2025 05:12:14 -0400
+X-MC-Unique: Fn2vuB3IPO2MiY96HCMZGQ-1
+X-Mimecast-MFC-AGG-ID: Fn2vuB3IPO2MiY96HCMZGQ_1760951533
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-4270a273b6eso2077752f8f.0
+        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 02:12:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760950813; x=1761555613;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nR9vTvm7ILndkvrr9eMtht4nb0L6F+CVXBeLHtxdVM8=;
-        b=Pm/SwVrLDC74ZQpv+LC+mjuuqSk4SDzJ1J5oOW0eoUskp0ZK2Y72vqAuqcLXTkBxJP
-         elnZkdvY0UwymW8fiURDbqvz+CG0itz+whABg8+/O1cyyuexznsuvmHjM5cFti10Hxzt
-         1BC/UFnorhWWvKohhS7EgzmSIJy2VtEEQrG1+h/NAeHHnJahvkvlCDjWNGlGQFsY2ggY
-         t4ow3G/NVA4BhfYy2ujZM0SeSLsfQbCT4oM0zqagKcinM5xn01geLSkWmZqXeZ5mMj4g
-         KFZ4h5ZA0Qahh/GpaBgwGHkl6ODKp33LeFVCyoITlM3ZsqdB9X48l80BQiCAc8+77Qxp
-         fk1w==
-X-Gm-Message-State: AOJu0YzN1TeVUFzTPKbmVATs42/DHJG3eNkrAApLXcVBij0UqOwfQNDg
-	HfDf0K7bDXxR2RyWMFkf7E9gfbFWA0OvMj8mznouGQfe9ytxS+LEf6+5
-X-Gm-Gg: ASbGncs3znEPBNBY865DSVtLqoHBvKQqPoIhSNdyvce2cpy9XlYRnPYIs8lR5GRqONF
-	rIibDPZzHaOchw/w1VYVXWBEDdXsZRtN3pqkWKRFzzd3EbPfNL916yx3kZDIfMt9yRyrupU2YRl
-	oWGZIEbN6xNGHW0oZFadzEDU5aT87Fd8PUkBPG89jqCQGowXfpya0lyhNRHAdY02ImAHqmaA13P
-	wQXyz0GprIb5sWhQHrsRkTC8OlvBGYzsyTfBFqrWDS9+Sk23JU14lhKyTGj/W4zftvWt4YFtr+y
-	2wdhbIBRz6YDOiDG206u2Xw1embhtPQ9p1SkJkqpUz+KvNK0PBTOZ/iTo13LSh34U3tFkmk1djv
-	IJdQh1zdGIE9JJTwtR+CTPEhp4Kg/6TLtUQCvNBVjgr3V0YJaXF7dpcHW2CM33WmlI+gHO+33JT
-	3vC3vvqTRKLq45xw0T2VNBg/iRSFmQsaI=
-X-Google-Smtp-Source: AGHT+IEv32CHHsaMz29Mey6R5r03clG9N54tobJc2ra9qYSg6/JIiCF+jpuXcA0/8HjP7dpq7ngnDw==
-X-Received: by 2002:a05:600c:8b0d:b0:46e:39e1:fc27 with SMTP id 5b1f17b1804b1-4711787442amr89749505e9.5.1760950812794;
-        Mon, 20 Oct 2025 02:00:12 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4710cd833ebsm107387605e9.3.2025.10.20.02.00.12
+        d=1e100.net; s=20230601; t=1760951533; x=1761556333;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7ubitj5/uevHZU/7Ly6xrweyvQaOv3M8jgDaIwUyJNQ=;
+        b=Y+41bKgHu6UMqKJvNWwNhKDMIwqqjD627lzX48mr/OtLScH+HM7mQ89NCKkOqH+Axc
+         NjnapMswL6v8YNHQU3nT5ytBhtP9dFpkxizbCkF0kVSlLL39AIKclZfIgLYu9VUYRpB+
+         oWXM1udwzJIAcGvAgqkiJK4aAGFfT0l3r/PsdGyqcz3Ztm8hk57dgbMapyXwS+2rqAOu
+         bRYc1luwfQI0gXsXA1B+GvfgdTy+BAN6PYYu+9hKfvy5gTYBTzW1c5dhWfXJuMVRFGE/
+         98QcoYxM79IMIW1BatPib0AuxpvjLWIAC//PfI6KGqY9YuVQHoa3Q1U/O1G5s05ldfqd
+         WMGg==
+X-Forwarded-Encrypted: i=1; AJvYcCWeHy4wFEW6A6ljGYU3F9P+rh3fZV2tAB8UuEYDbsOB09IOI454sLAVLFY262t4Z6EKRoA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzBSgCvMDsP4KOji/SWT4kY4VLTkSS0dOChqgpA/B6aR2zepVKj
+	eY7/w6KrVVlfsMmMMVu30bw3qrpPTL/LkUIOGzcizz1M8hl2DNyiax0bkIfoQ87tZuUKihh2wRJ
+	30iIu8BiyC+darUfnHQIRm2Tbc/YjK7oNMo8IsHl1bov9W2hugHNoVw==
+X-Gm-Gg: ASbGncsMD7EHP56Ew59RtRJLIYscbpHBJ3TbghHb1KXJNgqRbaA6+xqmoUo91clfS9t
+	mqqNGi2KTlrUQAt0JeYJzFktv/KZgLTJ0jsKP4cnJkzbFeK/PKclPvF81kQ1d6lVwAWwB6Ie0Em
+	Z+90aI3Krgq40dnFqy9bym4SPVWu/Za2XopLzAltbadkIMrUoSmQ+OhuiOxy6+imwwaoIvEHRTe
+	m/HavYlf+JrHS3x/ypzlsDer01A8re907GQ6Ddu9+JeaJn8MftKhE0RhVtH+7aezP3Hr0Kmnf/c
+	LhjmL1Y5+T3i7oEG2gN8qgfH7B3Lx3MJZQ2wnvsf2KfkHFOczl3hVdi4rdiG6hYs0fCmGc8EbQz
+	HStnuDMsRD3+mDAiU8Z8JxUV4SCTrijQ=
+X-Received: by 2002:a5d:5888:0:b0:3e8:68:3a91 with SMTP id ffacd0b85a97d-42704e0efc6mr8234674f8f.60.1760951533492;
+        Mon, 20 Oct 2025 02:12:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH1x7pXYq8e945UALV9q1YHdxFAo/gpZoHmNBgsdqAAWXDZS350AGwm1xrETAUHltalmZTxLw==
+X-Received: by 2002:a5d:5888:0:b0:3e8:68:3a91 with SMTP id ffacd0b85a97d-42704e0efc6mr8234649f8f.60.1760951533088;
+        Mon, 20 Oct 2025 02:12:13 -0700 (PDT)
+Received: from jlelli-thinkpadt14gen4.remote.csb ([176.206.13.103])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47152959b55sm139474055e9.6.2025.10.20.02.12.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Oct 2025 02:00:12 -0700 (PDT)
-Date: Mon, 20 Oct 2025 09:06:37 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Puranjay Mohan <puranjay@kernel.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix build with new LLVM
-Message-ID: <aPX7nYh09CPlFgra@mail.gmail.com>
-References: <20250918093606.454541-1-a.s.protopopov@gmail.com>
- <CAADnVQLso776xFQTzPFahmV=JbE3Ca8jQ7UdPuMChjJAK_echg@mail.gmail.com>
- <aMwy+pt+Rg1eNr0z@mail.gmail.com>
- <CAADnVQ+2ic2gWyvqp4qFCwZpKqV+7BDnovL08Jp0tFSaC4pm9g@mail.gmail.com>
+        Mon, 20 Oct 2025 02:12:12 -0700 (PDT)
+Date: Mon, 20 Oct 2025 11:12:10 +0200
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Andrea Righi <arighi@nvidia.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Joel Fernandes <joelagnelf@nvidia.com>, Tejun Heo <tj@kernel.org>,
+	David Vernet <void@manifault.com>,
+	Changwoo Min <changwoo@igalia.com>, Shuah Khan <shuah@kernel.org>,
+	sched-ext@lists.linux.dev, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/14] sched/debug: Stop and start server based on if it
+ was active
+Message-ID: <aPX86h9lSEZh0YP2@jlelli-thinkpadt14gen4.remote.csb>
+References: <20251017093214.70029-1-arighi@nvidia.com>
+ <20251017093214.70029-3-arighi@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+2ic2gWyvqp4qFCwZpKqV+7BDnovL08Jp0tFSaC4pm9g@mail.gmail.com>
+In-Reply-To: <20251017093214.70029-3-arighi@nvidia.com>
 
-On 25/09/18 09:26AM, Alexei Starovoitov wrote:
-> On Thu, Sep 18, 2025 at 9:21 AM Anton Protopopov
-> <a.s.protopopov@gmail.com> wrote:
-> >
-> > On 25/09/18 08:02AM, Alexei Starovoitov wrote:
-> > > On Thu, Sep 18, 2025 at 2:30 AM Anton Protopopov
-> > > <a.s.protopopov@gmail.com> wrote:
-> > > >
-> > > > The progs/stream.c BPF program now uses arena helpers, so it includes
-> > > > bpf_arena_common.h, which conflicts with the declarations generated
-> > > > in vmlinux.h. This leads to the following build errors with the recent
-> > > > LLVM:
-> > > >
-> > > >     In file included from progs/stream.c:8:
-> > > >     .../tools/testing/selftests/bpf/bpf_arena_common.h:47:15: error: conflicting types for 'bpf_arena_alloc_pages'
-> > > >        47 | void __arena* bpf_arena_alloc_pages(void *map, void __arena *addr, __u32 page_cnt,
-> > > >           |               ^
-> > > >     .../tools/testing/selftests/bpf/tools/include/vmlinux.h:229284:14: note: previous declaration is here
-> > > >      229284 | extern void *bpf_arena_alloc_pages(void *p__map, void *addr__ign, u32 page_cnt, int node_id, u64 flags) __weak __ksym;
-> > > >             |              ^
-> > > >
-> > > >     ... etc
-> > >
-> > > I suspect you're using old pahole.
-> > > New one can transfer __arena tags into vmlinux.h
-> >
-> > Ok, TIL about CONFIG_PAHOLE_VERSION (before I've sent the patch,
-> > I've updated the pahole, re-built the kernel, but didn't do `make
-> > oldconfig` after updating pahole.)
+Hi!
+
+On 17/10/25 11:25, Andrea Righi wrote:
+> From: Joel Fernandes <joelagnelf@nvidia.com>
 > 
-> Yeah. It's a footgun that few people are aware of :(
-> I was bitten by it too.
-> We have a small section about pahole in bpf_devel_QA.rst.
-> We should probably expand it and list the common issues and how to fix them.
-> Every week somebody sends a patch due to old pahole :(
+> Currently the DL server interface for applying parameters checks
+> CFS-internals to identify if the server is active. This is error-prone
+> and makes it difficult when adding new servers in the future.
+> 
+> Fix it, by using dl_server_active() which is also used by the DL server
+> code to determine if the DL server was started.
+> 
+> Acked-by: Tejun Heo <tj@kernel.org>
+> Reviewed-by: Andrea Righi <arighi@nvidia.com>
+> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> ---
+>  kernel/sched/debug.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+> index 6cf9be6eea49a..e71f6618c1a6a 100644
+> --- a/kernel/sched/debug.c
+> +++ b/kernel/sched/debug.c
+> @@ -354,6 +354,8 @@ static ssize_t sched_fair_server_write(struct file *filp, const char __user *ubu
+>  		return err;
+>  
+>  	scoped_guard (rq_lock_irqsave, rq) {
+> +		bool is_active;
+> +
+>  		runtime  = rq->fair_server.dl_runtime;
+>  		period = rq->fair_server.dl_period;
+>  
+> @@ -376,8 +378,11 @@ static ssize_t sched_fair_server_write(struct file *filp, const char __user *ubu
+>  			return  -EINVAL;
+>  		}
+>  
+> -		update_rq_clock(rq);
+> -		dl_server_stop(&rq->fair_server);
+> +		is_active = dl_server_active(&rq->fair_server);
+> +		if (is_active) {
+> +			update_rq_clock(rq);
+> +			dl_server_stop(&rq->fair_server);
+> +		}
 
-And today I also learned about the "next" branch of the pahole repo.
-The "master" branch was too old to generate kfunc header for a kfunc
-compiled with a .cold part (namely, bpf_dynptr_slice).
+Won't this reintroduce what bb4700adc3abe ("sched/deadline: Always stop
+dl-server before changing parameters") fixed?
 
-As the "old pahole" thing happens to so many people, maybe there is
-a way to in-source it into kernel?..
+Thanks,
+Juri
+
 
