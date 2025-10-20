@@ -1,130 +1,151 @@
-Return-Path: <bpf+bounces-71357-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71358-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79D56BEFA5B
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 09:19:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2020BBEFBF6
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 09:55:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 357B64EEC9B
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 07:17:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3E5F3E133C
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 07:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064452D877A;
-	Mon, 20 Oct 2025 07:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AFA52E22A7;
+	Mon, 20 Oct 2025 07:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JL9o6iWm"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="BTIkRn1f"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98D81C3306
-	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 07:17:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98ED2E1F02;
+	Mon, 20 Oct 2025 07:54:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760944630; cv=none; b=BlYM5sHpImaDA4eUbRA0CY3VhFA3V36OU9Mh7n7RSkFc7z/crQujPjioa4OitMwXcBZHvB54rZcI+i8yJvHBC19uZRIxTSFsSs7ceqS56VKQ4ZMvW1ZQqwpLVKzHGWQBww+uXrtSV9EtgglhEA7yY84gM47DwWGDMMeDG+ZOSUI=
+	t=1760946897; cv=none; b=aF+IbTVG1kmSwMS3JKJUO5mlJUHiYQig7TIDuchkhmyDJM77p27sL9rMQRMWEDOzebeKz7gZaQoF5IriyHYrUocE9FGeiCCeJjOnpIXBYmcSy2hXf4i/t78nJvpocHa39TCcvvPdIgXuWZDc+Qd9scmMXSVy04cj+S5Fszz/4Jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760944630; c=relaxed/simple;
-	bh=VX98mlxtPYjH7uHi14fcU0Y9W2rCrcBlo0la6pmre5Q=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EqQrwlomTmLwUEm+wC3bKVDdzoRfHmKX01taFRUNwKeYjl32pJv4p6fjQherEA7hRSkf6jqqPYWE73LsknHx6raHsEOYhejlmeF1Oe5AGQVPSFmhtNPvST8iBsaez3raDUMmuRuGwIJeJV2SeESPAbmxKRqqUrenre21lQIri3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JL9o6iWm; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-47118259fd8so21322485e9.3
-        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 00:17:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760944626; x=1761549426; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qGeDgH+006nMBZO+STd4+dGyA3p+13YdnkLcw3+y6Rs=;
-        b=JL9o6iWm6ykjhViMNoTvGjBheQVWEShRJIWdkxoc/3LhealsZ1UU6dgmfDbp7jauXW
-         lpX1IpwhGum5uNVApRh4AvxEpmrV9nlFhS91LD0EcGiHsTZ0xImp0RaiQSSOrnJidTPF
-         wFbSMJHc9tqkHozoK46EH0rowgIHJ6kf6om2xzoZjN16ZN0DeAaCmX8ab94YtmuI22tI
-         3DcsWPKOf7Q+DOrI3/OsBTrbRMXWYpT2pNhBR+5dS/gxxX9pLyay7dv3f+dzAasBDtQk
-         zdPTbMosbK5i8bTqyTFa5qBRMGbQO0bGcu4BThmdraYGNjyLqwldX4pPpsrwNJOPiyo1
-         3PiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760944626; x=1761549426;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qGeDgH+006nMBZO+STd4+dGyA3p+13YdnkLcw3+y6Rs=;
-        b=PiaN/PxbnpdReBUrwaBEEHKlpZtxkCi6OnEPheL1QHihxExyDy3TDp0BgZ6azMvaeU
-         2YMpIVCvup/sP3esnjhSyDBEtTH4+8WhAMBN7q/DgWLtNaoxH7CMhGouHG72qTT+ck9K
-         5OUnNCp8Nz5x0GEHOu0TITpmOIX9nkSBBLK+rscOBSGAgTP9+83I38sdK3NpCxCnU9tZ
-         DY1fc3i2gfRXp+nt3ltuz2yRVoicjWQP4rukb+Y33NMhytlHRCDjxLlIiukY7ckYMFev
-         nhdO8FEjapBK9QIyztN7GmV0vrGVMLr4qlVmVhdJCLzSif5MGcOS4StVfAt3r3U20YCQ
-         sGFw==
-X-Gm-Message-State: AOJu0YykdNvovXmAwiBp+Js/Xr4aX/8sJYeoHpVbeUWWDIWOIBjiB7nE
-	zKCDmCaVsCzCn0XlMLX8+2QyGe0OgvnaqLx2Z2ot4pvI+P/ihAmI3rKIbat46w==
-X-Gm-Gg: ASbGncvu+DH33uy4YK5jwLNotEuayHOYTyVJJri+m1T2CW3XeAt1V5zO3vBaxpaz74S
-	jB79R6sgtBBV+OnNKzAm8ppexU4cxPT7iVlb0nH4GfdthxwroYygRo5vznGV90UYBjn9TsEkrRa
-	tE/l/i/2ou4ShjjAES09xKo3MruqRXvqcGO27gVvaRNRYENN71K09GY/P6ML2FM1ia7exzfY598
-	mg6sblIgygWEP0RH/+xuZTVZHWP+c2e63A32IuYYB81I3uVNpA/wNdQnMIn7X049VAzKESrQO+B
-	/MclBzrtKh4hfzy2fCNvq3x5h98W7bKPzodMf+dto6pZzQf1KmlvMZAHoR9vFTXQWFpk/cl13Oy
-	TSYS3ZDGAZk3pAe4CMp1S1zb10nva7OhdPp8vcbmFN6jcujtFofi/GndzNYyptbgE/DCjpYk9Uz
-	j7TWuKJeQK+AymkbgDKpsn
-X-Google-Smtp-Source: AGHT+IHCqu/FMlKsBy5PujdUoOM5euAkp+HjAqCActyQIp4PAfiDc5AfsA0/OnbcR1+hGsMfq66tyQ==
-X-Received: by 2002:a05:600c:3e8f:b0:46f:a95d:e9e7 with SMTP id 5b1f17b1804b1-471177ab11dmr90834745e9.0.1760944625651;
-        Mon, 20 Oct 2025 00:17:05 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-471144c831asm209053675e9.13.2025.10.20.00.17.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Oct 2025 00:17:05 -0700 (PDT)
-Date: Mon, 20 Oct 2025 07:23:30 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH v6 bpf-next 10/17] bpf, x86: add support for indirect
- jumps
-Message-ID: <aPXjcpoDmWAvY3yw@mail.gmail.com>
-References: <20251019202145.3944697-1-a.s.protopopov@gmail.com>
- <20251019202145.3944697-11-a.s.protopopov@gmail.com>
+	s=arc-20240116; t=1760946897; c=relaxed/simple;
+	bh=I5jCuepJI3vrBvT25Ra6E0AMw9dK+4snMIFbHEyu6Fk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TnO7kfziYC/PrEcH+PPQFk3LM5kwl60Grw5BJekVr6iPw0bAAYCYCEm1ZAqcBezQJpgFV0rWTbfn0+Ha8L3Q3xcJCRjf3cNdDvViZ5TLbKZa5OrJag4rb1oJ0TKiWXmz+s6U2BgnI9FmOX4SaDYr0QNzS/dyjr1ajxOyWOaTBVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=BTIkRn1f; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=1jRErsjafOp2xqxe194vdLdVYDDtMtkVjrDYsKvGIbo=; b=BTIkRn1f0TazF+WECcO+mZejxM
+	YJjEuNo/NtQljql4Dc+cNxegqUDJ1DT4uHBf40n3OAQmd17iDh+qrWP95RGu9E4hObejt9GdBdfgf
+	aqOIHpoqzjG34c3DrLwt1i+n3lpLsXmMx7v20b7hsJc1vH4yjI3RW8a3tRbaNNceAXKy/rZr7nmbo
+	n6OsY4RR3t9nnav2KFp9HzOgv4eByMejGEvI2epGayC49kq8fwZ5+G2XlkwEblRYXbZQPXX44Qwtr
+	601GCQHmWxqe/z9i6IxAU7d7vivd+fo061SDt4OAdE86+QiC1LqdYzyZyAPq4+nZj57/r6I6YMR4q
+	4sw+gCRw==;
+Received: from localhost ([127.0.0.1])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1vAkj4-0005ZV-1Q;
+	Mon, 20 Oct 2025 09:54:42 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: martin.lau@linux.dev
+Cc: kuba@kernel.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Yinhao Hu <dddddd@hust.edu.cn>,
+	Kaiyan Mei <M202472210@hust.edu.cn>,
+	Dongliang Mu <dzm91@hust.edu.cn>,
+	Willem de Bruijn <willemb@google.com>,
+	Stanislav Fomichev <sdf@fomichev.me>
+Subject: [PATCH bpf] bpf: Do not let BPF test infra emit invalid GSO types to stack
+Date: Mon, 20 Oct 2025 09:54:41 +0200
+Message-ID: <20251020075441.127980-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251019202145.3944697-11-a.s.protopopov@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: Clear (ClamAV 1.0.9/27797/Sun Oct 19 11:52:26 2025)
 
-On 25/10/19 08:21PM, Anton Protopopov wrote:
-> Add support for a new instruction
-> 
->     BPF_JMP|BPF_X|BPF_JA, SRC=0, DST=Rx, off=0, imm=0
->
-> [...]
->
-> +static struct bpf_iarray *
-> +create_jt(int t, struct bpf_verifier_env *env, int fd)
-> +{
-> +	static struct bpf_subprog_info *subprog;
-> +	int subprog_start, subprog_end;
-> +	struct bpf_iarray *jt;
-> +	int i;
-> +
-> +	subprog = bpf_find_containing_subprog(env, t);
-> +	subprog_start = subprog->start;
-> +	subprog_end = (subprog + 1)->start;
-> +	jt = jt_from_subprog(env, subprog_start, subprog_end);
-> +	if (IS_ERR(jt))
-> +		return jt;
-> +
-> +	/* Check that the every element of the jump table fits within the given subprogram */
-> +	for (i = 0; i < jt->cnt; i++) {
-> +		if (jt->items[i] < subprog_start || jt->items[i] >= subprog_end) {
-> +			verbose(env, "jump table for insn %d points outside of the subprog [%u,%u]",
-> +					t, subprog_start, subprog_end);
-> +			return ERR_PTR(-EINVAL);
+Yinhao et al. reported that their fuzzer tool was able to trigger a
+skb_warn_bad_offload() from netif_skb_features() -> gso_features_check().
+When a BPF program - triggered via BPF test infra - pushes the packet
+to the loopback device via bpf_clone_redirect() then mentioned offload
+warning can be seen. GSO-related features are then rightfully disabled.
 
-AI found a bug here: jt should have been freed in this error path.
-Will fix in the next version.
+We get into this situation due to convert___skb_to_skb() setting
+gso_segs and gso_size but not gso_type. Technically, it makes sense
+that this warning triggers since the GSO properties are malformed due
+to the gso_type. Potentially, the gso_type could be marked non-trustworthy
+through setting it at least to SKB_GSO_DODGY without any other specific
+assumptions, but that also feels wrong given we should not go further
+into the GSO engine in the first place.
+
+The checks were added in 121d57af308d ("gso: validate gso_type in GSO
+handlers") because there were malicious (syzbot) senders that combine
+a protocol with a non-matching gso_type. If we would want to drop such
+packets, gso_features_check() currently only returns feature flags via
+netif_skb_features(), so one location for potentially dropping such skbs
+could be validate_xmit_unreadable_skb(), but then otoh it would be
+an additional check in the fast-path for a very corner case. Given
+bpf_clone_redirect() is the only place where BPF test infra could emit
+such packets, lets reject them right there.
+
+Fixes: 850a88cc4096 ("bpf: Expose __sk_buff wire_len/gso_segs to BPF_PROG_TEST_RUN")
+Fixes: cf62089b0edd ("bpf: Add gso_size to __sk_buff")
+Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
+Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
+Reported-by: Dongliang Mu <dzm91@hust.edu.cn>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Stanislav Fomichev <sdf@fomichev.me>
+---
+ [ bpf-next would be fine as well imho since its mainly about muting
+   the skb_warn_bad_offload warning. The Fixes tags are mainly for
+   reference / historic context. ]
+
+ net/bpf/test_run.c | 5 +++++
+ net/core/filter.c  | 7 +++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 1782e83de2cb..983b9ee1164b 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -950,6 +950,11 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+ 
+ 	if (__skb->gso_segs > GSO_MAX_SEGS)
+ 		return -EINVAL;
++
++	/* Currently GSO type is zero/unset. If this gets extended with
++	 * a small list of accepted GSO types in future, the filter for
++	 * an unset GSO type in bpf_clone_redirect() can be lifted.
++	 */
+ 	skb_shinfo(skb)->gso_segs = __skb->gso_segs;
+ 	skb_shinfo(skb)->gso_size = __skb->gso_size;
+ 	skb_shinfo(skb)->hwtstamps.hwtstamp = __skb->hwtstamp;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 76628df1fc82..9d67a34a6650 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2458,6 +2458,13 @@ BPF_CALL_3(bpf_clone_redirect, struct sk_buff *, skb, u32, ifindex, u64, flags)
+ 	if (unlikely(flags & (~(BPF_F_INGRESS) | BPF_F_REDIRECT_INTERNAL)))
+ 		return -EINVAL;
+ 
++	/* BPF test infra's convert___skb_to_skb() can create type-less
++	 * GSO packets. gso_features_check() will detect this as a bad
++	 * offload. However, lets not leak them out in the first place.
++	 */
++	if (unlikely(skb_is_gso(skb) && !skb_shinfo(skb)->gso_type))
++		return -EBADMSG;
++
+ 	dev = dev_get_by_index_rcu(dev_net(skb->dev), ifindex);
+ 	if (unlikely(!dev))
+ 		return -EINVAL;
+-- 
+2.43.0
+
 
