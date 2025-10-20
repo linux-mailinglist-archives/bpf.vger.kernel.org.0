@@ -1,139 +1,139 @@
-Return-Path: <bpf+bounces-71373-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71372-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3B95BF014C
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 11:05:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABB5CBF0119
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 11:00:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EAEEB4F08E5
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 09:04:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 564603B0D01
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 09:00:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431762ED14C;
-	Mon, 20 Oct 2025 09:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE522D0637;
+	Mon, 20 Oct 2025 09:00:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gGXCH/MV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OUkqiCBL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1072E8B75
-	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 09:04:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A142ECEA8
+	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 09:00:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760951094; cv=none; b=Hzad/ULk36pXbR0141u0Lmlsob59y7BBofQXJbhLero4cer92Pp/bQQS1qw5PlpNE/Ok2O5a/pHi8qXWBS6xa/woCoDhT/zErmOrOnu0Gr8odfOZQM0gAiso262j/iwW7Sl7huZN3HHJsAjkUETw5l9JOw/YVKtits/4iEUQcz0=
+	t=1760950817; cv=none; b=nvhRMlKH10ET+TwWyyVg77zVtmqfa+GaHPQ3WkPqFGFB5daeSiUgIcF5U7vjRk0ACO8B/fJdk7hQjOhMBACdapn2XwS4+kQMYsgnB+2z5d+2BzJJD9Wt/a+IjM7g3K0RVNnBnbWwdPyJz3ybuZdvdbfXfD5CtEFXzmQL3Dd0JA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760951094; c=relaxed/simple;
-	bh=rNa7mky+fCbxF54R6TCait+kuOtgvYJLoIoIYKwBB4M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gcOgXwHBfZKvlTJqBJkQRv20UhrDV9qjZy+cNujKrnCZwlXMg9UxOKES20RmI94sCYYtPsn7s3qGgtmmbyXLvATwh1jnMDwSymuyS2o+DkNfHsdW+ITNxLwnsLSeJDOXjIdMKrgAagunkWl1vNXjbYHv0dqYFiplvKSzvJ6oFRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gGXCH/MV; arc=none smtp.client-ip=209.85.166.176
+	s=arc-20240116; t=1760950817; c=relaxed/simple;
+	bh=zvaY8lf7qWqGy0iOB/oaVzQo+PIYm5LFANizKettLc4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RivS2HzNPJcw9yPwfSeWItS9eLPRGQ1/64NvTmgmj5Knpke7aPfU+r519NtUgowL1hcyDPPIq39opr2jtushAs80EAYuwRT6M6jgsRkY4igvJ4A2y68lGuJWkkofPbaNC1HReUYrTnU+7Oi3pWGeru9UO1gbyhj2bxTY+mAgCOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OUkqiCBL; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-430e6ac6bccso881795ab.0
-        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 02:04:53 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47112edf9f7so16397335e9.0
+        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 02:00:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760951092; x=1761555892; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rNa7mky+fCbxF54R6TCait+kuOtgvYJLoIoIYKwBB4M=;
-        b=gGXCH/MVJX+klLHX7w2AOlOFKi+QT0op/HDVYGaCwoRJHuRBwWon4OahSGZbDDNa6H
-         YCyQxQUPgFzX5ADFjsu9FxXcTNB7B/Wh3wCh6ab54CZVikB/162zSUtlYRpycaphTfnR
-         kEBrrIK6oMRhmf9M1h7/8mAFOuCdMGvsNhOuo3uIl9hK9ftno2JxTOjfhxDXExGGx8To
-         4NYxHVZTbvO8BSmtWdGJtS/zn0y0Az99HP7AB6hHC643XXMN3L3OrDWEdZTzGYwUJ5Qj
-         mDbXrvGhCjgRUhNX7bf/sM3ef6zjOTXt5a8i0oyxPVRDVzum/uNJ8c/+LLgldssl1C0X
-         HmWg==
+        d=gmail.com; s=20230601; t=1760950813; x=1761555613; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nR9vTvm7ILndkvrr9eMtht4nb0L6F+CVXBeLHtxdVM8=;
+        b=OUkqiCBL7w99OG2SMqmSnOLPeJ8DsUsS04H59f9ivKwAPjvGUW+4K6TX8TX9oflqa2
+         rsx2P1qKuJshMempdpZWnGdXtz4HhwrdH/uNyj0LS7INqvYjVQ1Nkr+mDeMkBiIAg9Fd
+         qIBPmMZ5XUiyh1incStnYDRAiF64peSBihJk8zwNNo/2+tSkTLlQT750QDIg9wrq3DrP
+         WAvXoJOW3o20sp04cnn85qQcnZiYJSwoh63eeqKaxVvYfD1wfJhr0R1kTGq0VVpYIbHs
+         lVLxQ9RnGizaduNRZRCaCiX8AKJPa7+DPmSixO5qF6gtKWL9muMbU9x2bvhGnXeiDy+V
+         XEUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760951092; x=1761555892;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rNa7mky+fCbxF54R6TCait+kuOtgvYJLoIoIYKwBB4M=;
-        b=DZTm/uGnx0E/hSHSasJTiYYBHKuCFEtUhJFAFyX0t/5fJEdk540KuJ7+nvkriRN6aF
-         rmvqYe4JtxcTIvDkXxGeSHaWo4FEz0nSCzW1qKKQ2IYMwTxbeJTpHO1j9Ws4JeMePhQu
-         iTEsUk6xjqMSkQulce+luAjeOGmJxIeNoCE088llfJ3/Lvsfb/b8/J1BCzDOqiT2HolY
-         Dn70aDrkDi96kpSAXZIPSoD0UvLEhruWaOAt7MGn8wqsyMU3t7akpo1GZbgns43lhPBt
-         oCTuQrrT2hkpdHgIemR6IqLPou0oAEYVfjuqU4ovT8rjI1625zSofmLf0gCQxLnN/uL7
-         ZbtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVwMPYmLfJZtx75XPrxTCx/ow0hJa1lQTpWIqPz9b4cgoL8Lp4aELxwXe3sC3BRXRFhsoE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwtP/AwBG017/kTG3zzIdNUajwht5jcWg2cMjDTlhElxcGrWSXM
-	1vHY4QrI68VkxchgDtHs5dTmO1Fvh18GMDS1h4tty5CsKpNFFnhKTInLs1xosLbyn8rbJn/oWNO
-	KKuPrQXrS5VROs7owF2FWQvvP+06NnBU=
-X-Gm-Gg: ASbGncu93O7B5Z15zcrZK+qPoTXkZytfLxWEclEixuvoKYUHMS2QK6MGkXcDYlVO4fU
-	Jw5JQ00zi6iya+ouCtxr74TArwQnAeLtwZKLkGotanw8v5YA/SvOEDYAD0QdA9kdC03RT/PuXvx
-	A0QTS2R+WfFOUxQKvAJoHTcA3sVlO7IqC6yMHy3CemB/1XMCVdTDG7WY2LH3U4M9rrOEHZ4zQsv
-	1934whMMifmXKKPyRWf1Hd9H2zZbuXQcsUxDpzfdHfzejbUU1+xToIp9ZeZ6om2kH0W0A==
-X-Google-Smtp-Source: AGHT+IHbFxABKJdkDFpndZrcm7O7RnmRKOWKdGfXP7hCauaGvoUYhf0iRfQUQ1Hid0h6Ka1JTIJ3bvujdm4aDeqRvNE=
-X-Received: by 2002:a05:6e02:2301:b0:424:805a:be98 with SMTP id
- e9e14a558f8ab-430c52e5b7amr147501405ab.9.1760951092478; Mon, 20 Oct 2025
- 02:04:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1760950813; x=1761555613;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nR9vTvm7ILndkvrr9eMtht4nb0L6F+CVXBeLHtxdVM8=;
+        b=Pm/SwVrLDC74ZQpv+LC+mjuuqSk4SDzJ1J5oOW0eoUskp0ZK2Y72vqAuqcLXTkBxJP
+         elnZkdvY0UwymW8fiURDbqvz+CG0itz+whABg8+/O1cyyuexznsuvmHjM5cFti10Hxzt
+         1BC/UFnorhWWvKohhS7EgzmSIJy2VtEEQrG1+h/NAeHHnJahvkvlCDjWNGlGQFsY2ggY
+         t4ow3G/NVA4BhfYy2ujZM0SeSLsfQbCT4oM0zqagKcinM5xn01geLSkWmZqXeZ5mMj4g
+         KFZ4h5ZA0Qahh/GpaBgwGHkl6ODKp33LeFVCyoITlM3ZsqdB9X48l80BQiCAc8+77Qxp
+         fk1w==
+X-Gm-Message-State: AOJu0YzN1TeVUFzTPKbmVATs42/DHJG3eNkrAApLXcVBij0UqOwfQNDg
+	HfDf0K7bDXxR2RyWMFkf7E9gfbFWA0OvMj8mznouGQfe9ytxS+LEf6+5
+X-Gm-Gg: ASbGncs3znEPBNBY865DSVtLqoHBvKQqPoIhSNdyvce2cpy9XlYRnPYIs8lR5GRqONF
+	rIibDPZzHaOchw/w1VYVXWBEDdXsZRtN3pqkWKRFzzd3EbPfNL916yx3kZDIfMt9yRyrupU2YRl
+	oWGZIEbN6xNGHW0oZFadzEDU5aT87Fd8PUkBPG89jqCQGowXfpya0lyhNRHAdY02ImAHqmaA13P
+	wQXyz0GprIb5sWhQHrsRkTC8OlvBGYzsyTfBFqrWDS9+Sk23JU14lhKyTGj/W4zftvWt4YFtr+y
+	2wdhbIBRz6YDOiDG206u2Xw1embhtPQ9p1SkJkqpUz+KvNK0PBTOZ/iTo13LSh34U3tFkmk1djv
+	IJdQh1zdGIE9JJTwtR+CTPEhp4Kg/6TLtUQCvNBVjgr3V0YJaXF7dpcHW2CM33WmlI+gHO+33JT
+	3vC3vvqTRKLq45xw0T2VNBg/iRSFmQsaI=
+X-Google-Smtp-Source: AGHT+IEv32CHHsaMz29Mey6R5r03clG9N54tobJc2ra9qYSg6/JIiCF+jpuXcA0/8HjP7dpq7ngnDw==
+X-Received: by 2002:a05:600c:8b0d:b0:46e:39e1:fc27 with SMTP id 5b1f17b1804b1-4711787442amr89749505e9.5.1760950812794;
+        Mon, 20 Oct 2025 02:00:12 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4710cd833ebsm107387605e9.3.2025.10.20.02.00.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Oct 2025 02:00:12 -0700 (PDT)
+Date: Mon, 20 Oct 2025 09:06:37 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Puranjay Mohan <puranjay@kernel.org>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix build with new LLVM
+Message-ID: <aPX7nYh09CPlFgra@mail.gmail.com>
+References: <20250918093606.454541-1-a.s.protopopov@gmail.com>
+ <CAADnVQLso776xFQTzPFahmV=JbE3Ca8jQ7UdPuMChjJAK_echg@mail.gmail.com>
+ <aMwy+pt+Rg1eNr0z@mail.gmail.com>
+ <CAADnVQ+2ic2gWyvqp4qFCwZpKqV+7BDnovL08Jp0tFSaC4pm9g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0435b904-f44f-48f8-afb0-68868474bf1c@nop.hu> <CAL+tcoA5qDAcnZpmULsnD=X6aVP-ztRxPv5z1OSP-nvtNEk+-w@mail.gmail.com>
- <643fbe8f-ba76-49b4-9fb7-403535fd5638@nop.hu>
-In-Reply-To: <643fbe8f-ba76-49b4-9fb7-403535fd5638@nop.hu>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Mon, 20 Oct 2025 17:04:15 +0800
-X-Gm-Features: AS18NWBmrX7pR-mzd1Ln7XLxaYpf0oT45HFNjpnxO9GjY_1QR-DL_G4ECdDzS2M
-Message-ID: <CAL+tcoDqgQbs20xV34RFWDoE5YPXS-ne3FBns2n9t4eggx8LAQ@mail.gmail.com>
-Subject: Re: null pointer dereference in interrupt after receiving an ip
- packet on veth from xsk from user space
-To: mc36 <csmate@nop.hu>
-Cc: Jonathan Lemon <jonathan.lemon@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Magnus Karlsson <magnus.karlsson@intel.com>, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 1118437@bugs.debian.org, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ+2ic2gWyvqp4qFCwZpKqV+7BDnovL08Jp0tFSaC4pm9g@mail.gmail.com>
 
-On Mon, Oct 20, 2025 at 4:55=E2=80=AFPM mc36 <csmate@nop.hu> wrote:
->
-> hi,
->
-> On 10/20/25 08:41, Jason Xing wrote:
-> > Hi,
+On 25/09/18 09:26AM, Alexei Starovoitov wrote:
+> On Thu, Sep 18, 2025 at 9:21 AM Anton Protopopov
+> <a.s.protopopov@gmail.com> wrote:
 > >
-> >> this happens 10/10 on host or in qemu-system-x86_64-kvm running 6.16.1=
-2 or 6.17.2...
+> > On 25/09/18 08:02AM, Alexei Starovoitov wrote:
+> > > On Thu, Sep 18, 2025 at 2:30 AM Anton Protopopov
+> > > <a.s.protopopov@gmail.com> wrote:
+> > > >
+> > > > The progs/stream.c BPF program now uses arena helpers, so it includes
+> > > > bpf_arena_common.h, which conflicts with the declarations generated
+> > > > in vmlinux.h. This leads to the following build errors with the recent
+> > > > LLVM:
+> > > >
+> > > >     In file included from progs/stream.c:8:
+> > > >     .../tools/testing/selftests/bpf/bpf_arena_common.h:47:15: error: conflicting types for 'bpf_arena_alloc_pages'
+> > > >        47 | void __arena* bpf_arena_alloc_pages(void *map, void __arena *addr, __u32 page_cnt,
+> > > >           |               ^
+> > > >     .../tools/testing/selftests/bpf/tools/include/vmlinux.h:229284:14: note: previous declaration is here
+> > > >      229284 | extern void *bpf_arena_alloc_pages(void *p__map, void *addr__ign, u32 page_cnt, int node_id, u64 flags) __weak __ksym;
+> > > >             |              ^
+> > > >
+> > > >     ... etc
+> > >
+> > > I suspect you're using old pahole.
+> > > New one can transfer __arena tags into vmlinux.h
 > >
-> > Thanks for the report.
-> >
-> > I'm wondering if you have time to bisect which recent commit has
-> > brought this problem. It looks like it never happens before 6.16?
-> >
->
-> and now confirming that 6.16.7 survives the reproducer code and 6.16.8 cr=
-ashes...
->
-> below is the decoded and raw 6.17 trace... regarding the exact commit has=
-h, i
->
-> would leave the chance for someone with much more resources than i have a=
-t hand....
+> > Ok, TIL about CONFIG_PAHOLE_VERSION (before I've sent the patch,
+> > I've updated the pahole, re-built the kernel, but didn't do `make
+> > oldconfig` after updating pahole.)
+> 
+> Yeah. It's a footgun that few people are aware of :(
+> I was bitten by it too.
+> We have a small section about pahole in bpf_devel_QA.rst.
+> We should probably expand it and list the common issues and how to fix them.
+> Every week somebody sends a patch due to old pahole :(
 
-Thanks for working on this.
+And today I also learned about the "next" branch of the pahole repo.
+The "master" branch was too old to generate kfunc header for a kfunc
+compiled with a .cold part (namely, bpf_dynptr_slice).
 
-Strange thing is that I didn't manage to see the crash on 6.16.0-rc6,
-6.17.0-rc3 or 6.18.0-rc1 that is the latest. I feel that your
-environment is hugely different from mine.
-
-I followed your steps you attached in your code:
-////// gcc xskInt.c -lxdp
-////// sudo ip link add veth1 type veth
-////// sudo ip link set veth0 up
-////// sudo ip link set veth1 up
-////// sudo ./a.out
-
-The version of libxdp that I use is 1.4.2, BTW.
-
-Could you share me with your .config? I'm not sure if I missed something.
-
-Thanks,
-Jason
+As the "old pahole" thing happens to so many people, maybe there is
+a way to in-source it into kernel?..
 
