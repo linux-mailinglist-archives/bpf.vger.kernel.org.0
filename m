@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-71422-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71432-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B00E4BF2686
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 18:26:35 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60342BF2841
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 18:50:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 900AE18A7E71
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 16:25:59 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3C5E64E1217
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 16:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C5162BE036;
-	Mon, 20 Oct 2025 16:24:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13F732F751;
+	Mon, 20 Oct 2025 16:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="ctZ6xT7J"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="mO3NbAYT"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E145C296159;
-	Mon, 20 Oct 2025 16:24:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9505B27703E;
+	Mon, 20 Oct 2025 16:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760977464; cv=none; b=O8H4G4NHEOhVE3jmCELS4L6YUfHEPEG/fZaOuDL5xLU2j8foA7JYQKnuIGfFJr+1tVNyoP8w+ng84/kV7traKYhLnE7zSFbAC3wLca1fe5OlAC01KX8l0eQ8jxSUbpI8/TFctH3vifT/jk9OE2i/eiTDlL6k6Q3LMOsmgePtxDs=
+	t=1760979010; cv=none; b=eBxetxAmVd8bJXcfegv1NsxnYg79gS41CBhkYxhsspT+3HahHvmtJg3ToOTps36Bq9NBg0fcjdwRFCfTlsbNaa1xZhmQHyvXMciUcnfqRcwW9lBS0O2xzLLIa3eJJ4oJT+iemk+ROmILr0H/psCWDXdOLPkp2GEzHLsOxkDg5yU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760977464; c=relaxed/simple;
-	bh=4KlQgj+DLiOQIwLN5XTRdpWwMGdGKfB0pUZWbzQeYUM=;
+	s=arc-20240116; t=1760979010; c=relaxed/simple;
+	bh=axwVNn1oOq7aYY/njrM8gm+AldkSN2aMLhjOiqGEzx8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qyLkHstm5s+AKcopAZHhSW3FopxUBFqERvs0fuJ857s1R349rw89W44fjT0BAcjJx7xlKMJkQuLio/eFkyyGjp4hMnUqrUkvvK2FuuRD3TiPXbo4+JpmGUscKCxnKUZiDVXoRnTGeco/gg4HzJW3r35TqzDkSNKN5Ow7O6wIouQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=ctZ6xT7J; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=TR/iRxR/0nLVM0iP0GTf8E/CdhRPTr4/zeU6j2xG/LICKej6ug4PBnFsc/ZFAtiPmEc19pe5BJ46zc8q61alb5b/bokucQVq9K1sMw4d7KeKQmLtvJJwn5BYCHdKj9ZsWWVeZdQmK3OSQHFLx7cLo6+yVCCDOP5Ck21cPon5BB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=mO3NbAYT; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,18 +36,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=XiGP8f3g9vVj9cBrvrA+o8ajrH9d7uAxQXSyy9tGfYg=; b=ctZ6xT7J+xa61iG0SnogqA47AG
-	ZpVOIJOdLchFxb/6x3kpM/RWYIN/zpPwxMBCZEFbTksQdcLgYtnABNAJz0HPwpPXJmMjhPXI7kNmI
-	gB00pT5Ke3iOc339Z9fipu6rY6wUpl028UPpL2isI0Fyb0dlFjWnNE3XdLyc/lJ2Cl3phdxrgh14h
-	t494PposEx0oftadC7LHpf57oBhEQPmWoZOSY0OqoVkgJn5I4UWTKLg02rdjTqNEGp0EVOmgZfgpq
-	EPbqjuzGhaxoxZX+7qqMQr7h6PviN4JXezcezJ+MEBvuZjcsHaNQCTIaDwF+x+Slo9+RId0vrAthr
-	o5SfKjzQ==;
+	bh=y+huL+OUGieSvs5Htmq/aYctGsslyBgrFzo+aTvSJL0=; b=mO3NbAYTD7T7kkl2891FC5D+qC
+	XZJbrtJhofnFWN7/lVCStA+UGXtXHCzouzUPuMA87vV4ip4AlbbT/kCFGs09FeuioLsgDQCHUtfb8
+	yKnDZ7dOAdCl4G4AMsto5/WOkli/7TxFG/sKFdxdACwNHt8zP0iUouzqYc+WH4d+OuytPXpkmm3kQ
+	kHD4TTf/6UJ6uCQpDlE6WQPCF9bvyAQB7HgHba/jL+nfobVDlfN+XY/0vL1jmJDl3i2C7knVTsiF/
+	7COg4lf5jePIFOloVnCZ+ng91a7u0fTpjeeYaqkafOA/5m4X99agL4w0CJMjHj9DOQCaywjZejYia
+	T3kmcpAw==;
 Received: from localhost ([127.0.0.1])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1vAsg3-000Jl4-2s;
-	Mon, 20 Oct 2025 18:24:07 +0200
+	id 1vAsg4-000JlB-33;
+	Mon, 20 Oct 2025 18:24:08 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -66,9 +66,9 @@ Cc: bpf@vger.kernel.org,
 	toke@redhat.com,
 	yangzhenze@bytedance.com,
 	wangdongdong.6@bytedance.com
-Subject: [PATCH net-next v3 10/15] xsk: Proxy pool management for mapped queues
-Date: Mon, 20 Oct 2025 18:23:50 +0200
-Message-ID: <20251020162355.136118-11-daniel@iogearbox.net>
+Subject: [PATCH net-next v3 11/15] netkit: Add single device mode for netkit
+Date: Mon, 20 Oct 2025 18:23:51 +0200
+Message-ID: <20251020162355.136118-12-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20251020162355.136118-1-daniel@iogearbox.net>
 References: <20251020162355.136118-1-daniel@iogearbox.net>
@@ -81,146 +81,296 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: Clear (ClamAV 1.0.9/27798/Mon Oct 20 11:37:28 2025)
 
-Similarly what we do for net_mp_{open,close}_rxq for mapped queues,
-proxy also the xsk_{reg,clear}_pool_at_qid via __netif_get_rx_queue_peer
-such that when a virtual netdev picked a mapped rxq, the request gets
-through to the real rxq in the physical netdev.
+Add a single device mode for netkit instead of netkit pairs. The primary
+target for the paired devices is to connect network namespaces, of course,
+and support has been implemented in projects like Cilium [0]. For the rxq
+binding the plan is to support two main scenarios related to single device
+mode:
 
-Change the function signatures for queue_id to unsigned int in order
-to pass the queue_id parameter into __netif_get_rx_queue_peer. The
-proxying is only relevant for queue_id < dev->real_num_rx_queues since
-right now its only supported for rxqs.
+* For the use-case of io_uring zero-copy, the control plane can either
+  set up a netkit pair where the peer device can perform rxq binding which
+  is then tied to the lifetime of the peer device, or the control plane
+  can use a regular netkit pair to connect the hostns to a Pod/container
+  and dynamically add/remove rxq bindings through a single device without
+  having to interrupt the device pair. In the case of io_uring, the memory
+  pool is used as skb non-linear pages, and thus the skb will go its way
+  through the regular stack into netkit. Things like the netkit policy when
+  no BPF is attached or skb scrubbing etc apply as-is in case the paired
+  devices are used, or if the backend memory is tied to the single device
+  and traffic goes through a paired device.
+
+* For the use-case of AF_XDP, the control plane needs to use netkit in the
+  single device mode. The single device mode currently enforces only a
+  pass policy when no BPF is attached, and does not yet support BPF link
+  attachments for AF_XDP. skbs sent to that device get dropped at the
+  moment. Given AF_XDP operates at a lower layer of the stack tying this
+  to the netkit pair did not make sense. In future, the plan is to allow
+  BPF at the XDP layer which can: i) process traffic coming from the AF_XDP
+  application (e.g. QEMU with AF_XDP backend) to filter egress traffic or
+  to push selected egress traffic up to the single netkit device to the
+  local stack (e.g. DHCP requests), and ii) vice-versa skbs sent to the
+  single netkit into the AF_XDP application (e.g. DHCP replies). Also,
+  the control-plane can dynamically add/remove rxq bindings for the single
+  netkit device without having to interrupt (e.g. down/up cycle) the main
+  netkit pair for the Pod which has traffic going in and out.
 
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Co-developed-by: David Wei <dw@davidwei.uk>
 Signed-off-by: David Wei <dw@davidwei.uk>
+Reviewed-by: Jordan Rife <jordan@jrife.io>
+Link: https://docs.cilium.io/en/stable/operations/performance/tuning/#netkit-device-mode [0]
 ---
- include/net/xdp_sock_drv.h |  4 ++--
- net/xdp/xsk.c              | 33 ++++++++++++++++++++++++++++-----
- net/xdp/xsk.h              |  5 ++---
- 3 files changed, 32 insertions(+), 10 deletions(-)
+ drivers/net/netkit.c         | 108 ++++++++++++++++++++++-------------
+ include/uapi/linux/if_link.h |   6 ++
+ 2 files changed, 74 insertions(+), 40 deletions(-)
 
-diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-index 242e34f771cc..25c37fab00bc 100644
---- a/include/net/xdp_sock_drv.h
-+++ b/include/net/xdp_sock_drv.h
-@@ -29,7 +29,7 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc);
- u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, u32 max);
- void xsk_tx_release(struct xsk_buff_pool *pool);
- struct xsk_buff_pool *xsk_get_pool_from_qid(struct net_device *dev,
--					    u16 queue_id);
-+					    unsigned int queue_id);
- void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool);
- void xsk_set_tx_need_wakeup(struct xsk_buff_pool *pool);
- void xsk_clear_rx_need_wakeup(struct xsk_buff_pool *pool);
-@@ -296,7 +296,7 @@ static inline void xsk_tx_release(struct xsk_buff_pool *pool)
- }
+diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
+index 492be60f2e70..e3a2445d83fc 100644
+--- a/drivers/net/netkit.c
++++ b/drivers/net/netkit.c
+@@ -25,6 +25,7 @@ struct netkit {
  
- static inline struct xsk_buff_pool *
--xsk_get_pool_from_qid(struct net_device *dev, u16 queue_id)
-+xsk_get_pool_from_qid(struct net_device *dev, unsigned int queue_id)
- {
- 	return NULL;
- }
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 985e0cac965d..9e55ea0f5fde 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -23,6 +23,8 @@
- #include <linux/netdevice.h>
- #include <linux/rculist.h>
- #include <linux/vmalloc.h>
-+
-+#include <net/netdev_queues.h>
- #include <net/xdp_sock_drv.h>
- #include <net/busy_poll.h>
- #include <net/netdev_lock.h>
-@@ -111,7 +113,7 @@ bool xsk_uses_need_wakeup(struct xsk_buff_pool *pool)
- EXPORT_SYMBOL(xsk_uses_need_wakeup);
+ 	/* Needed in slow-path */
+ 	enum netkit_mode mode;
++	enum netkit_pairing pair;
+ 	bool primary;
+ 	u32 headroom;
+ };
+@@ -133,6 +134,10 @@ static int netkit_open(struct net_device *dev)
+ 	struct netkit *nk = netkit_priv(dev);
+ 	struct net_device *peer = rtnl_dereference(nk->peer);
  
- struct xsk_buff_pool *xsk_get_pool_from_qid(struct net_device *dev,
--					    u16 queue_id)
-+					    unsigned int queue_id)
- {
- 	if (queue_id < dev->real_num_rx_queues)
- 		return dev->_rx[queue_id].pool;
-@@ -122,12 +124,19 @@ struct xsk_buff_pool *xsk_get_pool_from_qid(struct net_device *dev,
- }
- EXPORT_SYMBOL(xsk_get_pool_from_qid);
- 
--void xsk_clear_pool_at_qid(struct net_device *dev, u16 queue_id)
-+void xsk_clear_pool_at_qid(struct net_device *dev, unsigned int queue_id)
- {
-+	bool needs_unlock = false;
-+
-+	if (queue_id < dev->real_num_rx_queues)
-+		WARN_ON_ONCE(!netif_get_rx_queue_peer_locked(&dev, &queue_id,
-+							     &needs_unlock));
- 	if (queue_id < dev->num_rx_queues)
- 		dev->_rx[queue_id].pool = NULL;
- 	if (queue_id < dev->num_tx_queues)
- 		dev->_tx[queue_id].pool = NULL;
-+	if (needs_unlock)
-+		netdev_unlock(dev);
- }
- 
- /* The buffer pool is stored both in the _rx struct and the _tx struct as we do
-@@ -135,14 +144,26 @@ void xsk_clear_pool_at_qid(struct net_device *dev, u16 queue_id)
-  * This might also change during run time.
-  */
- int xsk_reg_pool_at_qid(struct net_device *dev, struct xsk_buff_pool *pool,
--			u16 queue_id)
-+			unsigned int queue_id)
- {
-+	bool needs_unlock = false;
-+	int ret = 0;
-+
- 	if (queue_id >= max_t(unsigned int,
- 			      dev->real_num_rx_queues,
- 			      dev->real_num_tx_queues))
- 		return -EINVAL;
- 	if (xsk_get_pool_from_qid(dev, queue_id))
- 		return -EBUSY;
-+	if (queue_id < dev->real_num_rx_queues) {
-+		if (!netif_get_rx_queue_peer_locked(&dev, &queue_id,
-+						    &needs_unlock))
-+			return -EBUSY;
++	if (nk->pair == NETKIT_DEVICE_SINGLE) {
++		netif_carrier_on(dev);
++		return 0;
 +	}
-+	if (xsk_get_pool_from_qid(dev, queue_id)) {
-+		ret = -EBUSY;
-+		goto out;
+ 	if (!peer)
+ 		return -ENOTCONN;
+ 	if (peer->flags & IFF_UP) {
+@@ -333,6 +338,7 @@ static int netkit_new_link(struct net_device *dev,
+ 	enum netkit_scrub scrub_prim = NETKIT_SCRUB_DEFAULT;
+ 	enum netkit_scrub scrub_peer = NETKIT_SCRUB_DEFAULT;
+ 	struct nlattr *peer_tb[IFLA_MAX + 1], **tbp, *attr;
++	enum netkit_pairing pair = NETKIT_DEVICE_PAIR;
+ 	enum netkit_action policy_prim = NETKIT_PASS;
+ 	enum netkit_action policy_peer = NETKIT_PASS;
+ 	struct nlattr **data = params->data;
+@@ -341,7 +347,7 @@ static int netkit_new_link(struct net_device *dev,
+ 	struct nlattr **tb = params->tb;
+ 	u16 headroom = 0, tailroom = 0;
+ 	struct ifinfomsg *ifmp = NULL;
+-	struct net_device *peer;
++	struct net_device *peer = NULL;
+ 	char ifname[IFNAMSIZ];
+ 	struct netkit *nk;
+ 	int err;
+@@ -378,6 +384,8 @@ static int netkit_new_link(struct net_device *dev,
+ 			headroom = nla_get_u16(data[IFLA_NETKIT_HEADROOM]);
+ 		if (data[IFLA_NETKIT_TAILROOM])
+ 			tailroom = nla_get_u16(data[IFLA_NETKIT_TAILROOM]);
++		if (data[IFLA_NETKIT_PAIRING])
++			pair = nla_get_u32(data[IFLA_NETKIT_PAIRING]);
+ 	}
+ 
+ 	if (ifmp && tbp[IFLA_IFNAME]) {
+@@ -390,45 +398,49 @@ static int netkit_new_link(struct net_device *dev,
+ 	if (mode != NETKIT_L2 &&
+ 	    (tb[IFLA_ADDRESS] || tbp[IFLA_ADDRESS]))
+ 		return -EOPNOTSUPP;
++	if (pair == NETKIT_DEVICE_SINGLE &&
++	    (tb != tbp ||
++	     tb[IFLA_NETKIT_PEER_POLICY] ||
++	     tb[IFLA_NETKIT_PEER_SCRUB] ||
++	     policy_prim != NETKIT_PASS))
++		return -EOPNOTSUPP;
+ 
+-	peer = rtnl_create_link(peer_net, ifname, ifname_assign_type,
+-				&netkit_link_ops, tbp, extack);
+-	if (IS_ERR(peer))
+-		return PTR_ERR(peer);
+-
+-	netif_inherit_tso_max(peer, dev);
+-	if (headroom) {
+-		peer->needed_headroom = headroom;
+-		dev->needed_headroom = headroom;
+-	}
+-	if (tailroom) {
+-		peer->needed_tailroom = tailroom;
+-		dev->needed_tailroom = tailroom;
+-	}
+-
+-	if (mode == NETKIT_L2 && !(ifmp && tbp[IFLA_ADDRESS]))
+-		eth_hw_addr_random(peer);
+-	if (ifmp && dev->ifindex)
+-		peer->ifindex = ifmp->ifi_index;
+-
+-	nk = netkit_priv(peer);
+-	nk->primary = false;
+-	nk->policy = policy_peer;
+-	nk->scrub = scrub_peer;
+-	nk->mode = mode;
+-	nk->headroom = headroom;
+-	bpf_mprog_bundle_init(&nk->bundle);
++	if (pair == NETKIT_DEVICE_PAIR) {
++		peer = rtnl_create_link(peer_net, ifname, ifname_assign_type,
++					&netkit_link_ops, tbp, extack);
++		if (IS_ERR(peer))
++			return PTR_ERR(peer);
++
++		netif_inherit_tso_max(peer, dev);
++		if (headroom)
++			peer->needed_headroom = headroom;
++		if (tailroom)
++			peer->needed_tailroom = tailroom;
++		if (mode == NETKIT_L2 && !(ifmp && tbp[IFLA_ADDRESS]))
++			eth_hw_addr_random(peer);
++		if (ifmp && dev->ifindex)
++			peer->ifindex = ifmp->ifi_index;
+ 
+-	err = register_netdevice(peer);
+-	if (err < 0)
+-		goto err_register_peer;
+-	netif_carrier_off(peer);
+-	if (mode == NETKIT_L2)
+-		dev_change_flags(peer, peer->flags & ~IFF_NOARP, NULL);
++		nk = netkit_priv(peer);
++		nk->primary = false;
++		nk->policy = policy_peer;
++		nk->scrub = scrub_peer;
++		nk->mode = mode;
++		nk->pair = pair;
++		nk->headroom = headroom;
++		bpf_mprog_bundle_init(&nk->bundle);
++
++		err = register_netdevice(peer);
++		if (err < 0)
++			goto err_register_peer;
++		netif_carrier_off(peer);
++		if (mode == NETKIT_L2)
++			dev_change_flags(peer, peer->flags & ~IFF_NOARP, NULL);
+ 
+-	err = rtnl_configure_link(peer, NULL, 0, NULL);
+-	if (err < 0)
+-		goto err_configure_peer;
++		err = rtnl_configure_link(peer, NULL, 0, NULL);
++		if (err < 0)
++			goto err_configure_peer;
 +	}
  
- 	pool->netdev = dev;
- 	pool->queue_id = queue_id;
-@@ -151,8 +172,10 @@ int xsk_reg_pool_at_qid(struct net_device *dev, struct xsk_buff_pool *pool,
- 		dev->_rx[queue_id].pool = pool;
- 	if (queue_id < dev->real_num_tx_queues)
- 		dev->_tx[queue_id].pool = pool;
--
--	return 0;
-+out:
-+	if (needs_unlock)
-+		netdev_unlock(dev);
-+	return ret;
+ 	if (mode == NETKIT_L2 && !tb[IFLA_ADDRESS])
+ 		eth_hw_addr_random(dev);
+@@ -436,12 +448,17 @@ static int netkit_new_link(struct net_device *dev,
+ 		nla_strscpy(dev->name, tb[IFLA_IFNAME], IFNAMSIZ);
+ 	else
+ 		strscpy(dev->name, "nk%d", IFNAMSIZ);
++	if (headroom)
++		dev->needed_headroom = headroom;
++	if (tailroom)
++		dev->needed_tailroom = tailroom;
+ 
+ 	nk = netkit_priv(dev);
+ 	nk->primary = true;
+ 	nk->policy = policy_prim;
+ 	nk->scrub = scrub_prim;
+ 	nk->mode = mode;
++	nk->pair = pair;
+ 	nk->headroom = headroom;
+ 	bpf_mprog_bundle_init(&nk->bundle);
+ 
+@@ -453,10 +470,12 @@ static int netkit_new_link(struct net_device *dev,
+ 		dev_change_flags(dev, dev->flags & ~IFF_NOARP, NULL);
+ 
+ 	rcu_assign_pointer(netkit_priv(dev)->peer, peer);
+-	rcu_assign_pointer(netkit_priv(peer)->peer, dev);
++	if (peer)
++		rcu_assign_pointer(netkit_priv(peer)->peer, dev);
+ 	return 0;
+ err_configure_peer:
+-	unregister_netdevice(peer);
++	if (peer)
++		unregister_netdevice(peer);
+ 	return err;
+ err_register_peer:
+ 	free_netdev(peer);
+@@ -516,6 +535,8 @@ static struct net_device *netkit_dev_fetch(struct net *net, u32 ifindex, u32 whi
+ 	nk = netkit_priv(dev);
+ 	if (!nk->primary)
+ 		return ERR_PTR(-EACCES);
++	if (nk->pair == NETKIT_DEVICE_SINGLE)
++		return ERR_PTR(-EOPNOTSUPP);
+ 	if (which == BPF_NETKIT_PEER) {
+ 		dev = rcu_dereference_rtnl(nk->peer);
+ 		if (!dev)
+@@ -877,6 +898,7 @@ static int netkit_change_link(struct net_device *dev, struct nlattr *tb[],
+ 		{ IFLA_NETKIT_PEER_INFO,  "peer info" },
+ 		{ IFLA_NETKIT_HEADROOM,   "headroom" },
+ 		{ IFLA_NETKIT_TAILROOM,   "tailroom" },
++		{ IFLA_NETKIT_PAIRING,    "pairing" },
+ 	};
+ 
+ 	if (!nk->primary) {
+@@ -896,9 +918,11 @@ static int netkit_change_link(struct net_device *dev, struct nlattr *tb[],
+ 	}
+ 
+ 	if (data[IFLA_NETKIT_POLICY]) {
++		err = -EOPNOTSUPP;
+ 		attr = data[IFLA_NETKIT_POLICY];
+ 		policy = nla_get_u32(attr);
+-		err = netkit_check_policy(policy, attr, extack);
++		if (nk->pair == NETKIT_DEVICE_PAIR)
++			err = netkit_check_policy(policy, attr, extack);
+ 		if (err)
+ 			return err;
+ 		WRITE_ONCE(nk->policy, policy);
+@@ -929,6 +953,7 @@ static size_t netkit_get_size(const struct net_device *dev)
+ 	       nla_total_size(sizeof(u8))  + /* IFLA_NETKIT_PRIMARY */
+ 	       nla_total_size(sizeof(u16)) + /* IFLA_NETKIT_HEADROOM */
+ 	       nla_total_size(sizeof(u16)) + /* IFLA_NETKIT_TAILROOM */
++	       nla_total_size(sizeof(u32)) + /* IFLA_NETKIT_PAIRING */
+ 	       0;
  }
  
- static int __xsk_rcv_zc(struct xdp_sock *xs, struct xdp_buff_xsk *xskb, u32 len,
-diff --git a/net/xdp/xsk.h b/net/xdp/xsk.h
-index a4bc4749faac..54d9a7736fd2 100644
---- a/net/xdp/xsk.h
-+++ b/net/xdp/xsk.h
-@@ -41,8 +41,7 @@ static inline struct xdp_sock *xdp_sk(struct sock *sk)
+@@ -949,6 +974,8 @@ static int netkit_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 		return -EMSGSIZE;
+ 	if (nla_put_u16(skb, IFLA_NETKIT_TAILROOM, dev->needed_tailroom))
+ 		return -EMSGSIZE;
++	if (nla_put_u32(skb, IFLA_NETKIT_PAIRING, nk->pair))
++		return -EMSGSIZE;
  
- void xsk_map_try_sock_delete(struct xsk_map *map, struct xdp_sock *xs,
- 			     struct xdp_sock __rcu **map_entry);
--void xsk_clear_pool_at_qid(struct net_device *dev, u16 queue_id);
-+void xsk_clear_pool_at_qid(struct net_device *dev, unsigned int queue_id);
- int xsk_reg_pool_at_qid(struct net_device *dev, struct xsk_buff_pool *pool,
--			u16 queue_id);
--
-+			unsigned int queue_id);
- #endif /* XSK_H_ */
+ 	if (peer) {
+ 		nk = netkit_priv(peer);
+@@ -970,6 +997,7 @@ static const struct nla_policy netkit_policy[IFLA_NETKIT_MAX + 1] = {
+ 	[IFLA_NETKIT_TAILROOM]		= { .type = NLA_U16 },
+ 	[IFLA_NETKIT_SCRUB]		= NLA_POLICY_MAX(NLA_U32, NETKIT_SCRUB_DEFAULT),
+ 	[IFLA_NETKIT_PEER_SCRUB]	= NLA_POLICY_MAX(NLA_U32, NETKIT_SCRUB_DEFAULT),
++	[IFLA_NETKIT_PAIRING]		= NLA_POLICY_MAX(NLA_U32, NETKIT_DEVICE_SINGLE),
+ 	[IFLA_NETKIT_PRIMARY]		= { .type = NLA_REJECT,
+ 					    .reject_message = "Primary attribute is read-only" },
+ };
+diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+index 3b491d96e52e..bbd565757298 100644
+--- a/include/uapi/linux/if_link.h
++++ b/include/uapi/linux/if_link.h
+@@ -1296,6 +1296,11 @@ enum netkit_mode {
+ 	NETKIT_L3,
+ };
+ 
++enum netkit_pairing {
++	NETKIT_DEVICE_PAIR,
++	NETKIT_DEVICE_SINGLE,
++};
++
+ /* NETKIT_SCRUB_NONE leaves clearing skb->{mark,priority} up to
+  * the BPF program if attached. This also means the latter can
+  * consume the two fields if they were populated earlier.
+@@ -1320,6 +1325,7 @@ enum {
+ 	IFLA_NETKIT_PEER_SCRUB,
+ 	IFLA_NETKIT_HEADROOM,
+ 	IFLA_NETKIT_TAILROOM,
++	IFLA_NETKIT_PAIRING,
+ 	__IFLA_NETKIT_MAX,
+ };
+ #define IFLA_NETKIT_MAX	(__IFLA_NETKIT_MAX - 1)
 -- 
 2.43.0
 
