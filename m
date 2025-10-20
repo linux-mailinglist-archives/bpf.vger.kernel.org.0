@@ -1,85 +1,85 @@
-Return-Path: <bpf+bounces-71401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EFB0BF1BFC
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 16:11:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4B9BBF1C05
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 16:12:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 13FF44F44F3
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 14:09:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FBEC18A6D8C
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 14:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9B093176E7;
-	Mon, 20 Oct 2025 14:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF0B932142F;
+	Mon, 20 Oct 2025 14:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XBLRt8L1"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bMQ7Sj/N"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C798326E6F5
-	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 14:09:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C6A320A0B
+	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 14:12:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760969378; cv=none; b=iWM75J5Qeu6KhKr3k/Pu0f1z5Kh1S/OyVB/bn9yhbCgRKdlk4M2X2u89uB3VYBqwEWUM+NxElIUSU2SFBkvIdAOlHY5RBkqLRZUaQv8S7LqSH3bJkYj82yioy8qbfmbhGBi/KPEk5YthcWwRBi6EiBQ31LlqSKEGCS8A03Vxnt0=
+	t=1760969545; cv=none; b=lWHAtB68JiptFCX///Jel5tzGqCb/xHoawL4aKDaPkSue9Hwd/hbM13Slv0FOtjaCWFQOa/CNbyXE9RkAJ43PZzRmVKJZBUldOEskdWZ5wOZ5jLDwb473V8E4EfWg8rIyJ1z+2kBT/PGjNwXStdc4B9BB0Ze9LVn7ANF4m7aM4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760969378; c=relaxed/simple;
-	bh=j/Pp8+a9LWec1g+KxozHCqh0X+tJ57lSb9FaEKyKHjs=;
+	s=arc-20240116; t=1760969545; c=relaxed/simple;
+	bh=XTmyJMnTaGQvMndSexCb1z6HpLrVTTo7/egeZXdgM08=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=itFg+iF7AVbvs0y6pQ+KcZNtBEGsbpMTC/FuI4JSZMFmKJpciPuVeZcES0dkTVRy6K4571NfLkmvlU66umIn4AfiT8dUqC/9gX86/MvzDXeVvy5WgDwCAK0jdckIM/UtQ+sWw5ukW/d439xeEO9qjATi3cdxrnFziukmjzIiKnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XBLRt8L1; arc=none smtp.client-ip=170.10.133.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=eTgPp5eWyF47+TsyFaj/RlZD4Iu1JtEzFFwUKs/miDPJLnH0ZcygBDvxa7R5uf6gAp1GF6ufun3cgCqrfv3Bj99QrRwwP22GS+KlO9lM0BT2XdOXmxTlKSYP87TAxlIGJka1OYApU5Ea92Pk7OfNxTxCd7n8I8GXOgNlCtJRS2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bMQ7Sj/N; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1760969375;
+	s=mimecast20190719; t=1760969541;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XQFS0nziRWGUnVx3NjlDIpRK/8NuLJrpA5nzcrIPL+Y=;
-	b=XBLRt8L10oXcdUWEYbpXf0u04wx0h3ciy4LRzvDEfl3rXyovPe0orTOlOkq6+rFRU4SlXP
-	AS42ANm50+3xukApIkO4wXUDw78wVRF1FzYLYSA78cVJKn8EBeLjxm73Npr+dqVtpK3Eat
-	wPCimZcVvzp12j9y6P1FdRUEXiAhD3U=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=7m1GlhRfmho7liEla+/1yigGXVY8Z7LQaPA9s5+XnW4=;
+	b=bMQ7Sj/NW5tUjYz5vnvf6LHsVH7KYObfCxq3ktDRYe8u0dS5UYmWtSCI/gpMNm+DzgYM8T
+	fPbQd/1v7+IZiYMc4yJcGkqLnewdcWixXpm/XQez3MpKMAupyOFxO/0IaOUlAGsEIdQ2l2
+	q7l2GbZJRSrLsktT8H/mAy7yE+kgWKg=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-678-p-sLhDtCMPakZuNHBV_vJg-1; Mon, 20 Oct 2025 10:09:34 -0400
-X-MC-Unique: p-sLhDtCMPakZuNHBV_vJg-1
-X-Mimecast-MFC-AGG-ID: p-sLhDtCMPakZuNHBV_vJg_1760969373
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4710d174c31so48138465e9.0
-        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 07:09:34 -0700 (PDT)
+ us-mta-626-VY7-5pPeNx6dU4yvEWQ2ag-1; Mon, 20 Oct 2025 10:12:19 -0400
+X-MC-Unique: VY7-5pPeNx6dU4yvEWQ2ag-1
+X-Mimecast-MFC-AGG-ID: VY7-5pPeNx6dU4yvEWQ2ag_1760969539
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-46eee58d405so23319485e9.1
+        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 07:12:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760969373; x=1761574173;
+        d=1e100.net; s=20230601; t=1760969538; x=1761574338;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XQFS0nziRWGUnVx3NjlDIpRK/8NuLJrpA5nzcrIPL+Y=;
-        b=t4IqU6LgnfWZdr5ecJOdRm6iW6rokAJkhT81lYAIoqG2ModqKqjDP97BTHKuOmtzV7
-         QkHHFE/dg2qlcvPvsPcMWYeTQ9saXD1T72DS7WNB7zc89H0or9eISJ/61QkM86Y+EfBH
-         72dCbOOGjQuyqb8XD2md2PJ81ZDROQI8EMMJ1Dm24CaBoYxnKdtU1HMJxmbd3zwb2M65
-         RksAp+B3v63uJVlVe054EXkOnPjMQyz5UeE0UA6auxJX08wy6YjpaKQt3jB8avR0s7O9
-         joYrHmtelLwifque+ifsijI7/RMlH2zqzwEEmYKPOOABLhmEAJ0bGdAtgzxfvaSHg/HB
-         uwNw==
-X-Forwarded-Encrypted: i=1; AJvYcCW+xeZpOdkbtJVikWjhp+DdFnGkQ/zOZw+sbGVcEILhssr8m2BsR/9gMQmZ8Mz/vD+e4os=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCND1yf2m2TB7c19ythXevMsgFdU2Q1eUuVhdUYJY0kn/d+Q9v
-	7RUcWqdVs3moLxWaWNckjrlPOXrA6qdOWFkA1t4lRzzSj45qoNKnZRFGSlJWphjZRuXnZCTw715
-	rAx1BFyMlNxQUtVlumBN1xd1KN6PUuYQVLoMqYIy5svrTD23eU2v2OA==
-X-Gm-Gg: ASbGncsqS1iR39T6cGxkjMUIXTqvHTwdq0y2UINfC/tqyncgyvTewQyETAXf9u/ZSvi
-	h3JLjQKmbn3yz0Hknm7TJ3yQDHK5NA8YUQhSnD/rhJUkxpvWDyjqKOw0I1PUOZc7QTFwAW86dwl
-	sNrGQXaP5hSzmVPmJlOTREJ6QmgSDNblAhn2r1UEhZMlX1nCgCBc7DSchUsxIFYIFa1Fz3mJadk
-	3msYh4wuWOz2Qg2LHOEbIYuru+oDIxT6aVV6VRgCYCVO0H8kV4uc0tBTZkpYet4agxVcp7Yzf39
-	480zwMj+Wsg8JtWVe2NuPNvHXRMnnikME47xjoAUk19l3h71lPHcYkZR9jnoWhdInlv5IcNVoEd
-	9zDWv91CV7hCRBfD2ecpTK/t4I2THCA==
-X-Received: by 2002:a05:600c:3149:b0:46e:4b8b:75f2 with SMTP id 5b1f17b1804b1-471178a7ea5mr86748895e9.16.1760969373333;
-        Mon, 20 Oct 2025 07:09:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH0mn7LBjNER9gtoWif8Bgg5J8Y0egN0uHFHsLZtoAR0dq+X1zkA1a8NQOlBpYb8JH2pb5i0w==
-X-Received: by 2002:a05:600c:3149:b0:46e:4b8b:75f2 with SMTP id 5b1f17b1804b1-471178a7ea5mr86748665e9.16.1760969372894;
-        Mon, 20 Oct 2025 07:09:32 -0700 (PDT)
+        bh=7m1GlhRfmho7liEla+/1yigGXVY8Z7LQaPA9s5+XnW4=;
+        b=dxJfYScgZCfWjLrGkGdLNXOODYluaPpvRqs2T8QZMJ3cJI4CgjtJViz3kN0zyRuA7y
+         SR8sRnuIYGfbhoANXkOMvRUPsjIDfrDwt7jURouWVPqRvbDF/tJXPauGQGqEadm1TD/a
+         Q3y0mWBbwpYMoG/iYx7qSCoOo24WaOpMkz2b/Ij/YD+f40rWUScVR0WNVZtN75nRQ3rR
+         ghWuvNfxNBsmVo+JsdoIeUXOm+aSaSWMbsMWfjjSyCqNiJ+pZA1oZZaIDyeytkHY6wGy
+         4zmuANGm4S4kvZ3C+WTm4uJtfO0cDMBBouZFiX6lMUg9XBj7tRxjslDPolGNjYhxF5lq
+         ZOiA==
+X-Forwarded-Encrypted: i=1; AJvYcCWux5pNogIcCEh71wxMr5OLVfbtdpdn9D13HkS/h9c+xTCsRDgFhKJxFLLyS/o17Tf2bKo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQjyc0mlqkbtEaum2K8grbROM4gXj03WU52ckeJvPhavd8AXV4
+	JRHISYQFoSZL4T1HVdGhxxm7Wz8eno/vQH4pn5SJpim/1z4pgWNQeS/dPsD3DLFifEPBxvKHR+X
+	VuLkVn+bqYSTWR1FW/MN7Hr3XTWZg9KJJz2eYgDiA/4BjudxSW/rvBg==
+X-Gm-Gg: ASbGncvnOfxf68VjGKYwVSzkLC52PCpfP4CbnPGcUrx3OIIXUogYNdQYHRJkPGhugHt
+	lvHhOfKgUTnIfEXDfZdnRPJ96ojTvBjKiMeEUy++jyF78HegVnTsfxZL1FEME5lt2J5WavaNqyQ
+	w8MdA8xVHdhpOeSfh836mgrY9m1Se0ceM1AVOFbwOCA0aznqxQtBNp4Lnz4ZTEJBBZ/VcZNCJKi
+	mz7ORU9dDB91vWWB/amVnRIwannVaHY0RAJ3g/I/SjbgH1sklhSqzBo/0LB5ZLoZCdOiuwtLWY6
+	yKfYtsKZ7iSnkH57IAPgI9HTC4IcviCnuOxQPg/4hWyxWt37z21m8rcrAR+Av6TNowrHOvWWbbK
+	R90Yl3fgq0m7sxfkb6+mYNUam/SBqqQ==
+X-Received: by 2002:a05:600c:3b8d:b0:46d:27b7:e7e5 with SMTP id 5b1f17b1804b1-47117917572mr120146955e9.32.1760969538599;
+        Mon, 20 Oct 2025 07:12:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEUFlFwDhK5O8LnMIOdT/gwVFGKlVMOVfS2OH7HmR0uwDj9gtAHpXIdIfbbitn2vkRwOsYp+A==
+X-Received: by 2002:a05:600c:3b8d:b0:46d:27b7:e7e5 with SMTP id 5b1f17b1804b1-47117917572mr120146715e9.32.1760969538203;
+        Mon, 20 Oct 2025 07:12:18 -0700 (PDT)
 Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.131.20])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47154d38309sm149048465e9.9.2025.10.20.07.09.30
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-427f00b988dsm15921167f8f.35.2025.10.20.07.12.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Oct 2025 07:09:31 -0700 (PDT)
-Date: Mon, 20 Oct 2025 16:09:29 +0200
+        Mon, 20 Oct 2025 07:12:17 -0700 (PDT)
+Date: Mon, 20 Oct 2025 16:12:14 +0200
 From: Juri Lelli <juri.lelli@redhat.com>
 To: Andrea Righi <arighi@nvidia.com>
 Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
@@ -92,14 +92,14 @@ Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	David Vernet <void@manifault.com>,
 	Changwoo Min <changwoo@igalia.com>, Shuah Khan <shuah@kernel.org>,
 	sched-ext@lists.linux.dev, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Luigi De Matteis <ldematteis123@gmail.com>
-Subject: Re: [PATCH 06/14] sched_ext: Add a DL server for sched_ext tasks
-Message-ID: <aPZCmZF_K-vJOYKp@jlelli-thinkpadt14gen4.remote.csb>
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/14] sched/deadline: Return EBUSY if dl_bw_cpus is zero
+Message-ID: <aPZDPsJaZ9g4jz0g@jlelli-thinkpadt14gen4.remote.csb>
 References: <20251017093214.70029-1-arighi@nvidia.com>
- <20251017093214.70029-7-arighi@nvidia.com>
- <aPYj-iOdvgUYQFpn@jlelli-thinkpadt14gen4.remote.csb>
- <aPY-QOXV5USEHVIq@gpd4>
+ <20251017093214.70029-5-arighi@nvidia.com>
+ <aPYFv6YcxqWez8aK@jlelli-thinkpadt14gen4.remote.csb>
+ <aPY7O7NNs2KyKpb-@gpd4>
+ <aPZBPQpRHm977Fno@gpd4>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -108,40 +108,59 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aPY-QOXV5USEHVIq@gpd4>
+In-Reply-To: <aPZBPQpRHm977Fno@gpd4>
 
-On 20/10/25 15:50, Andrea Righi wrote:
-> Hi Juri,
-> 
-> On Mon, Oct 20, 2025 at 01:58:50PM +0200, Juri Lelli wrote:
-> > Hi!
+On 20/10/25 16:03, Andrea Righi wrote:
+> On Mon, Oct 20, 2025 at 03:38:12PM +0200, Andrea Righi wrote:
+> > On Mon, Oct 20, 2025 at 11:49:51AM +0200, Juri Lelli wrote:
+> > > Hi!
+> > > 
+> > > On 17/10/25 11:25, Andrea Righi wrote:
+> > > > From: Joel Fernandes <joelagnelf@nvidia.com>
+> > > > 
+> > > > Hotplugged CPUs coming online do an enqueue but are not a part of any
+> > > > root domain containing cpu_active() CPUs. So in this case, don't mess
+> > > > with accounting and we can retry later. Without this patch, we see
+> > > > crashes with sched_ext selftest's hotplug test due to divide by zero.
+> > > > 
+> > > > Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> > > > ---
+> > > >  kernel/sched/deadline.c | 7 ++++++-
+> > > >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> > > > index 4aefb34a1d38b..f2f5b1aea8e2b 100644
+> > > > --- a/kernel/sched/deadline.c
+> > > > +++ b/kernel/sched/deadline.c
+> > > > @@ -1665,7 +1665,12 @@ int dl_server_apply_params(struct sched_dl_entity *dl_se, u64 runtime, u64 perio
+> > > >  	cpus = dl_bw_cpus(cpu);
+> > > >  	cap = dl_bw_capacity(cpu);
+> > > >  
+> > > > -	if (__dl_overflow(dl_b, cap, old_bw, new_bw))
+> > > > +	/*
+> > > > +	 * Hotplugged CPUs coming online do an enqueue but are not a part of any
+> > > > +	 * root domain containing cpu_active() CPUs. So in this case, don't mess
+> > > > +	 * with accounting and we can retry later.
+> > > 
+> > > Later when? It seems a little vague. :)
 > > 
-> > On 17/10/25 11:25, Andrea Righi wrote:
-
-...
-
-> > > @@ -1487,6 +1499,11 @@ static bool dequeue_task_scx(struct rq *rq, struct task_struct *p, int deq_flags
-> > >  	sub_nr_running(rq, 1);
-> > >  
-> > >  	dispatch_dequeue(rq, p);
-> > > +
-> > > +	/* Stop the server if this was the last task */
-> > > +	if (rq->scx.nr_running == 0)
-> > > +		dl_server_stop(&rq->ext_server);
-> > > +
+> > Yeah, this comment is actually incorrect, we're not "retrying later"
+> > anymore (we used to do that in a previous version), now the params are
+> > applied via:
 > > 
-> > Do we want to use the delayed stop behavior for scx-server as we have
-> > for fair-server? Wonder if it's a matter of removing this explicit stop
-> > and wait for a full period to elapse as we do for fair. It should reduce
-> > timer reprogramming overhead for scx as well.
+> >   ext.c:handle_hotplug() -> dl_server_on() -> dl_server_apply_params()
+> > 
+> > Or via scx_enable() when an scx scheduler is loaded. So, I'm wondering if
+> > this condition is still needed. Will do some tests.
 > 
-> So, IIUC we could just remove this explicit dl_server_stop() and the server
-> would naturally stop at the end of its current deadline period, if there
-> are still no runnable tasks, right?
+> Looks like I can't reproduce the error with the hotplug kselftest anymore
+> (and it was happening pretty quickly).
+> 
+> Then I guess we can drop this patch or maybe add a WARN_ON_ONCE(!cpus) just
+> to safe?
 
-Right, that is what I'd expect. But this part tricked me several times
-already, so I am not 100% certain (Peter please keep me honest :).
+WARN_ON_ONCE() works for me.
 
-> In that case it's worth a try.
+Thanks!
 
 
