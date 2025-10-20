@@ -1,179 +1,248 @@
-Return-Path: <bpf+bounces-71450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71452-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 402C0BF3AA2
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 23:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7290ABF3BBA
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 23:27:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DF4418C4FB5
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 21:10:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4B7818C2F2D
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 21:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795062EC55E;
-	Mon, 20 Oct 2025 21:08:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C235E335076;
+	Mon, 20 Oct 2025 21:26:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gdMDObck"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166B12E6CAB
-	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 21:08:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A42233375D;
+	Mon, 20 Oct 2025 21:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760994507; cv=none; b=My3QS138blWENSsBJUxxPWDtecbHFXss1DSC5RI7cfwMDWL+5WTiN8O3qm9P5SUXRHeIAztPdSMixKTFqmdi7/OiDANsW+4S20w62kPMu2ZgHHRe76qxlXJSWclnzR0AvouBIffopRJZ+XN1CIjM6yS7Ik1b/88Ns3rxofTISaU=
+	t=1760995600; cv=none; b=DxMrWqWr0Mri9q3Q5I2S8Kq3AAQzpd6jmD+3uO+PRTvKh/2le7V+SsIZcB+kC/xSnHqhoiScGWf1LkCi1Q1dPO0zoQca7lRW38bLK6QHM3ooIPj13ioG3YJD0ZPLWjEzQcRPsfv4/yoetHAU8HXS3MyLIrygb91I/Lvwn5Hfj3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760994507; c=relaxed/simple;
-	bh=hxhjLCBZfNBCCzqgf9QcOOR3d4nK6IBdQqW32aYBurE=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Nl6VRl7betdGOBHVJwDH6NOYMvG8nBE+5je2RxXCBBeJA6Y/uwW/PYB6ykN9A2MikyvssF6cDuUNVs1VPQXgcy5aVV2rOymTr8+pK/K8n1Oz2FXKY2HZyLqaoYaP2MbGndY8qsqAUoYc/3wCsfI2qJYxnShO7VE3NEmzvQb5YIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-430db6d36c6so62599605ab.2
-        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 14:08:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760994504; x=1761599304;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Bu7UmFKZwYM7EYVrujSk24G85KpdWniCmCnGeTN1CEw=;
-        b=RvpO5EpoXz3F6kS4peRS/9Mv2gLetXlI2b8Wf45TcJ412OkJri+XwIPy7YRiAAEdRI
-         y44oaJbu2bZKLXwxGea/5rxomiJLT5kBUkE6Sj9nTa2jn8Me0X6ggRY4RHx/+ef6I12h
-         AKVXdtvwueKNa+7sWXbUuq49wwmtPx+7QnXR8WHvc+LAS6lgZDjRRDL/EnP/WIxT5CAG
-         xVYYnBrEEWpdhk+5SMn0GGJEpI06ImeXdLz9CtHMt40qRldnmw1mPvvhfLk5NDXnF6sL
-         xA1NBOl/gA/4S1lnF+WKtivWHPzzMyOme3vPjMlG8gg0oy9vp6waNlJG9ntbujAYdy0m
-         dKaw==
-X-Forwarded-Encrypted: i=1; AJvYcCX9E/sbXGSguXgSlDd1x9QNdi+yifYAra+g2uJdREZKdf6ZKpxvrFUMOhdT9jEUQt6O5OI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzFiDyAGHi7kdNV6p0dzuZT/fbeEY3uSvX5jSxhImOnmKH4fvV3
-	wrNECXOg6vaIWWx5USGDoubqEJTpHJbjyPVk12c3I5aqN2YJxy0wWQD+pZ5dd1uMlFdQ3TaDfr5
-	fsvpPRlwaHEVmISxnioVXB61F8xMLdM1iKzeXi9vLGJkeIX4iDj9yDasqj5k=
-X-Google-Smtp-Source: AGHT+IHwFfnjoIwpmNlUmVtUUXMe0VJy0ObADhZw4QPUWijMCBpDpKIyDlCxEVFHJY+z7r9ICr7Ir+ld2d8LJquRMzrwpZyjcYvG
+	s=arc-20240116; t=1760995600; c=relaxed/simple;
+	bh=Vl0LkZmcqdOilJhaw5cYs+K+TtJi8z4nn49piM4Us7I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bvDsEM8sSLDOZDt/3fviYF/7HbUBxCpYhlq8Fi08uDEDWOe+MQJvRFRhVoTw95fGT215OnCQ0QCdvOG3lpGHxmgXkUAwOahNbtfmIKptbHJgzaDVnyVlcOtG3NDBRjAUGncBjj9msdpNuqUXPe4O96gsPeOb//n3HOh7glM+7Yo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gdMDObck; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9979C116C6;
+	Mon, 20 Oct 2025 21:26:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760995599;
+	bh=Vl0LkZmcqdOilJhaw5cYs+K+TtJi8z4nn49piM4Us7I=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gdMDObckHy+NxEkwxjfSkC7R1bwKgRt2UNZignA+OoLCAWbAYp+OhAzNHSMmbpMs7
+	 HLSgLrHUJZWcAME4snDcfIh+oG4LxZykpg/gcaE1zAXJ5ttIFw4XS+jvJnKBnjNlIg
+	 CJp6qcST0bPbFueQp6iOeEZdRRsRm9ojt5GJXNAmsNY5nM2W7XLFhFFnbxZZnX/6dX
+	 tsqpJtEQ8bpnHFP2yr5S5A148Jp51UV4VLm2k5RSm2nwqt9T8j7hlVHN3qTU1CqE9j
+	 WugVpCaqtnkDWexRiOnGPvxAJbAE3hEm7jaXMHsgt0nhyHEnsvhxvJ8nO5BWp0Qgfw
+	 WZppfnH7scWow==
+From: Kees Cook <kees@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Kees Cook <kees@kernel.org>,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	Willem de Bruijn <willemb@google.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v3 0/9] net: Introduce struct sockaddr_unspec
+Date: Mon, 20 Oct 2025 14:26:29 -0700
+Message-Id: <20251020212125.make.115-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c265:0:b0:430:af8f:1d28 with SMTP id
- e9e14a558f8ab-430c5223e4cmr232929755ab.11.1760994504129; Mon, 20 Oct 2025
- 14:08:24 -0700 (PDT)
-Date: Mon, 20 Oct 2025 14:08:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68f6a4c8.050a0220.1be48.0011.GAE@google.com>
-Subject: [syzbot] [bpf?] WARNING in bpf_bprintf_prepare (3)
-From: syzbot <syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	chandna.sahil@gmail.com, daniel@iogearbox.net, eddyz87@gmail.com, 
-	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org, 
-	kpsingh@kernel.org, linux-kernel@vger.kernel.org, listout@listout.xyz, 
-	martin.lau@linux.dev, netdev@vger.kernel.org, sdf@fomichev.me, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9326; i=kees@kernel.org; h=from:subject:message-id; bh=Vl0LkZmcqdOilJhaw5cYs+K+TtJi8z4nn49piM4Us7I=; b=owGbwMvMwCVmps19z/KJym7G02pJDBnfVnJl/DwsUdZ9cxejif1zEa2nrxi/VHE/mfgs9eHWP Ee5C3mFHaUsDGJcDLJiiixBdu5xLh5v28Pd5yrCzGFlAhnCwMUpABOpd2Bk+LOLs/rFF36W7c4L 3/2W+V9/ZIH525XME0XXCfWFxT2QPMPwkzEoWC0oanvAnR1eU2bksRpXTFi+KK582Ub9fzsjv79 fyQMA
+X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Hi!
 
-syzbot found the following issue on:
+ v3:
+   - fix missed kernel_connect/bind casts in bpf selftests
+   - fix missed kernel_connect cast in samples/
+   - drop "bpf: Add size validation to bpf_sock_addr_set_sun_path()",
+     which is technically unrelated to the sockaddr conversion
+ v2: https://lore.kernel.org/linux-hardening/20251014223349.it.173-kees@kernel.org/
+ v1: https://lore.kernel.org/all/20250723230354.work.571-kees@kernel.org/
 
-HEAD commit:    a1e83d4c0361 selftests/bpf: Fix redefinition of 'off' as d..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d21de2580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9ad7b090a18654a7
-dashboard link: https://syzkaller.appspot.com/bug?extid=b0cff308140f79a9c4cb
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=160cf542580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=128d5c58580000
+The historically fixed-size struct sockaddr is part of UAPI and embedded
+in many existing structures. The kernel uses struct sockaddr extensively
+within the kernel to represent arbitrarily sized sockaddr structures,
+which caused problems with the compiler's ability to determine object
+sizes correctly. The "temporary" solution was to make sockaddr explicitly
+use a flexible array, but this causes problems for embedding struct
+sockaddr in structures, where once again the compiler has to guess about
+the size of such objects, and causes thousands of warnings under the
+coming -Wflex-array-member-not-at-end warning.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2f6a7a0cd1b7/disk-a1e83d4c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/873984cfc71e/vmlinux-a1e83d4c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/16711d84070c/bzImage-a1e83d4c.xz
+Switching to sockaddr_storage internally everywhere wastes a lot of memory,
+so we are left with needing two changes:
+- introduction of an explicitly arbitrarily sized sockaddr struct
+- switch struct sockaddr back to being fixed size
 
-The issue was bisected to:
+Doing the latter step requires all "arbitrarily sized" uses of struct
+sockaddr to be replaced with the new struct from the first step.
 
-commit 7c33e97a6ef5d84e98b892c3e00c6d1678d20395
-Author: Sahil Chandna <chandna.sahil@gmail.com>
-Date:   Tue Oct 14 18:56:35 2025 +0000
+So, introduce the new struct and do enough conversions that we can
+switch sockaddr back to a fixed-size sa_data.
 
-    bpf: Do not disable preemption in bpf_test_run().
+Thanks!
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=172fe492580000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=14afe492580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=10afe492580000
+-Kees
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com
-Fixes: 7c33e97a6ef5 ("bpf: Do not disable preemption in bpf_test_run().")
+Kees Cook (9):
+  net: Add struct sockaddr_unspec for sockaddr of unknown length
+  net/l2tp: Add missing sa_family validation in
+    pppol2tp_sockaddr_get_info
+  net: Convert proto_ops bind() callbacks to use sockaddr_unspec
+  net: Convert proto_ops connect() callbacks to use sockaddr_unspec
+  net: Remove struct sockaddr from net.h
+  net: Convert proto callbacks from sockaddr to sockaddr_unspec
+  bpf: Convert cgroup sockaddr filters to use sockaddr_unspec
+    consistently
+  bpf: Convert bpf_sock_addr_kern "uaddr" to sockaddr_unspec
+  net: Convert struct sockaddr to fixed-size "sa_data[14]"
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 6145 at kernel/bpf/helpers.c:781 bpf_try_get_buffers kernel/bpf/helpers.c:781 [inline]
-WARNING: CPU: 1 PID: 6145 at kernel/bpf/helpers.c:781 bpf_bprintf_prepare+0x12cf/0x13a0 kernel/bpf/helpers.c:834
-Modules linked in:
-CPU: 1 UID: 0 PID: 6145 Comm: syz.4.53 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/02/2025
-RIP: 0010:bpf_try_get_buffers kernel/bpf/helpers.c:781 [inline]
-RIP: 0010:bpf_bprintf_prepare+0x12cf/0x13a0 kernel/bpf/helpers.c:834
-Code: ff e9 ce fe ff ff e8 10 ec e0 ff e9 be fe ff ff e8 06 ec e0 ff e9 b4 fe ff ff e8 fc eb e0 ff e9 aa fe ff ff e8 f2 eb e0 ff 90 <0f> 0b 90 65 ff 0d 27 fd b2 10 b8 f0 ff ff ff e9 17 ff ff ff e8 d8
-RSP: 0018:ffffc90003797840 EFLAGS: 00010293
-RAX: ffffffff81df57fe RBX: ffffc90003797a10 RCX: ffff888026493c80
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000003
-RBP: ffffc90003797970 R08: 0000000000585870 R09: 0000000000000005
-R10: dffffc0000000000 R11: fffff520006f2f20 R12: dffffc0000000000
-R13: 0000000000000004 R14: 0000000000000003 R15: 1ffff920006f2f42
-FS:  00005555805f5500(0000) GS:ffff888125e0c000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000007c04e000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- ____bpf_trace_printk kernel/trace/bpf_trace.c:372 [inline]
- bpf_trace_printk+0xdb/0x190 kernel/trace/bpf_trace.c:362
- bpf_prog_bfbd7bf4bf171090+0x41/0x5a
- bpf_dispatcher_nop_func include/linux/bpf.h:1350 [inline]
- __bpf_prog_run include/linux/filter.h:721 [inline]
- bpf_prog_run include/linux/filter.h:728 [inline]
- bpf_prog_run_pin_on_cpu include/linux/filter.h:745 [inline]
- bpf_flow_dissect+0x225/0x720 net/core/flow_dissector.c:1024
- bpf_prog_test_run_flow_dissector+0x37c/0x5c0 net/bpf/test_run.c:1414
- bpf_prog_test_run+0x2c7/0x340 kernel/bpf/syscall.c:4688
- __sys_bpf+0x562/0x860 kernel/bpf/syscall.c:6167
- __do_sys_bpf kernel/bpf/syscall.c:6259 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:6257 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6257
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f25b0f8efc9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe036cd5e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007f25b11e5fa0 RCX: 00007f25b0f8efc9
-RDX: 0000000000000050 RSI: 0000200000000180 RDI: 000000000000000a
-RBP: 00007f25b1011f91 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f25b11e5fa0 R14: 00007f25b11e5fa0 R15: 0000000000000003
- </TASK>
+ include/linux/bpf-cgroup.h                    | 17 ++++++++------
+ include/linux/filter.h                        |  2 +-
+ include/linux/net.h                           |  9 ++++----
+ include/linux/socket.h                        | 23 +++++++++++++++----
+ include/net/inet_common.h                     | 13 +++++------
+ include/net/ip.h                              |  4 ++--
+ include/net/ipv6.h                            | 10 ++++----
+ include/net/ipv6_stubs.h                      |  2 +-
+ include/net/ping.h                            |  2 +-
+ include/net/sctp/sctp.h                       |  2 +-
+ include/net/sock.h                            | 14 +++++------
+ include/net/tcp.h                             |  2 +-
+ include/net/udp.h                             |  2 +-
+ include/net/vsock_addr.h                      |  2 +-
+ net/rds/rds.h                                 |  2 +-
+ net/smc/smc.h                                 |  4 ++--
+ .../perf/trace/beauty/include/linux/socket.h  |  5 +---
+ crypto/af_alg.c                               |  2 +-
+ drivers/block/drbd/drbd_receiver.c            |  6 ++---
+ drivers/infiniband/hw/erdma/erdma_cm.c        |  6 ++---
+ drivers/infiniband/sw/siw/siw_cm.c            |  8 +++----
+ drivers/isdn/mISDN/l1oip_core.c               |  2 +-
+ drivers/isdn/mISDN/socket.c                   |  4 ++--
+ drivers/net/ppp/pppoe.c                       |  4 ++--
+ drivers/net/ppp/pptp.c                        |  8 +++----
+ drivers/net/wireless/ath/ath10k/qmi.c         |  2 +-
+ drivers/net/wireless/ath/ath11k/qmi.c         |  2 +-
+ drivers/net/wireless/ath/ath12k/qmi.c         |  2 +-
+ drivers/nvme/host/tcp.c                       |  4 ++--
+ drivers/nvme/target/tcp.c                     |  2 +-
+ drivers/slimbus/qcom-ngd-ctrl.c               |  2 +-
+ drivers/target/iscsi/iscsi_target_login.c     |  2 +-
+ drivers/xen/pvcalls-back.c                    |  4 ++--
+ fs/afs/rxrpc.c                                |  6 ++---
+ fs/coredump.c                                 |  2 +-
+ fs/dlm/lowcomms.c                             |  8 +++----
+ fs/ocfs2/cluster/tcp.c                        |  6 ++---
+ fs/smb/client/connect.c                       |  4 ++--
+ fs/smb/server/transport_tcp.c                 |  4 ++--
+ kernel/bpf/cgroup.c                           |  8 +++----
+ net/9p/trans_fd.c                             |  8 +++----
+ net/appletalk/ddp.c                           |  4 ++--
+ net/atm/pvc.c                                 |  4 ++--
+ net/atm/svc.c                                 |  4 ++--
+ net/ax25/af_ax25.c                            |  4 ++--
+ net/bluetooth/hci_sock.c                      |  2 +-
+ net/bluetooth/iso.c                           |  6 ++---
+ net/bluetooth/l2cap_sock.c                    |  4 ++--
+ net/bluetooth/rfcomm/core.c                   |  6 ++---
+ net/bluetooth/rfcomm/sock.c                   |  5 ++--
+ net/bluetooth/sco.c                           |  4 ++--
+ net/caif/caif_socket.c                        |  2 +-
+ net/can/bcm.c                                 |  2 +-
+ net/can/isotp.c                               |  2 +-
+ net/can/j1939/socket.c                        |  4 ++--
+ net/can/raw.c                                 |  2 +-
+ net/ceph/messenger.c                          |  2 +-
+ net/core/dev.c                                |  2 +-
+ net/core/dev_ioctl.c                          |  2 +-
+ net/core/filter.c                             |  5 ++--
+ net/core/sock.c                               |  6 ++---
+ net/ieee802154/socket.c                       | 12 +++++-----
+ net/ipv4/af_inet.c                            | 16 ++++++-------
+ net/ipv4/arp.c                                |  2 +-
+ net/ipv4/datagram.c                           |  4 ++--
+ net/ipv4/ping.c                               |  8 +++----
+ net/ipv4/raw.c                                |  3 ++-
+ net/ipv4/tcp.c                                |  2 +-
+ net/ipv4/tcp_ipv4.c                           |  4 ++--
+ net/ipv4/udp.c                                |  6 +++--
+ net/ipv4/udp_tunnel_core.c                    |  4 ++--
+ net/ipv6/af_inet6.c                           |  6 ++---
+ net/ipv6/datagram.c                           |  8 +++----
+ net/ipv6/ip6_udp_tunnel.c                     |  4 ++--
+ net/ipv6/ping.c                               |  2 +-
+ net/ipv6/raw.c                                |  3 ++-
+ net/ipv6/tcp_ipv6.c                           |  6 ++---
+ net/ipv6/udp.c                                |  5 ++--
+ net/iucv/af_iucv.c                            |  6 ++---
+ net/l2tp/l2tp_core.c                          |  8 +++----
+ net/l2tp/l2tp_ip.c                            |  6 +++--
+ net/l2tp/l2tp_ip6.c                           |  5 ++--
+ net/l2tp/l2tp_ppp.c                           |  9 +++++++-
+ net/llc/af_llc.c                              |  4 ++--
+ net/mctp/af_mctp.c                            |  4 ++--
+ net/mctp/test/route-test.c                    |  2 +-
+ net/mctp/test/utils.c                         |  5 ++--
+ net/mptcp/pm_kernel.c                         |  4 ++--
+ net/mptcp/protocol.c                          |  5 ++--
+ net/mptcp/subflow.c                           |  4 ++--
+ net/netfilter/ipvs/ip_vs_sync.c               |  6 ++---
+ net/netlink/af_netlink.c                      |  4 ++--
+ net/netrom/af_netrom.c                        |  6 ++---
+ net/nfc/llcp_sock.c                           |  6 ++---
+ net/nfc/rawsock.c                             |  2 +-
+ net/packet/af_packet.c                        | 15 ++++++------
+ net/phonet/pep.c                              |  3 ++-
+ net/phonet/socket.c                           | 10 ++++----
+ net/qrtr/af_qrtr.c                            |  4 ++--
+ net/qrtr/ns.c                                 |  2 +-
+ net/rds/af_rds.c                              |  2 +-
+ net/rds/bind.c                                |  2 +-
+ net/rds/tcp_connect.c                         |  4 ++--
+ net/rds/tcp_listen.c                          |  2 +-
+ net/rose/af_rose.c                            |  4 ++--
+ net/rxrpc/af_rxrpc.c                          |  4 ++--
+ net/rxrpc/rxperf.c                            |  2 +-
+ net/sctp/socket.c                             | 13 ++++++-----
+ net/smc/af_smc.c                              |  6 ++---
+ net/socket.c                                  | 14 +++++------
+ net/sunrpc/clnt.c                             |  6 ++---
+ net/sunrpc/svcsock.c                          |  2 +-
+ net/sunrpc/xprtsock.c                         |  9 ++++----
+ net/tipc/socket.c                             |  6 ++---
+ net/unix/af_unix.c                            | 12 +++++-----
+ net/vmw_vsock/af_vsock.c                      |  6 ++---
+ net/vmw_vsock/vsock_addr.c                    |  2 +-
+ net/x25/af_x25.c                              |  4 ++--
+ net/xdp/xsk.c                                 |  2 +-
+ samples/qmi/qmi_sample_client.c               |  2 +-
+ .../selftests/bpf/test_kmods/bpf_testmod.c    |  4 ++--
+ 121 files changed, 326 insertions(+), 290 deletions(-)
 
+-- 
+2.34.1
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
