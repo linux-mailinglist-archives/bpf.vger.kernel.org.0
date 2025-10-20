@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-71459-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 152DABF3BE3
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 23:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BBB5DBF3BDE
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 23:28:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B71C40321A
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 21:27:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 997D8421DA2
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 21:27:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B258F33711B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A59E0337113;
 	Mon, 20 Oct 2025 21:26:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EuuxRNQJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PWupwVqu"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89398334C2A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88CF8334C29;
 	Mon, 20 Oct 2025 21:26:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760995600; cv=none; b=JzYP4pSaGQjrKeiUmLrm1iZTy1FFbAF3NEHxMeYu0bD8NJAXmiJTtepKmPqQMythFtYAQTiub1hmUXEAoSAU261bHlWRN2mcf+i/2eE7HxFci6uJdNHlyYzFY/RwV15wUGHxsMpuZCNlMdEtlqHe1iRufxF8VEpY7XIMWhRz+e0=
+	t=1760995600; cv=none; b=RD02tbJIz66BSoeaiFucm2kQ4UNcvdvjkIeZgOmeGJZZm4OhhmyvB5yf879gg+nHaCBy8mxk3eKmNdKof7pzBgqAbM0Jg3aEmVBnSNTtugEABEUhsAYyexJU8EJj73mW169qQradOy4D7ymz1GIh8YCrCAVG8zipI7uIkwrtiTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1760995600; c=relaxed/simple;
-	bh=qvxb3tuA7mFuJoalcsIpG14To0zLxp4Z4edePlcyGXQ=;
+	bh=SCu74n1QPb+l2An5uCSZFkG0ZSJa3rxMAjAeYpfmuRs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XBmOlwhDXi4uNfw7OL1Li+08446IEwOCkxmY0SONGV5GFDk/arqfH1cKNysEADHCkYoaQpYA/CdpPBdAVnYtxhkNlgC2UZlL46gnll2+BQxKk5o5XiK9Z9vhSZBzsrwRAXQ/yQWBgPtmBOnx7qmm8WaMJ4sv6Waz9rs68LDAhMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EuuxRNQJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18112C2BC87;
+	 MIME-Version; b=BlOvyZLwXTEKi/vo3aBcQ43ZS4nUxLP493b4pZKkJ4WDu2IpL7a2t4zoK3enNZKVGzqZqCEkRI6sGoP5Cj3yN0vJX/DwSOBMQd8c+kD1Hc+kRdFYu6NL9gwL2MPdS62w2aiqVC9nrgB3u33KqfFdsBvUxoabdn/e1MPtU1onf0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PWupwVqu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 185C1C2BCAF;
 	Mon, 20 Oct 2025 21:26:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1760995600;
-	bh=qvxb3tuA7mFuJoalcsIpG14To0zLxp4Z4edePlcyGXQ=;
+	bh=SCu74n1QPb+l2An5uCSZFkG0ZSJa3rxMAjAeYpfmuRs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EuuxRNQJQRwhGoMPmtuh/d4oQEq52faLQQGh9LLOhHV8l56qz0TM0SlCDsc6r/1fR
-	 pLy5pE12srwBrSFHxr/j9i48um19R0Q/7ZtyMaX4I9yODgvC71CpChXNCrpGc8pSbO
-	 WasgLDqilDOj5CPgPWfN+w5Py4fD8A3jX1eIQxdXWkWYNsIHjp76cORo66MGDy2t+C
-	 qzcs7IHLg8fr82LTUl3QOGR5C79LIxGGNSgmdXWfT+7lpnUXKuAevtJKSoS/55RpoO
-	 XZiYYjeFHk1UoojzKwDQKH2B/xoU3FIJV6/nvNiWY4tbWONdYvBqzr31pTyulmpkeD
-	 aODm9j7PajtsA==
+	b=PWupwVquFABXyx8izrOyH52uk+n0bjRp8LX/1IgdPgsNptGbdJBrNFTZStQZy2NET
+	 MRDXy3XtQmsfErftOnBRL5OvCdALn0TsB6BI0ZWHFjWAuaspwylFY0s2o2y7hRcSSN
+	 cq6jBigAeM/SlwpgTJvQ0VyckhiZJjpSlta4s8uvEGwruoBBXmYkrurvepp3HXoRN0
+	 9/CYz4YUMWNXy2nYvb4wdk3swoIkdAtVoxSyS5JC6qhdcbh3ouOjjCM0SY7rbY8D2B
+	 NivoEJ2iad/bXqaavfxBXq44x8WMvr24e3f2wguIgUQeDb5OMiPQHg8qBkM/Fz/kj+
+	 BdZDDl9hHTgig==
 From: Kees Cook <kees@kernel.org>
 To: Jakub Kicinski <kuba@kernel.org>
 Cc: Kees Cook <kees@kernel.org>,
@@ -58,9 +58,9 @@ Cc: Kees Cook <kees@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH v3 8/9] bpf: Convert bpf_sock_addr_kern "uaddr" to sockaddr_unspec
-Date: Mon, 20 Oct 2025 14:26:37 -0700
-Message-Id: <20251020212639.1223484-8-kees@kernel.org>
+Subject: [PATCH v3 9/9] net: Convert struct sockaddr to fixed-size "sa_data[14]"
+Date: Mon, 20 Oct 2025 14:26:38 -0700
+Message-Id: <20251020212639.1223484-9-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251020212125.make.115-kees@kernel.org>
 References: <20251020212125.make.115-kees@kernel.org>
@@ -70,65 +70,146 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1986; i=kees@kernel.org; h=from:subject; bh=qvxb3tuA7mFuJoalcsIpG14To0zLxp4Z4edePlcyGXQ=; b=owGbwMvMwCVmps19z/KJym7G02pJDBnfVvK+/9rqufO3Tt3/YlYO1q9NvwSuHxF+0+GbKXzC7 Pm8/isVHaUsDGJcDLJiiixBdu5xLh5v28Pd5yrCzGFlAhnCwMUpABOpnc7I0Hi+jEfk2In0R0dX Cc96mrDj3+u+73xsIlVHih81rSnlvsbI0JQ5XSfwyRauQzd31kupJxi7i94P4jcNFE1r3fW96E4 7GwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5439; i=kees@kernel.org; h=from:subject; bh=SCu74n1QPb+l2An5uCSZFkG0ZSJa3rxMAjAeYpfmuRs=; b=owGbwMvMwCVmps19z/KJym7G02pJDBnfVvJGni+0KhBxmfq1hiHc+Z380vp3eaJBtjMdM85M0 pT7cOBoRykLgxgXg6yYIkuQnXuci8fb9nD3uYowc1iZQIYwcHEKwETuGDIy/O7Tr2lO0nmlWXnO 5TjP3JV7lXSk4/IdlN0nnrloL2O7i5Fh8qPbtRIqshZ6U9xOvD6YFnWL27Cxofr+BEdmXrVvLF+ YAQ==
 X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-Change struct bpf_sock_addr_kern to use sockaddr_unspec for the "uaddr"
-field instead of sockaddr. This improves type safety in the BPF cgroup
-socket address filtering code.
+Revert struct sockaddr from flexible array to fixed 14-byte "sa_data",
+solves over 36,000 -Wflex-array-member-not-at-end warnings, since struct
+sockaddr is embedded within many network structs.
 
-The casting in __cgroup_bpf_run_filter_sock_addr() is updated to match the
-new type, removing an unnecessary cast in the initialization and updating
-the conditional assignment to use the appropriate sockaddr_unspec cast.
+With socket/proto sockaddr-based internal APIs switched to use struct
+sockaddr_unspec, there should be no more uses of struct sockaddr that
+depend on reading beyond the end of struct sockaddr::sa_data that might
+trigger bounds checking.
 
+Comparing an x86_64 "allyesconfig" vmlinux build before and after this
+patch showed no new "ud1" instructions from CONFIG_UBSAN_BOUNDS nor any
+explicit "field-spanning" memcpy CONFIG_FORTIFY_SOURCE instrumentations.
+
+Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 Signed-off-by: Kees Cook <kees@kernel.org>
 ---
- include/linux/filter.h | 2 +-
- kernel/bpf/cgroup.c    | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ include/linux/socket.h                         |  6 ++----
+ tools/perf/trace/beauty/include/linux/socket.h |  5 +----
+ net/core/dev.c                                 |  2 +-
+ net/core/dev_ioctl.c                           |  2 +-
+ net/ipv4/arp.c                                 |  2 +-
+ net/packet/af_packet.c                         | 10 +++++-----
+ 6 files changed, 11 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index f5c859b8131a..52594affe7ee 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1515,7 +1515,7 @@ static inline int bpf_tell_extensions(void)
+diff --git a/include/linux/socket.h b/include/linux/socket.h
+index 27f57c7ee02a..5e9d83cec850 100644
+--- a/include/linux/socket.h
++++ b/include/linux/socket.h
+@@ -32,12 +32,10 @@ typedef __kernel_sa_family_t	sa_family_t;
+  *	1003.1g requires sa_family_t and that sa_data is char.
+  */
  
- struct bpf_sock_addr_kern {
- 	struct sock *sk;
--	struct sockaddr *uaddr;
-+	struct sockaddr_unspec *uaddr;
- 	/* Temporary "register" to make indirect stores to nested structures
- 	 * defined above. We need three registers to make such a store, but
- 	 * only two (src and dst) are available at convert_ctx_access time
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index af8b070e71ba..d045bc0ecc70 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1673,10 +1673,10 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
++/* Deprecated for in-kernel use. Use struct sockaddr_unspec instead. */
+ struct sockaddr {
+ 	sa_family_t	sa_family;	/* address family, AF_xxx	*/
+-	union {
+-		char sa_data_min[14];		/* Minimum 14 bytes of protocol address	*/
+-		DECLARE_FLEX_ARRAY(char, sa_data);
+-	};
++	char		sa_data[14];	/* 14 bytes of protocol address	*/
+ };
+ 
+ /**
+diff --git a/tools/perf/trace/beauty/include/linux/socket.h b/tools/perf/trace/beauty/include/linux/socket.h
+index 3b262487ec06..77d7c59f5d8b 100644
+--- a/tools/perf/trace/beauty/include/linux/socket.h
++++ b/tools/perf/trace/beauty/include/linux/socket.h
+@@ -34,10 +34,7 @@ typedef __kernel_sa_family_t	sa_family_t;
+ 
+ struct sockaddr {
+ 	sa_family_t	sa_family;	/* address family, AF_xxx	*/
+-	union {
+-		char sa_data_min[14];		/* Minimum 14 bytes of protocol address	*/
+-		DECLARE_FLEX_ARRAY(char, sa_data);
+-	};
++	char		sa_data[14];	/* 14 bytes of protocol address	*/
+ };
+ 
+ struct linger {
+diff --git a/net/core/dev.c b/net/core/dev.c
+index a64cef2c537e..6dc5861f87b0 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9885,7 +9885,7 @@ DECLARE_RWSEM(dev_addr_sem);
+ /* "sa" is a true struct sockaddr with limited "sa_data" member. */
+ int netif_get_mac_address(struct sockaddr *sa, struct net *net, char *dev_name)
  {
- 	struct bpf_sock_addr_kern ctx = {
- 		.sk = sk,
--		.uaddr = (struct sockaddr *)uaddr,
-+		.uaddr = uaddr,
- 		.t_ctx = t_ctx,
- 	};
--	struct sockaddr_storage unspec;
-+	struct sockaddr_storage storage;
- 	struct cgroup *cgrp;
- 	int ret;
+-	size_t size = sizeof(sa->sa_data_min);
++	size_t size = sizeof(sa->sa_data);
+ 	struct net_device *dev;
+ 	int ret = 0;
  
-@@ -1688,8 +1688,8 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
- 		return 0;
+diff --git a/net/core/dev_ioctl.c b/net/core/dev_ioctl.c
+index ad54b12d4b4c..b3ce0fb24a69 100644
+--- a/net/core/dev_ioctl.c
++++ b/net/core/dev_ioctl.c
+@@ -596,7 +596,7 @@ static int dev_ifsioc(struct net *net, struct ifreq *ifr, void __user *data,
+ 		if (ifr->ifr_hwaddr.sa_family != dev->type)
+ 			return -EINVAL;
+ 		memcpy(dev->broadcast, ifr->ifr_hwaddr.sa_data,
+-		       min(sizeof(ifr->ifr_hwaddr.sa_data_min),
++		       min(sizeof(ifr->ifr_hwaddr.sa_data),
+ 			   (size_t)dev->addr_len));
+ 		netdev_lock_ops(dev);
+ 		call_netdevice_notifiers(NETDEV_CHANGEADDR, dev);
+diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
+index 833f2cf97178..8316ca59088a 100644
+--- a/net/ipv4/arp.c
++++ b/net/ipv4/arp.c
+@@ -1189,7 +1189,7 @@ static int arp_req_get(struct net *net, struct arpreq *r)
  
- 	if (!ctx.uaddr) {
--		memset(&unspec, 0, sizeof(unspec));
--		ctx.uaddr = (struct sockaddr *)&unspec;
-+		memset(&storage, 0, sizeof(storage));
-+		ctx.uaddr = (struct sockaddr_unspec *)&storage;
- 		ctx.uaddrlen = 0;
- 	} else {
- 		ctx.uaddrlen = *uaddrlen;
+ 	read_lock_bh(&neigh->lock);
+ 	memcpy(r->arp_ha.sa_data, neigh->ha,
+-	       min(dev->addr_len, sizeof(r->arp_ha.sa_data_min)));
++	       min(dev->addr_len, sizeof(r->arp_ha.sa_data)));
+ 	r->arp_flags = arp_state_to_flags(neigh);
+ 	read_unlock_bh(&neigh->lock);
+ 
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index 73bea76ea45d..d21483cae94f 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -3284,7 +3284,7 @@ static int packet_bind_spkt(struct socket *sock, struct sockaddr_unspec *uaddr,
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct sockaddr *sa = (struct sockaddr *)uaddr;
+-	char name[sizeof(sa->sa_data_min) + 1];
++	char name[sizeof(sa->sa_data) + 1];
+ 
+ 	/*
+ 	 *	Check legality
+@@ -3295,8 +3295,8 @@ static int packet_bind_spkt(struct socket *sock, struct sockaddr_unspec *uaddr,
+ 	/* uaddr->sa_data comes from the userspace, it's not guaranteed to be
+ 	 * zero-terminated.
+ 	 */
+-	memcpy(name, sa->sa_data, sizeof(sa->sa_data_min));
+-	name[sizeof(sa->sa_data_min)] = 0;
++	memcpy(name, sa->sa_data, sizeof(sa->sa_data));
++	name[sizeof(sa->sa_data)] = 0;
+ 
+ 	return packet_do_bind(sk, name, 0, 0);
+ }
+@@ -3581,11 +3581,11 @@ static int packet_getname_spkt(struct socket *sock, struct sockaddr *uaddr,
+ 		return -EOPNOTSUPP;
+ 
+ 	uaddr->sa_family = AF_PACKET;
+-	memset(uaddr->sa_data, 0, sizeof(uaddr->sa_data_min));
++	memset(uaddr->sa_data, 0, sizeof(uaddr->sa_data));
+ 	rcu_read_lock();
+ 	dev = dev_get_by_index_rcu(sock_net(sk), READ_ONCE(pkt_sk(sk)->ifindex));
+ 	if (dev)
+-		strscpy(uaddr->sa_data, dev->name, sizeof(uaddr->sa_data_min));
++		strscpy(uaddr->sa_data, dev->name, sizeof(uaddr->sa_data));
+ 	rcu_read_unlock();
+ 
+ 	return sizeof(*uaddr);
 -- 
 2.34.1
 
