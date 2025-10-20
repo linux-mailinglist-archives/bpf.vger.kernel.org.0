@@ -1,154 +1,170 @@
-Return-Path: <bpf+bounces-71411-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71418-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E827BF25B7
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 18:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 75DE5BF2653
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 18:25:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3EA9A4F7745
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 16:17:39 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4D24F4F92F4
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 16:24:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4767B285CA4;
-	Mon, 20 Oct 2025 16:17:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C0D28CF4A;
+	Mon, 20 Oct 2025 16:24:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ci+iD7PV"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="axmQzGe+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE77277C9A
-	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 16:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0A5286422;
+	Mon, 20 Oct 2025 16:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760977052; cv=none; b=X+YC1QybLHcygG2W/meAlAVIc0NmJfQbX36A3CwHhPIKQEFsnUmKbhndm3X8ofS2BVLEBQ2xqkMAU4rfi31Dk0HaZfql8EtYxiQuLSfuCoNghOZX0m//aTxVxQLGJedg1CJDf2aOW3PQ12/nYkhfCxjiYH3NI6tRtHyF6PFWrPE=
+	t=1760977459; cv=none; b=YeBrDsR2krVA6YFbWwZu4MPcw6lontHysB7sXDJrdy3Ri2eBzVXTiE8hT763EcChmJt6lZ89VqaDabjNHgRWPL/axvZDt5lR45/6e87wSgMhMsi7tMb1lZGY/mir61yXnnUJWq6twvypyj2aqWuX9Cb8JjcWGN7M3nhgttVwO7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760977052; c=relaxed/simple;
-	bh=ULurqNgTjIRm8jXItaQmTq6l/zmGPnpuvlJ/4FEyZY0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f3HqRZR02X3neMZFv+F/SdPTHnu4aCf6mua6Egbju2ZAxw3WG/vC7HbjciL/27Cvo4UrRoTETBka7jJVyySn5lBzAyIPw7ECRe/OsHjqLK/e1vWC9Le2kFOKpustYTzeldoInbp6nkid/NY5TxmXtVt6g6chlyCJN+oj783JA5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ci+iD7PV; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7930132f59aso6125664b3a.0
-        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 09:17:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760977051; x=1761581851; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1JV3ElJ0PE7M/5axYF+HEhAt8OP699X7xWQsv/feFME=;
-        b=ci+iD7PVtHiBERs6XyLwgVIb02uilqDcfkFSgew8sk8cTVqVbeNWfDswWGeOJk0B94
-         Nf1vB3cn8gLn5dLQ9xjq9YbMXDcV/14b1LvmSpn2D3lfIRPrqyyxlQQ2aYHwnUYNRjgQ
-         7wuDczftRGd/q49WTl15/dRkuVPsaLgUjg98kXBt75kHR4WmUhrucMEWg4pJ/jLKaCk5
-         NnqixYopplIu9mzLvMMU5sjJljhYALekZGNQI6M7ex7XcFvKeHaK8PqukbAWMzJ5SQ17
-         +maN4LRWYUxOqSReG+FHCI05EsafguMn5BRJWgWoqVW882/vp6kXcw7P0Fnf/cnWATXY
-         yWNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760977051; x=1761581851;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1JV3ElJ0PE7M/5axYF+HEhAt8OP699X7xWQsv/feFME=;
-        b=CONbvyN1QRIUPwJpEtFgVo1H+OCozjDfgBYsGUnHbsBPzjSvfpsiHl9BLAFNETR0SU
-         JLHjYv+reHrxz24UN75eDV5aWg4ie4yAvQS1NVSHDxeqHzbRzzkTSOK/84tzDTDjkGit
-         b2TClUB3FowGf/y46SaClwsqc9JF6T0JYtcYbV/01417CuHl8bzIcV8rrqXRYUrPN0lN
-         7cHuonznWuoGFHFPDl0sLSRA4uK+FYRCOYhsLYLHx7lNcsiCEpNtz8cFgHnIu+5Hv2Wk
-         uEAx78A0nTisEx64oxHYePVQ5mnkiHmWJZXl6qc707yKb+Uq3wn0xb+u92MHDLhf8KG3
-         fxWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXmHrvQq2wr05bKJmvxIWCosFHiifymgPtpSMxOpylqjcbKoar2UoT5nc5WNMaGdRP8GrQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx4b/dlO3+qPnFSOqY0CWFRx70NWmTSaoWbmovyLTt2R80Rd3yx
-	e6mqF0kj6u0Ez7I4CQEspjLIkCXpfKiNu922BqQ+5ssqRan+l1lwzM/iWmc3DiRuOWv9YAqVrmW
-	tB70vzxJYFQw81/0aZvx7/ooRwBAP7wI=
-X-Gm-Gg: ASbGncuNKjL+3Ep0mEORTEaUMz+P9GJ+dvQmzYAf5NCvEElE1/zxc5h0yAIYWfVHmF3
-	K6hf+S5GQUfklVh93EBZcyNMJHzTFk1lwCLAadnN0J7hLcolDbt3WFD8yPKGERoVEStyF5ZKsvX
-	1Qt6CGL+5ERk53zPXXUYaXI/RqZYhfGD0clsDYsY2MIVYvg5zLV3IWjW6ZbX0M423CyfLkVVwV8
-	JQKo1dcxMloL5x9btxIQAOtx8h3iWWHRGdhP/ynfcs7bzEEW4uIzBRCbOGMwiXRLJ4JywmTumgZ
-	avYGPIH+zwI=
-X-Google-Smtp-Source: AGHT+IGbh3vIY6677DF9brRXSRdqlbWv3B0n8wxI06Wzk1E/BOpWWUwdp56dVrMID+U6pR7TEAzyQ0+fm4lNYwaxZ54=
-X-Received: by 2002:a17:903:138a:b0:290:567a:bb98 with SMTP id
- d9443c01a7336-290cc6da1fdmr167710265ad.57.1760977050441; Mon, 20 Oct 2025
- 09:17:30 -0700 (PDT)
+	s=arc-20240116; t=1760977459; c=relaxed/simple;
+	bh=Z4UT22EGyvlEG1tl2tPWz5AKAW8ctXe9I+yn5eN28bU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JZNzwhx6QTpv1pX2sfi+IhOp92opjpa/Ck5oWcH2miChdB5Wts7BaXgTOatFVe9aT4nTuPRs020rym7qj5yfbQ6zd3Ed5Qav6e9vwHTXqtaedBNUtrbYD08IxY0T9ua6b30rY71QicmbkDAfvLUYeT6VXZCHD6uZ43ZPak1AS/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=axmQzGe+; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=zMQLgJjxGNREMvSiUsrqy2mt5zVHgiDcqKcyCwADK3Y=; b=axmQzGe+tJZnIL9mTVbOUmk/1U
+	qyHt7UVn1a3cHQSRedVCD8JOqPdN6S7mllnigoo1acACnGFSJF9BovaYRgpIIrVyvuEst8ddUje3F
+	pHvWyYlWPO0xIqIQDrP/XoSlfWwbA64lDdMtHw6n15U860BLzIO8EQcoezzzqP9FuezSSxzfNRpp8
+	kl+QMc/1K2K/3oY6g70VeGldQ1O9Mu+L7/fjg6wvzXwfSBvsg2mkQ/aAKhvLuofMMGCyap+dEpt60
+	oEORRXLZm3o64bZwTLJ/O2GA6RHpiTdP2TGqjPf+Db/bYq7X3uX3K2iVhhtqW7aY+gkSeRsv+N78i
+	iKvnFfSw==;
+Received: from localhost ([127.0.0.1])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1vAsfs-000JiL-1n;
+	Mon, 20 Oct 2025 18:23:56 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	razor@blackwall.org,
+	pabeni@redhat.com,
+	willemb@google.com,
+	sdf@fomichev.me,
+	john.fastabend@gmail.com,
+	martin.lau@kernel.org,
+	jordan@jrife.io,
+	maciej.fijalkowski@intel.com,
+	magnus.karlsson@intel.com,
+	dw@davidwei.uk,
+	toke@redhat.com,
+	yangzhenze@bytedance.com,
+	wangdongdong.6@bytedance.com
+Subject: [PATCH net-next v3 00/15] netkit: Support for io_uring zero-copy and AF_XDP
+Date: Mon, 20 Oct 2025 18:23:40 +0200
+Message-ID: <20251020162355.136118-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAADnVQ+pXhEsumx6NapCU0sCJw9vdB3TdLMLtCoHa7_sqCRH1A@mail.gmail.com>
- <20251019223006.26252-1-nooraineqbal@gmail.com>
-In-Reply-To: <20251019223006.26252-1-nooraineqbal@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 20 Oct 2025 09:17:18 -0700
-X-Gm-Features: AS18NWBGqjFbbLYWqoMHdvc1S5PFT_whCkYbB4vjL2fGXEzy9hWRYir83-8Tb60
-Message-ID: <CAEf4BzbtzHsa8DASzOg-Xqp8_-vG5ekC7JXhwuyZqPhrckU1hA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: sync pending IRQ work before freeing ring buffer
-To: Noorain Eqbal <nooraineqbal@gmail.com>
-Cc: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org, 
-	bpf@vger.kernel.org, daniel@iogearbox.net, david.hunter@linuxfoundation.org, 
-	eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel-mentees@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
-	skhan@linuxfoundation.org, song@kernel.org, 
-	syzbot+2617fc732430968b45d2@syzkaller.appspotmail.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: Clear (ClamAV 1.0.9/27798/Mon Oct 20 11:37:28 2025)
 
-On Sun, Oct 19, 2025 at 3:30=E2=80=AFPM Noorain Eqbal <nooraineqbal@gmail.c=
-om> wrote:
->
-> On Sat, Oct 19, 2025 at 1:13 UTC, Alexei Starovoitov wrote:
-> > Why do you think irq_work_run_list() processes bpf ringbuf in
-> > the above splat?
->
-> In the syzbot reproducer, GDB shows that when bpf_ringbuf_free() is enter=
-ed
-> the ring buffer's irq_work was still pending when the map was being freed=
-.
->
->     (gdb) p rb->work
->     $5 =3D {
->       node =3D {llist =3D {next =3D 0xffffffff8dc055c0 <wake_up_kfence_ti=
-mer_work>},
->               {u_flags =3D 35, a_flags =3D {counter =3D 35}}},
->       func =3D 0xffffffff8223ac60 <bpf_ringbuf_notify>,
->       irqwait =3D {task =3D 0x0}
->     }
->
-> Here, `u_flags =3D 0x23` indicates IRQ_WORK_PENDING and IRQ_WORK_BUSY
-> are set, which shows that irq_work for the ring buffer was still queued
-> at the time of free. This confirms that `irq_work_run_list()` could
-> process the ring buffer after memory was freed.
->
-> On Sat, Oct 19, 2025 at 1:13 UTC, Alexei Starovoitov wrote:
-> > Sort-of kind-of makes sense, but bpf_ringbuf_free() is called
-> > when no references to bpf map are left. User space and bpf progs
-> > are not using it anymore, so irq_work callbacks should have completed
-> > long ago.
->
-> You're correct that normally all irq_work callbacks should have completed
-> by the time bpf_ringbuf_free() is called. However, there is a small
-> race window. In the syzbot reproducer (https://syzkaller.appspot.com/text=
-?tag=3DReproC&x=3D17a24b34580000),
-> the BPF program is attached to sched_switch and it also writes to the
-> ring buffer on every context switch. Each forked child creates the
-> BPF program and quickly drops the last reference after bpf_ringbuf_commit=
-()
-> queues an irq_work. Because the irq_work runs asynchronously, it may stil=
-l
-> be pending when bpf_ringbuf_free() executes, thus creating a small race
-> window that can lead to use-after-free.
->
-> Adding `irq_work_sync(&rb->work)` ensures that all pending notifications
-> complete before freeing the buffer.
+Containers use virtual netdevs to route traffic from a physical netdev
+in the host namespace. They do not have access to the physical netdev
+in the host and thus can't use memory providers or AF_XDP that require
+reconfiguring/restarting queues in the physical netdev.
 
-I think this all makes sense and the fix should be good. Please add
-the above details (perhaps in a bit more condensed form) to the commit
-message.
+This patchset adds the concept of queue peering to virtual netdevs that
+allow containers to use memory providers and AF_XDP at native speed.
+These mapped queues are bound to a real queue in a physical netdev and
+act as a proxy.
 
->
-> Thanks,
-> Noorain Eqbal
+Memory providers and AF_XDP operations takes an ifindex and queue id,
+so containers would pass in an ifindex for a virtual netdev and a queue
+id of a mapped queue, which then gets proxied to the underlying real
+queue. Peered queues are created and bound to a real queue atomically
+through a generic ynl netdev operation.
+
+We have implemented support for this concept in netkit and tested the
+latter against Nvidia ConnectX-6 (mlx5) as well as Broadcom BCM957504
+(bnxt_en) 100G NICs. For more details see the individual patches.
+
+v2->v3:
+ - Use netdev_ops_assert_locked instead of netdev_assert_locked (syzbot)
+ - Add missing netdev_lockdep_set_classes in netkit
+v1->v2:
+ - Removed bind sample ynl code (Stan)
+ - Reworked netdev locking to have consistent order (Stan, Kuba)
+ - Return 'not supported' in API patch (Stan)
+ - Improved ynl documentation (Kuba)
+ - Added 'max: s32-max' in ynl spec for ifindex (Kuba)
+ - Added also queue type in ynl to have user specify rx to make
+   it obvious (Kuba)
+ - Use of netdev_hold (Kuba)
+ - Avoid static inlines from another header (Kuba)
+ - Squashed some commits (Kuba, Stan)
+ - Removed ndo_{peer,unpeer}_queues callback and simplified
+   code (Kuba)
+ - Improved commit messages (Toke, Kuba, Stan, zf)
+ - Got rid of locking genl_sk_priv_get (Stan)
+ - Removed af_xdp cleanup churn (Maciej)
+ - Added netdev locking asserts (Stan)
+ - Reject ethtool ioctl path queue resizing (Kuba)
+ - Added kdoc for ndo_queue_create (Stan)
+ - Uninvert logic in netkit single dev mode (Jordan)
+ - Added binding support for multiple queues
+
+Daniel Borkmann (9):
+  net, ethtool: Disallow peered real rxqs to be resized
+  xsk: Move NETDEV_XDP_ACT_ZC into generic header
+  xsk: Move pool registration into single function
+  xsk: Add small helper xp_pool_bindable
+  xsk: Change xsk_rcv_check to check netdev/queue_id from pool
+  xsk: Proxy pool management for mapped queues
+  netkit: Add single device mode for netkit
+  netkit: Document fast vs slowpath members via macros
+  netkit: Add xsk support for af_xdp applications
+
+David Wei (6):
+  net: Add bind-queue operation
+  net: Implement netdev_nl_bind_queue_doit
+  net: Add peer info to queue-get response
+  net: Proxy net_mp_{open,close}_rxq for mapped queues
+  netkit: Implement rtnl_link_ops->alloc and ndo_queue_create
+  netkit: Add io_uring zero-copy support for TCP
+
+ Documentation/netlink/specs/netdev.yaml |  84 ++++++
+ drivers/net/netkit.c                    | 330 ++++++++++++++++++++----
+ include/linux/ethtool.h                 |   1 +
+ include/net/netdev_queues.h             |   5 +
+ include/net/netdev_rx_queue.h           |  39 ++-
+ include/net/page_pool/memory_provider.h |   4 +-
+ include/net/xdp_sock_drv.h              |   8 +-
+ include/uapi/linux/if_link.h            |   6 +
+ include/uapi/linux/netdev.h             |  22 ++
+ net/core/netdev-genl-gen.c              |  25 ++
+ net/core/netdev-genl-gen.h              |   1 +
+ net/core/netdev-genl.c                  | 177 ++++++++++++-
+ net/core/netdev_rx_queue.c              | 126 +++++++--
+ net/ethtool/channels.c                  |  12 +-
+ net/ethtool/common.c                    |  10 +-
+ net/ethtool/ioctl.c                     |   4 +-
+ net/xdp/xsk.c                           |  44 +++-
+ net/xdp/xsk.h                           |   5 +-
+ net/xdp/xsk_buff_pool.c                 |  18 +-
+ tools/include/uapi/linux/netdev.h       |  22 ++
+ 20 files changed, 830 insertions(+), 113 deletions(-)
+
+-- 
+2.43.0
+
 
