@@ -1,234 +1,119 @@
-Return-Path: <bpf+bounces-71367-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71369-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4F6DBF0000
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 10:41:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24FB9BF00C4
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 10:55:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6857189EAA8
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 08:41:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9B3C3BC6FE
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 08:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD9672EC559;
-	Mon, 20 Oct 2025 08:41:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 302922ED144;
+	Mon, 20 Oct 2025 08:55:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="g++C1C8v"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="PQ/pB4pm"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D131F1517;
-	Mon, 20 Oct 2025 08:41:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794741643B;
+	Mon, 20 Oct 2025 08:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760949668; cv=none; b=kwVSVv8l8xTWxZ6ljdCavttSBbmn3ZtqA24cmj+xK/gvJYq0XLzxIk1rvPWHt0jToX+Zi7Y9PbLi3Ka9EU37iiW9ygA3BgjZReRTZW+q7oQaXSzGe+PAkkuvaSB487O1Bcyg10UQYR+DhovQ7xJRqsOVKD8s8pc7j8AfU4FhmLI=
+	t=1760950511; cv=none; b=eAxs7oODDHFHvTKVUOEAOodcp94ZOib9lW40jvkQRgWrbmGL3y4uJtUlU7FTkRkZP/IZPvO6VRBFrMHxWL9LxgNBF9t6t11N9mDUTFMCRRwD3SWZ6moGSU5sWtd7hQQAMVqkG1Iw8TO4/EAv/3ZNEEib6465NPK0GqOsZaCYvTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760949668; c=relaxed/simple;
-	bh=j9yEkHBaZTQHcGD0XBLUbfsvIwG+WLkyVW8M9OqBigQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DohddONyk4EhEOqXrroaoQd+jo2fKWGxy/fgtsgnOCeWPIDSZ+P9SETucbR+uzOCgAf6xcou44DpFEp3WvtxwP8QMWP9u0NfQiSx0Jh3nH/4hgLIYWGc6r9vLs3VXjk98g06B6aEfPQmUD0m+TuZQcu++EnfBZg9vAtqt1acV8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=g++C1C8v; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1760949654;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=d2ASlFl8CZjWKl3AeuWdFgcOERTPwTmFTKMyRlTsQbM=;
-	b=g++C1C8v24WDqr9GGUDcKFTgHO62v13d1uXca2eTAfV2jsuIKtdL6Sp8stnwi1co7315ns
-	452UZnaNonN8zXG1+PhwXHGmsLgfLofrzOQEz6PWN7CFenNk6y31Tw2EigaSYxxuM1vIaY
-	oLe+eh5TC1SsUc5rMjohqwnTB1v0Rv8=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: Menglong Dong <menglong8.dong@gmail.com>, Jiri Olsa <olsajiri@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, mattbobrowski@google.com, rostedt@goodmis.org,
- mhiramat@kernel.org, mathieu.desnoyers@efficios.com, leon.hwang@linux.dev,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject:
- Re: [PATCH RFC bpf-next 5/5] selftests/bpf: add testcases for tracing session
-Date: Mon, 20 Oct 2025 16:40:17 +0800
-Message-ID: <2243183.irdbgypaU6@7950hx>
-In-Reply-To: <aPXwo0puQI3t0CXC@krava>
-References:
- <20251018142124.783206-1-dongml2@chinatelecom.cn>
- <20251018142124.783206-6-dongml2@chinatelecom.cn> <aPXwo0puQI3t0CXC@krava>
+	s=arc-20240116; t=1760950511; c=relaxed/simple;
+	bh=wU69FWg0HnxDv6ekq3BFRwg1waREh/mUKaxeSy9S7QU=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Subject:Cc:
+	 References:In-Reply-To; b=W111cHSAWZ39GC/eLPwM0mqdqwp3nrGHLeoR58zDC/HfJheUPDRoMQMoS/RLQoPOr1RjuO+Hct8VE4iT8/I0ygiksztMgvNeCP3bBkQhCn6vkdJz8s25CWghnYT68pqAA4BAzgMhoKXcD2dIL+k15FJacm121PRtqNPMbyksSEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=PQ/pB4pm; arc=none smtp.client-ip=185.246.84.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id ADBFF1A1533;
+	Mon, 20 Oct 2025 08:55:00 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 8243D606D5;
+	Mon, 20 Oct 2025 08:55:00 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 9D53C102F23A9;
+	Mon, 20 Oct 2025 10:54:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1760950495; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=wU69FWg0HnxDv6ekq3BFRwg1waREh/mUKaxeSy9S7QU=;
+	b=PQ/pB4pmgNCRHVAktZEPxdSjsFln8znIep9nVHYg0FN3yjap5mnMRj7EN0NH0KYjolciuP
+	p/xR3bUJDhAwNc2gFTfPwedGqaUA67zh09BL9bffEXWZ1D/T078oTOhwNuHqKMJE+ohmAB
+	Kd0f/pR2Ac4wTl3uY0wt+1H6x7eJ/BsEzDZ0F3cA895sAvfj5SvK6PwdxGgQuKmTynKgQx
+	9lTRvAwCa/2VEGnemb+143wjJDRJWFOm8UETAh29tJsKilPKyrVI2ZqO+wPCWtPgyFmB4X
+	b9RlL4FfH94f41DzhKL4IosQVLP8I3I4YdPHzaiVT+Mi3RJjYnB8clyIgg++6w==
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 20 Oct 2025 10:54:40 +0200
+Message-Id: <DDN0UIQ05A22.1SDXOW1K83VYY@bootlin.com>
+From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+To: "Martin KaFai Lau" <martin.lau@linux.dev>,
+ =?utf-8?b?QWxleGlzIExvdGhvcsOpIChlQlBGIEZvdW5kYXRpb24p?=
+ <alexis.lothore@bootlin.com>
+Subject: Re: [PATCH bpf-next 2/5] selftests/bpf: add tc helpers
+Cc: "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
+ <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>, "Eduard
+ Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong
+ Song" <yonghong.song@linux.dev>, "John Fastabend"
+ <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
+ Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
+ <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>,
+ <ebpf@linuxfoundation.org>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Bastien Curutchet"
+ <bastien.curutchet@bootlin.com>, <bpf@vger.kernel.org>,
+ <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.21.0-0-g5549850facc2
+References: <20251017-tc_tunnel-v1-0-2d86808d86b2@bootlin.com>
+ <20251017-tc_tunnel-v1-2-2d86808d86b2@bootlin.com>
+ <a49ebaad-cc79-4ade-aa4a-ad37fcf81dee@linux.dev>
+In-Reply-To: <a49ebaad-cc79-4ade-aa4a-ad37fcf81dee@linux.dev>
+X-Last-TLS-Session-Version: TLSv1.3
 
-On 2025/10/20 16:19, Jiri Olsa wrote:
-> On Sat, Oct 18, 2025 at 10:21:24PM +0800, Menglong Dong wrote:
-> 
-> SNIP
-> 
-> > +static void test_fsession_reattach(void)
-> > +{
-> > +	struct fsession_test *skel = NULL;
-> > +	int err, prog_fd;
-> > +	LIBBPF_OPTS(bpf_test_run_opts, topts);
-> > +
-> > +	skel = fsession_test__open_and_load();
-> > +	if (!ASSERT_OK_PTR(skel, "fsession_test__open_and_load"))
-> > +		goto cleanup;
-> > +
-> > +	/* First attach */
-> > +	err = fsession_test__attach(skel);
-> > +	if (!ASSERT_OK(err, "fsession_first_attach"))
-> > +		goto cleanup;
-> > +
-> > +	/* Trigger test function calls */
-> > +	prog_fd = bpf_program__fd(skel->progs.test1);
-> > +	err = bpf_prog_test_run_opts(prog_fd, &topts);
-> > +	if (!ASSERT_OK(err, "test_run_opts err"))
-> > +		return;
-> 
-> goto cleanup
+On Sat Oct 18, 2025 at 1:26 AM CEST, Martin KaFai Lau wrote:
+>
+>
+> On 10/17/25 7:29 AM, Alexis Lothor=C3=A9 (eBPF Foundation) wrote:
+>> diff --git a/tools/testing/selftests/bpf/tc_helpers.c b/tools/testing/se=
+lftests/bpf/tc_helpers.c
+>> new file mode 100644
+>> index 0000000000000000000000000000000000000000..d668e10e3ebad8f8e04862f5=
+c2b3ccd487fe8fa6
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/tc_helpers.c
+>> @@ -0,0 +1,87 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +#define _GNU_SOURCE
+>> +
+>> +#include <net/if.h>
+>> +#include "tc_helpers.h"
+>> +#include "test_progs.h"
+>> +
+>> +static int attach_tc_prog(int ifindex, int igr_fd, int egr_fd)
+>
+> This one looks good but change it to "int tc_prog_attach(const char=20
+> *dev, int ingress_fd, int egress_fd)". Remove static. Take "const char=20
+> *dev" as the arg. Add it to network_helpers.[ch] instead of creating a=20
+> new source file.
 
-ACK.
+Nice, thanks for the hint, I missed this header
 
-> 
-> > +	if (!ASSERT_OK(topts.retval, "test_run_opts retval"))
-> > +		return;
-> 
-> goto cleanup
+Alexis
 
-ACK.
-
-> 
-> > +
-> > +	/* Verify first call */
-> > +	ASSERT_EQ(skel->bss->test1_entry_called, 1, "test1_entry_first");
-> > +	ASSERT_EQ(skel->bss->test1_exit_called, 1, "test1_exit_first");
-> > +
-> > +	/* Detach */
-> > +	fsession_test__detach(skel);
-> > +
-> > +	/* Reset counters */
-> > +	memset(skel->bss, 0, sizeof(*skel->bss));
-> > +
-> > +	/* Second attach */
-> > +	err = fsession_test__attach(skel);
-> > +	if (!ASSERT_OK(err, "fsession_second_attach"))
-> > +		goto cleanup;
-> > +
-> > +	err = bpf_prog_test_run_opts(prog_fd, &topts);
-> > +	if (!ASSERT_OK(err, "test_run_opts err"))
-> > +		return;
-> 
-> goto cleanup
-
-ACK.
-
-> 
-> > +	if (!ASSERT_OK(topts.retval, "test_run_opts retval"))
-> > +		return;
-> 
-> goto cleanup
-
-ACK.
-
-> 
-> > +
-> > +	/* Verify second call */
-> > +	ASSERT_EQ(skel->bss->test1_entry_called, 1, "test1_entry_second");
-> > +	ASSERT_EQ(skel->bss->test1_exit_called, 1, "test1_exit_second");
-> > +
-> > +cleanup:
-> > +	fsession_test__destroy(skel);
-> > +}
-> > +
-> > +void test_fsession_test(void)
-> > +{
-> > +#if !defined(__x86_64__)
-> > +	test__skip();
-> > +	return;
-> > +#endif
-> > +	if (test__start_subtest("fsession_basic"))
-> > +		test_fsession_basic();
-> > +	if (test__start_subtest("fsession_reattach"))
-> > +		test_fsession_reattach();
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/fsession_test.c b/tools/testing/selftests/bpf/progs/fsession_test.c
-> > new file mode 100644
-> > index 000000000000..cce2b32f7c2c
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/fsession_test.c
-> > @@ -0,0 +1,178 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2025 ChinaTelecom */
-> > +#include <vmlinux.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> > +
-> > +__u64 test1_entry_result = 0;
-> > +__u64 test1_exit_result = 0;
-> > +__u64 test1_entry_called = 0;
-> > +__u64 test1_exit_called = 0;
-> > +
-> > +SEC("fsession/bpf_fentry_test1")
-> > +int BPF_PROG(test1, int a)
-> > +{
-> 
-> I guess we can access return argument directly but it makes sense only
-> for exit session program, or we could use bpf_get_func_ret
-
-Yeah, we can access the return value directly here or use
-bpf_get_func_ret(). For fentry, it is also allow to access the return value.
-It makes no sense to obtain the return value in the fentry, and
-what it gets is just the previous fsession-fentry returned.
-And it needs more effort in the verifier to forbid such operation.
-
-The testcases is not complete, and I'll add more testcases in the
-next version to cover more cases.
-
-Thanks!
-Menglong Dong
-
-> 
-> jirka
-> 
-> 
-> > +	bool is_exit = bpf_tracing_is_exit(ctx);
-> > +
-> > +	if (!is_exit) {
-> > +		/* This is entry */
-> > +		test1_entry_called = 1;
-> > +		test1_entry_result = a == 1;
-> > +		return 0; /* Return 0 to allow exit to be called */
-> > +	}
-> > +
-> > +	/* This is exit */
-> > +	test1_exit_called = 1;
-> > +	test1_exit_result = a == 1;
-> > +	return 0;
-> > +}
-> > +
-> > +__u64 test2_entry_result = 0;
-> > +__u64 test2_exit_result = 0;
-> > +__u64 test2_entry_called = 0;
-> > +__u64 test2_exit_called = 0;
-> > +
-> 
-> SNIP
-> 
-> 
-
-
-
+--=20
+Alexis Lothor=C3=A9, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
