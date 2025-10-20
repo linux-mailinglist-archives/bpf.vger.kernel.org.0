@@ -1,269 +1,106 @@
-Return-Path: <bpf+bounces-71431-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71423-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C13CABF283B
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 18:49:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BEF2BF26EC
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 18:30:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B7B4A4EA9FC
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 16:49:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6F00423192
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 16:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EE2532F750;
-	Mon, 20 Oct 2025 16:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2A22877F1;
+	Mon, 20 Oct 2025 16:28:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="PVIN0ico"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RjfM3gm2"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76F8F32ED3E;
-	Mon, 20 Oct 2025 16:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A595328A72F
+	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 16:28:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760978986; cv=none; b=C7S+ptVAU+MHOHOrtyKhrHWTlRxg9FqfMQ+dlSz/YEUel6+Nnm/bF/uQcD4NL5C7JcxD9TvsA24Rp/UFimqSwb0IyZBUx+SrCjgiWSrlyOlmY/deqaE0oqEuarY6wKc5b5zXnJulzBFdCfl+4VdK2c5OlBi3pZjDI9TQZTZEtC8=
+	t=1760977703; cv=none; b=DRI5a7kh6p82BqgtibKr6rtmH3P3YNeJkFommyu5+HftTiXX4jdqSpLZMJMj0wb10lobKYjI1y1J89TlVQFF3olHriBIN4l1iNag9p5Kf840m0KfgwJX7yyjeQPNxo0/OoDGOIi4fxySkQ6M+ryzpWojSumc2EjtIetZFSH79HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760978986; c=relaxed/simple;
-	bh=UxGsfH3mkkGxYO6io+0E+8yvKqYEhJiVmJ7X+FgzsUs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tWMPxjSNTrtn7gzFYZpfM6XYrPw72F8USW96p1zxPywphGwsGRL9NMc8ZreGpv3gIY16vG7NU4Hq3fxmiUBMwHy/zmzYGU0GyWtm/lt/MnqYjt0R/4Jyb3lPd7o16J6TRhICcdFidkQzGzWvYCG6AfbHFTzRucGYizXQFxg8+B4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=PVIN0ico; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=884xqxUtg5jU/T30SRwYu58JWq3FvgLsVIs4zUZceAU=; b=PVIN0ico4nEB6MW0zPT5e7MqhL
-	cFlSm9RZxO9Y+YOl+mpep1t94DEWeLCSEvh1B+Cu8p4osC2aUB9r5p7Ca0DaIytyFxd2IJDOJhsEM
-	9b+Zm7SCsPYEQFPMPxRKfIeyJn/Of8LY6jwEEYEMNtkGGkK4ruubKxcqKk8d4K4SAUmgZY6jTEZDn
-	VPy4Rw5cTP2xyiNDa+2oZ7H8eNgjmmj3oPS1eSxRyxMwij4P99odXLY3TBysW0YgYt+xLH4eTgD4I
-	ge+Fd6OeHAKQIx1dfrjG4acXjNC8/l70tLp7F7EwBuCX0vy0PHv1v0PH2PggwbdNVitWbS7RQu/9N
-	T7Rx0afg==;
-Received: from localhost ([127.0.0.1])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1vAsg9-000Jms-1R;
-	Mon, 20 Oct 2025 18:24:13 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org,
-	kuba@kernel.org,
-	davem@davemloft.net,
-	razor@blackwall.org,
-	pabeni@redhat.com,
-	willemb@google.com,
-	sdf@fomichev.me,
-	john.fastabend@gmail.com,
-	martin.lau@kernel.org,
-	jordan@jrife.io,
-	maciej.fijalkowski@intel.com,
-	magnus.karlsson@intel.com,
-	dw@davidwei.uk,
-	toke@redhat.com,
-	yangzhenze@bytedance.com,
-	wangdongdong.6@bytedance.com
-Subject: [PATCH net-next v3 15/15] netkit: Add xsk support for af_xdp applications
-Date: Mon, 20 Oct 2025 18:23:55 +0200
-Message-ID: <20251020162355.136118-16-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20251020162355.136118-1-daniel@iogearbox.net>
-References: <20251020162355.136118-1-daniel@iogearbox.net>
+	s=arc-20240116; t=1760977703; c=relaxed/simple;
+	bh=BEZaggrBBd4b0AfjBpwDK0R+fV7p40QB8e5rEKn57B8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XNyyF2LnLKiA98HKEq0GdfQa+4t3O5Z4WWHNxQpUC9j9n7VJYe5EMxf98NG4CgbTgOC3NKVp/VgPBZUvQDZYrbtJtoSbg32s8sMHST/3mMLxyMgOcfmRyRsXk8+Wls9uCatkIzv7VbSSWorl954G03UOuqpfWDPm0AXlQunTAFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RjfM3gm2; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-47157119d8bso5448655e9.3
+        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 09:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760977696; x=1761582496; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BEZaggrBBd4b0AfjBpwDK0R+fV7p40QB8e5rEKn57B8=;
+        b=RjfM3gm28U5ghZSqu2mnef+2Jt4MrrtHHtl1+Suw86NPNckFD1eHRdxFiZ4yJRaqgM
+         IK/81AFPbKx6RKPlfugMIH004AL2JvFPO5h8MW1XOgvOiyvDXN0/fYvZMCi9u7qMvgn9
+         hOkNQ61hk1RmT4IJ7LarCDYFBf0M20yMcaiBB8/EqF02ToE6y41pwTgeFXCydMB/y5XX
+         jUegSRqohqZry9qvTTpw/DRIL7s0qVEacP9y7hS0LVPXWASp8oM9ftKBSLSE0Ynxn2wb
+         oiz4pig+tZ+IeTJxxTWclBIR/ojL70CyI8nx3ibmD7uirBpW2stXejV6cKGplM0mDtwt
+         bGTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760977696; x=1761582496;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BEZaggrBBd4b0AfjBpwDK0R+fV7p40QB8e5rEKn57B8=;
+        b=B/yaKJ6LDD8EDYqiV0hd8ThNWze1huIU0b6AoNdDuX3j7bSFkh+vZePpCDAXiG3Ugy
+         SaNYy66mLmDe5g+QnpaG2uwXzH5eak1HMOtKb6/3QMKWMNUemuPL46v4Psb8scF70muq
+         kN6tuxoKYhSYptFtQimKX5gwh9ZKLFElFW9wRk8PEw1nStztMdL79580ofEkrQ2qJoqS
+         l+2yzwaLSiMzrQcB1jCUbNr8Mli+0iYQDwJJ5f7b5I5fYUvcAxbdRG5qFICF63oxoC9F
+         iWl0vbdwQEDCEi+4PNXReGjYQ46po9EeQZMJ6FVxgJHHZb5ext+hDWJ/FEA3kgAa+nOL
+         35Gg==
+X-Forwarded-Encrypted: i=1; AJvYcCWOxdtIXBK57mXd4bvMHJj/WQj3KYOBPiv1/ZKbbjwtj5aegKmezToDgnKTQsLpDa3r3ko=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwtHMU1Cpjb2gBOTgimCcAKji50rCay7IYXa4t7hJHQeJzNlOpA
+	iEaynKbcaHBu1UUyBGmIzb7z7G94T0E/M3Z6ISsOJVLFdiyXUDb3FFbO99tgFu4c3sREQYeGnEo
+	US8Cb31QmDhnOPD1WoAiSmRo7OVyqDb8=
+X-Gm-Gg: ASbGncsi9ar8P5xocdKQqoyIF8tzmHEpTwttEXo0sV3zJkTLcHlBpBNb91xC8WAe9qb
+	l3IS8jzB8lcW39J4N1imV87eaquYA8LfNXc4S0RV/WStClaAF9Eq42I5lu3J+rFEBFEwFv3o6dx
+	SzgdXCfKZrpLX+AMnAyyL3aJ61ekUtKjaVHzEqXa286tSmYYam805+syGoYkFSyN90RQqSwa+W0
+	oWY+gvR4CB7QpHUdPLvDgtaDvSajDB932yQgIr3KVDUM894wdRQuNENrHv70/nWRm0xkcfzeQZs
+X-Google-Smtp-Source: AGHT+IGgsb23uLOYmPtswWrzHBvsGatayTaNyrZEWVwipxccOWsj2/tNIa+9q5qhrVZNBeJYMzzwLQsvnR4FFMLm6S8=
+X-Received: by 2002:a05:600c:19d4:b0:46e:4a13:e6c6 with SMTP id
+ 5b1f17b1804b1-47117907234mr107718165e9.19.1760977696264; Mon, 20 Oct 2025
+ 09:28:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: Clear (ClamAV 1.0.9/27798/Mon Oct 20 11:37:28 2025)
+References: <CAEf4Bza6ynjUHanEEqQZ_mke3oBCzSitxBt9Jb5tx8rxt8q4vg@mail.gmail.com>
+ <20251020085918.1604034-1-higuoxing@gmail.com>
+In-Reply-To: <20251020085918.1604034-1-higuoxing@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 20 Oct 2025 09:28:03 -0700
+X-Gm-Features: AS18NWAYQpOtsQ2xgj0ICvDQj1f9fYVEjTCZgyvRi5tfiwjitQ9rlcRw3bERhgg
+Message-ID: <CAADnVQLDQpNEa0bT6nyX3UfGTE94YxrM4gPD+PirmqHwXRB15Q@mail.gmail.com>
+Subject: Re: strace log before the fix, with fsync fix and with fclose fix.
+To: Xing Guo <higuoxing@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Jiri Olsa <olsajiri@gmail.com>, sveiss@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Enable support for AF_XDP applications to operate on a netkit device.
-The goal is that AF_XDP applications can natively consume AF_XDP
-from network namespaces. The use-case from Cilium side is to support
-Kubernetes KubeVirt VMs through QEMU's AF_XDP backend. KubeVirt is a
-virtual machine management add-on for Kubernetes which aims to provide
-a common ground for virtualization. KubeVirt spawns the VMs inside
-Kubernetes Pods which reside in their own network namespace just like
-regular Pods.
+On Mon, Oct 20, 2025 at 1:59=E2=80=AFAM Xing Guo <higuoxing@gmail.com> wrot=
+e:
+>
+> Test with fsync:
 
-Raw QEMU AF_XDP backend example with eth0 being a physical device with
-16 queues where netkit is bound to the last queue (for multi-queue RSS
-context can be used if supported by the driver):
-
-  # ethtool -X eth0 start 0 equal 15
-  # ethtool -X eth0 start 15 equal 1 context new
-  # ethtool --config-ntuple eth0 flow-type ether \
-            src 00:00:00:00:00:00 \
-            src-mask ff:ff:ff:ff:ff:ff \
-            dst $mac dst-mask 00:00:00:00:00:00 \
-            proto 0 proto-mask 0xffff action 15
-  [ ... setup BPF/XDP prog on eth0 to steer into shared xsk map ... ]
-  # ip netns add foo
-  # ip link add numrxqueues 2 nk type netkit single
-  # ./pyynl/cli.py --spec ~/netlink/specs/netdev.yaml \
-                   --do bind-queue \
-                   --json "{"src-ifindex": $(ifindex eth0), "src-queue-id": 15, \
-                            "dst-ifindex": $(ifindex nk), "queue-type": "rx"}"
-  {'dst-queue-id': 1}
-  # ip link set nk netns foo
-  # ip netns exec foo ip link set lo up
-  # ip netns exec foo ip link set nk up
-  # ip netns exec foo qemu-system-x86_64 \
-          -kernel $kernel \
-          -drive file=${image_name},index=0,media=disk,format=raw \
-          -append "root=/dev/sda rw console=ttyS0" \
-          -cpu host \
-          -m $memory \
-          -enable-kvm \
-          -device virtio-net-pci,netdev=net0,mac=$mac \
-          -netdev af-xdp,ifname=nk,id=net0,mode=native,queues=1,start-queue=1,inhibit=on,map-path=$dir/xsks_map \
-          -nographic
-
-We have tested the above against a dual-port Nvidia ConnectX-6 (mlx5)
-100G NIC with successful network connectivity out of QEMU. An earlier
-iteration of this work was presented at LSF/MM/BPF [0].
-
-For getting to a first starting point to connect all things with
-KubeVirt, bind mounting the xsk map from Cilium into the VM launcher
-Pod which acts as a regular Kubernetes Pod while not perfect, is not
-a big problem given its out of reach from the application sitting
-inside the VM (and some of the control plane aspects are baked in
-the launcher Pod already), so the isolation barrier is still the VM.
-Eventually the goal is to have a XDP/XSK redirect extension where
-there is no need to have the xsk map, and the BPF program can just
-derive the target xsk through the queue where traffic was received
-on.
-
-The exposure through netkit is because Cilium should not act as a
-proxy handing out xsk sockets. Existing applications expect a netdev
-from kernel side and should not need to rewrite just to implement
-against a CNI's protocol. Also, all the memory should not be accounted
-against Cilium but rather the application Pod itself which is consuming
-AF_XDP. Further, on up/downgrades we expect the data plane to being
-completely decoupled from the control plane; if Cilium would own the
-sockets that would be disruptive. Another use-case which opens up and
-is regularly asked from users would be to have DPDK applications on
-top of AF_XDP in regular Kubernetes Pods.
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Co-developed-by: David Wei <dw@davidwei.uk>
-Signed-off-by: David Wei <dw@davidwei.uk>
-Link: https://bpfconf.ebpf.io/bpfconf2025/bpfconf2025_material/lsfmmbpf_2025_netkit_borkmann.pdf [0]
----
- drivers/net/netkit.c | 71 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 70 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-index a281b39a1047..f69abe5ec4cd 100644
---- a/drivers/net/netkit.c
-+++ b/drivers/net/netkit.c
-@@ -12,6 +12,7 @@
- #include <net/netdev_lock.h>
- #include <net/netdev_queues.h>
- #include <net/netdev_rx_queue.h>
-+#include <net/xdp_sock_drv.h>
- #include <net/netkit.h>
- #include <net/dst.h>
- #include <net/tcx.h>
-@@ -235,6 +236,71 @@ static void netkit_get_stats(struct net_device *dev,
- 	stats->tx_dropped = DEV_STATS_READ(dev, tx_dropped);
- }
- 
-+static bool netkit_xsk_supported_at_phys(const struct net_device *dev)
-+{
-+	if (!dev->netdev_ops->ndo_bpf ||
-+	    !dev->netdev_ops->ndo_xdp_xmit ||
-+	    !dev->netdev_ops->ndo_xsk_wakeup)
-+		return false;
-+	if ((dev->xdp_features & NETDEV_XDP_ACT_XSK) != NETDEV_XDP_ACT_XSK)
-+		return false;
-+	return true;
-+}
-+
-+static int netkit_xsk(struct net_device *dev, struct netdev_bpf *xdp)
-+{
-+	struct netkit *nk = netkit_priv(dev);
-+	struct netdev_bpf xdp_lower;
-+	struct netdev_rx_queue *rxq;
-+	struct net_device *phys;
-+
-+	switch (xdp->command) {
-+	case XDP_SETUP_XSK_POOL:
-+		if (nk->pair == NETKIT_DEVICE_PAIR)
-+			return -EOPNOTSUPP;
-+		if (xdp->xsk.queue_id >= dev->real_num_rx_queues)
-+			return -EINVAL;
-+
-+		rxq = __netif_get_rx_queue(dev, xdp->xsk.queue_id);
-+		if (!rxq->peer)
-+			return -EOPNOTSUPP;
-+
-+		phys = rxq->peer->dev;
-+		if (!netkit_xsk_supported_at_phys(phys))
-+			return -EOPNOTSUPP;
-+
-+		memcpy(&xdp_lower, xdp, sizeof(xdp_lower));
-+		xdp_lower.xsk.queue_id = get_netdev_rx_queue_index(rxq->peer);
-+		break;
-+	case XDP_SETUP_PROG:
-+		return -EPERM;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return phys->netdev_ops->ndo_bpf(phys, &xdp_lower);
-+}
-+
-+static int netkit_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags)
-+{
-+	struct netdev_rx_queue *rxq;
-+	struct net_device *phys;
-+
-+	if (queue_id >= dev->real_num_rx_queues)
-+		return -EINVAL;
-+
-+	rxq = __netif_get_rx_queue(dev, queue_id);
-+	if (!rxq->peer)
-+		return -EOPNOTSUPP;
-+
-+	phys = rxq->peer->dev;
-+	if (!netkit_xsk_supported_at_phys(phys))
-+		return -EOPNOTSUPP;
-+
-+	return phys->netdev_ops->ndo_xsk_wakeup(phys,
-+			get_netdev_rx_queue_index(rxq->peer), flags);
-+}
-+
- static int netkit_init(struct net_device *dev)
- {
- 	netdev_lockdep_set_classes(dev);
-@@ -255,6 +321,8 @@ static const struct net_device_ops netkit_netdev_ops = {
- 	.ndo_get_peer_dev	= netkit_peer_dev,
- 	.ndo_get_stats64	= netkit_get_stats,
- 	.ndo_uninit		= netkit_uninit,
-+	.ndo_bpf		= netkit_xsk,
-+	.ndo_xsk_wakeup		= netkit_xsk_wakeup,
- 	.ndo_features_check	= passthru_features_check,
- };
- 
-@@ -409,10 +477,11 @@ static void netkit_setup(struct net_device *dev)
- 	dev->hw_enc_features = netkit_features;
- 	dev->mpls_features = NETIF_F_HW_CSUM | NETIF_F_GSO_SOFTWARE;
- 	dev->vlan_features = dev->features & ~netkit_features_hw_vlan;
--
- 	dev->needs_free_netdev = true;
- 
- 	netif_set_tso_max_size(dev, GSO_MAX_SIZE);
-+
-+	xdp_set_features_flag(dev, NETDEV_XDP_ACT_XSK);
- }
- 
- static struct net *netkit_get_link_net(const struct net_device *dev)
--- 
-2.43.0
-
+I doubt people will be reading this giant log.
+Please bisect it instead.
+Since it's not reproducible when /tmp is backed by tmpfs
+it's probably some change in vfs or in the file system that
+your laptop is using for /tmp.
+It changes a user visible behavior of the file system and
+needs to be investigated, since it may affect more code than
+just this selftest.
 
