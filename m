@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-71430-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71431-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8911BF2835
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 18:49:34 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id C13CABF283B
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 18:49:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF6DA425739
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 16:49:31 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B7B4A4EA9FC
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 16:49:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35F332F74C;
-	Mon, 20 Oct 2025 16:49:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EE2532F750;
+	Mon, 20 Oct 2025 16:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="pxthquvc"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="PVIN0ico"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C63427E071;
-	Mon, 20 Oct 2025 16:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76F8F32ED3E;
+	Mon, 20 Oct 2025 16:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760978967; cv=none; b=ReOlvXoOdXM9XkZxCgapKO/Mrj8caHp3+ZfVtTX1fMF9YeqYravI53Iepq78qOIxsQ0MUx4mLlwK/QKgGOJgyxf292YtHhO6KQC/Pu4X7/WO81H5aneEOpMUSzANpFZL/VNeQIz4N4F04vWYZzSf7TGT7WlsVGGGcGHqwo0dp+4=
+	t=1760978986; cv=none; b=C7S+ptVAU+MHOHOrtyKhrHWTlRxg9FqfMQ+dlSz/YEUel6+Nnm/bF/uQcD4NL5C7JcxD9TvsA24Rp/UFimqSwb0IyZBUx+SrCjgiWSrlyOlmY/deqaE0oqEuarY6wKc5b5zXnJulzBFdCfl+4VdK2c5OlBi3pZjDI9TQZTZEtC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760978967; c=relaxed/simple;
-	bh=fz6d13/8g9fz5cwXCG01qQYhBQPqVULH4k3VjnV6m2k=;
+	s=arc-20240116; t=1760978986; c=relaxed/simple;
+	bh=UxGsfH3mkkGxYO6io+0E+8yvKqYEhJiVmJ7X+FgzsUs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tZrRvphmK4jgkPTVyQRLFxyUV9S+YZ9zgQTf5DZYPysn3G2tEu2iw+kSQIBy7OgS34Fb/kOItwL91qkN9xo4g2ijgm4qQ/+Ceh827XorpNJMNPYeAa6Nli2uGiAdeX3fYiH1jJuF3Sqi+o1IX3DkFVdF2XSWVGS0gvzyIuInGtE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=pxthquvc; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=tWMPxjSNTrtn7gzFYZpfM6XYrPw72F8USW96p1zxPywphGwsGRL9NMc8ZreGpv3gIY16vG7NU4Hq3fxmiUBMwHy/zmzYGU0GyWtm/lt/MnqYjt0R/4Jyb3lPd7o16J6TRhICcdFidkQzGzWvYCG6AfbHFTzRucGYizXQFxg8+B4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=PVIN0ico; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,18 +36,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=7brbynTB30Kt41JdXoJYefjsF2tB4KvKdHKaQHe/2TM=; b=pxthquvcJ4nlAhDJWRIpMmjh+D
-	V67n3kbfkvgYgVDH/hgp4exgoDJzoX9r/PO2GgarnXkj+ypaEN/Q5Kdu0F7ABdmWf8HuSXBUxiZOP
-	IUcp6wTRywnGFVjV+OVutd4w7PSp8/lJQc76YPbSAqjtOaOU9t2QaBq8BUAYLqVaKTsxQ5DReC0LT
-	VDiQ+vejMZLkjlVqR3tdj1KWURvHxQhIPPBAscFrmO9DXUSoPZleSpgOnYaof0yFRU8XwE2ZPPAt3
-	maP/EBM58cgiNrMxuxiCNqm98LyxEo33eskRB3Zh/pQNfwvEb9Lo7YzUzrwmJ+nwj57Y+i8VcaTJl
-	nHiSvrqA==;
+	bh=884xqxUtg5jU/T30SRwYu58JWq3FvgLsVIs4zUZceAU=; b=PVIN0ico4nEB6MW0zPT5e7MqhL
+	cFlSm9RZxO9Y+YOl+mpep1t94DEWeLCSEvh1B+Cu8p4osC2aUB9r5p7Ca0DaIytyFxd2IJDOJhsEM
+	9b+Zm7SCsPYEQFPMPxRKfIeyJn/Of8LY6jwEEYEMNtkGGkK4ruubKxcqKk8d4K4SAUmgZY6jTEZDn
+	VPy4Rw5cTP2xyiNDa+2oZ7H8eNgjmmj3oPS1eSxRyxMwij4P99odXLY3TBysW0YgYt+xLH4eTgD4I
+	ge+Fd6OeHAKQIx1dfrjG4acXjNC8/l70tLp7F7EwBuCX0vy0PHv1v0PH2PggwbdNVitWbS7RQu/9N
+	T7Rx0afg==;
 Received: from localhost ([127.0.0.1])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1vAsg8-000Jmd-1D;
-	Mon, 20 Oct 2025 18:24:12 +0200
+	id 1vAsg9-000Jms-1R;
+	Mon, 20 Oct 2025 18:24:13 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -66,9 +66,9 @@ Cc: bpf@vger.kernel.org,
 	toke@redhat.com,
 	yangzhenze@bytedance.com,
 	wangdongdong.6@bytedance.com
-Subject: [PATCH net-next v3 14/15] netkit: Add io_uring zero-copy support for TCP
-Date: Mon, 20 Oct 2025 18:23:54 +0200
-Message-ID: <20251020162355.136118-15-daniel@iogearbox.net>
+Subject: [PATCH net-next v3 15/15] netkit: Add xsk support for af_xdp applications
+Date: Mon, 20 Oct 2025 18:23:55 +0200
+Message-ID: <20251020162355.136118-16-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20251020162355.136118-1-daniel@iogearbox.net>
 References: <20251020162355.136118-1-daniel@iogearbox.net>
@@ -81,104 +81,188 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: Clear (ClamAV 1.0.9/27798/Mon Oct 20 11:37:28 2025)
 
-From: David Wei <dw@davidwei.uk>
+Enable support for AF_XDP applications to operate on a netkit device.
+The goal is that AF_XDP applications can natively consume AF_XDP
+from network namespaces. The use-case from Cilium side is to support
+Kubernetes KubeVirt VMs through QEMU's AF_XDP backend. KubeVirt is a
+virtual machine management add-on for Kubernetes which aims to provide
+a common ground for virtualization. KubeVirt spawns the VMs inside
+Kubernetes Pods which reside in their own network namespace just like
+regular Pods.
 
-This adds the last missing bit to netkit for supporting io_uring with
-zero-copy mode [0]. Up until this point it was not possible to consume
-the latter out of containers or Kubernetes Pods where applications are
-in their own network namespace.
-
-Thus, as a last missing bit, implement ndo_queue_get_dma_dev() in netkit
-to return the physical device of the real rxq for DMA. This allows memory
-providers like io_uring zero-copy or devmem to bind to the physically
-mapped rxq in netkit.
-
-io_uring example with eth0 being a physical device with 16 queues where
-netkit is bound to the last queue, iou-zcrx.c is binary from selftests.
-Flow steering to that queue is based on the service VIP:port of the
-server utilizing io_uring:
+Raw QEMU AF_XDP backend example with eth0 being a physical device with
+16 queues where netkit is bound to the last queue (for multi-queue RSS
+context can be used if supported by the driver):
 
   # ethtool -X eth0 start 0 equal 15
   # ethtool -X eth0 start 15 equal 1 context new
-  # ethtool --config-ntuple eth0 flow-type tcp4 dst-ip 1.2.3.4 dst-port 5000 action 15
+  # ethtool --config-ntuple eth0 flow-type ether \
+            src 00:00:00:00:00:00 \
+            src-mask ff:ff:ff:ff:ff:ff \
+            dst $mac dst-mask 00:00:00:00:00:00 \
+            proto 0 proto-mask 0xffff action 15
+  [ ... setup BPF/XDP prog on eth0 to steer into shared xsk map ... ]
   # ip netns add foo
-  # ip link add type netkit peer numrxqueues 2
+  # ip link add numrxqueues 2 nk type netkit single
   # ./pyynl/cli.py --spec ~/netlink/specs/netdev.yaml \
                    --do bind-queue \
                    --json "{"src-ifindex": $(ifindex eth0), "src-queue-id": 15, \
-                            "dst-ifindex": $(ifindex nk0), "queue-type": "rx"}"
+                            "dst-ifindex": $(ifindex nk), "queue-type": "rx"}"
   {'dst-queue-id': 1}
-  # ip link set nk0 netns foo
-  # ip link set nk1 up
+  # ip link set nk netns foo
   # ip netns exec foo ip link set lo up
-  # ip netns exec foo ip link set nk0 up
-  # ip netns exec foo ip addr add 1.2.3.4/32 dev nk0
-  [ ... setup routing etc to get external traffic into the netns ... ]
-  # ip netns exec foo ./iou-zcrx -s -p 5000 -i nk0 -q 1
+  # ip netns exec foo ip link set nk up
+  # ip netns exec foo qemu-system-x86_64 \
+          -kernel $kernel \
+          -drive file=${image_name},index=0,media=disk,format=raw \
+          -append "root=/dev/sda rw console=ttyS0" \
+          -cpu host \
+          -m $memory \
+          -enable-kvm \
+          -device virtio-net-pci,netdev=net0,mac=$mac \
+          -netdev af-xdp,ifname=nk,id=net0,mode=native,queues=1,start-queue=1,inhibit=on,map-path=$dir/xsks_map \
+          -nographic
 
-Remote io_uring client:
+We have tested the above against a dual-port Nvidia ConnectX-6 (mlx5)
+100G NIC with successful network connectivity out of QEMU. An earlier
+iteration of this work was presented at LSF/MM/BPF [0].
 
-  # ./iou-zcrx -c -h 1.2.3.4 -p 5000 -l 12840 -z 65536
+For getting to a first starting point to connect all things with
+KubeVirt, bind mounting the xsk map from Cilium into the VM launcher
+Pod which acts as a regular Kubernetes Pod while not perfect, is not
+a big problem given its out of reach from the application sitting
+inside the VM (and some of the control plane aspects are baked in
+the launcher Pod already), so the isolation barrier is still the VM.
+Eventually the goal is to have a XDP/XSK redirect extension where
+there is no need to have the xsk map, and the BPF program can just
+derive the target xsk through the queue where traffic was received
+on.
 
-We have tested the above against a Broadcom BCM957504 (bnxt_en)
-100G NIC, supporting TCP header/data split.
+The exposure through netkit is because Cilium should not act as a
+proxy handing out xsk sockets. Existing applications expect a netdev
+from kernel side and should not need to rewrite just to implement
+against a CNI's protocol. Also, all the memory should not be accounted
+against Cilium but rather the application Pod itself which is consuming
+AF_XDP. Further, on up/downgrades we expect the data plane to being
+completely decoupled from the control plane; if Cilium would own the
+sockets that would be disruptive. Another use-case which opens up and
+is regularly asked from users would be to have DPDK applications on
+top of AF_XDP in regular Kubernetes Pods.
 
-Similarly, this also works for devmem which we tested using ncdevmem:
-
-  # ip netns exec foo ./ncdevmem -s 1.2.3.4 -l -p 5000 -f nk0 -t 1 -q 1
-
-And on the remote client:
-
-  # ./ncdevmem -s 1.2.3.4 -p 5000 -f eth0
-
-For Cilium, the plan is to open up support for the various memory providers
-for regular Kubernetes Pods when Cilium is configured with netkit datapath
-mode.
-
-Signed-off-by: David Wei <dw@davidwei.uk>
-Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://kernel-recipes.org/en/2024/schedule/efficient-zero-copy-networking-using-io_uring [0]
+Co-developed-by: David Wei <dw@davidwei.uk>
+Signed-off-by: David Wei <dw@davidwei.uk>
+Link: https://bpfconf.ebpf.io/bpfconf2025/bpfconf2025_material/lsfmmbpf_2025_netkit_borkmann.pdf [0]
 ---
- drivers/net/netkit.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/net/netkit.c | 71 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 70 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-index 75b57496b72e..a281b39a1047 100644
+index a281b39a1047..f69abe5ec4cd 100644
 --- a/drivers/net/netkit.c
 +++ b/drivers/net/netkit.c
-@@ -282,6 +282,21 @@ static const struct ethtool_ops netkit_ethtool_ops = {
- 	.get_channels		= netkit_get_channels,
- };
- 
-+static struct device *netkit_queue_get_dma_dev(struct net_device *dev, int idx)
-+{
-+	struct netdev_rx_queue *rxq, *peer_rxq;
-+	unsigned int peer_idx;
-+
-+	rxq = __netif_get_rx_queue(dev, idx);
-+	if (!rxq->peer)
-+		return NULL;
-+
-+	peer_rxq = rxq->peer;
-+	peer_idx = get_netdev_rx_queue_index(peer_rxq);
-+
-+	return netdev_queue_get_dma_dev(peer_rxq->dev, peer_idx);
-+}
-+
- static int netkit_queue_create(struct net_device *dev)
- {
- 	struct netkit *nk = netkit_priv(dev);
-@@ -307,7 +322,8 @@ static int netkit_queue_create(struct net_device *dev)
+@@ -12,6 +12,7 @@
+ #include <net/netdev_lock.h>
+ #include <net/netdev_queues.h>
+ #include <net/netdev_rx_queue.h>
++#include <net/xdp_sock_drv.h>
+ #include <net/netkit.h>
+ #include <net/dst.h>
+ #include <net/tcx.h>
+@@ -235,6 +236,71 @@ static void netkit_get_stats(struct net_device *dev,
+ 	stats->tx_dropped = DEV_STATS_READ(dev, tx_dropped);
  }
  
- static const struct netdev_queue_mgmt_ops netkit_queue_mgmt_ops = {
--	.ndo_queue_create = netkit_queue_create,
-+	.ndo_queue_get_dma_dev		= netkit_queue_get_dma_dev,
-+	.ndo_queue_create		= netkit_queue_create,
++static bool netkit_xsk_supported_at_phys(const struct net_device *dev)
++{
++	if (!dev->netdev_ops->ndo_bpf ||
++	    !dev->netdev_ops->ndo_xdp_xmit ||
++	    !dev->netdev_ops->ndo_xsk_wakeup)
++		return false;
++	if ((dev->xdp_features & NETDEV_XDP_ACT_XSK) != NETDEV_XDP_ACT_XSK)
++		return false;
++	return true;
++}
++
++static int netkit_xsk(struct net_device *dev, struct netdev_bpf *xdp)
++{
++	struct netkit *nk = netkit_priv(dev);
++	struct netdev_bpf xdp_lower;
++	struct netdev_rx_queue *rxq;
++	struct net_device *phys;
++
++	switch (xdp->command) {
++	case XDP_SETUP_XSK_POOL:
++		if (nk->pair == NETKIT_DEVICE_PAIR)
++			return -EOPNOTSUPP;
++		if (xdp->xsk.queue_id >= dev->real_num_rx_queues)
++			return -EINVAL;
++
++		rxq = __netif_get_rx_queue(dev, xdp->xsk.queue_id);
++		if (!rxq->peer)
++			return -EOPNOTSUPP;
++
++		phys = rxq->peer->dev;
++		if (!netkit_xsk_supported_at_phys(phys))
++			return -EOPNOTSUPP;
++
++		memcpy(&xdp_lower, xdp, sizeof(xdp_lower));
++		xdp_lower.xsk.queue_id = get_netdev_rx_queue_index(rxq->peer);
++		break;
++	case XDP_SETUP_PROG:
++		return -EPERM;
++	default:
++		return -EINVAL;
++	}
++
++	return phys->netdev_ops->ndo_bpf(phys, &xdp_lower);
++}
++
++static int netkit_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags)
++{
++	struct netdev_rx_queue *rxq;
++	struct net_device *phys;
++
++	if (queue_id >= dev->real_num_rx_queues)
++		return -EINVAL;
++
++	rxq = __netif_get_rx_queue(dev, queue_id);
++	if (!rxq->peer)
++		return -EOPNOTSUPP;
++
++	phys = rxq->peer->dev;
++	if (!netkit_xsk_supported_at_phys(phys))
++		return -EOPNOTSUPP;
++
++	return phys->netdev_ops->ndo_xsk_wakeup(phys,
++			get_netdev_rx_queue_index(rxq->peer), flags);
++}
++
+ static int netkit_init(struct net_device *dev)
+ {
+ 	netdev_lockdep_set_classes(dev);
+@@ -255,6 +321,8 @@ static const struct net_device_ops netkit_netdev_ops = {
+ 	.ndo_get_peer_dev	= netkit_peer_dev,
+ 	.ndo_get_stats64	= netkit_get_stats,
+ 	.ndo_uninit		= netkit_uninit,
++	.ndo_bpf		= netkit_xsk,
++	.ndo_xsk_wakeup		= netkit_xsk_wakeup,
+ 	.ndo_features_check	= passthru_features_check,
  };
  
- static struct net_device *netkit_alloc(struct nlattr *tb[],
+@@ -409,10 +477,11 @@ static void netkit_setup(struct net_device *dev)
+ 	dev->hw_enc_features = netkit_features;
+ 	dev->mpls_features = NETIF_F_HW_CSUM | NETIF_F_GSO_SOFTWARE;
+ 	dev->vlan_features = dev->features & ~netkit_features_hw_vlan;
+-
+ 	dev->needs_free_netdev = true;
+ 
+ 	netif_set_tso_max_size(dev, GSO_MAX_SIZE);
++
++	xdp_set_features_flag(dev, NETDEV_XDP_ACT_XSK);
+ }
+ 
+ static struct net *netkit_get_link_net(const struct net_device *dev)
 -- 
 2.43.0
 
