@@ -1,103 +1,91 @@
-Return-Path: <bpf+bounces-71366-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71365-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88169BEFFC4
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 10:36:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CBDBBEFF9A
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 10:34:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CECC18976F4
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 08:36:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD4C83B40B0
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 08:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA9A2EC08D;
-	Mon, 20 Oct 2025 08:36:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 740382EA75C;
+	Mon, 20 Oct 2025 08:32:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JE+T+XCA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FwuUH/5j"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CFC22EB873
-	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 08:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A63D2153FB
+	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 08:32:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760949385; cv=none; b=A6AGUhIs/2pvTS6rMt/jKHt0xFrqLVYzjA7EN+FQjTFI16WJdMca4QUOt4FiRVHLiLN53+/7lzZXMZi9Jo8eRA/JuXEUsiVL+D0jAzIAl/pxbBi1vlLIqAkYG2xlt7WCqUEFf3K1X+Eovp9vMsmWH4SBSe0jGEphIzgPa3eiDMA=
+	t=1760949151; cv=none; b=ue0t6Rce5g+9Q7RmTLmf4M3Da5WAWgwdlFxPlx9JJ9u2QOpC1KnuEuL04sxuJNeFUO/fPbr/ZIMtrdLiErIy+vwkC8F985vFOOQB5BnH8GEsDPP/+y4KixWeVG0RyGJA6cA8ZEefrbcrkjTNcVkvnbNgMkWCpsQnCHvioJ97NLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760949385; c=relaxed/simple;
-	bh=wzYeKe8llsS8xH05UqQBqkk5pJepcdnzGoYD0EgvANs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SdW4vH6EQ7TeX4sLS+K6ri9vZtjyotRzpMtuENKa3/DJ0a7C92oGadLfrHO+9ynUu9BN0ys8/yXy/l4KBoSa0CI8Ya90oJhmu5+2+b/jS+/MTHw5gF8KDQ4IV4E59t1narZOoGFTQ092BFjQwd8lkTWhj1wI3szKI9NERfvBngc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JE+T+XCA; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1760949382;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LDPZ0ul7eThbecq+UNdvM4KlBx5eDgTRibaStyKpTWQ=;
-	b=JE+T+XCApnvv31aq5BvuV65PVpgUeen3+KaEzi97ptpHJn2BP9vaNG0j/Oqhx9GDWS1prq
-	/FU/qLkRTRloi4Vae+1VlXRIvf4r7XdWqKsEIiiWs6sl1xxmZPZTHppEaNSLegqwQgVdM8
-	G8DEBYa8qQsc2RANavpO+gntlW2gn5c=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-443-DFK4c_3mMRGFUX8mncxo5A-1; Mon, 20 Oct 2025 04:36:20 -0400
-X-MC-Unique: DFK4c_3mMRGFUX8mncxo5A-1
-X-Mimecast-MFC-AGG-ID: DFK4c_3mMRGFUX8mncxo5A_1760949379
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-46e4cb3e4deso14314395e9.1
-        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 01:36:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760949379; x=1761554179;
+	s=arc-20240116; t=1760949151; c=relaxed/simple;
+	bh=l8cmaS2SKGt1xvgQbKHx3HmLmcdLfZAslOypsZISbCw=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B0p3ufMpqlEX0hZaGY/KgiNfLflYHwVkVk3nV8hO3cPAkuZ4PEytFSzTMGy2Su4HJQV7N68n2EpFJLMR83GkGr8p9OBsy+VF5sX7Ig7sH80gb+7J8o9EfRAuVtjabke3lgPn4PN5UFkqF7mwIjYcAuymsWgnu9kD+D6cZ0HTafM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FwuUH/5j; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4710022571cso34029735e9.3
+        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 01:32:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760949147; x=1761553947; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=B7cHa8JYza0+oKYC1CcOJOjoywkgaaVS64RVWYlUn3M=;
+        b=FwuUH/5jlTH7N31LqAP643lMNNhEHr01F51lsRjWLuwoXe0WOxB3bZsKlsIK0rSakj
+         QDKQeXnUcIopVp108EG5jfjZ0QkG+lHqFW3S81p8kfiGlBxVRXkzBulxtRh4UVnGOeQM
+         EUMQs+9TPiIvf96oMfTiwCxJtyrGNTnDEsV7PdHdiRnTrWS3t0V4Yl24b2ZnJRCIfsHo
+         mZl1KC4UQhkSCmn5miqgUWs8JKZHy5QXVGFzGQIo/UKLLAWel/Rz4N/CLuEjVbeyq7TP
+         1KBIvV+dSeh5ejnlLpEUJhWxYiW/dux4mEit29g67blK8GVLhDtWjMggr5liywCeWdCh
+         gTGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760949147; x=1761553947;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LDPZ0ul7eThbecq+UNdvM4KlBx5eDgTRibaStyKpTWQ=;
-        b=c9VKDfP2mNf90lITj0xXnUL6XdBoJRnTy1tKA+NJUURk1opNq49b3BajFnvOQbWJlo
-         KTPNTv4BRjHKyHxm06fZ/VgSLsgP8ju2g8gO2v13jguW8rf9NHW8P4Hhsi0Uf7LW5EVo
-         qV36R/8Y2ypRiNJyEyhFmYfKJ0sMpS0tJh5QqYdJq7UJeodFuRATyHWautmVGOIE6Bfp
-         zLrktVhaOicY5cSlAEFo+E+QoUxEKVO0aEuzc+gGwU+KknWWEDly42iDDhJ6qks6skp3
-         YpTvvE+qA/ETsJ0LKTYWLI7sPsvRtWs8OchIiEbi5xmxYjNTig58ha5B+G/h2KI8wN1G
-         DyTw==
-X-Forwarded-Encrypted: i=1; AJvYcCWTCuLoov1PD2yom7+J9+Ryw4Fgg7C3KAigFZZYAnn/CwspmuAEjv+h4feIlO9MEK+2qTM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YypLo70m+WF1uXt3JL+YsA0weCqGK3mgk3EAM4Yd97J/FtPGPFa
-	0PB8cZJ5zRGKFv7egu1O/Q0RmJ3uZ6gPXxygO98iE8xAaWqJ2jmwJPZDX8KjKu5mWvQ7BCjUWin
-	1gm209FRus7vRVdfWrY0tDIed8qGAq9bl8I4j/6l+WKo8ym1/qt693A==
-X-Gm-Gg: ASbGnctsYOwtCd0tDRb3JfJwCvGV55mGZN1l4+JQloj0LlIJY3klPLSqJEaa5Dwfxav
-	hFu/Eut/GMUeW8WBUoRCs0Kgy0g+5kHUzN5DPoG+gFShgHQ0q8ZOs40r14tNMOBMNAccZsfrcrQ
-	CahGwY9WJJBpFYyvhrw3U6AEnBWbWKjRhRUV7TiuZfJVOtNZCE+Mj7boOtAQ6zyvP8FWzVeVHiD
-	r6RLvkCiv+5gQCfIcDJZRDCjUuSjUqVCmf1mQuCnyYQzje3JayyYknwOlP0gapOgg2MsSbcLctY
-	dQNqkLcrowN47HvyZWpaso3/P370ThwYKw3CV91Cv+Zn27OLaXpRRHMROauv7JgppFobKrpm/XB
-	ZF4yKvYCnKsv9eDjEr95SVN/RwcX6Csg=
-X-Received: by 2002:a05:600c:6290:b0:46f:b42e:e38f with SMTP id 5b1f17b1804b1-47117345ffdmr107954745e9.19.1760949378905;
-        Mon, 20 Oct 2025 01:36:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG9PwoSk43ABFo5essiejYiBkUkNUIQWrYCuPXPAmRDQtUNGUR37Zqt6yI37QTO1Cp76s6VKA==
-X-Received: by 2002:a05:600c:6290:b0:46f:b42e:e38f with SMTP id 5b1f17b1804b1-47117345ffdmr107954455e9.19.1760949378471;
-        Mon, 20 Oct 2025 01:36:18 -0700 (PDT)
-Received: from jlelli-thinkpadt14gen4.remote.csb ([176.206.13.103])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4710ed9e7d7sm112564395e9.3.2025.10.20.01.36.16
+        bh=B7cHa8JYza0+oKYC1CcOJOjoywkgaaVS64RVWYlUn3M=;
+        b=ISMb6zuTMeUkI9ed9wi2iH9tsbbZ+oKvK1PiYjnQob0U2uUvXeQJTAXxeioTKcoUMs
+         MqH2xPGkHsuFDYima8hSZozf2V4elGAkMeUwOqN0sXGwGxTx082ts3lLDA75pkN7iSe1
+         aqkUryxYYuTwzhVpV2v+VY456+eUp7Fnp+m4NEzmWxGMticMaNSYPvsIvl1Tm6wwJhak
+         j1dFIF03Q1q5Od6DrCbjswRAH5uBQyEnDGvRm471bEfW4x51UVbcU0cTnZ4MbR3zy5Al
+         i9tnxBfQkzTm73SesPRW9Gc4XrM9iWrRBXav7vVcbK4pC997MlRRn+xRlBaFX94k+ZZN
+         Zhvw==
+X-Gm-Message-State: AOJu0YzFkswhrHN69toX+Rnd0QqT/v41p1mMs2eQpdg2A2Or+6YShNUc
+	FKuRETfn0JcqVM0zvhhYfncDGsFf/uyqQ3ZyOl8ROKsd24L8JIpAbzcFq2T8sQ==
+X-Gm-Gg: ASbGncvZI4S63coBxE8wV1KjfJPg74RevQP+j+2oBfVpQygqLIy6cw3XcL/oBBAv9U2
+	6X6TPYuNg7pGoEJyfaeZQXuEUIjihhjxjpPNXLwHfBlAaiGSS4OyTCCg4jqdB/SxrYtDZdhC5pl
+	IbUUL6PQZmJo2TGiGJatOkF7zqXhwpM+T8T+MDbMUrZG2Dxmiwgp830wULE0349rqd5MouPgBpW
+	fAElXDm9i9E3JetlShVYSAzxIp81LyU+yAKp+b146byOLAMhuF8U8dyi+h7PExe5B6ubIzM+9KE
+	Ciy3fN40BUW3tUKg0d+N073Ul5f5CBZeTDe3JGRoTvzhFFCavOp9UvkgSQG2CCldTEAD3oOHuEB
+	LtKC8z1mDAC9fOVFgUHK2Xi76ngRo1lowTKF71L0oaeezPjTlEv9iFXmw7UhaW53OpI2jpJx+Ui
+	uzvySiHl342TCIqkARZ2fx
+X-Google-Smtp-Source: AGHT+IGwRCYPc3nzGn10cltIpubplawJmNxMJX1D0Vn+eGxMVong6yZOcGv5nOWfx4eitxFEAszhPA==
+X-Received: by 2002:a05:600c:190f:b0:46e:49fd:5e30 with SMTP id 5b1f17b1804b1-471178705b0mr94148915e9.6.1760949146509;
+        Mon, 20 Oct 2025 01:32:26 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-471144239bdsm263753525e9.3.2025.10.20.01.32.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Oct 2025 01:36:17 -0700 (PDT)
-Date: Mon, 20 Oct 2025 10:36:15 +0200
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Andrea Righi <arighi@nvidia.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>, Tejun Heo <tj@kernel.org>,
-	David Vernet <void@manifault.com>,
-	Changwoo Min <changwoo@igalia.com>, Shuah Khan <shuah@kernel.org>,
-	sched-ext@lists.linux.dev, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/14] sched/debug: Fix updating of ppos on server write
- ops
-Message-ID: <aPX0fwMfPi1M9SL_@jlelli-thinkpadt14gen4.remote.csb>
-References: <20251017093214.70029-1-arighi@nvidia.com>
- <20251017093214.70029-2-arighi@nvidia.com>
+        Mon, 20 Oct 2025 01:32:26 -0700 (PDT)
+Date: Mon, 20 Oct 2025 08:38:51 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Quentin Monnet <qmo@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH v6 bpf-next 08/17] bpf, x86: allow indirect jumps to
+ r8...r15
+Message-ID: <aPX1Gzcqm0Aq7xTx@mail.gmail.com>
+References: <20251019202145.3944697-1-a.s.protopopov@gmail.com>
+ <20251019202145.3944697-9-a.s.protopopov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -106,28 +94,58 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251017093214.70029-2-arighi@nvidia.com>
+In-Reply-To: <20251019202145.3944697-9-a.s.protopopov@gmail.com>
 
-Hi!
-
-On 17/10/25 11:25, Andrea Righi wrote:
-> From: Joel Fernandes <joelagnelf@nvidia.com>
+On 25/10/19 08:21PM, Anton Protopopov wrote:
+> Currently the emit_indirect_jump() function only accepts one of the
+> RAX, RCX, ..., RBP registers as the destination. Make it to accept
+> R8, R9, ..., R15 as well, and make callers to pass BPF registers, not
+> native registers. This is required to enable indirect jumps support
+> in eBPF.
 > 
-> Updating "ppos" on error conditions does not make much sense. The pattern
-> is to return the error code directly without modifying the position, or
-> modify the position on success and return the number of bytes written.
+> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  arch/x86/net/bpf_jit_comp.c | 28 +++++++++++++++++++++-------
+>  1 file changed, 21 insertions(+), 7 deletions(-)
 > 
-> Since on success, the return value of apply is 0, there is no point in
-> modifying ppos either. Fix it by removing all this and just returning
-> error code or number of bytes written on success.
-> 
-> Acked-by: Tejun Heo <tj@kernel.org>
-> Reviewed-by: Andrea Righi <arighi@nvidia.com>
-> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index c8e628410d2c..7443465ce9a4 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -660,24 +660,38 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+>  
+>  #define EMIT_LFENCE()	EMIT3(0x0F, 0xAE, 0xE8)
+>  
+> -static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
+> +static void __emit_indirect_jump(u8 **pprog, int reg, bool ereg)
+>  {
+>  	u8 *prog = *pprog;
+>  
+> +	if (ereg)
+> +		EMIT1(0x41);
+> +
+> +	EMIT2(0xFF, 0xE0 + reg);
+> +
+> +	*pprog = prog;
+> +}
+> +
+> +static void emit_indirect_jump(u8 **pprog, int bpf_reg, u8 *ip)
+> +{
+> +	u8 *prog = *pprog;
+> +	int reg = reg2hex[bpf_reg];
+> +	bool ereg = is_ereg(bpf_reg);
+> +
+>  	if (cpu_feature_enabled(X86_FEATURE_INDIRECT_THUNK_ITS)) {
+>  		OPTIMIZER_HIDE_VAR(reg);
+>  		emit_jump(&prog, its_static_thunk(reg), ip);
 
-Reviewed-by: Juri Lelli <juri.lelli@redhat.com>
+AI found bug here: its_static_thunk(reg) should use reg+8*ereg.
+(The code here was not changed, however, before this patch this code
+only was called for eax and ecx.) Will fix in the next version.
 
-Thanks,
-Juri
+Also added verifier_gotox tests which validate that gotox works with
+r0,...,r9.
 
+> [...]
 
