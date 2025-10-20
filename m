@@ -1,129 +1,346 @@
-Return-Path: <bpf+bounces-71385-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71386-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5482BF0533
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 11:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 58FDBBF0864
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 12:25:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 467F518953E0
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 09:55:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4AC7188EEEB
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 10:26:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60CB82F5306;
-	Mon, 20 Oct 2025 09:54:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F29552F5A03;
+	Mon, 20 Oct 2025 10:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZD5z2o6U"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VshzGVNN"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7431D2ED167
-	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 09:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846C31E9919
+	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 10:25:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760954075; cv=none; b=jgqsnhmCiEjfFC27FYu/nF0+4EPX179G7XwPqeR4+Wh+mTurENmKnxhfZI47g4ytozDVYzZHzpRNcLQQJSgAcWZsR7S+UejcN2vPeMYG6hHq+3VQyDfwePq1YZfbkLnUPzeFssgQGhhkm3yyRDT1IWweNbhtiw59Z9H+A9DaZKs=
+	t=1760955937; cv=none; b=tLl5JZ1CMn459+olVnZMbSkgAteQSYAhvkjH3ytABhrLRJT/4wDlsfApEBF3eonTvW3NjI6Iy7geeIQFKj5ueekghgdC70bBd9cWfJZx7/a/wBH/gpipKeB1VnIFV/3Dx7DhSYfvahc3RS+ZMmc+euxl7UdmgDdMAFiGdJsnZSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760954075; c=relaxed/simple;
-	bh=EDh2hY7KcsoLCVNbqCrydEKfepj9ENE7y3LCCo74QDY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ahyYnnoDEDv1/2mnMng5KmQQES6Ck9sreACGEHYDBWOdMbiqNfBqmLi6v0cu2baIASEC1HOGdvewBu1ncuwFoCjm+1/ldE2i/YCVMRhadmgVH/CcbxK39mHwY8mfxzD4OlSTLljHALOKNGDapCG49fwqrfJWCkSWvs0dI9cQiG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZD5z2o6U; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1760955937; c=relaxed/simple;
+	bh=CwF+yZDak0Elu4utklnJ/uFv7Gi4MxASsza7h+em8FY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ihn+GWOqlImhy6u5m49XOXBcWqHrLOJZdRhikBYc12qOogt3AwjLw9c0X7WC6kOkqdGOHg+iLE66PogmEaZMFaZAYDtnGlD2kzByVntvu+zauu8tevbvGHRzL0S2Fo2w4/L4q+ZbFgn1J6tjUQBoxZF0IJKPVavgQUxBOVNKCBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VshzGVNN; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1760954073;
+	s=mimecast20190719; t=1760955934;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FOvPujFryMZ7+AgeMw1kh2ZO5Xa2du80EwXqsZUS+1A=;
-	b=ZD5z2o6UtjtJmVOkMKRPwAnZFTAWSglCX8QHsHYo8MIgvIEUIcWzYX47STLcOJG9ornSYp
-	bcX2QfP68C0thUPUf6A0OQyDN40Osnr59ZLj3vawijvGvZiQ/fO+JaTDP652FmGJb/uVgm
-	S0ih44x1CaSNJ+WU2KKUE+KzlxZcB0w=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=xHVay0ecEvOk/WYTNlxi8BsqYH5mFIhmM9aH7MtmBnQ=;
+	b=VshzGVNNZHdDT4MR6DbFRrV4urweC0wqxl1zTLkfRbnWb57iBKnMl8WYILXI2T/XwrVHXI
+	73v4TYA474aKIdL7+FWkLQGSVeQ9HfouV/ERlv7NdGSQ8s5li4rPYXuu7l43iRlXOycvqY
+	63LMHquHaR9wEy6p6yzMiGQTut8D4Qs=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-53-nZ_t3kALPHKY98iqwGb-Tw-1; Mon, 20 Oct 2025 05:54:31 -0400
-X-MC-Unique: nZ_t3kALPHKY98iqwGb-Tw-1
-X-Mimecast-MFC-AGG-ID: nZ_t3kALPHKY98iqwGb-Tw_1760954070
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-47105bfcf15so22351625e9.2
-        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 02:54:31 -0700 (PDT)
+ us-mta-378-ddePUa3yP-KznZwXFQ2ihA-1; Mon, 20 Oct 2025 06:25:33 -0400
+X-MC-Unique: ddePUa3yP-KznZwXFQ2ihA-1
+X-Mimecast-MFC-AGG-ID: ddePUa3yP-KznZwXFQ2ihA_1760955932
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-63c276d535bso3681966a12.3
+        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 03:25:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760954070; x=1761558870;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FOvPujFryMZ7+AgeMw1kh2ZO5Xa2du80EwXqsZUS+1A=;
-        b=JTDSUOiTfCm3+2flas/cwkp/Zcy9avPg2g4Smv8gbte66i6U2e59FxXhNVhfj4rIus
-         8P3YVs0+2j9k4tRPIjbKF/p/jwtXkmnP6I+VlEc5X9FMtDso92pMwCShcImBkpseCrJQ
-         hv2kTBxq1QlSv8t1bvssgSSZXbtjuOJNR6MeF9DPTWK84/f7mGPzRTyM/Ur1ev3ntNJW
-         N0ZweNJoFq10peFsnoxvK4tL5pREFhQzNMAKJ5Lrhr/iIrn3pCFtK3EK+wbPEod069pN
-         990/dluaook1J85+zhS14+YSo7WyA+3g1Vo8f/q7RvLpeGxhsTkv80khBj1Kf+SDoYg8
-         0Wag==
-X-Forwarded-Encrypted: i=1; AJvYcCWMtnEgCfXMliq9KECs87D/pkS4w7fHVhBmh0nI3bvbfPK7dIgzUBWTVxZSJDKd12hyLQg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzP7OC9dV1xcM0f5IXecMmGKmoPNEHoWY4TMMfY/N3M1wa/ptDr
-	Fw0nviwNMh1dyoI9THnc99hHJXG7fBGUNsL5wyX6sL2t9besLZA1g9ebiwmk0bTanlOW9F9wt73
-	bRsIuqRELEX/LChmp259Mt6s9EnfoCiSXsPQFR4RxxoHDxrYrW6tBvg==
-X-Gm-Gg: ASbGncuxz8TAyDX9q4zOyk0gC+CQu+NdL9MpzjYBVHhsqhBW9fXTHn4obMqFA/BP8xM
-	z6iqLLvDfr9jttzXHbVCGggvBTiAz5aUKrbEeg50iYKMV67a+T9BTY4yfy/D11Q4O3ujdNSmEVS
-	8RninZqkf60EERsIcp9VoVV3sUfvCOto+SFLYIxsJrbi7F3a9Lp8uzgLgjpvwohoppx4kXvWa5g
-	VH/rii3daSp2OBGc8t9d+0jsAhFV1ZeDegss5/Ty9IPgHhRZc/2+bYZ2zIxE+S3l2hTznu7oHuK
-	zBuBCoyiYew0h1b0EcBSCm6YuQkyUGP8pHfvMgRhcVYloOCIlOv7vB2F36hW1AABU0YTi1ekaEn
-	cAOZtRL8wm8nJMBPn9hefz9JsGKpT+IU=
-X-Received: by 2002:a05:600c:621b:b0:46e:48fd:a1a9 with SMTP id 5b1f17b1804b1-4711791fbbbmr98205665e9.33.1760954070235;
-        Mon, 20 Oct 2025 02:54:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHwQc8jHbyCjws7r+xEl2xJJIVq9zC6q6jCBAIB087YXtxrslD/Tbf+7AnvpKx9nVNS0eYmew==
-X-Received: by 2002:a05:600c:621b:b0:46e:48fd:a1a9 with SMTP id 5b1f17b1804b1-4711791fbbbmr98205355e9.33.1760954069891;
-        Mon, 20 Oct 2025 02:54:29 -0700 (PDT)
-Received: from jlelli-thinkpadt14gen4.remote.csb ([176.206.13.103])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4711442d9e8sm224260885e9.7.2025.10.20.02.54.28
+        d=1e100.net; s=20230601; t=1760955932; x=1761560732;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xHVay0ecEvOk/WYTNlxi8BsqYH5mFIhmM9aH7MtmBnQ=;
+        b=bg+/+jrQWnkWnD5YgIqLvPvjhmVYTnle2GcRlyZuW0tePaf/ClqiH6Sv+P3XJs7DnB
+         3ys1u1kNFvDuhzFE8CUjwIsWwAHWWKRMMOQoRT9bTB7CNtL9u0L+MXHonDYKRb3qa510
+         Ronr6VXBs+7tnxurFPt/7YSMT4G1vaqNZqZf9GEtU6WeZ59Qu4m7h6JELgcMvgT+1w6b
+         GFoXJ2XZK3DtNbBoK8lV3w3F8aw16c+umQ0jftsZAT3YyD5PgvRd6mNXoUzPKHIKwBr0
+         MXG8/YGVjUgtzzFcsynO+bmzdXqHF38tQwb/3ZWkp89puvgGjtTmaBtPX4LM6qrYmjsa
+         YExw==
+X-Gm-Message-State: AOJu0YywD72yGrCGAnR9yFUWy4wb6ZfCZG1elQ5mGpiLTqIYCBpFTyI1
+	hGrMFECWXmrst6WtgzMbKqKnK57jk//DZQj3p7oGQ2toZUz8q3Y1MTw9MS1pPeVE/NUI8LI9uIA
+	5ZYSjXuvYVY70Ogwvioek38X/4TdL7aJjGsZ7aVDpTIbSch3j3Ije7g==
+X-Gm-Gg: ASbGncv+XrfH+s6b/QlTwb4dK6v9BiLHLN1tML7ezQkDzKjpPLLCjh9PY6tzPRwczaj
+	G6ObPdXM1ArshyG888xxpJ9vOzP4EVDKmggAmq/Acca3cPiTc1Sv1QpPoMSxwpg7RUux/VBhb8v
+	AaC4c9fkXEQ+GpDIxO38RWOvaFAOcIDapHm9MZXRMJZF0F/4owSI8k7IPdJT/169iN0efp8tmai
+	NT//Ik/a/CtcOkkSj0ODrH7dU84j7cylxfmXOFMSDlTw5gL1iPW0Ca/soCmAJrydclHHPYVugIR
+	21BBUcB6YrUFhqi15VzClc7G8O0lE1h/8tN+sr/7awRo29EFeH/w5MEuRr2WCi1K3XqEhsovQQt
+	pMER/NPNjS1gjADScGONgfbXTRA==
+X-Received: by 2002:a05:6402:f0f:b0:637:e94a:fb56 with SMTP id 4fb4d7f45d1cf-63c1f6da02bmr8502668a12.35.1760955931848;
+        Mon, 20 Oct 2025 03:25:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEayzUZ8wlpZv1q9uCinMJ/D3prJbd1R7i0pa57HpUHs6t7Ux8nd9I3AiX4f+8zOHehqIINiw==
+X-Received: by 2002:a05:6402:f0f:b0:637:e94a:fb56 with SMTP id 4fb4d7f45d1cf-63c1f6da02bmr8502645a12.35.1760955931347;
+        Mon, 20 Oct 2025 03:25:31 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (alrua-x1.borgediget.toke.dk. [2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-63c49430272sm6305091a12.23.2025.10.20.03.25.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Oct 2025 02:54:29 -0700 (PDT)
-Date: Mon, 20 Oct 2025 11:54:27 +0200
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Andrea Righi <arighi@nvidia.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>, Tejun Heo <tj@kernel.org>,
-	David Vernet <void@manifault.com>,
-	Changwoo Min <changwoo@igalia.com>, Shuah Khan <shuah@kernel.org>,
-	sched-ext@lists.linux.dev, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/14] sched: Add a server arg to
- dl_server_update_idle_time()
-Message-ID: <aPYG0w4dYZIws9sr@jlelli-thinkpadt14gen4.remote.csb>
-References: <20251017093214.70029-1-arighi@nvidia.com>
- <20251017093214.70029-6-arighi@nvidia.com>
+        Mon, 20 Oct 2025 03:25:30 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id B219C2E9E7C; Mon, 20 Oct 2025 12:25:29 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, ilias.apalodimas@linaro.org, lorenzo@kernel.org,
+ kuba@kernel.org, netdev@vger.kernel.org, magnus.karlsson@intel.com,
+ andrii@kernel.org, stfomichev@gmail.com, aleksander.lobakin@intel.com
+Subject: Re: [PATCH v2 bpf 2/2] veth: update mem type in xdp_buff
+In-Reply-To: <aPKiC0jZV6kLBvIq@boxer>
+References: <20251017143103.2620164-1-maciej.fijalkowski@intel.com>
+ <20251017143103.2620164-3-maciej.fijalkowski@intel.com>
+ <87a51pij2l.fsf@toke.dk> <aPJ0YqfH+pdSIbVS@boxer> <87347hifgh.fsf@toke.dk>
+ <87zf9pgzx2.fsf@toke.dk> <aPKiC0jZV6kLBvIq@boxer>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 20 Oct 2025 12:25:29 +0200
+Message-ID: <87wm4phnty.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251017093214.70029-6-arighi@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi!
+Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
 
-On 17/10/25 11:25, Andrea Righi wrote:
-> From: Joel Fernandes <joelagnelf@nvidia.com>
-> 
-> Since we are adding more servers, make dl_server_update_idle_time()
-> accept a server argument than a specific server.
+> On Fri, Oct 17, 2025 at 08:12:57PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
+>>=20
+>> > Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+>> >
+>> >> On Fri, Oct 17, 2025 at 06:33:54PM +0200, Toke H=C3=B8iland-J=C3=B8rg=
+ensen wrote:
+>> >>> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+>> >>>=20
+>> >>> > Veth calls skb_pp_cow_data() which makes the underlying memory to
+>> >>> > originate from system page_pool. For CONFIG_DEBUG_VM=3Dy and XDP p=
+rogram
+>> >>> > that uses bpf_xdp_adjust_tail(), following splat was observed:
+>> >>> >
+>> >>> > [   32.204881] BUG: Bad page state in process test_progs  pfn:11c9=
+8b
+>> >>> > [   32.207167] page: refcount:0 mapcount:0 mapping:000000000000000=
+0 index:0x0 pfn:0x11c98b
+>> >>> > [   32.210084] flags: 0x1fffe0000000000(node=3D0|zone=3D1|lastcpup=
+id=3D0x7fff)
+>> >>> > [   32.212493] raw: 01fffe0000000000 dead000000000040 ff11000123c9=
+b000 0000000000000000
+>> >>> > [   32.218056] raw: 0000000000000000 0000000000000001 00000000ffff=
+ffff 0000000000000000
+>> >>> > [   32.220900] page dumped because: page_pool leak
+>> >>> > [   32.222636] Modules linked in: bpf_testmod(O) bpf_preload
+>> >>> > [   32.224632] CPU: 6 UID: 0 PID: 3612 Comm: test_progs Tainted: G=
+ O        6.17.0-rc5-gfec474d29325 #6969 PREEMPT
+>> >>> > [   32.224638] Tainted: [O]=3DOOT_MODULE
+>> >>> > [   32.224639] Hardware name: QEMU Standard PC (i440FX + PIIX, 199=
+6), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+>> >>> > [   32.224641] Call Trace:
+>> >>> > [   32.224644]  <IRQ>
+>> >>> > [   32.224646]  dump_stack_lvl+0x4b/0x70
+>> >>> > [   32.224653]  bad_page.cold+0xbd/0xe0
+>> >>> > [   32.224657]  __free_frozen_pages+0x838/0x10b0
+>> >>> > [   32.224660]  ? skb_pp_cow_data+0x782/0xc30
+>> >>> > [   32.224665]  bpf_xdp_shrink_data+0x221/0x530
+>> >>> > [   32.224668]  ? skb_pp_cow_data+0x6d1/0xc30
+>> >>> > [   32.224671]  bpf_xdp_adjust_tail+0x598/0x810
+>> >>> > [   32.224673]  ? xsk_destruct_skb+0x321/0x800
+>> >>> > [   32.224678]  bpf_prog_004ac6bb21de57a7_xsk_xdp_adjust_tail+0x52=
+/0xd6
+>> >>> > [   32.224681]  veth_xdp_rcv_skb+0x45d/0x15a0
+>> >>> > [   32.224684]  ? get_stack_info_noinstr+0x16/0xe0
+>> >>> > [   32.224688]  ? veth_set_channels+0x920/0x920
+>> >>> > [   32.224691]  ? get_stack_info+0x2f/0x80
+>> >>> > [   32.224693]  ? unwind_next_frame+0x3af/0x1df0
+>> >>> > [   32.224697]  veth_xdp_rcv.constprop.0+0x38a/0xbe0
+>> >>> > [   32.224700]  ? common_startup_64+0x13e/0x148
+>> >>> > [   32.224703]  ? veth_xdp_rcv_one+0xcd0/0xcd0
+>> >>> > [   32.224706]  ? stack_trace_save+0x84/0xa0
+>> >>> > [   32.224709]  ? stack_depot_save_flags+0x28/0x820
+>> >>> > [   32.224713]  ? __resched_curr.constprop.0+0x332/0x3b0
+>> >>> > [   32.224716]  ? timerqueue_add+0x217/0x320
+>> >>> > [   32.224719]  veth_poll+0x115/0x5e0
+>> >>> > [   32.224722]  ? veth_xdp_rcv.constprop.0+0xbe0/0xbe0
+>> >>> > [   32.224726]  ? update_load_avg+0x1cb/0x12d0
+>> >>> > [   32.224730]  ? update_cfs_group+0x121/0x2c0
+>> >>> > [   32.224733]  __napi_poll+0xa0/0x420
+>> >>> > [   32.224736]  net_rx_action+0x901/0xe90
+>> >>> > [   32.224740]  ? run_backlog_napi+0x50/0x50
+>> >>> > [   32.224743]  ? clockevents_program_event+0x1cc/0x280
+>> >>> > [   32.224746]  ? hrtimer_interrupt+0x31e/0x7c0
+>> >>> > [   32.224749]  handle_softirqs+0x151/0x430
+>> >>> > [   32.224752]  do_softirq+0x3f/0x60
+>> >>> > [   32.224755]  </IRQ>
+>> >>> >
+>> >>> > It's because xdp_rxq with mem model set to MEM_TYPE_PAGE_SHARED wa=
+s used
+>> >>> > when initializing xdp_buff.
+>> >>> >
+>> >>> > Fix this by using new helper xdp_convert_skb_to_buff() that, besid=
+es
+>> >>> > init/prepare xdp_buff, will check if page used for linear part of
+>> >>> > xdp_buff comes from page_pool. We assume that linear data and frag=
+s will
+>> >>> > have same memory provider as currently XDP API does not provide us=
+ a way
+>> >>> > to distinguish it (the mem model is registered for *whole* Rx queu=
+e and
+>> >>> > here we speak about single buffer granularity).
+>> >>> >
+>> >>> > In order to meet expected skb layout by new helper, pull the mac h=
+eader
+>> >>> > before conversion from skb to xdp_buff.
+>> >>> >
+>> >>> > However, that is not enough as before releasing xdp_buff out of ve=
+th via
+>> >>> > XDP_{TX,REDIRECT}, mem type on xdp_rxq associated with xdp_buff is
+>> >>> > restored to its original model. We need to respect previous settin=
+g at
+>> >>> > least until buff is converted to frame, as frame carries the mem_t=
+ype.
+>> >>> > Add a page_pool variant of veth_xdp_get() so that we avoid refcount
+>> >>> > underflow when draining page frag.
+>> >>> >
+>> >>> > Fixes: 0ebab78cbcbf ("net: veth: add page_pool for page recycling")
+>> >>> > Reported-by: Alexei Starovoitov <ast@kernel.org>
+>> >>> > Closes: https://lore.kernel.org/bpf/CAADnVQ+bBofJDfieyOYzSmSujSfJw=
+DTQhiz3aJw7hE+4E2_iPA@mail.gmail.com/
+>> >>> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+>> >>> > ---
+>> >>> >  drivers/net/veth.c | 43 +++++++++++++++++++++++++++--------------=
+--
+>> >>> >  1 file changed, 27 insertions(+), 16 deletions(-)
+>> >>> >
+>> >>> > diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+>> >>> > index a3046142cb8e..eeeee7bba685 100644
+>> >>> > --- a/drivers/net/veth.c
+>> >>> > +++ b/drivers/net/veth.c
+>> >>> > @@ -733,7 +733,7 @@ static void veth_xdp_rcv_bulk_skb(struct veth_=
+rq *rq, void **frames,
+>> >>> >  	}
+>> >>> >  }
+>> >>> >=20=20
+>> >>> > -static void veth_xdp_get(struct xdp_buff *xdp)
+>> >>> > +static void veth_xdp_get_shared(struct xdp_buff *xdp)
+>> >>> >  {
+>> >>> >  	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_buff(=
+xdp);
+>> >>> >  	int i;
+>> >>> > @@ -746,12 +746,33 @@ static void veth_xdp_get(struct xdp_buff *xd=
+p)
+>> >>> >  		__skb_frag_ref(&sinfo->frags[i]);
+>> >>> >  }
+>> >>> >=20=20
+>> >>> > +static void veth_xdp_get_pp(struct xdp_buff *xdp)
+>> >>> > +{
+>> >>> > +	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_buff(=
+xdp);
+>> >>> > +	int i;
+>> >>> > +
+>> >>> > +	page_pool_ref_page(virt_to_page(xdp->data));
+>> >>> > +	if (likely(!xdp_buff_has_frags(xdp)))
+>> >>> > +		return;
+>> >>> > +
+>> >>> > +	for (i =3D 0; i < sinfo->nr_frags; i++) {
+>> >>> > +		skb_frag_t *frag =3D &sinfo->frags[i];
+>> >>> > +
+>> >>> > +		page_pool_ref_page(netmem_to_page(frag->netmem));
+>> >>> > +	}
+>> >>> > +}
+>> >>> > +
+>> >>> > +static void veth_xdp_get(struct xdp_buff *xdp)
+>> >>> > +{
+>> >>> > +	xdp->rxq->mem.type =3D=3D MEM_TYPE_PAGE_POOL ?
+>> >>> > +		veth_xdp_get_pp(xdp) : veth_xdp_get_shared(xdp);
+>> >>> > +}
+>> >>> > +
+>> >>> >  static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
+>> >>> >  					struct xdp_buff *xdp,
+>> >>> >  					struct sk_buff **pskb)
+>> >>> >  {
+>> >>> >  	struct sk_buff *skb =3D *pskb;
+>> >>> > -	u32 frame_sz;
+>> >>> >=20=20
+>> >>> >  	if (skb_shared(skb) || skb_head_is_locked(skb) ||
+>> >>> >  	    skb_shinfo(skb)->nr_frags ||
+>> >>> > @@ -762,19 +783,9 @@ static int veth_convert_skb_to_xdp_buff(struc=
+t veth_rq *rq,
+>> >>> >  		skb =3D *pskb;
+>> >>> >  	}
+>> >>> >=20=20
+>> >>> > -	/* SKB "head" area always have tailroom for skb_shared_info */
+>> >>> > -	frame_sz =3D skb_end_pointer(skb) - skb->head;
+>> >>> > -	frame_sz +=3D SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+>> >>> > -	xdp_init_buff(xdp, frame_sz, &rq->xdp_rxq);
+>> >>> > -	xdp_prepare_buff(xdp, skb->head, skb_headroom(skb),
+>> >>> > -			 skb_headlen(skb), true);
+>> >>> > +	__skb_pull(*pskb, skb->data - skb_mac_header(skb));
+>> >>>=20
+>> >>> veth_xdp_rcv_skb() does:
+>> >>>=20
+>> >>> 	__skb_push(skb, skb->data - skb_mac_header(skb));
+>> >>> 	if (veth_convert_skb_to_xdp_buff(rq, xdp, &skb))
+>> >>>=20
+>> >>> so how about just getting rid of that push instead of doing the oppo=
+site
+>> >>> pull straight after? :)
+>> >>
+>> >> Hi Toke,
+>> >>
+>> >> I believe this is done so we get a proper headroom representation whi=
+ch is
+>> >> needed for XDP_PACKET_HEADROOM comparison. Maybe we could be smarter =
+here
+>> >> and for example subtract mac header length? However I wanted to prese=
+rve
+>> >> old behavior.
+>> >
+>> > Yeah, basically what we want is to check if the mac_header offset is
+>> > larger than the headroom. So the check could just be:
+>> >
+>> >     skb->mac_header < XDP_PACKET_HEADROOM
+>> >
+>> > however, it may be better to use the helper? Since that makes sure we
+>> > keep hitting the DEBUG_NET_WARN_ON_ONCE inside the helper... So:
+>> >
+>> >     skb_mac_header(skb) - skb->head < XDP_PACKET_HEADROOM
+>> >
+>> > or, equivalently:
+>> >
+>> >     skb_headroom(skb) - skb_mac_offset(skb) < XDP_PACKET_HEADROOM
+>> >
+>> > I think the first one is probably more readable, since skb_mac_offset()
+>> > is negative here, so the calculation looks off...
+>>=20
+>> Wait, veth_xdp_rcv_skb() calls skb_reset_mac_header() further down, so
+>> it expects skb->data to point to the mac header. So getting rid of the
+>
+> Oof. Correct.
+>
+>> __skb_push() is not a good idea; but neither is doing the __skb_pull() as
+>> your patch does currently.
+>>=20
+>> How about just making xdp_convert_skb_to_buff() agnostic to where
+>> skb->data is?
+>>=20
+>> 	headroom =3D skb_mac_header(skb) - skb->head;
+>>         data_len =3D skb->data + skb->len - skb_mac_header(skb);
+>
+> could we just use skb->tail - skb_mac_header(skb) here?
 
-Nit,                      ^ rather?
+Yeah, guess so. Tail is a length, though, so that would be
+skb_tail_pointer(skb) - skb_mac_header(skb)
 
-> Reviewed-by: Andrea Righi <arighi@nvidia.com>
-> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> anyways, i'm gonna try out your suggestion on weekend or on monday and
+> will send a v3. maybe input from someone else in different time zones will
+> land in by tomorrow. thanks again:)
 
-Acked-by: Juri Lelli <juri.lelli@redhat.com>
+Cool!
 
-Thanks,
-Juri
+-Toke
 
 
