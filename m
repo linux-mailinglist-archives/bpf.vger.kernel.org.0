@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-71341-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71342-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5A5DBEF2BB
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 05:17:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EC8FBEF2C4
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 05:17:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CCED84EB43F
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 03:17:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A74811898F39
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 03:18:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E5F929D270;
-	Mon, 20 Oct 2025 03:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9445429E10F;
+	Mon, 20 Oct 2025 03:17:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="awt91vO4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bVyaMwOq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86BD529B233
-	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 03:17:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A010E284B25
+	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 03:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760930241; cv=none; b=FtP1SMFRq+KjOwZmdeJ8NQiElKFP2BN0Mt8J45sYlnrUc32r1i3ab6udPEJfBEyLGhrxyYsemF7HW3xZ8ZXBH10XT7imLIRTKihnPC6lI1hxrVLq9+VKbs2+fwEf3p4urNTVeGJkJUACSHX5u7fUXz9lHCTh3tJJM0ojUx3LKNY=
+	t=1760930250; cv=none; b=UXJLZSfpUXBQLkMkChhlrcUF53x0xnkxBCK/pCxr0qv3WbPHokUQzT5X8GL8et2uzXDNUtqLJJCo6YRZRdRHATBtUe33DKHwLUAR/NimFhExZZa2VvJrMFGJpvrHZiLQdV4xvWGSsd5lKVk2AW5A8B3UieGhho5nv7j4dRAyhSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760930241; c=relaxed/simple;
-	bh=sTyjq4lpHpE1Tag4v7BrWtTUyfVl+9Yq5BWJCJuucZ8=;
+	s=arc-20240116; t=1760930250; c=relaxed/simple;
+	bh=67tstnZQtFomumySgDLtAWENQiAj9CP/JvCGAp8ZJA0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eoN0BQku0yhrFtK7CS3VRv+jGu7WagTxZPSl+s2zBaqUO+/Ccq45TupZpvM10YSkTTgYy/THTXIeiauuOS1mr5kYFtEjadc5y1mr3gG2lVY/P8d856mT6lRtS7t21vq/ns1IPRb9WpCosyo5xQ/BSORbei7pywPLb26MfL3vBLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=awt91vO4; arc=none smtp.client-ip=209.85.214.172
+	 MIME-Version; b=WViC3Dw47peE+WI7w+siTvYMCau13a9nK4tl/QNZQK4NlDhQJdwxrkau+6K1POXFXDCmTwQRRplLyY0omvS0v/zO4dQ1hGG8lGUgewMAh+ecizY0dlFIIbDbs5KlroSZ3mZvcCv3IEYXNKYu/hPu3JpLDXmmjeDl9mMsp0VaSsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bVyaMwOq; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-27c369f898fso56791135ad.3
-        for <bpf@vger.kernel.org>; Sun, 19 Oct 2025 20:17:19 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-27c369f898fso56792725ad.3
+        for <bpf@vger.kernel.org>; Sun, 19 Oct 2025 20:17:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760930239; x=1761535039; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760930248; x=1761535048; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kYdtRER+63D5fwP+dPFGkrD4tSBc+ZR0Nj1GwO3r8rs=;
-        b=awt91vO4bDyg6BC107x/vOpmB4wLxzVF5dNdNwcXwB124WZfBJizAS5Aaj/gJT9JiS
-         YVQ1nsRzSgPSdnMK88ewCrWVir/xYtIsBAuyjylfWLakwJGz+p1LiEAj0jgx3ABX5xbW
-         bfatyQq/Xcldh5nDu3Nb6n6PPiShCwNJ8oxfLQ7gViOcUtAMAHQd2xBHJfzvG2wTTDme
-         0NxGKsf3S4h2vQQRRekqtt+ceS4jpUVbBW7p0odDSzTZQgaHS0+pS5ikSvCF6v7xN1lA
-         Mdo2I3LMlgv2riILDHWoAdSi7pg51rPn6JGdtFu4dzRRkANHgq3VmqbpMIpTFw9FB/8I
-         eNCg==
+        bh=kgY8zZ+/XYQ7X1ie6Z77HlsEOZA2/cqevW2Opv26tkA=;
+        b=bVyaMwOq9BD6dVXg4Mr2zkvjYMcAx17kvvDnDBfHEG/GvBIK831pSBiY06aU10RM04
+         Z0JNUT56R4v8jAj10InpXxTK18M61+mi/8XfDq11W8QZdjRwHgO52AQnU4Fwyx2TEF+/
+         i5rgY3lnBelmllCkRL3hkCStVUeDfaN7XVRPm+wg1GUbszKm3VJiRgYpmM+Dbg+gpgdN
+         mZznupTHYtyD6NW50FKeUUKKGAAOiTL+HVEWFNtJ6lx+nH+5fJDVCiRbvdTqMYsAU9Bc
+         RfaF3Nhn0M/HF+zbiaMVU38XpkLvqSLZ3pUefzBj3YDpW3Wl0dUL8bJztWHQQ+yT9DBI
+         DfHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760930239; x=1761535039;
+        d=1e100.net; s=20230601; t=1760930248; x=1761535048;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kYdtRER+63D5fwP+dPFGkrD4tSBc+ZR0Nj1GwO3r8rs=;
-        b=tpirlabdvzDgC2wYxgGGYJthoVYd3IEnWnjwO68vb0RUhf96fVHRNlfQYtrQBc3Izo
-         7fErLKraC26YOnJuaVbGcFlU1zfSO7AB6taW5ggnjHkDpi/LSduKcDJjFjagWbN+FDSe
-         15ZfXkR9UFtYtr+MFPupIlPmAEKfWAy8CSwIMk/tMdYZ50+bNe75ui1oaO3DMV577G8+
-         NQj9OEZ1LIP3u60GS+2zXr+i5bFgiYw8xFfqpNGILJl3jPf/l5XO4SkWF87KyMgC2nvA
-         G6DZNVZarSFVW80UcK9KUEKoiUyGTRbeMkckvC3yAYXEWJLONJifnrxUQkb4qh3ppEwp
-         bsiw==
-X-Gm-Message-State: AOJu0Ywi3bMdmG4w00H/pwjCiFO5BjuZPXSPwiscGBq8fR7/J39k/vPW
-	g8BjCe/xPBE11msvE2+PgeJNc43ZknjlAVj3CropqIi9pfuavbYx9lsP
-X-Gm-Gg: ASbGncvcBXUPPibzD1PBwEA8rugTJjx3pCJOnwQ1zc343DJbs91j2flMMw55spIizAU
-	6orrqkjdL1gQK66o4NzznBJ+R1n+4ZlZdwui0mshL7HlUV8V58naXIxLcG9NMPjdycJ/1g2enb6
-	KX+La2AFpF79KtuCV+KOZmzGh2wNujhOJfw724xV4wGCUpOw6WXhiLAo+eJhCETsohXwnCVeBrY
-	kq99sDGqDr3Wq9mrfjmEVDOqSlNhTxIe4Kjetj1SvMQHDtETD9azqlHtXT09xEsBESc7a0h2i/B
-	85YbCBAzUqi85ol7tSMnk33npRgr2QGOeCytrD32G6oVofopxD6rpKvpsm8euYVLu0AQMr8hqtN
-	iEFo4Va2ePJyJVa6bAn+fTOUNMdlLXIWuFDd62T6FRkqsPwIq3Pd4X8VtniQOlEveAaSW+Mgw1V
-	Od//6Wq7Ab8MOImTso2piA3i+i4tDlOFByOx9UuJfbQOSKeA==
-X-Google-Smtp-Source: AGHT+IGo/kUBmmZVSBiCCtDWJPQhX6W2PzXxnBQ3p+r5Rs/M8lNok3r/Ez1M0M2GbDWgxzLf0C8R3g==
-X-Received: by 2002:a17:902:dac5:b0:267:6754:8fd9 with SMTP id d9443c01a7336-290ca216ad6mr166008035ad.39.1760930238858;
-        Sun, 19 Oct 2025 20:17:18 -0700 (PDT)
+        bh=kgY8zZ+/XYQ7X1ie6Z77HlsEOZA2/cqevW2Opv26tkA=;
+        b=AaCYUIzS5NxqX0VQ705LpA1AtYKf1mscOHHWPUed0UMCJIVq2JNb4NGzZf7P0FOYY8
+         V9f8aXmkhGBvI81F9y1qPBGlhew54wzWc36YvS04zfolkAcntuHAosI/V/1q/jwHpgVs
+         e5YqR7rxl23XukOOpHO8tDW74IH0RZYTcgUYOHz1a61fZ/oqecBZYKlFEYytTCVyguqo
+         K4h8HB86eOVJ1dT2b4bcKzrpmXJj7PovwH4Jyi2OOnHLLLUmLDzqKMqt7RhC8KGoXqdU
+         ycph9AuidUIG9ngz14mReQuIrk3C3LH77ZN653ficY68yJ2cAh8KnQXQEJXZkT+JASey
+         fizA==
+X-Gm-Message-State: AOJu0YxB6DMVZTOTdiZNa4a8Wm5bmnm3WiJFl4bMxygqvFPbXcTpnv6o
+	iozBkcvctyC0QMTP8gmSjqayakL/ikcVf2Spw9FryAEbx7LgZrEoU5K+
+X-Gm-Gg: ASbGncsSEW6cFA0WC8hmLT3Co/O+LPgSKgyOWq8RbcxnYFwJjE944mV1oWW9f5lTDwJ
+	31c2+wfDPD9sJM7m9Uz3nsFpuO11gQw52UoHArTPRdTkd8V8gLRWyPQyuDlQmJVA1KyW0lZ69+5
+	UKPmVQF67S2+1jEPRl2cMCUTB1lmtKLYC4afl8rfcD2KS+DWoOVgXdAw6sEo+Fd/14jIoW8jWxh
+	aVo0fcddjcoULxSqSA1OfdRRYcw2p4DsXkJNv5ttBoQS7M+Gx3ajUV/5ctMfJX7FFqPdKqKtBBR
+	+Opwej8ClATb50Ywicb/RVwSGZeWK6M4WLG+uiDVxd5K0PGz7CqVnyV11ogFWIo7/6lYlsd+BKR
+	oGcTkbbijP6c5kTi01jXbsfpry8AxWrjRpNsl9Xj7qZxbbMNYyN5VLSi8s+BwF3JqXlHPc8XIj9
+	Lfp1EwjoJ4/C4EMRt2FJaZbSJZCfWa/2PD1XaGYXopnIn6EA==
+X-Google-Smtp-Source: AGHT+IHVM+3Yo7hTmlmKN8A82OrKb4FDTGmFMRc6s6X9qctctr9R21jaCigysyc8KxazAaAwSj+mYg==
+X-Received: by 2002:a17:902:ce07:b0:290:a3b9:d4c7 with SMTP id d9443c01a7336-290ca121944mr137614825ad.30.1760930247823;
+        Sun, 19 Oct 2025 20:17:27 -0700 (PDT)
 Received: from localhost.localdomain ([2409:891f:1da1:a41d:3815:5989:6e28:9b6d])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471fddfesm66373435ad.88.2025.10.19.20.17.10
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471fddfesm66373435ad.88.2025.10.19.20.17.19
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 19 Oct 2025 20:17:18 -0700 (PDT)
+        Sun, 19 Oct 2025 20:17:27 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: akpm@linux-foundation.org,
 	ast@kernel.org,
@@ -111,9 +111,9 @@ Cc: bpf@vger.kernel.org,
 	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v11 mm-new 06/10] mm: bpf-thp: add support for global mode
-Date: Mon, 20 Oct 2025 11:16:51 +0800
-Message-Id: <20251020031655.1093-2-laoar.shao@gmail.com>
+Subject: [PATCH v11 mm-new 07/10] Documentation: add BPF THP
+Date: Mon, 20 Oct 2025 11:16:52 +0800
+Message-Id: <20251020031655.1093-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20251020031655.1093-1-laoar.shao@gmail.com>
 References: <20251020031655.1093-1-laoar.shao@gmail.com>
@@ -125,201 +125,134 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The per-process BPF-THP mode is unsuitable for managing shared resources
-such as shmem THP and file-backed THP. This aligns with known cgroup
-limitations for similar scenarios [0].
-
-Introduce a global BPF-THP mode to address this gap. When registered:
-- All existing per-process instances are disabled
-- New per-process registrations are blocked
-- Existing per-process instances remain registered (no forced unregistration)
-
-The global mode takes precedence over per-process instances. Updates are
-type-isolated: global instances can only be updated by new global
-instances, and per-process instances by new per-process instances.
-
-Link: https://lore.kernel.org/linux-mm/YwNold0GMOappUxc@slm.duckdns.org/ [0]
+Add the documentation.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- mm/huge_memory_bpf.c | 109 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 107 insertions(+), 2 deletions(-)
+ Documentation/admin-guide/mm/transhuge.rst | 113 +++++++++++++++++++++
+ 1 file changed, 113 insertions(+)
 
-diff --git a/mm/huge_memory_bpf.c b/mm/huge_memory_bpf.c
-index e8894c10d1d9..cad1ca6f59a4 100644
---- a/mm/huge_memory_bpf.c
-+++ b/mm/huge_memory_bpf.c
-@@ -33,6 +33,28 @@ struct bpf_thp_ops {
- };
- 
- static DEFINE_SPINLOCK(thp_ops_lock);
-+static struct bpf_thp_ops __rcu *bpf_thp_global; /* global mode */
+diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
+index 1654211cc6cf..4d2941158f09 100644
+--- a/Documentation/admin-guide/mm/transhuge.rst
++++ b/Documentation/admin-guide/mm/transhuge.rst
+@@ -738,3 +738,116 @@ support enabled just fine as always. No difference can be noted in
+ hugetlbfs other than there will be less overall fragmentation. All
+ usual features belonging to hugetlbfs are preserved and
+ unaffected. libhugetlbfs will also work fine as usual.
 +
-+static unsigned long
-+bpf_hook_thp_get_orders_global(struct vm_area_struct *vma,
-+			       enum tva_type type,
-+			       unsigned long orders)
-+{
-+	thp_order_fn_t *bpf_hook_thp_get_order;
-+	int bpf_order;
++BPF THP
++=======
 +
-+	rcu_read_lock();
-+	bpf_hook_thp_get_order = rcu_dereference(bpf_thp_global->thp_get_order);
-+	if (!bpf_hook_thp_get_order)
-+		goto out;
++:Author: Yafang Shao <laoar.shao@gmail.com>
++:Date: October 2025
 +
-+	bpf_order = bpf_hook_thp_get_order(vma, type, orders);
-+	orders &= BIT(bpf_order);
++Overview
++--------
 +
-+out:
-+	rcu_read_unlock();
-+	return orders;
-+}
- 
- unsigned long bpf_hook_thp_get_orders(struct vm_area_struct *vma,
- 				      enum tva_type type,
-@@ -45,6 +67,10 @@ unsigned long bpf_hook_thp_get_orders(struct vm_area_struct *vma,
- 	if (!mm)
- 		return orders;
- 
-+	/* Global BPF-THP takes precedence over per-process BPF-THP. */
-+	if (rcu_access_pointer(bpf_thp_global))
-+		return bpf_hook_thp_get_orders_global(vma, type, orders);
++When the system is configured with "always" or "madvise" THP mode, a BPF program
++can be used to adjust THP allocation policies dynamically. This enables
++fine-grained control over THP decisions based on various factors including
++workload identity, allocation context, and system memory pressure.
 +
- 	rcu_read_lock();
- 	bpf_thp = rcu_dereference(mm->bpf_mm.bpf_thp);
- 	if (!bpf_thp || !bpf_thp->thp_get_order)
-@@ -177,6 +203,23 @@ static int bpf_thp_init_member(const struct btf_type *t,
- 	return 0;
- }
- 
-+static int bpf_thp_reg_gloabl(void *kdata, struct bpf_link *link)
-+{
-+	struct bpf_thp_ops *ops = kdata;
++Program Interface
++-----------------
 +
-+	/* Protect the global pointer bpf_thp_global from concurrent writes. */
-+	spin_lock(&thp_ops_lock);
-+	/* Only one instance is allowed. */
-+	if (rcu_access_pointer(bpf_thp_global)) {
-+		spin_unlock(&thp_ops_lock);
-+		return -EBUSY;
-+	}
++This feature implements a struct_ops BPF program with the following interface::
 +
-+	rcu_assign_pointer(bpf_thp_global, ops);
-+	spin_unlock(&thp_ops_lock);
-+	return 0;
-+}
++    struct bpf_thp_ops {
++        pid_t pid;
++        thp_order_fn_t *thp_get_order;
++    };
 +
- static int bpf_thp_reg(void *kdata, struct bpf_link *link)
- {
- 	struct bpf_thp_ops *bpf_thp = kdata;
-@@ -187,6 +230,11 @@ static int bpf_thp_reg(void *kdata, struct bpf_link *link)
- 	pid_t pid;
- 
- 	pid = bpf_thp->pid;
++Callback Functions
++------------------
 +
-+	/* Fallback to global mode if pid is not set. */
-+	if (!pid)
-+		return bpf_thp_reg_gloabl(kdata, link);
++thp_get_order()
++~~~~~~~~~~~~~~~
 +
- 	p = find_get_task_by_vpid(pid);
- 	if (!p)
- 		return -ESRCH;
-@@ -207,8 +255,10 @@ static int bpf_thp_reg(void *kdata, struct bpf_link *link)
- 	 * might register this task simultaneously.
- 	 */
- 	spin_lock(&thp_ops_lock);
--	/* Each process is exclusively managed by a single BPF-THP. */
--	if (rcu_access_pointer(mm->bpf_mm.bpf_thp))
-+	/* Each process is exclusively managed by a single BPF-THP.
-+	 * Global mode disables per-process instances.
-+	 */
-+	if (rcu_access_pointer(mm->bpf_mm.bpf_thp) || rcu_access_pointer(bpf_thp_global))
- 		goto out_lock;
- 	err = 0;
- 	rcu_assign_pointer(mm->bpf_mm.bpf_thp, bpf_thp);
-@@ -224,12 +274,33 @@ static int bpf_thp_reg(void *kdata, struct bpf_link *link)
- 	return err;
- }
- 
-+static void bpf_thp_unreg_global(void *kdata, struct bpf_link *link)
-+{
-+	struct bpf_thp_ops *bpf_thp;
++.. code-block:: c
 +
-+	spin_lock(&thp_ops_lock);
-+	if (!rcu_access_pointer(bpf_thp_global)) {
-+		spin_unlock(&thp_ops_lock);
-+		return;
-+	}
++    int thp_get_order(struct vm_area_struct *vma,
++                      enum tva_type type,
++                      unsigned long orders);
 +
-+	bpf_thp = rcu_replace_pointer(bpf_thp_global, NULL,
-+				      lockdep_is_held(&thp_ops_lock));
-+	WARN_ON_ONCE(!bpf_thp);
-+	spin_unlock(&thp_ops_lock);
++Parameters
++^^^^^^^^^^
 +
-+	synchronize_rcu();
-+}
++``vma``
++    ``vm_area_struct`` associated with the THP allocation.
 +
- static void bpf_thp_unreg(void *kdata, struct bpf_link *link)
- {
- 	struct bpf_thp_ops *bpf_thp = kdata;
- 	struct bpf_mm_ops *bpf_mm;
- 	struct list_head *pos, *n;
- 
-+	if (!bpf_thp->pid)
-+		return bpf_thp_unreg_global(kdata, link);
++``type``
++    TVA type for the current ``vma``.
 +
- 	spin_lock(&thp_ops_lock);
- 	list_for_each_safe(pos, n, &bpf_thp->mm_list) {
- 		bpf_mm = list_entry(pos, struct bpf_mm_ops, bpf_thp_list);
-@@ -242,6 +313,31 @@ static void bpf_thp_unreg(void *kdata, struct bpf_link *link)
- 	synchronize_rcu();
- }
- 
-+static int bpf_thp_update_global(void *kdata, void *old_kdata, struct bpf_link *link)
-+{
-+	struct bpf_thp_ops *old_bpf_thp = old_kdata;
-+	struct bpf_thp_ops *bpf_thp = kdata;
-+	struct bpf_thp_ops *old_global;
++``orders``
++    Bitmask of available THP orders for this allocation.
 +
-+	if (!old_bpf_thp || !bpf_thp)
-+		return -EINVAL;
++Return value
++^^^^^^^^^^^^
 +
-+	spin_lock(&thp_ops_lock);
-+	/* BPF-THP global instance has already been removed. */
-+	if (!rcu_access_pointer(bpf_thp_global)) {
-+		spin_unlock(&thp_ops_lock);
-+		return -ENOENT;
-+	}
++- The suggested THP order for allocation from the BPF program
++- Must be a valid, available order from the provided ``orders`` bitmask
 +
-+	old_global = rcu_replace_pointer(bpf_thp_global, bpf_thp,
-+					 lockdep_is_held(&thp_ops_lock));
-+	WARN_ON_ONCE(!old_global);
-+	spin_unlock(&thp_ops_lock);
++Operation Modes
++---------------
 +
-+	synchronize_rcu();
-+	return 0;
-+}
++Per Process Mode
++~~~~~~~~~~~~~~~~
 +
- static int bpf_thp_update(void *kdata, void *old_kdata, struct bpf_link *link)
- {
- 	struct bpf_thp_ops *old_bpf_thp = old_kdata;
-@@ -249,6 +345,15 @@ static int bpf_thp_update(void *kdata, void *old_kdata, struct bpf_link *link)
- 	struct bpf_mm_ops *bpf_mm;
- 	struct list_head *pos, *n;
- 
-+	/* Updates are confined to instances of the same scope:
-+	 * global to global, process-local to process-local.
-+	 */
-+	if (!!old_bpf_thp->pid != !!bpf_thp->pid)
-+		return -EINVAL;
++When registering a BPF-THP with a specific PID, the program is installed in the
++target task's ``mm_struct``::
 +
-+	if (!old_bpf_thp->pid)
-+		return bpf_thp_update_global(kdata, old_kdata, link);
++    struct mm_struct {
++        struct bpf_thp_ops __rcu *bpf_thp;
++    };
 +
- 	INIT_LIST_HEAD(&bpf_thp->mm_list);
- 
- 	/* Could be optimized to a per-instance lock if this lock becomes a bottleneck. */
++Inheritance Behavior
++^^^^^^^^^^^^^^^^^^^^
++
++- Existing child processes are unaffected
++- Newly forked children inherit the BPF-THP from their parent
++- The BPF-THP persists across execve() calls
++
++Management Rules
++^^^^^^^^^^^^^^^^
++
++- When a BPF-THP instance is unregistered, all managed tasks' ``bpf_thp``
++  pointers are reset to ``NULL``
++- When a BPF-THP instance is updated, all managed tasks' ``bpf_thp`` pointers
++  are automatically updated to the new version
++- Each process can be managed by only one BPF-THP instance at a time
++
++Global Mode
++~~~~~~~~~~~
++
++If no PID is specified during registration, the BPF-THP operates in global mode.
++In this mode, all tasks in the system are managed by the global instance.
++
++Global Mode Precedence
++^^^^^^^^^^^^^^^^^^^^^^
++
++- The global instance takes precedence over all per-process instances
++- All existing per-process instances are disabled when a global instance is
++  registered
++- New per-process registrations are blocked while a global instance is active
++- Existing per-process instances remain registered (no forced unregistration)
++
++Instance Management
++^^^^^^^^^^^^^^^^^^^
++
++- Updates are type-isolated: global instances can only be updated by new global
++  instances, and per-process instances by new per-process instances
++- Only one global BPF-THP can be registered at a time
++- Global instances can be updated dynamically without requiring task restarts
++
++Implementation Notes
++--------------------
++
++- This is currently an experimental feature
++- ``CONFIG_BPF_THP`` must be enabled to use this functionality
++- The feature depends on proper THP configuration ("always" or "madvise" mode)
 -- 
 2.47.3
 
