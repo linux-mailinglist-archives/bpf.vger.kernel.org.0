@@ -1,467 +1,409 @@
-Return-Path: <bpf+bounces-71445-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71446-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D9EBF37C6
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 22:45:32 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55C61BF39DF
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 23:03:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DA7EF4ED26E
-	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 20:45:30 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D3ADD4FEF9A
+	for <lists+bpf@lfdr.de>; Mon, 20 Oct 2025 21:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A2962E03FE;
-	Mon, 20 Oct 2025 20:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F29732E9EAA;
+	Mon, 20 Oct 2025 20:58:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="jV/dmDyU";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="GOAnKjB1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aPwwf6hS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A9F28506F;
-	Mon, 20 Oct 2025 20:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760993126; cv=fail; b=hAdWx3UFuK7HTgnX+A0Y0RcyWuAM7K15l3yBDVzCnRmtMteD6j58SE+3xMz2VgTw9a1I4M8k4qIGRzDwcIgDMAz1N2Kz83kBLgxjV5pMbPd3+woJMLbc+wY8vT4VCKliBWeEH1xQOjGmr2lddBzkeFCVTuf1HIjLsCXr79cqA1I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760993126; c=relaxed/simple;
-	bh=TCn+2TfE3Sai6xlvNV36ZF6hiSlEQyfgopF5uU27Phw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=b28WrKh+2OpMEoQWxEgo8iFzksnh66KNJzCEg1AONRvBEgiGhJ8UhofDVPv9sWzBcValzPIzAnUOD9y8Cacx9Jqkvt1m2WcRs8IPw+posVl+uzl7JP8ZZAhDeJuVDaSZiUjtH/KIWv1VTyAx3u/Z7edoJM6VAd4kLsKr3X1YxPA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=jV/dmDyU; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=GOAnKjB1; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59KJukII003518;
-	Mon, 20 Oct 2025 20:45:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=mRSU5dz22XcfmohqBvsHhxds5c1RL4HTn/Q0a3OdjLE=; b=
-	jV/dmDyU7cBJKsbkBTlzanlw7PZ+Wzxxz1IOhspgL+aej28Ula7ni7uZ8g/SeTAZ
-	36/szXUTQhcqpAx4rQnS/vLFNB2Itn/Zwo67wo2I8QwP1FbYSGh5UMI29WRR1Iqn
-	JDFfs707vtgkogxXGTLSAeWd3TzgYyGXt64u/IF+qm8O3KxC6sIhcgoGqSO7bLXH
-	Yo0GhqLHL/cvzUrkrPL3EkmUPgz25UAIu4s8pW5fI47Qqu0fFJAYTYt2YYlB8ykN
-	bp4TVuq9af54aGF4JaNRCvlZzutxWPEWPggLXtsP+hIIRqBS4i/vjQB/Yxzwar47
-	NvcXA6jfvrZozEXunvpVQQ==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 49v2ypu2ck-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 20 Oct 2025 20:45:05 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 59KK7dBw035624;
-	Mon, 20 Oct 2025 20:45:04 GMT
-Received: from bn1pr04cu002.outbound.protection.outlook.com (mail-eastus2azon11010037.outbound.protection.outlook.com [52.101.56.37])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 49v1bc4tpw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 20 Oct 2025 20:45:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=i76ibDCIY2zcLUqoY0JXXvTua0Wzokv5gfHTkWGRxXUD9I/fmFs60YPkiP74zrZXsK2yuuVjGJ3nkDLcW2gSRPSf0xYg1Q41YJn78ydd0TxmrpJp1NA1GoTlm3OMGnWxMeayqb84tGGSsPS9kUSnp3YKGNZ9FFpPzbVJ6UU4nk2KclFUz4TyTnmS84AJIceFGU/P34wFFBtCLqrDkBec36f93BY3hTiRLt3WnbEWo4IhZ+jmrP+cSOHlUsuqOnEZBiHjOUAZ01JLwXpEfwdmMlnkaCqvqgTGuVuW78knyZOo94EvcMMzByo8NwA1lB6cH272Np+6Fx8HRoMtOZfHlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mRSU5dz22XcfmohqBvsHhxds5c1RL4HTn/Q0a3OdjLE=;
- b=dRYIyEvCEBLNejytMFvsG2LG1tgIgF3GEfgghW7T5zm4iETsIfRvqTwS8dwmW4H0K2mODJwv70ad7D+NdL9/Oa7Z+1kEplrq0ZONlCIPArI0AE+7nuX9ZiNloon+9RM7mHvqKZH/olUnPhEGgnPlXQB8YhumG9DSz9sDXwz2J93qUd4jPn62WLaEu6p7hpfNH180w+RZdktC/9iorL1QROrVqpL6cHH9KnAN4DZVn9F2HXvLjLWUsLzCDnX9vnGbmoBcKcmAmenalpiP5nbfJNMtqSU+uAbH6bcWUzWc0HkiCB7VDMEujONtER5MWwjyJsvKw6zVJZyDwwoX8C7C0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B0D2E62BF
+	for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 20:58:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1760993895; cv=none; b=HDpx5RsFySHCqTvGhpCindak/72nVVirTWtygh/XfX3jhFibbr89PdyMdBwg8QOaZSwHCCDZSsNL5UG6RWlEPPBMmYUsTVEVQKUe6vKKH9jTqEef1PO9xA5prCLErIjIB46BZcYKd5PrZ9SwrRyAf6JNoExPP4im83cqwnYzcGM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1760993895; c=relaxed/simple;
+	bh=ZG9UCd889CQdz4r4zfVS51ATPlBclEmo0Uk2C5eHUq4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TJBakjtBJ1eGDCDLu16Chl1s3Gw3a47dSb+AENRUJAQ0LYZ4HpbfgObxHrUwHTe5FK7lC6lFmgAJfqdCjMv5p0G6GlkGm1Ssyvj7oXR45CTSTGH5yw8oGcoh5l/cxqu+Wu7vFpijWX6bx9RcuyTFe5vIQyySpJPVMuB494kxnFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aPwwf6hS; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-77f5d497692so5878142b3a.1
+        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 13:58:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mRSU5dz22XcfmohqBvsHhxds5c1RL4HTn/Q0a3OdjLE=;
- b=GOAnKjB1Wfmz+lVKxd2FWHtnpNHZRLnSBq8hSjdkKIOEYlXlCzKN3DyWtMBCNvGNEFosfeaPC1fNv+EbDhHAFTR7S+ab9m72kRuG909pf7jvRVUkpD+Dmqf3+DzGZsEmtgHrqEP9EtdKHRjW4Y4YF50H9URmnsrGKxhcprQQclI=
-Received: from IA0PR10MB7622.namprd10.prod.outlook.com (2603:10b6:208:483::19)
- by SJ0PR10MB4446.namprd10.prod.outlook.com (2603:10b6:a03:2d9::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9228.17; Mon, 20 Oct
- 2025 20:44:57 +0000
-Received: from IA0PR10MB7622.namprd10.prod.outlook.com
- ([fe80::2a07:dfe3:d6e0:abdb]) by IA0PR10MB7622.namprd10.prod.outlook.com
- ([fe80::2a07:dfe3:d6e0:abdb%6]) with mapi id 15.20.9228.015; Mon, 20 Oct 2025
- 20:44:57 +0000
-Message-ID: <4896ef05-da3f-4b41-8b76-0ec901ad569d@oracle.com>
-Date: Mon, 20 Oct 2025 13:44:54 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH dwarves] pahole: Avoid generating artificial inlined
- functions for BTF
-To: Alan Maguire <alan.maguire@oracle.com>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team@fb.com
-References: <20251003173620.2892942-1-yonghong.song@linux.dev>
- <2dce0093-9376-4c06-b306-7e7d5660aadf@oracle.com>
- <984c45b9-fc67-4077-af52-d9464608fede@linux.dev>
- <33a601cf-d885-424b-a159-f114c1d3e9c0@oracle.com>
-Content-Language: en-US
-From: David Faust <david.faust@oracle.com>
-In-Reply-To: <33a601cf-d885-424b-a159-f114c1d3e9c0@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR13CA0192.namprd13.prod.outlook.com
- (2603:10b6:a03:2c3::17) To IA0PR10MB7622.namprd10.prod.outlook.com
- (2603:10b6:208:483::19)
+        d=gmail.com; s=20230601; t=1760993893; x=1761598693; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=185KjAz9KJe26nN7W/KSrP4Gwt2yR9qFTTm5RW75sN4=;
+        b=aPwwf6hSZUxz0MqKBPWkXDpp0i9Xkz+jtyodO2qAJHGmlLZ/DqAhnIzwzMQaYt53Te
+         6xVQ6jF+GIpPedHe3GhsQk5r7kjlT2y4Nsg/jMs/s7a7coOqCR6N806SgftuLMbTl/bz
+         giJ6uwyt4Dc8+7ScgiJYtNr21dGGLTcfyRfRfbAaTTq/0Hx8p4zHRPX4E5FUDKEnwHDh
+         HPEzR9bdLz8dhg7Y+n2rMNu6ibEDN7eiJ4uJFM3uTTEka+CFPT27zoB4GTR1BFw1wAbm
+         OY7en0WX9KLMPcZ2f1l2mCF+bskPFQEmailx4XZqfkhMJiAUDPhjwRHjnH4PqKkueHB2
+         WpOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760993893; x=1761598693;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=185KjAz9KJe26nN7W/KSrP4Gwt2yR9qFTTm5RW75sN4=;
+        b=bZFVghWuZbb8liDc538bR58vG0QP9WoOj1Vt7yWw8IKVhas7XVD+fl9LnArkLzEQxY
+         +mTey8AuXSQtVSthbe/v943LCn9K3CqdNNQFQ7uBt3chiwqhPGQRkJBiZy0he669J+lD
+         r07vJ43Os/08sXCNouzE6djHrTARoweNvsk5g94E742/XSSJORcxBrDdM+uB3VhqzlHv
+         MUR1SJ4984BYkS6udK4/0Im7oHb43M++owsE0a6BFbdru3Y/nuIGm5cKdDkQAqM+eHze
+         LF9zGNle6n6VbYwe4VFgzXdcGp4fTeau5CCnMPasMmzJsrRc0rIfsXBZJhfTjGyYkh8B
+         +l5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXXEDRDnZ0recFu2Tm+J5y4sxD8si7O46D4mthe8YF4fOgZ1ux0eWZRTQCYL/kHSvvAKlo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZxSIXDkHJjgbeNEu/ZuWTEirpPDJ56oxk1JYAkpXWu6LHr6LP
+	/fRgI9+wcNHwBEL+9ZRUAzVjhxvYsJNKB3VbgG3bRdXvmmOkselI50OUdVTkljVRF2MUHuKzY5a
+	bmKo5o/1rcU+G5tylrJgyDuct7wQi10s=
+X-Gm-Gg: ASbGncv7uqP3xF+jrkBEfrDUA1MHvCEz2anXNorW3I2CplCcYPFKbR7er2v1J1wVHsX
+	UXFyMmeV6NsidqbrM6vlB5Iaae7/8oOCbisjP7koqFCeWwk6wG1i72t4jXWd8Xj23NVdoj291ng
+	Qm+0LKfIPahr55JcwivMhjiOdvlz/OtBhCa6FTDFntsV3Wrq9ELaLB6nnbONIIUPtcPfndQGmQA
+	NSdIlHcbdOUea6ILmPt73TZRyN9CqQEG+efedGjb9m0vC3WgtqizHlVgapY/Eb+Ok0awhpfJ8l1
+X-Google-Smtp-Source: AGHT+IFRM0tB0GqmxwcdVG/edv6LRSqdWFd7Y/s6q2iQyRP7YrAMsHVAxvF+RKEbnuA6W7X8OnugvZ/Am22WWMs8tr8=
+X-Received: by 2002:a17:90b:5111:b0:330:84c8:92d0 with SMTP id
+ 98e67ed59e1d1-33bcf8e57e3mr18929384a91.24.1760993892584; Mon, 20 Oct 2025
+ 13:58:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA0PR10MB7622:EE_|SJ0PR10MB4446:EE_
-X-MS-Office365-Filtering-Correlation-Id: e038a037-69d8-48d5-81ab-08de101987ad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?bEc5NlBVOGx5U1VWS0VMc3RxdkpXUkU3eUlyQkg3WXJ4cTNPODFwL29oT0dx?=
- =?utf-8?B?N1BQZmJmYm0yeXdpTkw2S0RUaTlLMXJsZUVRZm95bzVqU1g4MDBEOUYyZEpL?=
- =?utf-8?B?RVByRTFmb09HblN1cllCdlE2YWoyR1F0R3hUTkVzTWg5d05kbVVla3plVUNO?=
- =?utf-8?B?UUhtb0Q0Z3JWMkNCcmc5UjB4NWh0cU5CanVUMytDWjlOSGhuU3JETHZENVE2?=
- =?utf-8?B?VHFJNmIvMXVtbjl1ek9FZTZESjJ1eloydzhYRUN0SFBoRVVkY243SFdNU1dN?=
- =?utf-8?B?MnM2U0NmeUNsTFIwd1B3akRhYmtRdzV3S0NqY1JSai82NC9sZVZ2aXZ1WXVj?=
- =?utf-8?B?T3Mzb29HREZTenlsSmpSWHlrOC9wUTJ4VHYzazMxb1lraXlEaFcxaHFPbE83?=
- =?utf-8?B?U0FDMnovZFBrSE0vdWkxLytmRGpOTHF3VUFGdnM2OGdYdC9aWTk5QTdGcWRU?=
- =?utf-8?B?RndzNUtJSC9yTEZyakZ4NS83UjBLTFdNdzc5MTNURHpCUUpXbG9sdFgvalFT?=
- =?utf-8?B?U3crNndCVktNSFdNZVM0U1hjQ2h6WmRzOWVQWFNzV3dvYzB1RVRzVE5wYm1o?=
- =?utf-8?B?VU5lT1MxbnQ1Z2tjeTZHa0NJbXVSV1hZTTV3aGFucndYSHRBbEcza2t5QUpM?=
- =?utf-8?B?M1FQdE52d1J5bDBSSy9sN0lxeDBCVTN5MzlOb2o0YkJIMmRTUHI4c2s4OHM3?=
- =?utf-8?B?bHM4emgzQmtkZ3N6UWtGVnlvT3gyWTdWdEY4cWJNM3FWVkNVN1FWbjQ1OEU2?=
- =?utf-8?B?dVZzczhMR3pGbzREOEVXZFBTSDNJZnJUVm0ybWQ0VzRnZndEVjZmNlpTcXhn?=
- =?utf-8?B?SkxUMDJkL3NIUCsyS2prMlU5RVJLdUMwQ2w0T2pHSUVPcnZPdHVhMlorckJo?=
- =?utf-8?B?MGc4VDY1NnNDamFOU2dVMnJqYVU1bkxDYi8xSG10WXJlNWErTitPVEs0eVM4?=
- =?utf-8?B?ZDB3S0VacUtXRmVvbkFTZVU2MGtLSzlmK2dqNkhTZ1dXOExqdC81anp2VjhU?=
- =?utf-8?B?eVhxNE9kSEo1dzdWQmNDVHN5UDFkVjBKeWtHN09NTVNpb3EycGQxRURWam5m?=
- =?utf-8?B?amRDQnk1WXB3eExQVGgxQjgzYXVPdXFnTG4rRkZ6NWVkRnpHUHpiQ3c2UUlG?=
- =?utf-8?B?eVRuemp6YlNvbXRTdm1EV2JzeUx4dS9HMGh0SnNHYklVVXhNR3d0ZGh1ZDBD?=
- =?utf-8?B?dU9sSDJnbjlobDhaZkdrMW13Q2NzS0NxUFJnV0YvdzZKeHp6ZE9ydW9CRlN0?=
- =?utf-8?B?bWNRQkFEd0JzK1FZeHdTUTlPbkhzakdiUVJ4c2tXUUw3NlQ0ZEZmV0x0NGdC?=
- =?utf-8?B?endwbHZUck4xVHE0Qzc2Sm5nK1Z6N3RFQkpLV0pic1FDL3ZwUXEzR1BUdjJp?=
- =?utf-8?B?a0I0SlBTN1VvQy9SOW1MVHNQYzNHVFZVL2ttbWtnbEhMRWJobWNGQ0gweVdi?=
- =?utf-8?B?bUsvK0xoV3luSGhNQ0tiRUhmUWNKM291ckNWcDkxNjY1VzgrMm1aMGhpOXg5?=
- =?utf-8?B?UVdWWVNwVXBwdlYzRVM5dlBTaDNMMVB0eGJQdFQ2RTBISjJWVU5nc3lSdml0?=
- =?utf-8?B?WTFHbXRIRHF6Yk5pbDBqcWhXd0NCWUc0MS9tNnBnRjRGNGVsb3FUOThrZU5j?=
- =?utf-8?B?anZWcTVlRWdWRE9FSHVhTTJ1VlVXKzN2UXRkMHMvMURaeEMrNlhLN0l2Qk4r?=
- =?utf-8?B?bEVLaE9NYm9iWlZvcmdPTkduanYwNWFLNlltbjlYU2RIVTdpNFZJSkcreGdq?=
- =?utf-8?B?M1RqZ3NLYTNrbmRhNXg1MkN2RnhZRXJRZHNFQlRucTVranVMWTVGM1hHMVNG?=
- =?utf-8?B?YWdKU2ZDS1JPcVpsbS9KMnhVNlRxanBnN1JOU1NPMmU3ejNNTUpWK25RRlc1?=
- =?utf-8?B?MWg3QWtqOFFjYmJDMmlvK2t3djNqcnJXSEhocnMwTC9UWWVqVXlBNjdxeHYz?=
- =?utf-8?B?a3k0dENrRFU1dEdHQ3lWYVVNWS95TCt3WThaVVowSjZOQlN1T014bHZId21i?=
- =?utf-8?B?ZEV2ZVo5OGxBPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR10MB7622.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bmgzV0g2Y1AzeWViUVREd2Zzb0pVMzhoSVRDNExrblJRVHhIODVwZjJJN1d6?=
- =?utf-8?B?ZEpDYTRWY0xVaWtsSjNXeWxlVVJHaUFiaDBLOThoVmRXdkpOK04zZG5tNnpT?=
- =?utf-8?B?OGw4M3RyRHlqV3BSZGtOaklBNDh2UXdCb3RiM1pKVzlPZ08rbjkwaUU3UlQw?=
- =?utf-8?B?aWFXQVQ3VHB0dFRXWU9wbkdYci94a21BY3o4UU5wSDlYQU1nNDJSZTZMdU5o?=
- =?utf-8?B?WDBjWGN1cGdCSlRkZ0ZZM0c4bUpDQk5PYWtkSWowK2lrd3loVTN4QWVLd29s?=
- =?utf-8?B?LzRDNklQNWVFWlI3cDJqSWNiWkhKM2xBQzNlT2tNZXdzNFJhTlpzUkdtbnRD?=
- =?utf-8?B?ekJUcHlVVU5lcXRyZFZYY0J5WUxweGt0RHdBaFpPN0NGZjhJVGt1QUpmVXhS?=
- =?utf-8?B?N3dxd21JV25hOFR4WURWSFFIcjdzNjZNY2UvTnVnRlFmQ1NlM1h2Mmh6YWxu?=
- =?utf-8?B?aTg4S3l1cEN2QVhyckQyT1ZodThkOGdZd3ZaSG94L01OSEF0QmhYTTFyUk0x?=
- =?utf-8?B?bi95dVFOaVJ5dGMrQ1E5OTZ0T1RYS201OU5NdGgxU2p4cDZCQ0IwYVNhZXlI?=
- =?utf-8?B?VmhzeFR1VHBEWnhrUjFMSXdOMVFnNjFhcnBjbVJqdWhPeXRBeHdzTXNVNm9B?=
- =?utf-8?B?NytvU3ZEdTkzdUVaaXY5b1BwYkpxODNoalIxTmE5dHExb1d5SWYzTWdYaUsr?=
- =?utf-8?B?ZHhZdUNrZThPQ3oxTmtlQkJGYVBiakFuSFdDSjA2V3VkamkzbFpUU2x3dFRL?=
- =?utf-8?B?NE5GZDhrSFdzV2IrM0NNNzgvTEcxaWNLZGtyUCs4Z3VjVEJYWEJMY1Rsd3ZX?=
- =?utf-8?B?TkFDVWtGNWUrS0hNaUd1UGFFcmI3RWVpMG9wZ0tBNkxBWWFEaG5SOXhocWNY?=
- =?utf-8?B?eFd6bHpOMUtxTjA2c29oQ09BU2tvUWlHSWJwcVUrNHRKUWprL21RaHZwb3Nl?=
- =?utf-8?B?UlU2UkRmVlRBbGhqcHZvcUFuSHdhMWJUQUFYOEsvM0lOUGRQaVlZU2Y2UWN3?=
- =?utf-8?B?MVlabUpNRjI3SkNBSWtNTksrTFRUWGh0WWdLSE5vby9hamV3RFN2alpGTFZ4?=
- =?utf-8?B?S21BK3hSVmdMc2tKN1E4ZXdrc3ZzbU9sTkQ0bVNsNHBMZXZQUnk3SlhhYmZH?=
- =?utf-8?B?bXZ6ZytadlBxM3VXVzhtWWlJWERZZ3VQVnZZNTBsdTRtZEQ1aThGNmVvZDNh?=
- =?utf-8?B?ZHpPSWRBTEJYd09KbGx4N1NhU2liWjM4dzhVRCtBZjJyL0ErT3I1UEZzcXVr?=
- =?utf-8?B?L0ppMmo3dm9iTjZINHh4MjVBYldaU2VWWStjdEhSTHBzM05ka3IzZExaYkJy?=
- =?utf-8?B?TzVGWnA5QzdQNGY0Z0h0VUNRNFRncDRhQ0VNciswY1lsNVlIVXJiTWtDaTQw?=
- =?utf-8?B?Tm5FdXpZM0FkVTdhcCtGNHZ1YTd6V2E4WmRtemtscmNUOEtzcDZWZmc0RlhE?=
- =?utf-8?B?QXRHelNjbjhwRnB1a0wrczJHV1R5R0hvNXhtSEpUb0Q3bCs4NDlvOW9hYllI?=
- =?utf-8?B?Rk16b0NtZTVpbUduMDhVZXg3L3crVk4rOGJrYUVzTE1DZE11aWMzejBpU0pm?=
- =?utf-8?B?YktSZi9HMUZLcTRTTG1SSXl5c0J1YjBrL1NzS3lKUDdhWUxYckhqRVdodmJW?=
- =?utf-8?B?Z3N6Q2ZIcld4RXJVQ3pYdTQvaWFYT2ZPQWtWOVBHUTNHNmV3OVRpUmFZZmpq?=
- =?utf-8?B?UGc3QnRwbkZyVXZMMHpEMHI1Vk5KUEIvYlVEeEltQUE1K3hWS2ptZlBLYmw1?=
- =?utf-8?B?eUhXZm1NYlBCRlA1Mjg4cy9Kak9FdW4ybkw5ZENzZm9HenlxNUZXb1hWVkN4?=
- =?utf-8?B?RUo3a3pkRE9WdlpucU4zdnlIMkpTK096ZnZPaXdJRDJIL2NjbURVQWtzdXpH?=
- =?utf-8?B?NFJvdTRFTDJud2pYQi81eTRuVVFwbTBNTm9sYllyTGozYTdHYmluZDNGUUpU?=
- =?utf-8?B?b1dzMlAxMk90ejd3OUxRb2xGYTM0MEpIOCtoT2ZtWThaNldKQytBZWxJdUZV?=
- =?utf-8?B?QS9BKzAyeHpBVlZZSG1IV3NuZnVnc0l5bzQ5VXBYd1RzUGtNalJhZlNHaGFK?=
- =?utf-8?B?WVA0QnRIc0JRbVF1SG4xOEQ1UUMrM1VadXR6ei95YVpudVRJOW9sSjl6cGk2?=
- =?utf-8?Q?N69swuk06la02FICTuhqArH32?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	vj1uNEe+GZzVq+vK4cdHj42CcAxabBOecdpXAP7kJbOgadl9yBK3ZJN//kxbXVxJTqNRYRjpJG0amKtgXl9n2brok/Lmft7x9yfhPZtR1fY00T0z5nkpJTkuMDRJEGbY3KLtk2SRqhDKSBVi08ynWKQQIaPrcE7zRO/Ji+rkVMrL+cMCU16bQvSM4NXmcYdNxsEQuWdf/jWNoBbduVgTsn/vC4XhAirTUUNgjIi8oU5pMmaxSoj7QJz/gaIFhQTbmyYkcH8MJAo/1JXZS386+wW/hNdrbHMiiP5kaFnva6pqop8q45Ut4Iay6GvqNTzWGLIkVZKkTa184BeaycryMJJIW7DrMrbzCp1t3mOq6/JRvyslbJ3+PHJUWm9TrZYZkqxNH99EBZoab3ZKnN4DVLGhYd3vD1QzshMuRVnK/Sv2GZ9M3O7+x/nG30DPp+e2SnHxSrqYPsFVrbxTuypi3EcJRMV3ckjiuyrMFHEaL4pBloytP+a4JOiW9O+nGjpp4TE5bPN/biCN9gYnOuMj/eB/QWraq7eOwa2KF7ClzTdW9nRos13qZ4MoFan2GoJpdGn2fXheudpWbMfO8uVA+HWZbRd/U5MdV0V2O7Ie8k8=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e038a037-69d8-48d5-81ab-08de101987ad
-X-MS-Exchange-CrossTenant-AuthSource: IA0PR10MB7622.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2025 20:44:57.1369
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Q44UW0nLrt8NK6Nvdt7MM6U2rSh4u8W5XRrl2UiNzYf4wemPAg3EESijNc8wRK9o3I7QLmWB+o+LeOGKS9PSkg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4446
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-10-20_06,2025-10-13_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
- adultscore=0 bulkscore=0 spamscore=0 suspectscore=0 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2510020000 definitions=main-2510200172
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDE4MDAyMyBTYWx0ZWRfX7lTEivgy+KO7
- beF5MNKzqSdvWT9EI7E8zkPN+eimv9Lm3N8lB61FlSaPfytBRaQI7WwLI3dDXZtK15nCi2e7L2z
- AnAss3HDv+yDtBoJzYjxtncZeRMjIkdf6pD2q794szFI6Qpae1xER1di6P6rXLIDzxUoqbLR/gb
- o7t4uhGG0NAGkOvewzL5IwLc/x2+qL5NavnUHunS3+7mT9R+q7Jx07DshQ/NSwaTJ4PLndbBN1t
- OcChaS9sEMUbRIWItZSV0Qm4HI81KXqU8/43I8OoJ874gBOCqAGSKGM1Vc+90c49KeX3z41jBb8
- TNAYJr3KV4EFxL/VB+txODDS1ELNJqaDrVSqBjpZytn2ILoLivzZT5dXYpZ9pFLaZDhkxayslV3
- 0wUBPBDdELGlm+e2j6CMYP0gQJZBIPl27EkU/QYT4vOGSDy/Uqs=
-X-Proofpoint-GUID: jFS25tsJGYoNmPidd2Z2gIvbNssts_nM
-X-Authority-Analysis: v=2.4 cv=Db8aa/tW c=1 sm=1 tr=0 ts=68f69f51 b=1 cx=c_pps
- a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=x6icFKpwvdMA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=NEAV23lmAAAA:8 a=3g6lvTd_0HygLE91AdMA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- cc=ntf awl=host:12091
-X-Proofpoint-ORIG-GUID: jFS25tsJGYoNmPidd2Z2gIvbNssts_nM
+References: <20251008173512.731801-1-alan.maguire@oracle.com>
+ <20251008173512.731801-2-alan.maguire@oracle.com> <CAEf4BzZ-0POy7UyFbyN37Y6zx+_2Q0kKR3hrQffq+KW6MOkZ1w@mail.gmail.com>
+ <f2e1fd61-7d3a-4aa6-9d36-a74987d040fe@oracle.com>
+In-Reply-To: <f2e1fd61-7d3a-4aa6-9d36-a74987d040fe@oracle.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 20 Oct 2025 13:57:57 -0700
+X-Gm-Features: AS18NWAaoYD76Qt5SNWA4V9Eclhn2pa280Syktic9rVx1Llzttt0AZsdwWfiLog
+Message-ID: <CAEf4Bza+zCKVHPHFDnNtKoYNGfeq+y7Oi96-+GGWOb8kop8tHA@mail.gmail.com>
+Subject: Re: [RFC bpf-next 01/15] bpf: Extend UAPI to support location information
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, acme@kernel.org, ttreyer@meta.com, 
+	yonghong.song@linux.dev, song@kernel.org, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
+	qmo@kernel.org, ihor.solodrai@linux.dev, david.faust@oracle.com, 
+	jose.marchesi@oracle.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Oct 17, 2025 at 1:43=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
+om> wrote:
+>
+> On 16/10/2025 19:36, Andrii Nakryiko wrote:
+> > On Wed, Oct 8, 2025 at 10:35=E2=80=AFAM Alan Maguire <alan.maguire@orac=
+le.com> wrote:
+> >>
+> >> Add BTF_KIND_LOC_PARAM, BTF_KIND_LOC_PROTO and BTF_KIND_LOCSEC
+> >> to help represent location information for functions.
+> >>
+> >> BTF_KIND_LOC_PARAM is used to represent how we retrieve data at a
+> >> location; either via a register, or register+offset or a
+> >> constant value.
+> >>
+> >> BTF_KIND_LOC_PROTO represents location information about a location
+> >> with multiple BTF_KIND_LOC_PARAMs.
+> >>
+> >> And finally BTF_KIND_LOCSEC is a set of location sites, each
+> >> of which has
+> >>
+> >> - a name (function name)
+> >> - a function prototype specifying which types are associated
+> >>   with parameters
+> >> - a location prototype specifying where to find those parameters
+> >> - an address offset
+> >>
+> >> This can be used to represent
+> >>
+> >> - a fully-inlined function
+> >> - a partially-inlined function where some _LOC_PROTOs represent
+> >>   inlined sites as above and others have normal _FUNC representations
+> >> - a function with optimized parameters; again the FUNC_PROTO
+> >>   represents the original function, with LOC info telling us
+> >>   where to obtain each parameter (or 0 if the parameter is
+> >>   unobtainable)
+> >>
+> >> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> >> ---
+> >>  include/linux/btf.h            |  29 +++++-
+> >>  include/uapi/linux/btf.h       |  85 ++++++++++++++++-
+> >>  kernel/bpf/btf.c               | 168 ++++++++++++++++++++++++++++++++=
+-
+> >>  tools/include/uapi/linux/btf.h |  85 ++++++++++++++++-
+> >>  4 files changed, 359 insertions(+), 8 deletions(-)
+> >>
+> >
+> > [...]
+> >
+> >> @@ -78,6 +80,9 @@ enum {
+> >>         BTF_KIND_DECL_TAG       =3D 17,   /* Decl Tag */
+> >>         BTF_KIND_TYPE_TAG       =3D 18,   /* Type Tag */
+> >>         BTF_KIND_ENUM64         =3D 19,   /* Enumeration up to 64-bit =
+values */
+> >> +       BTF_KIND_LOC_PARAM      =3D 20,   /* Location parameter inform=
+ation */
+> >> +       BTF_KIND_LOC_PROTO      =3D 21,   /* Location prototype for si=
+te */
+> >> +       BTF_KIND_LOCSEC         =3D 22,   /* Location section */
+> >>
+> >>         NR_BTF_KINDS,
+> >>         BTF_KIND_MAX            =3D NR_BTF_KINDS - 1,
+> >> @@ -198,4 +203,78 @@ struct btf_enum64 {
+> >>         __u32   val_hi32;
+> >>  };
+> >>
+> >> +/* BTF_KIND_LOC_PARAM consists a btf_type specifying a vlen of 0, nam=
+e_off is 0
+> >
+> > what if we make LOC_PARAM variable-length (i.e., use vlen). We can
+> > always have a fixed 4 bytes value that will contain an arg size, maybe
+> > some flags, and an enum representing what kind of location spec it is
+> > (constant, register, reg-deref, reg+off, reg+off-deref, etc). And then
+> > depending on that enum we'll know how to interpret those vlen * 4
+> > bytes. This will give us extensibility to support more complicated
+> > expressions, when we will be ready to tackle them. Still nicely
+> > dedupable, though. WDYT?
+> >
+>
+> It's a great idea; extensibility is really important here as I hope we
+> can learn to cover some of the additional location cases we don't
+> currently. Also we can retire the whole "continue" flag thing for cases
+> like multi-register representations of structs; we can instead have a
+> vlen 2 representation with registers in each slot. What's also nice
+> about that is that it lines up the LOC_PROTO and FUNC_PROTO indices for
+> parameters so the same index in LOC_PROTO has its type in FUNC_PROTO.
+>
+> In terms of specifics, I think removing the arg size from the type/size
+> btf_type field is a good thing as you suggest; having to reinterpret
+> negative values there is messy. So what about
+>
+> /* BTF_KIND_LOC_PARAM consists a btf_type specifying a vlen of 0,
+> name_off and type/size are 0.
+>  * It is followed by a singular "struct btf_loc_param" and a
+> vlen-specified set of "struct btf_loc_param_data".
+>  */
+>
+> enum {
 
+nit: name this enum, so we can refer to it from comments
 
-On 10/20/25 13:11, Alan Maguire wrote:
-> On 20/10/2025 17:01, Yonghong Song wrote:
->>
->>
->> On 10/20/25 3:53 AM, Alan Maguire wrote:
->>> On 03/10/2025 18:36, Yonghong Song wrote:
->>>> In llvm pull request [1], the dwarf is changed to accommodate functions
->>>> whose signatures are different from source level although they have
->>>> the same name. Other non-source functions are also included in dwarf.
->>>>
->>>> The following is an example:
->>>>
->>>> The source:
->>>> ====
->>>>    $ cat test.c
->>>>    struct t { int a; };
->>>>    char *tar(struct t *a, struct t *d);
->>>>    __attribute__((noinline)) static char * foo(struct t *a, struct t
->>>> *d, int b)
->>>>    {
->>>>      return tar(a, d);
->>>>    }
->>>>    char *bar(struct t *a, struct t *d)
->>>>    {
->>>>      return foo(a, d, 1);
->>>>    }
->>>> ====
->>>>
->>>> Part of generated dwarf:
->>>> ====
->>>> 0x0000005c:   DW_TAG_subprogram
->>>>                  DW_AT_low_pc    (0x0000000000000010)
->>>>                  DW_AT_high_pc   (0x0000000000000015)
->>>>                  DW_AT_frame_base        (DW_OP_reg7 RSP)
->>>>                  DW_AT_linkage_name      ("foo")
->>>>                  DW_AT_name      ("foo")
->>>>                  DW_AT_decl_file ("/home/yhs/tests/sig-change/
->>>> deadarg/test.c")
->>>>                  DW_AT_decl_line (3)
->>>>                  DW_AT_type      (0x000000bb "char *")
->>>>                  DW_AT_artificial        (true)
->>>>                  DW_AT_external  (true)
->>>>
->>>> 0x0000006c:     DW_TAG_formal_parameter
->>>>                    DW_AT_location        (DW_OP_reg5 RDI)
->>>>                    DW_AT_decl_file       ("/home/yhs/tests/sig-
->>>> change/deadarg/test.c")
->>>>                    DW_AT_decl_line       (3)
->>>>                    DW_AT_type    (0x000000c4 "t *")
->>>>
->>>> 0x00000075:     DW_TAG_formal_parameter
->>>>                    DW_AT_location        (DW_OP_reg4 RSI)
->>>>                    DW_AT_decl_file       ("/home/yhs/tests/sig-
->>>> change/deadarg/test.c")
->>>>                    DW_AT_decl_line       (3)
->>>>                    DW_AT_type    (0x000000c4 "t *")
->>>>
->>>> 0x0000007e:     DW_TAG_inlined_subroutine
->>>>                    DW_AT_abstract_origin (0x0000009a "foo")
->>>>                    DW_AT_low_pc  (0x0000000000000010)
->>>>                    DW_AT_high_pc (0x0000000000000015)
->>>>                    DW_AT_call_file       ("/home/yhs/tests/sig-
->>>> change/deadarg/test.c")
->>>>                    DW_AT_call_line       (0)
->>>>
->>>> 0x0000008a:       DW_TAG_formal_parameter
->>>>                      DW_AT_location      (DW_OP_reg5 RDI)
->>>>                      DW_AT_abstract_origin       (0x000000a2 "a")
->>>>
->>>> 0x00000091:       DW_TAG_formal_parameter
->>>>                      DW_AT_location      (DW_OP_reg4 RSI)
->>>>                      DW_AT_abstract_origin       (0x000000aa "d")
->>>>
->>>> 0x00000098:       NULL
->>>>
->>>> 0x00000099:     NULL
->>>>
->>>> 0x0000009a:   DW_TAG_subprogram
->>>>                  DW_AT_name      ("foo")
->>>>                  DW_AT_decl_file ("/home/yhs/tests/sig-change/
->>>> deadarg/test.c")
->>>>                  DW_AT_decl_line (3)
->>>>                  DW_AT_prototyped        (true)
->>>>                  DW_AT_type      (0x000000bb "char *")
->>>>                  DW_AT_inline    (DW_INL_inlined)
->>>>
->>>> 0x000000a2:     DW_TAG_formal_parameter
->>>>                    DW_AT_name    ("a")
->>>>                    DW_AT_decl_file       ("/home/yhs/tests/sig-
->>>> change/deadarg/test.c")
->>>>                    DW_AT_decl_line       (3)
->>>>                    DW_AT_type    (0x000000c4 "t *")
->>>>
->>>> 0x000000aa:     DW_TAG_formal_parameter
->>>>                    DW_AT_name    ("d")
->>>>                    DW_AT_decl_file       ("/home/yhs/tests/sig-
->>>> change/deadarg/test.c")
->>>>                    DW_AT_decl_line       (3)
->>>>                    DW_AT_type    (0x000000c4 "t *")
->>>>
->>>> 0x000000b2:     DW_TAG_formal_parameter
->>>>                    DW_AT_name    ("b")
->>>>                    DW_AT_decl_file       ("/home/yhs/tests/sig-
->>>> change/deadarg/test.c")
->>>>                    DW_AT_decl_line       (3)
->>>>                    DW_AT_type    (0x000000d8 "int")
->>>>
->>>> 0x000000ba:     NULL
->>>> ====
->>>>
->>>> In the above, there are two subprograms with the same name 'foo'.
->>>> Currently btf encoder will consider both functions as ELF functions.
->>>> Since two subprograms have different signature, the funciton will
->>>> be ignored.
->>>>
->>>> But actually, one of function 'foo' is marked as DW_INL_inlined which
->>>> means
->>>> we should not treat it as an elf funciton. The patch fixed this issue
->>>> by filtering subprograms if the corresponding function__inlined() is
->>>> true.
->>>>
->>>> This will fix the issue for [1]. But it should work fine without [1]
->>>> too.
->>>>
->>>>    [1] https://github.com/llvm/llvm-project/pull/157349
->>> The change itself looks fine on the surface but it has some odd
->>> consequences that we need to find a solution for.
->>>
->>> Specifically in CI I was seeing an error in BTF-to-DWARF function
->>> comparison:
->>>
->>> https://github.com/alan-maguire/dwarves/actions/runs/18376819644/
->>> job/52352757287#step:7:40
->>>
->>> 1: Validation of BTF encoding of functions; this may take some time:
->>> ERROR: mismatch : BTF '__be32 ip6_make_flowlabel(struct net *, struct
->>> sk_buff *, __be32, struct flowi6 *, bool);' not found; DWARF ''
->>>
->>> Further investigation reveals the problem; there is a constprop variant
->>> of ip6_make_flowlabel():
->>>
->>> ffffffff81ecf390 t ip6_make_flowlabel.constprop.0
->>>
->>> ..and the problem is it has a different function signature:
->>>
->>> __be32 ip6_make_flowlabel(struct net *, struct sk_buff *, __be32, struct
->>> flowi6 *, bool);
->>>
->>> The "real" function (that was inlined, other than the constprop variant)
->>> looks like this:
->>>
->>> static inline __be32 ip6_make_flowlabel(struct net *net, struct sk_buff
->>> *skb,
->>>                       __be32 flowlabel, bool autolabel,
->>>                       struct flowi6 *fl6);
->>>
->>> i.e. the last two parameters are in a different order.
->>
->> It is interesting that gcc optimization may change parameter orders...
->>
-> 
-> Yeah, I'm checking into this because I sort of wonder if it's a bug in
-> pahole processing and that the bool was in fact constant-propagated and
-> the struct fl6 * was actually the last ip6_make_flowlabel.constprop
-> parameter. Might be an issue in how we handle abstract origin cases.
+>         BTF_LOC_PARAM_REG_DATA,
+>         BTF_LOC_PARAM_CONST_DATA,
+> };
+>
+> struct btf_loc_param {
+>         __u8 size;      /* signed size; negative values represent signed
+>                          * values of the specified size, for example -8
+>                          * is an 8-byte signed value.
+>                          */
+>         __u8 data;      /* interpret struct btf_loc_param_data */
 
-Yeah, I think most likely 'autolabel' was const-propagated and *fl6 is
-the last real arg as you suggest.
+e.g., this will mention that this is enum btf_loc_param_kind from the above
 
-I'm not an expert on the IPA optimization passes, but I don't know of
-any that would reorder parameters like that. 
+>         __u16 flags;
+> };
+>
+> struct btf_loc_param_data {
+>         union {
+>                 struct {
+>                         __u16   reg;            /* register number */
+>                         __u16   flags;          /* register dereference *=
+/
+>                         __s32   offset;         /* offset from
+> register-stored address */
+>                 };
+>                 struct {
+>                         __u32 val_lo32;         /* lo 32 bits of 64-bit
+> value */
+>                         __u32 val_hi32;         /* hi 32 bits of 64-bit
+> value */
+>                 };
+>         };
+> };
 
-OTOH, I see a few places in kernel sources where ip6_make_flowlabel is
-passed a simple 'true' for autolabel.  That sort of thing will almost
-certainly be optimized by the IPA-cprop pass.
+I'd actually specify that each vlen element is 4 byte long (that's
+minimal reasonable size we can use to keep everything aligned well),
+and then just specify how to interpret those values depending on that
+loc_param_kind. I.e., for register we can use vlen=3D1, and say that
+those 4 bytes define register number (or whatever we will use to
+identify the register). But for reg+offset we have vlen=3D2, where first
+is register as before, second is offset value. And so on.
 
-Note that you may have _both_ the "real" version and the .constprop
-version of the function.  IPA-cprop can create specialized versions
-of functions so places where a parameter is a known constant can use
-the .constprop version (where 'autolabel' has been dropped) while
-other places where it may be variable use the original.
+>
+> I realize we have flags in two places (loc_param and loc_param_data for
+> registers); just in case we needed some sort of mix of register value
+> and register dereference I think that makes sense; haven't seen that in
+> practice yet though. Let me know if the above is what you have in mind.
 
-IPA-SRA (.isra suffix) can also change function parameters and return
-values, but afaiu it does not reorder existing parameters.
+see above, I think having spec for each kind of param location and
+using minimal amount of data will give us this future-proof approach.
+We don't even have to define flags until we have them, just specify
+that all unused bits/bytes should be zero, until used in the future.
 
-> 
->>>
->>> Digging into the DWARF representation, the .constprop function uses an
->>> abstract origin reference to the original function. In the case prior to
->>> your change, we would have compared function signatures across both
->>> representations and found the inconsistency and then avoided emitting
->>> BTF for the function.
->>>
->>> However with your change, we no longer add a function representation for
->>> the inline case to contrast with and detect that inconsistency.
->>>
->>> So that's the core problem; your change is trying to avoid comparing
->>> across inlined and uninlined functions with the same name/prefix, but
->>> sometimes we need to do exactly that to detect inconsistent
->>> representations when they really are inlined/uninlined instances of the
->>> same function. I don't see an easy answer here since it seems to me both
->>> are legitimate cases.
->>
->> The upstream does not like llvm pull request (associated with this patch)
->> so it is totally ok to discard this patch. Sorry, I think generally
->> we should only care about the *real* functions. But I missed that
->> you want to compare signatures of the *read* functions and *inlined*
->> functions.
->>
-> 
-> Yeah, it's all a symptom of the fact we are trying to reconstruct things
-> with incomplete info; these are all tradeoffs but I'm hoping with the
-> location info we can at least provide data about the tricky cases rather
-> than simply skip them.
-> 
->>>
->>> I'm hoping we can use BTF location info [1] to cover cases like this
->>> where we have inconsistencies between types in parameters. Rather than
->>> having to decide which case is correct we simply use location
->>> representations for the cases where we are unsure. This will make such
->>> cases safely traceable since we have info about where parameters are
->>> stored.
->>
->> Indeed this could solve the inlined functions problem. Again, please
->> discard
->> this patch for now.
->>
-> 
-> Will do; sorry it took me a while to get around to this one! Thanks!
-> 
+>
+>
+> >> + * and is followed by a singular "struct btf_loc_param". type/size sp=
+ecifies
+> >> + * the size of the associated location value.  The size value should =
+be
+> >> + * cast to a __s32 as negative sizes can be specified; -8 to indicate=
+ a signed
+> >> + * 8 byte value for example.
+> >> + *
+> >> + * If kind_flag is 1 the btf_loc is a constant value, otherwise it re=
+presents
+> >> + * a register, possibly dereferencing it with the specified offset.
+> >> + *
+> >> + * "struct btf_type" is followed by a "struct btf_loc_param" which co=
+nsists
+> >> + * of either the 64-bit value or the register number, offset etc.
+> >> + * Interpretation depends on whether the kind_flag is set as describe=
+d above.
+> >> + */
+> >> +
+> >> +/* BTF_KIND_LOC_PARAM specifies a signed size; negative values repres=
+ent signed
+> >> + * values of the specific size, for example -8 is an 8-byte signed va=
+lue.
+> >> + */
+> >> +#define BTF_TYPE_LOC_PARAM_SIZE(t)     ((__s32)((t)->size))
+> >> +
+> >> +/* location param specified by reg + offset is a dereference */
+> >> +#define BTF_LOC_FLAG_REG_DEREF         0x1
+> >> +/* next location param is needed to specify parameter location also; =
+for example
+> >> + * when two registers are used to store a 16-byte struct by value.
+> >> + */
+> >> +#define BTF_LOC_FLAG_CONTINUE          0x2
+> >> +
+> >> +struct btf_loc_param {
+> >> +       union {
+> >> +               struct {
+> >> +                       __u16   reg;            /* register number */
+> >> +                       __u16   flags;          /* register dereferenc=
+e */
+> >> +                       __s32   offset;         /* offset from registe=
+r-stored address */
+> >> +               };
+> >> +               struct {
+> >> +                       __u32 val_lo32;         /* lo 32 bits of 64-bi=
+t value */
+> >> +                       __u32 val_hi32;         /* hi 32 bits of 64-bi=
+t value */
+> >> +               };
+> >> +       };
+> >> +};
+> >> +
+> >> +/* BTF_KIND_LOC_PROTO specifies location prototypes; i.e. how locatio=
+ns relate
+> >> + * to parameters; a struct btf_type of BTF_KIND_LOC_PROTO is followed=
+ by a
+> >> + * a vlen-specified number of __u32 which specify the associated
+> >> + * BTF_KIND_LOC_PARAM for each function parameter associated with the
+> >> + * location.  The type should either be 0 (no location info) or point=
+ at
+> >> + * a BTF_KIND_LOC_PARAM.  Multiple BTF_KIND_LOC_PARAMs can be used to
+> >> + * represent a single function parameter; in such a case each should =
+specify
+> >> + * BTF_LOC_FLAG_CONTINUE.
+> >> + *
+> >> + * The type field in the associated "struct btf_type" should point at=
+ an
+> >> + * associated BTF_KIND_FUNC_PROTO.
+> >> + */
+> >> +
+> >> +/* BTF_KIND_LOCSEC consists of vlen-specified number of "struct btf_l=
+oc"
+> >> + * containing location site-specific information;
+> >> + *
+> >> + * - name associated with the location (name_off)
+> >> + * - function prototype type id (func_proto)
+> >> + * - location prototype type id (loc_proto)
+> >> + * - address offset (offset)
+> >> + */
+> >> +
+> >> +struct btf_loc {
+> >> +       __u32 name_off;
+> >> +       __u32 func_proto;
+> >> +       __u32 loc_proto;
+> >> +       __u32 offset;
+> >> +};
+> >
+> > What is that offset relative to? Offset within the function in which
+> > we were inlined? Do we know what that function is? I might have missed
+> > how we represent that.
+>
+> The offset is relative to kernel base address (at compile-time the
+> address of .text, at runtime the address of _start). The reasoning is we
+> have to deal with kASLR which means any compile-time absolute address
+> will likely change when the kernel is loaded. So we cannot deal in raw
+> addresses, and to fixup the addresses we then gather kernel/module base
+> address at runtime to compute the actual location of the inline site.
+> See get_base_addr() in tools/lib/bpf/loc.c in patch 14 for an example of
+> how this is done.
+
+this makes sense, but this should be documented, IMO
+
+>
+> Given this, it might make sense to have a convention where the LOCSEC
+> specifies the section name also, something like
+>
+> "inline.text"
+>
+> What do you think?
+
+hm... I'd specify offsets relative to the KASLR base, uniformly.
+Section name is a somewhat superficial detail in terms of tracing
+kernel functions, I don't know if it's that important to group
+functions by ELF section. (unless I'm missing where this would be
+important for correctness?)
+
+>
+> >
+> >> +
+> >> +/* helps libbpf know that location declarations are present; libbpf
+> >> + * can then work around absence if this value is not set.
+> >> + */
+> >> +#define BTF_KIND_LOC_UAPI_DEFINED 1
+> >> +
+> >
+> > you don't mention that in the commit, I'll have to figure this out
+> > from subsequent patches, but it would be nice to give an overview of
+> > the purpose of this in this patch
+> >
+>
+> This is a bit ugly, but is intended to help deal with the situation -
+> which happens a lot with distros where we might want to build libbpf
+> without latest UAPI headers (some distros may not get new UAPI headers
+> for a while). The libbpf patches check if the above is defined, and if
+> not supply their own location-related definitions. If in turn libbpf
+> needs to define them, it defines BTF_KIND_LOC_LIBBPF_DEFINED. Finally
+> pahole - which needs to compile both with a checkpointed libbpf commit
+> and a libbpf that may be older and not have location definitions -
+> checks for either, and if not present does a similar set of declarations
+> to ensure compilation still succeeds. We use weak declarations of libbpf
+> location-related functions locally to check if they are available at
+> runtime; this dynamically determines if the inline feature is available.
+>
+> Not pretty, but it will help avioid some of the issues we had with BTF
+> enum64 and compilation.
+
+um... all this is completely unnecessary because libbpf is supplying
+its own freshest UAPI headers it needs in Github mirror under
+include/uapi/linux subdir. Distros should use those UAPI headers to
+build libbpf from source.
+
+So the above BTF_KIND_LOC_UAPI_DEFINED hack is not necessary.
+
+>
+> Thanks!
+>
 > Alan
-> 
-
 
