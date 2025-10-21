@@ -1,76 +1,78 @@
-Return-Path: <bpf+bounces-71564-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71565-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10B82BF6AF3
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 15:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 68D54BF6AFA
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 15:12:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6BEE64F48DF
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 13:12:25 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CC4AF503039
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 13:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B832C334C17;
-	Tue, 21 Oct 2025 13:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BBB335079;
+	Tue, 21 Oct 2025 13:12:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c16Q1L7+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RYca6u56"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB3FC2EDD53
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 13:12:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B2D12459F7
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 13:12:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761052339; cv=none; b=n1BIJvFpeUEUmlgglIR5kL0t8o/ZuhzKCFaZTlkdMsh2slEYesG/l8ewrIUk3yXgIywZ0FFT5Tc1eXI0EvnAxbGxxmFF6Qk52jmJas7+1dOmBbp8HXM1GiDhtU7/C2rYxg0kn/6tldjA8dYwkIk20guILXtTDYPRCVe7m1dklQc=
+	t=1761052344; cv=none; b=D9gsd0NliB09TKSAXrSkkfrMjOGmrAIPgJHHTSXKFLd0l/KX3p3t4UIq06QTTSblKm3VIgTxnPlTSE86yYI6hv7Qie4lSyQcUpeFJwyHBVSYDzcn+R7lV4mPauLjSpAqr0eqqkbOZ04P4wiMKUrnH3urHBoe83kiYb0KFzWFJ9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761052339; c=relaxed/simple;
-	bh=lXXrXhZQlKkja3Hsm370JTFLnuv6HR//m4/vJrb54HY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z5aK4A6V5gAHoQl6UvSeVzkpASM6IJBvXOsqNlVPPBYyZIM/JMiPK/2YCSMqJ6s2WODmNVkJZE4Ynj0/2YX4ZQI0lTjCs309Ly5LyFmEgAt6suQxUMnn/QH4/sQsZTsqp80yERm4h99YVOz+gSFd3zM215cgsCxjXdjvyDKCocg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c16Q1L7+; arc=none smtp.client-ip=209.85.214.172
+	s=arc-20240116; t=1761052344; c=relaxed/simple;
+	bh=pQPr7htILs16jic9LGLLgnMQ6ijlAqDBjUrkgVTGwJU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Vh7VofCite8lAGIx6qW5BaKHcQo3eEKq/peZOoasRfyUiz64OmIb1EuhcionL62voR5uUO//+1lBHKSxYyN5XCQ6vraiRkF44OyJ2myb8BmgSM4rCcPbAtoBoedOWzpkVmgaUurYQxjH4D8ja2+0huI8tTUes6CLgcXzAaWbgcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RYca6u56; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-290deb0e643so40926685ad.2
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 06:12:17 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-27ee41e0798so88619795ad.1
+        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 06:12:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761052337; x=1761657137; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jnwEDlLy9NGxzXc8xxMXBW1U2krgWGY/nWxqk6w/IGA=;
-        b=c16Q1L7+9Z85/9lvjd7D/pNTdY8AAkV24tDmadXnYRELemSFgvGXw0aYyH4n9S4s4f
-         Uzv0FdoSWFTI8nNwV2ZuKmA847+q/rVZcmrqOxCdt9YOxin8Dpbilgb+xD5rbgWouqZC
-         0/aKebhrNXIpO0q+hDMyhW57K5C1jCDTmQbatMCJN2KqYPNPAfhgKpF3xUQkRmxHUoHb
-         Bo3PC6sxGzJ/TQ/pmvOqLs0JvRqY2Mr8Y0xixxHTVfCePzjpL7wCPthllIXgeo0OZqKX
-         IWfSrXyrvkVFclt3SS7sXuN8NrL4EbNje0f3o1aVJ0WjbGNSDg/vQC8VVTS7ndcBs0qI
-         5wkw==
+        d=gmail.com; s=20230601; t=1761052342; x=1761657142; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G/dnLWTXFqXm9s9XxXu0cafb5DL+nQFgTeQspmwu09w=;
+        b=RYca6u56war0QxnjTIT9I0xjrODdab/pxsHUpvSChL1Yif+9d3X34m5nbX7Vyqno4h
+         tq21gSzc0afSrOgdbsQaKzWNjcvD0NyJmZo7cC2ZvGslH+XM8N2cHKjbuO0nTEub+dA2
+         P23a8TdjPiK+bL50Y8prJEF38n1s6E/SNYtjMgxKR45UMi40Yia3rh1Y7FMvPJQ2c7Jj
+         vGNTeHvCX/jk8/N59KBXfvaKqzhMq4DYAqqTnpPLyNmAUBvIfLtttjvuvdtKZUcOHEx6
+         N5E4+LbSRywOcSk/sNyZCobwPNR7OWdccewW/ilW47+/yNZwiEppE3FBLj9WFMdeYqJz
+         irzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761052337; x=1761657137;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jnwEDlLy9NGxzXc8xxMXBW1U2krgWGY/nWxqk6w/IGA=;
-        b=MmJKt6oaZV7ngxjzQEreEyOnRmbyNL9T0j13o8NNiq4587cI/ixX0tGr7GG/tX3yw4
-         rp1WISWbbYNJES1R6eDTULDDtzBed3yV1i7N0IqNmg2tt2lJ6MQOzO7++hE3sFwJgIyN
-         roKxhNOSVPAU3kvSoqL8Vkd1Klg93y03KBBXeZZtkmOZKSOnOR+wFjk/9+r/qR4xUD6t
-         HaklcT+joiBRJw6ZdL63CIM2lbOh4fVo8MZHKCXHihJk+I9tnPOWdjjyHDhcB/SIOWJB
-         AFCuHk5B/axInS0j0Y/5jOfHXd2iii3TifLdQUV7Mj68CR1dSJhwlX5zl7JdVHtiJ2Qb
-         NVbw==
-X-Gm-Message-State: AOJu0YxuyR+hbK4yd6EAdslcLtZRtYfMzz5RH8lI4ITBvdI0E9U7cFO5
-	u/2yD325YGnZFIBspJbfNc1unlKmwGoX9ZzlRhRBAJpcb3cbAi/nYU85
-X-Gm-Gg: ASbGncsEmYZ7iRhpLrS6YNzUUYo/YqNRu5WcvGE3VIilv/j3t3+rCmqPFtPgIKd+32g
-	iIhzkktQsRz9N0OD01o4JAdQ99iyuo3o8380eQicBSt+oT4KO0o0Plw3nHFBiFtHGhzJBpsSJ2H
-	dUCou3Fvvrrs16vu2SvIUGM2yOoGz/K8W/HfCe6GcforANz8x6vORMRqcXZeTmEO61HFyfAxx0H
-	NGQ3B6kTRsDBCDODJMNun4eUOf5RwRo19Bv1a28DOkN5jcBAU6y2+SVIZcRUmbX5Ul/4gfZbnDP
-	8iCz4gdvBQkBF/rwVNZqMXtlEojXKmujFYZPmK/h2g1Th1v2/INt8mv+Vj3pZfknTCXcRdBS/Kb
-	obxKiM4zvgT7OswlS8nlNWSzehfBHTl7ZAluOPc8FYYaKxIHyEDRcSaZuZI75mubMxJ1pdtHErX
-	2WHasUPf/fL3snuWfHq56lIGZ/sVUSVCDSIcyry0v/Hzyb12kH1VmyJqySZQ==
-X-Google-Smtp-Source: AGHT+IEIVWVEFQQJlwTvkcEsPIa9G1I0ilTN8+mEn+ignqV9jVSKxaeVbgILkk1uZgjXZQfay/Ld0g==
-X-Received: by 2002:a17:902:e5cf:b0:290:9576:d6ef with SMTP id d9443c01a7336-290cba423b1mr231725315ad.54.1761052336909;
-        Tue, 21 Oct 2025 06:12:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1761052342; x=1761657142;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G/dnLWTXFqXm9s9XxXu0cafb5DL+nQFgTeQspmwu09w=;
+        b=ZhuwQyqiA0ddJ+/yfNlR7MBBcLUwLi16haC6lLDiJMzp5HXi1xViiGg1Q3LS3lj45W
+         HuA8xFydxOWUVCRSSIREGhSCzhY5Qc+z+Q06NEsGWTortnqW0Bdp+sXU9kAhc9RzQFcF
+         5kEhddWRwziW5ERr6FqWVqkIr9GbuuVT31WTCtKAxVfVIJT3xoyhTbt0tfIYGX+PDbAu
+         eRxby+DT1AzY/PDaNLlMXN/Bot0ux81ZlwVgjjYOvPaQl4mat+NdDGqZKtG8HSrU4RHF
+         V2rDwkQTJDm99fXycEkErP6XqndSnI5TmtyUOhjY5GpssVF3qfzepDsfKAGoLAk3wNff
+         J56A==
+X-Gm-Message-State: AOJu0YxWwYswh1sX/GaHr1/56iLZgAz1EwGEVt1QhARSON30H4E0mfpj
+	YBIgIaDCSiDxl6gOQ2eEhMksXTBdriqg2PShDHKTzEhk8xJjhJNcRv2Y
+X-Gm-Gg: ASbGncsX/fzyzyNG2C+9fYRsiTFrecYN4Ji4/oaHB2tcxGnHENbEp1cPSx2NgwWohAZ
+	JmyE4repO9fJ/t4Z1Tb+BJI3SG8l2QKulmuD3GBJ5Dxt5yKvEx3KVNCWd8b/RY9MAPmP45B2PjD
+	tjM6o0gw2dTcIqKOvfD4lYsHYt2VZJFDE5N3gn4hqh/Jy656ZeS0e48eIRwcuwJDEY8r62xdUlT
+	RNrJzQjXheYCr5p5yMKCKChVHgZ/G//kq+MHjX94sCOiDHAUWpB3nP7ol1i/ew+Xl2wbHXFPwjA
+	Ue3gTOZ9ZHzjR4XIwQkd80528eajyM1ePsJ68F6wIo17n2QWVXZl/v6w1qbFIBbJ/+UJ4GoqrMh
+	cNn7zJBDsGYdD7FiB9zCIpUcXpH8ryWr3NOxssGZJ6tg6tIY8Od7a2du6MPaNj45y2WWLmM1vla
+	6U8fvn0OigXorcL+aAkyKUDNDx+o+kNGcjNlFKnS4TAS0Nk7RRzEaSTBC0XA==
+X-Google-Smtp-Source: AGHT+IEcf3sRiDeIqkzjrl4nyqdLulMa3wDRCJ44nvcE0oww6QkDtoBkOGRxj/mKX3YCR8vazUB1MA==
+X-Received: by 2002:a17:903:2990:b0:264:8a8d:92e8 with SMTP id d9443c01a7336-290ccab59b1mr206049925ad.59.1761052341628;
+        Tue, 21 Oct 2025 06:12:21 -0700 (PDT)
 Received: from KERNELXING-MB0.tencent.com ([43.132.141.25])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471fd9ddsm109248175ad.89.2025.10.21.06.12.12
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471fd9ddsm109248175ad.89.2025.10.21.06.12.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Oct 2025 06:12:16 -0700 (PDT)
+        Tue, 21 Oct 2025 06:12:21 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -90,10 +92,12 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next v3 0/9] xsk: batch xmit in copy mode
-Date: Tue, 21 Oct 2025 21:12:00 +0800
-Message-Id: <20251021131209.41491-1-kerneljasonxing@gmail.com>
+Subject: [PATCH net-next v3 1/9] xsk: introduce XDP_GENERIC_XMIT_BATCH setsockopt
+Date: Tue, 21 Oct 2025 21:12:01 +0800
+Message-Id: <20251021131209.41491-2-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20251021131209.41491-1-kerneljasonxing@gmail.com>
+References: <20251021131209.41491-1-kerneljasonxing@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -104,103 +108,176 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-This series is focused on the performance improvement in copy mode. As
-observed in the physical servers, there are much room left to ramp up
-the transmission for copy mode, compared to zerocopy mode.
+Add a new socket option to provide an alternative to achieve a higher
+overall throughput with the rest of series applied. As the corresponding
+documentataion I added says, it might increase the latency because the
+heavy allocation cannot be avoided especially when the shortage of
+memory occurs. So this patch don't turn this feature as default.
 
-Even though we can apply zerocopy to achieve a much better performance,
-some limitations are still there especially for virtio and veth cases.
-In the real world, many hosts still don't implement and support zerocopy
-mode for VMs, so copy mode is the only way we can resort to.
+Add generic_xmit_batch to tertermine how many descriptors are handled
+at one time. It shouldn't be larger than max_tx_budget.
 
-Zerocopy has a good function name xskq_cons_read_desc_batch() which
-reads descriptors in batch and then sends them out at a time, rather
-than just read and send the descriptor one by one in a loop. Similar
-batch ideas can be seen from classic mechanisms like GSO/GRO which also
-try to handle as many packets as they can at one time. So the motivation
-and idea of the series actually originated from them.
+Introduce skb_cache when setting setsockopt with xs->mutex protection to
+store newly allocated skbs at one time.
 
-Looking back to the initial design and implementation of AF_XDP, it's
-not hard to find the big difference it made is to speed up the
-transmission when zerocopy mode is enabled. So the conclusion is that
-zerocopy mode of AF_XDP outperforms AF_PACKET that still uses copy mode.
-As to the whole logic of copy mode for both of them, they looks quite
-similar, especially when application using AF_PACKET sets
-PACKET_QDISC_BYPASS option. Digging into the details of AF_PACKET, we
-can find the implementation is comparatively heavy which can also be
-proved by the real test as shown below. The numbers of AF_PACKET test
-are a little bit lower.
+Introduce desc_cache to temporarily cache what descriptors the xsk is
+about to send each round.
 
-At the current moment, I consider copy mode of AF_XDP as a half bypass
-mechanism to some extent in comparison with the well known bypass
-mechanism like DPDK. To avoid much consumption in kernel as much as
-possible, then the batch xmit is proposed to aggregate descriptors in a
-certain small group and then read/allocate/build/send them in individual
-loops.
-
-Applications are allowed to use setsockopt to turn on this feature.
-Since memory allocation can be time consuming and heavy due to lack of
-memory, it might not be that good to hold one descriptor for too long,
-which brings high latency for one skb. That's the reason why the feature
-is not set as default.
-
-Experiments numbers:
-1) Tested on ixgbe at 10Gb/sec.
-copy mode:   1,861,347 pps (baseline)
-batch mode:  2,344,052 pps (+25.9%)
-xmit.more:   2,711,077 pps (+45.6%)
-zc mode:    13,333,593 pps (+616.3%)
-AF_PACKET:   1,375,808 pps (-26.0%)
-
-2) Tested on i40e at 10Gb/sec.
-copy mode:   1,813,071 pps (baseline)
-xmit.more:   3,044,596 pps (67.9%)
-zc mode:    14,880,841 pps (720.7%)
-AF_PACKET:   1,553,856 pps (-14.0%)
-
-[2]: taskset -c 1 ./xdpsock -i eth1 -t  -S -s 64
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
 ---
-v3
-Link: https://lore.kernel.org/all/20250825135342.53110-1-kerneljasonxing@gmail.com/
-1. I retested and got different test numbers. Previous test is not that
-right because my env has two NUMA nodes and only the first one has a
-faster speed.
-2. To achieve a stable performance result, the development and
-evaluation are also finished in physical servers just like the numbers
-that I share.
-3. I didn't use pool->tx_descs because sockets can share the same umem
-pool.
-3. Use skb list to chain the allocated and built skbs to send.
-5. Add AF_PACKET test numbers.
+ Documentation/networking/af_xdp.rst | 17 ++++++++++
+ include/net/xdp_sock.h              |  7 ++++
+ include/uapi/linux/if_xdp.h         |  1 +
+ net/xdp/xsk.c                       | 51 +++++++++++++++++++++++++++++
+ tools/include/uapi/linux/if_xdp.h   |  1 +
+ 5 files changed, 77 insertions(+)
 
-
-V2
-Link: https://lore.kernel.org/all/20250811131236.56206-1-kerneljasonxing@gmail.com/
-1. add xmit.more sub-feature (Jesper)
-2. add kmem_cache_alloc_bulk (Jesper and Maciej)
-
-Jason Xing (9):
-  xsk: introduce XDP_GENERIC_XMIT_BATCH setsockopt
-  xsk: extend xsk_build_skb() to support passing an already allocated
-    skb
-  xsk: add xsk_alloc_batch_skb() to build skbs in batch
-  xsk: add direct xmit in batch function
-  xsk: rename nb_pkts to nb_descs in xsk_tx_peek_release_desc_batch
-  xsk: extend xskq_cons_read_desc_batch to count nb_pkts
-  xsk: support batch xmit main logic
-  xsk: support generic batch xmit in copy mode
-  xsk: support dynamic xmit.more control for batch xmit
-
- Documentation/networking/af_xdp.rst |  17 +++
- include/net/xdp_sock.h              |  14 ++
- include/uapi/linux/if_xdp.h         |   1 +
- net/core/dev.c                      |  26 ++++
- net/core/skbuff.c                   | 101 +++++++++++++
- net/xdp/xsk.c                       | 223 ++++++++++++++++++++++++----
- net/xdp/xsk_queue.h                 |   5 +-
- tools/include/uapi/linux/if_xdp.h   |   1 +
- 8 files changed, 359 insertions(+), 29 deletions(-)
-
+diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
+index 50d92084a49c..7a8d219efe71 100644
+--- a/Documentation/networking/af_xdp.rst
++++ b/Documentation/networking/af_xdp.rst
+@@ -447,6 +447,23 @@ mode to allow application to tune the per-socket maximum iteration for
+ better throughput and less frequency of send syscall.
+ Allowed range is [32, xs->tx->nentries].
+ 
++XDP_GENERIC_XMIT_BATCH
++----------------------
++
++It provides an option that allows application to use batch xmit in the copy
++mode. Batch process tries to allocate a certain number skbs through bulk
++mechanism first and then initialize them and finally send them out at one
++time.
++It applies efficient bulk allocation/deallocation function, avoid frequently
++grabbing/releasing a few locks (like cache lock and queue lock), minimizing
++triggering IRQs from the driver side, which generally gain the overall
++performance improvement as observed by xdpsock benchmark.
++Potential side effect is that it might increase the latency of per packet
++due to memory allocation that is unavoidable and time-consuming.
++Setting a relatively large value of batch size could benifit for scenarios
++like bulk transmission. The maximum value shouldn't be larger than
++xs->max_tx_budget.
++
+ XDP_STATISTICS getsockopt
+ -------------------------
+ 
+diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+index ce587a225661..f33f1e7dcea2 100644
+--- a/include/net/xdp_sock.h
++++ b/include/net/xdp_sock.h
+@@ -45,6 +45,12 @@ struct xsk_map {
+ 	struct xdp_sock __rcu *xsk_map[];
+ };
+ 
++struct xsk_batch {
++	u32 generic_xmit_batch;
++	struct sk_buff **skb_cache;
++	struct xdp_desc *desc_cache;
++};
++
+ struct xdp_sock {
+ 	/* struct sock must be the first member of struct xdp_sock */
+ 	struct sock sk;
+@@ -89,6 +95,7 @@ struct xdp_sock {
+ 	struct mutex mutex;
+ 	struct xsk_queue *fq_tmp; /* Only as tmp storage before bind */
+ 	struct xsk_queue *cq_tmp; /* Only as tmp storage before bind */
++	struct xsk_batch batch;
+ };
+ 
+ /*
+diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
+index 23a062781468..44cb72cd328e 100644
+--- a/include/uapi/linux/if_xdp.h
++++ b/include/uapi/linux/if_xdp.h
+@@ -80,6 +80,7 @@ struct xdp_mmap_offsets {
+ #define XDP_STATISTICS			7
+ #define XDP_OPTIONS			8
+ #define XDP_MAX_TX_SKB_BUDGET		9
++#define XDP_GENERIC_XMIT_BATCH		10
+ 
+ struct xdp_umem_reg {
+ 	__u64 addr; /* Start of packet data area */
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 7b0c68a70888..ace91800c447 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -1210,6 +1210,8 @@ static int xsk_release(struct socket *sock)
+ 	xskq_destroy(xs->tx);
+ 	xskq_destroy(xs->fq_tmp);
+ 	xskq_destroy(xs->cq_tmp);
++	kfree(xs->batch.skb_cache);
++	kvfree(xs->batch.desc_cache);
+ 
+ 	sock_orphan(sk);
+ 	sock->sk = NULL;
+@@ -1544,6 +1546,55 @@ static int xsk_setsockopt(struct socket *sock, int level, int optname,
+ 		WRITE_ONCE(xs->max_tx_budget, budget);
+ 		return 0;
+ 	}
++	case XDP_GENERIC_XMIT_BATCH:
++	{
++		struct xsk_buff_pool *pool = xs->pool;
++		struct xsk_batch *batch = &xs->batch;
++		struct xdp_desc *descs;
++		struct sk_buff **skbs;
++		unsigned int size;
++		int ret = 0;
++
++		if (optlen != sizeof(size))
++			return -EINVAL;
++		if (copy_from_sockptr(&size, optval, sizeof(size)))
++			return -EFAULT;
++		if (size == batch->generic_xmit_batch)
++			return 0;
++		if (size > xs->max_tx_budget || !pool)
++			return -EACCES;
++
++		mutex_lock(&xs->mutex);
++		if (!size) {
++			kfree(batch->skb_cache);
++			kvfree(batch->desc_cache);
++			batch->generic_xmit_batch = 0;
++			goto out;
++		}
++
++		skbs = kmalloc(size * sizeof(struct sk_buff *), GFP_KERNEL);
++		if (!skbs) {
++			ret = -ENOMEM;
++			goto out;
++		}
++		descs = kvcalloc(size, sizeof(struct xdp_desc), GFP_KERNEL);
++		if (!descs) {
++			kfree(skbs);
++			ret = -ENOMEM;
++			goto out;
++		}
++		if (batch->skb_cache)
++			kfree(batch->skb_cache);
++		if (batch->desc_cache)
++			kvfree(batch->desc_cache);
++
++		batch->skb_cache = skbs;
++		batch->desc_cache = descs;
++		batch->generic_xmit_batch = size;
++out:
++		mutex_unlock(&xs->mutex);
++		return ret;
++	}
+ 	default:
+ 		break;
+ 	}
+diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/linux/if_xdp.h
+index 23a062781468..44cb72cd328e 100644
+--- a/tools/include/uapi/linux/if_xdp.h
++++ b/tools/include/uapi/linux/if_xdp.h
+@@ -80,6 +80,7 @@ struct xdp_mmap_offsets {
+ #define XDP_STATISTICS			7
+ #define XDP_OPTIONS			8
+ #define XDP_MAX_TX_SKB_BUDGET		9
++#define XDP_GENERIC_XMIT_BATCH		10
+ 
+ struct xdp_umem_reg {
+ 	__u64 addr; /* Start of packet data area */
 -- 
 2.41.3
 
