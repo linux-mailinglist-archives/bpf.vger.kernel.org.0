@@ -1,99 +1,72 @@
-Return-Path: <bpf+bounces-71595-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71600-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 363B0BF7D43
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 19:10:33 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9504EBF7E5B
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 19:28:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9034546CCD
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 17:10:31 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2F41D34AD36
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 17:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD9F348899;
-	Tue, 21 Oct 2025 17:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7716B35580C;
+	Tue, 21 Oct 2025 17:27:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jOJXBTEY"
+	dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b="bAHvNP48"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from gentwo.org (gentwo.org [62.72.0.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1FB5339710;
-	Tue, 21 Oct 2025 17:10:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C99355802
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 17:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761066625; cv=none; b=YmEF741TRdBEAlLsrpUBPMDoRMiquX/YjLas4msgUDsJs6ZSDhaKPmwb0FvkRTrFFIJapHWBnefpWxPeJZaRDRfrJ6yfld6khvm9YaTVqsKukO1nFdW54q2WsZi7ljPGHnuYzzFCgacZs5X9s9TpsS9viWyn2KvlIM2Hyvl5B+s=
+	t=1761067675; cv=none; b=IaYk7r+ZjZGtsKcoIlvlcjnPUKp5ERXxh0my1vOU22BHGkXnciUUPUnykLq0u2wGs2SJenh77mA8aZ3VN9CQLMT9H4UsjRPzb0UzuqWZsymSwk9eFFMsg+EANiLHEWkUB6+QNxRqeulNjOOx3eByEtV9M89MfeabilfijcLKWf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761066625; c=relaxed/simple;
-	bh=rSjJKdQB3KKSZZPvG0Kerperdmp5F1v3jL6/KaDh4Yk=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=GZf9bKWilpxX+3wB063wqj0jVX01ZYTwlfu22gfaWhqKu3wD+daJLTH+j/hVp00Fv4fnDoGyUlA2z5/A37jpqjTmZp0G0evFVErInQ0H6Nnx8nBZPW+d2zRTMC8rsx9SgcrvbWwrJjwT8WCBFREw8J89YVtkMnMtNh5KsiRSclU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jOJXBTEY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E7E6C4CEF1;
-	Tue, 21 Oct 2025 17:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761066624;
-	bh=rSjJKdQB3KKSZZPvG0Kerperdmp5F1v3jL6/KaDh4Yk=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=jOJXBTEYbNITZmmyyezZSSzl7AvCQkNpnZoEmjxp1BHqG4HNdTSjRL9lO2uptthUV
-	 srUvdO4wnXrS8J0zrrVR5bPS17VqUgxwcpFLj4e+6eaLBN95pfo4HHsLvEh4xqKo2A
-	 Fv5KAYslVBEBqInhKgYNQNvgjKECS61t/fOHR6M9aG/xKPAcfS2awBxH07TBMX69Wk
-	 RoT+YypJQfRFs4FMIG1PbN4NVOpUICycOYeRTHjCfH7c0oA4ZgDvTKv3rnCDIu4bkU
-	 4Sms9bejKiAbjG2mJGGTA+5r8nBs6XIWIhwaFBkmpe/zn52dOYNJKzkClzk6yVLSsT
-	 hjrc0yIUctTEQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 37E8F3A55F96;
-	Tue, 21 Oct 2025 17:10:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1761067675; c=relaxed/simple;
+	bh=aDZFA/XJVv1lEwaX7z09NSQIhGALV+zbSDqdbk5QFJI=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=tVILgt8gLv8l3tDf1OxP/D5dT78dKDuGVSRLAv6/zS2vByzqhDgZKWAwq6QK2tvrG4KiJml/1qO5MIfjKu8I0j5/YrLFtks4i1tcdXW8WGaVNGHYs9CnVG8NI1TENSqNr0XTaTyEIXPL/+jSEz+MqFO3DDCtT15WQsjHHemNbug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org; spf=pass smtp.mailfrom=gentwo.org; dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b=bAHvNP48; arc=none smtp.client-ip=62.72.0.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentwo.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.org;
+	s=default; t=1761067306;
+	bh=aDZFA/XJVv1lEwaX7z09NSQIhGALV+zbSDqdbk5QFJI=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=bAHvNP48NVamnZjDJ/vxsQI7f/YDnfkfpe99y8gyVMUyLPkqutguMbtftGOKvmO4A
+	 +nDPfAVj9tCakTNGLKigCg8wNd/YhxaK68MSAGiDwGhY0Jtj5kIMgFUpZPBxv+5K1j
+	 zxUzs/lHCbR9+I1ilOLZ1i8uIVcAJjCJN6Dz3y9U=
+Received: by gentwo.org (Postfix, from userid 1003)
+	id B7D464028E; Tue, 21 Oct 2025 10:21:46 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+	by gentwo.org (Postfix) with ESMTP id B5F664015D;
+	Tue, 21 Oct 2025 10:21:46 -0700 (PDT)
+Date: Tue, 21 Oct 2025 10:21:46 -0700 (PDT)
+From: "Christoph Lameter (Ampere)" <cl@gentwo.org>
+To: Ankur Arora <ankur.a.arora@oracle.com>
+cc: bpf@vger.kernel.org, arnd@arndb.de, catalin.marinas@arm.com, 
+    will@kernel.org, peterz@infradead.org, akpm@linux-foundation.org, 
+    mark.rutland@arm.com, harisokn@amazon.com, ast@kernel.org, 
+    rafael@kernel.org, daniel.lezcano@linaro.org, memxor@gmail.com, 
+    zhenglifeng1@huawei.com, xueshuai@linux.alibaba.com, 
+    joao.m.martins@oracle.com, boris.ostrovsky@oracle.com, 
+    konrad.wilk@oracle.com
+Subject: Re: [PATCH v7 1/7] asm-generic: barrier: Add
+ smp_cond_load_relaxed_timeout()
+In-Reply-To: <20251017061606.455701-2-ankur.a.arora@oracle.com>
+Message-ID: <9f894121-72ca-d6f2-d1d1-9b84a5e94cf0@gentwo.org>
+References: <20251017061606.455701-1-ankur.a.arora@oracle.com> <20251017061606.455701-2-ankur.a.arora@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] bpf: sync pending IRQ work before freeing ring buffer
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176106660601.1163561.6885193392074712225.git-patchwork-notify@kernel.org>
-Date: Tue, 21 Oct 2025 17:10:06 +0000
-References: <20251020180301.103366-1-nooraineqbal@gmail.com>
-In-Reply-To: <20251020180301.103366-1-nooraineqbal@gmail.com>
-To: Noorain Eqbal <nooraineqbal@gmail.com>
-Cc: andrii.nakryiko@gmail.com, alexei.starovoitov@gmail.com,
- andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
- david.hunter@linuxfoundation.org, eddyz87@gmail.com, haoluo@google.com,
- john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
- linux-kernel-mentees@lists.linux.dev, linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, sdf@fomichev.me, skhan@linuxfoundation.org,
- song@kernel.org, syzbot+2617fc732430968b45d2@syzkaller.appspotmail.com,
- yonghong.song@linux.dev
+Content-Type: text/plain; charset=US-ASCII
 
-Hello:
 
-This patch was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Mon, 20 Oct 2025 23:33:01 +0530 you wrote:
-> Fix a race where irq_work can be queued in bpf_ringbuf_commit()
-> but the ring buffer is freed before the work executes.
-> In the syzbot reproducer, a BPF program attached to sched_switch
-> triggers bpf_ringbuf_commit(), queuing an irq_work. If the ring buffer
-> is freed before this work executes, the irq_work thread may accesses
-> freed memory.
-> Calling `irq_work_sync(&rb->work)` ensures that all pending irq_work
-> complete before freeing the buffer
-> 
-> [...]
-
-Here is the summary with links:
-  - [v2] bpf: sync pending IRQ work before freeing ring buffer
-    https://git.kernel.org/bpf/bpf/c/4e9077638301
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Reviewed-by: Christoph Lameter (Ampere) <cl@gentwo.org>
 
 
