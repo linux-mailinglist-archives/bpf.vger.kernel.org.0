@@ -1,139 +1,229 @@
-Return-Path: <bpf+bounces-71611-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71612-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAAF6BF807F
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 20:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D25C7BF80A6
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 20:25:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25772546330
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 18:17:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 886BB427D8D
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 18:25:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FA53502BC;
-	Tue, 21 Oct 2025 18:17:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3F92351FA2;
+	Tue, 21 Oct 2025 18:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y2+NDogU"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="VEtJkEw4";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BLaUuuH/";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Sm1typx3";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="gvkiQ3mn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C89626B942
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 18:17:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4626234E760
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 18:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761070632; cv=none; b=sHmSbXeCQte9DrCWHNBAngHrsPNY5dzdD/QpG1ofLBMzAqXzPkjRJKVzfvaVxyBlTh3d68w/hTkOdK/mJmsZnTSyGl3wW4qdscHtCMCkYaliem+st+6l/axTx2XwSLMQsoFUFu+UYx5lA9g4YdXEk3H9/7nCkNkh8V9cZa9euwU=
+	t=1761071123; cv=none; b=WkltPCZXpZyE4zq7Lzlku8e9rnVIURd0uAVHyMJZqIWzzGLl7nZos531S7+IEyB0ZMEJe1H4Vjs/K6qaVuBV/ZtWeCwWnFEcb2NlTI3pusuUwi31NgYTwdSRbE4xx1qpwYydt5nDNkz2yVx2RY+3Nhu2YxWgPXR8GENU4IOiBHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761070632; c=relaxed/simple;
-	bh=uHaCegWf7G1lsvdrseJq4v473UN4vezxPgOeKsQYQfw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XfrIwhH+vYkHx2VCk+YUjb9d0U5GB/uKPiNd2t+pEOdbDdd4Ie5bWbxskKCIybZZ4FASDBJMfYNtk1rz2gKCYzKlce0sIsARTrscdtol+ksUlPFIHB2omC8HHuuuKxy8jlC6EsKJRVF/7C0+jgHRvgVeiVKBCb5+qJhDRzUnMJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y2+NDogU; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4710683a644so1602215e9.0
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 11:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761070628; x=1761675428; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RGD+FcEsW2FFxX+kG8Fzb0HeFi6smqsLpBgWiT17QWM=;
-        b=Y2+NDogUB0iETGhC4CXgQ31LdQqAqcvVAm4cv4Pw/8PDCNWVifZnlYrzqoKW4e4vTo
-         Srctj0xnbCDCBHoUhNqg2P4kyKOKh2qVA9cJnhfprMQbMt+Zt9c7/3Qm3KOPPXtHaVZo
-         khk/CooUbfKTw+aRkP2QK6w3GPWSBVAdLeOygn6dgnx6lc/VFOePQ1ZfDCJk54Jm5DY6
-         N7ukILX6OSpXOtC6JI+eu5dSfMkut8CnDEHnQiwgnMKlJ0hJ/6YzcXOV9i97w84Za4YI
-         WU/GyPc84CpJksd52Y9dZYI53JJVbe1AUczn1pE+vIOUcWcVJABPV6IIDSNuPlkjr0R7
-         yF2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761070628; x=1761675428;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RGD+FcEsW2FFxX+kG8Fzb0HeFi6smqsLpBgWiT17QWM=;
-        b=sT0z0uXLe1CgD2u2HzTvafyVfFaB/yhsz3TWDFJgsapADq3VkM+wGLFCvFrMS3RVRP
-         J/+yCB7cJ8Y0Cmjhj6/26iioGyrxpuhvF3KRfX535QvWwIewjLpjC56P+VrYjKtMg9SR
-         RxE/mNS/NurNOKw8XDTtjqtBtKX8cX+6PGLR05Xdj1rDPdT8a3AHvuVwsXTJ3W5Jzgss
-         Wi6t/0ipHnZE2EJKZPvDt6DmJCoe6z6B+wgdSrww5aptnHprzUEZQ9tUjyTO/s+p4AEx
-         8JHmgfxh1tHkoyiTXDmx8N7Tn9vhjQEpuqiEssYZb4tCxGiWUzx15a9NT7tdYLYEC4F0
-         7tvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUI8tRaSHV8D3SrL+MyNRFTiS2nqO6bkpTPVItdbAdRraebdG4HyC0CY1TCViXDP7Ax+lc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxsI7rY+7SYJWXEOK5ANH9n3Ro+6d9pha1Bkin85NesFaC97CRY
-	I2HBmbDEr2RoLUxxF9MqeCRGsjDBblUK5ZoFlxoTEWA5eh+65XvDxd9w54/e6Xx3mXLlCc+CLw4
-	XGYoQBtNZxfjRFcN0f4mFe7ZkPLG4Hiw=
-X-Gm-Gg: ASbGncsfVUU7iyuFb6Tp6YmsSYTO4vMbQFOh9DB8PvArEeESVk7f8TRo/agVQ2QocC3
-	JHjE5erOTLPPvVL2YH9Mbeocl3ncFsEVy0YVLt3veWyr28De+T71gzqGcbAMbUqmX77l9liDeJ9
-	dUau7Tf8MD8MCZ40lAPNembrC5lXzA4kvL1/1mSEyhlWKaSP+e7Voz10bfWncohaqBPj4FoyXza
-	I/QBDEvWoUwOg0nOq99EJUvp5W8ZdIY6zqU8h2VFTB4GLpQdU3dRkRLtTuQnYvRbFEOJXvQLYez
-X-Google-Smtp-Source: AGHT+IHAL3TwL3lSrbbeuTOnvc5N+BYP3uS+YNImwOULyrDGTO3KCuxddBINXlS3GnAhet25AeUZNxliKcrwhe5LULc=
-X-Received: by 2002:a05:600c:5251:b0:471:846:80ac with SMTP id
- 5b1f17b1804b1-475c400151emr4658295e9.18.1761070627745; Tue, 21 Oct 2025
- 11:17:07 -0700 (PDT)
+	s=arc-20240116; t=1761071123; c=relaxed/simple;
+	bh=qzOZ0xEqZr41ShEs0F75G1i6qz3j4pAqSl1NS/UW7Vw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D5qftOiIWX1zD1nJ4GUyx4rcNnXm2ROXlkS/66KWrJSopPe1bwI/oVVaphmQAGBBRrYzpXO2LHimK9Hf4v/+1S9KWlg8IiVlh2Ka9OE+yJ/3kuBL3IAxi2OpU43d8u0eiBUtacQZ+JQPw+kyr0WiOfXBYqRXaCz/+LR6hzwsE+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=VEtJkEw4; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BLaUuuH/; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Sm1typx3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=gvkiQ3mn; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3BF112119B;
+	Tue, 21 Oct 2025 18:25:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1761071115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5laJCGigRWB3O63qPhWFyh2ZtIa70D/0VNdf/PQZCLE=;
+	b=VEtJkEw4fYSBpnsoyzArsjKKrZXg2wKiQHgEWCtYA0fgltI1UKmKotqCrJLN4qKVdkHoCS
+	sdmKRP1taD+cfj33BIaMbqgCW4ClfxeFifpchfz47BBZFTBMnOwunLoc5Azjw8h23M9QOA
+	TfXtVafPBSvrdmFUvhokJ+tirjDxtpk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1761071115;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5laJCGigRWB3O63qPhWFyh2ZtIa70D/0VNdf/PQZCLE=;
+	b=BLaUuuH/ykbf/g2Sx+hH9yD0qA0muG4QfS/ZT7eDqDDrtg5bJwhyeuPjDNmvRz4iDLae8b
+	zgFRA4/78kEAbjDg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Sm1typx3;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=gvkiQ3mn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1761071111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5laJCGigRWB3O63qPhWFyh2ZtIa70D/0VNdf/PQZCLE=;
+	b=Sm1typx36jZYYu/VF0cV91k9XmuEDrN55KaCQRk/20uYBs4A4akOa/E2nv31MslmVrg3ke
+	HODuoRlsUyiJKoVecMwhrlS7lEcjlm553/xArl7rcYQ71h+ewbKFCpe4nlfCd4qirxrMS1
+	HiW2F1gVSYN+VsCwAFOHVDUHav6gJto=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1761071111;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5laJCGigRWB3O63qPhWFyh2ZtIa70D/0VNdf/PQZCLE=;
+	b=gvkiQ3mnOf3Z9AwKEbqGWIr9M+pKnZFrEBjAQioUmDvyQq7B8/OauagrWbeFp1v6slmzkW
+	7nBijquPcS+wwfBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B7E36139B1;
+	Tue, 21 Oct 2025 18:25:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id bx0JKgbQ92gAUAAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Tue, 21 Oct 2025 18:25:10 +0000
+Message-ID: <32086239-2fd5-42bd-a554-d0e3c263bb0c@suse.de>
+Date: Tue, 21 Oct 2025 20:25:00 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251018142124.783206-1-dongml2@chinatelecom.cn> <20251018142124.783206-4-dongml2@chinatelecom.cn>
-In-Reply-To: <20251018142124.783206-4-dongml2@chinatelecom.cn>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 21 Oct 2025 11:16:53 -0700
-X-Gm-Features: AS18NWC-vk9wYK7_8tX_FVlBKQAbSU9jzlpKybVeQNDtOy8tuK9-TkGozXjUbPI
-Message-ID: <CAADnVQLN96WZd0eWWb=__62g49y_wPfjTPKXaB_=o5jdVE7uKQ@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 3/5] bpf,x86: add tracing session supporting
- for x86_64
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Leon Hwang <leon.hwang@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] xsk: avoid data corruption on cq descriptor number
+To: Simon Horman <horms@kernel.org>
+Cc: netdev@vger.kernel.org, csmate@nop.hu, kerneljasonxing@gmail.com,
+ maciej.fijalkowski@intel.com, bjorn@kernel.org, sdf@fomichev.me,
+ jonathan.lemon@gmail.com, bpf@vger.kernel.org
+References: <20251021150656.6704-1-fmancera@suse.de>
+ <aPez6DYh13kmY9NF@horms.kernel.org>
+Content-Language: en-US
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+In-Reply-To: <aPez6DYh13kmY9NF@horms.kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 3BF112119B
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.98 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.17)[-0.867];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	URIBL_BLOCKED(0.00)[suse.de:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[vger.kernel.org,nop.hu,gmail.com,intel.com,kernel.org,fomichev.me];
+	DKIM_TRACE(0.00)[suse.de:+];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:mid,suse.de:dkim]
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -2.98
+X-Spam-Level: 
 
-On Sat, Oct 18, 2025 at 7:21=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
->  /* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
->  #define LOAD_TRAMP_TAIL_CALL_CNT_PTR(stack)    \
->         __LOAD_TCC_PTR(-round_up(stack, 8) - 8)
-> @@ -3179,8 +3270,10 @@ static int __arch_prepare_bpf_trampoline(struct bp=
-f_tramp_image *im, void *rw_im
->                                          void *func_addr)
->  {
->         int i, ret, nr_regs =3D m->nr_args, stack_size =3D 0;
-> -       int regs_off, nregs_off, ip_off, run_ctx_off, arg_stack_off, rbx_=
-off;
-> +       int regs_off, nregs_off, session_off, ip_off, run_ctx_off,
-> +           arg_stack_off, rbx_off;
->         struct bpf_tramp_links *fentry =3D &tlinks[BPF_TRAMP_FENTRY];
-> +       struct bpf_tramp_links *session =3D &tlinks[BPF_TRAMP_SESSION];
->         struct bpf_tramp_links *fexit =3D &tlinks[BPF_TRAMP_FEXIT];
->         struct bpf_tramp_links *fmod_ret =3D &tlinks[BPF_TRAMP_MODIFY_RET=
-URN];
->         void *orig_call =3D func_addr;
-> @@ -3222,6 +3315,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf=
-_tramp_image *im, void *rw_im
->          *
->          * RBP - nregs_off [ regs count      ]  always
->          *
-> +        * RBP - session_off [ session flags ] tracing session
-> +        *
->          * RBP - ip_off    [ traced function ]  BPF_TRAMP_F_IP_ARG flag
->          *
->          * RBP - rbx_off   [ rbx value       ]  always
-> @@ -3246,6 +3341,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf=
-_tramp_image *im, void *rw_im
->         /* regs count  */
->         stack_size +=3D 8;
->         nregs_off =3D stack_size;
-> +       stack_size +=3D 8;
-> +       session_off =3D stack_size;
 
-Unconditional stack increase? :(
+
+On 10/21/25 6:25 PM, Simon Horman wrote:
+> On Tue, Oct 21, 2025 at 05:06:56PM +0200, Fernando Fernandez Mancera wrote:
+> 
+> ...
+> 
+>> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> 
+> ...
+> 
+>> @@ -774,6 +777,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>>   {
+>>   	struct net_device *dev = xs->dev;
+>>   	struct sk_buff *skb = xs->skb;
+>> +	struct page *page;
+>>   	int err;
+>>   
+>>   	if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
+>> @@ -791,6 +795,8 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>>   		len = desc->len;
+>>   
+>>   		if (!skb) {
+>> +			struct xsk_addr_node *head_addr;
+>> +
+>>   			hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
+>>   			tr = dev->needed_tailroom;
+>>   			skb = sock_alloc_send_skb(&xs->sk, hr + len + tr, 1, &err);
+>> @@ -804,7 +810,13 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>>   			if (unlikely(err))
+>>   				goto free_err;
+>>   
+>> -			xsk_skb_init_misc(skb, xs, desc->addr);
+>> +			head_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
+>> +			if (!head_addr) {
+>> +				__free_page(page);
+> 
+> Hi Fernando,
+> 
+> Perhaps the page changes to xsk_build_skb() aren't needed
+> because page seems to be uninitialised here.
+> 
+> Flagged by W=1 builds with Clang 21.1.1, and Smatch.
+> 
+
+Ah, I don't know know what I was thinking about.. but yes, that page 
+handling isn't needed of course as it isn't initialized. (I even needed 
+the page struct because it wasn't available in that context).
+
+I will send a V2 patch if the proposed solution is accepted. In additon, 
+the performance impact isn't as bad as I thought.. just 4 bytes pero 
+skb.. as the cache must be initialized anyway.
+
+>> +				err = -ENOMEM;
+>> +				goto free_err;
+>> +			}
+>> +			xsk_skb_init_misc(skb, xs, head_addr, desc->addr);
+>>   			if (desc->options & XDP_TX_METADATA) {
+>>   				err = xsk_skb_metadata(skb, buffer, desc,
+>>   						       xs->pool, hr);
+>> @@ -814,7 +826,6 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>>   		} else {
+>>   			int nr_frags = skb_shinfo(skb)->nr_frags;
+>>   			struct xsk_addr_node *xsk_addr;
+>> -			struct page *page;
+>>   			u8 *vaddr;
+>>   
+>>   			if (unlikely(nr_frags == (MAX_SKB_FRAGS - 1) && xp_mb_desc(desc))) {
+>> @@ -843,7 +854,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>>   			refcount_add(PAGE_SIZE, &xs->sk.sk_wmem_alloc);
+>>   
+>>   			xsk_addr->addr = desc->addr;
+>> -			list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
+>> +			list_add_tail(&xsk_addr->addr_node, &XSK_TX_HEAD(skb)->addr_node);
+>>   		}
+>>   	}
+>>   
+>> -- 
+>> 2.51.0
+>>
+>>
+
 
