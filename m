@@ -1,91 +1,92 @@
-Return-Path: <bpf+bounces-71644-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71645-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3D21BF91B1
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 00:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 433DBBF9277
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 00:54:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E35194FA97A
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 22:44:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4770A507EFD
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 22:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636ED2E7BDD;
-	Tue, 21 Oct 2025 22:43:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271BF2BDC32;
+	Tue, 21 Oct 2025 22:45:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xo2AUayj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hnmLswCM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C852C326C
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 22:43:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2830C2FB
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 22:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761086582; cv=none; b=qyqAPBs2+94dyxBMlbOPILXcx+02XnQQNGxTd47KJJZ0TbhvzmnLlRHF3mhm4LQOHi9a//7Ud23tGxJ+UfTqVjnDDDLybroJcGCDtv7ShdpAoAk/SQ5VhU/JIfPCv3HgrEmQUSgIS2cB+IgrBsIr5t+v8ppR2FrFj14prpprkrs=
+	t=1761086717; cv=none; b=vFT9Mg53OwTRcNSSCLfXm0UiehKjeIkcTOege5IiHEKiHsFdkPe5qc9oxM1nv0imTSdxyjrhJWQqcL3vGJ7P6h20BdWSgtcH8Wm381kRlc7MKKu1Oz+JU6MKW095QT1jLwsAz/EWjwt/cW2thW6ZnQysieRuvZHkWKwezeuJ8OU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761086582; c=relaxed/simple;
-	bh=MzqSwiwer1zW9tfL+O4jCtylLrj6/cVtYWjZZN1u9is=;
+	s=arc-20240116; t=1761086717; c=relaxed/simple;
+	bh=xlpcDofI9+fgrMOOQEyGZ+PcOAXHhvbHK+VFZ2VIIEE=;
 	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VKbc6jx6UPCp4AZbYb5JB4AQMThxm5nt8quuZEEVZ9PkTdskI5AgVLW+ZvOtbxUreyz8KkXUSs5Ap24i5yJXtgdRtVfgEXYTcAXhpV3LR0OqLAc1Td5XMEdgfuyOvUd+px9C63xgw5ryFHpnMeb9x6loDY/e3mEx3It1sdYFxIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xo2AUayj; arc=none smtp.client-ip=209.85.210.169
+	 Content-Type:MIME-Version; b=rCRhAJd6wRq5D7addOKoHlIjKGatDfwiyNjR64GI8LVuGRTkx9SVq8kLjwWfEJwQZpm2VyOlyDAAlY5ETJkvekWMHLh9rn+cvOvUdWJpak0pmkW7Z16FaCJbdTpUOK+fpeP9njqXc+9TUW5tnXTjMNjIPwbNoQjm6cFIRI+mCKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hnmLswCM; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-781010ff051so4593446b3a.0
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 15:43:00 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7a23208a0c2so2771860b3a.0
+        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 15:45:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761086580; x=1761691380; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761086715; x=1761691515; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HNtjmbThiH7BdTtfw2oLKsTbwFsjoxfH7/HpFDUzcP0=;
-        b=Xo2AUayjLx70GBDxBmBJDJtzJn/hllJx0WVMBiDe1CXHEzCA+eWZzKlBAY6yu8uczs
-         RL4qcIFSAbJ3XGRtkilAq7cISG0SeDFAJxIiJA/RT4zncbmP5thpU96pTEMOObq5oIc0
-         PggHmfK+fcooJ8VRTqt7ttkv1QioZFc1hrrgWeUdylMUkS0YnB+F4W5dahb6Yc7Tiu8l
-         mBUIyO3TEEqeQFSK6X+TERNImx6T2hGtvHPwjgfW+N9IGdz2J3ODmmBK/D/QL9/Dnl6J
-         pfArH1CzJkMtqvWZpYhneyk6tp55PBYyw+8Me2E55N8pDxHgOWXsXUBZIG41iN+xcuwa
-         4eRw==
+        bh=6etc7IKFQtvmVVy1rBmzfQiuGSqTL1/HIh/vxZoHiK8=;
+        b=hnmLswCMyPkwm7UWnbfzkYOSQYA9CVGxU8lnriwiQIYxtlgA4OOBLWnzEQHm7FacaW
+         WtKBV8Jvmv+2XiguyXLhRTRxjZ7qZmcXs4tq29ElYgI1HibSgPybyYpMgrnHwuZvIHSL
+         J2WWHrPYyvFCSXF5oHFlZfJXv6JjWUKb4GfpwoBNjLwq6cGipdPxFMopVqWe6oRj4hRb
+         dvAdpkFjiHzQQtxEF2B0YcCOpBsV+4jYi8hFCean0UySf5rknyNh2xpZ+T3k8GREJiaz
+         uZtkhvCa4SBxszIJmSDEn0qypmWmYrIzDbdHWpYko+gYdh1MbCcSnb7VKIcA2xGwP2xH
+         loIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761086580; x=1761691380;
+        d=1e100.net; s=20230601; t=1761086715; x=1761691515;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=HNtjmbThiH7BdTtfw2oLKsTbwFsjoxfH7/HpFDUzcP0=;
-        b=cxLOuXZjRGg4zEQfLbTi9/VjcesnVGnDkHtPrOpk6blTQQFgIBqnk7lRVR9TRgyfaY
-         lDt8LQsCSPGI3WpLyOtkRYBzzLD0USfcaN/uqQWXcz1nG88L05LqffifO834TrfFDARN
-         EjtPd8gKWvW0jY3tMKgML8MAp83DuMfhZxn0fIvAlA96CILswXeqvG+gtoUZdQTEp4Qe
-         5OTunYM78jOH6iisgQdWW2ux+qVEQs4uQnkQU2nsdY4uy/n5xPV5OnkiCZuiYpLx6QL6
-         VOfL31ymJMnNq+wXDYgkrVSfzGvndXLE3Ka2XYsGeoROZNWJP+t67nbASzCtyl6yyfXU
-         pKEw==
-X-Forwarded-Encrypted: i=1; AJvYcCUHBlVj+9WGcMKDFt4RRI4Z9VZDkxkvKSlhmoE+vR2317NFmdvVbY3vml7uLd3OyfJ5Y70=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxAFiwRGI/60Z1DqLr8RtGjhyNKP21ztlLAOtCXS3Xj5PqvK4Zk
-	Kt/GdWIgwh1K/uirPSCqu3LSRjgrNLr5g+28T9/OweA8j/fzl8dwTWsF
-X-Gm-Gg: ASbGncukk/72H1GpdzIffvgGSjAjJ2/W4hDTO14KhcybugflBJ72mzoKenkY1V9Nz/p
-	4R4uDSItBpf/sjpapX1CBSR7qdAgYLx17qH9PISkWKWoK+Kuxq20+4pdZ3erXp219SKRbFLYFoj
-	3Q2HOqfhTKMXKmEZyQ8A2qC4xnwVkvsIgcwZ1cQ8ombAHgp5i/Um3BJI6IE3fQbCmnhdBPA1oGb
-	CACW+WN+7vm6zs+BvK7JNeMNa7DOxizRzhW/EwQZGVe2UUyo6fuB3T2wJ/4A44c3L6x9StL3dgW
-	McnkMMr+x5i5+2o1YoPQI3+r+wkcsH1p2cCD7/7HGR9EKeJEmDTknhH4Ul0ais2hqMuBg5OXMFr
-	iAYyjJBCKm+dRRiBu38DkMgPlo9pEAg/AKI8T8RQ0BQvK1GEDMarRKWP2nBKlsFphXqUr+0tmsz
-	8hTVBvYEhoUJc9LvDv0u+upskkytwU6jjU68g=
-X-Google-Smtp-Source: AGHT+IGVeB9pZsRRluUhaCG+FLAWMza21q77wgJgK0dUdiybSzmzUMI2pxF8LCUZXhLB3ZwFISf+zQ==
-X-Received: by 2002:a05:6a20:3805:b0:334:a942:89f5 with SMTP id adf61e73a8af0-334a9428a30mr15578740637.9.1761086580102;
-        Tue, 21 Oct 2025 15:43:00 -0700 (PDT)
+        bh=6etc7IKFQtvmVVy1rBmzfQiuGSqTL1/HIh/vxZoHiK8=;
+        b=Pt0uJ5HUd7f9vh9SjNoiXBDfatcPx1N8OdAm1FIX58uhTrkeXliJB5RxfnT1w7/bQ0
+         J6p4fhxhxSgDecegTmhymo41IjjmDTyyhaAIEALrxinZHN1YyqHfLzN9gcLmtSf4cjxm
+         7tjLoPC1s7VaqoBxkI+T2LCSfpXxGhRZVTqmLeMRZSEX887hVAt8BBUEPr97wmZ93Tx3
+         MG3PkgWcdPQrTUmMa2wVS8CH8xvBCYxqf5woKlmSjS0pyMgoc69sZqU/l0BNDVq/Bqly
+         lDiBCzn88bnou7L0ROSkMbz0rzBEAbfA1biZBYN0Za0MXHQebYkbUU8rtUGWyto3qkI5
+         daQA==
+X-Forwarded-Encrypted: i=1; AJvYcCVqfOzhbzbuhD+sQN4UwrVAMMgXmmXS8S9XHwVWQXxDO0mrVUjMtR6lrxIMlsnSKugofKw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2TFiPJYzMN83qkyNjzHx8z024eKIn5So+4FGIRPSX3VZlUBTO
+	YPoA6PfXW6hPDUCEa1FoJCKmk96Ds8Czb749kVDEfsaaCMvODcu4DFs5
+X-Gm-Gg: ASbGncuAxWb7aNjgNNOk6VnRmZfQR9GA3h9YkBBWo3LXj/7tVwJjz44/e1rveG0PjX0
+	TlX8ddrjLNk3jVet8azN5pwcf1wXx2avwKKV/XGR6ofwbO6eKxAKrMSVnX2EU3bntUDCDAFRvgw
+	YgTYkAmc3baZCM1kktTaYg2ywvdFm80dXnBnFydb3rqrklF3YjmraV9fEB1IQq9NVc9thC3hT3W
+	8ilOh67jAUpvq44Y8sSUUj9fZ4km3rx3pSjRTGpsfJ/heMVv4ibjLLKRzYPDjD8iNXoL0CB8xSA
+	nqyI+NFLD0tAa3Prk21z7H34AI5iY65/vJiTP8ymhGLJG2PsRYuQYGJCYVX45BfYS8CK9zKVYtb
+	BRbTQuXruHIa5jquzzUucp2l64C04726UrMstgaXQUn3jGRM65E6L/i1kzpmjzGzOStMN0f0hVr
+	hJvq6sQ2zbFu3YsdR3RJQ8zgfL
+X-Google-Smtp-Source: AGHT+IFIUO7I4ZencHOZ/p+dwdIcN7anMQ2d3cmnUB/D8XACHuxdxaANusKyq09o2C/4tqAweEp/rA==
+X-Received: by 2002:a17:90b:4c92:b0:32e:32f8:bf9f with SMTP id 98e67ed59e1d1-33bcf8f9960mr22261588a91.30.1761086715266;
+        Tue, 21 Oct 2025 15:45:15 -0700 (PDT)
 Received: from ?IPv6:2a03:83e0:115c:1:84fc:875:6946:cc56? ([2620:10d:c090:500::7:6bbb])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a22ff15c89sm12795759b3a.1.2025.10.21.15.42.59
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33e223c7fb5sm628232a91.2.2025.10.21.15.45.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Oct 2025 15:42:59 -0700 (PDT)
-Message-ID: <b0e59e59fbe35090809ccbe0b01d923212c789ab.camel@gmail.com>
-Subject: Re: [PATCH v6 bpf-next 16/17] selftests/bpf: add new verifier_gotox
- test
+        Tue, 21 Oct 2025 15:45:14 -0700 (PDT)
+Message-ID: <d162c8aee790c60a75f0e253a95346cf12b51d7e.camel@gmail.com>
+Subject: Re: [PATCH v6 bpf-next 14/17] libbpf: support llvm-generated
+ indirect jumps
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org, Alexei
  Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Anton
  Protopopov <aspsk@isovalent.com>,  Daniel Borkmann <daniel@iogearbox.net>,
  Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Date: Tue, 21 Oct 2025 15:42:58 -0700
-In-Reply-To: <20251019202145.3944697-17-a.s.protopopov@gmail.com>
+Date: Tue, 21 Oct 2025 15:45:13 -0700
+In-Reply-To: <10f8fe24770eb663ea849f133b4474d2cbd0b513.camel@gmail.com>
 References: <20251019202145.3944697-1-a.s.protopopov@gmail.com>
-	 <20251019202145.3944697-17-a.s.protopopov@gmail.com>
+		 <20251019202145.3944697-15-a.s.protopopov@gmail.com>
+	 <10f8fe24770eb663ea849f133b4474d2cbd0b513.camel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -96,133 +97,50 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Sun, 2025-10-19 at 20:21 +0000, Anton Protopopov wrote:
-> Add a set of tests to validate core gotox functionality
-> without need to rely on compilers.
+On Tue, 2025-10-21 at 15:18 -0700, Eduard Zingerman wrote:
+
+[...]
+
+> > +/*
+> > + * In LLVM the .jumptables section contains jump tables entries relati=
+ve to the
+> > + * section start. The BPF kernel-side code expects jump table offsets =
+relative
+> > + * to the beginning of the program (passed in bpf(BPF_PROG_LOAD)). Thi=
+s helper
+> > + * computes a delta to be added when creating a map.
+> > + */
+> > +static int jt_adjust_off(struct bpf_program *prog, int insn_idx)
+> > +{
+> > +	int i;
+> > +
+> > +	for (i =3D prog->subprog_cnt - 1; i >=3D 0; i--) {
+> > +		if (insn_idx >=3D prog->subprogs[i].sub_insn_off)
 >=20
-> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> ---
+> Sorry, I'm still confused about what happens here.
+> The `insn_idx` is comes from relocation, meaning that it is a value
+> recorded relative to section start, right?  On the other hand,
+> `.sub_insn_off` is an offset of a subprogram within a concatenated
+> program, about to be loaded.  These values should not be compared
+> directly.
 
-Thank you for adding these.
-Could you please also add a test cases that checks the following errors:
-- "jump table for insn %d points outside of the subprog [%u,%u]"
-- "the sum of R%u umin_value %llu and off %u is too big\n"
-- "register R%d doesn't point to any offset in map id=3D%d\n"
-?
+I'm wrong on this account, append_subprog_relos() adjusts relo->insn_idx.
+Still, please consider refactoring as below.
 
-Might be the case that some of these can't be triggered because of the
-check_mem_access() call.
-
-[...]
-
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_gotox.c b/tools/t=
-esting/selftests/bpf/progs/verifier_gotox.c
-> new file mode 100644
-> index 000000000000..1a92e4d321e8
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/verifier_gotox.c
-
-[...]
-
-> +/*
-> + * Gotox is forbidden when there is no jump table loaded
-> + * which points to the sub-function where the gotox is used
-> + */
-> +SEC("socket")
-> +__failure __msg("no jump tables found for subprog starting at 0")
-                                                              ^^^^
-				Nit: one day we need to figure out a way to
-				     report subprogram names, when reporting
-				     check_cfg() errors.
-
-> +__naked void jump_table_no_jump_table(void)
-> +{
-> +	asm volatile ("						\
-> +	.8byte %[gotox_r0];					\
-> +	r0 =3D 1;							\
-> +	exit;							\
-> +"	:							\
-> +	: __imm_insn(gotox_r0, BPF_RAW_INSN(BPF_JMP | BPF_JA | BPF_X, BPF_REG_0=
-, 0, 0 , 0))
-> +	: __clobber_all);
-> +}
-> +
-> +/*
-> + * Incorrect type of the target register, only PTR_TO_INSN allowed
-> + */
-> +SEC("socket")
-> +__failure __msg("R1 has type 1, expected PTR_TO_INSN")
-                           ^^^^^^
-	      log.c:reg_type_str() should help here.
-
-> +__naked void jump_table_incorrect_dst_reg_type(void)
-> +{
-> +	asm volatile ("						\
-> +	.pushsection .jumptables,\"\",@progbits;		\
-> +jt0_%=3D:								\
-> +	.quad ret0_%=3D;						\
-> +	.quad ret1_%=3D;						\
-> +	.size jt0_%=3D, 16;					\
-> +	.global jt0_%=3D;						\
-> +	.popsection;						\
-> +								\
-> +	r0 =3D jt0_%=3D ll;						\
-> +	r0 +=3D 8;						\
-> +	r0 =3D *(u64 *)(r0 + 0);					\
-> +	r1 =3D 42;						\
-> +	.8byte %[gotox_r1];					\
-> +	ret0_%=3D:						\
-> +	r0 =3D 0;							\
-> +	exit;							\
-> +	ret1_%=3D:						\
-> +	r0 =3D 1;							\
-> +	exit;							\
-> +"	:							\
-> +	: __imm_insn(gotox_r1, BPF_RAW_INSN(BPF_JMP | BPF_JA | BPF_X, BPF_REG_1=
-, 0, 0 , 0))
-> +	: __clobber_all);
-> +}
-> +
-> +#define DEFINE_INVALID_SIZE_PROG(READ_SIZE, OUTCOME)			\
-
-Nit: this can be merged with DEFINE_SIMPLE_JUMP_TABLE_PROG.
-
-> +									\
-> +	SEC("socket")							\
-> +	OUTCOME								\
-> +	__naked void jump_table_invalid_read_size_ ## READ_SIZE(void)	\
-> +	{								\
-> +		asm volatile ("						\
-> +		.pushsection .jumptables,\"\",@progbits;		\
-> +	jt0_%=3D:								\
-> +		.quad ret0_%=3D;						\
-> +		.quad ret1_%=3D;						\
-> +		.size jt0_%=3D, 16;					\
-> +		.global jt0_%=3D;						\
-> +		.popsection;						\
-> +									\
-> +		r0 =3D jt0_%=3D ll;						\
-> +		r0 +=3D 8;						\
-> +		r0 =3D *(" #READ_SIZE " *)(r0 + 0);			\
-> +		.8byte %[gotox_r0];					\
-> +		ret0_%=3D:						\
-> +		r0 =3D 0;							\
-> +		exit;							\
-> +		ret1_%=3D:						\
-> +		r0 =3D 1;							\
-> +		exit;							\
-> +	"	:							\
-> +		: __imm_insn(gotox_r0, BPF_RAW_INSN(BPF_JMP | BPF_JA | BPF_X, BPF_REG_=
-0, 0, 0 , 0)) \
-> +		: __clobber_all);					\
-> +	}
-> +
-> +DEFINE_INVALID_SIZE_PROG(u32, __failure __msg("Invalid read of 4 bytes f=
-rom insn_array"))
-> +DEFINE_INVALID_SIZE_PROG(u16, __failure __msg("Invalid read of 2 bytes f=
-rom insn_array"))
-> +DEFINE_INVALID_SIZE_PROG(u8,  __failure __msg("Invalid read of 1 bytes f=
-rom insn_array"))
+> I think, that my suggestion from v5 [1] should be easier to understand:
+>=20
+>    > Or rename this thing to find_subprog_idx(), pass relo object into
+>    > create_jt_map(), call find_subprog_idx() there, and do the following=
+:
+>    >
+>    >   xlated_off =3D jt[i] / sizeof(struct bpf_insn);
+>    >   /* make xlated_off relative to subprogram start */
+>    >   xlated_off -=3D prog->subprogs[subprog_idx].sec_insn_off;
+>    >   /* make xlated_off relative to main subprogram start */
+>    >   xlated_off +=3D prog->subprogs[subprog_idx].sub_insn_off;
+>=20
+> [1] https://lore.kernel.org/bpf/b5fd31c3e703c8c84c6710f5536510fbce04b36f.=
+camel@gmail.com/
 
 [...]
 
