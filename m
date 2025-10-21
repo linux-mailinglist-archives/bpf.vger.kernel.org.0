@@ -1,133 +1,116 @@
-Return-Path: <bpf+bounces-71495-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71496-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4AE9BF57E2
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 11:26:13 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90F4EBF5892
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 11:37:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50BDB3B09A8
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 09:26:11 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A8A334FF0C9
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 09:37:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5676432AAA8;
-	Tue, 21 Oct 2025 09:26:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B022E7BD9;
+	Tue, 21 Oct 2025 09:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="noEdxz1c"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GRGFgEvG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED7A31D736
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 09:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D75C7D07D;
+	Tue, 21 Oct 2025 09:37:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761038765; cv=none; b=iKQstH+/5HjqhEFSkdeu/uYWuiIX3+ES2ZyUqlCoMWDjNpBasr+kDkMQ2z9fvMWIliwo2IGIipFfpS6SpZnVa5NKeM8bu/QuoYIZsymPKgKyEdExYnQBi1FMvQgxFFwY/tivdAXuOUr9XiOlF2RcMFbW4xdENlcpmqUnxH4rykw=
+	t=1761039430; cv=none; b=BwSRFcejENYEb8xVQttuDn2BcrY7Aue18HWP6r2SiI/c9ctr+QB4oR0nD+NxLnAALI4NqiO7RCrvJ3Abh78KN5TRPHNZ+fzqjjaE9evEFPKEdSsg5/Njih/7x9XcalZELdlBXBhFpbsm8KiJ3x2uxeL2Eep2bSBBKHOiM4Bv0Oo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761038765; c=relaxed/simple;
-	bh=VFQphnGkoktZvUzEwKwCJ8sXqt24rjb9W6hVqumfQyA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QfDmpgnGde7vIbdHPK3MtWhNecuGxSpuUAeA820XW1o4H676mtnJGmV7BqgGWnv9JWwWsIJc0TMqFRegJQgRJKd4S9QXnXJ0tRHz+IxiClra8qQ66dXjNs/swZ2XUKnyGtUHgp+9nfd9wIzWNZWOvmbV7sGra7nygDy8jItn5XU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=noEdxz1c; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-46b303f7469so42559615e9.1
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 02:26:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761038762; x=1761643562; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bOpWrFnzvrU8dTkKh9SzfT0djhjWURZWY8moqWPz71I=;
-        b=noEdxz1cmxgyCrbf3Wd6MWCQBkpKNuZl7HVtYdP3Y3ADUEPOGo/W4mv8fGrl1kwgzs
-         bF2CQSmwtzufVKYln5FMiHBQMBapwLx1+DDrJjaSyhC7Kez+WAI6iP4j2YvQmOllZmU7
-         1IvELMEK2Tcic7sajjCEp6mIlkYRnpjSUfJw24joMxXOVfhjeQZu1xiKCOm7cbzzUCLT
-         Mq/ls385ZSNy6/l/+Km18SBrMO777cinIWNAwFhtu9Z461iVlI1N6PHW7+JRQHINlgHc
-         3lpHy4tO7TTbHoShpmcBV2JXIe3ziQxhzpoWB+kqiDPbyrNEdbu3gLjbXLYHYIQ3FtDO
-         O2Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761038762; x=1761643562;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bOpWrFnzvrU8dTkKh9SzfT0djhjWURZWY8moqWPz71I=;
-        b=PtS081ME+h2EYqUT6AJLt3HGNZaTITQLByDN12y41bP41NjNLcgXxZDdoV1E99KSE6
-         ZS8TiUTPFugWdW8yG2inWRN7ConjvTC4EM1a1ZjRd3ve7Kp6WlieiONS2+PAk5HlHv38
-         wODR6Nb+IIx3FlNH3JTYmuaafBeXV9gykQ7FXHf+w886fUnyi+dsk37WiAVUHPemGCh0
-         x60z+wDwh5ISRYI30cyc4TzhL9JiTsfLIXMvszOPtvCaJ8RmMtjss+9aQI6M4hmMOJjL
-         YYnAXRtkX9c/tj3Ah2A8GhJOxuO40U1jqkbcJgtOyImTH/DJPxuygcGFV0ByWG4UP9jj
-         3txw==
-X-Forwarded-Encrypted: i=1; AJvYcCVcuPoYYpqsn1SNKkFVuB7mdgTsP6mSKfmqYqd9Aqxfj6EQv5IpYfo0xIDoWJqPPlcVbP8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx5vD+ryccbQ40ZL74YdJtMeBNoCfKCLAIjsOAIHrCFL54FSAqT
-	kHF5ADgrgexpazQFg7LaboFnR1v7ifGrIQlFaeQJP+ZeV2M24cUw9b3sT/Uv1g==
-X-Gm-Gg: ASbGncuIyJpt3j+JT8BV56yLdV6qxiaWnImtBw2LVQi8hyg/jg2EjqzigFaPEcbv+yM
-	E1HDmFijNrhjMD6ELTDNLMuv2y/Ti8u3zhn8b08zUiMjiBqFAEfOU2IcJ89N8/2A4aSkUAZq6ZD
-	HkmBfxZFcUKnShnrGhtyXLiRYKxHV8jeFrc+0QrMuZdV/ucKMX5PZv7lR8sMWZZxFarN/BTv5P9
-	fAN6fOWfmLlDMOxFW+4MoDlI4CZciEdJXTc91tP/l/S2aHquvHlAVM4nMW76OdiwFWmH09rIBsP
-	pKwPJc2xcOSo1ZAGOpREsKWkvb8CrJ2WzttLK7EP+mlSYxuIbUeK+/aIZtV/43pFqR1PNO71v6c
-	aPJvqWpEQDYwa+JaOIoESll93HsOfR+Ctw5MqTSnEjIxyjADSOfYvPZ4l7uswz/2fZ50wlQ6TJm
-	Xnre5R46Q2Tipr3/aJrPtw8jIrOVMtYi9GwJMaBBWguSCus7DyDOXSTeIgfkbTbaw=
-X-Google-Smtp-Source: AGHT+IHG9qJps3XQWPNYA4OPAfHFr1juDXQi4VNXIDoZlFbccTY3/HGAyaSBPRBTf6Mk1q4iNuNdsg==
-X-Received: by 2002:a05:600c:818f:b0:46f:b42e:e361 with SMTP id 5b1f17b1804b1-47117931c89mr109559365e9.41.1761038762110;
-        Tue, 21 Oct 2025 02:26:02 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-427ea5a0ec2sm19195113f8f.3.2025.10.21.02.26.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Oct 2025 02:26:01 -0700 (PDT)
-Date: Tue, 21 Oct 2025 10:26:00 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Kees Cook <kees@kernel.org>
-Cc: Jakub Kicinski <kuba@kernel.org>, "Gustavo A. R. Silva"
- <gustavo@embeddedor.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
- <horms@kernel.org>, Kuniyuki Iwashima <kuniyu@google.com>, Willem de Bruijn
- <willemb@google.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3 1/9] net: Add struct sockaddr_unspec for sockaddr of
- unknown length
-Message-ID: <20251021102600.2838d216@pumpkin>
-In-Reply-To: <20251020212639.1223484-1-kees@kernel.org>
-References: <20251020212125.make.115-kees@kernel.org>
-	<20251020212639.1223484-1-kees@kernel.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1761039430; c=relaxed/simple;
+	bh=vROLQ/huaW8/CmioOws1Snjr2nLyqHBL1ATXlL1hhH8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LPfdsirZOwrJb/eJfzendjQ0lJQdYY1+7adHGm4vwEivla/9H9DESrnS8oLEVjzHkzlxGaYMYZ0Ts/VnGdNDodxq7IbSH4VtVKtt0q78iOvROEqzSER1SOk+woUk9Nnv0vdmvKzfW/wfyGcd39wCyv1nuV3XNG3iiepLFC+l5nA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GRGFgEvG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2211C4CEF1;
+	Tue, 21 Oct 2025 09:37:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761039427;
+	bh=vROLQ/huaW8/CmioOws1Snjr2nLyqHBL1ATXlL1hhH8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=GRGFgEvG7nDjyoNfr+98OUc31cYs1vcfeJ1lZ19J39hKo6KNETy4lLfe8i1yrFd2z
+	 AEWh7m8gQ3Q0A0brHYhNsr966m+eGOBlduSiyN9Qf+I4zLSYE+dSz9SSC8fuMMS2Bo
+	 oAq7+wMNBvMpwh9p9bqypFSReeSKxBwk+l95Ea2CasiTlpqOPT1GYOQiHxaTxXoVy6
+	 3PajPbL4ITGPJ1ixgTR6dz8UDX7wKWfJ0qAxIqgbFW6RHjFGPEt9Lx3a0la+alcc5o
+	 UwwmcsDehn+kIvOFLk/h/tiGAZnY6BN0qVow27leRxghJGOBkuOSzGBC1UUJcOfZ/n
+	 hulvUWugCRQ4Q==
+Message-ID: <e0901356-ef48-4652-9ad4-ff85ae07d83a@kernel.org>
+Date: Tue, 21 Oct 2025 11:37:00 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2] bpf/cpumap.c: Remove unnecessary TODO comment
+To: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>, ast@kernel.org,
+ daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, haoluo@google.com,
+ jolsa@kernel.org
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+ david.hunter.linux@gmail.com, khalid@kernel.org,
+ linux-kernel-mentees@lists.linuxfoundation.org
+References: <20251020170254.14622-1-mehdi.benhadjkhelifa@gmail.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20251020170254.14622-1-mehdi.benhadjkhelifa@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Mon, 20 Oct 2025 14:26:30 -0700
-Kees Cook <kees@kernel.org> wrote:
 
-> Add flexible sockaddr structure to support addresses longer than the
-> traditional 14-byte struct sockaddr::sa_data limitation without
-> requiring the full 128-byte sa_data of struct sockaddr_storage. This
-> allows the network APIs to pass around a pointer to an object that
-> isn't lying to the compiler about how big it is, but must be accompanied
-> by its actual size as an additional parameter.
+
+On 20/10/2025 19.02, Mehdi Ben Hadj Khelifa wrote:
+> After discussion with bpf maintainers[1], queue_index could
+> be propagated to the remote XDP program by the xdp_md struct[2]
+> which makes this todo a misguide for future effort.
 > 
-> It's possible we may way to migrate to including the size with the
-> struct in the future, e.g.:
+> [1]:https://lore.kernel.org/all/87y0q23j2w.fsf@cloudflare.com/
+> [2]:https://docs.ebpf.io/linux/helper-function/bpf_xdp_adjust_meta/
 > 
-> struct sockaddr_unspec {
-> 	u16 sa_data_len;
-> 	u16 sa_family;
-> 	u8  sa_data[] __counted_by(sa_data_len);
-> };
+> Signed-off-by: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
+> ---
+> Changelog:
+> 
+> Changes from v1:
+> 
+> -Added a comment to clarify that RX queue_index is lost after the frame
+> redirection.
+> 
+> Link:https://lore.kernel.org/bpf/d9819687-5b0d-4bfa-9aec-aef71b847383@gmail.com/T/#mcb6a0315f174d02db3c9bc4fa556cc939c87a706
+>   kernel/bpf/cpumap.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+> index 703e5df1f4ef..6856a4a67840 100644
+> --- a/kernel/bpf/cpumap.c
+> +++ b/kernel/bpf/cpumap.c
+> @@ -195,7 +195,10 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+>   
+>   		rxq.dev = xdpf->dev_rx;
+>   		rxq.mem.type = xdpf->mem_type;
+> -		/* TODO: report queue_index to xdp_rxq_info */
+> +		/* The NIC RX queue_index is lost after the frame redirection
+> +		 * but in case of need, it can be passed as a custom XDP
+> +		 * metadata via xdp_md struct to the remote XDP program
 
-One on the historic Unix implementations split the 'sa_family'
-field into two single byte fields - the second one containing the length.
-That might work - although care would be needed not to pass a length
-back to userspace.
+Argh, saying XDP metadata is accessed via the xdp_md struct is just wrong.
 
-NetBSD certainly forbid declaring variables of type 'sockaddr storage',
-the kernel could only use pointers to it.
-These days that might be enforcable by the compiler.
+Nacked-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
-	David
+> +		 */
+>   
+>   		xdp_convert_frame_to_buff(xdpf, &xdp);
+>   
+
 
