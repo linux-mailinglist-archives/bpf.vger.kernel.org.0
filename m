@@ -1,169 +1,124 @@
-Return-Path: <bpf+bounces-71485-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71486-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71BD0BF4356
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 02:57:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C13DBF4389
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 03:06:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BF5F18C4769
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 00:56:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 132C93B73C2
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 01:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86073246762;
-	Tue, 21 Oct 2025 00:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC5B2214210;
+	Tue, 21 Oct 2025 01:06:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=maowtm.org header.i=@maowtm.org header.b="awhjyFMn";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DwQHcems"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K10jsOlW"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-b7-smtp.messagingengine.com (fout-b7-smtp.messagingengine.com [202.12.124.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BCEB20DD75
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 00:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030A516CD33
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 01:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761008060; cv=none; b=DLBtd7NnJQYKNzrOkH5QUIzo1ASyE4DM28t0Hw2PYBV2Gg004VrK97ZpFV4EXxtANEu4j0nTcE0Rsd7lCCEg/6il4itdYbqu3Xcv9PKE6kXwyia0ATkO5akJnm7GfbyFS7sj01ww9aR2yW7cRsFaaJh+sT4cQGk52xvct/J4k5U=
+	t=1761008780; cv=none; b=fjiXjaObRCwwcsbcvZIE89nldKgSSC/LoOZkfFiwtncm7zRUurYZW6x9fRrllSP8oY8MpDOeo80vY6SVPbe20jHZYgrL8DMuKmOhFN92sRYpcrLjH5nOP9ykRHwpM5nvc0yRQqp0NQ2NdgdUOVt5PWjifuWEdMHEKzDysjZn5yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761008060; c=relaxed/simple;
-	bh=EYkgt6B6y0OLHQt10mzU+cJYTfszrPGIHQQ1RT4RIQU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XIK5KkEDF5y3PRRo6vnK6/BjLEcfNhYzOalxXcBkaHWv+bqqZmq3NEWISeTHXe2Yr6TZLXAi1lefNSnsSdrkGVFItjACrCroHIpH9JBVgfeQimPxmqlHACArUq1Sk/yYxKS2NiEeriGI343nE4qTTZJggCird5nV52QqzdC7CFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maowtm.org; spf=pass smtp.mailfrom=maowtm.org; dkim=pass (2048-bit key) header.d=maowtm.org header.i=@maowtm.org header.b=awhjyFMn; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DwQHcems; arc=none smtp.client-ip=202.12.124.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maowtm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maowtm.org
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailfout.stl.internal (Postfix) with ESMTP id 394641D00143;
-	Mon, 20 Oct 2025 20:54:16 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-03.internal (MEProxy); Mon, 20 Oct 2025 20:54:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maowtm.org; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1761008056;
-	 x=1761094456; bh=eJkYQ9/Nh/vMkb12XPWGOuILBCfHhVe8I7QJQCo4FrI=; b=
-	awhjyFMnwfTd5jcuSXlZ8sZXpmZW785JY50n18rXirlZ6ABUQXTYBnwrxvi5q+jP
-	/YxxO3afdcwEoK0TGf8Xk0qVj5Lnw1CDHeiEX/jA98L/+GzTPOUdhIfaiil9pRcu
-	BCNcl6R/qlMvJriFJ8XuW6XCa0H3WhIh5dnKNryDBLFBP87X9rvpWXEgJHfQlzPK
-	EP7wAu1kQAexo8v35zB+OGq38g587J7kSuESxC0L74rxwiPaxy2INgojiL3zRwxe
-	O6L92xqLkOJRag4UcL+aWy4ayjbR255TgQyqDw6Sy7NEHIcpVZk0kMz+g0ZBAivB
-	hbLKhNoLNv8QwF2g0oAFpw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1761008056; x=
-	1761094456; bh=eJkYQ9/Nh/vMkb12XPWGOuILBCfHhVe8I7QJQCo4FrI=; b=D
-	wQHcemsA7NeEbn7CCg3FR8vSyIPSVYbEDtsAmZXT5VXCaM6xqOFOrrnzOqmMU0AX
-	wsgULBPx8MeAgvfZ3AdTu47dzx08dftD0UhPiT47OwKZPrz/KGooWKmchuqsotTQ
-	DSD/3i390N6KNXtlWZt7XLnmwqzr80WeWohFYaD1nrfxwsAGLMHjnn3AhbFxEBaI
-	cRZS0aqVuTSIrMuv3LmRvJtd/u8phH6pmHE0EH2rO/4HoZQQT1tqdqVxtkWgcidA
-	DX8cS+i9+g1UnYOlQMzry5HfnSNeCRzrKhkmjC/hjor2AZfH41r3ax0VzUub7ePs
-	bQM0iuwMttkPmrYdbnk9g==
-X-ME-Sender: <xms:ttn2aH7RV8nh3SYRDqtT1lPQ-_kIZ_AyqD1WoqykGYMhiu5zOZpF4g>
-    <xme:ttn2aG6ErHm45hojI1dc9SJ6TkvpMDspi1l0w2KgjJwxMl5IMkGYaIG9NO2LThZGs
-    YJ86ytdhL_w25pk9Rl7e56UbmYjXtGmH8MmpSAbWqYAiZOLkIfFips>
-X-ME-Received: <xmr:ttn2aFHFFW-1VJ0jT2qzlEXQoDoH_Zxg1m_l_Bn-zZOcBvURh9HcP69_EgLCJP705F-LR3B2-3FDS-QkgmMSoT46>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddufeelfeduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpefvihhnghhm
-    rghoucghrghnghcuoehmsehmrghofihtmhdrohhrgheqnecuggftrfgrthhtvghrnhepff
-    fhhfegueejkeefhffffeetieejffevtedutefhhfejjeegleeuieejfffggedunecuffho
-    mhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehmsehmrghofihtmhdrohhrghdpnhgspghrtghpthhtohep
-    kedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepshhonhhgsehkvghrnhgvlhdroh
-    hrghdprhgtphhtthhopegrshhmrgguvghushestghouggvfihrvggtkhdrohhrghdprhgt
-    phhtthhopehvlehfsheslhhishhtshdrlhhinhhugidruggvvhdprhgtphhtthhopegvrh
-    hitghvhheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhutghhohesihhonhhkohhv
-    rdhnvghtpdhrtghpthhtoheplhhinhhugigpohhsshestghruhguvggshihtvgdrtghomh
-    dprhgtphhtthhopehmihgtseguihhgihhkohgurdhnvghtpdhrtghpthhtohepsghpfhes
-    vhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:ttn2aGXH7-AqYXsJDwlVtam_JS0xW0iXjXGwm1cSvjgfFx3PVWSQqA>
-    <xmx:ttn2aJX0Gx0OfCH68cj9UvFp9r96TgPYZJDLjl4Zsl0H3rI823hFJQ>
-    <xmx:ttn2aMLhtGRfXVZljAS2egSsAVNdTJbNLO9vZEQoVTI-KzfhAoMq5Q>
-    <xmx:ttn2aJBAzkVW9caXacgHEA_KHWBYBTnwVozBxkRH1rjFmzM7hD50wg>
-    <xmx:uNn2aPF7Br6pMBqzUkOPcf9qO94nx0tRzZk43MNoWuNF0thoMWZ2GCn8>
-Feedback-ID: i580e4893:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 20 Oct 2025 20:54:13 -0400 (EDT)
-Message-ID: <086bb120-22eb-43ff-a486-14e8eeb7dd80@maowtm.org>
-Date: Tue, 21 Oct 2025 01:54:11 +0100
+	s=arc-20240116; t=1761008780; c=relaxed/simple;
+	bh=xUuHHljOFEdYCvkkVUcG2yNKYjdPagL7eq358zZ15x4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=RW1CYDxlroskKmlG8El0PoyORBhaqiCQyvLbwIYmVbjuS6MvMswkfcGXf6cKcRXy26T9bPHpNFF67DcM6lhamUhIUzK0r29rCJ85eFUDzr1kxGMY31fP5Wad1XL0wvdEPAdkQquWFvD5bDpoXwpfVW4mzXEXFt4BXsvJa5HWNEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K10jsOlW; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b556284db11so4249602a12.0
+        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 18:06:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761008778; x=1761613578; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+63y6nXBzztYrhoSW6YELYnT99ah/4Fb8gojWvD1Sa8=;
+        b=K10jsOlWY7XRHq2Ed/vHvjparvIAlgN1kmlb/p8NO8WFbJ3W9a94zrbAOHXHlOTWzq
+         8JfkB/v2vuOlj6GgIcp9ZaZsibfnalLH17k7u/DPvV2KOv9QNtSJrFCxeMIZXEFLeoQB
+         +tbdANtxgbyk6OENqOd9maCgKHUokfjmHLiX/sQfgbVNyn/C8nEMtlQ7IudRny+ILtlj
+         ANaZYDS9RLRpeudAwXEjePaFcM8cAiMOPrMxI/deqaoQgz9S9sOAR3orxmutwWHbyYvm
+         w1qUs9sijBptGa/25o5DR6hgtXM9hN8elU5i3IBcxDwP8WNeWDxzJfWv7cNbJbMHgFua
+         jJtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761008778; x=1761613578;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+63y6nXBzztYrhoSW6YELYnT99ah/4Fb8gojWvD1Sa8=;
+        b=vFMvYKaNCUr0XNm1TQIY7rvJccBRqfgsrM1/4Hc9O2JBxdBdRn0/cd26L82Bc74RZt
+         4UJ/EdUadAqaVM9ZixX+mTIdZ6caVUgWt4qPw2Pf2bRNGwo52YFUue75V1h+BcBU8vxN
+         FroHbdNvaEYBPqwlP1s/Ybl5ziEV9IMscO2D7wsupz4eYdhgFmdMaryXsOYi2oJ9bmCS
+         2hMwBxda+qMi03dId5hb9iW787xWQO2HpG9uF1FHBPo/zBZEzC9PsjH8FNbXzGGwg6p1
+         lZaFdPaB4b6maWIIukQHd1t61Y0mfIk2SP64kzewL81MsPNmTeQ1N7+PgERqWWEimc/n
+         sqSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXEgBPXI3TWW0lfit7JGhMv/7D+h19qf99H/V/aAh94FD77EVSTFSej2NWsNKn3zggXrtw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBFVD3rIrd1YKGzuKNLNc7TJSO7ym9L+kbJGa2G33o1dbya5u7
+	PMWZM8VhJm0Ooa3aKdv/peH1NttJZvFBe7sWywm/vaKQcMuN60+87qzY
+X-Gm-Gg: ASbGncsfa2cX3mRfkYbFa+FEBIGuV+m3wm7/hGCxyHk6S4z3xm06jaCEHvftI4v/o51
+	x/JDOP+19muGJM8GIPkc+PT/uO/s5SisC/C3+TctAX9O36H3SCr0Q7Pp88hWatSrjWTM38+12Td
+	OaWatNYVclceuN1/32RL6N9oXyh63cbi15KMDmukq+is72y4u7a/aTFe32ZIwUSOvnywVCdvt2m
+	xodQHiCMrtFKG1aNiVJ0rRh4Q1W3V7SNymYHp5En8iPM/FKAZqwMCL0nUPJWJU55Ih3Yt/MotHx
+	DtsikU91Vo0zlA87YoBjLfhFnCe/4/DTZlRv6ofq3DVyP8jh80+9JaIrOxXhPQ6FLUuE6X4YYmH
+	l/28tweWqnausby/mJ0lYEypy5akDeoQ+0sk/o50nO0czeu+cLu/5KWbTy+YEOAchPkVjKJ0sPc
+	e5IfbZnX7ACPVf4iTtadMtXOAsmg==
+X-Google-Smtp-Source: AGHT+IFHp3nJbq1iBMXBd1/3CdZaGtu/ESeFDqoXznrwJB5IngEJkzQth+ImAUyhapBjqU5QVG7c1A==
+X-Received: by 2002:a17:902:eccb:b0:28e:80d7:662d with SMTP id d9443c01a7336-290cbb483demr195431325ad.58.1761008778137;
+        Mon, 20 Oct 2025 18:06:18 -0700 (PDT)
+Received: from ?IPv6:2a03:83e0:115c:1:badb:b2de:62b2:f20c? ([2620:10d:c090:500::4:1637])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29246ebd215sm93327565ad.14.2025.10.20.18.06.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Oct 2025 18:06:17 -0700 (PDT)
+Message-ID: <76e2860403e1bed66f76688132ffe71316f28445.camel@gmail.com>
+Subject: Re: [RFC PATCH v2 1/5] btf: search local BTF before base BTF
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Andrii Nakryiko	
+ <andrii.nakryiko@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, Song
+ Liu	 <song@kernel.org>, pengdonglin <pengdonglin@xiaomi.com>
+Date: Mon, 20 Oct 2025 18:06:16 -0700
+In-Reply-To: <20251020093941.548058-2-dolinux.peng@gmail.com>
+References: <20251020093941.548058-1-dolinux.peng@gmail.com>
+	 <20251020093941.548058-2-dolinux.peng@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: 9P change breaks bpftrace running in qemu+9p?
-To: Song Liu <song@kernel.org>, Dominique Martinet <asmadeus@codewreck.org>
-Cc: v9fs@lists.linux.dev, Eric Van Hensbergen <ericvh@kernel.org>,
- Latchesar Ionkov <lucho@ionkov.net>,
- Christian Schoenebeck <linux_oss@crudebyte.com>,
- =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
- bpf <bpf@vger.kernel.org>
-References: <CAHzjS_u_SYdt5=2gYO_dxzMKXzGMt-TfdE_ueowg-Hq5tRCAiw@mail.gmail.com>
- <e0c7cd4e-4183-40a8-b90d-12e9e29e9890@maowtm.org>
- <CAHzjS_sXdnHdFXS8z5XUVU8mCiyVu+WnXVTMxhyegBFRm6Bskg@mail.gmail.com>
- <aPaqZpDtc_Thi6Pz@codewreck.org>
- <CAHzjS_uEhozUU-g62AkTfSMW58FphVO8udz8qsGzE33jqVpY+g@mail.gmail.com>
-Content-Language: en-US
-From: Tingmao Wang <m@maowtm.org>
-In-Reply-To: <CAHzjS_uEhozUU-g62AkTfSMW58FphVO8udz8qsGzE33jqVpY+g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On 10/20/25 22:52, Song Liu wrote:
-> Hi Dominique,
-> 
-> On Mon, Oct 20, 2025 at 2:32 PM Dominique Martinet
-> <asmadeus@codewreck.org> wrote:
->>
->> Song Liu wrote on Mon, Oct 20, 2025 at 12:40:23PM -0700:
->>> I am running qemu 9.2.0 and bpftrace v0.24.0. I don't think anything is
->>> very special here.
->>
->> I don't reproduce either (qemu 9.2.4 and bpftrace v0.24.1, I even went
->> and installed vmtest to make sure), trying both my branch and a pristine
->> v6.18-rc2 kernel -- what's the exact commit you're testing and could you
->> attach your .config ?
-> 
-> Attached, please find the config file.
-> 
-> I tried to debug this, and found that the issue disappears when I remove
-> v9fs_lookup_revalidate from v9fs_dentry_operations. But I couldn't figure
-> out why d_revalidate() is causing such an issue.
+On Mon, 2025-10-20 at 17:39 +0800, Donglin Peng wrote:
+> Change btf_find_by_name_kind() to search the local BTF first,
+> then fall back to the base BTF. This can skip traversing the large
+> vmlinux BTF when the target type resides in a kernel module's BTF,
+> thereby significantly improving lookup performance.
+>=20
+> In a test searching for the btf_type of function ext2_new_inode
+> located in the ext2 kernel module:
+>=20
+> Before: 408631 ns
+> After:     499 ns
+>=20
+> Performance improvement: ~819x faster
 
-I've compiled qemu 9.2.0 and download the binary build of bpftrace v0.24.0
-from GitHub [1], and compiled kernel with your config, but unfortunately I
-still can't reproduce it...
+[...]
 
-I do now get this message sometimes (probably unrelated?):
-bpftrace (148) used greatest stack depth: 11624 bytes left
+> ---
 
-I don't really know how to proceed right now but I will have it run in a
-loop and see if I can hit it by chance.
+The flip makes sense, but are we sure that there are no implicit
+expectations to return base type in case of a name conflict?
 
-If you can reproduce it frequently and can debug exactly what is returning
--EIO in v9fs_lookup_revalidate that would probably be very helpful, or if
-you can enable 9p debug outputs and see what's happening around the time
-of error (CONFIG_NET_9P_DEBUG=y and also debug=5 mount options - I'm not
-sure how to get vmtest to use a custom mount option but if it's
-reproducible in plain QEMU that's also an option) that might also be
-informative I think?  I'm happy to take a deeper look (although I'm of
-course less of an expert than Dominique so hopefully he can also give some
-opinion).
-
-I'm also curious if this can happen with just a usual `stat` or other
-operations (not necessarily caused by dentry revalidation, and thus not
-necessarily to do with my patch)
-
-[1]: https://github.com/bpftrace/bpftrace/releases/tag/v0.24.0
-
-> 
-> Thanks,
-> Song
-
+E.g. kernel/bpf/btf.c:btf_parse_struct_metas() takes a pointer to
+`btf` instance and looks for types in alloc_obj_fields array by name
+(e.g. "bpf_spin_lock"). This will get confused if module declares a
+type with the same name. Probably not a problem in this particular
+case, but did you inspect other uses?
 
