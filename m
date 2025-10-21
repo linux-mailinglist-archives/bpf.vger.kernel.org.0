@@ -1,146 +1,101 @@
-Return-Path: <bpf+bounces-71645-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71646-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 433DBBF9277
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 00:54:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF78EBF9241
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 00:50:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4770A507EFD
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 22:50:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC31519A6F44
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 22:51:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271BF2BDC32;
-	Tue, 21 Oct 2025 22:45:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F6C32868BD;
+	Tue, 21 Oct 2025 22:46:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hnmLswCM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VkWa2lCS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2830C2FB
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 22:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7805121C16E
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 22:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761086717; cv=none; b=vFT9Mg53OwTRcNSSCLfXm0UiehKjeIkcTOege5IiHEKiHsFdkPe5qc9oxM1nv0imTSdxyjrhJWQqcL3vGJ7P6h20BdWSgtcH8Wm381kRlc7MKKu1Oz+JU6MKW095QT1jLwsAz/EWjwt/cW2thW6ZnQysieRuvZHkWKwezeuJ8OU=
+	t=1761086772; cv=none; b=cvK5ejFziwF0YOOReTwX2soGDpBl3UHogompC8S7zoHyIu8dCZrt6BkNhmWLh2XajxNpwd4+il+wsjF2uhLpYC+8ds9Q1AQMvYkUXt+Zxh7bZZ/wrsWjUQDzpqIwOs6iheXTDcpO5qOMqt81/lhBrY3AfmnEAiB7mqg+rMnbW/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761086717; c=relaxed/simple;
-	bh=xlpcDofI9+fgrMOOQEyGZ+PcOAXHhvbHK+VFZ2VIIEE=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=rCRhAJd6wRq5D7addOKoHlIjKGatDfwiyNjR64GI8LVuGRTkx9SVq8kLjwWfEJwQZpm2VyOlyDAAlY5ETJkvekWMHLh9rn+cvOvUdWJpak0pmkW7Z16FaCJbdTpUOK+fpeP9njqXc+9TUW5tnXTjMNjIPwbNoQjm6cFIRI+mCKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hnmLswCM; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7a23208a0c2so2771860b3a.0
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 15:45:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761086715; x=1761691515; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6etc7IKFQtvmVVy1rBmzfQiuGSqTL1/HIh/vxZoHiK8=;
-        b=hnmLswCMyPkwm7UWnbfzkYOSQYA9CVGxU8lnriwiQIYxtlgA4OOBLWnzEQHm7FacaW
-         WtKBV8Jvmv+2XiguyXLhRTRxjZ7qZmcXs4tq29ElYgI1HibSgPybyYpMgrnHwuZvIHSL
-         J2WWHrPYyvFCSXF5oHFlZfJXv6JjWUKb4GfpwoBNjLwq6cGipdPxFMopVqWe6oRj4hRb
-         dvAdpkFjiHzQQtxEF2B0YcCOpBsV+4jYi8hFCean0UySf5rknyNh2xpZ+T3k8GREJiaz
-         uZtkhvCa4SBxszIJmSDEn0qypmWmYrIzDbdHWpYko+gYdh1MbCcSnb7VKIcA2xGwP2xH
-         loIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761086715; x=1761691515;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=6etc7IKFQtvmVVy1rBmzfQiuGSqTL1/HIh/vxZoHiK8=;
-        b=Pt0uJ5HUd7f9vh9SjNoiXBDfatcPx1N8OdAm1FIX58uhTrkeXliJB5RxfnT1w7/bQ0
-         J6p4fhxhxSgDecegTmhymo41IjjmDTyyhaAIEALrxinZHN1YyqHfLzN9gcLmtSf4cjxm
-         7tjLoPC1s7VaqoBxkI+T2LCSfpXxGhRZVTqmLeMRZSEX887hVAt8BBUEPr97wmZ93Tx3
-         MG3PkgWcdPQrTUmMa2wVS8CH8xvBCYxqf5woKlmSjS0pyMgoc69sZqU/l0BNDVq/Bqly
-         lDiBCzn88bnou7L0ROSkMbz0rzBEAbfA1biZBYN0Za0MXHQebYkbUU8rtUGWyto3qkI5
-         daQA==
-X-Forwarded-Encrypted: i=1; AJvYcCVqfOzhbzbuhD+sQN4UwrVAMMgXmmXS8S9XHwVWQXxDO0mrVUjMtR6lrxIMlsnSKugofKw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2TFiPJYzMN83qkyNjzHx8z024eKIn5So+4FGIRPSX3VZlUBTO
-	YPoA6PfXW6hPDUCEa1FoJCKmk96Ds8Czb749kVDEfsaaCMvODcu4DFs5
-X-Gm-Gg: ASbGncuAxWb7aNjgNNOk6VnRmZfQR9GA3h9YkBBWo3LXj/7tVwJjz44/e1rveG0PjX0
-	TlX8ddrjLNk3jVet8azN5pwcf1wXx2avwKKV/XGR6ofwbO6eKxAKrMSVnX2EU3bntUDCDAFRvgw
-	YgTYkAmc3baZCM1kktTaYg2ywvdFm80dXnBnFydb3rqrklF3YjmraV9fEB1IQq9NVc9thC3hT3W
-	8ilOh67jAUpvq44Y8sSUUj9fZ4km3rx3pSjRTGpsfJ/heMVv4ibjLLKRzYPDjD8iNXoL0CB8xSA
-	nqyI+NFLD0tAa3Prk21z7H34AI5iY65/vJiTP8ymhGLJG2PsRYuQYGJCYVX45BfYS8CK9zKVYtb
-	BRbTQuXruHIa5jquzzUucp2l64C04726UrMstgaXQUn3jGRM65E6L/i1kzpmjzGzOStMN0f0hVr
-	hJvq6sQ2zbFu3YsdR3RJQ8zgfL
-X-Google-Smtp-Source: AGHT+IFIUO7I4ZencHOZ/p+dwdIcN7anMQ2d3cmnUB/D8XACHuxdxaANusKyq09o2C/4tqAweEp/rA==
-X-Received: by 2002:a17:90b:4c92:b0:32e:32f8:bf9f with SMTP id 98e67ed59e1d1-33bcf8f9960mr22261588a91.30.1761086715266;
-        Tue, 21 Oct 2025 15:45:15 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:84fc:875:6946:cc56? ([2620:10d:c090:500::7:6bbb])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33e223c7fb5sm628232a91.2.2025.10.21.15.45.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Oct 2025 15:45:14 -0700 (PDT)
-Message-ID: <d162c8aee790c60a75f0e253a95346cf12b51d7e.camel@gmail.com>
-Subject: Re: [PATCH v6 bpf-next 14/17] libbpf: support llvm-generated
- indirect jumps
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org, Alexei
- Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Anton
- Protopopov <aspsk@isovalent.com>,  Daniel Borkmann <daniel@iogearbox.net>,
- Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Date: Tue, 21 Oct 2025 15:45:13 -0700
-In-Reply-To: <10f8fe24770eb663ea849f133b4474d2cbd0b513.camel@gmail.com>
-References: <20251019202145.3944697-1-a.s.protopopov@gmail.com>
-		 <20251019202145.3944697-15-a.s.protopopov@gmail.com>
-	 <10f8fe24770eb663ea849f133b4474d2cbd0b513.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1761086772; c=relaxed/simple;
+	bh=8Yi4wsLUGlj+LPpx1ZxCTrQv3laOqZ6rrsLk5GaysiM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YcukpyceCy3lmRMeYvbnCu/uLDSKqkFFqdigjXRd0IF8MyNwvqr/OgyAKw36OCk6x7Y49hiSFF5m6SgYqBHxA8fMpNBgZV7J3URjdZsLQvaRQYlkmrPkpCszMeSD6P/hGlRG0EBnzMiPHpmKfxYsTEZOL8xm9nKa5wFH/IbkDkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VkWa2lCS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F7C6C4CEFF
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 22:46:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761086772;
+	bh=8Yi4wsLUGlj+LPpx1ZxCTrQv3laOqZ6rrsLk5GaysiM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=VkWa2lCSvnjE17/tgS81wePAfHecfhNG11jPXXED2zGzhsqK11qdo5tM9HSyExuIu
+	 4GulW1WNX1wFBoWOK3HmLy/167BS1R0dVCp4lO4V7KbcokjawBgKd09v9zZ/VtGl9r
+	 ym4FWaEehbNfIBpNgTi1KghAYO6tWIT/nXxEW932SFrIms6GfR6UP99T5Xj9UXj7ef
+	 oryBeOSqy2zL1WtUIv5Ken1IngK3H/k2/zeuxa9+YGbo12vPZk+mPi7pIWSGvRzH2L
+	 Jhys/puKeY8EHi7zGtXPczkrdd0EjHzEb1oKgLJGOtfc+/Ddi16JJGfmuGfFeNzuVg
+	 DI9whryrlWG2g==
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-795be3a3644so51171986d6.0
+        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 15:46:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUZWtPpufi44i0+4XBdGgGKfLHMgB9ZoqFSbYV3gyMSkK4vdzYZbStTAh/PXO67kwr4J4w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQTk3fIKaFATR0D8CsB20whlVSleA+tstoSQ727iTqR3LM7qkC
+	SFE5ti18HqFSnuLzNkffMjRqSf2+oXoH62p/no7dD63gqmOlRbKUrTeh4gxVQ0qI3vQ+wTwp1Ew
+	EU6VWu7K7EiE8hVEK7eIy5r7QEPRfQHQ=
+X-Google-Smtp-Source: AGHT+IGbJZonn9gqagn6gyi7iThd5ydwZkXgp5pIwGP34sdgmQ0t/Jmt6mgI+v0Edn839t8DPTWZKlLDZX0KMS6lYes=
+X-Received: by 2002:a05:6214:1948:b0:87d:a372:fd3e with SMTP id
+ 6a1803df08f44-87da3918502mr159614426d6.56.1761086771180; Tue, 21 Oct 2025
+ 15:46:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251022-mmap-regression-v1-1-980365ee524e@codewreck.org>
+In-Reply-To: <20251022-mmap-regression-v1-1-980365ee524e@codewreck.org>
+From: Song Liu <song@kernel.org>
+Date: Tue, 21 Oct 2025 15:46:00 -0700
+X-Gmail-Original-Message-ID: <CAHzjS_s5EzJkvTqi73XS_9bBsaGuXu1zQ4jOLgcpC9vmJ7FoaA@mail.gmail.com>
+X-Gm-Features: AS18NWAItVFqwhj3RByyGzRKQfVCYO_ER0xdHoP_gZ-DIxoEtoXTz3_jzN7jFVI
+Message-ID: <CAHzjS_s5EzJkvTqi73XS_9bBsaGuXu1zQ4jOLgcpC9vmJ7FoaA@mail.gmail.com>
+Subject: Re: [PATCH] fs/9p: don't use cached metadata in revalidate for cache=mmap
+To: asmadeus@codewreck.org
+Cc: Song Liu <song@kernel.org>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
+	Christian Schoenebeck <linux_oss@crudebyte.com>, Tingmao Wang <m@maowtm.org>, 
+	Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, v9fs@lists.linux.dev, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2025-10-21 at 15:18 -0700, Eduard Zingerman wrote:
-
+On Tue, Oct 21, 2025 at 3:10=E2=80=AFPM Dominique Martinet via B4 Relay
+<devnull+asmadeus.codewreck.org@kernel.org> wrote:
+>
+> From: Dominique Martinet <asmadeus@codewreck.org>
 [...]
+> ---
+>
+> Reported-by: Song Liu <song@kernel.org>
+> Link: https://lkml.kernel.org/r/CAHzjS_u_SYdt5=3D2gYO_dxzMKXzGMt-TfdE_ueo=
+wg-Hq5tRCAiw@mail.gmail.com
+> Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Link: https://lore.kernel.org/bpf/CAEf4BzZbCE4tLoDZyUf_aASpgAGFj75QMfSXX4=
+a4dLYixnOiLg@mail.gmail.com/
+> Fixes: 290434474c33 ("fs/9p: Refresh metadata in d_revalidate for uncache=
+d mode too")
+> Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
 
-> > +/*
-> > + * In LLVM the .jumptables section contains jump tables entries relati=
-ve to the
-> > + * section start. The BPF kernel-side code expects jump table offsets =
-relative
-> > + * to the beginning of the program (passed in bpf(BPF_PROG_LOAD)). Thi=
-s helper
-> > + * computes a delta to be added when creating a map.
-> > + */
-> > +static int jt_adjust_off(struct bpf_program *prog, int insn_idx)
-> > +{
-> > +	int i;
-> > +
-> > +	for (i =3D prog->subprog_cnt - 1; i >=3D 0; i--) {
-> > +		if (insn_idx >=3D prog->subprogs[i].sub_insn_off)
->=20
-> Sorry, I'm still confused about what happens here.
-> The `insn_idx` is comes from relocation, meaning that it is a value
-> recorded relative to section start, right?  On the other hand,
-> `.sub_insn_off` is an offset of a subprogram within a concatenated
-> program, about to be loaded.  These values should not be compared
-> directly.
+I can confirm this fixes bpftrace and the reproducer in the VM.
 
-I'm wrong on this account, append_subprog_relos() adjusts relo->insn_idx.
-Still, please consider refactoring as below.
+Tested-by: Song Liu <song@kernel.org>
 
-> I think, that my suggestion from v5 [1] should be easier to understand:
->=20
->    > Or rename this thing to find_subprog_idx(), pass relo object into
->    > create_jt_map(), call find_subprog_idx() there, and do the following=
-:
->    >
->    >   xlated_off =3D jt[i] / sizeof(struct bpf_insn);
->    >   /* make xlated_off relative to subprogram start */
->    >   xlated_off -=3D prog->subprogs[subprog_idx].sec_insn_off;
->    >   /* make xlated_off relative to main subprogram start */
->    >   xlated_off +=3D prog->subprogs[subprog_idx].sub_insn_off;
->=20
-> [1] https://lore.kernel.org/bpf/b5fd31c3e703c8c84c6710f5536510fbce04b36f.=
-camel@gmail.com/
+Thanks for the quick fix!
 
 [...]
 
