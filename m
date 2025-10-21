@@ -1,99 +1,294 @@
-Return-Path: <bpf+bounces-71593-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71594-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F23A0BF7C83
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 18:50:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFB42BF7CC5
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 18:56:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C0943A2C86
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 16:50:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68F2119A7069
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 16:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7948426B942;
-	Tue, 21 Oct 2025 16:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D10350D79;
+	Tue, 21 Oct 2025 16:56:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xuo0WpGt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i3gEdwvg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F056E346E4D;
-	Tue, 21 Oct 2025 16:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8EE34AAE5
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 16:56:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761065426; cv=none; b=tO49bQRywdhvbRyAUVSbGfMHWvLZMcbl6u9GW/jTpZ9WhMeJNUKvxqP5idAYrs79dHc5lToparTSWGvBRLuZQU6X81XzAVphz2POeRS54LSWhzOW1IRAVcs45b4SHB110aeqAg4HN/g445lhK5JuuNBFUSLRbSkQewWnr2O8gV8=
+	t=1761065789; cv=none; b=ibRka6txWx0pySG+JjOhh5/2b9/T4wJ+cyWGLfPJKdgIZt3BWCDwS0bfN7YWMeJB+spMKflrHNt7VxXs04R5qDZGVETPR2fIUJkTjFLg8t8dsQrX9hgf/pbZocETHsfOvszSIe1cnG3QGe74xCItQrZBmOdaGXJKKHnEC3ka3qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761065426; c=relaxed/simple;
-	bh=+BafhbXkJhAILjAhpBXovI19QdGmbkSLGtSV/MpF1/A=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=ek8XbzJymVtXKoJ/8i5tihSwuCcp5CAYfvH2SZ185HPzWkMD/2UgC8mMuflba3HPWqbV/yyWYJegn3hPhwXJEgFN6oEe1QR3G4U9SjvTkm/XTCRZX86YHeMdOpgUmh1Y9TeBukCTUgYYHFT3HDsJ7D69VU1h92QHxdMdxNI1g5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xuo0WpGt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 820E7C4CEF1;
-	Tue, 21 Oct 2025 16:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761065425;
-	bh=+BafhbXkJhAILjAhpBXovI19QdGmbkSLGtSV/MpF1/A=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Xuo0WpGtjFCj0kfY8zZ4/o11T1RpHCGHykEq+6yR+ACfC5fbanCu6bqLISg60bb6w
-	 hWQsHnfpnyXOe/OjYPwF4APRywoi9aZqRQWOqnYOgc/7gjaGFEw92RymgBYgvRuQ/b
-	 UohUVkaytxDhgoQc5s+dQzp6Wq4kwmAAsd9/pgvAMhr1a0xxU5eJdSFeTdfEFO72j8
-	 e1D7O/33TOAyvV0vF3L6YYco8neucTbYHjWqAJl+YjnQogLUTDF2vxPvfVr8Lotk/P
-	 4lre4PG0g2/YwWXaJpaNBBCvNfDvpSlioywzUmPxhPYHMaC2aevXLKeI9Xvw8AoO1a
-	 iuqujV+a6/cZw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D933A55F96;
-	Tue, 21 Oct 2025 16:50:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1761065789; c=relaxed/simple;
+	bh=WCDM0Dh/P1MJegYmmTqfY461iQGVC1KbUiBxRCf+N9A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LFIVDu4PHp1DEPcEvwuj5V6Bbb09RWDOBzEo9Ut9QbqtUVL/ceoQ6cr1FkvRRz0zU4gJbmyHAyU/C09Nu54Gjfh2Yzj5ll0svaP7k7AuWVhYzqiuU68nltibm2EFEAF4eFdD5T9lffB5i3+TLMX9b7Eo0OhjRYzyTbGjTH44kIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i3gEdwvg; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3ed20bdfdffso5389848f8f.2
+        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 09:56:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761065784; x=1761670584; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2eulPDt+BGqCCZUMmq5c3Qn/igljkUZkpKio7rpKRew=;
+        b=i3gEdwvgrX4hV9sCAv0rG245tx7F9BoAaXoVWD9etU+Vcsq8qRsqDYDvg4lzMDFzFo
+         NnpYikKXWZiLyA1iz3m2s4C/y1Q8PKECfvd9zDnN7hm2L6iHiK7e8hcXpkQDlSTzUQgJ
+         v3rP1Bvvj1GCPupQbgZTsh8dRMgv0effl3uqtA631WjjbetoJOpnDqqM4HeN17hIxdMz
+         CZoGIfk9F4LikSo4qv9fXQOwZ4+5H9IOzhkKvPVkfECOqMQfOd2GHgZhzAiXzlBfFH70
+         DzjL4Cyih+2sqGH+HGGdWdJHYrH/rI5zx/d55djRsYvxUYLo25GviG/7p+N16nBosrSu
+         PbVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761065784; x=1761670584;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2eulPDt+BGqCCZUMmq5c3Qn/igljkUZkpKio7rpKRew=;
+        b=LiPQykW2wJi/byXMf9FZXlXa4EKEOQI9iUVU8i9WqTqV1UfKbFa+2m6UIb4GmHnQP5
+         7plJJuZdaa8gajMqFhMsvVl5zJTeZCG9g/zcnZu77T3xx4ioIevI/G6sFX3SY5xenG7b
+         fQbCdrjdg6IKMEYjXXrbZTS0k9Jooe+3vIn+qtIY7yrliUsq5spbb60+bXKd6Vgtw8Mm
+         NCHt9bp1A+qJDIZRj7vFnIc6yKhGS/WMQWma0eCLz1MblDqi6l4lt3X4Delyf2xN6GVf
+         7LWRJ7jXm1U5eqM3VtTGr9mZWoQBdvC987t1EVypbDykOrHCUFLhGBRptNS5JcAA/srG
+         NOfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXD3PSRcqr3I4uQDlF8cmfrF9KHD9+1M6r5W2rezLOYePVk5cgyE7Hd0CIP62fUzjM7CCg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyK+VRWmtTD4VYbaHN65B6vEREL2elRW0cliBsTXh71G8ni0CU/
+	oSM17YUQDAHKEt63E1jz4NnUZ+TbVIoKiWiWj7HPFHfcyuJl4V3c6s8M/qfLbwgYAu2FKpm77Dj
+	zQaMzLOw3vtEKuW/kA5njJ8KBZ75pB/s=
+X-Gm-Gg: ASbGncvntQYuRHDZSyc8jRLfAgQXOt9iFeCBUvIjs0KsVVYviWc6nn0RIIwzBxtK7dK
+	uiI1tVLDuse2Tl33k+cJWUYkRY3jLi5pM+26xNMj+9rsIPZ9TOm9olqUCLZPTQqsT2Hk80p3UTS
+	ueyqhL+iFMQwPOFYqx6ab3EPWEliy3hV7NvFBy9pETaHsHBcneo5419ObfDxafwxd09kvqVVu5l
+	TjCEgNTNLxvyprcNkpbG32sZCxkqRtWQiC8teOdMx5pquqZUC0tUy4mL/Uhxoj5E2a/I7EwHzZN
+	F4LHkz4jmak=
+X-Google-Smtp-Source: AGHT+IEadp2PmK+XtjDgRfhWlPpP2KXyboEQ/xZ2EcD7NQBdN8VXo6Vfnfcn5ob2/xI2no+srLQzu+gtG6Xptg9UP9s=
+X-Received: by 2002:a05:6000:2586:b0:403:8cc:db6b with SMTP id
+ ffacd0b85a97d-42704db4467mr12927690f8f.35.1761065783956; Tue, 21 Oct 2025
+ 09:56:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 bpf] bpf: liveness: clarify get_outer_instance()
- handling
- in propagate_to_outer_instance()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176106540703.1157367.9711062469755027347.git-patchwork-notify@kernel.org>
-Date: Tue, 21 Oct 2025 16:50:07 +0000
-References: <20251021080849.860072-1-shardulsb08@gmail.com>
-In-Reply-To: <20251021080849.860072-1-shardulsb08@gmail.com>
-To: Shardul Bankar <shardulsb08@gmail.com>
-Cc: bpf@vger.kernel.org, eddyz87@gmail.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- linux-kernel@vger.kernel.org
+References: <CAHzjS_u_SYdt5=2gYO_dxzMKXzGMt-TfdE_ueowg-Hq5tRCAiw@mail.gmail.com>
+ <e0c7cd4e-4183-40a8-b90d-12e9e29e9890@maowtm.org> <CAHzjS_sXdnHdFXS8z5XUVU8mCiyVu+WnXVTMxhyegBFRm6Bskg@mail.gmail.com>
+ <aPaqZpDtc_Thi6Pz@codewreck.org> <CAHzjS_uEhozUU-g62AkTfSMW58FphVO8udz8qsGzE33jqVpY+g@mail.gmail.com>
+ <086bb120-22eb-43ff-a486-14e8eeb7dd80@maowtm.org> <CAHzjS_vrVJrphZqBMxVE4UEfOqgP8XPq6dRuBh9DdWL-SYtO2w@mail.gmail.com>
+In-Reply-To: <CAHzjS_vrVJrphZqBMxVE4UEfOqgP8XPq6dRuBh9DdWL-SYtO2w@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 21 Oct 2025 09:56:10 -0700
+X-Gm-Features: AS18NWBYHfGvvDiun6RLm7u4qqcsiuYJsoCSKClE1yohs0Ed4-TUGooDKRR6fSA
+Message-ID: <CAADnVQKSJTAx-4T4WLFhLPcmJ-Ea5onKG+Z-d9iv48r4A6nJMQ@mail.gmail.com>
+Subject: Re: 9P change breaks bpftrace running in qemu+9p?
+To: Song Liu <song@kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
+	Christian Brauner <brauner@kernel.org>
+Cc: Tingmao Wang <m@maowtm.org>, Dominique Martinet <asmadeus@codewreck.org>, v9fs@lists.linux.dev, 
+	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
+	Christian Schoenebeck <linux_oss@crudebyte.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Mon, Oct 20, 2025 at 11:49=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+>
+> Hi Tingmao,
+>
+> On Mon, Oct 20, 2025 at 5:54=E2=80=AFPM Tingmao Wang <m@maowtm.org> wrote=
+:
+> >
+> > On 10/20/25 22:52, Song Liu wrote:
+> > > Hi Dominique,
+> > >
+> > > On Mon, Oct 20, 2025 at 2:32=E2=80=AFPM Dominique Martinet
+> > > <asmadeus@codewreck.org> wrote:
+> > >>
+> > >> Song Liu wrote on Mon, Oct 20, 2025 at 12:40:23PM -0700:
+> > >>> I am running qemu 9.2.0 and bpftrace v0.24.0. I don't think anythin=
+g is
+> > >>> very special here.
+> > >>
+> > >> I don't reproduce either (qemu 9.2.4 and bpftrace v0.24.1, I even we=
+nt
+> > >> and installed vmtest to make sure), trying both my branch and a pris=
+tine
+> > >> v6.18-rc2 kernel -- what's the exact commit you're testing and could=
+ you
+> > >> attach your .config ?
+> > >
+> > > Attached, please find the config file.
+> > >
+> > > I tried to debug this, and found that the issue disappears when I rem=
+ove
+> > > v9fs_lookup_revalidate from v9fs_dentry_operations. But I couldn't fi=
+gure
+> > > out why d_revalidate() is causing such an issue.
+> >
+> > I've compiled qemu 9.2.0 and download the binary build of bpftrace v0.2=
+4.0
+> > from GitHub [1], and compiled kernel with your config, but unfortunatel=
+y I
+> > still can't reproduce it...
+>
+> Thanks for running these tests.
+>
+> > I do now get this message sometimes (probably unrelated?):
+> > bpftrace (148) used greatest stack depth: 11624 bytes left
+> >
+> > I don't really know how to proceed right now but I will have it run in =
+a
+> > loop and see if I can hit it by chance.
+> >
+> > If you can reproduce it frequently and can debug exactly what is return=
+ing
+> > -EIO in v9fs_lookup_revalidate that would probably be very helpful, or =
+if
+> > you can enable 9p debug outputs and see what's happening around the tim=
+e
+> > of error (CONFIG_NET_9P_DEBUG=3Dy and also debug=3D5 mount options - I'=
+m not
+> > sure how to get vmtest to use a custom mount option but if it's
+> > reproducible in plain QEMU that's also an option) that might also be
+> > informative I think?  I'm happy to take a deeper look (although I'm of
+> > course less of an expert than Dominique so hopefully he can also give s=
+ome
+> > opinion).
+> >
+> > I'm also curious if this can happen with just a usual `stat` or other
+> > operations (not necessarily caused by dentry revalidation, and thus not
+> > necessarily to do with my patch)
+>
+> I used strace to compare the behavior before and after the change.
+> It appears to me that bpftrace didn't get -EIO in the error case. Instead=
+,
+> it got 0 bytes for a read that was supposed to return data.
+>
+> Success case:
+> ...
+> openat(AT_FDCWD, "/tmp/bpftrace.Rl1Vkg",
+> O_RDWR|O_CREAT|O_EXCL|O_CLOEXEC, 0600) =3D 3
+> write(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\1\0\367\0\1\0\0\0\0\0\0\0\0\0\0=
+\0"...,
+> 4352) =3D 4352
+> openat(AT_FDCWD, "/tmp/bpftrace.Rl1Vkg", O_RDONLY|O_CLOEXEC) =3D 4
+> newfstatat(4, "", {st_mode=3DS_IFREG|0600, st_size=3D4352, ...}, AT_EMPTY=
+_PATH) =3D 0
+> read(4, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\1\0\367\0\1\0\0\0\0\0\0\0\0\0\0\=
+0"...,
+> 8192) =3D 4352
+> close(4) =3D 0
+> ...
+>
+> Failure case:
+> ...
+> openat(AT_FDCWD, "/tmp/bpftrace.LbbDxk",
+> O_RDWR|O_CREAT|O_EXCL|O_CLOEXEC, 0600) =3D 3
+> write(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\1\0\367\0\1\0\0\0\0\0\0\0\0\0\0=
+\0"...,
+> 4352) =3D 4352
+> openat(AT_FDCWD, "/tmp/bpftrace.LbbDxk", O_RDONLY|O_CLOEXEC) =3D 4
+> newfstatat(4, "", {st_mode=3DS_IFREG|0600, st_size=3D0, ...}, AT_EMPTY_PA=
+TH) =3D 0
+> read(4, "", 8192) =3D 0
+> ...
+>
+> So the failure case is basically:
+> 1) open a file for write, and write something;
+> 2) open the same file for read, and read() returns 0.
+>
+> I created a small program to reproduce this issue (attached below).
+>
+> Before [1], the program can read the data on the first read():
+> [root@(none) ]# ./main xxx
+> i: 0, read returns 4096
+> i: 1, read returns 0
+> i: 2, read returns 0
+> i: 3, read returns 0
+> i: 4, read returns 0
+> i: 5, read returns 0
+> i: 6, read returns 0
+> i: 7, read returns 0
+> i: 8, read returns 0
+> i: 9, read returns 0
+>
+> After [1], the program cannot read the data, even after retry:
+> [root@(none) ]# ./main yyy
+> i: 0, read returns 0
+> i: 1, read returns 0
+> i: 2, read returns 0
+> i: 3, read returns 0
+> i: 4, read returns 0
+> i: 5, read returns 0
+> i: 6, read returns 0
+> i: 7, read returns 0
+> i: 8, read returns 0
+> i: 9, read returns 0
+>
+> I am not sure what is the "right" behavior in this case. But this is
+> clearly a change of behavior.
+>
+> Thanks,
+> Song
+>
+> [1] https://lore.kernel.org/v9fs/cover.1743956147.git.m@maowtm.org/
+>
+>
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D reproducer =3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> #include <fcntl.h>
+> #include <stdio.h>
+> #include <stdlib.h>
+> #include <unistd.h>
+>
+> char buf[4096];
+>
+> int main(int argc, char *argv[])
+> {
+>         int ret, i;
+>         int fdw, fdr;
+>
+>         if (argc < 2)
+>                 return 1;
+>
+>         fdw =3D openat(AT_FDCWD, argv[1], O_RDWR|O_CREAT|O_EXCL|O_CLOEXEC=
+, 0600);
+>         if (fdw < 0) {
+>                 fprintf(stderr, "cannot open fdw\n");
+>                 return 1;
+>         }
+>         write(fdw, buf, sizeof(buf));
+>
+>         fdr =3D openat(AT_FDCWD, argv[1], O_RDONLY|O_CLOEXEC);
+>
+>         if (fdr < 0) {
+>                 fprintf(stderr, "cannot open fdr\n");
+>                 close(fdw);
+>                 return 1;
+>         }
+>
+>         for (i =3D 0; i < 10; i++) {
+>                 ret =3D read(fdr, buf, sizeof(buf));
+>                 fprintf(stderr, "i: %d, read returns %d\n", i, ret);
+>         }
+>
+>         close(fdr);
+>         close(fdw);
+>         unlink(argv[1]);
+>         return 0;
+> }
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Andrii reported the issue as well:
+https://lore.kernel.org/bpf/CAEf4BzZbCE4tLoDZyUf_aASpgAGFj75QMfSXX4a4dLYixn=
+OiLg@mail.gmail.com/
 
-On Tue, 21 Oct 2025 13:38:46 +0530 you wrote:
-> propagate_to_outer_instance() calls get_outer_instance() and uses the
-> returned pointer to reset and commit stack write marks. Under normal
-> conditions, update_instance() guarantees that an outer instance exists,
-> so get_outer_instance() cannot return an ERR_PTR.
-> 
-> However, explicitly checking for IS_ERR(outer_instance) makes this code
-> more robust and self-documenting. It reduces cognitive load when reading
-> the control flow and silences potential false-positive reports from
-> static analysis or automated tooling.
-> 
-> [...]
-
-Here is the summary with links:
-  - [v3,bpf] bpf: liveness: clarify get_outer_instance() handling in propagate_to_outer_instance()
-    https://git.kernel.org/bpf/bpf-next/c/96d31dff3fa4
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+selftests/bpf was relying on the above behavior too
+which we adjusted already, but
+this looks to be a regression either in 9p or in vfs.
 
