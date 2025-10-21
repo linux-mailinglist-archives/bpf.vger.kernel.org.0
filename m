@@ -1,39 +1,81 @@
-Return-Path: <bpf+bounces-71574-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71575-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42947BF6DA3
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 15:45:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34208BF6EA5
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 15:55:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1ED64505F73
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 13:43:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C15D919A0D42
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 13:56:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 936EF337B8B;
-	Tue, 21 Oct 2025 13:43:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC9CC2877C3;
+	Tue, 21 Oct 2025 13:55:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YGRpbJSr"
 X-Original-To: bpf@vger.kernel.org
-Received: from www.nop.hu (www.nop.hu [80.211.201.218])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 1EF322F693C
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 13:43:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.211.201.218
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2233370EB
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 13:55:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761054193; cv=none; b=Agv22N80F2fAH5QoKsdUDA27QxmKDa+8fvmQ5zIWvIn414ajoLJ50jvh03ojJipLj0E5/I1u1XTebJg6B9RvKsJYHwjHN7xJnD54t8aLeGG7SXMqJX9Q+m/dl2vsP/lG75JsYTv74Hzj2wmxbaSt3MmVsre10Qpx4yHV8/8bXyU=
+	t=1761054934; cv=none; b=XBozfs3emw1zz+JklI8gAipKyHWuwkKC5S+VXx8dfb0pYQlV4uBQblkTpHo4q7M7Bik3MV6Y9bobQ5YjSEB7doeYFABz3YrMiRZbqMey7Z7sQzue3DJaI7sbxXoq61FgGw3i5p9aDGIBA6yBmS0N6Wd4kGOP4HlUh89zdH1qAUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761054193; c=relaxed/simple;
-	bh=3vfOP4cRQmDcREeD+QJJrzzgEoDi6gHpS7CUO305J6c=;
+	s=arc-20240116; t=1761054934; c=relaxed/simple;
+	bh=1C/CMYRxtvqwNM2YoYyDr1kpKiDWJNGal0fWYgTIgG0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=m6VMa1TO0cPkrMqz9kcNyLmaOaPqpgU873FEvmEnKlGZJe5gC87ks5AXGz9WCYmaao/vIO1xG4Wcmy/I7wsLPCRkAlvF+Kcv0LG9STewYDgd9sZQxmK7a+pLdYdQcSnVxt4r1xN8T0o5RzInNJOfpeMSMqjz5oBQBpGZgjjBA58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nop.hu; spf=pass smtp.mailfrom=nop.hu; arc=none smtp.client-ip=80.211.201.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nop.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nop.hu
-Received: from 2001:db8:8319::200:11ff:fe11:2222 (helo [IPV6:2001:db8:8319:0:200:11ff:fe11:2222])
-    (reverse as null)
-    by 2001:db8:1101::18 (helo www.nop.hu)
-    (envelope-from csmate@nop.hu) with smtp (freeRouter v25.10.21-cur)
-    for kerneljasonxing@gmail.com fmancera@suse.de alekcejk@googlemail.com jonathan.lemon@gmail.com sdf@fomichev.me maciej.fijalkowski@intel.com magnus.karlsson@intel.com bjorn@kernel.org 1118437@bugs.debian.org netdev@vger.kernel.org bpf@vger.kernel.org ; Tue, 21 Oct 2025 15:43:09 +0200
-Message-ID: <1c523c77-7eb7-453b-ba15-d4616edc18fb@nop.hu>
-Date: Tue, 21 Oct 2025 15:43:09 +0200
+	 In-Reply-To:Content-Type; b=c98r6Ch2CsvbaqVcD01p+w7/XFeCaImlERBbkCVk/PtPDaAGkNu5+tWLA4clN6Uhtk4qTcHu+b4CekNBMdzL65gVc3YIm3rIjqb+RgP0JjP4OXC+aoygHxaYIyjOoK/j9Ww/qmf2mcArKKXH7GCgP4DWezPWCruQTjc1qtN7TTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YGRpbJSr; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-46fcf9f63b6so31421695e9.2
+        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 06:55:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761054930; x=1761659730; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kcLLZtq1uNDjJQb+3BVYFHiRfsHBP2vHeAmDZ4VpLlE=;
+        b=YGRpbJSrK6e2K4VXAoQiBJv6HJl8CmnRESn1AZDarwO6UOGeZx/dfIcr9f2LmAYkGT
+         FtphffGZpoYWpF7UzyDKDVX7FMvm+knZq6tIVVXc7hgidcJ/2m9neUDCPq+VsirvEsGp
+         FPGUF+NJ/niw/nWgNHbhU8IxBG96g2uc6vnsHncg+jGO5+bgDx/igM84uFfCgxP8gw/l
+         3CEqrXjYecjNtpLfkd4ryexmpkIP75eFkHEeLeF1tvUuFP4oeDgMd1eTkHAVPfzhwi6Z
+         2uIKeTU+7a8th3lqcjVuD+AUhoPF8pILD94SHqs835qOtcCUEAqBcjHmejnPAFaeCCQj
+         /pIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761054930; x=1761659730;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kcLLZtq1uNDjJQb+3BVYFHiRfsHBP2vHeAmDZ4VpLlE=;
+        b=OeDIHxaD/b2miL2QN7pnQAIeTudgTF+tQSZmHHydNsfrfmJOksHi42ZcJ2LXS5h1nv
+         kSL+/I7ZSAE53m+Fq+LYBX8wDBFPCK3VAN5i3blrj62o+BZ6WPIu2vASEOz1D+ni/tHX
+         m9/v3gD1s6trIPiHdsOOZrS3WYQ2HWQf8mdPkJBB+iQWVlznpjBy7Xr913FGJPqYovxX
+         abcX//J+By+r8uTBFcT89YbPStEpMMI9MkgjphZ09tx2r90k/3lD9qILPvwJcV1+2FIu
+         Dnl42M0l78H0m+CmAXcyntuNKPqzkQpqO/yW9Vyee1CdGz+YkMUXCL1/+3mwRb5cDJ9X
+         EntA==
+X-Forwarded-Encrypted: i=1; AJvYcCXczEWDmhrW5oPSyfrYt/Z1q7X7H9ZlIW4Z9MPl1H3cy/IWW1QL/Ht/zqHno+hgwlnKX6I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxoZ+lyc3/FVbLxswmgfcPCvg+10AEzqmVuBLUzFPis217Sv14Z
+	5ZAAVBIMRrmUilTeapNXIpPDWoVkPdST6byCNObb3L3rPvC56+k9cEcX
+X-Gm-Gg: ASbGnctvx/UIUp554B7liNJMn7Ne4OAiyGPMFG/ITeeXxqJV6MElP56Aj7XdlqyWkCM
+	HJzav1I4K/ohzVxD8FSrk1e3i+grKkr25z9fratjmanVK3YJ7I5+WoEifj+3+H14/2iHwa2qbRA
+	gfg3+1bT43rzuYjJaURVNClTtw0L7iq1VKhJ4nwJXXxq/OUxoBj2fYXelojVp1u+WoweFCYawpm
+	q8nSH3S0VHSVVzSuH4lbZFt7v4JMB1JKW2h/DfLB2HYgpmtsAY8qaWS1VqhVRPcnK1m5C+/05qm
+	t0Q2CIxYe5XCWZ8eT9yMRBQX8omE9uCufP3X8wdvPF7tBDrbiToZa1wvE6KZu4Cf0j6KvHsQp+D
+	o7PpmcWe9shIWXwxD2PYOE4Ehc2Xs8Fbyv5WyWyCB1p0OkHdsvS5t5DtlolTSm0UR+HPre+GqTl
+	yRnTUG46aH/3k71hQGktlYpRg2IdOiuSXQ8lyojI0IRnSEBqQGwmw=
+X-Google-Smtp-Source: AGHT+IFoOH6YPlVUTrrQJbntYq1SM45e7oGzQUWkQ++v0lQDkRyrdEzBL1I4aC3jKFvU+bflzqrptg==
+X-Received: by 2002:a05:600c:470d:b0:45f:2cd5:5086 with SMTP id 5b1f17b1804b1-4711786d5a3mr121625135e9.3.1761054929728;
+        Tue, 21 Oct 2025 06:55:29 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1126:4:4c57:4e9:b55b:f327? ([2620:10d:c092:500::6:c0ff])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-427ea5bbc50sm20764482f8f.21.2025.10.21.06.55.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Oct 2025 06:55:29 -0700 (PDT)
+Message-ID: <b682bacf-8b61-42b2-9f4c-d617f9f56d17@gmail.com>
+Date: Tue, 21 Oct 2025 14:55:28 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -41,108 +83,85 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: null pointer dereference in interrupt after receiving an ip
- packet on veth from xsk from user space
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: Fernando Fernandez Mancera <fmancera@suse.de>, alekcejk@googlemail.com,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Magnus Karlsson <magnus.karlsson@intel.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, 1118437@bugs.debian.org, netdev@vger.kernel.org,
- bpf@vger.kernel.org
-References: <0435b904-f44f-48f8-afb0-68868474bf1c@nop.hu>
- <CAL+tcoA5qDAcnZpmULsnD=X6aVP-ztRxPv5z1OSP-nvtNEk+-w@mail.gmail.com>
- <643fbe8f-ba76-49b4-9fb7-403535fd5638@nop.hu>
- <CAL+tcoDqgQbs20xV34RFWDoE5YPXS-ne3FBns2n9t4eggx8LAQ@mail.gmail.com>
- <d8808206-0951-4512-91cb-58839ba9b8c4@nop.hu>
- <7e58078f-8355-4259-b929-c37abbc1f206@suse.de>
- <CAL+tcoDLr_soUTsZzFE+f-M0R83tvqx7tGjU+a5nBFSdtyP7Lw@mail.gmail.com>
- <fbeb5832-0051-4f78-bfdf-f1087bc98510@nop.hu>
- <CAL+tcoBVLi6sRJv4ZTA-O3FcACq0dOsUdKO92MuCCC0CZgLs-Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 10/10] selftests/bpf: add file dynptr tests
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
+ kernel-team@meta.com, memxor@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+References: <20251020222538.932915-1-mykyta.yatsenko5@gmail.com>
+ <20251020222538.932915-11-mykyta.yatsenko5@gmail.com>
+ <006a3fe8ca7072ac35e083ee070408d9a12eadfc.camel@gmail.com>
 Content-Language: en-US
-From: mc36 <csmate@nop.hu>
-In-Reply-To: <CAL+tcoBVLi6sRJv4ZTA-O3FcACq0dOsUdKO92MuCCC0CZgLs-Q@mail.gmail.com>
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <006a3fe8ca7072ac35e083ee070408d9a12eadfc.camel@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-hi,
-
-On 10/21/25 15:02, Jason Xing wrote:
->> if you're in a need for some more complicated xsk tests, just let me know, freertr
+On 10/21/25 01:45, Eduard Zingerman wrote:
+> On Mon, 2025-10-20 at 23:25 +0100, Mykyta Yatsenko wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
 >>
->> have a dataplane and a socat-alike tool with an xsk based packetio for a while....
-> 
-> Could you provide a link that points to what you just mentioned? I
-> believe more tests on veth are necessary.
-> 
-
-sure, but be warned, it's a huge rabbit-hole that you're jumping into.... :)
-
-so the homepage is freertr.org, it provides a daily vm builds...
-
-if you grab the qcow2, convert to raw and mount -o offset=1048576
-
-you can update the kernel and initrd, and you need to put the xdp
-
-bpf and elf libs as they're not part of that image... then umount it,
-
-and after the first boot (look at the serial console!), do the following:
-
-conf t
-int eth1
-  vrf forwarding host
-  ipv4 addr 10.0.2.222 255.255.255.0
-  exit
-ipv4 route host 0.0.0.0 0.0.0.0 10.0.2.2
-end
-write
-test hwext path /rtr/rtr- dataplane p4xsk
-reload cold
-y
-
-your xdp dataplath is activated, the vm kernel itself will be behind
-
-a veth pair, the dataplane will play with the qemu virtio-pci and the veth,
-
-and there will be an other veth for the dataplane-controlplane communication
-
-full of random non-ip frames, then
-
-ping 10.255.255.1 vrf host
-
-ping 10.0.2.2 vrf host
-
-will test for the fresh kernel and the outside word...
-
-you can exercise the above with a raw socket on the original image if you do "p4raw"
-
-instead of "p4xsk", and as we're on the bpf, it have an in-kernel forwarder called "p4xdp"....:)
-
-
-
-the source is at https://github.com/mc36/freeRtr , the misc/native folder
-
-contains the dataplane, and the socat-alike tools.... just ./c.sh to build them...
-
-
-afterwards you can create topologies with then like
-
-(1.1.1.1/30)ns1-----<veth1>------host-----<veth2>------ns2(1.1.1.2/30)
-
-to cross connect 2 interfaces on the host, just run 2 processes like
-
-xskInt.bin veth1 skb 1234 127.0.0.1 4321 127.0.0.1
-
-pcapInt.bin veth2 4321 127.0.0.1 1234 127.0.0.1
-
-there are other tools with uring, raw socket, mmaped raw socket
-
-and some others that are uninterested in the current topic imho....
-
-
-have a nice day,
-
-csaba
+>> Introducing selftests for validating file-backed dynptr works as
+>> expected.
+>>   * validate implementation supports dynptr slice and read operations
+>>   * validate destructors should be paired with initializers
+>>   * validate sleepable progs can page in.
+>>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+> [...]
+>
+>> diff --git a/tools/testing/selftests/bpf/progs/file_reader.c b/tools/testing/selftests/bpf/progs/file_reader.c
+>> new file mode 100644
+>> index 000000000000..695ef6392771
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/file_reader.c
+>> @@ -0,0 +1,178 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
+>> +
+>> +#include <vmlinux.h>
+>> +#include <string.h>
+>> +#include <stdbool.h>
+>> +#include <bpf/bpf_tracing.h>
+>> +#include "bpf_misc.h"
+>> +#include "errno.h"
+>> +
+>> +char _license[] SEC("license") = "GPL";
+>> +
+>> +struct {
+>> +	__uint(type, BPF_MAP_TYPE_ARRAY);
+>> +	__uint(max_entries, 1);
+>> +	__type(key, int);
+>> +	__type(value, struct elem);
+>> +} arrmap SEC(".maps");
+>> +
+>> +struct {
+>> +	__uint(type, BPF_MAP_TYPE_RINGBUF);
+>> +	__uint(max_entries, 10000000);
+>> +} ringbuf SEC(".maps");
+> The test case lgtm, but a question: will it be possible to use an
+> array map instead of a ringbuf?  Just to avoid the need to allocate
+> and discard the pointer.
+How do I use array map here? Should I set a map value to be a buffer of
+needed length (256KB) or use 1 byte value and 256K elements in the map?
+Honestly, both options seem a little awkward to me, but I'm not sure 
+maybe it is an
+expected way to get a big buffer.
+I like allocation/discard, as it guarantees that this temporary buffer 
+is local to the
+current func execution and we need to run non-trivial deinitialization 
+anyway.
+>
+> [...]
+>
+>> diff --git a/tools/testing/selftests/bpf/progs/file_reader_fail.c b/tools/testing/selftests/bpf/progs/file_reader_fail.c
+>> new file mode 100644
+>> index 000000000000..32fe28ed2439
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/file_reader_fail.c
+> Thank you for adding these.
+>
+> [...]
 
 
