@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-71571-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71572-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90F20BF6B1A
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 15:13:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B39BF6B41
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 15:14:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D1BDE504594
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 13:13:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE7E03B600B
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 13:13:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB16A335079;
-	Tue, 21 Oct 2025 13:12:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5885337BA2;
+	Tue, 21 Oct 2025 13:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fUQsp2X6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dOd8hT8P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E289D334C13
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 13:12:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43308335089
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 13:12:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761052372; cv=none; b=taHtlOOgk4W/Jg1iaC0VVSgMho2Ja5m0iasyBa1DBpKulLvQJqODri/MeJyGM3KGqAEwAK/PHhaoID3fg2P508nibovxfN29rFZlBTNIKZj9rTSNZQacboxyqsl/7hJnzX4VBqYgBJknIynEQqwdlCGVt1UJJloChk3uyJ1af8o=
+	t=1761052376; cv=none; b=dZWOAQPHFT2/8soQnpa4lhQYlwidLZpbroQDLXR7V7ci++fsYtLTyl4wX1TLylTaLMx1cCkWgOJUTkAGW/jJ7EFDGoNyROoVo1dGoTK0asa1qt5J4C3z8pRx446z0RIBkuHHWujDDTNEZb3g5EGN1z1JHQghx8i8uS8TWNxiQNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761052372; c=relaxed/simple;
-	bh=9D6o2seMmUJvsbN+DuC++XIRcRSaJe63DeDm/DK3IiI=;
+	s=arc-20240116; t=1761052376; c=relaxed/simple;
+	bh=XV21u0o1UkZ+p4SG4ifSb/1NsJU2+4TPwZ/wKgidg9c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Lbngjqkp3MNPQVdaWriIpFX3njsx2hVDwPHFNXBECjARdjspyPVVhHTEyuvmkyp4xMAFlTgM1/ji0DCID/dTkBVhz1R2e9g1PZ9CLSK1VKW03KpPVjXBQZqOy8ZIUbaukrf0KiliIx/kYEj9YRigVeKASh8WYbDHHJ/bkMvD024=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fUQsp2X6; arc=none smtp.client-ip=209.85.214.170
+	 MIME-Version; b=NSSKhIGkkDDB+Zi/dnRewhaVqRVLretHc3X6WQyBC85tMae4YyoFPqiqO+dUuFc6afKkwFrUvzppK4TckWHYfK6XaXalSkQ0cWueVPplbriuPm13P0C/qR35Mk7NsFkYrw4AemYUZC5zywNUUaQbyF+v/BW5PVjvypnBkG2Iu4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dOd8hT8P; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-279e2554c8fso51946035ad.2
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 06:12:49 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-27ee41e0798so88634575ad.1
+        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 06:12:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761052369; x=1761657169; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761052373; x=1761657173; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jCHpnqaCnmuQwlsQYxnl8jND0G0Yea1tAyo1BGydydQ=;
-        b=fUQsp2X6D8QJ+9Kxnq+YCeX94e+zPSmiv/FgnI9EKq6G4pGErHiQXrhgtyzck8kWhy
-         tz/jHs2wQ3HyQD+l21V2ie7J6huHFmU2pSfHfGnisGLARLsPVf7SrHuJfFU1MaHDrNb0
-         XymgEn2CRXNq/7eyoPyQxEe5ek0XCC2kprcqZaCB4+Hl4AjJzsu+qh5kRXeUFixVxCnl
-         x1qpuPzfuDQ2XHoEXxJ6d6dZAXtgGY0GPSysHauCDrpJJq45fwQsSyL8aDup5rbH31AM
-         Fl03Ckp1ONaM8Uflgw3KUQJXwEA6p0sXGg76MnX6qEHE0Vkv+gpyrBPCIleCzy0tn4nm
-         V1hw==
+        bh=4GWp0OdfmGSSPSvRPpG1fQFRxJdjlWQ03bu+3XaH0mY=;
+        b=dOd8hT8PjQN9mr095IScPRjpkydZo4/CEvbRYBQX0hmqEiWQrXRlhbGhswXC3K/VsO
+         sY6qZwAj18EdyKPZ8MJeqAex6323FgcMYk57MmatXFsO9DGbmaKepOl1B99SKj+G0gsD
+         W+2eblDGb5s0VZfF7Xyn0U8ulL4SI1BvtMQtWPlDKl9LSMgdgV2dGsH0D05jDQXZQh+Y
+         UgdSnZruzmTohOin45EinXrga0pMOmZ0OSrszvuKU595Y84oplbWOP7jelwRf2EkLW5o
+         IQAgQ7ZQw9nTlRVNK03phzIfWbQrlgssQtb45QRz5MFow3Zitkce4Rg/i9MQ89uYWPnf
+         gwLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761052369; x=1761657169;
+        d=1e100.net; s=20230601; t=1761052373; x=1761657173;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jCHpnqaCnmuQwlsQYxnl8jND0G0Yea1tAyo1BGydydQ=;
-        b=vlYIJHh1atc9H1h0z8dab8XbdQOLqHymUf/7/QXe7RkTswcpcP9Nj0GyQqjYKO0pAs
-         LxT58NMR97QWf8he2XopNN0I6BIF50+VmmnD4vSnx3pNlYzr40hs76IZBi2LAgkQIT0B
-         yuCV3pHr6GKhTyYdpibsO69T0GdoZ1d38sbeiH36cVByDKmOXNWRrhahDUTg06FpV6c5
-         KFfe/TIPu+0/h2Q5bYjFkehuJxZLzbZfSBe7iYOPk1GU0EjssNsRCV9gauoqDv+IGoUP
-         po7TQGChmHIjAIkvbvq9f+8hNR0bj9rKlAJsIjoEuyKVSdEaNljFO9DAKvsb/C535yUU
-         SIKw==
-X-Gm-Message-State: AOJu0Yx6iWhzeHT1FcaFqkeKx7om8x/1s+oDkyBNBg3hPe7Fa5hvnSHb
-	7ojIYKMlenJFr4WgLaSFIdRBBJG6EZ7fXAcTm6Fl3PJXHefzzjBhyW+J
-X-Gm-Gg: ASbGncvH7UxTfJh3CAczuywaoBHo0p49kt6HsfisH4bKGcLq7hsrBMB+VYddAKksARg
-	/hva+LAlWZ9jt0SclzHvLR8jQ8nrxzcPt4wVglUX9WS7Pro1j0GRjbxt7lSK4scGXtHQnSLdV99
-	bKRfL6qvDfdX31MphLmhSJUp4ob+OTfGt8Z7Ykq4XnZwieKy6xJuN6Q9PPT0oFYcruK0vWEKt3C
-	hnr07wzJC6P/gzhIbR85h5BxlOxfj/Wk9PACpEQUVkCDbrRii/u9wTVB0NzN+TltozjtJho+iuW
-	0lyP+n5pr8tOrQXZrHOSCJ5/paHai8lV/2GI8/3wFM/gF8w+P8xtIazdIrKaxxJTfKX2JX8qEKw
-	L6p6NeTINYyAIKq5zU2tKxKN2WlUh6O8EpnDKAaLXYj4FuDRzqC1dA0mwCzc2gOFyl3WoAF9nNT
-	ZlstVn+gq7gzctLe6KdmUvIL4RM3lJpd7uTQtbvgRIKv9o/U4=
-X-Google-Smtp-Source: AGHT+IEQCepTB3yxcvlRZKZP9O64GR2yI1M00dxCDtyyW8QGqS0i3xPN8kpiXo+wM2xE3qEX2u3PrQ==
-X-Received: by 2002:a17:903:19e6:b0:273:31fb:a872 with SMTP id d9443c01a7336-290c9c89c81mr205906715ad.6.1761052368967;
-        Tue, 21 Oct 2025 06:12:48 -0700 (PDT)
+        bh=4GWp0OdfmGSSPSvRPpG1fQFRxJdjlWQ03bu+3XaH0mY=;
+        b=EDxVzcmqgfchfkyJFjo+xfGoJwYCqbV/ol+ppi3I/+8SCwtaeDwDFggc12KpB7JYQY
+         Ke3G3JBFZU+LaBn/kbDaHHhHkRAFSI0Fwhf+0PB+d90NlcWg+lKKn9nLSJFda01yLqau
+         01/n9sZMAadgE38BafnDpR5VaM2wSQ2eXKQYkngiblyhmulA7h0G8ivSvRTWSqwrOxRC
+         g6NFwBjSHSQ8ZXVtaFTPpBMvSMY/e3Adkwd7ao1uf5DtoWCROpK2cHzzbWxlI9AxCbZ/
+         X0D8G+AnV4nRTzQT/Qdyzcb4rxszjbgef058N6qHZZSVKsjltMa4oi+hVxlnEHXC3AdO
+         YRBw==
+X-Gm-Message-State: AOJu0Ywv8Bg4npqbiRKi2Iyy13iJb0acugkYIukT49mMaaDyBkxs3Elr
+	Umdrh/d2cKosDhSmdfeopwKePIRXhBHlfKIvf/Aj1pnJ4lBxZ3WqbG+D
+X-Gm-Gg: ASbGncvW6D3vkBK5Rwvlx5T8ih7bqole/SHmgIQuu794v1GJnS2aVq+/4P1JI/FN6cH
+	37/wWdu0NGE1oXwRrOFNxHKDo6vHNztmBB4GdkWweAn69mbxfvO0N6VQjR7+I6haPBmdppHw6gA
+	sRvOm5vcBJgOz1trY2r4adx4cO7VSnnvl5shW/T20Sxv/OH9m/MB07ns7t2e3pnYHjUdqKZddYX
+	x7KWy2+xgFRmNvOU3te2nCH5E9LvGWODNgzVxUbhJx5rBQr3TEyQAWHhg9RwivFqfJxrRMo2QyA
+	27FFUJ8mpkGwBxyOEgPw204xwgYQwxuJX+td/t/BOU7F8dgqEVYyWKwmQKnFtOX4JNP+52XjZCY
+	cBeg5grOXLbqYz4pHlqRKTRYFn4f0SYtn7tC4QXaUgFDJ2aFX14JCLoXErns/4GhvWLx+1KNyfY
+	obWuU14chhJeFYQ40IefDf8b6p6nmjZHgXwwgYy+0pj+8mlRA=
+X-Google-Smtp-Source: AGHT+IHz7PPIn6WpcJnf0x8j9af9ACfhUzxhHdjR5t5W79Y7Grn/3zWUmVDFNk1/IgZQS3aQUA1F5A==
+X-Received: by 2002:a17:902:ccc8:b0:27e:f201:ec94 with SMTP id d9443c01a7336-290c9d1c446mr225901315ad.18.1761052373383;
+        Tue, 21 Oct 2025 06:12:53 -0700 (PDT)
 Received: from KERNELXING-MB0.tencent.com ([43.132.141.25])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471fd9ddsm109248175ad.89.2025.10.21.06.12.44
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471fd9ddsm109248175ad.89.2025.10.21.06.12.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Oct 2025 06:12:48 -0700 (PDT)
+        Tue, 21 Oct 2025 06:12:53 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -92,9 +92,9 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next v3 7/9] xsk: support batch xmit main logic
-Date: Tue, 21 Oct 2025 21:12:07 +0800
-Message-Id: <20251021131209.41491-8-kerneljasonxing@gmail.com>
+Subject: [PATCH net-next v3 8/9] xsk: support generic batch xmit in copy mode
+Date: Tue, 21 Oct 2025 21:12:08 +0800
+Message-Id: <20251021131209.41491-9-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20251021131209.41491-1-kerneljasonxing@gmail.com>
 References: <20251021131209.41491-1-kerneljasonxing@gmail.com>
@@ -108,141 +108,78 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-This function __xsk_generic_xmit_batch() is the core function in batches
-xmit, implement a batch version of __xsk_generic_xmit().
+- Move xs->mutex into xsk_generic_xmit to prevent race condition when
+  application manipulates generic_xmit_batch simultaneously.
+- Enable batch xmit eventually.
 
-The whole logic is divided into sections:
-1. check if we have enough available slots in tx ring and completion
-   ring.
-2. read descriptors from tx ring into pool->tx_descs in batches
-3. reserve enough slots in completion ring to avoid backpressure
-4. allocate and build skbs in batches
-5. send all the possible packets in batches at one time
+Make the whole feature work eventually.
 
 Signed-off-by: Jason Xing <kernelxing@tencent.com>
 ---
- net/xdp/xsk.c | 108 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 108 insertions(+)
+ net/xdp/xsk.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index d30090a8420f..1fa099653b7d 100644
+index 1fa099653b7d..3741071c68fd 100644
 --- a/net/xdp/xsk.c
 +++ b/net/xdp/xsk.c
-@@ -878,6 +878,114 @@ struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 	return ERR_PTR(err);
+@@ -891,8 +891,6 @@ static int __xsk_generic_xmit_batch(struct xdp_sock *xs)
+ 	struct sk_buff *skb;
+ 	int err = 0;
+ 
+-	mutex_lock(&xs->mutex);
+-
+ 	/* Since we dropped the RCU read lock, the socket state might have changed. */
+ 	if (unlikely(!xsk_is_bound(xs))) {
+ 		err = -ENXIO;
+@@ -982,21 +980,17 @@ static int __xsk_generic_xmit_batch(struct xdp_sock *xs)
+ 	if (sent_frame)
+ 		__xsk_tx_release(xs);
+ 
+-	mutex_unlock(&xs->mutex);
+ 	return err;
  }
  
-+static int __xsk_generic_xmit_batch(struct xdp_sock *xs)
-+{
-+	struct xsk_batch *batch = &xs->batch;
-+	struct xdp_desc *descs = batch->desc_cache;
-+	struct xsk_buff_pool *pool = xs->pool;
-+	u32 nb_pkts, nb_descs, cons_descs;
-+	struct net_device *dev = xs->dev;
-+	bool sent_frame = false;
-+	u32 max_batch, expected;
-+	u32 i = 0, max_budget;
-+	struct sk_buff *skb;
-+	int err = 0;
-+
-+	mutex_lock(&xs->mutex);
-+
-+	/* Since we dropped the RCU read lock, the socket state might have changed. */
-+	if (unlikely(!xsk_is_bound(xs))) {
-+		err = -ENXIO;
-+		goto out;
-+	}
-+
-+	if (xs->queue_id >= dev->real_num_tx_queues)
-+		goto out;
-+
-+	if (unlikely(!netif_running(dev) ||
-+		     !netif_carrier_ok(dev)))
-+		goto out;
-+
-+	max_budget = READ_ONCE(xs->max_tx_budget);
-+	max_batch = batch->generic_xmit_batch;
-+
-+	for (i = 0; i < max_budget; i += cons_descs) {
-+		expected = max_budget - i;
-+		expected = max_batch > expected ? expected : max_batch;
-+		nb_descs = xskq_cons_nb_entries(xs->tx, expected);
-+		if (!nb_descs)
-+			goto out;
-+
-+		/* This is the backpressure mechanism for the Tx path. Try to
-+		 * reserve space in the completion queue for all packets, but
-+		 * if there are fewer slots available, just process that many
-+		 * packets. This avoids having to implement any buffering in
-+		 * the Tx path.
-+		 */
-+		nb_descs = xskq_prod_nb_free(pool->cq, nb_descs);
-+		if (!nb_descs) {
-+			err = -EAGAIN;
-+			goto out;
-+		}
-+
-+		nb_pkts = 0;
-+		nb_descs = xskq_cons_read_desc_batch(xs->tx, pool, descs,
-+						     nb_descs, &nb_pkts);
-+		if (!nb_descs) {
-+			err = -EAGAIN;
-+			xs->tx->queue_empty_descs++;
-+			goto out;
-+		}
-+
-+		cons_descs = xsk_alloc_batch_skb(xs, nb_pkts, nb_descs, &err);
-+		/* Return 'nb_descs - cons_descs' number of descs to the
-+		 * pool if the batch allocation partially fails
-+		 */
-+		if (cons_descs < nb_descs) {
-+			xskq_cons_cancel_n(xs->tx, nb_descs - cons_descs);
-+			xsk_cq_cancel_locked(xs->pool, nb_descs - cons_descs);
-+		}
-+
-+		if (!skb_queue_empty(&batch->send_queue)) {
-+			int err_xmit;
-+
-+			err_xmit = xsk_direct_xmit_batch(xs, dev);
-+			if (err_xmit == NETDEV_TX_BUSY)
-+				err = -EAGAIN;
-+			else if (err_xmit == NET_XMIT_DROP)
-+				err = -EBUSY;
-+
-+			sent_frame = true;
-+			xs->skb = NULL;
-+		}
-+
-+		if (err)
-+			goto out;
-+	}
-+
-+	/* Maximum budget of descriptors have been consumed */
-+	err = -EAGAIN;
-+
-+	if (xskq_has_descs(xs->tx)) {
-+		if (xs->skb)
-+			xsk_drop_skb(xs->skb);
-+	}
-+
-+out:
-+	/* If send_queue has more pending skbs, we must to clear
-+	 * the rest of them.
-+	 */
-+	while ((skb = __skb_dequeue(&batch->send_queue)) != NULL) {
-+		xskq_cons_cancel_n(xs->tx, xsk_get_num_desc(skb));
-+		xsk_consume_skb(skb);
-+	}
-+	if (sent_frame)
-+		__xsk_tx_release(xs);
-+
-+	mutex_unlock(&xs->mutex);
-+	return err;
-+}
-+
- static int __xsk_generic_xmit(struct sock *sk)
+-static int __xsk_generic_xmit(struct sock *sk)
++static int __xsk_generic_xmit(struct xdp_sock *xs)
  {
- 	struct xdp_sock *xs = xdp_sk(sk);
+-	struct xdp_sock *xs = xdp_sk(sk);
+ 	bool sent_frame = false;
+ 	struct xdp_desc desc;
+ 	struct sk_buff *skb;
+ 	u32 max_batch;
+ 	int err = 0;
+ 
+-	mutex_lock(&xs->mutex);
+-
+ 	/* Since we dropped the RCU read lock, the socket state might have changed. */
+ 	if (unlikely(!xsk_is_bound(xs))) {
+ 		err = -ENXIO;
+@@ -1071,17 +1065,22 @@ static int __xsk_generic_xmit(struct sock *sk)
+ 	if (sent_frame)
+ 		__xsk_tx_release(xs);
+ 
+-	mutex_unlock(&xs->mutex);
+ 	return err;
+ }
+ 
+ static int xsk_generic_xmit(struct sock *sk)
+ {
++	struct xdp_sock *xs = xdp_sk(sk);
+ 	int ret;
+ 
+ 	/* Drop the RCU lock since the SKB path might sleep. */
+ 	rcu_read_unlock();
+-	ret = __xsk_generic_xmit(sk);
++	mutex_lock(&xs->mutex);
++	if (xs->batch.generic_xmit_batch)
++		ret = __xsk_generic_xmit_batch(xs);
++	else
++		ret = __xsk_generic_xmit(xs);
++	mutex_unlock(&xs->mutex);
+ 	/* Reaquire RCU lock before going into common code. */
+ 	rcu_read_lock();
+ 
 -- 
 2.41.3
 
