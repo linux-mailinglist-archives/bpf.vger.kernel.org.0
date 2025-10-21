@@ -1,101 +1,117 @@
-Return-Path: <bpf+bounces-71646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71647-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF78EBF9241
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 00:50:49 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C48BF9320
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 01:17:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC31519A6F44
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 22:51:13 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id F29FA4F9A57
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 23:17:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F6C32868BD;
-	Tue, 21 Oct 2025 22:46:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6A629E109;
+	Tue, 21 Oct 2025 23:17:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VkWa2lCS"
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="jwn/V6Ii"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7805121C16E
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 22:46:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from submarine.notk.org (submarine.notk.org [62.210.214.84])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC0D1B7F4;
+	Tue, 21 Oct 2025 23:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.210.214.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761086772; cv=none; b=cvK5ejFziwF0YOOReTwX2soGDpBl3UHogompC8S7zoHyIu8dCZrt6BkNhmWLh2XajxNpwd4+il+wsjF2uhLpYC+8ds9Q1AQMvYkUXt+Zxh7bZZ/wrsWjUQDzpqIwOs6iheXTDcpO5qOMqt81/lhBrY3AfmnEAiB7mqg+rMnbW/Q=
+	t=1761088643; cv=none; b=oBLZnSxzXjbtTlRTLdGNf9Hiz5AkGNnVxZW3sSWmvMbCxY1NJ8Tdwhuu16hhYIFg2xcFdFc/C/8rLFK6h7V1EYhPAXNrfp1DUdzE56KxYnO9Xjuk4ngM9ahpU4uacu7whHJVwGNPDh4Zss2xfCXaJwOcPm7xIVRO/n4VnTV846A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761086772; c=relaxed/simple;
-	bh=8Yi4wsLUGlj+LPpx1ZxCTrQv3laOqZ6rrsLk5GaysiM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YcukpyceCy3lmRMeYvbnCu/uLDSKqkFFqdigjXRd0IF8MyNwvqr/OgyAKw36OCk6x7Y49hiSFF5m6SgYqBHxA8fMpNBgZV7J3URjdZsLQvaRQYlkmrPkpCszMeSD6P/hGlRG0EBnzMiPHpmKfxYsTEZOL8xm9nKa5wFH/IbkDkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VkWa2lCS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F7C6C4CEFF
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 22:46:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761086772;
-	bh=8Yi4wsLUGlj+LPpx1ZxCTrQv3laOqZ6rrsLk5GaysiM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=VkWa2lCSvnjE17/tgS81wePAfHecfhNG11jPXXED2zGzhsqK11qdo5tM9HSyExuIu
-	 4GulW1WNX1wFBoWOK3HmLy/167BS1R0dVCp4lO4V7KbcokjawBgKd09v9zZ/VtGl9r
-	 ym4FWaEehbNfIBpNgTi1KghAYO6tWIT/nXxEW932SFrIms6GfR6UP99T5Xj9UXj7ef
-	 oryBeOSqy2zL1WtUIv5Ken1IngK3H/k2/zeuxa9+YGbo12vPZk+mPi7pIWSGvRzH2L
-	 Jhys/puKeY8EHi7zGtXPczkrdd0EjHzEb1oKgLJGOtfc+/Ddi16JJGfmuGfFeNzuVg
-	 DI9whryrlWG2g==
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-795be3a3644so51171986d6.0
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 15:46:12 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUZWtPpufi44i0+4XBdGgGKfLHMgB9ZoqFSbYV3gyMSkK4vdzYZbStTAh/PXO67kwr4J4w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQTk3fIKaFATR0D8CsB20whlVSleA+tstoSQ727iTqR3LM7qkC
-	SFE5ti18HqFSnuLzNkffMjRqSf2+oXoH62p/no7dD63gqmOlRbKUrTeh4gxVQ0qI3vQ+wTwp1Ew
-	EU6VWu7K7EiE8hVEK7eIy5r7QEPRfQHQ=
-X-Google-Smtp-Source: AGHT+IGbJZonn9gqagn6gyi7iThd5ydwZkXgp5pIwGP34sdgmQ0t/Jmt6mgI+v0Edn839t8DPTWZKlLDZX0KMS6lYes=
-X-Received: by 2002:a05:6214:1948:b0:87d:a372:fd3e with SMTP id
- 6a1803df08f44-87da3918502mr159614426d6.56.1761086771180; Tue, 21 Oct 2025
- 15:46:11 -0700 (PDT)
+	s=arc-20240116; t=1761088643; c=relaxed/simple;
+	bh=TA9Z2xjXmSPik79pd2nczCKbtFRPJOsg1yrzP0azcSQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VrCagGIEmLwrfOhzjRr76zcW/cmNm+iywbScWrzkMi1zEMO0w4MHKN6jA0kTR9ZGdek1NdimqikPJaqTb1N2RHaY/1EAiMLTZsPFTJOBFFUXKK6U/Em0m8YRIFzslz7OSvegJzwvoxO11JYw9nnjRy133VsNuuAnl2ZVgFzhLK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=jwn/V6Ii; arc=none smtp.client-ip=62.210.214.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: from gaia.codewreck.org (localhost [127.0.0.1])
+	by submarine.notk.org (Postfix) with ESMTPS id C8C9714C2D3;
+	Wed, 22 Oct 2025 01:17:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org;
+	s=2; t=1761088635;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WvdSOJwgRRDHWmISrEiJpRZTFo/MJ+TFfDsA9nuP/9Y=;
+	b=jwn/V6Ii+on6aH/1miOeIiq0m1L3XX0jqMPiKZ+zTpSjH5aD3yRayNilm/4UIMKjlYP7dF
+	zoOz+v0GrJ05h7I8SppFbiQpeyLssfgTHjZ8FtO4lk7MP8fykqRX2dg3lJEuE0ZEzUebif
+	gR+jgU0xci9klWEuZnGFi+sUYtmfviiKj3sUi2OYxwa5hB71B26VKaZyDKXrwCmYn10gZx
+	iJYmJmBuNb6+bFojVZ7vADN4auWx8tM5cGWPObQCeIlltxQ4/9HjGxUtLjySHbCfbaVsTV
+	Hf/r9S9LKG4XRQPNZwbLh/Pev+o8HLa0MPQO5APw926IK3BRKDTBJ7pQN1A5DA==
+Received: from localhost (gaia.codewreck.org [local])
+	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id 4ac624d5;
+	Tue, 21 Oct 2025 23:17:11 +0000 (UTC)
+Date: Wed, 22 Oct 2025 08:16:56 +0900
+From: Dominique Martinet <asmadeus@codewreck.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Song Liu <song@kernel.org>, Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Tingmao Wang <m@maowtm.org>, Alexei Starovoitov <ast@kernel.org>,
+	linux-kernel@vger.kernel.org, v9fs@lists.linux.dev,
+	bpf@vger.kernel.org
+Subject: [GIT PULL] 9p cache=mmap regression fix (for 6.18-rc3)
+Message-ID: <aPgUaFE1oUq8e1F-@codewreck.org>
+References: <20251022-mmap-regression-v1-1-980365ee524e@codewreck.org>
+ <CAHzjS_s5EzJkvTqi73XS_9bBsaGuXu1zQ4jOLgcpC9vmJ7FoaA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251022-mmap-regression-v1-1-980365ee524e@codewreck.org>
-In-Reply-To: <20251022-mmap-regression-v1-1-980365ee524e@codewreck.org>
-From: Song Liu <song@kernel.org>
-Date: Tue, 21 Oct 2025 15:46:00 -0700
-X-Gmail-Original-Message-ID: <CAHzjS_s5EzJkvTqi73XS_9bBsaGuXu1zQ4jOLgcpC9vmJ7FoaA@mail.gmail.com>
-X-Gm-Features: AS18NWAItVFqwhj3RByyGzRKQfVCYO_ER0xdHoP_gZ-DIxoEtoXTz3_jzN7jFVI
-Message-ID: <CAHzjS_s5EzJkvTqi73XS_9bBsaGuXu1zQ4jOLgcpC9vmJ7FoaA@mail.gmail.com>
-Subject: Re: [PATCH] fs/9p: don't use cached metadata in revalidate for cache=mmap
-To: asmadeus@codewreck.org
-Cc: Song Liu <song@kernel.org>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
-	Christian Schoenebeck <linux_oss@crudebyte.com>, Tingmao Wang <m@maowtm.org>, 
-	Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, v9fs@lists.linux.dev, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHzjS_s5EzJkvTqi73XS_9bBsaGuXu1zQ4jOLgcpC9vmJ7FoaA@mail.gmail.com>
 
-On Tue, Oct 21, 2025 at 3:10=E2=80=AFPM Dominique Martinet via B4 Relay
-<devnull+asmadeus.codewreck.org@kernel.org> wrote:
->
-> From: Dominique Martinet <asmadeus@codewreck.org>
-[...]
-> ---
->
-> Reported-by: Song Liu <song@kernel.org>
-> Link: https://lkml.kernel.org/r/CAHzjS_u_SYdt5=3D2gYO_dxzMKXzGMt-TfdE_ueo=
-wg-Hq5tRCAiw@mail.gmail.com
-> Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Link: https://lore.kernel.org/bpf/CAEf4BzZbCE4tLoDZyUf_aASpgAGFj75QMfSXX4=
-a4dLYixnOiLg@mail.gmail.com/
-> Fixes: 290434474c33 ("fs/9p: Refresh metadata in d_revalidate for uncache=
-d mode too")
-> Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+Hi Linus,
 
-I can confirm this fixes bpftrace and the reproducer in the VM.
+We had a regression with cache=mmap that impacted quite a few people so
+I'm sending a fix less than a couple of hours after making the commit.
 
-Tested-by: Song Liu <song@kernel.org>
+If it turns out there are other side effects I'd suggest just reverting
+commit 290434474c33 ("fs/9p: Refresh metadata in d_revalidate for
+uncached mode too") first, but the fix is rather minimal so I think it's
+ok to try falling forward -- let me know if you prefer a revert and I'll
+send one instead (there's a minor conflict)
 
-Thanks for the quick fix!
+Thanks to Sung Liu for the minimal reproducer and testing, as well as
+Alexei/Andrii and everyone else who looked at it.
 
-[...]
+
+
+The following changes since commit 211ddde0823f1442e4ad052a2f30f050145ccada:
+
+  Linux 6.18-rc2 (2025-10-19 15:19:16 -1000)
+
+are available in the Git repository at:
+
+  https://github.com/martinetd/linux tags/9p-for-6.18-rc3
+
+for you to fetch changes up to 2776e27d404684bc43acf023d7ca15255e96b3e3:
+
+  fs/9p: don't use cached metadata in revalidate for cache=mmap (2025-10-22 08:04:05 +0900)
+
+----------------------------------------------------------------
+Fix regression with cache=mmap in 6.18-rc1
+
+Will do some more testing as time allows but this fixes the immediate
+issue minimally (only impacts cache=mmap), and is therefore an
+improvement good enough to send right away.
+
+----------------------------------------------------------------
+Dominique Martinet (1):
+      fs/9p: don't use cached metadata in revalidate for cache=mmap
+
+ fs/9p/vfs_dentry.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+-- 
+Dominique Martinet | Asmadeus
 
