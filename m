@@ -1,192 +1,387 @@
-Return-Path: <bpf+bounces-71580-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71581-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 863C2BF72FD
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 16:55:36 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A795BF7420
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 17:10:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA79819C14E7
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 14:55:52 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C338C5067EC
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 15:07:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0880534029F;
-	Tue, 21 Oct 2025 14:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97DA5342CB8;
+	Tue, 21 Oct 2025 15:07:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lRWh79pn"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GlnTlnj0";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="sMo0E4T+";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="0hPcoWu6";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Tec1mRF4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B62D33FE29
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 14:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9C534216B
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 15:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761058504; cv=none; b=LF0LICYsCYh7ScN2m6v6iH69kduNxs/FWeTmc//pLerKzWKgRIYOnHQZnJzh1OpC49bjCk+HBiGl8BZzx4HciGxp5rTVGfW/IUPxrXdodgf0FEQoOnEb/PtKCvWdEGR0DnqJpApvxHnrfc9j3Xt3K3KH+iagUjfn1SGOiPXslRY=
+	t=1761059245; cv=none; b=BUaHxn7r5DzMyg4eXiFVy63AGBztQNGVc5wZCEKeBOs2sE907KWOK2RRdQMDCOlH+WQSOeyG85TgTOlV6N4xX7/NcVK8/qPSftM1FbVY+abMz9Y7Y/dQLjT79R7UCYyY8QROMQ+jOsWOvr1YhnyN70OHltaYyiYvIFdQIT94oRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761058504; c=relaxed/simple;
-	bh=a2r4gbx5pftkJohfSudPXPqpZK+2aqBiLvHpHvB1CDM=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=pvi9S1zoKfbQlFS4pNvylvQB9XzNW7DroR9u1whkrNeM6z9+6T8jM8m2BxhYuoqH4DUcPJLlSA7OtQsSdUYJZhKidcj50hSkwP1fZ9xy14YAbW4PSediQRK5Tr220yqySdbTQJy1mDQRT4MvsHnkf5MJFEECzhpCtCxftmM1z7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lRWh79pn; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-28a5b8b12a1so57454085ad.0
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 07:55:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761058502; x=1761663302; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=u8jKwwQTCYq7iHexXCekwfwrRuw8RhOd5w+D5wzskuo=;
-        b=lRWh79pnHFWHDaxcERTeeJJ9Yz192uStf22Fot2jFv2oLb+RBA+FBL7gi0ReDYkVrH
-         sIpZh0Rh4uWVe1R+F280PpUWUA2dkqKTd1CCSfsQdt5JVgoHZU2UdYvUNsB8+3h+HorF
-         FdAPzx7vv6TvHGFSi/7bNUefFC9lb5a3Bza3vgMAXlEtPfv6qFYHcoTyV5GnglmUNNfR
-         sGVixPnC+qnCXnmUsxI0aA6drNEZrZfs1vPwEf+eQMfoTwuTzHJTYy4TrKs/8KXxz52d
-         wsSg3bB2r6GWvPdUzEzgMc26+rsZVCW6Mk6KHuBnlQTUOYXPUJWG7DFTl5/SY9mZMfdY
-         9IGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761058502; x=1761663302;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=u8jKwwQTCYq7iHexXCekwfwrRuw8RhOd5w+D5wzskuo=;
-        b=VHnKqzEFepzoqkj0wM/vVidM+RxaLHwWVt21IYdPPKR/6HF2eQG7bx9Do/uHZ7uT9p
-         I9YB/656J+DN1tOwdIqZQDEVUBgzuu5lhQTt6mokAM9u5ur3PXiN1wwbYPknYGPw5Mks
-         EfGKdyvpD6I4FnVYUFdOYtWvR6e62N0Is6t8PmYkTZg13HaAMJO947kJn9fDad6y+C99
-         +esud6H8TgAY8CHP6xT+1SH7foD8S320kbgfOjjC7Ypqc6Yg/VSaN+IBlnLxvz4VICsu
-         dfnX4DeM6qQndJA5c8oNswlXsS7yvwhZm72Hs58EDP8CBWut41OveaATJJyOO59LPFK3
-         ElVA==
-X-Forwarded-Encrypted: i=1; AJvYcCUcbIZVfSpeWsK+OmEg36DCD0AfoYNrwWr0cV/4Lk/jOpD0Qmi0AmnImnWj1YXZReL8VcU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRJF8E/IirszdbvN+1MOweQyhVn9QvoW+UybrNzphjUpMrd7Of
-	QHZJPfnsVvwrDe4GwKSKsIqJfV6+bGFThMxN2xZAwsJ2jXJqvTp22m5OHQCE4SrG
-X-Gm-Gg: ASbGncuK/AePmlb7X0gsnIXk1nQFZNX4CAiu6c/vF0g6edmRD+HYjNUcG8Q+zDuxtAK
-	u4pdDW4TqC6pdS844fHb6BCiZiI098RPFD3wzis+tO0oDk5dlRkfogfTi2QxUhcz3OovXmNXwEb
-	G9zXhLtVD0JEpbFHcq25iZhswjwMw6/KyEsarxho7WYNLJHttO/aObgxr5OCFDn6YPd9ZDvDc7s
-	9urhwBrCNCdPLtdid2/8hXMw/v0bA0yf+jBhI4/BAfkVGWVkKfQc1vuspQJUPJ2y8s0wbRwxOEi
-	RCi5h+gSa7wjOAR2SiYqlz9jEqU4wCaG4DJKamxEwrPrII4KMZP4G0GmpE/+LRT8U6sMMjJDjqz
-	L4TDlA0QfGEFOZRoY5a1fECd0d4IrDroqvyvR4tuTR7JLQrdIMq1xdt+LiBl0746o90YlM6phYF
-	5Zs7qrgN9ke1T4Zj7dxmDr012O3Qk=
-X-Google-Smtp-Source: AGHT+IFD3ACZjLecX4pFX0ikhUD8ku4gWsoItiIAGHahNhewRSmWm38mI9KB9e/CDiUStUJdIm/msA==
-X-Received: by 2002:a17:902:e544:b0:249:37ad:ad03 with SMTP id d9443c01a7336-290cba4ebdamr212152465ad.34.1761058502303;
-        Tue, 21 Oct 2025 07:55:02 -0700 (PDT)
-Received: from ehlo.thunderbird.net ([2804:14d:128a:9455:6fde:1f5e:a99c:2ca0])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471fdceesm110734285ad.81.2025.10.21.07.55.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Oct 2025 07:55:01 -0700 (PDT)
-Date: Tue, 21 Oct 2025 11:54:56 -0300
-From: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-To: Alan Maguire <alan.maguire@oracle.com>, Jakub Sitnicki <jakub@cloudflare.com>,
- Yonghong Song <yonghong.song@linux.dev>
-CC: dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Matt Fleming <mfleming@cloudflare.com>, kernel-team@cloudflare.com
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_dwarves=5D_pahole=3A_Avoid_genera?=
- =?US-ASCII?Q?ting_artificial_inlined_functions_for_BTF?=
-User-Agent: Thunderbird for Android
-In-Reply-To: <caf3969f-658d-41f9-9de9-9ef3a3773ee8@oracle.com>
-References: <20251003173620.2892942-1-yonghong.song@linux.dev> <874irswi4a.fsf@cloudflare.com> <caf3969f-658d-41f9-9de9-9ef3a3773ee8@oracle.com>
-Message-ID: <54691577-8921-476D-B1BC-AFB9D258B7F5@gmail.com>
+	s=arc-20240116; t=1761059245; c=relaxed/simple;
+	bh=hixvYbrC0kxLMAUZVabKLa+06sPY4gK9W7EK7YKFeoo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PLJksu43zDu1CBavDc9tK2RDuKZzs9Umkov8Q1bxjFS3khvoxn0AlQE4abxs0WaeLMwe0eQPvk/KC7+CUhkvSZP6DHi67EmmTU1/EKT5ZsDG0ZYBzzavG8iHDh34EUsA6C3DoMJ7vmDXhALjTRK1Cy1OkcoWrUCnpMA/jY6d+Wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=GlnTlnj0; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=sMo0E4T+; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=0hPcoWu6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Tec1mRF4; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D82B81F38D;
+	Tue, 21 Oct 2025 15:07:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1761059236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ZFLuloM4HcoGuPMqKzXBmieGYZFizjS9WkGw+2k5t9o=;
+	b=GlnTlnj007QOycU4Nm5dJ22ZkfbWA6EJbunDOBuVBX4Okk+W1G/zweD2Kxyvkf0mnZ7ZNo
+	1UbtYmqsonEA48Ftd2saM2ewlGAqiBZi1QaxieSFvWveFgN2P1NJGW8NOy2FPqPgXS+fRE
+	a7B68cHgzoq4g78wlv5fcnVlrligXsA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1761059236;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ZFLuloM4HcoGuPMqKzXBmieGYZFizjS9WkGw+2k5t9o=;
+	b=sMo0E4T+ZgllN3ijUu9UNgp1ICrUIHKTzt4ubj2wfksA/5OWGn0hpC9d7NVC7PttYIdWe6
+	A+xVsb9IFg9G7EAQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1761059231; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ZFLuloM4HcoGuPMqKzXBmieGYZFizjS9WkGw+2k5t9o=;
+	b=0hPcoWu6b3vbV7/rzr/ziX/T3df+/+pysf1nfRx65FWa2GM2zWNK9cBKpvfSvlkeE4wLl4
+	t0ftKVW7T3d88rFRbwkLURqrO9rXPuOq35ZKgpRCGR0jcf4/2/IZTzrQloMqa9AoovhfpJ
+	DRu0M6AW1+9EQUnOo+pctiKSoHg08l8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1761059231;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ZFLuloM4HcoGuPMqKzXBmieGYZFizjS9WkGw+2k5t9o=;
+	b=Tec1mRF4jnKZgFwklkiqtjlcUSVJ96YlZDAFwlWTPMMtGzSHi/kNv7lvQZYK8aDY+3mxzt
+	LsmhNnfHzzdXncCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 57EE8139D2;
+	Tue, 21 Oct 2025 15:07:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id JxPCEp+h92igFQAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Tue, 21 Oct 2025 15:07:11 +0000
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+To: netdev@vger.kernel.org
+Cc: csmate@nop.hu,
+	kerneljasonxing@gmail.com,
+	maciej.fijalkowski@intel.com,
+	bjorn@kernel.org,
+	sdf@fomichev.me,
+	jonathan.lemon@gmail.com,
+	bpf@vger.kernel.org,
+	Fernando Fernandez Mancera <fmancera@suse.de>
+Subject: [PATCH net] xsk: avoid data corruption on cq descriptor number
+Date: Tue, 21 Oct 2025 17:06:56 +0200
+Message-ID: <20251021150656.6704-1-fmancera@suse.de>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[nop.hu,gmail.com,intel.com,kernel.org,fomichev.me,vger.kernel.org,suse.de];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.de:mid,imap1.dmz-prg2.suse.org:helo];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com]
+X-Spam-Flag: NO
+X-Spam-Score: -1.30
 
+Since commit 30f241fcf52a ("xsk: Fix immature cq descriptor
+production"), the descriptor number is store in skb control block and
+xsk_cq_submit_addr_locked() relies on it to put the umem addrs onto
+pool's completion queue.
 
+skb control block shouldn't be used for this purpose as after transmit
+xsk doesn't have control over it and other subsystems could use it. This
+leads to the following kernel panic due to a NULL pointer dereference.
 
-On October 21, 2025 11:32:08 AM GMT-03:00, Alan Maguire <alan=2Emaguire@or=
-acle=2Ecom> wrote:
->On 21/10/2025 13:32, Jakub Sitnicki wrote:
->> On Fri, Oct 03, 2025 at 10:36 AM -07, Yonghong Song wrote:
->>> But actually, one of function 'foo' is marked as DW_INL_inlined which =
-means
->>> we should not treat it as an elf funciton=2E The patch fixed this issu=
-e
->>> by filtering subprograms if the corresponding function__inlined() is t=
-rue=2E
->>=20
->> I have a semi-related question: are there any plans for BTF to indicate
->> when a function has been inlined? Not necessarily where it has been
->> inlined, just that it has, somewhere, at least once=2E
->>=20
->> When tracing with bpftrace or perf without a vmlinux available, it's
->> easy to assume you're tracing all calls to a function, when in fact som=
-e
->> calls may be inlined within the same compilation unit=2E
->>=20
->> A good example is tracing the rtnl_lock - there are multiple inlined
->> copies, but neither bpftrace nor perf can warn you about it when debug
->> info is absent=2E
->>=20
->
->hi Jakub, see the RFC series at [1]=2E The goal is to represent inline
->sites in BTF such that we can see when a function has been partially or
->fully inlined, or indeed when optimizations have been applied to its ,
->parameters which result in it being unsafe for fprobe()ing - in these
->cases we skip representing such functions in BTF today=2E
+ BUG: kernel NULL pointer dereference, address: 0000000000000000
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: Oops: 0000 [#1] SMP NOPTI
+ CPU: 2 UID: 1 PID: 927 Comm: p4xsk.bin Not tainted 6.16.12+deb14-cloud-amd64 #1 PREEMPT(lazy)  Debian 6.16.12-1
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.17.0-debian-1.17.0-1 04/01/2014
+ RIP: 0010:xsk_destruct_skb+0xd0/0x180
+ [...]
+ Call Trace:
+  <IRQ>
+  ? napi_complete_done+0x7a/0x1a0
+  ip_rcv_core+0x1bb/0x340
+  ip_rcv+0x30/0x1f0
+  __netif_receive_skb_one_core+0x85/0xa0
+  process_backlog+0x87/0x130
+  __napi_poll+0x28/0x180
+  net_rx_action+0x339/0x420
+  handle_softirqs+0xdc/0x320
+  ? handle_edge_irq+0x90/0x1e0
+  do_softirq.part.0+0x3b/0x60
+  </IRQ>
+  <TASK>
+  __local_bh_enable_ip+0x60/0x70
+  __dev_direct_xmit+0x14e/0x1f0
+  __xsk_generic_xmit+0x482/0xb70
+  ? __remove_hrtimer+0x41/0xa0
+  ? __xsk_generic_xmit+0x51/0xb70
+  ? _raw_spin_unlock_irqrestore+0xe/0x40
+  xsk_sendmsg+0xda/0x1c0
+  __sys_sendto+0x1ee/0x200
+  __x64_sys_sendto+0x24/0x30
+  do_syscall_64+0x84/0x2f0
+  ? __pfx_pollwake+0x10/0x10
+  ? __rseq_handle_notify_resume+0xad/0x4c0
+  ? restore_fpregs_from_fpstate+0x3c/0x90
+  ? switch_fpu_return+0x5b/0xe0
+  ? do_syscall_64+0x204/0x2f0
+  ? do_syscall_64+0x204/0x2f0
+  ? do_syscall_64+0x204/0x2f0
+  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+  </TASK>
+ [...]
+ Kernel panic - not syncing: Fatal exception in interrupt
+ Kernel Offset: 0x1c000000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
 
-I wonder if at least telling the user that there are such optimized cases =
-around line N on function F, etc it could help with workarounds while traci=
-ng=2E
+The approach proposed store the first address also in the xsk_addr_node
+along with the number of descriptors. The head xsk_addr_node is
+referenced by skb_shinfo(skb)->destructor_arg. The rest of the fragments
+store the address on the list.
 
-I=2Ee=2E represent it in BTF and let tools decide it's unsafe and use it j=
-ust for these warnings=2E
+This is less efficient as the kmem_cache must be initialized even if a
+single fragment is received and also 4 bytes are wasted when storing
+each address.
 
->In the case of inlined/optimized functions the proposal is to represent
->them via BTF location data; not all of these locations will have all
->parameters available due to optimization etc=2E However even absent that
->it is still valuable to know such inlining has occurred as you say=2E
+Fixes: 30f241fcf52a ("xsk: Fix immature cq descriptor production")
+Closes: https://lore.kernel.org/netdev/0435b904-f44f-48f8-afb0-68868474bf1c@nop.hu/
+Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
+---
+Note: Please notice I am not an XDP expert so I cannot tell if this
+would cause a performance regression, advice is welcomed.
+---
+ net/xdp/xsk.c | 57 ++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 34 insertions(+), 23 deletions(-)
 
-Oh well, that's what you propose 8-)
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 7b0c68a70888..203934aeade6 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -37,18 +37,14 @@
+ #define MAX_PER_SOCKET_BUDGET 32
+ 
+ struct xsk_addr_node {
++	u32 num_descs;
+ 	u64 addr;
+ 	struct list_head addr_node;
+ };
+ 
+-struct xsk_addr_head {
+-	u32 num_descs;
+-	struct list_head addrs_list;
+-};
+-
+ static struct kmem_cache *xsk_tx_generic_cache;
+ 
+-#define XSKCB(skb) ((struct xsk_addr_head *)((skb)->cb))
++#define XSK_TX_HEAD(skb) ((struct xsk_addr_node *)((skb_shinfo(skb)->destructor_arg)))
+ 
+ void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
+ {
+@@ -569,12 +565,11 @@ static void xsk_cq_submit_addr_locked(struct xsk_buff_pool *pool,
+ 	spin_lock_irqsave(&pool->cq_lock, flags);
+ 	idx = xskq_get_prod(pool->cq);
+ 
+-	xskq_prod_write_addr(pool->cq, idx,
+-			     (u64)(uintptr_t)skb_shinfo(skb)->destructor_arg);
++	xskq_prod_write_addr(pool->cq, idx, XSK_TX_HEAD(skb)->addr);
+ 	descs_processed++;
+ 
+-	if (unlikely(XSKCB(skb)->num_descs > 1)) {
+-		list_for_each_entry_safe(pos, tmp, &XSKCB(skb)->addrs_list, addr_node) {
++	if (unlikely(XSK_TX_HEAD(skb)->num_descs > 1)) {
++		list_for_each_entry_safe(pos, tmp, &XSK_TX_HEAD(skb)->addr_node, addr_node) {
+ 			xskq_prod_write_addr(pool->cq, idx + descs_processed,
+ 					     pos->addr);
+ 			descs_processed++;
+@@ -582,6 +577,7 @@ static void xsk_cq_submit_addr_locked(struct xsk_buff_pool *pool,
+ 			kmem_cache_free(xsk_tx_generic_cache, pos);
+ 		}
+ 	}
++	kmem_cache_free(xsk_tx_generic_cache, XSK_TX_HEAD(skb));
+ 	xskq_prod_submit_n(pool->cq, descs_processed);
+ 	spin_unlock_irqrestore(&pool->cq_lock, flags);
+ }
+@@ -597,12 +593,12 @@ static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
+ 
+ static void xsk_inc_num_desc(struct sk_buff *skb)
+ {
+-	XSKCB(skb)->num_descs++;
++	XSK_TX_HEAD(skb)->num_descs++;
+ }
+ 
+ static u32 xsk_get_num_desc(struct sk_buff *skb)
+ {
+-	return XSKCB(skb)->num_descs;
++	return XSK_TX_HEAD(skb)->num_descs;
+ }
+ 
+ static void xsk_destruct_skb(struct sk_buff *skb)
+@@ -619,16 +615,16 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+ }
+ 
+ static void xsk_skb_init_misc(struct sk_buff *skb, struct xdp_sock *xs,
+-			      u64 addr)
++			      struct xsk_addr_node *head, u64 addr)
+ {
+-	BUILD_BUG_ON(sizeof(struct xsk_addr_head) > sizeof(skb->cb));
+-	INIT_LIST_HEAD(&XSKCB(skb)->addrs_list);
++	INIT_LIST_HEAD(&head->addr_node);
++	head->addr = addr;
++	head->num_descs = 0;
+ 	skb->dev = xs->dev;
+ 	skb->priority = READ_ONCE(xs->sk.sk_priority);
+ 	skb->mark = READ_ONCE(xs->sk.sk_mark);
+-	XSKCB(skb)->num_descs = 0;
+ 	skb->destructor = xsk_destruct_skb;
+-	skb_shinfo(skb)->destructor_arg = (void *)(uintptr_t)addr;
++	skb_shinfo(skb)->destructor_arg = (void *)head;
+ }
+ 
+ static void xsk_consume_skb(struct sk_buff *skb)
+@@ -638,11 +634,12 @@ static void xsk_consume_skb(struct sk_buff *skb)
+ 	struct xsk_addr_node *pos, *tmp;
+ 
+ 	if (unlikely(num_descs > 1)) {
+-		list_for_each_entry_safe(pos, tmp, &XSKCB(skb)->addrs_list, addr_node) {
++		list_for_each_entry_safe(pos, tmp, &XSK_TX_HEAD(skb)->addr_node, addr_node) {
+ 			list_del(&pos->addr_node);
+ 			kmem_cache_free(xsk_tx_generic_cache, pos);
+ 		}
+ 	}
++	kmem_cache_free(xsk_tx_generic_cache, XSK_TX_HEAD(skb));
+ 
+ 	skb->destructor = sock_wfree;
+ 	xsk_cq_cancel_locked(xs->pool, num_descs);
+@@ -712,6 +709,8 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ 	buffer = xsk_buff_raw_get_data(pool, addr);
+ 
+ 	if (!skb) {
++		struct xsk_addr_node *head_addr;
++
+ 		hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
+ 
+ 		skb = sock_alloc_send_skb(&xs->sk, hr, 1, &err);
+@@ -720,7 +719,11 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ 
+ 		skb_reserve(skb, hr);
+ 
+-		xsk_skb_init_misc(skb, xs, desc->addr);
++		head_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
++		if (!head_addr)
++			return ERR_PTR(-ENOMEM);
++
++		xsk_skb_init_misc(skb, xs, head_addr, desc->addr);
+ 		if (desc->options & XDP_TX_METADATA) {
+ 			err = xsk_skb_metadata(skb, buffer, desc, pool, hr);
+ 			if (unlikely(err))
+@@ -736,7 +739,7 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ 		 * would be dropped, which implies freeing all list elements
+ 		 */
+ 		xsk_addr->addr = desc->addr;
+-		list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
++		list_add_tail(&xsk_addr->addr_node, &XSK_TX_HEAD(skb)->addr_node);
+ 	}
+ 
+ 	len = desc->len;
+@@ -774,6 +777,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ {
+ 	struct net_device *dev = xs->dev;
+ 	struct sk_buff *skb = xs->skb;
++	struct page *page;
+ 	int err;
+ 
+ 	if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
+@@ -791,6 +795,8 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 		len = desc->len;
+ 
+ 		if (!skb) {
++			struct xsk_addr_node *head_addr;
++
+ 			hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
+ 			tr = dev->needed_tailroom;
+ 			skb = sock_alloc_send_skb(&xs->sk, hr + len + tr, 1, &err);
+@@ -804,7 +810,13 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 			if (unlikely(err))
+ 				goto free_err;
+ 
+-			xsk_skb_init_misc(skb, xs, desc->addr);
++			head_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
++			if (!head_addr) {
++				__free_page(page);
++				err = -ENOMEM;
++				goto free_err;
++			}
++			xsk_skb_init_misc(skb, xs, head_addr, desc->addr);
+ 			if (desc->options & XDP_TX_METADATA) {
+ 				err = xsk_skb_metadata(skb, buffer, desc,
+ 						       xs->pool, hr);
+@@ -814,7 +826,6 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 		} else {
+ 			int nr_frags = skb_shinfo(skb)->nr_frags;
+ 			struct xsk_addr_node *xsk_addr;
+-			struct page *page;
+ 			u8 *vaddr;
+ 
+ 			if (unlikely(nr_frags == (MAX_SKB_FRAGS - 1) && xp_mb_desc(desc))) {
+@@ -843,7 +854,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 			refcount_add(PAGE_SIZE, &xs->sk.sk_wmem_alloc);
+ 
+ 			xsk_addr->addr = desc->addr;
+-			list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
++			list_add_tail(&xsk_addr->addr_node, &XSK_TX_HEAD(skb)->addr_node);
+ 		}
+ 	}
+ 
+-- 
+2.51.0
 
->
->[1]
->https://lore=2Ekernel=2Eorg/bpf/20251008173512=2E731801-1-alan=2Emaguire@=
-oracle=2Ecom/
->
->> $ sudo perf probe -a rtnl_lock
->> Added new event:
->>   probe:rtnl_lock      (on rtnl_lock)
->> =20
->> You can now use it in all perf tools, such as:
->> =20
->>         perf record -e probe:rtnl_lock -aR sleep 1
->> =20
->> $ sudo apt install linux-image-`uname -r`-dbg
->> Installing:
->>   linux-image-6=2E12=2E53-cloudflare-2025=2E10=2E4-dbg
->> [=E2=80=A6]
->> $ sudo perf probe -d rtnl_lock
->> Removed event: probe:rtnl_lock
->> $ sudo perf probe -a rtnl_lock
->> Added new events:
->>   probe:rtnl_lock      (on rtnl_lock)
->>   probe:rtnl_lock      (on rtnl_lock)
->>   probe:rtnl_lock      (on rtnl_lock)
->>   probe:rtnl_lock      (on rtnl_lock)
->>   probe:rtnl_lock      (on rtnl_lock)
->>   probe:rtnl_lock      (on rtnl_lock)
->>   probe:rtnl_lock      (on rtnl_lock)
->>   probe:rtnl_lock      (on rtnl_lock)
->>   probe:rtnl_lock      (on rtnl_lock)
->>   probe:rtnl_lock      (on rtnl_lock)
->>   probe:rtnl_lock      (on rtnl_lock)
->> =20
->> You can now use it in all perf tools, such as:
->> =20
->>         perf record -e probe:rtnl_lock -aR sleep 1
->> =20
->> $
->>=20
->> Thanks,
->> -jkbs
->
-
-- Arnaldo 
 
