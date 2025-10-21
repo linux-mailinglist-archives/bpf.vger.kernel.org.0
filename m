@@ -1,256 +1,127 @@
-Return-Path: <bpf+bounces-71588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71589-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AC05BF795B
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 18:08:15 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BD3DBF7A28
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 18:23:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AA23421613
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 16:07:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 175734EFD79
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 16:23:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 058FE345CDC;
-	Tue, 21 Oct 2025 16:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 643B73491D0;
+	Tue, 21 Oct 2025 16:23:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w5uYFMHO"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="PIzC92+N"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817B233033B;
-	Tue, 21 Oct 2025 16:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75FDB342C95
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 16:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761062845; cv=none; b=agcXU1Kts1p+GoqnZUSeNLkycprOTlmfe15z8ZfnLaAwVLptfgJfqVqquttQ6ikCZXVfexOibqUMDn1dY9UeakQMwKKgo8R9aCL0iSVTJncIBhDWKCjV92df5i5h9TnGd4Fn435N2kiuka1jzmwk0F0pNqIPRhzylUYaBxde6sY=
+	t=1761063790; cv=none; b=naJOkcqOrN5mHvr6uc2Cfu1fQCamvy8FqDzeBgtwAzo62i8S92b/zZC2bYngxCMS5yQ6Ulm42MIinonqoa4Nn6035RUekcuM+02QbH6XKd8q6hRgeJC8TAio7epLQZ2XrbuJJQnXsEY9ub9XilcErMvlvnixj7aRTps4wy3Sht8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761062845; c=relaxed/simple;
-	bh=iY9Yb0Gn2Gx4LmXHIlKFgLujqTljqZiHXTOJwPqFXek=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YAx5H0usOuh+IwNGmOiPbHEqF4pCeWZDJLSTND9IX9lHjTbuMxQ2Zs8oIF4m4JTDP3NIub9+mFXZIR1i8Ylr4c3vIu3p2hkJLMsDhLKStL9fjAs9Y5bqNp69cN2vbDKcSYGxYUd3nIlKgULlLkuyGU3FC+9CBX6Tn8rEyEP+hFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=w5uYFMHO; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761062840;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f/ceOYFMHO8rupmeTuNBdZk0i8ibDpq4hA/Mx8osgH0=;
-	b=w5uYFMHOTKmlHbxaOYhCWyqkI8cAKAvY99nTXx8aZW5iJ/KTAY7VpzsqKirs4UX3yWYWkp
-	K0sWgibi7IsLsDTyKluOg0gORACCMrBNTFlgnSsG9dYOH/TpfW4h7awVXUQTSqBHE4FVtM
-	oksRDUvsZfQBNN0QrhyDiDi47xSoDp8=
-From: Tao Chen <chen.dylane@linux.dev>
-To: peterz@infradead.org,
-	mingo@redhat.com,
-	acme@kernel.org,
-	namhyung@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	kan.liang@linux.intel.com,
-	song@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com
-Cc: linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v4 2/2] bpf: Use per-cpu BPF callchain entry to save callchain
-Date: Wed, 22 Oct 2025 00:06:33 +0800
-Message-ID: <20251021160633.3046301-3-chen.dylane@linux.dev>
-In-Reply-To: <20251021160633.3046301-1-chen.dylane@linux.dev>
-References: <20251021160633.3046301-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1761063790; c=relaxed/simple;
+	bh=ioFG2QaGQxwz5gnpyd7wKdUTHVMhLAfWcPTQKhiPDj8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HfvmpX2YktuJ0Qc1ayPms5sr2PjsxRcu1l2nUt1nAvpkqSe+qBGrnOKdsdq5KEJyPhQlX852sHNYgrKg0Goa64ONub5h4jaTc3idmZm2XxbmFdXsFdtmCrxYEq5Bo6ZVl1SH3O8eCb2CcncInhDs2REjYgSpASWUWKvTztkmlbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=PIzC92+N; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-330b4739538so5444117a91.3
+        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 09:23:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1761063788; x=1761668588; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ko+Kc8EOpLWbTMFL12IdldJO27v4hHa56bAgcQaqoNs=;
+        b=PIzC92+NAcRrYYvOCcZ5zh179YtDgPKe7MKBk7CoapOyIg4BBBAzBlR/LJlFyxb0Mq
+         nYW5837NRRpXxTIEPbJBngIrWSHtNcWwYBsYWunuEGNLgJfHzqdaVv9qqb+45pnLxCNi
+         K26JiyGTv6humd543ucN0thQnxaZ0r1MhKH+BLqmJ9T8jFVofv3yRPprn4pYc4sBAQKw
+         NcREaUPtuPZnWOibV/FM3XuFU7NSwPs2xlt1D33o0ahRZGhz8wJtmPrAGh5KTzAmeSet
+         RUkEdZkCrhKSYYxr4AOckza20b52/4uJqoj5kV+AKl3a1l2vSM3wqZ1YyxChjjT5Cdpm
+         4NuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761063788; x=1761668588;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ko+Kc8EOpLWbTMFL12IdldJO27v4hHa56bAgcQaqoNs=;
+        b=YKhxTsCteqk+WVPEbUKmXGgE4h7oVPFA0YTiziqftz1BYx96eT6kMuHs0wzUYP93JZ
+         KNh+aOykyEp2mnlOcsygr0kOtGqChiT3f+Z5AnRm3YnOdn3+/pdoi00lrmj8yZAVVuwp
+         awfNDXWHuzeszJnKxWbST6phRqXhqrXIt1DmlE3AqdF50boLpTnKy2OpvrpPWmKrDOe2
+         mCJSHyyLoceEARd8MfiVQMJedmUSrpcXGZUgVZ1aIFho5Lfkbjw3yUqeI71A7hu01VkP
+         DEX47RGEe1WFdNuqH3IdCb/e6zFzXkbTp/wiR1xoqUIf3WgEmBjINN428cQd1suTSVSp
+         cJmg==
+X-Forwarded-Encrypted: i=1; AJvYcCWqcX3XdpTTu0oj51j1kOx4+O0XX+xe9PkdFCp1VvjDyn/3CmW+VGv5ux4/EqFs0AnV/I4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzroI+2dsD7Ua+h+Dyig0kVH8t98CsjN6BX2wc5A5qRrFxlrKjF
+	r3C1qzkx41oSLEPRLtI3YKroQtywY+bn4KcbPnDgWmyVkR/dNpbZEq2ZaT9RI4xGOexTAz6Uq75
+	V+lCjns0gyBU/8p/CIx9fFfopUWeQlIpp8WMMD7X27K3yxMO1ZpZsfw==
+X-Gm-Gg: ASbGncu1LGxoc9xOklN4J7KtrLwk9f4uqGV7AhivBN1XyXhah/tiVip5+b/rzTh8Sx3
+	rrlR2hTSY9SMpkb5bv3bQYtgQ7oNzYc+x8rP6fKYNt3rN9eNq5Kxk4yV78bdL9gixLFI3W2ff4j
+	GE3YWndQAVGc90zYIIVR+Zpd7mv86cg7oc0aozfX0+0ZKNfOIc/kNgXKJkk/OM2s1b2/uI08Tj9
+	Bi/AtRqCMBNXqOfKaAoohM6KTihie84zEt6mgGiOijE1A5JesGPOOcP7l3KUyNgdJrL7ek=
+X-Google-Smtp-Source: AGHT+IGt4Lzi4mhp1MfH5jF+IcHXWUOccQlOFd9tFKs5S9MlSna+BmR7SWJIKFfxQoQ0qSxgAqL9kA7McL4N2dVYx68=
+X-Received: by 2002:a17:90b:180e:b0:32e:73fd:81a3 with SMTP id
+ 98e67ed59e1d1-33bcf93dfbdmr27922336a91.33.1761063787525; Tue, 21 Oct 2025
+ 09:23:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20251021122758.2659513-1-omosnace@redhat.com>
+In-Reply-To: <20251021122758.2659513-1-omosnace@redhat.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Tue, 21 Oct 2025 12:22:56 -0400
+X-Gm-Features: AS18NWB5lQV6vOb0FNBV3MhIGbNUH6yZO81tIZnwRE8GRrrg4_dPsp5GczFYtAw
+Message-ID: <CAHC9VhTf51hZ=r=hNpeHGU3FBAC-Y3yB6FmsQq_hKq4WUihRBQ@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/bpf: do not audit capability check in do_jit()
+To: Ondrej Mosnacek <omosnace@redhat.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org, 
+	selinux@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	"Serge E . Hallyn" <serge@hallyn.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As Alexei noted, get_perf_callchain() return values may be reused
-if a task is preempted after the BPF program enters migrate disable
-mode. Drawing on the per-cpu design of bpf_bprintf_buffers,
-per-cpu BPF callchain entry is used here.
+On Tue, Oct 21, 2025 at 8:28=E2=80=AFAM Ondrej Mosnacek <omosnace@redhat.co=
+m> wrote:
+>
+> The failure of this check only results in a security mitigation being
+> applied, slightly affecting performance of the compiled BPF program. It
+> doesn't result in a failed syscall, an thus auditing a failed LSM
+> permission check for it is unwanted. For example with SELinux, it causes
+> a denial to be reported for confined processes running as root, which
+> tends to be flagged as a problem to be fixed in the policy. Yet
+> dontauditing or allowing CAP_SYS_ADMIN to the domain may not be
+> desirable, as it would allow/silence also other checks - either going
+> against the principle of least privilege or making debugging potentially
+> harder.
+>
+> Fix it by changing it from capable() to ns_capable_noaudit(), which
+> instructs the LSMs to not audit the resulting denials.
+>
+> Link: https://bugzilla.redhat.com/show_bug.cgi?id=3D2369326
+> Fixes: d4e89d212d40 ("x86/bpf: Call branch history clearing sequence on e=
+xit")
+> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+> ---
+>
+> v1: https://lore.kernel.org/selinux/20250806143105.915748-1-omosnace@redh=
+at.com/
+> Changes in v2:
+>  - just silence the audit records instead of switching to bpf_capable()
+>
+>  arch/x86/net/bpf_jit_comp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- kernel/bpf/stackmap.c | 98 ++++++++++++++++++++++++++++++++-----------
- 1 file changed, 73 insertions(+), 25 deletions(-)
+Reviewed-by: Paul Moore <paul@paul-moore.com>
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 94e46b7f340..97028d39df1 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -31,6 +31,52 @@ struct bpf_stack_map {
- 	struct stack_map_bucket *buckets[] __counted_by(n_buckets);
- };
- 
-+struct bpf_perf_callchain_entry {
-+	u64 nr;
-+	u64 ip[PERF_MAX_STACK_DEPTH];
-+};
-+
-+#define MAX_PERF_CALLCHAIN_PREEMPT 3
-+static DEFINE_PER_CPU(struct bpf_perf_callchain_entry[MAX_PERF_CALLCHAIN_PREEMPT],
-+		      bpf_perf_callchain_entries);
-+static DEFINE_PER_CPU(int, bpf_perf_callchain_preempt_cnt);
-+
-+static int bpf_get_perf_callchain_or_entry(struct perf_callchain_entry **entry,
-+					   struct pt_regs *regs, bool kernel,
-+					   bool user, u32 max_stack, bool crosstack,
-+					   bool add_mark, bool get_callchain)
-+{
-+	struct bpf_perf_callchain_entry *bpf_entry;
-+	struct perf_callchain_entry *perf_entry;
-+	int preempt_cnt;
-+
-+	preempt_cnt = this_cpu_inc_return(bpf_perf_callchain_preempt_cnt);
-+	if (WARN_ON_ONCE(preempt_cnt > MAX_PERF_CALLCHAIN_PREEMPT)) {
-+		this_cpu_dec(bpf_perf_callchain_preempt_cnt);
-+		return -EBUSY;
-+	}
-+
-+	bpf_entry = this_cpu_ptr(&bpf_perf_callchain_entries[preempt_cnt - 1]);
-+	if (!get_callchain) {
-+		*entry = (struct perf_callchain_entry *)bpf_entry;
-+		return 0;
-+	}
-+
-+	perf_entry = get_perf_callchain(regs, (struct perf_callchain_entry *)bpf_entry,
-+					kernel, user, max_stack,
-+					crosstack, add_mark);
-+	*entry = perf_entry;
-+
-+	return 0;
-+}
-+
-+static void bpf_put_perf_callchain(void)
-+{
-+	if (WARN_ON_ONCE(this_cpu_read(bpf_perf_callchain_preempt_cnt) == 0))
-+		return;
-+	this_cpu_dec(bpf_perf_callchain_preempt_cnt);
-+}
-+
- static inline bool stack_map_use_build_id(struct bpf_map *map)
- {
- 	return (map->map_flags & BPF_F_STACK_BUILD_ID);
-@@ -192,11 +238,11 @@ get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
- {
- #ifdef CONFIG_STACKTRACE
- 	struct perf_callchain_entry *entry;
--	int rctx;
--
--	entry = get_callchain_entry(&rctx);
-+	int ret;
- 
--	if (!entry)
-+	ret = bpf_get_perf_callchain_or_entry(&entry, NULL, false, false, 0, false, false,
-+					      false);
-+	if (ret)
- 		return NULL;
- 
- 	entry->nr = stack_trace_save_tsk(task, (unsigned long *)entry->ip,
-@@ -216,8 +262,6 @@ get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
- 			to[i] = (u64)(from[i]);
- 	}
- 
--	put_callchain_entry(rctx);
--
- 	return entry;
- #else /* CONFIG_STACKTRACE */
- 	return NULL;
-@@ -305,6 +349,7 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
- 	bool user = flags & BPF_F_USER_STACK;
- 	struct perf_callchain_entry *trace;
- 	bool kernel = !user;
-+	int err;
- 
- 	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
- 			       BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
-@@ -314,14 +359,15 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
- 	if (max_depth > sysctl_perf_event_max_stack)
- 		max_depth = sysctl_perf_event_max_stack;
- 
--	trace = get_perf_callchain(regs, NULL, kernel, user, max_depth,
--				   false, false);
-+	err = bpf_get_perf_callchain_or_entry(&trace, regs, kernel, user, max_depth,
-+					      false, false, true);
-+	if (err)
-+		return err;
- 
--	if (unlikely(!trace))
--		/* couldn't fetch the stack trace */
--		return -EFAULT;
-+	err = __bpf_get_stackid(map, trace, flags);
-+	bpf_put_perf_callchain();
- 
--	return __bpf_get_stackid(map, trace, flags);
-+	return err;
- }
- 
- const struct bpf_func_proto bpf_get_stackid_proto = {
-@@ -443,20 +489,23 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 	if (sysctl_perf_event_max_stack < max_depth)
- 		max_depth = sysctl_perf_event_max_stack;
- 
--	if (may_fault)
--		rcu_read_lock(); /* need RCU for perf's callchain below */
--
- 	if (trace_in)
- 		trace = trace_in;
--	else if (kernel && task)
-+	else if (kernel && task) {
- 		trace = get_callchain_entry_for_task(task, max_depth);
--	else
--		trace = get_perf_callchain(regs, NULL, kernel, user, max_depth,
--					   crosstask, false);
-+	} else {
-+		err = bpf_get_perf_callchain_or_entry(&trace, regs, kernel, user, max_depth,
-+						      false, false, true);
-+		if (err)
-+			return err;
-+	}
-+
-+	if (unlikely(!trace))
-+		goto err_fault;
- 
--	if (unlikely(!trace) || trace->nr < skip) {
--		if (may_fault)
--			rcu_read_unlock();
-+	if (trace->nr < skip) {
-+		if (!trace_in)
-+			bpf_put_perf_callchain();
- 		goto err_fault;
- 	}
- 
-@@ -475,9 +524,8 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 		memcpy(buf, ips, copy_len);
- 	}
- 
--	/* trace/ips should not be dereferenced after this point */
--	if (may_fault)
--		rcu_read_unlock();
-+	if (!trace_in)
-+		bpf_put_perf_callchain();
- 
- 	if (user_build_id)
- 		stack_map_get_build_id_offset(buf, trace_nr, user, may_fault);
--- 
-2.48.1
-
+--=20
+paul-moore.com
 
