@@ -1,72 +1,66 @@
-Return-Path: <bpf+bounces-71641-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71642-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97681BF903E
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 00:12:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ED7ABF9060
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 00:15:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B1F319C2727
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 22:13:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5AC15800F3
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 22:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EECF296BB9;
-	Tue, 21 Oct 2025 22:12:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8929329D276;
+	Tue, 21 Oct 2025 22:15:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="kX4lhc38"
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="39kj7JE8"
 X-Original-To: bpf@vger.kernel.org
 Received: from submarine.notk.org (submarine.notk.org [62.210.214.84])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AE722989BC;
-	Tue, 21 Oct 2025 22:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7B028726E;
+	Tue, 21 Oct 2025 22:15:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.210.214.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761084751; cv=none; b=jRYLGt61yeHjQPfJuTqQWIw2WwdkXxrUJY494wwu/t3p+jgj26hOPks9fmQH+t5Hzt6XzUjo2kJqjst+5N6Tb2n9O1J1Gb8yP1aIyHaqtdflcDGFJJYIPXhvALxCCllgWBgPcDbOJZOgdpVXehyQzjQ39mMXfnykW7YQY/EBSjk=
+	t=1761084910; cv=none; b=dNW8tQ72YbgwRSIYN1nGZ7llMgwSrUDwSECdwdEAMiT0Rf7JLICM4ezbWuxMdYH6s1MtQOaBEwM3XdIjt4UAm2aw8md52MpukkHBeL2lm08R2zFi+OUQyMFHG4IS9vk6GJqGQvV8tfqJ135sC5Gfew7cGj186W2RH/mFcPhCmLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761084751; c=relaxed/simple;
-	bh=ofUIlUcJf+qSxbCYFOj4Dmv8C/Q/gYj+rCTIU17Szqs=;
+	s=arc-20240116; t=1761084910; c=relaxed/simple;
+	bh=ldQAI4BRJFmmqy3xoslndrgZGiE2rVoT8TBMFRA/xjs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DwTx0+dt8MgglW7D0oIeKqnBM+gYBI/5wC2cGWfdfw5gSDSZf2EJA6ioKng1h1BYpS+NPPqtD/9eAFbygTDnLZ8BRXWXBachonE52NVg+PgJEnKJfdzv4wtL1SptF/0wq6AKzRp5kiqGlQ318zORo7KMLF12Cl1MsX4lzeUyVKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=kX4lhc38; arc=none smtp.client-ip=62.210.214.84
+	 Content-Type:Content-Disposition:In-Reply-To; b=EX9rk1Bo1vAncrZiFdSQUPJLcIHhXiaUU57s9GjkuNmyo91FFx9yj8Rrd8Teo//tZ3QIl9YRvt6KGsd4pxqV4PalB315UHuj8qb3fANvZKKR1s/MrHMRvJd7rzUSh6wJYm7wMcVzRsK8EjM5BZJPumf+/5OeDP9uFaCSpDs+e8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=39kj7JE8; arc=none smtp.client-ip=62.210.214.84
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
 Received: from gaia.codewreck.org (localhost [127.0.0.1])
-	by submarine.notk.org (Postfix) with ESMTPS id B02D014C2D3;
-	Wed, 22 Oct 2025 00:12:18 +0200 (CEST)
+	by submarine.notk.org (Postfix) with ESMTPS id CF92E14C2D3;
+	Wed, 22 Oct 2025 00:15:02 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org;
-	s=2; t=1761084741;
+	s=2; t=1761084905;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DvgjUM9pwk9ojxcDr4HMoG2nE5PWiwPcbp29vqBU1MQ=;
-	b=kX4lhc38IASBnGAnsO2gRsnvwMooM10C4XUxJwu1iiBoQ0Yt6dRbGxRdV59OGZmDIh7SJ1
-	CCCbN+U8fQMKAdz0ruJhqkEutoTsmcoVqmtyro9Brk6JK4EJs8QAJVVAHZfh2o31AjmxGK
-	IcJi68ksWWiz9jNTtOVPbCmUFfJq7t+Rlh8IbUJILZ129kf9BIcftNqZQiPk6ylgFWHp5a
-	Fe1NArMgPxT/x4V4M5Cq8WqVdPAWs4yARjmreAuatu7fowYr69lhmChIsDTQlGujjYF3rK
-	Ed02cDwGfd9zIzELtdIkr8TmufRWTQ0LuNmntysnVeYTFgIaDGrD5QSykKSCSw==
+	bh=PNRzJByaf1w3cRLviNXJCnTJ87QZjB0GM+XYE3IMdz8=;
+	b=39kj7JE83CSnRM+StI16XqiYKI75TQS2QjVxky6X9LakUU/AEky+GDyYbHpPcUKuI+BTfz
+	3SruiX8w9dYW7apSTHMJpUKZVFVXsmNVTp7ATk5JEQWbY+XQIuXpHate82Sq8JKh7k9Xuv
+	g6I45etMSlW+xz5PHOfVu6LiKfF4JhKiCw0h3VbleT9lixLWWWiWLOv3PjvP+g347ZjDxM
+	5NRRofx/QymecJ+t47tEkb+Ny5c54tB39SvAk1GEcotPercOP8s9GT5HRVZIU6U4T0TKhV
+	MkWe6neA1TuLzXgnn1qhRFcDUm5oYe1ywYyOZOa0SRcqF5Wxv7V4IDUL/SnOvg==
 Received: from localhost (gaia.codewreck.org [local])
-	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id f75e589d;
-	Tue, 21 Oct 2025 22:12:17 +0000 (UTC)
-Date: Wed, 22 Oct 2025 07:12:02 +0900
+	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id d6a04676;
+	Tue, 21 Oct 2025 22:15:01 +0000 (UTC)
+Date: Wed, 22 Oct 2025 07:14:46 +0900
 From: Dominique Martinet <asmadeus@codewreck.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Song Liu <song@kernel.org>,
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-	Christian Brauner <brauner@kernel.org>, Tingmao Wang <m@maowtm.org>,
-	v9fs@lists.linux.dev, Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-	bpf <bpf@vger.kernel.org>
-Subject: Re: 9P change breaks bpftrace running in qemu+9p?
-Message-ID: <aPgFMtg2DzzeRreH@codewreck.org>
-References: <CAHzjS_u_SYdt5=2gYO_dxzMKXzGMt-TfdE_ueowg-Hq5tRCAiw@mail.gmail.com>
- <e0c7cd4e-4183-40a8-b90d-12e9e29e9890@maowtm.org>
- <CAHzjS_sXdnHdFXS8z5XUVU8mCiyVu+WnXVTMxhyegBFRm6Bskg@mail.gmail.com>
- <aPaqZpDtc_Thi6Pz@codewreck.org>
- <CAHzjS_uEhozUU-g62AkTfSMW58FphVO8udz8qsGzE33jqVpY+g@mail.gmail.com>
- <086bb120-22eb-43ff-a486-14e8eeb7dd80@maowtm.org>
- <CAHzjS_vrVJrphZqBMxVE4UEfOqgP8XPq6dRuBh9DdWL-SYtO2w@mail.gmail.com>
- <CAADnVQKSJTAx-4T4WLFhLPcmJ-Ea5onKG+Z-d9iv48r4A6nJMQ@mail.gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Xing Guo <higuoxing@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	Jiri Olsa <olsajiri@gmail.com>, sveiss@meta.com,
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: strace log before the fix, with fsync fix and with fclose fix.
+Message-ID: <aPgF1u8OaMkWvWK2@codewreck.org>
+References: <CAEf4Bza6ynjUHanEEqQZ_mke3oBCzSitxBt9Jb5tx8rxt8q4vg@mail.gmail.com>
+ <20251020085918.1604034-1-higuoxing@gmail.com>
+ <CAADnVQLDQpNEa0bT6nyX3UfGTE94YxrM4gPD+PirmqHwXRB15Q@mail.gmail.com>
+ <CAEf4BzZbCE4tLoDZyUf_aASpgAGFj75QMfSXX4a4dLYixnOiLg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,31 +69,24 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAADnVQKSJTAx-4T4WLFhLPcmJ-Ea5onKG+Z-d9iv48r4A6nJMQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZbCE4tLoDZyUf_aASpgAGFj75QMfSXX4a4dLYixnOiLg@mail.gmail.com>
 
-Alexei Starovoitov wrote on Tue, Oct 21, 2025 at 09:56:10AM -0700:
-> > I am not sure what is the "right" behavior in this case. But this is
-> > clearly a change of behavior.
+Andrii Nakryiko wrote on Mon, Oct 20, 2025 at 01:12:16PM -0700:
+> So unclear, which is why it would be nice for FS folks to double
+> check. It's certainly a change in behavior, it used to work reliably
+> before. [0] is the source code of the test (and note that we now added
+> fsync(), without it the test is now broken).
 
-That's definitely wrong, the resulting file was truncated.
-Thanks for the repro!
-
-I've sent a fix here:
+It's a 9p bug, sorry.
+tentative fix:
 https://lkml.kernel.org/r/20251022-mmap-regression-v1-1-980365ee524e@codewreck.org
 
+other thread with repro:
+https://lkml.kernel.org/r/CAHzjS_u_SYdt5=2gYO_dxzMKXzGMt-TfdE_ueowg-Hq5tRCAiw@mail.gmail.com
 
-Would be great if you could confirm it fixes your problems, and I'll get
-it sent to Linus
-
-> Andrii reported the issue as well:
-> https://lore.kernel.org/bpf/CAEf4BzZbCE4tLoDZyUf_aASpgAGFj75QMfSXX4a4dLYixnOiLg@mail.gmail.com/
-> 
-> selftests/bpf was relying on the above behavior too
-> which we adjusted already, but
-> this looks to be a regression either in 9p or in vfs.
-
-Looks like a 9p bug, sorry :(
-
+I'll send the fix to Linus once someone can confirm this works for this
+usecase as well (and try to improve our testing a bit... maybe just run
+the bpf test suite for starters)
 -- 
 Dominique Martinet | Asmadeus
 
