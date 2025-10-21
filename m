@@ -1,83 +1,83 @@
-Return-Path: <bpf+bounces-71498-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71500-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E99C2BF5C57
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 12:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C24F1BF5E0A
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 12:49:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C268818C8530
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 10:25:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A9F318C782D
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 10:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2CAC32C949;
-	Tue, 21 Oct 2025 10:24:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13168A926;
+	Tue, 21 Oct 2025 10:49:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="fYONXq4X"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="ChnEU0FF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28D632B999
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 10:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33EC623D7FB
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 10:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761042281; cv=none; b=ETTMd1nSmAhAuZqPcPH5T3B3MRphk+STuGF5P1niYgjSEMgDJCY6UxAWA4uctMsHEif7+2mdVvpOi10Ao/YBHPAf5BNmLZeXL6g+Aq2RWGvbKzTiqsXIGSZdYFo92WhbYsWM4yemtPmNluXzRDjR7lTk0MSWPvq0+BumC4Y1AR0=
+	t=1761043765; cv=none; b=lC1tRglKQjrQVE9qfJXwHP0KxIK69L+WSBs6UMd8HlgtAMVViqv7xVaEpKnJLLFEOQ3fgMFJ/V4W1WVRfsYMnC1QYSH0bBSrqGsTkWnuwP0fyVu0Y7aiEBgzX15selZbTRqYuti+9VtmRfukG3wISur2TFcTPZaRfxue+ux470o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761042281; c=relaxed/simple;
-	bh=B3s7ZSl86JD4ZLrcy7v2rLerojZVW4rI6JyJqxX2Opw=;
+	s=arc-20240116; t=1761043765; c=relaxed/simple;
+	bh=hrF0LCmElQ4WpX5W62bYMJ+jvZnpkYWbqiea2O+smAw=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=WQsAlF56BtgVkeDQoKb5w+L0cPNWC111by38H/HaSpu4hPifqxrCTtuuY0SLxQQLyophSJktlu0R7ZUmwOheAuicx/nP2o5nVJbOxpDyVnOe+t5Zt8dP6AizlJSL2PLh8SNWuoi1Y/AhpR7KWOJdewRZq+6xIB0tyAG2do5AZTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=fYONXq4X; arc=none smtp.client-ip=209.85.208.47
+	 MIME-Version:Content-Type; b=qw2p73IRoqkAO6CASzvNHKTLk401TIqgp33Gt91vlYN0powJYh3Ryr5EinmBScifJdmkzVd37q1oya2y3WjKkOXgZCHiZ5SwdydbqJPSQtyuTx6u5IfVtU+pLjASxwSvI+JHwd28gxP2cbTnnQOpY9CMhPsKZFRlanRoL0/euyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=ChnEU0FF; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-63c3c7d3d53so6197413a12.2
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 03:24:37 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b3d5088259eso841529466b.1
+        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 03:49:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1761042276; x=1761647076; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1761043761; x=1761648561; darn=vger.kernel.org;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JcFCzEhSLG+mhX1K/VGxSMuzwAex5vT0vkcdh5aIy+o=;
-        b=fYONXq4XOeRd1D/VeQ7wsDVll2QuE+S7FML5Na0kk+LYWI/nIdZdFTu9k0PZVRjE4s
-         92e4nR9nrGjLdbusoffg0QSwppIFAKW6ezo3ZMb0WKlrr33Fe84KNw4EM7fSOFhkGwqa
-         kvkeZrIOQg5rKdhy5zyYjK5LZhj34CTJ4Y32dHqYndbWdbLZwFZNW+8d9mrTTXwac+wc
-         kp7AFDiW+PwU0LilUiucbxX4GoGNyvvHWBovqNb1UFzDgZiWRFRnjuZHOupIwFhVlK4Z
-         4DjzM9bLAOkez+aunzkwB01uEGaJBTyxl86/mMVhLaBjCPdHph4DCDigvfp9yEHn82dV
-         /kmQ==
+        bh=7EOHmK2OfLfwzNiHBksUI9w2NZOUojlK5wP3wAwmdUc=;
+        b=ChnEU0FF2MBGOqWLekXisSjna5eNyAi/g7y7+pWsBzT+/GkhltvS4OgQ9nA5zuUr1U
+         IFLooonoNDeXoajSkb3prNRHm6TwqZFYgAejnP4ksdDwixBcv8344/JvpF/FWHuU+gCw
+         eGV22EtHpMnzAPzkWxTWaySDw4GbQQN5PETcJhsYDehrigkHuoAKxqGvsUAWHt2DhHZ3
+         NM1EGCJcAZAr9sqt6RAUtPKbMkm6gUQdGg0ba7nvi2KLdWlHqBQ+A0/gHSl/rgk/4OmG
+         ic5jgPQs54mKjT2ng05T8j3L80wd+9zgOdLbY9UlGQ2E+gAvPRoz56TjsT+c7RQxRyr9
+         2ysw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761042276; x=1761647076;
+        d=1e100.net; s=20230601; t=1761043761; x=1761648561;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JcFCzEhSLG+mhX1K/VGxSMuzwAex5vT0vkcdh5aIy+o=;
-        b=k2IG4Ih2eSzAhabZnjQ4lYUmPs4qbdsPTX5l+rE5HdRAcDLiFQNHIwZ/5ZVyQexyxX
-         n/kYgVmc2yqSugRMc3ghvvJVqyZfz9cIcxjBGzA0gwVf096T7ZvoUWFDdFtkO9AnUq5U
-         5IxLGM9zX6Hx4h/bg/BRip+0Z0um+Mm2XsCoIzdTNA9Pw5EA70ni94XrIogRSv3IhS7K
-         2gaQNZHEQWfXCKZkqZZ9dSBhZRH1tWrAnPdX53f9LENvmFP3uA5AtuHoUl4K5GrhG+dH
-         sczwndQktkUkou+16yXiNlAaHfn+ATYEMHW0D41wAst1jiwX5j4yQwg6abqaf8Xzm0Ao
-         OAbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXFyplXPo7zpXktulQZaV7YlFFzC62dvsaBm9wG4AxwXnDAPSCgzecFv0486Lv4wOOOuUI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YykiQrRalmsZGwP8kKZnW4uHJ41S2fSK4+tl34+RUb3+2aqBgU2
-	wGJKuKft9+JPETzHzbsq2iOpUlf+1FjDd6Qu9oGXkJFdcbe2Er7TnsWQ8adcKNpHpOg=
-X-Gm-Gg: ASbGncvM5NlKZuiXmB6z+zxR49VQyEAnCYpFQKklJNw8AfJdJz0kCvK1bWP8223CMUa
-	gxWz5tF163M/TnBYRvt63mtVEuiOCOiKCt2f4Uha7YmYuMJFV0OK1miJJ8lhTg0yfWaTh4J+OwW
-	B3yBqx6+wCsfG/I2f0nN4XcSIFAHlvfiIHjakFcsP3uboOVgl7gbz5ugDAsLolpruJp486ohDZb
-	+GGxWKVwPf0XnYcdt2cOOiFU4/ZRk1iofMdaCNFFNSCSqjvT/2EeN8jFQ/PqHJKy745SCaIsy9Q
-	1SZmJ01Ns3EHeoz9+ub/ecA4KUsBC498sIpQn4cixcZCvztD/10HdUmWUJAC0eB6LJPMmrnvnPu
-	1YZ4pNI/22SyHphSjB2sSYxKTrYZjEtmH94t/6NkED1yewk0Yr0x5z2OI6mQWtJLV5qqrBPfsrj
-	ft7ig=
-X-Google-Smtp-Source: AGHT+IHkXRt1bvA2nq78V9v3smCUF/mdE6nd/jsrFec9VaW89MGSq10bqEG5Bj4znCDYslvVrucVQw==
-X-Received: by 2002:a05:6402:254b:b0:634:9121:7a2d with SMTP id 4fb4d7f45d1cf-63c1f6e5309mr17096839a12.26.1761042276183;
-        Tue, 21 Oct 2025 03:24:36 -0700 (PDT)
+        bh=7EOHmK2OfLfwzNiHBksUI9w2NZOUojlK5wP3wAwmdUc=;
+        b=QU9IER2TkNehXzZAUaNYeDkB7bniisjDmw4Dwi41sUw3KJnjD1GNhg9OZAAwtDjP2T
+         B5ga2T02SkIlCyJjxyW1ABpV4cr2PTul+qinhnfOwCJDJfmH8Q7y+aggOYGWC4EwU12m
+         mWqP++4v8dALWahFNVyhivEJDGLHGK3ft+s2YriPN968peT/iXq3MzrehJWJcpQ2Xi6q
+         JeiF+RzRcgRS5/XCvVPsgMng2EJx+PFqkaFaWTxlrraZAwjIdc1nzYi78jiPePqKzkmK
+         YDj6GuLu7mrf4AQkP53Os2IvgkFVq5K3rG4s8HNYNu0Cjt1NlSv1ugmuJfdBbQ8o4nCR
+         WXtw==
+X-Forwarded-Encrypted: i=1; AJvYcCXwh4yeTDkaE9NRIESqx9bl3h7penfbSy6ke1bkgJrbp7aUwky92eg6DmgKTJ53k0zduCc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzivaxENM+ihxFHqj/amRHJq2rNNWgF3/hnuTxnGXM6WOInYWe7
+	3ozPKtwydlPZ2OTaY6fBt4fNvfjS69NL0ZOZHFzQ3pbgfwFzaF0/cKiCXR++RkICLY8=
+X-Gm-Gg: ASbGnctflAQSOcJLzFqy2gXRtX2lJ2B51PJMk9x9ObLge+qOIJSrtnQ4/DXPXOynIIc
+	S/QIDumjXRmZQrnQ3BN0TpDOD8DWcXR9HVaY6VO/HbieqCVJqU2OSwvTG1eKcMPIhvCXzI0RDxd
+	AXU4y0+PHV3VK7XKWSXIdjbDMpBSGnP2i23BOa1mqRu8Ua7AZyGYUwIDh6LUZwcN10r/dxC+GRK
+	NI5mPg80o1YJYckKXFcqrWt6yQspx4/7c3xn/R6FZ5C4K6zqUyRrwowvoyYIhFm97/4piPIHloh
+	OGbO3+l3KYH1raqgqxuIgzIxBW4/GAja8Mq4io7qhxehC1JyacW8zfVSLODJmJe/Kzf9FyRGz3W
+	XiKpEwIknLT2ORLz/rHKRVpNgIMPziSbzB01L02zj2AFhJ4AbBIKpCKi52IkFlp22ZxAkJByMK8
+	R3lV4=
+X-Google-Smtp-Source: AGHT+IHy8op2SrI/lJue90xZTdUE8jYPVJKT9x3Xt5nh13yYcQucOr2Oqx/NtzVh356uT2+TUQAh8g==
+X-Received: by 2002:a17:907:3f11:b0:b42:7c2:1f9f with SMTP id a640c23a62f3a-b6475706f53mr1757165566b.62.1761043761371;
+        Tue, 21 Oct 2025 03:49:21 -0700 (PDT)
 Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:d0])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-63c4945efebsm8971783a12.32.2025.10.21.03.24.35
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b65eb036a3esm1068920266b.46.2025.10.21.03.49.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Oct 2025 03:24:35 -0700 (PDT)
+        Tue, 21 Oct 2025 03:49:20 -0700 (PDT)
 From: Jakub Sitnicki <jakub@cloudflare.com>
 To: Jiayuan Chen <jiayuan.chen@linux.dev>
 Cc: mptcp@lists.linux.dev,  netdev@vger.kernel.org,  bpf@vger.kernel.org,
-  John Fastabend <john.fastabend@gmail.com>,  Eric Dumazet
- <edumazet@google.com>,  Kuniyuki Iwashima <kuniyu@google.com>,  Paolo
- Abeni <pabeni@redhat.com>,  Willem de Bruijn <willemb@google.com>,  "David
+  Eric Dumazet <edumazet@google.com>,  Kuniyuki Iwashima
+ <kuniyu@google.com>,  Paolo Abeni <pabeni@redhat.com>,  Willem de Bruijn
+ <willemb@google.com>,  John Fastabend <john.fastabend@gmail.com>,  "David
  S. Miller" <davem@davemloft.net>,  Jakub Kicinski <kuba@kernel.org>,
   Simon Horman <horms@kernel.org>,  Matthieu Baerts <matttbe@kernel.org>,
   Mat Martineau <martineau@kernel.org>,  Geliang Tang <geliang@kernel.org>,
@@ -89,14 +89,14 @@ Cc: mptcp@lists.linux.dev,  netdev@vger.kernel.org,  bpf@vger.kernel.org,
  Luo <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
  <shuah@kernel.org>,  Florian Westphal <fw@strlen.de>,
   linux-kernel@vger.kernel.org,  linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH net v2 1/3] net,mptcp: fix incorrect IPv4/IPv6 fallback
- detection with BPF Sockmap
-In-Reply-To: <20251020060503.325369-2-jiayuan.chen@linux.dev> (Jiayuan Chen's
-	message of "Mon, 20 Oct 2025 14:04:46 +0800")
+Subject: Re: [PATCH net v2 2/3] bpf,sockmap: disallow MPTCP sockets from
+ sockmap updates
+In-Reply-To: <20251020060503.325369-3-jiayuan.chen@linux.dev> (Jiayuan Chen's
+	message of "Mon, 20 Oct 2025 14:04:47 +0800")
 References: <20251020060503.325369-1-jiayuan.chen@linux.dev>
-	<20251020060503.325369-2-jiayuan.chen@linux.dev>
-Date: Tue, 21 Oct 2025 12:24:34 +0200
-Message-ID: <87h5vswo0t.fsf@cloudflare.com>
+	<20251020060503.325369-3-jiayuan.chen@linux.dev>
+Date: Tue, 21 Oct 2025 12:49:19 +0200
+Message-ID: <87cy6gwmvk.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -106,57 +106,47 @@ MIME-Version: 1.0
 Content-Type: text/plain
 
 On Mon, Oct 20, 2025 at 02:04 PM +08, Jiayuan Chen wrote:
-> When the server has MPTCP enabled but receives a non-MP-capable request
-> from a client, it calls mptcp_fallback_tcp_ops().
+> MPTCP creates subflows for data transmission, and these sockets should not
+> be added to sockmap because MPTCP sets specialized data_ready handlers
+> that would be overridden by sockmap.
 >
-> Since non-MPTCP connections are allowed to use sockmap, which replaces
-> sk->sk_prot, using sk->sk_prot to determine the IP version in
-> mptcp_fallback_tcp_ops() becomes unreliable. This can lead to assigning
-> incorrect ops to sk->sk_socket->ops.
+> Additionally, for the parent socket of MPTCP subflows (plain TCP socket),
+> MPTCP sk requires specific protocol handling that conflicts with sockmap's
+> operation(mptcp_prot).
 >
-> Additionally, when BPF Sockmap modifies the protocol handlers, the
-> original WARN_ON_ONCE(sk->sk_prot != &tcp_prot) check would falsely
-> trigger warnings.
->
-> Fix this by using the more stable sk_family to distinguish between IPv4
-> and IPv6 connections, ensuring correct fallback protocol operations are
-> selected even when BPF Sockmap has modified the socket protocol handlers.
+> This patch adds proper checks to reject MPTCP subflows and their parent
+> sockets from being added to sockmap, while preserving compatibility with
+> reuseport functionality for listening MPTCP sockets.
 >
 > Fixes: 0b4f33def7bb ("mptcp: fix tcp fallback crash")
 > Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
 > ---
->  net/mptcp/protocol.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+>  net/core/sock_map.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 >
-> diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-> index 0292162a14ee..c2d1513615ae 100644
-> --- a/net/mptcp/protocol.c
-> +++ b/net/mptcp/protocol.c
-> @@ -61,11 +61,14 @@ static u64 mptcp_wnd_end(const struct mptcp_sock *msk)
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index 5947b38e4f8b..da21deb970b3 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -535,6 +535,15 @@ static bool sock_map_redirect_allowed(const struct sock *sk)
 >  
->  static const struct proto_ops *mptcp_fallback_tcp_ops(const struct sock *sk)
+>  static bool sock_map_sk_is_suitable(const struct sock *sk)
 >  {
-> +	/* When BPF Sockmap is used, it replaces sk->sk_prot.
-> +	 * Using sk_family is a reliable way to determine the IP version.
-> +	 */
->  #if IS_ENABLED(CONFIG_MPTCP_IPV6)
-> -	if (sk->sk_prot == &tcpv6_prot)
-> +	if (sk->sk_family == AF_INET6)
->  		return &inet6_stream_ops;
->  #endif
-> -	WARN_ON_ONCE(sk->sk_prot != &tcp_prot);
-> +	WARN_ON_ONCE(sk->sk_family != AF_INET);
->  	return &inet_stream_ops;
+> +	if ((sk_is_tcp(sk) && sk_is_mptcp(sk)) /* subflow */ ||
+> +	    (sk->sk_protocol == IPPROTO_MPTCP && sk->sk_state != TCP_LISTEN)) {
+> +		/* Disallow MPTCP subflows and their parent socket.
+> +		 * However, a TCP_LISTEN MPTCP socket is permitted because
+> +		 * sockmap can also serve for reuseport socket selection.
+> +		 */
+> +		pr_err_once("sockmap: MPTCP sockets are not supported\n");
+> +		return false;
+> +	}
+>  	return !!sk->sk_prot->psock_update_sk_prot;
 >  }
 
-Should probably be a READ_ONCE(sk->sk_family) based on what I see in
-IPV6_ADDRFORM:
+You're checking sk_state without sk_lock held. That doesn't seem right.
+Take a look how we always call sock_map_sk_state_allowed() after
+grabbing the lock.
 
-https://elixir.bootlin.com/linux/v6.18-rc1/source/net/ipv6/ipv6_sockglue.c#L607
-
-Nit: It's BPF sockmap, cpumap, etc. We don't treat it as a proper noun.
-
-Other than that:
-
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+Same might apply to sk_is_mptcp(). Please double check.
 
