@@ -1,259 +1,137 @@
-Return-Path: <bpf+bounces-71490-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71491-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86990BF4BD2
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 08:49:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3828EBF5300
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 10:10:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29283402611
-	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 06:49:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCC304272A9
+	for <lists+bpf@lfdr.de>; Tue, 21 Oct 2025 08:09:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44EA3267AF2;
-	Tue, 21 Oct 2025 06:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228CC2ED84A;
+	Tue, 21 Oct 2025 08:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IiUMHWzN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LUs+4XVI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8C92609FC
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 06:49:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D50FC2ECD0F
+	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 08:08:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761029376; cv=none; b=a31jtgdAx3SeoXxLwxDH2/h2qF9QpD9n5+LQ0Vvaz4Ir9ql+hQst58LK0vAy6cfqE5L8op2a+uRp/QmFDz4/FZSoUzyzH607dLA0wN6A6vLIGBGMm1/wo58N7K4U3HG3DxH9mMpOMW4KsOY2r1s2CF7ncoY2gMNqnyPFNf3/QdE=
+	t=1761034141; cv=none; b=cdVpIWjpeQq0bQGDj2yjRtkUhlQYZLlgBHxc2LGRcl/K1ARzQcec7TvXvN9+ffXlMv9/q4AkTIrbi9+W8ui2xI78TTjZNn1FGzKbRuvUqsHi1LJsjZv4FtQuKI3SxVzdmP01sR59uU5SnYlyWQzT3LFvi/WIwHZMy3knfSQIZhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761029376; c=relaxed/simple;
-	bh=xcZQIxmt0q7uT+5+6SfYbseOeX41s5MWzi0BsL+y1F4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jpnLFOzDshOjKvCreQQWb+5PpqtgZA1J52wgFnkuqIQlllBHR4QqzbWDrZdlx59U1EsSqRFOQiK1nSvt88YkS4DB3bBFnnt+c7cmRYMgguiQijb8tboRGzoptGfDtFNv5eaGXWrWezfm8oIY/DjNLhX3NvtsVnHQBRaO9v2kk3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IiUMHWzN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57D2BC4CEFD
-	for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 06:49:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761029376;
-	bh=xcZQIxmt0q7uT+5+6SfYbseOeX41s5MWzi0BsL+y1F4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=IiUMHWzNDo9RDYzli32AYondrfwO7KVoRqvfd5MNVoQfpQlbEcG0aTes41/L4J7S0
-	 7CRM7afpGe3h38qqe6qGiPdx1x+MREpHDLiKOri4SU+/68jDoDRVmLEIVpZZ9VASMF
-	 zhoxfkzqpJmKUvOwHhjmF0TtN9S70SPXLv4eHGfAE0Y6+djurVkZGIWTOu9bXV9qgK
-	 NgPzCAXa+pIQSpQ82gBqUB6uEYX9vrHP93ef2Z2WXXtu0bV9uIYqGBHm51Fn5zHDhO
-	 dKXBteK3C/fKsAVuoyX8KOKLTkLo4tCgELGJB5YmDVMQKZP/sYX1dcVKnfxYv2m95Y
-	 ys7AW36WwyRtw==
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-87bb66dd224so72374336d6.3
-        for <bpf@vger.kernel.org>; Mon, 20 Oct 2025 23:49:36 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWdS/XutJeP8DxT6QwDa+C6+0sspbbiTGRQKyC34JUal73sQ9udDTgQFJUpbQgimqOH0lQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7/MPk5HJaUCvoEH9vZ02yFg1CPEdZWoAt9UcoSeYrvXr8LFVN
-	j3vgMVJU6G5BGpGlgUWmKehtYixRYymHqBR+WNnUFa0Sr54THsZZ/OHM1Oh1/wekVqgj/BphA3a
-	SrjYLghLfmYllTVUS1OW/6OCAyzwgZ9U=
-X-Google-Smtp-Source: AGHT+IHouf+2WkWUQ8MYKie8ND06uJ17b3MbgfSTT/06m4808Xc250GGYaj07sJxEHQJaS2QSGDOdBP0aDfUZ4xx/Z8=
-X-Received: by 2002:ad4:5f4a:0:b0:87b:f3c0:1621 with SMTP id
- 6a1803df08f44-87c2066cc50mr204832406d6.56.1761029375477; Mon, 20 Oct 2025
- 23:49:35 -0700 (PDT)
+	s=arc-20240116; t=1761034141; c=relaxed/simple;
+	bh=FwP7RFhS/UAFSpDkb3KLcxGDte+je8FgtPNCjZxV0Ug=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JcAE7NbFm3eBOEoqgk143Y+fJV5V4HaXj8/l/7iv1EGQIPoXrTQb/eKYSqfHa/CK2XXYotN6gDpzoPAd82SpzlNpoS35lWlAhjblWU5rcSO0W8qxEvFxg2rJpxqplXYfwbC7pXz42elaI7LgSvb6IZMZCfAb/DYxzVHFx1pkTL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LUs+4XVI; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-781251eec51so4153235b3a.3
+        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 01:08:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761034139; x=1761638939; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d6omVxeHPJccVZYxmUB5z3Y6O20DnvuzVWmKGSg10CY=;
+        b=LUs+4XVI/m6aO9YGTf8f9xtrCYHO76qDYeUU96tPMVv1rJ/43XfmPhZ7QMP25iNse2
+         0vwPUpx+F6YeXV0BuQPvarhspEtyopdT/zv+cTE87csDc7SRPn6B1voNAmQLM99a7lC/
+         DvQTKEPj0DBVedrI39Z2mz29hKwV0an0ucp9/wy2bvsBbRxOtW+H7VlLW//rCFrU+CPB
+         8fSwb8onz2pMqpdkkcja/RhCBgnf2Y73IR5AKAP6lu7e70l6THrmiOOpW3Z1xUkPu/3X
+         cnf45MjxXg6+NMDdz4cJiH1uoAX2VtW2vESye3s+Q8SxIW89/1BKw6LPjW2DwP+mD313
+         bGaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761034139; x=1761638939;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d6omVxeHPJccVZYxmUB5z3Y6O20DnvuzVWmKGSg10CY=;
+        b=sjFNSp3SEaRW2ELa74R60cPyx7E11RpntedHCjIPk4gRACGwVYshh80T5ELMos8tYm
+         yLoYC24S13jv3rNRZXpPe3viMvBfop1fjKX5EZKL/2g72G6+BPFMVU/YEdPyiZDYMrEx
+         kX5kNr35kWjPNVCwyOSBUBhsD78IXSZ8MSBZcLCx7T4StBVn763RIWlZYEXZShWo+gFL
+         cvMM8FafmKYh7VeAs3zUZjhQepsTjgW1Wn9LQmOXJfm+x9ZhL6JYi8tcMI0VrfKkthtP
+         hnLZx+42n99x3ELiFsG+YJYVB4nyP8O+SU4v6X8JXo1d2IyZlt7TNRS9d9byXI0+i+cw
+         el/A==
+X-Gm-Message-State: AOJu0YxHbo6q148+rfcPCB7w/SW/DROIXnIvwbOKOTvYdwvUlbYIpjD5
+	92BRnH69yCdGViU8bwu6SVWA9V4D3KfvqtNoFOaCSH5fvCmL1KWZG2QI2H98FMfN
+X-Gm-Gg: ASbGncvZhYx5IRidbAElBDi4I7y1OTGdG87jKx7xlW3I/44aY6LfILndrGDQT55ypMO
+	FihkOh2n0rySvlLDNocimiLxIFCDCdGBYJy3wMrY99ApvI1sEBL2S3iyS4SRSMtRNvJWaZnvGBQ
+	sXQ/vEVn3V2D7fNAzdibFaSnKNOKPNklXC50wNOqR56SGED/Zahnupnbu9wMrzvX/wq+RaDzjWw
+	5J6CH4NtfyeIH+i17X+uCFzXaXKEg44gRS+2mNhuSrWxe5A27mBRb3bUOvt8u/rqKNzT4r812hq
+	/8zaV7RYsB2En0AoRVyonOWCab+zXIkC9LC2rWz+UZpFaiM6NRRlW78Tpj4ag/+BXgU+1DXX/X0
+	T+Bpb4952j1vR7dR9+WeApgLOTXo9T2FlOQeAxYIF/65UN2ReZv77IijLREwpZDphoLP5n/aXgZ
+	EQWKhjtoD0qQ==
+X-Google-Smtp-Source: AGHT+IE7lHhHjkKOsMhyBiKOKtjK0j3mfs2g1/yj+Xj0Ks4LIQgWNdA1JFuNUbEDKSnI9fAu6Kipyg==
+X-Received: by 2002:a05:6a00:230a:b0:781:16de:cc1a with SMTP id d2e1a72fcca58-7a220d37785mr21996238b3a.32.1761034138761;
+        Tue, 21 Oct 2025 01:08:58 -0700 (PDT)
+Received: from Shardul.. ([223.185.42.221])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a22ff15829sm10528468b3a.11.2025.10.21.01.08.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Oct 2025 01:08:58 -0700 (PDT)
+From: Shardul Bankar <shardulsb08@gmail.com>
+To: bpf@vger.kernel.org
+Cc: shardulsb08@gmail.com,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3 bpf] bpf: liveness: clarify get_outer_instance() handling in propagate_to_outer_instance()
+Date: Tue, 21 Oct 2025 13:38:46 +0530
+Message-Id: <20251021080849.860072-1-shardulsb08@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHzjS_u_SYdt5=2gYO_dxzMKXzGMt-TfdE_ueowg-Hq5tRCAiw@mail.gmail.com>
- <e0c7cd4e-4183-40a8-b90d-12e9e29e9890@maowtm.org> <CAHzjS_sXdnHdFXS8z5XUVU8mCiyVu+WnXVTMxhyegBFRm6Bskg@mail.gmail.com>
- <aPaqZpDtc_Thi6Pz@codewreck.org> <CAHzjS_uEhozUU-g62AkTfSMW58FphVO8udz8qsGzE33jqVpY+g@mail.gmail.com>
- <086bb120-22eb-43ff-a486-14e8eeb7dd80@maowtm.org>
-In-Reply-To: <086bb120-22eb-43ff-a486-14e8eeb7dd80@maowtm.org>
-From: Song Liu <song@kernel.org>
-Date: Mon, 20 Oct 2025 23:49:24 -0700
-X-Gmail-Original-Message-ID: <CAHzjS_vrVJrphZqBMxVE4UEfOqgP8XPq6dRuBh9DdWL-SYtO2w@mail.gmail.com>
-X-Gm-Features: AS18NWCZ_SQEw16OwgAGDTPBr02aILqIcOiLzCalXTvKe3EeOy4CZT7oiVJiXME
-Message-ID: <CAHzjS_vrVJrphZqBMxVE4UEfOqgP8XPq6dRuBh9DdWL-SYtO2w@mail.gmail.com>
-Subject: Re: 9P change breaks bpftrace running in qemu+9p?
-To: Tingmao Wang <m@maowtm.org>
-Cc: Song Liu <song@kernel.org>, Dominique Martinet <asmadeus@codewreck.org>, v9fs@lists.linux.dev, 
-	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
-	Christian Schoenebeck <linux_oss@crudebyte.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Tingmao,
+propagate_to_outer_instance() calls get_outer_instance() and uses the
+returned pointer to reset and commit stack write marks. Under normal
+conditions, update_instance() guarantees that an outer instance exists,
+so get_outer_instance() cannot return an ERR_PTR.
 
-On Mon, Oct 20, 2025 at 5:54=E2=80=AFPM Tingmao Wang <m@maowtm.org> wrote:
->
-> On 10/20/25 22:52, Song Liu wrote:
-> > Hi Dominique,
-> >
-> > On Mon, Oct 20, 2025 at 2:32=E2=80=AFPM Dominique Martinet
-> > <asmadeus@codewreck.org> wrote:
-> >>
-> >> Song Liu wrote on Mon, Oct 20, 2025 at 12:40:23PM -0700:
-> >>> I am running qemu 9.2.0 and bpftrace v0.24.0. I don't think anything =
-is
-> >>> very special here.
-> >>
-> >> I don't reproduce either (qemu 9.2.4 and bpftrace v0.24.1, I even went
-> >> and installed vmtest to make sure), trying both my branch and a pristi=
-ne
-> >> v6.18-rc2 kernel -- what's the exact commit you're testing and could y=
-ou
-> >> attach your .config ?
-> >
-> > Attached, please find the config file.
-> >
-> > I tried to debug this, and found that the issue disappears when I remov=
-e
-> > v9fs_lookup_revalidate from v9fs_dentry_operations. But I couldn't figu=
-re
-> > out why d_revalidate() is causing such an issue.
->
-> I've compiled qemu 9.2.0 and download the binary build of bpftrace v0.24.=
-0
-> from GitHub [1], and compiled kernel with your config, but unfortunately =
-I
-> still can't reproduce it...
+However, explicitly checking for IS_ERR(outer_instance) makes this code
+more robust and self-documenting. It reduces cognitive load when reading
+the control flow and silences potential false-positive reports from
+static analysis or automated tooling.
 
-Thanks for running these tests.
+No functional change intended.
 
-> I do now get this message sometimes (probably unrelated?):
-> bpftrace (148) used greatest stack depth: 11624 bytes left
->
-> I don't really know how to proceed right now but I will have it run in a
-> loop and see if I can hit it by chance.
->
-> If you can reproduce it frequently and can debug exactly what is returnin=
-g
-> -EIO in v9fs_lookup_revalidate that would probably be very helpful, or if
-> you can enable 9p debug outputs and see what's happening around the time
-> of error (CONFIG_NET_9P_DEBUG=3Dy and also debug=3D5 mount options - I'm =
-not
-> sure how to get vmtest to use a custom mount option but if it's
-> reproducible in plain QEMU that's also an option) that might also be
-> informative I think?  I'm happy to take a deeper look (although I'm of
-> course less of an expert than Dominique so hopefully he can also give som=
-e
-> opinion).
->
-> I'm also curious if this can happen with just a usual `stat` or other
-> operations (not necessarily caused by dentry revalidation, and thus not
-> necessarily to do with my patch)
+Reported-by: kernel-patches-review-bot (https://github.com/kernel-patches/bpf/pull/10006#issuecomment-3409419240)
+Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+Signed-off-by: Shardul Bankar <shardulsb08@gmail.com>
+---
+ kernel/bpf/liveness.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I used strace to compare the behavior before and after the change.
-It appears to me that bpftrace didn't get -EIO in the error case. Instead,
-it got 0 bytes for a read that was supposed to return data.
+diff --git a/kernel/bpf/liveness.c b/kernel/bpf/liveness.c
+index 3c611aba7f52..ae31f9ee4994 100644
+--- a/kernel/bpf/liveness.c
++++ b/kernel/bpf/liveness.c
+@@ -522,6 +522,8 @@ static int propagate_to_outer_instance(struct bpf_verifier_env *env,
+ 
+ 	this_subprog_start = callchain_subprog_start(callchain);
+ 	outer_instance = get_outer_instance(env, instance);
++	if (IS_ERR(outer_instance))
++		return PTR_ERR(outer_instance);
+ 	callsite = callchain->callsites[callchain->curframe - 1];
+ 
+ 	reset_stack_write_marks(env, outer_instance, callsite);
+-- 
+2.34.1
 
-Success case:
-...
-openat(AT_FDCWD, "/tmp/bpftrace.Rl1Vkg",
-O_RDWR|O_CREAT|O_EXCL|O_CLOEXEC, 0600) =3D 3
-write(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\1\0\367\0\1\0\0\0\0\0\0\0\0\0\0\0=
-"...,
-4352) =3D 4352
-openat(AT_FDCWD, "/tmp/bpftrace.Rl1Vkg", O_RDONLY|O_CLOEXEC) =3D 4
-newfstatat(4, "", {st_mode=3DS_IFREG|0600, st_size=3D4352, ...}, AT_EMPTY_P=
-ATH) =3D 0
-read(4, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\1\0\367\0\1\0\0\0\0\0\0\0\0\0\0\0"=
-...,
-8192) =3D 4352
-close(4) =3D 0
-...
-
-Failure case:
-...
-openat(AT_FDCWD, "/tmp/bpftrace.LbbDxk",
-O_RDWR|O_CREAT|O_EXCL|O_CLOEXEC, 0600) =3D 3
-write(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\1\0\367\0\1\0\0\0\0\0\0\0\0\0\0\0=
-"...,
-4352) =3D 4352
-openat(AT_FDCWD, "/tmp/bpftrace.LbbDxk", O_RDONLY|O_CLOEXEC) =3D 4
-newfstatat(4, "", {st_mode=3DS_IFREG|0600, st_size=3D0, ...}, AT_EMPTY_PATH=
-) =3D 0
-read(4, "", 8192) =3D 0
-...
-
-So the failure case is basically:
-1) open a file for write, and write something;
-2) open the same file for read, and read() returns 0.
-
-I created a small program to reproduce this issue (attached below).
-
-Before [1], the program can read the data on the first read():
-[root@(none) ]# ./main xxx
-i: 0, read returns 4096
-i: 1, read returns 0
-i: 2, read returns 0
-i: 3, read returns 0
-i: 4, read returns 0
-i: 5, read returns 0
-i: 6, read returns 0
-i: 7, read returns 0
-i: 8, read returns 0
-i: 9, read returns 0
-
-After [1], the program cannot read the data, even after retry:
-[root@(none) ]# ./main yyy
-i: 0, read returns 0
-i: 1, read returns 0
-i: 2, read returns 0
-i: 3, read returns 0
-i: 4, read returns 0
-i: 5, read returns 0
-i: 6, read returns 0
-i: 7, read returns 0
-i: 8, read returns 0
-i: 9, read returns 0
-
-I am not sure what is the "right" behavior in this case. But this is
-clearly a change of behavior.
-
-Thanks,
-Song
-
-[1] https://lore.kernel.org/v9fs/cover.1743956147.git.m@maowtm.org/
-
-
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D reproducer =3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-char buf[4096];
-
-int main(int argc, char *argv[])
-{
-        int ret, i;
-        int fdw, fdr;
-
-        if (argc < 2)
-                return 1;
-
-        fdw =3D openat(AT_FDCWD, argv[1], O_RDWR|O_CREAT|O_EXCL|O_CLOEXEC, =
-0600);
-        if (fdw < 0) {
-                fprintf(stderr, "cannot open fdw\n");
-                return 1;
-        }
-        write(fdw, buf, sizeof(buf));
-
-        fdr =3D openat(AT_FDCWD, argv[1], O_RDONLY|O_CLOEXEC);
-
-        if (fdr < 0) {
-                fprintf(stderr, "cannot open fdr\n");
-                close(fdw);
-                return 1;
-        }
-
-        for (i =3D 0; i < 10; i++) {
-                ret =3D read(fdr, buf, sizeof(buf));
-                fprintf(stderr, "i: %d, read returns %d\n", i, ret);
-        }
-
-        close(fdr);
-        close(fdw);
-        unlink(argv[1]);
-        return 0;
-}
 
