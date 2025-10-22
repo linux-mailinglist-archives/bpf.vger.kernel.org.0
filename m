@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-71722-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71723-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53CE3BFC1D7
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 15:24:07 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72FB5BFC22B
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 15:28:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CF7375688A8
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 13:16:20 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9C568568C53
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 13:16:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F50E3446CB;
-	Wed, 22 Oct 2025 13:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF1034677B;
+	Wed, 22 Oct 2025 13:13:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall.org header.i=@blackwall.org header.b="aThXpps5"
+	dkim=pass (2048-bit key) header.d=blackwall.org header.i=@blackwall.org header.b="KuoOIIWv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F3B3128D6
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 13:12:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A465026ED3F
+	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 13:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761138758; cv=none; b=K2wPsKeWo7BQF29qSOcrlP4iSckcCt2PXwqvI+0twJqMGQstjcq8mX7qL/FzPgQB2ePYIeK6KDL+ZtEnqbca8Kpa69v1Bt+7Zdz2tVqoSZ+RNH1dpS9RkbCRew8RsqTQsXjlGYPChICGk09JNT0SPg7QYZKNbr9H/XsJQPBBLnU=
+	t=1761138799; cv=none; b=ZI8bYB3eg20XWjTC9N6kClDBCwUz4B6BI1fzfGg1ilpx2FyHmbAIgrkyHeksdTLa2rUgTZ0sJwuuYvheo0DppIzE9Xs2mQbpKtqXkk2yaEoJMH6098o7IWFZ+U48YdmjJneWQRtLfCldYu4gRh+vVZ9rSJVinB83KKOUcteIJ9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761138758; c=relaxed/simple;
-	bh=j3EF8nNJ/B9fiL+MTyUTkLmXu0Vakq9P0w0wWMyl9+U=;
+	s=arc-20240116; t=1761138799; c=relaxed/simple;
+	bh=dV2v2nvJt4bSpXkLdGKI5N/kiZYlj5EWvCVnEaOV3U0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fd6YqxVpabXpwC6Y/gsbMJDRu0qfGlQ7rEbq+ndSSrze/gzI9WfV9/mMDXy0rLkDPJEC/dLNRkoZQpm+4hvKYLTxztw5dpbU9WsbeUbgS2zGhxFGB9G8vMA3Dzx9satdJH7LtZCB8D6HLwGIedKJmyfI6cc5ouSeLXkNDNgpv5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall.org header.i=@blackwall.org header.b=aThXpps5; arc=none smtp.client-ip=209.85.218.42
+	 In-Reply-To:Content-Type; b=BuZYI+HyshpAdxmgYSJoZz+C+lmd7LW7JFbHdWkhpSXRzc+Wh4EBU6UMUCjPOaiVdWGh2haiVA0wTBfKWgYwB7RE+XDIWDnFPbYECKFBAWHpmr+pR9AXnh/xGOcI23caBMsWFyRKuqI6v3b7exQG6KUbUBRaXdW0wSIUWIx/q2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall.org header.i=@blackwall.org header.b=KuoOIIWv; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b3d196b7eeeso1227951066b.0
-        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 06:12:36 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-63c4b41b38cso9926079a12.3
+        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 06:13:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall.org; s=google; t=1761138755; x=1761743555; darn=vger.kernel.org;
+        d=blackwall.org; s=google; t=1761138796; x=1761743596; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VHTN18Q7bf9HuEpGxM5gwgS8Ai9rdnBZqd+2bHozBZM=;
-        b=aThXpps5L9E6ExVx3fEdflsV0FLaA6cQe59+bAFCgHBONlgm36R0rwVb/EtAT4lxRa
-         lNnNRNCX4xiserq3VnDP6Bxt63oCbThMlD+xRNOFEd53J9YK0rQ6gUltOeck8A3vMoDd
-         1NuNy3z6cNes4e2SmhVHFDv5ByhKNlZLjk39aKlQWXU2ftTK03cEHU/MCV5ds37zdICl
-         HqpuyM84qyg+55ixTn5id2LGhuRd96HjTcX5rXY5pLC9ZZp3x/X5lEZpglRmBas7MeE7
-         ANQWMwEla3PYkB2DgiK5NowW+mRH3S1480Q2tOreFq91VqNxq+P0R/FL44wonNoFhSXn
-         nNZA==
+        bh=A3FWtSfsXNEHVOfUrJKgEy3Vxzr+aNYEbiBsxgJNPt0=;
+        b=KuoOIIWvBVloosX61y/tT4HFAJeV/QNXKfBvmszEV2EOUWY3ZI/8JLPTIN5h9RkefM
+         obEMFGiQ2dMm898NtWS68zunhl3l69uW5GZDjvPlEveNzDHVF1kp6q0ymXx1lMDHwxMJ
+         3qbKcjB2qZBVNnYGLKwGtVKa6+hDnFE1OPxPNJcgHX0no74fo3sljqFJyACyRsSnSHTQ
+         Zmn99/3rZliZhIdAG0bd9xWjIQEj5QTeh3lfBS+ZgfNxHcSjXXIjMvOby/FLw+SwslPr
+         eUgQv+0BMcSYmAIatSHiyez46yoY6sRnsPYEiKBD3A9W/AlsJACbjyYUQpyi50Tzu2IN
+         AWpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761138755; x=1761743555;
+        d=1e100.net; s=20230601; t=1761138796; x=1761743596;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VHTN18Q7bf9HuEpGxM5gwgS8Ai9rdnBZqd+2bHozBZM=;
-        b=YPanpPobWE6F96xxFoj3VvWwcVe2q+TuxqmyhBNQ3otgY1x20VyLMbIssJrZJhhTTF
-         BbKcIDAqVrr/8HYaDycI9E70uDNeNAkzH/+bf8W2gqxkgGFRlekRbPo6Zeo86UzvjiVa
-         3dn/Vr3vZJ/zdwX/twk1zvvAURNrBm89NhFgmJlfYGV+cQFdi4M7g+pOEkuFtgtMhFAb
-         wVmQ7bdjwqgErA0r+rbtW+yTWxU5c9B/pcMEsy2DBPBWY8dDWC14/hEfHe8tCcorEl3e
-         KNbieUxdGZZ5F0kG6ZoPaYzOFhq5TgIEh6gnZdTDHjlYJ6tAAlyHD95c+ngHy1BaIw/+
-         0Qqg==
-X-Gm-Message-State: AOJu0YzgSbeil3Ts5sOJXvB0V0Zn3Gkv1VdhJF8qqIFIcTNGLWvdMvyq
-	zrYpQTgW6zznrNkAbPi0ZJ1e8rNApkek6PNdyopwvx3csj84/c487srCz6w7wbRLY/8=
-X-Gm-Gg: ASbGncslyil/i9oDh7LNVnxxaePrwsKbJfibk25Xj+jZBURXfSMDpwdN0aQI8TnN1U0
-	etrpxSFStbDUMGfznKcFaTvfixd3+2uCQwevEyNHsynumxgduGgds7Z4s8Mm6vZa5JXh5jxqNzM
-	slkhYHU67lm1mGECuS/hSe/2OzMgLPudljc6if+vpGLpqrRpXzqqwzRJl8mpaZSYM+mZ3SQb6vI
-	8jKgVywzvDXXimHL5ozxJv2i1Bh52+qSSD76wqOGFpUdHQN0O4jH10w+NtxFOMFWlLdBijijV1F
-	adOJGtC8VMIe57yMqn0Groleid/IdKHbr8Zj8Hso5es/NxXuXWh1cfOmDzEMfi2VUh83tDxHHi/
-	+eKuR/3sa1U87kTp8Z4FT7l0m3HjG7Eh38Ql9YlMC/qNG/l3L/mNxzqVa36NkKvwEhC9cbLBWJE
-	UHjveAkK9dWXPjE/SW8fcoGf6jCUZ+JDUQPmydUol4fLY=
-X-Google-Smtp-Source: AGHT+IGIuQw+jehYddpwQvtKHW8rXdJQLVUZLJZVXiNyMP5WwTi0mnqaJMU6oX4sCssI/dhS5MT2IA==
-X-Received: by 2002:a17:907:7f8a:b0:b62:2352:5043 with SMTP id a640c23a62f3a-b6474940cd5mr2349929466b.46.1761138754630;
-        Wed, 22 Oct 2025 06:12:34 -0700 (PDT)
+        bh=A3FWtSfsXNEHVOfUrJKgEy3Vxzr+aNYEbiBsxgJNPt0=;
+        b=eP0zq49Lk+G73mE/8s1zSih0adE9DvFELZdkvjlEgdMhS9h50QXCLeAa97pk0yomgn
+         OhTwtjamqEodoT9fGFUWKIFgNASygGgg3cID0u6kbEYivkEFxpgMjboVTsnSGr72C0VZ
+         Ap92AQ3UrAX6MEofVb64g0ctkRAY3dP4LAr7VBXoMK2inrpwf7vEIbNdzxSjw9o/qzGd
+         +IDOZf9pQ96c1bqbAdZqydhcLw7aIto50p3HrPg0dP6jbjAHDtZwU2qSttaPUuJKKp20
+         CiNk+ZnvT60wn6CVv8Keg+qu83WCpwLCtEvZNavQFIHWeiUbjBF7Aju3/sadguifLASl
+         6czg==
+X-Gm-Message-State: AOJu0Yx507Z0N1kRKZbXKzqh8j7kTvwBaPimPTbA6mnwkqHFtKnfVnKX
+	iuvRpalPwB8NdK4M+M9DVI3InqxNdD1zTg/SDmaB3RgW7cLBTV5EK8Nm5tX/JQp8JD0=
+X-Gm-Gg: ASbGncsYdb0kYyFD+1vfzzSESQJZB0sktm1ZsL+3Y6TgWfcfwEyJdMgyIUqNAb2nYgE
+	7WKwzmV9Rw2XBR4TaukyqrJVYVOFYpNUVUOUku9xzileihAbyxho6qfc1si0lnzMiqCbRRuDC3l
+	5ZeFlKM1RY9N8z1CNSTXxshodMIU/RER+drw1zYYMIoLkThNBc+fcxQjKqmOlWfMYitBUomYV+o
+	OvH5Lcu/4oUkGer6ynZxGAnJG4ms3fm11FehPN+CZeM6WyNcUJO6g9Hn117YcwVfCaycHaHNjwL
+	glq8iRcJ2Yf4RpeTB+3CmVnUQxndzo59yAphWNgzyPVmD0nm8epFrYRmTw+CGHxFK/jteCgbsKH
+	91t12HFQk940zJBbqJKdSu6BufVw7rC6+17LlVOqVZ1K7djk34DQXiXb3iKnRFfupfgnDoc1d/G
+	SqBSHm9az3wR/AuWx8NjI9ipbjmYy7Bna2s0Q49n9pggU=
+X-Google-Smtp-Source: AGHT+IG7FlwpPgSQtYI7TuWDw1QmT9WYfpFdEVXKrwbg6V8/HarkHMVbTdIi7OP1z1qmm0bMiWOHhw==
+X-Received: by 2002:a05:6402:5204:b0:626:4774:2420 with SMTP id 4fb4d7f45d1cf-63c1f6b53bcmr21739139a12.20.1761138795365;
+        Wed, 22 Oct 2025 06:13:15 -0700 (PDT)
 Received: from [192.168.0.205] (78-154-15-142.ip.btc-net.bg. [78.154.15.142])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b65e7da2c5dsm1317274766b.15.2025.10.22.06.12.33
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-63c4949bf40sm12310240a12.39.2025.10.22.06.13.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Oct 2025 06:12:34 -0700 (PDT)
-Message-ID: <57fb7b81-2ba9-4899-a110-10b4e3e637c9@blackwall.org>
-Date: Wed, 22 Oct 2025 16:12:33 +0300
+        Wed, 22 Oct 2025 06:13:14 -0700 (PDT)
+Message-ID: <6571a7f3-3900-44c9-8dcc-a7f3f34a888d@blackwall.org>
+Date: Wed, 22 Oct 2025 16:13:13 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,8 +82,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 14/15] netkit: Add io_uring zero-copy support
- for TCP
+Subject: Re: [PATCH net-next v3 11/15] netkit: Add single device mode for
+ netkit
 To: Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
  pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
@@ -91,112 +91,57 @@ Cc: bpf@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
  maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, dw@davidwei.uk,
  toke@redhat.com, yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
 References: <20251020162355.136118-1-daniel@iogearbox.net>
- <20251020162355.136118-15-daniel@iogearbox.net>
+ <20251020162355.136118-12-daniel@iogearbox.net>
 Content-Language: en-US
 From: Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <20251020162355.136118-15-daniel@iogearbox.net>
+In-Reply-To: <20251020162355.136118-12-daniel@iogearbox.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 10/20/25 19:23, Daniel Borkmann wrote:
-> From: David Wei <dw@davidwei.uk>
+> Add a single device mode for netkit instead of netkit pairs. The primary
+> target for the paired devices is to connect network namespaces, of course,
+> and support has been implemented in projects like Cilium [0]. For the rxq
+> binding the plan is to support two main scenarios related to single device
+> mode:
 > 
-> This adds the last missing bit to netkit for supporting io_uring with
-> zero-copy mode [0]. Up until this point it was not possible to consume
-> the latter out of containers or Kubernetes Pods where applications are
-> in their own network namespace.
+> * For the use-case of io_uring zero-copy, the control plane can either
+>   set up a netkit pair where the peer device can perform rxq binding which
+>   is then tied to the lifetime of the peer device, or the control plane
+>   can use a regular netkit pair to connect the hostns to a Pod/container
+>   and dynamically add/remove rxq bindings through a single device without
+>   having to interrupt the device pair. In the case of io_uring, the memory
+>   pool is used as skb non-linear pages, and thus the skb will go its way
+>   through the regular stack into netkit. Things like the netkit policy when
+>   no BPF is attached or skb scrubbing etc apply as-is in case the paired
+>   devices are used, or if the backend memory is tied to the single device
+>   and traffic goes through a paired device.
 > 
-> Thus, as a last missing bit, implement ndo_queue_get_dma_dev() in netkit
-> to return the physical device of the real rxq for DMA. This allows memory
-> providers like io_uring zero-copy or devmem to bind to the physically
-> mapped rxq in netkit.
+> * For the use-case of AF_XDP, the control plane needs to use netkit in the
+>   single device mode. The single device mode currently enforces only a
+>   pass policy when no BPF is attached, and does not yet support BPF link
+>   attachments for AF_XDP. skbs sent to that device get dropped at the
+>   moment. Given AF_XDP operates at a lower layer of the stack tying this
+>   to the netkit pair did not make sense. In future, the plan is to allow
+>   BPF at the XDP layer which can: i) process traffic coming from the AF_XDP
+>   application (e.g. QEMU with AF_XDP backend) to filter egress traffic or
+>   to push selected egress traffic up to the single netkit device to the
+>   local stack (e.g. DHCP requests), and ii) vice-versa skbs sent to the
+>   single netkit into the AF_XDP application (e.g. DHCP replies). Also,
+>   the control-plane can dynamically add/remove rxq bindings for the single
+>   netkit device without having to interrupt (e.g. down/up cycle) the main
+>   netkit pair for the Pod which has traffic going in and out.
 > 
-> io_uring example with eth0 being a physical device with 16 queues where
-> netkit is bound to the last queue, iou-zcrx.c is binary from selftests.
-> Flow steering to that queue is based on the service VIP:port of the
-> server utilizing io_uring:
-> 
->   # ethtool -X eth0 start 0 equal 15
->   # ethtool -X eth0 start 15 equal 1 context new
->   # ethtool --config-ntuple eth0 flow-type tcp4 dst-ip 1.2.3.4 dst-port 5000 action 15
->   # ip netns add foo
->   # ip link add type netkit peer numrxqueues 2
->   # ./pyynl/cli.py --spec ~/netlink/specs/netdev.yaml \
->                    --do bind-queue \
->                    --json "{"src-ifindex": $(ifindex eth0), "src-queue-id": 15, \
->                             "dst-ifindex": $(ifindex nk0), "queue-type": "rx"}"
->   {'dst-queue-id': 1}
->   # ip link set nk0 netns foo
->   # ip link set nk1 up
->   # ip netns exec foo ip link set lo up
->   # ip netns exec foo ip link set nk0 up
->   # ip netns exec foo ip addr add 1.2.3.4/32 dev nk0
->   [ ... setup routing etc to get external traffic into the netns ... ]
->   # ip netns exec foo ./iou-zcrx -s -p 5000 -i nk0 -q 1
-> 
-> Remote io_uring client:
-> 
->   # ./iou-zcrx -c -h 1.2.3.4 -p 5000 -l 12840 -z 65536
-> 
-> We have tested the above against a Broadcom BCM957504 (bnxt_en)
-> 100G NIC, supporting TCP header/data split.
-> 
-> Similarly, this also works for devmem which we tested using ncdevmem:
-> 
->   # ip netns exec foo ./ncdevmem -s 1.2.3.4 -l -p 5000 -f nk0 -t 1 -q 1
-> 
-> And on the remote client:
-> 
->   # ./ncdevmem -s 1.2.3.4 -p 5000 -f eth0
-> 
-> For Cilium, the plan is to open up support for the various memory providers
-> for regular Kubernetes Pods when Cilium is configured with netkit datapath
-> mode.
-> 
-> Signed-off-by: David Wei <dw@davidwei.uk>
-> Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
 > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> Link: https://kernel-recipes.org/en/2024/schedule/efficient-zero-copy-networking-using-io_uring [0]
+> Co-developed-by: David Wei <dw@davidwei.uk>
+> Signed-off-by: David Wei <dw@davidwei.uk>
+> Reviewed-by: Jordan Rife <jordan@jrife.io>
+> Link: https://docs.cilium.io/en/stable/operations/performance/tuning/#netkit-device-mode [0]
 > ---
->  drivers/net/netkit.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
+>  drivers/net/netkit.c         | 108 ++++++++++++++++++++++-------------
+>  include/uapi/linux/if_link.h |   6 ++
+>  2 files changed, 74 insertions(+), 40 deletions(-)
 > 
-> diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-> index 75b57496b72e..a281b39a1047 100644
-> --- a/drivers/net/netkit.c
-> +++ b/drivers/net/netkit.c
-> @@ -282,6 +282,21 @@ static const struct ethtool_ops netkit_ethtool_ops = {
->  	.get_channels		= netkit_get_channels,
->  };
->  
-> +static struct device *netkit_queue_get_dma_dev(struct net_device *dev, int idx)
-> +{
-> +	struct netdev_rx_queue *rxq, *peer_rxq;
-> +	unsigned int peer_idx;
-> +
-> +	rxq = __netif_get_rx_queue(dev, idx);
-> +	if (!rxq->peer)
-> +		return NULL;
-> +
-> +	peer_rxq = rxq->peer;
-> +	peer_idx = get_netdev_rx_queue_index(peer_rxq);
-> +
-> +	return netdev_queue_get_dma_dev(peer_rxq->dev, peer_idx);
-> +}
-> +
->  static int netkit_queue_create(struct net_device *dev)
->  {
->  	struct netkit *nk = netkit_priv(dev);
-> @@ -307,7 +322,8 @@ static int netkit_queue_create(struct net_device *dev)
->  }
->  
->  static const struct netdev_queue_mgmt_ops netkit_queue_mgmt_ops = {
-> -	.ndo_queue_create = netkit_queue_create,
-> +	.ndo_queue_get_dma_dev		= netkit_queue_get_dma_dev,
-> +	.ndo_queue_create		= netkit_queue_create,
->  };
->  
->  static struct net_device *netkit_alloc(struct nlattr *tb[],
 
 Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
 
