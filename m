@@ -1,214 +1,137 @@
-Return-Path: <bpf+bounces-71830-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71831-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27CDBBFD8D9
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 19:23:56 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 305FBBFD7F1
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 19:13:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D9FF3BAB61
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 16:57:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 05B634FAB11
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 17:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F45335B123;
-	Wed, 22 Oct 2025 16:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4103727146A;
+	Wed, 22 Oct 2025 17:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ric7Gw9I"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QTKs7ur5"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753DB35B137
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 16:57:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40AAE26ED29
+	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 17:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761152255; cv=none; b=Pdra2k461UVcdj8kZzUgTzDniEL7xh7sWK5A7z/UL+YzHUMIeLTtuM+Tv2um8X3PeR+to3N1/3xVHfXUROKVDqIWhnBDZqYm0ZaBQy9gpa532vHBMk1K2w4vglPOUGAQlmZbjZvHIVcG/qoYG3rJqai1QWIJhI83HKEiVCqtYCg=
+	t=1761152421; cv=none; b=FJvdg7QxI1ek73Z8OKuctJ1Nw4sSib1xmV7fNtnEkReXlZxaXTEz/VRnfB1OUaicaiM1daHvR9lBzoX3wE8DnCYiLqffBWR4m3xzydjjnR4Q9RFiDAENKGxSJp6XfC4bANIjeSDpxkXmB7l7w3EVUguXNH+aAftGSXcszmw1RF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761152255; c=relaxed/simple;
-	bh=ytm0ejnHzvO2wfwThkZuPsjyf68Bo1+nSesP3d8YWjM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=CCAMR9l8gNjxuWas5lTA0uiRlpTesawv+HAQJx+Ykh3PlPu7y2TIUI6cP1FaB68a8D51H+gxEiKXUzmMFp5zyVO/z69HTv0knBgetZ0neL5ox5ZgwXHPYWVRF4XtvSp5R0lHoeoUKb0yhm6S6w09JpfJGTDzJlRtcFU5WTiQj4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ric7Gw9I; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <14371cf8-e49a-4c68-b763-fa7563a9c764@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761152250;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NFRxEnfnc4VPVFTxGFAyLIkhm0TFgIiDXqEVdaKjeWU=;
-	b=ric7Gw9IqSWQA5EEA9T60kJ2JkX47fhNif7Nk8x8lWfHx6a8ccyGLoFuCef9ytW6lmB/Ce
-	dHKi0ZDFO0O0tRIut8KK/qTu9qklJ/Fd459a4oOOra66uvj64C2JgGmVS6+2DqgxUs/9V+
-	PMZ4MrNeeXtjGgkHlQrOfWwWY58vD50=
-Date: Wed, 22 Oct 2025 09:57:22 -0700
+	s=arc-20240116; t=1761152421; c=relaxed/simple;
+	bh=Il9KvT9aOw3nM8rPyw78uVLElJTEq5yc96lYtncXGZA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fQ9LuBkeHIlyoV6eQOLqvV7rKETMmgcSQP/AyQNJwlMMzdhbGq7DTyHirl3mQJiiOSjXcMrJMDC0CoWu/tB+xDIGpwEKUxU1a25Lvu44fLIBXIM6YoReVgNiJ9z2OAFu/75wGN85uzp7GgPfFZ/DPDLuWV6FpZGFx2pcwI3dLDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QTKs7ur5; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-77f5d497692so8771258b3a.1
+        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 10:00:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761152419; x=1761757219; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Il9KvT9aOw3nM8rPyw78uVLElJTEq5yc96lYtncXGZA=;
+        b=QTKs7ur5OPI2gqjg0KUYYcUNAwUx9XZFS36YPagkIGmNavXfPCKnzucd1TGlvJrLsy
+         gyK3ueCZKtxI4LY8apkfMqr8Y8p95uGue/DuSOvQuYBY9HoxY/IwaqfXm7ulnSzvEE0j
+         y7XT14H3m0s+GUhhKJlve7ks+EFc2YO7sSrrgbR2M/umeE3Rx03cIV0hxHSKT8UtYNBa
+         wEXfPXTVFkggnBhk4QdHyPSxvqwTqbRWfxnFZ6yXvRjVyrRN98zUE5sBpE2yeJ8kk0Iv
+         QdvLsI9XTfk/fclIh3CiNfcFv6/fP9FZw1No3/9gRrisW8Q37hdcjp6DBs75iQ6WKRlX
+         ZluA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761152419; x=1761757219;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Il9KvT9aOw3nM8rPyw78uVLElJTEq5yc96lYtncXGZA=;
+        b=qn9521FdFADnu3+0/LL3mnO3g3wdre3b5696Olo/dntMHjBNCfwxVq6CTlL9ogh5xY
+         xcjTBVTZ7cO4QHNwXh1gSL7Pk+MbmyINuyLdK742xIbIcqtWeheU5UV/1UoWPlUKKYiq
+         d0APo8MfUEdghHH1ftvvJJEvUR2XanwSXQ+r54nJVPOFK2flRDpojHRjgxZAyDlX4D4d
+         CC3Uqw925fUJ/kcm/L1eBerA/F7KAlvxqWJ9nVYAhdehMlx+LGTiTiMVWWOzMJLgrtEN
+         pY8mpHEUB7KsBOfOJJ6iMcgHfYKbvXFc83uXFjaiShXxKPzgTZqnA5waMA+W3jLoNUUb
+         G8Bw==
+X-Gm-Message-State: AOJu0Yyz5Dmw2W8Y0EWsXgkReBTezdrM8qdCjpEjaCrEE5xbMDAaVuyd
+	cm51ay0+fX76hwOOrcDqnOD+/CpfpPzKYWLt08I/ptAHrQEBA6MATRqa
+X-Gm-Gg: ASbGncvz5WQ/KtIN8QyPp1ZZP619vyzJU86cqPjx+qCYkmApXA2dM2fONy4pfoNT11i
+	mzvZze+/KcgEslaRaF1Xr/8z1OrLhQkeqYJNgaHf+L8FTugpqJJ4XYvS8RthpiaFDUrtV0E8Y57
+	pbb3lqapsyMyH0kksEjOPox3PFGTlbmBUbo9l0X4QVZf7FXHZYeHBZtjOeisXXEOR41KVk/Iie9
+	Rpsb29k6zOhqdlOO2gTYYKp81Prw/yUG0/cEVYf3EgKs8FXBDfUti0xLSe7isXYzgZMT3dKyFOO
+	XeOBxHPwRrBwR9caEEWg0Dc3v+4tfY2062G+tu+Lcm2HqkfvhRmNBqXb1KeqOq1dhBXoKv9xfHb
+	6V1tDz+zwyF3Ioa5oLeR/GlgFhvkrhaezU2a8y5xVfRm84jl+p2RH7zF6TbUk3ezwf0jPUo1Ldj
+	vZGbjL8zUSkeB0OzxLbBMQPZRFJ283Z2O/wAU=
+X-Google-Smtp-Source: AGHT+IHzRB7ko+7UoZkLb+73trdatEShqD6viR6vMVNkDRdYiI65VYU9xGtzWGYXnu3ehZqKqE8ciQ==
+X-Received: by 2002:a05:6a00:9514:b0:781:2271:50df with SMTP id d2e1a72fcca58-7a220ad9c9cmr26296628b3a.19.1761152419324;
+        Wed, 22 Oct 2025 10:00:19 -0700 (PDT)
+Received: from ?IPv6:2a03:83e0:115c:1:fa8d:1a05:3c71:d71? ([2620:10d:c090:500::7:b877])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a230123122sm14957323b3a.72.2025.10.22.10.00.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Oct 2025 10:00:19 -0700 (PDT)
+Message-ID: <3c14b6ca33d86b34eeba1d820b0654e713136b5c.camel@gmail.com>
+Subject: Re: [PATCH v6 bpf-next 05/17] selftests/bpf: add selftests for new
+ insn_array map
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko	 <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>,
+ Daniel Borkmann	 <daniel@iogearbox.net>, Quentin Monnet <qmo@kernel.org>,
+ Yonghong Song	 <yonghong.song@linux.dev>
+Date: Wed, 22 Oct 2025 10:00:17 -0700
+In-Reply-To: <d5babd1d0a1ff4b1d5f11a95bde7881f7c970272.camel@gmail.com>
+References: <20251019202145.3944697-1-a.s.protopopov@gmail.com>
+		 <20251019202145.3944697-6-a.s.protopopov@gmail.com>
+		 <9660d7d3d3348bdf84c0a1a2861b66db9e2cc980.camel@gmail.com>
+		 <aPjfuZd+370hXFLJ@mail.gmail.com>
+		 <0e98a654792b6ab8002b0cf7ddf604e20b2f8f5e.camel@gmail.com>
+		 <aPjlANnS+hj09w2s@mail.gmail.com>
+	 <d5babd1d0a1ff4b1d5f11a95bde7881f7c970272.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [syzbot] [bpf?] WARNING in bpf_bprintf_prepare (3)
-Content-Language: en-GB
-To: syzbot <syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com>,
- andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- chandna.sahil@gmail.com, daniel@iogearbox.net, eddyz87@gmail.com,
- haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
- kpsingh@kernel.org, linux-kernel@vger.kernel.org, listout@listout.xyz,
- martin.lau@linux.dev, netdev@vger.kernel.org, sdf@fomichev.me,
- song@kernel.org, syzkaller-bugs@googlegroups.com
-References: <68f6a4c8.050a0220.1be48.0011.GAE@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <68f6a4c8.050a0220.1be48.0011.GAE@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
+On Wed, 2025-10-22 at 07:03 -0700, Eduard Zingerman wrote:
+> On Wed, 2025-10-22 at 14:06 +0000, Anton Protopopov wrote:
+>=20
+> [...]
+>=20
+> > > > > > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_insn_ar=
+ray.c b/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
+> > > > > > new file mode 100644
+> > > > > > index 000000000000..a4304ef5be13
+> > > > > > --- /dev/null
+> > > > > > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
+> > > > >=20
+> > > > > [...]
+> > > > >=20
+> > > > > > +static void check_bpf_no_lookup(void)
+> > > > >=20
+> > > > > This one can be moved to prog_tests/bpf_insn_array.c, I think.
+> > > >=20
+> > > > A typo? (This is a patch for the prog_tests/bpf_insn_array.c)
+> > >=20
+> > > Yes, I mean progs/verifier_gotox.c, the one with inline assembly.
+> >=20
+> > I think it should stay here. There will be other usages of the
+> > instruction array, and neither should allow operations on it from
+> > a BPF prog (indirect calls, static keys).
+>=20
+> It will be functionally identical and like 3x-4x time shorter in that fil=
+e.
 
-
-On 10/20/25 2:08 PM, syzbot wrote:
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    a1e83d4c0361 selftests/bpf: Fix redefinition of 'off' as d..
-> git tree:       bpf
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12d21de2580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9ad7b090a18654a7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b0cff308140f79a9c4cb
-> compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=160cf542580000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=128d5c58580000
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/2f6a7a0cd1b7/disk-a1e83d4c.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/873984cfc71e/vmlinux-a1e83d4c.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/16711d84070c/bzImage-a1e83d4c.xz
->
-> The issue was bisected to:
->
-> commit 7c33e97a6ef5d84e98b892c3e00c6d1678d20395
-> Author: Sahil Chandna <chandna.sahil@gmail.com>
-> Date:   Tue Oct 14 18:56:35 2025 +0000
->
->      bpf: Do not disable preemption in bpf_test_run().
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=172fe492580000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14afe492580000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10afe492580000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com
-> Fixes: 7c33e97a6ef5 ("bpf: Do not disable preemption in bpf_test_run().")
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 6145 at kernel/bpf/helpers.c:781 bpf_try_get_buffers kernel/bpf/helpers.c:781 [inline]
-> WARNING: CPU: 1 PID: 6145 at kernel/bpf/helpers.c:781 bpf_bprintf_prepare+0x12cf/0x13a0 kernel/bpf/helpers.c:834
-
-Okay, the warning is due to the following WARN_ON_ONCE:
-
-static DEFINE_PER_CPU(struct bpf_bprintf_buffers[MAX_BPRINTF_NEST_LEVEL], bpf_bprintf_bufs);
-static DEFINE_PER_CPU(int, bpf_bprintf_nest_level);
-
-int bpf_try_get_buffers(struct bpf_bprintf_buffers **bufs)
-{
-         int nest_level;
-
-         nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
-         if (WARN_ON_ONCE(nest_level > MAX_BPRINTF_NEST_LEVEL)) {
-                 this_cpu_dec(bpf_bprintf_nest_level);
-                 return -EBUSY;
-         }
-         *bufs = this_cpu_ptr(&bpf_bprintf_bufs[nest_level - 1]);
-
-         return 0;
-}
-
-Basically without preempt disable, at process level, it is possible
-more than one process may trying to take bpf_bprintf_buffers.
-Adding softirq and nmi, it is totally likely to have more than 3
-level for buffers. Also, more than one process with bpf_bprintf_buffers
-will cause problem in releasing buffers, so we need to have
-preempt_disable surrounding bpf_try_get_buffers() and
-bpf_put_buffers().
-
-There are some kfuncs/helpers need such preempt_disable
-protection, e.g. bpf_stream_printk, bpf_snprintf,
-bpf_trace_printk, bpf_trace_vprintk, bpf_seq_printf.
-But please double check.
-
-
-> Modules linked in:
-> CPU: 1 UID: 0 PID: 6145 Comm: syz.4.53 Not tainted syzkaller #0 PREEMPT(full)
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/02/2025
-> RIP: 0010:bpf_try_get_buffers kernel/bpf/helpers.c:781 [inline]
-> RIP: 0010:bpf_bprintf_prepare+0x12cf/0x13a0 kernel/bpf/helpers.c:834
-> Code: ff e9 ce fe ff ff e8 10 ec e0 ff e9 be fe ff ff e8 06 ec e0 ff e9 b4 fe ff ff e8 fc eb e0 ff e9 aa fe ff ff e8 f2 eb e0 ff 90 <0f> 0b 90 65 ff 0d 27 fd b2 10 b8 f0 ff ff ff e9 17 ff ff ff e8 d8
-> RSP: 0018:ffffc90003797840 EFLAGS: 00010293
-> RAX: ffffffff81df57fe RBX: ffffc90003797a10 RCX: ffff888026493c80
-> RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000003
-> RBP: ffffc90003797970 R08: 0000000000585870 R09: 0000000000000005
-> R10: dffffc0000000000 R11: fffff520006f2f20 R12: dffffc0000000000
-> R13: 0000000000000004 R14: 0000000000000003 R15: 1ffff920006f2f42
-> FS:  00005555805f5500(0000) GS:ffff888125e0c000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000000 CR3: 000000007c04e000 CR4: 00000000003526f0
-> Call Trace:
->   <TASK>
->   ____bpf_trace_printk kernel/trace/bpf_trace.c:372 [inline]
->   bpf_trace_printk+0xdb/0x190 kernel/trace/bpf_trace.c:362
->   bpf_prog_bfbd7bf4bf171090+0x41/0x5a
->   bpf_dispatcher_nop_func include/linux/bpf.h:1350 [inline]
->   __bpf_prog_run include/linux/filter.h:721 [inline]
->   bpf_prog_run include/linux/filter.h:728 [inline]
->   bpf_prog_run_pin_on_cpu include/linux/filter.h:745 [inline]
->   bpf_flow_dissect+0x225/0x720 net/core/flow_dissector.c:1024
->   bpf_prog_test_run_flow_dissector+0x37c/0x5c0 net/bpf/test_run.c:1414
->   bpf_prog_test_run+0x2c7/0x340 kernel/bpf/syscall.c:4688
->   __sys_bpf+0x562/0x860 kernel/bpf/syscall.c:6167
->   __do_sys_bpf kernel/bpf/syscall.c:6259 [inline]
->   __se_sys_bpf kernel/bpf/syscall.c:6257 [inline]
->   __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6257
->   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->   do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
->   entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7f25b0f8efc9
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffe036cd5e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 00007f25b11e5fa0 RCX: 00007f25b0f8efc9
-> RDX: 0000000000000050 RSI: 0000200000000180 RDI: 000000000000000a
-> RBP: 00007f25b1011f91 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007f25b11e5fa0 R14: 00007f25b11e5fa0 R15: 0000000000000003
->   </TASK>
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
-
+Wait. I'm being stupid again. There is no simple way to get an FD for
+the iarray map when writing a bpf C. So your current implementation
+makes most sense. Please disregard this nitpick, the patch is good as
+it is.
 
