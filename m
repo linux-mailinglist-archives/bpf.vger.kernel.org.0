@@ -1,164 +1,219 @@
-Return-Path: <bpf+bounces-71695-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71696-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D35AFBFADA8
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 10:20:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60DF3BFAEA7
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 10:34:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 294991A04C93
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 08:20:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39D3E1A01101
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 08:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49BF3308F1A;
-	Wed, 22 Oct 2025 08:20:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FE6C30B51B;
+	Wed, 22 Oct 2025 08:34:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bCkXj4FC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eNENQrci"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95DDA308F33
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 08:19:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749B82773F1;
+	Wed, 22 Oct 2025 08:34:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761121199; cv=none; b=VhhxqqNMda011jriW/F5RCFKPG0DgvEmeLAJ4KEVY3QXqhwQqVGX5gxyBUlBBCPVoXXsxFQSdIEHptAQ+Cu9xDVK7JNwUCDq0ELJ5+auO04cGtLuyDJpXaDzi76Z57TpeLvZBbuUWKi22Y2fYfiSoOg5k/vQB0HC/omcwiDFL18=
+	t=1761122077; cv=none; b=Mqe2wtc1LE7px6wEfZIDqr//L9GwmPQbCu2Z9zlMrNtgQQndMqIxpFZyWc7Sn7NJd/IcEHA76V1oaFF+yuRaKOpqIfkYljMUo1SGbw8CcSx/2o+qoxBo3Utb2Iu/ivIta+T8+562/jAhLuceNA68d4BTgDl13pB1JWg6lMB/YfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761121199; c=relaxed/simple;
-	bh=AeBSiBDgwpOGCGWPswfsYos7CpkvHnSPMpBTKMI3s6k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZNNiyyHHyWSEaMPioS+W6OcSS/9RUTT/QQZj1NR8+S55asfie1SLIM2SVIpScd1QRhvjuQ5voNof7XqihAvldj8Xo8Y55Zd7e9pEtfkk8dT66nPsDOZ3bAjEdCKS5EGjTus20Krszbz1gNm2fHrytxAozrD+aW9JW++CuMYJqvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bCkXj4FC; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761121185;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bpy//4A7k0mbi8peB9EHLJq9FXO+mcernBj+cHoysX4=;
-	b=bCkXj4FCRTsFuSWTdzCO9l/y1V8g6EkIWkSW7RkPA5aA6w8xS6+THX9b97DHypTYKGsiHY
-	Z9+CHBFANqs5y/DhbCsbNFTbTU+z0Py4KfK4kXnMUhemF8gDdSt0uCbVpLcgie8kinKCQk
-	vtLfHpuOQuDgxCwfvELMNRwPsQ6jHGw=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: ast@kernel.org, jolsa@kernel.org, Menglong Dong <menglong8.dong@gmail.com>
-Cc: daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, mattbobrowski@google.com, rostedt@goodmis.org,
- mhiramat@kernel.org, mathieu.desnoyers@efficios.com, leon.hwang@linux.dev,
- jiang.biao@linux.dev, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 00/10] bpf: tracing session supporting
-Date: Wed, 22 Oct 2025 16:19:27 +0800
-Message-ID: <5931958.DvuYhMxLoT@7950hx>
-In-Reply-To: <20251022080159.553805-1-dongml2@chinatelecom.cn>
-References: <20251022080159.553805-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1761122077; c=relaxed/simple;
+	bh=lzCbKU7QItIkr+mzKOU75bPyRFomE2+TIRxFLe0FUWk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n/b7e3mBW02CG7hP9AxRAhAwvvhVT8FxtdRspAqC9F6dur2zxch0+yxI1xdZVGaraXhGFjQycKs4omAevcCDakp+2psGUO4RaMP9T+mTZVhsPWNGsw+HdbH96XghnedgDwgIieSCgbyP1ImoPXdlOzIn30ULm9rf5sisOAg5UEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eNENQrci; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B9F3C4CEE7;
+	Wed, 22 Oct 2025 08:34:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761122077;
+	bh=lzCbKU7QItIkr+mzKOU75bPyRFomE2+TIRxFLe0FUWk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eNENQrcijcTgroitdHL2f4ePo57qFYdmGZUemOnJ78NywWQnQtQrOb1AxabP2RXOU
+	 RT6odx4YLLn3fzKG2+oDTNbHyf3mry6rONviKjb4GPu5YUzRcSO4HBQlnvOsUIScvq
+	 HSUbnYfMy92yW1gnMMYb7CiPw7lAcS+wFJhnxVLo5ym1i6l9S2TKoLZAcJfXH0jpVK
+	 HH49quTYRA7Eqb9QopaARqJTYR5D8EGOtoJCTPV9IxxqJSYqG5ihRtFNfbM3pRIeOe
+	 bPRuQlVjb9ZlP68ysXySotx7GYcYmYJyoVfy8Dh0SwkKMwHu2bYtGf5c8SijT/fLeZ
+	 ARWTDed3EBIgQ==
+Date: Wed, 22 Oct 2025 10:34:29 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>, 
+	Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH RFC DRAFT 00/50] nstree: listns()
+Message-ID: <20251022-autoverkehr-begreifbar-9532f1dc148a@brauner>
+References: <20251021-work-namespace-nstree-listns-v1-0-ad44261a8a5b@kernel.org>
+ <20251021143454.GA8072@fedora>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20251021143454.GA8072@fedora>
 
-On 2025/10/22 16:01, Menglong Dong wrote:
-> Sometimes, we need to hook both the entry and exit of a function with
-> TRACING. Therefore, we need define a FENTRY and a FEXIT for the target
-> function, which is not convenient.
+On Tue, Oct 21, 2025 at 10:34:54AM -0400, Josef Bacik wrote:
+> On Tue, Oct 21, 2025 at 01:43:06PM +0200, Christian Brauner wrote:
+> > Hey,
+> > 
+> > As announced a while ago this is the next step building on the nstree
+> > work from prior cycles. There's a bunch of fixes and semantic cleanups
+> > in here and a ton of tests.
+> > 
+> > I need helper here!: Consider the following current design:
+> > 
+> > Currently listns() is relying on active namespace reference counts which
+> > are introduced alongside this series.
+> > 
+> > The active reference count of a namespace consists of the live tasks
+> > that make use of this namespace and any namespace file descriptors that
+> > explicitly pin the namespace.
+> > 
+> > Once all tasks making use of this namespace have exited or reaped, all
+> > namespace file descriptors for that namespace have been closed and all
+> > bind-mounts for that namespace unmounted it ceases to appear in the
+> > listns() output.
+> > 
+> > My reason for introducing the active reference count was that namespaces
+> > might obviously still be pinned internally for various reasons. For
+> > example the user namespace might still be pinned because there are still
+> > open files that have stashed the openers credentials in file->f_cred, or
+> > the last reference might be put with an rcu delay keeping that namespace
+> > active on the namespace lists.
+> > 
+> > But one particularly strange example is CONFIG_MMU_LAZY_TLB_REFCOUNT=y.
+> > Various architectures support the CONFIG_MMU_LAZY_TLB_REFCOUNT option
+> > which uses lazy TLB destruction.
+> > 
+> > When this option is set a userspace task's struct mm_struct may be used
+> > for kernel threads such as the idle task and will only be destroyed once
+> > the cpu's runqueue switches back to another task. So the kernel thread
+> > will take a reference on the struct mm_struct pinning it.
+> > 
+> > And for ptrace() based access checks struct mm_struct stashes the user
+> > namespace of the task that struct mm_struct belonged to originally and
+> > thus takes a reference to the users namespace and pins it.
+> > 
+> > So on an idle system such user namespaces can be persisted for pretty
+> > arbitrary amounts of time via struct mm_struct.
+> > 
+> > Now, without the active reference count regulating visibility all
+> > namespace that still are pinned in some way on the system will appear in
+> > the listns() output and can be reopened using namespace file handles.
+> > 
+> > Of course that requires suitable privileges and it's not really a
+> > concern per se because a task could've also persist the namespace
+> > recorded in struct mm_struct explicitly and then the idle task would
+> > still reuse that struct mm_struct and another task could still happily
+> > setns() to it afaict and reuse it for something else.
+> > 
+> > The active reference count though has drawbacks itself. Namely that
+> > socket files break the assumption that namespaces can only be opened if
+> > there's either live processes pinning the namespace or there are file
+> > descriptors open that pin the namespace itself as the socket SIOCGSKNS
+> > ioctl() can be used to open a network namespace based on a socket which
+> > only indirectly pins a network namespace.
+> > 
+> > So that punches a whole in the active reference count tracking. So this
+> > will have to be handled as right now socket file descriptors that pin a
+> > network namespace that don't have an active reference anymore (no live
+> > processes, not explicit persistence via namespace fds) can't be used to
+> > issue a SIOCGSKNS ioctl() to open the associated network namespace.
+> > 
+> > So two options I see if the api is based on ids:
+> > 
+> > (1) We use the active reference count and somehow also make it work with
+> >     sockets.
+> > (2) The active reference count is not needed and we say that listns() is
+> >     an introspection system call anyway so we just always list
+> >     namespaces regardless of why they are still pinned: files,
+> >     mm_struct, network devices, everything is fair game.
+> > (3) Throw hands up in the air and just not do it.
+> >
 > 
-> Therefore, we add a tracing session support for TRACING. Generally
-> speaking, it's similar to kprobe session, which can hook both the entry
-> and exit of a function with a single BPF program. Meanwhile, it can also
-> control the execution of the fexit with the return value of the fentry.
-> Session cookie is also supported with the kfunc bpf_fsession_cookie().
+> I think the active reference counts are just nice to have, if I'm not missing
+> something we still have to figure out which pid is using the namespace we may
+> want to enter, so there's already a "time of check, time of use" issue. I think
+> if we want to have the active count we can do it just as an advisory thing, have
+> a flag that says "this ns is dying and you can't do anything with it", and then
+> for network namespaces we can just never set the flag and let the existing
+> SIOCKGSNS ioctl work as is.
 > 
-> The kfunc bpf_tracing_is_exit() and bpf_fsession_cookie() are both inlined
-> in the verifier.
+> The bigger question (and sorry I didn't think about this before now), is how are
+> we going to integrate this into the rest of the NS related syscalls? Having
+> progromatic introspection is excellent from a usabiility point of view, but we
+> also want to be able to have an easy way to get a PID from these namespaces, and
+> even eventually do things like setns() based on these IDs. Those are followup
+> series of course, but we should at least have a plan for them. Thanks,
 
-Hmm......the gmail broken after it sent the 7th patch. So I sent
-the remained 3 patches again. However, they are not recognized
-together as a series. So awkward :/
+I don't think we even need to have separate system calls to operate
+directly on the IDs that's why I added namespace file handles.
 
-Should I resend it?
+We have listns() to iterate through namespaces in various ways.
+This will be followed by statns() which will indeed operate on these
+IDs to retrieve namespace specific information.
 
-Thanks!
-Menglong Dong
+I already have that one drafted as well (That can contain all kinds of
+namespace specific information like number of mounts (mntns), or number
+of sockets (netns), number of network devices (netns), number of process
+(pidns) what have you. Although what to expose I'm leaving to the
+individual namespaces to figure out. IOW, I'm not going to figure out
+what information statns() whould expose for network namespaces. I'll
+leave that to net/).
 
-> 
-> We allow the usage of bpf_get_func_ret() to get the return value in the
-> fentry of the tracing session, as it will always get "0", which is safe
-> enough and is OK.
-> 
-> The while fsession stuff is arch related, so the -EOPNOTSUPP will be
-> returned if it is not supported yet by the arch. In this series, we only
-> support x86_64. And later, other arch will be implemented.
-> 
-> Changes since v1:
-> * session cookie support.
->   In this version, session cookie is implemented, and the kfunc
->   bpf_fsession_cookie() is added.
-> 
-> * restructure the layout of the stack.
->   In this version, the session stuff that stored in the stack is changed,
->   and we locate them after the return value to not break
->   bpf_get_func_ip().
-> 
-> * testcase enhancement.
->   Some nits in the testcase that suggested by Jiri is fixed. Meanwhile,
->   the testcase for get_func_ip and session cookie is added too.
-> 
-> Menglong Dong (10):
->   bpf: add tracing session support
->   bpf: add kfunc bpf_tracing_is_exit for TRACE_SESSION
->   bpf: add kfunc bpf_fsession_cookie for TRACING SESSION
->   bpf,x86: add ret_off to invoke_bpf()
->   bpf,x86: add tracing session supporting for x86_64
->   libbpf: add support for tracing session
->   selftests/bpf: test get_func_ip for fsession
->   selftests/bpf: add testcases for tracing session
->   selftests/bpf: add session cookie testcase for fsession
->   selftests/bpf: add testcase for mixing fsession, fentry and fexit
-> 
->  arch/arm64/net/bpf_jit_comp.c                 |   3 +
->  arch/loongarch/net/bpf_jit.c                  |   3 +
->  arch/powerpc/net/bpf_jit_comp.c               |   3 +
->  arch/riscv/net/bpf_jit_comp64.c               |   3 +
->  arch/s390/net/bpf_jit_comp.c                  |   3 +
->  arch/x86/net/bpf_jit_comp.c                   | 214 ++++++++++++++++--
->  include/linux/bpf.h                           |   2 +
->  include/uapi/linux/bpf.h                      |   1 +
->  kernel/bpf/btf.c                              |   2 +
->  kernel/bpf/syscall.c                          |   2 +
->  kernel/bpf/trampoline.c                       |   5 +-
->  kernel/bpf/verifier.c                         |  45 +++-
->  kernel/trace/bpf_trace.c                      |  59 ++++-
->  net/bpf/test_run.c                            |   1 +
->  net/core/bpf_sk_storage.c                     |   1 +
->  tools/bpf/bpftool/common.c                    |   1 +
->  tools/include/uapi/linux/bpf.h                |   1 +
->  tools/lib/bpf/bpf.c                           |   2 +
->  tools/lib/bpf/libbpf.c                        |   3 +
->  .../selftests/bpf/prog_tests/fsession_test.c  | 161 +++++++++++++
->  .../bpf/prog_tests/get_func_ip_test.c         |   2 +
->  .../bpf/prog_tests/tracing_failure.c          |   2 +-
->  .../selftests/bpf/progs/fsession_cookie.c     |  49 ++++
->  .../selftests/bpf/progs/fsession_mixed.c      |  45 ++++
->  .../selftests/bpf/progs/fsession_test.c       | 175 ++++++++++++++
->  .../selftests/bpf/progs/get_func_ip_test.c    |  14 ++
->  26 files changed, 776 insertions(+), 26 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/fsession_test.c
->  create mode 100644 tools/testing/selftests/bpf/progs/fsession_cookie.c
->  create mode 100644 tools/testing/selftests/bpf/progs/fsession_mixed.c
->  create mode 100644 tools/testing/selftests/bpf/progs/fsession_test.c
-> 
-> 
+But to your other point: to perform traditional operations like setns()
+or all of the ioctls associated with such namespaces, it's pretty easy:
 
+  struct file_handle **net_handle;
+  char net_buf[sizeof(*net_handle) + MAX_HANDLE_SZ];
 
+  net_handle = (struct file_handle *)net_buf;
+  net_handle->handle_bytes = sizeof(struct nsfs_file_handle);
+  net_handle->handle_type = FILEID_NSFS;
+  struct nsfs_file_handle *net_fh = (struct nsfs_file_handle *)net_handle->f_handle;
+  net_fh->ns_id = netns_id;
 
+Now obviously that should exist in a nice simple define and aligned and
+not nastily open-coded like I did here but you get the point. The
+namespace id is sufficient to open an fd to it which is the main api to
+perform actual semantic operations on it.
 
+  /*
+   * As long as the caller has CAP_SYS_ADMIN in the owning user namespace
+   * of the etwork namespace or is located in the network namespace they
+   * can open a file descriptor to it just like with
+   * /proc/<pid>/ns/<ns_type>
+   */
+  int netns_fd = open_by_handle_at(FD_NSFS_ROOT, net_handle, O_RDONLY);
+  
+  setns(netns_fd, CLONE_NEWNET)
+
+Getting pids from pid namespaces or translating them between pid
+namespaces is something I added a while ago as well, via ioctl_nsfs:
+
+/* Translate pid from target pid namespace into the caller's pid namespace. */
+#define NS_GET_PID_FROM_PIDNS	_IOR(NSIO, 0x6, int)
+/* Return thread-group leader id of pid in the callers pid namespace. */
+#define NS_GET_TGID_FROM_PIDNS	_IOR(NSIO, 0x7, int)
+/* Translate pid from caller's pid namespace into a target pid namespace. */
+#define NS_GET_PID_IN_PIDNS	_IOR(NSIO, 0x8, int)
+/* Return thread-group leader id of pid in the target pid namespace. */
+#define NS_GET_TGID_IN_PIDNS	_IOR(NSIO, 0x9, int)
+
+That also works fd-based and so is covered by open_by_handle_at().
 
