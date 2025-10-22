@@ -1,278 +1,166 @@
-Return-Path: <bpf+bounces-71672-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71673-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3695EBFA49C
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 08:45:58 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 645B3BFA59F
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 08:54:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45043481676
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 06:44:58 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0E2594F488E
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 06:53:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52C2B2EE60B;
-	Wed, 22 Oct 2025 06:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 611EB2F2618;
+	Wed, 22 Oct 2025 06:53:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c8TBj/5z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NCG1tcqT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E11F62EFD9E
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 06:44:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F96224AF0
+	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 06:53:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761115495; cv=none; b=pcdlQqMmhOuc2AFHYSo4XXVlLDW4ZxosxHlYE2UbXQnR3SbaITeiKvRHwJcygnEew2Z38qWwaJPgaVOzJKw7GYltUwA71459GRXWizBcy7ZtoiHnSbr1Ijf7eY5g/na8HN4F/zA19LtrrNyfaxGSosRu3H7Lua6Z/fN8loYoFNw=
+	t=1761116031; cv=none; b=NL+Bq6fLvuXD+rrwZehW0nen2XoSfa5VEO2T35ikAKUcg40kV98nUOz7AmXSjEiZhVh8l5XQQrpKZ0Vbl3k5YeArqtFK3fHBP314XUcMdjZGWhFdlxWVP2OCUbyZvNNESJjswPkT98iplelu/d5qNDYkuPasiZQ5YWh+tThMKRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761115495; c=relaxed/simple;
-	bh=rXJwZo/sEsZnLWIaanrdMrDp6qXD1VbRpS6y/7uiAVU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WjE/MwG0dpGIMkedW/1l/2Y36LvvA97EEhlSmT6lvurbpoP4dB7eYxtjhBynFmuFzQHv9/P0I+qruPfpG4OMkQ/vQIVyM9zp4AdJoNdDn/CgnO9hAuHVC85kriuuuxmOjJ74UQPSI8FGYCy+vy5IPQQi05Z4D0nIPr4rHSMeqtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c8TBj/5z; arc=none smtp.client-ip=209.85.128.49
+	s=arc-20240116; t=1761116031; c=relaxed/simple;
+	bh=F/vphGZKH0qpQzPbpS6SNY7pmf7I05yj22+z9cao+MM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=EyxLyRw+FAts3i90fcy841pMqlo4yELfR6No9W/q46NDC3LGFsg/JIXl48+YL5/vBdxc2ADnETSkFX2I2DyQb21IyJMrBVrm9tHreUe96v3UJqKAQUrqDD1PkCgZXzII+TUXB8QDKzlHhlmwxiU37o470olhNML9h4LDf3UuJKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NCG1tcqT; arc=none smtp.client-ip=209.85.210.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-47118259fd8so40000535e9.3
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 23:44:53 -0700 (PDT)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-78f3bfe3f69so5688711b3a.2
+        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 23:53:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761115492; x=1761720292; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fDC7fBGVjICr0dHegQoMCTHDX7ueu7LgShVSHZLYb18=;
-        b=c8TBj/5zZXp4sfExJvkl7lWJjwX+lWwLVNK0vMEW9h81XJl1dW33QJ3C7aHqGnRm+M
-         LVLLB4FEqwhZzOcDtDe6bQonZrscio/QXFgw1dqrK75RfUFEEl0APjy78o2nSjtTsKlW
-         vuVizTFIj+NbLJqO5aUPFIpk8blN5eYotiEmS9JesieJ2CLRUVwSdO0LgMdGWT6TkXDX
-         EbkOlKrndthbK1DdpEIsTFb7e3MBjnJQuslLc1gYu3TiGtRq5sOmXYGNXHv+uTxVArHH
-         gKmbOX6/Vee4zI47hT93IbfKIGZq64gaisRNg1zHyl6l2WpjEJ3G0+VMB8i5ihdNZ7oh
-         2B8A==
+        d=gmail.com; s=20230601; t=1761116030; x=1761720830; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SXARnwZT4spsO4NRUWFlmV6GGi8KcPnqLjj2bGNvZjA=;
+        b=NCG1tcqTjxDEAyCpFMEspj91ZHGOU8TmvZTUN+jdBSRYRK0FdIwBxkM4zDDRbqghSx
+         1gkUrb4luDQOXI3H4/XERsLC1FhrGHVWjqAN7kZyKjyUHpLb3DNZsvffJiFZI+Y0tACH
+         b+E23UuTUfyLEay7z7oB8xiiFGqqGe7V5KlNhgULxxI+4UJNHvWdHG2v4kr9ZCIb+v5K
+         1qcHXY8yxR1awo54xXhqKp3jD4FXY6PPx9LfGTEV4dCd7VNZQfN4udOumTifG7fyA/+Z
+         KYmsGxnd7fmZNvcOjGEazkDcbMxTr0oeWzd1rAecIseH9ZGKchsM0M4icT/aAUsRu81S
+         ZRPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761115492; x=1761720292;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fDC7fBGVjICr0dHegQoMCTHDX7ueu7LgShVSHZLYb18=;
-        b=PWEVBFpyTWyrKgT+MO4FpQ3QozH5EggsX7ONSAcx1qlg/5XLmmTZXQNrEkXODAHrps
-         avekzREfS+zgcESEu61DYZtvRK/3vChb8fA+EXXiWHFx3f3xSJTBAmJLqZpHGpxiS2ia
-         5Mib16kVa7VIQ/iCnfzqFb1kZ+3zmDevfCFwc11h7e8I/cs0fI55smfYVddmQkTQFLEn
-         oKZTh4zwWeWs37w0Zu0yu7z6FbbyZ89VCvXCdW6+eyN0O/kRgFS4SgfUoV+sn9tZxW3a
-         /qp0rG0uJjA5YM8KAJ86Vo0LwV4eU9Yi0gx7BUZ90/FLqF797bWJjf5X4Ovm7H/NNhES
-         Rzkg==
-X-Gm-Message-State: AOJu0YxiutNikLdXqfG97tWAkebfPh0FKfPYYtLXiIjzgoL3lCmXU6AA
-	xNYVYi93OetUIaohAjrh4GHn7k/PJORfOo82WCOyK2vekEVNs9q68vd7
-X-Gm-Gg: ASbGncs7X+Imzs0xANg+Wi8PoUhJEk5cBCugDV5G8W+2a1fssdYKJX69wPSLw+iTIxL
-	2SqwE4krCIsfENV7BCiWpuq2zpjPxie97+3hd6EWS79KEgEEfzCpfEtUVJky4N2/8zgfkzgFqqT
-	IKwm/JthhuxpagxszPSfPwJ5tWoQZwZXRHpBBdEwzpUzLbwTypjDy3ypvvB+St2n5Fcq4XIWxyk
-	bH9QX+CpNfhy8OHJirBQ5AwwjQL5qwKoL+Cv24THkyWBQmtvkL7U4pOUAYEkqgCVMXzKfOn5jxK
-	ondnW31ni7odj/+5AhT8YNOaQuxwnwbQo608DCaQHQoKZ9+i9fjITYm6mmXCqSBHD5bFbahZ+HA
-	Iv/faCMC8Dzw1U8+Zc04XsCXy2hwlNCG0WBIqewlWKklRK4am4aBFCw/2nRFrCHKNfDOZz4yQSh
-	omKk1MaA66sw==
-X-Google-Smtp-Source: AGHT+IH0oXvLO7XYFiKAKMij5W3FVfmeEt3ZsND4UyuPJ7Vo2VADNDg6hlrOCZ9UG6+DkA8kumP6cQ==
-X-Received: by 2002:a05:600c:1e1f:b0:471:d2f:799a with SMTP id 5b1f17b1804b1-47117877791mr130890115e9.16.1761115492033;
-        Tue, 21 Oct 2025 23:44:52 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475c427f77bsm28670895e9.3.2025.10.21.23.44.50
+        d=1e100.net; s=20230601; t=1761116030; x=1761720830;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SXARnwZT4spsO4NRUWFlmV6GGi8KcPnqLjj2bGNvZjA=;
+        b=CBB3AK/x/IrE7QYDW4yDHVyNajUgYFcABmLw7rY2uRhGAqUXc3pihMVHG19eU5kyP6
+         WpzR9gxdFxy8oao8Ndrl37WKlqre1J2L1kPUtQqoSSr9zb9h9WeR3r9WFOs+TQhP5mJ7
+         JtaqU/JL4w8OxXRvIUjm7HQdw6gVL0e3lhiS4Yd250EHJPlpjNfqB32ynxZ3u7iZOtcX
+         bxwWO+Q0E77qdJctfzpdOy/IXmM7xNZdemn9f6AcqVIOpy+/PsnX05vrbzV5ir6wbWeH
+         qxaNMIC2QrcxdKguRM2+b7LW1zNJX/039O+r8edGT1Ax4uN+1L6jrn89rRJLIbTUgncx
+         5yQw==
+X-Gm-Message-State: AOJu0YwL2ZwtiffQrOdmZ23HQBLoJJhbCBJJxNF4n4DZd3A/Lnu/1n2R
+	/Q4bFuOo0qOscGVXbQOFTHHF+MPdSlw9UMILLmFxyRltenT9fMYPjt+K
+X-Gm-Gg: ASbGncsGulSEW+SkgZMigjOARKcg2TQV7BryJ5RaCG++KaV8/CD8hVJ6LU05H+S9FuR
+	alEavksegZFpC9dBwSup2A0oZzBE5xLhOGGs5q0CDdkCNtH9g/n4Svb/Dgvh0cCz/TG21dORVQ0
+	Q0cLfNM6ubL8bSLx8RMe6qVCeBzadwZL5OWTgUZpdm6N4BLi3/cgLhNdb/nWLU94miR9RbEDxbF
+	BXZJxt9e+JMAnEU9dgvSNjBr5AxYTkc3TVnNWMaFsPTXcqVIMhNLd5TZFJLEDWExog3KQuXHJT1
+	4fBQfJOjn+MAVwfS6d5s7HF2QVtixfS5xSQ3tJeXFur1aIZMmNaiGUnq4HZkvwH2TfLndXZwsa4
+	jto9/F8vZ4T+bEmDNewL8ayiaYoRuakJiAGKCkCmTshYQ1WVmLvtfFKn+xiiiOkaf6ECW2ZFh
+X-Google-Smtp-Source: AGHT+IGIS+hAHCDlATOmVlc7RZ7oYUF3yr6Rtwo6xhtP5JEu5q5qyr/fSP+75tiKt8rAG0OTPR+Icg==
+X-Received: by 2002:a05:6a20:6a0b:b0:32b:83bf:2cdb with SMTP id adf61e73a8af0-334a8524332mr27402947637.15.1761116029767;
+        Tue, 21 Oct 2025 23:53:49 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6a76b36188sm12269241a12.27.2025.10.21.23.53.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Oct 2025 23:44:51 -0700 (PDT)
-Date: Wed, 22 Oct 2025 06:51:32 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
+        Tue, 21 Oct 2025 23:53:49 -0700 (PDT)
+Message-ID: <ca9b352ca29f34cfac52f969f25fee204e25fb6f.camel@gmail.com>
 Subject: Re: [PATCH v6 bpf-next 10/17] bpf, x86: add support for indirect
  jumps
-Message-ID: <aPh+9Lw+vmD1nXqY@mail.gmail.com>
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko	 <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>,
+ Daniel Borkmann	 <daniel@iogearbox.net>, Quentin Monnet <qmo@kernel.org>,
+ Yonghong Song	 <yonghong.song@linux.dev>
+Date: Tue, 21 Oct 2025 23:53:45 -0700
+In-Reply-To: <aPh+9Lw+vmD1nXqY@mail.gmail.com>
 References: <20251019202145.3944697-1-a.s.protopopov@gmail.com>
- <20251019202145.3944697-11-a.s.protopopov@gmail.com>
- <c3de352f15a5004c48f4b37bfb4294f6602ec644.camel@gmail.com>
+	 <20251019202145.3944697-11-a.s.protopopov@gmail.com>
+	 <c3de352f15a5004c48f4b37bfb4294f6602ec644.camel@gmail.com>
+	 <aPh+9Lw+vmD1nXqY@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c3de352f15a5004c48f4b37bfb4294f6602ec644.camel@gmail.com>
 
-On 25/10/21 02:17PM, Eduard Zingerman wrote:
-> On Sun, 2025-10-19 at 20:21 +0000, Anton Protopopov wrote:
-> > Add support for a new instruction
-> > 
-> >     BPF_JMP|BPF_X|BPF_JA, SRC=0, DST=Rx, off=0, imm=0
-> > 
-> > which does an indirect jump to a location stored in Rx.  The register
-> > Rx should have type PTR_TO_INSN. This new type assures that the Rx
-> > register contains a value (or a range of values) loaded from a
-> > correct jump table – map of type instruction array.
-> > 
-> > For example, for a C switch LLVM will generate the following code:
-> > 
-> >     0:   r3 = r1                    # "switch (r3)"
-> >     1:   if r3 > 0x13 goto +0x666   # check r3 boundaries
-> >     2:   r3 <<= 0x3                 # adjust to an index in array of addresses
-> >     3:   r1 = 0xbeef ll             # r1 is PTR_TO_MAP_VALUE, r1->map_ptr=M
-> >     5:   r1 += r3                   # r1 inherits boundaries from r3
-> >     6:   r1 = *(u64 *)(r1 + 0x0)    # r1 now has type INSN_TO_PTR
-> >     7:   gotox r1                   # jit will generate proper code
-> > 
-> > Here the gotox instruction corresponds to one particular map. This is
-> > possible however to have a gotox instruction which can be loaded from
-> > different maps, e.g.
-> > 
-> >     0:   r1 &= 0x1
-> >     1:   r2 <<= 0x3
-> >     2:   r3 = 0x0 ll                # load from map M_1
-> >     4:   r3 += r2
-> >     5:   if r1 == 0x0 goto +0x4
-> >     6:   r1 <<= 0x3
-> >     7:   r3 = 0x0 ll                # load from map M_2
-> >     9:   r3 += r1
-> >     A:   r1 = *(u64 *)(r3 + 0x0)
-> >     B:   gotox r1                   # jump to target loaded from M_1 or M_2
-> > 
-> > During check_cfg stage the verifier will collect all the maps which
-> > point to inside the subprog being verified. When building the config,
-> > the high 16 bytes of the insn_state are used, so this patch
-> > (theoretically) supports jump tables of up to 2^16 slots.
-> > 
-> > During the later stage, in check_indirect_jump, it is checked that
-> > the register Rx was loaded from a particular instruction array.
-> > 
-> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> > ---
-> 
-> LGTM, please, address a few remaining points.
-> 
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> 
-> [...]
-> 
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index ae017c032944..d2df21fde118 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> 
-> [...]
-> 
-> > +static struct bpf_iarray *
-> > +create_jt(int t, struct bpf_verifier_env *env, int fd)
->   		    	   		    	  ^^^^^^
-> 				   This parameter is unused
+On Wed, 2025-10-22 at 06:51 +0000, Anton Protopopov wrote:
 
-Ah, yes, no more ->imm. Fixed.
+[...]
 
-> > +{
-> > +	static struct bpf_subprog_info *subprog;
-> > +	int subprog_start, subprog_end;
-> > +	struct bpf_iarray *jt;
-> > +	int i;
-> > +
-> > +	subprog = bpf_find_containing_subprog(env, t);
-> > +	subprog_start = subprog->start;
-> > +	subprog_end = (subprog + 1)->start;
-> > +	jt = jt_from_subprog(env, subprog_start, subprog_end);
-> > +	if (IS_ERR(jt))
-> > +		return jt;
-> > +
-> > +	/* Check that the every element of the jump table fits within the given subprogram */
-> > +	for (i = 0; i < jt->cnt; i++) {
-> > +		if (jt->items[i] < subprog_start || jt->items[i] >= subprog_end) {
-> > +			verbose(env, "jump table for insn %d points outside of the subprog [%u,%u]",
-> > +					t, subprog_start, subprog_end);
-> > +			return ERR_PTR(-EINVAL);
-> > +		}
-> > +	}
-> > +
-> > +	return jt;
-> > +}
-> 
-> [...]
-> 
-> > +/* gotox *dst_reg */
-> > +static int check_indirect_jump(struct bpf_verifier_env *env, struct bpf_insn *insn)
-> > +{
-> > +	struct bpf_verifier_state *other_branch;
-> > +	struct bpf_reg_state *dst_reg;
-> > +	struct bpf_map *map;
-> > +	u32 min_index, max_index;
-> > +	int err = 0;
-> > +	int n;
-> > +	int i;
-> > +
-> > +	dst_reg = reg_state(env, insn->dst_reg);
-> > +	if (dst_reg->type != PTR_TO_INSN) {
-> > +		verbose(env, "R%d has type %d, expected PTR_TO_INSN\n",
-> > +			     insn->dst_reg, dst_reg->type);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	map = dst_reg->map_ptr;
-> > +	if (verifier_bug_if(!map, env, "R%d has an empty map pointer", insn->dst_reg))
-> > +		return -EFAULT;
-> > +
-> > +	if (verifier_bug_if(map->map_type != BPF_MAP_TYPE_INSN_ARRAY, env,
-> > +			    "R%d has incorrect map type %d", insn->dst_reg, map->map_type))
-> > +		return -EFAULT;
-> 
-> Nit: we discussed this in v5, let's drop the verifier_bug_if() and
->      return -EINVAL?
+> > > +/* gotox *dst_reg */
+> > > +static int check_indirect_jump(struct bpf_verifier_env *env, struct =
+bpf_insn *insn)
+> > > +{
+> > > +	struct bpf_verifier_state *other_branch;
+> > > +	struct bpf_reg_state *dst_reg;
+> > > +	struct bpf_map *map;
+> > > +	u32 min_index, max_index;
+> > > +	int err =3D 0;
+> > > +	int n;
+> > > +	int i;
+> > > +
+> > > +	dst_reg =3D reg_state(env, insn->dst_reg);
+> > > +	if (dst_reg->type !=3D PTR_TO_INSN) {
+> > > +		verbose(env, "R%d has type %d, expected PTR_TO_INSN\n",
+> > > +			     insn->dst_reg, dst_reg->type);
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	map =3D dst_reg->map_ptr;
+> > > +	if (verifier_bug_if(!map, env, "R%d has an empty map pointer", insn=
+->dst_reg))
+> > > +		return -EFAULT;
+> > > +
+> > > +	if (verifier_bug_if(map->map_type !=3D BPF_MAP_TYPE_INSN_ARRAY, env=
+,
+> > > +			    "R%d has incorrect map type %d", insn->dst_reg, map->map_type=
+))
+> > > +		return -EFAULT;
+> >=20
+> > Nit: we discussed this in v5, let's drop the verifier_bug_if() and
+> >      return -EINVAL?
+>=20
+> So, I think this is a verifier bug. We've checked above that the
+> register is PTR_TO_INSN, so it must have map and map type should
+> be BPF_MAP_TYPE_INSN_ARRAY. Now this is always true, for future
+> I added these warnings, just in case. Wdyt?
 
-So, I think this is a verifier bug. We've checked above that the
-register is PTR_TO_INSN, so it must have map and map type should
-be BPF_MAP_TYPE_INSN_ARRAY. Now this is always true, for future
-I added these warnings, just in case. Wdyt?
+Wellp, yes this is a verifier bug, thank you for explaining.
+Sorry for the noise.
 
->      > The program can be written in a way, such that e.g. hash map
->      > pointer is passed as a parameter for gotox, that would be an
->      > incorrect program, not a verifier bug.
-> 
->      Also, use reg_type_str() instead of "type %d"?
+> >      > The program can be written in a way, such that e.g. hash map
+> >      > pointer is passed as a parameter for gotox, that would be an
+> >      > incorrect program, not a verifier bug.
+> >=20
+> >      Also, use reg_type_str() instead of "type %d"?
+>=20
+> This is map type, not register? Ah, you maybe meant the first
+> message, I will fix it, thanks.
 
-This is map type, not register? Ah, you maybe meant the first
-message, I will fix it, thanks.
+Hm, right, doesn't apply here, but helps with the first message.
+It looks like we don't have a similar function for maps.
+But that's a "bug", not verifier message, so probably fine.
 
-> > +
-> > +	err = indirect_jump_min_max_index(env, insn->dst_reg, map, &min_index, &max_index);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	/* Ensure that the buffer is large enough */
-> > +	if (!env->gotox_tmp_buf || env->gotox_tmp_buf->cnt < max_index - min_index + 1) {
-> > +		env->gotox_tmp_buf = iarray_realloc(env->gotox_tmp_buf,
-> > +						    max_index - min_index + 1);
-> > +		if (!env->gotox_tmp_buf)
-> > +			return -ENOMEM;
-> > +	}
-> > +
-> > +	n = copy_insn_array_uniq(map, min_index, max_index, env->gotox_tmp_buf->items);
-> 
-> Nit: let's not forget about a follow-up to remove this allocation.
+> > > +
+> > > +	err =3D indirect_jump_min_max_index(env, insn->dst_reg, map, &min_i=
+ndex, &max_index);
+> > > +	if (err)
+> > > +		return err;
+> > > +
 
-Thanks, in the list of followups.
-
-> > +	if (n < 0)
-> > +		return n;
-> > +	if (n == 0) {
-> > +		verbose(env, "register R%d doesn't point to any offset in map id=%d\n",
-> > +			     insn->dst_reg, map->id);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	for (i = 0; i < n - 1; i++) {
-> > +		other_branch = push_stack(env, env->gotox_tmp_buf->items[i],
-> > +					  env->insn_idx, env->cur_state->speculative);
-> > +		if (IS_ERR(other_branch))
-> > +			return PTR_ERR(other_branch);
-> > +	}
-> > +	env->insn_idx = env->gotox_tmp_buf->items[n-1];
-> > +	return 0;
-> > +}
-> > +
-> 
-> [...]
+[...]
 
