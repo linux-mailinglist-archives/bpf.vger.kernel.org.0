@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-71716-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F70CBFBFF7
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 14:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E7955BFBFFC
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 15:00:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 044A45428DF
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 12:57:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8CC1B507B73
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 12:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E231B34A79A;
-	Wed, 22 Oct 2025 12:52:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C88534D4C0;
+	Wed, 22 Oct 2025 12:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EMb+n9s1"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HaQRNlcK"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41B234B680;
-	Wed, 22 Oct 2025 12:52:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A4734BA59;
+	Wed, 22 Oct 2025 12:52:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761137558; cv=none; b=dquu9+9QPKI/sCC5Xk4qRBPHGtOSRG/G86vK3rzg+fs0MIFB3jT0qx+XyUWZvb57rYNuCFepgskdeSs0iBxbjk0FGDwagGlJj/HEhC4VnE5H8kT0m6bGkFUkcQ94kSfNGAA9EH3I0danIBeSbZrGuyfg2vVZ9RnNr6wdP06waF0=
+	t=1761137563; cv=none; b=GxMAMu7aCZVjE5MLHj9Y7KmH0D7CbVbRtvdBmY4/8JpXH8l9SnYpoxFMwWw5rTGiBO5P246BhuObbGjYbIp9RuD6ScEE8BxI4AUHqGsJBZWJlwFUrpSS5vSJ02tht+9Je0Lf5G8+0EZz/lPfrFES7GjSDMOlsKUP8sxaQxXsC90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761137558; c=relaxed/simple;
-	bh=hA/rNAUJo//Sg2AVupf1myTNZJjdErqp7bRl2MuijfA=;
+	s=arc-20240116; t=1761137563; c=relaxed/simple;
+	bh=zWIWI9oD3zyV1imXRF+M57x47jWpz86Ps91RWZLV1tA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iRjDPHm6ot84JDUWq83sXkYnIIoXjJmEJYQT1Hb+4KaCyiVo2soWaK03DBzCEk0g4yOkgG5J/Hs3b8rErf4EjbbZDBQZUrEOoL26d/1YKY4lPb4j/+fOGU6L4RYrrelhhCM3egJerKgcHfTmotoW2ZzZmqDQ4SE8FF31rtkX+n0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EMb+n9s1; arc=none smtp.client-ip=192.198.163.17
+	 MIME-Version; b=H0HjskIoLGQI3hc+FdysXTDLe/6PdtF05j68pimdKR4SuoqGzic+UvsqthEW7mdTciRuwpBJPKbleTmCB3phi1uxgCrMS03BLb25APS0X6LHIu8J4Xo3ACAB8ZxAJizKdw1bWXZJn301v9qcuMUVo842D8CsO5rUPJbJR75vXhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HaQRNlcK; arc=none smtp.client-ip=192.198.163.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1761137553; x=1792673553;
+  t=1761137556; x=1792673556;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=hA/rNAUJo//Sg2AVupf1myTNZJjdErqp7bRl2MuijfA=;
-  b=EMb+n9s1aRXq7BJiqMWyN4ZM2G09jd4ebDLL1B4/jqErvR8ioBqeKjtv
-   cFfPPg8yr3iog82/7oJopah1g8TGrkcqGwPQZLlfRo6iSuqc3egEZKjoN
-   h41B0mQ0JGEHt2NGcguLJNneKgLWzT0DzLdNT/7mC/rMn58I76Q7mH5Pv
-   4XHPlWj7FPfNLc4abbYEW09Uwth2xTwljP8O6kmwwBBrVlCDD2bLbDDwp
-   tt5ok4IHSgs7Puy/nSsNV+vVhxXHMKoiGkCmyP84um7ioc1MGuQhb2RUw
-   zL7rbO383dwlY6CDmE7/dqHnwrtYn4rv2TfcpJ/ElRkg/yiUBRmubR7QO
-   w==;
-X-CSE-ConnectionGUID: HE7m+vTTQaqkiNlDFykqyg==
-X-CSE-MsgGUID: oEvakSxkR2CevabFG2KFmg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="63190443"
+  bh=zWIWI9oD3zyV1imXRF+M57x47jWpz86Ps91RWZLV1tA=;
+  b=HaQRNlcKqDQqB6MKR+DYrMzeujl3z2pd8R5FU4Vpp0boLnefg91Rx9dt
+   IQsvrXUjwT5aS9rL8ngRMeLESQSK05Wu/cvtn9g/Z1LThoFy7wi0Z7Eg6
+   KJ25FDNlqkK7fs2mvJsQXQJmhZURiM6vFdgWr4NC0XO+YoVSDCNBWCxR/
+   LEuFfiskeSlfNYRuP7tyzjjW6Pl9yMc08GBgAmgNiOQeebW/yqEKSx33Q
+   EmOHpaZit0n+VMale2s98NYgk3zdiDhGdUjxMVHkn2jH8nis1W2TalfVs
+   3sGzbJmje5EB9EHKOvgia30BQsF3tPjiq3DE/iOn4Su9ZfVTd5lhM0DbS
+   Q==;
+X-CSE-ConnectionGUID: cUgp5C+JTV6a23QA2N5t/Q==
+X-CSE-MsgGUID: X4etawNoTgWUkI5R3+aTBg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="63190447"
 X-IronPort-AV: E=Sophos;i="6.19,247,1754982000"; 
-   d="scan'208";a="63190443"
+   d="scan'208";a="63190447"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2025 05:52:28 -0700
-X-CSE-ConnectionGUID: snY197sTR/qkBRjlmeJT2g==
-X-CSE-MsgGUID: D0O6aDfvTwWfncg3gLWhkA==
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2025 05:52:31 -0700
+X-CSE-ConnectionGUID: /b8a3bBeS8O7z/F2dwmE1g==
+X-CSE-MsgGUID: zyOBzGyLSLOyghhaI/+pIA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.19,247,1754982000"; 
-   d="scan'208";a="207534777"
+   d="scan'208";a="207534781"
 Received: from boxer.igk.intel.com ([10.102.20.173])
-  by fmviesa002.fm.intel.com with ESMTP; 22 Oct 2025 05:52:25 -0700
+  by fmviesa002.fm.intel.com with ESMTP; 22 Oct 2025 05:52:28 -0700
 From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -70,13 +70,10 @@ Cc: netdev@vger.kernel.org,
 	toke@redhat.com,
 	lorenzo@kernel.org,
 	kuba@kernel.org,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com,
-	Ihor Solodrai <ihor.solodrai@linux.dev>,
-	Octavian Purdila <tavip@google.com>
-Subject: [PATCH v3 bpf 1/2] xdp: introduce xdp_convert_skb_to_buff()
-Date: Wed, 22 Oct 2025 14:52:08 +0200
-Message-Id: <20251022125209.2649287-2-maciej.fijalkowski@intel.com>
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH v3 bpf 2/2] veth: update mem type in xdp_buff
+Date: Wed, 22 Oct 2025 14:52:09 +0200
+Message-Id: <20251022125209.2649287-3-maciej.fijalkowski@intel.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20251022125209.2649287-1-maciej.fijalkowski@intel.com>
 References: <20251022125209.2649287-1-maciej.fijalkowski@intel.com>
@@ -86,127 +83,183 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Currently, generic XDP hook uses xdp_rxq_info from netstack Rx queues
-which do not have its XDP memory model registered. There is a case when
-XDP program calls bpf_xdp_adjust_tail() BPF helper, which in turn
-releases underlying memory. This happens when it consumes enough amount
-of bytes and when XDP buffer has fragments. For this action the memory
-model knowledge passed to XDP program is crucial so that core can call
-suitable function for freeing/recycling the page.
+When skb's headroom is not sufficient for XDP purposes,
+skb_pp_cow_data() returns new skb with requested headroom space. This
+skb was provided by page_pool.
 
-For netstack queues it defaults to MEM_TYPE_PAGE_SHARED (0) due to lack
-of mem model registration. The problem we're fixing here is when kernel
-copied the skb to new buffer backed by system's page_pool and XDP buffer
-is built around it. Then when bpf_xdp_adjust_tail() calls
-__xdp_return(), it acts incorrectly due to mem type not being set to
-MEM_TYPE_PAGE_POOL and causes a page leak.
+For CONFIG_DEBUG_VM=y and XDP program that uses bpf_xdp_adjust_tail()
+against a skb with frags, and mentioned helper consumed enough amount of
+bytes that in turn released the page, following splat was observed:
 
-Pull out the existing code from bpf_prog_run_generic_xdp() that
-init/prepares xdp_buff onto new helper xdp_convert_skb_to_buff() and
-embed there rxq's mem_type initialization that is assigned to xdp_buff.
-Make it agnostic to current skb->data position.
+[   32.204881] BUG: Bad page state in process test_progs  pfn:11c98b
+[   32.207167] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11c98b
+[   32.210084] flags: 0x1fffe0000000000(node=0|zone=1|lastcpupid=0x7fff)
+[   32.212493] raw: 01fffe0000000000 dead000000000040 ff11000123c9b000 0000000000000000
+[   32.218056] raw: 0000000000000000 0000000000000001 00000000ffffffff 0000000000000000
+[   32.220900] page dumped because: page_pool leak
+[   32.222636] Modules linked in: bpf_testmod(O) bpf_preload
+[   32.224632] CPU: 6 UID: 0 PID: 3612 Comm: test_progs Tainted: G O        6.17.0-rc5-gfec474d29325 #6969 PREEMPT
+[   32.224638] Tainted: [O]=OOT_MODULE
+[   32.224639] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[   32.224641] Call Trace:
+[   32.224644]  <IRQ>
+[   32.224646]  dump_stack_lvl+0x4b/0x70
+[   32.224653]  bad_page.cold+0xbd/0xe0
+[   32.224657]  __free_frozen_pages+0x838/0x10b0
+[   32.224660]  ? skb_pp_cow_data+0x782/0xc30
+[   32.224665]  bpf_xdp_shrink_data+0x221/0x530
+[   32.224668]  ? skb_pp_cow_data+0x6d1/0xc30
+[   32.224671]  bpf_xdp_adjust_tail+0x598/0x810
+[   32.224673]  ? xsk_destruct_skb+0x321/0x800
+[   32.224678]  bpf_prog_004ac6bb21de57a7_xsk_xdp_adjust_tail+0x52/0xd6
+[   32.224681]  veth_xdp_rcv_skb+0x45d/0x15a0
+[   32.224684]  ? get_stack_info_noinstr+0x16/0xe0
+[   32.224688]  ? veth_set_channels+0x920/0x920
+[   32.224691]  ? get_stack_info+0x2f/0x80
+[   32.224693]  ? unwind_next_frame+0x3af/0x1df0
+[   32.224697]  veth_xdp_rcv.constprop.0+0x38a/0xbe0
+[   32.224700]  ? common_startup_64+0x13e/0x148
+[   32.224703]  ? veth_xdp_rcv_one+0xcd0/0xcd0
+[   32.224706]  ? stack_trace_save+0x84/0xa0
+[   32.224709]  ? stack_depot_save_flags+0x28/0x820
+[   32.224713]  ? __resched_curr.constprop.0+0x332/0x3b0
+[   32.224716]  ? timerqueue_add+0x217/0x320
+[   32.224719]  veth_poll+0x115/0x5e0
+[   32.224722]  ? veth_xdp_rcv.constprop.0+0xbe0/0xbe0
+[   32.224726]  ? update_load_avg+0x1cb/0x12d0
+[   32.224730]  ? update_cfs_group+0x121/0x2c0
+[   32.224733]  __napi_poll+0xa0/0x420
+[   32.224736]  net_rx_action+0x901/0xe90
+[   32.224740]  ? run_backlog_napi+0x50/0x50
+[   32.224743]  ? clockevents_program_event+0x1cc/0x280
+[   32.224746]  ? hrtimer_interrupt+0x31e/0x7c0
+[   32.224749]  handle_softirqs+0x151/0x430
+[   32.224752]  do_softirq+0x3f/0x60
+[   32.224755]  </IRQ>
 
-This problem was triggered by syzbot as well as AF_XDP test suite which
-is about to be integrated to BPF CI.
+It's because xdp_rxq with mem model set to MEM_TYPE_PAGE_SHARED was used
+when initializing xdp_buff.
 
-Reported-by: syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/netdev/6756c37b.050a0220.a30f1.019a.GAE@google.com/
-Fixes: e6d5dbdd20aa ("xdp: add multi-buff support for xdp running in generic mode")
-Tested-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Co-developed-by: Octavian Purdila <tavip@google.com>
-Signed-off-by: Octavian Purdila <tavip@google.com> # whole analysis, testing, initiating a fix
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com> # commit msg and proposed more robust fix
+Fix this by using new helper xdp_convert_skb_to_buff() that, besides
+init/prepare xdp_buff, will check if page used for linear part of
+xdp_buff comes from page_pool. We assume that linear data and frags will
+have same memory provider as currently XDP API does not provide us a way
+to distinguish it (the mem model is registered for *whole* Rx queue and
+here we speak about single buffer granularity).
+
+Before releasing xdp_buff out of veth via XDP_{TX,REDIRECT}, mem type on
+xdp_rxq associated with xdp_buff is restored to its original model. We
+need to respect previous setting at least until buff is converted to
+frame, as frame carries the mem_type. Add a page_pool variant of
+veth_xdp_get() so that we avoid refcount underflow when draining page
+frag.
+
+Fixes: 0ebab78cbcbf ("net: veth: add page_pool for page recycling")
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Closes: https://lore.kernel.org/bpf/CAADnVQ+bBofJDfieyOYzSmSujSfJwDTQhiz3aJw7hE+4E2_iPA@mail.gmail.com/
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 ---
- include/net/xdp.h | 27 +++++++++++++++++++++++++++
- net/core/dev.c    | 25 ++++---------------------
- 2 files changed, 31 insertions(+), 21 deletions(-)
+ drivers/net/veth.c | 43 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 26 insertions(+), 17 deletions(-)
 
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index aa742f413c35..cec43f56ae9a 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -384,6 +384,33 @@ struct sk_buff *xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 					 struct net_device *dev);
- struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf);
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index a3046142cb8e..187f30e2cb4b 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -733,7 +733,7 @@ static void veth_xdp_rcv_bulk_skb(struct veth_rq *rq, void **frames,
+ 	}
+ }
  
-+static inline
-+void xdp_convert_skb_to_buff(struct sk_buff *skb, struct xdp_buff *xdp,
-+			     struct xdp_rxq_info *xdp_rxq)
+-static void veth_xdp_get(struct xdp_buff *xdp)
++static void veth_xdp_get_shared(struct xdp_buff *xdp)
+ {
+ 	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
+ 	int i;
+@@ -746,12 +746,33 @@ static void veth_xdp_get(struct xdp_buff *xdp)
+ 		__skb_frag_ref(&sinfo->frags[i]);
+ }
+ 
++static void veth_xdp_get_pp(struct xdp_buff *xdp)
 +{
-+	u32 frame_sz, pkt_len;
++	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
++	int i;
 +
-+	/* SKB "head" area always have tailroom for skb_shared_info */
-+	frame_sz = skb_end_pointer(skb) - skb->head;
-+	frame_sz += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
++	page_pool_ref_page(virt_to_page(xdp->data));
++	if (likely(!xdp_buff_has_frags(xdp)))
++		return;
 +
-+	DEBUG_NET_WARN_ON_ONCE(!skb_mac_header_was_set(skb));
-+	pkt_len =  skb->tail - skb->mac_header;
++	for (i = 0; i < sinfo->nr_frags; i++) {
++		skb_frag_t *frag = &sinfo->frags[i];
 +
-+	xdp_init_buff(xdp, frame_sz, xdp_rxq);
-+	xdp_prepare_buff(xdp, skb->head, skb->mac_header, pkt_len, true);
-+
-+	if (skb_is_nonlinear(skb)) {
-+		skb_shinfo(skb)->xdp_frags_size = skb->data_len;
-+		xdp_buff_set_frags_flag(xdp);
-+	} else {
-+		xdp_buff_clear_frags_flag(xdp);
++		page_pool_ref_page(netmem_to_page(frag->netmem));
 +	}
-+
-+	xdp->rxq->mem.type = page_pool_page_is_pp(virt_to_head_page(xdp->data)) ?
-+				MEM_TYPE_PAGE_POOL : MEM_TYPE_PAGE_SHARED;
 +}
 +
- static inline
- void xdp_convert_frame_to_buff(const struct xdp_frame *frame,
- 			       struct xdp_buff *xdp)
-diff --git a/net/core/dev.c b/net/core/dev.c
-index a64cef2c537e..3d607dce292b 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -5320,35 +5320,18 @@ static struct netdev_rx_queue *netif_get_rxqueue(struct sk_buff *skb)
- u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
- 			     const struct bpf_prog *xdp_prog)
++static void veth_xdp_get(struct xdp_buff *xdp)
++{
++	xdp->rxq->mem.type == MEM_TYPE_PAGE_POOL ?
++		veth_xdp_get_pp(xdp) : veth_xdp_get_shared(xdp);
++}
++
+ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
+ 					struct xdp_buff *xdp,
+ 					struct sk_buff **pskb)
  {
--	void *orig_data, *orig_data_end, *hard_start;
-+	void *orig_data, *orig_data_end;
- 	struct netdev_rx_queue *rxqueue;
- 	bool orig_bcast, orig_host;
--	u32 mac_len, frame_sz;
-+	u32 metalen, act, mac_len;
- 	__be16 orig_eth_type;
- 	struct ethhdr *eth;
--	u32 metalen, act;
- 	int off;
+ 	struct sk_buff *skb = *pskb;
+-	u32 frame_sz;
  
--	/* The XDP program wants to see the packet starting at the MAC
--	 * header.
--	 */
-+	rxqueue = netif_get_rxqueue(skb);
- 	mac_len = skb->data - skb_mac_header(skb);
--	hard_start = skb->data - skb_headroom(skb);
--
+ 	if (skb_shared(skb) || skb_head_is_locked(skb) ||
+ 	    skb_shinfo(skb)->nr_frags ||
+@@ -762,19 +783,7 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
+ 		skb = *pskb;
+ 	}
+ 
 -	/* SKB "head" area always have tailroom for skb_shared_info */
--	frame_sz = (void *)skb_end_pointer(skb) - hard_start;
+-	frame_sz = skb_end_pointer(skb) - skb->head;
 -	frame_sz += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
- 
--	rxqueue = netif_get_rxqueue(skb);
--	xdp_init_buff(xdp, frame_sz, &rxqueue->xdp_rxq);
--	xdp_prepare_buff(xdp, hard_start, skb_headroom(skb) - mac_len,
--			 skb_headlen(skb) + mac_len, true);
+-	xdp_init_buff(xdp, frame_sz, &rq->xdp_rxq);
+-	xdp_prepare_buff(xdp, skb->head, skb_headroom(skb),
+-			 skb_headlen(skb), true);
+-
 -	if (skb_is_nonlinear(skb)) {
 -		skb_shinfo(skb)->xdp_frags_size = skb->data_len;
 -		xdp_buff_set_frags_flag(xdp);
 -	} else {
 -		xdp_buff_clear_frags_flag(xdp);
 -	}
-+	xdp_convert_skb_to_buff(skb, xdp, &rxqueue->xdp_rxq);
++	xdp_convert_skb_to_buff(skb, xdp, &rq->xdp_rxq);
+ 	*pskb = skb;
  
- 	orig_data_end = xdp->data_end;
- 	orig_data = xdp->data;
+ 	return 0;
+@@ -822,24 +831,24 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
+ 	case XDP_TX:
+ 		veth_xdp_get(xdp);
+ 		consume_skb(skb);
+-		xdp->rxq->mem = rq->xdp_mem;
+ 		if (unlikely(veth_xdp_tx(rq, xdp, bq) < 0)) {
+ 			trace_xdp_exception(rq->dev, xdp_prog, act);
+ 			stats->rx_drops++;
+ 			goto err_xdp;
+ 		}
+ 		stats->xdp_tx++;
++		rq->xdp_rxq.mem = rq->xdp_mem;
+ 		rcu_read_unlock();
+ 		goto xdp_xmit;
+ 	case XDP_REDIRECT:
+ 		veth_xdp_get(xdp);
+ 		consume_skb(skb);
+-		xdp->rxq->mem = rq->xdp_mem;
+ 		if (xdp_do_redirect(rq->dev, xdp, xdp_prog)) {
+ 			stats->rx_drops++;
+ 			goto err_xdp;
+ 		}
+ 		stats->xdp_redirect++;
++		rq->xdp_rxq.mem = rq->xdp_mem;
+ 		rcu_read_unlock();
+ 		goto xdp_xmit;
+ 	default:
 -- 
 2.43.0
 
