@@ -1,255 +1,237 @@
-Return-Path: <bpf+bounces-71836-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71837-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F72CBFDCF5
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 20:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE39DBFDD0A
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 20:25:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3384E18C8AB3
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 18:24:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 849EC18C6EE2
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 18:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F62634B67A;
-	Wed, 22 Oct 2025 18:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1A972629;
+	Wed, 22 Oct 2025 18:25:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hoEjOc9y"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="IEQcAg6u";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="oaikgD6H";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="iSRKPkya";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ctXcTiKz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD36345CC1
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 18:23:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 367D733DECE
+	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 18:25:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761157423; cv=none; b=Yh4COHU5zax/QW6v70FS5yN3FA4l9IJfjJdL1KkyZ0trE7iuWcOUQtMvf8x5d8s0oTnb5ej4EbRCrpzg5v/CMzb0w6Q28ERRNzwG69yT27e/pTWY/CuXtjYSRtHitpQ0gix5QQ96h0HGOkG4Ei2ATz5GOBnzWeO8p60a3HrznDM=
+	t=1761157533; cv=none; b=rWaiAL6Ut3SP7SRs+Tni7x9MmjrtOwa7D/kqNwu0hrhQrcq73q4fdH/e3ItxAIeoyT6A/efwsUAWVI+8fuRoP1ztPtXUMoRT23RDFUrQzkhEU6yQHi1lCHjoFbsSB+t54Ogjhi+svFNgwU1daX78A3hkWQM7FCJDYf5X3Qveu/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761157423; c=relaxed/simple;
-	bh=UVZI17h7HLb/ZMhJZ55NqWT18DZ8rBDoglUJXsA63X0=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=nbDyGKw0vYa76px1vA5TgGxyxNiAbHP61BlRXH7EddOBDcAKpt4XIqZpFTxjCtMQdN+FANfhEi0HtlZ0i1Wgyq9kO3QRPCEN1ae3/RRT9opMn4OvSPAKkzakfs3TYc3IgJkj0rzR7JKHV3MD7shb0V3U+tZYqMN0sZ04UIZXwyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--joshwash.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hoEjOc9y; arc=none smtp.client-ip=209.85.210.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--joshwash.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-7a26a53a4faso637138b3a.0
-        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 11:23:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761157420; x=1761762220; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Iktq7Wn5pIoCwGAvXL7/BQYzOTmxLjXbBR6x1OGDLzQ=;
-        b=hoEjOc9y1T0RnT+QPSBUuvJvkqhLAbQioNZRERr0kj+egfj4DmBR4jdZmTDToq0nFk
-         +JlsCmgmYD94dlDnVBk2D/RjS+hY+UdYW2TARh+uUH4ASyXOkedNCOcPfNiN/tqbP8jH
-         IgvvtJjnFn09D5BO+5/bz9AKGJa+E3FYDv47kOv6wRB807LQXSyni8ApHMYUoIoZrXtS
-         oZKoEsDP2VTIhSdVaDAt2RBiAH6vp9hKjyLRwSbzPQdbUJe4+xvEcRL4Gj5T+s4I/P2S
-         oF8rDycLKcKvw/MqAz+THE1TUdmU997XhhBgs5SDkSfwUUpE0xVRIKOJlqvs0pvpVVQ2
-         hIqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761157420; x=1761762220;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Iktq7Wn5pIoCwGAvXL7/BQYzOTmxLjXbBR6x1OGDLzQ=;
-        b=Qb/iMzBXtPBo0vjri4PjRdQHql09dqvPjtKza/uafXGpByQOZ2OAyKkgu18WOUSIxS
-         MFC3bVJGjrkuoT39KOINI/etpWmEwvtxanLYLHKVTXs+Stis1k7N3MuqioKoVowj0HIk
-         RjQdns9wcWN9WZnufuzZ8adF0FEslDxH5V+eGbx5VOjHz38KzITzsHNFu6tuUNCJf9jP
-         Iaq1ganjfzAy3IwN1e2Tc7MiT37Qz5jbTz4oVryZI8MvzQbNO9LbTvyHUAPoaKuU3PeE
-         B7LdRg43AxiXC/yPAOmPj299+EQymUX4/ToWXibBwmrs64IKi7158uqChuQ0K2n4c2Hx
-         Tx3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUEVz/jJkEaYWo1GpqFY9fWIPljnDMXgGgh6PzSsn50uWHYwSqD/zA4rTfddsB3zGZ6mPY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzvW37E1CnGeaESgiDKbF09K30AoSVCOAPklFsNPGWk5k14T+fg
-	1FjqYaWfR/xxJkJJo74d3XaRpSH2oMawLhhChUjTzu5snHSi8psYUaLA1AV9cQbEA1Y2Nn3AARC
-	06TU8yCDcN2TyNA==
-X-Google-Smtp-Source: AGHT+IGY8k93vtQ43TFG6C5KrT1OedrQTPkyFUfuTJOTRGOzReM/XDp/D9+KnHM0koEIxyjI0OoJHbVRRiPa7g==
-X-Received: from pfbfw12.prod.google.com ([2002:a05:6a00:61cc:b0:7a2:6aaa:30c5])
- (user=joshwash job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a20:4311:b0:246:d43a:3856 with SMTP id adf61e73a8af0-334a857d6f3mr26831189637.22.1761157420128;
- Wed, 22 Oct 2025 11:23:40 -0700 (PDT)
-Date: Wed, 22 Oct 2025 11:22:24 -0700
-In-Reply-To: <20251022182301.1005777-1-joshwash@google.com>
+	s=arc-20240116; t=1761157533; c=relaxed/simple;
+	bh=XbD7dw98fNoWEVrr2LFnAlDmr2SnP1gkippzM6piiEk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=e/4GzvrWFOMVbZvoj4Gnv9IUbVkSgd/9B2BNeOUL+2/hMnv4egmHvZDn5sR9S6to+nor1MprLy7Eo9spEbi6InfMuCHf+dsLSsIfi4+W4q8zW6nDbHXArqOPKh+YD6hv9g7iUBIN4xg2Dk+gi6qnrO/DwxgHO7A3cGGebK6wNOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=IEQcAg6u; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=oaikgD6H; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=iSRKPkya; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ctXcTiKz; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1EC241F395;
+	Wed, 22 Oct 2025 18:25:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1761157525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x2wjTx12vkWJdcIYkIG0o1d7T1MHz7dILrXhb+x09qw=;
+	b=IEQcAg6u2cksyvRJOy1ZPR2pbf4nb7eacwqcAxgBxHOxoIT4ShIco8Vq4bBGJA2EWwHDj6
+	TVsrUCjJxnWcqi/WVdIJtu8GcJkeXmXk3jfcyVN6+s5FhxES33Ec8m+Yanfs11DQokdOTb
+	8MCnO6n6ELKX4gS8DAgwRzDdgSUakl0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1761157525;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x2wjTx12vkWJdcIYkIG0o1d7T1MHz7dILrXhb+x09qw=;
+	b=oaikgD6HKdRheoaJZfBGpLezgEWNISXZJ3Vg1aN+rd3hsj4QHwKDNCut/eiTK9PJLtAx3u
+	r+dRWtE8GoALqbCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1761157521; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x2wjTx12vkWJdcIYkIG0o1d7T1MHz7dILrXhb+x09qw=;
+	b=iSRKPkyayPAiB4UeKYmArJD5+QEg9i2G2S8WyQTLK3lSbnX8GbP/QiHm7DRwnkEFyBao/N
+	/IxV1NzKnJvPsq+3/R+WWQ72XkzXXFmImbB4L3pFLs2TpDJ1iXhpH4jFNvt/nYHxUXCpQk
+	4uHr4hR9ei7VMLRCeLbf6I2rTaTah1U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1761157521;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x2wjTx12vkWJdcIYkIG0o1d7T1MHz7dILrXhb+x09qw=;
+	b=ctXcTiKzKOYDVAsEzTBW1Gg1856fT2ZsWM/G3dM+loePtNTiCzzO6wBRuOummSPwVMsS16
+	Cg1DJh7hsaqJ+dBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 92EA11339F;
+	Wed, 22 Oct 2025 18:25:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id h6CKIJAh+Wj/BAAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Wed, 22 Oct 2025 18:25:20 +0000
+Message-ID: <a0b39fda-4aca-44e3-a178-4bad431243c5@suse.de>
+Date: Wed, 22 Oct 2025 20:24:58 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20251022182301.1005777-1-joshwash@google.com>
-X-Mailer: git-send-email 2.51.1.814.gb8fa24458f-goog
-Message-ID: <20251022182301.1005777-3-joshwash@google.com>
-Subject: [PATCH net-next 2/3] gve: Allow ethtool to configure rx_buf_len
-From: Joshua Washington <joshwash@google.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] xsk: avoid data corruption on cq descriptor number
 To: netdev@vger.kernel.org
-Cc: Ankit Garg <nktgrg@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Jordan Rhee <jordanrhee@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Joshua Washington <joshwash@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Ziwei Xiao <ziweixiao@google.com>, 
-	open list <linux-kernel@vger.kernel.org>, 
-	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc: csmate@nop.hu, kerneljasonxing@gmail.com, maciej.fijalkowski@intel.com,
+ bjorn@kernel.org, sdf@fomichev.me, jonathan.lemon@gmail.com,
+ bpf@vger.kernel.org
+References: <20251021150656.6704-1-fmancera@suse.de>
+Content-Language: en-US
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+In-Reply-To: <20251021150656.6704-1-fmancera@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[nop.hu,gmail.com,intel.com,kernel.org,fomichev.me,vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.de:mid,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-From: Ankit Garg <nktgrg@google.com>
 
-Add support for getting and setting the RX buffer length via the
-ethtool ring parameters (`ethtool -g`/`-G`). The driver restricts the
-allowed buffer length to 2048 (SZ_2K) or 4096 (SZ_4K).
 
-As XDP is only supported when the `rx_buf_len` is 2048, the driver now
-enforces this in two places:
-1.  In `gve_xdp_set`, rejecting XDP programs if the current buffer
-    length is not 2048.
-2.  In `gve_set_rx_buf_len_config`, rejecting buffer length changes if
-    XDP is loaded and the new length is not 2048.
+On 10/21/25 5:06 PM, Fernando Fernandez Mancera wrote:
+> Since commit 30f241fcf52a ("xsk: Fix immature cq descriptor
+> production"), the descriptor number is store in skb control block and
+> xsk_cq_submit_addr_locked() relies on it to put the umem addrs onto
+> pool's completion queue.
+> 
+> skb control block shouldn't be used for this purpose as after transmit
+> xsk doesn't have control over it and other subsystems could use it. This
+> leads to the following kernel panic due to a NULL pointer dereference.
+> 
+>   BUG: kernel NULL pointer dereference, address: 0000000000000000
+>   #PF: supervisor read access in kernel mode
+>   #PF: error_code(0x0000) - not-present page
+>   PGD 0 P4D 0
+>   Oops: Oops: 0000 [#1] SMP NOPTI
+>   CPU: 2 UID: 1 PID: 927 Comm: p4xsk.bin Not tainted 6.16.12+deb14-cloud-amd64 #1 PREEMPT(lazy)  Debian 6.16.12-1
+>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.17.0-debian-1.17.0-1 04/01/2014
+>   RIP: 0010:xsk_destruct_skb+0xd0/0x180
+>   [...]
+>   Call Trace:
+>    <IRQ>
+>    ? napi_complete_done+0x7a/0x1a0
+>    ip_rcv_core+0x1bb/0x340
+>    ip_rcv+0x30/0x1f0
+>    __netif_receive_skb_one_core+0x85/0xa0
+>    process_backlog+0x87/0x130
+>    __napi_poll+0x28/0x180
+>    net_rx_action+0x339/0x420
+>    handle_softirqs+0xdc/0x320
+>    ? handle_edge_irq+0x90/0x1e0
+>    do_softirq.part.0+0x3b/0x60
+>    </IRQ>
+>    <TASK>
+>    __local_bh_enable_ip+0x60/0x70
+>    __dev_direct_xmit+0x14e/0x1f0
+>    __xsk_generic_xmit+0x482/0xb70
+>    ? __remove_hrtimer+0x41/0xa0
+>    ? __xsk_generic_xmit+0x51/0xb70
+>    ? _raw_spin_unlock_irqrestore+0xe/0x40
+>    xsk_sendmsg+0xda/0x1c0
+>    __sys_sendto+0x1ee/0x200
+>    __x64_sys_sendto+0x24/0x30
+>    do_syscall_64+0x84/0x2f0
+>    ? __pfx_pollwake+0x10/0x10
+>    ? __rseq_handle_notify_resume+0xad/0x4c0
+>    ? restore_fpregs_from_fpstate+0x3c/0x90
+>    ? switch_fpu_return+0x5b/0xe0
+>    ? do_syscall_64+0x204/0x2f0
+>    ? do_syscall_64+0x204/0x2f0
+>    ? do_syscall_64+0x204/0x2f0
+>    entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>    </TASK>
+>   [...]
+>   Kernel panic - not syncing: Fatal exception in interrupt
+>   Kernel Offset: 0x1c000000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+> 
+> The approach proposed store the first address also in the xsk_addr_node
+> along with the number of descriptors. The head xsk_addr_node is
+> referenced by skb_shinfo(skb)->destructor_arg. The rest of the fragments
+> store the address on the list.
+> 
+> This is less efficient as the kmem_cache must be initialized even if a
+> single fragment is received and also 4 bytes are wasted when storing
+> each address.
+> 
+> Fixes: 30f241fcf52a ("xsk: Fix immature cq descriptor production")
+> Closes: https://lore.kernel.org/netdev/0435b904-f44f-48f8-afb0-68868474bf1c@nop.hu/
+> Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
+> ---
+> Note: Please notice I am not an XDP expert so I cannot tell if this
+> would cause a performance regression, advice is welcomed.
+> ---
+>   net/xdp/xsk.c | 57 ++++++++++++++++++++++++++++++---------------------
+>   1 file changed, 34 insertions(+), 23 deletions(-)
+> 
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 7b0c68a70888..203934aeade6 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -37,18 +37,14 @@
+>   #define MAX_PER_SOCKET_BUDGET 32
+>   
+>   struct xsk_addr_node {
+> +	u32 num_descs;
+>   	u64 addr;
+>   	struct list_head addr_node;
+>   };
+>   
+> -struct xsk_addr_head {
+> -	u32 num_descs;
+> -	struct list_head addrs_list;
+> -};
+> -
+>   static struct kmem_cache *xsk_tx_generic_cache;
+>   
 
-Signed-off-by: Ankit Garg <nktgrg@google.com>
-Reviewed-by: Harshitha Ramamurthy <hramamurthy@google.com>
-Reviewed-by: Jordan Rhee <jordanrhee@google.com>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Joshua Washington <joshwash@google.com>
----
- drivers/net/ethernet/google/gve/gve.h         |  9 ++++
- drivers/net/ethernet/google/gve/gve_ethtool.c | 13 +++++-
- drivers/net/ethernet/google/gve/gve_main.c    | 45 +++++++++++++++++++
- 3 files changed, 66 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/google/gve/gve.h b/drivers/net/ethernet/google/gve/gve.h
-index c237d00c5ab3..a33b44c1eb86 100644
---- a/drivers/net/ethernet/google/gve/gve.h
-+++ b/drivers/net/ethernet/google/gve/gve.h
-@@ -1167,6 +1167,12 @@ static inline bool gve_is_gqi(struct gve_priv *priv)
- 		priv->queue_format == GVE_GQI_QPL_FORMAT;
- }
- 
-+static inline bool gve_is_dqo(struct gve_priv *priv)
-+{
-+	return priv->queue_format == GVE_DQO_RDA_FORMAT ||
-+	       priv->queue_format == GVE_DQO_QPL_FORMAT;
-+}
-+
- static inline u32 gve_num_tx_queues(struct gve_priv *priv)
- {
- 	return priv->tx_cfg.num_queues + priv->tx_cfg.num_xdp_queues;
-@@ -1248,6 +1254,9 @@ void gve_rx_free_rings_gqi(struct gve_priv *priv,
- void gve_rx_start_ring_gqi(struct gve_priv *priv, int idx);
- void gve_rx_stop_ring_gqi(struct gve_priv *priv, int idx);
- bool gve_header_split_supported(const struct gve_priv *priv);
-+int gve_set_rx_buf_len_config(struct gve_priv *priv, u32 rx_buf_len,
-+			      struct netlink_ext_ack *extack,
-+			      struct gve_rx_alloc_rings_cfg *rx_alloc_cfg);
- int gve_set_hsplit_config(struct gve_priv *priv, u8 tcp_data_split,
- 			  struct gve_rx_alloc_rings_cfg *rx_alloc_cfg);
- /* rx buffer handling */
-diff --git a/drivers/net/ethernet/google/gve/gve_ethtool.c b/drivers/net/ethernet/google/gve/gve_ethtool.c
-index db6fc855a511..52500ae8348e 100644
---- a/drivers/net/ethernet/google/gve/gve_ethtool.c
-+++ b/drivers/net/ethernet/google/gve/gve_ethtool.c
-@@ -529,6 +529,8 @@ static void gve_get_ringparam(struct net_device *netdev,
- 	cmd->rx_pending = priv->rx_desc_cnt;
- 	cmd->tx_pending = priv->tx_desc_cnt;
- 
-+	kernel_cmd->rx_buf_len = priv->rx_cfg.packet_buffer_size;
-+
- 	if (!gve_header_split_supported(priv))
- 		kernel_cmd->tcp_data_split = ETHTOOL_TCP_DATA_SPLIT_UNKNOWN;
- 	else if (priv->header_split_enabled)
-@@ -589,6 +591,12 @@ static int gve_set_ringparam(struct net_device *netdev,
- 	int err;
- 
- 	gve_get_curr_alloc_cfgs(priv, &tx_alloc_cfg, &rx_alloc_cfg);
-+
-+	err = gve_set_rx_buf_len_config(priv, kernel_cmd->rx_buf_len, extack,
-+					&rx_alloc_cfg);
-+	if (err)
-+		return err;
-+
- 	err = gve_set_hsplit_config(priv, kernel_cmd->tcp_data_split,
- 				    &rx_alloc_cfg);
- 	if (err)
-@@ -605,6 +613,8 @@ static int gve_set_ringparam(struct net_device *netdev,
- 			return err;
- 	} else {
- 		/* Set ring params for the next up */
-+		priv->rx_cfg.packet_buffer_size =
-+			rx_alloc_cfg.packet_buffer_size;
- 		priv->header_split_enabled = rx_alloc_cfg.enable_header_split;
- 		priv->tx_desc_cnt = tx_alloc_cfg.ring_size;
- 		priv->rx_desc_cnt = rx_alloc_cfg.ring_size;
-@@ -944,7 +954,8 @@ static int gve_get_ts_info(struct net_device *netdev,
- 
- const struct ethtool_ops gve_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_USECS,
--	.supported_ring_params = ETHTOOL_RING_USE_TCP_DATA_SPLIT,
-+	.supported_ring_params = ETHTOOL_RING_USE_TCP_DATA_SPLIT |
-+				 ETHTOOL_RING_USE_RX_BUF_LEN,
- 	.get_drvinfo = gve_get_drvinfo,
- 	.get_strings = gve_get_strings,
- 	.get_sset_count = gve_get_sset_count,
-diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index 8d825218965a..8009819c73f2 100644
---- a/drivers/net/ethernet/google/gve/gve_main.c
-+++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -1722,6 +1722,13 @@ static int verify_xdp_configuration(struct net_device *dev)
- 		return -EOPNOTSUPP;
- 	}
- 
-+	if (priv->rx_cfg.packet_buffer_size != SZ_2K) {
-+		netdev_warn(dev,
-+			    "XDP is not supported for Rx buf len %d. Set Rx buf len to %d before using XDP.\n",
-+			    priv->rx_cfg.packet_buffer_size, SZ_2K);
-+		return -EOPNOTSUPP;
-+	}
-+
- 	max_xdp_mtu = priv->rx_cfg.packet_buffer_size - sizeof(struct ethhdr);
- 	if (priv->queue_format == GVE_GQI_QPL_FORMAT)
- 		max_xdp_mtu -= GVE_RX_PAD;
-@@ -2050,6 +2057,44 @@ bool gve_header_split_supported(const struct gve_priv *priv)
- 		priv->queue_format == GVE_DQO_RDA_FORMAT && !priv->xdp_prog;
- }
- 
-+int gve_set_rx_buf_len_config(struct gve_priv *priv, u32 rx_buf_len,
-+			      struct netlink_ext_ack *extack,
-+			      struct gve_rx_alloc_rings_cfg *rx_alloc_cfg)
-+{
-+	u32 old_rx_buf_len = rx_alloc_cfg->packet_buffer_size;
-+
-+	if (rx_buf_len == old_rx_buf_len)
-+		return 0;
-+
-+	if (!gve_is_dqo(priv)) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Modifying Rx buf len is only supported with DQO format");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (priv->xdp_prog && rx_buf_len != SZ_2K) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Rx buf len can only be 2048 when XDP is on");
-+		return -EINVAL;
-+	}
-+
-+	if (rx_buf_len > priv->max_rx_buffer_size) {
-+		NL_SET_ERR_MSG_FMT_MOD(extack,
-+				       "Rx buf len exceeds the max supported value of %u",
-+				       priv->max_rx_buffer_size);
-+		return -EINVAL;
-+	}
-+
-+	if (rx_buf_len != SZ_2K && rx_buf_len != SZ_4K) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Rx buf len can only be 2048 or 4096");
-+		return -EINVAL;
-+	}
-+	rx_alloc_cfg->packet_buffer_size = rx_buf_len;
-+
-+	return 0;
-+}
-+
- int gve_set_hsplit_config(struct gve_priv *priv, u8 tcp_data_split,
- 			  struct gve_rx_alloc_rings_cfg *rx_alloc_cfg)
- {
--- 
-2.51.1.814.gb8fa24458f-goog
-
+FWIW, if the 4 bytes wasted for each umem address other than the initial 
+one is too much, we can add another kmem_cache for just the xsk_addr_head..
 
