@@ -1,237 +1,124 @@
-Return-Path: <bpf+bounces-71665-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71666-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB262BF9CBA
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 05:11:50 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35A6BBF9D06
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 05:21:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAC29189A0AF
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 03:12:11 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D84454ECFB2
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 03:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761D722F74A;
-	Wed, 22 Oct 2025 03:11:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D601D2327A3;
+	Wed, 22 Oct 2025 03:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ecU5J8UT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fqiV863w"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F372288F7
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 03:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C2E719E82A
+	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 03:20:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761102701; cv=none; b=i8pLemLgO8Zzrv1auV1g2qf0Nc+iBrsjd0t0XCOqBO3atmAXMgNGoveJsy2hgNpSq2/a8uTP3HENV4I1Ra0PcNmgl8KSx80J64ljGDNnEPlwgh6nN2eaKKrJ55X6JFLSXe+v00HzLkzEy137jAmnGfesp6TEyeNv6RPgMTy/f74=
+	t=1761103254; cv=none; b=NbxUcPt9zWFcimvxWqc18LTJxcb7uysLTosRlyWRcIzeRMf/lJlBtQhGlm2q+tOUZV0hUM9Rb/dcEOx1wvhXihGiusXhqekSKSirVdATZV++6283kKsdCifoiLv9RQcXbrAB5cN1QXG5BoI3r4iFz0BCRSFt+pXU5CjtryfF3l0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761102701; c=relaxed/simple;
-	bh=vo4X/k8QJ+NxqbcWxXdeO1gco1FXAXIvNeqYsVUxN+4=;
+	s=arc-20240116; t=1761103254; c=relaxed/simple;
+	bh=+X5SqWoDFfoI2c9akgItJeGjJLH1IJggeu/maoBWvRk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GQ0dJ9/V+qQk8E0Px0d+WdmhSZbLEPm8Nh32FMjzMnZ6FduLQJUTNdcy5JIi3oFGRx4KBg0Oth+RWu1OH4hB+1wFadyx4R9jeT6YSGewGM2ZMHOWMnj9fowOtJczSvglRNR3dXzjzm5si2y3cLDY4M4Lk+pW0ygyZZ5jpW10YuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ecU5J8UT; arc=none smtp.client-ip=209.85.166.47
+	 To:Cc:Content-Type; b=AYKNvp+rFc4ZuBUjMgMavmHBu2auRDVDZLZazlXwpUlCJsay2ZKEUyC9FkPlu4g7XmDIKZy1g3cxZuyxLHUbLAHlFv4J/ehyQ2QS5LLcF36CJDu7PdoIHZdX6d9wrM1iwbhaLBPfWzs6xA6WSLNYP2ukfqtGbueJ0GDb3OQGEo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fqiV863w; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-93e89a59d68so160548239f.0
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 20:11:38 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-427091cd4fdso3046186f8f.1
+        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 20:20:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761102698; x=1761707498; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761103251; x=1761708051; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1w81N5UwqCcLk9lzNRuUpjETqoES8d1bFB+ZdpugPTA=;
-        b=ecU5J8UT2Bwg8ULPydtna8dAQMF62PFne2fmf1Y9Ag8gK6uy29cNT/9sEC0fepMoUR
-         zxGvA9KDaX+D52B/boKTWnBLfg5u2nbMp3jj2VSm5DmxVfgxsjNTvul8Bq6n+oi4IHUG
-         o51N065I48yH3pYK1LeJafJCxj2cRlUhJwnxSwdnXFp0iwqvzKrzwJXqFtZiR8q6v90w
-         1/PcZ5EBGpqvawUyH3eTTS+i+QH5kDq0f3SJJtZCWP1dIKRRjNbDbnD+ArQZFEDjyl4h
-         QaEbDbvMFBBcNxAEuqjKjeDq20z1s5v9bpJvAiT/e1nDxqDYrrdUW7DPUZVuu5bPnAqd
-         TPLw==
+        bh=+X5SqWoDFfoI2c9akgItJeGjJLH1IJggeu/maoBWvRk=;
+        b=fqiV863wNzHDQzq1LRtwN4jg+4gdphknq/woOxOCZxvvlaMohu+vTolG9w3zCYgOGF
+         r5WKXV8hRsWwPPLZ3rKYjXcY0WeyYgQ0z30QxErKQgxEIzzzbwGu1DCHvoZpktg2cTAS
+         vaVLtVNAYc6ZIaSziP5qUzgwTTc/lj7jA38UpL92S/6DxO6634w5FhZCAuvrXFSljVww
+         vXe9XplLKnF51j6A//FW9HThdcZM6JHk+/V8QXajtmkR4yQfWLDgGItPwyOp3JVf8rgh
+         m/GgMwEel8hujTdb+hSl6DtdKLJn3b0Mc+4w1fPHmbapJd8ATHdU5J1zu/nY1njYTM3Y
+         C/gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761102698; x=1761707498;
+        d=1e100.net; s=20230601; t=1761103251; x=1761708051;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1w81N5UwqCcLk9lzNRuUpjETqoES8d1bFB+ZdpugPTA=;
-        b=Z03wFJTFt0c5cSK6y5VDYOyWa6dLO0fNk0/1i/dBAEPdm1ZdCHErfDQkhYHl6RkBu/
-         b6UllLNoiw8HSXDhwMXFuHxtgO2HsZcvrN7mKYmbmRG14CNR2j7PkQXfugdPpR8YZtQ2
-         wL8qpJJucGhuB8iPyjDo4HuhFUzBbFtFn0gjqPRjtUK1Dr/e79CUoWQG/19OwDeTWC/w
-         DAz2tDcscDVK+hZB7pYO7Po4Yf0L2KFZztXk3/ZTMg05y+G2uoh0SAXd156Q7z/kLXtp
-         0MXmqlub0ckxZFpdIHkmL8AvQatgDxrUeNs/Fuq06BfcL60ML352aKaScJ/nVWgWslYv
-         eGpA==
-X-Forwarded-Encrypted: i=1; AJvYcCVaGZyUuMIkjYxV+pRtf5VxXKQ2mqgMhJWqvzKcPM2pyTnS5tGiILlzM0qZnDKAzm7FAxU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx9gxSx7X/GI9PYxOvbWgQ9EwrO6ZuUTzgvfVagNNSydPQAU0zk
-	fN3uZvB7x8DzhStDV316umhx60ClnFOdggh6G8dzsNGo+uOBZLfAOOSnfvzoDuvA9pQmz0ICj5x
-	fttbVw8fFjDfG8zXWoZ3H83YsxG3LRV4=
-X-Gm-Gg: ASbGncv1O5mLYjREs2P3VO+HAvqkG15m3AuBl+mQ3Rjj4yC2fDXB32wZWb8s7o2YfSz
-	L6483LvpT8IeyRyC+9r5xSP0YD9RgWzvu7lAAyiYTbidTeuqlK+5pRNHWVpbK/S9jDZ/UOQwOXn
-	1f1HbewMpikh9gBodZ+THIUTxAiJJXJqEL90YSdNAuwdTr88b2kR0Xm49D4fH37KmjqkO//UjdV
-	XIYj4CXgsgjC/+vwY0EuZz1wS8Bt6Yc2RSfcJJgFc4QPj31JheuGgzsVJsAhaauF8tJDUI=
-X-Google-Smtp-Source: AGHT+IHsc5L8H41oQ6pWuGlwc/6nz3oXWi8+Bcroke4DapuC5C0EkQMaKnI90LLtcbQ2XDw0xbZs5GobUsx8JgiIzoU=
-X-Received: by 2002:a05:6e02:1689:b0:42d:876e:61bd with SMTP id
- e9e14a558f8ab-430c527fb41mr284123945ab.28.1761102697970; Tue, 21 Oct 2025
- 20:11:37 -0700 (PDT)
+        bh=+X5SqWoDFfoI2c9akgItJeGjJLH1IJggeu/maoBWvRk=;
+        b=iRtxlOxWDfKExwrKa/9+m3bRUfggMOmliCBSuPglwkKXn4YsnG3++q+sPpIvq7d7/s
+         7mVPwWAaz1jvv0Bc/Y/jyardjklHh+OjFHVCbXZe8IBoNgYEWLO8Gay8+URW9Z6UzYd3
+         zqGau2diFQfrgccXWTGGHyohintOvYU7UlefDMD5TQDGSkbEF4Q8Eq9R3jowo3p+PwQ2
+         NzltUDuJOQcXTytdkn2EK5zCsQh8JSl/op52bdk8Cxp+547Eqwb/3IJ6fttmC0u7A1JD
+         XJukjGBugGcO72hkqVMxaskpHpDFQHXZKvVsaRXLVr2VV4j4ToDXPgKlxHZn3cKXGPqt
+         wuaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW7V0u37GVlZthFpAvkplUhyZWLaMuxhx0oW8dyuuxpLdr4oxZJYv6aAA6JKy2TI1Ja0Q4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2ClOXULIQxZyD3oKSwHavnzMSPbvWA/siUk5x5Qz76+2GcEWW
+	M3rdpq3oCr/joRr4X1JL7wALRz80uK93+QPgVclAvFpXE6PkgeN8nTAxwK5tYeqdXWikpW23W2X
+	xTgpDK3GnLWop9IBvU+jF0Yh4OX6zpFk=
+X-Gm-Gg: ASbGncu/aMCkHB96AF2TE9RK8DM0dDtuAXmYKx8TvrGEGMfXrnCJ9kwviop8gbFmt4v
+	SL+/atzPpiPjYRWu4Qqef/LHyxTj/ZTZ4HFD8+6iq13giJVURNg2+NyO8unyfPtV5vZySXrLdfq
+	mMJ0YMa08oCi8/rB7rA3b6/EciNiPkke9t+czv8RGfXkVnrz1/66r8w2nhUv2Lgo+iU2XyEXVuo
+	hq1JLksOs4aGctqeswTZjF7cAdDFf33VpYn9VxqNGdWcS+MmM7XEyNCzU9JDX4QxPeiU39xiJnE
+	RWqACRztijoaOm+t5mXLZZqiG++HUWyH18A3jNA=
+X-Google-Smtp-Source: AGHT+IE50lKb+kPEoKZc5F3yM7N6BTaVXzqzA0yb2g3dXRmZDfN34hIy3RF0WFwJUXE1TFtQJel2WUllphPVQvGIhcc=
+X-Received: by 2002:adf:e19a:0:b0:427:613:7772 with SMTP id
+ ffacd0b85a97d-42706137842mr11242112f8f.32.1761103250588; Tue, 21 Oct 2025
+ 20:20:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251021173200.7908-1-alessandro.d@gmail.com> <20251021173200.7908-2-alessandro.d@gmail.com>
-In-Reply-To: <20251021173200.7908-2-alessandro.d@gmail.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Wed, 22 Oct 2025 11:11:01 +0800
-X-Gm-Features: AS18NWBBSoMIxcuhS-7Wwy3NqCqJITQFYqxcB1a6KZpfmjK1-38rwvJFwSyOIzY
-Message-ID: <CAL+tcoCwGQyNSv9BZ_jfsia6YFoyT790iknqxG7bB7wVi3C_vQ@mail.gmail.com>
-Subject: Re: [PATCH net v2 1/1] i40e: xsk: advance next_to_clean on status descriptors
-To: Alessandro Decina <alessandro.d@gmail.com>
-Cc: netdev@vger.kernel.org, Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
-	"David S. Miller" <davem@davemloft.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Tirthendu Sarkar <tirthendu.sarkar@intel.com>, 
-	Tony Nguyen <anthony.l.nguyen@intel.com>, bpf@vger.kernel.org, 
-	intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
+References: <636d45a8-cdc4-46ce-b1cb-6d2e4e3226ae@hust.edu.cn>
+ <CAADnVQLFuMAYHXXd_=2ebnhsE_tECKrVcLwuOt9b0dK4-Ww+gQ@mail.gmail.com>
+ <034fed44-2640-4338-8f7a-89a4c9c4af6f@hust.edu.cn> <CAADnVQJ4HeTzm+2DNSFG83HF01OxN98QLXZ_zUVThsMzSF6=CA@mail.gmail.com>
+ <7b86d9eb-313d-4a3e-8547-6a8c1ec2caaf@hust.edu.cn>
+In-Reply-To: <7b86d9eb-313d-4a3e-8547-6a8c1ec2caaf@hust.edu.cn>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 21 Oct 2025 20:20:39 -0700
+X-Gm-Features: AS18NWDI7sGDOd_4h8R6aGR4qYNbtyuA1mLh5TyeFyaBk0xVrcOZBXThhhFluoo
+Message-ID: <CAADnVQ+GuhM5ZbPPZ7R_pVfEjsfX_rneqaEtZ-u_qABQetJ3ZQ@mail.gmail.com>
+Subject: Re: Information Leakage via Type Confusion in bpf_snprintf_btf()
+To: Yinhao Hu <dddddd@hust.edu.cn>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, dzm91@hust.edu.cn, 
+	M202472210@hust.edu.cn, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 22, 2025 at 1:33=E2=80=AFAM Alessandro Decina
-<alessandro.d@gmail.com> wrote:
+On Tue, Oct 21, 2025 at 8:08=E2=80=AFPM Yinhao Hu <dddddd@hust.edu.cn> wrot=
+e:
 >
-> Whenever a status descriptor is received, i40e processes and skips over
-> it, correctly updating next_to_process but forgetting to update
-> next_to_clean. In the next iteration this accidentally causes the
-> creation of an invalid multi-buffer xdp_buff where the first fragment
-> is the status descriptor.
+> On 10/22/25 10:20 AM, Alexei Starovoitov wrote:
+> > On Tue, Oct 21, 2025 at 6:42=E2=80=AFPM Yinhao Hu <dddddd@hust.edu.cn> =
+wrote:
+> >>
+> >> Hi,
+> >>
+> >> Thank you for reviewing our report.
+> >> We have verified the content in the report. Could you please point out
+> >> which specific part caused confusion? We would be happy to provide
+> >> additional details or clarification.
+> >
+> > Do not top-post.
+> >
+> > Am I talking to a person or an AI bot?
+> >
+> > Did you read what you wrote: "programs with `CAP_SYS_ADMIN`
+> > to leak kernel memory" and that made sense to you?
 >
-> If then a skb is constructed from such an invalid buffer - because the
-> eBPF program returns XDP_PASS - a panic occurs:
->
-> [ 5866.367317] BUG: unable to handle page fault for address: ffd31c37eab1=
-c980
-> [ 5866.375050] #PF: supervisor read access in kernel mode
-> [ 5866.380825] #PF: error_code(0x0000) - not-present page
-> [ 5866.386602] PGD 0
-> [ 5866.388867] Oops: Oops: 0000 [#1] SMP NOPTI
-> [ 5866.393575] CPU: 34 UID: 0 PID: 0 Comm: swapper/34 Not tainted 6.17.0-=
-custom #1 PREEMPT(voluntary)
-> [ 5866.403740] Hardware name: Supermicro AS -2115GT-HNTR/H13SST-G, BIOS 3=
-.2 03/20/2025
-> [ 5866.412339] RIP: 0010:memcpy+0x8/0x10
-> [ 5866.416454] Code: cc cc 90 cc cc cc cc cc cc cc cc cc cc cc cc cc cc c=
-c 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 90 48 89 f8 48 89 d1 <=
-f3> a4 e9 fc 26 c0 fe 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
-> [ 5866.437538] RSP: 0018:ff428d9ec0bb0ca8 EFLAGS: 00010286
-> [ 5866.443415] RAX: ff2dd26dbd8f0000 RBX: ff2dd265ad161400 RCX: 000000000=
-00004e1
-> [ 5866.451435] RDX: 00000000000004e1 RSI: ffd31c37eab1c980 RDI: ff2dd26db=
-d8f0000
-> [ 5866.459454] RBP: ff428d9ec0bb0d40 R08: 0000000000000000 R09: 000000000=
-0000000
-> [ 5866.467470] R10: 0000000000000000 R11: 0000000000000000 R12: ff428d9ee=
-c726ef8
-> [ 5866.475490] R13: ff2dd26dbd8f0000 R14: ff2dd265ca2f9fc0 R15: ff2dd2654=
-8548b80
-> [ 5866.483509] FS:  0000000000000000(0000) GS:ff2dd2c363592000(0000) knlG=
-S:0000000000000000
-> [ 5866.492600] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 5866.499060] CR2: ffd31c37eab1c980 CR3: 0000000178d7b040 CR4: 000000000=
-0f71ef0
-> [ 5866.507079] PKRU: 55555554
-> [ 5866.510125] Call Trace:
-> [ 5866.512867]  <IRQ>
-> [ 5866.515132]  ? i40e_clean_rx_irq_zc+0xc50/0xe60 [i40e]
-> [ 5866.520921]  i40e_napi_poll+0x2d8/0x1890 [i40e]
-> [ 5866.526022]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [ 5866.531408]  ? raise_softirq+0x24/0x70
-> [ 5866.535623]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [ 5866.541011]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [ 5866.546397]  ? rcu_sched_clock_irq+0x225/0x1800
-> [ 5866.551493]  __napi_poll+0x30/0x230
-> [ 5866.555423]  net_rx_action+0x20b/0x3f0
-> [ 5866.559643]  handle_softirqs+0xe4/0x340
-> [ 5866.563962]  __irq_exit_rcu+0x10e/0x130
-> [ 5866.568283]  irq_exit_rcu+0xe/0x20
-> [ 5866.572110]  common_interrupt+0xb6/0xe0
-> [ 5866.576425]  </IRQ>
-> [ 5866.578791]  <TASK>
->
-> Advance next_to_clean to ensure invalid xdp_buff(s) aren't created.
->
-> Fixes: 1c9ba9c14658 ("i40e: xsk: add RX multi-buffer support")
-> Signed-off-by: Alessandro Decina <alessandro.d@gmail.com>
-> ---
->  drivers/net/ethernet/intel/i40e/i40e_xsk.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/eth=
-ernet/intel/i40e/i40e_xsk.c
-> index 9f47388eaba5..dbc19083bbb7 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> @@ -441,13 +441,18 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring,=
- int budget)
->                 dma_rmb();
->
->                 if (i40e_rx_is_programming_status(qword)) {
-> +                       u16 ntp;
-> +
->                         i40e_clean_programming_status(rx_ring,
->                                                       rx_desc->raw.qword[=
-0],
->                                                       qword);
->                         bi =3D *i40e_rx_bi(rx_ring, next_to_process);
->                         xsk_buff_free(bi);
-> -                       if (++next_to_process =3D=3D count)
-> +                       ntp =3D next_to_process++;
-> +                       if (next_to_process =3D=3D count)
->                                 next_to_process =3D 0;
-> +                       if (next_to_clean =3D=3D ntp)
-> +                               next_to_clean =3D next_to_process;
->                         continue;
->                 }
->
-> --
-> 2.43.0
->
->
+> Apologies for the misnomer, it means that if the PoC is granted the
+> CAP_SYS_ADMIN capability, it can trigger the vulnerability and cause
+> information leakage.
 
-I'm copying your reply from v1 as shown below so that we can continue
-with the discussion :)
-
-> It really depends on whether a status descriptor can be received in the
-> middle of multi-buffer packet. Based on the existing code, I assumed it
-> can. Therefore, consider this case:
->
-> [valid_1st_packet][status_descriptor][valid_2nd_packet]
->
-> In this case you want to skip status_descriptor but keep the existing
-> logic that leads to:
->
->     first =3D next_to_clean =3D valid_1st_packet
->
-> so then you can go and add valid_2nd_packet as a fragment to the first.
-
-Sorry, honestly, I still don't follow you.
-
-Looking at the case you provided, I think @first always pointing to
-valid_1st_packet is valid which does not bring any trouble. You mean
-the case is what you're trying to handle?
-
-You patch updates next_to_clean that is only used at the very
-beginning, so it will not affect @first. Imaging the following case:
-
-     [status_descriptor][valid_1st_packet][valid_2nd_packet]
-
-Even if the next_to_clean is updated, the @first still points to
-[status_descriptor] that is invalid and that will later cause the
-panic when constructing the skb.
-
-I'm afraid that we're not on the same page. Let me confirm that it is
-@first that points to the status descriptor that causes the panic,
-right? Could you share with us the exact case just like you did as
-above. Thank you.
-
-Thanks,
-Jason
+I thought AI can read the code...
+Please see include/uapi/linux/capability.h
+what CAP_SYS_ADMIN means and what is allowed.
 
