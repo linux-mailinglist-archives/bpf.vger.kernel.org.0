@@ -1,184 +1,159 @@
-Return-Path: <bpf+bounces-71656-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71657-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDE7EBF98F8
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 03:05:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DF31BF9974
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 03:16:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8500119C7495
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 01:05:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACC173B0A19
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 01:15:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C5C13A258;
-	Wed, 22 Oct 2025 01:05:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C0081FCF7C;
+	Wed, 22 Oct 2025 01:15:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HDCIcUu9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c0AP2GnV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f67.google.com (mail-yx1-f67.google.com [74.125.224.67])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6419A86340
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 01:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445C81D88A4
+	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 01:15:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761095122; cv=none; b=NIwJ7r4UdJrSKPsbtA9HMMREUQc10kfI/9Cn7UCoRBQTXs7IZUX7YaxPR06HnPN3oxRNtEyWKTfB5niOPibPHkkx4SgMhj1j98fhc4zbp+crW0QpLv87kmm47RpYLt4MFXpnDuWlF1B0CHEr7IOErLVLZKho1RiK3gDOMpE5dXg=
+	t=1761095737; cv=none; b=HH+BdxhLAz44b1RiigwZWtAvg//lHEEKLb8GxsmxQNvmpM/kvP5E3myZEjQ4YZoDslazdvHwCnDQaZwVQ/nND+iX54UvxYeEgbouM82gE9fjUTv9hvKXHGIIFwGHK1n0XRNc6hmyJC0Rs6OAtBk15Cb3mp5u7Wi9IdilAZDJVHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761095122; c=relaxed/simple;
-	bh=4rmLUQu1le5r8D+swi25K4jEmqaVPWc7lJ6PHq6tcyQ=;
+	s=arc-20240116; t=1761095737; c=relaxed/simple;
+	bh=Jr9o8Fe1cMM3n6Vlk+UfVvrS4X6V47Y9qhlCyKITm0o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ishtiKzqH96KYSolga5uQVoWh+nw6YBGdAzLsgQCkNK7DTNopiwOSvkrs7JuK9dJ6C/kgEGjuXkDX5qmw15NeRopJXmIFEEj8poWFRoaoyNNzkgj9Od1eu0ksrYcCPEgdKkSnEFOsVgLAUITNg4t/FzoZeqeCr8YwomiFvfdhHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HDCIcUu9; arc=none smtp.client-ip=74.125.224.67
+	 To:Cc:Content-Type; b=F0myV6Iaq1tsoaqS5wEpMndRrTMxEM3k48MRnUWqWtcEAcrn5Vd9FGDEiDMr6+f7wBtu7bEqoKxNu6y8kyzwcI8ehlFSzfDfp0NJRg4eqIBvSelyMTt31qy7i7HDXXCyUBNwBMJAbJKwBzv5yjdNPWJ7fTR81eufdlDa3Z8k1j8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c0AP2GnV; arc=none smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f67.google.com with SMTP id 956f58d0204a3-63e1e1bf882so4646421d50.1
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 18:05:20 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-634cef434beso844136a12.1
+        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 18:15:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761095119; x=1761699919; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761095733; x=1761700533; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EpBWUMQUyNYztr0Z+6+lgRKFyM4PGQRNG3RtejXI1dQ=;
-        b=HDCIcUu9l4Uhbwu7zyX3X3VuVKCyI+HKGSp+LI2xNLz2NFyfdscIQyW79bnFihm5DG
-         z1suO+SaaItuy4Hq2UCxlO7iyTb/+ayXNTFxxvuLWpI0j6DOx1QxjufvksL7ImfSD2Z8
-         96S2x+n9F7eUFdKsVsaO9Zv59SiqrmJbXaoSSzRmYoCWuR//TW8kRR2oQeHyP/cINZ+B
-         He3v3uo6tWAnxRwUwX9IME4SQqMIvZKpUwxvsfzIx3UlY0Hrdf2qfgkFPXn6RMeKLPsS
-         bEztIWcL7Ctf9ulY2Zgbs7SpXq52QX8ysVLQ4QAHdayRVZasehc2+Smw3CWM3iFayeoY
-         m5lg==
+        bh=woIbsdxyP3SY2orn275GN3OxfriuvKkh/5p7Czi2+bM=;
+        b=c0AP2GnVK9voeE+G28kwj4ROp/PTI9+xZjKV/vF+4qKRWFyUGOortsuSSnt7I8I+Uk
+         DPwfm3u5p/JL2LdEqVPu+/XyvfZb2oiw4r9jjLf3TKuUYIK+jWBtGX+CeNsaH/LmDz1m
+         BPZEUaajJhlHOAzVi7cHc5puB3W+tAniv7D9eG6hmLEqa2cZlT+XtrHbPDfa7hFVZXLT
+         AxiLVgPxenyGXvCSJx7OU7gUVL5+lz/wS2npNV2v+8BmKQvfL/wsNRk+AZiTBbD7dg84
+         xJ4ezO8GwP9MT2QNzr+Le/TKAEGaPusjOsWygeikrtuPpgNOyFw+4R5FfWvCUqyWlBTm
+         eITg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761095119; x=1761699919;
+        d=1e100.net; s=20230601; t=1761095733; x=1761700533;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EpBWUMQUyNYztr0Z+6+lgRKFyM4PGQRNG3RtejXI1dQ=;
-        b=ST2Gmjiv1tYVF3sijHOXwagksKHoLyFtg7XLnQCwbgIT7L5Y/xumgo3TmxYHzHPaPY
-         7yEnYf6pgB1bqCW82W8G2qeIp6Pm0ZVTc5YsWGomIMyVZAxfBxFgjjJhbq5Xhhf/hOwa
-         bQs1hL9FXXhNxPIQdCmG+XO8RNg2fc5LOlQQyILRtU1NzSFJ10YQbK0aPxrTlHZeZlDW
-         Q5k6JpbCz6+EemZrnbk3uVyw8ECpdsg8Rw/A6T8tbfadkliEcXq1+XsQsa0v8TJ7yEiS
-         WCN2u46zskncMmnlusuu5jz7B/gJy+go8PK7XjfNwBMYEPYxV4u9oFdRirW3DkSAC7/D
-         WWAg==
-X-Forwarded-Encrypted: i=1; AJvYcCXr6SnfXJ3/ACrmRmpdac5Nix1Qi7CPDco2oy7gm+VASsb4LIkqSX0lGNUdtKzKWmqlLAo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxsucXf0O2KAmSqLj/M4G8QH/qMKFjonvpQ2kwWW7lYW0wBfhaH
-	34ya1xVl0ElNYl62wFmENZvF39dOULf32sMjNcojsi26Zub1OFySJh0Le1E7Wp6xwtz7pRaG4aE
-	wemPZqub1VbfPji5i/sZYm2plQtyWwV4=
-X-Gm-Gg: ASbGncs8lDeyl+df4O2Q5QGvdMHY+9wxuhznQXpSVVmetmnDpEX721l9XyQL2rCAKHN
-	m113OhW7cjbvUZoPhLKx6Z7HYFRSLCsmF3cOMBlpw04h/ZeKaD3/Qb1/AlhxQNyyujishIZHtow
-	yEEG9mJc6RDhS7WOPIiQ91ryH8qhrvKogeGku7JKNA0AH9oIgHj43xIy263EYWc1tqBpfrQAQpm
-	R9vF5NzlOpUyb1A1w9WHb/Gd/4Wn76t1F35ctigP/a6fRN8jqtRtmD0tDtY0myr9MRL7Zs=
-X-Google-Smtp-Source: AGHT+IF3FvmioM9BLiSXPvFefJ9mFTLeZP3TQOzmbGHlmIBl0/JtWtAgQ/j9lUo1B1DPYzFjyNFxiVtADeI/nOfgO0Y=
-X-Received: by 2002:a05:690c:6204:b0:722:7a7f:537a with SMTP id
- 00721157ae682-783b02e8f85mr264235697b3.38.1761095119351; Tue, 21 Oct 2025
- 18:05:19 -0700 (PDT)
+        bh=woIbsdxyP3SY2orn275GN3OxfriuvKkh/5p7Czi2+bM=;
+        b=Z+dddOCbWq4YWoA9cUdILdgYINJnikTJcfD70HCwVV1odCx6hEEZNIoEkXYh3qmcBF
+         kBcK7cjCks4/ML5ndpSVpdKtj9bAPsF4USbfK3M9fnbFKLbIP1FGRyrPwLgX1crakUKm
+         E/CFR1Ah6Xtch9mdLHx60ATirTiqaONRKjt+YSVdIQlOJP8Akskxl/iHJfCnMAJyYUbp
+         NX7rA/MC7xBWswj8nTzS9fjybBptNJkDxC3ejxrdCOqPWIwgMo3ICVvu29BJx12xi4OA
+         gbUlYKbX1kL/PEdfJ/krNs+zaEIgUqpDlEiycRk7oGFGMcZvK33G6GKfTV6xtbvg1cLm
+         r9xA==
+X-Forwarded-Encrypted: i=1; AJvYcCX/l4vy1pTMjENzDCm4VG0GN6UXMKfkAFRv4KuhXkpG4eg9AwR4gR0puf/hpV45cfnlXHg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwiSl0yW7MokETtV33bInbdktDIMnXYzw/DVNS+ZRjnrqGhkbzr
+	/V+HwIlLs91vSokTNEKPlPJ/Fuz0hyOm9PDITvRoU4eASs/+Z1vmHCWDltTY6XATQhLb/bRGR4I
+	S6MBm8O8ifjW3O6agd06hNdCM7k5qMus=
+X-Gm-Gg: ASbGncuBcn2tKsxvivN1g7jzjVccLllCAng/fMN+Pert8pXS2dWkhfx3e+k2oW1aqzN
+	+4FsREbtN/PH5gy0aB9M/7I6m4PRo1vT0zHbp7AqFj+ISyGjERum1nlOOOCGWWtNNrX4a2X+h0c
+	661eGkBA3xrvfZCK6fsACx4RoCkdxY1AKkYG3/Np9p2SBudlJIYrJJI3d/+1Z2xYbcL9T47NjhS
+	oRi0QdGxGeDtaUEqOEcgXFdUAvb5tXM6u0qEW3/DcHdM5TKaACVl6OgsDgaWw==
+X-Google-Smtp-Source: AGHT+IF8qT+3cQlutV2V5LKeFy+yWaAPEmk3Tmkf7M+saEzE2zSCWO8VFBs5h26E80tQEv0kG/6sg9DsaoP8ItQy+eM=
+X-Received: by 2002:a05:6402:440b:b0:62f:4828:c7d5 with SMTP id
+ 4fb4d7f45d1cf-63e173c288cmr1721406a12.16.1761095733265; Tue, 21 Oct 2025
+ 18:15:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251018142124.783206-1-dongml2@chinatelecom.cn>
- <20251018142124.783206-4-dongml2@chinatelecom.cn> <CAADnVQLN96WZd0eWWb=__62g49y_wPfjTPKXaB_=o5jdVE7uKQ@mail.gmail.com>
-In-Reply-To: <CAADnVQLN96WZd0eWWb=__62g49y_wPfjTPKXaB_=o5jdVE7uKQ@mail.gmail.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Wed, 22 Oct 2025 09:05:08 +0800
-X-Gm-Features: AS18NWBvheWbnEYFkDqoW2scTpYlV2lsYeAzkOkH1tIPcoLNZoG6fvzq48EGweo
-Message-ID: <CADxym3ad72C+0D2AMDp799-zmLO-f2TG1+Xtbu-72Jv6LSzwSg@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 3/5] bpf,x86: add tracing session supporting
- for x86_64
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Leon Hwang <leon.hwang@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+References: <20251020093941.548058-1-dolinux.peng@gmail.com>
+ <20251020093941.548058-6-dolinux.peng@gmail.com> <e8b8b84a-b132-44f0-827b-668f32755ff7@oracle.com>
+In-Reply-To: <e8b8b84a-b132-44f0-827b-668f32755ff7@oracle.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Date: Wed, 22 Oct 2025 09:15:21 +0800
+X-Gm-Features: AS18NWBRkH6bTJXyB56Sq1g9RoN36lgLPFuPztF6E3otkDZ-f1rD7uN3XKCLono
+Message-ID: <CAErzpmuSEfgih1-RDN1FAxB5Sd1phKr9Ntr9YmdDw2vXGgZ0Gw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 5/5] btf: add CONFIG_BPF_SORT_BTF_BY_KIND_NAME
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: ast@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Eduard Zingerman <eddyz87@gmail.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Song Liu <song@kernel.org>, pengdonglin <pengdonglin@xiaomi.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 22, 2025 at 2:17=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Oct 22, 2025 at 1:28=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
+om> wrote:
 >
-> On Sat, Oct 18, 2025 at 7:21=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
-il.com> wrote:
-> >  /* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
-> >  #define LOAD_TRAMP_TAIL_CALL_CNT_PTR(stack)    \
-> >         __LOAD_TCC_PTR(-round_up(stack, 8) - 8)
-> > @@ -3179,8 +3270,10 @@ static int __arch_prepare_bpf_trampoline(struct =
-bpf_tramp_image *im, void *rw_im
-> >                                          void *func_addr)
-> >  {
-> >         int i, ret, nr_regs =3D m->nr_args, stack_size =3D 0;
-> > -       int regs_off, nregs_off, ip_off, run_ctx_off, arg_stack_off, rb=
-x_off;
-> > +       int regs_off, nregs_off, session_off, ip_off, run_ctx_off,
-> > +           arg_stack_off, rbx_off;
-> >         struct bpf_tramp_links *fentry =3D &tlinks[BPF_TRAMP_FENTRY];
-> > +       struct bpf_tramp_links *session =3D &tlinks[BPF_TRAMP_SESSION];
-> >         struct bpf_tramp_links *fexit =3D &tlinks[BPF_TRAMP_FEXIT];
-> >         struct bpf_tramp_links *fmod_ret =3D &tlinks[BPF_TRAMP_MODIFY_R=
-ETURN];
-> >         void *orig_call =3D func_addr;
-> > @@ -3222,6 +3315,8 @@ static int __arch_prepare_bpf_trampoline(struct b=
-pf_tramp_image *im, void *rw_im
-> >          *
-> >          * RBP - nregs_off [ regs count      ]  always
-> >          *
-> > +        * RBP - session_off [ session flags ] tracing session
-> > +        *
-> >          * RBP - ip_off    [ traced function ]  BPF_TRAMP_F_IP_ARG flag
-> >          *
-> >          * RBP - rbx_off   [ rbx value       ]  always
-> > @@ -3246,6 +3341,8 @@ static int __arch_prepare_bpf_trampoline(struct b=
-pf_tramp_image *im, void *rw_im
-> >         /* regs count  */
-> >         stack_size +=3D 8;
-> >         nregs_off =3D stack_size;
-> > +       stack_size +=3D 8;
-> > +       session_off =3D stack_size;
+> On 20/10/2025 10:39, Donglin Peng wrote:
+> > Pahole v1.32 and later supports BTF sorting. Add a new configuration
+> > option to control whether to enable this feature for vmlinux and
+> > kernel modules.
+> >
+> > Cc: Eduard Zingerman <eddyz87@gmail.com>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > Cc: Alan Maguire <alan.maguire@oracle.com>
+> > Cc: Song Liu <song@kernel.org>
+> > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> > Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
+> > ---
+> >  kernel/bpf/Kconfig   | 8 ++++++++
+> >  scripts/Makefile.btf | 5 +++++
+> >  2 files changed, 13 insertions(+)
+> >
+> > diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
+> > index eb3de35734f0..08251a250f06 100644
+> > --- a/kernel/bpf/Kconfig
+> > +++ b/kernel/bpf/Kconfig
+> > @@ -101,4 +101,12 @@ config BPF_LSM
+> >
+> >         If you are unsure how to answer this question, answer N.
+> >
+> > +config BPF_SORT_BTF_BY_KIND_NAME
+> > +     bool "Sort BTF types by kind and name"
+> > +     depends on BPF_SYSCALL
+> > +     help
+> > +       This option sorts BTF types in vmlinux and kernel modules by th=
+eir
+> > +       kind and name, enabling binary search for btf_find_by_name_kind=
+()
+> > +       and significantly improving its lookup performance.
+> > +
+> >  endmenu # "BPF subsystem"
+> > diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
+> > index db76335dd917..3f1a0b3c3f3f 100644
+> > --- a/scripts/Makefile.btf
+> > +++ b/scripts/Makefile.btf
+> > @@ -29,6 +29,11 @@ ifneq ($(KBUILD_EXTMOD),)
+> >  module-pahole-flags-$(call test-ge, $(pahole-ver), 128) +=3D --btf_fea=
+tures=3Ddistilled_base
+> >  endif
+> >
+> > +ifeq ($(call test-ge, $(pahole-ver), 132),y)
+> > +pahole-flags-$(CONFIG_BPF_SORT_BTF_BY_KIND_NAME)     +=3D --btf_featur=
+es=3Dsort
+> > +module-pahole-flags-$(CONFIG_BPF_SORT_BTF_BY_KIND_NAME) +=3D --btf_fea=
+tures=3Dsort
+> > +endif
+> > +
 >
-> Unconditional stack increase? :(
+> perhaps it's useful informationally, but you don't need to wrap the
+> addition of the sort flag in a pahole version check; unsupported
+> btf_features are just ignored. Also we're at v1.30 in pahole now (we'll
+> be releasing 1.31 shortly hopefully), so any version check should be
+> v1.30/v1.31. I'd say just leave out the version check though.
 
-Ah, it should be conditional increase and I made a mistake here,
-which will be fixed in the V2.
+Understood, thanks. Will do.
 
-In fact, we can't add the session stuff here. Once we make it
-conditional increase, we can't tell the location of "ip" in
-bpf_get_func_ip() anymore, as we can't tell if session stuff exist
-in bpf_get_func_ip().
-
-Several solution that I come up:
-
-1. reuse the nregs_off. It's 8-bytes, but 1-byte is enough for it.
-Therefore, we can store some metadata flags to the high 7-bytes
-of it, such as "SESSION_EXIST" or "IP_OFFSET". And then,
-we can get the offset of the ip in bpf_get_func_ip().
-It works, but it will make the code more confusing.
-
-2. Introduce a bpf_tramp_session_run_ctx:
-struct bpf_tramp_session_run_ctx {
-  struct bpf_tramp_run_ctx;
-  __u64 session_flags;
-  __u64 session_cookie;
-}
-If the session exist, use the bpf_tramp_session_run_ctx in the
-trampoline.
-It work and simple.
-
-3. Add the session stuff to the tail of the context, which means
-after the "return value". And the stack will become this:
-session cookie -> 8-bytes if session
-session flags   -> 8-bytes if session
-return value     -> 8-bytes
-argN
-.....
-arg1
-
-Both method 2 and method 3 work and simple, and I decide use
-the method 3 in the V2.
-
-Thanks!
-Menglong Dong
+>
+> Alan
 
