@@ -1,97 +1,97 @@
-Return-Path: <bpf+bounces-71851-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71852-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B217BFE391
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 22:50:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A478BFE412
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 23:10:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AC0934F699E
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 20:50:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFC733A8232
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 21:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80287301014;
-	Wed, 22 Oct 2025 20:50:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC2202F60DD;
+	Wed, 22 Oct 2025 21:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VV5qQxjG"
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="OYxbb3LK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313982FFDEB
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 20:50:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC41D2DECAA;
+	Wed, 22 Oct 2025 21:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761166212; cv=none; b=EjVN3vN9wJdJ4UYFWizZgAACzp87qHW/ErA+N0lhoIhrO9MspheH7YgMdqmg79QT4wGwceApiM32sLx1XYWSS4evZ4NCHB72kXo2XEQm6UbX3UQZRg8GZeq2OyZA0OAhcknPrDBEACP/TCP9YGwm5cTzr/ScokRAimo6N+r2eZM=
+	t=1761167410; cv=none; b=AoKp0W1s0f61oMRe2oDfZn0dOUxUPyst6CJUGFl7Gcpp9/xtM5nsy3gGmcUmI3SbKQJpkcrwCl5X5HHZUVEpqspxPW0dyJhzsU5WIuE+4L6wxKC2WMoou3zKZYm6dhf1LJX2z+lIs9CIQNaghCKd/v8hSm3RPpdcBVkKONIafbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761166212; c=relaxed/simple;
-	bh=0JgR9WDTUHynjtqt1SVok1mWflkxdI3OpEFCJjXRJyo=;
+	s=arc-20240116; t=1761167410; c=relaxed/simple;
+	bh=LpN+y4m181tftmVGsBANTa/8o/qjnn89JjGeFCMgIPg=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=rlaiRIZ/yaC+2disMYrg+uAm3xHLWZJHuEwmTLdGzxTSdNeO1B8ujEYSYGd+2rla/jfBGQpVgrBTPSGkBZErtVUQmANFGM3MxpnzMCNBFZmUTpbecADM9YNLovws97RkbKmnDcI8aISgz+qd0CmyBjcvufD8Y9v0LMGUc/ru7ns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VV5qQxjG; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-77f67ba775aso83919b3a.3
-        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 13:50:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761166210; x=1761771010; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UgUcpfhrvyt6eYMrfd8U4oPFhV6AvkhtxDSF2rQSVSI=;
-        b=VV5qQxjGw2JFEZQCvGzS2/poqbV9qTsMs2kOpFchaAzpoN0v5pOGu9R/BP6RH0S08f
-         wtQblirjAeAqt8gjjKkhOvF3F4rMHMiBi3yHdBGTTbljoI4o1i/hinzUIkwbNH2GkcRu
-         wN2MduilJKpI2RhSMoWt6Rt5k0HVme+Lbj8cb5H848zQh1q8nHGdlKWYhq6x2t88q8qa
-         a7yndMZxEuTfSoCuU8Scl2xKPHA85JJMUUKhZ4uh31Mue4MTUfV1lWgOLzcoZsufEst1
-         8xUWpPIzvjUJsLmd+gVUpEBA3upvWgMNN1yZbKOevNzPbJ8h3zhl/tOtm8RrHC6EPsod
-         am7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761166210; x=1761771010;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UgUcpfhrvyt6eYMrfd8U4oPFhV6AvkhtxDSF2rQSVSI=;
-        b=VcDxcmzmo8o52pCk5rJsyNmeJfoB+usdAE99l/yreO+N/GHS+Owfpim7YGRgz1xVcj
-         fqDcL0OQlFTQj2o3W0eI/L8boaZlINAJ6vLFC+IUgSHzMgF2r1Oia2RkiuSOsG2Z8Ohy
-         EfZuV5Iu+xoOLPyADuk6zmoIBJkOpLWsV+oj1F7z004G1QY3gnUA4t8VWfmSW8bqQYBQ
-         LfTiWHFg74I+vwOGQJJwwkPHiJKklDHMmlYMDs1a5Jopxbqz8Fb1KW7Ehcbeq0Ba3g/R
-         DpUbWyZtK+rhPFi1dHZlO8D4VTKCgVs4jOfUyH9jKSSYTbQqUWZRWB/w24phnmLrgYoD
-         mqXw==
-X-Forwarded-Encrypted: i=1; AJvYcCXXFe9pWBHHUoZsRzUmogL1VuO3X4Wi+SVxP2YkI/W4FNMaivw6RgdWCv063SHwtzf4H8I=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw8ISLZc4WOpbyyz8XPaAFSqID0CmY0Qyq3aLTOC7zG87ofwMke
-	sjLKXPhUL514ecb0Q/RV8hXLeFjWlnQVWsbT2IpR9hzkPHTSwl7/Zi5l
-X-Gm-Gg: ASbGncvjz3j/rRmt2Lzg5R4HntpBj+tEk9CDD9fbJF5bJz2E/L+0+Qp3y/wgCKV0l3A
-	2FNxjVhKuspiSmGfQuyhbmU8f7dpiFxHdC1ODkjMRRQCamex5CTGKMq4HruzIKVESHN78PXb7tm
-	SCTUuEK3TscgmjPu9QiDuteHtAQodaGDztTvqKPyZQ2nei26jIcXJievupipJ8De0Af+ZTF6xvO
-	/rpXmyQ7Kjc4TT+8r3cnLedP4zNH4XBgCpLcSpVOlEoXHq/Zu7MTuDYyc9dfy4bc73nAG1ov/YA
-	SjPXhs1+wUl80F7hYMV6kYH2AJ4GkNi8cuGQqkVXfeZtgBPyjw4H47jOtWgqmCaf+hD7PHN6Wi+
-	ysewvXp1D9yjDP2aOLnLFyBJzlMOAf5geDiw31t5hkVurWmNWptIWxSRoBlVdNfSR/ZCmj92f0M
-	a5rjx12oTvSPem5gDmegTJXHu+lEotPsUAdB4=
-X-Google-Smtp-Source: AGHT+IEV7pugFPydmKhRrO5R/SjYxtWqVbY5mI6z6oTdXgS9HtSf1+AY271CZOh4AWxrX2zJPvrYFQ==
-X-Received: by 2002:a05:6a00:4f81:b0:7a1:373f:c216 with SMTP id d2e1a72fcca58-7a220a9ded3mr27481912b3a.14.1761166210420;
-        Wed, 22 Oct 2025 13:50:10 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:fa8d:1a05:3c71:d71? ([2620:10d:c090:500::7:b877])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a274a9e912sm161398b3a.22.2025.10.22.13.50.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Oct 2025 13:50:10 -0700 (PDT)
-Message-ID: <7651ac9cc74e135f04ecfee8660bea0a0d3883ab.camel@gmail.com>
-Subject: Re: [RFC PATCH v2 2/5] btf: sort BTF types by kind and name to
- enable binary search
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: ast@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alan Maguire
- <alan.maguire@oracle.com>, Song Liu	 <song@kernel.org>, pengdonglin
- <pengdonglin@xiaomi.com>
-Date: Wed, 22 Oct 2025 13:50:08 -0700
-In-Reply-To: <CAErzpmusSgOaROhEO25fKenvxQJU1oSPKKzUA4h67ptdQxWM7A@mail.gmail.com>
-References: <20251020093941.548058-1-dolinux.peng@gmail.com>
-	 <20251020093941.548058-3-dolinux.peng@gmail.com>
-	 <174642a334760af39a5e7bacdd8b977b392a82c7.camel@gmail.com>
-	 <CAErzpmusSgOaROhEO25fKenvxQJU1oSPKKzUA4h67ptdQxWM7A@mail.gmail.com>
+	 Content-Type:MIME-Version; b=dJzl4IKvDOY2A0ZEB1ULj0eXY4dL9wgvArRsZocr0VlmjrkE3yNtsvq6ldcRwwtcxL1uL8jpxCn0fmhaGFl57v18VmPOo+Hs0yt/UHbXBYNnjwq/L0+YXiAF+9bM6bMIQ0q9Av+6QIhJi/XeZR26lhpjZu7yzdIUFz5AifU5ajs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=OYxbb3LK; arc=none smtp.client-ip=198.37.111.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1761167404;
+	bh=LpN+y4m181tftmVGsBANTa/8o/qjnn89JjGeFCMgIPg=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=OYxbb3LKlLXWOLVGEkMC7Hkqv/qGAKlTBSbcSPBVwdXLewg57rJ9hedYvYl7e4Wt/
+	 IdD/jf4niSRbpa6la7QCBlwWj69aEaLX7AkkS5pWWkJoqrffqz9fkp2/4ukRs/pM/m
+	 vQXec1XuQexYG9UOOh3KexG8f2Ama/am9QXryoUA=
+Received: from [IPv6:2001:4898:d8:34:ab55:e469:cd28:a34c] (unknown [IPv6:2001:4898:80e8:a:2b6f:e469:cd28:a34c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 86E631C001D;
+	Wed, 22 Oct 2025 17:10:03 -0400 (EDT)
+Message-ID: <b21284e338846166804bd99bfc37186cf80f1b38.camel@HansenPartnership.com>
+Subject: Re: [PATCH bpf-next v2 0/3] BPF signature hash chains
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Paul Moore <paul@paul-moore.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, KP
+ Singh <kpsingh@kernel.org>, Blaise Boscaccy
+ <bboscaccy@linux.microsoft.com>, bpf <bpf@vger.kernel.org>, LSM List
+ <linux-security-module@vger.kernel.org>, "K. Y. Srinivasan"
+ <kys@microsoft.com>, Daniel Borkmann <daniel@iogearbox.net>, Andrii
+ Nakryiko <andrii@kernel.org>,  wufan@linux.microsoft.com, Quentin Monnet
+ <qmo@kernel.org>
+Date: Wed, 22 Oct 2025 14:10:02 -0700
+In-Reply-To: <CAADnVQKcOS8iu0Nq5aYg+Lg_EAO8fFde0H3w8t0m_SXUy4iKAA@mail.gmail.com>
+References: <20250929213520.1821223-1-bboscaccy@linux.microsoft.com>
+	 <CAHC9VhTQ_DR=ANzoDBjcCtrimV7XcCZVUsANPt=TjcvM4d-vjg@mail.gmail.com>
+	 <CACYkzJ4yG1d8ujZ8PVzsRr_PWpyr6goD9DezQTu8ydaf-skn6g@mail.gmail.com>
+	 <CAHC9VhR2Ab8Rw8RBm9je9-Ss++wufstxh4fB3zrZXnBoZpSi_Q@mail.gmail.com>
+	 <CACYkzJ7u_wRyknFjhkzRxgpt29znoTWzz+ZMwmYEE-msc2GSUw@mail.gmail.com>
+	 <CAHC9VhSDkwGgPfrBUh7EgBKEJj_JjnY68c0YAmuuLT_i--GskQ@mail.gmail.com>
+	 <CACYkzJ4mJ6eJBzTLgbPG9A6i_dN2e0B=1WNp6XkAr-WmaEyzkA@mail.gmail.com>
+	 <CAHC9VhRyG9ooMz6wVA17WKA9xkDy=UEPVkD4zOJf5mqrANMR9g@mail.gmail.com>
+	 <CAADnVQLfyh=qby02AFe+MfJYr2sPExEU0YGCLV9jJk=cLoZoaA@mail.gmail.com>
+	 <88703f00d5b7a779728451008626efa45e42db3d.camel@HansenPartnership.com>
+	 <CAADnVQKdsF5_9Vb_J+z27y5Of3P6J3gPNZ=hXKFi=APm6AHX3w@mail.gmail.com>
+	 <42bc677e031ed3df4f379cd3d6c9b3e1e8fadd87.camel@HansenPartnership.com>
+	 <CAADnVQ+M+_zLaqmd6As0z95A5BwGR8n8oFto-X-i4BgMvuhrXQ@mail.gmail.com>
+	 <fe538d3d723b161ee5354bb2de8e3a2ac7cf8255.camel@HansenPartnership.com>
+	 <CAHC9VhSU0UCHW9ApHsVQLX9ar6jTEfAW4b4bBi5-fbbsOaashg@mail.gmail.com>
+	 <CAHC9VhTvxgufmxHZFBd023xgkOyp9Cmq-hA-Gv8sJF1xYQBFSA@mail.gmail.com>
+	 <CAADnVQJw_B-T6=TauUdyMLOxcfMDZ1hdHUFVnk59NmeWDBnEtw@mail.gmail.com>
+	 <CAHC9VhSRiZacAy=JTKgWnBDbycey37JRVC61373HERTEUFmxEA@mail.gmail.com>
+	 <CAADnVQLRtfPrH6sffaPVyFP4Aib+e7uVVWLi7bb79d9TrHjHpQ@mail.gmail.com>
+	 <bc823ddbaf63e0e177eb46d1cc15076e4e2e689d.camel@HansenPartnership.com>
+	 <CAADnVQKcOS8iu0Nq5aYg+Lg_EAO8fFde0H3w8t0m_SXUy4iKAA@mail.gmail.com>
+Autocrypt: addr=James.Bottomley@HansenPartnership.com;
+ prefer-encrypt=mutual;
+ keydata=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
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -99,120 +99,34 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Wed, 2025-10-22 at 11:02 +0800, Donglin Peng wrote:
-> On Wed, Oct 22, 2025 at 2:59=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
-> >=20
-> > On Mon, 2025-10-20 at 17:39 +0800, Donglin Peng wrote:
-> > > This patch implements sorting of BTF types by their kind and name,
-> > > enabling the use of binary search for type lookups.
-> > >=20
-> > > To share logic between kernel and libbpf, a new btf_sort.c file is
-> > > introduced containing common sorting functionality.
-> > >=20
-> > > The sorting is performed during btf__dedup() when the new
-> > > sort_by_kind_name option in btf_dedup_opts is enabled.
-> >=20
-> > Do we really need this option?  Dedup is free to rearrange btf types
-> > anyway, so why not sort always?  Is execution time a concern?
->=20
-> The issue is that sorting changes the layout of BTF. Many existing selfte=
-sts
-> rely on the current, non-sorted order for their validation checks. Introd=
-ucing
-> this as an optional feature first allows us to run it without immediately
-> breaking the tests, giving us time to fix them incrementally.
-
-How many tests are we talking about?
-The option is an API and it stays with us forever.
-If the only justification for its existence is to avoid tests
-modification, I don't think that's enough.
-
-> >=20
-> > > For vmlinux and kernel module BTF, btf_check_sorted() verifies
-> > > whether the types are sorted and binary search can be used.
-> >=20
-> > [...]
-> >=20
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index c414cf37e1bd..11b05f4eb07d 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-
+On Mon, 2025-10-20 at 18:25 -0700, Alexei Starovoitov wrote:
+> On Mon, Oct 20, 2025 at 4:13=E2=80=AFPM James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
 [...]
-
-> > > +s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u=
-8 kind)
-> > > +{
-> > > +     return find_btf_by_name_kind(btf, 1, name, kind);
-> >                                          ^^^
-> >                 nit: this will make it impossible to find "void" w/o a =
-special case
-> >                      in the find_btf_by_name_kind(), why not start from=
- 0?
+> > The point, for me, is when doing integrity tests both patch sets
+> > produce identical results and correctly detect when integrity of a
+> > light skeleton is compromised (in mathematical terms that means
+> > they're functionally equivalent).=C2=A0 The only difference is that wit=
+h
+> > Blaise's patch set verification completes before the LSM load hook
+> > is called and with KP's it completes after ... and the security
+> > problem with the latter case is that there's no LSM hook to collect
+> > the verification result.
 >=20
-> Thanks. I referred to btf__find_by_name_kind in libbpf. In
-> btf_find_by_name_kind,
-> there is a special check for "void". Consequently, I've added a
-> similar special check
-> for "void" in find_btf_by_name_kind as well.
+> the security problem with KP's approach? wtf.
+> I'm going to add "depends on !microsoft" to kconfig bpf_syscall
+> and be done with it.
+> Don't use it since it's so insecure.
 
-Yes, I see the special case in the find_btf_by_name_kind.
-But wouldn't starting from 0 here avoid the need for special case?
+Most Linux installations use LSMs to enforce and manage policies for
+system integrity (they don't all use the same set of LSMs, but that's
+not relevant to the argument).  So while Meta may not use LSMs for
+system integrity the fact that practically everyone else does makes not
+having a correctly functioning LSM hook for BPF signature verification
+a problem for a huge set of users that goes way beyond just Microsoft.
 
-[...]
+Regards,
 
-> > > diff --git a/tools/lib/bpf/btf_sort.c b/tools/lib/bpf/btf_sort.c
-> > > new file mode 100644
-> > > index 000000000000..2ad4a56f1c08
-> > > --- /dev/null
-> > > +++ b/tools/lib/bpf/btf_sort.c
-> >=20
-> > [...]
-> >=20
-> > > +/*
-> > > + * Sort BTF types by kind and name in ascending order, placing named=
- types
-> > > + * before anonymous ones.
-> > > + */
-> > > +int btf_compare_type_kinds_names(const void *a, const void *b, void =
-*priv)
-> > > +{
-> > > +     struct btf *btf =3D (struct btf *)priv;
-> > > +     struct btf_type *ta =3D btf_type_by_id(btf, *(__u32 *)a);
-> > > +     struct btf_type *tb =3D btf_type_by_id(btf, *(__u32 *)b);
-> > > +     const char *na, *nb;
-> > > +     int ka, kb;
-> > > +
-> > > +     /* ta w/o name is greater than tb */
-> > > +     if (!ta->name_off && tb->name_off)
-> > > +             return 1;
-> > > +     /* tb w/o name is smaller than ta */
-> > > +     if (ta->name_off && !tb->name_off)
-> > > +             return -1;
-> > > +
-> > > +     ka =3D btf_kind(ta);
-> > > +     kb =3D btf_kind(tb);
-> > > +     na =3D btf__str_by_offset(btf, ta->name_off);
-> > > +     nb =3D btf__str_by_offset(btf, tb->name_off);
-> > > +
-> > > +     return cmp_btf_kind_name(ka, na, kb, nb);
-> >=20
-> > If both types are anonymous and have the same kind, this will lead to
-> > strcmp(NULL, NULL). On kernel side that would lead to null pointer
-> > dereference.
->=20
-> Thanks, I've confirmed that for anonymous types, name_off is 0,
-> so btf__str_by_offset returns a pointer to btf->strs_data (which
-> contains a '\0' at index 0) rather than NULL. However, when name_off
-> is invalid, btf__str_by_offset does return NULL. Using str_is_empty
-> will correctly handle both scenarios. Unnamed types of the same kind
-> shall be considered equal. I will fix it in the next version.
+James
 
-I see, thank you for explaining.
-Checking the usage of kernel/bpf/btf.c:btf_name_valid_identifier(),
-it looks like kernel validates name_off for all types.
-So, your implementation should be fine.
-
-[...]
 
