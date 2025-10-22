@@ -1,113 +1,96 @@
-Return-Path: <bpf+bounces-71654-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71655-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 488CEBF9832
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 02:46:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CEADBF98E0
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 03:01:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F8FA1884D78
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 00:47:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6F89462415
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 01:01:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F42C186E58;
-	Wed, 22 Oct 2025 00:46:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 272811A8F97;
+	Wed, 22 Oct 2025 01:01:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GwJCxRdf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aegie7Ov"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A958878F51
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 00:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DA703EA8D;
+	Wed, 22 Oct 2025 01:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761093989; cv=none; b=RVsplZWGXIdMC+HB1oDVB5ey0XtqXAJbWbfZGW5qXFfk81cQzVV4ClZd4qrVbyNO2yJOt01EXpstmFZkwhDUixkgoY4KKr8Dm8vIN9+6ACRlLB9CdB6NsQCp3MXhOOktj7I2SnxkSMWhr4T/s23DbUILxhF6oYjqOLbzyYM7cY0=
+	t=1761094898; cv=none; b=fc3ofImkRL4UwyV5B3D50k9lPLmEh+n00f8ey+pboXvGaEPGmXNVw5JVI1rskgnRBJJqCaDrpsBneIUPJJD4WBTEaP6qyN4Eu/TJ6+kzZxIHftnrf8kr4wtbibPToRfv/SMTnslAFYb0tuYb/cWMhRuziPnrYCCHG46uQbY9r8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761093989; c=relaxed/simple;
-	bh=lpliMyeA47AzHFtUBa8S6kTNg2528qX79MD4C57/r4U=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Aq5zxIBhtRoR4gcWlwGUevujJhci3+1P++2dAHbYnpa9fKNdgdkm/4vg0q9ektA/uIGjw6hJqly1GWpDyU7fEg2XY3vl+7swcOa3rGUv8p4owZgkhR2wvs0wQnGxl9FWX133qlcn/V34yeub3ZhDRF9N6yUu8RFMO6OjfVij0jQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GwJCxRdf; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b593def09e3so4148036a12.2
-        for <bpf@vger.kernel.org>; Tue, 21 Oct 2025 17:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761093987; x=1761698787; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lDrHLpskHFMQv92o394xgpom3uvpCYSgWAD3X2geURA=;
-        b=GwJCxRdfkEQbtNHENoXOHfeRc2dDzHu8ONWR53ybRjqIE1GdllYd/HzbxswU+XoT31
-         Wu+QxDf9EkURcLr2/UA6M3necYkqGppLsT1GOuTbKH7rKOjYO+FITpo4/RqtAM8m175i
-         9WVGP14ueqzOYENc8VVaqhmfZYIQEs2Ba7OiBfKqqbxEzSs1M1i1+gxjSa1wEbKcHXFe
-         iu+QIjrekJg4dttrZ3wFSE13WjEfkjZFg346b8B+fVWVAvroE+f+gilK5iqdsVGquq0o
-         VTcVjfdcbTciHlXcQUxeIrSC1y8/lZZFx9/QZy+L8MrsfoX2aqowFMIN4co2n02eMxcv
-         vvmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761093987; x=1761698787;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lDrHLpskHFMQv92o394xgpom3uvpCYSgWAD3X2geURA=;
-        b=IIjBEVE2tc7h2guobUUm4ZSNdUWCxiRjxWoJZcY+y3eX2A+U2TG+01jUZ2Kx8xfOvT
-         OtGWN24twOAgTdp8uZBW5OQJ7Pk5EidMwV5Dr6i0ETrefsvJBluEh9LUIqYiFuEqn3kq
-         DrmHcDjPDxe00mD1kiM0UkQCYTWoZDx+13OmYXzFjiI7Mv3AeEUUNctHBQa7X++HzKDn
-         t7omnDDhbRWshpN1/hm51QTGdp4CqXo5qLJsc99I87ifcK4TjnPX3nZqmLQJKkA6OFIS
-         L3yyKf2Q4zUMpxLkdJ+oYtiPVC+rrysiVpbwdsOt7aNmIhNXKdGb9QmHrRL1lyNYtEXM
-         DI7A==
-X-Forwarded-Encrypted: i=1; AJvYcCWxrrXkPjuGFJPYuOSFaZM/T6WAbwfohocmkt9tvoBPL1Db6aXkkuMs3jzUezUe46sBa9g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YykndG7LxRWO7/1ru8hs9VstJ2zEPFINGHV6wIA1koeCIVG+YIR
-	HVyw9tCsMWd5uvZQquIzGIRvI4eTyMfg3heEO3F1O651anQzNFD+uHElZAbsD7IG
-X-Gm-Gg: ASbGncub1fttxsLeC8MphSGlie0L3oyHHifIPRVCPR9p2IHUMrKGPZv4emMyRs320uZ
-	YxftY9Dnb4OSDGd46sJnPsvyUZqMY/LKryY60xb+TO7Zb/YJjx3TYn3adz2Qz7GLGImW2NGQb5k
-	SWKV6jvN1D7dJcFrQcijsOk5r0e5Iku79GoUlxnKxNqBfyBqPyJ0czfeFAw02KwwNjI1B8Dr8M0
-	QQeBn25/WI2RJ3GmBSndAvTSDvl8OOTJ4vR9fRtXkbDghzm2YEQP6NeezMYjVexTUzVZdB+mv3/
-	qmAvvBz09GvbhlvHbw5h6To+ZghF/14zMN9qX5CL/mGnI/7gyZSOteeY/s6ukYzwtrnSApO5/wX
-	NEz01ueOWnB6/cEuMEFfZcLkrRKgYNGCxIiNCl8ZKWYtKIb9GFS7nuR3Xhs8cOZkRjEQdHMRnWc
-	+6KQEppRWaesbEadOXRUeT9bAl
-X-Google-Smtp-Source: AGHT+IEYX5Bqr5pPBiavBwvqvBmfhhX/3I/mL6MI7va0aWpXrKwkZfJd5ieFf7vU3sfan0FPPAzm6w==
-X-Received: by 2002:a17:902:f547:b0:24b:164d:4e61 with SMTP id d9443c01a7336-290c9ca2aa2mr245688345ad.13.1761093986811;
-        Tue, 21 Oct 2025 17:46:26 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:84fc:875:6946:cc56? ([2620:10d:c090:500::7:6bbb])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292b0e4c4ecsm58030225ad.25.2025.10.21.17.46.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Oct 2025 17:46:26 -0700 (PDT)
-Message-ID: <0edef8990239d06feb90cf2a6574759cf68b975b.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v4 10/10] selftests/bpf: add file dynptr tests
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com, memxor@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Tue, 21 Oct 2025 17:46:25 -0700
-In-Reply-To: <20251021200334.220542-11-mykyta.yatsenko5@gmail.com>
-References: <20251021200334.220542-1-mykyta.yatsenko5@gmail.com>
-	 <20251021200334.220542-11-mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1761094898; c=relaxed/simple;
+	bh=7IKRMTP4CJIKPwBwo+6TW7HvgNmAIjrOCbnjXmxq4us=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KwDSVCkhE7MBBxptG6PKY+S0BJAbCYDBNixs950r6AA2K8YqDSQhsiiQ4Z8e6s4I8uehItKLcCu20lB+xekXDQS5udtbdTRQVEGPqMpirgpimtaw2HO53purIRjHP26xQqsurQnI+R+xVDdtU/C7JB/lCxClGHUKHfrJEEko0UA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aegie7Ov; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5331BC4CEF1;
+	Wed, 22 Oct 2025 01:01:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761094898;
+	bh=7IKRMTP4CJIKPwBwo+6TW7HvgNmAIjrOCbnjXmxq4us=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=aegie7Ov08g7CjEUqDN5JrHnw5VbVrp7FDxMbO1PNyuHQsO//sCCU1Tsn+zHhwQZl
+	 TstUOvksXonHVqDTHJbhtTwFnorS7Az1CdjF5F47Ml2h+DEa9FKMxSg23t/fWHO6aN
+	 eLQFMFUQnuPcVdMS5zayhJqx0kSgaS/rO3/odVDENVZheuLkPa6QQKbaPnzKbo+1AQ
+	 hA758shauILDZPK2b+lM7T2tEpJJf4fHAcnLELpmj5oFpbgD509CZ2e5tAF2DWwHqd
+	 6298nsVCdw+O547MpwjA6vn6MKogV/VlT5WAS4mQ6rKuQwI0pp7BFXgUyPlO/sRjjg
+	 HUsZ1r6n083MQ==
+Date: Tue, 21 Oct 2025 18:01:36 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
+ <daniel@iogearbox.net>, <ilias.apalodimas@linaro.org>, <toke@redhat.com>,
+ <lorenzo@kernel.org>, <netdev@vger.kernel.org>,
+ <magnus.karlsson@intel.com>, <andrii@kernel.org>, <stfomichev@gmail.com>,
+ <syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com>, Ihor Solodrai
+ <ihor.solodrai@linux.dev>, Octavian Purdila <tavip@google.com>
+Subject: Re: [PATCH v2 bpf 1/2] xdp: update xdp_rxq_info's mem type in XDP
+ generic hook
+Message-ID: <20251021180136.39431ed3@kernel.org>
+In-Reply-To: <aPZ3FvcIVOPVxQum@boxer>
+References: <20251017143103.2620164-1-maciej.fijalkowski@intel.com>
+	<20251017143103.2620164-2-maciej.fijalkowski@intel.com>
+	<50cbda75-9e0c-4d04-8d01-75dc533b8bb9@kernel.org>
+	<025d2281-caf0-4f88-8f31-b0bfa5596aec@intel.com>
+	<aPZ3FvcIVOPVxQum@boxer>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2025-10-21 at 21:03 +0100, Mykyta Yatsenko wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
+On Mon, 20 Oct 2025 19:53:26 +0200 Maciej Fijalkowski wrote:
+> > > The SKB should be marked via skb->pp_recycle, but I guess you are try=
+ing
+> > > to catch code that doesn't set this correctly?
+> > > (Slightly worried this will "paper-over" some other buggy code?)
+> > >  =20
+> > >> +=C2=A0=C2=A0=C2=A0 xdp->rxq->mem.type =3D page_pool_page_is_pp(virt=
+_to_page(xdp->data)) ? =20
+> >=20
+> > BTW this may return incorrect results if the page is not order-0.
+> > IIRC system PPs always return order-0 pages, what about veth code etc? =
+=20
 >=20
-> Introducing selftests for validating file-backed dynptr works as
-> expected.
->  * validate implementation supports dynptr slice and read operations
->  * validate destructors should be paired with initializers
->  * validate sleepable progs can page in.
->=20
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> ---
+> veth's pp works on order-0 pages well, however I agree it would be better
+> to use virt_to_head_page() here.
 
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+In this case the mem.type update is for consuming frags only, right?
+We can't free the head itself since the skb is attached to it.
+So running the predicates on xdp->data is probably wrong.
 
-[...]
+Is it possible to get to bpf_prog_run_generic_xdp() (with frags)
+and without going thru netif_skb_check_for_xdp() ? If no then
+frags must have come from skb_pp_cow().=20
+And the type is always MEM_TYPE_PAGE_POOL ?
 
