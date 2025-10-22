@@ -1,284 +1,136 @@
-Return-Path: <bpf+bounces-71834-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71835-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF6ECBFDB85
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 19:54:17 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A742BFDCAF
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 20:15:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 123803A3434
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 17:54:16 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 037C14F8596
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 18:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 338B12E1C7C;
-	Wed, 22 Oct 2025 17:54:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C4C92EDD62;
+	Wed, 22 Oct 2025 18:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UIUFAuoE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EP15c+8Z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 922622E172B
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 17:54:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA34B2EAB7D
+	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 18:15:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761155651; cv=none; b=mA35eI4ARnx+AzXoGP+IVxCUjWqcdAhfGPO0bc7sTify+tS1h13shsmN3h8gi3Qwt9tJ24EhkIq2q05Lh3GimSpdRxTqJ/ar1lOc3vUPW+MfKg3SUKRAQDpVXbd20A+kBiY7ZXLVE35TJjG33lbiU30LT5HqZ0SolFd1RMD4L3I=
+	t=1761156909; cv=none; b=PGUBQuWXTribbxtxMMKsZKtNuvzVdJYyIeLKafJm3Nigc8nyIR93OxjL/NHjD/bhlxrj/4RUUmQhNUk7ZeRpQvX7QT7tFXMAk7ZrWUuBKmhlPQGRhZTCdOQg6lhEKZQv0KdmoAMd252qC6M7N4ggp7ld45vo2sTWpjOCYCBH7Aw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761155651; c=relaxed/simple;
-	bh=VSGDtEJ5A7Pv5AJIsbo6G0pnMLXGS/GD5fUXjXOptwM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SBa8VKeYDrC/FhnIBv9X7A4Rpl4+ScGcc5ygJye7QGw3DFYjaFV8kfM9vTxusNZzPC3ShczHy4bnvkezHYKcPY2ZRoZuNNwPdTccqhZftg76GoGdvpGIkoIksZT5vdVCIOLXPdqT/c6+tJ+o4cot/8HfY9CKRS2SctoKDkVkPUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UIUFAuoE; arc=none smtp.client-ip=209.85.128.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-471076f819bso57486325e9.3
-        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 10:54:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761155647; x=1761760447; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=H7R81KCktcpI4qms/dvGlk3Nmu/8wiBKIRFEH0ElPQY=;
-        b=UIUFAuoEOBls/14FHZp+GKk0GkBA9JGzkvQ1FAX1i1/2rc1Vfzh4IdhFZcoY/GD+2g
-         YT3xjcgVq0JcGAY5EQuZa+Zaip5+V4wJzGuA8Q1MpzRWLDbs1TpOrSP76g7jXA8NL0OM
-         rULvajmHUdl2Xqs4wa/Eo/g3Xvjqh4HmxSmWl2dfkatC0UjFQ0oc601r4fyG/agZzOSc
-         d2WmQ7wAPvrwYPoFqqCwDtaUAGNeLu8lQC1hodOLulgjkvotcUFIFbXmJkZeZHUN6Re3
-         GBAYroS3HYQHrN3dj499iaqgGjMntnuRsRJkFQUvVRocMvA/cDUesHVAngyOimEpQRzy
-         KQrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761155647; x=1761760447;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=H7R81KCktcpI4qms/dvGlk3Nmu/8wiBKIRFEH0ElPQY=;
-        b=NlH4V+qEGujj8AnQhxE91srrG2KYqcitS19oHYIRyJvGb0/rf+Wui3ugV2HR7RbibR
-         tTObTbKoahaAnPEyzpi/E7ObcMOS9yFOi6kVAeJKvFmTkbZU4UONUX+TUGOp1/u5mrsL
-         TlmS35HmPgvueVKMASYcFiALTOFJUzi8ewNEuh0LMnN7ZdxaGDLsxcNcWTK25+lMI/g9
-         zb9n09j13Jas41Hvrr17NUgi+DIKRfV7dY2/etjgJgc6o5l1FEXHtzRpGKMZEG0m5W3c
-         ldHyoBGzeaKpXsjUpa0GzPkNlYMP+rcZnmKG9p+HgZbZ0Scyl5BS87yhV1xpgFrwjJ0M
-         7wSA==
-X-Gm-Message-State: AOJu0YznYcUtcAUuDGaYTpc97N8aoZ/vEI/JS+7/0BqMFLzaQx/BU5TR
-	nLDGiGIglpOznkVtfOMheezxjzs646imCFqrNaQ/nPOnlFMckCD6BdlqoNmwlrTx
-X-Gm-Gg: ASbGncusmCNn3syn1+Gv2JndBeKwsxlgo8VPLl9NIVmyMyLxjdhbAV+72QDoP87D3aX
-	W4H0kX53MOsdryHbFYZl9qFN7wikhZF85KGFhZY3dVShAhAFr1HycqoRmpsEiDcUaHXKzRPDqR7
-	GLuWFxqMdR9J0d62rYUPRU62BGBcudwXTWB2g3J8zWsvZMyoIQfmx5BrCct7bVv66xWqIJ58QHS
-	ICSW5mD5LiolVLLaeoH3ukn+s2Z7Lldr4gwHhHRoOIYYyWoWtS1X6pvVlOL85b6VLG97Zi1lANC
-	P6XTCXqRu506rqQO0dDMAnHB5yvYTh+E3EHA/pNI0kSJc+tybTzS/AkK2lad8Xn7UNiZ1XwGMWA
-	Ev1SkTgibCPmWGxgUw1d1275xolp8AcIrGPFMnXSaWTO085HeqmWUEXSMlpzBgE7NZASAgLPVa2
-	Jz8eN74HoSCha/5vNi9V221xD7axJ19k01N+4DKtYPIM6KXoliqzw1dCjmMyvh8CyO
-X-Google-Smtp-Source: AGHT+IGbAcE+WWruJrWvBEnqt4gf4EHsaMi4L4wLYsRFRf4LFYZ7NsKwCm/irD9mpplMawS8x/a4nA==
-X-Received: by 2002:a05:600c:548a:b0:471:669:e95d with SMTP id 5b1f17b1804b1-4711787dcc8mr144237345e9.12.1761155647369;
-        Wed, 22 Oct 2025 10:54:07 -0700 (PDT)
-Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-475c42b48c9sm60640605e9.15.2025.10.22.10.54.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Oct 2025 10:54:06 -0700 (PDT)
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	kkd@meta.com,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next v1] selftests/bpf: Add ABBCCA case for rqspinlock stress test
-Date: Wed, 22 Oct 2025 17:54:02 +0000
-Message-ID: <20251022175402.211176-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1761156909; c=relaxed/simple;
+	bh=MXeNLNddQ4jvxUTQVwovWtDMVHVwhiulywOctMNy2mo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gMYZsdUWu+/zcaZOEkcqFiv1EeEOZRy/lhQQndEgW234CfxZtAWNEgGgkX2oTMP2M+P5HYoREWsTxLWwr2ew2zHFdDECpV1xPYdbU4FjytEEonsG4PSVqhYf/usF+DqEVTj0rDbOMw6Gw23Nc29o93Bz3vSJh7LgNIDCFgOXH14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EP15c+8Z; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <39af9321-fb9b-4cee-84f1-77248a375e85@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761156904;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bjqzvxTmikL5FOmQCQrIY1gpsRGBxx0jwN7oqp/m/lM=;
+	b=EP15c+8ZpJlE8r0PhiZNqT3KJdeNs+10Yt6iGptu13afiLnb8HFR7i6FnQZKdTn4yZU/ZI
+	GUEGrDxO+YOSrVKQLKbYI6Epo2v5K2jLVJKhXhWWLAtyYNByFC6uZVrBEzzT1CJh3P2ozD
+	gU48vjKCer659VKfH4kJpnTTrf/oibU=
+Date: Wed, 22 Oct 2025 11:14:56 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 1/2] bpf: Skip bounds adjustment for conditional
+ jumps on same register
+Content-Language: en-GB
+To: KaFai Wan <kafai.wan@linux.dev>, ast@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+ paul.chaignon@gmail.com, m.shachnai@gmail.com, luis.gerhorst@fau.de,
+ colin.i.king@gmail.com, harishankar.vishwanathan@gmail.com,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Cc: Kaiyan Mei <M202472210@hust.edu.cn>, Yinhao Hu <dddddd@hust.edu.cn>
+References: <20251022164457.1203756-1-kafai.wan@linux.dev>
+ <20251022164457.1203756-2-kafai.wan@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20251022164457.1203756-2-kafai.wan@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Introduce a new mode for the rqspinlock stress test that exercises a
-deadlock that won't be detected by the AA and ABBA checks, such that we
-always reliably trigger the timeout fallback. We need 4 CPUs for this
-particular case, as CPU 0 is untouched, and three participant CPUs for
-triggering the ABBCCA case.
 
-Refactor the lock acquisition paths in the module to better reflect the
-three modes and choose the right lock depending on the context.
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/res_spin_lock.c  | 11 ++-
- .../bpf/test_kmods/bpf_test_rqspinlock.c      | 85 ++++++++++++++-----
- 2 files changed, 72 insertions(+), 24 deletions(-)
+On 10/22/25 9:44 AM, KaFai Wan wrote:
+> When conditional jumps are performed on the same register (e.g., r0 <= r0,
+> r0 > r0, r0 < r0) where the register holds a scalar with range, the verifier
+> incorrectly attempts to adjust the register's min/max bounds. This leads to
+> invalid range bounds and triggers a BUG warning:
+>
+> verifier bug: REG INVARIANTS VIOLATION (true_reg1): range bounds violation u64=[0x1, 0x0] s64=[0x1, 0x0] u32=[0x1, 0x0] s32=[0x1, 0x0] var_off=(0x0, 0x0)
+> WARNING: CPU: 0 PID: 93 at kernel/bpf/verifier.c:2731 reg_bounds_sanity_check+0x163/0x220
+> Modules linked in:
+> CPU: 0 UID: 0 PID: 93 Comm: repro-x-3 Tainted: G        W           6.18.0-rc1-ge7586577b75f-dirty #218 PREEMPT(full)
+> Tainted: [W]=WARN
+> Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+> RIP: 0010:reg_bounds_sanity_check+0x163/0x220
+> Call Trace:
+>   <TASK>
+>   reg_set_min_max.part.0+0x1b1/0x360
+>   check_cond_jmp_op+0x1195/0x1a60
+>   do_check_common+0x33ac/0x33c0
+>   ...
+>
+> The issue occurs in reg_set_min_max() function where bounds adjustment logic
+> is applied even when both registers being compared are the same. Comparing a
+> register with itself should not change its bounds since the comparison result
+> is always known (e.g., r0 == r0 is always true, r0 < r0 is always false).
+>
+> Fix this by adding an early return in reg_set_min_max() when false_reg1 and
+> false_reg2 point to the same register, skipping the unnecessary bounds
+> adjustment that leads to the verifier bug.
+>
+> Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
+> Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
+> Closes: https://lore.kernel.org/all/1881f0f5.300df.199f2576a01.Coremail.kaiyanm@hust.edu.cn/
+> Fixes: 0df1a55afa83 ("bpf: Warn on internal verifier errors")
+> Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
+> ---
+>   kernel/bpf/verifier.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 6d175849e57a..420ad512d1af 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -16429,6 +16429,10 @@ static int reg_set_min_max(struct bpf_verifier_env *env,
+>   	if (false_reg1->type != SCALAR_VALUE || false_reg2->type != SCALAR_VALUE)
+>   		return 0;
+>   
+> +	/* If conditional jumps on the same register, skip the adjustment */
+> +	if (false_reg1 == false_reg2)
+> +		return 0;
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/res_spin_lock.c b/tools/testing/selftests/bpf/prog_tests/res_spin_lock.c
-index 8c6c2043a432..f566d89f85ea 100644
---- a/tools/testing/selftests/bpf/prog_tests/res_spin_lock.c
-+++ b/tools/testing/selftests/bpf/prog_tests/res_spin_lock.c
-@@ -111,7 +111,16 @@ void serial_test_res_spin_lock_stress(void)
- 	sleep(5);
- 	unload_module("bpf_test_rqspinlock", false);
+Your change looks good. But this is a special case and it should not
+happen for any compiler generated code. So could you investigate
+why regs_refine_cond_op() does not work? Since false_reg1 and false_reg2
+is the same, so register refinement should keep the same. Probably
+some minor change in regs_refine_cond_op(...) should work?
 
--	ASSERT_OK(load_module_params("bpf_test_rqspinlock.ko", "test_ab=1", false), "load module ABBA");
-+	ASSERT_OK(load_module_params("bpf_test_rqspinlock.ko", "test_mode=1", false), "load module ABBA");
-+	sleep(5);
-+	unload_module("bpf_test_rqspinlock", false);
-+
-+	if (libbpf_num_possible_cpus() < 4) {
-+		test__skip();
-+		return;
-+	}
-+
-+	ASSERT_OK(load_module_params("bpf_test_rqspinlock.ko", "test_mode=2", false), "load module ABBCCA");
- 	sleep(5);
- 	unload_module("bpf_test_rqspinlock", false);
- }
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c b/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c
-index 769206fc70e4..4cced4bb8af1 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c
-@@ -22,23 +22,61 @@ static struct perf_event_attr hw_attr = {
-
- static rqspinlock_t lock_a;
- static rqspinlock_t lock_b;
-+static rqspinlock_t lock_c;
-+
-+enum rqsl_mode {
-+	RQSL_MODE_AA = 0,
-+	RQSL_MODE_ABBA,
-+	RQSL_MODE_ABBCCA,
-+};
-+
-+static int test_mode = RQSL_MODE_AA;
-+module_param(test_mode, int, 0644);
-+MODULE_PARM_DESC(test_mode,
-+		 "rqspinlock test mode: 0 = AA, 1 = ABBA, 2 = ABBCCA");
-
- static struct perf_event **rqsl_evts;
- static int rqsl_nevts;
-
--static bool test_ab = false;
--module_param(test_ab, bool, 0644);
--MODULE_PARM_DESC(test_ab, "Test ABBA situations instead of AA situations");
--
- static struct task_struct **rqsl_threads;
- static int rqsl_nthreads;
- static atomic_t rqsl_ready_cpus = ATOMIC_INIT(0);
-
- static int pause = 0;
-
--static bool nmi_locks_a(int cpu)
-+static const char *rqsl_mode_names[] = {
-+	[RQSL_MODE_AA] = "AA",
-+	[RQSL_MODE_ABBA] = "ABBA",
-+	[RQSL_MODE_ABBCCA] = "ABBCCA",
-+};
-+
-+struct rqsl_lock_pair {
-+	rqspinlock_t *worker_lock;
-+	rqspinlock_t *nmi_lock;
-+};
-+
-+static struct rqsl_lock_pair rqsl_get_lock_pair(int cpu)
- {
--	return (cpu & 1) && test_ab;
-+	int mode = READ_ONCE(test_mode);
-+
-+	switch (mode) {
-+	default:
-+	case RQSL_MODE_AA:
-+		return (struct rqsl_lock_pair){ &lock_a, &lock_a };
-+	case RQSL_MODE_ABBA:
-+		if (cpu & 1)
-+			return (struct rqsl_lock_pair){ &lock_b, &lock_a };
-+		return (struct rqsl_lock_pair){ &lock_a, &lock_b };
-+	case RQSL_MODE_ABBCCA:
-+		switch (cpu % 3) {
-+		case 0:
-+			return (struct rqsl_lock_pair){ &lock_a, &lock_b };
-+		case 1:
-+			return (struct rqsl_lock_pair){ &lock_b, &lock_c };
-+		default:
-+			return (struct rqsl_lock_pair){ &lock_c, &lock_a };
-+		}
-+	}
- }
-
- static int rqspinlock_worker_fn(void *arg)
-@@ -51,19 +89,17 @@ static int rqspinlock_worker_fn(void *arg)
- 		atomic_inc(&rqsl_ready_cpus);
-
- 		while (!kthread_should_stop()) {
-+			struct rqsl_lock_pair locks = rqsl_get_lock_pair(cpu);
-+			rqspinlock_t *worker_lock = locks.worker_lock;
-+
- 			if (READ_ONCE(pause)) {
- 				msleep(1000);
- 				continue;
- 			}
--			if (nmi_locks_a(cpu))
--				ret = raw_res_spin_lock_irqsave(&lock_b, flags);
--			else
--				ret = raw_res_spin_lock_irqsave(&lock_a, flags);
-+			ret = raw_res_spin_lock_irqsave(worker_lock, flags);
- 			mdelay(20);
--			if (nmi_locks_a(cpu) && !ret)
--				raw_res_spin_unlock_irqrestore(&lock_b, flags);
--			else if (!ret)
--				raw_res_spin_unlock_irqrestore(&lock_a, flags);
-+			if (!ret)
-+				raw_res_spin_unlock_irqrestore(worker_lock, flags);
- 			cpu_relax();
- 		}
- 		return 0;
-@@ -91,6 +127,7 @@ static int rqspinlock_worker_fn(void *arg)
- static void nmi_cb(struct perf_event *event, struct perf_sample_data *data,
- 		   struct pt_regs *regs)
- {
-+	struct rqsl_lock_pair locks;
- 	int cpu = smp_processor_id();
- 	unsigned long flags;
- 	int ret;
-@@ -98,17 +135,13 @@ static void nmi_cb(struct perf_event *event, struct perf_sample_data *data,
- 	if (!cpu || READ_ONCE(pause))
- 		return;
-
--	if (nmi_locks_a(cpu))
--		ret = raw_res_spin_lock_irqsave(&lock_a, flags);
--	else
--		ret = raw_res_spin_lock_irqsave(test_ab ? &lock_b : &lock_a, flags);
-+	locks = rqsl_get_lock_pair(cpu);
-+	ret = raw_res_spin_lock_irqsave(locks.nmi_lock, flags);
-
- 	mdelay(10);
-
--	if (nmi_locks_a(cpu) && !ret)
--		raw_res_spin_unlock_irqrestore(&lock_a, flags);
--	else if (!ret)
--		raw_res_spin_unlock_irqrestore(test_ab ? &lock_b : &lock_a, flags);
-+	if (!ret)
-+		raw_res_spin_unlock_irqrestore(locks.nmi_lock, flags);
- }
-
- static void free_rqsl_threads(void)
-@@ -142,13 +175,19 @@ static int bpf_test_rqspinlock_init(void)
- 	int i, ret;
- 	int ncpus = num_online_cpus();
-
--	pr_err("Mode = %s\n", test_ab ? "ABBA" : "AA");
-+	if (test_mode < RQSL_MODE_AA || test_mode > RQSL_MODE_ABBCCA) {
-+		pr_err("Invalid mode %d\n", test_mode);
-+		return -EINVAL;
-+	}
-+
-+	pr_err("Mode = %s\n", rqsl_mode_names[test_mode]);
-
- 	if (ncpus < 3)
- 		return -ENOTSUPP;
-
- 	raw_res_spin_lock_init(&lock_a);
- 	raw_res_spin_lock_init(&lock_b);
-+	raw_res_spin_lock_init(&lock_c);
-
- 	rqsl_evts = kcalloc(ncpus - 1, sizeof(*rqsl_evts), GFP_KERNEL);
- 	if (!rqsl_evts)
---
-2.51.0
+> +
+>   	/* fallthrough (FALSE) branch */
+>   	regs_refine_cond_op(false_reg1, false_reg2, rev_opcode(opcode), is_jmp32);
+>   	reg_bounds_sync(false_reg1);
 
 
