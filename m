@@ -1,242 +1,218 @@
-Return-Path: <bpf+bounces-71850-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71851-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C9BBBFE331
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 22:41:32 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B217BFE391
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 22:50:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8DEFB350F9F
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 20:41:31 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AC0934F699E
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 20:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B78271451;
-	Wed, 22 Oct 2025 20:41:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80287301014;
+	Wed, 22 Oct 2025 20:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dfKsQJTX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VV5qQxjG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281F22F1FD2
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 20:41:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313982FFDEB
+	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 20:50:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761165687; cv=none; b=FZQ+KsiGZyu6iaN/eh4QTh91tph37LwZNWkXudimGuhAvH2pWiE/9qaxSNIS7TuhdM/qjB+er33zOIq1XefXLX5y+dL4mFbgP0ZHE1gbOUf22iuTcumfyHIPess50RCeoTLzxXOMD8geoFjKtxgGvhjLsjlFWNeLY8FdEPliz54=
+	t=1761166212; cv=none; b=EjVN3vN9wJdJ4UYFWizZgAACzp87qHW/ErA+N0lhoIhrO9MspheH7YgMdqmg79QT4wGwceApiM32sLx1XYWSS4evZ4NCHB72kXo2XEQm6UbX3UQZRg8GZeq2OyZA0OAhcknPrDBEACP/TCP9YGwm5cTzr/ScokRAimo6N+r2eZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761165687; c=relaxed/simple;
-	bh=/cjzEoYOZUH5gf58st5NFBxDx/pO/aQKRFNN5GRl/nk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DEfwof2Subqnn/l8KhWI5tPEsZqzRvcPd8inXj5aFoViTlAgaHjZ6ne3EH0LNvKeHUcuqXECFe82EcMs5di7w73DvQcvJkqA1IXVRDUJYni/tmOT7wiznzbSyhoc3YH8poyTtptF8q3nX5OZi03Ub/B7hmQ2qnvAsCPtP+hJTA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dfKsQJTX; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1761166212; c=relaxed/simple;
+	bh=0JgR9WDTUHynjtqt1SVok1mWflkxdI3OpEFCJjXRJyo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=rlaiRIZ/yaC+2disMYrg+uAm3xHLWZJHuEwmTLdGzxTSdNeO1B8ujEYSYGd+2rla/jfBGQpVgrBTPSGkBZErtVUQmANFGM3MxpnzMCNBFZmUTpbecADM9YNLovws97RkbKmnDcI8aISgz+qd0CmyBjcvufD8Y9v0LMGUc/ru7ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VV5qQxjG; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-4285169c005so30140f8f.0
-        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 13:41:23 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-77f67ba775aso83919b3a.3
+        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 13:50:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761165682; x=1761770482; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=unKE/F22XNSyuW9yU5JIIPfLSp87oQ293d4LB9OETlc=;
-        b=dfKsQJTXV6q0cTduGrLtM9UYCSkixPf1QSGYbO/kqQNa0ITiP3fuQuTjrl1GR/OgKw
-         UUD5+UjwAw7WN4L8S6rOWgFYL+2aHPtna2mMtFE7drAYVDF73Yd+A/WmDQSNGPbu9/lG
-         cspwWB4yfmZPrzwxFuJnJP7RxkJ2pXIBGPvMd8kDJIRoECgosvz7D15wgCQkcN0mtT2E
-         XK0D5Vq4hjUHq7cQGBA9aO2eKyCoF9d0C4zp232OecUo2qUZrorI9A75dDRMUbmTgH/5
-         76b+QbsBsMQ3GZUeFRI2vZdBVA2Uu/tj1tAG86x5A5wqDAE6QWFZJV2JP9Sc8pyX6H7i
-         txRw==
+        d=gmail.com; s=20230601; t=1761166210; x=1761771010; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=UgUcpfhrvyt6eYMrfd8U4oPFhV6AvkhtxDSF2rQSVSI=;
+        b=VV5qQxjGw2JFEZQCvGzS2/poqbV9qTsMs2kOpFchaAzpoN0v5pOGu9R/BP6RH0S08f
+         wtQblirjAeAqt8gjjKkhOvF3F4rMHMiBi3yHdBGTTbljoI4o1i/hinzUIkwbNH2GkcRu
+         wN2MduilJKpI2RhSMoWt6Rt5k0HVme+Lbj8cb5H848zQh1q8nHGdlKWYhq6x2t88q8qa
+         a7yndMZxEuTfSoCuU8Scl2xKPHA85JJMUUKhZ4uh31Mue4MTUfV1lWgOLzcoZsufEst1
+         8xUWpPIzvjUJsLmd+gVUpEBA3upvWgMNN1yZbKOevNzPbJ8h3zhl/tOtm8RrHC6EPsod
+         am7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761165682; x=1761770482;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=unKE/F22XNSyuW9yU5JIIPfLSp87oQ293d4LB9OETlc=;
-        b=qONObAL2i1vpBo8mLR60XG6OZA8ibtatX6MIokK7LJmRLo9aeEuKg+QT/fIieavEts
-         YKdUr5vUpkKwW+Evb5HOZlp/x8QGfVOhyNPtPv0uxVSsQCzvxeiur7J4YnKeWNj5VZEz
-         mG/odzQW34RhvgfD98BddTRw67qWcke222BX5fFN5J+FZuHVSXtoDZq4+5+cdyNnpJE4
-         5VzHdjV7OQaGKagtTnSsIf/ICoeuoVhRFMC14mIxgHg1Jqo+qe1SPjCjzVgMjA4/rbwy
-         3fGDzxZFOS4kFNpCYASFpKwzPRtOi+rE6marYxfVLdrg23ZQmVSSD0ELu8H4zC/ymE4g
-         FitQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVQ7ZlzvdT/Fg7yG+RpIECkVeoHaVwWljNGXO7BRURIQROz13UGM/s7Sd1t/HSxS3YHIrM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBdno5hXmARjKqCAwybssTXWBH6zxAy3O8Kags62Oatd5SoC8d
-	5yq2MdDWTuO8J6zaf+7zQGGGe1vNTXLAVPgli3AZWc8TtpZx6Viz0u3R
-X-Gm-Gg: ASbGncuTMHz3ZcnRutGepDTFWGQD26UlkIv93WTzJu1WJlqzfOJLMhtcpGjvAdnLsNZ
-	Tu8bFGT6AKr3EiBRUyTFGwegjGB/J0up1uFCQ4Mqnj/bLg3LAAS/9qDg0aK9t15TeagGYBscr/z
-	GwKT9Ldvm+yI2a7dyYa1Gq4t5AJ8Q3M4CsczEd22omqd9uA5KVfoN6jDXIsPMfdOwlxMMKo34hX
-	ntOCQxLAbs0MvfBuso6/BCFWPEdZA58CzcaZBr3ZwgsQ20A4ajcW2v+P5vd56V8weaDxh7Q99Zi
-	OhnOM8cpji3uGkwobBkhLiYPE+uFnC5dNllgOFYbf1eatE9PTO7KtaLwFLYFZfZaFgZR3FIgNy2
-	b4wmzYVnA1XvZlIJj2FQZTSkJxa6dlSAvoC32qn8vNQHHjt1IPfQpHx9eiD/2xDLJxYaoDK6A+E
-	Q=
-X-Google-Smtp-Source: AGHT+IGh0GLLdjFBGi5Y/tsXH9nF2sfGR5neIPd614tGmkEBYvy3EnkjHraKKTLmiYbIfHg64UFXJw==
-X-Received: by 2002:a05:6000:400d:b0:3ee:1461:1659 with SMTP id ffacd0b85a97d-42704d98980mr14222089f8f.31.1761165682163;
-        Wed, 22 Oct 2025 13:41:22 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-474949e0a3csm46152755e9.0.2025.10.22.13.41.21
+        d=1e100.net; s=20230601; t=1761166210; x=1761771010;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UgUcpfhrvyt6eYMrfd8U4oPFhV6AvkhtxDSF2rQSVSI=;
+        b=VcDxcmzmo8o52pCk5rJsyNmeJfoB+usdAE99l/yreO+N/GHS+Owfpim7YGRgz1xVcj
+         fqDcL0OQlFTQj2o3W0eI/L8boaZlINAJ6vLFC+IUgSHzMgF2r1Oia2RkiuSOsG2Z8Ohy
+         EfZuV5Iu+xoOLPyADuk6zmoIBJkOpLWsV+oj1F7z004G1QY3gnUA4t8VWfmSW8bqQYBQ
+         LfTiWHFg74I+vwOGQJJwwkPHiJKklDHMmlYMDs1a5Jopxbqz8Fb1KW7Ehcbeq0Ba3g/R
+         DpUbWyZtK+rhPFi1dHZlO8D4VTKCgVs4jOfUyH9jKSSYTbQqUWZRWB/w24phnmLrgYoD
+         mqXw==
+X-Forwarded-Encrypted: i=1; AJvYcCXXFe9pWBHHUoZsRzUmogL1VuO3X4Wi+SVxP2YkI/W4FNMaivw6RgdWCv063SHwtzf4H8I=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8ISLZc4WOpbyyz8XPaAFSqID0CmY0Qyq3aLTOC7zG87ofwMke
+	sjLKXPhUL514ecb0Q/RV8hXLeFjWlnQVWsbT2IpR9hzkPHTSwl7/Zi5l
+X-Gm-Gg: ASbGncvjz3j/rRmt2Lzg5R4HntpBj+tEk9CDD9fbJF5bJz2E/L+0+Qp3y/wgCKV0l3A
+	2FNxjVhKuspiSmGfQuyhbmU8f7dpiFxHdC1ODkjMRRQCamex5CTGKMq4HruzIKVESHN78PXb7tm
+	SCTUuEK3TscgmjPu9QiDuteHtAQodaGDztTvqKPyZQ2nei26jIcXJievupipJ8De0Af+ZTF6xvO
+	/rpXmyQ7Kjc4TT+8r3cnLedP4zNH4XBgCpLcSpVOlEoXHq/Zu7MTuDYyc9dfy4bc73nAG1ov/YA
+	SjPXhs1+wUl80F7hYMV6kYH2AJ4GkNi8cuGQqkVXfeZtgBPyjw4H47jOtWgqmCaf+hD7PHN6Wi+
+	ysewvXp1D9yjDP2aOLnLFyBJzlMOAf5geDiw31t5hkVurWmNWptIWxSRoBlVdNfSR/ZCmj92f0M
+	a5rjx12oTvSPem5gDmegTJXHu+lEotPsUAdB4=
+X-Google-Smtp-Source: AGHT+IEV7pugFPydmKhRrO5R/SjYxtWqVbY5mI6z6oTdXgS9HtSf1+AY271CZOh4AWxrX2zJPvrYFQ==
+X-Received: by 2002:a05:6a00:4f81:b0:7a1:373f:c216 with SMTP id d2e1a72fcca58-7a220a9ded3mr27481912b3a.14.1761166210420;
+        Wed, 22 Oct 2025 13:50:10 -0700 (PDT)
+Received: from ?IPv6:2a03:83e0:115c:1:fa8d:1a05:3c71:d71? ([2620:10d:c090:500::7:b877])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a274a9e912sm161398b3a.22.2025.10.22.13.50.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Oct 2025 13:41:21 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 22 Oct 2025 22:41:20 +0200
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Feng Yang <yangfeng59949@163.com>,
-	andrii@kernel.org, bpf@vger.kernel.org, jpoimboe@kernel.org,
-	linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
-	peterz@infradead.org, x86@kernel.org, yhs@fb.com
-Subject: Re: [BUG] no ORC stacktrace from kretprobe.multi bpf program
-Message-ID: <aPlBcKq7S-bD3B56@krava>
-References: <20251015121138.4190d046@gandalf.local.home>
- <20251022090429.136755-1-yangfeng59949@163.com>
- <aPjO0yLCxPbUJP9r@krava>
- <20251022102819.7675ee7a@gandalf.local.home>
+        Wed, 22 Oct 2025 13:50:10 -0700 (PDT)
+Message-ID: <7651ac9cc74e135f04ecfee8660bea0a0d3883ab.camel@gmail.com>
+Subject: Re: [RFC PATCH v2 2/5] btf: sort BTF types by kind and name to
+ enable binary search
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: ast@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alan Maguire
+ <alan.maguire@oracle.com>, Song Liu	 <song@kernel.org>, pengdonglin
+ <pengdonglin@xiaomi.com>
+Date: Wed, 22 Oct 2025 13:50:08 -0700
+In-Reply-To: <CAErzpmusSgOaROhEO25fKenvxQJU1oSPKKzUA4h67ptdQxWM7A@mail.gmail.com>
+References: <20251020093941.548058-1-dolinux.peng@gmail.com>
+	 <20251020093941.548058-3-dolinux.peng@gmail.com>
+	 <174642a334760af39a5e7bacdd8b977b392a82c7.camel@gmail.com>
+	 <CAErzpmusSgOaROhEO25fKenvxQJU1oSPKKzUA4h67ptdQxWM7A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251022102819.7675ee7a@gandalf.local.home>
 
-On Wed, Oct 22, 2025 at 10:28:19AM -0400, Steven Rostedt wrote:
-> On Wed, 22 Oct 2025 14:32:19 +0200
-> Jiri Olsa <olsajiri@gmail.com> wrote:
-> 
-> > thanks for the report.. so above is from arm?
-> > 
-> > yes the x86_64 starts with:
-> >   unwind_start(&state, current, NULL, (void *)regs->sp);
-> > 
-> > I seems to get reasonable stack traces on x86 with the change below,
-> > which just initializes fields in regs that are used later on and sets
-> > the stack so the ftrace_graph_ret_addr code is triggered during unwind
-> > 
-> > but I'm not familiar with this code, Masami, Josh, any idea?
-> 
-> Oh! This is an issue with a stack trace happening from a callback of the
-> exit handler?
+On Wed, 2025-10-22 at 11:02 +0800, Donglin Peng wrote:
+> On Wed, Oct 22, 2025 at 2:59=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
+> >=20
+> > On Mon, 2025-10-20 at 17:39 +0800, Donglin Peng wrote:
+> > > This patch implements sorting of BTF types by their kind and name,
+> > > enabling the use of binary search for type lookups.
+> > >=20
+> > > To share logic between kernel and libbpf, a new btf_sort.c file is
+> > > introduced containing common sorting functionality.
+> > >=20
+> > > The sorting is performed during btf__dedup() when the new
+> > > sort_by_kind_name option in btf_dedup_opts is enabled.
+> >=20
+> > Do we really need this option?  Dedup is free to rearrange btf types
+> > anyway, so why not sort always?  Is execution time a concern?
+>=20
+> The issue is that sorting changes the layout of BTF. Many existing selfte=
+sts
+> rely on the current, non-sorted order for their validation checks. Introd=
+ucing
+> this as an optional feature first allows us to run it without immediately
+> breaking the tests, giving us time to fix them incrementally.
 
-yes, it's triggered via:
+How many tests are we talking about?
+The option is an API and it stays with us forever.
+If the only justification for its existence is to avoid tests
+modification, I don't think that's enough.
 
-  return_to_handler
-    ftrace_return_to_handler
-      fprobe_return
-        kprobe_multi_link_exit_handler
-	  kprobe_multi_link_prog_run
-	    bpf_prog_run
-	      bpf_prog..
-	        bpf_get_stackid
-		  get_perf_callchain
-		    perf_callchain_kernel
-		      unwind_start
+> >=20
+> > > For vmlinux and kernel module BTF, btf_check_sorted() verifies
+> > > whether the types are sorted and binary search can be used.
+> >=20
+> > [...]
+> >=20
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index c414cf37e1bd..11b05f4eb07d 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
 
-> 
-> OK, that makes much more sense. As I don't think the code handles that
-> properly.
-> 
-> > 
-> > thanks,
-> > jirka
-> > 
-> > 
-> > ---
-> > diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-> > index 367da3638167..2d2bb8c37b56 100644
-> > --- a/arch/x86/kernel/ftrace_64.S
-> > +++ b/arch/x86/kernel/ftrace_64.S
-> > @@ -353,6 +353,8 @@ STACK_FRAME_NON_STANDARD_FP(__fentry__)
-> >  SYM_CODE_START(return_to_handler)
-> >  	UNWIND_HINT_UNDEFINED
-> 
-> I believe the above UNWIND_HINT_UNDEFINED means that if ORC were to hit
-> this, it should just give up.
-> 
-> This is because tracing the exit of the function really doesn't fit in the
-> normal execution paradigm.
-> 
-> The entry is easy. It's the same as if the callback was called by the
-> function being traced. The exit is more difficult because the function
-> being traced has already did its return. Now the callback is in this limbo
-> area of being called between a return and the caller.
+[...]
 
-I followed rethook trampoline arch_rethook_trampoline code which does similar
-stuff and gets similar treatment in unwind_recover_ret_addr like fgraph
+> > > +s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u=
+8 kind)
+> > > +{
+> > > +     return find_btf_by_name_kind(btf, 1, name, kind);
+> >                                          ^^^
+> >                 nit: this will make it impossible to find "void" w/o a =
+special case
+> >                      in the find_btf_by_name_kind(), why not start from=
+ 0?
+>=20
+> Thanks. I referred to btf__find_by_name_kind in libbpf. In
+> btf_find_by_name_kind,
+> there is a special check for "void". Consequently, I've added a
+> similar special check
+> for "void" in find_btf_by_name_kind as well.
 
-> 
-> >  	ANNOTATE_NOENDBR
-> > +	push $return_to_handler
-> > +	UNWIND_HINT_FUNC
-> 
-> OK, so what happened here is that you put in the return_to_handle into the
-> stack and told ORC that this is a normal function, and that when it
-> triggers to do a lookup from the handler itself.
+Yes, I see the special case in the find_btf_by_name_kind.
+But wouldn't starting from 0 here avoid the need for special case?
 
-together with the "push $return_to_handler" it suppose to instruct ftrace_graph_ret_addr
-to go get the 'real' return address from shadow stack
+[...]
 
-> 
-> I wonder if we could just add a new UNWIND_HINT that tells ORC to do that?
+> > > diff --git a/tools/lib/bpf/btf_sort.c b/tools/lib/bpf/btf_sort.c
+> > > new file mode 100644
+> > > index 000000000000..2ad4a56f1c08
+> > > --- /dev/null
+> > > +++ b/tools/lib/bpf/btf_sort.c
+> >=20
+> > [...]
+> >=20
+> > > +/*
+> > > + * Sort BTF types by kind and name in ascending order, placing named=
+ types
+> > > + * before anonymous ones.
+> > > + */
+> > > +int btf_compare_type_kinds_names(const void *a, const void *b, void =
+*priv)
+> > > +{
+> > > +     struct btf *btf =3D (struct btf *)priv;
+> > > +     struct btf_type *ta =3D btf_type_by_id(btf, *(__u32 *)a);
+> > > +     struct btf_type *tb =3D btf_type_by_id(btf, *(__u32 *)b);
+> > > +     const char *na, *nb;
+> > > +     int ka, kb;
+> > > +
+> > > +     /* ta w/o name is greater than tb */
+> > > +     if (!ta->name_off && tb->name_off)
+> > > +             return 1;
+> > > +     /* tb w/o name is smaller than ta */
+> > > +     if (ta->name_off && !tb->name_off)
+> > > +             return -1;
+> > > +
+> > > +     ka =3D btf_kind(ta);
+> > > +     kb =3D btf_kind(tb);
+> > > +     na =3D btf__str_by_offset(btf, ta->name_off);
+> > > +     nb =3D btf__str_by_offset(btf, tb->name_off);
+> > > +
+> > > +     return cmp_btf_kind_name(ka, na, kb, nb);
+> >=20
+> > If both types are anonymous and have the same kind, this will lead to
+> > strcmp(NULL, NULL). On kernel side that would lead to null pointer
+> > dereference.
+>=20
+> Thanks, I've confirmed that for anonymous types, name_off is 0,
+> so btf__str_by_offset returns a pointer to btf->strs_data (which
+> contains a '\0' at index 0) rather than NULL. However, when name_off
+> is invalid, btf__str_by_offset does return NULL. Using str_is_empty
+> will correctly handle both scenarios. Unnamed types of the same kind
+> shall be considered equal. I will fix it in the next version.
 
-if I remove the initial UNWIND_HINT_UNDEFINED I get objtool warning
-about unreachable instruction
+I see, thank you for explaining.
+Checking the usage of kernel/bpf/btf.c:btf_name_valid_identifier(),
+it looks like kernel validates name_off for all types.
+So, your implementation should be fine.
 
-> 
-> >  
-> >  	/* Save ftrace_regs for function exit context  */
-> >  	subq $(FRAME_SIZE), %rsp
-> > @@ -360,6 +362,9 @@ SYM_CODE_START(return_to_handler)
-> >  	movq %rax, RAX(%rsp)
-> >  	movq %rdx, RDX(%rsp)
-> >  	movq %rbp, RBP(%rsp)
-> > +	movq %rsp, RSP(%rsp)
-> > +	movq $0, EFLAGS(%rsp)
-> > +	movq $__KERNEL_CS, CS(%rsp)
-> 
-> Is this simulating some kind of interrupt?
-
-there are several checks in pt_regs on these fields 
-
-- in get_perf_callchain we check user_mode(regs) so CS has to be set
-- in perf_callchain_kernel we call perf_hw_regs(regs), so EFLAGS has to be set
-
-> 
-> >  	movq %rsp, %rdi
-> >  
-> >  	call ftrace_return_to_handler
-> 
-> Now it gets tricky in the ftrace_return_to_handler as the first thing it
-> does is to pop the shadow stack, which makes the return_to_handler lookup
-> different, as its no longer on the stack that the unwinder will use.
-
-hum strange.. the resulting stack trace seems ok, I'll make it a
-selftest I send it
-
-ftrace_graph_ret_addr that checks on the 'real return address seems
-to have 2 ways of getting to it:
-
-        i = *idx ? : task->curr_ret_stack;
-
-I dont know how that previous pop affects this, but I'm sure it's
-more complicated than this ;-)
-
-jirka
-
-
-> 
-> The return address will live in the "ret" variable of that function, which
-> the unwinder will not have access to. Yeah, this will not be easy to solve.
-> 
-> -- Steve
-> 
-> 
-> > @@ -368,7 +373,8 @@ SYM_CODE_START(return_to_handler)
-> >  	movq RDX(%rsp), %rdx
-> >  	movq RAX(%rsp), %rax
-> >  
-> > -	addq $(FRAME_SIZE), %rsp
-> > +	addq $(FRAME_SIZE) + 8, %rsp
-> > +
-> >  	/*
-> >  	 * Jump back to the old return address. This cannot be JMP_NOSPEC rdi
-> >  	 * since IBT would demand that contain ENDBR, which simply isn't so for
-> 
+[...]
 
