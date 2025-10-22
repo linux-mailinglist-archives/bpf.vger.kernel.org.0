@@ -1,195 +1,284 @@
-Return-Path: <bpf+bounces-71833-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71834-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16D25BFDA31
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 19:40:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF6ECBFDB85
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 19:54:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0F431A080DD
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 17:40:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 123803A3434
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 17:54:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953132D978A;
-	Wed, 22 Oct 2025 17:39:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 338B12E1C7C;
+	Wed, 22 Oct 2025 17:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0fLYb71"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UIUFAuoE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE562D8DCF
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 17:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 922622E172B
+	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 17:54:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761154781; cv=none; b=XmGyXfoXhqLnto4AuBZ4u4lm3ZM+u65we4/5lKwO+DbAoe/1+AXVfBse+9CbIUjPdCgZwMOIo4TdbCht/QqHpMr12MrUQJzAQ9TN4OXcBi8m2+VCopMzg555qYc9b7IuJC1X8GsHKQdSdGVwoPede8o+8R7XUJfdx/BpGmZko/E=
+	t=1761155651; cv=none; b=mA35eI4ARnx+AzXoGP+IVxCUjWqcdAhfGPO0bc7sTify+tS1h13shsmN3h8gi3Qwt9tJ24EhkIq2q05Lh3GimSpdRxTqJ/ar1lOc3vUPW+MfKg3SUKRAQDpVXbd20A+kBiY7ZXLVE35TJjG33lbiU30LT5HqZ0SolFd1RMD4L3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761154781; c=relaxed/simple;
-	bh=O2rS9th93VdiObqGHqJg9tF9FtBIZpNefdSGlMkHdmY=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q9S5+lN2ZqSldxmrEY4stI/K1XsGtMvSATWQeCmG+QyZShOLW1ZMwT7YN09BZwCGPxIjxicoHiPi06vfEiZXQESd4NdPAHjm40REk43vPTmM+WgpGqMzPsjI+ca56y6WD5+R7BrdReVAo6sJqJMBbIpUWbSJF3kxXg7locB8p+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V0fLYb71; arc=none smtp.client-ip=209.85.216.48
+	s=arc-20240116; t=1761155651; c=relaxed/simple;
+	bh=VSGDtEJ5A7Pv5AJIsbo6G0pnMLXGS/GD5fUXjXOptwM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SBa8VKeYDrC/FhnIBv9X7A4Rpl4+ScGcc5ygJye7QGw3DFYjaFV8kfM9vTxusNZzPC3ShczHy4bnvkezHYKcPY2ZRoZuNNwPdTccqhZftg76GoGdvpGIkoIksZT5vdVCIOLXPdqT/c6+tJ+o4cot/8HfY9CKRS2SctoKDkVkPUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UIUFAuoE; arc=none smtp.client-ip=209.85.128.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-33f9aec69b6so582149a91.1
-        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 10:39:39 -0700 (PDT)
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-471076f819bso57486325e9.3
+        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 10:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761154778; x=1761759578; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DQdE14qwP3ArpvNj7koaLBKy4oXNS6rDuyXrc8Mb3G8=;
-        b=V0fLYb71LWnbHwu7vx+4+aT/VvkpyKipsXg1ezt52QvFAnKAfO/rz8U9SAK3QD+I6M
-         a3HuAHR/dntApw2kb4XyxrlPKGsIblTNQGIM7K4tFoGHgZ6ops7ZEi4ej4IlWOObDJm2
-         IGIrsJfG3ZqjSKhfdC+6zndkFNPU5yo3U9KEVSZ91FQWAFQOEtArWzGhABH71QcRTZOg
-         uvcGXrc7+cns1KPyTfU9cemH2ySU+42kbSGJIqEf8kt2hiXVHOmLb56+1/ID69JrZMux
-         A9Y8GYgN8ATvaCfykkSZtFExjj/YN5o1fkoz8QhJi46JrLqbTSz3oNTO72YXBpdF6oLg
-         QBew==
+        d=gmail.com; s=20230601; t=1761155647; x=1761760447; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=H7R81KCktcpI4qms/dvGlk3Nmu/8wiBKIRFEH0ElPQY=;
+        b=UIUFAuoEOBls/14FHZp+GKk0GkBA9JGzkvQ1FAX1i1/2rc1Vfzh4IdhFZcoY/GD+2g
+         YT3xjcgVq0JcGAY5EQuZa+Zaip5+V4wJzGuA8Q1MpzRWLDbs1TpOrSP76g7jXA8NL0OM
+         rULvajmHUdl2Xqs4wa/Eo/g3Xvjqh4HmxSmWl2dfkatC0UjFQ0oc601r4fyG/agZzOSc
+         d2WmQ7wAPvrwYPoFqqCwDtaUAGNeLu8lQC1hodOLulgjkvotcUFIFbXmJkZeZHUN6Re3
+         GBAYroS3HYQHrN3dj499iaqgGjMntnuRsRJkFQUvVRocMvA/cDUesHVAngyOimEpQRzy
+         KQrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761154778; x=1761759578;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DQdE14qwP3ArpvNj7koaLBKy4oXNS6rDuyXrc8Mb3G8=;
-        b=cc8jONkWdLvHt3jEWmyhrrwb6yrsZzYWDhlntQmzdEZylLcnKIGFUOTMU8gSp/Sd95
-         tYBJT4nGUvbW0VDDScLBjhE1Ak0xuayHZgT3PXvYP5oEQNxXomQ3hQjuL9bCnWTr+5Rm
-         C1npWIJfVYEq5jjOWQaU38U3lyKXkEuyonqxym+QFKN5WDzLZXaI5ZcojoYtL8IxcPvb
-         76ORF0p2EF0odfnw2lMajloIZl1Czj5x1JxqcHAks+jLRJBX0edf+Cjm5FY6YM218iSX
-         TtrrQrd5T1O1ZvV2fKgEQfIAWKk0QzDtzHe0kKlGzzFRabZXamb3P9x66ncKK3Bwt9Tk
-         RgnA==
-X-Forwarded-Encrypted: i=1; AJvYcCWjZ63apjBlCbGxkaNNJ84ta3qpv/cnqIdSNndfFQbvxmBrqWWGLFfY3sQCPgmaTaH/nic=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwjOZty/dQgZY93ecYxHkuBvhJP1BBo+Y9c0yyy5Z8l8gwz1QJB
-	jUmzJIaZpFzzzHLbUIhwiR/iPyBLV4TnSEL8ieNLONPC9hAQ4BQK5xmh
-X-Gm-Gg: ASbGnctijp0LVcWW7JnZoEkgBqth2nohjoIWA5LS/iNmDmGkO+y2U3LpthBTSmda4eN
-	wriV653/UmwjdY4S3OInSengi9tlGe/x7CThZN+5W2lNBnByi+ogdkGwzOh9SxjvFo+YFUTcQgT
-	YCVNKib46T8W/I5dvSjZF2Vkk5nrmX0flfjt03+1+7DaNgNBxy/r5AAlr4U91GOoXUpp2SwnNPX
-	gTYBLfmoGMMtOtx3HcMFjUVvAiqxMgeK58MRlh6fpwOUdU9iZBXYKhn5x0Yy0OXZ19Xkgzg4M0V
-	lk4XS1dA93/A9k2S3+mjjY2omVE9xIwUaDfNZ00fgdr1v6hK9YQnuR74i7rhFd3/7Mm6LGmrVB8
-	n5+S8YcGpQjT5bYTgz5YH4fB474Afai6gzrGNcr2WAxgsA+xPN8cTY1laesMrLtdmcVVnmpKWE4
-	sig/8=
-X-Google-Smtp-Source: AGHT+IF/wQlvN1PHS4P0FuXHnhUI6gRONo719YP7lTtUWQHYnX87iTmhZHJVAyR2zlOCWjra1Hg12w==
-X-Received: by 2002:a17:90b:3c88:b0:338:3d07:5174 with SMTP id 98e67ed59e1d1-33bcf85d01dmr25963979a91.5.1761154778032;
-        Wed, 22 Oct 2025 10:39:38 -0700 (PDT)
-Received: from lima-default ([104.28.246.147])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33e223d11c8sm3174342a91.4.2025.10.22.10.39.32
+        d=1e100.net; s=20230601; t=1761155647; x=1761760447;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H7R81KCktcpI4qms/dvGlk3Nmu/8wiBKIRFEH0ElPQY=;
+        b=NlH4V+qEGujj8AnQhxE91srrG2KYqcitS19oHYIRyJvGb0/rf+Wui3ugV2HR7RbibR
+         tTObTbKoahaAnPEyzpi/E7ObcMOS9yFOi6kVAeJKvFmTkbZU4UONUX+TUGOp1/u5mrsL
+         TlmS35HmPgvueVKMASYcFiALTOFJUzi8ewNEuh0LMnN7ZdxaGDLsxcNcWTK25+lMI/g9
+         zb9n09j13Jas41Hvrr17NUgi+DIKRfV7dY2/etjgJgc6o5l1FEXHtzRpGKMZEG0m5W3c
+         ldHyoBGzeaKpXsjUpa0GzPkNlYMP+rcZnmKG9p+HgZbZ0Scyl5BS87yhV1xpgFrwjJ0M
+         7wSA==
+X-Gm-Message-State: AOJu0YznYcUtcAUuDGaYTpc97N8aoZ/vEI/JS+7/0BqMFLzaQx/BU5TR
+	nLDGiGIglpOznkVtfOMheezxjzs646imCFqrNaQ/nPOnlFMckCD6BdlqoNmwlrTx
+X-Gm-Gg: ASbGncusmCNn3syn1+Gv2JndBeKwsxlgo8VPLl9NIVmyMyLxjdhbAV+72QDoP87D3aX
+	W4H0kX53MOsdryHbFYZl9qFN7wikhZF85KGFhZY3dVShAhAFr1HycqoRmpsEiDcUaHXKzRPDqR7
+	GLuWFxqMdR9J0d62rYUPRU62BGBcudwXTWB2g3J8zWsvZMyoIQfmx5BrCct7bVv66xWqIJ58QHS
+	ICSW5mD5LiolVLLaeoH3ukn+s2Z7Lldr4gwHhHRoOIYYyWoWtS1X6pvVlOL85b6VLG97Zi1lANC
+	P6XTCXqRu506rqQO0dDMAnHB5yvYTh+E3EHA/pNI0kSJc+tybTzS/AkK2lad8Xn7UNiZ1XwGMWA
+	Ev1SkTgibCPmWGxgUw1d1275xolp8AcIrGPFMnXSaWTO085HeqmWUEXSMlpzBgE7NZASAgLPVa2
+	Jz8eN74HoSCha/5vNi9V221xD7axJ19k01N+4DKtYPIM6KXoliqzw1dCjmMyvh8CyO
+X-Google-Smtp-Source: AGHT+IGbAcE+WWruJrWvBEnqt4gf4EHsaMi4L4wLYsRFRf4LFYZ7NsKwCm/irD9mpplMawS8x/a4nA==
+X-Received: by 2002:a05:600c:548a:b0:471:669:e95d with SMTP id 5b1f17b1804b1-4711787dcc8mr144237345e9.12.1761155647369;
+        Wed, 22 Oct 2025 10:54:07 -0700 (PDT)
+Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-475c42b48c9sm60640605e9.15.2025.10.22.10.54.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Oct 2025 10:39:37 -0700 (PDT)
-From: Your Name <alessandro.d@gmail.com>
-X-Google-Original-From: Your Name <you@gmail.com>
-Date: Thu, 23 Oct 2025 04:39:29 +1100
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: Alessandro Decina <alessandro.d@gmail.com>, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
+        Wed, 22 Oct 2025 10:54:06 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Tirthendu Sarkar <tirthendu.sarkar@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>, bpf@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2 1/1] i40e: xsk: advance next_to_clean on status
- descriptors
-Message-ID: <aPkW0U5xG3ZOekI0@lima-default>
-References: <20251021173200.7908-1-alessandro.d@gmail.com>
- <20251021173200.7908-2-alessandro.d@gmail.com>
- <aPkRoCQikecxLxTS@boxer>
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v1] selftests/bpf: Add ABBCCA case for rqspinlock stress test
+Date: Wed, 22 Oct 2025 17:54:02 +0000
+Message-ID: <20251022175402.211176-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aPkRoCQikecxLxTS@boxer>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 22, 2025 at 07:17:20PM +0200, Maciej Fijalkowski wrote:
-> On Wed, Oct 22, 2025 at 12:32:00AM +0700, Alessandro Decina wrote:
-> 
-> Hi Alessandro,
+Introduce a new mode for the rqspinlock stress test that exercises a
+deadlock that won't be detected by the AA and ABBA checks, such that we
+always reliably trigger the timeout fallback. We need 4 CPUs for this
+particular case, as CPU 0 is untouched, and three participant CPUs for
+triggering the ABBCCA case.
 
-Hey,
+Refactor the lock acquisition paths in the module to better reflect the
+three modes and choose the right lock depending on the context.
 
-Thanks for the review!
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+ .../selftests/bpf/prog_tests/res_spin_lock.c  | 11 ++-
+ .../bpf/test_kmods/bpf_test_rqspinlock.c      | 85 ++++++++++++++-----
+ 2 files changed, 72 insertions(+), 24 deletions(-)
 
+diff --git a/tools/testing/selftests/bpf/prog_tests/res_spin_lock.c b/tools/testing/selftests/bpf/prog_tests/res_spin_lock.c
+index 8c6c2043a432..f566d89f85ea 100644
+--- a/tools/testing/selftests/bpf/prog_tests/res_spin_lock.c
++++ b/tools/testing/selftests/bpf/prog_tests/res_spin_lock.c
+@@ -111,7 +111,16 @@ void serial_test_res_spin_lock_stress(void)
+ 	sleep(5);
+ 	unload_module("bpf_test_rqspinlock", false);
 
-> 
-> > Whenever a status descriptor is received, i40e processes and skips over
-> > it, correctly updating next_to_process but forgetting to update
-> > next_to_clean. In the next iteration this accidentally causes the
-> > creation of an invalid multi-buffer xdp_buff where the first fragment
-> > is the status descriptor.
-> > 
-> > If then a skb is constructed from such an invalid buffer - because the
-> > eBPF program returns XDP_PASS - a panic occurs:
-> 
-> can you elaborate on the test case that would reproduce this? I suppose
-> AF_XDP ZC with jumbo frames, doing XDP_PASS, but what was FDIR setup that
-> caused status descriptors?
+-	ASSERT_OK(load_module_params("bpf_test_rqspinlock.ko", "test_ab=1", false), "load module ABBA");
++	ASSERT_OK(load_module_params("bpf_test_rqspinlock.ko", "test_mode=1", false), "load module ABBA");
++	sleep(5);
++	unload_module("bpf_test_rqspinlock", false);
++
++	if (libbpf_num_possible_cpus() < 4) {
++		test__skip();
++		return;
++	}
++
++	ASSERT_OK(load_module_params("bpf_test_rqspinlock.ko", "test_mode=2", false), "load module ABBCCA");
+ 	sleep(5);
+ 	unload_module("bpf_test_rqspinlock", false);
+ }
+diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c b/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c
+index 769206fc70e4..4cced4bb8af1 100644
+--- a/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c
++++ b/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c
+@@ -22,23 +22,61 @@ static struct perf_event_attr hw_attr = {
 
-Doesn't have to be jumbo or multi-frag, anything that does XDP_PASS
-reproduces, as long as status descriptors are posted. 
+ static rqspinlock_t lock_a;
+ static rqspinlock_t lock_b;
++static rqspinlock_t lock_c;
++
++enum rqsl_mode {
++	RQSL_MODE_AA = 0,
++	RQSL_MODE_ABBA,
++	RQSL_MODE_ABBCCA,
++};
++
++static int test_mode = RQSL_MODE_AA;
++module_param(test_mode, int, 0644);
++MODULE_PARM_DESC(test_mode,
++		 "rqspinlock test mode: 0 = AA, 1 = ABBA, 2 = ABBCCA");
 
-See the scenarios here https://lore.kernel.org/netdev/aPkDtuVgbS4J-Og_@lima-default/
+ static struct perf_event **rqsl_evts;
+ static int rqsl_nevts;
 
-As for what's causing the status descriptors, I haven't been able to
-figure that out. I just know that I periodically get
-I40E_RX_PROG_STATUS_DESC_FD_FILTER_STATUS. Happy to dig deeper if you
-have any ideas!
+-static bool test_ab = false;
+-module_param(test_ab, bool, 0644);
+-MODULE_PARM_DESC(test_ab, "Test ABBA situations instead of AA situations");
+-
+ static struct task_struct **rqsl_threads;
+ static int rqsl_nthreads;
+ static atomic_t rqsl_ready_cpus = ATOMIC_INIT(0);
 
-> > diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > index 9f47388eaba5..dbc19083bbb7 100644
-> > --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > @@ -441,13 +441,18 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
-> >  		dma_rmb();
-> >  
-> >  		if (i40e_rx_is_programming_status(qword)) {
-> > +			u16 ntp;
-> > +
-> >  			i40e_clean_programming_status(rx_ring,
-> >  						      rx_desc->raw.qword[0],
-> >  						      qword);
-> >  			bi = *i40e_rx_bi(rx_ring, next_to_process);
-> >  			xsk_buff_free(bi);
-> > -			if (++next_to_process == count)
-> > +			ntp = next_to_process++;
-> > +			if (next_to_process == count)
-> >  				next_to_process = 0;
-> > +			if (next_to_clean == ntp)
-> > +				next_to_clean = next_to_process;
-> 
-> I wonder if this is more readable?
-> 
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> index 9f47388eaba5..36f412a2d836 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> @@ -446,6 +446,10 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
->  						      qword);
->  			bi = *i40e_rx_bi(rx_ring, next_to_process);
->  			xsk_buff_free(bi);
-> +			if (next_to_clean == next_to_process) {
-> +				if (++next_to_clean == count)
-> +					next_to_clean = 0;
-> +			}
->  			if (++next_to_process == count)
->  				next_to_process = 0;
->  			continue;
-> 
-> >  			continue;
-> >  		}
+ static int pause = 0;
 
-Probably because I've looked at it for longer, I find my version clearer
-(I think I copied it from another driver actually). But I don't really
-mind, happy to switch to yours if you prefer!
+-static bool nmi_locks_a(int cpu)
++static const char *rqsl_mode_names[] = {
++	[RQSL_MODE_AA] = "AA",
++	[RQSL_MODE_ABBA] = "ABBA",
++	[RQSL_MODE_ABBCCA] = "ABBCCA",
++};
++
++struct rqsl_lock_pair {
++	rqspinlock_t *worker_lock;
++	rqspinlock_t *nmi_lock;
++};
++
++static struct rqsl_lock_pair rqsl_get_lock_pair(int cpu)
+ {
+-	return (cpu & 1) && test_ab;
++	int mode = READ_ONCE(test_mode);
++
++	switch (mode) {
++	default:
++	case RQSL_MODE_AA:
++		return (struct rqsl_lock_pair){ &lock_a, &lock_a };
++	case RQSL_MODE_ABBA:
++		if (cpu & 1)
++			return (struct rqsl_lock_pair){ &lock_b, &lock_a };
++		return (struct rqsl_lock_pair){ &lock_a, &lock_b };
++	case RQSL_MODE_ABBCCA:
++		switch (cpu % 3) {
++		case 0:
++			return (struct rqsl_lock_pair){ &lock_a, &lock_b };
++		case 1:
++			return (struct rqsl_lock_pair){ &lock_b, &lock_c };
++		default:
++			return (struct rqsl_lock_pair){ &lock_c, &lock_a };
++		}
++	}
+ }
 
-Ciao
-Alessandro
+ static int rqspinlock_worker_fn(void *arg)
+@@ -51,19 +89,17 @@ static int rqspinlock_worker_fn(void *arg)
+ 		atomic_inc(&rqsl_ready_cpus);
+
+ 		while (!kthread_should_stop()) {
++			struct rqsl_lock_pair locks = rqsl_get_lock_pair(cpu);
++			rqspinlock_t *worker_lock = locks.worker_lock;
++
+ 			if (READ_ONCE(pause)) {
+ 				msleep(1000);
+ 				continue;
+ 			}
+-			if (nmi_locks_a(cpu))
+-				ret = raw_res_spin_lock_irqsave(&lock_b, flags);
+-			else
+-				ret = raw_res_spin_lock_irqsave(&lock_a, flags);
++			ret = raw_res_spin_lock_irqsave(worker_lock, flags);
+ 			mdelay(20);
+-			if (nmi_locks_a(cpu) && !ret)
+-				raw_res_spin_unlock_irqrestore(&lock_b, flags);
+-			else if (!ret)
+-				raw_res_spin_unlock_irqrestore(&lock_a, flags);
++			if (!ret)
++				raw_res_spin_unlock_irqrestore(worker_lock, flags);
+ 			cpu_relax();
+ 		}
+ 		return 0;
+@@ -91,6 +127,7 @@ static int rqspinlock_worker_fn(void *arg)
+ static void nmi_cb(struct perf_event *event, struct perf_sample_data *data,
+ 		   struct pt_regs *regs)
+ {
++	struct rqsl_lock_pair locks;
+ 	int cpu = smp_processor_id();
+ 	unsigned long flags;
+ 	int ret;
+@@ -98,17 +135,13 @@ static void nmi_cb(struct perf_event *event, struct perf_sample_data *data,
+ 	if (!cpu || READ_ONCE(pause))
+ 		return;
+
+-	if (nmi_locks_a(cpu))
+-		ret = raw_res_spin_lock_irqsave(&lock_a, flags);
+-	else
+-		ret = raw_res_spin_lock_irqsave(test_ab ? &lock_b : &lock_a, flags);
++	locks = rqsl_get_lock_pair(cpu);
++	ret = raw_res_spin_lock_irqsave(locks.nmi_lock, flags);
+
+ 	mdelay(10);
+
+-	if (nmi_locks_a(cpu) && !ret)
+-		raw_res_spin_unlock_irqrestore(&lock_a, flags);
+-	else if (!ret)
+-		raw_res_spin_unlock_irqrestore(test_ab ? &lock_b : &lock_a, flags);
++	if (!ret)
++		raw_res_spin_unlock_irqrestore(locks.nmi_lock, flags);
+ }
+
+ static void free_rqsl_threads(void)
+@@ -142,13 +175,19 @@ static int bpf_test_rqspinlock_init(void)
+ 	int i, ret;
+ 	int ncpus = num_online_cpus();
+
+-	pr_err("Mode = %s\n", test_ab ? "ABBA" : "AA");
++	if (test_mode < RQSL_MODE_AA || test_mode > RQSL_MODE_ABBCCA) {
++		pr_err("Invalid mode %d\n", test_mode);
++		return -EINVAL;
++	}
++
++	pr_err("Mode = %s\n", rqsl_mode_names[test_mode]);
+
+ 	if (ncpus < 3)
+ 		return -ENOTSUPP;
+
+ 	raw_res_spin_lock_init(&lock_a);
+ 	raw_res_spin_lock_init(&lock_b);
++	raw_res_spin_lock_init(&lock_c);
+
+ 	rqsl_evts = kcalloc(ncpus - 1, sizeof(*rqsl_evts), GFP_KERNEL);
+ 	if (!rqsl_evts)
+--
+2.51.0
 
 
