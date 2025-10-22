@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-71686-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DF24BFAC27
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 10:04:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28581BFAC2D
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 10:04:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4368A5069AB
-	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 08:03:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EFDF1A04D85
+	for <lists+bpf@lfdr.de>; Wed, 22 Oct 2025 08:04:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE6D30102A;
-	Wed, 22 Oct 2025 08:02:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE2BB303A0B;
+	Wed, 22 Oct 2025 08:02:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zt08qrWC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b+Ixmedz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com [209.85.215.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ACEC301027
-	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 08:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6E12ECE96
+	for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 08:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761120150; cv=none; b=HFts8qLtnwGgFwa2Kq9/B8n4K2r1ByYhDghDXYW0yBTLAhQ6gcZJSdF/PuyEmoUIex/ESHFLgxKvF1NiyYJ5XCV/BBH+aDpYiPyIQTLXEYf3m5BoXpCpj3hLGqY/Yjb7QqxRg4nCROjjqHKRNRTf+9AqsUthoijMRzFcbkTRpOM=
+	t=1761120155; cv=none; b=Qd3n6omGQZUUo1XzXOQDc5slpq7blgJ2u3EXScaFWDniSD77XPwMynopI396GAPqFAsCkwT9+WLifSNyG5owMcCak/G7Z96aNFMCSiLEOIZpZwpm0bTXGe1P6sStRY8iOhwML+cIIkSogJl+PMo5hE2wjxWahuD2ezaC4iZUaBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761120150; c=relaxed/simple;
-	bh=E3vAsVhEKLpEuWi7Z5YqNSEtnj0vJWvd3Pb3WZ9xabM=;
+	s=arc-20240116; t=1761120155; c=relaxed/simple;
+	bh=ge4RKcTL9mwWJ/8YcU4iA3Hebcqf1IXM5VAR/s9Qs0U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NiLdAUdn0SsgwovnzmMtqb9cGI0BREt5q5T7/oeQ5svRjHaO4XBuXoIT20IbTloctsSwzSREhaCNo1DgQJeABK1qqpVAACN/1k5wdiN0GC9hOZMlFZvSlbM1BUBdkh0k6AEhe8+fUQc4JrN91jGMmq7WfXvpDWgqtmSZveDO15s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zt08qrWC; arc=none smtp.client-ip=209.85.214.195
+	 MIME-Version; b=kkUe1/Ru3HF3KC0IR/WfF6jNxsMCTzKZVoKh6Tmijyrq3eYkYy8dQMX5eWBBLxc8yuWkEDKLZvLv1tKd+/bs1UtZPGb+IgKd+MGPycoZIUiaHjmEf1E8oWsczk36YA1ndHEAbvsgTIuEMPF1LEeYNrkGM2NHnPr7z8JT7QS6YaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b+Ixmedz; arc=none smtp.client-ip=209.85.215.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-28e7cd6dbc0so82697305ad.0
-        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 01:02:26 -0700 (PDT)
+Received: by mail-pg1-f195.google.com with SMTP id 41be03b00d2f7-b6cdd7e5802so365198a12.1
+        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 01:02:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761120146; x=1761724946; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761120151; x=1761724951; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ylOZLeoyykhuoaz4lbTwEjPsmcSXlb4GkDnmde4T+hQ=;
-        b=Zt08qrWCatcHaC9a5Bj26UDTgjcTHU0Rh/n4rmrjCkYK7ps6oBB25BHd2rrBT6KAIF
-         QiaoRiCc3+ofgkIVcS7HaCTPGmwI2iMtDFwyK08eWe4s7bMq39x52+qafApj/iRP+93R
-         h76W64bXTKptvv6tvpCV+msjPbXHppnoCKNanpx2mkN77CSnu5ufaz4O2uE0rayIMhYj
-         N0UZDneEdxBReI1QjPvMgep0k2MSOp0EbfKwbLI+8nvwCuBuh49eiCw0RsDePphLifrq
-         WUpeKRhKHf1nFBAFQDlElDeyeCaPZCVAdBVkyS41fg6pEQEaavyprJZcUl9mXkE2UKnv
-         naJg==
+        bh=jfXwmoObYIYRyTIzn9fIn8LwwiT3RUaRjh3izqidMDI=;
+        b=b+IxmedzdgbsmoRLVXa0XAbMGAh8g5xDGn50Y1g9PfO8V2qkNSNxisWMc9uZppg4UU
+         ztIob0Rso2jeeSeY6hCMw27aaz2jdxOS2N4ryoJ5XpAEse/C2qP+sneFxqpX0+bEHo5M
+         BuQ1qKR3qe3uGxObRB9yeiaPnEaCveUYBfCBNNN/jR6rVZP/Eg0SsDdM9M34PVwILVrA
+         y0+pu5urP+R8vI34PDJMvtjYNevqAk/6gH2uV0UvbvsKv/5OxNQPYagmYi9KZNySbk9U
+         RGE1kXwGwVCMT4OPVRg9cDwRc8JhYAJ9FCGrMjf95BH4TBa0HG2SpCfzZDPdImjltZ7s
+         NatA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761120146; x=1761724946;
+        d=1e100.net; s=20230601; t=1761120151; x=1761724951;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ylOZLeoyykhuoaz4lbTwEjPsmcSXlb4GkDnmde4T+hQ=;
-        b=UAjevVnw+3dgZ8rXw+enzB/3H1/sDiDXh0k/sKJQ24qTBBhFE/7ti59onSaddfpBjs
-         0RkHR84aIjTpVXYfB2sPxD8Djy+A8cJ4BJ3WHlW52lNAWnViNQKmMqAl53tmdVxS6Q/a
-         zLUsRo8vHJ2CSHJZs3RM6L0Q5gKK/rCOS70MwEt3rPg17WGGNdSDZWuwq+b6OaRE07MO
-         4ydjRAJPV5lCZDvhb7G3Wwg0XsDDWvBi8ilwPyREsVL11bdWQTOLRe6tJA0nHXG4vYR7
-         8pAs37zYUxSMZqrh0+EXUymTGzlQPaSTfkWku1YWQxJW+r4XfPlGOd9/QSc8TziS1+sx
-         E2vA==
-X-Forwarded-Encrypted: i=1; AJvYcCV+P7bNOyIs3zkIj047/6Vo89sxbV7ndXWJqQhscFYYjHWd/rUQnQJMVsg82fjHScjwk8g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTGSh/7Bu/KQPoYadphJ3oGM8nA4+nEM9+Gn+UxEU8k4KxJ1gq
-	U8r75kXWA9E6Bep8u4fRtG8IuwxIDsYjzwAi60UJ6vgkzKY2Ao7aANxj
-X-Gm-Gg: ASbGncu/fWKAa/IFRVpXqLjMSgvVlv2Ozgso183FwWycZDhffI8tSigM9CWxedieD98
-	x8fK6A5Zldap6AEdfOc/x841oV7MGTRj+THpcANaRR2t2xNqx8QlSJFdr8VUWUXvSaiuSW49aNO
-	e9tQeBMeSKENMN0ppfzRN09fRPpLrd7Cyo/TxrqfEg3rfNVsxMdt3VoF5mSffGlT9YnzEBSObTS
-	teqZS/GHFiGbcsjHZrCHFNYry1fkzNgVi4nh2LINczShu/4ePjqe9PbYk+5gKl1WAgqwAZ8cEO2
-	R5qqJIyWwBOdWI/MDc5jpf06kbUThgAKpIxUfOD+X+ZvNPGoBSGMZe3senWHWM0VSvHh0CNntpO
-	+buz4M4kZQQkPFCW6S3hy1hiTDdAWQieWdx7mbIRdWOWmIemKSrjzHbL0IajyrVTa+x5v0Cious
-	kGOrLXk20=
-X-Google-Smtp-Source: AGHT+IElFYc85CKhS9KfCJHXRWtMMxrtc4wlc15KexTf7Z4eltq5dEOMAG1bp2AuYLzlNwgLZOKhew==
-X-Received: by 2002:a17:902:ef4f:b0:275:b1cf:6ddc with SMTP id d9443c01a7336-290c9cf8f20mr260206065ad.5.1761120145882;
-        Wed, 22 Oct 2025 01:02:25 -0700 (PDT)
+        bh=jfXwmoObYIYRyTIzn9fIn8LwwiT3RUaRjh3izqidMDI=;
+        b=gTyf1I6I1mYK4yx4i1uDmsc5awbiUuRvSb7vVHYJw0OxTgbmjgySEZM52LmLlcu03v
+         CFh6ODp71DakNnlaLpuEAOIzZAEhfuvInjZfKo1+Vw6vVgl0rxSvS2y3Vw+MBLNqTUl5
+         P6yNH8rhkdOGryDwvVY6CdY2T+badFoEVqw9VzDnbGmoCdklVbFqi6t0Ynp3agci14G+
+         /u0U/t/K8VSmpphRomuZWB8s9jZgwbVNP2BiOODqUJgtMpWDljhpJ0NWVGesGFzyAbIM
+         K9ZssDspjCFgUCNpYROe/C8KinYu+GGrcn0A71FfZlLsG/0449OMUXQG358I5Vu6e9QK
+         184w==
+X-Forwarded-Encrypted: i=1; AJvYcCVCAp2pQbhN00g2vcwLFoNaPln74kEl5WaUTt7J386c4Gkhldd2Kjb0uJU48SaZqpCIxwA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzBWcgCGPNyAej7fT3uwuii4Y+VqNJugHuO80Bw/QoIW+1n3tdg
+	sQIyGwrf+qLuNAZF/i9ZnWGUwHE7MnA0axM61eYrz+DRKyoFY1OliUiu
+X-Gm-Gg: ASbGncv3IbcmmggVzEFy0FiYnayHWewwdd0swm4hCVNjoSLKhjrsN5t8PLHkh/OTK+A
+	Y6Hulj/OSh2qOAPsRYugid8lDHdKLb8T0+Is2KW4DxOp2oR091ZYQKSNgFpqVr3VUKIkzrKUrPq
+	efBWF1m3B6lHMpLjlb7dUY83tY+7lXUT2vh+Wf2gnbQ+8uUBCTQig7fawaU+ZePOA9hnTqeq/2F
+	RMcegWt7yvs1vdREerPMVFKOLGvSZ3KsVrZQDkVNhie0x7OIf5QYtzMuI6KpDcWxC18aCtObqat
+	G7PWXM1SkQBMGkTXAnylB1MkqBGLHgOHQGIzBse/BcnCIDvEytBWwo4uPTaQYdOnybHd4j6aPC/
+	99nTzeWtDo+Q7gbr8iwokaGBBqJFyyCOZSL4icalFjw2LrLVRa6+BUSV6iqxgKmt+yWRuIsBEsH
+	18LDvH/5U=
+X-Google-Smtp-Source: AGHT+IHcRP/+rFsLy2RENva1Jsb8xo2NqJEfdzP+xic7X2vYpKPlauqBCppFkorSXIkJjpXUbP1Srw==
+X-Received: by 2002:a17:902:dac2:b0:275:2328:5d3e with SMTP id d9443c01a7336-290c9ca32f9mr265453375ad.18.1761120151286;
+        Wed, 22 Oct 2025 01:02:31 -0700 (PDT)
 Received: from 7950hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471d7e41sm131947785ad.57.2025.10.22.01.02.20
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471d7e41sm131947785ad.57.2025.10.22.01.02.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Oct 2025 01:02:25 -0700 (PDT)
+        Wed, 22 Oct 2025 01:02:30 -0700 (PDT)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: ast@kernel.org,
@@ -97,9 +97,9 @@ Cc: daniel@iogearbox.net,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 03/10] bpf: add kfunc bpf_fsession_cookie for TRACING SESSION
-Date: Wed, 22 Oct 2025 16:01:52 +0800
-Message-ID: <20251022080159.553805-4-dongml2@chinatelecom.cn>
+Subject: [PATCH bpf-next v2 04/10] bpf,x86: add ret_off to invoke_bpf()
+Date: Wed, 22 Oct 2025 16:01:53 +0800
+Message-ID: <20251022080159.553805-5-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.51.1.dirty
 In-Reply-To: <20251022080159.553805-1-dongml2@chinatelecom.cn>
 References: <20251022080159.553805-1-dongml2@chinatelecom.cn>
@@ -111,123 +111,165 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add the kfunc bpf_fsession_cookie(), which is similar to
-bpf_session_cookie() and return the address of the session cookie. The
-address of the session cookie is stored after session flags, which means
-ctx[nr_args + 2].
-
-Inline this kfunc in the verifier too.
+For now, the offset of the return value in trampoline is fixed 8-bytes.
+In this commit, we introduce the variable "ret_off" to represent the
+offset of the return value. For now, the "ret_off" is just 8. And in the
+following patch, we will make it something else to use the room after it.
 
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
- include/linux/bpf.h      |  1 +
- kernel/bpf/verifier.c    | 20 ++++++++++++++++++--
- kernel/trace/bpf_trace.c | 10 ++++++++++
- 3 files changed, 29 insertions(+), 2 deletions(-)
+ arch/x86/net/bpf_jit_comp.c | 41 +++++++++++++++++++++----------------
+ 1 file changed, 23 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3f6cad5df2db..83d5d4d3120d 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1735,6 +1735,7 @@ struct bpf_prog {
- 				enforce_expected_attach_type:1, /* Enforce expected_attach_type checking at attach time */
- 				call_get_stack:1, /* Do we call bpf_get_stack() or bpf_get_stackid() */
- 				call_get_func_ip:1, /* Do we call get_func_ip() */
-+				call_session_cookie:1, /* Do we call bpf_fsession_cookie() */
- 				tstamp_type_access:1, /* Accessed __sk_buff->tstamp_type */
- 				sleepable:1;	/* BPF program is sleepable */
- 	enum bpf_prog_type	type;		/* Type of BPF program */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a4d0dd4440fd..ab46e5fbc7a6 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12294,6 +12294,7 @@ enum special_kfunc_type {
- 	KF_bpf_task_work_schedule_signal,
- 	KF_bpf_task_work_schedule_resume,
- 	KF_bpf_tracing_is_exit,
-+	KF_bpf_fsession_cookie,
- };
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 389c3a96e2b8..7a604ee9713f 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -2940,7 +2940,7 @@ static void restore_regs(const struct btf_func_model *m, u8 **prog,
  
- BTF_ID_LIST(special_kfunc_list)
-@@ -12367,6 +12368,7 @@ BTF_ID(func, __bpf_trap)
- BTF_ID(func, bpf_task_work_schedule_signal)
- BTF_ID(func, bpf_task_work_schedule_resume)
- BTF_ID(func, bpf_tracing_is_exit)
-+BTF_ID(func, bpf_fsession_cookie)
- 
- static bool is_task_work_add_kfunc(u32 func_id)
+ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+ 			   struct bpf_tramp_link *l, int stack_size,
+-			   int run_ctx_off, bool save_ret,
++			   int run_ctx_off, bool save_ret, int ret_off,
+ 			   void *image, void *rw_image)
  {
-@@ -12422,7 +12424,8 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
- 	bool arg_mem_size = false;
+ 	u8 *prog = *pprog;
+@@ -3005,7 +3005,7 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+ 	 * value of BPF_PROG_TYPE_STRUCT_OPS prog.
+ 	 */
+ 	if (save_ret)
+-		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
++		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ret_off);
  
- 	if (meta->func_id == special_kfunc_list[KF_bpf_cast_to_kern_ctx] ||
--	    meta->func_id == special_kfunc_list[KF_bpf_tracing_is_exit])
-+	    meta->func_id == special_kfunc_list[KF_bpf_tracing_is_exit] ||
-+	    meta->func_id == special_kfunc_list[KF_bpf_fsession_cookie])
- 		return KF_ARG_PTR_TO_CTX;
+ 	/* replace 2 nops with JE insn, since jmp target is known */
+ 	jmp_insn[0] = X86_JE;
+@@ -3055,7 +3055,7 @@ static int emit_cond_near_jump(u8 **pprog, void *func, void *ip, u8 jmp_cond)
  
- 	/* In this function, we verify the kfunc's BTF as per the argument type,
-@@ -13915,7 +13918,8 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ static int invoke_bpf(const struct btf_func_model *m, u8 **pprog,
+ 		      struct bpf_tramp_links *tl, int stack_size,
+-		      int run_ctx_off, bool save_ret,
++		      int run_ctx_off, bool save_ret, int ret_off,
+ 		      void *image, void *rw_image)
+ {
+ 	int i;
+@@ -3063,7 +3063,8 @@ static int invoke_bpf(const struct btf_func_model *m, u8 **pprog,
+ 
+ 	for (i = 0; i < tl->nr_links; i++) {
+ 		if (invoke_bpf_prog(m, &prog, tl->links[i], stack_size,
+-				    run_ctx_off, save_ret, image, rw_image))
++				    run_ctx_off, save_ret, ret_off, image,
++				    rw_image))
+ 			return -EINVAL;
+ 	}
+ 	*pprog = prog;
+@@ -3072,7 +3073,7 @@ static int invoke_bpf(const struct btf_func_model *m, u8 **pprog,
+ 
+ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
+ 			      struct bpf_tramp_links *tl, int stack_size,
+-			      int run_ctx_off, u8 **branches,
++			      int run_ctx_off, int ret_off, u8 **branches,
+ 			      void *image, void *rw_image)
+ {
+ 	u8 *prog = *pprog;
+@@ -3082,18 +3083,18 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
+ 	 * Set this to 0 to avoid confusing the program.
+ 	 */
+ 	emit_mov_imm32(&prog, false, BPF_REG_0, 0);
+-	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
++	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ret_off);
+ 	for (i = 0; i < tl->nr_links; i++) {
+ 		if (invoke_bpf_prog(m, &prog, tl->links[i], stack_size, run_ctx_off, true,
+-				    image, rw_image))
++				    ret_off, image, rw_image))
+ 			return -EINVAL;
+ 
+-		/* mod_ret prog stored return value into [rbp - 8]. Emit:
+-		 * if (*(u64 *)(rbp - 8) !=  0)
++		/* mod_ret prog stored return value into [rbp - ret_off]. Emit:
++		 * if (*(u64 *)(rbp - ret_off) !=  0)
+ 		 *	goto do_fexit;
+ 		 */
+-		/* cmp QWORD PTR [rbp - 0x8], 0x0 */
+-		EMIT4(0x48, 0x83, 0x7d, 0xf8); EMIT1(0x00);
++		/* cmp QWORD PTR [rbp - ret_off], 0x0 */
++		EMIT4(0x48, 0x83, 0x7d, -ret_off); EMIT1(0x00);
+ 
+ 		/* Save the location of the branch and Generate 6 nops
+ 		 * (4 bytes for an offset and 2 bytes for the jump) These nops
+@@ -3179,7 +3180,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 					 void *func_addr)
+ {
+ 	int i, ret, nr_regs = m->nr_args, stack_size = 0;
+-	int regs_off, nregs_off, ip_off, run_ctx_off, arg_stack_off, rbx_off;
++	int ret_off, regs_off, nregs_off, ip_off, run_ctx_off, arg_stack_off,
++	    rbx_off;
+ 	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
+ 	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
+ 	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
+@@ -3213,7 +3215,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 	 * RBP + 8         [ return address  ]
+ 	 * RBP + 0         [ RBP             ]
+ 	 *
+-	 * RBP - 8         [ return value    ]  BPF_TRAMP_F_CALL_ORIG or
++	 * RBP - ret_off   [ return value    ]  BPF_TRAMP_F_CALL_ORIG or
+ 	 *                                      BPF_TRAMP_F_RET_FENTRY_RET flags
+ 	 *
+ 	 *                 [ reg_argN        ]  always
+@@ -3239,6 +3241,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 	save_ret = flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RET);
+ 	if (save_ret)
+ 		stack_size += 8;
++	ret_off = stack_size;
+ 
+ 	stack_size += nr_regs * 8;
+ 	regs_off = stack_size;
+@@ -3341,7 +3344,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 
+ 	if (fentry->nr_links) {
+ 		if (invoke_bpf(m, &prog, fentry, regs_off, run_ctx_off,
+-			       flags & BPF_TRAMP_F_RET_FENTRY_RET, image, rw_image))
++			       flags & BPF_TRAMP_F_RET_FENTRY_RET, ret_off,
++			       image, rw_image))
+ 			return -EINVAL;
+ 	}
+ 
+@@ -3352,7 +3356,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 			return -ENOMEM;
+ 
+ 		if (invoke_bpf_mod_ret(m, &prog, fmod_ret, regs_off,
+-				       run_ctx_off, branches, image, rw_image)) {
++				       run_ctx_off, ret_off, branches,
++				       image, rw_image)) {
+ 			ret = -EINVAL;
+ 			goto cleanup;
  		}
+@@ -3380,7 +3385,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 			}
+ 		}
+ 		/* remember return value in a stack for bpf prog to access */
+-		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
++		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ret_off);
+ 		im->ip_after_call = image + (prog - (u8 *)rw_image);
+ 		emit_nops(&prog, X86_PATCH_SIZE);
  	}
+@@ -3403,7 +3408,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
  
--	if (meta.func_id == special_kfunc_list[KF_bpf_session_cookie]) {
-+	if (meta.func_id == special_kfunc_list[KF_bpf_session_cookie] ||
-+	    meta.func_id == special_kfunc_list[KF_bpf_fsession_cookie]) {
- 		meta.r0_size = sizeof(u64);
- 		meta.r0_rdonly = false;
- 	}
-@@ -14196,6 +14200,9 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 			return err;
- 	}
+ 	if (fexit->nr_links) {
+ 		if (invoke_bpf(m, &prog, fexit, regs_off, run_ctx_off,
+-			       false, image, rw_image)) {
++			       false, ret_off, image, rw_image)) {
+ 			ret = -EINVAL;
+ 			goto cleanup;
+ 		}
+@@ -3433,7 +3438,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
  
-+	if (meta.func_id == special_kfunc_list[KF_bpf_fsession_cookie])
-+		env->prog->call_session_cookie = true;
-+
- 	return 0;
- }
+ 	/* restore return value of orig_call or fentry prog back into RAX */
+ 	if (save_ret)
+-		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
++		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -ret_off);
  
-@@ -22007,6 +22014,15 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 		insn_buf[4] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0);
- 		insn_buf[5] = BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1);
- 		*cnt = 6;
-+	} else if (desc->func_id == special_kfunc_list[KF_bpf_fsession_cookie]) {
-+		/* Load nr_args from ctx - 8 */
-+		insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
-+		/* add rax, 2 */
-+		insn_buf[1] = BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 2);
-+		insn_buf[2] = BPF_ALU64_IMM(BPF_LSH, BPF_REG_0, 3);
-+		insn_buf[3] = BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_1);
-+		insn_buf[4] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0);
-+		*cnt = 5;
- 	}
- 
- 	if (env->insn_aux_data[insn_idx].arg_prog) {
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index d0720d850621..4a8568bd654d 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3370,10 +3370,20 @@ __bpf_kfunc bool bpf_tracing_is_exit(void *ctx)
- 	return ((u64 *)ctx)[nr_args + 1] & 1;
- }
- 
-+__bpf_kfunc u64 *bpf_fsession_cookie(void *ctx)
-+{
-+	/* This helper call is inlined by verifier. */
-+	u64 nr_args = ((u64 *)ctx)[-1];
-+
-+	/* ctx[nr_args + 2] is the session cookie address */
-+	return (u64 *)((u64 *)ctx)[nr_args + 2];
-+}
-+
- __bpf_kfunc_end_defs();
- 
- BTF_KFUNCS_START(tracing_kfunc_set_ids)
- BTF_ID_FLAGS(func, bpf_tracing_is_exit, KF_FASTCALL)
-+BTF_ID_FLAGS(func, bpf_fsession_cookie, KF_FASTCALL)
- BTF_KFUNCS_END(tracing_kfunc_set_ids)
- 
- static int bpf_tracing_filter(const struct bpf_prog *prog, u32 kfunc_id)
+ 	emit_ldx(&prog, BPF_DW, BPF_REG_6, BPF_REG_FP, -rbx_off);
+ 	EMIT1(0xC9); /* leave */
 -- 
 2.51.1.dirty
 
