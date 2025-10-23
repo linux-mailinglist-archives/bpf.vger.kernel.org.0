@@ -1,621 +1,273 @@
-Return-Path: <bpf+bounces-71911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71928-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C7E9C01B05
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 16:15:27 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9529C01B26
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 16:16:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2BAF3BBB9B
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 14:03:04 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E8D05543DB9
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 14:10:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2BA31A7FE;
-	Thu, 23 Oct 2025 13:53:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55110320A3E;
+	Thu, 23 Oct 2025 14:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sGiDD3Jd"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB557320A32
-	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 13:53:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3F2314A73;
+	Thu, 23 Oct 2025 14:10:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761227592; cv=none; b=mtr5WrqUPvshvqbcNSXIc4/yfhBN2zxL5xqz3IYlG7Kwalzc1iKycbPG9aQ2c1gba5Lt8btZ7e5nZCYTk2dHBxhuYJtBZIJdTR9sbhufSMlui6RhHgfv6i+k2xeusGAtyltiCq9jaUrNABHy6NxZiWDXqMdFNUAHtlUpgiTydxo=
+	t=1761228612; cv=none; b=ZjlVHVqiwSjbI8s6PxttJuJMwpJpfP5ud7G5SbYVcG8BckVxMNwH4Fm42QcAv0FPGM2OI3hKVLXr/jWSEE5xJbKnpSp6QjuXa1JRPznIWtyXGzmSRr/3pXuwTLqy9dGS1YSZHKLXS1gCmXhI5eb+7MPNDf4EwJwHUHoVv2UDFYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761227592; c=relaxed/simple;
-	bh=vDYq67K+iD9SldjFCe1s28vyl/Br7rDOrV9TTPXIMnE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=CgVgFLSXAU4Hen4cu0yE5Z4OhX0lUXK7x8w6IHOc8++BAV24BptX6eP1zpDmmpCk9HnQp6flPjksTE/i6YqP7YELoZFcVrSDliaSaL2aI6UIaKxsQMZfHiK/rTxZgrSW6xsKmJtgVAoq3AsPhAL4nbc9n16DCtxKXc9moD0mBvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 99D1621233;
-	Thu, 23 Oct 2025 13:53:01 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 18A3913B09;
-	Thu, 23 Oct 2025 13:52:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id iEq+BTYz+mjvQQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 23 Oct 2025 13:52:54 +0000
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Thu, 23 Oct 2025 15:52:33 +0200
-Subject: [PATCH RFC 11/19] slab: remove SLUB_CPU_PARTIAL
+	s=arc-20240116; t=1761228612; c=relaxed/simple;
+	bh=+XL8RrDBOy9ArRyemNwKo8d/iWH9W5DEDpZfSsRIndU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=smdlAcFABbLK8Ux0WYqI6bHz1EBZZkWGRNzvvXCv8JEZkNMoPnXK5dr31PK/RRCZhlOLArScw2vA1YOT+HOs5dL3SeQNa+fmPdBz7grzY/999Qeei+NpsbgFqiCxWVkB3Bj/vpq5JayJYSWmnQlUZaotplYaGEy1chw4msHUdG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sGiDD3Jd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79326C4CEF7;
+	Thu, 23 Oct 2025 14:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761228612;
+	bh=+XL8RrDBOy9ArRyemNwKo8d/iWH9W5DEDpZfSsRIndU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=sGiDD3Jdhj93sq0zYZW/7j+rruafWfp8AnRgYMht4QGlDzB84Ns8Wv+DSC0e+L5Um
+	 M/zWV59Vkslr0w3sUo2eEGzDywuV+pdvSGXggU6DWAOpRw9cjmFHShzQZzwRh6w+Sa
+	 uimEZ9i5gG8qytwD1g9WvhZSjPtqRVkpGZ6JflFuDoN14trU1PIvSeaoU6F6OGmJ74
+	 6mXTpXRjl0XrippNcE3vO1lZnMJ6assg2GIKs86WJifsoEIjuGqT0tCb1pYcBd+bPc
+	 WSwq06mU2fVuOndqURbs7OT/sQqqALDDeeYaqLXxjXKF3sSAHhtMOYocpJjDBOEmyf
+	 ZdYwsEFcaq5QQ==
+Message-ID: <14b565a1-0c2a-420d-ab2a-dc8a46dbf33c@kernel.org>
+Date: Thu, 23 Oct 2025 16:10:01 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v3 0/3] mptcp: Fix conflicts between MPTCP and sockmap
+Content-Language: en-GB, fr-BE
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, mptcp@lists.linux.dev
+Cc: John Fastabend <john.fastabend@gmail.com>,
+ Jakub Sitnicki <jakub@cloudflare.com>, Eric Dumazet <edumazet@google.com>,
+ Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Willem de Bruijn <willemb@google.com>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Simon Horman <horms@kernel.org>, Mat Martineau <martineau@kernel.org>,
+ Geliang Tang <geliang@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20251023125450.105859-1-jiayuan.chen@linux.dev>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <20251023125450.105859-1-jiayuan.chen@linux.dev>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251023-sheaves-for-all-v1-11-6ffa2c9941c0@suse.cz>
-References: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz>
-In-Reply-To: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz>
-To: Andrew Morton <akpm@linux-foundation.org>, 
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
- Roman Gushchin <roman.gushchin@linux.dev>, Harry Yoo <harry.yoo@oracle.com>
-Cc: Uladzislau Rezki <urezki@gmail.com>, 
- "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
- Suren Baghdasaryan <surenb@google.com>, 
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
- Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org, 
- linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev, 
- bpf@vger.kernel.org, kasan-dev@googlegroups.com, 
- Vlastimil Babka <vbabka@suse.cz>
-X-Mailer: b4 0.14.3
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spam-Level: 
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 99D1621233
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
 
-We have removed the partial slab usage from allocation paths. Now remove
-the whole config option and associated code.
+Hi Jiayuan,
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/Kconfig |  11 ---
- mm/slab.h  |  29 ------
- mm/slub.c  | 309 ++++---------------------------------------------------------
- 3 files changed, 19 insertions(+), 330 deletions(-)
+Thank you for the v3. Sorry, I didn't have the opportunity to react on
+the v2.
 
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 0e26f4fc8717..c83085e34243 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -247,17 +247,6 @@ config SLUB_STATS
- 	  out which slabs are relevant to a particular load.
- 	  Try running: slabinfo -DA
- 
--config SLUB_CPU_PARTIAL
--	default y
--	depends on SMP && !SLUB_TINY
--	bool "Enable per cpu partial caches"
--	help
--	  Per cpu partial caches accelerate objects allocation and freeing
--	  that is local to a processor at the price of more indeterminism
--	  in the latency of the free. On overflow these caches will be cleared
--	  which requires the taking of locks that may cause latency spikes.
--	  Typically one would choose no for a realtime system.
--
- config RANDOM_KMALLOC_CACHES
- 	default n
- 	depends on !SLUB_TINY
-diff --git a/mm/slab.h b/mm/slab.h
-index f7b8df56727d..a103da44ab9d 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -61,12 +61,6 @@ struct slab {
- 					struct llist_node llnode;
- 					void *flush_freelist;
- 				};
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--				struct {
--					struct slab *next;
--					int slabs;	/* Nr of slabs left */
--				};
--#endif
- 			};
- 			/* Double-word boundary */
- 			union {
-@@ -206,23 +200,6 @@ static inline size_t slab_size(const struct slab *slab)
- 	return PAGE_SIZE << slab_order(slab);
- }
- 
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--#define slub_percpu_partial(c)			((c)->partial)
--
--#define slub_set_percpu_partial(c, p)		\
--({						\
--	slub_percpu_partial(c) = (p)->next;	\
--})
--
--#define slub_percpu_partial_read_once(c)	READ_ONCE(slub_percpu_partial(c))
--#else
--#define slub_percpu_partial(c)			NULL
--
--#define slub_set_percpu_partial(c, p)
--
--#define slub_percpu_partial_read_once(c)	NULL
--#endif // CONFIG_SLUB_CPU_PARTIAL
--
- /*
-  * Word size structure that can be atomically updated or read and that
-  * contains both the order and the number of objects that a slab of the
-@@ -246,12 +223,6 @@ struct kmem_cache {
- 	unsigned int object_size;	/* Object size without metadata */
- 	struct reciprocal_value reciprocal_size;
- 	unsigned int offset;		/* Free pointer offset */
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--	/* Number of per cpu partial objects to keep around */
--	unsigned int cpu_partial;
--	/* Number of per cpu partial slabs to keep around */
--	unsigned int cpu_partial_slabs;
--#endif
- 	unsigned int sheaf_capacity;
- 	struct kmem_cache_order_objects oo;
- 
-diff --git a/mm/slub.c b/mm/slub.c
-index bd67336e7c1f..d8891d852a8f 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -263,15 +263,6 @@ void *fixup_red_left(struct kmem_cache *s, void *p)
- 	return p;
- }
- 
--static inline bool kmem_cache_has_cpu_partial(struct kmem_cache *s)
--{
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--	return !kmem_cache_debug(s);
--#else
--	return false;
--#endif
--}
--
- /*
-  * Issues still to be resolved:
-  *
-@@ -425,9 +416,6 @@ struct kmem_cache_cpu {
- 		freelist_aba_t freelist_tid;
- 	};
- 	struct slab *slab;	/* The slab from which we are allocating */
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--	struct slab *partial;	/* Partially allocated slabs */
--#endif
- 	local_trylock_t lock;	/* Protects the fields above */
- #ifdef CONFIG_SLUB_STATS
- 	unsigned int stat[NR_SLUB_STAT_ITEMS];
-@@ -660,29 +648,6 @@ static inline unsigned int oo_objects(struct kmem_cache_order_objects x)
- 	return x.x & OO_MASK;
- }
- 
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--static void slub_set_cpu_partial(struct kmem_cache *s, unsigned int nr_objects)
--{
--	unsigned int nr_slabs;
--
--	s->cpu_partial = nr_objects;
--
--	/*
--	 * We take the number of objects but actually limit the number of
--	 * slabs on the per cpu partial list, in order to limit excessive
--	 * growth of the list. For simplicity we assume that the slabs will
--	 * be half-full.
--	 */
--	nr_slabs = DIV_ROUND_UP(nr_objects * 2, oo_objects(s->oo));
--	s->cpu_partial_slabs = nr_slabs;
--}
--#elif defined(SLAB_SUPPORTS_SYSFS)
--static inline void
--slub_set_cpu_partial(struct kmem_cache *s, unsigned int nr_objects)
--{
--}
--#endif /* CONFIG_SLUB_CPU_PARTIAL */
--
- /*
-  * If network-based swap is enabled, slub must keep track of whether memory
-  * were allocated from pfmemalloc reserves.
-@@ -3460,12 +3425,6 @@ static void *alloc_single_from_new_slab(struct kmem_cache *s, struct slab *slab,
- 	return object;
- }
- 
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--static void put_cpu_partial(struct kmem_cache *s, struct slab *slab, int drain);
--#else
--static inline void put_cpu_partial(struct kmem_cache *s, struct slab *slab,
--				   int drain) { }
--#endif
- static inline bool pfmemalloc_match(struct slab *slab, gfp_t gfpflags);
- 
- static bool get_partial_node_bulk(struct kmem_cache *s,
-@@ -3891,131 +3850,6 @@ static void deactivate_slab(struct kmem_cache *s, struct slab *slab,
- #define local_unlock_cpu_slab(s, flags)	\
- 	local_unlock_irqrestore(&(s)->cpu_slab->lock, flags)
- 
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--static void __put_partials(struct kmem_cache *s, struct slab *partial_slab)
--{
--	struct kmem_cache_node *n = NULL, *n2 = NULL;
--	struct slab *slab, *slab_to_discard = NULL;
--	unsigned long flags = 0;
--
--	while (partial_slab) {
--		slab = partial_slab;
--		partial_slab = slab->next;
--
--		n2 = get_node(s, slab_nid(slab));
--		if (n != n2) {
--			if (n)
--				spin_unlock_irqrestore(&n->list_lock, flags);
--
--			n = n2;
--			spin_lock_irqsave(&n->list_lock, flags);
--		}
--
--		if (unlikely(!slab->inuse && n->nr_partial >= s->min_partial)) {
--			slab->next = slab_to_discard;
--			slab_to_discard = slab;
--		} else {
--			add_partial(n, slab, DEACTIVATE_TO_TAIL);
--			stat(s, FREE_ADD_PARTIAL);
--		}
--	}
--
--	if (n)
--		spin_unlock_irqrestore(&n->list_lock, flags);
--
--	while (slab_to_discard) {
--		slab = slab_to_discard;
--		slab_to_discard = slab_to_discard->next;
--
--		stat(s, DEACTIVATE_EMPTY);
--		discard_slab(s, slab);
--		stat(s, FREE_SLAB);
--	}
--}
--
--/*
-- * Put all the cpu partial slabs to the node partial list.
-- */
--static void put_partials(struct kmem_cache *s)
--{
--	struct slab *partial_slab;
--	unsigned long flags;
--
--	local_lock_irqsave(&s->cpu_slab->lock, flags);
--	partial_slab = this_cpu_read(s->cpu_slab->partial);
--	this_cpu_write(s->cpu_slab->partial, NULL);
--	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
--
--	if (partial_slab)
--		__put_partials(s, partial_slab);
--}
--
--static void put_partials_cpu(struct kmem_cache *s,
--			     struct kmem_cache_cpu *c)
--{
--	struct slab *partial_slab;
--
--	partial_slab = slub_percpu_partial(c);
--	c->partial = NULL;
--
--	if (partial_slab)
--		__put_partials(s, partial_slab);
--}
--
--/*
-- * Put a slab into a partial slab slot if available.
-- *
-- * If we did not find a slot then simply move all the partials to the
-- * per node partial list.
-- */
--static void put_cpu_partial(struct kmem_cache *s, struct slab *slab, int drain)
--{
--	struct slab *oldslab;
--	struct slab *slab_to_put = NULL;
--	unsigned long flags;
--	int slabs = 0;
--
--	local_lock_cpu_slab(s, flags);
--
--	oldslab = this_cpu_read(s->cpu_slab->partial);
--
--	if (oldslab) {
--		if (drain && oldslab->slabs >= s->cpu_partial_slabs) {
--			/*
--			 * Partial array is full. Move the existing set to the
--			 * per node partial list. Postpone the actual unfreezing
--			 * outside of the critical section.
--			 */
--			slab_to_put = oldslab;
--			oldslab = NULL;
--		} else {
--			slabs = oldslab->slabs;
--		}
--	}
--
--	slabs++;
--
--	slab->slabs = slabs;
--	slab->next = oldslab;
--
--	this_cpu_write(s->cpu_slab->partial, slab);
--
--	local_unlock_cpu_slab(s, flags);
--
--	if (slab_to_put) {
--		__put_partials(s, slab_to_put);
--		stat(s, CPU_PARTIAL_DRAIN);
--	}
--}
--
--#else	/* CONFIG_SLUB_CPU_PARTIAL */
--
--static inline void put_partials(struct kmem_cache *s) { }
--static inline void put_partials_cpu(struct kmem_cache *s,
--				    struct kmem_cache_cpu *c) { }
--
--#endif	/* CONFIG_SLUB_CPU_PARTIAL */
--
- static inline void flush_slab(struct kmem_cache *s, struct kmem_cache_cpu *c)
- {
- 	unsigned long flags;
-@@ -4053,8 +3887,6 @@ static inline void __flush_cpu_slab(struct kmem_cache *s, int cpu)
- 		deactivate_slab(s, slab, freelist);
- 		stat(s, CPUSLAB_FLUSH);
- 	}
--
--	put_partials_cpu(s, c);
- }
- 
- static inline void flush_this_cpu_slab(struct kmem_cache *s)
-@@ -4063,15 +3895,13 @@ static inline void flush_this_cpu_slab(struct kmem_cache *s)
- 
- 	if (c->slab)
- 		flush_slab(s, c);
--
--	put_partials(s);
- }
- 
- static bool has_cpu_slab(int cpu, struct kmem_cache *s)
- {
- 	struct kmem_cache_cpu *c = per_cpu_ptr(s->cpu_slab, cpu);
- 
--	return c->slab || slub_percpu_partial(c);
-+	return c->slab;
- }
- 
- static bool has_pcs_used(int cpu, struct kmem_cache *s)
-@@ -5599,21 +5429,18 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 		new.inuse -= cnt;
- 		if ((!new.inuse || !prior) && !was_frozen) {
- 			/* Needs to be taken off a list */
--			if (!kmem_cache_has_cpu_partial(s) || prior) {
--
--				n = get_node(s, slab_nid(slab));
--				/*
--				 * Speculatively acquire the list_lock.
--				 * If the cmpxchg does not succeed then we may
--				 * drop the list_lock without any processing.
--				 *
--				 * Otherwise the list_lock will synchronize with
--				 * other processors updating the list of slabs.
--				 */
--				spin_lock_irqsave(&n->list_lock, flags);
--
--				on_node_partial = slab_test_node_partial(slab);
--			}
-+			n = get_node(s, slab_nid(slab));
-+			/*
-+			 * Speculatively acquire the list_lock.
-+			 * If the cmpxchg does not succeed then we may
-+			 * drop the list_lock without any processing.
-+			 *
-+			 * Otherwise the list_lock will synchronize with
-+			 * other processors updating the list of slabs.
-+			 */
-+			spin_lock_irqsave(&n->list_lock, flags);
-+
-+			on_node_partial = slab_test_node_partial(slab);
- 		}
- 
- 	} while (!slab_update_freelist(s, slab,
-@@ -5629,13 +5456,6 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 			 * activity can be necessary.
- 			 */
- 			stat(s, FREE_FROZEN);
--		} else if (kmem_cache_has_cpu_partial(s) && !prior) {
--			/*
--			 * If we started with a full slab then put it onto the
--			 * per cpu partial list.
--			 */
--			put_cpu_partial(s, slab, 1);
--			stat(s, CPU_PARTIAL_FREE);
- 		}
- 
- 		return;
-@@ -5657,7 +5477,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 	 * Objects left in the slab. If it was not on the partial list before
- 	 * then add it.
- 	 */
--	if (!kmem_cache_has_cpu_partial(s) && unlikely(!prior)) {
-+	if (unlikely(!prior)) {
- 		add_partial(n, slab, DEACTIVATE_TO_TAIL);
- 		stat(s, FREE_ADD_PARTIAL);
- 	}
-@@ -6298,8 +6118,8 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
- 		if (unlikely(!allow_spin)) {
- 			/*
- 			 * __slab_free() can locklessly cmpxchg16 into a slab,
--			 * but then it might need to take spin_lock or local_lock
--			 * in put_cpu_partial() for further processing.
-+			 * but then it might need to take spin_lock
-+			 * for further processing.
- 			 * Avoid the complexity and simply add to a deferred list.
- 			 */
- 			defer_free(s, head);
-@@ -7615,39 +7435,6 @@ static int init_kmem_cache_nodes(struct kmem_cache *s)
- 	return 1;
- }
- 
--static void set_cpu_partial(struct kmem_cache *s)
--{
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--	unsigned int nr_objects;
--
--	/*
--	 * cpu_partial determined the maximum number of objects kept in the
--	 * per cpu partial lists of a processor.
--	 *
--	 * Per cpu partial lists mainly contain slabs that just have one
--	 * object freed. If they are used for allocation then they can be
--	 * filled up again with minimal effort. The slab will never hit the
--	 * per node partial lists and therefore no locking will be required.
--	 *
--	 * For backwards compatibility reasons, this is determined as number
--	 * of objects, even though we now limit maximum number of pages, see
--	 * slub_set_cpu_partial()
--	 */
--	if (!kmem_cache_has_cpu_partial(s))
--		nr_objects = 0;
--	else if (s->size >= PAGE_SIZE)
--		nr_objects = 6;
--	else if (s->size >= 1024)
--		nr_objects = 24;
--	else if (s->size >= 256)
--		nr_objects = 52;
--	else
--		nr_objects = 120;
--
--	slub_set_cpu_partial(s, nr_objects);
--#endif
--}
--
- static unsigned int calculate_sheaf_capacity(struct kmem_cache *s,
- 					     struct kmem_cache_args *args)
- 
-@@ -8517,8 +8304,6 @@ int do_kmem_cache_create(struct kmem_cache *s, const char *name,
- 	s->min_partial = min_t(unsigned long, MAX_PARTIAL, ilog2(s->size) / 2);
- 	s->min_partial = max_t(unsigned long, MIN_PARTIAL, s->min_partial);
- 
--	set_cpu_partial(s);
--
- 	s->cpu_sheaves = alloc_percpu(struct slub_percpu_sheaves);
- 	if (!s->cpu_sheaves) {
- 		err = -ENOMEM;
-@@ -8882,20 +8667,6 @@ static ssize_t show_slab_objects(struct kmem_cache *s,
- 			total += x;
- 			nodes[node] += x;
- 
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--			slab = slub_percpu_partial_read_once(c);
--			if (slab) {
--				node = slab_nid(slab);
--				if (flags & SO_TOTAL)
--					WARN_ON_ONCE(1);
--				else if (flags & SO_OBJECTS)
--					WARN_ON_ONCE(1);
--				else
--					x = data_race(slab->slabs);
--				total += x;
--				nodes[node] += x;
--			}
--#endif
- 		}
- 	}
- 
-@@ -9030,12 +8801,7 @@ SLAB_ATTR(min_partial);
- 
- static ssize_t cpu_partial_show(struct kmem_cache *s, char *buf)
- {
--	unsigned int nr_partial = 0;
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--	nr_partial = s->cpu_partial;
--#endif
--
--	return sysfs_emit(buf, "%u\n", nr_partial);
-+	return sysfs_emit(buf, "0\n");
- }
- 
- static ssize_t cpu_partial_store(struct kmem_cache *s, const char *buf,
-@@ -9047,11 +8813,9 @@ static ssize_t cpu_partial_store(struct kmem_cache *s, const char *buf,
- 	err = kstrtouint(buf, 10, &objects);
- 	if (err)
- 		return err;
--	if (objects && !kmem_cache_has_cpu_partial(s))
-+	if (objects)
- 		return -EINVAL;
- 
--	slub_set_cpu_partial(s, objects);
--	flush_all(s);
- 	return length;
- }
- SLAB_ATTR(cpu_partial);
-@@ -9090,42 +8854,7 @@ SLAB_ATTR_RO(objects_partial);
- 
- static ssize_t slabs_cpu_partial_show(struct kmem_cache *s, char *buf)
- {
--	int objects = 0;
--	int slabs = 0;
--	int cpu __maybe_unused;
--	int len = 0;
--
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--	for_each_online_cpu(cpu) {
--		struct slab *slab;
--
--		slab = slub_percpu_partial(per_cpu_ptr(s->cpu_slab, cpu));
--
--		if (slab)
--			slabs += data_race(slab->slabs);
--	}
--#endif
--
--	/* Approximate half-full slabs, see slub_set_cpu_partial() */
--	objects = (slabs * oo_objects(s->oo)) / 2;
--	len += sysfs_emit_at(buf, len, "%d(%d)", objects, slabs);
--
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--	for_each_online_cpu(cpu) {
--		struct slab *slab;
--
--		slab = slub_percpu_partial(per_cpu_ptr(s->cpu_slab, cpu));
--		if (slab) {
--			slabs = data_race(slab->slabs);
--			objects = (slabs * oo_objects(s->oo)) / 2;
--			len += sysfs_emit_at(buf, len, " C%d=%d(%d)",
--					     cpu, objects, slabs);
--		}
--	}
--#endif
--	len += sysfs_emit_at(buf, len, "\n");
--
--	return len;
-+	return sysfs_emit(buf, "0(0)\n");
- }
- SLAB_ATTR_RO(slabs_cpu_partial);
- 
+On 23/10/2025 14:54, Jiayuan Chen wrote:
+> Overall, we encountered a warning [1] that can be triggered by running the
+> selftest I provided.
+> 
+> MPTCP creates subflows for data transmission between two endpoints.
+> However, BPF can use sockops to perform additional operations when TCP
+> completes the three-way handshake. The issue arose because we used sockmap
+> in sockops, which replaces sk->sk_prot and some handlers.
 
+Do you know at what stage the sk->sk_prot is modified with sockmap? When
+switching to TCP_ESTABLISHED?
+
+Is it before or after having set "tcp_sk(sk)->is_mptcp = 0" (in
+subflow_ulp_fallback(), coming from subflow_syn_recv_sock() I suppose)?
+
+If MPTCP is still being used (sk_is_tcp(sk) && sk_is_mptcp(sk)), I guess
+sockmap should never touch the in-kernel TCP subflows: they will likely
+only carry a part of the data. Instead, sockmap should act on the MPTCP
+sockets, not the in-kernel TCP subflows.
+
+There is one particular case to take into consideration: an MPTCP
+connection can fallback to "plain" TCP before being used by the
+userspace. Typically, that's when an MPTCP listening socket receives a
+"plain" TCP request (without MPTCP): a "plain" TCP socket will then be
+created, and exposed to the userspace. In this case, sk_is_mptcp(sk)
+will return false. I guess that's the case you are trying to handle,
+right? (It might help BPF reviewers to mention that in the commit
+message(s).)
+
+I would then say that sk->sk_prot->psock_update_sk_prot should not point
+to tcp_bpf_update_proto() when MPTCP is being used (or this callback
+should take the MPTCP case into account, but I guess no). In case of
+fallback before the accept() stage, the socket can then be used as a
+"plain" TCP one. I guess when tcp_bpf_update_proto() will be called,
+sk_prot is pointing to tcp(v6)_prot, not the MPTCP subflow override one,
+right?
+
+> Since subflows
+> also have their own specialized handlers, this creates a conflict and leads
+> to traffic failure. Therefore, we need to reject operations targeting
+> subflows.
+
+Would it not work to set sk_prot->psock_update_sk_prot to NULL for the
+v4 and v6 subflows (in mptcp_subflow_init()) for the moment while
+sockmap is not supported with MPTCP? This might save you some checks in
+sock_map.c, no?
+
+> This patchset simply prevents the combination of subflows and sockmap
+> without changing any functionality.
+
+In your case, you have an MPTCP listening socket, but you receive a TCP
+request, right? The "sockmap update" is done when switching to
+TCP_ESTABLISHED, when !sk_is_mptcp(sk), but that's before
+mptcp_stream_accept(). That's why sk->sk_prot has been modified, but it
+is fine to look at sk_family, and return inet(6)_stream_ops, right?
+
+A more important question: what will typically happen in your case if
+you receive an MPTCP request and sockmap is then not supported? Will the
+connection be rejected or stay in a strange state because the userspace
+will not expect that? In these cases, would it not be better to disallow
+sockmap usage while the MPTCP support is not available? The userspace
+would then get an error from the beginning that the protocol is not
+supported, and should then not create an MPTCP socket in this case for
+the moment, no?
+
+I can understand that the switch from TCP to MPTCP was probably done
+globally, and this transition should be as seamless as possible, but it
+should not cause a regression with MPTCP requests. An alternative could
+be to force a fallback to TCP when sockmap is used, even when an MPTCP
+request is received, but not sure if it is practical to do, and might be
+strange from the user point of view.
+
+> A complete integration of MPTCP and sockmap would require more effort, for
+> example, we would need to retrieve the parent socket from subflows in
+> sockmap and implement handlers like read_skb.
+> 
+> If maintainers don't object, we can further improve this in subsequent
+> work.
+
+That would be great to add MPTCP support in sockmap! As mentioned above,
+this should be done on the MPTCP socket. I guess the TCP "in-kernel"
+subflows should not be modified.
+
+> [1] truncated warning:
+> [   18.234652] ------------[ cut here ]------------
+> [   18.234664] WARNING: CPU: 1 PID: 388 at net/mptcp/protocol.c:68 mptcp_stream_accept+0x34c/0x380
+> [   18.234726] Modules linked in:
+> [   18.234755] RIP: 0010:mptcp_stream_accept+0x34c/0x380
+> [   18.234762] RSP: 0018:ffffc90000cf3cf8 EFLAGS: 00010202
+> [   18.234800] PKRU: 55555554
+> [   18.234806] Call Trace:
+> [   18.234810]  <TASK>
+> [   18.234837]  do_accept+0xeb/0x190
+> [   18.234861]  ? __x64_sys_pselect6+0x61/0x80
+> [   18.234898]  ? _raw_spin_unlock+0x12/0x30
+> [   18.234915]  ? alloc_fd+0x11e/0x190
+> [   18.234925]  __sys_accept4+0x8c/0x100
+> [   18.234930]  __x64_sys_accept+0x1f/0x30
+> [   18.234933]  x64_sys_call+0x202f/0x20f0
+> [   18.234966]  do_syscall_64+0x72/0x9a0
+> [   18.234979]  ? switch_fpu_return+0x60/0xf0
+> [   18.234993]  ? irqentry_exit_to_user_mode+0xdb/0x1e0
+> [   18.235002]  ? irqentry_exit+0x3f/0x50
+> [   18.235005]  ? clear_bhb_loop+0x50/0xa0
+> [   18.235022]  ? clear_bhb_loop+0x50/0xa0
+> [   18.235025]  ? clear_bhb_loop+0x50/0xa0
+> [   18.235028]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> [   18.235066]  </TASK>
+> [   18.235109] ---[ end trace 0000000000000000 ]---
+
+Please next time use the ./scripts/decode_stacktrace.sh if possible.
+(and strip the timestamps if it is not giving useful info)
+
+Just to be sure: is it the warning you get on top of net or net-next? Or
+an older version? (Always useful to mention the base)
+
+> ---
+> v2: https://lore.kernel.org/bpf/20251020060503.325369-1-jiayuan.chen@linux.dev/T/#t
+>     Some advice suggested by Jakub Sitnicki
+> 
+> v1: https://lore.kernel.org/mptcp/a0a2b87119a06c5ffaa51427a0964a05534fe6f1@linux.dev/T/#t
+>     Some advice from Matthieu Baerts.
+
+(It usually helps reviewers to add more details in the notes/changelog
+for the individual patch)
+
+> Jiayuan Chen (3):
+>   net,mptcp: fix proto fallback detection with BPF sockmap
+
+(detail: you can use the "mptcp:" prefix, no need to add "net,")
+
+>   bpf,sockmap: disallow MPTCP sockets from sockmap
+>   selftests/bpf: Add mptcp test with sockmap
+> 
+>  net/core/sock_map.c                           |  27 ++++
+>  net/mptcp/protocol.c                          |   9 +-
+>  .../testing/selftests/bpf/prog_tests/mptcp.c  | 150 ++++++++++++++++++
+>  .../selftests/bpf/progs/mptcp_sockmap.c       |  43 +++++
+>  4 files changed, 227 insertions(+), 2 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/mptcp_sockmap.c
+> 
+
+Cheers,
+Matt
 -- 
-2.51.1
+Sponsored by the NGI0 Core fund.
 
 
