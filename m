@@ -1,471 +1,235 @@
-Return-Path: <bpf+bounces-71866-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71865-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05C92BFF4E8
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 08:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D25D2BFF4E2
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 08:12:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C5D43AA495
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 06:12:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 635B63A620D
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 06:12:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FA527FD49;
-	Thu, 23 Oct 2025 06:11:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552C9279324;
+	Thu, 23 Oct 2025 06:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qG1HcRaJ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bybPLchg"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3C9286D5D
-	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 06:11:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761199919; cv=none; b=o7uiTlhbzRvWTuvyaBwiVuxuXw7E5XyBluZKc5k7+L7OIpt8PBvXPLB8lCB3sHyXqFOTQYVhcDrqsDiwKO+r/jDxbfDD18wN2LVQXRX//JA6Lgzn+WSfanxldszAJ8wjPJJbVG/Gp334a9swyKOu+sYGI+EvYfHMZr2PSbRF/qQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761199919; c=relaxed/simple;
-	bh=wdaVwDtAh+xzW3oYCE8lhLcNeQkNEiruuO30tZexr64=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=huIFybTQxxALN0usxPgUADM2NHGRdzqbfVmMz4EIUQrd1/iI4xvG0iuJ4rvN8E3x7QCWiLyMYVa/zV5CpPHz9Om1/Rhl1o6WkZp6+mHH2dByGcl9H9Qz23Xske1h3x22y9qN+9hjI3JFSDhnbSfuNqAHqPyzLKwzFch3FRYSeZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qG1HcRaJ; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <eb6328bf-2b96-4b91-811c-dd8dd303fdbc@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761199905;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8b9Xl9t/F/Zd9A3cHpf9cxx3vOlRhkRz/axJ6cIiX6w=;
-	b=qG1HcRaJ/21gF2OmS1N7C4DLCJbx9Dvm78VWWyg7uHAZ+sC5XgCsaQcZVZPlLX+Msx+u9e
-	/aE5fJXHORO2C1rvlK+MyXuuJoN8P9bwkhLDAVE6tt2rGgGeZFrXxTr7jaIx+LxUeVHORj
-	Zy9zgcplK+DpSM2DOkidi7P5iXP4S3Q=
-Date: Thu, 23 Oct 2025 14:11:31 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5634227FD49;
+	Thu, 23 Oct 2025 06:11:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761199914; cv=fail; b=kpRThna4BcQUTmWc9+G9ak7Jju5QfRtYwxLcAEJv5ZdPj690dZuh3NxFNKM0rwApTaonyh62NFKyHSE1RMsF5HqEDQUxNnMMOKDI0gk1N5TcMKoaVw94rvRgngf4+OoOjkc21dMlO8RHHTh2NGePavBVT+T/RyR6KCZ/5v3EPxY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761199914; c=relaxed/simple;
+	bh=zF/1AfaH5yWtK91o1aSNbqnBlB3PR+XMyJ5B36zrIl8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=fNbmReTzOqwOZn5CpajrVllhqO0jZWqF/XLqaeRZs8viTke9DrLansN8KAt/auEA8f7fk6WHHyPqG9S4XTXcGizjvLoNnuWAEPlqIy2kMp7zSc3um9AVguf0HNL/HpW3fE9drDDStIUJFumvZqQ9CJcbZh4wx8AhAI+ZjA43fPQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bybPLchg; arc=fail smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1761199914; x=1792735914;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=zF/1AfaH5yWtK91o1aSNbqnBlB3PR+XMyJ5B36zrIl8=;
+  b=bybPLchgSoKqj/roHS9qlQ1VDHpAQbybZ+PB/BWnr6wY06SO8uib2ASo
+   gxrJlpN7iphKl2ffG6r8kcZRl6G1z/p/tRsazDQyEyvygt46zQQnTFZ3l
+   U6vpjG64RWshhDjD2kcV/UHCbHk8SvkSWem62BmuYGXdB3sJkvn19q6mt
+   5EgedS4G2QLEXhZNkO1UNgFaXlrJlREF9JNlwGO8nvJxJXexipU9LwkCF
+   1hifg/cpQfIxD3oTvVlPIOFBDnZC4F/pBcKzEJM/moRH3mYujirgAnf59
+   z2+3JhjsKjJ+K1Wn9+WBWsS5ZQa3RUzeLOUMlqUf181zDBIAAdzJ96Mzi
+   w==;
+X-CSE-ConnectionGUID: cMK0W1LBTAO8MkCr7MUbxw==
+X-CSE-MsgGUID: llaH3OP+QLSxFvO1z4S6ig==
+X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="63398894"
+X-IronPort-AV: E=Sophos;i="6.19,248,1754982000"; 
+   d="scan'208";a="63398894"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2025 23:11:53 -0700
+X-CSE-ConnectionGUID: iRXINAL4TSyuQ1UHe4Xkvw==
+X-CSE-MsgGUID: N9fY/ETdTeGqc2EPtbpEww==
+X-ExtLoop1: 1
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+  by fmviesa003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2025 23:11:52 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27; Wed, 22 Oct 2025 23:11:51 -0700
+Received: from ORSEDG903.ED.cps.intel.com (10.7.248.13) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27 via Frontend Transport; Wed, 22 Oct 2025 23:11:51 -0700
+Received: from DM5PR21CU001.outbound.protection.outlook.com (52.101.62.25) by
+ edgegateway.intel.com (134.134.137.113) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27; Wed, 22 Oct 2025 23:11:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=vXHnEiKw2bp4xLdaCnUisR++Cxo7j+o2sE8e/97++XpocQO41+5KVyjsGfTq/F2QQHVvnfh86iJEaQrXFtVVUWpiXVpcPwS3MYJUe5BzF5PBQlBp5cHQPhFARLTuI83Ek2W6AHlQZe07YyLbJIWqJ3cGWAWbHCWCXLBvYIGhsQ4YwntZfUdpAPxi1NMatwk/81KCGmgtyEhJjdYSxs6/bF75rUUEyi/orru+3rMxVj5gWZz11zSgZTILxVFha8/cWDEnI1JbWEYNDRUggatffIwvSnMOiQ1+PndFD0OWevgS9Rj7DeJesXGwooZ2XvVUtVfctAz6ZncqQBsPChpHGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Q89LMnZpegaGEdaD20s9FdjwKFXrLbvMK1Mw2yRsa1U=;
+ b=AovYpK9Gt07Mrtov9whrf9mjcPLuneNQ/1gZ61MzxEakwnssT2QEn3Y2y8BsRSvDNwzRgr/sZSH+jM9asZKr84kCIzYmRlG3680CUJpQET6RwgpNtppvba5xZNv3lsm9tTCoM7cj28NQaXHgMBsxq2kTbUv18yefRcoV7ZEqydubQbgJiFY87PReISCvFLhLERdoTnrufVUPMdQz/hw//odGTCJGt8HLrn59K6BkpCIsBAb9NalXg3E7mntGy8T6x5nyjhaptQkaBxASHzCfhCPll2G7sSTJbHK7yGVPgdiufQUdNv3W0Ex3y1oCliP3BxGPLj40ZOikfQJ05WpwBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ0PR11MB6815.namprd11.prod.outlook.com (2603:10b6:a03:484::14)
+ by DM3PPF7468F7991.namprd11.prod.outlook.com (2603:10b6:f:fc00::f2d) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9253.13; Thu, 23 Oct
+ 2025 06:11:44 +0000
+Received: from SJ0PR11MB6815.namprd11.prod.outlook.com
+ ([fe80::5fdb:7ce4:1375:3a71]) by SJ0PR11MB6815.namprd11.prod.outlook.com
+ ([fe80::5fdb:7ce4:1375:3a71%5]) with mapi id 15.20.9253.011; Thu, 23 Oct 2025
+ 06:11:44 +0000
+From: "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>
+To: Your Name <alessandro.d@gmail.com>
+CC: Jason Xing <kerneljasonxing@gmail.com>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "Fijalkowski, Maciej"
+	<maciej.fijalkowski@intel.com>, "David S. Miller" <davem@davemloft.net>,
+	Alexei Starovoitov <ast@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
+	Daniel Borkmann <daniel@iogearbox.net>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Paolo Abeni <pabeni@redhat.com>,
+	"Kitszel, Przemyslaw" <przemyslaw.kitszel@intel.com>, Stanislav Fomichev
+	<sdf@fomichev.me>, "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net v2 1/1] i40e: xsk: advance next_to_clean on status
+ descriptors
+Thread-Topic: [PATCH net v2 1/1] i40e: xsk: advance next_to_clean on status
+ descriptors
+Thread-Index: AQHcQrC93ElBT1jzGkCik6J1gjAaa7TNfZuAgAAjr/CAALsdAIAA4wHg
+Date: Thu, 23 Oct 2025 06:11:44 +0000
+Message-ID: <SJ0PR11MB6815F7E1AD7F8D437C4589F690F0A@SJ0PR11MB6815.namprd11.prod.outlook.com>
+References: <20251021173200.7908-1-alessandro.d@gmail.com>
+ <20251021173200.7908-2-alessandro.d@gmail.com>
+ <CAL+tcoCwGQyNSv9BZ_jfsia6YFoyT790iknqxG7bB7wVi3C_vQ@mail.gmail.com>
+ <SA1SPRMB0026CD60501E3684B5EC67F290F3A@SA1SPRMB0026.namprd11.prod.outlook.com>
+ <aPkGKqZjauLHYfka@lima-default>
+In-Reply-To: <aPkGKqZjauLHYfka@lima-default>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR11MB6815:EE_|DM3PPF7468F7991:EE_
+x-ms-office365-filtering-correlation-id: 35b333d8-30e4-4825-ba13-08de11fb0a66
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016|38070700021;
+x-microsoft-antispam-message-info: =?us-ascii?Q?LKcAvUv9UETrUyJSrof56cAiD+YHeXnrf1vZOi0gyURgCD7vFcH3kgQGIQ2B?=
+ =?us-ascii?Q?ELdb9UW92rn2DrPOC5cfbwj5T889WoxNp77R7n2TZS0O44r1AO4iwwtf5g9e?=
+ =?us-ascii?Q?D6O95gZuU4nlSoCIcJSb6ZKrFEuhGj3lNFU/1o4zMKJ+D7ej36w3MJ+5Ne+B?=
+ =?us-ascii?Q?sftKjdXABJP3Oh0RVX9PEHxre0ese14P+pszIV+T92SbGV+u9j5jb4R6rHqW?=
+ =?us-ascii?Q?0BMqzptmNXGNFijcYbJOlZ2+ACmE/ZwLeiNWe4hDpOipkqvp3SpU7+uLDEFG?=
+ =?us-ascii?Q?0ai/YWNRWpIJ+bikkG0Qc+2G5Xre9zmLR2Z4M1IkUg3v68z3pM9SuISAwJVe?=
+ =?us-ascii?Q?QjOh2q8M6xkbIIjXVWTpvt8VzeE7eSf9JvDi0+Ir0aWMGRwLRwfRkrTnySUQ?=
+ =?us-ascii?Q?QFuF0TYIHuzDK/MsKV/5MgVKCiBLTm9UTJI2hH51o3ebgXQTO+gKydPRcGOf?=
+ =?us-ascii?Q?oc2rAZ+BKJG416OdfdRuLJCaTtKODOADgLnKhyhWThOmsdfZZUGmSZa9GnWr?=
+ =?us-ascii?Q?24sZxxygQ40VO5/7QjINFD5dFUOji9mFs5F4I8lCk05uIbKegNt+SOjrq0ge?=
+ =?us-ascii?Q?hgDxWQ14U4vCA1JJ0BV1mqWPIz6eZXSLKCdZ4c0/qSCE5yVfSiIG4fp+QH3Z?=
+ =?us-ascii?Q?jxQobfl6ZkZgR5gd7Gs+zyy3I79TBnwALrc+L+ciTQNyEHSHoeg5od0T4a3S?=
+ =?us-ascii?Q?+zFVNng5jWQkIt5bs9qGd6ME3cmcpZvGl13LC2jgmLTJ6TuD/P9ml2jR/mY6?=
+ =?us-ascii?Q?e1zGg3QaRamvj0dAaoh3k9wCTjrvDFq6xDz///n/qToHmJCDhiqWVOCPXzGo?=
+ =?us-ascii?Q?VOl+8btBxRc8JzSqeq09O1W+mUj1p4Yu8e/PwgL90ACBbE8EFUBgAy8QVroX?=
+ =?us-ascii?Q?gFwTBD0doDELwmt9n/ewKIq7kGbHAEkDTzDqv79jntPHcKMWuHRp+rCYji+b?=
+ =?us-ascii?Q?VGKOQBek3+s/n46ZTMkubxjEEL1UYnHWIjUXzdWoU5c8QRMim0EnxauAvuJA?=
+ =?us-ascii?Q?FmCOfpujiX70Y0zkr6O5/F8YfgHSzd8TT3HtnHFc/hMyRe9SJbIKjVZI6260?=
+ =?us-ascii?Q?FlpM+cXRbGMnJCNrn1dCPSHU1aDj9F6rbWboylDSNOhGUHTx/mul0ZTA1wi+?=
+ =?us-ascii?Q?A4bu6UFlcjenMZLw1N4DrKvPDi3kiRiIXcXW2DvcRI1gptxxyjGOUJkOsn/S?=
+ =?us-ascii?Q?5Ugm1A/9nsJzO/82OW/u4QyY7refd9ylxDW6xAGXdag+xWuWRHugWrqB0wxT?=
+ =?us-ascii?Q?HJJOmlvfkpEY//ubeDYR92SdpwLOxsoMEZSCVuuG/XEn1QhpHBNnX5CIjLvb?=
+ =?us-ascii?Q?+xTUjX9fedpjbbQdSgwN8gncMDJ5c8/92UGQ0h2ouLGS2ywAt0j3Djn1vtaQ?=
+ =?us-ascii?Q?99aYcSYLLh6g2SBQ2UOGX3LtqZ0uWW2Rqjjw6925eiddVID0Q83xf6nVkh+Y?=
+ =?us-ascii?Q?6Nuf5kySauiJyYyQ5h1Yquu7CuxtAVXQHMD3BdYctvOlHTQ+Axix2CTEt83m?=
+ =?us-ascii?Q?Kln57U/ONl6FXglbnnoLzmGFUCAEPZrL2e0G?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB6815.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Hnngl1JPoGPlmsRLLbrLhUsPNE7imGXEJWiy8mgTnEoO/0F0CbLaps48FTwF?=
+ =?us-ascii?Q?mub7zNKJ4tbCE9DZRQNTGqEZy6YZUOKcQzONBqGyf4TM3R6I8Vcp4tW/Frsi?=
+ =?us-ascii?Q?4uigQ+O+pEDcVremb9rvG7wk6ENgLuzEDIX37ruuz1dpl2cswwCXs967tvAW?=
+ =?us-ascii?Q?y1a263RBcH1GwtGRjJuiVz9EURl+D+Z1Mu5zE0+JmGt+uIjgwVWJqp51JaNy?=
+ =?us-ascii?Q?WN60+aD9AVVFkNJ0fzP+RQrL8L/AgB7sA7WNjoHOyowMkMlBopLKBdG/iuMG?=
+ =?us-ascii?Q?P4cnXgmyt1QjAfKxWnX7ERPB3Au6P7Lm5aVXilBVpEdCKBWVO5tk+7YG6z/z?=
+ =?us-ascii?Q?fXuez+teuu9+KvNoIQ0u3lgUqTDA9V1IWfY5nUUzQHmY2dLXTDeX4/oKKBZH?=
+ =?us-ascii?Q?kgZ/v+/48r+1GZbff04Uu5SeUZpn2zDgdAUaTpbGKwqiA0XHEyKkWTC7JWId?=
+ =?us-ascii?Q?cgQSD+CJCRIIadh4D4Lt8jySyG1uHDQqMVn3vAh94TSUR/+YwlsHtj01Zq+R?=
+ =?us-ascii?Q?MDVEHSMrubmDD25dvpjrgr9nHhFCEEoZjUk4ix/N1BehnpM8/0n9DxcTi8if?=
+ =?us-ascii?Q?+WY/vqW7vXoB03LLKbu6UV2spUJWZnP69Q2rwx4BnCpE02wSROLGT05nYUUK?=
+ =?us-ascii?Q?rQHPZHxq36k+RYWFN/6/41lgr03eaNrwAyIKwCYosJ9lvZQsDPK271WiFgc/?=
+ =?us-ascii?Q?T7pYcVIoD28tXIX52ZuqlvXdbhM2TKfSeKyQdBBUUKkg5WnaiQgAzQ0EzCLx?=
+ =?us-ascii?Q?eRFyg14rhuGVR9VGRA4BYHIfv3Ac1Cs4NiFvniazbdkp2z+H3xLHzSpJf7S3?=
+ =?us-ascii?Q?RqgRRBSdA13tEpyBRVnn0XZ1hQHNorRLqUVl5h36y+YsgY9WvzyGmxGV/Q1I?=
+ =?us-ascii?Q?fwrEqcDvvkToci8WQcYHuNFhzyVgLU2DsdN0muD07dvfTFD24Mgah3KZhj1q?=
+ =?us-ascii?Q?5rjFCfCGWZhDc270oP9F9gfPKq3QN4J65Pz2GlnLI+NTNQ6keqDtkw5yo0Ox?=
+ =?us-ascii?Q?+bia4yTHymLBzeas9D4SqgosJYXPcveoBsmtO3HGAyFKIdW0BG3nuOuxbBBC?=
+ =?us-ascii?Q?z2YTetSQXW8ALqCyXB2uv/ZIoGDhRP4wzt3hL0E/NEZokBcSkmp1vDirLjkl?=
+ =?us-ascii?Q?0G33fNruior8Z7MCi9eG6WwTLQqleBvPMKp9I+nU8QL2NIwHgFV7PwHJ+jH+?=
+ =?us-ascii?Q?ktqP2wUjBi48dftJdK2+/IQ7cj25q5SfiObm/c4iz4JwUsufFLK2xFjlpCz1?=
+ =?us-ascii?Q?D/Mm6Bd2ChcGS7tLXnKrEcSRISp1AR5pEm6Asx1OB6Hj9EUuFPD0RTC4w9nA?=
+ =?us-ascii?Q?3bC0k4kphlD4dad0O9OoUdsAgEMvsTQsSJ/ET5wjQuL5gfCyKEWRVlBn2tsT?=
+ =?us-ascii?Q?YdmJeqGQFpHBXbQltDSsv/aePySn2xn/BySBOYf42RkMxN79XQ/BL4eSXn9o?=
+ =?us-ascii?Q?0ZNeXBCDlbczvI1Fb/X+ITsILeDOsbwMID6aAQVgAkHZ1S1+zPWVDN5AwMbX?=
+ =?us-ascii?Q?lonUr+x84+d770MFJ6McHryO3xyZhJNH/o5cgDOcmUe8u4gdu3hN+gi4t7if?=
+ =?us-ascii?Q?SPpbg9/tGh4m/jWIxFxlavT4DOIRuflckgFhjIZ5?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next v2 2/2] bpf: Pass external callchain entry to
- get_perf_callchain
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Jiri Olsa <olsajiri@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Kan Liang <kan.liang@linux.intel.com>, Song Liu <song@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- "linux-perf-use." <linux-perf-users@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <20251014100128.2721104-1-chen.dylane@linux.dev>
- <20251014100128.2721104-3-chen.dylane@linux.dev> <aO4-jAA5RIUY2yxc@krava>
- <CAADnVQLoF49pu8CT81FV1ddvysQzvYT4UO1P21fVxnafnO5vrQ@mail.gmail.com>
- <CAEf4BzbAt_3co0s-+DspnHuJryG2DKPLP9OwsN0bWWnbd5zsmQ@mail.gmail.com>
- <abd75aed-9ff2-4e6d-8fec-2b118264efa9@linux.dev>
- <CAEf4BzbtU2m9mh+Wi-BvuJ7U5_oHL3TWB8w2M5pRO6w6CCbfVw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAEf4BzbtU2m9mh+Wi-BvuJ7U5_oHL3TWB8w2M5pRO6w6CCbfVw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB6815.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35b333d8-30e4-4825-ba13-08de11fb0a66
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2025 06:11:44.1766
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7P8xHyyFaF/ybd+FL2cN3c/mg+z3oii6d7PA4QKuHVzseeMHlKlVdl9sN5u1GyXrP5BNpXCPkSnpMLCs9tuU0cDUvCzsYPYJJjQi4tJfoZo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PPF7468F7991
+X-OriginatorOrg: intel.com
 
-在 2025/10/22 00:37, Andrii Nakryiko 写道:
-> On Sat, Oct 18, 2025 at 12:51 AM Tao Chen <chen.dylane@linux.dev> wrote:
->>
->> 在 2025/10/17 04:39, Andrii Nakryiko 写道:
->>> On Tue, Oct 14, 2025 at 8:02 AM Alexei Starovoitov
->>> <alexei.starovoitov@gmail.com> wrote:
->>>>
->>>> On Tue, Oct 14, 2025 at 5:14 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->>>>>
->>>>> On Tue, Oct 14, 2025 at 06:01:28PM +0800, Tao Chen wrote:
->>>>>> As Alexei noted, get_perf_callchain() return values may be reused
->>>>>> if a task is preempted after the BPF program enters migrate disable
->>>>>> mode. Drawing on the per-cpu design of bpf_perf_callchain_entries,
->>>>>> stack-allocated memory of bpf_perf_callchain_entry is used here.
->>>>>>
->>>>>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->>>>>> ---
->>>>>>    kernel/bpf/stackmap.c | 19 +++++++++++--------
->>>>>>    1 file changed, 11 insertions(+), 8 deletions(-)
->>>>>>
->>>>>> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
->>>>>> index 94e46b7f340..acd72c021c0 100644
->>>>>> --- a/kernel/bpf/stackmap.c
->>>>>> +++ b/kernel/bpf/stackmap.c
->>>>>> @@ -31,6 +31,11 @@ struct bpf_stack_map {
->>>>>>         struct stack_map_bucket *buckets[] __counted_by(n_buckets);
->>>>>>    };
->>>>>>
->>>>>> +struct bpf_perf_callchain_entry {
->>>>>> +     u64 nr;
->>>>>> +     u64 ip[PERF_MAX_STACK_DEPTH];
->>>>>> +};
->>>>>> +
->>>
->>> we shouldn't introduce another type, there is perf_callchain_entry in
->>> linux/perf_event.h, what's the problem with using that?
->>
->> perf_callchain_entry uses flexible array, DEFINE_PER_CPU seems do not
->> create buffer for this, for ease of use, the size of the ip array has
->> been explicitly defined.
->>
->> struct perf_callchain_entry {
->>           u64                             nr;
->>           u64                             ip[]; /*
->> /proc/sys/kernel/perf_event_max_stack */
->> };
->>
-> 
-> Ok, fair enough, but instead of casting between perf_callchain_entry
-> and bpf_perf_callchain_entry, why not put perf_callchain_entry inside
-> bpf_perf_callchain_entry as a first struct and pass a pointer to it.
-> That looks a bit more appropriate? Though I'm not sure if compiler
-> will complain about that flex array...
-> 
-> But on related note, I looked briefly at how perf gets those
-> perf_callchain_entries, and it does seem like it also has a small
-> stack of entries, so maybe we don't really need to invent anything
-> here. See PERF_NR_CONTEXTS and how that's used.
-> 
+> From: Your Name <alessandro.d@gmail.com>
+> Sent: 22 October 2025 21:58
+>=20
+> On Wed, Oct 22, 2025 at 05:41:06AM +0000, Sarkar, Tirthendu wrote:
+> > > From: Jason Xing <kerneljasonxing@gmail.com>
+> >
+> > I believe the issue is not that status_descriptor is getting into
+> > multi-buffer packet but not updating next_to_clean results in
+> > I40E_DESC_UNUSED() to return incorrect values.
+>=20
+> I don't think this is true? next_to_clean can be < next_to_process by
+> design, see
+>=20
+> 	if (next_to_process !=3D next_to_clean)
+> 		first =3D *i40e_rx_bi(rx_ring, next_to_clean);
+>=20
+> at the start of i40e_clean_rx_irq_zc. This condition is normal and means
+> when we exited the function - for example because we ran out of budget -
+> we were in the middle of a multi-buffer packet and now we must continue.
+>=20
 
-It seems so. The implementation of get_callchain_entry and 
-put_callchain_entry is similar to a simple stack management.
+Ah, yes. Missed that. BTW, we won't run out of budget when we see status_de=
+scriptor or in the middle of a multi-buffer packet since those do not incre=
+ase total_rx_packets.=20
+However,  if we see a status descriptor and no packets after that (size =3D=
+ 0), we will break the loop thus making next_to_clean and next_to_process o=
+ut-of-sync with next_to_clean still pointing to status descriptor when we r=
+esume.
 
-struct perf_callchain_entry *get_callchain_entry(int *rctx)
-{
-         int cpu;
-         struct callchain_cpus_entries *entries;
-
-         *rctx = get_recursion_context(this_cpu_ptr(callchain_recursion));
-         if (*rctx == -1)
-                 return NULL;
-
-         entries = rcu_dereference(callchain_cpus_entries);
-         if (!entries) {
-  
-put_recursion_context(this_cpu_ptr(callchain_recursion), *rctx);
-                 return NULL;
-         }
-
-         cpu = smp_processor_id();
-
-         return (((void *)entries->cpu_entries[cpu]) +
-                 (*rctx * perf_callchain_entry__sizeof()));
-}
-
-void
-put_callchain_entry(int rctx)
-{
-         put_recursion_context(this_cpu_ptr(callchain_recursion), rctx);
-}
-
-> If instead of disabling preemption we disable migration, then I think
-> we should be good with relying on perf's callchain management, or am I
-> missing something?
-> 
-
-Peter proposed refactoring the get_perf_callchain interface in v3, i 
-think after that we can still use perf callchain, but with the 
-refactored API, it can prevent being overwritten by preemption.
-
-BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map
-{
-	...
-	entry = bpf_get_perf_callchain;
-	__bpf_get_stackid(map, entry, flags);
-	bpf_put_callchain_entry(entry);
-	...
-}
-
-A simple specific implementation is as follows:
-
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index fd1d91017b9..1c7573f085f 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -67,6 +67,7 @@ struct perf_callchain_entry_ctx {
-  	u32				nr;
-  	short				contexts;
-  	bool				contexts_maxed;
-+	bool				add_mark;
-  };
-
-  typedef unsigned long (*perf_copy_f)(void *dst, const void *src,
-@@ -1718,9 +1719,18 @@ DECLARE_PER_CPU(struct perf_callchain_entry, 
-perf_callchain_entry);
-
-  extern void perf_callchain_user(struct perf_callchain_entry_ctx 
-*entry, struct pt_regs *regs);
-  extern void perf_callchain_kernel(struct perf_callchain_entry_ctx 
-*entry, struct pt_regs *regs);
-+
-+extern void __init_perf_callchain_ctx(struct perf_callchain_entry_ctx *ctx,
-+				      struct perf_callchain_entry *entry,
-+				      u32 max_stack, bool add_mark);
-+
-+extern void __get_perf_callchain_kernel(struct perf_callchain_entry_ctx 
-*ctx, struct pt_regs *regs);
-+extern void __get_perf_callchain_user(struct perf_callchain_entry_ctx 
-*ctx, struct pt_regs *regs);
-+
-+
-  extern struct perf_callchain_entry *
-  get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
--		   u32 max_stack, bool crosstask, bool add_mark);
-+		   u32 max_stack, bool crosstask);
-  extern int get_callchain_buffers(int max_stack);
-  extern void put_callchain_buffers(void);
-  extern struct perf_callchain_entry *get_callchain_entry(int *rctx);
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 4d53cdd1374..3f2543e5244 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -297,14 +297,38 @@ static long __bpf_get_stackid(struct bpf_map *map,
-  	return id;
-  }
-
-+static struct perf_callchain_entry *entry
-+bpf_get_perf_callchain(int *rctx, struct pt_regs *regs, bool kernel, 
-bool user, int max_stack)
-+{
-+	struct perf_callchain_entry_ctx ctx;
-+	struct perf_callchain_entry *entry;
-+
-+	entry = get_callchain_entry(&rctx);
-+	if (unlikely(!entry))
-+		return NULL;
-+
-+	__init_perf_callchain_ctx(&ctx, entry)
-+	if (kernel)
-+		__get_perf_callchain_kernel(&ctx, regs);
-+	if (user)
-+		__get_perf_callchain_user(&ctx, regs);
-+	return entry;
-+}
-+
-+static bpf_put_perf_callchain(int rctx)
-+{
-+	put_callchain_entry(rctx);
-+}
-+
-  BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
-  	   u64, flags)
-  {
-  	u32 max_depth = map->value_size / stack_map_data_size(map);
-  	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
-  	bool user = flags & BPF_F_USER_STACK;
--	struct perf_callchain_entry *trace;
-+	struct perf_callchain_entry *entry;
-  	bool kernel = !user;
-+	int rctx, ret;
-
-  	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
-  			       BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
-@@ -314,14 +338,14 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, 
-regs, struct bpf_map *, map,
-  	if (max_depth > sysctl_perf_event_max_stack)
-  		max_depth = sysctl_perf_event_max_stack;
-
--	trace = get_perf_callchain(regs, kernel, user, max_depth,
--				   false, false);
--
--	if (unlikely(!trace))
--		/* couldn't fetch the stack trace */
-+	entry = bpf_get_perf_callchain(&rctx, regs, kernel, user, max_depth);
-+	if (unlikely(!entry))
-  		return -EFAULT;
-
--	return __bpf_get_stackid(map, trace, flags);
-+	ret = __bpf_get_stackid(map, entry, flags);
-+	bpf_put_callchain_entry(rctx);
-+
-+	return ret;
-  }
-
-  const struct bpf_func_proto bpf_get_stackid_proto = {
-@@ -452,7 +476,7 @@ static long __bpf_get_stack(struct pt_regs *regs, 
-struct task_struct *task,
-  		trace = get_callchain_entry_for_task(task, max_depth);
-  	else
-  		trace = get_perf_callchain(regs, kernel, user, max_depth,
--					   crosstask, false);
-+					   crosstask);
-
-  	if (unlikely(!trace) || trace->nr < skip) {
-  		if (may_fault)
-diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
-index 808c0d7a31f..2c36e490625 100644
---- a/kernel/events/callchain.c
-+++ b/kernel/events/callchain.c
-@@ -216,13 +216,54 @@ static void 
-fixup_uretprobe_trampoline_entries(struct perf_callchain_entry *entr
-  #endif
-  }
-
-+void __init_perf_callchain_ctx(struct perf_callchain_entry_ctx *ctx,
-+			       struct perf_callchain_entry *entry,
-+			       u32 max_stack, bool add_mark)
-+
-+{
-+	ctx->entry		= entry;
-+	ctx->max_stack		= max_stack;
-+	ctx->nr			= entry->nr = 0;
-+	ctx->contexts		= 0;
-+	ctx->contexts_maxed	= false;
-+	ctx->add_mark		= add_mark;
-+}
-+
-+void __get_perf_callchain_kernel(struct perf_callchain_entry_ctx *ctx, 
-struct pt_regs *regs)
-+{
-+	if (user_mode(regs))
-+		return;
-+
-+	if (ctx->add_mark)
-+		perf_callchain_store_context(ctx, PERF_CONTEXT_KERNEL);
-+	perf_callchain_kernel(ctx, regs);
-+}
-+
-+void __get_perf_callchain_user(struct perf_callchain_entry_ctx *ctx, 
-struct pt_regs *regs)
-+{
-+	int start_entry_idx;
-+
-+	if (!user_mode(regs)) {
-+		if (current->flags & (PF_KTHREAD | PF_USER_WORKER))
-+			return;
-+		regs = task_pt_regs(current);
-+	}
-+
-+	if (ctx->add_mark)
-+		perf_callchain_store_context(ctx, PERF_CONTEXT_USER);
-+
-+	start_entry_idx = ctx->nr;
-+	perf_callchain_user(ctx, regs);
-+	fixup_uretprobe_trampoline_entries(ctx->entry, start_entry_idx);
-+}
-+
-  struct perf_callchain_entry *
-  get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
--		   u32 max_stack, bool crosstask, bool add_mark)
-+		   u32 max_stack, bool crosstask)
-  {
-  	struct perf_callchain_entry *entry;
-  	struct perf_callchain_entry_ctx ctx;
--	int rctx, start_entry_idx;
-+	int rctx;
-
-  	/* crosstask is not supported for user stacks */
-  	if (crosstask && user && !kernel)
-@@ -232,34 +273,14 @@ get_perf_callchain(struct pt_regs *regs, bool 
-kernel, bool user,
-  	if (!entry)
-  		return NULL;
-
--	ctx.entry		= entry;
--	ctx.max_stack		= max_stack;
--	ctx.nr			= entry->nr = 0;
--	ctx.contexts		= 0;
--	ctx.contexts_maxed	= false;
-+	__init_perf_callchain_ctx(&ctx, entry, max_stack, true);
-
--	if (kernel && !user_mode(regs)) {
--		if (add_mark)
--			perf_callchain_store_context(&ctx, PERF_CONTEXT_KERNEL);
--		perf_callchain_kernel(&ctx, regs);
--	}
--
--	if (user && !crosstask) {
--		if (!user_mode(regs)) {
--			if (current->flags & (PF_KTHREAD | PF_USER_WORKER))
--				goto exit_put;
--			regs = task_pt_regs(current);
--		}
-+	if (kernel)
-+		__get_perf_callchain_kernel(&ctx, regs);
-
--		if (add_mark)
--			perf_callchain_store_context(&ctx, PERF_CONTEXT_USER);
--
--		start_entry_idx = entry->nr;
--		perf_callchain_user(&ctx, regs);
--		fixup_uretprobe_trampoline_entries(entry, start_entry_idx);
--	}
-+	if (user && !crosstask)
-+		__get_perf_callchain_user(&ctx, regs);
-
--exit_put:
-  	put_callchain_entry(rctx);
-
-  	return entry;
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 7541f6f85fc..eb0f110593d 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -8218,7 +8218,7 @@ perf_callchain(struct perf_event *event, struct 
-pt_regs *regs)
-  		return &__empty_callchain;
-
-  	callchain = get_perf_callchain(regs, kernel, user,
--				       max_stack, crosstask, true);
-+				       max_stack, crosstask);
-  	return callchain ?: &__empty_callchain;
-  }
-
->>>
->>>>>>    static inline bool stack_map_use_build_id(struct bpf_map *map)
->>>>>>    {
->>>>>>         return (map->map_flags & BPF_F_STACK_BUILD_ID);
->>>>>> @@ -305,6 +310,7 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
->>>>>>         bool user = flags & BPF_F_USER_STACK;
->>>>>>         struct perf_callchain_entry *trace;
->>>>>>         bool kernel = !user;
->>>>>> +     struct bpf_perf_callchain_entry entry = { 0 };
->>>>>
->>>>> so IIUC having entries on stack we do not need to do preempt_disable
->>>>> you had in the previous version, right?
->>>>>
->>>>> I saw Andrii's justification to have this on the stack, I think it's
->>>>> fine, but does it have to be initialized? it seems that only used
->>>>> entries are copied to map
->>>>
->>>> No. We're not adding 1k stack consumption.
->>>
->>> Right, and I thought we concluded as much last time, so it's a bit
->>> surprising to see this in this patch.
->>>
->>
->> Ok, I feel like I'm missing some context from our previous exchange.
->>
->>> Tao, you should go with 3 entries per CPU used in a stack-like
->>> fashion. And then passing that entry into get_perf_callchain() (to
->>> avoid one extra copy).
->>>
->>
->> Got it. It is more clearer, will change it in v3.
->>
->>>>
->>>> pw-bot: cr
->>
->>
->> --
->> Best Regards
->> Tao Chen
-
-
--- 
-Best Regards
-Tao Chen
+Thanks,
+Tirthendu
 
