@@ -1,184 +1,283 @@
-Return-Path: <bpf+bounces-71951-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71952-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AB2AC02525
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 18:09:15 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE6D0C02640
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 18:18:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 556E91882B30
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 16:09:38 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9FED25676D0
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 16:15:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B16B28314A;
-	Thu, 23 Oct 2025 16:09:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C512BDC09;
+	Thu, 23 Oct 2025 16:15:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="O9+Xzi/M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ug274Z6E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57DC9278761
-	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 16:09:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A40259CB9
+	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 16:15:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761235746; cv=none; b=WW6onr1xhn14Epu9FatOKYEzVWvltFgeH7xAJ5dYFoT+peLH9BNTSFecet7nfZzQeBSLTe1oidlgZwV+0+Xfc6BBTgJ5jEJHPAyFYjfUfAO9rWUNLsGnqU0dBPCZrLWVFjSOLF1DyW71XIjciFabuFP74N4iMbNjav16g2SggP8=
+	t=1761236103; cv=none; b=hqVgLRmR7cD77Y4HZS2RzrK699BcuNTLeh55UYkhTCDR9LEXFotjaZGpc/np7bV2E0MMUYDLrXuGAs20ClKnb0kWPCXV9R4F+XJQJwe+OtjtjebPPuT1aKep0xMIgt34pU9HwoIz+tdyLMyqlm1r7s1hBxHzG4KgjuPFxy8kBfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761235746; c=relaxed/simple;
-	bh=iicqHqIRyiknDU8aj031heEdaLM9JecB5tKouPwEMLk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DKnzrsXM1ihfygmBHbzdLUBttJn3lEvRKQ301bB6R4fOyyn0Ywt7qkpp6sWo4fTQGAci64axAuPj3EhMeHM7BdFkX4L8KbNlTWQ+zK2+5kefvu+WLuIagA2v8Kjyp12Gp/xKDPe7Ab6uTyXgkAQeR66pfzqQbdP/JPifN5/Yj5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=O9+Xzi/M; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-290d48e9f1fso205535ad.1
-        for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 09:09:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761235744; x=1761840544; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7DD2FrCR3h7s6+/jsUTtH0YJbnzDwL7eNDOT6HMeIno=;
-        b=O9+Xzi/M1akcZRLHH11g8Za/ira4T/ufAxTwrgdVhrCYDS2C2VFEbiceBC0eVp2kD6
-         NzoP3GDNZ6QdjjCSJHQqq2SeZiTIBLO1ISjpyPLWBW8FMMq2nf8pZ7ArEQsriUYKnoQz
-         6Gwm1GgvewJNBTmwGeG340GkFm2HeiUFKIdeO1a5yXFYOySt9LHTnfXs0LCS3HjOYAVc
-         6hKVX+szCT8WRJTLVbymXel7cjB+tDww+UEZEAltGni3KmFNlhJvL8qAV39/KZDLmg/g
-         GIE+ON/VNztvq/QlI1+9kTuu6GkAUWwEQCQXx+Fh76VLtpkqLGUS8+pZDjGcNKgr0bUT
-         BUHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761235744; x=1761840544;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7DD2FrCR3h7s6+/jsUTtH0YJbnzDwL7eNDOT6HMeIno=;
-        b=Yd2ZNa+8VIRxMCWdrspZrsXWgRAyKBD2QDYG9gzfGfW0LPydDBxk7SmXrmqUVFeWG3
-         r3P1wbTeO+HNMl2rMLQiUgUXlReAWTgaV1+apdvcg3si4w9Y+IlY0yYOr9gXsK9E38iR
-         FnJcMFwsYdTv4Y6MUymFTujen0B64z1u0flGP0417VnUulE8rfwNiQblysIIvqXlXFbG
-         V+kCjO5rGO9q7+0RpkvKbvFplj1gcLD5NmyiJz4QVAmGqd8dYXrn0wcvpb2FOpTECWGy
-         iGlBi89z+Dg2KChME3m+HdADdZ7YDHVKvIv7k87T30/VF5OvN1L5UnhgMNnf+NsoNo0e
-         2P5g==
-X-Forwarded-Encrypted: i=1; AJvYcCUyk56dadma0cQGG0HPMS3AFX46NgZquIlMDJAsUzlTJ6E9GJ2Ze9R7GwAVlSGp0fA3WTw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQAzScSN5Bp61S0o1CjnzdoaoQzMqSD3kDN/VO9ORKU0vcjVax
-	iFZguJFAfC293ASCVXKgzV64TG/oikJbWTXnm7LA5sKLrTQAww+VVX/K5F4aIjRMtRRlTFcrgFq
-	DZcDpkShQEuouNp5QA9vghC4QmcQ1HFWKa8XMLHkE
-X-Gm-Gg: ASbGncvBAj+qVC04SBmUubfjj3gK/7tKLO4ttM3Vp9TvrSJ1IqUnz2loWFlIRSvVp20
-	OVXC0RbUyBc9XQrXzRP5qqznwKoa/bY5jCxPtV1b2RUlZ2tFI9lq/AmzosMJb1jLsmvS8Ndb0yS
-	4ADuZAUnsqlxgjkiKOhNrzh2Px5BCUMm6J6Nz/UO7NVYy14/zgcsbN1ZgQavZxW7kUoza0m24Jx
-	rANVIlKYpZmdAbbLfNFydKwmF/LqbsDTfYIL/F4i565P1O4BXxbaWPusX32xh7q7ZHUSpnAP2wt
-	yhKSy3WOGiH9TUc=
-X-Google-Smtp-Source: AGHT+IFm2MFLeK85YermsOMu5zYpTpjbtEK4xI00o5TLBfizVMtB0lHY5AA/2uze9+mJDbIqCwZ3M48UjYiYnpTrzDk=
-X-Received: by 2002:a17:903:1c2:b0:290:dc44:d6fa with SMTP id
- d9443c01a7336-29487303b51mr523455ad.16.1761235744060; Thu, 23 Oct 2025
- 09:09:04 -0700 (PDT)
+	s=arc-20240116; t=1761236103; c=relaxed/simple;
+	bh=qwKrw7kl+VeM7QrOZeXqtXAdzN6g7Ex6ji9qaOHcy84=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Mfyz82LI2g9AiqySn3OQhchjtKCqaEcvSviV+lPOpvZAGgG/dIxpRZLqw8dLtsZg4mKv93FsJuI34gSYOZTRqkQJ0xY3cNbgf6VCMblkji1DTk8C7UmNYjfXl/sgzJPHCrgy49CFRHtKVFmJUK8PUAplbVASOcMe5XszT0h1cSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ug274Z6E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E067C113D0;
+	Thu, 23 Oct 2025 16:15:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761236102;
+	bh=qwKrw7kl+VeM7QrOZeXqtXAdzN6g7Ex6ji9qaOHcy84=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ug274Z6EKyWfHsbexUOEhJvid3RQID5vF30687t1fQHp1l2fpF02dLuUSrG3XcJfY
+	 Wo1U3Hogn1Y9tzqI2OlpaRlVTI5IjJ2Vt4I3+2xzbe16YcGIS6D6Y6PlFS08P/t6i6
+	 6neHTpifUsaT6uITVMcLmxUWyLCc+L+TujEDHFTaxx2ZogrRrsVlkLXissCilBRwQm
+	 Alz/7ih8Rcuw2jddu9dG1Z8b/b+uOZjeBgxhsVrDxbaYEKhZiQFd+qMSYLbY1BhMw+
+	 t0fbZBtJE/ePK5pMXaJ03hpdmjB+1Sj+i+WVeyev8Ws6AoNaT8v86mGpGdrOL4hnuC
+	 0yv+AQ4uihGGA==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next] bpf: stream: start using kmalloc_nolock()
+Date: Thu, 23 Oct 2025 16:14:44 +0000
+Message-ID: <20251023161448.4263-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251023015043.38868-1-xueshuai@linux.alibaba.com>
-In-Reply-To: <20251023015043.38868-1-xueshuai@linux.alibaba.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 23 Oct 2025 09:08:52 -0700
-X-Gm-Features: AS18NWDd7pnd6R6MJu2L_vLKwKGtCotRaE8bGYrXMIICN6v6EliIOYkLKsl-DF8
-Message-ID: <CAP-5=fWupb62_QKM3bZO9K9yeJqC2H-bdi6dQNM7zAsLTJoDow@mail.gmail.com>
-Subject: Re: [PATCH] perf record: skip synthesize event when open evsel failed
-To: Shuai Xue <xueshuai@linux.alibaba.com>
-Cc: alexander.shishkin@linux.intel.com, peterz@infradead.org, 
-	james.clark@arm.com, leo.yan@linaro.org, mingo@redhat.com, 
-	baolin.wang@linux.alibaba.com, acme@kernel.org, mark.rutland@arm.com, 
-	jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nathan@kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 22, 2025 at 6:50=E2=80=AFPM Shuai Xue <xueshuai@linux.alibaba.c=
-om> wrote:
->
-> When using perf record with the `--overwrite` option, a segmentation faul=
-t
-> occurs if an event fails to open. For example:
->
->   perf record -e cycles-ct -F 1000 -a --overwrite
->   Error:
->   cycles-ct:H: PMU Hardware doesn't support sampling/overflow-interrupts.=
- Try 'perf stat'
->   perf: Segmentation fault
->       #0 0x6466b6 in dump_stack debug.c:366
->       #1 0x646729 in sighandler_dump_stack debug.c:378
->       #2 0x453fd1 in sigsegv_handler builtin-record.c:722
->       #3 0x7f8454e65090 in __restore_rt libc-2.32.so[54090]
->       #4 0x6c5671 in __perf_event__synthesize_id_index synthetic-events.c=
-:1862
->       #5 0x6c5ac0 in perf_event__synthesize_id_index synthetic-events.c:1=
-943
->       #6 0x458090 in record__synthesize builtin-record.c:2075
->       #7 0x45a85a in __cmd_record builtin-record.c:2888
->       #8 0x45deb6 in cmd_record builtin-record.c:4374
->       #9 0x4e5e33 in run_builtin perf.c:349
->       #10 0x4e60bf in handle_internal_command perf.c:401
->       #11 0x4e6215 in run_argv perf.c:448
->       #12 0x4e653a in main perf.c:555
->       #13 0x7f8454e4fa72 in __libc_start_main libc-2.32.so[3ea72]
->       #14 0x43a3ee in _start ??:0
->
-> The --overwrite option implies --tail-synthesize, which collects non-samp=
-le
-> events reflecting the system status when recording finishes. However, whe=
-n
-> evsel opening fails (e.g., unsupported event 'cycles-ct'), session->evlis=
-t
-> is not initialized and remains NULL. The code unconditionally calls
-> record__synthesize() in the error path, which iterates through the NULL
-> evlist pointer and causes a segfault.
->
-> To fix it, move the record__synthesize() call inside the error check bloc=
-k, so
-> it's only called when there was no error during recording, ensuring that =
-evlist
-> is properly initialized.
->
-> Fixes: 4ea648aec019 ("perf record: Add --tail-synthesize option")
-> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+BPF stream kfuncs need to be non-sleeping as they can be called from
+programs running in any context, this requires a way to allocate memory
+from any context. Currently, this is done by a custom per-CPU NMI-safe
+bump allocation mechanism, backed by try_alloc_pages() and
+free_pages_nolock() primitives.
 
-This looks great! I wonder if we can add a test, perhaps here:
-https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
-t/tree/tools/perf/tests/shell/record.sh?h=3Dperf-tools-next#n435
-something like:
-```
-$ perf record -e foobar -F 1000 -a --overwrite -o /dev/null -- sleep 0.1
-```
-in a new test subsection for test_overwrite? foobar would be an event
-that we could assume isn't present. Could you help with a test
-covering the problems you've uncovered and perhaps related flags?
+As kmalloc_nolock() and kfree_nolock() primitives are available now, the
+custom allocator can be removed in favor of these.
 
-Thanks,
-Ian
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+---
+ kernel/bpf/stream.c | 159 +++-----------------------------------------
+ 1 file changed, 8 insertions(+), 151 deletions(-)
 
-> ---
->  tools/perf/builtin-record.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index d76f01956e33..b1fb87016d5a 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -2883,11 +2883,11 @@ static int __cmd_record(struct record *rec, int a=
-rgc, const char **argv)
->                 rec->bytes_written +=3D off_cpu_write(rec->session);
->
->         record__read_lost_samples(rec);
-> -       record__synthesize(rec, true);
->         /* this will be recalculated during process_buildids() */
->         rec->samples =3D 0;
->
->         if (!err) {
-> +               record__synthesize(rec, true);
->                 if (!rec->timestamp_filename) {
->                         record__finish_output(rec);
->                 } else {
-> --
-> 2.39.3
->
+diff --git a/kernel/bpf/stream.c b/kernel/bpf/stream.c
+index eb6c5a21c2ef..593976a5d6c8 100644
+--- a/kernel/bpf/stream.c
++++ b/kernel/bpf/stream.c
+@@ -4,111 +4,10 @@
+ #include <linux/bpf.h>
+ #include <linux/filter.h>
+ #include <linux/bpf_mem_alloc.h>
+-#include <linux/percpu.h>
+-#include <linux/refcount.h>
+ #include <linux/gfp.h>
+ #include <linux/memory.h>
+-#include <linux/local_lock.h>
+ #include <linux/mutex.h>
+ 
+-/*
+- * Simple per-CPU NMI-safe bump allocation mechanism, backed by the NMI-safe
+- * try_alloc_pages()/free_pages_nolock() primitives. We allocate a page and
+- * stash it in a local per-CPU variable, and bump allocate from the page
+- * whenever items need to be printed to a stream. Each page holds a global
+- * atomic refcount in its first 4 bytes, and then records of variable length
+- * that describe the printed messages. Once the global refcount has dropped to
+- * zero, it is a signal to free the page back to the kernel's page allocator,
+- * given all the individual records in it have been consumed.
+- *
+- * It is possible the same page is used to serve allocations across different
+- * programs, which may be consumed at different times individually, hence
+- * maintaining a reference count per-page is critical for correct lifetime
+- * tracking.
+- *
+- * The bpf_stream_page code will be replaced to use kmalloc_nolock() once it
+- * lands.
+- */
+-struct bpf_stream_page {
+-	refcount_t ref;
+-	u32 consumed;
+-	char buf[];
+-};
+-
+-/* Available room to add data to a refcounted page. */
+-#define BPF_STREAM_PAGE_SZ (PAGE_SIZE - offsetofend(struct bpf_stream_page, consumed))
+-
+-static DEFINE_PER_CPU(local_trylock_t, stream_local_lock) = INIT_LOCAL_TRYLOCK(stream_local_lock);
+-static DEFINE_PER_CPU(struct bpf_stream_page *, stream_pcpu_page);
+-
+-static bool bpf_stream_page_local_lock(unsigned long *flags)
+-{
+-	return local_trylock_irqsave(&stream_local_lock, *flags);
+-}
+-
+-static void bpf_stream_page_local_unlock(unsigned long *flags)
+-{
+-	local_unlock_irqrestore(&stream_local_lock, *flags);
+-}
+-
+-static void bpf_stream_page_free(struct bpf_stream_page *stream_page)
+-{
+-	struct page *p;
+-
+-	if (!stream_page)
+-		return;
+-	p = virt_to_page(stream_page);
+-	free_pages_nolock(p, 0);
+-}
+-
+-static void bpf_stream_page_get(struct bpf_stream_page *stream_page)
+-{
+-	refcount_inc(&stream_page->ref);
+-}
+-
+-static void bpf_stream_page_put(struct bpf_stream_page *stream_page)
+-{
+-	if (refcount_dec_and_test(&stream_page->ref))
+-		bpf_stream_page_free(stream_page);
+-}
+-
+-static void bpf_stream_page_init(struct bpf_stream_page *stream_page)
+-{
+-	refcount_set(&stream_page->ref, 1);
+-	stream_page->consumed = 0;
+-}
+-
+-static struct bpf_stream_page *bpf_stream_page_replace(void)
+-{
+-	struct bpf_stream_page *stream_page, *old_stream_page;
+-	struct page *page;
+-
+-	page = alloc_pages_nolock(/* Don't account */ 0, NUMA_NO_NODE, 0);
+-	if (!page)
+-		return NULL;
+-	stream_page = page_address(page);
+-	bpf_stream_page_init(stream_page);
+-
+-	old_stream_page = this_cpu_read(stream_pcpu_page);
+-	if (old_stream_page)
+-		bpf_stream_page_put(old_stream_page);
+-	this_cpu_write(stream_pcpu_page, stream_page);
+-	return stream_page;
+-}
+-
+-static int bpf_stream_page_check_room(struct bpf_stream_page *stream_page, int len)
+-{
+-	int min = offsetof(struct bpf_stream_elem, str[0]);
+-	int consumed = stream_page->consumed;
+-	int total = BPF_STREAM_PAGE_SZ;
+-	int rem = max(0, total - consumed - min);
+-
+-	/* Let's give room of at least 8 bytes. */
+-	WARN_ON_ONCE(rem % 8 != 0);
+-	rem = rem < 8 ? 0 : rem;
+-	return min(len, rem);
+-}
+-
+ static void bpf_stream_elem_init(struct bpf_stream_elem *elem, int len)
+ {
+ 	init_llist_node(&elem->node);
+@@ -116,54 +15,12 @@ static void bpf_stream_elem_init(struct bpf_stream_elem *elem, int len)
+ 	elem->consumed_len = 0;
+ }
+ 
+-static struct bpf_stream_page *bpf_stream_page_from_elem(struct bpf_stream_elem *elem)
+-{
+-	unsigned long addr = (unsigned long)elem;
+-
+-	return (struct bpf_stream_page *)PAGE_ALIGN_DOWN(addr);
+-}
+-
+-static struct bpf_stream_elem *bpf_stream_page_push_elem(struct bpf_stream_page *stream_page, int len)
+-{
+-	u32 consumed = stream_page->consumed;
+-
+-	stream_page->consumed += round_up(offsetof(struct bpf_stream_elem, str[len]), 8);
+-	return (struct bpf_stream_elem *)&stream_page->buf[consumed];
+-}
+-
+-static struct bpf_stream_elem *bpf_stream_page_reserve_elem(int len)
+-{
+-	struct bpf_stream_elem *elem = NULL;
+-	struct bpf_stream_page *page;
+-	int room = 0;
+-
+-	page = this_cpu_read(stream_pcpu_page);
+-	if (!page)
+-		page = bpf_stream_page_replace();
+-	if (!page)
+-		return NULL;
+-
+-	room = bpf_stream_page_check_room(page, len);
+-	if (room != len)
+-		page = bpf_stream_page_replace();
+-	if (!page)
+-		return NULL;
+-	bpf_stream_page_get(page);
+-	room = bpf_stream_page_check_room(page, len);
+-	WARN_ON_ONCE(room != len);
+-
+-	elem = bpf_stream_page_push_elem(page, room);
+-	bpf_stream_elem_init(elem, room);
+-	return elem;
+-}
+-
+ static struct bpf_stream_elem *bpf_stream_elem_alloc(int len)
+ {
+ 	const int max_len = ARRAY_SIZE((struct bpf_bprintf_buffers){}.buf);
+ 	struct bpf_stream_elem *elem;
+-	unsigned long flags;
++	size_t alloc_size;
+ 
+-	BUILD_BUG_ON(max_len > BPF_STREAM_PAGE_SZ);
+ 	/*
+ 	 * Length denotes the amount of data to be written as part of stream element,
+ 	 * thus includes '\0' byte. We're capped by how much bpf_bprintf_buffers can
+@@ -172,10 +29,13 @@ static struct bpf_stream_elem *bpf_stream_elem_alloc(int len)
+ 	if (len < 0 || len > max_len)
+ 		return NULL;
+ 
+-	if (!bpf_stream_page_local_lock(&flags))
++	alloc_size = round_up(offsetof(struct bpf_stream_elem, str[len]), 8);
++	elem = kmalloc_nolock(alloc_size, __GFP_ZERO, -1);
++	if (!elem)
+ 		return NULL;
+-	elem = bpf_stream_page_reserve_elem(len);
+-	bpf_stream_page_local_unlock(&flags);
++
++	bpf_stream_elem_init(elem, len);
++
+ 	return elem;
+ }
+ 
+@@ -231,10 +91,7 @@ static struct bpf_stream *bpf_stream_get(enum bpf_stream_id stream_id, struct bp
+ 
+ static void bpf_stream_free_elem(struct bpf_stream_elem *elem)
+ {
+-	struct bpf_stream_page *p;
+-
+-	p = bpf_stream_page_from_elem(elem);
+-	bpf_stream_page_put(p);
++	kfree_nolock(elem);
+ }
+ 
+ static void bpf_stream_free_list(struct llist_node *list)
+-- 
+2.47.3
+
 
