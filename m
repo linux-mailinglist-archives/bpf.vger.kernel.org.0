@@ -1,148 +1,124 @@
-Return-Path: <bpf+bounces-71944-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71945-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80B66C02326
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 17:42:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9C49C02332
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 17:43:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0FD7C543D7E
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 15:40:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4AF81886296
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 15:43:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6466733C50F;
-	Thu, 23 Oct 2025 15:39:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA8F23396E5;
+	Thu, 23 Oct 2025 15:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FNsvXrzh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qxse0Xx0"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EC633C520
-	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 15:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A266A33C520
+	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 15:42:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761233996; cv=none; b=KiOVQT4qHLW5+JnjC+IIeDqHgBGPL265ylJT7Wo+QZnlImoQDMJfrg9wP4xPSkY3kIuS3euDg8lSggotS5wVeziKTN8Q8KPjuxnEIXqV6kG2y804uqH4RhLQatg9TOI3cSWaiX29OPA+n/AzFY3AFch4OJOWdSfDedvrQczPn4E=
+	t=1761234169; cv=none; b=nKfVh8E864NHSPkvAJCUS8LGLD5kvpw8Z2FaMIGF8Dr5OQDM1wCm/DyZ6hdf4vch8xmnNOBUlbGUl5xCdZWoOLHW234ep5APdmqQSHH0vfnTiaAJ/EvPlRXHNAtCQLj9XFQXXcor/z8StgC6gmASSwSi6lnmDFEwbKI4/Ws1Kcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761233996; c=relaxed/simple;
-	bh=ti0UHhSYt96791PDFgTG8yi+uqI3jA7rIHdlbh71V+o=;
+	s=arc-20240116; t=1761234169; c=relaxed/simple;
+	bh=q52XoYD9UMEeNWx8+kGq3GYFr3ugdoKh0p7BaDkyaVQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E9un+nBr0gM0Aldzs0RX26NxHroJogBl9mPCBUIhfD8xGtv524qa0ZYa1Ee9b/0zH/nwKwDPUE/uDpaM1wG7s/I3VZVK1TIATH5smRkBNbYlHjw42uqXdSskpk5hcsYDV4uwHDy8FqdnDP82V0xzZ+6O7Azmztj2XEyB3r3aRbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FNsvXrzh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C447C116B1
-	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 15:39:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761233996;
-	bh=ti0UHhSYt96791PDFgTG8yi+uqI3jA7rIHdlbh71V+o=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=FNsvXrzh5xfHGR3EQTuQ7kbwSs3uDv8IdHlfNHXThcDE7PvZzhj2Wx5Gfy5jTnFty
-	 mbySokzgyGhlj5idQe+1AyB6zUA2YglsJxvdpaitcC2PIGVp1XJdK4jAoXeAR8lWVJ
-	 ZhfNCL3DflC11ycSKnki3Nlp/o6WMhQ/PxJgsYIHibUQdXHkwcXO2HRbnEb72O9Oa4
-	 +GJaaCM23L98OlmN9qKTK+1Nep44kpB6gSp7TSoA/rjj6gA2IIsNCRdql9WCU28hYD
-	 vZVwmEl6MAJgAJsbiPyif33DM1C3PGH/R4YfFshKbQyPRGpTmcm3uIBtR+lZEOFEKE
-	 22KsdSdPiOsJg==
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3ece0e4c5faso896126f8f.1
-        for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 08:39:56 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVgr3m+kRFRxeICJvr/wsO0+RG9yd+BOTKmfaYlWJ1zDr5GrOJu1TgyQjdwU8JGTqtqPMY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzGbz6qsqW7pR3pBG9vL618BVqdd/07Hm0uHHL8qY6VbSRrZHEV
-	WFFF68BS73H5tRVNZ98iCnSH0hiJYA+jMpD7j6UZrPCKKs7O62NT078LtwnZlk/wOqYOJJRN2kF
-	SmRiYhgA1NY7y4ZBDeff4sOdHT75yjAeAx/Ww6UfD
-X-Google-Smtp-Source: AGHT+IGQVbYGp7O+yoxgyFGve+8RV7ljJ2coZFw7sdkM2H8nfHgfdLQMkpik8PV1ZmE0UDNJQeBwdH3xHYDfavUOd/0=
-X-Received: by 2002:a05:6000:2303:b0:427:6c7:6703 with SMTP id
- ffacd0b85a97d-42706c76a60mr17469915f8f.63.1761233994937; Thu, 23 Oct 2025
- 08:39:54 -0700 (PDT)
+	 To:Cc:Content-Type; b=kL5ggHkHgnEGlCrr3rs0+rcf0wk/MizpNc3oQKJup66kVde1BJoWwH8KKZPKCs9vPbSWrqCoj7I9QSUkKbrzMV4i1iGwT1ty1FoVQ42kUkFWS+X1NOxxIQCaWPVntKPMNDgoUGsAuDsPPsGDxo71BYFRTPNs3WkgtwwwtyWEMas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qxse0Xx0; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-46e6a6a5e42so5723655e9.0
+        for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 08:42:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761234166; x=1761838966; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q52XoYD9UMEeNWx8+kGq3GYFr3ugdoKh0p7BaDkyaVQ=;
+        b=Qxse0Xx0vrmoBcXp2XCcSG2yRPM2k9DmsP62D609Pa1iuIsvDBSk0wdybNGsqqzCfQ
+         NcQb1cnWODKUlL+W+IVNV7Dn+U/XVb+wxbeLKZHXmUzt0wkNjvvAI9grfsHhuZk5b+Lp
+         rOHoHrvvrzigN9RekQwkOoNP4cmw48l7uNz10GedHzCYPqWwrEqxQTDPDobH63rovtIy
+         mNj66De5famlJZlvJCtB2VObAMv1bLchIsfMHLDO2BxltRJJtDGKvPOMg+o09q61Hy6T
+         pipjOIppOo6BtKWdnSB5I/1iBIbb6YgMKGEywfs/JAVLgWBkiydq+sJ9eyFTw47N//7R
+         quWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761234166; x=1761838966;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q52XoYD9UMEeNWx8+kGq3GYFr3ugdoKh0p7BaDkyaVQ=;
+        b=GV61NKZRlJxvT7HfA9lS9a0nRYe7toj46QgaxyQnoml+fsLDHMAmxEOOHRvC0Dp0a8
+         RPAWa+tcOxsOWARddF6gEkhSBrQT7CiXgYM9shCy0lD1LS9D1rlkDK6TcXp5waFtYDBV
+         WlA0qA2RYYPgg8UDY8bjaV2Skie5H9pJa1h24/tH8O5v707jr3Imo53fOsbffC85pB64
+         g/iKTBea8aNk297IcKmC2kB3mp3E/wB4k7iUgERAEkeLQK1+0zCu1lkdInv1NyH+6OON
+         0BMsgNbKy/GykhAmbMHx2dtMu5zEKxrE6fOhvR8VlqohW07A5LuaxCi060wYaQcB8/Am
+         huDA==
+X-Forwarded-Encrypted: i=1; AJvYcCXIHNedx2FWgAOlqQ7WteDJYpXT60IUbiy60VgWaavjXEOo6BK5+41NQKIsVpvB6df1hpQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyAINVInB0yRjGJ3UPmTDUuLpEIM0MBQWJ35ZZnpxWL5evFos2t
+	GdXI8jiJT1uCAY+u9iy2CAWwPYq/oAN4Za/XzmjzxX2DH+K2ACJeXUEC55aYgYqG3la/s7jmO3v
+	wxwBHLZIqjlnXz9BKljF22Noxs8BfwDs=
+X-Gm-Gg: ASbGncsK6KtXqp0B1WPSoQUaeMylZ4GHF8+pH9K/Np/avAZ+fSln6+Jc8RpkgvbsA46
+	qc+Dqcm0SDulr8JJ+P/1JLCp5Oq59eZcgxtIGTzOUR8qfOTo6hpKZcypKau7t3KnhwT1YMmlmuD
+	FddPBI69U4gR5mC+n9m9NzjHSu5X5cJe/J3p3rmchNlGC3fqZ1Ys2d/kyct0emqLdAwSSDNhgr8
+	4EMbrpLDDuHR7JnHY1t6Orh6jItFK8/7UiMdqn5H2JnhhYqLLwUaIGQoQ8yehlDRdHp7Kh9c7YQ
+	KmcqkYWAVLVa2If6599nwQ==
+X-Google-Smtp-Source: AGHT+IFhow4QI7xwSMhlDLZ5U1ipuss1H6Ff92i8GV+W07OMa+jEx3VQ4ocR2Em4KUSzfNwGqYXyynb9DW8McUjIsPI=
+X-Received: by 2002:a05:600c:37c7:b0:46d:3a07:73cd with SMTP id
+ 5b1f17b1804b1-4711790c31emr150922395e9.23.1761234165874; Thu, 23 Oct 2025
+ 08:42:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250929213520.1821223-1-bboscaccy@linux.microsoft.com>
- <CAHC9VhTQ_DR=ANzoDBjcCtrimV7XcCZVUsANPt=TjcvM4d-vjg@mail.gmail.com>
- <CACYkzJ4yG1d8ujZ8PVzsRr_PWpyr6goD9DezQTu8ydaf-skn6g@mail.gmail.com>
- <CAHC9VhR2Ab8Rw8RBm9je9-Ss++wufstxh4fB3zrZXnBoZpSi_Q@mail.gmail.com>
- <CACYkzJ7u_wRyknFjhkzRxgpt29znoTWzz+ZMwmYEE-msc2GSUw@mail.gmail.com>
- <CAHC9VhSDkwGgPfrBUh7EgBKEJj_JjnY68c0YAmuuLT_i--GskQ@mail.gmail.com>
- <CACYkzJ4mJ6eJBzTLgbPG9A6i_dN2e0B=1WNp6XkAr-WmaEyzkA@mail.gmail.com>
- <CAHC9VhRyG9ooMz6wVA17WKA9xkDy=UEPVkD4zOJf5mqrANMR9g@mail.gmail.com>
- <CAADnVQLfyh=qby02AFe+MfJYr2sPExEU0YGCLV9jJk=cLoZoaA@mail.gmail.com>
- <88703f00d5b7a779728451008626efa45e42db3d.camel@HansenPartnership.com>
- <CAADnVQKdsF5_9Vb_J+z27y5Of3P6J3gPNZ=hXKFi=APm6AHX3w@mail.gmail.com>
- <42bc677e031ed3df4f379cd3d6c9b3e1e8fadd87.camel@HansenPartnership.com>
- <CAADnVQ+M+_zLaqmd6As0z95A5BwGR8n8oFto-X-i4BgMvuhrXQ@mail.gmail.com>
- <fe538d3d723b161ee5354bb2de8e3a2ac7cf8255.camel@HansenPartnership.com>
- <CAHC9VhSU0UCHW9ApHsVQLX9ar6jTEfAW4b4bBi5-fbbsOaashg@mail.gmail.com>
- <CAHC9VhTvxgufmxHZFBd023xgkOyp9Cmq-hA-Gv8sJF1xYQBFSA@mail.gmail.com>
- <CAADnVQJw_B-T6=TauUdyMLOxcfMDZ1hdHUFVnk59NmeWDBnEtw@mail.gmail.com>
- <CAHC9VhSRiZacAy=JTKgWnBDbycey37JRVC61373HERTEUFmxEA@mail.gmail.com>
- <CAADnVQLRtfPrH6sffaPVyFP4Aib+e7uVVWLi7bb79d9TrHjHpQ@mail.gmail.com>
- <bc823ddbaf63e0e177eb46d1cc15076e4e2e689d.camel@HansenPartnership.com>
- <CAADnVQKcOS8iu0Nq5aYg+Lg_EAO8fFde0H3w8t0m_SXUy4iKAA@mail.gmail.com> <b21284e338846166804bd99bfc37186cf80f1b38.camel@HansenPartnership.com>
-In-Reply-To: <b21284e338846166804bd99bfc37186cf80f1b38.camel@HansenPartnership.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Thu, 23 Oct 2025 17:39:43 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ4z4vzVEjtOmFHuC9tpDmWp0N-EH-xDK7Bs6YJ-x0W3Sw@mail.gmail.com>
-X-Gm-Features: AWmQ_blPK84HlJK2wlWAn0y4h3BNe6SxxwJC-xtb75N9yB8CsQaGCGdK5kJkXQk
-Message-ID: <CACYkzJ4z4vzVEjtOmFHuC9tpDmWp0N-EH-xDK7Bs6YJ-x0W3Sw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/3] BPF signature hash chains
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Paul Moore <paul@paul-moore.com>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, bpf <bpf@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, wufan@linux.microsoft.com, 
-	Quentin Monnet <qmo@kernel.org>
+References: <20251022071825.238909-1-jiayuan.chen@linux.dev>
+ <6aa7fafd-30b1-4605-8b80-4a158934218d@linux.dev> <0643875cea56f4e4fd78c7e9222b24e269136155@linux.dev>
+ <84906f32-955d-4fda-b87d-56c052ddfd87@linux.dev> <8a94c764c5fa4ff04fa7dd69ed47fcdf782b814e@linux.dev>
+In-Reply-To: <8a94c764c5fa4ff04fa7dd69ed47fcdf782b814e@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 23 Oct 2025 08:42:34 -0700
+X-Gm-Features: AWmQ_blQXgPilzRH5-JKjp2M5ciDOClA5vPCYZnL9G8qXyDh5BpMORYPoCvzAh8
+Message-ID: <CAADnVQKNpd8SCawQbW69ALWNZMoOvxwRbBQELqzh0P52iXG=kw@mail.gmail.com>
+Subject: pahole next->master. Was: [PATCH bpf-next v1] selftests/bpf: Guard
+ addr_space_cast code with __BPF_FEATURE_ADDR_SPACE_CAST
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, Alan Maguire <alan.maguire@oracle.com>, 
+	Anton Protopopov <a.s.protopopov@gmail.com>, Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Puranjay Mohan <puranjay@kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	clang-built-linux <llvm@lists.linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 22, 2025 at 11:10=E2=80=AFPM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> On Mon, 2025-10-20 at 18:25 -0700, Alexei Starovoitov wrote:
-> > On Mon, Oct 20, 2025 at 4:13=E2=80=AFPM James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
-> [...]
-> > > The point, for me, is when doing integrity tests both patch sets
-> > > produce identical results and correctly detect when integrity of a
-> > > light skeleton is compromised (in mathematical terms that means
-> > > they're functionally equivalent).  The only difference is that with
-> > > Blaise's patch set verification completes before the LSM load hook
-> > > is called and with KP's it completes after ... and the security
-> > > problem with the latter case is that there's no LSM hook to collect
-> > > the verification result.
-> >
-> > the security problem with KP's approach? wtf.
-> > I'm going to add "depends on !microsoft" to kconfig bpf_syscall
-> > and be done with it.
-> > Don't use it since it's so insecure.
->
-> Most Linux installations use LSMs to enforce and manage policies for
-> system integrity (they don't all use the same set of LSMs, but that's
-> not relevant to the argument).  So while Meta may not use LSMs for
-> system integrity the fact that practically everyone else does makes not
-> having a correctly functioning LSM hook for BPF signature verification
-> a problem for a huge set of users that goes way beyond just Microsoft.
+On Thu, Oct 23, 2025 at 12:50=E2=80=AFAM Jiayuan Chen <jiayuan.chen@linux.d=
+ev> wrote:
 >
 
-The core tenet of your claim is that  you need "LSM observability" but
-without any description of a security policy
-that cannot not be currently implemented. The responses I have
-received are generic statements that the loader verification is
-"unsafe"
-
-If you really consider this unsafe, then you can deny loading programs
-with relocations and re-enable them when / if we achieve stable
-instruction buffers. To be honest, with this restriction of all
-signature verification happening in the kernel you also need to deny
-key real-world BPF use-cases like Cilium, bpftrace which generate eBPF
-programs on the target host which also shows me how out of touch you
-are with the eBPF eco-system and users.
-
-- KP
-
-> Regards,
 >
-> James
+> thanks, but version 1.30 didn't work in my tests - even pahole's master b=
+ranch fails, only the next branch works...
 >
+>
+> It seems that the 'old' pahole parses some kfuncs incorrectly, for exampl=
+e bpf_dynptr_slice().
+
+Alan,
+
+the introduction of the 'next' branch screwed up the workflow for many peop=
+le.
+Let's remove it and merge everything into master.
+People expect master branch to be the one where active development
+is happening and the source of truth for the latest features.
 
