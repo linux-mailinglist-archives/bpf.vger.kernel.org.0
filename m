@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-71858-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71859-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DA6DBFEC39
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 02:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D4CFBFEC3C
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 02:57:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EF2E14E465E
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 00:57:06 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8ADF94E2E25
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 00:57:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A58D17483;
-	Thu, 23 Oct 2025 00:57:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8063C1A3165;
+	Thu, 23 Oct 2025 00:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UZkS7mei"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H+pmiirx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F681891A9
-	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 00:57:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8781235B154
+	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 00:57:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761181023; cv=none; b=cO08BTyowZiDbmJT5tZdr4dS/tRagk9wK7ZkNwAuiCuJqvKDCNVJMtOpLmdEj33da/c2ZiqRsmijoui3LA2Rz6dqjEkXrquCM2D/eABmdwbD0ZtSU9sEIlqC8BFOelKKJoijohBNa6Fr8o35TRUU/IHSTslAFAkq7yFION6dtkA=
+	t=1761181057; cv=none; b=g/cUAmEkL7MKY3FRQuvA+WXrrAIzy6LMxxhhIuJOXh+p9VseMApSWlqjTDB85Z6627kZ9e8ZszH8+m6Bp5lwc10nx+ZyLRCC9y5XEVDp0kPM6TDiSVOH7VAIGNYbQ8jHnKwI15dKjOXZZRlRlBU0YkFTW39hrYigmhbyJAVREXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761181023; c=relaxed/simple;
-	bh=cMRrsSoUCKVN272+zUrBcFfVfKdMzsflpJn5+RK/ni4=;
+	s=arc-20240116; t=1761181057; c=relaxed/simple;
+	bh=KeiA21OKMHVHxWBS2SFXZT/vOIC4OQ7sVFDRF6D6368=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=QMkGEUCqeruDK4PwNUuKT4bYbHfYbcW2kj5egsLP+Xx2x09zfKN817YsjjtdQy+3ua2qBslY2hIsG8C4PPZpOYxEZA8KQi+TMaMgWQ4FsDcBq3U280ZbDl04SA/dYOgChGL/s2viYDsmJW8eXaNQdu9sLVarR7DnO1jiSLNHibI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UZkS7mei; arc=none smtp.client-ip=209.85.214.169
+	 Content-Type:MIME-Version; b=biGWLSB6byhW8Cn8+gTWsXzFRaExFq398jTG1hXUfcpWQPbM4p1SL/pVGiLbssNWKAplITeupADGe4WBOpjr41kB/rTRUMnAvuYwzhjT/Wf01CcExKpLQ7EYmbIentTiGgjh4L3ei2REGNPlnQoDo6xqK6qCJji9RIv/KS+IqjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H+pmiirx; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-28e7cd6dbc0so2813305ad.0
-        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 17:57:01 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-7811a02316bso178215b3a.3
+        for <bpf@vger.kernel.org>; Wed, 22 Oct 2025 17:57:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761181021; x=1761785821; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761181055; x=1761785855; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=L7EKnyBeh0jONdCQLwZ24E1aRwyCcjKTqUSkMS6hbrg=;
-        b=UZkS7meiBaEounjwQunFkIOanTScRQy2/UnHlDMaG+ChGVWPLVXKc8RDHGf3VLLaXW
-         08CeDq1GZyo2p/oh2A4oomiqDYABs1s/JYF7Gbn6GXYrjXm9M6VhLS00TmGbIzQJ0N2R
-         3aoAZxTT9hJJfo5Q2ghEq+j0UWDi4asa1RYI+NWVlFLWA6RGK7uFhL3d2K56wvPjBNKa
-         26AWqjSA6BtnkSUc9Xs9o0QaEIsHCjNkfl2to1NJ1hoKF/Okv/T/oNNQ9Lc17ejAcrAS
-         5KWOSe6vJ1XaycjGV1c4gQWhJymQA2fp2LpOErWmknNS40H1L1jgaYBVLJeflCOL+0Z/
-         D1cg==
+        bh=W2FZ/t+WQN+ebpe5bkA7qAjqtfR2fImIxXm9jF/Fglw=;
+        b=H+pmiirxSY9iyup5MRMFT4mepCqSL1Zxoc15IqioE1vIBjiXzGAp/gFZMEjoKd6QOs
+         lbQ37XlYbWTPyG6xe7xUu1zSJ8OIMKtvcLCjtPgkgHMR4GBZ8d0ZhAWNmqQZCnQIt6XO
+         QAf8my1yvPqBJgug2jlyXlD3fcV2zuWqWWPVPepvQ64SoS+EpKTeMwMECY7lV2Z4Mh1o
+         ilTyDLOPLoQiUo0CO4OMnJwa7I1Tjs7Zzvr7E4mgtwqUncQK9L9Mgm6Sh6mEK0geM68c
+         a66cy4oFJXbXdYf3M42p1nrNSFGsdulcs0UwxMzrsFtViOkrPLh76wGlJhjGZERmYB1S
+         avEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761181021; x=1761785821;
+        d=1e100.net; s=20230601; t=1761181055; x=1761785855;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=L7EKnyBeh0jONdCQLwZ24E1aRwyCcjKTqUSkMS6hbrg=;
-        b=R/dKyt8pFw4dffpoT3zFUgG0CP5WQnTvMnCwAckgvYgywAYUZ1GG+Azcp0VFlcFyYv
-         sojjhrjdGLin3bG9utZXkkYsWPBAhTkcpvnU4S2klGxzbRMU22c+22aw30ob3AoHJvQI
-         B6as0trXFx3SA69lHnCG7vtAl2hgGaCSDZUZdmcMZDg14c3dwQmLZMQpxeEJACPaIjQ7
-         Vi6r/8GpVRD2diU0nRLAie6+Ku9iVJuNRzirKChWGXCM22gzahKV6K3g0TujKZ6X9Gsk
-         fIXDCdj9Wp3r/s7Rn/CzcK0x8GMyXhmBZdDbBNfN2qFVv3EygIfK3pjHKKbMTxTwBiTa
-         gihA==
-X-Forwarded-Encrypted: i=1; AJvYcCXXtR84Yyg05JI0DK4y9B/ermMS5T1RWOQAjeDB18HpVKLJ4g4+MaBRSG/wMIPb9yXQm6I=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxjrhFO4BFNShQXc+fBTOjpS3uNMOi40iuufGrbZVvigNaYFZvh
-	H6gX9vWYguyhnEpxk9j9Zp30npIyTzw9eI0wvB3O7OHedG8/ullAzwuf
-X-Gm-Gg: ASbGncuPDj+swcRi1sqzGcfAEDpvgcb3HxYckeYR33JMroz5lU5wr4h72QMaNHW8uuQ
-	OCvPxN7585FJjFQOJECFnogXxBBr8WpsjxBNrKgFINmlQEaWLucSIhMbW1VfByzBwvM9Yv8qHyq
-	cS2mHzTsjsNUghnOb0yu0VnCODDyQAG/1SSXt501RlnhebC5df7OOy4CyqSZUomaMvw4Ut8s2ON
-	gsI9hypKh/yMSNxWp2W8KK9WzBb1fZN54JoRitPbxm6NAjU4fMPMZecAs/z0rnnstpOdBOgbQvB
-	fDBTZnPPJSeU7MfDljTKcABK2lOAEhVIEsc+h64lteiUGTox7iTKsydcJIDT5xlNKxbuiTnrIYF
-	H0/2qSuqO0ta4nWadBlmljSJEX+N1pCNvRbJ2qEylIxcIx5zWW3eVxoMVzX7vU2UheWyhaBge8m
-	zWE5OiXdLGqMV/2+QBiQli9XYYIY6n9DeKBts=
-X-Google-Smtp-Source: AGHT+IFb4obnKXDqBY+g5WJSO2SBBcOBNb+s5DQi2tBL/aLUZjx2MpT0JXgIbiGQ/WOMRBlUJ0/weA==
-X-Received: by 2002:a17:903:138a:b0:290:9332:eebd with SMTP id d9443c01a7336-290c9cf90b5mr261337535ad.10.1761181020913;
-        Wed, 22 Oct 2025 17:57:00 -0700 (PDT)
+        bh=W2FZ/t+WQN+ebpe5bkA7qAjqtfR2fImIxXm9jF/Fglw=;
+        b=cPGWkRYcN/zkaa5bLhkNOtkeC92v/hD3I1I2fqK1KVE2DAYyVDwu4GdF5bgji3CWIm
+         BBUSgSOvynAxDQ3ytuyKeZ0z4ONf/zEqbyideUrYAauBCvn1bS0dXl51q46g370dcKue
+         Y5lN24rzMjMNiCR2FqWyqXxfl2favocamI+y2qw7FZohQHtPUkz/C+On3lcSVygbTxNa
+         u3mDy8KW7jL9NSpeHkyKv+A3vKvh+BxdA4IdBBcxT7qKqdM2xlxpY+Roqz3O0e/ipgRf
+         c8xfE5LGAa2/gtfJXZtNEFEThUP9JifIiAqlQvmQm5H2ZMFXq4Ta3tqDrP7NDu/2MloO
+         mpNw==
+X-Forwarded-Encrypted: i=1; AJvYcCVWcHLVHYW904LFe+wPuYIK5bKNANWkB91tp/FAEAK8hXb2Ssj8XU7aJJjhtS6h8/xAkyg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwZG5qntVRFV8o0AMUaGXVj/S09P0MSL7+Tti97YC9/5M5VNSDD
+	isSC5hZci2MlxNVYVrsJJSjXL6K9BPSit5ywk3Rx6JfI0NIcNi43z6I3
+X-Gm-Gg: ASbGncvT9IYcYWdLuHrwDDx4GJ7UIShFrDBnp+ErvMvHCsATzJEZuUwZVn4D0uMDsV7
+	k2Nfn268dOIzzdpwFL/kmsAQvIrIwrBU0IxzLgWOYtjq3sHOHRGhwpIkGJrjRxNaZ6pIenr1BDp
+	MpCDwujRPVbr09r5YydhblsYAUo74uEhUDlBrysJ/dJJuJBF8vBh5+79d4hohKEXpcA3fLSVZbw
+	xnQgjTNSrrHG0erbLaN16WLsaEH/6eTYuWG3Tel/N+RCBGvAlui1zmKc5jjWBnU7sbM3IV/UGhR
+	ZcCtEN3mOPw5pUMD/1FCOX4khzh/iyP8yTAwM6WS8u+CJWfS2mShd+7ltCXkU7TaM90BoehmJRm
+	5RvW4FV5xPd8V5LpRD4Rm7+IPq45hSShrmQoCKbYnCapjK2IRjNRfT18Rfha735ULom/XQ1rt9s
+	8cMVyj36EbUoucZ3wF/5Shm4AaD8DG98A+qYw=
+X-Google-Smtp-Source: AGHT+IGIKj6y9FV88U6XCmNmrNc7e0J/LncU7hBeyp9e+rHo6S2D+XxSttGhr5tcx+qEiNEDmmoofQ==
+X-Received: by 2002:a05:6a00:a87:b0:77e:f03b:d49a with SMTP id d2e1a72fcca58-7a220a995bfmr26445131b3a.19.1761181054586;
+        Wed, 22 Oct 2025 17:57:34 -0700 (PDT)
 Received: from ?IPv6:2a03:83e0:115c:1:fa8d:1a05:3c71:d71? ([2620:10d:c090:500::7:b877])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2946dda72e8sm4553365ad.9.2025.10.22.17.56.58
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a274b8ac3dsm565677b3a.44.2025.10.22.17.57.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Oct 2025 17:57:00 -0700 (PDT)
-Message-ID: <531305ee76a5ef186b1204dc8281ebc7ebb2b1c0.camel@gmail.com>
-Subject: Re: [RFC bpf-next 01/15] bpf: Extend UAPI to support location
- information
+        Wed, 22 Oct 2025 17:57:34 -0700 (PDT)
+Message-ID: <adb75ea792825e164a4758e40059a677d26694b7.camel@gmail.com>
+Subject: Re: [RFC bpf-next 02/15] libbpf: Add support for BTF kinds
+ LOC_PARAM, LOC_PROTO and LOCSEC
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org, 
 	daniel@iogearbox.net, andrii@kernel.org
@@ -85,10 +85,10 @@ Cc: martin.lau@linux.dev, acme@kernel.org, ttreyer@meta.com,
 	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
 	qmo@kernel.org, ihor.solodrai@linux.dev, david.faust@oracle.com, 
 	jose.marchesi@oracle.com, bpf@vger.kernel.org
-Date: Wed, 22 Oct 2025 17:56:57 -0700
-In-Reply-To: <20251008173512.731801-2-alan.maguire@oracle.com>
+Date: Wed, 22 Oct 2025 17:57:32 -0700
+In-Reply-To: <20251008173512.731801-3-alan.maguire@oracle.com>
 References: <20251008173512.731801-1-alan.maguire@oracle.com>
-			 <20251008173512.731801-2-alan.maguire@oracle.com>
+		 <20251008173512.731801-3-alan.maguire@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -103,88 +103,265 @@ On Wed, 2025-10-08 at 18:34 +0100, Alan Maguire wrote:
 
 [...]
 
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index f06976ffb63f..65091c6aff4b 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 18907f0fcf9f..0abd7831d6b4 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
 
 [...]
 
-> > @@ -552,7 +579,7 @@ struct btf_field_desc {
->  	/* member struct size, or zero, if no members */
->  	int m_sz;
->  	/* repeated per-member offsets */
-> -	int m_off_cnt, m_offs[1];
-> +	int m_off_cnt, m_offs[2];
->  };
+> @@ -588,6 +621,34 @@ static int btf_validate_type(const struct btf *btf, =
+const struct btf_type *t, __
 
-Should this be a part of patch #2?
-Commit message of the patch #2 explains why its needed.
+offtopic: we should probably switch this function to use field and string i=
+terators.
 
-> diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
-> index 266d4ffa6c07..a74b9d202847 100644
-> --- a/include/uapi/linux/btf.h
-> +++ b/include/uapi/linux/btf.h
-
-[...]
-
-> +/* BTF_KIND_LOC_PARAM consists a btf_type specifying a vlen of 0, name_o=
-ff is 0
-> + * and is followed by a singular "struct btf_loc_param". type/size speci=
-fies
-> + * the size of the associated location value.  The size value should be
-> + * cast to a __s32 as negative sizes can be specified; -8 to indicate a =
-signed
-> + * 8 byte value for example.
-
-Not sure it matters after Andrii's suggestion, but I find this
-description a bit cryptic. Maybe just note that (s32)(t)->size
-can be -8, -4, -2 for signed values, 2, 4, 8 for unsigned values,
-and its absolute value denotes the size of the value in bytes?
-
-+1 to Andrii's suggestion to use enum to represent btf_loc_param "tag".
-
-Also, what register numbering scheme is used?
-Probably should be mentioned in the docstring.
-
-> + *
-> + * If kind_flag is 1 the btf_loc is a constant value, otherwise it repre=
-sents
-> + * a register, possibly dereferencing it with the specified offset.
-> + *
-> + * "struct btf_type" is followed by a "struct btf_loc_param" which consi=
-sts
-> + * of either the 64-bit value or the register number, offset etc.
-> + * Interpretation depends on whether the kind_flag is set as described a=
-bove.
-> + */
-
-[...]
-
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 0de8fc8a0e0b..29cec549f119 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-
-[...]
-
-> +static void btf_loc_param_log(struct btf_verifier_env *env,
-> +			 const struct btf_type *t)
-> +{
-> +	const struct btf_loc_param *p =3D btf_loc_param(t);
+>  		}
+>  		break;
+>  	}
+> +	case BTF_KIND_LOC_PARAM:
+> +		break;
+> +	case BTF_KIND_LOC_PROTO: {
+> +		__u32 *p =3D btf_loc_proto_params(t);
 > +
-> +	if (btf_type_kflag(t))
-> +		btf_verifier_log(env, "type=3D%u const=3D%lld", t->type, btf_loc_param=
-_value(t));
-> +	else
-> +		btf_verifier_log(env, "type=3D%u reg=3D%u flags=3D%d offset %u",
+> +		n =3D btf_vlen(t);
+> +		for (i =3D 0; i < n; i++, p++) {
+> +			err =3D btf_validate_id(btf, *p, id);
+> +			if (err)
+> +				return err;
+> +		}
+> +		break;
+> +	}
+> +	case BTF_KIND_LOCSEC: {
+> +		const struct btf_loc *l =3D btf_locsec_locs(t);
+> +
+> +		n =3D btf_vlen(t);
+> +		for (i =3D 0; i < n; i++, l++) {
+> +			err =3D btf_validate_str(btf, l->name_off, "loc name", id);
+> +			if (!err)
+> +				err =3D btf_validate_id(btf, l->func_proto, id);
+> +			if (!err)
+> +				btf_validate_id(btf, l->loc_proto, id);
+                              ^^^^
+                       Missing `err =3D`?
 
-Nit: print flags in hex?
+> +			if (err)
+> +				return err;
+> +		}
+> +		break;
+> +	}
+>  	default:
+>  		pr_warn("btf: type [%u]: unrecognized kind %u\n", id, kind);
+>  		return -EINVAL;
+> @@ -2993,6 +3054,183 @@ int btf__add_decl_attr(struct btf *btf, const cha=
+r *value, int ref_type_id,
+>  	return btf_add_decl_tag(btf, value, ref_type_id, component_idx, 1);
+>  }
+> =20
+> +/*
+> + * Append new BTF_KIND_LOC_PARAM with either
+> + *   - *value* set as __u64 value following btf_type, with info->kflag s=
+et to 1
+> + *     if *is_value* is true; or
+> + *   - *reg* number, *flags* and *offset* set if *is_value* is set to 0,=
+ and
+> + *    info->kflag set to 0.
+> + * Returns:
+> + *   -  >0, type ID of newly added BTF type;
+> + *   - <0, on error.
+> + */
+> +int btf__add_loc_param(struct btf *btf, __s32 size, bool is_value, __u64=
+ value,
+> +		       __u16 reg, __u16 flags, __s32 offset)
 
-> +				 t->type, p->reg, p->flags, p->offset);
+Probably, would be more convenient to have several functions, e.g.:
+- btf__add_loc_param_const()
+- btf__add_loc_param_reg()
+- btf__add_loc_param_deref()
+
+Should `size` be some kind of enum?
+E.g. with values like S64, S32, ..., U64.
+So the the usage would be like:
+
+  btf__add_loc_param_const(btf, U64, 0xdeadbeef);
+
+Wdyt?
+
+> +{
+> +	struct btf_loc_param *p;
+> +	struct btf_type *t;
+> +	int sz;
+> +
+> +	if (btf_ensure_modifiable(btf))
+> +		return libbpf_err(-ENOMEM);
+> +
+> +	sz =3D sizeof(struct btf_type) + sizeof(__u64);
+> +	t =3D btf_add_type_mem(btf, sz);
+> +	if (!t)
+> +		return libbpf_err(-ENOMEM);
+> +
+> +	t->name_off =3D 0;
+> +	t->info =3D btf_type_info(BTF_KIND_LOC_PARAM, 0, is_value);
+> +	t->size =3D size;
+> +
+> +	p =3D btf_loc_param(t);
+> +
+> +	if (is_value) {
+> +		p->val_lo32 =3D value & 0xffffffff;
+> +		p->val_hi32 =3D value >> 32;
+> +	} else {
+> +		p->reg =3D reg;
+> +		p->flags =3D flags;
+> +		p->offset =3D offset;
+> +	}
+> +	return btf_commit_type(btf, sz);
 > +}
 
 [...]
 
+> +int btf__add_locsec_loc(struct btf *btf, const char *name, __u32 func_pr=
+oto, __u32 loc_proto,
+> +			__u32 offset)
+> +{
+> +	struct btf_type *t;
+> +	struct btf_loc *l;
+> +	int name_off, sz;
+> +
+> +	if (!name || !name[0])
+> +		return libbpf_err(-EINVAL);
+> +
+> +	if (validate_type_id(func_proto) || validate_type_id(loc_proto))
+> +		return libbpf_err(-EINVAL);
+> +
+> +	/* last type should be BTF_KIND_LOCSEC */
+> +	if (btf->nr_types =3D=3D 0)
+> +		return libbpf_err(-EINVAL);
+> +	t =3D btf_last_type(btf);
+> +	if (!btf_is_locsec(t))
+> +		return libbpf_err(-EINVAL);
+> +
+> +	/* decompose and invalidate raw data */
+> +	if (btf_ensure_modifiable(btf))
+> +		return libbpf_err(-ENOMEM);
+> +
+> +	name_off =3D btf__add_str(btf, name);
+> +	if (name_off < 0)
+> +		return name_off;
+> +
+> +	sz =3D sizeof(*l);
+> +	l =3D btf_add_type_mem(btf, sz);
+> +	if (!l)
+> +		return libbpf_err(-ENOMEM);
+> +
+> +	l->name_off =3D name_off;
+> +	l->func_proto =3D func_proto;
+> +	l->loc_proto =3D loc_proto;
+> +	l->offset =3D offset;
+> +
+> +	/* update parent type's vlen */
+> +	t =3D btf_last_type(btf);
+> +	btf_type_inc_vlen(t);
+
+Since vlen is only u16, maybe check for overflow and report an error here?
+
+> +
+> +	btf->hdr->type_len +=3D sz;
+> +	btf->hdr->str_off +=3D sz;
+> +	return 0;
+> +}
+> +
+>  struct btf_ext_sec_info_param {
+>  	__u32 off;
+>  	__u32 len;
+
+[...]
+
+> @@ -5075,6 +5361,45 @@ static int btf_dedup_ref_type(struct btf_dedup *d,=
+ __u32 type_id)
+>  		break;
+>  	}
+> =20
+> +	case BTF_KIND_LOC_PROTO: {
+> +		__u32 *p1, *p2;
+> +		__u16 i, vlen;
+> +
+> +		p1 =3D btf_loc_proto_params(t);
+> +		vlen =3D btf_vlen(t);
+> +
+> +		for (i =3D 0; i < vlen; i++, p1++) {
+> +			ref_type_id =3D btf_dedup_ref_type(d, *p1);
+> +			if (ref_type_id < 0)
+> +				return ref_type_id;
+> +			*p1 =3D ref_type_id;
+> +		}
+> +
+> +		h =3D btf_hash_loc_proto(t);
+> +		for_each_dedup_cand(d, hash_entry, h) {
+> +			cand_id =3D hash_entry->value;
+> +			cand =3D btf_type_by_id(d->btf, cand_id);
+> +			if (!btf_equal_common(t, cand))
+> +				continue;
+
+Nit: having btf_equal_loc_proto() would have been more readable here.
+
+> +			vlen =3D btf_vlen(cand);
+> +			p1 =3D btf_loc_proto_params(t);
+> +			p2 =3D btf_loc_proto_params(cand);
+> +			if (vlen =3D=3D 0) {
+> +				new_id =3D cand_id;
+> +				break;
+> +			}
+> +			for (i =3D 0; i < vlen; i++, p1++, p2++) {
+> +				if (*p1 !=3D *p2)
+> +					break;
+> +				new_id =3D cand_id;
+> +				break;
+> +			}
+> +			if (new_id =3D=3D cand_id)
+> +				break;
+
+Why `break` and not `continue`?
+Also, BTF_KIND_FUNC_PROTO does not have this special case, why the differen=
+ce?
+
+> +		}
+> +		break;
+> +	}
+> +
+>  	default:
+>  		return -EINVAL;
+>  	}
+
+[...]
+
+> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> index 6388392f49a0..95bdda2f4a2d 100644
+> --- a/tools/lib/bpf/btf_dump.c
+> +++ b/tools/lib/bpf/btf_dump.c
+> @@ -328,6 +328,9 @@ static int btf_dump_mark_referenced(struct btf_dump *=
+d)
+>  		case BTF_KIND_ENUM64:
+>  		case BTF_KIND_FWD:
+>  		case BTF_KIND_FLOAT:
+> +		case BTF_KIND_LOC_PARAM:
+> +		case BTF_KIND_LOC_PROTO:
+> +		case BTF_KIND_LOCSEC:
+>  			break;
+> =20
+>  		case BTF_KIND_VOLATILE:
+> @@ -339,7 +342,6 @@ static int btf_dump_mark_referenced(struct btf_dump *=
+d)
+>  		case BTF_KIND_VAR:
+>  		case BTF_KIND_DECL_TAG:
+>  		case BTF_KIND_TYPE_TAG:
+> -			d->type_states[t->type].referenced =3D 1;
+>  			break;
+
+This change seems unrelated, why is it necessary?
+
+> =20
+>  		case BTF_KIND_ARRAY: {
+
+[...]
 
 
