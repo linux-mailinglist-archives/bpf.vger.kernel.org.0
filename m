@@ -1,31 +1,31 @@
-Return-Path: <bpf+bounces-71922-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71924-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C38E5C019A0
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 16:00:29 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09092C019BB
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 16:01:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 973AA56578A
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 13:55:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AF67756184A
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 13:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFB3B3321DD;
-	Thu, 23 Oct 2025 13:53:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F280833342F;
+	Thu, 23 Oct 2025 13:53:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 079CD3314CD
-	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 13:53:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1769332EA7
+	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 13:53:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761227627; cv=none; b=SU99C/E+KbVEfgwGskoGhq8wIRRaFvDsKEWcuAsbHln7EoAicYrAOmKejLFM50CDq5fkcI5Hyb8lDUzAJUzmzaG+cFyDoL5gY2Kuw91GgnwmGkUdnY2qmZqfVPmvXg/emNZhFF6SxGenvU3CnLUc9zLaCY4tT0hrmui8NRMSB0s=
+	t=1761227633; cv=none; b=WkC5K1oEp9CddG/+0UBOhbbew2CddBfayUCX/BPa/sSZ9VtUN39DZRe06cO2gGkF9IhExf8MbP6hR+t0eeXnKmGMtg/Ej5ybQl8rWUW3IGzVx6FEmebIXphlxrDHZHNvDGfRPNXGttqiGn1ncY0CnB3bWMTg8RmT5/T3Qa5hjRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761227627; c=relaxed/simple;
-	bh=Tx3alZCX/iWjxCho3p1HiJERNNhEkf5M0K5IdItTQjY=;
+	s=arc-20240116; t=1761227633; c=relaxed/simple;
+	bh=rax54nsNsojaw3G1YtDjDYfbqk8HuAjajkRzTHDctDk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=WNa2VXK3Soe1kJYYmWVYBv6l4T7gzMlbXAcaMj9Q1DuVCJ17+QqbxaiRmictZNBdoJmz4l/PQFDW9FfUZy4bozrDYc33frsR8X59SHmxJkUcU4IvzH6DBUv2lqLj+xbqVvd2qWMsoSEDnWNRNeaJgphZbGDYW6WzmO+vJ8yAtMY=
+	 In-Reply-To:To:Cc; b=R3Z86vuAACg8cooAOnOvDjfEGaMHwWPuPKVBwnByoQWwCwNkzXJfWXQukkY6IWDn7JevSVB47ONqizSGHbEQ7Wsiyl4/lyAK+9c3HjJqLWCcmVraLMz/uB+e/rP48llQrOwsXU4FHYf9wVyCSIlP/RoUTePC0XwDj+Gl7fIvcsg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
@@ -33,7 +33,7 @@ Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AFC0F1F7CE;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B398F1F7CF;
 	Thu, 23 Oct 2025 13:53:01 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
@@ -41,15 +41,15 @@ Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BF88613B0F;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D6F6F13B10;
 	Thu, 23 Oct 2025 13:52:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id oPB8LjYz+mjvQQAAD6G6ig
+	id oDUPNDYz+mjvQQAAD6G6ig
 	(envelope-from <vbabka@suse.cz>); Thu, 23 Oct 2025 13:52:54 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Thu, 23 Oct 2025 15:52:39 +0200
-Subject: [PATCH RFC 17/19] slab: refill sheaves from all nodes
+Date: Thu, 23 Oct 2025 15:52:40 +0200
+Subject: [PATCH RFC 18/19] slab: update overview comments
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -58,7 +58,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251023-sheaves-for-all-v1-17-6ffa2c9941c0@suse.cz>
+Message-Id: <20251023-sheaves-for-all-v1-18-6ffa2c9941c0@suse.cz>
 References: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz>
 In-Reply-To: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -76,7 +76,7 @@ X-Mailer: b4 0.14.3
 X-Rspamd-Pre-Result: action=no action;
 	module=replies;
 	Message is reply to one we originated
-X-Rspamd-Queue-Id: AFC0F1F7CE
+X-Rspamd-Queue-Id: B398F1F7CF
 X-Rspamd-Pre-Result: action=no action;
 	module=replies;
 	Message is reply to one we originated
@@ -88,232 +88,219 @@ X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
 
-__refill_objects() currently only attempts to get partial slabs from the
-local node and then allocates new slab(s). Expand it to trying also
-other nodes while observing the remote node defrag ratio, similarly to
-get_any_partial().
+The changes related to sheaves made the description of locking and other
+details outdated. Update it to reflect current state.
 
-This will prevent allocating new slabs on a node while other nodes have
-many free slabs. It does mean sheaves will contain non-local objects in
-that case. Allocations that care about specific node will still be
-served appropriately, but might get a slowpath allocation.
-
-Like get_any_partial() we do observe cpuset_zone_allowed(), although we
-might be refilling a sheaf that will be then used from a different
-allocation context.
-
-We can also use the resulting refill_objects() in
-__kmem_cache_alloc_bulk() for non-debug caches. This means
-kmem_cache_alloc_bulk() will get better performance when sheaves are
-exhausted. kmem_cache_alloc_bulk() cannot indicate a preferred node so
-it's compatible with sheaves refill in preferring the local node.
+Also add a new copyright line due to major changes.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 130 ++++++++++++++++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 102 insertions(+), 28 deletions(-)
+ mm/slub.c | 141 +++++++++++++++++++++++++++++---------------------------------
+ 1 file changed, 67 insertions(+), 74 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index d55afa9b277f..4e003493ba60 100644
+index 4e003493ba60..515a2b59cb52 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2505,8 +2505,8 @@ static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
- }
+@@ -1,13 +1,15 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * SLUB: A slab allocator that limits cache line use instead of queuing
+- * objects in per cpu and per node lists.
++ * SLUB: A slab allocator with low overhead percpu array caches and mostly
++ * lockless freeing of objects to slabs in the slowpath.
+  *
+- * The allocator synchronizes using per slab locks or atomic operations
+- * and only uses a centralized lock to manage a pool of partial slabs.
++ * The allocator synchronizes using spin_trylock for percpu arrays in the
++ * fastpath, and cmpxchg_double (or bit spinlock) for slowpath freeing.
++ * Uses a centralized lock to manage a pool of partial slabs.
+  *
+  * (C) 2007 SGI, Christoph Lameter
+  * (C) 2011 Linux Foundation, Christoph Lameter
++ * (C) 2025 SUSE, Vlastimil Babka
+  */
  
- static unsigned int
--__refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
--		 unsigned int max);
-+refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
-+	       unsigned int max);
+ #include <linux/mm.h>
+@@ -53,11 +55,13 @@
  
- static int refill_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf,
- 			 gfp_t gfp)
-@@ -2517,8 +2517,8 @@ static int refill_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf,
- 	if (!to_fill)
- 		return 0;
- 
--	filled = __refill_objects(s, &sheaf->objects[sheaf->size], gfp,
--			to_fill, to_fill);
-+	filled = refill_objects(s, &sheaf->objects[sheaf->size], gfp, to_fill,
-+				to_fill);
- 
- 	sheaf->size += filled;
- 
-@@ -6423,25 +6423,21 @@ void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
- EXPORT_SYMBOL(kmem_cache_free_bulk);
- 
- static unsigned int
--__refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
--		 unsigned int max)
-+__refill_objects_node(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
-+		      unsigned int max, struct kmem_cache_node *n)
- {
- 	struct slab *slab, *slab2;
- 	struct partial_context pc;
- 	unsigned int refilled = 0;
- 	unsigned long flags;
- 	void *object;
--	int node;
- 
- 	pc.flags = gfp;
- 	pc.min_objects = min;
- 	pc.max_objects = max;
- 
--	node = numa_mem_id();
--
--	/* TODO: consider also other nodes? */
--	if (!get_partial_node_bulk(s, get_node(s, node), &pc))
--		goto new_slab;
-+	if (!get_partial_node_bulk(s, n, &pc))
-+		return 0;
- 
- 	list_for_each_entry_safe(slab, slab2, &pc.slabs, slab_list) {
- 
-@@ -6480,8 +6476,6 @@ __refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
- 	}
- 
- 	if (unlikely(!list_empty(&pc.slabs))) {
--		struct kmem_cache_node *n = get_node(s, node);
--
- 		spin_lock_irqsave(&n->list_lock, flags);
- 
- 		list_for_each_entry_safe(slab, slab2, &pc.slabs, slab_list) {
-@@ -6503,13 +6497,91 @@ __refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
- 		}
- 	}
- 
-+	return refilled;
-+}
- 
--	if (likely(refilled >= min))
--		goto out;
-+#ifdef CONFIG_NUMA
-+static unsigned int
-+__refill_objects_any(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
-+		     unsigned int max, int local_node)
-+{
-+	struct zonelist *zonelist;
-+	struct zoneref *z;
-+	struct zone *zone;
-+	enum zone_type highest_zoneidx = gfp_zone(gfp);
-+	unsigned int cpuset_mems_cookie;
-+	unsigned int refilled = 0;
-+
-+	/* see get_any_partial() for the defrag ratio description */
-+	if (!s->remote_node_defrag_ratio ||
-+			get_cycles() % 1024 > s->remote_node_defrag_ratio)
-+		return 0;
-+
-+	do {
-+		cpuset_mems_cookie = read_mems_allowed_begin();
-+		zonelist = node_zonelist(mempolicy_slab_node(), gfp);
-+		for_each_zone_zonelist(zone, z, zonelist, highest_zoneidx) {
-+			struct kmem_cache_node *n;
-+			unsigned int r;
-+
-+			n = get_node(s, zone_to_nid(zone));
-+
-+			if (!n || !cpuset_zone_allowed(zone, gfp) ||
-+					n->nr_partial <= s->min_partial)
-+				continue;
-+
-+			r = __refill_objects_node(s, p, gfp, min, max, n);
-+			refilled += r;
-+
-+			if (r >= min) {
-+				/*
-+				 * Don't check read_mems_allowed_retry() here -
-+				 * if mems_allowed was updated in parallel, that
-+				 * was a harmless race between allocation and
-+				 * the cpuset update
-+				 */
-+				return refilled;
-+			}
-+			p += r;
-+			min -= r;
-+			max -= r;
-+		}
-+	} while (read_mems_allowed_retry(cpuset_mems_cookie));
-+
-+	return refilled;
-+}
-+#else
-+static inline unsigned int
-+__refill_objects_any(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
-+		     unsigned int max, int local_node)
-+{
-+	return 0;
-+}
-+#endif
-+
-+static unsigned int
-+refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
-+	       unsigned int max)
-+{
-+	int local_node = numa_mem_id();
-+	unsigned int refilled;
-+	unsigned long flags;
-+	struct slab *slab;
-+	void *object;
-+
-+	refilled = __refill_objects_node(s, p, gfp, min, max,
-+					 get_node(s, local_node));
-+	if (refilled >= min)
-+		return refilled;
-+
-+	refilled += __refill_objects_any(s, p + refilled, gfp, min - refilled,
-+					 max - refilled, local_node);
-+	if (refilled >= min)
-+		return refilled;
- 
- new_slab:
- 
--	slab = new_slab(s, pc.flags, node);
-+	slab = new_slab(s, gfp, local_node);
- 	if (!slab)
- 		goto out;
- 
-@@ -6541,8 +6613,8 @@ __refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
- 
- 	if (refilled < min)
- 		goto new_slab;
--out:
- 
-+out:
- 	return refilled;
- }
- 
-@@ -6552,18 +6624,20 @@ int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- {
- 	int i;
- 
--	/*
--	 * TODO: this might be more efficient (if necessary) by reusing
--	 * __refill_objects()
--	 */
--	for (i = 0; i < size; i++) {
-+	if (IS_ENABLED(CONFIG_SLUB_TINY) || kmem_cache_debug(s)) {
-+		for (i = 0; i < size; i++) {
- 
--		p[i] = ___slab_alloc(s, flags, NUMA_NO_NODE, _RET_IP_,
--				     s->object_size);
--		if (unlikely(!p[i]))
--			goto error;
-+			p[i] = ___slab_alloc(s, flags, NUMA_NO_NODE, _RET_IP_,
-+					     s->object_size);
-+			if (unlikely(!p[i]))
-+				goto error;
- 
--		maybe_wipe_obj_freeptr(s, p[i]);
-+			maybe_wipe_obj_freeptr(s, p[i]);
-+		}
-+	} else {
-+		i = refill_objects(s, p, flags, size, size);
-+		if (i < size)
-+			goto error;
- 	}
- 
- 	return i;
+ /*
+  * Lock order:
+- *   1. slab_mutex (Global Mutex)
+- *   2. node->list_lock (Spinlock)
+- *   3. kmem_cache->cpu_slab->lock (Local lock)
+- *   4. slab_lock(slab) (Only on some arches)
+- *   5. object_map_lock (Only for debugging)
++ *   0.  cpu_hotplug_lock
++ *   1.  slab_mutex (Global Mutex)
++ *   2a. kmem_cache->cpu_sheaves->lock (Local trylock)
++ *   2b. node->barn->lock (Spinlock)
++ *   2c. node->list_lock (Spinlock)
++ *   3.  slab_lock(slab) (Only on some arches)
++ *   4.  object_map_lock (Only for debugging)
+  *
+  *   slab_mutex
+  *
+@@ -78,31 +82,38 @@
+  *	C. slab->objects	-> Number of objects in slab
+  *	D. slab->frozen		-> frozen state
+  *
+- *   Frozen slabs
++ *   SL_partial slabs
++ *
++ *   Slabs on node partial list have at least one free object. A limited number
++ *   of slabs on the list can be fully free (slab->inuse == 0), until we start
++ *   discarding them. These slabs are marked with SL_partial, and the flag is
++ *   cleared while removing them, usually to grab their freelist afterwards.
++ *   This clearing also exempts them from list management. Please see
++ *   __slab_free() for more details.
+  *
+- *   If a slab is frozen then it is exempt from list management. It is
+- *   the cpu slab which is actively allocated from by the processor that
+- *   froze it and it is not on any list. The processor that froze the
+- *   slab is the one who can perform list operations on the slab. Other
+- *   processors may put objects onto the freelist but the processor that
+- *   froze the slab is the only one that can retrieve the objects from the
+- *   slab's freelist.
++ *   Full slabs
+  *
+- *   CPU partial slabs
++ *   For caches without debugging enabled, full slabs (slab->inuse ==
++ *   slab->objects and slab->freelist == NULL) are not placed on any list.
++ *   The __slab_free() freeing the first object from such a slab will place
++ *   it on the partial list. Caches with debugging enabled place such slab
++ *   on the full list and use different allocation and freeing paths.
++ *
++ *   Frozen slabs
+  *
+- *   The partially empty slabs cached on the CPU partial list are used
+- *   for performance reasons, which speeds up the allocation process.
+- *   These slabs are not frozen, but are also exempt from list management,
+- *   by clearing the SL_partial flag when moving out of the node
+- *   partial list. Please see __slab_free() for more details.
++ *   If a slab is frozen then it is exempt from list management. It is used to
++ *   indicate a slab that has failed consistency checks and thus cannot be
++ *   allocated from anymore - it is also marked as full. Any previously
++ *   allocated objects will be simply leaked upon freeing instead of attempting
++ *   to modify the potentially corrupted freelist and metadata.
+  *
+  *   To sum up, the current scheme is:
+- *   - node partial slab: SL_partial && !frozen
+- *   - cpu partial slab: !SL_partial && !frozen
+- *   - cpu slab: !SL_partial && frozen
+- *   - full slab: !SL_partial && !frozen
++ *   - node partial slab:            SL_partial && !full && !frozen
++ *   - taken off partial list:      !SL_partial && !full && !frozen
++ *   - full slab, not on any list:  !SL_partial &&  full && !frozen
++ *   - frozen due to inconsistency: !SL_partial &&  full &&  frozen
+  *
+- *   list_lock
++ *   node->list_lock (spinlock)
+  *
+  *   The list_lock protects the partial and full list on each node and
+  *   the partial slab counter. If taken then no new slabs may be added or
+@@ -112,47 +123,46 @@
+  *
+  *   The list_lock is a centralized lock and thus we avoid taking it as
+  *   much as possible. As long as SLUB does not have to handle partial
+- *   slabs, operations can continue without any centralized lock. F.e.
+- *   allocating a long series of objects that fill up slabs does not require
+- *   the list lock.
++ *   slabs, operations can continue without any centralized lock.
+  *
+  *   For debug caches, all allocations are forced to go through a list_lock
+  *   protected region to serialize against concurrent validation.
+  *
+- *   cpu_slab->lock local lock
++ *   cpu_sheaves->lock (local_trylock)
+  *
+- *   This locks protect slowpath manipulation of all kmem_cache_cpu fields
+- *   except the stat counters. This is a percpu structure manipulated only by
+- *   the local cpu, so the lock protects against being preempted or interrupted
+- *   by an irq. Fast path operations rely on lockless operations instead.
++ *   This lock protects fastpath operations on the percpu sheaves. On !RT it
++ *   only disables preemption and does no atomic operations. As long as the main
++ *   or spare sheaf can handle the allocation or free, there is no other
++ *   overhead.
+  *
+- *   On PREEMPT_RT, the local lock neither disables interrupts nor preemption
+- *   which means the lockless fastpath cannot be used as it might interfere with
+- *   an in-progress slow path operations. In this case the local lock is always
+- *   taken but it still utilizes the freelist for the common operations.
++ *   node->barn->lock (spinlock)
+  *
+- *   lockless fastpaths
++ *   This lock protects the operations on per-NUMA-node barn. It can quickly
++ *   serve an empty or full sheaf if available, and avoid more expensive refill
++ *   or flush operation.
+  *
+- *   The fast path allocation (slab_alloc_node()) and freeing (do_slab_free())
+- *   are fully lockless when satisfied from the percpu slab (and when
+- *   cmpxchg_double is possible to use, otherwise slab_lock is taken).
+- *   They also don't disable preemption or migration or irqs. They rely on
+- *   the transaction id (tid) field to detect being preempted or moved to
+- *   another cpu.
++ *   Lockless freeing
++ *
++ *   Objects may have to be freed to their slabs when they are from a remote
++ *   node (where we want to avoid filling local sheaves with remote objects)
++ *   or when there are too many full sheaves. On architectures supporting
++ *   cmpxchg_double this is done by a lockless update of slab's freelist and
++ *   counters, otherwise slab_lock is taken. This only needs to take the
++ *   list_lock if it's a first free to a full slab, or when there are too many
++ *   fully free slabs and some need to be discarded.
+  *
+  *   irq, preemption, migration considerations
+  *
+- *   Interrupts are disabled as part of list_lock or local_lock operations, or
++ *   Interrupts are disabled as part of list_lock or barn lock operations, or
+  *   around the slab_lock operation, in order to make the slab allocator safe
+  *   to use in the context of an irq.
++ *   Preemption is disabled as part of local_trylock operations.
++ *   kmalloc_nolock() and kfree_nolock() are safe in NMI context but see
++ *   their limitations.
+  *
+- *   In addition, preemption (or migration on PREEMPT_RT) is disabled in the
+- *   allocation slowpath, bulk allocation, and put_cpu_partial(), so that the
+- *   local cpu doesn't change in the process and e.g. the kmem_cache_cpu pointer
+- *   doesn't have to be revalidated in each section protected by the local lock.
+- *
+- * SLUB assigns one slab for allocation to each processor.
+- * Allocations only occur from these slabs called cpu slabs.
++ * SLUB assigns two object arrays called sheaves for caching allocation and
++ * frees on each cpu, with a NUMA node shared barn for balancing between cpus.
++ * Allocations and frees are primarily served from these sheaves.
+  *
+  * Slabs with free elements are kept on a partial list and during regular
+  * operations no list for full slabs is used. If an object in a full slab is
+@@ -160,25 +170,8 @@
+  * We track full slabs for debugging purposes though because otherwise we
+  * cannot scan all objects.
+  *
+- * Slabs are freed when they become empty. Teardown and setup is
+- * minimal so we rely on the page allocators per cpu caches for
+- * fast frees and allocs.
+- *
+- * slab->frozen		The slab is frozen and exempt from list processing.
+- * 			This means that the slab is dedicated to a purpose
+- * 			such as satisfying allocations for a specific
+- * 			processor. Objects may be freed in the slab while
+- * 			it is frozen but slab_free will then skip the usual
+- * 			list operations. It is up to the processor holding
+- * 			the slab to integrate the slab into the slab lists
+- * 			when the slab is no longer needed.
+- *
+- * 			One use of this flag is to mark slabs that are
+- * 			used for allocations. Then such a slab becomes a cpu
+- * 			slab. The cpu slab may be equipped with an additional
+- * 			freelist that allows lockless access to
+- * 			free objects in addition to the regular freelist
+- * 			that requires the slab lock.
++ * Slabs are freed when they become empty. Teardown and setup is minimal so we
++ * rely on the page allocators per cpu caches for fast frees and allocs.
+  *
+  * SLAB_DEBUG_FLAGS	Slab requires special handling due to debug
+  * 			options set. This moves	slab handling out of
 
 -- 
 2.51.1
