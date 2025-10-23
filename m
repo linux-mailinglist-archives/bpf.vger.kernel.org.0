@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-71912-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71916-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59F35C01958
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 15:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FCD7C0198A
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 15:59:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 699B63B3106
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 13:53:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A56A3B0B7D
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 13:54:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E36C322C9D;
-	Thu, 23 Oct 2025 13:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6138E32C955;
+	Thu, 23 Oct 2025 13:53:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Mdy9BKbL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+uOlwOB7";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EPf6Y90J";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="P0Lui0/h"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wqZuf521";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CnYeHNMj";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cByGnC2S";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YD2XioWV"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6DF2320CA8
-	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 13:53:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CC232BF4C
+	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 13:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761227594; cv=none; b=g+1GCRxwrelut1GuAaJPSU6dQZ9BQ38kPm5V6HitDEWvzKghIlkWlyLQEw4vS6xBAaulZ7s9bsWgeZRAweBPF8fqxS9+NULHHmFrCPW3X0G3enmuS4xtUkn3N4EBdIzoNNvF+vrpyf9VHzR3RV9KX81f6ak7Cfu4T2tKHSjJdbs=
+	t=1761227608; cv=none; b=Ln26OCi7hhgdRjx/V7QCA9Z+fVVvxfLzBm0O37dqnV18fliA3vLYPHzltp8UFU3f7yuPOQRLnlRQd7cNaMLRxr8HiVnqMbE6oZaT8/7TCuWWoyBlyVhf9Y7SkHc1bAIfyIs3XHVUFpV+tBY8XwzuDLDhULfDv3lG1IvFTUa/cr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761227594; c=relaxed/simple;
-	bh=6Iiz3AHt1Z1Af2WpTwoU9QnqqUvhGzaiRG7A77s07W8=;
+	s=arc-20240116; t=1761227608; c=relaxed/simple;
+	bh=J+mNa8aMmKgcu5wNPXLxWNSAcuTapQyzGPwQdplEi7Q=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=scu93iV8k2Dd34KUqyaC8td35fzN/EbH7aJGtq6vUsdiMUgyBCwW7qExumOJn8iY0arHRDIuUfWbfI8RMIu2XCdirAys6yRcK8iDWMpBMCXIS2A+YMgqd4eHSWxxWKINsVXQfQ55c0cjcXbnC/WJIkmSZqxyTT6QsZyE/ZrCMAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Mdy9BKbL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+uOlwOB7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EPf6Y90J; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=P0Lui0/h; arc=none smtp.client-ip=195.135.223.131
+	 In-Reply-To:To:Cc; b=d3r+goF2x6qO/NASZ0TWbG+li/w6/9S4HIFJ2J+pE2hlsKifrt+ImNoXFup0RygAI7+fumEr/OmGWiR7B4w7dtb0nNAAItERsncpjCAbhiRwbLG55eORXBAz1mKJPAtCa8WW5wxKhQYW3GM3mTRbWFUCF1NtVyG24U1/re6jOPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wqZuf521; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CnYeHNMj; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cByGnC2S; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YD2XioWV; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 356491F7E1;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5A2011F7E2;
 	Thu, 23 Oct 2025 13:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1761227577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BMsUktfL5WtFwPCNB5fqm7HAiF7pw4pM7Su8oc/8OIE=;
-	b=Mdy9BKbLm2lN1RACuTP3IEWpgAFVa7Fshte+HriO9fKIlEuuHazko/HNUO+TrJCgysS6DP
-	qbMkOSPnAP/Vc0fvnG7qJZY442AWC0MLCqAkwZuFx2sHw/wyTOc+6YgPhSLN2lLdrUj0Ip
-	gGDRhrZlP/wqYtKY9DGJUZXjMoYobRQ=
+	bh=fdXDD3/ZApJgGZ00uKWLh+CAcEIa/UY+x34vKoVNPc8=;
+	b=wqZuf521dhBUSe+PUBx5cFjW0EwNwJ09LrbM/jktq5YHqpOLnp+mhM6lSq/rq2o5FOJ2MW
+	sorgz8blp0znWqoZfvlkKYcB2kjPyDLm0LjWK1x4w15RN+JEReXLwUjAedi4TFv1kfO4AS
+	w6kNaPq61VzY0A6++uSdhetdNNLJtnU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1761227577;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BMsUktfL5WtFwPCNB5fqm7HAiF7pw4pM7Su8oc/8OIE=;
-	b=+uOlwOB7G6UnQ7VofjGwWpSWB1tS3X/MTsf0Mh39EL30Li3sFkbLqfoTr0+SKSACmSseLj
-	v75xnLK2L6+NXeCw==
+	bh=fdXDD3/ZApJgGZ00uKWLh+CAcEIa/UY+x34vKoVNPc8=;
+	b=CnYeHNMjlFQL7+/DQKpWMg0TtyCTAOWISIgwHjfphP18Y0wo43Rh/50FTu2drTTDthhQQ/
+	PlUpuLQ2A7PqPwAw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
@@ -65,33 +65,33 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BMsUktfL5WtFwPCNB5fqm7HAiF7pw4pM7Su8oc/8OIE=;
-	b=EPf6Y90JOImCC0jua9VvOIFRXsPvKG0JuNSvVby2rlaB3k8Xbx7Jhme7+aJ2qa/lBKSjDQ
-	mZokjHpOlgVfrSoTzRwMAY7Hs+WayoqduU/NJiVdK1sSb+gGEm0ZveoYdySE3r2ODfmuDS
-	ThembSqD8ecUvAKO2Y+xRGATadJj/yg=
+	bh=fdXDD3/ZApJgGZ00uKWLh+CAcEIa/UY+x34vKoVNPc8=;
+	b=cByGnC2SYolBTRDYP8LS+IpQD1Eji+sWPYqwG9A7uyT2WYWd6uF4ocy1PBoEU2twgSQF3F
+	po19jPfCxukL6MloV/Hb7HvbDv3zwlHggPvg+lsQjKntGDG3IooxXV8xRzqBWw0DfRZY0o
+	ZdMcKD+AS5LAdkwznTDzrjwN+w9yVO8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1761227573;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BMsUktfL5WtFwPCNB5fqm7HAiF7pw4pM7Su8oc/8OIE=;
-	b=P0Lui0/h5SvlSmXMW6h8A4EhWC9Ya74OAhUoHOBv352Z7+wG0GrnqfP5cCtHxbpB0f+Jg1
-	IO7ol//+pdxU3YDQ==
+	bh=fdXDD3/ZApJgGZ00uKWLh+CAcEIa/UY+x34vKoVNPc8=;
+	b=YD2XioWV/+tzIWCxj8BZXcvzFXDMaQOhyZIP1OrCHhNrqg2jVi0Z5PnAZ1jSf3E020PTTA
+	OlHX/cLWXNnc99Dw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 11D48139D2;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3099A13AAB;
 	Thu, 23 Oct 2025 13:52:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6O8UBDUz+mjvQQAAD6G6ig
+	id yIGWCzUz+mjvQQAAD6G6ig
 	(envelope-from <vbabka@suse.cz>); Thu, 23 Oct 2025 13:52:53 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Thu, 23 Oct 2025 15:52:23 +0200
-Subject: [PATCH RFC 01/19] slab: move kfence_alloc() out of internal bulk
- alloc
+Date: Thu, 23 Oct 2025 15:52:24 +0200
+Subject: [PATCH RFC 02/19] slab: handle pfmemalloc slabs properly with
+ sheaves
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,7 +100,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251023-sheaves-for-all-v1-1-6ffa2c9941c0@suse.cz>
+Message-Id: <20251023-sheaves-for-all-v1-2-6ffa2c9941c0@suse.cz>
 References: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz>
 In-Reply-To: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -113,9 +113,9 @@ Cc: Uladzislau Rezki <urezki@gmail.com>,
  Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org, 
  linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev, 
  bpf@vger.kernel.org, kasan-dev@googlegroups.com, 
- Vlastimil Babka <vbabka@suse.cz>, Alexander Potapenko <glider@google.com>, 
- Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>
+ Vlastimil Babka <vbabka@suse.cz>
 X-Mailer: b4 0.14.3
+X-Spam-Level: 
 X-Spamd-Result: default: False [-8.30 / 50.00];
 	REPLY(-4.00)[];
 	BAYES_HAM(-3.00)[100.00%];
@@ -126,7 +126,7 @@ X-Spamd-Result: default: False [-8.30 / 50.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	ARC_NA(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
@@ -137,137 +137,201 @@ X-Spamd-Result: default: False [-8.30 / 50.00];
 	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo]
 X-Spam-Flag: NO
 X-Spam-Score: -8.30
-X-Spam-Level: 
 
-SLUB's internal bulk allocation __kmem_cache_alloc_bulk() can currently
-allocate some objects from KFENCE, i.e. when refilling a sheaf. It works
-but it's conceptually the wrong layer, as KFENCE allocations should only
-happen when objects are actually handed out from slab to its users.
+When a pfmemalloc allocation actually dips into reserves, the slab is
+marked accordingly and non-pfmemalloc allocations should not be allowed
+to allocate from it. The sheaves percpu caching currently doesn't follow
+this rule, so implement it before we expand sheaves usage to all caches.
 
-Currently for sheaf-enabled caches, slab_alloc_node() can return KFENCE
-object via kfence_alloc(), but also via alloc_from_pcs() when a sheaf
-was refilled with KFENCE objects. Continuing like this would also
-complicate the upcoming sheaf refill changes.
+Make sure objects from pfmemalloc slabs don't end up in percpu sheaves.
+When freeing, skip sheaves when freeing an object from pfmemalloc slab.
+When refilling sheaves, use __GFP_NOMEMALLOC to override any pfmemalloc
+context - the allocation will fallback to regular slab allocations when
+sheaves are depleted and can't be refilled because of the override.
 
-Thus remove KFENCE allocation from __kmem_cache_alloc_bulk() and move it
-to the places that return slab objects to users. slab_alloc_node() is
-already covered (see above). Add kfence_alloc() to
-kmem_cache_alloc_from_sheaf() to handle KFENCE allocations from
-prefilled sheafs, with a comment that the caller should not expect the
-sheaf size to decrease after every allocation because of this
-possibility.
+For kfree_rcu(), detect pfmemalloc slabs after processing the rcu_sheaf
+after the grace period in __rcu_free_sheaf_prepare() and simply flush
+it if any object is from pfmemalloc slabs.
 
-For kmem_cache_alloc_bulk() implement a different strategy to handle
-KFENCE upfront and rely on internal batched operations afterwards.
-Assume there will be at most once KFENCE allocation per bulk allocation
-and then assign its index in the array of objects randomly.
+For prefilled sheaves, try to refill them first with __GFP_NOMEMALLOC
+and if it fails, retry without __GFP_NOMEMALLOC but then mark the sheaf
+pfmemalloc, which makes it flushed back to slabs when returned.
 
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 44 ++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 36 insertions(+), 8 deletions(-)
+ mm/slub.c | 65 +++++++++++++++++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 51 insertions(+), 14 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 87a1d2f9de0d..4731b9e461c2 100644
+index 4731b9e461c2..ab03f29dc3bf 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -5530,6 +5530,9 @@ int kmem_cache_refill_sheaf(struct kmem_cache *s, gfp_t gfp,
-  *
-  * The gfp parameter is meant only to specify __GFP_ZERO or __GFP_ACCOUNT
-  * memcg charging is forced over limit if necessary, to avoid failure.
-+ *
-+ * It is possible that the allocation comes from kfence and then the sheaf
-+ * size is not decreased.
-  */
- void *
- kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
-@@ -5541,7 +5544,10 @@ kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
- 	if (sheaf->size == 0)
- 		goto out;
+@@ -469,7 +469,10 @@ struct slab_sheaf {
+ 		struct rcu_head rcu_head;
+ 		struct list_head barn_list;
+ 		/* only used for prefilled sheafs */
+-		unsigned int capacity;
++		struct {
++			unsigned int capacity;
++			bool pfmemalloc;
++		};
+ 	};
+ 	struct kmem_cache *cache;
+ 	unsigned int size;
+@@ -2645,7 +2648,7 @@ static struct slab_sheaf *alloc_full_sheaf(struct kmem_cache *s, gfp_t gfp)
+ 	if (!sheaf)
+ 		return NULL;
  
--	ret = sheaf->objects[--sheaf->size];
-+	ret = kfence_alloc(s, s->object_size, gfp);
-+
-+	if (likely(!ret))
-+		ret = sheaf->objects[--sheaf->size];
+-	if (refill_sheaf(s, sheaf, gfp)) {
++	if (refill_sheaf(s, sheaf, gfp | __GFP_NOMEMALLOC)) {
+ 		free_empty_sheaf(s, sheaf);
+ 		return NULL;
+ 	}
+@@ -2723,12 +2726,13 @@ static void sheaf_flush_unused(struct kmem_cache *s, struct slab_sheaf *sheaf)
+ 	sheaf->size = 0;
+ }
  
- 	init = slab_want_init_on_alloc(gfp, s);
- 
-@@ -7361,14 +7367,8 @@ int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 	local_lock_irqsave(&s->cpu_slab->lock, irqflags);
- 
- 	for (i = 0; i < size; i++) {
--		void *object = kfence_alloc(s, s->object_size, flags);
--
--		if (unlikely(object)) {
--			p[i] = object;
--			continue;
--		}
-+		void *object = c->freelist;
- 
--		object = c->freelist;
- 		if (unlikely(!object)) {
- 			/*
- 			 * We may have removed an object from c->freelist using
-@@ -7449,6 +7449,7 @@ int kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags, size_t size,
- 				 void **p)
+-static void __rcu_free_sheaf_prepare(struct kmem_cache *s,
++static bool __rcu_free_sheaf_prepare(struct kmem_cache *s,
+ 				     struct slab_sheaf *sheaf)
  {
+ 	bool init = slab_want_init_on_free(s);
+ 	void **p = &sheaf->objects[0];
  	unsigned int i = 0;
-+	void *kfence_obj;
++	bool pfmemalloc = false;
  
- 	if (!size)
- 		return 0;
-@@ -7457,6 +7458,20 @@ int kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags, size_t size,
- 	if (unlikely(!s))
- 		return 0;
+ 	while (i < sheaf->size) {
+ 		struct slab *slab = virt_to_slab(p[i]);
+@@ -2741,8 +2745,13 @@ static void __rcu_free_sheaf_prepare(struct kmem_cache *s,
+ 			continue;
+ 		}
  
++		if (slab_test_pfmemalloc(slab))
++			pfmemalloc = true;
++
+ 		i++;
+ 	}
++
++	return pfmemalloc;
+ }
+ 
+ static void rcu_free_sheaf_nobarn(struct rcu_head *head)
+@@ -5031,7 +5040,7 @@ __pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
+ 		return NULL;
+ 
+ 	if (empty) {
+-		if (!refill_sheaf(s, empty, gfp)) {
++		if (!refill_sheaf(s, empty, gfp | __GFP_NOMEMALLOC)) {
+ 			full = empty;
+ 		} else {
+ 			/*
+@@ -5331,6 +5340,26 @@ void *kmem_cache_alloc_node_noprof(struct kmem_cache *s, gfp_t gfpflags, int nod
+ }
+ EXPORT_SYMBOL(kmem_cache_alloc_node_noprof);
+ 
++static int __prefill_sheaf_pfmemalloc(struct kmem_cache *s,
++				      struct slab_sheaf *sheaf, gfp_t gfp)
++{
++	int ret = 0;
++
++	ret = refill_sheaf(s, sheaf, gfp | __GFP_NOMEMALLOC);
++
++	if (likely(!ret || !gfp_pfmemalloc_allowed(gfp)))
++		return ret;
++
 +	/*
-+	 * to make things simpler, only assume at most once kfence allocated
-+	 * object per bulk allocation and choose its index randomly
++	 * if we are allowed to, refill sheaf with pfmemalloc but then remember
++	 * it for when it's returned
 +	 */
-+	kfence_obj = kfence_alloc(s, s->object_size, flags);
++	ret = refill_sheaf(s, sheaf, gfp);
++	sheaf->pfmemalloc = true;
 +
-+	if (unlikely(kfence_obj)) {
-+		if (unlikely(size == 1)) {
-+			p[0] = kfence_obj;
-+			goto out;
-+		}
-+		size--;
-+	}
++	return ret;
++}
 +
- 	if (s->cpu_sheaves)
- 		i = alloc_from_pcs_bulk(s, size, p);
+ /*
+  * returns a sheaf that has at least the requested size
+  * when prefilling is needed, do so with given gfp flags
+@@ -5401,17 +5430,18 @@ kmem_cache_prefill_sheaf(struct kmem_cache *s, gfp_t gfp, unsigned int size)
+ 	if (!sheaf)
+ 		sheaf = alloc_empty_sheaf(s, gfp);
  
-@@ -7468,10 +7483,23 @@ int kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags, size_t size,
- 		if (unlikely(__kmem_cache_alloc_bulk(s, flags, size - i, p + i) == 0)) {
- 			if (i > 0)
- 				__kmem_cache_free_bulk(s, i, p);
-+			if (kfence_obj)
-+				__kfence_free(kfence_obj);
- 			return 0;
+-	if (sheaf && sheaf->size < size) {
+-		if (refill_sheaf(s, sheaf, gfp)) {
++	if (sheaf) {
++		sheaf->capacity = s->sheaf_capacity;
++		sheaf->pfmemalloc = false;
++
++		if (sheaf->size < size &&
++		    __prefill_sheaf_pfmemalloc(s, sheaf, gfp)) {
+ 			sheaf_flush_unused(s, sheaf);
+ 			free_empty_sheaf(s, sheaf);
+ 			sheaf = NULL;
  		}
  	}
  
-+	if (unlikely(kfence_obj)) {
-+		int idx = get_random_u32_below(size + 1);
-+
-+		if (idx != size)
-+			p[size] = p[idx];
-+		p[idx] = kfence_obj;
-+
-+		size++;
-+	}
-+
-+out:
- 	/*
- 	 * memcg and kmem_cache debug support and memory initialization.
- 	 * Done outside of the IRQ disabled fastpath loop.
+-	if (sheaf)
+-		sheaf->capacity = s->sheaf_capacity;
+-
+ 	return sheaf;
+ }
+ 
+@@ -5431,7 +5461,8 @@ void kmem_cache_return_sheaf(struct kmem_cache *s, gfp_t gfp,
+ 	struct slub_percpu_sheaves *pcs;
+ 	struct node_barn *barn;
+ 
+-	if (unlikely(sheaf->capacity != s->sheaf_capacity)) {
++	if (unlikely((sheaf->capacity != s->sheaf_capacity)
++		     || sheaf->pfmemalloc)) {
+ 		sheaf_flush_unused(s, sheaf);
+ 		kfree(sheaf);
+ 		return;
+@@ -5497,7 +5528,7 @@ int kmem_cache_refill_sheaf(struct kmem_cache *s, gfp_t gfp,
+ 
+ 	if (likely(sheaf->capacity >= size)) {
+ 		if (likely(sheaf->capacity == s->sheaf_capacity))
+-			return refill_sheaf(s, sheaf, gfp);
++			return __prefill_sheaf_pfmemalloc(s, sheaf, gfp);
+ 
+ 		if (!__kmem_cache_alloc_bulk(s, gfp, sheaf->capacity - sheaf->size,
+ 					     &sheaf->objects[sheaf->size])) {
+@@ -6177,8 +6208,12 @@ static void rcu_free_sheaf(struct rcu_head *head)
+ 	 * handles it fine. The only downside is that sheaf will serve fewer
+ 	 * allocations when reused. It only happens due to debugging, which is a
+ 	 * performance hit anyway.
++	 *
++	 * If it returns true, there was at least one object from pfmemalloc
++	 * slab so simply flush everything.
+ 	 */
+-	__rcu_free_sheaf_prepare(s, sheaf);
++	if (__rcu_free_sheaf_prepare(s, sheaf))
++		goto flush;
+ 
+ 	n = get_node(s, sheaf->node);
+ 	if (!n)
+@@ -6333,7 +6368,8 @@ static void free_to_pcs_bulk(struct kmem_cache *s, size_t size, void **p)
+ 			continue;
+ 		}
+ 
+-		if (unlikely(IS_ENABLED(CONFIG_NUMA) && slab_nid(slab) != node)) {
++		if (unlikely((IS_ENABLED(CONFIG_NUMA) && slab_nid(slab) != node)
++			     || slab_test_pfmemalloc(slab))) {
+ 			remote_objects[remote_nr] = p[i];
+ 			p[i] = p[--size];
+ 			if (++remote_nr >= PCS_BATCH_MAX)
+@@ -6631,7 +6667,8 @@ void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
+ 		return;
+ 
+ 	if (s->cpu_sheaves && likely(!IS_ENABLED(CONFIG_NUMA) ||
+-				     slab_nid(slab) == numa_mem_id())) {
++				     slab_nid(slab) == numa_mem_id())
++			   && likely(!slab_test_pfmemalloc(slab))) {
+ 		if (likely(free_to_pcs(s, object)))
+ 			return;
+ 	}
 
 -- 
 2.51.1
