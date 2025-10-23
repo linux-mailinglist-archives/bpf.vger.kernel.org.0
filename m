@@ -1,179 +1,99 @@
-Return-Path: <bpf+bounces-71933-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71941-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B228AC01E15
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 16:47:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF271C01F9C
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 17:05:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D8B73B6AD7
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 14:39:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 147C619A5666
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 15:05:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5B9632D7F4;
-	Thu, 23 Oct 2025 14:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54EB41D5AD4;
+	Thu, 23 Oct 2025 15:05:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kXXlt/Pm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IjyAOad0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 760F13093AB
-	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 14:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB1A132AAC8
+	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 15:05:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761230349; cv=none; b=TBA2wzHiSc5sGSx8KQhL16rzYfUyeOGSZx1FrCo+kj5yeKv3HFO93CWxsAZ+qKyamBLhS7J5BF8azsYc6alqu63P5asjKdsNndeor2GOa7bc5jDo42sPXoa+JuMdhSz2rw8hUgTYJ0ZuRnLbIvOWiO/sB1TUd7Z8Ckj7zsvfWU4=
+	t=1761231918; cv=none; b=thxzcgRZghhHHu46MmYvh8FONmIrHJnhS9nXQNmnTg8FFV36MLirt+SmU4bzWTxAsbAzjdeg/Iave4CPhaCKdDcUWxtb6DSwgAwP3g2WyQNF1UFdF4rXz3cH0P1FKASSixyqcEg/Xna+WKL7TfYfiTSQpWHP2WEXSCNi5wHXeF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761230349; c=relaxed/simple;
-	bh=QhwyrjBpjgfOnL3bdRWqdkRQ3slK04/PCvNpP+0vgrA=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=hqdJ6MK0JiLfJFmQUL+jToPq+Qy3vssBdaeyfQVtdOsZZaJDQT9IVEhglyieTaJvaGnwWGvDMDyzuc6LW8URC/58x6rnK3HH4sh8rpa3OMvkdJp/+2pByCCgvTRUp7vb445hs1a/GZuc4CDoTvbZOCqZAsD1SekfKOPG5aY5ScM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kXXlt/Pm; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1761231918; c=relaxed/simple;
+	bh=hF5Pv5qLCCJJd2cynxhKvVBDZqBduAAiX2Q0bjJYFqs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EUw3fxIfSLKLvaIhk9/6sXdXx4XhlVW6IdeadLUEBqkhal9kdb5WfHJkDAM3qT1y3/gdVZDe4j/6ECa/RQpbsOmzFnu+Q51wdCKy68G7o+5waH3u3FvbXD3lKuSZSEM0ocdgjEOpZ1rhU2VAQlp8bY1EbGhS5IG2rdzrb6WhUoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IjyAOad0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D53AC4CEF7;
+	Thu, 23 Oct 2025 15:05:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761231917;
+	bh=hF5Pv5qLCCJJd2cynxhKvVBDZqBduAAiX2Q0bjJYFqs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IjyAOad0ZtO3XRJ6b410p/4fccp2wO661B+Co5EYeu2YysQbBkGjqhZtSSCoaRNY1
+	 EslK+ton4XdGzj8IGepMsOxRQDvgan87md4AAAq53kDsEmQR7jYFIZkayim3bKYobj
+	 eTrX1djFz+sXklyJ4Fe+DszhJ8XsY2KlbNF7afYgTiNwsl8JKRPY8aW5SRMRk/OjbO
+	 iVOnvRDWhqqgBDyen1ZOI9VzeA1V3G9haes1EdHjqxc+axfeNqAFdUOgyjt2lmvOXC
+	 bnS9mGB0uh/imydOWTEewxiGJoNz06eUAEf+jkz9PzTsWa2lRoGgctRni/RrfKMfkt
+	 DBRb70inKowGQ==
+Date: Thu, 23 Oct 2025 20:27:01 +0530
+From: Naveen N Rao <naveen@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@kernel.org, kernel-team@meta.com, Hari Bathini <hbathini@linux.ibm.com>
+Subject: Re: [PATCH bpf-next] libbpf: fix powerpc's stack register definition
+ in bpf_tracing.h
+Message-ID: <b4m7i5myohaf5gdx6u5vpyha3a5v4d72s4gtz77duamvgovmul@7pf6ahibwygt>
+References: <20251020203643.989467-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761230335;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HXi8UPiE0uzXnPOltiRRjCeAETESSly9AvRlExTJgIA=;
-	b=kXXlt/PmnGWBhr/8YGbWQbhMTVtkCX75zpERQmSDEVaSjJ5XMSBNMm/FjDodgaCz1DGrgQ
-	68VSl35ipqt3t7pTFE/H3zuXGp4j744g1Fns2ErFrq6kQXzvml8yC13aQWoDgP8RNswLTi
-	PSJKoEQLTt2TMZ8UsJO3tpKhi+nTk9Y=
-Date: Thu, 23 Oct 2025 14:38:48 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
-Message-ID: <b722c37528e6f94bef828d6ca478a9fa8d33501a@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH net v3 1/3] net,mptcp: fix proto fallback detection with
- BPF sockmap
-To: "Matthieu Baerts" <matttbe@kernel.org>, mptcp@lists.linux.dev
-Cc: stable@vger.kernel.org, "Jakub Sitnicki" <jakub@cloudflare.com>, "John
- Fastabend" <john.fastabend@gmail.com>, "Eric Dumazet"
- <edumazet@google.com>, "Kuniyuki Iwashima" <kuniyu@google.com>, "Paolo
- Abeni" <pabeni@redhat.com>, "Willem de Bruijn" <willemb@google.com>,
- "David S. Miller" <davem@davemloft.net>, "Jakub Kicinski"
- <kuba@kernel.org>, "Simon Horman" <horms@kernel.org>, "Mat Martineau"
- <martineau@kernel.org>, "Geliang Tang" <geliang@kernel.org>, "Andrii
- Nakryiko" <andrii@kernel.org>, "Eduard Zingerman" <eddyz87@gmail.com>,
- "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
- <daniel@iogearbox.net>, "Martin KaFai Lau" <martin.lau@linux.dev>, "Song
- Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "KP
- Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>, "Hao
- Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>, "Shuah Khan"
- <shuah@kernel.org>, "Florian Westphal" <fw@strlen.de>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-In-Reply-To: <cc923a56-cf2d-4c3a-b1bd-90dbc3075ef2@kernel.org>
-References: <20251023125450.105859-1-jiayuan.chen@linux.dev>
- <20251023125450.105859-2-jiayuan.chen@linux.dev>
- <cc923a56-cf2d-4c3a-b1bd-90dbc3075ef2@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251020203643.989467-1-andrii@kernel.org>
 
-October 23, 2025 at 22:10, "Matthieu Baerts" <matttbe@kernel.org mailto:m=
-atttbe@kernel.org?to=3D%22Matthieu%20Baerts%22%20%3Cmatttbe%40kernel.org%=
-3E > wrote:
+On Mon, Oct 20, 2025 at 01:36:43PM -0700, Andrii Nakryiko wrote:
+> retsnoop's build on powerpc (ppc64le) architecture ([0]) failed due to
+> wrong definition of PT_REGS_SP() macro. Looking at powerpc's
+> implementation of stack unwinding in perf_callchain_user_64() clearly
+> shows that stack pointer register is gpr[1].
+> 
+> Fix libbpf's definition of __PT_SP_REG for powerpc to fix all this.
+> 
+>   [0] https://kojipkgs.fedoraproject.org/work/tasks/1544/137921544/build.log
+> 
+> Fixes: 138d6153a139 ("samples/bpf: Enable powerpc support")
+> Cc: Naveen N Rao <naveen@kernel.org>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  tools/lib/bpf/bpf_tracing.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index a8f6cd4841b0..dbe32a5d02cd 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -311,7 +311,7 @@ struct pt_regs___arm64 {
+>  #define __PT_RET_REG regs[31]
+>  #define __PT_FP_REG __unsupported__
+>  #define __PT_RC_REG gpr[3]
+> -#define __PT_SP_REG sp
+> +#define __PT_SP_REG gpr[1]
+>  #define __PT_IP_REG nip
 
+:facepalm:
 
->=20
->=20Hi Jiayuan,
->=20
->=20On 23/10/2025 14:54, Jiayuan Chen wrote:
->=20
->=20>=20
->=20> When the server has MPTCP enabled but receives a non-MP-capable req=
-uest
-> >  from a client, it calls mptcp_fallback_tcp_ops().
-> >=20=20
->=20>  Since non-MPTCP connections are allowed to use sockmap, which repl=
-aces
-> >  sk->sk_prot, using sk->sk_prot to determine the IP version in
-> >  mptcp_fallback_tcp_ops() becomes unreliable. This can lead to assign=
-ing
-> >  incorrect ops to sk->sk_socket->ops.
-> >=20=20
->=20>  Additionally, when BPF Sockmap modifies the protocol handlers, the
-> >  original WARN_ON_ONCE(sk->sk_prot !=3D &tcp_prot) check would falsel=
-y
-> >  trigger warnings.
-> >=20=20
->=20>  Fix this by using the more stable sk_family to distinguish between=
- IPv4
-> >  and IPv6 connections, ensuring correct fallback protocol operations =
-are
-> >  selected even when BPF Sockmap has modified the socket protocol hand=
-lers.
-> >=20=20
->=20>  Fixes: 0b4f33def7bb ("mptcp: fix tcp fallback crash")
-> >  Cc: <stable@vger.kernel.org>
-> >  Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-> >  Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-> >  ---
-> >  net/mptcp/protocol.c | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> >=20=20
->=20>  diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-> >  index 0292162a14ee..2393741bc310 100644
-> >  --- a/net/mptcp/protocol.c
-> >  +++ b/net/mptcp/protocol.c
-> >  @@ -61,11 +61,16 @@ static u64 mptcp_wnd_end(const struct mptcp_sock=
- *msk)
-> >=20=20
->=20>  static const struct proto_ops *mptcp_fallback_tcp_ops(const struct=
- sock *sk)
-> >  {
-> >  + /* When BPF sockmap is used, it may replace sk->sk_prot.
-> >  + * Using sk_family is a reliable way to determine the IP version.
-> >  + */
-> >  + unsigned short family =3D READ_ONCE(sk->sk_family);
-> >  +
-> >  #if IS_ENABLED(CONFIG_MPTCP_IPV6)
-> >  - if (sk->sk_prot =3D=3D &tcpv6_prot)
-> >  + if (family =3D=3D AF_INET6)
-> >  return &inet6_stream_ops;
-> >  #endif
-> >  - WARN_ON_ONCE(sk->sk_prot !=3D &tcp_prot);
-> >  + WARN_ON_ONCE(family !=3D AF_INET);
-> >  return &inet_stream_ops;
-> >=20
->=20Just to be sure: is there anything in BPF modifying sk->sk_socket->op=
-s?
-> Because that's what mptcp_fallback_tcp_ops() will do somehow.
->=20
->=20In other words, is it always fine to set inet(6)_stream_ops? (I guess
-> yes, but better to be sure while we are looking at that :) )
+Thanks for fixing this.
+Reviewed-by: Naveen N Rao (AMD) <naveen@kernel.org>
 
+- Naveen
 
-
-Hi Matt,
-
-I can confirm that on the BPF side, the only special operations targeting
-sockets currently are sockmap/sockhash. Their implementations do not modi=
-fy
-sk->sk_socket->ops. Currently, they only modify sk->prot, because the BPF
-side typically operates on 'struct sock' and does not concern itself with
-'struct socket'.
-
-Therefore, setting inet(6)_stream_ops is fine.
-
-Thanks,
-Jiayuan
-
-> >=20
->=20> }
-> >=20
->=20Cheers,
-> Matt
-> --=20
->=20Sponsored by the NGI0 Core fund.
->
 
