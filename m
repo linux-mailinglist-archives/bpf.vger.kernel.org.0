@@ -1,157 +1,134 @@
-Return-Path: <bpf+bounces-71965-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71966-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF3C6C03284
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 21:19:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F7F6C03357
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 21:40:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15C043B006B
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 19:19:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F205E3A85A4
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 19:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE50348451;
-	Thu, 23 Oct 2025 19:18:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB08334D91E;
+	Thu, 23 Oct 2025 19:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VQ01ncSt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MGiw1PLt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF9002882CE
-	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 19:18:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07C1E30E0F9
+	for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 19:40:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761247136; cv=none; b=oMIbMU/I/ghZ68rc0MjCVLISIfG/zY9GUzVtqo3moctS05y2P1QgMYsZEwUUJoP/RM+jNeYFlQAEijq4aQYEL9EvPsHH36lGZ6vffmTeVDw7No4qoSs/ls10uZUU7Jh26CcsZP9h5/e4ugxp/qwPVAnhB7KJOY0ljN+D9cve/4o=
+	t=1761248413; cv=none; b=mww/zircw7/IrkYUIXlM18bkKgCRdqWvVLF/EAkg0l22czKFqrN4wPakRAEtIE2S1oishget4kW2qJAq9YHFKktDepooT/U2rVu6wrnBru9+xi+BdJl4Xh6b0p2LVCgNxpA0iWb89IJVXt/QJLJ7kE5he5LlUr//0JPydgKakOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761247136; c=relaxed/simple;
-	bh=ZlVl4Y8fvijsIY/tZOebc6pxDPocARgBnk23Bvw1/Ws=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=aXqA5Y2iD9bnl7dAoYzTJkmFyyJhYWfRE2wJUxJqS/pCGyBky/vEYSOf6+nwEs4XUWT+/WJKZ70VebeBI1xofhwZxJghbTW0LQ5oLGgi4U6qlskXJeGrvbVwJmYZh+yfGhAWHhHM320QGPtEjoEVCYkb+lyKU4W6KX0SiBgazkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VQ01ncSt; arc=none smtp.client-ip=209.85.210.178
+	s=arc-20240116; t=1761248413; c=relaxed/simple;
+	bh=LVSTUEbnkLIAzj9Vx2EvlgOAnsoNEFWZI7Re6Fq/m9U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=agYyP/tdUJZSMIWtDK80ew06EXwYrNAbUYA54Vz9VjXxAjiBDrgmHwa1TjL/SJQdiitx/ILOT1m9KDFgAx5YHHsPT6ulLG0VFaRfFEfdP/oea3tnm/e7QyXjW1nobRMVgVbKYtnLZjjyvWewT7ukSUx+wAYfZnYvFNCXFx7lOMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MGiw1PLt; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-793021f348fso1159964b3a.1
-        for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 12:18:54 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-27ee41e0798so16288035ad.1
+        for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 12:40:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761247134; x=1761851934; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=d2Wyw9UPvJvWNPUS1O/5Wbx6cu+HsX5RAvhS3bPDhM4=;
-        b=VQ01ncStqw3zRTNvoMzeyEi9bzeC+oZZpGcswqPOJLi6VYNJgheqs3CQaq5/RYrl0m
-         NsRpNihgU3hre2fyFvnuBXhqDof4OKoPQUXssERZH0Ow+17WtSSEsFCAsNEUl/SHgOFX
-         8+ME2ZhJcxBxAtMfNGoJZZHcjj0x+aBYcISHU7JH2Q9+Ly8MehIhnJldAT4f+bycHb8y
-         1eXLu+Rv62IL861DiKpXQzONxpFkU3luDXNIXoZGemzhcnUpE27vMfrEZLwRf4z0Dhz+
-         8KegJUOTELma6C8e6r10qbzHSCrYuHQU5x5eKCo5u72ZwhBStb07vh0LL3zUnn5FcsMm
-         +Cqw==
+        d=gmail.com; s=20230601; t=1761248411; x=1761853211; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LVSTUEbnkLIAzj9Vx2EvlgOAnsoNEFWZI7Re6Fq/m9U=;
+        b=MGiw1PLt2FiiYONIpQvOVqvLQuIVbbJQ6q1IXmfj09Sga9l/64PLynicJmhPrehJM4
+         CKqEIp19MJbpvwFyM00phSeggso+QJuSZ4vs8bBhAKU156viYEnMIJrTxRZX/7oxKAgh
+         fLneuqe4Uvx4M9wOL/Hv1AtDrhYfd1jlCF24KQXAvbnDk6PrRQNjbuNnSLzYxZiHNnXr
+         AjWN+i6qh5riSdqJgqpisV5OwF0h/g9vxZwOsd6CfD3Q7ys4CW/G5BOpu4cB1lJu+zNw
+         6/K3wTQpS6LcPTyZqLCP4oTlLuDGSYSTxRRWVaCRE6pNAbdDCLJmEYmPlYfhE/XlyBaC
+         Mu8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761247134; x=1761851934;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=d2Wyw9UPvJvWNPUS1O/5Wbx6cu+HsX5RAvhS3bPDhM4=;
-        b=iP7eBZEW9YSDrLs8rIPxrANz/kKjoqhVWPJZU0t9gJEDlO4OnhXTbGn1uzoRVYhsGT
-         buI1NM0VMSVyDt9/UrL3JbYwB+UW4DhSsPphOGlSMaUa5ITV4yS7AEV7d2dKkEIk5j5p
-         xx+O2QGgqmgv9OZiZy5cMDCWvymjqLcUYuk/E1/13HvpdI2T3wvo5INwLT4vKnC5JCMj
-         zWWZaLTVf5yI9jrgi+WBCNMlFgpsOdtJ/dnvcUzvl/TSEto3HnwBDXMMgPKUjaWO8z7U
-         oyLXqm6woxueDwasuES/oa0qgBUYWFYkyCcsLZI4JpSAYfOTfRxR/cF5lfoXdrK18T2a
-         Oixg==
-X-Forwarded-Encrypted: i=1; AJvYcCVL6jJGH9OFrQQ/E5tGts90Z7WtmKo8aGDbltrK9/FcBehQRQnsxw8jl5Z7m1NpdJygfaY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwXwEie2r/bO6Mz6dTrmmVwFIQNGpLCipyZ2Cc9U5uLzetitS1y
-	LEe+yHCN4ccDFTCzboNfZ8F9AeUUPontcLkdc8qdztwYKTxsCY50aQr7
-X-Gm-Gg: ASbGncuDEttnQUXph9/ocC9m1IQyg28v7HG1Q9dBCjeckuJc82WJG2ALsaYv+e1Kj3G
-	9jLfn6VC67nRKWgYUwp/UKofh5ypd0VjrCYcCdEhXMgG9Yz0PVhtetQUZDB05uBNsdGOD1xvOtV
-	3HFz4SghrcxuuV0rU4PyH2SLzUJEreJwWFzEgSfGf0K0wyHWI66bZkp6M+IUIrWvdHh3z9MDPkt
-	LGNGn/7+/1YUmhD6PBJdx0d6cXMGaQbpB2JcYYlSJFhRd5pqG/o8LQkEVDfW1NPXkZmZQ8viQ2d
-	iwwL7d3DDswEpcXUuUVjpZezPj42HAO49nMD+Sjh4aAedt+K2dOycH4GlOgLKOBkzewKdf4dwXy
-	TYHxPiE+0C22uM/lnclwMPwNIiU/ea/G5KbRvMGEmf5P0eVb2qmXKvh+JtuUKbA1NMEuzub7sKg
-	==
-X-Google-Smtp-Source: AGHT+IFSOMyy4CQOMO6iTPnyGDZ4lKheF1dZ6GnReQZHIBdMpbixWN6EucmzeUPlpNjUIFfppa1t/A==
-X-Received: by 2002:a05:6a20:7344:b0:2e2:3e68:6e45 with SMTP id adf61e73a8af0-334a8642ea9mr36315441637.51.1761247133885;
-        Thu, 23 Oct 2025 12:18:53 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33e2247a342sm6621836a91.13.2025.10.23.12.18.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Oct 2025 12:18:53 -0700 (PDT)
-Message-ID: <de9b8201c4312ff891899b1a7a443332879d9043.camel@gmail.com>
-Subject: Re: [RFC bpf-next 02/15] libbpf: Add support for BTF kinds
- LOC_PARAM, LOC_PROTO and LOCSEC
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org
-Cc: martin.lau@linux.dev, acme@kernel.org, ttreyer@meta.com, 
-	yonghong.song@linux.dev, song@kernel.org, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	qmo@kernel.org, ihor.solodrai@linux.dev, david.faust@oracle.com, 
-	jose.marchesi@oracle.com, bpf@vger.kernel.org
-Date: Thu, 23 Oct 2025 12:18:50 -0700
-In-Reply-To: <20251008173512.731801-3-alan.maguire@oracle.com>
-References: <20251008173512.731801-1-alan.maguire@oracle.com>
-	 <20251008173512.731801-3-alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1761248411; x=1761853211;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LVSTUEbnkLIAzj9Vx2EvlgOAnsoNEFWZI7Re6Fq/m9U=;
+        b=JWgTgzRLIpadfAluqqO2ShKo9kMRaVpRTKLlKc13/Xw7mgG0L7Yu5JhtLkwuLfsh4H
+         idQMY9vnihm82fP6frsW41do1MQo89IxehIbc32IqbXlootNtvQRBVkB7bXoF2ZHMLue
+         vslZ7aLsAtqwbYKcSnZuy0iEiMzriOOyciculMyL4R1fGTsun/nkiq4xglW/QzGcbN+L
+         aaRzNE//9NA2mBbEaVbeFx70BuhKf2WT3+uXK1PCclZUqIUUlwfYZAXssRK/HoU4TXee
+         h3+svz31gkLreqxSkGS6S0nl8G4HP3dIw+qBN6rtL73RHb201tEme3qRXMXFRYxcxQHu
+         spLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVs+nZFlsgqIdS4azF1h0wlrCilomGeD2pY0Ghx54uWmbyhJSRPLEHuo+aXbbH02moxeZs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzR6YQZoQlkorDNYywMki6itzG8Pc64ncZbrsROSMtfdasqE1Y3
+	msGdZIaJ/fE7vP8qWhTbpx7gCbXkCsGng7WUakSD+oAJIAM9doIUXsUm8Fq2+r8maLFbwL3vjnk
+	1HVd86mxZqhIZA08HNoz/oRoFBFbTWIE=
+X-Gm-Gg: ASbGnctBHhbk3owgCFHnPtE9wdWqdQ1gaKDLJdWiSTWLRAqbGV/i0pG/zRx8RyUP4iG
+	1ThPSn2yj9VZxEhVowPrIo9t/JNrGO6lRPne1ILukJAyccK5QAz7gdaqsslpco43cbQaP+mba8t
+	KJ58NaQEQ2jnwjL/W74AEeSHYH5oIlSlft7Zk5H/mmadvHKgzfGgE5o1XcSuPBDwMPGQPLxZO2t
+	+V6CUQHflcVedbVXqCPZ5hsQXKCgxJ14xfWS/brykmU2X9MDDwOMJBgsTK3bKjSEPLm9tOqSOt6
+	rfGTqhdAzzE=
+X-Google-Smtp-Source: AGHT+IEhuZTV8ezLGcrth8HESSqDZMBIJHnHiqqsyIHltjqbCmhOwj0sR/LSVQ/PCaZxbA7uEuZRcIOOcvol27U+RHg=
+X-Received: by 2002:a17:903:1a0e:b0:26a:23c7:68da with SMTP id
+ d9443c01a7336-290ca02353emr310880525ad.25.1761248411250; Thu, 23 Oct 2025
+ 12:40:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251020093941.548058-1-dolinux.peng@gmail.com>
+ <20251020093941.548058-3-dolinux.peng@gmail.com> <174642a334760af39a5e7bacdd8b977b392a82c7.camel@gmail.com>
+ <CAErzpmusSgOaROhEO25fKenvxQJU1oSPKKzUA4h67ptdQxWM7A@mail.gmail.com>
+ <7651ac9cc74e135f04ecfee8660bea0a0d3883ab.camel@gmail.com>
+ <CAErzpmtWLLYuFk3npTiOgGOKcEcH1QUGGEHLvPncVT+z261C1A@mail.gmail.com>
+ <CAADnVQKU0MnQHxxvnp9WCu_UO4fEtd_D6ckNmOd7pLg90ecF4A@mail.gmail.com>
+ <CAEf4Bzajdv3Rd1xAxm_UZWBxPc8M0=VuUkfjJvOFSObOs19GbQ@mail.gmail.com> <CAADnVQJG_tK18oxmjW37cbrxF2zPKPk_dvqXUTnOjUue7J0tLQ@mail.gmail.com>
+In-Reply-To: <CAADnVQJG_tK18oxmjW37cbrxF2zPKPk_dvqXUTnOjUue7J0tLQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 23 Oct 2025 12:39:57 -0700
+X-Gm-Features: AS18NWCi5yLjTclZEFhU1VH8SOuBSBCDx6iFebw-WC4t6DXqtoN0O0_X7B7k0LM
+Message-ID: <CAEf4BzYLyi6=Fyz9ziOAwkFOjUPyJmTj4c6g247XBwgwJ8m-qw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 2/5] btf: sort BTF types by kind and name to enable
+ binary search
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Donglin Peng <dolinux.peng@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Song Liu <song@kernel.org>, pengdonglin <pengdonglin@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2025-10-08 at 18:34 +0100, Alan Maguire wrote:
+On Thu, Oct 23, 2025 at 11:37=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Oct 23, 2025 at 9:28=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> >
+> > Speaking of flags, though. I think adding BTF_F_SORTED flag to
+> > btf_header->flags seems useful, as that would allow libbpf (and user
+> > space apps working with BTF in general) to use more optimal
+> > find_by_name implementation. The only gotcha is that old kernels
+> > enforce this btf_header->flags to be zero, so pahole would need to
+> > know not to emit this when building BTF for old kernels (or, rather,
+> > we'll just teach pahole_flags in kernel build scripts to add this
+> > going forward). This is not very important for kernel, because kernel
+> > has to validate all this anyways, but would allow saving time for user
+> > space.
+>
+> Thinking more about it... I don't think it's worth it.
+> It's an operational headache. I'd rather have newer pahole sort it
+> without on/off flags and detection, so that people can upgrade
+> pahole and build older kernels.
+> Also BTF_F_SORTED doesn't spell out the way it's sorted.
+> Things may change and we will need a new flag and so on.
+> I think it's easier to check in the kernel and libbpf whether
+> BTF is sorted the way they want it.
+> The check is simple, fast and done once. Then both (kernel and libbpf) ca=
+n
+> set an internal flag and use different functions to search
+> within a given BTF.
 
-[...]
-
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index 18907f0fcf9f..0abd7831d6b4 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-
-[...]
-
-> @@ -588,6 +621,34 @@ static int btf_validate_type(const struct btf *btf, =
-const struct btf_type *t, __
->  		}
->  		break;
->  	}
-> +	case BTF_KIND_LOC_PARAM:
-> +		break;
-> +	case BTF_KIND_LOC_PROTO: {
-> +		__u32 *p =3D btf_loc_proto_params(t);
-> +
-> +		n =3D btf_vlen(t);
-> +		for (i =3D 0; i < n; i++, p++) {
-> +			err =3D btf_validate_id(btf, *p, id);
-> +			if (err)
-> +				return err;
-> +		}
-> +		break;
-> +	}
-> +	case BTF_KIND_LOCSEC: {
-> +		const struct btf_loc *l =3D btf_locsec_locs(t);
-> +
-> +		n =3D btf_vlen(t);
-> +		for (i =3D 0; i < n; i++, l++) {
-> +			err =3D btf_validate_str(btf, l->name_off, "loc name", id);
-> +			if (!err)
-> +				err =3D btf_validate_id(btf, l->func_proto, id);
-> +			if (!err)
-> +				btf_validate_id(btf, l->loc_proto, id);
-> +			if (err)
-> +				return err;
-> +		}
-> +		break;
-
-Do we want to also check that number of parameters in loc_proto is the
-same (or less then) number of parameters in func_proto?
-Also, would it make sense to support a case when e.g. parameters #1
-and #3 are in known locations, but parameter #2 is absent?
-
-> +	}
->  	default:
->  		pr_warn("btf: type [%u]: unrecognized kind %u\n", id, kind);
->  		return -EINVAL;
-
-[...]
+I guess that's fine. libbpf can do this check lazily on the first
+btf__find_by_name() to avoid unnecessary overhead. Agreed.
 
