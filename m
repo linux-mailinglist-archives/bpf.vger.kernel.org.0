@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-71900-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71901-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8894FC0134B
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 14:47:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51051C01367
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 14:48:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D49C34E9B8E
-	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 12:47:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 086EE3A7118
+	for <lists+bpf@lfdr.de>; Thu, 23 Oct 2025 12:48:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F1A313E28;
-	Thu, 23 Oct 2025 12:47:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 004A42EE60B;
+	Thu, 23 Oct 2025 12:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="O6rNBLTH"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="giDh6nN9"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39A127E1D7;
-	Thu, 23 Oct 2025 12:47:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C8E2EB856;
+	Thu, 23 Oct 2025 12:48:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761223632; cv=none; b=M/HENe5/weXgFTr7FZ2Gg1P8DhoOVBvt4DwnMdui+aftDBkJ8MM1DjCr/n3sIV9TGUkv+cO78tUk5n3U0Gc4l03Rdhg3Vtea40wph+tvOiuBfsLAqSLoXhIqR1w2A1swsJ0bHAuQPBRoI2KKVGj4F4hraIjf9k5Lww5W77EDOK0=
+	t=1761223715; cv=none; b=tHXoo3tqv8LakAzmC8YCMT7g/ZJzLvcmlKJmve3wTq53cBk+bMDGE9baDrYxSWELxKztgwAgcJdvk5x0NOo3X+VUxryvzQK9do8oUlzYbKTK5VMu2/kGjbawpNRwASHGESCNNHZxLUIJdNZjjDzpt4ZblNP1dBhxDkXsiEL5RyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761223632; c=relaxed/simple;
-	bh=lH4Rlnozzyr4pHltOr9Y3FA93+z2w09HQwC4Ss3HmE4=;
+	s=arc-20240116; t=1761223715; c=relaxed/simple;
+	bh=oAAhGQT5vj7sTLE42wIwJ/wHzhVqTVxEBiibNpt99D4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZLZVwkP+2Yo06msu9mRLF75zRUb+Tk/aNubZHhHKUsAoRfsAbKAkY4YtsRoa+cSzCFawTB+b2tXfyiEe9zA1UeTTitwplRb6w8MfNkNCDltNYYGg9OzCeKSbb/KGXOPfYqcnfYN9EF6/EuE2GrB9W/ad3P+3P6OE2cYoAZAygHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=O6rNBLTH; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=Cp2UK1N8JVd/1Pq5SMR+1zPD1NdBUhrbCopH2p60L0UTVFdz/vJ3mQfbUqjo47RmWzjeypvo6YXURoCL2wvXusmvaNaF8Qjcr9rhb8dnLjAETCAPiuWSPVw3BVyKZ9AtvoLhijtO+qfb5T0fUXr/paq8pVggqu55jGm6A7/AtO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=giDh6nN9; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=6ny7px9FhmQahCaQXLsfT1WbJygAjzePN69K3ZtgFFs=; b=O6rNBLTHg/ku6aNuw2suSr5S7p
-	gTBpgMYRxUwkrg/d06/h62SPGQoD6U/WTdImsM0KyEjrm2/2KIVdnTW146nFJStAiUHeecjMC0Epr
-	tRTa/yl+rfmc3Lx6+KVSOk4QNvPIFHqB9Ftxd6FUm9X1NPe5n5TuP5+9jDboUTodwG5d1QCx6CzpQ
-	oBI8aOT7HYNz5bPNe3Vb/x5bQqlLBtMBNEartevZIjALEK0A/XNgDwu4BAyPjCsz9qBWmLWrHJCGL
-	3Rs9uudyzKsf5HCybrzV6tS+5jCd57v2fzZiIGpRWnt976ar++zoc5MGs+EwNZ8B02tCpr2tbXfXx
-	nvvtIJpw==;
+	bh=+wRGm+SEPVGYmZOGC+WQG1MeFYibXgy62jaj+AlOd6Y=; b=giDh6nN99whiLo4/B/xqdO23zd
+	STeTePNQWTHAXZbbHCF9HspOVqCGMkx57AEZABEsiupEz2lUUW7NsbydyrGRkIH5lL1Xd778UdN/s
+	U/xoaHVtA0ET+q8YUYguPYuvCBjIBST6uuQsxBHm5pSyyTSKIYgEwv/+Z5VWijm0nN9D/NiBHLoet
+	AaJ/mAq07K8B7wbH0hF6mcmb7JCwDMTR77lKk6AtpZv2gTNJfWAhM3z/v0ux4/h0qDk7xmbT5OLmH
+	0oQVF+emCNB+ShO5ooOaTRIvmGfQ+s7q01vnBqbdSEbtKs4TdnEf5fhd1u1ohDV3c9cR7DJTHBO7W
+	Lzn8oejw==;
 Received: from sslproxy01.your-server.de ([78.46.139.224])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1vBuiG-00051H-29;
-	Thu, 23 Oct 2025 14:46:40 +0200
+	id 1vBujp-0005F8-0k;
+	Thu, 23 Oct 2025 14:48:17 +0200
 Received: from localhost ([127.0.0.1])
 	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1vBuiF-000Ki2-2A;
-	Thu, 23 Oct 2025 14:46:39 +0200
-Message-ID: <a06c96fa-1f0d-46f2-be8e-debc3933e573@iogearbox.net>
-Date: Thu, 23 Oct 2025 14:46:39 +0200
+	id 1vBujo-0006LR-0z;
+	Thu, 23 Oct 2025 14:48:16 +0200
+Message-ID: <34c1e9d1-bfc1-48f9-a0ce-78762574fa10@iogearbox.net>
+Date: Thu, 23 Oct 2025 14:48:15 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,7 +73,7 @@ Cc: bpf@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
  toke@redhat.com, yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
 References: <20251020162355.136118-1-daniel@iogearbox.net>
  <20251020162355.136118-3-daniel@iogearbox.net>
- <3b091dc8-47ae-48c2-b7e9-ee3deea6d5e9@redhat.com>
+ <412f4b9a-61bb-4ac8-9069-16a62338bd87@redhat.com>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -119,28 +119,24 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <3b091dc8-47ae-48c2-b7e9-ee3deea6d5e9@redhat.com>
+In-Reply-To: <412f4b9a-61bb-4ac8-9069-16a62338bd87@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.9/27801/Thu Oct 23 11:45:29 2025)
 
-On 10/23/25 12:17 PM, Paolo Abeni wrote:
+On 10/23/25 12:27 PM, Paolo Abeni wrote:
 > On 10/20/25 6:23 PM, Daniel Borkmann wrote:
->> +	tmp_rxq = __netif_get_rx_queue(dst_dev, dst_dev->real_num_rx_queues - 1);
->> +	if (tmp_rxq->peer && tmp_rxq->peer->dev != src_dev) {
+>> +	if (!src_dev->dev.parent) {
 >> +		err = -EOPNOTSUPP;
 >> +		NL_SET_ERR_MSG(info->extack,
->> +			       "Binding multiple queues from difference source devices not supported");
+>> +			       "Source device is a virtual device");
 >> +		goto err_unlock_src_dev;
 >> +	}
 > 
-> Why checking a single queue on dst/virtual device? Should the above
-> check be repeated for all the real_num_rx_queues?
-We could, but this is actually already enough. For example, initially the device
-has no phys binding at all (tmp_rxq->peer is NULL). Then we bind the first time.
-In the second request, we reject tmp_rxq->peer->dev != src_dev, and enforce
-binding to the same device again as previously, and then it repeats for subsequent
-bind requests.
+> Is this check strictly needed? I think that if we relax it, it could be
+> simpler to create all-virtual selftests.
+It is needed given we need to always ensure lock ordering for the two devices,
+that is, the order is always from the virtual to the physical device.
 
 Thanks,
 Daniel
