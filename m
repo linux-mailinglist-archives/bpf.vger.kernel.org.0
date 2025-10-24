@@ -1,264 +1,183 @@
-Return-Path: <bpf+bounces-72108-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72109-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DFD4C06B5E
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 16:34:08 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40D4DC06CA1
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 16:51:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3806534835A
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 14:34:07 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0C72F35C5F8
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 14:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E8E31D392;
-	Fri, 24 Oct 2025 14:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36455258EC8;
+	Fri, 24 Oct 2025 14:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QWmua2NW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X8seNLt5"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44EF52FB092
-	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 14:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898FF23AE87;
+	Fri, 24 Oct 2025 14:50:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761316418; cv=none; b=gphMhZ2ukQqdG7w0ePNTVm/tAH8bRtheISgSlisY/cbS0SbynXioASyG/4mhNPSbQvEDAE2K2rvghwdYrfspu3Y+cVaYr+xiYmbjcju7IPKO5O/kM33WQ7u5V3F2xzJ4XOBblCyYFwN2LXYFDSHATuRK+feDJvwBT2VpWRm4Kj8=
+	t=1761317452; cv=none; b=UXChoreHiCMRad9LGJ2ZULYFSWM7ztMPP9g0xqWykW9H7PijbeG1kIBYa8gn/N0MH9KIhQL+DGoVY0zxNY4db71bryrrahLqjwbwPc3LiBB2GU6iuJGPW+qVOuzYGn+YImhDXgDP3KBxNHEYd8/Jo45BUGP1cqSiigjhsKCCqcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761316418; c=relaxed/simple;
-	bh=St2tGCQEewbnfrbUK5ouJM4MBPRSJieB8IQU4yLWqf4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Zn1yICEh9OwqukY20oIYYvuySMP0HQu4uBrJOeDPPUabVD+5Xy/mMJV4/ipKqT7DUi6bUBEIwj0pVn6uxCofL7bNYp01rq2Sqzu4AZQv8MqVhf4JC3ai902Y9VeiXW9dCjwnx0mWp7tkXRop2NwCqjPIfz/QeRYPcWatISOvcX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QWmua2NW; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1761316414;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qMR4VmIIzn/w/4nNJSUeQgFleHSwnzkaVnDEewrnAfI=;
-	b=QWmua2NWfwpSQJ4qBGBbEepLWsTznEHDfzXVzWccjzDkFVK4kc788pQk5ZyQhtqFuwakTm
-	2NUHI/T3gRw+61g3c/SYWJUSa7wf3esow7k4Wkjm53jSbSzgjGwDBl8JwdGX/ZEtu5dfPj
-	Y4PeiDa/MtFbqd4R7ZRu7RFYrTbDw9c=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-520-swEIiPJgNSicGJwE7WtrfA-1; Fri, 24 Oct 2025 10:33:32 -0400
-X-MC-Unique: swEIiPJgNSicGJwE7WtrfA-1
-X-Mimecast-MFC-AGG-ID: swEIiPJgNSicGJwE7WtrfA_1761316412
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-b5c6c817a95so167127266b.0
-        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 07:33:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761316412; x=1761921212;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qMR4VmIIzn/w/4nNJSUeQgFleHSwnzkaVnDEewrnAfI=;
-        b=SjVKko6Kq/rXcckxN9awNkNmtc89QvvTVftAsNkumPcXT+qCpXYOoBQvnb/hkDJnLp
-         1ef3exaZ8PZZVeiEVyl9mcmaSXQTB3VV7yFYZB9jo/Hcz4FjOWjyk1QrTEmiRIYfXllZ
-         81Zntb+eMY56Wa2E1tXuMzdHPfiHhENUtZc2LYNnFZbkRFcJk3D+9+GTLPMfZdhep5Xj
-         /35qPjGmO1jBbiGmAiR3NWbrPyP3GrqHMueAhsl0m9c3ILRLHsuVGS1VCjcJE3K4e97t
-         mfAnWb/DrvFCslGyxxmZGAaLGFrywItE7VcTAQOLov6gc+6vnqMMnGLr8OYhp9LpYE19
-         MW+w==
-X-Forwarded-Encrypted: i=1; AJvYcCW4a+ORxqWBha/cuN6KphKrVs76+Buot4QbUTSNHmpB6NlfkqoI9jWo1TNuSAYTih0yvGU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCtTqtdFEA9D7vdtEppS+eHZKbGy8Qq5cqE/WRw3ji4By7UZeD
-	33tVI3bslZeG4ehGNSNPtyIKb9ZVX3jSKDLqLxh/Xnjh8ERtHWP9BdV0H5H1IEqyyBGpEVci6My
-	i8bFKBMonwVKc+SKxikZCIa5+GO8gx+hjHz5LI64yKK/hL0w2QdVWdA==
-X-Gm-Gg: ASbGncsnSHlsyPHEgvWbcJycHUI2jlKLW30xU+JgSmZ3vdmSmrdpGjP4yT1GB5uGdkN
-	3ZsOInWJzY8O2G7iU/kw7wou739dFzrStNSpaEoWGeflFy1Qmbz/wOjA/J3/4HqHkMOhuGTMS6/
-	uBg5mr8vhpohw8ADnpUN9XJfDJ+kV9iH3L14YAfSY3diCYjnCsGEiTf7wmvJjCUK8m/K7h2FjY7
-	yw9B5wPSYH9MpEu16shne4zSJHHNomYEuk3JIbsT7CvoxKRWYYYxhLNtqDvDd+jJLkSSIJCz+ps
-	bn1TNzyPV0gbHpndBL/aSm/6JRRnCKutdmY4LXGed1DThev8EpQS3ONYvg5exEF9J0KqNW6HUly
-	r72IyTiuCPZWrUoBmxTftQuM=
-X-Received: by 2002:a17:907:3daa:b0:b3d:656b:9088 with SMTP id a640c23a62f3a-b64749416admr3903160166b.54.1761316411538;
-        Fri, 24 Oct 2025 07:33:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHJLEAmzEsqCaXOpu82Aaw82/w7mLyOC9azKvS1K33FnRFrN1PBJiJg/V40XnFDES8K3O5Haw==
-X-Received: by 2002:a17:907:3daa:b0:b3d:656b:9088 with SMTP id a640c23a62f3a-b64749416admr3903157466b.54.1761316411041;
-        Fri, 24 Oct 2025 07:33:31 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-63e3f322cf3sm4399668a12.29.2025.10.24.07.33.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Oct 2025 07:33:30 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 8F4982EA579; Fri, 24 Oct 2025 16:33:29 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
- makita.toshiaki@lab.ntt.co.jp
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, Eric Dumazet
- <eric.dumazet@gmail.com>, "David S. Miller" <davem@davemloft.net>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- ihor.solodrai@linux.dev, toshiaki.makita1@gmail.com, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel-team@cloudflare.com
-Subject: Re: [PATCH net V1 3/3] veth: more robust handing of race to avoid
- txq getting stuck
-In-Reply-To: <176123158453.2281302.11061466460805684097.stgit@firesoul>
-References: <176123150256.2281302.7000617032469740443.stgit@firesoul>
- <176123158453.2281302.11061466460805684097.stgit@firesoul>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Fri, 24 Oct 2025 16:33:29 +0200
-Message-ID: <871pmsfjye.fsf@toke.dk>
+	s=arc-20240116; t=1761317452; c=relaxed/simple;
+	bh=0knJF7uPO6AofNUjLkQQvkI0kJEMlROapYN6LI2qQlU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FLpmye7PkKFl9ZYhym6NHyiplHhZXrOxSHTK5tDhbDXsN0aGGcFYYEhWC71BjUjGZY18PYMulRDm0IWglWk1s9vGFzunzDcJjaJHOA7Ewkk4OUIr9oxs8WN3HZgPfDrIK3UFmdMaQ5JcgUvdB4iuapcUg5Gmnp4W3WdnE9JK0eM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X8seNLt5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CB14C4CEF1;
+	Fri, 24 Oct 2025 14:50:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761317452;
+	bh=0knJF7uPO6AofNUjLkQQvkI0kJEMlROapYN6LI2qQlU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X8seNLt5RF176sZd6t2usJg6+ak1kThL3v1R1UTT43sFOzps+l0LW6+qqN1YXaOx8
+	 7G/ugiiZ9KyWkayAGz2cf+0Dkc9NA8WKB6Y9o3lfP2XbiaH3eqsmDVqNugHrZjWZKf
+	 ighuDrTNgD1XhVcflIq6Z8ImsGEvPJr4tyXK12HZedFj8fLQrLGSjZhpYyTlfVhXkC
+	 Y000Gf13lfSV3wCRZLYNjoCxvQwr1+7WXw06Wwq4Zv/FErQ75Eh6JBMnu3c1HeaJhe
+	 IpVGcslSDxM0wR09pKb1kFEDPBjorrfiRibxjWUq5cwo72/cZfUrKT7iebRWaLpeO9
+	 TLAuPc+M0yXpQ==
+Date: Fri, 24 Oct 2025 16:50:44 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Ferenc Fejes <ferenc@fejes.dev>
+Cc: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Jeff Layton <jlayton@kernel.org>, Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH RFC DRAFT 00/50] nstree: listns()
+Message-ID: <20251024-rostig-stier-0bcd991850f5@brauner>
+References: <20251021-work-namespace-nstree-listns-v1-0-ad44261a8a5b@kernel.org>
+ <f708a1119b2ad8cf2514b1df128a4ef7cf21c636.camel@fejes.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f708a1119b2ad8cf2514b1df128a4ef7cf21c636.camel@fejes.dev>
 
-Jesper Dangaard Brouer <hawk@kernel.org> writes:
+> > Add a new listns() system call that allows userspace to iterate through
+> > namespaces in the system. This provides a programmatic interface to
+> > discover and inspect namespaces, enhancing existing namespace apis.
+> > 
+> > Currently, there is no direct way for userspace to enumerate namespaces
+> > in the system. Applications must resort to scanning /proc/<pid>/ns/
+> > across all processes, which is:
+> > 
+> > 1. Inefficient - requires iterating over all processes
+> > 2. Incomplete - misses inactive namespaces that aren't attached to any
+> >    running process but are kept alive by file descriptors, bind mounts,
+> >    or parent namespace references
+> > 3. Permission-heavy - requires access to /proc for many processes
+> > 4. No ordering or ownership.
+> > 5. No filtering per namespace type: Must always iterate and check all
+> >    namespaces.
+> > 
+> > The list goes on. The listns() system call solves these problems by
+> > providing direct kernel-level enumeration of namespaces. It is similar
+> > to listmount() but obviously tailored to namespaces.
+> 
+> I've been waiting for such an API for years; thanks for working on it. I mostly
+> deal with network namespaces, where points 2 and 3 are especially painful.
+> 
+> Recently, I've used this eBPF snippet to discover (at most 1024, because of the
+> verifier's halt checking) network namespaces, even if no process is attached.
+> But I can't do anything with it in userspace since it's not possible to pass the
+> inode number or netns cookie value to setns()...
 
-> Commit dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to
-> reduce TX drops") introduced a race condition that can lead to a permanently
-> stalled TXQ. This was observed in production on ARM64 systems (Ampere Altra
-> Max).
->
-> The race occurs in veth_xmit(). The producer observes a full ptr_ring and
-> stops the queue (netif_tx_stop_queue()). The subsequent conditional logic,
-> intended to re-wake the queue if the consumer had just emptied it (if
-> (__ptr_ring_empty(...)) netif_tx_wake_queue()), can fail. This leads to a
-> "lost wakeup" where the TXQ remains stopped (QUEUE_STATE_DRV_XOFF) and
-> traffic halts.
->
-> This failure is caused by an incorrect use of the __ptr_ring_empty() API
-> from the producer side. As noted in kernel comments, this check is not
-> guaranteed to be correct if a consumer is operating on another CPU. The
-> empty test is based on ptr_ring->consumer_head, making it reliable only for
-> the consumer. Using this check from the producer side is fundamentally racy.
->
-> This patch fixes the race by adopting the more robust logic from an earlier
-> version V4 of the patchset, which always flushed the peer:
->
-> (1) In veth_xmit(), the racy conditional wake-up logic and its memory barrier
-> are removed. Instead, after stopping the queue, we unconditionally call
-> __veth_xdp_flush(rq). This guarantees that the NAPI consumer is scheduled,
-> making it solely responsible for re-waking the TXQ.
+I've mentioned it in the cover letter and in my earlier reply to Josef:
 
-This makes sense.
+On v6.18+ kernels it is possible to generate and open file handles to
+namespaces. This is probably an api that people outside of fs/ proper
+aren't all that familiar with.
 
-> (2) On the consumer side, the logic for waking the peer TXQ is centralized.
-> It is moved out of veth_xdp_rcv() (which processes a batch) and placed at
-> the end of the veth_poll() function. This ensures netif_tx_wake_queue() is
-> called once per complete NAPI poll cycle.
+In essence it allows you to refer to files - or more-general:
+kernel-object that may be referenced via files - via opaque handles
+instead of paths.
 
-So is this second point strictly necessary to fix the race, or is it
-more of an optimisation?
+For regular filesystem that are multi-instance (IOW, you can have
+multiple btrfs or ext4 filesystems mounted) such file handles cannot be
+used without providing a file descriptor to another object in the
+filesystem that is used to resolve the file handle...
 
-> (3) Finally, the NAPI completion check in veth_poll() is updated. If NAPI is
-> about to complete (napi_complete_done), it now also checks if the peer TXQ
-> is stopped. If the ring is empty but the peer TXQ is stopped, NAPI will
-> reschedule itself. This prevents a new race where the producer stops the
-> queue just as the consumer is finishing its poll, ensuring the wakeup is not
-> missed.
+However, for single-instance filesystems like pidfs and nsfs that's not
+required which is why I added:
 
-Also makes sense...
+FD_PIDFS_ROOT
+FD_NSFS_ROOT
 
-> Fixes: dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to reduce TX drops")
-> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> ---
->  drivers/net/veth.c |   42 +++++++++++++++++++++---------------------
->  1 file changed, 21 insertions(+), 21 deletions(-)
->
-> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> index 3976ddda5fb8..1d70377481eb 100644
-> --- a/drivers/net/veth.c
-> +++ b/drivers/net/veth.c
-> @@ -392,14 +392,12 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
->  		}
->  		/* Restore Eth hdr pulled by dev_forward_skb/eth_type_trans */
->  		__skb_push(skb, ETH_HLEN);
-> -		/* Depend on prior success packets started NAPI consumer via
-> -		 * __veth_xdp_flush(). Cancel TXQ stop if consumer stopped,
-> -		 * paired with empty check in veth_poll().
-> -		 */
->  		netif_tx_stop_queue(txq);
-> -		smp_mb__after_atomic();
-> -		if (unlikely(__ptr_ring_empty(&rq->xdp_ring)))
-> -			netif_tx_wake_queue(txq);
-> +		/* Handle race: Makes sure NAPI peer consumer runs. Consumer is
-> +		 * responsible for starting txq again, until then ndo_start_xmit
-> +		 * (this function) will not be invoked by the netstack again.
-> +		 */
-> +		__veth_xdp_flush(rq);
+which means that you can open both pidfds and namespace via
+open_by_handle_at() purely based on the file handle. I call such file
+handles "exhaustive file handles" because they fully describe the object
+to be resolvable without any further information.
 
-Nit: I'd lose the "Handle race:" prefix from the comment; the rest of
-the comment is clear enough without it, and since there's no explanation
-of *which* race is being handled, it is just confusing, IMO.
+They are also not subject to the capable(CAP_DAC_READ_SEARCH) permission
+check that regular file handles are and so can be used even by
+unprivileged code as long as the caller is sufficiently privileged over
+the relevant object (pid resolvable in caller's pid namespace of pidfds,
+or caller located in namespace or privileged over the owning user
+namespace of the relevant namespace for nsfs).
 
->  		break;
->  	case NET_RX_DROP: /* same as NET_XMIT_DROP */
->  drop:
-> @@ -900,17 +898,9 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
->  			struct veth_xdp_tx_bq *bq,
->  			struct veth_stats *stats)
->  {
-> -	struct veth_priv *priv = netdev_priv(rq->dev);
-> -	int queue_idx = rq->xdp_rxq.queue_index;
-> -	struct netdev_queue *peer_txq;
-> -	struct net_device *peer_dev;
->  	int i, done = 0, n_xdpf = 0;
->  	void *xdpf[VETH_XDP_BATCH];
->  
-> -	/* NAPI functions as RCU section */
-> -	peer_dev = rcu_dereference_check(priv->peer, rcu_read_lock_bh_held());
-> -	peer_txq = peer_dev ? netdev_get_tx_queue(peer_dev, queue_idx) : NULL;
-> -
->  	for (i = 0; i < budget; i++) {
->  		void *ptr = __ptr_ring_consume(&rq->xdp_ring);
->  
-> @@ -959,11 +949,6 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
->  	rq->stats.vs.xdp_packets += done;
->  	u64_stats_update_end(&rq->stats.syncp);
->  
-> -	if (peer_txq && unlikely(netif_tx_queue_stopped(peer_txq))) {
-> -		txq_trans_cond_update(peer_txq);
-> -		netif_tx_wake_queue(peer_txq);
-> -	}
-> -
->  	return done;
->  }
->  
-> @@ -971,12 +956,20 @@ static int veth_poll(struct napi_struct *napi, int budget)
->  {
->  	struct veth_rq *rq =
->  		container_of(napi, struct veth_rq, xdp_napi);
-> +	struct veth_priv *priv = netdev_priv(rq->dev);
-> +	int queue_idx = rq->xdp_rxq.queue_index;
-> +	struct netdev_queue *peer_txq;
->  	struct veth_stats stats = {};
-> +	struct net_device *peer_dev;
->  	struct veth_xdp_tx_bq bq;
->  	int done;
->  
->  	bq.count = 0;
->  
-> +	/* NAPI functions as RCU section */
-> +	peer_dev = rcu_dereference_check(priv->peer, rcu_read_lock_bh_held());
-> +	peer_txq = peer_dev ? netdev_get_tx_queue(peer_dev, queue_idx) : NULL;
-> +
->  	xdp_set_return_frame_no_direct();
->  	done = veth_xdp_rcv(rq, budget, &bq, &stats);
->  
-> @@ -986,7 +979,8 @@ static int veth_poll(struct napi_struct *napi, int budget)
->  	if (done < budget && napi_complete_done(napi, done)) {
->  		/* Write rx_notify_masked before reading ptr_ring */
->  		smp_store_mb(rq->rx_notify_masked, false);
-> -		if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
-> +		if (unlikely(!__ptr_ring_empty(&rq->xdp_ring) ||
-> +			     (peer_txq && netif_tx_queue_stopped(peer_txq)))) {
->  			if (napi_schedule_prep(&rq->xdp_napi)) {
->  				WRITE_ONCE(rq->rx_notify_masked, true);
->  				__napi_schedule(&rq->xdp_napi);
-> @@ -998,6 +992,12 @@ static int veth_poll(struct napi_struct *napi, int budget)
->  		veth_xdp_flush(rq, &bq);
->  	xdp_clear_return_frame_no_direct();
->  
-> +	/* Release backpressure per NAPI poll */
-> +	if (peer_txq && netif_tx_queue_stopped(peer_txq)) {
-> +		txq_trans_cond_update(peer_txq);
-> +		netif_tx_wake_queue(peer_txq);
-> +	}
-> +
->  	return done;
->  }
->  
+File handles for namespaces have the following uapi:
 
+struct nsfs_file_handle {
+	__u64 ns_id;
+	__u32 ns_type;
+	__u32 ns_inum;
+};
+
+#define NSFS_FILE_HANDLE_SIZE_VER0 16 /* sizeof first published struct */
+#define NSFS_FILE_HANDLE_SIZE_LATEST sizeof(struct nsfs_file_handle) /* sizeof latest published struct */
+
+and it is explicitly allowed to generate such file handles manually in
+userspace. When the kernel generates a namespace file handle via
+name_to_handle_at() till will return: ns_id, ns_type, and ns_inum but
+userspace is allowed to provide the kernel with a laxer file handle
+where only the ns_id is filled in but ns_type and ns_inum are zero - at
+least after this patch series.
+
+So for your case where you even know inode number, ns type, and ns id
+you can fill in a struct nsfs_file_handle and either look at my reply to
+Josef or in the (ugly) tests.
+
+fd = open_by_handle_at(FD_NSFS_ROOT, file_handle, O_RDONLY);
+
+and can open the namespace (provided it is still active).
+
+> 
+> extern const void net_namespace_list __ksym;
+> static void list_all_netns()
+> {
+>     struct list_head *nslist = 
+> 	bpf_core_cast(&net_namespace_list, struct list_head);
+> 
+>     struct list_head *iter = nslist->next;
+> 
+>     bpf_repeat(1024) {
+
+This isn't needed anymore. I've implemented it in a bpf-friendly way so
+it's possible to add kfuncs that would allow you to iterate through the
+various namespace trees (locklessly).
+
+If this is merged then I'll likely design that bpf part myself.
+
+> After this merged, do you see any chance for backports? Does it rely on recent
+> bits which is hard/impossible to backport? I'm not aware of backported syscalls
+> but this would be really nice to see in older kernels.
+
+Uhm, what downstream entities, managing kernels do is not my concern but
+for upstream it's certainly not an option. There's a lot of preparatory
+work that would have to be backported.
 
