@@ -1,154 +1,137 @@
-Return-Path: <bpf+bounces-72003-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72004-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DA8CC05031
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 10:16:46 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 734FDC04F9B
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 10:08:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7443408223
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 08:08:23 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 26F9D3455D9
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 08:08:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC8FD2FDC5D;
-	Fri, 24 Oct 2025 08:08:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C10B3019C8;
+	Fri, 24 Oct 2025 08:08:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ivwmwOoU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mdNmI4qA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5395C2FDC44;
-	Fri, 24 Oct 2025 08:08:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97408301498
+	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 08:08:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761293286; cv=none; b=pla9ynO2FI2mJmwnC0wIeSVDrjtV0AvM/aVUFGd/JPoHc32D4/nxpcqECG89BshAPnBk95RtPNKRXz39B2Yryl+zZYjjmrLRqWeusXdT5IvYK/wE1+Y31naI6QpsDpcmUcDvlMigFWFtMJrNKSFJhlWQOSj+oBO3WgVfkvckgu0=
+	t=1761293301; cv=none; b=J9IWrxg+z6IFzzNPwcxv05dKJJtw3DfqscOam7wNDuV4/9g2KNmrT788t/krVxFt47TQFRuOMp16MrXO96lGng6osGSL9qih7GkgjdaD/R7YozRiJGr+sTbRi14hLFl11xPVdhIgUYexzOuBgf6VZ4UBIZvTCBeR2O6r2dpPL50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761293286; c=relaxed/simple;
-	bh=UTt/Q0XaE240mGhbyc0GBR+vGT+S8mXRNkiX+CKXR2g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OjxIeiI5OkcABR3xgVcbPGDsLcPF2liKgshEIOK/sxNHDttgn/XtPEUWqMjuembZpgelvmginvULQHr26yNFM0OJxTWC4Y9jBoyd0IePhr0aSQA9ExDYcMgrrNAIHGsqeSYrNCMemZV2GDsXGHnCqm8CKsEOh24R6svYDhUmiCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ivwmwOoU; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1761293284; x=1792829284;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UTt/Q0XaE240mGhbyc0GBR+vGT+S8mXRNkiX+CKXR2g=;
-  b=ivwmwOoU9Bd/cH4Wf+HuCtuJGRkesBmqZwiIy2UQgfGPPy8+6r+YtrlX
-   iNlXfqntenWLEPbywW5OxklGbeZwntSbWf3WocDLF+FbzIPU8qokMsdAO
-   8acOSeG37kdJFpoCP7c6hQaUUvGhctXia9RuXk/q0V+vOUYWwxsq7QjfB
-   CsDaI8FkUvfqxinxlnOQpI7DPVjg3jy1yH2iJp20blbwCgzzGN6NsiTDP
-   LTPg5hT3JLiGLxQm+g+1YEK9kyyZQ0kzlTji7b8zZX6KtCrgGbhDwGLgh
-   eVYnH9gzkwS1Cg5alp9txDqbW3QJqnvC8ETnPlfTpD0Tmr+nxz2J/fJkb
-   Q==;
-X-CSE-ConnectionGUID: /4TprjiHTwGvQ/kc6GCxoQ==
-X-CSE-MsgGUID: v9ejTz52TDqDF/FNxhp66Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="63620713"
-X-IronPort-AV: E=Sophos;i="6.19,251,1754982000"; 
-   d="scan'208";a="63620713"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2025 01:08:03 -0700
-X-CSE-ConnectionGUID: cCFN/iBWRGahFx9FoHfx9Q==
-X-CSE-MsgGUID: zqkBOcvTQa22Dhk4feXAcA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,251,1754982000"; 
-   d="scan'208";a="184441717"
-Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
-  by orviesa008.jf.intel.com with ESMTP; 24 Oct 2025 01:08:00 -0700
-Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1vCCq5-000EJv-16;
-	Fri, 24 Oct 2025 08:07:57 +0000
-Date: Fri, 24 Oct 2025 16:07:43 +0800
-From: kernel test robot <lkp@intel.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-	magnus.karlsson@intel.com, aleksander.lobakin@intel.com,
-	ilias.apalodimas@linaro.org, toke@redhat.com, lorenzo@kernel.org,
-	kuba@kernel.org, Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com,
-	Ihor Solodrai <ihor.solodrai@linux.dev>,
-	Octavian Purdila <tavip@google.com>
-Subject: Re: [PATCH v3 bpf 1/2] xdp: introduce xdp_convert_skb_to_buff()
-Message-ID: <202510241549.mWZqm0BR-lkp@intel.com>
-References: <20251022125209.2649287-2-maciej.fijalkowski@intel.com>
+	s=arc-20240116; t=1761293301; c=relaxed/simple;
+	bh=7nsIjxJWbWE/evrRetoYMmRlti7SQG1A+Mfv2lnGeKg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UPZ2yAra+nDh1olQMqRMmgSDty2yuW5G3bhTDHL2lb03awhJTgrf3jKUatykfBTYicRNbYkzLZjuQoeTkKKTSelgMY1AnFnkZryTof1Ncve0VEOMczW6rU6F2jbPTyJXdIHv+LnoMi6XE/syc+s5m9fHZz9pDP5q4MwKv84s2fg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mdNmI4qA; arc=none smtp.client-ip=209.85.210.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-77f67ba775aso2204995b3a.3
+        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 01:08:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761293299; x=1761898099; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JVhF+LS/VFIVfRVK60hqpDN69wUmvTRnXE3X6JFK5lg=;
+        b=mdNmI4qAsw+nHRMgzOO5YQvprlxV7GXHT0VIbsCcZD2eiGx8NGoRMC4pPdqLOYIGuJ
+         XXQpZyxJ0Wjuo8LWgihjjt+wktRdVKiKCWcE92OuJNmpkryudbA7YY9RiikUNySiYten
+         VYRyzjzn/G4w5xF67ok4lW3e2b9KZY7ajnKOtb9fVf58mckC0n+G1bsV63SYjsMN2eWR
+         z7NSHcLfHq9OrK27D7niirZCRzfmFTsz/Fy642XgRgmUCCXCjt0SdDaeHHZAVIkRyduB
+         NwG/W1hdJqqo6OqmjsObkctyxB1hSGfKTSJ5E+kfqOc7w+38ZEFQszvC/nAaGwpBjwev
+         Ba4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761293299; x=1761898099;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JVhF+LS/VFIVfRVK60hqpDN69wUmvTRnXE3X6JFK5lg=;
+        b=iE2UcJg0cqyv6DlDiN5Ma/iElevSZ3920Om797yVkAHWWCd1/vanytIrIrCESxEGeA
+         Ouen2qbqTr3RgSEyTuKd0k3KMYG0BDd4VX+XMxu8c6WeMEZE7wwMe1eRf/xGfSD0BFGt
+         H46dsMQnIjRvlZkDXx6/sZ0bxqKq5meH7Um1Sn9av6GHGYc5Cg4KdiGGpLP0aTBmnpKi
+         yp8gTLjNmnDK6bySkXFh19iPqhH4623X2ILs88ev+6O1yzUnCEL0763t3SWYgCSfOGB2
+         eMiNo9r/klf390rUFz5Dum11dOHFZMWghA1UmHdkSFZTVRHwisqHGRJjgSRBROHsMnWK
+         BN0A==
+X-Forwarded-Encrypted: i=1; AJvYcCUlcbRvbQuTIxt1XFKEfj/0weOH+jIAaPFHVCMJMEEmkzOQ6z4U9JIUrbQ72L8zzkn70W8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyFGEp5C1oKbChLcZaC/qzXYYGzYQUew5fHFS7edH9DFgTKzGkU
+	xhRpFIM0kohoN3mz6ncLaXpbMlHL6cSBrJKeUONe8wk1d16p0Wy32Cvu
+X-Gm-Gg: ASbGnct0nH7WH9TTzYcf+7JJ5sVo7LbQQjwLN8QAtMPATQYvXMpqnC1k6QzkwS3RY1X
+	aAg6SQbfx8eqKwGeAu3CE1yiwUwm/iSQtGxkQ/yHbgS0hA14cN/WlSmtfieItCo3iuheepz+TA/
+	orrOhXsh+Z8PkPs0kgv6ZzF0Y45zdJbJARxQWFM7y4F1xdsp+oBg1iktVfulPYICiz9yOPNUcr9
+	uxc1Y5vUr6f3a4NnazzAj+xCCSBsqj1Ywrg2z7N5/GKxdykRjH2mA9SBHhYTKwQpWuKD3q4KvYM
+	QF1a3E0TGbYuBD4HTXd3inQ14NMqL8/6V+6F32Ofzg1EdglVfRrv+l2/eTl7lwILpqNp2SEaUtf
+	6lSEJy1+PQCGWhPRVE5WN48e1vFTO1xy+GbnZ4GAz52q5KacJo7oqCkSFlACT1kp4yrAOqV/VgO
+	AweSHZ5Bkdl3wp+/n1UbqGqrPKPIw7
+X-Google-Smtp-Source: AGHT+IFqbf59z458q6CV//wwrkG2YQyZ6Muu0CoQS/MrqfCezuYg7MN1x7yE1WmediLzYVtk9nXIwQ==
+X-Received: by 2002:a05:6a20:3c8d:b0:2fa:26fb:4a7b with SMTP id adf61e73a8af0-334a8650347mr36367003637.57.1761293298709;
+        Fri, 24 Oct 2025 01:08:18 -0700 (PDT)
+Received: from E07P150077.ecarx.com.cn ([103.52.189.24])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a274dc33easm5011581b3a.68.2025.10.24.01.08.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Oct 2025 01:08:18 -0700 (PDT)
+From: Jianyun Gao <jianyungao89@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: Jianyun Gao <jianyungao89@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org (open list:BPF [LIBRARY] (libbpf))
+Subject: [PATCH v2] libbpf: optimize the redundant code in the bpf_object__init_user_btf_maps() function.
+Date: Fri, 24 Oct 2025 16:08:02 +0800
+Message-Id: <20251024080802.642189-1-jianyungao89@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251022125209.2649287-2-maciej.fijalkowski@intel.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Maciej,
+In the elf_sec_data() function, the input parameter 'scn' will be
+evaluated. If it is NULL, then it will directly return NULL. Therefore,
+the return value of the elf_sec_data() function already takes into
+account the case where the input parameter scn is NULL. Therefore,
+subsequently, the code only needs to check whether the return value of
+the elf_sec_data() function is NULL.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Jianyun Gao <jianyungao89@gmail.com>
+---
+v1->v2:
+Fix the compilation issue caused by rename operation in version v1.
+The v1 version is here:
 
-[auto build test WARNING on bpf/master]
+https://lore.kernel.org/lkml/20251024060720.634826-1-jianyungao89@gmail.com/
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Maciej-Fijalkowski/xdp-introduce-xdp_convert_skb_to_buff/20251022-210958
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
-patch link:    https://lore.kernel.org/r/20251022125209.2649287-2-maciej.fijalkowski%40intel.com
-patch subject: [PATCH v3 bpf 1/2] xdp: introduce xdp_convert_skb_to_buff()
-config: sh-randconfig-r111-20251024 (https://download.01.org/0day-ci/archive/20251024/202510241549.mWZqm0BR-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 10.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251024/202510241549.mWZqm0BR-lkp@intel.com/reproduce)
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202510241549.mWZqm0BR-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
-   net/core/dev.c:4164:17: sparse: sparse: context imbalance in '__dev_queue_xmit' - different lock contexts for basic block
-   net/core/dev.c:5188:9: sparse: sparse: context imbalance in 'kick_defer_list_purge' - different lock contexts for basic block
-   net/core/dev.c:5290:22: sparse: sparse: context imbalance in 'enqueue_to_backlog' - different lock contexts for basic block
-   net/core/dev.c: note: in included file (through include/trace/events/xdp.h, include/linux/bpf_trace.h):
->> include/net/xdp.h:398:17: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] pkt_len @@     got unsigned char * @@
-   include/net/xdp.h:398:17: sparse:     expected unsigned int [usertype] pkt_len
-   include/net/xdp.h:398:17: sparse:     got unsigned char *
-   net/core/dev.c:5678:17: sparse: sparse: context imbalance in 'net_tx_action' - different lock contexts for basic block
-   net/core/dev.c:6373:9: sparse: sparse: context imbalance in 'flush_backlog' - different lock contexts for basic block
-   net/core/dev.c:6520:9: sparse: sparse: context imbalance in 'process_backlog' - different lock contexts for basic block
-
-vim +398 include/net/xdp.h
-
-   386	
-   387	static inline
-   388	void xdp_convert_skb_to_buff(struct sk_buff *skb, struct xdp_buff *xdp,
-   389				     struct xdp_rxq_info *xdp_rxq)
-   390	{
-   391		u32 frame_sz, pkt_len;
-   392	
-   393		/* SKB "head" area always have tailroom for skb_shared_info */
-   394		frame_sz = skb_end_pointer(skb) - skb->head;
-   395		frame_sz += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-   396	
-   397		DEBUG_NET_WARN_ON_ONCE(!skb_mac_header_was_set(skb));
- > 398		pkt_len =  skb->tail - skb->mac_header;
-   399	
-   400		xdp_init_buff(xdp, frame_sz, xdp_rxq);
-   401		xdp_prepare_buff(xdp, skb->head, skb->mac_header, pkt_len, true);
-   402	
-   403		if (skb_is_nonlinear(skb)) {
-   404			skb_shinfo(skb)->xdp_frags_size = skb->data_len;
-   405			xdp_buff_set_frags_flag(xdp);
-   406		} else {
-   407			xdp_buff_clear_frags_flag(xdp);
-   408		}
-   409	
-   410		xdp->rxq->mem.type = page_pool_page_is_pp(virt_to_head_page(xdp->data)) ?
-   411					MEM_TYPE_PAGE_POOL : MEM_TYPE_PAGE_SHARED;
-   412	}
-   413	
-
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index b90574f39d1c..fbe74686c97d 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -2996,7 +2996,7 @@ static int bpf_object__init_user_btf_maps(struct bpf_object *obj, bool strict,
+ 
+ 	scn = elf_sec_by_idx(obj, obj->efile.btf_maps_shndx);
+ 	data = elf_sec_data(obj, scn);
+-	if (!scn || !data) {
++	if (!data) {
+ 		pr_warn("elf: failed to get %s map definitions for %s\n",
+ 			MAPS_ELF_SEC, obj->path);
+ 		return -EINVAL;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
