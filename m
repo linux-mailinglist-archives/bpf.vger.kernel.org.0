@@ -1,115 +1,129 @@
-Return-Path: <bpf+bounces-72156-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72157-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7F39C0801C
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 22:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B37DC08191
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 22:44:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28B5B3BD117
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 20:14:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0CD03BA8A8
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 20:44:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1893B2E6CDA;
-	Fri, 24 Oct 2025 20:14:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD0B52F999F;
+	Fri, 24 Oct 2025 20:44:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ig/NWESD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PDWPNKfn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C43F2E6CAA
-	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 20:14:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B125B2F8BD1
+	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 20:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761336860; cv=none; b=U7KqBI4wrtsMhNSvSrcwbGYZCOlSfZF1sMuf0u89Td/gh2wSTY+qyePKkhuXXHGmBkRf2vQHutRpyIoF3sdcSToPewsjBMMTIZjq5+sxGrw46oChqbwBIaetBYDqJFi5k+WvsaS61EvWB5wd1MZj+CMGEuX7Pd1tzTxbIuRT4DI=
+	t=1761338648; cv=none; b=iCyJ1XqveSlkMD0lIMZzrHrdJQnvvvH5EgyeJLd87jcfr5A1AmF+KVQF0FOHt5OcHRyfCjAosg3PuUNPRbCiOZR+OXaTYI5kRXmaL4o66dZwQbXNFrsR99zyOZ5fdDOckWnKmqPLnZhriiilUUqDMogOUErLCsCahheDrJvXfyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761336860; c=relaxed/simple;
-	bh=QRmmUPZjD0Nl/pzvJDzPxygHUoc//WlZnhbayyftwX4=;
+	s=arc-20240116; t=1761338648; c=relaxed/simple;
+	bh=RNvLYaINM6n6Q8orahjUExiUrP2C5m6sUpUU/3kkhqg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YQP3b3XZJ63EwQmAK8U1IKiJXwGJyaJk9Vsjil8a3l/RoNeVqeigqBRiFgCa8qsoUWOcp/arUkuIeTKyfLvXa2u2Zyspz7ieC23WpiMcwIGQ6OPpQ4854M3phrgYZCHOTOcA1YOuZSmmnnRGWC3X7F7eA+de9S2dLzrPa9Myqvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ig/NWESD; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-784966ad073so31734877b3.1
-        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 13:14:18 -0700 (PDT)
+	 To:Cc:Content-Type; b=mq9kpifhOkHZo1FB4RevVzQMkeTZ4X0ClF4Nk83Nhx7f1FGBkusSbDLyHuyq8aovf5u8QDwtJQaTXWgJr+D4MxUtBNcQk0O7GOT3o9tnjFk+32aZFpbiwCVDTHcjpMYZDnCH5mVJtWVujRmdReebnZ5s70ROHY/7WomEJjrm2mQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PDWPNKfn; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-421851bca51so2220903f8f.1
+        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 13:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761336858; x=1761941658; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761338644; x=1761943444; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QRmmUPZjD0Nl/pzvJDzPxygHUoc//WlZnhbayyftwX4=;
-        b=Ig/NWESDE+V92QIAs8zCk53vnQj51oYAK+pzbV212WD2G+yUvvKjvhTy9IiZvbfWWz
-         47+14pJ65zdfrpG6ITUPgGZm3p7BsqVObqp8yKF3njxT8BlMatV4DGKQjGcuX7mvw5rw
-         wkaXanPokV8WnRclwP200/vH3zEIeUmEOAPRs2pCQJSxGPALGqX1thYEGX6k+Wwm84v/
-         NdQ370q4xL2lpiigeIrsFRbl2KvP8+CSXysI7CKHn5rv8nFVbHcT4dARO1NCK46uTteP
-         FeJHPD2l+Y1kZLbGLMfGkcEoD3oBN1hCQNrX49yfL3iFzKxQPFMahCYqg/o4/8JuFskT
-         ch0A==
+        bh=RxHcVaFJP8LSAUbqjjuozojLxS3r7R2EKYoJfzV0av8=;
+        b=PDWPNKfnvOhNrpgNr1ziFcM03mI+9YAvFLQAzHSj3aDY34JkaBkH9tC3AFFMKPOP9K
+         9kQNxp2nOcYfiKGF5kvvnNuR5x/AXJVMoI64cH7TWP5IIYvqRJ4QO5Pt2WJEwvhuDFAZ
+         5iVb5lbJPASH5XKtCHouixKHVfroqrcwCWERpMIpoWCSz+mpZc0Nu7ElmVOlpyfpDyHv
+         5kd8b8HdQWoNyl2h+KlslQW21M+sY7ZhWNQ1QbIjZgTn/Eae8UpDtQ+5FaFYY81E1p3i
+         FHHcYD7OJztPzUefeU8NF9+eiw2KO6YXqunXYNlMvWJraKDjeK5SVp6VxI0h2Oo+kZLL
+         OHOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761336858; x=1761941658;
+        d=1e100.net; s=20230601; t=1761338644; x=1761943444;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QRmmUPZjD0Nl/pzvJDzPxygHUoc//WlZnhbayyftwX4=;
-        b=BebmV3dSe7oV7rtEp2eDLKYCwEMxIqdf50TIvVnWp9XX9iw+Pk45Zrx5VTpNW00+MS
-         Y6MdhwlkyY5P64qKkR+vJO+eF+5JcSL8gRXPCcC+ssFcLH+GK1PhesjEUo4Z7tHD5aZR
-         6bs4V8uZD2WdEaM61sOfk9UEMeEezxaBqyv+X9Siy7tkugBY0Bj8S/uyEUa3jGraUPth
-         eJoy7UEZAhoqy1l4sdm6hc+jtaQKTmFoN8Xp67r9xjripoQq+id73B68IPI4N3+TGmhs
-         LYUtiDpiBzX5HTG/WiFyJHGFEZEX97vdz4l01nprilS8HCL90ljZgIZEwQJKxo5+P8rT
-         IV8w==
-X-Forwarded-Encrypted: i=1; AJvYcCUMPI70XkgLUUdH+uNwiL5PIBdcFA9+769tylERpEqY5Gne2KgovsjvH+DbM9RohyPGCiM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz89WkMjhU9OPsMH75E94dT2WAHsnWszjs8yP7bcF9d4XR6b1Wh
-	Gg+Hg9BvLRHRGtM14f06xiZh/d1T9b5aF8fyX+xYqx2ecGDZkkV5KtLLnOIEzhQCOpyptz8U+fO
-	mOhbQTJphX30hkFAwEuiHjYRCei+m0SeP+el46LPP
-X-Gm-Gg: ASbGncvG4uK47OkJr+HKhACodc22UicttFMqX4RgaCe/HlvCRMPUZQg1GlYPIVJu6Tm
-	Ybg7FobK9Nw3o3DqD+fj/JGMAIITjbkogCl6IP+JRyhR4db1LrCWwZ9KzmsCqCTPk2HzbUbQesk
-	qSatr1YwdA/icWNCr+A4bo45jX0NNJ/WYvtgCCAs2Bf2SswxhdSA1vSFf5Edzb/2ks+U1wcNxlq
-	E6kuNEF5UckvNiuLTq1VDnSPBz0ki+oZ6YjbsZJ2cDUEKy+K1YQBdtW6UMLLw2kveGt1jpTcYSF
-	6Oc4b+DMxROjDtlQBCgCwd1uyk4uSPzHC3I4
-X-Google-Smtp-Source: AGHT+IHTpYbhZDmL6ruzEWH+gphI5m7Ialef1RNXjW82+6aaizHeKOCv9/XRyMcMq4hJKcNstGH8IXkZIyc1k4him6k=
-X-Received: by 2002:a05:690e:12ca:b0:63e:2f32:cccb with SMTP id
- 956f58d0204a3-63e2f32cee7mr16781408d50.10.1761336857579; Fri, 24 Oct 2025
- 13:14:17 -0700 (PDT)
+        bh=RxHcVaFJP8LSAUbqjjuozojLxS3r7R2EKYoJfzV0av8=;
+        b=VqY0B9PLoh7s2pAgNVl7utvkivm3JqyPnEckd14QUivCHb/FEDa3S3BA4dBhamldXr
+         8PQVarK1w3lHpG/tHzOURUVZOE0HTvRvDxazX85XiSKXWmb3kcOgvYASs/E9IaOR5Cg+
+         bgPKcJpKnfGQxEJg4qsYPfjHK00jCtQjSZCs3fJFFjnL1ndA1fDcfun2JW7+CLBkgtIz
+         ay8S8d5YIY0lwZd9hZQce+VmacPrlM2iLRysFJ2/XkI8DdMbcXzsnIw3aBs2zZjADQ1z
+         53rXwPJOk6zREWKa3Q/rpmyMjPTmggRBwdvn5EBF+8t9Ir0le/aaQDawam8vxEwQBJ3A
+         zQvg==
+X-Forwarded-Encrypted: i=1; AJvYcCX/SoVhVRc6Es4K9OHuBaOupGS2Q5jloC3yFgDGdBkpHyMLpGZm3fqBFqWVgj/QpNWxCwg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGlTGBMOvBhoaVqhSyHwLyQrrpbSe4HzZdJZkPOnskkdg+F0nu
+	I28Otouq5ZLNWgtenxTMF5Yz7YzCj5PEKOvjCSUwP85BAX8tui6ICAHO9sZiK6C6uGwtNM5ulYE
+	EndhTO90/ZZwb/h1vWHrlmMU4n7ZSyvQ=
+X-Gm-Gg: ASbGnctO2/PH49pTpPd0TsCMrXhRhwOvnQRJ+9RHqnYhxMjJcNn6A+Y23LqdcmsT86u
+	riOF984jmef4jfl+Gv2kalJQz5Najeebm0Uh7oatuGSewpLNYUAvg80HuO7OAhMRjEJ6KIkPVuE
+	ciF0YdEdpopkM562VygoM0WpCa8Rq46dtan9vE4EjktDlTEuM7+WoK+z9W+RrJlgZ5kGVtHWUOT
+	SE4IFN3Yr9l9+TVb/sfLJiiQ810oX40s9mCx/r04oZNGNVoSwQy2k/uLH65B0Hl9oQmONnyR0eN
+	Sn+WFQ00wmiVvp8g/VavTpRJ700d
+X-Google-Smtp-Source: AGHT+IGLFt1YCHWbNyJyaEpr+22LPb9d3Q1kWYq7cFolvy1jDcRdvp0v3rx52ay4vxC3D1vRjgD3rmqs6Qx2J3gTPG4=
+X-Received: by 2002:a05:6000:26d2:b0:429:8a81:3f4d with SMTP id
+ ffacd0b85a97d-4299075ca93mr3213632f8f.63.1761338643874; Fri, 24 Oct 2025
+ 13:44:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251022182301.1005777-1-joshwash@google.com> <20251022182301.1005777-3-joshwash@google.com>
- <20251023171445.2d470bb3@kernel.org> <CAJcM6BFTb+ASBwO+5sMfLZyyO4+MhWKp3AweXMJrgis9P7ygag@mail.gmail.com>
- <20251024131004.01e1bce7@kernel.org>
-In-Reply-To: <20251024131004.01e1bce7@kernel.org>
-From: Ankit Garg <nktgrg@google.com>
-Date: Fri, 24 Oct 2025 13:14:06 -0700
-X-Gm-Features: AWmQ_bm-8GreWoq_uf6j4SHvhOnHL6CyYtA5h03iWipus0wRS1EtWd4i-WIu02I
-Message-ID: <CAJcM6BFnN2HSYy=3+ocx+-M=tZroba6wCz9Pxgc8hyS0szdD2w@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/3] gve: Allow ethtool to configure rx_buf_len
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Joshua Washington <joshwash@google.com>, netdev@vger.kernel.org, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Jordan Rhee <jordanrhee@google.com>, 
-	Willem de Bruijn <willemb@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Ziwei Xiao <ziweixiao@google.com>, 
-	open list <linux-kernel@vger.kernel.org>, 
-	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
+References: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz> <20251023-sheaves-for-all-v1-11-6ffa2c9941c0@suse.cz>
+In-Reply-To: <20251023-sheaves-for-all-v1-11-6ffa2c9941c0@suse.cz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 24 Oct 2025 13:43:52 -0700
+X-Gm-Features: AWmQ_bnqGo3VhvdnD4VDhLrtr6dWJQ16k-K7Ue44kfB0ODJ6fAEdUY4Nt58fKuE
+Message-ID: <CAADnVQKBPF8g3JgbCrcGFx35Bujmta2vnJGM9pgpcLq1-wqLHg@mail.gmail.com>
+Subject: Re: [PATCH RFC 11/19] slab: remove SLUB_CPU_PARTIAL
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Christoph Lameter <cl@gentwo.org>, 
+	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Suren Baghdasaryan <surenb@google.com>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-rt-devel@lists.linux.dev, 
+	bpf <bpf@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 24, 2025 at 1:10=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+On Thu, Oct 23, 2025 at 6:53=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
 ote:
 >
-> On Fri, 24 Oct 2025 11:17:04 -0700 Ankit Garg wrote:
-> > > Please plumb extack thru to here. It's inside struct netdev_bpf
-> >
-> > Using extack just for this log will make it inconsistent with other
-> > logs in this method. Would it be okay if I send a fast follow patch to
-> > use exstack in this method and others?
->
-> Could you make it part of this series, tho?
+>  static bool has_pcs_used(int cpu, struct kmem_cache *s)
+> @@ -5599,21 +5429,18 @@ static void __slab_free(struct kmem_cache *s, str=
+uct slab *slab,
+>                 new.inuse -=3D cnt;
+>                 if ((!new.inuse || !prior) && !was_frozen) {
+>                         /* Needs to be taken off a list */
+> -                       if (!kmem_cache_has_cpu_partial(s) || prior) {
 
-Absolutely. Will include in v2.
+I'm struggling to convince myself that it's correct.
+Losing '|| prior' means that we will be grabbing
+this "speculative" spin_lock much more often.
+While before the change we need spin_lock only when
+slab was partially empty
+(assuming cpu_partial was on for caches where performance matters).
+
+Also what about later check:
+if (prior && !on_node_partial) {
+       spin_unlock_irqrestore(&n->list_lock, flags);
+       return;
+}
+and
+if (unlikely(!prior)) {
+                add_partial(n, slab, DEACTIVATE_TO_TAIL);
+
+Say, new.inuse =3D=3D 0 then 'n' will be set,
+do we lose the slab?
+Because before the change it would be added to put_cpu_partial() ?
+
+but... since AI didn't find any bugs here, I must be wrong :)
 
