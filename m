@@ -1,110 +1,96 @@
-Return-Path: <bpf+bounces-72169-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72170-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 278C0C08490
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 01:18:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4692CC0852F
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 01:34:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4F533B01A0
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 23:18:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE5273BA958
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 23:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03592303CB7;
-	Fri, 24 Oct 2025 23:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4530A30DEA1;
+	Fri, 24 Oct 2025 23:33:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j892gAnj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fkXMn9sl"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F052367A2;
-	Fri, 24 Oct 2025 23:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B68303A09;
+	Fri, 24 Oct 2025 23:33:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761347914; cv=none; b=PKTqI4LD9XbRhfMooyhhRwG4ipcnSoCGpGJ9xHHO+spfhZVWtvjf4FB0awBK2wuc34XUSR62ZSHg/oBciWxrZ03t3gMsKxz1wi8NWhnJwbnPXUUaXT7Z/4PaFSBgI5WrbyfVd5eL0T1jlRvTh9Qrl+KSjhEB1QpzGIIJJnoAMok=
+	t=1761348831; cv=none; b=GpVxvhksaca0Q5Zx4WpOQXaMht9iTuMfIspFYPsymlbsIcjvCsK6L+YRL6rv3UX8kogms38zVEep30Saq87wCNpO1alx6ilbNf+EIgAGPdH83HaLNCOlR+nsmWkxejQIKjjmZrTOGVVA30zQ1eyWPBCvxIazKf5xcecbGIkmNFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761347914; c=relaxed/simple;
-	bh=RN4xKOmcogBVduP5jR903GRyz8uCvrLfKzMjVo3Fc4A=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qS7eo9lr2uWiVNHr6UlFZWSQrZa0tKU13rjelPo1Ok+ZAzT8XImxUCGer4nL3Tj7p1C8aIVEEivSKQ/U8eY5MFUPEwy1N51BWvGVSDksvEY6YyxazQthhy5DC1JB99/G+H5UzhCqHWlBFyUH228iy5AsAs9jQoOUJlF/50p6EKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j892gAnj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3800EC4CEF1;
-	Fri, 24 Oct 2025 23:18:33 +0000 (UTC)
+	s=arc-20240116; t=1761348831; c=relaxed/simple;
+	bh=+VEU9nhPEHtAMMHzg5x5itMvJngxn1huwVpTNGZ1sug=;
+	h=Date:Message-ID:From:To:Cc:Subject; b=B6ETlyZ0MKqGsyJBCjRWcRMhk2nhukpFg5LfQgXDjFZjb3x5rTOXP9WkZI457GXYpAR0sb5rDMLYXodh04Ysey7RmzkMFruijT8jJ9wtAmu1iGWvKFrJm68DMKDEU0lvMUD3l/lDA6cqXB5gxQdbsa9/fUwCw/Rnr0XJVzkoOds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fkXMn9sl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AC27C4CEF1;
+	Fri, 24 Oct 2025 23:33:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761347913;
-	bh=RN4xKOmcogBVduP5jR903GRyz8uCvrLfKzMjVo3Fc4A=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=j892gAnjHH4IqlZUciWweFzm42d+ANehG3PmfHoDXkYuRBaZ/UcGfRq9GDhHQK0/P
-	 GcHE9LTGuOG/IkFL+Isx1yqpFtnUpmWnkdb6GCiW4KKM1NQ4ObYUnArvqGZP3MDu+Q
-	 fC21FabsIoXp3/MSMIhM6tNKxlZs048zz99bpOuB23QuDcFoF+FOxw1xbthYnBFjFc
-	 7VtKK9uhMNz7TwzouPl2UleF8/deX0wDLU7wMLW3ek+Hs0zH7OMSsJYKDACVDSkDbB
-	 nAoh3W+OHL7JFwG/sRTSj5no6utW7EdJ6Ucey5TEaei8O7jtS5dpEpHaQIH3zcMqEi
-	 NyQ8Bov5cOZkA==
-Date: Fri, 24 Oct 2025 16:18:32 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
- razor@blackwall.org, pabeni@redhat.com, willemb@google.com,
- sdf@fomichev.me, john.fastabend@gmail.com, martin.lau@kernel.org,
- jordan@jrife.io, maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
- dw@davidwei.uk, toke@redhat.com, yangzhenze@bytedance.com,
- wangdongdong.6@bytedance.com
-Subject: Re: [PATCH net-next v3 03/15] net: Add peer info to queue-get
- response
-Message-ID: <20251024161832.2ff28238@kernel.org>
-In-Reply-To: <17f5b871-9bd9-4313-b123-67afa0f69272@iogearbox.net>
-References: <20251020162355.136118-1-daniel@iogearbox.net>
-	<20251020162355.136118-4-daniel@iogearbox.net>
-	<20251023193333.751b686a@kernel.org>
-	<17f5b871-9bd9-4313-b123-67afa0f69272@iogearbox.net>
+	s=k20201202; t=1761348831;
+	bh=+VEU9nhPEHtAMMHzg5x5itMvJngxn1huwVpTNGZ1sug=;
+	h=Date:From:To:Cc:Subject:From;
+	b=fkXMn9slYBK6TmFYl2nUX7PG96ixgNCkdHebekUOeEtqWBs088A6lcV0cvhYpAjgw
+	 k3WKv1RVlHmpg71hwPYWtzoZg4nWOcy4m11HKUgNeRcJNJnm3E2NPGp71nMQwzN/Bw
+	 dv/CD7Ukkijaen/2pqvErMMhsK6772TbWkGCo7hgcCMN4WKnKmlN3d9lnIKEZaF7eg
+	 IHJwfUHFDmZkp+YXg7KsW8CdDnxpCkennBK2aUTG9io23Fy4mk7XUXFkY4fQxoILEm
+	 VxFeESw8M2h1fqHjt43w/Zy7r5jY4KlScNkZmUTlCT4B3jVCYokGsbUKslfwDH9lZ8
+	 atkIzlGSsdOGQ==
+Date: Fri, 24 Oct 2025 13:33:50 -1000
+Message-ID: <6c9852055cae7d54ce33df77c5c7a1dc@kernel.org>
+From: Tejun Heo <tj@kernel.org>
+To: David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>, Changwoo Min <changwoo@igalia.com>
+Cc: sched-ext@lists.linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH sched_ext/for-6.19] sched_ext: Add ___compat suffix to scx_bpf_dsq_insert___v2 in compat.bpf.h
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Fri, 24 Oct 2025 14:59:39 +0200 Daniel Borkmann wrote:
-> On 10/24/25 4:33 AM, Jakub Kicinski wrote:
-> > On Mon, 20 Oct 2025 18:23:43 +0200 Daniel Borkmann wrote:  
-> >> Add a nested peer field to the queue-get response that returns the peered
-> >> ifindex and queue id.
-> >>
-> >> Example with ynl client:
-> >>
-> >>    # ip netns exec foo ./pyynl/cli.py \
-> >>        --spec ~/netlink/specs/netdev.yaml \
-> >>        --do queue-get \
-> >>        --json '{"ifindex": 3, "id": 1, "type": "rx"}'
-> >>    {'id': 1, 'ifindex': 3, 'peer': {'id': 15, 'ifindex': 4, 'netns-id': 21}, 'type': 'rx'}  
-> > 
-> > I'm struggling with the roles of what is src and dst and peer :(
-> > No great suggestion off the top of my head but better terms would
-> > make this much easier to review.
-> > 
-> > The example seems to be from the container side. Do we need to show peer
-> > info on the container side? Not just on the host side?  
-> 
-> I think up to us which side we want to show. My thinking was to allow user
-> introspection from both, but we don't have to. Right now the above example
-> was from the container side, but technically it could be either side depending
-> in which netns the phys dev would be located.
-> 
-> The user knows which is which based on the ifindex passed to the queue-get
-> query: if the ifindex is from a virtual device (e.g. netkit type), then the
-> 'peer' section shows the phys dev, and vice versa, if the ifindex is from a
-> phys device (say, mlx5), then the 'peer' section shows the virtual one.
-> 
-> Maybe I'll provide a better more in-depth example with both sides and above
-> explanation in the commit msg for v4..
+2dbbdeda77a6 ("sched_ext: Fix scx_bpf_dsq_insert() backward binary
+compatibility") renamed the new bool-returning variant to scx_bpf_dsq_insert___v2
+in the kernel. However, libbpf currently only strips ___SUFFIX on the BPF side,
+not on kernel symbols, so the compat wrapper couldn't match the kernel kfunc and
+would always fall back to the old variant even when the new one was available.
 
-Yes, FWIW my mental model is that "leaking" host information into the
-container is best avoided. Not a problem, but shouldn't be done without
-a clear reason.
-Typical debug scenario can be covered from the host side (container X
-is having issues with queue Y, dump all the queues, find out which one
-is bound to X/Y).
+Add an extra ___compat suffix as a workaround - libbpf strips one suffix on the
+BPF side leaving ___v2, which then matches the kernel kfunc directly. In the
+future when libbpf strips all suffixes on both sides, all suffixes can be
+dropped.
+
+Fixes: 2dbbdeda77a6 ("sched_ext: Fix scx_bpf_dsq_insert() backward binary compatibility")
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+ tools/sched_ext/include/scx/compat.bpf.h |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+--- a/tools/sched_ext/include/scx/compat.bpf.h
++++ b/tools/sched_ext/include/scx/compat.bpf.h
+@@ -237,15 +237,17 @@ scx_bpf_dsq_insert_vtime(struct task_struct *p, u64 dsq_id, u64 slice, u64 vtime
+ /*
+  * v6.19: scx_bpf_dsq_insert() now returns bool instead of void. Move
+  * scx_bpf_dsq_insert() decl to common.bpf.h and drop compat helper after v6.22.
++ * The extra ___compat suffix is to work around libbpf not ignoring __SUFFIX on
++ * kernel side. The entire suffix can be dropped later.
+  */
+-bool scx_bpf_dsq_insert___v2(struct task_struct *p, u64 dsq_id, u64 slice, u64 enq_flags) __ksym __weak;
++bool scx_bpf_dsq_insert___v2___compat(struct task_struct *p, u64 dsq_id, u64 slice, u64 enq_flags) __ksym __weak;
+ void scx_bpf_dsq_insert___v1(struct task_struct *p, u64 dsq_id, u64 slice, u64 enq_flags) __ksym __weak;
+
+ static inline bool
+ scx_bpf_dsq_insert(struct task_struct *p, u64 dsq_id, u64 slice, u64 enq_flags)
+ {
+-	if (bpf_ksym_exists(scx_bpf_dsq_insert___v2)) {
+-		return scx_bpf_dsq_insert___v2(p, dsq_id, slice, enq_flags);
++	if (bpf_ksym_exists(scx_bpf_dsq_insert___v2___compat)) {
++		return scx_bpf_dsq_insert___v2___compat(p, dsq_id, slice, enq_flags);
+ 	} else {
+ 		scx_bpf_dsq_insert___v1(p, dsq_id, slice, enq_flags);
+ 		return true;
 
