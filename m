@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-72152-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72153-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15C57C07E1D
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 21:19:49 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0093AC07E08
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 21:18:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE991402632
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 19:17:50 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 811F6502F6D
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 19:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487DD296BDA;
-	Fri, 24 Oct 2025 19:16:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B9D2571B9;
+	Fri, 24 Oct 2025 19:17:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="IJ73bu07"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Yt6sYadV"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E68927E05F;
-	Fri, 24 Oct 2025 19:16:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39E323815D;
+	Fri, 24 Oct 2025 19:17:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761333384; cv=none; b=vDIe+K0riQv0N7FVYd3tarfTIqv+Fe/VMmI9X9xGoS9MNZClIZ6nGz1Jesi1+PaPkYt4YojhE3pGjWrQOi5ebip0XC8AMDUl3eN3NREP/w42wtsABafPB89MsNXmrtzdHqMrTWFN65ZReGRqO0izdPEOhAvYsxZH9cMHXgP34Lk=
+	t=1761333445; cv=none; b=qAse+bmi/xLH8nMwo1UvXk3mVTMPFCAfIev866Pa/7AQN4UcgbJU/cY6AT8saKFmBI+S8Vr327uSqZQcZP0SxaOs3Ltcs1U+vpO1KmL7Ju9bqCle7euY5h8Slw0Owj2YhUd00H/K13wUImP97CVwtxI3uQajG2+/yrlS2ehxdbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761333384; c=relaxed/simple;
-	bh=yYmRR4TttRC5UImQITsbqbKt9vQgaZvhpVOrfLMFYLQ=;
+	s=arc-20240116; t=1761333445; c=relaxed/simple;
+	bh=lPCINNRV4r2kEJuhaXukVJiXIfSpVMFHoSMMM5+FBb4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mcEQxVQH3JSD9UcBvbHRXbbbp12s1lbAmdVdngMQDFB7DG+/4UzF0OPktFQSkxJDLNWEQ+LC5CowChLmcZ8mT+AQAnx9esVOB2onp+3f9yBi2WdXEucTLLjLF9bVsBz1OA7UYnpej3R+v1ZPhJztT3UYb3M5oDVJLE0mWCa5SBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=IJ73bu07; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=l00WWnUWKF6xEE+BC1zhrNStEiOtyqZ/l/3cRvD+P7CI9xmgcVIgI9AXDe2OrfltvVGo5wO3a8roFxJ1EYrgxWE9yS4wT6wKvTUGuiDNgk7MoUwuliM2CuxW/ht4tDMFJ+DZttjUlN3OxPirYVlnEokVBCjjbId4hYHH+Cfxv/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Yt6sYadV; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=2ripltC+8ZS9TujwdQjGiTa2vWeauSg+y554vy8DnsQ=; b=IJ73bu07J10/2KpsWXSISkBOBC
-	VQ2CWfZkevPtPbH733aPqXFjyuaAZ1WwM2SEXdNextMSf1SdZfvxp8HWmSBRJf2yCt/kIX33iKxzS
-	K5xwKVd3LB2eEuQqkXu/Jqs7Ex5KOaamof2LD6JL11Aqr+MQi9SVG/qIfG3vYiOIG3kpGYTOuK+vk
-	q0Bo2xvQwbX64fMjRHmQkZYNrC1d/1olZkeAXAoWVgxPeyxDbC2d3IoCEHkOBZr+47s+oghh1BHFC
-	ORAXL0fB00KQheJZH25xvX47+xySF3Kgh8F25FqlOp3mVJVAq/C6Vz6qhMYKBRKE+6O/U3TMbT659
-	oqkHTbyw==;
+	bh=pV/KEL6brKs3xzF/ssKuAvZkXQ/J6sDS0hrYk+BRdx0=; b=Yt6sYadVFvYJqzYqQRsY0s1DTi
+	rtsXKsTHgiEGDyYtFc129T3EJRSfokl3q6/r+oOEGHqqD5V9rbzUVJ9rKvWyxoIfmVLwSiwDOh2Y9
+	49tBGjF/26uC6eAftBjd3VzA4RbXLHf4cnjzc42vx0WF+/Ee00YbGvKJ2S5gmG4awR0raO6WOJpdq
+	5NVaoHkWDGLofFYGj5YgGFEo89nvrpmNd0aYBLe87iLMks0U6H5dL+tKV/3+nYGqySdLKzpzA31EH
+	TOGIt+aC3XgXk/UurKuca42L+BDuRsSIxBlRG3JdbDpKKa0G003gdNW7OCf8MDswOL+He4O5+NOnY
+	fIdu9ytQ==;
 Received: from sslproxy07.your-server.de ([78.47.199.104])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1vCNGZ-000HIL-0G;
-	Fri, 24 Oct 2025 21:15:59 +0200
+	id 1vCNHf-000I89-1p;
+	Fri, 24 Oct 2025 21:17:07 +0200
 Received: from localhost ([127.0.0.1])
 	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1vCNGY-000Pcg-0B;
-	Fri, 24 Oct 2025 21:15:58 +0200
-Message-ID: <0d85faff-50d7-4ac5-8e82-fe406c87e3ad@iogearbox.net>
-Date: Fri, 24 Oct 2025 21:15:57 +0200
+	id 1vCNHe-0006HZ-1t;
+	Fri, 24 Oct 2025 21:17:06 +0200
+Message-ID: <22c714a2-e306-4b7e-8cdb-2240d55ccaa6@iogearbox.net>
+Date: Fri, 24 Oct 2025 21:17:06 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,17 +63,19 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 02/15] net: Implement
- netdev_nl_bind_queue_doit
+Subject: Re: [PATCH net-next v3 01/15] net: Add bind-queue operation
 To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
- davem@davemloft.net, razor@blackwall.org, pabeni@redhat.com,
- willemb@google.com, sdf@fomichev.me, john.fastabend@gmail.com,
- martin.lau@kernel.org, jordan@jrife.io, maciej.fijalkowski@intel.com,
- magnus.karlsson@intel.com, dw@davidwei.uk, toke@redhat.com,
- yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
+Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, davem@davemloft.net, razor@blackwall.org,
+ pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
+ john.fastabend@gmail.com, martin.lau@kernel.org, jordan@jrife.io,
+ maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, dw@davidwei.uk,
+ toke@redhat.com, yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
 References: <20251020162355.136118-1-daniel@iogearbox.net>
- <20251020162355.136118-3-daniel@iogearbox.net> <aPvDW0o89kmtGFfH@mini-arch>
+ <20251020162355.136118-2-daniel@iogearbox.net>
+ <20251023191253.6b33b3f4@kernel.org>
+ <c93a71ea-fddf-4f0c-9a01-ca5f1729037a@iogearbox.net>
+ <aPvBQJ6FUN5X2kMW@mini-arch>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -119,43 +121,33 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <aPvDW0o89kmtGFfH@mini-arch>
+In-Reply-To: <aPvBQJ6FUN5X2kMW@mini-arch>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.9/27802/Fri Oct 24 11:42:12 2025)
 
-On 10/24/25 8:20 PM, Stanislav Fomichev wrote:
-[...]
->> +	/* Locking order is always from the virtual to the physical device
->> +	 * since this is also the same order when applications open the
->> +	 * memory provider later on.
->> +	 */
->> +	dst_dev = netdev_get_by_index_lock(genl_info_net(info), dst_ifidx);
->> +	if (!dst_dev) {
->> +		err = -ENODEV;
->> +		goto err_genlmsg_free;
->> +	}
+On 10/24/25 8:11 PM, Stanislav Fomichev wrote:
+> On 10/24, Daniel Borkmann wrote:
+>> On 10/24/25 4:12 AM, Jakub Kicinski wrote:
+>>> On Mon, 20 Oct 2025 18:23:41 +0200 Daniel Borkmann wrote:
+>>>> +      name: bind-queue
+>>>> +      doc: |
+>>>> +        Bind a physical netdevice queue to a virtual one. The binding
+>>>> +        creates a queue pair, where a queue can reference its peer queue.
+>>>> +        This is useful for memory providers and AF_XDP operations which
+>>>> +        take an ifindex and queue id to allow auch applications to bind
+>>>> +        against virtual devices in containers.
+>>>> +      attribute-set: queue-pair
+>>>
+>>>         flags: [admin-perm]
+>>>
+>>> right?
+>> Oh, yes good catch! I've just checked for other instances in that file, don't
+>> we also need the same flag for bind-tx? bind-rx for example has it, only the
+>> info dumps don't. I can cook a patch for net
 > 
-> ...
-> 
->> +	src_dev = netdev_get_by_index_lock(genl_info_net(info), src_ifidx);
->> +	if (!src_dev) {
->> +		err = -ENODEV;
->> +		goto err_unlock_dst_dev;
->> +	}
-> 
-> But isn't the above susceptible to ABBA exploitation from the userspace?
-> I can try to concurrently do two requests, the second one being with
-> dst_dev and src_dev swapped. Or do we assume that we exit earlier for
-> the swapped case based on some other condition?
+> IIRC, TX side was non-admin-perm by design (because it only references the
+> binding for tx and doesn't need any heavy device setup).
 
-Hm, in all of the locking that was reworked, we only ever let the case succeed
-where it locks both devices when the dst_dev is a virtual device, and the
-src_dev is a phys device. If this is not given and the dst_dev is a phys device,
-we error out via err_unlock_dst_dev and unlock the dst_dev again but never
-proceed further to attempt to lock src_dev (as mentioned in the comment) -
-basically what you mentioned the swapped case cannot lock both devs.
-
-Thanks,
-Daniel
+Ah perfect, thanks for clarifying!
 
