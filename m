@@ -1,94 +1,94 @@
-Return-Path: <bpf+bounces-72147-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72148-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8D0EC07C72
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 20:37:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AAC6C07D17
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 20:51:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A46533B3A40
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 18:36:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8157D1C20C0B
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 18:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C5B242D95;
-	Fri, 24 Oct 2025 18:36:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0387B34BA54;
+	Fri, 24 Oct 2025 18:49:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eQxlR8IZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GEDQw34p"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED3F34A3D2
-	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 18:36:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0868734BA2B
+	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 18:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761331013; cv=none; b=dZccwos0wETfyQkMOO0MWuPtmRwkEBFjNnSAhHs+V1jvORkGIMJBHAgTRWeUjEnMXn9zwt1qoamDjWc2O8k6CG6JrdfuYsHfEofIskOoAaoMKatU++2nxFWIiby675A5T+y3yrG8H8DJLenHsuCHgwB78QiKP2OjHSIKKxmNdmg=
+	t=1761331768; cv=none; b=kNV1d0l5mrUPmEm1H52OFexQGMw8i9sSPtJ+Gnwr4pdH7f+pp/Bcg3Jo0mzsuUU6tlJbqUuWnRLqD0eIAlFRSb8/F5NWsvjZmwaYQyxd4iXAObsGxyBcvV3w2bTryzCkxPAKtrRnfFr4H2wA2oIFJx5R+hWmTvleZp9ntUyhY5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761331013; c=relaxed/simple;
-	bh=TLJCfzmKFt/fyeAodJh1L0RNKxUAkg2mvHuuHAcwfAM=;
+	s=arc-20240116; t=1761331768; c=relaxed/simple;
+	bh=9OAJrpwPzl4HGRkU45vDY66wUHd7GQ/097gNeGpkgSs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SGqxha6NutGo+PQX83a3VNOcAvyTG76OiDH8Z7PByKdRruqr5YK5z697jSZkmw3bKn+nB1uQt4NRT3taB9HrFwq+XffdgEhnZ15KGm6Y5/473bRPQeagNYGpV5QZL1yg/1ADoyXCkPNERNYFQvfH8pYK4OyVppQpWVeCKm2hCLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eQxlR8IZ; arc=none smtp.client-ip=209.85.210.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=FwG/2o1b4lDi/f8zD59wwfzlszDnbxx5jG2vpWYLIJN+k4MBleC2qYzyQNTpiwiYZtwaiHRvN5PIyt51rWi4uczRmEphQ1wMZctI7ZJhcNMY8YFkx1RhgKyPXZ64+/jSD4WYBKs0KSE7X5snufLhVu41Qhq20JFXaVIDgHJXMN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GEDQw34p; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-7a28226dd13so1445795b3a.3
-        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 11:36:51 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-77f5d497692so2940625b3a.1
+        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 11:49:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761331011; x=1761935811; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761331766; x=1761936566; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/p9MJq52UuKppFKE5ODwKIT5v7QxFOxkS5Z3SporLhQ=;
-        b=eQxlR8IZNmUVp+ZCpAYgPqmumiZWyZ94J76Vo5Y58Z7pi2RkSXh8SQC9gwuwD3uyNY
-         XGAhCglqGSsfEDqYN5qHs5kI1V7vGYlrDJMkLsyus+tzca3GDSA2ub8o6xnQMy+NugE4
-         t9Qdt+d1l2NBTuyTvqx4sY+Zhbh2W+0XWFtzB8xrzLZzirIfb2kShOkpIucWqlud0N4c
-         yot24mYpbQ9T5C/R1TFvjUD1z5+drXSc87Cmp7+qTcbx3Hy5a9o13e4c9MLKRjbEqjB3
-         CWz3cZGS107L5ehn3lcSMS10GafAS/5XmQ00mHpJh0Y1xL+FCriT+tqPHUGMVqHjv99L
-         UZdA==
+        bh=j8uwBvkrN4z1ERe0y1FsgiwQIgdWY2Fm+gyvMoJUcSg=;
+        b=GEDQw34pYpm3E/7cIgSR/hAuBqslpvUe2PMcG2vrSAk/srXwiMqmNcbDursuJe3c0X
+         mjo+cgbME+P0zDhAhNZLJ+4DY/+0C8suac/TFa/d7tNcmE62j8Y61e2IKvdur5VZcj2h
+         fDduqLhgAgfy6BsRNL6wSZh14Z66DZjPbYISzfiICnpgY/iOJQnJQ7TBMJJPbhW56+/q
+         lzsiirRSg3DI5NM5mnixb+kdkCDpiGnn9/xAQHrR9kNf5+Q+w7SwM9kBdV0D89w7Fwt2
+         LTkVvubj6jXpCLFrxo3PJDpccUgcrvMgPY8HG6pKNiw/vvoy5p5I8mwImFGMQ0CBfu0k
+         rU3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761331011; x=1761935811;
+        d=1e100.net; s=20230601; t=1761331766; x=1761936566;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/p9MJq52UuKppFKE5ODwKIT5v7QxFOxkS5Z3SporLhQ=;
-        b=oBBhaf7DXg41nO1WwwCfj8cN6WonDuc/Fv4Z1A5ClAOfw0OrkkBcxSAPSRumxULZCa
-         Er23k2hJLX6KWjxNN3hQtFpErH4MwjYvg5L782LIw5Ah7ieYtbsIHIP51wTAyuZ2PitP
-         ju/e9SN9q34lEY231YuxpT+mn8hWZyOZ4GVV703c3+9LUFeGzMIZyuYFGKwGz67EAD4E
-         kk1Z6nqcJKXvMC2RYS9/ObS2JBA1SxYsVL37IQy+lebTMHsZvPQRn+sqdrOGFJUpIJ6D
-         8c1DDixbgoRKJ/T1MoIXU2Hwy+91pnZ/6H44myi+BDxIfAJhxGwWqmUOAOFAg8iQcma6
-         mHKA==
-X-Forwarded-Encrypted: i=1; AJvYcCXJB4FQ3FQSoH+IIuTsAKRmVgW5F9UC9suVizCh1h8k9pjGB5NdZGSJShNqx3HTisjjZtQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyRHB0gJvum0B9ozelxRy96uuP6eT8ootzZ//j2uMBQAdSCClph
-	7GsC+4PbYjwNQeFFi3Eg7QB7AoMVuOfS/epOzvhQGh9JIzM3lpBYt/o=
-X-Gm-Gg: ASbGncsZcoAF6N7KY0Zqsdp6fRuLTyOGqtlnLU0ha5GrShGv4kUv7tECcLKZ5JeZsEY
-	uq1poFzKEtT0nH5LHOOk27VtACnC3Rct3q107g7GgEVhqx198rdNtCXVE41JSFj/r8gi2iz5sUo
-	OiDBYI6L/B5hF+aqA6Va8dPoIXAlAv2Pg0rX3dUn/0AIpuSJPcffUYKGxHmrAVOx+T8iAPc3uw6
-	U5wWEO6PNt29GJBKw3/FF30s9DVDmWK1ymdCQMyzWy2KWTUVw3clq9j6NF73RbUij9bsGACGO6E
-	GlRVjOwfJv0kVb76FdTribR1H6IBw8WdmKTrSaTvFlnH/wvXVzDHSyCmqS0PzeKu5TXvaFbdIJj
-	fJiwHoykj+UiMJscBH8cqRnapuCEpJpyr1vGWK4LIFOUo3WM+xzDDzkFrmIb293xDAlzJtMI2ub
-	rkomf5QoXZUldp0vB4k6VNSBejy8NWN2DG9ZYDTTCW7/27PD49DSwC/S7wtOL5o3Z+EiH8ru6r5
-	/zaE5R9ebYKD8nGqHC0MAdR9Nf6ovMDj4PgadQPFcnq0ehBcdyIm3d1j9SfKztjCXU=
-X-Google-Smtp-Source: AGHT+IElytHOLHqAJt40PmFD33nDV30/pQ9pjEo3pyPzbMNhsNB5oVrUYLU5jCyElmliYgWdmv3Z0Q==
-X-Received: by 2002:a05:6a20:3d84:b0:2af:65aa:4eef with SMTP id adf61e73a8af0-334a8621973mr36217923637.47.1761331010417;
-        Fri, 24 Oct 2025 11:36:50 -0700 (PDT)
+        bh=j8uwBvkrN4z1ERe0y1FsgiwQIgdWY2Fm+gyvMoJUcSg=;
+        b=FrhzZXJvOoknebY6PBB2vIGEM7rlJx4t1Hsk6m8yLgAoR7OiHI9jEXCRg8jvWcSVvD
+         sQ3OYjHTyKPHomUeOlFYSRT4O52kuXH0nfpRzWASQ1TbXAOr+MkwvC6vKLQsVjP2xTyn
+         pRNfLBuvIhvHGbrp0cURA2VWPXi0lFVXrKyD30+lg91OhvhCaFiF9wU1PNTp+zoxn5bf
+         kOwnV387zpuqw0yx39IV1kgkpkNH0MM0nxQThjqOESJJvPbZjO9V6DXeY/6+dyke07dN
+         H6eXbEX8dTGwbk+qASqaO4G6phhUFPzrqBDv0444seqAleeW3mOU3bkeUjJeX/9Zat+C
+         9t1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVzvxMznsM+sxjL931yEVrBtwM0Jkj9TbY7CkQfA+2YtF3L2hqkdByu8E+6Hcur85LHXFI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzeiwNy3cPENUQ8/FBDNom4FlzApe84eilMEekNuLCDYVM/cEUU
+	2ky8SXbiJDhL5g2cGXxEog2si1IcYBEXXDh+6iEA88Bp6IJddfLmMAo=
+X-Gm-Gg: ASbGnctmm49N3JxA+a0h0xiZ/7IZFdTuN4w2xpba7F9Y80jSfnt4fdBXvSo2n01VVsD
+	Jr5uGXqtW0sABywJQbr2Yrc/7eo6HTgLmwhwX7i/Np/RzI3rG3XeyP0kPPWZVxl85Z4BVjjGMlJ
+	iC0hrgdutWr5iADyx4mmD/IjBVg1IQGgvxRYGSTgzhPTz1caRShcGU8WFgIR7vD2jDU65tRumiO
+	sNuJGTG5bZ7Q7KpS57Cnrsk1xzENQErWCeyTsuZ+6q2/hLc5ZG3b7pWxvRc9YkVtVxhu+iTE4bZ
+	KJ1N+KGyvCcoWUFGJvFZUx0M4FDKNPCd8iaW8QgWvyo1jfBn7J0OUoZ0HJ6g6mzGqbIj0RF1ftV
+	5L4iVqteXwkuFfWG1Z+z71EgSLaV7BveRbAr2z5Bj5OjX+2/1a7hGEeCzmTkp+kOtmhpKwrwqjR
+	iBLx+8VkSHVNbwg/RMpSQ5IabZ8bQMXbM+gNq4RPgWUsntjZFsPHuaHzPfjOsMDxXRX0sL9uViX
+	xFRW1nWlIpyfQVRpBjjTi102b0M/vXj3+VRsq0rsTP4sSN64YpBB3IYP5pIaA+Fzt0=
+X-Google-Smtp-Source: AGHT+IGsn+zJ+Chhg2sIUKUpGqm+Ej5PJ1ZPkvdgc+szauI7og7ciysiYZDs26a0/miBsx7EFB995g==
+X-Received: by 2002:a05:6a20:1585:b0:334:847c:dd3d with SMTP id adf61e73a8af0-334a864febdmr41446224637.54.1761331766075;
+        Fri, 24 Oct 2025 11:49:26 -0700 (PDT)
 Received: from localhost (c-76-102-12-149.hsd1.ca.comcast.net. [76.102.12.149])
-        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-33fb0191b1dsm6473090a91.18.2025.10.24.11.36.49
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-7a274b8a0edsm6645874b3a.35.2025.10.24.11.49.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Oct 2025 11:36:50 -0700 (PDT)
-Date: Fri, 24 Oct 2025 11:36:49 -0700
+        Fri, 24 Oct 2025 11:49:25 -0700 (PDT)
+Date: Fri, 24 Oct 2025 11:49:24 -0700
 From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-	davem@davemloft.net, razor@blackwall.org, pabeni@redhat.com,
-	willemb@google.com, sdf@fomichev.me, john.fastabend@gmail.com,
-	martin.lau@kernel.org, jordan@jrife.io,
-	maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-	dw@davidwei.uk, toke@redhat.com, yangzhenze@bytedance.com,
-	wangdongdong.6@bytedance.com
-Subject: Re: [PATCH net-next v3 05/15] net: Proxy net_mp_{open,close}_rxq for
- mapped queues
-Message-ID: <aPvHQYXJ8SGA-lSw@mini-arch>
-References: <20251020162355.136118-1-daniel@iogearbox.net>
- <20251020162355.136118-6-daniel@iogearbox.net>
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+	sdf@fomichev.me, ast@kernel.org, daniel@iogearbox.net,
+	hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to,
+	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+Subject: Re: [PATCH net-next v3 3/9] xsk: add xsk_alloc_batch_skb() to build
+ skbs in batch
+Message-ID: <aPvKNAZP8kKolwIm@mini-arch>
+References: <20251021131209.41491-1-kerneljasonxing@gmail.com>
+ <20251021131209.41491-4-kerneljasonxing@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,136 +97,103 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20251020162355.136118-6-daniel@iogearbox.net>
+In-Reply-To: <20251021131209.41491-4-kerneljasonxing@gmail.com>
 
-On 10/20, Daniel Borkmann wrote:
-> From: David Wei <dw@davidwei.uk>
+On 10/21, Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
 > 
-> When a process in a container wants to setup a memory provider, it will
-> use the virtual netdev and a mapped rxq, and call net_mp_{open,close}_rxq
-> to try and restart the queue. At this point, proxy the queue restart on
-> the real rxq in the physical netdev.
+> Support allocating and building skbs in batch.
 > 
-> For memory providers (io_uring zero-copy rx and devmem), it causes the
-> real rxq in the physical netdev to be filled from a memory provider that
-> has DMA mapped memory from a process within a container.
+> This patch uses kmem_cache_alloc_bulk() to complete the batch allocation
+> which relies on the global common cache 'net_hotdata.skbuff_cache'. Use
+> a xsk standalone skb cache (namely, xs->skb_cache) to store allocated
+> skbs instead of resorting to napi_alloc_cache that was designed for
+> softirq condition.
 > 
-> Signed-off-by: David Wei <dw@davidwei.uk>
-> Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> After allocating memory for each of skbs, in a 'for' loop, the patch
+> borrows part of __allocate_skb() to initialize skb and then calls
+> xsk_build_skb() to complete the rest of initialization process, like
+> copying data and stuff.
+> 
+> Add batch.send_queue and use the skb->list to make skbs into one chain
+> so that they can be easily sent which is shown in the subsequent patches.
+> 
+> In terms of freeing skbs process, napi_consume_skb() in the tx completion
+> would put the skb into global cache 'net_hotdata.skbuff_cache' that
+> implements the deferred freeing skb feature to avoid freeing skb one
+> by one to improve the performance.
+> 
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
 > ---
->  include/net/page_pool/memory_provider.h |  4 +-
->  net/core/netdev_rx_queue.c              | 57 +++++++++++++++++--------
->  2 files changed, 41 insertions(+), 20 deletions(-)
+>  include/net/xdp_sock.h |   3 ++
+>  net/core/skbuff.c      | 101 +++++++++++++++++++++++++++++++++++++++++
+>  net/xdp/xsk.c          |   1 +
+>  3 files changed, 105 insertions(+)
 > 
-> diff --git a/include/net/page_pool/memory_provider.h b/include/net/page_pool/memory_provider.h
-> index ada4f968960a..b6f811c3416b 100644
-> --- a/include/net/page_pool/memory_provider.h
-> +++ b/include/net/page_pool/memory_provider.h
-> @@ -23,12 +23,12 @@ bool net_mp_niov_set_dma_addr(struct net_iov *niov, dma_addr_t addr);
->  void net_mp_niov_set_page_pool(struct page_pool *pool, struct net_iov *niov);
->  void net_mp_niov_clear_page_pool(struct net_iov *niov);
+> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> index 8944f4782eb6..cb5aa8a314fe 100644
+> --- a/include/net/xdp_sock.h
+> +++ b/include/net/xdp_sock.h
+> @@ -47,8 +47,10 @@ struct xsk_map {
 >  
-> -int net_mp_open_rxq(struct net_device *dev, unsigned ifq_idx,
-> +int net_mp_open_rxq(struct net_device *dev, unsigned int rxq_idx,
->  		    struct pp_memory_provider_params *p);
->  int __net_mp_open_rxq(struct net_device *dev, unsigned int rxq_idx,
->  		      const struct pp_memory_provider_params *p,
->  		      struct netlink_ext_ack *extack);
-> -void net_mp_close_rxq(struct net_device *dev, unsigned ifq_idx,
-> +void net_mp_close_rxq(struct net_device *dev, unsigned int rxq_idx,
->  		      struct pp_memory_provider_params *old_p);
->  void __net_mp_close_rxq(struct net_device *dev, unsigned int rxq_idx,
->  			const struct pp_memory_provider_params *old_p);
-> diff --git a/net/core/netdev_rx_queue.c b/net/core/netdev_rx_queue.c
-> index 8ee289316c06..b4ff3497e086 100644
-> --- a/net/core/netdev_rx_queue.c
-> +++ b/net/core/netdev_rx_queue.c
-> @@ -170,48 +170,63 @@ int __net_mp_open_rxq(struct net_device *dev, unsigned int rxq_idx,
->  		      struct netlink_ext_ack *extack)
->  {
->  	struct netdev_rx_queue *rxq;
-> +	bool needs_unlock = false;
->  	int ret;
+>  struct xsk_batch {
+>  	u32 generic_xmit_batch;
+> +	unsigned int skb_count;
+>  	struct sk_buff **skb_cache;
+>  	struct xdp_desc *desc_cache;
+> +	struct sk_buff_head send_queue;
+>  };
 >  
->  	if (!netdev_need_ops_lock(dev))
->  		return -EOPNOTSUPP;
-> -
->  	if (rxq_idx >= dev->real_num_rx_queues) {
->  		NL_SET_ERR_MSG(extack, "rx queue index out of range");
->  		return -ERANGE;
->  	}
-> -	rxq_idx = array_index_nospec(rxq_idx, dev->real_num_rx_queues);
->  
-> +	rxq_idx = array_index_nospec(rxq_idx, dev->real_num_rx_queues);
-> +	rxq = netif_get_rx_queue_peer_locked(&dev, &rxq_idx, &needs_unlock);
-> +	if (!rxq) {
-> +		NL_SET_ERR_MSG(extack, "rx queue peered to a virtual netdev");
-> +		return -EBUSY;
-> +	}
-> +	if (!dev->dev.parent) {
-> +		NL_SET_ERR_MSG(extack, "rx queue is mapped to a virtual netdev");
-> +		ret = -EBUSY;
-> +		goto out;
-> +	}
->  	if (dev->cfg->hds_config != ETHTOOL_TCP_DATA_SPLIT_ENABLED) {
->  		NL_SET_ERR_MSG(extack, "tcp-data-split is disabled");
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto out;
->  	}
->  	if (dev->cfg->hds_thresh) {
->  		NL_SET_ERR_MSG(extack, "hds-thresh is not zero");
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto out;
->  	}
->  	if (dev_xdp_prog_count(dev)) {
->  		NL_SET_ERR_MSG(extack, "unable to custom memory provider to device with XDP program attached");
-> -		return -EEXIST;
-> +		ret = -EEXIST;
-> +		goto out;
->  	}
-> -
-> -	rxq = __netif_get_rx_queue(dev, rxq_idx);
->  	if (rxq->mp_params.mp_ops) {
->  		NL_SET_ERR_MSG(extack, "designated queue already memory provider bound");
-> -		return -EEXIST;
-> +		ret = -EEXIST;
-> +		goto out;
->  	}
+>  struct xdp_sock {
+> @@ -130,6 +132,7 @@ struct xsk_tx_metadata_ops {
+>  struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>  			      struct sk_buff *allocated_skb,
+>  			      struct xdp_desc *desc);
+> +int xsk_alloc_batch_skb(struct xdp_sock *xs, u32 nb_pkts, u32 nb_descs, int *err);
 >  #ifdef CONFIG_XDP_SOCKETS
->  	if (rxq->pool) {
->  		NL_SET_ERR_MSG(extack, "designated queue already in use by AF_XDP");
-> -		return -EBUSY;
-> +		ret = -EBUSY;
-> +		goto out;
->  	}
->  #endif
-> -
->  	rxq->mp_params = *p;
->  	ret = netdev_rx_queue_restart(dev, rxq_idx);
->  	if (ret) {
->  		rxq->mp_params.mp_ops = NULL;
->  		rxq->mp_params.mp_priv = NULL;
->  	}
-> +out:
-> +	if (needs_unlock)
-> +		netdev_unlock(dev);
+>  
+>  int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp);
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index bc12790017b0..5b6d3b4fa895 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -81,6 +81,8 @@
+>  #include <net/page_pool/helpers.h>
+>  #include <net/psp/types.h>
+>  #include <net/dropreason.h>
+> +#include <net/xdp_sock.h>
+> +#include <net/xsk_buff_pool.h>
+>  
+>  #include <linux/uaccess.h>
+>  #include <trace/events/skb.h>
+> @@ -615,6 +617,105 @@ static void *kmalloc_reserve(unsigned int *size, gfp_t flags, int node,
+>  	return obj;
+>  }
+>  
+> +int xsk_alloc_batch_skb(struct xdp_sock *xs, u32 nb_pkts, u32 nb_descs, int *err)
+> +{
+> +	struct xsk_batch *batch = &xs->batch;
+> +	struct xdp_desc *descs = batch->desc_cache;
+> +	struct sk_buff **skbs = batch->skb_cache;
+> +	gfp_t gfp_mask = xs->sk.sk_allocation;
+> +	struct net_device *dev = xs->dev;
+> +	int node = NUMA_NO_NODE;
+> +	struct sk_buff *skb;
+> +	u32 i = 0, j = 0;
+> +	bool pfmemalloc;
+> +	u32 base_len;
+> +	u8 *data;
+> +
+> +	base_len = max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
+> +	if (!(dev->priv_flags & IFF_TX_SKB_NO_LINEAR))
+> +		base_len += dev->needed_tailroom;
+> +
+> +	if (batch->skb_count >= nb_pkts)
+> +		goto build;
+> +
+> +	if (xs->skb) {
+> +		i = 1;
 
-Can we do something better than needs_unlock flag? Maybe something like the
-following?
-
-netif_put_rx_queue_peer_locked(orig_dev, dev)
-{
-	if (orig_dev != dev)
-		netdev_unlock(dev);
-}
-
-Then we can do:
-
-orig_dev = dev;
-rxq = netif_get_rx_queue_peer_locked(&dev, &rx_idx);
-...
-netif_put_rx_queue_peer_locked(orig_dev, dev);
+What is the point of setting i to 1 here? You always start the loop from
+i=0.
 
