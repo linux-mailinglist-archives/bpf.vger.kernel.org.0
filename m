@@ -1,171 +1,183 @@
-Return-Path: <bpf+bounces-72102-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72103-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76DFFC069DA
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 16:07:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4681EC06A16
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 16:11:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D056C4E303A
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 14:07:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0BA819A41D7
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 14:09:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C3E320A17;
-	Fri, 24 Oct 2025 14:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4102F31E11F;
+	Fri, 24 Oct 2025 14:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="jgBWFQvq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="k46Or4Da"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="X+blk7eJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from flow-b8-smtp.messagingengine.com (flow-b8-smtp.messagingengine.com [202.12.124.143])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57C231D742;
-	Fri, 24 Oct 2025 14:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.143
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1752DEA6A;
+	Fri, 24 Oct 2025 14:08:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761314844; cv=none; b=eAqAGg/WnRj9WVGvLI4MWQvAbURyjD+VZu+56Je3BhNwfTFlZKavZwTlsWuTqJZ3A+vn/k+2tluwqoW+8DVWn+4OmuL7LmWNq1fd3vyaXhDSI0Ez7tUwUncRf86goAOASbqHqHgNX5xUMuDteIlcWwqATWGr1jwcnJn5L0DBozE=
+	t=1761314913; cv=none; b=cj6hwmwu7nM1n0KnBYsTsfah42ibSIAFlFOd+7HdPqnSxXOmBe+9r69QdZInIslT8rJ+Yjo9pvdlUJNEwp95BgAjOAiWcuN2nOgXBxRq91cqs4rJ5l8Fq0Z/Ug2Nlq2xOc5xtTrw4RrvdYpV50S6jggXvuJbTv265+9a0F50HsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761314844; c=relaxed/simple;
-	bh=seTjJ9cm6Zi9cqnUGd6+2HjOK4qyMZwn9gNNu1eyosw=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=g7V6Z01vZfhamlW0btokzqJphHmYC/hOBJ++ZXXRcd0xHMFyJj6Xgejre+D1TomB3+sxaiUd/wn0I0j1FgItcwOv6sBqywqTEG9SD7Tcx5uei3M80kMCpMZuHcfCx95S7xCrMg4yFNXV1OiYd7eUTA1Zt7C+Ms+MUjScLKLCNdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=jgBWFQvq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=k46Or4Da; arc=none smtp.client-ip=202.12.124.143
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailflow.stl.internal (Postfix) with ESMTP id 54B501300260;
-	Fri, 24 Oct 2025 10:07:20 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-05.internal (MEProxy); Fri, 24 Oct 2025 10:07:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1761314840;
-	 x=1761322040; bh=miSsXPm4+M0zwlfLzYyT4CIr/q9mDcjy6aC2hB/hyk4=; b=
-	jgBWFQvqDqbz/Zq/xSrEgs0hq9MPBcOZ2dNhQ1yMZYMTDANg0IEMjS0xYuS1njKK
-	jI43y9Ow4+ENflZ5QpoeKG+EruCmIBM/OPIqHcRBUvA5YgSoW4SJGuPkSO+YdZw8
-	kojKnVaT8q0cmTKXGEGJHtpuKYP0O780K6pQYGEw5kSMU6ezFwz1bIfQepykAvVr
-	ohXELdiiKsCBZoglf271iR+wQp0SoDuv0DYZiM4KLLo9grpJoGgllmDHvO3OacPk
-	WO0aws6DWT6GsFBL3gm+v3yl63taVN22FUe9lzN0NNMgmCZJLLIn0nFvDLYCyAQg
-	H4fxkgWnFHYv1QwhzeKjWw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1761314840; x=
-	1761322040; bh=miSsXPm4+M0zwlfLzYyT4CIr/q9mDcjy6aC2hB/hyk4=; b=k
-	46Or4Daocr+xA9L6d1Xsx5qKTMN0FQGxQqFeTMfZPV0ekpgNTq96i1c5m7K8dHY2
-	XZSatkEfkiD50NN+A4SoOGc/m3JKVlHpSN7EW0FBm3xbaeAzR458klY3gcUzFPGh
-	b49S2e/27nSPuZOx5AsxlJPVkhcLyNHAJTfw9xWJ8DiMxXdR+MPr9vOvsfxH4fwc
-	JT37LSRscqR8GsePIWdOJxo4GrlMRqzTjBPNGboraqPiRA1qLhMgxDOEpAPLkXwv
-	4BxoAuhZuQCIDLWy2E97Wx6iJpMxVVoxKLyZ7JoUjS/6dz0Hh0xpwJ2d4SK8lL1Q
-	al6bnjiSx+RnTeLMjltvQ==
-X-ME-Sender: <xms:Foj7aG4NuYtOpcaRWHfUIksbaBlZerYvV3Q7w7tCjS8W4AVYj4bqwA>
-    <xme:Foj7aKtf0mBz2cBRu6i0sDJ2VsejI9GVBRjz64SoCOswlE9XKD20WfXKnZy5LLCpu
-    PN1psAfiI6zQcaQZ5oDZlrPFJT_d-mL8yLH2lUa5QIdxxcxZ3-5Ww>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddugeelheegucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefggfevudegudevledvkefhvdei
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
-    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepvddvpdhmohguvgepshhmthhpohhu
-    thdprhgtphhtthhopehmiiigrhgvrghrhiestdhpohhinhhtvghrrdguvgdprhgtphhtth
-    hopehhrghnnhgvshestghmphigtghhghdrohhrghdprhgtphhtthhopegthihphhgrrhes
-    tgihphhhrghrrdgtohhmpdhrtghpthhtoheprghmihhrjeefihhlsehgmhgrihhlrdgtoh
-    hmpdhrtghpthhtohepuggrrghnrdhjrdguvghmvgihvghrsehgmhgrihhlrdgtohhmpdhr
-    tghpthhtohepvgguuhhmrgiivghtsehgohhoghhlvgdrtghomhdprhgtphhtthhopehjrg
-    hnnhhhsehgohhoghhlvgdrtghomhdprhgtphhtthhopeiisgihshiivghksehinhdrfigr
-    fidrphhlpdhrtghpthhtohepsghrrghunhgvrheskhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:Foj7aHDM4oeTEXhqauXmthr2GR6ilhZI57zYSak8FJlFgBge84kUOg>
-    <xmx:Foj7aJN7IEPHUfIw4pYnNqv5_h9BJtW4TkoBBCnnlSAJzv0fVOSc0A>
-    <xmx:Foj7aNQIp8WDI5COISvW5X4bvl8bLoIlnrmE5gKB-F8Bh54FDnNoBw>
-    <xmx:Foj7aKuBpwOj5PR8C59xW1chma9wqxV8TWIH3K-1xSO_aL-K7MCCFQ>
-    <xmx:GIj7aH8aRQ5olxoTtA5Lw-Je7GEAi6eHUZb1YU-y6f6Bko96GGTE0ukv>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 4F1B6700063; Fri, 24 Oct 2025 10:07:18 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1761314913; c=relaxed/simple;
+	bh=3n6Mg9W03EyoIK8pagxfBsueUo1hZrfz9Lq0Z8X3N7w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GxBJ9kaTjEdsbu7lLbbi42IQX/Sdmkm0xThLzxktozvMCWhfhrQ+zsIJ+8J+hadRP9Ytg0c9iao3QuN/+6MLUugXuUViK+RAfoB+Y44vPUS2Hf9wDhQc6WFsTm78NWMAlJA9sAgNVWxi+dFQVv1sOXD+pYIpu3uyZLFSH5epGrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=X+blk7eJ; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Goq8YxHBPNs6f2rYuSxbbsHycF8mgkQfSZw+JTwSmhM=; b=X+blk7eJmCwk6pY0VoWEtox47s
+	gBivRCzUAGh95sLhc3XnbTW0bnWByeRIzr13TsRc7sKaSG8pQzazWgKwY2nJA7Nx/LP5gOp512BAE
+	MgLCpmJEEIU8B6og849pb1XrdKiWffeAviGZyckVZxON0ct4etrkE4AMJ+edbE16raYUkeqOk5iOu
+	VlcgpVDjVUkiCzvXRgKq0apJr+BQ0eOncnlNQ1qOrNSow3NWr/48LW3nu+FrVo2c1NosSmuhjkVE4
+	+WLK7s8ViN2zgViEvppABvDtVXGIR4KRz2iu15x+pJtFTaI/WYuDLuO+5hrGyg9FfeWCnG/RwGcXj
+	BYIu9WBA==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vCHb7-00000002Jc9-3khN;
+	Fri, 24 Oct 2025 13:12:52 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 548A7300323; Fri, 24 Oct 2025 16:08:15 +0200 (CEST)
+Date: Fri, 24 Oct 2025 16:08:15 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Jens Remus <jremus@linux.ibm.com>
+Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	"Jose E. Marchesi" <jemarch@gnu.org>,
+	Beau Belgrave <beaub@linux.microsoft.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>,
+	Kees Cook <kees@kernel.org>, Carlos O'Donell <codonell@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH v16 0/4] perf: Support the deferred unwinding
+ infrastructure
+Message-ID: <20251024140815.GE3245006@noisy.programming.kicks-ass.net>
+References: <20251007214008.080852573@kernel.org>
+ <20251023150002.GR4067720@noisy.programming.kicks-ass.net>
+ <20251024092926.GI4068168@noisy.programming.kicks-ass.net>
+ <20251024104119.GJ4068168@noisy.programming.kicks-ass.net>
+ <a59509f0-5888-4663-9e82-98e27fc3e813@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: A9aggTBZhXf3
-Date: Fri, 24 Oct 2025 16:06:57 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
- "Josef Bacik" <josef@toxicpanda.com>, "Jeff Layton" <jlayton@kernel.org>
-Cc: "Jann Horn" <jannh@google.com>, "Mike Yuan" <me@yhndnzj.com>,
- =?UTF-8?Q?Zbigniew_J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>,
- "Lennart Poettering" <mzxreary@0pointer.de>,
- "Daan De Meyer" <daan.j.demeyer@gmail.com>,
- "Aleksa Sarai" <cyphar@cyphar.com>, "Amir Goldstein" <amir73il@gmail.com>,
- "Tejun Heo" <tj@kernel.org>, "Johannes Weiner" <hannes@cmpxchg.org>,
- "Thomas Gleixner" <tglx@linutronix.de>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>, "Jan Kara" <jack@suse.cz>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- Netdev <netdev@vger.kernel.org>
-Message-Id: <481c973c-3ae5-4184-976e-96ab633dd09a@app.fastmail.com>
-In-Reply-To: 
- <20251024-work-namespace-nstree-listns-v3-17-b6241981b72b@kernel.org>
-References: 
- <20251024-work-namespace-nstree-listns-v3-0-b6241981b72b@kernel.org>
- <20251024-work-namespace-nstree-listns-v3-17-b6241981b72b@kernel.org>
-Subject: Re: [PATCH v3 17/70] nstree: add listns()
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a59509f0-5888-4663-9e82-98e27fc3e813@linux.ibm.com>
 
-On Fri, Oct 24, 2025, at 12:52, Christian Brauner wrote:
-> Add a new listns() system call that allows userspace to iterate through
-> namespaces in the system. This provides a programmatic interface to
-> discover and inspect namespaces, enhancing existing namespace apis.
+On Fri, Oct 24, 2025 at 03:58:20PM +0200, Jens Remus wrote:
+> Hello Peter!
+> 
+> On 10/24/2025 12:41 PM, Peter Zijlstra wrote:
+> > On Fri, Oct 24, 2025 at 11:29:26AM +0200, Peter Zijlstra wrote:
+> >> On Thu, Oct 23, 2025 at 05:00:02PM +0200, Peter Zijlstra wrote:
+> >>
+> >>> Trouble is, pretty much every unwind is 510 entries long -- this cannot
+> >>> be right. I'm sure there's a silly mistake in unwind/user.c but I'm too
+> >>> tired to find it just now. I'll try again tomorrow.
+> >>
+> >> PEBKAC
+> > 
+> > Anyway, while staring at this, I noted that the perf userspace unwind
+> > code has a few bits that are missing from the new shiny thing.
+> > 
+> > How about something like so? This add an optional arch specific unwinder
+> > at the very highest priority (bit 0) and uses that to do a few extra
+> > bits before disabling itself and falling back to whatever lower prio
+> > unwinder to do the actual unwinding.
+> 
+> unwind user sframe does not need any of this special handling, because
+> it knows for each IP whether the SP or FP is the CFA base register
+> and whether the FP and RA have been saved.
 
-I double-checked that the ABI is well-formed and works the same
-way on all supported architectures, though I did not check the functional
-aspects.
+It still can't unwind VM86 stacks. But yes, it should do lots better
+with that start of function hack.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Isn't this actually specific to unwind user fp?  If the IP is at
+> function entry, then the FP has not been setup yet.  I think unwind user
+> fp could handle this using an arch specific is_uprobe_at_func_entry() to
+> determine whether to use a new frame_fp_entry instead of frame_fp.  For
+> x86 the following frame_fp_entry should work, if I am not wrong:
+> 
+> #define ARCH_INIT_USER_FP_ENTRY_FRAME(ws)	\
+> 	.cfa_off	=  1*(ws),		\
+> 	.ra_off		= -1*(ws),		\
+> 	.fp_off		= 0,			\
+> 	.use_fp		= false,
+> 
+> Following roughly outlines the required changes:
+> 
+> diff --git a/kernel/unwind/user.c b/kernel/unwind/user.c
+> 
+> -static int unwind_user_next_fp(struct unwind_user_state *state)
+> +static int unwind_user_next_common(struct unwind_user_state *state,
+> +                                  const struct unwind_user_frame *frame,
+> +                                  struct pt_regs *regs)
+> 
+> @@ -71,6 +83,7 @@ static int unwind_user_next_common(struct unwind_user_state *state,
+>         state->sp = sp;
+>         if (frame->fp_off)
+>                 state->fp = fp;
+> +       state->topmost = false;
+>         return 0;
+>  }
+> @@ -154,6 +167,7 @@ static int unwind_user_start(struct unwind_user_state *state)
+>         state->sp = user_stack_pointer(regs);
+>         state->fp = frame_pointer(regs);
+>         state->ws = compat_user_mode(regs) ? sizeof(int) : sizeof(long);
+> +       state->topmost = true;
+> 
+>         return 0;
+>  }
+> 
+> static int unwind_user_next_fp(struct unwind_user_state *state)
+> {
+> 	const struct unwind_user_frame fp_frame = {
+> 		ARCH_INIT_USER_FP_FRAME(state->ws)
+> 	};
+> 	const struct unwind_user_frame fp_entry_frame = {
+> 		ARCH_INIT_USER_FP_ENTRY_FRAME(state->ws)
+> 	};
+> 	struct pt_regs *regs = task_pt_regs(current);
+> 
+> 	if (state->topmost && is_uprobe_at_func_entry(regs))
+> 		return unwind_user_next_common(state, &fp_entry_frame, regs);
+> 	else
+> 		return unwind_user_next_common(state, &fp_frame, regs);
+> }
+> 
+> diff --git a/include/linux/unwind_user_types.h b/include/linux/unwind_user_types.h
+> @@ -43,6 +43,7 @@ struct unwind_user_state {
+>         unsigned int                            ws;
+>         enum unwind_user_type                   current_type;
+>         unsigned int                            available_types;
+> +       bool                                    topmost;
+>         bool                                    done;
+>  };
+> 
+> What do you think?
 
-One small thing I noticed:
-
-> +SYSCALL_DEFINE4(listns, const struct ns_id_req __user *, req,
-> +		u64 __user *, ns_ids, size_t, nr_ns_ids, unsigned int, flags)
-> +{
-> +	struct klistns klns __free(klistns_free) = {};
-> +	const size_t maxcount = 1000000;
-> +	struct ns_id_req kreq;
-> +	ssize_t ret;
-> +
-> +	if (flags)
-> +		return -EINVAL;
-> +
-> +	if (unlikely(nr_ns_ids > maxcount))
-> +		return -EOVERFLOW;
-> +
-> +	if (!access_ok(ns_ids, nr_ns_ids * sizeof(*ns_ids)))
-> +		return -EFAULT;
-
-I'm a bit worried about hardcoding the maxcount value here, which
-seems to limit both the size of the allocation and prevent overflowing
-the multiplication of the access_ok() argument, though that isn't
-completely clear from the implementation.
-
-Allowing 8MB of vmalloc space to be filled can be bad on 32-bit
-systems that may only have 100MB in total. The access_ok() check
-looks like it tries to provide an early-fail error return but
-should not actually be needed since there is a single copy_to_user()
-in the end, and that is more likely to fail for unmapped memory than
-an access_ok() failure.
-
-Would it make sense to just drop the kvmalloc() completely and
-instead put_user() the output values individually? That way you
-can avoid both a hardwired limit and a potential DoS from vmalloc
-exhaustion.
-
-     Arnd
+Yeah, I suppose that should work. Let me rework things accordingly.
 
