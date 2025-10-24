@@ -1,209 +1,361 @@
-Return-Path: <bpf+bounces-71987-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71988-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13068C043C5
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 05:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 928A3C044F8
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 06:13:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D32CE3B87C8
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 03:20:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E62A3B7E2C
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 04:13:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B24261B6E;
-	Fri, 24 Oct 2025 03:20:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D80D2853E0;
+	Fri, 24 Oct 2025 04:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aVTpZ9/P"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LoDe8ebH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6762635B130
-	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 03:20:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90B0127E05F
+	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 04:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761276013; cv=none; b=KKuuuufQ+ZAvd3PKTWMEO45vojVIV4Dw7PAkJEPX/mmzVhXt3qXA9byjAeG2iVCBOlsaQ04dxUsYtf6Y+VqDr8GCIj9hDwAlfIQ9kezV4Bn0cGJQK6qRryLAV75sbA7RyMhb92Hi1GH3SftwzESLuHGYlnmd/BMwMAHcwkjRNZQ=
+	t=1761279210; cv=none; b=IIVOOeVrg7ISQVUKzGo+wsQ3aGP1zmxEopeaISWUDKR3af70JUwtlG6j9jjJzvzGUBB2Q1bShhXAQNGzNaWGk0jtnee/cHMDdZfq2PUVxILDfAA1cNVHED6KCAA1uG3EJakNXwKRVoHs957ZbTUezIunvoBcz+OOYRE3s52PLF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761276013; c=relaxed/simple;
-	bh=vosHIbmXHUkjKFcSFtE8VAnh1l4a3kdW+/Z8WGM83mc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qS+yb/BCsktl4IscFHy8g8c/I1BQ8VWMb650pvHkS87N1SyxcF51H8N/xr0TwFaq4TWCsnDwWDDbvRPS4RE38YmJwNHTPwYV00dsYvuduuc9eYaRQOqGYgL9jX6GAcrplb7JcUb3MztX+CwrbxJtE1uShlvo7TgHhEd0fRYotNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aVTpZ9/P; arc=none smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4e89e689ec7so9833861cf.2
-        for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 20:20:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761276010; x=1761880810; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vosHIbmXHUkjKFcSFtE8VAnh1l4a3kdW+/Z8WGM83mc=;
-        b=aVTpZ9/PJgMruRXJhXX6rESwt2hxLL1A+hZ62WIs6zV+y/YyEIYceTg9dGUconiVZE
-         N0Z3ZSmnXOXoL3z4EsSMfSUsUIOeKRZhk58cFnN0g/YZ/SS8qlXWAJlh+oTtoXZetd4h
-         ieSkjVuEan12faQQaOi7+Cza29YBA4K4KIkJA7w9fMR4/ZkWpREyPpk6Ih/OifGUqnXk
-         63BOKhoWi8zvsTkKwc47asuOmpmeH7Q1Qiv40eaoL+bz+20Sepjse8HYt/FS8qGnjuYG
-         ty2yJB8c9kc0tpIOt7IFbRfUOzmpn/yDgqQFNJYP5HfZgfnCSWUlWn0oHnWSlYNr13yj
-         CDog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761276010; x=1761880810;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vosHIbmXHUkjKFcSFtE8VAnh1l4a3kdW+/Z8WGM83mc=;
-        b=SBS682/I7oijstlR8F+C3vz14h0VCAMTeXvtb9KBLGglIab7Opt9ItYWoKtQ1BVnNq
-         q4nzlVeGzKMvVOpZprvPlSrc+aFg04eHeR1Uua67tFJ9n6GiA5AlZnPA07ENMW2DB2QZ
-         cI9J2bkaMkdBexyGBADf0mBRnOUd51XQYdO62LHkFdkh70zC0EP04TWu69+a3tYfrq9f
-         k34jv0FLOy96bKz8QNo4QBXyK115by6dy2vkpHw3hWM7Au+gO2jbHS3ig1m/fbHElRn6
-         sUJgJSTPk85ecHgcVIMIfVVk6804eX0gEDBnJwXN46jmmd2QS60wVcHf74Ffs8e3EEwk
-         986g==
-X-Forwarded-Encrypted: i=1; AJvYcCVV3oBW284SFzI83ISMq+MOXR+wQrLc2tW4XPsXPLdr1qAwqwqxWaoiqIAS3WBh1+hMqvo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJ5UxDWEGiTC8Y9v7VQYl3mviVWth8k/ZwF2FNdiYwSk/uWIgj
-	JxS02zRuuXzbkA/ouzrIJ5eL+dJ7reJLkxhXTZbj9+t2Je/XZ7BT4th2lJXRmwXsQ1zDHNI35CQ
-	Y7bIGjADv8b9Fm4SZi20r+l2i9Qj7BBE=
-X-Gm-Gg: ASbGncs2tCs4odD0/I1gI82/cc/5DC0F+ki77ykiEpSTrINwJ8kA1t+suLZBIy67y61
-	pu5GJYyww1VcHF7ZWfNGNm2mdm6KMkbrnXpEHHhn3vBmDmnQwMVpip99hqM36IgbWso1ukFOknl
-	FxWWMlr1gbG5aAss3H0u9W6ZAvJJmnQ4MGhiZ4hoUMcw5wekOmSSJVW4gj3Oersv2oSl40lZ2jY
-	MIgkuj1EiVQoCkCpq0nrLwnl/AzbhdSi7yEzfB8eRlZgJ78z0qXol+CKdZ+eQ==
-X-Google-Smtp-Source: AGHT+IFuKLNzDHgyVnAc5upxNk6bZXC3pluBaw0VdoK1RNjYz8XToqqei8JPDhUGUEGNlSvEelgzXNgrEFpmvuP5MQs=
-X-Received: by 2002:ac8:578b:0:b0:4e5:6c5e:430a with SMTP id
- d75a77b69052e-4e89d3a47c8mr340792321cf.64.1761276009998; Thu, 23 Oct 2025
- 20:20:09 -0700 (PDT)
+	s=arc-20240116; t=1761279210; c=relaxed/simple;
+	bh=FMNaLFDjx69v6ZzbO/4atk50VxceYVKBeF/2QQssp6E=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=MQKQmVufmIX1zV7Kkz3NL0ZugiFTxjQPMYT8XHmqT6rSO7g0IsYF/IfxzGUcZhlrwsmEqtujmI8ObmsS2QT0c/wDQ1Ud8Wbj3mPgqTj/xPr5T+BJKDwf0Bt78UcmfEt6fNhyVhd4p2HmgaQAr2K82wLu79d7y25YaUpItKhR/tM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LoDe8ebH; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251020093941.548058-1-dolinux.peng@gmail.com>
- <20251020093941.548058-3-dolinux.peng@gmail.com> <174642a334760af39a5e7bacdd8b977b392a82c7.camel@gmail.com>
- <CAErzpmusSgOaROhEO25fKenvxQJU1oSPKKzUA4h67ptdQxWM7A@mail.gmail.com>
- <7651ac9cc74e135f04ecfee8660bea0a0d3883ab.camel@gmail.com>
- <CAErzpmtWLLYuFk3npTiOgGOKcEcH1QUGGEHLvPncVT+z261C1A@mail.gmail.com>
- <CAADnVQKU0MnQHxxvnp9WCu_UO4fEtd_D6ckNmOd7pLg90ecF4A@mail.gmail.com>
- <CAEf4Bzajdv3Rd1xAxm_UZWBxPc8M0=VuUkfjJvOFSObOs19GbQ@mail.gmail.com>
- <CAADnVQJG_tK18oxmjW37cbrxF2zPKPk_dvqXUTnOjUue7J0tLQ@mail.gmail.com>
- <CAEf4BzYLyi6=Fyz9ziOAwkFOjUPyJmTj4c6g247XBwgwJ8m-qw@mail.gmail.com>
- <CAErzpmtMPuGBhisLOaZMyzM5u3=0QrmZcuWqNgbMrceEEPN3TA@mail.gmail.com>
- <CAErzpmsCJAWVjWnV2LWAnYCouynYZbUupS08LUuhixiT2do3sg@mail.gmail.com>
- <7d9e373c7f0f3b7a50ee6a719375410da452b7ba.camel@gmail.com>
- <CAErzpmtJmj-ZX+uL_N9e5-r1iL+kD=0vwM9BeDL3t4C2re261A@mail.gmail.com> <f5cb8c37dc7a23beb0d83fe2aa0a4dc29bc40fd5.camel@gmail.com>
-In-Reply-To: <f5cb8c37dc7a23beb0d83fe2aa0a4dc29bc40fd5.camel@gmail.com>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Fri, 24 Oct 2025 11:19:55 +0800
-X-Gm-Features: AS18NWDBZBREJwKmL2ehSlR-iVb6MBKxIurAqAr9cAYdqWHWbtf1c3KKSrtcx8g
-Message-ID: <CAErzpmuY0miq0B5BSF8ueY+NOTGfvcUKPbO4_W3BKX74c5K4rg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/5] btf: sort BTF types by kind and name to enable
- binary search
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Alexei Starovoitov <ast@kernel.org>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Song Liu <song@kernel.org>, pengdonglin <pengdonglin@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761279196;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NRsGgrjIKsQrMKsBDmX9pjVYYabxhQ/HoNpJSeaQfa8=;
+	b=LoDe8ebHaOq7xdpyZZcnnEt0x3wAfZWdFVPu4aL/qZJU2e0m7fBYfeUmFicNASdr7MKVDW
+	6ugPwjNAyWGzS3CxAM3KbRUVGsusQ0UkV/ujzP062yM1WXzqui9LscJwkPnebsj5d+NxNP
+	ibgSidUC/rTBWqp/xmhIQ8PErNUPM5s=
+Date: Fri, 24 Oct 2025 04:13:13 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
+Message-ID: <319c419455b73deb312b53d99c30217f6b606208@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH net v3 0/3] mptcp: Fix conflicts between MPTCP and
+ sockmap
+To: "Matthieu Baerts" <matttbe@kernel.org>, mptcp@lists.linux.dev
+Cc: "John Fastabend" <john.fastabend@gmail.com>, "Jakub Sitnicki"
+ <jakub@cloudflare.com>, "Eric Dumazet" <edumazet@google.com>, "Kuniyuki
+ Iwashima" <kuniyu@google.com>, "Paolo Abeni" <pabeni@redhat.com>, "Willem
+ de Bruijn" <willemb@google.com>, "David S. Miller" <davem@davemloft.net>,
+ "Jakub Kicinski" <kuba@kernel.org>, "Simon Horman" <horms@kernel.org>,
+ "Mat Martineau" <martineau@kernel.org>, "Geliang Tang"
+ <geliang@kernel.org>, "Alexei Starovoitov" <ast@kernel.org>, "Daniel
+ Borkmann" <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>,
+ "Martin KaFai Lau" <martin.lau@linux.dev>, "Eduard Zingerman"
+ <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong Song"
+ <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
+ Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
+ <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>, "Florian Westphal"
+ <fw@strlen.de>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+In-Reply-To: <14b565a1-0c2a-420d-ab2a-dc8a46dbf33c@kernel.org>
+References: <20251023125450.105859-1-jiayuan.chen@linux.dev>
+ <14b565a1-0c2a-420d-ab2a-dc8a46dbf33c@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Oct 24, 2025 at 11:15=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
->
-> On Fri, 2025-10-24 at 11:04 +0800, Donglin Peng wrote:
-> > On Fri, Oct 24, 2025 at 10:32=E2=80=AFAM Eduard Zingerman <eddyz87@gmai=
-l.com> wrote:
-> > >
-> > > On Fri, 2025-10-24 at 10:23 +0800, Donglin Peng wrote:
-> > > > On Fri, Oct 24, 2025 at 9:59=E2=80=AFAM Donglin Peng <dolinux.peng@=
-gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Oct 24, 2025 at 3:40=E2=80=AFAM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > On Thu, Oct 23, 2025 at 11:37=E2=80=AFAM Alexei Starovoitov
-> > > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Thu, Oct 23, 2025 at 9:28=E2=80=AFAM Andrii Nakryiko
-> > > > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > Speaking of flags, though. I think adding BTF_F_SORTED flag=
- to
-> > > > > > > > btf_header->flags seems useful, as that would allow libbpf =
-(and user
-> > > > > > > > space apps working with BTF in general) to use more optimal
-> > > > > > > > find_by_name implementation. The only gotcha is that old ke=
-rnels
-> > > > > > > > enforce this btf_header->flags to be zero, so pahole would =
-need to
-> > > > > > > > know not to emit this when building BTF for old kernels (or=
-, rather,
-> > > > > > > > we'll just teach pahole_flags in kernel build scripts to ad=
-d this
-> > > > > > > > going forward). This is not very important for kernel, beca=
-use kernel
-> > > > > > > > has to validate all this anyways, but would allow saving ti=
-me for user
-> > > > > > > > space.
-> > > > > > >
-> > > > > > > Thinking more about it... I don't think it's worth it.
-> > > > > > > It's an operational headache. I'd rather have newer pahole so=
-rt it
-> > > > > > > without on/off flags and detection, so that people can upgrad=
+2025/10/23 22:10, "Matthieu Baerts" <matttbe@kernel.org mailto:matttbe@ke=
+rnel.org?to=3D%22Matthieu%20Baerts%22%20%3Cmatttbe%40kernel.org%3E > =E5=
+=86=99=E5=88=B0:
+
+
+> >  MPTCP creates subflows for data transmission between two endpoints.
+> >  However, BPF can use sockops to perform additional operations when T=
+CP
+> >  completes the three-way handshake. The issue arose because we used s=
+ockmap
+> >  in sockops, which replaces sk->sk_prot and some handlers.
+> >=20
+>=20Do you know at what stage the sk->sk_prot is modified with sockmap? W=
+hen
+> switching to TCP_ESTABLISHED?
+> Is it before or after having set "tcp_sk(sk)->is_mptcp =3D 0" (in
+> subflow_ulp_fallback(), coming from subflow_syn_recv_sock() I suppose)?
+
+
+Yes, there are two call points. One is after executing subflow_syn_recv_s=
+ock():
+tcp_init_transfer(sk, BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB, skb);
+
+So at this point, is_mptcp =3D 0. The other call point is when userspace =
+calls
+the BPF interface, passing in an fd while it's not a subflow but a parent=
+ sk
+with its own mptcp_prot we will also reject it.
+
+You can refer to my provided selftest, which covers these scenarios.
+
+> If MPTCP is still being used (sk_is_tcp(sk) && sk_is_mptcp(sk)), I gues=
+s
+> sockmap should never touch the in-kernel TCP subflows: they will likely
+> only carry a part of the data. Instead, sockmap should act on the MPTCP
+> sockets, not the in-kernel TCP subflows.
+
+Yes, I agree.
+
+For full functionality, we need to retrieve the parent socket from MPTCP
+and integrate it with sockmap, rather than simply rejecting.
+
+The current implementation rejects MPTCP because I previously attempted t=
+o
+add sockmap support for MPTCP, but it required implementing many interfac=
+es
+and would take considerable time.
+
+So for now, I'm proposing this as a fix to resolve the immediate issue.
+Subsequently, we can continue working on fully integrating MPTCP with soc=
+kmap.
+
+> There is one particular case to take into consideration: an MPTCP
+> connection can fallback to "plain" TCP before being used by the
+> userspace. Typically, that's when an MPTCP listening socket receives a
+> "plain" TCP request (without MPTCP): a "plain" TCP socket will then be
+> created, and exposed to the userspace. In this case, sk_is_mptcp(sk)
+> will return false. I guess that's the case you are trying to handle,
+> right? (It might help BPF reviewers to mention that in the commit
+> message(s).)
+
+Yes, this is primarily the case we're addressing. I will add this descrip=
+tion
+to the commit message.
+
+
+> I would then say that sk->sk_prot->psock_update_sk_prot should not poin=
+t
+> to tcp_bpf_update_proto() when MPTCP is being used (or this callback
+> should take the MPTCP case into account, but I guess no). In case of
+> fallback before the accept() stage, the socket can then be used as a
+> "plain" TCP one. I guess when tcp_bpf_update_proto() will be called,
+> sk_prot is pointing to tcp(v6)_prot, not the MPTCP subflow override one=
+,
+> right?
+
+Yes, when tcp_bpf_update_proto is called the sk_prot is pointing to tcp(v=
+6)_prot.
+subflow_syn_recv_sock
+ mptcp_subflow_drop_ctx
+  subflow_ulp_fallback
+   mptcp_subflow_ops_undo_override -> reset sk_prot to original one
+
+So [patch 2/3] aims to prevent psock_update_sk_prot from being executed o=
+n subflows.
+
+Actually, replacing the subflow's callbacks is also incorrect, as you men=
+tioned earlier,
+because subflows only carry part of the data. By checking for subflows ea=
+rly and skipping
+subsequent steps, we avoid incorrect logic.
+
+Furthermore, there's another risk: if an IPv6 request comes in and we per=
+form the replacement,
+MPTCP will roll it back to inet_stream_ops. I haven't delved too deeply i=
+nto the potential
+impact, but I noticed that inet6_release has many V6-specific cleanup pro=
+cedures not present
+in inet_release.
+
+> >=20
+>=20> Since subflows
+> >  also have their own specialized handlers, this creates a conflict an=
+d leads
+> >  to traffic failure. Therefore, we need to reject operations targetin=
+g
+> >  subflows.
+> >=20
+>=20Would it not work to set sk_prot->psock_update_sk_prot to NULL for th=
 e
-> > > > > > > pahole and build older kernels.
-> > > > > > > Also BTF_F_SORTED doesn't spell out the way it's sorted.
-> > > > > > > Things may change and we will need a new flag and so on.
-> > > > > > > I think it's easier to check in the kernel and libbpf whether
-> > > > > > > BTF is sorted the way they want it.
-> > > > > > > The check is simple, fast and done once. Then both (kernel an=
-d libbpf) can
-> > > > > > > set an internal flag and use different functions to search
-> > > > > > > within a given BTF.
-> > > > > >
-> > > > > > I guess that's fine. libbpf can do this check lazily on the fir=
-st
-> > > > > > btf__find_by_name() to avoid unnecessary overhead. Agreed.
-> > > > >
-> > > > > Thank you for all the feedback. Based on the suggestions above, t=
-he sorting
-> > > > > implementation will be redesigned in the next version as follows:
-> > > > >
-> > > > > 1. The sorting operation will be fully handled by pahole, with no=
- dependency on
-> > > > > libbpf. This means users can benefit from sorting simply by upgra=
-ding their
-> > > > > pahole version.
-> > > >
-> > > > I suggest that libbpf provides a sorting function, such as the
-> > > > btf__permute suggested
-> > > > by Andrii, for pahole to call. This approach allows pahole to lever=
-age
-> > > > libbpf's existing
-> > > > helper functions and avoids code duplication.
-> > >
-> > > Could you please enumerate the functions you'd have to reimplement in
-> > > pahole?
-> >
-> > Yes. Once the BTF types are sorted, the type IDs in both the BTF and BT=
-F ext
-> > sections must be remapped. Libbpf provides helper functions like
-> > btf_field_iter_init,
-> > btf_field_iter_next,
-> > btf_ext_visit_type_ids
-> > to iterate through the btf_field and btf_ext_info_sec entries that
-> > require updating.
-> > We will likely need to reimplement these three functions for this purpo=
-se.
->
-> I think Andrii's suggestion is to have btf__permute in libbpf,
-> as it needs all the functions you mention.
-> But actual sorting can happen in pahole, then:
-> - allocate array of length num-types, initialize it 0..num-types;
-> - reorder it as one sees fit;
-> - call btf__permute() from libbpf and get all the renamings handled by it=
-.
+> v4 and v6 subflows (in mptcp_subflow_init()) for the moment while
+> sockmap is not supported with MPTCP? This might save you some checks in
+> sock_map.c, no?
 
-Yes, the first two can be implemented in pahole, while the last one belongs
-in libbpf.
+This seems like a reliable alternative I hadn't considered initially.
 
+However, adding the check on the BPF side serves another purpose: to expl=
+icitly
+warn users that sockmap and MPTCP are incompatible.
+
+Since the latest Golang version enables MPTCP server by default, and if t=
+he client
+doesn't support MPTCP, it falls back to TCP logic. We want to print a cle=
+ar message
+informing users who have upgraded to the latest Golang and are using sock=
+map.
+
+Perhaps we could add a function like sk_is_mptcp_subflow() in the MPTCP s=
+ide?
+The implementation would simply be sk_is_tcp(sk) && sk_is_mptcp(sk).
+
+Implementing this check logic on the BPF side might become invalid if MPT=
+CP internals
+change later; placing it in the MPTCP side might be a better choice.
+
+
+> >=20
+>=20> This patchset simply prevents the combination of subflows and sockm=
+ap
+> >  without changing any functionality.
+> >=20
+>=20In your case, you have an MPTCP listening socket, but you receive a T=
+CP
+> request, right? The "sockmap update" is done when switching to
+> TCP_ESTABLISHED, when !sk_is_mptcp(sk), but that's before
+> mptcp_stream_accept(). That's why sk->sk_prot has been modified, but it
+> is fine to look at sk_family, and return inet(6)_stream_ops, right?
+
+I believe so. Since MPTCP is fundamentally based on TCP, using sk_family =
+to
+determine which ops to fall back to should be sufficient.
+
+However, strictly speaking, this [patch 1/3] might not even be necessary =
+if we
+prevent the sk_prot replacement for subflows at the sockmap layer.
+
+> A more important question: what will typically happen in your case if
+> you receive an MPTCP request and sockmap is then not supported? Will th=
+e
+> connection be rejected or stay in a strange state because the userspace
+> will not expect that? In these cases, would it not be better to disallo=
+w
+> sockmap usage while the MPTCP support is not available? The userspace
+> would then get an error from the beginning that the protocol is not
+> supported, and should then not create an MPTCP socket in this case for
+> the moment, no?
 >
-> [...]
+> I can understand that the switch from TCP to MPTCP was probably done
+> globally, and this transition should be as seamless as possible, but it
+> should not cause a regression with MPTCP requests. An alternative could
+> be to force a fallback to TCP when sockmap is used, even when an MPTCP
+> request is received, but not sure if it is practical to do, and might b=
+e
+> strange from the user point of view.
+
+Actually, I understand this not as an MPTCP regression, but as a sockmap
+regression.
+
+Let me explain how users typically use sockmap:
+
+Users typically create multiple sockets on a host and program using BPF+s=
+ockmap
+to enable fast data redirection. This involves intercepting data sent or =
+received
+by one socket and redirecting it to the send or receive queue of another =
+socket.
+
+This requires explicit user programming. The goal is that when multiple m=
+icroservices
+on one host need to communicate, they can bypass most of the network stac=
+k and avoid
+data copies between user and kernel space.
+
+However, when an MPTCP request occurs, this redirection flow fails.
+
+Since the sockmap workflow typically occurs after the three-way handshake=
+, rolling
+back at that point might be too late, and undoing the logic for MPTCP wou=
+ld be very
+complex.
+
+Regardless, the reality is that MPTCP and sockmap are already conflicting=
+, and this
+has been the case for some time. So I think our first step is to catch sp=
+ecific
+behavior on the BPF side and print a message
+"sockmap/sockhash: MPTCP sockets are not supported\n", informing users to=
+ either
+stop using sockmap or not use MPTCP.
+
+As for the logic to check for subflows, I think implementing it in subflo=
+w.c would be
+beneficial, as this logic would likely be useful later if we want to
+support MPTCP + sockmap.
+
+Furthermore, this commit also addresses the issue of incorrectly selectin=
+g
+inet_stream_ops due to the subflow prot replacement, as mentioned above.
+
+> >=20
+>=20> A complete integration of MPTCP and sockmap would require more effo=
+rt, for
+> >  example, we would need to retrieve the parent socket from subflows i=
+n
+> >  sockmap and implement handlers like read_skb.
+> >=20=20
+>=20>  If maintainers don't object, we can further improve this in subseq=
+uent
+> >  work.
+> >=20
+>=20That would be great to add MPTCP support in sockmap! As mentioned abo=
+ve,
+> this should be done on the MPTCP socket. I guess the TCP "in-kernel"
+> subflows should not be modified.
+
+
+I think we should first fix the issue by having sockmap reject operations=
+ on subflows.
+Subsequently, we can work on fully integrating sockmap with MPTCP as a fe=
+ature
+(which would require implementing some handlers).
+
+> >=20
+>=20> [1] truncated warning:
+> >  [ 18.234652] ------------[ cut here ]------------
+> >  [ 18.234664] WARNING: CPU: 1 PID: 388 at net/mptcp/protocol.c:68 mpt=
+cp_stream_accept+0x34c/0x380
+> >  [ 18.234726] Modules linked in:
+> >  [ 18.234755] RIP: 0010:mptcp_stream_accept+0x34c/0x380
+> >  [ 18.234762] RSP: 0018:ffffc90000cf3cf8 EFLAGS: 00010202
+[...]
+> >=20
+>=20Please next time use the ./scripts/decode_stacktrace.sh if possible.
+> (and strip the timestamps if it is not giving useful info)
+> Just to be sure: is it the warning you get on top of net or net-next? O=
+r
+> an older version? (Always useful to mention the base)
+
+Thank you, Matthieu. I will pay attention to this.
+
+
+> >=20
+>=20> ---
+> >  v2: https://lore.kernel.org/bpf/20251020060503.325369-1-jiayuan.chen=
+@linux.dev/T/#t
+> >  Some advice suggested by Jakub Sitnicki
+> >=20=20
+>=20>  v1: https://lore.kernel.org/mptcp/a0a2b87119a06c5ffaa51427a0964a05=
+534fe6f1@linux.dev/T/#t
+> >  Some advice from Matthieu Baerts.
+> >=20
+>=20(It usually helps reviewers to add more details in the notes/changelo=
+g
+> for the individual patch)
+
+Thank you, Matthieu. I will provide more detailed descriptions in the fut=
+ure.
+
+
+Best regards,
+Jiayuan
 
