@@ -1,200 +1,205 @@
-Return-Path: <bpf+bounces-71985-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71986-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BCF5C04352
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 05:05:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8974DC043A9
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 05:15:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 065F64F2E3C
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 03:05:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42BB918C1B6B
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 03:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B8125DAF0;
-	Fri, 24 Oct 2025 03:04:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87616261B6E;
+	Fri, 24 Oct 2025 03:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vr6iWYEZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QqXfVxtg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E403FBA7
-	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 03:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9418728DC4
+	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 03:15:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761275097; cv=none; b=KKsxY+1Z9SYhK7ODfAYcSXwyuPswXkeAtl5m+Gmh5HIYJ44vqR/MBi+BYGVUVfFMA5A6OVbW7oG0xm7PSSHVpc6z76b3Yjrtfw74gXlbmc9lBzsWHGx6A/ILPFUIMHR01OPfU9hiS4XEIXRjNHvH7aPrzCGx55r3HB2bdVi0R4A=
+	t=1761275727; cv=none; b=FkMp3SZi51oeTGB++bYR22waNiGoaftmf49TwDq0aeRfBbat4nzwuaUqzTnQB+q9rW4HWNgxI6lSb4nn1wAIhOPFiTSwvzZpy4bqD0ihnLDSVd8cJbmlOPTcv48yChShhkb4TkjW4RwARYBUBfdUlx1c66U5KuahR19S9amov2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761275097; c=relaxed/simple;
-	bh=9qvwpdbG6zEDU8NOfGA49If3FN+HOu5UEImINHYPOas=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZYmIPg36GdlfAxD8SNhKfl1yX6FGLAgKAWzTkKkZ8hx5oJUtvJexV/2ZkJBR+Uf9DN1wSMotIXG2Rjyc7qDcAUOMVG59eGElAMtFWg77Xj8Mu7uZTfWgRzxFs8kslCSXzsvcM/1gdTkEgoUzrVg/shdirKtQn4ud8mDTaI9RxwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vr6iWYEZ; arc=none smtp.client-ip=209.85.208.50
+	s=arc-20240116; t=1761275727; c=relaxed/simple;
+	bh=U/fQ9GO8LFn4u0AVU/CFCxO1RaC5xIwwnoSuDNwYWec=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=d2wIFQGEAmaWDY22c1aCQp7ERBc1DONEwa52Mebn3QtpSlt8MOn7iA4P2yaYTvlGP67uu6wyPchfVdA0x95lRcT60FtTvg/4YFeXm3DVrQ1yhamDSLDEYM1UWTcofNbMLsxBYVPaenGmq2IwsOzHXxB9felxZkDTaEZdpqtfnbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QqXfVxtg; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-63c12ff0c5eso3304519a12.0
-        for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 20:04:55 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7a2852819a8so293893b3a.3
+        for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 20:15:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761275094; x=1761879894; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OPUr1ujv1VAgrlSTn6U9qdaZAklVD4GTZntdmTR2xhA=;
-        b=Vr6iWYEZE8b5YV0dX1KnHxllBWKxm8apBTWHtWJAVimTEhONy6ShRJFncZa4/SInfM
-         vOrsZj+FnwbpOTfNMy2jFG8z4s/bnxkGZgj0X/bVifE4mGfsbIpFddrbOC+38QMoXTE2
-         fCN4IyZDuBOj3DJ5D5BCSYf6N5iWtZdzYVcmrpEdvUows8nid3UzD1CJdJHP3vRUoosQ
-         xLvalhb9XsiV5gfSXFYY8rrpZDpPqM+sv/cwuutcjeU62HZpek/WhyO6I5mXj8ljstBt
-         tDwWyBDKpFRarjGvdFsMMWuYMqoZ1Vy4ZtBdc9mRxFHkEu5NDp0bd4xnfN8dCogWoG4h
-         DIuA==
+        d=gmail.com; s=20230601; t=1761275725; x=1761880525; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=U/fQ9GO8LFn4u0AVU/CFCxO1RaC5xIwwnoSuDNwYWec=;
+        b=QqXfVxtgtZpRKzSYgcY0ejOO2UczABY2CgNGWLyIZdheKNKTdseiWwpOPgpOx/KIQI
+         s4erM9jnl/NDq2TEzqhHKICxKCPhlMKoJs41GEvsxJX1qqGjAqGCldpryiCBDJLLf76F
+         j8Xy/kKX02XSDSe87qs7DzRB1KpJP4MRQ9hRuibWcJbWgpVySf6a/FEArthSp3Zo7pqM
+         7QIOe8ky3u7pE535XRps9GMLhTH5e5Heu8g2XSiYpzmT6qy/CAt9qtND/lzxZ/A05rMb
+         cQxHPrQRpJ/8rt8XPSIqUMrV1XUVswtnCi98mhqXIouiPc4IYzoYeXVCDdpn+wCRfNqL
+         psMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761275094; x=1761879894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OPUr1ujv1VAgrlSTn6U9qdaZAklVD4GTZntdmTR2xhA=;
-        b=IczP5WpyQ4Q99NOgFBIaujjkg9deYK2itVLSGAQsCAPb/vwLlnIO2Y7KglYl9WKOHW
-         j/krdUS56hUTpHsMrcwyMl7hUwETH0l/xXCSaqtoBplMBXjwezU8pI2zfBRX25M9SLZ6
-         l5wUTHumnVX/tcDBsYKoZyoi44HwirBW+CUPtfBkbiVAVJJpwYVrmdbQc8PRRW4bdcVB
-         jyRgfUCaRzeVtu2n34Oo6kC0RkPKCT6F2EuTqyg+FAjAKgSSTxGwESHRtZT+RSldJ0S5
-         YyqgAci40F1+ZZ1GIeTMfvLSnpyYL153PZcxhV2QJ+PCdVUph7Z1LGy1l8yajh6Ei6PA
-         Ug4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXpQf5nClhHB8NBY6zXcSVw7uhFqu9r65OPljt21UpROXYBITV7jZxolgDHDfb+qkvPwdc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzkZY4wdVV7ZWP886b5WcHbAYpsuFzHoTJU0zsm6iXuyGDUpDDN
-	+IfnLEe9+Zvj7FlfuM0qTvE0oMqQT8Nem6DTOjgs6ckOfgV/jW7Hllhc4YfpNcsS55Au/7lRgrg
-	NCT7u2cVbqMhCbl089cYLXZiXvaqPSdM=
-X-Gm-Gg: ASbGncs5dGijeNBodh0RxtbE8rAYJLV3sW/r90q5/7KM1qM5Lgydt/vYpav/jRnzTzW
-	HGP7Uo4j1PJJ3an1o20dHCmdEfjfCdxqCZ8l4P+xA8CGzxEE+y22B4Po7sX+2hwhjiPzvX3IAI1
-	FQEPXxGjRtX8e6r2iHXbczeJrPtajTeevYTXNE3PDkFGE8Jjva+zmnPT4WpjJ3+sV1doQDvylhi
-	eftv4OVBqN24vXR+TZvdTVxxA9EZihG9KHVX3xgLO9tze/RFjFZCeOTzenJRDPNLzT787vh
-X-Google-Smtp-Source: AGHT+IFLGx1bMWOEh+6E7cuvAEG/Y+JZKAjZastrcZR//d17jCwFzXukweVlGVe7meHeLU/xts4ZS4gYTnL5zJWAVJE=
-X-Received: by 2002:a05:6402:2712:b0:63c:13b9:58b0 with SMTP id
- 4fb4d7f45d1cf-63e5eb076cbmr1048162a12.5.1761275094270; Thu, 23 Oct 2025
- 20:04:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1761275725; x=1761880525;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=U/fQ9GO8LFn4u0AVU/CFCxO1RaC5xIwwnoSuDNwYWec=;
+        b=YDhO5ZWGBXOf0LgVHPO1N7m0nsd/q6v4Lx/ZKq/KCz4mXe2R7Lo6oQZoCfAWVrq/B0
+         mOWUvDq1zsM2RUw1tT+TqIGXDnQT8xlCOmzh0dd6fs6QZd5gKYZega7g7fkuijv6P7iN
+         mwKEPvL1MqhmBPFdLyKGso+C67byLs5e3mfJKHlnVDqC1Pf3M9jKsMJid2XF3Q8M/rWb
+         STw2wUfqGVrEUYNE6ucj21P/eXqZqIUm4UTGet9GkA1mqr02qsMiQ5ckGB64m+DxUIXU
+         lm0o5UEMvOxAu/PE+fpOYEBdQXzo30icsbfC5uEsnukPu2hhjkcoKEjIaaZLzHbssP8A
+         ++zg==
+X-Forwarded-Encrypted: i=1; AJvYcCUmSG+5ebAc4P7f7fUZsB8SqQTWfA+20n/Do9G+hignmjAtbJjzp3lDyFee2Omu5JYGCx0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwNDVBjR2J9DseJoE8zNgcaFdnVLIWHAtr6myVKDvhHv4eRH/KF
+	73mRyg9WxUf5Ewn7wpss9mVj2mlj3gb7LegkXzU8nuURQ97WTDCA9jAkk+V+0z2y
+X-Gm-Gg: ASbGncsisj0qo0pudwqRryTdnOHwqKQjJ7NdavcT2d5xqk1YcS8E8y9e1eDpXQyLGge
+	xM1r750Rz1NM4Ab5fuufUKEpPvt9hhcPTsNruFxugtc6sCRftcUdMVINZuX1JixSPBl4KwwHnLR
+	kTdqJeELylQyshr3SOHHnkPCyZJPGAET88up1aAMIjFpZqrg/rJgNpE8r/4q4TFaR+oK+58PO3U
+	G8j7w6eNKqypXC5Wm/NU8PVTg9e0Zr5KLlqcprQPxBis/dYhK/182h9+cBfSa3DGJleI3PuTgSa
+	g2kNfXsNnX7cNN8gg6q9NVUYVWAp0x4lucTrUhtc1y28Y/QTYFJybbTp+mboSnv0tsmch7wj4To
+	1wO/5qJym04sjLqHfAltk/7xbFrnJ88sO6HhgNpYLEyPQhR/iSkk6TPXAi7DI0tGmY8I0Ucro
+X-Google-Smtp-Source: AGHT+IEIuHq7UcqS02TmVxJm8DIWd3Dpbf7GvUXrzylNp+X7NjpEw3KO3Ux4mjYeXFbE8THlmxGb9w==
+X-Received: by 2002:a05:6a20:a104:b0:334:a180:b7a7 with SMTP id adf61e73a8af0-33c61fc0376mr6747573637.42.1761275724902;
+        Thu, 23 Oct 2025 20:15:24 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6cf4c4d83dsm3598428a12.18.2025.10.23.20.15.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Oct 2025 20:15:24 -0700 (PDT)
+Message-ID: <f5cb8c37dc7a23beb0d83fe2aa0a4dc29bc40fd5.camel@gmail.com>
+Subject: Re: [RFC PATCH v2 2/5] btf: sort BTF types by kind and name to
+ enable binary search
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov	
+ <alexei.starovoitov@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, 
+ Alexei Starovoitov	 <ast@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ bpf <bpf@vger.kernel.org>,  Song Liu <song@kernel.org>, pengdonglin
+ <pengdonglin@xiaomi.com>
+Date: Thu, 23 Oct 2025 20:15:21 -0700
+In-Reply-To: <CAErzpmtJmj-ZX+uL_N9e5-r1iL+kD=0vwM9BeDL3t4C2re261A@mail.gmail.com>
+References: <20251020093941.548058-1-dolinux.peng@gmail.com>
+	 <20251020093941.548058-3-dolinux.peng@gmail.com>
+	 <174642a334760af39a5e7bacdd8b977b392a82c7.camel@gmail.com>
+	 <CAErzpmusSgOaROhEO25fKenvxQJU1oSPKKzUA4h67ptdQxWM7A@mail.gmail.com>
+	 <7651ac9cc74e135f04ecfee8660bea0a0d3883ab.camel@gmail.com>
+	 <CAErzpmtWLLYuFk3npTiOgGOKcEcH1QUGGEHLvPncVT+z261C1A@mail.gmail.com>
+	 <CAADnVQKU0MnQHxxvnp9WCu_UO4fEtd_D6ckNmOd7pLg90ecF4A@mail.gmail.com>
+	 <CAEf4Bzajdv3Rd1xAxm_UZWBxPc8M0=VuUkfjJvOFSObOs19GbQ@mail.gmail.com>
+	 <CAADnVQJG_tK18oxmjW37cbrxF2zPKPk_dvqXUTnOjUue7J0tLQ@mail.gmail.com>
+	 <CAEf4BzYLyi6=Fyz9ziOAwkFOjUPyJmTj4c6g247XBwgwJ8m-qw@mail.gmail.com>
+	 <CAErzpmtMPuGBhisLOaZMyzM5u3=0QrmZcuWqNgbMrceEEPN3TA@mail.gmail.com>
+	 <CAErzpmsCJAWVjWnV2LWAnYCouynYZbUupS08LUuhixiT2do3sg@mail.gmail.com>
+	 <7d9e373c7f0f3b7a50ee6a719375410da452b7ba.camel@gmail.com>
+	 <CAErzpmtJmj-ZX+uL_N9e5-r1iL+kD=0vwM9BeDL3t4C2re261A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251020093941.548058-1-dolinux.peng@gmail.com>
- <20251020093941.548058-3-dolinux.peng@gmail.com> <174642a334760af39a5e7bacdd8b977b392a82c7.camel@gmail.com>
- <CAErzpmusSgOaROhEO25fKenvxQJU1oSPKKzUA4h67ptdQxWM7A@mail.gmail.com>
- <7651ac9cc74e135f04ecfee8660bea0a0d3883ab.camel@gmail.com>
- <CAErzpmtWLLYuFk3npTiOgGOKcEcH1QUGGEHLvPncVT+z261C1A@mail.gmail.com>
- <CAADnVQKU0MnQHxxvnp9WCu_UO4fEtd_D6ckNmOd7pLg90ecF4A@mail.gmail.com>
- <CAEf4Bzajdv3Rd1xAxm_UZWBxPc8M0=VuUkfjJvOFSObOs19GbQ@mail.gmail.com>
- <CAADnVQJG_tK18oxmjW37cbrxF2zPKPk_dvqXUTnOjUue7J0tLQ@mail.gmail.com>
- <CAEf4BzYLyi6=Fyz9ziOAwkFOjUPyJmTj4c6g247XBwgwJ8m-qw@mail.gmail.com>
- <CAErzpmtMPuGBhisLOaZMyzM5u3=0QrmZcuWqNgbMrceEEPN3TA@mail.gmail.com>
- <CAErzpmsCJAWVjWnV2LWAnYCouynYZbUupS08LUuhixiT2do3sg@mail.gmail.com> <7d9e373c7f0f3b7a50ee6a719375410da452b7ba.camel@gmail.com>
-In-Reply-To: <7d9e373c7f0f3b7a50ee6a719375410da452b7ba.camel@gmail.com>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Fri, 24 Oct 2025 11:04:41 +0800
-X-Gm-Features: AS18NWB4eCzmr0fFGv5HUOJe8WdIjkJQVvEoqeUUnF94s8F8X5qD_mJIkzaQnMo
-Message-ID: <CAErzpmtJmj-ZX+uL_N9e5-r1iL+kD=0vwM9BeDL3t4C2re261A@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/5] btf: sort BTF types by kind and name to enable
- binary search
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Alexei Starovoitov <ast@kernel.org>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Song Liu <song@kernel.org>, pengdonglin <pengdonglin@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 24, 2025 at 10:32=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
->
-> On Fri, 2025-10-24 at 10:23 +0800, Donglin Peng wrote:
-> > On Fri, Oct 24, 2025 at 9:59=E2=80=AFAM Donglin Peng <dolinux.peng@gmai=
-l.com> wrote:
-> > >
-> > > On Fri, Oct 24, 2025 at 3:40=E2=80=AFAM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Thu, Oct 23, 2025 at 11:37=E2=80=AFAM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Thu, Oct 23, 2025 at 9:28=E2=80=AFAM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > >
-> > > > > > Speaking of flags, though. I think adding BTF_F_SORTED flag to
-> > > > > > btf_header->flags seems useful, as that would allow libbpf (and=
- user
-> > > > > > space apps working with BTF in general) to use more optimal
-> > > > > > find_by_name implementation. The only gotcha is that old kernel=
-s
-> > > > > > enforce this btf_header->flags to be zero, so pahole would need=
- to
-> > > > > > know not to emit this when building BTF for old kernels (or, ra=
-ther,
-> > > > > > we'll just teach pahole_flags in kernel build scripts to add th=
-is
-> > > > > > going forward). This is not very important for kernel, because =
-kernel
-> > > > > > has to validate all this anyways, but would allow saving time f=
-or user
-> > > > > > space.
-> > > > >
-> > > > > Thinking more about it... I don't think it's worth it.
-> > > > > It's an operational headache. I'd rather have newer pahole sort i=
-t
-> > > > > without on/off flags and detection, so that people can upgrade
-> > > > > pahole and build older kernels.
-> > > > > Also BTF_F_SORTED doesn't spell out the way it's sorted.
-> > > > > Things may change and we will need a new flag and so on.
-> > > > > I think it's easier to check in the kernel and libbpf whether
-> > > > > BTF is sorted the way they want it.
-> > > > > The check is simple, fast and done once. Then both (kernel and li=
-bbpf) can
-> > > > > set an internal flag and use different functions to search
-> > > > > within a given BTF.
-> > > >
-> > > > I guess that's fine. libbpf can do this check lazily on the first
-> > > > btf__find_by_name() to avoid unnecessary overhead. Agreed.
-> > >
-> > > Thank you for all the feedback. Based on the suggestions above, the s=
-orting
-> > > implementation will be redesigned in the next version as follows:
-> > >
-> > > 1. The sorting operation will be fully handled by pahole, with no dep=
-endency on
-> > > libbpf. This means users can benefit from sorting simply by upgrading=
- their
-> > > pahole version.
-> >
-> > I suggest that libbpf provides a sorting function, such as the
-> > btf__permute suggested
-> > by Andrii, for pahole to call. This approach allows pahole to leverage
-> > libbpf's existing
-> > helper functions and avoids code duplication.
->
-> Could you please enumerate the functions you'd have to reimplement in
-> pahole?
+On Fri, 2025-10-24 at 11:04 +0800, Donglin Peng wrote:
+> On Fri, Oct 24, 2025 at 10:32=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.=
+com> wrote:
+> >=20
+> > On Fri, 2025-10-24 at 10:23 +0800, Donglin Peng wrote:
+> > > On Fri, Oct 24, 2025 at 9:59=E2=80=AFAM Donglin Peng <dolinux.peng@gm=
+ail.com> wrote:
+> > > >=20
+> > > > On Fri, Oct 24, 2025 at 3:40=E2=80=AFAM Andrii Nakryiko
+> > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > >=20
+> > > > > On Thu, Oct 23, 2025 at 11:37=E2=80=AFAM Alexei Starovoitov
+> > > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > >=20
+> > > > > > On Thu, Oct 23, 2025 at 9:28=E2=80=AFAM Andrii Nakryiko
+> > > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > > >=20
+> > > > > > >=20
+> > > > > > > Speaking of flags, though. I think adding BTF_F_SORTED flag t=
+o
+> > > > > > > btf_header->flags seems useful, as that would allow libbpf (a=
+nd user
+> > > > > > > space apps working with BTF in general) to use more optimal
+> > > > > > > find_by_name implementation. The only gotcha is that old kern=
+els
+> > > > > > > enforce this btf_header->flags to be zero, so pahole would ne=
+ed to
+> > > > > > > know not to emit this when building BTF for old kernels (or, =
+rather,
+> > > > > > > we'll just teach pahole_flags in kernel build scripts to add =
+this
+> > > > > > > going forward). This is not very important for kernel, becaus=
+e kernel
+> > > > > > > has to validate all this anyways, but would allow saving time=
+ for user
+> > > > > > > space.
+> > > > > >=20
+> > > > > > Thinking more about it... I don't think it's worth it.
+> > > > > > It's an operational headache. I'd rather have newer pahole sort=
+ it
+> > > > > > without on/off flags and detection, so that people can upgrade
+> > > > > > pahole and build older kernels.
+> > > > > > Also BTF_F_SORTED doesn't spell out the way it's sorted.
+> > > > > > Things may change and we will need a new flag and so on.
+> > > > > > I think it's easier to check in the kernel and libbpf whether
+> > > > > > BTF is sorted the way they want it.
+> > > > > > The check is simple, fast and done once. Then both (kernel and =
+libbpf) can
+> > > > > > set an internal flag and use different functions to search
+> > > > > > within a given BTF.
+> > > > >=20
+> > > > > I guess that's fine. libbpf can do this check lazily on the first
+> > > > > btf__find_by_name() to avoid unnecessary overhead. Agreed.
+> > > >=20
+> > > > Thank you for all the feedback. Based on the suggestions above, the=
+ sorting
+> > > > implementation will be redesigned in the next version as follows:
+> > > >=20
+> > > > 1. The sorting operation will be fully handled by pahole, with no d=
+ependency on
+> > > > libbpf. This means users can benefit from sorting simply by upgradi=
+ng their
+> > > > pahole version.
+> > >=20
+> > > I suggest that libbpf provides a sorting function, such as the
+> > > btf__permute suggested
+> > > by Andrii, for pahole to call. This approach allows pahole to leverag=
+e
+> > > libbpf's existing
+> > > helper functions and avoids code duplication.
+> >=20
+> > Could you please enumerate the functions you'd have to reimplement in
+> > pahole?
+>=20
+> Yes. Once the BTF types are sorted, the type IDs in both the BTF and BTF =
+ext
+> sections must be remapped. Libbpf provides helper functions like
+> btf_field_iter_init,
+> btf_field_iter_next,
+> btf_ext_visit_type_ids
+> to iterate through the btf_field and btf_ext_info_sec entries that
+> require updating.
+> We will likely need to reimplement these three functions for this purpose=
+.
 
-Yes. Once the BTF types are sorted, the type IDs in both the BTF and BTF ex=
-t
-sections must be remapped. Libbpf provides helper functions like
-btf_field_iter_init,
-btf_field_iter_next,
-btf_ext_visit_type_ids
-to iterate through the btf_field and btf_ext_info_sec entries that
-require updating.
-We will likely need to reimplement these three functions for this purpose.
+I think Andrii's suggestion is to have btf__permute in libbpf,
+as it needs all the functions you mention.
+But actual sorting can happen in pahole, then:
+- allocate array of length num-types, initialize it 0..num-types;
+- reorder it as one sees fit;
+- call btf__permute() from libbpf and get all the renamings handled by it.
 
->
-> > >
-> > > 2. The kernel and libbpf will only be responsible for:
-> > >     2.1. Checking whether the BTF data is sorted
-> > >     2.2. Implementing binary search for sorted BTF
-> > >
-> > > Regarding the sorting check overhead: if the runtime cost is sufficie=
-ntly small,
-> > > it can be performed during BTF parsing. Based on my local testing wit=
-h vmlinux
-> > >  BTF (containing 143,484 btf_types), this check takes at most 1.5 mil=
-liseconds
-> > > during boot. Is this 1.5ms overhead acceptable?
-> > >
-> > > Are there any other suggestions?
+[...]
 
