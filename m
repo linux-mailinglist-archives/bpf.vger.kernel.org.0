@@ -1,118 +1,110 @@
-Return-Path: <bpf+bounces-72168-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72169-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CB76C083FF
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 00:35:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 278C0C08490
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 01:18:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E4591AA202A
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 22:35:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4F533B01A0
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 23:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D89E309F03;
-	Fri, 24 Oct 2025 22:34:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03592303CB7;
+	Fri, 24 Oct 2025 23:18:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QM7oMOxx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j892gAnj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 297D52FFF8E
-	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 22:34:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F052367A2;
+	Fri, 24 Oct 2025 23:18:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761345293; cv=none; b=DBNH4Gm/x/GEIqhHHNDnml1mxz/Zx7x8MKm4mW8QmLVlzc0U18sKSheellWG+rVeLnaC+W98qfLB3zlbrLyINRWPFmMYAP4ozJRD2eXaFv7D6KrMsbkv7kArS7Hp9uTL40WH6lUPHPTn0zVXbqe2BYp6LzO/j+6qaOeEHPIizzw=
+	t=1761347914; cv=none; b=PKTqI4LD9XbRhfMooyhhRwG4ipcnSoCGpGJ9xHHO+spfhZVWtvjf4FB0awBK2wuc34XUSR62ZSHg/oBciWxrZ03t3gMsKxz1wi8NWhnJwbnPXUUaXT7Z/4PaFSBgI5WrbyfVd5eL0T1jlRvTh9Qrl+KSjhEB1QpzGIIJJnoAMok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761345293; c=relaxed/simple;
-	bh=/1lCqzDVfSqKcHOVvqPIUIhFwtXQWPe83gIVdwmBx9A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XuWR+Gvn0e5HtRGHQ6jrtsxuSVbgZ5spuUXa65QwKAUpjYrxVQ9hAxoR0jfjB1qY/P2PyRFDSUvj+jgr55P+yufivahgh7STaLXLMs5+zhy6pMq9McH1wpIaxnkA//d1m3xgEUIGhfJGlTDNx/necJIRKzlPzQSHGjPzjwa+X0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QM7oMOxx; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3ee64bc6b85so2581217f8f.3
-        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 15:34:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761345289; x=1761950089; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dgWMmy8jJ+GexnEc4sqtdfOGQCxpNGU9Ux5BrjtS6oA=;
-        b=QM7oMOxx7+3JP6Nos+OzBy89rmsvVBDDAlUa0JFbnArfTFZL2DDCv1KUIX4vX0Pimi
-         vzBdvKazoTSpfZammXUIh8SXdc4IbR2Zl8iUUVBBhphmIxQS/7IBQSeH6TFvbW8rmbfP
-         5BoKYpS/FSMSNPUnY03GlDqxKIVwogaN1VgozobpWrZ+f84NkrSmyngCH6R5nA0Iybjt
-         I8iYGj0mBAUftxTJvNg64s4gQ1X0FENWzt7SkwFvC+OTAqE6YHMz6zxYA6pcPd2cWM6d
-         h5fLopTIvEOGsV89M6Bx6D1HnGd6LncOMSZFXmz7ivyBXW5we6XydkH5MHHq4q4nqpFV
-         omSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761345289; x=1761950089;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dgWMmy8jJ+GexnEc4sqtdfOGQCxpNGU9Ux5BrjtS6oA=;
-        b=JO7j5yzwv6tr9wNo0YwTZoX0Dfs/zYFjMOvhFEDUueQl2YIu9Yf3C9/cFuqfs7Dqs3
-         FA50ztvTnyJrZc/E3ZweY6i8vULmXiddLq0LVDtlP0k12Yq1mDVPqfu5pLJSJuZik+ZV
-         e5lXYRVEBFPAB5a1indNzx2mVCyDE9PeikuRwHYvkzNlljkcO8t1PWB2dR4uch7IZDm1
-         QsO2L+SkEjvU4yUR8C1NaCA/FinoUstwlOT9nT7XR9b2Gcorrzdh1QW0pPyptgXLOy1p
-         hywBSno+fnA0OKs8i+P/TkqqmOw0I862AbSeDPgkDvyDMCZ8ThdajA7YZsv0RmpLk+df
-         WZMw==
-X-Forwarded-Encrypted: i=1; AJvYcCWtVo+m+P/kw8BtIC6aF9sLAg0ggeBz1/U0HfScHzV25sPirM31HfBXGFvp2+Kbc/B6XwU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw5so34+as6JrzGSH0odYqhvDppU6IVgGQh1u8CQa5Bljt6o9EQ
-	9IZo1eyy3NTdi+U334H4DBfXs8XENC80dy2fk/3uxxngSFlzJ+I2WKbrk06Wq8T6VSzitdAFkIY
-	aWAHDK7WlEeG7b35eQmKmCU9T1L4N+is=
-X-Gm-Gg: ASbGncvoPpcr1gXqNOBQ/s92bQrpRFzI9uAsz3fjqNHkXnMrfGK6gYUoenX7Y2TUhAn
-	kJfPWgHBFOp03pFv9SZX/426mZi/x1d4bjlgoqkBCjW2AMwdwR0sDFWMwmIMtK6+Y9kXRPrVigH
-	ogv3NBQJQK+U97F9xIQke0DKIHUkGgPt649g5Qkhauotjvqrol4pEXdBQZi0DnrjETZPCS6HrJ3
-	hsMn3STmm+s9IDn8Hu0ts6lyaYb1nVuLMm4cbGO/AGlfduou5AMyHdVO1s+zXK5KOvdCsyRcq+T
-	6Q83NZHQYctoGeTsKz9u6DBPAhVX
-X-Google-Smtp-Source: AGHT+IGVBqTo1Qga775DM3PeXJFOBVyycwfIPdw/nCiZHEmybAiqSl5amP9rqdkQHIC0hvV9j/gd2HZiroKhtTMd1Iw=
-X-Received: by 2002:a05:6000:40c7:b0:427:847:9d59 with SMTP id
- ffacd0b85a97d-42708479e00mr22413715f8f.45.1761345289151; Fri, 24 Oct 2025
- 15:34:49 -0700 (PDT)
+	s=arc-20240116; t=1761347914; c=relaxed/simple;
+	bh=RN4xKOmcogBVduP5jR903GRyz8uCvrLfKzMjVo3Fc4A=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qS7eo9lr2uWiVNHr6UlFZWSQrZa0tKU13rjelPo1Ok+ZAzT8XImxUCGer4nL3Tj7p1C8aIVEEivSKQ/U8eY5MFUPEwy1N51BWvGVSDksvEY6YyxazQthhy5DC1JB99/G+H5UzhCqHWlBFyUH228iy5AsAs9jQoOUJlF/50p6EKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j892gAnj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3800EC4CEF1;
+	Fri, 24 Oct 2025 23:18:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761347913;
+	bh=RN4xKOmcogBVduP5jR903GRyz8uCvrLfKzMjVo3Fc4A=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=j892gAnjHH4IqlZUciWweFzm42d+ANehG3PmfHoDXkYuRBaZ/UcGfRq9GDhHQK0/P
+	 GcHE9LTGuOG/IkFL+Isx1yqpFtnUpmWnkdb6GCiW4KKM1NQ4ObYUnArvqGZP3MDu+Q
+	 fC21FabsIoXp3/MSMIhM6tNKxlZs048zz99bpOuB23QuDcFoF+FOxw1xbthYnBFjFc
+	 7VtKK9uhMNz7TwzouPl2UleF8/deX0wDLU7wMLW3ek+Hs0zH7OMSsJYKDACVDSkDbB
+	 nAoh3W+OHL7JFwG/sRTSj5no6utW7EdJ6Ucey5TEaei8O7jtS5dpEpHaQIH3zcMqEi
+	 NyQ8Bov5cOZkA==
+Date: Fri, 24 Oct 2025 16:18:32 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+ razor@blackwall.org, pabeni@redhat.com, willemb@google.com,
+ sdf@fomichev.me, john.fastabend@gmail.com, martin.lau@kernel.org,
+ jordan@jrife.io, maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+ dw@davidwei.uk, toke@redhat.com, yangzhenze@bytedance.com,
+ wangdongdong.6@bytedance.com
+Subject: Re: [PATCH net-next v3 03/15] net: Add peer info to queue-get
+ response
+Message-ID: <20251024161832.2ff28238@kernel.org>
+In-Reply-To: <17f5b871-9bd9-4313-b123-67afa0f69272@iogearbox.net>
+References: <20251020162355.136118-1-daniel@iogearbox.net>
+	<20251020162355.136118-4-daniel@iogearbox.net>
+	<20251023193333.751b686a@kernel.org>
+	<17f5b871-9bd9-4313-b123-67afa0f69272@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz> <20251023-sheaves-for-all-v1-3-6ffa2c9941c0@suse.cz>
-In-Reply-To: <20251023-sheaves-for-all-v1-3-6ffa2c9941c0@suse.cz>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 24 Oct 2025 15:34:37 -0700
-X-Gm-Features: AWmQ_bm73zAZG0hwU9rfMl02lZ4uq3I2SSq2VpZGEnfSrxZZCZEFxDP-C90Ympo
-Message-ID: <CAADnVQKYkMVmjMrRhsg29fgYKQU8=bDJW3ghTHLbmFHJPmdNxA@mail.gmail.com>
-Subject: Re: [PATCH RFC 03/19] slub: remove CONFIG_SLUB_TINY specific code paths
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Christoph Lameter <cl@gentwo.org>, 
-	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Suren Baghdasaryan <surenb@google.com>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-rt-devel@lists.linux.dev, 
-	bpf <bpf@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Oct 23, 2025 at 6:53=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> CONFIG_SLUB_TINY minimizes the SLUB's memory overhead in multiple ways,
-> mainly by avoiding percpu caching of slabs and objects. It also reduces
-> code size by replacing some code paths with simplified ones through
-> ifdefs, but the benefits of that are smaller and would complicate the
-> upcoming changes.
->
-> Thus remove these code paths and associated ifdefs and simplify the code
-> base.
->
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/slab.h |   2 --
->  mm/slub.c | 107 +++-----------------------------------------------------=
-------
->  2 files changed, 4 insertions(+), 105 deletions(-)
+On Fri, 24 Oct 2025 14:59:39 +0200 Daniel Borkmann wrote:
+> On 10/24/25 4:33 AM, Jakub Kicinski wrote:
+> > On Mon, 20 Oct 2025 18:23:43 +0200 Daniel Borkmann wrote:  
+> >> Add a nested peer field to the queue-get response that returns the peered
+> >> ifindex and queue id.
+> >>
+> >> Example with ynl client:
+> >>
+> >>    # ip netns exec foo ./pyynl/cli.py \
+> >>        --spec ~/netlink/specs/netdev.yaml \
+> >>        --do queue-get \
+> >>        --json '{"ifindex": 3, "id": 1, "type": "rx"}'
+> >>    {'id': 1, 'ifindex': 3, 'peer': {'id': 15, 'ifindex': 4, 'netns-id': 21}, 'type': 'rx'}  
+> > 
+> > I'm struggling with the roles of what is src and dst and peer :(
+> > No great suggestion off the top of my head but better terms would
+> > make this much easier to review.
+> > 
+> > The example seems to be from the container side. Do we need to show peer
+> > info on the container side? Not just on the host side?  
+> 
+> I think up to us which side we want to show. My thinking was to allow user
+> introspection from both, but we don't have to. Right now the above example
+> was from the container side, but technically it could be either side depending
+> in which netns the phys dev would be located.
+> 
+> The user knows which is which based on the ifindex passed to the queue-get
+> query: if the ifindex is from a virtual device (e.g. netkit type), then the
+> 'peer' section shows the phys dev, and vice versa, if the ifindex is from a
+> phys device (say, mlx5), then the 'peer' section shows the virtual one.
+> 
+> Maybe I'll provide a better more in-depth example with both sides and above
+> explanation in the commit msg for v4..
 
-Looks like it is removing most of it.
-Just remove the whole thing. Do people care about keeping SLUB_TINY?
+Yes, FWIW my mental model is that "leaking" host information into the
+container is best avoided. Not a problem, but shouldn't be done without
+a clear reason.
+Typical debug scenario can be covered from the host side (container X
+is having issues with queue Y, dump all the queues, find out which one
+is bound to X/Y).
 
