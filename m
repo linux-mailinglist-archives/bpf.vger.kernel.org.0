@@ -1,161 +1,87 @@
-Return-Path: <bpf+bounces-71976-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71977-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A321C04110
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 03:59:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99C4BC0416B
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 04:09:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9EF9A4E68D5
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 01:59:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC9C43B79B4
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 02:09:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26C01E98EF;
-	Fri, 24 Oct 2025 01:59:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCA3423909C;
+	Fri, 24 Oct 2025 02:08:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F7K31CFr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d78CWoEo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91EBF1DF755
-	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 01:59:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581DE222590;
+	Fri, 24 Oct 2025 02:08:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761271186; cv=none; b=fQOh6pQ5ke06q0t3t16bDgvhqvzND6NZbaPY3GdQIqHpDchS4KFJSWFH7LbjZ72AQ4SEBAfihnWZ3ZHIaofwL2N6ihHZuR9QkbW75p4QGFz3CuB5TnFZ+ZR+KVLJRMjx99Frd6WpOihKYoZqoba11yB7BZiJfIVDvZ5KxfxOuGs=
+	t=1761271733; cv=none; b=TxOvo4cKS4zog2AeBUAVWnXQZJjPtyJNg1rBzHIApks+k453IzFR84HAeyw3ZtYc3qyB9OX0Wx24JPe1JwNphh9BuvSXvPakvjcjX3mO9QbQWtUQnHEIqPeTMbgf7JWZVhgSRhPLOke6TFX3bOkOtwKL7e0ALsBVKtuxrioVlPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761271186; c=relaxed/simple;
-	bh=aeWewlhGQ0C6l2wHmmqYhcrMOrNsxoaaBwSfmH+Hy5Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LncqwD8jYKNkfOaI1psUV24jy5aMPW9HNsdVltx8Z0rCwppRo2YKdslQ0Ps+TjNW9UFzoWk3ZB23PNYN/glsGHnFghj5b/r3QKv2lsl8qI1d4kVsML/7BeWg5jnWRNIUeTGUfScfXopAepYWEFv+Qa/R2M7kOcD+BOqlfXUYjkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F7K31CFr; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-63bad3cd668so2839238a12.3
-        for <bpf@vger.kernel.org>; Thu, 23 Oct 2025 18:59:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761271183; x=1761875983; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7rB4FXl5hyvE6TowvU8+Yj1ALYmBSYmfZvdeiCwkdjI=;
-        b=F7K31CFrev1YOLGkw/BYW+QnT9lGr9+gokUGwxWe5m3kCpSCwBMRAjFIcp3yyfH+3R
-         aYQcc/0B0nR26FiEPbCJVr4f+FFUMmezJInHKUTFLZT+tYPYdclm/qRSEfz8Pz01WZ6+
-         xTJT/iz1rrCq9JdS+E0epJyh1k0vCbkyqb42js5yC62pJSDZ4zzVXfuVySYDpBDaGMFg
-         mU6wdiKm1B1yVB+8N7Bw2kWSNeSLZp88OPJ8YkbihsViMIYk7WRwlSq2FRQ5JIg6NRQ5
-         EhJn1Nb1c13VFOTwW0uBjoYk6qSEl9DSiF8IqAXqyK09Sqk0JIAtsfbOikRq1BzysJKp
-         slcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761271183; x=1761875983;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7rB4FXl5hyvE6TowvU8+Yj1ALYmBSYmfZvdeiCwkdjI=;
-        b=PWPa7f6MWrXAtOLHAGAF7iBlf0RbsHwHeDCsV7daLtC6fJmsr3CbCqLyOZuJF3N7i5
-         fUrO8rLhwXe6mqhV8rbcWhEboI2gI1KSJ1ykJYm4eToHtSjUopY2PqJ5YEO+gs2kKCB6
-         IBQ9jI1b83es6HndoygRlqFv9J9au40lmj9UIAzxGlsiELWFF7bhYORG97X332A76R46
-         z4YbAsSzjZsOtGn9iyUogBur6w8yu7JjwIJqW5d7JjsssEgTTHiT0pK1kJYzufHO8NFU
-         z/puplpGxpQexKQEkJLW+oHl/7rOvGZHOKwZo+NfrWxd7fD++6tJ98100mJDF9EX3nuD
-         2MBw==
-X-Forwarded-Encrypted: i=1; AJvYcCUBIY/yCIicPA+2BEdyT+wfBjrP36JZ5GLrieP8AvZzmwqC22OaKYqkfm1xijxdmmKNf5k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqjzKqloVA46oBlFnDDOYyUmC8PZ4yRX6yj25H4PFVWXINbZ4x
-	F96q328GGUXhSUJUyLhPgL4KeYXhN7zlVjMhyd8PEzq2TPm8Wd51pugV6jX55fO6hjGV4fNBnDU
-	Xohnby3LCEjOPxnH593bYBLuJLRDalS4=
-X-Gm-Gg: ASbGncuNkiCFg7i1oABWqLizmzK55usLzDVwS1wSQ8Nlid08GQgB/gQTiAzX1nZ1IzM
-	pfzfXvKqTZWsUM9X4mY1X7BiM3T8/pgsrcjHjLAxjnoOC2p19OWk9sfDoP+Zww42Zi/cmjyWJII
-	ZRTIGZbxG+9S1tp6le14ZZwuRd/ncT6ZVtuAFqWYzApHfYJ4E4n6qAyVcEYHFK/AGh19yf8ta37
-	7MIaEaQiTWGxQHgst2Q4MHp4WnuhhxCOZmbATMTX1pD7pIqhm7X8yhsES18Z9vu2vR84YAt
-X-Google-Smtp-Source: AGHT+IFAdu5tYoXGsiciHSKWPq7w8AF+ekApybceaHvXUAVQHFQ/qsK4oBOnm6T+K20KSc4r3DBCR+JBRtu4RApd2/o=
-X-Received: by 2002:a05:6402:524c:b0:639:ff5f:bdfb with SMTP id
- 4fb4d7f45d1cf-63c1f6b0b58mr27634437a12.19.1761271182583; Thu, 23 Oct 2025
- 18:59:42 -0700 (PDT)
+	s=arc-20240116; t=1761271733; c=relaxed/simple;
+	bh=xdb0qdmUX2sKmoaupBQ4qSQ0D/Kl54pOe1oxYSzbZU0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LIxz2ymW25G9b8SqZuuqAWqw2wYE8aeMXTv8x/mCSs6K98zyGosZ9+3LV6/YMDnFtawpfrV2g8/10DowAY0zx2DHOY6O8SdEqqt2oFUqLk/JsO0HtASqeswvzLIurkFKIZQYTP+vzc6hWDYqYWNjXN/ifZm4pIoJUh2Txegt6SM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d78CWoEo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D70DC4CEE7;
+	Fri, 24 Oct 2025 02:08:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761271732;
+	bh=xdb0qdmUX2sKmoaupBQ4qSQ0D/Kl54pOe1oxYSzbZU0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=d78CWoEogpxSuy5vVn7RfkcQ5IpGal6BxAIFRDVh6o15RtVt5ygsBbt0ae5asJE8X
+	 KihKsQAfIkOJmrheKdYSqyOwr5W5Wvv8a5UivzkxGQCz3EMzOMqQFl5Hy23I5QkmBi
+	 MaA+ktaq4xa/nmqdOihE7D/a1WhnQ60HaSXCxx0sqXFw/UBPhW3iLQK6PEdbptuIuv
+	 tqYub7yPpz5GZw1C3Es0Cv84tVT5XxqUTNqpoV8+0ve/7KK6cE8JMidDhokdarD0nV
+	 ZZ8uR4tgt37tOHGcqihAi1rmh1WPPbto1uau/s4y+UcIFhV0mPKKMOsAhBrhRFMr3Q
+	 VNWl6/lNryhlg==
+Date: Thu, 23 Oct 2025 19:08:51 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, davem@davemloft.net, razor@blackwall.org,
+ willemb@google.com, sdf@fomichev.me, john.fastabend@gmail.com,
+ martin.lau@kernel.org, jordan@jrife.io, maciej.fijalkowski@intel.com,
+ magnus.karlsson@intel.com, dw@davidwei.uk, toke@redhat.com,
+ yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
+Subject: Re: [PATCH net-next v3 02/15] net: Implement
+ netdev_nl_bind_queue_doit
+Message-ID: <20251023190851.435e2afa@kernel.org>
+In-Reply-To: <34c1e9d1-bfc1-48f9-a0ce-78762574fa10@iogearbox.net>
+References: <20251020162355.136118-1-daniel@iogearbox.net>
+	<20251020162355.136118-3-daniel@iogearbox.net>
+	<412f4b9a-61bb-4ac8-9069-16a62338bd87@redhat.com>
+	<34c1e9d1-bfc1-48f9-a0ce-78762574fa10@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251020093941.548058-1-dolinux.peng@gmail.com>
- <20251020093941.548058-3-dolinux.peng@gmail.com> <174642a334760af39a5e7bacdd8b977b392a82c7.camel@gmail.com>
- <CAErzpmusSgOaROhEO25fKenvxQJU1oSPKKzUA4h67ptdQxWM7A@mail.gmail.com>
- <7651ac9cc74e135f04ecfee8660bea0a0d3883ab.camel@gmail.com>
- <CAErzpmtWLLYuFk3npTiOgGOKcEcH1QUGGEHLvPncVT+z261C1A@mail.gmail.com>
- <CAADnVQKU0MnQHxxvnp9WCu_UO4fEtd_D6ckNmOd7pLg90ecF4A@mail.gmail.com>
- <CAEf4Bzajdv3Rd1xAxm_UZWBxPc8M0=VuUkfjJvOFSObOs19GbQ@mail.gmail.com>
- <CAADnVQJG_tK18oxmjW37cbrxF2zPKPk_dvqXUTnOjUue7J0tLQ@mail.gmail.com> <CAEf4BzYLyi6=Fyz9ziOAwkFOjUPyJmTj4c6g247XBwgwJ8m-qw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYLyi6=Fyz9ziOAwkFOjUPyJmTj4c6g247XBwgwJ8m-qw@mail.gmail.com>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Fri, 24 Oct 2025 09:59:29 +0800
-X-Gm-Features: AWmQ_bl5c-H7_mPtbkQyyIYah1HW3fReM7rZN1BaHNNaBN4HCCBC6bsrF_EF6EI
-Message-ID: <CAErzpmtMPuGBhisLOaZMyzM5u3=0QrmZcuWqNgbMrceEEPN3TA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/5] btf: sort BTF types by kind and name to enable
- binary search
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Alan Maguire <alan.maguire@oracle.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Song Liu <song@kernel.org>, 
-	pengdonglin <pengdonglin@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Oct 24, 2025 at 3:40=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Oct 23, 2025 at 11:37=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Oct 23, 2025 at 9:28=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > >
-> > > Speaking of flags, though. I think adding BTF_F_SORTED flag to
-> > > btf_header->flags seems useful, as that would allow libbpf (and user
-> > > space apps working with BTF in general) to use more optimal
-> > > find_by_name implementation. The only gotcha is that old kernels
-> > > enforce this btf_header->flags to be zero, so pahole would need to
-> > > know not to emit this when building BTF for old kernels (or, rather,
-> > > we'll just teach pahole_flags in kernel build scripts to add this
-> > > going forward). This is not very important for kernel, because kernel
-> > > has to validate all this anyways, but would allow saving time for use=
-r
-> > > space.
-> >
-> > Thinking more about it... I don't think it's worth it.
-> > It's an operational headache. I'd rather have newer pahole sort it
-> > without on/off flags and detection, so that people can upgrade
-> > pahole and build older kernels.
-> > Also BTF_F_SORTED doesn't spell out the way it's sorted.
-> > Things may change and we will need a new flag and so on.
-> > I think it's easier to check in the kernel and libbpf whether
-> > BTF is sorted the way they want it.
-> > The check is simple, fast and done once. Then both (kernel and libbpf) =
-can
-> > set an internal flag and use different functions to search
-> > within a given BTF.
->
-> I guess that's fine. libbpf can do this check lazily on the first
-> btf__find_by_name() to avoid unnecessary overhead. Agreed.
+On Thu, 23 Oct 2025 14:48:15 +0200 Daniel Borkmann wrote:
+> On 10/23/25 12:27 PM, Paolo Abeni wrote:
+> > On 10/20/25 6:23 PM, Daniel Borkmann wrote:  
+> >> +	if (!src_dev->dev.parent) {
+> >> +		err = -EOPNOTSUPP;
+> >> +		NL_SET_ERR_MSG(info->extack,
+> >> +			       "Source device is a virtual device");
+> >> +		goto err_unlock_src_dev;
+> >> +	}  
+> > 
+> > Is this check strictly needed? I think that if we relax it, it could be
+> > simpler to create all-virtual selftests.  
+> It is needed given we need to always ensure lock ordering for the two devices,
+> that is, the order is always from the virtual to the physical device.
 
-Thank you for all the feedback. Based on the suggestions above, the sorting
-implementation will be redesigned in the next version as follows:
-
-1. The sorting operation will be fully handled by pahole, with no dependenc=
-y on
-libbpf. This means users can benefit from sorting simply by upgrading their
-pahole version.
-
-2. The kernel and libbpf will only be responsible for:
-    2.1. Checking whether the BTF data is sorted
-    2.2. Implementing binary search for sorted BTF
-
-Regarding the sorting check overhead: if the runtime cost is sufficiently s=
-mall,
-it can be performed during BTF parsing. Based on my local testing with vmli=
-nux
- BTF (containing 143,484 btf_types), this check takes at most 1.5 milliseco=
-nds
-during boot. Is this 1.5ms overhead acceptable?
-
-Are there any other suggestions?
+You do seem to be taking the lock before you check if the device was
+the type you expected tho.
 
