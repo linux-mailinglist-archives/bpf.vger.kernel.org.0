@@ -1,66 +1,66 @@
-Return-Path: <bpf+bounces-71997-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71999-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0602C04BEA
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 09:35:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8530BC04C14
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 09:37:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3B69A50247F
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 07:34:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A85E6402163
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 07:34:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 348612E6CA8;
-	Fri, 24 Oct 2025 07:34:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED19E2E6CC3;
+	Fri, 24 Oct 2025 07:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="mogzTyP/"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Iad6GyB9"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FCE72E4247;
-	Fri, 24 Oct 2025 07:34:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A3472E2DE6;
+	Fri, 24 Oct 2025 07:34:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761291247; cv=none; b=rIS33yi/qO0LLOVxColXK9wuFAO03j3KZJuCFnNVt1dlhT3Xr3L0k+e0S29ojllZSRP5eZ6qHpz3ZuJ4aZVEWnByYOt30YEtS+4cGQfcF7PdEUWpMUPaQUNichCkv4J4KkLrID3XHMjCgTPtitQHsh9tg0RpIjWPhrFlbbpTEAc=
+	t=1761291253; cv=none; b=Dy35+exU/yYwXPJGEcWTxLiOpm9KImNZM3Jkb68JbaAReCAKk9lWeUUo8tYziWRrUj3v3PWEDj+paYE0EPSJq2JWSu+oyiefA8N6/upoL5oHby8tgHkZaTRqpKjLBtLJw7gfoSchqVpLfE8GZ2jjTnULQq+xC+2nOkQJPmaHewo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761291247; c=relaxed/simple;
-	bh=DS1DeLxuCwz4/1DhiQwvyK0UEVKnhVA9suPP+PvoJwI=;
+	s=arc-20240116; t=1761291253; c=relaxed/simple;
+	bh=LHfX99HybPRtLnMnbIWaFMCULw9nfKFbYV9Nalslgso=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BJeWBWPIg7M0M07myWKk1wmUaVDGIU/PndWL0mtoph2E9A5dogSHLkkjG536nf+lpSIQNl+gxr8kxs9clsqWxsXOqAyVqGrVjyoW3/+FWN2JRy6F0ST2w3YPblzmwXi/rmi3/dyc3WYgmJQmPJCpYr6IwRqD/0xY3aH2NKqCURM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=mogzTyP/; arc=none smtp.client-ip=205.220.177.32
+	 MIME-Version; b=Q5XLiNJJr5eymrmsYCX+iUpR69BbLP6RHR0PcdIDX4644zKRGAy2zOYlYZybEXRNzKGWLMSEpH8ATPtgxVhQwk9PRCAB1BlH5eKRkNwBYXOEZ3WHVot6ILcyZlhD6jaPN7efCFBrtOBXGZYttvdomg35tuO/qhH/OTvmOe4hxH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Iad6GyB9; arc=none smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59O3NOXV019049;
-	Fri, 24 Oct 2025 07:33:46 GMT
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59O3OFB4020773;
+	Fri, 24 Oct 2025 07:33:49 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2025-04-25; bh=ggM1U
-	s1LlfT3GxpER/eiDLgmWXZARQWSSVG9m3jl4gI=; b=mogzTyP/PSrGwjUkjxeiF
-	G5DvsWImqcpjuuNWHOZjXFbiVGsNGgVpTBVPRQVv/4IurNluiha7l4IgJOdhCEhQ
-	jNNAB5sOIHZyYTQ0uam2myQIYBYADWCFffP63yl/LdQkqy+1CSx6i5Zp4ihJvlIm
-	PG8ioD3hcsS2mh0hhuDzPii+HnR1AB6Y8exIsfGPwuiSuLcZOjT0HxuctWKiAdUo
-	M9DrIoqdnRLaOg5NbjnZqHgzs6YuCJN3zYWqe5ddq5QmPLRU41OH0jMvX03ixvH7
-	K5YNnQliSBgYytBQPIcV9PDMKWxSkro7FoNVmtywGYh7kSpL5VygoSLh2/V7f8A8
+	:mime-version:references:subject:to; s=corp-2025-04-25; bh=MTIfn
+	kAqvz7HGI3LZnMC2nPyrD2ygLYTkkHPdF5VuME=; b=Iad6GyB9worfQLkB4gsYN
+	Q5XHplNHjMQEDJElz/xo+gm0yFI3w3GQGNqSj63PB2BVj7V9lSOLfs8uDVrgxeXL
+	4HfRtl6ORPJj3G7EVJvvv1OwxEu+dPGf2MJ747NJFAQMEZo5XGLw5eUb5sIlfA8c
+	WP6fiXkhtZ0AqTWB7iAoeKLKGQ8rQB0RtH6EOkOz7Q7ZX/pZcAcyUE9cHm0FM2uo
+	NizF0L3KoNncqu1fst6+pD0fdDxyN30tzMhlRUeZUdTWCMzQAG/J5kraPjuEMQRR
+	G0XFxTTr0kl2Kn8E477vfn5KavlQWIr3sK6jVkUiiki6i91gD8eqic6wJcFVSdoU
 	A==
 Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 49v2vw3bq3-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 49v2vw3bq5-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 24 Oct 2025 07:33:45 +0000 (GMT)
+	Fri, 24 Oct 2025 07:33:48 +0000 (GMT)
 Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 59O7Evrd022182;
-	Fri, 24 Oct 2025 07:33:45 GMT
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 59O6HeJC022289;
+	Fri, 24 Oct 2025 07:33:48 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 49v1bgm4hy-1
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 49v1bgm4km-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 24 Oct 2025 07:33:45 +0000
+	Fri, 24 Oct 2025 07:33:48 +0000
 Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 59O7XYwj019356;
-	Fri, 24 Oct 2025 07:33:44 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 59O7XYwl019356;
+	Fri, 24 Oct 2025 07:33:47 GMT
 Received: from bpf.uk.oracle.com (dhcp-10-154-57-127.vpn.oracle.com [10.154.57.127])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 49v1bgm48v-4;
-	Fri, 24 Oct 2025 07:33:44 +0000
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 49v1bgm48v-5;
+	Fri, 24 Oct 2025 07:33:47 +0000
 From: Alan Maguire <alan.maguire@oracle.com>
 To: dwarves@vger.kernel.org
 Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
@@ -70,9 +70,9 @@ Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
         jolsa@kernel.org, qmo@kernel.org, ihor.solodrai@linux.dev,
         david.faust@oracle.com, jose.marchesi@oracle.com, bpf@vger.kernel.org,
         Alan Maguire <alan.maguire@oracle.com>
-Subject: [RFC dwarves 3/5] dwarf_loader: Collect inline expansion location information
-Date: Fri, 24 Oct 2025 08:33:26 +0100
-Message-ID: <20251024073328.370457-4-alan.maguire@oracle.com>
+Subject: [RFC dwarves 4/5] btf_encoder: Support encoding of inline location information
+Date: Fri, 24 Oct 2025 08:33:27 +0100
+Message-ID: <20251024073328.370457-5-alan.maguire@oracle.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20251024073328.370457-1-alan.maguire@oracle.com>
 References: <20251024073328.370457-1-alan.maguire@oracle.com>
@@ -90,498 +90,692 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlo
  phishscore=0 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
  suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2510020000 definitions=main-2510240065
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDE4MDAyMiBTYWx0ZWRfX6Gb77CiKaBt+
- 9rCIA1+mOKS+MsZSfKHqZF8VHOgwnzZmNF4TnwTaXlaLDbTnhrYAuo/PC8wrawYtXTwxpP47pY8
- PITv8u+QeqW61icda4522p/XiGV7AVfSoe+j59cVWW5QITadfoyvkj9ZoZUGomk52TXAOGaU+gZ
- avDE4kewk6yT9a/5cXhqLFGK1UYyrQgyLAGnZUF4rR4NKM82x3OruMAU9FjZRkt1pVm7pALTUSM
- 2XtKs6LTYfiZzdak7nETC03dtoSCAum3FUuAa7mh3HzFw/TLdtN/YoCH5hJn9f19HyCt0alm1w/
- EfZ8bdF6DJvoNtTFQpSYXn51WvAe1B1LjDS9uxq7/5oDE4D1yp6AZgEWjRdGwoFxy8OY17a+74B
- zpBnwNpgVwEG6wDp0I5ku7S1DqktpNU6i95Oj5g8WyC254TDEFg=
-X-Proofpoint-ORIG-GUID: 1ELAYiZMwjgz3xpCdwabM_1pIahle6k5
-X-Proofpoint-GUID: 1ELAYiZMwjgz3xpCdwabM_1pIahle6k5
-X-Authority-Analysis: v=2.4 cv=FuwIPmrq c=1 sm=1 tr=0 ts=68fb2bd9 b=1 cx=c_pps
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDE4MDAyMiBTYWx0ZWRfX5jjLbcJQSOUb
+ PbrjKguL3Pdo9FFLNxXSatNaKzBKDoz+yzFb6HU2W2aKQEag9QV6k8nv3i15xuama2hk26nDG8t
+ eqUNNXIuziWV8UVfR7BdlTQsMLaJcNrqyN2BqPohaoq81QoATwtoPG2f1exoSFYWzvTnRD52qS2
+ yN0yfqe68mWt/v2HmSJQOfm4tdnHRheWPSAYQ57UZI2EBjeW6SqS+rBF8X+2ub30uf3IScloDE0
+ DORw9vXL1POhfbiuDJ0IJ/enFxHi4rcVGQG8qg/Ww+IRwZx3h29HYqbkx8QQ972PEq8xYH4iUUG
+ cST1q437x6GXvvLgureAwS999Tn3Lx6rvkw81EJyOvUCVVSOJltun18BxNfj5V6Dr8BE2gHU8O8
+ xgDTQR2aNPpFCk3yOYlFAWa7hi0LzkynvwzuuqJ304mkIbDXVrU=
+X-Proofpoint-ORIG-GUID: Gbv1tu5SKi45PYd6FjC1e3to1wl8Jlrd
+X-Proofpoint-GUID: Gbv1tu5SKi45PYd6FjC1e3to1wl8Jlrd
+X-Authority-Analysis: v=2.4 cv=FuwIPmrq c=1 sm=1 tr=0 ts=68fb2bdd b=1 cx=c_pps
  a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
- a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yJwZ7lJ45cyLskzZi_IA:9 cc=ntf
- awl=host:13624
+ a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
+ a=SgRc0pz8ICCZHlU92ggA:9 cc=ntf awl=host:13624
 
-Collect location information for parameters, inline expansions and ensure it
-does not rely on aspects of the CU that go away when it is freed.
+This patch requires updated libbpf with APIs to add location
+information.  Iterate over inline expansions saving prototype
+and associated location info for later addition.  Location
+info can either be added to .BTF or a new .BTF.extra section
+which is split BTF relative to .BTF; this helps when size of
+location info makes adding it to .BTF prohibitive.  To support
+this we need to dedup .BTF first, then access the mappings of
+types to ensure the types of the parameters and return values
+of the functions associated with the inline sites get post-dedup
+updates.  Finally the .BTF.extra section itself is deduplicated
+allowing for FUNC_PROTO, LOC_PARAM and LOC_PROTO deduplication.
 
-(This is a slightly differerent approach from Thierry's but it was helped
-greatly by his series; would happily add a Co-developed by here or
-whatever suits)
+Multiple BTF_KIND_LOCSECs are added if there are more then
+65535 (max value vlen can support).
 
-Signed-off-by: Alan Maguire <alan.maguire>
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- dwarf_loader.c | 277 +++++++++++++++++++++++++++++++++++++++----------
- dwarves.h      |  48 ++++++++-
- 2 files changed, 266 insertions(+), 59 deletions(-)
+ btf_encoder.c | 396 +++++++++++++++++++++++++++++++++++++++++++++-----
+ dwarves.h     |   9 ++
+ 2 files changed, 371 insertions(+), 34 deletions(-)
 
-diff --git a/dwarf_loader.c b/dwarf_loader.c
-index 4656575..a7ae497 100644
---- a/dwarf_loader.c
-+++ b/dwarf_loader.c
-@@ -1185,29 +1185,54 @@ static ptrdiff_t __dwarf_getlocations(Dwarf_Attribute *attr,
- 	return ret;
- }
+diff --git a/btf_encoder.c b/btf_encoder.c
+index 710a122..ae56aa8 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -35,6 +35,7 @@
+ #include <pthread.h>
  
--/* For DW_AT_location 'attr':
-- * - if first location is DW_OP_regXX with expected number, return the register;
-- *   otherwise save the register for later return
-- * - if location DW_OP_entry_value(DW_OP_regXX) with expected number is in the
-- *   list, return the register; otherwise save register for later return
-- * - otherwise if no register was found for locations, return -1.
-+/* Retrieve location information for parameter; focus on simple locations
-+ * like constants and register values.  Support multiple registers as
-+ * it is possible for a value (struct) to be passed via multiple registers.
-+ * Handle edge cases like multiple instances of same location value, but
-+ * avoid cases with large (>1 size) expressions to keep things simple.
-+ * This covers the vast majority of cases.  The only unhandled atom is
-+ * DW_OP_GNU_parameter_ref; future work could add that and improve
-+ * location handling.  In practice the below supports the majority
-+ * of parameter locations.
-  */
--static int parameter__reg(Dwarf_Attribute *attr, int expected_reg)
-+static int parameter__locs(Dwarf_Die *die, Dwarf_Attribute *attr, struct parameter *parm)
- {
--	Dwarf_Addr base, start, end;
--	Dwarf_Op *expr, *entry_ops;
--	Dwarf_Attribute entry_attr;
--	size_t exprlen, entry_len;
-+	Dwarf_Addr base, start, end, first = -1;
-+	Dwarf_Attribute next_attr;
- 	ptrdiff_t offset = 0;
--	int loc_num = -1;
-+	Dwarf_Op *expr;
-+	size_t exprlen;
- 	int ret = -1;
+ #define BTF_BASE_ELF_SEC	".BTF.base"
++#define BTF_EXTRA_ELF_SEC	".BTF.extra"
+ #define BTF_IDS_SECTION		".BTF_ids"
+ #define BTF_ID_FUNC_PFX		"__BTF_ID__func__"
+ #define BTF_ID_SET8_PFX		"__BTF_ID__set8__"
+@@ -43,6 +44,38 @@
+ #define BTF_FASTCALL_TAG       "bpf_fastcall"
+ #define BPF_ARENA_ATTR         "address_space(1)"
  
-+	/* parameter__locs() can be called recursively, but at toplevel
-+	 * die is non-NULL signalling we need to look up loc/const attrs.
-+	 */
-+	if (die) {
-+		if (dwarf_attr(die, DW_AT_const_value, attr) != NULL) {
-+			parm->has_loc = 1;
-+			parm->optimized = 1;
-+			parm->locs[0].is_const = 1;
-+			parm->nlocs = 1;
-+			parm->locs[0].size = 8;
-+			parm->locs[0].value = attr_numeric(die, DW_AT_const_value);
-+			return 0;
-+		}
-+		if (dwarf_attr(die, DW_AT_location, attr) == NULL)
-+			return 0;
-+	}
++/* For older libbpf may need to define BTF loc data. */
++#if !defined(BTF_KIND_LOC_UAPI_DEFINED) && !defined(BTF_KIND_LOC_LIBBPF_DEFINED)
++#define BTF_KIND_LOC_PARAM      20
++#define BTF_KIND_LOC_PROTO      21
++#define BTF_KIND_LOCSEC         22
 +
- 	/* use libdw__lock as dwarf_getlocation(s) has concurrency issues
- 	 * when libdw is not compiled with experimental --enable-thread-safety
- 	 */
- 	pthread_mutex_lock(&libdw__lock);
- 	while ((offset = __dwarf_getlocations(attr, offset, &base, &start, &end, &expr, &exprlen)) > 0) {
--		loc_num++;
-+		/* We only want location info referring to start of function;
-+		 * assumes we get location info in address order; empirically
-+		 * this is the case.  Only exception is DW_OP_*entry_value
-+		 * location info which always refers to the value on entry.
-+		 */
-+		if (first == -1)
-+			first = start;
- 
- 		/* Convert expression list (XX DW_OP_stack_value) -> (XX).
- 		 * DW_OP_stack_value instructs interpreter to pop current value from
-@@ -1216,33 +1241,154 @@ static int parameter__reg(Dwarf_Attribute *attr, int expected_reg)
- 		if (exprlen > 1 && expr[exprlen - 1].atom == DW_OP_stack_value)
- 			exprlen--;
- 
--		if (exprlen != 1)
--			continue;
-+		if (exprlen > 1) {
-+			/* ignore complex exprs not at start of function,
-+			 * but bail if we hit a complex loc expr at the start.
-+			 */
-+			if (start != first)
-+				continue;
-+			ret = -1;
-+			goto out;
-+		}
- 
- 		switch (expr->atom) {
--		/* match DW_OP_regXX at first location */
-+		case DW_OP_deref:
-+			if (parm->nlocs > 0)
-+				parm->locs[parm->nlocs - 1].is_deref = 1;
-+			else
-+				ret = -1;
-+			break;
- 		case DW_OP_reg0 ... DW_OP_reg31:
--			if (loc_num != 0)
-+			if (start != first || parm->nlocs > 1)
-+				break;
-+			/* avoid duplicate location value */
-+			if (parm->nlocs > 0 && parm->locs[parm->nlocs - 1].reg ==
-+					       (expr->atom - DW_OP_reg0))
-+				break;
-+			parm->locs[parm->nlocs].reg = expr->atom - DW_OP_reg0;
-+			parm->locs[parm->nlocs].is_deref = 0;
-+			parm->locs[parm->nlocs].size = 8;
-+			parm->locs[parm->nlocs++].offset = 0;
-+			ret = 0;
-+			break;
-+		case DW_OP_fbreg:
-+		case DW_OP_breg0 ... DW_OP_breg31:
-+			if (start != first || parm->nlocs > 1)
- 				break;
--			ret = expr->atom;
--			if (ret == expected_reg)
--				goto out;
-+			/* avoid duplicate location value */
-+			if (parm->nlocs > 0 && parm->locs[parm->nlocs - 1].reg ==
-+					       (expr->atom - DW_OP_breg0)) {
-+				if (parm->locs[parm->nlocs - 1].offset != expr->offset)
-+					ret = -1;
-+				break;
-+			}
-+			parm->locs[parm->nlocs].reg = expr->atom - DW_OP_breg0;
-+			parm->locs[parm->nlocs].is_deref = 1;
-+			parm->locs[parm->nlocs].size = 8;
-+			parm->locs[parm->nlocs++].offset = expr->offset;
-+			ret = 0;
-+			break;
-+		case DW_OP_lit0 ... DW_OP_lit31:
-+			if (start != first)
-+				break;
++#define BTF_TYPE_LOC_PARAM_SIZE(t)      ((__s32)((t)->size))
++#define BTF_LOC_FLAG_DEREF		0x1
++#define BTF_LOC_FLAG_CONTINUE		0x2
 +
-+			if (parm->nlocs > 0 && (expr->atom - DW_OP_lit0) ==
-+					       parm->locs[parm->nlocs - 1].value)
-+				break;
-+			parm->locs[parm->nlocs].is_const = 1;
-+			parm->locs[parm->nlocs].size = 1;
-+			parm->locs[parm->nlocs++].value = expr->atom - DW_OP_lit0;
-+			ret = 0;
-+			break;
-+		case DW_OP_const1u ... DW_OP_consts:
-+			if (start != first)
-+				break;
-+			if (parm->nlocs > 0 && (parm->locs[parm->nlocs - 1].is_const &&
-+			    expr->number == parm->locs[parm->nlocs - 1].value))
-+				break;
-+			parm->locs[parm->nlocs].is_const = 1;
-+			parm->locs[parm->nlocs].value = expr->number;
-+			switch (expr->atom) {
-+			case DW_OP_const1u:
-+				parm->locs[parm->nlocs].size = 1;
-+				break;
-+			case DW_OP_const1s:
-+				parm->locs[parm->nlocs].size = -1;
-+				break;
-+			case DW_OP_const2u:
-+				parm->locs[parm->nlocs].size = 2;
-+				break;
-+			case DW_OP_const2s:
-+				parm->locs[parm->nlocs].size = -2;
-+				break;
-+			case DW_OP_const4u:
-+				parm->locs[parm->nlocs].size = 4;
-+				break;
-+			case DW_OP_const4s:
-+				parm->locs[parm->nlocs].size = -4;
-+				break;
-+			case DW_OP_const8u:
-+			case DW_OP_constu:
-+				parm->locs[parm->nlocs].size = 8;
-+				break;
-+			case DW_OP_const8s:
-+			case DW_OP_consts:
-+				parm->locs[parm->nlocs].size = -8;
-+				break;
-+			}
-+			parm->nlocs++;
-+			ret = 0;
-+			break;
-+		case DW_OP_addr:
-+			if (start != first || parm->nlocs > 0)
-+				break;
-+			parm->locs[parm->nlocs].is_const = 1;
-+			parm->locs[parm->nlocs].is_addr = 1;
-+			parm->locs[parm->nlocs].size = 8;
-+			parm->locs[parm->nlocs++].value = expr->number;
-+			ret = 0;
- 			break;
--		/* match DW_OP_entry_value(DW_OP_regXX) at any location */
- 		case DW_OP_entry_value:
- 		case DW_OP_GNU_entry_value:
--			if (dwarf_getlocation_attr(attr, expr, &entry_attr) == 0 &&
--			    dwarf_getlocation(&entry_attr, &entry_ops, &entry_len) == 0 &&
--			    entry_len == 1) {
--				ret = entry_ops->atom;
--				if (ret == expected_reg)
--					goto out;
-+			/* Match DW_OP_entry_value(DW_OP_regXX) at any offset
-+			 * in function since it always describes value on entry.
-+			 */
-+			if (dwarf_getlocation_attr(attr, expr, &next_attr) == 0) {
-+				pthread_mutex_unlock(&libdw__lock);
-+				return parameter__locs(NULL, &next_attr, parm);
- 			}
-+			ret = -1;
-+			break;
-+		case DW_OP_implicit_pointer:
-+			if (start != first)
-+				break;
-+			if (dwarf_getlocation_implicit_pointer(attr, expr, &next_attr) == 0) {
-+				pthread_mutex_unlock(&libdw__lock);
-+				return parameter__locs(NULL, &next_attr, parm);
-+			}
-+			ret = -1;
-+			break;
-+		case DW_OP_implicit_value:
-+			if (start != first)
-+				break;
-+			if (dwarf_getlocation_attr(attr, expr, &next_attr) == 0) {
-+				pthread_mutex_unlock(&libdw__lock);
-+				return parameter__locs(NULL, &next_attr, parm);
-+			}
-+			ret = -1;
-+			break;
-+		default:
-+			/* unhandled op */
-+			ret = -1;
- 			break;
- 		}
-+		if (ret == -1)
-+			break;
- 	}
- out:
- 	pthread_mutex_unlock(&libdw__lock);
-+	if (ret == 0)
-+		parm->has_loc = 1;
- 	return ret;
- }
- 
-@@ -1250,10 +1396,11 @@ static struct parameter *parameter__new(Dwarf_Die *die, struct cu *cu,
- 					struct conf_load *conf, int param_idx)
- {
- 	struct parameter *parm = tag__alloc(cu, sizeof(*parm));
-+	int ret;
- 
- 	if (parm != NULL) {
--		bool has_const_value;
- 		Dwarf_Attribute attr;
-+		int expected_reg;
- 
- 		tag__init(&parm->tag, cu, die);
- 		parm->name = attr_string(die, DW_AT_name, conf);
-@@ -1293,28 +1440,31 @@ static struct parameter *parameter__new(Dwarf_Die *die, struct cu *cu,
- 		 * between these parameter representations.  See
- 		 * ftype__recode_dwarf_types() below for how this is handled.
- 		 */
--		has_const_value = dwarf_attr(die, DW_AT_const_value, &attr) != NULL;
--		parm->has_loc = dwarf_attr(die, DW_AT_location, &attr) != NULL;
--
--		if (parm->has_loc) {
--			struct location location;
--			attr_location(die, &location.expr, &location.exprlen);
--
--			int expected_reg = cu->register_params[param_idx];
--			int actual_reg = parameter__reg(&attr, expected_reg);
--
--			if (actual_reg < 0)
--				parm->optimized = 1;
--			else if (expected_reg >= 0 && expected_reg != actual_reg)
--				/* mark parameters that use an unexpected
--				 * register to hold a parameter; these will
--				 * be problematic for users of BTF as they
--				 * violate expectations about register
--				 * contents.
--				 */
--				parm->unexpected_reg = 1;
--		} else if (has_const_value) {
-+		expected_reg = cu->register_params[param_idx];
-+		if (expected_reg >= DW_OP_reg0)
-+			expected_reg -= DW_OP_reg0;
-+
-+		ret = parameter__locs(die, &attr, parm);
-+
-+		if (!parm->has_loc)
-+			return parm;
-+
-+		if (ret < 0) {
-+			/* undecipherable location */
- 			parm->optimized = 1;
-+			return parm;
-+		}
-+		if (parm->locs[0].is_const) {
-+			parm->optimized = 1;
-+		} else if (expected_reg >= 0 &&
-+			   expected_reg != parm->locs[0].reg) {
-+			/* mark parameters that use an unexpected
-+			 * register to hold a parameter; these will
-+			 * be problematic for users of BTF as they
-+			 * violate expectations about register
-+			 * contents.
-+			 */
-+			parm->unexpected_reg = 1;
- 		}
- 	}
- 
-@@ -1377,10 +1527,14 @@ static struct inline_expansion *inline_expansion__new(Dwarf_Die *die, struct cu
- 		dwarf_tag__set_attr_type(dtag, type, die, DW_AT_abstract_origin);
- 
- 		Dwarf_Attribute attr_orig;
-+		exp->name = 0;
- 		if (dwarf_attr(die, DW_AT_abstract_origin, &attr_orig)) {
- 			Dwarf_Die die_orig;
--			if (dwarf_formref_die(&attr_orig, &die_orig)) {
--				exp->name = attr_string(&die_orig, DW_AT_name, conf);
-+
-+			if (dwarf_formref_die(&attr_orig, &die_orig) &&
-+			    dwarf_tag(&die_orig) == DW_TAG_subprogram) {
-+				if (dwarf_hasattr(&die_orig, DW_AT_name))
-+					exp->name = attr_string(&die_orig, DW_AT_name, conf);
- 			}
- 		}
- 
-@@ -2686,12 +2840,12 @@ static void inline_expansion__recode_dwarf_types(struct tag *tag, struct cu *cu)
- 	 * in fact an abtract origin, i.e. must be looked up in the tags_table,
- 	 * not in the types_table.
- 	 */
--	struct dwarf_tag *ftype = NULL;
-+	struct dwarf_tag *function = NULL;
- 	if (dtag->type != 0)
--		ftype = dwarf_cu__find_tag_by_ref(dcu, dtag, type);
-+		function = dwarf_cu__find_tag_by_ref(dcu, dtag, type);
- 	else
--		ftype = dwarf_cu__find_tag_by_ref(dcu, dtag, abstract_origin);
--	if (ftype == NULL) {
-+		function = dwarf_cu__find_tag_by_ref(dcu, dtag, abstract_origin);
-+	if (function == NULL) {
- 		if (dtag->type != 0)
- 			tag__print_type_not_found(tag);
- 		else
-@@ -2699,13 +2853,14 @@ static void inline_expansion__recode_dwarf_types(struct tag *tag, struct cu *cu)
- 		return;
- 	}
- 
--	ftype__recode_dwarf_types(dtag__tag(ftype), cu);
-+	ftype__recode_dwarf_types(dtag__tag(function), cu);
- 
- 	struct tag *pos;
- 	struct inline_expansion *exp = tag__inline_expansion(tag);
- 	list_for_each_entry(pos, &exp->parms, node)
- 		parameter__recode_dwarf_type(tag__parameter(pos), cu);
--	exp->ip.tag.type = ftype->small_id;
-+	exp->ip.tag.type = function->small_id;
-+	exp->function = tag__function(dtag__tag(function));
- }
- 
- static void lexblock__recode_dwarf_types(struct lexblock *tag, struct cu *cu)
-@@ -2983,6 +3138,14 @@ static int cu__resolve_func_ret_types_optimized(struct cu *cu)
- 		struct function *fn = tag__function(tag);
- 		bool has_unexpected_reg = false, has_struct_param = false;
- 
-+		/* Inlined function representations likely have parameters
-+		 * in wrong locations; ensure they do not contribute to
-+		 * classification of unexpected regs for a function that
-+		 * is partially inlined.
-+		 */
-+		if (fn->inlined)
-+			continue;
-+
- 		/* mark function as optimized if parameter is, or
- 		 * if parameter does not have a location; at this
- 		 * point location presence has been marked in
-diff --git a/dwarves.h b/dwarves.h
-index 284bc02..d6efdd0 100644
---- a/dwarves.h
-+++ b/dwarves.h
-@@ -481,6 +481,19 @@ bool languages__cu_filtered(struct languages *languages, struct cu *cu, bool ver
- 			continue;			\
- 		else
- 
-+/**
-+ * cu__for_each_inline_expansion - iterate thru all inline expansions
-+ * @cu: struct cu instance to iterate
-+ * @pos: struct tag iterator
-+ * @id: uint32_t tag id
-+ */
-+#define cu__for_each_inline_expansion(cu, id, pos)	\
-+	for (id = 0; id < cu->tags_table.nr_entries; ++id) \
-+		if (!tag__is_inline_expansion(cu->tags_table.entries[id]) || \
-+		    !(pos = tag__inline_expansion(cu->tags_table.entries[id])))\
-+			continue;			\
-+		else
-+
- int cu__add_tag(struct cu *cu, struct tag *tag, uint32_t *id);
- int cu__add_tag_with_id(struct cu *cu, struct tag *tag, uint32_t id);
- int cu__table_add_tag(struct cu *cu, struct tag *tag, uint32_t *id);
-@@ -615,6 +628,11 @@ static inline bool tag__is_restrict(const struct tag *tag)
- 	return tag->tag == DW_TAG_restrict_type;
- }
- 
-+static inline bool tag__is_inline_expansion(const struct tag *tag)
-+{
-+	return tag->tag == DW_TAG_inlined_subroutine;
-+}
-+
- static inline int tag__is_modifier(const struct tag *tag)
- {
- 	return tag__is_const(tag) ||
-@@ -821,13 +839,22 @@ struct ip_tag {
- 
- struct inline_expansion {
- 	struct ip_tag	 ip;
--	const char	 *name;
-+	const char	*name;
- 	size_t		 size;
- 	uint64_t	 high_pc;
- 	struct list_head parms;
- 	uint16_t   nr_parms;
-+	struct function	*function;
- };
- 
-+/**
-+ * inline_expansion__for_each_parameter - iterate thru all the parameters
-+ * @ie: struct inline_expansion instance to iterate
-+ * @pos: struct parameter iterator
-+ */
-+#define inline_expansion__for_each_parameter(ie, pos) \
-+	list_for_each_entry(pos, &(ie)->parms, tag.node)
-+
- static inline struct inline_expansion *
- 				tag__inline_expansion(const struct tag *tag)
- {
-@@ -944,13 +971,30 @@ size_t lexblock__fprintf(const struct lexblock *lexblock, const struct cu *cu,
- 			 struct function *function, uint16_t indent,
- 			 const struct conf_fprintf *conf, FILE *fp);
- 
-+
-+struct parameter_loc {
-+	uint8_t is_const:1;
-+	uint8_t is_deref:1;
-+	uint8_t is_addr:1;
-+	int8_t size;
++struct btf_loc_param {
 +	union {
 +		struct {
-+			uint16_t reg;
-+			uint16_t flags;
-+			uint32_t offset;
++			__u16 reg;      /* register number */
++			__u16 flags;    /* register dereference */
++			__s32 offset;   /* offset from register-stored address */
 +		};
-+		uint64_t value;
++		struct {
++			__u32 val_lo32; /* lo 32 bits of 64-bit value */
++			__u32 val_hi32; /* hi 32 bits of 64-bit value */
++		};
 +	};
 +};
 +
- struct parameter {
- 	struct tag tag;
- 	const char *name;
--	struct location location;
- 	uint8_t optimized:1;
- 	uint8_t unexpected_reg:1;
- 	uint8_t has_loc:1;
-+	struct parameter_loc locs[2];	/* multiple locs may be used */
-+	uint8_t nlocs;
++struct btf_loc {
++        __u32 name_off;
++        __u32 func_proto;
++        __u32 loc_proto;
++        __u32 offset;
++};
++#endif
++
+ /* kfunc flags, see include/linux/btf.h in the kernel source */
+ #define KF_FASTCALL   (1 << 12)
+ #define KF_ARENA_RET  (1 << 13)
+@@ -77,10 +110,25 @@ struct btf_encoder_func_annot {
+ 	int16_t component_idx;
  };
  
- static inline struct parameter *tag__parameter(const struct tag *tag)
++struct loc_param {
++	struct parameter_loc *locs;
++	uint8_t nlocs;
++};
++
++struct loc {
++	char *name;
++	struct loc_param *params;
++	uint8_t nparams;
++	int func_proto_id;
++	int loc_proto_id;
++	uint32_t offset;
++};
++
+ /* state used to do later encoding of saved functions */
+ struct btf_encoder_func_state {
+ 	struct btf_encoder *encoder;
+ 	struct elf_function *elf;
++	struct loc *loc;
+ 	uint32_t type_id_off;
+ 	uint16_t nr_parms;
+ 	uint16_t nr_annots;
+@@ -125,6 +173,12 @@ struct elf_functions {
+ 	int cnt;
+ };
+ 
++struct btf_encoder_func_states {
++	struct btf_encoder_func_state *array;
++	int cnt;
++	int cap;
++};
++
+ /*
+  * cu: cu being processed.
+  */
+@@ -150,11 +204,9 @@ struct btf_encoder {
+ 	struct elf_secinfo *secinfo;
+ 	size_t             seccnt;
+ 	int                encode_vars;
+-	struct {
+-		struct btf_encoder_func_state *array;
+-		int cnt;
+-		int cap;
+-	} func_states;
++	struct btf_encoder_func_states func_states;
++	struct btf_encoder_func_states loc_states;
++	__u32		   *dedup_map;
+ 	/* This is a list of elf_functions tables, one per ELF.
+ 	 * Multiple ELF modules can be processed in one pahole run,
+ 	 * so we have to store elf_functions tables per ELF.
+@@ -812,14 +864,16 @@ static int btf__add_bpf_arena_type_tags(struct btf *btf, struct btf_encoder_func
+ 
+ static inline bool is_kfunc_state(struct btf_encoder_func_state *state)
+ {
+-	return state && state->elf && state->elf->kfunc;
++	if (!state || !state->elf)
++		return false;
++	return state->elf->kfunc;
+ }
+ 
+ static int32_t btf_encoder__add_func_proto(struct btf_encoder *encoder, struct ftype *ftype,
+ 					   struct btf_encoder_func_state *state)
+ {
++	struct btf *btf = encoder->btf;
+ 	const struct btf_type *t;
+-	struct btf *btf;
+ 	struct parameter *param;
+ 	uint16_t nr_params, param_idx;
+ 	int32_t id, type_id;
+@@ -829,19 +883,24 @@ static int32_t btf_encoder__add_func_proto(struct btf_encoder *encoder, struct f
+ 	assert(ftype != NULL || state != NULL);
+ 
+ 	if (is_kfunc_state(state) && encoder->tag_kfuncs && encoder->encode_attributes)
+-		if (btf__add_bpf_arena_type_tags(encoder->btf, state) < 0)
++		if (btf__add_bpf_arena_type_tags(btf, state) < 0)
+ 			return -1;
+ 
+ 	/* add btf_type for func_proto */
+ 	if (ftype) {
+-		btf = encoder->btf;
+ 		nr_params = ftype->nr_parms + (ftype->unspec_parms ? 1 : 0);
+ 		type_id = btf_encoder__tag_type(encoder, ftype->tag.type);
+ 	} else if (state) {
+-		encoder = state->encoder;
+-		btf = state->encoder->btf;
+ 		nr_params = state->nr_parms;
+ 		type_id = state->ret_type_id;
++		/* ret type_id may need to be adjusted after dedup; if
++		 * dedup_map is present, adjust id to the post-dedup
++		 * id.  This is used when creating .BTF.extra which
++		 * refers to .BTF that has ben deduped; since we
++		 * recorded the type id it has changed due to dedup.
++		 */
++		if (encoder->dedup_map)
++			type_id = encoder->dedup_map[type_id];
+ 	} else {
+ 		return 0;
+ 	}
+@@ -886,7 +945,13 @@ static int32_t btf_encoder__add_func_proto(struct btf_encoder *encoder, struct f
+ 			 */
+ 			strncpy(tmp_name, name, sizeof(tmp_name) - 1);
+ 
+-			if (btf_encoder__add_func_param(encoder, tmp_name, p->type_id,
++			/* Similar to above, parameter type_id may need to be
++			 * adjusted after dedup.
++			 */
++			type_id = p->type_id;
++			if (encoder->dedup_map)
++				type_id = encoder->dedup_map[p->type_id];
++			if (btf_encoder__add_func_param(encoder, tmp_name, type_id,
+ 							param_idx == nr_params))
+ 				return -1;
+ 		}
+@@ -1165,26 +1230,27 @@ static bool funcs__match(struct btf_encoder_func_state *s1,
+ 	return true;
+ }
+ 
+-static struct btf_encoder_func_state *btf_encoder__alloc_func_state(struct btf_encoder *encoder)
++static struct btf_encoder_func_state *
++btf_encoder__alloc_func_state(struct btf_encoder_func_states *func_states)
+ {
+ 	struct btf_encoder_func_state *state, *tmp;
+ 
+-	if (encoder->func_states.cnt >= encoder->func_states.cap) {
++	if (func_states->cnt >= func_states->cap) {
+ 
+ 		/* We only need to grow to accommodate duplicate
+ 		 * function declarations across different CUs, so the
+ 		 * rate of the array growth shouldn't be high.
+ 		 */
+-		encoder->func_states.cap += 64;
++		func_states->cap += 64;
+ 
+-		tmp = realloc(encoder->func_states.array, sizeof(*tmp) * encoder->func_states.cap);
++		tmp = realloc(func_states->array, sizeof(*tmp) * func_states->cap);
+ 		if (!tmp)
+ 			return NULL;
+ 
+-		encoder->func_states.array = tmp;
++		func_states->array = tmp;
+ 	}
+ 
+-	state = &encoder->func_states.array[encoder->func_states.cnt++];
++	state = &func_states->array[func_states->cnt++];
+ 	memset(state, 0, sizeof(*state));
+ 
+ 	return state;
+@@ -1217,6 +1283,9 @@ static bool elf_function__has_ambiguous_address(struct elf_function *func)
+ 	uint64_t addr = 0;
+ 	int i;
+ 
++	if (!func)
++		return false;
++
+ 	if (func->sym_cnt <= 1)
+ 		return false;
+ 
+@@ -1232,30 +1301,33 @@ static bool elf_function__has_ambiguous_address(struct elf_function *func)
+ 	return false;
+ }
+ 
+-static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct function *fn, struct elf_function *func)
++static int btf_encoder__save_func(struct btf_encoder *encoder, struct function *fn,
++				  struct elf_function *func, struct loc *loc)
+ {
+-	struct btf_encoder_func_state *state = btf_encoder__alloc_func_state(encoder);
++	struct btf_encoder_func_state *state = btf_encoder__alloc_func_state(loc ?
++					       &encoder->loc_states :
++					       &encoder->func_states);
+ 	struct ftype *ftype = &fn->proto;
+ 	struct btf *btf = encoder->btf;
+ 	struct llvm_annotation *annot;
+ 	struct parameter *param;
+ 	uint8_t param_idx = 0;
+-	int str_off, err = 0;
++	int err = -ENOMEM;
++	int str_off;
+ 
+ 	if (!state)
+ 		return -ENOMEM;
+ 
+ 	state->encoder = encoder;
+ 	state->elf = func;
++	state->loc = loc;
+ 	state->ambiguous_addr = elf_function__has_ambiguous_address(func);
+ 	state->nr_parms = ftype->nr_parms + (ftype->unspec_parms ? 1 : 0);
+ 	state->ret_type_id = ftype->tag.type == 0 ? 0 : encoder->type_id_off + ftype->tag.type;
+ 	if (state->nr_parms > 0) {
+ 		state->parms = zalloc(state->nr_parms * sizeof(*state->parms));
+-		if (!state->parms) {
+-			err = -ENOMEM;
++		if (!state->parms)
+ 			goto out;
+-		}
+ 	}
+ 	state->inconsistent_proto = ftype->inconsistent_proto;
+ 	state->unexpected_reg = ftype->unexpected_reg;
+@@ -1283,10 +1355,8 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
+ 		uint8_t idx = 0;
+ 
+ 		state->annots = zalloc(state->nr_annots * sizeof(*state->annots));
+-		if (!state->annots) {
+-			err = -ENOMEM;
++		if (!state->annots)
+ 			goto out;
+-		}
+ 		list_for_each_entry(annot, &fn->annots, node) {
+ 			str_off = btf__add_str(encoder->btf, annot->value);
+ 			if (str_off < 0) {
+@@ -1351,6 +1421,10 @@ static int32_t btf_encoder__add_func(struct btf_encoder *encoder,
+ 	uint16_t idx;
+ 	int err;
+ 
++	/* If inline, skip. */
++	if (!state->elf)
++		return 0;
++
+ 	btf_fnproto_id = btf_encoder__add_func_proto(encoder, NULL, state);
+ 	name = func->name;
+ 	if (btf_fnproto_id >= 0)
+@@ -1486,15 +1560,19 @@ static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool skip_e
+ 		 */
+ 		add_to_btf |= !state->unexpected_reg && !state->inconsistent_proto && !state->uncertain_parm_loc && !state->ambiguous_addr;
+ 
+-		if (state->uncertain_parm_loc)
++		if (!add_to_btf) {
+ 			btf_encoder__log_func_skip(encoder, saved_fns[i].elf,
+-					"uncertain parameter location\n",
+-					0, 0);
++				state->unexpected_reg ? "unexpected regs\n" :
++				state->inconsistent_proto ? "inconsistent prototype\n" :
++				state->uncertain_parm_loc ? "uncertain parameter locations\n" :
++				"ambiguous address location\n");
++		}
+ 
+ 		if (add_to_btf) {
+ 			err = btf_encoder__add_func(state->encoder, state);
+ 			if (err < 0)
+ 				goto out;
++
+ 		}
+ 	}
+ 
+@@ -2108,8 +2186,146 @@ out:
+ 	return err;
+ }
+ 
++static int saved_loc_funcs_cmp(const void *a, const void *b)
++{
++	const struct btf_encoder_func_state *al = a;
++	const struct btf_encoder_func_state *bl = b;
++
++	return al->loc->offset - bl->loc->offset;
++}
++
++static int btf_encoder__add_saved_loc_param(struct btf_encoder *encoder,
++					    struct loc_param *param,
++					    int32_t *param_ids,
++					    uint8_t *num_param_ids)
++
++{
++	uint16_t flags = param->nlocs > 1 ? BTF_LOC_FLAG_CONTINUE : 0;
++	uint64_t value;
++	bool is_const;
++	int32_t ret = 0;
++
++	/* do we have meaningful location data ? */
++	if (param->nlocs == 0)
++		goto out;
++
++	is_const = param->locs[0].is_const;
++	value = is_const ? param->locs[0].value : 0;
++	if (is_const) {
++		flags |= param->locs[0].flags;
++		if (param->locs[0].is_deref)
++			flags |= BTF_LOC_FLAG_DEREF;
++	}
++
++	ret = btf__add_loc_param(encoder->btf, param->locs[0].size, is_const, value,
++				 is_const ? 0 : param->locs[0].reg, flags,
++				 is_const ? 0 : param->locs[0].offset);
++	if (ret <= 0)
++		goto out;
++
++	if (ret > 0) {
++		param_ids[*num_param_ids] = ret;
++		if (param->nlocs == 2) {
++			(*num_param_ids)++;
++			is_const = param->locs[1].is_const;
++			value = is_const ? param->locs[1].value : 0;
++			flags = is_const ? 0 : param->locs[1].flags;
++			ret = btf__add_loc_param(encoder->btf,
++						 param->locs[1].size,
++						 is_const, value,
++						 is_const ? 0 : param->locs[1].reg,
++						 flags,
++						 is_const ? 0 : param->locs[1].offset);
++			if (ret > 0)
++				param_ids[*num_param_ids] = ret;
++		}
++	}
++out:
++	if (ret <= 0)
++		param_ids[*num_param_ids] = 0;
++
++	(*num_param_ids)++;
++	return ret;
++}
++
++static int32_t btf_encoder__add_locsecs(struct btf_encoder *encoder)
++{
++	struct btf_encoder_func_state *saved_loc_funcs = encoder->loc_states.array;
++	uint32_t i, nr_saved_loc_funcs = encoder->loc_states.cnt;
++	struct btf *btf = encoder->btf;
++	int32_t ret;
++
++	qsort(saved_loc_funcs, nr_saved_loc_funcs, sizeof(*saved_loc_funcs), saved_loc_funcs_cmp);
++
++	for (i = 0; i < nr_saved_loc_funcs; i++) {
++		struct btf_encoder_func_state *state = &saved_loc_funcs[i];
++		struct loc *loc = state->loc;
++		int32_t param_ids[32] = {};
++		uint8_t j = 0, num_param_ids = 0;
++
++		loc->func_proto_id = btf_encoder__add_func_proto(encoder, NULL, state);
++		if (loc->func_proto_id < 0) {
++			btf__log_err(btf, BTF_KIND_FUNC_PROTO, "func_proto", true,
++				     loc->func_proto_id,
++				     "Error emitting BTF func proto");
++		}
++		for (j = 0; j < loc->nparams; j++) {
++			ret = btf_encoder__add_saved_loc_param(encoder, &loc->params[j],
++							       param_ids, &num_param_ids);
++			if (ret < 0)
++				return ret;
++		}
++		loc->loc_proto_id = btf__add_loc_proto(btf);
++		if (loc->loc_proto_id < 0) {
++			btf__log_err(btf, BTF_KIND_LOC_PROTO, "loc_proto", true, loc->loc_proto_id,
++				     "Error emitting BTF location prototype");
++			return loc->loc_proto_id;
++		}
++		for (j = 0; j < num_param_ids; j++) {
++			ret = btf__add_loc_proto_param(btf, param_ids[j]);
++			if (ret < 0) {
++				btf__log_err(btf, BTF_KIND_LOC_PROTO, "loc_proto_param", true, ret,
++					     "Error emitting BTF location prototype param for %u",
++					     loc->loc_proto_id);
++				return ret;
++			}
++		}
++	}
++	for (i = 0; i < nr_saved_loc_funcs; i++) {
++		struct loc *loc = saved_loc_funcs[i].loc;
++
++		/* vlen max is 65535, so add a new locsec for each
++		 * 65535 locations.
++		 */
++		if (i == 0 || (i % 0xffff) == 0) {
++			int32_t id = btf__add_locsec(btf, "inline");
++
++			if (id < 0) {
++				btf__log_err(btf, BTF_KIND_LOCSEC, "inline",
++					     true, id, "Error emitting BTF type");
++				return id;
++			}
++		}
++		ret = btf__add_locsec_loc(btf, loc->name, loc->func_proto_id, loc->loc_proto_id,
++					 loc->offset);
++		if (ret < 0) {
++			btf__log_err(btf, BTF_KIND_LOCSEC, "inline", true, ret,
++				     "Error emitting BTF loc");
++			return ret;
++		}
++	}
++	return 0;
++}
++
+ int btf_encoder__encode(struct btf_encoder *encoder, struct conf_load *conf)
+ {
++#if defined(BTF_KIND_LOC_UAPI_DEFINED) || defined(BTF_KIND_LOC_LIBBPF_DEFINED)
++	size_t map_sz = 0;
++	LIBBPF_OPTS(btf_dedup_opts, dedup_opts, .dedup_map = &encoder->dedup_map,
++		    .dedup_map_sz = &map_sz);
++#else
++	LIBBPF_OPTS(btf_dedup_opts, dedup_opts);
++#endif
+ 	int err;
+ 	size_t shndx;
+ 
+@@ -2121,11 +2337,14 @@ int btf_encoder__encode(struct btf_encoder *encoder, struct conf_load *conf)
+ 		if (gobuffer__size(&encoder->secinfo[shndx].secinfo))
+ 			btf_encoder__add_datasec(encoder, shndx);
+ 
++	if (encoder->loc_states.cnt && !conf->btf_gen_inlines_extra)
++		btf_encoder__add_locsecs(encoder);
++
+ 	/* Empty file, nothing to do, so... done! */
+ 	if (btf__type_cnt(encoder->btf) == 1)
+ 		return 0;
+ 
+-	if (btf__dedup(encoder->btf, NULL)) {
++	if (btf__dedup(encoder->btf, &dedup_opts)) {
+ 		fprintf(stderr, "%s: btf__dedup failed!\n", __func__);
+ 		return -1;
+ 	}
+@@ -2159,6 +2378,20 @@ int btf_encoder__encode(struct btf_encoder *encoder, struct conf_load *conf)
+ 			return err;
+ 		}
+ 		err = btf_encoder__write_elf(encoder, encoder->btf, BTF_ELF_SEC);
++		if (!err && conf->btf_gen_inlines_extra) {
++			struct btf *base = encoder->btf;
++
++			encoder->btf = btf__new_empty_split(base);
++			encoder->type_id_off = btf__type_cnt(base) - 1;
++			err = btf_encoder__add_locsecs(encoder);
++			if (!err)
++				err = btf__dedup(encoder->btf, NULL);
++			if (!err)
++				err = btf_encoder__write_elf(encoder, encoder->btf,
++							     BTF_EXTRA_ELF_SEC);
++			btf__free(encoder->btf);
++			encoder->btf = base;
++		}
+ 	}
+ 
+ 	elf_functions_list__clear(&encoder->elf_functions_list);
+@@ -2320,7 +2553,7 @@ static size_t get_elf_section(struct btf_encoder *encoder, uint64_t addr)
+  * values. Prefixes should be added sparingly, and it should be objectively
+  * obvious that they are not useful.
+  */
+-static bool filter_variable_name(const char *name)
++static bool filter_name(const char *name)
+ {
+ 	static const struct { char *s; size_t len; } skip[] = {
+ 		#define X(str) {str, sizeof(str) - 1}
+@@ -2429,7 +2662,7 @@ static int btf_encoder__encode_cu_variables(struct btf_encoder *encoder)
+ 		if (!name)
+ 			continue;
+ 
+-		if (filter_variable_name(name))
++		if (filter_name(name))
+ 			continue;
+ 
+ 		/* A 0 address may be in a "discard" section; DWARF provides
+@@ -2689,6 +2922,74 @@ static bool ftype__has_uncertain_arg_loc(struct cu *cu, struct ftype *ftype)
+ 	return false;
+ }
+ 
++/* save loc params for later addition. */
++static int btf_encoder__add_loc_param(struct btf_encoder *encoder,
++				      struct inline_expansion *ie,
++				      struct parameter *param,
++				      uint64_t base,
++				      struct loc_param *lp)
++{
++	uint8_t i, nlocs;
++
++	nlocs = param->nlocs;
++	if (nlocs) {
++		lp->locs = calloc(nlocs, sizeof(struct parameter_loc));
++		if (!lp->locs)
++			return -ENOMEM;
++		memcpy(lp->locs, param->locs, nlocs * sizeof(struct parameter_loc));
++	}
++	lp->nlocs = nlocs;
++	for (i = 0; i < nlocs; i++) {
++		if (param->locs[i].is_addr && lp->locs[i].value >= base)
++			lp->locs[i].value -= base;
++	}
++	return nlocs;
++}
++
++static int btf_encoder__add_inline_expansion(struct btf_encoder *encoder,
++				      struct inline_expansion *ie, uint64_t base)
++{
++	struct loc *loc = calloc(1, sizeof(*loc));
++	struct parameter *param = NULL;
++	int err = -ENOMEM;
++
++	if (loc)
++		loc->name = strdup(ie->function->name);
++	if (!loc || !loc->name)
++		goto out;
++
++	inline_expansion__for_each_parameter(ie, param) {
++		loc->nparams++;
++	}
++
++	if (loc->nparams > 0) {
++		int i = 0;
++
++		loc->params = calloc(loc->nparams, sizeof(struct loc_param));
++		if (!loc->params)
++			goto out;
++		param = NULL;
++		inline_expansion__for_each_parameter(ie, param) {
++			err = btf_encoder__add_loc_param(encoder, ie, param, base,
++							 &loc->params[i++]);
++			if (err < 0)
++				goto out;
++		}
++	}
++	loc->offset = (uint32_t)(ie->ip.addr - base);
++
++	err = btf_encoder__save_func(encoder, ie->function, NULL, loc);
++	if (!err)
++		return 0;
++out:
++	if (loc) {
++		free(loc->name);
++		free(loc->params);
++	}
++	free(loc);
++	return err;
++}
++
+ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct conf_load *conf_load)
+ {
+ 	struct llvm_annotation *annot;
+@@ -2696,8 +2997,11 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
+ 	struct elf_functions *funcs;
+ 	uint32_t core_id;
+ 	struct function *fn;
++	struct inline_expansion *ie;
++	uint64_t base = 0;
+ 	struct tag *pos;
+ 	int err = 0;
++	size_t i;
+ 
+ 	encoder->cu = cu;
+ 	funcs = btf_encoder__elf_functions(encoder);
+@@ -2815,11 +3119,35 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
+ 		if (ftype__has_uncertain_arg_loc(cu, &fn->proto))
+ 			fn->proto.uncertain_parm_loc = 1;
+ 
+-		err = btf_encoder__save_func(encoder, fn, func);
++		err = btf_encoder__save_func(encoder, fn, func, NULL);
+ 		if (err)
+ 			goto out;
+ 	}
+ 
++	core_id = 0;
++
++	/* Use .text base to adjust addresses from absolute to relative;
++	 * other sections like discarded-after init sections have different
++	 * ELF section base but a single global adjustment for kernel/module
++	 * is easier to manage.
++	 */
++	for (i = 1; i < encoder->seccnt; i++) {
++		if (!(encoder->secinfo[i].type == SHT_PROGBITS))
++			continue;
++		if (strcmp(encoder->secinfo[i].name, ".text") == 0) {
++			base = encoder->secinfo[i].addr;
++			break;
++		}
++	}
++
++	if (conf_load->btf_gen_inlines) {
++		cu__for_each_inline_expansion(cu, core_id, ie) {
++			if (!ie->ip.addr || !ie->name || filter_name(ie->name))
++				continue;
++			btf_encoder__add_inline_expansion(encoder, ie, base);
++		}
++	}
++
+ 	if (encoder->encode_vars)
+ 		err = btf_encoder__encode_cu_variables(encoder);
+ 
+diff --git a/dwarves.h b/dwarves.h
+index d6efdd0..df6a518 100644
+--- a/dwarves.h
++++ b/dwarves.h
+@@ -55,6 +55,13 @@ __weak extern int btf__add_enum64(struct btf *btf, const char *name, __u32 byte_
+ __weak extern int btf__add_enum64_value(struct btf *btf, const char *name, __u64 value);
+ __weak extern int btf__add_type_attr(struct btf *btf, const char *value, int ref_type_id);
+ __weak extern int btf__distill_base(const struct btf *src_btf, struct btf **new_base_btf, struct btf **new_split_btf);
++__weak extern int btf__add_loc_param(struct btf *btf, __s32 size, bool is_value, __u64 value,
++				     __u16 reg, __u16 flags, __s32 offset);
++__weak extern int btf__add_loc_proto(struct btf *btf);
++__weak extern int btf__add_loc_proto_param(struct btf *btf, __u32 id);
++__weak extern int btf__add_locsec(struct btf *btf, const char *name);
++__weak extern int btf__add_locsec_loc(struct btf *btf, const char *name, __u32 func_proto,
++				      __u32 loc_proto, __u32 offset);
+ 
+ /*
+  * BTF combines all the types into one big CU using btf_dedup(), so for something
+@@ -100,6 +107,8 @@ struct conf_load {
+ 	bool			reproducible_build;
+ 	bool			btf_decl_tag_kfuncs;
+ 	bool			btf_gen_distilled_base;
++	bool			btf_gen_inlines;
++	bool			btf_gen_inlines_extra;	/* target .BTF.extra? */
+ 	bool			btf_attributes;
+ 	uint8_t			hashtable_bits;
+ 	uint8_t			max_hashtable_bits;
 -- 
 2.39.3
 
