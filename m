@@ -1,185 +1,136 @@
-Return-Path: <bpf+bounces-72127-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72128-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C031EC074B1
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 18:26:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8031C0759E
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 18:38:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 73B1E5820B5
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 16:21:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C8DC18913C6
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 16:38:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156163375A0;
-	Fri, 24 Oct 2025 16:21:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2E1280037;
+	Fri, 24 Oct 2025 16:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gZTbNWIm"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B062F99AE;
-	Fri, 24 Oct 2025 16:21:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F79274FD0
+	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 16:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761322879; cv=none; b=npiSlZAoY8o1JJH4JfAh/pI6hT4GqKvIglmRTEy6dXWFR6y3IIVKLSZOrHILM2yqSaLgaMsNaIVNkN4kG7AqNylZa+EkYgY5npUGo7SrWd0dpQxcq1Cpxahnn5CpRwhe2XRP7kmfFqF0cxdGUInfWfTnAk9a2LGl7uCMmoRC8Rw=
+	t=1761323888; cv=none; b=eazYKF1oTbm/JpMzRUcNX5JE3R2Ab6FZAyJS13avy3blZro3tozyWR1K0ceO3Jd7eRU8try+PMAetlZ2uWLnr2YHR2hM5H3bcygbk4Y1d8uv7DJEY5IT8uY2rNmjgjaCKRheuBEG7CbE2oL351LTV+xH/82sPYFg0PPde9Ocw3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761322879; c=relaxed/simple;
-	bh=u+RABbfiDwB8KOWWfhGS5SuKdDxH0dOMfXQH4j/bYKc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=W039loaF82GXDayc4FWzYP8gH26V8vMJ5QyR9pfH569KZXBpTIJ+H+Z/b6/j7X/O5yG4hNyhLdsoU310gwJcxxKVyiGMEVAO954QAyS2ncwqU3I6V2meoigpqAfauxjdbtq3MdhzEI2iJ4g6vvevwokx0D1MA2d9/ALMRw+NzCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf05.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id 4D584140D7F;
-	Fri, 24 Oct 2025 16:21:09 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf05.hostedemail.com (Postfix) with ESMTPA id B02C720011;
-	Fri, 24 Oct 2025 16:21:06 +0000 (UTC)
-Date: Fri, 24 Oct 2025 12:21:35 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Song Liu <songliubraving@meta.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
- "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>,
- "ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
- <daniel@iogearbox.net>, "andrii@kernel.org" <andrii@kernel.org>,
- "andrey.grodzovsky@crowdstrike.com" <andrey.grodzovsky@crowdstrike.com>,
- "mhiramat@kernel.org" <mhiramat@kernel.org>, Kernel Team
- <kernel-team@meta.com>
-Subject: Re: [PATCH bpf-next 2/3] ftrace: bpf: Fix IPMODIFY + DIRECT in
- modify_ftrace_direct()
-Message-ID: <20251024122135.3bc668e8@gandalf.local.home>
-In-Reply-To: <D4EEB2BC-E87F-4F85-B043-867D4E1ED573@meta.com>
-References: <20251024071257.3956031-1-song@kernel.org>
-	<20251024071257.3956031-3-song@kernel.org>
-	<aPtmThVpiCrlKc0b@krava>
-	<D4EEB2BC-E87F-4F85-B043-867D4E1ED573@meta.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1761323888; c=relaxed/simple;
+	bh=4RdmMOkVFovv6W3PG0hz9kHh4ekzafNn8MrGb3gvNds=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=N5JgDj8umd0QMo0BRXxTsjpKAHypfWk/Shcw25+KhSgEc7FzfIJptfw3em9YVggKrMeiz6huSsxPDPpgwmVIAjHVR9fT2GNIwX6VNClEBvlhexuTkSIXRSsPlAy4kCTUhIKz9Yg2QMYWsjYdBVE7Af48xbD9+F9px/9gP/EFErs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gZTbNWIm; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <90ec497a230584b0e627d12eaf172236b7a5165b.camel@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761323883;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yk3pEU/ACNai1/q+WeDU0CKJXNjGIfc4+FFbTTAuSvo=;
+	b=gZTbNWImdS5DbYczGLOS/duKMTfC1P2/KqR8Fj2/eycDa09s2PtKWcKM0HCsLRm/Rzw2XX
+	nVchMoKRZKM1GI44f0wW9auzTW8aQUS7K3YF06nYI9s4mrYLtWXESoCt6Tz19rX43UQIRp
+	M2MWPeJxq1A/HmUTimc2gQYTS9AjZ9w=
+Subject: Re: [PATCH bpf-next 1/2] bpf: Skip bounds adjustment for
+ conditional jumps on same register
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: KaFai Wan <kafai.wan@linux.dev>
+To: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov
+	 <alexei.starovoitov@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, KP Singh
+ <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
+ <shuah@kernel.org>, Paul Chaignon <paul.chaignon@gmail.com>, Matan Shachnai
+ <m.shachnai@gmail.com>, Luis Gerhorst <luis.gerhorst@fau.de>, 
+ colin.i.king@gmail.com, Harishankar Vishwanathan
+ <harishankar.vishwanathan@gmail.com>, bpf <bpf@vger.kernel.org>, LKML
+ <linux-kernel@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK"
+ <linux-kselftest@vger.kernel.org>, Kaiyan Mei <M202472210@hust.edu.cn>, 
+ Yinhao Hu <dddddd@hust.edu.cn>
+Date: Sat, 25 Oct 2025 00:37:51 +0800
+In-Reply-To: <0d98a2c754884e94c3367209680c071a8df4279d.camel@gmail.com>
+References: <20251022164457.1203756-1-kafai.wan@linux.dev>
+	 <20251022164457.1203756-2-kafai.wan@linux.dev>
+	 <39af9321-fb9b-4cee-84f1-77248a375e85@linux.dev>
+	 <1d03174dfe2a7eab1166596c85a6b586a660dffc.camel@gmail.com>
+	 <CAADnVQKdMcOkkqNa3LbGWqsz9iHAODFSinokj6htbGi0N66h_Q@mail.gmail.com>
+	 <abe1bd5def7494653d52425818815baa54a3628a.camel@gmail.com>
+	 <0d267da41178f3ac4669621516888a06d6aa5665.camel@linux.dev>
+	 <f0a52150bc99aa4da1a25d6181975cd3c80a717f.camel@gmail.com>
+	 <b190c9b2837b28cf579aa38126de50e29e0add32.camel@linux.dev>
+	 <0d98a2c754884e94c3367209680c071a8df4279d.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 5iehismwuy7ybyeiup8rjx4kdg8831rb
-X-Rspamd-Server: rspamout07
-X-Rspamd-Queue-Id: B02C720011
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+8fP31qr3LzIq83PFv8zCS04TujMrhx5w=
-X-HE-Tag: 1761322866-466142
-X-HE-Meta: U2FsdGVkX1+Em1zzNVTn6iur8V5TXiUJQ/hQP/DD1sFZjYhCvQoCkvtlpRvySvFk+PnsbFyHgxy157nysWhS6DgSADSIDO5mJJMTqoaeNr0uCqT1Go2BhXQdXjF6vJOonzqt0dU2rInJnFalCAoOd/lZWXVPXD4ab/Ka2ETCf8vfYIZ5TJneAJ7lLLYTtRZfegjiWf/15QsLPyclNhcJmgF8J/5pXEFj+opXzQOqPsEr3XKq9Nisc1DqtElC8P/Hv8SPmB4Z1+TSNl+ytHBkLO7CGOLPf03DwuDnS2H5PF6Dquz7v6vU/PsdMOrBSV7IPVANMViCpSXVm3PvzWby5QnuXUkKW8oZfIByee6FqVXAfMuIGDp96iSBRcqlnbMQ
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 24 Oct 2025 15:47:04 +0000
-Song Liu <songliubraving@meta.com> wrote:
+On Fri, 2025-10-24 at 09:21 -0700, Eduard Zingerman wrote:
+> On Sat, 2025-10-25 at 00:13 +0800, KaFai Wan wrote:
+>=20
+> [...]
+>=20
+> > For non-scalar cases we only allow pointer comparison on pkt_ptr, this =
+check is before
+> > is_branch_taken()
+> >=20
+> > 	src_reg =3D &regs[insn->src_reg];
+> > 	if (!(reg_is_pkt_pointer_any(dst_reg) && reg_is_pkt_pointer_any(src_re=
+g)) &&
+> > 	=C2=A0=C2=A0=C2=A0 is_pointer_value(env, insn->src_reg)) {
+> > 		verbose(env, "R%d pointer comparison prohibited\n",
+> > 			insn->src_reg);
+> > 		return -EACCES;
+> > 	}=20
+> >=20
+> > and in the end of check_cond_jmp_op() (after is_branch_taken()), we che=
+cked again
+> >=20
+> > 	} else if (!try_match_pkt_pointers(insn, dst_reg, &regs[insn->src_reg]=
+,
+> > 					=C2=A0=C2=A0 this_branch, other_branch) &&
+> > 		=C2=A0=C2=A0 is_pointer_value(env, insn->dst_reg)) {
+> > 		verbose(env, "R%d pointer comparison prohibited\n",
+> > 			insn->dst_reg);
+> > 		return -EACCES;
+> > 	}
+> >=20
+> > this time we=C2=A0check if it is valid comparison on pkt_ptr in try_mat=
+ch_pkt_pointers().=C2=A0
+> >=20
+> > Currently we just allow 4 opcode (BPF_JGT, BPF_JLT, BPF_JGE, BPF_JLE) o=
+n pkt_ptr, and with
+> > conditions. But we bypass these prohibits in privileged mode (is_pointe=
+r_value() always=C2=A0
+> > return false in privileged mode).
+> >=20
+> > So the logic skip these prohibits for pkt_ptr in unprivileged mode.
+>=20
+> Well, yes, but do you really need to do forbid `if r0 > r0 goto ...` in u=
+npriv?
 
-> >> --- a/kernel/trace/ftrace.c
-> >> +++ b/kernel/trace/ftrace.c
-> >> @@ -2020,8 +2020,6 @@ static int __ftrace_hash_update_ipmodify(struct ftrace_ops *ops,
-> >> if (is_ipmodify)
-> >> goto rollback;
-> >> 
-> >> - FTRACE_WARN_ON(rec->flags & FTRACE_FL_DIRECT);  
-> > 
-> > why is this needed?  
-> 
-> This is needed for the modify_ftrace_direct case, because 
-> the record already have a direct function (BPF trampoline)
-> attached. 
+Currently `if r0 > r0 goto ...` is forbid in unpriv, but we can allow it.=
+=20
 
-I don't like the fact that it's removing a check for other cases.
-
-It needs to be denoted that this use case is "OK" where as other use cases
-are not. That way the check is still there for other cases and only "OK"
-for this use case.
-
-Something like this:
-
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 370f620734cf..51b205bafe80 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -1971,7 +1971,8 @@ static void ftrace_hash_rec_enable_modify(struct ftrace_ops *ops)
-  */
- static int __ftrace_hash_update_ipmodify(struct ftrace_ops *ops,
- 					 struct ftrace_hash *old_hash,
--					 struct ftrace_hash *new_hash)
-+					 struct ftrace_hash *new_hash,
-+					 bool update)
- {
- 	struct ftrace_page *pg;
- 	struct dyn_ftrace *rec, *end = NULL;
-@@ -2020,6 +2021,16 @@ static int __ftrace_hash_update_ipmodify(struct ftrace_ops *ops,
- 				if (is_ipmodify)
- 					goto rollback;
- 
-+				/*
-+				 * If this is called by __modify_ftrace_direct()
-+				 * then it is only chaning where the direct
-+				 * pointer is jumping to, and the record already
-+				 * points to a direct trampoline. If it isn't
-+				 * then it is a bug to update ipmodify on a direct
-+				 * caller.
-+				 */
-+				FTRACE_WARN_ON(!update &&
-+					       (rec->flags & FTRACE_FL_DIRECT));
- 				/*
- 				 * Another ops with IPMODIFY is already
- 				 * attached. We are now attaching a direct
-@@ -2067,14 +2078,14 @@ static int __ftrace_hash_update_ipmodify(struct ftrace_ops *ops,
- 	return -EBUSY;
- }
- 
--static int ftrace_hash_ipmodify_enable(struct ftrace_ops *ops)
-+static int ftrace_hash_ipmodify_enable(struct ftrace_ops *ops, bool update)
- {
- 	struct ftrace_hash *hash = ops->func_hash->filter_hash;
- 
- 	if (ftrace_hash_empty(hash))
- 		hash = NULL;
- 
--	return __ftrace_hash_update_ipmodify(ops, EMPTY_HASH, hash);
-+	return __ftrace_hash_update_ipmodify(ops, EMPTY_HASH, hash, update);
- }
- 
- /* Disabling always succeeds */
-@@ -2085,7 +2096,7 @@ static void ftrace_hash_ipmodify_disable(struct ftrace_ops *ops)
- 	if (ftrace_hash_empty(hash))
- 		hash = NULL;
- 
--	__ftrace_hash_update_ipmodify(ops, hash, EMPTY_HASH);
-+	__ftrace_hash_update_ipmodify(ops, hash, EMPTY_HASH, false);
- }
- 
- static int ftrace_hash_ipmodify_update(struct ftrace_ops *ops,
-@@ -2099,7 +2110,7 @@ static int ftrace_hash_ipmodify_update(struct ftrace_ops *ops,
- 	if (ftrace_hash_empty(new_hash))
- 		new_hash = NULL;
- 
--	return __ftrace_hash_update_ipmodify(ops, old_hash, new_hash);
-+	return __ftrace_hash_update_ipmodify(ops, old_hash, new_hash, false);
- }
- 
- static void print_ip_ins(const char *fmt, const unsigned char *p)
-@@ -3059,7 +3070,7 @@ int ftrace_startup(struct ftrace_ops *ops, int command)
- 	 */
- 	ops->flags |= FTRACE_OPS_FL_ENABLED | FTRACE_OPS_FL_ADDING;
- 
--	ret = ftrace_hash_ipmodify_enable(ops);
-+	ret = ftrace_hash_ipmodify_enable(ops, false);
- 	if (ret < 0) {
- 		/* Rollback registration process */
- 		__unregister_ftrace_function(ops);
-@@ -6131,7 +6142,7 @@ __modify_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
- 	 * ops->ops_func for the ops. This is needed because the above
- 	 * register_ftrace_function_nolock() worked on tmp_ops.
- 	 */
--	err = ftrace_hash_ipmodify_enable(ops);
-+	err = ftrace_hash_ipmodify_enable(ops, true);
- 	if (err)
- 		goto out;
- 
-
--- Steve
+--=20
+Thanks,
+KaFai
 
