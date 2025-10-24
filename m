@@ -1,62 +1,128 @@
-Return-Path: <bpf+bounces-72171-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72172-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B062C0855A
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 01:41:09 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CFD5C085BC
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 01:57:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 492343AA66B
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 23:41:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 581EA4E5663
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 23:57:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574FA30E82D;
-	Fri, 24 Oct 2025 23:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF9EE30F532;
+	Fri, 24 Oct 2025 23:57:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TydFgV/g"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HoVhBWG+"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CE42EF677;
-	Fri, 24 Oct 2025 23:41:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BA3330E83A
+	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 23:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761349262; cv=none; b=PUVnbDThQZkJJBZKyoYSm1xntstq4xNB5KCI1oKzRwcn9jsNh+Fjpa3Thl+KzHaU038tY4AqsC+jz0i95pGZywjHjz48XeQDpg4/k49bfz5gQdXgPTtl8MRfBzovFCSX2f5OeZlzsgOS7Hc2BwPPFkzsiiqGcJEwOEqMGQQf5Z8=
+	t=1761350253; cv=none; b=F9gzuTRqadBCX+pe0Zqb24IoIs/6dR8NRyqAB4jbhupR0G16iaAh+jxziz+rqTkHCBB2mng0UWmL3i8fbxHqlPAP5XJnriPyRs+WYsqtX67zddwJVap1dNHKrctk/rncYSzNpCVC8IhwH32ZG2+NvePXqUX30K3wC35HnLk9p4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761349262; c=relaxed/simple;
-	bh=KlxQwxQiOyaOmfqlFrMqSOenDkOWYeInFu7SxGIC7qI=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=X85AuDugdg+iziF+31SGsuoAY1xMb2pGlP5py0zrc2Q2Sy3EDYzJYbUSv1sU9arR1HkKoyg2ypihTHYSK8ST44AOqNoejg0Fy2K3x14sh4zb/xRZ5wdaYYNZyuNEI5u/te168Z3xR44bDyv30HFrjbdw+fcudFxWfPGrQgoIcsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TydFgV/g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38138C4CEF1;
-	Fri, 24 Oct 2025 23:41:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761349262;
-	bh=KlxQwxQiOyaOmfqlFrMqSOenDkOWYeInFu7SxGIC7qI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=TydFgV/gIII94z/FdptMJSYONC4cW8imOoIfN7CaxVm6YLRgNhwJFcHWrNNZzsDPw
-	 5AKQYdxai0u9wNhiCrGLWxgb3be6FdE9H7nxpJdXBWFTzuxUCp8M8fMuHgX6qqI1F4
-	 w75YrKgNI6nr50pwXPliKf5dVtfueatD1J6fZsUEzBZnaphbvBbgr9qVOLqOR/7Pit
-	 OB3Ta+O0oKXgdJalbhf36vXe4H4Hw1+Q6r//AM6bzaTg+maDBOTgpjn5WmrpkuwthQ
-	 Ac2m7Gd6Qg43/DwedMeNMeRYz5nfR3rxTEgS4bezD95Ggv55ogoyhdgsFnfuzKD+eh
-	 Sl4v1KQKyC/ew==
-Date: Fri, 24 Oct 2025 13:41:01 -1000
-Message-ID: <d2bc20b71d883574ca2a6a5fa4960548@kernel.org>
-From: Tejun Heo <tj@kernel.org>
-To: David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>, Changwoo Min <changwoo@igalia.com>
-Cc: sched-ext@lists.linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH sched_ext/for-6.19] sched_ext: Add ___compat suffix to scx_bpf_dsq_insert___v2 in compat.bpf.h
-In-Reply-To: <6c9852055cae7d54ce33df77c5c7a1dc@kernel.org>
-References: <6c9852055cae7d54ce33df77c5c7a1dc@kernel.org>
+	s=arc-20240116; t=1761350253; c=relaxed/simple;
+	bh=dNKLlMrwd1/HZexcmyJUATq+vFaKLMO+fNIoDoZR3Os=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rFx7DfcEGC1c8ga9Y/O4IlZObgNsvAdDFz94exujdVm4msX+VipqP7aKR1/WLIs0QZLv1N4PFwU1bAGeeW92X81FDD4vbh1mWyKlElu98/LHYixTT4bh0wVZr+8qml1G/52qIopRN8xse46d6vgCkJFHApvY5Q70443TG07Iiw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HoVhBWG+; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-42421b1514fso1746340f8f.2
+        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 16:57:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761350250; x=1761955050; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dNKLlMrwd1/HZexcmyJUATq+vFaKLMO+fNIoDoZR3Os=;
+        b=HoVhBWG+RL22HhNsNbkwL1itfboESzkPwb+wNLo5TTZKyF4cMd2WBZGBokGp34aiSI
+         pWbDx325z8KfQ5S44WBp2ZW3ab4dF9cTTSHwwg5Dayb3jbIv0tPoB7YAccMnG+wRJ79e
+         PZiP0vQ//ronUNsxz1jsfpCn7GrWnsGZh7ba0GDuL+f7qgJnH17/vGLbI5sE9jwxgmPW
+         BBCerzau29H0vZAbfdWn9HVyWtl8ExNAC5KJMuLEZD78+cfjeH5xhufMDOSPaA1OVPwG
+         y6QQ9UXkCpP3gThKSPDzmv+M7BKKc2qG1Q2k+ZMdqJeqqm1H64R/GLXD1WUA6vEJadQ3
+         mt2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761350250; x=1761955050;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dNKLlMrwd1/HZexcmyJUATq+vFaKLMO+fNIoDoZR3Os=;
+        b=YqKV2lxM7GAYVjB14cIS9TqoXZ7uv2wgPxLBGN3rjB8IQpvRc3u9qQtju5MtGRbwap
+         dUnPQeuETbMSxduvBs7y6ZfM3NG85GLjLi2ODNhHRCYHsdKr84AAjxVOBqg8Snnjn2/2
+         JHniBK970KJ3JMqH/wmr9X804NJAaAbkDxlvCrKYAKvh6iTICL9bpuAAmj5dsfxBU+Mm
+         /jrohyOVYEDl7S6Jtan6LcV9maQoZ/7GNv8v1j8JOmdwYS3GxxepjyX3ob1HQONObOS/
+         ydoTLLYU0SjPBh2RE+BOylcpcTgweP5Ve56eMuVQxNpAUQseZo50Df49yAjeeLWp76vT
+         Th9w==
+X-Forwarded-Encrypted: i=1; AJvYcCU5QB+QIX8+/7UR0AMg41MlcLVtL1iPOw3JHzNSauaivrAoU//XPK2ifhdJgtmPWN1qltY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxKKxV2D3GOgK4o1ut5WBcBsS2F7F8oSkHB4rITRGggTPR9IlJn
+	jq2nU/ErolFzbzOTaTbqnt7IrHyqBYckJwCyS9kJ0jI0uVl7pSRcCWY5+Z00doMPmSGaVL+3lg4
+	srxAlD+0cOJ2WojN5/culu4nbZY/yaks=
+X-Gm-Gg: ASbGncuuD6OxyfOXC0Y3xCh8jaTi+4E78UbKcRxIngTd3cQXxtQTSPpPlu53aWztQtt
+	0kgLGJ0xVP/xv9mdp3Hnc15SDB3ACgEf1pSxakfPtLA/j33kkISlbgjPzFJarRq32md1x5C1nWS
+	xH0kiM4xgXrOUCtNe5XQTVksrq8tiA5bm1nAlcs6cqrzOHP8vSP8SgH79+WbY/8NAc5F63YX3/P
+	TR+/9XlLNN0U21yPO5nc7Snof4J0aE0jZb8VyH7yf3a61G3hGlVU0Zw97JNEoJIERiWw/Bsc5jh
+	ZCwQJXjVnsS1y4fVxLupsU+g+4FK
+X-Google-Smtp-Source: AGHT+IF8HoLxCsbxFn0Q05QHNEFaH5LN/KgcQUuwi/NFCX+hm+nzFT1ZjELINl1AgyfVOFTyiPf1ZTpt2LmAPKbOJ38=
+X-Received: by 2002:a5d:5f55:0:b0:427:5ed:296d with SMTP id
+ ffacd0b85a97d-42990712615mr3163617f8f.28.1761350249591; Fri, 24 Oct 2025
+ 16:57:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz>
+In-Reply-To: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 24 Oct 2025 16:57:18 -0700
+X-Gm-Features: AWmQ_bltQWl9Zt65mlT3O0wfqqWroGd-22lI3adDJdCXk0hQ4ymeHmC7hV8Eb1Q
+Message-ID: <CAADnVQKYDgwgAQ+geFrY=xDxNoe2YuEYVQU+d3V3nMhkMBg1zw@mail.gmail.com>
+Subject: Re: [PATCH RFC 00/19] slab: replace cpu (partial) slabs with sheaves
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Christoph Lameter <cl@gentwo.org>, 
+	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Suren Baghdasaryan <surenb@google.com>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-rt-devel@lists.linux.dev, 
+	bpf <bpf@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>, 
+	Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Applied to sched_ext/for-6.19.
+On Thu, Oct 23, 2025 at 6:53=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> Percpu sheaves caching was introduced as opt-in but the goal was to
+> eventually move all caches to them. This is the next step, enabling
+> sheaves for all caches (except the two bootstrap ones) and then removing
+> the per cpu (partial) slabs and lots of associated code.
+>
+> Besides (hopefully) improved performance, this removes the rather
+> complicated code related to the lockless fastpaths (using
+> this_cpu_try_cmpxchg128/64) and its complications with PREEMPT_RT or
+> kmalloc_nolock().
+>
+> The lockless slab freelist+counters update operation using
+> try_cmpxchg128/64 remains and is crucial for freeing remote NUMA objects
+> without repeating the "alien" array flushing of SLUB, and to allow
+> flushing objects from sheaves to slabs mostly without the node
+> list_lock.
+>
+> This is the first RFC to get feedback. Biggest TODOs are:
+>
+> - cleanup of stat counters to fit the new scheme
+> - integration of rcu sheaves handling with kfree_rcu batching
 
-Thanks.
---
-tejun
+The whole thing looks good, and imo these two are lower priority.
+
+> - performance evaluation
+
+The performance results will be the key.
+What kind of benchmarks do you have in mind?
 
