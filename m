@@ -1,64 +1,77 @@
-Return-Path: <bpf+bounces-71995-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-71996-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30E4FC04A81
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 09:15:20 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03881C04BE7
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 09:35:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 695A23BC763
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 07:15:02 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E91C64FDDF6
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 07:34:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE2742C026D;
-	Fri, 24 Oct 2025 07:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD5592E5400;
+	Fri, 24 Oct 2025 07:34:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eE9dPGYl"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="c3FgtXNH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D17729C327;
-	Fri, 24 Oct 2025 07:13:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BD92E2DE6;
+	Fri, 24 Oct 2025 07:34:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761290003; cv=none; b=NyPL6HFdUI9ypYs8K6DDcr7lChSATWobD8QhydI7Mx5pe0kUndAl4gAJMDCL9hyWgVyHCy28CnhyEIQLirLj+j3tw8XRD8oyLI7kipazTfhccxFs1HRyi7/ZwCYKn06UG45rAkWdmWJh1bW4JNJrq+OzSyiP9EJArUJeeh8TxBw=
+	t=1761291245; cv=none; b=ANRU4SK0PKrHMOwabeSpfKZeZyOge7SIctYmW1en9nIB5JT34GehruF6G7Tlu34YpC4WQ0AeJee8hYcvz2D+nicctVodbIQ6EaQKhhD2uBbJpZe1CsWGP0avhBNdIYEFmeD1MJWe0ODuNfmoq18qePpeTCC+NVfPFaNUVTJfyGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761290003; c=relaxed/simple;
-	bh=euNXfmHSdLMS8YZpkPG5vNkUc0h98/CM2xKpVLwz8dA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NZfIH03qZkUJud0S91eGj239xE95egNb9+EUjxulXyHWrMhQf+8DkBfOjrNFvhm4GhReJHolnwA8vy9n964EwYeLpN3hyaOY2bWmkmwxDzoSgACG2zH62t+W6PyWDpWbwpYoYtH7HjBpm7+BKqUxyiYEtFgOX9Kf4e2ajfI3wJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eE9dPGYl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3910C4CEF1;
-	Fri, 24 Oct 2025 07:13:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761290002;
-	bh=euNXfmHSdLMS8YZpkPG5vNkUc0h98/CM2xKpVLwz8dA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eE9dPGYlk5IdHIOGVkazj4pTfCGy1tXfT0umTTPanA/tJ/e6/bZhJMERzocVBIxC7
-	 ollgTfe8Z6ZIoeygzT/mUrj+nFTIUjbCcxPd2JW/M5IjsIXSHE2w+d3tYGuy317Fwx
-	 VO+wTAViaGkRzGQmJM5WuvjDhvRXqZG2ctR6rgrDBHP7olc7x5VTZlEbWVGqWfsWgp
-	 umm3oJ2npVk9OhSL3P+9iEMNY5OAwfaoCin+Bi//Qeno8t04Zibhqj3MWPSyWIm08r
-	 V/wfWfiGwPvLQ4wIv6pV5PTAvqPRPBaMRpGLOU0vc5rofzSo6qd8LhhmGoW5edmOS8
-	 0YG5DxfqRwT+w==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	live-patching@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	rostedt@goodmis.org,
-	andrey.grodzovsky@crowdstrike.com,
-	mhiramat@kernel.org,
-	kernel-team@meta.com,
-	Song Liu <song@kernel.org>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Add tests for livepatch + bpf trampoline
-Date: Fri, 24 Oct 2025 00:12:57 -0700
-Message-ID: <20251024071257.3956031-4-song@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251024071257.3956031-1-song@kernel.org>
-References: <20251024071257.3956031-1-song@kernel.org>
+	s=arc-20240116; t=1761291245; c=relaxed/simple;
+	bh=0UAec0Fr+NXUdWX+wkOeNQszJqaI0q/zsFGU5CjU0vo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NbTAb3RllNlwdDc2si/Ej/8H7T+jIgUK5doXL7wNXuQ5y9JJk16ysNVe9//KIofyfh227S8YqXSZodPZmxqlk/YaApUHWCyB64c8Kncv0pttLtttAvQ6V4ZIHPtgYJKnk9VnAQsq3gQUZqrSnO6fD5dWHuu4QJmpnk0qlZ1R6Tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=c3FgtXNH; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59O3NWHA005755;
+	Fri, 24 Oct 2025 07:33:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2025-04-25; bh=wxHYR7ihB1r1dCploAkzZQWl5F5Cu
+	QnQs24YD7aVxCo=; b=c3FgtXNHjoFIVO1z9FxnU3wQlNdkbM3w68gfiwmY6VJci
+	uMu6+5CGJGTrc1Fn10i0EngAJlwz5T65ymCebTdkMpfWGr5brgEUPusaJMg74Yv1
+	S7W+H31GcOrEZkEGk2SXVmYDoo6CEiJmsSBqjzBU8NaTh5hRw2lY41z2j9/bvI2Q
+	mo9D/d013B7h3I46SfJV32RDpfVww/i1asuWa2L0WSmqAxrd+F+RcUE+cJYyE4dO
+	wsVLGQgbBGQpo9/qvlfUO/VTFlqd/5CNcrQEKsSHJX/SLgjjS07+EN7NJJclwqnB
+	eJtJk40P40pU6viEpqsHa65i1Sco1z/N34yZvoUKw==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 49xv5wm4q9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 24 Oct 2025 07:33:35 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 59O5MC1P022300;
+	Fri, 24 Oct 2025 07:33:35 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 49v1bgm4ba-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 24 Oct 2025 07:33:35 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 59O7XYwd019356;
+	Fri, 24 Oct 2025 07:33:34 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-154-57-127.vpn.oracle.com [10.154.57.127])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 49v1bgm48v-1;
+	Fri, 24 Oct 2025 07:33:34 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: dwarves@vger.kernel.org
+Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, acme@kernel.org, ttreyer@meta.com,
+        yonghong.song@linux.dev, song@kernel.org, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+        jolsa@kernel.org, qmo@kernel.org, ihor.solodrai@linux.dev,
+        david.faust@oracle.com, jose.marchesi@oracle.com, bpf@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [RFC dwarves 0/5] pahole: support BTF inline encoding
+Date: Fri, 24 Oct 2025 08:33:23 +0100
+Message-ID: <20251024073328.370457-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,206 +79,79 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-10-23_03,2025-10-22_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ phishscore=0 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2510020000 definitions=main-2510240065
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDIyMDA3MSBTYWx0ZWRfX74csGnbckTSJ
+ NyIlGfOdirJ/v5k/tbSg84ibZMNDaOR1CcSOuId25OREgOh1zU3+fOF5siwUb2AMu9a5JSGXRpy
+ LBv6fOX9KDLZrX1noFwOYIKLscmk/WxTGm6Wq/HORyWS7PxbUtLFw6PGnUzgblIMvcfO23nyeLz
+ 3nnuSyIYHcMOMYIgSzg6KSWoDk0D4wd9eDbn6mMIGGM6qMuwtUiAqptOthCJ7GNM52YtQrCFcxr
+ n2W7/kPdycfP5L6D5G4kuWDIpEKHwoiU2bV6j1TpQ7wdk8xbDxgrZWg8lkMBu+GpiObIryKIVmP
+ tD7506venXDPeUngPz4Mzh2yFV2zvnUwz8y8zSwPlLAOS0+8Zkx+VcH/rNrsu4cXcqpMN9r8nBE
+ Cv3n7QfshTgiMUmRjhhfWB8UIFuE6XW7xOpz/i7D/iwCepRp9Bo=
+X-Proofpoint-GUID: Xw9WjEbmNYafsC-pcMoI0HGK3iSrK9dU
+X-Proofpoint-ORIG-GUID: Xw9WjEbmNYafsC-pcMoI0HGK3iSrK9dU
+X-Authority-Analysis: v=2.4 cv=RfOdyltv c=1 sm=1 tr=0 ts=68fb2bcf b=1 cx=c_pps
+ a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
+ a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=yPCof4ZbAAAA:8
+ a=MKHlBN67fjswmNnkxXsA:9 cc=ntf awl=host:13624
 
-Both livepatch and BPF trampoline use ftrace. Special attention is needed
-when livepatch and fexit program touch the same function at the same
-time, because livepatch updates a kernel function and the BPF trampoline
-need to call into the right version of the kernel function.
+This series is the RFC companion to [1]; while it has some issues
+(including segmentation faults which will be fixed in follups)
+hopefully it illustrates the approach.
 
-Use samples/livepatch/livepatch-sample.ko for the test.
+These patches were developed with help from prior work by
+Eduard Zingerman on inline site decoding and Thierry Treyer
+on inline encoding, but the scheme used here is somewhat simpler.
+It relies on using standard BTF kinds (_LOC_PARAM for parameters
+at inline sites, _LOC_PROTO for collections of paraeters at inline
+sites, _LOCSEC for descriptions of inline sites; names, function
+prototypes, location prototypes and relative address offsets).
 
-The test covers two cases:
-  1) When a fentry program is loaded first. This exercises the
-     modify_ftrace_direct code path.
-  2) When a fentry program is loaded first. This exercises the
-     register_ftrace_direct code path.
+Patches 1-3 focus on preparing the DWARF loader to collect
+inline info.
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- tools/testing/selftests/bpf/config            |   3 +
- .../bpf/prog_tests/livepatch_trampoline.c     | 113 ++++++++++++++++++
- .../bpf/progs/livepatch_trampoline.c          |  30 +++++
- 3 files changed, 146 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/livepatch_trampoline.c
- create mode 100644 tools/testing/selftests/bpf/progs/livepatch_trampoline.c
+Patch 4 does the BTF encoding, and patch 5 adds the inline option.
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 70b28c1e653e..f2a2fd236ca8 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -50,6 +50,7 @@ CONFIG_IPV6_SIT=y
- CONFIG_IPV6_TUNNEL=y
- CONFIG_KEYS=y
- CONFIG_LIRC=y
-+CONFIG_LIVEPATCH=y
- CONFIG_LWTUNNEL=y
- CONFIG_MODULE_SIG=y
- CONFIG_MODULE_SRCVERSION_ALL=y
-@@ -111,6 +112,8 @@ CONFIG_IP6_NF_FILTER=y
- CONFIG_NF_NAT=y
- CONFIG_PACKET=y
- CONFIG_RC_CORE=y
-+CONFIG_SAMPLES=y
-+CONFIG_SAMPLE_LIVEPATCH=m
- CONFIG_SECURITY=y
- CONFIG_SECURITYFS=y
- CONFIG_SYN_COOKIES=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/livepatch_trampoline.c b/tools/testing/selftests/bpf/prog_tests/livepatch_trampoline.c
-new file mode 100644
-index 000000000000..6326f957dbcd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/livepatch_trampoline.c
-@@ -0,0 +1,113 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#include <test_progs.h>
-+#include "testing_helpers.h"
-+#include "livepatch_trampoline.skel.h"
-+
-+static int load_livepatch(void)
-+{
-+	const char *livepatch_paths[] = {
-+		"../../../../samples/livepatch/livepatch-sample.ko",
-+		/* This is the path used by CI */
-+		"/tmp/work/bpf/bpf/kbuild-output/samples/livepatch/livepatch-sample.ko",
-+	};
-+	int ret, i;
-+
-+	for (i = 0; i < sizeof(livepatch_paths) / sizeof(char *); i++) {
-+		ret = load_module(livepatch_paths[i], env_verbosity > VERBOSE_NONE);
-+		if (!ret)
-+			break;
-+	}
-+	return ret;
-+}
-+
-+static void unload_livepatch(void)
-+{
-+	/* Disable the livepatch before unloading the module */
-+	system("echo 0 > /sys/kernel/livepatch/livepatch_sample/enabled");
-+
-+	unload_module("livepatch_sample", env_verbosity > VERBOSE_NONE);
-+}
-+
-+static void read_proc_cmdline(void)
-+{
-+	char buf[4096];
-+	int fd, ret;
-+
-+	fd = open("/proc/cmdline", O_RDONLY);
-+	if (!ASSERT_OK_FD(fd, "open /proc/cmdline"))
-+		return;
-+
-+	ret = read(fd, buf, sizeof(buf));
-+	if (!ASSERT_GT(ret, 0, "read /proc/cmdline"))
-+		goto out;
-+
-+	ASSERT_OK(strncmp(buf, "this has been live patched", 26), "strncmp");
-+
-+out:
-+	close(fd);
-+}
-+
-+static void __test_livepatch_trampoline(bool fexit_first)
-+{
-+	struct livepatch_trampoline *skel = NULL;
-+	int err;
-+
-+	skel = livepatch_trampoline__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		goto out;
-+
-+	skel->bss->my_pid = getpid();
-+
-+	if (!fexit_first) {
-+		/* fentry program is loaded first by default */
-+		err = livepatch_trampoline__attach(skel);
-+		if (!ASSERT_OK(err, "skel_attach"))
-+			goto out;
-+	} else {
-+		/* Manually load fexit program first. */
-+		skel->links.fexit_cmdline = bpf_program__attach(skel->progs.fexit_cmdline);
-+		if (!ASSERT_OK_PTR(skel->links.fexit_cmdline, "attach_fexit"))
-+			goto out;
-+
-+		skel->links.fentry_cmdline = bpf_program__attach(skel->progs.fentry_cmdline);
-+		if (!ASSERT_OK_PTR(skel->links.fentry_cmdline, "attach_fentry"))
-+			goto out;
-+	}
-+
-+	read_proc_cmdline();
-+
-+	ASSERT_EQ(skel->bss->fentry_hit, 1, "fentry_hit");
-+	ASSERT_EQ(skel->bss->fexit_hit, 1, "fexit_hit");
-+out:
-+	livepatch_trampoline__destroy(skel);
-+}
-+
-+void test_livepatch_trampoline(void)
-+{
-+	int retry_cnt = 0;
-+
-+retry:
-+	if (load_livepatch()) {
-+		if (retry_cnt) {
-+			ASSERT_OK(1, "load_livepatch");
-+			goto out;
-+		}
-+		/*
-+		 * Something else (previous run of the same test?) loaded
-+		 * the KLP module. Unload the KLP module and retry.
-+		 */
-+		unload_livepatch();
-+		retry_cnt++;
-+		goto retry;
-+	}
-+
-+	if (test__start_subtest("fentry_first"))
-+		__test_livepatch_trampoline(false);
-+
-+	if (test__start_subtest("fexit_first"))
-+		__test_livepatch_trampoline(true);
-+out:
-+	unload_livepatch();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/livepatch_trampoline.c b/tools/testing/selftests/bpf/progs/livepatch_trampoline.c
-new file mode 100644
-index 000000000000..15579d5bcd91
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/livepatch_trampoline.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+int fentry_hit;
-+int fexit_hit;
-+int my_pid;
-+
-+SEC("fentry/cmdline_proc_show")
-+int BPF_PROG(fentry_cmdline)
-+{
-+	if (my_pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	fentry_hit = 1;
-+	return 0;
-+}
-+
-+SEC("fexit/cmdline_proc_show")
-+int BPF_PROG(fexit_cmdline)
-+{
-+	if (my_pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	fexit_hit = 1;
-+	return 0;
-+}
+The target of encoding is either the .BTF section (if "inline"
+is specified as btf_feature) or .BTF.extra (for the inline.extra
+feature).
+
+One challenge here is that we need to stash info about function
+prototypes while walking DWARF CUs for later use in inline
+encoding.  However, if the inlines are encoded in a separate
+split BTF section (inline.extra) dedup that happens to the
+main BTF will not renumber these type references.  As a result
+we need to ask dedup to hand us back the old->new BTF id
+mappings to fix things up.
+
+Note that since RFC of the bpf-next series we will be changing
+a lot of this, but it still gives a rough sense of how things
+are done.
+
+[1] https://lore.kernel.org/bpf/20251008173512.731801-1-alan.maguire@oracle.com/
+
+Alan Maguire (3):
+  dwarf_loader: Collect inline expansion location information
+  btf_encoder: Support encoding of inline location information
+  pahole: Support inline encoding with inline[.extra] BTF feature
+
+Thierry Treyer (2):
+  dwarf_loader: Add parameters list to inlined expansion
+  dwarf_loader: Add name to inline expansion
+
+ btf_encoder.c  | 396 +++++++++++++++++++++++++++++++++++++++++----
+ dwarf_loader.c | 428 ++++++++++++++++++++++++++++++++++++-------------
+ dwarves.c      |  26 +++
+ dwarves.h      |  60 +++++++
+ pahole.c       |  33 +++-
+ 5 files changed, 791 insertions(+), 152 deletions(-)
+
 -- 
-2.47.3
+2.39.3
 
 
