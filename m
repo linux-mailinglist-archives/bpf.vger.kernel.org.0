@@ -1,153 +1,202 @@
-Return-Path: <bpf+bounces-72104-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72105-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id E51D6C069F5
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 16:10:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD9FAC06AD6
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 16:22:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AD4B84EBFD4
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 14:09:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF3ED3A8075
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 14:22:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3B5322559;
-	Fri, 24 Oct 2025 14:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01FE2046BA;
+	Fri, 24 Oct 2025 14:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="hlVWpuEo";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Q3qANt1i"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="ezQP+7u3"
 X-Original-To: bpf@vger.kernel.org
-Received: from flow-b8-smtp.messagingengine.com (flow-b8-smtp.messagingengine.com [202.12.124.143])
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C8B31814A;
-	Fri, 24 Oct 2025 14:08:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.143
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9A371F5827;
+	Fri, 24 Oct 2025 14:22:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761314920; cv=none; b=bIZwyYOF/2PbpKOMKnewspX4vNdkrR4gNlEMt4uxz3ixb4VUqifHp6ERPdW2Tu5GljA58BTfGUCfaXntArIQ5zLJ5hjuoLrKVCSMKPl7rx8YSX/BPKXhizUYk3eIJVOx16skUAVEbnqjGRyPAKw2s/SiZPo4LggJxHyV7RkWSEI=
+	t=1761315755; cv=none; b=i0yScdX/rFZLCOKhyBeXyyETHTF4IFtgufwGz8tp7elKSidPZtvOF6JFTTh5pNXGwxvLCW3m3W9OwJb8CWHwPVz1PxWR+gyuuf/5+du8ixvbgtKry/zPz2rmN9oxumLE/zowWhK9blhWPXQ/+FmW1FsfWzEpX0bK8+YKI3Y9cew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761314920; c=relaxed/simple;
-	bh=VB7MUbFzQw0hGAqr2p+CQiUuP9dG3eG52n6sxVb7FEk=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=Kn2EGa8N1ppsuIUSU6uAfpeEARpbX/XGo5RvU0xrWrMURr/3d58/k0aUW8VpAK6OybhfNsI/CBCKMchy2MuGPRfxlahOqDyh1m2K3gE2IILuvYRGfMOUmz3EphKnBOqwV65MPhFemfhbl/oQ0ze15RP7vF8g4GU9gfpFsGxHo4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=hlVWpuEo; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Q3qANt1i; arc=none smtp.client-ip=202.12.124.143
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailflow.stl.internal (Postfix) with ESMTP id AEEFD13006B5;
-	Fri, 24 Oct 2025 10:08:37 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-05.internal (MEProxy); Fri, 24 Oct 2025 10:08:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1761314917;
-	 x=1761322117; bh=Cb+ptnx07ebPr7o44PcZpvCH+xBEfVRPWdIj9Bu8PAI=; b=
-	hlVWpuEowvcQ6T6uZqLHfrUU9JlFXqGHcV8BHQkCM0MzrkM4uyGfftYu1MeCSqni
-	QUWKUgEfY83yORtU0utfCF2h4y0inSZNJyvQdZtaxL5NNctp0Xdcf53q8wtR7E9c
-	xvUMbDaI5R/3AGOwHOlOGpQBi0tChugU5qRNoml9LZuXqNSMOYFRH0KMgVHAT0/I
-	gRfJh3uJDQGKxtA/lwkNSoeG9L92ihfF9XSiEwauzOyY80tA/Mge612399gJSGxJ
-	kUpnX157bWwSifx3GLcd8eaEmERuOkWZSJgFDhu6CRNExLfKS6Jh7urUEzMXadoB
-	zoGexToHJXiWQMTgw8ynEA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1761314917; x=
-	1761322117; bh=Cb+ptnx07ebPr7o44PcZpvCH+xBEfVRPWdIj9Bu8PAI=; b=Q
-	3qANt1i+zXY6oUOAlXErT5FKFmPLwU+e0ZdhkeYCRbn8e8NVgiOQoa4NhDvRL+0Z
-	J7MIR9cWPfn96kD8nYrOZVFb1vlglmDP24GBi5iYU7+0GVoSgwVdXyL0h68qPMVR
-	BXD02sO1Ls9m7FOWtVaMLms+Wjv6KgV5URYsYaJJKChl87/+WPQE3QmDyrsZxrBH
-	X8564wcaN4vIXrhYz9ggib+c0Nsm/xbM2LwhrMasDqVksXgZwAev+id6/75mFMHP
-	Tsw4pQwkaJl1IZC2JzW+5LizuevV3AdysERGuzFlTqHnujuGdElQWJMaDBX8ZCDB
-	i4vO+HXb1nqngVqDTnkGA==
-X-ME-Sender: <xms:ZIj7aA3Eg3Y0rlzk26ezjCER1IzRbSwN2wjgyobpPn-bU88Qf21ZAQ>
-    <xme:ZIj7aF77yLXSQjINknf_EQXACdywcpQQUYKqCnaMnAKK8PTIjJT8EVsUlpIE2YeBc
-    9Ly1OQd9u0EbOnRqmT7Y1GJn6AczAC_Jx25CRn-xdDC47-qzdNu>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddugeelheegucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefggfevudegudevledvkefhvdei
-    necuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
-    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepvddvpdhmohguvgepshhmthhpohhu
-    thdprhgtphhtthhopehmiiigrhgvrghrhiestdhpohhinhhtvghrrdguvgdprhgtphhtth
-    hopehhrghnnhgvshestghmphigtghhghdrohhrghdprhgtphhtthhopegthihphhgrrhes
-    tgihphhhrghrrdgtohhmpdhrtghpthhtoheprghmihhrjeefihhlsehgmhgrihhlrdgtoh
-    hmpdhrtghpthhtohepuggrrghnrdhjrdguvghmvgihvghrsehgmhgrihhlrdgtohhmpdhr
-    tghpthhtohepvgguuhhmrgiivghtsehgohhoghhlvgdrtghomhdprhgtphhtthhopehjrg
-    hnnhhhsehgohhoghhlvgdrtghomhdprhgtphhtthhopeiisgihshiivghksehinhdrfigr
-    fidrphhlpdhrtghpthhtohepsghrrghunhgvrheskhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:ZYj7aG4UJ2M8mc3pnSzWeFpW2CG5XHRvFuvCPGbR3JoK59nl83qsmQ>
-    <xmx:ZYj7aBPgrinlB_DSWtycLsEcaniQY6W2WbSpix2NBrnlgimoI32iDQ>
-    <xmx:ZYj7aH7BdLb6AqXBIH_FZBmjsIWL8OL5ThWIUAzV5tYwajH9yU0IbA>
-    <xmx:ZYj7aIzWcoJTsQ_UTsWxc6_N0j7AIb1XaVzd0jMwaWXpD3G9F5ukbQ>
-    <xmx:ZYj7aPDZv86yheOLByNFoKdlBVjT8Z9V_vZax3GzdYaa2VPAbx1q-aCp>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id DCF42700054; Fri, 24 Oct 2025 10:08:36 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1761315755; c=relaxed/simple;
+	bh=2AIS1AnyVXmYXs2B/o3OhQYHrOJcyrvIst6+oyJcSEA=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=N/oCYZH7U8erD3OUboltOL0e4TZWDkSHHMJ2aBSXx6ubOX2MxW41Jr+To61TP2a8oE5HcFdtSNmTmKkejDLno32P5+8lQI7gXvWbnTLHgSMDv1KgUCofKkOf9H2Q8ihkfY98aHYyYCC7Oh7NwxRYl3AQKWQ+6HqVEyCCyfWDROI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=ezQP+7u3; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 59OBwgYl419537;
+	Fri, 24 Oct 2025 07:21:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=b/ol2wZmOZszG9k8vxf893BYtcntNjtXKAqt3ZVyZ6M=; b=ezQP+7u3tFEf
+	zrYyaDhCkTMVQFov2O0qB6+PQ8nFCiz5xUxgfcMk2tR+A3R95RZzzaKIuV+0udnJ
+	CETmgt5bY2oOqy9mzXp4dlGP2sajgZMdyujqwW9Jd3+LwfTJJnmgMKee2hmQcqYr
+	WcE4brwFFiA3z7jYttDF5dcSZDq9hbl8VFDOJu5glQxQ96K+O8D1SKa4j6JalBSI
+	O5tzYojsleliqP7yWdADgof1zsQg4uANQ8T4e/jCWi4UAfCyP24qMqFgbZnB9oHV
+	Z2N/UdAhoSxb1Rht4AfWxZvy79778q+JYsFec/by5KkZgF6k0yclfpMdaDfD7DNN
+	vDn6vxt7NQ==
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4a09288x7k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Fri, 24 Oct 2025 07:21:55 -0700 (PDT)
+Received: from devbig091.ldc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.20; Fri, 24 Oct 2025 14:21:52 +0000
+From: Chris Mason <clm@meta.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+CC: Chris Mason <clm@meta.com>, Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@gentwo.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>,
+        "Liam R. Howlett"
+	<Liam.Howlett@oracle.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        "Sebastian
+ Andrzej Siewior" <bigeasy@linutronix.de>,
+        Alexei Starovoitov
+	<ast@kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rt-devel@lists.linux.dev>,
+        <bpf@vger.kernel.org>, <kasan-dev@googlegroups.com>
+Subject: Re: [PATCH RFC 02/19] slab: handle pfmemalloc slabs properly with sheaves
+Date: Fri, 24 Oct 2025 07:21:35 -0700
+Message-ID: <20251024142137.739555-1-clm@meta.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251023-sheaves-for-all-v1-2-6ffa2c9941c0@suse.cz>
+References:
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AvgbtRMgB1Po
-Date: Fri, 24 Oct 2025 16:08:16 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
- "Josef Bacik" <josef@toxicpanda.com>, "Jeff Layton" <jlayton@kernel.org>
-Cc: "Jann Horn" <jannh@google.com>, "Mike Yuan" <me@yhndnzj.com>,
- =?UTF-8?Q?Zbigniew_J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>,
- "Lennart Poettering" <mzxreary@0pointer.de>,
- "Daan De Meyer" <daan.j.demeyer@gmail.com>,
- "Aleksa Sarai" <cyphar@cyphar.com>, "Amir Goldstein" <amir73il@gmail.com>,
- "Tejun Heo" <tj@kernel.org>, "Johannes Weiner" <hannes@cmpxchg.org>,
- "Thomas Gleixner" <tglx@linutronix.de>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>, "Jan Kara" <jack@suse.cz>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- Netdev <netdev@vger.kernel.org>
-Message-Id: <cfefa1c8-4cd2-478e-8c68-627a0a767f7d@app.fastmail.com>
-In-Reply-To: 
- <20251024-work-namespace-nstree-listns-v3-18-b6241981b72b@kernel.org>
-References: 
- <20251024-work-namespace-nstree-listns-v3-0-b6241981b72b@kernel.org>
- <20251024-work-namespace-nstree-listns-v3-18-b6241981b72b@kernel.org>
-Subject: Re: [PATCH v3 18/70] arch: hookup listns() system call
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDI0MDEyOCBTYWx0ZWRfXwTD/VmjTrZA6
+ JRMZKrwqksV2xp1yhJWxwn6gzdqQ6FLs2fQ0eb7xBONuzcwgzrrSURnRmWBCizGKI+13LbnEIl4
+ ylNtvCoS+qc8ZaNrun/2WUn50FZBKyvgRCtxu011MC4I60o1A0gUQr7LQe1DnOC1f19Mw9W27VB
+ MlWsAS28QxLMenEBX7/purq6SIW3f2Ls4I6uC6IrLhRbaN7uAosLW6+sFcqB5q5bySPDl5GzzE5
+ R9gNXo0vhN4ZummzWu1+T3C/Fckz++HJCysc3xdveEplf4WxEoLA0JxvzvfFP6keHpZ+LjYmoHz
+ lUK8NtClWc9hhIyXgA6umSdgtc7sWHlWqXnnspAxBWh4MhmjJc8arJC6lHS0Uji0i8FsmPJ+NE1
+ uMZWCoJMv2b3asDyr7V0u3Kf1VWvBQ==
+X-Proofpoint-GUID: 1v7_B19uZD_UKIAK3zHZIbCsxtzfqkFk
+X-Authority-Analysis: v=2.4 cv=aK79aL9m c=1 sm=1 tr=0 ts=68fb8b83 cx=c_pps
+ a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17
+ a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=PCJbmnWxFXnHO1kFQDsA:9
+ a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-ORIG-GUID: 1v7_B19uZD_UKIAK3zHZIbCsxtzfqkFk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-10-24_02,2025-10-22_01,2025-03-28_01
 
-On Fri, Oct 24, 2025, at 12:52, Christian Brauner wrote:
-> Add the listns() system call to all architectures.
+On Thu, 23 Oct 2025 15:52:24 +0200 Vlastimil Babka <vbabka@suse.cz> wrote:
+
+> When a pfmemalloc allocation actually dips into reserves, the slab is
+> marked accordingly and non-pfmemalloc allocations should not be allowed
+> to allocate from it. The sheaves percpu caching currently doesn't follow
+> this rule, so implement it before we expand sheaves usage to all caches.
+> 
+> Make sure objects from pfmemalloc slabs don't end up in percpu sheaves.
+> When freeing, skip sheaves when freeing an object from pfmemalloc slab.
+> When refilling sheaves, use __GFP_NOMEMALLOC to override any pfmemalloc
+> context - the allocation will fallback to regular slab allocations when
+> sheaves are depleted and can't be refilled because of the override.
+> 
+> For kfree_rcu(), detect pfmemalloc slabs after processing the rcu_sheaf
+> after the grace period in __rcu_free_sheaf_prepare() and simply flush
+> it if any object is from pfmemalloc slabs.
+> 
+> For prefilled sheaves, try to refill them first with __GFP_NOMEMALLOC
+> and if it fails, retry without __GFP_NOMEMALLOC but then mark the sheaf
+> pfmemalloc, which makes it flushed back to slabs when returned.
 >
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
 
-This looks correct to me,
+Hi Vlastimil,
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+We're trying out the AI patch review automation on the BPF commits and it had
+some questions about a few of these.  Since the goal is to actually test the
+automation, I'm putting them in unedited, but I did try and make sure they
+were valid before sending.
 
-> diff --git a/include/uapi/asm-generic/unistd.h 
-> b/include/uapi/asm-generic/unistd.h
-> index 04e0077fb4c9..942370b3f5d2 100644
-> --- a/include/uapi/asm-generic/unistd.h
-> +++ b/include/uapi/asm-generic/unistd.h
-> @@ -857,9 +857,11 @@ __SYSCALL(__NR_open_tree_attr, sys_open_tree_attr)
->  __SYSCALL(__NR_file_getattr, sys_file_getattr)
->  #define __NR_file_setattr 469
->  __SYSCALL(__NR_file_setattr, sys_file_setattr)
-> +#define __NR_listns 470
-> +__SYSCALL(__NR_listns, sys_listns)
-> 
->  #undef __NR_syscalls
-> -#define __NR_syscalls 470
-> +#define __NR_syscalls 471
-> 
+For this one, I'm not sure if the behavior AI is flagging is intentional or
+not, so it feels like a reasonable question to me at least:
 
-I still need to remove this unused file, but that is my problem,
-not yours. No need to add patch 71 to your series ;-)
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 4731b9e461c2..ab03f29dc3bf 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
 
-    Arnd
+[ ... ]
+
+> @@ -5331,6 +5340,26 @@ void *kmem_cache_alloc_node_noprof(struct kmem_cache *s, gfp_t gfpflags, int nod
+>  }
+>  EXPORT_SYMBOL(kmem_cache_alloc_node_noprof);
+>
+> +static int __prefill_sheaf_pfmemalloc(struct kmem_cache *s,
+> +				      struct slab_sheaf *sheaf, gfp_t gfp)
+> +{
+> +	int ret = 0;
+> +
+> +	ret = refill_sheaf(s, sheaf, gfp | __GFP_NOMEMALLOC);
+> +
+> +	if (likely(!ret || !gfp_pfmemalloc_allowed(gfp)))
+> +		return ret;
+> +
+> +	/*
+> +	 * if we are allowed to, refill sheaf with pfmemalloc but then remember
+> +	 * it for when it's returned
+> +	 */
+> +	ret = refill_sheaf(s, sheaf, gfp);
+> +	sheaf->pfmemalloc = true;
+> +
+> +	return ret;
+> +}
+
+[ ... ]
+
+> @@ -5497,7 +5528,7 @@ int kmem_cache_refill_sheaf(struct kmem_cache *s, gfp_t gfp,
+>
+>  	if (likely(sheaf->capacity >= size)) {
+>  		if (likely(sheaf->capacity == s->sheaf_capacity))
+> -			return refill_sheaf(s, sheaf, gfp);
+> +			return __prefill_sheaf_pfmemalloc(s, sheaf, gfp);
+>
+>  		if (!__kmem_cache_alloc_bulk(s, gfp, sheaf->capacity - sheaf->size,
+>  					     &sheaf->objects[sheaf->size])) {
+                                             ^^^
+
+In kmem_cache_refill_sheaf(), does the oversize sheaf path (when
+sheaf->capacity != s->sheaf_capacity) need __GFP_NOMEMALLOC too?
+
+The commit message says "When refilling sheaves, use __GFP_NOMEMALLOC
+to override any pfmemalloc context", and the normal capacity path now
+calls __prefill_sheaf_pfmemalloc() which adds __GFP_NOMEMALLOC.
+
+But this oversize path still calls __kmem_cache_alloc_bulk() with the
+raw gfp flags. If the calling context is pfmemalloc-enabled (e.g.,
+during swap or network operations), could pfmemalloc objects be
+allocated into the sheaf? Those objects would then be returned via
+kmem_cache_alloc_from_sheaf() to potentially non-pfmemalloc callers.
+
+Similar issue exists in kmem_cache_prefill_sheaf() for the oversize
+path at the function's start, though that code wasn't modified by this
+patch.
+
+>  			return -ENOMEM;
+>  		}
+>  		sheaf->size = sheaf->capacity;
+
+[ ... ]
+
+
 
