@@ -1,256 +1,239 @@
-Return-Path: <bpf+bounces-72106-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72107-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 480EAC06B2D
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 16:30:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E0A3C06B30
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 16:30:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07F7E1C04B10
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 14:30:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 099061C04AED
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 14:30:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE9930C361;
-	Fri, 24 Oct 2025 14:30:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECC031A7FB;
+	Fri, 24 Oct 2025 14:30:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="V04MSyAs"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="lNiDEF6C"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2C62D8DB9;
-	Fri, 24 Oct 2025 14:30:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5227C313552;
+	Fri, 24 Oct 2025 14:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761316208; cv=none; b=U5czRe0lgvEMx8TIVgW/70hJhV6zVHJAG43e2gFt5i8k4u4ZAYst86kF/dO6dYVPvP77IdwXBBmPqHPSN7I2vekZlpwQT6Spne2PINoZ/6U8PUwgbLno3pSuP4TT+ihTOcEk9zkDp+lP+LnSa8RZ5ktxOIBAGoUX77pNwZzl0fI=
+	t=1761316208; cv=none; b=Hxyo0WprC0EALul//gW1s3D2pUG3Lotp+JWPaADPy9xqaHnfsWJzDv8tkqFQHJdOFHxcSaUSaoj15U++2FZ3BCeLXVMHsNvEpYnLVQCJTW+HsnT5iNIdtxy9/dcq+366rr1d/U7zSm7LTll3DYFAySQ/h3Kf1OI1XPQz4lKXenU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1761316208; c=relaxed/simple;
-	bh=co3nQrBHS0v7JO+1VNEdd1IihFfn6mzVni/0vzfUvLs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j0aMgnuledQmIqBbBexRj/MoENNi9yHWYxZAeXXdJIu3XO0gr4Ds/HZkulunAlc1AWTm9ug3KIQPlEMGh4+uZe5Iai0Xr8kAxrnzH1bIKx8WvNVimwuRpaPyh/Ns98/8FrhKwP+Emi9LIhygWLch4303M01ZEqFkji4MHG4J8/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=V04MSyAs; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59O8VK8h010609;
-	Fri, 24 Oct 2025 14:29:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	bh=sXzz58hqxduSzGRDh3mLu3YJJIeqMSKkD/Imsf7uYNQ=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MFSepCTZnBDkRZlrnaisuz0EV50vSrZhDF5npimdpz6qwHIQop28Wzc6Hj588tDrghBGmZ4G/WBbFFuslFhZOhi1ccdEjHQK49cdOs30krcnE29VfhNyGzRi/25qoQeKPb+3TAuX68L8SQ6fevJ3IB+fCuYdKpIzq8pB+C5JGOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=lNiDEF6C; arc=none smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 59O2UEjG1836665;
+	Fri, 24 Oct 2025 07:29:45 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=v4oMNt
-	a2EA5ONs6LrrVjbXVDCb8udFX3XWucqebTej8=; b=V04MSyAstrmDLJINvm2cvh
-	VH4O7MmBLQ3A+6sq6zY+4LDsmeUvK2duNA0isw6qpilo4yeVMbE3+37QAxnkVVpJ
-	XfKdQkwZU3GHDE/jGuYXgNG3VM6Y8+guEtdgTgM4VkDzvUL82AEWk6fSmA+tmeLV
-	mxeoIz0imRO3xrMbRLyjVUGNYV67h4JOlzzG9PLz+5A/+Y95lj/J8MuX7Yuv4bCz
-	ZZA+L324/3yYOY7ZYODoWvAkpmtEHIxPpyvP5QPXKPFi2Omi7Ymcdih9YFKkShP/
-	RT9LDFDayJBr5zurxg+pCuU6j3FzCirFbY5/3XI7l0zM1paxidN/0/58y8GVDhLA
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49v30w65vn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 24 Oct 2025 14:29:16 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 59OEPFuZ011350;
-	Fri, 24 Oct 2025 14:29:15 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49v30w65vj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 24 Oct 2025 14:29:15 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 59OB8wi9002488;
-	Fri, 24 Oct 2025 14:29:14 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 49vqeju9tp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 24 Oct 2025 14:29:14 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 59OETADX38994314
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 24 Oct 2025 14:29:10 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 82A4720043;
-	Fri, 24 Oct 2025 14:29:10 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8233F20040;
-	Fri, 24 Oct 2025 14:29:08 +0000 (GMT)
-Received: from [9.111.177.85] (unknown [9.111.177.85])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 24 Oct 2025 14:29:08 +0000 (GMT)
-Message-ID: <6b5c0c64-c4da-416d-a103-8d6ec2f06a9b@linux.ibm.com>
-Date: Fri, 24 Oct 2025 16:29:07 +0200
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=6/h0G3p+CogW+KUD4A3h3rSaunnYLJugMgdAj9+txKM=; b=lNiDEF6CSP20
+	iTsKdShjwOWG080Ql4m0WuuhKTv/PnaxXYtx2oBXzSdEmmHN7jcBUwvLpsJ0l19i
+	2pN7xUXlwxalCx8zy3oAclMDLf2a059pw1umjoGUI1AgU+a0ybhiKuP4g6gRBzfB
+	L+k3vdZxzdnpzDjAMGaF8dQgxXkmg6C0sgUroTyp/7DXOvXQwxICSzLS6CXdk1XR
+	kgWoLESaE3lsZEq28cnhZibtC0cya778ashO/hCetb0FJPb2O0jFYSQKcKKDr0Fa
+	Yu0eoA8r6/MNE7kizbFCOCj9p1vhSMYZCMshku3Yz6hOLBoRoNX6W98joaTZs8QU
+	eq2VFCVJDQ==
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4a00qr3bp6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Fri, 24 Oct 2025 07:29:45 -0700 (PDT)
+Received: from devbig091.ldc1.facebook.com (2620:10d:c0a8:1b::8e35) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.20; Fri, 24 Oct 2025 14:29:44 +0000
+From: Chris Mason <clm@meta.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+CC: Chris Mason <clm@meta.com>, Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@gentwo.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>,
+        "Liam R. Howlett"
+	<Liam.Howlett@oracle.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        "Sebastian
+ Andrzej Siewior" <bigeasy@linutronix.de>,
+        Alexei Starovoitov
+	<ast@kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rt-devel@lists.linux.dev>,
+        <bpf@vger.kernel.org>, <kasan-dev@googlegroups.com>
+Subject: Re: [PATCH RFC 10/19] slab: remove cpu (partial) slabs usage from allocation paths
+Date: Fri, 24 Oct 2025 07:29:20 -0700
+Message-ID: <20251024142927.780367-1-clm@meta.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251023-sheaves-for-all-v1-10-6ffa2c9941c0@suse.cz>
+References:
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 08/15] unwind_user/sframe: Wire up unwind_user to
- sframe
-To: Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, x86@kernel.org, linux-mm@kvack.org,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Masami Hiramatsu
- <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Indu Bhagat <indu.bhagat@oracle.com>,
-        "Jose E. Marchesi" <jemarch@gnu.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Florian Weimer <fweimer@redhat.com>, Kees Cook <kees@kernel.org>,
-        "Carlos O'Donell" <codonell@redhat.com>, Sam James <sam@gentoo.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-        Michal Hocko
- <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>
-References: <20251022144326.4082059-1-jremus@linux.ibm.com>
- <20251022144326.4082059-9-jremus@linux.ibm.com>
- <20251024134415.GD3245006@noisy.programming.kicks-ass.net>
-Content-Language: en-US
-From: Jens Remus <jremus@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20251024134415.GD3245006@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Ykpf61_8y0gZ-cwvoWdHTyYd4VO3jyTg
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDE4MDAyMiBTYWx0ZWRfX+6YJFqcIrYau
- FfAiginkKWCbTRDMMfI4es5x0Gv2LrIgpMT7B1DW1SUwfXR+r8YvBgLHibQikeToBe9tDf9Su8i
- SNe406UM1ZQHVDOOe7bQLmK3YmgyoFsKs3snpKHi1zjEdyPg/untiqR0sx8USLZ7DslJvwuVXtX
- 7uov274LjKqmA7OxgZlmpdrURUk0CEr7LGSOd39WYdiUPx6BHVrf74M9u86J8W6h2C5teh/wZnT
- LzpVbaclqQLW2t3ExBtkH2EeFZY8j3Kcro2vvFU8HWwqbKP+gaXumYanr19g8i8GnuKTvD5En7N
- CxKPz3S4KFbu+pLcYBRBXfeJa+wunvpVdCfE3NPMCJ4iUwiLX6zytmxsVam68rJax8xxt/LSz2L
- xwE2cVaqDY9a72MNQPfsV8L3ZSYvmg==
-X-Authority-Analysis: v=2.4 cv=MIJtWcZl c=1 sm=1 tr=0 ts=68fb8d3c cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=Z3Xqy3CnV3LH82Reu_wA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=DXsff8QfwkrTrK3sU8N1:22 a=Z5ABNNGmrOfJ6cZ5bIyy:22
- a=bWyr8ysk75zN3GCy5bjg:22
-X-Proofpoint-ORIG-GUID: T5WOf74hicSV-YNKqrY5feRRWuekCWRm
+Content-Type: text/plain
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDI0MDEyOSBTYWx0ZWRfXzo7mh/+QEEto
+ lN48tJt90rZ0v9oBAvXPrAsfwe+CenqqyK68LR7o0BOfvJujTaqFIdwroPduE2PBMa7VnKqUE/B
+ hR/lbf4iinufGfA1AoIc8lE3vKY7y4Hw5m21adIOtvFfDgLbh7c/rKrhMA+6RLDywjI9qT/AoPU
+ QMz8k7g4r2r6F7d78Ky9USlLG/pqBLtW9jbItBaZRSJncw/ge9eg3eKLxO5qPcfnkt2yRAOGPDZ
+ 0oDHjSRBppMO5yVVZV2peChq0H2i7zjAjvg8Sie6K49tWvOlXv5+AOIWEC9CFAuuk3C2lzCpqtT
+ +WAgDcHMs2kxxD4qDJk65eXaVVatHMy1wdEZjZIXRWbu9DTaF8gSAizL8JMHUtenNSM7KaKQCvX
+ uRzKVvQvjM8o8dsWfoKrJwWlFoOyMA==
+X-Authority-Analysis: v=2.4 cv=YfWwJgRf c=1 sm=1 tr=0 ts=68fb8d59 cx=c_pps
+ a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17
+ a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=Qud2Co-4zkO9aUnGrzwA:9
+ a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-GUID: whmAAHXeJ-9g96VK63zLv5mAQoKsaiQB
+X-Proofpoint-ORIG-GUID: whmAAHXeJ-9g96VK63zLv5mAQoKsaiQB
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-10-24_02,2025-10-22_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 spamscore=0 phishscore=0 lowpriorityscore=0 adultscore=0
- clxscore=1015 impostorscore=0 bulkscore=0 priorityscore=1501 suspectscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510020000 definitions=main-2510180022
 
-On 10/24/2025 3:44 PM, Peter Zijlstra wrote:
-> On Wed, Oct 22, 2025 at 04:43:19PM +0200, Jens Remus wrote:
+On Thu, 23 Oct 2025 15:52:32 +0200 Vlastimil Babka <vbabka@suse.cz> wrote:
+
+> We now rely on sheaves as the percpu caching layer and can refill them
+> directly from partial or newly allocated slabs. Start removing the cpu
+> (partial) slabs code, first from allocation paths.
 > 
->> @@ -26,12 +27,10 @@ get_user_word(unsigned long *word, unsigned long base, int off, unsigned int ws)
->>  	return get_user(*word, addr);
->>  }
->>  
->> -static int unwind_user_next_fp(struct unwind_user_state *state)
->> +static int unwind_user_next_common(struct unwind_user_state *state,
->> +				   const struct unwind_user_frame *frame,
->> +				   struct pt_regs *regs)
->>  {
+> This means that any allocation not satisfied from percpu sheaves will
+> end up in ___slab_alloc(), where we remove the usage of cpu (partial)
+> slabs, so it will only perform get_partial() or new_slab().
 > 
-> What is pt_regs for? AFAICT it isn't actually used in any of the
-> following patches.
-
-Good catch!  No idea.  It started to appear in v9 of the series:
-
-[PATCH v8 06/12] unwind_user/sframe: Wire up unwind_user to sframe
-https://lore.kernel.org/all/20250708021159.386608979@kernel.org/
-
-[PATCH v9 06/11] unwind_user/sframe: Wire up unwind_user to sframe
-https://lore.kernel.org/all/20250717012936.619600891@kernel.org/
-
-My s390 support for unwind user sframe will make use of it, but it
-should better be introduced there then.
-
-@Steven: Any idea why you added pt_regs?  Your v9 even had this other
-instance of unused pt_regs:
-
-+static struct unwind_user_frame *get_fp_frame(struct pt_regs *regs)
-+{
-+	return &fp_frame;
-+}
-
->> @@ -67,6 +66,26 @@ static int unwind_user_next_fp(struct unwind_user_state *state)
->>  	return 0;
->>  }
->>  
->> +static int unwind_user_next_sframe(struct unwind_user_state *state)
->> +{
->> +	struct unwind_user_frame _frame, *frame;
->> +
->> +	/* sframe expects the frame to be local storage */
->> +	frame = &_frame;
->> +	if (sframe_find(state->ip, frame))
->> +		return -ENOENT;
->> +	return unwind_user_next_common(state, frame, task_pt_regs(current));
->> +}
+> In get_partial_node() we used to return a slab for freezing as the cpu
+> slab and to refill the partial slab. Now we only want to return a single
+> object and leave the slab on the list (unless it became full). We can't
+> simply reuse alloc_single_from_partial() as that assumes freeing uses
+> free_to_partial_list(). Instead we need to use __slab_update_freelist()
+> to work properly against a racing __slab_free().
 > 
-> Would it not be simpler to write:
-> 
-> static int unwind_user_next_sframe(struct unwind_user_state *state)
-> {
-> 	struct unwind_user_frame frame;
-> 
-> 	/* sframe expects the frame to be local storage */
-> 	if (sframe_find(state->ip, &frame))
-> 		return -ENOENT;
-> 	return unwind_user_next_common(state, &frame, task_pt_regs(current));
-> }
-> 
-> hmm?
+> The rest of the changes is removing functions that no longer have any
+> callers.
+>
 
-I agree.  Must have been a leftover from changes from v8 to v9.
+Hi Vlastimil,
 
->> @@ -80,6 +99,16 @@ static int unwind_user_next(struct unwind_user_state *state)
->>  
->>  		state->current_type = type;
->>  		switch (type) {
->> +		case UNWIND_USER_TYPE_SFRAME:
->> +			switch (unwind_user_next_sframe(state)) {
->> +			case 0:
->> +				return 0;
->> +			case -ENOENT:
->> +				continue;	/* Try next method. */
->> +			default:
->> +				state->done = true;
->> +			}
->> +			break;
-> 
-> Should it remove SFRAME from state->available_types at this point?
+We're trying out the AI patch review automation on the BPF commits and it had
+some questions about a few of these.  Since the goal is to actually test the
+automation, I'm putting them in unedited, but I did try and make sure they
+were valid before sending.
 
-In the -ENOENT case?  If the reason is that there was either no SFrame
-section or no SFrame information (SFrame FRE) for the IP, then SFRAME
-could potentially be successful with the next IP in the call chain.
-Provided the other unwind methods do correctly unwind both SP and FP.
+This one seems pretty unlikely but still worth fixing:
 
-@Steven: What is your opinion on this?
+>
+> diff --git a/mm/slub.c b/mm/slub.c
+> index e2b052657d11..bd67336e7c1f 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
 
-Thanks and regards,
-Jens
--- 
-Jens Remus
-Linux on Z Development (D3303)
-+49-7031-16-1128 Office
-jremus@de.ibm.com
+[ ... ]
 
-IBM
+> @@ -3575,15 +3532,15 @@ static bool get_partial_node_bulk(struct kmem_cache *s,
+>  }
+>
+>  /*
+> - * Try to allocate a partial slab from a specific node.
+> + * Try to allocate object from a partial slab on a specific node.
+>   */
+> -static struct slab *get_partial_node(struct kmem_cache *s,
+> -				     struct kmem_cache_node *n,
+> -				     struct partial_context *pc)
+> +static void *get_partial_node(struct kmem_cache *s,
+> +			      struct kmem_cache_node *n,
+> +			      struct partial_context *pc)
+>  {
+> -	struct slab *slab, *slab2, *partial = NULL;
+> +	struct slab *slab, *slab2;
+>  	unsigned long flags;
+> -	unsigned int partial_slabs = 0;
+> +	void *object;
+>
+>  	/*
+>  	 * Racy check. If we mistakenly see no partial slabs then we
+> @@ -3599,54 +3556,54 @@ static struct slab *get_partial_node(struct kmem_cache *s,
+>  	else if (!spin_trylock_irqsave(&n->list_lock, flags))
+>  		return NULL;
+>  	list_for_each_entry_safe(slab, slab2, &n->partial, slab_list) {
+> +
+> +		unsigned long counters;
+> +		struct slab new;
+> +
+>  		if (!pfmemalloc_match(slab, pc->flags))
+>  			continue;
 
-IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
-IBM Data Privacy Statement: https://www.ibm.com/privacy/
+Can get_partial_node() return an uninitialized pointer? The variable
+'object' is declared but never initialized. If all slabs in the partial
+list fail the pfmemalloc_match() check, the loop completes without
+setting 'object', then returns it at the end of the function.
+
+In the previous version, the equivalent 'partial' variable was explicitly
+initialized to NULL. When all slabs were skipped, NULL was returned.
+
+>
+>  		if (IS_ENABLED(CONFIG_SLUB_TINY) || kmem_cache_debug(s)) {
+> -			void *object = alloc_single_from_partial(s, n, slab,
+> +			object = alloc_single_from_partial(s, n, slab,
+>  							pc->orig_size);
+> -			if (object) {
+> -				partial = slab;
+> -				pc->object = object;
+> +			if (object)
+>  				break;
+> -			}
+>  			continue;
+>  		}
+>
+> -		remove_partial(n, slab);
+> -
+> -		if (!partial) {
+> -			partial = slab;
+> -			stat(s, ALLOC_FROM_PARTIAL);
+> -
+> -			if ((slub_get_cpu_partial(s) == 0)) {
+> -				break;
+> -			}
+> -		} else {
+> -			put_cpu_partial(s, slab, 0);
+> -			stat(s, CPU_PARTIAL_NODE);
+> -
+> -			if (++partial_slabs > slub_get_cpu_partial(s) / 2) {
+> -				break;
+> -			}
+> -		}
+> +		/*
+> +		 * get a single object from the slab. This might race against
+> +		 * __slab_free(), which however has to take the list_lock if
+> +		 * it's about to make the slab fully free.
+> +		 */
+> +		do {
+> +			object = slab->freelist;
+> +			counters = slab->counters;
+> +			new.freelist = get_freepointer(s, object);
+> +			new.counters = counters;
+> +			new.inuse++;
+> +		} while (!__slab_update_freelist(s, slab,
+> +			object, counters,
+> +			new.freelist, new.counters,
+> +			"get_partial_node"));
+> +
+> +		if (!new.freelist)
+> +			remove_partial(n, slab);
+>  	}
+>  	spin_unlock_irqrestore(&n->list_lock, flags);
+> -	return partial;
+> +	return object;
+>  }
+
+[ ... ]
+
 
 
