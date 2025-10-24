@@ -1,180 +1,276 @@
-Return-Path: <bpf+bounces-72141-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72142-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35D34C07AF3
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 20:17:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A600C07B89
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 20:22:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 179274EB953
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 18:17:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E5E41892F94
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 18:22:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3C1261B64;
-	Fri, 24 Oct 2025 18:17:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85FD346E74;
+	Fri, 24 Oct 2025 18:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="J1kkGTUn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hxb69m2v"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f50.google.com (mail-yx1-f50.google.com [74.125.224.50])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68A7C2E0
-	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 18:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB3621CC49
+	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 18:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761329839; cv=none; b=VFbk7JHNHyg9YWbK00qCdvdZJHagEMu67xrtJ1vp3nwRqbHp8v/USqpsTZA+OUPoiKblwvgAE9dB1+vVrwDKVdIT1YI2x3Bw8X48k27fDnkyCf5iiQYO92xmTDe2K2+eQUKSZivuw/zI/Zl8sYlZbpy6yfCXotkLvwO7Yc4UBZw=
+	t=1761330015; cv=none; b=ubQ/5ZS1mnt3jCevaKTpaRyeMmQPQsdkrgDYgw3aDQkDOgF/mGmbQNjvFhKYMmVPDeYfAdbVDgCJQdlcDzl1Nh3oFblN2ePXdlUl1Tkb/w67ZwEUoZaa+13/LENuPXLRkNPHkJcIYgKc0Y5ZGoGoY3kc7WB6uNBTxy2ovY2F04g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761329839; c=relaxed/simple;
-	bh=DrTetYwXYnChgeufrcDQ2X9huG25jnVcdcsflx4+eh4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QfPKZM1pon1qpVERE8LF5dM/rgelkpwApY6rwRMNQkr/+FYNjQcipJG2QlDyf1zPiRNB7bqxD8S3j4D3SpbJRtq75TsKe/kpKCMCcvxLjwAI+ox/FSJPlgJ1jvQwcTBTVWgcBffs547WNYG5mfdRJhuXFaHFGnDUW4sbNSQdcHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=J1kkGTUn; arc=none smtp.client-ip=74.125.224.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yx1-f50.google.com with SMTP id 956f58d0204a3-63b710f276fso2412986d50.1
-        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 11:17:17 -0700 (PDT)
+	s=arc-20240116; t=1761330015; c=relaxed/simple;
+	bh=XEWcdB8nSL7TWcB0vmWs3gPFfFkARIiMj9ncUdIOKvg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sZYtcX8786GuSvYd58moRDvvRmQ/ccG66NRp/3+w4il6jGe3NfpL02xIIiJZqQCikQLtki9JsU+a/YExR/G9ZahwvyK23hSFafWhs0cjGwfu2qhQxhmlnHIrU0qWWZNEij58w7EtViySeGNuoO97+12wPoosu4oCZHIt6yXlnpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hxb69m2v; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7a2738daea2so2109274b3a.0
+        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 11:20:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761329837; x=1761934637; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2h/ElMh0No0vgq96kFlbqzJt3eEKJ2285EnfEz82Ydg=;
-        b=J1kkGTUnTXpQ74o8T0Q1lGWtOP0oUF1WJhYxYZrSnxuKYXpWE03zauZ3w+BK4lCUPU
-         L7XoURzZ3JH2qYsUZTIxhZg2n7gbFMQLKibqpLOUNiGM11nEB0I2ijM3dPD/azWlEkJd
-         w5HhQsiQ+yoE6xGdjFWGoLRo7nnEHvatmBN0gxF8IMYgxitM6FYieKCQdBfsjX/S26y4
-         FXh/EykkV1ZyhCeH8CGpUi7nlfVknEivViteRhR/gSHgVFvjVUMoD+LeiRQEFr2dPoZt
-         LFCUqMs5+1xKgSxgjuVUi/3JKBVRFQuVFsCTPZR5AWFQ0ksC9YCyI3WnXTNBga3meGbA
-         Oxig==
+        d=gmail.com; s=20230601; t=1761330013; x=1761934813; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mF8pASkRSmy3g5pAre6pJzEAWPU5hy46lyxgo7GleXY=;
+        b=Hxb69m2vcZLJBzX+QHiR+EYvsOj3PsSBmFSqAmXnoaM55Rswoj2yAwWv+vWyKXm0TI
+         qhXMC0gh27QainkDAUDMoXiEHCwEAvQR9er9wyHbompffxJhej6vSC3rMZs3X05D97pZ
+         mNMmVRsYFZiUajGKdVHaNtZiihUPTetmhShf6SgB2Ke0hsH6qGWGcYpts3azfT3YFxNg
+         ysjpZZ55LtYnVUnMVOZTtsSVH70gwjetIDYZyQ1VZ3pCokGyErGxpRgXPOqWyJCqOXQy
+         PyiejjyzCPYSufxx00o4ieO0a1dKDHuUalM9d8rma65XFNk+QpUG0pM2hwlnBYXnwLbT
+         Atcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761329837; x=1761934637;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2h/ElMh0No0vgq96kFlbqzJt3eEKJ2285EnfEz82Ydg=;
-        b=l+JVR3r7T/hoSOHxwu5OYJR4XlYTecDmFcZ6EqHcskMagh3/ZemLjFq3Lti/67ay01
-         P6TKXrsE7qvreWG4Gt5nYxXBBgEjDatSJ4d2RFl4/6Pf6YFMjmcFXODnzN1Dc4NL5yH3
-         v5C0wirSwJBiDPxMOGtUDYtk9eXMPioVDLoO9/0JCxi4AE2g+K6Uh+5rFzdqg0PRUkx6
-         bPnUykAq6+/N09fT+HLiMZ6MdJldgbOipMvc+G0mgR3hqeOCUtYrrl0k9b+dpDQAJb3H
-         eRQ7t7LC7rbksMpaY3VnAXxD6q/R9HC+aeKdsdtRFlx63DZ+ElaNLuOy/Wcpvz9+SsHg
-         8oig==
-X-Forwarded-Encrypted: i=1; AJvYcCUUfIpUXf/mdpoltd1AO0yJDD1GZbdd3MG9ki/7LSJSrKgjQlgEUbFDX7NEAyUQRFDx1Co=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbPjy6O6LIdgMUaOt2F3gpQNbcPx+5wwT5UhmhooRfUcjjDlCu
-	1Pkz86xJ9jMIw3YSn2mLf0xupaTSIYsUs7o5ga9JAYTQLslbI0x5zkTsFOYlUcVPKOJCUaKwozC
-	Sj3qqfCeeHydR3ErDYtFpWEtPlzjBI8wylRAIbOUZ
-X-Gm-Gg: ASbGnct4yM6FmEp+f+4yvwEPuQ9+BS+HEbC1ZRH/TQWix8LtEiwul9LxM2xxDpOMdOl
-	tJZSKnUltW0bMhKBpY+YKNmPO6OY/Mb5HG9W1f1awZAyIvzNcemK6r2GDhqKFfEznXmrA6Fs1om
-	BR5BjrXFQl7fyL+iT/BCVQ5dkHr0+BspKMrVsOlrfbH4b2XrQzuzOT6UaJsRKZxUCromzqaAcnl
-	SH58i+IywiPV+YwXR/uy2mC+GR7m8qPPOF+/oFsdSidxB59C0N1n9qBT19MsL8OzRrxxfiEvXFc
-	OKlnl3iBfkXA/HW5hWAXO6VcpM4c3z+JP/Mf
-X-Google-Smtp-Source: AGHT+IH7fLaxmQPiHVCyIFuVlkCG7QU1A/wthZwwqQkRRKGlnH5+qz2v1xZpkL3rChyG1ByYzAe4TaJtZZ5aJ7l0xXQ=
-X-Received: by 2002:a05:690e:1243:b0:63e:2a71:83b9 with SMTP id
- 956f58d0204a3-63e2a7189f5mr17754554d50.65.1761329836370; Fri, 24 Oct 2025
- 11:17:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1761330013; x=1761934813;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mF8pASkRSmy3g5pAre6pJzEAWPU5hy46lyxgo7GleXY=;
+        b=rPiM52WXXlywqqHr5piAkHHLrXHgx2UCiTc+iS2Lj89P/Xu7+qpAbAW2Ef02nYkLj9
+         xFJsXgxmzDD0YFEpg9uoabLfDlx3yiwU6OTwTUhHNuPjpIdYhn9Et6nCkaUnHmXqeVv5
+         x79pHDx+nEE7osI4SBrq3CR/G663BvxuaFujmCenhzZRtRqY/HsI5GTnn+5+niKdhS9G
+         P2voOaQcGXIXKVF97x4qbi+vwzda1aPp983W4cfYkiBebUwNmrcw/HckjMS/bAtclYM0
+         55BJ2iRo99gBL8ZXV6NML+il8IcFnC6lpdTyCRfLDOmbsby2VrXLpE62lqGZzxrMrMae
+         AW/A==
+X-Forwarded-Encrypted: i=1; AJvYcCXnDxWWRvkwmlIudZXeLiFs1yhvlSr/20W0BnPiVby/YgDSjwd/UZrqjYwvBU9FJuFFCc8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxLEukVL/mmCOLCrFq8op6VlOcNARTZqfsZR7jafJBom7nuTstI
+	WOgFwsFM6ppuLZWahgtMbj3HkpMWHWjh3/ROf5LNB1QyDMaFl81qtKc=
+X-Gm-Gg: ASbGncu47eAC8VQ0M4wcJVw5hD9PYQF2uO1AJPLShhds50UpvPViw9NZK3U4KM1ZjhK
+	R/Uy/xk2sKOZejwdte3DD4JBmV7mChO0Bvq23cNHC/JYwiqJNOzJDEikQ7cfcxB6tgo7kB4YLa4
+	hCI5pSlokG/twVjJ9VOy3YuSf1n9QL3d8NI37Dqy+VcoTwSR/kv2899+lI92Wi0rq7vHE2ceZKx
+	GJR28GNnjhN/Vw0BcxiiZk9QsVWRBXC3v5x69r4VsZPNlNh2W96LQSFpw/iIqnWz1hXXYySYYaV
+	lZo1B0M+WEosH/BdmC8SNvvrNZf3ZP43mDzxIFeDBEMFSrlScdQmHvC5WrGfUQrFUW6q7IfbWxD
+	/e7UfMoIpW/e/eQstxihtGYL+M/kznQwIPaG9WrNBmUEOrs/7+wMcgJ/xa6fCfD0WZo7bvIJsgc
+	31UvCF/CYFoocHIoy8aVxCnn0Yk0+h8/ODs8lpB/hs/cN/1w/CWIEkd6Z1a13owStUjwdfJsmOO
+	/8CyIDcamieFKhzDZLiSNW2ajoOVjtj1H3VXJKCbqYop+QGYOYLZnMw6Jyu7FepS98=
+X-Google-Smtp-Source: AGHT+IFl3AvSw+4rywJDi3NIfeZ09z7+cHIedsvqceTYOl/yM/dg2dUTcTxeuql+mG9DZvg6arOO/g==
+X-Received: by 2002:a05:6a20:72a7:b0:334:a1bb:58a7 with SMTP id adf61e73a8af0-334a8614287mr38803933637.46.1761330012605;
+        Fri, 24 Oct 2025 11:20:12 -0700 (PDT)
+Received: from localhost (c-76-102-12-149.hsd1.ca.comcast.net. [76.102.12.149])
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-7a274a9e580sm6537353b3a.17.2025.10.24.11.20.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Oct 2025 11:20:12 -0700 (PDT)
+Date: Fri, 24 Oct 2025 11:20:11 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
+	davem@davemloft.net, razor@blackwall.org, pabeni@redhat.com,
+	willemb@google.com, sdf@fomichev.me, john.fastabend@gmail.com,
+	martin.lau@kernel.org, jordan@jrife.io,
+	maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+	dw@davidwei.uk, toke@redhat.com, yangzhenze@bytedance.com,
+	wangdongdong.6@bytedance.com
+Subject: Re: [PATCH net-next v3 02/15] net: Implement
+ netdev_nl_bind_queue_doit
+Message-ID: <aPvDW0o89kmtGFfH@mini-arch>
+References: <20251020162355.136118-1-daniel@iogearbox.net>
+ <20251020162355.136118-3-daniel@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251022182301.1005777-1-joshwash@google.com> <20251022182301.1005777-3-joshwash@google.com>
- <20251023171445.2d470bb3@kernel.org>
-In-Reply-To: <20251023171445.2d470bb3@kernel.org>
-From: Ankit Garg <nktgrg@google.com>
-Date: Fri, 24 Oct 2025 11:17:04 -0700
-X-Gm-Features: AWmQ_bkOcEz5vk4of_aFjLMcVnCbAUnvZuNnSpX91lCMUqEeQToL2-tc3L6UKxI
-Message-ID: <CAJcM6BFTb+ASBwO+5sMfLZyyO4+MhWKp3AweXMJrgis9P7ygag@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/3] gve: Allow ethtool to configure rx_buf_len
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Joshua Washington <joshwash@google.com>, netdev@vger.kernel.org, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Jordan Rhee <jordanrhee@google.com>, 
-	Willem de Bruijn <willemb@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Ziwei Xiao <ziweixiao@google.com>, 
-	open list <linux-kernel@vger.kernel.org>, 
-	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20251020162355.136118-3-daniel@iogearbox.net>
 
-On Thu, Oct 23, 2025 at 5:14=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Wed, 22 Oct 2025 11:22:24 -0700 Joshua Washington wrote:
-> > +     if (priv->rx_cfg.packet_buffer_size !=3D SZ_2K) {
-> > +             netdev_warn(dev,
-> > +                         "XDP is not supported for Rx buf len %d. Set =
-Rx buf len to %d before using XDP.\n",
-> > +                         priv->rx_cfg.packet_buffer_size, SZ_2K);
-> > +             return -EOPNOTSUPP;
-> > +     }
->
-> Please plumb extack thru to here. It's inside struct netdev_bpf
->
+On 10/20, Daniel Borkmann wrote:
+> From: David Wei <dw@davidwei.uk>
+> 
+> Implement netdev_nl_bind_queue_doit() that creates an rx queue in a
+> virtual netdev and then binds it to an rxq in a real netdev to create
+> a queue pair.
+> 
+> Example with ynl client:
+> 
+>   # ./pyynl/cli.py \
+>       --spec ~/netlink/specs/netdev.yaml \
+>       --do bind-queue \
+>       --json '{"src-ifindex": 4, "src-queue-id": 15, "dst-ifindex": 8, "queue-type": "rx"}'
+>   {'dst-queue-id': 1}
+> 
+> Note that the netdevice locking order is always from the virtual to
+> the physical device.
+> 
+> Signed-off-by: David Wei <dw@davidwei.uk>
+> Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> ---
+>  include/net/netdev_queues.h   |   5 ++
+>  include/net/netdev_rx_queue.h |  36 ++++++++-
+>  net/core/netdev-genl.c        | 141 +++++++++++++++++++++++++++++++++-
+>  net/core/netdev_rx_queue.c    |  61 +++++++++++++++
+>  4 files changed, 240 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
+> index cd00e0406cf4..286d5edce07d 100644
+> --- a/include/net/netdev_queues.h
+> +++ b/include/net/netdev_queues.h
+> @@ -130,6 +130,10 @@ void netdev_stat_queue_sum(struct net_device *netdev,
+>   * @ndo_queue_get_dma_dev: Get dma device for zero-copy operations to be used
+>   *			   for this queue. Return NULL on error.
+>   *
+> + * @ndo_queue_create: Create a new RX queue which can be bound to another queue.
+> + *		      Ops on this queue are redirected to the peer queue e.g.
+> + *		      when opening a memory provider.
+> + *
+>   * Note that @ndo_queue_mem_alloc and @ndo_queue_mem_free may be called while
+>   * the interface is closed. @ndo_queue_start and @ndo_queue_stop will only
+>   * be called for an interface which is open.
+> @@ -149,6 +153,7 @@ struct netdev_queue_mgmt_ops {
+>  						  int idx);
+>  	struct device *		(*ndo_queue_get_dma_dev)(struct net_device *dev,
+>  							 int idx);
+> +	int			(*ndo_queue_create)(struct net_device *dev);
+>  };
+>  
+>  bool netif_rxq_has_unreadable_mp(struct net_device *dev, int idx);
+> diff --git a/include/net/netdev_rx_queue.h b/include/net/netdev_rx_queue.h
+> index 8cdcd138b33f..db3ef94c0744 100644
+> --- a/include/net/netdev_rx_queue.h
+> +++ b/include/net/netdev_rx_queue.h
+> @@ -28,6 +28,7 @@ struct netdev_rx_queue {
+>  #endif
+>  	struct napi_struct		*napi;
+>  	struct pp_memory_provider_params mp_params;
+> +	struct netdev_rx_queue		*peer;
+>  } ____cacheline_aligned_in_smp;
+>  
+>  /*
+> @@ -56,6 +57,37 @@ get_netdev_rx_queue_index(struct netdev_rx_queue *queue)
+>  	return index;
+>  }
+>  
+> -int netdev_rx_queue_restart(struct net_device *dev, unsigned int rxq);
+> +static inline void __netdev_rx_queue_peer(struct netdev_rx_queue *src_rxq,
+> +					  struct netdev_rx_queue *dst_rxq)
+> +{
+> +	src_rxq->peer = dst_rxq;
+> +	dst_rxq->peer = src_rxq;
+> +}
+>  
+> -#endif
+> +static inline void __netdev_rx_queue_unpeer(struct netdev_rx_queue *src_rxq,
+> +					    struct netdev_rx_queue *dst_rxq)
+> +{
+> +	src_rxq->peer = NULL;
+> +	dst_rxq->peer = NULL;
+> +}
+> +
+> +static inline bool netdev_rx_queue_peered(struct net_device *dev,
+> +					  u16 queue_id)
+> +{
+> +	if (queue_id < dev->real_num_rx_queues)
+> +		return dev->_rx[queue_id].peer;
+> +	return false;
+> +}
+> +
+> +void netdev_rx_queue_peer(struct net_device *src_dev,
+> +			  struct netdev_rx_queue *src_rxq,
+> +			  struct netdev_rx_queue *dst_rxq);
+> +void netdev_rx_queue_unpeer(struct net_device *src_dev,
+> +			    struct netdev_rx_queue *src_rxq,
+> +			    struct netdev_rx_queue *dst_rxq);
+> +int netdev_rx_queue_restart(struct net_device *dev, unsigned int rxq);
+> +struct netdev_rx_queue *
+> +netif_get_rx_queue_peer_locked(struct net_device **dev,
+> +			       unsigned int *rxq_idx,
+> +			       bool *needs_unlock);
+> +#endif /* _LINUX_NETDEV_RX_QUEUE_H */
+> diff --git a/net/core/netdev-genl.c b/net/core/netdev-genl.c
+> index ce1018ea390f..579469abac8c 100644
+> --- a/net/core/netdev-genl.c
+> +++ b/net/core/netdev-genl.c
+> @@ -1122,7 +1122,146 @@ int netdev_nl_bind_tx_doit(struct sk_buff *skb, struct genl_info *info)
+>  
+>  int netdev_nl_bind_queue_doit(struct sk_buff *skb, struct genl_info *info)
+>  {
+> -	return -EOPNOTSUPP;
+> +	u32 src_ifidx, src_qid, dst_ifidx, dst_qid, q_type;
+> +	struct netdev_rx_queue *src_rxq, *dst_rxq, *tmp_rxq;
+> +	struct net_device *src_dev, *dst_dev;
+> +	struct sk_buff *rsp;
+> +	int err = 0;
+> +	void *hdr;
+> +
+> +	if (GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_PAIR_QUEUE_TYPE) ||
+> +	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_PAIR_SRC_IFINDEX) ||
+> +	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_PAIR_SRC_QUEUE_ID) ||
+> +	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_PAIR_DST_IFINDEX))
+> +		return -EINVAL;
+> +
+> +	src_ifidx = nla_get_u32(info->attrs[NETDEV_A_QUEUE_PAIR_SRC_IFINDEX]);
+> +	src_qid = nla_get_u32(info->attrs[NETDEV_A_QUEUE_PAIR_SRC_QUEUE_ID]);
+> +	dst_ifidx = nla_get_u32(info->attrs[NETDEV_A_QUEUE_PAIR_DST_IFINDEX]);
+> +	q_type = nla_get_u32(info->attrs[NETDEV_A_QUEUE_PAIR_QUEUE_TYPE]);
+> +
+> +	if (q_type != NETDEV_QUEUE_TYPE_RX) {
+> +		NL_SET_ERR_MSG(info->extack, "Only binding of RX queue supported");
+> +		return -EOPNOTSUPP;
+> +	}
+> +	if (dst_ifidx == src_ifidx) {
+> +		NL_SET_ERR_MSG(info->extack,
+> +			       "Destination driver cannot be same as source driver");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	rsp = genlmsg_new(GENLMSG_DEFAULT_SIZE, GFP_KERNEL);
+> +	if (!rsp)
+> +		return -ENOMEM;
+> +
+> +	hdr = genlmsg_iput(rsp, info);
+> +	if (!hdr) {
+> +		err = -EMSGSIZE;
+> +		goto err_genlmsg_free;
+> +	}
 
-Using extack just for this log will make it inconsistent with other
-logs in this method. Would it be okay if I send a fast follow patch to
-use exstack in this method and others?
+[..]
 
-> >       max_xdp_mtu =3D priv->rx_cfg.packet_buffer_size - sizeof(struct e=
-thhdr);
-> >       if (priv->queue_format =3D=3D GVE_GQI_QPL_FORMAT)
-> >               max_xdp_mtu -=3D GVE_RX_PAD;
-> > @@ -2050,6 +2057,44 @@ bool gve_header_split_supported(const struct gve=
-_priv *priv)
-> >               priv->queue_format =3D=3D GVE_DQO_RDA_FORMAT && !priv->xd=
-p_prog;
-> >  }
-> >
-> > +int gve_set_rx_buf_len_config(struct gve_priv *priv, u32 rx_buf_len,
-> > +                           struct netlink_ext_ack *extack,
-> > +                           struct gve_rx_alloc_rings_cfg *rx_alloc_cfg=
-)
-> > +{
-> > +     u32 old_rx_buf_len =3D rx_alloc_cfg->packet_buffer_size;
-> > +
-> > +     if (rx_buf_len =3D=3D old_rx_buf_len)
-> > +             return 0;
-> > +
-> > +     if (!gve_is_dqo(priv)) {
-> > +             NL_SET_ERR_MSG_MOD(extack,
-> > +                                "Modifying Rx buf len is only supporte=
-d with DQO format");
-> > +             return -EOPNOTSUPP;
-> > +     }
-> > +
-> > +     if (priv->xdp_prog && rx_buf_len !=3D SZ_2K) {
-> > +             NL_SET_ERR_MSG_MOD(extack,
-> > +                                "Rx buf len can only be 2048 when XDP =
-is on");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     if (rx_buf_len > priv->max_rx_buffer_size) {
->
-> This check looks kinda pointless given the check right below against
-> the exact sizes?
->
+> +	/* Locking order is always from the virtual to the physical device
+> +	 * since this is also the same order when applications open the
+> +	 * memory provider later on.
+> +	 */
+> +	dst_dev = netdev_get_by_index_lock(genl_info_net(info), dst_ifidx);
+> +	if (!dst_dev) {
+> +		err = -ENODEV;
+> +		goto err_genlmsg_free;
+> +	}
 
-My intent was to code defensively against device accidently advertising
-anything in [2k+1,4k) as max buffer size. I will remove this check.
+...
 
-> > +             NL_SET_ERR_MSG_FMT_MOD(extack,
-> > +                                    "Rx buf len exceeds the max suppor=
-ted value of %u",
-> > +                                    priv->max_rx_buffer_size);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     if (rx_buf_len !=3D SZ_2K && rx_buf_len !=3D SZ_4K) {
-> > +             NL_SET_ERR_MSG_MOD(extack,
-> > +                                "Rx buf len can only be 2048 or 4096")=
-;
-> > +             return -EINVAL;
-> > +     }
-> > +     rx_alloc_cfg->packet_buffer_size =3D rx_buf_len;
-> > +
-> > +     return 0;
-> > +}
+> +	src_dev = netdev_get_by_index_lock(genl_info_net(info), src_ifidx);
+> +	if (!src_dev) {
+> +		err = -ENODEV;
+> +		goto err_unlock_dst_dev;
+> +	}
+
+But isn't the above susceptible to ABBA exploitation from the userspace?
+I can try to concurrently do two requests, the second one being with
+dst_dev and src_dev swapped. Or do we assume that we exit earlier for
+the swapped case based on some other condition?
 
