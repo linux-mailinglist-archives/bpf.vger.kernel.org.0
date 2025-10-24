@@ -1,78 +1,61 @@
-Return-Path: <bpf+bounces-72094-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72095-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF074C06657
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 15:07:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63ED7C06817
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 15:30:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C57043AA006
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 13:02:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48FD018912F7
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 13:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E39331A7F4;
-	Fri, 24 Oct 2025 13:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1ACE31D366;
+	Fri, 24 Oct 2025 13:30:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ueTMeeYE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ULoqiPtI"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 378032AE8E;
-	Fri, 24 Oct 2025 13:02:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F360315D33;
+	Fri, 24 Oct 2025 13:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761310933; cv=none; b=olj7lTAqW1JPe8I6cnZ4e2Pnb16hxBW/3s7IlYnubRuspuIFL0zMEwi6XRREHDGLY+Ab/YfMjIeAe0ts8tHM9p0aY2/0M4z9ICzA3WW5UzZMgkSSdgPmlBRIt7pswcgIUmDjpSXI0M1OMt1vBdn3jDT/IKFNQgu/oZ/WU1d7bkE=
+	t=1761312608; cv=none; b=L/rRUuf3mK/jvHryBHrmp2EfPKQHwQeOxXjbrFRHcaDLSK/U//UpLwHtU4z18v6l/dD/B257zPGJajf3CsWQRUh4jhIV5geZ5UalaQLbLQ1FO/Risq2I4iIvPotvMYKp2WBUiz84+tL59VHn6ihsxZUFvhIu9eyb3Lr1kWOzfuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761310933; c=relaxed/simple;
-	bh=sWNapAQdiDgKyOmK1F9SQowPxHMep3JI7SQBHBeWmUE=;
+	s=arc-20240116; t=1761312608; c=relaxed/simple;
+	bh=FZMqJ8vLerAohSPBj3F9Rf1fou27rkcO54jPIHUN1JU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LnLSpXiYFYrAoib9ZU2ZvGfbg1AQ4QwFLOGWAmcdgReMV1mzFbdnmP4Pdq0d3CpqYDF0SGvuYGAMZ0cG5NTLeOJ0yUTdpxqM/6h1J/PjEfrT9wBj4OKPOGXAJgYnY0Cg+g6TsXlQzzX/gmdhGhEoCfR6qF/M0dZM/7UKCkg5TEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ueTMeeYE; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=KIzxo1I8zroSVihAvyvbWPNv07jZePh2BUEf0mtEhks=; b=ueTMeeYEqebx8NRI0fTJD7ctYh
-	N6dJVOJoczHU3Z6e9VjrXI3DEYHcV4zcaAefAyyP6gSUzQlGP+oWEj3fF5wjFPqo47yrw3+P8SV2p
-	Ti9cS+SF1Iz+a2DW5GcukXJz7DQpyLVLKF8aEdcZdMozYStgnLh0jZ/2LozhRyTFaR4I/F7UiHCoj
-	A3NH8qjpKbOhIShkU8EilPT4wThJmBhVXlHuvRUTAuTOZ/bDcMHNr2pXkEUZ45MtOd5Sx8lrQV3uf
-	0c4M4COHxaYNRCsBoGtWuyGyONk1udDbE4D2Ey39PhpdPTetzHHu1mgX8Mf6+oTsDfwQcyDzIbrEr
-	TIm3oygA==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vCHQg-00000000sUc-1NtR;
-	Fri, 24 Oct 2025 13:02:03 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 2745C300323; Fri, 24 Oct 2025 15:02:03 +0200 (CEST)
-Date: Fri, 24 Oct 2025 15:02:03 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Indu Bhagat <indu.bhagat@oracle.com>,
-	"Jose E. Marchesi" <jemarch@gnu.org>,
-	Beau Belgrave <beaub@linux.microsoft.com>,
-	Jens Remus <jremus@linux.ibm.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>,
-	Kees Cook <kees@kernel.org>, Carlos O'Donell <codonell@redhat.com>
-Subject: Re: [PATCH v16 4/4] perf tools: Merge deferred user callchains
-Message-ID: <20251024130203.GC3245006@noisy.programming.kicks-ass.net>
-References: <20250908175319.841517121@kernel.org>
- <20250908175430.639412649@kernel.org>
- <20251002134938.756db4ef@gandalf.local.home>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pJEGo3XKFLDe9T0Quvl9y1PnmRjPvLd4DPRgTpXvRd6bJJQmn1C+fB3b0x8pbaSnWpRkMFsEN02/YnpNABaelv4LhcS4UUbIx+OoHk/hX4Vwytk3jxZagPrgDlwJ3UaEuU+QvNEjL3mnUUYq/SW6FvMrTqYzYat2HQ2rdun6wJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ULoqiPtI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DC1FC4CEF1;
+	Fri, 24 Oct 2025 13:30:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761312606;
+	bh=FZMqJ8vLerAohSPBj3F9Rf1fou27rkcO54jPIHUN1JU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ULoqiPtI/5Z6J+3rgCRlGkfDtb07dy8maI8bEKRPq6TJKWlCoT3aB6GkAyFSRizol
+	 px88/i9HAOA56byTVLyYh82H8ZrClfm8CjLjetikyNlHOe0cYjFZIqKIk5VxcGZEFm
+	 /vpgYR8kq9Mi4c3Rs45W4azUHK70qLbvIx9n/nhvDi6WU/G/qv4cfheWY51a+ILysJ
+	 UI3MWuAbpA6SHieklXk9NvpxwYCZt2VgUJxcofuhC9NP9LNuBDhUimyuNIVicSpf58
+	 PPNYzH0SI8ZfTm0By9+rLne0bgrfHGNQpU1IiNtZjVadAppfCR9OBfKFyD+PagG5Gv
+	 9Kixm6jYK2C6g==
+Date: Fri, 24 Oct 2025 14:30:00 +0100
+From: Simon Horman <horms@kernel.org>
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+	sdf@fomichev.me, ast@kernel.org, daniel@iogearbox.net,
+	hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to,
+	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+Subject: Re: [PATCH net-next v3 1/9] xsk: introduce XDP_GENERIC_XMIT_BATCH
+ setsockopt
+Message-ID: <aPt_WLQXPDOcmd1M@horms.kernel.org>
+References: <20251021131209.41491-1-kerneljasonxing@gmail.com>
+ <20251021131209.41491-2-kerneljasonxing@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -81,72 +64,78 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251002134938.756db4ef@gandalf.local.home>
+In-Reply-To: <20251021131209.41491-2-kerneljasonxing@gmail.com>
 
-On Thu, Oct 02, 2025 at 01:49:38PM -0400, Steven Rostedt wrote:
-> On Mon, 08 Sep 2025 13:53:23 -0400
-> Steven Rostedt <rostedt@kernel.org> wrote:
-> 
-> > +static int evlist__deliver_deferred_samples(struct evlist *evlist,
-> > +					    const struct perf_tool *tool,
-> > +					    union  perf_event *event,
-> > +					    struct perf_sample *sample,
-> > +					    struct machine *machine)
-> > +{
-> > +	struct deferred_event *de, *tmp;
-> > +	struct evsel *evsel;
-> > +	int ret = 0;
-> > +
-> > +	if (!tool->merge_deferred_callchains) {
-> > +		evsel = evlist__id2evsel(evlist, sample->id);
-> > +		return tool->callchain_deferred(tool, event, sample,
-> > +						evsel, machine);
-> > +	}
-> > +
-> > +	list_for_each_entry_safe(de, tmp, &evlist->deferred_samples, list) {
-> > +		struct perf_sample orig_sample;
-> 
-> orig_sample is not initialized and can then contain junk.
-> 
-> > +
-> > +		ret = evlist__parse_sample(evlist, de->event, &orig_sample);
-> > +		if (ret < 0) {
-> > +			pr_err("failed to parse original sample\n");
-> > +			break;
-> > +		}
-> > +
-> > +		if (sample->tid != orig_sample.tid)
-> > +			continue;
-> > +
-> > +		if (event->callchain_deferred.cookie == orig_sample.deferred_cookie)
-> > +			sample__merge_deferred_callchain(&orig_sample, sample);
-> 
-> The sample__merge_deferred_callchain() initializes both
-> orig_sample.deferred_callchain and the callchain. But now that it's not
-> being called, it can cause the below free to happen with junk as the
-> callchain. This needs:
-> 
-> 		else
-> 			orig_sample.deferred_callchain = false;
+On Tue, Oct 21, 2025 at 09:12:01PM +0800, Jason Xing wrote:
 
-Ah, so I saw crashes from here and just deleted both free()s and got on
-with things ;-)
+...
 
-> > +
-> > +		evsel = evlist__id2evsel(evlist, orig_sample.id);
-> > +		ret = evlist__deliver_sample(evlist, tool, de->event,
-> > +					     &orig_sample, evsel,> machine); +
-> > +		if (orig_sample.deferred_callchain)
-> > +			free(orig_sample.callchain);
-> > +
-> > +		list_del(&de->list);
-> > +		free(de);
-> > +
-> > +		if (ret)
-> > +			break;
-> > +	}
-> > +	return ret;
-> > +}
-> 
-> -- Steve
+> index 7b0c68a70888..ace91800c447 100644
+
+...
+
+> @@ -1544,6 +1546,55 @@ static int xsk_setsockopt(struct socket *sock, int level, int optname,
+>  		WRITE_ONCE(xs->max_tx_budget, budget);
+>  		return 0;
+>  	}
+> +	case XDP_GENERIC_XMIT_BATCH:
+> +	{
+> +		struct xsk_buff_pool *pool = xs->pool;
+> +		struct xsk_batch *batch = &xs->batch;
+> +		struct xdp_desc *descs;
+> +		struct sk_buff **skbs;
+> +		unsigned int size;
+> +		int ret = 0;
+> +
+> +		if (optlen != sizeof(size))
+> +			return -EINVAL;
+> +		if (copy_from_sockptr(&size, optval, sizeof(size)))
+> +			return -EFAULT;
+> +		if (size == batch->generic_xmit_batch)
+> +			return 0;
+> +		if (size > xs->max_tx_budget || !pool)
+> +			return -EACCES;
+> +
+> +		mutex_lock(&xs->mutex);
+> +		if (!size) {
+> +			kfree(batch->skb_cache);
+> +			kvfree(batch->desc_cache);
+> +			batch->generic_xmit_batch = 0;
+> +			goto out;
+> +		}
+> +
+> +		skbs = kmalloc(size * sizeof(struct sk_buff *), GFP_KERNEL);
+> +		if (!skbs) {
+> +			ret = -ENOMEM;
+> +			goto out;
+> +		}
+> +		descs = kvcalloc(size, sizeof(struct xdp_desc), GFP_KERNEL);
+> +		if (!descs) {
+> +			kfree(skbs);
+> +			ret = -ENOMEM;
+> +			goto out;
+> +		}
+> +		if (batch->skb_cache)
+> +			kfree(batch->skb_cache);
+> +		if (batch->desc_cache)
+> +			kvfree(batch->desc_cache);
+
+Hi Jason,
+
+nit: kfree and kvfree are no-ops when passed NULL,
+     so the conditions above seem unnecessary.
+
+> +
+> +		batch->skb_cache = skbs;
+> +		batch->desc_cache = descs;
+> +		batch->generic_xmit_batch = size;
+> +out:
+> +		mutex_unlock(&xs->mutex);
+> +		return ret;
+> +	}
+>  	default:
+>  		break;
+>  	}
+
+...
 
