@@ -1,380 +1,334 @@
-Return-Path: <bpf+bounces-72010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E2C7C05A49
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 12:42:58 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DA3DC05A3A
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 12:41:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D9F30504195
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 10:41:35 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0A36A35BEB3
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 10:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F1A031062C;
-	Fri, 24 Oct 2025 10:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68FEF307AE0;
+	Fri, 24 Oct 2025 10:41:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="0n6AA1Nm";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="NFUddAfD";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="emsfwdQL";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="S9OoCNoI"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="f8SBe+CV"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469F02FE041
-	for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 10:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A80C7146585;
+	Fri, 24 Oct 2025 10:41:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761302485; cv=none; b=fAAPTJ3LnwdCWm7CsA0iOOEX3ChnKoKFTLCKcV81CtOPwvjiVJf1Tm1i+ln/V7+euRfxZJp7SY6FX1BPw1b3gji+6VkwiqE3miEZiAUC7jIbOSXDmmLlmZT0OeDbwzYFFt9du9jKxZOKNo0pj0hoR/B2PZqH8KNSevFxkojzGuo=
+	t=1761302506; cv=none; b=u12PPbqHCNLdU0SkaZsAl/0yFvZVrl3VF3PKc0pY7w+eD4SOl6EvTqmlyuA79/Wl0Hq7X+S3exqebZkFfY+dsS55M1gWp4wMUH+7UdVRCloDgRulQxQe7IJkHu17mIymc2s2QZnMFWnudyITfj8VMtd1D/uXDyUePS/2PEa8Fw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761302485; c=relaxed/simple;
-	bh=li6KSp9cre7+afqkFOJCiB/+pjP3e1iaKEH4VasOQ80=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NU1+kYptp78BqpkwQQ8mc3YVJkCVUE/Ndfdh4fiFQi74wDmaEX+n9yLT4EVhCeRf/iDBzZS4bLCWqpeR76KAO0Cg7aiRWEXZXof3ZKZRj95qWAiI5+RgBxyYdvXQybmz7V2RXpm6YAadJ7+PdCpgpHlkavMG2GEVGMoxVnmcsxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=0n6AA1Nm; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=NFUddAfD; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=emsfwdQL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=S9OoCNoI; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 611B01F443;
-	Fri, 24 Oct 2025 10:41:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1761302476; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=GxewOv61lIhFO1u6lbyVbaaV2olLn0w+aW8dk+FDhK4=;
-	b=0n6AA1NmCbljap9Usg39T+Rapi5TCjuM1ePqMo9zSFmjjtbuk3gClwSgLJ+XJgHp48+3QP
-	SM66v8I5wdqJHKBz6dl9/lsxUOFUrTSrSefu6N33KwHarj3ARrrC4OsDph9OlTjCYilEpU
-	q0EaxYLSiFcGFGPA8Jejjj17PZAES58=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1761302476;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=GxewOv61lIhFO1u6lbyVbaaV2olLn0w+aW8dk+FDhK4=;
-	b=NFUddAfDfsmOtytPfiVPU9SbztRFATsjqxSu08noi9BvpFk8UocV8OHioCTXuCvlAoKiFx
-	eEqDb3DNZS36RCCg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=emsfwdQL;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=S9OoCNoI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1761302472; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=GxewOv61lIhFO1u6lbyVbaaV2olLn0w+aW8dk+FDhK4=;
-	b=emsfwdQLrEF7xYSPcrfvDo4kPargHb+NyqKGSizc07rCZ6PZlVC1BAqXNCTYn1BgBRJLNW
-	79DApMQaaWMl2VTcgo+M33XtIus8govaHTR/W21DyAPgAB8tpaayuxz5SEPivHrthaJBqX
-	LUGlvQ6GoX1Jxpv7p3FYvxt0i4xj/Lo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1761302472;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=GxewOv61lIhFO1u6lbyVbaaV2olLn0w+aW8dk+FDhK4=;
-	b=S9OoCNoILsfW1kG8yWfNalG077r+vG8LJl/eYNUPpcYRc/YxfDQS7Ld7et0ug1xikRnTKk
-	HSQWVDyFk+tm7uDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 98CE813AEF;
-	Fri, 24 Oct 2025 10:41:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id dS6QIsdX+2jPXAAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Fri, 24 Oct 2025 10:41:11 +0000
-From: Fernando Fernandez Mancera <fmancera@suse.de>
-To: netdev@vger.kernel.org
-Cc: csmate@nop.hu,
-	kerneljasonxing@gmail.com,
-	maciej.fijalkowski@intel.com,
-	bjorn@kernel.org,
-	sdf@fomichev.me,
-	jonathan.lemon@gmail.com,
-	bpf@vger.kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	Fernando Fernandez Mancera <fmancera@suse.de>
-Subject: [PATCH net v2] xsk: avoid data corruption on cq descriptor number
-Date: Fri, 24 Oct 2025 12:40:49 +0200
-Message-ID: <20251024104049.20902-1-fmancera@suse.de>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1761302506; c=relaxed/simple;
+	bh=fXL/XYAKyPRWPyekI6E49EFt8QJxlnZtekWFaIU9Yeg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N+AzWEYKTBnkLpSrDEDoPKC/UXskhweo9Xxfypp8PLNALlG/Rov3PawiCSyHj6Nt4LjfxU+huRTYkuFtruWusf/GibDt3usZLWpfg0sy9iwnwrw6B5NKq7Rlk8LTED9Vp8EKP9bozveZfEq43vuTygfOM0tfVSAU4I1ZlqOK5E8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=f8SBe+CV; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Er4bARwpXMjZqI0mWGWcvCvZFUERMQG43Oiv5EcZcgA=; b=f8SBe+CV3BMAK4ghr54SE+SpLC
+	+gVTsUS3+wRihhplqA5eA2ATGVPTheQgcWNdoP653YNPWw5S0okwwA2pg+SnJpibrwr7h8antvYJV
+	XbgtgyOYh9sQpobuigPaFCtJ1gFBN2D5G/sFmz6ESkt482ul60Wi5XrwiI1lY66Hya08wfqYx4T4b
+	nMW+xOyOn2WWBBW23fQ74mI7+VZ1zop7/HYVw3WjoeZZm9ASAfR9C0uUj3MDnWFo1hwHso4fmwOX0
+	pTXto9hi9Lg4gUMoI8MVNZVhl6dv5EE+YrSCCZ8A0KUEPDqQ3owDxjbSk7Xih97mSNy92CuozGP5T
+	PO37CfEg==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vCFEV-0000000FRAD-3qyi;
+	Fri, 24 Oct 2025 10:41:21 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 5FD6030023C; Fri, 24 Oct 2025 12:41:19 +0200 (CEST)
+Date: Fri, 24 Oct 2025 12:41:19 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Steven Rostedt <rostedt@kernel.org>, jremus@linux.ibm.com
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, x86@kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	"Jose E. Marchesi" <jemarch@gnu.org>,
+	Beau Belgrave <beaub@linux.microsoft.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>,
+	Kees Cook <kees@kernel.org>, Carlos O'Donell <codonell@redhat.com>
+Subject: Re: [PATCH v16 0/4] perf: Support the deferred unwinding
+ infrastructure
+Message-ID: <20251024104119.GJ4068168@noisy.programming.kicks-ass.net>
+References: <20251007214008.080852573@kernel.org>
+ <20251023150002.GR4067720@noisy.programming.kicks-ass.net>
+ <20251024092926.GI4068168@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 611B01F443
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[nop.hu,gmail.com,intel.com,kernel.org,fomichev.me,vger.kernel.org,davemloft.net,google.com,redhat.com,suse.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:email,suse.de:mid,suse.de:dkim];
-	TAGGED_RCPT(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.de:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -1.51
-X-Spam-Level: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251024092926.GI4068168@noisy.programming.kicks-ass.net>
 
-Since commit 30f241fcf52a ("xsk: Fix immature cq descriptor
-production"), the descriptor number is stored in skb control block and
-xsk_cq_submit_addr_locked() relies on it to put the umem addrs onto
-pool's completion queue.
+On Fri, Oct 24, 2025 at 11:29:26AM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 23, 2025 at 05:00:02PM +0200, Peter Zijlstra wrote:
+> 
+> > Trouble is, pretty much every unwind is 510 entries long -- this cannot
+> > be right. I'm sure there's a silly mistake in unwind/user.c but I'm too
+> > tired to find it just now. I'll try again tomorrow.
+> 
+> PEBKAC
 
-skb control block shouldn't be used for this purpose as after transmit
-xsk doesn't have control over it and other subsystems could use it. This
-leads to the following kernel panic due to a NULL pointer dereference.
+Anyway, while staring at this, I noted that the perf userspace unwind
+code has a few bits that are missing from the new shiny thing.
 
- BUG: kernel NULL pointer dereference, address: 0000000000000000
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 0 P4D 0
- Oops: Oops: 0000 [#1] SMP NOPTI
- CPU: 2 UID: 1 PID: 927 Comm: p4xsk.bin Not tainted 6.16.12+deb14-cloud-amd64 #1 PREEMPT(lazy)  Debian 6.16.12-1
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.17.0-debian-1.17.0-1 04/01/2014
- RIP: 0010:xsk_destruct_skb+0xd0/0x180
- [...]
- Call Trace:
-  <IRQ>
-  ? napi_complete_done+0x7a/0x1a0
-  ip_rcv_core+0x1bb/0x340
-  ip_rcv+0x30/0x1f0
-  __netif_receive_skb_one_core+0x85/0xa0
-  process_backlog+0x87/0x130
-  __napi_poll+0x28/0x180
-  net_rx_action+0x339/0x420
-  handle_softirqs+0xdc/0x320
-  ? handle_edge_irq+0x90/0x1e0
-  do_softirq.part.0+0x3b/0x60
-  </IRQ>
-  <TASK>
-  __local_bh_enable_ip+0x60/0x70
-  __dev_direct_xmit+0x14e/0x1f0
-  __xsk_generic_xmit+0x482/0xb70
-  ? __remove_hrtimer+0x41/0xa0
-  ? __xsk_generic_xmit+0x51/0xb70
-  ? _raw_spin_unlock_irqrestore+0xe/0x40
-  xsk_sendmsg+0xda/0x1c0
-  __sys_sendto+0x1ee/0x200
-  __x64_sys_sendto+0x24/0x30
-  do_syscall_64+0x84/0x2f0
-  ? __pfx_pollwake+0x10/0x10
-  ? __rseq_handle_notify_resume+0xad/0x4c0
-  ? restore_fpregs_from_fpstate+0x3c/0x90
-  ? switch_fpu_return+0x5b/0xe0
-  ? do_syscall_64+0x204/0x2f0
-  ? do_syscall_64+0x204/0x2f0
-  ? do_syscall_64+0x204/0x2f0
-  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-  </TASK>
- [...]
- Kernel panic - not syncing: Fatal exception in interrupt
- Kernel Offset: 0x1c000000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+How about something like so? This add an optional arch specific unwinder
+at the very highest priority (bit 0) and uses that to do a few extra
+bits before disabling itself and falling back to whatever lower prio
+unwinder to do the actual unwinding.
 
-The approach proposed stores the first address also in the xsk_addr_node
-along with the number of descriptors. The head xsk_addr_node is
-referenced in skb_shinfo(skb)->destructor_arg. The rest of the fragments
-store the address on the list.
-
-This is less efficient as 4 bytes are wasted when storing each address.
-
-Fixes: 30f241fcf52a ("xsk: Fix immature cq descriptor production")
-Closes: https://lore.kernel.org/netdev/0435b904-f44f-48f8-afb0-68868474bf1c@nop.hu/
-Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
 ---
-v2: fix erroneous page handling and fix typos on commit message.
----
- net/xdp/xsk.c | 52 ++++++++++++++++++++++++++++-----------------------
- 1 file changed, 29 insertions(+), 23 deletions(-)
+ arch/x86/events/core.c             |   40 ---------------------------
+ arch/x86/include/asm/unwind_user.h |    4 ++
+ arch/x86/include/asm/uprobes.h     |    9 ++++++
+ arch/x86/kernel/unwind_user.c      |   53 +++++++++++++++++++++++++++++++++++++
+ arch/x86/kernel/uprobes.c          |   32 ++++++++++++++++++++++
+ include/linux/unwind_user_types.h  |    5 ++-
+ kernel/unwind/user.c               |    7 ++++
+ 7 files changed, 109 insertions(+), 41 deletions(-)
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 7b0c68a70888..965cf071b036 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -37,18 +37,14 @@
- #define MAX_PER_SOCKET_BUDGET 32
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -2845,46 +2845,6 @@ static unsigned long get_segment_base(un
+ 	return get_desc_base(desc);
+ }
  
- struct xsk_addr_node {
-+	u32 num_descs;
- 	u64 addr;
- 	struct list_head addr_node;
+-#ifdef CONFIG_UPROBES
+-/*
+- * Heuristic-based check if uprobe is installed at the function entry.
+- *
+- * Under assumption of user code being compiled with frame pointers,
+- * `push %rbp/%ebp` is a good indicator that we indeed are.
+- *
+- * Similarly, `endbr64` (assuming 64-bit mode) is also a common pattern.
+- * If we get this wrong, captured stack trace might have one extra bogus
+- * entry, but the rest of stack trace will still be meaningful.
+- */
+-static bool is_uprobe_at_func_entry(struct pt_regs *regs)
+-{
+-	struct arch_uprobe *auprobe;
+-
+-	if (!current->utask)
+-		return false;
+-
+-	auprobe = current->utask->auprobe;
+-	if (!auprobe)
+-		return false;
+-
+-	/* push %rbp/%ebp */
+-	if (auprobe->insn[0] == 0x55)
+-		return true;
+-
+-	/* endbr64 (64-bit only) */
+-	if (user_64bit_mode(regs) && is_endbr((u32 *)auprobe->insn))
+-		return true;
+-
+-	return false;
+-}
+-
+-#else
+-static bool is_uprobe_at_func_entry(struct pt_regs *regs)
+-{
+-	return false;
+-}
+-#endif /* CONFIG_UPROBES */
+-
+ #ifdef CONFIG_IA32_EMULATION
+ 
+ #include <linux/compat.h>
+--- a/arch/x86/include/asm/unwind_user.h
++++ b/arch/x86/include/asm/unwind_user.h
+@@ -8,4 +8,8 @@
+ 	.fp_off		= -2*(ws),			\
+ 	.use_fp		= true,
+ 
++#define HAVE_UNWIND_USER_ARCH 1
++
++extern int unwind_user_next_arch(struct unwind_user_state *state);
++
+ #endif /* _ASM_X86_UNWIND_USER_H */
+--- a/arch/x86/include/asm/uprobes.h
++++ b/arch/x86/include/asm/uprobes.h
+@@ -62,4 +62,13 @@ struct arch_uprobe_task {
+ 	unsigned int			saved_tf;
  };
  
--struct xsk_addr_head {
--	u32 num_descs;
--	struct list_head addrs_list;
--};
--
- static struct kmem_cache *xsk_tx_generic_cache;
- 
--#define XSKCB(skb) ((struct xsk_addr_head *)((skb)->cb))
-+#define XSK_TX_HEAD(skb) ((struct xsk_addr_node *)((skb_shinfo(skb)->destructor_arg)))
- 
- void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
- {
-@@ -569,12 +565,11 @@ static void xsk_cq_submit_addr_locked(struct xsk_buff_pool *pool,
- 	spin_lock_irqsave(&pool->cq_lock, flags);
- 	idx = xskq_get_prod(pool->cq);
- 
--	xskq_prod_write_addr(pool->cq, idx,
--			     (u64)(uintptr_t)skb_shinfo(skb)->destructor_arg);
-+	xskq_prod_write_addr(pool->cq, idx, XSK_TX_HEAD(skb)->addr);
- 	descs_processed++;
- 
--	if (unlikely(XSKCB(skb)->num_descs > 1)) {
--		list_for_each_entry_safe(pos, tmp, &XSKCB(skb)->addrs_list, addr_node) {
-+	if (unlikely(XSK_TX_HEAD(skb)->num_descs > 1)) {
-+		list_for_each_entry_safe(pos, tmp, &XSK_TX_HEAD(skb)->addr_node, addr_node) {
- 			xskq_prod_write_addr(pool->cq, idx + descs_processed,
- 					     pos->addr);
- 			descs_processed++;
-@@ -582,6 +577,7 @@ static void xsk_cq_submit_addr_locked(struct xsk_buff_pool *pool,
- 			kmem_cache_free(xsk_tx_generic_cache, pos);
- 		}
- 	}
-+	kmem_cache_free(xsk_tx_generic_cache, XSK_TX_HEAD(skb));
- 	xskq_prod_submit_n(pool->cq, descs_processed);
- 	spin_unlock_irqrestore(&pool->cq_lock, flags);
- }
-@@ -597,12 +593,12 @@ static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
- 
- static void xsk_inc_num_desc(struct sk_buff *skb)
- {
--	XSKCB(skb)->num_descs++;
-+	XSK_TX_HEAD(skb)->num_descs++;
- }
- 
- static u32 xsk_get_num_desc(struct sk_buff *skb)
- {
--	return XSKCB(skb)->num_descs;
-+	return XSK_TX_HEAD(skb)->num_descs;
- }
- 
- static void xsk_destruct_skb(struct sk_buff *skb)
-@@ -619,16 +615,16 @@ static void xsk_destruct_skb(struct sk_buff *skb)
- }
- 
- static void xsk_skb_init_misc(struct sk_buff *skb, struct xdp_sock *xs,
--			      u64 addr)
-+			      struct xsk_addr_node *head, u64 addr)
- {
--	BUILD_BUG_ON(sizeof(struct xsk_addr_head) > sizeof(skb->cb));
--	INIT_LIST_HEAD(&XSKCB(skb)->addrs_list);
-+	INIT_LIST_HEAD(&head->addr_node);
-+	head->addr = addr;
-+	head->num_descs = 0;
- 	skb->dev = xs->dev;
- 	skb->priority = READ_ONCE(xs->sk.sk_priority);
- 	skb->mark = READ_ONCE(xs->sk.sk_mark);
--	XSKCB(skb)->num_descs = 0;
- 	skb->destructor = xsk_destruct_skb;
--	skb_shinfo(skb)->destructor_arg = (void *)(uintptr_t)addr;
-+	skb_shinfo(skb)->destructor_arg = (void *)head;
- }
- 
- static void xsk_consume_skb(struct sk_buff *skb)
-@@ -638,11 +634,12 @@ static void xsk_consume_skb(struct sk_buff *skb)
- 	struct xsk_addr_node *pos, *tmp;
- 
- 	if (unlikely(num_descs > 1)) {
--		list_for_each_entry_safe(pos, tmp, &XSKCB(skb)->addrs_list, addr_node) {
-+		list_for_each_entry_safe(pos, tmp, &XSK_TX_HEAD(skb)->addr_node, addr_node) {
- 			list_del(&pos->addr_node);
- 			kmem_cache_free(xsk_tx_generic_cache, pos);
- 		}
- 	}
-+	kmem_cache_free(xsk_tx_generic_cache, XSK_TX_HEAD(skb));
- 
- 	skb->destructor = sock_wfree;
- 	xsk_cq_cancel_locked(xs->pool, num_descs);
-@@ -720,7 +717,11 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
- 
- 		skb_reserve(skb, hr);
- 
--		xsk_skb_init_misc(skb, xs, desc->addr);
-+		xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
-+		if (!xsk_addr)
-+			return ERR_PTR(-ENOMEM);
++#ifdef CONFIG_UPROBES
++extern bool is_uprobe_at_func_entry(struct pt_regs *regs);
++#else
++static bool is_uprobe_at_func_entry(struct pt_regs *regs)
++{
++	return false;
++}
++#endif /* CONFIG_UPROBES */
 +
-+		xsk_skb_init_misc(skb, xs, xsk_addr, desc->addr);
- 		if (desc->options & XDP_TX_METADATA) {
- 			err = xsk_skb_metadata(skb, buffer, desc, pool, hr);
- 			if (unlikely(err))
-@@ -736,7 +737,7 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
- 		 * would be dropped, which implies freeing all list elements
- 		 */
- 		xsk_addr->addr = desc->addr;
--		list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
-+		list_add_tail(&xsk_addr->addr_node, &XSK_TX_HEAD(skb)->addr_node);
+ #endif	/* _ASM_UPROBES_H */
+--- /dev/null
++++ b/arch/x86/kernel/unwind_user.c
+@@ -0,0 +1,53 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#include <linux/unwind_user.h>
++#include <linux/uprobes.h>
++#include <linux/uaccess.h>
++#include <linux/sched/task_stack.h>
++#include <asm/processor.h>
++#include <asm/tlbflush.h>
++
++int unwind_user_next_arch(struct unwind_user_state *state)
++{
++	struct pt_regs *regs = task_pt_regs(current);
++
++	/* only once, on the first iteration */
++	state->available_types &= ~UNWIND_USER_TYPE_ARCH;
++
++	/* We don't know how to unwind VM86 stacks. */
++	if (regs->flags & X86_VM_MASK) {
++		state->done = true;
++		return 0;
++	}
++
++	/*
++	 * If we are called from uprobe handler, and we are indeed at the very
++	 * entry to user function (which is normally a `push %rbp` instruction,
++	 * under assumption of application being compiled with frame pointers),
++	 * we should read return address from *regs->sp before proceeding
++	 * to follow frame pointers, otherwise we'll skip immediate caller
++	 * as %rbp is not yet setup.
++	 */
++	if (!is_uprobe_at_func_entry(regs))
++		return -EINVAL;
++
++#ifdef CONFIG_COMPAT
++	if (state->ws == sizeof(int)) {
++		unsigned int retaddr;
++		int ret = get_user(retaddr, (unsigned int __user *)regs->sp);
++		if (ret)
++			return ret;
++
++		state->ip = retaddr;
++		return 0;
++	}
++#endif
++	unsigned long retaddr;
++	int ret = get_user(retaddr, (unsigned long __user *)regs->sp);
++	if (ret)
++		return ret;
++
++	state->ip = retaddr;
++	return 0;
++}
++
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -1791,3 +1791,35 @@ bool arch_uretprobe_is_alive(struct retu
+ 	else
+ 		return regs->sp <= ret->stack;
+ }
++
++/*
++ * Heuristic-based check if uprobe is installed at the function entry.
++ *
++ * Under assumption of user code being compiled with frame pointers,
++ * `push %rbp/%ebp` is a good indicator that we indeed are.
++ *
++ * Similarly, `endbr64` (assuming 64-bit mode) is also a common pattern.
++ * If we get this wrong, captured stack trace might have one extra bogus
++ * entry, but the rest of stack trace will still be meaningful.
++ */
++bool is_uprobe_at_func_entry(struct pt_regs *regs)
++{
++	struct arch_uprobe *auprobe;
++
++	if (!current->utask)
++		return false;
++
++	auprobe = current->utask->auprobe;
++	if (!auprobe)
++		return false;
++
++	/* push %rbp/%ebp */
++	if (auprobe->insn[0] == 0x55)
++		return true;
++
++	/* endbr64 (64-bit only) */
++	if (user_64bit_mode(regs) && is_endbr((u32 *)auprobe->insn))
++		return true;
++
++	return false;
++}
+--- a/include/linux/unwind_user_types.h
++++ b/include/linux/unwind_user_types.h
+@@ -3,13 +3,15 @@
+ #define _LINUX_UNWIND_USER_TYPES_H
+ 
+ #include <linux/types.h>
++#include <linux/bits.h>
+ 
+ /*
+  * Unwind types, listed in priority order: lower numbers are attempted first if
+  * available.
+  */
+ enum unwind_user_type_bits {
+-	UNWIND_USER_TYPE_FP_BIT =		0,
++	UNWIND_USER_TYPE_ARCH_BIT = 0,
++	UNWIND_USER_TYPE_FP_BIT,
+ 
+ 	NR_UNWIND_USER_TYPE_BITS,
+ };
+@@ -17,6 +19,7 @@ enum unwind_user_type_bits {
+ enum unwind_user_type {
+ 	/* Type "none" for the start of stack walk iteration. */
+ 	UNWIND_USER_TYPE_NONE =			0,
++	UNWIND_USER_TYPE_ARCH =			BIT(UNWIND_USER_TYPE_ARCH_BIT),
+ 	UNWIND_USER_TYPE_FP =			BIT(UNWIND_USER_TYPE_FP_BIT),
+ };
+ 
+--- a/kernel/unwind/user.c
++++ b/kernel/unwind/user.c
+@@ -79,6 +79,10 @@ static int unwind_user_next(struct unwin
+ 
+ 		state->current_type = type;
+ 		switch (type) {
++		case UNWIND_USER_TYPE_ARCH:
++			if (!unwind_user_next_arch(state))
++				return 0;
++			continue;
+ 		case UNWIND_USER_TYPE_FP:
+ 			if (!unwind_user_next_fp(state))
+ 				return 0;
+@@ -107,6 +111,9 @@ static int unwind_user_start(struct unwi
+ 		return -EINVAL;
  	}
  
- 	len = desc->len;
-@@ -773,6 +774,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 				     struct xdp_desc *desc)
- {
- 	struct net_device *dev = xs->dev;
-+	struct xsk_addr_node *xsk_addr;
- 	struct sk_buff *skb = xs->skb;
- 	int err;
++	if (HAVE_UNWIND_USER_ARCH)
++		state->available_types |= UNWIND_USER_TYPE_ARCH;
++
+ 	if (IS_ENABLED(CONFIG_HAVE_UNWIND_USER_FP))
+ 		state->available_types |= UNWIND_USER_TYPE_FP;
  
-@@ -804,7 +806,12 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 			if (unlikely(err))
- 				goto free_err;
- 
--			xsk_skb_init_misc(skb, xs, desc->addr);
-+			xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
-+			if (!xsk_addr) {
-+				err = -ENOMEM;
-+				goto free_err;
-+			}
-+			xsk_skb_init_misc(skb, xs, xsk_addr, desc->addr);
- 			if (desc->options & XDP_TX_METADATA) {
- 				err = xsk_skb_metadata(skb, buffer, desc,
- 						       xs->pool, hr);
-@@ -813,7 +820,6 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 			}
- 		} else {
- 			int nr_frags = skb_shinfo(skb)->nr_frags;
--			struct xsk_addr_node *xsk_addr;
- 			struct page *page;
- 			u8 *vaddr;
- 
-@@ -843,7 +849,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 			refcount_add(PAGE_SIZE, &xs->sk.sk_wmem_alloc);
- 
- 			xsk_addr->addr = desc->addr;
--			list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
-+			list_add_tail(&xsk_addr->addr_node, &XSK_TX_HEAD(skb)->addr_node);
- 		}
- 	}
- 
--- 
-2.51.0
-
 
