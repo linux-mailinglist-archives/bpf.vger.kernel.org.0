@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-72110-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72111-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 374F7C06CCE
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 16:54:17 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CE3BC06CF2
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 16:55:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D13EB3AA818
-	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 14:52:39 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E32C24FE3D8
+	for <lists+bpf@lfdr.de>; Fri, 24 Oct 2025 14:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B906531619E;
-	Fri, 24 Oct 2025 14:52:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07292475C2;
+	Fri, 24 Oct 2025 14:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="C5xU06UQ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="m5ZNZ1Jc"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73FDA26A1B6;
-	Fri, 24 Oct 2025 14:52:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDFA421323C;
+	Fri, 24 Oct 2025 14:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761317528; cv=none; b=tOdiZeGUCDbNqm/fLHMeN4b9971isrZUU7ZHb6WZSwsgewJJ6FSYMSWfQ22P5+wqz9bwIlFOnNIsv0qcUG6jyDryW/dHDNe8F0RgBjk/Ge/53cg/zXY5ZmknJqe8MUPm0m/wEmRJ9FoPMp/AnIsvVdvWMO+8VkTyx/Vr1LfSvrU=
+	t=1761317655; cv=none; b=Hf6hDYenqVojm95NGPw/ak5mMdfoy9bgN0Wu0MhLIfRBxGwSN2B+DUXzerM3xFqtF65VJ4e/NmOLG5zSIVzLtqlnnUhVVgwVu1BviPMjAZjDdqF7xzweO97AzzYVOsNjBw9KL8+dxZxTUDLuiqdOUFdZEWvzXppHi2i1Qo/4zAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761317528; c=relaxed/simple;
-	bh=BCij+Hi25/ydA//h3z3RbncjJoIs3LzuZAEi5NEGqwc=;
+	s=arc-20240116; t=1761317655; c=relaxed/simple;
+	bh=PX4dhvurWQai25jeawZvGXTEw4KNid+rcjO6I4NaqVw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BCt9DW+cjBuM9P/4FWLXWkhpWYKgKCUCpTNU45a1CRnGf5eCmYgHpywAVT04fG9up2HDdj9xWocNDjEmrSbs5TtH2IC3l7GXYdaDS5rn7NNL2sLCRtOQPhwmhmkWQbOzYCc6lYzVEpaHX9Mehn5xLhwfShCwbaJZj7pyvUq8i7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=C5xU06UQ; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:Content-Disposition:In-Reply-To; b=MCCdjrfQIgJQvBKliiqLfgPAnlVHmj2d86+AsaSWXpNCPZOLP4n4GfQIzOmzJTvbeEXdwB2RSRrDRMc5J6vM363m4oW16oEBItEi908wsVtEifLKnL1JOllAI3SnkorI5LFUofACfb8peZBF85IIity7qp/4Pg2EPINuHuoseyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=m5ZNZ1Jc; arc=none smtp.client-ip=90.155.92.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=FI/WN7v2RklnKmQzu2cqn+e7+2+5pDjrh+VgvJvLgHY=; b=C5xU06UQuCVdgN/ugSNpkE54me
-	XcFfLLPr1zcj6LA5fmeYQS/PY173GVc7Cm/ThcLpCUVkSJsDBk6NUwTh3PUqkwGAAYrd1MEXFxckg
-	cLbAF23BNB6M+bY36sLdIcm3BUWvP3ObCSXlCeP0E7fopXV5VnZUO0AuY3PffMxenSVbIhK9nXsOE
-	lAUsuVYIBKtsL++NZActDsMKHe/ltbodv1MUALCzCLTeOHkxBr1dshuA8qVUQSGzh6+eYtyAJUqIQ
-	xVBoYu/50YdMgUVgtjOybVrFlDOoI7UTxSYKVbpz/EJz7EDuHz/D5nRpDOaR9Ur27EI9/OrGJlaXs
-	s2vW9NtA==;
+	bh=DptzTZ14yrxGy61NJ5hyR0bSKTuyHN29scw4+I+9uec=; b=m5ZNZ1JchVHjpESDAWzaBLUWb2
+	pNPnE58kUmbbFzpjia6LGoxoYlmulD+QNRavI4ZAdk2wPj0Lu2RrjEFvuGDsCQwwomMOi/Mp/LV1T
+	HGVkjRXrs3F41kCvGSDU4E33LoyyQz+1zBuBVxwB7WGarp8DBSBgz/uIv2UNnXki2sk82lYakNTXu
+	LaXG+S3hD/TFkQxzveeuH9P+BXHTT64IwKH+pdQ5HmvTBgv2luP8ZKQgEqTjOozizX1+SQf/2klLw
+	Ojn56TBqLodC7jPhw62Zjn8zxb2ynaYm0JLo0q0ihc9gqQ9TrUOX+BIISeqSZEjSYHl/1gZ9mf1WR
+	XiAPSpVw==;
 Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vCJ92-00000003I0G-1n74;
-	Fri, 24 Oct 2025 14:51:57 +0000
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vCIJR-00000002L2G-0Tfu;
+	Fri, 24 Oct 2025 13:58:37 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 9460A30039F; Fri, 24 Oct 2025 16:51:56 +0200 (CEST)
-Date: Fri, 24 Oct 2025 16:51:56 +0200
+	id 01FE5300323; Fri, 24 Oct 2025 16:54:02 +0200 (CEST)
+Date: Fri, 24 Oct 2025 16:54:01 +0200
 From: Peter Zijlstra <peterz@infradead.org>
 To: Jens Remus <jremus@linux.ibm.com>
 Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
@@ -71,13 +71,14 @@ Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
 	Vasily Gorbik <gor@linux.ibm.com>
 Subject: Re: [PATCH v16 0/4] perf: Support the deferred unwinding
  infrastructure
-Message-ID: <20251024145156.GM4068168@noisy.programming.kicks-ass.net>
+Message-ID: <20251024145401.GN4068168@noisy.programming.kicks-ass.net>
 References: <20251007214008.080852573@kernel.org>
  <20251023150002.GR4067720@noisy.programming.kicks-ass.net>
  <20251024092926.GI4068168@noisy.programming.kicks-ass.net>
  <20251024104119.GJ4068168@noisy.programming.kicks-ass.net>
  <a59509f0-5888-4663-9e82-98e27fc3e813@linux.ibm.com>
  <20251024140815.GE3245006@noisy.programming.kicks-ass.net>
+ <20251024145156.GM4068168@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,256 +87,92 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251024140815.GE3245006@noisy.programming.kicks-ass.net>
+In-Reply-To: <20251024145156.GM4068168@noisy.programming.kicks-ass.net>
 
-On Fri, Oct 24, 2025 at 04:08:15PM +0200, Peter Zijlstra wrote:
+On Fri, Oct 24, 2025 at 04:51:56PM +0200, Peter Zijlstra wrote:
 
-> Yeah, I suppose that should work. Let me rework things accordingly.
+> --- a/arch/x86/include/asm/unwind_user.h
+> +++ b/arch/x86/include/asm/unwind_user.h
+> @@ -3,6 +3,7 @@
+>  #define _ASM_X86_UNWIND_USER_H
+>  
+>  #include <asm/ptrace.h>
+> +#include <asm/uprobes.h>
+>  
+>  #define ARCH_INIT_USER_FP_FRAME(ws)			\
+>  	.cfa_off	=  2*(ws),			\
+> @@ -10,6 +11,12 @@
+>  	.fp_off		= -2*(ws),			\
+>  	.use_fp		= true,
+>  
+> +#define ARCH_INIT_USER_FP_ENTRY_FRAME(ws)		\
+> +	.cfa_off	=  1*(ws),			\
+> +	.ra_off		= -1*(ws),			\
+> +	.fp_off		= 0,				\
+> +	.use_fp		= false,
+> +
+>  static inline int unwind_user_word_size(struct pt_regs *regs)
+>  {
+>  	/* We can't unwind VM86 stacks */
+> @@ -22,4 +29,9 @@ static inline int unwind_user_word_size(
+>  	return sizeof(long);
+>  }
+>  
+> +static inline bool unwind_user_at_function_start(struct pt_regs *regs)
+> +{
+> +	return is_uprobe_at_func_entry(regs);
+> +}
+> +
+>  #endif /* _ASM_X86_UNWIND_USER_H */
 
----
-Subject: unwind_user/x86: Teach FP unwind about start of function
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Fri Oct 24 12:31:10 CEST 2025
+> --- a/include/linux/unwind_user_types.h
+> +++ b/include/linux/unwind_user_types.h
+> @@ -39,6 +39,7 @@ struct unwind_user_state {
+>  	unsigned int				ws;
+>  	enum unwind_user_type			current_type;
+>  	unsigned int				available_types;
+> +	bool					topmost;
+>  	bool					done;
+>  };
+>  
+> --- a/kernel/unwind/user.c
+> +++ b/kernel/unwind/user.c
 
-When userspace is interrupted at the start of a function, before we
-get a chance to complete the frame, unwind will miss one caller.
+>  
+> +static int unwind_user_next_fp(struct unwind_user_state *state)
+> +{
+> +	struct pt_regs *regs = task_pt_regs(current);
+> +
+> +	const struct unwind_user_frame fp_frame = {
+> +		ARCH_INIT_USER_FP_FRAME(state->ws)
+> +	};
+> +	const struct unwind_user_frame fp_entry_frame = {
+> +		ARCH_INIT_USER_FP_ENTRY_FRAME(state->ws)
+> +	};
+> +
+> +	if (state->topmost && unwind_user_at_function_start(regs))
+> +		return unwind_user_next_common(state, &fp_entry_frame);
+> +
+> +	return unwind_user_next_common(state, &fp_frame);
+> +}
+> +
+>  static int unwind_user_next(struct unwind_user_state *state)
+>  {
+>  	unsigned long iter_mask = state->available_types;
+> @@ -118,6 +134,7 @@ static int unwind_user_start(struct unwi
+>  		state->done = true;
+>  		return -EINVAL;
+>  	}
+> +	state->topmost = true;
+>  
+>  	return 0;
+>  }
 
-X86 has a uprobe specific fixup for this, add bits to the generic
-unwinder to support this.
+And right before sending this; I realized we could do the
+unwind_user_at_function_start() in unwind_user_start() and set something
+like state->entry = true instead of topmost.
 
-Suggested-by: Jens Remus <jremus@linux.ibm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/events/core.c             |   40 -------------------------------------
- arch/x86/include/asm/unwind_user.h |   12 +++++++++++
- arch/x86/include/asm/uprobes.h     |    9 ++++++++
- arch/x86/kernel/uprobes.c          |   32 +++++++++++++++++++++++++++++
- include/linux/unwind_user_types.h  |    1 
- kernel/unwind/user.c               |   35 ++++++++++++++++++++++++--------
- 6 files changed, 80 insertions(+), 49 deletions(-)
+That saves having to do task_pt_regs() in unwind_user_next_fp().
 
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -2845,46 +2845,6 @@ static unsigned long get_segment_base(un
- 	return get_desc_base(desc);
- }
- 
--#ifdef CONFIG_UPROBES
--/*
-- * Heuristic-based check if uprobe is installed at the function entry.
-- *
-- * Under assumption of user code being compiled with frame pointers,
-- * `push %rbp/%ebp` is a good indicator that we indeed are.
-- *
-- * Similarly, `endbr64` (assuming 64-bit mode) is also a common pattern.
-- * If we get this wrong, captured stack trace might have one extra bogus
-- * entry, but the rest of stack trace will still be meaningful.
-- */
--static bool is_uprobe_at_func_entry(struct pt_regs *regs)
--{
--	struct arch_uprobe *auprobe;
--
--	if (!current->utask)
--		return false;
--
--	auprobe = current->utask->auprobe;
--	if (!auprobe)
--		return false;
--
--	/* push %rbp/%ebp */
--	if (auprobe->insn[0] == 0x55)
--		return true;
--
--	/* endbr64 (64-bit only) */
--	if (user_64bit_mode(regs) && is_endbr((u32 *)auprobe->insn))
--		return true;
--
--	return false;
--}
--
--#else
--static bool is_uprobe_at_func_entry(struct pt_regs *regs)
--{
--	return false;
--}
--#endif /* CONFIG_UPROBES */
--
- #ifdef CONFIG_IA32_EMULATION
- 
- #include <linux/compat.h>
---- a/arch/x86/include/asm/unwind_user.h
-+++ b/arch/x86/include/asm/unwind_user.h
-@@ -3,6 +3,7 @@
- #define _ASM_X86_UNWIND_USER_H
- 
- #include <asm/ptrace.h>
-+#include <asm/uprobes.h>
- 
- #define ARCH_INIT_USER_FP_FRAME(ws)			\
- 	.cfa_off	=  2*(ws),			\
-@@ -10,6 +11,12 @@
- 	.fp_off		= -2*(ws),			\
- 	.use_fp		= true,
- 
-+#define ARCH_INIT_USER_FP_ENTRY_FRAME(ws)		\
-+	.cfa_off	=  1*(ws),			\
-+	.ra_off		= -1*(ws),			\
-+	.fp_off		= 0,				\
-+	.use_fp		= false,
-+
- static inline int unwind_user_word_size(struct pt_regs *regs)
- {
- 	/* We can't unwind VM86 stacks */
-@@ -22,4 +29,9 @@ static inline int unwind_user_word_size(
- 	return sizeof(long);
- }
- 
-+static inline bool unwind_user_at_function_start(struct pt_regs *regs)
-+{
-+	return is_uprobe_at_func_entry(regs);
-+}
-+
- #endif /* _ASM_X86_UNWIND_USER_H */
---- a/arch/x86/include/asm/uprobes.h
-+++ b/arch/x86/include/asm/uprobes.h
-@@ -62,4 +62,13 @@ struct arch_uprobe_task {
- 	unsigned int			saved_tf;
- };
- 
-+#ifdef CONFIG_UPROBES
-+extern bool is_uprobe_at_func_entry(struct pt_regs *regs);
-+#else
-+static bool is_uprobe_at_func_entry(struct pt_regs *regs)
-+{
-+	return false;
-+}
-+#endif /* CONFIG_UPROBES */
-+
- #endif	/* _ASM_UPROBES_H */
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -1791,3 +1791,35 @@ bool arch_uretprobe_is_alive(struct retu
- 	else
- 		return regs->sp <= ret->stack;
- }
-+
-+/*
-+ * Heuristic-based check if uprobe is installed at the function entry.
-+ *
-+ * Under assumption of user code being compiled with frame pointers,
-+ * `push %rbp/%ebp` is a good indicator that we indeed are.
-+ *
-+ * Similarly, `endbr64` (assuming 64-bit mode) is also a common pattern.
-+ * If we get this wrong, captured stack trace might have one extra bogus
-+ * entry, but the rest of stack trace will still be meaningful.
-+ */
-+bool is_uprobe_at_func_entry(struct pt_regs *regs)
-+{
-+	struct arch_uprobe *auprobe;
-+
-+	if (!current->utask)
-+		return false;
-+
-+	auprobe = current->utask->auprobe;
-+	if (!auprobe)
-+		return false;
-+
-+	/* push %rbp/%ebp */
-+	if (auprobe->insn[0] == 0x55)
-+		return true;
-+
-+	/* endbr64 (64-bit only) */
-+	if (user_64bit_mode(regs) && is_endbr((u32 *)auprobe->insn))
-+		return true;
-+
-+	return false;
-+}
---- a/include/linux/unwind_user_types.h
-+++ b/include/linux/unwind_user_types.h
-@@ -39,6 +39,7 @@ struct unwind_user_state {
- 	unsigned int				ws;
- 	enum unwind_user_type			current_type;
- 	unsigned int				available_types;
-+	bool					topmost;
- 	bool					done;
- };
- 
---- a/kernel/unwind/user.c
-+++ b/kernel/unwind/user.c
-@@ -26,14 +26,12 @@ get_user_word(unsigned long *word, unsig
- 	return get_user(*word, addr);
- }
- 
--static int unwind_user_next_fp(struct unwind_user_state *state)
-+static int unwind_user_next_common(struct unwind_user_state *state,
-+				   const struct unwind_user_frame *frame)
- {
--	const struct unwind_user_frame frame = {
--		ARCH_INIT_USER_FP_FRAME(state->ws)
--	};
- 	unsigned long cfa, fp, ra;
- 
--	if (frame.use_fp) {
-+	if (frame->use_fp) {
- 		if (state->fp < state->sp)
- 			return -EINVAL;
- 		cfa = state->fp;
-@@ -42,7 +40,7 @@ static int unwind_user_next_fp(struct un
- 	}
- 
- 	/* Get the Canonical Frame Address (CFA) */
--	cfa += frame.cfa_off;
-+	cfa += frame->cfa_off;
- 
- 	/* stack going in wrong direction? */
- 	if (cfa <= state->sp)
-@@ -53,19 +51,37 @@ static int unwind_user_next_fp(struct un
- 		return -EINVAL;
- 
- 	/* Find the Return Address (RA) */
--	if (get_user_word(&ra, cfa, frame.ra_off, state->ws))
-+	if (get_user_word(&ra, cfa, frame->ra_off, state->ws))
- 		return -EINVAL;
- 
--	if (frame.fp_off && get_user_word(&fp, cfa, frame.fp_off, state->ws))
-+	if (frame->fp_off && get_user_word(&fp, cfa, frame->fp_off, state->ws))
- 		return -EINVAL;
- 
- 	state->ip = ra;
- 	state->sp = cfa;
--	if (frame.fp_off)
-+	if (frame->fp_off)
- 		state->fp = fp;
-+	state->topmost = false;
- 	return 0;
- }
- 
-+static int unwind_user_next_fp(struct unwind_user_state *state)
-+{
-+	struct pt_regs *regs = task_pt_regs(current);
-+
-+	const struct unwind_user_frame fp_frame = {
-+		ARCH_INIT_USER_FP_FRAME(state->ws)
-+	};
-+	const struct unwind_user_frame fp_entry_frame = {
-+		ARCH_INIT_USER_FP_ENTRY_FRAME(state->ws)
-+	};
-+
-+	if (state->topmost && unwind_user_at_function_start(regs))
-+		return unwind_user_next_common(state, &fp_entry_frame);
-+
-+	return unwind_user_next_common(state, &fp_frame);
-+}
-+
- static int unwind_user_next(struct unwind_user_state *state)
- {
- 	unsigned long iter_mask = state->available_types;
-@@ -118,6 +134,7 @@ static int unwind_user_start(struct unwi
- 		state->done = true;
- 		return -EINVAL;
- 	}
-+	state->topmost = true;
- 
- 	return 0;
- }
+Does that make sense?
 
