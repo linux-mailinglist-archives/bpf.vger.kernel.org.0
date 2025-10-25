@@ -1,76 +1,78 @@
-Return-Path: <bpf+bounces-72180-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72181-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E44AC08C6C
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 08:53:34 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id A46F8C08C6F
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 08:53:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE3B93BF391
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 06:53:25 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CDECA4E7F5D
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 06:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C762D9EDC;
-	Sat, 25 Oct 2025 06:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0D442D9EF2;
+	Sat, 25 Oct 2025 06:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iE+Gp1Fv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KtDxybyd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FC421ADB9
-	for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 06:53:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E7326E6E8
+	for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 06:53:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761375201; cv=none; b=MH14KIzFCnVecmilFKL4REglvfyGWZtmvUJgyqPKjNKasom9GvdbpFjuTr0VxpNBC0Q8wwX4nRumAOlRjNMSh1RPgFTbLXQGJTYJ3kaNXbUeKqvEB5h5lGd+OQ6TWp5JkkIIgRNVZRjpDfQQBS/Hfmz+KS8OOIZYvisdIWkXjw0=
+	t=1761375207; cv=none; b=oEAIPsj8P/eetyBBc5Y41RxN/lZLE0XPz/9+mTaGz1wpztAmFBOUK/Kg77eW0rFBzsH8B+ykQGrQn3IV94TdH9HRhk5vcU9/EM6LUs7IqaPe5MWbmgX3nZ0Gh3zNR4Qo3+hwp3P2FWI7e8uT88L9xlS/H0XY+QXXMbl/io/UlNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761375201; c=relaxed/simple;
-	bh=w99RtLvpk8UVgGX6ieDZH4veRr9AEGHKN/Ya9s591E0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VJ8PL6btF1HhpB+kFOvlxDrEBp6NRIeO/YvugfzUWH2EfaIcmeNBQoFuqWsZJ/XECLmkswSaxdJeIYrVxxKW/kGlxGnmqs0A+Rs0/rylcBIdyE2iiz33LAzJ7bILNDPtPdIcHZpy/Z1OX7WkaqfRwurFxHR9ZAj6JnKnv909rj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iE+Gp1Fv; arc=none smtp.client-ip=209.85.210.177
+	s=arc-20240116; t=1761375207; c=relaxed/simple;
+	bh=wijw4i1M0vTfBFIbS7+/cqkVMQiKCJdpRlsjiYYJilA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=c20Bj5aAI03egbK/ViQH+kIsriLKbKgc7jOqirZqqVBtXlXyslYhwZHS0HpMQpXFhR/Togkjc4TpD99sXI9VTPx/O32NV1KkUz/YR5D3rtV+XBE8t3BfXJl7o/K6FN7WgFEovyn9yPZNUFceatIDV6xja0HQAKp/kdR9ltQqKpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KtDxybyd; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7a28c7e3577so898396b3a.1
-        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 23:53:19 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-781206cce18so2933783b3a.0
+        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 23:53:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761375199; x=1761979999; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kp1JMEroAvT24q+TEkRbK9XSf980ZtoUE9pXBiTTcZw=;
-        b=iE+Gp1FveUCkDgob1sSgjodFoBV8V3Up+0YyTlZV4re4NTxFcqkNs+KeMDXTLn8Yci
-         dbftkWMH50WbegbZ/+rq88vCp7YrK0rDmkcUX7wGPbuBiGcfuE220E4ysh/MXNF4BO8L
-         5UqV3CRAm+yCLdw4cUVfTqbGyCnFqPfTs26iMPKA/p9W87licz5fbq13f2kXH4YAgmpy
-         u/SiyVneLWdYNGKxGzKrj2uGtma8ee37Yk+z33PegNCQ9MrFcKI09QyihLvBX0cUZqOU
-         68hCZVrvigQvaf6elDJQ5pv6grJRR3mNu+5b4r08Myx2wnh4wAxBbTLmFpQFMvdiY4jm
-         J45Q==
+        d=gmail.com; s=20230601; t=1761375205; x=1761980005; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MYxOi7/j9cjsZqMBUihMGCpPdFfgZqdeuZI37Hp+Tuo=;
+        b=KtDxybydnYZddupZNm4crER3d/FqPBvKR8c6vqyzd63LC/9KJdzPlgX4Z1qaIbjxh4
+         eDBdsFFDQWadwsAGdPvtMNghRXeC/1e/bwxcjfPpWt5CpxM7tzSqyVN59dkQiewKAhRq
+         h9Ne+JLfPnEgitUbl0MNdL6X01dMbkkZCbf8uCDAuMl12AtGWmviU7y14CMibk/UUwZH
+         PJo4ycEsDRAZEY51Ojq5RYwhc9J3HMCPA7S2fBxukPdNIsvpKciwCxH8PqAJVy23QAAM
+         e7bc12n+Y4Ctd4HZNCQZKSuOYrGbgbeCkgWuUVbnWxzhb89hwID3x/cLv+4bI4oGI8Rm
+         WO2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761375199; x=1761979999;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Kp1JMEroAvT24q+TEkRbK9XSf980ZtoUE9pXBiTTcZw=;
-        b=f5clxqAJdyFewaJ21jFDQ0xJQwQDEWvO2uT2SieuWsbV6idUbe8bCM2QcvnfsfCeP3
-         50X9Sz8xGiNZeIuyVT+H+8bosFw1y7d/sIjO8H+0N1mvb4ZJbduwFVkZRAbi0LqoL3WC
-         Xfb8CR14o22n+cGYZ0t6WlQZHPZIiw7VbSdtq/majMVL1CfhGOlkfmi/40YEtnDgmjCk
-         wGY9gIOiJcZUe4N4JI1gvlvvxyvmfI4ZS3GuzZH3H3Qmucb4zFWT/NyQpXih6xZXLvyx
-         zvdppjHAIh9Vyt/na6T7WHggHQSOOmtsA8AK9TixzCisTnzP1Kkr8ibPuRPhJoQR7djB
-         oonA==
-X-Gm-Message-State: AOJu0Ywd72mGiSjcgpaLH4x22DqjLhmxUIbcl93dVBrU5bxrWgVpy+Y1
-	8mEa8hlslaaUYJZ6Kn8Lfvpuo7mJjvbApAn51MziFUbr4u4X0UEQTAIt
-X-Gm-Gg: ASbGncv4ktwm222pTRvxm0S1cARQ7yRFX0ZyoCVk3JmtkuKMwMApPobgxaejOc3/cag
-	0hs7e1pveMkoYwEwjaeE82yxwdoDiUu707aRVP75g8Q9BPDOh19uq16swwEK0inZCLWQDvReB8/
-	mvcb7jP+UPEb79a9rDz6gI4HJg37j/xCjGfsKwwdHNw2WwkAplHnuCh5vD+sbeqpXDXUBXka+pL
-	TFgela0orDJfTaJ5XqJpaSiHrmuI7nmF3qStyTFuL/v/ohehOXMWF29ALNgJttglCyDNCKf78wM
-	23JiZCpzJ8Q+7ctSXRk7xxSkKBd4zzaEd9H3o4uzb5d7rgPznePhP6XiuCtTW5bw/PLbbY5Bi4a
-	GWD12xIScOfhKrevQFqFa3XUQwT4wP+Bq2GvOVrK8XTdKit8kCxz04LP42UpbEyDkJy46WaR/OS
-	qQnxZ79Wb/R36cd6lOgK8UYTSTH4pkZS2EwGnA0UeDuw==
-X-Google-Smtp-Source: AGHT+IEFW/6eK7FLLLHanhNe2hYWEwfdayYE2KNuu89PBLF3Wc88bg+ZRhMRoOMulVRY8+1YDsQbmA==
-X-Received: by 2002:a05:6a21:778c:b0:33b:1dce:993b with SMTP id adf61e73a8af0-33b1dce9c9dmr13244537637.10.1761375199251;
-        Fri, 24 Oct 2025 23:53:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1761375205; x=1761980005;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MYxOi7/j9cjsZqMBUihMGCpPdFfgZqdeuZI37Hp+Tuo=;
+        b=EmbPcKL8GOq+B0BJAOR0xzNfqOz4EOVY9zip6mw++G8Qkc0FPTBPI+KGRoru+R0ww6
+         u1RqI1TtfjFi9WwKo4NYVWEyO8CIMRstcsbvrcO4iaG2EagWVcxppy43eKibwiXRHSTA
+         PYYu6Yoasj7P58yBFe1l53RvWbs7AS/zuqnM4fb5APIU7CQ0Zhx5RVke0zr2SjvZfxcn
+         at7QFdgUlpOv3i/fGbdSbJDSE08EDK+uKOSEVp5lxOgR4vGfXXFJ8phhjFSiLIL/IUKZ
+         +TEOmBjoBNZu7BBg/mumfuwPRyoBQu6wWgNMqjFjUJyfhSw9Ei1u2VOTKH2V5+8wLph5
+         zR/Q==
+X-Gm-Message-State: AOJu0YxrmrOn/fa7zqYWpXP4NOkBBoa7/sG6p6Ax0/njnLI4kFT6gBm1
+	cq/v8WN2OASXh3zDLhZb+nm3aPM6BCVQtt6BEs2zSnTOob9sIOtANC9s
+X-Gm-Gg: ASbGncv8UypYSjTx0nQJ6GzsKVbUk/08yaS2az0wcQRZNQUb0wWVoLVfsSpWTPXtDVU
+	ZVVuE0eH1qs3Xq4rBZEjKVP4VNnsPW2+wmuLLR6/3WnVO6ZZHp7fqJRIYR3XHkrypTd3QUcmFy0
+	PKtpfmO/XQOaxRcT/LLRE0SFWLGdZ/t3GLxtpymxrNIzKdJ+gsrPmZ07uxUZF0XYyjrni6XG7b7
+	zjIS+AYrseiwjieJInp+ckQtUqNEv9tXcEM4+csk/6GeOWZZL3PABpMQmhAPlB8EEwCMsMx7sW5
+	jbs1pTPA5HvjOfd4Xpdkj27j6uJrQmugL/vQieG00AkJrEwm3TydhFUmJGqhvIN/H5Z4c9BVItb
+	fiEMr13D4oR8jpUJXKm1nGM2UYB0D8sGjKSxgApK41yrg2ZVqCYzC93G56M2eNa5k1XQAjzVuWV
+	1koNMwmC0ctc6QnzIvTMwHwd89x9YR+ojtc81IIi38XQ==
+X-Google-Smtp-Source: AGHT+IFQ0YTZEGeIJ8YN+UDuP3ySMc4ZngeurKJEicfSScvo2krlJZu4E7wNkT5tG9m9tU42s7mT2Q==
+X-Received: by 2002:a05:6a00:23cb:b0:7a2:7dab:d51f with SMTP id d2e1a72fcca58-7a284e62981mr6779258b3a.16.1761375205034;
+        Fri, 24 Oct 2025 23:53:25 -0700 (PDT)
 Received: from KERNELXING-MC1.tencent.com ([111.201.29.154])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a4140699basm1262820b3a.50.2025.10.24.23.53.13
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a4140699basm1262820b3a.50.2025.10.24.23.53.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Oct 2025 23:53:18 -0700 (PDT)
+        Fri, 24 Oct 2025 23:53:24 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -90,10 +92,12 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next 0/2] xsk: mitigate the side effect of cq_lock
-Date: Sat, 25 Oct 2025 14:53:08 +0800
-Message-Id: <20251025065310.5676-1-kerneljasonxing@gmail.com>
+Subject: [PATCH net-next 1/2] xsk: avoid using heavy lock when the pool is not shared
+Date: Sat, 25 Oct 2025 14:53:09 +0800
+Message-Id: <20251025065310.5676-2-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20251025065310.5676-1-kerneljasonxing@gmail.com>
+References: <20251025065310.5676-1-kerneljasonxing@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -104,18 +108,66 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-Two optimizations regarding cq_lock can yield a performance increase
-because of avoiding disabling and enabling interrupts frequently.
+The commit f09ced4053bc ("xsk: Fix race in SKB mode transmit with
+shared cq") uses a heavy lock (spin_lock_irqsave) for the shared
+pool scenario which is that multiple sockets share the same pool.
 
-Jason Xing (2):
-  xsk: avoid using heavy lock when the pool is not shared
-  xsk: use a smaller new lock for shared pool case
+It does harm to the case where the pool is only owned by one xsk.
+The patch distinguishes those two cases through checking if the xsk
+list only has one xsk. If so, that means the pool is exclusive and
+we don't need to hold the lock and disable IRQ at all. The benefit
+of this is to avoid those two operations being executed extremely
+frequently.
 
- include/net/xsk_buff_pool.h | 13 +++++++++----
- net/xdp/xsk.c               | 20 ++++++++++++--------
- net/xdp/xsk_buff_pool.c     |  3 ++-
- 3 files changed, 23 insertions(+), 13 deletions(-)
+With this patch, the performance number[1] could go from 1,872,565 pps
+to 2,147,803 pps. It's a noticeable rise of around 14.6%.
 
+[1]: taskset -c 1 ./xdpsock -i enp2s0f1 -q 0 -t -S -s 64
+
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+---
+ net/xdp/xsk.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 7b0c68a70888..76f797fcc49c 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -548,12 +548,15 @@ static int xsk_wakeup(struct xdp_sock *xs, u8 flags)
+ 
+ static int xsk_cq_reserve_locked(struct xsk_buff_pool *pool)
+ {
++	bool lock = !list_is_singular(&pool->xsk_tx_list);
+ 	unsigned long flags;
+ 	int ret;
+ 
+-	spin_lock_irqsave(&pool->cq_lock, flags);
++	if (lock)
++		spin_lock_irqsave(&pool->cq_lock, flags);
+ 	ret = xskq_prod_reserve(pool->cq);
+-	spin_unlock_irqrestore(&pool->cq_lock, flags);
++	if (lock)
++		spin_unlock_irqrestore(&pool->cq_lock, flags);
+ 
+ 	return ret;
+ }
+@@ -588,11 +591,14 @@ static void xsk_cq_submit_addr_locked(struct xsk_buff_pool *pool,
+ 
+ static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
+ {
++	bool lock = !list_is_singular(&pool->xsk_tx_list);
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&pool->cq_lock, flags);
++	if (lock)
++		spin_lock_irqsave(&pool->cq_lock, flags);
+ 	xskq_prod_cancel_n(pool->cq, n);
+-	spin_unlock_irqrestore(&pool->cq_lock, flags);
++	if (lock)
++		spin_unlock_irqrestore(&pool->cq_lock, flags);
+ }
+ 
+ static void xsk_inc_num_desc(struct sk_buff *skb)
 -- 
 2.41.3
 
