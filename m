@@ -1,170 +1,147 @@
-Return-Path: <bpf+bounces-72200-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72201-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7983C09F46
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 21:30:08 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 316EBC0A060
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 23:18:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 921371C2085E
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 19:30:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 18D654E3FAD
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 21:18:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BB80309F0F;
-	Sat, 25 Oct 2025 19:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 683C6242938;
+	Sat, 25 Oct 2025 21:18:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mZEX4CE+"
 X-Original-To: bpf@vger.kernel.org
-Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0668030ACE3;
-	Sat, 25 Oct 2025 19:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2ECE25A338
+	for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 21:18:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761420599; cv=none; b=TLNHGK7vMbRn/ek7WX6feNuorOYGK8vcCLvpFfziq5BbqwqIZ8gPva9BtHuljOKDKMZC+eX1rV7c+IWR/VQTHoUWcCZiiOFq+NAJjv06Ck0FlvozofI/Tw+b9uK49AYluS8NZZd0O0jqoSpTvgF9tPeabcbj/808GwBA4V/7q04=
+	t=1761427098; cv=none; b=elOQuALaBnMUHpBnXXKpdMvZNT3W5xjySeD200or+O8PzGR5uHH8G0XXEKmGMXEGVNREGBEgHXDJ9B8/DRP/nxQTmqYEv/KReJwjbFjsweWpfl+51JMX2dGXcuH0tUpGqTyV2VXZ/d8PLkKPk7piC87oUS7sMaW/vMDd2B26Usc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761420599; c=relaxed/simple;
-	bh=BKwSS5n1j+TmCA2j8wQg/7+SCSaYJZVFdLwqBi+78Kc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OSqL47Dkx3DAo4qk/cDTyjcSocDvco8itKRczVv4zqHAm0LgerFP22+4IsyO6FadVcktisHrTdQ5jpdVfr2zTWSbSydWFSoHkymVclmXpXV+QHgUma0gRgjkrRsDcacYex8YO3MURYWzlqE5EbXTOslAgCHO2q6ai3r1kijebEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
-Received: from dev-dsk-arnaudlc-1a-b66eeb5f.eu-west-1.amazon.com (54-240-197-230.amazon.com [54.240.197.230])
-	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id 1798640B8D;
-	Sat, 25 Oct 2025 19:29:54 +0000 (UTC)
-Authentication-Results: Plesk;
-	spf=pass (sender IP is 54.240.197.230) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=dev-dsk-arnaudlc-1a-b66eeb5f.eu-west-1.amazon.com
-Received-SPF: pass (Plesk: connection is authenticated)
-From: Arnaud Lecomte <contact@arnaud-lcm.com>
-To: contact@arnaud-lcm.com,
-	alexei.starovoitov@gmail.com,
-	andrii.nakryiko@gmail.com,
-	andrii@kernel.org
-Cc: ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	sdf@fomichev.me,
-	song@kernel.org,
-	syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: [PATCH V10 RESEND 2/2] bpf: fix stackmap overflow check in
- __bpf_get_stackid()
-Date: Sat, 25 Oct 2025 19:29:41 +0000
-Message-ID: <20251025192941.1500-1-contact@arnaud-lcm.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251025192858.31424-1-contact@arnaud-lcm.com>
-References: <20251025192858.31424-1-contact@arnaud-lcm.com>
+	s=arc-20240116; t=1761427098; c=relaxed/simple;
+	bh=3bsFJNE4DE47AGrHwWCWsH5kkVM8VML79+gkO8TWy4Y=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PgrA0ZKP0It4601xLgws+KrGRIsXk29qPPVKGwi2G3itLL6VyfLzHa53ZfIMh56tYoUmoWp3JtJLw/itg8VgfxwMDD2+7kjnc//nG6n5IfF33NuMNDj/39enmDe0UDrP6+DeOKybsVuEqQalmXXH6iBJ9W5Q773DV0joTcBMnzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mZEX4CE+; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4710665e7deso16267335e9.1
+        for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 14:18:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761427093; x=1762031893; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3c1WBcRxq8wi3EgsqQk7zV+qxOcJsiv7FtZH/pCDIvU=;
+        b=mZEX4CE+Evz7rK6n13uoO+oaBt/vTGBXt6fMM7JWaD83VHSqUwqR8XS9AA/Ol8qIhc
+         4GcmTV3pvquzRxqc2hPUKAsiT8jDcLxBsbBTf1V+HLskARyMqjmeRWROkDCf5VoRc/NT
+         gyE6puY26dU+BDRxJriQfusveL7gHfG2lAMSWoa5CRsbQkDUAzZOrYpQVvfW6TxlfLWF
+         39Vex8olo0zFL91ltxC3ncEYXDLSlumoL0JPGv/gIEyNz33LJ0mtUnZwEKVTG64JNkgi
+         DnjcdRQlnJdypsllSllkeo+c/+PV7PDeQGXB+ZEfNKr+oRJi45h5FF6zKVY2ngPbqoDt
+         dscw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761427093; x=1762031893;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3c1WBcRxq8wi3EgsqQk7zV+qxOcJsiv7FtZH/pCDIvU=;
+        b=VKXbMwK8TQI52R4o4j6Ze1d13AkDx3M5o735NRJVrZz3sKUlR/tlFXw+Kg8oe5oSd1
+         jOVA7J+EI/PvDc05ibTvfMdFWkM1v51euc7om7koMK3iM09xxgny6qNhCjagXTxBsiVT
+         TNNM/q89pPZnVEK71Yrz+z6HaGkY3E3CGdcHLGKTouH2OHRSGZuidUcG4wATLa+Lyb6x
+         M9OyPvvUEu/nrwG4VvDV9Hm5wG/FmyOiw+NBFwQJazN1mH7Rczi6oEGtG53fYk2W5olS
+         9/yC1MR6SEFgjc7wHyXbi+Rwp0xTBtRjzyXo7h3LzHUqzGFUUiuVHBhAggr3QZ91U4UB
+         A6JA==
+X-Forwarded-Encrypted: i=1; AJvYcCUU4UN9JSrBB73KHsci8vqfe7sOF+Cbee7GkAKv/OnttfdFY15c3WBmkNXmB1YFEAcCbR4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwqzXx3lINFpt+4I7RWYF+1c6mK1GEB25ZkCeQJy8ZqKuWdyn/
+	ZPNdJ6phTz9ogN7DsSf//l3HYji2+blOc07QnkL7ixxj549nmNLNOt0x
+X-Gm-Gg: ASbGncswPFu/7mNWHHH0r/zjh3a57RduqNzASW6Ai6d7pWumEJuPhL+HbRIYJZJIT79
+	UOEDveNnwePPLbYWH4Lk9tafOQ8DXfglLX1fRz1GbaxaP+fPhKNscnh28/rm2vz5Lje8PvqoSIv
+	t5558Eddpa09xCGMiKQBg4LzQyBi4GmX5c4ylEuneC3DDf77zrAJITexIpOyv3Z0MXz7MTmJJ75
+	g3RvGFs9lNp0ER/VNHyJd6F1vIPjRXwFUTfoUZXmmQ2yMm4SfkzLkzXO8+qJ3cuKe4XWi19Aowp
+	cGF1zrXxaQ1UxNhn4PPDCz5OD4LMetLyLTzkFPTDXRq5CHRC+ELksUouTdQu35NaD3/0wl/fdVJ
+	V3YYKs/sFG20VyFLMUCM1ZauvbMEqJkS4EU+zFBSb1/k+cGzdJXKet+rdYF/oJOuFpotxzQh/9k
+	4=
+X-Google-Smtp-Source: AGHT+IEKmGV6iwycAf4O/Au0c79Uf5s26+e12RwvflkfNHz45yscxbt7voylHffu4v/BbZtKilFDgg==
+X-Received: by 2002:a05:600c:64c3:b0:477:ad4:4920 with SMTP id 5b1f17b1804b1-4770ad449b4mr8309285e9.10.1761427093382;
+        Sat, 25 Oct 2025 14:18:13 -0700 (PDT)
+Received: from krava ([176.74.159.170])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429952db964sm5427322f8f.33.2025.10.25.14.18.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Oct 2025 14:18:12 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sat, 25 Oct 2025 23:18:11 +0200
+To: Nirbhay Sharma <nirbhay.lkd@gmail.com>
+Cc: Kees Cook <kees@kernel.org>, Shuah Khan <shuah@kernel.org>,
+	Andy Lutomirski <luto@amacapital.net>,
+	Will Drewry <wad@chromium.org>, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	khalid@kernel.org, david.hunter.linux@gmail.com,
+	linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] selftests/seccomp: fix pointer type mismatch in UPROBE
+ test
+Message-ID: <aP0-k3vlEEWNUtF8@krava>
+References: <20251025184903.154755-2-nirbhay.lkd@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-PPP-Message-ID: <176142059485.24744.14432141279233149393@Plesk>
-X-PPP-Vhost: arnaud-lcm.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251025184903.154755-2-nirbhay.lkd@gmail.com>
 
-Syzkaller reported a KASAN slab-out-of-bounds write in __bpf_get_stackid()
-when copying stack trace data. The issue occurs when the perf trace
- contains more stack entries than the stack map bucket can hold,
- leading to an out-of-bounds write in the bucket's data array.
+On Sun, Oct 26, 2025 at 12:19:04AM +0530, Nirbhay Sharma wrote:
+> Fix compilation error in UPROBE_setup caused by pointer type mismatch
+> in ternary expression. The probed_uretprobe and probed_uprobe function
+> pointers have different type attributes (__attribute__((nocf_check))),
 
-Reported-by: syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=c9b724fbb41cf2538b7b
-Fixes: ee2a098851bf ("bpf: Adjust BPF stack helper functions to accommodate skip > 0")
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Acked-by: Song Liu <song@kernel.org>
-Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
----
-Changes in v2:
- - Fixed max_depth names across get stack id
+just probed_uprobe right?
 
-Changes in v4:
- - Removed unnecessary empty line in __bpf_get_stackid
+> which causes the conditional operator to fail with:
+> 
+>   seccomp_bpf.c:5175:74: error: pointer type mismatch in conditional
+>   expression [-Wincompatible-pointer-types]
 
-Changes in v6:
- - Added back trace_len computation in __bpf_get_stackid
+curious what compiler do you see that with? gcc-15 is silent,
+the change looks good to me
 
-Changes in v7:
- - Removed usefull trace->nr assignation in bpf_get_stackid_pe
- - Added restoration of trace->nr for both kernel and user traces
-   in bpf_get_stackid_pe
+thanks,
+jirka
 
-Changes in v9:
- - Fixed variable declarations in bpf_get_stackid_pe
- - Added the missing truncate of trace_nr in __bpf_getstackid
 
-Changes in v10:
- - Remove not required trace->nr = nr_kernel; in bpf_get_stackid_pe
-
-Link to v9:
-https://lore.kernel.org/all/20250912233558.75076-1-contact@arnaud-lcm.com/
----
----
- kernel/bpf/stackmap.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 5e9ad050333c..2365541c81dd 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -251,8 +251,8 @@ static long __bpf_get_stackid(struct bpf_map *map,
- {
- 	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
- 	struct stack_map_bucket *bucket, *new_bucket, *old_bucket;
-+	u32 hash, id, trace_nr, trace_len, i, max_depth;
- 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
--	u32 hash, id, trace_nr, trace_len, i;
- 	bool user = flags & BPF_F_USER_STACK;
- 	u64 *ips;
- 	bool hash_matches;
-@@ -261,7 +261,8 @@ static long __bpf_get_stackid(struct bpf_map *map,
- 		/* skipping more than usable stack trace */
- 		return -EFAULT;
- 
--	trace_nr = trace->nr - skip;
-+	max_depth = stack_map_calculate_max_depth(map->value_size, stack_map_data_size(map), flags);
-+	trace_nr = min_t(u32, trace->nr - skip, max_depth - skip);
- 	trace_len = trace_nr * sizeof(u64);
- 	ips = trace->ip + skip;
- 	hash = jhash2((u32 *)ips, trace_len / sizeof(u32), 0);
-@@ -390,15 +391,11 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
- 		return -EFAULT;
- 
- 	nr_kernel = count_kernel_ip(trace);
-+	__u64 nr = trace->nr; /* save original */
- 
- 	if (kernel) {
--		__u64 nr = trace->nr;
--
- 		trace->nr = nr_kernel;
- 		ret = __bpf_get_stackid(map, trace, flags);
--
--		/* restore nr */
--		trace->nr = nr;
- 	} else { /* user */
- 		u64 skip = flags & BPF_F_SKIP_FIELD_MASK;
- 
-@@ -409,6 +406,10 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
- 		flags = (flags & ~BPF_F_SKIP_FIELD_MASK) | skip;
- 		ret = __bpf_get_stackid(map, trace, flags);
- 	}
-+
-+	/* restore nr */
-+	trace->nr = nr;
-+
- 	return ret;
- }
- 
--- 
-2.47.3
-
+> 
+> Cast both function pointers to 'const void *' to match the expected
+> parameter type of get_uprobe_offset(), resolving the type mismatch
+> while preserving the function selection logic.
+> 
+> Signed-off-by: Nirbhay Sharma <nirbhay.lkd@gmail.com>
+> ---
+>  tools/testing/selftests/seccomp/seccomp_bpf.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> index 874f17763536..e13ffe18ef95 100644
+> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
+> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> @@ -5172,7 +5172,8 @@ FIXTURE_SETUP(UPROBE)
+>  		ASSERT_GE(bit, 0);
+>  	}
+>  
+> -	offset = get_uprobe_offset(variant->uretprobe ? probed_uretprobe : probed_uprobe);
+> +	offset = get_uprobe_offset(variant->uretprobe ?
+> +		(const void *)probed_uretprobe : (const void *)probed_uprobe);
+>  	ASSERT_GE(offset, 0);
+>  
+>  	if (variant->uretprobe)
+> -- 
+> 2.48.1
+> 
+> 
 
