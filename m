@@ -1,93 +1,94 @@
-Return-Path: <bpf+bounces-72195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4390FC09DF4
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 19:33:55 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EC46C09DF7
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 19:34:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C12913BE575
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 17:33:15 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4540F4E1184
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 17:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF382F656F;
-	Sat, 25 Oct 2025 17:33:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503163002A4;
+	Sat, 25 Oct 2025 17:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NbBxC3H3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kX61LPqZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30AE62F99BC
-	for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 17:33:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27131234973
+	for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 17:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761413593; cv=none; b=PFfMpKAaJXGQpqZWJC7b6ehlOjBwoL630fMyWzPW6MvMLn4hPx/N47ZssYqXgpVuSoEhhol3LZCRRtDFeI9USE2lC9cW0DJ8cef0lCgtDZGOqjL6HOdnlGlD3Sd1+20dVyQkRNcTEm18NWmcOyGA4iLKIQzThW8SrTmxm/ZYTk8=
+	t=1761413665; cv=none; b=XanIN13cy7EhtoNFaPmuYBBzXx9jkLULr47I24fCS0T6FStTfVpHcLLxCyHzsICPtBIq9Om7BUWBXoZck0ZKKxwVGbaeSvPglKorjUWmOYKRqvcwfimO00GBu72Kr6vbsIAuP0UESTW3ZZ79EIa4xienOs2cOnVd2Y2gmGRkUq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761413593; c=relaxed/simple;
-	bh=O++OuxACJ9yOD/LcvpNM5q+keNyT34PLBznMpf+bS+Y=;
+	s=arc-20240116; t=1761413665; c=relaxed/simple;
+	bh=FHDfONyn1Pa1QgEUWNZNU8p+yWQnb9uw2CEic6agawY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AO1I2feZjmE/kRZm9NePrtK563NEtbboHaDa2WUyeka/wwlR/ssYPq0Yf+/KoNxpadOd6fsmB+1+g0pjqiuInItl5gjoDH+SFrlbSbnDXDr8rFT7rBqiTDvKBAgB0/iCIssndz01J//fLMENM8jhlY+/BgSLKBYP/eQAsWHiJpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NbBxC3H3; arc=none smtp.client-ip=209.85.128.47
+	 Content-Type:Content-Disposition:In-Reply-To; b=J4wl7zbll3ZQkx/0CURVLa8xso4JYnyBvFz4w8OMEC9TVa1J0907HhOBw7FdDTdilm4fveMfHx7NbBivVsGpGPCnyWUjgLT57AmVXUpTe6w+fLYuLgtOWShQrmpuEsElmaYYKnkLI972ERajsqMEKulOtbMp5cy1q1qtkopbn28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kX61LPqZ; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-47112edf9f7so18134425e9.0
-        for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 10:33:10 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4710665e7deso15533755e9.1
+        for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 10:34:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761413589; x=1762018389; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761413662; x=1762018462; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hER1EO0Ammi3FMse7lNAFlgxjn728ejmaORrs3S7WBs=;
-        b=NbBxC3H3pGIOTQqFZlKFZ19H+2G3//B/x06FzyFRcaFAlfGxUw0oaJrEqrfO9U/ZbD
-         hrrdKWMrhQ4hbemXB28zz4yhJgX3N1pxSp3tsB6nS1EppTYP7NtnEARVZBGo4atD6s2+
-         E3uFXmibhOaltQwWcya989n+U0iqbe2fYgZL9xEh8U6+U/NGunHx9iN8Ehv/oHl7CoaC
-         qBw7jP49oWrz6pVpCOWa+vvM4Y8tRXQoQAlFMYyvuiISv+eCTeJBBzP1IADnNkfIRp5x
-         RLaqpWHobrisSqQ7/rfD8H1N+5FDfaghnzQxLcFwNGfNfU4u4oWF9TVRMQHde/5Uoc1d
-         r5Kg==
+        bh=6PeJQCeDjdt8BiGaz282bO088/asJbK1yR6kqHEckT4=;
+        b=kX61LPqZX4suXpoNNE7tkL9IFB4ybK2HCv1h5v3j6nFdzzLHMmkR4u/GAerPAp2Kew
+         hZHI81cIgm9Dvxhc7D4IQBm01wVngKAdzXP7PloarVANzbB+RGRj38tMYmems6dBWDCx
+         bRzmVEKU8FYsRIZAS6nZ/TwpGE6fYAlhGW6UaiDspkRe1kaqUagEW5oa6RDFfA6R40px
+         iC8N6hkyzwqeX56nfpijnaiadh3tK51xOjv3dF1kfCdSHw2Y4FjTr9HVeaP6FSYO/j9c
+         bcGIB2W6sc57NgISHj3YQ95MNGAFocPzTPUZJG1xNkoFY0mi354gnYOx7NDJZhzXtejj
+         ++lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761413589; x=1762018389;
+        d=1e100.net; s=20230601; t=1761413662; x=1762018462;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hER1EO0Ammi3FMse7lNAFlgxjn728ejmaORrs3S7WBs=;
-        b=PE/h+5HygIChkEHy85t7aQii0zX+IUuPjgLo0xSjpI+zfY7sbt5PuCkMUm83oM/VQg
-         SRA/eVqxz+UbqwdKaUUjiJcyXqKzwRRq6gwhmajPtRr2knTSZ+wV/UlgR0X2MiJK8oLb
-         pcJUeH3B/d3DA5LhxoaUdF9uIs9kN1NTO4e9NkWpnCsdU2f/oCOMNLVyBsuwrBmSLg8P
-         MAW0qvzvL3IYtf+p7Y0h28gL2+fCrkBJKCdMevvCfKo0JIHOxlc8uPQz5lRiwNVQ1sik
-         gjLQXeqglwd9++IU6RNafCNcfpZcTtaqBj4IjsJqwF7EN5mye0NJ7LxOj0KD1aM0DaUG
-         FEoA==
-X-Gm-Message-State: AOJu0YwP5Sa2a65iuKuNbuC2/vqjjbljVPs1mne1nQjvnTWR19oYGnEg
-	fTyVqjorUsI7q9qcwvgCofYSRRatyHbVAQtOtHImQS2fSuCEXi2aLWEs
-X-Gm-Gg: ASbGncvB0WKAG4elY+s8RtcCDjlOA/Pr0sJHCaa737Q/bbwqNWB1phq3WmkFC41MX8Q
-	y5ar22BjdbFzQgzPr/Gb6id8KtYXtQ9kSumIi3jpDbo86boZlGf48jxLDMwTKxWNpH9qZE0oIjr
-	renwb+1uNLbPU9XKAazFGnIRv/IhjhCaiFH0J1DzD7u7s9bM03judVYt1IAvn24/gfoC/jBSlhw
-	gSstcXZlbjwr0NPgeWu8e5VpQQIGrKkz+9UvN/vV6ZnogauawjNwPqg0d4oNdtOfNxN3mU8FURt
-	iECUqRldGoIJ3xOtTi7ltAt3KdxSLNKj6fGp97dAKc4p4Tnbnt2EBL965okQnyqGv/4TPE/0Wj8
-	8OLOZLWlHYWOhdYwt1I9+fPgsPJNPIRyRKh3pdsLKbRpCYrug6QLEnBNVEFHs/ffhj6FAOivFN9
-	nT1g/SzWzFB6z/Ml6et8OE
-X-Google-Smtp-Source: AGHT+IFufwaAHYiZDrBApIK1QTGrXTbOit2IqfHIfKNPEyXzuIvh4CE07JI0Rod57yiXFMNIIcp/WQ==
-X-Received: by 2002:a05:600c:a02:b0:46e:477a:f3dd with SMTP id 5b1f17b1804b1-475cb064926mr74063075e9.36.1761413589126;
-        Sat, 25 Oct 2025 10:33:09 -0700 (PDT)
+        bh=6PeJQCeDjdt8BiGaz282bO088/asJbK1yR6kqHEckT4=;
+        b=TRjDBHuv3kSpZsf0tMC0W9k/wG1LSuvj4TxVXIhx8Eh9mSArNsjlN5p5xk7ZI6ju29
+         eTdv4QE+zG/5/+iaZ5b3c6rXIOuvZo50uHxvQNLfOvrUXLIk5o0nmne7Spe3ntAOazl7
+         AIBCBVREE3WXwFWmuUhCTGhv+guaXmRt6nOhtg2C72HgHx+OOLKO3CvgOKV5fVogopKM
+         ev1wfaRgoRSWRiinYo0f2+La0EcfJotK4GC5M7yYodga1lMtoLFuLOUigpN9G0ThcF9A
+         AWyOFeTecSHc0JpFBLg+f+TXLVMwbeLkYK2O4JN9lF5bkCHXDUFJZ0tyMoRfe24o9dd3
+         8LfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWhvkTpL9zeN1Aw0kWtEhX53p3yBDyxPkL+tIc8FTVjRwrJYE1pj/Nz+GrATnE+zyjmh18=@vger.kernel.org
+X-Gm-Message-State: AOJu0YylBoYKQU27BCZA5SKtrybOaOGW+32MlygWlw+hsq9n+vD4lfaC
+	BLrKBBLVDz/4DN9dUkKQg9Cuu7wmefbX8X0Q/2X/1lDpYrqSCWTSbDK4
+X-Gm-Gg: ASbGncuIaPWeeu6KMFQt/1hfABtd8sqnNKZpgyvh9L+EXPpkvQaCTerz4qz7D1SwMvM
+	SchCllDnT07IbN5Qm1sNOczviW7tRewd4f8FkH9EQma68nt7/rME/hUDiT602xovNSJDiLCBrXV
+	/GmUHwi/7Aji2IBy/pDNAUe43O+eUl9CPPe9JmYl7Kw6JLicebpDGHHJzxZEYyY9YasUVgUCTda
+	OrpWbSuZDpIMDeTtVdm/jPs/4n8HkzROl991yTUtG8RA2889jUn2dmTcPNKpCpNqweYFqonYagi
+	Qdp+fzS711EiwFn2fZha16htsIbg+TUNbe/YjeXqQTbr//0f5/iu3OpYtew1IrAJh6+IccsFQ4J
+	/u4RqE2svfHQZagz8iHtiPQWa6oRK8kY1fwZZoS1Nq9uH0t1mo0MRJX1UbObRTIytJJjWF9Ty1+
+	YcBmTH6VIPyQ==
+X-Google-Smtp-Source: AGHT+IGTmIXNy83R6sw5KQjMh+rhPHZF+qBhFSQ7i4y3SPgzkGai2Dv/krE2g36SXvviuWyiGKDLkA==
+X-Received: by 2002:a05:600c:4e45:b0:471:786:94d3 with SMTP id 5b1f17b1804b1-475cb02faa5mr78954315e9.22.1761413662294;
+        Sat, 25 Oct 2025 10:34:22 -0700 (PDT)
 Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429952de5f9sm4757570f8f.38.2025.10.25.10.33.08
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475dd47794asm48289985e9.1.2025.10.25.10.34.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Oct 2025 10:33:08 -0700 (PDT)
-Date: Sat, 25 Oct 2025 17:39:51 +0000
+        Sat, 25 Oct 2025 10:34:21 -0700 (PDT)
+Date: Sat, 25 Oct 2025 17:41:05 +0000
 From: Anton Protopopov <a.s.protopopov@gmail.com>
 To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Anton Protopopov <aspsk@isovalent.com>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH v6 bpf-next 14/17] libbpf: support llvm-generated
- indirect jumps
-Message-ID: <aP0LZxQU2ww0pRBQ@mail.gmail.com>
+	Quentin Monnet <qmo@kernel.org>
+Subject: Re: [PATCH v6 bpf-next 17/17] selftests/bpf: add C-level selftests
+ for indirect jumps
+Message-ID: <aP0LsTKYFAxE8OpD@mail.gmail.com>
 References: <20251019202145.3944697-1-a.s.protopopov@gmail.com>
- <20251019202145.3944697-15-a.s.protopopov@gmail.com>
- <10f8fe24770eb663ea849f133b4474d2cbd0b513.camel@gmail.com>
- <aPt2jVEBji43u+6Q@mail.gmail.com>
+ <20251019202145.3944697-18-a.s.protopopov@gmail.com>
+ <3a9c5da97ad4f2d3ccccf315cb855b4d896f5a7c.camel@gmail.com>
+ <aPjdeCjV4fYqqPeR@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -96,177 +97,68 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aPt2jVEBji43u+6Q@mail.gmail.com>
+In-Reply-To: <aPjdeCjV4fYqqPeR@mail.gmail.com>
 
-On 25/10/24 12:52PM, Anton Protopopov wrote:
-> On 25/10/21 03:18PM, Eduard Zingerman wrote:
+On 25/10/22 01:34PM, Anton Protopopov wrote:
+> On 25/10/21 05:27PM, Eduard Zingerman wrote:
 > > On Sun, 2025-10-19 at 20:21 +0000, Anton Protopopov wrote:
 > > 
 > > [...]
 > > 
-> > > ---
-> > >  tools/lib/bpf/libbpf.c        | 240 +++++++++++++++++++++++++++++++++-
-> > >  tools/lib/bpf/libbpf_probes.c |   4 +
-> > >  tools/lib/bpf/linker.c        |  10 +-
-> > >  3 files changed, 251 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index b90574f39d1c..ee44bc49a3ba 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > 
-> > [...]
-> > 
-> > > +/*
-> > > + * In LLVM the .jumptables section contains jump tables entries relative to the
-> > > + * section start. The BPF kernel-side code expects jump table offsets relative
-> > > + * to the beginning of the program (passed in bpf(BPF_PROG_LOAD)). This helper
-> > > + * computes a delta to be added when creating a map.
-> > > + */
-> > > +static int jt_adjust_off(struct bpf_program *prog, int insn_idx)
-> > > +{
-> > > +	int i;
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c b/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
+> > > new file mode 100644
+> > > index 000000000000..4394654ac75a
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
+> > > @@ -0,0 +1,185 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
 > > > +
-> > > +	for (i = prog->subprog_cnt - 1; i >= 0; i--) {
-> > > +		if (insn_idx >= prog->subprogs[i].sub_insn_off)
+> > > +#include <test_progs.h>
+> > > +
+> > > +#include <linux/if_ether.h>
+> > > +#include <linux/in.h>
+> > > +#include <linux/ip.h>
+> > > +#include <linux/ipv6.h>
+> > > +#include <linux/in6.h>
+> > > +#include <linux/udp.h>
+> > > +#include <linux/tcp.h>
+> > > +
+> > > +#include <sys/syscall.h>
+> > > +#include <bpf/bpf.h>
+> > > +
+> > > +#include "bpf_gotox.skel.h"
+> > > +
+> > > +/* Disable tests for now, as CI runs with LLVM-20 */
+> > > +#if 0
 > > 
-> > Sorry, I'm still confused about what happens here.
-> > The `insn_idx` is comes from relocation, meaning that it is a value
-> > recorded relative to section start, right?  On the other hand,
-> > `.sub_insn_off` is an offset of a subprogram within a concatenated
-> > program, about to be loaded.  These values should not be compared
-> > directly.
+> > I removed all the `#if 0` and tried to compile this test using LLVM at commit
+> > 1a9aba29b09e ("[RISCV] Remove unreachable break statements. NFC (#164481)").
 > > 
-> > I think, that my suggestion from v5 [1] should be easier to understand:
+> > LLVM refuses to compile showing errors like below:
+> > 
+> >   CLNG-BPF [test_progs-cpuv4] bpf_gotox.bpf.o
+> > fatal error: error in backend: Cannot select: <U+001B>[0;31mt15<U+001B>[0m: ch = brind <U+001B>[0;30mt7<U+001B>[0m, <U+001B>[0;30mt14<U+001B>[0m
+> >   <U+001B>[0;30mt14<U+001B>[0m: i64,ch = load<(invariant load (s64) from %ir.arrayidx)> <U+001B>[0;30mt0<U+001B>[0m, <U+001B>[0;36mt13<U+001B>[0m, undef:i64, progs/bpf_gotox.c:202:8
+> >     <U+001B>[0;36mt13<U+001B>[0m: i64 = add nuw <U+001B>[0;33mt17<U+001B>[0m, <U+001B>[0;35mt12<U+001B>[0m, progs/bpf_gotox.c:202:8
+> >       <U+001B>[0;33mt17<U+001B>[0m: i64 = LDIMM64 TargetGlobalAddress:i64<ptr @__const.big_jump_table.jt> 0, progs/bpf_gotox.c:202:8
+> >       <U+001B>[0;35mt12<U+001B>[0m: i64 = shl nuw nsw <U+001B>[0;32mt9<U+001B>[0m, Constant:i64<3>, progs/bpf_gotox.c:202:8
+> >         <U+001B>[0;32mt9<U+001B>[0m: i64 = and <U+001B>[0;35mt5<U+001B>[0m, Constant:i64<255>, progs/bpf_gotox.c:202:18
+> >           <U+001B>[0;35mt5<U+001B>[0m: i64,ch = load<(load (s64) from %ir.ctx)> <U+001B>[0;30mt0<U+001B>[0m, <U+001B>[0;32mt2<U+001B>[0m, undef:i64, progs/bpf_gotox.c:202:16
+> >             <U+001B>[0;32mt2<U+001B>[0m: i64,ch = CopyFromReg <U+001B>[0;30mt0<U+001B>[0m, Register:i64 %5
+> > In function: big_jump_table
+> > 
+> > CC'ing Yonghong.
 > 
-> Well, if you insist :) (I saw the next e-mail as well, thanks.)
+> Looks like no -mcpu=v4. I had to hack Makefile (set v3 -> v4) to build it.
 > 
-> >    > Or rename this thing to find_subprog_idx(), pass relo object into
-> >    > create_jt_map(), call find_subprog_idx() there, and do the following:
-> >    >
-> >    >   xlated_off = jt[i] / sizeof(struct bpf_insn);
-> >    >   /* make xlated_off relative to subprogram start */
-> >    >   xlated_off -= prog->subprogs[subprog_idx].sec_insn_off;
-> >    >   /* make xlated_off relative to main subprogram start */
-> >    >   xlated_off += prog->subprogs[subprog_idx].sub_insn_off;
-> > 
-> > [1] https://lore.kernel.org/bpf/b5fd31c3e703c8c84c6710f5536510fbce04b36f.camel@gmail.com/
-> > 
-> > > +			return prog->subprogs[i].sub_insn_off - prog->subprogs[i].sec_insn_off;
-> > > +	}
-> > > +
-> > > +	return -prog->sec_insn_off;
-> > > +}
-> > > +
-> > > +
-> > >  /* Relocate data references within program code:
-> > >   *  - map references;
-> > >   *  - global variable references;
-> > > @@ -6235,6 +6422,21 @@ bpf_object__relocate_data(struct bpf_object *obj, struct bpf_program *prog)
-> > >  		case RELO_CORE:
-> > >  			/* will be handled by bpf_program_record_relos() */
-> > >  			break;
-> > > +		case RELO_INSN_ARRAY: {
-> > > +			int map_fd;
-> > > +
-> > > +			map_fd = create_jt_map(obj, prog, relo->sym_off, relo->sym_size,
-> > > +					       jt_adjust_off(prog, relo->insn_idx));
-> > > +			if (map_fd < 0) {
-> > > +				pr_warn("prog '%s': relo #%d: can't create jump table: sym_off %u\n",
-> > > +						prog->name, i, relo->sym_off);
-> > > +				return map_fd;
-> > > +			}
-> > > +			insn[0].src_reg = BPF_PSEUDO_MAP_VALUE;
-> > > +			insn->imm = map_fd;
-> > > +			insn->off = 0;
-> > > +		}
-> > > +			break;
-> > >  		default:
-> > >  			pr_warn("prog '%s': relo #%d: bad relo type %d\n",
-> > >  				prog->name, i, relo->type);
-> > 
-> > [...]
-> > 
-> > > @@ -9228,6 +9457,15 @@ void bpf_object__close(struct bpf_object *obj)
-> > >  
-> > >  	zfree(&obj->arena_data);
-> > >  
-> > > +	zfree(&obj->jumptables_data);
-> > > +	obj->jumptables_data_sz = 0;
-> > > +
-> > > +	if (obj->jumptable_maps && obj->jumptable_map_cnt) {
-> > 
-> > Nit: outer 'if' seems unnecessary.
-> 
-> I suspect this was a check for if obj->jumptable_maps is null or not.
-> I think this should never happen that jumptable_map_cnt && !jumptable_map,
-> so I will remove the if.
-> 
-> > > +		for (i = 0; i < obj->jumptable_map_cnt; i++)
-> > > +			close(obj->jumptable_maps[i].fd);
-> > > +	}
-> > > +	zfree(&obj->jumptable_maps);
-> > > +
-> > >  	free(obj);
-> > >  }
-> > 
-> > [...]
-> > 
-> > > diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-> > > index 56ae77047bc3..3defd4bc9154 100644
-> > > --- a/tools/lib/bpf/linker.c
-> > > +++ b/tools/lib/bpf/linker.c
-> > > @@ -27,6 +27,8 @@
-> > >  #include "strset.h"
-> > >  
-> > >  #define BTF_EXTERN_SEC ".extern"
-> > > +#define JUMPTABLES_SEC ".jumptables"
-> > > +#define JUMPTABLES_REL_SEC ".rel.jumptables"
-> > 
-> > Nit: maybe avoid duplicating JUMPTABLES_SEC by moving all *_SEC macro
-> >      to libbpf_internal.h?
-> 
-> Yes, ok.
-> 
-> > >  
-> > >  struct src_sec {
-> > >  	const char *sec_name;
-> > > @@ -2025,6 +2027,9 @@ static int linker_append_elf_sym(struct bpf_linker *linker, struct src_obj *obj,
-> > >  			obj->sym_map[src_sym_idx] = dst_sec->sec_sym_idx;
-> > >  			return 0;
-> > >  		}
-> > > +
-> > > +		if (strcmp(src_sec->sec_name, JUMPTABLES_SEC) == 0)
-> > > +			goto add_sym;
-> > >  	}
-> > >  
-> > >  	if (sym_bind == STB_LOCAL)
-> > > @@ -2271,8 +2276,9 @@ static int linker_append_elf_relos(struct bpf_linker *linker, struct src_obj *ob
-> > >  						insn->imm += sec->dst_off / sizeof(struct bpf_insn);
-> > >  					else
-> > >  						insn->imm += sec->dst_off;
-> > > -				} else {
-> > > -					pr_warn("relocation against STT_SECTION in non-exec section is not supported!\n");
-> > > +				} else if (strcmp(src_sec->sec_name, JUMPTABLES_REL_SEC) != 0) {
-> > > +					pr_warn("relocation against STT_SECTION in section %s is not supported!\n",
-> > > +						src_sec->sec_name);
-> > 
-> > Sorry, I missed this on a previous iteration.
-> > LLVM generates section relative offsets for jump table contents, so it
-> > seems that relocations inside jump table section should not occur.
-> > Is this a leftover, or am I confused?
-> 
-> I think this is a leftover in LLVM, so I have to keep it here.
-> I will check again with the latest LLVM.
+> Even when one tries to build test_progs-cpuv4, the v3 version is
+> also built.  In the bpf prog this is easy to ifdef it: x86_64 +
+> __clang + one can define a variable like BPF_CPU=4 in Makefile.
+> But the prog_tests can't easily see was the skeleton compiled
+> with v3 or v4, so I just ended up with putting #if 0 there for now...
 
-Yes, the latest LLVM I've built (llvmorg-22-init-12400-g09eea2256e53)
-does generate it:
+Yes, checked with the latest LLVM that this is "v3 vs. v4".
+If you pass -mcpu=v4 the code will compile fine.
 
-    $ llvm-readelf -S bpf_gotox.bpf.o | grep jumptables
-      [ 8] .jumptables       PROGBITS        ...
-      [ 9] .rel.jumptables   REL             ...
-
-> > >  					return -EINVAL;
-> > >  				}
-> > >  			}
+> > [...]
 
