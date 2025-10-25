@@ -1,127 +1,89 @@
-Return-Path: <bpf+bounces-72175-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72176-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD3BBC0873D
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 02:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A841C087B5
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 02:54:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D60E63AFFD9
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 00:33:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A9223B8B87
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 00:54:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D802C156F45;
-	Sat, 25 Oct 2025 00:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CC91F4168;
+	Sat, 25 Oct 2025 00:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nu3HjmvM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QCm1ENVv"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D07386337
-	for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 00:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CA91E633C;
+	Sat, 25 Oct 2025 00:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761352401; cv=none; b=YXSUpSn3t7a6Rfjn+VdNTWt6qaFRl6FBsixt9/3p8ZOgvgrut/q7Ljkn0Swm+bwQUeat6OdxnW2L7HEgam3CRAprnnQS7xiBv77uUWCV6C8rq0smlFrwNfe+bREZENfv0xZPiOqbNOcBjWqTeKQOnnJ51+ugRd8N/RNkgZMXh5Y=
+	t=1761353644; cv=none; b=nHUsVXunNWJUXfY/Ak8m1XoHGE9wMCBx9h7nt21WL+bRkCYisJOnWI0amxqBsSZx+YvyX+8Uxwhgz579ZofLSMk6ODJdDfw/c/ud2fEkSQXA7tMP9BuAMhOw4fhc647Y9gC1pa7PC0Hm/QBRjem/Qrk3u4/q+Bov6KLPQhwdiDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761352401; c=relaxed/simple;
-	bh=PgR7lzU9RlXHT5sK4VOdFxsHQoX+25lTA+URTQprJPU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GCKf8+XtyXnolLhY69VEtFSsYsodkS1oodKj1WxeOYGz1CIA3FudfFpgK7Aap8pjcwqML4J3NhL1ojsPbW8PovITEQUzhGmd0E4UAXwTO54gigUGBSVP2G7jGlvabNIB7Aj9Q5TOsBSAIvLLnmEnLcU/dysxsPgxWffITBqBNpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nu3HjmvM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08CF6C4CEFB
-	for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 00:33:21 +0000 (UTC)
+	s=arc-20240116; t=1761353644; c=relaxed/simple;
+	bh=mDTG24SA/D6Zl2v+cxxSNFpswm6/adPBv6yaf/7vO8Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rBrvW/TP7/smQPH2wfTRiB1WkD7Mfx9YyqzHaCL/LcZDKlBKE+ps3nnxqxQIslg+cEW68n231/385+CocxkGrAI/nge4ue0OWKepFJc7yLr7V/4GQzdA5VIRu2QHxPElUo7XGuCxZCQQGgph5Gs9sqjT8bjEQHQIZcvu46PAQ+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QCm1ENVv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE681C4CEF1;
+	Sat, 25 Oct 2025 00:54:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761352401;
-	bh=PgR7lzU9RlXHT5sK4VOdFxsHQoX+25lTA+URTQprJPU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Nu3HjmvMYw2bBqcxpF+LkUoYKjCaF0ilugj0int+eHn0fY5Mb2/ccFSqjGvdnHyF5
-	 4nPNYRzzh/5PADVeoux05YIIRv0ChEyS67ImGtYEKPLujUu2sd2gdjo526GT02vAxD
-	 8cpUyBfb6Tu2L9NtF163yyxOYHyUTI1CVlHUDwyBMnUGb8SRZeimS7/+z8QXontzbJ
-	 rvCnusjOH3PV0WuHnPveQLdr2WFMwdl6idwc1qJQCXTSov3t1EUfuPEo9QBpjza1vK
-	 JynBbij7HahhilXveV1fQbnKnVm5kNlkHyPtQut/LlS3dSnsO9InMw6Nqaf8a9CPia
-	 L8JT180vyzPYQ==
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-87c20106cbeso36826186d6.1
-        for <bpf@vger.kernel.org>; Fri, 24 Oct 2025 17:33:20 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX4jLjet2AELZxV1E5anSInfef2Ts2a+htNL3rfmm9GHtKMBEjtQHhItDlfD40cz8hoe7M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwIZTeqwlV5L5cdnsbPhBy3wnD/ChC42q1qFFZ8n+GoNhGW7rpo
-	4afxlC8tTzCmYgJrm34CGe0M9r/0h3NWjul61EUNIbIzns2zzFbHZFUgH9OkFu8wjbkKCvsTrRf
-	qNPPI3UDxxwSCq7aPhiYCmv4EnZGOaYg=
-X-Google-Smtp-Source: AGHT+IHT9C2MVfE2QgFCOr3nqh2/Dwq2wsY4Lvxnsl+07Ia7Ig9leK6YSyrwqd3getEar74gYWLTQVaTOW7PZfw3sto=
-X-Received: by 2002:a05:6214:491:b0:87c:277f:8d38 with SMTP id
- 6a1803df08f44-87fb6458d34mr64007316d6.50.1761352400140; Fri, 24 Oct 2025
- 17:33:20 -0700 (PDT)
+	s=k20201202; t=1761353643;
+	bh=mDTG24SA/D6Zl2v+cxxSNFpswm6/adPBv6yaf/7vO8Q=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QCm1ENVvbA0/KJyuOBvSRd9yC/waAyYd73az37Pd5i1iSz5cQTqVw7DuxPjAd8yGk
+	 QkzhCkhargWJHnZgTvbydoi4OyJ7kdm9toOeG8RqWh6xSGEI9JPImV1tSubQVbtySt
+	 HX1I8y9KcAnQm8bcKSEWliknJ9ZzeH4gI1oyRbSZMTQQce/fiKiAozssLvGlAc4A34
+	 NSJOZz0jJG7rkKk2oQWJxr+B/W01vMz2x/WGyN0v3ACCV+h0it4/nv01wAmqZYqRwV
+	 RbYzuzl5CU7ihTYEzZ3GhUYJ1cSKl91EdR+HLH9fAKTUp7RKIGXo3sz66mH6IYy+WT
+	 ekAPR773bV4Ww==
+Date: Fri, 24 Oct 2025 17:54:02 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: netdev@vger.kernel.org, makita.toshiaki@lab.ntt.co.jp, Eric Dumazet
+ <eric.dumazet@gmail.com>, "David S. Miller" <davem@davemloft.net>, Paolo
+ Abeni <pabeni@redhat.com>, ihor.solodrai@linux.dev,
+ toshiaki.makita1@gmail.com, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [PATCH net V1 2/3] veth: stop and start all TX queue in netdev
+ down/up
+Message-ID: <20251024175402.397c05a9@kernel.org>
+In-Reply-To: <176123157775.2281302.5972243809904783041.stgit@firesoul>
+References: <176123150256.2281302.7000617032469740443.stgit@firesoul>
+	<176123157775.2281302.5972243809904783041.stgit@firesoul>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251024182901.3247573-1-song@kernel.org> <20251024182901.3247573-3-song@kernel.org>
- <20251024201154.392878cd@gandalf.local.home>
-In-Reply-To: <20251024201154.392878cd@gandalf.local.home>
-From: Song Liu <song@kernel.org>
-Date: Fri, 24 Oct 2025 17:33:09 -0700
-X-Gmail-Original-Message-ID: <CAHzjS_u3_+2fnFiFuTXBchFumSeS_TjZ32yKeAsKKudBPjXEEQ@mail.gmail.com>
-X-Gm-Features: AWmQ_blbqXK0qp086-ih7Y4P857Uz5YViQ9DnjYNZ4-sXHhmnxVBW6VAiaoWxio
-Message-ID: <CAHzjS_u3_+2fnFiFuTXBchFumSeS_TjZ32yKeAsKKudBPjXEEQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf 2/3] ftrace: bpf: Fix IPMODIFY + DIRECT in modify_ftrace_direct()
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Song Liu <song@kernel.org>, bpf@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, live-patching@vger.kernel.org, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	andrey.grodzovsky@crowdstrike.com, mhiramat@kernel.org, kernel-team@meta.com, 
-	olsajiri@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Oct 24, 2025 at 5:11=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Fri, 24 Oct 2025 11:29:00 -0700
-> Song Liu <song@kernel.org> wrote:
->
-> > --- a/kernel/bpf/trampoline.c
-> > +++ b/kernel/bpf/trampoline.c
-> > @@ -221,6 +221,13 @@ static int register_fentry(struct bpf_trampoline *=
-tr, void *new_addr)
-> >
-> >       if (tr->func.ftrace_managed) {
-> >               ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 0, 1);
-> > +             /*
-> > +              * Clearing fops->trampoline and fops->NULL is
-> > +              * needed by the "goto again" case in
-> > +              * bpf_trampoline_update().
-> > +              */
-> > +             tr->fops->trampoline =3D 0;
-> > +             tr->fops->func =3D NULL;
-> >               ret =3D register_ftrace_direct(tr->fops, (long)new_addr);
-> >       } else {
-> >               ret =3D bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_ad=
-dr);
->
-> I ran these through my own tests and this failed to build:
->
-> /work/build/trace/nobackup/linux-test.git/kernel/bpf/trampoline.c: In fun=
-ction =E2=80=98register_fentry=E2=80=99:
-> /work/build/trace/nobackup/linux-test.git/kernel/bpf/trampoline.c:229:25:=
- error: invalid use of undefined type =E2=80=98struct ftrace_ops=E2=80=99
->   229 |                 tr->fops->trampoline =3D 0;
->       |                         ^~
-> /work/build/trace/nobackup/linux-test.git/kernel/bpf/trampoline.c:230:25:=
- error: invalid use of undefined type =E2=80=98struct ftrace_ops=E2=80=99
->   230 |                 tr->fops->func =3D NULL;
->       |                         ^~
->   CC      kernel/trace/rethook.o
-> make[5]: *** [/work/build/trace/nobackup/linux-test.git/scripts/Makefile.=
-build:287: kernel/bpf/trampoline.o] Error 1
-> make[5]: *** Waiting for unfinished jobs....
->
-> Config attched.
+On Thu, 23 Oct 2025 16:59:37 +0200 Jesper Dangaard Brouer wrote:
+> The veth driver started manipulating TXQ states in commit
+> dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring
+> to reduce TX drops").
+> 
+> Other drivers manipulating TXQ states takes care of stopping
+> and starting TXQs in NDOs.  Thus, adding this to veth .ndo_open
+> and .ndo_stop.
 
-We need to guard this part with CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS.
-The suggestion by AI should also fix this, and give cleaner code.
+Kinda, but taking a device up or down resets the qdisc, IIRC.
 
-Thanks,
-Song
+So stopping the qdisc for real drivers is mostly a way to make sure
+that there's nothing entering the xmit handler as the driver dismantles
+its state.
+
+I'm not sure if this is an official rule, but I'm under the impression
+that stopping the queues or carrier loss (and
+netif_tx_stop_all_queues(peer) in close() is stopping peer's Tx queue
+on carrier loss) is inadvisable as it may lead to old packets getting
+transmitted when carrier comes back.
+
+IOW based on the commit msg - I'm not sure this patch is needed..
 
