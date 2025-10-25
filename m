@@ -1,74 +1,74 @@
-Return-Path: <bpf+bounces-72185-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72186-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A979C08E49
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 11:12:53 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFB86C08E6E
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 11:27:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51F1A1B23739
-	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 09:12:33 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 31C673500E5
+	for <lists+bpf@lfdr.de>; Sat, 25 Oct 2025 09:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A89B2D8387;
-	Sat, 25 Oct 2025 09:12:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE482E040E;
+	Sat, 25 Oct 2025 09:27:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EhHlV+3j"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j/SX9Tzg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66BFA20C029
-	for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 09:12:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4638C2DF138
+	for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 09:27:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761383521; cv=none; b=EyqyW12s4iHXuN2G08iU74gTXkfviMZ0/F6pR0IIahkG69Zn4d/eWc6+2oAuQ36fUdvByRIJP//o5mGcVB8uzGNSBCCmP8ND7LDKSVjO77wxZUEsH3fI9FLPajJXZuGZMyZ8uMeq7CrbNBtxXMjphm+Zaaw0Uxwa350cCkogE5E=
+	t=1761384430; cv=none; b=Xt5j6AyjsFBmZ5HBPXHW3BDi42inqJDKtG+kvCzQsXvd1h99l9xSTs0jnp3f5udO0OoL2f5KnJ2W10J5TpnfLW/0mQOkelpRdBoT+bT+BKXTsKK6x653gpRcDB9yHay5ACh1uOBb7474b4GXLvVdLXzDN69THT5U98kwd1tLa2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761383521; c=relaxed/simple;
-	bh=Lhq+NsnLG98t+AfKEhq0wOsx3dpzPR9hM91kFPXBgcQ=;
+	s=arc-20240116; t=1761384430; c=relaxed/simple;
+	bh=+yhvxANQQYMZd+THRWHrQvK32ymSHEL7AFquatZ8/s8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NNXVcfaLrqoNosxABJKAoWMcywuVwqqP3/EBAYzpBykcyHZayGn83AtXHWYIsH67fTWabRUXkVNUYKaUhz36cvEgibAmGK78ct6kag4bbwtuwZEAQd9jTQd2+Ol117CExJ/4s5/3aAAPf8bx74CfYhtTaEEzyb00Nvim0esRNPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EhHlV+3j; arc=none smtp.client-ip=209.85.166.170
+	 To:Cc:Content-Type; b=TDKQSwTsiyjhuaROV57gETLfPiWtfhfb59aF0EJGM8MHi5NfqzC7NA7smOawhSMaAK31KjbLYM46hu5fy0t1lAyKKX+CwRlKhYgfgZbZyswdeWVivCOWnXRwTzFY/PI1si/a2ZMZ8OM7FB0bzJJh5AViyOLYe7J871aJDicS+ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j/SX9Tzg; arc=none smtp.client-ip=209.85.166.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-430b621ec08so30919225ab.0
-        for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 02:12:00 -0700 (PDT)
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-93e7d3648a8so117650039f.2
+        for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 02:27:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761383519; x=1761988319; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761384428; x=1761989228; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=om2YzHu3nCOqPwoqC+II/RAS9gh5R+taAfLDoGS7cb4=;
-        b=EhHlV+3jShaiHB6FFqX4P/xiZH6/CQid43iVolGTF9bGMfLMXHIceeKcH46AeqcA6I
-         iJ5Apucre51SsRZv2slxPUZQPuk1NV/OTUVgvusUth5W8FiOJd/8bZ1Zq+4w+/Bqzby8
-         oWt9g8ILJmiFC3OiA/MBiUsq9NMFh3bXU2AQFSD+yYkgoFEnXtMLO66BqM8TUghr2RT6
-         EbBUnkUC9hPlllt47z1HboRsc1Tw6dZl+DuEvEP/3LBI88WV4y1j53Vzq8SWThxKz9Kn
-         b3SX8zIoSmUfOhs10pDcO0qyxDqZ+GtOEi1CAPRyM43CsthBe9tPhGHdf7ib6Q36doF2
-         X3Sg==
+        bh=kG1gV01eQTrH5+0JToPnmHZQ7nQS9WMCwhx85si3Z0Y=;
+        b=j/SX9Tzg2rg/LWrwfSV9DaQ0wrcQaPzByk1Z5LAJ2JBYT8Y4Q5Vbf/sFvi8jKv6WLI
+         2MPug4zI2nY0eTwvreaiROfc4kD1fOFctt5gV+M4arzc47CZyDQB86rRExhFovwPeJqA
+         6gy3LjcDluCuiTv4h7JPlxJljqmHj7VhxFXAO7zs6iPpIne5taw4vnERdt/GEI44UTLq
+         3Ws2U5XkYPZpu51nQer2nu/j7tjxuxpPaZgchXyrMvAy6AZAk9+9ng4uEu3QMeT0RN1Y
+         J9L+EJPgAo744czdpFz6aMxg3P4JMaL7f8dbg14nnOcpglwSYE/z/CxOQed2X0Hb4fFJ
+         AYZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761383519; x=1761988319;
+        d=1e100.net; s=20230601; t=1761384428; x=1761989228;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=om2YzHu3nCOqPwoqC+II/RAS9gh5R+taAfLDoGS7cb4=;
-        b=D1tuYx+iTqLvB8chNy6mHedi+cPJWx8HEgn36eqzu09owC1kaW7J+3i9ihczmXVIVc
-         Mobd8Gs/c5PqewZlYWFOVpxil4hoCkMRtT+uSC4tDsk9Q56vr0KOGzMm6oU9ahotKynX
-         FyC1o/2oht4Hre2OPQJOhz3BKFaTzIhwhcjxppDBt3t+4QqhEsYJECtpa+RMnlDEHT25
-         aZESPS7/9ICEkcvKsna9nY8JDJHghVzFiyEWx2hezoJObs/7vUh3ZCWSjV1xbTuSi12O
-         II07rnuV2ObMJnllH/osI8LfJolutVKszD6mp+NZBykAkHxWdYEEAwDEFCzWvwDvMvsd
-         BkAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWk1kvjfFFGftQbHN01ecPNKFXP03+PNqwXguBgNIU54C6T9+TZEPArV6c2hF7B9/cOLZA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzwF7zMziPZRuVSkJp1fO9TPn2hWQJ1buplRFmi/iZfsrMm+GRQ
-	Hytk/GaMymP2BHENkcQNM+Wxo78DWasaD5EsbjNBPZLfe5/aCYpKA3T2aRHCnPxv9JAhpb1wIfO
-	fOL6ekuNyuJjIbKgImQAewR1mh30lb+U=
-X-Gm-Gg: ASbGnctYfT1sY6E2aVS1+yZQ4q6Nifsi+Eo2Lw7oUAQYlGeBaAGUYEIM6FjQTSwDlg3
-	ygDgb2GND2Sv2Eul3AzKca0+Y4Bf5WjQ6JCmucTflPnpmu5iQpYNXfToB9vMVMbrAny46f9VuJT
-	yERdG953OHni9OPTXtTweDXmZxsx0jsHrXLnN8PlPpwSKQbnfAzGMb3/Ih8TRhr2QZrPy3QNVJN
-	ihbQtsAt+jxaM8IxDqCs0SPs7ZIdJe0fzxd83e0SRYBceOH5kSRaaq4gamsNBv7gm7RaQ==
-X-Google-Smtp-Source: AGHT+IH+QjMwOjg4gNFZDwJyTUOtFhKnkbWxOK1k+HPDITRbGv+joYzZONrTczYVCrJOvFdjVzMFrBmDxK76nn7t5qE=
-X-Received: by 2002:a05:6e02:156c:b0:430:acb1:e785 with SMTP id
- e9e14a558f8ab-430c5208dacmr442399545ab.6.1761383519507; Sat, 25 Oct 2025
- 02:11:59 -0700 (PDT)
+        bh=kG1gV01eQTrH5+0JToPnmHZQ7nQS9WMCwhx85si3Z0Y=;
+        b=B1va+CtBfrpsV6+RlxkzcofN3t8OJjfMkNhNW+Y8dPHDt8LrMn/4XSCPNjNXs1f9ct
+         0yJUD/469idbOD9XcknlxfUm6Wxx9OQ3Gzxbz0icd0+O0Xsr3zc5V6thi8/liLHWrIjZ
+         HGkkzKkizSf4ECtsmWAbHDEVL7h7+yGsivYVnOepsl6PlJ6iCZ0UwEetdSjE/GbbNM+6
+         VnJVPJxoI7Gp0g4HEycuCRpAhFgSejYBC8TZHANnQqE9TkdAZ6r+ukVA38XRlX3VTQmz
+         fDX/rAv5W6gh/vZDE9eAhufC0npvrCQCxDTCXnuSZjOw6pUzyEzA6yxTuXApFYweSTAL
+         TyfA==
+X-Forwarded-Encrypted: i=1; AJvYcCUtZUxeNcYKpXfzxyqFQv3E/xLuQk3ckX7HgzNJGcamZWi3IKx6l7PbKjBzf01EIxFFAds=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFfnI3jvdI4TXJ/r5Sz3kFsj4CPIm486kGU7IYxQxvS+2vRF+c
+	nzuSHJYv/guJAnvkHX9AVqneukzM0d/a3OZ9ueKbVqdJb6MpdEF2qVLDy+wnEKnuHCEVfFJOTPY
+	XzIBeJIxYTUX8S7ksVM3hPdEkyYq4efY=
+X-Gm-Gg: ASbGncs4cfLfaGbTruYyCYqIxBBakqEGBFQBwd7b4m6Me3/grtvL+YMweHYH9bjBh9Y
+	r4TIND4p36kJtPuJnXPq6a3ByLESIg/88oaTWT2V43DHC6eUoNh0QjF4CS0TnPskQitgfOC7exo
+	lXNs0MyInkQN1t8Uu2ofLuRe2SK5gvYeRd0XGovVvLdeEeGK4mnbjKURf/Vsb6Z4RHpZ+vRmCTZ
+	10Urq32iNKUlFsJyauqGCBlHVhZGDW0rO1WfA9iRwJWBghP9CFyQrn+5Ak=
+X-Google-Smtp-Source: AGHT+IEetEMwamsAlW0y061WquijFhU4ai/j0rDYzriqZ5aMsmOlxzol7OSUEDJ2dBjghU1CIUuB9xbIuq0/M2whFUQ=
+X-Received: by 2002:a05:6e02:1aae:b0:430:9fde:33d5 with SMTP id
+ e9e14a558f8ab-430c525f0c7mr473570665ab.11.1761384428322; Sat, 25 Oct 2025
+ 02:27:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,15 +76,15 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20251021131209.41491-1-kerneljasonxing@gmail.com>
- <20251021131209.41491-4-kerneljasonxing@gmail.com> <aPvKNAZP8kKolwIm@mini-arch>
-In-Reply-To: <aPvKNAZP8kKolwIm@mini-arch>
+ <20251021131209.41491-4-kerneljasonxing@gmail.com> <aPuANsZ6_xj8YY3D@horms.kernel.org>
+In-Reply-To: <aPuANsZ6_xj8YY3D@horms.kernel.org>
 From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Sat, 25 Oct 2025 17:11:23 +0800
-X-Gm-Features: AWmQ_blde_31pqxo3Xh3exy7vgnbP-UcSbo33ZrvghygqceyyIUPT-jSUjSpLp0
-Message-ID: <CAL+tcoBNeghhUv=EG=NwGP+dYtXv-Ms489YBFh3rctxfRagUAQ@mail.gmail.com>
+Date: Sat, 25 Oct 2025 17:26:32 +0800
+X-Gm-Features: AWmQ_bmoZIWxxMzBpS54VdnI5d80uf7cF5jM16h0qCwFZyNtTl4EHvFk3JzIgj8
+Message-ID: <CAL+tcoBQfRJ=O5F3ii4LxhxZVZm3YT1pafM63DUdzOdwXdimjQ@mail.gmail.com>
 Subject: Re: [PATCH net-next v3 3/9] xsk: add xsk_alloc_batch_skb() to build
  skbs in batch
-To: Stanislav Fomichev <stfomichev@gmail.com>
+To: Simon Horman <horms@kernel.org>
 Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
 	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
 	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
@@ -95,80 +95,17 @@ Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Oct 25, 2025 at 2:49=E2=80=AFAM Stanislav Fomichev <stfomichev@gmai=
-l.com> wrote:
+On Fri, Oct 24, 2025 at 9:33=E2=80=AFPM Simon Horman <horms@kernel.org> wro=
+te:
 >
-> On 10/21, Jason Xing wrote:
-> > From: Jason Xing <kernelxing@tencent.com>
-> >
-> > Support allocating and building skbs in batch.
-> >
-> > This patch uses kmem_cache_alloc_bulk() to complete the batch allocatio=
-n
-> > which relies on the global common cache 'net_hotdata.skbuff_cache'. Use
-> > a xsk standalone skb cache (namely, xs->skb_cache) to store allocated
-> > skbs instead of resorting to napi_alloc_cache that was designed for
-> > softirq condition.
-> >
-> > After allocating memory for each of skbs, in a 'for' loop, the patch
-> > borrows part of __allocate_skb() to initialize skb and then calls
-> > xsk_build_skb() to complete the rest of initialization process, like
-> > copying data and stuff.
-> >
-> > Add batch.send_queue and use the skb->list to make skbs into one chain
-> > so that they can be easily sent which is shown in the subsequent patche=
-s.
-> >
-> > In terms of freeing skbs process, napi_consume_skb() in the tx completi=
-on
-> > would put the skb into global cache 'net_hotdata.skbuff_cache' that
-> > implements the deferred freeing skb feature to avoid freeing skb one
-> > by one to improve the performance.
-> >
-> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > ---
-> >  include/net/xdp_sock.h |   3 ++
-> >  net/core/skbuff.c      | 101 +++++++++++++++++++++++++++++++++++++++++
-> >  net/xdp/xsk.c          |   1 +
-> >  3 files changed, 105 insertions(+)
-> >
-> > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> > index 8944f4782eb6..cb5aa8a314fe 100644
-> > --- a/include/net/xdp_sock.h
-> > +++ b/include/net/xdp_sock.h
-> > @@ -47,8 +47,10 @@ struct xsk_map {
-> >
-> >  struct xsk_batch {
-> >       u32 generic_xmit_batch;
-> > +     unsigned int skb_count;
-> >       struct sk_buff **skb_cache;
-> >       struct xdp_desc *desc_cache;
-> > +     struct sk_buff_head send_queue;
-> >  };
-> >
-> >  struct xdp_sock {
-> > @@ -130,6 +132,7 @@ struct xsk_tx_metadata_ops {
-> >  struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
-> >                             struct sk_buff *allocated_skb,
-> >                             struct xdp_desc *desc);
-> > +int xsk_alloc_batch_skb(struct xdp_sock *xs, u32 nb_pkts, u32 nb_descs=
-, int *err);
-> >  #ifdef CONFIG_XDP_SOCKETS
-> >
-> >  int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp);
+> On Tue, Oct 21, 2025 at 09:12:03PM +0800, Jason Xing wrote:
+>
+> ...
+>
 > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > index bc12790017b0..5b6d3b4fa895 100644
-> > --- a/net/core/skbuff.c
-> > +++ b/net/core/skbuff.c
-> > @@ -81,6 +81,8 @@
-> >  #include <net/page_pool/helpers.h>
-> >  #include <net/psp/types.h>
-> >  #include <net/dropreason.h>
-> > +#include <net/xdp_sock.h>
-> > +#include <net/xsk_buff_pool.h>
-> >
-> >  #include <linux/uaccess.h>
-> >  #include <trace/events/skb.h>
+>
+> ...
+>
 > > @@ -615,6 +617,105 @@ static void *kmalloc_reserve(unsigned int *size, =
 gfp_t flags, int node,
 > >       return obj;
@@ -199,11 +136,95 @@ gfp_t flags, int node,
 > > +
 > > +     if (xs->skb) {
 > > +             i =3D 1;
+> > +             batch->skb_count++;
+> > +     }
+> > +
+> > +     batch->skb_count +=3D kmem_cache_alloc_bulk(net_hotdata.skbuff_ca=
+che,
+> > +                                               gfp_mask, nb_pkts - bat=
+ch->skb_count,
+> > +                                               (void **)&skbs[batch->s=
+kb_count]);
+> > +     if (batch->skb_count < nb_pkts)
+> > +             nb_pkts =3D batch->skb_count;
+> > +
+> > +build:
+> > +     for (i =3D 0, j =3D 0; j < nb_descs; j++) {
+> > +             if (!xs->skb) {
+> > +                     u32 size =3D base_len + descs[j].len;
+> > +
+> > +                     /* In case we don't have enough allocated skbs */
+> > +                     if (i >=3D nb_pkts) {
+> > +                             *err =3D -EAGAIN;
+> > +                             break;
+> > +                     }
+> > +
+> > +                     if (sk_wmem_alloc_get(&xs->sk) > READ_ONCE(xs->sk=
+.sk_sndbuf)) {
+> > +                             *err =3D -EAGAIN;
+> > +                             break;
+> > +                     }
+> > +
+> > +                     skb =3D skbs[batch->skb_count - 1 - i];
+> > +
+> > +                     prefetchw(skb);
+> > +                     /* We do our best to align skb_shared_info on a s=
+eparate cache
+> > +                      * line. It usually works because kmalloc(X > SMP=
+_CACHE_BYTES) gives
+> > +                      * aligned memory blocks, unless SLUB/SLAB debug =
+is enabled.
+> > +                      * Both skb->head and skb_shared_info are cache l=
+ine aligned.
+> > +                      */
+> > +                     data =3D kmalloc_reserve(&size, gfp_mask, node, &=
+pfmemalloc);
+> > +                     if (unlikely(!data)) {
+> > +                             *err =3D -ENOBUFS;
+> > +                             break;
+> > +                     }
+> > +                     /* kmalloc_size_roundup() might give us more room=
+ than requested.
+> > +                      * Put skb_shared_info exactly at the end of allo=
+cated zone,
+> > +                      * to allow max possible filling before reallocat=
+ion.
+> > +                      */
+> > +                     prefetchw(data + SKB_WITH_OVERHEAD(size));
+> > +
+> > +                     memset(skb, 0, offsetof(struct sk_buff, tail));
+> > +                     __build_skb_around(skb, data, size);
+> > +                     skb->pfmemalloc =3D pfmemalloc;
+> > +                     skb_set_owner_w(skb, &xs->sk);
+> > +             } else if (unlikely(i =3D=3D 0)) {
+> > +                     /* We have a skb in cache that is left last time =
+*/
+> > +                     kmem_cache_free(net_hotdata.skbuff_cache,
+> > +                                     skbs[batch->skb_count - 1]);
+> > +                     skbs[batch->skb_count - 1] =3D xs->skb;
+> > +             }
+> > +
+> > +             skb =3D xsk_build_skb(xs, skb, &descs[j]);
 >
-> What is the point of setting i to 1 here? You always start the loop from
-> i=3D0.
+> Hi Jason,
+>
+> Perhaps it cannot occur, but if we reach this line
+> without the if (!xs->skb) condition having been met for
+> any iteration of there loop this code sits inside,
+> then skb will be uninitialised here.
+>
+> Also, assuming the above doesn't occur, and perhaps this
+> next case is intentional, but if the same condition is
+> not met for any iteration of the loop, then skb will have
+> its value from a prior iteration.
 
-Oh, right, I should've removed it!
+Thank you. You spotted one big mistake I've made. I will handle this in V4.
+
+>
+> Flagged by Smatch.
+
+Cool, I noticed that this tool you have used for a long time has found
+various issues!
 
 Thanks,
 Jason
