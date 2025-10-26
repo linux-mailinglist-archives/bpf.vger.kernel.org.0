@@ -1,77 +1,79 @@
-Return-Path: <bpf+bounces-72218-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72219-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E3F6C0A5BE
-	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 11:02:28 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32C84C0A5C1
+	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 11:02:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26FA53ABB6E
-	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 10:02:23 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0F4854E3ADA
+	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 10:02:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C18925291B;
-	Sun, 26 Oct 2025 10:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA56425785E;
+	Sun, 26 Oct 2025 10:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X1BsCR9F"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EBBHCMXu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C1CBA3D
-	for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 10:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6A3BA3D
+	for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 10:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761472939; cv=none; b=lBiKFlrJJq7gtL2Ctvuf1rohQZihw6u2ftypANVL5PMhLPbLI9W0TYat11ZSfMoeIr+xTL1HXEhdCBG2AKKR7T1xqXqfSsNz7HB0KUmHRQCBJPS/ZzIs8/k4TIC6jmeXiUlyAxyORDZXo7a2oNnPXLEEM1zYLO4/hkiyUMMMW2Q=
+	t=1761472948; cv=none; b=lLIle2Rm9FctE4mxqoD4hUXf9DZRStbTXxD50VzaMN9DqYkpjsO9fjG23x5mO4jC6sDmJvNp0kD9RDQLtiWgrzBxQsq/U5fi1YFQMKD7sRs8eUObpj8DzwX+0oJmkWJqRYXgt421pBxfdxWU3WJrgSUmM+Lv5MFcnzGFSyIXgxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761472939; c=relaxed/simple;
-	bh=4uaXalrNCmR3r9uQhnbgdGAMqQaKUxwCaMNhP8WFtI4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=mAX4KuI62/radl5oq3C0vNDyBGMAnX9ytKmXcfCoV2oIj//7BQx4rhFxJOxZiy/Ymb058TpUY7IAQirshRxlklGPEGJXr1fCb2OdS+00PZdLiNFeDemsviL7J85GT38UOJu7x+wqEis9lPojmCdO4rk1lncJp01HvTK2g9dHIGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X1BsCR9F; arc=none smtp.client-ip=209.85.216.45
+	s=arc-20240116; t=1761472948; c=relaxed/simple;
+	bh=0xyTgKakH3C9h8/AC463iMeIxMyfjPW460wuhaCFBIU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=eGCmWdmtzGfW3pGr46aDExMO6+nBX4V0OrrU3EZpyIPY91nMeC2LtMwCPkXxLCPOXmBfOM3Q3yHKAyEzfL3NIRmCgqi1JJE+QHal4uO/fTGQwCEEXZsT9vMTGnWnk3dEb4lKLSy58hg9T4MpkvnaY2v72m0vYtbnYkn8qjpNjWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EBBHCMXu; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-33ff5149ae8so579688a91.3
-        for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 03:02:16 -0700 (PDT)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-b593def09e3so2183306a12.2
+        for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 03:02:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761472936; x=1762077736; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=71oyM3iP4xpqh1DSC2mSfcPoW9iB//67VkyjOnGFurQ=;
-        b=X1BsCR9FSUi4j0GfBOhINMj9Zx0ePFmL/u55xcfgubEfkgkewnm3EJawXMbCMEs7m9
-         so3DxUBvJ9mtNgk561Dn06fjrq9O5eNAgerkfMmPFd7Zwd6zxV1Ws1F/WdPxWW94yBNu
-         JJGO/vJ3P2usIjhH5+hXn6dJCwAGbvv3/h2Tq3/jyYJoBNNVGzSN7BgQLfEYGxEEZMgn
-         weChgK5xJ/jQi8kWyF5jGrZn4E7UBzSAx7HqOrkMivGpTqOW4Gr+nnHuY93phESG7Ttx
-         wiNlMhirD0Dtfqdyo47s6wV/vjqlY07d0iOeR+0oxA4MMgIJs5CruISDrPuPYky9N3yb
-         gI1w==
+        d=gmail.com; s=20230601; t=1761472946; x=1762077746; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UwGSchT18d8qNcK6ftYzJtYNcHfYL/3EORdpk4nxKdU=;
+        b=EBBHCMXuhhyhWPYPZH3oVKbcSuzc4gtCForS/pQkvoGcaxqOUEiD5COjv2mZJerZmm
+         DUU6iRYNA1E3+ctx4sh3OTkEj6awo2/r6dwSURP+TyCel9L/sda75kahneljV3AOZlqf
+         Y4byAtuB69K6+ykSU55HBt5RsFBgk0IRdPNXCu9YoJ6q+J7t656yN1PV+ira1v+OhVd4
+         OJUWGJR+rHjplAOhKi9MssV51JJUm8oFYJQeG6brkQD+yQqYDjL9skmCukIYTP2ylNj0
+         GS5B3axflqp4T9fOfc1SutxB3hn1kGCHJ5FyPFsIlTlQoDXUL20odFLwxQoSiDw3QrCo
+         MuMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761472936; x=1762077736;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=71oyM3iP4xpqh1DSC2mSfcPoW9iB//67VkyjOnGFurQ=;
-        b=niRY1H/dnST9zEBkMU37pP5qqS+6YKZBrGO8ZKAb27+UNtcft2mqk6w8Id5zqt36pN
-         4Du3Oin8ITTZ0HuGunCyZ3CIpzHA02+byEqK1YLuARl9n1zpXWfHlaMwcyxHCzBZDbfG
-         HiSrJJaQF2J4wPgUIoOwKd4lPf7CYHiZ15aWHiINDe6iOFusN+cZFNrX2V6Kc26xQ6bM
-         s1cAj1zssomRgwLlnTrz4ACW8Zj8HWFcKeH+eS1X1AamyPud6PiC9Cfnfz81GcjCUNfn
-         RV8GXpu5MN6P1E8Q+cHL9WiXkNcCyQTq1IilqPrFTZsHQibyaAb1tP2UfjEyBGXsn2zB
-         Ck0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXLbMLFgvCvZ4QpL9ENV8edD3o6rIjxXmq4FST14cSxj3SuQ4J4/cst6nlHf/vWLxBkAlc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMZTK93+nu1pM0Hiu/OAe/Vc/eDHUpkx5+RDMS6yeIiR0XuW4b
-	tVCiNGSfI85E3EQzgUAoBYgiR3g87hi7MQl/jkmjuCbM03T+44n+xAGP
-X-Gm-Gg: ASbGnctQ/Inse8qGYWIWSsuVUQfepvSGg+XuQBzW5kFznjipSLZiLI5lhDinhJRA+hu
-	tI1hRw92yHD4IdbRGMbWJHRnqddnSMeY10Tly4KAyjxs+2ZMtvVD75N6obV7thfrquQF9MFqVX0
-	HlEznhoKiN6zWOKk7AkaougIrftgxTotCqtJwO8jqh7TKnl2p8sMeQfAhgZTaR8vSp4vGOY9Uig
-	H3wVWwEsQqVvTcXIKneecpdgZvBBqnrnEEK8IePWmte+qMYJC4xzmtH6INarR5rhY4jebqMe3Eo
-	2EqYsmt0tcOofXJpLXPuk+9W4qUpY6ccjwQURohJ+EZkhrjYfxeERDp2hPMTId39jyOeO+kZ9OW
-	6nw9VRR69XxS7WARAzxNa1Qb7eMayzd8Ah3a88GBHx08JcE9Yn99C2qubwjwgJm+/2qw0v/yYzT
-	ot/C9JY8pIWR/yUZ1Xy/3dhm+WPfnG5M8nLZ1xTll+BcV08w==
-X-Google-Smtp-Source: AGHT+IF3W0fD8mmF2/UGWyg+0FB39FKVjvrwsLKyUVcP5vVu2JK3UT/8NMbm25jqTH9tVOGWi/W2sQ==
-X-Received: by 2002:a17:90b:250e:b0:33f:ebdd:9961 with SMTP id 98e67ed59e1d1-33febdd9ccdmr3656581a91.28.1761472935796;
-        Sun, 26 Oct 2025 03:02:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1761472946; x=1762077746;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UwGSchT18d8qNcK6ftYzJtYNcHfYL/3EORdpk4nxKdU=;
+        b=i/obw0KdkTcPPMyproOa6h53Qv+d301E596m3b4p/JJVj/dZvfb+md/lcYzj7TxB5N
+         lXgYyz7w66ME7/oA/+I0jFgrxrfG7IpyG9hPOkwDVX7ZmgXP2Rq+FFc4cWD+xm6OaF8x
+         bCtXCZvRtWRaWy4wl+rNa8LNIHcHWKufpgjorHGuma1fek9gUz70FN+NDOlyqJZdy6n/
+         bW/Yh9kTF8qSzbmKiyEBh8fF0uz+VtGZ7yU5F7a9VzDomsGGWI8PQHmztT8V32e0yR5S
+         ojDwQQb6kZMicYX+CnvJTy2kBFaLBSYsd18lK7OC5O8zVVONk01Q6rTfGDYdYmK/eD5c
+         Yjbw==
+X-Forwarded-Encrypted: i=1; AJvYcCWTK2fmMz35HY9ve22WZ41UEknO9JaGs1CpJc8lFrUHusBn/lDu3wla5Hwj+XO1L/tqSxY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWCrlg/viTzzlTR4LTw6Smx+Me0v9UmBE2E4NBDSYn2gayMSl0
+	k94cvoSO2xsRxfOKWYZxECghJCRJ87pqIL8+oZwUhaUUEpAWsOBtHnQd
+X-Gm-Gg: ASbGncvqe/NwCjF7HSDF4pvgGaItoivi3faLzbiuriE5WCm/1IffVnNKRv+AacXNJIL
+	oTdMADT5g6C/vN8M8dT/sJiLYS5JmGY7GE5a+vjxTaH7cpqJC2DrgfYgxi4BY+UEBK6zY1xLwTu
+	YDwB01hvffqc4U38q8Dqtnoaf3kWp9mVeFrBrpy0Xu+qbW77edm2uapHH0QfVqlJp6wBZCkHhqi
+	ocyePTkALKek/HIEbyDavVNaHpYk/y06gxVKg6jWA44aNRzz96pq5hU64RMAM7DWGqOrKg8tsoU
+	C55QzoqQJ/U54dyTkh6wZtWn3OWi38lzrhz3YKE6VT/SfX4OjOpkIrUugZKON1epl1Cytet5Eag
+	caDOX01iX8sQgHRKNk/43o75msMebY/RKeBnfIMTuq3WIo2VIzQhT7kUtnWNhvtsudev3L84bkc
+	OlUK3tWKeNdDFMfwJ/OTV+6uak0gMctjx7h7E=
+X-Google-Smtp-Source: AGHT+IGuJ84bU5ooLGoiNi0u5x/Ollkx2KP02O/Hek3R52H05y4BEGNapVukKfR1o3GdEw6baOphkA==
+X-Received: by 2002:a17:903:4407:b0:27e:ef27:1e52 with SMTP id d9443c01a7336-290ca1218dfmr405991515ad.35.1761472946089;
+        Sun, 26 Oct 2025 03:02:26 -0700 (PDT)
 Received: from localhost.localdomain ([2409:891f:1a84:d:452e:d344:ffb:662b])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33fed7d1fdesm4824966a91.5.2025.10.26.03.02.07
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33fed7d1fdesm4824966a91.5.2025.10.26.03.02.16
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 26 Oct 2025 03:02:15 -0700 (PDT)
+        Sun, 26 Oct 2025 03:02:25 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: akpm@linux-foundation.org,
 	ast@kernel.org,
@@ -108,168 +110,193 @@ Cc: martin.lau@linux.dev,
 	clm@meta.com,
 	bpf@vger.kernel.org,
 	linux-mm@kvack.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v12 mm-new 00/10] mm, bpf: BPF-MM, BPF-THP
-Date: Sun, 26 Oct 2025 18:01:49 +0800
-Message-Id: <20251026100159.6103-1-laoar.shao@gmail.com>
+	Yafang Shao <laoar.shao@gmail.com>,
+	Yang Shi <shy828301@gmail.com>
+Subject: [PATCH v12 mm-new 01/10] mm: thp: remove vm_flags parameter from khugepaged_enter_vma()
+Date: Sun, 26 Oct 2025 18:01:50 +0800
+Message-Id: <20251026100159.6103-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+In-Reply-To: <20251026100159.6103-1-laoar.shao@gmail.com>
+References: <20251026100159.6103-1-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-History
-=======
+The khugepaged_enter_vma() function requires handling in two specific
+scenarios:
+1. New VMA creation
+  When a new VMA is created (for anon vma, it is deferred to pagefault), if
+  vma->vm_mm is not present in khugepaged_mm_slot, it must be added. In
+  this case, khugepaged_enter_vma() is called after vma->vm_flags have been
+  set, allowing direct use of the VMA's flags.
+2. VMA flag modification
+  When vma->vm_flags are modified (particularly when VM_HUGEPAGE is set),
+  the system must recheck whether to add vma->vm_mm to khugepaged_mm_slot.
+  Currently, khugepaged_enter_vma() is called before the flag update, so
+  the call must be relocated to occur after vma->vm_flags have been set.
 
-RFC v1: fmod_ret based BPF-THP hook
-        https://lore.kernel.org/linux-mm/20250429024139.34365-1-laoar.shao@gmail.com/
+In the VMA merging path, khugepaged_enter_vma() is also called. For this
+case, since VMA merging only occurs when the vm_flags of both VMAs are
+identical (excluding special flags like VM_SOFTDIRTY), we can safely use
+target->vm_flags instead. (It is worth noting that khugepaged_enter_vma()
+can be removed from the VMA merging path because the VMA has already been
+added in the two aforementioned cases. We will address this cleanup in a
+separate patch.)
 
-RFC v2: struct_ops based BPF-THP hook
-        https://lore.kernel.org/linux-mm/20250520060504.20251-1-laoar.shao@gmail.com/
+After this change, we can further remove vm_flags parameter from
+thp_vma_allowable_order(). That will be handled in a followup patch.
 
-RFC v4: Get THP order with interface get_suggested_order()
-        https://lore.kernel.org/linux-mm/20250729091807.84310-1-laoar.shao@gmail.com/
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Usama Arif <usamaarif642@gmail.com>
+---
+ include/linux/khugepaged.h | 10 ++++++----
+ mm/huge_memory.c           |  2 +-
+ mm/khugepaged.c            | 27 ++++++++++++++-------------
+ mm/madvise.c               |  7 +++++++
+ mm/vma.c                   |  6 +++---
+ 5 files changed, 31 insertions(+), 21 deletions(-)
 
-v4->v9: Simplify the interface to:
-
-        unsigned long
-        bpf_hook_thp_get_orders(struct vm_area_struct *vma, enum tva_type type,
-                                unsigned long orders);
-
-        https://lore.kernel.org/linux-mm/20250930055826.9810-1-laoar.shao@gmail.com/
-
-v9->RFC v10: Scope BPF-THP to individual processes
-v10->v11:    Remove the RFC tag
-v11->v12:    Fix issues reported by AI
-
-The Design
-==========
-
-Scoping BPF-THP to cgroup is rejected
--------------------------------------
-
-As explained by Gutierrez:
-
-1. It breaks the cgroup hierarchy when 2 siblings have different THP policies
-2. Cgroup was designed for resource management not for grouping processes and
-   tune those processes
-3. We set a precedent for other people adding new flags to cgroup and 
-   potentially polluting cgroups. We may end up with cgroups having tens of
-   different flags, making sysadmin's job more complex
-
-The related links are: 
-
-  https://lore.kernel.org/linux-mm/1940d681-94a6-48fb-b889-cd8f0b91b330@huawei-partners.com/
-  https://lore.kernel.org/linux-mm/20241030150851.GB706616@cmpxchg.org/    
-
-So we has to scope it to process.
-
-Scoping BPF-THP to process
---------------------------
-
-To eliminate potential conflicts among competing BPF-THP instances, we
-enforce that each process is exclusively managed by a single BPF-THP. This
-approach has received agreement from David. For context, see:
-
-  https://lore.kernel.org/linux-mm/3577f7fd-429a-49c5-973b-38174a67be15@redhat.com/
-
-When registering a BPF-THP, we specify the PID of a target task. The
-BPF-THP is then installed in the task's `mm_struct`
-
-  struct mm_struct {
-      struct bpf_thp_ops __rcu *thp_thp;
-  };
-
-Inheritance Behavior:
-
-- Existing child processes are unaffected
-- Newly forked children inherit the BPF-THP from their parent
-- The BPF-THP persists across exec
-
-A new linked list tracks all tasks managed by each BPF-THP instance:
-
-- Newly managed tasks are added to the list
-- Exiting tasks are automatically removed from the list
-- During BPF-THP unregistration (e.g., when the BPF link is removed), all
-  managed tasks have their bpf_thp pointer set to NULL
-- BPF-THP instances can be dynamically updated, with all tracked tasks
-  automatically migrating to the new version.
-
-This design simplifies BPF-THP management in production environments by
-providing clear lifecycle management and preventing conflicts between
-multiple BPF-THP instances.
-
-Global Mode
------------
-
-The per-process BPF-THP mode is unsuitable for managing shared resources
-such as shmem THP and file-backed THP. This aligns with known cgroup
-limitations for similar scenarios:
-
-  https://lore.kernel.org/linux-mm/YwNold0GMOappUxc@slm.duckdns.org/ 
-
-Introduce a global BPF-THP mode to address this gap. When registered:
-- All existing per-process instances are disabled
-- New per-process registrations are blocked
-- Existing per-process instances remain registered (no forced unregistration)
-
-The global mode takes precedence over per-process instances. Updates are
-type-isolated: global instances can only be updated by new global
-instances, and per-process instances by new per-process instances.
-
-BPF CI
-------
-
-Several dependency patches are currently in mm-new but haven't been merged
-into bpf-next. To enable BPF CI testing, I had to make minor changes to
-patches #1 and #2 and trigger the BPF CI manually. For details, see:
-
-  https://github.com/kernel-patches/bpf/pull/10097
-
-An error occurred during the test, but it was unrelated to this series.
-
-Yafang Shao (10):
-  mm: thp: remove vm_flags parameter from khugepaged_enter_vma()
-  mm: thp: remove vm_flags parameter from thp_vma_allowable_order()
-  mm: thp: add support for BPF based THP order selection
-  mm: thp: decouple THP allocation between swap and page fault paths
-  mm: thp: enable THP allocation exclusively through khugepaged
-  mm: bpf-thp: add support for global mode
-  Documentation: add BPF THP
-  selftests/bpf: add a simple BPF based THP policy
-  selftests/bpf: add test case to update THP policy
-  selftests/bpf: add test case for BPF-THP inheritance across fork
-
- Documentation/admin-guide/mm/transhuge.rst    | 113 +++++
- MAINTAINERS                                   |   3 +
- fs/exec.c                                     |   1 +
- fs/proc/task_mmu.c                            |   3 +-
- include/linux/huge_mm.h                       |  58 ++-
- include/linux/khugepaged.h                    |  10 +-
- include/linux/mm_types.h                      |  17 +
- kernel/fork.c                                 |   1 +
- mm/Kconfig                                    |  24 +
- mm/Makefile                                   |   1 +
- mm/huge_memory.c                              |   7 +-
- mm/huge_memory_bpf.c                          | 423 ++++++++++++++++++
- mm/khugepaged.c                               |  43 +-
- mm/madvise.c                                  |   7 +
- mm/memory.c                                   |  22 +-
- mm/mmap.c                                     |   1 +
- mm/shmem.c                                    |   2 +-
- mm/vma.c                                      |   6 +-
- tools/testing/selftests/bpf/config            |   3 +
- .../selftests/bpf/prog_tests/thp_adjust.c     | 357 +++++++++++++++
- .../selftests/bpf/progs/test_thp_adjust.c     |  53 +++
- 21 files changed, 1101 insertions(+), 54 deletions(-)
- create mode 100644 mm/huge_memory_bpf.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
-
+diff --git a/include/linux/khugepaged.h b/include/linux/khugepaged.h
+index 179ce716e769..b8291a9740b4 100644
+--- a/include/linux/khugepaged.h
++++ b/include/linux/khugepaged.h
+@@ -15,8 +15,8 @@ extern void khugepaged_destroy(void);
+ extern int start_stop_khugepaged(void);
+ extern void __khugepaged_enter(struct mm_struct *mm);
+ extern void __khugepaged_exit(struct mm_struct *mm);
+-extern void khugepaged_enter_vma(struct vm_area_struct *vma,
+-				 vm_flags_t vm_flags);
++extern void khugepaged_enter_vma(struct vm_area_struct *vma);
++extern void khugepaged_enter_mm(struct mm_struct *mm);
+ extern void khugepaged_min_free_kbytes_update(void);
+ extern bool current_is_khugepaged(void);
+ extern int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
+@@ -40,8 +40,10 @@ static inline void khugepaged_fork(struct mm_struct *mm, struct mm_struct *oldmm
+ static inline void khugepaged_exit(struct mm_struct *mm)
+ {
+ }
+-static inline void khugepaged_enter_vma(struct vm_area_struct *vma,
+-					vm_flags_t vm_flags)
++static inline void khugepaged_enter_vma(struct vm_area_struct *vma)
++{
++}
++static inline void khugepaged_enter_mm(struct mm_struct *mm)
+ {
+ }
+ static inline int collapse_pte_mapped_thp(struct mm_struct *mm,
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 7a0eedf5e3c8..bcbc1674f3d3 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1476,7 +1476,7 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
+ 	ret = vmf_anon_prepare(vmf);
+ 	if (ret)
+ 		return ret;
+-	khugepaged_enter_vma(vma, vma->vm_flags);
++	khugepaged_enter_vma(vma);
+ 
+ 	if (!(vmf->flags & FAULT_FLAG_WRITE) &&
+ 			!mm_forbids_zeropage(vma->vm_mm) &&
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 8ed9f8e2d376..d517659d905f 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -367,12 +367,6 @@ int hugepage_madvise(struct vm_area_struct *vma,
+ #endif
+ 		*vm_flags &= ~VM_NOHUGEPAGE;
+ 		*vm_flags |= VM_HUGEPAGE;
+-		/*
+-		 * If the vma become good for khugepaged to scan,
+-		 * register it here without waiting a page fault that
+-		 * may not happen any time soon.
+-		 */
+-		khugepaged_enter_vma(vma, *vm_flags);
+ 		break;
+ 	case MADV_NOHUGEPAGE:
+ 		*vm_flags &= ~VM_HUGEPAGE;
+@@ -514,14 +508,21 @@ static unsigned long collapse_allowable_orders(struct vm_area_struct *vma,
+ 	return thp_vma_allowable_orders(vma, vm_flags, tva_flags, orders);
+ }
+ 
+-void khugepaged_enter_vma(struct vm_area_struct *vma,
+-			  vm_flags_t vm_flags)
++void khugepaged_enter_mm(struct mm_struct *mm)
+ {
+-	if (!mm_flags_test(MMF_VM_HUGEPAGE, vma->vm_mm) &&
+-	    hugepage_enabled()) {
+-		if (collapse_allowable_orders(vma, vm_flags, true))
+-			__khugepaged_enter(vma->vm_mm);
+-	}
++	if (mm_flags_test(MMF_VM_HUGEPAGE, mm))
++		return;
++	if (!hugepage_enabled())
++		return;
++
++	__khugepaged_enter(mm);
++}
++
++void khugepaged_enter_vma(struct vm_area_struct *vma)
++{
++	if (!collapse_allowable_orders(vma, vma->vm_flags, true))
++		return;
++	khugepaged_enter_mm(vma->vm_mm);
+ }
+ 
+ void __khugepaged_exit(struct mm_struct *mm)
+diff --git a/mm/madvise.c b/mm/madvise.c
+index fb1c86e630b6..067d4c6d5c46 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -1425,6 +1425,13 @@ static int madvise_vma_behavior(struct madvise_behavior *madv_behavior)
+ 	VM_WARN_ON_ONCE(madv_behavior->lock_mode != MADVISE_MMAP_WRITE_LOCK);
+ 
+ 	error = madvise_update_vma(new_flags, madv_behavior);
++	/*
++	 * If the vma become good for khugepaged to scan,
++	 * register it here without waiting a page fault that
++	 * may not happen any time soon.
++	 */
++	if (!error && new_flags & VM_HUGEPAGE)
++		khugepaged_enter_mm(madv_behavior->vma->vm_mm);
+ out:
+ 	/*
+ 	 * madvise() returns EAGAIN if kernel resources, such as
+diff --git a/mm/vma.c b/mm/vma.c
+index 919d1fc63a52..519963e6f174 100644
+--- a/mm/vma.c
++++ b/mm/vma.c
+@@ -975,7 +975,7 @@ static __must_check struct vm_area_struct *vma_merge_existing_range(
+ 	if (err || commit_merge(vmg))
+ 		goto abort;
+ 
+-	khugepaged_enter_vma(vmg->target, vmg->vm_flags);
++	khugepaged_enter_vma(vmg->target);
+ 	vmg->state = VMA_MERGE_SUCCESS;
+ 	return vmg->target;
+ 
+@@ -1095,7 +1095,7 @@ struct vm_area_struct *vma_merge_new_range(struct vma_merge_struct *vmg)
+ 	 * following VMA if we have VMAs on both sides.
+ 	 */
+ 	if (vmg->target && !vma_expand(vmg)) {
+-		khugepaged_enter_vma(vmg->target, vmg->vm_flags);
++		khugepaged_enter_vma(vmg->target);
+ 		vmg->state = VMA_MERGE_SUCCESS;
+ 		return vmg->target;
+ 	}
+@@ -2506,7 +2506,7 @@ static int __mmap_new_vma(struct mmap_state *map, struct vm_area_struct **vmap)
+ 	 * call covers the non-merge case.
+ 	 */
+ 	if (!vma_is_anonymous(vma))
+-		khugepaged_enter_vma(vma, map->vm_flags);
++		khugepaged_enter_vma(vma);
+ 	*vmap = vma;
+ 	return 0;
+ 
 -- 
 2.47.3
 
