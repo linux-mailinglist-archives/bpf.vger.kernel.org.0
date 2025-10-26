@@ -1,147 +1,191 @@
-Return-Path: <bpf+bounces-72203-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72204-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D18F6C0A158
-	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 02:58:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 862B0C0A1ED
+	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 04:02:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A51118C19BA
-	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 00:59:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE8913A678D
+	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 03:01:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C9CB242D6B;
-	Sun, 26 Oct 2025 00:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4F4F1EF36E;
+	Sun, 26 Oct 2025 03:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FoNjnXqW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V9hchCjd"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13842611E;
-	Sun, 26 Oct 2025 00:58:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE4661FECAB
+	for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 03:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761440310; cv=none; b=C26lv5XE1RZGKniiCM9nM43udTsE76aWcxIaCpyPVp2UR9WYvLXk1dTGg2CQOm26mUn13hZvB2GK52HrPv1G2ri2MY1+nFehX+jcKQNo9SFy8zcdkAoBstFk+fhp5YO7QzZr/NnEZDI8Asc+cBsfQoCL4AhvD6x50leknAxANJc=
+	t=1761447714; cv=none; b=r//ZQbPE8MqzUCxSbKxGFRaVBe3PcSR2FGU+zu8MtbLIhqjpgJKuivY2brp7GCzK2fj5Zen6r1nryg1RAAK3nWz3gzXPC8ahrQWOYFAxEyn/2+pY1DMRxskJcsOPR/mNdwlz4DFaaSuiFFWoyTyI4LiiUmSQGXEfaHXWE56A0Qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761440310; c=relaxed/simple;
-	bh=iKNU21p4UOkhzbsU6WfHyfoc71anHD5MgXpTQaxqSvU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oXTnnb2QI9pa3z1jG93NdhoulLZbisMosVLxGz/JWT3x5AAdQjLP8xq3iFtxuvZsaatATLsexjniSeJUXi5vM45C5FLb053ic5e5l7fN7q9Ga6mwemf3X8TzEUTUxLiA8xjIU17LcBRWP1dywcsaF9yy5JiY9bwrbed4U+SKl+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FoNjnXqW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD662C4CEF5;
-	Sun, 26 Oct 2025 00:58:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761440309;
-	bh=iKNU21p4UOkhzbsU6WfHyfoc71anHD5MgXpTQaxqSvU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FoNjnXqWgDaGFKoPeRTziiKkQt9O08mjcK0iBsx5lSgtOulcik5n7VwHBaJzQ7kgH
-	 vRVIf3Ra1QInObf7/23u+ZmsA8/i89WTiRP/RP6bXQCm8cWsNBRKBiaSYfpysCkNTs
-	 k9FQnt/VsXhYiC2ZcQ8FcjJho9MmGHNIw/9L0TNEBzXwi1fCcpxnDKMxLO7Rf8ctMa
-	 q05cbwUGJtzrUMgpUrttdCV/dQ9ui8w4CJlyKphRVYiEtHsrHKhA6oXuubosBUyO5w
-	 1eCrnuXePrr1gRIrhbT+7wmdW5hkj6Df3m/1Qz6c76t37Wvklo6zJUI2Sqsp+QlngB
-	 WuT5wELuJFj0A==
-Date: Sat, 25 Oct 2025 17:58:27 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Adrian Hunter <adrian.hunter@intel.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Indu Bhagat <indu.bhagat@oracle.com>,
-	"Jose E. Marchesi" <jemarch@gnu.org>,
-	Beau Belgrave <beaub@linux.microsoft.com>,
-	Jens Remus <jremus@linux.ibm.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>,
-	Kees Cook <kees@kernel.org>, Carlos O'Donell <codonell@redhat.com>
-Subject: Re: [PATCH v16 0/4] perf: Support the deferred unwinding
- infrastructure
-Message-ID: <aP1yM53r1GLS-767@google.com>
-References: <20251007214008.080852573@kernel.org>
- <20251023150002.GR4067720@noisy.programming.kicks-ass.net>
- <20251023124057.2a6e793a@gandalf.local.home>
- <20251024082656.GS4067720@noisy.programming.kicks-ass.net>
- <20251024125841.GK4068168@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1761447714; c=relaxed/simple;
+	bh=iaHwTrGVnGciWMjn8Nzd0xPOsyU6baCadBkXvKT19gA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iFSlPAPwgDMslJQkKj/aHn9XjUV0LswwAjKcSo6G6EQ2SyTu+MrpcpfgSuM90fPNp+kT50zYBYEA5wJrI8VwYtd/t7NL2yPR8nwIXhhe1ZEf07C2ijZ92JqFaolU59wzXnK8+XN2QrxetI7EEvanGjcELpCQ5uUAgbKRp/Kao78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V9hchCjd; arc=none smtp.client-ip=209.85.214.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-290ab379d48so31999115ad.2
+        for <bpf@vger.kernel.org>; Sat, 25 Oct 2025 20:01:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761447712; x=1762052512; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UXYl16vyCySzBmLxYb9g7KSK62mtaFrc8XpoELCZfXk=;
+        b=V9hchCjdSXZroxO9QQm0ge8ByGM2dQfmTRtwS8O3HnBMlq9a4JFulmj1FE8iGwc+9+
+         /d+FtdzsEybf03hpdE8hPpcfcqGfxB65fK1hsyFdBYuJG4b53pnWsO/byu+Bs2oKQ7A7
+         ybBEJ9p59CcfeNQdBW5axrOw/Qsw3c/PkzQ6Rzd9HMzhzzi5Pbt3lYTowA43735s8Rhp
+         cYN/yTuuBlx7nj1y/jie6ScRErkuc98frXXAAfA12BjfnittRfmTz9YRXPnrtUv/LIHt
+         w/tmjRTdloyFI26KcybjLLT+SGHaqxPB+FlcEUyJmwEY+6VXhPdwFU4AUZcPQ0ntj+st
+         XlAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761447712; x=1762052512;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UXYl16vyCySzBmLxYb9g7KSK62mtaFrc8XpoELCZfXk=;
+        b=OaG7vwklA5rne5fh1DgZGxtTKswkTzQFk+E7TUGpCwJ482Oaxxu31ohrFMl51LrbWS
+         VWhUyhVTBUP5KaO9bu6hPH7nQ9l5EcFCpT8U2wjXWerwPJoOqrS8AsnDm3LFeoiwEhn/
+         Ra5owWZsIn1YwAV3Fk39my+ioI6Sq5pcvqHrB8BA0Nb2iBblIMJvTHkFQ4zzVgFiLkPV
+         qDvEK5bLZwDjDGN1kfVtkgvUVosmxJJbBRfbepHQ9MDKoaGm4KQBGDe4rOLaL9xX3kAb
+         bmi9u/2XrhXizyiRfPDkCl0yhwRm5qUAo0G4OYxAw8hmyaqLp1xuxMcik6wQ+WX6/Ioz
+         VKug==
+X-Forwarded-Encrypted: i=1; AJvYcCXfZuKWOYGViH++U6/hoeNvCt65cAz+OX2S3GlX7pDd3qlE4rBKS6dwK8T00FFGxgkkXUU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwYO1zQzrqPmee+rbe8jL38FFFERryqbBAMSV/rEE7Xb1wKM0ND
+	0JvOEedNOnDmOrcrWhf00ct06dwtzbjLwGFbcl2SLoxi0vbSFaUrrhkI
+X-Gm-Gg: ASbGncsIdnKZI40Bol3aPTYHEnlcwLU3ynn+cevO3ZJYjaonowqJRFs+EhkKG2NkSPs
+	ShBiaBOSJWc8lgiZ/OazDo5SF9Ne7ywn2EzU5EsEXCO8nCWHo/SMNR9WFGXPkCFl8gIoOeL0fFh
+	fpwxjyuXPTmXqHfu+cGfGJrrwVl58cQ6pT3OAeTXG4F81wN3EyJnpSsiuwaKurmywttPney6Kae
+	AQjBsy9S5eSgRjdoa93QXe2qw970y2Bqxz4QTYQsEdA4r7PhQBM34JX0EfVaGCBQQk7gdj7W1/X
+	H/n94nq2kxIDdduB2qx9RT4I0nbdOQcBsoPSUpy0Gjrp98FMObKPPGw/P2Ju4SLXEFn/ejAvhvg
+	U40lvdSjxPDmDMqrHGLi+A71bULA4Ly5PYWsvDqPEsKLf0ArYmJdB1pSw0y3zS/cLl3eo7zQJnt
+	8rBVviiXWJd8re1kulThTZLg==
+X-Google-Smtp-Source: AGHT+IFMC2yoTBCqvafrh22kIpK/2+2o4SnwzUWnGo0yvXCL9Nkdv+DMpuwly7n7AdRPexdpVAitYQ==
+X-Received: by 2002:a17:903:2445:b0:25c:25f1:542d with SMTP id d9443c01a7336-290ca1219e1mr406570025ad.36.1761447712161;
+        Sat, 25 Oct 2025 20:01:52 -0700 (PDT)
+Received: from 7950hx ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498d40b1esm38100645ad.73.2025.10.25.20.01.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Oct 2025 20:01:51 -0700 (PDT)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: ast@kernel.org,
+	jolsa@kernel.org
+Cc: daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	mattbobrowski@google.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	leon.hwang@linux.dev,
+	jiang.biao@linux.dev,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/7] bpf: tracing session supporting
+Date: Sun, 26 Oct 2025 11:01:36 +0800
+Message-ID: <20251026030143.23807-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.51.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20251024125841.GK4068168@noisy.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 
-Hi Peter,
+Sometimes, we need to hook both the entry and exit of a function with
+TRACING. Therefore, we need define a FENTRY and a FEXIT for the target
+function, which is not convenient.
 
-On Fri, Oct 24, 2025 at 02:58:41PM +0200, Peter Zijlstra wrote:
-> 
-> Arnaldo, Namhyung,
-> 
-> On Fri, Oct 24, 2025 at 10:26:56AM +0200, Peter Zijlstra wrote:
-> 
-> > > So "perf_iterate_sb()" was the key point I was missing. I'm guessing it's
-> > > basically a demultiplexer that distributes events to all the requestors?
-> > 
-> > A superset. Basically every event in the relevant context that 'wants'
-> > it.
-> > 
-> > It is what we use for all traditional side-band events (hence the _sb
-> > naming) like mmap, task creation/exit, etc.
-> > 
-> > I was under the impression the perf tool would create one software dummy
-> > event to listen specifically for these events per buffer, but alas, when
-> > I looked at the tool this does not appear to be the case.
-> > 
-> > As a result it is possible to receive these events multiple times. And
-> > since that is a problem that needs to be solved anyway, I didn't think
-> > it 'relevant' in this case.
-> 
-> When I use:
-> 
->   perf record -ag -e cycles -e instructions
-> 
-> I get:
-> 
-> # event : name = cycles, , id = { }, type = 0 (PERF_TYPE_HARDWARE), size = 136, config = 0 (PERF_COUNT_HW_CPU_CYCLES), { sample_period, sample_freq } = 2000, sample_type = IP|TID|TIME|CALLCHAIN|CPU|PERIOD|IDENTIFIER, read_format = ID|LOST, disabled = 1, freq = 1, sample_id_all = 1, defer_callchain = 1
-> # event : name = instructions, , id = { }, type = 0 (PERF_TYPE_HARDWARE), size = 136, config = 0x1 (PERF_COUNT_HW_INSTRUCTIONS), { sample_period, sample_freq } = 2000, sample_type = IP|TID|TIME|CALLCHAIN|CPU|PERIOD|IDENTIFIER, read_format = ID|LOST, disabled = 1, freq = 1, sample_id_all = 1, defer_callchain = 1
-> # event : name = dummy:u, , id = { }, type = 1 (PERF_TYPE_SOFTWARE), size = 136, config = 0x9 (PERF_COUNT_SW_DUMMY), { sample_period, sample_freq } = 1, sample_type = IP|TID|TIME|CPU|IDENTIFIER, read_format = ID|LOST, exclude_kernel = 1, exclude_hv = 1, mmap = 1, comm = 1, task = 1, sample_id_all = 1, exclude_guest = 1, mmap2 = 1, comm_exec = 1, ksymbol = 1, bpf_event = 1, build_id = 1, defer_output = 1
-> 
-> And we have this dummy event I spoke of above; and it has defer_output
-> set, none of the others do. This is what I expected.
-> 
-> *However*, when I use:
-> 
->   perf record -g -e cycles -e instruction
-> 
-> I get:
-> 
-> # event : name = cycles, , id = { }, type = 0 (PERF_TYPE_HARDWARE), size = 136, config = 0 (PERF_COUNT_HW_CPU_CYCLES), { sample_period, sample_freq } = 2000, sample_type = IP|TID|TIME|CALLCHAIN|ID|PERIOD, read_format = ID|LOST, disabled = 1, inherit = 1, mmap = 1, comm = 1, freq = 1, enable_on_exec = 1, task = 1, sample_id_all = 1, mmap2 = 1, comm_exec = 1, ksymbol = 1, bpf_event = 1, build_id = 1, defer_callchain = 1, defer_output = 1
-> # event : name = instructions, , id = { }, type = 0 (PERF_TYPE_HARDWARE), size = 136, config = 0x1 (PERF_COUNT_HW_INSTRUCTIONS), { sample_period, sample_freq } = 2000, sample_type = IP|TID|TIME|CALLCHAIN|ID|PERIOD, read_format = ID|LOST, disabled = 1, inherit = 1, freq = 1, enable_on_exec = 1, sample_id_all = 1, defer_callchain = 1
-> 
-> Which doesn't have a dummy event. Notably the first real event has
-> defer_output set (and all the other sideband stuff like mmap, comm,
-> etc.).
-> 
-> Is there a reason the !cpu mode doesn't have the dummy event? Anyway, it
-> should all work, just unexpected inconsistency that confused me. 
+Therefore, we add a tracing session support for TRACING. Generally
+speaking, it's similar to kprobe session, which can hook both the entry
+and exit of a function with a single BPF program. Meanwhile, it can also
+control the execution of the fexit with the return value of the fentry.
+Session cookie is also supported with the kfunc bpf_fsession_cookie().
 
-Right, I don't remember why.  I think there's no reason doing it for
-system wide mode only.
+The kfunc bpf_tracing_is_exit() and bpf_fsession_cookie() are both inlined
+in the verifier.
 
-Adrian, do you have any idea?  I have a vague memory that you worked on
-this in the past.
+We allow the usage of bpf_get_func_ret() to get the return value in the
+fentry of the tracing session, as it will always get "0", which is safe
+enough and is OK.
 
-Thanks,
-Namhyung
+The while fsession stuff is arch related, so the -EOPNOTSUPP will be
+returned if it is not supported yet by the arch. In this series, we only
+support x86_64. And later, other arch will be implemented.
+
+Changes since v2:
+* squeeze some patches:
+  - the 2 patches for the kfunc bpf_tracing_is_exit() and
+    bpf_fsession_cookie() are merged into the second patch.
+  - the testcases for fsession are also squeezed.
+
+* fix the CI error by move the testcase for bpf_get_func_ip to
+  fsession_test.c
+
+Changes since v1:
+* session cookie support.
+  In this version, session cookie is implemented, and the kfunc
+  bpf_fsession_cookie() is added.
+
+* restructure the layout of the stack.
+  In this version, the session stuff that stored in the stack is changed,
+  and we locate them after the return value to not break
+  bpf_get_func_ip().
+
+* testcase enhancement.
+  Some nits in the testcase that suggested by Jiri is fixed. Meanwhile,
+  the testcase for get_func_ip and session cookie is added too.
+
+Menglong Dong (7):
+  bpf: add tracing session support
+  bpf: add two kfunc for TRACE_SESSION
+  bpf,x86: add ret_off to invoke_bpf()
+  bpf,x86: add tracing session supporting for x86_64
+  libbpf: add support for tracing session
+  selftests/bpf: add testcases for tracing session
+  selftests/bpf: test fsession mixed with fentry and fexit
+
+ arch/arm64/net/bpf_jit_comp.c                 |   3 +
+ arch/loongarch/net/bpf_jit.c                  |   3 +
+ arch/powerpc/net/bpf_jit_comp.c               |   3 +
+ arch/riscv/net/bpf_jit_comp64.c               |   3 +
+ arch/s390/net/bpf_jit_comp.c                  |   3 +
+ arch/x86/net/bpf_jit_comp.c                   | 221 +++++++++++++--
+ include/linux/bpf.h                           |   2 +
+ include/uapi/linux/bpf.h                      |   1 +
+ kernel/bpf/btf.c                              |   2 +
+ kernel/bpf/syscall.c                          |   2 +
+ kernel/bpf/trampoline.c                       |   5 +-
+ kernel/bpf/verifier.c                         |  45 ++-
+ kernel/trace/bpf_trace.c                      |  59 +++-
+ net/bpf/test_run.c                            |   1 +
+ net/core/bpf_sk_storage.c                     |   1 +
+ tools/bpf/bpftool/common.c                    |   1 +
+ tools/include/uapi/linux/bpf.h                |   1 +
+ tools/lib/bpf/bpf.c                           |   2 +
+ tools/lib/bpf/libbpf.c                        |   3 +
+ .../selftests/bpf/prog_tests/fsession_test.c  |  95 +++++++
+ .../bpf/prog_tests/tracing_failure.c          |   2 +-
+ .../selftests/bpf/progs/fsession_test.c       | 264 ++++++++++++++++++
+ 22 files changed, 694 insertions(+), 28 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fsession_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fsession_test.c
+
+-- 
+2.51.1
 
 
