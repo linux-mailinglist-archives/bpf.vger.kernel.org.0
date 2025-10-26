@@ -1,148 +1,131 @@
-Return-Path: <bpf+bounces-72212-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72213-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8914C0A2A9
-	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 05:44:55 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECCD8C0A505
+	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 09:59:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EAC43B2CAF
-	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 04:44:51 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DE4014E15A7
+	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 08:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D22258ECE;
-	Sun, 26 Oct 2025 04:44:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13542877DE;
+	Sun, 26 Oct 2025 08:58:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VVYanjcz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KMon76BZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C56C15D5B6;
-	Sun, 26 Oct 2025 04:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01359286D7C
+	for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 08:58:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761453887; cv=none; b=rLTPv9GGROYHc5LZxT2SkhL6lBLKP4KtmC8Vff7rUh9HGpWxtaq1JELy38BLoA5tN0Al3oRYoZxioZ7bQGuO7zaD023QXHF0Tu118E+ZkzD4ng3sULwuc9QVDsqSG9vxj7jeeGizmqMDuApWuzRayTvfz2kH2x0P9NwYFjiWf0U=
+	t=1761469134; cv=none; b=fqMek2oUk+XI1B4RGHl4LjaKxLGSUg0wDxa0cUBWOumz6DvnPLhYStQyQrRrAAmGLtU1FcipHF7PLBtg6fAVzcYwK0L8U+cKO276yj70cc3WOya6WYI1SDj3QIRQS2H2K45hzyphsXasnZQaoTM9JI1aOQp3AwJkbWiFoiUzsMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761453887; c=relaxed/simple;
-	bh=K14gYDkP3HowqXFY8VVUwqVY0rTYiAZ+Es9ijFsW2qM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U7N25Bm5K2veHE2KmN0E8dd7DCs/DerlaTYftH/MQNJ9lA6DBk1nkeUS4KZxdx/TdfC8A5OtLSYWu/CAChGCgpkqcvu2lAJPsIDiujbNB+hu9Pw04t+o3v9PZOyGxOY20zj7kqIKnPGbsrZsmR+cPzFjU1kJjlwC1OCDhvVjOQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VVYanjcz; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1761453886; x=1792989886;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=K14gYDkP3HowqXFY8VVUwqVY0rTYiAZ+Es9ijFsW2qM=;
-  b=VVYanjczsmofELOm51Xx2FuOJfkyzYK0vXuKu1Zd6UE17l0KZ4am3xJ3
-   ZpEV2icGKaqAOLDIxIlRU1M5RBLiIrnc7SljvQBWsM2xTBF3Wi7ExaG7z
-   dmefk/K92/nlX0UXu3Pv7twcmvFFbreATrt/DZylPNCaKALYZs/K09YmH
-   lrFUjpS7SuvoHzaJLnAi8YwKSbBFQXaQPSfKNr6lcNCT1OXKpKIB+WIj4
-   hJiyr6hLhTdIMqy9xHRuCyv+ZPFhsmy6NizfQDjhyHDELpJWzqNTMkTCQ
-   FpkOD7rr1JiQUEniYVUvIm4XNlShJBx3bGRWFwaVPnfb6W4w3jXhrYa4R
-   g==;
-X-CSE-ConnectionGUID: lBgUDEM+SpiPg3fjUR9F1Q==
-X-CSE-MsgGUID: zLq7Zgj+T5u6aB8da7WASw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="66187894"
-X-IronPort-AV: E=Sophos;i="6.19,256,1754982000"; 
-   d="scan'208";a="66187894"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2025 21:44:45 -0700
-X-CSE-ConnectionGUID: GDS0Z1SIRHGeje471Z1IRg==
-X-CSE-MsgGUID: 7YbqpuzNS4OE3DxxayX9BQ==
-X-ExtLoop1: 1
-Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
-  by fmviesa003.fm.intel.com with ESMTP; 25 Oct 2025 21:44:41 -0700
-Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1vCscK-000Fsn-1I;
-	Sun, 26 Oct 2025 04:44:34 +0000
-Date: Sun, 26 Oct 2025 12:42:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org,
-	jolsa@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, daniel@iogearbox.net,
-	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	mattbobrowski@google.com, rostedt@goodmis.org, mhiramat@kernel.org,
-	leon.hwang@linux.dev, jiang.biao@linux.dev, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 2/7] bpf: add two kfunc for TRACE_SESSION
-Message-ID: <202510261253.qRd57kJv-lkp@intel.com>
-References: <20251026030143.23807-3-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1761469134; c=relaxed/simple;
+	bh=5K4B7s96EMwwaDVEBzoytBv7iE1q9RzEsf4agH12XZM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DJJJADYjCYhh8yE/inm4egSO+Dt7uDGLu2t9AIbH2RMCAuPEJCIAfMC1VeJmcvIvNdoTJ5hNxEnghOvBTNsa9YHFlVpF5JQcm+YLefXVlucgEGe7RtOkC0Ib6HVjH+oIMemD5GHcspmv1PIu8AQV7lgprmWKBgX/L8VIqNlBpdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KMon76BZ; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-b6cf257f325so2993568a12.2
+        for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 01:58:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761469132; x=1762073932; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5K4B7s96EMwwaDVEBzoytBv7iE1q9RzEsf4agH12XZM=;
+        b=KMon76BZA7iezln/XZHUxCJhQZRX9NLslCTWfW4lw5hmD2wCcGtMu4pKPaJ3VsdD9M
+         7uhj9fYLjxEBKBiZNR+C0qvElKvses1AxCRZv8V4LpiK5vB08UyCWdW8Oxmh1m1ybR9J
+         P4YbBSK5ZSr5ncBRV9s7d4eKpTIfWE4k4aLg6b8jphC+6CzzEXXM/lSjT5KN4j7ZGCma
+         NvUp/jOhal7A3Of8+GF3/TAdI0o7Z199/l9hqgBQLODggg164fypvwuZlBEZGYP6P5Py
+         qfb5tfmvzCWLni/vQ0rKyWlrQJIVtNJkXpJx2tYZrUyu0VZbtigNn/cEbgnAnZ9PM+/1
+         GOCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761469132; x=1762073932;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5K4B7s96EMwwaDVEBzoytBv7iE1q9RzEsf4agH12XZM=;
+        b=J3b6p4wS+fe7FGRVTiBLA8cWgV8Q/cbLLLCIhmv7c6X7wIhyG0UX8gRmJE6PB2LU3X
+         pQW7ed2Sv+4B7Lnb2TE6jwVdlgEDqeM/PAruOuJxKqaG5hv8GZzCTd2QxCq54oQFssUa
+         EfTE3ONcaqlT7+QG2dgdJFc2fJsa3azwzlpTMEpKeYrAGM4vNngvnpl8X491t+AYBeJk
+         PltUB58cLM3h1qkYstIGFqIr/j2kgYCZrSZS8ONeqExbWIVwvDTiXMOFU7oSyCsfmXG3
+         p8bJENLgN9fWCWTcXqro2dC2qavYigioHfQwy01DRSD6hyn4ip9gg1cqYsY1shqwIbWQ
+         rz3g==
+X-Forwarded-Encrypted: i=1; AJvYcCXO40t9x2yAMFXbxoTjRXKynd3LdAIl27x8Se0VzYVrcE2nu8E62TK2Qk61jVvqa9k8e/w=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6cNuUsJlFMmmpMljrx4kJ6XM787BbHyLH6xbUZCVERFdzo6rm
+	Q34MH1xPv5WzhMgCo+PkaSHrRg6BWa8IzaEj5ERMPN3Wr6cVGFptrnsU
+X-Gm-Gg: ASbGncvcq8nnmNfK+rbP1Y7ngo8h2S4yuT4u0UbZo7O109gd1hNkPsLYsQ4smIvbDPE
+	BApeEgyvgpqV9dV8I1zpBVPOnA3octaCzhY4dYYrPnEHMZWM0H2YhT5A/qw9rOiNhBUAtU/iAal
+	GYLqgl/KkRYie2bVpbH9ydmWhvr86+OOicPzRG8F4fgUQFYePkbiQw02K69k8Ly+XWumV/NIYob
+	J2jy9gwIMFHSD38R4391Free/7uQW/BjpPLzK4tMr5bCjaIPAWx2R7sLrVGTXtJkRNdm7GSCIob
+	pwv5tEUPY65eN0fmHt8O0KoSGOdS+YWSm8g/TlwmEGtenlLh8LwR4uDKhM2cCWrS4F7LxPlB9Ou
+	JNYYK18Q8giFsKQBP7JNCGHpdUgtPxiwwg01pSEaRJlcaDVVNIUaVirKS7d79S24qalrbBe/mjU
+	3e6eK9a43cpLepVfjpAzNv3zBqqeUi313152951O+Y2Dcdcr46kw66aCmBMSySeLAZyOCoZH3al
+	yKebc4r0YDWUekwkiiBSlEw16LDlR679Q==
+X-Google-Smtp-Source: AGHT+IHbY4zR+pxQ2HAXsXrhA3W5dSP1Wj+vZRqqpwWFOwc/lu9gHcqd7/GoXq4UV6YsapVAtB9Wiw==
+X-Received: by 2002:a17:902:f690:b0:290:ac36:2ed6 with SMTP id d9443c01a7336-2948b97fd44mr101660985ad.14.1761469132156;
+        Sun, 26 Oct 2025 01:58:52 -0700 (PDT)
+Received: from ?IPV6:2606:4700:110:896a:5f1b:2412:be21:3a45? ([2a09:bac1:36e0:1c0::10c:2f])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33fed70a83csm4611330a91.4.2025.10.26.01.58.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Oct 2025 01:58:51 -0700 (PDT)
+Message-ID: <da05d1d1-c241-49af-bed8-7db5e9968396@gmail.com>
+Date: Sun, 26 Oct 2025 14:28:46 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251026030143.23807-3-dongml2@chinatelecom.cn>
-
-Hi Menglong,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Menglong-Dong/bpf-add-tracing-session-support/20251026-110720
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20251026030143.23807-3-dongml2%40chinatelecom.cn
-patch subject: [PATCH bpf-next v3 2/7] bpf: add two kfunc for TRACE_SESSION
-config: i386-buildonly-randconfig-003-20251026 (https://download.01.org/0day-ci/archive/20251026/202510261253.qRd57kJv-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251026/202510261253.qRd57kJv-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202510261253.qRd57kJv-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   kernel/trace/bpf_trace.c: In function '____bpf_trace_printk':
-   kernel/trace/bpf_trace.c:377:9: warning: function '____bpf_trace_printk' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
-     377 |         ret = bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt, data.bin_args);
-         |         ^~~
-   kernel/trace/bpf_trace.c: In function '____bpf_trace_vprintk':
-   kernel/trace/bpf_trace.c:433:9: warning: function '____bpf_trace_vprintk' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
-     433 |         ret = bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt, data.bin_args);
-         |         ^~~
-   kernel/trace/bpf_trace.c: In function '____bpf_seq_printf':
-   kernel/trace/bpf_trace.c:475:9: warning: function '____bpf_seq_printf' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
-     475 |         seq_bprintf(m, fmt, data.bin_args);
-         |         ^~~~~~~~~~~
-   kernel/trace/bpf_trace.c: In function 'bpf_fsession_cookie':
->> kernel/trace/bpf_trace.c:3379:16: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-    3379 |         return (u64 *)((u64 *)ctx)[nr_args + 2];
-         |                ^
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for I2C_K1
-   Depends on [n]: I2C [=y] && HAS_IOMEM [=y] && (ARCH_SPACEMIT || COMPILE_TEST [=y]) && OF [=n]
-   Selected by [y]:
-   - MFD_SPACEMIT_P1 [=y] && HAS_IOMEM [=y] && (ARCH_SPACEMIT || COMPILE_TEST [=y]) && I2C [=y]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/seccomp: fix pointer type mismatch in UPROBE
+ test
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Kees Cook <kees@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, khalid@kernel.org, david.hunter.linux@gmail.com,
+ linux-kernel-mentees@lists.linuxfoundation.org
+References: <20251025184903.154755-2-nirbhay.lkd@gmail.com>
+ <aP0-k3vlEEWNUtF8@krava>
+Content-Language: en-US
+From: Nirbhay Sharma <nirbhay.lkd@gmail.com>
+In-Reply-To: <aP0-k3vlEEWNUtF8@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-vim +3379 kernel/trace/bpf_trace.c
 
-  3372	
-  3373	__bpf_kfunc u64 *bpf_fsession_cookie(void *ctx)
-  3374	{
-  3375		/* This helper call is inlined by verifier. */
-  3376		u64 nr_args = ((u64 *)ctx)[-1];
-  3377	
-  3378		/* ctx[nr_args + 2] is the session cookie address */
-> 3379		return (u64 *)((u64 *)ctx)[nr_args + 2];
-  3380	}
-  3381	
+Hi Jiri,
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thank you for the review and for catching that inaccuracy!
+
+On 10/26/25 2:48 AM, Jiri Olsa wrote:
+> just probed_uprobe right?
+
+Yes, you're absolutely correct. Only probed_uprobe has the
+__attribute__((nocf_check)) attribute. I apologize for the confusion
+in my original commit message. I'll fix this in v2.
+
+> curious what compiler do you see that with?
+
+I am seeing this error with Clang 19.1.2 on Fedora, which enables
+-fcf-protection=full by default. As Sam confirmed, the error occurs
+specifically when CFI protection is enabled via -fcf-protection. GCC
+without this flag treats it as a warning or ignores the nocf_check
+attribute entirely.
+
+I'll send v2 with the corrected commit message.
+
+Thanks again for the review!
+
+Best regards,
+Nirbhay
+
 
