@@ -1,242 +1,225 @@
-Return-Path: <bpf+bounces-72230-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72231-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4E14C0A6F7
-	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 13:27:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8DB9C0A93C
+	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 15:18:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 37BFC34705E
-	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 12:27:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CA87189C7C2
+	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 14:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF57721E087;
-	Sun, 26 Oct 2025 12:27:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E50824166D;
+	Sun, 26 Oct 2025 14:18:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fYDXnlUh"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="EGevNWVq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FCA37483
-	for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 12:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD52F213E7A
+	for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 14:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761481664; cv=none; b=fXYBdl/LD8Kf4Rs0cIDNsrRTWqPmXTe9Glv4/dzFJJ7Pweif/MqRdnMtcpgEUKyCbW5qrUsWRfV5brCefP+rX7WF5G+peq6mOxWE192PHCGofpEPb/M1vt1CaPi6S2F/7/e/UbD7mQkeeKUu1IJJV85nP7AT5ZvlQ+V7+uK4H/o=
+	t=1761488319; cv=none; b=gyVJjyvjgpcx4XP06neFz6JmMgCryvEg47Ekp5v8kfb5ZvpUWegzcA1hdSJ89gLPrWfRtRRfTiXiCCtxUSxfYuP1Ip4bltxAE53pjp0XjEtSAq9auNhCIwjYit7dN62hZy9G8Bs+W3/N1Qk3GPOvH5PMLPdsROu8BFV+PJewlrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761481664; c=relaxed/simple;
-	bh=vN7vq63DYimrifF2gRdY6Kq9IR6IHE+jAV5HCN4ixV8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WNyyrQVsYmndUR9V8fxqUwCnN9TrtnmcdHatiUDihvqqtPFo79bH4lpPpp5bUeEuLCRTOIraMPgbs7YNhcVm7FnZFhLPxYm3/6jUSSIm9XHr9eNXPK2j8mjS6VsZ1idKx7nZKK5/MykG/HheSsgluWtaSHf6yhhkpfrNSZHSrMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fYDXnlUh; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-47114a40161so40726595e9.3
-        for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 05:27:42 -0700 (PDT)
+	s=arc-20240116; t=1761488319; c=relaxed/simple;
+	bh=uCkFSufQFZ7HFWxTTk7p88jt/0W3ryStBP8ftxN+t0g=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=SFJDrhIHxDI4sGIXVq8yAk8kPlNZPREUOZuhm52c5vGACFyYZNjMDFoZqqhXy4+PHG/trmt7dNMSdO0EExgBGGSQHvvhMiNjY/6v2h694lzsAuTboHtGL92Meoa49QeLFIa7yn5djIpEVw+yeN5kMoEQSMp/rRGSC32J9gD1m9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=EGevNWVq; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b5b823b4f3dso407584366b.3
+        for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 07:18:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761481661; x=1762086461; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2vc58ekBNXfQujPrq87lImkUZHBHCJNbrBLZ8gnd45s=;
-        b=fYDXnlUhysXA2CyIwHvcNqvVoNga7YytubMxeAwuj5g5+5UcxO1Qqs/BHhx4wt4Ie2
-         5sfuAqBxZWtoCJgrwJsie7yF8CsJ0J9dk7+wp44x8YsM7GcbITi8QjjMU7r5bq9nAXja
-         c+GdDXssjttkvt7XwvEKw47X0a4ItHMKM/PcJ/dxPB5jzuRSKYVqvVaxKcrX3pTJddIf
-         Thj44WhN//xPprNerBJYCgrGnQZMXGXLQU4DAqZrr81hpbJ9pqkjvA+754ew/avuEHnU
-         obShHjQgvh3jfgU/ecPseqSWsJ6C5oO3o0mpyuzWmnsE7xFg0DEQZJr0/bZGXIfweiwM
-         RBjw==
+        d=cloudflare.com; s=google09082023; t=1761488316; x=1762093116; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1zfwv/RUYuHDy5X2aWHYd9NaLbvMNGst97rjU1pFJgk=;
+        b=EGevNWVquPrraDLBk67tPL2ylJXdauAKyZMpXDtjqTakIwqx8ufxDyoyS+hJRx5gC4
+         4topeZGdFYrP6Uaxf8uFrRbQmg+uvmEiTEq7yoZZluN5jsL2ENckdZrYJPct2rZp3MTe
+         jpB/Vafj5T82Oo8YPNEFj7GhApfazG58rfcyWSlqrlkoIAU1+UmaZnyo4oP/CDnCtyIk
+         x38WQFZGXG1+5lFTK+GuLp1pQtH9OKkIpC5VLi0hckhGc9HWxL3Xdfz+KVKAQU8MpasX
+         NnJyiascpohK0nVtKD8uQ6G5vVMp+vlHftD+JR8bc6JfGpSMMBlNZ6gw6rrPrRWrvgvK
+         8nVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761481661; x=1762086461;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2vc58ekBNXfQujPrq87lImkUZHBHCJNbrBLZ8gnd45s=;
-        b=W/Mk86DELG4wJwJ1Zi9rZ5hNAYFU6ynHFY9wtw7AbGahf9/v9k7ltkiq9rXsMcqGvP
-         JKy9G2Vi75wDqHco/g7ZQ7fCk/92wZ8+yE5xso9TyISW0NuuTjOkUAz6U8je+eK1QtDH
-         cIx/uaCAzPEa3KSJQkPgsGsdyZWqMvU/NzQJchE+Mf2zKDEQRIcHJiWI5N1bpi/XHdOg
-         P6JDhTigbmD9j/0kz8ym3eHkyLPXR+uUwWTiOgvLjUzHaNBailU5BpgiH5usvWfo0ccr
-         Ur9+nvmENZnKpntaw0hPQKVp9uRnVmM/hP4fGmTzMwBt9w+WTgCrD5DXATk9XH+7m3LV
-         r9lw==
-X-Gm-Message-State: AOJu0Yw1rQnTsGwbchWrvx8aXsBtwih2ICWzFEjhCYZasLfDNBzregjR
-	x8+M+rqV4xjg9fCNZXfBl8NQeLPgw8Q177fwpiOBLdTxPPR5pxvnzIDm
-X-Gm-Gg: ASbGncu0kOCNg7azieM9Yl3RwkjxtlKJBui1G4MZtuKpAad8eptm9jPWNFQv+KbHSjD
-	HhiuKqlvfbzq6o/wnfcsYqNErfzzw9+3xR6UiBHXp1cBg+BOwl5AhmXk0kC6PkHkGJqdJ7oEJJw
-	AWV51yl2jlHc0ewj3eeYlLfWgYEABHBPMprmbb5GOARFSpQSVzruvBR/3npJOTsEVFw5v8Jh0+p
-	4R6DLdMdRdAxlg5tK9WP1IHD98CUNW46S0XZldLdBDlV7pd7AGKGwriKG+HvyiLl7hMlQyJeZG4
-	Avzh0YS/uolzmfpogEnfu4r7hkDJK20WkKXHI91MFL35rUvWsoTWfvcv4VdWa3XHc/RVhn9kdzC
-	9hSjKF4iX2TK4oiM52bRPX2+IwtjLKoSL6ZuQmBaDgNn8iFn8t/VdF2XA+ePFISVxV5hQlb3tUK
-	jLYE+/BqvarQ==
-X-Google-Smtp-Source: AGHT+IGwdeQuuxmyw+bWYBsi03qv6oGpsftG6MHOTygoBapASDQuKU7KQbziAX4X15H2gEDAyAjswA==
-X-Received: by 2002:a05:600c:524c:b0:475:d952:342e with SMTP id 5b1f17b1804b1-475d9523a29mr50618835e9.35.1761481660696;
-        Sun, 26 Oct 2025 05:27:40 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475ddd41a5esm37890255e9.5.2025.10.26.05.27.39
+        d=1e100.net; s=20230601; t=1761488316; x=1762093116;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1zfwv/RUYuHDy5X2aWHYd9NaLbvMNGst97rjU1pFJgk=;
+        b=cVdXq5R2OciLyqFhp4vpN6XKFoMhsuoAOqDd0X9gMW9KaXBfJioZpCmIU74uwtQpGS
+         Jof01dQPcvmrwm+3w7hhd0ZlY0DMqv2cBzKhf/YpxRebigVCtivdmxT33Jc/m9/OkpEr
+         1VKgdOHCicy/H2DANqy0VbvTpfcIGV6nn/D0O7VMeVQRWHCLKAF/yPix/m7tR4QsTnyY
+         QO0KBatLnns4CWeGIOiCZT3Sf/37MAyVaJ2Du0OOPHh83x2WGzoR3PfcO2ubD1xpPc39
+         E7aBy++LdRdqO8igYxOjEBkjWEkRz/KQVLT/CmUWl8PQjDeo8jyC2yMTRY22tU7/0G7s
+         yViw==
+X-Gm-Message-State: AOJu0Yw3c+gIyvpyLmEJK9aHOaCDtG8yyGO1BEIvxvvFdT9YCTcCHtzx
+	5MO90ElHrvO3cZsaqnereN8L4rHzNdJuNkriJF+u4Lli0P4ZGESaT5C17LAKAoaIkv0=
+X-Gm-Gg: ASbGncs2WUF5N6G8XEtP2uXWIoJxWZM0LAJBq7BjOUyso0hLO82ruuCTl8dXJxp7Ezi
+	6lZu92VN43FIF4UyotJmE+cux9naQAtUFvmRK/vyahJkceRD5ONLCw2UO2zrT0oUjUJHN18ORUQ
+	EDeWim1EiaU8ilGzlt4Cuq5NuZPKaah61E5W6Qy1HRIsI6Gg2djuDk//pitICkh+9FOD8OCDRCF
+	P0SjmogB2bCEEeIiB9Km+/P0Pt2jvilBh2HZQEZtaNCOatN32iEfnJPk/70PRWiTZD6n1CTrIH1
+	g/DvW9ZzpFjkE2+O4p4zwPZv2JOJ9t1N9EuNDgSXADUBITS3mo9MCITa5DnEOnvbCwy7MKFQgT0
+	hIux0wKPNdURpUyg+AaZMrEAdPM67AAgOQALBru8dsgd+qWOkfe3imNfTHRfRWgMvrd+WwX3Q8k
+	nPOVHtB4dmvsMD/pmy7qw3H9Pt7GXuebB9frZyeSPd3/4czORU+alN9qQy
+X-Google-Smtp-Source: AGHT+IFLGVilDlNj+sxzb+TcWj2MHhtcAlionRYHxHnW4/143W0R6dc68ajUvfHY+JfDSJpvYYQeDQ==
+X-Received: by 2002:a17:907:6ea9:b0:b6d:606f:2aa9 with SMTP id a640c23a62f3a-b6d606f3a5emr1107160366b.65.1761488316143;
+        Sun, 26 Oct 2025 07:18:36 -0700 (PDT)
+Received: from cloudflare.com (79.184.211.13.ipv4.supernova.orange.pl. [79.184.211.13])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b6d853077d2sm472225666b.3.2025.10.26.07.18.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Oct 2025 05:27:40 -0700 (PDT)
-Date: Sun, 26 Oct 2025 12:34:21 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH v6 bpf-next 16/17] selftests/bpf: add new verifier_gotox
- test
-Message-ID: <aP4VTXG6n7XYnm23@mail.gmail.com>
-References: <20251019202145.3944697-1-a.s.protopopov@gmail.com>
- <20251019202145.3944697-17-a.s.protopopov@gmail.com>
- <b0e59e59fbe35090809ccbe0b01d923212c789ab.camel@gmail.com>
- <aPtltvv+WHPMEnNt@mail.gmail.com>
+        Sun, 26 Oct 2025 07:18:35 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+Subject: [PATCH bpf-next v3 00/16] Make TC BPF helpers preserve skb
+ metadata
+Date: Sun, 26 Oct 2025 15:18:20 +0100
+Message-Id: <20251026-skb-meta-rx-path-v3-0-37cceebb95d3@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aPtltvv+WHPMEnNt@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKwt/mgC/23NzQ6CMBAE4FchPbumPwGsJ9/DeNjCVhqRkrYSD
+ OHdbTDxgsfJZL5ZWKTgKLJzsbBAk4vODzmoQ8GaDoc7gWtzZpLLkmuuID4MPCkhhBlGTB0YKrl
+ RKGq0muXZGMi6eSOvzIwWBpoTu+WmczH58N6+JrH1X1bqPTsJ4NBSzTnWaERjLk3vX63tMdCx8
+ c9NnORPEVz8U2RWrMbyZBWZqq12yrquH7glmqkFAQAA
+X-Change-ID: 20250903-skb-meta-rx-path-be50b3a17af9
+To: bpf@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Alexei Starovoitov <ast@kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+ KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Arthur Fabre <arthur@arthurfabre.com>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org, 
+ kernel-team@cloudflare.com
+X-Mailer: b4 0.15-dev-07fe9
 
-On 25/10/24 11:40AM, Anton Protopopov wrote:
-> On 25/10/21 03:42PM, Eduard Zingerman wrote:
-> > On Sun, 2025-10-19 at 20:21 +0000, Anton Protopopov wrote:
-> > > Add a set of tests to validate core gotox functionality
-> > > without need to rely on compilers.
-> > > 
-> > > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> > > ---
-> > 
-> > Thank you for adding these.
-> > Could you please also add a test cases that checks the following errors:
-> > - "jump table for insn %d points outside of the subprog [%u,%u]"
-> > - "the sum of R%u umin_value %llu and off %u is too big\n"
-> > - "register R%d doesn't point to any offset in map id=%d\n"
-> 
-> Yeah, sorry, these actually were on my list, but I've postponed them
-> for the next version. Will add. (I also need to add a few selftests
-> on the offset when loading from map.)
+[NOTE TO REVIEWERS: I will be AFK from Oct 28th for around two weeks.]
 
-So, tbh, I can't actually find a way to trigger any of them,
-looks like these conditions are always caught earlier...
+Changes in v3:
+- Use the already existing BPF_STREAM_STDERR const in tests (Martin)
+- Unclone skb head on bpf_dynptr_write to skb metadata (patch 3) (Martin)
+- Swap order of patches 1 & 2 to refer to skb_postpush_data_move() in docs
+- Mention in skb_data_move() docs how to move just the metadata
+- Note in pskb_expand_head() docs to move metadata after skb_push() (Jakub)
+- Link to v2: https://lore.kernel.org/r/20251019-skb-meta-rx-path-v2-0-f9a58f3eb6d6@cloudflare.com
 
-> > 
-> > Might be the case that some of these can't be triggered because of the
-> > check_mem_access() call.
-> > 
-> > [...]
-> > 
-> > > diff --git a/tools/testing/selftests/bpf/progs/verifier_gotox.c b/tools/testing/selftests/bpf/progs/verifier_gotox.c
-> > > new file mode 100644
-> > > index 000000000000..1a92e4d321e8
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/progs/verifier_gotox.c
-> > 
-> > [...]
-> > 
-> > > +/*
-> > > + * Gotox is forbidden when there is no jump table loaded
-> > > + * which points to the sub-function where the gotox is used
-> > > + */
-> > > +SEC("socket")
-> > > +__failure __msg("no jump tables found for subprog starting at 0")
-> >                                                               ^^^^
-> > 				Nit: one day we need to figure out a way to
-> > 				     report subprogram names, when reporting
-> > 				     check_cfg() errors.
-> 
-> But those are not always present, right?
-> 
-> > 
-> > > +__naked void jump_table_no_jump_table(void)
-> > > +{
-> > > +	asm volatile ("						\
-> > > +	.8byte %[gotox_r0];					\
-> > > +	r0 = 1;							\
-> > > +	exit;							\
-> > > +"	:							\
-> > > +	: __imm_insn(gotox_r0, BPF_RAW_INSN(BPF_JMP | BPF_JA | BPF_X, BPF_REG_0, 0, 0 , 0))
-> > > +	: __clobber_all);
-> > > +}
-> > > +
-> > > +/*
-> > > + * Incorrect type of the target register, only PTR_TO_INSN allowed
-> > > + */
-> > > +SEC("socket")
-> > > +__failure __msg("R1 has type 1, expected PTR_TO_INSN")
-> >                            ^^^^^^
-> > 	      log.c:reg_type_str() should help here.
-> 
-> Yes, thanks, this was changed to address your comment
-> in the other patch.
-> 
-> > > +__naked void jump_table_incorrect_dst_reg_type(void)
-> > > +{
-> > > +	asm volatile ("						\
-> > > +	.pushsection .jumptables,\"\",@progbits;		\
-> > > +jt0_%=:								\
-> > > +	.quad ret0_%=;						\
-> > > +	.quad ret1_%=;						\
-> > > +	.size jt0_%=, 16;					\
-> > > +	.global jt0_%=;						\
-> > > +	.popsection;						\
-> > > +								\
-> > > +	r0 = jt0_%= ll;						\
-> > > +	r0 += 8;						\
-> > > +	r0 = *(u64 *)(r0 + 0);					\
-> > > +	r1 = 42;						\
-> > > +	.8byte %[gotox_r1];					\
-> > > +	ret0_%=:						\
-> > > +	r0 = 0;							\
-> > > +	exit;							\
-> > > +	ret1_%=:						\
-> > > +	r0 = 1;							\
-> > > +	exit;							\
-> > > +"	:							\
-> > > +	: __imm_insn(gotox_r1, BPF_RAW_INSN(BPF_JMP | BPF_JA | BPF_X, BPF_REG_1, 0, 0 , 0))
-> > > +	: __clobber_all);
-> > > +}
-> > > +
-> > > +#define DEFINE_INVALID_SIZE_PROG(READ_SIZE, OUTCOME)			\
-> > 
-> > Nit: this can be merged with DEFINE_SIMPLE_JUMP_TABLE_PROG.
-> 
-> Didn't want to overload the macro too much so the prog stays
-> readable. (Here are two different regs are used.) I will check
-> how it looks like if I merge them, and merge, if it looks ok-ish.
-> 
-> > > +									\
-> > > +	SEC("socket")							\
-> > > +	OUTCOME								\
-> > > +	__naked void jump_table_invalid_read_size_ ## READ_SIZE(void)	\
-> > > +	{								\
-> > > +		asm volatile ("						\
-> > > +		.pushsection .jumptables,\"\",@progbits;		\
-> > > +	jt0_%=:								\
-> > > +		.quad ret0_%=;						\
-> > > +		.quad ret1_%=;						\
-> > > +		.size jt0_%=, 16;					\
-> > > +		.global jt0_%=;						\
-> > > +		.popsection;						\
-> > > +									\
-> > > +		r0 = jt0_%= ll;						\
-> > > +		r0 += 8;						\
-> > > +		r0 = *(" #READ_SIZE " *)(r0 + 0);			\
-> > > +		.8byte %[gotox_r0];					\
-> > > +		ret0_%=:						\
-> > > +		r0 = 0;							\
-> > > +		exit;							\
-> > > +		ret1_%=:						\
-> > > +		r0 = 1;							\
-> > > +		exit;							\
-> > > +	"	:							\
-> > > +		: __imm_insn(gotox_r0, BPF_RAW_INSN(BPF_JMP | BPF_JA | BPF_X, BPF_REG_0, 0, 0 , 0)) \
-> > > +		: __clobber_all);					\
-> > > +	}
-> > > +
-> > > +DEFINE_INVALID_SIZE_PROG(u32, __failure __msg("Invalid read of 4 bytes from insn_array"))
-> > > +DEFINE_INVALID_SIZE_PROG(u16, __failure __msg("Invalid read of 2 bytes from insn_array"))
-> > > +DEFINE_INVALID_SIZE_PROG(u8,  __failure __msg("Invalid read of 1 bytes from insn_array"))
-> > 
-> > [...]
+Changes in v2:
+- Tweak WARN_ON_ONCE check in skb_data_move() (patch 2)
+- Convert all tests to verify skb metadata in BPF (patches 9-10)
+- Add test coverage for modified BPF helpers (patches 12-15)
+- Link to RFCv1: https://lore.kernel.org/r/20250929-skb-meta-rx-path-v1-0-de700a7ab1cb@cloudflare.com
+
+This patch set continues our work [1] to allow BPF programs and user-space
+applications to attach multiple bytes of metadata to packets via the
+XDP/skb metadata area.
+
+The focus of this patch set it to ensure that skb metadata remains intact
+when packets pass through a chain of TC BPF programs that call helpers
+which operate on skb head.
+
+Currently, several helpers that either adjust the skb->data pointer or
+reallocate skb->head do not preserve metadata at its expected location,
+that is immediately in front of the MAC header. These are:
+
+- bpf_skb_adjust_room
+- bpf_skb_change_head
+- bpf_skb_change_proto
+- bpf_skb_change_tail
+- bpf_skb_vlan_pop
+- bpf_skb_vlan_push
+
+In TC BPF context, metadata must be moved whenever skb->data changes to
+keep the skb->data_meta pointer valid. I don't see any way around
+it. Creative ideas how to avoid that would be very welcome.
+
+With that in mind, we can patch the helpers in at least two different ways:
+
+1. Integrate metadata move into header move
+
+   Replace the existing memmove, which follows skb_push/pull, with a helper
+   that moves both headers and metadata in a single call. This avoids an
+   extra memmove but reduces transparency.
+
+        skb_pull(skb, len);
+-       memmove(skb->data, skb->data - len, n);
++       skb_postpull_data_move(skb, len, n);
+        skb->mac_header += len;
+
+        skb_push(skb, len)
+-       memmove(skb->data, skb->data + len, n);
++       skb_postpush_data_move(skb, len, n);
+        skb->mac_header -= len;
+
+2. Move metadata separately
+
+   Add a dedicated metadata move after the header move. This is more
+   explicit but costs an additional memmove.
+
+        skb_pull(skb, len);
+        memmove(skb->data, skb->data - len, n);
++       skb_metadata_postpull_move(skb, len);
+        skb->mac_header += len;
+
+        skb_push(skb, len)
++       skb_metadata_postpush_move(skb, len);
+        memmove(skb->data, skb->data + len, n);
+        skb->mac_header -= len;
+
+This patch set implements option (1), expecting that "you can have just one
+memmove" will be the most obvious feedback, while readability is a,
+somewhat subjective, matter of taste, which I don't claim to have ;-)
+
+The structure of the patch set is as follows:
+
+- patches 1-4 prepare ground for safe-proofing the BPF helpers
+- patches 5-9 modify the BPF helpers to preserve skb metadata
+- patches 10-11 prepare ground for metadata tests with BPF helper calls
+- patches 12-16 adapt and expand tests to cover the made changes
+
+Thanks,
+-jkbs
+
+[1] https://lore.kernel.org/all/20250814-skb-metadata-thru-dynptr-v7-0-8a39e636e0fb@cloudflare.com/
+
+---
+Jakub Sitnicki (16):
+      net: Helper to move packet data and metadata after skb_push/pull
+      net: Preserve metadata on pskb_expand_head
+      bpf: Unclone skb head on bpf_dynptr_write to skb metadata
+      vlan: Make vlan_remove_tag return nothing
+      bpf: Make bpf_skb_vlan_pop helper metadata-safe
+      bpf: Make bpf_skb_vlan_push helper metadata-safe
+      bpf: Make bpf_skb_adjust_room metadata-safe
+      bpf: Make bpf_skb_change_proto helper metadata-safe
+      bpf: Make bpf_skb_change_head helper metadata-safe
+      selftests/bpf: Verify skb metadata in BPF instead of userspace
+      selftests/bpf: Dump skb metadata on verification failure
+      selftests/bpf: Expect unclone to preserve skb metadata
+      selftests/bpf: Cover skb metadata access after vlan push/pop helper
+      selftests/bpf: Cover skb metadata access after bpf_skb_adjust_room
+      selftests/bpf: Cover skb metadata access after change_head/tail helper
+      selftests/bpf: Cover skb metadata access after bpf_skb_change_proto
+
+ include/linux/filter.h                             |   9 +
+ include/linux/if_vlan.h                            |  13 +-
+ include/linux/skbuff.h                             |  75 ++++
+ kernel/bpf/helpers.c                               |   6 +-
+ net/core/filter.c                                  |  34 +-
+ net/core/skbuff.c                                  |   6 +-
+ .../bpf/prog_tests/xdp_context_test_run.c          | 129 ++++---
+ tools/testing/selftests/bpf/progs/test_xdp_meta.c  | 386 +++++++++++++++------
+ 8 files changed, 475 insertions(+), 183 deletions(-)
+
 
