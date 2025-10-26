@@ -1,730 +1,321 @@
-Return-Path: <bpf+bounces-72269-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72271-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAEA3C0B118
-	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 20:21:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94E5BC0B1BA
+	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 21:06:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7DDD3B1659
-	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 19:21:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DEE8189FBA8
+	for <lists+bpf@lfdr.de>; Sun, 26 Oct 2025 20:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96CD6261581;
-	Sun, 26 Oct 2025 19:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA44527467E;
+	Sun, 26 Oct 2025 20:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EU2IKPRg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NRX+1Lpa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0708C2FE04B
-	for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 19:20:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C5523185E
+	for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 20:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761506454; cv=none; b=czPmNesZInfWJy0+W/sF8hePxPQP5FVLOx4p4PWncfqLvcGbizU5v6plfhKnwdqjxHJ1WYw7TmbrkcOyIu0PvIYxHOlCpdj8r0v3+DJakdygP2lzgSREniup5erZSf1Kpd3cZ3Rg/8Bo5qOKrdgHrUrhjyBLQYniVXFU5km+SGs=
+	t=1761509178; cv=none; b=k6s4i88YSFmqlYsVfrHtJuG1LMW1R1OSVk/xIFLklspZAv6HmJeYbLqTVJbJ8AptjoOHSOqLaQXfyyy8TLo7jvtafPXz1Nng4hH7fZ/BL9YutpnL72rW655hLtRaU7LSCvtE5kzLGBtM8cW2xsUHYzRS2h9eSW97WuUbgaRawxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761506454; c=relaxed/simple;
-	bh=Bp+FnsP1wAW8DK15oxvCaOxtNWT+XxvMtuKwtjhPbhM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=V2HhYMAYphxf04VF05dahdq8LyTWOEbEHiH5yRTmRwLwVT0x4G0mJmzxNljWkOKLngSSCQdZyMaIeZ1/Ls1+GyvrtB1QBUDqXHsrq+cehLRaiMJaz2kZEvbVuFK3wML/5Kgr5VKTO//i8BIXps5u5569oXUJYJcI/EprG1JwDkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EU2IKPRg; arc=none smtp.client-ip=209.85.128.52
+	s=arc-20240116; t=1761509178; c=relaxed/simple;
+	bh=VrkW14uqGip0Bk2+38JuH4m4s5WOxAyeoaDxqc6rezw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jf0Ju7LjHkf0jpW/cIhF4up98jQe3MjhCIPJbZO4iJh90LbQqrICJkyU25CbJInHAGcR8VXlA+mg47zCXLKwiGaGhScFt3AndAf//MO2Sp1nTPOO4o4YlKA0GCDDDjazSABF5Wn+Cqkn1mnBq/RjUxllZuoWWMOaKi1WSsWdgBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NRX+1Lpa; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4711b95226dso46454495e9.0
-        for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 12:20:51 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-27d4d6b7ab5so58009355ad.2
+        for <bpf@vger.kernel.org>; Sun, 26 Oct 2025 13:06:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761506450; x=1762111250; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O5Ju/VSJ0D/h26aATaUOZIgX79vwM2wkSuQMVwA31M8=;
-        b=EU2IKPRgXN68inytZf6wrlmtqbFdh+vYm3PuFphuFK6CgO1Wplz/j07zExa8tXzfFw
-         lj0WnBkd3/unyuNaomVetn9cL4o9KVal0DfjxDZXynofXK82ZOZoB4zACK+ajYbwf83r
-         tusOaAu36ZA9DvOCsbFOFKrNXc5/F6KGsTpu5GBxxzgsMcxp6EV7QMgNh/WXYT0Qjw6P
-         BiTX6Gdf+pT/W8Apq1ZrPbAMbJeM1hySxp7+6IRd/9QZhgizn9aCQ3N8VRfu6dsR+5bK
-         TYi003OUDtaFMQft94BNN/7pSWl8iX8W6NvTQmEJzuG6s4v9eAievMqtv+m4ZbYDqH3x
-         fLsQ==
+        d=gmail.com; s=20230601; t=1761509175; x=1762113975; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=NLnr/ncBHj2yG+qse5NSNQc2ilWvF/iAF5vKMIBHC4I=;
+        b=NRX+1LpaBLlitRafAIda7l07vJP5b2KLnqkE86EUjiboheyXst6K+m0tqwORKsCjeF
+         xLF+DOEhJgvTRxKAAvzBA9//mir1QJiiKe5n3cbj/togo8D4hnP7rKcTSdAy4He2B1T7
+         onPdktbxPrOyg/iHT2yU5/m1dKKmNbTpdKXJrEGTypzwlQPDZ7WzPIk6WqpUefDmyPdk
+         BcpOAMeheDTD9U628EfbgNs4XwyVAWth7AXg6IDsN+SA8r92VDBu0P+KztcJ9Fm4gUSD
+         C/LiDtQq7kGvaiUHAFEu45r9B3JAKgjCmbizyUghOSLDjC40yLBNf+J1D1jTe+GldEBr
+         fLhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761506450; x=1762111250;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O5Ju/VSJ0D/h26aATaUOZIgX79vwM2wkSuQMVwA31M8=;
-        b=s0Z4GAOoheEk131k0jrUKyyihzTe/iQUJAp7iN7RBP2Y8/BeAAxKhP24G2kscIHGKr
-         ueKBrhdstSvJf55Nc8FVJ1vT/yToRNR4ALb8xvte5c6JKY24ZDroe/7wYA7kmhaO65Pf
-         xYsJd/r5iR12CrKRiyGU0/yGj9GjnDSGCl8JNtfR24jJJCpwdgNVmxmOGSrHensam9gE
-         1FZ0W0q26vcdUFwQnIzigmR8axWrTxp6TtJP7KshJD6WJvx8alyj4+B80qc6EpQu5wMi
-         jbWjfmtvynPFjYSAo3Ix6esXapKZN0oLJg4O18pRanLNKY1OlnNd7C0kewRSfnidWtYm
-         IO2A==
-X-Gm-Message-State: AOJu0YzANu7qdZ8z9Xs0x+2LoRpFy+cCNgDyhKY+NPm9Iiex4Vun9PO7
-	Ku/IzYKObmqd6wnpm+NGwHLsV9COSDBoXLL+XBX/kPgY+2ROG6h0D8IKepgApg==
-X-Gm-Gg: ASbGnctTOcvxMYy7/VkBhLCRaMeZMESSXjatpWEufV4aDOihkFWCF1dDh4tI7G0h7TH
-	OGA/T8jKAhMwwZ6x6+Q7S9GFMTO5sYbO7Q5jgJdeTTbgaIvG2kWAGNjw2vYddKXWSJvQxKFKbBa
-	6jCElC3hG9MS6wzW+FGkWgH3MXzkRZOPuzBgLbke/xSfbQFA5CRUd7OuJWwvQe9xc5YNYb1ZMaI
-	P1j3Z5Nm/KtNxbZSWof7oaRy0wg6OlluLgDFZHf6C/6GbUa0Qb1odXQ0tTk+TfLz2lS0RF3sgAH
-	1N9a+lBLuCWXsdVVfDDY8l5ROVjZhFPHCEV0/aX9jUthi7ww03ZA8kvJ67pj8OcnWD7UjID4eWe
-	7ztPg1mYmptu/4YwcCfdrmsRYqYywEzxO7tXiaH6a1S7dVG6hxAXYUCQknokIeKXoqou4fON5TQ
-	6N5PvyW1xvkNEd9lS0EOg=
-X-Google-Smtp-Source: AGHT+IG4pWUer9yO1GmtudAx7BV4fvHdtvzEvzc4vXDtlYrxdKL1oLswgAmWuG3zSe8n6ghusImBAQ==
-X-Received: by 2002:a05:600c:524f:b0:46e:4c67:ff17 with SMTP id 5b1f17b1804b1-471178a6fa9mr239595485e9.14.1761506449808;
-        Sun, 26 Oct 2025 12:20:49 -0700 (PDT)
-Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475dd4894c9sm92434375e9.5.2025.10.26.12.20.48
+        d=1e100.net; s=20230601; t=1761509175; x=1762113975;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NLnr/ncBHj2yG+qse5NSNQc2ilWvF/iAF5vKMIBHC4I=;
+        b=ph4IC0be8yuIa6JW2Gt0XH34M2RF+IIEzsTXrG/1pZ8aM4VD0I+TkplAN8qujP87WI
+         RrM4Qj1QPyzptSmfnLIts69beFFdDMYzJ8cVnnWTKjLr7FqG+mvhh6VnplWo6vxXZ91E
+         bBukNx0EG197dgR8Xquesd9FHhqVMphx5aHMpEMvd1kTCcSUbs6GrQ0q5uHmzWn704XH
+         Twj/6L6xvW2qH3E1js+YPqbYUY74QoiPiPBN0Y/K+H+DMYj481iT8FUg0vrPuq6HHBxR
+         mBQWCkTeC+Bn25Yr2/9XVOz24Soqa5MAFxa7HLMVZEkaJTJFN60GfRy57yp4z+yHskAy
+         /Y7w==
+X-Forwarded-Encrypted: i=1; AJvYcCVTD5PLx1XwPH08x1ynewvXrvh1UBM+S3k/E/Wwgfl8S175vBdyHOefjvPEaAYY6JGpJEg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxdc/fiLUnwpggamB1yg5L3OQQJldk7y6imBQgVVxND0r0T50Uu
+	5evJtYg+BdgL0eiCiMa0yjqNmqLF6kefvcNiqzows+Dh4RbP10V77S+r
+X-Gm-Gg: ASbGncugMWqJ9HpFgopTRKtXHAZbACV9R+RHFV3Oxa8UwndIbDU6gvObHAREcSv1wy0
+	LauObIQ5YCJw6SqyZAGWIk9Sv9sJPwYTOw/OwxWck9z7sh6dziN4Tv7TrDNhgUghTcEc2YCpY8/
+	2B0L8lzcf3GwqKPgyEfDwLtCss+Un154M8nCq18kJutK8aPUUR40zCDlk3DZEZFFC1mMsWUUSRt
+	P4dLW5wYTj/a9ndbuxlOP5dnka0E7YX564JDDH5FqnFQam0oci5Te7e15gLijX/qj9MVZXhPZ8s
+	80t4cV+7mZRExqXhbi8gypkwNc56CG53Zx1snYIQTkX8j42YkvzC9ECesIlmCaQUJLJluRYN6Ys
+	hHKqFFA7cGJIx+P05mmKBUtKNm2HYqb8IrxHAqph1fM0SttR4A0uKnskn2176f7/rJzKwHUybnz
+	oH60Ns8BVp3G86qWADcjzJlWd0nmI=
+X-Google-Smtp-Source: AGHT+IEeZ5+5Z7bpIdsGVtc+udutyYjxYW6a5bceAwOzU5KRn9m5dxZq4bxZWwLlRZgCxC+SzyGeog==
+X-Received: by 2002:a17:903:3d0c:b0:267:af07:6526 with SMTP id d9443c01a7336-290cb65c541mr451329865ad.55.1761509175229;
+        Sun, 26 Oct 2025 13:06:15 -0700 (PDT)
+Received: from chandna.localdomain ([106.222.228.122])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498d0987fsm56798615ad.25.2025.10.26.13.06.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Oct 2025 12:20:48 -0700 (PDT)
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Cc: Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH v7 bpf-next 12/12] selftests/bpf: add C-level selftests for indirect jumps
-Date: Sun, 26 Oct 2025 19:27:09 +0000
-Message-Id: <20251026192709.1964787-13-a.s.protopopov@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20251026192709.1964787-1-a.s.protopopov@gmail.com>
-References: <20251026192709.1964787-1-a.s.protopopov@gmail.com>
+        Sun, 26 Oct 2025 13:06:14 -0700 (PDT)
+Date: Mon, 27 Oct 2025 01:35:57 +0530
+From: Sahil Chandna <chandna.sahil@gmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com,
+	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org, listout@listout.xyz,
+	martin.lau@linux.dev, netdev@vger.kernel.org, sdf@fomichev.me,
+	song@kernel.org, syzkaller-bugs@googlegroups.com,
+	linux-rt-devel@lists.linux.dev, bigeasy@linutronix.de
+Subject: Re: [syzbot] [bpf?] WARNING in bpf_bprintf_prepare (3)
+Message-ID: <aP5_JbddrpnDs-WN@chandna.localdomain>
+References: <68f6a4c8.050a0220.1be48.0011.GAE@google.com>
+ <14371cf8-e49a-4c68-b763-fa7563a9c764@linux.dev>
+ <aPklOxw0W-xUbMEI@chandna.localdomain>
+ <8dd359dd-b42f-4676-bb94-07288b38fac1@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <8dd359dd-b42f-4676-bb94-07288b38fac1@linux.dev>
 
-Add C-level selftests for indirect jumps to validate LLVM and libbpf
-functionality. The tests are intentionally disabled, to be run
-locally by developers, but will not make the CI red.
+On Wed, Oct 22, 2025 at 12:56:25PM -0700, Yonghong Song wrote:
+>
+>
+>On 10/22/25 11:40 AM, Sahil Chandna wrote:
+>>On Wed, Oct 22, 2025 at 09:57:22AM -0700, Yonghong Song wrote:
+>>>
+>>>
+>>>On 10/20/25 2:08 PM, syzbot wrote:
+>>>>Hello,
+>>>>
+>>>>syzbot found the following issue on:
+>>>>
+>>>>HEAD commit:    a1e83d4c0361 selftests/bpf: Fix redefinition of 
+>>>>'off' as d..
+>>>>git tree:       bpf
+>>>>console output: 
+>>>>https://syzkaller.appspot.com/x/log.txt?x=12d21de2580000
+>>>>kernel config: 
+>>>>https://syzkaller.appspot.com/x/.config?x=9ad7b090a18654a7
+>>>>dashboard link: 
+>>>>https://syzkaller.appspot.com/bug?extid=b0cff308140f79a9c4cb
+>>>>compiler:       Debian clang version 20.1.8 
+>>>>(++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), 
+>>>>Debian LLD 20.1.8
+>>>>syz repro: https://syzkaller.appspot.com/x/repro.syz?x=160cf542580000
+>>>>C reproducer: https://syzkaller.appspot.com/x/repro.c?x=128d5c58580000
+>>>>
+>>>>Downloadable assets:
+>>>>disk image: https://storage.googleapis.com/syzbot-assets/2f6a7a0cd1b7/disk-a1e83d4c.raw.xz
+>>>>vmlinux: https://storage.googleapis.com/syzbot-assets/873984cfc71e/vmlinux-a1e83d4c.xz
+>>>>kernel image: https://storage.googleapis.com/syzbot-assets/16711d84070c/bzImage-a1e83d4c.xz
+>>>>
+>>>>The issue was bisected to:
+>>>>
+>>>>commit 7c33e97a6ef5d84e98b892c3e00c6d1678d20395
+>>>>Author: Sahil Chandna <chandna.sahil@gmail.com>
+>>>>Date:   Tue Oct 14 18:56:35 2025 +0000
+>>>>
+>>>>    bpf: Do not disable preemption in bpf_test_run().
+>>>>
+>>>>bisection log: 
+>>>>https://syzkaller.appspot.com/x/bisect.txt?x=172fe492580000
+>>>>final oops: https://syzkaller.appspot.com/x/report.txt?x=14afe492580000
+>>>>console output: 
+>>>>https://syzkaller.appspot.com/x/log.txt?x=10afe492580000
+>>>>
+>>>>IMPORTANT: if you fix the issue, please add the following tag to 
+>>>>the commit:
+>>>>Reported-by: syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com
+>>>>Fixes: 7c33e97a6ef5 ("bpf: Do not disable preemption in 
+>>>>bpf_test_run().")
+>>>>
+>>>>------------[ cut here ]------------
+>>>>WARNING: CPU: 1 PID: 6145 at kernel/bpf/helpers.c:781 
+>>>>bpf_try_get_buffers kernel/bpf/helpers.c:781 [inline]
+>>>>WARNING: CPU: 1 PID: 6145 at kernel/bpf/helpers.c:781 
+>>>>bpf_bprintf_prepare+0x12cf/0x13a0 kernel/bpf/helpers.c:834
+>>>
+>>>Okay, the warning is due to the following WARN_ON_ONCE:
+>>>
+>>>static DEFINE_PER_CPU(struct 
+>>>bpf_bprintf_buffers[MAX_BPRINTF_NEST_LEVEL], bpf_bprintf_bufs);
+>>>static DEFINE_PER_CPU(int, bpf_bprintf_nest_level);
+>>>
+>>>int bpf_try_get_buffers(struct bpf_bprintf_buffers **bufs)
+>>>{
+>>>       int nest_level;
+>>>
+>>>       nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
+>>>       if (WARN_ON_ONCE(nest_level > MAX_BPRINTF_NEST_LEVEL)) {
+>>>               this_cpu_dec(bpf_bprintf_nest_level);
+>>>               return -EBUSY;
+>>>       }
+>>>       *bufs = this_cpu_ptr(&bpf_bprintf_bufs[nest_level - 1]);
+>>>
+>>>       return 0;
+>>>}
+>>>
+>>>Basically without preempt disable, at process level, it is possible
+>>>more than one process may trying to take bpf_bprintf_buffers.
+>>>Adding softirq and nmi, it is totally likely to have more than 3
+>>>level for buffers. Also, more than one process with bpf_bprintf_buffers
+>>>will cause problem in releasing buffers, so we need to have
+>>>preempt_disable surrounding bpf_try_get_buffers() and
+>>>bpf_put_buffers().
+>>Right, but using preempt_disable() may impact builds with
+>>CONFIG_PREEMPT_RT=y, similar to bug[1]? Do you think local_lock() 
+>>could be used here
+>
+>We should be okay. for all the kfuncs/helpers I mentioned below,
+>with the help of AI, I didn't find any spin_lock in the code path
+>and all these helpers although they try to *print* some contents,
+>but the kfuncs/helpers itself is only to deal with buffers and
+>actual print will happen asynchronously.
+>
+>>as nest level is per cpu variable and local lock semantics can work
+>>for both RT and non rt builds ?
+>
+>I am not sure about local_lock() in RT as for RT, local_lock() could
+>be nested and the release may not in proper order. See
+>  https://www.kernel.org/doc/html/v5.8/locking/locktypes.html
+>
+>  local_lock is not suitable to protect against preemption or interrupts on a
+>  PREEMPT_RT kernel due to the PREEMPT_RT specific spinlock_t semantics.
+>
+>So I suggest to stick to preempt_disable/enable approach.
+>
+>>>
+>>>There are some kfuncs/helpers need such preempt_disable
+>>>protection, e.g. bpf_stream_printk, bpf_snprintf,
+>>>bpf_trace_printk, bpf_trace_vprintk, bpf_seq_printf.
+>>>But please double check.
+>>>
+>>Sure, thanks!
 
-Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
----
- tools/testing/selftests/bpf/Makefile          |   4 +-
- .../selftests/bpf/prog_tests/bpf_gotox.c      | 185 ++++++++
- tools/testing/selftests/bpf/progs/bpf_gotox.c | 402 ++++++++++++++++++
- 3 files changed, 590 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_gotox.c
+Since these helpers eventually call bpf_bprintf_prepare(),
+I figured adding protection around bpf_try_get_buffers(),
+which triggers the original warning, should be sufficient.
+I tried a few approaches to address the warning as below :
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 7437c325179e..a897cb31fe6d 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -454,7 +454,9 @@ BPF_CFLAGS = -g -Wall -Werror -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)	\
- 	     -I$(abspath $(OUTPUT)/../usr/include)			\
- 	     -std=gnu11		 					\
- 	     -fno-strict-aliasing 					\
--	     -Wno-compare-distinct-pointer-types
-+	     -Wno-compare-distinct-pointer-types			\
-+	     -Wno-initializer-overrides					\
-+	     #
- # TODO: enable me -Wsign-compare
- 
- CLANG_CFLAGS = $(CLANG_SYS_INCLUDES)
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c b/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
-new file mode 100644
-index 000000000000..4394654ac75a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
-@@ -0,0 +1,185 @@
-+// SPDX-License-Identifier: GPL-2.0
+1. preempt_disable() / preempt_enable() around bpf_prog_run_pin_on_cpu()
+diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+index 1b61bb25ba0e..6a128179a26f 100644
+--- a/net/core/flow_dissector.c
++++ b/net/core/flow_dissector.c
+@@ -1021,7 +1021,9 @@ u32 bpf_flow_dissect(struct bpf_prog *prog, struct bpf_flow_dissector *ctx,
+   		     (int)FLOW_DISSECTOR_F_STOP_AT_ENCAP);
+   	flow_keys->flags = flags;
+
++	preempt_disable();
+   	result = bpf_prog_run_pin_on_cpu(prog, ctx);
++	preempt_enable();
+
+   	flow_keys->nhoff = clamp_t(u16, flow_keys->nhoff, nhoff, hlen);
+   	flow_keys->thoff = clamp_t(u16, flow_keys->thoff,
+This fixes the original WARN_ON in both PREEMPT_FULL and RT builds.
+However, when tested with the syz reproducer of the original bug [1], it
+still triggers the expected DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt)) 
+warning from __local_bh_disable_ip(), due to the preempt_disable() 
+interacting with RT spinlock semantics.
+[1] [https://syzkaller.appspot.com/bug?extid=1f1fbecb9413cdbfbef8](https://syzkaller.appspot.com/bug?extid=1f1fbecb9413cdbfbef8)
+So this approach avoids the buffer nesting issue, but re-introduces the following issue:
+[  363.968103][T21257] DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt))
+[  363.968922][T21257] WARNING: CPU: 0 PID: 21257 at kernel/softirq.c:176 __local_bh_disable_ip+0x3d9/0x540
+[  363.969046][T21257] Modules linked in:
+[  363.969176][T21257] Call Trace:
+[  363.969181][T21257]  <TASK>
+[  363.969186][T21257]  ? __local_bh_disable_ip+0xa1/0x540
+[  363.969197][T21257]  ? sock_map_delete_elem+0xa2/0x170
+[  363.969209][T21257]  ? preempt_schedule_common+0x83/0xd0
+[  363.969252][T21257]  ? rt_spin_unlock+0x161/0x200
+[  363.969269][T21257]  sock_map_delete_elem+0xaf/0x170
+[  363.969280][T21257]  bpf_prog_464bc2be3fc7c272+0x43/0x47
+[  363.969289][T21257]  bpf_flow_dissect+0x22b/0x750
+[  363.969299][T21257]  bpf_prog_test_run_flow_dissector+0x37c/0x5c0
+
+2. preempt_disable() inside bpf_try_get_buffers() and bpf_put_buffers()
+
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 8eb117c52817..bc8630833a94 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -777,12 +777,14 @@ int bpf_try_get_buffers(struct bpf_bprintf_buffers **bufs)
+  {
+         int nest_level;
+
++       preempt_disable();
+         nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
+         if (WARN_ON_ONCE(nest_level > MAX_BPRINTF_NEST_LEVEL)) {
+                 this_cpu_dec(bpf_bprintf_nest_level);
+                 return -EBUSY;
+         }
+         *bufs = this_cpu_ptr(&bpf_bprintf_bufs[nest_level - 1]);
++       preempt_enable();
+
+         return 0;
+  }
+@@ -791,7 +793,10 @@ void bpf_put_buffers(void)
+  {
+         if (WARN_ON_ONCE(this_cpu_read(bpf_bprintf_nest_level) == 0))
+                 return;
 +
-+#include <test_progs.h>
-+
-+#include <linux/if_ether.h>
-+#include <linux/in.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+#include <linux/in6.h>
-+#include <linux/udp.h>
-+#include <linux/tcp.h>
-+
-+#include <sys/syscall.h>
-+#include <bpf/bpf.h>
-+
-+#include "bpf_gotox.skel.h"
-+
-+/* Disable tests for now, as CI runs with LLVM-20 */
-+#if 0
-+static void __test_run(struct bpf_program *prog, void *ctx_in, size_t ctx_size_in)
-+{
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+			    .ctx_in = ctx_in,
-+			    .ctx_size_in = ctx_size_in,
-+		   );
-+	int err, prog_fd;
-+
-+	prog_fd = bpf_program__fd(prog);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run_opts err");
-+}
-+
-+static void check_simple(struct bpf_gotox *skel,
-+			 struct bpf_program *prog,
-+			 __u64 ctx_in,
-+			 __u64 expected)
-+{
-+	skel->bss->ret_user = 0;
-+
-+	__test_run(prog, &ctx_in, sizeof(ctx_in));
-+
-+	if (!ASSERT_EQ(skel->bss->ret_user, expected, "skel->bss->ret_user"))
-+		return;
-+}
-+
-+static void check_simple_fentry(struct bpf_gotox *skel,
-+				struct bpf_program *prog,
-+				__u64 ctx_in,
-+				__u64 expected)
-+{
-+	skel->bss->in_user = ctx_in;
-+	skel->bss->ret_user = 0;
-+
-+	/* trigger */
-+	usleep(1);
-+
-+	if (!ASSERT_EQ(skel->bss->ret_user, expected, "skel->bss->ret_user"))
-+		return;
-+}
-+
-+/* validate that for two loads of the same jump table libbpf generates only one map */
-+static void check_one_map_two_jumps(struct bpf_gotox *skel)
-+{
-+	struct bpf_prog_info prog_info;
-+	struct bpf_map_info map_info;
-+	__u32 len;
-+	__u32 map_ids[16];
-+	int prog_fd, map_fd;
-+	int ret;
-+	int i;
-+	bool seen = false;
-+
-+	memset(&prog_info, 0, sizeof(prog_info));
-+	prog_info.map_ids = (long)map_ids;
-+	prog_info.nr_map_ids = ARRAY_SIZE(map_ids);
-+	prog_fd = bpf_program__fd(skel->progs.one_map_two_jumps);
-+	if (!ASSERT_GE(prog_fd, 0, "bpf_program__fd(one_map_two_jumps)"))
-+		return;
-+
-+	len = sizeof(prog_info);
-+	ret = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &len);
-+	if (!ASSERT_OK(ret, "bpf_obj_get_info_by_fd(prog_fd)"))
-+		return;
-+
-+	for (i = 0; i < prog_info.nr_map_ids; i++) {
-+		map_fd  = bpf_map_get_fd_by_id(map_ids[i]);
-+		if (!ASSERT_GE(map_fd, 0, "bpf_program__fd(one_map_two_jumps)"))
-+			return;
-+
-+		len = sizeof(map_info);
-+		memset(&map_info, 0, len);
-+		ret = bpf_obj_get_info_by_fd(map_fd, &map_info, &len);
-+		if (!ASSERT_OK(ret, "bpf_obj_get_info_by_fd(map_fd)")) {
-+			close(map_fd);
-+			return;
-+		}
-+
-+		if (map_info.type == BPF_MAP_TYPE_INSN_ARRAY) {
-+			if (!ASSERT_EQ(seen, false, "more than one INSN_ARRAY map")) {
-+				close(map_fd);
-+				return;
-+			}
-+			seen = true;
-+		}
-+		close(map_fd);
-+	}
-+
-+	ASSERT_EQ(seen, true, "no INSN_ARRAY map");
-+}
-+
-+static void check_gotox_skel(struct bpf_gotox *skel)
-+{
-+	int i;
-+	__u64 in[]   = {0, 1, 2, 3, 4,  5, 77};
-+	__u64 out[]  = {2, 3, 4, 5, 7, 19, 19};
-+	__u64 out2[] = {103, 104, 107, 205, 115, 1019, 1019};
-+	__u64 in3[]  = {0, 11, 27, 31, 22, 45, 99};
-+	__u64 out3[] = {2,  3,  4,  5, 19, 19, 19};
-+	__u64 in4[]  = {0, 1, 2, 3, 4,  5, 77};
-+	__u64 out4[] = {12, 15, 7 , 15, 12, 15, 15};
-+
-+	for (i = 0; i < ARRAY_SIZE(in); i++)
-+		check_simple(skel, skel->progs.simple_test, in[i], out[i]);
-+
-+	for (i = 0; i < ARRAY_SIZE(in); i++)
-+		check_simple(skel, skel->progs.simple_test2, in[i], out[i]);
-+
-+	for (i = 0; i < ARRAY_SIZE(in); i++)
-+		check_simple(skel, skel->progs.two_switches, in[i], out2[i]);
-+
-+	if (0) for (i = 0; i < ARRAY_SIZE(in); i++)
-+		check_simple(skel, skel->progs.big_jump_table, in3[i], out3[i]);
-+
-+	if (0) for (i = 0; i < ARRAY_SIZE(in); i++)
-+		check_simple(skel, skel->progs.one_jump_two_maps, in4[i], out4[i]);
-+
-+	for (i = 0; i < ARRAY_SIZE(in); i++)
-+		check_simple(skel, skel->progs.use_static_global1, in[i], out[i]);
-+
-+	for (i = 0; i < ARRAY_SIZE(in); i++)
-+		check_simple(skel, skel->progs.use_static_global2, in[i], out[i]);
-+
-+	for (i = 0; i < ARRAY_SIZE(in); i++)
-+		check_simple(skel, skel->progs.use_nonstatic_global1, in[i], out[i]);
-+
-+	for (i = 0; i < ARRAY_SIZE(in); i++)
-+		check_simple(skel, skel->progs.use_nonstatic_global2, in[i], out[i]);
-+
-+	bpf_program__attach(skel->progs.simple_test_other_sec);
-+	for (i = 0; i < ARRAY_SIZE(in); i++)
-+		check_simple_fentry(skel, skel->progs.simple_test_other_sec, in[i], out[i]);
-+
-+	bpf_program__attach(skel->progs.use_static_global_other_sec);
-+	for (i = 0; i < ARRAY_SIZE(in); i++)
-+		check_simple_fentry(skel, skel->progs.use_static_global_other_sec, in[i], out[i]);
-+
-+	bpf_program__attach(skel->progs.use_nonstatic_global_other_sec);
-+	for (i = 0; i < ARRAY_SIZE(in); i++)
-+		check_simple_fentry(skel, skel->progs.use_nonstatic_global_other_sec, in[i], out[i]);
-+
-+	if (0) check_one_map_two_jumps(skel);
-+}
-+
-+void test_bpf_gotox(void)
-+{
-+	struct bpf_gotox *skel;
-+	int ret;
-+
-+	skel = bpf_gotox__open();
-+	if (!ASSERT_NEQ(skel, NULL, "bpf_gotox__open"))
-+		return;
-+
-+	ret = bpf_gotox__load(skel);
-+	if (!ASSERT_OK(ret, "bpf_gotox__load"))
-+		return;
-+
-+	check_gotox_skel(skel);
-+
-+	bpf_gotox__destroy(skel);
-+}
-+#else
-+void test_bpf_gotox(void)
-+{
-+}
-+#endif
-diff --git a/tools/testing/selftests/bpf/progs/bpf_gotox.c b/tools/testing/selftests/bpf/progs/bpf_gotox.c
-new file mode 100644
-index 000000000000..3c8ee363bda1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_gotox.c
-@@ -0,0 +1,402 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+#include "bpf_misc.h"
-+
-+/* Disable tests for now, as CI runs with LLVM-20 */
-+#if 0
-+__u64 in_user;
-+__u64 ret_user;
-+
-+struct simple_ctx {
-+	__u64 x;
++       preempt_disable();
+         this_cpu_dec(bpf_bprintf_nest_level);
++       preempt_enable();
+  }
+This *still* reproduces the original syz issue, so the protection needs to be 
+placed around the entire program run, not inside the helper itself as
+in above experiment.
+
+3. Using a per-CPU local_lock
+Finally, I tested with a per-CPU local_lock around bpf_prog_run_pin_on_cpu():
++struct bpf_cpu_lock {
++	local_lock_t lock;
 +};
 +
-+__u64 some_var;
-+
-+/*
-+ * This function adds code which will be replaced by a different
-+ * number of instructions by the verifier. This adds additional
-+ * stress on testing the insn_array maps corresponding to indirect jumps.
-+ */
-+static __always_inline void adjust_insns(__u64 x)
-+{
-+	some_var ^= x + bpf_jiffies64();
-+}
-+
-+SEC("syscall")
-+int simple_test(struct simple_ctx *ctx)
-+{
-+	switch (ctx->x) {
-+	case 0:
-+		adjust_insns(ctx->x + 1);
-+		ret_user = 2;
-+		break;
-+	case 1:
-+		adjust_insns(ctx->x + 7);
-+		ret_user = 3;
-+		break;
-+	case 2:
-+		adjust_insns(ctx->x + 9);
-+		ret_user = 4;
-+		break;
-+	case 3:
-+		adjust_insns(ctx->x + 11);
-+		ret_user = 5;
-+		break;
-+	case 4:
-+		adjust_insns(ctx->x + 17);
-+		ret_user = 7;
-+		break;
-+	default:
-+		adjust_insns(ctx->x + 177);
-+		ret_user = 19;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int simple_test2(struct simple_ctx *ctx)
-+{
-+	switch (ctx->x) {
-+	case 0:
-+		adjust_insns(ctx->x + 1);
-+		ret_user = 2;
-+		break;
-+	case 1:
-+		adjust_insns(ctx->x + 7);
-+		ret_user = 3;
-+		break;
-+	case 2:
-+		adjust_insns(ctx->x + 9);
-+		ret_user = 4;
-+		break;
-+	case 3:
-+		adjust_insns(ctx->x + 11);
-+		ret_user = 5;
-+		break;
-+	case 4:
-+		adjust_insns(ctx->x + 17);
-+		ret_user = 7;
-+		break;
-+	default:
-+		adjust_insns(ctx->x + 177);
-+		ret_user = 19;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int simple_test_other_sec(struct pt_regs *ctx)
-+{
-+	__u64 x = in_user;
-+
-+	switch (x) {
-+	case 0:
-+		adjust_insns(x + 1);
-+		ret_user = 2;
-+		break;
-+	case 1:
-+		adjust_insns(x + 7);
-+		ret_user = 3;
-+		break;
-+	case 2:
-+		adjust_insns(x + 9);
-+		ret_user = 4;
-+		break;
-+	case 3:
-+		adjust_insns(x + 11);
-+		ret_user = 5;
-+		break;
-+	case 4:
-+		adjust_insns(x + 17);
-+		ret_user = 7;
-+		break;
-+	default:
-+		adjust_insns(x + 177);
-+		ret_user = 19;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int two_switches(struct simple_ctx *ctx)
-+{
-+	switch (ctx->x) {
-+	case 0:
-+		adjust_insns(ctx->x + 1);
-+		ret_user = 2;
-+		break;
-+	case 1:
-+		adjust_insns(ctx->x + 7);
-+		ret_user = 3;
-+		break;
-+	case 2:
-+		adjust_insns(ctx->x + 9);
-+		ret_user = 4;
-+		break;
-+	case 3:
-+		adjust_insns(ctx->x + 11);
-+		ret_user = 5;
-+		break;
-+	case 4:
-+		adjust_insns(ctx->x + 17);
-+		ret_user = 7;
-+		break;
-+	default:
-+		adjust_insns(ctx->x + 177);
-+		ret_user = 19;
-+		break;
-+	}
-+
-+	switch (ctx->x + !!ret_user) {
-+	case 1:
-+		adjust_insns(ctx->x + 7);
-+		ret_user = 103;
-+		break;
-+	case 2:
-+		adjust_insns(ctx->x + 9);
-+		ret_user = 104;
-+		break;
-+	case 3:
-+		adjust_insns(ctx->x + 11);
-+		ret_user = 107;
-+		break;
-+	case 4:
-+		adjust_insns(ctx->x + 11);
-+		ret_user = 205;
-+		break;
-+	case 5:
-+		adjust_insns(ctx->x + 11);
-+		ret_user = 115;
-+		break;
-+	default:
-+		adjust_insns(ctx->x + 177);
-+		ret_user = 1019;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int big_jump_table(struct simple_ctx *ctx __attribute__((unused)))
-+{
-+	const void *const jt[256] = {
-+		[0 ... 255] = &&default_label,
-+		[0] = &&l0,
-+		[11] = &&l11,
-+		[27] = &&l27,
-+		[31] = &&l31,
-+	};
-+
-+	goto *jt[ctx->x & 0xff];
-+
-+l0:
-+	adjust_insns(ctx->x + 1);
-+	ret_user = 2;
-+	return 0;
-+
-+l11:
-+	adjust_insns(ctx->x + 7);
-+	ret_user = 3;
-+	return 0;
-+
-+l27:
-+	adjust_insns(ctx->x + 9);
-+	ret_user = 4;
-+	return 0;
-+
-+l31:
-+	adjust_insns(ctx->x + 11);
-+	ret_user = 5;
-+	return 0;
-+
-+default_label:
-+	adjust_insns(ctx->x + 177);
-+	ret_user = 19;
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int one_jump_two_maps(struct simple_ctx *ctx __attribute__((unused)))
-+{
-+	__label__ l1, l2, l3, l4;
-+	void *jt1[2] = { &&l1, &&l2 };
-+	void *jt2[2] = { &&l3, &&l4 };
-+	unsigned int a = ctx->x % 2;
-+	unsigned int b = (ctx->x / 2) % 2;
-+	volatile int ret = 0;
-+
-+	if (!(a < 2 && b < 2))
-+		return 19;
-+
-+	if (ctx->x % 2)
-+		goto *jt1[a];
-+	else
-+		goto *jt2[b];
-+
-+	l1: ret += 1;
-+	l2: ret += 3;
-+	l3: ret += 5;
-+	l4: ret += 7;
-+
-+	ret_user = ret;
-+	return ret;
-+}
-+
-+SEC("syscall")
-+int one_map_two_jumps(struct simple_ctx *ctx __attribute__((unused)))
-+{
-+	__label__ l1, l2, l3;
-+	void *jt[3] = { &&l1, &&l2, &&l3 };
-+	unsigned int a = (ctx->x >> 2) & 1;
-+	unsigned int b = (ctx->x >> 3) & 1;
-+	volatile int ret = 0;
-+
-+	if (ctx->x % 2)
-+		goto *jt[a];
-+
-+	if (ctx->x % 3)
-+		goto *jt[a + b];
-+
-+	l1: ret += 3;
-+	l2: ret += 5;
-+	l3: ret += 7;
-+
-+	ret_user = ret;
-+	return ret;
-+}
-+
-+/* Just to introduce some non-zero offsets in .text */
-+static __noinline int f0(volatile struct simple_ctx *ctx __arg_ctx)
-+{
-+	if (ctx)
-+		return 1;
-+	else
-+		return 13;
-+}
-+
-+SEC("syscall") int f1(struct simple_ctx *ctx)
-+{
-+	ret_user = 0;
-+	return f0(ctx);
-+}
-+
-+static __noinline int __static_global(__u64 x)
-+{
-+	switch (x) {
-+	case 0:
-+		adjust_insns(x + 1);
-+		ret_user = 2;
-+		break;
-+	case 1:
-+		adjust_insns(x + 7);
-+		ret_user = 3;
-+		break;
-+	case 2:
-+		adjust_insns(x + 9);
-+		ret_user = 4;
-+		break;
-+	case 3:
-+		adjust_insns(x + 11);
-+		ret_user = 5;
-+		break;
-+	case 4:
-+		adjust_insns(x + 17);
-+		ret_user = 7;
-+		break;
-+	default:
-+		adjust_insns(x + 177);
-+		ret_user = 19;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int use_static_global1(struct simple_ctx *ctx)
-+{
-+	ret_user = 0;
-+	return __static_global(ctx->x);
-+}
-+
-+SEC("syscall")
-+int use_static_global2(struct simple_ctx *ctx)
-+{
-+	ret_user = 0;
-+	adjust_insns(ctx->x + 1);
-+	return __static_global(ctx->x);
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int use_static_global_other_sec(void *ctx)
-+{
-+	return __static_global(in_user);
-+}
-+
-+__noinline int __nonstatic_global(__u64 x)
-+{
-+	switch (x) {
-+	case 0:
-+		adjust_insns(x + 1);
-+		ret_user = 2;
-+		break;
-+	case 1:
-+		adjust_insns(x + 7);
-+		ret_user = 3;
-+		break;
-+	case 2:
-+		adjust_insns(x + 9);
-+		ret_user = 4;
-+		break;
-+	case 3:
-+		adjust_insns(x + 11);
-+		ret_user = 5;
-+		break;
-+	case 4:
-+		adjust_insns(x + 17);
-+		ret_user = 7;
-+		break;
-+	default:
-+		adjust_insns(x + 177);
-+		ret_user = 19;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int use_nonstatic_global1(struct simple_ctx *ctx)
-+{
-+	ret_user = 0;
-+	return __nonstatic_global(ctx->x);
-+}
-+
-+SEC("syscall")
-+int use_nonstatic_global2(struct simple_ctx *ctx)
-+{
-+	ret_user = 0;
-+	adjust_insns(ctx->x + 1);
-+	return __nonstatic_global(ctx->x);
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int use_nonstatic_global_other_sec(void *ctx)
-+{
-+	return __nonstatic_global(in_user);
-+}
-+#endif
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.34.1
++static DEFINE_PER_CPU(struct bpf_cpu_lock, bpf_cpu_lock) = {
++	.lock = INIT_LOCAL_LOCK(),
++};
+@@ -1021,7 +1030,9 @@ u32 bpf_flow_dissect(struct bpf_prog *prog, struct bpf_flow_dissector *ctx,
+                      (int)FLOW_DISSECTOR_F_STOP_AT_ENCAP);
+         flow_keys->flags = flags;
 
++       local_lock(&bpf_cpu_lock.lock);
+         result = bpf_prog_run_pin_on_cpu(prog, ctx);
++       local_unlock(&bpf_cpu_lock.lock);
+
+This approach avoid the warning on both RT and non-RT builds, with both the 
+syz reproducer. The intention of introducing the per-CPU local_lock is to 
+maintain consistent per-CPU execution semantics between RT and non-RT kernels.
+On non-RT builds, local_lock maps to preempt_disable()/enable(),
+which provides the same semantics as before.
+On RT builds, it maps to an RT-safe per-CPU spinlock, avoiding the
+softirq_ctrl.cnt issue.
+
+Let me know if you’d like me to run some more experiments on this.
 
