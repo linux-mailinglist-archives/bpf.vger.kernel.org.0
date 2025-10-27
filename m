@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-72386-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72388-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BBDDC11F7A
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 00:20:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DDA9C11F63
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 00:19:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B6F23B5811
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 23:17:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8763919C0837
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 23:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3859C32C326;
-	Mon, 27 Oct 2025 23:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92AE632F755;
+	Mon, 27 Oct 2025 23:17:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uHT3XV84"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ku2hs8Yy"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9A0A32D45E
-	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 23:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FBA132E15B
+	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 23:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761607068; cv=none; b=NsVdUOBvpKslT9RFsNUnJrfF7y5BAXS78EOMTOKznzlv4lw+A+3pb4kfLmR+ENLyHBGdiaEgmdW0ndlL0Yh8By30p9ccWXyvkGXo/9IYsu5wUANXrzEpeW1GMWGFER9c7Ysoz/teC2vtr5L1Ba/E+FkdITVrh8jjIqjFwtVhnGQ=
+	t=1761607074; cv=none; b=qmipcjOZjiiCkCzNIfejtrX4GhhPJDpjaFZUZwhHC3dznhHmg4pdcPe8R8ukk1l3n6iNsARP+JxfYsLt/kfo0/fMVohxlc9cvRB1gQLvetmujIXKIJCr6n+OMPcWPY3pwx66sKz7DHZMD348rWGt0yY3QBHYJCYQcvR3LFLbe1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761607068; c=relaxed/simple;
-	bh=2S8xMD20xJiFE5dD4XoW8mT1iMTyRXxTPjugts2sGC8=;
+	s=arc-20240116; t=1761607074; c=relaxed/simple;
+	bh=LZ8xqIko04bi57HdEFeTW/ZOAwpKTvHz5QAb/lseWiw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FpkWv+F57VnkrtO5ArOmy6lAtfMvtcPYLupPOHWLAwcxWYlh1chmKI7j7r8cqMXK04c6gkrDLoVTxaf/LY/BxpbbRFOV+HHTDe6nA4CU3U8QcUPia0aob5KbjnLSdvL+0YMoJdMz/+Jz6MX3oEWvIp+WpQwrhGlAWWloTM1J+cI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uHT3XV84; arc=none smtp.client-ip=95.215.58.187
+	 MIME-Version; b=GWwkVKGM9KC5xjL9wIhvVWyhDoRN8hApxNvsRa8l04Y3ismzkrCrJdEGhpbylQ6ftG+6rC9g3ldckqgFyM5s0AGem2YVb3f8pnQxIyA3IC3iLBOUVOUM8QNqNTtx+hLgsBDP0HtgVFl7wEAG5pPuz0QP4cpG/08W672JdeFlUP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ku2hs8Yy; arc=none smtp.client-ip=95.215.58.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761607065;
+	t=1761607069;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dxeBk//0vfxmCDXu0Ua3XftjTjzPqFj9JEVDoYRQlLo=;
-	b=uHT3XV84WSMhGH7cmFl+7kM0vWfbc7wXTQ/mEMDZ4Lb6zZ3mGMbFtS8jEAoLnrqSegg2W5
-	v9TldZKy722Q4pqdAHezjhpWzEjt4+sVolqhBSb3fjC25cv6vC8BAeia7NVb4Cnr3x8B4b
-	lGUOlrGJjO896IyjcThEmkbCJCeJC2U=
+	bh=fKYk3X446OvKPFK1dbaJLt6hxCv7gj7lfZhXfighlFU=;
+	b=ku2hs8Yy7UvEemaXTfBXG4klDsCAebaAkVDabecACSyHzK1FlAZNchUjP2R9kWCRuWzeh3
+	T3K0YConVo0LzU3EJ2u5NQdqk331R4Y1lpBjCenBmLbDLwG6y+8Xctm/5qrxAe9u/FQ1Mw
+	yNRExSxjfmVtfHkr2tIxuzgjMiNhz5I=
 From: Roman Gushchin <roman.gushchin@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-kernel@vger.kernel.org,
@@ -60,9 +60,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	Tejun Heo <tj@kernel.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>
-Subject: [PATCH v2 02/23] bpf: initial support for attaching struct ops to cgroups
-Date: Mon, 27 Oct 2025 16:17:05 -0700
-Message-ID: <20251027231727.472628-3-roman.gushchin@linux.dev>
+Subject: [PATCH v2 03/23] bpf: mark struct oom_control's memcg field as TRUSTED_OR_NULL
+Date: Mon, 27 Oct 2025 16:17:06 -0700
+Message-ID: <20251027231727.472628-4-roman.gushchin@linux.dev>
 In-Reply-To: <20251027231727.472628-1-roman.gushchin@linux.dev>
 References: <20251027231727.472628-1-roman.gushchin@linux.dev>
 Precedence: bulk
@@ -74,62 +74,42 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-When a struct ops is being attached and a bpf link is created,
-allow to pass a cgroup fd using bpf attr, so that struct ops
-can be attached to a cgroup instead of globally.
-
-Attached struct ops doesn't hold a reference to the cgroup,
-only preserves cgroup id.
+Struct oom_control is used to describe the OOM context.
+It's memcg field defines the scope of OOM: it's NULL for global
+OOMs and a valid memcg pointer for memcg-scoped OOMs.
+Teach bpf verifier to recognize it as trusted or NULL pointer.
+It will provide the bpf OOM handler a trusted memcg pointer,
+which for example is required for iterating the memcg's subtree.
 
 Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf.h         |  1 +
- kernel/bpf/bpf_struct_ops.c | 13 +++++++++++++
- 2 files changed, 14 insertions(+)
+ kernel/bpf/verifier.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index eae907218188..7205b813e25f 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1849,6 +1849,7 @@ struct bpf_struct_ops_link {
- 	struct bpf_link link;
- 	struct bpf_map __rcu *map;
- 	wait_queue_head_t wait_hup;
-+	u64 cgroup_id;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 542e23fb19c7..811275419be3 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7104,6 +7104,10 @@ BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct vm_area_struct) {
+ 	struct file *vm_file;
  };
  
- struct bpf_link_primer {
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 45cc5ee19dc2..58664779a2b6 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -13,6 +13,7 @@
- #include <linux/btf_ids.h>
- #include <linux/rcupdate_wait.h>
- #include <linux/poll.h>
-+#include <linux/cgroup.h>
- 
- struct bpf_struct_ops_value {
- 	struct bpf_struct_ops_common_value common;
-@@ -1359,6 +1360,18 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
- 	}
- 	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_map_lops, NULL,
- 		      attr->link_create.attach_type);
-+#ifdef CONFIG_CGROUPS
-+	if (attr->link_create.cgroup.relative_fd) {
-+		struct cgroup *cgrp;
++BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct oom_control) {
++	struct mem_cgroup *memcg;
++};
 +
-+		cgrp = cgroup_get_from_fd(attr->link_create.cgroup.relative_fd);
-+		if (IS_ERR(cgrp))
-+			return PTR_ERR(cgrp);
-+
-+		link->cgroup_id = cgroup_id(cgrp);
-+		cgroup_put(cgrp);
-+	}
-+#endif /* CONFIG_CGROUPS */
+ static bool type_is_rcu(struct bpf_verifier_env *env,
+ 			struct bpf_reg_state *reg,
+ 			const char *field_name, u32 btf_id)
+@@ -7146,6 +7150,7 @@ static bool type_is_trusted_or_null(struct bpf_verifier_env *env,
+ 	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket));
+ 	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct dentry));
+ 	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct vm_area_struct));
++	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct oom_control));
  
- 	err = bpf_link_prime(&link->link, &link_primer);
- 	if (err)
+ 	return btf_nested_type_is_trusted(&env->log, reg, field_name, btf_id,
+ 					  "__safe_trusted_or_null");
 -- 
 2.51.0
 
