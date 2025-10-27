@@ -1,168 +1,181 @@
-Return-Path: <bpf+bounces-72342-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72343-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF3D9C0EDFA
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 16:16:48 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E312C0EDFF
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 16:16:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6167189B534
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 15:09:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2C7174FD9CC
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 15:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE8B72FE057;
-	Mon, 27 Oct 2025 15:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E5EC30597B;
+	Mon, 27 Oct 2025 15:09:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mtT8YkLa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FR43UlQ8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1182E611E
-	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 15:08:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21A013AD26;
+	Mon, 27 Oct 2025 15:09:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761577738; cv=none; b=oKXGVav/AO/ADteyny7Lheg2e3w262zbI9HdMlvlmDFAOmVzEJAvIuGn3OpJxHH+FwonrGJYYMycC9rvAvkKm7L2zlMHsP2EUF0CiiBP1KrGwBFTZY2G4mDMTWiPRvCzeai8fxyoqBTJ8qIaebaOxTN5v2G6YhhHXnOiLUH6fyU=
+	t=1761577752; cv=none; b=AMuXlS5uz2i1a515EbVPmRyoEsEQPm9r2fHQbRCR2lTgBix+C4dxfegojdIwxC2joAiqlcwukCgMbLiPNJ3T+NQ6MqGeagY4P99fCdU464j8rEM2A6thK9pcxDTyePq7yDcSWRXVFOU5dabWW+9donyo6BzztUSM61MDtw2DoF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761577738; c=relaxed/simple;
-	bh=E6TanHOEWRAN+pm6bYT8hZApuV50k09I3qBAuiVZgYY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cgxBbEvzu+ikl9bsAplB5nzF+OVMST+Kf46OikY8xjCfi94NMbSHddVRdCBhiaAUS6BuUCEKEpzWhivhXqhf1dV9DjtaJu6qewJAIEcJk2JTPi+6SFQwc9jHkthJsLT2pKA7vnd0wWBVTOMM3XlmtEF9ybUMU9J/gp4foI1SfcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mtT8YkLa; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b6cf07258e3so3467473a12.0
-        for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 08:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761577736; x=1762182536; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CWC5gkPdxGSTgxFMIx5rrToJ8P8ezVw3vUIN7VkwkFM=;
-        b=mtT8YkLaF20/D627XKTVaexicqyuPSry97S638w8M3Pv6rEIFZb52oEHUiI97c1cS2
-         gzkRyuVa5qhodO48bqXGfRmN40FNV7+OUZeeKs5Uku+5sTjSeGHXeFnbnKsQS11MLYCm
-         LM4/neskhqzXvSDnUdWRKs46yz/glsqfd5WdH1nuRvt16KGgpRc9JUbi7jD7VsMOUMP5
-         XOLXY+2TVyrKcpuBe516tYlVF/fsQjxflUe/4OR6aVtINDLrlDZbjYGIATpqD5MHZjIB
-         fgCr9VnHMAO4CJ0K6uq0riu812ZaXAd2dpzjsAl839oyme0old1ZTHQSu7gKZutQ0pcK
-         K1TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761577736; x=1762182536;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CWC5gkPdxGSTgxFMIx5rrToJ8P8ezVw3vUIN7VkwkFM=;
-        b=EFAhMlRv1m67cq8MachsWIOh1SjdpSgpsaxJgJM/xbYa/dWjA6MH/1WJqZ478bZ7s7
-         DU72s3N6wONmMjOQnU8sQxToOovdGVE5fNY59K4czbDW5RTljf2kC9/O/+7xEQL9oPJp
-         JJjXTUSP/w1vhST99FajoyjZniD1DSpTch3vP92iHV2uYsy954VgWj8Edekrhj/cnwac
-         2GZSNzyAL6dTpkwCrrASKwg/TErnqSsRdaR0mn79qRo3H6wtqTEMHbmtnSTvwyK1c2xj
-         MVvbHf4W6u1uBJvsQiTi1CR9QZ8V2Wgzbd5PbfrtW5sdLgNvCsOEb8qsN+aV+8O+QqaC
-         /Rvw==
-X-Forwarded-Encrypted: i=1; AJvYcCUKEPpiBL5vg47MpWelLcN1NEur02xsVbGaJpZNRZNn3UAwv2Sv+K34dSGs0epJyzPPs6M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMbrghIGHEu/QslrfpmASnxvdLG/43VCpISakk7Ph4YiKZnSi1
-	eLPlAQwsN0NwKr+/jwuH7+hy3WP9L2f+1wfTTUjOo/9I5AfATsHqo4aa
-X-Gm-Gg: ASbGnctXblvE2r1E0CF4WD1wggPM+TjpcIf2RGpHwUs3SyauDkGeXRqM7iJQj7cYGrl
-	LHtaODzo8xMf9DHzSp30DyBi2CPHIROV4VTpa3fkmc6PGU1uy9DGY1PndFcrQRYHs1xEN9Cds9o
-	xrBSZs8N4oRCbNGkQKcaE6nNA9y8wEjmd7osGfjlJzYfZCyCX6R6UCGUlik71z61ScoJtLABbt4
-	EP7hvHIuT/g8jyliNvCoYd6/OJYbpFYWOvhzHm8Zmjn6k0Hbjyqcsr/lA07zXD447rynpdxRVSV
-	G6NrdOTWPVALtYZpub9gQOVswYojdzdkQ/7/jTV5zKuaQnsL/xybvvMQ7wTLV9teFYCztrvaYuq
-	gAfjmI2UweJaNbk/zuJgQT2Ys2vRtoYwWoFTsxoz2+vJsDNIQNpaPT7c1aJ+fk0GGJ7hQVPuhbw
-	4VtalsPK1Ow2o+/cr1F6YTL9CH/guLz8cp
-X-Google-Smtp-Source: AGHT+IFHIscxo7imWnRY5urYdW89HjcRlzIelV1JJZA81YcKKcZ25FMolijoFKaqSlkIM5bdPfTYvw==
-X-Received: by 2002:a17:902:f68b:b0:27e:f1d1:74e0 with SMTP id d9443c01a7336-294cb37a547mr2902695ad.17.1761577736199;
-        Mon, 27 Oct 2025 08:08:56 -0700 (PDT)
-Received: from localhost.localdomain ([124.77.218.104])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-29498cf358fsm84405955ad.20.2025.10.27.08.08.51
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 27 Oct 2025 08:08:54 -0700 (PDT)
-From: Miaoqian Lin <linmq006@gmail.com>
-To: Alexander Gordeev <agordeev@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	linux-s390@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: linmq006@gmail.com,
-	stable@vger.kernel.org
-Subject: [PATCH v2] s390/mm: Fix memory leak in add_marker() when kvrealloc fails
-Date: Mon, 27 Oct 2025 23:08:38 +0800
-Message-Id: <20251027150838.59571-1-linmq006@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+	s=arc-20240116; t=1761577752; c=relaxed/simple;
+	bh=r/sfwrGirfIxpbp9Gat6aGb+IK4Rnj9iHAHnwh9wiD8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RGcCtOx7NTX4ytyxe8enxNeSX+Udd3D6MWMZvLXnXmH/yAvRYhLRXKCBSXFTTaK05sKl6dLQQb9DVyYlCI2EXVyaU0BEmXnsD3rErBcbTVw6TpOA64y8EPl9xgD1MIveJBE61ZnZSDb6xSmje/nbgPBRm3Qag+PowZ3LVe/LETg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FR43UlQ8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DC0DC4CEF1;
+	Mon, 27 Oct 2025 15:09:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761577751;
+	bh=r/sfwrGirfIxpbp9Gat6aGb+IK4Rnj9iHAHnwh9wiD8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FR43UlQ8MwKZyJyyW/T2FDWKhfO5p7J1eT/6yw/sGCmcWuRDyKvKvMO6kxhCh+pBo
+	 sCAR6uiORIpCQxEszW9RjTcIJgyIMWwy6CY+4ravx1fojOSCQnBuISLYk9QTmCp84a
+	 d7Y6ZtODQkFj1PCkNG7ppIInx67aDnxJed9cxmbpYqEvOQfFM7pouDmc5VhLbnBClD
+	 zeuDPIJBVGPKgmFGespC4iukLup+VMf6qih7meWTThY7vqL+J2+46h9J3GBWjdbqqr
+	 BwGnmto+IITrlxDOXB3Uz99KIinBq6/3RVp3c4wxN3HZGMx3I7jdZ4VxcQOaxsQONM
+	 mAiq+QxHhdnbA==
+Date: Mon, 27 Oct 2025 12:09:07 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Anton Protopopov <a.s.protopopov@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	clang-built-linux <llvm@lists.linux.dev>
+Subject: Re: pahole next->master. Was: [PATCH bpf-next v1] selftests/bpf:
+ Guard addr_space_cast code with __BPF_FEATURE_ADDR_SPACE_CAST
+Message-ID: <aP-LE7ssid10iKw-@x1>
+References: <20251022071825.238909-1-jiayuan.chen@linux.dev>
+ <6aa7fafd-30b1-4605-8b80-4a158934218d@linux.dev>
+ <0643875cea56f4e4fd78c7e9222b24e269136155@linux.dev>
+ <84906f32-955d-4fda-b87d-56c052ddfd87@linux.dev>
+ <8a94c764c5fa4ff04fa7dd69ed47fcdf782b814e@linux.dev>
+ <CAADnVQKNpd8SCawQbW69ALWNZMoOvxwRbBQELqzh0P52iXG=kw@mail.gmail.com>
+ <aP-InycOjSO8EqcO@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <aP-InycOjSO8EqcO@x1>
 
-The function has a memory leak when kvrealloc() fails.
-The function directly assigns NULL to the markers pointer, losing the
-reference to the previously allocated memory. This causes kvfree() in
-pt_dump_init() to free NULL instead of the leaked memory.
+On Mon, Oct 27, 2025 at 11:58:43AM -0300, Arnaldo Carvalho de Melo wrote:
+> On Thu, Oct 23, 2025 at 08:42:34AM -0700, Alexei Starovoitov wrote:
+> > On Thu, Oct 23, 2025 at 12:50 AM Jiayuan Chen <jiayuan.chen@linux.dev> wrote:
+> > > thanks, but version 1.30 didn't work in my tests - even pahole's master branch fails, only the next branch works...
+> > >
+> 
+> > > It seems that the 'old' pahole parses some kfuncs incorrectly, for example bpf_dynptr_slice().
+> l
+> > Alan,
+>  
+> > the introduction of the 'next' branch screwed up the workflow for many people.
+> > Let's remove it and merge everything into master.
+> > People expect master branch to be the one where active development
+> > is happening and the source of truth for the latest features.
+> 
+> My bad, I've been away for too long, next is supposed to be with things
+> for a short while, testing for a few days, for CI consumption, then move
+> to master, rinse repeat.
+> 
+> I think we should go back to that model.
 
-Fix by:
-1. Using kvrealloc() uniformly for all allocations
-2. Using a temporary variable to preserve the original pointer until
-   allocation succeeds
-3. Removing the error path that sets markers_cnt=0 to keep
-   consistency between markers and markers_cnt
+The difference is small but can explain as has changes to the btf
+loader, and the reporter, as I now checked the whole thread, says that
+'next' works for him, so I'll move what is in 'next' to 'master' now.
 
-Found via static analysis and this is similar to commit 42378a9ca553
-("bpf, verifier: Fix memory leak in array reallocation for stack state")
+Just for reference since I had done it, my investigation is below.
 
-Fixes: d0e7915d2ad3 ("s390/mm/ptdump: Generate address marker array dynamically")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
----
-changes in v2:
-- update the fixing logic to prevent memory leak in v1
-v1 link: https://lore.kernel.org/all/20251026091351.36275-1-linmq006@gmail.com/
----
- arch/s390/mm/dump_pagetables.c | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+- Arnaldo
 
-diff --git a/arch/s390/mm/dump_pagetables.c b/arch/s390/mm/dump_pagetables.c
-index 9af2aae0a515..ab0c1fcf2782 100644
---- a/arch/s390/mm/dump_pagetables.c
-+++ b/arch/s390/mm/dump_pagetables.c
-@@ -291,16 +291,15 @@ static int ptdump_cmp(const void *a, const void *b)
+⬢ [acme@toolbx pahole]$ git remote update korg
+Fetching korg
+⬢ [acme@toolbx pahole]$ 
+⬢ [acme@toolbx pahole]$ git remote -v | grep korg
+korg	https://git.kernel.org/pub/scm/devel/pahole/pahole.git (fetch)
+korg	https://git.kernel.org/pub/scm/devel/pahole/pahole.git (push)
+⬢ [acme@toolbx pahole]$ git diff --stat korg/master korg/next 
+warning: refname 'korg/next' is ambiguous.
+ .github/scripts/build-pahole.sh      | 23 +++++++++++++++++++++++
+ .github/scripts/compare-functions.sh | 30 ++++++++++++++++++++++++++++++
+ .github/workflows/test.yml           |  4 ++--
+ .github/workflows/vmtest.yml         |  4 ++++
+ CMakeLists.txt                       |  5 -----
+ README                               |  4 ++++
+ btf_loader.c                         | 23 ++++++++++++++++++++---
+ dwarves_fprintf.c                    |  2 +-
+ 8 files changed, 84 insertions(+), 11 deletions(-)
+⬢ [acme@toolbx pahole]$
+
+Related to btf bitfields:
+
+diff --git a/btf_loader.c b/btf_loader.c
+index f4f9f65289b5acac..64ea68022ab04e60 100644
+--- a/btf_loader.c
++++ b/btf_loader.c
+@@ -645,9 +645,15 @@ static int class__fixup_btf_bitfields(const struct conf_load *conf, struct tag *
+                pos->byte_size = tag__size(type, cu);
+                pos->bit_size = pos->byte_size * 8;
  
- static int add_marker(unsigned long start, unsigned long end, const char *name)
- {
--	size_t oldsize, newsize;
--
--	oldsize = markers_cnt * sizeof(*markers);
--	newsize = oldsize + 2 * sizeof(*markers);
--	if (!oldsize)
--		markers = kvmalloc(newsize, GFP_KERNEL);
--	else
--		markers = kvrealloc(markers, newsize, GFP_KERNEL);
--	if (!markers)
--		goto error;
-+	struct addr_marker *new_markers;
-+	size_t newsize;
-+
-+	newsize = (markers_cnt + 2) * sizeof(*markers);
-+	new_markers = kvrealloc(markers, newsize, GFP_KERNEL);
-+	if (!new_markers)
-+		return -ENOMEM;
-+
-+	markers = new_markers;
- 	markers[markers_cnt].is_start = 1;
- 	markers[markers_cnt].start_address = start;
- 	markers[markers_cnt].size = end - start;
-@@ -312,9 +311,6 @@ static int add_marker(unsigned long start, unsigned long end, const char *name)
- 	markers[markers_cnt].name = name;
- 	markers_cnt++;
- 	return 0;
--error:
--	markers_cnt = 0;
--	return -ENOMEM;
- }
+-               /* if BTF data is incorrect and has size == 0, skip field,
+-                * instead of crashing */
++               /* If the BTF data is incorrect and has size == 0, skip field
++                * instead of crashing. However the field can be a zero or
++                * variable-length array and we still need to infer alignment.
++                */
+                if (pos->byte_size == 0) {
++                       pos->alignment = class__infer_alignment(conf,
++                                                               pos->byte_offset,
++                                                               tag__natural_alignment(type, cu),
++                                                               smallest_offset);
+                        continue;
+                }
  
- static int pt_dump_init(void)
--- 
-2.39.5 (Apple Git-154)
-
+@@ -672,7 +678,18 @@ static int class__fixup_btf_bitfields(const struct conf_load *conf, struct tag *
+                                                        pos->byte_offset,
+                                                        tag__natural_alignment(type, cu),
+                                                        smallest_offset);
+-               smallest_offset = pos->byte_offset + pos->byte_size;
++
++               /* Compute the smallest offset between this field and the next
++                * one.
++                *
++                * In case of bitfields we need to take into account the
++                * actual size being used instead of the underlying type one as
++                * it could be larger, otherwise we could miss a hole.
++                */
++               smallest_offset = pos->byte_offset;
++               smallest_offset += pos->bitfield_size ?
++                       (pos->bitfield_offset + pos->bitfield_size + 7) / 8 :
++                       pos->byte_size;
+        }
+ 
+        tag_type->alignment = class__infer_alignment(conf,
 
