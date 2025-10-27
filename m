@@ -1,101 +1,111 @@
-Return-Path: <bpf+bounces-72351-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72352-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35C3CC0F6F5
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 17:48:09 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81857C0F842
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 18:03:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF401484EEB
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 16:38:40 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C25D44F601D
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 17:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6543131960E;
-	Mon, 27 Oct 2025 16:36:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8E03148DD;
+	Mon, 27 Oct 2025 17:00:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ey7n90JD";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xoIbsUk2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r8mzZubS"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7274830AAC8;
-	Mon, 27 Oct 2025 16:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C9A28AB0B
+	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 17:00:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761582990; cv=none; b=TQsRAK0ApbGR9hjH+fQW93uUhMw8UIsYUrvaRK1CSAzlDvDXwfIk3I+uZXqJYqfPnvq/K8lqOTGriXk+RyZAQ6ymJlIppLNJSdb/VuQx67MJ/X2GiZa39MIQ2dnK0wCYPaiCT5+Cq9HGryrK343KeutyRFjPGEcOHSBYbZ6T864=
+	t=1761584442; cv=none; b=PybuO7l2+qpOtunDhxemtL0NE+F2+WOflTZw9TgypsSXARKdutrMXZXs0BSqTdLurQXvhX/+U6OnGf7koJxul59ZRnpc824yVa5fNr7gF4pEOD8MYCETugaEeCzWyKNlwMD8A3y4EefzbR7+xeyOzkndJflToGNdx7iOwUNiiN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761582990; c=relaxed/simple;
-	bh=NF5bSX0dyXfyOuPerzSokt+xmjFMmp5Twg/WVnHSNyg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ieuymSF2TINMxXy0pJUb6SJu5c9OF/TQJY7CAtwjvy72TLxyjQzxpxYvrplfIq2IJXpt5qiGQNKEl3QYhMt9U/ncBzQPJ/IFSlXa3kFRSihUtYy3TayC1uMx7i0mgP3rI1BfAkdYI+hdV7bZ0b8hgIhFQrjGiBaAx9yDD/L0ukc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ey7n90JD; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xoIbsUk2; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1761582987;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OY0q5YKTtT4E1ub/SpSB1ESrYQ5WABlmRfW9bRPjcDE=;
-	b=ey7n90JDMTUM2Zplf9hrF7CfTAUl/zYjlBdAveeVDbOc8ldRGQ5IgDRhRHEC4SjTCRCAwm
-	HOCpUiOITgnmyeuHcEyYNMhcgEr0MtJAvrjVP/dp9ZcO9VnXu1MlG19lmGMZFXK8pE9byb
-	qCvo2rU7soYJu5SvFyaIDcW3yws89FFOgfppQqSiXlA9smFcFvpdrpGARE1JWRzDS1xhjp
-	jAg2IyMcqyMUSfceTXxqam6QPuUYKbSBaWv++3QRy+0t5LncQkdMhcgyww7vKgjLgCUjvn
-	eyPFg3cyEP76bok5mJwZOa+CzK0KpYoJJm+3ZYX+aoDhkSnFpiQlm2+T2GoLEw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1761582987;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OY0q5YKTtT4E1ub/SpSB1ESrYQ5WABlmRfW9bRPjcDE=;
-	b=xoIbsUk2+vEfPCpIpLkF4GC+uw2r8MliQIR0TvsBpdisw3Dy96mpl0L1ViaoVKsVRemTKD
-	kVWEc+FYaY5tk6DA==
-To: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
- Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>
-Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, Zbigniew
- =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering
- <mzxreary@0pointer.de>, Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa
- Sarai <cyphar@cyphar.com>, Amir Goldstein <amir73il@gmail.com>, Tejun Heo
- <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v3 11/70] ns: add active reference count
-In-Reply-To: <20251024-work-namespace-nstree-listns-v3-11-b6241981b72b@kernel.org>
-References: <20251024-work-namespace-nstree-listns-v3-0-b6241981b72b@kernel.org>
- <20251024-work-namespace-nstree-listns-v3-11-b6241981b72b@kernel.org>
-Date: Mon, 27 Oct 2025 17:36:27 +0100
-Message-ID: <87a51cwbck.ffs@tglx>
+	s=arc-20240116; t=1761584442; c=relaxed/simple;
+	bh=zdaN97o/dzSXtdRiNkixtSO6Xkd3uj8D5ixY9kX8V5g=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Sw9E9FlbXeLWOGlWKusH+LTjz2bk3TrTC/cFuk5du1Kj6Qw7o3ZfneADHj4xDg6cOQk95snQ1kQz6qrKp3vITZpCT9qP5yzCKyBFHJ9kueUcfP9a9hCZHDQ0fjLXz247vk/E4iu7LUb2K+tdZIkavHEiRyKKgHkQbIUFCHrHwLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r8mzZubS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DAC8C4CEF1;
+	Mon, 27 Oct 2025 17:00:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761584441;
+	bh=zdaN97o/dzSXtdRiNkixtSO6Xkd3uj8D5ixY9kX8V5g=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=r8mzZubSACRLBkBEEmF0tYEeLPb0JxMnBtdF6TVo/+cKG63f1SkUQgpF7ylpPPa/o
+	 Ryz3tACcplLtLghyRw/hi0X1fHI9R+B0veFZLTz9IdqDYQgTVHYtfi489YHBf+06O4
+	 +v+STzzQJAYjxD5bgoV/HAaaFaw5Ys+kybndKX3JIwIZcItWCwVMcEVwUt+rRTz0um
+	 0PMSKbENmL8a4IWBcRIjzzJGxm2eccBApLqhouCLRJEYoKjW7HKmGmmQuMNWfTy79I
+	 7oht4fORDgqLEFzwf3nBVCts5eGb3cYylfrlk9rLtDytzGf2La/g8dLSaFoB2IfTBn
+	 j9DtgD3bYXgVg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAF6F39B167A;
+	Mon, 27 Oct 2025 17:00:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v5 00/10] bpf: Introduce file dynptr
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176158441975.1450474.531383794756795259.git-patchwork-notify@kernel.org>
+Date: Mon, 27 Oct 2025 17:00:19 +0000
+References: <20251026203853.135105-1-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20251026203853.135105-1-mykyta.yatsenko5@gmail.com>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ eddyz87@gmail.com, yatsenko@meta.com
 
-On Fri, Oct 24 2025 at 12:52, Christian Brauner wrote:
-> diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
-> index ee05cad288da..2e7c110bd13f 100644
-> --- a/kernel/time/namespace.c
-> +++ b/kernel/time/namespace.c
-> @@ -106,6 +106,7 @@ static struct time_namespace *clone_time_ns(struct user_namespace *user_ns,
->  	ns->offsets = old_ns->offsets;
->  	ns->frozen_offsets = false;
->  	ns_tree_add(ns);
-> +	ns_ref_active_get_owner(ns);
+Hello:
 
-It seems all places where ns_ref_active_get_owner() is added it is
-preceeded by a variant of ns_tree_add(). So why don't you stilck that
-refcount thing into ns_tree_add()? I'm probably missing something here.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Thanks,
+On Sun, 26 Oct 2025 20:38:43 +0000 you wrote:
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+> 
+> This series adds a new dynptr kind, file dynptr, which enables BPF
+> programs to perform safe reads from files in a structured way.
+> Initial motivations include:
+>  * Parsing the executable’s ELF to locate thread-local variable symbols
+>  * Capturing stack traces when frame pointers are disabled
+> 
+> [...]
 
-        tglx
+Here is the summary with links:
+  - [bpf-next,v5,01/10] selftests/bpf: remove unnecessary kfunc prototypes
+    https://git.kernel.org/bpf/bpf-next/c/a61a257ff51c
+  - [bpf-next,v5,02/10] bpf: widen dynptr size/offset to 64 bit
+    https://git.kernel.org/bpf/bpf-next/c/531b87d865eb
+  - [bpf-next,v5,03/10] lib: move freader into buildid.h
+    https://git.kernel.org/bpf/bpf-next/c/76e4fed84712
+  - [bpf-next,v5,04/10] lib/freader: support reading more than 2 folios
+    https://git.kernel.org/bpf/bpf-next/c/5a5fff604fa3
+  - [bpf-next,v5,05/10] bpf: verifier: centralize const dynptr check in unmark_stack_slots_dynptr()
+    https://git.kernel.org/bpf/bpf-next/c/9cba966f1c55
+  - [bpf-next,v5,06/10] bpf: add plumbing for file-backed dynptr
+    https://git.kernel.org/bpf/bpf-next/c/8d8771dc03e4
+  - [bpf-next,v5,07/10] bpf: add kfuncs and helpers support for file dynptrs
+    https://git.kernel.org/bpf/bpf-next/c/e3e36edb1b8f
+  - [bpf-next,v5,08/10] bpf: verifier: refactor kfunc specialization
+    https://git.kernel.org/bpf/bpf-next/c/d869d56ca848
+  - [bpf-next,v5,09/10] bpf: dispatch to sleepable file dynptr
+    https://git.kernel.org/bpf/bpf-next/c/2c52e8943a43
+  - [bpf-next,v5,10/10] selftests/bpf: add file dynptr tests
+    https://git.kernel.org/bpf/bpf-next/c/784cdf931543
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
 
