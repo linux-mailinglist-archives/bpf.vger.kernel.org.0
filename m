@@ -1,438 +1,178 @@
-Return-Path: <bpf+bounces-72408-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72409-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A1D1C120A4
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 00:31:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A15C3C120F7
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 00:33:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 940365845E3
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 23:25:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 185E93B6671
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 23:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0FB339B41;
-	Mon, 27 Oct 2025 23:23:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F6D330336;
+	Mon, 27 Oct 2025 23:25:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="E7E4LM8d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YGW/0Alx"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0490A32E150
-	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 23:23:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B5733032B
+	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 23:25:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761607398; cv=none; b=MgBPTiBM12gh3u7FUWv1nywWfpmyXnnGznO/FTAWCcb54mHfLaRJdEr92rMpiQEFahixwfpW5oTFCowDqjZtAICbTBb1anWGeKZpS97EX33rzorOroQoRTY9ury1PnrExcMZWh1fNlagqv/v8AdNWp+qx+awUgunK9rJTEA2lPg=
+	t=1761607527; cv=none; b=VNIt/E0B1b/2qDmrt0JKdbMb/I8vHc+X1z6u1bQHg3HkXYuD+heFlJona5V6Ygba2C2KQSSxKsNhTjpQ5/2loDIcej52Ed1XSgZlxnbwkJ+C/MhCi8CvMd+NOZjxl7hX000gevWMEgdOsDBA98ZiPSJIw5JQWAY0+E8SHHj7DoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761607398; c=relaxed/simple;
-	bh=VQVKdTMAyi6QHS87Ca/J1BY2fX1H1tye+2yFXSneJ1M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MzHwBeA+1NvAGBiHIetmrMbex/jCvK6c5jL2QRErgYf6uv+e2bANZYLpPLcJleRrrBNhNFTC86GqDLAgmCnzJGYageaHzM4JfqaehaTDesIGTsj5BpuJ09WsAYJfMfgsAh7zKlHhoV6d2ikTlm0cCF6nvYcmBsFE9ASiu+g+Mjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=E7E4LM8d; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761607395;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zUole0fevJNTWH/QrfuoUDEj281F+dD7fcGUfbGb1V8=;
-	b=E7E4LM8dJ/rehFz/AdqoNoWUiisJMzEZYiPcspGMTpSMJc+isYT5KpRiWBUtC5bvTBEnNk
-	13DwqOcebTOKCNjdutYBUn2zf223HSkRZ5HqzVB273/Zs6Rdy+/02MadYY8X6GmkTqxUzb
-	SEzFrJjrfveD/JJz9dwULbYzl65J9uY=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Tejun Heo <tj@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>
-Subject: [PATCH v2 23/23] bpf: selftests: PSI struct ops test
-Date: Mon, 27 Oct 2025 16:22:06 -0700
-Message-ID: <20251027232206.473085-13-roman.gushchin@linux.dev>
-In-Reply-To: <20251027232206.473085-1-roman.gushchin@linux.dev>
-References: <20251027232206.473085-1-roman.gushchin@linux.dev>
+	s=arc-20240116; t=1761607527; c=relaxed/simple;
+	bh=Y4ZIT1f91iBGmk4xRx86A+l5fibNVm2gp3l6/wOO7k8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nFdt8w6ey4gSKuKNZBlNiNRC4+puVExDlAVQtJvt83zO6RvzkQxziO9p1QwL2w3qdn1zAV0X16z+HFzN1Q8m3UAjUQqyxU6Trsw9vPEBA8nhQ5/tZ28qVhtDox9AyJwpz2lXCl/Zyn4vgmNwPyINl56fim1Hj8hDyLGtj7Q/BYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YGW/0Alx; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-b6cf257f325so4261005a12.2
+        for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 16:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761607526; x=1762212326; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CRBA81blJCxBwppAcPVtTVmJUk5RcmdCStnriHugR84=;
+        b=YGW/0AlxRL8z4qxElB5SUAeihVwT4293NQ5XrPgAvHy7RQKaCZgNCuRdL/5NaUDNYk
+         iKS4niI+vLPPegc8/ZEYvx0RgryqvvG59xS7Vu0/Z1PBANGDSIcRhMtJpK6xzWa2KJOh
+         2YtWSlAOELo4aNSETWs1DEAWD4CKM5aPmwNWUhVpoXQmxq0NfvkExnJ5kTwqhkWHFOVY
+         EhPcofrkZBpnrAvw9rlM1fPcaLpxSU+W493X1aF3O6WhOhl4V8wWzbil9XNutqUKnfxq
+         F/K6IoXosrwOPwjdluxtQdH7Lf5ipy6HCtjSkBekvdHmk76QXTPpDcMc+Xjc/0tr6r8W
+         9Oog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761607526; x=1762212326;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CRBA81blJCxBwppAcPVtTVmJUk5RcmdCStnriHugR84=;
+        b=I0/ZZXLOX8Yj3XUQ2V/Y1b/RbEhPHnt+MBgDrreLfqZMhSJ5tZAhpGbN0G992cELDM
+         ox1PrfzsMV1DZiEUl0sLZpuWqZqcD2WJEzdp80sPLDIOjKs1b6rgki8jTKdme6p/HENk
+         eXcE8R6EXK1DP6u+eDtXzIAA4mBZyMLnopSnfzoNPTwnlcdJ7rpTksH99WsXCuH4E15c
+         DmeWu+aQoWnzOsqI3WIWMQgnntxRXe7vBDQ+g7ZIHnwhmPKQsvkG/NGl3zuVM0VRJt/s
+         86e3MUsn7Ee7F+ywSVOXSgD+BRG6g/b33ully4QlTJZIDuOef2zu0G6AMNzF5gRJBLAu
+         KYgA==
+X-Gm-Message-State: AOJu0Ywt6FQ8Q6N1LV6+kLyvaD3HZsQF/SaKTIRrY9xFc8lhXlrfsXN/
+	KO7fAtxJw4ixwcBIhCiGAwLTFdlZfxHoDAlu2JXhEapUaRhPfveY3iZU
+X-Gm-Gg: ASbGncutC8rBQvUzzEfJUNmI1zaK18DZFcVz7jq/oHn09ALTWUs6T63CqHkZNf9CjXu
+	GTSRCaGE2epDQZpcM8ptytccYvvfr5iLn5ug0XMl3mm5aDTl3wSdwphoVoOc8SQE6PWyYbJd+Z9
+	+7cDyaS6uju8uQeZuzjm6zuo92i6NS1KXQjdiVF6UyMu9hvN5hwHfbUdKNun5w1FdX6GzoDr6o6
+	3iA1M4+ttyLDJEfT9/nSMvgGGkJvb6TKeZ7slscLYbAiwQMvCywWPKoxeCANt1nmvJLdKvLqyYK
+	SlPAlCY7fN7QtXEUtOqB4ebgU50fIVfo1atAzpF0xZnho5SgvtO+f/O8/jYLSBH7Tsah0x0TQqR
+	uaEgR6H3ArVbe6arMgFvaXCzLPyRnmxiemKrJ9r6Liy/neN1yDCF5+fs4IPdAN95HdWqoW5US++
+	LsEWSfRoIo
+X-Google-Smtp-Source: AGHT+IFyhdjqxFKnqBmfgaRmFiaHsDNZBChJnlGiMfaji+FGBBeDydWBN99s3XB/nYOiuh1VVCKbew==
+X-Received: by 2002:a17:902:d4c7:b0:262:cd8c:bfa8 with SMTP id d9443c01a7336-294cb525612mr15801485ad.34.1761607525311;
+        Mon, 27 Oct 2025 16:25:25 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498d22ea8sm94590015ad.45.2025.10.27.16.25.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Oct 2025 16:25:25 -0700 (PDT)
+Message-ID: <ee2274f3293eb82c3c4671de8cefcbf6d679c0b3.camel@gmail.com>
+Subject: Re: [PATCH v7 bpf-next 12/12] selftests/bpf: add C-level selftests
+ for indirect jumps
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>, Anton Protopopov
+	 <a.s.protopopov@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko	 <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>,
+ Daniel Borkmann	 <daniel@iogearbox.net>, Quentin Monnet <qmo@kernel.org>
+Date: Mon, 27 Oct 2025 16:25:22 -0700
+In-Reply-To: <20251026192709.1964787-13-a.s.protopopov@gmail.com>
+References: <20251026192709.1964787-1-a.s.protopopov@gmail.com>
+	 <20251026192709.1964787-13-a.s.protopopov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Add a PSI struct ops test.
+On Sun, 2025-10-26 at 19:27 +0000, Anton Protopopov wrote:
+> Add C-level selftests for indirect jumps to validate LLVM and libbpf
+> functionality. The tests are intentionally disabled, to be run
+> locally by developers, but will not make the CI red.
+>=20
+> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> ---
 
-The test creates a cgroup with two child sub-cgroups, sets up
-memory.high for one of those and puts there a memory hungry
-process (initially frozen).
+[...]
 
-Then it creates 2 PSI triggers from within a init() BPF callback and
-attaches them to these cgroups.  Then it deletes the first cgroup,
-creates another one and runs the memory hungry task. From the cgroup
-creation callback the test is creating another trigger.
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_gotox.c b/tools/testin=
+g/selftests/bpf/progs/bpf_gotox.c
+> new file mode 100644
+> index 000000000000..3c8ee363bda1
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bpf_gotox.c
+> @@ -0,0 +1,402 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include <bpf/bpf_core_read.h>
+> +#include "bpf_misc.h"
+> +
+> +/* Disable tests for now, as CI runs with LLVM-20 */
+> +#if 0
 
-The memory hungry task is creating a high memory pressure in one
-memory cgroup, which triggers a PSI event. The PSI BPF handler
-declares a memcg oom in the corresponding cgroup. Finally the checks
-that both handle_cgroup_free() and handle_psi_event() handlers were
-executed, the correct process was killed and oom counters were
-updated.
+Yonghong,
 
-Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
----
- .../selftests/bpf/prog_tests/test_psi.c       | 238 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/test_psi.c  |  82 ++++++
- 2 files changed, 320 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_psi.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_psi.c
+I think we need the following thing in LLVM:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_psi.c b/tools/testing/selftests/bpf/prog_tests/test_psi.c
-new file mode 100644
-index 000000000000..b294cea0a6fe
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_psi.c
-@@ -0,0 +1,238 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+#include <bpf/bpf.h>
-+
-+#include "cgroup_helpers.h"
-+#include "test_psi.skel.h"
-+
-+enum psi_res {
-+	PSI_IO,
-+	PSI_MEM,
-+	PSI_CPU,
-+	PSI_IRQ,
-+	NR_PSI_RESOURCES,
-+};
-+
-+struct cgroup_desc {
-+	const char *path;
-+	unsigned long long id;
-+	int pid;
-+	int fd;
-+	size_t target;
-+	size_t high;
-+	bool victim;
-+};
-+
-+#define MB (1024 * 1024)
-+
-+static struct cgroup_desc cgroups[] = {
-+	{ .path = "/psi_test" },
-+	{ .path = "/psi_test/cg1" },
-+	{ .path = "/psi_test/cg2", .target = 500 * MB,
-+	  .high = 40 * MB, .victim = true },
-+};
-+
-+static int spawn_task(struct cgroup_desc *desc)
-+{
-+	char *ptr;
-+	int pid;
-+
-+	pid = fork();
-+	if (pid < 0)
-+		return pid;
-+
-+	if (pid > 0) {
-+		/* parent */
-+		desc->pid = pid;
-+		return 0;
-+	}
-+
-+	/* child */
-+	ptr = (char *)malloc(desc->target);
-+	if (!ptr)
-+		return -ENOMEM;
-+
-+	memset(ptr, 'a', desc->target);
-+
-+	while (1)
-+		sleep(1000);
-+
-+	return 0;
-+}
-+
-+static void setup_environment(void)
-+{
-+	int i, err;
-+
-+	err = setup_cgroup_environment();
-+	if (!ASSERT_OK(err, "setup_cgroup_environment"))
-+		goto cleanup;
-+
-+	for (i = 0; i < ARRAY_SIZE(cgroups); i++) {
-+		cgroups[i].fd = create_and_get_cgroup(cgroups[i].path);
-+		if (!ASSERT_GE(cgroups[i].fd, 0, "create_and_get_cgroup"))
-+			goto cleanup;
-+
-+		cgroups[i].id = get_cgroup_id(cgroups[i].path);
-+		if (!ASSERT_GT(cgroups[i].id, 0, "get_cgroup_id"))
-+			goto cleanup;
-+
-+		/* Freeze the top-level cgroup and enable the memory controller */
-+		if (i == 0) {
-+			err = write_cgroup_file(cgroups[i].path, "cgroup.freeze", "1");
-+			if (!ASSERT_OK(err, "freeze cgroup"))
-+				goto cleanup;
-+
-+			err = write_cgroup_file(cgroups[i].path, "cgroup.subtree_control",
-+						"+memory");
-+			if (!ASSERT_OK(err, "enable memory controller"))
-+				goto cleanup;
-+		}
-+
-+		/* Set memory.high */
-+		if (cgroups[i].high) {
-+			char buf[256];
-+
-+			snprintf(buf, sizeof(buf), "%lu", cgroups[i].high);
-+			err = write_cgroup_file(cgroups[i].path, "memory.high", buf);
-+			if (!ASSERT_OK(err, "set memory.high"))
-+				goto cleanup;
-+
-+			snprintf(buf, sizeof(buf), "0");
-+			write_cgroup_file(cgroups[i].path, "memory.swap.max", buf);
-+		}
-+
-+		/* Spawn tasks creating memory pressure */
-+		if (cgroups[i].target) {
-+			char buf[256];
-+
-+			err = spawn_task(&cgroups[i]);
-+			if (!ASSERT_OK(err, "spawn task"))
-+				goto cleanup;
-+
-+			snprintf(buf, sizeof(buf), "%d", cgroups[i].pid);
-+			err = write_cgroup_file(cgroups[i].path, "cgroup.procs", buf);
-+			if (!ASSERT_OK(err, "put child into a cgroup"))
-+				goto cleanup;
-+		}
-+	}
-+
-+	return;
-+
-+cleanup:
-+	cleanup_cgroup_environment();
-+}
-+
-+static int run_and_wait_for_oom(void)
-+{
-+	int ret = -1;
-+	bool first = true;
-+	char buf[4096] = {};
-+	size_t size;
-+
-+	/* Unfreeze the top-level cgroup */
-+	ret = write_cgroup_file(cgroups[0].path, "cgroup.freeze", "0");
-+	if (!ASSERT_OK(ret, "unfreeze cgroup"))
-+		return -1;
-+
-+	for (;;) {
-+		int i, status;
-+		pid_t pid = wait(&status);
-+
-+		if (pid == -1) {
-+			if (errno == EINTR)
-+				continue;
-+			/* ECHILD */
-+			break;
-+		}
-+
-+		if (!first)
-+			continue;
-+		first = false;
-+
-+		/* Check which process was terminated first */
-+		for (i = 0; i < ARRAY_SIZE(cgroups); i++) {
-+			if (!ASSERT_OK(cgroups[i].victim !=
-+				       (pid == cgroups[i].pid),
-+				       "correct process was killed")) {
-+				ret = -1;
-+				break;
-+			}
-+
-+			if (!cgroups[i].victim)
-+				continue;
-+
-+			/* Check the memcg oom counter */
-+			size = read_cgroup_file(cgroups[i].path, "memory.events",
-+						buf, sizeof(buf));
-+			if (!ASSERT_OK(size <= 0, "read memory.events")) {
-+				ret = -1;
-+				break;
-+			}
-+
-+			if (!ASSERT_OK(strstr(buf, "oom_kill 1") == NULL,
-+				       "oom_kill count check")) {
-+				ret = -1;
-+				break;
-+			}
-+		}
-+
-+		/* Kill all remaining tasks */
-+		for (i = 0; i < ARRAY_SIZE(cgroups); i++)
-+			if (cgroups[i].pid && cgroups[i].pid != pid)
-+				kill(cgroups[i].pid, SIGKILL);
-+	}
-+
-+	return ret;
-+}
-+
-+void test_psi(void)
-+{
-+	struct test_psi *skel;
-+	u64 deleted_cgroup_id;
-+	int new_cgroup_fd;
-+	u64 new_cgroup_id;
-+	int err;
-+
-+	setup_environment();
-+
-+	skel = test_psi__open_and_load();
-+	err = libbpf_get_error(skel);
-+	if (CHECK_FAIL(err))
-+		goto cleanup;
-+
-+	skel->bss->deleted_cgroup_id = cgroups[1].id;
-+	skel->bss->high_pressure_cgroup_id = cgroups[2].id;
-+
-+	err = test_psi__attach(skel);
-+	if (CHECK_FAIL(err))
-+		goto cleanup;
-+
-+	/* Delete the first cgroup, it should trigger handle_cgroup_offline() */
-+	remove_cgroup(cgroups[1].path);
-+
-+	new_cgroup_fd = create_and_get_cgroup("/psi_test_new");
-+	if (!ASSERT_GE(new_cgroup_fd, 0, "create_and_get_cgroup"))
-+		goto cleanup;
-+
-+	new_cgroup_id = get_cgroup_id("/psi_test_new");
-+	if (!ASSERT_GT(new_cgroup_id, 0, "get_cgroup_id"))
-+		goto cleanup;
-+
-+	/* Unfreeze all child tasks and create the memory pressure */
-+	err = run_and_wait_for_oom();
-+	CHECK_FAIL(err);
-+
-+	/* Check the result of the handle_cgroup_offline() handler */
-+	deleted_cgroup_id = skel->bss->deleted_cgroup_id;
-+	ASSERT_EQ(deleted_cgroup_id, cgroups[1].id, "deleted cgroup id");
-+
-+	/* Check the result of the handle_cgroup_online() handler */
-+	ASSERT_EQ(skel->bss->new_cgroup_id, new_cgroup_id,
-+		  "new cgroup id");
-+
-+cleanup:
-+	cleanup_cgroup_environment();
-+	test_psi__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_psi.c b/tools/testing/selftests/bpf/progs/test_psi.c
-new file mode 100644
-index 000000000000..4ddec7ec3eda
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_psi.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define PSI_FULL 0x80000000
-+
-+/* cgroup which will experience the high memory pressure */
-+u64 high_pressure_cgroup_id;
-+
-+/* cgroup which will be deleted */
-+u64 deleted_cgroup_id;
-+
-+/* cgroup which will be created */
-+u64 new_cgroup_id;
-+
-+/* cgroup which was deleted */
-+u64 deleted_cgroup_id;
-+
-+char constraint_name[] = "CONSTRAINT_BPF_PSI_MEM";
-+
-+SEC("struct_ops.s/init")
-+int BPF_PROG(psi_init, struct bpf_psi *bpf_psi)
-+{
-+	int ret;
-+
-+	ret = bpf_psi_create_trigger(bpf_psi, high_pressure_cgroup_id,
-+				     PSI_MEM | PSI_FULL, 100000, 1000000);
-+	if (ret)
-+		return ret;
-+
-+	return bpf_psi_create_trigger(bpf_psi, deleted_cgroup_id,
-+				      PSI_IO, 100000, 1000000);
-+}
-+
-+SEC("struct_ops.s/handle_psi_event")
-+void BPF_PROG(handle_psi_event, struct bpf_psi *bpf_psi, struct psi_trigger *t)
-+{
-+	u64 cgroup_id = t->cgroup_id;
-+	struct mem_cgroup *memcg;
-+	struct cgroup *cgroup;
-+
-+	cgroup = bpf_cgroup_from_id(cgroup_id);
-+	if (!cgroup)
-+		return;
-+
-+	memcg = bpf_get_mem_cgroup(&cgroup->self);
-+	if (!memcg) {
-+		bpf_cgroup_release(cgroup);
-+		return;
-+	}
-+
-+	bpf_out_of_memory(memcg, 0, BPF_OOM_FLAGS_WAIT_ON_OOM_LOCK,
-+			  constraint_name);
-+
-+	bpf_put_mem_cgroup(memcg);
-+	bpf_cgroup_release(cgroup);
-+}
-+
-+SEC("struct_ops.s/handle_cgroup_online")
-+void BPF_PROG(handle_cgroup_online, struct bpf_psi *bpf_psi, u64 cgroup_id)
-+{
-+	new_cgroup_id = cgroup_id;
-+
-+	bpf_psi_create_trigger(bpf_psi, cgroup_id, PSI_IO, 100000, 1000000);
-+}
-+
-+SEC("struct_ops.s/handle_cgroup_offline")
-+void BPF_PROG(handle_cgroup_offline, struct bpf_psi *bpf_psi, u64 cgroup_id)
-+{
-+	deleted_cgroup_id = cgroup_id;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_psi_ops test_bpf_psi = {
-+	.init = (void *)psi_init,
-+	.handle_psi_event = (void *)handle_psi_event,
-+	.handle_cgroup_online = (void *)handle_cgroup_online,
-+	.handle_cgroup_offline = (void *)handle_cgroup_offline,
-+};
--- 
-2.51.0
+  diff --git a/clang/lib/Basic/Targets/BPF.cpp b/clang/lib/Basic/Targets/BP=
+F.cpp
+  index 0411bcca5178..8de1083d758c 100644
+  --- a/clang/lib/Basic/Targets/BPF.cpp
+  +++ b/clang/lib/Basic/Targets/BPF.cpp
+  @@ -75,6 +75,7 @@ void BPFTargetInfo::getTargetDefines(const LangOptions =
+&Opts,
+       Builder.defineMacro("__BPF_FEATURE_GOTOL");
+       Builder.defineMacro("__BPF_FEATURE_ST");
+       Builder.defineMacro("__BPF_FEATURE_LOAD_ACQ_STORE_REL");
+  +    Builder.defineMacro("__BPF_FEATURE_GOTOX");
+     }
+   }
 
+Then, Anton will be able to use it in order to decide if to skip the
+tests, wdyt?
+
+> +__u64 in_user;
+> +__u64 ret_user;
+> +
+> +struct simple_ctx {
+> +	__u64 x;
+> +};
+> +
+> +__u64 some_var;
+> +
+> +/*
+> + * This function adds code which will be replaced by a different
+> + * number of instructions by the verifier. This adds additional
+> + * stress on testing the insn_array maps corresponding to indirect jumps=
+.
+> + */
+> +static __always_inline void adjust_insns(__u64 x)
+> +{
+> +	some_var ^=3D x + bpf_jiffies64();
+> +}
+> +
+> +SEC("syscall")
+> +int simple_test(struct simple_ctx *ctx)
+> +{
+> +	switch (ctx->x) {
+> +	case 0:
+> +		adjust_insns(ctx->x + 1);
+> +		ret_user =3D 2;
+> +		break;
+
+[...]
 
