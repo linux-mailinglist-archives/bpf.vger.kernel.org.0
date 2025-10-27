@@ -1,132 +1,166 @@
-Return-Path: <bpf+bounces-72346-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72347-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B136EC0EFE5
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 16:37:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDE52C0F11D
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 16:53:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47FDB189AA95
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 15:37:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CF4D428352
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 15:47:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53E4830E826;
-	Mon, 27 Oct 2025 15:35:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 005E030F818;
+	Mon, 27 Oct 2025 15:45:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G+2T6J8Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fx+jkrkg"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8303C30C34E;
-	Mon, 27 Oct 2025 15:35:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25EC730C619
+	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 15:45:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761579328; cv=none; b=q8r+s1FfPEm2ZgkFhTnSWOBYMGI3H3SKv1PfrXs7c/ynSbobuBabzWgKTlj/rjSx6eGCy65loxgmouUfjcBMEC28yb+feXhigfMUvyxiyolk/iPm4ZiNqWIMazZtdD85Ww9rVVX83TgQv3JiE1vxqoaikNbtbghjaBY8G68yDXk=
+	t=1761579906; cv=none; b=ofhcQbeow9TnqZK9SyuEjb0aNIZrSoaZeAj+pnds3+LzfnGvf0EuScAoNAPKfN0yQ5ok8/m2g+AIendoH5rV/jn/3GQlmsheSedDYBtn7mvhZ3OcAcApLe9JoR9x79ZEct4vsn47gJLTx54pZoNXfVoWwMk4FQklk4/Q+2Hd4KA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761579328; c=relaxed/simple;
-	bh=2jKlo9CQ/dgzw3BhTA23TcVV3xpme89NObWAlxIMQwA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DS0ySE36gwvze1KOzbR/XuqmkSdfUcvWod7rJf2I8RHoQaB26Fc0pFqMpPEjrIXUZOEEx5B25v51sN5KsdxTHbrvTO1hRmjW+m9KzChHtFCKE2VhRJR4okJTVT8tLdY4OE6Gyl0bZc3Ga/nw+wA0WtIuXnUs68G58IGVP5KNw8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G+2T6J8Y; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <769c6167e9e650348f92b90c538b93c565a9ae11.camel@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761579324;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RPoQ5R6AJCTgJgv4zmVqGWOWmnF17b06dGH2ttmgY3E=;
-	b=G+2T6J8Y46X7fBUECpVr9zzKh3p7TLcgEv+4WME/UG6QlxoyNr98VGDWgUCKLmAY17gsxA
-	bE4SXhmrT3IRPLUfx28q5i3MKX53ZbONg3mYaxHswMLZm2IRtnvj08jOrlloa5U5w91ZNh
-	9cpsnCaFeHjw4kOc1keD5EDgb213hQ4=
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix tnum_overlap to check for zero
- mask first
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: KaFai Wan <kafai.wan@linux.dev>
-To: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
- song@kernel.org,  yonghong.song@linux.dev, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com,  jolsa@kernel.org, shuah@kernel.org,
- paul.chaignon@gmail.com, m.shachnai@gmail.com,  memxor@gmail.com,
- harishankar.vishwanathan@gmail.com, colin.i.king@gmail.com, 
- luis.gerhorst@fau.de, shung-hsi.yu@suse.com, bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc: syzbot+c950cc277150935cc0b5@syzkaller.appspotmail.com
-Date: Mon, 27 Oct 2025 23:35:05 +0800
-In-Reply-To: <20251026163806.3300636-2-kafai.wan@linux.dev>
-References: <20251026163806.3300636-1-kafai.wan@linux.dev>
-	 <20251026163806.3300636-2-kafai.wan@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1761579906; c=relaxed/simple;
+	bh=qgXmkNhAhY6WchRH7Q4rsd2FBpG4g/uYCUhhcPv5dAY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DwRXTXi/S0yrP9zgw5wC+vDnTBq5Ypahal4fVGR6uIjTI4+8mf5nCrslChe+3fBNljDdxQPzUEXqwV3BpSb666IPS43ZV7eUtIvp+3wKAjBeMnOHjruQzyk27JhbI5E0F9nB+Wib+h9ueJ3Wk/EuRoPxaqZ4YNwNzTp/DAT9AMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fx+jkrkg; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-73b4e3d0756so48139797b3.3
+        for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 08:45:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761579904; x=1762184704; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jBQiLZSwF/LNIt8C2mTIJJ7RPYKplhz+h76J6R2gIAY=;
+        b=fx+jkrkgeH9QSQjTxN9T8lY8s1AyubSw5U6+FW9C5DI02357iT2bwN85Nx0m7ErYxB
+         woBbapX4kDWldVuyI794AJtr5oLwbSxkxiRtLMZ3zk2WeTYJIwpsTgJ8so5h5/rLW3nf
+         G9dW8W/DymEzYPrTjRQJbnp57EkLeTyZMe5m/w82XAbbwQX7I35LSAXArgGeqOYkXMLy
+         5aJ194iyRkKx4benygsi/L4sJvpSGSwqLtLLjj4rOma43mgaA471nMI1hjrEySCGuAPT
+         zc1rHcxl2zfD1OIGdc4iitzFsP9o6aTXI+e6SdSIPjDhABTsM0mzyq4lvSLviKR9MZxG
+         BsBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761579904; x=1762184704;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jBQiLZSwF/LNIt8C2mTIJJ7RPYKplhz+h76J6R2gIAY=;
+        b=dj1rPFNQfLlIdPV8mHXSvpd+ROaZvJ+FMUmExdNeT/qx4L+QiMDCFJrRrMW7yXJrCM
+         FL73pcn+eNiD3KqVQFj5qvj3xnRZKV01esVEW9JbNK2zj09zz6mk7NO78Sbj5XMaeggM
+         pIkahhyxjo69T43T6pcaxKOLEwh06LQd4zYu5sjGNJUmycDyLq41Q6pKRWwnJy/eaaKD
+         aNrzGAGlXeBQXF6WSkhjuVArOw4NrMjoqC8hUQh+0hR/DFj/hUqKPH3WVdzcaoERXB5t
+         6Y6LBfLLqtf5LF2cv2uQgak0YARXLt+y+x8fnOObBlMPqyx5Ra01LwT5uDO8dRtBT0YP
+         QcnA==
+X-Gm-Message-State: AOJu0YwqkoLgjth9EAHr5HIQuhE8jihIMzdMgQqC9wMz+9If4+ECLQWZ
+	Mvnf8wEVRd8dCz0fgLivdkkh0/v/OSZ58k16rR8ea3H1tdQSN1XTM4J7AMh33hgtmlm7a184+sg
+	c1+fBKTPNkCfz0avhCao9F8MATKYNieE=
+X-Gm-Gg: ASbGnctOvpOCw+SgADsxfSvJDqguK6mg4Nt6teH+/8ijSLutcGRkgQ2YfwWUiI96Beg
+	xKjBduaODrazwzqkv36qY5FKh4Yog2ctY43YwQ9gDSvVWnZvi4XRcAaWRg7CToI5vjOoC0edDsw
+	JhpY41aGpnj2RCBU6EUkzfomvXOaIDbd3AeF+QgjeT3wlxcuS6GU9PU3oVDEvUJpIZ0FzmhOpaX
+	dKpBW/7BR94XPCevSbk5T0wIiVtKkd5aGgifqO/UTuAhc8vq3cCN9UdBMyXtKx91mqsfKk=
+X-Google-Smtp-Source: AGHT+IExotPP9DeycZFzjGUJtTiClWmPd9kW9XEQYVHSF3lBLy99xgpcnLYzoQeFuBkOlvR/aO1x4UpiEz1jnJW67ac=
+X-Received: by 2002:a05:690c:4d06:b0:76c:1926:8029 with SMTP id
+ 00721157ae682-78617f70da2mr2804767b3.54.1761579903991; Mon, 27 Oct 2025
+ 08:45:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Migadu-Flow: FLOW_OUT
+References: <20251026154000.34151-1-leon.hwang@linux.dev> <20251026154000.34151-4-leon.hwang@linux.dev>
+In-Reply-To: <20251026154000.34151-4-leon.hwang@linux.dev>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Mon, 27 Oct 2025 08:44:53 -0700
+X-Gm-Features: AWmQ_blhWwrOs7XJgSMOEnYRZPoMEn0YxuvdEaBupfg1qMVmRp8bsrdLudOgbSQ
+Message-ID: <CAMB2axPhcYctJYz0bH032-Kc1h2LcJL74O5iS5g=8Qp74GPK_g@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 3/4] bpf: Free special fields when update local
+ storage maps
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com, 
+	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
+	memxor@gmail.com, linux-kernel@vger.kernel.org, kernel-patches-bot@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Sorry, this patch is wrong, please ignore.
-
-On Mon, 2025-10-27 at 00:38 +0800, KaFai Wan wrote:
-> Syzbot reported a kernel warning due to a range invariant violation in
-> the BPF verifier. The issue occurs when tnum_overlap() fails to detect
-> that two tnums don't have any overlapping bits.
->=20
-> The problematic BPF program:
-> =C2=A0=C2=A0 0: call bpf_get_prandom_u32
-> =C2=A0=C2=A0 1: r6 =3D r0
-> =C2=A0=C2=A0 2: r6 &=3D 0xFFFFFFFFFFFFFFF0
-> =C2=A0=C2=A0 3: r7 =3D r0
-> =C2=A0=C2=A0 4: r7 &=3D 0x07
-> =C2=A0=C2=A0 5: r7 -=3D 0xFF
-> =C2=A0=C2=A0 6: if r6 =3D=3D r7 goto <exit>
->=20
-> After instruction 5, R7 has the range:
-> =C2=A0=C2=A0 R7: u64=3D[0xffffffffffffff01, 0xffffffffffffff08] var_off=
-=3D(0xffffffffffffff00; 0xf)
->=20
-> R6 and R7 don't overlap since they have no agreeing bits. However,
-> is_branch_taken() fails to recognize this, causing the verifier to
-> refine register bounds and end up with inconsistent bounds:
->=20
-> =C2=A0=C2=A0 6: if r6 =3D=3D r7 goto <exit>
-> =C2=A0=C2=A0 R6: u64=3D[0xffffffffffffff01, 0xffffffffffffff00] var_off=
-=3D(0xffffffffffffff00, 0x0)
-> =C2=A0=C2=A0 R7: u64=3D[0xffffffffffffff01, 0xffffffffffffff00] var_off=
-=3D(0xffffffffffffff00, 0x0)
->=20
-> The root cause is that tnum_overlap() doesn't properly handle the case
-> where the masks have no overlapping bits.
->=20
-> Fix this by adding an early check for zero mask intersection in tnum_over=
-lap().
->=20
-> Reported-by: syzbot+c950cc277150935cc0b5@syzkaller.appspotmail.com
-> Fixes: f41345f47fb2 ("bpf: Use tnums for JEQ/JNE is_branch_taken logic")
-> Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
+On Sun, Oct 26, 2025 at 8:41=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
+rote:
+>
+> When updating local storage maps with BPF_F_LOCK on the fast path, the
+> special fields were not freed after being replaced. This could cause
+> memory referenced by BPF_KPTR_{REF,PERCPU} fields to be held until the
+> map gets freed.
+>
+> Similarly, on the other path, the old sdata's special fields were never
+> freed regardless of whether BPF_F_LOCK was used, causing the same issue.
+>
+> Fix this by calling 'bpf_obj_free_fields()' after
+> 'copy_map_value_locked()' to properly release the old fields.
+>
+> Fixes: 9db44fdd8105 ("bpf: Support kptrs in local storage maps")
+> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
 > ---
-> =C2=A0kernel/bpf/tnum.c | 2 ++
-> =C2=A01 file changed, 2 insertions(+)
->=20
-> diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
-> index f8e70e9c3998..af2f38b4f840 100644
-> --- a/kernel/bpf/tnum.c
-> +++ b/kernel/bpf/tnum.c
-> @@ -163,6 +163,8 @@ bool tnum_overlap(struct tnum a, struct tnum b)
-> =C2=A0{
-> =C2=A0	u64 mu;
-> =C2=A0
-> +	if ((a.mask & b.mask) =3D=3D 0)
-> +		return false;
-> =C2=A0	mu =3D ~a.mask & ~b.mask;
-> =C2=A0	return (a.value & mu) =3D=3D (b.value & mu);
-> =C2=A0}
+>  kernel/bpf/bpf_local_storage.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storag=
+e.c
+> index b931fbceb54da..8e3aea4e07c50 100644
+> --- a/kernel/bpf/bpf_local_storage.c
+> +++ b/kernel/bpf/bpf_local_storage.c
+> @@ -609,6 +609,7 @@ bpf_local_storage_update(void *owner, struct bpf_loca=
+l_storage_map *smap,
+>                 if (old_sdata && selem_linked_to_storage_lockless(SELEM(o=
+ld_sdata))) {
+>                         copy_map_value_locked(&smap->map, old_sdata->data=
+,
+>                                               value, false);
+> +                       bpf_obj_free_fields(smap->map.record, old_sdata->=
+data);
 
---=20
-Thanks,
-KaFai
+[ ... ]
+
+>                         return old_sdata;
+>                 }
+>         }
+> @@ -641,6 +642,7 @@ bpf_local_storage_update(void *owner, struct bpf_loca=
+l_storage_map *smap,
+>         if (old_sdata && (map_flags & BPF_F_LOCK)) {
+>                 copy_map_value_locked(&smap->map, old_sdata->data, value,
+>                                       false);
+> +               bpf_obj_free_fields(smap->map.record, old_sdata->data);
+
+The one above and this make sense. Thanks for fixing it.
+
+>                 selem =3D SELEM(old_sdata);
+>                 goto unlock;
+>         }
+> @@ -654,6 +656,7 @@ bpf_local_storage_update(void *owner, struct bpf_loca=
+l_storage_map *smap,
+>
+>         /* Third, remove old selem, SELEM(old_sdata) */
+>         if (old_sdata) {
+> +               bpf_obj_free_fields(smap->map.record, old_sdata->data);
+
+Is this really needed? bpf_selem_free_list() later should free special
+fields in this selem.
+
+
+>                 bpf_selem_unlink_map(SELEM(old_sdata));
+>                 bpf_selem_unlink_storage_nolock(local_storage, SELEM(old_=
+sdata),
+>                                                 true, &old_selem_free_lis=
+t);
+> --
+> 2.51.0
+>
+>
 
