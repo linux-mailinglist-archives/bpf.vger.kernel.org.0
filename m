@@ -1,266 +1,250 @@
-Return-Path: <bpf+bounces-72312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72314-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9EFDC0D72B
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 13:15:32 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D8E0C0D780
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 13:19:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 717E0189EC36
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 12:15:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C13144F07F3
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 12:19:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B6F3002BD;
-	Mon, 27 Oct 2025 12:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B782D2F60A1;
+	Mon, 27 Oct 2025 12:19:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i6CTPSJ3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ze39u2ZI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA2E302172;
-	Mon, 27 Oct 2025 12:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EAAB4A1A;
+	Mon, 27 Oct 2025 12:19:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761567275; cv=none; b=CmMLaST5jGiVcImVl0rfT53fbBBoGSm8/+L222HGaGaYU1QAKWXACeV/0WhdIFoDgX65UV7qSudXm+ulf+DzEwVIuEmmU1biJQMDZAZkI8075qLgh6k2eagUgbxOUjeZYKWIkA5njmCn+p0AvWU7fTPTTgejpiYL+mlsE3TvgYQ=
+	t=1761567577; cv=none; b=uHwcWtXfNe8UFLgBy15fv8ECiOo4PO0gjOwC2/9hM7Ar9ytqWSOvkRpwjZ3cIz3tU9/NQGboxquS7YAzSIchDF1fuvVc8hk4m04DQvBideE07SKV6RCSpVO1T4XU8DvwFd1nrraeBRuetE8sO4vZiTI/hmYXlDATL7EJAfiAGfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761567275; c=relaxed/simple;
-	bh=zWIWI9oD3zyV1imXRF+M57x47jWpz86Ps91RWZLV1tA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cbe1lIEwrvHGa3vQ8du3k+gBHs8ADAKdMhQeuoMulf6olgCvwb28cFc3xrpUqPoYwmjmFzOz6zkYqNGhn9p9lzidxmursbAFSHS8YS0BR+6US1xTURjp4NljLXmuLEE9NPbMlveq+TxfM5v7WbPnj86sCT0xCc7LLnpVYrs2bWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i6CTPSJ3; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1761567273; x=1793103273;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zWIWI9oD3zyV1imXRF+M57x47jWpz86Ps91RWZLV1tA=;
-  b=i6CTPSJ335+nF6XbH3lzELWizvOL0zucVjBXImsRFZwM7QVzrFszSRWr
-   ORx5WgNZRDXZ4EnNBJEF6k/fQLwY2Y6RKjQKhihFzu3Ctzg8zpsAqeq3O
-   fqIMGXrIJ6jcSp4qeMrjaKwMlRhjHPXvHcQDnFEYJxI7hfkXyqu+RFiDM
-   b5kDqanQhOCdnXrdh/qUQqeJ7JInR2P+xUwoXCmOFH7Pvf03LS6pG5spO
-   Q3sKZbhT0ATtz2jDgss1GH4z/Y4oqxONXqADShRruUSGCE0zQOIrN8/0f
-   /0ePT1SEIjZJb4AcuQwo7hjmcnrwb0NKzgbTGzXfJz6JsgZKpFB8oeA6a
-   w==;
-X-CSE-ConnectionGUID: pXTHBFxXSnuyXpaqAxftNg==
-X-CSE-MsgGUID: lw2P+XdBTjKBlv3BszO0Vw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="63532367"
-X-IronPort-AV: E=Sophos;i="6.19,258,1754982000"; 
-   d="scan'208";a="63532367"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2025 05:13:29 -0700
-X-CSE-ConnectionGUID: tvLaW+/uSemUk3ca0VXycw==
-X-CSE-MsgGUID: AOIH65doTl6f9840evgjKA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,258,1754982000"; 
-   d="scan'208";a="184923484"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by fmviesa006.fm.intel.com with ESMTP; 27 Oct 2025 05:13:27 -0700
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org
-Cc: netdev@vger.kernel.org,
-	magnus.karlsson@intel.com,
-	aleksander.lobakin@intel.com,
-	ilias.apalodimas@linaro.org,
-	toke@redhat.com,
-	lorenzo@kernel.org,
-	kuba@kernel.org,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH v4 bpf 2/2] veth: update mem type in xdp_buff
-Date: Mon, 27 Oct 2025 13:13:18 +0100
-Message-Id: <20251027121318.2679226-3-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20251027121318.2679226-1-maciej.fijalkowski@intel.com>
-References: <20251027121318.2679226-1-maciej.fijalkowski@intel.com>
+	s=arc-20240116; t=1761567577; c=relaxed/simple;
+	bh=dukrLhMfXoRux/Hbo3C10fR6iaX8YS1a5MOGby1Gct8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ub5587cowUUKM1TMHCgYxK7t9dQdRoPOKd7XBYTxpZOQli/UyZXLfXqWBIzmgLxjAGGpCJjQpkw6llVmYG2C82J8AdAcnOvQoSGrdn9eSGEgyEe+fYTja9iFgAowTH49Y4fyzkMx2/zVchee4x0QAYJtKYuis23k77VHMDf+Hq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ze39u2ZI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C92FC4CEF1;
+	Mon, 27 Oct 2025 12:19:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761567576;
+	bh=dukrLhMfXoRux/Hbo3C10fR6iaX8YS1a5MOGby1Gct8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Ze39u2ZIcxUg4nT/SjtW+RDWKkfU60OrULoBamXUnwD9EbQYO0QjzyGAUtHxyEflc
+	 MyUREs0vJzftopk+OWBL1KAhdT4knSHblJiyTByzFfpMZ7JajddQOFIZ5niMRsrlc8
+	 uF8X599sJYVxaO5aDQxK6Rf97yU1n5nBUFenPnpPLrYKELwb3r/O/5/34YIGJt9QIm
+	 Od57ylV9/0sKHbeh4hV55y0RO1MqHC3WfdAUGEhkUFzM4bNp314x6PJeD9NICEvZ4k
+	 vbxEX1JNOLZKe+MwzWyBUTcz3WEVwLnvKT1QBjjpJp3SMu5eCd0A4aC5mUDo1c1bOr
+	 hCMiHhr/Zk4mw==
+Message-ID: <b021f5c3-5105-445d-b919-8282363a19fc@kernel.org>
+Date: Mon, 27 Oct 2025 13:19:32 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net V1 3/3] veth: more robust handing of race to avoid txq
+ getting stuck
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ netdev@vger.kernel.org, makita.toshiaki@lab.ntt.co.jp
+Cc: Eric Dumazet <eric.dumazet@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, ihor.solodrai@linux.dev,
+ toshiaki.makita1@gmail.com, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel-team@cloudflare.com
+References: <176123150256.2281302.7000617032469740443.stgit@firesoul>
+ <176123158453.2281302.11061466460805684097.stgit@firesoul>
+ <871pmsfjye.fsf@toke.dk>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <871pmsfjye.fsf@toke.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-When skb's headroom is not sufficient for XDP purposes,
-skb_pp_cow_data() returns new skb with requested headroom space. This
-skb was provided by page_pool.
 
-For CONFIG_DEBUG_VM=y and XDP program that uses bpf_xdp_adjust_tail()
-against a skb with frags, and mentioned helper consumed enough amount of
-bytes that in turn released the page, following splat was observed:
 
-[   32.204881] BUG: Bad page state in process test_progs  pfn:11c98b
-[   32.207167] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11c98b
-[   32.210084] flags: 0x1fffe0000000000(node=0|zone=1|lastcpupid=0x7fff)
-[   32.212493] raw: 01fffe0000000000 dead000000000040 ff11000123c9b000 0000000000000000
-[   32.218056] raw: 0000000000000000 0000000000000001 00000000ffffffff 0000000000000000
-[   32.220900] page dumped because: page_pool leak
-[   32.222636] Modules linked in: bpf_testmod(O) bpf_preload
-[   32.224632] CPU: 6 UID: 0 PID: 3612 Comm: test_progs Tainted: G O        6.17.0-rc5-gfec474d29325 #6969 PREEMPT
-[   32.224638] Tainted: [O]=OOT_MODULE
-[   32.224639] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-[   32.224641] Call Trace:
-[   32.224644]  <IRQ>
-[   32.224646]  dump_stack_lvl+0x4b/0x70
-[   32.224653]  bad_page.cold+0xbd/0xe0
-[   32.224657]  __free_frozen_pages+0x838/0x10b0
-[   32.224660]  ? skb_pp_cow_data+0x782/0xc30
-[   32.224665]  bpf_xdp_shrink_data+0x221/0x530
-[   32.224668]  ? skb_pp_cow_data+0x6d1/0xc30
-[   32.224671]  bpf_xdp_adjust_tail+0x598/0x810
-[   32.224673]  ? xsk_destruct_skb+0x321/0x800
-[   32.224678]  bpf_prog_004ac6bb21de57a7_xsk_xdp_adjust_tail+0x52/0xd6
-[   32.224681]  veth_xdp_rcv_skb+0x45d/0x15a0
-[   32.224684]  ? get_stack_info_noinstr+0x16/0xe0
-[   32.224688]  ? veth_set_channels+0x920/0x920
-[   32.224691]  ? get_stack_info+0x2f/0x80
-[   32.224693]  ? unwind_next_frame+0x3af/0x1df0
-[   32.224697]  veth_xdp_rcv.constprop.0+0x38a/0xbe0
-[   32.224700]  ? common_startup_64+0x13e/0x148
-[   32.224703]  ? veth_xdp_rcv_one+0xcd0/0xcd0
-[   32.224706]  ? stack_trace_save+0x84/0xa0
-[   32.224709]  ? stack_depot_save_flags+0x28/0x820
-[   32.224713]  ? __resched_curr.constprop.0+0x332/0x3b0
-[   32.224716]  ? timerqueue_add+0x217/0x320
-[   32.224719]  veth_poll+0x115/0x5e0
-[   32.224722]  ? veth_xdp_rcv.constprop.0+0xbe0/0xbe0
-[   32.224726]  ? update_load_avg+0x1cb/0x12d0
-[   32.224730]  ? update_cfs_group+0x121/0x2c0
-[   32.224733]  __napi_poll+0xa0/0x420
-[   32.224736]  net_rx_action+0x901/0xe90
-[   32.224740]  ? run_backlog_napi+0x50/0x50
-[   32.224743]  ? clockevents_program_event+0x1cc/0x280
-[   32.224746]  ? hrtimer_interrupt+0x31e/0x7c0
-[   32.224749]  handle_softirqs+0x151/0x430
-[   32.224752]  do_softirq+0x3f/0x60
-[   32.224755]  </IRQ>
 
-It's because xdp_rxq with mem model set to MEM_TYPE_PAGE_SHARED was used
-when initializing xdp_buff.
+On 24/10/2025 16.33, Toke Høiland-Jørgensen wrote:
+> Jesper Dangaard Brouer <hawk@kernel.org> writes:
+> 
+>> Commit dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to
+>> reduce TX drops") introduced a race condition that can lead to a permanently
+>> stalled TXQ. This was observed in production on ARM64 systems (Ampere Altra
+>> Max).
+>>
+>> The race occurs in veth_xmit(). The producer observes a full ptr_ring and
+>> stops the queue (netif_tx_stop_queue()). The subsequent conditional logic,
+>> intended to re-wake the queue if the consumer had just emptied it (if
+>> (__ptr_ring_empty(...)) netif_tx_wake_queue()), can fail. This leads to a
+>> "lost wakeup" where the TXQ remains stopped (QUEUE_STATE_DRV_XOFF) and
+>> traffic halts.
+>>
+>> This failure is caused by an incorrect use of the __ptr_ring_empty() API
+>> from the producer side. As noted in kernel comments, this check is not
+>> guaranteed to be correct if a consumer is operating on another CPU. The
+>> empty test is based on ptr_ring->consumer_head, making it reliable only for
+>> the consumer. Using this check from the producer side is fundamentally racy.
+>>
+>> This patch fixes the race by adopting the more robust logic from an earlier
+>> version V4 of the patchset, which always flushed the peer:
+>>
+>> (1) In veth_xmit(), the racy conditional wake-up logic and its memory barrier
+>> are removed. Instead, after stopping the queue, we unconditionally call
+>> __veth_xdp_flush(rq). This guarantees that the NAPI consumer is scheduled,
+>> making it solely responsible for re-waking the TXQ.
+> 
+> This makes sense.
+> 
+>> (2) On the consumer side, the logic for waking the peer TXQ is centralized.
+>> It is moved out of veth_xdp_rcv() (which processes a batch) and placed at
+>> the end of the veth_poll() function. This ensures netif_tx_wake_queue() is
+>> called once per complete NAPI poll cycle.
+> 
+> So is this second point strictly necessary to fix the race, or is it
+> more of an optimisation?
+> 
 
-Fix this by using new helper xdp_convert_skb_to_buff() that, besides
-init/prepare xdp_buff, will check if page used for linear part of
-xdp_buff comes from page_pool. We assume that linear data and frags will
-have same memory provider as currently XDP API does not provide us a way
-to distinguish it (the mem model is registered for *whole* Rx queue and
-here we speak about single buffer granularity).
+IMHO it is strictly necessary to fix the race.  The wakeup check
+netif_tx_queue_stopped() in veth_poll() needs to be after the code that
+(potentially) writes rx_notify_masked.
 
-Before releasing xdp_buff out of veth via XDP_{TX,REDIRECT}, mem type on
-xdp_rxq associated with xdp_buff is restored to its original model. We
-need to respect previous setting at least until buff is converted to
-frame, as frame carries the mem_type. Add a page_pool variant of
-veth_xdp_get() so that we avoid refcount underflow when draining page
-frag.
+This handles the race where veth_xmit() haven't called
+netif_tx_stop_queue() yet, but veth_poll() manage to consume all packets
+and stopped NAPI.  Then we know that __veth_xdp_flush(rq) in veth_xmit()
+will see rx_notify_masked==false and start NAPI/veth_poll() again, and
+even-though there is no packets left to process we still hit the check
+netif_tx_queue_stopped() which start txq and will allow veth_xmit() to
+run again.
 
-Fixes: 0ebab78cbcbf ("net: veth: add page_pool for page recycling")
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Closes: https://lore.kernel.org/bpf/CAADnVQ+bBofJDfieyOYzSmSujSfJwDTQhiz3aJw7hE+4E2_iPA@mail.gmail.com/
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- drivers/net/veth.c | 43 ++++++++++++++++++++++++++-----------------
- 1 file changed, 26 insertions(+), 17 deletions(-)
+I'll see if I can improve the description for (2).
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index a3046142cb8e..187f30e2cb4b 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -733,7 +733,7 @@ static void veth_xdp_rcv_bulk_skb(struct veth_rq *rq, void **frames,
- 	}
- }
- 
--static void veth_xdp_get(struct xdp_buff *xdp)
-+static void veth_xdp_get_shared(struct xdp_buff *xdp)
- {
- 	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
- 	int i;
-@@ -746,12 +746,33 @@ static void veth_xdp_get(struct xdp_buff *xdp)
- 		__skb_frag_ref(&sinfo->frags[i]);
- }
- 
-+static void veth_xdp_get_pp(struct xdp_buff *xdp)
-+{
-+	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-+	int i;
-+
-+	page_pool_ref_page(virt_to_page(xdp->data));
-+	if (likely(!xdp_buff_has_frags(xdp)))
-+		return;
-+
-+	for (i = 0; i < sinfo->nr_frags; i++) {
-+		skb_frag_t *frag = &sinfo->frags[i];
-+
-+		page_pool_ref_page(netmem_to_page(frag->netmem));
-+	}
-+}
-+
-+static void veth_xdp_get(struct xdp_buff *xdp)
-+{
-+	xdp->rxq->mem.type == MEM_TYPE_PAGE_POOL ?
-+		veth_xdp_get_pp(xdp) : veth_xdp_get_shared(xdp);
-+}
-+
- static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 					struct xdp_buff *xdp,
- 					struct sk_buff **pskb)
- {
- 	struct sk_buff *skb = *pskb;
--	u32 frame_sz;
- 
- 	if (skb_shared(skb) || skb_head_is_locked(skb) ||
- 	    skb_shinfo(skb)->nr_frags ||
-@@ -762,19 +783,7 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 		skb = *pskb;
- 	}
- 
--	/* SKB "head" area always have tailroom for skb_shared_info */
--	frame_sz = skb_end_pointer(skb) - skb->head;
--	frame_sz += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
--	xdp_init_buff(xdp, frame_sz, &rq->xdp_rxq);
--	xdp_prepare_buff(xdp, skb->head, skb_headroom(skb),
--			 skb_headlen(skb), true);
--
--	if (skb_is_nonlinear(skb)) {
--		skb_shinfo(skb)->xdp_frags_size = skb->data_len;
--		xdp_buff_set_frags_flag(xdp);
--	} else {
--		xdp_buff_clear_frags_flag(xdp);
--	}
-+	xdp_convert_skb_to_buff(skb, xdp, &rq->xdp_rxq);
- 	*pskb = skb;
- 
- 	return 0;
-@@ -822,24 +831,24 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
- 	case XDP_TX:
- 		veth_xdp_get(xdp);
- 		consume_skb(skb);
--		xdp->rxq->mem = rq->xdp_mem;
- 		if (unlikely(veth_xdp_tx(rq, xdp, bq) < 0)) {
- 			trace_xdp_exception(rq->dev, xdp_prog, act);
- 			stats->rx_drops++;
- 			goto err_xdp;
- 		}
- 		stats->xdp_tx++;
-+		rq->xdp_rxq.mem = rq->xdp_mem;
- 		rcu_read_unlock();
- 		goto xdp_xmit;
- 	case XDP_REDIRECT:
- 		veth_xdp_get(xdp);
- 		consume_skb(skb);
--		xdp->rxq->mem = rq->xdp_mem;
- 		if (xdp_do_redirect(rq->dev, xdp, xdp_prog)) {
- 			stats->rx_drops++;
- 			goto err_xdp;
- 		}
- 		stats->xdp_redirect++;
-+		rq->xdp_rxq.mem = rq->xdp_mem;
- 		rcu_read_unlock();
- 		goto xdp_xmit;
- 	default:
--- 
-2.43.0
+>> (3) Finally, the NAPI completion check in veth_poll() is updated. If NAPI is
+>> about to complete (napi_complete_done), it now also checks if the peer TXQ
+>> is stopped. If the ring is empty but the peer TXQ is stopped, NAPI will
+>> reschedule itself. This prevents a new race where the producer stops the
+>> queue just as the consumer is finishing its poll, ensuring the wakeup is not
+>> missed.
+> 
+> Also makes sense...
+> 
+>> Fixes: dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to reduce TX drops")
+>> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+>> ---
+>>   drivers/net/veth.c |   42 +++++++++++++++++++++---------------------
+>>   1 file changed, 21 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+>> index 3976ddda5fb8..1d70377481eb 100644
+>> --- a/drivers/net/veth.c
+>> +++ b/drivers/net/veth.c
+>> @@ -392,14 +392,12 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+>>   		}
+>>   		/* Restore Eth hdr pulled by dev_forward_skb/eth_type_trans */
+>>   		__skb_push(skb, ETH_HLEN);
+>> -		/* Depend on prior success packets started NAPI consumer via
+>> -		 * __veth_xdp_flush(). Cancel TXQ stop if consumer stopped,
+>> -		 * paired with empty check in veth_poll().
+>> -		 */
+>>   		netif_tx_stop_queue(txq);
+>> -		smp_mb__after_atomic();
+>> -		if (unlikely(__ptr_ring_empty(&rq->xdp_ring)))
+>> -			netif_tx_wake_queue(txq);
+>> +		/* Handle race: Makes sure NAPI peer consumer runs. Consumer is
+>> +		 * responsible for starting txq again, until then ndo_start_xmit
+>> +		 * (this function) will not be invoked by the netstack again.
+>> +		 */
+>> +		__veth_xdp_flush(rq);
+> 
+> Nit: I'd lose the "Handle race:" prefix from the comment; the rest of
+> the comment is clear enough without it, and since there's no explanation
+> of *which* race is being handled, it is just confusing, IMO.
+
+Good point, I will remove prefix.
+
+>>   		break;
+>>   	case NET_RX_DROP: /* same as NET_XMIT_DROP */
+>>   drop:
+>> @@ -900,17 +898,9 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
+>>   			struct veth_xdp_tx_bq *bq,
+>>   			struct veth_stats *stats)
+>>   {
+>> -	struct veth_priv *priv = netdev_priv(rq->dev);
+>> -	int queue_idx = rq->xdp_rxq.queue_index;
+>> -	struct netdev_queue *peer_txq;
+>> -	struct net_device *peer_dev;
+>>   	int i, done = 0, n_xdpf = 0;
+>>   	void *xdpf[VETH_XDP_BATCH];
+>>   
+>> -	/* NAPI functions as RCU section */
+>> -	peer_dev = rcu_dereference_check(priv->peer, rcu_read_lock_bh_held());
+>> -	peer_txq = peer_dev ? netdev_get_tx_queue(peer_dev, queue_idx) : NULL;
+>> -
+>>   	for (i = 0; i < budget; i++) {
+>>   		void *ptr = __ptr_ring_consume(&rq->xdp_ring);
+>>   
+>> @@ -959,11 +949,6 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
+>>   	rq->stats.vs.xdp_packets += done;
+>>   	u64_stats_update_end(&rq->stats.syncp);
+>>   
+>> -	if (peer_txq && unlikely(netif_tx_queue_stopped(peer_txq))) {
+>> -		txq_trans_cond_update(peer_txq);
+>> -		netif_tx_wake_queue(peer_txq);
+>> -	}
+>> -
+>>   	return done;
+>>   }
+>>   
+>> @@ -971,12 +956,20 @@ static int veth_poll(struct napi_struct *napi, int budget)
+>>   {
+>>   	struct veth_rq *rq =
+>>   		container_of(napi, struct veth_rq, xdp_napi);
+>> +	struct veth_priv *priv = netdev_priv(rq->dev);
+>> +	int queue_idx = rq->xdp_rxq.queue_index;
+>> +	struct netdev_queue *peer_txq;
+>>   	struct veth_stats stats = {};
+>> +	struct net_device *peer_dev;
+>>   	struct veth_xdp_tx_bq bq;
+>>   	int done;
+>>   
+>>   	bq.count = 0;
+>>   
+>> +	/* NAPI functions as RCU section */
+>> +	peer_dev = rcu_dereference_check(priv->peer, rcu_read_lock_bh_held());
+>> +	peer_txq = peer_dev ? netdev_get_tx_queue(peer_dev, queue_idx) : NULL;
+>> +
+>>   	xdp_set_return_frame_no_direct();
+>>   	done = veth_xdp_rcv(rq, budget, &bq, &stats);
+>>   
+>> @@ -986,7 +979,8 @@ static int veth_poll(struct napi_struct *napi, int budget)
+>>   	if (done < budget && napi_complete_done(napi, done)) {
+>>   		/* Write rx_notify_masked before reading ptr_ring */
+>>   		smp_store_mb(rq->rx_notify_masked, false);
+>> -		if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
+>> +		if (unlikely(!__ptr_ring_empty(&rq->xdp_ring) ||
+>> +			     (peer_txq && netif_tx_queue_stopped(peer_txq)))) {
+>>   			if (napi_schedule_prep(&rq->xdp_napi)) {
+>>   				WRITE_ONCE(rq->rx_notify_masked, true);
+>>   				__napi_schedule(&rq->xdp_napi);
+>> @@ -998,6 +992,12 @@ static int veth_poll(struct napi_struct *napi, int budget)
+>>   		veth_xdp_flush(rq, &bq);
+>>   	xdp_clear_return_frame_no_direct();
+>>   
+>> +	/* Release backpressure per NAPI poll */
+>> +	if (peer_txq && netif_tx_queue_stopped(peer_txq)) {
+>> +		txq_trans_cond_update(peer_txq);
+>> +		netif_tx_wake_queue(peer_txq);
+>> +	}
+>> +
+>>   	return done;
+>>   }
+>>   
+> 
 
 
