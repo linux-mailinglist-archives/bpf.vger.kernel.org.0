@@ -1,103 +1,101 @@
-Return-Path: <bpf+bounces-72334-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72335-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DF44C0E74A
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 15:37:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46BA0C0E93B
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 15:48:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7537188D17F
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 14:35:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93244463819
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 14:35:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D528330BF59;
-	Mon, 27 Oct 2025 14:31:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F7930C626;
+	Mon, 27 Oct 2025 14:31:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AGlR3RpS"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VDxLR1S1"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B0E30ACF7
-	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 14:31:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D53130C619
+	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 14:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761575505; cv=none; b=aIg6Mq6wWmB9vfzrbicWXVZIfS5/5SpYipztlGR1f/GAhenX3F6bLImni4+Nxbh3J6c5c3ENJkVjKoJAjfPntVlqBOQLKJU5VNjPkWIQg9ZEjw7pZgnsEqWgwIvmGxUx0faZmrrJXawYbtMYLdYE3pC+Z7OPglU28UH9QG3rbaQ=
+	t=1761575512; cv=none; b=SiiZ/QktypDNeixAVnyhaPXp92I0R75ys6JIAhW+gK0OpfxZXKOZtX8ZsSOxJjSRwwbtpQwMqFw25i5KMBm2Oefzonmmlcoy7o+lP5ulZNievO+JFaooEMz6EWbVoKS24/9MOnS2I7iJ4vI9fPXIpN7QaZpsTwroSPJww2FSrbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761575505; c=relaxed/simple;
-	bh=QZcXiRDkn2CEe1SMwdiavm/3yNEraVw6q51WtyZeWZQ=;
+	s=arc-20240116; t=1761575512; c=relaxed/simple;
+	bh=5yoCK2fLFx2htBhJqpSHdGHkPxVFQ0/TNvSRi8cTu5U=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=DckgBnqAsdfLvaUlNw+WXaB3Q8+bYtsYGPEZPZF+uX25gdaAqVnoyi5BJX/P56HZnMizqiY6vnLB+c57wC1v/Ju5xoZ/vtEmhsU6T6/1JyMsE5je4eF2QQiz9EulpBlE8IsT7LE2l96zOfqRAPAR3PWVLdlWHiGmJ5sClbjXTHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AGlR3RpS; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=PdjTgRnzSFHf32R6nNvKC/yu3Xo0r18CflxEauLl6x8xK9zeW/htXHd9BupIZBvC+V6fpJrjupw+y5sZLAvhHspGjbzti4T34CtOUPWjlnT3om/igEfgiXaqFdIqqqV5HS0LCvWJrODl6lCtVQtNhXaNhIjhdhtxrvOhWSN86Fg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VDxLR1S1; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1761575502;
+	s=mimecast20190719; t=1761575509;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QZcXiRDkn2CEe1SMwdiavm/3yNEraVw6q51WtyZeWZQ=;
-	b=AGlR3RpSHrbnA5W66iTC4ABWoTIomVBhxopCJMzIFao124nkiGWIa1farjPdMHwU9Mc5yI
-	fiDE0I/np2SQjL+YUTKSpFwQfzW2JsjxkDl9Ff0WkI03sQuNzpf4N65iV/Z24wPaLCwE3m
-	9pQpLnASlIccr8P3B0Vu00Oy6f46P7U=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=RC2NuXLdnjLHgFfW2yobW9SdnsNBGRycsRCnkqVBmtg=;
+	b=VDxLR1S1qMrqnfjiLqVNX5rxQdF2rLA12ZthxYA+A4zB+29/xBbfrLfUFZQBeCfcfOXVAT
+	Ke5M8e678GmbirwZI25jzCMM3UQ2AqRMtvF6uomtW59/nfrwZBhHwBgt7GW0HiMvZWKUEJ
+	MydUzVx4+WdNVjYJZ1oxbqYtkhTFMHA=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-258-PWSKCkbxPpyBfQs2TVLn-A-1; Mon, 27 Oct 2025 10:31:41 -0400
-X-MC-Unique: PWSKCkbxPpyBfQs2TVLn-A-1
-X-Mimecast-MFC-AGG-ID: PWSKCkbxPpyBfQs2TVLn-A_1761575500
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-63c2b8d344cso6114373a12.0
-        for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 07:31:40 -0700 (PDT)
+ us-mta-523-qStH0w4HN-C-DX7IAEmFjQ-1; Mon, 27 Oct 2025 10:31:48 -0400
+X-MC-Unique: qStH0w4HN-C-DX7IAEmFjQ-1
+X-Mimecast-MFC-AGG-ID: qStH0w4HN-C-DX7IAEmFjQ_1761575507
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-b4626b2d07bso393597966b.1
+        for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 07:31:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761575500; x=1762180300;
+        d=1e100.net; s=20230601; t=1761575507; x=1762180307;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QZcXiRDkn2CEe1SMwdiavm/3yNEraVw6q51WtyZeWZQ=;
-        b=DQf6kdJ307JPSHNyVclP5d/D+QTWwxDEIfdpA0qwKP6TKfxCwnoSiC2MRg3PfL+2od
-         Leplck5AHEsAUkjaMZieSE3eEHTXyjzBmBIAanDeZW9PbnNwi9DyVpokxFW73r9U4nec
-         sDdPkgepctY0i8RjbVfCFP/TT/1Gza5naB1nJq7HpBdXFqwkgBMVorLdQ8CiWN3FSE02
-         H5j286WlKmzVEv2P1m/WXOdY3rJwvMBBpiH7GBYUE3UdWugeeJHIgTKIp5wDaMzed4TE
-         XSeKcc//JUJgivLRs6c1+ipKGDdKKsoLihcjxH81L7W1VL0EbRvEs3cbf/Ytd2skBY4C
-         x2SA==
-X-Forwarded-Encrypted: i=1; AJvYcCXR/Z4KG96ofNgsyEIW8C/rOLuujafRcJIRN8Ov4jG+q3KJt/Oe9Rzcvg2AHnBuuZWIoaw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywx61j0Rg4lBU1lUe6SAfT57tYDjsenrqUHBe2FmQ0CtDOycdR0
-	P2yUH1IhnT2B1oWrPCSHMS45r8M199HGgTGKtGpUVv5l58YGhT6W1qPHhHAU3rbzkYvKsh89pLJ
-	4rw3NJi7hVY+bjiDVAJA2Z+gNXKjfqTfD8Yj+WkTHjgmQ2R+GwuuR+g==
-X-Gm-Gg: ASbGnctR+Ij5Lh6jTzswugsGbty8vVh29c3BwW06vY6IZV5lHxHDECanGJGngRWBnVb
-	Tdr8CrUeLimnIzlmRTNuyVXHLZ+Az5L/k7CYBhnear/WNN0cm5EKznM7W6ITy8wzXmqqVOUIJgQ
-	D80ZgzVvmM9+ZezaNtnS4c2r2JVWFEnf1ocgC9C34kUpR5ZVfISULJi78vb8wYiBlHgitC/ghPu
-	8LeN6H+FtJ2Sya0K/QPcfehJ1qwvux2zRKKLBrdjaJuWl40fUCWBgsDBZHH9oyG+aEPB0yOhQUF
-	tQaGldJRvj1yxOry31V98nSoOlWww7I2NxYQTSZT28Yp42FoYhZsOJG0Sh5u93zaexObUSeMZIm
-	gSQDOi4sG3xrzZ3W1pl76OEyppw==
-X-Received: by 2002:a17:907:d1b:b0:b04:1249:2b24 with SMTP id a640c23a62f3a-b6dba56f908mr12496666b.37.1761575499803;
-        Mon, 27 Oct 2025 07:31:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHGeKsYcRiyTwP3GVGgGDXvdfH25i6VHJvBBM4RcMH9DWuG1+VcBzYhWvawsrB9fT9lMDQtdQ==
-X-Received: by 2002:a17:907:d1b:b0:b04:1249:2b24 with SMTP id a640c23a62f3a-b6dba56f908mr12493766b.37.1761575499306;
-        Mon, 27 Oct 2025 07:31:39 -0700 (PDT)
+        bh=RC2NuXLdnjLHgFfW2yobW9SdnsNBGRycsRCnkqVBmtg=;
+        b=VmPiH51QmZiPsRw6J76Iukq8X5oyu7yD5aI0S7XCT7Sd8HBvu/9Z4hPJ4e4syuYAyW
+         WuUAk7z0q9zl1XJwn9I+arYgrLXU2D6o3BwCG2rPHBIt3juiLJg3BXFkmgHsdhQoW65y
+         YyrM1tcUKswdJgNMdd5mkoHOH1sOZ3TcDLWV3BDWWbUsDNgvUcssN/Y7SvLAWc0lItfK
+         qo8TsjA+p2UugGUr5s1h06JtUzKxvYKw5kwkQ172Y4wN+7J03P6pB7TWI11J5oc1z7LG
+         Hr0E0tSPdBxnWe0E0O9vFUpke6M0cni0M6OCNA3l/fcIwpDcwHzMEkG1bzTinPiFTZD4
+         J7bg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBljx/mkA/eZgbYyDTObdc9rCl48nlOd4NSaB6mL8T2aZULGqI6gTZYBaaFuUKZOjU3Fk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9iI+9Reizaxwcck4e4md8MzyJMkO0g04ymrwYt6VSgxXCcOVW
+	NgIqTPCq3smUr5+gXfPWsOB2JD2lBnAtCuy217P31O5s50yQQFgy+adWoGcLpncVFw5O0a+dqDA
+	FDlH4cvOMTg/N9aJhlC80vJCe7hUSiFYHzcXNZMppO6uBGNbhCAb0Ww==
+X-Gm-Gg: ASbGnctqHNYzXq6qZS9saEqU/vu5Xq6n+vYDUW6hvs5QhnQ9fmXAqaAoVoJxMk/LXtH
+	TKGRBpJ1xnQJ/Q91yvUETpiBbtRede+mFuJuJoIYlxjD3DgumTdtvQKv98Wccd8WE8oUQJHwuq0
+	yMsJT9HOqXzZUFsvtUfLCUMhS7Y9YclSd6XxQi/PWNGClZOPKH92vGnCmt7nFHIfnuR56h5uftz
+	tiO1AJu63IVLCGsSQn0S4RXrUBWMcrsMZMN6wFg3R5B9CYi9cZSrgJF+pH+tjTWSSKZEG5ypgVk
+	b/2lXrdu15x4u0p4Uc8sdD8cXnSdOJfr/0aqZTeUZJvh6GlaW9rSKQpAJ5sqMLi6NVu6d00F1D0
+	tC/druN1hhhE/R36D2mZbtfe+2Q==
+X-Received: by 2002:a17:907:7ba8:b0:b3d:200a:bd6e with SMTP id a640c23a62f3a-b6dba5a54e7mr10307966b.47.1761575506850;
+        Mon, 27 Oct 2025 07:31:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHu+GLRLPMVOA9xC7zkvI5UmwsYsI28Ty7IQo5OH1Hkudxl2thVOn2YkMHx0f0USc0NQF4l6A==
+X-Received: by 2002:a17:907:7ba8:b0:b3d:200a:bd6e with SMTP id a640c23a62f3a-b6dba5a54e7mr10305466b.47.1761575506419;
+        Mon, 27 Oct 2025 07:31:46 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk (alrua-x1.borgediget.toke.dk. [2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b6d854430dbsm775630866b.63.2025.10.27.07.31.38
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b6d8548ed8fsm782554466b.73.2025.10.27.07.31.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Oct 2025 07:31:38 -0700 (PDT)
+        Mon, 27 Oct 2025 07:31:45 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id A52272EAA5E; Mon, 27 Oct 2025 15:31:37 +0100 (CET)
+	id 300D92EAA60; Mon, 27 Oct 2025 15:31:45 +0100 (CET)
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
  ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org
 Cc: netdev@vger.kernel.org, magnus.karlsson@intel.com,
  aleksander.lobakin@intel.com, ilias.apalodimas@linaro.org,
  lorenzo@kernel.org, kuba@kernel.org, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>,
- syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com, Ihor Solodrai
- <ihor.solodrai@linux.dev>, Octavian Purdila <tavip@google.com>
-Subject: Re: [PATCH v4 bpf 1/2] xdp: introduce xdp_convert_skb_to_buff()
-In-Reply-To: <20251027121318.2679226-2-maciej.fijalkowski@intel.com>
+ <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH v4 bpf 2/2] veth: update mem type in xdp_buff
+In-Reply-To: <20251027121318.2679226-3-maciej.fijalkowski@intel.com>
 References: <20251027121318.2679226-1-maciej.fijalkowski@intel.com>
- <20251027121318.2679226-2-maciej.fijalkowski@intel.com>
+ <20251027121318.2679226-3-maciej.fijalkowski@intel.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 27 Oct 2025 15:31:37 +0100
-Message-ID: <87pla8e7qu.fsf@toke.dk>
+Date: Mon, 27 Oct 2025 15:31:45 +0100
+Message-ID: <87ms5ce7qm.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -109,41 +107,88 @@ Content-Transfer-Encoding: quoted-printable
 
 Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
 
-> Currently, generic XDP hook uses xdp_rxq_info from netstack Rx queues
-> which do not have its XDP memory model registered. There is a case when
-> XDP program calls bpf_xdp_adjust_tail() BPF helper, which in turn
-> releases underlying memory. This happens when it consumes enough amount
-> of bytes and when XDP buffer has fragments. For this action the memory
-> model knowledge passed to XDP program is crucial so that core can call
-> suitable function for freeing/recycling the page.
+> When skb's headroom is not sufficient for XDP purposes,
+> skb_pp_cow_data() returns new skb with requested headroom space. This
+> skb was provided by page_pool.
 >
-> For netstack queues it defaults to MEM_TYPE_PAGE_SHARED (0) due to lack
-> of mem model registration. The problem we're fixing here is when kernel
-> copied the skb to new buffer backed by system's page_pool and XDP buffer
-> is built around it. Then when bpf_xdp_adjust_tail() calls
-> __xdp_return(), it acts incorrectly due to mem type not being set to
-> MEM_TYPE_PAGE_POOL and causes a page leak.
+> For CONFIG_DEBUG_VM=3Dy and XDP program that uses bpf_xdp_adjust_tail()
+> against a skb with frags, and mentioned helper consumed enough amount of
+> bytes that in turn released the page, following splat was observed:
 >
-> Pull out the existing code from bpf_prog_run_generic_xdp() that
-> init/prepares xdp_buff onto new helper xdp_convert_skb_to_buff() and
-> embed there rxq's mem_type initialization that is assigned to xdp_buff.
-> Make it agnostic to current skb->data position.
+> [   32.204881] BUG: Bad page state in process test_progs  pfn:11c98b
+> [   32.207167] page: refcount:0 mapcount:0 mapping:0000000000000000 index=
+:0x0 pfn:0x11c98b
+> [   32.210084] flags: 0x1fffe0000000000(node=3D0|zone=3D1|lastcpupid=3D0x=
+7fff)
+> [   32.212493] raw: 01fffe0000000000 dead000000000040 ff11000123c9b000 00=
+00000000000000
+> [   32.218056] raw: 0000000000000000 0000000000000001 00000000ffffffff 00=
+00000000000000
+> [   32.220900] page dumped because: page_pool leak
+> [   32.222636] Modules linked in: bpf_testmod(O) bpf_preload
+> [   32.224632] CPU: 6 UID: 0 PID: 3612 Comm: test_progs Tainted: G O     =
+   6.17.0-rc5-gfec474d29325 #6969 PREEMPT
+> [   32.224638] Tainted: [O]=3DOOT_MODULE
+> [   32.224639] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIO=
+S rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> [   32.224641] Call Trace:
+> [   32.224644]  <IRQ>
+> [   32.224646]  dump_stack_lvl+0x4b/0x70
+> [   32.224653]  bad_page.cold+0xbd/0xe0
+> [   32.224657]  __free_frozen_pages+0x838/0x10b0
+> [   32.224660]  ? skb_pp_cow_data+0x782/0xc30
+> [   32.224665]  bpf_xdp_shrink_data+0x221/0x530
+> [   32.224668]  ? skb_pp_cow_data+0x6d1/0xc30
+> [   32.224671]  bpf_xdp_adjust_tail+0x598/0x810
+> [   32.224673]  ? xsk_destruct_skb+0x321/0x800
+> [   32.224678]  bpf_prog_004ac6bb21de57a7_xsk_xdp_adjust_tail+0x52/0xd6
+> [   32.224681]  veth_xdp_rcv_skb+0x45d/0x15a0
+> [   32.224684]  ? get_stack_info_noinstr+0x16/0xe0
+> [   32.224688]  ? veth_set_channels+0x920/0x920
+> [   32.224691]  ? get_stack_info+0x2f/0x80
+> [   32.224693]  ? unwind_next_frame+0x3af/0x1df0
+> [   32.224697]  veth_xdp_rcv.constprop.0+0x38a/0xbe0
+> [   32.224700]  ? common_startup_64+0x13e/0x148
+> [   32.224703]  ? veth_xdp_rcv_one+0xcd0/0xcd0
+> [   32.224706]  ? stack_trace_save+0x84/0xa0
+> [   32.224709]  ? stack_depot_save_flags+0x28/0x820
+> [   32.224713]  ? __resched_curr.constprop.0+0x332/0x3b0
+> [   32.224716]  ? timerqueue_add+0x217/0x320
+> [   32.224719]  veth_poll+0x115/0x5e0
+> [   32.224722]  ? veth_xdp_rcv.constprop.0+0xbe0/0xbe0
+> [   32.224726]  ? update_load_avg+0x1cb/0x12d0
+> [   32.224730]  ? update_cfs_group+0x121/0x2c0
+> [   32.224733]  __napi_poll+0xa0/0x420
+> [   32.224736]  net_rx_action+0x901/0xe90
+> [   32.224740]  ? run_backlog_napi+0x50/0x50
+> [   32.224743]  ? clockevents_program_event+0x1cc/0x280
+> [   32.224746]  ? hrtimer_interrupt+0x31e/0x7c0
+> [   32.224749]  handle_softirqs+0x151/0x430
+> [   32.224752]  do_softirq+0x3f/0x60
+> [   32.224755]  </IRQ>
 >
-> This problem was triggered by syzbot as well as AF_XDP test suite which
-> is about to be integrated to BPF CI.
+> It's because xdp_rxq with mem model set to MEM_TYPE_PAGE_SHARED was used
+> when initializing xdp_buff.
 >
-> Reported-by: syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/netdev/6756c37b.050a0220.a30f1.019a.GAE@g=
-oogle.com/
-> Fixes: e6d5dbdd20aa ("xdp: add multi-buff support for xdp running in gene=
-ric mode")
-> Tested-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> Co-developed-by: Octavian Purdila <tavip@google.com>
-> Signed-off-by: Octavian Purdila <tavip@google.com> # whole analysis, test=
-ing, initiating a fix
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com> # commit=
- msg and proposed more robust fix
-
+> Fix this by using new helper xdp_convert_skb_to_buff() that, besides
+> init/prepare xdp_buff, will check if page used for linear part of
+> xdp_buff comes from page_pool. We assume that linear data and frags will
+> have same memory provider as currently XDP API does not provide us a way
+> to distinguish it (the mem model is registered for *whole* Rx queue and
+> here we speak about single buffer granularity).
+>
+> Before releasing xdp_buff out of veth via XDP_{TX,REDIRECT}, mem type on
+> xdp_rxq associated with xdp_buff is restored to its original model. We
+> need to respect previous setting at least until buff is converted to
+> frame, as frame carries the mem_type. Add a page_pool variant of
+> veth_xdp_get() so that we avoid refcount underflow when draining page
+> frag.
+>
+> Fixes: 0ebab78cbcbf ("net: veth: add page_pool for page recycling")
+> Reported-by: Alexei Starovoitov <ast@kernel.org>
+> Closes: https://lore.kernel.org/bpf/CAADnVQ+bBofJDfieyOYzSmSujSfJwDTQhiz3=
+aJw7hE+4E2_iPA@mail.gmail.com/
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
 Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
