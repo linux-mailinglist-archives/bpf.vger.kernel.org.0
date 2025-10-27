@@ -1,151 +1,150 @@
-Return-Path: <bpf+bounces-72333-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72334-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F3AEC0E687
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 15:28:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF44C0E74A
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 15:37:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56B98461D20
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 14:20:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7537188D17F
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 14:35:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F9CE3090CA;
-	Mon, 27 Oct 2025 14:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D528330BF59;
+	Mon, 27 Oct 2025 14:31:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XeYJg7rG"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AGlR3RpS"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D35961E32D6;
-	Mon, 27 Oct 2025 14:20:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B0E30ACF7
+	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 14:31:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761574816; cv=none; b=m42hHoCITLDPxt3gSr+W43qnbsysmKrGOTutVj7r9hHsH4INLJiWps4t5Ft/bxH7z1Pec+m692Zkb6NqrSvvh05TRSLsXQ2h9h7o2wTM43ylSERn0mTUrGAuJJXtrzSf2bAjcVj/jgZ94R7zLo5wAwkCIndlIIalQEv8mQtw5ac=
+	t=1761575505; cv=none; b=aIg6Mq6wWmB9vfzrbicWXVZIfS5/5SpYipztlGR1f/GAhenX3F6bLImni4+Nxbh3J6c5c3ENJkVjKoJAjfPntVlqBOQLKJU5VNjPkWIQg9ZEjw7pZgnsEqWgwIvmGxUx0faZmrrJXawYbtMYLdYE3pC+Z7OPglU28UH9QG3rbaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761574816; c=relaxed/simple;
-	bh=WvotowJYmjcG2tGRzmtuc8Os1u6jgZN0RM68zABwZL0=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=iRFKmB+LAZG+p++LfrG8VL36tkAPfge84xXTg+0xmxf0X9GYNLSo1tR5f/v1SlilFoVZsOwWgTSXqhEsZroLhsOv6KwgbQHaIbQvBYIztCv41lt+u6q3iI7v6b+HInEjFo0iWc0KB64uUK02beDs8fQjMEn9TufqaWDoNgfoDbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XeYJg7rG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D583C4CEF1;
-	Mon, 27 Oct 2025 14:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761574815;
-	bh=WvotowJYmjcG2tGRzmtuc8Os1u6jgZN0RM68zABwZL0=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=XeYJg7rGs0ELts6mw/zdSWyLKVfRw2qbudo+DpXdXrTAbluh2Gh2WpXIhjkgkkZoZ
-	 36hg9EYAwK5IULfAlnP6paOMGHgGT0sloRfLBbfGlfSCyJEj/IvDatKd3w4zh7TcDk
-	 1EDJ6UeIWvjXjTAlMctjZMb4dzqONKB/3aoutMjj2GDnowZOlDYBQXyHUtO0Jhv1Kf
-	 1V6hjKmQboe5TfpoUSDb6eYFM9smIdiuIkhc0zsKmewrKKhanczTZJBSwd4Uct3uKB
-	 0Fe13+ANZvDbsbm83IpHwXNAuFCeFg0+hAVyCwq9B5uEkK+fIxN2PMwFEDHgsfIokT
-	 mPME9CUzlZD/w==
-Content-Type: multipart/mixed; boundary="===============5581349777016619937=="
+	s=arc-20240116; t=1761575505; c=relaxed/simple;
+	bh=QZcXiRDkn2CEe1SMwdiavm/3yNEraVw6q51WtyZeWZQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=DckgBnqAsdfLvaUlNw+WXaB3Q8+bYtsYGPEZPZF+uX25gdaAqVnoyi5BJX/P56HZnMizqiY6vnLB+c57wC1v/Ju5xoZ/vtEmhsU6T6/1JyMsE5je4eF2QQiz9EulpBlE8IsT7LE2l96zOfqRAPAR3PWVLdlWHiGmJ5sClbjXTHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AGlR3RpS; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1761575502;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QZcXiRDkn2CEe1SMwdiavm/3yNEraVw6q51WtyZeWZQ=;
+	b=AGlR3RpSHrbnA5W66iTC4ABWoTIomVBhxopCJMzIFao124nkiGWIa1farjPdMHwU9Mc5yI
+	fiDE0I/np2SQjL+YUTKSpFwQfzW2JsjxkDl9Ff0WkI03sQuNzpf4N65iV/Z24wPaLCwE3m
+	9pQpLnASlIccr8P3B0Vu00Oy6f46P7U=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-258-PWSKCkbxPpyBfQs2TVLn-A-1; Mon, 27 Oct 2025 10:31:41 -0400
+X-MC-Unique: PWSKCkbxPpyBfQs2TVLn-A-1
+X-Mimecast-MFC-AGG-ID: PWSKCkbxPpyBfQs2TVLn-A_1761575500
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-63c2b8d344cso6114373a12.0
+        for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 07:31:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761575500; x=1762180300;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QZcXiRDkn2CEe1SMwdiavm/3yNEraVw6q51WtyZeWZQ=;
+        b=DQf6kdJ307JPSHNyVclP5d/D+QTWwxDEIfdpA0qwKP6TKfxCwnoSiC2MRg3PfL+2od
+         Leplck5AHEsAUkjaMZieSE3eEHTXyjzBmBIAanDeZW9PbnNwi9DyVpokxFW73r9U4nec
+         sDdPkgepctY0i8RjbVfCFP/TT/1Gza5naB1nJq7HpBdXFqwkgBMVorLdQ8CiWN3FSE02
+         H5j286WlKmzVEv2P1m/WXOdY3rJwvMBBpiH7GBYUE3UdWugeeJHIgTKIp5wDaMzed4TE
+         XSeKcc//JUJgivLRs6c1+ipKGDdKKsoLihcjxH81L7W1VL0EbRvEs3cbf/Ytd2skBY4C
+         x2SA==
+X-Forwarded-Encrypted: i=1; AJvYcCXR/Z4KG96ofNgsyEIW8C/rOLuujafRcJIRN8Ov4jG+q3KJt/Oe9Rzcvg2AHnBuuZWIoaw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywx61j0Rg4lBU1lUe6SAfT57tYDjsenrqUHBe2FmQ0CtDOycdR0
+	P2yUH1IhnT2B1oWrPCSHMS45r8M199HGgTGKtGpUVv5l58YGhT6W1qPHhHAU3rbzkYvKsh89pLJ
+	4rw3NJi7hVY+bjiDVAJA2Z+gNXKjfqTfD8Yj+WkTHjgmQ2R+GwuuR+g==
+X-Gm-Gg: ASbGnctR+Ij5Lh6jTzswugsGbty8vVh29c3BwW06vY6IZV5lHxHDECanGJGngRWBnVb
+	Tdr8CrUeLimnIzlmRTNuyVXHLZ+Az5L/k7CYBhnear/WNN0cm5EKznM7W6ITy8wzXmqqVOUIJgQ
+	D80ZgzVvmM9+ZezaNtnS4c2r2JVWFEnf1ocgC9C34kUpR5ZVfISULJi78vb8wYiBlHgitC/ghPu
+	8LeN6H+FtJ2Sya0K/QPcfehJ1qwvux2zRKKLBrdjaJuWl40fUCWBgsDBZHH9oyG+aEPB0yOhQUF
+	tQaGldJRvj1yxOry31V98nSoOlWww7I2NxYQTSZT28Yp42FoYhZsOJG0Sh5u93zaexObUSeMZIm
+	gSQDOi4sG3xrzZ3W1pl76OEyppw==
+X-Received: by 2002:a17:907:d1b:b0:b04:1249:2b24 with SMTP id a640c23a62f3a-b6dba56f908mr12496666b.37.1761575499803;
+        Mon, 27 Oct 2025 07:31:39 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHGeKsYcRiyTwP3GVGgGDXvdfH25i6VHJvBBM4RcMH9DWuG1+VcBzYhWvawsrB9fT9lMDQtdQ==
+X-Received: by 2002:a17:907:d1b:b0:b04:1249:2b24 with SMTP id a640c23a62f3a-b6dba56f908mr12493766b.37.1761575499306;
+        Mon, 27 Oct 2025 07:31:39 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (alrua-x1.borgediget.toke.dk. [2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b6d854430dbsm775630866b.63.2025.10.27.07.31.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Oct 2025 07:31:38 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id A52272EAA5E; Mon, 27 Oct 2025 15:31:37 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org
+Cc: netdev@vger.kernel.org, magnus.karlsson@intel.com,
+ aleksander.lobakin@intel.com, ilias.apalodimas@linaro.org,
+ lorenzo@kernel.org, kuba@kernel.org, Maciej Fijalkowski
+ <maciej.fijalkowski@intel.com>,
+ syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com, Ihor Solodrai
+ <ihor.solodrai@linux.dev>, Octavian Purdila <tavip@google.com>
+Subject: Re: [PATCH v4 bpf 1/2] xdp: introduce xdp_convert_skb_to_buff()
+In-Reply-To: <20251027121318.2679226-2-maciej.fijalkowski@intel.com>
+References: <20251027121318.2679226-1-maciej.fijalkowski@intel.com>
+ <20251027121318.2679226-2-maciej.fijalkowski@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 27 Oct 2025 15:31:37 +0100
+Message-ID: <87pla8e7qu.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <3ce42cc0aa2dbb6414178fe6e848101b62c4094b0e27cd12e44c9f742f13718a@mail.kernel.org>
-In-Reply-To: <20251027135423.3098490-2-dolinux.peng@gmail.com>
-References: <20251027135423.3098490-2-dolinux.peng@gmail.com>
-Subject: Re: [RFC PATCH v3 1/3] btf: implement BTF type sorting for accelerated lookups
-From: bot+bpf-ci@kernel.org
-To: dolinux.peng@gmail.com,ast@kernel.org
-Cc: linux-kernel@vger.kernel.org,bpf@vger.kernel.org,dolinux.peng@gmail.com,eddyz87@gmail.com,andrii.nakryiko@gmail.com,alan.maguire@oracle.com,song@kernel.org,pengdonglin@xiaomi.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Mon, 27 Oct 2025 14:20:14 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
---===============5581349777016619937==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
 
-
-```
-commit 1fada9fa20ae7a48b4ba2dd189d4d2dd29878ad2
-Author: Donglin Peng <dolinux.peng@gmail.com>
-
-btf: implement BTF type sorting for accelerated lookups
-
-This patch introduces a new libbpf interface btf__permute() to reorganize
-BTF types according to a provided mapping, with binary search capability
-for accelerated lookups in large type sets.
-
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index 18907f0fc..d20bf81a2 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-
-[ ... ]
-
-> +/*
-> + * Shuffle BTF types.
-> + *
-> + * Rearranges types according to the permutation map in p->ids. The p->map
-> + * array stores the mapping from original type IDs to new shuffled IDs,
-> + * which is used in the next phase to update type references.
-> + */
-> +static int btf_permute_shuffle_types(struct btf_permute *p)
-> +{
-> +	struct btf *btf = p->btf;
-> +	const struct btf_type *t;
-> +	__u32 *new_offs = NULL;
-> +	void *l, *new_types = NULL;
-> +	int i, id, len, err;
-> +
-> +	new_offs = calloc(btf->nr_types, sizeof(*new_offs));
-> +	new_types = calloc(btf->hdr->type_len, 1);
-> +	if (!new_types || !new_offs) {
-> +		err = -ENOMEM;
-> +		goto out_err;
-> +	}
-
-Can btf_permute_shuffle_types() leak new_offs? If the first calloc()
-succeeds but the second fails, the function jumps to out_err which
-returns without freeing new_offs.
-
-> +
-> +	l = new_types;
-> +	for (i = 0; i < btf->nr_types; i++) {
-> +		id = p->ids[i];
-> +		t = btf__type_by_id(btf, id);
-
-Can invalid type IDs from p->ids[] crash btf__type_by_id()? The ids
-array comes from user input via btf__permute() opts, but there's no
-validation that the IDs are within the valid range before passing them
-to btf__type_by_id(). If a user provides an out-of-range type ID, this
-could access invalid memory.
-
-> +		len = btf_type_size(t);
-> +		memcpy(l, t, len);
-> +		new_offs[i] = l - new_types;
-> +		p->map[id - btf->start_id] = btf->start_id + i;
-> +		l += len;
-> +	}
-> +
-> +	free(btf->types_data);
-> +	free(btf->type_offs);
-> +	btf->types_data = new_types;
-> +	btf->type_offs = new_offs;
-> +	return 0;
-> +
-> +out_err:
-> +	return err;
-> +}
-
-[ ... ]
+> Currently, generic XDP hook uses xdp_rxq_info from netstack Rx queues
+> which do not have its XDP memory model registered. There is a case when
+> XDP program calls bpf_xdp_adjust_tail() BPF helper, which in turn
+> releases underlying memory. This happens when it consumes enough amount
+> of bytes and when XDP buffer has fragments. For this action the memory
+> model knowledge passed to XDP program is crucial so that core can call
+> suitable function for freeing/recycling the page.
+>
+> For netstack queues it defaults to MEM_TYPE_PAGE_SHARED (0) due to lack
+> of mem model registration. The problem we're fixing here is when kernel
+> copied the skb to new buffer backed by system's page_pool and XDP buffer
+> is built around it. Then when bpf_xdp_adjust_tail() calls
+> __xdp_return(), it acts incorrectly due to mem type not being set to
+> MEM_TYPE_PAGE_POOL and causes a page leak.
+>
+> Pull out the existing code from bpf_prog_run_generic_xdp() that
+> init/prepares xdp_buff onto new helper xdp_convert_skb_to_buff() and
+> embed there rxq's mem_type initialization that is assigned to xdp_buff.
+> Make it agnostic to current skb->data position.
+>
+> This problem was triggered by syzbot as well as AF_XDP test suite which
+> is about to be integrated to BPF CI.
+>
+> Reported-by: syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/netdev/6756c37b.050a0220.a30f1.019a.GAE@g=
+oogle.com/
+> Fixes: e6d5dbdd20aa ("xdp: add multi-buff support for xdp running in gene=
+ric mode")
+> Tested-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> Co-developed-by: Octavian Purdila <tavip@google.com>
+> Signed-off-by: Octavian Purdila <tavip@google.com> # whole analysis, test=
+ing, initiating a fix
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com> # commit=
+ msg and proposed more robust fix
 
 
-```
+Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-In-Reply-To-Subject: `btf: implement BTF type sorting for accelerated lookups`
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18843706931
-
---===============5581349777016619937==--
 
