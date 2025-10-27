@@ -1,111 +1,136 @@
-Return-Path: <bpf+bounces-72352-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72353-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81857C0F842
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 18:03:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DB6EC0F816
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 18:01:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C25D44F601D
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 17:01:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0760D19A5293
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 17:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8E03148DD;
-	Mon, 27 Oct 2025 17:00:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r8mzZubS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6ED314D3A;
+	Mon, 27 Oct 2025 17:00:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C9A28AB0B
-	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 17:00:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8FC0314D1F;
+	Mon, 27 Oct 2025 17:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761584442; cv=none; b=PybuO7l2+qpOtunDhxemtL0NE+F2+WOflTZw9TgypsSXARKdutrMXZXs0BSqTdLurQXvhX/+U6OnGf7koJxul59ZRnpc824yVa5fNr7gF4pEOD8MYCETugaEeCzWyKNlwMD8A3y4EefzbR7+xeyOzkndJflToGNdx7iOwUNiiN0=
+	t=1761584447; cv=none; b=Lv6lfyJ/IYSoAllPX+D16pI4m9gQk92CLxABtAnPL6GC9l3E/Y86WSaWthXImINYGLsIJwlh0rf4wrRhQIJn4Pv1fBQ7sD1JldhM38y+k/P6/8CLb2vuYiy7fNMvrgNdeZEMiVhjedBnmCbVKtNq0uuDObuNZcptNdjHO5G+oTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761584442; c=relaxed/simple;
-	bh=zdaN97o/dzSXtdRiNkixtSO6Xkd3uj8D5ixY9kX8V5g=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Sw9E9FlbXeLWOGlWKusH+LTjz2bk3TrTC/cFuk5du1Kj6Qw7o3ZfneADHj4xDg6cOQk95snQ1kQz6qrKp3vITZpCT9qP5yzCKyBFHJ9kueUcfP9a9hCZHDQ0fjLXz247vk/E4iu7LUb2K+tdZIkavHEiRyKKgHkQbIUFCHrHwLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r8mzZubS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DAC8C4CEF1;
-	Mon, 27 Oct 2025 17:00:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761584441;
-	bh=zdaN97o/dzSXtdRiNkixtSO6Xkd3uj8D5ixY9kX8V5g=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=r8mzZubSACRLBkBEEmF0tYEeLPb0JxMnBtdF6TVo/+cKG63f1SkUQgpF7ylpPPa/o
-	 Ryz3tACcplLtLghyRw/hi0X1fHI9R+B0veFZLTz9IdqDYQgTVHYtfi489YHBf+06O4
-	 +v+STzzQJAYjxD5bgoV/HAaaFaw5Ys+kybndKX3JIwIZcItWCwVMcEVwUt+rRTz0um
-	 0PMSKbENmL8a4IWBcRIjzzJGxm2eccBApLqhouCLRJEYoKjW7HKmGmmQuMNWfTy79I
-	 7oht4fORDgqLEFzwf3nBVCts5eGb3cYylfrlk9rLtDytzGf2La/g8dLSaFoB2IfTBn
-	 j9DtgD3bYXgVg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAF6F39B167A;
-	Mon, 27 Oct 2025 17:00:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1761584447; c=relaxed/simple;
+	bh=AW+uBVkZ7blD+z57BRlsNkIK1OZ57j/FX/0q3xlVmn8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=b4wrUgSI3pMyGM0Nz/CDQ2xHJ4wNqFJWnTqlN7NL+5LR12q0HzRf7wSK5iKs6c3+m8/ESCCqTCD94YLqW+ZEkniZbhzfK8QGDPjoiSYLvuJVKeSUCtodzUTDGzk8JD5tf9hrXOaUJIEIiAvPwxlbZrQEmfx+w7A40MG4cbZpweY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf17.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay04.hostedemail.com (Postfix) with ESMTP id 23D331A01E6;
+	Mon, 27 Oct 2025 17:00:36 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf17.hostedemail.com (Postfix) with ESMTPA id 969A81E;
+	Mon, 27 Oct 2025 17:00:33 +0000 (UTC)
+Date: Mon, 27 Oct 2025 13:01:09 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ live-patching@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, andrey.grodzovsky@crowdstrike.com, mhiramat@kernel.org,
+ kernel-team@meta.com, olsajiri@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH v3 bpf 1/3] ftrace: Fix BPF fexit with livepatch
+Message-ID: <20251027130109.4065026f@gandalf.local.home>
+In-Reply-To: <20251026205445.1639632-2-song@kernel.org>
+References: <20251026205445.1639632-1-song@kernel.org>
+	<20251026205445.1639632-2-song@kernel.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v5 00/10] bpf: Introduce file dynptr
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176158441975.1450474.531383794756795259.git-patchwork-notify@kernel.org>
-Date: Mon, 27 Oct 2025 17:00:19 +0000
-References: <20251026203853.135105-1-mykyta.yatsenko5@gmail.com>
-In-Reply-To: <20251026203853.135105-1-mykyta.yatsenko5@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
- eddyz87@gmail.com, yatsenko@meta.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 969A81E
+X-Stat-Signature: zgpiqdfq3xfpp98kxzc8t1ikg1w19hnt
+X-Rspamd-Server: rspamout06
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1/BKfmPXZzH1N7RsBVffcbvXnVHMI4eHCI=
+X-HE-Tag: 1761584433-530337
+X-HE-Meta: U2FsdGVkX1+B5Z7vjqW2B2UTVfiwYjWO0dlLJFfGF914RMDSTZeP003v7Prmm4tVy5gEAL3JvLrTpF1XXJJuxmC8DA4mK5JGwr6pgY3Ro+zNNLRlgxUgH9FF3WVN1aXzne/2/MCU4xcYZq66wRhu1n5XMuIWQd2rzjsd/Tvhb9Qlf0XBMVqpZDphETaiIEZDleh2RVZZSNSwUEPpfcOzG7uLxhNOOoG/y2G0xHEihfOzdoha0ZWm2ZTo+ZhoAZjX2WrPcWk3iT02vzJN8Nhf2ZL5ZmETsNx6PXnLqkEqB28lTk6kjKWtRI9VIQDgDVGHl+A9P0y7u49+pmNM30JAIkuS7c4IyT6v
 
-Hello:
+On Sun, 26 Oct 2025 13:54:43 -0700
+Song Liu <song@kernel.org> wrote:
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -6048,6 +6048,12 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+>  	ops->direct_call = addr;
+>  
+>  	err = register_ftrace_function_nolock(ops);
+> +	if (err) {
+> +		/* cleanup for possible another register call */
+> +		ops->func = NULL;
+> +		ops->trampoline = 0;
+> +		remove_direct_functions_hash(hash, addr);
+> +	}
+>  
 
-On Sun, 26 Oct 2025 20:38:43 +0000 you wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
-> 
-> This series adds a new dynptr kind, file dynptr, which enables BPF
-> programs to perform safe reads from files in a structured way.
-> Initial motivations include:
->  * Parsing the executable’s ELF to locate thread-local variable symbols
->  * Capturing stack traces when frame pointers are disabled
-> 
-> [...]
+As you AI bot noticed that it was missing what unregister_ftrace_direct()
+does, instead, can we make a helper function that both use? This way it
+will not get out of sync again.
 
-Here is the summary with links:
-  - [bpf-next,v5,01/10] selftests/bpf: remove unnecessary kfunc prototypes
-    https://git.kernel.org/bpf/bpf-next/c/a61a257ff51c
-  - [bpf-next,v5,02/10] bpf: widen dynptr size/offset to 64 bit
-    https://git.kernel.org/bpf/bpf-next/c/531b87d865eb
-  - [bpf-next,v5,03/10] lib: move freader into buildid.h
-    https://git.kernel.org/bpf/bpf-next/c/76e4fed84712
-  - [bpf-next,v5,04/10] lib/freader: support reading more than 2 folios
-    https://git.kernel.org/bpf/bpf-next/c/5a5fff604fa3
-  - [bpf-next,v5,05/10] bpf: verifier: centralize const dynptr check in unmark_stack_slots_dynptr()
-    https://git.kernel.org/bpf/bpf-next/c/9cba966f1c55
-  - [bpf-next,v5,06/10] bpf: add plumbing for file-backed dynptr
-    https://git.kernel.org/bpf/bpf-next/c/8d8771dc03e4
-  - [bpf-next,v5,07/10] bpf: add kfuncs and helpers support for file dynptrs
-    https://git.kernel.org/bpf/bpf-next/c/e3e36edb1b8f
-  - [bpf-next,v5,08/10] bpf: verifier: refactor kfunc specialization
-    https://git.kernel.org/bpf/bpf-next/c/d869d56ca848
-  - [bpf-next,v5,09/10] bpf: dispatch to sleepable file dynptr
-    https://git.kernel.org/bpf/bpf-next/c/2c52e8943a43
-  - [bpf-next,v5,10/10] selftests/bpf: add file dynptr tests
-    https://git.kernel.org/bpf/bpf-next/c/784cdf931543
+static void reset_direct(struct ftrace_ops *ops, unsigned long addr)
+{
+	struct ftrace_hash *hash = ops->func_hash->filter_hash;
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+	ops->func = NULL;
+	ops->trampoline = 0;
+	remove_direct_functions_hash(hash, addr);
+}
 
+Then we could have:
 
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 0c91247a95ab..51c3f5d46fde 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -6062,7 +6062,7 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+ 
+ 	err = register_ftrace_function_nolock(ops);
+ 	if (err)
+-		remove_direct_functions_hash(hash, addr);
++		reset_direct(ops, addr);
+ 
+  out_unlock:
+ 	mutex_unlock(&direct_mutex);
+@@ -6095,7 +6095,6 @@ EXPORT_SYMBOL_GPL(register_ftrace_direct);
+ int unregister_ftrace_direct(struct ftrace_ops *ops, unsigned long addr,
+ 			     bool free_filters)
+ {
+-	struct ftrace_hash *hash = ops->func_hash->filter_hash;
+ 	int err;
+ 
+ 	if (check_direct_multi(ops))
+@@ -6105,13 +6104,9 @@ int unregister_ftrace_direct(struct ftrace_ops *ops, unsigned long addr,
+ 
+ 	mutex_lock(&direct_mutex);
+ 	err = unregister_ftrace_function(ops);
+-	remove_direct_functions_hash(hash, addr);
++	reset_direct(ops, addr);
+ 	mutex_unlock(&direct_mutex);
+ 
+-	/* cleanup for possible another register call */
+-	ops->func = NULL;
+-	ops->trampoline = 0;
+-
+ 	if (free_filters)
+ 		ftrace_free_filter(ops);
+ 	return err;
+
+-- Steve
 
