@@ -1,188 +1,191 @@
-Return-Path: <bpf+bounces-72379-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72380-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77E3EC11B06
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 23:26:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A399C11DBF
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 23:48:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFA4F402CD9
-	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 22:25:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E5F61A65837
+	for <lists+bpf@lfdr.de>; Mon, 27 Oct 2025 22:47:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECE832C31E;
-	Mon, 27 Oct 2025 22:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F172D97AA;
+	Mon, 27 Oct 2025 22:38:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LFjWr7Is"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NJMpfckN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 152F7329C64
-	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 22:25:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DEB52F12A3
+	for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 22:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761603935; cv=none; b=mAJrM81+THQFU9B9uA3GlxI5m6Rhzg3Po1EIf2OqbXPNXeAZoSkryw/K3AIbu1uxSxkf+Al2fTjTbNaDxlmJTlZiE5IfXLFIq7x5BfL30tYKCwEPKN1PaDSJIAf3bWSnus2mMtXe6QhifK/n6LwkokL5JllcKKSlENOqrgDJ/hM=
+	t=1761604690; cv=none; b=pAIeWu7E3Xdlq1speOYepOeM7yae9ozgQ3HWBb0mSoEvTYTSw6gTeX/eLo3hGimm9xVSh9rwEUw0zWcTDVP56KCPhWL7Mqrga7Sphc0aJCerHNNPkFfAITwjtAfALtzVKvPuKgD3DIY89e2+53Zaq6wmhRgLyoVa197S2Glp5rc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761603935; c=relaxed/simple;
-	bh=ujIAydKczuzdwKBdhbyuKoWTL5IbL7V/TEs/+/HAH2M=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZaA0hyk2Kbv0Yk+TRAm+4ZdPLg2W40LKzsDyQHqyy/polp/vRcy+x8DWw6AV2v6OydSmn75eJq4zvU10H8SVBuLlgoPkIkHX5QfNb/6V4/zvQctEqE0H75czDl4JPOZo64d3I1u0EgNzapV6HEV71vgYa4bi0afHU32BH30nhEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LFjWr7Is; arc=none smtp.client-ip=209.85.128.54
+	s=arc-20240116; t=1761604690; c=relaxed/simple;
+	bh=8LyPPjguGNSVJlKG5jajc4g92mACZiPqAPv6ykSyQ+k=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=B855ddWhkK02F9dz2XXhUAlOUsb/W3FxahfMZoRh+0Y6AQmn/o8PsnzE7zgWqMIWZ5Tp4ZLRIRAHDsWtdUqlKuvzNcgzWGfM+yLdl3aD7gkCjpoW5oC95V0Putdy3QcxiDMeZG6VccHfMqRu474DdpaNnGEVMEV0k8kjDW5INlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NJMpfckN; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4710022571cso54175645e9.3
-        for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 15:25:33 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-340299fe579so327866a91.2
+        for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 15:38:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761603932; x=1762208732; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MKDbU8B4IbG+AAzbZltvWI7s50AOGrKS71QrEu9vmRY=;
-        b=LFjWr7IsGCicE/XBCvNiXABDOS/DJOaKIjU7vurkKgaa5l/7481xoGTrfgjNFbpwFG
-         uw8XTUw0bzG1cVhxmBs3dn8sgkTSFmgaqkWIvit2DRymc/0jvFSGk/CguXxXjnQMTKtk
-         uq2oInYyANV/qupdxUP4UShFBdAVmpzqALb2PVTEqrLvfz5Lwxbm64eKNCMC4BUBtaq5
-         v2AG9t6tI8VFIbDQ3iFqw8BrHZPYdkVSeowvu7Y/m3yEiDA6F89py0eSPm+weFW0ww7B
-         ayEwWZ6d8Yp9QXNnYkFvjb7IzWTtaPY29aWvfNf+o+M0K8W/SSz9sGfiO2rMUDvQo33L
-         SU0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761603932; x=1762208732;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1761604687; x=1762209487; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MKDbU8B4IbG+AAzbZltvWI7s50AOGrKS71QrEu9vmRY=;
-        b=YOct32zf50ijXydyHKwBrh4wxRLXFignYfhDMZEdPJLrehvAYa4oSs2C7LFzlGWj84
-         Mp03K4bKxZ6Otpf46H+XX6g2k4ccYlFPmK7R6oX6RcYAMJ99oGsBQzQ79LEMCNa78HXh
-         SEt6eiwST67ruAXQ5cYGH8k9nIWspx3PhsgwcmxqaqcRN9jzS+Rd+IZjwcprWZK7xwFQ
-         j0dpTuHF7bufrXHDneIvFUrVvbc80LWx7+E333DCnPhT8RKCBrVKzEQXuxfu52RJBUde
-         +CJ0B5PGsMOC6+pugwv3NjNuGwWZghPx8sBPP7UDS28Yy8cT46kXw6VmhcgQYsioQhLI
-         cc+A==
-X-Forwarded-Encrypted: i=1; AJvYcCW3hWIEDZZLWybFchQ1vWdJTpuQJlB1cOBU1qwG250t0mY04ACH4/4S6NGdPqFSAYpnzlw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzP1xVPOaM9olLJUZ3LVuImsOScp6RZa0FI+5oJefyrKHyxbP1x
-	C0Tgri+j9KIc9ISg1xdwHi2eudzAxXm+nrqMQHfCf7AHbxF2OHu9GByy
-X-Gm-Gg: ASbGncucR/vYdDBWcFO4gfBkIWbWwrzxMzHqwP5fmyuLyPK3sb+/+7QjlXK5eYwzwvZ
-	RAxoYHNTSwTQuxi0jxA8OsiOJ4WKi3e1PnY5/pUQQHqGjQ7tpCj1LdTh3KCzkYLqDb/07butqqf
-	EDXGN5LYw3u9fZ1HpReyr54souaHax51F0eqWnnornLzDQmPjyopvatr10FLAaXy/2Zzjb8cCLw
-	mqJqpWc0DQH6z0b/DoIw6c3NxdkPCivapnEfqz1n2snloYgZIlSLr7ykORdWhR0XMQPi4n0RFku
-	rR5B/v5TzzYBV2HPjPLFqzSomVuwa+KSBOgT3uGs1lRPhs+IzSGFN4OFkbBhLG3TkjrMdA9yj01
-	Mix671NbtLyGMqqViiQ2UeCQ0WhK+T7RgyYqSb0eqTLVGipa/7Ytwqf/MgDj1XqQ8
-X-Google-Smtp-Source: AGHT+IFewjIU04uCpHRCTJrs4Aqm896DfPXNFrP2ep6c0V5rjWWsGXrd3MTH1aryAc1zbKqXD+Is1w==
-X-Received: by 2002:a05:600c:4fc4:b0:477:fcb:2256 with SMTP id 5b1f17b1804b1-47717e037f5mr9929675e9.17.1761603932286;
-        Mon, 27 Oct 2025 15:25:32 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475dd4783b8sm159667385e9.15.2025.10.27.15.25.30
+        bh=EedtdqTCYCQ+1n66kbJzMRTpMmg1X7TIaVHz7291L6Y=;
+        b=NJMpfckNoyH6JDl1cydtYtBZA7K9+BmO/BdsbOTJoZNGz/64MSF4bpIEqAYS7WFAKk
+         ul1iW93kfrskmoou4fgQ19n3tHGlMNUq52Mkf0wlCr5g1eLdzfrKJmLch8LJNlnGulcn
+         KcW3nq1zLfEcM9pWtrK+FCDRCIhgQEitHgHEfGHZcXlSMCHHd47Qi/ARd95iZc6D4+W2
+         JVt+K49RoTs4FowTEzeiJn8bpgFdX4WVmVMUQr3u9xDy3A1gdl2B/D4LvC97MpC/xxVI
+         nN6rD/IbD4vVem2mt5J1GklKeplBuf0b7r1qt1RwryfGpHMtjnsoJqwuRVowha7AXamD
+         pMRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761604687; x=1762209487;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=EedtdqTCYCQ+1n66kbJzMRTpMmg1X7TIaVHz7291L6Y=;
+        b=N2kSKPGAGSWTTMFlrnhFJo8Bz7tXBak9TIPEVCBeRkZPQH7+7Gn26KUW+0e/+u6X90
+         3q6e5gerZpvBQ7p1Oe+J1WpXKOX4o+RKeufIL4Icusvr8JdwJsYkROvnLNzn28ghTmmd
+         zaRJxmD1AznHl7lXIY9Ul1bqRmRh5rqOj5NWaCZ4Q4F5SoeQM5naHDG2HALDpysK0AjL
+         EknPcw4j02YO1k/Sgnj0J8FSLV60Oz4F4/L1zAnfmI9zFo1YhhmTidRoH7fq08oI1j20
+         TVHCB6gxe+0TnfJJA+um3xe5Ux/exjUI+ruzBxp/wcgdVGcPBgnmFfvVXThqGqXygXyJ
+         9GOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUi3wrgDdsTfjO54ikCm+QtE2rrCxC30hNOl8Gvy0v84z53xyc2yZNnFndRIkyh7UKMXw0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwlwqYQPbmgfrgEpjf/nDMj4WIvyrWJV7Ht1DcOVJJaapbt3zib
+	0XEg/0lqFU69AYtyUtYYBFP42vHhKq5rEK2fSDDvHC95pDA2ITxEwKNR
+X-Gm-Gg: ASbGnct+BhU6OnXxyIQovFnxBlFM/ikSNOqPrdF5s75in6e2W9I8pcgkPZwO/0wEh7w
+	db1nIDYhM53O83wJXFLQcCgWSj5/XMCh2mAbuBlfK1iES1rDEVyy5aKJIou91WK4Xpz/f5blt9d
+	i5zvQ0FCM9VkzGaJgyBfufGohnqEjn62AHz+HWwbTyquj487UCI5NxqoayBv+QHnKD0ADb3mAce
+	QTOACfPCK4K8ayDrwUCsN8U432vuyOy2T3UXNeMItCY27JxVamifC+2T96YTqApAc2dPjfUXhGz
+	OMys+6Wl+F+1/gdY8yTR1kW6gXtgai27YdIHtA2GzcuUcds1TZn4fgr9tyic9tEL1QEsWolNg2r
+	8pLIJVmO5OZ7BxdgCt2FNkJvmKpDhP3HkJaajTsd23gTY3yRx7V4i+n4A7PDIZdQ1Q4TEWJtqv0
+	tHrB43QSye
+X-Google-Smtp-Source: AGHT+IEBZW1NP9hem8lcOd6TNAJAaCJn7TRzDTDehGydchEg8Q8ARaWKHqJREp2zz1YuEYyOkbrg+Q==
+X-Received: by 2002:a17:90b:4b11:b0:32e:87fa:d975 with SMTP id 98e67ed59e1d1-34027ab3922mr1488840a91.34.1761604687473;
+        Mon, 27 Oct 2025 15:38:07 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-340299e6fe2sm301739a91.0.2025.10.27.15.38.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Oct 2025 15:25:31 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 27 Oct 2025 23:25:29 +0100
-To: bot+bpf-ci@kernel.org
-Cc: mhiramat@kernel.org, rostedt@goodmis.org, jpoimboe@kernel.org,
-	song@kernel.org, peterz@infradead.org, bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, yhs@fb.com,
-	songliubraving@fb.com, andrii@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
-	yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
-Subject: Re: [PATCH 1/3] Revert "perf/x86: Always store regs->ip in
- perf_callchain_kernel()"
-Message-ID: <aP_xWRe7qNr1j9Px@krava>
-References: <20251027131354.1984006-2-jolsa@kernel.org>
- <8227ad3af501bb982231ef00ac5e970a0a12c9d64e07ea3f3d37100ec7e3f1cc@mail.kernel.org>
+        Mon, 27 Oct 2025 15:38:07 -0700 (PDT)
+Message-ID: <dd184cdb0593392c6ad6c19111bfa17ac56bcb1f.camel@gmail.com>
+Subject: Re: [PATCH v7 bpf-next 09/12] libbpf: support llvm-generated
+ indirect jumps
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org, Alexei
+ Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Anton
+ Protopopov <aspsk@isovalent.com>,  Daniel Borkmann <daniel@iogearbox.net>,
+ Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
+Date: Mon, 27 Oct 2025 15:38:04 -0700
+In-Reply-To: <20251026192709.1964787-10-a.s.protopopov@gmail.com>
+References: <20251026192709.1964787-1-a.s.protopopov@gmail.com>
+	 <20251026192709.1964787-10-a.s.protopopov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8227ad3af501bb982231ef00ac5e970a0a12c9d64e07ea3f3d37100ec7e3f1cc@mail.kernel.org>
 
-On Mon, Oct 27, 2025 at 01:52:18PM +0000, bot+bpf-ci@kernel.org wrote:
-> 
-> ```
-> commit 26b06def1956497a15eecf22787d5430fad2fed6
-> Author: Jiri Olsa <jolsa@kernel.org>
-> 
-> Revert "perf/x86: Always store regs->ip in perf_callchain_kernel()"
-> 
-> This commit reverts a 2019 fix that ensured regs->ip is stored when
-> using non-HW regs (regs populated by perf_arch_fetch_caller_regs). The
-> revert claims the IP is captured during unwinding, but analysis suggests
-> otherwise.
-> 
-> > diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> > index 745caa6c1..fa6c47b50 100644
-> > --- a/arch/x86/events/core.c
-> > +++ b/arch/x86/events/core.c
-> > @@ -2789,13 +2789,13 @@ perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct pt_regs *re
-> >  		return;
-> >  	}
-> >
-> > -	if (perf_callchain_store(entry, regs->ip))
-> > -		return;
-> > -
-> > -	if (perf_hw_regs(regs))
-> > +	if (perf_hw_regs(regs)) {
-> > +		if (perf_callchain_store(entry, regs->ip))
-> > +			return;
-> >  		unwind_start(&state, current, regs, NULL);
-> > -	else
-> > +	} else {
-> >  		unwind_start(&state, current, NULL, (void *)regs->sp);
-> > +	}
-> 
-> When perf_hw_regs(regs) returns false (which happens when regs comes from
-> perf_arch_fetch_caller_regs since it sets regs->flags=0), the else branch
-> calls unwind_start with regs=NULL. Can this lose the regs->ip value?
-> 
-> Looking at the code flow:
-> 
-> perf_arch_fetch_caller_regs() sets:
->   - regs->ip = CALLER_ADDR0 (the caller's instruction pointer)
->   - regs->flags = 0 (no X86_EFLAGS_FIXED)
-> 
-> perf_hw_regs() checks:
->   - returns (regs->flags & X86_EFLAGS_FIXED), which is false
-> 
-> The else branch executes:
->   - unwind_start(&state, current, NULL, (void *)regs->sp)
-> 
-> In __unwind_start() at arch/x86/kernel/unwind_orc.c, when regs=NULL:
->   - Takes the "else if (task == current)" path (line 711)
->   - Initializes state->ip via inline asm from current location
->   - This is __unwind_start's IP, not the original regs->ip
->   - Then advances to first_frame at regs->sp (lines 755-758)
-> 
-> The original regs->ip value (captured by perf_arch_fetch_caller_regs) is
-> never stored in the callchain. This was the exact issue fixed by commit
+[...]
 
-IIUC it is, unwinder will eventually unwind to it
+> +static int create_jt_map(struct bpf_object *obj, struct bpf_program *pro=
+g, struct reloc_desc *relo)
+> +{
+> +	const __u32 jt_entry_size =3D 8;
+> +	int sym_off =3D relo->sym_off;
+> +	int jt_size =3D relo->sym_size;
+> +	__u32 max_entries =3D jt_size / jt_entry_size;
+> +	__u32 value_size =3D sizeof(struct bpf_insn_array_value);
+> +	struct bpf_insn_array_value val =3D {};
+> +	int subprog_idx;
+> +	int map_fd, err;
+> +	__u64 insn_off;
+> +	__u64 *jt;
+> +	__u32 i;
+> +
+> +	map_fd =3D find_jt_map(obj, prog, sym_off);
+> +	if (map_fd >=3D 0)
+> +		return map_fd;
+> +
+> +	if (sym_off % jt_entry_size) {
+> +		pr_warn("jumptable start %d should be multiple of %u\n",
+> +			sym_off, jt_entry_size);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (jt_size % jt_entry_size) {
+> +		pr_warn("jumptable size %d should be multiple of %u\n",
+> +			jt_size, jt_entry_size);
+> +		return -EINVAL;
+> +	}
+> +
+> +	map_fd =3D bpf_map_create(BPF_MAP_TYPE_INSN_ARRAY, ".jumptables",
+> +				4, value_size, max_entries, NULL);
+> +	if (map_fd < 0)
+> +		return map_fd;
+> +
+> +	if (!obj->jumptables_data) {
+> +		pr_warn("map '.jumptables': ELF file is missing jump table data\n");
+> +		err =3D -EINVAL;
+> +		goto err_close;
+> +	}
+> +	if (sym_off + jt_size > obj->jumptables_data_sz) {
+> +		pr_warn("jumptables_data size is %zd, trying to access %d\n",
+> +			obj->jumptables_data_sz, sym_off + jt_size);
+> +		err =3D -EINVAL;
+> +		goto err_close;
+> +	}
+> +
+> +	jt =3D (__u64 *)(obj->jumptables_data + sym_off);
+> +	for (i =3D 0; i < max_entries; i++) {
+> +		/*
+> +		 * The offset should be made to be relative to the beginning of
+> +		 * the main function, not the subfunction.
+> +		 */
+> +		insn_off =3D jt[i]/sizeof(struct bpf_insn);
+> +		if (!prog->subprogs) {
+> +			insn_off -=3D prog->sec_insn_off;
+> +		} else {
+> +			subprog_idx =3D find_subprog_idx(prog, relo->insn_idx);
 
-> 83f44ae0f8af in 2019, which stated:
-> 
->   "The stacktrace_map_raw_tp BPF selftest is failing because the RIP
->    saved by perf_arch_fetch_caller_regs() isn't getting saved by
->    perf_callchain_kernel()."
-> 
-> Does this revert re-introduce the BPF selftest failure that was fixed in
-> 2019? The test tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c
-> still exists in the kernel tree.
+Nit: find_subprog_idx(prog, relo->insn_idx) can be moved outside of the loo=
+p, I think.
 
-stacktrace_map_raw_tp does not check what's the first ip of the
-stacktrace and it passes with or without this change
+> +			if (subprog_idx < 0) {
+> +				pr_warn("invalid jump insn idx[%d]: %d, no subprog found\n",
+> +					i, relo->insn_idx);
+> +				err =3D -EINVAL;
+> +			}
+> +			insn_off -=3D prog->subprogs[subprog_idx].sec_insn_off;
+> +			insn_off +=3D prog->subprogs[subprog_idx].sub_insn_off;
+> +		}
+> +
+> +		/*
+> +		 * LLVM-generated jump tables contain u64 records, however
+> +		 * should contain values that fit in u32.
+> +		 */
+> +		if (insn_off > UINT32_MAX) {
+> +			pr_warn("invalid jump table value %llx at offset %d\n",
+> +				jt[i], sym_off + i);
+> +			err =3D -EINVAL;
+> +			goto err_close;
+> +		}
+> +
+> +		val.orig_off =3D insn_off;
+> +		err =3D bpf_map_update_elem(map_fd, &i, &val, 0);
+> +		if (err)
+> +			goto err_close;
+> +	}
 
-I can see double entries on current code and just one with this change:
-
-# bpftrace -e 'tracepoint:sched:sched_process_exec { print(kstack()); }'
-Attaching 1 probe...
-
-        bprm_execve+1767
-        bprm_execve+1767
-        do_execveat_common.isra.0+425
-        __x64_sys_execve+56
-        do_syscall_64+133
-        entry_SYSCALL_64_after_hwframe+118
-
-thanks,
-jirka
+[...]
 
