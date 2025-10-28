@@ -1,147 +1,91 @@
-Return-Path: <bpf+bounces-72573-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72574-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81261C15BA8
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:17:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F27DCC15BB1
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:18:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 501BF4074C9
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 16:11:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93E851890914
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 16:12:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB9D23ABBD;
-	Tue, 28 Oct 2025 16:11:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E133396FD;
+	Tue, 28 Oct 2025 16:12:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SyxgsjzA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ebQmc8ol"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA493081B8
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 16:11:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF5A3081B8
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 16:12:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761667862; cv=none; b=bc7/HkDvh7/hY/SDOz9B3i186JPSYYzVwZQAQs4V9DSsmTIGGwc5wc+WuINqkbOuGr8ry8yqy2exHnTXxY1/tFzvitp008Molp3q1yKNkxEh6rySi4SP3x+wgCgiS6+4OZmHbHlr3aPkCU1671uhBcJWHieCEjx7VQS4n6ZlKXg=
+	t=1761667934; cv=none; b=WZ05Y3050kWvcSxzX7+kHW1ooQijxTvfeo8fhSusk4JAcb7sMc+pzBq73VLS9GtxjlE6XUW9jzpqsIVlGzVq+uk5RS8SuUgEgjvW7LXBw5p7WhCnAXQETDAGAQm+byQ8IZ5VsvUs/FC3154vO1oS02CYLdBV3E4rn0613yuKeHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761667862; c=relaxed/simple;
-	bh=dJBi1SI6KRLdskO7pfO8PR4VwDReQHqZlMyEW6CEiGU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=aoe6rBwMO8zfHCKQ2qU/Wtfeyb0HPGrMEp7XAvzJkftY/VXBHlU/j9BSDCZV0COxaNaOiIYXPXhuVAiHAp3sEYxC0K7PK1DX779quosCi5hOORq+qR+JHC7LFT+4UvqF2yB4W31hwnxSRbNltTxlftP24FGf1HBmhvUtTrKvxGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SyxgsjzA; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761667858;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D4PZj+Z/AUd5TD2H5mliXY1n/lg/WeR66f3O6rTVgL0=;
-	b=SyxgsjzAaP3eQ9upztzSYWfJ4WsFRqyGC+WNAlDIHsVjNFkuLy+80+fxZhJbxoF71KM/Sb
-	2dXtGFR0Z9YliT37NCbk2o9jgMkSzntlWrQPUd9ujQ4NC2Ewk5O6GCMZUgB8sGf6/K33Ov
-	Tv8wxDHZwyaHL5z9MiCmBhWGX4QJh9c=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: bot+bpf-ci@kernel.org
-Cc: akpm@linux-foundation.org,  linux-kernel@vger.kernel.org,
- ast@kernel.org, surenb@google.com, mhocko@kernel.org,
- shakeel.butt@linux.dev, hannes@cmpxchg.org, andrii@kernel.org,
- inwardvessel@gmail.com, linux-mm@kvack.org, cgroups@vger.kernel.org,
- bpf@vger.kernel.org, martin.lau@kernel.org, song@kernel.org,
- memxor@gmail.com, tj@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
- yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
-Subject: Re: [PATCH v2 08/23] mm: introduce BPF kfuncs to deal with memcg
- pointers
-In-Reply-To: <2c91977fcab04be6305bf4be57e825f7e84005d16667adcdfad0585be506537c@mail.kernel.org>
-	(bot's message of "Mon, 27 Oct 2025 23:48:21 +0000 (UTC)")
-References: <20251027231727.472628-9-roman.gushchin@linux.dev>
-	<2c91977fcab04be6305bf4be57e825f7e84005d16667adcdfad0585be506537c@mail.kernel.org>
-Date: Tue, 28 Oct 2025 09:10:47 -0700
-Message-ID: <87ldkv57nc.fsf@linux.dev>
+	s=arc-20240116; t=1761667934; c=relaxed/simple;
+	bh=THm16ndzj06DojLwICFWcOalj47J8grV6Xkr29WbmsI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=tXYAP6HXhS7/vVWsWGrYVhHWAnjhEnjKE7AaP1c/Jn750czmzXicGUH0T+3t7x5BCod6V5x11H2XBtK5elps6pNEWTZVVwjg+3kUCOhr+uvPEdkbY6AwVYNSMrZkvPPUkXrpEMkH7e0lETvlxEOO78tsNyxdqRzijmdnrwncD9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ebQmc8ol; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED68FC4CEE7;
+	Tue, 28 Oct 2025 16:12:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761667933;
+	bh=THm16ndzj06DojLwICFWcOalj47J8grV6Xkr29WbmsI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ebQmc8oloiWDB+RLxmLDORlLuU/ecjNV3HjP1o6TdyjiWleOqznoZEHJAJ8yuFtjx
+	 2lfQH4BaH2cPLuBsczZ4ixM4KCQtfOhpxVC1nxUFq0AnQnrFLDg3KZsc2yGb2k7wzW
+	 qUX7MTfTqoa7lrHJOTdkyLwhkeSbhxKz1kSDKvC4fLC2HQzsEImI+jLQJxobihSAyJ
+	 nB4EajOE1jaXGmrl7k6USLhEvB5ah7H4UausOp010YYfMa0hArPzmOZgo6HCNi3S36
+	 FUMYmPSzNDR/NhzjOE74n0apnPx8W0hi2MqxPMdOEJ5mzld7uYvMiFy/UnQd1ikiF8
+	 PBcKuePCOB47Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB3DC39EFA68;
+	Tue, 28 Oct 2025 16:11:51 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] tools:bpf: fix missing closing parethesis for
+ BTF_KIND_UNKN
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176166791075.2291094.18133627510897823274.git-patchwork-notify@kernel.org>
+Date: Tue, 28 Oct 2025 16:11:50 +0000
+References: <20251028063345.1911-1-zhangchujun@cmss.chinamobile.com>
+In-Reply-To: <20251028063345.1911-1-zhangchujun@cmss.chinamobile.com>
+To: Zhang Chujun <zhangchujun@cmss.chinamobile.com>
+Cc: bpf@vger.kernel.org
 
-bot+bpf-ci@kernel.org writes:
+Hello:
 
-> ```
-> commit ec8e2e1769704b4f69261f36e6aaf035d47c5f0f
-> Author: Roman Gushchin <roman.gushchin@linux.dev>
->
-> mm: introduce BPF kfuncs to deal with memcg pointers
->
-> This commit introduces two new BPF kfuncs for converting css pointers
-> to memcg pointers with proper reference counting: bpf_get_mem_cgroup()
-> and bpf_put_mem_cgroup().
->
->> diff --git a/mm/Makefile b/mm/Makefile
->> index 051e88c69..2d8f9beb3 100644
->> --- a/mm/Makefile
->> +++ b/mm/Makefile
->> @@ -107,6 +107,7 @@ obj-$(CONFIG_MEMCG) += swap_cgroup.o
->>  endif
->>  ifdef CONFIG_BPF_SYSCALL
->>  obj-y += bpf_oom.o
->> +obj-$(CONFIG_MEMCG) += bpf_memcontrol.o
->>  endif
->>  obj-$(CONFIG_CGROUP_HUGETLB) += hugetlb_cgroup.o
->>  obj-$(CONFIG_GUP_TEST) += gup_test.o
->> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
->> new file mode 100644
->> index 000000000..1e4609774
->> --- /dev/null
->> +++ b/mm/bpf_memcontrol.c
->> @@ -0,0 +1,88 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Memory Controller-related BPF kfuncs and auxiliary code
->> + *
->> + * Author: Roman Gushchin <roman.gushchin@linux.dev>
->> + */
->> +
->> +#include <linux/memcontrol.h>
->> +#include <linux/bpf.h>
->> +
->> +__bpf_kfunc_start_defs();
->> +
->> +/**
->> + * bpf_get_mem_cgroup - Get a reference to a memory cgroup
->> + * @css: pointer to the css structure
->> + *
->> + * Returns a pointer to a mem_cgroup structure after bumping
->> + * the corresponding css's reference counter.
->> + *
->> + * It's fine to pass a css which belongs to any cgroup controller,
->> + * e.g. unified hierarchy's main css.
->> + *
->> + * Implements KF_ACQUIRE semantics.
->> + */
->> +__bpf_kfunc struct mem_cgroup *
->> +bpf_get_mem_cgroup(struct cgroup_subsys_state *css)
->> +{
->> +	struct mem_cgroup *memcg = NULL;
->> +	bool rcu_unlock = false;
->> +
->> +	if (!root_mem_cgroup)
->> +		return NULL;
->> +
->> +	if (root_mem_cgroup->css.ss != css->ss) {
->                                             ^^^^^^^
->
-> Can this dereference a NULL css pointer?  The function checks css for
-> NULL at line 42 with "if (css && css_tryget(css))", which suggests css
-> can be NULL.  If a BPF program calls this function with a NULL css,
-> wouldn't it crash here before reaching that check?
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Here css passed as an argument to bpf_get_mem_cgroup() can't be NULL,
-because the BPF verifier guarantees that it's a valid css pointer.
+On Tue, 28 Oct 2025 14:33:45 +0800 you wrote:
+> In the btf_dumper_do_type function, the debug print statement for
+> BTF_KIND_UNKN was missing a closing parenthesis in the output format.
+> This patch adds the missing ')' to ensure proper formatting of the
+> dump output.
+> 
+> Signed-off-by: Zhang Chujun <zhangchujun@cmss.chinamobile.com>
+> 
+> [...]
 
-However the result of rcu_dereference_raw(cgroup->subsys[ssid]) can be
-NULL, this is why the "if (css && css_tryget(css))" check is required
-down below.
+Here is the summary with links:
+  - tools:bpf: fix missing closing parethesis for BTF_KIND_UNKN
+    https://git.kernel.org/bpf/bpf-next/c/88427328e35d
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
