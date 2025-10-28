@@ -1,150 +1,208 @@
-Return-Path: <bpf+bounces-72638-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72639-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 506FCC171AE
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 22:59:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83BC9C17224
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 23:08:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA8BA3B6719
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 21:59:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5232B1B23C63
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 22:08:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB4FC30100D;
-	Tue, 28 Oct 2025 21:59:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D27C3557F4;
+	Tue, 28 Oct 2025 22:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="PaO5IVF6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lF+kY4sp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35611255F28
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 21:59:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D96B0354ACC
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 22:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761688753; cv=none; b=mz+iZrYCFPMFMETq3/bxpq5IeIER1DhRa0ATyZ+gCTKCyZ+0NnIebWVCCSJM34FVjTj2RsLLgnMp8BZQS9NQ6hkMb0i1iny/P7c71FIX71mTEcy9OxbBwCBOeeD5g8QJmyiPHsmXh+hDMz/T6PTgJ7on6inwa7/BWrQ4MmGFOUE=
+	t=1761689284; cv=none; b=arQk3uOrbfRgTG9OZCeiKCrzGxUmctuKUou8pkPzuDCis7zlx3HIc/+1CeIEhILDy3bBZLHrx35sJ1QO++E9FRsW6Mk/1digfUetEas8r+6aVyclbyJjmukvacYqZjMQsL/lUsZEzPKTSrDgC34vb6RZybO6v3DpRZB6R88Qgoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761688753; c=relaxed/simple;
-	bh=C6g0A0cOE4AkGdUOdxz1HhnC5GCH/e/DvvgbquG05wc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y+7ELZShKHr3MaQnr397Hi4ciZRflvaHR3OR255btbwMcPGOOKpkKleNPdWCKq6keLfsKotSWHotB4fr/I+wCIDVGmu7Cy3yVSzrkRA/X41d1ZfiY30gdqDY+LOup6hvfmO1PEYwvs6108TdqRcRbqIYs6yiUalH3oVKLsvSm2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=PaO5IVF6; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b4fb8d3a2dbso4393528a12.3
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 14:59:07 -0700 (PDT)
+	s=arc-20240116; t=1761689284; c=relaxed/simple;
+	bh=xxLjTcs49KVHsuBWJBp8+5TQJEuXYXCZzLvCqnDtD3k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TVOI75l9SHULHUi1u5hs0i17hJUrS3zZae3aUIAxeCkOp4tRwsysyNxLX6rO3YfwWKOw+yWnDsfMjZsR344/fWcLGD4vEXZSQJIgxdLOSGZZs3QA6/tfPFqFW48xEoV+UTW2rW8MMj99ELMeGzxboYIj4RNOtw4Spd9MzwzUSK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lF+kY4sp; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-4270491e9easo5366889f8f.2
+        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 15:08:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1761688747; x=1762293547; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tij0vdBARhZU7Q7nZ9g6692s1qvrdH+ldHofNw13hX0=;
-        b=PaO5IVF6MdVaCkJfbjB51J6cBTJxeU2ymdevJnTSN75mFzRSpxPptftTXVlugJJdz7
-         juax61q9+HlD17loWXC7hKNHGNVxOSVOuoAxnkTv12rmOscDLaPNLctcv1f3TxBEBKuB
-         iw1zPtGvy16Lliy0Lm7lb6c4gVs0de6YS06lV2DvAkkKaejpoOsDjG+mfngje7a4x7Op
-         x1OnyVKer8EfQVaLuaW95EJ4aQSwplCzjKzw4p9zJIQ4GD0gmDyf4CeVC+Bccic1t/xI
-         XgZAZ3G/Uo4eyal1kc4kZrOi41snUNH/iGkIbJIj6ZwryAA861YbUGtzdxT/xBLV85va
-         7oig==
+        d=gmail.com; s=20230601; t=1761689281; x=1762294081; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7V+762A1daN4J9oNjmmT69+inXV9phu8pPtP3M7FAMM=;
+        b=lF+kY4spAEP0CrGbZfaCAYVN7tjQyJ5/IL8S82YAu/KyjKTunYI52v+6qy/xg2iw//
+         2Pi2f7HzzYPuj1lhyuMfD8Rx2xK+JiCvtEJyPmXulM0ugiz773sMLNM4Z2uzDz0LtMQz
+         R1D9Hs53WOC11wBg9ld1ltuUSCRYYkHvQMcQYu0F44xXeWnmoldnNqbTPjdDPxjuoZFc
+         jeber4tOBrgqsoJ/Pcvxy6biJejoZFO5BGnMLtHxMuxh5OxB7JnnuDWextrF1tC/8s2M
+         4653WgUejRDf3dfmvisPN3TAONI0sLwUwAjRtC8ZUqKPjWS8ZxYKQziRHPSMuCOOvEYA
+         +xtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761688747; x=1762293547;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tij0vdBARhZU7Q7nZ9g6692s1qvrdH+ldHofNw13hX0=;
-        b=MTJfjp1phVcryTBqfMKphO+Uj7P9WEmRROOfNCXWTeCc1hl81O4x/ME7eul3aQytBc
-         kLYNJRKuMACpW5v5pkd2tsz26Ls/L9cPbG7cttA2zZpPdcbkUMuRDZONv9eCCBYSscP4
-         a7KMb7cdwQJsY2eKldx24Ym/Ir2EBPXgh/s8HMMQJJiqxHuTByh+43bbT+Nag4wlmFu0
-         SaoWdw/IS9pRapCbdxRX2J1/1IKkEfaTdWMfXRq1fxpkrwt1xzRgPPvXYDmr4RqpP49Z
-         /SAgZ76QFdiVSjJWy03+CHVGakgBEi1CaaKwnLSFQUy4kzdEbsT+a5j6Fz5IwO6yS1he
-         viZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUMhnVCEB7I3+A1jg5L6sM/0nimK64iH3WcNM0WczEUe+aPuTCgJc9MMnFHNEmPUTCr05A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyVhGms8BMcJorT/JO8xtc4N5KyRX2N4Xp9ZsgffFXX9+acg9A0
-	qpWP2GXL51m1xmp17dTORZ3Ku/1svDoOjDdfl3QABPF5QMmHHMCicUmYas8qLd6pApw=
-X-Gm-Gg: ASbGnctwEEbRSomZOnS7RTlebnaQpmnsTnmEnhUNTQhbb0WpnIjSycMFoAkcEePhJUN
-	SEADk8+qO8YEMkn8/lCwobepd1g6xC1eIOD5Ha3Sp7USZMtPNuX7RsxoO3jD7TFU8IHyRcx/gow
-	z9BTrJZb93ajjCfgTV8N7ZLmQA+C/bpN5KmjQILjs6i8z6jWwfuJZNqCLW7rtwvhM1xe57cMMak
-	VdyFpZn+ObW+mgiJJ1YYFCHit2x/c5aCk7sYZXSHkcDNuU8LyrorssPou39akm02uGTnnLicukv
-	eYjIdVoEjFeSm+2vj4yY+47vpA74sTYkVfiqpoVWrFg6PHR1mA7mUOYK81vokQBQjzNXCEr7R47
-	WfnXkM3qXwgIOKpvAXQH6/0FoNiZvMptsK2bjBYw+3Zk/SzAIJQdZcA1pct9W34nbDFQe6t/MNQ
-	xg1/ogibuTSn8RoCep2oLGkBLL1ldanMX813f4V+YOCQWypG3jtJtGphxJqfyK0Z6fpTUnIuOga
-	v59jM8=
-X-Google-Smtp-Source: AGHT+IFm9U3smQa6+NdE28V6JGiqAx7ls0qtePHR+YPiXlASo8b2JGls0Au4/g3Ffd+thu3U7V938w==
-X-Received: by 2002:a17:902:ea0f:b0:246:7a43:3f66 with SMTP id d9443c01a7336-294dedd214fmr7872585ad.7.1761688747430;
-        Tue, 28 Oct 2025 14:59:07 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1156:1:c8f:b917:4342:fa09? ([2620:10d:c090:500::5:1375])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498e45a4csm126965515ad.108.2025.10.28.14.59.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Oct 2025 14:59:06 -0700 (PDT)
-Message-ID: <77a3eb52-b0e0-440e-80a0-6e89322e33e9@davidwei.uk>
-Date: Tue, 28 Oct 2025 14:59:05 -0700
+        d=1e100.net; s=20230601; t=1761689281; x=1762294081;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7V+762A1daN4J9oNjmmT69+inXV9phu8pPtP3M7FAMM=;
+        b=A8LHN1NBWmkRbiLE0rwbfMLpU7mxZ4c/kcdBv/Uyi/2eXYYYyzUKXD6bsbW0DZGIri
+         uZbrQ2vK+oEI0yM67rWvrobJDXL+wUF7Zc+qaNn0MO49kRnevfjIqWZCe4svY+nqIZOy
+         wNE2G/mzAONu9CDFj9S5/3GI3ZzG8TjK7t8nkpgY7DH8H6lhlMMlcQZZntXsReOXijJ6
+         3HdHNw6WJH8PRsEYgCAsjuwk6hQBZuWNv8xZTsyBMtwCvhH/NroaiadT1dis7A7rq63i
+         pqsOJwJbzUtgeQ0bDRlOkjZGBfi4tjoIcikr1plJB2QiQ0zLeUPV+PeomSb0p7ZigGaj
+         piHw==
+X-Forwarded-Encrypted: i=1; AJvYcCUh8+Y2e9c2P95o6y76IhNn4rptODSSxdR343vg2zfH1XND8WnflXFhHzEIAA1OHTRB0Pw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTFR7X2+JYNdVxMy1xE5TWiY5E93UaYDS0D+h9C6qRmxTKE2Ts
+	NRcxhbQu4ScqA2MPWqmFkk5ocWhuKc/UVfd4lYGAC0hpDvMUKzXiR8+6olHnxGuusiPO/p2DtR7
+	HrysTwJA0L+QRud0bK6P0jCltM/VBLHo=
+X-Gm-Gg: ASbGncvtp1ugv6WBq5I4ByPn1N9M/rRHUzTYa3pCOf+yTqQSQ4ppzH1CdQQLJWS65U1
+	+INXK9dwAdu0u6bkmzGaPUflQaJrHaYTcAj+nQEQ1wQ1w3IyCvYsYKGcW8r+gf/0VCM/km+JWk6
+	DyM9BNj38GcLvj3kf8S5e583MFEDm4HW7KjkbffD9fvaIx0sBg9COzp+3QeO4RJlrRyIkjEjdF6
+	sS0y+Nd86zF/KS4XLJ9qCf2CLRv79i+4iLg6JPgjbpVuJQTDVu9AGdSx/j4pQpfRJNDC8PXeYag
+	M53sU6MfNr4enjYPdQ==
+X-Google-Smtp-Source: AGHT+IGICaO3BvlkXeLb+EbVNUOXQ0U63xZwGPTFrBoahOPE5MZiS6EG5jxPBtr1ZSjP3nUamu+JhVo3r42lsbR/Cqg=
+X-Received: by 2002:a5d:5849:0:b0:426:ff7c:86d3 with SMTP id
+ ffacd0b85a97d-429aef78c90mr552970f8f.13.1761689280869; Tue, 28 Oct 2025
+ 15:08:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 02/15] net: Implement
- netdev_nl_bind_queue_doit
-To: Jakub Kicinski <kuba@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Cc: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, davem@davemloft.net, razor@blackwall.org,
- willemb@google.com, sdf@fomichev.me, john.fastabend@gmail.com,
- martin.lau@kernel.org, jordan@jrife.io, maciej.fijalkowski@intel.com,
- magnus.karlsson@intel.com, toke@redhat.com, yangzhenze@bytedance.com,
- wangdongdong.6@bytedance.com
-References: <20251020162355.136118-1-daniel@iogearbox.net>
- <20251020162355.136118-3-daniel@iogearbox.net>
- <412f4b9a-61bb-4ac8-9069-16a62338bd87@redhat.com>
- <34c1e9d1-bfc1-48f9-a0ce-78762574fa10@iogearbox.net>
- <20251023190851.435e2afa@kernel.org>
-Content-Language: en-US
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <20251023190851.435e2afa@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+ <20251027231727.472628-7-roman.gushchin@linux.dev> <CAADnVQKWskY1ijJtSX=N0QczW_-gtg-X_SpK_GuiYBYQodn5wQ@mail.gmail.com>
+ <87qzumq358.fsf@linux.dev>
+In-Reply-To: <87qzumq358.fsf@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 28 Oct 2025 15:07:49 -0700
+X-Gm-Features: AWmQ_bn1qYp03A-J3vHinawzwNNuHcAYrjS8vVp0NbrkX9UuC4qoOTSYxLLTXTE
+Message-ID: <CAADnVQ+iEcMaJ68LNt2XxOeJtdZkCzJwDk9ueovQbASrX7WMdg@mail.gmail.com>
+Subject: Re: [PATCH v2 06/23] mm: introduce BPF struct ops for OOM handling
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, JP Kobryn <inwardvessel@gmail.com>, 
+	linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Song Liu <song@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2025-10-23 19:08, Jakub Kicinski wrote:
-> On Thu, 23 Oct 2025 14:48:15 +0200 Daniel Borkmann wrote:
->> On 10/23/25 12:27 PM, Paolo Abeni wrote:
->>> On 10/20/25 6:23 PM, Daniel Borkmann wrote:
->>>> +	if (!src_dev->dev.parent) {
->>>> +		err = -EOPNOTSUPP;
->>>> +		NL_SET_ERR_MSG(info->extack,
->>>> +			       "Source device is a virtual device");
->>>> +		goto err_unlock_src_dev;
->>>> +	}
->>>
->>> Is this check strictly needed? I think that if we relax it, it could be
->>> simpler to create all-virtual selftests.
->> It is needed given we need to always ensure lock ordering for the two devices,
->> that is, the order is always from the virtual to the physical device.
-> 
-> You do seem to be taking the lock before you check if the device was
-> the type you expected tho.
+On Tue, Oct 28, 2025 at 11:42=E2=80=AFAM Roman Gushchin
+<roman.gushchin@linux.dev> wrote:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>
+> > On Mon, Oct 27, 2025 at 4:18=E2=80=AFPM Roman Gushchin <roman.gushchin@=
+linux.dev> wrote:
+> >>
+> >> +bool bpf_handle_oom(struct oom_control *oc)
+> >> +{
+> >> +       struct bpf_oom_ops *bpf_oom_ops =3D NULL;
+> >> +       struct mem_cgroup __maybe_unused *memcg;
+> >> +       int idx, ret =3D 0;
+> >> +
+> >> +       /* All bpf_oom_ops structures are protected using bpf_oom_srcu=
+ */
+> >> +       idx =3D srcu_read_lock(&bpf_oom_srcu);
+> >> +
+> >> +#ifdef CONFIG_MEMCG
+> >> +       /* Find the nearest bpf_oom_ops traversing the cgroup tree upw=
+ards */
+> >> +       for (memcg =3D oc->memcg; memcg; memcg =3D parent_mem_cgroup(m=
+emcg)) {
+> >> +               bpf_oom_ops =3D READ_ONCE(memcg->bpf_oom);
+> >> +               if (!bpf_oom_ops)
+> >> +                       continue;
+> >> +
+> >> +               /* Call BPF OOM handler */
+> >> +               ret =3D bpf_ops_handle_oom(bpf_oom_ops, memcg, oc);
+> >> +               if (ret && oc->bpf_memory_freed)
+> >> +                       goto exit;
+> >> +       }
+> >> +#endif /* CONFIG_MEMCG */
+> >> +
+> >> +       /*
+> >> +        * System-wide OOM or per-memcg BPF OOM handler wasn't success=
+ful?
+> >> +        * Try system_bpf_oom.
+> >> +        */
+> >> +       bpf_oom_ops =3D READ_ONCE(system_bpf_oom);
+> >> +       if (!bpf_oom_ops)
+> >> +               goto exit;
+> >> +
+> >> +       /* Call BPF OOM handler */
+> >> +       ret =3D bpf_ops_handle_oom(bpf_oom_ops, NULL, oc);
+> >> +exit:
+> >> +       srcu_read_unlock(&bpf_oom_srcu, idx);
+> >> +       return ret && oc->bpf_memory_freed;
+> >> +}
+> >
+> > ...
+> >
+> >> +static int bpf_oom_ops_reg(void *kdata, struct bpf_link *link)
+> >> +{
+> >> +       struct bpf_struct_ops_link *ops_link =3D container_of(link, st=
+ruct bpf_struct_ops_link, link);
+> >> +       struct bpf_oom_ops **bpf_oom_ops_ptr =3D NULL;
+> >> +       struct bpf_oom_ops *bpf_oom_ops =3D kdata;
+> >> +       struct mem_cgroup *memcg =3D NULL;
+> >> +       int err =3D 0;
+> >> +
+> >> +       if (IS_ENABLED(CONFIG_MEMCG) && ops_link->cgroup_id) {
+> >> +               /* Attach to a memory cgroup? */
+> >> +               memcg =3D mem_cgroup_get_from_ino(ops_link->cgroup_id)=
+;
+> >> +               if (IS_ERR_OR_NULL(memcg))
+> >> +                       return PTR_ERR(memcg);
+> >> +               bpf_oom_ops_ptr =3D bpf_oom_memcg_ops_ptr(memcg);
+> >> +       } else {
+> >> +               /* System-wide OOM handler */
+> >> +               bpf_oom_ops_ptr =3D &system_bpf_oom;
+> >> +       }
+> >
+> > I don't like the fallback and special case of cgroup_id =3D=3D 0.
+> > imo it would be cleaner to require CONFIG_MEMCG for this feature
+> > and only allow attach to a cgroup.
+> > There is always a root cgroup that can be attached to and that
+> > handler will be acting as "system wide" oom handler.
+>
+> I thought about it, but then it can't be used on !CONFIG_MEMCG
+> configurations and also before cgroupfs is mounted, root cgroup
+> is created etc.
 
-I believe this is okay. Let's say we have two netdevs, A that is real
-and B that is virtual. User calls netdev_nl_bind_queue_doit() twice in
-two different contexts, 1 with the correct order (A as src, B as dst)
-and 2 with the incorrect order (B as src, A as dst). We always try to
-lock dst first, then src.
+before that bpf isn't viable either, and oom is certainly not an issue.
 
-         1                 2
-lock(dst == B)
-                   lock(dst == A)
-                   is not virtual...
-                   unlock(A)
-lock(src == A)
+> This is why system-wide things are often handled in a
+> special way, e.g. in by PSI (grep system_group_pcpu).
+>
+> I think supporting !CONFIG_MEMCG configurations might be useful for
+> some very stripped down VM's, for example.
 
+I thought I wouldn't need to convince the guy who converted bpf maps
+to memcg and it made it pretty much mandatory for the bpf subsystem :)
+I think the following is long overdue:
+diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
+index eb3de35734f0..af60be6d3d41 100644
+--- a/kernel/bpf/Kconfig
++++ b/kernel/bpf/Kconfig
+@@ -34,6 +34,7 @@ config BPF_SYSCALL
+        select NET_SOCK_MSG if NET
+        select NET_XGRESS if NET
+        select PAGE_POOL if NET
++       depends on MEMCG
+        default n
 
-         1                 2
-                   lock(dst == A)
-lock(dst == B)
-                   is not virtual...
-                   unlock(A)
-lock(src == A)
-
-The check will prevent ABBA by never taking that final lock to complete
-the cycle. Please check and lmk if I'm off, stuff like this makes my
-brain hurt.
+With this we can cleanup a ton of code.
+Let's not add more hacks just because some weird thing
+still wants !MEMCG. If they do, they will survive without bpf.
 
