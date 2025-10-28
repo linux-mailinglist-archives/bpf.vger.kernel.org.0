@@ -1,87 +1,87 @@
-Return-Path: <bpf+bounces-72507-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2215CC13B95
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 10:10:51 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9E45C13BA7
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 10:11:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B71273B2233
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 09:10:48 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4EE0C3543C4
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 09:11:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D11E2BDC34;
-	Tue, 28 Oct 2025 09:10:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FD02ECD32;
+	Tue, 28 Oct 2025 09:10:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H7yBZpRD"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J69usoSV"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47ED62D77F5
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 09:10:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6152D2E8B96
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 09:10:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761642636; cv=none; b=hKkKttYQ/CVaVTxtW5aJqUekHBQabjokIth1OYeUqbVOJ0R+0XdCvhqDUe08f/k8dPzBRVMlaT9tzYjP4yL2hfUpBZ9CU/bGuTihMAg+S+SQaqO/a7QQJezVktzmvdNAa99qhUZbVTbp6CjHIsGSuLJ4+xrjJ1cfSueQZ+lNUrA=
+	t=1761642648; cv=none; b=NoBmyW2QMCBpDQ9NeyvHLquHxBrpv0w9Td43hJRAq/N6pYQl+emVPAtITcBIOaxKC3US8rggsGX+a8H2SilOfMPJg7mS9rZKqTS/Y1PedCcm5mViAMXzRGQbXc4mUiYd0Ph4i8A9bfuUhm8NRjqPEkBDPE4FoV2r4vtWjdWwZoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761642636; c=relaxed/simple;
-	bh=gsaXk6rPSnT3/htmS1wC1UxgQ9W8HC0fe87DUuj7boA=;
+	s=arc-20240116; t=1761642648; c=relaxed/simple;
+	bh=nUvmRIdePhWR1BVd6YS9hQ9Nhkp7ylTEdot9/hR9dxQ=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=iF4I6hD7TgUU63qJR4OeNrx5J0d5jyDRLMPUnfnsf951LnZjSRUHrgFsZkglZRPVnMWhNVc/l0Dow83Iohbdo2l26R+ITCtVurAAjnc1+d82mdEH835XzdrSKkq5L7XhNW9/XhVP9sqGvsUsqN+Y7eoE3s8Tru7ge3+zHyjfCQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H7yBZpRD; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=JI5RGFSsNUXZjX8CUT/TXLEX6KLJ1ddSCEbyHG9q97m0JgqoanSZXHDwlxrN18tgPr8CoC7/CV/FtuR/toclglpzw0odBCTgz1UKx0uv1imUehxjjHpwMxU4lsBwIHmXAvFJ0N6xGBz5E12HQf+OdLLBtNa9daDsAaMRx/geEaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=J69usoSV; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1761642633;
+	s=mimecast20190719; t=1761642645;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9fC2VCoLVnfLvc+GVN6vMzms7DTor0VnmsdHYFXK6aw=;
-	b=H7yBZpRDmG6FDvDNe1OUeNStN7meFo7sma3g0PNcS3W6GigR8K4PMCOX90Y4SobWXlnDXa
-	/O4EjRe9ZvqXEfr/yyvLmyEG5bVdYkStdg8MFuzYjqvPrfKQPCHKCdNvGbXga3hGr3LUH4
-	0OoSC1JOqCSpffsOmWT9mwrIfhONPic=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=2jISGdCb1GJlrcq0k79tPP36lvaZ1ZSwf/Nio4tsSv8=;
+	b=J69usoSV9WLiq38JTKJWuWL1kRLEvdmzZWkz2kvhuXVoY+M4Z0/NQAjX54tbzCziznT2U3
+	uFCDY+R++rxCTMDoelA/pqkYbL6TFH8XX39jT5pn3pJs3+wrpRKRBxjdVJ9M/7AuywBOSs
+	DajaVBqXbU8gfwuLNXzIyMWy1Q9XWa0=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-170-aQnviCjIMi2j_bsSnZaEfg-1; Tue, 28 Oct 2025 05:10:31 -0400
-X-MC-Unique: aQnviCjIMi2j_bsSnZaEfg-1
-X-Mimecast-MFC-AGG-ID: aQnviCjIMi2j_bsSnZaEfg_1761642631
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-b6d7ad47b58so336874466b.1
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 02:10:31 -0700 (PDT)
+ us-mta-614-oN-8G8OZNiKufFuuIAXs9A-1; Tue, 28 Oct 2025 05:10:43 -0400
+X-MC-Unique: oN-8G8OZNiKufFuuIAXs9A-1
+X-Mimecast-MFC-AGG-ID: oN-8G8OZNiKufFuuIAXs9A_1761642642
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-634cdb5d528so7703648a12.1
+        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 02:10:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761642631; x=1762247431;
+        d=1e100.net; s=20230601; t=1761642642; x=1762247442;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9fC2VCoLVnfLvc+GVN6vMzms7DTor0VnmsdHYFXK6aw=;
-        b=F5I0oUU+0OGZsL3quvC1kyg93KXunV5zDlDNbRIha7u6zmEOqcG3A4T46JHdNcvMX4
-         lUneOYWDuozqGPyzek+TTcNJQ8xFhdDhMMCzvDTqx98GDSkd9tgauHapO5BhEnG/B8GU
-         LPlC/gcvdrUx0fi2vawWUjOQ9EryA/nUWOj54en/ZBGCHKOoo2UjaM7crognVavhIBI8
-         IuY1vY7FKExMeY2MVTtRrv3+EQz0vJA5a4V1aTy8oMvD3Aw6QSNLH5OMXWLCMz3jIEIR
-         63zu0JY9+OIxFJeEU+eV9WlftS3HkwVdFLe4ZfN992QD8CVSAweDqUL/Lz3yXZPKG4MX
-         g2iA==
-X-Forwarded-Encrypted: i=1; AJvYcCWZyDcPdVrtSL8CkMeJcA/YHHhrjhg13jOsGljFsNAfbM1ddBRoCl+jsdylUJjoSW+M4yI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YycMemGyXBcHtmAruNJqwZWXBeNYGokrf052oKfdmycrPiKxW1x
-	fPOrU/dyFFLW6eVmvEVSZAVn9wi+J44AK1IOmNxF/bYAldHtmmwsH59lwDDqfGgnQziLEUBsPbK
-	qMG9iflbiEytrU9CFSQFu+FjMfmHiNASDayZo/VOYrFWpbq19ajAj8g==
-X-Gm-Gg: ASbGncvtgOt4CicZle8NaEi6JfVRHc/hi8/vuPp/QX4/RwkMB8R0l0nBSs8rglxp0ua
-	m8mwVUTb85W/eN183PPpSPJLzdGauRERSxqtkdJviS1gkrSSJ3eqsX+FiQF7zqovMMcGdnIWnIg
-	ZBJw7MnhnK+54SbCPhLY9E5OI3fWSaHfiv3PGlv2q9FjCq0gqx6l/l946+1l2tAT/tJcXTvmq/x
-	pTHk5gONnuudtMa48d/frXr4kgwBeaJvXAjqKE1Qzf7v+WHfQGbALXcYF1f88RquN4XeBSLrkDO
-	OEu9fby6qV85x/8IecWRvWdrJZyMksaqhBxGelYuM/mZIBSv8KqljaOnCPQdy4dOMSbx6MHDAe5
-	ZTqMMEbljH+xjmTYRv3FhX40=
-X-Received: by 2002:a17:906:7314:b0:b6d:5f02:51e1 with SMTP id a640c23a62f3a-b6dba48ed89mr308758366b.20.1761642630690;
-        Tue, 28 Oct 2025 02:10:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHp5fIM3h+FEyqEOS5MHMS5ieohkbVb2Z5rr/lbPP90LvTja8uJXC93IQE7iLbY3k1MDqtHAA==
-X-Received: by 2002:a17:906:7314:b0:b6d:5f02:51e1 with SMTP id a640c23a62f3a-b6dba48ed89mr308756366b.20.1761642630332;
-        Tue, 28 Oct 2025 02:10:30 -0700 (PDT)
+        bh=2jISGdCb1GJlrcq0k79tPP36lvaZ1ZSwf/Nio4tsSv8=;
+        b=FNNCTitpN2GjUHQVpiMq6GL81gikSyECwk/Je/Rqq8XMF3SagfulcYR1WzpveWMLNG
+         c3iQRdWNu/VRMuXExaFE0MPlxG1ZLL4F/u3LDXFkvo31fZCJFuxZAe5DgjW7hRVCmQlC
+         /vurhnlOkoeET5yhBj9DUf0c8rNWjvmA51GI12HeIaO6zzZ4DANq9T2C/WkexWwxDP3r
+         oIL36mzGrJl7kZbm7HRI/VfEBO2jgIj1evTboii1UUjPpZop7N5NZTMp4LY46HITD28V
+         jOrXhUfmjbv8ZuQ4aH734vQQ+zw3LPNtCC9EGElXW8vdm99WgrKb2JoimjHPTTDl87E3
+         ESdg==
+X-Forwarded-Encrypted: i=1; AJvYcCW/aPJ6nWB5UDsNfdRcqqdEERVLoOytznJnUcO1dF30DPQkree7Wd1zUc54Apezpqx0Te4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqhWoTHFsjCgyQp2fkHhUrZ3qvAzavWDqnZT0T2M5Q7dExH/zz
+	O13ym9sbTKB2PIW0aJgoLlUsOk1n2vTKBfyUl7oGC1E7fxXQEcCxfXh/k1PV6lyXlNynt9AksnH
+	thcAH2rSdJVtc2IYTA2mUTpE0AFxayJn9wSxFxsxCjbpLc+mw9Ar7mg==
+X-Gm-Gg: ASbGncuOdTDw+4u6r193+l1j74C9wBbwqSusKXnDWo8fgeqcg3j/g1Q1zEwaf5rAKHu
+	1XqRpCMqfLyzbi2NTXt9eFctcG9+5CQsN8eyT75P98MOAa8vOnNq/UMPZpORpSf3ATyk6N9Xwbl
+	o14CvQkwrGMANQbQCA7piEkcu/H67cZp3kPCrvExaNSXhxE9qQq7K11btVjkNxgyaXyCZ1aZAnH
+	+pdhxGzAHiBFwXrcleYVPHrIhDGZY6CBZMX4CwprLZ7mHZW/eTz2jPn5E0bwW5CvwRNc6HW8VNR
+	4OupQVqvrOtFsA2UWwhmnO76V20HOY+6WHNDyj0P6FGI71tvJhFKX7UPmcN5lnweYthGv8HlIpY
+	m4aDT+g4Z/h4NSoPf5tDaSxU=
+X-Received: by 2002:a05:6402:3551:b0:63b:f48d:cf46 with SMTP id 4fb4d7f45d1cf-63f4bcb889dmr2198785a12.8.1761642642426;
+        Tue, 28 Oct 2025 02:10:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGYL1I7iYELO1BGl1eN/tsiGHTTVmgI6PfKI6Bfdq9lP4t6LQVqj/exevSCIOYmz6JDfKXGcg==
+X-Received: by 2002:a05:6402:3551:b0:63b:f48d:cf46 with SMTP id 4fb4d7f45d1cf-63f4bcb889dmr2198759a12.8.1761642641927;
+        Tue, 28 Oct 2025 02:10:41 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b6d8548ed9asm1045251566b.74.2025.10.28.02.10.29
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6402a6be2eesm1007717a12.16.2025.10.28.02.10.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Oct 2025 02:10:29 -0700 (PDT)
+        Tue, 28 Oct 2025 02:10:41 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id C0E5E2EAC74; Tue, 28 Oct 2025 10:10:28 +0100 (CET)
+	id 9DF882EAC76; Tue, 28 Oct 2025 10:10:40 +0100 (CET)
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To: Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org
 Cc: Jesper Dangaard Brouer <hawk@kernel.org>, Eric Dumazet
@@ -91,14 +91,14 @@ Cc: Jesper Dangaard Brouer <hawk@kernel.org>, Eric Dumazet
  makita.toshiaki@lab.ntt.co.jp, toshiaki.makita1@gmail.com,
  bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, kernel-team@cloudflare.com
-Subject: Re: [PATCH net V2 1/2] veth: enable dev_watchdog for detecting
- stalled TXQs
-In-Reply-To: <176159553266.5396.10834647359497221596.stgit@firesoul>
+Subject: Re: [PATCH net V2 2/2] veth: more robust handing of race to avoid
+ txq getting stuck
+In-Reply-To: <176159553930.5396.4492315010562655785.stgit@firesoul>
 References: <176159549627.5396.15971398227283515867.stgit@firesoul>
- <176159553266.5396.10834647359497221596.stgit@firesoul>
+ <176159553930.5396.4492315010562655785.stgit@firesoul>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date: Tue, 28 Oct 2025 10:10:28 +0100
-Message-ID: <87ecqne6ij.fsf@toke.dk>
+Date: Tue, 28 Oct 2025 10:10:40 +0100
+Message-ID: <87bjlre6i7.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -110,37 +110,65 @@ Content-Transfer-Encoding: quoted-printable
 
 Jesper Dangaard Brouer <hawk@kernel.org> writes:
 
-> The changes introduced in commit dc82a33297fc ("veth: apply qdisc
-> backpressure on full ptr_ring to reduce TX drops") have been found to cau=
-se
-> a race condition in production environments.
+> Commit dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to
+> reduce TX drops") introduced a race condition that can lead to a permanen=
+tly
+> stalled TXQ. This was observed in production on ARM64 systems (Ampere Alt=
+ra
+> Max).
 >
-> Under specific circumstances, observed exclusively on ARM64 (aarch64)
-> systems with Ampere Altra Max CPUs, a transmit queue (TXQ) can become
-> permanently stalled. This happens when the race condition leads to the TXQ
-> entering the QUEUE_STATE_DRV_XOFF state without a corresponding queue wak=
-e-up,
-> preventing the attached qdisc from dequeueing packets and causing the
-> network link to halt.
+> The race occurs in veth_xmit(). The producer observes a full ptr_ring and
+> stops the queue (netif_tx_stop_queue()). The subsequent conditional logic,
+> intended to re-wake the queue if the consumer had just emptied it (if
+> (__ptr_ring_empty(...)) netif_tx_wake_queue()), can fail. This leads to a
+> "lost wakeup" where the TXQ remains stopped (QUEUE_STATE_DRV_XOFF) and
+> traffic halts.
 >
-> As a first step towards resolving this issue, this patch introduces a
-> failsafe mechanism. It enables the net device watchdog by setting a timeo=
-ut
-> value and implements the .ndo_tx_timeout callback.
+> This failure is caused by an incorrect use of the __ptr_ring_empty() API
+> from the producer side. As noted in kernel comments, this check is not
+> guaranteed to be correct if a consumer is operating on another CPU. The
+> empty test is based on ptr_ring->consumer_head, making it reliable only f=
+or
+> the consumer. Using this check from the producer side is fundamentally ra=
+cy.
 >
-> If a TXQ stalls, the watchdog will trigger the veth_tx_timeout() function,
-> which logs a warning and calls netif_tx_wake_queue() to unstall the queue
-> and allow traffic to resume.
+> This patch fixes the race by adopting the more robust logic from an earli=
+er
+> version V4 of the patchset, which always flushed the peer:
 >
-> The log message will look like this:
+> (1) In veth_xmit(), the racy conditional wake-up logic and its memory bar=
+rier
+> are removed. Instead, after stopping the queue, we unconditionally call
+> __veth_xdp_flush(rq). This guarantees that the NAPI consumer is scheduled,
+> making it solely responsible for re-waking the TXQ.
 >
->  veth42: NETDEV WATCHDOG: CPU: 34: transmit queue 0 timed out 5393 ms
->  veth42: veth backpressure stalled(n:1) TXQ(0) re-enable
+> (2) On the consumer side, the logic for waking the peer TXQ is moved out =
+of
+> veth_xdp_rcv() and placed at the end of the veth_poll() function. This
+> placement is part of fixing the race, as the netif_tx_queue_stopped() che=
+ck
+> must occur after rx_notify_masked is potentially set to false during NAPI
+> completion.
+>  This handles the race where veth_poll() consumes all packets and complet=
+es
+> NAPI before veth_xmit() on the producer side has called netif_tx_stop_que=
+ue().
+> In this state, the producer's __veth_xdp_flush(rq) call will see
+> rx_notify_masked is false and reschedule NAPI. This new NAPI poll, even i=
+f it
+> processes no packets, is now guaranteed to run the netif_tx_queue_stopped=
+()
+> check, see the stopped queue, and wake it up, allowing veth_xmit() to pro=
+ceed.
 >
-> This provides a necessary recovery mechanism while the underlying race
-> condition is investigated further. Subsequent patches will address the ro=
-ot
-> cause and add more robust state handling.
+> (3) Finally, the NAPI completion check in veth_poll() is updated. If NAPI=
+ is
+> about to complete (napi_complete_done), it now also checks if the peer TXQ
+> is stopped. If the ring is empty but the peer TXQ is stopped, NAPI will
+> reschedule itself. This prevents a new race where the producer stops the
+> queue just as the consumer is finishing its poll, ensuring the wakeup is =
+not
+> missed.
 >
 > Fixes: dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to =
 reduce TX drops")
