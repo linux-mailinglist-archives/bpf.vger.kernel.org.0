@@ -1,116 +1,162 @@
-Return-Path: <bpf+bounces-72590-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72591-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DB11C15E8E
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:45:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17DBBC15F42
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:52:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D3C64342BA7
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 16:45:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B52A53BC84D
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 16:45:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9E37341AA0;
-	Tue, 28 Oct 2025 16:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624463446BF;
+	Tue, 28 Oct 2025 16:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KHIDCTun"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e5dBpYUL"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF7920013A
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 16:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48882C0286;
+	Tue, 28 Oct 2025 16:45:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761669927; cv=none; b=CLfjgNdN/v3bS3qu9M9jo0hQ60gYXHeJZfMrLhwsrAlVuDOwbMB+WBU7VszcZ9yIZCck6tpEvtgNS9Q61TFnkFlO2i6VckvWJZnMvjCpzyXgxSFSK5RAazlqJDiDkLseYvHXxk4tBxI9lBzIp41INkBWOINsj4DHhWx9QsDwbRE=
+	t=1761669941; cv=none; b=YExtVBQjkr+TcQDXFtQ6JUY82W3dI51C51GK59fXa1fKWzKGLT1lPh2Dkpw8tKZM2qgbHBqGcHeVnhYqxrcFvCWq3yARXu8IvZ6lxhUMxTXa/GJMARbhswNUk2yfgSfWwwBFUk5xNqrArZD6qGSNuQoBtcaUvhVyCtdJJCQyv20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761669927; c=relaxed/simple;
-	bh=we7dWev+dyTeCybOlXST9gtiRRywcl7qxWSX7OCQOzE=;
+	s=arc-20240116; t=1761669941; c=relaxed/simple;
+	bh=yZ330NEhhUvCg2S6l+06VAtonuQXNHscx1TyS7+WG44=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=II78MYJv1XRU2cJmuhMuA9LRRJHOWoe3n75g2pY4ZcNnv4vK6UszKqC8/RFBV2V2KUhsobknPAx/BMdufeCgwlqk4Mfo96dWQ+JLkAnBo+v2B9cdeGlUevMtQT1pd4+7Q3jnFNp7FgQSCmNXYKUP5hBGSiozcsYEh3GUFsZ26zA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KHIDCTun; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BE9AC4CEE7;
-	Tue, 28 Oct 2025 16:45:25 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=iOMcpPWXouzVnhI5Pk8z7aXoLQj2JlnIppGREzmqszvog3tO8hb4JqG3latFAAMBoWKxnQAOzxNWGDe9QKi8zsJLUaVPi6K03Epy+verywomD98ziRJ8TggQo0Z+zxwex9aXAl2mKuCiAVm8hSG76bs6o6PNUsRsIfTquEMPyI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e5dBpYUL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36BDEC4CEE7;
+	Tue, 28 Oct 2025 16:45:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761669927;
-	bh=we7dWev+dyTeCybOlXST9gtiRRywcl7qxWSX7OCQOzE=;
+	s=k20201202; t=1761669941;
+	bh=yZ330NEhhUvCg2S6l+06VAtonuQXNHscx1TyS7+WG44=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=KHIDCTun6aL6c0tXuxUXppxXyZEi4fNQWdHux98IyCoTqNElWMFNt6D+O2WNAnGUK
-	 DbXQ0wmQZmyxiExUaXWB00ln04uNpZ9LrzlpiA+W5JWA4mC2pWS8k8xG3yfy4dnARc
-	 gPZqsjWFFprh1YsHjvaJRIcQDEcM+KUaUW3FuK9CLSAlna8/UpQpvFUXJPxEg6T5ax
-	 ON5O+4ZezJAl1RW35yRGyT5+d5USAmVYOLgK/VpE5F5grxGKXKKzIftYzSVcufUdMn
-	 9IOWeTZkrvObqv+RJr7Y0bKr3xlDqLqcFNgSEltlYM0muChIhkxOv9FQQ5cAOhlFrG
-	 xrbDKTCknxRJQ==
-Content-Type: multipart/mixed; boundary="===============3825646978135117536=="
+	b=e5dBpYULUxrSnDnOQzz+uIp+OJ5vu4cRX1YYbMz1hXEUgHJogVwcg3cSFTcYo+muG
+	 kicl25pvM5xZao9UrOQU+5W2iaPV/ocTE6zR4/cPGm+YlEaRVzpcIxTDWr3zzfuBmD
+	 W7CGS2PxAddzt+lMCJSx/hS3/d032DGhnyLzaJI/QY5578+shywIBwpwJgVvnIt4K1
+	 7UNxhETCQZNyhJmh7diGjegG/E7Vqmq+zJQuUEVCgU4lgx2WHUykrVL9/6QKLDEorD
+	 IobV54JNmhd1Hpc/gUeaUZWXFgIdlGXRg9VXOHo+GAowXUiNK1hzbJIXUNyiXEqZkl
+	 QHcNvVh+3e2Ig==
+Content-Type: multipart/mixed; boundary="===============0226383592031790764=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <478a9790d452e3ab4c846f673e7e6ed1b4cb347adfe9628d0fc71256d7f2edcc@mail.kernel.org>
-In-Reply-To: <20251028155709.1265445-3-alan.maguire@oracle.com>
-References: <20251028155709.1265445-3-alan.maguire@oracle.com>
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Test parsing of (multi-)split BTF
+Message-Id: <5b54b160eacd11f9b17b8fed22313aa0c7344843b2a4d0b1a33553545b1b9a8e@mail.kernel.org>
+In-Reply-To: <20251028160200.4204-2-fmancera@suse.de>
+References: <20251028160200.4204-2-fmancera@suse.de>
+Subject: Re: [PATCH 2/2 bpf] xsk: avoid data corruption on cq descriptor number
 From: bot+bpf-ci@kernel.org
-To: alan.maguire@oracle.com,andrii@kernel.org
-Cc: eddyz87@gmail.com,ast@kernel.org,daniel@iogearbox.net,martin.lau@linux.dev,acme@kernel.org,ttreyer@meta.com,yonghong.song@linux.dev,song@kernel.org,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,ihor.solodrai@linux.dev,bpf@vger.kernel.org,alan.maguire@oracle.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Tue, 28 Oct 2025 16:45:25 +0000 (UTC)
+To: fmancera@suse.de,bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,magnus.karlsson@intel.com,maciej.fijalkowski@intel.com,sdf@fomichev.me,kerneljasonxing@gmail.com,fw@strlen.de,fmancera@suse.de,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Tue, 28 Oct 2025 16:45:40 +0000 (UTC)
 
---===============3825646978135117536==
+--===============0226383592031790764==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
 
 ```
-commit 8509f4500fb2dfaec7a383a802dffaf84995c434
-Author: Alan Maguire <alan.maguire@oracle.com>
+commit 517548717cd8f9023f71443add6daabf21ef7135
+Author: Fernando Fernandez Mancera <fmancera@suse.de>
 
-selftests/bpf: Test parsing of (multi-)split BTF
+xsk: avoid data corruption on cq descriptor number
 
-This commit adds test coverage for parsing split BTF data that has been
-written to files. It writes raw BTF data to temporary files, parses them
-back, and compares the parsed results to the original in-memory BTF.
+This patch fixes data corruption in AF_XDP by migrating descriptor
+information from skb->cb (which can be overwritten by other subsystems
+after transmit) to skb XDP extension.
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/btf_split.c b/tools/testing/selftests/bpf/prog_tests/btf_split.c
-> index 3696fb9a0..ee1481c5f 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/btf_split.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/btf_split.c
+Closes: https://lore.kernel.org/netdev/0435b904-f44f-48f8-afb0-68868474bf1c@nop.hu/
+
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 7b0c68a70..4f3fc005d 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
 
 [ ... ]
 
-> @@ -123,6 +155,35 @@ static void __test_btf_split(bool multi)
->  "	int uf2;\n"
->  "};\n\n", "c_dump");
+> @@ -727,16 +730,32 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+>  				return ERR_PTR(err);
+>  		}
+>  	} else {
+> +		struct xdp_skb_ext *ext;
+> +
+>  		xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
+>  		if (!xsk_addr)
+>  			return ERR_PTR(-ENOMEM);
 >
-> +	/* write base, split BTFs to files and ensure parsing succeeds */
-> +	if (btf_raw_write(btf1, base_btf_file) != 0)
-> +		goto cleanup;
-> +	if (btf_raw_write(btf2, split_btf_file) != 0)
-> +		goto cleanup;
-> +	btf4 = btf__parse(base_btf_file, NULL);
-> +	if (!ASSERT_OK_PTR(btf4, "parse_base"))
-> +		goto cleanup;
-> +	btf5 = btf__parse_split(split_btf_file, btf4);
-> +	if (!ASSERT_OK_PTR(btf5, "parse_split"))
-> +		goto cleanup;
-> +	if (multi) {
-> +		if (btf_raw_write(btf3, multisplit_btf_file) != 0)
-> +			goto cleanup;
-> +		btf6 = btf__parse_split(multisplit_btf_file, btf5);
-> +		if (!ASSERT_OK_PTR(btf5, "parse_multisplit"))
-                                 ^^^^^
+> +		ext = skb_ext_find(skb, SKB_EXT_XDP);
+> +		if (!ext) {
+> +			ext = skb_ext_add(skb, SKB_EXT_XDP);
+> +			if (!ext)
+> +				return ERR_PTR(-ENOMEM);
+                                ^^^^
 
-Should this check btf6 instead of btf5? The line above assigns to btf6,
-but this assertion checks btf5 which was already validated earlier.
-Following the pattern from the btf4 and btf5 checks above, it looks like
-this should be checking the newly assigned btf6 pointer.
+In xsk_build_skb_zerocopy(), when skb_ext_add() fails after the
+kmem_cache_zalloc() succeeds, does this leak the xsk_addr allocation?
 
-> +			goto cleanup;
-> +	} else {
-> +		btf6 = btf5;
-> +	}
+The xsk_addr node is allocated first, then if skb_ext_add() returns
+NULL, the function returns ERR_PTR(-ENOMEM) without freeing xsk_addr.
+It hasn't been added to any list yet, so nothing will clean it up.
+
+> +			memset(ext, 0, sizeof(*ext));
+> +			INIT_LIST_HEAD(&ext->addrs_list);
+> +			ext->num_descs = 1;
+> +		} else if (ext->num_descs == 0) {
+> +			INIT_LIST_HEAD(&ext->addrs_list);
+> +			ext->num_descs = 1;
+> +		}
+> +
+>  		/* in case of -EOVERFLOW that could happen below,
+>  		 * xsk_consume_skb() will release this node as whole skb
+>  		 * would be dropped, which implies freeing all list elements
+>  		 */
+>  		xsk_addr->addr = desc->addr;
+> -		list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
+> +		list_add_tail(&xsk_addr->addr_node, &ext->addrs_list);
+> +		xsk_inc_num_desc(skb);
+>  	}
+
+[ ... ]
+
+> @@ -804,6 +823,11 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>  			if (unlikely(err))
+>  				goto free_err;
+>
+> +			if (!skb_ext_add(skb, SKB_EXT_XDP)) {
+> +				err = -ENOMEM;
+> +				goto free_err;
+> +			}
+> +
+                ^^^^
+
+In xsk_build_skb() on the first-descriptor path, when skb_ext_add()
+succeeds, does the extension get initialized?
+
+The code adds the extension but doesn't capture the returned pointer
+or initialize it. Later, xsk_destruct_skb()->xsk_cq_submit_addr_locked()
+will read ext->num_descs, and for multi-buffer packets, subsequent
+descriptors will find this extension and try to use ext->addrs_list.
+
+Without initialization, ext->num_descs contains garbage which could be
+interpreted as > 1, and ext->addrs_list is an uninitialized list_head.
+This can cause the destructor to iterate a corrupt list, or
+list_add_tail() in the multi-buffer path to corrupt memory.
+
+Compare with the subsequent-descriptor path at lines 856-870 where
+the extension is properly initialized with memset() and INIT_LIST_HEAD()
+when added.
+
+>  			xsk_skb_init_misc(skb, xs, desc->addr);
+>  			if (desc->options & XDP_TX_METADATA) {
+>  				err = xsk_skb_metadata(skb, buffer, desc,
 
 [ ... ]
 
@@ -121,8 +167,8 @@ this should be checking the newly assigned btf6 pointer.
 AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
 See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-In-Reply-To-Subject: `selftests/bpf: Test parsing of (multi-)split BTF`
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18881352510
+In-Reply-To-Subject: `xsk: avoid data corruption on cq descriptor number`
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18881598580
 
---===============3825646978135117536==--
+--===============0226383592031790764==--
 
