@@ -1,100 +1,128 @@
-Return-Path: <bpf+bounces-72585-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72586-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0DA6C15D68
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:35:17 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FEBAC15D31
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:31:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 609C0189A8FE
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 16:31:32 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E173D354E7C
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 16:31:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0403A33F8C6;
-	Tue, 28 Oct 2025 16:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D578293B5F;
+	Tue, 28 Oct 2025 16:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k7twYd5N"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UsFMAVyw"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7548129ACC0;
-	Tue, 28 Oct 2025 16:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D775223DFF
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 16:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761669030; cv=none; b=rGa0kb3k+wNbNT11nNlnpYXdLJomVHR4LNQUEKjMjNlynHeQ/dcZmvmXESuFsY9Z8SkRWVCEFYUqDHOeYLrLYend6po43aed8hOBzdmmwfYtqKudTr4BmyTfI/LbW6RiwNGTKzy9ZUL8oE8+rd6abAnjUCLV0fN8IX2lFo976Ak=
+	t=1761669110; cv=none; b=Gw61h44P7Jlp7oc9ueXzyEIPyH5oLfUuvZpGadhw7rAowxX5K3Z1yufPQYHfgBz4YOB/3Utsw7S4nkQIYsEyj+EBkVKlEyg+T93fCWNYkAX+mX3+cyWFvEJZ/nP/y0qPjUlBCE4u5csCNtYWg7ZIX/mhRAA4HxQDk4ft0OqkaXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761669030; c=relaxed/simple;
-	bh=Ju7I/4XLe5wPX3bvjVLHfU8M+za/o+NbpqhxOXUvqR0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=NSwHDSV7lMiv1Kn2jeSPN6kUi3PWQfrofm413UoiwsQM80iHxKJzIPIT/t/rLU6jTB7z957T4SLPRQKhp9kdw3lWkZxcfSnIuXO+Kj5mpn6rVaKiT7Y4lZ5bvNgWVORz4IOWrzZoA6lpKmUH3oBJA2Y3tjSKOQRA6f31GudTCuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k7twYd5N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 080AAC113D0;
-	Tue, 28 Oct 2025 16:30:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761669030;
-	bh=Ju7I/4XLe5wPX3bvjVLHfU8M+za/o+NbpqhxOXUvqR0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=k7twYd5Nx5zVwcObQ7aVEzjMO8kw630B/sM4yLoO2/g8WAAwqseUoYw90RyF+RTG6
-	 lYmG4if8/fbxqjoS5NebhIFr5/ZRFe+1+MKu2gFoz9SciQWV6x+OXJYWbrwZLQiiZu
-	 l3Oisy9fFg2gRDUREaQ/J8aEMx8mi5D/oywzPD2gK2vLvF/oyRJ9s1W0aq70pDxswo
-	 IyKQSBbIvH2UFDiU98q3hJFHo0AFK1oIkJrsv9HdSlCNVzLjlGWut0+wL1NHWdQ//e
-	 WR7f66Cth+5P0jPbaDX4fozMUnh+NcwEwSIHXc6z36bLxrypb8QR8RIxXjpgJ6bhQ3
-	 j3HrGbaiHfoYA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAE4E39EFA69;
-	Tue, 28 Oct 2025 16:30:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1761669110; c=relaxed/simple;
+	bh=0PucAMAox93xgjGrD5pR5CZazcj6sVnwd0fqWCdhArI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=SL7sa/JbTAhQcNSMtBlmEjgP+qpXb4doHzssBDzGpbsA/S6QgdHYBezD2Cn3nynji5qmC3aCu2f/TQuAIhpd1gf+ynajK5VYHrMkbMbv2viBEBmCbzH81tBYdmehBuHBABlrEVryrLtK9LsYpK/ZZU0yV5sakixkOFuO4ScvA4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UsFMAVyw; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761669105;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HWSSRHmArf/3utDL/ehBcqRMhr+v6BRpRpOeVW9o8r8=;
+	b=UsFMAVywaT8IpkoioAmt6vXomW1hLiGke5lnfdOFm6CT75B6FrTgPwndxR0Ld4UWB+GB6Z
+	kNutJOjE/CXohXqu1fHCO5Wo3THXTOtts+MdPLoZN5i9dq8L67okdhsPKyc4EOyrIZ69wY
+	ts6Gbva7I2Aaj5nD5s2hWpcBahe3SXQ=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: bot+bpf-ci@kernel.org
+Cc: akpm@linux-foundation.org,  linux-kernel@vger.kernel.org,
+ ast@kernel.org, surenb@google.com, mhocko@kernel.org,
+ shakeel.butt@linux.dev, hannes@cmpxchg.org, andrii@kernel.org,
+ inwardvessel@gmail.com, linux-mm@kvack.org, cgroups@vger.kernel.org,
+ bpf@vger.kernel.org, martin.lau@kernel.org, song@kernel.org,
+ memxor@gmail.com, tj@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
+ yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCH v2 17/23] bpf: selftests: introduce read_cgroup_file()
+ helper
+In-Reply-To: <58dd6b759499f212f626e6d7658dd558b3e6a334e0780898002cb2cb84dbcb85@mail.kernel.org>
+	(bot's message of "Mon, 27 Oct 2025 23:48:24 +0000 (UTC)")
+References: <20251027232206.473085-7-roman.gushchin@linux.dev>
+	<58dd6b759499f212f626e6d7658dd558b3e6a334e0780898002cb2cb84dbcb85@mail.kernel.org>
+Date: Tue, 28 Oct 2025 09:31:38 -0700
+Message-ID: <87ms5b3s45.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V10 RESEND 1/2] bpf: refactor stack map trace depth
- calculation into helper function
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176166900751.2299764.16778692195336587842.git-patchwork-notify@kernel.org>
-Date: Tue, 28 Oct 2025 16:30:07 +0000
-References: <20251025192858.31424-1-contact@arnaud-lcm.com>
-In-Reply-To: <20251025192858.31424-1-contact@arnaud-lcm.com>
-To: Arnaud Lecomte <contact@arnaud-lcm.com>
-Cc: alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
- andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
- eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, sdf@fomichev.me, song@kernel.org,
- syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
- syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
+bot+bpf-ci@kernel.org writes:
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+> ```
+> commit 712137918bba1b0a9c7c670bab9200b0f0d6a7e8
+> Author: Roman Gushchin <roman.gushchin@linux.dev>
+>
+> bpf: selftests: introduce read_cgroup_file() helper
+>
+> This patch adds a new helper function read_cgroup_file() to read from
+> cgroup control files in BPF selftests. The function opens a file,
+> reads into a buffer, and returns the result.
+>
+>> diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
+>> index 20cede4db..8fb02fe4c 100644
+>> --- a/tools/testing/selftests/bpf/cgroup_helpers.c
+>> +++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+>> @@ -126,6 +126,45 @@ int enable_controllers(const char *relative_path, const char *controllers)
+>>  	return __enable_controllers(cgroup_path, controllers);
+>>  }
+>>
+>> +static size_t __read_cgroup_file(const char *cgroup_path, const char *file,
+>> +				 char *buf, size_t size)
+>> +{
+>> +	char file_path[PATH_MAX + 1];
+>> +	size_t ret;
+>> +	int fd;
+>> +
+>> +	snprintf(file_path, sizeof(file_path), "%s/%s", cgroup_path, file);
+>> +	fd = open(file_path, O_RDONLY);
+>> +	if (fd < 0) {
+>> +		log_err("Opening %s", file_path);
+>> +		return -1;
+>
+> Can __read_cgroup_file() return -1 when its return type is size_t?
+>
+> The function signature declares size_t (unsigned), but returns -1 here.
+> When -1 is implicitly converted to size_t, it becomes SIZE_MAX
+> (18446744073709551615 on 64-bit systems). Callers checking for errors
+> with "if (ret < 0)" will fail because size_t is unsigned, and callers
+> checking "if (ret == -1)" will also fail after the cast.
+>
+>> +	}
+>> +
+>> +	ret = read(fd, buf, size);
+>> +	close(fd);
+>> +	return ret;
+>
+> Does this handle read() errors correctly?
+>
+> The read() syscall returns ssize_t which can be negative on error.
+> Assigning this to size_t (line 143) converts negative error codes into
+> large positive numbers. For example, read() returning -1 becomes SIZE_MAX
+> when stored in ret.
+>
+> Should the return type be ssize_t instead of size_t to properly propagate
+> both success (byte count) and error (negative values) to callers?
 
-On Sat, 25 Oct 2025 19:28:58 +0000 you wrote:
-> Extract the duplicated maximum allowed depth computation for stack
-> traces stored in BPF stacks from bpf_get_stackid() and __bpf_get_stack()
-> into a dedicated stack_map_calculate_max_depth() helper function.
-> 
-> This unifies the logic for:
-> - The max depth computation
-> - Enforcing the sysctl_perf_event_max_stack limit
-> 
-> [...]
-
-Here is the summary with links:
-  - [V10,RESEND,1/2] bpf: refactor stack map trace depth calculation into helper function
-    https://git.kernel.org/bpf/bpf-next/c/e17d62fedd10
-  - [V10,RESEND,2/2] bpf: fix stackmap overflow check in __bpf_get_stackid()
-    https://git.kernel.org/bpf/bpf-next/c/23f852daa4ba
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Correct, fixed to ssize_t. Thanks!
 
