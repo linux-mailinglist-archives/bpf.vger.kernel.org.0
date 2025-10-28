@@ -1,129 +1,156 @@
-Return-Path: <bpf+bounces-72626-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72627-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C24A2C16849
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 19:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D41F9C16879
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 19:43:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC3C71B28E3A
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 18:40:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 582671C21E15
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 18:43:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051EB34F27D;
-	Tue, 28 Oct 2025 18:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E289134FF69;
+	Tue, 28 Oct 2025 18:42:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aPCuih3M"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QEm//4JB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CC4834EEE6
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 18:40:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82E0434EEF2
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 18:42:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761676819; cv=none; b=ZjMHaIykiIXYrsvqCojvWlCOQxRLdL1SySYsBAN68/oH0piOPC8yaVjEO5zbBmAzWlTymf/AAfqdxwQvrjtSaTQ/k3cjNuQcHDuXQULaDmAMSZSjwdjbsl3JI6vWqEkTFE4nhfX1kVTGff+bZRId/gn0knlrwFTTtbBdpHVGWmU=
+	t=1761676958; cv=none; b=hPjZPeNJ0nUyrCkgIlCeOtchGxtX3YPSZ6bBcUHr4BbSwC52aqT122U46TZ8Qxza/kes1aROkJwU5lhStM/Pn7MuvLDCkJ+70GhWmZETc8iAwKG0ZdLlyJ3lmrrPwuRxOEkJkFZXPKEWph3f2Ah0c5NI6iHC3m+YopTOWG3gJnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761676819; c=relaxed/simple;
-	bh=YHUyqG9og7JRiLqH4LyIAka56ptv6pdodMSXVssNBPA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VIhoGRbsRXGdplMNyn5Unw5eD1HBS1GTu6rKICL/zG1eaeRUoMqLX02HxC3GDFrOOPmRA74+1HUtMs2ijqW+DdQQEFpT5HVfOiOimB4u9kAAA1x2GT3DLmTuKxL/IMgrmZP3gqC8ah0w1iovi99eu62ZHsMwwCTHwBroQ2oYvrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aPCuih3M; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-78af743c232so5880920b3a.1
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 11:40:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761676817; x=1762281617; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ReHRtTE3vpAbKBdAM1gtLmprCAAoAlRTRkSZ/pbLtpY=;
-        b=aPCuih3M3sTZfq26ff42uHYNlimbbmyUp3u23K6QobQWTGpkbinrzLU4m/AktGHdyK
-         VL9WaD9M6O+cDDHkWqvVKOzV8MMmjAwMI72Apv9VkMuv4qnN9V/0Ozp3YCh/dCgGqlPV
-         NHUBxLWwEefvlwe7woasAGFljrukNZ/1LfIoEkJScYLLknghxntRn+mpMLAT37ZSQ7fy
-         ug1kXzeKtFr3yy9N5xnRNbv440mEv6OCKvxrXWneMwyqK0kYoQqEOVf5JeNCiBQggm11
-         LFfLFAGZ6ad6BRVu97IqlO3Dk5OHhu7VPdMVXPPlilVhOuXZDXw9Hq9xUflJBEmaA8tb
-         JbHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761676817; x=1762281617;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ReHRtTE3vpAbKBdAM1gtLmprCAAoAlRTRkSZ/pbLtpY=;
-        b=mRR/FxRpv7FIHk39Am+iObUiVEO1OAt6SfKo75qEhds/XZenCELD9uaFtqc61sSuhq
-         OmYVw4SSKkSwwO+cOkpkShQpWLJHTfjqixcvBtIae3Guk35CWmDSb/9EvwgHc3AEq3HL
-         w0f+In2YbSxLaRUjQdMp8iKltM1KFNFRzBabtS+P956WrTBcx1kd1QaKEAGT13QDANaZ
-         N/wMT2x1S1JE4PgrXYMhFWEX9ZBezvfAE4X0QNEmFenUhpcaTl81tt5ru7hm9BI+nWVb
-         AN6gxaAgdYBxeafEdD8P4er1C/V3FyLxEZdvLQIBj8CkGr32fiKW3X4uAtOjpbDH+srr
-         cFcw==
-X-Forwarded-Encrypted: i=1; AJvYcCXytOggQLY+sOiztJfr3ZFcXS0sv/5JjsGNpTLR3DJ1r/PED7sAyUUwkDTFu6x5P9BqylQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDYKTmrmsEv+GaKj+RVD+PKVMJbYv8ltmPSvXaIIrxyZrbdqHJ
-	NbNzIuFqrOC/EK8O7WgF/jceqFDL19L+B+uZCOMQmcXwyrCFaGNh3sOAtAmrpfJTv9QngkxX6Ca
-	sX8BylCFCg3h4j3TUNtA+HmEn6WOe6P4=
-X-Gm-Gg: ASbGncvy8JdDbNJ5O5zYu5DqMaR6H4bjOy0tsMCxonJdTVVKTucPk9DzSsAIzaGB/cc
-	ocs3iBSxLHOIXVPRA1zmsHJnaSpPjKVNrZUAENrRySlngB8oWkTjTg+DxQARrhDTFQxQsU5rzXg
-	uSMpCZO9TkFqU/rGePHUpJJFfb1m/28+jjRDGPEPlegMxUdmXNTCh1ToEgs/ggaKwv7Ysa19ONx
-	N4fl8iKBNjZJkmSmoBoNjh0Re00+Oq04Ay2dc6us0hkgH51APnk0KvwnDUVvfCewwh0vTz/NzSq
-X-Google-Smtp-Source: AGHT+IFpi9zDAw8H+uPYXYR7N1r5jRqU5Ai68jkqn3uM+9psX8uQczEPz/AgjranWwgbURI8mlaG82WgPadfnvyMFso=
-X-Received: by 2002:a17:90b:4c4d:b0:31e:d4e3:4002 with SMTP id
- 98e67ed59e1d1-3403a14377emr52330a91.2.1761676817234; Tue, 28 Oct 2025
- 11:40:17 -0700 (PDT)
+	s=arc-20240116; t=1761676958; c=relaxed/simple;
+	bh=goTC3AtaAi01urtiUtv3DK9rgjalng0u2KmjYfb12ks=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=flR/FzIeE/jD3sbT6OSdV0nK58yAlpOB3vfZkao78bsa9/sVUlyNtJg9lao4qatT+CoLKTO02LaHtHfTiz+I9CxR0wVlJZDpHX8tpdbIYBMSvbof/yxdz8zJmtIz9STnrVoVNZv4itjp6Iek4D+jNkAJw2FFs5w/EuFlHBxcsPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QEm//4JB; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761676954;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UViaiKs97AW130sd1Pv1jMx77Woc0mLfVhtIKZNEsXs=;
+	b=QEm//4JBVdHkp2n7eP7X+898pDWsbWkilRRDP2Ko/YBBo6UKw+UvVX3Asjh0e0UdJCN+6S
+	XOW0V2qu7Tgb+4tEk+vQISKdEdrf+L5RoaD4BtgsZDvTLR8ELwpryoEoajOe5DLGs14lF5
+	fTvPlRyjeTam2lyXWMYKq7qIpjO4VBY=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,  LKML
+ <linux-kernel@vger.kernel.org>,  Alexei Starovoitov <ast@kernel.org>,
+  Suren Baghdasaryan <surenb@google.com>,  Michal Hocko
+ <mhocko@kernel.org>,  Shakeel Butt <shakeel.butt@linux.dev>,  Johannes
+ Weiner <hannes@cmpxchg.org>,  Andrii Nakryiko <andrii@kernel.org>,  JP
+ Kobryn <inwardvessel@gmail.com>,  linux-mm <linux-mm@kvack.org>,  "open
+ list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,  bpf
+ <bpf@vger.kernel.org>,  Martin KaFai Lau <martin.lau@kernel.org>,  Song
+ Liu <song@kernel.org>,  Kumar Kartikeya Dwivedi <memxor@gmail.com>,  Tejun
+ Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 06/23] mm: introduce BPF struct ops for OOM handling
+In-Reply-To: <CAADnVQKWskY1ijJtSX=N0QczW_-gtg-X_SpK_GuiYBYQodn5wQ@mail.gmail.com>
+	(Alexei Starovoitov's message of "Tue, 28 Oct 2025 10:45:47 -0700")
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+	<20251027231727.472628-7-roman.gushchin@linux.dev>
+	<CAADnVQKWskY1ijJtSX=N0QczW_-gtg-X_SpK_GuiYBYQodn5wQ@mail.gmail.com>
+Date: Tue, 28 Oct 2025 11:42:27 -0700
+Message-ID: <87qzumq358.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251027135423.3098490-1-dolinux.peng@gmail.com> <20251027135423.3098490-4-dolinux.peng@gmail.com>
-In-Reply-To: <20251027135423.3098490-4-dolinux.peng@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 28 Oct 2025 11:40:03 -0700
-X-Gm-Features: AWmQ_bkfehzA6_mDWthS_m9oyAgVFVGQGAttnEawAXl4ZiOgz-ClG0bQjogRbQ0
-Message-ID: <CAEf4BzZ+tpT2ViD_zc8mwz260spriYDiPymw3MFsEibRcuqbqg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 3/3] btf: Reuse libbpf code for BTF type sorting
- verification and binary search
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: ast@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Eduard Zingerman <eddyz87@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, Song Liu <song@kernel.org>, 
-	pengdonglin <pengdonglin@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Oct 27, 2025 at 6:54=E2=80=AFAM Donglin Peng <dolinux.peng@gmail.co=
-m> wrote:
->
-> The previous commit implemented BTF sorting verification and binary
-> search algorithm in libbpf. This patch enables this functionality in
-> the kernel.
->
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Alan Maguire <alan.maguire@oracle.com>
-> Cc: Song Liu <song@kernel.org>
-> Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
-> Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
-> ---
-> v2->v3:
-> - Include btf_sort.c directly in btf.c to reduce function call overhead
-> ---
->  kernel/bpf/btf.c | 34 ++++++++++++++++++----------------
->  1 file changed, 18 insertions(+), 16 deletions(-)
->
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 0de8fc8a0e0b..df258815a6ca 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -33,6 +33,7 @@
->  #include <net/sock.h>
->  #include <net/xdp.h>
->  #include "../tools/lib/bpf/relo_core.h"
-> +#include "../tools/lib/bpf/btf_sort.h"
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-I don't believe in code reuse for the sake of code reuse. This code
-sharing just makes everything more entangled and complicated.
-Reimplementing binary search is totally fine, IMO.
+> On Mon, Oct 27, 2025 at 4:18=E2=80=AFPM Roman Gushchin <roman.gushchin@li=
+nux.dev> wrote:
+>>
+>> +bool bpf_handle_oom(struct oom_control *oc)
+>> +{
+>> +       struct bpf_oom_ops *bpf_oom_ops =3D NULL;
+>> +       struct mem_cgroup __maybe_unused *memcg;
+>> +       int idx, ret =3D 0;
+>> +
+>> +       /* All bpf_oom_ops structures are protected using bpf_oom_srcu */
+>> +       idx =3D srcu_read_lock(&bpf_oom_srcu);
+>> +
+>> +#ifdef CONFIG_MEMCG
+>> +       /* Find the nearest bpf_oom_ops traversing the cgroup tree upwar=
+ds */
+>> +       for (memcg =3D oc->memcg; memcg; memcg =3D parent_mem_cgroup(mem=
+cg)) {
+>> +               bpf_oom_ops =3D READ_ONCE(memcg->bpf_oom);
+>> +               if (!bpf_oom_ops)
+>> +                       continue;
+>> +
+>> +               /* Call BPF OOM handler */
+>> +               ret =3D bpf_ops_handle_oom(bpf_oom_ops, memcg, oc);
+>> +               if (ret && oc->bpf_memory_freed)
+>> +                       goto exit;
+>> +       }
+>> +#endif /* CONFIG_MEMCG */
+>> +
+>> +       /*
+>> +        * System-wide OOM or per-memcg BPF OOM handler wasn't successfu=
+l?
+>> +        * Try system_bpf_oom.
+>> +        */
+>> +       bpf_oom_ops =3D READ_ONCE(system_bpf_oom);
+>> +       if (!bpf_oom_ops)
+>> +               goto exit;
+>> +
+>> +       /* Call BPF OOM handler */
+>> +       ret =3D bpf_ops_handle_oom(bpf_oom_ops, NULL, oc);
+>> +exit:
+>> +       srcu_read_unlock(&bpf_oom_srcu, idx);
+>> +       return ret && oc->bpf_memory_freed;
+>> +}
+>
+> ...
+>
+>> +static int bpf_oom_ops_reg(void *kdata, struct bpf_link *link)
+>> +{
+>> +       struct bpf_struct_ops_link *ops_link =3D container_of(link, stru=
+ct bpf_struct_ops_link, link);
+>> +       struct bpf_oom_ops **bpf_oom_ops_ptr =3D NULL;
+>> +       struct bpf_oom_ops *bpf_oom_ops =3D kdata;
+>> +       struct mem_cgroup *memcg =3D NULL;
+>> +       int err =3D 0;
+>> +
+>> +       if (IS_ENABLED(CONFIG_MEMCG) && ops_link->cgroup_id) {
+>> +               /* Attach to a memory cgroup? */
+>> +               memcg =3D mem_cgroup_get_from_ino(ops_link->cgroup_id);
+>> +               if (IS_ERR_OR_NULL(memcg))
+>> +                       return PTR_ERR(memcg);
+>> +               bpf_oom_ops_ptr =3D bpf_oom_memcg_ops_ptr(memcg);
+>> +       } else {
+>> +               /* System-wide OOM handler */
+>> +               bpf_oom_ops_ptr =3D &system_bpf_oom;
+>> +       }
+>
+> I don't like the fallback and special case of cgroup_id =3D=3D 0.
+> imo it would be cleaner to require CONFIG_MEMCG for this feature
+> and only allow attach to a cgroup.
+> There is always a root cgroup that can be attached to and that
+> handler will be acting as "system wide" oom handler.
 
-[...]
+I thought about it, but then it can't be used on !CONFIG_MEMCG
+configurations and also before cgroupfs is mounted, root cgroup
+is created etc. This is why system-wide things are often handled in a
+special way, e.g. in by PSI (grep system_group_pcpu).
+
+I think supporting !CONFIG_MEMCG configurations might be useful for
+some very stripped down VM's, for example.
 
