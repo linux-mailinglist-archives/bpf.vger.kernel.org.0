@@ -1,228 +1,170 @@
-Return-Path: <bpf+bounces-72483-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72484-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A2C7C12A77
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 03:23:35 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63613C12A80
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 03:24:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AE02E4E3ADF
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 02:23:33 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 531864EFB87
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 02:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998B523B63F;
-	Tue, 28 Oct 2025 02:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dVsAlLWR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0638E23D291;
+	Tue, 28 Oct 2025 02:24:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED6E21C9FD
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 02:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236A91A5B8A;
+	Tue, 28 Oct 2025 02:24:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761618209; cv=none; b=cakpyvrQNPod9mIoIuiH6OvNLwvBWSTy85+GFoA4VdXi0EcWR+XrXWcRw0k8oqXWzlGpeSxtKHJQ9vVGykCE6dPy86JFdLRgRD+jiOPXGkupgADOPJpzNp1HGe8fYQCG3QREhiZB/LWrcl/JJpmQ8ipeWEHoWLBDjqk3KRcGnkg=
+	t=1761618281; cv=none; b=A9r9ip1Q11azkL69rpzGUnBpWxGpzizdiG9gQTGF8svJ47jYgtQkWTh2nHxECJz5v3awxtn1QaEqtH22JrhTkB1ctltTzZXV20CTWzZJ5oDZtYSocveCcaoL8rjpnVMHXMevMF6RPGrDuNp23RVbfu+FzedM7Re8ti2aCO+GvRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761618209; c=relaxed/simple;
-	bh=ogmWN+Yo+WRWxz5JuQoVPgWFsyBHQ3lh7oxomEtc85U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A+lJmhj68V4kcWrED3F6E6ubCgCdkkWmnQb69MZUXbFTw0V/btuMjyVvOx32jUDiAQJKXXgB+q9lpHhqlPxvlaTxRb8/0qysX+qPKrjyDCAiKtJ4RYNISNmimokg4ZlFE3XscZFAZ7z6dM52WWjgtZM0c/ttoKRf+kxFpdiKniM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dVsAlLWR; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b6d345d7ff7so1010663366b.1
-        for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 19:23:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761618206; x=1762223006; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6pARiCYSdg5o5Qzd+a3J2boA62921F59y94mkVra958=;
-        b=dVsAlLWR4mH2rYlXM6Tekn7quPzK7F0XaiaLoCZCCAvquJ+hTNa35Y1NSYaWlKx/l3
-         bDT2q+ESWNgSucNjgUZqyNDagBgVzQ6Yl8O1wUbu8Y1exg33G6Bwgh6ZXarHuMDhijNS
-         MqucpEn59iyWZyI5r+Hyxq6PUmHhWUeH1lqn26pCrAEPjYbn2RWL7Ii37BJvok84sDJL
-         ++5C4l4fs7j+Da7OFCw6eQFs3QyqL09C0qAxsE+DrMAVb2WbMosTkYshD4IzXdNWAy3K
-         YSbZ0YYKbAZ4BgIQGd1W+fyB8ntYVo9H1poS71nWvAUesxzmJ7BF2XpzGOrHz01D0Jpj
-         d5XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761618206; x=1762223006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6pARiCYSdg5o5Qzd+a3J2boA62921F59y94mkVra958=;
-        b=DQC7P5vZ92V3nEzQoIAhwrMJyDKysOxT7Uq18k63FGAjaqTzOIclIBCXqCMkjNLuq+
-         HJFdhGG2KuhIQs7KT5wklHdmcUC4j5BMx37RUQkFLLq/ZfuGU7GLaZ8LOvNyM6GzKAis
-         gp1pupg0iPjGQ858W4xZWPQuD6AZh250h5ocQ3rqNJZSxhleMjoMQiLDJftzVtaIUJ67
-         Loe1eBTm7Kf2iaUG7g63NVq9JHzUKtiu5OXV4y76WqCJiVn5tuFrofXZXzErcEH7BXbg
-         FDIR/MZ9clAcOxqHnuCxmtgBesl76O0jCQP+XIQyUjC4WDA7M3y3aZBWu4sOHd3Cfo6m
-         b8Fw==
-X-Forwarded-Encrypted: i=1; AJvYcCWJuy40ANCBP0/FrXSLIMSWVnHI/LJu76yD4Q2O69aY4F+DGkxkWxZa2JErJHttyRQYKxo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwiLcQUUTQT3t1lda046XMdWeCiGUBheJ18eaVsjIJQKtYzVmWU
-	pOQgWPWtWX/KABg+MbQx3glCUqZFxtodGCV7/jbAr2Vs4pnCVmvDu5FooevASLyFVmG1rpUL5K6
-	IgzIqbBZCW9CUvnuiT3WjUXaww6aMVzvLria8
-X-Gm-Gg: ASbGncssenCebFyAcCFJZm2jkqVgZxaADBh5gUyvScNm/kTnaB84LASk+lZetrcIi+c
-	m6vLG9wugVLEo6PUwqKiH7zVTG/h8EI6nGMbZeRkYdVKn5CxJ79SX8HZNQxiKx/6WrlEzD3J/qt
-	SNborJ9nfZR3Mrnp5rJgiO/FnTmGTUinzOprBVq+cxWrWx2KF6YxrEC5M0xqnyW8gJM+AaoeIr2
-	SJ0v959f0l3377S26R9MzCP9pMDSxRcgA++oX2ahlMDuWcLRsZ4tActuSqnhg==
-X-Google-Smtp-Source: AGHT+IED1Suapf4STarzlNw2dnysa1HHPOi/OyYQwOfNavNzIXMoj95He+RT9XOiL1TpXC2wyiFcWQSE8Tf44MMQ7ek=
-X-Received: by 2002:a17:907:944d:b0:b3e:c99b:c77f with SMTP id
- a640c23a62f3a-b6dbbff3129mr172637566b.24.1761618205576; Mon, 27 Oct 2025
- 19:23:25 -0700 (PDT)
+	s=arc-20240116; t=1761618281; c=relaxed/simple;
+	bh=q6FNcEVb7r/dd3rY9+bQk6lP5I+i/FtdOTB3/WeN3EQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JZYe2g9Fmoir9DuXH155tCtfzIIzHJULh7Zx7ehaT4OPuAPkjtz+8AmnrPDKiienqSpALYg7R9sMVS0M9ZW2PFjKmY7X8jCrkxFEUPTmC6HLQUwgNpMThpVa5qQ0WzTWHbSGFRwoRV1Gu01hOA+zLYgMCialQSTll7IhnmH2Mjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-c45ff70000001609-8a-6900295ba92a
+Date: Tue, 28 Oct 2025 11:24:21 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Mina Almasry <almasrymina@google.com>
+Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+	davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
+	leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+	andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
+	akpm@linux-foundation.org, david@redhat.com,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
+	ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
+	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+	toke@redhat.com, asml.silence@gmail.com, bpf@vger.kernel.org,
+	linux-rdma@vger.kernel.org, sfr@canb.auug.org.au, dw@davidwei.uk,
+	ap420073@gmail.com, dtatulea@nvidia.com
+Subject: Re: [RFC mm v4 1/2] page_pool: check if nmdesc->pp is !NULL to
+ confirm its usage as pp for net_iov
+Message-ID: <20251028022421.GA77904@system.software.com>
+References: <20251023074410.78650-1-byungchul@sk.com>
+ <20251023074410.78650-2-byungchul@sk.com>
+ <CAHS8izPM-s2sL_KyGyUyv37PfZxNLf029DrXpQe8fo637Rn+rw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251027135423.3098490-1-dolinux.peng@gmail.com>
- <20251027135423.3098490-3-dolinux.peng@gmail.com> <c3f1b8ce39335ea0061a8b75a943f12638da6a9c.camel@gmail.com>
-In-Reply-To: <c3f1b8ce39335ea0061a8b75a943f12638da6a9c.camel@gmail.com>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Tue, 28 Oct 2025 10:23:13 +0800
-X-Gm-Features: AWmQ_bkWvgu9D8t2u62ZdOQLvnE8Z5Kz5pGXMlEeLui3DqiFNGdUm7WchEjrFXY
-Message-ID: <CAErzpmtu0=_j23ipTh9CGYKXRwxH4nqGptZX7Pd55PFvWLq4rw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 2/3] selftests/bpf: add tests for BTF type permutation
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: ast@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Song Liu <song@kernel.org>, pengdonglin <pengdonglin@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHS8izPM-s2sL_KyGyUyv37PfZxNLf029DrXpQe8fo637Rn+rw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+++cnXNcro7L6p8SwaKiIGtR9AZSZhCnIjL60EWiDnlqo23F
+	ZqZR4C0qSbOs0LlkYuUyc23a1JWSm5fZ1RbKotLSUrppaYmXmelE8tvD+z7v83s+vAwhaxeH
+	MCptrKDT8mo5JSElPwLzl0cvnaZaWfBqHhgtxRTcHYiHwg8VYhgs7hKBsciO4PfgWxpGq+oR
+	9NU2UPDN1YugIL+fAOPLVBL+WIYIqHR0IfiafY+Cz/XtNNy1bYe2250kPDpXTkD7JTcF6anD
+	BFQNdtOQXGEeCy5NpKHJniGGq0O3CChP/EDDa4eRgtbiUTF0OtNJaDTcIeHntVoC2jIioN40
+	B/qffkdQaykXQf/FGxQ05zhE8KCqmYYsj4mCjtQ2BB5XOwnXfOcpyE3KQDA8MBbZnflbDLl1
+	rXREGJfk9VKc63sPwZXdeSPiWrIvk5y3+omIqzS8pzmT7QRXal7GpXk9BGcrukBxtt4rNPeu
+	5RHFubOHSa7y4zqusqJPxKWndFNRs/dJwmMEtSpO0K1Yf1CitLyzo+Png+N/3DCgRFQ3Mw0F
+	MJhdjR1WHzGp3dbr5Lgm2UW4M6MUjWuKXYK93kG/J5hdim9WXxanIQlDsF00fv4ik0pDDDOL
+	1eC6Zs24R8oCNl5t9XtkrBnhkbwGamIRhBtzPvkBxFioL89DjN8SbCgu/MtMjBfglAe5flYA
+	uxO/TnL5O8xmF+LH9gbRRM9zAbjEETSh5+Eas5fMREGGKQTDFILhP8EwhWBCZBGSqbRxGl6l
+	Xh2mTNCq4sMOHdPY0Njn3T7ji65AvU27nIhlkDxQ2qQeVcrEfJw+QeNEmCHkwdLwXJ9SJo3h
+	E04JumMHdCfUgt6JQhlSPle6qv9kjIw9wscKRwXhuKCb3IqYgJBERMYud/7MyXGHWD1DHS0R
+	Q1kzNocXKnp+7Z8+f2T+jk1b2Ld8x6k1bUHuhj3BVmUBuzBfERu1NXJddDl/8/7W5PUlewce
+	6tc6Ukyr7L4vi7eVhe62JruOHj4duaGzVTtalnX2Qg2fat7xJ8wSckD57JZa8WzaGeNGRp/5
+	q9HYV6VolJN6Ja9YRuj0/D+lH0RNdQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+++c8z/H0fK0rA76IVhEuC4WFb1d0S91CMqKIKigTnVow81k
+	S9GwmLqoRq7ZDZuXVlmZGdKs6Swlnc7ZPWWxyDYzU7pZmUlOa21G5LeH533e3/N+eBlC3kLF
+	MurUA6IuVdAosJSUbliRN297/AT1ggGHBIqrKjHc+JkJ17pqKRiu7AtbFQ4Eg8OvaAjVuxF8
+	b27F8NE1gODyxSECip8aSfhRFSTAWdeH4EPhTQzv3N003LCvh8DVXhLuHa0hoPukB0O+cYSA
+	+uF+GnJry8PgagMNrpI2Cp45zBScCV4hoMbQRUNHXTEGf2WIgt6mfBLarNdJ+Hq2mYCAORHc
+	tmkw9PATguaqGgkMnSjB4D1fJ4E79V4aTrfbMLw1BhC0u7pJODt6DENRjhnByM8wst8ySEFR
+	i59OTOBzfD7Muz59Ifjb119K+BeFBSTva3gg4Z3W1zRvs6fz1eVK3uRrJ3h7xXHM2wdO0Xzn
+	i3uY9xSOkLzzzTLeWftdwufn9eON07ZJV+4VNeoMUZewepdUVdXpQGnHYjI/l1iRAbVEm1AU
+	w7GLOc+tc2REk+wsrtdcjSIas7M5n2+YiOgYNp4rayigTEjKEGwfzT1+YsEmxDBTWC3X4tVG
+	MjIWuOIz/rGMnC1H3K/SVvx3MJlrO98zVkCEoaOl7URkl2DjuGu/mb/2DC7vTtFYVxS7ievI
+	cY3dMJWdyd13tEosaJJ1HMk6jmT9T7KOI9kQWYFi1KkZWkGtWTJfn6LKSlVnzt+zX2tH4ee6
+	emi0oBYNdqxtQiyDFBNlzzQhlZwSMvRZ2ibEMYQiRrayaFQll+0Vsg6Kuv07dekaUd+E4hhS
+	MV22bqu4S87uEw6IKaKYJur+TSVMVKwBOc0hpqz6V8OjKcKRi53PS/2G5PhvwcOy2M2Lg7aG
+	NL0n6fCq5G1bok0LdliowHvmypD4OXB3+Qk4sh5nKo/eNv4Q5EH1WnmuZ47uUrnFbVqj9Bq7
+	Ei58WZo0Kd3uV+6emzzQ6N2cnZQdHbf76YZNj3oWVcS7axpznbkzp4ZOJypIvUpYqCR0euEP
+	GRjoFVgDAAA=
+X-CFilter-Loop: Reflected
 
-On Tue, Oct 28, 2025 at 2:53=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Mon, 2025-10-27 at 21:54 +0800, Donglin Peng wrote:
-> > Verify that BTF type permutation functionality works correctly.
+On Mon, Oct 27, 2025 at 06:25:38PM -0700, Mina Almasry wrote:
+> On Thu, Oct 23, 2025 at 12:44 AM Byungchul Park <byungchul@sk.com> wrote:
 > >
-> > Cc: Eduard Zingerman <eddyz87@gmail.com>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Cc: Alan Maguire <alan.maguire@oracle.com>
-> > Cc: Song Liu <song@kernel.org>
-> > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
-> > Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
+> > ->pp_magic field in struct page is current used to identify if a page
+> > belongs to a page pool.  However, ->pp_magic will be removed and page
+> > type bit in struct page e.g. PGTY_netpp should be used for that purpose.
+> >
+> > As a preparation, the check for net_iov, that is not page-backed, should
+> > avoid using ->pp_magic since net_iov doens't have to do with page type.
+> > Instead, nmdesc->pp can be used if a net_iov or its nmdesc belongs to a
+> > page pool, by making sure nmdesc->pp is NULL otherwise.
+> >
+> > For page-backed netmem, just leave unchanged as is, while for net_iov,
+> > make sure nmdesc->pp is initialized to NULL and use nmdesc->pp for the
+> > check.
+> >
+> > Signed-off-by: Byungchul Park <byungchul@sk.com>
 > > ---
->
-> Do we need a test case for split btf?
-> We probably do, as there is index arithmetic etc.
+> >  net/core/devmem.c      |  1 +
+> >  net/core/netmem_priv.h |  8 ++++++++
+> >  net/core/page_pool.c   | 16 ++++++++++++++--
+> >  3 files changed, 23 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/net/core/devmem.c b/net/core/devmem.c
+> > index d9de31a6cc7f..f81b700f1fd1 100644
+> > --- a/net/core/devmem.c
+> > +++ b/net/core/devmem.c
+> > @@ -291,6 +291,7 @@ net_devmem_bind_dmabuf(struct net_device *dev,
+> >                         niov = &owner->area.niovs[i];
+> >                         niov->type = NET_IOV_DMABUF;
+> >                         niov->owner = &owner->area;
+> > +                       niov->desc.pp = NULL;
+> 
+> Don't you also need to = NULL the niov allocations in io_uring zcrx,
+> or is that already done? Maybe mention in commit message.
 
-Thanks, I will add a test case for split btf.
+Yes, that's been already done by kvmalloc_array(__GFP_ZERO).  I want to
+leave a comment explaining that on io_uring side like:
 
->
-> [...]
->
-> > @@ -8022,6 +8026,72 @@ static struct btf_dedup_test dedup_tests[] =3D {
-> >               BTF_STR_SEC("\0foo\0x\0y\0foo_ptr"),
-> >       },
-> >  },
-> > +{
-> > +     .descr =3D "permute: func/func_param/struct/struct_member tags",
-> > +     .input =3D {
-> > +             .raw_types =3D {
-> > +                     /* int */
-> > +                     BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),  /=
-* [1] */
-> > +                     /* void f(int a1, int a2) */
-> > +                     BTF_FUNC_PROTO_ENC(0, 2),                       /=
-* [2] */
-> > +                             BTF_FUNC_PROTO_ARG_ENC(NAME_NTH(1), 1),
-> > +                             BTF_FUNC_PROTO_ARG_ENC(NAME_NTH(2), 1),
-> > +                     BTF_FUNC_ENC(NAME_NTH(3), 2),                   /=
-* [3] */
-> > +                     /* struct t {int m1; int m2;} */
-> > +                     BTF_STRUCT_ENC(NAME_NTH(4), 2, 8),              /=
-* [4] */
-> > +                             BTF_MEMBER_ENC(NAME_NTH(5), 1, 0),
-> > +                             BTF_MEMBER_ENC(NAME_NTH(6), 1, 32),
-> > +                     /* tag -> f: tag1, tag2, tag3 */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(7), 3, -1),           /=
-* [5] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(8), 3, -1),           /=
-* [6] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(9), 3, -1),           /=
-* [7] */
-> > +                     /* tag -> f/a2: tag1, tag2, tag3 */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(7), 3, 1),            /=
-* [8] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(8), 3, 1),            /=
-* [9] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(9), 3, 1),            /=
-* [10] */
-> > +                     /* tag -> t: tag1, tag2, tag3 */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(7), 4, -1),           /=
-* [11] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(8), 4, -1),           /=
-* [12] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(9), 4, -1),           /=
-* [13] */
-> > +                     /* tag -> t/m2: tag1, tag3 */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(7), 4, 1),            /=
-* [14] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(8), 4, 1),            /=
-* [15] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(9), 4, 1),            /=
-* [16] */
-> > +                     BTF_END_RAW,
-> > +             },
-> > +             BTF_STR_SEC("\0a1\0a2\0f\0t\0m1\0m2\0tag1\0tag2\0tag3"),
-> > +     },
->
-> Nit: I think that this test is a bit too large.
->      Having fewer decl_tags would still test what we want to test.
+diff --git a/io_uring/zcrx.c b/io_uring/zcrx.c
+index e5ff49f3425e..f771bb3e756d 100644
+--- a/io_uring/zcrx.c
++++ b/io_uring/zcrx.c
+@@ -444,6 +444,10 @@ static int io_zcrx_create_area(struct io_zcrx_ifq *ifq,
+ 		area->freelist[i] = i;
+ 		atomic_set(&area->user_refs[i], 0);
+ 		niov->type = NET_IOV_IOURING;
++
++		/* niov->pp is already initialized to NULL by
++		 * kvmalloc_array(__GFP_ZERO).
++		 */
+ 	}
+ 
+ 	area->free_count = nr_iovs;
 
-Thanks, I agree, I will clean it up.
+However, I dropped it as Pavel requested:
 
->
-> > +     .expect =3D {
-> > +             .raw_types =3D {
-> > +                     BTF_FUNC_ENC(NAME_NTH(3), 16),                  /=
-* [1] */
-> > +                     BTF_STRUCT_ENC(NAME_NTH(4), 2, 8),              /=
-* [2] */
-> > +                             BTF_MEMBER_ENC(NAME_NTH(5), 15, 0),
-> > +                             BTF_MEMBER_ENC(NAME_NTH(6), 15, 32),
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(7), 1, -1),           /=
-* [3] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(7), 1,  1),           /=
-* [4] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(7), 2, -1),           /=
-* [5] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(7), 2,  1),           /=
-* [6] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(8), 1, -1),           /=
-* [7] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(8), 1,  1),           /=
-* [8] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(8), 2, -1),           /=
-* [9] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(8), 2,  1),           /=
-* [10] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(9), 1, -1),           /=
-* [11] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(9), 1,  1),           /=
-* [12] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(9), 2, -1),           /=
-* [13] */
-> > +                     BTF_DECL_TAG_ENC(NAME_NTH(9), 2,  1),           /=
-* [14] */
-> > +                     BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),  /=
-* [15] */
-> > +                     BTF_FUNC_PROTO_ENC(0, 2),                       /=
-* [16] */
-> > +                             BTF_FUNC_PROTO_ARG_ENC(NAME_NTH(1), 15),
-> > +                             BTF_FUNC_PROTO_ARG_ENC(NAME_NTH(2), 15),
-> > +                     BTF_END_RAW,
-> > +             },
-> > +             BTF_STR_SEC("\0a1\0a2\0f\0t\0m1\0m2\0tag1\0tag2\0tag3"),
-> > +     },
-> > +     .permute =3D true,
-> > +     .permute_opts =3D {
-> > +             .ids =3D permute_ids_sort_by_kind_name,
-> > +     },
-> > +},
-> >  };
->
-> [...]
+  https://lore.kernel.org/lkml/8d833a3f-ae18-4ea6-9092-ddaa48290a63@gmail.com/
+
+I will mention it in commit message then.
+
+> Other than that, looks correct,
+> 
+> Reviewed-by: Mina Almasry <almasrymina@google.com>
+
+Thanks.
+
+	Byungchul
 
