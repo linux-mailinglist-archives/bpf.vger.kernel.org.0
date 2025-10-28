@@ -1,158 +1,192 @@
-Return-Path: <bpf+bounces-72552-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id A96CAC15480
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 15:56:53 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56E26C15509
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 16:05:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2461E35421C
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 14:56:53 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D5E28500904
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 15:00:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C6ED337B86;
-	Tue, 28 Oct 2025 14:56:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D98393396F4;
+	Tue, 28 Oct 2025 14:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ONDFyyJs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HIxRRktd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F5F23C8AE
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 14:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910DD31815D
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 14:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761663404; cv=none; b=espELVeuIORnQb45B0kTCeVV5MFFWw0RzsQ2JJDzF2D1PLhc9fmh1X8tfFvBowqZ2TRrBo1QBwYIkPqKmm+IbZSiS9MkONp1J77OXPhZjZrqsr0fSFNvz+nDloIbwCl3ZNNh5XLY8mkOUJs+bQIo18Nk5TSmWvL7CFCXfQgG5hY=
+	t=1761663551; cv=none; b=pyfSJ64C52MZNp1ce/tHbZauYVDrk2mEFlGg+0pKgjSugLtevUEUhgpcodMM67g4WDEPdoM7jJrEarwBirHGtS9eoyqOXpKuCMcuNF5dhIrDZ934qfUwvJ7t044COzidlknSCHF8mOUD5UsWHwk96is95OfwUJwqgZn0S1uXqj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761663404; c=relaxed/simple;
-	bh=er2CNC3QcaaVpEVwyaeUqrEOigVeBx2t4bAbwKskTPo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R7upgnD41+Q+z0Rgk9/ksu4izOTrYgyGfGiVnqYLFUJbRbWQ0kZAcCQ3WjKZ/AHW/cbmyZbJvkMXl+zG/J+iYfx5dtoxEayF9cG2PEQx56NbXLf8502vjuMpGq4e8PPMQmsTYX/VABYGCaAKE+YWXIcoBKYKG3V6N86ckSm93v8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ONDFyyJs; arc=none smtp.client-ip=209.85.210.175
+	s=arc-20240116; t=1761663551; c=relaxed/simple;
+	bh=m8DCIVaxTeasPR4QZ9qG4yxDX42vr38meJ1MfR+IWJ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aR51igU1CYcpO4/fsNC3XTpf6ZROKOKFXx2lL/bdAY3W6WmPALKEP9hrcvA6QOmmix7f6V6bzLWqIT6Ak+U/KK7bLoH99j7SoGMVo8XnuzajaNZ+udLjEyQ97m0Xz1cVVpvUrH50Df6gI+vk18ECy+VLUawbtJStKxi/X3X6yH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HIxRRktd; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-781010ff051so4118653b3a.0
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 07:56:43 -0700 (PDT)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-42557c5cedcso3956444f8f.0
+        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 07:59:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761663403; x=1762268203; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cpT9v3vZsTqou8arP0DXWnWYqvjSdGYFzEcyXBF9plY=;
-        b=ONDFyyJsOaEgCxKnEb685WtU5/NKT4nAcUb/D0YPlI+K/+oUNTkjaH0LxaE7Ks7h63
-         u9N07qCf5xb4zKJbmfrHisaUrUWKRPYP/nN1kBmKqA4kT1KRdzNeySTm72b+wee2CWM1
-         RRs2RMn9VONZqzRV/4uN6sTUFT2uWliR2gdIWaPW6KcT0O7sWzvYJvTmiGk8+9097qFD
-         VUvVHm+Yy3H7zShT//YAF1jBLgCJnR8xyFc2k9STW84HWx0WEA+gAEG5ymuk9RKq4anl
-         kiCYcseaH01j/XTsEJhvKaWKe+7NFLKi0lnJqmms41jJgre2zPK8OXcU6q0nKQH4DrMK
-         Ez5A==
+        d=gmail.com; s=20230601; t=1761663548; x=1762268348; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PI/PZuI71Hv9kIf1B5g7KheAwRmAq5KrbWDu/HPN2HA=;
+        b=HIxRRktdANNpCYh3jszqtRKcgpmSsr5en8xWbGTFGBoHU0n23RWTfynH0rapLNejkU
+         9DNhRseeZ/IbXQ5BF7J9VQjHznsXKeUppYHe5m4DVe22TMcKXOArHymx5sE8G3TYWonm
+         9LoCNO53jOyDfSQXefm2vrZ8vb5GT3YZXJeQGjSC4t9B2X1hzKeRPREH4NVBePAloJTB
+         K7UIWvU7CqS4pmlu7ablwIpZD69oI2RU+wd5R3MuNMRP9FIU3F4BVfkBP7Gj7ejxd4jN
+         Z8VMem3MMT6IaPvDa1KDjdCGRloj/9vFCGNYeIiIMqWJmf5/DIfdTXwSizSyCvgpVBdf
+         iPbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761663403; x=1762268203;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cpT9v3vZsTqou8arP0DXWnWYqvjSdGYFzEcyXBF9plY=;
-        b=NpCWp8O/hu79D//HKUidV+tnwJpBuiFTFnXwNjDW7rmSQermIeDvLThXA72cw7wJSM
-         xF6jz8gJxnUnvlrfZQMqumTdB+lwQuL9MKy12rUyNOH3cH/oY2uSGpWbBo6cucC3zr0b
-         fc1ryhtVjKK9O6UcGkl2B9BostWps6dpTaHR801QhmuZlGJxkGXIfJ115g2L/rjpI6Dk
-         1l6TOYrm3xtULbjAtoy9wv1DOJMRGIZvNvyfX/S80iii6jRwQGVED/qtvAoHaeigU0vh
-         sDRMVt/+ZPoU7Mcx1ZzCHx2btDONTJoVmvA6eJ43/HzAd5k/miRn3s6d6+1FJx5zeynn
-         x5pQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWXmhjokDDmYlKflWqzOylAFxhiq7fVcocjR9KUwjzGDOaTigq/1yNpNQ3/8zyz/p9NMTc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZ9sZmIq2z8TIqurlI4dqAr3WSO9Mtqvy7dtM4K+iLWr6f+dP3
-	zP6tSo7kgGze1vRoDCdWehgvdZacOcFmUJP7I93mJClxMhRpUmOpC/Xt
-X-Gm-Gg: ASbGncs7ABA6xTddOVuqgcGeii+607yq+l2h5Ji5dWsINdDZk2c2mqT63ZfdHQAQUfg
-	Omi0CA9nQg7PZnRm+SFqasZNz68NZsid5hu9h9wozWPi5x/rMU78+iErrK+vOGaqRa/YY/SAlS4
-	lUHis47rfASBXtHKfzuupJraYXEr3P8LERrSEMubUrQQifWagmwh9EjVE5pTlPKZwbLd8OUcbfX
-	toGIKDglLMwrCDEmKFrsU+FwEn3m1rKsSaNX5s4RuXurRPBIA0b1944qmcgBh6pEN8IZfaqI2zz
-	CJb48NQfpdTFyyfGh4eyGNPlcvEkqoc/F2+1D32vDhldQ0m/06nvj/BH4V5AefBWhMzyELIazr6
-	qHDzMxDCrSkoKUfqXlfhYLBDRV2FeoRKQpQ6578HBbpl3eIZUkZJc67a01ujP9cSyFoxwSh2Cio
-	OKjRCdsuDyBy889nB2pHtze6PX4vXdD/JWjaWNLA0e82YGPOLNR7kym5V//HHFF1N9jKwdX01bC
-	F49109mCHmUqQ==
-X-Google-Smtp-Source: AGHT+IGfeHgVIMC0VHfcmG+idW723Hz2pg/WUGXn0Avn4tmBgDpRwGVIyyi/7yWZfkVRxwppZsPQWw==
-X-Received: by 2002:a05:6a20:1582:b0:340:d065:c8b3 with SMTP id adf61e73a8af0-344d375663amr6595914637.36.1761663402796;
-        Tue, 28 Oct 2025 07:56:42 -0700 (PDT)
-Received: from [192.168.99.24] (i223-218-244-253.s42.a013.ap.plala.or.jp. [223.218.244.253])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-7a414069164sm12135669b3a.45.2025.10.28.07.56.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Oct 2025 07:56:42 -0700 (PDT)
-Message-ID: <aacc9c56-bea9-44eb-90fd-726d41b418dd@gmail.com>
-Date: Tue, 28 Oct 2025 23:56:38 +0900
+        d=1e100.net; s=20230601; t=1761663548; x=1762268348;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PI/PZuI71Hv9kIf1B5g7KheAwRmAq5KrbWDu/HPN2HA=;
+        b=pMIabg/kofDDp6YF5jpjOq2Yd5guDIHXNoHIqPxExd8HC++v7vIxrBTxZmACHb4u4z
+         Atz3xWfN1ghvn07IKvjrTszrUPrOOb+or5mm+Ty6SWpbtkozp7NF6SKlZ4l3tcWRX2Yy
+         z3ZVlXOyoXp23+gQyeXP0M6BfkNzh+EOmrPoxhqT2okndmumLoOxrH3THK1nw1FZQ/rb
+         UuBWarzcxU4S+ujpImvZHW4YPb12y4Wb++JwwCxy4MX+1SVImcuK9V3lpdEWhcVTxokV
+         wJ1p8gXajX3d43wVhgGTO7r9zqukc/7CurUv7g8vP4cWxYl/Fdmj5SQv2rQCL1cOj+mP
+         +zxQ==
+X-Gm-Message-State: AOJu0Yy2TsLpM/Q2PkF427A+dBZWjKtxmXEDTAE5DaX7NVgvlFjdb3Kf
+	H1tvMPBn05OP9CmjA4EIFMoVgVEyyWAAc+RgtlFfiiXPctxQd/hXGwjl
+X-Gm-Gg: ASbGnct9HnAEenxSNwBODDhCzOQ4qtWJ5nIuB4KFh13okzqVejh2GFEOUZJN06cQldj
+	3WTxSGuLLSCkEZAEBtIg0+zCIHhkaCOEk9QiRu9/3tEE7YK3GU7N3KfsNSm0BwMcGzcY318NYUd
+	gcF28F4cAq7JEj5PSzJQy7NyMAqp2qQov9/cay0xGvJjOO+wt223VeyQqUdxiS6NNHDbhGeaTaG
+	HGfo4rdIGNj5OBieFAJlDlxEyvMCRfHg9SD1P29OcO+txEe2WE4k0F55qmX48pvyKSLFcsBlB+A
+	BSchXR3BIDyNYMf16/htO8SWY6Mj/eqjH00smuHeRLcoK7vwe7rtqusmmCR4ijgVGKsMxEe9NgS
+	W3C6MY9y6wzR8IYfFt+v+4yR5fpb+JvE3Iux6tb8WRrMLAGJtNczCItFCeGpQhtFNHUPObqsKsY
+	Si9i+rxwlL2Sbd9USkH7zf
+X-Google-Smtp-Source: AGHT+IHL/knHDRbkmAAdh+e5/GM1R0pH69p1XnM7aCRUh3ko5T6ct42T+TAbQTHpPcHWZhxhmBgfgw==
+X-Received: by 2002:a05:6000:26cf:b0:427:2e8:fe3a with SMTP id ffacd0b85a97d-429a7e4ae98mr3558339f8f.13.1761663547611;
+        Tue, 28 Oct 2025 07:59:07 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429952de5f9sm20780414f8f.38.2025.10.28.07.59.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Oct 2025 07:59:07 -0700 (PDT)
+Date: Tue, 28 Oct 2025 15:05:42 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: bot+bpf-ci@kernel.org
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	aspsk@isovalent.com, daniel@iogearbox.net, eddyz87@gmail.com,
+	qmo@kernel.org, yonghong.song@linux.dev, martin.lau@kernel.org,
+	clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCH v8 bpf-next 10/11] selftests/bpf: add new verifier_gotox
+ test
+Message-ID: <aQDbxmPEkOuVcQV1@mail.gmail.com>
+References: <20251028142049.1324520-11-a.s.protopopov@gmail.com>
+ <33646aa56766cac6c6915ffde6652dd9b2f640a5262203002d7f6cfd4f82c247@mail.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net V2 2/2] veth: more robust handing of race to avoid txq
- getting stuck
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, ihor.solodrai@linux.dev,
- "Michael S. Tsirkin" <mst@redhat.com>, makita.toshiaki@lab.ntt.co.jp,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel-team@cloudflare.com,
- netdev@vger.kernel.org, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
- <toke@toke.dk>
-References: <176159549627.5396.15971398227283515867.stgit@firesoul>
- <176159553930.5396.4492315010562655785.stgit@firesoul>
-Content-Language: en-US
-From: Toshiaki Makita <toshiaki.makita1@gmail.com>
-In-Reply-To: <176159553930.5396.4492315010562655785.stgit@firesoul>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <33646aa56766cac6c6915ffde6652dd9b2f640a5262203002d7f6cfd4f82c247@mail.kernel.org>
 
-On 2025/10/28 5:05, Jesper Dangaard Brouer wrote:
+On 25/10/28 02:45PM, bot+bpf-ci@kernel.org wrote:
+> 
+> ```
+> commit 817a92582203a0d4c62d2de0abae0bd4a5418fa3
+> Author: Anton Protopopov <a.s.protopopov@gmail.com>
+> 
+> selftests/bpf: add new verifier_gotox test
+> 
+> This commit adds a new BPF selftest file to validate the gotox
+> (indirect jump) instruction functionality. The tests cover various
+> edge cases including reserved field validation, bounds checking,
+> alignment, and register usage.
+> 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+> > index c0e8ffdaa..4b4b081b4 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+> 
+> [ ... ]
+> 
+> > diff --git a/tools/testing/selftests/bpf/progs/verifier_gotox.c b/tools/testing/selftests/bpf/progs/verifier_gotox.c
+> > new file mode 100644
+> > index 000000000..f7bf0a5e0
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/verifier_gotox.c
+> 
+> [ ... ]
+> 
+> > +SEC("socket")
+> > +__failure __msg("writes into insn_array not allowed")
+> > +__naked void jump_table_no_writes(void)
+> > +{
+> > +	asm volatile ("						\
+> > +	.pushsection .jumptables,\"\",@progbits;		\
+> > +jt0_%=:								\
+> > +	.quad ret0_%=;						\
+> > +	.quad ret1_%=;						\
+> > +	.size jt0_%=, 16;					\
+> > +	.global jt0_%=;						\
+> > +	.popsection;						\
+> > +								\
+> > +	r0 = jt0_%= ll;						\
+> > +	r0 += 8;						\
+> > +	r1 = 0xbeef;						\
+> > +	*(u64 *)(r0 + 0) = r1;					\
+> 
+> [ ... ]
+> 
+> > +SEC("socket")
+> > +__failure __msg("jump table for insn 4 points outside of the subprog [0,10]")
+> > +__naked void jump_table_outside_subprog(void)
+> > +{
+> > +	asm volatile ("						\
+> > +	.pushsection .jumptables,\"\",@progbits;		\
+> > +jt0_%=:								\
+> > +	.quad ret0_%=;						\
+> > +	.quad ret1_%=;						\
+> > +	.quad ret_out_%=;					\
+> > +	.size jt0_%=, 24;					\
+> > +	.global jt0_%=;						\
+> > +	.popsection;						\
+> > +								\
+> > +	r0 = jt0_%= ll;						\
+> > +	r0 += 8;						\
+> > +	*(u64 *)(r0 + 0) = r1;					\
+> > +	.8byte %[gotox_r0];					\
+> 
+> Does jump_table_outside_subprog() use the correct operation?  This test
 
-> (1) In veth_xmit(), the racy conditional wake-up logic and its memory barrier
-> are removed. Instead, after stopping the queue, we unconditionally call
-> __veth_xdp_flush(rq). This guarantees that the NAPI consumer is scheduled,
-> making it solely responsible for re-waking the TXQ.
+For this test it doesn't matter: the error triggered by this test happens
+before the check for the writes. (But thanks AI, I will change the line
+for better readability.)
 
-Maybe another option is to use !ptr_ring_full() instead of ptr_ring_empty()?
-I'm not sure which is better. Anyway I'm ok with your approach.
+> writes to the jump table (line marked with * above), but the expected
+> error message indicates it should be testing bounds checking, not write
+> protection. All other bounds validation tests in the file use read
+> operations like "r0 = *(u64 *)(r0 + 0);" (see jump_table_misaligned_access,
+> jump_table_invalid_mem_acceess_pos, jump_table_invalid_mem_acceess_neg).
+> The write operation will cause the verifier to reject the program with
+> "writes into insn_array not allowed" before it can validate whether the
+> jump target is within the subprogram boundary.
+> 
+> Should this be changed to a read operation to properly test the intended
+> bounds check?
+> 
+> 
+> ```
+> 
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+> 
+> In-Reply-To-Subject: `selftests/bpf: add new verifier_gotox test`
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18878193924
 
-...
-
-> (3) Finally, the NAPI completion check in veth_poll() is updated. If NAPI is
-> about to complete (napi_complete_done), it now also checks if the peer TXQ
-> is stopped. If the ring is empty but the peer TXQ is stopped, NAPI will
-> reschedule itself. This prevents a new race where the producer stops the
-> queue just as the consumer is finishing its poll, ensuring the wakeup is not
-> missed.
-...
-
-> @@ -986,7 +979,8 @@ static int veth_poll(struct napi_struct *napi, int budget)
->   	if (done < budget && napi_complete_done(napi, done)) {
->   		/* Write rx_notify_masked before reading ptr_ring */
->   		smp_store_mb(rq->rx_notify_masked, false);
-> -		if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
-> +		if (unlikely(!__ptr_ring_empty(&rq->xdp_ring) ||
-> +			     (peer_txq && netif_tx_queue_stopped(peer_txq)))) {
-
-Not sure if this is necessary.
- From commitlog, your intention seems to be making sure to wake up the queue,
-but you wake up the queue immediately after this hunk in the same function,
-so isn't it guaranteed without scheduling another napi?
-
->   			if (napi_schedule_prep(&rq->xdp_napi)) {
->   				WRITE_ONCE(rq->rx_notify_masked, true);
->   				__napi_schedule(&rq->xdp_napi);
-> @@ -998,6 +992,13 @@ static int veth_poll(struct napi_struct *napi, int budget)
->   		veth_xdp_flush(rq, &bq);
->   	xdp_clear_return_frame_no_direct();
->   
-> +	/* Release backpressure per NAPI poll */
-> +	smp_rmb(); /* Paired with netif_tx_stop_queue set_bit */
-> +	if (peer_txq && netif_tx_queue_stopped(peer_txq)) {
-> +		txq_trans_cond_update(peer_txq);
-> +		netif_tx_wake_queue(peer_txq);
-> +	}
-> +
->   	return done;
->   }
-
---
-Toshiaki Makita
 
