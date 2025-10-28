@@ -1,130 +1,135 @@
-Return-Path: <bpf+bounces-72636-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72637-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98C67C1709D
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 22:35:53 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id A48D7C1712A
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 22:41:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06DD33BFC4D
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 21:35:01 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C5A00508FF4
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 21:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDEF22D8395;
-	Tue, 28 Oct 2025 21:33:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F028F2D877D;
+	Tue, 28 Oct 2025 21:35:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="phmrTVky"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r93s37by"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F97155333
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 21:33:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6796B2D595B
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 21:35:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761687235; cv=none; b=U1CsDtFhsQPq6UUeXxYujqo48xqd/YOxXTK0fofbUp4TDdj81GwNTMqc0eMRDZUW+oxMjeZASqk7QJasZ4+IQ0/YOmp9hsIeB5Kb1c/8+ZCmdksfpRxK8o8G9GuDyo9cNLfDHDOLF9rzhe6x9kgip1/XJCyYxt/hDaz7wf92FPE=
+	t=1761687305; cv=none; b=Z0WxE7MU7dcswdnv8w8vzyvbXkVWqpaRQ5/KV9hTsAJ87QViqp3dbbreT58L9AzF3hkAOkNIzk6D4L2mdiy6ehJaLy/acug7WKTmnsGzQLUC4yovjBS1tPWsMoVvGeYhfrSK/cchFfXbFJ1xoucOfKR02nRpO7gciNuiozL4+a4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761687235; c=relaxed/simple;
-	bh=iFWP7xxMJgkbRCwFD/Ow8yzZAuMAdW311BwnuPvp2SA=;
+	s=arc-20240116; t=1761687305; c=relaxed/simple;
+	bh=R2i31H9vGUKt8c9pEDO8kNOSs2JZfSsFlvxECOPAMbQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UtocNgkq/+ayGujzwZAhGw23uiFAr/kiCgHIJnhWuT/5gkcCD68Kzva4KbwhqpDKyGFqwL48dGEteU0TwQrURunjpDo7JgPZdWk7Ylt9gNMwe/Icoap0cvQ3hVI/ssXpfelzffQ8qAL0/RZA4JREt/pjYuo8FOjn843BWWexmPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=phmrTVky; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36CD2C113D0
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 21:33:55 +0000 (UTC)
+	 To:Cc:Content-Type; b=sckM5ifqvx63i4SDkreATFspzsB/XPYi8BYHomVM3fF2YxmPh1qWuia2fRJmOD6VxzVUkhGhDqujtzwnfBzGEW5KziFCVMrM7rpwOVcUT3Yf4G70O6OrkJr3khXQMtVNHWWPGJk2Iug0v8BtaSBw+E/b4utwJdostnjELoJ/EDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r93s37by; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46A55C4AF0B
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 21:35:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761687235;
-	bh=iFWP7xxMJgkbRCwFD/Ow8yzZAuMAdW311BwnuPvp2SA=;
+	s=k20201202; t=1761687305;
+	bh=R2i31H9vGUKt8c9pEDO8kNOSs2JZfSsFlvxECOPAMbQ=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=phmrTVkyk/RJJ+EFRqA64SJtzZw1RrTXF0Jy7f1CXc/pvZLehllXnDr4sgfEh9lXA
-	 2/twG9h2eNIdBfauTgXEQuIRcS4YaIBUHDFnASGVKVGIr9PViTjDz3uHg1aUHndGnm
-	 JfmMrIDVcmMtfhGvsEaRyHNrcNHVVSFVyWqW7mc2lxSIew6H7Ge6bK3IDkKkVZFTE+
-	 ckLbL07VYqopMUKqVW/aEdK3rZ1Vhdn7Jx2oYQrh9yRmC9zb2iiksD6jhqrAr/U6XF
-	 BoaOIR9Ixch8dADOEBUFirZRLio3iFt5cOVoN7gFFs9TvytO8YcKQnFMJVdWxBjyCE
-	 nG+tulYpts/hw==
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-87dfba1b278so68400346d6.1
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 14:33:55 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW9LAy8bZXMltJRCrRSjCwGNxMWz8O5qtuqLR2TIjpuWGCscS3YagnyJwLAXpTqL8Rl124=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1L7pBYsgq/B2A9ywFTZEKSoF4d5efc2z5cKmTLyX7IfIoklnn
-	XA0D1cxL7qn8FipnuZqHETy0LnL7Szz2wv0yNviM9T2H4TU+lGUGalZoLlGBSFjvgaEEqS448DP
-	SpJcUY6Gv9/W4rhixeqhBnVDN0zFkAsU=
-X-Google-Smtp-Source: AGHT+IESUEc3eeZzEWwxs00NmoTrW71KQg0jPt0Nsondh+RQEdb4dLarCNV80h0sV/jj5ri8Uz9bMzHY51U++MLe3GA=
-X-Received: by 2002:a05:6214:2129:b0:807:ca4f:5666 with SMTP id
- 6a1803df08f44-88009ad0903mr10291646d6.2.1761687234390; Tue, 28 Oct 2025
- 14:33:54 -0700 (PDT)
+	b=r93s37byBu5Kqu2QNWAApFRsKMEiKn+rnGBu28Yh213bmXlXtpGYHy6Md1GZVj5bM
+	 s5vnSo0yrYRMDPmHpEUorqNbrzfUbLmxqipY4eXZSatd2x/wYVLZWkfxLbVUyrJnqB
+	 qzzqP0cqOIMCM1+yieYa4Jpw8ExK8yVQ10CoTtDy/YpQpSoWeYoXUNtfhEmCx16Hlx
+	 hAutjjpMeCNc9SkrGfI4cOnOn4oU/nFvmIHsnMpTitKiMXtsQmuipZbmLKSEJQNkuU
+	 lggI9QCrsvI59YWcEgE4fHKT+JxK/C1s0+GH6Knmt4VFXcIEFUXIvCxgclL3uQke9v
+	 P+fvzMKknG1XA==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-592f098f7adso8164069e87.0
+        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 14:35:05 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUc52qtw2ajQYrmnsdCsZenu4kRQXDTdqQKCF2yE3XzZEnZYS3QlPKSE/biZ/lCpMEjiFE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwNrxWYibmkCO5DsZi+QoNrd2vEvWIjRM1O4zQSm9A50CaFGRrB
+	I6oQsYbTymm2mPQejcU+i4kB858VomSehdSMfBdWUYA5FMSr6zMzA/922C3+chlD5v85vF9D3MK
+	m6HILzMx50KTcyAkQ8JT1Z0yW16iGtwY=
+X-Google-Smtp-Source: AGHT+IEUgTLUAIKN7pUG+BuUf5d2rQVkYmo1LrGvDv+SiZ+/7mc0PZPnIKuDcBIJFaSVmyoUk9OgmOBn+4n7FgjOtLw=
+X-Received: by 2002:a05:6512:3b0c:b0:592:fce6:9054 with SMTP id
+ 2adb3069b0e04-594128c4f37mr242551e87.52.1761687303564; Tue, 28 Oct 2025
+ 14:35:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251027231727.472628-1-roman.gushchin@linux.dev> <20251027231727.472628-7-roman.gushchin@linux.dev>
-In-Reply-To: <20251027231727.472628-7-roman.gushchin@linux.dev>
-From: Song Liu <song@kernel.org>
-Date: Tue, 28 Oct 2025 14:33:43 -0700
-X-Gmail-Original-Message-ID: <CAHzjS_vrNZpEbBuHLhHwHaGzLaF3QEeKWz-VikCm0bYrFBq4UA@mail.gmail.com>
-X-Gm-Features: AWmQ_bn4FJi2CLDbiuBc051gpuUbvflP1rY5GJvh4T7UtMPVn-sJ9ZXRwYG7Zb8
-Message-ID: <CAHzjS_vrNZpEbBuHLhHwHaGzLaF3QEeKWz-VikCm0bYrFBq4UA@mail.gmail.com>
-Subject: Re: [PATCH v2 06/23] mm: introduce BPF struct ops for OOM handling
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, bpf@vger.kernel.org, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Song Liu <song@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>
+References: <20251028004614.393374-1-viro@zeniv.linux.org.uk>
+ <20251028004614.393374-23-viro@zeniv.linux.org.uk> <66300d81c5e127e3bca8c6c4d997da386b142004.camel@HansenPartnership.com>
+ <20251028174540.GN2441659@ZenIV> <20251028210805.GP2441659@ZenIV>
+In-Reply-To: <20251028210805.GP2441659@ZenIV>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Tue, 28 Oct 2025 22:34:51 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF6tvg6+CL_1x7h0HK1PoSGtxDjc0LQ1abGQBd5qrbffg@mail.gmail.com>
+X-Gm-Features: AWmQ_bkR_zy3h447gWqfy_yWS54Z8UsgWDqAQbawTspKnXeI6tlX292HDo0fyss
+Message-ID: <CAMj1kXF6tvg6+CL_1x7h0HK1PoSGtxDjc0LQ1abGQBd5qrbffg@mail.gmail.com>
+Subject: Re: [PATCH v2 22/50] convert efivarfs
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, linux-fsdevel@vger.kernel.org, 
+	torvalds@linux-foundation.org, brauner@kernel.org, jack@suse.cz, 
+	raven@themaw.net, miklos@szeredi.hu, neil@brown.name, a.hindborg@kernel.org, 
+	linux-mm@kvack.org, linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev, 
+	kees@kernel.org, rostedt@goodmis.org, gregkh@linuxfoundation.org, 
+	linux-usb@vger.kernel.org, paul@paul-moore.com, casey@schaufler-ca.com, 
+	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com, 
+	selinux@vger.kernel.org, borntraeger@linux.ibm.com, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 27, 2025 at 4:18=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
-x.dev> wrote:
-[...]
-> +
-> +struct bpf_oom_ops {
-> +       /**
-> +        * @handle_out_of_memory: Out of memory bpf handler, called befor=
-e
-> +        * the in-kernel OOM killer.
-> +        * @ctx: Execution context
-> +        * @oc: OOM control structure
-> +        *
-> +        * Should return 1 if some memory was freed up, otherwise
-> +        * the in-kernel OOM killer is invoked.
-> +        */
-> +       int (*handle_out_of_memory)(struct bpf_oom_ctx *ctx, struct oom_c=
-ontrol *oc);
-> +
-> +       /**
-> +        * @handle_cgroup_offline: Cgroup offline callback
-> +        * @ctx: Execution context
-> +        * @cgroup_id: Id of deleted cgroup
-> +        *
-> +        * Called if the cgroup with the attached bpf_oom_ops is deleted.
-> +        */
-> +       void (*handle_cgroup_offline)(struct bpf_oom_ctx *ctx, u64 cgroup=
-_id);
+On Tue, 28 Oct 2025 at 22:08, Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Tue, Oct 28, 2025 at 05:45:40PM +0000, Al Viro wrote:
+>
+> > FWIW, having a special path for "we are in foofs_fill_super(), fuck
+> > the locking - nobody's going to access it anyway" is not a great
+> > idea, simply because the helpers tend to get reused on codepaths
+> > where we can't cut corners that way.
+>
+>         BTW, looking through efivarfs codebase now... *both* callers
+> of efivarfs_create_dentry() end up doing dcache lookups, with variously
+> convoluted call chains.  Look: efivarfs_check_missing() has an explicit
+> try_lookup_noperm() before the call of efivarfs_create_dentry().
+> efivarfs_callback() doesn't, but it's called via
+>         efivar_init(efivarfs_callback, sb, true)
+> and with the last argument being true efivar_init() will precede the call
+> of the callback with efivarfs_variable_is_present().  Guess what does that
+> thing (never used anywhere else) do?  Right, the call of try_lookup_noperm().
+>
+> Why do we bother with that?  What's wrong with having efivarfs_create_dentry()
+> returning -EEXIST in case of dentry already being there and turning the
+> chunk in efivar_init() into
+>                         err = func(variable_name, vendor_guid,
+>                                    variable_name_size, data);
+>                         if (err == -EEXIST) {
+>                                 if (duplicate_check)
+>                                         dup_variable_bug(variable_name,
+>                                                          &vendor_guid,
+>                                                          variable_name_size);
+>                                 else
+>                                         err = 0;
+>                         }
+>                         if (err)
+>                                 status = EFI_NOT_FOUND;
+> Note that both possible callbacks become almost identical and I wouldn't
+> be surprised if that "almost" is actually "completely"...  <checks> yep.
+>
 
-handle_out_of_memory() and handle_cgroup_offline() takes bpf_oom_ctx,
-which is just cgroup_id for now. Shall we pass in struct mem_cgroup, which
-should be easier to use?
+I'll let James respond to the specifics of your suggestion, but I'll
+just note that this code has a rather convoluted history, as we used
+to have two separate pseudo-filesystem drivers, up until a few years
+ago: the sysfs based 'efivars' and this efivarfs driver. Given that
+modifications in one needed to be visible in the other, they shared a
+linked list that shadowed the state of the underlying variable store.
+'efivars' was removed years ago, but it was only recently that James
+replaced the linked list in this driver with the dentry cache as the
+shadow mechanism.
 
-Thanks,
-Song
+Relying on the -EEXIST return value to detect duplicates, and
+combining the two callbacks seem like neat optimizations to me, so
 
-> +
-> +       /**
-> +        * @name: BPF OOM policy name
-> +        */
-> +       char name[BPF_OOM_NAME_MAX_LEN];
-> +};
-> +
-> +#ifdef CONFIG_BPF_SYSCALL
-> +/**
-> + * @bpf_handle_oom: handle out of memory condition using bpf
-> + * @oc: OOM control structure
-> + *
-> + * Returns true if some memory was freed.
-> + */
-> +bool bpf_handle_oom(struct oom_control *oc);
-> +
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+but I have to confess I am slightly out of my depth when it comes to VFS stuff.
 
