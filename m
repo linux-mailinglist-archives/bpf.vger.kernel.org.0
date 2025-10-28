@@ -1,131 +1,135 @@
-Return-Path: <bpf+bounces-72641-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72643-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59D26C17387
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 23:44:14 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id B71E7C173E4
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 23:56:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C65531A23B7F
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 22:42:36 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3E5FC356705
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 22:56:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEAC93570DE;
-	Tue, 28 Oct 2025 22:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46BE836A5E1;
+	Tue, 28 Oct 2025 22:56:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="pQssramd"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="o+gXM3DQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC6D3570CF
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 22:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646F43557FE
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 22:56:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761691320; cv=none; b=PFAP0si8q4oWlQmCDztQvuPQ50D3+8b/04Z2IcemKpVh1dsZAUT4MUXPpU4bxGCpNOweqf1SV7/yGSt84ooWyYCPMwUt+jqzs88RmlPlcN8LeoXXZ+T5jPrJjoNs4MYU2Yqe8cRGABXZg1hvj+hz8mwrXuviiOXzUHi2JA9oj3s=
+	t=1761692175; cv=none; b=QB+RwoQkTVWlQ6yvAU2jZo65aZCsE3H/NsgMd8atEsytJ6FlJERprKB0b+a5QjG3lxdq+pF+5PxLwah8QoC3MH4qwmXfilVHPD5NOf6oew+m8O0tZ0SODvkMYuW3QJ7BhgEBv00wvycCJ8+ZNVgqwMLn847MD/Qhbo8EHbVecUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761691320; c=relaxed/simple;
-	bh=83BsrsHd9DtHXIvdniBfXhWCcsdNkwUdX9oNRcxQWWA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IMyZehMPQNSp9EX0GZtTKMEz2VzsM1VUP3EVtfk5wRzlgM0TKgA2PPm7X8lnAyWlWyip8Cz63FVNxjEur9FlgBHSv+lJEq5ucxuxY1bSNLrBhp+R0Qx8TMQQeLG7hqfqtlyrpNWKClYombI5k3ozZTSVkUgcYyABLRtFBMgykOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=pQssramd; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-34003f73a05so424941a91.1
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 15:41:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1761691318; x=1762296118; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rhdhypFJDWIT7pOJW2kZUfFCC11WfHBrz2Nq1/pPCBQ=;
-        b=pQssramdldvU+onZlFa28wD8JgrFRyeL3IrR/aJioO0jQ/255UX+naCkWP+mX9SqSQ
-         +lNHcB25t1k0zI6/t/Pf0bDAdJDU3yLYWGk9PZt81kEuqQzvVz9AqpYv9tWprH80XZg4
-         tgbycR2DBtSxkOmP2S5zqdv1PRovgJnoBRcTWXjeR/cCf3DRVO0loEr/Pf+DwR3tXpPk
-         qFvE6tqVKouzNXjQg0DBTo20YnThIB2znsMA6rBgQBuUkXdThGYPN1X2S+SQl+AndbdZ
-         QV/G39u8Lpl4i5iWxmtfAU58xOulFG1LfwkNGA/j91blo9ZckOWAZlmtwrQv99878dfa
-         YFpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761691318; x=1762296118;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rhdhypFJDWIT7pOJW2kZUfFCC11WfHBrz2Nq1/pPCBQ=;
-        b=q7wPhjeet6gUeWvko8g9DTOBc8VsyWtpq0AA0D7GFhfTL82AEcncuu4ODtvDVTXMLZ
-         R9Ep2aj087iN3dVXp5pP0N3PUlScUStwuwdT+mn3uq0NZEFl97kBAb54Lh4McLecCbNf
-         /N6WNzJLGc/qqfecSi4tZfQlNZLaLb2Bx+upXlAU2lkMOIAWT/GjIRNeQlBfAe1HVSOu
-         Y53zzMemjcYbYZgmwDfuLY5vg5IBiCebkFkK/n1fnIJxnDzdcnabYWC02tDJ55JuQKKr
-         ioCnfMJwUMSQHAYAGoN/2/1lB0CP3p5rUAnL50YhHXtxe1pBMru+ygByzO6dm20AOib4
-         Uklw==
-X-Forwarded-Encrypted: i=1; AJvYcCVzC+QX2TOUE+qMhMyJCUKjp2YyLP0ZpZOP1WMI2hzSV1tKStcpfh2he2rJJNLlMW3/MMo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwMS+dT1dERgpbWWU3nE6nIDN0G2FYQ6NKf4BX49hYW4C0K0yuu
-	3AvROLFia1kGZxpw8BLxeHIlb6dyXgE83cYMkgrufqTU1GSoVrJq0NCvgBg3X+IUtrQ=
-X-Gm-Gg: ASbGncsbmNnXcVCtWegHtzAhM7mzSP83wQLSMnCywVSHD+e34Fp71jfsNcLNAJV7twM
-	TMtiNZ/FiQJnXJH2E5ui8+YtvCPFH5pw5ReUkbbd4zotTFndxYaELjBviUbFj8KmlMpNNv7Kymr
-	qj3Xi6Of7NlRBAeXFHqb3gmm6dVtAJ4RylTGeFyiHzie1MS6bXBedXmf+BGrYYmqm/wXHt9nvh2
-	XGHzg2mi+W8Zziu5fIsgX57cHoCLjhiHxNLSw5/qxmiMed8lWpS7LMU/ueqWzqE0iNkPLNqKRc9
-	LZ6bvEjEd/IWtA6Bm8WUhG5YmUnWqq0SzY3z2oDZe7aCPDnaqL7kSS19fhx4kNIQdOrNAy2audc
-	lje8jkSlhaKOg+leyjHD2MCm0ZVXHy3LclJW/W1do9FMIjrfkW0TGU1vq2c8dPL3pLRn+UilYSm
-	+5HISjwqWN8rXQoIwwoXe/Lwj+P8Xrcqx0DazgjI1Y/DiTFh4PVvl2ONjO8o8sd0IjSaLf
-X-Google-Smtp-Source: AGHT+IG0iE584jRlKe5lISrbNMv41T1x67kLdkM9KYyyXjy+vROKVbk6iFfK4oAYQFvskuvGDu3KNw==
-X-Received: by 2002:a17:90b:134c:b0:32e:72bd:6d5a with SMTP id 98e67ed59e1d1-3403963d448mr861274a91.1.1761691317762;
-        Tue, 28 Oct 2025 15:41:57 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1156:1:c8f:b917:4342:fa09? ([2620:10d:c090:500::5:1375])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33fed81b40fsm13255992a91.16.2025.10.28.15.41.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Oct 2025 15:41:57 -0700 (PDT)
-Message-ID: <2f2333fb-707a-4d21-a32d-776489ddc343@davidwei.uk>
-Date: Tue, 28 Oct 2025 15:41:55 -0700
+	s=arc-20240116; t=1761692175; c=relaxed/simple;
+	bh=RLoNYxGc/OMWUoC2F6HqL5IAZ8tTYBOrKBUTKviKabc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m/5TbfkJKb42nHrBb2tvtaYfgIbLbnH+y9s6RZ9ib+PJd4BQ59XPEL7bHrEjR3h070pHAftjluhEqSYypoP/FNWpQlpYAUMAiNntwPt7VwNhamL1SqeJJRVfM7zdD1LQhwSywqDpPjXKAkyaN1oCYxB0vnnurXKiqe6U9RfCg3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=o+gXM3DQ; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59SMCh2S030726;
+	Tue, 28 Oct 2025 22:55:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2025-04-25; bh=LQPBqQs3EwuuA+aAGSJeBpPp1MKPQ
+	BpcA+VXt/BJCY4=; b=o+gXM3DQoDfTNXXnANWDwxtKVjt3t36Jz6bkWm6poXusi
+	G0kZtFraNjEuydYKY3kFuWXfm7f9ylRE9yuB6RhsNt3y9y3/Sk9LJ0FM/t4YBzNV
+	W0/auc1PNW37UVUirXd+Iu+2TJYg83SBgk52qe48CKqLP6M2y79CF9VBqHFSTgOc
+	UVpyIxf0RF42a7pU5z3TRK9lptOqSbiVspgVmaOKE8DSyotHc0UA3jwMTboCJ2Sn
+	OZnZVk4aqePBawFiR/6mLbOaRfZeDrRNZ4dOflmT8LKmag6FiMO0AYFVI9Vi+IMR
+	Wl6D6up/CxKZrv9mk/o24s/0O57/OP05wVn6rpnvQ==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4a33vygbc1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 28 Oct 2025 22:55:49 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 59SLWYdL011644;
+	Tue, 28 Oct 2025 22:55:49 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4a33vwek5g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 28 Oct 2025 22:55:49 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 59SMpl5s001957;
+	Tue, 28 Oct 2025 22:55:48 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-154-54-249.vpn.oracle.com [10.154.54.249])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 4a33vwek50-1;
+	Tue, 28 Oct 2025 22:55:48 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: andrii@kernel.org
+Cc: eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, acme@kernel.org, ttreyer@meta.com,
+        yonghong.song@linux.dev, song@kernel.org, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+        jolsa@kernel.org, ihor.solodrai@linux.dev, bpf@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH v3 bpf-next 0/2] Multi-split BTF fixes and test
+Date: Tue, 28 Oct 2025 22:55:42 +0000
+Message-ID: <20251028225544.1312356-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 02/15] net: Implement
- netdev_nl_bind_queue_doit
-To: Jakub Kicinski <kuba@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
- razor@blackwall.org, pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
- john.fastabend@gmail.com, martin.lau@kernel.org, jordan@jrife.io,
- maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, toke@redhat.com,
- yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
-References: <20251020162355.136118-1-daniel@iogearbox.net>
- <20251020162355.136118-3-daniel@iogearbox.net>
- <20251023192842.31a2efc0@kernel.org>
-Content-Language: en-US
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <20251023192842.31a2efc0@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-10-28_08,2025-10-22_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 bulkscore=0
+ mlxscore=0 adultscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
+ definitions=main-2510280194
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDI4MDE2MiBTYWx0ZWRfX19tXLoUqVP4m
+ z3vvxgWs7VgtE2uITbT5NfIx5rXNSNBHyhgtwNrBQQPW1N1siO5hAgLg2dAEWsQOeD/POVofLL/
+ xm6X6wBUSSXDKmrDXQr+v5Pdty8hofKnpDCSiayMIj5ebxzUZsEDVTWCP1yr6kPL0yeM2XTkQM1
+ tlKtVI3yjkbF3Ut7uaHCbDqmtOkKqygZAGRwy6RCSkj3dfoQmEfrTGq88qgTQHKmjxf2Nw++kpT
+ 6+YKuaX2vAdi5QJRJjbuEYmidlSN2VU1fduzGlufzksRSUQgEVdWciI1wul1Wx62tMZ3BEjW7zW
+ rFq70SvY+P5FhBX6XBj6GKSHi5gU/oNcs3iR4mm0CaT7oX0HCjC0I6/Gr68fbmsTTzXf4HWt0Q8
+ o+meqpRSTwqanJ61VS3cyJ+sFptC0w==
+X-Proofpoint-ORIG-GUID: rDxyCXZrwfBt1sMTGcXu7dLnSePimrBM
+X-Authority-Analysis: v=2.4 cv=M8xA6iws c=1 sm=1 tr=0 ts=690149f5 b=1 cx=c_pps
+ a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
+ a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=yPCof4ZbAAAA:8
+ a=yiKXGxLub-E0OzASjs4A:9
+X-Proofpoint-GUID: rDxyCXZrwfBt1sMTGcXu7dLnSePimrBM
 
-On 2025-10-23 19:28, Jakub Kicinski wrote:
-> On Mon, 20 Oct 2025 18:23:42 +0200 Daniel Borkmann wrote:
->> +void netdev_rx_queue_peer(struct net_device *src_dev,
->> +			  struct netdev_rx_queue *src_rxq,
->> +			  struct netdev_rx_queue *dst_rxq)
->> +{
->> +	netdev_assert_locked(src_dev);
->> +	netdev_assert_locked(dst_rxq->dev);
->> +
->> +	netdev_hold(src_dev, &src_rxq->dev_tracker, GFP_KERNEL);
-> 
-> Isn't ->dev_tracker already used by sysfs?
+This small series consists of a fix to multi-split BTF parsing
+(patch 1) and a test which exercises (multi-)split BTF parsing
+(patch 2).
 
-You're right, it is. Can netdevice_tracker not be shared?
+Changes since v2 [1]
 
-> 
-> Are you handling the underlying device going away?
+- fix Fixes: tag formatting (Andrii, patch 1)
+- BPF code-review bot saw we were doing ASSERT_OK_PTR() on wrong
+  BTF (not multisplit) in patch 2
+- ensure cleanup is correctly handled for BTF, unlink in split
+  tests (Andrii, patch 2)
 
-Ah, good point, no we're not handling that right now. Reading the code
-and intuitively, it doesn't look like holding the netdev refc will
-prevent something like unplugging the device...
+Changes since v1 [2]
 
-I take it an unregistration notifier e.g. xsk_notifier() is the way to
-handle it?
+- BPF code-review bot spotted another place that the string offset
+needed to be adjusted based upon base start string offset + header
+string offset.
+- added selftests to extend split BTF testing to parsing
 
-> 
->> +	__netdev_rx_queue_peer(src_rxq, dst_rxq);
->> +}
+[1] https://lore.kernel.org/bpf/20251028155709.1265445-1-alan.maguire@oracle.com/
+[2] https://lore.kernel.org/bpf/20251023142812.258870-1-alan.maguire@oracle.com/
+
+Alan Maguire (2):
+  libbpf: Fix parsing of multi-split BTF
+  selftests/bpf: Test parsing of (multi-)split BTF
+
+ tools/lib/bpf/btf.c                           |  4 +-
+ .../selftests/bpf/prog_tests/btf_split.c      | 80 ++++++++++++++++++-
+ 2 files changed, 80 insertions(+), 4 deletions(-)
+
+-- 
+2.39.3
+
 
