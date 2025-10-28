@@ -1,158 +1,102 @@
-Return-Path: <bpf+bounces-72479-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72480-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6807EC1296A
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 02:50:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6201AC12991
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 02:56:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D58E9352073
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 01:50:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75752568AAF
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 01:56:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B28625A633;
-	Tue, 28 Oct 2025 01:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5733C2737F3;
+	Tue, 28 Oct 2025 01:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="DJNInhTR"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="Le8KjsBu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E5FE1DE894
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 01:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E8C263F28;
+	Tue, 28 Oct 2025 01:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761616226; cv=none; b=eZaIXDtktG0DtLh/QMXxKn4DaAYO9vfvnuyaefHLbNb1TtSwg0qG4S5JsXmKrY/yknX87goAX+SU2IVqkKpvTCUExLrBTirEoTas3aplDjPxXmnUCxymDqKLYrqwsH6dlmp3e7cljCS36FP0TLGw6S9Z921U/eNZodxnzXD28JU=
+	t=1761616559; cv=none; b=YYMqFgRVxjerorRHujz+rrsKOADHPiFpTdJ52D0sIU6sw9V2rU0Q9GX7Z9YMqRlOsNt1+FaB+mz4CnHUpHrxuZKCrt9X9QiKYkxmkwU0bjQUMvl5vOMvWKNpXVlKlnLMnykN5zX4AnEpG9PqhmUECu0k0zrhUCgx+FBQMdGnM5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761616226; c=relaxed/simple;
-	bh=egI9YqNPe+9Ospz/laL6gjdZwfp2mENxEK9oSkrWlg0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VMCt5nz70tdaEmsD5zx66VmUUtUngq9oGFrAuYimjM4w7cDo8QScd2s/UFHTZwemVB2SPt36LW/k/yGaKstc5KG0wZ+GpzYyWEaogTm/GyCBNkAuqRZqxLFMUTo0OhB+H5/aecR6VYcy3vz3zocoMLtyhBlMpyyLuw2eatGWLpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=DJNInhTR; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-33badfbbc48so6886953a91.2
-        for <bpf@vger.kernel.org>; Mon, 27 Oct 2025 18:50:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1761616223; x=1762221023; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0uqWsER2lvpM1BFwi97W3jPbnbI+DdhSgyhsiCuGVeQ=;
-        b=DJNInhTRi+VwGwYhOqJfNzQHCsrxYfwuZdRXrTKDIZn5n2OY9c7Jk/28Yjj9gAM2wW
-         1Hbo0yJvkW5H43hwXZ9bZzcPbIuGYlM1s+JJN38oAJ5nRUFd7IZ7Khhd0K69fRBo0Vnu
-         /yIgNlb8SDKNAS9LyoVA+nEXxd1FYaRdmnKtmWnizWIMmD3mQBwErCT7lGtVSlJ1EbyY
-         HFVzra+USkfttjasQvA2gCNj2wL4DFbFUGgAnytb/wdHhorJ48sGkJwbtzeHeH7amArY
-         E+iL7LLpIqtA8Mdm4A+efLco3F5NdGSdcSUYoi4co3U05n0+OaVs2gqsUKUfUN4IRA8e
-         fVhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761616223; x=1762221023;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0uqWsER2lvpM1BFwi97W3jPbnbI+DdhSgyhsiCuGVeQ=;
-        b=GpGRs7jnzb0Yl9c+5WVsR+g88t7fxy+bf2sz77SL+CbPsNflWjvwWwKsm4FTvPoRQu
-         HD+I+IfC2fIMcGRmTVopmCQmj+5/gb5BQ7bp7f+df3pxhY8GJv+gu26ljXxYVGjlpHHp
-         UjgQSMmd890nzhoFij7Ll1rZIeDnqHRMVmPA7ma57D/Q3KO74bVab/XHbypgECGzaIPc
-         wFL3uLXFCRJyEcNOyi2/tya317blzSMcPd0ywlTb6TshkKO9kYYcSouuN3qMDLqMpNjE
-         k5kqKKzqhsMNb8sulyioqwXpxRfTanaa02djHnbMh0z+cwZ0cUhsPqMhaB3GR0KUvr3Y
-         lOCA==
-X-Gm-Message-State: AOJu0YzC8wczGSvtyMd+ywTaW68bH/fJOCO02sSxYvoIKA7/J2zDlelq
-	cQSRD/FFevCsLeSt8pq/QSO/ILn0fsteJE17iBggjovIQqcPGpiHCOt9jeLODUoccMMELyW+M2Z
-	Ed4JEkFz4MRxByXI1ZOTwC7OkLFzsM86jRQZXkRaL
-X-Gm-Gg: ASbGncv+34xLRgAYZv5OyD/i1PhDll+uEyd5cIshduDNtXOHttsu0Q2XJCrLihEXnC/
-	pMGIFcS8r+qAhjo81qzaQ7tqS5deRN+T4bzFZDumbDIWe+iEvcUZ6ttbq++mEGM17JUHA9wFn8/
-	kcmiiZDlpnHGNb66Pn9vZ7lXx3VF1bzqgCEcFAzBm8eRZyVL93X+mcdHOcPmNyAbxoRJPrD+4MZ
-	An/rS+tq9J+gmrqNSD6mROgxcBBYSJYfDxtf2tXBXsSo8KZEJmRQeUboqVD
-X-Google-Smtp-Source: AGHT+IFIcd+uaOxgvUBNoN1jswBfv9wR75xnyXOcRVREkUsbREllucHhYo/8m8rqI1IihjpMqJ8++4byeibL2ds9fH8=
-X-Received: by 2002:a17:90b:4f81:b0:339:d1f0:c740 with SMTP id
- 98e67ed59e1d1-340279a5f62mr2127114a91.1.1761616223299; Mon, 27 Oct 2025
- 18:50:23 -0700 (PDT)
+	s=arc-20240116; t=1761616559; c=relaxed/simple;
+	bh=2nWzQD7+/4f80rBQ1UVL9YpxO6XOr6j9T92xF5dMgPw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OVF0bAGizVRJgw1bpkqJgMneY37pDUlDlfQGRZZk0L2FMPxXvWvPnmDTcCHN2GxIyOonWnh57tzBdS7F/ppfi9lkaVcwlt9o6t6LbFfN4k0R8vtqPjcRkvXNStVgOweyrSQYkMeMj62ZrJ848cqaEfEF3IAzlyYdgSbe7XaSfqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=Le8KjsBu; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=NMWzOpxOLp7djj4rryockFPgtDMeGtwU0HcuCp9Qs50=; b=Le8KjsBu+85kzt1t4BL8YLSUCP
+	aF48vXMeS/zemSMpkY8HqTGBwm0ZU5YrRhYzEC5oZEVC+l3smpfNXn666wRG/uExh/x7oN9MB9XOj
+	zpeS72wOY36FmbBVPzYMMCQUKinAbkmV3tCxRZIrNthIThSX5espx/xsim9TTv3BqSJ5A3D6OV7Yi
+	rK1NreXBBAvHNZiQc7rChyFRYtgOIkKQZt1TysBJYZfVG3/4CyNNL7QgtACAKJ466GTZWdbgE7ac4
+	BJAPN7UfUYSWmql2NJztc1/1b1yzIJ4W5eLGvarO+t66RFki8ovME3q7knigxC7p/U+4mPtzoxn5X
+	iyn+VxuQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vDYwD-000000039xT-37LE;
+	Tue, 28 Oct 2025 01:55:53 +0000
+Date: Tue, 28 Oct 2025 01:55:53 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: linux-fsdevel@vger.kernel.org
+Cc: torvalds@linux-foundation.org, brauner@kernel.org, jack@suse.cz,
+	raven@themaw.net, miklos@szeredi.hu, neil@brown.name,
+	a.hindborg@kernel.org, linux-mm@kvack.org,
+	linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+	kees@kernel.org, rostedt@goodmis.org, gregkh@linuxfoundation.org,
+	linux-usb@vger.kernel.org, paul@paul-moore.com,
+	casey@schaufler-ca.com, linuxppc-dev@lists.ozlabs.org,
+	john.johansen@canonical.com, selinux@vger.kernel.org,
+	borntraeger@linux.ibm.com, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 31/50] convert autofs
+Message-ID: <20251028015553.GM2441659@ZenIV>
+References: <20251028004614.393374-1-viro@zeniv.linux.org.uk>
+ <20251028004614.393374-32-viro@zeniv.linux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251025001022.1707437-1-song@kernel.org> <CAHC9VhTb2p3DL_knRgFyDv396BwH-KhwR0cBhqLQ-KdgcA1yLw@mail.gmail.com>
- <CAPhsuW6O96aJbZptVY754tQ1-C_JtH8PwS1oZX6a1Tch7ehEkg@mail.gmail.com>
-In-Reply-To: <CAPhsuW6O96aJbZptVY754tQ1-C_JtH8PwS1oZX6a1Tch7ehEkg@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Mon, 27 Oct 2025 21:50:11 -0400
-X-Gm-Features: AWmQ_blXtmJiRO5K1bqpyuAPod0MDG6LK8RiElIaQpVZH3OFxc9EiJ_KCQvr22o
-Message-ID: <CAHC9VhRzjkTSUPS9odXRruAuSNbv44Atxj2sreQgcVpDu5pL-Q@mail.gmail.com>
-Subject: Re: [RFC bpf-next] lsm: bpf: Remove lsm_prop_bpf
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com, 
-	kpsingh@kernel.org, mattbobrowski@google.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, john.johansen@canonical.com, 
-	eparis@redhat.com, audit@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251028004614.393374-32-viro@zeniv.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Mon, Oct 27, 2025 at 6:45=E2=80=AFPM Song Liu <song@kernel.org> wrote:
-> On Mon, Oct 27, 2025 at 2:14=E2=80=AFPM Paul Moore <paul@paul-moore.com> =
-wrote:
-> > On Fri, Oct 24, 2025 at 8:10=E2=80=AFPM Song Liu <song@kernel.org> wrot=
-e:
-> > >
-> > > lsm_prop_bpf is not used in any code. Remove it.
-> > >
-> > > Signed-off-by: Song Liu <song@kernel.org>
-> > >
-> > > ---
-> > >
-> > > Or did I miss any user of it?
-> > > ---
-> > >  include/linux/lsm/bpf.h  | 16 ----------------
-> > >  include/linux/security.h |  2 --
-> > >  2 files changed, 18 deletions(-)
-> > >  delete mode 100644 include/linux/lsm/bpf.h
-> >
-> > You probably didn't miss any direct reference to lsm_prop_bpf, but the
-> > data type you really should look for when deciding on this is
-> > lsm_prop.  There are a number of LSM hooks that operate on a lsm_prop
-> > struct instead of secid tokens, and without a lsm_prop_bpf
-> > struct/field in the lsm_prop struct a BPF LSM will be limited compared
-> > to other LSMs.  Perhaps that limitation is okay, but it is something
->
-> I think audit is the only user of lsm_prop (via audit_names and
-> audit_context). For BPF based LSM or audit, I don't think we need
-> specific lsm_prop. If anything is needed, we can implement it with
-> task local storage or inode local storage.
->
-> CC audit@ and Eric Paris for more comments on audit side.
+On Tue, Oct 28, 2025 at 12:45:50AM +0000, Al Viro wrote:
 
-You might not want to wait on a comment from Eric :)
+> @@ -627,7 +626,7 @@ static int autofs_dir_unlink(struct inode *dir, struct dentry *dentry)
+>  
+>  	p_ino = autofs_dentry_ino(dentry->d_parent);
+>  	p_ino->count--;
+> -	dput(dentry);
+> +	d_make_discardable(dentry);
+>  
+>  	d_inode(dentry)->i_size = 0;
+>  	clear_nlink(d_inode(dentry));
 
-> > that should be discussed; I see you've added KP to the To/CC line, I
-> > would want to see an ACK from him before I merge anything removing
-> > lsm_prop_bpf.
->
-> Matt Bobrowski is the co-maintainer of BPF LSM. I think we are OK
-> with his Reviewed-by?
+BTW, is there any reason why autofs_dir_unlink() does not update
+ctime of the parent directory?  Try it on a normal filesystem:
 
-Good to know, I wasn't aware that Matt was also listed as a maintainer
-for the BPF LSM.  In that case as long as there is an ACK, not just a
-reviewed tag, I think that should be sufficient.
+; mkdir foo
+; touch foo/bar
+; stat --printf='%z\n' foo
+2025-10-27 21:40:03.489427380 -0400
+; rm foo/bar
+; stat --printf='%z\n' foo
+2025-10-27 21:40:16.853470607 -0400
 
-> > I haven't checked to see if the LSM hooks associated with a lsm_prop
-> > struct are currently allowed for a BPF LSM, but I would expect a patch
-> > removing the lsm_prop_bpf struct/field to also disable those LSM hooks
-> > for BPF LSM use.
->
-> I don't think we need to disable anything here. When lsm_prop was
-> first introduced in [1], nothing was added to handle BPF.
+and note the change of ctime of directory reported after removing
+an entry in it.   All Unices since v7 had been that way...
 
-If the BPF LSM isn't going to maintain any state in the lsm_prop
-struct, I'd rather see the associated LSM interfaces disabled from
-being used in a BPF LSM just so we don't run into odd expectations in
-the future.  Maybe they are already disabled, I haven't checked.
-
-If you want to keep those interfaces/hooks enabled for a BPF LSM, just
-keep the lsm_prop_bpf struct/field.
-
---=20
-paul-moore.com
+Why does autofs unlink() need to be different in that respect?
+Some userland reasons?
 
