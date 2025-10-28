@@ -1,199 +1,161 @@
-Return-Path: <bpf+bounces-72502-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72503-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86602C13729
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 09:09:06 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B787C13957
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 09:43:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42AA71893733
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 08:09:30 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1C9794E5D12
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 08:43:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CFB2D3EE5;
-	Tue, 28 Oct 2025 08:08:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB762D9498;
+	Tue, 28 Oct 2025 08:43:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eBUWJTiC"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Xq7ERVrJ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Eodsjk9g"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A082AE8E;
-	Tue, 28 Oct 2025 08:08:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 437D12C17A8;
+	Tue, 28 Oct 2025 08:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761638938; cv=none; b=CuVpDP3dqAcuW4sQbszLCHmndFaD6vI8Zhzz/mLZyAD7QtMrlh3Hbrauq5XBKlwfAp+G5T8Vl59H2SAZwUysXbIyPRxKXmHm5y4O5PXJ9wfnJvl3Nj7YD1xpCyicjAbcfbqQlftkP3hMntwUquayocyvczePcfO9s+EJZwuE5IQ=
+	t=1761640996; cv=none; b=p72MLnObd41MrcZ2luyYKXTE34Nmj0j7tobsGwL6VUKd9+xUUTZqmQOJ2tHaxLdwzytDfsQ8iv++gUYG7j7knCoI575cYQHobu+Cw0nS73ElHKrhkb4No7NhqmJ4NWfypOSfKgefWDFYI4JVJX4n1AJDWL/khDrBUSC93ERKRb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761638938; c=relaxed/simple;
-	bh=4sTJoE3Tj68a0XVvk4bdhjMbSBfYSqrGGw2z4DoVkBg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZQnWA49hcuGO1UzmW4tEONLcFLZbp+Eh5yvcHwITVWhx9V/mo6DLKXLafqoA1kYarEbqZm/0fCTLyMy58VWeePAEtTW4RHhWnnLdWmP0QuF8lFhGu2WcUhZUVjyZZ9VGBesoSQoFpUVpqArlbOTx/P/mscHzMDkRN1PQ4EYLX6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eBUWJTiC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A866C4CEE7;
-	Tue, 28 Oct 2025 08:08:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761638937;
-	bh=4sTJoE3Tj68a0XVvk4bdhjMbSBfYSqrGGw2z4DoVkBg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=eBUWJTiCpui8Y8h+rvZhpFQCXrOkAqagYnefylVdojremZPo7WYSML7ZocFScXett
-	 y67QVMobugvi0pXljU3f4XCwl+cah7D9PGCN0ATzbKvwz5zo3uGIF4y0knvVoskCgp
-	 2KBRN4H5Mot8OHVZzC5kYcVcLjuh0bhaJRB3uGmwC+oBAXGcxDGS/b3nlS4HN5ppQq
-	 EhsJ29jp31kjJQVnpGEaClfk80RQfqPIZ9Hgjj85w33y9h84gaxHQCHXyHn5CgdGiZ
-	 HsLJ5S5gGc1FpLD5WmL2ixlZSHdS+vZzrOHuFyeJASNexKja3mlqXlPMbf29mOoptY
-	 UqryBxuo5eAOg==
-Message-ID: <11142984-9bbe-4611-bbe7-fa5494036b8f@kernel.org>
-Date: Tue, 28 Oct 2025 09:08:52 +0100
+	s=arc-20240116; t=1761640996; c=relaxed/simple;
+	bh=24piICuL1TFvQkkPUpBURn6MSOHQmPj30SRS3p89FRg=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=FJ/5obfr1rUlKrMI/pgZKuVbC65p4JNb2d1yFeztGVDgQS2Krs9SEWLc1QiTubyn5YUee6Y1cMdOzmTbNPiN8MTRAIOjaPAqaN0IzxSCmFPaT/rR+HYVnS2hYR2eVZ4UVomRmT9wtz0w2bp8JKxZ/zoReEmhvsDnmI40eNx2uP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Xq7ERVrJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Eodsjk9g; arc=none smtp.client-ip=103.168.172.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfout.phl.internal (Postfix) with ESMTP id 3C646EC049C;
+	Tue, 28 Oct 2025 04:43:12 -0400 (EDT)
+Received: from phl-imap-17 ([10.202.2.105])
+  by phl-compute-04.internal (MEProxy); Tue, 28 Oct 2025 04:43:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1761640992;
+	 x=1761727392; bh=0JJIkDhabFeQu41OWvb1I0C49bKjs5BXbI+33V7E/DI=; b=
+	Xq7ERVrJvCMn7KM+GJIjGJU6l/nnqobgi2ttOFMlQ3gzVppaypAMXeNoGpJG6J7w
+	iU4q6IJEeMYQ7SAACfECkIOrlyiKMWDfdYWzsl73R1f+8KzfecXegG25oGI0xMCz
+	dOXuwLiI63yhQNuGnf8bko+4nJXq0rGCKPHCxoBak7JxJD3/+Av6Ryjk2j4u+cJZ
+	Ghdgf2CQxAh1RnArZ3j10fmuwkMad8qPZQOTiyNvrDTBwYyIgzX0AFwRJ91gA2L5
+	VqaOwLG/kMSmJHyy7ZbAedUj3lonwWXmGHmDYJ4fcvy0FPXe8iNwfeXFKNLtQedX
+	o2ywp7YtllGKuWrJLW0GOA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1761640992; x=
+	1761727392; bh=0JJIkDhabFeQu41OWvb1I0C49bKjs5BXbI+33V7E/DI=; b=E
+	odsjk9gmyhy5abk7WI2miFV+T87z564P1AYR2TvLZGQpqArDmPokF/t722n3I4Tj
+	EpyVxm/uAn+B/CYsExrbwg/Ym1wj4JcV+ZXs+foGaPgnXUpESUdCszPEwxut/zFX
+	xcV3bSxllP3wL3eb7VK35iE0S+g0Bv1b2tN/3WjNv7KFE9KeHHvMBwmfVdHU5bLN
+	2i+DFfnEauC8R0f4aLHDvo4s2qkQGmvwPl5ODYfWEEVxmNgQbRCu/9+UrtQDsAp2
+	McBvjLHmuFvxcH7KzrGNlPW/+MzCC0ohSNNRNr0BzoIAq5V1sil47l8i1m6Ne+yD
+	gj+ehDon30hPc80oq9r8Q==
+X-ME-Sender: <xms:HoIAaUtaYFqBbJcPsIwH_N9aBY3VmmgjKJsuzycGO5yhkf5od7uupQ>
+    <xme:HoIAacSn2C6gyejJUVK9jxPnsznK09RRPtkVN6ix7AeSkMwhE7L64Q7_h61Ot49T4
+    DU0HE5d1ja8ZDWj0zMtyVbwIxkocyj4fqybNYAX81eNbgbEp7ckiN4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduiedtgedtucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
+    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
+    hrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefggfevudegudevledvkefhvdei
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
+    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepvddvpdhmohguvgepshhmthhpohhu
+    thdprhgtphhtthhopehhrghrihhsohhknhesrghmrgiiohhnrdgtohhmpdhrtghpthhtoh
+    eptggrthgrlhhinhdrmhgrrhhinhgrshesrghrmhdrtghomhdprhgtphhtthhopehmrghr
+    khdrrhhuthhlrghnugesrghrmhdrtghomhdprhgtphhtthhopegtlhesghgvnhhtfihord
+    horhhgpdhrtghpthhtohepmhgvmhigohhrsehgmhgrihhlrdgtohhmpdhrtghpthhtohep
+    iihhvghnghhlihhfvghnghdusehhuhgrfigvihdrtghomhdprhgtphhtthhopehpvghtvg
+    hriiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdr
+    ohhrghdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:HoIAaRK98uVZXggexNZJxfpOi2NhgCDBpdBortjF4YEFlnX-7575tg>
+    <xmx:HoIAaYtT4qxWDTg6TXCMRVb6I7jai_a5cVtV7XatpNk52wWObCtxyw>
+    <xmx:HoIAaZsQi0-T0s8zmmp7YXxMdSo49olveWp-cJiaKFFMl0_-8Q_RPQ>
+    <xmx:HoIAaXVHVooVmeleiM97lpwcJ8DxjnGIMcPMdIXgwf_9CIvgOPFLpw>
+    <xmx:IIIAaR6OVmbqtFe8haMko2FXa-g9Vh851x94veFTolgXUIvEFDoTVRSF>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id B93ADC40054; Tue, 28 Oct 2025 04:43:10 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 bpf 1/2] xdp: introduce xdp_convert_skb_to_buff()
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
- ast@kernel.org, daniel@iogearbox.net
-Cc: netdev@vger.kernel.org, magnus.karlsson@intel.com,
- aleksander.lobakin@intel.com, ilias.apalodimas@linaro.org, toke@redhat.com,
- lorenzo@kernel.org, kuba@kernel.org,
- syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com,
- Ihor Solodrai <ihor.solodrai@linux.dev>, Octavian Purdila <tavip@google.com>
-References: <20251027121318.2679226-1-maciej.fijalkowski@intel.com>
- <20251027121318.2679226-2-maciej.fijalkowski@intel.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20251027121318.2679226-2-maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ThreadId: Ab2ZwGVH8-qs
+Date: Tue, 28 Oct 2025 09:42:50 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Ankur Arora" <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
+ Linux-Arch <linux-arch@vger.kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+ bpf@vger.kernel.org
+Cc: "Catalin Marinas" <catalin.marinas@arm.com>,
+ "Will Deacon" <will@kernel.org>, "Peter Zijlstra" <peterz@infradead.org>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Mark Rutland" <mark.rutland@arm.com>,
+ "Haris Okanovic" <harisokn@amazon.com>,
+ "Christoph Lameter (Ampere)" <cl@gentwo.org>,
+ "Alexei Starovoitov" <ast@kernel.org>,
+ "Rafael J . Wysocki" <rafael@kernel.org>,
+ "Daniel Lezcano" <daniel.lezcano@linaro.org>,
+ "Kumar Kartikeya Dwivedi" <memxor@gmail.com>, zhenglifeng1@huawei.com,
+ xueshuai@linux.alibaba.com, "Joao Martins" <joao.m.martins@oracle.com>,
+ "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
+ "Konrad Rzeszutek Wilk" <konrad.wilk@oracle.com>
+Message-Id: <3642cfd1-7da6-4a75-80b7-00c21ab6955f@app.fastmail.com>
+In-Reply-To: <20251028053136.692462-3-ankur.a.arora@oracle.com>
+References: <20251028053136.692462-1-ankur.a.arora@oracle.com>
+ <20251028053136.692462-3-ankur.a.arora@oracle.com>
+Subject: Re: [RESEND PATCH v7 2/7] arm64: barrier: Support
+ smp_cond_load_relaxed_timeout()
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
+On Tue, Oct 28, 2025, at 06:31, Ankur Arora wrote:
+> Support waiting in smp_cond_load_relaxed_timeout() via
+> __cmpwait_relaxed(). Limit this to when the event-stream is enabled,
+> to ensure that we wake from WFE periodically and don't block forever
+> if there are no stores to the cacheline.
+>
+> In the unlikely event that the event-stream is unavailable, fallback
+> to spin-waiting.
+>
+> Also set SMP_TIMEOUT_POLL_COUNT to 1 so we do the time-check for each
+> iteration in smp_cond_load_relaxed_timeout().
 
+After I looked at the entire series again, this one feels like
+a missed opportunity. Especially on low-power systems but possibly
+on any ARMv9.2+ implementation including Cortex-A320, it would
+be nice to be able to both turn off the event stream and also
+make this function take fewer wakeups:
 
-On 27/10/2025 13.13, Maciej Fijalkowski wrote:
-> Currently, generic XDP hook uses xdp_rxq_info from netstack Rx queues
-> which do not have its XDP memory model registered. There is a case when
-> XDP program calls bpf_xdp_adjust_tail() BPF helper, which in turn
-> releases underlying memory. This happens when it consumes enough amount
-> of bytes and when XDP buffer has fragments. For this action the memory
-> model knowledge passed to XDP program is crucial so that core can call
-> suitable function for freeing/recycling the page.
-> 
-> For netstack queues it defaults to MEM_TYPE_PAGE_SHARED (0) due to lack
-> of mem model registration. The problem we're fixing here is when kernel
-> copied the skb to new buffer backed by system's page_pool and XDP buffer
-> is built around it. Then when bpf_xdp_adjust_tail() calls
-> __xdp_return(), it acts incorrectly due to mem type not being set to
-> MEM_TYPE_PAGE_POOL and causes a page leak.
-> 
-> Pull out the existing code from bpf_prog_run_generic_xdp() that
-> init/prepares xdp_buff onto new helper xdp_convert_skb_to_buff() and
-> embed there rxq's mem_type initialization that is assigned to xdp_buff.
-> Make it agnostic to current skb->data position.
-> 
-> This problem was triggered by syzbot as well as AF_XDP test suite which
-> is about to be integrated to BPF CI.
-> 
-> Reported-by: syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/netdev/6756c37b.050a0220.a30f1.019a.GAE@google.com/
-> Fixes: e6d5dbdd20aa ("xdp: add multi-buff support for xdp running in generic mode")
-> Tested-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> Co-developed-by: Octavian Purdila <tavip@google.com>
-> Signed-off-by: Octavian Purdila <tavip@google.com> # whole analysis, testing, initiating a fix
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com> # commit msg and proposed more robust fix
-> ---
->   include/net/xdp.h | 25 +++++++++++++++++++++++++
->   net/core/dev.c    | 25 ++++---------------------
->   2 files changed, 29 insertions(+), 21 deletions(-)
-> 
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index aa742f413c35..eba1c0cd5800 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -384,6 +384,31 @@ struct sk_buff *xdp_build_skb_from_frame(struct xdp_frame *xdpf,
->   					 struct net_device *dev);
->   struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf);
->   
-> +static inline
-> +void xdp_convert_skb_to_buff(struct sk_buff *skb, struct xdp_buff *xdp,
-> +			     struct xdp_rxq_info *xdp_rxq)
-> +{
-> +	u32 frame_sz, pkt_len;
+> +/* Re-declared here to avoid include dependency. */
+> +extern bool arch_timer_evtstrm_available(void);
 > +
-> +	/* SKB "head" area always have tailroom for skb_shared_info */
-> +	frame_sz = skb_end_pointer(skb) - skb->head;
-> +	frame_sz += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-> +	pkt_len =  skb_tail_pointer(skb) - skb_mac_header(skb);
+> +#define cpu_poll_relax(ptr, val)					\
+> +do {									\
+> +	if (arch_timer_evtstrm_available())				\
+> +		__cmpwait_relaxed(ptr, val);				\
+> +	else								\
+> +		cpu_relax();						\
+> +} while (0)
 > +
-> +	xdp_init_buff(xdp, frame_sz, xdp_rxq);
-> +	xdp_prepare_buff(xdp, skb->head, skb->mac_header, pkt_len, true);
-> +
-> +	if (skb_is_nonlinear(skb)) {
-> +		skb_shinfo(skb)->xdp_frags_size = skb->data_len;
-> +		xdp_buff_set_frags_flag(xdp);
-> +	} else {
-> +		xdp_buff_clear_frags_flag(xdp);
-> +	}
-> +
-> +	xdp->rxq->mem.type = page_pool_page_is_pp(virt_to_head_page(xdp->data)) ?
-> +				MEM_TYPE_PAGE_POOL : MEM_TYPE_PAGE_SHARED;
 
-We are slowly killing performance with these paper cuts.  The
-information we are looking for should be available via skb->pp_recycle,
-but instead we go lookup the page to deref that memory.  And plus the
-virt_to_head_page() is more expensive than virt_to_page().
+Since the caller knows exactly how long it wants to wait for,
+we should be able to fit a 'wfet' based primitive in here and
+pass the timeout as another argument.
 
-Why don't we check skb->pp_recycle first, and then fall-back to checking
-the page to catch the mentioned problems?
-
---Jesper
-
-> +}
-> +
->   static inline
->   void xdp_convert_frame_to_buff(const struct xdp_frame *frame,
->   			       struct xdp_buff *xdp)
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 2acfa44927da..a71da4edc493 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -5320,35 +5320,18 @@ static struct netdev_rx_queue *netif_get_rxqueue(struct sk_buff *skb)
->   u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
->   			     const struct bpf_prog *xdp_prog)
->   {
-> -	void *orig_data, *orig_data_end, *hard_start;
-> +	void *orig_data, *orig_data_end;
->   	struct netdev_rx_queue *rxqueue;
->   	bool orig_bcast, orig_host;
-> -	u32 mac_len, frame_sz;
-> +	u32 metalen, act, mac_len;
->   	__be16 orig_eth_type;
->   	struct ethhdr *eth;
-> -	u32 metalen, act;
->   	int off;
->   
-> -	/* The XDP program wants to see the packet starting at the MAC
-> -	 * header.
-> -	 */
-> +	rxqueue = netif_get_rxqueue(skb);
->   	mac_len = skb->data - skb_mac_header(skb);
-> -	hard_start = skb->data - skb_headroom(skb);
-> -
-> -	/* SKB "head" area always have tailroom for skb_shared_info */
-> -	frame_sz = (void *)skb_end_pointer(skb) - hard_start;
-> -	frame_sz += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
->   
-> -	rxqueue = netif_get_rxqueue(skb);
-> -	xdp_init_buff(xdp, frame_sz, &rxqueue->xdp_rxq);
-> -	xdp_prepare_buff(xdp, hard_start, skb_headroom(skb) - mac_len,
-> -			 skb_headlen(skb) + mac_len, true);
-> -	if (skb_is_nonlinear(skb)) {
-> -		skb_shinfo(skb)->xdp_frags_size = skb->data_len;
-> -		xdp_buff_set_frags_flag(xdp);
-> -	} else {
-> -		xdp_buff_clear_frags_flag(xdp);
-> -	}
-> +	xdp_convert_skb_to_buff(skb, xdp, &rxqueue->xdp_rxq);
->   
->   	orig_data_end = xdp->data_end;
->   	orig_data = xdp->data;
-
+    Arnd
 
