@@ -1,66 +1,67 @@
-Return-Path: <bpf+bounces-72605-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72606-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F930C16404
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 18:43:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2688C164D8
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 18:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 395871886EF5
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:43:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56ED9401FAC
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 268FD34DCE3;
-	Tue, 28 Oct 2025 17:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CEC834DCDD;
+	Tue, 28 Oct 2025 17:45:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="smv/lP5o"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="QUl6NIix"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F3B134C991;
-	Tue, 28 Oct 2025 17:42:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D99134C820;
+	Tue, 28 Oct 2025 17:45:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761673373; cv=none; b=W84HQkTmwXBkT0jJMFtBCrKVAeaSuj/s5ws2swGBb9b+zKVCgdbCIVQwsTOH38Dn0hmtr7RNiqKbOse8m8/F4v1cJP11TE3OVB0aSRLMH0CwEy4vt6IrJCD6BcqTan0pWbG8PWZDWlfHQXD4tX58gCbdfaSItLoA4RwVsMBywTY=
+	t=1761673552; cv=none; b=bf40DqzLh80Yd56I/UpsFA+9AFkQfINvy6YZij2JSd8IhzisEeOvFFpqsx4c2kU3+bjE2tJ4HOtx7FJ28j51bw/BkzHlrzb++PB3yl6KuSOQ34KPWX3myKEqmml5KSr67toghHn1P5Gk73cwhemfuMuLd4YWt5fphtoSn/SPZVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761673373; c=relaxed/simple;
-	bh=O9h35W/5qIeYiR+aZ394LJfEnSiQZLZpjbezvmnwe7c=;
+	s=arc-20240116; t=1761673552; c=relaxed/simple;
+	bh=Mr1WTHFZ6i5J3hlsCvzyRrLq65RcchJJniLiOO3sXYs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q15SzsgUuR3y8UhtEP8v/EXorvKG6HoOhyYYSWP2fbNZOiWQtpZqtLtJgaoFVxMsqXGvmR8CQvB+3967SKEnEG5GulYOrL3SvVdHrcop83twNA9LO8aaBIhM7VRZJXAnLXlIEts1nFuxMpAOGyOT8RFfsHi8QB7n3/lUAZZPArw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=smv/lP5o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 188B7C113D0;
-	Tue, 28 Oct 2025 17:42:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761673373;
-	bh=O9h35W/5qIeYiR+aZ394LJfEnSiQZLZpjbezvmnwe7c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=smv/lP5o9CsLvG21j5v2Heg6EF/lysOnQHrQpZJiX8DtUg2Lq+g99CODEbIkkrZy5
-	 OnjRJPcTk2LkvWjG2QWv+/uQ0Ww+4DXzENNaOCqTBqeroFUrss8437dc7sS66Uzdkd
-	 saBHMOWXQZgMHK0ZAe1/AA+uB1En7rv2Aefwc7TpOhguU26if64+pyj6FMRBrldQyP
-	 0jKG+7WgPyu8hiTKfkeJC+GIk/EtN71fzJen24goMLtLwd4sZbowqCWy+tNdr6/Ezc
-	 3z5sSEESJtbWEZHhKs1Y7lcFapuO723akp7KCBJlKkXmJurqWZgGNzlgHNtz186X/3
-	 +mbeVR8ykC8LQ==
-Date: Tue, 28 Oct 2025 07:42:52 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH v2 08/23] mm: introduce BPF kfuncs to deal with memcg
- pointers
-Message-ID: <aQEAnB7Gjs4vew8x@slm.duckdns.org>
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
- <20251027231727.472628-9-roman.gushchin@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y1F+WFPqPqt80p3tT/TdYufd551WyY4E2cg8wGatyTmek6m683X5KCYaMSjppYWXNmqqg2dPiqmKEBtuUEcvdsrfbyLZY/oh2makm3Rrbnhy8VpBBf+Y3WGfIyepIvA5PEogR5cgLRAxKYgp/YBlkscVzx8+5hsbBwXETDOwW04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=QUl6NIix; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=2mGX18mZZPvHyD8tp/SlP21jzNUQaCksFfGjxcCZFG8=; b=QUl6NIixR/oJXVqt4B3YANU+NQ
+	An/HOGXy/H+ZiEDYlQgRKgWKwvqssxz+gwDGLAME5GA/P7Qf6W6uPHxh6DWijCwvV4CcNYO/PXoT5
+	YxZBFVCaU5Ea98ocoVf+/q91F1LwvtlAEGUyQ8O8zHEb4mZB0k+xjRSVz7F5gofV6A3RIqoPynnN9
+	ezVcllUY59AGWdrRcZT+9Oh9asmURfIrTvNXHcX3TNV5V0uHjxp9Dz1RlWKoS/sBrDzfbCjA+ECAd
+	RggfScej5M7Nnn6ExkwpClYDvlVq2rJMZSdhEkCYOdEy4KQyfIbMTYNy1dXL1QSfVewkCAh1tyQfP
+	dUST2J4w==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vDnlM-00000008bgd-3GJA;
+	Tue, 28 Oct 2025 17:45:40 +0000
+Date: Tue, 28 Oct 2025 17:45:40 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org,
+	brauner@kernel.org, jack@suse.cz, raven@themaw.net,
+	miklos@szeredi.hu, neil@brown.name, a.hindborg@kernel.org,
+	linux-mm@kvack.org, linux-efi@vger.kernel.org,
+	ocfs2-devel@lists.linux.dev, kees@kernel.org, rostedt@goodmis.org,
+	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+	paul@paul-moore.com, casey@schaufler-ca.com,
+	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com,
+	selinux@vger.kernel.org, borntraeger@linux.ibm.com,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v2 22/50] convert efivarfs
+Message-ID: <20251028174540.GN2441659@ZenIV>
+References: <20251028004614.393374-1-viro@zeniv.linux.org.uk>
+ <20251028004614.393374-23-viro@zeniv.linux.org.uk>
+ <66300d81c5e127e3bca8c6c4d997da386b142004.camel@HansenPartnership.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,30 +70,39 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251027231727.472628-9-roman.gushchin@linux.dev>
+In-Reply-To: <66300d81c5e127e3bca8c6c4d997da386b142004.camel@HansenPartnership.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Mon, Oct 27, 2025 at 04:17:11PM -0700, Roman Gushchin wrote:
-> +__bpf_kfunc struct mem_cgroup *
-> +bpf_get_mem_cgroup(struct cgroup_subsys_state *css)
-> +{
-> +	struct mem_cgroup *memcg = NULL;
-> +	bool rcu_unlock = false;
-> +
-> +	if (!root_mem_cgroup)
-> +		return NULL;
-> +
-> +	if (root_mem_cgroup->css.ss != css->ss) {
-> +		struct cgroup *cgroup = css->cgroup;
-> +		int ssid = root_mem_cgroup->css.ss->id;
-> +
-> +		rcu_read_lock();
-> +		rcu_unlock = true;
-> +		css = rcu_dereference_raw(cgroup->subsys[ssid]);
+On Tue, Oct 28, 2025 at 08:53:45AM -0400, James Bottomley wrote:
 
-Would it make more sense to use cgroup_e_css()?
+> That dput looks misplaced in a creation routine and this is a common
+> pattern in pseudo filesystems that either pre-populate the dentry state
+> or create effectively unused dentries on other changes.  I know not
+> every pseudo filesystem does this, but it did make me wonder if it
+> should have it's own API, say d_create_persistent()?
 
-Thanks.
+That dput() is paired with efivarfs_alloc_dentry(); the real problem
+here is different - efivarfs_create_dentry() relies upon the external
+serialization.  Have it race with lookup (let alone unlink()) and
+there's a lot of headache.
 
--- 
-tejun
+Most of the callers should be safe, but... I'm not sure that unfreeze
+case can't run into trouble.
+
+It might need to be fixed; I don't want to mix that with this series,
+so I went for the minimal transformation here.  I suspect that we
+ought to use simple_start_creating()/simple_done_creating() instead
+of those efivarfs_alloc_dentry()/dput(), but I'll need to look at
+the locking environments in all call chains ;-/
+
+FWIW, having a special path for "we are in foofs_fill_super(), fuck
+the locking - nobody's going to access it anyway" is not a great
+idea, simply because the helpers tend to get reused on codepaths
+where we can't cut corners that way.
+
+It *may* be useful to grow a set of primitives for something like "we are
+forming a detached tree, will splice it into the final position once we
+are entirely done", and configfs might shed a lot of kludges if massaged
+in that direction, but I'd rather see what configfs massage converges
+to before settling on an API for that.
 
