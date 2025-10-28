@@ -1,213 +1,184 @@
-Return-Path: <bpf+bounces-72594-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72595-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97F0EC1610E
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 18:11:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52879C161BA
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 18:20:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D8B8188D1B6
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:10:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D0AC4017B2
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:13:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1230348468;
-	Tue, 28 Oct 2025 17:09:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B590E34A78C;
+	Tue, 28 Oct 2025 17:13:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mFsEAYZR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lflIthSq"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3074132D0FA;
-	Tue, 28 Oct 2025 17:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9713491D4
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 17:13:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761671371; cv=none; b=HYKtOkTJzhrUqe3xWzada72hR8PoQi3OSOeVYBSeu3FStGu0qEANs8KfV3ZGQN9z6S6livj7VLzag2HksS+J15UoyiHhXg/3EDOWwsuMauUx31WGfE54YknOe9DHZb3C5b13+T06pizbhv7rOwrq3Evmv4ToAHv1fp9m7WNjUoU=
+	t=1761671597; cv=none; b=VQd+JWpHdDS8H28anqJx0dDRTJ5w5kic113979nmxlSZmujkGl87G+0J4OSn903DxxO2b5kXeLs/8gxI8O3fJtm+ZGS8wY2WsrFdlo2kUe+Y1huPJ+324XcCp4HAbenMH6gAQTw1d5LyUxvesOeUhlK/2bRX3QBXyquKPshgXaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761671371; c=relaxed/simple;
-	bh=Q/DvAf8uCkX2SPY6TkNj/fjy6KkdM9UtV7Vt2f04sMY=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=V+RUDQ0z8XYuDjlEjN0t9H3BknG1ad5S5DJCdVMbrhCirjVcmmms/hjtaTxJEbZ4X8iL31DjU7D0k5OqEydEVT+9z4Txvksb4zN3+pbC0bZFlTp7cYx49XBWGpdy+NfU3v0BY3wfaTeEIjCAHJz/42b3kg1a4dXORtf+N5yTx4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mFsEAYZR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 931ADC4CEE7;
-	Tue, 28 Oct 2025 17:09:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761671370;
-	bh=Q/DvAf8uCkX2SPY6TkNj/fjy6KkdM9UtV7Vt2f04sMY=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=mFsEAYZRCq4UENune6IVXZdDlYzHgHBAwXb8WugQxY6+syeePOp+ipAyNcx50ahmG
-	 O5+SL4Hbaj/XZ4qDPrEdGABNuzalNBc2QKpKkNGsHFCvFS1dLjgAdXotJkPiqqH3kR
-	 SZx4o84mEt9zrh30Wd0vaMrfi5ogJIeMrxe8bPuB6a1x4r+M9QDArvkwry6q2qeP+O
-	 NOQy1j0c3bCQ8TANoCaWQtcSMWd7vNxUoG0PS0wN1Uerwxr6GNCD7ZjiANvRrRGKNV
-	 3l+d5AFNOJxNmu6XwqLoYp3Ne/L+qA1IS+bGbata46auw5Yv4s5/WvecO/6niXiOaj
-	 bXzALiH5vNOvg==
-Content-Type: multipart/mixed; boundary="===============9046533533940140989=="
+	s=arc-20240116; t=1761671597; c=relaxed/simple;
+	bh=LmoN/2Lb9XP/SiTAkIUVaIFPO2+kSTqE3sLIkvS7l1w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TGd3hhwtrtEvQMjmNGhCRhqCAvS3dCOZpGAoJ64ZCKVXGGgnTkHYlOFxVKHZDCUUpuxlBtikC61vlReV7ODrA2V0+7NKzTfkk+iqhV84ZZNpY0Kl0cv7yeyL9QtkiAg8VJTL7ffBKeRWWlvCzpiJGPcf7W//QwkhPTAjANMevSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lflIthSq; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-47112edf9f7so40384395e9.0
+        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 10:13:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761671593; x=1762276393; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DIJa6yW1wPduR4RBE7Uk88NTTDYku8mns/k2aKumBjg=;
+        b=lflIthSqxuCLIEx+QHqiB11Kk1u9lb/fHdJ3TVUHU1zdPafIwivglAGxPqS5s2j4+A
+         g5ooaAFTBAEC4qsmXhRY4Xwbt6RW6dpIcOTBB8UAKmlsOpyhUGDxSVZZPtAkxtzxXtir
+         rE0lAfpl2MUrxA0DzEzNoxqPG38Wl0NTXgwPNrIba00VYk61pu30Xky5WDxOYMAYcokH
+         IklNAoCm69CTvJ4PZjDKt42R/tgcN97pLQcVfv7qOaNXcDIixBL2HIJ7aP6zq+M+RcRJ
+         IkV/MWy/V6pKPY67zza+Rb5MDDFKKz+mFN1l+rHR6stx7+iX+Vf0hRlA1Ol8R6xaOQwX
+         KfYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761671593; x=1762276393;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DIJa6yW1wPduR4RBE7Uk88NTTDYku8mns/k2aKumBjg=;
+        b=jknOVgg5xyMN3VBRp6h8P1eCM4c7qLQEGB41e99oPPzGHJSR0tqkA1zdlY7+nKNWMi
+         o4k+qXIdsBKIbJKEoda4FDnmBB4KwRLnwAHVvP7E94vtlLa1rVOAEiQBV1uLoeJYfikc
+         7UMVYIIcTymqRG1d98X4Gqklp4+dO66zwpwuk4EX/gPbVn7h3ydDDwxj3XDLjSQx0zyB
+         t4Bq8iUjI8zXAeIxOQDLVvspKNRdUQq3jdMFuXqknkysDwYYkMygK9d/pFyFHKIxCoUB
+         +O160CzgcFiFOcvC0Nh6BDl0WUEYsHKVE42HNtnkxgTM//wLyMlxnJxGHp9twhRkN9BV
+         qGTw==
+X-Forwarded-Encrypted: i=1; AJvYcCX78ZhvkXWpHWVz1eezcj6ocXUuzUsygfl5FN+NOzeP1eU6G957YqPvL7Qg/7SrTvLMMVI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw9vMnck4+x8rakIzXyl4QH8vohRJ1rcsm+JDnM8CUe9zqh/Yid
+	o52siQOcOQPO2ZyeGXVPctcpHrQLtU0X36ULwLPVrGaSSL/Q5R24cScJfjIdPoKNN7OhltwrmAB
+	F2UoyE1+UrIi9UXkTLm68THd6sxCQM9Q=
+X-Gm-Gg: ASbGncsEM6yTrgohuSGK3nwCxrtNyd2NuZBIoIVURmvyAiE5ojghEvl8zDItZktUZ6U
+	2AEbqbzQRQa8fezf4ScTFgBJcaSoGwh3P0O4+AOPSppS8VEtg2cc2xSmgO49HrEgiQRlRCzJ62M
+	zL1/D+7HUP+LRIcSXPgf37scXo+h0pJw8cpoo5ihqI+0cdih+3ZsPimsn0TLJa4WU2DjEvKUVJK
+	8+qkhpSRLVRhOK6OUqwGKxWHFrOOR6mVqsVfuAQbaCvZOTC+EKOH1nsNZnRr1LVzjnuIb6snce7
+X-Google-Smtp-Source: AGHT+IFP3tNBApkgdl3FcTzbs5OTt0/UxHdByUlbNMa7M18QIw/9VxiLJBuO5yL98zcmhZv7CtkpzCaqV05ZKsJfr2g=
+X-Received: by 2002:a05:600c:198f:b0:46e:32dd:1b1a with SMTP id
+ 5b1f17b1804b1-4771e165903mr2438615e9.7.1761671592922; Tue, 28 Oct 2025
+ 10:13:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <a48e281e6912037490270da40f79e45c1ad1e430c8c1cc84c48306106b06113a@mail.kernel.org>
-In-Reply-To: <20251028162502.3418817-2-chen.dylane@linux.dev>
-References: <20251028162502.3418817-2-chen.dylane@linux.dev>
-Subject: Re: [PATCH bpf-next v4 1/2] perf: Refactor get_perf_callchain
-From: bot+bpf-ci@kernel.org
-To: chen.dylane@linux.dev,peterz@infradead.org,mingo@redhat.com,acme@kernel.org,namhyung@kernel.org,mark.rutland@arm.com,alexander.shishkin@linux.intel.com,jolsa@kernel.org,irogers@google.com,adrian.hunter@intel.com,kan.liang@linux.intel.com,song@kernel.org,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com
-Cc: linux-perf-users@vger.kernel.org,linux-kernel@vger.kernel.org,bpf@vger.kernel.org,chen.dylane@linux.dev,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Tue, 28 Oct 2025 17:09:28 +0000 (UTC)
+References: <20251027231727.472628-9-roman.gushchin@linux.dev>
+ <2c91977fcab04be6305bf4be57e825f7e84005d16667adcdfad0585be506537c@mail.kernel.org>
+ <87ldkv57nc.fsf@linux.dev>
+In-Reply-To: <87ldkv57nc.fsf@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 28 Oct 2025 10:12:59 -0700
+X-Gm-Features: AWmQ_bkyeYs1B4vFl1Z_bGgU5JQLQ4pVv-Ayp-pwPQhhznGsEdhTH5wiCYvJjLE
+Message-ID: <CAADnVQLkza5_95qc0vGYBLUu-4FN_cZEcVywTs5XemTE9O-ZtQ@mail.gmail.com>
+Subject: Re: [PATCH v2 08/23] mm: introduce BPF kfuncs to deal with memcg pointers
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: bot+bpf-ci@kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, inwardvessel <inwardvessel@gmail.com>, 
+	linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Song Liu <song@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Eduard <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, Chris Mason <clm@meta.com>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
---===============9046533533940140989==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-
-```
-commit 59cfc61f83ad4ec998f4242ca000c554e3001b47
-Author: Tao Chen <chen.dylane@linux.dev>
-
-perf: Refactor get_perf_callchain
-
-This patch refactors get_perf_callchain() by extracting logic into new
-helper functions to provide more flexible stack-sampling APIs for BPF.
-
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index fd1d91017..14a382cad 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -67,6 +67,7 @@ struct perf_callchain_entry_ctx {
->  	u32				nr;
->  	short				contexts;
->  	bool				contexts_maxed;
-> +	bool				add_mark;
->  };
-
-[ ... ]
-
-> @@ -1718,9 +1719,17 @@ DECLARE_PER_CPU(struct perf_callchain_entry, perf_callchain_entry);
+On Tue, Oct 28, 2025 at 9:11=E2=80=AFAM Roman Gushchin <roman.gushchin@linu=
+x.dev> wrote:
 >
->  extern void perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs);
->  extern void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs);
-> +
-> +extern void __init_perf_callchain_ctx(struct perf_callchain_entry_ctx *ctx,
-> +				      struct perf_callchain_entry *entry,
-> +				      u32 max_stack, bool add_mark);
-> +
-> +extern void __get_perf_callchain_kernel(struct perf_callchain_entry_ctx *ctx, struct pt_regs *regs);
-> +extern void __get_perf_callchain_user(struct perf_callchain_entry_ctx *ctx, struct pt_regs *regs);
-> +
->  extern struct perf_callchain_entry *
->  get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
-> -		   u32 max_stack, bool crosstask, bool add_mark);
-> +		   u32 max_stack, bool crosstask);
-
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index 4d53cdd13..e28b35c7e 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -315,7 +315,7 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
->  		max_depth = sysctl_perf_event_max_stack;
+> bot+bpf-ci@kernel.org writes:
 >
->  	trace = get_perf_callchain(regs, kernel, user, max_depth,
-> -				   false, false);
-> +				   false);
-                                       ^^^^^ removed last parameter
-
-Previously bpf_get_stackid() passed add_mark=false to get_perf_callchain().
-Now the parameter is gone, but get_perf_callchain() hardcodes add_mark=true
-when calling __init_perf_callchain_ctx(). This means BPF stack traces will
-now include PERF_CONTEXT_KERNEL/PERF_CONTEXT_USER marker values when they
-didn't before.
-
-The markers get added by __get_perf_callchain_kernel() and
-__get_perf_callchain_user() when ctx->add_mark is true. These markers are
-sentinel values (-128 for KERNEL, -512 for USER) that appear in the trace
-IP array alongside actual instruction pointers.
-
+> > ```
+> > commit ec8e2e1769704b4f69261f36e6aaf035d47c5f0f
+> > Author: Roman Gushchin <roman.gushchin@linux.dev>
+> >
+> > mm: introduce BPF kfuncs to deal with memcg pointers
+> >
+> > This commit introduces two new BPF kfuncs for converting css pointers
+> > to memcg pointers with proper reference counting: bpf_get_mem_cgroup()
+> > and bpf_put_mem_cgroup().
+> >
+> >> diff --git a/mm/Makefile b/mm/Makefile
+> >> index 051e88c69..2d8f9beb3 100644
+> >> --- a/mm/Makefile
+> >> +++ b/mm/Makefile
+> >> @@ -107,6 +107,7 @@ obj-$(CONFIG_MEMCG) +=3D swap_cgroup.o
+> >>  endif
+> >>  ifdef CONFIG_BPF_SYSCALL
+> >>  obj-y +=3D bpf_oom.o
+> >> +obj-$(CONFIG_MEMCG) +=3D bpf_memcontrol.o
+> >>  endif
+> >>  obj-$(CONFIG_CGROUP_HUGETLB) +=3D hugetlb_cgroup.o
+> >>  obj-$(CONFIG_GUP_TEST) +=3D gup_test.o
+> >> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
+> >> new file mode 100644
+> >> index 000000000..1e4609774
+> >> --- /dev/null
+> >> +++ b/mm/bpf_memcontrol.c
+> >> @@ -0,0 +1,88 @@
+> >> +// SPDX-License-Identifier: GPL-2.0-or-later
+> >> +/*
+> >> + * Memory Controller-related BPF kfuncs and auxiliary code
+> >> + *
+> >> + * Author: Roman Gushchin <roman.gushchin@linux.dev>
+> >> + */
+> >> +
+> >> +#include <linux/memcontrol.h>
+> >> +#include <linux/bpf.h>
+> >> +
+> >> +__bpf_kfunc_start_defs();
+> >> +
+> >> +/**
+> >> + * bpf_get_mem_cgroup - Get a reference to a memory cgroup
+> >> + * @css: pointer to the css structure
+> >> + *
+> >> + * Returns a pointer to a mem_cgroup structure after bumping
+> >> + * the corresponding css's reference counter.
+> >> + *
+> >> + * It's fine to pass a css which belongs to any cgroup controller,
+> >> + * e.g. unified hierarchy's main css.
+> >> + *
+> >> + * Implements KF_ACQUIRE semantics.
+> >> + */
+> >> +__bpf_kfunc struct mem_cgroup *
+> >> +bpf_get_mem_cgroup(struct cgroup_subsys_state *css)
+> >> +{
+> >> +    struct mem_cgroup *memcg =3D NULL;
+> >> +    bool rcu_unlock =3D false;
+> >> +
+> >> +    if (!root_mem_cgroup)
+> >> +            return NULL;
+> >> +
+> >> +    if (root_mem_cgroup->css.ss !=3D css->ss) {
+> >                                             ^^^^^^^
+> >
+> > Can this dereference a NULL css pointer?  The function checks css for
+> > NULL at line 42 with "if (css && css_tryget(css))", which suggests css
+> > can be NULL.  If a BPF program calls this function with a NULL css,
+> > wouldn't it crash here before reaching that check?
 >
->  	if (unlikely(!trace))
->  		/* couldn't fetch the stack trace */
-> @@ -452,7 +452,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
->  		trace = get_callchain_entry_for_task(task, max_depth);
->  	else
->  		trace = get_perf_callchain(regs, kernel, user, max_depth,
-> -					   crosstask, false);
-> +					   crosstask);
-                                                   ^^^^^ same issue here
-
-Same problem in __bpf_get_stack() which was also passing add_mark=false.
-
-This changes BPF stack map behavior in user-visible ways:
-
-1) bpf_get_stackid() hashes the entire trace->ip[] array including any
-   markers, so identical stacks will now produce different stack IDs.
-
-2) bpf_get_stack() copies trace->ip[] directly to userspace buffers,
-   so BPF programs will see marker values mixed with instruction pointers.
-
-Can BPF tools handle these unexpected marker values? The commit message
-says "The next patch will modify the BPF part" but doesn't explain this
-intermediate behavior change.
-
-> diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
-> index 808c0d7a3..2c36e4906 100644
-> --- a/kernel/events/callchain.c
-> +++ b/kernel/events/callchain.c
-
-[ ... ]
-
->  struct perf_callchain_entry *
->  get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
-> -		   u32 max_stack, bool crosstask, bool add_mark)
-> +		   u32 max_stack, bool crosstask)
->  {
->  	struct perf_callchain_entry *entry;
->  	struct perf_callchain_entry_ctx ctx;
-> -	int rctx, start_entry_idx;
-> +	int rctx;
+> Here css passed as an argument to bpf_get_mem_cgroup() can't be NULL,
+> because the BPF verifier guarantees that it's a valid css pointer.
 >
->  	/* crosstask is not supported for user stacks */
->  	if (crosstask && user && !kernel)
-> @@ -232,34 +273,14 @@ get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
->  	if (!entry)
->  		return NULL;
->
-> -	ctx.entry		= entry;
-> -	ctx.max_stack		= max_stack;
-> -	ctx.nr			= entry->nr = 0;
-> -	ctx.contexts		= 0;
-> -	ctx.contexts_maxed	= false;
-> +	__init_perf_callchain_ctx(&ctx, entry, max_stack, true);
-                                                                ^^^^
-Here's where add_mark is hardcoded to true for all callers. The old code
-allowed callers to control this via parameter. BPF was passing false,
-perf_callchain() was passing true. Now both get true unconditionally.
+> However the result of rcu_dereference_raw(cgroup->subsys[ssid]) can be
+> NULL, this is why the "if (css && css_tryget(css))" check is required
+> down below.
 
-[ ... ]
-
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 7541f6f85..eb0f11059 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -8218,7 +8218,7 @@ perf_callchain(struct perf_event *event, struct pt_regs *regs)
->  		return &__empty_callchain;
->
->  	callchain = get_perf_callchain(regs, kernel, user,
-> -				       max_stack, crosstask, true);
-> +				       max_stack, crosstask);
->  	return callchain ?: &__empty_callchain;
->  }
-
-
-```
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-In-Reply-To-Subject: `perf: Refactor get_perf_callchain`
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18882141979
-
---===============9046533533940140989==--
+Yeah. Not sure how feasible it is to teach AI about KF_RCU semantics.
 
