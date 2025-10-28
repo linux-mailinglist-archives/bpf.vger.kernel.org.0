@@ -1,93 +1,80 @@
-Return-Path: <bpf+bounces-72470-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72472-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11639C1278C
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 02:03:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC4AAC12786
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 02:03:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E92EC58211C
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 00:54:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA1071A64601
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 01:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4779B23D2B1;
-	Tue, 28 Oct 2025 00:51:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD822135CE;
+	Tue, 28 Oct 2025 01:02:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BzgdYC84"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="bYrDOiVt"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E9113AD1C;
-	Tue, 28 Oct 2025 00:51:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A701758B;
+	Tue, 28 Oct 2025 01:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761612701; cv=none; b=HiN6QqZ3wgY8d14eSBo/rscVDFgMIkvbj834mm+ySb2lz8AumSAJ4eAvLgjIily3T0eDnBBsoqmoMKT6WUjENOczh73yJU/3l2bhKwTKX28X+/p6rzUQa0cdVYitDMX/zRPh/awZnieg2XeB2PgBMui9awDWdB1wz+y/8fLYzUM=
+	t=1761613356; cv=none; b=kFrYkSKGz2HT598K2rzJuLM9hNno70lO5dQkDpTQz2d3pnNOvghZGpoalppqYKnVaqJbtxc++kpwqoN78H4936cGIK0odn34yBFQTHlUwOd/T6/oCrHEVMD2GuDFl2S4eNoh0tM3NGBi0Lgkpr6qNpxyCGGbuJioAujbFIuHK94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761612701; c=relaxed/simple;
-	bh=B3wQzMLbOhQRfaLAzldS6M7Qq4VdvWa8daZ/dTvVZww=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=hFSyRcgHRx+SedeMbj+0T4aCT1qhyfAISKEgwhwHaye7IYn/YIRBdKzbG9znhAxPjh/g0PGQYReOR9+S2WC3UiYmFiNkg/bjgFlw7lSZ5cgJhrNDhB50KeeKc25x98OZSyiz6GLFeRaU8AAiH/i8UjbtRtVKEi/ffB3AAwUPQo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BzgdYC84; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36248C4CEF1;
-	Tue, 28 Oct 2025 00:51:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761612701;
-	bh=B3wQzMLbOhQRfaLAzldS6M7Qq4VdvWa8daZ/dTvVZww=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=BzgdYC84a6TWOsj1DTaLwaIkUE8gRYDjfUFbC+iMX9kGeZ9BLihTowzVTdIZbGN0C
-	 ujp3Rt+NvmqNpUpHcgaJLK6tFVg5p2i2cTPJJPKFJ1KBs4ZfNdQHRnUJjCUuj8WVcI
-	 Ot887XDYhmMjkbV9G2xLJqzSu5jWxf6GrTmzDP+Hjl7jBPJrc20c/NGFMDpuqQfPBQ
-	 lFwMq8666c6aQ7ux1s43ckyLoCbQIGWV2+15NUkdgOJH7+7tj+kT2pIfoQUveZkmw1
-	 xQsRWf6s3SetPnqtA9RExaZ1i+5fFiw4pp6FmLjdssDzRbN1Uq4Vj/NOpcgHHYtY3N
-	 VanS64g6u51EQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70CAF39D60BB;
-	Tue, 28 Oct 2025 00:51:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1761613356; c=relaxed/simple;
+	bh=+rrlVZSuOxU/mzFNB78NdIvNQMdIXjvCZ4f3YDQ4Vy8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c9E+tu6qFf1zO1UB42vpqxyPUFi+W30W3Gpe4p+6sRL0EwpKpehMUZ2HB2PnSJPrRYYLwykrEzJy+MBIwt1NVmG4bNpl+9ebN/yi56IZsA4xiDq9Xt1vyvjB8SimYunuiaBDU9qavBVLKCMtOPAy64EeNyuceR5WRJd0IO4Oa7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=bYrDOiVt; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=9wyoIZYTrVDDO7g+99sSfbwUrHDKLElCNrsKfYNRevE=; b=bYrDOiVtr9EnBCfWeyaRKsN0Rf
+	zO8thzgRBHKXhYx/oORvEyK4vY6Lh/KF4IU6ZB+15g7s1PWyfACnJ8ZUB6uKhzi/ywkiIYACjMEUA
+	fOg/T6QctXpDZBgXPrUjGIXpN74nbg7sXP6WMlKmHnvhs7IHmvDQ4fSsxsB2yNVu5WDBqRWQs/4mu
+	VqLVY7LfZpSLOBTqqDWt3Dj48aR9TI4boH4iE7d+iH4XNY+K7frisMFDEpM2MGAIVw+TcCyv2B6mW
+	kN/vCpaOPX8rpp+QhOzxzUmHJjhY2L3aZJAJ7ZO/UnNOyL+2oM21W4iRjm1spaIvxuG664KGPM+x2
+	2gK54TvA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vDY3h-00000001wen-1zTr;
+	Tue, 28 Oct 2025 00:59:33 +0000
+Date: Tue, 28 Oct 2025 00:59:33 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: linux-fsdevel@vger.kernel.org
+Cc: torvalds@linux-foundation.org, brauner@kernel.org, jack@suse.cz,
+	raven@themaw.net, miklos@szeredi.hu, neil@brown.name,
+	a.hindborg@kernel.org, linux-mm@kvack.org,
+	linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+	kees@kernel.org, rostedt@goodmis.org, gregkh@linuxfoundation.org,
+	linux-usb@vger.kernel.org, paul@paul-moore.com,
+	casey@schaufler-ca.com, linuxppc-dev@lists.ozlabs.org,
+	john.johansen@canonical.com, selinux@vger.kernel.org,
+	borntraeger@linux.ibm.com, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 00/50] tree-in-dcache stuff
+Message-ID: <20251028005933.GK2441659@ZenIV>
+References: <20251028004614.393374-1-viro@zeniv.linux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] riscv: Fix memory leak in module_frob_arch_sections()
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: 
- <176161267924.1638595.1882870898016863299.git-patchwork-notify@kernel.org>
-Date: Tue, 28 Oct 2025 00:51:19 +0000
-References: <20251026091912.39727-1-linmq006@gmail.com>
-In-Reply-To: <20251026091912.39727-1-linmq006@gmail.com>
-To: Miaoqian Lin <linmq006@gmail.com>
-Cc: linux-riscv@lists.infradead.org, pjw@kernel.org, palmer@dabbelt.com,
- aou@eecs.berkeley.edu, alex@ghiti.fr, samuel.holland@sifive.com,
- ajones@ventanamicro.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- stable@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251028004614.393374-1-viro@zeniv.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Hello:
+On Tue, Oct 28, 2025 at 12:45:19AM +0000, Al Viro wrote:
 
-This patch was applied to riscv/linux.git (fixes)
-by Paul Walmsley <pjw@kernel.org>:
+> Compared to v[1/50] 
 
-On Sun, 26 Oct 2025 17:19:08 +0800 you wrote:
-> The current code directly overwrites the scratch pointer with the
-> return value of kvrealloc(). If kvrealloc() fails and returns NULL,
-> the original buffer becomes unreachable, causing a memory leak.
-> 
-> Fix this by using a temporary variable to store kvrealloc()'s return
-> value and only update the scratch pointer on success.
-> 
-> [...]
+*blink*
 
-Here is the summary with links:
-  - riscv: Fix memory leak in module_frob_arch_sections()
-    https://git.kernel.org/riscv/c/c42458fcf54b
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+That should've been "Compared to v1:"...
 
