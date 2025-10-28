@@ -1,186 +1,171 @@
-Return-Path: <bpf+bounces-72517-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72518-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60277C143D0
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 12:01:52 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90EF0C1443D
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 12:07:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C0591A26C31
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 10:56:15 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7C2FE505946
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 10:59:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E359302150;
-	Tue, 28 Oct 2025 10:52:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE809309DC0;
+	Tue, 28 Oct 2025 10:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mg89WkOn"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GoX60KGy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E8F4277C96
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 10:52:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB21A3090F1
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 10:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761648764; cv=none; b=Qd94tpflJBdiPbYUPSwYkejPChcvoRiUaT/OaDvCClIuXXOZLYif4PzyeKYrpItcYeMN2sxtXspIljA6cCSVM65/36/CnES1Q9m3F1RIz58xWXkHZ1dk7WKGUXSozLZJvQj6rBHEUx7nQ/zFQ9S1K4xBgKxsuJx3ZPLs01yPVXM=
+	t=1761649076; cv=none; b=qa9OswDXGxN8H+xbMwNj18m9fGnewU6lGA3BAy/CoIeF9mRYYx11K+nx15ZwWxHf/2zVdo6aFx6lKtSX7KaFSgcNQC6XAXmTGJAbYGk6NzuKQKwZ8ZxsHFDCEX/lTOIyyAIEjUzZJc2FrfjVRE0lKAtCs5+XJNakD4YPQG8hdkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761648764; c=relaxed/simple;
-	bh=Py7d/pTPFOK6RrhmjKiR7J60AA7/QTdOI/zNquEcOOY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a8+tG0SO+2zXfeOUgNdVq9WwH9OaYQWvemwFlTbPwgYDcRMUycYHcJKSYS6gex5UMIPAaqbuVj9Iq0jpsukhjhHVIk/djVNoF2iHtvD3/8JtYDMxGhR2bXMkSU7p2gj8h2gBGQsAOdRJkNnGIfglJUb6+PR01Xec4MaAEyWwxuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mg89WkOn; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-47719ad0c7dso5920295e9.0
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 03:52:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761648761; x=1762253561; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CM1/rdnARq6V8yWHkf8NlMSxVL3oKohVhRNxL9EXxJ8=;
-        b=mg89WkOn8FzDewynEF/tuZalutrkRIi/3H6hC9I1bCD8X4vCWjhXbinYA/HWSVxHBz
-         amTuCvrpEwZdtDoDZQVopiCBzZw468m6gGbeaYXfzz3JnXJMk+5JKokUhhxTo3vTkDSu
-         581l7kZNfaNmB+Jn9QIRk97APE16iv1JtSA5m3Pz+PZ9WE3EceCX7SB8HkhRZEQoWCFp
-         uhGOKoU8HEZ3gCr/a2XqybazgkHc6r+bUR9vmy618cgxWL2O8v5CJVjg4106yKQm5ZE1
-         fhwO3JHXLm9O44EUPmfmUuX0AGihjfa+DQS8uNBQss+xNOt7R7j1yOZNIf5OlDhiKclT
-         OmZg==
+	s=arc-20240116; t=1761649076; c=relaxed/simple;
+	bh=dhQt0bKJ9jTDhVK4Se77dIyzwulKfyFM8IP6do1bd2Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g4FzPYmJgyGrbCVOp7Z1C9s5rqH2VJtTd7Mhpt+aCo8Mcw1K2uhUOWkQRa4OhohaNA7FSwJpChUY9/2VlRiBB470Rqllbw3hrD5Am3lz5ljjFCdRTxC/3QTYJyCYiNGg7EK1vsaUSzSmrAYnGrtQDHtYv+DGtF7/WFhxFmtT92o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GoX60KGy; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1761649073;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ss7g9OPGrAkY9kUcGCclPiLcw52MVKuR0CuNg2oTpdY=;
+	b=GoX60KGyBU7TaI352OE0Ic9ZAlHFkRFOugnC/z/ujAlg5NvjtAiSj88+61XRw1nuXR+yGB
+	T/68B741Q7uOr0fjluU/s+fmHlKCRgGl0S5Zhsx7lwvrDUjbOVy3jV2kFL16qHcBr03flA
+	BylgLV1b4MzMPmzKFSs2jZx8sGOyO1g=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-418-WZFlO5n2NguJevv4Csi9qA-1; Tue, 28 Oct 2025 06:57:52 -0400
+X-MC-Unique: WZFlO5n2NguJevv4Csi9qA-1
+X-Mimecast-MFC-AGG-ID: WZFlO5n2NguJevv4Csi9qA_1761649071
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-475ddd57999so26716055e9.1
+        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 03:57:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761648761; x=1762253561;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CM1/rdnARq6V8yWHkf8NlMSxVL3oKohVhRNxL9EXxJ8=;
-        b=L73/xkJZYpdVx2rgVt1EFC+ukIs8BCnCa6pgbSIPiKEelCR3cWkcGLyyh6wuwYTlNC
-         xGe6pisBDntZSe4siyst9E1tG4S6WrWx+b59bFFrAkaRMm1esKWOpFwGqLvMPs7lD46f
-         VgpnO61KI0bPdRaKcWItfMzndhzQazQdNcwlzOSMbETosjMyPI2FkOk03/SC2SULFs0V
-         1PBTyBfTEjiubA5MS8VyBkTzJkpAk4Gp6FJyxe1TebcDs9Qxiroyz0PJ9+X8AUdZDEPQ
-         VgytG5nUub+PmI24GVqlZe5LzpFmN27opw22qzVcytnFJ+cU+v3vUA+AX+m3rKaQuaOO
-         CChw==
-X-Forwarded-Encrypted: i=1; AJvYcCXEAkLvcjhJVTDhNutcVGsqYhQhQ/0M9lGkPM7I1dMtmRLyscAw7c6CtDJbMmflCs861wk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFuDDVpD/lMWZxcfBeDFu9ppjj5z63tHc7qX/Cqmtagyfs5xe0
-	NGHywLPEIojRXUc1wR+EUdikdR1I0gvAYLAV7tRLUlHwhnNL9ioNR4HL
-X-Gm-Gg: ASbGnctdidFl+7j4HNVCDJs7R7oW8jzYe86nH9Lud+tpqIMp6DjY8nUA58gelAJdxWk
-	vtC3oJyzhWzGwKH9HBJg3ZGc6jg+NX7/TxQRVO90qBCzHLdTRWXg/5lZOvGC9V26YOF5qWf1Yr3
-	oM3IWaQDDjOe355+1Fva25YBilmTil2Z/v3Pfv45NbnTN3xJYG5KtHSkEIilPj/NpB6ZxtxuSJm
-	tSMGn01yo3gGAr20OwV1Ml762IFdD+zY0CCTabgR/7vGwDTZjZ5YHTrp7mMTTyC80bI4HHtEGZo
-	zxRcL2c/AU8/yEHyQscPCjeSqZcooeqV4XEZd8Og9aJBO94SrAb1a4QEWLY5wgGBlMcsyFmC2O5
-	RRfFRF85zWtF+I5yNIsCRqz6Vi4QD6vl4/Hi5pv26gLN6MuEagTwe8mN4ftURS9gDBNnr3RqxC3
-	q4uc9gGBYrPw==
-X-Google-Smtp-Source: AGHT+IHYD84AHYDSl3jEMjC6xzktZV8Dcn5AfHYdqT/hQruzGAPyC8HXb6sqCN9pK1NwWjNBsnInBA==
-X-Received: by 2002:a05:600c:a013:b0:46e:1b89:77f1 with SMTP id 5b1f17b1804b1-47717dfa406mr26202095e9.9.1761648761332;
-        Tue, 28 Oct 2025 03:52:41 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475dd4cc5efsm192625775e9.16.2025.10.28.03.52.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Oct 2025 03:52:40 -0700 (PDT)
-Date: Tue, 28 Oct 2025 10:59:16 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <qmo@kernel.org>
-Subject: Re: [PATCH v7 bpf-next 12/12] selftests/bpf: add C-level selftests
- for indirect jumps
-Message-ID: <aQCiBNHFYENQdNvL@mail.gmail.com>
-References: <20251026192709.1964787-1-a.s.protopopov@gmail.com>
- <20251026192709.1964787-13-a.s.protopopov@gmail.com>
- <ee2274f3293eb82c3c4671de8cefcbf6d679c0b3.camel@gmail.com>
+        d=1e100.net; s=20230601; t=1761649071; x=1762253871;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ss7g9OPGrAkY9kUcGCclPiLcw52MVKuR0CuNg2oTpdY=;
+        b=pjboi1j040Yiz8mgcuEKhJiTOxa1eP8I4A47jtWjIYD6UM/lAk/5WWqE7tpg4/R5sG
+         iOMcvJWqzQAUDtOqztpUlWL0BRDYMjJRynDivR7KZxFoLcIxS/KVk0/ebnA5o5O1RmHF
+         OV7f8GifXWg7BBsbDaE3c/fnCuRFx1qFS5TnhYZv8qUbRcv12UdRUvQ3CpWDhl5ZjJZe
+         mLft8V9We8QpjTglSQrFj2QgkAMrw2d3H5o1+NnRsLeuc7ZRHKE2l1bmxqU9GvD0bR0z
+         6CmH7dWoEhU++WB0uVBxM3UEF51rnXTvwOVSTrbJLTE9SyWA2EVnHEwbRemW0W8JxBn8
+         WLsA==
+X-Forwarded-Encrypted: i=1; AJvYcCVx76joA+viqsI0g8m85f4MRqJir4JzESAmWjkVDezkZzzSWSQDNY5QYPnBo00uFVX5oiw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw4T51QRGV7XpiZOfnGD1kVQK3sstUsULk9XK9Jrm34wAAE6GIa
+	0znpDJ2pKE9Pqqt+ec5n9WRU7tRdRM3WgP0SYLsRfdoomEWSHg3jUMPca7BrPyPqUspBBfGT4+T
+	V+8b0yMHx7GKXcRmwsOxLmpQsUFaiyltph2CaACmdM4M357/OVVwffQ==
+X-Gm-Gg: ASbGncvdCBGeiCVtR0n39Zci9kbDt7Qd47EkyJmMCGO4unYgoQOUHdmH8u+KbWQmt4+
+	/IYrtJQ9ZM+3gCB2Iel1znXuLGC2x69VPN5KfqCRjQq80v9na5zDTyDY8gKgFLfGA/e5WyVPPVe
+	6h+ikPgNH6xh+KTPXDKNn2XdW5h5u0+1KldPVC7R2Im1Y5bRUW/Om0SEpnTJIJvQYy3Zg4A90mm
+	0bq5lXQvqwPTYgweSTdDUUxYoYQUSlg09R7pfMLZwPreSCK8Ju6bqkS/H6PSXKUf283iztiP1/H
+	P4v09RAU/n5CJZMTmtmA8BxaGGZIQ1eA+eQReXUANfRF3NT7Srmij5AW2s547bhpHFL3XFDEpM6
+	VjMt4hfk8gKdC3kUTVIejgxLo2rDEgpkJwSQpfhfDUFQ/H14=
+X-Received: by 2002:a05:600c:34c7:b0:475:e067:f23d with SMTP id 5b1f17b1804b1-47717e30340mr24822305e9.25.1761649071053;
+        Tue, 28 Oct 2025 03:57:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IErU20c2eSasDdwQZzdlRNWvVKDbbva3lmpIExHrHtMT8SPwj/9JiHFRH8lMSjet+8CB83SCA==
+X-Received: by 2002:a05:600c:34c7:b0:475:e067:f23d with SMTP id 5b1f17b1804b1-47717e30340mr24821915e9.25.1761649070539;
+        Tue, 28 Oct 2025 03:57:50 -0700 (PDT)
+Received: from ?IPV6:2a0d:3344:2712:7e10:4d59:d956:544f:d65c? ([2a0d:3344:2712:7e10:4d59:d956:544f:d65c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475dd47853csm191118005e9.13.2025.10.28.03.57.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Oct 2025 03:57:50 -0700 (PDT)
+Message-ID: <05efdc9a-8704-476e-8179-1a9fc0ada749@redhat.com>
+Date: Tue, 28 Oct 2025 11:57:47 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ee2274f3293eb82c3c4671de8cefcbf6d679c0b3.camel@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 2/6] net: ti: icssg-prueth: Add XSK pool
+ helpers
+To: Meghana Malladi <m-malladi@ti.com>, horms@kernel.org,
+ namcao@linutronix.de, vadim.fedorenko@linux.dev, jacob.e.keller@intel.com,
+ christian.koenig@amd.com, sumit.semwal@linaro.org, sdf@fomichev.me,
+ john.fastabend@gmail.com, hawk@kernel.org, daniel@iogearbox.net,
+ ast@kernel.org, kuba@kernel.org, edumazet@google.com, davem@davemloft.net,
+ andrew+netdev@lunn.ch
+Cc: linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
+ linux-media@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, srk@ti.com,
+ Vignesh Raghavendra <vigneshr@ti.com>, Roger Quadros <rogerq@kernel.org>,
+ danishanwar@ti.com
+References: <20251023093927.1878411-1-m-malladi@ti.com>
+ <20251023093927.1878411-3-m-malladi@ti.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20251023093927.1878411-3-m-malladi@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 25/10/27 04:25PM, Eduard Zingerman wrote:
-> On Sun, 2025-10-26 at 19:27 +0000, Anton Protopopov wrote:
-> > Add C-level selftests for indirect jumps to validate LLVM and libbpf
-> > functionality. The tests are intentionally disabled, to be run
-> > locally by developers, but will not make the CI red.
-> > 
-> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> > ---
-> 
-> [...]
-> 
-> > diff --git a/tools/testing/selftests/bpf/progs/bpf_gotox.c b/tools/testing/selftests/bpf/progs/bpf_gotox.c
-> > new file mode 100644
-> > index 000000000000..3c8ee363bda1
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/bpf_gotox.c
-> > @@ -0,0 +1,402 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include "vmlinux.h"
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +#include <bpf/bpf_core_read.h>
-> > +#include "bpf_misc.h"
-> > +
-> > +/* Disable tests for now, as CI runs with LLVM-20 */
-> > +#if 0
-> 
-> Yonghong,
-> 
-> I think we need the following thing in LLVM:
-> 
->   diff --git a/clang/lib/Basic/Targets/BPF.cpp b/clang/lib/Basic/Targets/BPF.cpp
->   index 0411bcca5178..8de1083d758c 100644
->   --- a/clang/lib/Basic/Targets/BPF.cpp
->   +++ b/clang/lib/Basic/Targets/BPF.cpp
->   @@ -75,6 +75,7 @@ void BPFTargetInfo::getTargetDefines(const LangOptions &Opts,
->        Builder.defineMacro("__BPF_FEATURE_GOTOL");
->        Builder.defineMacro("__BPF_FEATURE_ST");
->        Builder.defineMacro("__BPF_FEATURE_LOAD_ACQ_STORE_REL");
->   +    Builder.defineMacro("__BPF_FEATURE_GOTOX");
->      }
->    }
-> 
-> Then, Anton will be able to use it in order to decide if to skip the
-> tests, wdyt?
+On 10/23/25 11:39 AM, Meghana Malladi wrote:
+> @@ -1200,6 +1218,109 @@ static int emac_xdp_setup(struct prueth_emac *emac, struct netdev_bpf *bpf)
+>  	return 0;
+>  }
+>  
+> +static int prueth_xsk_pool_enable(struct prueth_emac *emac,
+> +				  struct xsk_buff_pool *pool, u16 queue_id)
+> +{
+> +	struct prueth_rx_chn *rx_chn = &emac->rx_chns;
+> +	u32 frame_size;
+> +	int ret;
+> +
+> +	if (queue_id >= PRUETH_MAX_RX_FLOWS ||
+> +	    queue_id >= emac->tx_ch_num) {
+> +		netdev_err(emac->ndev, "Invalid XSK queue ID %d\n", queue_id);
+> +		return -EINVAL;
+> +	}
+> +
+> +	frame_size = xsk_pool_get_rx_frame_size(pool);
+> +	if (frame_size < PRUETH_MAX_PKT_SIZE)
+> +		return -EOPNOTSUPP;
+> +
+> +	ret = xsk_pool_dma_map(pool, rx_chn->dma_dev, PRUETH_RX_DMA_ATTR);
+> +	if (ret) {
+> +		netdev_err(emac->ndev, "Failed to map XSK pool: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	if (netif_running(emac->ndev)) {
+> +		/* stop packets from wire for graceful teardown */
+> +		ret = icssg_set_port_state(emac, ICSSG_EMAC_PORT_DISABLE);
+> +		if (ret)
+> +			return ret;
+> +		prueth_destroy_rxq(emac);
+> +	}
+> +
+> +	emac->xsk_qid = queue_id;
+> +	prueth_set_xsk_pool(emac, queue_id);
+> +
+> +	if (netif_running(emac->ndev)) {
+> +		ret = prueth_create_rxq(emac);
 
-This will definitely be useful for the BPF side.
+It looks like this falls short of Jakub's request on v2:
 
-Where this doesn't apply is the corresponding prog_tests/bpf_gotox.c,
-as it can be compiled independently and for sure it will not have
-__BPF_FEATURE_GOTOX enabled. So what is the way to tell preprocessor
-if gotox was enabled in BPF program? Is there a way to pass/generate
-a macro definition from BPF prog to skeleton? If so, then it can be
-used in the prog_tests/bpf_gotox.c to enable/disable tests.
+https://lore.kernel.org/netdev/20250903174847.5d8d1c9f@kernel.org/
 
-> > +__u64 in_user;
-> > +__u64 ret_user;
-> > +
-> > +struct simple_ctx {
-> > +	__u64 x;
-> > +};
-> > +
-> > +__u64 some_var;
-> > +
-> > +/*
-> > + * This function adds code which will be replaced by a different
-> > + * number of instructions by the verifier. This adds additional
-> > + * stress on testing the insn_array maps corresponding to indirect jumps.
-> > + */
-> > +static __always_inline void adjust_insns(__u64 x)
-> > +{
-> > +	some_var ^= x + bpf_jiffies64();
-> > +}
-> > +
-> > +SEC("syscall")
-> > +int simple_test(struct simple_ctx *ctx)
-> > +{
-> > +	switch (ctx->x) {
-> > +	case 0:
-> > +		adjust_insns(ctx->x + 1);
-> > +		ret_user = 2;
-> > +		break;
-> 
-> [...]
+about not freeing the rx queue for reconfig.
+
+I think you should:
+- stop the H/W from processing incoming packets,
+- spool all the pending packets
+- attach/detach the xsk_pool
+- refill the ring
+- re-enable the H/W
+
+/P
+
 
