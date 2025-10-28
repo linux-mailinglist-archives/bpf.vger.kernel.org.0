@@ -1,176 +1,152 @@
-Return-Path: <bpf+bounces-72532-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72533-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52F53C14BAF
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 13:59:02 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id C96B5C14DEF
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 14:34:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BD4D94FDBEA
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 12:58:07 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 77EAF350A24
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 13:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57AA8330B18;
-	Tue, 28 Oct 2025 12:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB8353375AE;
+	Tue, 28 Oct 2025 13:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="n3UVXJto"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qmEwP7kC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F0D330B3B;
-	Tue, 28 Oct 2025 12:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2460B335063;
+	Tue, 28 Oct 2025 13:33:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761656270; cv=none; b=LC3pW1/26pgdx9Dv+3rucFfJKfrN+cl4kTlVPIzpA/2d1e0eySSzR3cTFWrdMnLHS9SXp5FOv8SA1sYoVY8/gV+2duqJbbJYvWc1NkFSqcz11jOtxVumoYcoof97CDzV/m5kiCUpvyCjlRt9f5JBxW/pGCK7xSwhZyA6KXoAwx8=
+	t=1761658391; cv=none; b=ZkV7gpEPfR9pH/ktFfXtcN9rsAzmO9BjzrYaj6WmTZqewe9EwVwid+7g6Z5OI/Hme6ZiaiaMVqWQLEHEeXPBlI3uuyc2QuzRtMMGSvjhsa7LRyf4kIy4B8MOcVjhtSbpMkN/jPNHQwjrNsC4e40FobMZ0NJVzGmlM9vu8/mOFag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761656270; c=relaxed/simple;
-	bh=c0lVYLey1J54j8+LzkyiF7aV7X/OiaCcAORzUDvclqE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OC1IthX56FW2XKawmshsblc9oXpoyWNbvQagOIp31CqPHDuCWRYChXUQOga93cPD3asBuky92qJ0/l4bLF3fCsXDNeZDbhjbN3ST37tfN1RMZGTZBLS7moMpXGDMMXUoWBkjQeCiYoXl7y81Ior1fct3wLCB8HL5WOdsacHREvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=n3UVXJto; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59SBDY6g015469;
-	Tue, 28 Oct 2025 12:57:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2025-04-25; bh=warw8
-	LcEpdVD1yZ6NqTjeOLsG3Gxja9LpBG0FJuLtoo=; b=n3UVXJtoKRP1tgQaroxsp
-	ZijJICAMc+P7SwJrE/bU8PTrqitCz2BWkGQS1ajOESlsN/1Bp75CDl4vva265YDm
-	qmkKfEsJht0txhlacPcnheOfrSr0nhMv+dfT3ZQYmo8gRTEuYaYRh8AcXi/JsVt+
-	JKfE9Kxn1Sx6Kf50NvDYlOfMdklRTLdmyYQ7zz2eG7tqigJhqXm3zuvCqTlDHxwi
-	z+Rjn0uZQaY5fZ8k0LZmS+O0MWzA9qPH3xxEk8xfWYavq0OGiYxISIpfjVrAJ6Eh
-	20hKPnTVyXXuZ66ekmn7udZdfClBbCqbudRKUIquQoSVu6mw7iKEbCeSK4+kBpLK
-	A==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4a0n4yp5pm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 28 Oct 2025 12:57:21 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 59SBslZc009120;
-	Tue, 28 Oct 2025 12:57:20 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4a0n0fcxcu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 28 Oct 2025 12:57:20 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 59SCvCUw017359;
-	Tue, 28 Oct 2025 12:57:19 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 4a0n0fcx93-3;
-	Tue, 28 Oct 2025 12:57:19 +0000
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To: bpf@vger.kernel.org
-Cc: alan.maguire@oracle.com,
-        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-        Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [RFC bpf-next 2/2] selftests/bpf: Add test for bpftool map ID printing
-Date: Tue, 28 Oct 2025 05:57:03 -0700
-Message-ID: <20251028125705.3586552-3-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20251028125705.3586552-1-harshit.m.mogalapalli@oracle.com>
-References: <20251028125705.3586552-1-harshit.m.mogalapalli@oracle.com>
+	s=arc-20240116; t=1761658391; c=relaxed/simple;
+	bh=zHgFOuY5SFOlmk5HuLBk82BmMu84ypaw7kIZB0Jb67g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kDYzFO+0hQwTB4OtoiFLwXIKBFzD5Wpun20rJFfBYpUzFzjfs1XL5s85+MNyJieF7hpEOIDjByu7ve0Rg/ATjEvqXNljIdgiAJWIL+JVkrfWC+0De5ylVtcN8mTQv6eeblWl14e4oqorPgA55D1CGIs4S345nDVDnBV9dSXdvYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qmEwP7kC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85C9FC4CEFD;
+	Tue, 28 Oct 2025 13:33:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761658389;
+	bh=zHgFOuY5SFOlmk5HuLBk82BmMu84ypaw7kIZB0Jb67g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qmEwP7kCXosfzQMpvMsWAoDgsyCyr9vumhoiyjhDQSMhSj//+fr3N8ViVDH/1DqCg
+	 iAMw0x2GF3UG7huzPYCoPAkfzimdyOxCJhjb5mf05XfiEQVYhCFA+4QAFPtts3IlXB
+	 lPdUPauefx0LtL5fiP4/Mj2+61oLsJl41mmeNNYpba65hCxz3HEel+JqqHudtWIHKo
+	 jgkirCJx9EF8ri80XldJOfj3NU3a5MJ7wL09fNTco1ScemLB3nG9W9WRJNRWMeelew
+	 kkwy/5o3D12FZKSUQ+CpGyeYWNpXg5lEx26xNf8uLQm98HShqQbOzn2XDomyCTGTbR
+	 MNaHUqpecxTiQ==
+Date: Tue, 28 Oct 2025 14:33:02 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Simon Horman <horms@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Jeff Layton <jlayton@kernel.org>, Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3 17/70] nstree: add listns()
+Message-ID: <20251028-fenchel-roman-75c1c7e13c93@brauner>
+References: <20251024-work-namespace-nstree-listns-v3-0-b6241981b72b@kernel.org>
+ <20251024-work-namespace-nstree-listns-v3-17-b6241981b72b@kernel.org>
+ <aQCcrqp7qxY8ew8T@horms.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-10-28_04,2025-10-22_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- adultscore=0 phishscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2510020000 definitions=main-2510280108
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDI1MDAxMyBTYWx0ZWRfXx5KHZTgsI3sh
- Ysi24Y1RM6CA/KQ4aNIxmfZB5h99QvcO4kol0Owj8okFK1bWeqz1gWFc7M0CfsklqhzHRpmKtrp
- vxxJ7NEcwJCCAP3q94tPDNmcVD2CK2vEv2HD62Uunx/ASXxIB1WO7Pm6FJOgM3Ow0rwEOnv4cuW
- MSRYgt4Y+BFri5n460HxEK8sFT8jo+rZCWYdNv/GbnvhGIXCvSCUziM0UbSPzGSButvT85jZgPM
- +bM9Vkfcw3O64h01DAcU4mzTJwI+mKaA79pJ0FASWSSKuLcJKzbavIXiyUeYgkg4p+mPgcOIHFJ
- MpXZWvO30wV3Dwj488thFKewNMjoisos3rQi7chObqjOWf0Wh5tQzjvx3esPk3uogArC3vogikN
- S3kb4lqAN60rIbtvogXrx/mq8ey/dOMkF31dGOhOPblYlVhKDkQ=
-X-Authority-Analysis: v=2.4 cv=Z9vh3XRA c=1 sm=1 tr=0 ts=6900bdb1 b=1 cx=c_pps
- a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
- a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
- a=zZ8rhmji2bsAaRzR-ewA:9 cc=ntf awl=host:12123
-X-Proofpoint-ORIG-GUID: xCGF6xnaL5i6aiMdNhkkeDs-L6C7a6YQ
-X-Proofpoint-GUID: xCGF6xnaL5i6aiMdNhkkeDs-L6C7a6YQ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <aQCcrqp7qxY8ew8T@horms.kernel.org>
 
-Add selftest to check if Map ID is printed on successful creation in
-both plain text and json formats.
+On Tue, Oct 28, 2025 at 10:36:30AM +0000, Simon Horman wrote:
+> On Fri, Oct 24, 2025 at 12:52:46PM +0200, Christian Brauner wrote:
+> 
+> ...
+> 
+> > diff --git a/kernel/nstree.c b/kernel/nstree.c
+> 
+> ...
+> 
+> > +static ssize_t do_listns(struct klistns *kls)
+> > +{
+> > +	u64 *ns_ids = kls->kns_ids;
+> > +	size_t nr_ns_ids = kls->nr_ns_ids;
+> > +	struct ns_common *ns, *first_ns = NULL;
+> > +	struct ns_tree *ns_tree = NULL;
+> > +	const struct list_head *head;
+> > +	struct user_namespace *user_ns;
+> > +	u32 ns_type;
+> > +	ssize_t ret;
+> > +
+> > +	if (hweight32(kls->ns_type) == 1)
+> > +		ns_type = kls->ns_type;
+> > +	else
+> > +		ns_type = 0;
+> > +
+> > +	if (ns_type) {
+> > +		ns_tree = ns_tree_from_type(ns_type);
+> > +		if (!ns_tree)
+> > +			return -EINVAL;
+> > +	}
+> > +
+> > +	if (kls->last_ns_id) {
+> > +		kls->first_ns = lookup_ns_id_at(kls->last_ns_id + 1, ns_type);
+> > +		if (!kls->first_ns)
+> > +			return -ENOENT;
+> > +		first_ns = kls->first_ns;
+> > +	}
+> > +
+> > +	ret = 0;
+> > +	if (ns_tree)
+> > +		head = &ns_tree->ns_list;
+> > +	else
+> > +		head = &ns_unified_list;
+> > +
+> > +	guard(rcu)();
+> > +	if (!first_ns)
+> > +		first_ns = first_ns_common(head, ns_tree);
+> > +
+> > +	for (ns = first_ns; !ns_common_is_head(ns, head, ns_tree) && nr_ns_ids;
+> > +	     ns = next_ns_common(ns, ns_tree)) {
+> > +		if (kls->ns_type && !(kls->ns_type & ns->ns_type))
+> > +			continue;
+> > +		if (!ns_get_unless_inactive(ns))
+> > +			continue;
+> > +		/* Check permissions */
+> > +		if (!ns->ops)
+> > +			user_ns = NULL;
+> 
+> Hi Christian,
+> 
+> Here it is assumed that ns->ops may be NULL.
+> 
+> > +		else
+> > +			user_ns = ns->ops->owner(ns);
+> > +		if (!user_ns)
+> > +			user_ns = &init_user_ns;
+> > +		if (ns_capable_noaudit(user_ns, CAP_SYS_ADMIN) ||
+> > +		    is_current_namespace(ns) ||
+> > +		    ((ns->ns_type == CLONE_NEWUSER) && ns_capable_noaudit(to_user_ns(ns), CAP_SYS_ADMIN))) {
+> > +			*ns_ids++ = ns->ns_id;
+> > +			nr_ns_ids--;
+> > +			ret++;
+> > +		}
+> > +		if (need_resched())
+> > +			cond_resched_rcu();
+> > +		/* doesn't sleep */
+> > +		ns->ops->put(ns);
+> 
+> And, if so, it isn't clear to me why that wouldn't also be the case here.
 
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
- .../testing/selftests/bpf/test_bpftool_map.sh | 36 +++++++++++++++++++
- 1 file changed, 36 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/test_bpftool_map.sh b/tools/testing/selftests/bpf/test_bpftool_map.sh
-index 515b1df0501e..013a64e96cbf 100755
---- a/tools/testing/selftests/bpf/test_bpftool_map.sh
-+++ b/tools/testing/selftests/bpf/test_bpftool_map.sh
-@@ -361,6 +361,40 @@ test_map_access_with_btf_list() {
- 	fi
- }
- 
-+# Function to test map ID printing
-+# Parameters:
-+#   $1: bpftool path
-+#   $2: BPF_DIR
-+test_map_id_printing() {
-+	local bpftool_path="$1"
-+	local bpf_dir="$2"
-+	local test_map_name="test_map_id"
-+	local test_map_path="$bpf_dir/$test_map_name"
-+
-+	local output
-+	output=$("$bpftool_path" map create "$test_map_path" type hash key 4 \
-+		value 8 entries 128 name "$test_map_name")
-+	if echo "$output" | grep -q "Map successfully created with ID:"; then
-+		echo "PASS: Map ID printed in plain text output."
-+	else
-+		echo "FAIL: Map ID not printed in plain text output."
-+		exit 1
-+	fi
-+
-+	rm -f "$test_map_path"
-+
-+	output=$("$bpftool_path" map create "$test_map_path" type hash key 4 \
-+		value 8 entries 128 name "$test_map_name" --json)
-+	if echo "$output" | jq -e 'has("id")' >/dev/null 2>&1; then
-+		echo "PASS: Map ID printed in JSON output."
-+	else
-+		echo "FAIL: Map ID not printed in JSON output."
-+		exit 1
-+	fi
-+
-+	rm -f "$test_map_path"
-+}
-+
- set -eu
- 
- trap cleanup_skip EXIT
-@@ -395,4 +429,6 @@ test_map_creation_and_map_of_maps "$BPFTOOL_PATH" "$BPF_DIR"
- 
- test_map_access_with_btf_list "$BPFTOOL_PATH"
- 
-+test_map_id_printing "$BPFTOOL_PATH" "$BPF_DIR"
-+
- exit 0
--- 
-2.50.1
-
+Right you are. Fixed.
 
