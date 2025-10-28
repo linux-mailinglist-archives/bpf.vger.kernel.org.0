@@ -1,245 +1,147 @@
-Return-Path: <bpf+bounces-72572-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72573-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A5EC15B62
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:15:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81261C15BA8
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:17:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A90F51A208DF
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 16:10:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 501BF4074C9
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 16:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4362040B6;
-	Tue, 28 Oct 2025 16:09:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB9D23ABBD;
+	Tue, 28 Oct 2025 16:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y6IVMUWl"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SyxgsjzA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F97D342C81
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 16:09:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA493081B8
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 16:11:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761667762; cv=none; b=DxrRE5OmyxZXOysApN+ga8B63oFyCTBmnXiylzRrgH9fK4AB4i0UE6glyBIV7T/fGkAUqbkCr76WYQLx/Bk2fuTuRhB/fElg69q8VZnf/M21+gTaSUm/Fm3SZp/eWRyXEsA8rCi7m5vlQZbbFBmhm4s96WGN34VwvGTer+8I3DI=
+	t=1761667862; cv=none; b=bc7/HkDvh7/hY/SDOz9B3i186JPSYYzVwZQAQs4V9DSsmTIGGwc5wc+WuINqkbOuGr8ry8yqy2exHnTXxY1/tFzvitp008Molp3q1yKNkxEh6rySi4SP3x+wgCgiS6+4OZmHbHlr3aPkCU1671uhBcJWHieCEjx7VQS4n6ZlKXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761667762; c=relaxed/simple;
-	bh=dDjULkuYxSeS0Y4oU4SV85womNCpNWdft//C4y9afh0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JWRoRcJRWU4T1Hc/LKwhmZMRBeJRa4zA5UO3VD/0ASWRlon7sUruG3Ddz7ylC0tWwIU3IquIAlu5zVZ4cwcPasYeP+mjVoCBLyqMJOhlYnww5WmXZaXryZ0xZynF+LnPwJ35Ho1Kc71xyW/ZKDSlcOMsGmB2IMVNDsVLxOXnPGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y6IVMUWl; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-b608df6d2a0so5636281a12.1
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 09:09:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761667759; x=1762272559; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nSbWUkP74jArjI30D0sAE5TvIq/zi84n0bjbO2j3uGY=;
-        b=Y6IVMUWlaNg1fG/P/xP/rpsC+LayiWrpGg/RPfpE6OcoNX59m6/62RJidt4xNYDv0s
-         UND9VsF+y21GwlP8hJOT8eJ5xdsdVXrX9B94FRxzd2IwcBpL7jYv7STW1GITg5K1Pq38
-         go4ZvqRSSijYoGE77uGE841L/jeErIReMuhFzIuuQH9XigF13yxTA9k10RgKRVTkFn/4
-         mI7eOdMDYw9ON6pcQ5cDtA8nCYsFlhhhRAm+Rv/qvj+2TiwIxBDZYbqLvfI8AkE/xq0D
-         oDBPDr293xPN9NZcpPbh9cH5bA3WGKzC+b12J2+rGgN7v/oDUmIbCbIB1qLUKDLtvlsE
-         IBoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761667759; x=1762272559;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nSbWUkP74jArjI30D0sAE5TvIq/zi84n0bjbO2j3uGY=;
-        b=NMagyinsk9kfW031RKz2noA/wSqe6fUJgX5OzfwSihONkiDScanHFA0pLjkXFDphtJ
-         X4w12we8IUbQFoVvTCIR6S4BoY6FyB2yjFSDHvCCpeLRoOqhvtj+2JZXuhcTLae8An5k
-         ML9+J9h/I5wDmAh/+TToeqXIe5nrs9OlfmKb/XqBfNUvjGhpAisG/CRHT3GlnkJDR6pe
-         URSA5vFFvT2VwSFGebs6VYWKMPb1KHtTOrgpdYQ27kXon25mJsCX9dWUvMf7oNc326If
-         5/pScHfYbeW8Jdt12/D5mWoZw+D+wv81x7h5rVCM6pVRlSUqM+qdiITDIzpav+ceNwqV
-         3cpA==
-X-Forwarded-Encrypted: i=1; AJvYcCWUVQB3MY9Lnbnz40KbDjMOCYJYYlDEtbN2TeJ3PJpZ3VAV/yuje9pc6WssWTlSYvsIsLQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzfhDhr1xPDsPX/n1PF/Vw59nzxGOqRy5HYRXYCdtlluWK2rlmU
-	azDbquTWPsVl559Er/ZiAeKJD/VVQ/g4dgj+5MOeOmjCmDbOKI84uCoqhypvHwjXJu0yu6EIWEV
-	m8F6930mXH21ZATHI1n/bLy6eYL7qeD4=
-X-Gm-Gg: ASbGncv7m4Vvh7k3Pfyhd8sD9KMOXJ+s04i6dBVnsOHukBzfJm5yblJfJUNyKAVsJZc
-	wAwje7ckwmGjRtIfTZ8uexpqsFVt0IMnhlpX1vBOgpwY1ZlXlIOahyUGv0H4r+Qm9CJKA20IX9u
-	Cjt30R7v/OpC8c4CFI0ja0yJcbrzVVLAR+RmbeqCdN6usTwfh8oNJuWgc0wtVTLCWVrc9UOfRs/
-	m6o0CcLbg+zaFu30x/XzV6IqOBVxYY0+RUqdoPdEqX7Pa3fz9uD5kNiyjIUkeCs/fpARJaKGi2r
-	Quktl78fCrk=
-X-Google-Smtp-Source: AGHT+IEt+jRXWPKMfkUhwdIG0jbgXiTN2/FnXGOF7GpfKVMtHqrZWr/N2HWc4lHOxmE0NYBa1VyI3gYStNqF+DUuve8=
-X-Received: by 2002:a17:902:d487:b0:290:ac36:2ed6 with SMTP id
- d9443c01a7336-294cb3a1287mr46576115ad.14.1761667759122; Tue, 28 Oct 2025
- 09:09:19 -0700 (PDT)
+	s=arc-20240116; t=1761667862; c=relaxed/simple;
+	bh=dJBi1SI6KRLdskO7pfO8PR4VwDReQHqZlMyEW6CEiGU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=aoe6rBwMO8zfHCKQ2qU/Wtfeyb0HPGrMEp7XAvzJkftY/VXBHlU/j9BSDCZV0COxaNaOiIYXPXhuVAiHAp3sEYxC0K7PK1DX779quosCi5hOORq+qR+JHC7LFT+4UvqF2yB4W31hwnxSRbNltTxlftP24FGf1HBmhvUtTrKvxGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SyxgsjzA; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761667858;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=D4PZj+Z/AUd5TD2H5mliXY1n/lg/WeR66f3O6rTVgL0=;
+	b=SyxgsjzAaP3eQ9upztzSYWfJ4WsFRqyGC+WNAlDIHsVjNFkuLy+80+fxZhJbxoF71KM/Sb
+	2dXtGFR0Z9YliT37NCbk2o9jgMkSzntlWrQPUd9ujQ4NC2Ewk5O6GCMZUgB8sGf6/K33Ov
+	Tv8wxDHZwyaHL5z9MiCmBhWGX4QJh9c=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: bot+bpf-ci@kernel.org
+Cc: akpm@linux-foundation.org,  linux-kernel@vger.kernel.org,
+ ast@kernel.org, surenb@google.com, mhocko@kernel.org,
+ shakeel.butt@linux.dev, hannes@cmpxchg.org, andrii@kernel.org,
+ inwardvessel@gmail.com, linux-mm@kvack.org, cgroups@vger.kernel.org,
+ bpf@vger.kernel.org, martin.lau@kernel.org, song@kernel.org,
+ memxor@gmail.com, tj@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
+ yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCH v2 08/23] mm: introduce BPF kfuncs to deal with memcg
+ pointers
+In-Reply-To: <2c91977fcab04be6305bf4be57e825f7e84005d16667adcdfad0585be506537c@mail.kernel.org>
+	(bot's message of "Mon, 27 Oct 2025 23:48:21 +0000 (UTC)")
+References: <20251027231727.472628-9-roman.gushchin@linux.dev>
+	<2c91977fcab04be6305bf4be57e825f7e84005d16667adcdfad0585be506537c@mail.kernel.org>
+Date: Tue, 28 Oct 2025 09:10:47 -0700
+Message-ID: <87ldkv57nc.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251020133156.215326-1-mehdi.benhadjkhelifa@gmail.com>
-In-Reply-To: <20251020133156.215326-1-mehdi.benhadjkhelifa@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 28 Oct 2025 09:09:03 -0700
-X-Gm-Features: AWmQ_bldhatN_kMnTkdHZ30UbwaQsKb7ZNir1RyLFpFR6qqrh0QB8XA0s5EslnI
-Message-ID: <CAEf4Bzb6hhyyiAyyZZAA2pUZRNmfjAw_63ES8owfGvT_QXMyTw@mail.gmail.com>
-Subject: Re: [PATCH v4] selftests/bpf: Change variable types for -Wsign-compare
-To: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, nathan@kernel.org, 
-	nick.desaulniers+lkml@gmail.com, morbo@google.com, justinstitt@google.com, 
-	ameryhung@gmail.com, toke@redhat.com, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, skhan@linuxfoundation.org, david.hunter.linux@gmail.com, 
-	khalid@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Oct 20, 2025 at 5:32=E2=80=AFAM Mehdi Ben Hadj Khelifa
-<mehdi.benhadjkhelifa@gmail.com> wrote:
->
-> This is a follow up patch for commit 495d2d8133fd("selftests/bpf: Attempt
-> to build BPF programs with -Wsign-compare") from Alexei Starovoitov[1]
-> to be able to enable -Wsign-compare C compilation flag for clang since
-> -Wall doesn't add it and BPF programs are built with clang.This has the
-> benefit to catch problematic comparisons in future tests as quoted from
-> the commit message:"
->   int i =3D -1;
->   unsigned int j =3D 1;
->   if (i < j) // this is false.
->
->   long i =3D -1;
->   unsigned int j =3D 1;
->   if (i < j) // this is true.
->
-> C standard for reference:
->
-> - If either operand is unsigned long the other shall be converted to
-> unsigned long.
->
-> - Otherwise, if one operand is a long int and the other unsigned int,
-> then if a long int can represent all the values of an unsigned int,
-> the unsigned int shall be converted to a long int;
-> otherwise both operands shall be converted to unsigned long int.
->
-> - Otherwise, if either operand is long, the other shall be
-> converted to long.
->
-> - Otherwise, if either operand is unsigned, the other shall be
-> converted to unsigned.
->
-> Unfortunately clang's -Wsign-compare is very noisy.
-> It complains about (s32)a =3D=3D (u32)b which is safe and doen't
-> have surprising behavior."
->
-> This specific patch supresses the following warnings when
-> -Wsign-compare is enabled:
->
-> 1 warning generated.
->
-> progs/bpf_iter_bpf_percpu_array_map.c:35:16: warning: comparison of
-> integers of different signs: 'int' and 'const volatile __u32'
-> (aka 'const volatile unsigned int') [-Wsign-compare]
->    35 |         for (i =3D 0; i < num_cpus; i++) {
->       |                     ~ ^ ~~~~~~~~
->
-> 1 warning generated.
->
-> progs/bpf_qdisc_fifo.c:93:2: warning: comparison of integers of
-> different signs: 'int' and '__u32'
-> (aka 'unsigned int') [-Wsign-compare]
->    93 |         bpf_for(i, 0, sch->q.qlen) {
->       |         ^       ~     ~~~~~~~~~~~
->
-> Should be noted that many more similar changes are still needed in order
-> to be able to enable the -Wsign-compare flag since -Werror is enabled and
-> would cause compilation of bpf selftests to fail.
->
-> [1].
-> Link:https://github.com/torvalds/linux/commit/495d2d8133fd1407519170a5238=
-f455abbd9ec9b
->
-> Signed-off-by: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
-> ---
-> Changelog:
->
-> Changes from v3:
->
-> -Downsized the patch as suggested by vivek yadav[2].
->
-> -Changed the commit message as suggested by Daniel Borkmann[3].
->
-> Link:https://lore.kernel.org/all/20250925103559.14876-1-mehdi.benhadjkhel=
-ifa@gmail.com/#r
->
-> Changes from v2:
->
-> -Split up the patch into a patch series as suggested by vivek
->
-> -Include only changes to variable types with no casting by my mentor
-> david
->
-> -Removed the -Wsign-compare in Makefile to avoid compilation errors
-> until adding casting for rest of comparisons.
->
-> Link:https://lore.kernel.org/bpf/20250924195731.6374-1-mehdi.benhadjkheli=
-fa@gmail.com/T/#u
->
-> Changes from v1:
->
-> - Fix CI failed builds where it failed due to do missing .c and
-> .h files in my patch for working in mainline.
->
-> Link:https://lore.kernel.org/bpf/20250924162408.815137-1-mehdi.benhadjkhe=
-lifa@gmail.com/T/#u
->
-> [2]:https://lore.kernel.org/all/CABPSWR7_w3mxr74wCDEF=3DMYYuG2F_vMJeD-dqo=
-tc8MDmaS_FpQ@mail.gmail.com/
-> [3]:https://lore.kernel.org/all/5ad26663-a3cc-4bf4-9d6f-8213ac8e8ce6@ioge=
-arbox.net/
->  .../testing/selftests/bpf/progs/bpf_iter_bpf_percpu_array_map.c | 2 +-
->  tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c              | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_percpu_array_=
-map.c b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_percpu_array_map.c
-> index 9fdea8cd4c6f..0baf00463f35 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_percpu_array_map.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_percpu_array_map.c
-> @@ -24,7 +24,7 @@ int dump_bpf_percpu_array_map(struct bpf_iter__bpf_map_=
-elem *ctx)
->         __u32 *key =3D ctx->key;
->         void *pptr =3D ctx->value;
->         __u32 step;
-> -       int i;
-> +       __u32 i;
->
->         if (key =3D=3D (void *)0 || pptr =3D=3D (void *)0)
->                 return 0;
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c b/tools/t=
-esting/selftests/bpf/progs/bpf_qdisc_fifo.c
-> index 1de2be3e370b..7a639dcb23a9 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
-> @@ -88,7 +88,7 @@ void BPF_PROG(bpf_fifo_reset, struct Qdisc *sch)
->  {
->         struct bpf_list_node *node;
->         struct skb_node *skbn;
-> -       int i;
-> +       __u32 i;
->
+bot+bpf-ci@kernel.org writes:
 
-this is wrong, i is coming from bpf_for() and is signed int
-
-I'd suggest dropping this patch altogether, it's not helpful and
-doesn't fix any real bugs.
-
-pw-bot: cr
-
->         bpf_for(i, 0, sch->q.qlen) {
->                 struct sk_buff *skb =3D NULL;
-> --
-> 2.51.1.dirty
+> ```
+> commit ec8e2e1769704b4f69261f36e6aaf035d47c5f0f
+> Author: Roman Gushchin <roman.gushchin@linux.dev>
 >
+> mm: introduce BPF kfuncs to deal with memcg pointers
+>
+> This commit introduces two new BPF kfuncs for converting css pointers
+> to memcg pointers with proper reference counting: bpf_get_mem_cgroup()
+> and bpf_put_mem_cgroup().
+>
+>> diff --git a/mm/Makefile b/mm/Makefile
+>> index 051e88c69..2d8f9beb3 100644
+>> --- a/mm/Makefile
+>> +++ b/mm/Makefile
+>> @@ -107,6 +107,7 @@ obj-$(CONFIG_MEMCG) += swap_cgroup.o
+>>  endif
+>>  ifdef CONFIG_BPF_SYSCALL
+>>  obj-y += bpf_oom.o
+>> +obj-$(CONFIG_MEMCG) += bpf_memcontrol.o
+>>  endif
+>>  obj-$(CONFIG_CGROUP_HUGETLB) += hugetlb_cgroup.o
+>>  obj-$(CONFIG_GUP_TEST) += gup_test.o
+>> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
+>> new file mode 100644
+>> index 000000000..1e4609774
+>> --- /dev/null
+>> +++ b/mm/bpf_memcontrol.c
+>> @@ -0,0 +1,88 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Memory Controller-related BPF kfuncs and auxiliary code
+>> + *
+>> + * Author: Roman Gushchin <roman.gushchin@linux.dev>
+>> + */
+>> +
+>> +#include <linux/memcontrol.h>
+>> +#include <linux/bpf.h>
+>> +
+>> +__bpf_kfunc_start_defs();
+>> +
+>> +/**
+>> + * bpf_get_mem_cgroup - Get a reference to a memory cgroup
+>> + * @css: pointer to the css structure
+>> + *
+>> + * Returns a pointer to a mem_cgroup structure after bumping
+>> + * the corresponding css's reference counter.
+>> + *
+>> + * It's fine to pass a css which belongs to any cgroup controller,
+>> + * e.g. unified hierarchy's main css.
+>> + *
+>> + * Implements KF_ACQUIRE semantics.
+>> + */
+>> +__bpf_kfunc struct mem_cgroup *
+>> +bpf_get_mem_cgroup(struct cgroup_subsys_state *css)
+>> +{
+>> +	struct mem_cgroup *memcg = NULL;
+>> +	bool rcu_unlock = false;
+>> +
+>> +	if (!root_mem_cgroup)
+>> +		return NULL;
+>> +
+>> +	if (root_mem_cgroup->css.ss != css->ss) {
+>                                             ^^^^^^^
+>
+> Can this dereference a NULL css pointer?  The function checks css for
+> NULL at line 42 with "if (css && css_tryget(css))", which suggests css
+> can be NULL.  If a BPF program calls this function with a NULL css,
+> wouldn't it crash here before reaching that check?
+
+Here css passed as an argument to bpf_get_mem_cgroup() can't be NULL,
+because the BPF verifier guarantees that it's a valid css pointer.
+
+However the result of rcu_dereference_raw(cgroup->subsys[ssid]) can be
+NULL, this is why the "if (css && css_tryget(css))" check is required
+down below.
 
