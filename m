@@ -1,68 +1,61 @@
-Return-Path: <bpf+bounces-72634-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72635-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD630C16E16
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 22:10:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 828B2C16E98
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 22:18:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EE7E3AD94C
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 21:08:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E2733AEC98
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 21:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7943502A1;
-	Tue, 28 Oct 2025 21:08:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="Ksb5g8Zr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870D6350282;
+	Tue, 28 Oct 2025 21:17:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22512DCF4C;
-	Tue, 28 Oct 2025 21:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2421D1F4188;
+	Tue, 28 Oct 2025 21:17:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761685695; cv=none; b=eFvZVMgQW12wdtDKHR3o71VNB7jiLT4I9TzxyDiuHaP73pylx+PUsGuWFIOAIfpxmFC8/PGj6K0p+/iQj4waRnG0PnYdiuwpRsx4i+Jc+WAibFQr6EBfWNH8gIi13Sbh764j1ZSH/P/O4PFlplUH5Akbb2aA3xROJUYPyUwNcTg=
+	t=1761686255; cv=none; b=Q5mJZTeRa8CK2XzmlhwKXjOSlQL10JWDTh3d/GoEIcZ4VFYrjQ1noAEmrzC+2Wx1E/Uum4ZqG/1XV4io3oVq3pXaHFKoAitMAirpfw2+KwQEp0dX6ivge5JD6YxrfQbxlumL5Pl10aRusebFNvtN1ZZgFFGBUJhbp/7Ol+GONwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761685695; c=relaxed/simple;
-	bh=yUSHQgos7Kh9J6Gv2qFGOCJHSJ6+VHnfECGLT/kKGiY=;
+	s=arc-20240116; t=1761686255; c=relaxed/simple;
+	bh=em98p2AJC4tx6/0tI7pM4H80h48CM34VXM6lkBhTBOc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gyJSJ3ZPGbZ7vFev8oBDyU+NLL8US1TGGNgkgqhtAmwOYVRt3OEu//eniriWfFLilO39no3VrQsK3W9CZwKAr+kfygDXVcuQ19a57dK+oIqaRP62yvj39iT9DE9iPkjMuIfuAPVAe3kjMmTBcc9ytt56xWDjVx1Aqxs3HKUtuOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=Ksb5g8Zr; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=KlTwB+1F+PugnwlBKmbzqaDoi+J+L/6Td5vFafDz7aQ=; b=Ksb5g8ZrVafnbFuTRxbUrPhDBj
-	VSOMEinbRhfNMqbf8zNwa4y+4w91yeN1ZkolOTq7QHfZv9jbf9wzwIgjoyGXNTLzmtCmiuSlsuFQY
-	I2duEP0tPN70bNXR+5LqqotswpJ2viRu62H7osNC8PUSJSrQulUJeNM/ANyqo1gLANZ82mjExXHlj
-	1F+kesXVgTzno6Sx7Se5kMbenDUUhlD1xSwZGEI1aNvuxQWH0jGuFuiDJKw286315kfeqCsz/8rE+
-	ioRQsGUqL6ZTFGl0vQ2Ve+T2xs0+XXea6lOfg9yJCHsRQXsmQJWUMV9NmpQEVchINZrcmNhueZ2ko
-	8V7lMBVw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDqvF-0000000FqQ8-4BSQ;
-	Tue, 28 Oct 2025 21:08:06 +0000
-Date: Tue, 28 Oct 2025 21:08:05 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org,
-	brauner@kernel.org, jack@suse.cz, raven@themaw.net,
-	miklos@szeredi.hu, neil@brown.name, a.hindborg@kernel.org,
-	linux-mm@kvack.org, linux-efi@vger.kernel.org,
-	ocfs2-devel@lists.linux.dev, kees@kernel.org, rostedt@goodmis.org,
-	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-	paul@paul-moore.com, casey@schaufler-ca.com,
-	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com,
-	selinux@vger.kernel.org, borntraeger@linux.ibm.com,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v2 22/50] convert efivarfs
-Message-ID: <20251028210805.GP2441659@ZenIV>
-References: <20251028004614.393374-1-viro@zeniv.linux.org.uk>
- <20251028004614.393374-23-viro@zeniv.linux.org.uk>
- <66300d81c5e127e3bca8c6c4d997da386b142004.camel@HansenPartnership.com>
- <20251028174540.GN2441659@ZenIV>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NKCRffkha2gSAxEcstcqJf+BRJRUSoiw4oCvjyVGlqbfC7zQses6wxiSEhagSSENJSbPgVnzKFMpbRMSuBKMv8Yjz4otHClLQ84uZu7Ac6YlJg7/u7c5EHJ++IW5OH9Y6mY82xg7BJWhOaMAAyMgnDaOhcPClrCuxu6vw4hxFiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E193C4CEE7;
+	Tue, 28 Oct 2025 21:17:30 +0000 (UTC)
+Date: Tue, 28 Oct 2025 21:17:28 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+	Linux-Arch <linux-arch@vger.kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+	bpf@vger.kernel.org, Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Haris Okanovic <harisokn@amazon.com>,
+	"Christoph Lameter (Ampere)" <cl@gentwo.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, zhenglifeng1@huawei.com,
+	xueshuai@linux.alibaba.com,
+	Joao Martins <joao.m.martins@oracle.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Subject: Re: [RESEND PATCH v7 2/7] arm64: barrier: Support
+ smp_cond_load_relaxed_timeout()
+Message-ID: <aQEy6ObvE0s2Gfbg@arm.com>
+References: <20251028053136.692462-1-ankur.a.arora@oracle.com>
+ <20251028053136.692462-3-ankur.a.arora@oracle.com>
+ <3642cfd1-7da6-4a75-80b7-00c21ab6955f@app.fastmail.com>
+ <87qzumq51p.fsf@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,273 +64,76 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251028174540.GN2441659@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <87qzumq51p.fsf@oracle.com>
 
-On Tue, Oct 28, 2025 at 05:45:40PM +0000, Al Viro wrote:
+On Tue, Oct 28, 2025 at 11:01:22AM -0700, Ankur Arora wrote:
+> Arnd Bergmann <arnd@arndb.de> writes:
+> > On Tue, Oct 28, 2025, at 06:31, Ankur Arora wrote:
+> >> Support waiting in smp_cond_load_relaxed_timeout() via
+> >> __cmpwait_relaxed(). Limit this to when the event-stream is enabled,
+> >> to ensure that we wake from WFE periodically and don't block forever
+> >> if there are no stores to the cacheline.
+> >>
+> >> In the unlikely event that the event-stream is unavailable, fallback
+> >> to spin-waiting.
+> >>
+> >> Also set SMP_TIMEOUT_POLL_COUNT to 1 so we do the time-check for each
+> >> iteration in smp_cond_load_relaxed_timeout().
+> >
+> > After I looked at the entire series again, this one feels like
+> > a missed opportunity. Especially on low-power systems but possibly
+> > on any ARMv9.2+ implementation including Cortex-A320, it would
+> > be nice to be able to both turn off the event stream and also
+> > make this function take fewer wakeups:
+> >
+> >> +/* Re-declared here to avoid include dependency. */
+> >> +extern bool arch_timer_evtstrm_available(void);
+> >> +
+> >> +#define cpu_poll_relax(ptr, val)					\
+> >> +do {									\
+> >> +	if (arch_timer_evtstrm_available())				\
+> >> +		__cmpwait_relaxed(ptr, val);				\
+> >> +	else								\
+> >> +		cpu_relax();						\
+> >> +} while (0)
+> >> +
+> >
+> > Since the caller knows exactly how long it wants to wait for,
+> > we should be able to fit a 'wfet' based primitive in here and
+> > pass the timeout as another argument.
+> 
+> Per se, I don't disagree with this when it comes to WFET.
+> 
+> Handling a timeout, however, is messier when we use other mechanisms.
+> 
+> Some problems that came up in my earlier discussions with Catalin:
+> 
+>   - when using WFE, we also need some notion of slack
+>     - and if a caller specifies only a small or no slack, then we need
+>       to combine WFE+cpu_relax()
+> 
+>   - for platforms that only use a polling primitive, we want to check
+>     the clock only intermittently for power reasons.
+>     Now, this could be done with an architecture specific spin-count.
+>     However, if the caller specifies a small slack, then we might need
+>     to we check the clock more often as we get closer to the deadline etc.
+> 
+> A smaller problem was that different users want different clocks and so
+> folding the timeout in a 'timeout_cond_expr' lets us do away with the
+> interface having to handle any of that.
+> 
+> I had earlier versions [v2] [v3] which had rather elaborate policies for
+> handling timeout, slack etc. But, given that the current users of the
+> interface don't actually care about precision, all of that seemed
+> a little overengineered.
 
-> FWIW, having a special path for "we are in foofs_fill_super(), fuck
-> the locking - nobody's going to access it anyway" is not a great
-> idea, simply because the helpers tend to get reused on codepaths
-> where we can't cut corners that way.
+Indeed, we've been through all these options and without a concrete user
+that needs a more precise timeout, we decided it's not worth it. It can,
+however, be improved later if such users appear.
 
-	BTW, looking through efivarfs codebase now... *both* callers
-of efivarfs_create_dentry() end up doing dcache lookups, with variously
-convoluted call chains.  Look: efivarfs_check_missing() has an explicit
-try_lookup_noperm() before the call of efivarfs_create_dentry().
-efivarfs_callback() doesn't, but it's called via
-	efivar_init(efivarfs_callback, sb, true)
-and with the last argument being true efivar_init() will precede the call
-of the callback with efivarfs_variable_is_present().  Guess what does that
-thing (never used anywhere else) do?  Right, the call of try_lookup_noperm().
+> [v2] https://lore.kernel.org/lkml/20250502085223.1316925-1-ankur.a.arora@oracle.com/#r
+> [v3] https://lore.kernel.org/lkml/20250627044805.945491-1-ankur.a.arora@oracle.com/
 
-Why do we bother with that?  What's wrong with having efivarfs_create_dentry()
-returning -EEXIST in case of dentry already being there and turning the
-chunk in efivar_init() into
-			err = func(variable_name, vendor_guid,
-				   variable_name_size, data);
-			if (err == -EEXIST) {
-				if (duplicate_check)
-					dup_variable_bug(variable_name,
-							 &vendor_guid,
-							 variable_name_size);
-				else
-					err = 0;
-			}
-			if (err)
-				status = EFI_NOT_FOUND;
-Note that both possible callbacks become almost identical and I wouldn't
-be surprised if that "almost" is actually "completely"...  <checks> yep.
-
-So I'm not sure we want that callback to be an argument, but that's
-a separate followup.  For now, do you see any problems with the following
-patch?  [Completely untested, on top of the posted series]
-
-diff --git a/fs/efivarfs/internal.h b/fs/efivarfs/internal.h
-index f913b6824289..045d53fd0f3c 100644
---- a/fs/efivarfs/internal.h
-+++ b/fs/efivarfs/internal.h
-@@ -55,8 +55,6 @@ bool efivar_validate(efi_guid_t vendor, efi_char16_t *var_name, u8 *data,
- bool efivar_variable_is_removable(efi_guid_t vendor, const char *name,
- 				  size_t len);
- char *efivar_get_utf8name(const efi_char16_t *name16, efi_guid_t *vendor);
--bool efivarfs_variable_is_present(efi_char16_t *variable_name,
--				  efi_guid_t *vendor, void *data);
- 
- extern const struct file_operations efivarfs_file_operations;
- extern const struct inode_operations efivarfs_dir_inode_operations;
-diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
-index 298ab3c929eb..80ed81bbd4a5 100644
---- a/fs/efivarfs/super.c
-+++ b/fs/efivarfs/super.c
-@@ -189,52 +189,6 @@ static const struct dentry_operations efivarfs_d_ops = {
- 	.d_hash = efivarfs_d_hash,
- };
- 
--static struct dentry *efivarfs_alloc_dentry(struct dentry *parent, char *name)
--{
--	struct dentry *d;
--	struct qstr q;
--	int err;
--
--	q.name = name;
--	q.len = strlen(name);
--
--	err = efivarfs_d_hash(parent, &q);
--	if (err)
--		return ERR_PTR(err);
--
--	d = d_alloc(parent, &q);
--	if (d)
--		return d;
--
--	return ERR_PTR(-ENOMEM);
--}
--
--bool efivarfs_variable_is_present(efi_char16_t *variable_name,
--				  efi_guid_t *vendor, void *data)
--{
--	char *name = efivar_get_utf8name(variable_name, vendor);
--	struct super_block *sb = data;
--	struct dentry *dentry;
--
--	if (!name)
--		/*
--		 * If the allocation failed there'll already be an
--		 * error in the log (and likely a huge and growing
--		 * number of them since they system will be under
--		 * extreme memory pressure), so simply assume
--		 * collision for safety but don't add to the log
--		 * flood.
--		 */
--		return true;
--
--	dentry = try_lookup_noperm(&QSTR(name), sb->s_root);
--	kfree(name);
--	if (!IS_ERR_OR_NULL(dentry))
--		dput(dentry);
--
--	return dentry != NULL;
--}
--
- static int efivarfs_create_dentry(struct super_block *sb, efi_char16_t *name16,
- 				  unsigned long name_size, efi_guid_t vendor,
- 				  char *name)
-@@ -244,7 +198,7 @@ static int efivarfs_create_dentry(struct super_block *sb, efi_char16_t *name16,
- 	struct dentry *dentry, *root = sb->s_root;
- 	unsigned long size = 0;
- 	int len;
--	int err = -ENOMEM;
-+	int err = 0;
- 	bool is_removable = false;
- 
- 	/* length of the variable name itself: remove GUID and separator */
-@@ -253,41 +207,36 @@ static int efivarfs_create_dentry(struct super_block *sb, efi_char16_t *name16,
- 	if (efivar_variable_is_removable(vendor, name, len))
- 		is_removable = true;
- 
-+	dentry = simple_start_creating(root, name);
-+	if (IS_ERR(dentry)) {
-+		err = PTR_ERR(dentry);
-+		goto out_name;
-+	}
-+
- 	inode = efivarfs_get_inode(sb, d_inode(root), S_IFREG | 0644, 0,
- 				   is_removable);
--	if (!inode)
--		goto fail_name;
-+	if (unlikely(!inode)) {
-+		err = -ENOMEM;
-+		goto out_dentry;
-+	}
- 
- 	entry = efivar_entry(inode);
- 
- 	memcpy(entry->var.VariableName, name16, name_size);
- 	memcpy(&(entry->var.VendorGuid), &vendor, sizeof(efi_guid_t));
- 
--	dentry = efivarfs_alloc_dentry(root, name);
--	if (IS_ERR(dentry)) {
--		err = PTR_ERR(dentry);
--		goto fail_inode;
--	}
--
- 	__efivar_entry_get(entry, NULL, &size, NULL);
- 
--	/* copied by the above to local storage in the dentry. */
--	kfree(name);
--
- 	inode_lock(inode);
- 	inode->i_private = entry;
- 	i_size_write(inode, size + sizeof(__u32)); /* attributes + data */
- 	inode_unlock(inode);
- 	d_make_persistent(dentry, inode);
--	dput(dentry);
--
--	return 0;
- 
--fail_inode:
--	iput(inode);
--fail_name:
-+out_dentry:
-+	simple_done_creating(dentry);
-+out_name:
- 	kfree(name);
--
- 	return err;
- }
- 
-@@ -407,42 +356,6 @@ static const struct fs_context_operations efivarfs_context_ops = {
- 	.free		= efivarfs_free,
- };
- 
--static int efivarfs_check_missing(efi_char16_t *name16, efi_guid_t vendor,
--				  unsigned long name_size, void *data)
--{
--	char *name;
--	struct super_block *sb = data;
--	struct dentry *dentry;
--	int err;
--
--	if (guid_equal(&vendor, &LINUX_EFI_RANDOM_SEED_TABLE_GUID))
--		return 0;
--
--	name = efivar_get_utf8name(name16, &vendor);
--	if (!name)
--		return -ENOMEM;
--
--	dentry = try_lookup_noperm(&QSTR(name), sb->s_root);
--	if (IS_ERR(dentry)) {
--		err = PTR_ERR(dentry);
--		goto out;
--	}
--
--	if (!dentry) {
--		/* found missing entry */
--		pr_info("efivarfs: creating variable %s\n", name);
--		return efivarfs_create_dentry(sb, name16, name_size, vendor, name);
--	}
--
--	dput(dentry);
--	err = 0;
--
-- out:
--	kfree(name);
--
--	return err;
--}
--
- static struct file_system_type efivarfs_type;
- 
- static int efivarfs_freeze_fs(struct super_block *sb)
-@@ -493,7 +406,7 @@ static int efivarfs_unfreeze_fs(struct super_block *sb)
- 		}
- 	}
- 
--	efivar_init(efivarfs_check_missing, sb, false);
-+	efivar_init(efivarfs_callback, sb, false);
- 	pr_info("efivarfs: finished resyncing variable state\n");
- 	return 0;
- }
-diff --git a/fs/efivarfs/vars.c b/fs/efivarfs/vars.c
-index 6edc10958ecf..d893e928891a 100644
---- a/fs/efivarfs/vars.c
-+++ b/fs/efivarfs/vars.c
-@@ -407,6 +407,8 @@ int efivar_init(int (*func)(efi_char16_t *, efi_guid_t, unsigned long, void *),
- 		case EFI_SUCCESS:
- 			variable_name_size = var_name_strnsize(variable_name,
- 							       variable_name_size);
-+			err = func(variable_name, vendor_guid,
-+				   variable_name_size, data);
- 
- 			/*
- 			 * Some firmware implementations return the
-@@ -416,18 +418,16 @@ int efivar_init(int (*func)(efi_char16_t *, efi_guid_t, unsigned long, void *),
- 			 * we'll ever see a different variable name,
- 			 * and may end up looping here forever.
- 			 */
--			if (duplicate_check &&
--			    efivarfs_variable_is_present(variable_name,
--							 &vendor_guid, data)) {
--				dup_variable_bug(variable_name, &vendor_guid,
--						 variable_name_size);
--				status = EFI_NOT_FOUND;
--			} else {
--				err = func(variable_name, vendor_guid,
--					   variable_name_size, data);
--				if (err)
--					status = EFI_NOT_FOUND;
-+			if (err == -EEXIST) {
-+				if (duplicate_check)
-+					dup_variable_bug(variable_name,
-+							 &vendor_guid,
-+							 variable_name_size);
-+				else
-+					err = 0;
- 			}
-+			if (err)
-+				status = EFI_NOT_FOUND;
- 			break;
- 		case EFI_UNSUPPORTED:
- 			err = -EOPNOTSUPP;
+-- 
+Catalin
 
