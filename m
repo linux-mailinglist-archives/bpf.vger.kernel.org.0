@@ -1,128 +1,231 @@
-Return-Path: <bpf+bounces-72586-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72587-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FEBAC15D31
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:31:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BFFFC15E1C
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 17:42:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E173D354E7C
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 16:31:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C6863A2DF1
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 16:35:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D578293B5F;
-	Tue, 28 Oct 2025 16:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB4C233032A;
+	Tue, 28 Oct 2025 16:35:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UsFMAVyw"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="AFx+lTO/";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="0OCrF9SP";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="AFx+lTO/";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="0OCrF9SP"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D775223DFF
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 16:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA22257852
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 16:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761669110; cv=none; b=Gw61h44P7Jlp7oc9ueXzyEIPyH5oLfUuvZpGadhw7rAowxX5K3Z1yufPQYHfgBz4YOB/3Utsw7S4nkQIYsEyj+EBkVKlEyg+T93fCWNYkAX+mX3+cyWFvEJZ/nP/y0qPjUlBCE4u5csCNtYWg7ZIX/mhRAA4HxQDk4ft0OqkaXk=
+	t=1761669303; cv=none; b=AoHaRwYF4lqrKB76iHgvBSo4yEsSATCQ+9WLVi+/0+jVjPe1nNxoHU2tAOaQjsxxdxwEsdTEYsqCuZy43xRCDkgLarB9W14bhFWE/nqZ/OrlCU9c4ranNb1cXGKHH2CBW5VcrYjXkO/UCy8qyUCdzEV6PxbtoiMQ7dDIcVWxwI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761669110; c=relaxed/simple;
-	bh=0PucAMAox93xgjGrD5pR5CZazcj6sVnwd0fqWCdhArI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=SL7sa/JbTAhQcNSMtBlmEjgP+qpXb4doHzssBDzGpbsA/S6QgdHYBezD2Cn3nynji5qmC3aCu2f/TQuAIhpd1gf+ynajK5VYHrMkbMbv2viBEBmCbzH81tBYdmehBuHBABlrEVryrLtK9LsYpK/ZZU0yV5sakixkOFuO4ScvA4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UsFMAVyw; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761669105;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1761669303; c=relaxed/simple;
+	bh=ehZTqzLesFvK0zNxNOB5Kro9fA0DfjJGFU5qk0PqFvY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c+apfveUvi+SLtKcEIttBc9idLyTRSgSgvENtqPUJDUgUZJ8ldrVpTBvjnWfgm4uSoQL0moyDIRfnSZuOlB02rT8hP2DIbGk8ICIRNTP6hxZ+/lwla6e/6hKEnEXmaFDXmFXdL0sbQCl1gBg00GyfVNKycc8Hj1PX0/TOkjIfh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=AFx+lTO/; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=0OCrF9SP; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=AFx+lTO/; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=0OCrF9SP; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C0BB3218DF;
+	Tue, 28 Oct 2025 16:34:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1761669299; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HWSSRHmArf/3utDL/ehBcqRMhr+v6BRpRpOeVW9o8r8=;
-	b=UsFMAVywaT8IpkoioAmt6vXomW1hLiGke5lnfdOFm6CT75B6FrTgPwndxR0Ld4UWB+GB6Z
-	kNutJOjE/CXohXqu1fHCO5Wo3THXTOtts+MdPLoZN5i9dq8L67okdhsPKyc4EOyrIZ69wY
-	ts6Gbva7I2Aaj5nD5s2hWpcBahe3SXQ=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: bot+bpf-ci@kernel.org
-Cc: akpm@linux-foundation.org,  linux-kernel@vger.kernel.org,
- ast@kernel.org, surenb@google.com, mhocko@kernel.org,
- shakeel.butt@linux.dev, hannes@cmpxchg.org, andrii@kernel.org,
- inwardvessel@gmail.com, linux-mm@kvack.org, cgroups@vger.kernel.org,
- bpf@vger.kernel.org, martin.lau@kernel.org, song@kernel.org,
- memxor@gmail.com, tj@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
- yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
-Subject: Re: [PATCH v2 17/23] bpf: selftests: introduce read_cgroup_file()
- helper
-In-Reply-To: <58dd6b759499f212f626e6d7658dd558b3e6a334e0780898002cb2cb84dbcb85@mail.kernel.org>
-	(bot's message of "Mon, 27 Oct 2025 23:48:24 +0000 (UTC)")
-References: <20251027232206.473085-7-roman.gushchin@linux.dev>
-	<58dd6b759499f212f626e6d7658dd558b3e6a334e0780898002cb2cb84dbcb85@mail.kernel.org>
-Date: Tue, 28 Oct 2025 09:31:38 -0700
-Message-ID: <87ms5b3s45.fsf@linux.dev>
+	bh=phyOXUwhpPX8VIgv4J33dCN3/ofby5jscWO6ji9fPD4=;
+	b=AFx+lTO/IUHNrg3exXUr8cWEVK1pW+00GEyZYgNubbQDVBMViMr5bI3JkfVRWC62YvAoTw
+	5NF6ekZgg2nY9PDdT+dKc9ii/bvOqgxvaeW2L/EY1PhH7fotZxfMrvodEBG7uL+qL6CzYv
+	uJsgnDaprGFZ9Z6WOO1Lp/2jpzI5Yao=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1761669299;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=phyOXUwhpPX8VIgv4J33dCN3/ofby5jscWO6ji9fPD4=;
+	b=0OCrF9SPjgMnAlrDvip9JHtYAXepPyIMRDfWLatFrQq75HbZUI8wFvBR6j3uIo7Zl89oAW
+	J+r+HHHwMluaKnCA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="AFx+lTO/";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=0OCrF9SP
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1761669299; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=phyOXUwhpPX8VIgv4J33dCN3/ofby5jscWO6ji9fPD4=;
+	b=AFx+lTO/IUHNrg3exXUr8cWEVK1pW+00GEyZYgNubbQDVBMViMr5bI3JkfVRWC62YvAoTw
+	5NF6ekZgg2nY9PDdT+dKc9ii/bvOqgxvaeW2L/EY1PhH7fotZxfMrvodEBG7uL+qL6CzYv
+	uJsgnDaprGFZ9Z6WOO1Lp/2jpzI5Yao=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1761669299;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=phyOXUwhpPX8VIgv4J33dCN3/ofby5jscWO6ji9fPD4=;
+	b=0OCrF9SPjgMnAlrDvip9JHtYAXepPyIMRDfWLatFrQq75HbZUI8wFvBR6j3uIo7Zl89oAW
+	J+r+HHHwMluaKnCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 54EC713693;
+	Tue, 28 Oct 2025 16:34:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id TmCpEbPwAGncHQAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Tue, 28 Oct 2025 16:34:59 +0000
+Message-ID: <c02c0369-ece0-4437-aa56-e8e36d945a23@suse.de>
+Date: Tue, 28 Oct 2025 17:34:46 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2 bpf] xsk: avoid data corruption on cq descriptor
+ number
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org, magnus.karlsson@intel.com,
+ maciej.fijalkowski@intel.com, sdf@fomichev.me, kerneljasonxing@gmail.com,
+ fw@strlen.de
+References: <20251028160200.4204-1-fmancera@suse.de>
+ <20251028160200.4204-2-fmancera@suse.de>
+Content-Language: en-US
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+In-Reply-To: <20251028160200.4204-2-fmancera@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: C0BB3218DF
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,intel.com,fomichev.me,gmail.com,strlen.de];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Spam-Score: -4.51
 
-bot+bpf-ci@kernel.org writes:
 
-> ```
-> commit 712137918bba1b0a9c7c670bab9200b0f0d6a7e8
-> Author: Roman Gushchin <roman.gushchin@linux.dev>
->
-> bpf: selftests: introduce read_cgroup_file() helper
->
-> This patch adds a new helper function read_cgroup_file() to read from
-> cgroup control files in BPF selftests. The function opens a file,
-> reads into a buffer, and returns the result.
->
->> diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
->> index 20cede4db..8fb02fe4c 100644
->> --- a/tools/testing/selftests/bpf/cgroup_helpers.c
->> +++ b/tools/testing/selftests/bpf/cgroup_helpers.c
->> @@ -126,6 +126,45 @@ int enable_controllers(const char *relative_path, const char *controllers)
->>  	return __enable_controllers(cgroup_path, controllers);
->>  }
->>
->> +static size_t __read_cgroup_file(const char *cgroup_path, const char *file,
->> +				 char *buf, size_t size)
->> +{
->> +	char file_path[PATH_MAX + 1];
->> +	size_t ret;
->> +	int fd;
->> +
->> +	snprintf(file_path, sizeof(file_path), "%s/%s", cgroup_path, file);
->> +	fd = open(file_path, O_RDONLY);
->> +	if (fd < 0) {
->> +		log_err("Opening %s", file_path);
->> +		return -1;
->
-> Can __read_cgroup_file() return -1 when its return type is size_t?
->
-> The function signature declares size_t (unsigned), but returns -1 here.
-> When -1 is implicitly converted to size_t, it becomes SIZE_MAX
-> (18446744073709551615 on 64-bit systems). Callers checking for errors
-> with "if (ret < 0)" will fail because size_t is unsigned, and callers
-> checking "if (ret == -1)" will also fail after the cast.
->
->> +	}
->> +
->> +	ret = read(fd, buf, size);
->> +	close(fd);
->> +	return ret;
->
-> Does this handle read() errors correctly?
->
-> The read() syscall returns ssize_t which can be negative on error.
-> Assigning this to size_t (line 143) converts negative error codes into
-> large positive numbers. For example, read() returning -1 becomes SIZE_MAX
-> when stored in ret.
->
-> Should the return type be ssize_t instead of size_t to properly propagate
-> both success (byte count) and error (negative values) to callers?
 
-Correct, fixed to ssize_t. Thanks!
+On 10/28/25 5:02 PM, Fernando Fernandez Mancera wrote:
+> Since commit 30f241fcf52a ("xsk: Fix immature cq descriptor
+> production"), the descriptor number is stored in skb control block and
+> xsk_cq_submit_addr_locked() relies on it to put the umem addrs onto
+> pool's completion queue.
+>[...]
+>   
+>   	len = desc->len;
+> @@ -804,6 +823,11 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>   			if (unlikely(err))
+>   				goto free_err;
+>   
+> +			if (!skb_ext_add(skb, SKB_EXT_XDP)) {
+> +				err = -ENOMEM;
+> +				goto free_err;
+> +			}
+> +
+
+This is a leftover. Without it, the logic simplified and indeed the 
+performance for non-fragmented traffic is not affected at all.
+
+While reviewing this, consider this line is dropped. I will send a V2 in 
+24 hours anyway as this is indeed introducing a buggy behavior.
+
+>   			xsk_skb_init_misc(skb, xs, desc->addr);
+>   			if (desc->options & XDP_TX_METADATA) {
+>   				err = xsk_skb_metadata(skb, buffer, desc,
+> @@ -814,6 +838,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>   		} else {
+>   			int nr_frags = skb_shinfo(skb)->nr_frags;
+>   			struct xsk_addr_node *xsk_addr;
+> +			struct xdp_skb_ext *ext;
+>   			struct page *page;
+>   			u8 *vaddr;
+>   
+> @@ -828,6 +853,22 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>   				goto free_err;
+>   			}
+>   
+> +			ext = skb_ext_find(skb, SKB_EXT_XDP);
+> +			if (!ext) {
+> +				ext = skb_ext_add(skb, SKB_EXT_XDP);
+> +				if (!ext) {
+> +					__free_page(page);
+> +					err = -ENOMEM;
+> +					goto free_err;
+> +				}
+> +				memset(ext, 0, sizeof(*ext));
+> +				INIT_LIST_HEAD(&ext->addrs_list);
+> +				ext->num_descs = 1;
+> +			} else if (ext->num_descs == 0) {
+> +				INIT_LIST_HEAD(&ext->addrs_list);
+> +				ext->num_descs = 1;
+> +			}
+> +
+>   			xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
+>   			if (!xsk_addr) {
+>   				__free_page(page);
+> @@ -843,12 +884,11 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>   			refcount_add(PAGE_SIZE, &xs->sk.sk_wmem_alloc);
+>   
+>   			xsk_addr->addr = desc->addr;
+> -			list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
+> +			list_add_tail(&xsk_addr->addr_node, &ext->addrs_list);
+> +			xsk_inc_num_desc(skb);
+>   		}
+>   	}
+>   
+> -	xsk_inc_num_desc(skb);
+> -
+>   	return skb;
+>   
+>   free_err:
+> @@ -857,7 +897,6 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>   
+>   	if (err == -EOVERFLOW) {
+>   		/* Drop the packet */
+> -		xsk_inc_num_desc(xs->skb);
+>   		xsk_drop_skb(xs->skb);
+>   		xskq_cons_release(xs->tx);
+>   	} else {
+
 
