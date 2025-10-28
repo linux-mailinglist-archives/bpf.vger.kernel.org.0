@@ -1,148 +1,110 @@
-Return-Path: <bpf+bounces-72650-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72651-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ED78C1757E
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 00:25:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41A90C17644
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 00:44:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73C2A3BF468
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 23:25:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4CD8400C74
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 23:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 434C035502B;
-	Tue, 28 Oct 2025 23:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83FBF36B96F;
+	Tue, 28 Oct 2025 23:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T51hn/Xi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qcxC+VpR"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDCD52BCF4A
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 23:25:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A3F280033;
+	Tue, 28 Oct 2025 23:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761693929; cv=none; b=fJBev0/SD49fvdugn+VW6myHNz6wlmcz6tznTMhN3U8lce1slDRm3m9asi3jVy0iEqMhxbNln49CwzCI3PXe5GJk9sEWsetSkgtM85yDoyWkkRH99X3woH3FoSivhUU07GFS1T70HwjG5lTt27+bVe7S7+joSZFz7jtrJIR9QgQ=
+	t=1761695079; cv=none; b=cpqGieIfHy+rdK814oGNGBhqJMfUS41h+tLqAvDAOLaBviKwXCNULNjxYk0+PDg9ZD9HHUV0gp7DA7GiVNCJLNRuJcqyfnBeVbq+LrpKmooWMEmTHG0TOId4AALuBcSeNsuV7zIWYL69JUtGR60Mv5Y4pdb1GMBEXx/v3OLdfJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761693929; c=relaxed/simple;
-	bh=/HfAwFCCRSHDSpFgmiMDUQOgM8GS5JpZbQTm5obqEY4=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=ceZeYECw1/8OY81QMNQ1B3fpcEfzbOks2+ZFkllxIEzXlyiHX8fCTtqJBrhid8hin2v9rdvJx23XPjxkr7+HbwoFB4Zh5HuWmWWM+kb5M4a4cJcrkAjv5FR/U22sDkGHYF0NZ028ofaDTtEmUpU1HAubTrqa+CqScDWko//hq00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T51hn/Xi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB013C4CEE7;
-	Tue, 28 Oct 2025 23:25:27 +0000 (UTC)
+	s=arc-20240116; t=1761695079; c=relaxed/simple;
+	bh=XV5KEoN5jVwlWM4qV2jaupzENzhi6N4X0KoX4O9lcMI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EjKrohds+hF8n/XtOGz9rffjetlkQYBuXzKq7kWcaqXe07KKAABdsmG1aqynA6dRGNOFYcg/jtpECYJ6KjdlCJFFouo+1oyeYcHb5XMKLtbc4b76/n59YaX2gbEEKzl23hn2Lhms37U1Ew7O3Vz3Z/admfTK02EdDSR0f8DK8F8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qcxC+VpR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0722FC4CEE7;
+	Tue, 28 Oct 2025 23:44:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761693929;
-	bh=/HfAwFCCRSHDSpFgmiMDUQOgM8GS5JpZbQTm5obqEY4=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=T51hn/XilNNxJ83HG2tdsIqXbZSy/8Ppts/2idFd/0abaehyAua8bt2XQt4SJ+vZk
-	 TUCbeQlYXiRYlb02hmvh8/207xzbA8cw+Hq7AuEBBTOkGUxLFYnYR7tCHaWoIc7mzD
-	 nsOo9y1oQ54nUzVtm5kRUD60H4TVySO+YLt25O1+F/i31Jp8eIT8vpny82SVGfVbby
-	 WROS/H/qbNKv+f///nabr2bfzIakY5BeSHHOwZcA+jA2SUy02ybePyDoPudr2X39hP
-	 43B5mMNUjI9V4Y4MEAgAlL6CQCUQUharBU2bIQbNiQthEXhWhCV1Cd7dAybih8EwYW
-	 /0t6QoNmvyKMQ==
-Content-Type: multipart/mixed; boundary="===============8249526173726576367=="
+	s=k20201202; t=1761695078;
+	bh=XV5KEoN5jVwlWM4qV2jaupzENzhi6N4X0KoX4O9lcMI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=qcxC+VpRGSxvjnAptq7vMQhAjA3xm8GK7cR2b0MYTw44nGtUNN+s3VNU1kIlmc1Wl
+	 UxLIWGbgBpHFj7akzF3LBarMQSVU2N0EjOtcfU6Bh+29lneFI84Y2R07cX9nrsaibi
+	 3LUGa0zyU5pnDJYgR8ep81+varLgqxGgw6yHggaE6dCfloGHcR/RusaEdUcU+vWLuK
+	 FVfJpCo7eR3c2Zapx0I6k8OLdVAc5CirrF9ASiqvgMKWCVZEykxkobE32DKh9i6gQw
+	 RPx8XsjiJm4snCgnT3ZsLhUqdqny9iwyJraXmeQUMXmIUFseDzrVaPOwye+q9plFEz
+	 PpYEOkY1MlcJw==
+Date: Tue, 28 Oct 2025 16:44:37 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: David Wei <dw@davidwei.uk>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+ razor@blackwall.org, willemb@google.com, sdf@fomichev.me,
+ john.fastabend@gmail.com, martin.lau@kernel.org, jordan@jrife.io,
+ maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, toke@redhat.com,
+ yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
+Subject: Re: [PATCH net-next v3 02/15] net: Implement
+ netdev_nl_bind_queue_doit
+Message-ID: <20251028164437.20b48513@kernel.org>
+In-Reply-To: <77a3eb52-b0e0-440e-80a0-6e89322e33e9@davidwei.uk>
+References: <20251020162355.136118-1-daniel@iogearbox.net>
+	<20251020162355.136118-3-daniel@iogearbox.net>
+	<412f4b9a-61bb-4ac8-9069-16a62338bd87@redhat.com>
+	<34c1e9d1-bfc1-48f9-a0ce-78762574fa10@iogearbox.net>
+	<20251023190851.435e2afa@kernel.org>
+	<77a3eb52-b0e0-440e-80a0-6e89322e33e9@davidwei.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <f41705b65cd398234052e965943ab9dedf7f78fbed66d1b6e385a0e58db81c2b@mail.kernel.org>
-In-Reply-To: <20251028225544.1312356-3-alan.maguire@oracle.com>
-References: <20251028225544.1312356-3-alan.maguire@oracle.com>
-Subject: Re: [PATCH v3 bpf-next 2/2] selftests/bpf: Test parsing of (multi-)split BTF
-From: bot+bpf-ci@kernel.org
-To: alan.maguire@oracle.com,andrii@kernel.org
-Cc: eddyz87@gmail.com,ast@kernel.org,daniel@iogearbox.net,martin.lau@linux.dev,acme@kernel.org,ttreyer@meta.com,yonghong.song@linux.dev,song@kernel.org,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,ihor.solodrai@linux.dev,bpf@vger.kernel.org,alan.maguire@oracle.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Tue, 28 Oct 2025 23:25:27 +0000 (UTC)
-
---===============8249526173726576367==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
+On Tue, 28 Oct 2025 14:59:05 -0700 David Wei wrote:
+> On 2025-10-23 19:08, Jakub Kicinski wrote:
+> > On Thu, 23 Oct 2025 14:48:15 +0200 Daniel Borkmann wrote:  
+> >> It is needed given we need to always ensure lock ordering for the two devices,
+> >> that is, the order is always from the virtual to the physical device.  
+> > 
+> > You do seem to be taking the lock before you check if the device was
+> > the type you expected tho.  
+> 
+> I believe this is okay. Let's say we have two netdevs, A that is real
+> and B that is virtual. 
 
-```
-commit 9da54f1ee8589391857dcb28c0dbc65a8e6632ea
-Author: Alan Maguire <alan.maguire@oracle.com>
+Now imagine they are both virtual.
 
-selftests/bpf: Test parsing of (multi-)split BTF
+> User calls netdev_nl_bind_queue_doit() twice in
+> two different contexts, 1 with the correct order (A as src, B as dst)
+> and 2 with the incorrect order (B as src, A as dst). We always try to
+> lock dst first, then src.
+> 
+>          1                 2
+> lock(dst == B)
+>                    lock(dst == A)
+>                    is not virtual...
+>                    unlock(A)
+> lock(src == A)
+> 
+> 
+>          1                 2
+>                    lock(dst == A)
+> lock(dst == B)
+>                    is not virtual...
+>                    unlock(A)
+> lock(src == A)
+> 
+> The check will prevent ABBA by never taking that final lock to complete
+> the cycle. Please check and lmk if I'm off, stuff like this makes my
+> brain hurt.
 
-This patch adds a test that writes raw BTF data to files, parses it
-back, and compares the parsed BTF to the original to verify correctness
-of the BTF parsing code.
-
-> diff --git a/tools/testing/selftests/bpf/prog_tests/btf_split.c b/tools/testing/selftests/bpf/prog_tests/btf_split.c
-> index 3696fb9a0..b07a91ff2 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/btf_split.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/btf_split.c
-
-[ ... ]
-
-> @@ -123,6 +157,38 @@ static void __test_btf_split(bool multi)
->  "	int uf2;\n"
->  "};\n\n", "c_dump");
->
-> +	/* write base, split BTFs to files and ensure parsing succeeds */
-> +	base_btf_sz = btf_raw_write(btf1, base_btf_file);
-> +	if (base_btf_sz < 0)
-> +		goto cleanup;
-> +	split_btf_sz = btf_raw_write(btf2, split_btf_file);
-> +	if (split_btf_sz < 0)
-> +		goto cleanup;
-> +	btf4 = btf__parse(base_btf_file, NULL);
-> +	if (!ASSERT_OK_PTR(btf4, "parse_base"))
-> +		goto cleanup;
-> +	btf5 = btf__parse_split(split_btf_file, btf4);
-> +	if (!ASSERT_OK_PTR(btf5, "parse_split"))
-> +		goto cleanup;
-> +	if (multi) {
-> +		multisplit_btf_sz = btf_raw_write(btf3, multisplit_btf_file);
-> +		if (multisplit_btf_sz < 0)
-> +			goto cleanup;
-> +		btf6 = btf__parse_split(multisplit_btf_file, btf5);
-> +		if (!ASSERT_OK_PTR(btf6, "parse_multisplit"))
-> +			goto cleanup;
-> +	} else {
-> +		btf6 = btf5;
-> +	}
-> +
-> +	/* compare parsed to original BTF */
-> +	for (i = 1; i < btf__type_cnt(btf6); i++) {
-> +		t = btf__type_by_id(btf6, i);
-> +		ot = btf__type_by_id(btf3, i);
-> +		if (!ASSERT_EQ(memcmp(t, ot, sizeof(*ot)), 0, "cmp_parsed_orig_btf"))
-> +			goto cleanup;
-> +	}
-> +
-
-Can btf__type_by_id return NULL here in the comparison loop? The loop
-iterates based on btf6's type count, but accesses types in both btf6
-and btf3. If btf6 has more types than btf3 (indicating a parsing bug),
-then btf__type_by_id(btf3, i) will return NULL when i exceeds btf3's
-type count, leading to a NULL dereference in memcmp.
-
-Other btf__type_by_id calls in this function (see earlier uses) check
-the return value with ASSERT_OK_PTR before dereferencing. Should this
-code either verify the type counts match first, or check these return
-values to maintain consistency with the rest of the function?
-
->  cleanup:
-> 	if (dump_buf_file)
-> 		fclose(dump_buf_file);
-
-[ ... ]
-
-
-```
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-In-Reply-To-Subject: `selftests/bpf: Test parsing of (multi-)split BTF`
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18891682588
-
---===============8249526173726576367==--
 
