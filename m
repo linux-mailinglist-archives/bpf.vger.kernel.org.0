@@ -1,147 +1,116 @@
-Return-Path: <bpf+bounces-72612-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72613-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A7A9C1661F
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 19:05:41 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4104CC16667
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 19:12:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 77F2E355DF2
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 18:05:40 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B42224F5224
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 18:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B55034BA5B;
-	Tue, 28 Oct 2025 18:05:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99DDF34B419;
+	Tue, 28 Oct 2025 18:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hs3woLT9"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ub1SN/SJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39EAB23D2A3
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 18:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C518332ED7
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 18:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761674731; cv=none; b=Eq5CZhnGPt8Md98sstUsGNenKzUPdLggbrh9XPnfTGwkofZEmlNenLFyHpNYXlxQa+qxeN8Cl9WW9C1hQEAAKYcsANZbCv5yIQbJkScfvwZx8UlVi54+apJrmMtdsTusnhI6szOgf0z3NXcmUyr7wp6iPqPdXTFqa8ZQ89801h8=
+	t=1761674984; cv=none; b=F9pm+leo3eI6DPV23hPsI5v58ZzzFqCSDlCgjFf7VoxE3TLDgSCzJdSsRnt6HuekNy6EBg6J7FpYDAM0XD3zmzOYKIfdwm+Kt20IjZr+cyEQHX+4Oz6UiJ2tfqlyv0ujOIaoAxQbD1ZNUIW9TwoJAwtfMS3xFfKhS77qeMOiB5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761674731; c=relaxed/simple;
-	bh=cn/C25Rbz1g7ApkaIAu6c0yNtzInMistPhKCeEWzQMY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NsrUKPl68qNjOdQGv80KPRrBejRo3acKVUAq1tmpO5VYvAyWqjCJ4AshE00kZMKNNe2f0xZ2Yc/Dusofsrbgn6kVHBQcRyIGSmfhSN+pMoG/I2AHkH0gcRJAuG1aLO+UhZ+5VRN3zhHFHzkjMeI9FYcpHv/ARL7jxkgjMwdWQo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hs3woLT9; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-34029c5beabso1365299a91.1
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 11:05:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761674729; x=1762279529; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yk6w8rVYaZcWTSTnE7iPwtQqPowVrL1jgYD+HQnj6UI=;
-        b=Hs3woLT9P6CfNwm6zmoW+BWsTMRdxwHNk7VjdvMXUUiCmeQXpYIvJaMWXvFTOce+zk
-         0bfeZVdepvmZ7wv+7fNtNDG7qCtWrqtlN+cITVFnlgUZfUa4Jo4ulrv9yWXbNUVlabls
-         gwwGrEvQC7ZYHuQXfHV6Vm064uKRQH9gFU2eHAb5CuIfy/m1y6m2Nq1K17nbKHZeleXE
-         06mr2thlk6C7dKfAY4LYZhg1NpB7SoPC1eS2MinA+jFTlk4siQAt+CxhewBdIQJRpDTU
-         iupTW7KDxwKfna+LK2sHSYs6SEGmitc53H7cBwtuh2QhFatxVreUCODKHT0ZxIb1OW5z
-         VLJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761674729; x=1762279529;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yk6w8rVYaZcWTSTnE7iPwtQqPowVrL1jgYD+HQnj6UI=;
-        b=iDggaBEnXXSL3we8nReBu8jF7oqo0WZU0hpYp6bxsKOX+N9clwPI847PCs7Bj+1g5j
-         n5b1IJGNIUPVfFteG6+fH8eR99mYgeX4GDR2QlvsZR+TRDa5PmLlJHtb4bOFTw6RAf0w
-         maMnc2hJ3MwpQcfpd8VPMd76yi01q10+CCSDYyQTRUIx98j3rvkVtDSDPRuzroms0UEQ
-         0o+d4b7X30YEThpNN6Z16e/58woF/KJ3jKRiE2DPAxMj8t7mm8hGiDruWjs42fxi/2gI
-         kgSitm0e3uI55FwvBJNOuHf2wDfLjMwxBL94lOmqaWuhRjjnJ/Z2XXcHw+Go9H6h0iTi
-         JE5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWlWORlNr7qLzpwbVYdsB8d6fMhXwdOx/EdnM8Q7AhBt4kfDEHlNQsM3p1b+Ig5L1Ler9M=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz2h58kEC1u282VPfC9hRBPdNYf10TABjNIev1H/9XYTBEeJjAE
-	9kdzCTHJ7UliuS90dNxbpnfgkgl0hxsG+zpuifKGaBA/UPYcyz8HeXWhlfUbxIL8ocKhGxhOJ+A
-	coFShe5UNS7v6fJomaRsS4ujQ0Ms0vd4=
-X-Gm-Gg: ASbGncszwjV2UQNszSBoHOUlXwdHWFJDFzEuH7GWGKOePEXIAlabZRqo2/A02uy0nqr
-	q13dwB5gI7ZbWO5OiXRtecaaz+B600wfCiKA02WOD0cC62WK90PpUtlXMvU427IYps+MqeGc7bg
-	i/WEYM47veoWF6CQeYptV1wawKi0nEf06mE/CM9KnFn5uGYEs7xG3XihxVxPSK4MGao4qf/Mlj4
-	ZrE5T6h6Urd7u2vDtX5hgM2MvP5v2BWI75AveqobfgdgwdUFbv9+JstKer2yoyQM5OaogQE7/65
-X-Google-Smtp-Source: AGHT+IGDWFPgY7P0J0rgoNRTpXkV9IpxvVzPeFO9NpOmpx7n8IIeQPH2id5pD0zxVQQqtPdTX8VbDivieGgcF2cpwKU=
-X-Received: by 2002:a17:90b:58ef:b0:33b:c5f6:40ef with SMTP id
- 98e67ed59e1d1-34027bda889mr5099562a91.24.1761674729195; Tue, 28 Oct 2025
- 11:05:29 -0700 (PDT)
+	s=arc-20240116; t=1761674984; c=relaxed/simple;
+	bh=qyPjfme0bAHk4BknKS0WkCzKt/nVeGKGxuV+yXg15z4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=MSrhXdoRDnn/QB25qAYY7Bhs/IoChmWI5r95Nqw8rJS5DwftAk/jSxvayW5LlvvwEnNYZ8t0jNml3iz/+KHa38jqQSkrZ1UEXi/J/TJg47Qp9WuBV5CEheoF+MgodkaKaFcRrKfFOsyXiY9M0yTvosaG/9uqy7RlsA+jDGTvXRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ub1SN/SJ; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761674980;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XpykUOb069QPLVeJZBbZFKflqnV60wvcTzlUbFCN+mA=;
+	b=Ub1SN/SJ7bZTNkNA7Mkvwc3LqkUUsEhfF8JeXFibIJIaiIBhX9asAWfHtE1uuPJ2oPqr7Q
+	Yu7c/Wy6sipgogjiJN5d6YT4oOnNFHX8T90X3ykir9AQyVjr/adaQh270IdhWWXzIgVaS1
+	OhTFaT2XmNcW8sMgw2wYNnQNfgVGO+g=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Tejun Heo <tj@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+  linux-kernel@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,
+  Suren Baghdasaryan <surenb@google.com>,  Michal Hocko
+ <mhocko@kernel.org>,  Shakeel Butt <shakeel.butt@linux.dev>,  Johannes
+ Weiner <hannes@cmpxchg.org>,  Andrii Nakryiko <andrii@kernel.org>,  JP
+ Kobryn <inwardvessel@gmail.com>,  linux-mm@kvack.org,
+  cgroups@vger.kernel.org,  bpf@vger.kernel.org,  Martin KaFai Lau
+ <martin.lau@kernel.org>,  Song Liu <song@kernel.org>,  Kumar Kartikeya
+ Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH v2 15/23] mm: introduce bpf_task_is_oom_victim() kfunc
+In-Reply-To: <aQD-RvxrX8_7QtxT@slm.duckdns.org> (Tejun Heo's message of "Tue,
+	28 Oct 2025 07:32:54 -1000")
+References: <20251027232206.473085-1-roman.gushchin@linux.dev>
+	<20251027232206.473085-5-roman.gushchin@linux.dev>
+	<aQD-RvxrX8_7QtxT@slm.duckdns.org>
+Date: Tue, 28 Oct 2025 11:09:28 -0700
+Message-ID: <877bwevqxz.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251028135732.6489-1-cuibixuan@vivo.com>
-In-Reply-To: <20251028135732.6489-1-cuibixuan@vivo.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 28 Oct 2025 11:05:14 -0700
-X-Gm-Features: AWmQ_bkJMeV6sNPrCRGI7CcuEc5yewkxYrithOiGgXmBNzkm4G-mk86H_tT3dWE
-Message-ID: <CAEf4Bzbp2FYvTVz6SStj_p_ok+LLeXEAxcUiCkyWRf3wyjwi_Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Ignore the modules that failed to load
- BTF object
-To: Bixuan Cui <cuibixuan@vivo.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Oct 28, 2025 at 6:57=E2=80=AFAM Bixuan Cui <cuibixuan@vivo.com> wro=
-te:
->
-> Register kfunc in self-developed module but run error in other modules:
->     libbpf: btf: type [164451]: referenced type [164446] is not FUNC_PROT=
-O
->     libbpf: failed to load module [syscon_reboot_mode]'s BTF object #2: -=
-22
->
-> It is usually skipping the error does not affect the search for the next =
-module.
->
-> Then ignoring the failed modules, load the bpf process:
->     libbpf: btf: type [164451]: referenced type [164446] is not FUNC_PROT=
-O
->     libbpf: failed to load module [syscon_reboot_mode]'s BTF object #3: -=
-22
->     libbpf: extern (func ksym) 'bpf_kfunc': resolved to bpf_module [16444=
-2]
->     ...
->
-> Signed-off-by: Bixuan Cui <cuibixuan@vivo.com>
-> ---
->  tools/lib/bpf/libbpf.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 711173acbcef..0fa0d89da068 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -5702,7 +5702,8 @@ static int load_module_btfs(struct bpf_object *obj)
->                 if (err) {
->                         pr_warn("failed to load module [%s]'s BTF object =
-#%d: %d\n",
->                                 name, id, err);
-> -                       goto err_out;
-> +                       close(fd);
-> +                       continue;
->                 }
+Tejun Heo <tj@kernel.org> writes:
 
-It's not an expected condition to have kernel module with corrupted
-BTF, so I don't think we should be doing this.
-
-pw-bot: cr
-
-
+> On Mon, Oct 27, 2025 at 04:21:58PM -0700, Roman Gushchin wrote:
+>> Export tsk_is_oom_victim() helper as a BPF kfunc.
+>> It's very useful to avoid redundant oom kills.
+>> 
+>> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+>> ---
+>>  mm/oom_kill.c | 14 ++++++++++++++
+>>  1 file changed, 14 insertions(+)
+>> 
+>> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+>> index 72a346261c79..90bb86dee3cf 100644
+>> --- a/mm/oom_kill.c
+>> +++ b/mm/oom_kill.c
+>> @@ -1397,11 +1397,25 @@ __bpf_kfunc int bpf_out_of_memory(struct mem_cgroup *memcg__nullable,
+>>  	return ret;
+>>  }
+>>  
+>> +/**
+>> + * bpf_task_is_oom_victim - Check if the task has been marked as an OOM victim
+>> + * @task: task to check
+>> + *
+>> + * Returns true if the task has been previously selected by the OOM killer
+>> + * to be killed. It's expected that the task will be destroyed soon and some
+>> + * memory will be freed, so maybe no additional actions required.
+>> + */
+>> +__bpf_kfunc bool bpf_task_is_oom_victim(struct task_struct *task)
+>> +{
+>> +	return tsk_is_oom_victim(task);
+>> +}
 >
->                 err =3D libbpf_ensure_mem((void **)&obj->btf_modules, &ob=
-j->btf_module_cap,
-> --
-> 2.39.0
->
+> In general, I'm not sure it's a good idea to add kfuncs for things which are
+> trivially accessible. Why can't things like this be provided as BPF
+> helpers?
+
+I agree that this one might be too trivial, but I added it based on the
+request from Michal Hocko. But with other helpers (e.g. for accessing
+memcg stats) the idea is to provide a relatively stable interface for
+bpf programs, which is not dependent on the implementation details. This
+will simplify the maintenance of bpf programs across multiple kernel
+versions.
+
+Thanks!
 
