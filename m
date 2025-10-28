@@ -1,404 +1,246 @@
-Return-Path: <bpf+bounces-72522-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72521-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 516BDC1468C
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 12:40:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C38C9C14650
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 12:36:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 408581AA32BF
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 11:40:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35E5D5E704B
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 11:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF1E03081CE;
-	Tue, 28 Oct 2025 11:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA2530499B;
+	Tue, 28 Oct 2025 11:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mAFHpO/E"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y3e5aH2B"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA112DFA31
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 11:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23FC41D63EF
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 11:35:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761651609; cv=none; b=GhVxIFNZYEorT2aswfHKkHMHa/4zCu7VvpUWOMPjK1Mu7D/t7L/n80m+2MaC1JfS1qwewxLvaTP45R0jODRsBuQ3a/9hlpqclaJTwxBRPZJSDH5v9v/rvQE1y6ul3Ax7iKBlZAMGhkUe7xTazPqtiimJMLaQpMxer26SO+jJ5W0=
+	t=1761651357; cv=none; b=mpi1KD6gDT8zqS1RrEbNIcE+uisGEz7KORyQZdD7qJ/548eXyKXWfO6PrPiHwB4/wQ5WKDHpE/M+RcJnN+M7J19TF2aVCxvTWi2t0IR12DcOfFkdJ7e5CCww7CKUJ/J2m0hv6BhyUvbpQ3w626C1bQT38jEhTmLh1K2yKg2icec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761651609; c=relaxed/simple;
-	bh=S8+Ja3ralZ2WxCdLK1ixOt+mF2q4rBG1Bbc1fFOF20Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=geHGJ0Rc7jP912FmkEmcJPl/DMTnJhK0JfdY4oV9/PUHF6qPb/G+yI+nd9lAaLlBQPmO67bcbQqBjPW9JuHND7DE0HWYaIzTlKzM9OM2y98eRJ69C/jr6hWJiptMq4l9N8LRvXTDFnt7VrtSyMaQBe9atSvj1+rE0lxKbUXZGRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mAFHpO/E; arc=none smtp.client-ip=209.85.210.177
+	s=arc-20240116; t=1761651357; c=relaxed/simple;
+	bh=vlahLeRGzYV4iG2ay45RoZtL9g/Xgo0UJHNDArsrhhk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WVlrXRwqEHCIRr+J/xE+wO0ZYjwuAt7wvZbJ+w7B3bYZxVOLXk+t/Cm/O9uu7gCXxrAWjSikj13J03/WD89tyu3zBJV5ht+T1REeAKYwymlpfAEZW/4UP4ZCIXfM5z/U2TUxmswb/P9P0CnTHzudz4NJHjKfEXBBm88bDyZ0rAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y3e5aH2B; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-77f5d497692so7099453b3a.1
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 04:40:07 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-475dae5d473so33925345e9.2
+        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 04:35:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761651607; x=1762256407; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UQGkMpWQvkIrFU/utWIdl52vdzB7gtbaDaCLqaVvZwY=;
-        b=mAFHpO/ERlvBgzENIiDBUGgcqj2edkDJ5i9oq4kHVh+9p+z6ZI63uZz1aLXo1wC8pd
-         ZPL1yImqUIAtp+tn6Qbn+M4Z5dUo7RfyfipXqi/I3exuGe2I0N6hO2HD6Q4jj5lg5+T7
-         UalETiVjsShfaZeXFw4Ra+MRgQhQwf097kkyVw8vfu1bXloevb+Cn+q3rzxKhcsBJ5Cb
-         ncNYm61tSwDapv6xoT+E7eCuEBCteb944Jv1J6iZKeOHaYTHhkUZsErmUux9XcVLw9Yf
-         WcUBSS2cPHXxcCVlLMxXkUsUcdB9aN7zXS4U5B60nt4k12R8K/EOs7RnK9z9cm4HUBqv
-         9jyw==
+        d=gmail.com; s=20230601; t=1761651354; x=1762256154; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XK9+fJKosdQsDKP510vQadPkF9fV/6LidRTWjZtcVP4=;
+        b=Y3e5aH2B340HD5oP2DTwDAGGX/QTfuSXSJAunBZis8Sysqzte5aq/kmCdhYxi+iTgY
+         auv/tSaAiJJO3PvOcK6Phke6ik0eXNG7FIyUjo7mrDlLBDP+piftE0OrlgFMMOLGmKq/
+         Uicdj8MCYSAauSzWVVeGWGtM3jlr8vbGRr04Y9S3mfBRpvw4lSlbrSGhfXgO/4fVeQIp
+         orR1UYbAjAVq/+GDlUVUZtF5RTIJ22mLAu3leNHi36oxyhOumQX78ISKBDFNZ5NWIMTG
+         zOHBKIOPCrP3WFx5tn2yNTm+Z8v9jFpLAcezYB/uyiLehXnH5AO04NYkMjRj+ZRVy0FJ
+         JScA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761651607; x=1762256407;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UQGkMpWQvkIrFU/utWIdl52vdzB7gtbaDaCLqaVvZwY=;
-        b=sB0vXhC8NicWkhSyDqUhqbxTYFGTQSuMxjEAgbEi1EUUAmOZPLlkoI5ipUQadeOKhS
-         MRiQvcJBGjZ33sYv1mmnpsiXLVNJDhMMfoviNXpfr9Yv2ZZMJhHuOvl9U6maN5ZhvDx7
-         5TQ2YbtChWLmIQ7CT++CuKDbjei8Xfgh2g1LoJ/S1CXC1pzdLksnqYS4rABpn7OiIpnX
-         VIuQCHTiv92v4d3JfluQTwmrHx9f9X8cqhqUu3pOKVE81XJ0QmdEgkewhp/bwfwJpw7H
-         aflY3MDFq3UJaJMlNC+semFEkpStTLP+RjE7dG3B3fGmtkpa/FBGbEs/H2qZBITOFkmW
-         MD2A==
-X-Forwarded-Encrypted: i=1; AJvYcCWXF9DZHZQuxKtmDrjuCieGBLXIEnhFA+Lqdnxpf6ymfkVczcMEjS1fXfxP8bAQayrH80Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUZlO3jCdY+13liuqQaWy7cGFJ6DS/hjIa0E/hdC+6YYdTh0WZ
-	ywMxrQkI1kScdO+6k/Nt8UGZeeS+9GP7EevEeotMY4IrscqeRyC1pHe6
-X-Gm-Gg: ASbGncs3bl6GVElIpqENoXvxcEZOPJfkUFcgLDClmF9LPArqi/DZ32ivhrGx6hqTAZR
-	8uAGwMSKcLHhyas3WgSzGg3jc7y3WlXb8+hu+oQMANUA+l3U2e8XQo2JDd5peBFYvdcZ88ykctI
-	n3wEYeD4CP6EIEnwcVY7HIKQpJFvK6EWmbc5jSiZtL1HIqLx2fZXMQ0btHhmHEcbPoCG833PiXe
-	5ub5HOV7GcFm90+rEUabhmaCc6GhwrW8evNocYu+pRkEOw0d7J3MD1Ii4fXdaZtXMg/dEoYNDqe
-	6dTQwMAb+Cyja6sbZxS3uSCG8C3oT+K5omMX1tIaKn6kKa8By+1OIguzZk3YcwVz36aKxxcc1Bo
-	Vofh83FiIjwOnwaRLkDgL7/4jMwH2RqKfGvH1Jk5LDtwJArOoWH3VQrsC2hxFLf7v+69l0DFZRE
-	Lp
-X-Google-Smtp-Source: AGHT+IELfm1V2/9P9RcJo7ple69Pu8CkbUuJnvOHx1MhFw0DK3gnvsbENWcBcTkx8E417BUE9yB8ag==
-X-Received: by 2002:a05:6a20:3ca7:b0:2ff:3752:8375 with SMTP id adf61e73a8af0-344d3a4fdbamr4255473637.45.1761651607102;
-        Tue, 28 Oct 2025 04:40:07 -0700 (PDT)
-Received: from archie.me ([210.87.74.117])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b71268bd810sm10351782a12.6.2025.10.28.04.40.06
+        d=1e100.net; s=20230601; t=1761651354; x=1762256154;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XK9+fJKosdQsDKP510vQadPkF9fV/6LidRTWjZtcVP4=;
+        b=G3u0rDcdT0A1RNk8bjqQuNFzRJKrnVXIX3PG4z8ltGJ+nRCsG/KNPzqqT6NrZD2KIl
+         eWyRZWdzRsBI6k4dCp4dHticXEvKc5SXxaAh8R4o17KFWg5n1zBmG7BYehVcTsPCKxnV
+         2yrWE4VHrkR1n8fuUK9EC0fYq8yAXmewltC0vUb0ZTVRIBa8xUkvpJwwx5IsqghT4YQW
+         2se6jLNZbKQafLCx3Sz3FiqLoZm+VfRXt6CxAqHO4lxjtmfzYluxOj1QZAtYxngJmAL/
+         tzBkm4e2zkb7odqo8aNAcA7hJjJFM+8o6Zvk00I7bS8hcw642VdJK2kh3H51FSN1RWEW
+         /AxQ==
+X-Gm-Message-State: AOJu0YwJrC3BL1DCnEuJQyyfIOrhyVLyym18jIifaP0sKDhJo8/ETN9Q
+	z/J+e+WbRb7gilTiJUavqb+Nifj8BaBkLQScZvXj2ptlFh2X+UEXXwXwzkP8Jg==
+X-Gm-Gg: ASbGncuBlpe1vxDccNrno5b6w9CJfy6SLrGPaZ20BOgVel0TacLhPjRZf+fjCoza9AZ
+	s9XOOFMDjLBTE8rdg5WwofpjhKFEl1QiEKv1+XLLn1WBXSrTTN70xMySkH1NXaN9eO9necOTDSA
+	6tn5j15MsUIEm8MUzvPQ+HC1khZD3zl8mB/ixEuGOM+RnRhV7TgndnlMA82vZdffbUbM2Re9SPd
+	fS3GtEwKokufOnrVqNM0gGm4/1KX9/Fj4t1eLJn8DmwPdp1tmbdlRCAlaApGDQ2nOY15AJjkiG2
+	HiZgWFlT0rusxKUS3j6rBpDBBJWSLBOQEcylYwsm1ds1GNN1HyWTJHd+Va/9bKfRlaKEgrpbnJc
+	POP/zkb3cPlTjWwxpSUSZwB+Ug0cjLpY+HN9l5NmOLEIsCYyYwgEAklejwqnSKCiFyjUJHM+qD7
+	RLQcy8z3HJtA==
+X-Google-Smtp-Source: AGHT+IFzUwl7+OOVcpYfN2c62FGGKpDpbj6qGu5s5jrg6AGk2H5MTi+w0XfVEOYOcMS6HNo69sEGmg==
+X-Received: by 2002:a05:600c:4691:b0:46e:4b79:551 with SMTP id 5b1f17b1804b1-47717e552bbmr25145655e9.31.1761651354348;
+        Tue, 28 Oct 2025 04:35:54 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475dd4a5cc4sm188222225e9.11.2025.10.28.04.35.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Oct 2025 04:40:06 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 931944209E50; Tue, 28 Oct 2025 18:40:03 +0700 (WIB)
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux Networking <netdev@vger.kernel.org>,
-	Linux BPF <bpf@vger.kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Alexei Starovoitov <ast@kernel.org>,
+        Tue, 28 Oct 2025 04:35:53 -0700 (PDT)
+Date: Tue, 28 Oct 2025 11:42:29 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: [PATCH net-next] net: Reorganize networking documentation toctree
-Date: Tue, 28 Oct 2025 18:39:24 +0700
-Message-ID: <20251028113923.41932-2-bagasdotme@gmail.com>
-X-Mailer: git-send-email 2.51.1
+	Quentin Monnet <qmo@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH v7 bpf-next 09/12] libbpf: support llvm-generated
+ indirect jumps
+Message-ID: <aQCsJZ6549YD9Wou@mail.gmail.com>
+References: <20251026192709.1964787-1-a.s.protopopov@gmail.com>
+ <20251026192709.1964787-10-a.s.protopopov@gmail.com>
+ <dd184cdb0593392c6ad6c19111bfa17ac56bcb1f.camel@gmail.com>
+ <b6f1be926ea382a9d4d30bdb8d09fa6b06d00165.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4925; i=bagasdotme@gmail.com; h=from:subject; bh=S8+Ja3ralZ2WxCdLK1ixOt+mF2q4rBG1Bbc1fFOF20Q=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDJkMq17fbp63pyIq0/jpJI47M/d/5uKyXvj/X43GNtfj+ /9Yf02L6yhlYRDjYpAVU2SZlMjXdHqXkciF9rWOMHNYmUCGMHBxCsBEipwZGXZ5L11wZYK8MaPh Kf+v2rG88zJv9U6uKZ/RHm79yuRxkSwjw1WBxJ36EQf4Z4mJJP2yUTi45cp5aZbry750OqZLM8a nsQAA
-X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b6f1be926ea382a9d4d30bdb8d09fa6b06d00165.camel@gmail.com>
 
-Current netdev docs has one large, unorganized toctree that makes
-finding relevant docs harder like a needle in a haystack. Split the
-toctree into four categories: networking core; protocols; devices; and
-assorted miscellaneous.
+On 25/10/27 03:59PM, Eduard Zingerman wrote:
+> On Mon, 2025-10-27 at 15:38 -0700, Eduard Zingerman wrote:
+> > [...]
+> >
+> > > +static int create_jt_map(struct bpf_object *obj, struct bpf_program *prog, struct reloc_desc *relo)
+> > > +{
+> > > +	const __u32 jt_entry_size = 8;
+> > > +	int sym_off = relo->sym_off;
+> > > +	int jt_size = relo->sym_size;
+> > > +	__u32 max_entries = jt_size / jt_entry_size;
+> > > +	__u32 value_size = sizeof(struct bpf_insn_array_value);
+> > > +	struct bpf_insn_array_value val = {};
+> > > +	int subprog_idx;
+> > > +	int map_fd, err;
+> > > +	__u64 insn_off;
+> > > +	__u64 *jt;
+> > > +	__u32 i;
+> > > +
+> > > +	map_fd = find_jt_map(obj, prog, sym_off);
+> > > +	if (map_fd >= 0)
+> > > +		return map_fd;
+> > > +
+> > > +	if (sym_off % jt_entry_size) {
+> > > +		pr_warn("jumptable start %d should be multiple of %u\n",
+> > > +			sym_off, jt_entry_size);
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	if (jt_size % jt_entry_size) {
+> > > +		pr_warn("jumptable size %d should be multiple of %u\n",
+> > > +			jt_size, jt_entry_size);
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	map_fd = bpf_map_create(BPF_MAP_TYPE_INSN_ARRAY, ".jumptables",
+> > > +				4, value_size, max_entries, NULL);
+> > > +	if (map_fd < 0)
+> > > +		return map_fd;
+> > > +
+> > > +	if (!obj->jumptables_data) {
+> > > +		pr_warn("map '.jumptables': ELF file is missing jump table data\n");
+> > > +		err = -EINVAL;
+> > > +		goto err_close;
+> > > +	}
+> > > +	if (sym_off + jt_size > obj->jumptables_data_sz) {
+> > > +		pr_warn("jumptables_data size is %zd, trying to access %d\n",
+> > > +			obj->jumptables_data_sz, sym_off + jt_size);
+> > > +		err = -EINVAL;
+> > > +		goto err_close;
+> > > +	}
+> > > +
+> > > +	jt = (__u64 *)(obj->jumptables_data + sym_off);
+> > > +	for (i = 0; i < max_entries; i++) {
+> > > +		/*
+> > > +		 * The offset should be made to be relative to the beginning of
+> > > +		 * the main function, not the subfunction.
+> > > +		 */
+> > > +		insn_off = jt[i]/sizeof(struct bpf_insn);
+> > > +		if (!prog->subprogs) {
+> > > +			insn_off -= prog->sec_insn_off;
+> > > +		} else {
+> > > +			subprog_idx = find_subprog_idx(prog, relo->insn_idx);
+> >
+> > Nit: find_subprog_idx(prog, relo->insn_idx) can be moved outside of the loop, I think.
+> >
+> > > +			if (subprog_idx < 0) {
+> > > +				pr_warn("invalid jump insn idx[%d]: %d, no subprog found\n",
+> > > +					i, relo->insn_idx);
+> > > +				err = -EINVAL;
+> > > +			}
+> > > +			insn_off -= prog->subprogs[subprog_idx].sec_insn_off;
+> > > +			insn_off += prog->subprogs[subprog_idx].sub_insn_off;
+> > > +		}
+> 
+> I think I found a bug, related to this code path.
+> Consider the following test case:
+> 
+> 	SEC("socket")
+> 	__naked void foo(void)
+> 	{
+> 	        asm volatile ("                                         \
+> 	        .pushsection .jumptables,\"\",@progbits;                \
+> 	jt0_%=:                                                         \
+> 	        .quad ret0_%=;                                          \
+> 	        .quad ret1_%=;                                          \
+> 	        .size jt0_%=, 16;                                       \
+> 	        .global jt0_%=;                                         \
+> 	        .popsection;                                            \
+> 	                                                                \
+> 	        r0 = jt0_%= ll;                                         \
+> 	        r0 += 8;                                                \
+> 	        r0 = *(u64 *)(r0 + 0);                                  \
+> 	        .8byte %[gotox_r0];                                     \
+> 	        ret0_%=:                                                \
+> 	        r0 = 0;                                                 \
+> 	        exit;                                                   \
+> 	        ret1_%=:                                                \
+> 	        r0 = 1;                                                 \
+> 	        call bar;                                               \
+> 	        exit;                                                   \
+> 	"       :                                                       \
+> 	        : __imm_insn(gotox_r0, BPF_RAW_INSN(BPF_JMP | BPF_JA | BPF_X, BPF_REG_0, 0, 0 , 0))
+> 	        : __clobber_all);
+> 	}
+> 	
+> 	__used
+> 	static int bar(void)
+> 	{
+> 	        return 0;
+> 	}
+> 
+> Note a call instruction referring bar().  It triggers the code path
+> above (we need a test case with subprograms in verifier_gotox).
+> The test case fails to load with the following error:
+> 
+>   libbpf: invalid jump insn idx[0]: 0, no subprog found
+>   libbpf: prog 'foo': relo #0: can't create jump table: sym_off 368
+>   libbpf: prog 'foo': failed to relocate data references: -EINVAL
+> 
+> If I remove the `call bar;`, test case loads and passes.
+> 
+> > > +
+> > > +		/*
+> > > +		 * LLVM-generated jump tables contain u64 records, however
+> > > +		 * should contain values that fit in u32.
+> > > +		 */
+> > > +		if (insn_off > UINT32_MAX) {
+> > > +			pr_warn("invalid jump table value %llx at offset %d\n",
+>                                                           ^^^^
+> Nit:                                              maybe add 0x prefix here?
 
-While at it, also sort the toctree entries and reduce toctree depth.
+Sure, added.
 
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
- Documentation/networking/index.rst | 241 ++++++++++++++++-------------
- 1 file changed, 136 insertions(+), 105 deletions(-)
-
-diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-index c775cababc8c17..ca86e544c5c8e2 100644
---- a/Documentation/networking/index.rst
-+++ b/Documentation/networking/index.rst
-@@ -5,138 +5,169 @@ Refer to :ref:`netdev-FAQ` for a guide on netdev development process specifics.
- 
- Contents:
- 
-+Networking core
-+---------------
-+
- .. toctree::
--   :maxdepth: 2
-+   :maxdepth: 1
- 
-    af_xdp
--   bareudp
--   batman-adv
--   can
--   can_ucan_protocol
--   device_drivers/index
--   diagnostic/index
--   dsa/index
--   devlink/index
--   caif/index
--   ethtool-netlink
--   ieee802154
--   iso15765-2
--   j1939
--   kapi
--   msg_zerocopy
--   failover
--   net_dim
--   net_failover
--   page_pool
--   phy
--   sfp-phylink
--   alias
--   bridge
--   snmp_counter
-    checksum-offloads
--   segmentation-offloads
--   scaling
--   tls
--   tls-offload
--   tls-handshake
--   nfc
--   6lowpan
--   6pack
--   arcnet-hardware
--   arcnet
--   atm
--   ax25
--   bonding
--   cdc_mbim
--   dctcp
--   devmem
--   dns_resolver
-+   diagnostic/index
-    driver
--   eql
--   fib_trie
--   filter
--   generic-hdlc
--   generic_netlink
--   ../netlink/specs/index
--   gen_stats
--   gtp
--   ila
--   ioam6-sysctl
--   iou-zcrx
--   ip_dynaddr
--   ipsec
--   ip-sysctl
--   ipv6
--   ipvlan
--   ipvs-sysctl
--   kcm
--   l2tp
--   lapb-module
-+   kapi
-    mac80211-injection
--   mctp
--   mpls-sysctl
--   mptcp
--   mptcp-sysctl
--   multiqueue
--   multi-pf-netdev
-+   msg_zerocopy
-    napi
-    net_cachelines/index
--   netconsole
-    netdev-features
--   netdevices
--   netfilter-sysctl
-    netif-msg
--   netmem
--   nexthop-group-resilient
--   nf_conntrack-sysctl
--   nf_flowtable
--   oa-tc6-framework
--   openvswitch
--   operstates
-    packet_mmap
--   phonet
-+   page_pool
-+   phy
-    phy-link-topology
--   pktgen
-+   scaling
-+   segmentation-offloads
-+   skbuff
-+   strparser
-+   timestamping
-+   xdp-rx-metadata
-+   xsk-tx-metadata
-+
-+Protocols
-+---------
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   6pack
-+   arcnet
-+   ax25
-+   bareudp
-+   caif/index
-+   can
-+   can_ucan_protocol
-+   dctcp
-+   gtp
-+   ila
-+   ipsec
-+   ipv6
-+   iso15765-2
-+   j1939
-+   l2tp
-+   mctp
-+   mptcp
-+   oa-tc6-framework
-+   phonet
-+   psp
-+   rxrpc
-+   sctp
-+   tcp-thin
-+   tcp_ao
-+   tipc
-+   tls
-+   tls-handshake
-+   tls-offload
-+   udplite
-+   vxlan
-+   x25
-+
-+Networking devices
-+------------------
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   6lowpan
-+   arcnet-hardware
-+   bonding
-+   bridge
-+   cdc_mbim
-+   device_drivers/index
-+   devlink/index
-+   devmem
-+   dsa/index
-+   eql
-+   ipvlan
-+   multi-pf-netdev
-+   multiqueue
-+   netconsole
-+   netdevices
-+   netmem
-+   operstates
-    plip
-    ppp_generic
-+   representors
-+   sriov
-+   statistics
-+   switchdev
-+   team
-+   tuntap
-+   vrf
-+   x25-iface
-+
-+Packet filtering
-+----------------
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   filter
-+   netfilter-sysctl
-+   nf_conntrack-sysctl
-+   nf_flowtable
-+   tc-actions-env-rules
-+   tc-queue-filters
-+   tproxy
-+
-+Miscellaneous
-+-------------
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   ../netlink/specs/index
-+   alias
-+   atm
-+   batman-adv
-+   dns_resolver
-+   ethtool-netlink
-+   failover
-+   fib_trie
-+   gen_stats
-+   generic-hdlc
-+   generic_netlink
-+   ieee802154
-+   ioam6-sysctl
-+   iou-zcrx
-+   ip-sysctl
-+   ip_dynaddr
-+   ipvs-sysctl
-+   kcm
-+   lapb-module
-+   mpls-sysctl
-+   mptcp-sysctl
-+   net_dim
-+   net_failover
-+   nexthop-group-resilient
-+   nfc
-+   openvswitch
-+   pktgen
-    proc_net_tcp
-    pse-pd/index
--   psp
-    radiotap-headers
-    rds
-    regulatory
--   representors
--   rxrpc
--   sctp
-    secid
-    seg6-sysctl
--   skbuff
-+   sfp-phylink
-    smc-sysctl
--   sriov
--   statistics
--   strparser
--   switchdev
-+   snmp_counter
-    sysfs-tagging
--   tc-actions-env-rules
--   tc-queue-filters
--   tcp_ao
--   tcp-thin
--   team
--   timestamping
--   tipc
--   tproxy
--   tuntap
--   udplite
--   vrf
--   vxlan
--   x25
--   x25-iface
-    xfrm_device
-    xfrm_proc
-    xfrm_sync
-    xfrm_sysctl
--   xdp-rx-metadata
--   xsk-tx-metadata
- 
- .. only::  subproject and html
- 
-
-base-commit: 5f30bc470672f7b38a60d6641d519f308723085c
--- 
-An old man doll... just what I always wanted! - Clara
-
+> > > +				jt[i], sym_off + i);
+> > > +			err = -EINVAL;
+> > > +			goto err_close;
+> > > +		}
+> > > +
+> > > +		val.orig_off = insn_off;
+> > > +		err = bpf_map_update_elem(map_fd, &i, &val, 0);
+> > > +		if (err)
+> > > +			goto err_close;
+> > > +	}
+> >
+> > [...]
 
