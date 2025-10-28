@@ -1,161 +1,175 @@
-Return-Path: <bpf+bounces-72503-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72504-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B787C13957
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 09:43:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27D59C13A70
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 09:57:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1C9794E5D12
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 08:43:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 727285E0BCE
+	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 08:54:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB762D9498;
-	Tue, 28 Oct 2025 08:43:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48DB92D7DF4;
+	Tue, 28 Oct 2025 08:54:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Xq7ERVrJ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Eodsjk9g"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zFjti9dY"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 437D12C17A8;
-	Tue, 28 Oct 2025 08:43:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC5A1F4CB3
+	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 08:54:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761640996; cv=none; b=p72MLnObd41MrcZ2luyYKXTE34Nmj0j7tobsGwL6VUKd9+xUUTZqmQOJ2tHaxLdwzytDfsQ8iv++gUYG7j7knCoI575cYQHobu+Cw0nS73ElHKrhkb4No7NhqmJ4NWfypOSfKgefWDFYI4JVJX4n1AJDWL/khDrBUSC93ERKRb4=
+	t=1761641689; cv=none; b=NFX8wUAjRh0S0FhKCXXPjJv0vkulHcJeLf9vqlECnIymgvVOUIdrqUCuRjQr5xzNLqI7xl5cLgmSTZHwXXxQmOF87ZGw9LcBLqHJdE1aYV3wFCw66DTslErzjdmARtVeIYN9DDsLFs+f0jgksvGyX1qgkonbCuT6ag15BtnAYh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761640996; c=relaxed/simple;
-	bh=24piICuL1TFvQkkPUpBURn6MSOHQmPj30SRS3p89FRg=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=FJ/5obfr1rUlKrMI/pgZKuVbC65p4JNb2d1yFeztGVDgQS2Krs9SEWLc1QiTubyn5YUee6Y1cMdOzmTbNPiN8MTRAIOjaPAqaN0IzxSCmFPaT/rR+HYVnS2hYR2eVZ4UVomRmT9wtz0w2bp8JKxZ/zoReEmhvsDnmI40eNx2uP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Xq7ERVrJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Eodsjk9g; arc=none smtp.client-ip=103.168.172.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfout.phl.internal (Postfix) with ESMTP id 3C646EC049C;
-	Tue, 28 Oct 2025 04:43:12 -0400 (EDT)
-Received: from phl-imap-17 ([10.202.2.105])
-  by phl-compute-04.internal (MEProxy); Tue, 28 Oct 2025 04:43:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1761640992;
-	 x=1761727392; bh=0JJIkDhabFeQu41OWvb1I0C49bKjs5BXbI+33V7E/DI=; b=
-	Xq7ERVrJvCMn7KM+GJIjGJU6l/nnqobgi2ttOFMlQ3gzVppaypAMXeNoGpJG6J7w
-	iU4q6IJEeMYQ7SAACfECkIOrlyiKMWDfdYWzsl73R1f+8KzfecXegG25oGI0xMCz
-	dOXuwLiI63yhQNuGnf8bko+4nJXq0rGCKPHCxoBak7JxJD3/+Av6Ryjk2j4u+cJZ
-	Ghdgf2CQxAh1RnArZ3j10fmuwkMad8qPZQOTiyNvrDTBwYyIgzX0AFwRJ91gA2L5
-	VqaOwLG/kMSmJHyy7ZbAedUj3lonwWXmGHmDYJ4fcvy0FPXe8iNwfeXFKNLtQedX
-	o2ywp7YtllGKuWrJLW0GOA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1761640992; x=
-	1761727392; bh=0JJIkDhabFeQu41OWvb1I0C49bKjs5BXbI+33V7E/DI=; b=E
-	odsjk9gmyhy5abk7WI2miFV+T87z564P1AYR2TvLZGQpqArDmPokF/t722n3I4Tj
-	EpyVxm/uAn+B/CYsExrbwg/Ym1wj4JcV+ZXs+foGaPgnXUpESUdCszPEwxut/zFX
-	xcV3bSxllP3wL3eb7VK35iE0S+g0Bv1b2tN/3WjNv7KFE9KeHHvMBwmfVdHU5bLN
-	2i+DFfnEauC8R0f4aLHDvo4s2qkQGmvwPl5ODYfWEEVxmNgQbRCu/9+UrtQDsAp2
-	McBvjLHmuFvxcH7KzrGNlPW/+MzCC0ohSNNRNr0BzoIAq5V1sil47l8i1m6Ne+yD
-	gj+ehDon30hPc80oq9r8Q==
-X-ME-Sender: <xms:HoIAaUtaYFqBbJcPsIwH_N9aBY3VmmgjKJsuzycGO5yhkf5od7uupQ>
-    <xme:HoIAacSn2C6gyejJUVK9jxPnsznK09RRPtkVN6ix7AeSkMwhE7L64Q7_h61Ot49T4
-    DU0HE5d1ja8ZDWj0zMtyVbwIxkocyj4fqybNYAX81eNbgbEp7ckiN4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduiedtgedtucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefggfevudegudevledvkefhvdei
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
-    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepvddvpdhmohguvgepshhmthhpohhu
-    thdprhgtphhtthhopehhrghrihhsohhknhesrghmrgiiohhnrdgtohhmpdhrtghpthhtoh
-    eptggrthgrlhhinhdrmhgrrhhinhgrshesrghrmhdrtghomhdprhgtphhtthhopehmrghr
-    khdrrhhuthhlrghnugesrghrmhdrtghomhdprhgtphhtthhopegtlhesghgvnhhtfihord
-    horhhgpdhrtghpthhtohepmhgvmhigohhrsehgmhgrihhlrdgtohhmpdhrtghpthhtohep
-    iihhvghnghhlihhfvghnghdusehhuhgrfigvihdrtghomhdprhgtphhtthhopehpvghtvg
-    hriiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdr
-    ohhrghdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:HoIAaRK98uVZXggexNZJxfpOi2NhgCDBpdBortjF4YEFlnX-7575tg>
-    <xmx:HoIAaYtT4qxWDTg6TXCMRVb6I7jai_a5cVtV7XatpNk52wWObCtxyw>
-    <xmx:HoIAaZsQi0-T0s8zmmp7YXxMdSo49olveWp-cJiaKFFMl0_-8Q_RPQ>
-    <xmx:HoIAaXVHVooVmeleiM97lpwcJ8DxjnGIMcPMdIXgwf_9CIvgOPFLpw>
-    <xmx:IIIAaR6OVmbqtFe8haMko2FXa-g9Vh851x94veFTolgXUIvEFDoTVRSF>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id B93ADC40054; Tue, 28 Oct 2025 04:43:10 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1761641689; c=relaxed/simple;
+	bh=QeYx/eFxq6lR4+YZ/DP4VSYkYOnQaUkr9HNt8KAt9V0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JtMpAmnEA4EVprau0yawIkj49+2iFLSvsIakBqog1Gz4KeOiAJjz4ue3xu4A6wEAlkV+EKgqurOj35HakOkHtqOWhBFRTvrJFBLIvgRdi++ToKh0ejgn5QiuZeLSdz49C/FLIo8NKFq1rToR+LX5VdEsbGdw/ErMnX6rwnGiTt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zFjti9dY; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-62fc0b7bf62so2103692a12.2
+        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 01:54:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1761641686; x=1762246486; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zzTgGU8Fc6YeRB9n5ReEGGKnPVnwGcFzwEAmeAoo+6o=;
+        b=zFjti9dYn8J4QTHiGtAwOeL3CC2dHxTOYfHv2mGg16qOaBgpifgevyxjJ9qLffs/Bg
+         Y6s9EcXQvSIwCbpoA74vD+11teZ4P7G8wHUzx+2Ev4Po6xjcrs/4ErY1qV+tjJ9Gj/cG
+         G4PKWLQU+aKQ3PD2CS/HYXP2XtlJEscOg31kXiPCT1YDCBBJKwNxrPAJQ5rKvZfBiqgR
+         xjXrNg6334IkzeQd+fXVOKg1LA3jTrRqRONMoeOhn+0WdRLEWbFO125kaHW0dyht75II
+         cWpezezAJxWAP79XOxPszpmw5nFbWjjmkaUy/g/g4zc5olxRLyPcsEnzN/NqwtO11Psw
+         ygMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761641686; x=1762246486;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zzTgGU8Fc6YeRB9n5ReEGGKnPVnwGcFzwEAmeAoo+6o=;
+        b=v9PJfVpKYt8Dci1Mz+im8Tl/HSPMi4SWxnBzzGBuf22PKczdna5MXUYKx7jrRVYQrf
+         uVoBkVW8HVQ+yb7dXTTK9DHFhX5w8JyA0zh4nXKK/lYINmMA4Abfst2VqRyBfdcuM2F0
+         WOC8mzH7xjqQFKIq+eND4v5MrcZFzejB0mKqiOU0W0JALtaETUQJMaPRoZplvQd8cjM0
+         LoaEPRqOfAS+Gv7b/FjWc13q5Y7bok/6PrRZSo4ykJsIqwXw9T3FG4z0/jTpiGSsPj/Z
+         4bBICkNEf+LW/MJ9ffYVrpPM+RSWlFmLPgqm0BV4XqWnhKBsDKxzIcTi9epmOVgusrKv
+         6ppA==
+X-Forwarded-Encrypted: i=1; AJvYcCUUabA4ifGLm0cGAvPI4eTbu5ZS9RSzrbHxjQMJFbKlGsXL63cwBynwaCK+F6GyTU6FpK8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCVqMqKSyjRgBog6SiDqP99maExvkx3s98BssP6JVyjXY8AF5C
+	ESAkHpHUOcnN4lt8RCp35HytompNMbADToQEzD3LuxcJfXnHs4yzl5CSadYLNE8Kxw==
+X-Gm-Gg: ASbGncu3Tycx+XidVi6rUjFJbZBrKJtDNdCuGCspbq3E3TdwVwXfnqE0PNTL8gj1E0b
+	lW2Mu9Y01e0bDC9dmPsrqX7IhGXs78fhRsW66LkjPfyZM48unjFVhvrRb5Ninba421P+NWJPFkr
+	2hyeS+nVlsZkKywT5UXhM+xuDRlWxC2QjkaKk0yyD6HNeVdljYBPhFdOSuNS6C3Q4vBM9jYP4Hs
+	ZvACMptW32qlkCMf8w+mjKZ1kHMWJDW47L1SeGjcYtiTBanYLFvjo6ebErPU7ULCaUHqLZ1weGL
+	KRJEqjsJnRTvq7PrhNrSjUspSTzv2KsGo5lz8Mr3348+kRqscyTWyo9IQpO5K/q5LWk7QtU27yh
+	y9s02Y9CDQK1gStx1wiHlhrxSBVeLh0DQGBHxPzvAeFimJbz2iopKxvjNFJPq+PNm4HxfEyAoMC
+	WgtksuLHRnbbtkybEOS4UR7sdDkTTtgackxbutxEa5/jLvRo5RWd2et97C
+X-Google-Smtp-Source: AGHT+IHPxqEW49Ey0+zH+V6NlQOHGZMBbZmRTn/CRr7R/OqlH3S491uTZTrMlBZvDnudHLtpe1IUUQ==
+X-Received: by 2002:a05:6402:3582:b0:639:fd12:65a2 with SMTP id 4fb4d7f45d1cf-63ed84965d2mr2330090a12.15.1761641686193;
+        Tue, 28 Oct 2025 01:54:46 -0700 (PDT)
+Received: from google.com (96.211.141.34.bc.googleusercontent.com. [34.141.211.96])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-63e7ef96105sm8342279a12.19.2025.10.28.01.54.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Oct 2025 01:54:45 -0700 (PDT)
+Date: Tue, 28 Oct 2025 08:54:41 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: Paul Moore <paul@paul-moore.com>
+Cc: Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+	linux-security-module@vger.kernel.org, jmorris@namei.org,
+	serge@hallyn.com, casey@schaufler-ca.com, kpsingh@kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	john.johansen@canonical.com, eparis@redhat.com,
+	audit@vger.kernel.org
+Subject: Re: [RFC bpf-next] lsm: bpf: Remove lsm_prop_bpf
+Message-ID: <aQCE0WwGlOADI5xT@google.com>
+References: <20251025001022.1707437-1-song@kernel.org>
+ <CAHC9VhTb2p3DL_knRgFyDv396BwH-KhwR0cBhqLQ-KdgcA1yLw@mail.gmail.com>
+ <CAPhsuW6O96aJbZptVY754tQ1-C_JtH8PwS1oZX6a1Tch7ehEkg@mail.gmail.com>
+ <CAHC9VhRzjkTSUPS9odXRruAuSNbv44Atxj2sreQgcVpDu5pL-Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: Ab2ZwGVH8-qs
-Date: Tue, 28 Oct 2025 09:42:50 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Ankur Arora" <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
- Linux-Arch <linux-arch@vger.kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
- bpf@vger.kernel.org
-Cc: "Catalin Marinas" <catalin.marinas@arm.com>,
- "Will Deacon" <will@kernel.org>, "Peter Zijlstra" <peterz@infradead.org>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Mark Rutland" <mark.rutland@arm.com>,
- "Haris Okanovic" <harisokn@amazon.com>,
- "Christoph Lameter (Ampere)" <cl@gentwo.org>,
- "Alexei Starovoitov" <ast@kernel.org>,
- "Rafael J . Wysocki" <rafael@kernel.org>,
- "Daniel Lezcano" <daniel.lezcano@linaro.org>,
- "Kumar Kartikeya Dwivedi" <memxor@gmail.com>, zhenglifeng1@huawei.com,
- xueshuai@linux.alibaba.com, "Joao Martins" <joao.m.martins@oracle.com>,
- "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
- "Konrad Rzeszutek Wilk" <konrad.wilk@oracle.com>
-Message-Id: <3642cfd1-7da6-4a75-80b7-00c21ab6955f@app.fastmail.com>
-In-Reply-To: <20251028053136.692462-3-ankur.a.arora@oracle.com>
-References: <20251028053136.692462-1-ankur.a.arora@oracle.com>
- <20251028053136.692462-3-ankur.a.arora@oracle.com>
-Subject: Re: [RESEND PATCH v7 2/7] arm64: barrier: Support
- smp_cond_load_relaxed_timeout()
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHC9VhRzjkTSUPS9odXRruAuSNbv44Atxj2sreQgcVpDu5pL-Q@mail.gmail.com>
 
-On Tue, Oct 28, 2025, at 06:31, Ankur Arora wrote:
-> Support waiting in smp_cond_load_relaxed_timeout() via
-> __cmpwait_relaxed(). Limit this to when the event-stream is enabled,
-> to ensure that we wake from WFE periodically and don't block forever
-> if there are no stores to the cacheline.
->
-> In the unlikely event that the event-stream is unavailable, fallback
-> to spin-waiting.
->
-> Also set SMP_TIMEOUT_POLL_COUNT to 1 so we do the time-check for each
-> iteration in smp_cond_load_relaxed_timeout().
+On Mon, Oct 27, 2025 at 09:50:11PM -0400, Paul Moore wrote:
+> On Mon, Oct 27, 2025 at 6:45 PM Song Liu <song@kernel.org> wrote:
+> > On Mon, Oct 27, 2025 at 2:14 PM Paul Moore <paul@paul-moore.com> wrote:
+> > > On Fri, Oct 24, 2025 at 8:10 PM Song Liu <song@kernel.org> wrote:
+> > > >
+> > > > lsm_prop_bpf is not used in any code. Remove it.
+> > > >
+> > > > Signed-off-by: Song Liu <song@kernel.org>
+> > > >
+> > > > ---
+> > > >
+> > > > Or did I miss any user of it?
+> > > > ---
+> > > >  include/linux/lsm/bpf.h  | 16 ----------------
+> > > >  include/linux/security.h |  2 --
+> > > >  2 files changed, 18 deletions(-)
+> > > >  delete mode 100644 include/linux/lsm/bpf.h
+> > >
+> > > You probably didn't miss any direct reference to lsm_prop_bpf, but the
+> > > data type you really should look for when deciding on this is
+> > > lsm_prop.  There are a number of LSM hooks that operate on a lsm_prop
+> > > struct instead of secid tokens, and without a lsm_prop_bpf
+> > > struct/field in the lsm_prop struct a BPF LSM will be limited compared
+> > > to other LSMs.  Perhaps that limitation is okay, but it is something
+> >
+> > I think audit is the only user of lsm_prop (via audit_names and
+> > audit_context). For BPF based LSM or audit, I don't think we need
+> > specific lsm_prop. If anything is needed, we can implement it with
+> > task local storage or inode local storage.
+> >
+> > CC audit@ and Eric Paris for more comments on audit side.
+> 
+> You might not want to wait on a comment from Eric :)
+> 
+> > > that should be discussed; I see you've added KP to the To/CC line, I
+> > > would want to see an ACK from him before I merge anything removing
+> > > lsm_prop_bpf.
+> >
+> > Matt Bobrowski is the co-maintainer of BPF LSM. I think we are OK
+> > with his Reviewed-by?
+> 
+> Good to know, I wasn't aware that Matt was also listed as a maintainer
+> for the BPF LSM.  In that case as long as there is an ACK, not just a
+> reviewed tag, I think that should be sufficient.
 
-After I looked at the entire series again, this one feels like
-a missed opportunity. Especially on low-power systems but possibly
-on any ARMv9.2+ implementation including Cortex-A320, it would
-be nice to be able to both turn off the event stream and also
-make this function take fewer wakeups:
+ACK.
 
-> +/* Re-declared here to avoid include dependency. */
-> +extern bool arch_timer_evtstrm_available(void);
-> +
-> +#define cpu_poll_relax(ptr, val)					\
-> +do {									\
-> +	if (arch_timer_evtstrm_available())				\
-> +		__cmpwait_relaxed(ptr, val);				\
-> +	else								\
-> +		cpu_relax();						\
-> +} while (0)
-> +
+> > > I haven't checked to see if the LSM hooks associated with a lsm_prop
+> > > struct are currently allowed for a BPF LSM, but I would expect a patch
+> > > removing the lsm_prop_bpf struct/field to also disable those LSM hooks
+> > > for BPF LSM use.
+> >
+> > I don't think we need to disable anything here. When lsm_prop was
+> > first introduced in [1], nothing was added to handle BPF.
+> 
+> If the BPF LSM isn't going to maintain any state in the lsm_prop
+> struct, I'd rather see the associated LSM interfaces disabled from
+> being used in a BPF LSM just so we don't run into odd expectations in
+> the future.  Maybe they are already disabled, I haven't checked.
 
-Since the caller knows exactly how long it wants to wait for,
-we should be able to fit a 'wfet' based primitive in here and
-pass the timeout as another argument.
+Well, it doesn't ATM, but nothing goes to say that this will change in
+the future. Until then though, I have no objections around removing
+lsm_prop_bpf from lsm_prop as there's currently no infrastructure in
+place allowing a BPF LSM to properly harness lsm_prop/lsm_prop_bpf. By
+harness, I mean literaly using lsm_prop/lsm_prop_bpf as some form of
+context storage mechanism.
 
-    Arnd
+As for the disablement of the associated interfaces, I don't feel like
+this warranted at this point? Doing so might break some out-of-tree
+BPF LSM implementations, specifically those that might be using these
+associated LSM interfaces purely for instrumentation purposes at this
+point?
 
