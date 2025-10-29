@@ -1,104 +1,124 @@
-Return-Path: <bpf+bounces-72911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 296DFC1D7F7
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 22:48:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA265C1D836
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 22:50:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E5F3E4E3F76
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 21:47:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73E46403662
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 21:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDC022D2391;
-	Wed, 29 Oct 2025 21:45:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1860320C00C;
+	Wed, 29 Oct 2025 21:49:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F6PhZS4h"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZxlBgTv0"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3559F20C00C;
-	Wed, 29 Oct 2025 21:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2684620010A
+	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 21:49:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761774348; cv=none; b=o4nd3wsNIS1e/KvcKZYEDYIg2pDzNSimAChS78zkHRSeKz78JhLtsvJkc0qmasAY/ypOG2sv4HPd/e572CAzZm+05KeY8SOoZagXEVNms+z5ZjK6wYdwYXD+AzeX4BKPO9gw4awDXGGwbjMEZFDLSOFjH9O+/LISFCH/ufdYw1M=
+	t=1761774576; cv=none; b=ebf87lW45WZyHAlf/YVATzl64xz5arsROofEGEDJ3sBVp45xOXZol/T5Xjf6nypA/CPtKBbDFNpVaLqEEviZupIgQSsWVTe8qwxDwWx6pxEaQVgwNgWaq9emfChh6Lzo40/2yJm31qnOU/itdOmxrGAI8rcS8ldyztiBGI+p7Tc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761774348; c=relaxed/simple;
-	bh=6N/PDZDuG63mYbRBd/5edZFLahJKbOcfDaWvIWC0rbE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YELRnYK7FD1pGOImXIKZK+TsTSItThnGP03VfrefJ6Hz3I1I/m4cZHj/oHGD6UrA6lb3rEaTF2t7FQXUtNWvVc8ToFW2kwXa5Jrxz4elNZDCJIaErLfg7Mu8y3d88/hg2SVTseq9P1PpdUMfwamYXzrBx+vMK3mQOIktvmu+FfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F6PhZS4h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDD00C4CEF7;
-	Wed, 29 Oct 2025 21:45:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761774347;
-	bh=6N/PDZDuG63mYbRBd/5edZFLahJKbOcfDaWvIWC0rbE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F6PhZS4h4d4Jm70pbTD/Zfvh2zE6PPSle2THnyGlLX/hJnApn3A30pp1+KONryzHU
-	 G4vMy07i+dWaiV9Unw3bEjkSfMgDiy7LXqA56qdwBWgka3hIyIVGQSWk2MePRwBx7j
-	 by9zJmb6zmYL8BLUqVOcMrzFgDmqwdvyZ1uVttNzM1bmaEqefuWoie+ML0wRMrF2Jp
-	 NH/vu3oNwHKj8LWnuB3SzolEAi4kJY1f79MhEFq0AzJWrGWfNysT9A4kxC/XDJa1LL
-	 aZiOGqNN/KPM4BvnP8NrgOWRpUngIuHXzBzvQvMMTuCV6W7F+r9DhOSQfDBE3vgeK3
-	 BYINY2jsETllQ==
-Date: Wed, 29 Oct 2025 11:45:46 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Song Liu <song@kernel.org>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops
- to cgroups
-Message-ID: <aQKLCuX5v5aO3fDa@slm.duckdns.org>
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
- <20251027231727.472628-3-roman.gushchin@linux.dev>
- <aQJZgd8-xXpK-Af8@slm.duckdns.org>
- <87ldkte9pr.fsf@linux.dev>
- <aQJ61wC0mvzc7qIU@slm.duckdns.org>
- <CAHzjS_vhk6RM6pkfKNrDNeEC=eObofL=f9FZ51tyqrFFz9tn1w@mail.gmail.com>
- <aQKGrqAf2iKZQD_q@slm.duckdns.org>
- <CAHzjS_tEYA2oboJ-SPq5wJLJTpJDNiA2Fk1wMRgyEpH0gjZRJw@mail.gmail.com>
+	s=arc-20240116; t=1761774576; c=relaxed/simple;
+	bh=5ElzWagHbGBXES7LgsOqPDJHbxWl8gd5+wO4+qgWVnU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZBded3Ii89HL9/7VUZYRvCgbwO7P08e7twnyNOLe7XW6mXoExK0QvzTv+a51xnkvId78BDh5CyLFcY4RdtHN1K9WXCWn96XQvkiJc1BcDK9jxG0WurzNg17EicZRwxof5+bXYRygLYG+IqtDaVfY1HpqEBvhllId/fpFEiOJtwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZxlBgTv0; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ac753f54-0e20-4f95-ae93-3376eb77dc89@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761774571;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j1h4HS/PxtRXNX6KM2UsGxsKenfMNMI5HNDVKvouZeM=;
+	b=ZxlBgTv0Agwh7rjG46rxOYc192tHRYhXVx/Rpsn7mQfzyTPIkKaTMbJAeeGu5kR582qY31
+	thJXCTCq8+sisjp4PstkwPWys9X9VbrVs5FAERlA1RmIkCDdfkshu0CK5reV/Sfp6QPo9s
+	lvWf0ROASOhJlw90jydoZkoQRjbwsC4=
+Date: Wed, 29 Oct 2025 14:49:17 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHzjS_tEYA2oboJ-SPq5wJLJTpJDNiA2Fk1wMRgyEpH0gjZRJw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1] selftests/bpf: fix file_reader test
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
+ kernel-team@meta.com, eddyz87@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+References: <20251029195907.858217-1-mykyta.yatsenko5@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <20251029195907.858217-1-mykyta.yatsenko5@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
-
-On Wed, Oct 29, 2025 at 02:37:38PM -0700, Song Liu wrote:
-> On Wed, Oct 29, 2025 at 2:27 PM Tejun Heo <tj@kernel.org> wrote:
-> > Doesn't that assume that the programs are more or less stateless? Wouldn't
-> > oom handlers want to track historical information, running averages, which
-> > process expanded the most and so on?
+On 10/29/25 12:59 PM, Mykyta Yatsenko wrote:
+> From: Mykyta Yatsenko <yatsenko@meta.com>
 > 
-> Yes, this does mean the program needs to store data in some BPF maps.
-> Do we have concern with the performance of BPF maps?
+> file_reader/on_open_expect_fault intermittently fails when test_progs
+> runs tests in parallel, because it expects a page fault on first read.
+> Another file_reader test running concurrently may have already pulled
+> the same pages into the page cache, eliminating the fault and causing a
+> spurious failure.
+> 
+> Make file_reader/on_open_expect_fault read from a file region that does
+> not overlap with other file_reader tests, so the initial access still
+> faults even under parallel execution.
+> 
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/file_reader.c | 6 +++++-
+>  tools/testing/selftests/bpf/progs/file_reader.c      | 2 +-
+>  2 files changed, 6 insertions(+), 2 deletions(-)
 
-It's just a lot more awkward to do and I have a difficult time thinking up
-reasons why one would need to do that. If you attach a single struct_ops
-instance to one cgroup, you can use global variables, maps, arena to track
-what's happening with the cgroup. If you share the same struct_ops across
-multiple cgroups, each operation has to scope per-cgroup states. I can see
-how that probably makes sense for sockets but cgroups aren't sockets. There
-are a lot fewer cgroups and they are organized in a tree.
+No more failures on CI:
+https://github.com/kernel-patches/bpf/actions/runs/18920720310/job/54022355262
 
-Thanks.
+Thank you for fixing.
 
--- 
-tejun
+Acked-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/file_reader.c b/tools/testing/selftests/bpf/prog_tests/file_reader.c
+> index 2a034d43b73e..5cde32b35da4 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/file_reader.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/file_reader.c
+> @@ -52,7 +52,11 @@ static int initialize_file_contents(void)
+>  	/* page-align base file address */
+>  	addr = (void *)((unsigned long)addr & ~(page_sz - 1));
+>  
+> -	for (off = 0; off < sizeof(file_contents); off += page_sz) {
+> +	/*
+> +	 * Page out range 0..512K, use 0..256K for positive tests and
+> +	 * 256K..512K for negative tests expecting page faults
+> +	 */
+> +	for (off = 0; off < sizeof(file_contents) * 2; off += page_sz) {
+>  		if (!ASSERT_OK(madvise(addr + off, page_sz, MADV_PAGEOUT),
+>  			       "madvise pageout"))
+>  			return errno;
+> diff --git a/tools/testing/selftests/bpf/progs/file_reader.c b/tools/testing/selftests/bpf/progs/file_reader.c
+> index 2585f83b0ce5..166c3ac6957d 100644
+> --- a/tools/testing/selftests/bpf/progs/file_reader.c
+> +++ b/tools/testing/selftests/bpf/progs/file_reader.c
+> @@ -49,7 +49,7 @@ int on_open_expect_fault(void *c)
+>  	if (bpf_dynptr_from_file(file, 0, &dynptr))
+>  		goto out;
+>  
+> -	local_err = bpf_dynptr_read(tmp_buf, user_buf_sz, &dynptr, 0, 0);
+> +	local_err = bpf_dynptr_read(tmp_buf, user_buf_sz, &dynptr, user_buf_sz, 0);
+>  	if (local_err == -EFAULT) { /* Expect page fault */
+>  		local_err = 0;
+>  		run_success = 1;
+
 
