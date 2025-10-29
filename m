@@ -1,87 +1,87 @@
-Return-Path: <bpf+bounces-72655-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72656-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90B23C1775F
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 01:04:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DC15C17785
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 01:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94CE03A9797
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 00:03:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 848A81B27890
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 00:05:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64533F9E8;
-	Wed, 29 Oct 2025 00:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103513A1CD;
+	Wed, 29 Oct 2025 00:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="S7z0WXf1"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="YbZoaS4q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A99FB67E
-	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 00:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0193B29A1
+	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 00:04:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761696174; cv=none; b=SfDDJE/F1w2YcUYlvzlq7KQY+0ujOZeMLyQuTj3tcWiaRq5bNnZT1rzyvvVNX10yXKw4wNCEvlIFSPUFKf5iPywTLX6a4gzMN9HIWQYfScfMOvx+WT6SZqA2Bm7gYOo296+ZOh6Zx8sSz5Xmb5xzZmif1NHJJtvPnGEYBVphtDY=
+	t=1761696299; cv=none; b=Ki2MRZZZ7XnVh+ZhhoNplDwBlwafeL9SE2Q3YDe5EIBEh2r4M5pQ6yG2brsKEQRfhbPsCd+DoaqJtc8h9WQm0pGTRNS/XxQ1uDt2/cg41s4wvBtzMc5wGhfu0GXVGHJyt6nwIX+yG8T7oBTSn8heMy1OEz9SbGDQdrKB1220vQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761696174; c=relaxed/simple;
-	bh=m1Iz4iCevIOErVXwxDtpkzo89S0mMIU4Qz1L+Q2VZzA=;
+	s=arc-20240116; t=1761696299; c=relaxed/simple;
+	bh=qF3NtATOlOxjmKjh31CoJ8+W1noziSRiCQPVNghpJQk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tSPFLANqXOlEu1WJw9+tgY+v2L1wSOTKfIvNg+U+mFuRlYxhXbYbaH817e9ThNO0vkosxLz50CM4BGnIyMmHsV2S2CQYhXlR0V8Ycy2jcvkGAF7oHcIwTWtS5WoBurYgO/yxiPA59/OYgDL1LIpfNg5lYsmSRAORaaQnSm6Tsw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=S7z0WXf1; arc=none smtp.client-ip=209.85.216.45
+	 To:Cc:Content-Type; b=Fo4uvKIUL1N98LdDgqEmeVWq8nFaXUj7JG85PdIQRwfRsrtW19W1nKeB+ugNaTo1s2qCntMbCkN5+6k0UZvgfDMEWY1MJlFWdOS2CnwlPOxUOlbLiNYeC525bUDz3DQxKbT6KHZ80Yj30ZS9hgV6IPxObTal2hubNK3Nt4DMdQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=YbZoaS4q; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-339d7c403b6so6439709a91.2
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 17:02:52 -0700 (PDT)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-34029a194bcso1688969a91.0
+        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 17:04:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1761696171; x=1762300971; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1761696296; x=1762301096; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xF6B/bGLrhNZetGrqx7q4mvUW1pHQ5FZufaW6F5zkk4=;
-        b=S7z0WXf1paaNc94V/GoD6ihSFN1Fwz04q7/Bri/+2oQeytuQmLCDloKQj8RU8eRhob
-         W+JIcgOCBpcWOanj37Y08dd8z7xNqHXU4eAf3a19dxRyCE6rp2OJV8FULItqQFbj7hxe
-         p0kN/hysrr7k/QG3QOwjg/WTEL52y8QwFNk7I+KpRoZlzWswY5ZEy5vZ33tGpzOcoNzv
-         uW6T/orZamFJhQp3VN1rEvTRZ2wqjFckPNbYzq2F4++bYXGN3fqfDXPSEYwoSW3HiLRC
-         fP9mrS/F1haqQvM1s3+wAsCmdDpj3kBfxV+18ift678WTks52jnGoOj5Uvfdx1W2KPOu
-         kKvA==
+        bh=BerLOcBoWrV1cLwn2WvSsreg5PxA+PLtgWK6veAyVuE=;
+        b=YbZoaS4qDsxU9JuqQ4+3At4yH/xb+t49dYMx4ISzdT10Oyh4a4LL8Xoth4UBNpPzur
+         itM56A7SQV0GUZ5w8xvciREEGwmWVcktk+WNgGo5xRpvGisMiQFBUmzHNigbgsdLltuz
+         +febz2p4RQxz1twT/85RYbInr8Qcj/hdKgsarSl4+IMbNiaHEfL/ickls/wMnIg+xzsa
+         4IPwCpYWb2isD1NXOYAbyvihlOi0GryBRt5RCIxfsk2RtMvDS6iHlBhho9ytJKF38Y/X
+         R2VWfvi+gGlciUOT1SsgwNss364GzmiITVWZ5HYuAohyrQ6dwaDR9zKMuNdpsLjDsniV
+         i9bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761696171; x=1762300971;
+        d=1e100.net; s=20230601; t=1761696296; x=1762301096;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xF6B/bGLrhNZetGrqx7q4mvUW1pHQ5FZufaW6F5zkk4=;
-        b=RmBj+MUgjIW2ObBBIDq8DHxP8d69PaNsHJA2GIPgPTGlMcwufSn4GL7a/EZuA/82zs
-         zC/njECqFFl/t+dcXcygQBSNtW7kqsZ83ub50O1ZEOR0ZVmPR9GahDP2STX7BbIcD6Ok
-         Qk3sOGcXffVY3BSRgM5aQC0Fkp4o1LvHkLoP2jlmLWtW6QTYZByTqZtK5w3AQcpu+zaJ
-         KeVR5oCIbkgJ3xgrMLgftauanQSmBCrTKttyJsl5bfshOcME1zwP037S1FZB82cMzQsm
-         crVUNJeCVSWxIaPH3DpNnqi6ngujVnoBn8IxTf0h+X4peQIzN3SZ9Ypm8ede5aJwfHbD
-         Ao5w==
-X-Forwarded-Encrypted: i=1; AJvYcCVA46CdAmjQwnALv9iKkDQj99rdKkYGuN3WTPTHnsEGxm2kis2isHdsYBc07eah43Jzi48=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyD0OlBRs8KNsaNnj7lFObcWdN6QHBDwoR88ixOgj4UdARjJvez
-	+KfnJa6d/dqYO7LstdCZVnWCMhynUQNVRFD/DpXN5omWP2xzH8neYl+0J9QOizjEEFQk/LNkMTq
-	dL6ixC9itCef8u3N9LWVyThSv3klpmUCdbu/0teRC
-X-Gm-Gg: ASbGncsgyCp9WIWm2ILFRhAs3KPkxyjfVp6oKIVMsL1I2ebcv0AyZ62cZqbh76HR3W6
-	y46tmEqeLA8tNoIPO+bwUm4WKAKxPMe+Zn7wOuLCnu0DunRy+bIs15iHPUA6m5SCKCEjEh4zpdZ
-	UwK77c/1EPt13ZU2ffy9nHFVesd/3X7NyyPRFj3ykNAdXEp/b/+4VtW1TuMSter8N2X8Z4d5/Jq
-	cW9Ay6kL/jLLGnlkDtt5LH++BCLBSLtssots8G33FBrZTaggUGDorRw2ukv
-X-Google-Smtp-Source: AGHT+IF4NZKo/CMR1Xvo4aqvxCL2dK2Kp/y68pib/yspEfnhKPr97BsNeUO4lrcXad0luDAxu81WWX06Cn/QvKa01OM=
-X-Received: by 2002:a17:90b:54c6:b0:33f:ebeb:d7ef with SMTP id
- 98e67ed59e1d1-3403a2a420cmr1024634a91.35.1761696171255; Tue, 28 Oct 2025
- 17:02:51 -0700 (PDT)
+        bh=BerLOcBoWrV1cLwn2WvSsreg5PxA+PLtgWK6veAyVuE=;
+        b=K0+v8Y29A8/AFiaFZELCc3e/XS1BmKVAAOm+edtr2Ue19Xr6SS1Eft0LhcWKO7Yc56
+         jWmxyaXs3toY9M0j/YSG7LIZqJej05CyXTQbXikZUNddRA+EMDT7Tn0lVPyMt2LoC5zW
+         ydp80uXyilqm5e0hPtNZ+qkkm0c2woEbF2ikLZXVrcdOS/u/08r1PjvonFwcP1pRcdUK
+         SRF1I01OVzQnZranVdgTFwahDDZ0OHH9/AHIHmAfAN9vWQlbVeLwNrVTi2JMhRv2ou3b
+         TZphdtNUq9AuLDH+8pwdIP4vV53yW1wtgtIMRzjs3lyb4DqZ6/gTlw+btmm5Udw7rBSD
+         B69w==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ/Oy1hducQfVtIL3Z+EAmGP8uug86WYoeHaoIHcvSLEFvajPwZKiav5BbuZv4xunJO/c=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxSrf4wSbLmhV8Pu0/Hn/+PBr3VTKD4vqyB2XWoqXIxN7h4XpBS
+	DAOtDYd2P6zZ2TCcz+hjkcJZ64rm7ptEn5ezCMfG/30wu6ZyC9alSvI50O6fORN8wZAMj3CPrSB
+	SvESYi5HvoFvZhWH/llkfB2vGiZTGL9NobFV3Uzjm
+X-Gm-Gg: ASbGncuAAKVS0kad6bIBKPFYGwm2OG20BKo1bvv33uWbdu+T43Xr5oV/lKsXtzqVkZS
+	jI0pCX9Utu+lCvYQ/Wh6LV6phHAG5nF0YBDhP7PeuWY4631aOmmw6aoYXtKwzyE3IH/KgUZo1lN
+	F/yUMf/Q0J0THw3WW+yiER8NbPVamWkPG6jWljgmYVBdhW7DXlEkyX9uzS9sTgFAgzPnI1G9KWr
+	WUZCX8a2tlNZxNq74+DNK6Thv2nBBYfrfDQ9TNIfMj6R7cNRmyHJzGMoyYaV9qSTSZ+JZo=
+X-Google-Smtp-Source: AGHT+IF9Sg8XTJhY1XF+gNJzXx33YCPJNPvD397jHY3K37ysFCuyvsRKOtkLfk2UKLtdow89RUSTsoGqlzXNXJIH+YE=
+X-Received: by 2002:a17:90b:3147:b0:33e:1ae2:a4a7 with SMTP id
+ 98e67ed59e1d1-3403a2604b4mr1039988a91.12.1761696296385; Tue, 28 Oct 2025
+ 17:04:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251028004614.393374-1-viro@zeniv.linux.org.uk> <20251028004614.393374-36-viro@zeniv.linux.org.uk>
-In-Reply-To: <20251028004614.393374-36-viro@zeniv.linux.org.uk>
+References: <20251028004614.393374-1-viro@zeniv.linux.org.uk> <20251028004614.393374-50-viro@zeniv.linux.org.uk>
+In-Reply-To: <20251028004614.393374-50-viro@zeniv.linux.org.uk>
 From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 28 Oct 2025 20:02:39 -0400
-X-Gm-Features: AWmQ_bmmcbrTxQbk2K0S9dnAz964E4djBpHBaC2BLyDDdj2u6ZdL3nJ0xadT9U0
-Message-ID: <CAHC9VhRQNmPZ3Sz496WPgQp-OkijiF7GgmHuR+=Kn3qBE6nj6Q@mail.gmail.com>
-Subject: Re: [PATCH v2 35/50] convert selinuxfs
+Date: Tue, 28 Oct 2025 20:04:44 -0400
+X-Gm-Features: AWmQ_blrbvCvNMESns84vcg9Bs91_mExO5kolf7cbCdCoz5ngCaqmvIG7Oeo_oM
+Message-ID: <CAHC9VhQH--uP=fWo0MsH5=BojV2qG=qy7A9tHTVOnLYOxKbV5Q@mail.gmail.com>
+Subject: Re: [PATCH v2 49/50] kill securityfs_recursive_remove()
 To: Al Viro <viro@zeniv.linux.org.uk>
 Cc: linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org, 
 	brauner@kernel.org, jack@suse.cz, raven@themaw.net, miklos@szeredi.hu, 
@@ -97,68 +97,18 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Oct 27, 2025 at 8:46=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> w=
 rote:
 >
-> Tree has invariant part + two subtrees that get replaced upon each
-> policy load.  Invariant parts stay for the lifetime of filesystem,
-> these two subdirs - from policy load to policy load (serialized
-> on lock_rename(root, ...)).
->
-> All object creations are via d_alloc_name()+d_add() inside selinuxfs,
-> all removals are via simple_recursive_removal().
->
-> Turn those d_add() into d_make_persistent()+dput() and that's mostly it.
+> it's an unused alias for securityfs_remove()
 >
 > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 > ---
->  security/selinux/selinuxfs.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
-> index f088776dbbd3..eae565358db4 100644
-> --- a/security/selinux/selinuxfs.c
-> +++ b/security/selinux/selinuxfs.c
-> @@ -1205,7 +1205,8 @@ static struct dentry *sel_attach(struct dentry *par=
-ent, const char *name,
->                 iput(inode);
->                 return ERR_PTR(-ENOMEM);
->         }
-> -       d_add(dentry, inode);
-> +       d_make_persistent(dentry, inode);
-> +       dput(dentry);
->         return dentry;
->  }
->
-> @@ -1934,10 +1935,11 @@ static struct dentry *sel_make_swapover_dir(struc=
-t super_block *sb,
->         /* directory inodes start off with i_nlink =3D=3D 2 (for "." entr=
-y) */
->         inc_nlink(inode);
->         inode_lock(sb->s_root->d_inode);
-> -       d_add(dentry, inode);
-> +       d_make_persistent(dentry, inode);
->         inc_nlink(sb->s_root->d_inode);
->         inode_unlock(sb->s_root->d_inode);
-> -       return dentry;
-> +       dput(dentry);
-> +       return dentry;  // borrowed
->  }
->
->  #define NULL_FILE_NAME "null"
-> @@ -2080,7 +2082,7 @@ static int sel_init_fs_context(struct fs_context *f=
-c)
->  static void sel_kill_sb(struct super_block *sb)
->  {
->         selinux_fs_info_free(sb);
-> -       kill_litter_super(sb);
-> +       kill_anon_super(sb);
->  }
+>  include/linux/security.h | 2 --
+>  1 file changed, 2 deletions(-)
 
-I suppose the kill_litter_super()->kill_anon_super() should probably
-be pulled out into another patch as it's not really related to the
-d_make_persistent() change, but otherwise this looks okay to me
-(assuming I followed the DCACHE_PERSISTENT changes correctly).
+That's annoying.  Another case of
+let-me-know-if-this-patchset-dies-so-I-can-take-this-patch-regardless.
 
 Acked-by: Paul Moore <paul@paul-moore.com>
 
---
+--=20
 paul-moore.com
 
