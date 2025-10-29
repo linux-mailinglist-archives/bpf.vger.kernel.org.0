@@ -1,106 +1,238 @@
-Return-Path: <bpf+bounces-72890-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72891-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4726C1D316
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 21:27:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9891DC1D34C
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 21:30:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 048271888612
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 20:27:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D84F91884353
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 20:30:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D3835BDD4;
-	Wed, 29 Oct 2025 20:27:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C12C31A563;
+	Wed, 29 Oct 2025 20:30:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uDvBTjFN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PUcjl/s1"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7693235BDC7
-	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 20:27:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE15835BDDA
+	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 20:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761769631; cv=none; b=UYBQv5VYTVO5hW+PLEJwlmNrk9+nXNMI2cWFMgYAcmYq1RBd6UhUXoEH+VkTOOkpiyj0nn6OjSNQNAhuoeco4Z6jYkqP+RlYg0aOkAMRneZvtiHC2aHr7h8IYnYzGxh98DU09+RIsO7+BkLLgvyi5RyS0e32QZATORarjiULu8M=
+	t=1761769810; cv=none; b=fz6X2F5PmpX+WKGquYrvdTZeIESvsOa58v/Ixy3N+KsvQzb74xtv7Lz2lmjl7+B3mpk9C/GLSTMs/vuKCeh+rQ/GrbRP1+6SsAip2Ou/ZoEVVvAKJKJmRLmtIQxqoHkoNTBCZELtYaZuZzwE0tJ7ptPqeSHoXyqlwUzDn/g0VUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761769631; c=relaxed/simple;
-	bh=+Pc7w3IAtNlTyP1zbbSyl8Dgv7qPtTj68AwRg9Qnoeo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=oU2XZ1pYQo5rmLQLAOcn0RSNvTxfYHiWQE5OqR28fYFPdjVRbioeQL/aXfvAH1T6nOTyTxZdZUsjBvw3/e0i8KcQ5MTWi3kIqBu/cGBla3DFliqrsqXxlZFU/R/ixkoTlhnSXfOQqfvbX3JJQJ/EmBjIOWM9hd7toVtRSIaBtow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uDvBTjFN; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761769626;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L5vmLW+oATPFNaWdtHY1yVME8el6pZeETE8QCtK8TCA=;
-	b=uDvBTjFNloStyK5QFb/yoXxdR2x9MXtvvx+VlwjlfcjJkJJCF/u4jP8Z1O8uvzIJVQei7i
-	DLMoZGz0HxN1qz2OYh0rxnJZijSp4ZzRT5ISRcNxuFsImqMhMXzbscUzEIQ+vEupnezkGS
-	jrYIMHJUDg0Es/IWmxMEqmpTQ0M5jVI=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Song Liu <song@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-  linux-kernel@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,
-  Suren Baghdasaryan <surenb@google.com>,  Michal Hocko
- <mhocko@kernel.org>,  Shakeel Butt <shakeel.butt@linux.dev>,  Johannes
- Weiner <hannes@cmpxchg.org>,  Andrii Nakryiko <andrii@kernel.org>,  JP
- Kobryn <inwardvessel@gmail.com>,  linux-mm@kvack.org,
-  cgroups@vger.kernel.org,  bpf@vger.kernel.org,  Martin KaFai Lau
- <martin.lau@kernel.org>,  Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-  Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops
- to cgroups
-In-Reply-To: <CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
-	(Song Liu's message of "Wed, 29 Oct 2025 11:01:00 -0700")
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
-	<20251027231727.472628-3-roman.gushchin@linux.dev>
-	<CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
-Date: Wed, 29 Oct 2025 13:26:59 -0700
-Message-ID: <87cy65e9nw.fsf@linux.dev>
+	s=arc-20240116; t=1761769810; c=relaxed/simple;
+	bh=GOCTkUGLRQCwRuz7gY4C3QuQ/60lhuEdpy3XpjbsPDQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YSowIMDYprvTxzPVB2XRD+a//Lf8k4XL9bfFaoMFz7WInAl2kMz/pMzXAqrfgYX/vGQCxLVTBnFkf773Dk09LMjpnuoQKtZ2DQ+NxBjkXqYZDeIKhjNY2NPkkPEUQSfRhFkRxXFIW0z8MqmiQiML8RS45G83fYeZlv/MScedkyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PUcjl/s1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55E28C19421
+	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 20:30:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761769810;
+	bh=GOCTkUGLRQCwRuz7gY4C3QuQ/60lhuEdpy3XpjbsPDQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=PUcjl/s14mLr6JgLAvYAvnZgA6MqBs8Iu7CBSaEqJBFaJx5B6bXJEoTEgxFWy7Oud
+	 7+cSqpzXRI8wiFSCkhg1+Kif0wI/OF7CPgiTw+kV0PD782paa60U0Aq3e2QXjeJWbI
+	 t7JdgaY6JEFIv3c5Qg/bNWHeiDjIWotZR1+uiUsl7hDC3cmiRnF7eRMajhYuJUlC/u
+	 Mwkc36rVb39Pqew94b7dYa+T4DadHlUrk33A2UF1TkD5/+tf8r3kALKb3T6NXCU6O7
+	 o3gfNe4ryokwsPaOU8zxy/qUQN3UGMrhLwolHNQIsyPUmR0s2QjZRAF1tdhrSikFd/
+	 /OuxUfSd3yPUQ==
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-654e25cc7d7so139307eaf.1
+        for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 13:30:10 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV8XG+EPsB/jMDvD4wHRgYWSfbFg8lNJ8walfrcKqu0RyffObAYVCLEIIVVlg8SXvKjXPU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGO/Sns7enFuFMJsBQtJPaYy0PtrXdQFB9qMI8rffaw83fQyiI
+	q/a+gyeVhRh9RW6qdn6/aqEiUEywQgqs9QeQSIGdUxFlsUfF/e0tRMT/pvru2+DYq2xLfABMLKf
+	cluH/2Npyzfyq9u/8FlPSlquCDc4Bc6w=
+X-Google-Smtp-Source: AGHT+IHW5uDP7MsolaMgn8jVjNqIsXYfFdWF7n+vPR5mI6Oev9ZYaWWAWl38Nzs+ZKhKkYITN6nyOLzYlFHqUlA5Z1k=
+X-Received: by 2002:a05:6820:2207:b0:654:eb8d:a91 with SMTP id
+ 006d021491bc7-65682418834mr281105eaf.8.1761769809367; Wed, 29 Oct 2025
+ 13:30:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20251028053136.692462-1-ankur.a.arora@oracle.com>
+ <20251028053136.692462-8-ankur.a.arora@oracle.com> <CAJZ5v0hSvzHfsE4nrEW-Ey0dnJ+m=dSU-f1RywGNU0Xyi3jXtQ@mail.gmail.com>
+ <87ms5ajp4c.fsf@oracle.com> <CAJZ5v0hQ7G9jvOv9VtRmsCKahBpUcPJMMOe07k_2mqsvggWcWg@mail.gmail.com>
+ <874irhjzcf.fsf@oracle.com>
+In-Reply-To: <874irhjzcf.fsf@oracle.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 29 Oct 2025 21:29:58 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0i5-8eO6T_-Sr-K=3Up89+_qtJW7NSjDknJSkk3Nhu8BQ@mail.gmail.com>
+X-Gm-Features: AWmQ_bk-kPvfwcU7JMvzIW3LgFhb5fas4TUCYzr6Ntlxek5O_3tqCEg-J-2w8JI
+Message-ID: <CAJZ5v0i5-8eO6T_-Sr-K=3Up89+_qtJW7NSjDknJSkk3Nhu8BQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v7 7/7] cpuidle/poll_state: Poll via smp_cond_load_relaxed_timeout()
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pm@vger.kernel.org, bpf@vger.kernel.org, arnd@arndb.de, 
+	catalin.marinas@arm.com, will@kernel.org, peterz@infradead.org, 
+	akpm@linux-foundation.org, mark.rutland@arm.com, harisokn@amazon.com, 
+	cl@gentwo.org, ast@kernel.org, daniel.lezcano@linaro.org, memxor@gmail.com, 
+	zhenglifeng1@huawei.com, xueshuai@linux.alibaba.com, 
+	joao.m.martins@oracle.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Migadu-Flow: FLOW_OUT
 
-Song Liu <song@kernel.org> writes:
-
-> On Mon, Oct 27, 2025 at 4:17=E2=80=AFPM Roman Gushchin <roman.gushchin@li=
-nux.dev> wrote:
-> [...]
->>  struct bpf_struct_ops_value {
->>         struct bpf_struct_ops_common_value common;
->> @@ -1359,6 +1360,18 @@ int bpf_struct_ops_link_create(union bpf_attr *at=
-tr)
->>         }
->>         bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct=
-_ops_map_lops, NULL,
->>                       attr->link_create.attach_type);
->> +#ifdef CONFIG_CGROUPS
->> +       if (attr->link_create.cgroup.relative_fd) {
->> +               struct cgroup *cgrp;
->> +
->> +               cgrp =3D cgroup_get_from_fd(attr->link_create.cgroup.rel=
-ative_fd);
+On Wed, Oct 29, 2025 at 8:13=E2=80=AFPM Ankur Arora <ankur.a.arora@oracle.c=
+om> wrote:
 >
-> We should use "target_fd" here, not relative_fd.
-
-Ok, thanks!
-
 >
-> Also, 0 is a valid fd, so we cannot use target_fd =3D=3D 0 to attach to
-> global memcg.
+> Rafael J. Wysocki <rafael@kernel.org> writes:
+>
+> > On Wed, Oct 29, 2025 at 5:42=E2=80=AFAM Ankur Arora <ankur.a.arora@orac=
+le.com> wrote:
+> >>
+> >>
+> >> Rafael J. Wysocki <rafael@kernel.org> writes:
+> >>
+> >> > On Tue, Oct 28, 2025 at 6:32=E2=80=AFAM Ankur Arora <ankur.a.arora@o=
+racle.com> wrote:
+> >> >>
+> >> >> The inner loop in poll_idle() polls over the thread_info flags,
+> >> >> waiting to see if the thread has TIF_NEED_RESCHED set. The loop
+> >> >> exits once the condition is met, or if the poll time limit has
+> >> >> been exceeded.
+> >> >>
+> >> >> To minimize the number of instructions executed in each iteration,
+> >> >> the time check is done only intermittently (once every
+> >> >> POLL_IDLE_RELAX_COUNT iterations). In addition, each loop iteration
+> >> >> executes cpu_relax() which on certain platforms provides a hint to
+> >> >> the pipeline that the loop busy-waits, allowing the processor to
+> >> >> reduce power consumption.
+> >> >>
+> >> >> This is close to what smp_cond_load_relaxed_timeout() provides. So,
+> >> >> restructure the loop and fold the loop condition and the timeout ch=
+eck
+> >> >> in smp_cond_load_relaxed_timeout().
+> >> >
+> >> > Well, it is close, but is it close enough?
+> >>
+> >> I guess that's the question.
+> >>
+> >> >> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> >> >> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> >> >> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> >> >> ---
+> >> >>  drivers/cpuidle/poll_state.c | 29 ++++++++---------------------
+> >> >>  1 file changed, 8 insertions(+), 21 deletions(-)
+> >> >>
+> >> >> diff --git a/drivers/cpuidle/poll_state.c b/drivers/cpuidle/poll_st=
+ate.c
+> >> >> index 9b6d90a72601..dc7f4b424fec 100644
+> >> >> --- a/drivers/cpuidle/poll_state.c
+> >> >> +++ b/drivers/cpuidle/poll_state.c
+> >> >> @@ -8,35 +8,22 @@
+> >> >>  #include <linux/sched/clock.h>
+> >> >>  #include <linux/sched/idle.h>
+> >> >>
+> >> >> -#define POLL_IDLE_RELAX_COUNT  200
+> >> >> -
+> >> >>  static int __cpuidle poll_idle(struct cpuidle_device *dev,
+> >> >>                                struct cpuidle_driver *drv, int inde=
+x)
+> >> >>  {
+> >> >> -       u64 time_start;
+> >> >> -
+> >> >> -       time_start =3D local_clock_noinstr();
+> >> >> +       u64 time_end;
+> >> >> +       u32 flags =3D 0;
+> >> >>
+> >> >>         dev->poll_time_limit =3D false;
+> >> >>
+> >> >> +       time_end =3D local_clock_noinstr() + cpuidle_poll_time(drv,=
+ dev);
+> >> >
+> >> > Is there any particular reason for doing this unconditionally?  If
+> >> > not, then it looks like an arbitrary unrelated change to me.
+> >>
+> >> Agreed. Will fix.
+> >>
+> >> >> +
+> >> >>         raw_local_irq_enable();
+> >> >>         if (!current_set_polling_and_test()) {
+> >> >> -               unsigned int loop_count =3D 0;
+> >> >> -               u64 limit;
+> >> >> -
+> >> >> -               limit =3D cpuidle_poll_time(drv, dev);
+> >> >> -
+> >> >> -               while (!need_resched()) {
+> >> >> -                       cpu_relax();
+> >> >> -                       if (loop_count++ < POLL_IDLE_RELAX_COUNT)
+> >> >> -                               continue;
+> >> >> -
+> >> >> -                       loop_count =3D 0;
+> >> >> -                       if (local_clock_noinstr() - time_start > li=
+mit) {
+> >> >> -                               dev->poll_time_limit =3D true;
+> >> >> -                               break;
+> >> >> -                       }
+> >> >> -               }
+> >> >> +               flags =3D smp_cond_load_relaxed_timeout(&current_th=
+read_info()->flags,
+> >> >> +                                                     (VAL & _TIF_N=
+EED_RESCHED),
+> >> >> +                                                     (local_clock_=
+noinstr() >=3D time_end));
+> >> >
+> >> > So my understanding of this is that it reduces duplication with some
+> >> > other places doing similar things.  Fair enough.
+> >> >
+> >> > However, since there is "timeout" in the name, I'd expect it to take
+> >> > the timeout as an argument.
+> >>
+> >> The early versions did have a timeout but that complicated the
+> >> implementation significantly. And the current users poll_idle(),
+> >> rqspinlock don't need a precise timeout.
+> >>
+> >> smp_cond_load_relaxed_timed(), smp_cond_load_relaxed_timecheck()?
+> >>
+> >> The problem with all suffixes I can think of is that it makes the
+> >> interface itself nonobvious.
+> >>
+> >> Possibly something with the sense of bail out might work.
+> >
+> > It basically has two conditions, one of which is checked in every step
+> > of the internal loop and the other one is checked every
+> > SMP_TIMEOUT_POLL_COUNT steps of it.  That isn't particularly
+> > straightforward IMV.
+>
+> Right. And that's similar to what poll_idle().
 
-Yep, switching to using root_memcg's fd instead.
+My point is that the macro in its current form is not particularly
+straightforward.
 
-Thanks!
+The code in poll_idle() does what it needs to do.
+
+> > Honestly, I prefer the existing code.  It is much easier to follow and
+> > I don't see why the new code would be better.  Sorry.
+>
+> I don't think there's any problem with the current code. However, I'd lik=
+e
+> to add support for poll_idle() on arm64 (and maybe other platforms) where
+> instead of spinning in a cpu_relax() loop, you wait on a cacheline.
+
+Well, there is MWAIT on x86, but it is not used here.  It just takes
+too much time to wake up from.  There are "fast" variants of that too,
+but they have been designed with user space in mind, so somewhat
+cumbersome for kernel use.
+
+> And that's what using something like smp_cond_load_relaxed_timeout()
+> would enable.
+>
+> Something like the series here:
+>   https://lore.kernel.org/lkml/87wmaljd81.fsf@oracle.com/
+>
+> (Sorry, should have mentioned this in the commit message.)
+
+I'm not sure how you can combine that with a proper timeout.  The
+timeout is needed because you want to break out of this when it starts
+to take too much time, so you can go back to the idle loop and maybe
+select a better idle state.
 
