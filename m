@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-72903-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72904-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D579C1D7C7
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 22:45:08 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B298C1D7BE
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 22:44:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24CBD18918DA
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 21:45:21 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3D68B4E2DE6
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 21:44:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC3F31D38F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E6F31D725;
 	Wed, 29 Oct 2025 21:44:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IuiniI53"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j+C4Ubba"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA8A031961C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA8212D248E;
 	Wed, 29 Oct 2025 21:44:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761774268; cv=none; b=d/0/4Tl+/2EDmwhknVsaFyUno5Mq5Zjbj7fu2T5cZbXan1GrivKRqW8kddDLyOTl75Yb598wQAlIN1qz757c3v9/ooOlpa77CDiwvkuPL4hOLMt9YanhuSmi5gWloyEIe0HwhAgFfdNVwfE1WqCG1wMjCZyaApLTFQpq+lKhhsE=
+	t=1761774268; cv=none; b=F9sicrz1v8F8Q0n7FrWh5UC1d+t2fZQMXK4c9XEveJqeGOZ5aQjq96PbNGFKUJkmgj1mu5dvWYoTOlZzzJ7Ym7vZxLER9wVFFB09ELlfQW1F2qPFQrpRH+VnKt/3TVjwNGa7ZKcowDTI0onqM3+MClQ8MM9mYji7jXcmM5iaN/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1761774268; c=relaxed/simple;
-	bh=YXc7W1+8aXkj/MTURnzetUWMChz932dRKCGUNsVl1kw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AdCyhLUygMtrfQxlqNdhL0uBRO2B7vEPYe6zPxOOLyB3GLFnmNaK8XRmg2SHh9cM9Dl7F4peClHzsnfZ27x/Su9svrRVl6FknyfKloXxo+oSP16EgGgWG5+lPwSerPWgqrTw/mExwmhXzVWAx/qXpc2M9pDFyfXDAybYbS+obtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IuiniI53; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5309BC4CEF7;
+	bh=qoX3Eeuxt2UgUeV5iTriLfkqHYq/RkMUXV28L5qWEqE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=cPAQF+DeLeckkYrY6fwwJd2lO4+1OaKkGwCd5i2ECGKRINab69jCxsbJ3XZ2api0VHNBEW+MSAumRzj5/Bpg1N4Rl1pTOQW6INOukdMCtolxOMGe3ftnLp7R837kf1YUI/qtXogflcaqP1RF4ATWGVwmy8kh24raeODMhWXtRRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j+C4Ubba; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5533FC4CEFB;
 	Wed, 29 Oct 2025 21:44:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1761774268;
-	bh=YXc7W1+8aXkj/MTURnzetUWMChz932dRKCGUNsVl1kw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=IuiniI53wyVLQccuU+xSAxbLhQBdar90D2tWgA0Z+YnbeEArJ/XLK3T2VnRWqPbGh
-	 CIu3TuCcBcfFtKr8a7/f0dYi+0bMC9D3NvGp98A2ei5qaLo2RLcHXod6eOw9LF+urI
-	 4f0r+mMJi4huay93IGnqLXF/v2OvqiNMfB2Wmf5ZcfE9PVoEvOUCt085sZLATvsPHB
-	 Qn58l09UwCVkh5QigTDeekGk7SaMvqv0lTc5WhUdlqBk/8iysqNju4ZAdMuLnulgK/
-	 WkEM3mfmujnPhncS6QboGzCBVldEbUT+ziTFck8dEqPIOKmP8WZuAmDTF2qHbKQOX7
-	 oVMxL34TY3e1w==
+	bh=qoX3Eeuxt2UgUeV5iTriLfkqHYq/RkMUXV28L5qWEqE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=j+C4UbbapGP1RUI8Cp09gyz5qjxVmXpf7O1wHa5ZkCtgO1fPZ2YgY2LsruAIdoS6T
+	 KBMUKbJhxVWswY/YmZ0nurGmU8pzSIhkTIu/UUF0TTSalkkL5DokOLEBNEPIS14NuT
+	 XZ05OsaLNoZ+zyzS6swO86PbVjydjkV+4yZFS2Hve5tzMgK8Zh7gPnJt9QtV9qQ3pq
+	 RkTH83Ch0iUQBr6OC6YCd4J/pYr+pzYDBiUZiAjhARCOc/A+55lLVDmIMo6f4rQXNk
+	 X2eI9mL1rNpmIplZEvdtR/ebdKjiEK+LdK/K60OZfm+DU+jaAp1+Hokj0jztNfSW0v
+	 7WE9oPYYtk1+g==
 From: Kees Cook <kees@kernel.org>
 To: Paolo Abeni <pabeni@redhat.com>
 Cc: Kees Cook <kees@kernel.org>,
@@ -57,187 +58,1341 @@ Cc: Kees Cook <kees@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	linux-hardening@vger.kernel.org
-Subject: [net-next PATCH v4 0/7] net: Introduce struct sockaddr_unsized
-Date: Wed, 29 Oct 2025 14:43:57 -0700
-Message-Id: <20251029214355.work.602-kees@kernel.org>
+Subject: [net-next PATCH v4 1/7] net: Convert proto_ops bind() callbacks to use sockaddr_unsized
+Date: Wed, 29 Oct 2025 14:43:58 -0700
+Message-Id: <20251029214428.2467496-1-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20251029214355.work.602-kees@kernel.org>
+References: <20251029214355.work.602-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9442; i=kees@kernel.org; h=from:subject:message-id; bh=YXc7W1+8aXkj/MTURnzetUWMChz932dRKCGUNsVl1kw=; b=owGbwMvMwCVmps19z/KJym7G02pJDJlMXQvqLblD3sgp9BwwnXUqPStia7lazCurmuW7Vzz9W 9wSfyO7o5SFQYyLQVZMkSXIzj3OxeNte7j7XEWYOaxMIEMYuDgFYCIP1jP8jzI7krllzkPLNec/ bPtyc/K0vJoJnbP3Cxz8Z7pqak7oEUVGhgt71e/u1Yjjq9vUHb1L/XyBUwd/UcnyXY79ahe4O/4 nMAAA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=54916; i=kees@kernel.org; h=from:subject; bh=qoX3Eeuxt2UgUeV5iTriLfkqHYq/RkMUXV28L5qWEqE=; b=owGbwMvMwCVmps19z/KJym7G02pJDJlMXQtv+x/xEnvfd3l6xPVlVZqzbhnPElZ4sfI/z8KKT cvbBWWNO0pZGMS4GGTFFFmC7NzjXDzetoe7z1WEmcPKBDKEgYtTACaiq8bIcKHIX/GdDEOl4cpN EllSzSw2dxQYD3vuVN/+qVXdc6/6XYb/hZf2yX87dPB+hEJnVdOTOQVcwvLyStw3/5t8+dl4MzS LAwA=
 X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-Hi!
+Update all struct proto_ops bind() callback function prototypes from
+"struct sockaddr *" to "struct sockaddr_unsized *" to avoid lying to the
+compiler about object sizes. Calls into struct proto handlers gain casts
+that will be removed in the struct proto conversion patch.
 
- v4:
-   - dropped pppol2tp_sockaddr_get_info validation changes
-   - renamed "struct sockaddr_unspec" to "struct sockaddr_unsized"
- v3: https://lore.kernel.org/linux-hardening/20251020212125.make.115-kees@kernel.org/
- v2: https://lore.kernel.org/linux-hardening/20251014223349.it.173-kees@kernel.org/
- v1: https://lore.kernel.org/all/20250723230354.work.571-kees@kernel.org/
+No binary changes expected.
 
-The historically fixed-size struct sockaddr is part of UAPI and embedded
-in many existing structures. The kernel uses struct sockaddr extensively
-within the kernel to represent arbitrarily sized sockaddr structures,
-which caused problems with the compiler's ability to determine object
-sizes correctly. The "temporary" solution was to make sockaddr explicitly
-use a flexible array, but this causes problems for embedding struct
-sockaddr in structures, where once again the compiler has to guess about
-the size of such objects, and causes thousands of warnings under the
-coming -Wflex-array-member-not-at-end warning.
+Signed-off-by: Kees Cook <kees@kernel.org>
+---
+ include/linux/net.h                                  |  4 ++--
+ include/net/inet_common.h                            |  2 +-
+ include/net/ipv6.h                                   |  2 +-
+ include/net/sock.h                                   |  2 +-
+ net/rds/rds.h                                        |  2 +-
+ net/smc/smc.h                                        |  2 +-
+ crypto/af_alg.c                                      |  2 +-
+ drivers/block/drbd/drbd_receiver.c                   |  4 ++--
+ drivers/infiniband/hw/erdma/erdma_cm.c               |  4 ++--
+ drivers/infiniband/sw/siw/siw_cm.c                   |  6 +++---
+ drivers/isdn/mISDN/l1oip_core.c                      |  2 +-
+ drivers/isdn/mISDN/socket.c                          |  4 ++--
+ drivers/net/ppp/pptp.c                               |  4 ++--
+ drivers/nvme/host/tcp.c                              |  2 +-
+ drivers/nvme/target/tcp.c                            |  2 +-
+ drivers/target/iscsi/iscsi_target_login.c            |  2 +-
+ drivers/xen/pvcalls-back.c                           |  2 +-
+ fs/afs/rxrpc.c                                       |  6 +++---
+ fs/dlm/lowcomms.c                                    |  6 +++---
+ fs/ocfs2/cluster/tcp.c                               |  4 ++--
+ fs/smb/client/connect.c                              |  2 +-
+ fs/smb/server/transport_tcp.c                        |  4 ++--
+ net/9p/trans_fd.c                                    |  2 +-
+ net/appletalk/ddp.c                                  |  2 +-
+ net/atm/pvc.c                                        |  4 ++--
+ net/atm/svc.c                                        |  2 +-
+ net/ax25/af_ax25.c                                   |  2 +-
+ net/bluetooth/hci_sock.c                             |  2 +-
+ net/bluetooth/iso.c                                  |  4 ++--
+ net/bluetooth/l2cap_sock.c                           |  2 +-
+ net/bluetooth/rfcomm/core.c                          |  4 ++--
+ net/bluetooth/rfcomm/sock.c                          |  2 +-
+ net/bluetooth/sco.c                                  |  2 +-
+ net/can/isotp.c                                      |  2 +-
+ net/can/j1939/socket.c                               |  2 +-
+ net/can/raw.c                                        |  2 +-
+ net/core/sock.c                                      |  2 +-
+ net/ieee802154/socket.c                              |  4 ++--
+ net/ipv4/af_inet.c                                   |  4 ++--
+ net/ipv4/udp_tunnel_core.c                           |  2 +-
+ net/ipv6/af_inet6.c                                  |  4 ++--
+ net/ipv6/ip6_udp_tunnel.c                            |  2 +-
+ net/iucv/af_iucv.c                                   |  2 +-
+ net/l2tp/l2tp_core.c                                 |  4 ++--
+ net/llc/af_llc.c                                     |  2 +-
+ net/mctp/af_mctp.c                                   |  2 +-
+ net/mctp/test/route-test.c                           |  2 +-
+ net/mptcp/protocol.c                                 |  6 +++---
+ net/mptcp/subflow.c                                  |  2 +-
+ net/netfilter/ipvs/ip_vs_sync.c                      |  4 ++--
+ net/netlink/af_netlink.c                             |  2 +-
+ net/netrom/af_netrom.c                               |  2 +-
+ net/nfc/llcp_sock.c                                  |  4 ++--
+ net/packet/af_packet.c                               | 11 ++++++-----
+ net/phonet/socket.c                                  |  8 ++++----
+ net/qrtr/af_qrtr.c                                   |  2 +-
+ net/qrtr/ns.c                                        |  2 +-
+ net/rds/bind.c                                       |  2 +-
+ net/rds/tcp_connect.c                                |  2 +-
+ net/rds/tcp_listen.c                                 |  2 +-
+ net/rose/af_rose.c                                   |  2 +-
+ net/rxrpc/af_rxrpc.c                                 |  2 +-
+ net/rxrpc/rxperf.c                                   |  2 +-
+ net/smc/af_smc.c                                     |  2 +-
+ net/socket.c                                         |  6 +++---
+ net/sunrpc/clnt.c                                    |  4 ++--
+ net/sunrpc/svcsock.c                                 |  2 +-
+ net/sunrpc/xprtsock.c                                |  4 ++--
+ net/tipc/socket.c                                    |  4 ++--
+ net/unix/af_unix.c                                   |  4 ++--
+ net/vmw_vsock/af_vsock.c                             |  4 ++--
+ net/x25/af_x25.c                                     |  2 +-
+ net/xdp/xsk.c                                        |  2 +-
+ tools/testing/selftests/bpf/test_kmods/bpf_testmod.c |  2 +-
+ 74 files changed, 113 insertions(+), 112 deletions(-)
 
-Switching to sockaddr_storage internally everywhere wastes a lot of memory,
-so we are left with needing two changes:
-- introduction of an explicitly arbitrarily sized sockaddr struct
-- switch struct sockaddr back to being fixed size
-
-Doing the latter step requires all "arbitrarily sized" uses of struct
-sockaddr to be replaced with the new struct from the first step.
-
-So, introduce the new struct and do enough conversions that we can
-switch sockaddr back to a fixed-size sa_data.
-
-Thanks!
-
--Kees
-
-Kees Cook (7):
-  net: Convert proto_ops bind() callbacks to use sockaddr_unsized
-  net: Convert proto_ops connect() callbacks to use sockaddr_unsized
-  net: Remove struct sockaddr from net.h
-  net: Convert proto callbacks from sockaddr to sockaddr_unsized
-  bpf: Convert cgroup sockaddr filters to use sockaddr_unsized
-    consistently
-  bpf: Convert bpf_sock_addr_kern "uaddr" to sockaddr_unsized
-  net: Convert struct sockaddr to fixed-size "sa_data[14]"
-
- include/linux/bpf-cgroup.h                      | 17 ++++++++++-------
- include/linux/filter.h                          |  2 +-
- include/linux/net.h                             |  9 ++++-----
- include/linux/socket.h                          |  6 ++----
- include/net/inet_common.h                       | 13 ++++++-------
- include/net/ip.h                                |  4 ++--
- include/net/ipv6.h                              | 10 +++++-----
- include/net/ipv6_stubs.h                        |  2 +-
- include/net/ping.h                              |  2 +-
- include/net/sctp/sctp.h                         |  2 +-
- include/net/sock.h                              | 14 +++++++-------
- include/net/tcp.h                               |  2 +-
- include/net/udp.h                               |  2 +-
- include/net/vsock_addr.h                        |  2 +-
- net/rds/rds.h                                   |  2 +-
- net/smc/smc.h                                   |  4 ++--
- tools/perf/trace/beauty/include/linux/socket.h  |  5 +----
- crypto/af_alg.c                                 |  2 +-
- drivers/block/drbd/drbd_receiver.c              |  6 +++---
- drivers/infiniband/hw/erdma/erdma_cm.c          |  6 +++---
- drivers/infiniband/sw/siw/siw_cm.c              |  8 ++++----
- drivers/isdn/mISDN/l1oip_core.c                 |  2 +-
- drivers/isdn/mISDN/socket.c                     |  4 ++--
- drivers/net/ppp/pppoe.c                         |  4 ++--
- drivers/net/ppp/pptp.c                          |  8 ++++----
- drivers/net/wireless/ath/ath10k/qmi.c           |  2 +-
- drivers/net/wireless/ath/ath11k/qmi.c           |  2 +-
- drivers/net/wireless/ath/ath12k/qmi.c           |  2 +-
- drivers/nvme/host/tcp.c                         |  4 ++--
- drivers/nvme/target/tcp.c                       |  2 +-
- drivers/slimbus/qcom-ngd-ctrl.c                 |  2 +-
- drivers/target/iscsi/iscsi_target_login.c       |  2 +-
- drivers/xen/pvcalls-back.c                      |  4 ++--
- fs/afs/rxrpc.c                                  |  6 +++---
- fs/coredump.c                                   |  2 +-
- fs/dlm/lowcomms.c                               |  8 ++++----
- fs/ocfs2/cluster/tcp.c                          |  6 +++---
- fs/smb/client/connect.c                         |  4 ++--
- fs/smb/server/transport_tcp.c                   |  4 ++--
- kernel/bpf/cgroup.c                             |  8 ++++----
- net/9p/trans_fd.c                               |  8 ++++----
- net/appletalk/ddp.c                             |  4 ++--
- net/atm/pvc.c                                   |  4 ++--
- net/atm/svc.c                                   |  4 ++--
- net/ax25/af_ax25.c                              |  4 ++--
- net/bluetooth/hci_sock.c                        |  2 +-
- net/bluetooth/iso.c                             |  6 +++---
- net/bluetooth/l2cap_sock.c                      |  4 ++--
- net/bluetooth/rfcomm/core.c                     |  6 +++---
- net/bluetooth/rfcomm/sock.c                     |  5 +++--
- net/bluetooth/sco.c                             |  4 ++--
- net/caif/caif_socket.c                          |  2 +-
- net/can/bcm.c                                   |  2 +-
- net/can/isotp.c                                 |  2 +-
- net/can/j1939/socket.c                          |  4 ++--
- net/can/raw.c                                   |  2 +-
- net/ceph/messenger.c                            |  2 +-
- net/core/dev.c                                  |  2 +-
- net/core/dev_ioctl.c                            |  2 +-
- net/core/filter.c                               |  5 +++--
- net/core/sock.c                                 |  6 +++---
- net/ieee802154/socket.c                         | 12 ++++++------
- net/ipv4/af_inet.c                              | 16 ++++++++--------
- net/ipv4/arp.c                                  |  2 +-
- net/ipv4/datagram.c                             |  4 ++--
- net/ipv4/ping.c                                 |  8 ++++----
- net/ipv4/raw.c                                  |  3 ++-
- net/ipv4/tcp.c                                  |  2 +-
- net/ipv4/tcp_ipv4.c                             |  4 ++--
- net/ipv4/udp.c                                  |  6 ++++--
- net/ipv4/udp_tunnel_core.c                      |  4 ++--
- net/ipv6/af_inet6.c                             |  6 +++---
- net/ipv6/datagram.c                             |  8 ++++----
- net/ipv6/ip6_udp_tunnel.c                       |  4 ++--
- net/ipv6/ping.c                                 |  2 +-
- net/ipv6/raw.c                                  |  3 ++-
- net/ipv6/tcp_ipv6.c                             |  6 +++---
- net/ipv6/udp.c                                  |  5 +++--
- net/iucv/af_iucv.c                              |  6 +++---
- net/l2tp/l2tp_core.c                            |  8 ++++----
- net/l2tp/l2tp_ip.c                              |  6 ++++--
- net/l2tp/l2tp_ip6.c                             |  5 +++--
- net/l2tp/l2tp_ppp.c                             |  2 +-
- net/llc/af_llc.c                                |  4 ++--
- net/mctp/af_mctp.c                              |  4 ++--
- net/mctp/test/route-test.c                      |  2 +-
- net/mctp/test/utils.c                           |  5 +++--
- net/mptcp/pm_kernel.c                           |  4 ++--
- net/mptcp/protocol.c                            |  5 +++--
- net/mptcp/subflow.c                             |  4 ++--
- net/netfilter/ipvs/ip_vs_sync.c                 |  6 +++---
- net/netlink/af_netlink.c                        |  4 ++--
- net/netrom/af_netrom.c                          |  6 +++---
- net/nfc/llcp_sock.c                             |  6 +++---
- net/nfc/rawsock.c                               |  2 +-
- net/packet/af_packet.c                          | 15 ++++++++-------
- net/phonet/pep.c                                |  3 ++-
- net/phonet/socket.c                             | 10 +++++-----
- net/qrtr/af_qrtr.c                              |  4 ++--
- net/qrtr/ns.c                                   |  2 +-
- net/rds/af_rds.c                                |  2 +-
- net/rds/bind.c                                  |  2 +-
- net/rds/tcp_connect.c                           |  4 ++--
- net/rds/tcp_listen.c                            |  2 +-
- net/rose/af_rose.c                              |  5 +++--
- net/rxrpc/af_rxrpc.c                            |  4 ++--
- net/rxrpc/rxperf.c                              |  2 +-
- net/sctp/socket.c                               | 13 +++++++------
- net/smc/af_smc.c                                |  6 +++---
- net/socket.c                                    | 14 +++++++-------
- net/sunrpc/clnt.c                               |  6 +++---
- net/sunrpc/svcsock.c                            |  2 +-
- net/sunrpc/xprtsock.c                           |  9 +++++----
- net/tipc/socket.c                               |  6 +++---
- net/unix/af_unix.c                              | 12 ++++++------
- net/vmw_vsock/af_vsock.c                        |  6 +++---
- net/vmw_vsock/vsock_addr.c                      |  2 +-
- net/x25/af_x25.c                                |  4 ++--
- net/xdp/xsk.c                                   |  2 +-
- samples/qmi/qmi_sample_client.c                 |  2 +-
- .../selftests/bpf/test_kmods/bpf_testmod.c      |  4 ++--
- 121 files changed, 303 insertions(+), 290 deletions(-)
-
+diff --git a/include/linux/net.h b/include/linux/net.h
+index ec09620f40f7..0e316f063113 100644
+--- a/include/linux/net.h
++++ b/include/linux/net.h
+@@ -163,7 +163,7 @@ struct proto_ops {
+ 	struct module	*owner;
+ 	int		(*release)   (struct socket *sock);
+ 	int		(*bind)	     (struct socket *sock,
+-				      struct sockaddr *myaddr,
++				      struct sockaddr_unsized *myaddr,
+ 				      int sockaddr_len);
+ 	int		(*connect)   (struct socket *sock,
+ 				      struct sockaddr *vaddr,
+@@ -345,7 +345,7 @@ int kernel_sendmsg(struct socket *sock, struct msghdr *msg, struct kvec *vec,
+ int kernel_recvmsg(struct socket *sock, struct msghdr *msg, struct kvec *vec,
+ 		   size_t num, size_t len, int flags);
+ 
+-int kernel_bind(struct socket *sock, struct sockaddr *addr, int addrlen);
++int kernel_bind(struct socket *sock, struct sockaddr_unsized *addr, int addrlen);
+ int kernel_listen(struct socket *sock, int backlog);
+ int kernel_accept(struct socket *sock, struct socket **newsock, int flags);
+ int kernel_connect(struct socket *sock, struct sockaddr *addr, int addrlen,
+diff --git a/include/net/inet_common.h b/include/net/inet_common.h
+index c17a6585d0b0..1666cf6f539e 100644
+--- a/include/net/inet_common.h
++++ b/include/net/inet_common.h
+@@ -42,7 +42,7 @@ int inet_shutdown(struct socket *sock, int how);
+ int inet_listen(struct socket *sock, int backlog);
+ int __inet_listen_sk(struct sock *sk, int backlog);
+ void inet_sock_destruct(struct sock *sk);
+-int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len);
++int inet_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len);
+ int inet_bind_sk(struct sock *sk, struct sockaddr *uaddr, int addr_len);
+ /* Don't allocate port at this moment, defer to connect. */
+ #define BIND_FORCE_ADDRESS_NO_PORT	(1 << 0)
+diff --git a/include/net/ipv6.h b/include/net/ipv6.h
+index 2ccdf85f34f1..2188bad9a687 100644
+--- a/include/net/ipv6.h
++++ b/include/net/ipv6.h
+@@ -1208,7 +1208,7 @@ void ipv6_local_rxpmtu(struct sock *sk, struct flowi6 *fl6, u32 mtu);
+ void inet6_cleanup_sock(struct sock *sk);
+ void inet6_sock_destruct(struct sock *sk);
+ int inet6_release(struct socket *sock);
+-int inet6_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len);
++int inet6_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len);
+ int inet6_bind_sk(struct sock *sk, struct sockaddr *uaddr, int addr_len);
+ int inet6_getname(struct socket *sock, struct sockaddr *uaddr,
+ 		  int peer);
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 60bcb13f045c..3e0618514ce4 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -1901,7 +1901,7 @@ int sock_cmsg_send(struct sock *sk, struct msghdr *msg,
+  * Functions to fill in entries in struct proto_ops when a protocol
+  * does not implement a particular function.
+  */
+-int sock_no_bind(struct socket *, struct sockaddr *, int);
++int sock_no_bind(struct socket *sock, struct sockaddr_unsized *saddr, int len);
+ int sock_no_connect(struct socket *, struct sockaddr *, int, int);
+ int sock_no_socketpair(struct socket *, struct socket *);
+ int sock_no_accept(struct socket *, struct socket *, struct proto_accept_arg *);
+diff --git a/net/rds/rds.h b/net/rds/rds.h
+index 5b1c072e2e7f..a029e5fcdea7 100644
+--- a/net/rds/rds.h
++++ b/net/rds/rds.h
+@@ -735,7 +735,7 @@ extern wait_queue_head_t rds_poll_waitq;
+ 
+ 
+ /* bind.c */
+-int rds_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len);
++int rds_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len);
+ void rds_remove_bound(struct rds_sock *rs);
+ struct rds_sock *rds_find_bound(const struct in6_addr *addr, __be16 port,
+ 				__u32 scope_id);
+diff --git a/net/smc/smc.h b/net/smc/smc.h
+index 2c9084963739..a008dbe6d6f6 100644
+--- a/net/smc/smc.h
++++ b/net/smc/smc.h
+@@ -42,7 +42,7 @@ void smc_unhash_sk(struct sock *sk);
+ void smc_release_cb(struct sock *sk);
+ 
+ int smc_release(struct socket *sock);
+-int smc_bind(struct socket *sock, struct sockaddr *uaddr,
++int smc_bind(struct socket *sock, struct sockaddr_unsized *uaddr,
+ 	     int addr_len);
+ int smc_connect(struct socket *sock, struct sockaddr *addr,
+ 		int alen, int flags);
+diff --git a/crypto/af_alg.c b/crypto/af_alg.c
+index ca6fdcc6c54a..5e760ab62618 100644
+--- a/crypto/af_alg.c
++++ b/crypto/af_alg.c
+@@ -145,7 +145,7 @@ void af_alg_release_parent(struct sock *sk)
+ }
+ EXPORT_SYMBOL_GPL(af_alg_release_parent);
+ 
+-static int alg_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
++static int alg_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len)
+ {
+ 	const u32 allowed = CRYPTO_ALG_KERN_DRIVER_ONLY;
+ 	struct sock *sk = sock->sk;
+diff --git a/drivers/block/drbd/drbd_receiver.c b/drivers/block/drbd/drbd_receiver.c
+index caaf2781136d..d9296f74f902 100644
+--- a/drivers/block/drbd/drbd_receiver.c
++++ b/drivers/block/drbd/drbd_receiver.c
+@@ -450,7 +450,7 @@ static struct socket *drbd_try_connect(struct drbd_connection *connection)
+ 	*  a free one dynamically.
+ 	*/
+ 	what = "bind before connect";
+-	err = sock->ops->bind(sock, (struct sockaddr *) &src_in6, my_addr_len);
++	err = sock->ops->bind(sock, (struct sockaddr_unsized *) &src_in6, my_addr_len);
+ 	if (err < 0)
+ 		goto out;
+ 
+@@ -537,7 +537,7 @@ static int prepare_listen_socket(struct drbd_connection *connection, struct acce
+ 	drbd_setbufsize(s_listen, sndbuf_size, rcvbuf_size);
+ 
+ 	what = "bind before listen";
+-	err = s_listen->ops->bind(s_listen, (struct sockaddr *)&my_addr, my_addr_len);
++	err = s_listen->ops->bind(s_listen, (struct sockaddr_unsized *)&my_addr, my_addr_len);
+ 	if (err < 0)
+ 		goto out;
+ 
+diff --git a/drivers/infiniband/hw/erdma/erdma_cm.c b/drivers/infiniband/hw/erdma/erdma_cm.c
+index e0acc185e719..ef66a6359eb9 100644
+--- a/drivers/infiniband/hw/erdma/erdma_cm.c
++++ b/drivers/infiniband/hw/erdma/erdma_cm.c
+@@ -993,7 +993,7 @@ static int kernel_bindconnect(struct socket *s, struct sockaddr *laddr,
+ 	int ret;
+ 
+ 	sock_set_reuseaddr(s->sk);
+-	ret = s->ops->bind(s, laddr, laddrlen);
++	ret = s->ops->bind(s, (struct sockaddr_unsized *)laddr, laddrlen);
+ 	if (ret)
+ 		return ret;
+ 	ret = s->ops->connect(s, raddr, raddrlen, flags);
+@@ -1315,7 +1315,7 @@ int erdma_create_listen(struct iw_cm_id *id, int backlog)
+ 	if (ipv4_is_zeronet(laddr->sin_addr.s_addr))
+ 		s->sk->sk_bound_dev_if = dev->netdev->ifindex;
+ 
+-	ret = s->ops->bind(s, (struct sockaddr *)laddr,
++	ret = s->ops->bind(s, (struct sockaddr_unsized *)laddr,
+ 			   sizeof(struct sockaddr_in));
+ 	if (ret)
+ 		goto error;
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index 708b13993fdf..7fe118cacb3f 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -1340,7 +1340,7 @@ static int kernel_bindconnect(struct socket *s, struct sockaddr *laddr,
+ 			return rv;
+ 	}
+ 
+-	rv = s->ops->bind(s, laddr, size);
++	rv = s->ops->bind(s, (struct sockaddr_unsized *)laddr, size);
+ 	if (rv < 0)
+ 		return rv;
+ 
+@@ -1789,7 +1789,7 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
+ 				goto error;
+ 			}
+ 		}
+-		rv = s->ops->bind(s, (struct sockaddr *)laddr,
++		rv = s->ops->bind(s, (struct sockaddr_unsized *)laddr,
+ 				  sizeof(struct sockaddr_in));
+ 	} else {
+ 		struct sockaddr_in6 *laddr = &to_sockaddr_in6(id->local_addr);
+@@ -1813,7 +1813,7 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
+ 				goto error;
+ 			}
+ 		}
+-		rv = s->ops->bind(s, (struct sockaddr *)laddr,
++		rv = s->ops->bind(s, (struct sockaddr_unsized *)laddr,
+ 				  sizeof(struct sockaddr_in6));
+ 	}
+ 	if (rv) {
+diff --git a/drivers/isdn/mISDN/l1oip_core.c b/drivers/isdn/mISDN/l1oip_core.c
+index f732f6614d37..6ab036e4a35f 100644
+--- a/drivers/isdn/mISDN/l1oip_core.c
++++ b/drivers/isdn/mISDN/l1oip_core.c
+@@ -676,7 +676,7 @@ l1oip_socket_thread(void *data)
+ 	hc->sin_remote.sin_port = htons((unsigned short)hc->remoteport);
+ 
+ 	/* bind to incoming port */
+-	if (socket->ops->bind(socket, (struct sockaddr *)&hc->sin_local,
++	if (socket->ops->bind(socket, (struct sockaddr_unsized *)&hc->sin_local,
+ 			      sizeof(hc->sin_local))) {
+ 		printk(KERN_ERR "%s: Failed to bind socket to port %d.\n",
+ 		       __func__, hc->localport);
+diff --git a/drivers/isdn/mISDN/socket.c b/drivers/isdn/mISDN/socket.c
+index b215b28cad7b..77b900db1cac 100644
+--- a/drivers/isdn/mISDN/socket.c
++++ b/drivers/isdn/mISDN/socket.c
+@@ -462,7 +462,7 @@ static int data_sock_getsockopt(struct socket *sock, int level, int optname,
+ }
+ 
+ static int
+-data_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
++data_sock_bind(struct socket *sock, struct sockaddr_unsized *addr, int addr_len)
+ {
+ 	struct sockaddr_mISDN *maddr = (struct sockaddr_mISDN *) addr;
+ 	struct sock *sk = sock->sk;
+@@ -696,7 +696,7 @@ base_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
+ }
+ 
+ static int
+-base_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
++base_sock_bind(struct socket *sock, struct sockaddr_unsized *addr, int addr_len)
+ {
+ 	struct sockaddr_mISDN *maddr = (struct sockaddr_mISDN *) addr;
+ 	struct sock *sk = sock->sk;
+diff --git a/drivers/net/ppp/pptp.c b/drivers/net/ppp/pptp.c
+index 90737cb71892..d07e87a0974c 100644
+--- a/drivers/net/ppp/pptp.c
++++ b/drivers/net/ppp/pptp.c
+@@ -382,8 +382,8 @@ static int pptp_rcv(struct sk_buff *skb)
+ 	return NET_RX_DROP;
+ }
+ 
+-static int pptp_bind(struct socket *sock, struct sockaddr *uservaddr,
+-	int sockaddr_len)
++static int pptp_bind(struct socket *sock, struct sockaddr_unsized *uservaddr,
++		     int sockaddr_len)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct sockaddr_pppox *sp = (struct sockaddr_pppox *) uservaddr;
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 9a96df1a511c..35d0bd91f6fd 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -1834,7 +1834,7 @@ static int nvme_tcp_alloc_queue(struct nvme_ctrl *nctrl, int qid,
+ 	sk_set_memalloc(queue->sock->sk);
+ 
+ 	if (nctrl->opts->mask & NVMF_OPT_HOST_TRADDR) {
+-		ret = kernel_bind(queue->sock, (struct sockaddr *)&ctrl->src_addr,
++		ret = kernel_bind(queue->sock, (struct sockaddr_unsized *)&ctrl->src_addr,
+ 			sizeof(ctrl->src_addr));
+ 		if (ret) {
+ 			dev_err(nctrl->device,
+diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
+index 470bf37e5a63..d543da09ef8e 100644
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -2055,7 +2055,7 @@ static int nvmet_tcp_add_port(struct nvmet_port *nport)
+ 	if (so_priority > 0)
+ 		sock_set_priority(port->sock->sk, so_priority);
+ 
+-	ret = kernel_bind(port->sock, (struct sockaddr *)&port->addr,
++	ret = kernel_bind(port->sock, (struct sockaddr_unsized *)&port->addr,
+ 			sizeof(port->addr));
+ 	if (ret) {
+ 		pr_err("failed to bind port socket %d\n", ret);
+diff --git a/drivers/target/iscsi/iscsi_target_login.c b/drivers/target/iscsi/iscsi_target_login.c
+index c2ac9a99ebbb..53aca059dc16 100644
+--- a/drivers/target/iscsi/iscsi_target_login.c
++++ b/drivers/target/iscsi/iscsi_target_login.c
+@@ -822,7 +822,7 @@ int iscsit_setup_np(
+ 	sock_set_reuseaddr(sock->sk);
+ 	ip_sock_set_freebind(sock->sk);
+ 
+-	ret = kernel_bind(sock, (struct sockaddr *)&np->np_sockaddr, len);
++	ret = kernel_bind(sock, (struct sockaddr_unsized *)&np->np_sockaddr, len);
+ 	if (ret < 0) {
+ 		pr_err("kernel_bind() failed: %d\n", ret);
+ 		goto fail;
+diff --git a/drivers/xen/pvcalls-back.c b/drivers/xen/pvcalls-back.c
+index fd7ed65e0197..da1b516b9cfd 100644
+--- a/drivers/xen/pvcalls-back.c
++++ b/drivers/xen/pvcalls-back.c
+@@ -650,7 +650,7 @@ static int pvcalls_back_bind(struct xenbus_device *dev,
+ 	if (ret < 0)
+ 		goto out;
+ 
+-	ret = inet_bind(map->sock, (struct sockaddr *)&req->u.bind.addr,
++	ret = inet_bind(map->sock, (struct sockaddr_unsized *)&req->u.bind.addr,
+ 			req->u.bind.len);
+ 	if (ret < 0)
+ 		goto out;
+diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
+index c1cadf8fb346..bf0e4ea0aafd 100644
+--- a/fs/afs/rxrpc.c
++++ b/fs/afs/rxrpc.c
+@@ -82,16 +82,16 @@ int afs_open_socket(struct afs_net *net)
+ 	if (ret < 0)
+ 		pr_err("Couldn't create RxGK CM key: %d\n", ret);
+ 
+-	ret = kernel_bind(socket, (struct sockaddr *) &srx, sizeof(srx));
++	ret = kernel_bind(socket, (struct sockaddr_unsized *) &srx, sizeof(srx));
+ 	if (ret == -EADDRINUSE) {
+ 		srx.transport.sin6.sin6_port = 0;
+-		ret = kernel_bind(socket, (struct sockaddr *) &srx, sizeof(srx));
++		ret = kernel_bind(socket, (struct sockaddr_unsized *) &srx, sizeof(srx));
+ 	}
+ 	if (ret < 0)
+ 		goto error_2;
+ 
+ 	srx.srx_service = YFS_CM_SERVICE;
+-	ret = kernel_bind(socket, (struct sockaddr *) &srx, sizeof(srx));
++	ret = kernel_bind(socket, (struct sockaddr_unsized *) &srx, sizeof(srx));
+ 	if (ret < 0)
+ 		goto error_2;
+ 
+diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
+index 9a0b6c2b6b01..0500421b6e3b 100644
+--- a/fs/dlm/lowcomms.c
++++ b/fs/dlm/lowcomms.c
+@@ -1134,7 +1134,7 @@ static int sctp_bind_addrs(struct socket *sock, __be16 port)
+ 		make_sockaddr(&localaddr, port, &addr_len);
+ 
+ 		if (!i)
+-			result = kernel_bind(sock, addr, addr_len);
++			result = kernel_bind(sock, (struct sockaddr_unsized *)addr, addr_len);
+ 		else
+ 			result = sock_bind_add(sock->sk, addr, addr_len);
+ 
+@@ -1813,7 +1813,7 @@ static int dlm_tcp_bind(struct socket *sock)
+ 	memcpy(&src_addr, &dlm_local_addr[0], sizeof(src_addr));
+ 	make_sockaddr(&src_addr, 0, &addr_len);
+ 
+-	result = kernel_bind(sock, (struct sockaddr *)&src_addr,
++	result = kernel_bind(sock, (struct sockaddr_unsized *)&src_addr,
+ 			     addr_len);
+ 	if (result < 0) {
+ 		/* This *may* not indicate a critical error */
+@@ -1852,7 +1852,7 @@ static int dlm_tcp_listen_bind(struct socket *sock)
+ 
+ 	/* Bind to our port */
+ 	make_sockaddr(&dlm_local_addr[0], dlm_config.ci_tcp_port, &addr_len);
+-	return kernel_bind(sock, (struct sockaddr *)&dlm_local_addr[0],
++	return kernel_bind(sock, (struct sockaddr_unsized *)&dlm_local_addr[0],
+ 			   addr_len);
+ }
+ 
+diff --git a/fs/ocfs2/cluster/tcp.c b/fs/ocfs2/cluster/tcp.c
+index b05d4e9d13b2..c7734193d8d7 100644
+--- a/fs/ocfs2/cluster/tcp.c
++++ b/fs/ocfs2/cluster/tcp.c
+@@ -1615,7 +1615,7 @@ static void o2net_start_connect(struct work_struct *work)
+ 	myaddr.sin_addr.s_addr = mynode->nd_ipv4_address;
+ 	myaddr.sin_port = htons(0); /* any port */
+ 
+-	ret = sock->ops->bind(sock, (struct sockaddr *)&myaddr,
++	ret = sock->ops->bind(sock, (struct sockaddr_unsized *)&myaddr,
+ 			      sizeof(myaddr));
+ 	if (ret) {
+ 		mlog(ML_ERROR, "bind failed with %d at address %pI4\n",
+@@ -2002,7 +2002,7 @@ static int o2net_open_listening_sock(__be32 addr, __be16 port)
+ 	INIT_WORK(&o2net_listen_work, o2net_accept_many);
+ 
+ 	sock->sk->sk_reuse = SK_CAN_REUSE;
+-	ret = sock->ops->bind(sock, (struct sockaddr *)&sin, sizeof(sin));
++	ret = sock->ops->bind(sock, (struct sockaddr_unsized *)&sin, sizeof(sin));
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "o2net: Error %d while binding socket at "
+ 		       "%pI4:%u\n", ret, &addr, ntohs(port)); 
+diff --git a/fs/smb/client/connect.c b/fs/smb/client/connect.c
+index dd12f3eb61dc..96d972263020 100644
+--- a/fs/smb/client/connect.c
++++ b/fs/smb/client/connect.c
+@@ -3112,7 +3112,7 @@ bind_socket(struct TCP_Server_Info *server)
+ 		struct socket *socket = server->ssocket;
+ 
+ 		rc = kernel_bind(socket,
+-				 (struct sockaddr *) &server->srcaddr,
++				 (struct sockaddr_unsized *) &server->srcaddr,
+ 				 sizeof(server->srcaddr));
+ 		if (rc < 0) {
+ 			struct sockaddr_in *saddr4;
+diff --git a/fs/smb/server/transport_tcp.c b/fs/smb/server/transport_tcp.c
+index 7a1e3dcc2cde..bf694bc78c65 100644
+--- a/fs/smb/server/transport_tcp.c
++++ b/fs/smb/server/transport_tcp.c
+@@ -519,10 +519,10 @@ static int create_socket(struct interface *iface)
+ 	}
+ 
+ 	if (ipv4)
+-		ret = kernel_bind(ksmbd_socket, (struct sockaddr *)&sin,
++		ret = kernel_bind(ksmbd_socket, (struct sockaddr_unsized *)&sin,
+ 				  sizeof(sin));
+ 	else
+-		ret = kernel_bind(ksmbd_socket, (struct sockaddr *)&sin6,
++		ret = kernel_bind(ksmbd_socket, (struct sockaddr_unsized *)&sin6,
+ 				  sizeof(sin6));
+ 	if (ret) {
+ 		pr_err("Failed to bind socket: %d\n", ret);
+diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
+index a516745f732f..ef517bb307e2 100644
+--- a/net/9p/trans_fd.c
++++ b/net/9p/trans_fd.c
+@@ -966,7 +966,7 @@ static int p9_bind_privport(struct socket *sock)
+ 			((struct sockaddr_in *)&stor)->sin_port = htons((ushort)port);
+ 		else
+ 			((struct sockaddr_in6 *)&stor)->sin6_port = htons((ushort)port);
+-		err = kernel_bind(sock, (struct sockaddr *)&stor, sizeof(stor));
++		err = kernel_bind(sock, (struct sockaddr_unsized *)&stor, sizeof(stor));
+ 		if (err != -EADDRINUSE)
+ 			break;
+ 	}
+diff --git a/net/appletalk/ddp.c b/net/appletalk/ddp.c
+index 30242fe10341..45db43cde67f 100644
+--- a/net/appletalk/ddp.c
++++ b/net/appletalk/ddp.c
+@@ -1149,7 +1149,7 @@ static int atalk_autobind(struct sock *sk)
+ }
+ 
+ /* Set the address 'our end' of the connection */
+-static int atalk_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
++static int atalk_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len)
+ {
+ 	struct sockaddr_at *addr = (struct sockaddr_at *)uaddr;
+ 	struct sock *sk = sock->sk;
+diff --git a/net/atm/pvc.c b/net/atm/pvc.c
+index 66d9a9bd5896..62fdf07c53de 100644
+--- a/net/atm/pvc.c
++++ b/net/atm/pvc.c
+@@ -24,7 +24,7 @@ static int pvc_shutdown(struct socket *sock, int how)
+ 	return 0;
+ }
+ 
+-static int pvc_bind(struct socket *sock, struct sockaddr *sockaddr,
++static int pvc_bind(struct socket *sock, struct sockaddr_unsized *sockaddr,
+ 		    int sockaddr_len)
+ {
+ 	struct sock *sk = sock->sk;
+@@ -59,7 +59,7 @@ static int pvc_bind(struct socket *sock, struct sockaddr *sockaddr,
+ static int pvc_connect(struct socket *sock, struct sockaddr *sockaddr,
+ 		       int sockaddr_len, int flags)
+ {
+-	return pvc_bind(sock, sockaddr, sockaddr_len);
++	return pvc_bind(sock, (struct sockaddr_unsized *)sockaddr, sockaddr_len);
+ }
+ 
+ static int pvc_setsockopt(struct socket *sock, int level, int optname,
+diff --git a/net/atm/svc.c b/net/atm/svc.c
+index f8137ae693b0..1906a493c8aa 100644
+--- a/net/atm/svc.c
++++ b/net/atm/svc.c
+@@ -97,7 +97,7 @@ static int svc_release(struct socket *sock)
+ 	return 0;
+ }
+ 
+-static int svc_bind(struct socket *sock, struct sockaddr *sockaddr,
++static int svc_bind(struct socket *sock, struct sockaddr_unsized *sockaddr,
+ 		    int sockaddr_len)
+ {
+ 	DEFINE_WAIT(wait);
+diff --git a/net/ax25/af_ax25.c b/net/ax25/af_ax25.c
+index 6ef8b2a57a9b..23c558ff9682 100644
+--- a/net/ax25/af_ax25.c
++++ b/net/ax25/af_ax25.c
+@@ -1094,7 +1094,7 @@ static int ax25_release(struct socket *sock)
+  *	that we've implemented support for SO_BINDTODEVICE. It is however small
+  *	and trivially backward compatible.
+  */
+-static int ax25_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
++static int ax25_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct full_sockaddr_ax25 *addr = (struct full_sockaddr_ax25 *)uaddr;
+diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
+index fc866759910d..ba9f48771e11 100644
+--- a/net/bluetooth/hci_sock.c
++++ b/net/bluetooth/hci_sock.c
+@@ -1185,7 +1185,7 @@ static int hci_sock_compat_ioctl(struct socket *sock, unsigned int cmd,
+ }
+ #endif
+ 
+-static int hci_sock_bind(struct socket *sock, struct sockaddr *addr,
++static int hci_sock_bind(struct socket *sock, struct sockaddr_unsized *addr,
+ 			 int addr_len)
+ {
+ 	struct sockaddr_hci haddr;
+diff --git a/net/bluetooth/iso.c b/net/bluetooth/iso.c
+index 9b263d061e05..1fda214a815d 100644
+--- a/net/bluetooth/iso.c
++++ b/net/bluetooth/iso.c
+@@ -944,7 +944,7 @@ static int iso_sock_create(struct net *net, struct socket *sock, int protocol,
+ 	return 0;
+ }
+ 
+-static int iso_sock_bind_bc(struct socket *sock, struct sockaddr *addr,
++static int iso_sock_bind_bc(struct socket *sock, struct sockaddr_unsized *addr,
+ 			    int addr_len)
+ {
+ 	struct sockaddr_iso *sa = (struct sockaddr_iso *)addr;
+@@ -1022,7 +1022,7 @@ static int iso_sock_bind_pa_sk(struct sock *sk, struct sockaddr_iso *sa,
+ 	return err;
+ }
+ 
+-static int iso_sock_bind(struct socket *sock, struct sockaddr *addr,
++static int iso_sock_bind(struct socket *sock, struct sockaddr_unsized *addr,
+ 			 int addr_len)
+ {
+ 	struct sockaddr_iso *sa = (struct sockaddr_iso *)addr;
+diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
+index 814fb8610ac4..ca7394d8fa4e 100644
+--- a/net/bluetooth/l2cap_sock.c
++++ b/net/bluetooth/l2cap_sock.c
+@@ -80,7 +80,7 @@ static int l2cap_validate_le_psm(u16 psm)
+ 	return 0;
+ }
+ 
+-static int l2cap_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
++static int l2cap_sock_bind(struct socket *sock, struct sockaddr_unsized *addr, int alen)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+diff --git a/net/bluetooth/rfcomm/core.c b/net/bluetooth/rfcomm/core.c
+index 96250807b32b..d62fd6c57617 100644
+--- a/net/bluetooth/rfcomm/core.c
++++ b/net/bluetooth/rfcomm/core.c
+@@ -781,7 +781,7 @@ static struct rfcomm_session *rfcomm_session_create(bdaddr_t *src,
+ 	addr.l2_psm    = 0;
+ 	addr.l2_cid    = 0;
+ 	addr.l2_bdaddr_type = BDADDR_BREDR;
+-	*err = kernel_bind(sock, (struct sockaddr *) &addr, sizeof(addr));
++	*err = kernel_bind(sock, (struct sockaddr_unsized *)&addr, sizeof(addr));
+ 	if (*err < 0)
+ 		goto failed;
+ 
+@@ -2068,7 +2068,7 @@ static int rfcomm_add_listener(bdaddr_t *ba)
+ 	addr.l2_psm    = cpu_to_le16(L2CAP_PSM_RFCOMM);
+ 	addr.l2_cid    = 0;
+ 	addr.l2_bdaddr_type = BDADDR_BREDR;
+-	err = kernel_bind(sock, (struct sockaddr *) &addr, sizeof(addr));
++	err = kernel_bind(sock, (struct sockaddr_unsized *)&addr, sizeof(addr));
+ 	if (err < 0) {
+ 		BT_ERR("Bind failed %d", err);
+ 		goto failed;
+diff --git a/net/bluetooth/rfcomm/sock.c b/net/bluetooth/rfcomm/sock.c
+index 913402806fa0..8c8762bbc6de 100644
+--- a/net/bluetooth/rfcomm/sock.c
++++ b/net/bluetooth/rfcomm/sock.c
+@@ -324,7 +324,7 @@ static int rfcomm_sock_create(struct net *net, struct socket *sock,
+ 	return 0;
+ }
+ 
+-static int rfcomm_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
++static int rfcomm_sock_bind(struct socket *sock, struct sockaddr_unsized *addr, int addr_len)
+ {
+ 	struct sockaddr_rc sa;
+ 	struct sock *sk = sock->sk;
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index ab0cf442d57b..01d878205e58 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -605,7 +605,7 @@ static int sco_sock_create(struct net *net, struct socket *sock, int protocol,
+ 	return 0;
+ }
+ 
+-static int sco_sock_bind(struct socket *sock, struct sockaddr *addr,
++static int sco_sock_bind(struct socket *sock, struct sockaddr_unsized *addr,
+ 			 int addr_len)
+ {
+ 	struct sockaddr_sco *sa = (struct sockaddr_sco *) addr;
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 74ee1e52249b..ce588b85665a 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1246,7 +1246,7 @@ static int isotp_release(struct socket *sock)
+ 	return 0;
+ }
+ 
+-static int isotp_bind(struct socket *sock, struct sockaddr *uaddr, int len)
++static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len)
+ {
+ 	struct sockaddr_can *addr = (struct sockaddr_can *)uaddr;
+ 	struct sock *sk = sock->sk;
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index 88e7160d4248..a2abedc757d0 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -440,7 +440,7 @@ static int j1939_sk_sanity_check(struct sockaddr_can *addr, int len)
+ 	return 0;
+ }
+ 
+-static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
++static int j1939_sk_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len)
+ {
+ 	struct sockaddr_can *addr = (struct sockaddr_can *)uaddr;
+ 	struct j1939_sock *jsk = j1939_sk(sock->sk);
+diff --git a/net/can/raw.c b/net/can/raw.c
+index a53853f5e9af..f36a83d3447c 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -449,7 +449,7 @@ static int raw_release(struct socket *sock)
+ 	return 0;
+ }
+ 
+-static int raw_bind(struct socket *sock, struct sockaddr *uaddr, int len)
++static int raw_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len)
+ {
+ 	struct sockaddr_can *addr = (struct sockaddr_can *)uaddr;
+ 	struct sock *sk = sock->sk;
+diff --git a/net/core/sock.c b/net/core/sock.c
+index dc03d4b5909a..6c8d50338f71 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -3420,7 +3420,7 @@ EXPORT_SYMBOL_GPL(sk_set_peek_off);
+  * function, some default processing is provided.
+  */
+ 
+-int sock_no_bind(struct socket *sock, struct sockaddr *saddr, int len)
++int sock_no_bind(struct socket *sock, struct sockaddr_unsized *saddr, int len)
+ {
+ 	return -EOPNOTSUPP;
+ }
+diff --git a/net/ieee802154/socket.c b/net/ieee802154/socket.c
+index 18d267921bb5..99ddfad9bb88 100644
+--- a/net/ieee802154/socket.c
++++ b/net/ieee802154/socket.c
+@@ -96,13 +96,13 @@ static int ieee802154_sock_sendmsg(struct socket *sock, struct msghdr *msg,
+ 	return sk->sk_prot->sendmsg(sk, msg, len);
+ }
+ 
+-static int ieee802154_sock_bind(struct socket *sock, struct sockaddr *uaddr,
++static int ieee802154_sock_bind(struct socket *sock, struct sockaddr_unsized *uaddr,
+ 				int addr_len)
+ {
+ 	struct sock *sk = sock->sk;
+ 
+ 	if (sk->sk_prot->bind)
+-		return sk->sk_prot->bind(sk, uaddr, addr_len);
++		return sk->sk_prot->bind(sk, (struct sockaddr *)uaddr, addr_len);
+ 
+ 	return sock_no_bind(sock, uaddr, addr_len);
+ }
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index 3109c5ec38f3..e70126c5ae44 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -464,9 +464,9 @@ int inet_bind_sk(struct sock *sk, struct sockaddr *uaddr, int addr_len)
+ 	return __inet_bind(sk, uaddr, addr_len, flags);
+ }
+ 
+-int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
++int inet_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len)
+ {
+-	return inet_bind_sk(sock->sk, uaddr, addr_len);
++	return inet_bind_sk(sock->sk, (struct sockaddr *)uaddr, addr_len);
+ }
+ EXPORT_SYMBOL(inet_bind);
+ 
+diff --git a/net/ipv4/udp_tunnel_core.c b/net/ipv4/udp_tunnel_core.c
+index 54386e06a813..11e5a88c923d 100644
+--- a/net/ipv4/udp_tunnel_core.c
++++ b/net/ipv4/udp_tunnel_core.c
+@@ -29,7 +29,7 @@ int udp_sock_create4(struct net *net, struct udp_port_cfg *cfg,
+ 	udp_addr.sin_family = AF_INET;
+ 	udp_addr.sin_addr = cfg->local_ip;
+ 	udp_addr.sin_port = cfg->local_udp_port;
+-	err = kernel_bind(sock, (struct sockaddr *)&udp_addr,
++	err = kernel_bind(sock, (struct sockaddr_unsized *)&udp_addr,
+ 			  sizeof(udp_addr));
+ 	if (err < 0)
+ 		goto error;
+diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+index 1b0314644e0c..0eeb85688b50 100644
+--- a/net/ipv6/af_inet6.c
++++ b/net/ipv6/af_inet6.c
+@@ -465,9 +465,9 @@ int inet6_bind_sk(struct sock *sk, struct sockaddr *uaddr, int addr_len)
+ }
+ 
+ /* bind for INET6 API */
+-int inet6_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
++int inet6_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len)
+ {
+-	return inet6_bind_sk(sock->sk, uaddr, addr_len);
++	return inet6_bind_sk(sock->sk, (struct sockaddr *)uaddr, addr_len);
+ }
+ EXPORT_SYMBOL(inet6_bind);
+ 
+diff --git a/net/ipv6/ip6_udp_tunnel.c b/net/ipv6/ip6_udp_tunnel.c
+index 0ff547a4bff7..b0d9286b33c8 100644
+--- a/net/ipv6/ip6_udp_tunnel.c
++++ b/net/ipv6/ip6_udp_tunnel.c
+@@ -40,7 +40,7 @@ int udp_sock_create6(struct net *net, struct udp_port_cfg *cfg,
+ 	memcpy(&udp6_addr.sin6_addr, &cfg->local_ip6,
+ 	       sizeof(udp6_addr.sin6_addr));
+ 	udp6_addr.sin6_port = cfg->local_udp_port;
+-	err = kernel_bind(sock, (struct sockaddr *)&udp6_addr,
++	err = kernel_bind(sock, (struct sockaddr_unsized *)&udp6_addr,
+ 			  sizeof(udp6_addr));
+ 	if (err < 0)
+ 		goto error;
+diff --git a/net/iucv/af_iucv.c b/net/iucv/af_iucv.c
+index 6c717a7ef292..894c53317e92 100644
+--- a/net/iucv/af_iucv.c
++++ b/net/iucv/af_iucv.c
+@@ -562,7 +562,7 @@ static void __iucv_auto_name(struct iucv_sock *iucv)
+ }
+ 
+ /* Bind an unbound socket */
+-static int iucv_sock_bind(struct socket *sock, struct sockaddr *addr,
++static int iucv_sock_bind(struct socket *sock, struct sockaddr_unsized *addr,
+ 			  int addr_len)
+ {
+ 	DECLARE_SOCKADDR(struct sockaddr_iucv *, sa, addr);
+diff --git a/net/l2tp/l2tp_core.c b/net/l2tp/l2tp_core.c
+index 369a2f2e459c..4b5e372a5cd4 100644
+--- a/net/l2tp/l2tp_core.c
++++ b/net/l2tp/l2tp_core.c
+@@ -1503,7 +1503,7 @@ static int l2tp_tunnel_sock_create(struct net *net,
+ 			memcpy(&ip6_addr.l2tp_addr, cfg->local_ip6,
+ 			       sizeof(ip6_addr.l2tp_addr));
+ 			ip6_addr.l2tp_conn_id = tunnel_id;
+-			err = kernel_bind(sock, (struct sockaddr *)&ip6_addr,
++			err = kernel_bind(sock, (struct sockaddr_unsized *)&ip6_addr,
+ 					  sizeof(ip6_addr));
+ 			if (err < 0)
+ 				goto out;
+@@ -1530,7 +1530,7 @@ static int l2tp_tunnel_sock_create(struct net *net,
+ 			ip_addr.l2tp_family = AF_INET;
+ 			ip_addr.l2tp_addr = cfg->local_ip;
+ 			ip_addr.l2tp_conn_id = tunnel_id;
+-			err = kernel_bind(sock, (struct sockaddr *)&ip_addr,
++			err = kernel_bind(sock, (struct sockaddr_unsized *)&ip_addr,
+ 					  sizeof(ip_addr));
+ 			if (err < 0)
+ 				goto out;
+diff --git a/net/llc/af_llc.c b/net/llc/af_llc.c
+index 5958a80fe14c..e5bb0c0d708c 100644
+--- a/net/llc/af_llc.c
++++ b/net/llc/af_llc.c
+@@ -337,7 +337,7 @@ static int llc_ui_autobind(struct socket *sock, struct sockaddr_llc *addr)
+  *	otherwise all hell will break loose.
+  *	Returns: 0 upon success, negative otherwise.
+  */
+-static int llc_ui_bind(struct socket *sock, struct sockaddr *uaddr, int addrlen)
++static int llc_ui_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addrlen)
+ {
+ 	struct sockaddr_llc *addr = (struct sockaddr_llc *)uaddr;
+ 	struct sock *sk = sock->sk;
+diff --git a/net/mctp/af_mctp.c b/net/mctp/af_mctp.c
+index b99ba14f39d2..5b1ef50637b7 100644
+--- a/net/mctp/af_mctp.c
++++ b/net/mctp/af_mctp.c
+@@ -49,7 +49,7 @@ static bool mctp_sockaddr_ext_is_ok(const struct sockaddr_mctp_ext *addr)
+ 	       !addr->__smctp_pad0[2];
+ }
+ 
+-static int mctp_bind(struct socket *sock, struct sockaddr *addr, int addrlen)
++static int mctp_bind(struct socket *sock, struct sockaddr_unsized *addr, int addrlen)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct mctp_sock *msk = container_of(sk, struct mctp_sock, sk);
+diff --git a/net/mctp/test/route-test.c b/net/mctp/test/route-test.c
+index 69a3ccfc6310..be9149ac79dd 100644
+--- a/net/mctp/test/route-test.c
++++ b/net/mctp/test/route-test.c
+@@ -205,7 +205,7 @@ static void __mctp_route_test_init(struct kunit *test,
+ 	addr.smctp_network = netid;
+ 	addr.smctp_addr.s_addr = 8;
+ 	addr.smctp_type = 0;
+-	rc = kernel_bind(sock, (struct sockaddr *)&addr, sizeof(addr));
++	rc = kernel_bind(sock, (struct sockaddr_unsized *)&addr, sizeof(addr));
+ 	KUNIT_ASSERT_EQ(test, rc, 0);
+ 
+ 	*devp = dev;
+diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+index 0292162a14ee..beb017e507a0 100644
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -3832,7 +3832,7 @@ static struct proto mptcp_prot = {
+ 	.no_autobind	= true,
+ };
+ 
+-static int mptcp_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
++static int mptcp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len)
+ {
+ 	struct mptcp_sock *msk = mptcp_sk(sock->sk);
+ 	struct sock *ssk, *sk = sock->sk;
+@@ -3846,10 +3846,10 @@ static int mptcp_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
+ 	}
+ 
+ 	if (sk->sk_family == AF_INET)
+-		err = inet_bind_sk(ssk, uaddr, addr_len);
++		err = inet_bind_sk(ssk, (struct sockaddr *)uaddr, addr_len);
+ #if IS_ENABLED(CONFIG_MPTCP_IPV6)
+ 	else if (sk->sk_family == AF_INET6)
+-		err = inet6_bind_sk(ssk, uaddr, addr_len);
++		err = inet6_bind_sk(ssk, (struct sockaddr *)uaddr, addr_len);
+ #endif
+ 	if (!err)
+ 		mptcp_copy_inaddrs(sk, ssk);
+diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
+index e8325890a322..d90237bf433c 100644
+--- a/net/mptcp/subflow.c
++++ b/net/mptcp/subflow.c
+@@ -1660,7 +1660,7 @@ int __mptcp_subflow_connect(struct sock *sk, const struct mptcp_pm_local *local,
+ 		addrlen = sizeof(struct sockaddr_in6);
+ #endif
+ 	ssk->sk_bound_dev_if = local->ifindex;
+-	err = kernel_bind(sf, (struct sockaddr *)&addr, addrlen);
++	err = kernel_bind(sf, (struct sockaddr_unsized *)&addr, addrlen);
+ 	if (err) {
+ 		MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_JOINSYNTXBINDERR);
+ 		pr_debug("msk=%p local=%d remote=%d bind error: %d\n",
+diff --git a/net/netfilter/ipvs/ip_vs_sync.c b/net/netfilter/ipvs/ip_vs_sync.c
+index 3402675bf521..d8c089ef387c 100644
+--- a/net/netfilter/ipvs/ip_vs_sync.c
++++ b/net/netfilter/ipvs/ip_vs_sync.c
+@@ -1435,7 +1435,7 @@ static int bind_mcastif_addr(struct socket *sock, struct net_device *dev)
+ 	sin.sin_addr.s_addr  = addr;
+ 	sin.sin_port         = 0;
+ 
+-	return kernel_bind(sock, (struct sockaddr *)&sin, sizeof(sin));
++	return kernel_bind(sock, (struct sockaddr_unsized *)&sin, sizeof(sin));
+ }
+ 
+ static void get_mcast_sockaddr(union ipvs_sockaddr *sa, int *salen,
+@@ -1542,7 +1542,7 @@ static int make_receive_sock(struct netns_ipvs *ipvs, int id,
+ 
+ 	get_mcast_sockaddr(&mcast_addr, &salen, &ipvs->bcfg, id);
+ 	sock->sk->sk_bound_dev_if = dev->ifindex;
+-	result = kernel_bind(sock, (struct sockaddr *)&mcast_addr, salen);
++	result = kernel_bind(sock, (struct sockaddr_unsized *)&mcast_addr, salen);
+ 	if (result < 0) {
+ 		pr_err("Error binding to the multicast addr\n");
+ 		goto error;
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index 2b46c0cd752a..b4110994776d 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -968,7 +968,7 @@ static void netlink_undo_bind(int group, long unsigned int groups,
+ 			nlk->netlink_unbind(sock_net(sk), undo + 1);
+ }
+ 
+-static int netlink_bind(struct socket *sock, struct sockaddr *addr,
++static int netlink_bind(struct socket *sock, struct sockaddr_unsized *addr,
+ 			int addr_len)
+ {
+ 	struct sock *sk = sock->sk;
+diff --git a/net/netrom/af_netrom.c b/net/netrom/af_netrom.c
+index 3331669d8e33..33468124d53d 100644
+--- a/net/netrom/af_netrom.c
++++ b/net/netrom/af_netrom.c
+@@ -561,7 +561,7 @@ static int nr_release(struct socket *sock)
+ 	return 0;
+ }
+ 
+-static int nr_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
++static int nr_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct nr_sock *nr = nr_sk(sk);
+diff --git a/net/nfc/llcp_sock.c b/net/nfc/llcp_sock.c
+index 57a2f97004e1..26e6ceb48a82 100644
+--- a/net/nfc/llcp_sock.c
++++ b/net/nfc/llcp_sock.c
+@@ -56,7 +56,7 @@ static struct proto llcp_sock_proto = {
+ 	.obj_size = sizeof(struct nfc_llcp_sock),
+ };
+ 
+-static int llcp_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
++static int llcp_sock_bind(struct socket *sock, struct sockaddr_unsized *addr, int alen)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct nfc_llcp_sock *llcp_sock = nfc_llcp_sock(sk);
+@@ -146,7 +146,7 @@ static int llcp_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
+ 	return ret;
+ }
+ 
+-static int llcp_raw_sock_bind(struct socket *sock, struct sockaddr *addr,
++static int llcp_raw_sock_bind(struct socket *sock, struct sockaddr_unsized *addr,
+ 			      int alen)
+ {
+ 	struct sock *sk = sock->sk;
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index 173e6edda08f..fccad2a529cc 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -3279,11 +3279,12 @@ static int packet_do_bind(struct sock *sk, const char *name, int ifindex,
+  *	Bind a packet socket to a device
+  */
+ 
+-static int packet_bind_spkt(struct socket *sock, struct sockaddr *uaddr,
++static int packet_bind_spkt(struct socket *sock, struct sockaddr_unsized *uaddr,
+ 			    int addr_len)
+ {
+ 	struct sock *sk = sock->sk;
+-	char name[sizeof(uaddr->sa_data_min) + 1];
++	struct sockaddr *sa = (struct sockaddr *)uaddr;
++	char name[sizeof(sa->sa_data_min) + 1];
+ 
+ 	/*
+ 	 *	Check legality
+@@ -3294,13 +3295,13 @@ static int packet_bind_spkt(struct socket *sock, struct sockaddr *uaddr,
+ 	/* uaddr->sa_data comes from the userspace, it's not guaranteed to be
+ 	 * zero-terminated.
+ 	 */
+-	memcpy(name, uaddr->sa_data, sizeof(uaddr->sa_data_min));
+-	name[sizeof(uaddr->sa_data_min)] = 0;
++	memcpy(name, sa->sa_data, sizeof(sa->sa_data_min));
++	name[sizeof(sa->sa_data_min)] = 0;
+ 
+ 	return packet_do_bind(sk, name, 0, 0);
+ }
+ 
+-static int packet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
++static int packet_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len)
+ {
+ 	struct sockaddr_ll *sll = (struct sockaddr_ll *)uaddr;
+ 	struct sock *sk = sock->sk;
+diff --git a/net/phonet/socket.c b/net/phonet/socket.c
+index db2d552e9b32..478b02647733 100644
+--- a/net/phonet/socket.c
++++ b/net/phonet/socket.c
+@@ -153,7 +153,7 @@ EXPORT_SYMBOL(pn_sock_unhash);
+ 
+ static DEFINE_MUTEX(port_mutex);
+ 
+-static int pn_socket_bind(struct socket *sock, struct sockaddr *addr, int len)
++static int pn_socket_bind(struct socket *sock, struct sockaddr_unsized *addr, int len)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct pn_sock *pn = pn_sk(sk);
+@@ -163,7 +163,7 @@ static int pn_socket_bind(struct socket *sock, struct sockaddr *addr, int len)
+ 	u8 saddr;
+ 
+ 	if (sk->sk_prot->bind)
+-		return sk->sk_prot->bind(sk, addr, len);
++		return sk->sk_prot->bind(sk, (struct sockaddr *)addr, len);
+ 
+ 	if (len < sizeof(struct sockaddr_pn))
+ 		return -EINVAL;
+@@ -206,8 +206,8 @@ static int pn_socket_autobind(struct socket *sock)
+ 
+ 	memset(&sa, 0, sizeof(sa));
+ 	sa.spn_family = AF_PHONET;
+-	err = pn_socket_bind(sock, (struct sockaddr *)&sa,
+-				sizeof(struct sockaddr_pn));
++	err = pn_socket_bind(sock, (struct sockaddr_unsized *)&sa,
++			     sizeof(struct sockaddr_pn));
+ 	if (err != -EINVAL)
+ 		return err;
+ 	BUG_ON(!pn_port(pn_sk(sock->sk)->sobject));
+diff --git a/net/qrtr/af_qrtr.c b/net/qrtr/af_qrtr.c
+index 00c51cf693f3..00bd3dd9f0f9 100644
+--- a/net/qrtr/af_qrtr.c
++++ b/net/qrtr/af_qrtr.c
+@@ -824,7 +824,7 @@ static int qrtr_autobind(struct socket *sock)
+ }
+ 
+ /* Bind socket to specified sockaddr. */
+-static int qrtr_bind(struct socket *sock, struct sockaddr *saddr, int len)
++static int qrtr_bind(struct socket *sock, struct sockaddr_unsized *saddr, int len)
+ {
+ 	DECLARE_SOCKADDR(struct sockaddr_qrtr *, addr, saddr);
+ 	struct qrtr_sock *ipc = qrtr_sk(sock->sk);
+diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
+index 3de9350cbf30..bfcc1a453f23 100644
+--- a/net/qrtr/ns.c
++++ b/net/qrtr/ns.c
+@@ -714,7 +714,7 @@ int qrtr_ns_init(void)
+ 	sq.sq_port = QRTR_PORT_CTRL;
+ 	qrtr_ns.local_node = sq.sq_node;
+ 
+-	ret = kernel_bind(qrtr_ns.sock, (struct sockaddr *)&sq, sizeof(sq));
++	ret = kernel_bind(qrtr_ns.sock, (struct sockaddr_unsized *)&sq, sizeof(sq));
+ 	if (ret < 0) {
+ 		pr_err("failed to bind to socket\n");
+ 		goto err_wq;
+diff --git a/net/rds/bind.c b/net/rds/bind.c
+index 97a29172a8ee..f800d920d969 100644
+--- a/net/rds/bind.c
++++ b/net/rds/bind.c
+@@ -160,7 +160,7 @@ void rds_remove_bound(struct rds_sock *rs)
+ 	rs->rs_bound_addr = in6addr_any;
+ }
+ 
+-int rds_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
++int rds_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct rds_sock *rs = rds_sk_to_rs(sk);
+diff --git a/net/rds/tcp_connect.c b/net/rds/tcp_connect.c
+index a0046e99d6df..1eff3b03ab77 100644
+--- a/net/rds/tcp_connect.c
++++ b/net/rds/tcp_connect.c
+@@ -145,7 +145,7 @@ int rds_tcp_conn_path_connect(struct rds_conn_path *cp)
+ 		addrlen = sizeof(sin);
+ 	}
+ 
+-	ret = kernel_bind(sock, addr, addrlen);
++	ret = kernel_bind(sock, (struct sockaddr_unsized *)addr, addrlen);
+ 	if (ret) {
+ 		rdsdebug("bind failed with %d at address %pI6c\n",
+ 			 ret, &conn->c_laddr);
+diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
+index 91e34af3fe5d..820d3e20de19 100644
+--- a/net/rds/tcp_listen.c
++++ b/net/rds/tcp_listen.c
+@@ -290,7 +290,7 @@ struct socket *rds_tcp_listen_init(struct net *net, bool isv6)
+ 		addr_len = sizeof(*sin);
+ 	}
+ 
+-	ret = kernel_bind(sock, (struct sockaddr *)&ss, addr_len);
++	ret = kernel_bind(sock, (struct sockaddr_unsized *)&ss, addr_len);
+ 	if (ret < 0) {
+ 		rdsdebug("could not bind %s listener socket: %d\n",
+ 			 isv6 ? "IPv6" : "IPv4", ret);
+diff --git a/net/rose/af_rose.c b/net/rose/af_rose.c
+index 543f9e8ebb69..47369eab5aec 100644
+--- a/net/rose/af_rose.c
++++ b/net/rose/af_rose.c
+@@ -693,7 +693,7 @@ static int rose_release(struct socket *sock)
+ 	return 0;
+ }
+ 
+-static int rose_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
++static int rose_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct rose_sock *rose = rose_sk(sk);
+diff --git a/net/rxrpc/af_rxrpc.c b/net/rxrpc/af_rxrpc.c
+index 36df0274d7b7..245f37a74394 100644
+--- a/net/rxrpc/af_rxrpc.c
++++ b/net/rxrpc/af_rxrpc.c
+@@ -127,7 +127,7 @@ static int rxrpc_validate_address(struct rxrpc_sock *rx,
+ /*
+  * bind a local address to an RxRPC socket
+  */
+-static int rxrpc_bind(struct socket *sock, struct sockaddr *saddr, int len)
++static int rxrpc_bind(struct socket *sock, struct sockaddr_unsized *saddr, int len)
+ {
+ 	struct sockaddr_rxrpc *srx = (struct sockaddr_rxrpc *)saddr;
+ 	struct rxrpc_local *local;
+diff --git a/net/rxrpc/rxperf.c b/net/rxrpc/rxperf.c
+index 2ea71e3831f7..98ea76fae70f 100644
+--- a/net/rxrpc/rxperf.c
++++ b/net/rxrpc/rxperf.c
+@@ -211,7 +211,7 @@ static int rxperf_open_socket(void)
+ 
+ 	ret = rxrpc_sock_set_security_keyring(socket->sk, rxperf_sec_keyring);
+ 
+-	ret = kernel_bind(socket, (struct sockaddr *)&srx, sizeof(srx));
++	ret = kernel_bind(socket, (struct sockaddr_unsized *)&srx, sizeof(srx));
+ 	if (ret < 0)
+ 		goto error_2;
+ 
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 77b99e8ef35a..60cc812ce633 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -421,7 +421,7 @@ static struct sock *smc_sock_alloc(struct net *net, struct socket *sock,
+ 	return sk;
+ }
+ 
+-int smc_bind(struct socket *sock, struct sockaddr *uaddr,
++int smc_bind(struct socket *sock, struct sockaddr_unsized *uaddr,
+ 	     int addr_len)
+ {
+ 	struct sockaddr_in *addr = (struct sockaddr_in *)uaddr;
+diff --git a/net/socket.c b/net/socket.c
+index e8892b218708..aaefb2e519a7 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -1872,7 +1872,7 @@ int __sys_bind_socket(struct socket *sock, struct sockaddr_storage *address,
+ 				   addrlen);
+ 	if (!err)
+ 		err = READ_ONCE(sock->ops)->bind(sock,
+-						 (struct sockaddr *)address,
++						 (struct sockaddr_unsized *)address,
+ 						 addrlen);
+ 	return err;
+ }
+@@ -3583,13 +3583,13 @@ static long compat_sock_ioctl(struct file *file, unsigned int cmd,
+  *	Returns 0 or an error.
+  */
+ 
+-int kernel_bind(struct socket *sock, struct sockaddr *addr, int addrlen)
++int kernel_bind(struct socket *sock, struct sockaddr_unsized *addr, int addrlen)
+ {
+ 	struct sockaddr_storage address;
+ 
+ 	memcpy(&address, addr, addrlen);
+ 
+-	return READ_ONCE(sock->ops)->bind(sock, (struct sockaddr *)&address,
++	return READ_ONCE(sock->ops)->bind(sock, (struct sockaddr_unsized *)&address,
+ 					  addrlen);
+ }
+ EXPORT_SYMBOL(kernel_bind);
+diff --git a/net/sunrpc/clnt.c b/net/sunrpc/clnt.c
+index 8ca354ecfd02..318ee24ad900 100644
+--- a/net/sunrpc/clnt.c
++++ b/net/sunrpc/clnt.c
+@@ -1457,12 +1457,12 @@ static int rpc_sockname(struct net *net, struct sockaddr *sap, size_t salen,
+ 	switch (sap->sa_family) {
+ 	case AF_INET:
+ 		err = kernel_bind(sock,
+-				(struct sockaddr *)&rpc_inaddr_loopback,
++				(struct sockaddr_unsized *)&rpc_inaddr_loopback,
+ 				sizeof(rpc_inaddr_loopback));
+ 		break;
+ 	case AF_INET6:
+ 		err = kernel_bind(sock,
+-				(struct sockaddr *)&rpc_in6addr_loopback,
++				(struct sockaddr_unsized *)&rpc_in6addr_loopback,
+ 				sizeof(rpc_in6addr_loopback));
+ 		break;
+ 	default:
+diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
+index 7b90abc5cf0e..16ff6c100821 100644
+--- a/net/sunrpc/svcsock.c
++++ b/net/sunrpc/svcsock.c
+@@ -1557,7 +1557,7 @@ static struct svc_xprt *svc_create_socket(struct svc_serv *serv,
+ 		ip6_sock_set_v6only(sock->sk);
+ 	if (type == SOCK_STREAM)
+ 		sock->sk->sk_reuse = SK_CAN_REUSE; /* allow address reuse */
+-	error = kernel_bind(sock, sin, len);
++	error = kernel_bind(sock, (struct sockaddr_unsized *)sin, len);
+ 	if (error < 0)
+ 		goto bummer;
+ 
+diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
+index 3aa987e7f072..95732a45b059 100644
+--- a/net/sunrpc/xprtsock.c
++++ b/net/sunrpc/xprtsock.c
+@@ -1845,8 +1845,8 @@ static int xs_bind(struct sock_xprt *transport, struct socket *sock)
+ 	memcpy(&myaddr, &transport->srcaddr, transport->xprt.addrlen);
+ 	do {
+ 		rpc_set_port((struct sockaddr *)&myaddr, port);
+-		err = kernel_bind(sock, (struct sockaddr *)&myaddr,
+-				transport->xprt.addrlen);
++		err = kernel_bind(sock, (struct sockaddr_unsized *)&myaddr,
++				  transport->xprt.addrlen);
+ 		if (err == 0) {
+ 			if (transport->xprt.reuseport)
+ 				transport->srcport = port;
+diff --git a/net/tipc/socket.c b/net/tipc/socket.c
+index 1574a83384f8..14f75ee88ddf 100644
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -710,7 +710,7 @@ int tipc_sk_bind(struct socket *sock, struct sockaddr *skaddr, int alen)
+ 	return res;
+ }
+ 
+-static int tipc_bind(struct socket *sock, struct sockaddr *skaddr, int alen)
++static int tipc_bind(struct socket *sock, struct sockaddr_unsized *skaddr, int alen)
+ {
+ 	struct tipc_uaddr *ua = (struct tipc_uaddr *)skaddr;
+ 	u32 atype = ua->addrtype;
+@@ -726,7 +726,7 @@ static int tipc_bind(struct socket *sock, struct sockaddr *skaddr, int alen)
+ 			return -EACCES;
+ 		}
+ 	}
+-	return tipc_sk_bind(sock, skaddr, alen);
++	return tipc_sk_bind(sock, (struct sockaddr *)skaddr, alen);
+ }
+ 
+ /**
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index 768098dec231..8e92d63fa95b 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -854,7 +854,7 @@ static int unix_listen(struct socket *sock, int backlog)
+ }
+ 
+ static int unix_release(struct socket *);
+-static int unix_bind(struct socket *, struct sockaddr *, int);
++static int unix_bind(struct socket *, struct sockaddr_unsized *, int);
+ static int unix_stream_connect(struct socket *, struct sockaddr *,
+ 			       int addr_len, int flags);
+ static int unix_socketpair(struct socket *, struct socket *);
+@@ -1477,7 +1477,7 @@ static int unix_bind_abstract(struct sock *sk, struct sockaddr_un *sunaddr,
+ 	return err;
+ }
+ 
+-static int unix_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
++static int unix_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len)
+ {
+ 	struct sockaddr_un *sunaddr = (struct sockaddr_un *)uaddr;
+ 	struct sock *sk = sock->sk;
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index 4c2db6cca557..fca26e279845 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -987,7 +987,7 @@ static int vsock_release(struct socket *sock)
+ }
+ 
+ static int
+-vsock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
++vsock_bind(struct socket *sock, struct sockaddr_unsized *addr, int addr_len)
+ {
+ 	int err;
+ 	struct sock *sk;
+@@ -995,7 +995,7 @@ vsock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+ 
+ 	sk = sock->sk;
+ 
+-	if (vsock_addr_cast(addr, addr_len, &vm_addr) != 0)
++	if (vsock_addr_cast((struct sockaddr *)addr, addr_len, &vm_addr) != 0)
+ 		return -EINVAL;
+ 
+ 	lock_sock(sk);
+diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
+index 655d1e0ae25f..ca8006d8f792 100644
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -670,7 +670,7 @@ static int x25_release(struct socket *sock)
+ 	return 0;
+ }
+ 
+-static int x25_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
++static int x25_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int addr_len)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct sockaddr_x25 *addr = (struct sockaddr_x25 *)uaddr;
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 7b0c68a70888..fb878a9e922f 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -1241,7 +1241,7 @@ static bool xsk_validate_queues(struct xdp_sock *xs)
+ 	return xs->fq_tmp && xs->cq_tmp;
+ }
+ 
+-static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
++static int xsk_bind(struct socket *sock, struct sockaddr_unsized *addr, int addr_len)
+ {
+ 	struct sockaddr_xdp *sxdp = (struct sockaddr_xdp *)addr;
+ 	struct sock *sk = sock->sk;
+diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+index 8074bc5f6f20..0497b5dea25c 100644
+--- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+@@ -923,7 +923,7 @@ __bpf_kfunc int bpf_kfunc_call_kernel_bind(struct addr_args *args)
+ 		goto out;
+ 	}
+ 
+-	err = kernel_bind(sock, (struct sockaddr *)&args->addr, args->addrlen);
++	err = kernel_bind(sock, (struct sockaddr_unsized *)&args->addr, args->addrlen);
+ out:
+ 	mutex_unlock(&sock_lock);
+ 
 -- 
 2.34.1
 
