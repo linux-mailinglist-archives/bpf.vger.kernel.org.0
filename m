@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-72770-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67B43C1A741
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 14:00:30 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id A56F3C1A600
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 13:50:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63D7D3AAE6D
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 12:41:45 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B55B75816CD
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 12:42:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48E1384B80;
-	Wed, 29 Oct 2025 12:24:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC41393DD1;
+	Wed, 29 Oct 2025 12:24:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W2XEC0WU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GqBjq4kq"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BBEF34DB56;
-	Wed, 29 Oct 2025 12:24:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBD6D3855B0;
+	Wed, 29 Oct 2025 12:24:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761740688; cv=none; b=bTKuRtyK0/XvN0Ib2RxObouFNOfdM3zRYbn9/Rou0gVxqfPz4lrJOnuXYNfqoFx0D2e+FEC9FdALs7iTzS3oYohLXotHkS71xAjYLe4EN1BjddEiCuYq7pdM0c5iy9MlY1usWNseDA8DQvrW5WnHnj1Mvzd2zmeTIl6Ewa4STVk=
+	t=1761740698; cv=none; b=Eg3RvJ5CF2q/z6KJugFdsDCYwT+6a0J09q7Pj4BYThr/7A2RnOFrCDRGx6omM6fnpi4TSCgpQW4ypM/l3yeINan/0KJ9pDRhg+VRVA7m6VFFv5YWy4jWoLHpT7EPDQ9+rHPKKzeHita+iyM7e4mDF1E/VY5Q/cp/5Zn5UjuSXbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761740688; c=relaxed/simple;
-	bh=/wqqJQoHPy6n2tHb+24Li+Lu21E+HeJSWgV7yWDzDrk=;
+	s=arc-20240116; t=1761740698; c=relaxed/simple;
+	bh=2cVn/rLMAtz+rjww4mseoVKumw7c91HQOHzmtSbA+4Q=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=aDZwCjTCqBL9B05nH+2idmLfMUTX0Mk4ejbjpnjkxNag+0IoWjeq93RXJJ8Gi1NnbGlw4pRdmq0e8T+oKLvk+ahylOK0Oz5U43WBufpRSklPl7KMs0+MReoxHDiTEy2HDKFp2oKb+K0dPS6u9GVvq7eXe3ipmZK60ZZ+MAUKq+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W2XEC0WU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46BE0C4CEFD;
-	Wed, 29 Oct 2025 12:24:42 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=JEA5ybWP6aMGLKiyLWijvQpBSaqmDrzJ+uSALXT4+NsAo/XwNu6Ch7R/pcT5HvD4radrO3fLYN7LbBf6U6hY/L7igP4gA6+cp+t5Zx+x7tZyV6M3i2wpdOsEpRpTIc6ZIxed8Lr8eNIp5FzMzlmZ2wc+hS9etPJA2jgt6niqmpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GqBjq4kq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81FEEC4CEFD;
+	Wed, 29 Oct 2025 12:24:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761740686;
-	bh=/wqqJQoHPy6n2tHb+24Li+Lu21E+HeJSWgV7yWDzDrk=;
+	s=k20201202; t=1761740697;
+	bh=2cVn/rLMAtz+rjww4mseoVKumw7c91HQOHzmtSbA+4Q=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=W2XEC0WUW0T2gpEPCOB1YPGwINSIVf4JdFGAw+YafN8uuVNoAbPwcREVBIkhHY0nq
-	 nsZaPIcD+cV2wjlAgBml0U0eLYsNAH3lQ1J0I28nZs/VmP/WSa9wO+dxglFSdb02uv
-	 813+KNiPkue8i2VnL705uy3aQjkZvu7SrS7ECGVd6JH1FxSuzw2HF9yWjAQELiesX9
-	 vdmMRMnT2gHI2pPWPPYv/+wfLwc4fZATcVHlgcCAHnsjWKyuMZaNSEYWvc6y0aDir0
-	 yPUIPQX0sINVP9EhepVWip1hEYNlMGZA58xvfU4WKGi0voeESxq9XxS5FghQAH1OiV
-	 aQVY1AGmLZsRQ==
+	b=GqBjq4kqMnZ46w1uTSS6/DWln99+3lMSBB+pQC3+FReZ12KIIRnOkh0i0qcFhun/S
+	 87ER+Pc066q4kVfmNeRk7nNLMq4Q8Fzq8nBQtBRrUNP9+bu3DQyEXg9xOwNLGRT+5S
+	 5tlmCcP+YkK4OojvDuDfsh5CBbm6pNCLUqFcIDleMJ8BKgKEYaF9yyXomaJNemxOtb
+	 kLX4Nmn/aKvUBZPKVG06OYSaKnR2lKPoxLTugzBySkkL5X6Q00hUhwZVQcsnEQ1eTD
+	 w8Mc1MyXbmVS66Q8jZ8flJm6aU2cG9vXgwvxROBM7nNsppBL7PkrVpp86giiQRR9cz
+	 xYn/XBjZhhI+g==
 From: Christian Brauner <brauner@kernel.org>
-Date: Wed, 29 Oct 2025 13:21:02 +0100
-Subject: [PATCH v4 49/72] selftests/namespaces: second listns() permission
+Date: Wed, 29 Oct 2025 13:21:04 +0100
+Subject: [PATCH v4 51/72] selftests/namespaces: fourth listns() permission
  test
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -53,7 +53,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251029-work-namespace-nstree-listns-v4-49-2e6f823ebdc0@kernel.org>
+Message-Id: <20251029-work-namespace-nstree-listns-v4-51-2e6f823ebdc0@kernel.org>
 References: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
 In-Reply-To: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
 To: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
@@ -70,46 +70,37 @@ Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>,
  netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
  Christian Brauner <brauner@kernel.org>
 X-Mailer: b4 0.15-dev-96507
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3018; i=brauner@kernel.org;
- h=from:subject:message-id; bh=/wqqJQoHPy6n2tHb+24Li+Lu21E+HeJSWgV7yWDzDrk=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQysfV/3ThdjWOmxdaW/sPGs1SkDSSNlz/NNrq15ZuAW
- OnSttXSHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABNZWsrIsPqJ3PRli5g07vwq
- Ou9qf6gvIflgp6j/PpZbZvbzyjeumsjI0FQuW5/Iq5sYFcrx+aKWK1d25EfOk49SvcP+HA6+duA
- IFwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2498; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=2cVn/rLMAtz+rjww4mseoVKumw7c91HQOHzmtSbA+4Q=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQysfULaHp/zjNV7N+kcE6/2/Gviq3+cs7pk16IMy7au
+ KrwYnBMRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwER2SzAy/OQsunEyZbdMlv77
+ F1sCp1ed33Z++kzfkwr8Tjsvb53xbAEjwznOaIXd9Xuj2c4E565/dNHlWX9I0RzJFdx5T5ZPOPl
+ 6Jy8A
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-Test that users with CAP_SYS_ADMIN in a user namespace can see
-all namespaces owned by that user namespace.
+Test permission checking with LISTNS_CURRENT_USER.
+Verify that listing with LISTNS_CURRENT_USER respects permissions.
 
 Signed-off-by: Christian Brauner <brauner@kernel.org>
 ---
- .../selftests/namespaces/listns_permissions_test.c | 100 +++++++++++++++++++++
- 1 file changed, 100 insertions(+)
+ .../selftests/namespaces/listns_permissions_test.c | 76 ++++++++++++++++++++++
+ 1 file changed, 76 insertions(+)
 
 diff --git a/tools/testing/selftests/namespaces/listns_permissions_test.c b/tools/testing/selftests/namespaces/listns_permissions_test.c
-index 907fe419ec22..c99c87cca046 100644
+index aed7288c7eca..7727c5964104 100644
 --- a/tools/testing/selftests/namespaces/listns_permissions_test.c
 +++ b/tools/testing/selftests/namespaces/listns_permissions_test.c
-@@ -128,4 +128,104 @@ TEST(listns_unprivileged_current_only)
- 			unexpected_count);
+@@ -366,4 +366,80 @@ TEST(listns_cannot_see_sibling_userns_namespaces)
+ 	TH_LOG("User namespace B correctly could not see sibling namespace A's network namespace");
  }
  
 +/*
-+ * Test that users with CAP_SYS_ADMIN in a user namespace can see
-+ * all namespaces owned by that user namespace.
++ * Test permission checking with LISTNS_CURRENT_USER.
++ * Verify that listing with LISTNS_CURRENT_USER respects permissions.
 + */
-+TEST(listns_cap_sys_admin_in_userns)
++TEST(listns_current_user_permissions)
 +{
-+	struct ns_id_req req = {
-+		.size = sizeof(req),
-+		.spare = 0,
-+		.ns_id = 0,
-+		.ns_type = 0,  /* All types */
-+		.spare2 = 0,
-+		.user_ns_id = 0,  /* Will be set to our created user namespace */
-+	};
-+	__u64 ns_ids[100];
 +	int pipefd[2];
 +	pid_t pid;
 +	int status;
@@ -122,55 +113,41 @@ index 907fe419ec22..c99c87cca046 100644
 +	ASSERT_GE(pid, 0);
 +
 +	if (pid == 0) {
-+		int fd;
-+		__u64 userns_id;
++		struct ns_id_req req = {
++			.size = sizeof(req),
++			.spare = 0,
++			.ns_id = 0,
++			.ns_type = 0,
++			.spare2 = 0,
++			.user_ns_id = LISTNS_CURRENT_USER,
++		};
++		__u64 ns_ids[100];
 +		ssize_t ret;
-+		int min_expected;
 +		bool success;
 +
 +		close(pipefd[0]);
 +
-+		/* Create user namespace - we'll have CAP_SYS_ADMIN in it */
++		/* Create user namespace */
 +		if (setup_userns() < 0) {
 +			close(pipefd[1]);
 +			exit(1);
 +		}
 +
-+		/* Get the user namespace ID */
-+		fd = open("/proc/self/ns/user", O_RDONLY);
-+		if (fd < 0) {
++		/* Create some namespaces owned by this user namespace */
++		if (unshare(CLONE_NEWNET) < 0) {
 +			close(pipefd[1]);
 +			exit(1);
 +		}
 +
-+		if (ioctl(fd, NS_GET_ID, &userns_id) < 0) {
-+			close(fd);
++		if (unshare(CLONE_NEWUTS) < 0) {
 +			close(pipefd[1]);
 +			exit(1);
 +		}
-+		close(fd);
 +
-+		/* Create several namespaces owned by this user namespace */
-+		unshare(CLONE_NEWNET);
-+		unshare(CLONE_NEWUTS);
-+		unshare(CLONE_NEWIPC);
-+
-+		/* List namespaces owned by our user namespace */
-+		req.user_ns_id = userns_id;
++		/* List with LISTNS_CURRENT_USER - should see our owned namespaces */
 +		ret = sys_listns(&req, ns_ids, ARRAY_SIZE(ns_ids), 0);
-+		if (ret < 0) {
-+			close(pipefd[1]);
-+			exit(1);
-+		}
 +
-+		/*
-+		 * We have CAP_SYS_ADMIN in this user namespace,
-+		 * so we should see all namespaces owned by it.
-+		 * That includes: net, uts, ipc, and the user namespace itself.
-+		 */
-+		min_expected = 4;
-+		success = (ret >= min_expected);
-+
++		success = (ret >= 3);  /* At least user, net, uts */
 +		write(pipefd[1], &success, sizeof(success));
 +		write(pipefd[1], &ret, sizeof(ret));
 +		close(pipefd[1]);
@@ -191,8 +168,7 @@ index 907fe419ec22..c99c87cca046 100644
 +	ASSERT_EQ(WEXITSTATUS(status), 0);
 +
 +	ASSERT_TRUE(success);
-+	TH_LOG("User with CAP_SYS_ADMIN saw %zd namespaces owned by their user namespace",
-+			count);
++	TH_LOG("LISTNS_CURRENT_USER returned %zd namespaces", count);
 +}
 +
  TEST_HARNESS_MAIN
