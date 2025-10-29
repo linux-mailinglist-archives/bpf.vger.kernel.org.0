@@ -1,103 +1,131 @@
-Return-Path: <bpf+bounces-72892-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72893-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00799C1D397
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 21:37:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 133F9C1D432
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 21:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 360E91885360
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 20:37:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 517F63B4D81
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 20:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2055334C20;
-	Wed, 29 Oct 2025 20:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9720286D7E;
+	Wed, 29 Oct 2025 20:44:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DrC5gWSU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wsCcap6Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2782773F0;
-	Wed, 29 Oct 2025 20:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344D6359FAF
+	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 20:44:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761770201; cv=none; b=QvmnMQ6e5o5UnZxCFMB2wSEPJBncuBYr0ffTbwpLWre2XTSRnwoMRpIP9NagsMlM7XaUJ2boREPDXnp1u+5cVnf/vAD8ra6X8WY3rUpitjiLVizlmqrx/XZE1lMipqupJM7vj6PA8CTyOogiGUtEROg2Msb4Rl9sK38SZ2R5wZU=
+	t=1761770696; cv=none; b=iJlQVTHCFAVnUUs1sw9IjvoM+Lebu88maseyLSKhsZKynSch37eIysmvKER2EaizUct/Ih83vcKvYcdSv9SJMKAsBmN3yP2+CiriisGH2dAuOXt4LXJ7t3nzRW7OVEgAIOkXnfnKsAk6cYvBtBgT30hM4RTiRDeqpROcuQ254vQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761770201; c=relaxed/simple;
-	bh=iOgHS+eZEE/s/+7/l6K7Sr/3V+3Pj70ijnv3Cvpoook=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gwTNo8Cu/OgZv6mCQo3VgmgqF4NFBjzYxlgxL1TbIwSTEfnWTXRBJoxtdvkorsQoSMU/EmrA3B4aEm/of9RJ5zPDiZLE+GHrv/+5ovKnAahwuQNTdXH4E9oShKturquOkHRV12uv5GmvcyA/pr6yy9AZLP8fkRDUdY1WW3fjCT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DrC5gWSU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E19A6C4CEF7;
-	Wed, 29 Oct 2025 20:36:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761770201;
-	bh=iOgHS+eZEE/s/+7/l6K7Sr/3V+3Pj70ijnv3Cvpoook=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DrC5gWSUJMcUvoYLDXbfHIwK1tb2VBfHwJxQHwh7TzSL5xh8sdvcpQx06xLCpGTzD
-	 6QQbbuzI+A/83Qlo+5BQGNuXpAkQyO09qgmnhxbREexwqrM9/pbeWYilD3XQafjfXD
-	 HLxEIloCvEhH93/Qn0m2ZleVlXUNdrWWQldZwdOuIPMn2PXL+rj2ACGEwkcb3AhzfC
-	 8VL8fzNYLHsdvEe95oaGzi6RelBNNgGhKSWy70B1SDCA6SFjt2zL0ax7ezldRCYICq
-	 v5gj8faxK3Pe1LhmNADlsWAcETHsfwvDKTaSu7gFesptWU5Y/ZMOVqtl5nwTqZCsqJ
-	 P7/gghhtBrsOw==
-Date: Wed, 29 Oct 2025 10:36:39 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops
- to cgroups
-Message-ID: <aQJ61wC0mvzc7qIU@slm.duckdns.org>
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
- <20251027231727.472628-3-roman.gushchin@linux.dev>
- <aQJZgd8-xXpK-Af8@slm.duckdns.org>
- <87ldkte9pr.fsf@linux.dev>
+	s=arc-20240116; t=1761770696; c=relaxed/simple;
+	bh=KdcO7dR6iOKxU3GwR6hgMJzc7tLPbW4Y9Tdmmzg0tzg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bg3gBxvdsZ1m8phrKqatMFBbbz8KXYhmvMbNdiP845I71UZlmWy9KSAhBKI9IpDhFloyPKi6Yo5lxFmATJR9g2BhAacvnnpRqWdaWDtvoDV1khTqUB6byuljDEh6sVhYSNC1aGGj1afBaw8zHjTJRVgyQtZPUPthxAUlQq9v3hE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wsCcap6Y; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7b25b8c3-af48-4f8d-9094-7fdbc71993aa@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761770692;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eW1AA5kfdr8lGTOD/a6CXcxjYs9RgvoOFvjzfthKVrA=;
+	b=wsCcap6YnxtB7OTEYxnen1NgTbTxWTRQHrFI0w6u6iHbf4/JM4t7Yrw3yHwR0/rC4d50Rv
+	x38Lk3pWhvJt/AgglrbJvXNAPQFXa/Ir5zU8gQ1MenNDyjqsu3V+/onxXVfK/ZqY8LhynA
+	7vDxwrJOoQZmuu2Q1OBaermugGMqiUk=
+Date: Wed, 29 Oct 2025 13:44:34 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ldkte9pr.fsf@linux.dev>
+Subject: Re: [PATCH bpf-next v1 1/8] bpf: Add BTF_ID_LIST_END and
+ BTF_ID_LIST_SIZE macros
+To: bot+bpf-ci@kernel.org, bpf@vger.kernel.org, andrii@kernel.org,
+ ast@kernel.org
+Cc: dwarves@vger.kernel.org, alan.maguire@oracle.com, acme@kernel.org,
+ eddyz87@gmail.com, tj@kernel.org, kernel-team@meta.com,
+ daniel@iogearbox.net, martin.lau@kernel.org, yonghong.song@linux.dev,
+ clm@meta.com
+References: <20251029190113.3323406-2-ihor.solodrai@linux.dev>
+ <3ff9f05dd90ecae535887b2b6ae14ab6b04fd28e8da22af874e917c5126cd803@mail.kernel.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <3ff9f05dd90ecae535887b2b6ae14ab6b04fd28e8da22af874e917c5126cd803@mail.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Oct 29, 2025 at 01:25:52PM -0700, Roman Gushchin wrote:
-> > BTW, for sched_ext sub-sched support, I'm just adding cgroup_id to
-> > struct_ops, which seems to work fine. It'd be nice to align on the same
-> > approach. What are the benefits of doing this through fd?
+On 10/29/25 12:41 PM, bot+bpf-ci@kernel.org wrote:
 > 
-> Then you can attach a single struct ops to multiple cgroups (or Idk
-> sockets or processes or some other objects in the future).
-> And IMO it's just a more generic solution.
+> ```
+> commit d616f53ce936875dd9f44cc77f9bed1198596463
+> Author: Ihor Solodrai <ihor.solodrai@linux.dev>
+> 
+> bpf: Add BTF_ID_LIST_END and BTF_ID_LIST_SIZE macros
+> 
+> This commit adds two new preprocessor macros to btf_ids.h for
+> calculating the size of BTF_ID_LIST arrays using pointer arithmetic
+> between a list and its __end marker.
+> 
+>> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+>> index 139bdecec..27a4724d5 100644
+>> --- a/include/linux/btf_ids.h
+>> +++ b/include/linux/btf_ids.h
+>> @@ -97,6 +97,16 @@ asm(							\
+>>  __BTF_ID_LIST(name, local)				\
+>>  extern u32 name[];
+>>
+>> +/*
+>> + * The BTF_ID_LIST_END macro may be used to denote an end
+>> + * of a BTF_ID_LIST. This enables calculation of the list
+>> + * size with BTF_ID_LIST_SIZE.
+>> + */
+>> +#define BTF_ID_LIST_END(name) \
+>> +BTF_ID_LIST(name##__end)
+>> +#define BTF_ID_LIST_SIZE(name) \
+>> +(name##__end - name)
+>> +
+> 
+> Are the fallback definitions missing for CONFIG_DEBUG_INFO_BTF=n?
 
-I'm not very convinced that sharing a single struct_ops instance across
-multiple cgroups would be all that useful. If you map this to normal
-userspace programs, a given struct_ops instance is package of code and all
-the global data (maps). ie. it's not like running the same program multiple
-times against different targets. It's more akin to running a single program
-instance which can handle multiple targets.
+Indeed. Kernel build fails with CONFIG_DEBUG_INFO_BTF=n
 
-Maybe that's useful in some cases, but that program would have to explicitly
-distinguish the cgroups that it's attached to. I have a hard time imagining
-use cases where a single struct_ops has to service multiple disjoint cgroups
-in the hierarchy and it ends up stepping outside of the usual operation
-model of cgroups - commonality being expressed through the hierarchical
-structure.
+Good bot.
 
-Thanks.
+> 
+> Looking at the #else branch starting at line 228, all existing macros
+> like BTF_ID_LIST, BTF_ID, BTF_SET_START, etc. have fallback definitions.
+> These new macros BTF_ID_LIST_END and BTF_ID_LIST_SIZE only exist in the
+> CONFIG_DEBUG_INFO_BTF=y path. When CONFIG_DEBUG_INFO_BTF is disabled,
+> code using these macros will fail to compile.
+> 
+> While there's no current usage that would break, the API is incomplete
+> compared to the established pattern in this header where every macro
+> works in both config states.
+> 
+>>  #define BTF_ID_LIST_GLOBAL(name, n)			\
+>>  __BTF_ID_LIST(name, globl)
+> 
+> 
+> ```
+> 
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+> 
+> In-Reply-To-Subject: `bpf: Add BTF_ID_LIST_END and BTF_ID_LIST_SIZE macros`
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18919699520
 
--- 
-tejun
 
