@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-72780-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72782-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7BB6C1A840
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 14:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A15EC1A7EF
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 14:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE745564514
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 12:46:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47655563660
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 12:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B47534F48A;
-	Wed, 29 Oct 2025 12:25:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F45C364481;
+	Wed, 29 Oct 2025 12:25:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AVaWB+9l"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mlm8us7a"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75AD33F388;
-	Wed, 29 Oct 2025 12:25:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E02363B9D;
+	Wed, 29 Oct 2025 12:25:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761740737; cv=none; b=LEPS+yKvG7SCSg63A1bnn5MY1FSF9Md2hoSvDaXB0uJfLjyQi4/UXWGT4ztaU1OB0qZrqJjJCAdUjINCXw7pHGLVV6YHK5sKoNh712fT6LhK3pllbDFNIs5vPeJQ7WtrrEmCY6rtf7sCC1Cwauokk440LItWNmyCNp7fmuPFLyo=
+	t=1761740747; cv=none; b=MDXSXs/fKL6S52dZqD1yMukCGfFZGvA3cccVYi8GoLvw8SGLd/FKcLmesphsENHpz+kRJYttH0VMf3RfSWbgvtod3qNN5WMfKH+ktfGzj2GsT2MkY8UJe3Eo87+CUOpHcwd/FmGVg2mB7+/ITrqwN12m7BYcMvYvHXSh7JxWCwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761740737; c=relaxed/simple;
-	bh=KWYYGboDUt3swjKDxkebVx+xZOw67uWV/kh+IrzwFAE=;
+	s=arc-20240116; t=1761740747; c=relaxed/simple;
+	bh=0F9mhX2Gl3SVx+//eDdT9Tj87KVi2B6yYobSD3BfDnA=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ijfSe8vQtUjoQoNl6ren5XPmGxOSEg5Db3mmnJwz9qes386FQlc1w80IY0AeOIxbXuES/wQkh/yVSqiAzOXOJVeZCFlb76dRmB8IUEa7gEw5WcnDyEF6PPiyw+jS7+anLwXiVBNn9GmCX7kKawu/RWxuKnXq61FJ429gTsHN9U0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AVaWB+9l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCA9DC4CEF7;
-	Wed, 29 Oct 2025 12:25:32 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=nbIbS/5Qle05qmJ7YyM45erAs8p/4qKvcFrq+A571MdDJVjGo4wHfD4rHq6PsSvzdB0drFhaP0jXzXfDSOix8XBXI8E6KtOEqovDBHNA+KcMs6WVYxgwuTczzZmbh0fBy5uff3rIt0ZwRTJhv4os/I8e7+Q7ToqtujnchnInThk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mlm8us7a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 139F4C4CEFF;
+	Wed, 29 Oct 2025 12:25:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761740737;
-	bh=KWYYGboDUt3swjKDxkebVx+xZOw67uWV/kh+IrzwFAE=;
+	s=k20201202; t=1761740747;
+	bh=0F9mhX2Gl3SVx+//eDdT9Tj87KVi2B6yYobSD3BfDnA=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=AVaWB+9lgEiya89wxq9QmoGHXnKfVa+Etod4Hrej3a5f2Eg6FStTI1xbIgXRFA9zC
-	 PI4r41FIV9BASaM+eRPN8NZw4Up9UJl79JByB5Hs0gKRpfk4WShrDkQ7f6w6HLldKO
-	 FmQdbt7uVt95/SJHqCkTIrk4ZraDzXhZFYgVIU8MsZJLlY5ThfNPg71Q/BmJKtVah8
-	 DzgBL3es4Es58K/yWJRDK1FLJekz6STMgszsauBgsveIVIXQyBqeFJ12VHqP5yv4az
-	 kiB3GKQAnhG9N3Pvyc03IS0J143ZuH37Py6BG3f5udqUHtbsDbs2vFPw/2ejS/2k0s
-	 hXQUrDuJa1Icw==
+	b=Mlm8us7aJOvLjIz6PyycbLhZioGMgblsBESGqQtaxcQIvdKX14OtyPZPDAwsqe5sE
+	 O5EmJ8oBz8AebyW5gh9xRJGYSJiaaHDwCJREVaXH5217jx7WHSMlZECJz18uygL+GO
+	 LtbKPocR0FtFwiMlElHCnZ3eFNqXTY440djTAMh9SkqlT/eZ8sMMsRgFfzhLQ3pAX8
+	 dbb23MOX5lrRU6iHfkVY2/3LlY5E1doM+PTabKIopPCevmHabFwtJ+SOLfmGRkBatE
+	 8g1BgQUW4TQ1u0CmtsDkaaBOfSqoaTrVzskk+d98dBvzvDhhn1lIkKB2axzXnV3O5E
+	 dbCNSFQN0EPng==
 From: Christian Brauner <brauner@kernel.org>
-Date: Wed, 29 Oct 2025 13:21:12 +0100
-Subject: [PATCH v4 59/72] selftests/namespaces: fifth inactive namespace
+Date: Wed, 29 Oct 2025 13:21:14 +0100
+Subject: [PATCH v4 61/72] selftests/namespaces: seventh inactive namespace
  resurrection test
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -53,7 +53,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251029-work-namespace-nstree-listns-v4-59-2e6f823ebdc0@kernel.org>
+Message-Id: <20251029-work-namespace-nstree-listns-v4-61-2e6f823ebdc0@kernel.org>
 References: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
 In-Reply-To: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
 To: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
@@ -70,54 +70,170 @@ Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>,
  netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
  Christian Brauner <brauner@kernel.org>
 X-Mailer: b4 0.15-dev-96507
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1167; i=brauner@kernel.org;
- h=from:subject:message-id; bh=KWYYGboDUt3swjKDxkebVx+xZOw67uWV/kh+IrzwFAE=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQysfW/VN/m4BTSM/f00QkLPtR9/Rzjo2cSfWd9s3HFI
- t8FcdbTO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACaSz8rIsMFt9a8jxyUuv87Y
- Gv3kU8nz3S9Zk++df8F0tluwXY9v5j6Gf2ZGLJtVuwxu+j79X3MnQ4cl5vFLrvKQoopO56fmX9t
- EmAE=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4066; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=0F9mhX2Gl3SVx+//eDdT9Tj87KVi2B6yYobSD3BfDnA=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQysfX/+/VeyEKvI3ylf+3v3wFCq3wVVLhU5kesmfD0f
+ WRzrV11RykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwERWbWRkmNmgNy9OVz+4PTWw
+ 2sn//PbXr76+WzNfQzTtrZTa552rzjL897pbbHhf1rUo53C/rZZw1M8zjb/WWTypXH/Moe/MOe9
+ uPgA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-Test SIOCGSKNS fails on non-socket file descriptors.
+Test socket keeps netns active after creating process exits. Verify that
+as long as the socket FD exists, the namespace remains active.
 
 Signed-off-by: Christian Brauner <brauner@kernel.org>
 ---
- .../testing/selftests/namespaces/siocgskns_test.c  | 26 ++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ .../testing/selftests/namespaces/siocgskns_test.c  | 141 +++++++++++++++++++++
+ 1 file changed, 141 insertions(+)
 
 diff --git a/tools/testing/selftests/namespaces/siocgskns_test.c b/tools/testing/selftests/namespaces/siocgskns_test.c
-index 28e45954c4fa..bbfef3c51ac1 100644
+index 231830daf5dc..60028eeecde0 100644
 --- a/tools/testing/selftests/namespaces/siocgskns_test.c
 +++ b/tools/testing/selftests/namespaces/siocgskns_test.c
-@@ -307,4 +307,30 @@ TEST(siocgskns_across_setns)
- 	close(netns_a_fd);
+@@ -401,4 +401,145 @@ TEST(siocgskns_multiple_sockets)
+ 	}
  }
  
 +/*
-+ * Test SIOCGSKNS fails on non-socket file descriptors.
++ * Test socket keeps netns active after creating process exits.
++ * Verify that as long as the socket FD exists, the namespace remains active.
 + */
-+TEST(siocgskns_non_socket)
++TEST(siocgskns_netns_lifecycle)
 +{
-+	int fd;
-+	int pipefd[2];
++	int sock_fd, netns_fd;
++	int ipc_sockets[2];
++	int syncpipe[2];
++	pid_t pid;
++	int status;
++	char sync_byte;
++	struct stat st;
++	ino_t netns_ino;
 +
-+	/* Test on regular file */
-+	fd = open("/dev/null", O_RDONLY);
-+	ASSERT_GE(fd, 0);
++	EXPECT_EQ(socketpair(AF_LOCAL, SOCK_STREAM | SOCK_CLOEXEC, 0, ipc_sockets), 0);
 +
-+	ASSERT_LT(ioctl(fd, SIOCGSKNS), 0);
-+	ASSERT_TRUE(errno == ENOTTY || errno == EINVAL);
-+	close(fd);
++	ASSERT_EQ(pipe(syncpipe), 0);
 +
-+	/* Test on pipe */
-+	ASSERT_EQ(pipe(pipefd), 0);
++	pid = fork();
++	ASSERT_GE(pid, 0);
 +
-+	ASSERT_LT(ioctl(pipefd[0], SIOCGSKNS), 0);
-+	ASSERT_TRUE(errno == ENOTTY || errno == EINVAL);
++	if (pid == 0) {
++		/* Child */
++		close(ipc_sockets[0]);
++		close(syncpipe[1]);
 +
-+	close(pipefd[0]);
-+	close(pipefd[1]);
++		if (unshare(CLONE_NEWNET) < 0) {
++			close(ipc_sockets[1]);
++			close(syncpipe[0]);
++			exit(1);
++		}
++
++		sock_fd = socket(AF_INET, SOCK_STREAM, 0);
++		if (sock_fd < 0) {
++			close(ipc_sockets[1]);
++			close(syncpipe[0]);
++			exit(1);
++		}
++
++		/* Send socket to parent */
++		struct msghdr msg = {0};
++		struct iovec iov = {0};
++		char buf[1] = {'X'};
++		char cmsg_buf[CMSG_SPACE(sizeof(int))];
++
++		iov.iov_base = buf;
++		iov.iov_len = 1;
++		msg.msg_iov = &iov;
++		msg.msg_iovlen = 1;
++		msg.msg_control = cmsg_buf;
++		msg.msg_controllen = sizeof(cmsg_buf);
++
++		struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
++		cmsg->cmsg_level = SOL_SOCKET;
++		cmsg->cmsg_type = SCM_RIGHTS;
++		cmsg->cmsg_len = CMSG_LEN(sizeof(int));
++		memcpy(CMSG_DATA(cmsg), &sock_fd, sizeof(int));
++
++		if (sendmsg(ipc_sockets[1], &msg, 0) < 0) {
++			close(sock_fd);
++			close(ipc_sockets[1]);
++			close(syncpipe[0]);
++			exit(1);
++		}
++
++		close(sock_fd);
++		close(ipc_sockets[1]);
++
++		/* Wait for parent signal */
++		read(syncpipe[0], &sync_byte, 1);
++		close(syncpipe[0]);
++		exit(0);
++	}
++
++	/* Parent */
++	close(ipc_sockets[1]);
++	close(syncpipe[0]);
++
++	/* Receive socket FD */
++	struct msghdr msg = {0};
++	struct iovec iov = {0};
++	char buf[1];
++	char cmsg_buf[CMSG_SPACE(sizeof(int))];
++
++	iov.iov_base = buf;
++	iov.iov_len = 1;
++	msg.msg_iov = &iov;
++	msg.msg_iovlen = 1;
++	msg.msg_control = cmsg_buf;
++	msg.msg_controllen = sizeof(cmsg_buf);
++
++	ssize_t n = recvmsg(ipc_sockets[0], &msg, 0);
++	close(ipc_sockets[0]);
++	ASSERT_EQ(n, 1);
++
++	struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
++	ASSERT_NE(cmsg, NULL);
++	memcpy(&sock_fd, CMSG_DATA(cmsg), sizeof(int));
++
++	/* Get netns from socket while child is alive */
++	netns_fd = ioctl(sock_fd, SIOCGSKNS);
++	if (netns_fd < 0) {
++		sync_byte = 'G';
++		write(syncpipe[1], &sync_byte, 1);
++		close(syncpipe[1]);
++		close(sock_fd);
++		waitpid(pid, NULL, 0);
++		if (errno == ENOTTY || errno == EINVAL)
++			SKIP(return, "SIOCGSKNS not supported");
++		ASSERT_GE(netns_fd, 0);
++	}
++	ASSERT_EQ(fstat(netns_fd, &st), 0);
++	netns_ino = st.st_ino;
++
++	/* Signal child to exit */
++	sync_byte = 'G';
++	write(syncpipe[1], &sync_byte, 1);
++	close(syncpipe[1]);
++
++	waitpid(pid, &status, 0);
++	ASSERT_TRUE(WIFEXITED(status));
++
++	/*
++	 * Socket FD should still keep namespace active even after
++	 * the creating process exited.
++	 */
++	int test_fd = ioctl(sock_fd, SIOCGSKNS);
++	ASSERT_GE(test_fd, 0);
++
++	struct stat st_test;
++	ASSERT_EQ(fstat(test_fd, &st_test), 0);
++	ASSERT_EQ(st_test.st_ino, netns_ino);
++
++	close(test_fd);
++	close(netns_fd);
++
++	/* Close socket - namespace should become inactive */
++	close(sock_fd);
 +}
 +
  TEST_HARNESS_MAIN
