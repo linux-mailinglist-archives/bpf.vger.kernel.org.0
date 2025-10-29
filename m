@@ -1,157 +1,146 @@
-Return-Path: <bpf+bounces-72885-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72886-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D683BC1D159
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 20:58:07 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF42C1D1B0
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 20:59:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D31BF566857
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 19:57:53 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D77E134C813
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 19:59:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2A335BDCE;
-	Wed, 29 Oct 2025 19:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2492435A95F;
+	Wed, 29 Oct 2025 19:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sRKiGKE4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K5F8Dcec"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6356519CD03
-	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 19:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFDD357A29
+	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 19:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761767801; cv=none; b=R0NY20ggT/AU3zBYOD5mBBexa8XW1+WjlQqR9wITS0ql+2LEkL2AY8rRUKUbszJrSb1VYrrli+M30enZKiHNgOyGpZaGNhzVxZMwPBEabpgqKBVairj6rClTs5fmMjYWu7Tfqou8/iSC0Zhj/yJoBw8pp+GLiKLN+r+IM/OjUtw=
+	t=1761767962; cv=none; b=A+H9fkufdBBgk96NdHxA3op/8eF+EmEx1XSC2peoQywwkSuQWFmvhSBe1wZhAMza4SaL/jXaP21AFQAHdyNYrTdYOw8N79vrF7P87jPcDPSDBVdBw2rNM2DKX1vl4AQCODa7nytFttA/RNyqzvbS4WHDXMAfoE47o3R+I0OBgG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761767801; c=relaxed/simple;
-	bh=qSqfO4GaIrR27fhgavCPzsBAMespcHyDtewzg+16dug=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BhGEY1UeFfjW37XoDIJ6CuE1EsVCI0+GMyEZWZ4BfhfBI8CVDwHJhNQ1es/us6VZ2OYNzu+ydHXgDC4iAlvTXQFedmhNixFoYNFutnrCvqSz8N9m2h40uj+4/Ge/UdW8HHhLdOBKxP4DDgeetqy3fNH942D4I8BcBErEtQTwDXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sRKiGKE4; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1ac9d14e-4250-480c-b863-410be78ac6c6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761767797;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=riRSf2R7xwaw3JNPyjOIY32N5sQTM0xVxav/eTpQzBA=;
-	b=sRKiGKE4PQuJxGC2AJi8XPaHhTU2mGX0xKY+eLSHxCSe/WQZYH6hqCf/wAY7KnIu10ZbYg
-	msvX550/fwGxa8JxO1t91w1jLjM/mysf5/i9IMwD0iOAnwE5CsOalsYN9/Jg5Xc1900cnt
-	cHBhB5PR8WGWB5uZa3y+KySLeK91gwc=
-Date: Wed, 29 Oct 2025 12:56:28 -0700
+	s=arc-20240116; t=1761767962; c=relaxed/simple;
+	bh=ueTnTOLUwaKJpePfYh2+s3lXTRYCYpbmLclGTWkl0wc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i52wXbYzp1576uQ8HAB0g3Ozh9GQ5puMCu+JnEkI8u8rGqHkLMiyIdR6vplXIj9YN5QxODgg05Zxv3jk5N6mgzdOAKwg0C7Wr7XIuL9je8QoqYq8ZRO3qqUoT2ZN0Ij/jL4vlxj0bGLq+qUvrEcbYpqEfyPLcJm9/dM4u+gwXlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K5F8Dcec; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-470ffbf2150so8589135e9.1
+        for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 12:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761767959; x=1762372759; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=X8yZz1v715AlMXc/A5J084sC/x+YSGFpgitDdD3oebI=;
+        b=K5F8DcecP32BWaJ4wzP/Skc0Dp7HNkUdklObtl3+OvdfsNUThYlazroKkIuacjKtMM
+         EI2PPAdxgaSpLxvJIoeslj4tN/5d0lbjTRoX0EnjENYmYtQ8gAD1Cnrhb7gsLFWpIx8C
+         2FFbNtaw47rqnUv87iOEMv5FwZDxvcG5bKp++YHUHUbpN7S5ukJkb5PLe39lOz0W23xe
+         aIML2eePkHdxkAeGZ8pNtup7FD1u+dfUWGC0bkz6ImrRi2JB4dOdZFFMSmJMgxTX5oko
+         jPsFHnl0iRZerMNVldMJm9y5hCfr6jhhPTswMRD+eTJde7MYuH51uVpyfBIMhfhKBG0t
+         icCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761767959; x=1762372759;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X8yZz1v715AlMXc/A5J084sC/x+YSGFpgitDdD3oebI=;
+        b=lU+Ka2jXeTsL/ovExfWHgkUy+P0nfxedkwKl4bZtuQuwbLlo0ZPLl63X83TyC13KSj
+         KFp3Sx2HHpeYUOu4arV00aoZstPWxrxc9vV9fp+ZwIo14eriB/WI4KjkCOfiextI8SA4
+         hB2C2ns2kJbyAQqEg6uTZL68To3ocjX7JtihOmIRr4UfAxD6Ks1vA3VzVyb8MwOKmx0C
+         UJ8ngVpRQB8rWD2FAmIUKcA9fPYCU4z1KU85uk9c7wHA3GX4bfIVkq7eucnpsoFbTBXF
+         jm/UPu9lNX1mtDlf1hO2QVJT6lwiKymHfbncoMaDrF04nwKy2knkAEECMPtYuSLWzB6V
+         T2yQ==
+X-Gm-Message-State: AOJu0YxhO60I9+B6TIog/sEwpjIuWq50GZbsnZ+R6XW0THg3FzFDoWaa
+	ro4vZDJs3bvuPDB/+KA3CFsFxYC//qh0yaqNDRUg7bMpxta0MclIAzqzDFMC3Q==
+X-Gm-Gg: ASbGnctVh+y1WThFZZWC+YtyLqUcIcSsDtdxQxJTfzsph90Akfzni1qNcatKF1WM1/K
+	jEiqyhvlZiwxDMIiH8k9sGAMs+e8+Y1UqkHp8UbvkMMgdhycBJAly253vCO9xjlpYLKzAmWZjEb
+	TwkqeYwXZnCLlNc2X+57PSFrc5PWFBmtRKw18hjUmhEfQxEW1yQDrkVrN/Sv1UPAA3ESQHm6Xhw
+	gYx/tVNkR3xoYJCErQO/A8zJsp0rtjIpZkeUXo3od03Uv4Jqa9uW4MPqX/FTts38MnojqfqzMVL
+	DmAzJGcaHH0fLUWyHZp38g0chS53Vcu7PZKnP4lSlUumSYNkUzVs9qtDraL6SYo4BETprQwOwVk
+	CvUtNZdvIoGUG3QTZZwXndGaR6R0hKLCWVeTDlYkP6IE279NbOvDrwY6vUZ4BA2JKiqNIyEg=
+X-Google-Smtp-Source: AGHT+IHBLS4DibeLplw17yL29UX4nMvdAmJ6Kx27iN3j08nldxSGvgqBGpPDuy6fs7sFGp47pfmRGQ==
+X-Received: by 2002:a7b:ce96:0:b0:471:611:c1e2 with SMTP id 5b1f17b1804b1-4772622261fmr6057385e9.3.1761767958401;
+        Wed, 29 Oct 2025 12:59:18 -0700 (PDT)
+Received: from localhost ([2620:10d:c092:500::4:7e57])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47728a96897sm302495e9.11.2025.10.29.12.59.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Oct 2025 12:59:17 -0700 (PDT)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com,
+	eddyz87@gmail.com,
+	ihor.solodrai@linux.dev
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next v1] selftests/bpf: fix file_reader test
+Date: Wed, 29 Oct 2025 19:59:07 +0000
+Message-ID: <20251029195907.858217-1-mykyta.yatsenko5@gmail.com>
+X-Mailer: git-send-email 2.51.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 3/4] selftests/bpf: integrate
- test_tc_tunnel.sh tests into test_progs
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?=
- <alexis.lothore@bootlin.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Bastien Curutchet <bastien.curutchet@bootlin.com>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20251027-tc_tunnel-v3-0-505c12019f9d@bootlin.com>
- <20251027-tc_tunnel-v3-3-505c12019f9d@bootlin.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20251027-tc_tunnel-v3-3-505c12019f9d@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 10/27/25 7:51 AM, Alexis Lothoré (eBPF Foundation) wrote:
-> +static int run_server(struct subtest_cfg *cfg)
-> +{
-> +	struct nstoken *nstoken = open_netns(SERVER_NS);
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
-It is unlikely but still better to check for open_netns failure. Just in 
-case that the network changes/traffic is accidentally done in the 
-original netns. There are a few netns switching in the test. Please 
-followup.
+file_reader/on_open_expect_fault intermittently fails when test_progs
+runs tests in parallel, because it expects a page fault on first read.
+Another file_reader test running concurrently may have already pulled
+the same pages into the page cache, eliminating the fault and causing a
+spurious failure.
 
-> +	int family = cfg->ipproto == 6 ? AF_INET6 : AF_INET;
-> +
-> +	cfg->server_fd = start_reuseport_server(family, SOCK_STREAM,
-> +						cfg->server_addr, TEST_PORT,
-> +						TIMEOUT_MS, 1);
+Make file_reader/on_open_expect_fault read from a file region that does
+not overlap with other file_reader tests, so the initial access still
+faults even under parallel execution.
 
-Why reuseport is needed? Does it have issue in bind() to the same 
-ip/port in the later sub-test?
-> +	close_netns(nstoken);
-> +	if (!ASSERT_NEQ(cfg->server_fd, NULL, "start server"))
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+---
+ tools/testing/selftests/bpf/prog_tests/file_reader.c | 6 +++++-
+ tools/testing/selftests/bpf/progs/file_reader.c      | 2 +-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-I changed the check to ASSERT_OK_PTR. Also two other similar 
-ASSERT_[N]EQ(..., NULL, ...) usages.
-> +		return -1;
-> +
-> +	return 0;
-> +}
-> +
-> +static void stop_server(struct subtest_cfg *cfg)
-> +{
-> +	close(*cfg->server_fd);
-
-NULL check on cfg->server_fd is needed during the error path of 
-run_test(). cfg->server_fd is leaked also. I changed it to 
-free_fds(cfg->server_fd, 1) instead.
-
-> +	cfg->server_fd = NULL;
-
-I don't think cfg will be reused, so I skip this NULL assignment.
-
-> +}
-> +
-> +static int check_server_rx_data(struct subtest_cfg *cfg,
-> +				struct connection *conn, int len)
-> +{
-> +	int err;
-> +
-> +	memset(rx_buffer, 0, BUFFER_LEN);
-> +	err = recv(conn->server_fd, rx_buffer, len, 0);
-> +	if (!ASSERT_EQ(err, len, "check rx data len"))
-> +		return 1;
-> +	if (!ASSERT_MEMEQ(tx_buffer, rx_buffer, len, "check received data"))
-> +		return 1;
-> +	return 0;
-> +}
-> +
-> +static struct connection *connect_client_to_server(struct subtest_cfg *cfg)
-> +{
-> +	struct network_helper_opts opts = {.timeout_ms = 500};
-> +	int family = cfg->ipproto == 6 ? AF_INET6 : AF_INET;
-> +	struct connection *conn = NULL;
-> +	int client_fd, server_fd;
-> +
-> +	conn = malloc(sizeof(struct connection));
-> +	if (!conn)
-> +		return conn;
-> +
-> +	client_fd = connect_to_addr_str(family, SOCK_STREAM, cfg->server_addr,
-> +					TEST_PORT, &opts);
-> +
-> +	if (client_fd < 0) {
-> +		free(conn);
-> +		return NULL;
-> +	}
-> +
-> +	server_fd = accept(*cfg->server_fd, NULL, NULL);
-> +	if (server_fd < 0) {
-
-Fixed the client_fd leak.
-Applied. Thanks.
+diff --git a/tools/testing/selftests/bpf/prog_tests/file_reader.c b/tools/testing/selftests/bpf/prog_tests/file_reader.c
+index 2a034d43b73e..5cde32b35da4 100644
+--- a/tools/testing/selftests/bpf/prog_tests/file_reader.c
++++ b/tools/testing/selftests/bpf/prog_tests/file_reader.c
+@@ -52,7 +52,11 @@ static int initialize_file_contents(void)
+ 	/* page-align base file address */
+ 	addr = (void *)((unsigned long)addr & ~(page_sz - 1));
+ 
+-	for (off = 0; off < sizeof(file_contents); off += page_sz) {
++	/*
++	 * Page out range 0..512K, use 0..256K for positive tests and
++	 * 256K..512K for negative tests expecting page faults
++	 */
++	for (off = 0; off < sizeof(file_contents) * 2; off += page_sz) {
+ 		if (!ASSERT_OK(madvise(addr + off, page_sz, MADV_PAGEOUT),
+ 			       "madvise pageout"))
+ 			return errno;
+diff --git a/tools/testing/selftests/bpf/progs/file_reader.c b/tools/testing/selftests/bpf/progs/file_reader.c
+index 2585f83b0ce5..166c3ac6957d 100644
+--- a/tools/testing/selftests/bpf/progs/file_reader.c
++++ b/tools/testing/selftests/bpf/progs/file_reader.c
+@@ -49,7 +49,7 @@ int on_open_expect_fault(void *c)
+ 	if (bpf_dynptr_from_file(file, 0, &dynptr))
+ 		goto out;
+ 
+-	local_err = bpf_dynptr_read(tmp_buf, user_buf_sz, &dynptr, 0, 0);
++	local_err = bpf_dynptr_read(tmp_buf, user_buf_sz, &dynptr, user_buf_sz, 0);
+ 	if (local_err == -EFAULT) { /* Expect page fault */
+ 		local_err = 0;
+ 		run_success = 1;
+-- 
+2.51.1
 
 
