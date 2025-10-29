@@ -1,120 +1,181 @@
-Return-Path: <bpf+bounces-72653-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72654-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29FDEC17708
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 00:59:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 314D9C1772B
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 01:01:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AAA81A65637
-	for <lists+bpf@lfdr.de>; Tue, 28 Oct 2025 23:59:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3476A3A5227
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 00:01:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8A7F355808;
-	Tue, 28 Oct 2025 23:58:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94261CAA4;
+	Wed, 29 Oct 2025 00:01:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="b5mm2fmB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RrID+pVC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5D1933711A
-	for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 23:58:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01444A41
+	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 00:01:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761695936; cv=none; b=p2ZhJ/OxHblfFbsGZA8jRuVCIPRPus5OPcfPBh6f/myjm8mMIfV1nGiDUmWnuI8lDDSNK427eAHzkKGw6IZQwekbdtRGnNpbPr+yZF2qbiZ/wd1+IEbTVvOrGwPAYQmLaaO4IoCjxA7jELQIZFNjWsRoz1OSb6Yzb8JcMf61yiU=
+	t=1761696076; cv=none; b=rTc0VVIHFmKFsdDZHmKc/gBWB0h7fD6IGBuxBCM2qs2IlkEX+Q3wrJOvLkJusy3MACY/QaKH5t1yR97Orz6dYJsnKQjor02fcIMKFdAgg30BS6cGRjFBcb0DnPwPXNxayT+wuNPjr/OLE8Cse8WLac8T7nFvcCZ+8ZwRdUp0KE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761695936; c=relaxed/simple;
-	bh=kk8zkzm83REChxkZSsstjBUXBS7wFfE2QPwc7AaZrqc=;
+	s=arc-20240116; t=1761696076; c=relaxed/simple;
+	bh=KSsYzrOROHvpveELtj2P3rV5KHC8RF3TgZLr336dA44=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X4aiTSK2qzhLZQGaU4pZ3muCWFCIw1GkgQzNr3VqtD0bYk2HILwQwJsmwFDVdyvX695Hi+KXu+2vD1ccWPCq8OJU42JOFjzNulUrRm5Jt9bldKW2xDomZpS0K6QABOpje3WOAKCNDNMoItbRYxREnl0C/RnAs1SJWK1KYvbeP9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=b5mm2fmB; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-63c2d72581fso9605493a12.0
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 16:58:54 -0700 (PDT)
+	 To:Cc:Content-Type; b=idxtxS4spVonBBI4lAGXb8yeez0vs3sqqfhU1Wyey9Fq6Tx5Q+rC60frgqNwTv9iENJjFazo4lyaBzuw53caA3vxNcyHa7MrZA8p8Gp+0tALWV8vi/gVGwQITUT23+9zcwDZDjiZVJWgawHN1R2csTCPXVFFcZ6bRzwI0JK7QFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RrID+pVC; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-945a4218f19so20796439f.1
+        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 17:01:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1761695933; x=1762300733; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761696074; x=1762300874; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/WE4n4TCb18hPsMXmSS/+ET4xqQfmAur/mQUYq6ibGY=;
-        b=b5mm2fmB9zTSMmFv4iKcb4cYmBOnPB/Zy4oRNHUHZ2iikAuKggazvFoh6D8vH5ZaA9
-         DhmA+LKcnFO/ZrtWv+2TA34YvpTl7erhnFKoSbM2HAtVpRNrZuJyEJhtkWIlZY9GLHks
-         +/MXfaI5oLqKh5dze2y6Rt0r5nN8ipVqo9HD3i/WJISxOx+NS6+V0zoCuTSi9yCJkwlh
-         lqEpqob3fsMnFyMfsJoSfvvOBZDCMfGFjBNH6d4vTByQp0KRH60bi9LyW2aLznonIwV+
-         XUn44AEioKOrWDBMX7EER2Pxhi4Hytd2/q/OVHWxKd1TUG2EPGrQA6fIBm6xvgqMNQor
-         I30A==
+        bh=yKrUqAEKrt2jMEwY5jFnhV9CSrg3ZApnj6UHXbNZRz8=;
+        b=RrID+pVCWCPAIACb78qHpH6TcrDqJKijYBuKIZosdngHuTXgN0lVOG1tjxbeyCa7SB
+         PfEQCYoJjUyR3xeu+D+pRTyVoxr7zzKx+9J2ExADi8iF6eUWNmnmvYyiw+OtWnct/uEj
+         GxsxQsIgIHGNmrY/gSNL10SMAM7B70hpWLav6D67HJGkO2DlOOqiuqKAZaJ9dRt8wgYv
+         4NMQv73htvfJCUfnbGAOqK+KAfkZPqKPYZnuR0ynMDo7hy6qUUeSWik7X9FkQDeFuxj2
+         fFHPfpcIwiKKwGKttHdVRqbRxkHft5uMJxfp827CiW6AXzNVesdY31EuiwtqGViMBzo+
+         vyzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761695933; x=1762300733;
+        d=1e100.net; s=20230601; t=1761696074; x=1762300874;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/WE4n4TCb18hPsMXmSS/+ET4xqQfmAur/mQUYq6ibGY=;
-        b=FmVKsYryg7ZAq0GH8QFZ/X4XN5N4tNdbWoXpzF0s1UbMxWRlytSfGb33R9uealzmeE
-         fQ9nImp4EM3s6XA8dkLx9lih0MW9j9X45RXY8TvNwBFSt5ulxoPmHVDeZN7/k0NbhmYI
-         bVC5w+i5BZyNVj5uEPyG5KWJ2fG2kWhY9Zo6K0d7EpwOTMS8URkxEAe/fe8X6ZPMycrU
-         ki5qofgppq2ipVDBAu/ImUY4/qyaJVw7KM9k5iEwxwO20PLTAY+XrHZ8tUhpqtt/Peyb
-         UjUh733MMEnPNFA5wiI4h7lAWCSXvhWQfd8S/D+aSCrMEZgapbRZNHJ6jyp9BZEtDP1M
-         bQzA==
-X-Forwarded-Encrypted: i=1; AJvYcCUTS7jBhT+p8AXEmb1q9cnIBQMsWcZfpr7zXSBxcAFk5b2JtdAil3J4M/dBIZFUwQG+lO8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwjaGay0yvk6npq/CZIPg3FTBl1EQPPRIXbS2uycjsayNAqG65L
-	clg9jXo/wU8uoTVcJoiuT/x9wHDCmPuRxP5O+j2Ud07xeQ6gBm+7siXAxadRDqjbu6/LAZJI5KT
-	bXmLb01pUD+XYJaenQmjscuWhCRxP8weWxdoLxpEX
-X-Gm-Gg: ASbGncttS/z7DuwyOlVxRvpzy8L28OEcX3t+RSnkFPThDtpOfQlJkzkaxilPFoa9GuL
-	OVfQsUOinfZXj+yuzRNk0FMUZUsbpuX8ZDLlXpiiUQ5YkwhRTUa3NQWqTkvHL5Beds0PO7VAjhS
-	ga/yQRG00VDtuW9tE5HvbuDhsJUjC2DpO7J73wMy9930QNHPCH8qVV8scAFlIvqHS7uoBbi0tc7
-	wk1Tm/Zn2RdyF71NON5qwDPpkj9edf/lLPseev1WUak7BZKKqMRbzsUmrHn
-X-Google-Smtp-Source: AGHT+IHvIzFCAVsIe9KLnMzhe7HeHw161tWjaGF8dq9LK8mHTJ5LNBNsg03z1RN2kv4hUoIzYntUB79AzDiL37F2WAo=
-X-Received: by 2002:a05:6402:50d0:b0:638:74dc:cf78 with SMTP id
- 4fb4d7f45d1cf-64044380bd9mr816143a12.34.1761695932545; Tue, 28 Oct 2025
- 16:58:52 -0700 (PDT)
+        bh=yKrUqAEKrt2jMEwY5jFnhV9CSrg3ZApnj6UHXbNZRz8=;
+        b=djoiGZ7DdxO3byud2o7k02Lh3/4E1D+16zR3Xzc0Sn1Wdn4kFLBgfmTeLNKQpu2Tmx
+         rdYYJ3pYTvB4bt8u+fAl7cPQfrcK71LYgs7RxHne6758uY7QNx6LfpkcCSXq4l4sUNRN
+         QGjEkNr7NW2+2Q4Kul8TuPS1NDyNoSlYhqTvyRJKPxZlG9XsE2tuM67USBQagPbCUR7M
+         KqlPoHSlUGdDK8i8jmey9WUFXBTrah3do84Rl+BcQkETtCPvqPM4C9YQHXSZx4ZtIlRD
+         xn8NxvpWdT8yjtcCxl9aoVCajgPW2gHLl0tGtbW7efKfYs9e87ZO4vg6ZqgWHNoTpENK
+         B7tQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVrKOf4zN1L+qTD7CYHjnQDIbXkt0OlUviSxKRnfWywtM9ah/lg1fTeHuUjZNvS28XTlzU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzdR15d8xSAPnZnUJ4ULmKhcuxNmBmUSnJuWNUJfdzMCy5qJdzY
+	nXFHEa0QtNTYbUkPlKI99ytAtmAAodnyvGg797qwGm1SvJHElgz+KXkyV+3rMkFQ4ZeN3c9tKUT
+	/P4oIvR++wKw4OK2dgdkAfU13QjDNwJI=
+X-Gm-Gg: ASbGncuKY3Ag95VMzlqIez9+M0Sho4nH/daF7U6oYSsWUR+V75xX+MnorDsIpRnlVC7
+	/+S1Bbdjp7g/dxOuHKzO+vBJDAtHuR6+ccBFKajQ5JMwahy0qxHi0EZ+MwL+b7WYK144cHtDi0o
+	/7fQ0tOOsCkbBIdCf2Tb+9Ye+M4qiwMMOUD9XrKmwJ4nodqXlhAm+brPWFWYBsDvdXZc8tLtqAg
+	sJyPdLyHDfOn4GGbZsCSOLLPN6E4oUtCwGggsA+a7V9x+8psuz1TStj9Wk=
+X-Google-Smtp-Source: AGHT+IGgLc96ZMr6l+/NUQL1N7IsFmNZTxHwZhGsXXdYttZwvnG2iOf3+nncQ6djkp1cF/5AZXtX8idEXUBgTmL2Y14=
+X-Received: by 2002:a92:cda5:0:b0:42f:a6b7:922b with SMTP id
+ e9e14a558f8ab-432103d8780mr67405685ab.7.1761696073792; Tue, 28 Oct 2025
+ 17:01:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251028004614.393374-1-viro@zeniv.linux.org.uk> <20251028004614.393374-11-viro@zeniv.linux.org.uk>
-In-Reply-To: <20251028004614.393374-11-viro@zeniv.linux.org.uk>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 28 Oct 2025 19:58:33 -0400
-X-Gm-Features: AWmQ_bnbOFuYYw7q6A3vKx1W9tiGVviHbdGsSFCW7Z6eJ8jFBd6mwoz2mbQdJG4
-Message-ID: <CAHC9VhR4nO+TanWwz4R-RQijy9h5B2h6HuBDXxBNp0+kAE4Asw@mail.gmail.com>
-Subject: Re: [PATCH v2 10/50] configfs, securityfs: kill_litter_super() not needed
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org, 
-	brauner@kernel.org, jack@suse.cz, raven@themaw.net, miklos@szeredi.hu, 
-	neil@brown.name, a.hindborg@kernel.org, linux-mm@kvack.org, 
-	linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev, kees@kernel.org, 
-	rostedt@goodmis.org, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
-	casey@schaufler-ca.com, linuxppc-dev@lists.ozlabs.org, 
-	john.johansen@canonical.com, selinux@vger.kernel.org, 
-	borntraeger@linux.ibm.com, bpf@vger.kernel.org
+References: <20251021131209.41491-1-kerneljasonxing@gmail.com>
+ <20251021131209.41491-2-kerneljasonxing@gmail.com> <aPt_WLQXPDOcmd1M@horms.kernel.org>
+ <CAL+tcoDnAv7+kG4WdAh1ELP0=bj_1og+DdD-JS4YuWzZC+9OhA@mail.gmail.com> <aQDW3HK6bx2LgfBY@horms.kernel.org>
+In-Reply-To: <aQDW3HK6bx2LgfBY@horms.kernel.org>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Wed, 29 Oct 2025 08:00:37 +0800
+X-Gm-Features: AWmQ_bnfQud7JTOfOAs9f495lJaHp_F0FO0O7ztnBuAzpwXum4nybDK_Fz258Do
+Message-ID: <CAL+tcoC6AAB3Ag_LpNUp6_WLoNziK4Du0=wtPWN8hm_SbdRSaA@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 1/9] xsk: introduce XDP_GENERIC_XMIT_BATCH setsockopt
+To: Simon Horman <horms@kernel.org>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
+	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
+	john.fastabend@gmail.com, joe@dama.to, willemdebruijn.kernel@gmail.com, 
+	bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	Jason Xing <kernelxing@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 27, 2025 at 8:46=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> w=
-rote:
+On Tue, Oct 28, 2025 at 10:44=E2=80=AFPM Simon Horman <horms@kernel.org> wr=
+ote:
 >
-> These are guaranteed to be empty by the time they are shut down;
-> both are single-instance and there is an internal mount maintained
-> for as long as there is any contents.
+> On Sat, Oct 25, 2025 at 05:08:39PM +0800, Jason Xing wrote:
+> > Hi Simon,
+> >
+> > On Fri, Oct 24, 2025 at 9:30=E2=80=AFPM Simon Horman <horms@kernel.org>=
+ wrote:
+> > >
+> > > On Tue, Oct 21, 2025 at 09:12:01PM +0800, Jason Xing wrote:
+> > >
+> > > ...
+> > >
+> > > > index 7b0c68a70888..ace91800c447 100644
+> > >
+> > > ...
+> > >
+> > > > @@ -1544,6 +1546,55 @@ static int xsk_setsockopt(struct socket *soc=
+k, int level, int optname,
+> > > >               WRITE_ONCE(xs->max_tx_budget, budget);
+> > > >               return 0;
+> > > >       }
+> > > > +     case XDP_GENERIC_XMIT_BATCH:
+> > > > +     {
+> > > > +             struct xsk_buff_pool *pool =3D xs->pool;
+> > > > +             struct xsk_batch *batch =3D &xs->batch;
+> > > > +             struct xdp_desc *descs;
+> > > > +             struct sk_buff **skbs;
+> > > > +             unsigned int size;
+> > > > +             int ret =3D 0;
+> > > > +
+> > > > +             if (optlen !=3D sizeof(size))
+> > > > +                     return -EINVAL;
+> > > > +             if (copy_from_sockptr(&size, optval, sizeof(size)))
+> > > > +                     return -EFAULT;
+> > > > +             if (size =3D=3D batch->generic_xmit_batch)
+> > > > +                     return 0;
+> > > > +             if (size > xs->max_tx_budget || !pool)
+> > > > +                     return -EACCES;
+> > > > +
+> > > > +             mutex_lock(&xs->mutex);
+> > > > +             if (!size) {
+> > > > +                     kfree(batch->skb_cache);
+> > > > +                     kvfree(batch->desc_cache);
+> > > > +                     batch->generic_xmit_batch =3D 0;
+> > > > +                     goto out;
+> > > > +             }
+> > > > +
+> > > > +             skbs =3D kmalloc(size * sizeof(struct sk_buff *), GFP=
+_KERNEL);
+> > > > +             if (!skbs) {
+> > > > +                     ret =3D -ENOMEM;
+> > > > +                     goto out;
+> > > > +             }
+> > > > +             descs =3D kvcalloc(size, sizeof(struct xdp_desc), GFP=
+_KERNEL);
+> > > > +             if (!descs) {
+> > > > +                     kfree(skbs);
+> > > > +                     ret =3D -ENOMEM;
+> > > > +                     goto out;
+> > > > +             }
+> > > > +             if (batch->skb_cache)
+> > > > +                     kfree(batch->skb_cache);
+> > > > +             if (batch->desc_cache)
+> > > > +                     kvfree(batch->desc_cache);
+> > >
+> > > Hi Jason,
+> > >
+> > > nit: kfree and kvfree are no-ops when passed NULL,
+> > >      so the conditions above seem unnecessary.
+> >
+> > Yep, but the checkpatch complains. I thought it might be good to keep
+> > it because normally we need to check the validation of the pointer
+> > first and then free it. WDYT?
 >
-> Both have that internal mount pinned by every object in root.
->
-> In other words, kill_litter_super() boils down to kill_anon_super()
-> for those.
->
-> Reviewed-by: Joel Becker <jlbec@evilplan.org>
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> ---
->  fs/configfs/mount.c | 2 +-
->  security/inode.c    | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> I don't feel particularly strongly about this.
+> But I would lean to wards removing the if() conditions
+> because they are unnecessary: less is more.
 
-Acked-by: Paul Moore <paul@paul-moore> (LSM)
+I see. I will do it :)
 
---=20
-paul-moore.com
+Thanks,
+Jason
 
