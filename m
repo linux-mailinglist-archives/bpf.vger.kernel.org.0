@@ -1,146 +1,221 @@
-Return-Path: <bpf+bounces-72886-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72887-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DF42C1D1B0
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 20:59:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D32B7C1D219
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 21:06:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D77E134C813
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 19:59:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 990DD3ABEFA
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 20:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2492435A95F;
-	Wed, 29 Oct 2025 19:59:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53E2231A805;
+	Wed, 29 Oct 2025 20:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K5F8Dcec"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XesAeEvE";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ApPLo/gT";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XesAeEvE";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ApPLo/gT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFDD357A29
-	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 19:59:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D14D25A65B
+	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 20:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761767962; cv=none; b=A+H9fkufdBBgk96NdHxA3op/8eF+EmEx1XSC2peoQywwkSuQWFmvhSBe1wZhAMza4SaL/jXaP21AFQAHdyNYrTdYOw8N79vrF7P87jPcDPSDBVdBw2rNM2DKX1vl4AQCODa7nytFttA/RNyqzvbS4WHDXMAfoE47o3R+I0OBgG8=
+	t=1761768374; cv=none; b=t6VlFytGyqxsPfN/BCeHFXzhWUNcOCyBobbTi9Q1Vr54snirixEg2lBj05zrYa6tGYLJ+GzMehkD0dUCse2SNVjLOMY3n14k6B8eoOhgf0c4Q3rmQj5FO0rYKkJvpAP+D56An0DYBybzIHSOc1dbfqPoEp/Zo9J+cx8izBk3aPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761767962; c=relaxed/simple;
-	bh=ueTnTOLUwaKJpePfYh2+s3lXTRYCYpbmLclGTWkl0wc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i52wXbYzp1576uQ8HAB0g3Ozh9GQ5puMCu+JnEkI8u8rGqHkLMiyIdR6vplXIj9YN5QxODgg05Zxv3jk5N6mgzdOAKwg0C7Wr7XIuL9je8QoqYq8ZRO3qqUoT2ZN0Ij/jL4vlxj0bGLq+qUvrEcbYpqEfyPLcJm9/dM4u+gwXlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K5F8Dcec; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-470ffbf2150so8589135e9.1
-        for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 12:59:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761767959; x=1762372759; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=X8yZz1v715AlMXc/A5J084sC/x+YSGFpgitDdD3oebI=;
-        b=K5F8DcecP32BWaJ4wzP/Skc0Dp7HNkUdklObtl3+OvdfsNUThYlazroKkIuacjKtMM
-         EI2PPAdxgaSpLxvJIoeslj4tN/5d0lbjTRoX0EnjENYmYtQ8gAD1Cnrhb7gsLFWpIx8C
-         2FFbNtaw47rqnUv87iOEMv5FwZDxvcG5bKp++YHUHUbpN7S5ukJkb5PLe39lOz0W23xe
-         aIML2eePkHdxkAeGZ8pNtup7FD1u+dfUWGC0bkz6ImrRi2JB4dOdZFFMSmJMgxTX5oko
-         jPsFHnl0iRZerMNVldMJm9y5hCfr6jhhPTswMRD+eTJde7MYuH51uVpyfBIMhfhKBG0t
-         icCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761767959; x=1762372759;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X8yZz1v715AlMXc/A5J084sC/x+YSGFpgitDdD3oebI=;
-        b=lU+Ka2jXeTsL/ovExfWHgkUy+P0nfxedkwKl4bZtuQuwbLlo0ZPLl63X83TyC13KSj
-         KFp3Sx2HHpeYUOu4arV00aoZstPWxrxc9vV9fp+ZwIo14eriB/WI4KjkCOfiextI8SA4
-         hB2C2ns2kJbyAQqEg6uTZL68To3ocjX7JtihOmIRr4UfAxD6Ks1vA3VzVyb8MwOKmx0C
-         UJ8ngVpRQB8rWD2FAmIUKcA9fPYCU4z1KU85uk9c7wHA3GX4bfIVkq7eucnpsoFbTBXF
-         jm/UPu9lNX1mtDlf1hO2QVJT6lwiKymHfbncoMaDrF04nwKy2knkAEECMPtYuSLWzB6V
-         T2yQ==
-X-Gm-Message-State: AOJu0YxhO60I9+B6TIog/sEwpjIuWq50GZbsnZ+R6XW0THg3FzFDoWaa
-	ro4vZDJs3bvuPDB/+KA3CFsFxYC//qh0yaqNDRUg7bMpxta0MclIAzqzDFMC3Q==
-X-Gm-Gg: ASbGnctVh+y1WThFZZWC+YtyLqUcIcSsDtdxQxJTfzsph90Akfzni1qNcatKF1WM1/K
-	jEiqyhvlZiwxDMIiH8k9sGAMs+e8+Y1UqkHp8UbvkMMgdhycBJAly253vCO9xjlpYLKzAmWZjEb
-	TwkqeYwXZnCLlNc2X+57PSFrc5PWFBmtRKw18hjUmhEfQxEW1yQDrkVrN/Sv1UPAA3ESQHm6Xhw
-	gYx/tVNkR3xoYJCErQO/A8zJsp0rtjIpZkeUXo3od03Uv4Jqa9uW4MPqX/FTts38MnojqfqzMVL
-	DmAzJGcaHH0fLUWyHZp38g0chS53Vcu7PZKnP4lSlUumSYNkUzVs9qtDraL6SYo4BETprQwOwVk
-	CvUtNZdvIoGUG3QTZZwXndGaR6R0hKLCWVeTDlYkP6IE279NbOvDrwY6vUZ4BA2JKiqNIyEg=
-X-Google-Smtp-Source: AGHT+IHBLS4DibeLplw17yL29UX4nMvdAmJ6Kx27iN3j08nldxSGvgqBGpPDuy6fs7sFGp47pfmRGQ==
-X-Received: by 2002:a7b:ce96:0:b0:471:611:c1e2 with SMTP id 5b1f17b1804b1-4772622261fmr6057385e9.3.1761767958401;
-        Wed, 29 Oct 2025 12:59:18 -0700 (PDT)
-Received: from localhost ([2620:10d:c092:500::4:7e57])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47728a96897sm302495e9.11.2025.10.29.12.59.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Oct 2025 12:59:17 -0700 (PDT)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com,
-	ihor.solodrai@linux.dev
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v1] selftests/bpf: fix file_reader test
-Date: Wed, 29 Oct 2025 19:59:07 +0000
-Message-ID: <20251029195907.858217-1-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.51.1
+	s=arc-20240116; t=1761768374; c=relaxed/simple;
+	bh=egTAeYK6JoSGkrLLP0QAsPVdhHkM2VNPKAOqPQwnQBc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TZME2a1ZI9qk/5rRI7HXeAXM2/6ecvjPAplYUQuGLpfSqTnTL7SwNL33Ul3oS/UVO+2jIbLfCz5hyQ7DGqdWp2XzK0C1IdzY9Ogvxd1so+z5/czzGmPmzGaNaEB63A+r/JXOHMPcq0R3f9JF/Lmi1xks5T4oi5pam/r4GpD9wFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XesAeEvE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ApPLo/gT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XesAeEvE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ApPLo/gT; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4DF833462A;
+	Wed, 29 Oct 2025 20:06:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1761768370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1K2si2V9W9zo0go0yDRYK2pKFo0UoWxQ6EW/yImCMlg=;
+	b=XesAeEvEBcp2wZCBnHcDJOOrn8ta5ZEKToqcvnOK4EbRi/n1GznqYIxQpgM+AGijZDoK4l
+	nDtZEffLTm0L7cTZEpz/x7JgmX2PudsUZodblxeHUsbW4CYWVoiMQa1yRYA++yR1wJyNSK
+	95LInYV7bNTlEtEqFnrAB0Not6zXUj8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1761768370;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1K2si2V9W9zo0go0yDRYK2pKFo0UoWxQ6EW/yImCMlg=;
+	b=ApPLo/gTIjc2TE/w6BQHdAVKefWoMh2AwUICgu2zdSw/lJ+74fyyGNsNe0ZTwALQdKRacg
+	IKg35NXPDwRdhkAQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=XesAeEvE;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="ApPLo/gT"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1761768370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1K2si2V9W9zo0go0yDRYK2pKFo0UoWxQ6EW/yImCMlg=;
+	b=XesAeEvEBcp2wZCBnHcDJOOrn8ta5ZEKToqcvnOK4EbRi/n1GznqYIxQpgM+AGijZDoK4l
+	nDtZEffLTm0L7cTZEpz/x7JgmX2PudsUZodblxeHUsbW4CYWVoiMQa1yRYA++yR1wJyNSK
+	95LInYV7bNTlEtEqFnrAB0Not6zXUj8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1761768370;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1K2si2V9W9zo0go0yDRYK2pKFo0UoWxQ6EW/yImCMlg=;
+	b=ApPLo/gTIjc2TE/w6BQHdAVKefWoMh2AwUICgu2zdSw/lJ+74fyyGNsNe0ZTwALQdKRacg
+	IKg35NXPDwRdhkAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D8A0D1349D;
+	Wed, 29 Oct 2025 20:06:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XH2dM7FzAmnXfAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 29 Oct 2025 20:06:09 +0000
+Message-ID: <982967fc-5636-46dc-83a1-ed3f4d98c8ae@suse.cz>
+Date: Wed, 29 Oct 2025 21:06:09 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 08/19] slab: handle kmalloc sheaves bootstrap
+Content-Language: en-US
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Suren Baghdasaryan <surenb@google.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ bpf@vger.kernel.org, kasan-dev@googlegroups.com
+References: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz>
+ <20251023-sheaves-for-all-v1-8-6ffa2c9941c0@suse.cz>
+ <aP8NMX48FLn8FPZD@hyeyoo>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <aP8NMX48FLn8FPZD@hyeyoo>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 4DF833462A
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,gentwo.org,google.com,linux.dev,gmail.com,oracle.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid]
+X-Spam-Score: -4.51
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+On 10/27/25 07:12, Harry Yoo wrote:
+>> @@ -8549,6 +8559,74 @@ static struct kmem_cache * __init bootstrap(struct kmem_cache *static_cache)
+>>  	return s;
+>>  }
+>>  
+>> +/*
+>> + * Finish the sheaves initialization done normally by init_percpu_sheaves() and
+>> + * init_kmem_cache_nodes(). For normal kmalloc caches we have to bootstrap it
+>> + * since sheaves and barns are allocated by kmalloc.
+>> + */
+>> +static void __init bootstrap_cache_sheaves(struct kmem_cache *s)
+>> +{
+>> +	struct kmem_cache_args empty_args = {};
+>> +	unsigned int capacity;
+>> +	bool failed = false;
+>> +	int node, cpu;
+>> +
+>> +	capacity = calculate_sheaf_capacity(s, &empty_args);
+>> +
+>> +	/* capacity can be 0 due to debugging or SLUB_TINY */
+>> +	if (!capacity)
+>> +		return;
+> 
+> I think pcs->main should still be !NULL in this case?
 
-file_reader/on_open_expect_fault intermittently fails when test_progs
-runs tests in parallel, because it expects a page fault on first read.
-Another file_reader test running concurrently may have already pulled
-the same pages into the page cache, eliminating the fault and causing a
-spurious failure.
-
-Make file_reader/on_open_expect_fault read from a file region that does
-not overlap with other file_reader tests, so the initial access still
-faults even under parallel execution.
-
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- tools/testing/selftests/bpf/prog_tests/file_reader.c | 6 +++++-
- tools/testing/selftests/bpf/progs/file_reader.c      | 2 +-
- 2 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/file_reader.c b/tools/testing/selftests/bpf/prog_tests/file_reader.c
-index 2a034d43b73e..5cde32b35da4 100644
---- a/tools/testing/selftests/bpf/prog_tests/file_reader.c
-+++ b/tools/testing/selftests/bpf/prog_tests/file_reader.c
-@@ -52,7 +52,11 @@ static int initialize_file_contents(void)
- 	/* page-align base file address */
- 	addr = (void *)((unsigned long)addr & ~(page_sz - 1));
- 
--	for (off = 0; off < sizeof(file_contents); off += page_sz) {
-+	/*
-+	 * Page out range 0..512K, use 0..256K for positive tests and
-+	 * 256K..512K for negative tests expecting page faults
-+	 */
-+	for (off = 0; off < sizeof(file_contents) * 2; off += page_sz) {
- 		if (!ASSERT_OK(madvise(addr + off, page_sz, MADV_PAGEOUT),
- 			       "madvise pageout"))
- 			return errno;
-diff --git a/tools/testing/selftests/bpf/progs/file_reader.c b/tools/testing/selftests/bpf/progs/file_reader.c
-index 2585f83b0ce5..166c3ac6957d 100644
---- a/tools/testing/selftests/bpf/progs/file_reader.c
-+++ b/tools/testing/selftests/bpf/progs/file_reader.c
-@@ -49,7 +49,7 @@ int on_open_expect_fault(void *c)
- 	if (bpf_dynptr_from_file(file, 0, &dynptr))
- 		goto out;
- 
--	local_err = bpf_dynptr_read(tmp_buf, user_buf_sz, &dynptr, 0, 0);
-+	local_err = bpf_dynptr_read(tmp_buf, user_buf_sz, &dynptr, user_buf_sz, 0);
- 	if (local_err == -EFAULT) { /* Expect page fault */
- 		local_err = 0;
- 		run_success = 1;
--- 
-2.51.1
-
+It will remain to be set to bootstrap_sheaf, and with s->sheaf_capacity
+things will continue to work.
 
