@@ -1,61 +1,95 @@
-Return-Path: <bpf+bounces-72834-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72835-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB5C4C1C8BF
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 18:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0297CC1C81F
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 18:39:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EB045858C1
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 16:47:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66FEB62432D
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 17:30:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F092F4A05;
-	Wed, 29 Oct 2025 16:46:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7444D34EEEC;
+	Wed, 29 Oct 2025 17:30:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="YW2HyLaR"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LVEIVOaQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ctF9xyK7";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LVEIVOaQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ctF9xyK7"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B621625A359;
-	Wed, 29 Oct 2025 16:46:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC0234F47B
+	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 17:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761756409; cv=none; b=DUr+n10AkJxdoObF+KdeM49M1NVvh8rPcclFsrov1iaC0tIGL7/WDglVQi3892zk91cwfAhxOc7TZAON5UuEiiFbS0LELOdhVFyGlu+hKyd+kV6+OtN6+3oiMwBeA89+Y36OroxgiA5R89cWutaqh5dT4zhLQgQgPX4Oe5lG6Ug=
+	t=1761759004; cv=none; b=Ix3vaLEBQZ2CEuYwMJFtzMkccQ0L1q6+hOff3N/JqUvzoKaHhhuiKUSxARYElKsBrrR8aq3YOJjkqwurWp3HWsOg/Xm2luY7L3CiJNe16hOtlLPtmedeSD5SUcm7WqerhCNhn5gXbHf0b3XF9aEX3VP7TIfmFcQMLdwpicC1Pok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761756409; c=relaxed/simple;
-	bh=TDXvwBfHT+9Q+fyL3LUDJND5eqVMnrq1CTZDEBVx7kc=;
+	s=arc-20240116; t=1761759004; c=relaxed/simple;
+	bh=qVTH40A5JCbCOMaD/Tpex0QWcx3jmKhVZXMoHraElUo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pW1IahNki/uJ1jPh/pFHVApTpXI+wuOBlrEhqNHRxKiT4AW+T9E+DJBt+O6/mv51iKXb3Jt0L679y02bV4etOZaGQF3E9m0oiE8U/ttxMNPTEBXtiocPzmlf5cEEgD4X8+t6lykINrQ2TgwX9Dj/xuoWcpfLxUiT5Nok2hDK8R0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=YW2HyLaR; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=ezBqsnAVQOjC1ykpTlU6d2On8atja4ltAjGiclusszY=; b=YW2HyLaRK7BVrvPyVqgQf5r2at
-	us2HpLLk1XAm4QIvFH9TMlYA8iEzLGNie8E3+PvYpWmV4jrHejUlGSUyVywe8NijODSWPFQHLmO/x
-	Se4Gh3p46aChCz0Qarn+rMbSaXB/PLMy+i50U5RUNy14ufqwQfnIW4O1imMOxNayHJW0oI69/juk1
-	wbf9j09n9MmuMS5dpdaMvt9T3WM3sjEkKDrVkB1YvmRBQ8ZknKgvMvHsFRaCROA0ge6kgbj1kJF9O
-	Y3AkwFS3aczh/ZgKVBZW8EHKt3Jrjjfy7jqSP5oZ7G5Wo2obSpn0kxFaliP31eOJ9yltwq48XTrEZ
-	igcWDBnw==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1vE9JR-0001Wb-1M;
-	Wed, 29 Oct 2025 17:46:17 +0100
-Received: from localhost ([127.0.0.1])
-	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1vE9JQ-00051F-1R;
-	Wed, 29 Oct 2025 17:46:16 +0100
-Message-ID: <ceda0507-e25a-43af-bad6-e9ede474ff94@iogearbox.net>
-Date: Wed, 29 Oct 2025 17:46:15 +0100
+	 In-Reply-To:Content-Type; b=geq+rJO4SqDlog9I/IefZyJtSIwQEO0hPjDFCns4UopmxMBuCRwo74/Mpt7hW3+VkX5uVP8hVM32Vg/ISDsNGWSWbagf785FAbPOV1tt/iRn2IrkiuxZmfPtPsmxYwk9jC+fA1oiy7FkMbdf4Qp1X80+R59RKD937eAYuhBAwPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LVEIVOaQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ctF9xyK7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LVEIVOaQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ctF9xyK7; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9C6873410D;
+	Wed, 29 Oct 2025 17:30:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1761759000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=oRycsl2hppTtVF2hMtZZwaQ8XfejV47sf0TtOJTd2k4=;
+	b=LVEIVOaQiQihyyVUrP032S89inzygkFWyPglGyhCVKJys7tNMO6HUJzV4u69AGh6ilDhGs
+	MkzoCxej3zPDuphsnF+Hp1VA2ZsYuV14fngmFbHOhu0qDjTL0mVq3oUguLEh8loNejGcqJ
+	0G9uHfoch0uFMiMIsjFJtTWHalG0q0I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1761759000;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=oRycsl2hppTtVF2hMtZZwaQ8XfejV47sf0TtOJTd2k4=;
+	b=ctF9xyK7ak253elPpv+mWxgHFLYAJ390A0negsSyH/lt8REDr2T6ttS1j2ikK1D5xSvd54
+	AiwoEjokQlAAJLDQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1761759000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=oRycsl2hppTtVF2hMtZZwaQ8XfejV47sf0TtOJTd2k4=;
+	b=LVEIVOaQiQihyyVUrP032S89inzygkFWyPglGyhCVKJys7tNMO6HUJzV4u69AGh6ilDhGs
+	MkzoCxej3zPDuphsnF+Hp1VA2ZsYuV14fngmFbHOhu0qDjTL0mVq3oUguLEh8loNejGcqJ
+	0G9uHfoch0uFMiMIsjFJtTWHalG0q0I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1761759000;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=oRycsl2hppTtVF2hMtZZwaQ8XfejV47sf0TtOJTd2k4=;
+	b=ctF9xyK7ak253elPpv+mWxgHFLYAJ390A0negsSyH/lt8REDr2T6ttS1j2ikK1D5xSvd54
+	AiwoEjokQlAAJLDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7E70C1396A;
+	Wed, 29 Oct 2025 17:30:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id sfBnHhhPAml+ZwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 29 Oct 2025 17:30:00 +0000
+Message-ID: <1e4e6ddd-e4a4-4f3a-ae47-93b69d25ff88@suse.cz>
+Date: Wed, 29 Oct 2025 18:30:00 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,86 +97,146 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 02/15] net: Implement
- netdev_nl_bind_queue_doit
-To: David Wei <dw@davidwei.uk>, Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
- razor@blackwall.org, pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
- john.fastabend@gmail.com, martin.lau@kernel.org, jordan@jrife.io,
- maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, toke@redhat.com,
- yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
-References: <20251020162355.136118-1-daniel@iogearbox.net>
- <20251020162355.136118-3-daniel@iogearbox.net>
- <20251023192842.31a2efc0@kernel.org>
- <2f2333fb-707a-4d21-a32d-776489ddc343@davidwei.uk>
+Subject: Re: [PATCH RFC 07/19] slab: make percpu sheaves compatible with
+ kmalloc_nolock()/kfree_nolock()
 Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <2f2333fb-707a-4d21-a32d-776489ddc343@davidwei.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: Clear (ClamAV 1.0.9/27807/Wed Oct 29 10:50:39 2025)
+To: Chris Mason <clm@meta.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Harry Yoo <harry.yoo@oracle.com>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Suren Baghdasaryan <surenb@google.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ bpf@vger.kernel.org, kasan-dev@googlegroups.com
+References: <20251024140416.642903-1-clm@meta.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <20251024140416.642903-1-clm@meta.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,gentwo.org,google.com,linux.dev,oracle.com,gmail.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Score: -4.30
+X-Spam-Level: 
 
-On 10/28/25 11:41 PM, David Wei wrote:
-> On 2025-10-23 19:28, Jakub Kicinski wrote:
->> On Mon, 20 Oct 2025 18:23:42 +0200 Daniel Borkmann wrote:
->>> +void netdev_rx_queue_peer(struct net_device *src_dev,
->>> +              struct netdev_rx_queue *src_rxq,
->>> +              struct netdev_rx_queue *dst_rxq)
->>> +{
->>> +    netdev_assert_locked(src_dev);
->>> +    netdev_assert_locked(dst_rxq->dev);
->>> +
->>> +    netdev_hold(src_dev, &src_rxq->dev_tracker, GFP_KERNEL);
->>
->> Isn't ->dev_tracker already used by sysfs?
+On 10/24/25 16:04, Chris Mason wrote:
+> On Thu, 23 Oct 2025 15:52:29 +0200 Vlastimil Babka <vbabka@suse.cz> wrote:
 > 
-> You're right, it is. Can netdevice_tracker not be shared?
-Given this is not common practice, I've added a peer_tracker (given
-this is also only enabled / takes space on debug kernels).
+>> Before we enable percpu sheaves for kmalloc caches, we need to make sure
+>> kmalloc_nolock() and kfree_nolock() will continue working properly and
+>> not spin when not allowed to.
+>> 
+>> Percpu sheaves themselves use local_trylock() so they are already
+>> compatible. We just need to be careful with the barn->lock spin_lock.
+>> Pass a new allow_spin parameter where necessary to use
+>> spin_trylock_irqsave().
+>> 
+>> In kmalloc_nolock_noprof() we can now attempt alloc_from_pcs() safely,
+>> for now it will always fail until we enable sheaves for kmalloc caches
+>> next. Similarly in kfree_nolock() we can attempt free_to_pcs().
+>>
+> 
+> Hi Vlastimil,
+> 
+> We're trying out the AI patch review automation on the BPF commits and it had
+> some questions about a few of these.  Since the goal is to actually test the
+> automation, I'm putting them in unedited, but I did try and make sure they
+> were valid before sending.
+> 
+> This one is a little verbose for s/NULL/ERR_PTR/ suggestions, but:
+> 
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index ecb10ed5acfe..5d0b2cf66520 100644
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+> 
+> [ ... ]
+> 
+>> @@ -2990,7 +2998,8 @@ barn_replace_empty_sheaf(struct node_barn *barn, struct slab_sheaf *empty)
+>>   * barn. But if there are too many full sheaves, reject this with -E2BIG.
+>>   */
+>>  static struct slab_sheaf *
+>> -barn_replace_full_sheaf(struct node_barn *barn, struct slab_sheaf *full)
+>> +barn_replace_full_sheaf(struct node_barn *barn, struct slab_sheaf *full,
+>> +			bool allow_spin)
+>>  {
+>>  	struct slab_sheaf *empty;
+>>  	unsigned long flags;
+>> @@ -3001,7 +3010,10 @@ barn_replace_full_sheaf(struct node_barn *barn, struct slab_sheaf *full)
+>>  	if (!data_race(barn->nr_empty))
+>>  		return ERR_PTR(-ENOMEM);
+>>
+>> -	spin_lock_irqsave(&barn->lock, flags);
+>> +	if (likely(allow_spin))
+>> +		spin_lock_irqsave(&barn->lock, flags);
+>> +	else if (!spin_trylock_irqsave(&barn->lock, flags))
+>> +		return NULL;
+> 
+> barn_replace_full_sheaf() now returns NULL when the trylock fails, in
+> addition to its existing ERR_PTR(-ENOMEM) and ERR_PTR(-E2BIG) returns.
 
-Thanks,
-Daniel
+Good catch, cool it can find such bugs.
+I'll return ERR_PTR(-EBUSY) which should be compatible with the callers.
+
 
