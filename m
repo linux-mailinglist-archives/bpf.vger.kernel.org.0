@@ -1,132 +1,222 @@
-Return-Path: <bpf+bounces-72838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72839-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFC75C1CAF7
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 19:09:06 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36882C1CA24
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 18:59:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE6C65861FF
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 17:55:19 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E556A4E2050
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 17:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEA3354ACB;
-	Wed, 29 Oct 2025 17:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 928E2354AD8;
+	Wed, 29 Oct 2025 17:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="ZqaowaHD"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nrf0lCxh"
 X-Original-To: bpf@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFA923491F4;
-	Wed, 29 Oct 2025 17:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D5B354AC5
+	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 17:56:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761760514; cv=none; b=D6H4Gyp264daYZtZZ9tYtzyOb2iSnASToyWV1fHwveccQDJKZlcR7CntElKmHMV58n+OvTJak+xEqlEO3CzqxUBKG/BfCVqljiQAF8GxAeQ+efEYGtHO6dsRUUxbcSUYFNeFLw1PcHnN7rOhAMS5w38sVNrDr5xCsOBWvROeSOw=
+	t=1761760605; cv=none; b=tXOzdhUD1bviWEwXs1sw7+AMH89HgTluJKF2pA7lmuuF+FqXzSeMtNBLwKrcRM+RYfrcLlR1RTUHykKonn13S88spSZohUe7TMevoYcejRl5igb+F6fRhfUaCfa+qBJzkICkg3qE7vBJl+TMFuSJgRd2or51CwUofmrqagQp86s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761760514; c=relaxed/simple;
-	bh=Giqyu8AnZs8eC9Lv6DdMItTT9K2cqweT89MM0MXC6us=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A6HQz5v5m901vXzkOOOJKi6+I/JjF5WwUkTA8qkP+It1ZvSpJyPpWs5G6KKLIIF+t8/03MfGiUoTPJiVBNn9jndI0mmqcJry+6xdBRjPgmMTySCrhLzbrvDrX1J9VwNz+ZRordNM08FLFqf4acVXsvmztm/AB8fdl23V7i+47MI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=ZqaowaHD; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=hxMUsVatKbWhonDVOdoqCw+QvpkWu6d9zu8seRb9LV0=; b=ZqaowaHDIWj01NIds+0TIejsHt
-	XNcqF3EBDGWDHrewmjlpyIq2j0AgqblkrtlOkNOTt0EWqIzLaIERrwPKq5f9eNXMv1aTIGZLrQ1HH
-	rg+ZORmt81RyG2qU67dv5WXr9ri4iBeQWNdeCGFu2fJJBw6MQcvPU6Grbx5t8CCUE+O3sDZ3z4Rll
-	aINFtyxUrztNEHbgUWxk5lOkAAe1TpMz3bbiONo/ap2hMi1ciYOvoU4Vv8C738OFzygsdk1MinKCa
-	dWoo2gHYZrrQJ6fr+RoKVyeWfb/xKGz1vuqhGzuDHVmJn/TDzmK0rUjeCaSxWOI8aYuDR7FgWfWEr
-	uT4IVvCQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vEANx-0000000D7rD-0xCn;
-	Wed, 29 Oct 2025 17:55:01 +0000
-Date: Wed, 29 Oct 2025 17:55:01 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Mark Tinguely <mark.tinguely@oracle.com>
-Cc: linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org,
-	brauner@kernel.org, jack@suse.cz, raven@themaw.net,
-	miklos@szeredi.hu, neil@brown.name, a.hindborg@kernel.org,
-	linux-mm@kvack.org, linux-efi@vger.kernel.org,
-	ocfs2-devel@lists.linux.dev, kees@kernel.org, rostedt@goodmis.org,
-	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-	paul@paul-moore.com, casey@schaufler-ca.com,
-	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com,
-	selinux@vger.kernel.org, borntraeger@linux.ibm.com,
-	bpf@vger.kernel.org
-Subject: Re: [External] : [PATCH v2 07/50] convert
- simple_{link,unlink,rmdir,rename,fill_super}() to new primitives
-Message-ID: <20251029175501.GS2441659@ZenIV>
-References: <20251028004614.393374-1-viro@zeniv.linux.org.uk>
- <20251028004614.393374-8-viro@zeniv.linux.org.uk>
- <3ec6f671-c490-42f2-b38b-f1fa20c60da2@oracle.com>
+	s=arc-20240116; t=1761760605; c=relaxed/simple;
+	bh=dQC30MHTvswSnusn5NOPjHmGoeeb2j1cD3HcbesEOFs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pfi0fO5u2ZkeTuDsb19BLgj470d2ciA8Wnq+QadbZvOASpat97WfPdU2CqstqY6a9Qyp5pFCFT1yeleXdLcfgpgZxQeWeXXEvg+DNpuEcog4ohW+RWdnQSD59zawxsJ0WW/l9VNzjhnNzZo61TblR9YNIoYIBjT9BmQOMZgxT0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nrf0lCxh; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7a6be149-9e04-444e-a433-49450385d6a0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761760590;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ppd0RHap4q7bSCes82xlTLvMUFropcMpTg+3MxryB3c=;
+	b=nrf0lCxhmc2lqlJiWe4YAO99sFd0VWUhwpdBQuozQojjIKuPKXFjvPd6+SDExpptyAoSW+
+	rtEHu8cGVS5FatxkW3l8Xsu7eCTWzdvE0lP7zhPDwyP94kto5OW1YVfadpn2ys/7/3aVE5
+	jdxCVH0oM92ZV21XRgiZl07i28tmDoM=
+Date: Wed, 29 Oct 2025 10:56:23 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3ec6f671-c490-42f2-b38b-f1fa20c60da2@oracle.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Subject: Re: [RFC bpf-next 1/2] bpftool: Print map ID upon creation and
+ support JSON output
+Content-Language: en-GB
+To: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+ bpf@vger.kernel.org
+Cc: alan.maguire@oracle.com, Quentin Monnet <qmo@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20251028125705.3586552-1-harshit.m.mogalapalli@oracle.com>
+ <20251028125705.3586552-2-harshit.m.mogalapalli@oracle.com>
+ <89b12696-26ff-411f-9cd3-74361f0f1ecd@linux.dev>
+ <cc32d3db-60ef-4046-8988-289cd0cc8c26@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <cc32d3db-60ef-4046-8988-289cd0cc8c26@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Oct 29, 2025 at 09:02:33AM -0500, Mark Tinguely wrote:
-> On 10/27/25 7:45 PM, Al Viro wrote:
-> > Note that simple_unlink() et.al. are used by many filesystems; for now
-> > they can not assume that persistency mark will have been set back
-> > when the object got created.  Once all conversions are done we'll
-> > have them complain if called for something that had not been marked
-> > persistent.
-> > 
-> > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> > ---
-> >   fs/libfs.c | 10 +++++-----
-> >   1 file changed, 5 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/fs/libfs.c b/fs/libfs.c
-> > index a033f35493d0..80f288a771e3 100644
-> > --- a/fs/libfs.c
-> > +++ b/fs/libfs.c
-> 
-> ...
-> 
-> >   EXPORT_SYMBOL(simple_unlink);
-> > @@ -1078,7 +1077,8 @@ int simple_fill_super(struct super_block *s, unsigned long magic,
-> >   		simple_inode_init_ts(inode);
-> >   		inode->i_fop = files->ops;
-> >   		inode->i_ino = i;
-> > -		d_add(dentry, inode);
-> > +		d_make_persistent(dentry, inode);
-> > +		dput(dentry);
-> >   	}
-> >   	return 0;
-> >   }
-> 
-> Putting on the dunce hat for the rest of us:
-> 
-> I think I understand the dput() for d_add() changes, but it is non-obvious.
-> Thinking of future maintenance, you may want to make a comment.
 
-As in
-		dput(dentry);	// paired with d_alloc_name()
-or
-		dput(dentry);	// that would've been simple_done_creating(),
-				// if we bothered with directory lock here
-or...?
 
-The thing is, d_alloc_name()/dput() instead of simple_start_creating()/
-simple_done_creating() is a bit of a shortcut, possible since we
-	* know that in this case nobody else could access that fs
-(we are in the middle of setting it up)
-	* know that directory we are populating started empty (we'd just
-created it) and nobody else had a chance to mess with it (see above)
-	* trust the caller to have all names in files[] array valid and
-unique
+On 10/29/25 9:05 AM, Harshit Mogalapalli wrote:
+> Hi Yonghong,
+>
+>
+> On 29/10/25 07:44, Yonghong Song wrote:
+>>
+>>
+>> On 10/28/25 5:57 AM, Harshit Mogalapalli wrote:
+>>> It is useful to print map ID on successful creation.
+>>>
+>>> JSON case:
+>>> $ ./bpftool -j map create /sys/fs/bpf/test_map4 type hash key 4 
+>>> value 8 entries 128 name map4
+>>> {"id":12}
+>>>
+>>> Generic case:
+>>> $ ./bpftool  map create /sys/fs/bpf/test_map5 type hash key 4 value 
+>>> 8 entries 128 name map5
+>>> Map successfully created with ID: 15
+>>>
+>>> Bpftool Issue: https://github.com/libbpf/bpftool/issues/121
+>>> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+>>> ---
+>>>   tools/bpf/bpftool/map.c | 24 ++++++++++++++++++++----
+>>>   1 file changed, 20 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+>>> index c9de44a45778..b6580f25361d 100644
+>>> --- a/tools/bpf/bpftool/map.c
+>>> +++ b/tools/bpf/bpftool/map.c
+>>> @@ -1251,6 +1251,8 @@ static int do_create(int argc, char **argv)
+>>>       LIBBPF_OPTS(bpf_map_create_opts, attr);
+>>>       enum bpf_map_type map_type = BPF_MAP_TYPE_UNSPEC;
+>>>       __u32 key_size = 0, value_size = 0, max_entries = 0;
+>>> +    struct bpf_map_info map_info = {};
+>>> +    __u32 map_info_len = sizeof(map_info);
+>>>       const char *map_name = NULL;
+>>>       const char *pinfile;
+>>>       int err = -1, fd;
+>>> @@ -1353,13 +1355,27 @@ static int do_create(int argc, char **argv)
+>>>       }
+>>>       err = do_pin_fd(fd, pinfile);
+>>> -    close(fd);
+>>> -    if (err)
+>>> +    if (err) {
+>>> +        close(fd);
+>>
+>> I think you can remove close(fd) here,
+>>
+>>>           goto exit;
+>>> +    }
+>>> -    if (json_output)
+>>> -        jsonw_null(json_wtr);
+>>> +    err = bpf_obj_get_info_by_fd(fd, &map_info, &map_info_len);
+>>> +    if (err) {
+>>> +        p_err("Failed to fetch map info: %s\n", strerror(errno));
+>>> +        close(fd);
+>>
+>> and here
+>>
+>>> +        goto exit;
+>>> +    }
+>>> +    close(fd);
+>>
+>> and here,
+>>
+>>> +
+>>> +    if (json_output) {
+>>> +        jsonw_start_object(json_wtr);
+>>> +        jsonw_int_field(json_wtr, "id", map_info.id);
+>>> +        jsonw_end_object(json_wtr);
+>>> +    } else {
+>>> +        printf("Map successfully created with ID: %u\n", map_info.id);
+>>> +    }
+>>>   exit:
+>>
+>> and put close(fd) here.
+>
+> I think we need one more close_fd: label and then put a close(fd); 
+> here. As there are other gotos to exit earlier in this function when 
+> fd is uninitialized, which can the error like:
+>
+> map.c: In function ‘do_create’:
+> map.c:1375:9: warning: ‘fd’ may be used uninitialized 
+> [-Wmaybe-uninitialized]
+>  1375 |         close(fd);
+>       |         ^~~~~~~~~
+> map.c:1258:23: note: ‘fd’ was declared here
+>  1258 |         int err = -1, fd;
+>       |                       ^~
+>
+>
+>
+> So, maybe we could do something like this:
+>
+>         err = do_pin_fd(fd, pinfile);
+> -       close(fd);
+>         if (err)
+> -               goto exit;
+> +               goto close_fd;
+>
+> -       if (json_output)
+> -               jsonw_null(json_wtr);
+> +       err = bpf_obj_get_info_by_fd(fd, &map_info, &map_info_len);
+> +       if (err) {
+> +               p_err("Failed to fetch map info: %s\n", strerror(errno));
+> +               goto close_fd;
+> +       }
+>
+> +       if (json_output) {
+> +               jsonw_start_object(json_wtr);
+> +               jsonw_int_field(json_wtr, "id", map_info.id);
+> +               jsonw_end_object(json_wtr);
+> +       } else {
+> +               printf("Map successfully created with ID: %u\n", 
+> map_info.id);
+> +       }
+> +close_fd:
+> +       close(fd);
+>  exit:
+>         if (attr.inner_map_fd > 0)
+>                 close(attr.inner_map_fd);
+>
+> I can prepare a v2 with this change, but wouldn't it be simpler to add a
+> direct close(fd); on the few error paths instead of introducing an
+> additional label for close(fd);?
 
-And for simple_fill_super() that's pretty straightforward, but in other 
-cases...  Rationale for taking that shortcut needs to be good.
+The above change LGTM. Thanks!
+
+>
+> Thoughts/Suggestions ?
+>
+> Thanks,
+> Harshit
+>
+>>
+>>>       if (attr.inner_map_fd > 0)
+>>>           close(attr.inner_map_fd);
+>>
+>>
+>
+>
+
 
