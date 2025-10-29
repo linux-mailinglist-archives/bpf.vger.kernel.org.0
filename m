@@ -1,118 +1,96 @@
-Return-Path: <bpf+bounces-72657-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72658-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CE11C177A3
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 01:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 07ED5C177AC
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 01:09:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84DC71C23816
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 00:08:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA32F1C80071
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 00:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BC8F1DE4E0;
-	Wed, 29 Oct 2025 00:08:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="Rm/tQAfY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2312B1DEFE0;
+	Wed, 29 Oct 2025 00:09:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE1835957
-	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 00:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 733C11D6187;
+	Wed, 29 Oct 2025 00:09:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761696501; cv=none; b=tGFKtRCC26Q4FokQPFbarZNFANXOTtOTgV02QgIskH0P64TNNPeNbIAzanxj+ZlY/wzJpYb/qP65Civ4whR4xvlm7s+A/FP0SKvp7k9rNakoOYVnaPOEuXaPT/iLD5/g8hPge6b8Kc0l6r7tJin3VKHTa72ahgJNp8SlbvhsbP4=
+	t=1761696566; cv=none; b=SennGiQ9oA3+GgOQsGpzMLcbDgl5HV8yfpmtWjY094asq4JP4z3YWLE+Vb+++RSlbqhtvaJvMbfEDJ2utUkNJNbJGeCcHIEaStILYMJasyBERHQHU7zqg+tQxxTBHy/+mJSq45gdo4RIktm7BblmKnfQ0xc2bFYQS/TZg1SKKEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761696501; c=relaxed/simple;
-	bh=4+0VmKS7izmdzBSkGnuSr1zXLYq/caM1BpBnvQPHwUU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TRqDXAqPL4EYAW3QU+8nS3jY+4RK2I0oUiCb+J6ho8itbKNBMDC6u6tl0wOgmz66hJ06XEj7P+LiQrWUuTWJuRr6AKe0XhstpVDELPlxyac5ymswcyIX/MCiHW9gJHGZOKq4kzT9VvRKKqFv6mbSHup77ECBLHchM5hNvF128F0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=Rm/tQAfY; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-33bc2178d6aso4844939a91.0
-        for <bpf@vger.kernel.org>; Tue, 28 Oct 2025 17:08:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1761696499; x=1762301299; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cZjzJP5BDJixdHcjsD4MEtXcdIeCfYM/75TifkWeDww=;
-        b=Rm/tQAfYDRv9P5gu7ha5CsCLxdHAVSufx4wPrLRv39Ao5X4Zd0nLl4WMq66DKWF21j
-         pzblNcL+S7EmmehpeXxiCucHVp/gIxF+345p35vVv7k3j4S9XiyILrrjYNpDck8Nwjvf
-         u0v4idUFcDSYLq+/hsZKpXYxYmCl3he69VZ7RAvIotMFQhDCV2Kqsptie1SrDLZP1AA0
-         kxbVDhUun37cH9zNf8QuTePAzGTU4YKjhVH0cU+/jVfx/MbmEfEddQxZN+GQ58Zt0VjO
-         DdJYJ6gKRYAwQ0SnbRvOZxH3etqOX762S1vBeYEBv174TLf5QcBHlHYWHsPxQFrzkq1d
-         oq5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761696499; x=1762301299;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cZjzJP5BDJixdHcjsD4MEtXcdIeCfYM/75TifkWeDww=;
-        b=XPb/ROvEFKHJymKsDzcbIAgBQ5b2gQkovENLzbeP+C4OElC36W0OPr8UHM0+7RXIie
-         EXCpSYBzJxZMeKeEcCOj5ZGtsXw+moo0i2z/pbc3uubnH37i2RPkgVOVvsNRT+I4KwzR
-         ztfBdqU9TEAXtW3zSRrLDGwPy4xcr6qpN+lqrjv5cfIVH3C/cVumoeCLfb8K2LLWzoHy
-         dH2QBb+4C0EYTJGIV3gr5PN3ieNWObOO+oFz6q10uezuQYfQVpiDF0NLCUn27osfJOIy
-         3804t4hlwLpLoeuNLQIKOoomRcxBlA0jezq+M4TP8lbOh00GX+LwilGAyDfuKNp8mRQz
-         93gw==
-X-Forwarded-Encrypted: i=1; AJvYcCWkPc48GsU5tGaFuERax5a5DstaRGyEu0AFfwe0d6lKyVVPyq4y8uobJLtZFk0CDpKAvGQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUj82BJe9BPVI0H+xRKHzbapta38TUFQC7fuclXhQzibhF5Af9
-	jLXSDXuy/B1Rp87tXvUxC4/30SKtYHbDUoF1dd7+sq77rZUytyP92erh2TyaaBLQj/jLyMvEZLA
-	L/myQOjXYvpuiODFWaTEfUs1tRQAnMwWMCmbiMxAN
-X-Gm-Gg: ASbGncu4nhTgDqYm/KaLo0Xj69JblXc8Ep1jI0bRJQKajQVU9ZvFpj8FxGgP8OD3yBs
-	paGQtMgej37amKo2AoeKk/Ymm6PTsyf3ogxDH8tbjGsa/S6WW7KZa87H+t1d21gDwKq2hwr8bFZ
-	1eVRuAdg3yvU6hp1JbppnJNMZEvwHm1FSEfoJNHqj7lS5h5tx+Lij9FWgysOLyVvzOej5fz4m7+
-	uqYcZDc0Glrhtywg8uadjYuJyZIaPYs6kWgz0IDFF+33SLsLPFrirlCe3NH
-X-Google-Smtp-Source: AGHT+IGEKRPFq5L2rd6w/ubcuTn//BXhetf/wOj9xAOGHPjYYno+UXGan0WlvoJBaoZ1JF4tIK0SCxZjeiDlUqLjb6g=
-X-Received: by 2002:a17:90b:4a05:b0:339:ef05:3575 with SMTP id
- 98e67ed59e1d1-3403a294f2fmr971614a91.26.1761696498871; Tue, 28 Oct 2025
- 17:08:18 -0700 (PDT)
+	s=arc-20240116; t=1761696566; c=relaxed/simple;
+	bh=zn7/Mgfu6z/4MIpO86n81HjFLAX8EANlwORyqEV34j0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rrCdw/nKb43aEQtuP6GUzn4lWI8W33KS8igHFD4EYG0Ag0jv0D6hK/fgTV22Ir3mEcHKeyUYtNBXBA3laHcbRcFZePxhaY+levmnb+Ph5Pkwj9yUoDBwcomrW0kFslPNg4hx7WqjIlq1sZ8yx79W+9bjqLQQFU50rEEmRnmb9Hk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf07.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay01.hostedemail.com (Postfix) with ESMTP id 8101449945;
+	Wed, 29 Oct 2025 00:09:21 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf07.hostedemail.com (Postfix) with ESMTPA id 867FE20024;
+	Wed, 29 Oct 2025 00:09:16 +0000 (UTC)
+Date: Tue, 28 Oct 2025 20:09:55 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>,
+ Indu Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>,
+ Beau Belgrave <beaub@linux.microsoft.com>, Jens Remus
+ <jremus@linux.ibm.com>, Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Florian Weimer
+ <fweimer@redhat.com>, Sam James <sam@gentoo.org>, Kees Cook
+ <kees@kernel.org>, Carlos O'Donell <codonell@redhat.com>
+Subject: Re: [PATCH v16 4/4] perf tools: Merge deferred user callchains
+Message-ID: <20251028200955.0340ae1c@gandalf.local.home>
+In-Reply-To: <20251024130203.GC3245006@noisy.programming.kicks-ass.net>
+References: <20250908175319.841517121@kernel.org>
+	<20250908175430.639412649@kernel.org>
+	<20251002134938.756db4ef@gandalf.local.home>
+	<20251024130203.GC3245006@noisy.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251028004614.393374-1-viro@zeniv.linux.org.uk> <20251028004614.393374-34-viro@zeniv.linux.org.uk>
-In-Reply-To: <20251028004614.393374-34-viro@zeniv.linux.org.uk>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 28 Oct 2025 20:08:07 -0400
-X-Gm-Features: AWmQ_blBn2fdqYcxKi_H91_QLngZD09fAUzDyH5oMtRPekpRq9pqWMOuQKzGUHw
-Message-ID: <CAHC9VhSeiK=qqLMUDAKRTgS5EEHdVvLD7-afuDqJWYFindvfUA@mail.gmail.com>
-Subject: Re: [PATCH v2 33/50] selinuxfs: don't stash the dentry of /policy_capabilities
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org, 
-	brauner@kernel.org, jack@suse.cz, raven@themaw.net, miklos@szeredi.hu, 
-	neil@brown.name, a.hindborg@kernel.org, linux-mm@kvack.org, 
-	linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev, kees@kernel.org, 
-	rostedt@goodmis.org, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
-	casey@schaufler-ca.com, linuxppc-dev@lists.ozlabs.org, 
-	john.johansen@canonical.com, selinux@vger.kernel.org, 
-	borntraeger@linux.ibm.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: s83ogzogzibnpwpdr7u1e4k6r9bahc13
+X-Rspamd-Server: rspamout07
+X-Rspamd-Queue-Id: 867FE20024
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19rKG5R5mSBL4RI6DA9hDmkitecXs2Ve6E=
+X-HE-Tag: 1761696556-616127
+X-HE-Meta: U2FsdGVkX186yRanWr15TKP/V7dgTJ5pJjNT8Qf8W1MTctYl1Wud062AX/34wZL7UA3kO+CIHwvKBGtEm+Fe5ZR8+ENT9XdsvdRwqAtQ/XNx26Km/RI3T8zO1A0YrtnEU/6E6u49zw2MSnQvM+9bFjLjmnzjMlGu00fZONCaCkrhThdHIpCLQLdKYRXGK7+2PIq9vzDT/Zdbb+u6FlQ9R+zGdzue2aMEUAbAuL+QUNGEaFKfgHn5dmyssE3Im47Qkb/tuVx3MGnM56pYldJCzI7S87uA9i77m/fTSW5PE8yTYzuq9DQwNDTseCyrWOZubu9I+jL0jkWBzOBLeEvxJfG7RWB62xXf7tMfZJngxeeDJ8R5NXyrJMim4DFXBQDu
 
-On Mon, Oct 27, 2025 at 8:46=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> w=
-rote:
->
-> Don't bother to store the dentry of /policy_capabilities - it belongs
-> to invariant part of tree and we only use it to populate that directory,
-> so there's no reason to keep it around afterwards.
->
-> Same situation as with /avc, /ss, etc.  There are two directories that
-> get replaced on policy load - /class and /booleans.  These we need to
-> stash (and update the pointers on policy reload); /policy_capabilities
-> is not in the same boat.
->
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> ---
->  security/selinux/selinuxfs.c | 21 +++++++++------------
->  1 file changed, 9 insertions(+), 12 deletions(-)
+On Fri, 24 Oct 2025 15:02:03 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Acked-by: Paul Moore <paul@paul-moore.com>
+> > The sample__merge_deferred_callchain() initializes both
+> > orig_sample.deferred_callchain and the callchain. But now that it's not
+> > being called, it can cause the below free to happen with junk as the
+> > callchain. This needs:
+> > 
+> > 		else
+> > 			orig_sample.deferred_callchain = false;  
+> 
+> Ah, so I saw crashes from here and just deleted both free()s and got on
+> with things ;-)
 
---=20
-paul-moore.com
+I just downloaded your tree again and it doesn't look like it was updated.
+
+Just didn't want you to forget about this ;)
+
+-- Steve
 
