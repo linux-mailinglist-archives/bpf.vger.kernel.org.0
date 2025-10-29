@@ -1,203 +1,171 @@
-Return-Path: <bpf+bounces-72789-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72794-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4CB6C1AAEE
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 14:29:54 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F0E7C1A8DF
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 14:13:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1DF95800EE
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 12:50:57 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C81D55033EB
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 13:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB63E350A27;
-	Wed, 29 Oct 2025 12:26:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2E5D230BF6;
+	Wed, 29 Oct 2025 12:55:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OQUp/2E/"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="EpvyDtnD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302A0366FC6;
-	Wed, 29 Oct 2025 12:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC47333507B;
+	Wed, 29 Oct 2025 12:55:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761740784; cv=none; b=ElcK5ccUY+nU2+SScidqXM1zKRQrUlRP7Elajf3O3z0nNzvpbW3846jFNyHitZPqsxWKYEx5YRguRZwL9NXtF3P65JzpXz6ZxO6E0H1Bx8oc9Z/0R7OMuDGXHF9ZPXHKiAkha/SO6jbvaGOmeH7W1Ki/tztRSGh9s4XnlSXY4os=
+	t=1761742527; cv=none; b=cUzjCDZz/WuXbj/Qiisp7+SR0t7+34H6q0lOzXHnSjaBA90qlWEf+dKOwx9pfY90BEWkZyOgvPx81Zx3AO/+xaBqgU2BeNF9nI2PHe48Klie4hBB6XN6R26PnKVvGxIzh2v/dz1esJOujGcvxIkMc+EB3ZWarxdEMij04/v8Y3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761740784; c=relaxed/simple;
-	bh=+kgGWvLMBNpy0C4YEMZXDEKTpLYegwzhaVcMRXxEJRg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=h8ziLOTTwnRynP9tqNU7BzJXorCAl1kXyJQcpEZCDpyiEwWxsRkodZdFaXGFnKbo1aoa3bWjr05ZQDNKm4sBji0pklyLwmg6X50j09vwUwcJHNx+vYd/5uqqFprF7Ba/lHi7y3du6p6f2Yg6+mHzKAVt5HnCunzUHnYqNl5/WKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OQUp/2E/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 111A1C116B1;
-	Wed, 29 Oct 2025 12:26:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761740783;
-	bh=+kgGWvLMBNpy0C4YEMZXDEKTpLYegwzhaVcMRXxEJRg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=OQUp/2E/skhKtrrpwAxfyaR97EtkNnKHr7qlgoqsjjd88QqnwOSxO/QxsMsWmD3K9
-	 b4hTCKFlqojHUUroxy7/74va3SV9SK5q0vC3W5J5NSnRaPYz2s6yCVP9Afr/ETG8KR
-	 JKPCi0p2GH7mDhKJvYhwf6TOyobe8nl9CRKnb1MxcfOc6SXbnORJfh7pjt/QoNVuSZ
-	 SId/ZU+LHmOk48XlULgsBYI2f0g954eoVwvF5enK5kdTdYvYsHulEtoJwwgquqt+Dj
-	 PpM3NJlzSjXXTzwAm2fgvsjpMyxkfkWVbwBRdyiAq7WqqGvu5GGSWrX0PLimbAwgDv
-	 gNl0TL5qUvPhw==
-From: Christian Brauner <brauner@kernel.org>
-Date: Wed, 29 Oct 2025 13:21:21 +0100
-Subject: [PATCH v4 68/72] selftests/namespace: second threaded active
- reference count test
+	s=arc-20240116; t=1761742527; c=relaxed/simple;
+	bh=0wMW0XC224Kej5/7Y/10VzAOIoK/Gr9bBang0zCkkec=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=T4bY+lSVbxM65yT2xAuzqMRgeM8p6rGBY5nCuDg+qUf/AEOem63Ca4oE6OVu50GjphiOsAZL//WlIgURp/a0a87KEc8FPX04go6oIroxussfVNY5WCs6b+pKyUCam8QnQ/HrutoZmKJwt/zN4fq05AqTiEw+pN2ctXqPrm7UN+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=EpvyDtnD; arc=none smtp.client-ip=115.124.30.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1761742520; h=Message-ID:Date:MIME-Version:Subject:From:To:Content-Type;
+	bh=1/s8TOdfgqqMhs6MPkKtJvuM4gO1U3iasXipTZ9JtZQ=;
+	b=EpvyDtnDaPezKIVx6Xq+/nz15ofVNiB9hS5v2gD51IH2AIe1VbxozYCjthGjchjAPSJFCtkyQgrsaoABfiMgdBP+04T0gK2i6072iYq/0JBVP+L/IISKd5XsKnzU9Pt+vWOk8ifbxhBl/YsH/e72mzN4Sgp+LipR7LpMYUCSJ4s=
+Received: from 30.246.176.102(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0WrG16KC_1761742518 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 29 Oct 2025 20:55:19 +0800
+Message-ID: <eed27aaf-fd0a-4609-a30b-68e7c5c11890@linux.alibaba.com>
+Date: Wed, 29 Oct 2025 20:55:14 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20251029-work-namespace-nstree-listns-v4-68-2e6f823ebdc0@kernel.org>
-References: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
-In-Reply-To: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
-To: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
- Jeff Layton <jlayton@kernel.org>
-Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
- =?utf-8?q?Zbigniew_J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, 
- Lennart Poettering <mzxreary@0pointer.de>, 
- Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
- Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, 
- Johannes Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>, 
- Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
- Christian Brauner <brauner@kernel.org>
-X-Mailer: b4 0.15-dev-96507
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3834; i=brauner@kernel.org;
- h=from:subject:message-id; bh=+kgGWvLMBNpy0C4YEMZXDEKTpLYegwzhaVcMRXxEJRg=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQysU1wYr2WrHFzesEcTYcfCkrND6ff4uWazLDG1/rfa
- +ODu1ILO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACayahkjw8IrrD3/bn0Qcrjo
- 2ZvJek9NM4zNspFLWGJbqRj3wtgdXxkZNgY9uPLLZ6p94Upxlx/+hSFzYoIthBSmcfNsOmodcGE
- 1LwA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp;
- fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] perf record: skip synthesize event when open evsel failed
+From: Shuai Xue <xueshuai@linux.alibaba.com>
+To: Ian Rogers <irogers@google.com>
+Cc: alexander.shishkin@linux.intel.com, peterz@infradead.org,
+ james.clark@arm.com, leo.yan@linaro.org, mingo@redhat.com,
+ baolin.wang@linux.alibaba.com, acme@kernel.org, mark.rutland@arm.com,
+ jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ nathan@kernel.org, bpf@vger.kernel.org
+References: <20251023015043.38868-1-xueshuai@linux.alibaba.com>
+ <CAP-5=fWupb62_QKM3bZO9K9yeJqC2H-bdi6dQNM7zAsLTJoDow@mail.gmail.com>
+ <fc75b170-86c1-49b6-a321-7dca56ad824a@linux.alibaba.com>
+In-Reply-To: <fc75b170-86c1-49b6-a321-7dca56ad824a@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Test that a namespace remains active while a thread holds an fd to it.
-Even after the thread exits, the namespace should remain active as long
-as another thread holds a file descriptor to it.
 
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
- .../selftests/namespaces/ns_active_ref_test.c      | 99 ++++++++++++++++++++++
- 1 file changed, 99 insertions(+)
 
-diff --git a/tools/testing/selftests/namespaces/ns_active_ref_test.c b/tools/testing/selftests/namespaces/ns_active_ref_test.c
-index 0c6c4869bb16..24dc8ef106b9 100644
---- a/tools/testing/selftests/namespaces/ns_active_ref_test.c
-+++ b/tools/testing/selftests/namespaces/ns_active_ref_test.c
-@@ -2251,4 +2251,103 @@ TEST(thread_ns_inactive_after_exit)
- 	ASSERT_TRUE(errno == ENOENT || errno == ESTALE);
- }
- 
-+/*
-+ * Test that a namespace remains active while a thread holds an fd to it.
-+ * Even after the thread exits, the namespace should remain active as long as
-+ * another thread holds a file descriptor to it.
-+ */
-+TEST(thread_ns_fd_keeps_active)
-+{
-+	pthread_t thread;
-+	struct thread_ns_info info;
-+	struct file_handle *handle;
-+	int pipefd[2];
-+	int syncpipe[2];
-+	int ret;
-+	char sync_byte;
-+	char buf[sizeof(*handle) + MAX_HANDLE_SZ];
-+
-+	ASSERT_EQ(pipe(pipefd), 0);
-+	ASSERT_EQ(pipe(syncpipe), 0);
-+
-+	info.pipefd = pipefd[1];
-+	info.syncfd_read = syncpipe[0];
-+	info.syncfd_write = -1;
-+	info.exit_code = -1;
-+
-+	/* Create thread that will create a namespace */
-+	ret = pthread_create(&thread, NULL, thread_create_namespace, &info);
-+	ASSERT_EQ(ret, 0);
-+
-+	/* Read namespace ID from thread */
-+	__u64 ns_id;
-+	ret = read(pipefd[0], &ns_id, sizeof(ns_id));
-+	if (ret != sizeof(ns_id)) {
-+		sync_byte = 'X';
-+		write(syncpipe[1], &sync_byte, 1);
-+		pthread_join(thread, NULL);
-+		close(pipefd[0]);
-+		close(pipefd[1]);
-+		close(syncpipe[0]);
-+		close(syncpipe[1]);
-+		SKIP(return, "Failed to read namespace ID from thread");
-+	}
-+
-+	TH_LOG("Thread created namespace with ID %llu", (unsigned long long)ns_id);
-+
-+	/* Construct file handle */
-+	handle = (struct file_handle *)buf;
-+	handle->handle_bytes = sizeof(struct nsfs_file_handle);
-+	handle->handle_type = FILEID_NSFS;
-+	struct nsfs_file_handle *fh = (struct nsfs_file_handle *)handle->f_handle;
-+	fh->ns_id = ns_id;
-+	fh->ns_type = 0;
-+	fh->ns_inum = 0;
-+
-+	/* Open namespace while thread is alive */
-+	TH_LOG("Opening namespace while thread is alive");
-+	int nsfd = open_by_handle_at(FD_NSFS_ROOT, handle, O_RDONLY);
-+	ASSERT_GE(nsfd, 0);
-+
-+	/* Signal thread to exit */
-+	TH_LOG("Signaling thread to exit");
-+	sync_byte = 'X';
-+	write(syncpipe[1], &sync_byte, 1);
-+	close(syncpipe[1]);
-+
-+	/* Wait for thread to exit */
-+	pthread_join(thread, NULL);
-+	close(pipefd[0]);
-+	close(pipefd[1]);
-+	close(syncpipe[0]);
-+
-+	if (info.exit_code != 0) {
-+		close(nsfd);
-+		SKIP(return, "Thread failed to create namespace");
-+	}
-+
-+	TH_LOG("Thread exited, but main thread holds fd - namespace should remain active");
-+
-+	/* Namespace should still be active because we hold an fd */
-+	int nsfd2 = open_by_handle_at(FD_NSFS_ROOT, handle, O_RDONLY);
-+	ASSERT_GE(nsfd2, 0);
-+
-+	/* Verify it's the same namespace */
-+	struct stat st1, st2;
-+	ASSERT_EQ(fstat(nsfd, &st1), 0);
-+	ASSERT_EQ(fstat(nsfd2, &st2), 0);
-+	ASSERT_EQ(st1.st_ino, st2.st_ino);
-+	close(nsfd2);
-+
-+	TH_LOG("Closing fd - namespace should become inactive");
-+	close(nsfd);
-+
-+	/* Now namespace should be inactive */
-+	nsfd = open_by_handle_at(FD_NSFS_ROOT, handle, O_RDONLY);
-+	ASSERT_LT(nsfd, 0);
-+	/* Should fail with ENOENT (inactive) or ESTALE (gone) */
-+	TH_LOG("Namespace inactive as expected: %s (errno=%d)", strerror(errno), errno);
-+	ASSERT_TRUE(errno == ENOENT || errno == ESTALE);
-+}
-+
- TEST_HARNESS_MAIN
+在 2025/10/24 10:45, Shuai Xue 写道:
+> 
+> 
+> 在 2025/10/24 00:08, Ian Rogers 写道:
+>> On Wed, Oct 22, 2025 at 6:50 PM Shuai Xue <xueshuai@linux.alibaba.com> wrote:
+>>>
+>>> When using perf record with the `--overwrite` option, a segmentation fault
+>>> occurs if an event fails to open. For example:
+>>>
+>>>    perf record -e cycles-ct -F 1000 -a --overwrite
+>>>    Error:
+>>>    cycles-ct:H: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
+>>>    perf: Segmentation fault
+>>>        #0 0x6466b6 in dump_stack debug.c:366
+>>>        #1 0x646729 in sighandler_dump_stack debug.c:378
+>>>        #2 0x453fd1 in sigsegv_handler builtin-record.c:722
+>>>        #3 0x7f8454e65090 in __restore_rt libc-2.32.so[54090]
+>>>        #4 0x6c5671 in __perf_event__synthesize_id_index synthetic-events.c:1862
+>>>        #5 0x6c5ac0 in perf_event__synthesize_id_index synthetic-events.c:1943
+>>>        #6 0x458090 in record__synthesize builtin-record.c:2075
+>>>        #7 0x45a85a in __cmd_record builtin-record.c:2888
+>>>        #8 0x45deb6 in cmd_record builtin-record.c:4374
+>>>        #9 0x4e5e33 in run_builtin perf.c:349
+>>>        #10 0x4e60bf in handle_internal_command perf.c:401
+>>>        #11 0x4e6215 in run_argv perf.c:448
+>>>        #12 0x4e653a in main perf.c:555
+>>>        #13 0x7f8454e4fa72 in __libc_start_main libc-2.32.so[3ea72]
+>>>        #14 0x43a3ee in _start ??:0
+>>>
+>>> The --overwrite option implies --tail-synthesize, which collects non-sample
+>>> events reflecting the system status when recording finishes. However, when
+>>> evsel opening fails (e.g., unsupported event 'cycles-ct'), session->evlist
+>>> is not initialized and remains NULL. The code unconditionally calls
+>>> record__synthesize() in the error path, which iterates through the NULL
+>>> evlist pointer and causes a segfault.
+>>>
+>>> To fix it, move the record__synthesize() call inside the error check block, so
+>>> it's only called when there was no error during recording, ensuring that evlist
+>>> is properly initialized.
+>>>
+>>> Fixes: 4ea648aec019 ("perf record: Add --tail-synthesize option")
+>>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+>>
+>> This looks great! I wonder if we can add a test, perhaps here:
+>> https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/tests/shell/record.sh?h=perf-tools-next#n435
+>> something like:
+>> ```
+>> $ perf record -e foobar -F 1000 -a --overwrite -o /dev/null -- sleep 0.1
+>> ```
+>> in a new test subsection for test_overwrite? foobar would be an event
+>> that we could assume isn't present. Could you help with a test
+>> covering the problems you've uncovered and perhaps related flags?
+>>
+> 
+> Hi, Ian,
+> 
+> Good suggestion, I'd like to add a test. But foobar may not a good case.
+> 
+> Regarding your example:
+> 
+>    perf record -e foobar -a --overwrite -o /dev/null -- sleep 0.1
+>    event syntax error: 'foobar'
+>                         \___ Bad event name
+> 
+>    Unable to find event on a PMU of 'foobar'
+>    Run 'perf list' for a list of valid events
+> 
+>     Usage: perf record [<options>] [<command>]
+>        or: perf record [<options>] -- <command> [<options>]
+> 
+>        -e, --event <event>   event selector. use 'perf list' to list available events
+> 
+> 
+> The issue with using foobar is that it's an invalid event name, and the
+> perf parser will reject it much earlier. This means the test would exit
+> before reaching the part of the code path we want to verify (where
+> record__synthesize() could be called).
+> 
+> A potential alternative could be testing an error case such as EACCES:
+> 
+>    perf record -e cycles -C 0 --overwrite -o /dev/null -- sleep 0.1
+> 
+> This could reproduce the scenario of a failure when attempting to access
+> a valid event, such as due to permission restrictions. However, the
+> limitation here is that users may override
+> /proc/sys/kernel/perf_event_paranoid, which affects whether or not this
+> test would succeed in triggering an EACCES error.
+> 
+> 
+> If you have any other suggestions or ideas for a better way to simulate
+> this situation, I'd love to hear them.
+> 
+> Thanks.
+> Shuai
 
--- 
-2.47.3
+Hi, Ian,
+
+Gentle ping.
+
+Thanks.
+Shuai
 
 
