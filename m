@@ -1,67 +1,62 @@
-Return-Path: <bpf+bounces-72683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCE90C1846D
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 06:12:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF6C7C1866D
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 07:15:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9C2F44EE398
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 05:11:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AC9B1AA472E
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 06:14:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A462F6929;
-	Wed, 29 Oct 2025 05:11:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CE7F2FE587;
+	Wed, 29 Oct 2025 06:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="E4trfwDo"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="e+WwOI0R"
 X-Original-To: bpf@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBD7F2F6190;
-	Wed, 29 Oct 2025 05:10:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FDA02F12BB;
+	Wed, 29 Oct 2025 06:14:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761714662; cv=none; b=XC7DQgPrhVpUvjMUQFUXO4xn0lMokLMZCM9HWAidDBjsnge67ovU1/EbFBPoA2W4f7lb1ON8KjTvD/DzFNHd6rZNOdMUdNqmsTeUWbhAjNqJAo4IfXjAewi9VYEMnKPvAJ9TZqAnwwCIZl9oRl/lOK30YRVf8Y7cZNLkl/dB+8E=
+	t=1761718465; cv=none; b=YPl2cNd0Sl4s32mwOgcvvEyeFp+2nx2nQluzvMbnnxJYHoTQgyLruat4dVl0bVka87mGppBuuaoVGMTOYeGC+P3nDMqV8DAN4GoJF6qBrLUlwwkRJqRMVqRmFqfZFAj0f2itPIpGTrQ1AAluJ59GEhJ0NmoE2QTRwgmtg30rSNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761714662; c=relaxed/simple;
-	bh=EhgwbRktNMne9VHsUlO/1oxrBnTgDJDYSBE51Al1m0M=;
+	s=arc-20240116; t=1761718465; c=relaxed/simple;
+	bh=CqTEutJd2iH+SNvmxd+5gxkNpnMuzCbcCo7+YPwtpRk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gNIOYxjso9ky0lvobauEww5/mT495S9sq+Vql5NTVQ0bQx7JdVdZ6U0BHHJpxzwF0DlSPIWseBTvd7y+P1aoKBpgdoRQqZPdEUDkTpLDO696aZW5bzkjyPshLLVx17zSic265wRXD3KYQ6Z2ilOCc2TgE7qaZEoXY3t8TVRhmdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=E4trfwDo; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=/BYNoVmF3YbRiY0Hi/9O43xTzLl3/EW8MXOY/56GuA0=; b=E4trfwDo1S01UKwsa2CrgAOcSE
-	ptoeCiFK8So4wlImp/8pjz/VBvtXHnB8B5MDyRYvg1yqGLdg6Tf92LaQjfNi1cdedAP3agZ1WbcNp
-	Toh2ZJ7N4fK8LWTgaEb9En4+6sGHZB9iL6nmh7258KhX1IkLOZPj8HC/XgwqzmmEtafzypODzG5bt
-	fwomHrB116rASJMqP4x4UdJNY2tD4SGar04GPmSHSEnVu+68QC/yQYWY/mzF2frEWxOl8gDK0uEy9
-	OVrO/Ud3CraTGrePIC97bq2rxP3pXsm5U9cT7uuVndAVbke/jLFpn9/5dW08qyUL1FvIPrqIxPapE
-	7bfmXpZQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDySS-00000000Yic-41sk;
-	Wed, 29 Oct 2025 05:10:53 +0000
-Date: Wed, 29 Oct 2025 05:10:52 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org,
-	brauner@kernel.org, jack@suse.cz, raven@themaw.net,
-	miklos@szeredi.hu, neil@brown.name, a.hindborg@kernel.org,
-	linux-mm@kvack.org, linux-efi@vger.kernel.org,
-	ocfs2-devel@lists.linux.dev, kees@kernel.org, rostedt@goodmis.org,
-	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-	paul@paul-moore.com, casey@schaufler-ca.com,
-	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com,
-	selinux@vger.kernel.org, borntraeger@linux.ibm.com,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v2 06/50] primitives for maintaining persisitency
-Message-ID: <20251029051052.GR2441659@ZenIV>
-References: <20251028004614.393374-1-viro@zeniv.linux.org.uk>
- <20251028004614.393374-7-viro@zeniv.linux.org.uk>
- <6d69842d102a496a9729924358c0267f00b170f3.camel@HansenPartnership.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kZ4qsuapaM0GF9cj99rN7U5yBFdNAk3pM5T4GoxaImet6Hia3QkVz7z7GModkJuYzUdp+mp3EPtbX7VDVo0g4iHNYuHYobF494eK23CZ14iti0PGB1+oUHHkO5ZBgY5lPt02zbXcHu9opWxdfiTF+mQ3KLQtuHKtcjpoUPjaapo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=e+WwOI0R; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1761718459; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=n/Wg+0g3Nyy/TFISVde9M4JkfxmwIT9/CJq8QDTfiTQ=;
+	b=e+WwOI0R9ZrPrfBiNyr6LG5isCqREIwOxb6EmMNG6gjWvitWLC+2DBmwi8wcOZBUXnjIzNa1SLGFeD1N0zYatl7gE6UdTwCb5vlV5Xl86V6fPlcLeGkTLeV684ufMFMkTh6ROyw7vP9oh9kVydiVLYqXpLbHmd48BvRx2XddUf0=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WrEi384_1761718457 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 29 Oct 2025 14:14:18 +0800
+Date: Wed, 29 Oct 2025 14:14:17 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>, ast@kernel.org,
+	andrii.nakryiko@gmail.com, daniel@iogearbox.net, andrii@kernel.org,
+	pabeni@redhat.com, song@kernel.org, sdf@google.com,
+	haoluo@google.com, yhs@fb.com, edumazet@google.com,
+	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
+	mjambigi@linux.ibm.com, wenjia@linux.ibm.com, wintera@linux.ibm.com,
+	dust.li@linux.alibaba.com, tonylu@linux.alibaba.com,
+	guwen@linux.alibaba.com, bpf@vger.kernel.org, davem@davemloft.net,
+	kuba@kernel.org, netdev@vger.kernel.org, sidraya@linux.ibm.com,
+	jaka@linux.ibm.com
+Subject: Re: [PATCH bpf-next v3 0/3] net/smc: Introduce smc_hs_ctrl
+Message-ID: <20251029061417.GA22337@j66a10360.sqa.eu95>
+References: <20250929063400.37939-1-alibuda@linux.alibaba.com>
+ <20251028121531.GA51645@j66a10360.sqa.eu95>
+ <fea9adf1-3c61-4213-bc84-9429bf3e82a7@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -70,48 +65,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6d69842d102a496a9729924358c0267f00b170f3.camel@HansenPartnership.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <fea9adf1-3c61-4213-bc84-9429bf3e82a7@linux.dev>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Tue, Oct 28, 2025 at 08:38:00AM -0400, James Bottomley wrote:
-> On Tue, 2025-10-28 at 00:45 +0000, Al Viro wrote:
-> [...]
-> > +void d_make_discardable(struct dentry *dentry)
-> > +{
-> > +	spin_lock(&dentry->d_lock);
-> > +	dentry->d_flags &= ~DCACHE_PERSISTENT;
-> > +	dentry->d_lockref.count--;
-> > +	rcu_read_lock();
-> > +	finish_dput(dentry);
-> > +}
-> > +EXPORT_SYMBOL(d_make_discardable);
+On Tue, Oct 28, 2025 at 05:30:12PM -0700, Martin KaFai Lau wrote:
+> On 10/28/25 5:15 AM, D. Wythe wrote:
+> >On Mon, Sep 29, 2025 at 02:33:57PM +0800, D. Wythe wrote:
+> >>This patch aims to introduce BPF injection capabilities for SMC and
+> >>includes a self-test to ensure code stability.
+> >>
+> >>Since the SMC protocol isn't ideal for every situation, especially
+> >>short-lived ones, most applications can't guarantee the absence of
+> >
+> >
+> >Hi bpf folks,
+> >
+> >I've noticed this patch has been pending for a while, and I wanted to
+> >gently check in. Is there any specific concerns or feedback regarding
+> >it from the BPF side? I'm keen to address any issues and move it
+> >forward.
 > 
-> I was going to ask why you don't have a WARN_ON if the dentry is not
-> persistent here.  Fortunately I read the next patch which gives the
-> explanation and saw that you do do this in patch 50.  For those of us
-> who have a very linear way of reading and responding to patches, it
-> would have been helpful to put a comment at the top saying something
-> like persistency will be checked when all callers are converted, which
-> you can replace in patch 50.
+> The original v1 started last year. The bpf side had been responsive
+> but the progress stopped for months and the smc side review had been
+> slow also. I doubt how well will this be supported in the future and
+> put this to the bottom of my list since then.
+> 
+> The set does not apply on bpf-next/net now. Please re-spin.
 
-Point...  How about
-void d_make_discardable(struct dentry *dentry)
-{
-	spin_lock(&dentry->d_lock);
-	/*
-	 * By the end of the series we'll add 
-	 * WARN_ON(!(dentry->d_flags & DCACHE_PERSISTENT);
-	 * here, but while object removal is done by a few common helpers,
-	 * object creation tends to be open-coded (if nothing else, new inode
-	 * needs to be set up), so adding a warning from the very beginning 
-	 * would make for much messier patch series.  
-	 */
-	dentry->d_flags &= ~DCACHE_PERSISTENT;
-	dentry->d_lockref.count--;
-	rcu_read_lock();  
-	finish_dput(dentry);
-}
+Hi Martin,
 
-at that point of the series, with comment replaced with WARN_ON() in
-#50?
+Thanks for your feedback and for surfacing these long-standing
+concerns regarding the patchset. I fully appreciate your perspective on
+its previous progress.
+
+You're right that this patchset has been in the pipeline for a
+significant amount of time, influenced by the past pace of SMC-side
+reviews. However, the good news is that its future support should no
+longer be a concern. Dust and I, along with two maintainers from IBM,
+have been co-maintaining the SMC subsystem for some time now. From our
+discussions, I believe that the IBM maintainers are in agreement
+and open to the progress of this specific patchset, and Dust Li has already
+provided an ACK. This collective and aligned support should effectively address
+previous worries about SMC-side review.
+
+Best regards,
+D. Wythe
 
