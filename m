@@ -1,128 +1,155 @@
-Return-Path: <bpf+bounces-72711-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72712-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2C47C19A00
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 11:15:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8734EC19D5A
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 11:47:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C5C964E79D9
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 10:15:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE4074631E9
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 10:41:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CA32F6194;
-	Wed, 29 Oct 2025 10:15:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5563133F8DA;
+	Wed, 29 Oct 2025 10:33:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uyxwq1h5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lYsynUJx"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D1962F5A1B
-	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 10:15:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA70932C938;
+	Wed, 29 Oct 2025 10:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761732913; cv=none; b=VWWbTaX9KlQE46hngSiJvq0lvGxT+kseUu8n8bn09AlLK0HtvlJgWzqoBSv7TV/glZ6MrI9CQ/gk3IYqCOZb5tA0ShLbXd8jsWaYqS1n0sb/MgZuThb0TgxK2gR1qA0+WLL/cx26nDIEUCaxCHEBZlTszhKtzxHG9KzUVdF6NeU=
+	t=1761734008; cv=none; b=iRsENPzVNCA22yKGb+JhPw3icT7BOUuR0X91KSrs1nDOi9Xl680fy4QFWgJAzE2CqtcsNPj6LGDnyn8mHH9skBBybsNlvLmTH59jCe+Y/tPtSwcAUhvErSrZ6LfGE/ETccDTOYox8nL9Y415fd9EwAyPuSFJuqmCBGUb4vV+qO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761732913; c=relaxed/simple;
-	bh=IgdfxtGQKQOq4+Je4sdLPTDIwGZ2L37jlgnYN1T3JBQ=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=tAosZfIiE/H7fmOyRuhfeLzP6lV/tyaSfVkcqe9070upk/S2QFAArNvV9MjVjN2R02ly86ECN1sp5VxGh6BcRzYYouGUhqPEoqQ4fNdorbBbilnTXZDQSgPZZl+3p/lavIbcNsGUveJy2RtUNV2KRu+83echA8fb27F1sT2SOYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uyxwq1h5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92391C4CEF7;
-	Wed, 29 Oct 2025 10:15:09 +0000 (UTC)
+	s=arc-20240116; t=1761734008; c=relaxed/simple;
+	bh=jW3t4Dky05lPY8vwEMeUV64HgYZv3cbkpNkYWRVtEJE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=luXjTKC4lUQx0ehPt+bPiMYIbsfa4eGA7uR7+Wz1IrvkZw1VQpgNIZS0hn7HFTVkxY65QGahUWZGE+c4EyRCN/ou+3Q/Sn2hrDG9anHjhPR06x9O3CvZEG1OK4UIrjeDvOcD0fs/rg+MxrysYGCItGkllVuoQIMYacF6TxTD8JE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lYsynUJx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C7FDC4CEF7;
+	Wed, 29 Oct 2025 10:33:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761732911;
-	bh=IgdfxtGQKQOq4+Je4sdLPTDIwGZ2L37jlgnYN1T3JBQ=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=Uyxwq1h59qzUvOOd17M8SwRQlEJK5e3WVYp/Qhtxt7PsmVCvd2dmTIkLYokklZOiN
-	 7kUl6PWxR8LLbyZbEjy5N1wSQrI5bZ+smXu3Vkq3W43DWHXr0cQCg9VMmL4qFsHWfN
-	 csC7gp/CKQvUlcY7rr4JWTURrvWlrbW+Sf1LaNa6AkMWJFZcYOaNJbkEjigmZoFPzC
-	 LKbcxN7XemFjbXtytpgcDECcELB0wlKzmMjbGoY/bv8gFZ9sOCdun4lUy7QZ2xVOPk
-	 0T9eh1QVOhEunVWWID8zxAJlZL2/UiMQAPWkG/nERxWtm38IvmgVjD92gZ7QNVzarG
-	 ++gvtCPZbw+cA==
-Content-Type: multipart/mixed; boundary="===============1714424974194933712=="
+	s=k20201202; t=1761734008;
+	bh=jW3t4Dky05lPY8vwEMeUV64HgYZv3cbkpNkYWRVtEJE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=lYsynUJxVZiUiCsmJM0jypLVG7AcY0ZwK0hhpZtHLY6Gb1fUIUoP24nwcWYogF0rs
+	 KotIuWsLPWMrJuCRUnf/UHrSc6uHEHm1jaOrWH3j38g7KeogP0z1LexU8fo4uqXQ37
+	 qRJOTW0tRn5kpA0fclgSw3dolaQMxr9fPJR9kKBXDUrQ5AW9BfykY2Mky+tVwWLfpe
+	 MseGeTQuouCXLWoRc5ZBeXf6ltgs5io7YwrEocfyMEX+pOjnCCy0EAQANYLGBsk47T
+	 BkVKgzR9DB8sJfzHKO822WiHkLJPoRCZLm9f78e9vfGtWmOYu2F3OZwWkmOli3aS5m
+	 e7AYebJxPTesA==
+Message-ID: <27e74aeb-89f5-4547-8ecc-232570e2644c@kernel.org>
+Date: Wed, 29 Oct 2025 11:33:23 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <498a5d7ce4624f022f8916088dc9132c3e8a02d7f84e440526bab44aa9bd275a@mail.kernel.org>
-In-Reply-To: <20251029094631.1387011-3-alan.maguire@oracle.com>
-References: <20251029094631.1387011-3-alan.maguire@oracle.com>
-Subject: Re: [RFC bpf-next 2/2] bpftool: Use libcrypto feature test to optionally support signing
-From: bot+bpf-ci@kernel.org
-To: alan.maguire@oracle.com,qmo@kernel.org
-Cc: ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,terrelln@fb.com,dsterba@suse.com,acme@redhat.com,irogers@google.com,leo.yan@arm.com,namhyung@kernel.org,tglozar@redhat.com,blakejones@google.com,yuzhuo@google.com,charlie@rivosinc.com,ebiggers@kernel.org,bpf@vger.kernel.org,alan.maguire@oracle.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed, 29 Oct 2025 10:15:09 +0000 (UTC)
-
---===============1714424974194933712==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-
-```
-commit d2f495eb79d8b11d0ce090766e078d07cff9a826
-Author: Alan Maguire <alan.maguire@oracle.com>
-
-bpftool: Use libcrypto feature test to optionally support signing
-
-This patch adds conditional compilation support for BPF signing
-functionality, allowing bpftool to build without libcrypto v3 by
-wrapping signing-related code in #ifdef USE_CRYPTO guards.
-
-> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-> index 6daf19809..914b0fc17 100644
-> --- a/tools/bpf/bpftool/prog.c
-> +++ b/tools/bpf/bpftool/prog.c
-
-[ ... ]
-
-> @@ -1931,12 +1931,10 @@ static int try_loader(struct gen_loader_opts *gen)
->  {
->  	struct bpf_load_and_run_opts opts = {};
->  	struct bpf_loader_ctx *ctx;
-> -	char sig_buf[MAX_SIG_SIZE];
-> -	__u8 prog_sha[SHA256_DIGEST_LENGTH];
->  	int ctx_sz = sizeof(*ctx) + 64 * max(sizeof(struct bpf_map_desc),
->  					     sizeof(struct bpf_prog_desc));
->  	int log_buf_sz = (1u << 24) - 1;
-> -	int err, fds_before, fd_delta;
-> +	int err = 0, fds_before, fd_delta;
->  	char *log_buf = NULL;
->
->  	ctx = alloca(ctx_sz);
-> @@ -1947,7 +1945,7 @@ static int try_loader(struct gen_loader_opts *gen)
->  		ctx->log_size = log_buf_sz;
->  		log_buf = malloc(log_buf_sz);
->  		if (!log_buf)
-> -			return -ENOMEM;
-> +			goto out;
-                        ^^^^^^^^
-
-When malloc fails here, does err get set to -ENOMEM before the goto?
-It looks like err is initialized to 0 at the top of the function, but
-there's no assignment before this goto. The old code returned -ENOMEM
-directly. Won't this cause malloc failure to return success (0) instead
-of -ENOMEM?
-
->  		ctx->log_buf = (long) log_buf;
->  	}
->  	opts.ctx = ctx;
-
-[ ... ]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net V2 2/2] veth: more robust handing of race to avoid txq
+ getting stuck
+To: Toshiaki Makita <toshiaki.makita1@gmail.com>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, ihor.solodrai@linux.dev,
+ "Michael S. Tsirkin" <mst@redhat.com>, makita.toshiaki@lab.ntt.co.jp,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel-team@cloudflare.com,
+ netdev@vger.kernel.org, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
+ <toke@toke.dk>
+References: <176159549627.5396.15971398227283515867.stgit@firesoul>
+ <176159553930.5396.4492315010562655785.stgit@firesoul>
+ <aacc9c56-bea9-44eb-90fd-726d41b418dd@gmail.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <aacc9c56-bea9-44eb-90fd-726d41b418dd@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-```
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-In-Reply-To-Subject: `bpftool: Use libcrypto feature test to optionally support signing`
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18904020660
+On 28/10/2025 15.56, Toshiaki Makita wrote:
+> On 2025/10/28 5:05, Jesper Dangaard Brouer wrote:
+> 
+>> (1) In veth_xmit(), the racy conditional wake-up logic and its memory 
+>> barrier
+>> are removed. Instead, after stopping the queue, we unconditionally call
+>> __veth_xdp_flush(rq). This guarantees that the NAPI consumer is 
+>> scheduled,
+>> making it solely responsible for re-waking the TXQ.
+> 
+> Maybe another option is to use !ptr_ring_full() instead of 
+> ptr_ring_empty()?
 
---===============1714424974194933712==--
+Nope, that will not work.
+I think MST will agree.
+
+> I'm not sure which is better. Anyway I'm ok with your approach.
+> 
+> ...
+> 
+>> (3) Finally, the NAPI completion check in veth_poll() is updated. If NAPI is
+>> about to complete (napi_complete_done), it now also checks if the peer TXQ
+>> is stopped. If the ring is empty but the peer TXQ is stopped, NAPI will
+>> reschedule itself. This prevents a new race where the producer stops the
+>> queue just as the consumer is finishing its poll, ensuring the wakeup 
+>> is not missed.
+> ...
+> 
+>> @@ -986,7 +979,8 @@ static int veth_poll(struct napi_struct *napi, int 
+>> budget)
+>>       if (done < budget && napi_complete_done(napi, done)) {
+>>           /* Write rx_notify_masked before reading ptr_ring */
+>>           smp_store_mb(rq->rx_notify_masked, false);
+>> -        if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
+>> +        if (unlikely(!__ptr_ring_empty(&rq->xdp_ring) ||
+>> +                 (peer_txq && netif_tx_queue_stopped(peer_txq)))) {
+> 
+> Not sure if this is necessary.
+
+How sure are you that this isn't necessary?
+
+>  From commitlog, your intention seems to be making sure to wake up the 
+> queue,
+> but you wake up the queue immediately after this hunk in the same function,
+> so isn't it guaranteed without scheduling another napi?
+> 
+
+The above code catches the case, where the ptr_ring is empty and the
+tx_queue is stopped.  It feels wrong not to reach in this case, but you
+*might* be right that it isn't strictly necessary, because below code
+will also call netif_tx_wake_queue() which *should* have a SKB stored
+that will *indirectly* trigger a restart of the NAPI.
+
+I will stare some more at the code to see if I can convince myself that
+we don't have to catch this case.
+
+Please, also provide "How sure are you that this isn't necessary?"
+
+
+>>               if (napi_schedule_prep(&rq->xdp_napi)) {
+>>                   WRITE_ONCE(rq->rx_notify_masked, true);
+>>                   __napi_schedule(&rq->xdp_napi);
+>> @@ -998,6 +992,13 @@ static int veth_poll(struct napi_struct *napi, 
+>> int budget)
+>>           veth_xdp_flush(rq, &bq);
+>>       xdp_clear_return_frame_no_direct();
+>> +    /* Release backpressure per NAPI poll */
+>> +    smp_rmb(); /* Paired with netif_tx_stop_queue set_bit */
+>> +    if (peer_txq && netif_tx_queue_stopped(peer_txq)) {
+>> +        txq_trans_cond_update(peer_txq);
+>> +        netif_tx_wake_queue(peer_txq);
+>> +    }
+>> +
+>>       return done;
+>>   }
+> 
+> -- 
+> Toshiaki Makita
+
 
