@@ -1,108 +1,112 @@
-Return-Path: <bpf+bounces-72713-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72714-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FA0CC19D9F
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 11:49:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E66A2C19DCC
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 11:51:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E66BE1C84B22
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 10:43:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5261D1CC2124
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 10:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6617C3009F5;
-	Wed, 29 Oct 2025 10:38:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7751633507B;
+	Wed, 29 Oct 2025 10:40:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kGOneHR8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jyzysFL+"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F9E24C068;
-	Wed, 29 Oct 2025 10:38:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2F2E3115BD
+	for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 10:40:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761734317; cv=none; b=nFwMxbFiylsM6UypxvbWDeCyYEkHRW2bhLjTk5V+B+5vsKdHtwT0KSaqZzaqK4rBiooAdPQulZUfGmA1HY7NgbK4aZUEvB6nRt7xEErR6LnA76S8quMVdIscS0QCKiu9j6mzqPGsNrhGDTus9O9z+/sMu7NehHM/ryhSgiyoQZw=
+	t=1761734437; cv=none; b=gxWr1VRxpFpKipFAvoA4tCvwKg9N9SGiw/mKPh9lBu+w4QqkyRfCDEfwsItBkw/msC/HeZ+XljJw+Bs2AqxbK27s9IWk5OYWFllx+Ot79BL+cMXRa/0n3kJXmjGY6VHXQk7VAjR8bbmXEDYdy+8JMCQCgUWcRb28b6W5nEwzb58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761734317; c=relaxed/simple;
-	bh=3s31/yBaG51d9qnkQpUcKyMtEB4jvcWcKzIO66o2Bdw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p7WjMRXuMGoYHNyrrIL2sUQ/FOT5Ze7hP/bqFLgq8pjQL5r/F2h8nW6+yE2wznLaI9qel9r4ac+zKsvzc3LUfO7FIoLTUNMX38SmrWsV/yuliNA2C/79gbvVXTqU8+LVDpr8Gu2UyCYysfAIqdjBKQ8W6a1oZyHAL4WbpW7FMMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=kGOneHR8; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=eHGSKAl2qgha8GO/z2VZF0A4lrkYk6RSodk4W7L/YGU=; b=kGOneHR8G49DYpxW0CsTg/SSBu
-	1QLUKocXaBLRrboFtgp9rpEIe90u8Ac8mpcto3HR0Pi9YcXQvxTWmJrhjY1Jrm75WDk/SvW0tfdJp
-	g3vGSwBWIhAHwNfE1FrEAFY1V+33c4QsWkRM8KqSysLu0tkgOd+Uag90pc5q1gtxX4XlqqI4t8whm
-	vQJ4S3KphBNAefAKEzxzstdcBKIPVk1swmAs4UjS7Fz501D2KRkokYp43CpgEpu+7RHJN6LRC4319
-	ghkkOnNXGyeewm0piiI0tP9nsuoactzwTtaE4P6pweEbE+kY4qydJOVeYShLOzp5CAzCsMN9heZpd
-	B6B7vytA==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vE3ZM-00000007WWi-1SWE;
-	Wed, 29 Oct 2025 10:38:21 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 17B29300289; Wed, 29 Oct 2025 11:38:21 +0100 (CET)
-Date: Wed, 29 Oct 2025 11:38:21 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Indu Bhagat <indu.bhagat@oracle.com>,
-	"Jose E. Marchesi" <jemarch@gnu.org>,
-	Beau Belgrave <beaub@linux.microsoft.com>,
-	Jens Remus <jremus@linux.ibm.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>,
-	Kees Cook <kees@kernel.org>, Carlos O'Donell <codonell@redhat.com>
-Subject: Re: [PATCH v16 4/4] perf tools: Merge deferred user callchains
-Message-ID: <20251029103821.GH3419281@noisy.programming.kicks-ass.net>
-References: <20250908175319.841517121@kernel.org>
- <20250908175430.639412649@kernel.org>
- <20251002134938.756db4ef@gandalf.local.home>
- <20251024130203.GC3245006@noisy.programming.kicks-ass.net>
- <20251028200955.0340ae1c@gandalf.local.home>
+	s=arc-20240116; t=1761734437; c=relaxed/simple;
+	bh=aK7R54AWyZUMIiJpnPGJaMZtAjTA4T4B+xQ5JFJuAYI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oLzv3aPLiCCh9KpyqZhCXr0X4PzVkMrQPyIccGYe7GP7ZtzHZm6G/aTe0yp4zp+WTHFt0/OcnSTbGIB3ZUyvqGGW4z8j12MA6gTPbXAtR4k3joWzJ7nqT9UiAnIXFeU3CUQmwBfoz9kR6fX+346DUEaQjEhtBX6uMTe7rkrcmxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jyzysFL+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35A7EC4CEFD;
+	Wed, 29 Oct 2025 10:40:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761734436;
+	bh=aK7R54AWyZUMIiJpnPGJaMZtAjTA4T4B+xQ5JFJuAYI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=jyzysFL+u5offpLB7AL2riprKVxVjKxLx8mPjo9mc20K+98HmfwEVzrKHvgOLNwEK
+	 3FsneCunBkf5tfH+LZoFCLPJSdCq7Qhm8zmlCLNbgXd8PdLQi2cIPFTGmeQkl8V0Eg
+	 +vNqrtpyK4fmhGa+G/4L4k8vDzLOdAEYQhmCL21EWIoltz8mLiqCAUwLzBZ4qMkb0n
+	 oJrXXJpu214uWwq9BzWqef8h5eXiScZ/MMJ4k5EbnIQp0SRJfBENI4mWQTvnneG3hV
+	 h9IB7EWH8qS0c1boAlpUN0JMneD2pIyfNz+u1X9GjLST/bbUI1BLNW3+ePZVDKnA3N
+	 aINBs/OCiwKHw==
+Message-ID: <fb2fd1cd-239d-4783-8b24-66af0e754a47@kernel.org>
+Date: Wed, 29 Oct 2025 11:40:29 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251028200955.0340ae1c@gandalf.local.home>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC bpf-next 2/2] bpftool: Use libcrypto feature test to
+ optionally support signing
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, terrelln@fb.com,
+ dsterba@suse.com, acme@redhat.com, irogers@google.com, leo.yan@arm.com,
+ namhyung@kernel.org, tglozar@redhat.com, blakejones@google.com,
+ yuzhuo@google.com, charlie@rivosinc.com, ebiggers@kernel.org,
+ bpf@vger.kernel.org
+References: <20251029094631.1387011-1-alan.maguire@oracle.com>
+ <20251029094631.1387011-3-alan.maguire@oracle.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20251029094631.1387011-3-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Oct 28, 2025 at 08:09:55PM -0400, Steven Rostedt wrote:
-> On Fri, 24 Oct 2025 15:02:03 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > > The sample__merge_deferred_callchain() initializes both
-> > > orig_sample.deferred_callchain and the callchain. But now that it's not
-> > > being called, it can cause the below free to happen with junk as the
-> > > callchain. This needs:
-> > > 
-> > > 		else
-> > > 			orig_sample.deferred_callchain = false;  
-> > 
-> > Ah, so I saw crashes from here and just deleted both free()s and got on
-> > with things ;-)
-> 
-> I just downloaded your tree again and it doesn't look like it was updated.
-> 
-> Just didn't want you to forget about this ;)
+2025-10-29 09:46 UTC+0000 ~ Alan Maguire <alan.maguire@oracle.com>
+> New libcrypto test verifies presence of openssl3 needed for BPF
+> signing; use that feature to conditionally compile signing-related
+> code so bpftool build will not break in the absence of libcrypto v3.
 
-Done, this should all be in tip/perf/core now. Thanks!
+
+Hi Alan, thanks for this work!
+
+
+> 
+> Fixes: 40863f4d6ef2 ("bpftool: Add support for signing BPF programs")
+> Suggested-by: Quentin Monnet <qmo@kernel.org>
+
+
+This is not exactly what I suggested, I mentioned adding such a feature
+check and printing a more user-friendly error message at build time if
+the dependency is missing, not leaving out the program signing feature.
+
+I've got reservations about the current approach: my concern is that
+people packaging bpftool may prefer to compile and ship it without
+program signing, if their build environment does not include the OpenSSL
+dependency. But it seems to me that it will be an important feature
+going forward, and that bpftool should ship with it.
+
+Regarding the OpenSSL v3 vs. older version concern (from the build
+failure report thread):
+
+> One issue here is that some distros package openssl v3 such that the
+> #include files are in /usr/include/openssl3 and libraries in
+> /usr/lib64/openssl3 so that older versions can co-exist. Maybe we could
+> figure out a feature test that handles that too?
+
+In that case, we should have a feature probe that gives us the right
+build parameters to ensure that v3, and not some older version, is
+picked when building bpftool? (We could imagine falling back to an older
+version, but I see v3.0 is now the oldest OpenSSL supported version so
+it's probably not worth it?)
+
+Best regards,
+Quentin
 
