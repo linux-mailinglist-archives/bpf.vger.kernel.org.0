@@ -1,171 +1,200 @@
-Return-Path: <bpf+bounces-72794-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72795-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F0E7C1A8DF
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 14:13:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8328C1B3DF
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 15:35:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C81D55033EB
-	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 13:06:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF7206E0F41
+	for <lists+bpf@lfdr.de>; Wed, 29 Oct 2025 13:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2E5D230BF6;
-	Wed, 29 Oct 2025 12:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F3E2D0C9D;
+	Wed, 29 Oct 2025 13:52:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="EpvyDtnD"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="I7Uy3BYV"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC47333507B;
-	Wed, 29 Oct 2025 12:55:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 732631EF0B0;
+	Wed, 29 Oct 2025 13:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761742527; cv=none; b=cUzjCDZz/WuXbj/Qiisp7+SR0t7+34H6q0lOzXHnSjaBA90qlWEf+dKOwx9pfY90BEWkZyOgvPx81Zx3AO/+xaBqgU2BeNF9nI2PHe48Klie4hBB6XN6R26PnKVvGxIzh2v/dz1esJOujGcvxIkMc+EB3ZWarxdEMij04/v8Y3Y=
+	t=1761745956; cv=none; b=MTfgWxt/yuKmIjFcbsZj4o8UAD2L3R7oZ5sHE6SKI7OsGxsnyzCT/f+uJlsv1Nw1PiRChuRaK259QnzmNJtodaf+nJ2cvtAI0c8an8UyKDwlX5GP6sVFWTU/fnabC5kmyGBRD+tsU2I1efB0jMNiqZQpsqNm5yx15vOwd4BhO28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761742527; c=relaxed/simple;
-	bh=0wMW0XC224Kej5/7Y/10VzAOIoK/Gr9bBang0zCkkec=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=T4bY+lSVbxM65yT2xAuzqMRgeM8p6rGBY5nCuDg+qUf/AEOem63Ca4oE6OVu50GjphiOsAZL//WlIgURp/a0a87KEc8FPX04go6oIroxussfVNY5WCs6b+pKyUCam8QnQ/HrutoZmKJwt/zN4fq05AqTiEw+pN2ctXqPrm7UN+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=EpvyDtnD; arc=none smtp.client-ip=115.124.30.110
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1761742520; h=Message-ID:Date:MIME-Version:Subject:From:To:Content-Type;
-	bh=1/s8TOdfgqqMhs6MPkKtJvuM4gO1U3iasXipTZ9JtZQ=;
-	b=EpvyDtnDaPezKIVx6Xq+/nz15ofVNiB9hS5v2gD51IH2AIe1VbxozYCjthGjchjAPSJFCtkyQgrsaoABfiMgdBP+04T0gK2i6072iYq/0JBVP+L/IISKd5XsKnzU9Pt+vWOk8ifbxhBl/YsH/e72mzN4Sgp+LipR7LpMYUCSJ4s=
-Received: from 30.246.176.102(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0WrG16KC_1761742518 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 29 Oct 2025 20:55:19 +0800
-Message-ID: <eed27aaf-fd0a-4609-a30b-68e7c5c11890@linux.alibaba.com>
-Date: Wed, 29 Oct 2025 20:55:14 +0800
+	s=arc-20240116; t=1761745956; c=relaxed/simple;
+	bh=rW3784dFwWK1ESSqmaBPg+kT0mzp+FqU2lvt8I3dmu4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=t2xfanb/gYIS4cGbu0hLYa37OKNHNinACbPBjsD272g03icRfpNUeLmMYIrs12SoZMOvzE/Tw0/zyNZUeFUhlionbdQnht22oUuGYZk7TXYpqO/t55ac57w6jOyDOglpLbTMmZiKvQThelAVI3WLHBPoYbWthumMLRbjFZPBVXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=I7Uy3BYV; arc=none smtp.client-ip=185.246.85.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 9D5C54E413BF;
+	Wed, 29 Oct 2025 13:52:32 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 5778F606E8;
+	Wed, 29 Oct 2025 13:52:32 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5A263117F80EE;
+	Wed, 29 Oct 2025 14:52:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1761745951; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=rhH66cXrlh+mBW9/j7oTqaX5K/p8LcUvQAyFmm6+5Q8=;
+	b=I7Uy3BYV/Ou2rYMnDh1/hbLmhYDx1/ph/I5ohpr9w/G0N3i9SxBnYKHMBHwx5cfopu9avr
+	Xq3vg2TbT0osKF5zTEKv82/yopurT8c8NTcGNl/ijT9MJskiz9eOawGpq0Pq4yFzU9rI+v
+	95y+tRGSQQOkhp8Z6SgnFCzD7LrS2aZZ9YRuIQnHyCM439BGEAIvP6n3Paw1kNDrRgwBuX
+	Dx6a91hs0BOhslhMx3KBN7LLeWLo8NH/9Yykcb0tqO5FFOsRnHdwcLiUeLNIZsMtOYwDmO
+	+myXpz7eDahFuhdLvKc/qx6zu76DMar/M9ciSClSYcpff5ALg6ZgMPOBv3tj8Q==
+From: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+Subject: [PATCH bpf-next v6 00/15] selftests/bpf: Integrate test_xsk.c to
+ test_progs framework
+Date: Wed, 29 Oct 2025 14:52:21 +0100
+Message-Id: <20251029-xsk-v6-0-5a63a64dff98@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf record: skip synthesize event when open evsel failed
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-To: Ian Rogers <irogers@google.com>
-Cc: alexander.shishkin@linux.intel.com, peterz@infradead.org,
- james.clark@arm.com, leo.yan@linaro.org, mingo@redhat.com,
- baolin.wang@linux.alibaba.com, acme@kernel.org, mark.rutland@arm.com,
- jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- nathan@kernel.org, bpf@vger.kernel.org
-References: <20251023015043.38868-1-xueshuai@linux.alibaba.com>
- <CAP-5=fWupb62_QKM3bZO9K9yeJqC2H-bdi6dQNM7zAsLTJoDow@mail.gmail.com>
- <fc75b170-86c1-49b6-a321-7dca56ad824a@linux.alibaba.com>
-In-Reply-To: <fc75b170-86c1-49b6-a321-7dca56ad824a@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABUcAmkC/23NwU7DMAyA4VeZciYoseOk2Yn3QByW1GUR0ExNV
+ RVNfXeiFMHEOFr29/sqCk+JizgermLiJZWUxzrYh4OI59P4yjL1dRaggBToTq7lTao4eMXeUa+
+ NqJeXiYe0tsqzCJdBjrzO4qVuzqnMefps+UW3fSuhxlZatFTSoTMO/Mlj8E8h5/k9jY8xf7TCA
+ r/KK9gVVKVdtGioJ9B0r/BWmV1hVZGxA0bUpvtHmRsF38pUBYrJEbrQOXuv6Edppe2uqCprIXr
+ i0Cn159e2bV+O8hcnegEAAA==
+X-Change-ID: 20250218-xsk-0cf90e975d14
+To: =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>, 
+ Magnus Karlsson <magnus.karlsson@intel.com>, 
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+ Jonathan Lemon <jonathan.lemon@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Alexis Lothore <alexis.lothore@bootlin.com>, netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+X-Mailer: b4 0.14.2
+X-Last-TLS-Session-Version: TLSv1.3
 
+Hi all,
 
+The test_xsk.sh script covers many AF_XDP use cases. The tests it runs
+are defined in xksxceiver.c. Since this script is used to test real
+hardware, the goal here is to leave it as it is, and only integrate the
+tests that run on veth peers into the test_progs framework.
 
-在 2025/10/24 10:45, Shuai Xue 写道:
-> 
-> 
-> 在 2025/10/24 00:08, Ian Rogers 写道:
->> On Wed, Oct 22, 2025 at 6:50 PM Shuai Xue <xueshuai@linux.alibaba.com> wrote:
->>>
->>> When using perf record with the `--overwrite` option, a segmentation fault
->>> occurs if an event fails to open. For example:
->>>
->>>    perf record -e cycles-ct -F 1000 -a --overwrite
->>>    Error:
->>>    cycles-ct:H: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
->>>    perf: Segmentation fault
->>>        #0 0x6466b6 in dump_stack debug.c:366
->>>        #1 0x646729 in sighandler_dump_stack debug.c:378
->>>        #2 0x453fd1 in sigsegv_handler builtin-record.c:722
->>>        #3 0x7f8454e65090 in __restore_rt libc-2.32.so[54090]
->>>        #4 0x6c5671 in __perf_event__synthesize_id_index synthetic-events.c:1862
->>>        #5 0x6c5ac0 in perf_event__synthesize_id_index synthetic-events.c:1943
->>>        #6 0x458090 in record__synthesize builtin-record.c:2075
->>>        #7 0x45a85a in __cmd_record builtin-record.c:2888
->>>        #8 0x45deb6 in cmd_record builtin-record.c:4374
->>>        #9 0x4e5e33 in run_builtin perf.c:349
->>>        #10 0x4e60bf in handle_internal_command perf.c:401
->>>        #11 0x4e6215 in run_argv perf.c:448
->>>        #12 0x4e653a in main perf.c:555
->>>        #13 0x7f8454e4fa72 in __libc_start_main libc-2.32.so[3ea72]
->>>        #14 0x43a3ee in _start ??:0
->>>
->>> The --overwrite option implies --tail-synthesize, which collects non-sample
->>> events reflecting the system status when recording finishes. However, when
->>> evsel opening fails (e.g., unsupported event 'cycles-ct'), session->evlist
->>> is not initialized and remains NULL. The code unconditionally calls
->>> record__synthesize() in the error path, which iterates through the NULL
->>> evlist pointer and causes a segfault.
->>>
->>> To fix it, move the record__synthesize() call inside the error check block, so
->>> it's only called when there was no error during recording, ensuring that evlist
->>> is properly initialized.
->>>
->>> Fixes: 4ea648aec019 ("perf record: Add --tail-synthesize option")
->>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->>
->> This looks great! I wonder if we can add a test, perhaps here:
->> https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/tests/shell/record.sh?h=perf-tools-next#n435
->> something like:
->> ```
->> $ perf record -e foobar -F 1000 -a --overwrite -o /dev/null -- sleep 0.1
->> ```
->> in a new test subsection for test_overwrite? foobar would be an event
->> that we could assume isn't present. Could you help with a test
->> covering the problems you've uncovered and perhaps related flags?
->>
-> 
-> Hi, Ian,
-> 
-> Good suggestion, I'd like to add a test. But foobar may not a good case.
-> 
-> Regarding your example:
-> 
->    perf record -e foobar -a --overwrite -o /dev/null -- sleep 0.1
->    event syntax error: 'foobar'
->                         \___ Bad event name
-> 
->    Unable to find event on a PMU of 'foobar'
->    Run 'perf list' for a list of valid events
-> 
->     Usage: perf record [<options>] [<command>]
->        or: perf record [<options>] -- <command> [<options>]
-> 
->        -e, --event <event>   event selector. use 'perf list' to list available events
-> 
-> 
-> The issue with using foobar is that it's an invalid event name, and the
-> perf parser will reject it much earlier. This means the test would exit
-> before reaching the part of the code path we want to verify (where
-> record__synthesize() could be called).
-> 
-> A potential alternative could be testing an error case such as EACCES:
-> 
->    perf record -e cycles -C 0 --overwrite -o /dev/null -- sleep 0.1
-> 
-> This could reproduce the scenario of a failure when attempting to access
-> a valid event, such as due to permission restrictions. However, the
-> limitation here is that users may override
-> /proc/sys/kernel/perf_event_paranoid, which affects whether or not this
-> test would succeed in triggering an EACCES error.
-> 
-> 
-> If you have any other suggestions or ideas for a better way to simulate
-> this situation, I'd love to hear them.
-> 
-> Thanks.
-> Shuai
+I've looked into what could improve the speed in the CI:
+- some tests are skipped when run on veth peers in a VM (because they
+  rely on huge page allocation or HW rings). This skipping logic still
+  takes some time and can be easily avoided.
+- the TEARDOWN test is quite long (several seconds on its own) because
+  it runs the same test 10 times in a row to ensure the teardown process
+  works properly
 
-Hi, Ian,
+With theses tests fully skipped in the CI and the veth setup done only
+once for each mode (DRV / SKB), the execution time is reduced to about 5
+seconds on my setup.
+```
+$ tools/testing/selftests/bpf/vmtest.sh -d $HOME/ebpf/output-regular/ -- time ./test_progs -t xsk
+[...]
+real    0m 5.04s
+user    0m 0.38s
+sys     0m 1.61s
+```
 
-Gentle ping.
+It still feels a bit long, but there are 24 tests run in both DRV and
+SKB modes which means around 100ms for each one. I'm not sure I can make
+it much faster without randomizing the tests so that not all of them run
+in every CI execution.
 
-Thanks.
-Shuai
+PATCH 1 extracts test_xsk[.c/.h] from xskxceiver[.c/.h] to make the
+tests available to test_progs.
+PATCH 2 to 7 fix small issues in the current test
+PATCH 8 to 13 handle all errors to release resources instead of calling
+exit() when any error occurs.
+PATCH 14 isolates the tests that won't fit in the CI
+PATCH 15 integrates the CI tests to the test_progs framework
+
+Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+---
+Changes in v6:
+- Setup veth peer once for each mode instead of once for each substest
+- Rename the 'flaky' table 'skip-ci' table and move the automatically
+  skipped and the longest tests into it
+- Link to v5: https://lore.kernel.org/r/20251016-xsk-v5-0-662c95eb8005@bootlin.com
+
+Changes in v5:
+- Rebase on latest bpf-next_base
+- Move XDP_ADJUST_TAIL_SHRINK_MULTI_BUFF to the flaky table
+- Add Maciej's reviewed-by
+- Link to v4: https://lore.kernel.org/r/20250924-xsk-v4-0-20e57537b876@bootlin.com
+
+Changes in v4:
+- Fix test_xsk.sh's summary report.
+- Merge PATCH 11 & 12 together, otherwise PATCH 11 fails to build.
+- Split old PATCH 3 in two patches. The first one fixes
+  testapp_stats_rx_dropped(), the second one fixes
+  testapp_xdp_shared_umem(). The unecessary frees (in
+  testapp_stats_rx_full() and testapp_stats_fill_empty() are removed)
+- Link to v3: https://lore.kernel.org/r/20250904-xsk-v3-0-ce382e331485@bootlin.com
+
+Changes in v3:
+- Rebase on latest bpf-next_base to integrate commit c9110e6f7237 ("selftests/bpf:
+Fix count write in testapp_xdp_metadata_copy()").
+- Move XDP_METADATA_COPY_* tests from flaky-tests to nominal tests
+- Link to v2: https://lore.kernel.org/r/20250902-xsk-v2-0-17c6345d5215@bootlin.com
+
+Changes in v2:
+- Rebase on the latest bpf-next_base and integrate the newly added tests
+  to the work (adjust_tail* and tx_queue_consumer tests)
+- Re-order patches to split xkxceiver sooner.
+- Fix the bug reported by Maciej.
+- Fix verbose mode in test_xsk.sh by keeping kselftest (remove PATCH 1,
+  7 and 8)
+- Link to v1: https://lore.kernel.org/r/20250313-xsk-v1-0-7374729a93b9@bootlin.com
+
+---
+Bastien Curutchet (eBPF Foundation) (15):
+      selftests/bpf: test_xsk: Split xskxceiver
+      selftests/bpf: test_xsk: Initialize bitmap before use
+      selftests/bpf: test_xsk: Fix __testapp_validate_traffic()'s return value
+      selftests/bpf: test_xsk: fix memory leak in testapp_stats_rx_dropped()
+      selftests/bpf: test_xsk: fix memory leak in testapp_xdp_shared_umem()
+      selftests/bpf: test_xsk: Wrap test clean-up in functions
+      selftests/bpf: test_xsk: Release resources when swap fails
+      selftests/bpf: test_xsk: Add return value to init_iface()
+      selftests/bpf: test_xsk: Don't exit immediately when xsk_attach fails
+      selftests/bpf: test_xsk: Don't exit immediately when gettimeofday fails
+      selftests/bpf: test_xsk: Don't exit immediately when workers fail
+      selftests/bpf: test_xsk: Don't exit immediately if validate_traffic fails
+      selftests/bpf: test_xsk: Don't exit immediately on allocation failures
+      selftests/bpf: test_xsk: Isolate non-CI tests
+      selftests/bpf: test_xsk: Integrate test_xsk.c to test_progs framework
+
+ tools/testing/selftests/bpf/Makefile              |   11 +-
+ tools/testing/selftests/bpf/prog_tests/test_xsk.c | 2595 ++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/test_xsk.h |  298 +++
+ tools/testing/selftests/bpf/prog_tests/xsk.c      |  151 ++
+ tools/testing/selftests/bpf/xskxceiver.c          | 2696 +--------------------
+ tools/testing/selftests/bpf/xskxceiver.h          |  156 --
+ 6 files changed, 3183 insertions(+), 2724 deletions(-)
+---
+base-commit: 4481a8590725400f37d3015f0ee0d53a2cdc1bd6
+change-id: 20250218-xsk-0cf90e975d14
+
+Best regards,
+-- 
+Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
 
 
