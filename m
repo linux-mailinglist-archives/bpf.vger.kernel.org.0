@@ -1,124 +1,131 @@
-Return-Path: <bpf+bounces-72939-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72940-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EA3DC1DD86
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 01:04:00 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 369CAC1DDA1
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 01:07:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id EF83C34C5EA
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 00:03:59 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B00A64E38E0
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 00:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC801E868;
-	Thu, 30 Oct 2025 00:03:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059BC3A1C9;
+	Thu, 30 Oct 2025 00:06:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c2xwHM38"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RArflTXl"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359541C68F;
-	Thu, 30 Oct 2025 00:03:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 145811CFBA
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 00:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761782633; cv=none; b=XaIZNp8Uz8LH0oHItRPcvLa+6xBwuQAsNZGPPsXoCa0vf4dhrXKO9bdGrB0PDl68kvXNSW73ZF4USEeJmsP5QdTpMbbgQb5rksWl2sARx4TVH9YnEocLz+QyxSbqtVGre76ngJ5500N+22QIzGD485R48i6gfqOTSeEn081RIEc=
+	t=1761782816; cv=none; b=GWB1k3N0pDLbA27XX3E91TFISdxjuSkP86pjxECKbfy6UwRufYl7myEyg04NrzttYPz0l6w+l3gaXukN1Fd3ugORa32wNcAlr0HCRB7EfKKcQEavnMJZHOHW4AhgCgccu/ZbocRgd8RPTv8xNh3I/Rji/6gUEd+sblDj7r6YjvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761782633; c=relaxed/simple;
-	bh=1XnGr1V9M31iKuMKW3cadiXKYVM5ogphmXcmc2DRafs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IbzCYLn11duTD4shRR748QKIiwSOC91MpRuV20DVNyODMr+HjCHIonhta7uDzCSizhF8ErISdtICWXFZtynoEI0JQZC6POsF91Q7O0I1LE1LmDlYcTKFu4lyl8u2rUsM8SvmyiLerlNvVPxNnEwxrw5aAhF32/Jg+fCwixcpvZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c2xwHM38; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 842BCC4CEF7;
-	Thu, 30 Oct 2025 00:03:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761782632;
-	bh=1XnGr1V9M31iKuMKW3cadiXKYVM5ogphmXcmc2DRafs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=c2xwHM38YkX0bt2FauUNoc+p8aNebX3OddEiZzpbnty76brkQojdA10bHHlhYJyoz
-	 8Q0JOl4clPV7GExdOLx+2nQrAJ51ZiSOG+KsKDerEiWItE4827kdsS1ONn2VO4m4A6
-	 OUH95kE6wD2yz1njEkr80MmZJ+zFV0u/jFHts1JjypsHf5fKSn3DG65xxeQBqQkQbf
-	 NmIp/MWjz4cRe0I2mJ88CHgOdxMNZEPp0te5nIOHcD53vxTeYM9yurfxQIRCTFfvu3
-	 38w+VTOCZP3ZPCgg/03pa3LcFGE7sRMdrnQQDyEuwhUeVdEykX3S4+H0HfwGrCjNNC
-	 7OwjtmPn74xTA==
-Date: Wed, 29 Oct 2025 14:03:51 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>, Song Liu <song@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>, linux-mm <linux-mm@kvack.org>,
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops
- to cgroups
-Message-ID: <aQKrZ2bQan8PnAQA@slm.duckdns.org>
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
- <20251027231727.472628-3-roman.gushchin@linux.dev>
- <aQJZgd8-xXpK-Af8@slm.duckdns.org>
- <87ldkte9pr.fsf@linux.dev>
- <aQJ61wC0mvzc7qIU@slm.duckdns.org>
- <CAHzjS_vhk6RM6pkfKNrDNeEC=eObofL=f9FZ51tyqrFFz9tn1w@mail.gmail.com>
- <871pmle5ng.fsf@linux.dev>
- <CAADnVQJ+4a97bp26BOpD5A9LOzfJ+XxyNt4bdG8n7jaO6+nV3Q@mail.gmail.com>
- <aQKa5L345s-vBJR1@slm.duckdns.org>
- <CAADnVQJp9FkPDA7oo-+yZ0SKFbE6w7FzARosLgzLmH74Vv+dow@mail.gmail.com>
+	s=arc-20240116; t=1761782816; c=relaxed/simple;
+	bh=SCfiGPiies82z9ioXueR/N43iveSe0WK/6Zp/t3WuJY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Fwjcqbw1KitRCq7HiBfcOHG4KyCcFJ5VsyC1HHasO6rhTJfniQtIXuiClE5e2Rbaee5PDAUW3M4rONihvNQFsi9vH8B6OiyWm4BiEJ8AMd6f/hAdrbNy8b5CV9JCvXRUOqWl3uzEP1kULnZ9XOknlsFekcQ+PhGpi/RqUMjF368=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RArflTXl; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b6cf30e5bbcso1146195a12.0
+        for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 17:06:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761782814; x=1762387614; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b1hNkDtSx9btv+ppu5ID3Ac1b4Cfy+TXF5aN1lbNAbM=;
+        b=RArflTXldx+BCchY47tZpx3SEKLsamNWujxbyI9akTbo/dVPquTJYrsQbUiDwXU05H
+         vk2cP56+YXSmUTRgSlxt9Ay0oyf49vyxHptfR1jLBrkxalFZfkDitjL7Z430vrKHlxAx
+         fMpZ+ibiqsbqC0uKB23y/dJqdkNl2/6hE+LM54dZDWD1KLczLrH8p2qjD7KGrvCJMyOB
+         VTjlhQ/IbNaGjjyVtnpE7/EAsAtnZq9hFQrnnJwtU2kPnQBmTCNYFInCrikamCmYRyZj
+         /qsK3BkEJaAMMPtqgL3WNSLNm7XfNT4KfvbaqTPry0/nbltiXFdZsOF5sZtlyQMnY0hm
+         JOtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761782814; x=1762387614;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b1hNkDtSx9btv+ppu5ID3Ac1b4Cfy+TXF5aN1lbNAbM=;
+        b=DmN1mGNgQIglqSqLuBK4cWpCtMqwsvPqaQqcd92NgtkDpTkXzcL2++X0iVnkYzlzIw
+         drKLGVqSyFfNuU1zI4O2qKhGmHm4VloeWJ7vvXjH1E2/a/gZUIP2BK0pwtFlRmnkfezg
+         GY3Aa2hxzZ1JJqAPdOIiqRmmxaGlGekCpSrSdxUUtpWJlPqBBkbKlgatj1UaxsGNGH35
+         PW4p+2Jvb0oZIzUa+sHS+n8tv2lkfcP07kFvi40y1mzE/0TdR8ANFJKLnyUQf/Ob4cXs
+         78QGv54pIvOA3B4/ddkT/5dofLI0D65+sdu4vErzHZhBdglyomJNRKn4FxkZ19aAi4sw
+         Sy2Q==
+X-Gm-Message-State: AOJu0YwpGuX0CJmuGlMDKTE/CmuUP67a2fZ4jG0S88RdGFMsOBI00yqF
+	3kx8hlfFymccqOsv/0qpTy4q7KvcN+5Ze/u8xdr4vXowyli5FGt7Swqk
+X-Gm-Gg: ASbGnctoG4NPeh67mb/o+JKODmwJUfeto5XVlnwv959CECvrjSIxKa2vS1jtFn4m+gN
+	5/8K59NE3liSGVgNFG814gJgXe5rJ5jp9T0hoNp3nQTAzaQ0FjJRQiRXOau3At640bqGZ4A4kqL
+	6WG08UQYMaU2KcC5ePAuG2VwDlL9AN5ZhjadhJfIAn8uupQ+ELT5Pv6lm58FzcCrX7jeZdrpTPU
+	aKKP+tl31D1MSkmpqE0Ul4y2kKNkQNY51816KToHZkNdi5g5C/mXOwSs4RoMXC4x9VXeAAR5pTG
+	NZ7UKVFMrHbLQCTE+fiIagaRz3qWeRxktXuc3NZ+NP3WDiy5CEZVTSb+0NWGzjz0DE6ZXW57Jru
+	BLCHUtmO0ztZeT5b275a/5pZ5FoCxEpbhWpRiCR3LeMNTuw6Jpt5GhkhvV8yxq1+29oWb15RNcU
+	v2r1aXNBOKcSveIxJNtKHjoCq3C67Y8gPXpn83uw==
+X-Google-Smtp-Source: AGHT+IHKfChxSwIqjz2zTw55zM4v/EfZMYy1z92r/U9l+CG4n+pE324MshyKfd1xIDlI+/dsB4MahQ==
+X-Received: by 2002:a17:902:ea0e:b0:265:62b6:c51a with SMTP id d9443c01a7336-294ed2a1377mr12476935ad.23.1761782814185;
+        Wed, 29 Oct 2025 17:06:54 -0700 (PDT)
+Received: from KERNELXING-MC1.tencent.com ([111.201.29.154])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498e4117esm162900155ad.93.2025.10.29.17.06.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Oct 2025 17:06:53 -0700 (PDT)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	sdf@fomichev.me,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	horms@kernel.org,
+	andrew+netdev@lunn.ch
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH net-next v2 0/2] xsk: minor optimizations around locks
+Date: Thu, 30 Oct 2025 08:06:44 +0800
+Message-Id: <20251030000646.18859-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJp9FkPDA7oo-+yZ0SKFbE6w7FzARosLgzLmH74Vv+dow@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Jason Xing <kernelxing@tencent.com>
 
-On Wed, Oct 29, 2025 at 04:53:07PM -0700, Alexei Starovoitov wrote:
-...
-> > - How would recursion work with private stacks? Aren't those attached to
-> >   each BPF program?
-> 
-> yes. private stack is per prog, but why does it matter?
-> I'm not suggesting that the same prog to be attached at different
-> levels of the cgroup hierarchy, because such configuration
-> will indeed trigger recursion prevention logic (with or without private
-> stack).
-> But having one logical sched-ext prog set to manage tasks
-> in container A and in container B makes sense as a use case to me
-> where A and B are different cgroups.
-> DSQs can be cgroup scoped too.
+Two optimizations regarding xsk_tx_list_lock and cq_lock can yield a
+performance increase because of avoiding disabling and enabling
+interrupts frequently.
 
-I don't know. Maybe, but this is kinda specific and I don't see how this
-would be useful in practical sense. Have nothing against using the
-mechanism. I can still enforce the same rules from scx side. It just looks
-unnecessarily over-designed. Maybe consistency with other BPF progs
-justifies it.
+---
+V2
+Link: https://lore.kernel.org/all/20251025065310.5676-1-kerneljasonxing@gmail.com/
+1. abandon applying lockless idea around cached_prod because the case as
+Jakub pointed out can cause the pool messy.
+2. add a new patch to handle xsk_tx_list_lock.
 
-> > If there is one struct_ops per cgroup, the oom kill kfunc can
-> >   look that up and then verify that the struct_ops has authority over the
-> >   target process. Multiple attachments can work too but that'd require
-> >   iterating all attachments, right?
-> 
-> Are you talking about bpf_oom_kill_process() kfunc from these patch set?
-> I don't think it needs any changes. oom context is passed into prog
-> and passed along to kfunc. Doesn't matter the cgroup origin.
+Jason Xing (2):
+  xsk: do not enable/disable irq when grabbing/releasing
+    xsk_tx_list_lock
+  xsk: use a smaller new lock for shared pool case
 
-Oh, if there are other mechanisms to enforce boundaries, it's not a problem,
-but I can almost guarantee as the framework grows, there will be needs for
-kfuncs to identify and verify the callers and handlers communicating with
-each other along the hierarchy requiring recursive calls.
-
-Thanks.
+ include/net/xsk_buff_pool.h | 13 +++++++++----
+ net/xdp/xsk.c               | 15 ++++++---------
+ net/xdp/xsk_buff_pool.c     | 15 ++++++---------
+ 3 files changed, 21 insertions(+), 22 deletions(-)
 
 -- 
-tejun
+2.41.3
+
 
