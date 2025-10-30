@@ -1,216 +1,157 @@
-Return-Path: <bpf+bounces-73031-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73033-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33A33C20ADF
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 15:43:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A58E1C20E77
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 16:24:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C673D4F05CE
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 14:37:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F2DA1889EBC
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 15:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22C152BE05F;
-	Thu, 30 Oct 2025 14:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A4835BDC6;
+	Thu, 30 Oct 2025 15:19:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="e3n1+xfA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tr1Of0Hs"
 X-Original-To: bpf@vger.kernel.org
-Received: from AM0PR83CU005.outbound.protection.outlook.com (mail-westeuropeazon11010052.outbound.protection.outlook.com [52.101.69.52])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02FBE2750FE;
-	Thu, 30 Oct 2025 14:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.69.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761834908; cv=fail; b=A26GmOkKHSeyOnF6qhXQQiGiQpezWRvww6bB9qT+ieMNG9LMxlxmFa8w0wCZHkJi/neSi9RAF9fDRGPo8karnooj0xRQwR2FJRFO+Mv2Nz1FjYkUDsDaZRF+02LG2WUfZI5O2OlpwsJFiL3GDtqgzovoXntvy1QL8N7fSCQs/Ns=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761834908; c=relaxed/simple;
-	bh=L/9syWY5Uc0f6dVV5fOe19D+Lnvl9WF1Tjpw0JAHevg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RJAYe8H6gnvA2kWO3qv+l2toVaOvHXUsX8B4tdIXs/LDNZQXBWDLYGhnvHOzk3jY4CrvgFMPK4/Qhbvpmi597RIyb+KWEM6BsphsWgMcLJB7IMV0oBEVIAtvP1GAwXKiylkk7KO4K+fwpr8Fez15gzD4IySYkkvG2Vnrn58fqmM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=e3n1+xfA; arc=fail smtp.client-ip=52.101.69.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=D7Thbe4SpAbggrnagAZzpVo11ItehZCTLKyQLpce2x6mo9Pq4Okb2raVDOG3mMUEmx5ti8xTBYZVOFRWpPNlPtX26afa5j1jB9ewxkL5bSxN+JwGWTWKidns4ZwDpKFsatrHCepRGj4Ubt82XF9X+1U4vEq/xE7E+Hlj951bqA6wmrJKoaeZzXbKDij/cdObU+joqE5OLkOJDOD2E91Fsez5JIg4JMH/yJoDA/hRp9FHhK9yJnyBHSzAmhWhwGkitxW3cXFA4B9O7zv0rX9EFRoEjGrzwk+LUxWRAd+Bb4/Pqpz5dHKhYoauNY7VynBDoeLO/Uyy7Acub9omPVTpDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uO0M59Rnpsh7uQlqMipDNASdfTD5FHcmFDaC761vsYo=;
- b=SxuFzk+i1qPI7awCP7AQImhZW0Zj2pNcCct18OBUeR9IeEwofDjv1PKwe578WWkCGgoTVZJoMOMus5tY+OtfnR/3zVWDgAqcB1eNI+pUMdGrwnh/oMRCDOVOomamOpMtH5E4Ez9gPwAEeRe92vyMUY6bFkdn4Nh2R+R0JzhUw1c4cJGPOYKJP2n8J3bCnu0BZsZvSdSXNVBdl0b4ZpxeX9sxPPUJglh2R/80LzSKPkDtu7akRjSylphbu6umX+oZ+gBTiBCCQ0Bq9WVx3NY6d/G1bBmJ0iV5zvak1awBtmnzIjkGjt4dnU04gaCsBDgDF//7bvg75qPAa9yi82wPIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 131.228.2.241) smtp.rcpttodomain=apple.com smtp.mailfrom=nokia-bell-labs.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nokia-bell-labs.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uO0M59Rnpsh7uQlqMipDNASdfTD5FHcmFDaC761vsYo=;
- b=e3n1+xfATu25lni1AnYdtxtmja3i+qR+GW8Ps7Q4c87+ZbSl43ptwKWiVJS4BHo9XuqYKVqkUW+r5c9dRMP9ZBLJ7ajO1lf+QfcC8RvrlNhgU9rGHLhOLAAq1+AyLa+dtpCOHzTlSUfOnvO+nZHSNEA6I7AO8udGAFMBQSud2riTNtFSD+Pn+hM/DtChXs2FdLHnM3kIgp1FjPtyF0n9pxns2yGwVbLbdp7WE2u5BXCqBMslFpX8ZJr/5Nz3scbF15hz98/nxnxjvU6Izu3SYBKVjIq6OhnziDa6YMlQ+jcINk4PU+2IKSLs6RJQWQB2+PHQsbS2JuGgGXYqmHI5+A==
-Received: from DUZP191CA0034.EURP191.PROD.OUTLOOK.COM (2603:10a6:10:4f8::11)
- by AS8PR07MB7878.eurprd07.prod.outlook.com (2603:10a6:20b:394::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9275.14; Thu, 30 Oct
- 2025 14:35:02 +0000
-Received: from DB5PEPF00014B97.eurprd02.prod.outlook.com
- (2603:10a6:10:4f8:cafe::a2) by DUZP191CA0034.outlook.office365.com
- (2603:10a6:10:4f8::11) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9275.14 via Frontend Transport; Thu,
- 30 Oct 2025 14:35:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.241)
- smtp.mailfrom=nokia-bell-labs.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nokia-bell-labs.com;
-Received-SPF: Pass (protection.outlook.com: domain of nokia-bell-labs.com
- designates 131.228.2.241 as permitted sender)
- receiver=protection.outlook.com; client-ip=131.228.2.241;
- helo=fihe3nok0734.emea.nsn-net.net; pr=C
-Received: from fihe3nok0734.emea.nsn-net.net (131.228.2.241) by
- DB5PEPF00014B97.mail.protection.outlook.com (10.167.8.235) with Microsoft
- SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9275.10
- via Frontend Transport; Thu, 30 Oct 2025 14:35:02 +0000
-Received: from sarah.nbl.nsn-rdnet.net (sarah.nbl.nsn-rdnet.net [10.0.73.150])
-	by fihe3nok0734.emea.nsn-net.net (Postfix) with ESMTP id C519F20094;
-	Thu, 30 Oct 2025 16:35:00 +0200 (EET)
-From: chia-yu.chang@nokia-bell-labs.com
-To: pabeni@redhat.com,
-	edumazet@google.com,
-	parav@nvidia.com,
-	linux-doc@vger.kernel.org,
-	corbet@lwn.net,
-	horms@kernel.org,
-	dsahern@kernel.org,
-	kuniyu@google.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	dave.taht@gmail.com,
-	jhs@mojatatu.com,
-	kuba@kernel.org,
-	stephen@networkplumber.org,
-	xiyou.wangcong@gmail.com,
-	jiri@resnulli.us,
-	davem@davemloft.net,
-	andrew+netdev@lunn.ch,
-	donald.hunter@gmail.com,
-	ast@fiberby.net,
-	liuhangbin@gmail.com,
-	shuah@kernel.org,
-	linux-kselftest@vger.kernel.org,
-	ij@kernel.org,
-	ncardwell@google.com,
-	koen.de_schepper@nokia-bell-labs.com,
-	g.white@cablelabs.com,
-	ingemar.s.johansson@ericsson.com,
-	mirja.kuehlewind@ericsson.com,
-	cheshire@apple.com,
-	rs.ietf@gmx.at,
-	Jason_Livingood@comcast.com,
-	vidhi_goel@apple.com
-Cc: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-Subject: [PATCH v5 net-next 14/14] tcp: accecn: enable AccECN
-Date: Thu, 30 Oct 2025 15:34:35 +0100
-Message-Id: <20251030143435.13003-15-chia-yu.chang@nokia-bell-labs.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20251030143435.13003-1-chia-yu.chang@nokia-bell-labs.com>
-References: <20251030143435.13003-1-chia-yu.chang@nokia-bell-labs.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E6F157A72
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 15:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761837544; cv=none; b=QnFHtGhimXwIE0Qv6zQUCUlvkJNfPrMaFmFA2hRiPtUnloKNzzIIkAPK8Rd2cEX0XickINW9OuHgt9iXMhSRtwUuLhp2JAvK7Vxb6mlZDw9Ha4gsag1iq7FB9JWwta8btcoSmSBxP4FhjVqzmi1y+VrW1xpAQgl1ANQONkd6f6I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761837544; c=relaxed/simple;
+	bh=3FIJl9mveDWptbQKjHjJEmwaODWR/AGMjlfjqnulFw0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fbfLLsnHC668V8v05lD/pn98QYcsYBhMCbXefcddyvzC9v2x2SDVsH2A1HwHqLIA0uK7GFW1KHFEoHw0fBGoR0ixawM6FuLwN6DgC+0SX9qUSCPzxiMOdS89IW6wpVqLZe1dlQKFlyR0k9H+krv1A8kjlOWQcflflnaXiq7fyZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tr1Of0Hs; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ff3cb8dc-ef02-4e83-8a58-ad9b561e5213@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761837540;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X/5WEphAD3bGSAX4FXdQkWzt6V9PNMYJmpKFuVQ+R38=;
+	b=tr1Of0HsVVBnq+cNIyPsA7wU4PvKjxWvVvpfXBXDtA9YOTraToDgCwz1YL6b93+kF/szuM
+	fsCcTJfSRmaeXeuY9zJX7UvFFsDh9DfMWXNm9LaWhkyyAQ5IPquVWYd1/2wbJYcVJOz7mu
+	SirRnZ18NAKQvS9nQqhCk/UVP+HAgFc=
+Date: Thu, 30 Oct 2025 08:18:53 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf] bpf: Make migrate_{disable,enable} always inline if
+ in header file
+Content-Language: en-GB
+To: Peter Zijlstra <peterz@infradead.org>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Menglong Dong <menglong8.dong@gmail.com>,
+ Ihor Solodrai <ihor.solodrai@linux.dev>
+References: <20251029183646.3811774-1-yonghong.song@linux.dev>
+ <CAADnVQJbat5mwSoDUUf9yNheTe6h58f3JFM=UMpgOSytnCCWuw@mail.gmail.com>
+ <20251030105318.GK4067720@noisy.programming.kicks-ass.net>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20251030105318.GK4067720@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB5PEPF00014B97:EE_|AS8PR07MB7878:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: a7f392b4-4b24-4c31-fb8a-08de17c182d7
-X-LD-Processed: 5d471751-9675-428d-917b-70f44f9630b0,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
- BCL:0;ARA:13230040|7416014|1800799024|376014|36860700013|82310400026|921020;
-X-Microsoft-Antispam-Message-Info:
- =?us-ascii?Q?mYFaIGGQLzor2dycKZ+oTH1YIeMJ3g72b3p/WtFu2suffOmHJtH0Di6lUtRU?=
- =?us-ascii?Q?xe1di4DuWSVkGuT9GLDBGilBraQ8pion90imI7hfbYT5VdpbN+dWDLoSlL9G?=
- =?us-ascii?Q?kYWkV66dAcP4E01fmVxVSZOCDmQ+rZtXXR9XhNvdWKPN76jLuNF/FLT/NRda?=
- =?us-ascii?Q?fZu8OI3xN7uL62Ntwd5N7xmExDbKIgnLR4qcOALn5/pYpTEzy5IgV+XvRaDm?=
- =?us-ascii?Q?IiY5zwkSVseKGAhoZerirF2b89SpBXgXcqS6fhg4fR0Ii5OyeIBovJPeSwAC?=
- =?us-ascii?Q?ES0csNxv7KYlyeje2iH9L2Q9RWHYwbBDZaAX9ohwuTYWhgYQ2/k5kTwlvLVY?=
- =?us-ascii?Q?PvTUJzIfJa77jEIiJcQWj30nknCYGUkVPMzqmIaRTq2mGrZ15EB0czU/dBYk?=
- =?us-ascii?Q?vtmjsKhUbQchiEvpnlH/j4o1RmeYHccdv/QB+6cuNPTHcikoedOI3UhtnoV+?=
- =?us-ascii?Q?JTLvZEQ1ZnRbROpqu6kdPQ0VDd2EBIXibNLqYQK/Xx1Fo+7yjU2i1LkR59OD?=
- =?us-ascii?Q?l0/K18e8ruWji5IXbfBGlS2X2kAeh8PKVojSfmRHMda8h1sHpfY8SUnhe4iA?=
- =?us-ascii?Q?Z4VyQDnw+fJzzLtAto2SWOXtvuwgd9xpjih3UvVmJJAZY1VYIRF3A0OQfD9W?=
- =?us-ascii?Q?m5+8mLuEcUWcoZFcSszsEvRmpMi2zWQt+1IueepTLLA059xHO5ahDYY/HGy+?=
- =?us-ascii?Q?f0yMgiRi9uAi5IaciozbypRlgbhPKTQaZnVRODXDrlK04b+AC0mFsc+QLS8m?=
- =?us-ascii?Q?Eb6KRRXmD/AHSMXsp5sOGA1QZTal6P+v42c/gRbywnXREkND8zEJbmUZeZXQ?=
- =?us-ascii?Q?aWeF7gC+NvcFb4uumd8+60/UDVv+Oy0vm+dIACb9r+MyCJuHmnl0Avt5K5n4?=
- =?us-ascii?Q?uFh3gWQrgTM76g4sf/Zy0dRMC2JY8cjUMZM/GwrqoFDxRCuX+0BhGFQjgaKx?=
- =?us-ascii?Q?bfbNvDFQ4vatOItqKetPPCK2uxDOiCQki23crDw311/cL9Wlrn9vh2GA522A?=
- =?us-ascii?Q?B85q3g2qoegxR81qmr/R2Vg2QqnHnInjtAbEMCsigkd0kjO/ZDKW1vODsTtb?=
- =?us-ascii?Q?RHZ9vPqKQxcVYX92ebZQ/9lG/Hq0+FAix3KjcI74oGvgQOwkmSooqqlB0VvX?=
- =?us-ascii?Q?fKfKqMCqZaCBNB/znrI/OduVOKM/7IVtg/SKrjeuP+0qlUSefKFIyj1CtF7q?=
- =?us-ascii?Q?yN67iuiBTNs9TLYddXbBAlhQmb+/1a3CCat+VEQHuwpI3VvXIJWAG3oN+C4x?=
- =?us-ascii?Q?mQY6I1IMDgrfzhWTxxm6Q8nwG5q4sDHoyXb8pl0bgL5l5zYpgpbk1nGmJMgY?=
- =?us-ascii?Q?uaQkQjvCrUCWUD482cKhOOhhN5T/AMyf5Dh4ukByh52swslgoj8p8idAOqfW?=
- =?us-ascii?Q?VKjNfUpwsrloKbbyRpt8ylULLN7y7uIEO7gMMvQyrNNSupqEkS3sqeDBl8kU?=
- =?us-ascii?Q?bAKxWXHfb7rvqmQsj1vEBmcYEwsyTeUHsjUghokOsVgQl/QhNJBUj8tC9Gi6?=
- =?us-ascii?Q?i2y5Z6tjan0RFSgZzKKZjezjBwTVYM8H4kQSmTOLJHpXpztsNldxc4/3FqHF?=
- =?us-ascii?Q?HitjyijMkh1iQQMz9EkPIJbopoCjrKdEIP0EpnbK?=
-X-Forefront-Antispam-Report:
- CIP:131.228.2.241;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0734.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(376014)(36860700013)(82310400026)(921020);DIR:OUT;SFP:1101;
-X-OriginatorOrg: nokia-bell-labs.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2025 14:35:02.3696
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7f392b4-4b24-4c31-fb8a-08de17c182d7
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.241];Helo=[fihe3nok0734.emea.nsn-net.net]
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TreatMessagesAsInternal-DB5PEPF00014B97.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR07MB7878
+X-Migadu-Flow: FLOW_OUT
 
-From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
 
-Enable Accurate ECN negotiation and request for incoming and
-outgoing connection by setting sysctl_tcp_ecn:
 
-+==============+===========================================+
-|              |  Highest ECN variant (Accurate ECN, ECN,  |
-|   tcp_ecn    |  or no ECN) to be negotiated & requested  |
-|              +---------------------+---------------------+
-|              | Incoming connection | Outgoing connection |
-+==============+=====================+=====================+
-|      0       |        No ECN       |        No ECN       |
-|      1       |         ECN         |         ECN         |
-|      2       |         ECN         |        No ECN       |
-+--------------+---------------------+---------------------+
-|      3       |     Accurate ECN    |     Accurate ECN    |
-|      4       |     Accurate ECN    |         ECN         |
-|      5       |     Accurate ECN    |        No ECN       |
-+==============+=====================+=====================+
+On 10/30/25 3:53 AM, Peter Zijlstra wrote:
+> On Wed, Oct 29, 2025 at 06:13:21PM -0700, Alexei Starovoitov wrote:
+>> On Wed, Oct 29, 2025 at 11:37 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>> With latest bpf/bpf-next tree and latest pahole master, I got the following
+>>> build failure:
+>>>
+>>>    $ make LLVM=1 -j
+>>>      ...
+>>>      LD      vmlinux.o
+>>>      GEN     .vmlinux.objs
+>>>      ...
+>>>      BTF     .tmp_vmlinux1.btf.o
+>>>      ...
+>>>      AS      .tmp_vmlinux2.kallsyms.o
+>>>      LD      vmlinux.unstripped
+>>>      BTFIDS  vmlinux.unstripped
+>>>    WARN: resolve_btfids: unresolved symbol migrate_enable
+>>>    WARN: resolve_btfids: unresolved symbol migrate_disable
+>>>    make[2]: *** [/home/yhs/work/bpf-next/scripts/Makefile.vmlinux:72: vmlinux.unstripped] Error 255
+>>>    make[2]: *** Deleting file 'vmlinux.unstripped'
+>>>    make[1]: *** [/home/yhs/work/bpf-next/Makefile:1242: vmlinux] Error 2
+>>>    make: *** [/home/yhs/work/bpf-next/Makefile:248: __sub-make] Error 2
+>>>
+>>> In pahole patch [1], if two functions having identical names but different
+>>> addresses, then this function name is considered ambiguous and later on
+>>> this function will not be added to vmlinux/module BTF.
+>>>
+>>> Commit 378b7708194f ("sched: Make migrate_{en,dis}able() inline") changed
+>>> original global funcitons migrate_{enable,disable} to
+>>>    - in kernel/sched/core.c, migrate_{enable,disable} are global funcitons.
+>>>    - in other places, migrate_{enable,disable} may survive as static functions
+>>>      since they are marked as 'inline' in include/linux/sched.h and the
+>>>      'inline' attribute does not garantee inlining.
+>>>
+>>> If I build with clang compiler (make LLVM=1 -j) (llvm21 and llvm22), I found
+>>> there are four symbols for migrate_{enable,disable} respectively, three
+>>> static functions and one global function. With the above pahole patch [1],
+>>> migrate_{enable,disable} are not in vmlinux BTF and this will cause
+>>> later resolve_btfids failure.
+>>>
+>>> Making migrate_{enable,disable} always inline in include/linux/sched.h
+>>> can fix the problem.
+>>>
+>>>    [1] https://lore.kernel.org/dwarves/79a329ef-9bb3-454e-9135-731f2fd51951@oracle.com/
+>>>
+>>> Fixes: 378b7708194f ("sched: Make migrate_{en,dis}able() inline")
+>>> Cc: Menglong Dong <menglong8.dong@gmail.com>
+>>> Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
+>>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>>> ---
+>>>   include/linux/sched.h | 4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/include/linux/sched.h b/include/linux/sched.h
+>>> index cbb7340c5866..b469878de25c 100644
+>>> --- a/include/linux/sched.h
+>>> +++ b/include/linux/sched.h
+>>> @@ -2407,12 +2407,12 @@ static inline void __migrate_enable(void) { }
+>>>    * be defined in kernel/sched/core.c.
+>>>    */
+>>>   #ifndef INSTANTIATE_EXPORTED_MIGRATE_DISABLE
+>>> -static inline void migrate_disable(void)
+>>> +static __always_inline void migrate_disable(void)
+>>>   {
+>>>          __migrate_disable();
+>>>   }
+>>>
+>>> -static inline void migrate_enable(void)
+>>> +static __always_inline void migrate_enable(void)
+>>>   {
+>>>          __migrate_enable();
+>>>   }
+>> Peter,
+>>
+>> Are you ok if we take this?
+> Yes, but WTH would clang not inline this trivial function to begin with?
 
-Refer Documentation/networking/ip-sysctl.rst for more details.
-
-Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
----
- net/ipv4/sysctl_net_ipv4.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
-index 6695a6022539..7edba98a91cb 100644
---- a/net/ipv4/sysctl_net_ipv4.c
-+++ b/net/ipv4/sysctl_net_ipv4.c
-@@ -47,7 +47,7 @@ static unsigned int udp_child_hash_entries_max = UDP_HTABLE_SIZE_MAX;
- static int tcp_plb_max_rounds = 31;
- static int tcp_plb_max_cong_thresh = 256;
- static unsigned int tcp_tw_reuse_delay_max = TCP_PAWS_MSL * MSEC_PER_SEC;
--static int tcp_ecn_mode_max = 2;
-+static int tcp_ecn_mode_max = 5;
- static u32 icmp_errors_extension_mask_all =
- 	GENMASK_U8(ICMP_ERR_EXT_COUNT - 1, 0);
- 
--- 
-2.34.1
+I checked asm codes with migrate_disable(). In the above cases, 
+__migrate_disable() is inlined and the function body of 
+migrate_disable() then becomes reasonably big. The caller of 
+migrate_disable() are ring_buffer_resize()*/*range_tree_set()/... which 
+are pretty big too.
 
 
