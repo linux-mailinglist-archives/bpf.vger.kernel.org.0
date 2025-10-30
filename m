@@ -1,331 +1,213 @@
-Return-Path: <bpf+bounces-72985-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72986-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1811EC1F847
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 11:26:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2A9BC1F8C3
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 11:29:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4F28A4E8F3E
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 10:26:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19320420515
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 10:26:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB22F3546F3;
-	Thu, 30 Oct 2025 10:25:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCA87351FB9;
+	Thu, 30 Oct 2025 10:26:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k+jzHI/3"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="t/L8PaR5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013052.outbound.protection.outlook.com [40.93.196.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA1C13546E4;
-	Thu, 30 Oct 2025 10:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761819921; cv=none; b=Xes2FigcOGRI1Dva1I0b2lTBHnvaZgYTTy+H4/FhWP9gaVN0D4xP3ap5bVef/PaW4ZJl60+pZ3I6oPJHSDJFByb1w668VISf+9fhDWzUBKQc/uvjUulPPfnirUw/RjTAWMumylhh9dMKP/SryBrRNsiTLfjtnda0mNrzAoH+XBA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761819921; c=relaxed/simple;
-	bh=f2lx/MhFQYSKhUR31WYWuqc0AYVs7PutTou05pAc9Og=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fh7lg7WLa+8ujl71Y529DKf2Pke/vlezoMFqMeXVyGfD4brD5qDGGAFW7ubC/fEk8UkNDq0CKnS6ar6zEN2is9A5wg3GJ4capz0D2jYNrn14ROlprGdDfNu0ea/uDEbCiP4OtEF0Zym4pJPvxPrlh5t3ftl2xMYck0abe2B1bKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k+jzHI/3; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1761819918; x=1793355918;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=f2lx/MhFQYSKhUR31WYWuqc0AYVs7PutTou05pAc9Og=;
-  b=k+jzHI/3bTLCu3oqRaQFHoyNDaHj+3VN3cqPEA5fE/Qqxi7SYRR3BtJc
-   7+xX7OWKgwm3y1ZFjIc0oDt0Aniq9SrNO46peIIT37Cg5MM2I+z5K98Sn
-   04Izh8Zpns+rpLyskvXKXy0TVSNvJfQhIyZVRTPyj4PxVoqWoEvlcYmAD
-   dp1GRrlQ/3sM23yPaXeaA4L1qpzDaRpg94jp4etfYtdfiQ+s7imfs6flb
-   52Zecb48s9ProeebMtU3FQmoSiDWSe+Z/wa7JKHyy0rFtDX6wBbGOaX67
-   Ul0p6s31F3t42sU0kbsIfG8WomvMUkcUKIIGsmiiUlxh6YyAVFuXLqldb
-   g==;
-X-CSE-ConnectionGUID: 11OF3SUxTn6KOJxZpRS+pA==
-X-CSE-MsgGUID: A8Sm9KSzSyO4OrtMjOf4Fg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11597"; a="81377012"
-X-IronPort-AV: E=Sophos;i="6.19,266,1754982000"; 
-   d="scan'208";a="81377012"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2025 03:25:18 -0700
-X-CSE-ConnectionGUID: UnfdYnT4R8ScBpZHHrl7mA==
-X-CSE-MsgGUID: p0aQ7k8iS0y4aWaETccOpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,266,1754982000"; 
-   d="scan'208";a="209499657"
-Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 30 Oct 2025 03:25:15 -0700
-Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1vEPqD-000Lou-0J;
-	Thu, 30 Oct 2025 10:25:13 +0000
-Date: Thu, 30 Oct 2025 18:24:19 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, bpf@vger.kernel.org,
-	andrii@kernel.org, ast@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, dwarves@vger.kernel.org,
-	alan.maguire@oracle.com, acme@kernel.org, eddyz87@gmail.com,
-	tj@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v1 3/8] bpf: Support for kfuncs with
- KF_MAGIC_ARGS
-Message-ID: <202510301811.fP0doUEk-lkp@intel.com>
-References: <20251029190113.3323406-4-ihor.solodrai@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC76C346E7E;
+	Thu, 30 Oct 2025 10:26:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761819971; cv=fail; b=iFnVBwFCmWQH9HOfQqqd34tv6/OzyBfqOyeaPuuQzXV3mEObXONtGuSj1c6qB4IiPk8Ew0Dl8VShkAdGmwGqbjDLALQvoVeRSREc2F5Jt8YjUoyrmd5xCR2YYnMgcJGAqGgGAdscLuzL6C0Zxix1DAbJLNVp2PiWVozFdtQQwX0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761819971; c=relaxed/simple;
+	bh=4Msg23iSF5WaNsoAUGWahLz3ldM6h/WhBlLPDxSylRI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=vAzT/a8F+qk2dp32PRvsPRm0VYODoKWwBQxr09f8jOpM0ZovXY+b0ZMOPVCLnEhOEkr9kgWY0ZzoB2Sm10IJExrZQUpYRPwVFNFO2v0NbWUONUmEs2WQaLPoaN8LTCR3X71vOXbc2jOsU2QCo4JueKLlPLjNY9Sw+2Q+fSAuUMM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=t/L8PaR5; arc=fail smtp.client-ip=40.93.196.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=V+KwzRlV5WzH5Yo8E3HzkxAnQ15ZirUR+Vxz/6/esxClyBQS8M4huswYHhyKBPwSkRd93oJUmjGykQPnjXYDHFZqrAD03jQTMw58PQ38Xwk3UEYla5m+unXCIaDzq2QZDX22aGZ2Mo8wgP0mtxH34L4JwniE/OPlKe/nF2iU0uGdouF1z2+aCX3+e/JDdlco/w6VhlUE7d2KLDJzBSDUxddT/+PjBqCB5pT8clOKjNo2CENiC+rpLHPvqYXzaq9++xuvLSOIFRvFDbZ4RLAgzogvAuP8TnvDmk/tWJ7Sx5NEjOWibbGmrLg5l3nu2WpRalqiLng8lyusZQZDRGrAqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MSXwpPG871gQw9v/lBu7H31gN3Zbax3yISN2Wd13o20=;
+ b=H1p5psjqTOyV0DbyIjtYdv+fsNRzzDCb7IbOuu4yMfr3O7CJ6/bWxk87ZPE7DaVzqk5B7UKXJwyBHT4OobukLvgy3YXKU0GtpJuU1CD1KVSkJa7ymZ611EAvdTGV9rGsW+CsOkqgOjsl8nydrKxfwxlGSFBt8Wtd3pW19dBHnMa7GAZ1nueAair6M96NfpHeBQCYiYytXHNoKIKLI5LOmkb7SvSDrpxEpn/dX5Mbr34qDFvLywsdNuB7iVV441TS8kb7Om+RId/vpyOdQczj7OSZ/6hmFfOvm6JWfApeZ0nYWTQLrLO9z/Y8nkYkCx4Jx7oXYq/v81YHtqX8e+5s/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MSXwpPG871gQw9v/lBu7H31gN3Zbax3yISN2Wd13o20=;
+ b=t/L8PaR5SGR6ggD2RUvpG75R5GMwhLY7FDExAqhd8ybFmtVTNVAYg/FvQACug8Muq9vwWXAeMwxO6XksQhlq0bNU/E8lb04LbavzWr4RqZ1/1P2a11S9eggZQ3Ki2hYak9ZBmWA4rwHZ6Gxg/62+KZeWEQe3GzBgKMtS2xEulN7e3InxvpcmrGe5pvU1SVfUOHYGaimopowqcE0yZhdi71xNn5sIGiTASpcJOI8552XH59uyJmUdJ2w7UjeLB2+FxbYpJVncCgs7rThrMZigGoJ2dZd+q1k8u810r+vA38xpYFWFXNnrg5dEW8ouXt+d5lXHo0841ORariimX6YRRQ==
+Received: from BL0PR05CA0008.namprd05.prod.outlook.com (2603:10b6:208:91::18)
+ by SJ2PR12MB7964.namprd12.prod.outlook.com (2603:10b6:a03:4cf::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9275.14; Thu, 30 Oct
+ 2025 10:26:05 +0000
+Received: from BL6PEPF0001AB58.namprd02.prod.outlook.com
+ (2603:10b6:208:91:cafe::2e) by BL0PR05CA0008.outlook.office365.com
+ (2603:10b6:208:91::18) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9298.4 via Frontend Transport; Thu,
+ 30 Oct 2025 10:25:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BL6PEPF0001AB58.mail.protection.outlook.com (10.167.241.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9275.10 via Frontend Transport; Thu, 30 Oct 2025 10:26:04 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Oct
+ 2025 03:25:47 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Oct
+ 2025 03:25:47 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Thu, 30
+ Oct 2025 03:25:42 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
+	<mbloch@nvidia.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, "John
+ Fastabend" <john.fastabend@gmail.com>, Richard Cochran
+	<richardcochran@gmail.com>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<bpf@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Carolina Jubran
+	<cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
+Subject: [PATCH net-next 0/6] Convert mlx5e and IPoIB to ndo_hwtstamp_get/set
+Date: Thu, 30 Oct 2025 12:25:04 +0200
+Message-ID: <1761819910-1011051-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251029190113.3323406-4-ihor.solodrai@linux.dev>
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB58:EE_|SJ2PR12MB7964:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4b8a9de9-0536-4fe8-a7e9-08de179ebb17
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700013|1800799024|7416014|82310400026|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?t6W6V3a+LKLMoHmM+pCniGVprVmOgP4bBMhbfrj0vo2py+Z0QFyZkUfkAfaG?=
+ =?us-ascii?Q?NfcQz5Cr+Z2yazvBSL0FXhz0HyqckkoHPF5l7UKaH1nH7qmZx7XmjI5HtStP?=
+ =?us-ascii?Q?BVAVer9bRoaOXY4dgsDP+w+MgG/oavGkFmZAZKOYhHkWErlWFCzJ/ool9JzP?=
+ =?us-ascii?Q?QnO/EFnnVVp2/tbJWpaXHkAClB1Jut2xChHgSV1d9Fs0x7NwIWiFWW4kcIVR?=
+ =?us-ascii?Q?hZ3sY/ngbZKLOn6XXpklAtRJ7Tlj0DbGr7H05DXIe0fLgxOFMv5DAayd2QpI?=
+ =?us-ascii?Q?IVUVmhPNth0bzXFAB91fCxWyBqRTzPeX+bp12S20BKAKaEcxoTfaGNiVHKSH?=
+ =?us-ascii?Q?OS5KZyujhpSRlvAQEwovA1+aeM4zEaYV3ZaQnqT0t3b2Vm9ciMv0URk1BsR8?=
+ =?us-ascii?Q?9pU0HjZPkXYZzWO4DxwY4KhlPsR8Xar/j4899uHoRzzi2bkA4b5sTzKvNbJ/?=
+ =?us-ascii?Q?D0H5gQR4tSdEWx1v4+Ht3J7Lg3rT9w5cDX6KxdaxQJM5S9emeVdHaJ3HKmmG?=
+ =?us-ascii?Q?wknaCg30bDTYqCJlwO2S+CUj3+IHExQ5re4g5ZJabz9mMBmGeuHXAVczTnQH?=
+ =?us-ascii?Q?XV6rNLTYilRBoCGeTCTAEZB/i9vm5B4Sfy7tTFN9I3I3bFieXNGLXAJ/QczG?=
+ =?us-ascii?Q?yc5pE4iqjpKPeeroinol7adCTkNP6DR/gW15XtBnDrvTqF0Z9i/4pwP65XGC?=
+ =?us-ascii?Q?g9sBqAkOPTpdX1wzkABJk3sCvxsM7oMoApLzM5Xl3AD3FS8LLxQyi9QTqGtP?=
+ =?us-ascii?Q?ZW+5Ny90ZctpFjSarx+BuWyHMyDOT6IKmPbgohq5CdfDDWYaYKOcgM8q8VQk?=
+ =?us-ascii?Q?69oOBomPeBHO6BDimx8x3Es3I4OxgLeYVRA+EZZjggoMnP3Llhh3Vs0jcHye?=
+ =?us-ascii?Q?YeoW33GbKemSKJVSmhf6tzcybyCqVeG7TTg16xXx5lr+8qPgpHa/OrGXq3ox?=
+ =?us-ascii?Q?Do7w+knj4Mz/rH7uUL70/KUIkZsT5fDLCObTxSD3hGjziTmWAquQ2hrRmfMr?=
+ =?us-ascii?Q?5kBfGRCAy+WR5ggsK+hx1UcprZAhD4yMTtEvWyvkHjAcAwRdHskroBg/Zo6w?=
+ =?us-ascii?Q?CMA5tBlSwZWZ3DKZy+sS2o8SgWHfWQ0mkR6revqf/B/ilSbIIPOFUihKh25V?=
+ =?us-ascii?Q?tHi/63BAfr+VX7inwb4tHSH7RKwEFOxifU1CIr9TIgMvMfjE3Q3crXTgyj2L?=
+ =?us-ascii?Q?+yE2KFTY0vpMQ0dq9QBAiGUFM0UdZ87A0X+RFe8pANf1pePycRSTcjOtablv?=
+ =?us-ascii?Q?w2Guxim3ylM5xH7Mq1oVxuJrsA6GFVK1gcAcui06KDKV5NFOqd6h5e143EZh?=
+ =?us-ascii?Q?HdhQnceC35T5OD91pE5EKi+CJK9moUWUwRdKG1scd7Vl8A4auNnnL9PVGSCs?=
+ =?us-ascii?Q?xdQ9X8gVQbwncMy1V/BcCjUf8JErzLA7uE38Q2/VEOEvZVvrZ7CvvtQyFcgf?=
+ =?us-ascii?Q?1gDFzv9H0nHAOQJBM8BDH+hLtEXwL1s0sSA7bMSpi+8KqQwn8TiKD5P7UDZW?=
+ =?us-ascii?Q?xUSvwb8jjlCfBTLt0FFDIrMWIpTq+ppRKvJ1Usp2CAuIwfrxEvD1BlCgfqkU?=
+ =?us-ascii?Q?CfYT1ajh72bezsBEhtc=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(7416014)(82310400026)(376014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2025 10:26:04.2462
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b8a9de9-0536-4fe8-a7e9-08de179ebb17
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB58.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7964
 
-Hi Ihor,
+Hi,
 
-kernel test robot noticed the following build errors:
+This series by Carolina migrates mlx5e and IPoIB to the
+ndo_hwtstamp_get/set interface and removes legacy hardware timestamp
+ioctl handling.  While doing so, it also cleans up naming and removes
+redundant code.
 
-[auto build test ERROR on bpf-next/master]
+No functional change in timestamp behavior.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ihor-Solodrai/bpf-Add-BTF_ID_LIST_END-and-BTF_ID_LIST_SIZE-macros/20251030-030608
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20251029190113.3323406-4-ihor.solodrai%40linux.dev
-patch subject: [PATCH bpf-next v1 3/8] bpf: Support for kfuncs with KF_MAGIC_ARGS
-config: x86_64-buildonly-randconfig-003-20251030 (https://download.01.org/0day-ci/archive/20251030/202510301811.fP0doUEk-lkp@intel.com/config)
-compiler: gcc-13 (Debian 13.3.0-16) 13.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251030/202510301811.fP0doUEk-lkp@intel.com/reproduce)
+Cleanup patches:
+- net/mlx5e: Remove redundant tstamp pointer from channel structures
+- net/mlx5e: Remove unnecessary tstamp local variable in mlx5i_complete_rx_cqe
+- net/mlx5e: Rename hwstamp functions to hwtstamp
+- net/mlx5e: Rename timestamp fields to hwtstamp_config
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202510301811.fP0doUEk-lkp@intel.com/
+Add suppport in ipoib:
+- IB/IPoIB: Add support for hwtstamp get/set ndos
 
-All errors (new ones prefixed by >>):
+Convert mlx5:
+- net/mlx5e: Convert to new hwtstamp_get/set interface
 
-         |                       ^
-   include/linux/compiler.h:166:29: note: in expansion of macro '__PASTE'
-     166 | #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __COUNTER__)
-         |                             ^~~~~~~
-   include/linux/compiler_types.h:84:22: note: in expansion of macro '___PASTE'
-      84 | #define __PASTE(a,b) ___PASTE(a,b)
-         |                      ^~~~~~~~
-   include/linux/compiler.h:166:37: note: in expansion of macro '__PASTE'
-     166 | #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __COUNTER__)
-         |                                     ^~~~~~~
-   include/linux/compiler.h:286:9: note: in expansion of macro '__UNIQUE_ID'
-     286 |         __UNIQUE_ID(__PASTE(__addressable_,sym)) = (void *)(uintptr_t)&sym;
-         |         ^~~~~~~~~~~
-   include/linux/compiler.h:289:9: note: in expansion of macro '___ADDRESSABLE'
-     289 |         ___ADDRESSABLE(sym, __section(".discard.addressable"))
-         |         ^~~~~~~~~~~~~~
-   include/linux/init.h:250:9: note: in expansion of macro '__ADDRESSABLE'
-     250 |         __ADDRESSABLE(fn)
-         |         ^~~~~~~~~~~~~
-   include/linux/init.h:255:9: note: in expansion of macro '__define_initcall_stub'
-     255 |         __define_initcall_stub(__stub, fn)                      \
-         |         ^~~~~~~~~~~~~~~~~~~~~~
-   include/linux/init.h:268:9: note: in expansion of macro '____define_initcall'
-     268 |         ____define_initcall(fn,                                 \
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/init.h:274:9: note: in expansion of macro '__unique_initcall'
-     274 |         __unique_initcall(fn, id, __sec, __initcall_id(fn))
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/init.h:276:35: note: in expansion of macro '___define_initcall'
-     276 | #define __define_initcall(fn, id) ___define_initcall(fn, id, .initcall##id)
-         |                                   ^~~~~~~~~~~~~~~~~~
-   include/linux/init.h:307:41: note: in expansion of macro '__define_initcall'
-     307 | #define late_initcall(fn)               __define_initcall(fn, 7)
-         |                                         ^~~~~~~~~~~~~~~~~
-   kernel/bpf/verifier.c:18983:1: note: in expansion of macro 'late_initcall'
-   18983 | late_initcall(unbound_reg_init);
-         | ^~~~~~~~~~~~~
-   In file included from include/uapi/linux/filter.h:9,
-                    from include/linux/bpf.h:8:
-   kernel/bpf/verifier.c:18983:15: error: 'unbound_reg_init' undeclared (first use in this function); did you mean 'unbound_reg'?
-   18983 | late_initcall(unbound_reg_init);
-         |               ^~~~~~~~~~~~~~~~
-   include/linux/compiler.h:286:72: note: in definition of macro '___ADDRESSABLE'
-     286 |         __UNIQUE_ID(__PASTE(__addressable_,sym)) = (void *)(uintptr_t)&sym;
-         |                                                                        ^~~
-   include/linux/init.h:250:9: note: in expansion of macro '__ADDRESSABLE'
-     250 |         __ADDRESSABLE(fn)
-         |         ^~~~~~~~~~~~~
-   include/linux/init.h:255:9: note: in expansion of macro '__define_initcall_stub'
-     255 |         __define_initcall_stub(__stub, fn)                      \
-         |         ^~~~~~~~~~~~~~~~~~~~~~
-   include/linux/init.h:268:9: note: in expansion of macro '____define_initcall'
-     268 |         ____define_initcall(fn,                                 \
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/init.h:274:9: note: in expansion of macro '__unique_initcall'
-     274 |         __unique_initcall(fn, id, __sec, __initcall_id(fn))
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/init.h:276:35: note: in expansion of macro '___define_initcall'
-     276 | #define __define_initcall(fn, id) ___define_initcall(fn, id, .initcall##id)
-         |                                   ^~~~~~~~~~~~~~~~~~
-   include/linux/init.h:307:41: note: in expansion of macro '__define_initcall'
-     307 | #define late_initcall(fn)               __define_initcall(fn, 7)
-         |                                         ^~~~~~~~~~~~~~~~~
-   kernel/bpf/verifier.c:18983:1: note: in expansion of macro 'late_initcall'
-   18983 | late_initcall(unbound_reg_init);
-         | ^~~~~~~~~~~~~
-   kernel/bpf/verifier.c:18983:15: note: each undeclared identifier is reported only once for each function it appears in
-   18983 | late_initcall(unbound_reg_init);
-         |               ^~~~~~~~~~~~~~~~
-   include/linux/compiler.h:286:72: note: in definition of macro '___ADDRESSABLE'
-     286 |         __UNIQUE_ID(__PASTE(__addressable_,sym)) = (void *)(uintptr_t)&sym;
-         |                                                                        ^~~
-   include/linux/init.h:250:9: note: in expansion of macro '__ADDRESSABLE'
-     250 |         __ADDRESSABLE(fn)
-         |         ^~~~~~~~~~~~~
-   include/linux/init.h:255:9: note: in expansion of macro '__define_initcall_stub'
-     255 |         __define_initcall_stub(__stub, fn)                      \
-         |         ^~~~~~~~~~~~~~~~~~~~~~
-   include/linux/init.h:268:9: note: in expansion of macro '____define_initcall'
-     268 |         ____define_initcall(fn,                                 \
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/init.h:274:9: note: in expansion of macro '__unique_initcall'
-     274 |         __unique_initcall(fn, id, __sec, __initcall_id(fn))
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/init.h:276:35: note: in expansion of macro '___define_initcall'
-     276 | #define __define_initcall(fn, id) ___define_initcall(fn, id, .initcall##id)
-         |                                   ^~~~~~~~~~~~~~~~~~
-   include/linux/init.h:307:41: note: in expansion of macro '__define_initcall'
-     307 | #define late_initcall(fn)               __define_initcall(fn, 7)
-         |                                         ^~~~~~~~~~~~~~~~~
-   kernel/bpf/verifier.c:18983:1: note: in expansion of macro 'late_initcall'
-   18983 | late_initcall(unbound_reg_init);
-         | ^~~~~~~~~~~~~
-   In file included from include/linux/printk.h:6,
-                    from include/asm-generic/bug.h:22,
-                    from arch/x86/include/asm/bug.h:108,
-                    from include/linux/bug.h:5,
-                    from include/linux/alloc_tag.h:8,
-                    from include/linux/workqueue.h:9,
-                    from include/linux/bpf.h:11:
->> include/linux/init.h:256:9: error: expected declaration specifiers before 'asm'
-     256 |         asm(".section   \"" __sec "\", \"a\"            \n"     \
-         |         ^~~
-   include/linux/init.h:268:9: note: in expansion of macro '____define_initcall'
-     268 |         ____define_initcall(fn,                                 \
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/init.h:274:9: note: in expansion of macro '__unique_initcall'
-     274 |         __unique_initcall(fn, id, __sec, __initcall_id(fn))
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/init.h:276:35: note: in expansion of macro '___define_initcall'
-     276 | #define __define_initcall(fn, id) ___define_initcall(fn, id, .initcall##id)
-         |                                   ^~~~~~~~~~~~~~~~~~
-   include/linux/init.h:307:41: note: in expansion of macro '__define_initcall'
-     307 | #define late_initcall(fn)               __define_initcall(fn, 7)
-         |                                         ^~~~~~~~~~~~~~~~~
-   kernel/bpf/verifier.c:18983:1: note: in expansion of macro 'late_initcall'
-   18983 | late_initcall(unbound_reg_init);
-         | ^~~~~~~~~~~~~
-   In file included from include/linux/init.h:5:
-   include/linux/build_bug.h:78:41: error: expected declaration specifiers before '_Static_assert'
-      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-         |                                         ^~~~~~~~~~~~~~
-   include/linux/build_bug.h:77:34: note: in expansion of macro '__static_assert'
-      77 | #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
-         |                                  ^~~~~~~~~~~~~~~
-   include/linux/init.h:260:9: note: in expansion of macro 'static_assert'
-     260 |         static_assert(__same_type(initcall_t, &fn));
-         |         ^~~~~~~~~~~~~
-   include/linux/init.h:268:9: note: in expansion of macro '____define_initcall'
-     268 |         ____define_initcall(fn,                                 \
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/init.h:274:9: note: in expansion of macro '__unique_initcall'
-     274 |         __unique_initcall(fn, id, __sec, __initcall_id(fn))
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/init.h:276:35: note: in expansion of macro '___define_initcall'
-     276 | #define __define_initcall(fn, id) ___define_initcall(fn, id, .initcall##id)
-         |                                   ^~~~~~~~~~~~~~~~~~
-   include/linux/init.h:307:41: note: in expansion of macro '__define_initcall'
-     307 | #define late_initcall(fn)               __define_initcall(fn, 7)
-         |                                         ^~~~~~~~~~~~~~~~~
-   kernel/bpf/verifier.c:18983:1: note: in expansion of macro 'late_initcall'
-   18983 | late_initcall(unbound_reg_init);
-         | ^~~~~~~~~~~~~
-   kernel/bpf/verifier.c:18983:32: error: expected declaration specifiers before ';' token
-   18983 | late_initcall(unbound_reg_init);
-         |                                ^
-   kernel/bpf/verifier.c:18987:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   18987 | {
-         | ^
-   kernel/bpf/verifier.c:19002:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19002 | {
-         | ^
-   kernel/bpf/verifier.c:19015:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19015 | {
-         | ^
-   kernel/bpf/verifier.c:19139:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19139 | {
-         | ^
-   kernel/bpf/verifier.c:19212:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19212 | {
-         | ^
-   kernel/bpf/verifier.c:19232:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19232 | {
-         | ^
-   kernel/bpf/verifier.c:19241:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19241 | {
-         | ^
-   kernel/bpf/verifier.c:19282:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19282 | {
-         | ^
-   kernel/bpf/verifier.c:19343:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19343 | {
-         | ^
-   kernel/bpf/verifier.c:19373:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19373 | {
-         | ^
-   kernel/bpf/verifier.c:19390:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19390 | {
-         | ^
-   kernel/bpf/verifier.c:19453:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19453 | {
-         | ^
-   kernel/bpf/verifier.c:19477:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19477 | {
-         | ^
-   kernel/bpf/verifier.c:19833:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19833 | {
-         | ^
-   kernel/bpf/verifier.c:19861:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19861 | {
-         | ^
-   kernel/bpf/verifier.c:19867:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19867 | {
-         | ^
-   kernel/bpf/verifier.c:19878:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19878 | {
-         | ^
-   kernel/bpf/verifier.c:19884:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
-   19884 | {
-         | ^
-   kernel/bpf/verifier.c:19930:1: warning: empty declaration
+Regards,
+Tariq
 
 
-vim +/asm +256 include/linux/init.h
+Carolina Jubran (6):
+  net/mlx5e: Remove redundant tstamp pointer from channel structures
+  net/mlx5e: Remove unnecessary tstamp local variable in
+    mlx5i_complete_rx_cqe
+  net/mlx5e: Rename hwstamp functions to hwtstamp
+  net/mlx5e: Rename timestamp fields to hwtstamp_config
+  IB/IPoIB: Add support for hwtstamp get/set ndos
+  net/mlx5e: Convert to new hwtstamp_get/set interface
 
-a8cccdd954732a5 Sami Tolvanen  2020-12-11  252  
-1b1eeca7e4c19fa Ard Biesheuvel 2018-08-21  253  #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
-3578ad11f3fba07 Sami Tolvanen  2020-12-11  254  #define ____define_initcall(fn, __stub, __name, __sec)		\
-3578ad11f3fba07 Sami Tolvanen  2020-12-11  255  	__define_initcall_stub(__stub, fn)			\
-a8cccdd954732a5 Sami Tolvanen  2020-12-11 @256  	asm(".section	\"" __sec "\", \"a\"		\n"	\
-a8cccdd954732a5 Sami Tolvanen  2020-12-11  257  	    __stringify(__name) ":			\n"	\
-3578ad11f3fba07 Sami Tolvanen  2020-12-11  258  	    ".long	" __stringify(__stub) " - .	\n"	\
-1cb61759d407166 Marco Elver    2021-05-21  259  	    ".previous					\n");	\
-1cb61759d407166 Marco Elver    2021-05-21  260  	static_assert(__same_type(initcall_t, &fn));
-1b1eeca7e4c19fa Ard Biesheuvel 2018-08-21  261  #else
-3578ad11f3fba07 Sami Tolvanen  2020-12-11  262  #define ____define_initcall(fn, __unused, __name, __sec)	\
-a8cccdd954732a5 Sami Tolvanen  2020-12-11  263  	static initcall_t __name __used 			\
-a8cccdd954732a5 Sami Tolvanen  2020-12-11  264  		__attribute__((__section__(__sec))) = fn;
-1b1eeca7e4c19fa Ard Biesheuvel 2018-08-21  265  #endif
-1b1eeca7e4c19fa Ard Biesheuvel 2018-08-21  266  
+ drivers/infiniband/ulp/ipoib/ipoib_main.c     | 29 ++++++++
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  | 12 ++--
+ .../net/ethernet/mellanox/mlx5/core/en/ptp.c  |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/en/ptp.h  |  1 -
+ .../mellanox/mlx5/core/en/reporter_rx.c       |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/en/trap.c |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/en/trap.h |  1 -
+ .../net/ethernet/mellanox/mlx5/core/en/txrx.h |  2 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
+ .../mellanox/mlx5/core/en/xsk/setup.c         |  2 +-
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  |  2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c | 66 ++++++++++---------
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  6 +-
+ .../ethernet/mellanox/mlx5/core/ipoib/ipoib.c | 34 +++++-----
+ .../ethernet/mellanox/mlx5/core/ipoib/ipoib.h |  6 +-
+ .../mellanox/mlx5/core/ipoib/ipoib_vlan.c     |  9 +--
+ .../ethernet/mellanox/mlx5/core/lib/clock.h   |  1 -
+ 17 files changed, 107 insertions(+), 75 deletions(-)
 
+
+base-commit: 1bae0fd90077875b6c9c853245189032cbf019f7
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.31.1
+
 
