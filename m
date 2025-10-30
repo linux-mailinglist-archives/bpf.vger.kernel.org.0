@@ -1,136 +1,212 @@
-Return-Path: <bpf+bounces-73056-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73057-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD6BFC217C0
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 18:27:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88255C217FB
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 18:30:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39F3C3A8F5A
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 17:23:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CC6B3A3856
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 17:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644D83683A3;
-	Thu, 30 Oct 2025 17:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EFAA368F33;
+	Thu, 30 Oct 2025 17:26:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fRYib/kM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C5aedShf"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C572437A3C0
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 17:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8074B3683A7
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 17:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761844974; cv=none; b=TpJsMlCIx0Qd9Eeu+9T5P+/l1ykV+S/sDByQD5Dkc6gePkmh0Bq0LWv4ffNnThlkoc2PW0BiB8zqihwh8/7d3SnRrKSSfctpkDJmLyLwdhWmgup5FLiHC6IFll2vgeZhzG4z9P2AXoJJ+W5OBBKO0rYXQmQbCUPJGdraNNeguQA=
+	t=1761845205; cv=none; b=ROx2LpaHGqnByolFKHwz1FPshs04N+qqXU7W44JOKXZZH6Qj8lsdqKLTi+7+1Wh6BOKFBVNCasVGj6VeJWc2ji/aWZkz/9FIO/a+9z49HTwTdoXUIwKsaUkqQgX4SelcAXieMTmFp8wBREytER5FVCtHLz8BY/ZcbFvf6AwXY0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761844974; c=relaxed/simple;
-	bh=BCoHEyyxZKYrrU4Ot3G1OWMRdoW/WRM++mtFk8nDG6U=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Pv9EWGgKQswoTQDHZli74oeogU0WA2p53TNKrfSTRmIhx6zMUpadBwwFu1CSH6DIQn6/q3pq8hmXu7QjWAInKJ9+OUQt52aCYkfOvXfHig/fJ9AS9ZknX22JsILjMSvV7DXJMX9+LfMvO2fGB9fbIOP1jTC80nKszFSeOnigsmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fRYib/kM; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761844959;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1yKUVg2QX7KLyptUjcVniVMmwZzulWf6rl33AVF5l/o=;
-	b=fRYib/kMeIDOH90ZS1ch2yNi5D8QUkaH4tedw7Z/hSbGGXrRmdrIpZ8M9Y/J8qtzjFwMqj
-	yOKKjjMwh9zn0bUKfvhmXdxn7jOOZaENuw1uvt38qHMAoafwoGb86QAtAWCbFkqIJfFVC+
-	6SEitYt7Mlk0NycoOGJBAnM9Rn6cvbE=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Song Liu <song@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-  linux-kernel@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,
-  Suren Baghdasaryan <surenb@google.com>,  Michal Hocko
- <mhocko@kernel.org>,  Shakeel Butt <shakeel.butt@linux.dev>,  Johannes
- Weiner <hannes@cmpxchg.org>,  Andrii Nakryiko <andrii@kernel.org>,  JP
- Kobryn <inwardvessel@gmail.com>,  linux-mm@kvack.org,
-  cgroups@vger.kernel.org,  bpf@vger.kernel.org,  Martin KaFai Lau
- <martin.lau@kernel.org>,  Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-  Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops
- to cgroups
-In-Reply-To: <CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
-	(Song Liu's message of "Wed, 29 Oct 2025 11:01:00 -0700")
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
-	<20251027231727.472628-3-roman.gushchin@linux.dev>
-	<CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
-Date: Thu, 30 Oct 2025 10:22:31 -0700
-Message-ID: <87zf98xq20.fsf@linux.dev>
+	s=arc-20240116; t=1761845205; c=relaxed/simple;
+	bh=R66pJ2aeC9T8mvq2SNWf8g2+t/j2D+rZ3f/RxsZQgbU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=qwekhlPS4pahQG6SCHa9Q1XCnqEeg72EmtCz3Ri3gCoIt3mhPcVb0yMW4TWbhlWOodg9v0hVgeddiU07PlhadM8gW/poSj34bhBzNoKtuLIM2OPV2yTpSqfzVRvwaxPfbinLkPwbV4Fv/bmly7vt3LHtzrS7AMYMr50ZGDiD5TE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C5aedShf; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-33bbc4e81dfso1589176a91.1
+        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 10:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761845203; x=1762450003; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=VBUZoX5dT2XZvzWD1hhhjp5IwzQTAkja0LZXBOQj9Aw=;
+        b=C5aedShfUdlRcp2X2X5npNdaQv5tPy22EKYt1MttovPaP/6Z5fTtgrtjF016IT5AT5
+         eK4E1vK4xcHuczp3i3uunwrnW5li+mkZDLCuiqzlD2smlr/BkdUP48LtxH6hKzrFLn1E
+         et6pyeUNNy2gh7DMdw46eec+Wq16QJiRINjUlGrlhG3db2MdMSnNMfcaLZKaYW0ab7R5
+         BMxS6CfY/b16sn346rcuAm8y6mwd3MmRVnLz7HbnYmCTHjzMUl3lP+TPxOe6/d5nGkar
+         8wj49cuJ0CpiGLv5Hq6T2ahG/mYuH8XP058xJAUDIBQ521GuSpWPEYU5zD6keX3jVleM
+         vqwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761845203; x=1762450003;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VBUZoX5dT2XZvzWD1hhhjp5IwzQTAkja0LZXBOQj9Aw=;
+        b=ol/8yP2JbHdl/bsaR79AYP4ehThYfChhve6ERqWuziOZyNmlOk0v9S7ZZtLYqkiclu
+         dTzc9/HHlkMlzXRWkyJJSQh5DSF3+AswMkgz/ff1Et+7aUtjIyegHbbTRVeq8ntc6deF
+         DgfihF3B+BHWCcmIFYkVOjl5mb2Zdj6zQl3+GR2B14/OZmqEH35NdON/iLmlq0oIJbD8
+         cQIpNOwZq95pijC0u/Txm904O6CxolrVtxm6LDvTFqPE3W/C2TDh637gu5wrgBYiL1ti
+         l/z3hiNCsdIzgqlZwBcg3ACTslBSSQe0AnK+pi4SumR/fuMQc9+OEaKY4Y0VeOoEhpxZ
+         knEw==
+X-Forwarded-Encrypted: i=1; AJvYcCW67n8e2J2twcAXPkqaORcLJ7ZDx2OsxZ4Gro+v78AVI5BVqBn5agqjui3+VDnwcfNiuuo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUhzZQtJDL4y7TLS6ZZtgB1nd/zEj53hspNFg+b2tX3mFqHa+d
+	uYFAN5FtRxbZP2y5rwZrGQknQLufvRmU42PayMOHFieAG4n4RdVPXVON
+X-Gm-Gg: ASbGnctn8VN3GLa1f9gH22fGzoyUBx1rCh16IQ1aM0lnLDhaEKeoZfgxAMQAspVcKNa
+	evIMnEceTqLXd2N8UNm4odZCENWF2Ijfs0GAzE386vKmzcley/FNHK/6GgxBcH2xqppgLyJPLaQ
+	u/6aTLXHG+zu71WX+wn1/TIwqQ94XKYVGgCU7yagvGifY46YTeUzOs8nuWJDgxETRW4oIKu8RG5
+	6hjO33iwl2xZjMMuYzQkxvKXHtDM50IBGWCuKCY6d5BcEF6yyodjDa0Zd5XC9IPymxT/asN20Ri
+	33LiXGCssn+9z4/MKes3p5/gANbkKisEQ7Q0IkkHcDunyhibcxtyjM1ArH38oUevazdFSBSPotZ
+	QsiknW0+G0D72Ng8bWpgmDcZ6Eg5rqxMcUL5RHnEfeZ6FYUcWfd+QJ2JoXoGVOxxl9mlvwXhlFd
+	2ex7ZgbdpT
+X-Google-Smtp-Source: AGHT+IF8A1a0P+znyR1j5oHtd7dlJzE05Rb6IK1i4Mns4f+5/RJqwEfxxr/XTUHh1gih4O1KdJJb3w==
+X-Received: by 2002:a17:90b:3947:b0:32e:753d:76da with SMTP id 98e67ed59e1d1-34083074e0emr636625a91.20.1761845202733;
+        Thu, 30 Oct 2025 10:26:42 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34050972842sm3298836a91.2.2025.10.30.10.26.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Oct 2025 10:26:42 -0700 (PDT)
+Message-ID: <aea5cd2ca9523a61d0193308a1b5f938a8d5b073.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/8] bpf: Support for kfuncs with
+ KF_MAGIC_ARGS
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Ihor Solodrai <ihor.solodrai@linux.dev>, bpf@vger.kernel.org, 
+	andrii@kernel.org, ast@kernel.org
+Cc: dwarves@vger.kernel.org, alan.maguire@oracle.com, acme@kernel.org, 
+	tj@kernel.org, kernel-team@meta.com
+Date: Thu, 30 Oct 2025 10:26:39 -0700
+In-Reply-To: <da20bc30-85be-44ab-b837-19aa97ebc431@linux.dev>
+References: <20251029190113.3323406-1-ihor.solodrai@linux.dev>
+	 <20251029190113.3323406-4-ihor.solodrai@linux.dev>
+	 <b667472aeb77ac63a3de82dae77012c0285e0286.camel@gmail.com>
+	 <da20bc30-85be-44ab-b837-19aa97ebc431@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Migadu-Flow: FLOW_OUT
 
-Song Liu <song@kernel.org> writes:
+On Thu, 2025-10-30 at 09:31 -0700, Ihor Solodrai wrote:
+> Hi Eduard, thank you for a quick review.
+>=20
+> On 10/29/25 4:54 PM, Eduard Zingerman wrote:
+> > On Wed, 2025-10-29 at 12:01 -0700, Ihor Solodrai wrote:
+> > > A kernel function bpf_foo with KF_MAGIC_ARGS flag is expected to have
+> >                                  ^^^^^^^^^^^^^
+> > 		I don't like this name very much.
+> > 		It bears very little context.
+> > 		Imo, KF_IMPLICIT_ARGS fits the use case much better.
+>=20
+> I know, naming is hard...
+>=20
+> The issue is that it's not only the flag, across the code we need
+> descriptive names for every "magic" thing:
+>   * a flagged function
+>     * how do we call it? kfunc_with_impl_args?
+>   * a function that exists only in BTF (_impl)
+>     * it's not an "implicit" function
+>     * it's not exactly an "implementation" function
+>     * "fake" is even worse than "magic" IMO, because it's not fake,
+>       but you could argue it's magical :D
+>     * btf_only_kfunc?
+>   * describing arguments is simpler: "implicit" seems ok, although as
+>     Alexei pointed out in previous iteration they are very much
+>     explicit in the kernel [1]
+>=20
+> For me, "(BPF) interface" and "(kernel) implementation" pair of terms
+> makes sense, but then I think it would be logical to have both
+> declarations in the kernel.
+>=20
+> The advantage of "magic" in this context is that it doesn't have
+> loaded meaning. But I agree this is a stretch, so can't insist.
+>=20
+> [1] https://lore.kernel.org/bpf/CAADnVQLvuubey0A0Fk=3DbzN-=3DJG2UUQHRqBij=
+ZpuvqMQ+xy4W4g@mail.gmail.com/
 
-> On Mon, Oct 27, 2025 at 4:17=E2=80=AFPM Roman Gushchin <roman.gushchin@li=
-nux.dev> wrote:
-> [...]
->>  struct bpf_struct_ops_value {
->>         struct bpf_struct_ops_common_value common;
->> @@ -1359,6 +1360,18 @@ int bpf_struct_ops_link_create(union bpf_attr *at=
-tr)
->>         }
->>         bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct=
-_ops_map_lops, NULL,
->>                       attr->link_create.attach_type);
->> +#ifdef CONFIG_CGROUPS
->> +       if (attr->link_create.cgroup.relative_fd) {
->> +               struct cgroup *cgrp;
->> +
->> +               cgrp =3D cgroup_get_from_fd(attr->link_create.cgroup.rel=
-ative_fd);
->
-> We should use "target_fd" here, not relative_fd.
->
-> Also, 0 is a valid fd, so we cannot use target_fd =3D=3D 0 to attach to
-> global memcg.
+- KF_IMPLICIT_ARGS
+- explicit_args_id -- for prototype with full set of args
+- implicit_args_id -- for prototype with missing args
 
-Yep, but then we need somehow signal there is a cgroup fd passed,
-so that struct ops'es which are not attached to cgroups keep working
-as previously. And we can't use link_create.attach_type.
+[...]
 
-Should I use link_create.flags? E.g. something like add new flag
+> > > @@ -3349,8 +3400,37 @@ static int add_kfunc_call(struct bpf_verifier_=
+env *env, u32 func_id, s16 offset)
+> > >  		return -EINVAL;
+> > >  	}
+> > > =20
+> > > +	kfunc_flags =3D btf_kfunc_flags(desc_btf, func_id, env->prog);
+> > >  	func_name =3D btf_name_by_offset(desc_btf, func->name_off);
+> > >  	addr =3D kallsyms_lookup_name(func_name);
+> > > +
+> > > +	/* This may be an _impl kfunc with KF_MAGIC_ARGS counterpart */
+> > > +	if (unlikely(!addr && !kfunc_flags)) {
+> > > +		tmp_func_id =3D magic_kfunc_by_impl(func_id);
+> >=20
+> > I think there is no need to hide magic_kfunc_by_impl() call behind the
+> > above condition. It can be moved before kfunc_flags assignment.
+> > Then it wont be necessary to textually repeat btf_name_by_offset() and
+> > kallsyms_lookup_name() calls.
+>=20
+> Not sure I follow...
+>=20
+> Yes, !addr is enough to detect potential _impl function, but there is
+> no way around name lookup in BTF and then another address lookup.
+>=20
+> The _impl function doesn't have an address, so after failed
+>   kallsyms_lookup_name("kfunc_impl");
+> we must do
+>   kallsyms_lookup_name("kfunc");
+> to find the correct address.
+>=20
+> Or do you suggest doing something like:
+>=20
+>   tmp_func_id =3D magic_kfunc_by_impl(func_id);
+>   if (tmp_func_id > 0)
+>       func_id =3D tmp_func_id;
+>=20
+> at the beginning of add_kfunc_call()?
 
-@@ -1224,6 +1224,7 @@ enum bpf_perf_event_type {
- #define BPF_F_AFTER		(1U << 4)
- #define BPF_F_ID		(1U << 5)
- #define BPF_F_PREORDER		(1U << 6)
-+#define BPF_F_CGROUP		(1U << 7)
- #define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
-=20
- /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+This, just check for magic_kfunc_by_impl() and replace func_id.
 
-and then do something like this:
+[...]
 
-int bpf_struct_ops_link_create(union bpf_attr *attr)
-{
-	<...>
-	if (attr->link_create.flags & BPF_F_CGROUP) {
-		struct cgroup *cgrp;
+> > > @@ -13632,10 +13718,28 @@ static int fetch_kfunc_meta(struct bpf_veri=
+fier_env *env,
+> > >  	func_proto =3D btf_type_by_id(desc_btf, func->type);
+> > > =20
+> > >  	kfunc_flags =3D btf_kfunc_flags_if_allowed(desc_btf, func_id, env->=
+prog);
+> > > -	if (!kfunc_flags) {
+> > > -		return -EACCES;
+> > > +	if (unlikely(!kfunc_flags)) {
+> >=20
+> > What if we patch insn->imm to use the "fake" function id in add_kfunc_c=
+all()?
+> > Then modifications to fetch_kfunc_meta() wont be necessary.
+>=20
+>=20
+> I considered this. I wasn't sure it's safe to patch insn->imm at this
+> stage of verification. Also I thought it may be harder to debug the
+> verifier if we do btf id replacement in the calls pre-verification
+> (because we lose the original btf id).
 
-		cgrp =3D cgroup_get_from_fd(attr->link_create.target_fd);
-		if (IS_ERR(cgrp)) {
-			err =3D PTR_ERR(cgrp);
-			goto err_out;
-		}
+See no issues with that.
 
-		link->cgroup_id =3D cgroup_id(cgrp);
-		cgroup_put(cgrp);
-	}
+> Maybe I was too causious.
+>=20
+> Alexei, Andrii, what do you think?
 
-Does it sound right?
-
-Thanks
+[...]
 
