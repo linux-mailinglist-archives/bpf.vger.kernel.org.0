@@ -1,199 +1,136 @@
-Return-Path: <bpf+bounces-73055-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73056-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AE31C21786
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 18:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD6BFC217C0
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 18:27:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D4CB564066
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 17:19:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39F3C3A8F5A
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 17:23:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA0B3683B1;
-	Thu, 30 Oct 2025 17:18:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644D83683A3;
+	Thu, 30 Oct 2025 17:22:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NjTRYPMi"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fRYib/kM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 758C032C31E
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 17:18:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C572437A3C0
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 17:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761844716; cv=none; b=ekzBVRDdFVFBXznevaPBptMy034rYmOmJfqctUrOOX+WBJW4XQOtzOsn0RXP1hxx96KsWYH0RXzT6p6Y1hfp0v1Q1iyMSNQjJWU/BxSV8pXi9wW9+u0n4x2wTcdEPtPKlkFtyHnJu5uDHBlKbfPl4N6Py+TfkA5WDrRuyCVb41w=
+	t=1761844974; cv=none; b=TpJsMlCIx0Qd9Eeu+9T5P+/l1ykV+S/sDByQD5Dkc6gePkmh0Bq0LWv4ffNnThlkoc2PW0BiB8zqihwh8/7d3SnRrKSSfctpkDJmLyLwdhWmgup5FLiHC6IFll2vgeZhzG4z9P2AXoJJ+W5OBBKO0rYXQmQbCUPJGdraNNeguQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761844716; c=relaxed/simple;
-	bh=VJLcmOospl0NvxJ/WTOkbujLbTnBJibWwvHUpjZ0/1w=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=jQalvq2REsSjTX+M/dsvmTJDvSjotYe5hEHpI906E6eXZYNKlZbdu3nGkyt0J7BsKMtzzbOm6cw6Mp3rtFPxfEsyZuAqJR19xqL9VfjhCeeg1Qecqvq/xoIHYAeRftTWFdhHCeORXtZtRKyJcjhjTJDWTXcWx8On6hq7YweV71w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NjTRYPMi; arc=none smtp.client-ip=209.85.128.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
-Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-475db4369b1so7155005e9.3
-        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 10:18:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761844713; x=1762449513; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0zIsYr/NZ5vBEDYePNHV7frUHCwl+Wvsd8lZxHFgSTA=;
-        b=NjTRYPMi7t4Sc0qduHqJAUaR2OaP2M3rj8a1pzTXzXCAraf5vvUtw5KWFZZXm8/Io0
-         xcdd8KNn3+7Rl2e0nnO4dVJD8onBJEddd11mJqnI8Cs7Al4FpN4AYzY+8QqmKWeVraiE
-         Na9enRm+27lhGolwsAX5xckYPHFPxPd9cHNIBqb7YleBuKB9ywSS9pGL18/SDkECxveI
-         uqgvhkt3hPeQC0ih1oHXBHr2aXqjWbN+9uUrwq74mAm8fct34G4D2UeVMILN73kLcXPM
-         mRdqCWI90wrOO2RKjLyUGgFd40mEdDK8A/HgHy3/G+vY0RsXKNtbzW3ecO0s+vSJl0Q6
-         F+eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761844713; x=1762449513;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0zIsYr/NZ5vBEDYePNHV7frUHCwl+Wvsd8lZxHFgSTA=;
-        b=KoePrzQrVPYKjrEFOCJNdqSAS2kB3Wh3gGGsFDUGzCToLDC4v0kDxNo6br6IVP0Gir
-         YUgDwVyEBq0Ki1Nl2BK8i5B0CAmKtj6WWH1qGuqpHmrAZERMN9q0n7nU1+/mUfQ2nfqT
-         90hJyU/+Nky/7ZQnmQ0gQw1avscvRiHCZGorfC5iAcOE0QBvWZ9CC/D/Gh6idNHV9JpD
-         3xST3Lo+vYbbxgj8YJVtxA3ugiS63LJ+fEMDYIdWGdQDqkych9/3Q0exkmE0mOw5BUSA
-         iiZQFWRtpRpMTE9LAdW9T8sWbW5fLvzqN85TStgpGYuN5B/XZM6WBCkyBST6L+sWqkHv
-         Ecxg==
-X-Forwarded-Encrypted: i=1; AJvYcCXlFDPSTOMH6aYdNLRld41dBhwWnLpiCojwDrvYwoWUNTmSmt/Xfjl40LIxIoLOmZv1tOU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTnSqlIzI91Y/bYD+xndUtxN6VQN2x7Es4qx0WErp6h+4gXGi8
-	SRmcI2wDkZACm6DzfkCAJiMqykfjlUlsyon1l8aOLk+6syo1OPfJ7BLD5Cenw09KURJOS3vHoee
-	pTP05bS39mDGPSw==
-X-Google-Smtp-Source: AGHT+IFXk6DKJ2LvWY2ZBOreY5EWyiD1FLIIWcEezkT9L8CiZAonL3OXc94rN18lwM8G/At6waViWG4yx0JY7g==
-X-Received: from wmbka6.prod.google.com ([2002:a05:600c:5846:b0:470:ffaa:ae5e])
- (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:3b8b:b0:471:989:9d7b with SMTP id 5b1f17b1804b1-4773086d53amr4625785e9.21.1761844712453;
- Thu, 30 Oct 2025 10:18:32 -0700 (PDT)
-Date: Thu, 30 Oct 2025 17:18:31 +0000
-In-Reply-To: <20250924152214.7292-9-roypat@amazon.co.uk>
+	s=arc-20240116; t=1761844974; c=relaxed/simple;
+	bh=BCoHEyyxZKYrrU4Ot3G1OWMRdoW/WRM++mtFk8nDG6U=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Pv9EWGgKQswoTQDHZli74oeogU0WA2p53TNKrfSTRmIhx6zMUpadBwwFu1CSH6DIQn6/q3pq8hmXu7QjWAInKJ9+OUQt52aCYkfOvXfHig/fJ9AS9ZknX22JsILjMSvV7DXJMX9+LfMvO2fGB9fbIOP1jTC80nKszFSeOnigsmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fRYib/kM; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761844959;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1yKUVg2QX7KLyptUjcVniVMmwZzulWf6rl33AVF5l/o=;
+	b=fRYib/kMeIDOH90ZS1ch2yNi5D8QUkaH4tedw7Z/hSbGGXrRmdrIpZ8M9Y/J8qtzjFwMqj
+	yOKKjjMwh9zn0bUKfvhmXdxn7jOOZaENuw1uvt38qHMAoafwoGb86QAtAWCbFkqIJfFVC+
+	6SEitYt7Mlk0NycoOGJBAnM9Rn6cvbE=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Song Liu <song@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+  linux-kernel@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,
+  Suren Baghdasaryan <surenb@google.com>,  Michal Hocko
+ <mhocko@kernel.org>,  Shakeel Butt <shakeel.butt@linux.dev>,  Johannes
+ Weiner <hannes@cmpxchg.org>,  Andrii Nakryiko <andrii@kernel.org>,  JP
+ Kobryn <inwardvessel@gmail.com>,  linux-mm@kvack.org,
+  cgroups@vger.kernel.org,  bpf@vger.kernel.org,  Martin KaFai Lau
+ <martin.lau@kernel.org>,  Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+  Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops
+ to cgroups
+In-Reply-To: <CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
+	(Song Liu's message of "Wed, 29 Oct 2025 11:01:00 -0700")
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+	<20251027231727.472628-3-roman.gushchin@linux.dev>
+	<CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
+Date: Thu, 30 Oct 2025 10:22:31 -0700
+Message-ID: <87zf98xq20.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
- <20250924152214.7292-1-roypat@amazon.co.uk> <20250924152214.7292-9-roypat@amazon.co.uk>
-X-Mailer: aerc 0.21.0
-Message-ID: <DDVTTQZBJXAK.1OC7BTWCVCP9U@google.com>
-Subject: Re: [PATCH v7 12/12] KVM: selftests: Test guest execution from direct
- map removed gmem
-From: Brendan Jackman <jackmanb@google.com>
-To: "Roy, Patrick" <roypat@amazon.co.uk>
-Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>, "corbet@lwn.net" <corbet@lwn.net>, 
-	"maz@kernel.org" <maz@kernel.org>, "oliver.upton@linux.dev" <oliver.upton@linux.dev>, 
-	"joey.gouly@arm.com" <joey.gouly@arm.com>, "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>, 
-	"yuzenghui@huawei.com" <yuzenghui@huawei.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>, 
-	"will@kernel.org" <will@kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>, 
-	"mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, 
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>, 
-	"hpa@zytor.com" <hpa@zytor.com>, "luto@kernel.org" <luto@kernel.org>, 
-	"peterz@infradead.org" <peterz@infradead.org>, "willy@infradead.org" <willy@infradead.org>, 
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "david@redhat.com" <david@redhat.com>, 
-	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>, 
-	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, "vbabka@suse.cz" <vbabka@suse.cz>, 
-	"rppt@kernel.org" <rppt@kernel.org>, "surenb@google.com" <surenb@google.com>, "mhocko@suse.com" <mhocko@suse.com>, 
-	"song@kernel.org" <song@kernel.org>, "jolsa@kernel.org" <jolsa@kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"martin.lau@linux.dev" <martin.lau@linux.dev>, "eddyz87@gmail.com" <eddyz87@gmail.com>, 
-	"yonghong.song@linux.dev" <yonghong.song@linux.dev>, 
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
-	"sdf@fomichev.me" <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, 
-	"jhubbard@nvidia.com" <jhubbard@nvidia.com>, "peterx@redhat.com" <peterx@redhat.com>, 
-	"jannh@google.com" <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>, 
-	"shuah@kernel.org" <shuah@kernel.org>, "seanjc@google.com" <seanjc@google.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Cali, Marco" <xmarcalx@amazon.co.uk>, 
-	"Kalyazin, Nikita" <kalyazin@amazon.co.uk>, "Thomson, Jack" <jackabt@amazon.co.uk>, 
-	"derekmn@amazon.co.uk" <derekmn@amazon.co.uk>, "tabba@google.com" <tabba@google.com>, 
-	"ackerleytng@google.com" <ackerleytng@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Migadu-Flow: FLOW_OUT
 
-On Wed Sep 24, 2025 at 3:22 PM UTC, Patrick Roy wrote:
-> Add a selftest that loads itself into guest_memfd (via
-> GUEST_MEMFD_FLAG_MMAP) and triggers an MMIO exit when executed. This
-> exercises x86 MMIO emulation code inside KVM for guest_memfd-backed
-> memslots where the guest_memfd folios are direct map removed.
-> Particularly, it validates that x86 MMIO emulation code (guest page
-> table walks + instruction fetch) correctly accesses gmem through the VMA
-> that's been reflected into the memslot's userspace_addr field (instead
-> of trying to do direct map accesses).
+Song Liu <song@kernel.org> writes:
+
+> On Mon, Oct 27, 2025 at 4:17=E2=80=AFPM Roman Gushchin <roman.gushchin@li=
+nux.dev> wrote:
+> [...]
+>>  struct bpf_struct_ops_value {
+>>         struct bpf_struct_ops_common_value common;
+>> @@ -1359,6 +1360,18 @@ int bpf_struct_ops_link_create(union bpf_attr *at=
+tr)
+>>         }
+>>         bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct=
+_ops_map_lops, NULL,
+>>                       attr->link_create.attach_type);
+>> +#ifdef CONFIG_CGROUPS
+>> +       if (attr->link_create.cgroup.relative_fd) {
+>> +               struct cgroup *cgrp;
+>> +
+>> +               cgrp =3D cgroup_get_from_fd(attr->link_create.cgroup.rel=
+ative_fd);
 >
-> Signed-off-by: Patrick Roy <roypat@amazon.co.uk>
-> ---
->  .../selftests/kvm/set_memory_region_test.c    | 50 +++++++++++++++++--
->  1 file changed, 46 insertions(+), 4 deletions(-)
+> We should use "target_fd" here, not relative_fd.
 >
-> diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-> index ce3ac0fd6dfb..cb3bc642d376 100644
-> --- a/tools/testing/selftests/kvm/set_memory_region_test.c
-> +++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-> @@ -603,6 +603,41 @@ static void test_mmio_during_vectoring(void)
->  
->  	kvm_vm_free(vm);
->  }
-> +
-> +static void guest_code_trigger_mmio(void)
-> +{
-> +	/*
-> +	 * Read some GPA that is not backed by a memslot. KVM consider this
-> +	 * as MMIO and tell userspace to emulate the read.
-> +	 */
-> +	READ_ONCE(*((uint64_t *)MEM_REGION_GPA));
-> +
-> +	GUEST_DONE();
-> +}
-> +
-> +static void test_guest_memfd_mmio(void)
-> +{
-> +	struct kvm_vm *vm;
-> +	struct kvm_vcpu *vcpu;
-> +	struct vm_shape shape = {
-> +		.mode = VM_MODE_DEFAULT,
-> +		.src_type = VM_MEM_SRC_GUEST_MEMFD_NO_DIRECT_MAP,
-> +	};
-> +	pthread_t vcpu_thread;
-> +
-> +	pr_info("Testing MMIO emulation for instructions in gmem\n");
-> +
-> +	vm = __vm_create_shape_with_one_vcpu(shape, &vcpu, 0, guest_code_trigger_mmio);
+> Also, 0 is a valid fd, so we cannot use target_fd =3D=3D 0 to attach to
+> global memcg.
 
-When I run this test on my minimal config in a nested VM I get:
+Yep, but then we need somehow signal there is a cgroup fd passed,
+so that struct ops'es which are not attached to cgroups keep working
+as previously. And we can't use link_create.attach_type.
 
-[root@testvm:~]# /nix/store/xlxd60n7v1qfr6s5zxda410zrzdd0xc2-kselftests/bin/run_kselftest.sh -t kvm:set_memory_region_test
-TAP version 13
-1..1
-# timeout set to 120
-# selftests: kvm: set_memory_region_test
-# Random seed: 0x6b8b4567
-# Testing KVM_RUN with zero added memory regions
-# Testing MMIO during vectoring error handling
-# Allowed number of memory slots: 32764
-# Adding slots 0..32763, each memory region with 2048K size
-# Testing MMIO emulation for instructions in gmem
-# ==== Test Assertion Failure ====
-#   lib/kvm_util.c:1118: region->mmap_start != MAP_FAILED
-#   pid=614 tid=614 errno=19 - No such device
-#      1	0x0000000000407b02: vm_mem_add at ??:?
-#      2	0x000000000040a924: __vm_create at ??:?
-#      3	0x000000000040ab16: __vm_create_shape_with_one_vcpu at ??:?
-#      4	0x00000000004042cf: main at ??:?
-#      5	0x00007faa6b08a47d: ?? ??:0
-#      6	0x00007faa6b08a538: ?? ??:0
-#      7	0x0000000000404384: _start at ??:?
-#   mmap() failed, rc: -1 errno: 19 (No such device)
+Should I use link_create.flags? E.g. something like add new flag
 
-Here's the kconfig I'm using (basically defconfig+KVM): 
+@@ -1224,6 +1224,7 @@ enum bpf_perf_event_type {
+ #define BPF_F_AFTER		(1U << 4)
+ #define BPF_F_ID		(1U << 5)
+ #define BPF_F_PREORDER		(1U << 6)
++#define BPF_F_CGROUP		(1U << 7)
+ #define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
+=20
+ /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
 
-https://gist.githubusercontent.com/bjackman/4ea941ef5072606769211f3b000c8ed7/raw/73808882ddae6ff2ae8a0be85ac977b2980f7292/kconfig.txt
+and then do something like this:
 
-Sorry I'm too ignorant about KVM to know what I'm missing here but I
-guess it's a missing TEST_REQUIRE()?
+int bpf_struct_ops_link_create(union bpf_attr *attr)
+{
+	<...>
+	if (attr->link_create.flags & BPF_F_CGROUP) {
+		struct cgroup *cgrp;
 
+		cgrp =3D cgroup_get_from_fd(attr->link_create.target_fd);
+		if (IS_ERR(cgrp)) {
+			err =3D PTR_ERR(cgrp);
+			goto err_out;
+		}
+
+		link->cgroup_id =3D cgroup_id(cgrp);
+		cgroup_put(cgrp);
+	}
+
+Does it sound right?
+
+Thanks
 
