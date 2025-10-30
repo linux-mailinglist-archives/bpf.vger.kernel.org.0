@@ -1,153 +1,231 @@
-Return-Path: <bpf+bounces-72961-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86F8FC1E053
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 02:26:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3CEBC1E240
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 03:37:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 454A24012C8
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 01:26:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EC8C3A5400
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 02:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1AA273816;
-	Thu, 30 Oct 2025 01:26:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DEEC32ABC4;
+	Thu, 30 Oct 2025 02:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hQJpEoua"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X9QtkD2P"
 X-Original-To: bpf@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4541F270EC1;
-	Thu, 30 Oct 2025 01:26:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A990126BF1;
+	Thu, 30 Oct 2025 02:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761787569; cv=none; b=YzWpl3Y+OjUMCdATNgWSRXvuvFzJxNS3dXy9m9rY6Q61qJOHKtdzuxEcG+TVAZmH3/nReJeK+DGSoGzLnY+TulJ61rqco8j2OVVmKB/Xx+jL8vaYjyP6bx1ytNHFQggwiea7vM7vamQHJYb56609wbFyS2bXwAIe2eZ2TMhE7Ww=
+	t=1761791856; cv=none; b=kgjPqIglyym4WCVGlR+LQvQVCjldyIFPBXwgGsOX8uBGwmcx6pra3PhCUKJ/9T83E+1vKMRxf2/bAVp/QSt0JwWN780W/I1ynvd+cSqISpXPeRhzkmg/t/gMLQtFyJp+hHQ08oWIR6cDyYoZIk3FjbEAw8RexStW0d2YIbxJGZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761787569; c=relaxed/simple;
-	bh=84kPkXhUTbe6LhLgk38kZ2juDmsQcTp5ZsiWx3+UrxA=;
+	s=arc-20240116; t=1761791856; c=relaxed/simple;
+	bh=oC9Ig42hWklRcp3NJPqZXoxu09JQxObjX3p/oUGkPV4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XMZ4aaqo1+nSujzztwbXzBCFY5d5b75vto1dmarzKrC8ozfnkoQrTN4JCq4h0WDzXvfVUUS+lVk2fr6VpzxEoQcc5scMuruOuj06KKKBEtTqTxcdM/rHHAfG9W4JPOSoULngVXsi9a6tOJn5kckUpQ7kkDlGKXDB/8LAiilLKEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hQJpEoua; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=DE4GUUSn7PS/fQa45gakfgN1Qyd0uWMtlpLL22+fJDs=; b=hQJpEouaCKg43OLB9uIUt5Si6r
-	LtknmQMFhhEP/mVrtGiYO1NoiHxI9p4Gf3BDkBxLfwv1ZTzvQvOycpYmpbSOsl/ChsST/5JMhAo8J
-	tV7jZPw6dPB1NS0ERA8r1xP6FvxC0NqZbvFZxGuAyar/yoAK//vfwz1DjBB+myOwODjXVP2/JFk5N
-	2sB5qCrtSHdrpU0VC1MC8ilNFJFomczGx6Z/gV1DoSY0rH/DxQZxr4GUbaF0WJdYmm9PxFplliaEY
-	9nhK/JbPV+gza/9FNZhrD9vS4MmgFzeUNEGHbOyALmrui/YC1zx0H/9gsSHVeeU3fUSc2YJtLe9Zx
-	iI/yLEFw==;
-Received: from [50.53.43.113] (helo=[192.168.254.34])
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vEHQR-00000003Ke3-1sDF;
-	Thu, 30 Oct 2025 01:26:03 +0000
-Message-ID: <b585fa87-b804-4f7c-844d-86645c61b2ca@infradead.org>
-Date: Wed, 29 Oct 2025 18:26:02 -0700
+	 In-Reply-To:Content-Type; b=qyuh93Fxr0Li7fP/FtWaWSJJsdUxFsy/BeWUmqyaxd+R3KnBLCKq+iASTgPAzFAuXaYuNRJ+VjZNk1JHN5DRbPOeybRiuyGspSEqUodAMbSLrrPBx4O7/dfQdovNEy/lEfsK08BDayYSa1SBP6buGv2QfYTkZx8UWcLIiUS1/Hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=X9QtkD2P; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2dbebe3a-5b96-4076-a3e3-00ae8de990d8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761791850;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HLvjLcI/0DbJGC9Bc0bi6CFAYKKHC4jWpCjENERXsTk=;
+	b=X9QtkD2Pe4Zq+yV7u5SP7kxWg9suXEIuWSxXX/Cqm88rD33ASllGFv4Irl77jhnU4j7jGu
+	/2mgDdOxQq8KhUF/nWoWrTT7jCbQiOhOZzZ4Y8h1piJo/BSJ5MC8/ioiIxOBeqteaoV3md
+	mo5DVcWFR08U4A66r1UUeE0wG1G8tRc=
+Date: Thu, 30 Oct 2025 10:36:46 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net: Reorganize networking documentation toctree
-To: Bagas Sanjaya <bagasdotme@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Documentation <linux-doc@vger.kernel.org>,
- Linux Networking <netdev@vger.kernel.org>, Linux BPF <bpf@vger.kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>
-References: <20251028113923.41932-2-bagasdotme@gmail.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20251028113923.41932-2-bagasdotme@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH bpf-next v4 1/2] perf: Refactor get_perf_callchain
+To: bot+bpf-ci@kernel.org, peterz@infradead.org, mingo@redhat.com,
+ acme@kernel.org, namhyung@kernel.org, mark.rutland@arm.com,
+ alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
+ adrian.hunter@intel.com, kan.liang@linux.intel.com, song@kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, martin.lau@kernel.org, clm@meta.com,
+ ihor.solodrai@linux.dev
+References: <20251028162502.3418817-2-chen.dylane@linux.dev>
+ <a48e281e6912037490270da40f79e45c1ad1e430c8c1cc84c48306106b06113a@mail.kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <a48e281e6912037490270da40f79e45c1ad1e430c8c1cc84c48306106b06113a@mail.kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-
-
-On 10/28/25 4:39 AM, Bagas Sanjaya wrote:
-> Current netdev docs has one large, unorganized toctree that makes
-> finding relevant docs harder like a needle in a haystack. Split the
-> toctree into four categories: networking core; protocols; devices; and
-> assorted miscellaneous.
+在 2025/10/29 01:09, bot+bpf-ci@kernel.org 写道:
 > 
-> While at it, also sort the toctree entries and reduce toctree depth.
+> ```
+> commit 59cfc61f83ad4ec998f4242ca000c554e3001b47
+> Author: Tao Chen <chen.dylane@linux.dev>
+> 
+> perf: Refactor get_perf_callchain
+> 
+> This patch refactors get_perf_callchain() by extracting logic into new
+> helper functions to provide more flexible stack-sampling APIs for BPF.
+> 
+>> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+>> index fd1d91017..14a382cad 100644
+>> --- a/include/linux/perf_event.h
+>> +++ b/include/linux/perf_event.h
+>> @@ -67,6 +67,7 @@ struct perf_callchain_entry_ctx {
+>>   	u32				nr;
+>>   	short				contexts;
+>>   	bool				contexts_maxed;
+>> +	bool				add_mark;
+>>   };
+> 
+> [ ... ]
+> 
+>> @@ -1718,9 +1719,17 @@ DECLARE_PER_CPU(struct perf_callchain_entry, perf_callchain_entry);
+>>
+>>   extern void perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs);
+>>   extern void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs);
+>> +
+>> +extern void __init_perf_callchain_ctx(struct perf_callchain_entry_ctx *ctx,
+>> +				      struct perf_callchain_entry *entry,
+>> +				      u32 max_stack, bool add_mark);
+>> +
+>> +extern void __get_perf_callchain_kernel(struct perf_callchain_entry_ctx *ctx, struct pt_regs *regs);
+>> +extern void __get_perf_callchain_user(struct perf_callchain_entry_ctx *ctx, struct pt_regs *regs);
+>> +
+>>   extern struct perf_callchain_entry *
+>>   get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
+>> -		   u32 max_stack, bool crosstask, bool add_mark);
+>> +		   u32 max_stack, bool crosstask);
+> 
+>> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+>> index 4d53cdd13..e28b35c7e 100644
+>> --- a/kernel/bpf/stackmap.c
+>> +++ b/kernel/bpf/stackmap.c
+>> @@ -315,7 +315,7 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
+>>   		max_depth = sysctl_perf_event_max_stack;
+>>
+>>   	trace = get_perf_callchain(regs, kernel, user, max_depth,
+>> -				   false, false);
+>> +				   false);
+>                                         ^^^^^ removed last parameter
+> 
+> Previously bpf_get_stackid() passed add_mark=false to get_perf_callchain().
+> Now the parameter is gone, but get_perf_callchain() hardcodes add_mark=true
+> when calling __init_perf_callchain_ctx(). This means BPF stack traces will
+> now include PERF_CONTEXT_KERNEL/PERF_CONTEXT_USER marker values when they
+> didn't before.
+> 
 
-Hm, I was going to ask how they are sorted, but I see that it's by
-file name -- chapter headings aren't sorted. E.g., under Protocols,
+The entire modification involves changes to two subsystems. To make the 
+review easier, the get_perf_callchain has been simply adapted here. In 
+the next patch, BPF will no longer use get_perf_callchain, and add_mark 
+will be set to false.
 
-
-ARCnet
-AX.25
-Bare UDP Tunnelling Module Documentation
-CAIF
-SocketCAN - Controller Area Network
-The UCAN Protocol
-DCTCP (DataCenter TCP)
-The Linux kernel GTP tunneling module
-Identifier Locator Addressing (ILA)
-IPsec
-IPv6
-
-These are sorted by file name. I'm not complaining, just
-making an observation.
-
-Another observation: I find the heading
-  Softnet Driver Issues
-confusing, since I can't find anything in
-Documentation/networking/ that tells me what Softnet means.
-(and yes, I know, you didn't add this, just moved it)
-
-
-I like the organization. Someone might quibble over a few
-entries and which section heading they should be in, but
-that can be changed any time. (mostly items under
-Miscellaneous; e.g. RDS is a protocol)
-
-
-The size of the new index page is nice (about 3 screens on my
-laptop). But I miss seeing the next level of headings
-(:maxdepth: 2 instead of 1). And I don't see any way to find
-that. It would be nice if I could click on a hamburger menu
-somewhere to see finer detailed TOC/index. Or if the
-sidebar TOC could be expanded by clicking on a heading.
-
-
-And I don't think that the line "Contents:" at the top is doing
-any good.
-
-So I tried this patch with :maxdepth: 2. There is still too much
-TOC info there IMO, so using :maxdepth: 1 is good.
-I just wish there was a way to see individual (page) TOCs on demand.
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> The markers get added by __get_perf_callchain_kernel() and
+> __get_perf_callchain_user() when ctx->add_mark is true. These markers are
+> sentinel values (-128 for KERNEL, -512 for USER) that appear in the trace
+> IP array alongside actual instruction pointers.
+> 
+>>
+>>   	if (unlikely(!trace))
+>>   		/* couldn't fetch the stack trace */
+>> @@ -452,7 +452,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>>   		trace = get_callchain_entry_for_task(task, max_depth);
+>>   	else
+>>   		trace = get_perf_callchain(regs, kernel, user, max_depth,
+>> -					   crosstask, false);
+>> +					   crosstask);
+>                                                     ^^^^^ same issue here
+> 
+> Same problem in __bpf_get_stack() which was also passing add_mark=false.
+> 
+> This changes BPF stack map behavior in user-visible ways:
+> 
+> 1) bpf_get_stackid() hashes the entire trace->ip[] array including any
+>     markers, so identical stacks will now produce different stack IDs.
+> 
+> 2) bpf_get_stack() copies trace->ip[] directly to userspace buffers,
+>     so BPF programs will see marker values mixed with instruction pointers.
+> 
+> Can BPF tools handle these unexpected marker values? The commit message
+> says "The next patch will modify the BPF part" but doesn't explain this
+> intermediate behavior change.
+> 
+>> diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
+>> index 808c0d7a3..2c36e4906 100644
+>> --- a/kernel/events/callchain.c
+>> +++ b/kernel/events/callchain.c
+> 
+> [ ... ]
+> 
+>>   struct perf_callchain_entry *
+>>   get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
+>> -		   u32 max_stack, bool crosstask, bool add_mark)
+>> +		   u32 max_stack, bool crosstask)
+>>   {
+>>   	struct perf_callchain_entry *entry;
+>>   	struct perf_callchain_entry_ctx ctx;
+>> -	int rctx, start_entry_idx;
+>> +	int rctx;
+>>
+>>   	/* crosstask is not supported for user stacks */
+>>   	if (crosstask && user && !kernel)
+>> @@ -232,34 +273,14 @@ get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
+>>   	if (!entry)
+>>   		return NULL;
+>>
+>> -	ctx.entry		= entry;
+>> -	ctx.max_stack		= max_stack;
+>> -	ctx.nr			= entry->nr = 0;
+>> -	ctx.contexts		= 0;
+>> -	ctx.contexts_maxed	= false;
+>> +	__init_perf_callchain_ctx(&ctx, entry, max_stack, true);
+>                                                                  ^^^^
+> Here's where add_mark is hardcoded to true for all callers. The old code
+> allowed callers to control this via parameter. BPF was passing false,
+> perf_callchain() was passing true. Now both get true unconditionally.
+> 
+> [ ... ]
+> 
+>> diff --git a/kernel/events/core.c b/kernel/events/core.c
+>> index 7541f6f85..eb0f11059 100644
+>> --- a/kernel/events/core.c
+>> +++ b/kernel/events/core.c
+>> @@ -8218,7 +8218,7 @@ perf_callchain(struct perf_event *event, struct pt_regs *regs)
+>>   		return &__empty_callchain;
+>>
+>>   	callchain = get_perf_callchain(regs, kernel, user,
+>> -				       max_stack, crosstask, true);
+>> +				       max_stack, crosstask);
+>>   	return callchain ?: &__empty_callchain;
+>>   }
+> 
+> 
+> ```
+> 
 > ---
->  Documentation/networking/index.rst | 241 ++++++++++++++++-------------
->  1 file changed, 136 insertions(+), 105 deletions(-)
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 > 
-> diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-> index c775cababc8c17..ca86e544c5c8e2 100644
-> --- a/Documentation/networking/index.rst
-> +++ b/Documentation/networking/index.rst
-> @@ -5,138 +5,169 @@ Refer to :ref:`netdev-FAQ` for a guide on netdev development process specifics.
+> In-Reply-To-Subject: `perf: Refactor get_perf_callchain`
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18882141979
 
 
 -- 
-~Randy
+Best Regards
+Tao Chen
 
