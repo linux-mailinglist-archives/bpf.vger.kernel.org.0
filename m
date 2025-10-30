@@ -1,117 +1,157 @@
-Return-Path: <bpf+bounces-73006-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E8E6C1FFBB
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 13:22:06 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86111C2002D
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 13:28:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2CFA74E970F
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 12:21:39 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0D25934E3BA
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 12:28:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64C532F12CC;
-	Thu, 30 Oct 2025 12:21:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57D5F314B93;
+	Thu, 30 Oct 2025 12:28:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="goDmxJDg"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="A0LW+ue8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5743F9C5
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 12:21:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BAEB2F12CC
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 12:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761826893; cv=none; b=EyoyJ4QRYPLz/3irun04WLqE0c7K1u3ELyhk8PU6JFR8iz+pSVAXvjLOF1Wq7NFJE89LXuEQP8YRsENNc/F1e2WdzcIukZxn/czN0wvsB0IylO9rykLih3/vIcsRrRKMehiWxYoSqmVa4cAlSnRzqefv3XLZLEFlYJzJwBTKVp4=
+	t=1761827331; cv=none; b=LQCVhMsuLtF5gSiM1UNkYi6jN1y42PVb20FYYgbd8TOxeaJi4Oi6eUfDhRlTH8q6J3Uhb/qnNLb1KqU3Rh0CzOtKE44K6xp8wG9NX6w5u7BJpTeG2MoJCPu8ub9ImSEwv62PfdacsoxGMTkOGSa1Ep6H/44lOeLuqLLhzgoCpQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761826893; c=relaxed/simple;
-	bh=XkrPMoW4ahWw13jNVRdygtsY8cfBMsm5T9zBqt0Vl9w=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=sGI7AhBAYxB3IO9QJjpYj5xyE2Vx341VIFEuWuzplsGbvUXQ3T7HSjCFYz808jccvn6k7tVaWIHPJqWF/NaBbI5sBWwpYAODQBtR2dU92QkG6CBQLOHnYk+IeMH2v4o5l5a0fhlpXWeGinpUXGWS2GaW056atEcWIvYKytEpQ5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=goDmxJDg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33CDBC4CEF1;
-	Thu, 30 Oct 2025 12:21:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761826893;
-	bh=XkrPMoW4ahWw13jNVRdygtsY8cfBMsm5T9zBqt0Vl9w=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=goDmxJDgdu+FUSdfdylOBrP3RauaM+6RlW6h2If7RXwvHXsQnOYnfwpPoS2avjYzS
-	 O4TH7vYmhmo7/5DQ6+03t75XsmXHQUAcoaFLquMNI9W4EhMqngI0bXaaHeQWWz5U6R
-	 U+OvMw8VlpS/fhB3Un8JNFxgxQasr7l+PSfncuVob2NIbmnVOvY/MGii4DT26Z+Ehr
-	 bvs29ho3uhtjgkbdcfkckA2UvTPrY2OaNE+mTpakqk2uqLZ3CamQv4rsgJt5dhPJdp
-	 f6O6SyEQOYSwowS/7BSMDQTzQQW9Qg46I4oXR45Pi4aN/UoeWZd52EKmWstCE508fi
-	 ty6g+z5rShrlQ==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
- Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Xu
- Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- kernel-team@meta.com
-Subject: Re: [PATCH bpf-next] bpf: arm64: fix BPF_ST into arena memory
-In-Reply-To: <20251030120146.50417-1-puranjay@kernel.org>
-References: <20251030120146.50417-1-puranjay@kernel.org>
-Date: Thu, 30 Oct 2025 12:21:29 +0000
-Message-ID: <mb61p3470twae.fsf@kernel.org>
+	s=arc-20240116; t=1761827331; c=relaxed/simple;
+	bh=3rsc6ptPvWByOYOhRv+nQJ1v7jnad7jLTGQxU4GRYQg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ShtRF3ZYL4ZRd4/nbp2STWfvw8bF+N4XTary7dAO3UD1dp74d6Jc568M6h4vi9yoFhjCaQ6brzetHcISr5G4q83I/khK4Vkc+thqNiGCfYKBUkFw8Bw97ScZ4dE9wR9tJqvdV5mqVnDptM3gig/P5/z+F3aqHfC3KlnNrOr5tWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=A0LW+ue8; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1761827329;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+WMVXs8TQMP3kSanWp9H8RTwHILJeUuZYlKUFoW3Nlw=;
+	b=A0LW+ue8xSq37qODwE/SfXSorgI0WFb9q6F0bfaunm3r084Ibu8fbyvgz9rK3LNFyIs9KG
+	tJH7n7JHa79HqJCqxEyLoobStESqLnLi2GqwejlFEpq4EqimTAIlMBVyh3NyKCvW5ZO37O
+	/dVkacldbuQ62JM35d+J011/iGnR4Dk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-308-6Sd_NaedNuqA65ZmEmd7ew-1; Thu, 30 Oct 2025 08:28:48 -0400
+X-MC-Unique: 6Sd_NaedNuqA65ZmEmd7ew-1
+X-Mimecast-MFC-AGG-ID: 6Sd_NaedNuqA65ZmEmd7ew_1761827327
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-475da25c4c4so8666775e9.0
+        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 05:28:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761827327; x=1762432127;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+WMVXs8TQMP3kSanWp9H8RTwHILJeUuZYlKUFoW3Nlw=;
+        b=nfBMR8zaUMy/jmHyovHRZlUMc171rP63gG3cyfvK1ZqRmOxOws//DtmH9NUY0hLQEd
+         1lc6yx65/zH3c+XPjyVmyUJ9jKTHVGfwlgue0s9RoIAyOSdbsyHHhmapgcY3xti0a9tu
+         ZsBfKWeCPEy0Ix3W9VZB9iJlYex9BZsdmJ3y15vaxSqr6ChjOxsUZl7sRKQVRxbzBf+e
+         gOvopCG9je2f0H+BkJxK89FOxWT8Pta50gutDwao2J2/9WzD+R/jXgaFZ0cCGXfEsklg
+         rAktDb0djuSQ4rPYmTCQjKkWbYz1RlrRhgoPL2fnQEi8kebeRkgt6W1TMh84srV3npFT
+         1aLg==
+X-Forwarded-Encrypted: i=1; AJvYcCWw367Exrn7cJEyTBrpSAkNfSTef6LZF1qsleuFw12jfbouXQlvqXC9LQHYDFGpQ+dhmrI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFykcJoVNG7klnJxG1Dzz8Cnns8Ud2xLs9FS31j48DxvOu9Gqr
+	+nFuHfaEvrhTBBWVDP1WCP9M7qaklW75XFKGcYLj/M4RXeEutVSHXysvgyNERrtLs7Pl/hnAdov
+	YhjPhhuYG5Jnw//P806DYliATPFT5Fh8BiJ+BzzehTYDD7u6qaIIvtQ==
+X-Gm-Gg: ASbGnctSJzXFqXYUHwr0WnsNHi4mg6+gWcQQcx6R/EETIVRXcGC4wviBfL0lo9mhCbK
+	V4EASvs75vabd7hszef9rq9Pv9Zu6e0zJWyP97Fe1g/yGBws+QOjdK2HVccLrfCTWw+2RbJt7X0
+	D/kun6D6bTVkf1hL1u6kHnMQt+oXsb9dkaCS9mIcpgdSJz0SKwwxoqpfSqVI1pmuT2m/MwfByXG
+	lsiIooM8yTmw/eUf5EesjzNjA4q3zw/iTTzef6yqKFxGfr8rdQ5RE/NCUcdD+fUwESBTRLcgyEh
+	Qj/vHxmLRyvblSntDFp+t28MNXP7uwyUkzk+S8lRWZgbdinqHSMYXCTCdAdEfvcvwllD9ggtmEY
+	YXx8tY/+BU5YKmxo6RipEVqPi1SELMKQj/QzrIkVeFOtp
+X-Received: by 2002:a05:600c:4511:b0:477:e66:4082 with SMTP id 5b1f17b1804b1-4771e1ec1d1mr66499225e9.29.1761827326740;
+        Thu, 30 Oct 2025 05:28:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGQc3JgzM1QEslivftQlK3inQluENUMNYgDE1rjtok3+8IGknzl6HMn3biCdPkc1D7PQaX66g==
+X-Received: by 2002:a05:600c:4511:b0:477:e66:4082 with SMTP id 5b1f17b1804b1-4771e1ec1d1mr66498985e9.29.1761827326363;
+        Thu, 30 Oct 2025 05:28:46 -0700 (PDT)
+Received: from ?IPV6:2a0d:3341:b8a2:8d10:2aab:5fa:9fa0:d7e6? ([2a0d:3341:b8a2:8d10:2aab:5fa:9fa0:d7e6])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477289adc18sm41187325e9.6.2025.10.30.05.28.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Oct 2025 05:28:45 -0700 (PDT)
+Message-ID: <154ebe12-6e3c-4b16-9f55-e10a30f5c989@redhat.com>
+Date: Thu, 30 Oct 2025 13:28:43 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net V2 2/2] veth: more robust handing of race to avoid txq
+ getting stuck
+To: Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ ihor.solodrai@linux.dev, "Michael S. Tsirkin" <mst@redhat.com>,
+ makita.toshiaki@lab.ntt.co.jp, toshiaki.makita1@gmail.com,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel-team@cloudflare.com
+References: <176159549627.5396.15971398227283515867.stgit@firesoul>
+ <176159553930.5396.4492315010562655785.stgit@firesoul>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <176159553930.5396.4492315010562655785.stgit@firesoul>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Puranjay Mohan <puranjay@kernel.org> writes:
+On 10/27/25 9:05 PM, Jesper Dangaard Brouer wrote:
+> (3) Finally, the NAPI completion check in veth_poll() is updated. If NAPI is
+> about to complete (napi_complete_done), it now also checks if the peer TXQ
+> is stopped. If the ring is empty but the peer TXQ is stopped, NAPI will
+> reschedule itself. This prevents a new race where the producer stops the
+> queue just as the consumer is finishing its poll, ensuring the wakeup is not
+> missed.
 
-There is a build issue in this version, I have sent v2 with fix. please
-review that one instead: https://lore.kernel.org/bpf/20251030121715.55214-1-puranjay@kernel.org/
+[...]
 
-Sorry for the noise.
+> @@ -986,7 +979,8 @@ static int veth_poll(struct napi_struct *napi, int budget)
+>  	if (done < budget && napi_complete_done(napi, done)) {
+>  		/* Write rx_notify_masked before reading ptr_ring */
+>  		smp_store_mb(rq->rx_notify_masked, false);
+> -		if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
+> +		if (unlikely(!__ptr_ring_empty(&rq->xdp_ring) ||
+> +			     (peer_txq && netif_tx_queue_stopped(peer_txq)))) {
+>  			if (napi_schedule_prep(&rq->xdp_napi)) {
+>  				WRITE_ONCE(rq->rx_notify_masked, true);
+>  				__napi_schedule(&rq->xdp_napi);
 
-Thanks,
-Puranjay
+Double checking I'm read the code correctly. The above is supposed to
+trigger when something alike the following happens
 
-> The arm64 JIT supports BPF_ST with BPF_PROBE_MEM32 (arena) by using the
-> tmp2 register to hold the dst + arena_vm_base value and using tmp2 as the
-> new dst register. But this is broken because in case is_lsi_offset()
-> returns false the tmp2 will be clobbered by emit_a64_mov_i(1, tmp2, off,
-> ctx); and hence the emitted store instruction will be of the form:
->
-> 	strb    w10, [x11, x11]
->
-> Fix this by using the third temporary register to hold the dst +
-> arena_vm_base.
->
-> Fixes: 339af577ec05 ("bpf: Add arm64 JIT support for PROBE_MEM32 pseudo instructions.")
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
->  arch/arm64/net/bpf_jit_comp.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> index ab83089c3d8f..348540b8e02d 100644
-> --- a/arch/arm64/net/bpf_jit_comp.c
-> +++ b/arch/arm64/net/bpf_jit_comp.c
-> @@ -785,6 +785,7 @@ static int emit_lse_atomic(const struct bpf_insn *insn, struct jit_ctx *ctx)
->  	const u8 src = bpf2a64[insn->src_reg];
->  	const u8 tmp = bpf2a64[TMP_REG_1];
->  	const u8 tmp2 = bpf2a64[TMP_REG_2];
-> +	const u8 tmp3 = bpf2a64[TMP_REG_3];
->  	const bool isdw = BPF_SIZE(code) == BPF_DW;
->  	const bool arena = BPF_MODE(code) == BPF_PROBE_ATOMIC;
->  	const s16 off = insn->off;
-> @@ -1757,8 +1758,8 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
->  	case BPF_ST | BPF_PROBE_MEM32 | BPF_W:
->  	case BPF_ST | BPF_PROBE_MEM32 | BPF_DW:
->  		if (BPF_MODE(insn->code) == BPF_PROBE_MEM32) {
-> -			emit(A64_ADD(1, tmp2, dst, arena_vm_base), ctx);
-> -			dst = tmp2;
-> +			emit(A64_ADD(1, tmp3, dst, arena_vm_base), ctx);
-> +			dst = tmp3;
->  		}
->  		if (dst == fp) {
->  			dst_adj = ctx->priv_sp_used ? priv_sp : A64_SP;
-> -- 
-> 2.47.3
+[producer]				[consumer]
+					veth_poll()
+					[ring empty]
+veth_xmit
+  veth_forward_skb
+  [NETDEV_TX_BUSY]		
+					napi_complete_done()
+					
+  netif_tx_stop_queue
+  __veth_xdp_flush()
+  rq->rx_notify_masked == true
+					WRITE_ONCE(rq->rx_notify_masked,
+						   false);
+
+?
+
+I think the above can't happen, the producer should need to fill the
+whole ring in-between the ring check and napi_complete_done().
+
+Am I misreading it?
+
+/P
+
 
