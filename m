@@ -1,328 +1,147 @@
-Return-Path: <bpf+bounces-72967-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A2D2C1E2DA
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 04:00:58 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26A55C1E37D
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 04:39:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A21614018F7
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 03:00:56 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id BF38C34D0FB
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 03:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB8F2522A7;
-	Thu, 30 Oct 2025 03:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AB12D0C73;
+	Thu, 30 Oct 2025 03:38:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="frSd84Sr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TtATJpib"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com [209.85.210.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4983632C95D
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 03:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A6421ABAC;
+	Thu, 30 Oct 2025 03:38:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761793230; cv=none; b=darife3J9De4r311kIm+d3mQLRh+y0Ril/z6SSQl6KJXsW7vU0fNYSaM0PG0s6FonZIYsh2HPtuneG6YT53lfBRQBO8Nfkx/LDyVHEunz4BGF74PM6lUuHHrcDaRU19WCUn2kZHtmF+byNNrGJYPjTiesxykSCUbe1y+HQJLAPw=
+	t=1761795536; cv=none; b=VRK7wwrKaAz462xBiiezh/e264oszUeUO6JtLb90STprqNCf4ilS4KR2hpwftaiPEQEScw88nzrMyveFKAENyNCyIzxkb5R/LESUQSbBWvUEaALq8nuPT1QoG28B4mLVPrMluv9m1IIE4fA3/SXr0oQU1RfqipIehYqcHXsRRmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761793230; c=relaxed/simple;
-	bh=p9VUFDUmElzhq3Y1NJOKencICnU7fgRdtPaIJ9+b4YA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PtQS9Im79J7YhsJUXSq+015/56xA3a3NX+27tWCDHv3QgC3NIKyJWmTTCVRRo/eI9zbhr44Ia0dIzT5oR6QKI4drSVc0Yr6pkkZNo4ooDD8Mj7g68xs87RmxaqLd9ncjbMuJ7p+aFYmvgeC46Q3sWdFZ2W/Dhiom8I4jFq2zONI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=frSd84Sr; arc=none smtp.client-ip=209.85.210.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f195.google.com with SMTP id d2e1a72fcca58-7a26dab3a97so405748b3a.0
-        for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 20:00:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761793228; x=1762398028; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VOqMlrs96orUrV/G+q7YtbzEmic4V+UvSE86rYjh92Q=;
-        b=frSd84SrVJH2O1fr6t14PLOZLs+hKdRks5Rx1JoNdgcdP+8kStcDC6OEqb/cPuZ0qW
-         mQxyKSz4mrTceEvu8Cl2wX/q4nCDpForUXbdUfSv4wvLuRFTwRIPCIP1BEG5NghO7tUe
-         zNRgt/0Xi9URJisY9Wr2+38PlKDlDbQo63I0Q895QphMk1It+aThUi5wEYFEPG2dsp+H
-         0WJp8246mtNGbf8zGQErJPMF9T5hhoGOLOQx2crBoeX8/QN9V8QdD5BqNZA/HjCSsTwX
-         3+n46QXmO6K6jkP9eRIxN9VEZy9UzedGnpOgGxF/GH/fLcoR9gfuT6g6rFk5D6IGB+63
-         WLrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761793228; x=1762398028;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VOqMlrs96orUrV/G+q7YtbzEmic4V+UvSE86rYjh92Q=;
-        b=Upj1V0dDpGJhAb4DXdtDXXCcnYkEcTKb/jsKPtACq5MSzqU9NStDEiqdpr5AUUGgro
-         SKvkSDAJRj/3yT9CwuLwVAkTVRllKFYl+FcMxTatAm/bhn8aupxkKRs9U4g6SzWrID0X
-         3wZd3SMM9pI27HFfyrzzGWNF6xPHZQ3R+Zv7+WPznCmw2f/PxRbzanMLKFSDcNe9JJZZ
-         eO/2dBfrrgHij4Jsmo3sl9opjuleMvvyhRA7A/38MehffDMeoeSJCIpUZYBFeT6EaTF8
-         Mexwuv1fR2iJr9A5wQANGNs07Tku4ICNmo4IXnqc2tJwHFfjgjEpps6PQ8LvWC2Juv20
-         SOqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVzgc0gFutCzp6GWss/Upt6S9Dn3dGLuk6vYRJBnjS7rDAd3SJcGZNLHZVlxBZ0JzUF/rU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyYGvHGMUSu2vzKRBYsNDclP+hdGtdaH1+4Ja8vBtKtPjpnYkY2
-	fVsRUFKkwqB+M/NvQfJ96ODz+yiae1m7QTOmNQmQLugZS4U4uZamnCrl
-X-Gm-Gg: ASbGncsS0Y7Nlsi87GGXjnthqgSZsq5R6hIj5S2hmnIGNAVhmHMfmJJoRFuX1YCyvqg
-	C5eoM4XAmjIhOUoWBO2NTKr2Ac0oAq00gvdgLTVs9rCLFnPi+T3y3Fy+n4MkEuC38hMg+0x70b7
-	lYHFFdLsE7Mbujw6L3xLiIWenr/n9pKcTIn8UUcXX37wOXDIi3R28PxBGWClH2b+HPTSEyyF0WE
-	cZNOAtdCpZ+0S4bPRxMXog5oloW2pJrs+fmqhvxtzBPb1Xbl1NP7pBlp+ATs4mbzWDIu4lIsvAQ
-	7+GpRtXG7RXm/jBDMi2UsDnkLhJxgKNmMcsdlsg73JP00W+mk5S+iMTBhDGMSP6zH3NF4vLDka0
-	YEjxsE7S2EdiCFom/ZTJDlGXK5QerduVP+8PLZUtntOEbEZSFb5T7c4d09SrZVSciUB3v4Apma+
-	Di
-X-Google-Smtp-Source: AGHT+IE+EkIZH7nXlS0M66HyWl57U57NNIvburFNgkiF/aZKFtLI6PX9C71beMO3KKsYSq3AkXoUuA==
-X-Received: by 2002:a05:6a00:806:b0:77e:8130:fda with SMTP id d2e1a72fcca58-7a624c63426mr1985029b3a.13.1761793228514;
-        Wed, 29 Oct 2025 20:00:28 -0700 (PDT)
-Received: from 7950hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a414012b19sm16663311b3a.12.2025.10.29.20.00.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Oct 2025 20:00:28 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: martin.lau@linux.dev,
-	leon.hwang@linux.dev
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	jiang.biao@linux.dev,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf 2/2] selftests/bpf: test map deadlock caused by NMI
-Date: Thu, 30 Oct 2025 11:00:10 +0800
-Message-ID: <20251030030010.95352-3-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.51.2
-In-Reply-To: <20251030030010.95352-1-dongml2@chinatelecom.cn>
-References: <20251030030010.95352-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1761795536; c=relaxed/simple;
+	bh=yRzypom4pzbe6gsbRhjk2rPEpXETf4phZwOxcFZU3IQ=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=YAs3s/xxmATyTLy7mdsMJ+n7bKX49Y7KIUl8MrNvdm8BHPtmWr1KcfiKxGSM4+oRE/+lgMd5lVBEzBk1IpNIabeLI7GJeG1QAg5BSVf3xq8xQ7q/1agAcrjGfTe5Iom2vVrKg2/7gFCHfnmui8WCCxif3xf7tnjiY43QJOETx6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TtATJpib; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47D7AC4CEF1;
+	Thu, 30 Oct 2025 03:38:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761795536;
+	bh=yRzypom4pzbe6gsbRhjk2rPEpXETf4phZwOxcFZU3IQ=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=TtATJpibSYniStxQ6oAGf+jR1gJj1TsxoioIGhMJG4WCqH8jB+O0G3FggGJdQHp7Y
+	 KzHgVq5/dLhlGGAgyQhNZmZx4QGAr3cPZvl0WCJzTTGHqUB6jY5MCHCO84/XaKWcRM
+	 pXgkDNpmVXAh5Rgfq5vdZaf1xAt707GroCYapJ1DV+2xk3TpE5ri+nbIA66rid+8B6
+	 qea3CLzKNPOKM/kyyEpguHcVwwUAdPeqKw9nd7n2+yxasCVWTo4WXh0RYqRHAeQhL/
+	 bNqhA5QdfC1avYcHLTmL1MwJE39csDMpOLYZywjEa/1JJS4qt8UYE8br2fw6lVAxAV
+	 yhl+y5apQ6/Aw==
+Content-Type: multipart/mixed; boundary="===============3203120713277759930=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <18b6f2c755710330b0c7399d17606a46c977f1ba3de4f37319aa1783638b1d2f@mail.kernel.org>
+In-Reply-To: <20251030030010.95352-2-dongml2@chinatelecom.cn>
+References: <20251030030010.95352-2-dongml2@chinatelecom.cn>
+Subject: Re: [PATCH bpf 1/2] bpf: use rqspinlock for lru map
+From: bot+bpf-ci@kernel.org
+To: menglong8.dong@gmail.com,martin.lau@linux.dev,leon.hwang@linux.dev
+Cc: ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,shuah@kernel.org,jiang.biao@linux.dev,linux-kernel@vger.kernel.org,bpf@vger.kernel.org,linux-kselftest@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Thu, 30 Oct 2025 03:38:54 +0000 (UTC)
 
-In this testing, map updating and deleting both happen in NMI context and
-user context, which is used to detect the possible deadlock.
+--===============3203120713277759930==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-For now, LRU is added in the testing, and more map type can be added in
-the feature.
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+```
+commit 8ae9fd98fe53c45a1a89adf6d254c2db90d26544
+Author: Menglong Dong <menglong8.dong@gmail.com>
+
+bpf: use rqspinlock for lru map
+
+This patch converts raw_spinlock_t to rqspinlock_t in BPF LRU maps to
+prevent NMI context deadlocks. The new lock API can fail gracefully
+instead of deadlocking, returning an error code.
+
+Link: https://lore.kernel.org/bpf/CAEf4BzbTJCUx0D=zjx6+5m5iiGhwLzaP94hnw36ZMDHAf4-U_w@mail.gmail.com/
+
+> diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
+> index e7a2fc605..38fddcb1e 100644
+> --- a/kernel/bpf/bpf_lru_list.c
+> +++ b/kernel/bpf/bpf_lru_list.c
+
+[ ... ]
+
+> @@ -466,23 +470,26 @@ static struct bpf_lru_node *bpf_common_lru_pop_free(struct bpf_lru *lru,
+>  	do {
+>  		steal_loc_l = per_cpu_ptr(clru->local_list, steal);
+>
+> -		raw_spin_lock_irqsave(&steal_loc_l->lock, flags);
+> +		if (raw_res_spin_lock_irqsave(&steal_loc_l->lock, flags))
+> +			goto out_next;
+>
+>  		node = __local_list_pop_free(steal_loc_l);
+>  		if (!node)
+>  			node = __local_list_pop_pending(lru, steal_loc_l);
+>
+> -		raw_spin_unlock_irqrestore(&steal_loc_l->lock, flags);
+> +		raw_res_spin_unlock_irqrestore(&steal_loc_l->lock, flags);
+>
+> +out_next:
+>  		steal = cpumask_next_wrap(steal, cpu_possible_mask);
+>  	} while (!node && steal != first_steal);
+>
+>  	loc_l->next_steal = steal;
+>
+>  	if (node) {
+> -		raw_spin_lock_irqsave(&loc_l->lock, flags);
+> +		if (raw_res_spin_lock_irqsave(&loc_l->lock, flags))
+> +			return NULL;
+                        ^^^^^^^^^^^
+
+Can this leak the node? At this point in bpf_common_lru_pop_free(),
+a node was successfully stolen from another CPU's list. The
+__local_list_pop_free() or __local_list_pop_pending() call removed
+the node from steal_loc_l, and steal_loc_l was unlocked. The node
+now exists but is not in any list.
+
+When raw_res_spin_lock_irqsave() fails here, the function returns
+NULL, but the stolen node is never added to the local pending list
+and never returned to any list. The node becomes orphaned.
+
+In NMI context (which this patch is designed to handle), lock
+failures are expected to be common. Each failure would leak one
+pre-allocated node from the BPF LRU pool, eventually exhausting
+the available nodes.
+
+>  		__local_list_add_pending(lru, loc_l, cpu, node, hash);
+> -		raw_spin_unlock_irqrestore(&loc_l->lock, flags);
+> +		raw_res_spin_unlock_irqrestore(&loc_l->lock, flags);
+>  	}
+>
+>  	return node;
+
+[ ... ]
+
+
+```
+
 ---
- .../selftests/bpf/prog_tests/map_deadlock.c   | 136 ++++++++++++++++++
- .../selftests/bpf/progs/map_deadlock.c        |  52 +++++++
- 2 files changed, 188 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/map_deadlock.c
- create mode 100644 tools/testing/selftests/bpf/progs/map_deadlock.c
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/map_deadlock.c b/tools/testing/selftests/bpf/prog_tests/map_deadlock.c
-new file mode 100644
-index 000000000000..17fcf1f5efa6
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/map_deadlock.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <bpf/libbpf.h>
-+#include <linux/perf_event.h>
-+#include <sys/syscall.h>
-+#include <sys/ioctl.h>
-+#include <pthread.h>
-+#include "map_deadlock.skel.h"
-+
-+
-+static int perf_open_all_cpus(struct perf_event_attr *attr, int fds[], int max_cpus)
-+{
-+	int n = 0;
-+
-+	for (int cpu = 0; cpu < max_cpus; cpu++) {
-+		int fd = syscall(__NR_perf_event_open, attr, -1 /* pid: all */, cpu,
-+				 -1 /* group_fd */, PERF_FLAG_FD_CLOEXEC);
-+		if (fd < 0)
-+			continue;
-+		fds[cpu] = fd;
-+		n++;
-+	}
-+	return n;
-+}
-+
-+struct thread_arg {
-+	int map_fd;
-+	bool *stop;
-+};
-+
-+static void *user_update_thread(void *argp)
-+{
-+	struct thread_arg *arg = argp;
-+	u32 key = 0;
-+	u64 val = 1;
-+
-+	while (!*arg->stop) {
-+		key++;
-+		val++;
-+		bpf_map_update_elem(arg->map_fd, &key, &val, BPF_ANY);
-+		if ((key & 0x7) == 0)
-+			bpf_map_delete_elem(arg->map_fd, &key);
-+	}
-+	return NULL;
-+}
-+
-+static void test_map(const char *map_name, int map_index)
-+{
-+	struct perf_event_attr attr = {
-+		.type = PERF_TYPE_HARDWARE,
-+		.size = sizeof(struct perf_event_attr),
-+		.config = PERF_COUNT_HW_CPU_CYCLES,
-+		.sample_period = 1000000,
-+		.freq = 0,
-+		.disabled = 0,
-+		.wakeup_events = 1,
-+	};
-+	int map_fd, nfd = 0, max_cpus, err;
-+	struct bpf_link **links = NULL;
-+	struct map_deadlock *skel;
-+	struct bpf_program *prog;
-+	struct thread_arg targ;
-+	bool stop = false;
-+	int *fds = NULL;
-+	pthread_t thr;
-+
-+	skel = map_deadlock__open();
-+	if (!ASSERT_OK_PTR(skel, "map_deadlock__open"))
-+		return;
-+	skel->rodata->map_index = map_index;
-+	err = map_deadlock__load(skel);
-+	if (!ASSERT_OK(err, "map_deadlock__load"))
-+		goto out;
-+
-+	prog = skel->progs.on_perf;
-+	map_fd = bpf_object__find_map_fd_by_name(skel->obj, map_name);
-+	if (!ASSERT_GE(map_fd, 0, map_name))
-+		goto out;
-+
-+	max_cpus = libbpf_num_possible_cpus();
-+	if (!ASSERT_GT(max_cpus, 0, "num cpus"))
-+		goto out;
-+
-+	links = calloc(max_cpus, sizeof(*links));
-+	ASSERT_OK_PTR(links, "alloc links");
-+	fds = calloc(max_cpus, sizeof(*fds));
-+	ASSERT_OK_PTR(fds, "alloc fds");
-+	for (int i = 0; i < max_cpus; i++)
-+		fds[i] = -1;
-+
-+	nfd = perf_open_all_cpus(&attr, fds, max_cpus);
-+	if (!ASSERT_GT(nfd, 0, "perf fds"))
-+		goto out;
-+
-+	for (int cpu = 0; cpu < max_cpus; cpu++) {
-+		if (fds[cpu] < 0)
-+			continue;
-+		links[cpu] = bpf_program__attach_perf_event(prog, fds[cpu]);
-+		if (!ASSERT_OK_PTR(links[cpu], "attach perf"))
-+			goto out;
-+	}
-+
-+	targ.map_fd = map_fd;
-+	targ.stop = &stop;
-+	err = pthread_create(&thr, NULL, user_update_thread, &targ);
-+	if (!ASSERT_OK(err, "create thr"))
-+		goto out;
-+
-+	/* 1 second should be enough to trigger the deadlock */
-+	sleep(1);
-+	stop = true;
-+	(void)pthread_join(thr, NULL);
-+	/* TODO: read dmesg to check the deadlock? */
-+out:
-+	if (links) {
-+		for (int cpu = 0; cpu < max_cpus; cpu++) {
-+			if (links[cpu])
-+				bpf_link__destroy(links[cpu]);
-+		}
-+	}
-+	if (fds) {
-+		for (int cpu = 0; cpu < max_cpus; cpu++) {
-+			if (fds[cpu] >= 0)
-+				close(fds[cpu]);
-+		}
-+	}
-+	free(links);
-+	free(fds);
-+	map_deadlock__destroy(skel);
-+}
-+
-+void test_map_deadlock(void)
-+{
-+	if (test__start_subtest("lru"))
-+		test_map("lru_map", 0);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/map_deadlock.c b/tools/testing/selftests/bpf/progs/map_deadlock.c
-new file mode 100644
-index 000000000000..6966224955fc
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/map_deadlock.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+struct lru_map {
-+	__uint(type, BPF_MAP_TYPE_LRU_HASH);
-+	__uint(max_entries, 1024);
-+	__type(key, u32);
-+	__type(value, u64);
-+} lru_map SEC(".maps");
-+
-+struct map_list {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+	__array(values, struct lru_map);
-+} map_list SEC(".maps") = {
-+	.values = { [0] = &lru_map },
-+};
-+
-+const volatile int map_index;
-+
-+static __always_inline void do_update_delete(void *map)
-+{
-+	u64 ts = bpf_ktime_get_ns();
-+	u32 key = (u32)(ts >> 12);
-+	u64 val = ts;
-+
-+	if ((ts & 1) == 0)
-+		bpf_map_update_elem(map, &key, &val, BPF_ANY);
-+	else
-+		bpf_map_delete_elem(map, &key);
-+}
-+
-+SEC("perf_event")
-+int on_perf(struct bpf_perf_event_data *ctx)
-+{
-+	int key = map_index;
-+	void *target_map;
-+
-+	target_map = bpf_map_lookup_elem(&map_list, &key);
-+	if (!target_map)
-+		return 0;
-+
-+	for (int i = 0; i < 4; i++)
-+		do_update_delete(target_map);
-+	return 0;
-+}
--- 
-2.51.2
+In-Reply-To-Subject: `bpf: use rqspinlock for lru map`
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18928591681
 
+--===============3203120713277759930==--
 
