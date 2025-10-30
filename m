@@ -1,212 +1,269 @@
-Return-Path: <bpf+bounces-73057-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73058-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88255C217FB
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 18:30:58 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20DE6C2180D
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 18:33:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CC6B3A3856
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 17:26:48 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D52C64E3E4F
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 17:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EFAA368F33;
-	Thu, 30 Oct 2025 17:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48CD36B985;
+	Thu, 30 Oct 2025 17:32:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C5aedShf"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eepk593v"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8074B3683A7
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 17:26:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9273F368F5A
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 17:32:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761845205; cv=none; b=ROx2LpaHGqnByolFKHwz1FPshs04N+qqXU7W44JOKXZZH6Qj8lsdqKLTi+7+1Wh6BOKFBVNCasVGj6VeJWc2ji/aWZkz/9FIO/a+9z49HTwTdoXUIwKsaUkqQgX4SelcAXieMTmFp8wBREytER5FVCtHLz8BY/ZcbFvf6AwXY0M=
+	t=1761845574; cv=none; b=Si6jKxabCCGIhW0NqBgC1Xd7GOEetR/PKheVUrqrij0Zz/yidhyUHzAOfQpY0fzdSKt9VHQjaBoFQsLc7bwdcj3GJn/Vm7AaHFCKaYbVYvMspSc0y0Nue/T3RkW5igezLSaoBhiq5y9XBmDVp6m5SQ7uKoCS24Iw3VSWIpsi4qo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761845205; c=relaxed/simple;
-	bh=R66pJ2aeC9T8mvq2SNWf8g2+t/j2D+rZ3f/RxsZQgbU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=qwekhlPS4pahQG6SCHa9Q1XCnqEeg72EmtCz3Ri3gCoIt3mhPcVb0yMW4TWbhlWOodg9v0hVgeddiU07PlhadM8gW/poSj34bhBzNoKtuLIM2OPV2yTpSqfzVRvwaxPfbinLkPwbV4Fv/bmly7vt3LHtzrS7AMYMr50ZGDiD5TE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C5aedShf; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-33bbc4e81dfso1589176a91.1
-        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 10:26:43 -0700 (PDT)
+	s=arc-20240116; t=1761845574; c=relaxed/simple;
+	bh=o6y3cSzf1w/dTMAmlEkzjUCthI15kujL+QsU5CD7uYc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sEulX7m41Itpr+Zoja2wRqF+oKrFCaxLrNSOpxB7nnuo+ukyoHswSzNeBeCaaJYjhsRdViqZjhw+eIE4jk9YcZbyjbZ4xzJKa+lT0208QWjQKjQD7vjA5RtR7niQTiX/gjl/z/IIrw3Yd6bCxtV4DY77O9Zicdhz4BvBFgbcRU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eepk593v; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-294f3105435so11075ad.1
+        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 10:32:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761845203; x=1762450003; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VBUZoX5dT2XZvzWD1hhhjp5IwzQTAkja0LZXBOQj9Aw=;
-        b=C5aedShfUdlRcp2X2X5npNdaQv5tPy22EKYt1MttovPaP/6Z5fTtgrtjF016IT5AT5
-         eK4E1vK4xcHuczp3i3uunwrnW5li+mkZDLCuiqzlD2smlr/BkdUP48LtxH6hKzrFLn1E
-         et6pyeUNNy2gh7DMdw46eec+Wq16QJiRINjUlGrlhG3db2MdMSnNMfcaLZKaYW0ab7R5
-         BMxS6CfY/b16sn346rcuAm8y6mwd3MmRVnLz7HbnYmCTHjzMUl3lP+TPxOe6/d5nGkar
-         8wj49cuJ0CpiGLv5Hq6T2ahG/mYuH8XP058xJAUDIBQ521GuSpWPEYU5zD6keX3jVleM
-         vqwA==
+        d=google.com; s=20230601; t=1761845572; x=1762450372; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kpw0BP5/ZzTxyIySHSIgM8LC06W+8PMfB6mbIG7sCAw=;
+        b=eepk593vSLHNrDUunk3lacbAqjj3urILsq5qHXMJTltgXrohD47nth5zBA+cAkj1BK
+         ntjZIILSAC9+rd3/Erk4lvJqY7MRIYoTtMyX9gJ/HYmpxPW1Tb4hmjtsCjAXlrIpQ7Ja
+         AZcGwPuC4LZZfU0d/wsYzCvONdiZa10rGeLUSrKQcFvAzQEA8ReGeEDa6k1A/SNJCi34
+         P04EG2+2rsRfnarjiiLSKXqbUHFZglHo5pFyo/hsRP0vKG7GbD11Xn3diOkruUD0IfEt
+         7CLEYKQCUtByzps8hzIeXtdC2/hUa6xAsUUt3lDLqeDb4i4DPLsbS+it856qL9S4Youn
+         3+DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761845203; x=1762450003;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VBUZoX5dT2XZvzWD1hhhjp5IwzQTAkja0LZXBOQj9Aw=;
-        b=ol/8yP2JbHdl/bsaR79AYP4ehThYfChhve6ERqWuziOZyNmlOk0v9S7ZZtLYqkiclu
-         dTzc9/HHlkMlzXRWkyJJSQh5DSF3+AswMkgz/ff1Et+7aUtjIyegHbbTRVeq8ntc6deF
-         DgfihF3B+BHWCcmIFYkVOjl5mb2Zdj6zQl3+GR2B14/OZmqEH35NdON/iLmlq0oIJbD8
-         cQIpNOwZq95pijC0u/Txm904O6CxolrVtxm6LDvTFqPE3W/C2TDh637gu5wrgBYiL1ti
-         l/z3hiNCsdIzgqlZwBcg3ACTslBSSQe0AnK+pi4SumR/fuMQc9+OEaKY4Y0VeOoEhpxZ
-         knEw==
-X-Forwarded-Encrypted: i=1; AJvYcCW67n8e2J2twcAXPkqaORcLJ7ZDx2OsxZ4Gro+v78AVI5BVqBn5agqjui3+VDnwcfNiuuo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUhzZQtJDL4y7TLS6ZZtgB1nd/zEj53hspNFg+b2tX3mFqHa+d
-	uYFAN5FtRxbZP2y5rwZrGQknQLufvRmU42PayMOHFieAG4n4RdVPXVON
-X-Gm-Gg: ASbGnctn8VN3GLa1f9gH22fGzoyUBx1rCh16IQ1aM0lnLDhaEKeoZfgxAMQAspVcKNa
-	evIMnEceTqLXd2N8UNm4odZCENWF2Ijfs0GAzE386vKmzcley/FNHK/6GgxBcH2xqppgLyJPLaQ
-	u/6aTLXHG+zu71WX+wn1/TIwqQ94XKYVGgCU7yagvGifY46YTeUzOs8nuWJDgxETRW4oIKu8RG5
-	6hjO33iwl2xZjMMuYzQkxvKXHtDM50IBGWCuKCY6d5BcEF6yyodjDa0Zd5XC9IPymxT/asN20Ri
-	33LiXGCssn+9z4/MKes3p5/gANbkKisEQ7Q0IkkHcDunyhibcxtyjM1ArH38oUevazdFSBSPotZ
-	QsiknW0+G0D72Ng8bWpgmDcZ6Eg5rqxMcUL5RHnEfeZ6FYUcWfd+QJ2JoXoGVOxxl9mlvwXhlFd
-	2ex7ZgbdpT
-X-Google-Smtp-Source: AGHT+IF8A1a0P+znyR1j5oHtd7dlJzE05Rb6IK1i4Mns4f+5/RJqwEfxxr/XTUHh1gih4O1KdJJb3w==
-X-Received: by 2002:a17:90b:3947:b0:32e:753d:76da with SMTP id 98e67ed59e1d1-34083074e0emr636625a91.20.1761845202733;
-        Thu, 30 Oct 2025 10:26:42 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34050972842sm3298836a91.2.2025.10.30.10.26.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Oct 2025 10:26:42 -0700 (PDT)
-Message-ID: <aea5cd2ca9523a61d0193308a1b5f938a8d5b073.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/8] bpf: Support for kfuncs with
- KF_MAGIC_ARGS
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, bpf@vger.kernel.org, 
-	andrii@kernel.org, ast@kernel.org
-Cc: dwarves@vger.kernel.org, alan.maguire@oracle.com, acme@kernel.org, 
-	tj@kernel.org, kernel-team@meta.com
-Date: Thu, 30 Oct 2025 10:26:39 -0700
-In-Reply-To: <da20bc30-85be-44ab-b837-19aa97ebc431@linux.dev>
-References: <20251029190113.3323406-1-ihor.solodrai@linux.dev>
-	 <20251029190113.3323406-4-ihor.solodrai@linux.dev>
-	 <b667472aeb77ac63a3de82dae77012c0285e0286.camel@gmail.com>
-	 <da20bc30-85be-44ab-b837-19aa97ebc431@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1761845572; x=1762450372;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kpw0BP5/ZzTxyIySHSIgM8LC06W+8PMfB6mbIG7sCAw=;
+        b=Am7NJhfwy2RsbRt+U0vtO43fPO0+9HhDaNS6Fd82grfhN9q3IVsYT2oDMh4xrrJdkB
+         T2ndOYqLHk4991IiBceoYVzFadgRy/q7nJ11Nh0PUnQ/r/C6IpiJ2WOd22n/Kh5mFS0u
+         YjJmRA1AMCq7VbtLTbg1DEYex0B+tEGmOHIvTG5aiQqx4LfXPfl/95h1C356ctIiu/5B
+         6m+N8/YQITtlYza6ZEgvlYVAstX3jtj45wK+vuYYMi+/0jPbDYX4AIHSNW7tOIbIHCsm
+         ALJf/UByv+5XYOhG69OL79OVH9rQgzrIhVD5AeSSvX8gnXw6tLi0uKwWwT+QwOhngxTb
+         090Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVnH8Pdtgo7rXQRDShg5Lbiyf/lpwgFlxreMBRK5bS/Ef/z/Nq+6ajBFTtIvnRgj7Srnlw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwKO4a2VsjnUg0bAbTcwhlxGeOmKOtJeAHP8Cj4RWsWrpYXOn6E
+	SA9yrsaq52HBi/W9PgLc7J17Kx4UltzrHPB2DfDfszZFxEZ04ILfn5Tk6GVeORhjSEwAe1XLRaQ
+	AXKLUghUGR4NPbCmqxolvuS9duGIxKfYXsDQm4RWK
+X-Gm-Gg: ASbGnctOBOfcuvflYXmRl073y23JMR3zoyuO3+5ynGh8fkPwA2nQnZxwcBTssEA6VGY
+	IBVxoR4FkG3Iw2zKSlxNvfS0K7TLzKf4AiCcIwekdB5qeMuknHUjJOQqFILmZRriNXD2TBSuuTU
+	kVRow/FWa6f5KAqbYmTe8cefuH5KcodfN22QuGNpA6FyAq57TPnmMO7yIC8gRyZGeoayYyOBshy
+	t4VGOxrv4v1khrE4YVrl61vJY84Q44re2TJsIKLqWIwsfKms4YNffa5dTS8ZI+8q+/36+TjLw71
+	24bW8omebrw27A==
+X-Google-Smtp-Source: AGHT+IEZ/XuvUh4Pfc8TZEIT/XpCOGKsDHcvvo0a03Cba9wl9ismbj8nWmssEItMOyR2UpCaVJqHUMI+4tyrg3KSmMU=
+X-Received: by 2002:a17:903:41cd:b0:294:e585:1f39 with SMTP id
+ d9443c01a7336-2951e712296mr166825ad.14.1761845571153; Thu, 30 Oct 2025
+ 10:32:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251023015043.38868-1-xueshuai@linux.alibaba.com>
+ <CAP-5=fWupb62_QKM3bZO9K9yeJqC2H-bdi6dQNM7zAsLTJoDow@mail.gmail.com>
+ <fc75b170-86c1-49b6-a321-7dca56ad824a@linux.alibaba.com> <eed27aaf-fd0a-4609-a30b-68e7c5c11890@linux.alibaba.com>
+In-Reply-To: <eed27aaf-fd0a-4609-a30b-68e7c5c11890@linux.alibaba.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 30 Oct 2025 10:32:39 -0700
+X-Gm-Features: AWmQ_bk7tOF4s6AC5WJe-Q9QRXRXoirQ2SSsbTQkJYvIz4kH-3l4XMLuqNsKtvQ
+Message-ID: <CAP-5=fVLGRsn7icH1cgmb==f5_D6Vr2CbzirAv7DY4Afjm4O2A@mail.gmail.com>
+Subject: Re: [PATCH] perf record: skip synthesize event when open evsel failed
+To: Shuai Xue <xueshuai@linux.alibaba.com>
+Cc: alexander.shishkin@linux.intel.com, peterz@infradead.org, 
+	james.clark@arm.com, leo.yan@linaro.org, mingo@redhat.com, 
+	baolin.wang@linux.alibaba.com, acme@kernel.org, mark.rutland@arm.com, 
+	jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nathan@kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2025-10-30 at 09:31 -0700, Ihor Solodrai wrote:
-> Hi Eduard, thank you for a quick review.
->=20
-> On 10/29/25 4:54 PM, Eduard Zingerman wrote:
-> > On Wed, 2025-10-29 at 12:01 -0700, Ihor Solodrai wrote:
-> > > A kernel function bpf_foo with KF_MAGIC_ARGS flag is expected to have
-> >                                  ^^^^^^^^^^^^^
-> > 		I don't like this name very much.
-> > 		It bears very little context.
-> > 		Imo, KF_IMPLICIT_ARGS fits the use case much better.
->=20
-> I know, naming is hard...
->=20
-> The issue is that it's not only the flag, across the code we need
-> descriptive names for every "magic" thing:
->   * a flagged function
->     * how do we call it? kfunc_with_impl_args?
->   * a function that exists only in BTF (_impl)
->     * it's not an "implicit" function
->     * it's not exactly an "implementation" function
->     * "fake" is even worse than "magic" IMO, because it's not fake,
->       but you could argue it's magical :D
->     * btf_only_kfunc?
->   * describing arguments is simpler: "implicit" seems ok, although as
->     Alexei pointed out in previous iteration they are very much
->     explicit in the kernel [1]
->=20
-> For me, "(BPF) interface" and "(kernel) implementation" pair of terms
-> makes sense, but then I think it would be logical to have both
-> declarations in the kernel.
->=20
-> The advantage of "magic" in this context is that it doesn't have
-> loaded meaning. But I agree this is a stretch, so can't insist.
->=20
-> [1] https://lore.kernel.org/bpf/CAADnVQLvuubey0A0Fk=3DbzN-=3DJG2UUQHRqBij=
-ZpuvqMQ+xy4W4g@mail.gmail.com/
+On Wed, Oct 29, 2025 at 5:55=E2=80=AFAM Shuai Xue <xueshuai@linux.alibaba.c=
+om> wrote:
+>
+>
+>
+> =E5=9C=A8 2025/10/24 10:45, Shuai Xue =E5=86=99=E9=81=93:
+> >
+> >
+> > =E5=9C=A8 2025/10/24 00:08, Ian Rogers =E5=86=99=E9=81=93:
+> >> On Wed, Oct 22, 2025 at 6:50=E2=80=AFPM Shuai Xue <xueshuai@linux.alib=
+aba.com> wrote:
+> >>>
+> >>> When using perf record with the `--overwrite` option, a segmentation =
+fault
+> >>> occurs if an event fails to open. For example:
+> >>>
+> >>>    perf record -e cycles-ct -F 1000 -a --overwrite
+> >>>    Error:
+> >>>    cycles-ct:H: PMU Hardware doesn't support sampling/overflow-interr=
+upts. Try 'perf stat'
+> >>>    perf: Segmentation fault
+> >>>        #0 0x6466b6 in dump_stack debug.c:366
+> >>>        #1 0x646729 in sighandler_dump_stack debug.c:378
+> >>>        #2 0x453fd1 in sigsegv_handler builtin-record.c:722
+> >>>        #3 0x7f8454e65090 in __restore_rt libc-2.32.so[54090]
+> >>>        #4 0x6c5671 in __perf_event__synthesize_id_index synthetic-eve=
+nts.c:1862
+> >>>        #5 0x6c5ac0 in perf_event__synthesize_id_index synthetic-event=
+s.c:1943
+> >>>        #6 0x458090 in record__synthesize builtin-record.c:2075
+> >>>        #7 0x45a85a in __cmd_record builtin-record.c:2888
+> >>>        #8 0x45deb6 in cmd_record builtin-record.c:4374
+> >>>        #9 0x4e5e33 in run_builtin perf.c:349
+> >>>        #10 0x4e60bf in handle_internal_command perf.c:401
+> >>>        #11 0x4e6215 in run_argv perf.c:448
+> >>>        #12 0x4e653a in main perf.c:555
+> >>>        #13 0x7f8454e4fa72 in __libc_start_main libc-2.32.so[3ea72]
+> >>>        #14 0x43a3ee in _start ??:0
+> >>>
+> >>> The --overwrite option implies --tail-synthesize, which collects non-=
+sample
+> >>> events reflecting the system status when recording finishes. However,=
+ when
+> >>> evsel opening fails (e.g., unsupported event 'cycles-ct'), session->e=
+vlist
+> >>> is not initialized and remains NULL. The code unconditionally calls
+> >>> record__synthesize() in the error path, which iterates through the NU=
+LL
+> >>> evlist pointer and causes a segfault.
+> >>>
+> >>> To fix it, move the record__synthesize() call inside the error check =
+block, so
+> >>> it's only called when there was no error during recording, ensuring t=
+hat evlist
+> >>> is properly initialized.
+> >>>
+> >>> Fixes: 4ea648aec019 ("perf record: Add --tail-synthesize option")
+> >>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> >>
+> >> This looks great! I wonder if we can add a test, perhaps here:
+> >> https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-ne=
+xt.git/tree/tools/perf/tests/shell/record.sh?h=3Dperf-tools-next#n435
+> >> something like:
+> >> ```
+> >> $ perf record -e foobar -F 1000 -a --overwrite -o /dev/null -- sleep 0=
+.1
+> >> ```
+> >> in a new test subsection for test_overwrite? foobar would be an event
+> >> that we could assume isn't present. Could you help with a test
+> >> covering the problems you've uncovered and perhaps related flags?
+> >>
+> >
+> > Hi, Ian,
+> >
+> > Good suggestion, I'd like to add a test. But foobar may not a good case=
+.
+> >
+> > Regarding your example:
+> >
+> >    perf record -e foobar -a --overwrite -o /dev/null -- sleep 0.1
+> >    event syntax error: 'foobar'
+> >                         \___ Bad event name
+> >
+> >    Unable to find event on a PMU of 'foobar'
+> >    Run 'perf list' for a list of valid events
+> >
+> >     Usage: perf record [<options>] [<command>]
+> >        or: perf record [<options>] -- <command> [<options>]
+> >
+> >        -e, --event <event>   event selector. use 'perf list' to list av=
+ailable events
+> >
+> >
+> > The issue with using foobar is that it's an invalid event name, and the
+> > perf parser will reject it much earlier. This means the test would exit
+> > before reaching the part of the code path we want to verify (where
+> > record__synthesize() could be called).
+> >
+> > A potential alternative could be testing an error case such as EACCES:
+> >
+> >    perf record -e cycles -C 0 --overwrite -o /dev/null -- sleep 0.1
+> >
+> > This could reproduce the scenario of a failure when attempting to acces=
+s
+> > a valid event, such as due to permission restrictions. However, the
+> > limitation here is that users may override
+> > /proc/sys/kernel/perf_event_paranoid, which affects whether or not this
+> > test would succeed in triggering an EACCES error.
+> >
+> >
+> > If you have any other suggestions or ideas for a better way to simulate
+> > this situation, I'd love to hear them.
+> >
+> > Thanks.
+> > Shuai
+>
+> Hi, Ian,
+>
+> Gentle ping.
 
-- KF_IMPLICIT_ARGS
-- explicit_args_id -- for prototype with full set of args
-- implicit_args_id -- for prototype with missing args
+Sorry, for the delay. I was trying to think of a better way given the
+problems you mention and then got distracted. I wonder if a legacy
+event that core PMUs never implement would be a good candidate to
+test. For example, the event "node-prefetch-misses" is for "Local
+memory prefetch misses" but the memory controller tends to be a
+separate PMU and this event is never implemented to my knowledge.
+Running this locally I see:
 
-[...]
+```
+$ perf record -e node-prefetch-misses -a --overwrite -o /dev/null -- sleep =
+0.1
+Lowering default frequency rate from 4000 to 1750.
+Please consider tweaking /proc/sys/kernel/perf_event_max_sample_rate.
+Error:
+Failure to open event 'cpu_atom/node-prefetch-misses/' on PMU
+'cpu_atom' which will be removed.
+No fallback found for 'cpu_atom/node-prefetch-misses/' for error 2
+Error:
+Failure to open event 'cpu_core/node-prefetch-misses/' on PMU
+'cpu_core' which will be removed.
+No fallback found for 'cpu_core/node-prefetch-misses/' for error 2
+Error:
+Failure to open any events for recording.
+perf: Segmentation fault
+   #0 0x55a487ad8b87 in dump_stack debug.c:366
+   #1 0x55a487ad8bfd in sighandler_dump_stack debug.c:378
+   #2 0x55a4878c6f94 in sigsegv_handler builtin-record.c:722
+   #3 0x7f72aae49df0 in __restore_rt libc_sigaction.c:0
+   #4 0x55a487b57ef8 in __perf_event__synthesize_id_index
+synthetic-events.c:1862
+   #5 0x55a487b58346 in perf_event__synthesize_id_index synthetic-events.c:=
+1943
+   #6 0x55a4878cb2a3 in record__synthesize builtin-record.c:2150
+   #7 0x55a4878cdada in __cmd_record builtin-record.c:2963
+   #8 0x55a4878d11ca in cmd_record builtin-record.c:4453
+   #9 0x55a48795b3cc in run_builtin perf.c:349
+   #10 0x55a48795b664 in handle_internal_command perf.c:401
+   #11 0x55a48795b7bd in run_argv perf.c:448
+   #12 0x55a48795bb06 in main perf.c:555
+   #13 0x7f72aae33ca8 in __libc_start_call_main libc_start_call_main.h:74
+   #14 0x7f72aae33d65 in __libc_start_main_alias_2 libc-start.c:128
+   #15 0x55a4878acf41 in _start perf[52f41]
+Segmentation fault
+```
 
-> > > @@ -3349,8 +3400,37 @@ static int add_kfunc_call(struct bpf_verifier_=
-env *env, u32 func_id, s16 offset)
-> > >  		return -EINVAL;
-> > >  	}
-> > > =20
-> > > +	kfunc_flags =3D btf_kfunc_flags(desc_btf, func_id, env->prog);
-> > >  	func_name =3D btf_name_by_offset(desc_btf, func->name_off);
-> > >  	addr =3D kallsyms_lookup_name(func_name);
-> > > +
-> > > +	/* This may be an _impl kfunc with KF_MAGIC_ARGS counterpart */
-> > > +	if (unlikely(!addr && !kfunc_flags)) {
-> > > +		tmp_func_id =3D magic_kfunc_by_impl(func_id);
-> >=20
-> > I think there is no need to hide magic_kfunc_by_impl() call behind the
-> > above condition. It can be moved before kfunc_flags assignment.
-> > Then it wont be necessary to textually repeat btf_name_by_offset() and
-> > kallsyms_lookup_name() calls.
->=20
-> Not sure I follow...
->=20
-> Yes, !addr is enough to detect potential _impl function, but there is
-> no way around name lookup in BTF and then another address lookup.
->=20
-> The _impl function doesn't have an address, so after failed
->   kallsyms_lookup_name("kfunc_impl");
-> we must do
->   kallsyms_lookup_name("kfunc");
-> to find the correct address.
->=20
-> Or do you suggest doing something like:
->=20
->   tmp_func_id =3D magic_kfunc_by_impl(func_id);
->   if (tmp_func_id > 0)
->       func_id =3D tmp_func_id;
->=20
-> at the beginning of add_kfunc_call()?
+Thanks,
+Ian
 
-This, just check for magic_kfunc_by_impl() and replace func_id.
-
-[...]
-
-> > > @@ -13632,10 +13718,28 @@ static int fetch_kfunc_meta(struct bpf_veri=
-fier_env *env,
-> > >  	func_proto =3D btf_type_by_id(desc_btf, func->type);
-> > > =20
-> > >  	kfunc_flags =3D btf_kfunc_flags_if_allowed(desc_btf, func_id, env->=
-prog);
-> > > -	if (!kfunc_flags) {
-> > > -		return -EACCES;
-> > > +	if (unlikely(!kfunc_flags)) {
-> >=20
-> > What if we patch insn->imm to use the "fake" function id in add_kfunc_c=
-all()?
-> > Then modifications to fetch_kfunc_meta() wont be necessary.
->=20
->=20
-> I considered this. I wasn't sure it's safe to patch insn->imm at this
-> stage of verification. Also I thought it may be harder to debug the
-> verifier if we do btf id replacement in the calls pre-verification
-> (because we lose the original btf id).
-
-See no issues with that.
-
-> Maybe I was too causious.
->=20
-> Alexei, Andrii, what do you think?
-
-[...]
+> Thanks.
+> Shuai
+>
 
