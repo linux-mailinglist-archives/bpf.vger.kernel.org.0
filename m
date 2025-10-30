@@ -1,62 +1,63 @@
-Return-Path: <bpf+bounces-73085-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73086-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A38D1C22AE5
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 00:15:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDBB7C22B52
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 00:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B4E294EE2BF
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 23:15:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFCA03BB94B
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 23:24:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C80E73A1CD;
-	Thu, 30 Oct 2025 23:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD8933BBD2;
+	Thu, 30 Oct 2025 23:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BqYnhxem"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mfyFjY+x"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 286A4244667
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 23:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F09433BBBD
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 23:24:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761866122; cv=none; b=XWSRRvw2cx1SebNqp1WyKlFdbHzCxFEU7BKnJk8u6yi3nKLfHyPLjmjejr6u8UbqC7VWP1hjwt2BtN0k823njltqYk9y+iJ+oWZqd7zYYPjW6Cp4aoNA65ioRTKjoW2FHF3M76VOrzpFXlRRGKT8jJCr47ekmlyC5Eo3690+6E8=
+	t=1761866676; cv=none; b=XCem2wkE277RK++AIY+qX0PmmGUrxxjZJCZBtBAYRc29Q/TyD1NZloX7wIGw7EbcwwMmVf+DSNkytzmc9sUV13ojSfcZZJefk/zF6MNkQAC2UrsEhVeirBcil2M672cUD+Qlgq297y2kUecnoS7O5HZmlazc71TktXcE5SD/mRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761866122; c=relaxed/simple;
-	bh=Dn7XJpP4rtwOB8NIOvQUmEMjKhFFZhahMNdfR72i7xQ=;
+	s=arc-20240116; t=1761866676; c=relaxed/simple;
+	bh=U5mVOjOKselIrEKZtoh+wWmjWaAqnt6aq/qkVMVT11c=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=m4dNy31jRpJKqP2RMH3ySoXRDiurhdsMoxMpdfradKOcInmrzkrpDzkSLT+846v+9+Z4LKZ6muZSqzFZ7ZcgcSEvOxR3xBCk8ZZloZQpqZ+2vrYyZoW4KppuP0CbFKdI5+shA1nVDi38HHDkaibx9gYnRkaM+iB/BP35as4PmPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BqYnhxem; arc=none smtp.client-ip=95.215.58.170
+	 MIME-Version:Content-Type; b=g49z6MMJQPEfiONeyFbKKx0NUVddsOut20TtcxLQWui2jyrZ/EQVLzcmKBxEDa2wFKRbk7w/TIB9iMzuEMNUvIsrFFZBcZex+/SPLtPkAiGWdA3j+OpRY+cT3Qw/XEGISZKTSNAUOWmRa0bgNxbXuolWVgrF0fLJqa6WI+zcYVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mfyFjY+x; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761866108;
+	t=1761866662;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nbsSEZaCMc7K7Atlywq1UA86pTshfXfbD+JgyxyXRuw=;
-	b=BqYnhxemjKDpfH7eW6N6jRHjYMwxVKsjcN/cG4hJ/T6pdPe4keRlC9cXgEVIkTtv5p+oKQ
-	GnmPbl0/rkAOQXBte6goaO5WKU8xpmSSgoKdLnR8zZsR2QT+6Mz336obgwm5/+sF49C/wu
-	lUk4ZnQnJUDPb4AYlGp8YqKaJXOl8rk=
+	bh=vFcFfa21Y8J0EvYjz5FYEa4biOxuGL1h90UpSLZ/vN0=;
+	b=mfyFjY+xuK5o/5m3QmAXgABGIwfeRaMj8f5cMWUmw2pAzfQT8LIKXkkjjjHK/fKnYyBZ7k
+	81yKYEXTIfVNFD686cdiGUOIO4/FODITODwT1oQm33mRZNioDP2jq5kO1hi2ljt7DmY/+x
+	d+7pG1L9EuwIC5HQqNbCGpdPnpfZspg=
 From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Song Liu <song@kernel.org>,  Amery Hung <ameryhung@gmail.com>,  Andrew
- Morton <akpm@linux-foundation.org>,  linux-kernel@vger.kernel.org,  Alexei
- Starovoitov <ast@kernel.org>,  Suren Baghdasaryan <surenb@google.com>,
-  Michal Hocko <mhocko@kernel.org>,  Shakeel Butt <shakeel.butt@linux.dev>,
-  Johannes Weiner <hannes@cmpxchg.org>,  Andrii Nakryiko
- <andrii@kernel.org>,  JP Kobryn <inwardvessel@gmail.com>,
-  linux-mm@kvack.org,  cgroups@vger.kernel.org,  bpf@vger.kernel.org,
-  Martin KaFai Lau <martin.lau@kernel.org>,  Kumar Kartikeya Dwivedi
- <memxor@gmail.com>,  Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops
- to cgroups
-In-Reply-To: <e027a330-8d51-44e5-badc-7c3ec4d41e23@linux.dev> (Martin KaFai
-	Lau's message of "Thu, 30 Oct 2025 15:42:12 -0700")
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Amery Hung <ameryhung@gmail.com>,  Song Liu <song@kernel.org>,  Andrew
+ Morton <akpm@linux-foundation.org>,  LKML <linux-kernel@vger.kernel.org>,
+  Alexei Starovoitov <ast@kernel.org>,  Suren Baghdasaryan
+ <surenb@google.com>,  Michal Hocko <mhocko@kernel.org>,  Shakeel Butt
+ <shakeel.butt@linux.dev>,  Johannes Weiner <hannes@cmpxchg.org>,  Andrii
+ Nakryiko <andrii@kernel.org>,  JP Kobryn <inwardvessel@gmail.com>,
+  linux-mm <linux-mm@kvack.org>,  "open list:CONTROL GROUP (CGROUP)"
+ <cgroups@vger.kernel.org>,  bpf <bpf@vger.kernel.org>,  Martin KaFai Lau
+ <martin.lau@kernel.org>,  Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+  Tejun Heo <tj@kernel.org>
+Subject: Re: bpf_st_ops and cgroups. Was: [PATCH v2 02/23] bpf: initial
+ support for attaching struct ops to cgroups
+In-Reply-To: <CAADnVQJGiH_yF=AoFSRy4zh20uneJgBfqGshubLM6aVq069Fhg@mail.gmail.com>
+	(Alexei Starovoitov's message of "Thu, 30 Oct 2025 15:19:11 -0700")
 References: <20251027231727.472628-1-roman.gushchin@linux.dev>
 	<20251027231727.472628-3-roman.gushchin@linux.dev>
 	<CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
@@ -64,10 +65,9 @@ References: <20251027231727.472628-1-roman.gushchin@linux.dev>
 	<CAHzjS_tnmSPy_cqCUHiLGt8Ouf079wQBQkostqJqfyKcJZPXLA@mail.gmail.com>
 	<CAMB2axMkYS1j=KeECZQ9rnupP8kw7dn1LnGV4udxMp=f=qoEQA@mail.gmail.com>
 	<877bwcus3h.fsf@linux.dev>
-	<CAHzjS_u5oqD3Dsk9JjK942QBL8UOMkqdM23xP0yTEb+MMuOoLw@mail.gmail.com>
-	<e027a330-8d51-44e5-badc-7c3ec4d41e23@linux.dev>
-Date: Thu, 30 Oct 2025 16:14:59 -0700
-Message-ID: <87bjloj824.fsf@linux.dev>
+	<CAADnVQJGiH_yF=AoFSRy4zh20uneJgBfqGshubLM6aVq069Fhg@mail.gmail.com>
+Date: Thu, 30 Oct 2025 16:24:15 -0700
+Message-ID: <87bjloht28.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,120 +78,37 @@ Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Migadu-Flow: FLOW_OUT
 
-Martin KaFai Lau <martin.lau@linux.dev> writes:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-> On 10/30/25 2:34 PM, Song Liu wrote:
->> Hi Roman,
->> On Thu, Oct 30, 2025 at 12:07=E2=80=AFPM Roman Gushchin
->> <roman.gushchin@linux.dev> wrote:
->> [...]
->>>> In TCP congestion control and BPF qdisc's model:
->>>>
->>>> During link_create, both adds the struct_ops to a list, and the
->>>> struct_ops can be indexed by name. The struct_ops are not "active" by
->>>> this time.
->>>> Then, each has their own interface to 'apply' the struct_ops to a
->>>> socket or queue: setsockopt() or netlink.
->>>>
->>>> But maybe cgroup-related struct_ops are different.
->>>
->>> Both tcp congestion and qdisk cases are somewhat different because
->>> there already is a way to select between multiple implementations, bpf
->>> just adds another one. In the oom case, it's not true. As of today,
->>> there is only one (global) oom killer. Of course we can create
->>> interfaces to allow a user make a choice. But the question is do we want
->>> to create such interface for the oom case specifically (and later for
->>> each new case separately), or there is a place for some generalization?
->> Agreed that this approach requires a separate mechanism to attach
->> the struct_ops to an entity.
->>=20
->>> Ok, let me summarize the options we discussed here:
->> Thanks for the summary!
->>=20
->>>
->>> 1) Make the attachment details (e.g. cgroup_id) the part of struct ops
->>> itself. The attachment is happening at the reg() time.
->>>
->>>    +: It's convenient for complex stateful struct ops'es, because a
->>>        single entity represents a combination of code and data.
->>>    -: No way to attach a single struct ops to multiple entities.
->>>
->>> This approach is used by Tejun for per-cgroup sched_ext prototype.
->>>
->>> 2) Make the attachment details a part of bpf_link creation. The
->>> attachment is still happening at the reg() time.
->>>
->>>    +: A single struct ops can be attached to multiple entities.
->>>    -: Implementing stateful struct ops'es is harder and requires passing
->>>       an additional argument (some sort of "self") to all callbacks.
->>> I'm using this approach in the bpf oom proposal.
->>>
->> I think both 1) and 2) have the following issue. With cgroup_id in
->> struct_ops or the link, the cgroup_id works more like a filter. The
->> cgroup doesn't hold any reference to the struct_ops. The bpf link
->> holds the reference to the struct_ops, so we need to keep the
->> the link alive, either by keeping an active fd, or by pinning the
->> link to bpffs. When the cgroup is removed, we need to clean up
->> the bpf link separately.
+> On Thu, Oct 30, 2025 at 12:06=E2=80=AFPM Roman Gushchin
+> <roman.gushchin@linux.dev> wrote:
+>>
+>> Ok, let me summarize the options we discussed here:
+>>
+>> 1) Make the attachment details (e.g. cgroup_id) the part of struct ops
+>> itself. The attachment is happening at the reg() time.
+>>
+>>   +: It's convenient for complex stateful struct ops'es, because a
+>>       single entity represents a combination of code and data.
+>>   -: No way to attach a single struct ops to multiple entities.
+>>
+>> This approach is used by Tejun for per-cgroup sched_ext prototype.
 >
-> The link can be detached (struct_ops's unreg) by the user space.
->
-> The link can also be detached from the subsystem (cgroup) here.
-> It was requested by scx:
-> https://lore.kernel.org/all/20240530065946.979330-7-thinker.li@gmail.com/
->
-> Not sure if scx has started using it.
->
->>=20
->>> 3) Move the attachment out of .reg() scope entirely. reg() will register
->>> the implementation system-wide and then some 3rd-party interface
->>> (e.g. cgroupfs) should be used to select the implementation.
->>>
->>>    +: ?
->>>    -: New hard-coded interfaces might be required to enable bpf-driven
->>>       kernel customization. The "attachment" code is not shared between
->>>       various struct ops cases.
->>>       Implementing stateful struct ops'es is harder and requires passing
->>>       an additional argument (some sort of "self") to all callbacks.
->>>
->>> This approach works well for cases when there is already a selection
->>> of implementations (e.g. tcp congestion mechanisms), and bpf is adding
->>> another one.
->> Another benefit of 3) is that it allows loading an OOM controller in
->> a
->> kernel module, just like loading a file system in a kernel module. This
->> is possible with 3) because we paid the cost of adding a new select
->> attach interface.
->> A semi-separate topic, option 2) enables attaching a BPF program
->> to a kernel object (a cgroup here, but could be something else). This
->> is an interesting idea, and we may find it useful in other cases (attach
->> a BPF program to a task_struct, etc.).
+> It's wrong. It should adopt bpf_struct_ops_link_create() approach
+> and use attr->link_create.cgroup.relative_fd to attach.
 
-Yep, task_struct is an attractive target for something like mm-related
-policies (THP, NUMA, memory tiers etc).
+This is basically what I have in v2, but Andrii and Song suggested that
+I should use attr->link_create.target_fd instead.
 
->
-> Does it have plan for a pure kernel module oom implementation?
+I have a slight preference towards attr->link_create.cgroup.relative_fd
+because it makes it clear that fd is a cgroup fd and potentially opens
+a possibility to e.g. attach struct_ops to individual tasks and
+cgroups, but I'm fine with both options.
 
-I highly doubt.
+Also, as Song pointed out, fd=3D=3D0 is in theory a valid target, so instea=
+d of
+using the "if (fd) {...}" check we might need a new flag. Idk if it
+really makes sense to complicate the code for it.
 
-> I think the link-to-cgrp support here does not necessary stop the
-> later write to cgroupfs support if a kernel module oom is indeed needed
-> in the future.
->
-> imo, cgroup-bpf has a eco-system around it, so it is sort of special. bpf=
- user
-> has expectation on how a bpf prog is attached to a cgroup. The introspect=
-ion,
-> auto detachment from the cgroup when the link is gone...etc.
->
-> If link-to-cgrp is used, I prefer (2). Stay with one way to attach
-> to a cgrp. It is also consistent with the current way of attaching a sing=
-le
-> bpf prog to a cgroup. It is now attaching a map/set of bpf prog to a cgro=
-up.
-> The individual struct_ops implementation can decide if it should
-> allow a struct_ops be attached multiple times.
-
-+1
+Can we, please, decide on what's best here?
 
