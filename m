@@ -1,210 +1,153 @@
-Return-Path: <bpf+bounces-73009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73010-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAF2DC2031C
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 14:18:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79347C204A2
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 14:42:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFEE71893D98
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 13:19:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 512CE460769
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 13:36:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44385239581;
-	Thu, 30 Oct 2025 13:18:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA2A62749CF;
+	Thu, 30 Oct 2025 13:36:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kX0etpTo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZUhI6lNy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kX0etpTo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZUhI6lNy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mo4w8M+z"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB0221CC51
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 13:18:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CC52245033
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 13:36:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761830330; cv=none; b=SYHkNQXma/y+tC3tYEqSY3PyRSJKNlvYGzmCMesyER3BfxUPQIRH9xaxssibemXyqcpW++eCENqmpF6OQw6xonBBF+smjwryWeUFAqtsaJrjNSEPTDwl5foprrp7li8fjDHjzmuFZNMYTxo9GiWRsVfY6Z1TaHAiQMHoaQkptJg=
+	t=1761831365; cv=none; b=e4hMNj4vw+0IuMJyNDLPNpv/AKMKndkhNZWFVrx3qU/vXSbYcA7QPBOX/HAHAGwSJjz3cyOWzt8ErDv+4IH/iKsY7d2W0CVHdCT6R/f5WH49w0sTjO5vEGsPBmj5nyMLmIrsxdyNkXH1TFQvJt3tYUlB9Ju9PvsxHyG4jeuLhk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761830330; c=relaxed/simple;
-	bh=ndZjkRltjIWMIZQTZXqFH8q+092Arxeecw4S8L2kLLY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X+BV1/knn303+cZXJ2uCTvyHsg7qxWFbSxm/1aljJnaHjVnwS/ikr6C6dScB35nerQCtSgX+4xBUNuoHj0/rKU7ygq7brnQ5PctC/6xyezYi9rJse30/uC40qN3RP3a9bC+z1dP4H2UrgBSbWsPvE79nKn6nsV2uEC28ntC44kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kX0etpTo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZUhI6lNy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kX0etpTo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZUhI6lNy; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 06C7A1F6E6;
-	Thu, 30 Oct 2025 13:18:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761830327; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CgjcxRthmM6PCoG1BiMHfp5HdQ/ejgbzHCetCjaVfDk=;
-	b=kX0etpToU/L1+noHFXojTL4kScufLYFcskoWFzx2mIARRWUpb1JTr2uEeS1Jq3qi3aQpcH
-	pllhyT66jYnhEtyhJY6RYXzB4apxxL0kk7Rv3Bx+YAejbWtYMPhTvS4NqSJH1YTDqcne4Q
-	smkbzkAsq1IuPsAPcGL9zOSPVogWHyY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761830327;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CgjcxRthmM6PCoG1BiMHfp5HdQ/ejgbzHCetCjaVfDk=;
-	b=ZUhI6lNyYmBAkIoA2bbz6dL8p3QR/xEiF+UmKTMvPWT1WlevTqrz8tw5zNggFYZzGLinNK
-	mDLwhnkExICvJIDQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=kX0etpTo;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZUhI6lNy
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761830327; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CgjcxRthmM6PCoG1BiMHfp5HdQ/ejgbzHCetCjaVfDk=;
-	b=kX0etpToU/L1+noHFXojTL4kScufLYFcskoWFzx2mIARRWUpb1JTr2uEeS1Jq3qi3aQpcH
-	pllhyT66jYnhEtyhJY6RYXzB4apxxL0kk7Rv3Bx+YAejbWtYMPhTvS4NqSJH1YTDqcne4Q
-	smkbzkAsq1IuPsAPcGL9zOSPVogWHyY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761830327;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CgjcxRthmM6PCoG1BiMHfp5HdQ/ejgbzHCetCjaVfDk=;
-	b=ZUhI6lNyYmBAkIoA2bbz6dL8p3QR/xEiF+UmKTMvPWT1WlevTqrz8tw5zNggFYZzGLinNK
-	mDLwhnkExICvJIDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DCE5913393;
-	Thu, 30 Oct 2025 13:18:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ovyeNbZlA2kjWgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 30 Oct 2025 13:18:46 +0000
-Message-ID: <2a95b2db-c487-440c-b95c-35549c8f5ba6@suse.cz>
-Date: Thu, 30 Oct 2025 14:18:46 +0100
+	s=arc-20240116; t=1761831365; c=relaxed/simple;
+	bh=946tCSyfwkcJEZIYbJYPYmAWxgbWBFpGqs507Chemqs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tTZvCTJ0A8/CP5KH5q5MZs3XO6dGIG2lAR/xxsyyILLPEDlsQ6Ux6undvBdDyHQbhARyzQ4P8OVvhaU/IID1RJwnhatLa6L6sRXb04P2yedtgvlI9xNWh4A57oVAEHq2Omv9up2W/whioEPdzMP14+hjo/N6+wO6ckWCSUbaBEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mo4w8M+z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2D43C16AAE
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 13:36:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761831364;
+	bh=946tCSyfwkcJEZIYbJYPYmAWxgbWBFpGqs507Chemqs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Mo4w8M+zoG7x4VSKBHFBlkcNbJr8yuOPcibcxBBGoKKL/xxYP6SoTzLLo4MNs3B3W
+	 LXBRGiqiBcuymn4pvOVdEzE+RhAUAEeSzEzaMVgkWQfQdcCqM8chFRdyPlB8uyQjhI
+	 Sy04DC7qmGww/ewmG6nPtqVrjY2mNjujRFnNwL7bqfm0FwXXsFy8N/4MjZzNCTEKM6
+	 AH9cxSZFPyaoQjhLwB8gKrOvY8VBqCrViJzhsfAiHRlbe8Pd48ohtXcde5WYc+J+Ks
+	 xtnvYufRNIqRkyzqUNQQ8FGGMaRxPzAYxs8fhTOpNjbPwsbTzNyqAjyH/iSW6qfl8l
+	 9rr9LsibKVXjw==
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-378de7d3057so10289731fa.1
+        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 06:36:04 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXChNtcTkilABkn3Y+SbXxMiebppoGbQO1EGum5zkLE49Mv+fSYNASENn8yoWmYnU2wQP0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzhsgFHs1cVE5SKJ8CGJ/UHTmGn1jlGPtp/BFScMwmrlLOFJ1ME
+	QVNPbQZf0Wei2LkwiszkiFqf+jzMwTyNZZc1OgtHvaVGCmgw5i/WfHCDcrzEyBW+dpiL+r7dM3c
+	jKXyGXp/o1xBfSDt7pq1qbQDukKNlT9s=
+X-Google-Smtp-Source: AGHT+IHPsQ63GACF+WTAXoqOco8sKMg1RRh6aHz0Br4Fnz15qbhOtOELzGrlJEWp65H1oXl/2WnpIpMcc/ndPgk67GM=
+X-Received: by 2002:a2e:9e56:0:b0:376:30c5:66ef with SMTP id
+ 38308e7fff4ca-37a1094a526mr7884761fa.16.1761831362808; Thu, 30 Oct 2025
+ 06:36:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 09/19] slab: add optimized sheaf refill from partial
- list
-Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Uladzislau Rezki <urezki@gmail.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Suren Baghdasaryan <surenb@google.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
- bpf@vger.kernel.org, kasan-dev@googlegroups.com
-References: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz>
- <20251023-sheaves-for-all-v1-9-6ffa2c9941c0@suse.cz>
- <aP8dWDNiHVpAe7ak@hyeyoo> <113a75f7-6846-48e4-9709-880602d44229@suse.cz>
- <aQKsNPQe--6QMOg0@hyeyoo>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <aQKsNPQe--6QMOg0@hyeyoo>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 06C7A1F6E6
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,gentwo.org,google.com,linux.dev,gmail.com,oracle.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:dkim];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -4.51
-X-Spam-Level: 
+References: <20251028004614.393374-1-viro@zeniv.linux.org.uk>
+ <20251028004614.393374-23-viro@zeniv.linux.org.uk> <66300d81c5e127e3bca8c6c4d997da386b142004.camel@HansenPartnership.com>
+ <20251028174540.GN2441659@ZenIV> <20251028210805.GP2441659@ZenIV>
+ <CAMj1kXF6tvg6+CL_1x7h0HK1PoSGtxDjc0LQ1abGQBd5qrbffg@mail.gmail.com>
+ <9f079d0c8cffb150c0decb673a12bfe1b835efc9.camel@HansenPartnership.com> <20251029193755.GU2441659@ZenIV>
+In-Reply-To: <20251029193755.GU2441659@ZenIV>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 30 Oct 2025 14:35:51 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHnEq97bzt-C=zKJdV3BK3EDJCPz3Pfyk52p2735-4wFA@mail.gmail.com>
+X-Gm-Features: AWmQ_bm2LrdVSSm_iuRDZ6ti_gfIvNqTw5CQZuyqzyGspRRRkaM_-X7LCT9AH9Q
+Message-ID: <CAMj1kXHnEq97bzt-C=zKJdV3BK3EDJCPz3Pfyk52p2735-4wFA@mail.gmail.com>
+Subject: Re: [PATCH v2 22/50] convert efivarfs
+To: Al Viro <viro@zeniv.linux.org.uk>, 
+	James Bottomley <james.bottomley@hansenpartnership.com>, brauner@kernel.org
+Cc: linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org, jack@suse.cz, 
+	raven@themaw.net, miklos@szeredi.hu, neil@brown.name, a.hindborg@kernel.org, 
+	linux-mm@kvack.org, linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev, 
+	kees@kernel.org, rostedt@goodmis.org, gregkh@linuxfoundation.org, 
+	linux-usb@vger.kernel.org, paul@paul-moore.com, casey@schaufler-ca.com, 
+	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com, 
+	selinux@vger.kernel.org, borntraeger@linux.ibm.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 10/30/25 01:07, Harry Yoo wrote:
-> On Wed, Oct 29, 2025 at 09:48:27PM +0100, Vlastimil Babka wrote:
->> (side note: gfpflags_allow_blocking() might be too conservative now that
->> sheafs will be the only caching layer, that condition could be perhaps
->> changed to gfpflags_allow_spinning() to allow some cheap refill).
-> 
-> Sounds good to me.
+On Wed, 29 Oct 2025 at 20:38, Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Wed, Oct 29, 2025 at 02:57:51PM -0400, James Bottomley wrote:
+>
+> > I think this all looks OK.  The reason for the convolution is that
+> > simple_start/done_creating() didn't exist when I did the conversion ...
+> > although if they had, I'm not sure I'd have thought of reworking
+> > efivarfs_create_dentry to use them.  I tried to update some redundant
+> > bits, but it wasn't the focus of what I was trying to fix.
+> >
+> > So I think the cleanup works and looks nice.
+> >
+> > >
+> > > Relying on the -EEXIST return value to detect duplicates, and
+> > > combining the two callbacks seem like neat optimizations to me, so
+> > >
+> > > Acked-by: Ard Biesheuvel <ardb@kernel.org>
+> > >
+> > > but I have to confess I am slightly out of my depth when it comes to
+> > > VFS stuff.
+> >
+> > Yes, ack too.
+>
+>         Umm...  FWIW, I've got a few more followups on top of that (see
+> #untested.efivarfs, current head at 36051c773015).  Not sure what would
+> be the best way to deal with that stuff - I hope to get the main series
+> stabilized and merged in the coming window.  Right now I'm collecting
+> feedback (acked-by, etc.), and there's a couple of outright bugfixes
+> in front of the series, so I'd expect at least a rebase to -rc4...
+>
 
-Hm now I realized the gfpflags_allow_blocking() check is there to make sure
-we can take the local lock without trylock after obtaining a full sheaf, so
-we can install it - because it should mean we're not in an interrupt
-context. The fact we already succeeded trylock earlier should be enough, but
-we'd run again into inventing ugly tricks to make lockdep happy.
+I pulled your code and tried to test it. It works fine for the
+ordinary case, but only now I realized that commit
 
-Or we use trylock and have failure paths that are only possible to hit on RT
-in practice...
+commit 0e4f9483959b785f65a36120bb0e4cf1407e492c
+Author: Christian Brauner <brauner@kernel.org>
+Date:   Mon Mar 31 14:42:12 2025 +0200
+
+    efivarfs: support freeze/thaw
+
+actually broke James's implementation of the post-resume sync with the
+underlying variable store.
+
+So I wonder what the point is of all this complexity if it does not
+work for the use case where it is the most important, i.e., resume
+from hibernation, where the system goes through an ordinary cold boot
+and so the EFI variable store may have gotten out of sync with the
+hibernated kernel's view of it.
+
+If no freeze/thaw support in the suspend/resume path is forthcoming,
+would it be better to just revert that change? That would badly
+conflict with your changes, though, so I'd like to resolve this before
+going further down this path.
+
+
+I did need to apply a fixup to get the revert to compile:
+
+--- a/fs/efivarfs/super.c
++++ b/fs/efivarfs/super.c
+@@ -412,8 +412,7 @@
+ {
+        unsigned long size;
+        struct efivarfs_ctx *ectx = container_of(ctx, struct efivarfs_ctx, ctx);
+-       struct qstr qstr = { .name = name, .len = len };
+-       struct dentry *dentry = d_hash_and_lookup(ectx->sb->s_root, &qstr);
++       struct dentry *dentry = try_lookup_noperm(&QSTR_LEN(name,
+len), ectx->sb->s_root);
+        struct inode *inode;
+        struct efivar_entry *entry;
+        int err;
 
