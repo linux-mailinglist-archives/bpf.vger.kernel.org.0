@@ -1,162 +1,214 @@
-Return-Path: <bpf+bounces-73002-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73005-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F3AC1FEB7
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 13:04:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B839C1FF91
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 13:19:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF4B142399E
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 12:04:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23A0A188E782
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 12:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEBAB33CEA0;
-	Thu, 30 Oct 2025 12:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601042C21FA;
+	Thu, 30 Oct 2025 12:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EjNrlfwW"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8461831D377;
-	Thu, 30 Oct 2025 12:03:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761825803; cv=none; b=pSAEbGUG7FTZbLWPSWRVprkXBL1C3etSLWZ6ERK/bEJ5I8ERqd+utLW/61aWvLRkVxm727l0bKRozkvKpaR5R08k0XugDlRmqAE6buzxM0+Fpuo6YjP1+Ww2q6HVnywtXhm5smNet4Jp/Lo8HJSNRqEQX16IlmI5uThSvo2H23c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761825803; c=relaxed/simple;
-	bh=YTZHOtTHA/gNt2NqNII9StP3tPvo/XXImIK2lbKGRvk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ARqKmLHc8DBtrWe7y/PO15567F72521yodo28ybBh2C8okCwlDNT9PZkTg1An0n7QZcYLHb+uRuTGKk/LLxFKLayqUIBIPoWCfOV/Faf6aT4PPPlL0pLsLMzufh4SKJ9VxKXO3SobKdeLvFHtsE7m0LVB2wsbddoyr8n719wpJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cy2m52xpBzKHMlw;
-	Thu, 30 Oct 2025 20:02:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id EB0A31A0847;
-	Thu, 30 Oct 2025 20:03:12 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP2 (Coremail) with SMTP id Syh0CgBH6UH6UwNpQHx+CA--.42489S3;
-	Thu, 30 Oct 2025 20:03:12 +0800 (CST)
-Message-ID: <5dab3b98-9134-4ee9-8cd1-2498c3eab49e@huaweicloud.com>
-Date: Thu, 30 Oct 2025 20:03:12 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B4E0213E9F;
+	Thu, 30 Oct 2025 12:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761826647; cv=fail; b=KoQVOXHH4nAFbr3jQsnf2hErFeulluSIyFlipmU/76YpiKzk/gny9iqzntzxKtYmxrDWWjaj8aYCtMvlR5eOteBO4hKc6e3NsCR6yu23jE9bM26VPWZbprwU9gEW8pUOFOTEpkoKAdwJQlHLa1+5hejE8uC45rqDeNVsBMgYDIQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761826647; c=relaxed/simple;
+	bh=Dd7/lTV+T61l0DAvRGmHskgmVHcLatd20bwai+x74J4=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=HOZ9kY4aBpVZeabQazfxbjfYAKapCbZWpspZqbGwM8lDbWT1HkSyzGqszJM2HYdIJzn7qUp0q2HRcwmIVEQ8b5rMS3/BgYiapkZEnyHUTuOdUEBOVi8O6iFjKTTkFPX1y+2uZ5nu2V8ay58ZI7wa0kBSv1NNBxz7k+RbJAAwOtM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EjNrlfwW; arc=fail smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1761826647; x=1793362647;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=Dd7/lTV+T61l0DAvRGmHskgmVHcLatd20bwai+x74J4=;
+  b=EjNrlfwWNgsY7lddgwqMyZ0wCbCpJwYr7cAwoapR8cYAKK/Q2CYed41P
+   0WvRi1T/a6odQbuG4O13mlilL8oR22kCiH+7ZMXL7muoIn9+EDc4Gpdsq
+   KvW2f1H132SmAKrt5u3aK8Gvtb7P0Av/u4qvuN2D0M7CxF1TJXlurZghE
+   YKE32U7rfnzEnCgPyb5v3tA/RejQHh7CGV025hl175B2R3X2psdS0rz6H
+   Z1CNR0+Jf2qdpUeki3Rtoc9qLkoDUxIWe32sTJ3znDjDJ79dtxoBbuGAF
+   bc4UZCidVLxoQK56xka0DLAc694es8yO3R2h2aBngbCxn/8qiTTzuiNN5
+   w==;
+X-CSE-ConnectionGUID: 9BEJz5OMQ3iOiT1c/ZvnNA==
+X-CSE-MsgGUID: aBDqoaI9TMyuYR221TQWKw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11597"; a="63664953"
+X-IronPort-AV: E=Sophos;i="6.19,266,1754982000"; 
+   d="scan'208";a="63664953"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2025 05:17:26 -0700
+X-CSE-ConnectionGUID: TCX8tQwGQ4uZwtXNmHJMQg==
+X-CSE-MsgGUID: ZlG6UH8QSqC3VIShmHAkSQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,266,1754982000"; 
+   d="scan'208";a="190013489"
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2025 05:17:26 -0700
+Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27; Thu, 30 Oct 2025 05:17:25 -0700
+Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27 via Frontend Transport; Thu, 30 Oct 2025 05:17:25 -0700
+Received: from CY3PR05CU001.outbound.protection.outlook.com (40.93.201.45) by
+ edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27; Thu, 30 Oct 2025 05:17:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=VhpdsSOZAk5JCobWlqp9LBY2x643rZrmqueC3jCxymHHrvvSvEJ6GzlGiYHBXymxG2lRYSTH3mam6CAVcnY2t2OUbrj8OwHPG60nAV9M3HT/iF4Lc6PzICJbjjmtxxOdo2ioBieDdMOhN/vjqTxjzcE+Cdm6gTkyi+77Bm9pzhOqY1eRzG0yvGVo8TdWQb0O5Hiaye60IrKS3AoT2b0W/Bx0d5tDUKbK0ETVBoVlKjw2BVaRehgxVmcBW99KlnJ4lXJMxYz84Zm58UtzX/KBxRMyUNlR/KnK1DdjUfDeJwu6CdNW6wWd+G6GFnnDlPSu0vQTPKPR2L5vjEDSpjhN/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QJxCgjDWF5p5Nbh/kNGXTK+eukq1WRYsTW/eeYtUnPk=;
+ b=dUwbt+lTHlM58C77r3ziaBze+N7Bm/lxnVfQ4iXFW4y9Tj+8XtpIpgWnwatt72xbc2DnPDTwxuVC++hTGVOESVhrVFnBK31m5GWnfXKl5D0JgDFvri7D5522BW3ZfH9VsS2JeBG4HUBSdFRhT6ivDQXgDGtSkOTz61z4pZwhKpCdejgsGdzzl7p7lUlNW84iF906bWjRWUDpY06Gz9YksgtvvSYVYjEb8JGPxNeYSmcg85++LeYRzD5jKlsnwxS/lGUsT+VmDClZ2UOCgXrLnWzLftv8ML/KZhiDGlWbzUd8VGLJqYwum9rBN2RalC1ilR4dyvQoNhlXTA6ZhkzTdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ DS0PR11MB7336.namprd11.prod.outlook.com (2603:10b6:8:11f::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9275.13; Thu, 30 Oct 2025 12:14:30 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca%4]) with mapi id 15.20.9275.013; Thu, 30 Oct 2025
+ 12:14:30 +0000
+Date: Thu, 30 Oct 2025 13:14:16 +0100
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<hawk@kernel.org>, <netdev@vger.kernel.org>, <magnus.karlsson@intel.com>,
+	<aleksander.lobakin@intel.com>, <ilias.apalodimas@linaro.org>,
+	<toke@redhat.com>, <lorenzo@kernel.org>,
+	<syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com>, Ihor Solodrai
+	<ihor.solodrai@linux.dev>, Octavian Purdila <tavip@google.com>
+Subject: Re: [PATCH v5 bpf 1/2] xdp: introduce xdp_convert_skb_to_buff()
+Message-ID: <aQNWlB5UL+rK8ZE5@boxer>
+References: <20251029221315.2694841-1-maciej.fijalkowski@intel.com>
+ <20251029221315.2694841-2-maciej.fijalkowski@intel.com>
+ <20251029165020.26b5dd90@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20251029165020.26b5dd90@kernel.org>
+X-ClientProxiedBy: VIZP296CA0021.AUTP296.PROD.OUTLOOK.COM
+ (2603:10a6:800:2a8::7) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: Add overwrite mode test
- for BPF ring buffer
-Content-Language: en-US
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>, Song Liu <song@kernel.org>
-References: <20251018035738.4039621-1-xukuohai@huaweicloud.com>
- <20251018035738.4039621-3-xukuohai@huaweicloud.com>
- <CAEf4BzZQfSBTqPwHE7fMTO1CbuoCYkFthUkCGvq3qT5CnT3-Eg@mail.gmail.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <CAEf4BzZQfSBTqPwHE7fMTO1CbuoCYkFthUkCGvq3qT5CnT3-Eg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBH6UH6UwNpQHx+CA--.42489S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxWry5JF1fWFW5tF1fCFWfZrb_yoW5Aw15pa
-	yrKFyYkrn2yFy2gr1fuFy2qFW09r1kArWFkr4xtw1rZr1UCFWxJryI9F4UKan3JrWFvr1F
-	y34jgF93u3WUKFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw
-	0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AK
-	xVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrx
-	kI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v2
-	6r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8Jw
-	CI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2uyIUUUU
-	U
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|DS0PR11MB7336:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5cda8da2-5f89-4311-2a4d-08de17ade0ac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?c/0RUa4dk/GWQoxLAKyOd6EM3PmOXFPPbc7m7ciELVcWLnF9zDeCTsQEivm6?=
+ =?us-ascii?Q?uBEu3GMetoIxpedbv6Ci3w1PbxnRL2wwITGU6kTNBhUdSqaQouAunaMTcL4A?=
+ =?us-ascii?Q?7R3Tnf9Sdussl2WcRdCVe56F+CwC0AygbTw4S3Iv+H+syr4X9sGNm1ObqhlW?=
+ =?us-ascii?Q?PDozyL/9bzegkN/+8RZ9fcDlIMF8n4jRImzrTGtRV64VAIBV/XmmVlFhzXPg?=
+ =?us-ascii?Q?PMrD46KBLI59yXA4fk2Q+e9Qy75tDvfNoDUtWSuSApkQWyHS4rUk42+eGVWV?=
+ =?us-ascii?Q?kKlUqyapo7BGo2782nKRkwTdBPp64huuwtaPHKj5W8a1eob9McOkHa734R6m?=
+ =?us-ascii?Q?kqmCZuBUiNScbOlAMU6+eK5QldprGDbJcul0Z2O7vn7hIah5AoV2VrqLk6it?=
+ =?us-ascii?Q?T4H0jG5jUZFIzPFqQSWwDDjGOw3hKwP77uI4ywZwCzGK0pzPSGrgbv9gDZok?=
+ =?us-ascii?Q?7Rop1kl9S3MHjWu9i9MIzX+d0XmIMQR7fwl5Id98PT6oLhRDmXsgQCGmap4h?=
+ =?us-ascii?Q?kEyvEy57QJlJsfmlkiJH3XWXjwPVNb+zMZbFrarbSkxlR+LpSHJhN4QkQPEL?=
+ =?us-ascii?Q?OwqO+ET2279EIC22faK7A4L4UNiL7jiBV7LDQTKXFDuCxtCbb8qjcQGi+ABN?=
+ =?us-ascii?Q?ayIZUubOUUJ+bFqk3U5EFYoF4PAhxNpd3wPCeS1kiwbH0BJqkFiT+sfOVmji?=
+ =?us-ascii?Q?dSRqaPXdvmWaTh7TSI8BTe4a7CAgjtKlQAcAPPCOHTanCnjiqFfFrZfdtmSr?=
+ =?us-ascii?Q?cveErytUCDH4a+2889u8lzTeD7Z7GJr6ilsaYsmi/fFO47qMQ8A7RKX9gG0u?=
+ =?us-ascii?Q?mf2nrB7ze77SxHQimhQaGCAx8pwLTMG58fzgtGQzrIwNIySh1Rsnp+ghI2eh?=
+ =?us-ascii?Q?garuFyl1CTDj2XuV2kLjNEvVJcrdusb/6+tm8HlWOljtTP62dlx3Pn4/1gHx?=
+ =?us-ascii?Q?OCIZ7Y855PypBhUZwtahjaXaLb4YdsxE88uKEOy8/dsYsi4/2JSwkBRbVPwe?=
+ =?us-ascii?Q?WbHNfuShdAfHwzvMSIzaT+q5SuXvVSmgt3b5kqJwcvcNcntaSw+apNWVTxdv?=
+ =?us-ascii?Q?zaod0cJ/4gJGUt27rwIe3yAhxeXrJAhChG+0rsQRK9ZBI/3ZXjQynO035gYH?=
+ =?us-ascii?Q?QBVhzk9IeJXwGYTfWeu9J/FGJ7xEDUOWItWAn1zG/9iCyEh5xu0r5EfOyuwa?=
+ =?us-ascii?Q?hTlROwyKNybVenfwA2DDRZg4Ti+WSI++l/hsBN0hshsNE3TmPWtCHpOINAIU?=
+ =?us-ascii?Q?y7FrNH/U1uP5p8byIpXcDzqs/Kbdz424anjp9NjbtXD7B2A+GWp1kBhs+H8M?=
+ =?us-ascii?Q?M06CiM5Gw+wUJhbKoOGfPyWfzrMQVckMjiXMKgJrZ2oByaoBc/3Im0HLXG0w?=
+ =?us-ascii?Q?f6HtNPhsmYYJ3B7YspTswqCy5xjeqy5cmN1RiaGKLJC7piZ9vji5qlE3irKh?=
+ =?us-ascii?Q?zL8K3hHp0nHoQG9S1lS60ID4FkxcSfb9?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?j/Z10CumPx1yxrGr3VveBGkln0sFY4DRjaiwZstQqEMr7vGAVA9FdAOWa6NW?=
+ =?us-ascii?Q?smdRyRueHpLzmapzAGBudbtGAc5UA9Y0EWE8Ao2I80ndET/rYTmCnwsWMpjH?=
+ =?us-ascii?Q?XhC7V3JeD7Jc3uWj2Fb74AbQIZN+CPFB6xDqpQqI1dHAj4Kz4SNd8zYg/Uxb?=
+ =?us-ascii?Q?Pk1Ad9FsK7l2UnRh8YDAAUkbyWBs/wKaWw2QDJfleN3rZrj7URS4TPA5wrS3?=
+ =?us-ascii?Q?dybUTQUfQL4huVVcbVQnbLrqjNPrQM8YVdJvWRsMzO/bKGRI6sf3kShysnPI?=
+ =?us-ascii?Q?EqFeqJJt2lbXe6TS+Acvjojg6IhzYASqvHME5vMfcIGfaLArTrshZF4OwW1A?=
+ =?us-ascii?Q?ypycmCBdAiFvpTSS0Xs+GfKSDxzD4AQMseSBt5T37VzEnOPARH+O98eWCm4q?=
+ =?us-ascii?Q?2Yo9Oxwmu/JRCAW6kBBuJUWKefiBjUJ/GAimAIChsp8EHUD+wmx+ly3F4rrw?=
+ =?us-ascii?Q?Jh8ePKLrHE4sz/6tAp6V7Qljqq7sVpMlxDcdtGEJXv//ckA3kkOXbb9wNhOP?=
+ =?us-ascii?Q?YR9WdFJzTurhkOQMiOgdf7tlPq8WoXnI6cZOLrO/U4A2ea96Ax6yOyyQxsPt?=
+ =?us-ascii?Q?1x4L/5JboZqsX9W2jDye//mayM2LH1rs11ZKyfoaoEE8TcG/+XqBzUdVs1xt?=
+ =?us-ascii?Q?grDhV9HKWresIE+BTTJJROB98391i5UuAs+Ukm3ztH6M8JJUy8i/LtTfkKbh?=
+ =?us-ascii?Q?BQ9b6VmHH60xgtPfOaYE3xweANfpVWxPGFPD/wSh/ECERbX4cnbkig9AU+3F?=
+ =?us-ascii?Q?TtDr9BF4ilkPodWSDf6MLXyIxMgU/ylHBRuvzYMz5STapcitll/hGjmnjO6j?=
+ =?us-ascii?Q?SUQ2ZmwsnxQRRTdZQ8yditdDKHFpJk3BtVmubPx55wJ+Qf+PIqhRam1nloAl?=
+ =?us-ascii?Q?L97LJ9RdMYyiL5bJF3d2uH4t7dLxoDvIgY+p8vS0ZrE3jgxOR2q9A53Y84WX?=
+ =?us-ascii?Q?kKWHpLpk83k5X1B4uuBZUs91YLG0bytXXQX+WS64zcX41lf/TngdREJuKDhP?=
+ =?us-ascii?Q?oiviNjjf6lcLuvH/2NeTroU99Phw+sgSrwlW97jtSL+WpwkxJGPUGEC82xtb?=
+ =?us-ascii?Q?383QFvdO9lvVbN/xEbebxPQ2kVFDptQgw74/z+RSqq4siAI1LnRtI0Gagkix?=
+ =?us-ascii?Q?Y8yGA9EcooZr128VJwtXXUhpgzuoR2NT95fxaUn5WHrji6tHjUwMLcjYol3r?=
+ =?us-ascii?Q?EZKW/H+ieoy3Qo2gPejTLUNcIvp3DOPfg8olj3WXQhbHJi4B8hvZdZglOidb?=
+ =?us-ascii?Q?hpBW3QIIu09J/agzoPnbkC7v1sV+KQTnIaE4Z8GkgjMMR4/AdnghSPeOFJWR?=
+ =?us-ascii?Q?tvv1OBVLkVLReyECPWgpnFQFQbzjgCo4YZ4ZOEx2SfcaASzib5aUZSq4Sgqs?=
+ =?us-ascii?Q?M9a2XvZQRZbqkDcUrQDrK5UnsDCDGgvgpLOon8tFztSLunca1OltL+oWu1rO?=
+ =?us-ascii?Q?gnhk2wpxUAZQQHXqr1n/KGEa3jsxA7T4Dt2RILeDkwElPQiTyNajhMkJXcbu?=
+ =?us-ascii?Q?YkVJncl6ET2RiMVxPdR5cRNZdpGUYgPne7Dx+6PTuTiF/pqYfZmSOnLlRx/7?=
+ =?us-ascii?Q?DcsjxscNFYZG6cp64zw3fK/ucaxdvUrsHQnNtz13cDsF5G8M6BZ8NWeFaSG5?=
+ =?us-ascii?Q?Mg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5cda8da2-5f89-4311-2a4d-08de17ade0ac
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2025 12:14:30.1080
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pG6OCLqFVVrNBO8R9b6M5pjYf0iwAzhcVoR3u5J0GFi5QRq2h+dtPtlILJd+t/lhdELCWjf66sfVZf6quWgfdfoJxd+b5pDj/67/2q7WggU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7336
+X-OriginatorOrg: intel.com
 
-On 10/28/2025 10:47 AM, Andrii Nakryiko wrote:
-> On Fri, Oct 17, 2025 at 9:04 PM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
->>
->> From: Xu Kuohai <xukuohai@huawei.com>
->>
->> Add overwrite mode test for BPF ring buffer. The test creates a BPF ring
->> buffer in overwrite mode, then repeatedly reserves and commits records
->> to check if the ring buffer works as expected both before and after
->> overwriting occurs.
->>
->> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->> ---
->>   tools/testing/selftests/bpf/Makefile          |  3 +-
->>   .../selftests/bpf/prog_tests/ringbuf.c        | 64 ++++++++++++
->>   .../bpf/progs/test_ringbuf_overwrite.c        | 98 +++++++++++++++++++
->>   3 files changed, 164 insertions(+), 1 deletion(-)
->>   create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_overwrite.c
->>
->> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
->> index f00587d4ede6..43d133bf514d 100644
->> --- a/tools/testing/selftests/bpf/Makefile
->> +++ b/tools/testing/selftests/bpf/Makefile
->> @@ -498,7 +498,8 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h               \
->>
->>   LSKELS := fexit_sleep.c trace_printk.c trace_vprintk.c map_ptr_kern.c  \
->>          core_kern.c core_kern_overflow.c test_ringbuf.c                 \
->> -       test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c
->> +       test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c    \
->> +       test_ringbuf_overwrite.c
->>
->>   LSKELS_SIGNED := fentry_test.c fexit_test.c atomics.c
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
->> index d1e4cb28a72c..5264af1dc768 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
->> @@ -17,6 +17,7 @@
->>   #include "test_ringbuf_n.lskel.h"
->>   #include "test_ringbuf_map_key.lskel.h"
->>   #include "test_ringbuf_write.lskel.h"
->> +#include "test_ringbuf_overwrite.lskel.h"
->>
->>   #define EDONE 7777
->>
->> @@ -497,6 +498,67 @@ static void ringbuf_map_key_subtest(void)
->>          test_ringbuf_map_key_lskel__destroy(skel_map_key);
->>   }
->>
->> +static void ringbuf_overwrite_mode_subtest(void)
->> +{
->> +       unsigned long size, len1, len2, len3, len4, len5;
->> +       unsigned long expect_avail_data, expect_prod_pos, expect_over_pos;
->> +       struct test_ringbuf_overwrite_lskel *skel;
->> +       int err;
->> +
->> +       skel = test_ringbuf_overwrite_lskel__open();
->> +       if (!ASSERT_OK_PTR(skel, "skel_open"))
->> +               return;
->> +
->> +       size = 0x1000;
+On Wed, Oct 29, 2025 at 04:50:20PM -0700, Jakub Kicinski wrote:
+> On Wed, 29 Oct 2025 23:13:14 +0100 Maciej Fijalkowski wrote:
+> > +	xdp->rxq->mem.type = skb->pp_recycle ? MEM_TYPE_PAGE_POOL :
+> > +					       MEM_TYPE_PAGE_SHARED;
 > 
-> this will fail on architecture with page size != 4KB, I adjusted this
-> to use page_size, len1 to page_size / 2 and len2 to page_size / 4
->
+> You really need to stop sending patches before I had a chance 
+> to reply :/ And this is wrong.
 
-Ah, good catch, thanks for fixing it!
+Why do you say so?
 
->> +       len1 = 0x800;
->> +       len2 = 0x400;
->> +       len3 = size - len1 - len2 - BPF_RINGBUF_HDR_SZ * 3; /* 0x3e8 */
->> +       len4 = len3 - 8; /* 0x3e0 */
->> +       len5 = len3; /* retry with len3 */
->> +
-> 
-> [...]
+netif_receive_generic_xdp()
+	netif_skb_check_for_xdp()
+	skb_cow_data_for_xdp() failed
+		go through skb linearize path
+			returned skb data is backed by kmalloc, not page_pool,
+			means mem type for this particular xdp_buff has to be
+			MEM_TYPE_PAGE_SHARED
 
+Are we on the same page now?
+
+> -- 
+> pw-bot: cr
 
