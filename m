@@ -1,471 +1,223 @@
-Return-Path: <bpf+bounces-72979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B4C0C1ECEA
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 08:39:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C427FC1EDBF
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 08:53:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BA793B3FF6
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 07:39:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 243411899B7F
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 07:53:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE32B337B81;
-	Thu, 30 Oct 2025 07:39:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4B49338900;
+	Thu, 30 Oct 2025 07:52:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VbP9zV3k"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kTGxVqYT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76BAC19E99F
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 07:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC84338598
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 07:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761809977; cv=none; b=VQZHaZs2wZsBb0wqO7pAxV/hmNp1vG03O7QRKXCWDU4Baen+1a2Q0tx9dkmJO0VJhCcqWjR4mfdt+/pwxIjExdrivUT/1fqjMQBtH4YDXXnI/aNYm4thJaYUGfKHqNlXCo5qZo0CNQHr4HWqdWREYydhaQOqESGZcBeXhDsjBy8=
+	t=1761810769; cv=none; b=MNigGy0XbhNgVLhszyWwU4v1QucpsB4dV3JTSbP4XplPz5fCJrG0VxIfUrCYAbeFoPxk2Ab7bpL9kADQVHTu3SKJAkS93YIPOxUAVyDtZQBirN1Qj2mHlRvwS3mWr7f3BNK0NWWZVPyAoR38/A3PWxiNS7baL2O/3fPJ3ynN79s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761809977; c=relaxed/simple;
-	bh=+l64EXpdFt1DrfN3+np4ABRcfKMULySFciF7f1OYXcg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZQKFUfqu5FpHmTCZ1tYa/wuNxZzGUcSm/nFOWBj5E3G12uUiTEFZLodM4i1kCAwP5lapH2uj11OEk0VrsnC4AbXDhfnuemGw54g2wxxuqKMJpH6VB65ztvojCYFRZwfOp1hmrmPu+0VWLhCeYExudnvOvV78PhKEIZ7Y12PrRAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VbP9zV3k; arc=none smtp.client-ip=209.85.128.50
+	s=arc-20240116; t=1761810769; c=relaxed/simple;
+	bh=jCnVFmhEiH0CWgQ9Wkjj1WRdWmTVSADaUfBtR70yHBo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NP1UuE2fbIpGoEic+DsAmlgknPCsXo9ITYcolXmnK0FM0grV6uLeykGxDqCG86QQ4/oyf023floerKjoNnRbm05YCNdc/lLFeC6gMc+a/7MBdACvTgf+vvbIbAvhxFRiyXbUNsgNOEZCMSbE3gsXLqJWDv/a2TCEZvCT0GLi13k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kTGxVqYT; arc=none smtp.client-ip=209.85.210.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-475dd559b0bso9256715e9.1
-        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 00:39:35 -0700 (PDT)
+Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-78125ed4052so1216150b3a.0
+        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 00:52:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761809974; x=1762414774; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DiIIo0gUBLHLzAog1tLX9NVA6kGTazFh+oexNCeDwUg=;
-        b=VbP9zV3kn7JsixTAmPmkBp3ZwPblpshHfC0KRdAgBkm2qQ9ueouGjbtjo6vLM5d3en
-         AyCNO6CVJPKAZpQXn/sUKP3oj2Im2vU3ZeChduse/NyrfilqJLniJM/wA/rOXZRxzEKO
-         +ECw0efvQ/iquAOGcWj8iZD8udY+1aShdkX8bePacNhu6enfoeeGiEKKby5zrQFhF45K
-         OOy7Ork3C/v5VZBvkg0F2zB3ijOqx/cQb6qAnPZMtWAmX0FFqRxYWY2aCRE4QemaN3+F
-         Sa/LuedQ2NA49EA3LOYf7XRwhJuIh51T1it9AaUnE5sBArPsI5HGP50JCkAmdqSCZd+o
-         29IQ==
+        d=gmail.com; s=20230601; t=1761810766; x=1762415566; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=es//t3hYUc1h16tXpqwms9mTk2LcY28iDx1fAoGPlsk=;
+        b=kTGxVqYTvFJ5shJnWM3q3sKxg8rOMk7IhvWXxMcHGytdLv80gwpeR5xzvkEKZTDDaS
+         QB4c4KrCwB8hh8Oa0hPeZomuD3LFbcfA9m9d+ExQiaL0DieGJwxD1ftT5LqoFyQ3fRpd
+         6z6GDuzN7703DXOLwJFrK+F70mTDHD6a20xSPxcVc1GUnYeShcC9V1sh1BhQ5azpmO0z
+         hKV/wEZmEXsC0Xz6rAUNxqtBu84+3bv5ninz9tsTVV9PLA+hW97C8u8s4pPkol3olO58
+         yi5q6fL3keE3oRLNp4ySrpaSymVy62vX+Gj27owQl+Xbi9MzDZ0oLQ/NSaeudZqvz2Gv
+         UpEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761809974; x=1762414774;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DiIIo0gUBLHLzAog1tLX9NVA6kGTazFh+oexNCeDwUg=;
-        b=gZT/GkAlGVsOD4jgdvvwoSO0ZDCEtMHaceomxhf1EGehL45H4z7bdJPNdC/HDjaAZI
-         20PhO8THzqWzY/z1VQK0SCh509ntOilgrpukxwcCBstMou+4FHI7lXXLLCvxH2lWVOVN
-         rKgBXYSbfUDuTfGnTRSsIIVu1ArnGCiJc/aFa/GY+GfiXjJmHwPqkVfIqAgiKmaVIQ9G
-         cleB0KX6gu1VyRkblZbyaqg5cVm0z6hOfJWyCqvWaKAzHu0tactwewX7scdL7UZbpvXd
-         0zP838MCeTiCO9CS4vr3KX4O7V8NW3prlLieAr+WYigXD1uA/1jTUg9dRPqdOShZv+m/
-         n1rg==
-X-Gm-Message-State: AOJu0Ywxx2Hhzl+VRbVarq26mQKHkuI/cdulA+BQPEOcYxZeEu3USSoN
-	pL82FBoV88g8NFv+2s4bl7pabY9C79pdMDVO21/155j0Qp9o6GvQ8snN
-X-Gm-Gg: ASbGncv+hi4XuDqZxOWlbi7lafQXiFqQr2P8pj/DD/fOgFZCM0UfZfPihMVw4nfI82y
-	KG2ieM7iKJQRr9awHcqxCLQrFqXZK95x09SrBjkLJ/3Fco8Np2KA1Wcl64QIVM6SFoymdXKUIzz
-	CN8lX87J7DnW1eHTey4Jeb9oqBCoQM4vUkNB2bBdC03gPcZpojPfYoy5tJOI+SG0fHJOLu5vKsS
-	064ePnjZIRsI0muvofdbGXFt+8wkgev3O9FPdg5wQbZ3gA2SUUoXdK/unYr+mCVz8LFC8SohlAd
-	av9qqiFPkruHR3xMWtmi3gtQLQGVbnAc71jvFNpyhq7P5gzu3X17e8cfX8DtlR3+mPGnxJG1Qp5
-	HglkqG6lRCg3918Ni19xxKzBNbgcgDSx9oKZikrVy4Pb9aoOf6sxDDg2ReDoCeQpaskX9r+Degl
-	gGx2G6W+LheQ==
-X-Google-Smtp-Source: AGHT+IEzE5AaUxjdDEFmGc09t9tGxiQyOLU4OFeseZ47qdXXE0m984AH1bZo51CNWsDPz7OkONnDLg==
-X-Received: by 2002:a05:600c:6218:b0:475:dd53:6c06 with SMTP id 5b1f17b1804b1-4771e20a66cmr50165095e9.40.1761809973426;
-        Thu, 30 Oct 2025 00:39:33 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4771844127fsm63669135e9.2.2025.10.30.00.39.32
+        d=1e100.net; s=20230601; t=1761810766; x=1762415566;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=es//t3hYUc1h16tXpqwms9mTk2LcY28iDx1fAoGPlsk=;
+        b=SWjKdKGSn0gN7BdIgbxZ27tvX1l5bWz5E/ihXMGGGC4oo4yb7slFemiHfojK3YwIG1
+         Y/vyFVl/Ej//3fruzZLa9yZQ1HinUnyPKsPRWT6l6awFOYNu17+y4RZh7TDBrXtI8IAk
+         tY4JZc1V69w1bX1AKMJkZ/DwEXxfz+yPp3vY069akeoaNAIGrAxOzvCWu8HxFkLImh9G
+         iiGcwS0CJ7F9wy5GZL0m5jelhoFu44fpUhCgh59FkXkEdz4xQIYuE7rVDTwvEBJ0DMO5
+         O4k+bkqvzgxTwB3BfJ40epLJz+a79zrUQpYwuu4lP8NDoSbhvr4qS8p9DPNuuih390U/
+         Su9A==
+X-Forwarded-Encrypted: i=1; AJvYcCWm4wf1LIHjPNtPqeGvfFDTEp7ZUkT9ZUsiJj29Ia4lEvklaHJLiOt6f0g0IeZ3Reo8fbc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXmbwmBUU6Dem2sJO5oENqmVV9Ufe0LQ9VGmn8626vFdauiOcI
+	twM2NSAIm+Zc1P3MIKtuUuumt7J4VACeAi1j+ycJ+9xX9njiD0K+tacN
+X-Gm-Gg: ASbGncu+hwYb+oo5tq6Xo6i7wN75B+oDvQiCRSlNJUfk97n6OgOBBXyg5aWe9MHiUu/
+	W5Mr/c0DMnfmkzsVlv2GCMSYutvasgzPO2mw1j2PA2HPiK/5e6Mrn1GAeBfqtYdHfDXC4Vh/aUK
+	imh7qclm2sRf2lcpLNRW+/UAIZ62EtUEj1rpwebTVL7G7HlaREpXOVlLF+Z1c8qNH1gUANcVART
+	AXRRSH3fx0X5rWuHRVEi9hhMz6D6h1B6GxRK2xwvywCWYTtCBBwjn0P7z/CoG8ABvDQFPfujKRA
+	tDW3+3rzxEzZo7nCbZ6yRDxDO0iF8SmEMD0OXLtodqOfbKh/AyvdMqSkxwtQulODuiErgfrMCUX
+	4KKxs1qL4Ab6Z8hBYcjpWUFbxbtEUiMUKXQyl3muHInR+ix/igN1ZH4D83VeX9BWzWv3hzGoSWl
+	mIcytLQ0P2WjDVxY5f0A==
+X-Google-Smtp-Source: AGHT+IHZ8ksUbK5gXKZSid7wPAY7piPOvChEgdLcJImb7iQbWhTr5ZvKB9Bn7kp1zwGLCz13KWhebA==
+X-Received: by 2002:a05:6a00:22ce:b0:7a2:75a9:b2b7 with SMTP id d2e1a72fcca58-7a62a3624d0mr2758460b3a.1.1761810766150;
+        Thu, 30 Oct 2025 00:52:46 -0700 (PDT)
+Received: from E07P150077.ecarx.com.cn ([103.52.189.24])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a414065418sm17955236b3a.41.2025.10.30.00.52.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Oct 2025 00:39:32 -0700 (PDT)
-Date: Thu, 30 Oct 2025 07:46:03 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Thu, 30 Oct 2025 00:52:45 -0700 (PDT)
+From: Jianyun Gao <jianyungao89@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: Jianyun Gao <jianyungao89@gmail.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH v8 bpf-next 11/11] selftests/bpf: add C-level selftests
- for indirect jumps
-Message-ID: <aQMXuySPuw1r7emc@mail.gmail.com>
-References: <20251028142049.1324520-1-a.s.protopopov@gmail.com>
- <20251028142049.1324520-12-a.s.protopopov@gmail.com>
- <aa216ba69c31ae6cb253813379e3065ae5a850d6.camel@gmail.com>
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org (open list:BPF [LIBRARY] (libbpf))
+Subject: [PATCH] libbpf: fix some mismatched @param tags in Doxygen comment of libbpf.h
+Date: Thu, 30 Oct 2025 15:52:37 +0800
+Message-Id: <20251030075237.1213902-1-jianyungao89@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa216ba69c31ae6cb253813379e3065ae5a850d6.camel@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On 25/10/29 02:49PM, Eduard Zingerman wrote:
-> On Tue, 2025-10-28 at 14:20 +0000, Anton Protopopov wrote:
-> > Add C-level selftests for indirect jumps to validate LLVM and libbpf
-> > functionality. The tests are intentionally disabled, to be run
-> > locally by developers, but will not make the CI red.
-> > 
-> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> > ---
-> 
-> Yonghong added __BPF_FEATURE_GOTOX macro to llvm yesterday.
-> I think it should be used instead of '#if 0' things.
-> E.g. as in the attached diff (does not handle one-map-two-jumps and
-> one-jump-two-maps).
+There are some mismatched @param tags in Doxygen comment of libbpf.h.
+The following is a case:
 
-Thanks! I will use some form of your patch. Somehow, having a flu
-while sending the last versions prevented my brain from figuring
-this out myself :(
+  /**
+  * @brief **bpf_link__unpin()** unpins the BPF link from a file
+  * in the BPFFS specified by a path. This decrements the links
+  * reference count.
+  *
+  * The file pinning the BPF link can also be unlinked by a different
+  * process in which case this function will return an error.
+  *
+  * @param prog BPF program to unpin
+  * @param path file path to the pin in a BPF file system
+  * @return 0, on success; negative error code, otherwise
+  */
+  LIBBPF_API int bpf_link__unpin(struct bpf_link *link);
 
-> Still think that amount of tests added is a bit excessive,
-> but defer to you and Yonghong to decide.
+In the parameters of the bpf_link__unpin() function, there are no 'prog'
+and 'path' parameters.
 
-I would keep them, this file is more about testing llvm->libbpf.
-(Though, I think, I need to convert most of them into `goto
-*table[i]` form, and only leave a few big switches which
-are guaranteed to be transformed to an indirect jump by LLVM.)
+This patch fixes the issues present in the Doxygen comments in the
+libbpf.h file.
 
-> Confirm that tests are passing when compiled with llvm
-> commit b2fe5d1482eb ("[SimplifyCFG] Hoist common code when succ is unreachable block (#165570)").
-> 
-> [...]
+Signed-off-by: Jianyun Gao <jianyungao89@gmail.com>
+---
+ tools/lib/bpf/libbpf.h | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c b/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
-> index bb0ebd16df43..252fb9019d70 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
-> @@ -15,7 +15,6 @@
->  
->  #include "bpf_gotox.skel.h"
->  
-> -#if 0
->  static void __test_run(struct bpf_program *prog, void *ctx_in, size_t ctx_size_in)
->  {
->  	LIBBPF_OPTS(bpf_test_run_opts, topts,
-> @@ -29,6 +28,16 @@ static void __test_run(struct bpf_program *prog, void *ctx_in, size_t ctx_size_i
->  	ASSERT_OK(err, "test_run_opts err");
->  }
->  
-> +static bool skip(struct bpf_gotox *skel)
-> +{
-> +	if (skel->bss->skip) {
-> +		test__skip();
-> +		skel->bss->skip = 0;
-> +		return true;
-> +	}
-> +	return false;
-> +}
-> +
->  static void check_simple(struct bpf_gotox *skel,
->  			 struct bpf_program *prog,
->  			 __u64 ctx_in,
-> @@ -37,6 +46,8 @@ static void check_simple(struct bpf_gotox *skel,
->  	skel->bss->ret_user = 0;
->  
->  	__test_run(prog, &ctx_in, sizeof(ctx_in));
-> +	if (skip(skel))
-> +		return;
->  
->  	if (!ASSERT_EQ(skel->bss->ret_user, expected, "skel->bss->ret_user"))
->  		return;
-> @@ -53,6 +64,8 @@ static void check_simple_fentry(struct bpf_gotox *skel,
->  	/* trigger */
->  	usleep(1);
->  
-> +	if (skip(skel))
-> +		return;
->  	if (!ASSERT_EQ(skel->bss->ret_user, expected, "skel->bss->ret_user"))
->  		return;
->  }
-> @@ -215,7 +228,7 @@ static void check_nonstatic_global_other_sec(struct bpf_gotox *skel)
->  		check_simple_fentry(skel, skel->progs.use_nonstatic_global_other_sec, in[i], out[i]);
->  }
->  
-> -static void __test_bpf_gotox(void)
-> +void test_bpf_gotox(void)
->  {
->  	struct bpf_gotox *skel;
->  	int ret;
-> @@ -263,14 +276,3 @@ static void __test_bpf_gotox(void)
->  
->  	bpf_gotox__destroy(skel);
->  }
-> -#else
-> -static void __test_bpf_gotox(void)
-> -{
-> -	test__skip();
-> -}
-> -#endif
-> -
-> -void test_bpf_gotox(void)
-> -{
-> -	__test_bpf_gotox();
-> -}
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_gotox.c b/tools/testing/selftests/bpf/progs/bpf_gotox.c
-> index 16ad6cf279c0..2f704f260874 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_gotox.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_gotox.c
-> @@ -6,9 +6,9 @@
->  #include <bpf/bpf_core_read.h>
->  #include "bpf_misc.h"
->  
-> -#if 0
->  __u64 in_user;
->  __u64 ret_user;
-> +__u64 skip;
->  
->  struct simple_ctx {
->  	__u64 x;
-> @@ -21,14 +21,17 @@ __u64 some_var;
->   * number of instructions by the verifier. This adds additional
->   * stress on testing the insn_array maps corresponding to indirect jumps.
->   */
-> +#ifdef __BPF_FEATURE_GOTOX
->  static __always_inline void adjust_insns(__u64 x)
->  {
->  	some_var ^= x + bpf_jiffies64();
->  }
-> +#endif
->  
->  SEC("syscall")
->  int one_switch(struct simple_ctx *ctx)
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	switch (ctx->x) {
->  	case 0:
->  		adjust_insns(ctx->x + 1);
-> @@ -55,13 +58,16 @@ int one_switch(struct simple_ctx *ctx)
->  		ret_user = 19;
->  		break;
->  	}
-> -
-> +#else
-> +	skip = 1;
-> +#endif
->  	return 0;
->  }
->  
->  SEC("syscall")
->  int one_switch_non_zero_sec_off(struct simple_ctx *ctx)
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	switch (ctx->x) {
->  	case 0:
->  		adjust_insns(ctx->x + 1);
-> @@ -90,11 +96,16 @@ int one_switch_non_zero_sec_off(struct simple_ctx *ctx)
->  	}
->  
->  	return 0;
-> +#else
-> +	skip = 1;
-> +	return 0;
-> +#endif
->  }
->  
->  SEC("fentry/" SYS_PREFIX "sys_nanosleep")
->  int simple_test_other_sec(struct pt_regs *ctx)
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	__u64 x = in_user;
->  
->  	switch (x) {
-> @@ -125,11 +136,16 @@ int simple_test_other_sec(struct pt_regs *ctx)
->  	}
->  
->  	return 0;
-> +#else
-> +	skip = 1;
-> +	return 0;
-> +#endif
->  }
->  
->  SEC("syscall")
->  int two_switches(struct simple_ctx *ctx)
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	switch (ctx->x) {
->  	case 0:
->  		adjust_insns(ctx->x + 1);
-> @@ -185,11 +201,16 @@ int two_switches(struct simple_ctx *ctx)
->  	}
->  
->  	return 0;
-> +#else
-> +	skip = 1;
-> +	return 0;
-> +#endif
->  }
->  
->  SEC("syscall")
->  int big_jump_table(struct simple_ctx *ctx __attribute__((unused)))
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	const void *const jt[256] = {
->  		[0 ... 255] = &&default_label,
->  		[0] = &&l0,
-> @@ -223,12 +244,16 @@ int big_jump_table(struct simple_ctx *ctx __attribute__((unused)))
->  default_label:
->  	adjust_insns(ctx->x + 177);
->  	ret_user = 19;
-> +#else
-> +	skip = 1;
-> +#endif
->  	return 0;
->  }
->  
->  SEC("syscall")
->  int one_jump_two_maps(struct simple_ctx *ctx __attribute__((unused)))
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	__label__ l1, l2, l3, l4;
->  	void *jt1[2] = { &&l1, &&l2 };
->  	void *jt2[2] = { &&l3, &&l4 };
-> @@ -251,11 +276,16 @@ int one_jump_two_maps(struct simple_ctx *ctx __attribute__((unused)))
->  
->  	ret_user = ret;
->  	return ret;
-> +#else
-> +	skip = 1;
-> +	return 0;
-> +#endif
->  }
->  
->  SEC("syscall")
->  int one_map_two_jumps(struct simple_ctx *ctx __attribute__((unused)))
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	__label__ l1, l2, l3;
->  	void *jt[3] = { &&l1, &&l2, &&l3 };
->  	unsigned int a = (ctx->x >> 2) & 1;
-> @@ -274,9 +304,14 @@ int one_map_two_jumps(struct simple_ctx *ctx __attribute__((unused)))
->  
->  	ret_user = ret;
->  	return ret;
-> +#else
-> +	skip = 1;
-> +	return 0;
-> +#endif
->  }
->  
->  /* Just to introduce some non-zero offsets in .text */
-> +#ifdef __BPF_FEATURE_GOTOX
->  static __noinline int f0(volatile struct simple_ctx *ctx __arg_ctx)
->  {
->  	if (ctx)
-> @@ -284,13 +319,20 @@ static __noinline int f0(volatile struct simple_ctx *ctx __arg_ctx)
->  	else
->  		return 13;
->  }
-> +#endif
->  
->  SEC("syscall") int f1(struct simple_ctx *ctx)
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	ret_user = 0;
->  	return f0(ctx);
-> +#else
-> +	skip = 1;
-> +	return 0;
-> +#endif
->  }
->  
-> +#ifdef __BPF_FEATURE_GOTOX
->  static __noinline int __static_global(__u64 x)
->  {
->  	switch (x) {
-> @@ -322,30 +364,47 @@ static __noinline int __static_global(__u64 x)
->  
->  	return 0;
->  }
-> +#endif
->  
->  SEC("syscall")
->  int use_static_global1(struct simple_ctx *ctx)
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	ret_user = 0;
->  	return __static_global(ctx->x);
-> +#else
-> +	skip = 1;
-> +	return 0;
-> +#endif
->  }
->  
->  SEC("syscall")
->  int use_static_global2(struct simple_ctx *ctx)
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	ret_user = 0;
->  	adjust_insns(ctx->x + 1);
->  	return __static_global(ctx->x);
-> +#else
-> +	skip = 1;
-> +	return 0;
-> +#endif
->  }
->  
->  SEC("fentry/" SYS_PREFIX "sys_nanosleep")
->  int use_static_global_other_sec(void *ctx)
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	return __static_global(in_user);
-> +#else
-> +	skip = 1;
-> +	return 0;
-> +#endif
->  }
->  
->  __noinline int __nonstatic_global(__u64 x)
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	switch (x) {
->  	case 0:
->  		adjust_insns(x + 1);
-> @@ -374,28 +433,46 @@ __noinline int __nonstatic_global(__u64 x)
->  	}
->  
->  	return 0;
-> +#else
-> +	skip = 1;
-> +	return 0;
-> +#endif
->  }
->  
->  SEC("syscall")
->  int use_nonstatic_global1(struct simple_ctx *ctx)
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	ret_user = 0;
->  	return __nonstatic_global(ctx->x);
-> +#else
-> +	skip = 1;
-> +	return 0;
-> +#endif
->  }
->  
->  SEC("syscall")
->  int use_nonstatic_global2(struct simple_ctx *ctx)
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	ret_user = 0;
->  	adjust_insns(ctx->x + 1);
->  	return __nonstatic_global(ctx->x);
-> +#else
-> +	skip = 1;
-> +	return 0;
-> +#endif
->  }
->  
->  SEC("fentry/" SYS_PREFIX "sys_nanosleep")
->  int use_nonstatic_global_other_sec(void *ctx)
->  {
-> +#ifdef __BPF_FEATURE_GOTOX
->  	return __nonstatic_global(in_user);
-> -}
-> +#else
-> +	skip = 1;
-> +	return 0;
->  #endif
-> +}
->  
->  char _license[] SEC("license") = "GPL";
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 5118d0a90e24..8ca7957c8dd4 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -481,14 +481,12 @@ LIBBPF_API int bpf_link__pin(struct bpf_link *link, const char *path);
+ 
+ /**
+  * @brief **bpf_link__unpin()** unpins the BPF link from a file
+- * in the BPFFS specified by a path. This decrements the links
+- * reference count.
++ * in the BPFFS. This decrements the links reference count.
+  *
+  * The file pinning the BPF link can also be unlinked by a different
+  * process in which case this function will return an error.
+  *
+- * @param prog BPF program to unpin
+- * @param path file path to the pin in a BPF file system
++ * @param link BPF link to unpin
+  * @return 0, on success; negative error code, otherwise
+  */
+ LIBBPF_API int bpf_link__unpin(struct bpf_link *link);
+@@ -995,8 +993,13 @@ LIBBPF_API __u32 bpf_program__line_info_cnt(const struct bpf_program *prog);
+  *   - fentry/fexit/fmod_ret;
+  *   - lsm;
+  *   - freplace.
+- * @param prog BPF program to set the attach type for
+- * @param type attach type to set the BPF map to have
++ * @param prog BPF program to configure; must be not yet loaded.
++ * @param attach_prog_fd FD of target BPF program (for freplace/extension).
++ * If >0 and func name omitted, defers BTF ID resolution.
++ * @param attach_func_name Target function name. Used either with
++ * attach_prog_fd to find its BTF ID in that program, or alone
++ * (no attach_prog_fd) to resolve kernel (vmlinux/module) BTF ID. Must be
++ * provided if attach_prog_fd is 0.
+  * @return error code; or 0 if no error occurred.
+  */
+ LIBBPF_API int
+@@ -1098,6 +1101,7 @@ LIBBPF_API __u32 bpf_map__value_size(const struct bpf_map *map);
+ /**
+  * @brief **bpf_map__set_value_size()** sets map value size.
+  * @param map the BPF map instance
++ * @param size the new value size
+  * @return 0, on success; negative error, otherwise
+  *
+  * There is a special case for maps with associated memory-mapped regions, like
+@@ -1202,7 +1206,7 @@ LIBBPF_API struct bpf_map *bpf_map__inner_map(struct bpf_map *map);
+  * per-CPU values value size has to be aligned up to closest 8 bytes for
+  * alignment reasons, so expected size is: `round_up(value_size, 8)
+  * * libbpf_num_possible_cpus()`.
+- * @flags extra flags passed to kernel for this operation
++ * @param flags extra flags passed to kernel for this operation
+  * @return 0, on success; negative error, otherwise
+  *
+  * **bpf_map__lookup_elem()** is high-level equivalent of
+@@ -1226,7 +1230,7 @@ LIBBPF_API int bpf_map__lookup_elem(const struct bpf_map *map,
+  * per-CPU values value size has to be aligned up to closest 8 bytes for
+  * alignment reasons, so expected size is: `round_up(value_size, 8)
+  * * libbpf_num_possible_cpus()`.
+- * @flags extra flags passed to kernel for this operation
++ * @param flags extra flags passed to kernel for this operation
+  * @return 0, on success; negative error, otherwise
+  *
+  * **bpf_map__update_elem()** is high-level equivalent of
+@@ -1242,7 +1246,7 @@ LIBBPF_API int bpf_map__update_elem(const struct bpf_map *map,
+  * @param map BPF map to delete element from
+  * @param key pointer to memory containing bytes of the key
+  * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
+- * @flags extra flags passed to kernel for this operation
++ * @param flags extra flags passed to kernel for this operation
+  * @return 0, on success; negative error, otherwise
+  *
+  * **bpf_map__delete_elem()** is high-level equivalent of
+@@ -1265,7 +1269,7 @@ LIBBPF_API int bpf_map__delete_elem(const struct bpf_map *map,
+  * per-CPU values value size has to be aligned up to closest 8 bytes for
+  * alignment reasons, so expected size is: `round_up(value_size, 8)
+  * * libbpf_num_possible_cpus()`.
+- * @flags extra flags passed to kernel for this operation
++ * @param flags extra flags passed to kernel for this operation
+  * @return 0, on success; negative error, otherwise
+  *
+  * **bpf_map__lookup_and_delete_elem()** is high-level equivalent of
+@@ -1637,6 +1641,7 @@ struct perf_buffer_opts {
+  * @param sample_cb function called on each received data record
+  * @param lost_cb function called when record loss has occurred
+  * @param ctx user-provided extra context passed into *sample_cb* and *lost_cb*
++ * @param opts optional parameters for the perf buffer, mainly *sample_period*
+  * @return a new instance of struct perf_buffer on success, NULL on error with
+  * *errno* containing an error code
+  */
+-- 
+2.34.1
 
 
