@@ -1,176 +1,166 @@
-Return-Path: <bpf+bounces-73077-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73078-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFBF2C2260D
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 22:08:44 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3725EC226D6
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 22:34:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E48281A26CC5
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 21:08:20 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B4454349F3A
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 21:34:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9893338934;
-	Thu, 30 Oct 2025 21:07:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44982307AFB;
+	Thu, 30 Oct 2025 21:34:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="OsmlvFso"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NVkgTo8z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C999C32E13F;
-	Thu, 30 Oct 2025 21:07:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB9842DFA3B
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 21:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761858452; cv=none; b=Xx+Jw3x9pnccBmSseworYwmd0kJWcQ09fDJBxmxutHjlrs/Hk8vEYc5jDHIEq5OPw8hWnMXPqfFo6qxPxRsaov0Rqd8uTz56lVFcLPmqDGd+nEmSHlXU19wvfT28CAlmj8GPn41ikqrfBrV66FRW4PxcYppsBcid8CQz5MRd4uY=
+	t=1761860062; cv=none; b=fJMSIXL6JxnUOm9gmXZQDszFvqga+dNVD0xfTL/RdoHQRFQijBOgnU0V0lG86AgTz4x8+65nvlv4rTNYxEFwlha5/XCAHbrJlCIOeHDWz0gBXLFDAy5vAx4JTePriLCQAKpY37XjxehXCpXTsfvkd9Hy6T7HpfFiJb5x+jDUjf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761858452; c=relaxed/simple;
-	bh=c0lVYLey1J54j8+LzkyiF7aV7X/OiaCcAORzUDvclqE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Xk2LQOigiBDCgVB6bfiHwUP2h1dh4WfXOS159/3IuvawHtiRb+Njh4ti3yDriwRSQHio36XhVIpgQnIXOS//Ppwh6K9WBkbuSLFjiTplLa6kfb8ZNL/ezSZEmszBYEQQmqzse6z4fQLWErUXwFg0VMZ1Gb4X1DwvqXFa3JjsCNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=OsmlvFso; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59UKV2Pt009976;
-	Thu, 30 Oct 2025 21:07:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2025-04-25; bh=warw8
-	LcEpdVD1yZ6NqTjeOLsG3Gxja9LpBG0FJuLtoo=; b=OsmlvFso9HKrTTYjL4h3T
-	QLdXiPTFmwLXnDkqVG+zcoYlMutTLLwJ83kHZy6zFjUtGzb5+6NxTYBJPqEXHboZ
-	Vyb0vAS2bU1vQ67N6vaxB45zumW/DX6SaTsuozTDhWlxShnmK5ezgAPpiouUYNpH
-	ctpXT3HYmzDLaAmoQTj6F65hiu3jCmNnpccmkmjqkzI69X4xp4f8O4K8L8AsNdVT
-	2/JSwHUlbMEv8yYQIgNAg61WUEUHgJFEfwxviI7ihOmL0gV2Pp8F9TH0cD9yCs4B
-	kX6/iz1H7sCDI4J0sLrcu9clAlvNIWye8fhSqpVE7PY8JXXp+Tr4iP4cuc9nNqcU
-	Q==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4a4d6q0c4h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 30 Oct 2025 21:07:08 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 59UJpW0C033995;
-	Thu, 30 Oct 2025 21:07:07 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4a34edwy38-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 30 Oct 2025 21:07:07 +0000
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 59UL70pU007669;
-	Thu, 30 Oct 2025 21:07:06 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 4a34edwxup-3;
-	Thu, 30 Oct 2025 21:07:06 +0000
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To: bpf@vger.kernel.org
-Cc: alan.maguire@oracle.com,
-        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-        Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 2/2] selftests/bpf: Add test for bpftool map ID printing
-Date: Thu, 30 Oct 2025 14:06:53 -0700
-Message-ID: <20251030210655.3938262-3-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20251030210655.3938262-1-harshit.m.mogalapalli@oracle.com>
-References: <20251030210655.3938262-1-harshit.m.mogalapalli@oracle.com>
+	s=arc-20240116; t=1761860062; c=relaxed/simple;
+	bh=vA3cQcFFKPHYjkv/o095+U48maXEWxIDrmI8GV0FkR8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kcUZfTW1wP2sEXidvL6O7DpUnIJgwMiiGHAuLU7aHDJAPqoIVXSCHePJrb+1S+rUGn8cCLsFfyQm/TgEn5Jq2ifviOjd8LlUMgTjZoP35ijMQ3F9NquS02uKD2pSQ/HoNEo5dZ2dnF9FYApa+qh2txO6yP2wquCRgZSUCq/cet0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NVkgTo8z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53556C116D0
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 21:34:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761860062;
+	bh=vA3cQcFFKPHYjkv/o095+U48maXEWxIDrmI8GV0FkR8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NVkgTo8zsh/oLtwCRGHu02MRlHkXjU+0bxw2XcUHuagq5PJLN22kQBFZbdeMY7efS
+	 2MTJdgK0VYBtO97xuZ0uisPN4RrlxI/WvEcHqfuhrvNI/Y5a97boExAn4Ycg6oVNob
+	 c02S5GXecCSsPAreWAfcsKrMVgQHvlf4rczHVAD6J79JtcmY7HPuo3NeP/vRGVLLEz
+	 s4gfZsgjB54VRsiZrOJ1pViSDlr3dOfKN7Lk3KIpofVaxxCTc4e7BeCm9SUcQFrJyp
+	 3NLPq2OIweWu/X2DT2D4jEpFhoyzaTcyKLubXPmJ4jVQBZUGX2dSXTf/JHgC7QaGFz
+	 krQmQNvq4YLtA==
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-87dcb1dd50cso25483566d6.3
+        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 14:34:22 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVFx5qnW3/5TnaSwB8rrckMVD7Em4uxVtgbdA/vpOB5jO2cku73yMIOXIWrZL5Ihoat/wc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YycH09uv0xciQ6crvNSU5SMGDKMaTzcnvIG+9ocihtgbPjWiQr1
+	8ihHCui+9Pp1WcUyHytKgPwwqBu8/QZcyfVOQjsFKfLBLcZ/V1xpHsdbAKjeDOLhnqwzLhC+9IN
+	mSIJCgiAZody74A0RT4QlqQyG1xfDZR0=
+X-Google-Smtp-Source: AGHT+IHMkX2vgEpmo54ScXG2z+0WIl2vpMLiW/fIKrF0LrJBFRJd62XKtruZSD0g4dhRrF2T+Nff4509mwhwddlY7x4=
+X-Received: by 2002:a05:6214:21e2:b0:87f:c009:79cc with SMTP id
+ 6a1803df08f44-8802f4db53cmr14665996d6.51.1761860061351; Thu, 30 Oct 2025
+ 14:34:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-10-30_07,2025-10-29_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 malwarescore=0
- mlxscore=0 phishscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
- definitions=main-2510300178
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDMwMDE1MiBTYWx0ZWRfXwCnPsVT77xOJ
- CkNhLAHkJT96HMmEmxA+vfLV4++CZl2wVBHtQHr04SfPLbdglCvtaevUrfnrPZSUmy+GwS6iTwJ
- ajOikvNYQlNG3f3/ztROSajbEw6tMkhtSf6siyVmnXdtYpodkrwEeGNQ2o0oLgx7pIoIArtS8a3
- cZlzmIndiUXxXw8pzITjlJdhSADlcErqVuhr5p+D1OlOh+PdUKvK3GqhGm3KWugV3P+HUhKI03N
- /3ia4BkvXdJP2zmCpyp+hJkZ4K8y/121ewjD3cq37syYnecaWZYxxt31+JbfoQglSOUFBJ2yzqB
- CTC1Cx0K3ayf65gSv7g5wSlifeIC6SZTZmgU6xXsDV6e/ud6DiwC8M4JSL5tSyB2cYnTvxSkBBg
- HjUiGzTNCLOeqEF2vnA9ItLXW9jUWfE8gVeRB4yfSv6w8AQAIY8=
-X-Proofpoint-GUID: ZteDhwy0O0AjBuXcp3zBcf_EpExXnfoI
-X-Authority-Analysis: v=2.4 cv=bLob4f+Z c=1 sm=1 tr=0 ts=6903d37c b=1 cx=c_pps
- a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
- a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
- a=zZ8rhmji2bsAaRzR-ewA:9 cc=ntf awl=host:13657
-X-Proofpoint-ORIG-GUID: ZteDhwy0O0AjBuXcp3zBcf_EpExXnfoI
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+ <20251027231727.472628-3-roman.gushchin@linux.dev> <CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
+ <87zf98xq20.fsf@linux.dev> <CAHzjS_tnmSPy_cqCUHiLGt8Ouf079wQBQkostqJqfyKcJZPXLA@mail.gmail.com>
+ <CAMB2axMkYS1j=KeECZQ9rnupP8kw7dn1LnGV4udxMp=f=qoEQA@mail.gmail.com> <877bwcus3h.fsf@linux.dev>
+In-Reply-To: <877bwcus3h.fsf@linux.dev>
+From: Song Liu <song@kernel.org>
+Date: Thu, 30 Oct 2025 14:34:10 -0700
+X-Gmail-Original-Message-ID: <CAHzjS_u5oqD3Dsk9JjK942QBL8UOMkqdM23xP0yTEb+MMuOoLw@mail.gmail.com>
+X-Gm-Features: AWmQ_bk7HNuiosItrXA1dyLcCJexg7C-WNSjzhjZ-UrPmMqZcQrRacrRjcLhdZg
+Message-ID: <CAHzjS_u5oqD3Dsk9JjK942QBL8UOMkqdM23xP0yTEb+MMuOoLw@mail.gmail.com>
+Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops to cgroups
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Amery Hung <ameryhung@gmail.com>, Song Liu <song@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, bpf@vger.kernel.org, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add selftest to check if Map ID is printed on successful creation in
-both plain text and json formats.
+Hi Roman,
 
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
- .../testing/selftests/bpf/test_bpftool_map.sh | 36 +++++++++++++++++++
- 1 file changed, 36 insertions(+)
+On Thu, Oct 30, 2025 at 12:07=E2=80=AFPM Roman Gushchin
+<roman.gushchin@linux.dev> wrote:
+[...]
+> > In TCP congestion control and BPF qdisc's model:
+> >
+> > During link_create, both adds the struct_ops to a list, and the
+> > struct_ops can be indexed by name. The struct_ops are not "active" by
+> > this time.
+> > Then, each has their own interface to 'apply' the struct_ops to a
+> > socket or queue: setsockopt() or netlink.
+> >
+> > But maybe cgroup-related struct_ops are different.
+>
+> Both tcp congestion and qdisk cases are somewhat different because
+> there already is a way to select between multiple implementations, bpf
+> just adds another one. In the oom case, it's not true. As of today,
+> there is only one (global) oom killer. Of course we can create
+> interfaces to allow a user make a choice. But the question is do we want
+> to create such interface for the oom case specifically (and later for
+> each new case separately), or there is a place for some generalization?
 
-diff --git a/tools/testing/selftests/bpf/test_bpftool_map.sh b/tools/testing/selftests/bpf/test_bpftool_map.sh
-index 515b1df0501e..013a64e96cbf 100755
---- a/tools/testing/selftests/bpf/test_bpftool_map.sh
-+++ b/tools/testing/selftests/bpf/test_bpftool_map.sh
-@@ -361,6 +361,40 @@ test_map_access_with_btf_list() {
- 	fi
- }
- 
-+# Function to test map ID printing
-+# Parameters:
-+#   $1: bpftool path
-+#   $2: BPF_DIR
-+test_map_id_printing() {
-+	local bpftool_path="$1"
-+	local bpf_dir="$2"
-+	local test_map_name="test_map_id"
-+	local test_map_path="$bpf_dir/$test_map_name"
-+
-+	local output
-+	output=$("$bpftool_path" map create "$test_map_path" type hash key 4 \
-+		value 8 entries 128 name "$test_map_name")
-+	if echo "$output" | grep -q "Map successfully created with ID:"; then
-+		echo "PASS: Map ID printed in plain text output."
-+	else
-+		echo "FAIL: Map ID not printed in plain text output."
-+		exit 1
-+	fi
-+
-+	rm -f "$test_map_path"
-+
-+	output=$("$bpftool_path" map create "$test_map_path" type hash key 4 \
-+		value 8 entries 128 name "$test_map_name" --json)
-+	if echo "$output" | jq -e 'has("id")' >/dev/null 2>&1; then
-+		echo "PASS: Map ID printed in JSON output."
-+	else
-+		echo "FAIL: Map ID not printed in JSON output."
-+		exit 1
-+	fi
-+
-+	rm -f "$test_map_path"
-+}
-+
- set -eu
- 
- trap cleanup_skip EXIT
-@@ -395,4 +429,6 @@ test_map_creation_and_map_of_maps "$BPFTOOL_PATH" "$BPF_DIR"
- 
- test_map_access_with_btf_list "$BPFTOOL_PATH"
- 
-+test_map_id_printing "$BPFTOOL_PATH" "$BPF_DIR"
-+
- exit 0
--- 
-2.50.1
+Agreed that this approach requires a separate mechanism to attach
+the struct_ops to an entity.
 
+> Ok, let me summarize the options we discussed here:
+
+Thanks for the summary!
+
+>
+> 1) Make the attachment details (e.g. cgroup_id) the part of struct ops
+> itself. The attachment is happening at the reg() time.
+>
+>   +: It's convenient for complex stateful struct ops'es, because a
+>       single entity represents a combination of code and data.
+>   -: No way to attach a single struct ops to multiple entities.
+>
+> This approach is used by Tejun for per-cgroup sched_ext prototype.
+>
+> 2) Make the attachment details a part of bpf_link creation. The
+> attachment is still happening at the reg() time.
+>
+>   +: A single struct ops can be attached to multiple entities.
+>   -: Implementing stateful struct ops'es is harder and requires passing
+>      an additional argument (some sort of "self") to all callbacks.
+> I'm using this approach in the bpf oom proposal.
+>
+
+I think both 1) and 2) have the following issue. With cgroup_id in
+struct_ops or the link, the cgroup_id works more like a filter. The
+cgroup doesn't hold any reference to the struct_ops. The bpf link
+holds the reference to the struct_ops, so we need to keep the
+the link alive, either by keeping an active fd, or by pinning the
+link to bpffs. When the cgroup is removed, we need to clean up
+the bpf link separately.
+
+> 3) Move the attachment out of .reg() scope entirely. reg() will register
+> the implementation system-wide and then some 3rd-party interface
+> (e.g. cgroupfs) should be used to select the implementation.
+>
+>   +: ?
+>   -: New hard-coded interfaces might be required to enable bpf-driven
+>      kernel customization. The "attachment" code is not shared between
+>      various struct ops cases.
+>      Implementing stateful struct ops'es is harder and requires passing
+>      an additional argument (some sort of "self") to all callbacks.
+>
+> This approach works well for cases when there is already a selection
+> of implementations (e.g. tcp congestion mechanisms), and bpf is adding
+> another one.
+
+Another benefit of 3) is that it allows loading an OOM controller in a
+kernel module, just like loading a file system in a kernel module. This
+is possible with 3) because we paid the cost of adding a new select
+attach interface.
+
+A semi-separate topic, option 2) enables attaching a BPF program
+to a kernel object (a cgroup here, but could be something else). This
+is an interesting idea, and we may find it useful in other cases (attach
+a BPF program to a task_struct, etc.).
+
+Thanks,
+Song
 
