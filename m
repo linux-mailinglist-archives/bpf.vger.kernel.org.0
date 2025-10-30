@@ -1,201 +1,163 @@
-Return-Path: <bpf+bounces-73079-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73080-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BADBDC22760
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 22:48:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64E42C2289F
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 23:19:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4F8F54EF7B1
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 21:48:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A6443BB6FD
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 22:19:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C573524D1;
-	Thu, 30 Oct 2025 21:48:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76DEA33A038;
+	Thu, 30 Oct 2025 22:19:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YqnWu/SL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OjXjkS1I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 437462620C3
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 21:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4213C26E16A
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 22:19:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761860891; cv=none; b=OY0xFEXqVtUEooe8wIQroGU+MURe0mkzcQ+17YQBs2gBc4LV04cgRgaFxtiqsT4bgrD8jEo+GE6KzlhvVTIwBbj0YET9d5FgQlXZLjuHTXl/5L4BpjvSY3Uj+XQZaXssIzoyYBxJw7cyKh7Azi7o42mWl4sy0Bs228uByBl++iQ=
+	t=1761862766; cv=none; b=Vv2GSDwPWHwVbkg2qq1hqeNRVbu0NfjAW9MmMVkEATLnY/gpZwwk/3BvTf3I7wzHCGQkolH1bLKT0WG7dWaaseCOZGbHRyrhfLUL6aL095jU70iDN/hKvDdcd2kOF5H6Vp3kNv8gGdq/RQ5qL3MgLm0zPtAx7lHnhFvi/LOnN5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761860891; c=relaxed/simple;
-	bh=qtDHxxoTJEWK6sajeFnub9aVCYf5UX0w2uwpoVn66QU=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sfJxT3nLiFx6Rt3wCR93BENDCpUzJUjlP+Wrwwaw/TzS+RSrbglehbU/+5aXRCiAXjT20muPXCJoiAWhbiuQGH2Me6bROkkaNeboj2C/jYV5FU0V1xn2vT9/ncujnbEs8t1Ph/ReYIg8whfC9jmvQEq+Zy0XTPSW6BgJieBV6bI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YqnWu/SL; arc=none smtp.client-ip=209.85.221.44
+	s=arc-20240116; t=1761862766; c=relaxed/simple;
+	bh=Q0NLfuAPRCRv2UVmufeZOfqT4b7DmYLGbcb7vMqjN8g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PXv7mu85NjiZJ72rBV+JnRPXoY5xCHvkgR5FNbz0UQKDi0aZS2u8mfrQjwRQxw9JolKV/MUYkbJqwSj6cNbS6y5N7jmFZTCkl3agnkJgCivzBMySeC7yImk2Eg7IqfAmulCHcC/JAw3KvPZAVt6qjeDbkuipsFKdKzYjps8d5IE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OjXjkS1I; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-4270a3464bcso1196417f8f.2
-        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 14:48:07 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-47721293fd3so9750535e9.1
+        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 15:19:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761860886; x=1762465686; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9zdtajZahxIouVQ7BZgQHFNhqJxmMsIC/KMsmOx1Lqs=;
-        b=YqnWu/SLwqT7BZyLLepbq4v5fXnyzyPp0wQJEW9NfH2x7BYS6qc5o7/nX3FXl+uV8y
-         efnb0LA0aQr3e4Z2KAYmWjsXK2xTHA8OJm1dlsHvCchUfZ1VJgwaT3LxucbT1oJw1Erj
-         w2JjNr3hY/70zIVTR9uRYr66D2/ovNjzIYvBQKL62T6oykC84dkSkAa5YeReBsy9i22W
-         CqJZIq29s+t+L6Gh2A4CeZ52gBkh8Pa1EIKMKEzk5HlaOB9shFOtHeMw6UVvTMO/DHH5
-         0rm4jLY/DHf9k3ZymG+IGV7Sljvgmy4GxGTHEYiZzt0QtkB0T9fEmq8PJJet/6d/E39J
-         kPLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761860886; x=1762465686;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1761862762; x=1762467562; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9zdtajZahxIouVQ7BZgQHFNhqJxmMsIC/KMsmOx1Lqs=;
-        b=c9PSFlIgdJecmELI+fqY3v0U0ur4vCbcM4/4i22Qn8P7p7U4ZfwRbmAuNBkKchrzQW
-         T2PzAoNqyW9S11XrP5S1cPJbAFijkkfZRYcD74bB3LU8flwlBK3CaW2PgMm36ebn7clv
-         8osrzVgylrjZ8r5BTVyBa4yQA99GSNtI8ZvuzwCFbGT3UlCt+ws4nXgGU0/JzX0p4IcP
-         hqwmhkKMRQGpcG0oKQlJKaaoMJRidA8vdZTDB0RC9+WoSjsPp5eItBj0sGbM9Vgst9XL
-         NVfof3BDfIN0wvPYY6KDqct9tsOQ4V5TWO8Oy2Y3uqzjNoffq/laEXSwBANDnwBFMV9t
-         aGgg==
-X-Forwarded-Encrypted: i=1; AJvYcCUo0pEex7Ou1f+TV80oFu2FdwHcbqtYhigeqmqPZxA+A2SyPaIigXWLKQRH7BSUNObdlpQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWkOO7x/58DlgJ5S6Hy7/DcstjamOfCXHTFCp28q/I/m9Kt8UU
-	Ry9iOuCwWhbVKBieVrwmDNJsjBdSz1h1BluxwDapyRygRGDZOvFKYACu
-X-Gm-Gg: ASbGnctAFUCVhfF2Vdnyf235PPbLcuYMXehWapKDyCdnpu0G9oqyo3y0K0FDqIn+3/q
-	669Cl8SrzAMo2mBTiinyFU7S4bi7TFlcpt7ZThr/7kP9HDHgkCdMfpoKE4KYQZunEQD3nXrTf2f
-	DVSLohdYP3U5nRqH+Azv1uV2nUHO4+28ZsstWK22UBa3h8myAWJcgeNpab1mfUlRz06GMJqsGLm
-	qq1Kft3EDB670EQfa+YPJmHgjIh/K1c93JJgzwN35vEjmyySoUKxd3I0rSckZI71l/yS0hUWP/F
-	XSBMRZkRPPd0mLUxTz5OW9hJYY65CGi8OJgaagxH8tSZfHaZ3TBABAwTUG5lotPESr8HVeKVClm
-	sjJ6uvai0sqDEC+2cvoz91K2ah+YvyjsNxA/y5KqdEJzxsm7QI9wePbXfq8bszbea
-X-Google-Smtp-Source: AGHT+IHpgIVwSKRX64ItacGOvKG5O7LOYeM0likkg9tQz3SPg+zELqpevWEhOftGbLR0IwXfs1b9eA==
-X-Received: by 2002:a05:6000:40df:b0:428:52d1:73ab with SMTP id ffacd0b85a97d-429bd6c1716mr960254f8f.58.1761860886262;
-        Thu, 30 Oct 2025 14:48:06 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429952de971sm33498892f8f.39.2025.10.30.14.48.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Oct 2025 14:48:05 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 30 Oct 2025 22:48:03 +0100
-To: Jiri Olsa <olsajiri@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: bot+bpf-ci@kernel.org, mhiramat@kernel.org, rostedt@goodmis.org,
-	song@kernel.org, peterz@infradead.org, bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, yhs@fb.com,
-	songliubraving@fb.com, andrii@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
-	yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
-Subject: Re: [PATCH 1/3] Revert "perf/x86: Always store regs->ip in
- perf_callchain_kernel()"
-Message-ID: <aQPdE7_yPO8HOwMC@krava>
-References: <20251027131354.1984006-2-jolsa@kernel.org>
- <8227ad3af501bb982231ef00ac5e970a0a12c9d64e07ea3f3d37100ec7e3f1cc@mail.kernel.org>
- <v53j2leswscyunqmrj5zvr3bsdafxlze5z3yp4hvsd6epbvdvm@njx4yhpkqoiz>
- <aP_0eh7TH2f_ykhz@krava>
- <xnx66p7w3qstst4ixj356dnzexrpsjy52tfwthp5kytv5yagcf@4ngtq5rrgqzj>
- <aQG_calHM0E7ou67@krava>
+        bh=wwT0gzXBjfVIjqUHMyMXwgTVGE+oE1n+ZnWlhE9CZ5U=;
+        b=OjXjkS1IDRMEsa3JaoykFfeSztq6wJvosHXa64fQAXuZSy9LFVkX7l3vlkq8/9Xd6j
+         4f4UP4RhQoGgcVi1IU+M79alMqgX16ZhpM5hC4xzNUKTN4MB25wk/kSCIN5DeJcobX9P
+         Sw+xhnHaxvHJKWnr3LlV6KOT2b9BEmn89S9hDxAq1mDT/ypy1YoszhniVjDgQEWLtQ62
+         Sx+OBuluhCcDHN3nDx7AqBQO3cKirWQVr+SkC2wh18pMXGw7j5OlnwEqnxO/GcIgccXx
+         vgomRqEdiXdL5W5Tg+BZx7JxxaWZX/vSN3Zzmg9ni4GDLOBd9hSTcvixS9Z0HxxxsDV7
+         P/Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761862762; x=1762467562;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wwT0gzXBjfVIjqUHMyMXwgTVGE+oE1n+ZnWlhE9CZ5U=;
+        b=Qfk7MipaTiNzkekK6pmgeXePEsTyjFEzRohShOjEG5Mtfu8bnzgY9vTdD3+aFHNbYJ
+         CM1nDDZejdx9khkqcUnbN8RptdzZ0oZ4K5a2i9X25x/m3KkPbq+LJaH1psEXgPjWEd3A
+         DEMwFKGDzvfu1fM6VecwnxUZkLFgPFpTnhYPUS82APlqfZw33Gssc3XtEUhG8d27jAuM
+         d568gn0GjqMnP14Tjpqgh0wFk4E75ixGhgTpogHdBCh1jK6bZ7wUeuu3Di66AwpP4qYd
+         KMZH4MR56SOueyKbA5r3P/T7mEGzvoJ1jT51/KuH+9njV961v4tM1RbJ6VauXll593bl
+         HH4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVvuzwdGplbNU+7z6tp/ene0AkaxrEGBXNVd3+6UaXDvLJVLG749KpDpOIP84WGizPwvJM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywn+bwo576iATPTfMBcvDYryAGMLGgZ6BRbpD84yFybisM0Y1y9
+	BStCE0pHlUXMa74Od7rK7tNLlaKC1P1v2vtxPprZ/fP3rA72ULypZIP9ZNQFUml+6Y+DjFXDZ2i
+	7EbXzxM3/beXyH7I0pQRpU8tAZLcM56A=
+X-Gm-Gg: ASbGncurmCPlMRSxaBo3XfQ4eqMdZbAUHmbr05aLf2BL1eFOZ8qz6flDJyKHAydJ5iv
+	rszhA/aktoWVn0pnWrk+25Py06lsMkzHpLMyPoycN5BeKKmB8vqpsxg2nsEb/mufjY/3grqEhU5
+	kI2hJHz9letPdtGbsb9/RU40xZk0biympBuPt36zZhwThIaPEZHI08QZbgBcSRVrhSKgRCBEYai
+	kS8e+VWWkPQQrmZbRMD0KaaLx4GQpeuOh5Kz+ylAk6265tNPdJSxk2cWD8TmoDgL/Qs/uygUHpg
+	AbWsyFAw0Q197+TI7ygomN9NpLeO
+X-Google-Smtp-Source: AGHT+IFiyX3dJnURSNNpVr0vY2zqjAiRZhDfNNfk8vGHPMc1PF33QyAD/7tk5XU1FaTuD+gAkKoljP+gHiDD9PWESHk=
+X-Received: by 2002:a05:600c:8189:b0:475:de75:84c6 with SMTP id
+ 5b1f17b1804b1-477262a941emr44348555e9.12.1761862762377; Thu, 30 Oct 2025
+ 15:19:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aQG_calHM0E7ou67@krava>
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+ <20251027231727.472628-3-roman.gushchin@linux.dev> <CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
+ <87zf98xq20.fsf@linux.dev> <CAHzjS_tnmSPy_cqCUHiLGt8Ouf079wQBQkostqJqfyKcJZPXLA@mail.gmail.com>
+ <CAMB2axMkYS1j=KeECZQ9rnupP8kw7dn1LnGV4udxMp=f=qoEQA@mail.gmail.com> <877bwcus3h.fsf@linux.dev>
+In-Reply-To: <877bwcus3h.fsf@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 30 Oct 2025 15:19:11 -0700
+X-Gm-Features: AWmQ_bncjILdks5wFOJTGOLbyWVnc9Lf7_PQRe6yc5ZnQYFFDm9_YYMU7X8G_V0
+Message-ID: <CAADnVQJGiH_yF=AoFSRy4zh20uneJgBfqGshubLM6aVq069Fhg@mail.gmail.com>
+Subject: bpf_st_ops and cgroups. Was: [PATCH v2 02/23] bpf: initial support
+ for attaching struct ops to cgroups
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Amery Hung <ameryhung@gmail.com>, Song Liu <song@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, JP Kobryn <inwardvessel@gmail.com>, 
+	linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 29, 2025 at 08:17:05AM +0100, Jiri Olsa wrote:
-> On Tue, Oct 28, 2025 at 08:39:33PM -0700, Josh Poimboeuf wrote:
-> > On Mon, Oct 27, 2025 at 11:38:50PM +0100, Jiri Olsa wrote:
-> > > On Mon, Oct 27, 2025 at 01:19:52PM -0700, Josh Poimboeuf wrote:
-> > > > On Mon, Oct 27, 2025 at 01:52:18PM +0000, bot+bpf-ci@kernel.org wrote:
-> > > > > Does this revert re-introduce the BPF selftest failure that was fixed in
-> > > > > 2019? The test tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c
-> > > > > still exists in the kernel tree.
-> > > > 
-> > > > I have the same question.  And note there may be subtle differences
-> > > > between the frame pointer and ORC unwinders.  The testcase would need to
-> > > > pass for both.
-> > > 
-> > > as I wrote in the other email that test does not check ips directly,
-> > > it just compare stacks taken from bpf_get_stackid and bpf_get_stack
-> > > helpers.. so it passes for both orc and frame pointer unwinder
-> > 
-> > Ok.  So the original fix wasn't actually a fix at all?  It would be good
-> > to understand that and mention it in the commit log.  Otherwise it's not
-> > clear why it's ok to revert a fix with no real explanation.
-> 
-> I think it was a fix when it was pushed 6 years ago, but some
-> unwind change along that time made it redundant, I'll try to
-> find what the change was
+On Thu, Oct 30, 2025 at 12:06=E2=80=AFPM Roman Gushchin
+<roman.gushchin@linux.dev> wrote:
+>
+> Ok, let me summarize the options we discussed here:
+>
+> 1) Make the attachment details (e.g. cgroup_id) the part of struct ops
+> itself. The attachment is happening at the reg() time.
+>
+>   +: It's convenient for complex stateful struct ops'es, because a
+>       single entity represents a combination of code and data.
+>   -: No way to attach a single struct ops to multiple entities.
+>
+> This approach is used by Tejun for per-cgroup sched_ext prototype.
 
-hum I can't tell what changed since v5.2 (kernel version when [1] landed)
-that reverted the behaviour which the [1] commit was fixing
+It's wrong. It should adopt bpf_struct_ops_link_create() approach
+and use attr->link_create.cgroup.relative_fd to attach.
+At that point scx can enforce that it attaches to one cgroup only
+if it simplifies things for sched-ext. That's fine.
+But api must be link based.
+Otherwise cgroup_id inside st_ops all the way from bpf prog
+will not be backward compatible if/when people would want
+to attach the same sched-ext to multiple cgroups.
 
-I did the test for both orc and framepointer unwind with and without the
-fix (revert of [1]) and except for the initial entry it does not seem to
-change the rest of the unwind ... though I'd expect orc unwind to have
-more entries
+> 2) Make the attachment details a part of bpf_link creation. The
+> attachment is still happening at the reg() time.
+>
+>   +: A single struct ops can be attached to multiple entities.
+>   -: Implementing stateful struct ops'es is harder and requires passing
+>      an additional argument (some sort of "self") to all callbacks.
 
-please check results below
+sched-ext is already suffering from lack of 'this'.
+The current workarounds with prog_assoc and aux__prog are not great.
+We should learn from that mistake instead of repeating it with bpf-oom.
 
-any idea? thanks,
-jirka
+As far as 'this' I think we should pass
+'struct bpf_struct_ops_link *' to all callbacks.
+This patch is proposing to have cougrp_id in there.
+It can be a pointer to cgroup too. This detail we can change later.
 
+We can brainstorm a way to pass 'link *' in run_ctx,
+and have an easy way to access it from ops and from kfuncs
+that ops will call.
+The existing tracing style bpf_set_run_ctx() should work for bpf-oom,
+and 'link *'->cgroup_id->cgrp->memcg will be there for ops
+and for kfuncs, but it doesn't quite work for sched-ext as-is
+that wants run_ctx to be different for sched-ext-s
+attached at different levels of hierarchy.
+Maybe additional bpf_set_run_ctx() while traversing
+hierarchy will do the trick?
+Then we might not even need aux_prog and kf_implicit_args that much.
+Though they may be useful on their own though.
 
-[1] 83f44ae0f8af perf/x86: Always store regs->ip in perf_callchain_kernel()
-[2] ae6a45a08689 x86/unwind/orc: Fall back to using frame pointers for generated code
----
-framepointer + fix:
+> I'm using this approach in the bpf oom proposal.
+>
+> 3) Move the attachment out of .reg() scope entirely. reg() will register
+> the implementation system-wide and then some 3rd-party interface
+> (e.g. cgroupfs) should be used to select the implementation.
 
-        bpf_prog_2beb79c650d605dd_rawtracepoint_bpf_testmod_test_read_1+324
-        bpf_trace_run2+216
-        __bpf_trace_bpf_testmod_test_read+13
-        bpf_testmod_test_read+1322
-        sysfs_kf_bin_read+103
-        kernfs_fop_read_iter+243
-        vfs_read+549
-        ksys_read+115
-        __x64_sys_read+29
-        x64_sys_call+6112
-        do_syscall_64+133
-        entry_SYSCALL_64_after_hwframe+118
-
-framepointer withtout fix:
-
-        bpf_prog_2beb79c650d605dd_rawtracepoint_bpf_testmod_test_read_1+324
-        bpf_prog_2beb79c650d605dd_rawtracepoint_bpf_testmod_test_read_1+324
-        bpf_trace_run2+216
-        __bpf_trace_bpf_testmod_test_read+13
-        bpf_testmod_test_read+1322
-        sysfs_kf_bin_read+103
-        kernfs_fop_read_iter+243
-        vfs_read+549
-        ksys_read+115
-        __x64_sys_read+29
-        x64_sys_call+6112
-        do_syscall_64+133
-        entry_SYSCALL_64_after_hwframe+118
-
-
-orc + fix:
-
-        bpf_prog_2beb79c650d605dd_rawtracepoint_bpf_testmod_test_read_1+324
-        bpf_trace_run2+214
-        bpf_testmod_test_read+1322
-        kernfs_fop_read_iter+228
-        vfs_read+550
-        ksys_read+112
-        do_syscall_64+133
-        entry_SYSCALL_64_after_hwframe+118
-
-
-orc without fix:
-
-        bpf_prog_2beb79c650d605dd_rawtracepoint_bpf_testmod_test_read_1+324
-        bpf_prog_2beb79c650d605dd_rawtracepoint_bpf_testmod_test_read_1+324
-        bpf_trace_run2+214
-        bpf_testmod_test_read+1322
-        kernfs_fop_read_iter+228
-        vfs_read+550
-        ksys_read+112
-        do_syscall_64+133
-        entry_SYSCALL_64_after_hwframe+118
+We went that road with ioctl-s and subsystem specific ways to attach.
+All of them sucked. link_create is the only acceptable approach
+because it returns FD.
 
