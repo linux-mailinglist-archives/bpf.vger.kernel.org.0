@@ -1,205 +1,256 @@
-Return-Path: <bpf+bounces-73017-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73018-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13FABC20989
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 15:30:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1381C20A40
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 15:38:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8E76F34F502
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 14:30:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96BD4189BFAB
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 14:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 782E2433A6;
-	Thu, 30 Oct 2025 14:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4CF92737EE;
+	Thu, 30 Oct 2025 14:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TE2P2+uV"
+	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="krTQm+gK"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from GVXPR05CU001.outbound.protection.outlook.com (mail-swedencentralazon11013059.outbound.protection.outlook.com [52.101.83.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDEE51F0E39
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 14:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761834628; cv=none; b=U1nspMiBTODEOOwR6B58O4ldyiwHjnvk32QPNFG5vsWYAZuomtAZ8pwqeVigw5FbgXeeJSocJJ0wE5T8YNuE3ESsSGuC+OD/AjkY9++JOcQolfR3K2h0mNRKy0duY2xXpFyviUrh4R1nJZR4/7vFzvrAvmRYY9mexXzvUQ4HCgc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761834628; c=relaxed/simple;
-	bh=Exy7QyU1oeByTEpDwoCCXCl4P8vmuSXO+nlH7c8iTSY=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Fn8e2Pvril2PPiGrhMIu18OQFzbues9WQORnmWK5vkwxBBKnR+d5xOtfb2AywCqto18DYZof74Em5D3JtHP6LzubjnyqXkjeEnqGmNz7I/O1fVRagb2KPtzL7KihRUIS/ROthbJwmz0ooS4BJY/FAyoUE7IwsfwaY7TjZyFntcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TE2P2+uV; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ca00af4c-39bd-455c-889e-044fcf9cf09f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761834613;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZYiXMuswR1+jgLjGoqjnHkFPcb2vIu0Q7bxZbMV3VUc=;
-	b=TE2P2+uVGQB+GtTNh1Af5qAqnZ30YTbmg4L1+QZMmgjHcT7hy7bVY0d6kRank3Y6KSpEvZ
-	PlqBwxBhMsFlYZNjhMT6laI9E9MK0eaYfk8+D1DVtyMIQfZMqyLUCxvisZlVYBPlIqpudm
-	DSmlAwsLk/r/m/RywdvxixuuNPWky8Q=
-Date: Thu, 30 Oct 2025 22:29:56 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E376426A1D9;
+	Thu, 30 Oct 2025 14:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.83.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761834884; cv=fail; b=XB9EW9v3tUio1OCqBXRzBmkMqUADSYFx6WqQ5E0kf/Is3naRWf6rGbcAvP8iPJgqvxTZxd1GA9KZlWwhC2ki8N7pFixkkvtkPXj69uL3VJmPab+7mOeIm8D4rrjpk9/8VzPTFiPs6euB2WENf1pCXZxnPLKeuEcrqas2FXPoN2Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761834884; c=relaxed/simple;
+	bh=dQEGJx1YNjzC3HboCIvJG36beTOioQfq2xP4TV1Cf74=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=AU4Dye5e0LlxpNHI5KNIOBaBwt4Ozzs2Z54/1ROjJy5dORE1giCIBwQwkyOsMhJ1fRkg/qsYYpFxwzJy0cdyuhHV96/3azi7mlXSgO64wl96zYNCI87J6zhBTn1LsjXDTjZ57lTsomNpLToCexHUeL0yuini9F9+LZwceoMqQ+M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=krTQm+gK; arc=fail smtp.client-ip=52.101.83.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=J1AI59BJh8GmQrHHAQq8txyQfcM7qZzAoPZ6v47mP/ZH3nPV/m5UTL7nSkAgXakznFxZi596o0RKEBXRYx7h39m3ZlACFMSsKGVPRTo7RO+UtCXQ015rMw5VbOgWot94jimWCaNe1wMYchqturZZ0bYcJSn7X1XI6/qhUt5IBp7hI3F9+s0DnxtA2wI56/nzq9sZ0maAeRD2a3RMHKXPszy2CLJwvecqa8tTxSPxPz0UXSyQQaL4CDsPPWZvAz1iso0Lh0cNcIe3ywbhmLjug01pl74rKDxzRKOPG701I/D1NJn5w2plFePUzUKPm6LrsI/ZjOmRTpN1xo8Vleg2SA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tp2be4a5WkOLwFsSD3QmajURfl8JuW25p006R9FsJuw=;
+ b=hG1Dk/2+zqxyC9OMZVl60OXIXMa6YRlpXoU9aKoNumDYP9awzFUcnC0cZhKapxy+Y3WS3xZlSk9EzfHR3C2Wa00jjBN6GReCixYsr1lnge/L2Wm73P2iUmIECPbRBh+NYBHs6pWNfVD0FN9Cqq1TGQIxzTajCJA2fSTzkWgM868SyK/3DR6DmUUqOl3Kj0kRmY6MdduVE3RTiYJhNeLb+WBiw/Qu6z3HDeFPqdCbGniGlMmNqeQlKPsdQVJLdJA8opagrDaiOya1NbYuLPG060qz0VXjV1wGuPm6EfPGkJWR/yAqa8/PHAb6/1+uVKMWvEGDGcoviIpZlXJe0OCeYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 131.228.2.241) smtp.rcpttodomain=apple.com smtp.mailfrom=nokia-bell-labs.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nokia-bell-labs.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tp2be4a5WkOLwFsSD3QmajURfl8JuW25p006R9FsJuw=;
+ b=krTQm+gKp1ePkJ3iBqiiWJSuLZBW/hZquPXwrkR1134WQoRgIhjqg29QxkeDYqcZdsegH8rcQYD+cHg5tQwYZdxGnm4+T3KtbO9widb+s0E7nP//7A9/89OFtyD5SIClycTgmtfppW6YeeNFAKbeJSlgp/TIN1yodHvlDPPkVBWH0T6vxJ2h468hVGazuR+NoHCpZycE5w9WNN9OObEzczTtbfug1IYBkdD6QRAdOileq0a/aK1wM2VNuF0qNcyydE0bYQo67wLnbHEDanWKI7iMS4GCmQziAOFu8s3+QyxPEyaXtsTHP1dBJntmDmg/1YKFEoOBsZr5OwV5orj4+A==
+Received: from AM0PR06CA0132.eurprd06.prod.outlook.com (2603:10a6:208:ab::37)
+ by AM8PR07MB7555.eurprd07.prod.outlook.com (2603:10a6:20b:24d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9275.13; Thu, 30 Oct
+ 2025 14:34:38 +0000
+Received: from AM3PEPF00009B9C.eurprd04.prod.outlook.com
+ (2603:10a6:208:ab:cafe::d1) by AM0PR06CA0132.outlook.office365.com
+ (2603:10a6:208:ab::37) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9275.14 via Frontend Transport; Thu,
+ 30 Oct 2025 14:34:39 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.241)
+ smtp.mailfrom=nokia-bell-labs.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nokia-bell-labs.com;
+Received-SPF: Pass (protection.outlook.com: domain of nokia-bell-labs.com
+ designates 131.228.2.241 as permitted sender)
+ receiver=protection.outlook.com; client-ip=131.228.2.241;
+ helo=fihe3nok0734.emea.nsn-net.net; pr=C
+Received: from fihe3nok0734.emea.nsn-net.net (131.228.2.241) by
+ AM3PEPF00009B9C.mail.protection.outlook.com (10.167.16.21) with Microsoft
+ SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9275.10
+ via Frontend Transport; Thu, 30 Oct 2025 14:34:38 +0000
+Received: from sarah.nbl.nsn-rdnet.net (sarah.nbl.nsn-rdnet.net [10.0.73.150])
+	by fihe3nok0734.emea.nsn-net.net (Postfix) with ESMTP id AD5D420123;
+	Thu, 30 Oct 2025 16:34:36 +0200 (EET)
+From: chia-yu.chang@nokia-bell-labs.com
+To: pabeni@redhat.com,
+	edumazet@google.com,
+	parav@nvidia.com,
+	linux-doc@vger.kernel.org,
+	corbet@lwn.net,
+	horms@kernel.org,
+	dsahern@kernel.org,
+	kuniyu@google.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	dave.taht@gmail.com,
+	jhs@mojatatu.com,
+	kuba@kernel.org,
+	stephen@networkplumber.org,
+	xiyou.wangcong@gmail.com,
+	jiri@resnulli.us,
+	davem@davemloft.net,
+	andrew+netdev@lunn.ch,
+	donald.hunter@gmail.com,
+	ast@fiberby.net,
+	liuhangbin@gmail.com,
+	shuah@kernel.org,
+	linux-kselftest@vger.kernel.org,
+	ij@kernel.org,
+	ncardwell@google.com,
+	koen.de_schepper@nokia-bell-labs.com,
+	g.white@cablelabs.com,
+	ingemar.s.johansson@ericsson.com,
+	mirja.kuehlewind@ericsson.com,
+	cheshire@apple.com,
+	rs.ietf@gmx.at,
+	Jason_Livingood@comcast.com,
+	vidhi_goel@apple.com
+Cc: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+Subject: [PATCH v5 net-next 00/14] AccECN protocol case handling series
+Date: Thu, 30 Oct 2025 15:34:21 +0100
+Message-Id: <20251030143435.13003-1-chia-yu.chang@nokia-bell-labs.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf v3 4/4] selftests/bpf: Add tests to verify freeing the
- special fields when update hash and local storage maps
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
- song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- memxor@gmail.com, linux-kernel@vger.kernel.org, kernel-patches-bot@fb.com
-References: <20251026154000.34151-1-leon.hwang@linux.dev>
- <20251026154000.34151-5-leon.hwang@linux.dev>
- <CAMB2axN6bsrMH6_qVz9eHY1HLp6SQmM-nOUEXUOOiibZFMzXMw@mail.gmail.com>
- <a798d47e-4ab8-423a-b8ef-e42ff9760324@linux.dev>
-Content-Language: en-US
-In-Reply-To: <a798d47e-4ab8-423a-b8ef-e42ff9760324@linux.dev>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM3PEPF00009B9C:EE_|AM8PR07MB7555:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7e60a12d-010b-4d8f-b56f-08de17c17473
+X-LD-Processed: 5d471751-9675-428d-917b-70f44f9630b0,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+ BCL:0;ARA:13230040|1800799024|376014|7416014|36860700013|82310400026|921020;
+X-Microsoft-Antispam-Message-Info:
+ =?utf-8?B?SkE5Q3VMYXJnSThCQVVFbWlZRWZmT1N5MmQ5bVRHQkcyVXpFZEFYN1Z1Q2Ew?=
+ =?utf-8?B?Vm1KbU5QZTN5ajF3dThmK3duUnFrWno5WkxLaDFlYU9WcFZubWx2WnJUMnl0?=
+ =?utf-8?B?ekg3UXJZQXNDakVLeWk5bVQ3eTFXdjFlUkQ0cy82eGJHN0hxdDZ2Nm5hUnpt?=
+ =?utf-8?B?RFloRGlMM1B5eDhoMzlIelBmR09qK2kyU1NCTE95MnJkK0ZYMms0Z21zZWR6?=
+ =?utf-8?B?eDlUYlVhbVNCY21UdkFSYXpTcU5sQlBvSTZ3dDBuRVk1NTVDVjRaUWF4WkhS?=
+ =?utf-8?B?UHNwSnRFRXo1MDJWYWN2NVlocnRNOXdRTnpUWklaWTNFL1ZTVExRaFVoRm5V?=
+ =?utf-8?B?R3c2MWh0MDYyOW1wYlI5ZlZPMDNUc0FVaWZ1enBLSUExd2NQeHdWLzNpZjNR?=
+ =?utf-8?B?ZEJQSE1jWGRiWnpORzIyWW1BYzgxckpJY2h6a09qQzIyYjlJVG92KzhwSkEz?=
+ =?utf-8?B?dmZ0YXllcHVTbFFpTTdrb1JtbnFOci9OU0dpSGI3Q29PSCtoVkQrRmpraGNR?=
+ =?utf-8?B?OFgzOWNJbHo3UStIcjZRYjBTbmNmWDBCRVlEbndvK0owNExqd2ZqVWRBdldz?=
+ =?utf-8?B?aUlpYmpORTdIZTZteDRBVDB1NUxJTDRXVDExb0tCNmRic214V2U2dG9QVkJP?=
+ =?utf-8?B?VkhOK1RwMkhwQWNlMDI4cXJmVUlQUU9CRG9CQzBveHlOazhSMjNGQ0VkcWh0?=
+ =?utf-8?B?dTVmUUpTMzdnYUN4V2hRNjQxTlhYWE5zYzFCdDBDNytQbjdISmNCaG5yV2Yz?=
+ =?utf-8?B?TGsyYjk5NllTdlZRNEtPaFlDNlJaaEg3S0k1WE1Vc0VEcjVaY053WmpLVWlu?=
+ =?utf-8?B?RGRVeXIvL05lTGRPSkhGMzY1OU02Tm1vNWhlSjdBTTEwMVcrc0FHd0JTVUVh?=
+ =?utf-8?B?N1BiQy8zRTdtTmpWd2tjeUlndGViRVdvWUFDVFNRU01TbGpLaGtLU0Ivckpn?=
+ =?utf-8?B?T1J6VmRqTVhsdzhCWk43Rjh2ZTF4QUhZcUNyWExBZkJ4TUlqRHdrR2h5THZ5?=
+ =?utf-8?B?QjhlejhEbEVJWFhRcW5uMk9MaWdRdTNTVTlUSjNpcCtIM1ZGd2ZmbXVtd2xL?=
+ =?utf-8?B?VVRodkJzNDZ6MnRFZnk5bm1xSG9UUlJTbDJCRncyNmtLVk05SlRlYmRVTWdN?=
+ =?utf-8?B?aFJ4Z2RtcjBTWVcxK04zeDJacXNna3A0dmRkRmprZFZmNjd2Mm9BOVZGanR4?=
+ =?utf-8?B?cEpLTnU3U045SUxDM0gyZ0oxQUVPcUUrdk9LVFVoZ0N3NW9ReUs1dWd6VHc5?=
+ =?utf-8?B?Y1YwMXptYm5nVFMrbW1nVllwOHdwa2k1VGtLWVU5SE1TWkp4b2xSS1ZhK0N6?=
+ =?utf-8?B?TTNkOUcyRVY1aHRIaWozbXNBc1hBV1hhNHRSakFMY09MVW9uT0FhSzl4KzZC?=
+ =?utf-8?B?MUwwc1g1Mjlqa2xKdUkvRjZWV2tKV2VCOWpYakZLbTc4RHhJa2lIWE9leVlu?=
+ =?utf-8?B?b1dPTVpNTjY1NTU0dDNuSmVDbk41MXBXMWh5UHlFb3lPU0pueG9uOGZBNkZX?=
+ =?utf-8?B?R0R3YU1PMWw1bWEzdXlQS3hHS0Yyem9DVHc2VVJNQ24rSTZQa2pDRWd1ZFJP?=
+ =?utf-8?B?RUQySnlnL1dMbmdVdkJnNjRhQU5qVnhhMWt6VVdoRmhvdjNhVGRQYStKMUtT?=
+ =?utf-8?B?QXYyVUhpMGZnelVUQVh6a1MxQmF0QndqT0RYdHJoMW1BL2Ura3Azdmdsd2pX?=
+ =?utf-8?B?MFlaUTk0RGc2MVlIaUVmcVAzdWtBL3hQc2RnVGdKNldycU5ZYlBRdzFIR0FO?=
+ =?utf-8?B?aDZxVXpvZnd2d1lJMjB1QnRVTmxIVzhRaGZTdU9MTTVkMVVLRzNQdUNWVGl4?=
+ =?utf-8?B?WUxQcUwrRkxsMjlmRVlTMURJOXJQaEIyMWR4dzRpaitTWGwwMU9lend4UkpM?=
+ =?utf-8?B?clcrRlJYU1JJREJmWWZZVlNqeWZOOHR3eG1wRUN2a1FRQjZrenBRM0pKbCtT?=
+ =?utf-8?B?TFBaMlNNUFdDbWs5RGZINS8vQXNNTXF2Ly9Sb09oVTZpN3VyV0xpSjhFeVh3?=
+ =?utf-8?B?MVRVMjR5V29mSmlWb1ZKVGoyQ0tjZVROVmhMOG05UmxIOFVPTXpYNlBUQmRF?=
+ =?utf-8?B?V29aYm8zbHU0ZC9tSmo2T3lKb0ZadHREVTBENkVyNzFlNzhKYTQ3dldzTlla?=
+ =?utf-8?Q?RxT+gSr3noVGHJbjYWsxNGy5k?=
+X-Forefront-Antispam-Report:
+ CIP:131.228.2.241;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0734.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(36860700013)(82310400026)(921020);DIR:OUT;SFP:1101;
+X-OriginatorOrg: nokia-bell-labs.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2025 14:34:38.2385
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e60a12d-010b-4d8f-b56f-08de17c17473
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.241];Helo=[fihe3nok0734.emea.nsn-net.net]
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TreatMessagesAsInternal-AM3PEPF00009B9C.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR07MB7555
 
+From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
 
+Hello,
 
-On 2025/10/29 22:58, Leon Hwang wrote:
-> 
-> 
-> On 2025/10/28 00:34, Amery Hung wrote:
->> On Sun, Oct 26, 2025 at 8:42 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>>
->>> Add tests to verify that updating hash and local storage maps decrements
->>> refcount when BPF_KPTR_REF objects are involved.
->>>
->>> The tests perform the following steps:
->>>
->>> 1. Call update_elem() to insert an initial value.
->>> 2. Use bpf_refcount_acquire() to increment the refcount.
->>> 3. Store the node pointer in the map value.
->>> 4. Add the node to a linked list.
->>> 5. Probe-read the refcount and verify it is *2*.
->>> 6. Call update_elem() again to trigger refcount decrement.
->>> 7. Probe-read the refcount and verify it is *1*.
->>>
->>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
->>> ---
->>>  .../bpf/prog_tests/refcounted_kptr.c          | 178 +++++++++++++++++-
->>>  .../selftests/bpf/progs/refcounted_kptr.c     | 160 ++++++++++++++++
->>>  2 files changed, 337 insertions(+), 1 deletion(-)
->>>
-> 
-> [...]
-> 
->>> @@ -44,3 +44,179 @@ void test_refcounted_kptr_wrong_owner(void)
->>>         ASSERT_OK(opts.retval, "rbtree_wrong_owner_remove_fail_a2 retval");
->>>         refcounted_kptr__destroy(skel);
->>>  }
->>> +
->>> +static void test_refcnt_leak(void *values, size_t values_sz, u64 flags, struct bpf_map *map,
->>> +                            struct bpf_program *prog_leak, struct bpf_program *prog_check)
->>> +{
-> 
-> [...]
-> 
->>> +}
->>
->> Just use syscall BPF programs across different subtests, and you can
->> share this test_refcnt_leak() across subtests.
->>
->> It also saves you some code setting up bpf_test_run_opts. You can just
->> call bpf_prog_test_run_opts(prog_fd, NULL) as you don't pass any input
->> from ctx.
->>
->>> +
->>> +static void test_percpu_hash_refcount_leak(void)
->>> +{
-> 
-> [...]
-> 
->>> +out:
->>> +       close(cgroup);
->>> +       refcounted_kptr__destroy(skel);
->>> +       if (client_fd >= 0)
->>> +               close(client_fd);
->>> +       if (server_fd >= 0)
->>> +               close(server_fd);
->>> +}
->>
->> Then, you won't need to set up server, connection.... just to
->> read/write cgroup local storage. Just call test_refcnt_leak() that
->> runs the two BPF syscall programs for cgroup local storage.
->>
-> 
-> [...]
-> 
->>
->>
->> And in syscall BPF program, you can simply get the cgroup through the
->> current task
->>
->> SEC("syscall")
->> int syscall_prog(void *ctx)
->> {
->>         struct task_struct *task = bpf_get_current_task_btf();
->>
->>         v = bpf_cgrp_storage_get(&cgrp_strg, task->cgroups->dfl_cgrp, 0,
->>                                BPF_LOCAL_STORAGE_GET_F_CREATE);
->>         ...
->> }
->>
-> 
-> Hi Amery,
-> 
-> Thanks for the suggestion.
-> 
-> I tried your approach, but the verifier rejected it with the following
-> error:
-> 
-> 0: R1=ctx() R10=fp0
-> ; task = bpf_get_current_task_btf(); @ refcounted_kptr.c:686
-> 0: (85) call bpf_get_current_task_btf#158     ; R0=trusted_ptr_task_struct()
-> ; v = bpf_cgrp_storage_get(&cgrp_strg, task->cgroups->dfl_cgrp, 0, @
-> refcounted_kptr.c:687
-> 1: (79) r1 = *(u64 *)(r0 +4856)       ; R0=trusted_ptr_task_struct()
-> R1=untrusted_ptr_css_set()
-> 2: (79) r2 = *(u64 *)(r1 +96)         ; R1=untrusted_ptr_css_set()
-> R2=untrusted_ptr_cgroup()
-> 3: (18) r1 = 0xffffa1b442a4b800       ; R1=map_ptr(map=cgrp_strg,ks=4,vs=16)
-> 5: (b7) r3 = 0                        ; R3=0
-> 6: (b7) r4 = 1                        ; R4=1
-> 7: (85) call bpf_cgrp_storage_get#210
-> R2 type=untrusted_ptr_ expected=ptr_, trusted_ptr_, rcu_ptr_
-> processed 7 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> peak_states 0 mark_read 0
-> 
+Plesae find the v5 AccECN case handling patch series, which covers
+several excpetional case handling of Accurate ECN spec (RFC9768),
+adds new identifiers to be used by CC modules, adds ecn_delta into
+rate_sample, and keeps the ACE counter for computation, etc.
 
-After analyzing the verifier log (with a bit of AI help), it turned out
-that 'task->cgroups->dfl_cgrp' wasn't protected by an RCU read lock.
-According to verifier.c::btf_ld_kptr_type(), this pointer must be
-accessed either within an RCU critical section or in a non-sleepable
-program.
+This patch series is part of the full AccECN patch series, which is available at
+https://github.com/L4STeam/linux-net-next/commits/upstream_l4steam/
 
-Adding RCU protection fixed the issue:
+Best regards,
+Chia-Yu
 
-    bpf_rcu_read_lock()
-    v = bpf_cgrp_storage_get(&cgrp_strg, task->cgroups->dfl_cgrp, 0,
-                             BPF_LOCAL_STORAGE_GET_F_CREATE);
-    bpf_rcu_read_unlock()
+---
+v5:
+- Move previous #11 in v4 in latter patch after discussion with RFC author.
+- Add #3 to update the comments for SKB_GSO_TCP_ECN and SKB_GSO_TCP_ACCECN. (Parav Pandit <parav@nvidia.com>)
+- Add gro self-test for TCP CWR flag in #4. (Eric Dumazet <edumazet@google.com>)
+- Add fixes: tag into #7 (Paolo Abeni <pabeni@redhat.com>)
+- Update commit message of #8 and if condition check (Paolo Abeni <pabeni@redhat.com>)
+- Add empty line between variable declarations and code in #13 (Paolo Abeni <pabeni@redhat.com>)
 
-With this change, test_refcnt_leak() can now be used across all subtests.
+v4:
+- Add previous #13 in v2 back after dicussion with the RFC author.
+- Add TCP_ACCECN_OPTION_PERSIST to tcp_ecn_option sysctl to ignore AccECN fallback policy on sending AccECN option.
 
-Thanks again for the helpful suggestion.
+v3:
+- Add additional min() check if pkts_acked_ewma is not initialized in #1. (Paolo Abeni <pabeni@redhat.com>)
+- Change TCP_CONG_WANTS_ECT_1 into individual flag add helper function INET_ECN_xmit_wants_ect_1() in #3. (Paolo Abeni <pabeni@redhat.com>)
+- Add empty line between variable declarations and code in #4. (Paolo Abeni <pabeni@redhat.com>)
+- Update commit message to fix old AccECN commits in #5. (Paolo Abeni <pabeni@redhat.com>)
+- Remove unnecessary brackets in #10. (Paolo Abeni <pabeni@redhat.com>)
+- Move patch #3 in v2 to a later Prague patch serise and remove patch #13 in v2. (Paolo Abeni <pabeni@redhat.com>)
 
-Thanks,
-Leon
+---
+Chia-Yu Chang (12):
+  net: update commnets for SKB_GSO_TCP_ECN and SKB_GSO_TCP_ACCECN
+  selftests/net: gro: add self-test for TCP CWR flag
+  tcp: L4S ECT(1) identifier and NEEDS_ACCECN for CC modules
+  tcp: disable RFC3168 fallback identifier for CC modules
+  tcp: accecn: handle unexpected AccECN negotiation feedback
+  tcp: accecn: retransmit downgraded SYN in AccECN negotiation
+  tcp: move increment of num_retrans
+  tcp: accecn: retransmit SYN/ACK without AccECN option or non-AccECN
+    SYN/ACK
+  tcp: accecn: unset ECT if receive or send ACE=0 in AccECN negotiaion
+  tcp: accecn: fallback outgoing half link to non-AccECN
+  tcp: accecn: detect loss ACK w/ AccECN option and add
+    TCP_ACCECN_OPTION_PERSIST
+  tcp: accecn: enable AccECN
+
+Ilpo Järvinen (2):
+  tcp: try to avoid safer when ACKs are thinned
+  gro: flushing when CWR is set negatively affects AccECN
+
+ Documentation/networking/ip-sysctl.rst        |  4 +-
+ .../networking/net_cachelines/tcp_sock.rst    |  1 +
+ include/linux/skbuff.h                        | 13 ++-
+ include/linux/tcp.h                           |  4 +-
+ include/net/inet_ecn.h                        | 20 +++-
+ include/net/tcp.h                             | 32 ++++++-
+ include/net/tcp_ecn.h                         | 92 ++++++++++++++-----
+ net/ipv4/sysctl_net_ipv4.c                    |  4 +-
+ net/ipv4/tcp.c                                |  2 +
+ net/ipv4/tcp_cong.c                           | 10 +-
+ net/ipv4/tcp_input.c                          | 37 +++++++-
+ net/ipv4/tcp_minisocks.c                      | 40 +++++---
+ net/ipv4/tcp_offload.c                        |  3 +-
+ net/ipv4/tcp_output.c                         | 42 ++++++---
+ tools/testing/selftests/net/gro.c             | 80 +++++++++++-----
+ 15 files changed, 294 insertions(+), 90 deletions(-)
+
+-- 
+2.34.1
 
 
