@@ -1,83 +1,83 @@
-Return-Path: <bpf+bounces-72989-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72990-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8428AC1F89C
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 11:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 975E6C1F8A5
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 11:29:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D4BD44E9D9C
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 10:27:55 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 308C54EA323
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 10:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A39C3563DC;
-	Thu, 30 Oct 2025 10:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0629357708;
+	Thu, 30 Oct 2025 10:26:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="skdK5yV+"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ZIJkYOkB"
 X-Original-To: bpf@vger.kernel.org
-Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012024.outbound.protection.outlook.com [40.93.195.24])
+Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012065.outbound.protection.outlook.com [52.101.48.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE2E3559E5;
-	Thu, 30 Oct 2025 10:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57785351FA7;
+	Thu, 30 Oct 2025 10:26:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.65
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761819984; cv=fail; b=kwOu8giiH7p0Mddqkuq6ReLld1EHEKY20LTCmO2LGKDltm6iVAmAHbKVPUBbpZsUT0ZBrkXhJhfLPOOACEMVm3kVL8idUfnX+4Syi9hYh3BfMu4VYVeRgXQ+wCPWBcTXYCvBysw9I55AamhYk2vCNbs2JSFx25sDLvQigZbLs3M=
+	t=1761819991; cv=fail; b=pJ0PTi+PH+sWLCmLV0KARHiLGs9UKMazyqFJzrQAPVnfUXT/6B/v50xlWAKVjRx4L+PRtR3NYell0MpOvrVd62GzsbMRFs/pL3pJ9/gwNiTy7ChZBiHALfpseulraGpcP5hj4V7ffRsQQTIoyT5JcCj8TAdka6PGfKVtKCJyaUE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761819984; c=relaxed/simple;
-	bh=QgqbTVB1dN9VI9lWn1pWWF+uFbSB6k/3pIfCj2vNLeE=;
+	s=arc-20240116; t=1761819991; c=relaxed/simple;
+	bh=jkg53qXTb4vkhasC0o8p3gmvGgwSQTRKYTmTVlmGyb8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KKKKjyx/fUSgUFIuS6bcBX790F2iDrY0kZQpLMGoMH9HWz4fnEm5+1bZriagYmKr4PJcMlm2+EXxo4HYHbprop8TVR/ca9Dp8CLjuQLijm23hxDoHk+wYdUEDlmyPO6hTo5te1sW4x7eMoaj0jJ9Czc5HYcq1v2bbvba2TESoJE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=skdK5yV+; arc=fail smtp.client-ip=40.93.195.24
+	 MIME-Version:Content-Type; b=QSmxvWbEkk7PtEadOmyMYmARLAbmpEe7tdwAsbSE633M781roCUhZhWrT+38/PEjSQ9XbPCEJmQyBCJ4cuh2Tz/ayIm7fRhqVvjjSCnbDrRSFzhhCAOk3BnC/sCkTlMs3QwYPc8syfgoLd3hU1AgTOP6tAk7Y7swsczeXp/pan4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ZIJkYOkB; arc=fail smtp.client-ip=52.101.48.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=IC+/8XyztPhToYVRIJ744JxRECA8lInWjsJL0KXoG/we/dnv5KseU7ZGehYSEPEeI+QuUmBgsCz6iBiR0C37EKfUlK6ZtSHyN9v7bA/q/QRYR5nLmnoy6A1k1iIF602DSn15dNAhRkP4nGGVprIIVwETAX60+yXN85lrE70pktQV+f6z1l6Uyomp40CtwpfKb+Z2scIteHxAUhYDPKBmaTOGgAanla5Wbuan92eYNHoC/i68YsyxhRtM2IN68HM235q3DfoTQQ84/KsekTrhgfbm9zWEmg2LYJQozfOUEUN2Mn7O06vqXat5MQt92mw9PLaatKWruE37l6Ds3qfx6g==
+ b=NH28E7mvzUW77oefj0yRJqlkXVAz0L49Ky+cM0RvltbTqwb7gQHqw6l/kGQJyTSDFpGFv/kuau/ay1mC4qSX9AhSfG8TnIev2jUmvSjVHbCxlSHYHrEGm/W+g7+u1NHrlxEHY0RH1Quv4f3qIWPUK7PWBM04yprbA/XOPWKumZWtA6VCKftfScZe48BTyG998lZ54IM2U+S+7oie7pd2dEwtG56IcNInAcyRwF7v6Zt8YLSoQJBfsAspJDPX6oXrllNiEsBbIJ+zV7aP6Dvc1f8IT7Ii13wQqXqSAhkdS84BAhjQP++td+oQzbUxqGUcWxU00kuQbPNeTaC2ksTSGg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=acPTaCYYGcmIVy4VyHIHr7goSCgIpxsyXGn3BtJ/nlw=;
- b=WNvqtgQ5AK9JVa2/q7ReHtBAqPt6tXBHrIG/6DY/D3qUSk9P8+l8kOfD46zUjFfGtwSjh//uQDEQ/7iXdAe1vIX6o+sw+Pnjt1kfTGBLvyjqKtxwG5IK3zNteXdQHi6QKKEaglHCxUEFYQIkMUUCM7uHhA9EzOQ7LBCb0F2PwWKCrFtSeD+Pun5Henp7TT83Zubm7dpf0gYdqI/Y/HLb9GvxrNV0+m4BNs4A2q1Z8LwVbS5hOe2k/koEWkRfR5E0szgHHUVafGpCMGcxw7jSQDmKinCwBpOf4xHYrsPE/XjZEezoia0gFpqXEJoXn8kGhVI4m7Uqe8aqxE1GH2nn8Q==
+ bh=byQ+RnWlGUwYqi6w9EvJsRqiKkdX2WCq+tT855Rzfw8=;
+ b=KI+ooE1amXie3QzsQrYNeK3G6iGKIVq7X4hC3xHpZbYk6hyhkx6LwCZ26xLEWfBBdousMFH1qg16D88H1gCIgBl1GpYPvjnk7dE4NRYfk1KBWrqlCIQJaYteaZFWg/4wTUkXoM4JrfP1OFjWemQp1zBGJ5O07WKjYJ8W72AmgVP8KheDBOxR6LmiIcqJB79ru7Uj6tPwDdGOeghCVHlKOmc3s0iF5Rp8Qqe6dHT3AqDTMIGZzDmPatZXA6XSqSTpQQkjMiioTVQQtUGP5rrWkvxmLLRjJj7OKNp6HDTg1aUFRc9RugawmGIVccbCrbTlz8f6YRci/sdR6+nGaUh97g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=acPTaCYYGcmIVy4VyHIHr7goSCgIpxsyXGn3BtJ/nlw=;
- b=skdK5yV+Jren/lg7JEnnaiZX5fQGzXCKH582RK+X8XxmhDFAXoWYuAqkMdeK65obINKzWX7m9x+ZmmkOB00EsUhVur90SpJ1gJd6pBKPlDQF5BhB79PHw2GXwU3arnyeqFy8WUMD8jujiVjgc8pmKBgun9F3PtHHTcpSBbk7i9oP7VpgmWSzgCFm3OLFsBr3NRm0Pk3kqXs4QL8PNg14KxsNFIklfDcToXBpzsGt7a8EmssmdhMsQMxGw+HJc45MctkIhRP9PIvUPvmqteoM9mZPTAAcspWMtzXZEEiUPx5hwcwH9ims25TLYSyVzIcPm1qqu6mXzGSG+hm1572lGQ==
-Received: from BL0PR05CA0012.namprd05.prod.outlook.com (2603:10b6:208:91::22)
- by DM4PR12MB6496.namprd12.prod.outlook.com (2603:10b6:8:bd::14) with
+ bh=byQ+RnWlGUwYqi6w9EvJsRqiKkdX2WCq+tT855Rzfw8=;
+ b=ZIJkYOkB/03ooPEXeN69vg88pUira01kvH87Q4+MCQaf4/xkL7MHCofcmFhg8NROcWnR2b0LEezk2KXDf7VsK6DvnrwPIMw8idubLhUtMl7vZzS7Qj41OAnUjtOJcnZP9Kz6H4bZaxF8nt/kKWANZAdtd1uTfRbNifXuFKZnCuYJ1BAqMBCzK5P+32mTHw5eUWMPS9KUB3WpcO8Ozz1fyFHonoQkj0ktUlaUQvRuM8MXFY/2m1fFa598c+UA5QndZDJBi3MrkZ2rQ7b9ICvhhOJxZuIUL0kT0t3oCjjGJROUDfzxUD+FmZud4+XqVpqi7mmmlz/rgeXrip20RKlTeg==
+Received: from BYAPR05CA0055.namprd05.prod.outlook.com (2603:10b6:a03:74::32)
+ by MW4PR12MB6778.namprd12.prod.outlook.com (2603:10b6:303:1e8::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9253.18; Thu, 30 Oct
- 2025 10:26:19 +0000
-Received: from BL6PEPF0001AB58.namprd02.prod.outlook.com
- (2603:10b6:208:91:cafe::a8) by BL0PR05CA0012.outlook.office365.com
- (2603:10b6:208:91::22) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9275.13 via Frontend Transport; Thu,
- 30 Oct 2025 10:26:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ 2025 10:26:24 +0000
+Received: from MWH0EPF000989EB.namprd02.prod.outlook.com
+ (2603:10b6:a03:74:cafe::58) by BYAPR05CA0055.outlook.office365.com
+ (2603:10b6:a03:74::32) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9298.5 via Frontend Transport; Thu,
+ 30 Oct 2025 10:26:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BL6PEPF0001AB58.mail.protection.outlook.com (10.167.241.10) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ MWH0EPF000989EB.mail.protection.outlook.com (10.167.241.138) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9275.10 via Frontend Transport; Thu, 30 Oct 2025 10:26:18 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9275.10 via Frontend Transport; Thu, 30 Oct 2025 10:26:24 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 30 Oct
+ 2025 03:26:10 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Oct
- 2025 03:26:04 -0700
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Oct
- 2025 03:26:03 -0700
+ 2025 03:26:09 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
  with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Thu, 30
- Oct 2025 03:25:58 -0700
+ Oct 2025 03:26:04 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -91,9 +91,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<bpf@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Carolina Jubran
 	<cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
-Subject: [PATCH net-next 3/6] net/mlx5e: Rename hwstamp functions to hwtstamp
-Date: Thu, 30 Oct 2025 12:25:07 +0200
-Message-ID: <1761819910-1011051-4-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next 4/6] net/mlx5e: Rename timestamp fields to hwtstamp_config
+Date: Thu, 30 Oct 2025 12:25:08 +0200
+Message-ID: <1761819910-1011051-5-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1761819910-1011051-1-git-send-email-tariqt@nvidia.com>
 References: <1761819910-1011051-1-git-send-email-tariqt@nvidia.com>
@@ -107,134 +107,241 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB58:EE_|DM4PR12MB6496:EE_
-X-MS-Office365-Filtering-Correlation-Id: 586a0c6d-d1ba-4af5-4e80-08de179ec3ca
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989EB:EE_|MW4PR12MB6778:EE_
+X-MS-Office365-Filtering-Correlation-Id: c950b6fb-96cb-43a2-16bb-08de179ec6fc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|1800799024|82310400026|7416014|36860700013;
+	BCL:0;ARA:13230040|82310400026|7416014|376014|1800799024|36860700013;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?qKyPGV8tjNkw/s0Cepa2RKQM8GM33Lnc75m3B/XapaKXcSLcQo17UdYgqbQd?=
- =?us-ascii?Q?tUvLSZBHGAFB0335W90+hBqr3agOBWTRrJZnvRVSNvD9AbxZ1CCml592S7NF?=
- =?us-ascii?Q?XOkq/RFCgxfibbGHgM5TaHLCYwKYOvMbCuRDkL0uY0bLnrjdeVWkULDUmXV2?=
- =?us-ascii?Q?fjhcBYeeH9ywUhfL4GMyxO+8DZLj7dEYkBXaQJFt9m2kX3Qe4NdhNIlIJjYO?=
- =?us-ascii?Q?WHO1FmMHWKVZo0gGW4sMgQNg04UAgsZ2MoNHFp7T+Rd26z8bkd3pcLfQpnex?=
- =?us-ascii?Q?oKzthhXiKpM3OWLRZxdhKtyRA9fcxWnVuD6YMPkEMpMT+CNx/+b62N9llqEG?=
- =?us-ascii?Q?4iPl5Q8/yUrpMTtAz0+/Dzq4h3x2k0qovX9jwMwcMySlyVaPgTGKZ25HGO6v?=
- =?us-ascii?Q?f3HkvDE6u7/WWG+QQ3baP+otFv4FbARib2l8CuXbD39RCgqSckH9qzrjOFQt?=
- =?us-ascii?Q?wztqjilt/zHyDjSPVzMHfCMaTZfWzBOL2jWg0u8Nbb0oUtVdxix01lUWMcjk?=
- =?us-ascii?Q?kzNMfpah/xqMBkjlJZaVn7jZynjG5e9EMbXL4QyHu9eEmnAxieNfLx+5kfAu?=
- =?us-ascii?Q?h444woSQ2G61rf+24Yxs/IQlDd3B76QLWJO4mjgUmNxaUZFW7pdJbyLq2wsG?=
- =?us-ascii?Q?QMZBe82Uw+hb+L0rXPsMZWDMmgf4bpJ3OKDLWj4bajIp+I4WDYTXSuTYGpq5?=
- =?us-ascii?Q?b80goqD8XxvRDrplVTrNAdleFi7kld0W6T6o48YGY1VE8R9hILJhD5M1rqbo?=
- =?us-ascii?Q?hj78qRpnkrJjT+6XkgGzZPhrlF8TOQX7Jm6xo3a0tGTGolXKBkWo3ckWYAd1?=
- =?us-ascii?Q?pQAOk5H4dzGhDVud/jxKw4Zwxhm8YqF6XU2Wz5u8v3kLjloZ7lNxjw3KPDG0?=
- =?us-ascii?Q?FE1MRsvTrj+JMXo2RzsESyVaumAEBoOmSMNd7kJ4f+Ix4+yfTddpA0a6TXg+?=
- =?us-ascii?Q?Dsj886MNubP/vn4XL8A5k1Ub3tE0DnLTYA3Ol8vjBr/dc2E6J+UnO+g0pu7f?=
- =?us-ascii?Q?i12k0CBfC9sR8TMRNyb1HXRkvuhdsC44oIskoVI9pEjt5tf8l9BmTg8ZluWb?=
- =?us-ascii?Q?P85fvMEjvDWz5yXr2TjjO3qY0YmBDFG1+4SutdXIzCwspOQi0uLGuPmaYKXL?=
- =?us-ascii?Q?JzBXonTmCimiWYMWGVKO+BInTFM2VVgZnYtHUeqoHA+Ce6mLXbJrZYK5uT13?=
- =?us-ascii?Q?SyqwUN0elb+OawhoTq8hoeua2cO3WeYrf7Is+YrWR3DLLPHjX4pPSnfK9GJx?=
- =?us-ascii?Q?Whv6a8NfWgvzhD9gSO7vvdjRpfT1aC4bJrG9SCVFpvyb7Xiy/yMVIMSTm6UF?=
- =?us-ascii?Q?OsfiXNQS9RjPNEK26g7lJcCAE/WWNVD9RdSfZsE4rIo/xAH2byHdUlKc6BoJ?=
- =?us-ascii?Q?7M+0L/NDh+jZkujTom8m/UnAQvIfTOEwA/HY8Kay5oE4CqNN1NpDktOjMezm?=
- =?us-ascii?Q?bC+XBNBdHZW/wqiMJvM69cmYfT+W2t4UKFULu5n5gRqO1tusld7Z6Xv0tXWd?=
- =?us-ascii?Q?Pwf456lzSskx5+M0J+NmXYTHxat1W3IC2FHuiKS0+0UYpghK+R8AX9aS1Bby?=
- =?us-ascii?Q?U8mTUmMoSK3Ik4K8U6s=3D?=
+	=?us-ascii?Q?Qw4/cxuTr5Uyi3ut7QweIYnxzeNafT6UuZI3Dg5zEAiN7iDg2aXkeCqN7ZT8?=
+ =?us-ascii?Q?gXPET8yC6h+lJw4L/l3kKTWB9zSfGiGC39rGjf+zIU9lfrSYJv9xY7Z8wMEB?=
+ =?us-ascii?Q?XVjigu7cSbmRkzMtjmHm9eA24DdZGqIRb91ItFF+xOwx+7R3q5o/bzJSoxc2?=
+ =?us-ascii?Q?FufVGxfLao6rkgF6x6maOQQzCes8EEQDbPN9A2H7s8yC7dSKEk6r/HLN1YJo?=
+ =?us-ascii?Q?fqcjU4MSqrG4OIWrPyo83uOSyWfJuEpl43Unr2yTLOAgvpKIrRkmNos4KHL4?=
+ =?us-ascii?Q?iEHXWx5owNB+F965UIS3Z+pUqhw4/j3RCoNg8meL9JraEd8hVUJu6d02uKok?=
+ =?us-ascii?Q?0L3tELnLSAZBxIxb2wuZ8J2RDCoRktH/BYL2cuCcgpMQzFvOsunEJiX73WVm?=
+ =?us-ascii?Q?Ql4J3hsC4K136mIblv0JoMjdhuxXeEO2Wifo/oA5TLNn2F2E0Vg/smKzydw8?=
+ =?us-ascii?Q?eTd+5ZAHg885t3pUUs3D6AHwQ45nU1iZGGHSJBxWIAAXVY2jwdkf1JGghLla?=
+ =?us-ascii?Q?4azavmVVvVhaOPsEML3hXTWfjZ4gROvHErLD8ekhGo+TWg9HAFaEiYCVT6zh?=
+ =?us-ascii?Q?4BRzdDjYE1ReFIsHr9D7g+h4b17IP3XBk9J/1g93vxnC1VXdQWrvJ8QK8amR?=
+ =?us-ascii?Q?yhqZGCHWJmQ+pwL6MRk8o2L1heN8s9taC4qtY3y70IATuzQ6Qli9+aGYtFaL?=
+ =?us-ascii?Q?mAEHfqlpIxzJjiQsMrxpTgAPdla0ysGZEV2hQO8oPUjnZmzX+dImChySWcFM?=
+ =?us-ascii?Q?PyZTVywwQEeScuf6dc/ClIMzAjcUS0JrPvms8TaPvvt89TCaNIMTMzYx1ngZ?=
+ =?us-ascii?Q?RouZx072RG5vg8U1GV3iMpaRx+mev39GdJtFLnuzC2oxrM0htsyqpdSUs/0s?=
+ =?us-ascii?Q?2G8rtdsMEjGJ+dSZi6BDAZpWxd8aNgll3wEojXcXdB6nMTIUleIcB4IWWYHN?=
+ =?us-ascii?Q?14bQaLoA8AL7T45KwrYUP/7mt9CaWhcBOHeWpN3kDA746gsKHecNlZoan2tE?=
+ =?us-ascii?Q?aH4wZtL03lJid/GSFu/n32J+qAwu2Anyt+SnyaDzZLVeIO3zadfJ6GkZ3ZjV?=
+ =?us-ascii?Q?9fpzUey14cpgUoT43WINkm7YjvyJskRoDwa005D1vyDc2nzNzdu9soSfAkxn?=
+ =?us-ascii?Q?UFd9XqkauMJzKS/iSEH1v9hfRQYb87DbveOi2olT7GMbqha2UeEkVpCVm0qJ?=
+ =?us-ascii?Q?PpIJFFOh9vWXHDUKjCBfzAWnEiaG589WmbvZPb9LWV1Y5q+ZAKGImoMkTyyR?=
+ =?us-ascii?Q?0WnEQ+SqOEd/wSaqoftz1cq76jnW+0TJAVlD+A14uq9frYu+P6Zj226hOWdm?=
+ =?us-ascii?Q?PgAc3hlg6vLXihb4aom8s8U3495rpaMhkMlv9nBKFBGNntDlY3pfwtvW6kkb?=
+ =?us-ascii?Q?F8c0Sty6flFfMRYc/705jdbrw7vq8T++2Cpk5Ix0l/OeXEfgpwwkRXGnQbZI?=
+ =?us-ascii?Q?igLBV934++QMBW30S3mUZweTDk1fz+pJ1+w7y3N4N5F/CuZto2YCeEsdJcRL?=
+ =?us-ascii?Q?7fTS1B1TiyIqQBagL8tv34hatfz9oFT+N+9SLQyAnnUp4CLD7/iMtdtiVP5z?=
+ =?us-ascii?Q?HNorGYzulmzyVZfbeY8=3D?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(1800799024)(82310400026)(7416014)(36860700013);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(7416014)(376014)(1800799024)(36860700013);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2025 10:26:18.8340
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2025 10:26:24.2916
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 586a0c6d-d1ba-4af5-4e80-08de179ec3ca
+X-MS-Exchange-CrossTenant-Network-Message-Id: c950b6fb-96cb-43a2-16bb-08de179ec6fc
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF0001AB58.namprd02.prod.outlook.com
+	MWH0EPF000989EB.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6496
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6778
 
 From: Carolina Jubran <cjubran@nvidia.com>
 
-Rename mlx5e_hwstamp_set/get() functions to mlx5e_hwtstamp_set/get()
-to better reflect that these functions handle hardware timestamping,
-not just hardware stamping.
+Rename hardware timestamp-related fields from 'tstamp' to
+'hwtstamp_config' throughout the MLX5 driver. The new name is more
+descriptive as it clearly indicates these fields contain hardware
+timestamp configuration.
 
 Signed-off-by: Carolina Jubran <cjubran@nvidia.com>
 Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en.h          | 4 ++--
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c     | 8 ++++----
- drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c | 4 ++--
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en.h           |  4 ++--
+ drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c       |  2 +-
+ .../net/ethernet/mellanox/mlx5/core/en/reporter_rx.c   |  3 ++-
+ drivers/net/ethernet/mellanox/mlx5/core/en/trap.c      |  2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c       |  2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c |  2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c   |  2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c      | 10 +++++-----
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c        |  4 ++--
+ 9 files changed, 16 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index 5485cf014926..ebd7493888d7 100644
+index ebd7493888d7..eb3eef1a496e 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -1026,8 +1026,8 @@ void mlx5e_self_test(struct net_device *ndev, struct ethtool_test *etest,
- 		     u64 *buf);
- void mlx5e_set_rx_mode_work(struct work_struct *work);
+@@ -696,7 +696,7 @@ struct mlx5e_rq {
+ 	struct mlx5e_rq_stats *stats;
+ 	struct mlx5e_cq        cq;
+ 	struct mlx5e_cq_decomp cqd;
+-	struct hwtstamp_config *tstamp;
++	struct hwtstamp_config *hwtstamp_config;
+ 	struct mlx5_clock      *clock;
+ 	struct mlx5e_icosq    *icosq;
+ 	struct mlx5e_priv     *priv;
+@@ -917,7 +917,7 @@ struct mlx5e_priv {
+ 	u8                         max_opened_tc;
+ 	bool                       tx_ptp_opened;
+ 	bool                       rx_ptp_opened;
+-	struct hwtstamp_config     tstamp;
++	struct hwtstamp_config     hwtstamp_config;
+ 	u16                        q_counter[MLX5_SD_MAX_GROUP_SZ];
+ 	u16                        drop_rq_q_counter;
+ 	struct notifier_block      events_nb;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+index 96a78b6d4904..12e10feb30f0 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+@@ -713,7 +713,7 @@ static int mlx5e_init_ptp_rq(struct mlx5e_ptp *c, struct mlx5e_params *params,
+ 	rq->netdev       = priv->netdev;
+ 	rq->priv         = priv;
+ 	rq->clock        = mdev->clock;
+-	rq->tstamp       = &priv->tstamp;
++	rq->hwtstamp_config = &priv->hwtstamp_config;
+ 	rq->mdev         = mdev;
+ 	rq->hw_mtu       = MLX5E_SW2HW_MTU(params, params->sw_mtu);
+ 	rq->stats        = &c->priv->ptp_stats.rq;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
+index b1415992ffa2..0686fbdd5a05 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
+@@ -318,7 +318,8 @@ mlx5e_rx_reporter_diagnose_common_ptp_config(struct mlx5e_priv *priv, struct mlx
+ 					     struct devlink_fmsg *fmsg)
+ {
+ 	mlx5e_health_fmsg_named_obj_nest_start(fmsg, "PTP");
+-	devlink_fmsg_u32_pair_put(fmsg, "filter_type", priv->tstamp.rx_filter);
++	devlink_fmsg_u32_pair_put(fmsg, "filter_type",
++				  priv->hwtstamp_config.rx_filter);
+ 	mlx5e_rx_reporter_diagnose_generic_rq(&ptp_ch->rq, fmsg);
+ 	mlx5e_health_fmsg_named_obj_nest_end(fmsg);
+ }
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/trap.c b/drivers/net/ethernet/mellanox/mlx5/core/en/trap.c
+index db6932b0cedf..da8c44f46edb 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/trap.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/trap.c
+@@ -47,7 +47,7 @@ static void mlx5e_init_trap_rq(struct mlx5e_trap *t, struct mlx5e_params *params
+ 	rq->netdev       = priv->netdev;
+ 	rq->priv         = priv;
+ 	rq->clock        = mdev->clock;
+-	rq->tstamp       = &priv->tstamp;
++	rq->hwtstamp_config = &priv->hwtstamp_config;
+ 	rq->mdev         = mdev;
+ 	rq->hw_mtu       = MLX5E_SW2HW_MTU(params, params->sw_mtu);
+ 	rq->stats        = &priv->trap_stats.rq;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+index 5d51600935a6..80f9fc10877a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+@@ -179,7 +179,7 @@ static int mlx5e_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+ {
+ 	const struct mlx5e_xdp_buff *_ctx = (void *)ctx;
  
--int mlx5e_hwstamp_set(struct mlx5e_priv *priv, struct ifreq *ifr);
--int mlx5e_hwstamp_get(struct mlx5e_priv *priv, struct ifreq *ifr);
-+int mlx5e_hwtstamp_set(struct mlx5e_priv *priv, struct ifreq *ifr);
-+int mlx5e_hwtstamp_get(struct mlx5e_priv *priv, struct ifreq *ifr);
- int mlx5e_modify_rx_cqe_compression_locked(struct mlx5e_priv *priv, bool val, bool rx_filter);
+-	if (unlikely(!mlx5e_rx_hw_stamp(_ctx->rq->tstamp)))
++	if (unlikely(!mlx5e_rx_hw_stamp(_ctx->rq->hwtstamp_config)))
+ 		return -ENODATA;
  
- int mlx5e_vlan_rx_add_vid(struct net_device *dev, __always_unused __be16 proto,
+ 	*timestamp =  mlx5e_cqe_ts_to_ns(_ctx->rq->ptp_cyc2time,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
+index dc5a4afa4974..5981c71cae2d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
+@@ -71,7 +71,7 @@ static int mlx5e_init_xsk_rq(struct mlx5e_channel *c,
+ 	rq->pdev         = c->pdev;
+ 	rq->netdev       = c->netdev;
+ 	rq->priv         = c->priv;
+-	rq->tstamp       = &c->priv->tstamp;
++	rq->hwtstamp_config = &c->priv->hwtstamp_config;
+ 	rq->clock        = mdev->clock;
+ 	rq->icosq        = &c->icosq;
+ 	rq->ix           = c->ix;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index 53e5ae252eac..47a3770fb0f7 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -2273,7 +2273,7 @@ static int set_pflag_rx_cqe_compress(struct net_device *netdev,
+ 	if (!MLX5_CAP_GEN(mdev, cqe_compression))
+ 		return -EOPNOTSUPP;
+ 
+-	rx_filter = priv->tstamp.rx_filter != HWTSTAMP_FILTER_NONE;
++	rx_filter = priv->hwtstamp_config.rx_filter != HWTSTAMP_FILTER_NONE;
+ 	err = mlx5e_modify_rx_cqe_compression_locked(priv, enable, rx_filter);
+ 	if (err)
+ 		return err;
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 20f55542433d..2ecbd735584e 100644
+index 2ecbd735584e..5b2491e19baa 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -4740,7 +4740,7 @@ static int mlx5e_hwstamp_config_ptp_rx(struct mlx5e_priv *priv, bool ptp_rx)
- 					&new_params.ptp_rx, true);
+@@ -735,7 +735,7 @@ static int mlx5e_init_rxq_rq(struct mlx5e_channel *c, struct mlx5e_params *param
+ 	rq->pdev         = c->pdev;
+ 	rq->netdev       = c->netdev;
+ 	rq->priv         = c->priv;
+-	rq->tstamp       = &c->priv->tstamp;
++	rq->hwtstamp_config = &c->priv->hwtstamp_config;
+ 	rq->clock        = mdev->clock;
+ 	rq->icosq        = &c->icosq;
+ 	rq->ix           = c->ix;
+@@ -3444,8 +3444,8 @@ int mlx5e_safe_reopen_channels(struct mlx5e_priv *priv)
+ 
+ void mlx5e_timestamp_init(struct mlx5e_priv *priv)
+ {
+-	priv->tstamp.tx_type   = HWTSTAMP_TX_OFF;
+-	priv->tstamp.rx_filter = HWTSTAMP_FILTER_NONE;
++	priv->hwtstamp_config.tx_type   = HWTSTAMP_TX_OFF;
++	priv->hwtstamp_config.rx_filter = HWTSTAMP_FILTER_NONE;
  }
  
--int mlx5e_hwstamp_set(struct mlx5e_priv *priv, struct ifreq *ifr)
-+int mlx5e_hwtstamp_set(struct mlx5e_priv *priv, struct ifreq *ifr)
+ static void mlx5e_modify_admin_state(struct mlx5_core_dev *mdev,
+@@ -4805,7 +4805,7 @@ int mlx5e_hwtstamp_set(struct mlx5e_priv *priv, struct ifreq *ifr)
+ 	if (err)
+ 		goto err_unlock;
+ 
+-	memcpy(&priv->tstamp, &config, sizeof(config));
++	memcpy(&priv->hwtstamp_config, &config, sizeof(config));
+ 	mutex_unlock(&priv->state_lock);
+ 
+ 	/* might need to fix some features */
+@@ -4820,7 +4820,7 @@ int mlx5e_hwtstamp_set(struct mlx5e_priv *priv, struct ifreq *ifr)
+ 
+ int mlx5e_hwtstamp_get(struct mlx5e_priv *priv, struct ifreq *ifr)
  {
- 	struct hwtstamp_config config;
- 	bool rx_cqe_compress_def;
-@@ -4818,7 +4818,7 @@ int mlx5e_hwstamp_set(struct mlx5e_priv *priv, struct ifreq *ifr)
- 	return err;
- }
+-	struct hwtstamp_config *cfg = &priv->tstamp;
++	struct hwtstamp_config *cfg = &priv->hwtstamp_config;
  
--int mlx5e_hwstamp_get(struct mlx5e_priv *priv, struct ifreq *ifr)
-+int mlx5e_hwtstamp_get(struct mlx5e_priv *priv, struct ifreq *ifr)
- {
- 	struct hwtstamp_config *cfg = &priv->tstamp;
- 
-@@ -4834,9 +4834,9 @@ static int mlx5e_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
- 
- 	switch (cmd) {
- 	case SIOCSHWTSTAMP:
--		return mlx5e_hwstamp_set(priv, ifr);
-+		return mlx5e_hwtstamp_set(priv, ifr);
- 	case SIOCGHWTSTAMP:
--		return mlx5e_hwstamp_get(priv, ifr);
-+		return mlx5e_hwtstamp_get(priv, ifr);
- 	default:
+ 	if (!MLX5_CAP_GEN(priv->mdev, device_frequency_khz))
  		return -EOPNOTSUPP;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+index cc2d90ed5378..727a561e8ffc 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+@@ -1598,7 +1598,7 @@ static inline bool mlx5e_build_rx_skb(struct mlx5_cqe64 *cqe,
+ 		stats->lro_bytes += cqe_bcnt;
  	}
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c
-index 79ae3a51a4b3..11d950f58ae3 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c
-@@ -563,9 +563,9 @@ int mlx5i_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
  
- 	switch (cmd) {
- 	case SIOCSHWTSTAMP:
--		return mlx5e_hwstamp_set(priv, ifr);
-+		return mlx5e_hwtstamp_set(priv, ifr);
- 	case SIOCGHWTSTAMP:
--		return mlx5e_hwstamp_get(priv, ifr);
-+		return mlx5e_hwtstamp_get(priv, ifr);
- 	default:
- 		return -EOPNOTSUPP;
+-	if (unlikely(mlx5e_rx_hw_stamp(rq->tstamp)))
++	if (unlikely(mlx5e_rx_hw_stamp(rq->hwtstamp_config)))
+ 		skb_hwtstamps(skb)->hwtstamp = mlx5e_cqe_ts_to_ns(rq->ptp_cyc2time,
+ 								  rq->clock, get_cqe_ts(cqe));
+ 	skb_record_rx_queue(skb, rq->ix);
+@@ -2704,7 +2704,7 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
+ 		stats->csum_none++;
  	}
+ 
+-	if (unlikely(mlx5e_rx_hw_stamp(&priv->tstamp)))
++	if (unlikely(mlx5e_rx_hw_stamp(&priv->hwtstamp_config)))
+ 		skb_hwtstamps(skb)->hwtstamp = mlx5e_cqe_ts_to_ns(rq->ptp_cyc2time,
+ 								  rq->clock, get_cqe_ts(cqe));
+ 	skb_record_rx_queue(skb, rq->ix);
 -- 
 2.31.1
 
