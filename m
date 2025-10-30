@@ -1,482 +1,205 @@
-Return-Path: <bpf+bounces-73016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73017-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9F94C20943
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 15:27:23 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13FABC20989
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 15:30:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EF4D189C4B5
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 14:27:43 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8E76F34F502
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 14:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEDC826B760;
-	Thu, 30 Oct 2025 14:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 782E2433A6;
+	Thu, 30 Oct 2025 14:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mIO1ykYo"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TE2P2+uV"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4EA7C8E6
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 14:27:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDEE51F0E39
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 14:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761834432; cv=none; b=EufMJONK5K1EtdrBsfIBdLVbBSAG0AZ6xt1J4V8XqUNDys2cDpWc9B9F0WFi2cgti026vxTiydVH2+TZGgkoOPEI5kY87Jrt1OWX2xFn8fNzwFkyvr2/fzy8jJxUc45EagejNOq4xPM1gnQFuzvaYC00VLt8OwpB4qSSaxeDhtg=
+	t=1761834628; cv=none; b=U1nspMiBTODEOOwR6B58O4ldyiwHjnvk32QPNFG5vsWYAZuomtAZ8pwqeVigw5FbgXeeJSocJJ0wE5T8YNuE3ESsSGuC+OD/AjkY9++JOcQolfR3K2h0mNRKy0duY2xXpFyviUrh4R1nJZR4/7vFzvrAvmRYY9mexXzvUQ4HCgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761834432; c=relaxed/simple;
-	bh=Osz9V4rlis6MlvPCVJ1sS06IW+iIwt1TuwuR8o4Rc2U=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NkRfUCoZiXOC0GRoMgeIMCFd/MxBBgbFYjxiCTrqcGBezPlFRpravIQZ5sh1sqzLKN4Cbq8sTFTMSRf/FHUBV7Qu8eojjilE0MB1JmQ7RoRKJkLlBagKpz8BV00HnQuwF/bq2QcJzre7Y0Gg0bqx0U8BiQFyMOascxfdqKb4Q9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mIO1ykYo; arc=none smtp.client-ip=91.218.175.181
+	s=arc-20240116; t=1761834628; c=relaxed/simple;
+	bh=Exy7QyU1oeByTEpDwoCCXCl4P8vmuSXO+nlH7c8iTSY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Fn8e2Pvril2PPiGrhMIu18OQFzbues9WQORnmWK5vkwxBBKnR+d5xOtfb2AywCqto18DYZof74Em5D3JtHP6LzubjnyqXkjeEnqGmNz7I/O1fVRagb2KPtzL7KihRUIS/ROthbJwmz0ooS4BJY/FAyoUE7IwsfwaY7TjZyFntcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TE2P2+uV; arc=none smtp.client-ip=95.215.58.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+Message-ID: <ca00af4c-39bd-455c-889e-044fcf9cf09f@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761834416;
+	t=1761834613;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=otkZ5ApkRfIYCx170EPorBEJOL1OsAFoyxtuxCPMlJ4=;
-	b=mIO1ykYoGaIQ21w/AuKzz0GZ3VAqn1uLWo3cu2TGWvKevHWAogPq7gvkHVmJhg91wQwnxE
-	D9zOZxyHi5C4jf0WUKtgibYJmCkFZcrDsq4h7z8RFo8X+xQNrapCnTCR1Xn5ynGUzbN9IM
-	l1SEErwBkLS5FAepGSgFivIpIT2kUnU=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-  linux-kernel@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,
-  Suren Baghdasaryan <surenb@google.com>,  Michal Hocko
- <mhocko@kernel.org>,  Shakeel Butt <shakeel.butt@linux.dev>,  Johannes
- Weiner <hannes@cmpxchg.org>,  Andrii Nakryiko <andrii@kernel.org>,  JP
- Kobryn <inwardvessel@gmail.com>,  linux-mm@kvack.org,
-  cgroups@vger.kernel.org,  bpf@vger.kernel.org,  Martin KaFai Lau
- <martin.lau@kernel.org>,  Song Liu <song@kernel.org>,  Kumar Kartikeya
- Dwivedi <memxor@gmail.com>,  Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 06/23] mm: introduce BPF struct ops for OOM handling
-In-Reply-To: <CALOAHbDmD2sTw6SLcZ3zikGO54GTyUSyFwTmak2UhA02oo4C-w@mail.gmail.com>
-	(Yafang Shao's message of "Thu, 30 Oct 2025 13:57:41 +0800")
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
-	<20251027231727.472628-7-roman.gushchin@linux.dev>
-	<CALOAHbDmD2sTw6SLcZ3zikGO54GTyUSyFwTmak2UhA02oo4C-w@mail.gmail.com>
-Date: Thu, 30 Oct 2025 07:26:42 -0700
-Message-ID: <877bwcpisd.fsf@linux.dev>
+	bh=ZYiXMuswR1+jgLjGoqjnHkFPcb2vIu0Q7bxZbMV3VUc=;
+	b=TE2P2+uVGQB+GtTNh1Af5qAqnZ30YTbmg4L1+QZMmgjHcT7hy7bVY0d6kRank3Y6KSpEvZ
+	PlqBwxBhMsFlYZNjhMT6laI9E9MK0eaYfk8+D1DVtyMIQfZMqyLUCxvisZlVYBPlIqpudm
+	DSmlAwsLk/r/m/RywdvxixuuNPWky8Q=
+Date: Thu, 30 Oct 2025 22:29:56 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf v3 4/4] selftests/bpf: Add tests to verify freeing the
+ special fields when update hash and local storage maps
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
+ song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ memxor@gmail.com, linux-kernel@vger.kernel.org, kernel-patches-bot@fb.com
+References: <20251026154000.34151-1-leon.hwang@linux.dev>
+ <20251026154000.34151-5-leon.hwang@linux.dev>
+ <CAMB2axN6bsrMH6_qVz9eHY1HLp6SQmM-nOUEXUOOiibZFMzXMw@mail.gmail.com>
+ <a798d47e-4ab8-423a-b8ef-e42ff9760324@linux.dev>
+Content-Language: en-US
+In-Reply-To: <a798d47e-4ab8-423a-b8ef-e42ff9760324@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Yafang Shao <laoar.shao@gmail.com> writes:
 
-> On Tue, Oct 28, 2025 at 7:22=E2=80=AFAM Roman Gushchin <roman.gushchin@li=
-nux.dev> wrote:
->>
->> Introduce a bpf struct ops for implementing custom OOM handling
->> policies.
->>
->> It's possible to load one bpf_oom_ops for the system and one
->> bpf_oom_ops for every memory cgroup. In case of a memcg OOM, the
->> cgroup tree is traversed from the OOM'ing memcg up to the root and
->> corresponding BPF OOM handlers are executed until some memory is
->> freed. If no memory is freed, the kernel OOM killer is invoked.
->>
->> The struct ops provides the bpf_handle_out_of_memory() callback,
->> which expected to return 1 if it was able to free some memory and 0
->> otherwise. If 1 is returned, the kernel also checks the bpf_memory_freed
->> field of the oom_control structure, which is expected to be set by
->> kfuncs suitable for releasing memory. If both are set, OOM is
->> considered handled, otherwise the next OOM handler in the chain
->> (e.g. BPF OOM attached to the parent cgroup or the in-kernel OOM
->> killer) is executed.
->>
->> The bpf_handle_out_of_memory() callback program is sleepable to enable
->> using iterators, e.g. cgroup iterators. The callback receives struct
->> oom_control as an argument, so it can determine the scope of the OOM
->> event: if this is a memcg-wide or system-wide OOM.
->>
->> The callback is executed just before the kernel victim task selection
->> algorithm, so all heuristics and sysctls like panic on oom,
->> sysctl_oom_kill_allocating_task and sysctl_oom_kill_allocating_task
->> are respected.
->>
->> BPF OOM struct ops provides the handle_cgroup_offline() callback
->> which is good for releasing struct ops if the corresponding cgroup
->> is gone.
->>
->> The struct ops also has the name field, which allows to define a
->> custom name for the implemented policy. It's printed in the OOM report
->> in the oom_policy=3D<policy> format. "default" is printed if bpf is not
->> used or policy name is not specified.
->>
->> [  112.696676] test_progs invoked oom-killer: gfp_mask=3D0xcc0(GFP_KERNE=
-L), order=3D0, oom_score_adj=3D0
->>                oom_policy=3Dbpf_test_policy
->> [  112.698160] CPU: 1 UID: 0 PID: 660 Comm: test_progs Not tainted 6.16.=
-0-00015-gf09eb0d6badc #102 PREEMPT(full)
->> [  112.698165] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BI=
-OS 1.17.0-5.fc42 04/01/2014
->> [  112.698167] Call Trace:
->> [  112.698177]  <TASK>
->> [  112.698182]  dump_stack_lvl+0x4d/0x70
->> [  112.698192]  dump_header+0x59/0x1c6
->> [  112.698199]  oom_kill_process.cold+0x8/0xef
->> [  112.698206]  bpf_oom_kill_process+0x59/0xb0
->> [  112.698216]  bpf_prog_7ecad0f36a167fd7_test_out_of_memory+0x2be/0x313
->> [  112.698229]  bpf__bpf_oom_ops_handle_out_of_memory+0x47/0xaf
->> [  112.698236]  ? srso_alias_return_thunk+0x5/0xfbef5
->> [  112.698240]  bpf_handle_oom+0x11a/0x1e0
->> [  112.698250]  out_of_memory+0xab/0x5c0
->> [  112.698258]  mem_cgroup_out_of_memory+0xbc/0x110
->> [  112.698274]  try_charge_memcg+0x4b5/0x7e0
->> [  112.698288]  charge_memcg+0x2f/0xc0
->> [  112.698293]  __mem_cgroup_charge+0x30/0xc0
->> [  112.698299]  do_anonymous_page+0x40f/0xa50
->> [  112.698311]  __handle_mm_fault+0xbba/0x1140
->> [  112.698317]  ? srso_alias_return_thunk+0x5/0xfbef5
->> [  112.698335]  handle_mm_fault+0xe6/0x370
->> [  112.698343]  do_user_addr_fault+0x211/0x6a0
->> [  112.698354]  exc_page_fault+0x75/0x1d0
->> [  112.698363]  asm_exc_page_fault+0x26/0x30
->> [  112.698366] RIP: 0033:0x7fa97236db00
->>
->> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
->> ---
->>  include/linux/bpf_oom.h    |  74 ++++++++++
->>  include/linux/memcontrol.h |   5 +
->>  include/linux/oom.h        |   8 ++
->>  mm/Makefile                |   3 +
->>  mm/bpf_oom.c               | 272 +++++++++++++++++++++++++++++++++++++
->>  mm/memcontrol.c            |   2 +
->>  mm/oom_kill.c              |  22 ++-
->>  7 files changed, 384 insertions(+), 2 deletions(-)
->>  create mode 100644 include/linux/bpf_oom.h
->>  create mode 100644 mm/bpf_oom.c
->>
->> diff --git a/include/linux/bpf_oom.h b/include/linux/bpf_oom.h
->> new file mode 100644
->> index 000000000000..18c32a5a068b
->> --- /dev/null
->> +++ b/include/linux/bpf_oom.h
->> @@ -0,0 +1,74 @@
->> +/* SPDX-License-Identifier: GPL-2.0+ */
->> +
->> +#ifndef __BPF_OOM_H
->> +#define __BPF_OOM_H
->> +
->> +struct oom_control;
->> +
->> +#define BPF_OOM_NAME_MAX_LEN 64
->> +
->> +struct bpf_oom_ctx {
->> +       /*
->> +        * If bpf_oom_ops is attached to a cgroup, id of this cgroup.
->> +        * 0 otherwise.
->> +        */
->> +       u64 cgroup_id;
->> +};
->> +
->> +struct bpf_oom_ops {
->> +       /**
->> +        * @handle_out_of_memory: Out of memory bpf handler, called befo=
-re
->> +        * the in-kernel OOM killer.
->> +        * @ctx: Execution context
->> +        * @oc: OOM control structure
->> +        *
->> +        * Should return 1 if some memory was freed up, otherwise
->> +        * the in-kernel OOM killer is invoked.
->> +        */
->> +       int (*handle_out_of_memory)(struct bpf_oom_ctx *ctx, struct oom_=
-control *oc);
->> +
->> +       /**
->> +        * @handle_cgroup_offline: Cgroup offline callback
->> +        * @ctx: Execution context
->> +        * @cgroup_id: Id of deleted cgroup
->> +        *
->> +        * Called if the cgroup with the attached bpf_oom_ops is deleted.
->> +        */
->> +       void (*handle_cgroup_offline)(struct bpf_oom_ctx *ctx, u64 cgrou=
-p_id);
->> +
->> +       /**
->> +        * @name: BPF OOM policy name
->> +        */
->> +       char name[BPF_OOM_NAME_MAX_LEN];
->> +};
->> +
->> +#ifdef CONFIG_BPF_SYSCALL
->> +/**
->> + * @bpf_handle_oom: handle out of memory condition using bpf
->> + * @oc: OOM control structure
->> + *
->> + * Returns true if some memory was freed.
->> + */
->> +bool bpf_handle_oom(struct oom_control *oc);
->> +
->> +
->> +/**
->> + * @bpf_oom_memcg_offline: handle memcg offlining
->> + * @memcg: Memory cgroup is offlined
->> + *
->> + * When a memory cgroup is about to be deleted and there is an
->> + * attached BPF OOM structure, it has to be detached.
->> + */
->> +void bpf_oom_memcg_offline(struct mem_cgroup *memcg);
->> +
->> +#else /* CONFIG_BPF_SYSCALL */
->> +static inline bool bpf_handle_oom(struct oom_control *oc)
->> +{
->> +       return false;
->> +}
->> +
->> +static inline void bpf_oom_memcg_offline(struct mem_cgroup *memcg) {}
->> +
->> +#endif /* CONFIG_BPF_SYSCALL */
->> +
->> +#endif /* __BPF_OOM_H */
->> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
->> index 50d851ff3f27..39a6c7c8735b 100644
->> --- a/include/linux/memcontrol.h
->> +++ b/include/linux/memcontrol.h
->> @@ -29,6 +29,7 @@ struct obj_cgroup;
->>  struct page;
->>  struct mm_struct;
->>  struct kmem_cache;
->> +struct bpf_oom_ops;
->>
->>  /* Cgroup-specific page state, on top of universal node page state */
->>  enum memcg_stat_item {
->> @@ -226,6 +227,10 @@ struct mem_cgroup {
->>          */
->>         bool oom_group;
->>
->> +#ifdef CONFIG_BPF_SYSCALL
->> +       struct bpf_oom_ops *bpf_oom;
->> +#endif
->> +
->>         int swappiness;
->>
->>         /* memory.events and memory.events.local */
->> diff --git a/include/linux/oom.h b/include/linux/oom.h
->> index 7b02bc1d0a7e..721087952d04 100644
->> --- a/include/linux/oom.h
->> +++ b/include/linux/oom.h
->> @@ -51,6 +51,14 @@ struct oom_control {
->>
->>         /* Used to print the constraint info. */
->>         enum oom_constraint constraint;
->> +
->> +#ifdef CONFIG_BPF_SYSCALL
->> +       /* Used by the bpf oom implementation to mark the forward progre=
-ss */
->> +       bool bpf_memory_freed;
->> +
->> +       /* Policy name */
->> +       const char *bpf_policy_name;
->> +#endif
->>  };
->>
->>  extern struct mutex oom_lock;
->> diff --git a/mm/Makefile b/mm/Makefile
->> index 21abb3353550..051e88c699af 100644
->> --- a/mm/Makefile
->> +++ b/mm/Makefile
->> @@ -105,6 +105,9 @@ obj-$(CONFIG_MEMCG) +=3D memcontrol.o vmpressure.o
->>  ifdef CONFIG_SWAP
->>  obj-$(CONFIG_MEMCG) +=3D swap_cgroup.o
->>  endif
->> +ifdef CONFIG_BPF_SYSCALL
->> +obj-y +=3D bpf_oom.o
->> +endif
->>  obj-$(CONFIG_CGROUP_HUGETLB) +=3D hugetlb_cgroup.o
->>  obj-$(CONFIG_GUP_TEST) +=3D gup_test.o
->>  obj-$(CONFIG_DMAPOOL_TEST) +=3D dmapool_test.o
->> diff --git a/mm/bpf_oom.c b/mm/bpf_oom.c
->> new file mode 100644
->> index 000000000000..c4d09ed9d541
->> --- /dev/null
->> +++ b/mm/bpf_oom.c
->> @@ -0,0 +1,272 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * BPF-driven OOM killer customization
->> + *
->> + * Author: Roman Gushchin <roman.gushchin@linux.dev>
->> + */
->> +
->> +#include <linux/bpf.h>
->> +#include <linux/oom.h>
->> +#include <linux/bpf_oom.h>
->> +#include <linux/srcu.h>
->> +#include <linux/cgroup.h>
->> +#include <linux/memcontrol.h>
->> +
->> +DEFINE_STATIC_SRCU(bpf_oom_srcu);
->> +static struct bpf_oom_ops *system_bpf_oom;
->> +
->> +#ifdef CONFIG_MEMCG
->> +static u64 memcg_cgroup_id(struct mem_cgroup *memcg)
->> +{
->> +       return cgroup_id(memcg->css.cgroup);
->> +}
->> +
->> +static struct bpf_oom_ops **bpf_oom_memcg_ops_ptr(struct mem_cgroup *me=
-mcg)
->> +{
->> +       return &memcg->bpf_oom;
->> +}
->> +#else /* CONFIG_MEMCG */
->> +static u64 memcg_cgroup_id(struct mem_cgroup *memcg)
->> +{
->> +       return 0;
->> +}
->> +static struct bpf_oom_ops **bpf_oom_memcg_ops_ptr(struct mem_cgroup *me=
-mcg)
->> +{
->> +       return NULL;
->> +}
->> +#endif
->> +
->> +static int bpf_ops_handle_oom(struct bpf_oom_ops *bpf_oom_ops,
->> +                             struct mem_cgroup *memcg,
->> +                             struct oom_control *oc)
->> +{
->> +       struct bpf_oom_ctx exec_ctx;
->> +       int ret;
->> +
->> +       if (IS_ENABLED(CONFIG_MEMCG) && memcg)
->> +               exec_ctx.cgroup_id =3D memcg_cgroup_id(memcg);
->> +       else
->> +               exec_ctx.cgroup_id =3D 0;
->> +
->> +       oc->bpf_policy_name =3D &bpf_oom_ops->name[0];
->> +       oc->bpf_memory_freed =3D false;
->> +       ret =3D bpf_oom_ops->handle_out_of_memory(&exec_ctx, oc);
->> +       oc->bpf_policy_name =3D NULL;
->> +
->> +       return ret;
->> +}
->> +
->> +bool bpf_handle_oom(struct oom_control *oc)
->> +{
->> +       struct bpf_oom_ops *bpf_oom_ops =3D NULL;
->> +       struct mem_cgroup __maybe_unused *memcg;
->> +       int idx, ret =3D 0;
->> +
->> +       /* All bpf_oom_ops structures are protected using bpf_oom_srcu */
->> +       idx =3D srcu_read_lock(&bpf_oom_srcu);
->> +
->> +#ifdef CONFIG_MEMCG
->> +       /* Find the nearest bpf_oom_ops traversing the cgroup tree upwar=
-ds */
->> +       for (memcg =3D oc->memcg; memcg; memcg =3D parent_mem_cgroup(mem=
-cg)) {
->> +               bpf_oom_ops =3D READ_ONCE(memcg->bpf_oom);
->> +               if (!bpf_oom_ops)
->> +                       continue;
->> +
->> +               /* Call BPF OOM handler */
->> +               ret =3D bpf_ops_handle_oom(bpf_oom_ops, memcg, oc);
->> +               if (ret && oc->bpf_memory_freed)
->> +                       goto exit;
->> +       }
->> +#endif /* CONFIG_MEMCG */
->> +
->> +       /*
->> +        * System-wide OOM or per-memcg BPF OOM handler wasn't successfu=
-l?
->> +        * Try system_bpf_oom.
->> +        */
->> +       bpf_oom_ops =3D READ_ONCE(system_bpf_oom);
->> +       if (!bpf_oom_ops)
->> +               goto exit;
->> +
->> +       /* Call BPF OOM handler */
->> +       ret =3D bpf_ops_handle_oom(bpf_oom_ops, NULL, oc);
->> +exit:
->> +       srcu_read_unlock(&bpf_oom_srcu, idx);
->> +       return ret && oc->bpf_memory_freed;
->> +}
->> +
->> +static int __handle_out_of_memory(struct bpf_oom_ctx *exec_ctx,
->> +                                 struct oom_control *oc)
->> +{
->> +       return 0;
->> +}
->> +
->> +static void __handle_cgroup_offline(struct bpf_oom_ctx *exec_ctx, u64 c=
-group_id)
->> +{
->> +}
->> +
->> +static struct bpf_oom_ops __bpf_oom_ops =3D {
->> +       .handle_out_of_memory =3D __handle_out_of_memory,
->> +       .handle_cgroup_offline =3D __handle_cgroup_offline,
->> +};
->> +
->> +static const struct bpf_func_proto *
->> +bpf_oom_func_proto(enum bpf_func_id func_id, const struct bpf_prog *pro=
-g)
->> +{
->> +       return tracing_prog_func_proto(func_id, prog);
->> +}
->> +
->> +static bool bpf_oom_ops_is_valid_access(int off, int size,
->> +                                       enum bpf_access_type type,
->> +                                       const struct bpf_prog *prog,
->> +                                       struct bpf_insn_access_aux *info)
->> +{
->> +       return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
->> +}
->> +
->> +static const struct bpf_verifier_ops bpf_oom_verifier_ops =3D {
->> +       .get_func_proto =3D bpf_oom_func_proto,
->> +       .is_valid_access =3D bpf_oom_ops_is_valid_access,
->> +};
->> +
->> +static int bpf_oom_ops_reg(void *kdata, struct bpf_link *link)
->> +{
->> +       struct bpf_struct_ops_link *ops_link =3D container_of(link, stru=
-ct bpf_struct_ops_link, link);
->> +       struct bpf_oom_ops **bpf_oom_ops_ptr =3D NULL;
->> +       struct bpf_oom_ops *bpf_oom_ops =3D kdata;
->> +       struct mem_cgroup *memcg =3D NULL;
->> +       int err =3D 0;
->> +
->> +       if (IS_ENABLED(CONFIG_MEMCG) && ops_link->cgroup_id) {
->> +               /* Attach to a memory cgroup? */
->> +               memcg =3D mem_cgroup_get_from_ino(ops_link->cgroup_id);
->> +               if (IS_ERR_OR_NULL(memcg))
->> +                       return PTR_ERR(memcg);
->> +               bpf_oom_ops_ptr =3D bpf_oom_memcg_ops_ptr(memcg);
->> +       } else {
->> +               /* System-wide OOM handler */
->> +               bpf_oom_ops_ptr =3D &system_bpf_oom;
->> +       }
->> +
->> +       /* Another struct ops attached? */
->> +       if (READ_ONCE(*bpf_oom_ops_ptr)) {
->> +               err =3D -EBUSY;
->> +               goto exit;
->> +       }
->> +
->> +       /* Expose bpf_oom_ops structure */
->> +       WRITE_ONCE(*bpf_oom_ops_ptr, bpf_oom_ops);
->
-> The mechanism for propagating this pointer to child cgroups isn't
-> clear. Would an explicit installation in every cgroup be required?
-> This approach seems impractical for production environments, where
-> cgroups are often created dynamically.
 
-There is no need to propagate it. Instead, the cgroup tree is traversed
-to the root when then OOM is happening and the closest bpf_oom_ops is used.
-Obviously, unlike some other cases of attaching bpf progs to cgroups,
-OOMs can not be that frequent, so there is no need to optimize for speed
-here.
+On 2025/10/29 22:58, Leon Hwang wrote:
+> 
+> 
+> On 2025/10/28 00:34, Amery Hung wrote:
+>> On Sun, Oct 26, 2025 at 8:42 AM Leon Hwang <leon.hwang@linux.dev> wrote:
+>>>
+>>> Add tests to verify that updating hash and local storage maps decrements
+>>> refcount when BPF_KPTR_REF objects are involved.
+>>>
+>>> The tests perform the following steps:
+>>>
+>>> 1. Call update_elem() to insert an initial value.
+>>> 2. Use bpf_refcount_acquire() to increment the refcount.
+>>> 3. Store the node pointer in the map value.
+>>> 4. Add the node to a linked list.
+>>> 5. Probe-read the refcount and verify it is *2*.
+>>> 6. Call update_elem() again to trigger refcount decrement.
+>>> 7. Probe-read the refcount and verify it is *1*.
+>>>
+>>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+>>> ---
+>>>  .../bpf/prog_tests/refcounted_kptr.c          | 178 +++++++++++++++++-
+>>>  .../selftests/bpf/progs/refcounted_kptr.c     | 160 ++++++++++++++++
+>>>  2 files changed, 337 insertions(+), 1 deletion(-)
+>>>
+> 
+> [...]
+> 
+>>> @@ -44,3 +44,179 @@ void test_refcounted_kptr_wrong_owner(void)
+>>>         ASSERT_OK(opts.retval, "rbtree_wrong_owner_remove_fail_a2 retval");
+>>>         refcounted_kptr__destroy(skel);
+>>>  }
+>>> +
+>>> +static void test_refcnt_leak(void *values, size_t values_sz, u64 flags, struct bpf_map *map,
+>>> +                            struct bpf_program *prog_leak, struct bpf_program *prog_check)
+>>> +{
+> 
+> [...]
+> 
+>>> +}
+>>
+>> Just use syscall BPF programs across different subtests, and you can
+>> share this test_refcnt_leak() across subtests.
+>>
+>> It also saves you some code setting up bpf_test_run_opts. You can just
+>> call bpf_prog_test_run_opts(prog_fd, NULL) as you don't pass any input
+>> from ctx.
+>>
+>>> +
+>>> +static void test_percpu_hash_refcount_leak(void)
+>>> +{
+> 
+> [...]
+> 
+>>> +out:
+>>> +       close(cgroup);
+>>> +       refcounted_kptr__destroy(skel);
+>>> +       if (client_fd >= 0)
+>>> +               close(client_fd);
+>>> +       if (server_fd >= 0)
+>>> +               close(server_fd);
+>>> +}
+>>
+>> Then, you won't need to set up server, connection.... just to
+>> read/write cgroup local storage. Just call test_refcnt_leak() that
+>> runs the two BPF syscall programs for cgroup local storage.
+>>
+> 
+> [...]
+> 
+>>
+>>
+>> And in syscall BPF program, you can simply get the cgroup through the
+>> current task
+>>
+>> SEC("syscall")
+>> int syscall_prog(void *ctx)
+>> {
+>>         struct task_struct *task = bpf_get_current_task_btf();
+>>
+>>         v = bpf_cgrp_storage_get(&cgrp_strg, task->cgroups->dfl_cgrp, 0,
+>>                                BPF_LOCAL_STORAGE_GET_F_CREATE);
+>>         ...
+>> }
+>>
+> 
+> Hi Amery,
+> 
+> Thanks for the suggestion.
+> 
+> I tried your approach, but the verifier rejected it with the following
+> error:
+> 
+> 0: R1=ctx() R10=fp0
+> ; task = bpf_get_current_task_btf(); @ refcounted_kptr.c:686
+> 0: (85) call bpf_get_current_task_btf#158     ; R0=trusted_ptr_task_struct()
+> ; v = bpf_cgrp_storage_get(&cgrp_strg, task->cgroups->dfl_cgrp, 0, @
+> refcounted_kptr.c:687
+> 1: (79) r1 = *(u64 *)(r0 +4856)       ; R0=trusted_ptr_task_struct()
+> R1=untrusted_ptr_css_set()
+> 2: (79) r2 = *(u64 *)(r1 +96)         ; R1=untrusted_ptr_css_set()
+> R2=untrusted_ptr_cgroup()
+> 3: (18) r1 = 0xffffa1b442a4b800       ; R1=map_ptr(map=cgrp_strg,ks=4,vs=16)
+> 5: (b7) r3 = 0                        ; R3=0
+> 6: (b7) r4 = 1                        ; R4=1
+> 7: (85) call bpf_cgrp_storage_get#210
+> R2 type=untrusted_ptr_ expected=ptr_, trusted_ptr_, rcu_ptr_
+> processed 7 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> peak_states 0 mark_read 0
+> 
+
+After analyzing the verifier log (with a bit of AI help), it turned out
+that 'task->cgroups->dfl_cgrp' wasn't protected by an RCU read lock.
+According to verifier.c::btf_ld_kptr_type(), this pointer must be
+accessed either within an RCU critical section or in a non-sleepable
+program.
+
+Adding RCU protection fixed the issue:
+
+    bpf_rcu_read_lock()
+    v = bpf_cgrp_storage_get(&cgrp_strg, task->cgroups->dfl_cgrp, 0,
+                             BPF_LOCAL_STORAGE_GET_F_CREATE);
+    bpf_rcu_read_unlock()
+
+With this change, test_refcnt_leak() can now be used across all subtests.
+
+Thanks again for the helpful suggestion.
+
+Thanks,
+Leon
+
 
