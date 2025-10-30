@@ -1,106 +1,153 @@
-Return-Path: <bpf+bounces-72960-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72961-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1340C1E041
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 02:23:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86F8FC1E053
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 02:26:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D43CC4E4352
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 01:23:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 454A24012C8
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 01:26:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C91E266B52;
-	Thu, 30 Oct 2025 01:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1AA273816;
+	Thu, 30 Oct 2025 01:26:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lkgM9F/C"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hQJpEoua"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66914265CD0
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 01:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4541F270EC1;
+	Thu, 30 Oct 2025 01:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761787381; cv=none; b=B/5laXGOWKLZLDHu7wI+sq8aB7rLega83AxzdDZQyuvWshvnoB6VDdunA8LY6q/5995oplNxV3S/gg64d6zwv0ytaV9QChQQX4SB6vWC8qAnPVZhdnO8nTY+ur1AjJS6vs6dbFOl0T7Y+z8AX8w3BquY75jaZpVY+IW5sQDYoyI=
+	t=1761787569; cv=none; b=YzWpl3Y+OjUMCdATNgWSRXvuvFzJxNS3dXy9m9rY6Q61qJOHKtdzuxEcG+TVAZmH3/nReJeK+DGSoGzLnY+TulJ61rqco8j2OVVmKB/Xx+jL8vaYjyP6bx1ytNHFQggwiea7vM7vamQHJYb56609wbFyS2bXwAIe2eZ2TMhE7Ww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761787381; c=relaxed/simple;
-	bh=eQsskdPFqtAG8r+9CBnEtMXYSJGlJyL8d1/Dt3bnXQE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ROkTjYCYoPuy1WemVm+TajnHtfgylO/a/vsw+bA+L8knhP9Wzki1NJ70OskixxUPOGnfiYDbe229AcYoNnjqn4nIZH5Lfj1ZuYgZwpKjzlrNQTIq0LEOohisBXDfExsZnaKiIx4t+oJP56TWAt2k3+3QxwgNfU+H/4eYozG5tf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lkgM9F/C; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-47721293fd3so3076505e9.1
-        for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 18:22:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761787378; x=1762392178; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rnwh+mA89EL9/aOcuwY36uqtEAcvT1ErA7wnpGBYf4s=;
-        b=lkgM9F/CZCIt2Lf3eJMJUN8htsG7NMV23arKuO7cbWgE9Lb7XkveABFfeWrnY97MXg
-         amnoFXHmxksVCNoWQ3j2rbFsQ+xBXATbURZUwZS9ZH1Wdm378bFH494bCz6P80FnY7CM
-         oMzqod1heH/WVIPIqxGA6RKw8PlxpLfuqTCllsgIkxgMT72V4tkK3JwalAN1teQwfkl6
-         KGClOzbQb6oV7WBy11nJ9bU6S+fNFksblOvmBO3R9MH1kTOX9rPLR/OpWgjlcxpQ6PNF
-         rUp5jfSWrnksq44fynTnnSK6louylWXnAoys2OlkXrKklsY9z9+Y7HyJc/P7N79+wSpX
-         A1VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761787378; x=1762392178;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rnwh+mA89EL9/aOcuwY36uqtEAcvT1ErA7wnpGBYf4s=;
-        b=Bsx8yjABpRvebrfB/0XvA5aTLzpj3b8cN9vPJbwLQpmL7MlW+07phQBI9P/kuZNeG1
-         kSowRm+UCW3w2ccM0J9cnbZx0w75FEBdzw8cVK98mu0CVXviPl9xTThGvMGvSjMZdAQq
-         ezej/4uvoNs3Wrg6I/QkEds1J8xFAkJYVNYDvNmiBbdpH/xrE18cLIgAu1VNxFhBxxnI
-         Um8nV5HaXjSzHdoCdd5REGwxbrLye4+FCL4KY3Usz6P7nw47bXHby5XJxaeXbKkLcH+C
-         YJjXJhZ709UsrpQ2Fcjs3grss01oG96ulvL58LVg1ZOKAbu63c2fDWpJoBQA513bJtOc
-         hFiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVZsO8feVZ9M61Wk/pF8E8kWiFGN3Ugbsw6SpuxFsKnAi7MF4HtmtSDj0fRFIpE/K5ezIM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDoMoOqHKcUn00cHbWONH0ibIye2YrtBmARma5yFPbvjUGdeha
-	ZD4TQnlBu/y/mGfLVejNInvLfNMmLereMa4o+afM3fhbeneb4bVIg65vzyqI3nin9kj5zlmWy5c
-	G4JoniLAJdJtk9EmBprA6LTyblp3pzJI=
-X-Gm-Gg: ASbGncup/CpEsXjM8X2jHu3axHHBETDkXHF2xG2fdBhkbs5SSwGQh5yjDZABwDLlJw3
-	BBYvpnQpIi2UMmaGtdj1+yT+NS5JH/RLwJ9iw6rjcyzflPX+6m8kV2+d/UayO/L4EcsUYxGUt6R
-	ayKoB3pEPaBJR17+hiu1vsAtX2b3vBTRfGN+Yzpb4Z6AiF9QM9KmgVMx/ahBbCRPdeOhjtgIr8Z
-	RNELo4cIuk2ilwhxBvYg13XRt1vSYYMqsZXw+YDFExLb3Cvi6aGoofatQTjU+G1XgpC0U5q7vE4
-	6/45hG78zrsFzGgY83uNO6wgYoAy
-X-Google-Smtp-Source: AGHT+IGYH9nUghSWaMxcWEi3sXwCpko6su1tg523Ut+neA3VF5K/bqKeT6rv8gkBgSIvCPL5u+JpZLKXlbgRF1Z0UfY=
-X-Received: by 2002:a05:600c:5252:b0:475:d7fd:5c59 with SMTP id
- 5b1f17b1804b1-477262baf00mr12349755e9.16.1761787377570; Wed, 29 Oct 2025
- 18:22:57 -0700 (PDT)
+	s=arc-20240116; t=1761787569; c=relaxed/simple;
+	bh=84kPkXhUTbe6LhLgk38kZ2juDmsQcTp5ZsiWx3+UrxA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XMZ4aaqo1+nSujzztwbXzBCFY5d5b75vto1dmarzKrC8ozfnkoQrTN4JCq4h0WDzXvfVUUS+lVk2fr6VpzxEoQcc5scMuruOuj06KKKBEtTqTxcdM/rHHAfG9W4JPOSoULngVXsi9a6tOJn5kckUpQ7kkDlGKXDB/8LAiilLKEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hQJpEoua; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=DE4GUUSn7PS/fQa45gakfgN1Qyd0uWMtlpLL22+fJDs=; b=hQJpEouaCKg43OLB9uIUt5Si6r
+	LtknmQMFhhEP/mVrtGiYO1NoiHxI9p4Gf3BDkBxLfwv1ZTzvQvOycpYmpbSOsl/ChsST/5JMhAo8J
+	tV7jZPw6dPB1NS0ERA8r1xP6FvxC0NqZbvFZxGuAyar/yoAK//vfwz1DjBB+myOwODjXVP2/JFk5N
+	2sB5qCrtSHdrpU0VC1MC8ilNFJFomczGx6Z/gV1DoSY0rH/DxQZxr4GUbaF0WJdYmm9PxFplliaEY
+	9nhK/JbPV+gza/9FNZhrD9vS4MmgFzeUNEGHbOyALmrui/YC1zx0H/9gsSHVeeU3fUSc2YJtLe9Zx
+	iI/yLEFw==;
+Received: from [50.53.43.113] (helo=[192.168.254.34])
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vEHQR-00000003Ke3-1sDF;
+	Thu, 30 Oct 2025 01:26:03 +0000
+Message-ID: <b585fa87-b804-4f7c-844d-86645c61b2ca@infradead.org>
+Date: Wed, 29 Oct 2025 18:26:02 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251023161448.4263-1-puranjay@kernel.org> <CAP01T74MS9fWmboh=vYeP=sQJT68E-naOUVfAV66xYjy6BH7NA@mail.gmail.com>
-In-Reply-To: <CAP01T74MS9fWmboh=vYeP=sQJT68E-naOUVfAV66xYjy6BH7NA@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 29 Oct 2025 18:22:44 -0700
-X-Gm-Features: AWmQ_blYojUAppp7wQ1XkuhLR8WWCAC_89wCPu1ygtL1z1dju2P6iuSWrqHTs4E
-Message-ID: <CAADnVQLW_8FfmJXx7oJ-wD+K=hiGOeJjMAVQ4cCu344W3TowwQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: stream: start using kmalloc_nolock()
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Puranjay Mohan <puranjay@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net: Reorganize networking documentation toctree
+To: Bagas Sanjaya <bagasdotme@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Documentation <linux-doc@vger.kernel.org>,
+ Linux Networking <netdev@vger.kernel.org>, Linux BPF <bpf@vger.kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>
+References: <20251028113923.41932-2-bagasdotme@gmail.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20251028113923.41932-2-bagasdotme@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Oct 23, 2025 at 12:57=E2=80=AFPM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
-> > -       if (!bpf_stream_page_local_lock(&flags))
-> > +       alloc_size =3D round_up(offsetof(struct bpf_stream_elem, str[le=
-n]), 8);
->
-> nit: Is this round_up necessary anymore? I would just drop it.
 
-Fixed and applied.
 
-Puranjay,
-see how I adjusted subj.
+On 10/28/25 4:39 AM, Bagas Sanjaya wrote:
+> Current netdev docs has one large, unorganized toctree that makes
+> finding relevant docs harder like a needle in a haystack. Split the
+> toctree into four categories: networking core; protocols; devices; and
+> assorted miscellaneous.
+> 
+> While at it, also sort the toctree entries and reduce toctree depth.
+
+Hm, I was going to ask how they are sorted, but I see that it's by
+file name -- chapter headings aren't sorted. E.g., under Protocols,
+
+
+ARCnet
+AX.25
+Bare UDP Tunnelling Module Documentation
+CAIF
+SocketCAN - Controller Area Network
+The UCAN Protocol
+DCTCP (DataCenter TCP)
+The Linux kernel GTP tunneling module
+Identifier Locator Addressing (ILA)
+IPsec
+IPv6
+
+These are sorted by file name. I'm not complaining, just
+making an observation.
+
+Another observation: I find the heading
+  Softnet Driver Issues
+confusing, since I can't find anything in
+Documentation/networking/ that tells me what Softnet means.
+(and yes, I know, you didn't add this, just moved it)
+
+
+I like the organization. Someone might quibble over a few
+entries and which section heading they should be in, but
+that can be changed any time. (mostly items under
+Miscellaneous; e.g. RDS is a protocol)
+
+
+The size of the new index page is nice (about 3 screens on my
+laptop). But I miss seeing the next level of headings
+(:maxdepth: 2 instead of 1). And I don't see any way to find
+that. It would be nice if I could click on a hamburger menu
+somewhere to see finer detailed TOC/index. Or if the
+sidebar TOC could be expanded by clicking on a heading.
+
+
+And I don't think that the line "Contents:" at the top is doing
+any good.
+
+So I tried this patch with :maxdepth: 2. There is still too much
+TOC info there IMO, so using :maxdepth: 1 is good.
+I just wish there was a way to see individual (page) TOCs on demand.
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> ---
+>  Documentation/networking/index.rst | 241 ++++++++++++++++-------------
+>  1 file changed, 136 insertions(+), 105 deletions(-)
+> 
+> diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
+> index c775cababc8c17..ca86e544c5c8e2 100644
+> --- a/Documentation/networking/index.rst
+> +++ b/Documentation/networking/index.rst
+> @@ -5,138 +5,169 @@ Refer to :ref:`netdev-FAQ` for a guide on netdev development process specifics.
+
+
+-- 
+~Randy
 
