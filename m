@@ -1,114 +1,124 @@
-Return-Path: <bpf+bounces-72938-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72939-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61CC9C1DD83
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 01:03:43 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EA3DC1DD86
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 01:04:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 707EF188FF64
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 00:04:07 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id EF83C34C5EA
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 00:03:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0084AD24;
-	Thu, 30 Oct 2025 00:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC801E868;
+	Thu, 30 Oct 2025 00:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mGkWCGQL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c2xwHM38"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5DF9476
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 00:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359541C68F;
+	Thu, 30 Oct 2025 00:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761782619; cv=none; b=Iue6j6QOsTaE5DsK1C2eFCJvDvFVzCSygepfF/dbLSBIJSoW9SUGFiTDBiPoDZMPfRqZFVoGYtRDwRR6/t0DcF4ykGQCLI22vIrhftTvD/jDtlEt3hMG1eJCilEfffQkV+zeReFELdfOWuAtzH3htRy+MtfEd6GJKjHOxJl/D2c=
+	t=1761782633; cv=none; b=XaIZNp8Uz8LH0oHItRPcvLa+6xBwuQAsNZGPPsXoCa0vf4dhrXKO9bdGrB0PDl68kvXNSW73ZF4USEeJmsP5QdTpMbbgQb5rksWl2sARx4TVH9YnEocLz+QyxSbqtVGre76ngJ5500N+22QIzGD485R48i6gfqOTSeEn081RIEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761782619; c=relaxed/simple;
-	bh=IQdAVekv4irRGgMMfp/PjHkXohbkVOvsM/8HtebJv/c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h7mxed3T/dFZmbFOinxPTTAuFE/zsgbiye2OFBwWKI3GsMdQei2sTx3D43wivYm6eycdB2kcBBNHBAdUqIqPIrdTf6QH2H4JboB6rPU43EA/VbQtnNDDb2eS511WnPlJfY0IT1MMLVfiQa6Dn2NtdEwS4VSk5bFZmwNrVChtMqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mGkWCGQL; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-4285169c005so241713f8f.0
-        for <bpf@vger.kernel.org>; Wed, 29 Oct 2025 17:03:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761782616; x=1762387416; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=El4J/tPU5GVXHSLQfOqUzKCRr5OClPDUdxz6lfYkO5M=;
-        b=mGkWCGQLgx5y1ztnWdRLWrFPG2DE/dwLk3NSXZ1ocEQlwZEmwWQL7fT/ds1dDS4gKX
-         gyi9cgN52qiO+lvSHVLBx+v21aubhfwHJxmnXm3ZKTDbW/uAfDqfWa36Jol1HvljrAZe
-         HKN4ctxFAvkpu/rMsY4woNp2TCU3gW0VHngAKGc+cib3AITXZRZBmyoQ2Ql+ySku2M9A
-         rWh4TWVOpW8tYYzz/qpiyVtCQk/d6Q07o4cpRBE4+VePUUuROAxZ+4j6s9dnqgcgW1nJ
-         cQQkDp9Obv64O5VN3IfvIy3KZ4A7mxxXcJBCe3yTE9h+SFszAiYkcbB/P8ahMeHIgl9N
-         /2xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761782616; x=1762387416;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=El4J/tPU5GVXHSLQfOqUzKCRr5OClPDUdxz6lfYkO5M=;
-        b=VZsUGQAESs9nimupu0BHpUraRAv+S2taBSPB9zvLjKxb/QhhKeYRa58Wp6be4y32cY
-         nrdtFqTzp+3nCV+fRe6t0ffe6lS/7mQaAO7QWxDtGMv1EGwI6MtqTnd2IRwL9nNzwVdV
-         qaQtSNrU6gL1g4CLhSbI6Z8VPh6bXgsch0xqRmudXK8bLrZ6xYgKFGw2DRQzs6YOA2ry
-         PS+q1b2/UoiipR1Rhik/nAaIdUvtIaNO7BeaL6uZo3irvxu6e7RqcumSi3mr4qt8qd6l
-         zELSTFmZoXDvuKYd2CnlohZAJbe3z5vlRKrraykZ2tgWbRGSGjJeWjOCRhcW5S9nA2wV
-         ng4A==
-X-Forwarded-Encrypted: i=1; AJvYcCW96n0W7+BxH0frIc0/X6pfgHBjJ4XRYFYGIwjhm4EEnNZJM3As3sgoEKzYNYK4EJ+PNZ0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyIjWHO1IXTgByNgjpWIEWwdisjG2zT66WX6/guCMwqJh+hg6Oe
-	uJKWJwEUEXfkB4yvYpgTNBZxQgmZn4b/vklmOfXulh46r5tWUJA5/NL8txb2y0j30smtoUFtFr3
-	ibzWp1n9m+QJ/NcnDet+RocP8Iwjqbac=
-X-Gm-Gg: ASbGnctg/xVPsz9bN1ZsbgehC9mcSOtYriIl4bzPLDe/k1AWiDtBfucfoa1uf1mbFUs
-	ZY/2WTaC8heF5d7LVQaU2zfQxN6LgHA6hN1ZH14mEdy8p0zIgmquLq2j8SStXlBAz6j526gb7i1
-	/Oue0EB17NI8Pi+Ii37SU3F5H8/a5nRUO7Dsx+x3WifrVGGECpurQzz9F3G6hN0y1vF6rkPAmqd
-	QiqJAAipCMW6yK3FVrj5T0o5JwUZovyitVrdGPVbGbMh26GJ/H8eqa77bj3pzyaKD46cZdNTrs8
-	7EifsSpJI+cMkhkpOg==
-X-Google-Smtp-Source: AGHT+IFh+W6qz2ceIUI2QhqYoE/268h3PX3Rtjarak7sWgQhdPAZITWiUaam+JJ2eaaDJjXrqjrqy4uREJVwVsVFhj8=
-X-Received: by 2002:a5d:5c89:0:b0:3e7:68b2:c556 with SMTP id
- ffacd0b85a97d-429aef84080mr4043118f8f.26.1761782615888; Wed, 29 Oct 2025
- 17:03:35 -0700 (PDT)
+	s=arc-20240116; t=1761782633; c=relaxed/simple;
+	bh=1XnGr1V9M31iKuMKW3cadiXKYVM5ogphmXcmc2DRafs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IbzCYLn11duTD4shRR748QKIiwSOC91MpRuV20DVNyODMr+HjCHIonhta7uDzCSizhF8ErISdtICWXFZtynoEI0JQZC6POsF91Q7O0I1LE1LmDlYcTKFu4lyl8u2rUsM8SvmyiLerlNvVPxNnEwxrw5aAhF32/Jg+fCwixcpvZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c2xwHM38; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 842BCC4CEF7;
+	Thu, 30 Oct 2025 00:03:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761782632;
+	bh=1XnGr1V9M31iKuMKW3cadiXKYVM5ogphmXcmc2DRafs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=c2xwHM38YkX0bt2FauUNoc+p8aNebX3OddEiZzpbnty76brkQojdA10bHHlhYJyoz
+	 8Q0JOl4clPV7GExdOLx+2nQrAJ51ZiSOG+KsKDerEiWItE4827kdsS1ONn2VO4m4A6
+	 OUH95kE6wD2yz1njEkr80MmZJ+zFV0u/jFHts1JjypsHf5fKSn3DG65xxeQBqQkQbf
+	 NmIp/MWjz4cRe0I2mJ88CHgOdxMNZEPp0te5nIOHcD53vxTeYM9yurfxQIRCTFfvu3
+	 38w+VTOCZP3ZPCgg/03pa3LcFGE7sRMdrnQQDyEuwhUeVdEykX3S4+H0HfwGrCjNNC
+	 7OwjtmPn74xTA==
+Date: Wed, 29 Oct 2025 14:03:51 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>, Song Liu <song@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	JP Kobryn <inwardvessel@gmail.com>, linux-mm <linux-mm@kvack.org>,
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops
+ to cgroups
+Message-ID: <aQKrZ2bQan8PnAQA@slm.duckdns.org>
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+ <20251027231727.472628-3-roman.gushchin@linux.dev>
+ <aQJZgd8-xXpK-Af8@slm.duckdns.org>
+ <87ldkte9pr.fsf@linux.dev>
+ <aQJ61wC0mvzc7qIU@slm.duckdns.org>
+ <CAHzjS_vhk6RM6pkfKNrDNeEC=eObofL=f9FZ51tyqrFFz9tn1w@mail.gmail.com>
+ <871pmle5ng.fsf@linux.dev>
+ <CAADnVQJ+4a97bp26BOpD5A9LOzfJ+XxyNt4bdG8n7jaO6+nV3Q@mail.gmail.com>
+ <aQKa5L345s-vBJR1@slm.duckdns.org>
+ <CAADnVQJp9FkPDA7oo-+yZ0SKFbE6w7FzARosLgzLmH74Vv+dow@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251029190113.3323406-1-ihor.solodrai@linux.dev>
- <20251029190113.3323406-4-ihor.solodrai@linux.dev> <b667472aeb77ac63a3de82dae77012c0285e0286.camel@gmail.com>
-In-Reply-To: <b667472aeb77ac63a3de82dae77012c0285e0286.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 29 Oct 2025 17:03:24 -0700
-X-Gm-Features: AWmQ_blixd95JW4fMfByV1IsDwwur7m8Z0T058Ir4uDIHps2me8sOhgRz7Ob68I
-Message-ID: <CAADnVQJPevofLp0B0h40t0X1gj_032kw42K0ykHW4BqdmY0eNw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/8] bpf: Support for kfuncs with KF_MAGIC_ARGS
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Ihor Solodrai <ihor.solodrai@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, dwarves <dwarves@vger.kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJp9FkPDA7oo-+yZ0SKFbE6w7FzARosLgzLmH74Vv+dow@mail.gmail.com>
 
-On Wed, Oct 29, 2025 at 4:54=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Wed, 2025-10-29 at 12:01 -0700, Ihor Solodrai wrote:
-> > A kernel function bpf_foo with KF_MAGIC_ARGS flag is expected to have
->                                  ^^^^^^^^^^^^^
->                 I don't like this name very much.
->                 It bears very little context.
->                 Imo, KF_IMPLICIT_ARGS fits the use case much better.
+Hello,
 
-+1
-I hate the name as well.
-KF_IMPLICIT_ARGS sounds much better and can be abbreviated
-to "__impl" in arg names.
-That way it will accidentally match our existing _impl() kfuncs
-though there _impl meant "implementation".
+On Wed, Oct 29, 2025 at 04:53:07PM -0700, Alexei Starovoitov wrote:
+...
+> > - How would recursion work with private stacks? Aren't those attached to
+> >   each BPF program?
+> 
+> yes. private stack is per prog, but why does it matter?
+> I'm not suggesting that the same prog to be attached at different
+> levels of the cgroup hierarchy, because such configuration
+> will indeed trigger recursion prevention logic (with or without private
+> stack).
+> But having one logical sched-ext prog set to manage tasks
+> in container A and in container B makes sense as a use case to me
+> where A and B are different cgroups.
+> DSQs can be cgroup scoped too.
 
-I think this double meaning of "impl" as "implementation specific"
-and "implicit" actually fits.
+I don't know. Maybe, but this is kinda specific and I don't see how this
+would be useful in practical sense. Have nothing against using the
+mechanism. I can still enforce the same rules from scx side. It just looks
+unnecessarily over-designed. Maybe consistency with other BPF progs
+justifies it.
+
+> > If there is one struct_ops per cgroup, the oom kill kfunc can
+> >   look that up and then verify that the struct_ops has authority over the
+> >   target process. Multiple attachments can work too but that'd require
+> >   iterating all attachments, right?
+> 
+> Are you talking about bpf_oom_kill_process() kfunc from these patch set?
+> I don't think it needs any changes. oom context is passed into prog
+> and passed along to kfunc. Doesn't matter the cgroup origin.
+
+Oh, if there are other mechanisms to enforce boundaries, it's not a problem,
+but I can almost guarantee as the framework grows, there will be needs for
+kfuncs to identify and verify the callers and handlers communicating with
+each other along the hierarchy requiring recursive calls.
+
+Thanks.
+
+-- 
+tejun
 
