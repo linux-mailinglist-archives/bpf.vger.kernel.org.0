@@ -1,124 +1,98 @@
-Return-Path: <bpf+bounces-73046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73047-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3A19C211E0
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 17:15:01 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA2B8C21229
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 17:22:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C65D04EBF63
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 16:14:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 968104E52EB
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 16:21:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43786365D27;
-	Thu, 30 Oct 2025 16:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF8D366FB7;
+	Thu, 30 Oct 2025 16:21:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lLSYhk4d"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D+quNg75"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B202C18859B;
-	Thu, 30 Oct 2025 16:14:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7E32D12EB
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 16:21:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761840841; cv=none; b=Mb7uR6luG/jjl2+w2cGFcq0vctY0aDDiS2eJ4CEs/My4CTgdQJSbhz/Dg3strM8GhhKXflKVfMZeRVzRBwTh5WZ3koLZ4XX8A7coQFrOTHZlfqsae7QIq/Vza6xEdgir6rtOhy7BBOKkKgQfW+CgXwWvcMVsh3w9Hp5vgqtXd8U=
+	t=1761841299; cv=none; b=bNEI7eimrS2ifKl8+PhHK5nXdNk0tIh0qslv12CNKv8qsgBIUkh2TwZIuk20P80Ad3N6MSPxLqTIb22S7t6Qg9GEP1ipQk9xfhvcfX1AYpiOFil6TnYvNn9NV340p1N+iog7/UkpbKA3mTbRbwimdFmEcv5KKtwlgsOzzUhA/gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761840841; c=relaxed/simple;
-	bh=81xY3et/CDlan4zato2VKfVrhsKD6Dy0acKVQafxgnY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uT2/1wRCkDQ+QiOrUWL0PCA65Bylwh58hSQUahhubAq/LjtZ7S4n8CRpiLUDI2xZz97SqkO+NheUTGY3uXgnoG8M+nYhKn8K2OyNuL/EqQakgvA+WjuHhgWcmHrZ/YHMei2n3j/lHrE3sCXcwAkC+PFEXmAwxN8a6FRkHNTF4HQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lLSYhk4d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 031D3C4CEF1;
-	Thu, 30 Oct 2025 16:14:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761840841;
-	bh=81xY3et/CDlan4zato2VKfVrhsKD6Dy0acKVQafxgnY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lLSYhk4dHqZ1dor08LN5ap2JBv3bG3N0GXsdH6f913EZk4xaZBcnfMvFv1C4K5mgf
-	 0xLQloW0iTP/7YCZg/JeYH9gJeTa7h7N4w0pxp0nJ+GhSachiJYzWK4iiimAYxP6Bk
-	 y/5NdkYtfklb0hB429t42B+VfjiM8DznMQgWZhOoV60Vg7n+M0HmFiEvSxkHmou7lG
-	 GAh3ytHVmPZ97ggPjChUxRXzgaNDIkxXuWhyBxVtYuVJwKTYtWhp1s8xW5PLBi62o+
-	 77g5MFoT4CJGhnN6RMNEmD68K1DSQbWOcltqcre4r+Bu5s8cIdfHphXYTbz1qZ9+8Q
-	 B9DMm9tFQd4Aw==
-Date: Thu, 30 Oct 2025 06:13:59 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Song Liu <song@kernel.org>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops
- to cgroups
-Message-ID: <aQOOxybyymnUk8fr@slm.duckdns.org>
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
- <20251027231727.472628-3-roman.gushchin@linux.dev>
- <aQJZgd8-xXpK-Af8@slm.duckdns.org>
- <87ldkte9pr.fsf@linux.dev>
- <aQJ61wC0mvzc7qIU@slm.duckdns.org>
- <CAHzjS_vhk6RM6pkfKNrDNeEC=eObofL=f9FZ51tyqrFFz9tn1w@mail.gmail.com>
- <aQKGrqAf2iKZQD_q@slm.duckdns.org>
- <CAHzjS_tEYA2oboJ-SPq5wJLJTpJDNiA2Fk1wMRgyEpH0gjZRJw@mail.gmail.com>
- <aQKLCuX5v5aO3fDa@slm.duckdns.org>
- <CAHzjS_uqFLEzvU0PTQiXajdFDsjC4gfk0Z4qMoiRQJ2uVPw6BA@mail.gmail.com>
+	s=arc-20240116; t=1761841299; c=relaxed/simple;
+	bh=kX0cm2UnEiNJ+qzpBPfgy3+r4pATEZSTxmE6WFa7VM4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Nr9NIV3DqfG/DhQAOaIvoQK9+6ettwp40nHLDUQ2IiwQdK+O9wZ7KUVIFIFHrLCHTX8HUxBhOS4ImvoY4SQOY1XRWYjyx730Z/lxqXrf6mZAzh2LgfWDaeK3s1nTf+y9v5LpO8bAIHDkISnWCLHFkWf6/4oCOeD5O6DTS5AQmyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D+quNg75; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <efa3540a-1f52-46ca-9f49-e631a5e3e48c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761841294;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zMFZXp3tx2YPKZtWsOkoNrm9qO50YlAqRAEraxEEN8U=;
+	b=D+quNg75KVoxfK+nHvJSuj2ygg7TDLVMhoUvNdsp2A4jI2e8UFgRH8PNkDziKckOgJWo6m
+	XCjmHu5mbjBRYXqAEWVnZUdaXYPvszj58fBy+J+k8NbwQ19z9vnwjD4s2+UYBPL6BWxKY5
+	O9a8dqI3BXq/QQIFqi9CKuODhqbUuFk=
+Date: Thu, 30 Oct 2025 09:21:28 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHzjS_uqFLEzvU0PTQiXajdFDsjC4gfk0Z4qMoiRQJ2uVPw6BA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/4] selftests/bpf: integrate
+ test_tc_tunnel.sh tests into test_progs
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Bastien Curutchet <bastien.curutchet@bootlin.com>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20251027-tc_tunnel-v3-0-505c12019f9d@bootlin.com>
+ <20251027-tc_tunnel-v3-3-505c12019f9d@bootlin.com>
+ <1ac9d14e-4250-480c-b863-410be78ac6c6@linux.dev>
+ <DDVPPGIO5P1F.E3DWINA74BJ6@bootlin.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <DDVPPGIO5P1F.E3DWINA74BJ6@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
-
-On Wed, Oct 29, 2025 at 09:32:44PM -0700, Song Liu wrote:
-> If the use case is to attach a single struct_ops to a single cgroup, the author
-> of that BPF program can always ignore the memcg parameter and use
-> global variables, etc. We waste a register in BPF ISA to save the pointer to
-> memcg,  but JiT may recover that in native instructions.
+On 10/30/25 7:04 AM, Alexis Lothoré wrote:
+>>> +	int family = cfg->ipproto == 6 ? AF_INET6 : AF_INET;
+>>> +
+>>> +	cfg->server_fd = start_reuseport_server(family, SOCK_STREAM,
+>>> +						cfg->server_addr, TEST_PORT,
+>>> +						TIMEOUT_MS, 1);
+>>
+>> Why reuseport is needed? Does it have issue in bind() to the same
+>> ip/port in the later sub-test?
 > 
-> OTOH, starting without a memcg parameter, it will be impossible to allow
-> attaching the same struct_ops to different cgroups. I still think it is a valid
-> use case that the sysadmin loads a set of OOM handlers for users in the
-> containers to choose from is a valid use case.
+> Yes, I observed that is I use the bare start_server, I systematically have
+> the first test passing, an all the others failing on the server startup
+> with errno 98 (Address already in use). I have been assuming that it is due
+> to some TIME_WAIT state on the freshly closed socket, but I may be missing
+> something ?
 
-I find something like that being implemented through struct_ops attaching
-rather unlikely. Wouldn't it look more like the following?
-
-- Attach a handler at the parent level which implements different policies.
-
-- Child cgroups pick the desired policy using e.g. cgroup xattrs and when
-  OOM event happens, the OOM handler attached at the parent implements the
-  requested policy.
-
-- If further customization is desired and supported, it's implemented
-  through child loading its own OOM handler which operates under the
-  parent's OOM handler.
-
-> Also, a per cgroup oom handler may need to access the memcg information
-> anyway. Without a dedicated memcg argument, the user need to fetch it
-> somewhere else.
-
-An OOM handler attached to a cgroup doesn't just need to handle OOM events
-in the cgroup itself. It's responsible for the whole sub-hierarchy. ie. It
-will need accessors to reach all those memcgs anyway.
-
-Another thing to consider is that the memcg for a given cgroup can change by
-the controller being enabled and disabled. There isn't the one permanent
-memcg that a given cgroup is associated with.
-
-Thanks.
-
--- 
-tejun
+Thanks for confirming. You are right. It should be the TIME_WAIT. Using 
+SO_REUSEPORT works but become confusing on what the test is trying to do 
+by starting only 1 reuseport server. reuseport is usually used with >1 
+server listening on the same address. A better thing to do is to always 
+setsockopt(SO_REUSEADDR) in start_server_addr for TCP.
 
