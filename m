@@ -1,55 +1,95 @@
-Return-Path: <bpf+bounces-72981-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-72982-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5F9FC1EE76
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 09:06:09 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28776C1F04E
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 09:39:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0718D188E8B9
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 08:06:33 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0CFA44E99B3
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 08:38:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E76132BF49;
-	Thu, 30 Oct 2025 08:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21C733892C;
+	Thu, 30 Oct 2025 08:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jlsLX77L"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Xrl/WCti";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="kHsHJoCe";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Xrl/WCti";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="kHsHJoCe"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A00517AE11;
-	Thu, 30 Oct 2025 08:05:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1A01273D66
+	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 08:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761811561; cv=none; b=A17rChyBtDPD795qhm0JSfE7CQlJwuz0bmACTnFb4NvY48DVPAjVsb3E7vQv1AHtfpyUvmEi+rDGAtFiZ0wqBW0y+5qBeFOx1+A6tucY6FNl4/Mor345+UH05V976XLVxAY/atnmm97BfSfqnsZWsKDj7JP6WJXFttx8R8fVzFQ=
+	t=1761813486; cv=none; b=cc4ubf7iRnLkinx3QDwHAlvXX4tQArwQfAkXKsAB5AE0UcWmrD5xsJVunBe0liEcJBEf/heZ8afd0E3BcC7M1SpAR2ClUwvgho5ZJlQo+TVxeUSCFt66jhhvHsmK3ZQqZlYnCznDEyCiyRmaMlOyAQCJtdfaGCHPZFp0zEies7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761811561; c=relaxed/simple;
-	bh=Op1t4LLfAXhJLesSQQ0Zr9Tb4KUF5kV6yD/hPL9PUSI=;
+	s=arc-20240116; t=1761813486; c=relaxed/simple;
+	bh=b3BmUeai7NSgi6gaI6pNqpck6u1VsQisyA6qdrDFrnI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Pw7LC46vPp7p8X179FovFtlvDqJ2n9d6KZVros8cus0yUQcvQsNj2VkxfoxwDaQb5E2SpKUGJJqf/gRKV1ngEzeXjZsXZK9LN2xQfYvehtRqzN7bl5B20uidSzZnt+zLiV9B5XBDuc0oS+JFKpYHdlW9WGFHg/vhHrBte5QCEx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jlsLX77L; arc=none smtp.client-ip=185.246.84.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id BB3A81A1781;
-	Thu, 30 Oct 2025 08:05:56 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 7DDD96068C;
-	Thu, 30 Oct 2025 08:05:56 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BD087102F2130;
-	Thu, 30 Oct 2025 09:05:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1761811555; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=yhO0zoxEkB9DzrUVoWIN7bjo6McuuEao4alqEu6uLBQ=;
-	b=jlsLX77LeQNohInoJWs+ecJrRdx6EBTro8CMxvC3JPE0B4chG8p7w/UusCVGAaMnr+1by2
-	rFS5EtZPlcXC37k9JwKwOBoYt/KYglMziIUjDzOeGvfy321aj9dfJZF9TnzJcKpv8gTVZw
-	rgLMYpNIMH3sL363P1TBpmaGeu8RfX01IID9c9hEo0zVBeGeBD5S9L0Csk06GDMAt5wAWR
-	orRWpcqnFmdeK7ZqniILIj0pWgsfiFoZfrm98KdvQUeXP/V3MSLz2BA0/sAmWDaqW+xkM8
-	gJ2vmYsvzbnERCIb3kxPlDOb25QcesuUIsBpG5o16ja0PzlrIZZ1T59M42FzBQ==
-Message-ID: <0e576e3d-7e77-43ec-8ec2-5867dcb44960@bootlin.com>
-Date: Thu, 30 Oct 2025 09:05:47 +0100
+	 In-Reply-To:Content-Type; b=ITXNNiUvy3nJFZ1NbKItCovtLZHr6Q1wXwl/vtUs3d6/grp7TWKe11zySO5bjrC2CU+4t4SqoH5o+iNa4UgbfCUJaxM4vIz0I+nzl3vcGHkBtCpzRqKOF1fnQPgu6/LWOiSmbaJ3Q6oYM/txNlNGgjwyuSvBm315J8XyWhN8yoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Xrl/WCti; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=kHsHJoCe; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Xrl/WCti; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=kHsHJoCe; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 17A2D33899;
+	Thu, 30 Oct 2025 08:38:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1761813483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V53nKA2HJa5rNDn7FCq67g4jdt3pT7RYKdpGCn1BnEw=;
+	b=Xrl/WCtiuFyQsKvvtSFuZ1sHgy/OhTQKzMOLqURyMWe2sF0jObb6so1q/dX3mirtyAO/0W
+	u96L7Sp/eRKGHBSO9LQGR/0w+3KISlS0qVtaG8a+uOMPmTQdFRXWHVHKBJ9NhLXJJdZPkD
+	8LKnmcWpIy9yJuuvVi4dsr4euRG8UDs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1761813483;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V53nKA2HJa5rNDn7FCq67g4jdt3pT7RYKdpGCn1BnEw=;
+	b=kHsHJoCeuwCeSPM9KpxCdPdCi7doswPiL5uCzfIOD7l4+StxKzOkNcqB2MHg57M6/6dcn7
+	woZaGZVlcYHnTiAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1761813483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V53nKA2HJa5rNDn7FCq67g4jdt3pT7RYKdpGCn1BnEw=;
+	b=Xrl/WCtiuFyQsKvvtSFuZ1sHgy/OhTQKzMOLqURyMWe2sF0jObb6so1q/dX3mirtyAO/0W
+	u96L7Sp/eRKGHBSO9LQGR/0w+3KISlS0qVtaG8a+uOMPmTQdFRXWHVHKBJ9NhLXJJdZPkD
+	8LKnmcWpIy9yJuuvVi4dsr4euRG8UDs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1761813483;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V53nKA2HJa5rNDn7FCq67g4jdt3pT7RYKdpGCn1BnEw=;
+	b=kHsHJoCeuwCeSPM9KpxCdPdCi7doswPiL5uCzfIOD7l4+StxKzOkNcqB2MHg57M6/6dcn7
+	woZaGZVlcYHnTiAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EA1513393;
+	Thu, 30 Oct 2025 08:38:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 0AXmI+ojA2knPwAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Thu, 30 Oct 2025 08:38:02 +0000
+Message-ID: <b7974772-2e34-44df-924f-702e96ac20d3@suse.de>
+Date: Thu, 30 Oct 2025 09:38:02 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,97 +97,91 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v6 00/15] selftests/bpf: Integrate test_xsk.c to
- test_progs framework
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Alexis Lothore <alexis.lothore@bootlin.com>,
- Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <20251029-xsk-v6-0-5a63a64dff98@bootlin.com>
- <CAADnVQ+ESBTW-+NOQ55HXLwODFZa+uHWzMpPAq1FfjPP4otH_A@mail.gmail.com>
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Subject: Re: [PATCH 2/2 bpf v2] xsk: avoid data corruption on cq descriptor
+ number
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, magnus.karlsson@intel.com,
+ maciej.fijalkowski@intel.com, sdf@fomichev.me, kerneljasonxing@gmail.com,
+ fw@strlen.de
+References: <20251028183032.5350-1-fmancera@suse.de>
+ <20251028183032.5350-2-fmancera@suse.de> <20251028160107.5c161a4f@kernel.org>
+ <b21cf80c-5d69-4914-aa45-00f9527f3436@suse.de>
+ <20251029162245.5ea2ee3e@kernel.org>
 Content-Language: en-US
-In-Reply-To: <CAADnVQ+ESBTW-+NOQ55HXLwODFZa+uHWzMpPAq1FfjPP4otH_A@mail.gmail.com>
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+In-Reply-To: <20251029162245.5ea2ee3e@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,intel.com,fomichev.me,gmail.com,strlen.de];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
+X-Spam-Flag: NO
+X-Spam-Score: -4.30
+X-Spam-Level: 
 
-Hi,
 
-On 10/29/25 7:54 PM, Alexei Starovoitov wrote:
-> On Wed, Oct 29, 2025 at 6:52 AM Bastien Curutchet (eBPF Foundation)
-> <bastien.curutchet@bootlin.com> wrote:
+
+On 10/30/25 12:22 AM, Jakub Kicinski wrote:
+> On Wed, 29 Oct 2025 08:51:58 +0100 Fernando Fernandez Mancera wrote:
+>> On 10/29/25 12:01 AM, Jakub Kicinski wrote:
+>>> On Tue, 28 Oct 2025 19:30:32 +0100 Fernando Fernandez Mancera wrote:
+>>>> Since commit 30f241fcf52a ("xsk: Fix immature cq descriptor
+>>>> production"), the descriptor number is stored in skb control block and
+>>>> xsk_cq_submit_addr_locked() relies on it to put the umem addrs onto
+>>>> pool's completion queue.
+>>>
+>>> Looking at the past discussion it sounds like you want to optimize
+>>> the single descriptor case? Can you not use a magic pointer for that?
+>>>
+>>> 	#define XSK_DESTRUCT_SINGLE_BUF	(void *)1
+>>> 	destructor_arg = XSK_DESTRUCT_SINGLE_BUF
+>>>
+>>> Let's target this fix at net, please, I think the complexity here is
+>>> all in skbs paths.
 >>
->> Hi all,
->>
->> The test_xsk.sh script covers many AF_XDP use cases. The tests it runs
->> are defined in xksxceiver.c. Since this script is used to test real
->> hardware, the goal here is to leave it as it is, and only integrate the
->> tests that run on veth peers into the test_progs framework.
->>
->> I've looked into what could improve the speed in the CI:
->> - some tests are skipped when run on veth peers in a VM (because they
->>    rely on huge page allocation or HW rings). This skipping logic still
->>    takes some time and can be easily avoided.
->> - the TEARDOWN test is quite long (several seconds on its own) because
->>    it runs the same test 10 times in a row to ensure the teardown process
->>    works properly
->>
->> With theses tests fully skipped in the CI and the veth setup done only
->> once for each mode (DRV / SKB), the execution time is reduced to about 5
->> seconds on my setup.
->> ```
->> $ tools/testing/selftests/bpf/vmtest.sh -d $HOME/ebpf/output-regular/ -- time ./test_progs -t xsk
->> [...]
->> real    0m 5.04s
->> user    0m 0.38s
->> sys     0m 1.61s
+>> I might be missing something here but if the destructor_arg pointer is
+>> used to do this, where should we store the umem address associated with
+>> it? In the proposed approach the skb extension should not be increased
+>> for non-fragmented traffic as there is only a single descriptor and
+>> therefore we can store the umem address in destructor_arg directly.
 > 
-> This is fine. I see
-> Summary: 2/48 PASSED, 0 SKIPPED, 0 FAILED
+> I see. Pointers are always aligned to 8B, you can stash the "pointer
+> type" there. If the bottom bit is 1 it's a umem and the skb was
+> single-chunk. If it's non-0 then it's a full kmalloc'ed struct.
 > 
-> real    0m8.165s
-> user    0m1.795s
-> sys     0m4.740s
-> 
-> on debug kernel with kasan which is ok.
-> > But it conflicts with itself :(
-> 
-> $ test_progs -j -t xsk
-> 
-> All error logs:
-> setup_veth:FAIL:ip link add veth0 numtxqueues 4 numrxqueues 4 type
-> veth peer name veth1 numtxqueues 4 numrxqueues 4 unexpected error: 512
-> (errno 2)
-> test_xsk_drv:FAIL:setup veth unexpected error: -1 (errno 2)
-> #664     xsk_drv:FAIL
-> Summary: 1/24 PASSED, 0 SKIPPED, 1 FAILED
-> 
-> Pls fix the parallel run and not by adding "_serial", of course.
-Oups, in my quest for speed I removed the 'test_ns' prefix. It didn't 
-seem necessary since all tests are run at once, but I forgot about 
-parallel execution between the DRV and SKB modes..
 
-Sorry about this, I'll put back the 'test_ns' prefix.
+That is a good point. Pointer tagging might be a good solution here. 
+Thanks, let me try that.
 
-It will be a good opportunity to address some of the AI feedback I received.
+>> The size of the skb extension will only increase for fragmented traffic
+>> (multiple descriptors).. but sure, if there is a fallback to the
+>> slowpath, it will burden a bit the performance. Although, for that to
+>> happen the must have tried to use AF_XDP family initially.. AFAICS, the
+>> size of skb extension is only increased when skb_ext_add() is called.
+> 
+> To be clear by adding an skb extension you are de-facto allocating
+> a bit in the skb struct. Just one of the bits of the active_extensions
+> field instead of a separate bitfield. If you can depend on the socket
+> association instead this is quite wasteful.
+> 
 
-
-Best regards,
-Bastien
 
