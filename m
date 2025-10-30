@@ -1,163 +1,124 @@
-Return-Path: <bpf+bounces-73045-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73046-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DD7EC2115C
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 17:05:20 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3A19C211E0
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 17:15:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id DF5DD34F400
-	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 16:05:19 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C65D04EBF63
+	for <lists+bpf@lfdr.de>; Thu, 30 Oct 2025 16:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 737E33655CA;
-	Thu, 30 Oct 2025 16:05:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43786365D27;
+	Thu, 30 Oct 2025 16:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qliyW6f9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lLSYhk4d"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A25032ED26
-	for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 16:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B202C18859B;
+	Thu, 30 Oct 2025 16:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761840310; cv=none; b=toEyYfCe8OAzxw2mc4Fysl38z1W7Wex5NWQPIkB60Dzk5PP3H1JSUO0FtfkgAaNIbaE5lg/IfkUznT14J8NYKoDVSprcO5hgoyp7aDl1UGp+OIlPLuJbpanu3Wk8di9HNR5htqAlOTcOc3SQMr6cIQ7G3E6/Xjpoe+CZgWjjRR0=
+	t=1761840841; cv=none; b=Mb7uR6luG/jjl2+w2cGFcq0vctY0aDDiS2eJ4CEs/My4CTgdQJSbhz/Dg3strM8GhhKXflKVfMZeRVzRBwTh5WZ3koLZ4XX8A7coQFrOTHZlfqsae7QIq/Vza6xEdgir6rtOhy7BBOKkKgQfW+CgXwWvcMVsh3w9Hp5vgqtXd8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761840310; c=relaxed/simple;
-	bh=c9b8XC/fH65U9UHUGq3SmXgvpJYhZ/Lo5B2qlcSERQ0=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=uxMbpZZaaqA1thAVxH2D2CSYq8xw/QOcZWn951gr318A6lmpJHhVHcw5v7WbdojSXo5UpenSvtxcYkxJBHjtSQNtWqtbGXDwe6ZzdrWgrstEL5A8VQzOBTGUtdqzAWgi0GaGYuSL/sMTHrqyvlhLdWXN4AqD9NMbL5Euiiu3xoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qliyW6f9; arc=none smtp.client-ip=209.85.221.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
-Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-42705afbf19so743798f8f.1
-        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 09:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761840307; x=1762445107; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=c9b8XC/fH65U9UHUGq3SmXgvpJYhZ/Lo5B2qlcSERQ0=;
-        b=qliyW6f9FdGAPSn3gcZoc5BpP2gLJjZeIYfJP4rm/oWdi/ndU8NBDjj9iHMTZwTRgc
-         +S94oEb9yR8WEBpBkxr8JKGhbdxJVi5LYg0iaWrpPxQGNiAS+oWfJ1/kLPlqMMrdoIUF
-         NLAukww8s9TEKxf1GKLYZrJOxcJDyKk06/nsZVs5oUCt/hQJv91jqYFlUHoWuVK1tzXn
-         aJdLZkEGoHcBaNpqtuNxNzs/St0pnhjzvI30otgRAnziex0ZMTSgbG/GbmB2XyjneT/F
-         nZXAsIbEVmqWqWxyZmJhhHcXwNaKsiF0NyhWokRdjHwEJqgYr4aV3wrHzzV7nsnWUliG
-         fKng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761840307; x=1762445107;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c9b8XC/fH65U9UHUGq3SmXgvpJYhZ/Lo5B2qlcSERQ0=;
-        b=imnVIeWEi7AZg3E+Kt9YY/+JOUOS1gxI/VrIS2nFJ3HQU4I2LxTlEGrccut7ZJhn4u
-         ILRQhTXA0qOzlFFd1FEi/TrTSGuL652EdJ/ijUPW53FY5N+FPLfP6tDOtdSBhIIryD8y
-         pruiLUdsOnH9gY87cyx2bZKLsrODSJ9OEXqmJuYFIZxJXKw7RiopK0ad/hSijYhM4Hbc
-         s/JqW8uHZ/4f88GzKJ+G8yQQcbkbxOjFqtl6/KG97EyAdvgI7f5TEENB2IrN+j0+gCfb
-         MmdCTCfg3eEX31xC5cxHeBuPdFPTiH9myb/9PPrYY+nI4LcCoyrtNRWZ0PQm5IjUWbG4
-         gi6w==
-X-Forwarded-Encrypted: i=1; AJvYcCX+HBcMjWqqKzGVB9gLd3GzB6q0QnhIV/pfQdD51X4MihI2mjPvAUCJwcn9MPIPZCRnXG8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2PmJ/ooA7Dfo+b1isUlY3kvrrt0rLm8R9yccnwBhH10eZ930+
-	KcX4LUH4C27Q/k/SNkQZGhtekP5IxS8abAoROzEK6teT1u499KigR2+NOVNBh7DcKYuW43oio7w
-	pjI4EqlMYHfzD3Q==
-X-Google-Smtp-Source: AGHT+IHjMaURNuY5ADspjcwjcl/WRoZFYO9bioemMflpQGaxNDVvaG4JDdR/nXAPdbz/Yfz+Utvfc7Y4KaunSA==
-X-Received: from wmbz6.prod.google.com ([2002:a05:600c:c086:b0:471:6089:1622])
- (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6000:2408:b0:429:8b8a:c32b with SMTP id ffacd0b85a97d-429b4c83176mr3266075f8f.22.1761840306279;
- Thu, 30 Oct 2025 09:05:06 -0700 (PDT)
-Date: Thu, 30 Oct 2025 16:05:05 +0000
-In-Reply-To: <e25867b6-ffc0-4c7c-9635-9b3f47b186ca@intel.com>
+	s=arc-20240116; t=1761840841; c=relaxed/simple;
+	bh=81xY3et/CDlan4zato2VKfVrhsKD6Dy0acKVQafxgnY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uT2/1wRCkDQ+QiOrUWL0PCA65Bylwh58hSQUahhubAq/LjtZ7S4n8CRpiLUDI2xZz97SqkO+NheUTGY3uXgnoG8M+nYhKn8K2OyNuL/EqQakgvA+WjuHhgWcmHrZ/YHMei2n3j/lHrE3sCXcwAkC+PFEXmAwxN8a6FRkHNTF4HQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lLSYhk4d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 031D3C4CEF1;
+	Thu, 30 Oct 2025 16:14:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761840841;
+	bh=81xY3et/CDlan4zato2VKfVrhsKD6Dy0acKVQafxgnY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lLSYhk4dHqZ1dor08LN5ap2JBv3bG3N0GXsdH6f913EZk4xaZBcnfMvFv1C4K5mgf
+	 0xLQloW0iTP/7YCZg/JeYH9gJeTa7h7N4w0pxp0nJ+GhSachiJYzWK4iiimAYxP6Bk
+	 y/5NdkYtfklb0hB429t42B+VfjiM8DznMQgWZhOoV60Vg7n+M0HmFiEvSxkHmou7lG
+	 GAh3ytHVmPZ97ggPjChUxRXzgaNDIkxXuWhyBxVtYuVJwKTYtWhp1s8xW5PLBi62o+
+	 77g5MFoT4CJGhnN6RMNEmD68K1DSQbWOcltqcre4r+Bu5s8cIdfHphXYTbz1qZ9+8Q
+	 B9DMm9tFQd4Aw==
+Date: Thu, 30 Oct 2025 06:13:59 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, bpf@vger.kernel.org,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops
+ to cgroups
+Message-ID: <aQOOxybyymnUk8fr@slm.duckdns.org>
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+ <20251027231727.472628-3-roman.gushchin@linux.dev>
+ <aQJZgd8-xXpK-Af8@slm.duckdns.org>
+ <87ldkte9pr.fsf@linux.dev>
+ <aQJ61wC0mvzc7qIU@slm.duckdns.org>
+ <CAHzjS_vhk6RM6pkfKNrDNeEC=eObofL=f9FZ51tyqrFFz9tn1w@mail.gmail.com>
+ <aQKGrqAf2iKZQD_q@slm.duckdns.org>
+ <CAHzjS_tEYA2oboJ-SPq5wJLJTpJDNiA2Fk1wMRgyEpH0gjZRJw@mail.gmail.com>
+ <aQKLCuX5v5aO3fDa@slm.duckdns.org>
+ <CAHzjS_uqFLEzvU0PTQiXajdFDsjC4gfk0Z4qMoiRQJ2uVPw6BA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
- <20250924152214.7292-1-roypat@amazon.co.uk> <20250924152214.7292-3-roypat@amazon.co.uk>
- <e25867b6-ffc0-4c7c-9635-9b3f47b186ca@intel.com>
-X-Mailer: aerc 0.21.0
-Message-ID: <DDVS9ITBCE2Z.RSTLCU79EX8G@google.com>
-Subject: Re: [PATCH v7 06/12] KVM: guest_memfd: add module param for disabling
- TLB flushing
-From: Brendan Jackman <jackmanb@google.com>
-To: Dave Hansen <dave.hansen@intel.com>, "Roy, Patrick" <roypat@amazon.co.uk>
-Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>, "corbet@lwn.net" <corbet@lwn.net>, 
-	"maz@kernel.org" <maz@kernel.org>, "oliver.upton@linux.dev" <oliver.upton@linux.dev>, 
-	"joey.gouly@arm.com" <joey.gouly@arm.com>, "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>, 
-	"yuzenghui@huawei.com" <yuzenghui@huawei.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>, 
-	"will@kernel.org" <will@kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>, 
-	"mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, 
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>, 
-	"hpa@zytor.com" <hpa@zytor.com>, "luto@kernel.org" <luto@kernel.org>, 
-	"peterz@infradead.org" <peterz@infradead.org>, "willy@infradead.org" <willy@infradead.org>, 
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "david@redhat.com" <david@redhat.com>, 
-	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>, 
-	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, "vbabka@suse.cz" <vbabka@suse.cz>, 
-	"rppt@kernel.org" <rppt@kernel.org>, "surenb@google.com" <surenb@google.com>, "mhocko@suse.com" <mhocko@suse.com>, 
-	"song@kernel.org" <song@kernel.org>, "jolsa@kernel.org" <jolsa@kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"martin.lau@linux.dev" <martin.lau@linux.dev>, "eddyz87@gmail.com" <eddyz87@gmail.com>, 
-	"yonghong.song@linux.dev" <yonghong.song@linux.dev>, 
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
-	"sdf@fomichev.me" <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, 
-	"jhubbard@nvidia.com" <jhubbard@nvidia.com>, "peterx@redhat.com" <peterx@redhat.com>, 
-	"jannh@google.com" <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>, 
-	"shuah@kernel.org" <shuah@kernel.org>, "seanjc@google.com" <seanjc@google.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Cali, Marco" <xmarcalx@amazon.co.uk>, 
-	"Kalyazin, Nikita" <kalyazin@amazon.co.uk>, "Thomson, Jack" <jackabt@amazon.co.uk>, 
-	"derekmn@amazon.co.uk" <derekmn@amazon.co.uk>, "tabba@google.com" <tabba@google.com>, 
-	"ackerleytng@google.com" <ackerleytng@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHzjS_uqFLEzvU0PTQiXajdFDsjC4gfk0Z4qMoiRQJ2uVPw6BA@mail.gmail.com>
 
-On Thu Sep 25, 2025 at 6:27 PM UTC, Dave Hansen wrote:
-> On 9/24/25 08:22, Roy, Patrick wrote:
->> Add an option to not perform TLB flushes after direct map manipulations.
->
-> I'd really prefer this be left out for now. It's a massive can of worms.
-> Let's agree on something that works and has well-defined behavior before
-> we go breaking it on purpose.
+Hello,
 
-As David pointed out in the MM Alignment Session yesterday, I might be
-able to help here. In [0] I've proposed a way to break up the direct map
-by ASI's "sensitivity" concept, which is weaker than the "totally absent
-from the direct map" being proposed here, but it has kinda similar
-implementation challenges.
+On Wed, Oct 29, 2025 at 09:32:44PM -0700, Song Liu wrote:
+> If the use case is to attach a single struct_ops to a single cgroup, the author
+> of that BPF program can always ignore the memcg parameter and use
+> global variables, etc. We waste a register in BPF ISA to save the pointer to
+> memcg,  but JiT may recover that in native instructions.
+> 
+> OTOH, starting without a memcg parameter, it will be impossible to allow
+> attaching the same struct_ops to different cgroups. I still think it is a valid
+> use case that the sysadmin loads a set of OOM handlers for users in the
+> containers to choose from is a valid use case.
 
-Basically it introduces a thing called a "freetype" that extends the
-idea of migratetype. Like the existing idea of migratetype, it's used to
-physically group pages when allocating, and you can index free pages by
-it, i.e. each freetype gets its own freelist. But it can also encode
-other information than mobility (and the other stuff that's encoded in
-migratetype...).
+I find something like that being implemented through struct_ops attaching
+rather unlikely. Wouldn't it look more like the following?
 
-Could it make sense to use that logic to just have entire pageblocks
-that are absent from the direct map? Then when allocating memory for the
-guest_memfd we get it from one of those pageblocks. Then we only have to
-flush the TLB if there's no memory left in pageblocks of this freetype
-(so the allocator has to flip another pageblock over to the "no direct
-map" freetype, after removing it from the direct map).
+- Attach a handler at the parent level which implements different policies.
 
-I haven't yet investigated this properly, I'll start doing that now.
-But I thought I'd immediately drop this note in case anyone can
-immediately see a reason why this doesn't work.
+- Child cgroups pick the desired policy using e.g. cgroup xattrs and when
+  OOM event happens, the OOM handler attached at the parent implements the
+  requested policy.
 
-[0] https://lore.kernel.org/all/20250924-b4-asi-page-alloc-v1-0-2d861768041f@google.com/T/#t
+- If further customization is desired and supported, it's implemented
+  through child loading its own OOM handler which operates under the
+  parent's OOM handler.
 
-BTW, I think if the skip-flush flag is the only thing blocking this
-patchset, it would be great to merge it without it. Even if that means
-it's no use for Firecracker usecases that doesn't mean the underlying
-feature isn't valuable for _someone_. Then we can figure out how to make
-it work for Firecracker afterwards, one way or another.
+> Also, a per cgroup oom handler may need to access the memcg information
+> anyway. Without a dedicated memcg argument, the user need to fetch it
+> somewhere else.
 
-(Just to be transparent: my nefarious ulterior motive is that it would
-give me an angle to start merging code that will eventually support ASI.
-But, I'm serious that there are probably users who would like this
-feature even if it's slow!)
+An OOM handler attached to a cgroup doesn't just need to handle OOM events
+in the cgroup itself. It's responsible for the whole sub-hierarchy. ie. It
+will need accessors to reach all those memcgs anyway.
+
+Another thing to consider is that the memcg for a given cgroup can change by
+the controller being enabled and disabled. There isn't the one permanent
+memcg that a given cgroup is associated with.
+
+Thanks.
+
+-- 
+tejun
 
