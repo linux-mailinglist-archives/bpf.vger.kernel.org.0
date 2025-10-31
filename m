@@ -1,442 +1,226 @@
-Return-Path: <bpf+bounces-73111-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73112-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBC4AC238A1
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 08:24:37 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCF8CC238E0
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 08:33:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B3F7D4E5F14
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 07:24:36 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 41F214F0615
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 07:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A79F32937C;
-	Fri, 31 Oct 2025 07:24:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92E1329E63;
+	Fri, 31 Oct 2025 07:32:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gyj/WAxb"
+	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="GjZp9HLa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11012019.outbound.protection.outlook.com [52.101.66.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E228D25DAFF
-	for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 07:24:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761895472; cv=none; b=i/HRuDnLvq0EuN1Aa9gTUMZ/2IAffK26WznIGkx/RVy9EsH2QynvsdjT4FUJk6SjYWhIiXI3kAhezvLvuAd4k67fel/s2vdC+rC0JYTar1ecYGDiB/BQamFpkBOV6CHJFnd1vsAg6BXhFw7L6gh0R7PHmroROAGMm///E2i+8P0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761895472; c=relaxed/simple;
-	bh=RQAsL7W4SrBCWD8Zvq4GpLme9aTC7gxkasfO3q6a1Uk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PVvcn3dJFhR8gknebZdJF7a+V4fL5eYwMjGbWdhvFYalpYaRstM2DbYWhiUOA/1rZDdQUx99wRYZZ+qqmWzSSzLGa4S+F+aJ3RZD1tIWNHUn6SEmhEKhAWvEN2ZnhNnneWvQZbd5Zo/0aCj+kQteJ3nmpPSr+8cHzuk/jxB5bXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gyj/WAxb; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-429b85c3880so1730777f8f.2
-        for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 00:24:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761895469; x=1762500269; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cRIIXxAqGe0HFnekqUVOYnuhj86EWw8qI/psy6BMl5Q=;
-        b=Gyj/WAxb1obKZvXSMBjh6BAKiL9zdo/ZxInx4voLVnhGCxgk4+CsjazFpZ24blU2b2
-         q9o7WYWyEwCw15sjAKUmJtS7hZcbkjNIdCtJgqdbntxxI4pzBmZNTY2BlK3LChHsr/ij
-         pl8ww7pYuhAyjopeJjG8PIm4VRZWZN1Z2PPwi0Bu8NFxelQoimm3EPYuFTp6Jc/GJjwU
-         38i8J37jtundFVZ9cZh01MNS5We2zHE7irctbev1KzMHqsaYS24/HMS2a2z0d7qNyvnL
-         27pPQtTCO2hCKRVRTfXGPuXE2I2Rsvhrza6AkwlDefpHLebpDg6hhPUtEsF46xVFlhh9
-         qcKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761895469; x=1762500269;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cRIIXxAqGe0HFnekqUVOYnuhj86EWw8qI/psy6BMl5Q=;
-        b=YAx+GRFiE76Bbajih6qY5G8Fv0w+ZD12mQ8qcex8VlTNqnfqOGebGkPROyyWBXeH2X
-         QaCVW2ck1R9vkSP4a3NpZS0R9qhF8nOSZp2NfCYupqxZXVbCJbzvo4eH5jn3l9ZQBrZ1
-         KIxMbuu1Juecji3isC132QvvzFIeBFmWvyN6AXDmAWOajukxMJEezZSQRNVsTocou4bg
-         1DHkJ24ebECF0A2+8zr5h+VVPFUJNxPTmJFl9uTSDFvWxZywiCJ59hm7rukggYqsSoKp
-         q4AoNHavgz/M4N1kvAJ4pqR5NySnwPMmFWorBp9DRA7mlyGgQV9jgRwnWqBf3+013ZBG
-         KvhQ==
-X-Gm-Message-State: AOJu0YxwJ596/9Z7qRKZCMnYMPYDfLbpy2sWeybrdjBwfe7ss99z8U67
-	R6KYUfIxigdCJkEJOgONAaw4mKDOoqoNjIDHZib9KCk2ktwr5gJTixApZ2i/BA==
-X-Gm-Gg: ASbGnctvwHeUMOKZQbB1TWz8GYakoAqeiHTVeCZeJoi0IpmHyMumrq+ucdIYaxpd3tk
-	ib5QUMyI+hznigiqzumzgbf6Hq0h6mao84F44m41udMbwBVSnbBQNliwCFL49rVTobzEWoPhq7h
-	RhGU6ApNb0htuB9YP1l1nNFGVGW0nGE9T4tQKaV6KJykourxtMI7HMWSPyuzRCOYIARMnfSoZSw
-	FPF232JkD6zPwoCWFEEXJyE2rFCDiUqatJalxzaxJFuucGZgp0UFAx6iSPeODmF8LZk8MEF+UWF
-	a7lqZL7RWi4shTeSzOlqLiEpHuzvN8H0JsV6dFwLNYUe63Ld1pqB9bvFydxhitQDVW0O/zcHbdi
-	bwm3Pn14I4lAYXLHZSFSYChijuDStCHT27agj/6QLAXmjTl+FEL+D609gjOoGrnbBh+sFVeWX7R
-	C/ZdYsBw0ixg==
-X-Google-Smtp-Source: AGHT+IEBZMiKw9VTjiyJn1rSTUnskM4ddSz3pK3iSqVbxQ4CFM4PzIS/5pXQDOMYifJQd+7jiH0kQg==
-X-Received: by 2002:a5d:5e8e:0:b0:429:bc93:9da8 with SMTP id ffacd0b85a97d-429bd6a65f8mr2096584f8f.32.1761895469014;
-        Fri, 31 Oct 2025 00:24:29 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429c13e03d0sm1999933f8f.26.2025.10.31.00.24.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Oct 2025 00:24:28 -0700 (PDT)
-Date: Fri, 31 Oct 2025 07:30:56 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH v8 bpf-next 08/11] libbpf: support llvm-generated
- indirect jumps
-Message-ID: <aQRlsLUgKtEMdUPO@mail.gmail.com>
-References: <20251028142049.1324520-1-a.s.protopopov@gmail.com>
- <20251028142049.1324520-9-a.s.protopopov@gmail.com>
- <CAEf4BzZok5fsX4BjhrwNB5CNQGVFCRM+M2TFhHu3x98bC1pOkg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC30E329391;
+	Fri, 31 Oct 2025 07:32:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761895953; cv=fail; b=Zgyz4OPvWkppcPMQGiKc3czZrhv+8lEiWqKL2JFAvgPs9mhfpgLYP0oJiZ01born6InXO2t6SybGbNBVnb2wbUuKqvAUCbmtUv9dcV7m5C6g4Rmfi5S4FhGTHvICr9EhhMJJ3kaSEghSGn46HNVsUruD7KVQswka9do64X2pQuQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761895953; c=relaxed/simple;
+	bh=r+fUeZIdvBMv47rfkF62ZP/78RmWLFWfuFlOD9f+fv4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=EljstkbcviQjVdUxVFQbsXKG/+aJQ3ivS96Tq2Njw6SfeqVPztsOsiKi4YsWvbUrCoLdt9nUT0iv1SWnBpsTcZ2gquHknNGYfeffdCz7nk7zgjLc9rdoMTKsh2HeUlSD7IqpmmXNKwaW1+oFP+oHlrUtkLRHkMz8fP6fIGB45M0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=GjZp9HLa; arc=fail smtp.client-ip=52.101.66.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=kL24cx6h778rk6G/LAJCerTDTDpzyFUqBvlGVBUYh0pZzp1jsDTowJI05G3Ak3xZr6U3X3mTCtpm4nOoS41ho+1EPk+W3HsjvIHXt3J/PaaLbX2pUtxPs4MrqO94bFRuqyvOiryVBaH3SbepY+RhkezdsqbVhWaTk0O3HMzG3Kq24Oo6yzvgohQgncxyZpjN+7CeeyzKX7+RaVQXMmUnaP+iaQOods2hKByuWboLIG6kJYYzp5KB4durTB57SbWPFUNgUcdsVWHUMuyIT5pir+GoRdXUQMwOcKvqoBJxZHARPRd567WvTbxk9Vmu+qAnLdQrfCnTsoHlIo2vAy570w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=r+fUeZIdvBMv47rfkF62ZP/78RmWLFWfuFlOD9f+fv4=;
+ b=OKUS+qYgZxuIPAkCzUe9x5Ics4jK22jqflIjBivUhyJxuprPartrQw0dW3yOK7FscbCjatXSuQ78RAm+Dneb6BPAzv8rzAl+OOqJYT2MZn454cM4gooZaxmLwRUFXa4AdOW2ArM5dBsLD5QKl0/N4PP6FZiyganYeSVr3hcwc7QauWoWFcEpEpksCRkzLRY3ee1qBexTtGD6VmSw4eFfZS+j7+28RSpRfv9TjJY72bXjP7ZJ2/+pJiuQomrweQhiMlobana9F0eQEmJvDNeH7w2ahPqFGxKG1QW+sTLFVdWZfziXQXl8bgyze9ZR+z1yeIEE9Jlyy9SF0JNbTDR6yg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia-bell-labs.com; dmarc=pass action=none
+ header.from=nokia-bell-labs.com; dkim=pass header.d=nokia-bell-labs.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r+fUeZIdvBMv47rfkF62ZP/78RmWLFWfuFlOD9f+fv4=;
+ b=GjZp9HLa9AKd6dQ1TC4R3X93/I531GffZ1Csnl7KtIIQOtYEWblWXQ4mP9HlGm1OolyfzJ4EMfZa/Hd8GfFTuUPyWWuRJawSFQ6E8+c7Y/K4wWQvL2AMVpj/5EhviUXJADo6YpmFz1n7ntgsf4bid6wCK5HykD2Fxyi71yCBDi19crTYiMaFQ9vR+U9/7rrcAPtQlgyMhARiLdbok3QSIRr1uezR2AWrcvROXCdPWHP8sCWfz1uhAhUYHn6bhmsFbU78ht4/d9Z8D/VdIF8NBQPfIP4gsaRL43p91EF62qBBvk3A8HKMnDkq6hw2QZZUCiSg3A0u7RdLR7vPvjR4rQ==
+Received: from PAXPR07MB7984.eurprd07.prod.outlook.com (2603:10a6:102:133::12)
+ by AM4PR07MB11088.eurprd07.prod.outlook.com (2603:10a6:20b:6ea::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9275.12; Fri, 31 Oct
+ 2025 07:32:27 +0000
+Received: from PAXPR07MB7984.eurprd07.prod.outlook.com
+ ([fe80::b7f8:dc0a:7e8d:56]) by PAXPR07MB7984.eurprd07.prod.outlook.com
+ ([fe80::b7f8:dc0a:7e8d:56%2]) with mapi id 15.20.9275.013; Fri, 31 Oct 2025
+ 07:32:27 +0000
+From: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: "pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com"
+	<edumazet@google.com>, "parav@nvidia.com" <parav@nvidia.com>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "corbet@lwn.net"
+	<corbet@lwn.net>, "horms@kernel.org" <horms@kernel.org>, "dsahern@kernel.org"
+	<dsahern@kernel.org>, "kuniyu@google.com" <kuniyu@google.com>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "dave.taht@gmail.com" <dave.taht@gmail.com>,
+	"jhs@mojatatu.com" <jhs@mojatatu.com>, "stephen@networkplumber.org"
+	<stephen@networkplumber.org>, "xiyou.wangcong@gmail.com"
+	<xiyou.wangcong@gmail.com>, "jiri@resnulli.us" <jiri@resnulli.us>,
+	"davem@davemloft.net" <davem@davemloft.net>, "andrew+netdev@lunn.ch"
+	<andrew+netdev@lunn.ch>, "donald.hunter@gmail.com" <donald.hunter@gmail.com>,
+	"ast@fiberby.net" <ast@fiberby.net>, "liuhangbin@gmail.com"
+	<liuhangbin@gmail.com>, "shuah@kernel.org" <shuah@kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"ij@kernel.org" <ij@kernel.org>, "ncardwell@google.com"
+	<ncardwell@google.com>, "Koen De Schepper (Nokia)"
+	<koen.de_schepper@nokia-bell-labs.com>, "g.white@cablelabs.com"
+	<g.white@cablelabs.com>, "ingemar.s.johansson@ericsson.com"
+	<ingemar.s.johansson@ericsson.com>, "mirja.kuehlewind@ericsson.com"
+	<mirja.kuehlewind@ericsson.com>, cheshire <cheshire@apple.com>,
+	"rs.ietf@gmx.at" <rs.ietf@gmx.at>, "Jason_Livingood@comcast.com"
+	<Jason_Livingood@comcast.com>, Vidhi Goel <vidhi_goel@apple.com>
+Subject: RE: [PATCH v5 net-next 00/14] AccECN protocol case handling series
+Thread-Topic: [PATCH v5 net-next 00/14] AccECN protocol case handling series
+Thread-Index: AQHcSapSn7GQdee2bkej55rw+3u3GrTbbyYAgABscqA=
+Date: Fri, 31 Oct 2025 07:32:27 +0000
+Message-ID:
+ <PAXPR07MB798409CBEC44A185BD40ED42A3F8A@PAXPR07MB7984.eurprd07.prod.outlook.com>
+References: <20251030143435.13003-1-chia-yu.chang@nokia-bell-labs.com>
+ <20251030175650.69d77ddd@kernel.org>
+In-Reply-To: <20251030175650.69d77ddd@kernel.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nokia-bell-labs.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR07MB7984:EE_|AM4PR07MB11088:EE_
+x-ms-office365-filtering-correlation-id: 675159cb-6fdc-4bf8-9b0c-08de184fa462
+x-ld-processed: 5d471751-9675-428d-917b-70f44f9630b0,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|1800799024|7416014|376014|38070700021;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?2FOsLk8d+QJUMZsLqcHClgdYGf1QZX+ptFYxjue3frT6jksvOICzwbKHohQ1?=
+ =?us-ascii?Q?U/NOt2n/7KISu+jMrYp7uMXXe9+mci8gdMvtdcsE0Vt86n2i0tJnrgoPuFhK?=
+ =?us-ascii?Q?tCgAucbPyt/ytA2K0+weCp75bkpdnmGLwHOLH4qJqWne5gpm29Dy6KUwhsgH?=
+ =?us-ascii?Q?thM5F5lpV4UHm6lcSt5azPTDEnZDs4XuWsrqacHDrkpjV2PK2Az+Q8cP6KfO?=
+ =?us-ascii?Q?AgBS7wX0QKPoB60ZUAFGfgf3PKNK82tO63CeD9lfTJkpQkJ6K0515aVaDlAN?=
+ =?us-ascii?Q?MGyuXBuRHwdzgzYCT5Ne8ClJ2Wt18qsVurv/QUehPoHXG2cxhjP4gu632QMQ?=
+ =?us-ascii?Q?2n84AVCPHj4927oWGw4BPaUL8xlsmRISIwTS/VHHP3bqEEDxYXVK5Pqs5eC6?=
+ =?us-ascii?Q?AsnoOKZsh6b8h1iBQrjlzKekGlTCuZN0AJ9Ii30pJDwea1k+Xj9A5CI8vPNq?=
+ =?us-ascii?Q?ORsF4Aufsy01Ceq/fqmn1TiInMjUzKZIx3kqxwc5dw89L5iaqyuaZS35Qi9x?=
+ =?us-ascii?Q?xmhKEekqki+T0fWP8C4XGrQ5nrZJaSAJ0oB/SMixLESJ5TjoNmPXAaFZiWO7?=
+ =?us-ascii?Q?z1P1tW7CMNxsboaFkDkLopL9yo96BfM8p0eCE/Fpc8d3PlOWNUWy8Rg+Xzew?=
+ =?us-ascii?Q?M6JRs2evSOBYloaf6f7IUv9YaEg1zpwZoK3eqTJTxMwxxfH7+FqZeZb9FC9I?=
+ =?us-ascii?Q?xXveCczBnBLqoJ/XzmmHuHvuoD++11yw1Q55HvHJYwZDxU8Cw+gjoFWsO9So?=
+ =?us-ascii?Q?bk1qmeOb3Z7Ez/cGBV0mOdQfFFous6ZfCk1JDgdSvf8iJ1xFMzkbBzpM7cgD?=
+ =?us-ascii?Q?nWQS9lWy+9ipCWaDO3PLZHYkL0XKiySkA+J/Ct1ZsIJkrVNrGn98GAXJ4+DI?=
+ =?us-ascii?Q?KuU7GxZNM4dMSjgdZmy0l7B8yn0n83J37oFKdLzvSSKbdyhmUMTc60phkYZM?=
+ =?us-ascii?Q?NZM1h2TAvU4Mt/fQwPhaDEt+ilqFo6EMuhfOKDe4zpSOO5coGqPAstcrJOm7?=
+ =?us-ascii?Q?VRSXsLDm3AU8pLf6fPuP7+YTUuCqaYqaTaBA9rkWTNRUcQYPoU6Gj0g8VRLl?=
+ =?us-ascii?Q?+qkqvri6iomFm01u1lBy8kX6+FEa90d951T8V4cfT8ho4QB7LxTLkVU7gspK?=
+ =?us-ascii?Q?kpUgBPaWCe04+ZoOpeLqJBvZvNeZwC5v56O75OPkIfqCFtxXVG6laJl7tZfL?=
+ =?us-ascii?Q?/F3NlzCtxwbRNLLFgIXfnGdbqtYvEFIF2DrYzLrJLONOupVC/fS1b2T1E1a4?=
+ =?us-ascii?Q?sIjgET42ChSSMscvTEGHxdDTccyH4xSd4tLLUZnrpq5J/ZY7V2fGFuhLOcbp?=
+ =?us-ascii?Q?FO4B+0a+2B3fSKWwI5WVt14A+vN2zGZCUUotVTKBf4yCEsDb1nVEztxJI9uy?=
+ =?us-ascii?Q?DPk94nh2RJmnatUyy0xRIU1iNFlYiSkRrUOS60CO3qqI3euQ7m6fz05vz1hp?=
+ =?us-ascii?Q?Te96KIDYXxeVOQhC9yEC3vUkuE1KnVnRhdMY004q3xOEBBLYlkuno2NNXVbu?=
+ =?us-ascii?Q?LXvEGSO0YgmR6clnauKv5l4dE40CRR0QbLc/?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR07MB7984.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?SXeAitOIzXzKoBb9dpGtJkaDayKtnZVJeMWEgu03BMPhzZl2EVBvsRuSUdQC?=
+ =?us-ascii?Q?ysLL82G9voDoWRQYBdmEqsQrDNsc/eXjZx5UF/fdFZnIVTIOJutQHpJroy8R?=
+ =?us-ascii?Q?5oYmeWlqwt4FctNdSy6pFaXptuhSfmAom7a8S0PTIotXbpeNNTJEw3B8EO5Q?=
+ =?us-ascii?Q?ObufJXCsi2dkJz/UYFBvbvHmNkNHwlVnPztUfjcPRWCErl/TxIM/C6Wo2/qC?=
+ =?us-ascii?Q?ODD8oPUZyZkaBwzCXy9AjOiTFKhk7NB44KC/HgZJmVDLibOvbV1XV85XXhsq?=
+ =?us-ascii?Q?lgvKjr6wKD5LuP9NMYizL7lFGUFn81SPS2Go989ozkU6lNpCrz+sNRFdfj77?=
+ =?us-ascii?Q?jDn8khUr6yhAKOgG2LPNX/8d59wKO9RTlRkFBnp++FQKem3xIT+WXwmIhGjI?=
+ =?us-ascii?Q?3NY2XJifewviH+kpfDe6eQhCtIaSY/ovv+efAgStKZJ4LsaCCwxh1ynJx8Br?=
+ =?us-ascii?Q?5RBm7EWkUj1MQQTQJO5OHkeZ9ksWR6QbyTZbzO00SPg6DVEXmBHw+bPXlBgI?=
+ =?us-ascii?Q?/JftI/jO5Ev6p+zqx6/kU9ukvZ/2c8qznZQSBC5U3pU8eY6ySnKuI45jCEKn?=
+ =?us-ascii?Q?HRU/odKFf5acT3IF7tOhMSX6icE0ISUaH3P/nIqAz2UKyUKzWViIR/f6TcIM?=
+ =?us-ascii?Q?37uC5/Fk7ZuvRNAUZSae29fR7x4gqFIiQ/ZUWgUYtYiI0Za74ZD5ZPHvqJH9?=
+ =?us-ascii?Q?Y8Ln86LpnsZ87XfLrWhNn4/4gwjwUUnkSSjuZWaVeHuTB/3h5j1zUUWHPl+7?=
+ =?us-ascii?Q?S2UHyKDwdSvqNVoSrxPIax/a/cJNhXdWgGiLz4dCkWlLF+/X6Dm0ZbzcoyX1?=
+ =?us-ascii?Q?KWSbGggT7I/sEcSFhcUW5s9m8B+rtsL3hQGKhryKxqx4MfsyxZK0Y+3VMQwp?=
+ =?us-ascii?Q?vj4sbHxiyTnRa4qoH26PTdG2LYImZ+hynlAcHw7R1b/aVEjwMCWPAEYXvapz?=
+ =?us-ascii?Q?KPNJE84hubmnE9ypNg2D6b62z0KGdSusVbuylhqrgoSqySprXeACtroLwZkq?=
+ =?us-ascii?Q?JjtCXa9vujJUF6LG2yBMO7B4gOdtqDmaKH3SNdNbFx2LnepM2x++oNwm92X/?=
+ =?us-ascii?Q?o+B8KgYMUhfZwU/0MYYnSfCWzCcjje/j5NITPUvsvxvXoP1/9ANb5bZnBfxB?=
+ =?us-ascii?Q?xGIyYOQW0svBLX6Of6ypNN7QCp6CdfGHF8BzJ8NAAyYbN2gnfRxmLZNTdKw9?=
+ =?us-ascii?Q?EL1amr81xlQiILvsnWWZF2ajKCY5AzkVkOYH5lUYm4iSnn+3iUfrosqQuG0r?=
+ =?us-ascii?Q?pTTCdSFLB0DUt/+6LSlylC6KeanMLMQIV4Vhadfo1LUuLnDZtMppQjSwfGQs?=
+ =?us-ascii?Q?jJr8QLDk00K6nqBLNlXFGL4BsIYQiGmwqYpiIdMXbMZGqWgF7/TPpq/OygZY?=
+ =?us-ascii?Q?tKmAhHaUjzoTkkvk3RCA5pL/5ZktZnZ5uK59ua5dtCA8+lc522lcfUnAfI/G?=
+ =?us-ascii?Q?0Ul+7Hvjy4b3tc1nXB6/DM6fUhlwDZt7apMbNPyc1djZ+Y0H6JcQB2nsXWce?=
+ =?us-ascii?Q?WWijVKmjYTNhmCObqZfNFTp/WlOrsLsPG73mx0Dy/T43zQfE29R63uXYuY70?=
+ =?us-ascii?Q?mKruZGe6Axxm5eVbTwpKbxMoFgZ3vg9/WUUnQgXfDXI50t3TffbrEkDLKbPC?=
+ =?us-ascii?Q?CQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZok5fsX4BjhrwNB5CNQGVFCRM+M2TFhHu3x98bC1pOkg@mail.gmail.com>
+X-OriginatorOrg: nokia-bell-labs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR07MB7984.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 675159cb-6fdc-4bf8-9b0c-08de184fa462
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Oct 2025 07:32:27.2218
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XsObv8wHkVLWFiQoC0jspxnzoK/JqiyzOJ8w7/LzlNDFqV5SoNM4vVY0Y7WYN9zcwNT7+zn8K5H1ES85AS1x28jzyDYouWCrZpN7u6W2wt1Bdzj5vvzfZQPLJAvXE0cD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR07MB11088
 
-On 25/10/30 02:00PM, Andrii Nakryiko wrote:
-> On Tue, Oct 28, 2025 at 7:15 AM Anton Protopopov
-> <a.s.protopopov@gmail.com> wrote:
-> >
-> > For v4 instruction set LLVM is allowed to generate indirect jumps for
-> > switch statements and for 'goto *rX' assembly. Every such a jump will
-> > be accompanied by necessary metadata, e.g. (`llvm-objdump -Sr ...`):
-> >
-> >        0:       r2 = 0x0 ll
-> >                 0000000000000030:  R_BPF_64_64  BPF.JT.0.0
-> >
-> > Here BPF.JT.1.0 is a symbol residing in the .jumptables section:
-> >
-> >     Symbol table:
-> >        4: 0000000000000000   240 OBJECT  GLOBAL DEFAULT     4 BPF.JT.0.0
-> >
-> > The -bpf-min-jump-table-entries llvm option may be used to control the
-> > minimal size of a switch which will be converted to an indirect jumps.
-> >
-> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> > ---
-> >  tools/lib/bpf/libbpf.c          | 249 +++++++++++++++++++++++++++++++-
-> >  tools/lib/bpf/libbpf_internal.h |   4 +
-> >  tools/lib/bpf/libbpf_probes.c   |   4 +
-> >  tools/lib/bpf/linker.c          |   9 +-
-> >  4 files changed, 263 insertions(+), 3 deletions(-)
-> >
-> 
-> [...]
-> 
-> > @@ -738,6 +758,16 @@ struct bpf_object {
-> >         void *arena_data;
-> >         size_t arena_data_sz;
-> >
-> > +       void *jumptables_data;
-> > +       size_t jumptables_data_sz;
-> > +
-> > +       struct {
-> > +               struct bpf_program *prog;
-> 
-> It bit us many times already when we stored direct bpf_program/bpf_map
-> pointers inside bpf_object (because depending on when those pointers
-> are taken they might be invalidated when we add another prog/map). I'm
-> too lazy to figure out if this can be a problem for this particular
-> case, but I think it would be more consistent and safer to store
-> program index and just look up struct bpf_program * (it's just an
-> array, quick and easy).
-> 
-> Consider that for a follow up, if this patch set lands as is.
+> -----Original Message-----
+> From: Jakub Kicinski <kuba@kernel.org>=20
+> Sent: Friday, October 31, 2025 1:57 AM
+> To: Chia-Yu Chang (Nokia) <chia-yu.chang@nokia-bell-labs.com>
+> Cc: pabeni@redhat.com; edumazet@google.com; parav@nvidia.com; linux-doc@v=
+ger.kernel.org; corbet@lwn.net; horms@kernel.org; dsahern@kernel.org; kuniy=
+u@google.com; bpf@vger.kernel.org; netdev@vger.kernel.org; dave.taht@gmail.=
+com; jhs@mojatatu.com; stephen@networkplumber.org; xiyou.wangcong@gmail.com=
+; jiri@resnulli.us; davem@davemloft.net; andrew+netdev@lunn.ch; donald.hunt=
+er@gmail.com; ast@fiberby.net; liuhangbin@gmail.com; shuah@kernel.org; linu=
+x-kselftest@vger.kernel.org; ij@kernel.org; ncardwell@google.com; Koen De S=
+chepper (Nokia) <koen.de_schepper@nokia-bell-labs.com>; g.white@cablelabs.c=
+om; ingemar.s.johansson@ericsson.com; mirja.kuehlewind@ericsson.com; cheshi=
+re <cheshire@apple.com>; rs.ietf@gmx.at; Jason_Livingood@comcast.com; Vidhi=
+ Goel <vidhi_goel@apple.com>
+> Subject: Re: [PATCH v5 net-next 00/14] AccECN protocol case handling seri=
+es
+>=20
+>=20
+> CAUTION: This is an external email. Please be very careful when clicking =
+links or opening attachments. See the URL nok.it/ext for additional informa=
+tion.
+>=20
+>=20
+>=20
+> On Thu, 30 Oct 2025 15:34:21 +0100 chia-yu.chang@nokia-bell-labs.com
+> wrote:
+> > Plesae find the v5 AccECN case handling patch series, which covers=20
+> > several excpetional case handling of Accurate ECN spec (RFC9768), adds=
+=20
+> > new identifiers to be used by CC modules, adds ecn_delta into=20
+> > rate_sample, and keeps the ACE counter for computation, etc.
+>=20
+> Is this a pure repost or you changed something?
 
-Ok, thanks, I will take a look.
+It only removes one empty line between "Fixes:" and "Signed-off" - no error=
+ was reported when using checkpatch.pl, but an error showed in patchworks p=
+ipeline.
 
-> > +               int sym_off;
-> > +               int fd;
-> > +       } *jumptable_maps;
-> > +       size_t jumptable_map_cnt;
-> > +
-> >         struct kern_feature_cache *feat_cache;
-> >         char *token_path;
-> >         int token_fd;
-> 
-> [...]
-> 
-> > +static int add_jt_map(struct bpf_object *obj, struct bpf_program *prog, int sym_off, int map_fd)
-> > +{
-> > +       size_t new_cnt = obj->jumptable_map_cnt + 1;
-> > +       size_t size = sizeof(obj->jumptable_maps[0]);
-> > +       void *tmp;
-> > +
-> > +       tmp = libbpf_reallocarray(obj->jumptable_maps, new_cnt, size);
-> > +       if (!tmp)
-> > +               return -ENOMEM;
-> > +
-> > +       obj->jumptable_maps = tmp;
-> > +       obj->jumptable_maps[new_cnt - 1].prog = prog;
-> > +       obj->jumptable_maps[new_cnt - 1].sym_off = sym_off;
-> > +       obj->jumptable_maps[new_cnt - 1].fd = map_fd;
-> > +       obj->jumptable_map_cnt = new_cnt;
-> 
-> nit: I'd go with `size_t cnt = obj->jumptable_map_cnt`, use `cnt + 1`
-> for reallocarray, and just `cnt` everywhere else. Then just canonical
-> `obj->jumptable_map_cnt++;` at the end.
-> 
-> minor, but if you get a chance, consider this
-
-will do
-
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int find_subprog_idx(struct bpf_program *prog, int insn_idx)
-> > +{
-> > +       int i;
-> > +
-> > +       for (i = prog->subprog_cnt - 1; i >= 0; i--) {
-> > +               if (insn_idx >= prog->subprogs[i].sub_insn_off)
-> > +                       return i;
-> > +       }
-> > +
-> > +       return -1;
-> > +}
-> > +
-> > +static int create_jt_map(struct bpf_object *obj, struct bpf_program *prog, struct reloc_desc *relo)
-> > +{
-> > +       const __u32 jt_entry_size = 8;
-> > +       int sym_off = relo->sym_off;
-> > +       int jt_size = relo->sym_size;
-> > +       __u32 max_entries = jt_size / jt_entry_size;
-> > +       __u32 value_size = sizeof(struct bpf_insn_array_value);
-> > +       struct bpf_insn_array_value val = {};
-> > +       int subprog_idx;
-> > +       int map_fd, err;
-> > +       __u64 insn_off;
-> > +       __u64 *jt;
-> > +       __u32 i;
-> > +
-> > +       map_fd = find_jt_map(obj, prog, sym_off);
-> > +       if (map_fd >= 0)
-> > +               return map_fd;
-> > +
-> > +       if (sym_off % jt_entry_size) {
-> > +               pr_warn("jumptable start %d should be multiple of %u\n",
-> > +                       sym_off, jt_entry_size);
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       if (jt_size % jt_entry_size) {
-> > +               pr_warn("jumptable size %d should be multiple of %u\n",
-> > +                       jt_size, jt_entry_size);
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       map_fd = bpf_map_create(BPF_MAP_TYPE_INSN_ARRAY, ".jumptables",
-> > +                               4, value_size, max_entries, NULL);
-> > +       if (map_fd < 0)
-> > +               return map_fd;
-> > +
-> > +       if (!obj->jumptables_data) {
-> > +               pr_warn("map '.jumptables': ELF file is missing jump table data\n");
-> 
-> I commend you for using `map '.jumptables':` logging prefix  to follow
-> libbpf-wide consistent map-related logging style. I'd just like to
-> commend you on all other pr_warn in this function, if you know what I
-> mean ;)
-
-Yep, will do
-
-> > +               err = -EINVAL;
-> > +               goto err_close;
-> > +       }
-> > +       if (sym_off + jt_size > obj->jumptables_data_sz) {
-> > +               pr_warn("jumptables_data size is %zd, trying to access %d\n",
-> > +                       obj->jumptables_data_sz, sym_off + jt_size);
-> > +               err = -EINVAL;
-> > +               goto err_close;
-> > +       }
-> > +
-> > +       subprog_idx = -1; /* main program */
-> > +       if (relo->insn_idx < 0 || relo->insn_idx >= prog->insns_cnt) {
-> > +               pr_warn("invalid instruction index %d\n", relo->insn_idx);
-> > +               err = -EINVAL;
-> > +               goto err_close;
-> > +       }
-> > +       if (prog->subprogs)
-> > +               subprog_idx = find_subprog_idx(prog, relo->insn_idx);
-> > +
-> > +       jt = (__u64 *)(obj->jumptables_data + sym_off);
-> > +       for (i = 0; i < max_entries; i++) {
-> > +               /*
-> > +                * The offset should be made to be relative to the beginning of
-> > +                * the main function, not the subfunction.
-> > +                */
-> > +               insn_off = jt[i]/sizeof(struct bpf_insn);
-> > +               if (subprog_idx >= 0) {
-> > +                       insn_off -= prog->subprogs[subprog_idx].sec_insn_off;
-> > +                       insn_off += prog->subprogs[subprog_idx].sub_insn_off;
-> > +               } else {
-> > +                       insn_off -= prog->sec_insn_off;
-> > +               }
-> > +
-> > +               /*
-> > +                * LLVM-generated jump tables contain u64 records, however
-> > +                * should contain values that fit in u32.
-> > +                */
-> > +               if (insn_off > UINT32_MAX) {
-> > +                       pr_warn("invalid jump table value 0x%llx at offset %d\n",
-> 
-> we will most probably get compiler warnings about %llx (same for
-> %lld/%llu, of course) and using __u64 (because %l or %ll for __u64 is
-> platform dependent, if I'm not mistaken). In most (all?) other places
-> we explicitly cast to (long long) as a mitigation.
-
-Ok, thanks, I will fix this
-
-> > +                               jt[i], sym_off + i);
-> > +                       err = -EINVAL;
-> > +                       goto err_close;
-> > +               }
-> > +
-> > +               val.orig_off = insn_off;
-> > +               err = bpf_map_update_elem(map_fd, &i, &val, 0);
-> > +               if (err)
-> > +                       goto err_close;
-> > +       }
-> > +
-> > +       err = bpf_map_freeze(map_fd);
-> > +       if (err)
-> > +               goto err_close;
-> > +
-> > +       err = add_jt_map(obj, prog, sym_off, map_fd);
-> > +       if (err)
-> > +               goto err_close;
-> > +
-> > +       return map_fd;
-> > +
-> > +err_close:
-> > +       close(map_fd);
-> > +       return err;
-> > +}
-> > +
-> >  /* Relocate data references within program code:
-> >   *  - map references;
-> >   *  - global variable references;
-> > @@ -6235,6 +6434,20 @@ bpf_object__relocate_data(struct bpf_object *obj, struct bpf_program *prog)
-> >                 case RELO_CORE:
-> >                         /* will be handled by bpf_program_record_relos() */
-> >                         break;
-> > +               case RELO_INSN_ARRAY: {
-> > +                       int map_fd;
-> > +
-> > +                       map_fd = create_jt_map(obj, prog, relo);
-> > +                       if (map_fd < 0) {
-> > +                               pr_warn("prog '%s': relo #%d: can't create jump table: sym_off %u\n",
-> > +                                               prog->name, i, relo->sym_off);
-> 
-> nit: make sure to align second row with first arg in the first row
-
-ok
-
-> > +                               return map_fd;
-> > +                       }
-> > +                       insn[0].src_reg = BPF_PSEUDO_MAP_VALUE;
-> > +                       insn->imm = map_fd;
-> > +                       insn->off = 0;
-> > +               }
-> > +                       break;
-> >                 default:
-> >                         pr_warn("prog '%s': relo #%d: bad relo type %d\n",
-> >                                 prog->name, i, relo->type);
-> > @@ -6432,6 +6645,24 @@ static int append_subprog_relos(struct bpf_program *main_prog, struct bpf_progra
-> >         return 0;
-> >  }
-> >
-> > +static int save_subprog_offsets(struct bpf_program *main_prog, struct bpf_program *subprog)
-> > +{
-> > +       size_t size = sizeof(main_prog->subprogs[0]);
-> > +       int new_cnt = main_prog->subprog_cnt + 1;
-> > +       void *tmp;
-> > +
-> > +       tmp = libbpf_reallocarray(main_prog->subprogs, new_cnt, size);
-> > +       if (!tmp)
-> > +               return -ENOMEM;
-> > +
-> > +       main_prog->subprogs = tmp;
-> > +       main_prog->subprogs[new_cnt - 1].sec_insn_off = subprog->sec_insn_off;
-> > +       main_prog->subprogs[new_cnt - 1].sub_insn_off = subprog->sub_insn_off;
-> > +       main_prog->subprog_cnt = new_cnt;
-> > +
-> 
-> ditto about new_cnt, cnt would be nicer and shorter, imo
-
-ok
-
-> > +       return 0;
-> > +}
-> > +
-> >  static int
-> >  bpf_object__append_subprog_code(struct bpf_object *obj, struct bpf_program *main_prog,
-> >                                 struct bpf_program *subprog)
-> > @@ -6461,6 +6692,15 @@ bpf_object__append_subprog_code(struct bpf_object *obj, struct bpf_program *main
-> >         err = append_subprog_relos(main_prog, subprog);
-> >         if (err)
-> >                 return err;
-> > +
-> > +       /* Save subprogram offsets */
-> 
-> yeah, that's what "save_subprog_offset" literally implies, what value
-> does this comment provide?
-
-will remove, thanks
-
-> > +       err = save_subprog_offsets(main_prog, subprog);
-> > +       if (err) {
-> > +               pr_warn("prog '%s': failed to add subprog offsets: %s\n",
-> > +                       main_prog->name, errstr(err));
-> > +               return err;
-> > +       }
-> > +
-> >         return 0;
-> >  }
-> >
-> > @@ -9228,6 +9468,13 @@ void bpf_object__close(struct bpf_object *obj)
-> >
-> >         zfree(&obj->arena_data);
-> >
-> > +       zfree(&obj->jumptables_data);
-> > +       obj->jumptables_data_sz = 0;
-> > +
-> > +       for (i = 0; i < obj->jumptable_map_cnt; i++)
-> > +               close(obj->jumptable_maps[i].fd);
-> > +       zfree(&obj->jumptable_maps);
-> > +
-> >         free(obj);
-> >  }
-> >
-> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> > index 35b2527bedec..93bc39bd1307 100644
-> > --- a/tools/lib/bpf/libbpf_internal.h
-> > +++ b/tools/lib/bpf/libbpf_internal.h
-> > @@ -74,6 +74,10 @@
-> >  #define ELF64_ST_VISIBILITY(o) ((o) & 0x03)
-> >  #endif
-> >
-> > +#ifndef JUMPTABLES_SEC
-> 
-> do we expect this definition to come from somewhere else as well?
-
-No, just copy-pasted from the other defines above. I will remove it.
-
-> > +#define JUMPTABLES_SEC ".jumptables"
-> > +#endif
-> > +
-> >  #define BTF_INFO_ENC(kind, kind_flag, vlen) \
-> >         ((!!(kind_flag) << 31) | ((kind) << 24) | ((vlen) & BTF_MAX_VLEN))
-> >  #define BTF_TYPE_ENC(name, info, size_or_type) (name), (info), (size_or_type)
-> 
-> [...]
+Shall I resubmit with v6 tag? Thanks.
 
