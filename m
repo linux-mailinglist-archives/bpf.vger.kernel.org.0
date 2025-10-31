@@ -1,350 +1,174 @@
-Return-Path: <bpf+bounces-73134-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73135-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07B13C23BC3
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 09:17:37 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6F85C23D8F
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 09:38:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AF5AB4F9244
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 08:09:48 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 863884F4070
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 08:32:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B57D33F8AC;
-	Fri, 31 Oct 2025 08:05:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF682E3B08;
+	Fri, 31 Oct 2025 08:32:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="oTX+zpVq"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WoyDtMBu"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54EA733E379;
-	Fri, 31 Oct 2025 08:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9661B1C8605
+	for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 08:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761897934; cv=none; b=mJdWqO9fwd8Musn9nYRepcBDNnRGurbJXImIR0zcD3M4v81xePF/YgqmBBcMBB1nLrzbhMfMny3aFcUtm59P47hPLSFpLVZJ4eKbhtAm+pwAkz9Vikh922+v2Fb2tROx7wL1nKoAy/ZO/AIVhVhXU29G0cbs+AcdKCJP1PaUz0g=
+	t=1761899561; cv=none; b=MLQZ/r5M/1U/EzpVVK/bBLcqKfoSap/X5pkr9zkPLTJaChAooABYyP7fkiDbeN6pL94MtFfc7ULOt8FFW2oO+skXIeZS4Nbdm5sBXLOQ2bVIoIVasTATmPNaYo3L0hHHMnLOyhCkz2DKhfEPwPvOXejERROSU6KgeCJeTsa+t/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761897934; c=relaxed/simple;
-	bh=7gmfHG2LMcsz64kwZgWjeJgDLBz91qHWvwk35kKLFj0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SszEEvD8ARAfU+K4zCrMCVUE/TdQvpN/EZKXh4diF4tklsuhNLmFM65/j553biP+PVwJ2W+tbfFY0SWgmyqZmJOc6r0w2TKguWaw7Z6o0bYKqRvj2+XJcKAHkoeZ/4Y7NA44PQi7AuUIRCTbL2KYU61eaL0HfjuAs5/cOJh7MS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=oTX+zpVq; arc=none smtp.client-ip=185.171.202.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 7C2DFC0E949;
-	Fri, 31 Oct 2025 08:05:10 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 0204D60704;
-	Fri, 31 Oct 2025 08:05:31 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 9D0601180FB70;
-	Fri, 31 Oct 2025 09:05:27 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1761897929; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=zLibuzXxWa/gHDzup86Us+9qKqNyVvpcBmw6tvGfxLg=;
-	b=oTX+zpVqU46ecu2LhPagNjvvrnJSO6h49xZQPgGg6D9D1mi08E+P810iIOvWGC382Yq24l
-	8K4Va0dmTEpPf2ZIuI6yDyazhHYQ2Wf+aU4wlilVMt80v58ZkVRi1d6XcDb/Kise/ek2Pi
-	TMLnieGrY07TNamAGrs4c3b1MjMlUyFuK+o8cA2CX4UA/IMv2Dz0qV/0qwBFc/wupxH+Pv
-	k1ShI8RmCClSW1WIGYwvsCvZAUbzBwQmJRRSkD6yRItW+81qHRg/qSJ2h6rrHLOh6bTgqb
-	tyj61qhzg9HsNlyAxDFN4WQ580J8vDmU1gRB3P4TCAG5gWluiNx4v7mhvzD6uA==
-From: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
-Date: Fri, 31 Oct 2025 09:04:51 +0100
-Subject: [PATCH bpf-next v7 15/15] selftests/bpf: test_xsk: Integrate
- test_xsk.c to test_progs framework
+	s=arc-20240116; t=1761899561; c=relaxed/simple;
+	bh=3j8afmSJ7Nmsi16sNeqRifyt/WmVa4gl82NY0GZWAqA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GVUCYv59OhSTL9YD3SnyzWy5WtZKjIM9Sjocq1EF+rgMZWtPm94MmnN5rNaW2MIPXpo5k/UFWhz3E6Mw0OjvmGvfiXL2xXOQH6VnHz3HLctR+rIfGkiSvt557quB1NX3feKXjcM/zsKKjielwwjiklKvFK4UDt5cmP92iaPnxgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WoyDtMBu; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-47112a73785so14271795e9.3
+        for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 01:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1761899557; x=1762504357; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4h4q0wa7BdASeLKkAa33sOr+LqpNtBVUob6S/qE5mOw=;
+        b=WoyDtMBuNhhFFznEpNIVqcF2X8Widy/OoxXlAPNS9tf4RR1UCNUREksKORQRI6yHHa
+         Z0XjnXYYxmTep6USUQftuXPQ3AKA3IOLtlc1K5UrfKYJzIkvcXYzVYvqvq93a/eODgSt
+         fNmeJIAoydG1RoAtJAc53SELCfJzaqJDms83Z+HfMZs8ZZd06vetrDwxcnqbWlT+Bhsx
+         n3qz0JDHWCbYfLpbZTghOvE2Y3XqVOtRecg0gjvV/3NGn9eMZsx9t4KywxXTkZesTyFT
+         TRez8XiTcf77/jOFeVVke5YfzY7UVYW4G2kz59apMI1vXAs7kdwJzqfdC5+RzCoMOO9N
+         NnHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761899557; x=1762504357;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4h4q0wa7BdASeLKkAa33sOr+LqpNtBVUob6S/qE5mOw=;
+        b=KWiV8cLASZOH8jOKSqUs14OioCy0PSU3uxLPInjWrKjNc6+6GpmF3vxOiORsOLIM9J
+         a7krcQ/yWVQ79l9xIxG7UBXmuq6C8B+L0sl49Rq8SrxAo4BDJSkNrQ33zKabTlAYt7Sg
+         TcDdic0o4sch3RW0nZ5159nCTcitRNTAmgJ+DuVLRXKqsl84CfGubYySPcDMzxbG1qoi
+         zNYAQ+NSyp0eB6vWJjrTutbKABGKrFQdpMsvNk+nTWx3mhpr1SmrGFAgp+X/A21zTD0Q
+         5cF485qvW1Zx6evnFvlahEdvcPf27p/9r6ikte7V+MPQoMQx5U9wYvkdMl+Pp9T67gc4
+         ZKqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWf4xU4Oa8zKQb6DOFUR+FZCWrBBomG9EfOzXoHn8w5hK/R5iMX37rqSIZKYPn7GYVhI68=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywk70kfBcfl7DDmpX5YqcgbfSxCsWpSpCwQHIVqfupjroLoe4hy
+	kyN0Ly24//IfboqcDJf/RAdWs20moAYZtU04zdbYswyKRHxfTGSGZtK5bDDA4j+C000=
+X-Gm-Gg: ASbGnctdSJ8gwRPecEmO5oAxO33wZyBFeqlGnBp4Q6ex0H50Yd0uOUKjlUt0B/L/qDI
+	21BoG9VJ/otJNoR+HR8usONNgNREIInY3dpmqtlJ+T4BIxyGc4NSoxrM40dW02BRelDIrjexbb6
+	FNfBcQt8bodUg5rxtw5+TQwH0Am7b74f39m66yfYSuvlZMQG4BTFz0MqiWBp9E44MI0mO0eihIE
+	hPiqCHSxHVb717rRuVesGXZcTCY+9/wFNkA8ukH6+X4T8WyxnZvBl4ejG4ATP3ibhHkKx99o/ky
+	90zV54Si5/QRjnICr1206GRRrddea+apJLBGNwreH1rFbe5UMeCGTrtw4lhk4MxR3UvRQ1atCM6
+	VPCAhVqSBfSSru6kpUPPGpUan7TZaorBLA003bQzFxQI1HoixF9UivZj6AacYzMvDE2ZYa/9RXY
+	Rbs0MqT6kcFQwGrETkcVizZQCe
+X-Google-Smtp-Source: AGHT+IGfDhEwc+4540g9zxrsusq87Jw5oannsM7AsDgvzrefgTdYZ1mcnrXQoAnn7esV8SehlhvpnQ==
+X-Received: by 2002:a05:600c:1f91:b0:475:daba:d03c with SMTP id 5b1f17b1804b1-477307c51d5mr21021365e9.13.1761899556870;
+        Fri, 31 Oct 2025 01:32:36 -0700 (PDT)
+Received: from localhost (109-81-31-109.rct.o2.cz. [109.81.31.109])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47732cb7f41sm20722905e9.0.2025.10.31.01.32.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Oct 2025 01:32:36 -0700 (PDT)
+Date: Fri, 31 Oct 2025 09:32:35 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, bpf@vger.kernel.org,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Song Liu <song@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 04/23] mm: define mem_cgroup_get_from_ino() outside of
+ CONFIG_SHRINKER_DEBUG
+Message-ID: <aQR0I9B9b1VvmYl2@tiehlicka>
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+ <20251027231727.472628-5-roman.gushchin@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20251031-xsk-v7-15-39fe486593a3@bootlin.com>
-References: <20251031-xsk-v7-0-39fe486593a3@bootlin.com>
-In-Reply-To: <20251031-xsk-v7-0-39fe486593a3@bootlin.com>
-To: =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>, 
- Magnus Karlsson <magnus.karlsson@intel.com>, 
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
- Jonathan Lemon <jonathan.lemon@gmail.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Alexis Lothore <alexis.lothore@bootlin.com>, netdev@vger.kernel.org, 
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
-X-Mailer: b4 0.14.2
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251027231727.472628-5-roman.gushchin@linux.dev>
 
-test_xsk.c isn't part of the test_progs framework.
+On Mon 27-10-25 16:17:07, Roman Gushchin wrote:
+> mem_cgroup_get_from_ino() can be reused by the BPF OOM implementation,
+> but currently depends on CONFIG_SHRINKER_DEBUG. Remove this dependency.
+> 
+> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-Integrate the tests defined by test_xsk.c into the test_progs framework
-through a new file : prog_tests/xsk.c. ZeroCopy mode isn't tested in it
-as veth peers don't support it.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Move test_xsk{.c/.h} to prog_tests/.
-
-Add the find_bit library to test_progs sources in the Makefile as it is
-is used by test_xsk.c
-
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
----
- tools/testing/selftests/bpf/Makefile               |  13 +-
- .../selftests/bpf/{ => prog_tests}/test_xsk.c      |   0
- .../selftests/bpf/{ => prog_tests}/test_xsk.h      |   0
- tools/testing/selftests/bpf/prog_tests/xsk.c       | 151 +++++++++++++++++++++
- tools/testing/selftests/bpf/xskxceiver.c           |   2 +-
- 5 files changed, 163 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 73681e63c3e13960a022dc4c817694e56d3646c6..93dbafa050c97377fc11278f131668c8726153b0 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -544,6 +544,8 @@ TRUNNER_TEST_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.test.o,	\
- 				 $$(notdir $$(wildcard $(TRUNNER_TESTS_DIR)/*.c)))
- TRUNNER_EXTRA_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o,		\
- 				 $$(filter %.c,$(TRUNNER_EXTRA_SOURCES)))
-+TRUNNER_LIB_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o,		\
-+				 $$(filter %.c,$(TRUNNER_LIB_SOURCES)))
- TRUNNER_EXTRA_HDRS := $$(filter %.h,$(TRUNNER_EXTRA_SOURCES))
- TRUNNER_TESTS_HDR := $(TRUNNER_TESTS_DIR)/tests.h
- TRUNNER_BPF_SRCS := $$(notdir $$(wildcard $(TRUNNER_BPF_PROGS_DIR)/*.c))
-@@ -687,6 +689,10 @@ $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
- 	$$(call msg,EXT-OBJ,$(TRUNNER_BINARY),$$@)
- 	$(Q)$$(CC) $$(CFLAGS) -c $$< $$(LDLIBS) -o $$@
- 
-+$(TRUNNER_LIB_OBJS): $(TRUNNER_OUTPUT)/%.o:$(TOOLSDIR)/lib/%.c
-+	$$(call msg,LIB-OBJ,$(TRUNNER_BINARY),$$@)
-+	$(Q)$$(CC) $$(CFLAGS) -c $$< $$(LDLIBS) -o $$@
-+
- # non-flavored in-srctree builds receive special treatment, in particular, we
- # do not need to copy extra resources (see e.g. test_btf_dump_case())
- $(TRUNNER_BINARY)-extras: $(TRUNNER_EXTRA_FILES) | $(TRUNNER_OUTPUT)
-@@ -700,6 +706,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): | $(TRUNNER_BPF_OBJS)
- 
- $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
- 			     $(TRUNNER_EXTRA_OBJS) $$(BPFOBJ)		\
-+			     $(TRUNNER_LIB_OBJS)			\
- 			     $(RESOLVE_BTFIDS)				\
- 			     $(TRUNNER_BPFTOOL)				\
- 			     $(OUTPUT)/veristat				\
-@@ -746,6 +753,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c		\
- 			 $(VERIFY_SIG_HDR)		\
- 			 flow_dissector_load.h	\
- 			 ip_check_defrag_frags.h
-+TRUNNER_LIB_SOURCES := find_bit.c
- TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
- 		       $(OUTPUT)/liburandom_read.so			\
- 		       $(OUTPUT)/xdp_synproxy				\
-@@ -783,6 +791,7 @@ endif
- TRUNNER_TESTS_DIR := map_tests
- TRUNNER_BPF_PROGS_DIR := progs
- TRUNNER_EXTRA_SOURCES := test_maps.c
-+TRUNNER_LIB_SOURCES :=
- TRUNNER_EXTRA_FILES :=
- TRUNNER_BPF_BUILD_RULE := $$(error no BPF objects should be built)
- TRUNNER_BPF_CFLAGS :=
-@@ -804,8 +813,8 @@ $(OUTPUT)/test_verifier: test_verifier.c verifier/tests.h $(BPFOBJ) | $(OUTPUT)
- 	$(Q)$(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
- 
- # Include find_bit.c to compile xskxceiver.
--EXTRA_SRC := $(TOOLSDIR)/lib/find_bit.c
--$(OUTPUT)/xskxceiver: $(EXTRA_SRC) test_xsk.c test_xsk.h xskxceiver.c xskxceiver.h $(OUTPUT)/network_helpers.o $(OUTPUT)/xsk.o $(OUTPUT)/xsk_xdp_progs.skel.h $(BPFOBJ) | $(OUTPUT)
-+EXTRA_SRC := $(TOOLSDIR)/lib/find_bit.c prog_tests/test_xsk.c prog_tests/test_xsk.h
-+$(OUTPUT)/xskxceiver: $(EXTRA_SRC) xskxceiver.c xskxceiver.h $(OUTPUT)/network_helpers.o $(OUTPUT)/xsk.o $(OUTPUT)/xsk_xdp_progs.skel.h $(BPFOBJ) | $(OUTPUT)
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
- 
-diff --git a/tools/testing/selftests/bpf/test_xsk.c b/tools/testing/selftests/bpf/prog_tests/test_xsk.c
-similarity index 100%
-rename from tools/testing/selftests/bpf/test_xsk.c
-rename to tools/testing/selftests/bpf/prog_tests/test_xsk.c
-diff --git a/tools/testing/selftests/bpf/test_xsk.h b/tools/testing/selftests/bpf/prog_tests/test_xsk.h
-similarity index 100%
-rename from tools/testing/selftests/bpf/test_xsk.h
-rename to tools/testing/selftests/bpf/prog_tests/test_xsk.h
-diff --git a/tools/testing/selftests/bpf/prog_tests/xsk.c b/tools/testing/selftests/bpf/prog_tests/xsk.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..dd4c35c0e428b4ff77c06f1c5889aed92f34984c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xsk.c
-@@ -0,0 +1,151 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <net/if.h>
-+#include <stdarg.h>
-+
-+#include "network_helpers.h"
-+#include "test_progs.h"
-+#include "test_xsk.h"
-+#include "xsk_xdp_progs.skel.h"
-+
-+#define VETH_RX "veth0"
-+#define VETH_TX "veth1"
-+#define MTU	1500
-+
-+int setup_veth(bool busy_poll)
-+{
-+	SYS(fail,
-+	"ip link add %s numtxqueues 4 numrxqueues 4 type veth peer name %s numtxqueues 4 numrxqueues 4",
-+	VETH_RX, VETH_TX);
-+	SYS(fail, "sysctl -wq net.ipv6.conf.%s.disable_ipv6=1", VETH_RX);
-+	SYS(fail, "sysctl -wq net.ipv6.conf.%s.disable_ipv6=1", VETH_TX);
-+
-+	if (busy_poll) {
-+		SYS(fail, "echo 2 > /sys/class/net/%s/napi_defer_hard_irqs", VETH_RX);
-+		SYS(fail, "echo 200000 > /sys/class/net/%s/gro_flush_timeout", VETH_RX);
-+		SYS(fail, "echo 2 > /sys/class/net/%s/napi_defer_hard_irqs", VETH_TX);
-+		SYS(fail, "echo 200000 > /sys/class/net/%s/gro_flush_timeout", VETH_TX);
-+	}
-+
-+	SYS(fail, "ip link set %s mtu %d", VETH_RX, MTU);
-+	SYS(fail, "ip link set %s mtu %d", VETH_TX, MTU);
-+	SYS(fail, "ip link set %s up", VETH_RX);
-+	SYS(fail, "ip link set %s up", VETH_TX);
-+
-+	return 0;
-+
-+fail:
-+	return -1;
-+}
-+
-+void delete_veth(void)
-+{
-+	SYS_NOFAIL("ip link del %s", VETH_RX);
-+	SYS_NOFAIL("ip link del %s", VETH_TX);
-+}
-+
-+int configure_ifobj(struct ifobject *tx, struct ifobject *rx)
-+{
-+	rx->ifindex = if_nametoindex(VETH_RX);
-+	if (!ASSERT_OK_FD(rx->ifindex, "get RX ifindex"))
-+		return -1;
-+
-+	tx->ifindex = if_nametoindex(VETH_TX);
-+	if (!ASSERT_OK_FD(tx->ifindex, "get TX ifindex"))
-+		return -1;
-+
-+	tx->shared_umem = false;
-+	rx->shared_umem = false;
-+
-+
-+	return 0;
-+}
-+
-+static void test_xsk(const struct test_spec *test_to_run, enum test_mode mode)
-+{
-+	struct ifobject *ifobj_tx, *ifobj_rx;
-+	struct test_spec test;
-+	int ret;
-+
-+	ifobj_tx = ifobject_create();
-+	if (!ASSERT_OK_PTR(ifobj_tx, "create ifobj_tx"))
-+		return;
-+
-+	ifobj_rx = ifobject_create();
-+	if (!ASSERT_OK_PTR(ifobj_rx, "create ifobj_rx"))
-+		goto delete_tx;
-+
-+	if (!ASSERT_OK(configure_ifobj(ifobj_tx, ifobj_rx), "conigure ifobj"))
-+		goto delete_rx;
-+
-+	ret = get_hw_ring_size(ifobj_tx->ifname, &ifobj_tx->ring);
-+	if (!ret) {
-+		ifobj_tx->hw_ring_size_supp = true;
-+		ifobj_tx->set_ring.default_tx = ifobj_tx->ring.tx_pending;
-+		ifobj_tx->set_ring.default_rx = ifobj_tx->ring.rx_pending;
-+	}
-+
-+	if (!ASSERT_OK(init_iface(ifobj_rx, worker_testapp_validate_rx), "init RX"))
-+		goto delete_rx;
-+	if (!ASSERT_OK(init_iface(ifobj_tx, worker_testapp_validate_tx), "init TX"))
-+		goto delete_rx;
-+
-+	test_init(&test, ifobj_tx, ifobj_rx, 0, &tests[0]);
-+
-+	test.tx_pkt_stream_default = pkt_stream_generate(DEFAULT_PKT_CNT, MIN_PKT_SIZE);
-+	if (!ASSERT_OK_PTR(test.tx_pkt_stream_default, "TX pkt generation"))
-+		goto delete_rx;
-+	test.rx_pkt_stream_default = pkt_stream_generate(DEFAULT_PKT_CNT, MIN_PKT_SIZE);
-+	if (!ASSERT_OK_PTR(test.rx_pkt_stream_default, "RX pkt generation"))
-+		goto delete_rx;
-+
-+
-+	test_init(&test, ifobj_tx, ifobj_rx, mode, test_to_run);
-+	ret = test.test_func(&test);
-+	if (ret != TEST_SKIP)
-+		ASSERT_OK(ret, "Run test");
-+	pkt_stream_restore_default(&test);
-+
-+	if (ifobj_tx->hw_ring_size_supp)
-+		hw_ring_size_reset(ifobj_tx);
-+
-+	pkt_stream_delete(test.tx_pkt_stream_default);
-+	pkt_stream_delete(test.rx_pkt_stream_default);
-+	xsk_xdp_progs__destroy(ifobj_tx->xdp_progs);
-+	xsk_xdp_progs__destroy(ifobj_rx->xdp_progs);
-+
-+delete_rx:
-+	ifobject_delete(ifobj_rx);
-+delete_tx:
-+	ifobject_delete(ifobj_tx);
-+}
-+
-+void test_ns_xsk_skb(void)
-+{
-+	int i;
-+
-+	if (!ASSERT_OK(setup_veth(false), "setup veth"))
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+		if (test__start_subtest(tests[i].name))
-+			test_xsk(&tests[i], TEST_MODE_SKB);
-+	}
-+
-+	delete_veth();
-+}
-+
-+void test_ns_xsk_drv(void)
-+{
-+	int i;
-+
-+	if (!ASSERT_OK(setup_veth(false), "setup veth"))
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+		if (test__start_subtest(tests[i].name))
-+			test_xsk(&tests[i], TEST_MODE_DRV);
-+	}
-+
-+	delete_veth();
-+}
-+
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 57fa4b3f0decf76b022c79b543b1a906f0c89076..9234a58b0a972dffc2f4a4909334cd67ad0d4a25 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -90,7 +90,7 @@
- #include <sys/mman.h>
- #include <sys/types.h>
- 
--#include "test_xsk.h"
-+#include "prog_tests/test_xsk.h"
- #include "xsk_xdp_progs.skel.h"
- #include "xsk.h"
- #include "xskxceiver.h"
+> ---
+>  include/linux/memcontrol.h | 4 ++--
+>  mm/memcontrol.c            | 2 --
+>  2 files changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 873e510d6f8d..9af9ae28afe7 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -832,9 +832,9 @@ static inline unsigned long mem_cgroup_ino(struct mem_cgroup *memcg)
+>  {
+>  	return memcg ? cgroup_ino(memcg->css.cgroup) : 0;
+>  }
+> +#endif
+>  
+>  struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino);
+> -#endif
+>  
+>  static inline struct mem_cgroup *mem_cgroup_from_seq(struct seq_file *m)
+>  {
+> @@ -1331,12 +1331,12 @@ static inline unsigned long mem_cgroup_ino(struct mem_cgroup *memcg)
+>  {
+>  	return 0;
+>  }
+> +#endif
+>  
+>  static inline struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
+>  {
+>  	return NULL;
+>  }
+> -#endif
+>  
+>  static inline struct mem_cgroup *mem_cgroup_from_seq(struct seq_file *m)
+>  {
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 4deda33625f4..5d27cd5372aa 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3618,7 +3618,6 @@ struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
+>  	return xa_load(&mem_cgroup_ids, id);
+>  }
+>  
+> -#ifdef CONFIG_SHRINKER_DEBUG
+>  struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
+>  {
+>  	struct cgroup *cgrp;
+> @@ -3639,7 +3638,6 @@ struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
+>  
+>  	return memcg;
+>  }
+> -#endif
+>  
+>  static void free_mem_cgroup_per_node_info(struct mem_cgroup_per_node *pn)
+>  {
+> -- 
+> 2.51.0
 
 -- 
-2.51.0
-
+Michal Hocko
+SUSE Labs
 
