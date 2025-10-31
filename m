@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-73197-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73190-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92C64C27058
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 22:24:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F349C27010
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 22:21:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78A9818951D9
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 21:22:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFCBA424552
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 21:21:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEDDE32BF25;
-	Fri, 31 Oct 2025 21:21:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B979C3148AC;
+	Fri, 31 Oct 2025 21:21:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="iTNMGTce"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="MJmD1kJu"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7DD30F556;
-	Fri, 31 Oct 2025 21:21:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC8A30CD98;
+	Fri, 31 Oct 2025 21:21:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761945695; cv=none; b=UpxbdL4RaNccLw7YANVF4w7akEjVQQOQaIh248+WrgN7qRLbNLygo1QQjleVLqEMHvijlwbv/qmy8DtHnuu4LaoQhoEzqs+JjmjZ2wsx6vHyWtrjiwlv8p9JY+N0RKb3xu8uqroyL04u3t3eYAa8yukmke+orHDf2uysBi8h368=
+	t=1761945693; cv=none; b=ogOvPae8qex7fnBbkjJ2N280SWJRdsqBBpl2STAHrVBU92rX2x5l6NtP0MLasT7NQz+zGPgTMV0bzlRqkNd6b2RSHOsVWwpQc/bsAkqjotqKjTTnwCXlIh0v9mke4jJ3N/pGNd2GFAE/DkHoh6zPfi/Hh262E+h9TtQ8BZ9JENc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761945695; c=relaxed/simple;
-	bh=EpgPg/p5cc7ht4GSCm2wnjnQJutNxY2Ggb26NMyeREc=;
+	s=arc-20240116; t=1761945693; c=relaxed/simple;
+	bh=Wu73lsr+AIZIozIAMk5uGbZq6C/TZ5dikIj4bVrKwFY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nzJbUts3bu43+yNPVXXkELGA+iGSqv2xE/zezuMobyFTojdgWFqe+e7SrSD3/wz4epF+CSMWEdWOfOjWZmXWlr38gK6E1moper+UU+ECZTYbJPFh9h/lk8OdI3CCH1s5ABAdLRLH+PzgH2OZOBbm3gAUy0rZ6dlQTJl1G6/dupw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=iTNMGTce; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=sEbWUMGkkhHDQnqZ46woR/LiVi7OrDiWfHtVFcpQJoPmXhQcJu+o3SXjBcjw+LFZ7z5kGtPUPhPyz7Avbxw6YU9kZFt1+Z6Fbzb4o/+JvEvNrkJRhInHkXmvwl1/MJEH4EcXbGJwKbrbMHk5zLvWesTypu7dUtHFC+Lcfp0DT0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=MJmD1kJu; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,18 +36,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=FKG4KtMnKWAZQiQUkIl012zrdhpKJ6kNdgrkPnRr/L0=; b=iTNMGTceyKRj4GJ7k863aJuw5S
-	+wFvIc7m7ntcglMciilwi/qQXSojwIMGuYP0OO9AlfBWgQSP1sZ1Ox7hKCiIO9hoCswCsLF9cV7+O
-	AmxH7omXGX9JaxXoFBSgdxyKxwG6OtQRMR4o0h2cSotcZH9o+LFhxsWsWAaQGpLkfuUd+R3sfs5H4
-	UwRbXmX0n+w0bf8AiuknrLUObg8SHb3SguCrQrp1B9BRmAu2sw1vFiIzXiYYSYBlzXFNM6omKU0bA
-	TgJfIru0nde/4xOdT0uwppfQbvfKPRoWf5SjgSOT+w6o7XNntFkSEnQHA5q4YDDJ0KxYJHjjpJTpV
-	Yflt843g==;
+	bh=CC9GnH+IgpH+RWxzO9qvI21eQ7uf77c7n05WM9K2QGo=; b=MJmD1kJujGikbxfuFpQ2iEMPZR
+	cJymLatYgM+CX+BeD+LF8trau0VYcwVtXx1MRbJoBNHHz7JCHgn65LSTJxnQSrI8uLpn9JbedeLnJ
+	P4E5Jj+bb59PHIcIg6Dmt7mzaF8Y6i0cywnqdmre2QJHPyt39kHaEF4i4BYLm/zFxjMPtTOFdlR6f
+	wbEg5vVCA/DbPB4+wpFWQaXQXdSIlCoexwPG98lDrAV0eUvXfHJmTw2FxYjsAWCZ8EumJwD+UoatF
+	yt/Gq7wfzsfvXO9A0s7HRjLnDcaQiBLc4EM+4TdRSBnsPeEgdtLa08j7Sg7Z+LcCJwqTTXXDVLV4G
+	zHoC9rkA==;
 Received: from localhost ([127.0.0.1])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1vEwYa-0005cn-0n;
-	Fri, 31 Oct 2025 22:21:12 +0100
+	id 1vEwYb-0005dH-11;
+	Fri, 31 Oct 2025 22:21:13 +0100
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -66,9 +66,9 @@ Cc: bpf@vger.kernel.org,
 	toke@redhat.com,
 	yangzhenze@bytedance.com,
 	wangdongdong.6@bytedance.com
-Subject: [PATCH net-next v4 06/14] xsk: Move NETDEV_XDP_ACT_ZC into generic header
-Date: Fri, 31 Oct 2025 22:20:55 +0100
-Message-ID: <20251031212103.310683-7-daniel@iogearbox.net>
+Subject: [PATCH net-next v4 07/14] xsk: Extend xsk_rcv_check validation
+Date: Fri, 31 Oct 2025 22:20:56 +0100
+Message-ID: <20251031212103.310683-8-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20251031212103.310683-1-daniel@iogearbox.net>
 References: <20251031212103.310683-1-daniel@iogearbox.net>
@@ -81,58 +81,59 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: Clear (ClamAV 1.0.9/27809/Fri Oct 31 10:42:21 2025)
 
-Move NETDEV_XDP_ACT_ZC into xdp_sock_drv.h header such that external code
-can reuse it, and rename it into more generic NETDEV_XDP_ACT_XSK.
+xsk_rcv_check tests for inbound packets to see whether they match the bound
+AF_XDP socket. Refactor the test into a small helper xsk_dev_queue_valid and
+move the validation against xs->dev and xs->queue_id there. The fast-path
+case stays in place and allows for quick return in xsk_dev_queue_valid. If
+it fails, the validation is extended to check whether the AF_XDP socket is
+bound against a peered queue, and if the case then the test is redone.
 
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Co-developed-by: David Wei <dw@davidwei.uk>
 Signed-off-by: David Wei <dw@davidwei.uk>
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
 ---
- include/net/xdp_sock_drv.h | 4 ++++
- net/xdp/xsk_buff_pool.c    | 6 +-----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ net/xdp/xsk.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-index 4f2d3268a676..242e34f771cc 100644
---- a/include/net/xdp_sock_drv.h
-+++ b/include/net/xdp_sock_drv.h
-@@ -12,6 +12,10 @@
- #define XDP_UMEM_MIN_CHUNK_SHIFT 11
- #define XDP_UMEM_MIN_CHUNK_SIZE (1 << XDP_UMEM_MIN_CHUNK_SHIFT)
- 
-+#define NETDEV_XDP_ACT_XSK	(NETDEV_XDP_ACT_BASIC |		\
-+				 NETDEV_XDP_ACT_REDIRECT |	\
-+				 NETDEV_XDP_ACT_XSK_ZEROCOPY)
-+
- struct xsk_cb_desc {
- 	void *src;
- 	u8 off;
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index aa9788f20d0d..26165baf99f4 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -158,10 +158,6 @@ static void xp_disable_drv_zc(struct xsk_buff_pool *pool)
- 	}
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 7b0c68a70888..6ae9ad5f27ad 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -331,14 +331,31 @@ static bool xsk_is_bound(struct xdp_sock *xs)
+ 	return false;
  }
  
--#define NETDEV_XDP_ACT_ZC	(NETDEV_XDP_ACT_BASIC |		\
--				 NETDEV_XDP_ACT_REDIRECT |	\
--				 NETDEV_XDP_ACT_XSK_ZEROCOPY)
--
- int xp_assign_dev(struct xsk_buff_pool *pool,
- 		  struct net_device *netdev, u16 queue_id, u16 flags)
++static bool xsk_dev_queue_valid(const struct xdp_sock *xs,
++				const struct xdp_rxq_info *info)
++{
++	struct net_device *dev = xs->dev;
++	u32 queue_index = xs->queue_id;
++	struct netdev_rx_queue *rxq;
++
++	if (info->dev == dev &&
++	    info->queue_index == queue_index)
++		return true;
++
++	rxq = READ_ONCE(__netif_get_rx_queue(dev, queue_index)->peer);
++	if (!rxq)
++		return false;
++
++	return info->dev == rxq->dev &&
++	       info->queue_index == get_netdev_rx_queue_index(rxq);
++}
++
+ static int xsk_rcv_check(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len)
  {
-@@ -203,7 +199,7 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
- 		/* For copy-mode, we are done. */
- 		return 0;
- 
--	if ((netdev->xdp_features & NETDEV_XDP_ACT_ZC) != NETDEV_XDP_ACT_ZC) {
-+	if ((netdev->xdp_features & NETDEV_XDP_ACT_XSK) != NETDEV_XDP_ACT_XSK) {
- 		err = -EOPNOTSUPP;
- 		goto err_unreg_pool;
- 	}
+ 	if (!xsk_is_bound(xs))
+ 		return -ENXIO;
+-
+-	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index)
++	if (!xsk_dev_queue_valid(xs, xdp->rxq))
+ 		return -EINVAL;
+-
+ 	if (len > xsk_pool_get_rx_frame_size(xs->pool) && !xs->sg) {
+ 		xs->rx_dropped++;
+ 		return -ENOSPC;
 -- 
 2.43.0
 
