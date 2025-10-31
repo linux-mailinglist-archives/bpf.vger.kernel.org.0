@@ -1,298 +1,127 @@
-Return-Path: <bpf+bounces-73173-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73174-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81EEFC26162
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 17:23:52 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50956C261CB
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 17:29:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FAC75829E1
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 16:08:14 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C1D4F4EE04E
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 16:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696552F5A24;
-	Fri, 31 Oct 2025 16:04:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28005280CFC;
+	Fri, 31 Oct 2025 16:20:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hwb9f8FM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iCSoX7Dk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7AD2EC0BF
-	for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 16:04:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93DDD170826;
+	Fri, 31 Oct 2025 16:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761926693; cv=none; b=CP0RjSkse/212tKh6fzNH31H5FgtDIa5DEYvsw1ntUGxbOk1N3wS3zDzwqo7P2A4B1/nlmYNcx7TOgEyBoJ8Fov3ZhI5Q8rj67ezTQDBG10MTWnNsnkOTLWBfa6rDL9vIQ/5r/p4+IIQpY8HA1rGXWMbWwUDZLb3hjS+BqSL+XY=
+	t=1761927649; cv=none; b=U+y1benfxJAD3A8yAQsU4rRKZlMt+BYzjU+G2vkM74XU4nGl1hTpHP8aCWy1ENpQxRbG3FpKlQ+EqHnVO0uE8ToiomW//HJT7//fYZmcO7U+RQeB1vG3guUgonoaGSEoD6/7t99JFCd0XO6cfwhSf9vYocFdog0TWQFf+K7Ks24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761926693; c=relaxed/simple;
-	bh=bKTxsXPniedvZveiJEwt7RUcC0psBlMO8tL7pHglkeE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mPVJ+JVtR9YyfT3BSae8r+gYsdK6bC9Wpm5OR8AxtH76+4z/C2ezDuWE0mPDcfRvN5vgRbjHJ/G2VIvYnrh39pSVI66xI0r+0MCwTEVTkRL8p0MIcGf3XSn0ToCcMtyOhwugcUzzQIufeLFuxvvhHrsdjRfeAxn7VS8+9H0zb04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hwb9f8FM; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-27d67abd215so262075ad.0
-        for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 09:04:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761926690; x=1762531490; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eLVC4iHlDAqCvKvsojHxwUrg7mXLg1rTWMixQxC3wXw=;
-        b=hwb9f8FMYbHo76pst2oDpPVbsGN9niKiF+VuUl7uniOk+7Dalt6ffnU29138wJ9jyv
-         8w4EhqbGXrATGpbQMiWKdYOym0yoNkgYP6siiK9OqGlEL0Yo8xSX2QUYBT79z46GXCU4
-         GqRsbpatnzEhdL7omIe5Gye9x8sjkvqHUyjypx1IgOw8NfaDe1UZnaHACL0UzsVmG5cd
-         OWLL+nZPVOkns3vru+C6GD0BaLBUNKwyEhz8N3Q73dvFE/cbdVMH2aSm4iPhFnyhvRjY
-         ll3axdIaMkWSZ4ICDOP2/sNetUuVjcfBVGXIRWOzDkw8m6idlZJDUkuv+fM64PxN3jFO
-         tNJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761926690; x=1762531490;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eLVC4iHlDAqCvKvsojHxwUrg7mXLg1rTWMixQxC3wXw=;
-        b=fjEIVTMd7pRDmtz5t0SYt1uEE10qblzzQsik99T0+HN+jGU/O2RUNtUtCq7r/mbGQ2
-         wPn6zKM3aWyJYF4K5Id3x6n0Qf3K9z4mnCmV9Khz0DbSSWAR91z3Npzog1gGw/i0Hutp
-         Pm6qIObr9cg4bfpaAnpqcuAqJddAdiSLHJ5YFZqCRr9oSzaVuplcTdoBkuvc+n5Xm94F
-         1lWSK1poqTMgCLADVh9EUInu+9yrc/OWoKzj4sdcF4Lv6ZfVdd4Yl9lWTeSfC9A/xtqb
-         ZpT2v7SjUs0oP4hkqOpHZHfmy//HbdT97jh5l2wOKacser3KZ0X4ZGMGcicUyr/o5v4U
-         0eig==
-X-Forwarded-Encrypted: i=1; AJvYcCUo2py1ISA7kFlm4MQmnbngtPgSUA1ki/Yu7rU1YeMrih5Pt57H/751KnQPdffQoaobYk4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyqG1PfIEFSOxQwPgQKdfNctvtP23sdeZGam3+leK7EKdoOSLUG
-	l06gYGBizY4b4sH7J5GQ8Hz4tUJCZbZ+Jj9bwPxn4tQAeoid8iTgkWaWcohioEXWfa5jo6fDEiw
-	Whx/QuR+TSQWQaBwBIEertzqjGnloIIRpjhvSmEoJ
-X-Gm-Gg: ASbGncvD7JgE3jIH5uA89+crX9OXVgOk3B6CnF4VcfC9CBol9mgmEoE614YOKWVZyd2
-	pvqqecdRfLiZxWnvpQlnZTQnD+FuLSdjL/DG2zkzkFu7quJUGT+zmS0PsMVLAbWvO9gMtu7noFp
-	E/nvfJXDT67T2xasTHpaUHe25Xb/poAe/03DIqa91Yy/7XeaMT/bstqSCCI2FLNGIaSGgJkJtfJ
-	BYwf2Iqf0dPYiwjAfQ1w05bsYFMWjHq4+reFGn3OpentSbsgAWcoI/XotDC5sGDngNSRyCGwGDZ
-	76NFrjbFd0+Er4k=
-X-Google-Smtp-Source: AGHT+IEcB+8h5eOHGJ2YPKcye/aiEf9ENj87BXKVudOlNz+B6I519uQ0kYlL9DP9225qjguMeBiXUTLElwPTer24Mu0=
-X-Received: by 2002:a17:902:e811:b0:290:d4dd:b042 with SMTP id
- d9443c01a7336-2951e77995amr5957285ad.16.1761926689972; Fri, 31 Oct 2025
- 09:04:49 -0700 (PDT)
+	s=arc-20240116; t=1761927649; c=relaxed/simple;
+	bh=Yb/w+7MPzDjhDPB34mgEUk5mobDcE3LsCSh5TaxunmU=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=OwH5ghOobCp6oilBUdArEADRwoFk5rF6OvDfOQ+cCN8yPOxVcwmM1koC28eESOYWGv3pPmuoCO2nHzeBeVWI9f6TK5nemxFB5lMaMLoX9x5evL8jOgZTNj0h498F/+ySfWGd1vIhpBnSyOkC6cJtFOMzn3/aGtZ0OkGY31Br3E4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iCSoX7Dk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04632C4CEE7;
+	Fri, 31 Oct 2025 16:20:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761927649;
+	bh=Yb/w+7MPzDjhDPB34mgEUk5mobDcE3LsCSh5TaxunmU=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=iCSoX7DkJPWMSC6vPQmObXvrr+WIOnvIoemLZ4fEkqO0sGymPNXDSl2jcdm1e2XiY
+	 aEnH3/W5PPMpquXKNf5aLUKtPsy+0Onor2Xo430d6nzbRLyfhq5j/GXDsvMErQNerC
+	 w247H1RpO20FbE6LcDPj+G76ApLj9vCwScGmHJQdeJOVkWbRfMSk2v5xW9ws0b6uDk
+	 RZt4SyBMmp+GKCozRVX1MgANx0PWejuea5Tq9NrZH+ZYaukM7nWcKcXbhItDz729pk
+	 m0Msc9Dr2YfYzkriRGdWSTu6jttdKovCjJ8qEduLht78Hcb2O6MWxgjYE2++RNUMdg
+	 rDXkWfG23LlPw==
+Content-Type: multipart/mixed; boundary="===============7198071862224552361=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251023015043.38868-1-xueshuai@linux.alibaba.com>
- <CAP-5=fWupb62_QKM3bZO9K9yeJqC2H-bdi6dQNM7zAsLTJoDow@mail.gmail.com>
- <fc75b170-86c1-49b6-a321-7dca56ad824a@linux.alibaba.com> <eed27aaf-fd0a-4609-a30b-68e7c5c11890@linux.alibaba.com>
- <CAP-5=fVLGRsn7icH1cgmb==f5_D6Vr2CbzirAv7DY4Afjm4O2A@mail.gmail.com> <5a06462a-697d-47b6-b51e-6438005b6130@linux.alibaba.com>
-In-Reply-To: <5a06462a-697d-47b6-b51e-6438005b6130@linux.alibaba.com>
-From: Ian Rogers <irogers@google.com>
-Date: Fri, 31 Oct 2025 09:04:38 -0700
-X-Gm-Features: AWmQ_bkelkfpf4y93i1UE_icgV-ko7nWCsbmdO2_BgOqFLH2IQ2RjuUM-6Q_tIE
-Message-ID: <CAP-5=fUvwokP=MYmS7kZqjCk+ZYs8A-9G+i3zt-zvjdZA6E_Jg@mail.gmail.com>
-Subject: Re: [PATCH] perf record: skip synthesize event when open evsel failed
-To: Shuai Xue <xueshuai@linux.alibaba.com>
-Cc: alexander.shishkin@linux.intel.com, peterz@infradead.org, 
-	james.clark@arm.com, leo.yan@linaro.org, mingo@redhat.com, 
-	baolin.wang@linux.alibaba.com, acme@kernel.org, mark.rutland@arm.com, 
-	jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nathan@kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <09feef91b51f675195b5b1b9a854d844c9999c0cebb429d785fe60f6c787dc8b@mail.kernel.org>
+In-Reply-To: <20251031-tc_edt-v1-2-5d34a5823144@bootlin.com>
+References: <20251031-tc_edt-v1-2-5d34a5823144@bootlin.com>
+Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: integrate test_tc_edt into test_progs
+From: bot+bpf-ci@kernel.org
+To: alexis.lothore@bootlin.com,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,shuah@kernel.org
+Cc: ebpf@linuxfoundation.org,bastien.curutchet@bootlin.com,thomas.petazzoni@bootlin.com,bpf@vger.kernel.org,linux-kselftest@vger.kernel.org,linux-kernel@vger.kernel.org,alexis.lothore@bootlin.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Fri, 31 Oct 2025 16:20:49 +0000 (UTC)
 
-On Thu, Oct 30, 2025 at 7:36=E2=80=AFPM Shuai Xue <xueshuai@linux.alibaba.c=
-om> wrote:
->
-> =E5=9C=A8 2025/10/31 01:32, Ian Rogers =E5=86=99=E9=81=93:
-> > On Wed, Oct 29, 2025 at 5:55=E2=80=AFAM Shuai Xue <xueshuai@linux.aliba=
-ba.com> wrote:
-> >>
-> >>
-> >>
-> >> =E5=9C=A8 2025/10/24 10:45, Shuai Xue =E5=86=99=E9=81=93:
-> >>>
-> >>>
-> >>> =E5=9C=A8 2025/10/24 00:08, Ian Rogers =E5=86=99=E9=81=93:
-> >>>> On Wed, Oct 22, 2025 at 6:50=E2=80=AFPM Shuai Xue <xueshuai@linux.al=
-ibaba.com> wrote:
-> >>>>>
-> >>>>> When using perf record with the `--overwrite` option, a segmentatio=
-n fault
-> >>>>> occurs if an event fails to open. For example:
-> >>>>>
-> >>>>>     perf record -e cycles-ct -F 1000 -a --overwrite
-> >>>>>     Error:
-> >>>>>     cycles-ct:H: PMU Hardware doesn't support sampling/overflow-int=
-errupts. Try 'perf stat'
-> >>>>>     perf: Segmentation fault
-> >>>>>         #0 0x6466b6 in dump_stack debug.c:366
-> >>>>>         #1 0x646729 in sighandler_dump_stack debug.c:378
-> >>>>>         #2 0x453fd1 in sigsegv_handler builtin-record.c:722
-> >>>>>         #3 0x7f8454e65090 in __restore_rt libc-2.32.so[54090]
-> >>>>>         #4 0x6c5671 in __perf_event__synthesize_id_index synthetic-=
-events.c:1862
-> >>>>>         #5 0x6c5ac0 in perf_event__synthesize_id_index synthetic-ev=
-ents.c:1943
-> >>>>>         #6 0x458090 in record__synthesize builtin-record.c:2075
-> >>>>>         #7 0x45a85a in __cmd_record builtin-record.c:2888
-> >>>>>         #8 0x45deb6 in cmd_record builtin-record.c:4374
-> >>>>>         #9 0x4e5e33 in run_builtin perf.c:349
-> >>>>>         #10 0x4e60bf in handle_internal_command perf.c:401
-> >>>>>         #11 0x4e6215 in run_argv perf.c:448
-> >>>>>         #12 0x4e653a in main perf.c:555
-> >>>>>         #13 0x7f8454e4fa72 in __libc_start_main libc-2.32.so[3ea72]
-> >>>>>         #14 0x43a3ee in _start ??:0
-> >>>>>
-> >>>>> The --overwrite option implies --tail-synthesize, which collects no=
-n-sample
-> >>>>> events reflecting the system status when recording finishes. Howeve=
-r, when
-> >>>>> evsel opening fails (e.g., unsupported event 'cycles-ct'), session-=
->evlist
-> >>>>> is not initialized and remains NULL. The code unconditionally calls
-> >>>>> record__synthesize() in the error path, which iterates through the =
-NULL
-> >>>>> evlist pointer and causes a segfault.
-> >>>>>
-> >>>>> To fix it, move the record__synthesize() call inside the error chec=
-k block, so
-> >>>>> it's only called when there was no error during recording, ensuring=
- that evlist
-> >>>>> is properly initialized.
-> >>>>>
-> >>>>> Fixes: 4ea648aec019 ("perf record: Add --tail-synthesize option")
-> >>>>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-> >>>>
-> >>>> This looks great! I wonder if we can add a test, perhaps here:
-> >>>> https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-=
-next.git/tree/tools/perf/tests/shell/record.sh?h=3Dperf-tools-next#n435
-> >>>> something like:
-> >>>> ```
-> >>>> $ perf record -e foobar -F 1000 -a --overwrite -o /dev/null -- sleep=
- 0.1
-> >>>> ```
-> >>>> in a new test subsection for test_overwrite? foobar would be an even=
-t
-> >>>> that we could assume isn't present. Could you help with a test
-> >>>> covering the problems you've uncovered and perhaps related flags?
-> >>>>
-> >>>
-> >>> Hi, Ian,
-> >>>
-> >>> Good suggestion, I'd like to add a test. But foobar may not a good ca=
-se.
-> >>>
-> >>> Regarding your example:
-> >>>
-> >>>     perf record -e foobar -a --overwrite -o /dev/null -- sleep 0.1
-> >>>     event syntax error: 'foobar'
-> >>>                          \___ Bad event name
-> >>>
-> >>>     Unable to find event on a PMU of 'foobar'
-> >>>     Run 'perf list' for a list of valid events
-> >>>
-> >>>      Usage: perf record [<options>] [<command>]
-> >>>         or: perf record [<options>] -- <command> [<options>]
-> >>>
-> >>>         -e, --event <event>   event selector. use 'perf list' to list=
- available events
-> >>>
-> >>>
-> >>> The issue with using foobar is that it's an invalid event name, and t=
-he
-> >>> perf parser will reject it much earlier. This means the test would ex=
-it
-> >>> before reaching the part of the code path we want to verify (where
-> >>> record__synthesize() could be called).
-> >>>
-> >>> A potential alternative could be testing an error case such as EACCES=
-:
-> >>>
-> >>>     perf record -e cycles -C 0 --overwrite -o /dev/null -- sleep 0.1
-> >>>
-> >>> This could reproduce the scenario of a failure when attempting to acc=
-ess
-> >>> a valid event, such as due to permission restrictions. However, the
-> >>> limitation here is that users may override
-> >>> /proc/sys/kernel/perf_event_paranoid, which affects whether or not th=
-is
-> >>> test would succeed in triggering an EACCES error.
-> >>>
-> >>>
-> >>> If you have any other suggestions or ideas for a better way to simula=
-te
-> >>> this situation, I'd love to hear them.
-> >>>
-> >>> Thanks.
-> >>> Shuai
-> >>
-> >> Hi, Ian,
-> >>
-> >> Gentle ping.
-> >
-> > Sorry, for the delay. I was trying to think of a better way given the
-> > problems you mention and then got distracted. I wonder if a legacy
-> > event that core PMUs never implement would be a good candidate to
-> > test. For example, the event "node-prefetch-misses" is for "Local
-> > memory prefetch misses" but the memory controller tends to be a
-> > separate PMU and this event is never implemented to my knowledge.
-> > Running this locally I see:
-> >
-> > ```
-> > $ perf record -e node-prefetch-misses -a --overwrite -o /dev/null -- sl=
-eep 0.1
-> > Lowering default frequency rate from 4000 to 1750.
-> > Please consider tweaking /proc/sys/kernel/perf_event_max_sample_rate.
-> > Error:
-> > Failure to open event 'cpu_atom/node-prefetch-misses/' on PMU
-> > 'cpu_atom' which will be removed.
-> > No fallback found for 'cpu_atom/node-prefetch-misses/' for error 2
-> > Error:
-> > Failure to open event 'cpu_core/node-prefetch-misses/' on PMU
-> > 'cpu_core' which will be removed.
-> > No fallback found for 'cpu_core/node-prefetch-misses/' for error 2
-> > Error:
-> > Failure to open any events for recording.
-> > perf: Segmentation fault
-> >     #0 0x55a487ad8b87 in dump_stack debug.c:366
-> >     #1 0x55a487ad8bfd in sighandler_dump_stack debug.c:378
-> >     #2 0x55a4878c6f94 in sigsegv_handler builtin-record.c:722
-> >     #3 0x7f72aae49df0 in __restore_rt libc_sigaction.c:0
-> >     #4 0x55a487b57ef8 in __perf_event__synthesize_id_index
-> > synthetic-events.c:1862
-> >     #5 0x55a487b58346 in perf_event__synthesize_id_index synthetic-even=
-ts.c:1943
-> >     #6 0x55a4878cb2a3 in record__synthesize builtin-record.c:2150
-> >     #7 0x55a4878cdada in __cmd_record builtin-record.c:2963
-> >     #8 0x55a4878d11ca in cmd_record builtin-record.c:4453
-> >     #9 0x55a48795b3cc in run_builtin perf.c:349
-> >     #10 0x55a48795b664 in handle_internal_command perf.c:401
-> >     #11 0x55a48795b7bd in run_argv perf.c:448
-> >     #12 0x55a48795bb06 in main perf.c:555
-> >     #13 0x7f72aae33ca8 in __libc_start_call_main libc_start_call_main.h=
-:74
-> >     #14 0x7f72aae33d65 in __libc_start_main_alias_2 libc-start.c:128
-> >     #15 0x55a4878acf41 in _start perf[52f41]
-> > Segmentation fault
-> > ```
->
->
-> Hi, Ian=EF=BC=8C
->
-> Is node-prefetch-misses a platform specific event? Running it on ARM Yiti=
-an 710
-> and Intel SPR platform, I see:
->
-> $sudo perf record -e node-prefetch-misses
-> Error:
-> The node-prefetch-misses event is not supported.
+--===============7198071862224552361==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
 
-Hi Shuai,
+CmBgYApjb21taXQgZmIwYzVjZmFkMzdlYWFkMzBmNTg0Y2FhZjUzZmU5ODI0MDI2YmM5MgpBdXRo
+b3I6IEFsZXhpcyBMb3Rob3LDqSAoZUJQRiBGb3VuZGF0aW9uKSA8YWxleGlzLmxvdGhvcmVAYm9v
+dGxpbi5jb20+CgpzZWxmdGVzdHMvYnBmOiBpbnRlZ3JhdGUgdGVzdF90Y19lZHQgaW50byB0ZXN0
+X3Byb2dzCgpUaGlzIHBhdGNoIGNvbnZlcnRzIHRlc3RfdGNfZWR0LnNoIHRvIHRoZSB0ZXN0X3By
+b2dzIGZyYW1ld29yaywKY3JlYXRpbmcgYSBuZXcgdGVzdCB0aGF0IG1lYXN1cmVzIEJQRi1iYXNl
+ZCB0cmFmZmljIHNoYXBpbmcgdG8gdmVyaWZ5CnRoYXQgdGhlIHJlc3VsdGluZyByYXRlIG1hdGNo
+ZXMgNU1icHMgd2l0aGluIGEgMiUgZXJyb3IgbWFyZ2luLgoKPiBkaWZmIC0tZ2l0IGEvdG9vbHMv
+dGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvdGVzdF90Y19lZHQuYyBiL3Rvb2xzL3Rl
+c3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL3Rlc3RfdGNfZWR0LmMKPiBuZXcgZmlsZSBt
+b2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAwMC4uYTc3ZTQ4ZmRmCj4gLS0tIC9kZXYvbnVsbAo+
+ICsrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL3Rlc3RfdGNfZWR0
+LmMKClsgLi4uIF0KCj4gKyNkZWZpbmUgVEFSR0VUX1JBVEVfTUJQUwk1LjAKPiArI2RlZmluZSBS
+QVRFX0VSUk9SX1BFUkNFTlQJMi4wCgpbIC4uLiBdCgo+ICtzdGF0aWMgdm9pZCBydW5fdGVzdCh2
+b2lkKQo+ICt7Cj4gKwlfX3U2NCByeF9ieXRlc19zdGFydCwgcnhfYnl0ZXNfZW5kOwo+ICsJZG91
+YmxlIHJhdGVfbWJwcywgcmF0ZV9lcnJvcjsKPiArCXB0aHJlYWRfdCBzZXJ2ZXJfdGhyZWFkID0g
+MDsKPiArCXN0cnVjdCBjb25uZWN0aW9uICpjb25uOwo+ICsJX191NjQgdHNfc3RhcnQsIHRzX2Vu
+ZDsKPiArCWludCByZXQ7Cj4gKwo+ICsKPiArCWNvbm4gPSBzZXR1cF9jb25uZWN0aW9uKCk7Cj4g
+KwlpZiAoIUFTU0VSVF9PS19QVFIoY29ubiwgInNldHVwIGNsaWVudCBhbmQgc2VydmVyIGNvbm5l
+Y3Rpb24iKSkKPiArCQlyZXR1cm47Cj4gKwo+ICsJcmV0ID0gcHRocmVhZF9jcmVhdGUoJnNlcnZl
+cl90aHJlYWQsIE5VTEwsIHJ1bl9zZXJ2ZXIsCj4gKwkJCSAgICAgKHZvaWQgKikoJmNvbm4tPnNl
+cnZlcl9jb25uX2ZkKSk7Cj4gKwlpZiAoIUFTU0VSVF9PSyhyZXQsICJzdGFydCBzZXJ2ZXIgcngg
+dGhyZWFkIikpCj4gKwkJZ290byBlbmRfY2xlYW51cF9jb25uOwo+ICsJaWYgKCFBU1NFUlRfT0so
+cmVhZF9yeF9ieXRlcygmcnhfYnl0ZXNfc3RhcnQpLCAicmVhZCByeF9ieXRlcyIpKQo+ICsJCWdv
+dG8gZW5kX2tpbGxfdGhyZWFkOwo+ICsJdHNfc3RhcnQgPSBnZXRfdGltZV9ucygpOwo+ICsJd2hp
+bGUgKHRydWUpIHsKPiArCQlzZW5kKGNvbm4tPmNsaWVudF9jb25uX2ZkLCAodm9pZCAqKXR4X2J1
+ZmZlciwgQlVGRkVSX0xFTiwgMCk7Cj4gKwkJdHNfZW5kID0gZ2V0X3RpbWVfbnMoKTsKPiArCQlp
+ZiAoKHRzX2VuZCAtIHRzX3N0YXJ0KS8xMDAwMDAgPj0gVElNRU9VVF9NUykgewogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5eXl5eXgoKRG9lcyB0aGlzIHRpbWUgY29u
+dmVyc2lvbiB1c2UgdGhlIGNvcnJlY3QgZGl2aXNvcj8gVGhlIHRpbWVvdXQgY2hlY2sKYXBwZWFy
+cyB0byBkaXZpZGUgbmFub3NlY29uZHMgYnkgMTAwMDAwLCBidXQgVElNRU9VVF9NUyBpcyAyMDAw
+Cm1pbGxpc2Vjb25kcy4gQ29udmVydGluZyBuYW5vc2Vjb25kcyB0byBtaWxsaXNlY29uZHMgcmVx
+dWlyZXMgZGl2aWRpbmcKYnkgMTAwMDAwMCwgbm90IDEwMDAwMC4gV2l0aCB0aGUgY3VycmVudCBj
+YWxjdWxhdGlvbiwgdGhlIHRpbWVvdXQgd291bGQKdHJpZ2dlciBhZnRlciAyMDAgbWlsbGlzZWNv
+bmRzIHJhdGhlciB0aGFuIDIwMDAgbWlsbGlzZWNvbmRzLgoKPiArCQkJdHhfdGltZW91dCA9IHRy
+dWU7Cj4gKwkJCXJldCA9IHJlYWRfcnhfYnl0ZXMoJnJ4X2J5dGVzX2VuZCk7Cj4gKwkJCWlmICgh
+QVNTRVJUX09LKHJldCwgInJlYWRfcnhfYnl0ZXMiKSkKPiArCQkJCWdvdG8gZW5kX2NsZWFudXBf
+Y29ubjsKPiArCQkJYnJlYWs7Cj4gKwkJfQo+ICsJfQo+ICsKPiArCXJhdGVfbWJwcyA9IChyeF9i
+eXRlc19lbmQgLSByeF9ieXRlc19zdGFydCkgLwo+ICsJCSAgICAoKHRzX2VuZCAtIHRzX3N0YXJ0
+KSAvIDEwMDAuMCk7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5eXl5e
+XgoKQ2FuIHRoaXMgcmF0ZSBjYWxjdWxhdGlvbiBwcm9kdWNlIHRoZSBjb3JyZWN0IHVuaXRzPyBU
+aGUgbnVtZXJhdG9yIGlzIGluCmJ5dGVzLCBhbmQgdGhlIGRlbm9taW5hdG9yIChuYW5vc2Vjb25k
+cyAvIDEwMDAuMCkgaXMgaW4gbWljcm9zZWNvbmRzLApnaXZpbmcgYnl0ZXMgcGVyIG1pY3Jvc2Vj
+b25kIHdoaWNoIGVxdWFscyBtZWdhYnl0ZXMgcGVyIHNlY29uZCAoTUIvcykuCkhvd2V2ZXIsIHRo
+ZSBjb21taXQgbWVzc2FnZSBzdGF0ZXMgdGhlIHRlc3QgdmVyaWZpZXMgIjVNYnBzIiAobWVnYWJp
+dHMKcGVyIHNlY29uZCksIGFuZCBUQVJHRVRfUkFURV9NQlBTIHN1Z2dlc3RzIHRoZSBzYW1lLiBD
+b252ZXJ0aW5nIE1CL3MgdG8KTWJwcyByZXF1aXJlcyBtdWx0aXBseWluZyBieSA4IChiaXRzIHBl
+ciBieXRlKSwgd2hpY2ggYXBwZWFycyB0byBiZQptaXNzaW5nLiBJcyB0aGUgdGVzdCBtZWFzdXJp
+bmcgaW4gdGhlIHdyb25nIHVuaXRzLCBvciBpcyB0aGVyZSBhIG5hbWluZwppbmNvbnNpc3RlbmN5
+PwoKPiArCXJhdGVfZXJyb3IgPQo+ICsJCWZhYnMoKHJhdGVfbWJwcyAtIFRBUkdFVF9SQVRFX01C
+UFMpICogMTAwLjAgLyBUQVJHRVRfUkFURV9NQlBTKTsKPiArCWZwcmludGYoc3RkZXJyLCAiUmF0
+ZTpcdCVmXG5FcnJvcjpcdCVmXG4iLCByYXRlX21icHMsIHJhdGVfZXJyb3IpOwo+ICsKPiArCUFT
+U0VSVF9MRShyYXRlX2Vycm9yLCBSQVRFX0VSUk9SX1BFUkNFTlQsCj4gKwkJICAicmF0ZSBlcnJv
+ciBpcyBsb3dlciB0aGFuIHRocmVzaG9sZCIpOwo+ICsKPiArZW5kX2tpbGxfdGhyZWFkOgo+ICsJ
+dHhfdGltZW91dCA9IHRydWU7Cj4gK2VuZF9jbGVhbnVwX2Nvbm46Cj4gKwljbGVhbnVwX2Nvbm5l
+Y3Rpb24oY29ubik7Cj4gK30KCgpgYGAKCi0tLQpBSSByZXZpZXdlZCB5b3VyIHBhdGNoLiBQbGVh
+c2UgZml4IHRoZSBidWcgb3IgZW1haWwgcmVwbHkgd2h5IGl0J3Mgbm90IGEgYnVnLgpTZWU6IGh0
+dHBzOi8vZ2l0aHViLmNvbS9rZXJuZWwtcGF0Y2hlcy92bXRlc3QvYmxvYi9tYXN0ZXIvY2kvY2xh
+dWRlL1JFQURNRS5tZAoKSW4tUmVwbHktVG8tU3ViamVjdDogYHNlbGZ0ZXN0cy9icGY6IGludGVn
+cmF0ZSB0ZXN0X3RjX2VkdCBpbnRvIHRlc3RfcHJvZ3NgCkNJIHJ1biBzdW1tYXJ5OiBodHRwczov
+L2dpdGh1Yi5jb20va2VybmVsLXBhdGNoZXMvYnBmL2FjdGlvbnMvcnVucy8xODk3ODE3MDk3Mgo=
 
-So node-prefetch-misses is a legacy event. Perf has a notion of events
-that are inbuilt to the kernel/PMU driver and get special fixed
-encodings. That said, the PMU driver in the kernel can just fail to
-support the events and I think that's uniformly the case for
-node-prefetch-misses. As shown by my reproduction of the crash, which
-I hope this suffices for a test - i.e. it is an event that parses but
-one that is never supported.
-
-Thanks,
-Ian
+--===============7198071862224552361==--
 
