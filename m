@@ -1,138 +1,154 @@
-Return-Path: <bpf+bounces-73179-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73180-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80681C2669E
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 18:41:46 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41004C2666E
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 18:38:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D1FCE4FC8A8
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 17:36:59 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0FC11347E9B
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 17:38:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE38C2F12D1;
-	Fri, 31 Oct 2025 17:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE13A258EC3;
+	Fri, 31 Oct 2025 17:37:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xlTcVDMM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lEjxjv9o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE44B2652A4
-	for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 17:30:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762341E412A
+	for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 17:37:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761931818; cv=none; b=OD7D9JogW20xtiKw6EcZ+EPjcCIDHVJS7006wTCHxKNQFGRe5+WPn/O8dtAwO7IJCPt6maouTSP/XAdmJJ1EJYr2eIEAUHRBKx/Gu3MH9mYe4jncFwL6rBdDh9RpEoW7gjc8UvWoM1WIU+lQmq7Zwb2I/pxRYfmzNJrQ5wOWVQI=
+	t=1761932255; cv=none; b=d3RvmyDtNWRNAmS1kQbD4mDVI+LuLJdrnuhpAx9M2DgyjXu7njTh0RUtEceSLvhYkq2ZRR1ZQFV1F+EsZy9m+sEiIJqs2Tz2WtZKBZkizEO+w7eMRet3AZNsow86JxBZUoTHiA8Ew12RumGE8e+q0z8rXkb5ZpM1cGsEjP6KhFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761931818; c=relaxed/simple;
-	bh=ELK/TPtUoa0DdzfjuQJxQqd/fmBurZBKRSXbJIZQLus=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Fi9PXAnQJff4BCUj9uDCymhHr7jQjyc74Mign/qkm8peJg/B/kxfEZwFT07q8rkq16texE0G1hyQJW+H8WHZqdKtrGyaQUDSlbxHFt5TTeqheO+3BaLIGqOj19bui7nO9Y3VvoqsiCbXXPMmu5HS1ms1DiQkhiQjLbyAJ/A8E/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xlTcVDMM; arc=none smtp.client-ip=209.85.128.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-475dd9906e1so15016835e9.0
-        for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 10:30:14 -0700 (PDT)
+	s=arc-20240116; t=1761932255; c=relaxed/simple;
+	bh=zsbaoA/F5NOlNgn/Q7m0Emzmj/vRyRI3wur6J/zRy/Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=noLBqFhv651uAlXPBLsZeC6gprjjaMrvz8oyJHH9TCX46Z5ii6y2zv2BNFXepV/eaU3ho5mNa+WhcZmhExEdPJxOJTMXLfAjig/utsOOblXMgWnwYdWxUQC4zobotgeukkG6zWz2OOgI+uJFAcRRMpPEoBIpED4RDWQyXhyfs9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lEjxjv9o; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-475dbc3c9efso15808255e9.0
+        for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 10:37:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761931813; x=1762536613; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8smNPhdFrk3F9UsFWfFOTzaD0PFIjf/jPl9FFvNvth4=;
-        b=xlTcVDMM2YXWR1LtabsCI+fB7WxqP/BNGHnliygKqFjwb59VituBUODZN1s/r/j7LZ
-         du8UJEaeZWkJblBUuqdirmTdbacpiHAx4twPldzTYbNbBoYDCQ9FfMNVRWkDAyjcEp9G
-         VnuOdx2g5GNGlXD4wmOalAtM+oMDs0akUUdQz3DW6CTXd9MfvTLab+OkNJZSj51jdWq5
-         E2JTNX9xt1uVWpzcWaELLrnfwEbKx0glh+eyIDMLENshEB64nz6eacBkPzv78Cn42AmY
-         Cwkt7NbGfh2GaG11aiPezj6Y7a9Bg2AFHaCfoUl1eglXUaM/oKEURdSt47gJ/32LFIN5
-         gGpg==
+        d=gmail.com; s=20230601; t=1761932252; x=1762537052; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C5mV2w6my4c1PMfXawO9gB6t8vYeJrvxem9h0oKA3+w=;
+        b=lEjxjv9oFZlzMn5hsNQUVb6a+oQWFxj/lq53sbuJRiKJxH4DJmrPjp8IF8nY/8qNI4
+         F4hrk3oAy8n5a2lNRUGK0fGFkRuAnULtm7BRdt0FWrI80Rc/malY1dyQjq/6+/uT0dS3
+         WXYfqx4yB3mO2nyqfV/oS/N3bh5c9KFnkEYOmsJ3mZGBDAh0uNo4lnJab4qJt6zSwgon
+         jGZGigAGe7GwDnAo9T8FoItHodMdZ15RnUciHb9W8rIIOEZPEiamKbAbfrzdz7R6yeoU
+         uM+A8IIJtQjlXnuqwoYPz3kHcLFx61mjD3idEGwdeXtdHdeAYtjGxL31i9YwXy0jcjPN
+         Qg6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761931813; x=1762536613;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8smNPhdFrk3F9UsFWfFOTzaD0PFIjf/jPl9FFvNvth4=;
-        b=B1SyrCwrpPJXWa101NK7OV/tcwtEfHkd/VHwb4OsnsIfo+d8xbVQgVfha4u1rPRE7o
-         m1cgrD0Bm05c3WwEpRG6OLJMglyUxQTjjFZMOaqPNSCZHZNAEwgLrJE58kNISbl0Stvw
-         YYFTqQpjxDyQlLK0VoQ+zYGCKCPaTW1mN4aR5YvJBAUWPG3W4Q96WDY2NwpLjzzXkOj6
-         1zO0KIrtVl13gxXsKW+No5HlrRRR5UT7h166p5L8ZPDwgBy7K04v2dXS8OuZwUrBLuKP
-         FZW2KYfJ1JM9ZMx86UnWArrGqN55fmaUpvF6Kgf7SyR4RGKpwcmF3P047Uv5Ine6kZ49
-         EWQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWFHUOuCiqKOc5Zaiuut7lBiKu8A6QPuONS7+Hs7SfiW4J4CQgeXs/nspCCOSnaLrZf5mo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyaabs766W/n5brpY4HiJ4dTGdyHEEFkF3yuwIvWSbt969BIwp7
-	+XUQYylM0m/jymdPzGKHXVxTA7QKi7U8h9TVgGTmZ3yd4SeMLI6k+N4U28WVmnMn3cbHaFK5gci
-	wjjiGm92SbD4qfw==
-X-Google-Smtp-Source: AGHT+IGAlLQK0HkJ6COX6kdvZKn0Ro2fXbdMSgyDJ0pItor316xsKGfib1jQEkdwcGXkq1m1difB1/UltgkgBQ==
-X-Received: from wmwp25.prod.google.com ([2002:a05:600d:8319:b0:477:c8e:1959])
- (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600d:8310:b0:477:326c:b33f with SMTP id 5b1f17b1804b1-477326cb6d3mr20439815e9.16.1761931812961;
- Fri, 31 Oct 2025 10:30:12 -0700 (PDT)
-Date: Fri, 31 Oct 2025 17:30:12 +0000
-In-Reply-To: <20250924152214.7292-2-roypat@amazon.co.uk>
+        d=1e100.net; s=20230601; t=1761932252; x=1762537052;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C5mV2w6my4c1PMfXawO9gB6t8vYeJrvxem9h0oKA3+w=;
+        b=Ni8RBOa6QC9lEy8rb/GX4BsrMN43Z1Xor7jnhRx82D8rlzl5sV1SAW8wV2eSpgmVqA
+         OG3gB0D3r1z0rHizBjdZ36liPWw6/GVhrS4NtRbuBPjvlkn3m3KPAxskWcooWy8pCIXX
+         qg87B6Zx4eA5qxodW0PRyOv6q2zWwa3pwKPDGtfo+wvK1IkaBF6lmGP5HS2QFJpFZXCt
+         sHvh6aOp0i2N0+CwByiN6pLaDt5yB05PLiZvyNY97q+V6lmYMkCAd3Tf6MFNBb1BMrEa
+         McdCpoZyLE42iEz4TWJcAAeR5XYZliCObPWxYNpRr5J55ww0bNCeU/JqL+DtVqKUZRe0
+         tfTA==
+X-Forwarded-Encrypted: i=1; AJvYcCWPA3ki1E+AYckpd6eieWQuBoZ+DJXmIWyjYTDvj0xgviRf09iGj3NmmeDEf5NQ0suvA3U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzxEN/o2VLUPFyMbIcqDw7qtjqqqi31V9K5CLvhA691NJYxBzph
+	cSKGS+YGDHKCjqtDeKdBMbopC8wvLDYzXWXzUkC+yjpibK/BcBPWaZB3v77idkM4z2047eesqvJ
+	DCOxA2S3+ccRk+x4rRUG0rVWlTfJA6zc=
+X-Gm-Gg: ASbGncs2iJAj5iJ+X0wNYKpPa7YWww4P2MEED4iw/dI7kkeFcDnUCM2kzdjJ8tkE+nS
+	8gVpkbgSps8pevn0xwsCa0lY5w7y8+Dp/EdHHadfyPsYuNlZW9iUkF1/ym6wVbOY1OEfI0wvvrI
+	VlJGAvW4Evnq2icYL1Z0l23XmKJ2Mm1VRaBwFh8KOa84FaYdpU+6/mX9e8iz3XgXVBdPXvPtEEO
+	or9H1Aa7MRvmZodOlcSxQb60eXNZr+8J5Han753UBNktBBXWJ1u2g5hK1/ROO3hNY0WSvzH7gSj
+	YhLcrVGS2xhnTeRqSA==
+X-Google-Smtp-Source: AGHT+IHPMUcDW3YwpEvtBrlqSkWgH3dOQo9Kw9291NP88P35J7TeeNcT/Tu9V9VlCr57x5pMjLGDLOmypXe3JvzCues=
+X-Received: by 2002:a05:6000:2585:b0:428:3f7c:bcfe with SMTP id
+ ffacd0b85a97d-429bd6c1ef3mr3470559f8f.57.1761932251229; Fri, 31 Oct 2025
+ 10:37:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
- <20250924152214.7292-1-roypat@amazon.co.uk> <20250924152214.7292-2-roypat@amazon.co.uk>
-X-Mailer: aerc 0.21.0
-Message-ID: <DDWOP8GKHESP.2EOY2HGM9RXHU@google.com>
-Subject: Re: [PATCH v7 05/12] KVM: guest_memfd: Add flag to remove from direct map
-From: Brendan Jackman <jackmanb@google.com>
-To: "Roy, Patrick" <roypat@amazon.co.uk>
-Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>, "corbet@lwn.net" <corbet@lwn.net>, 
-	"maz@kernel.org" <maz@kernel.org>, "oliver.upton@linux.dev" <oliver.upton@linux.dev>, 
-	"joey.gouly@arm.com" <joey.gouly@arm.com>, "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>, 
-	"yuzenghui@huawei.com" <yuzenghui@huawei.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>, 
-	"will@kernel.org" <will@kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>, 
-	"mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, 
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>, 
-	"hpa@zytor.com" <hpa@zytor.com>, "luto@kernel.org" <luto@kernel.org>, 
-	"peterz@infradead.org" <peterz@infradead.org>, "willy@infradead.org" <willy@infradead.org>, 
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "david@redhat.com" <david@redhat.com>, 
-	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>, 
-	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, "vbabka@suse.cz" <vbabka@suse.cz>, 
-	"rppt@kernel.org" <rppt@kernel.org>, "surenb@google.com" <surenb@google.com>, "mhocko@suse.com" <mhocko@suse.com>, 
-	"song@kernel.org" <song@kernel.org>, "jolsa@kernel.org" <jolsa@kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"martin.lau@linux.dev" <martin.lau@linux.dev>, "eddyz87@gmail.com" <eddyz87@gmail.com>, 
-	"yonghong.song@linux.dev" <yonghong.song@linux.dev>, 
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
-	"sdf@fomichev.me" <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, 
-	"jhubbard@nvidia.com" <jhubbard@nvidia.com>, "peterx@redhat.com" <peterx@redhat.com>, 
-	"jannh@google.com" <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>, 
-	"shuah@kernel.org" <shuah@kernel.org>, "seanjc@google.com" <seanjc@google.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Cali, Marco" <xmarcalx@amazon.co.uk>, 
-	"Kalyazin, Nikita" <kalyazin@amazon.co.uk>, "Thomson, Jack" <jackabt@amazon.co.uk>, 
-	"derekmn@amazon.co.uk" <derekmn@amazon.co.uk>, "tabba@google.com" <tabba@google.com>, 
-	"ackerleytng@google.com" <ackerleytng@google.com>
+MIME-Version: 1.0
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+ <20251027231727.472628-3-roman.gushchin@linux.dev> <CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
+ <87zf98xq20.fsf@linux.dev> <CAHzjS_tnmSPy_cqCUHiLGt8Ouf079wQBQkostqJqfyKcJZPXLA@mail.gmail.com>
+ <CAMB2axMkYS1j=KeECZQ9rnupP8kw7dn1LnGV4udxMp=f=qoEQA@mail.gmail.com>
+ <877bwcus3h.fsf@linux.dev> <CAADnVQJGiH_yF=AoFSRy4zh20uneJgBfqGshubLM6aVq069Fhg@mail.gmail.com>
+ <87bjloht28.fsf@linux.dev>
+In-Reply-To: <87bjloht28.fsf@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 31 Oct 2025 10:37:19 -0700
+X-Gm-Features: AWmQ_bk3MBgTJKB4MZUJUE5RMJOP5ctpuIVST3txj8WpDOUYgUkSaXNEbEZ7Ahg
+Message-ID: <CAADnVQLHT7DrqwNb_N_==vxCdtX3QvTyZKxZa4STw4cD-WKswQ@mail.gmail.com>
+Subject: Re: bpf_st_ops and cgroups. Was: [PATCH v2 02/23] bpf: initial
+ support for attaching struct ops to cgroups
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Amery Hung <ameryhung@gmail.com>, Song Liu <song@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, JP Kobryn <inwardvessel@gmail.com>, 
+	linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed Sep 24, 2025 at 3:22 PM UTC, Patrick Roy wrote:
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 1d0585616aa3..73a15cade54a 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -731,6 +731,12 @@ static inline bool kvm_arch_has_private_mem(struct kvm *kvm)
->  bool kvm_arch_supports_gmem_mmap(struct kvm *kvm);
->  #endif
->  
-> +#ifdef CONFIG_KVM_GUEST_MEMFD
-> +#ifndef kvm_arch_gmem_supports_no_direct_map
-> +#define kvm_arch_gmem_supports_no_direct_map can_set_direct_map
-> +#endif
-> +#endif /* CONFIG_KVM_GUEST_MEMFD */
+On Thu, Oct 30, 2025 at 4:24=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
+x.dev> wrote:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>
+> > On Thu, Oct 30, 2025 at 12:06=E2=80=AFPM Roman Gushchin
+> > <roman.gushchin@linux.dev> wrote:
+> >>
+> >> Ok, let me summarize the options we discussed here:
+> >>
+> >> 1) Make the attachment details (e.g. cgroup_id) the part of struct ops
+> >> itself. The attachment is happening at the reg() time.
+> >>
+> >>   +: It's convenient for complex stateful struct ops'es, because a
+> >>       single entity represents a combination of code and data.
+> >>   -: No way to attach a single struct ops to multiple entities.
+> >>
+> >> This approach is used by Tejun for per-cgroup sched_ext prototype.
+> >
+> > It's wrong. It should adopt bpf_struct_ops_link_create() approach
+> > and use attr->link_create.cgroup.relative_fd to attach.
+>
+> This is basically what I have in v2, but Andrii and Song suggested that
+> I should use attr->link_create.target_fd instead.
 
-The test robot seems happy so I think I'm probably mistaken here, but
-AFAICS can_set_direct_map only exists when ARCH_HAS_SET_DIRECT_MAP,
-which powerpc doesn't set.
+Yes. Of course.
+link_create.cgroup.relative_fd actually points to a program.
+We will need it if/when we add support for mprog style attach.
 
-If this is indeed an issue I think it can be fixed by just defining
-can_set_direct_map() to false when !ARCH_HAS_SET_DIRECT_MAP.
+> I have a slight preference towards attr->link_create.cgroup.relative_fd
+> because it makes it clear that fd is a cgroup fd and potentially opens
+> a possibility to e.g. attach struct_ops to individual tasks and
+> cgroups, but I'm fine with both options.
+
+yeah. The name is confusing. It's not a cgroup fd.
+
+> Also, as Song pointed out, fd=3D=3D0 is in theory a valid target, so inst=
+ead of
+> using the "if (fd) {...}" check we might need a new flag. Idk if it
+> really makes sense to complicate the code for it.
+
+One option is to cgroup_get_from_fd(attr->link_create.target_fd)
+and if it's not a cgroup, just ignore it in bpf_struct_ops_link_create()
+But a new flag like BPF_F_CGROUP_FD maybe cleaner ?
+If we ever attach st_ops to tasks there will be another BPF_F_PID_FD flag ?
+Or we may try different supported kinds like bpf_fd_probe_obj() does
+and don't bother with flags.
+
+New attach_type-s are not necessary. The type of st_ops itself
+reflects the purpose and hook location.
 
