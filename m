@@ -1,56 +1,57 @@
-Return-Path: <bpf+bounces-73138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73140-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91CBEC2407C
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 10:09:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 969E0C23FEF
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 10:05:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 825483BEB27
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 09:02:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CB23189A308
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 09:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF6D32E132;
-	Fri, 31 Oct 2025 09:01:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3FD632F75D;
+	Fri, 31 Oct 2025 09:02:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hUph6cor"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="vQSTRGHZ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323DA328B63
-	for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 09:01:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 201B232E68E;
+	Fri, 31 Oct 2025 09:01:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761901317; cv=none; b=fKi4z8OuHXx/Cx/W8t5BDV0cSTTfAbFkQSmDWpXnEzrVkqlFV0F6qfnzdftt6J0jcHix7taUSSw+AU350qvIBS0LRel6O8jTkir6f1Wrm0Xu99MjhdNDU5PHXp7gjy12dCyN5SQYI48KKKZ3oGBZHeQwfLfphI+iL7dZVTkCN30=
+	t=1761901320; cv=none; b=PaIm0ClRYLJ+8WBueg+M4kNLHCy9mQBvBcIw+SP2diZj1g2XW9SY2rr/6hbaUtEPWYw51A8B1z+KBEYbgNa+e71o1X1Ttp94uWb4VSwrxqTI5oh/CnzAIiZHo0Qt26BFNC+K5i94sszImenWIbk+wXbnDe39uSYkoFo5yxzEsOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761901317; c=relaxed/simple;
-	bh=O5itHnLTDcAl7kg5b+ivHplkojiYqTRRAtCF+sGH1mI=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=XL/eZ/eMYAaOcy2wP61kg8Ub0+G9ERlUnLzD06yZ8oO7hiXT771QyigDsVLDsaZL+qB6nRLyBqdPbX8/RE6+jtmT6+wvNmaEJnSlalSCF3nPs/IRBxR8a7Qols68zS3giJcR/ECakr6xEkN/5Z1rNH2bArKcG5t4VUq07NVH3zY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hUph6cor; arc=none smtp.client-ip=185.171.202.116
+	s=arc-20240116; t=1761901320; c=relaxed/simple;
+	bh=xqZ4ks0zodwVdhdoU6aLILyMcPX95g56qW1FHGqGTRY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=jkRxCPGzVI8ZVL1X0HBvsR3pR/7bLK8NXL6cLR0/58eLpo7B6XIKaONlFhIYpIHU21nuyMvNTug34MZyDyGF5Z3lg02R1RYgdIzBgasBDA7uNH9V+NCSsbkK9vB8UCxCMGq6n1lZ5jI0wZjgbawOv9KDhrC/9+mliCk5AbuJ0wk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=vQSTRGHZ; arc=none smtp.client-ip=185.171.202.116
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id ED37AC0E94D;
-	Fri, 31 Oct 2025 09:01:31 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id F20E6C0E94F;
+	Fri, 31 Oct 2025 09:01:35 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 6B12560704;
-	Fri, 31 Oct 2025 09:01:52 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 249A011810843;
-	Fri, 31 Oct 2025 10:01:48 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 7949160704;
+	Fri, 31 Oct 2025 09:01:56 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B59E411810838;
+	Fri, 31 Oct 2025 10:01:53 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1761901311; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=7C6G3ro04Iqz2YzPn/lLXpMOd5QB91V65CxIuf8EN4I=;
-	b=hUph6corzB0WA1dwRt5oKq5fKundl6bdXdzKiLgzrWAwB02vvFhTghkAnyCssf6sYXcBIv
-	YgRuARpwnngLERrNPHW2cCtt5AnuWXcKQdEP+vCW/vr3Iupd3pze//H+8cqOC7P2CVPUgK
-	ZXdti62qjQpjZMRbPb2uuCyV1soE7N+pi1IEqUJYtvK82xee6/zb6gNBdSWYhR6DgcHj6i
-	6owm46o2QecQ/amGUt9BsEPCsutQ1ldm1fZjJb5VaeaZ+VaKp4frdANNwLyg9b6UE0N4Sq
-	AjAkdJqMfsbSVODSSpR66VHI010GV0ZxwR6EOynnrxU6GVtxHisQkjKz/aA4mA==
+	t=1761901315; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=kef/BUw/7kskzjxgi11EVQHCfO8iul2HvO8swTDNzfU=;
+	b=vQSTRGHZG/JHOsfT87atsoYUt+0Zdf0vxb5xD00YJoYSQ5OlznKJiLzo5FjfW2uGEMIsJT
+	3hJIQ0agBbQG5L9+6HqvbDt5hDvlk9NC9ZYVwgH8O8R2gk6LOyFe2m4m3wTMpWE9qYnE0W
+	5QwLh/QzomfBMtz1FRXycJhmAjJNyeG3b/zkUw43LTJr/kgX0zeEIRzNJQtISekfapwtpu
+	BUd2EJedANGGSdrLJSL//5u3z24f4E3/M09q6BsunwyTd6jkAdSEg8cuQBpQ0xeeinD0p/
+	MhkImuqyE4qp9GFM+EQOV1Fmb5c2+CtZWetjqOyOyR3AEgb2sK/EmwPVz5uqnA==
 From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Subject: [PATCH bpf-next 0/3] selftests/bpf: small improvements on
- tc_tunnel
-Date: Fri, 31 Oct 2025 10:01:40 +0100
-Message-Id: <20251031-tc_tunnel_improv-v1-0-0ffe44d27eda@bootlin.com>
+Date: Fri, 31 Oct 2025 10:01:42 +0100
+Subject: [PATCH bpf-next 2/3] selftests/bpf: add checks in tc_tunnel when
+ entering net namespaces
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -59,10 +60,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAPR6BGkC/x3MQQqAIBBA0avErBPUSKirRETZWAM1iVoE0d2Tl
- m/x/wMRA2GEtngg4EWRDs5QZQF2HXlBQXM2aKlrJSspkh3SyYzbQLsPxyXM1MzKam2NM5AzH9D
- R/S87mLwTjHeC/n0/Ocn3JGwAAAA=
-X-Change-ID: 20251030-tc_tunnel_improv-6b9d1c22c6f6
+Message-Id: <20251031-tc_tunnel_improv-v1-2-0ffe44d27eda@bootlin.com>
+References: <20251031-tc_tunnel_improv-v1-0-0ffe44d27eda@bootlin.com>
+In-Reply-To: <20251031-tc_tunnel_improv-v1-0-0ffe44d27eda@bootlin.com>
 To: Alexei Starovoitov <ast@kernel.org>, 
  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
  Martin KaFai Lau <martin.lau@linux.dev>, 
@@ -79,31 +79,258 @@ Cc: ebpf@linuxfoundation.org,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 
-Hello,
-this series is a small follow-up to the test_tc_tunnel recent
-integration, to address some small missing details raised during the
-final review ([1]). This is mostly about adding some missing checks on
-net namespaces management.
+test_tc_tunnel is missing checks on any open_netns. Add those checks
+anytime we try to enter a net namespace, and skip the related operations
+if we fail. While at it, reduce the number of open_netns/close_netns for
+cases involving operations in two distinct namespaces: the test
+currently does the following:
 
-[1] https://lore.kernel.org/bpf/1ac9d14e-4250-480c-b863-410be78ac6c6@linux.dev/
+  nstoken = open_netns("foo")
+  do_operation();
+  close(nstoken);
+  nstoken = open_netns("bar")
+  do_another_operation();
+  close(nstoken);
+
+As already stated in reviews for the initial test, we don't need to go
+back to the root net namespace to enter a second namespace, so just do:
+
+  ntoken_client = open_netns("foo")
+  do_operation();
+  nstoken_server = open_netns("bar")
+  do_another_operation();
+  close(nstoken_server);
+  close(nstoken_client);
 
 Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
 ---
-Alexis Lothoré (eBPF Foundation) (3):
-      selftests/bpf: skip tc_tunnel subtest if its setup fails
-      selftests/bpf: add checks in tc_tunnel when entering net namespaces
-      selftests/bpf: use start_server_str rather than start_reuseport_server in tc_tunnel
+ .../selftests/bpf/prog_tests/test_tc_tunnel.c      | 134 ++++++++++++++-------
+ 1 file changed, 88 insertions(+), 46 deletions(-)
 
- .../selftests/bpf/prog_tests/test_tc_tunnel.c      | 162 ++++++++++++++-------
- 1 file changed, 107 insertions(+), 55 deletions(-)
----
-base-commit: 1e2d874b04ba46a3b9fe6697097aa437641f4339
-change-id: 20251030-tc_tunnel_improv-6b9d1c22c6f6
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_tc_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tc_tunnel.c
+index 1d8d38e67f8b..deea90aaefad 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_tc_tunnel.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_tc_tunnel.c
+@@ -133,8 +133,12 @@ static void set_subtest_addresses(struct subtest_cfg *cfg)
+ 
+ static int run_server(struct subtest_cfg *cfg)
+ {
+-	struct nstoken *nstoken = open_netns(SERVER_NS);
+ 	int family = cfg->ipproto == 6 ? AF_INET6 : AF_INET;
++	struct nstoken *nstoken;
++
++	nstoken = open_netns(SERVER_NS);
++	if (!ASSERT_OK_PTR(nstoken, "open server ns"))
++		return -1;
+ 
+ 	cfg->server_fd = start_reuseport_server(family, SOCK_STREAM,
+ 						cfg->server_addr, TEST_PORT,
+@@ -319,6 +323,10 @@ static int configure_encapsulation(struct subtest_cfg *cfg)
+ static int configure_kernel_decapsulation(struct subtest_cfg *cfg)
+ {
+ 	struct nstoken *nstoken = open_netns(SERVER_NS);
++	int ret = -1;
++
++	if (!ASSERT_OK_PTR(nstoken, "open server ns"))
++		return ret;
+ 
+ 	if (cfg->configure_fou_rx_port &&
+ 	    !ASSERT_OK(add_fou_rx_port(cfg), "configure FOU RX port"))
+@@ -337,11 +345,11 @@ static int configure_kernel_decapsulation(struct subtest_cfg *cfg)
+ 	SYS(fail, "sysctl -qw net.ipv4.conf.all.rp_filter=0");
+ 	SYS(fail, "sysctl -qw net.ipv4.conf.testtun0.rp_filter=0");
+ 	SYS(fail, "ip link set dev testtun0 up");
+-	close_netns(nstoken);
+-	return 0;
++
++	ret = 0;
+ fail:
+ 	close_netns(nstoken);
+-	return -1;
++	return ret;
+ }
+ 
+ static void remove_kernel_decapsulation(struct subtest_cfg *cfg)
+@@ -356,6 +364,10 @@ static void remove_kernel_decapsulation(struct subtest_cfg *cfg)
+ static int configure_ebpf_decapsulation(struct subtest_cfg *cfg)
+ {
+ 	struct nstoken *nstoken = open_netns(SERVER_NS);
++	int ret = -1;
++
++	if (!ASSERT_OK_PTR(nstoken, "open server ns"))
++		return ret;
+ 
+ 	if (!cfg->expect_kern_decap_failure)
+ 		SYS(fail, "ip link del testtun0");
+@@ -363,17 +375,20 @@ static int configure_ebpf_decapsulation(struct subtest_cfg *cfg)
+ 	if (!ASSERT_OK(tc_prog_attach("veth2", cfg->server_ingress_prog_fd, -1),
+ 		       "attach_program"))
+ 		goto fail;
+-	close_netns(nstoken);
+-	return 0;
++
++	ret = 0;
+ fail:
+ 	close_netns(nstoken);
+-	return -1;
++	return ret;
+ }
+ 
+ static void run_test(struct subtest_cfg *cfg)
+ {
+ 	struct nstoken *nstoken = open_netns(CLIENT_NS);
+ 
++	if (!ASSERT_OK_PTR(nstoken, "open client ns"))
++		return;
++
+ 	if (!ASSERT_OK(run_server(cfg), "run server"))
+ 		goto fail;
+ 
+@@ -407,7 +422,7 @@ static void run_test(struct subtest_cfg *cfg)
+ 
+ static int setup(void)
+ {
+-	struct nstoken *nstoken = NULL;
++	struct nstoken *nstoken_client, *nstoken_server;
+ 	int fd, err;
+ 
+ 	fd = open("/dev/urandom", O_RDONLY);
+@@ -424,52 +439,75 @@ static int setup(void)
+ 	    !ASSERT_OK(make_netns(SERVER_NS), "create server ns"))
+ 		goto fail;
+ 
+-	nstoken = open_netns(CLIENT_NS);
+-	SYS(fail, "ip link add %s type veth peer name %s",
++	nstoken_client = open_netns(CLIENT_NS);
++	if (!ASSERT_OK_PTR(nstoken_client, "open client ns"))
++		goto fail_delete_ns;
++	SYS(fail_close_ns_client, "ip link add %s type veth peer name %s",
+ 	    "veth1 mtu 1500 netns " CLIENT_NS " address " MAC_ADDR_VETH1,
+ 	    "veth2 mtu 1500 netns " SERVER_NS " address " MAC_ADDR_VETH2);
+-	SYS(fail, "ethtool -K veth1 tso off");
+-	SYS(fail, "ip link set veth1 up");
+-	close_netns(nstoken);
+-	nstoken = open_netns(SERVER_NS);
+-	SYS(fail, "ip link set veth2 up");
+-	close_netns(nstoken);
+-
++	SYS(fail_close_ns_client, "ethtool -K veth1 tso off");
++	SYS(fail_close_ns_client, "ip link set veth1 up");
++	nstoken_server = open_netns(SERVER_NS);
++	if (!ASSERT_OK_PTR(nstoken_server, "open server ns"))
++		goto fail_close_ns_client;
++	SYS(fail_close_ns_server, "ip link set veth2 up");
++
++	close_netns(nstoken_server);
++	close_netns(nstoken_client);
+ 	return 0;
++
++fail_close_ns_server:
++	close_netns(nstoken_server);
++fail_close_ns_client:
++	close_netns(nstoken_client);
++fail_delete_ns:
++	SYS_NOFAIL("ip netns del " CLIENT_NS);
++	SYS_NOFAIL("ip netns del " SERVER_NS);
+ fail:
+-	close_netns(nstoken);
+-	return 1;
++	return -1;
+ }
+ 
+ static int subtest_setup(struct test_tc_tunnel *skel, struct subtest_cfg *cfg)
+ {
+-	struct nstoken *nstoken;
++	struct nstoken *nstoken_client, *nstoken_server;
++	int ret = -1;
+ 
+ 	set_subtest_addresses(cfg);
+ 	if (!ASSERT_OK(set_subtest_progs(cfg, skel),
+ 		       "find subtest progs"))
+-		return -1;
++		goto fail;
+ 	if (cfg->extra_decap_mod_args_cb)
+ 		cfg->extra_decap_mod_args_cb(cfg, cfg->extra_decap_mod_args);
+ 
+-	nstoken = open_netns(CLIENT_NS);
+-	SYS(fail, "ip -4 addr add " IP4_ADDR_VETH1 "/24 dev veth1");
+-	SYS(fail, "ip -4 route flush table main");
+-	SYS(fail, "ip -4 route add " IP4_ADDR_VETH2 " mtu 1450 dev veth1");
+-	SYS(fail, "ip -6 addr add " IP6_ADDR_VETH1 "/64 dev veth1 nodad");
+-	SYS(fail, "ip -6 route flush table main");
+-	SYS(fail, "ip -6 route add " IP6_ADDR_VETH2 " mtu 1430 dev veth1");
+-	close_netns(nstoken);
+-
+-	nstoken = open_netns(SERVER_NS);
+-	SYS(fail, "ip -4 addr add " IP4_ADDR_VETH2 "/24 dev veth2");
+-	SYS(fail, "ip -6 addr add " IP6_ADDR_VETH2 "/64 dev veth2 nodad");
+-	close_netns(nstoken);
+-
+-	return 0;
++	nstoken_client = open_netns(CLIENT_NS);
++	if (!ASSERT_OK_PTR(nstoken_client, "open client ns"))
++		goto fail;
++	SYS(fail_close_client_ns,
++	    "ip -4 addr add " IP4_ADDR_VETH1 "/24 dev veth1");
++	SYS(fail_close_client_ns, "ip -4 route flush table main");
++	SYS(fail_close_client_ns,
++	    "ip -4 route add " IP4_ADDR_VETH2 " mtu 1450 dev veth1");
++	SYS(fail_close_client_ns,
++	    "ip -6 addr add " IP6_ADDR_VETH1 "/64 dev veth1 nodad");
++	SYS(fail_close_client_ns, "ip -6 route flush table main");
++	SYS(fail_close_client_ns,
++	    "ip -6 route add " IP6_ADDR_VETH2 " mtu 1430 dev veth1");
++	nstoken_server = open_netns(SERVER_NS);
++	if (!ASSERT_OK_PTR(nstoken_server, "open server ns"))
++		goto fail_close_client_ns;
++	SYS(fail_close_server_ns,
++	    "ip -4 addr add " IP4_ADDR_VETH2 "/24 dev veth2");
++	SYS(fail_close_server_ns,
++	    "ip -6 addr add " IP6_ADDR_VETH2 "/64 dev veth2 nodad");
++
++	ret = 0;
++
++fail_close_server_ns:
++	close_netns(nstoken_server);
++fail_close_client_ns:
++	close_netns(nstoken_client);
+ fail:
+-	close_netns(nstoken);
+-	return -1;
++	return ret;
+ }
+ 
+ 
+@@ -478,15 +516,19 @@ static void subtest_cleanup(struct subtest_cfg *cfg)
+ 	struct nstoken *nstoken;
+ 
+ 	nstoken = open_netns(CLIENT_NS);
+-	SYS_NOFAIL("tc qdisc delete dev veth1 parent ffff:fff1");
+-	SYS_NOFAIL("ip a flush veth1");
+-	close_netns(nstoken);
++	if (ASSERT_OK_PTR(nstoken, "open clien ns")) {
++		SYS_NOFAIL("tc qdisc delete dev veth1 parent ffff:fff1");
++		SYS_NOFAIL("ip a flush veth1");
++		close_netns(nstoken);
++	}
+ 	nstoken = open_netns(SERVER_NS);
+-	SYS_NOFAIL("tc qdisc delete dev veth2 parent ffff:fff1");
+-	SYS_NOFAIL("ip a flush veth2");
+-	if (!cfg->expect_kern_decap_failure)
+-		remove_kernel_decapsulation(cfg);
+-	close_netns(nstoken);
++	if (ASSERT_OK_PTR(nstoken, "open clien ns")) {
++		SYS_NOFAIL("tc qdisc delete dev veth2 parent ffff:fff1");
++		SYS_NOFAIL("ip a flush veth2");
++		if (!cfg->expect_kern_decap_failure)
++			remove_kernel_decapsulation(cfg);
++		close_netns(nstoken);
++	}
+ }
+ 
+ static void cleanup(void)
 
-Best regards,
 -- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.51.1.dirty
 
 
