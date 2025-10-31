@@ -1,279 +1,138 @@
-Return-Path: <bpf+bounces-73109-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73110-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE996C236AD
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 07:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B0A6C23846
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 08:16:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F2B3188F236
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 06:37:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0A8318981E3
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 07:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C112F656A;
-	Fri, 31 Oct 2025 06:37:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDBC345038;
+	Fri, 31 Oct 2025 07:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IWgZxD2e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="geA/hab5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com [209.85.214.194])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82BF5239E61
-	for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 06:37:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62F21FF1C7
+	for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 07:16:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761892639; cv=none; b=Ofx+5UGsYbFXVsuvY8lrf0UbyasI6SsX9r6hU1HaUljEMeMkLIlkjEK1wHLkK9FlDrrE6ufc8B7b1t6FReXJN+KRtyUDxNiPg34SU6Qyly7OBNvisRa0wEncs7X9kSmUS00sTSoRoZjATCEDuxWLJqme9k8UVTga0FNRep++uzM=
+	t=1761895009; cv=none; b=Ic+HYIhpemJdiZQ9MNuCiSYiKgzBXwEgNVBj9WCbaVS8UDSfmBvwL6E90mFivmRsG9iJXeJhl4F7KC8FE5BN2BVwAXoZGT9UK5AoRTXD22ZsqDp9g1Tf15NrWR+SuB2N4fviP+wNgWQjekHoGJYkA6BdSADznXLRSSjuQDLPaB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761892639; c=relaxed/simple;
-	bh=vaP9tFVHrd+h3H4hUZXdcXreKNUI8n2Fq+c1yV7Q2Ac=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WevDn5VFYNVD4FGEps15UDiDB1xEHZ2UiuzHLuDQV2WECNZHQDjvhyNt87jefKLC/N0R9B5CY8IOscKZx9ODtlpsoY1gQdPkZd/NHD/YvyEcPsO+5Xr3DJAEAIuMMeujIcyuthVsCXT4dYdO9jT/cGXFsanR8eWB2NoJqrMJ2cQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IWgZxD2e; arc=none smtp.client-ip=209.85.214.194
+	s=arc-20240116; t=1761895009; c=relaxed/simple;
+	bh=Vly4q/+fjEFA0Gvb0YnNMpF5OHTfP8EDgsNefR1fj/M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p0MpwSjYYRvUhYjQThtILJrXlw9ecSKR3ZWHizkiRwL+n5MDH5CSkPZLk4hv//ymEy+pzJQv4KLAiWzi1AWOpXYssRdvILmV9trCT/uXus9oOXiy6VOZ3Xk1oMcGDOqiny5yOB2VD8vVgYN84Y7pWm1fJ7U3bRbZp0EgEs/Hw88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=geA/hab5; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f194.google.com with SMTP id d9443c01a7336-294df925292so16419205ad.1
-        for <bpf@vger.kernel.org>; Thu, 30 Oct 2025 23:37:17 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-429b85c3880so1724522f8f.2
+        for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 00:16:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761892637; x=1762497437; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sDYWddzEhzy192wOWLvawa5saRjQOm029FdqACvNNZ0=;
-        b=IWgZxD2eGivcA7Ep0azk2qGv2ZQW48r8NdRJQHR+uZNsuIbNPxzFK4+ZheG3oBm2Mb
-         5X7lqgLPOQ1wnMx06hCwTiIcetlDfLowvreowL6sFDgytI3YeOiKfM5m8wmLmDe3VHh3
-         5iug/vDpOR6flztM+rcYk46dBHfe3fBCZAp7mD7k4Cc6SGA57bNhyWQS2FmBBElYX2e5
-         F2KHCMcMOPez2INS8vgHQrAlvWFy+pBXaM8KPSCSeDn2V+iHuyb4+Nzg9hZkjGONjhqN
-         vyvWC/NC6o1KAR2wAJbPgEz04qdgMHTcxG8VbUJnNzdktQCNk2Dh26F3uaME5ltDIsf0
-         rZ6A==
+        d=gmail.com; s=20230601; t=1761895006; x=1762499806; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mzqltOJWaCS/8huAd/V73dCSxqRmhZ7JwPQqZdG9BCI=;
+        b=geA/hab5NvmUsxRucATAuzMGK6Ul/HqCW5/UzmKCz3qrth5ULHdcJcuSRyN/6Kcuo+
+         7RiKFbbhg7NOcOrePzwpUnH0s9yLl/FkpGmOwtwX3KPw8/OISnuVVzDLc9i7u4dwp+Yj
+         Q4t9NIyxNuge7HbfDYLFaPNyTLGsEgavpsmHYH9wnm7dCqHO60Wp3WgqUDuWmfF++zSi
+         WtbSf4r2BQW1/ET97bdr9Nc2ErWvXcp/pqc5inXt0j+wczB0N1Q9uVIJEcIJvgqOHmpK
+         p52pg/LITZzIGEzrRcN3/GgdWiwgQJ/4C87+3OK5slMiHv/osGE+6gZMKM9EXNCrczYR
+         wuFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761892637; x=1762497437;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sDYWddzEhzy192wOWLvawa5saRjQOm029FdqACvNNZ0=;
-        b=Mj/NPVxalq/zoFInizwJmpxhR3GBlol1I6dGVmF+XGeqTbIJCSF84tvAR8SIbMOJah
-         /AnAMv5V37eGp42ArxG9JicI4FWxxENMI+2tbv9vsmnLUm/r9d0M3scJ8yrsZWFiNMTq
-         KlxN8VFDiqULtQC454ugLAm2hmkoKYh6Fn3S5PFojVAMKspm8pskKYEgqEiB70UH5Oh4
-         DW3kmIixDJHQ1kjvlKWsxv1BpEDvhhQ7sr1vrcpiHAHuKgaNpzeh2gmUGgfVq68zN0FK
-         6WH1+b+r8gBtoZOE9/HY+/kXMEfxxbat18jbFuaE18SV574gOL6W49rrn7rPt62kMuOe
-         77DQ==
-X-Gm-Message-State: AOJu0YzgYATIh/+p+M0LbFKokrNB1WwAsMsW1i4XTTdgxh+eLt0p8sI5
-	1z/IUxYXIPGb3MLnnNZhD7CHmhAFxdJIHBX9NnrF8js94Pb9hA5GXb2mRUFajSMroE5VwCeGsZU
-	W768+qtbhCAzqXdiWZIgQVPujY+c5F2M=
-X-Gm-Gg: ASbGncs3gENJEoguJItTpcY5ivEjwrP58eyzYwLdQG4Lh7+Mow0/KO6Tu0K8VoyiU56
-	4P6qhalnKRJw7RX8UgYYpiJguuSRbZlEDnC4ausRjY+MqsauOFGeR01HAhoI5n7+QTaeDsLJym4
-	xJaviQNNl2zhcXHzZLPg8NHza0Hbqmbe3BO7+4R0OvCrhzPN/xoKKUHyLIcHqTIerF0tDaFek0b
-	AzxMbzcw9Dn6V4ZDOWkNKk8scAn0QxxTVrCW8FpQIOXWh4kl8DFjXN61+BURBjyy9gGfFg=
-X-Google-Smtp-Source: AGHT+IHKvlwTT+v4lVp0g7UewFcEqQtoC0e/Rzm6EFfiRLL8K/1VBKeXr7TztP+Jn70agztCGIOlvZiTJHMPQ3Dj4hs=
-X-Received: by 2002:a17:903:1ce:b0:27e:ec72:f6d with SMTP id
- d9443c01a7336-2951a36e6f8mr40862445ad.11.1761892636677; Thu, 30 Oct 2025
- 23:37:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1761895006; x=1762499806;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mzqltOJWaCS/8huAd/V73dCSxqRmhZ7JwPQqZdG9BCI=;
+        b=ZE8FPRzv1gMSNhRV2T6OnnIXwzdTsjdOElw/SUPPpmRba3vAPXZdam7rHm43tqqat0
+         CLkpBB7RaB1XY45QN7ihOpTKxIPGs9Pnz+Hpt18nrvkdy3OdanWwei4G7IJOd7ySQ8pK
+         5QAbAayRCXxV9oVMX2sjrUxASrqTJ5t2Q4IFhMw4Qn5SbUMESycoDTayl2HJmDsD3Oqh
+         kZ+M4al5YIJAQh9RO9l8H6TQUivWD5JLoVS93xxX/eGX2ZJqhGsEA3L9ijS6HLcwQj1I
+         Jtw2Bs0VWQ+AGoMxYxiBb3jYSSX7VcO01/4I/1S3BpgQDF9a751QhLAfXGoOUQv2zdgI
+         p6Jg==
+X-Gm-Message-State: AOJu0Yxyd0/qWTU5y87N28VIPCP3uEo7SccelGkm+9Jtvf4Kl1YrB5DA
+	9c0L03GwvUOI6escVdCLdMl8ZVbG6WeVjQ7orJsgUPGPX3NjC/nqWlcv
+X-Gm-Gg: ASbGncux2Yr9guCBKxHmT7z7dQBUZPtNYE8NjhPq+HAHuC+gx9QDA6TK8ZLo2iQ6a1k
+	oidSXiaUDDtrzqf9avSpEWQOrVTEtADUagYG0mQ4IyUBKgIggLr5wDz43nvHgjT30/CHb4VJxSq
+	ZaIo8GVYigSFATYv5HEEkMO6AWXIvxZibqsH7MB0p6ehtI9SjEtu7aksUVCskilrKI60GhUy2JI
+	yNhd1SraMSpOzzCktd2Zg4pieWgfBhaPLs2G7fPR4+FjP4rivpBkCf8bMZGV67Zab0zeLctn7s4
+	UrDYOgn7MqOb6o7cpif7d5HshZ+S0H49yoa1Qz/9joBrStRcTPl3QAXX8dtddLayhJfXmJ8Hxjh
+	zBHpjPLRc4plF2khGEQEugDiRvGf69KH3v2p7QeDdpDGAX4X6tVrKX+pXkQnYXOKNQ15XCI8rqY
+	T9e72ghKx8KC2oFY7ZB/9h
+X-Google-Smtp-Source: AGHT+IEYwdgcisWvS8vYtXefkTcxIZeEbax9ETaXjCIXXyWSBQDIoHO1gURbatU06buTwMs5uBcw0A==
+X-Received: by 2002:a05:6000:43c5:20b0:428:4004:8226 with SMTP id ffacd0b85a97d-429bd6a6626mr1498675f8f.34.1761895005902;
+        Fri, 31 Oct 2025 00:16:45 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429c1142c3csm1918395f8f.16.2025.10.31.00.16.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Oct 2025 00:16:45 -0700 (PDT)
+Date: Fri, 31 Oct 2025 07:23:13 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Quentin Monnet <qmo@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH v8 bpf-next 01/11] bpf, x86: add new map type:
+ instructions array
+Message-ID: <aQRj4bxjbrECVIb9@mail.gmail.com>
+References: <20251028142049.1324520-1-a.s.protopopov@gmail.com>
+ <20251028142049.1324520-2-a.s.protopopov@gmail.com>
+ <CAADnVQL1nznRsfdSgFPxSf1Rdhq7hpQMcmT7BKaRn9KHwD=P6A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251031032627.1414462-2-jianyungao89@gmail.com> <554b5b314ffd7eb00be58d5997d44c7c4986895ad28776a87a9d6a2bf1c0765c@mail.kernel.org>
-In-Reply-To: <554b5b314ffd7eb00be58d5997d44c7c4986895ad28776a87a9d6a2bf1c0765c@mail.kernel.org>
-From: Jianyun Gao <jianyungao89@gmail.com>
-Date: Fri, 31 Oct 2025 14:37:05 +0800
-X-Gm-Features: AWmQ_bkDa-Yulfkw8NVn1sKXKelgLuaoZX3bACDt0cDA73N01wPRBODLyGsfRxI
-Message-ID: <CAHP3+4CWSbZdNjSdoQhsB9Cvc9vp7V3qzJ=EVMO5+By9ZeAr3A@mail.gmail.com>
-Subject: Re: [PATCH 1/5] libbpf: Add doxygen documentation for bpf_map_* APIs
- in bpf.h
-To: bot+bpf-ci@kernel.org
-Cc: bpf@vger.kernel.org, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@kernel.org, clm@meta.com, 
-	ihor.solodrai@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQL1nznRsfdSgFPxSf1Rdhq7hpQMcmT7BKaRn9KHwD=P6A@mail.gmail.com>
 
-I will fix it in the next version.
+On 25/10/30 03:50PM, Alexei Starovoitov wrote:
+> On Tue, Oct 28, 2025 at 7:15 AM Anton Protopopov
+> <a.s.protopopov@gmail.com> wrote:
+> >                 }
+> > +
+> > +               bpf_prog_update_insn_ptrs(prog, addrs, image);
+> > +
+> 
+> I suspect there is off-by-1 bug somewhere in bpf_prog_update_insn_ptrs() math,
+> since addrs[0] points to function prologue.
+> addrs[1] is the offset of the first bpf insn.
+> See how it's called in other place:
+>    bpf_prog_fill_jited_linfo(prog, addrs + 1);
 
-On Fri, Oct 31, 2025 at 12:01=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
->
->
-> ```
-> commit 4da02b18e2168885350f3935b5ce2f1f52c850ba
-> Author: Jianyun Gao <jianyungao89@gmail.com>
->
-> libbpf: Add doxygen documentation for bpf_map_* APIs in bpf.h
->
-> This commit adds Doxygen documentation for 13 bpf_map_* API functions in
-> the libbpf user-space library header.
->
-> > diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> > index e983a3e40..bcb303d95 100644
-> > --- a/tools/lib/bpf/bpf.h
-> > +++ b/tools/lib/bpf/bpf.h
->
-> [ ... ]
->
-> > @@ -151,19 +202,452 @@ struct bpf_btf_load_opts {
-> >  LIBBPF_API int bpf_btf_load(const void *btf_data, size_t btf_size,
-> >                           struct bpf_btf_load_opts *opts);
-> >
-> > +/**
-> > + * @brief Update or insert an element in a BPF map.
-> > + *
-> > + * Attempts to store the value referenced by @p value into the BPF map
-> > + * identified by @p fd under the key referenced by @p key. The semanti=
-cs
-> > + * of the operation are controlled by @p flags:
->
-> [ ... ]
->
-> > + * @return 0 on success; -1 on failure with errno set appropriately.
-> > + *
-> > + * Possible errno values include (not exhaustive):
-> > + *   - E2BIG:      Key or value size exceeds map definition.
-> > + *   - EINVAL:     Invalid map fd, flags, or unsupported operation for=
- map type.
-> > + *   - EBADF:      @p fd is not a valid BPF map descriptor.
-> > + *   - ENOENT:     Key does not exist (with BPF_EXIST).
-> > + *   - EEXIST:     Key already exists (with BPF_NOEXIST).
-> > + *   - ENOMEM:     Kernel memory allocation failure.
-> > + *   - EPERM/EACCES: Insufficient privileges or rejected by security p=
-olicy.
-> > + *   - ENOSPC:     Map at capacity (for maps with a max entries limit)=
-.
-> > + *
-> > + */
-> >  LIBBPF_API int bpf_map_update_elem(int fd, const void *key, const void=
- *value,
-> >                                  __u64 flags);
->
-> Is the documented return value correct? The implementation uses
-> libbpf_err_errno() which returns negative errno values directly on
-> failure (e.g., -EINVAL, -ENOENT), not -1 with errno set. Looking at
-> bpf_map_update_elem() in bpf.c:
->
->   int bpf_map_update_elem(int fd, const void *key, const void *value,
->                           __u64 flags)
->   {
->       ...
->       ret =3D sys_bpf(BPF_MAP_UPDATE_ELEM, &attr, attr_sz);
->       return libbpf_err_errno(ret);
->   }
->
-> And libbpf_err_errno() in libbpf_internal.h:
->
->   static inline int libbpf_err_errno(int ret)
->   {
->       return ret < 0 ? -errno : ret;
->   }
->
-> So when syscall() returns -1, libbpf_err_errno() converts this to
-> -errno. Should the documentation state "negative error code on failure"
-> instead of "-1 on failure with errno set"?
->
-> For comparison, the existing batch operation docs in the same file
-> correctly document: "@return 0, on success; negative error code,
-> otherwise (errno is also set to..."
->
-> > +/**
-> > + * @brief Look up an element in a BPF map by key.
->
-> [ ... ]
->
-> > + * @return 0 on success (value populated),
-> > + *         -1 on failure with errno set appropriately:
-> > + *         - ENOENT: The key does not exist in the map.
->
-> The same return value documentation issue appears in
-> bpf_map_lookup_elem(). The implementation uses libbpf_err_errno() so it
-> returns negative errno, not -1.
->
-> > +/**
-> > + * @brief Look up (read) a value stored in a BPF map.
->
-> [ ... ]
->
-> > + * @return 0 on success; -1 on failure with errno set appropriately:
-> > + *         - ENOENT: No element with the specified key exists.
->
-> Same issue in bpf_map_lookup_elem_flags() - should document negative
-> errno return, not -1.
->
-> > +/**
-> > + * @brief Atomically look up and delete a single element from a BPF ma=
-p.
->
-> [ ... ]
->
-> > + * @return 0 on success (value copied and element deleted);
-> > + *         -1 on failure with errno set:
-> > + *         - ENOENT: Key not found in the map.
->
-> Same issue in bpf_map_lookup_and_delete_elem() - returns negative errno.
->
-> > +/**
-> > + * @brief Atomically look up and delete an element from a BPF map with=
- extra flags.
->
-> [ ... ]
->
-> > + * @return 0 on success; -1 on failure with errno set:
-> > + *         - ENOENT: Key not found.
->
-> Same issue in bpf_map_lookup_and_delete_elem_flags().
->
-> > +/**
-> > + * @brief Delete (remove) a single element from a BPF map.
->
-> [ ... ]
->
-> > + * @return 0 on success; -1 on failure with errno set appropriately.
-> > + *
-> > + */
-> >  LIBBPF_API int bpf_map_delete_elem(int fd, const void *key);
->
-> Same issue in bpf_map_delete_elem().
->
-> > +/**
-> > + * @brief Delete an element from a BPF map with optional flags.
->
-> [ ... ]
->
-> > + * @return 0 on success; -1 on failure with errno set:
-> > + *         - ENOENT: Key not found.
->
-> Same issue in bpf_map_delete_elem_flags().
->
-> > +/**
-> > + * @brief Iterate over keys in a BPF map by retrieving the key that fo=
-llows a given key.
->
-> [ ... ]
->
-> > + * @return 0 on success (next key stored in @p next_key);
-> > + *         -1 on failure with errno set:
-> > + *           - ENOENT: No further keys (end of iteration) or map is em=
-pty (when @p key is NULL).
->
-> Same issue in bpf_map_get_next_key().
->
-> All eight of these functions consistently return negative errno values
-> via libbpf_err_errno(), but the documentation states they return -1 with
-> errno set (the traditional C API pattern). This creates inconsistency
-> with the existing batch operation documentation and could mislead users
-> about proper error handling.
->
->
-> ```
->
-> ---
-> AI reviewed your patch. Please fix the bug or email reply why it's not a =
-bug.
-> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/READM=
-E.md
->
-> In-Reply-To-Subject: `libbpf: Add doxygen documentation for bpf_map_* API=
-s in bpf.h`
-> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/189619=
-81609
+So all the maps I have in all selftests tests point to a wrong ip for
+every goto, and still work?
+
+In fact, addrs[0] points to right after the prologue, see how it is
+initialized in do_jit:
+
+  addrs[0] = proglen;
+
+here proglen is the length of prologue. The loop in do_jit startrs
+with i=1, but all addrs are referenced with i-1:
+
+    case BPF_JMP | BPF_CALL: {
+            u8 *ip = image + addrs[i - 1];
+
+The bpf_prog_fill_jited_linfo internally also does the -1 thingy:
+
+    insn_to_jit_off[linfo[i].insn_off - insn_start - 1];
+
+> pw-bot: cr
+
+^ will send v9 in a few days with minor fixes pointed by Eduard and Andrii
 
