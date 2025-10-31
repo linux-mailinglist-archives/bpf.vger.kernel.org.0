@@ -1,56 +1,57 @@
-Return-Path: <bpf+bounces-73168-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73169-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3179C25EC4
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 16:56:36 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 037DCC25EBE
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 16:56:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EC4F189A6EE
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 15:56:27 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A37D5350A6D
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 15:56:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96DA52EC561;
-	Fri, 31 Oct 2025 15:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361352F12B2;
+	Fri, 31 Oct 2025 15:55:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="w+hD89nl"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="tJ177pes"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE282EA755;
-	Fri, 31 Oct 2025 15:55:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF272EAB79
+	for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 15:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761926128; cv=none; b=emDPoqs42ybO5GA2HfUInX3Kt090GyzJzP5cVq3Jq0WZ4EhLbVOxkK50Z6teo3Hj/yX14jXwzEHKtljZYPfC0loBGYaI/8/Nk1h+MLs0V5cYKYUpVXQvnKaGO/21x5UZ4o5AfL1rycyOZhsOgaLAJxUihf202JTSpiS3w2uAuUk=
+	t=1761926130; cv=none; b=gN1Gh4D6tUTZ839K1GugXVEDD6daggPOXnFh2KVUE+ye+WJJUZwUeMYw0WUfZSyQ67vhIoLWJjKID+39X6MI0Wr0hoIj3E0zu1qL3iGg20JMpsF0sUtAgVOg4PwgkNOl4RhpoDz1OAxRL6fnVP8VuHnTi432JDbEsYkkcHX21lY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761926128; c=relaxed/simple;
-	bh=y++OIs24NlL2poJhyuPT7wxHIdzikkTShu5iXdEikZ0=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=TAgdGEJ9nzFpkuFI6dD624ZFZGk9c8E6GU6QHRbUtl3DDddJp5OqTsug+ZbmpS6qZZE399KxmxotUta9378UYT6NdnyxlbCDNP1VzUUwPb/vjz5dC1vvTCetMEdnTXfF3b2Tj1pQ7J8sOuRwvGQwJZC9qWuXQb3i6S+pWzlPDyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=w+hD89nl; arc=none smtp.client-ip=185.246.85.4
+	s=arc-20240116; t=1761926130; c=relaxed/simple;
+	bh=y2YwLjlXI824LBCVKOlkoBk28o/Z3o0tUlA3oxiFcls=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=sCo08/42mEHWPrm7lbAhxqUZvSyBKOsWS/T8KaU2ZMYRl+M/byw3qCsk7BDR7hG7N+xHQDh/rgpmqinX4Xcs8zE3FnaJoFin6RfYG4u7lXMMRoK0h2sd6zv4rdgu+iNzRrYKVhmhG+YJQ7DGMzIoqINVhlhgpbdAdPiGwT+JusM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=tJ177pes; arc=none smtp.client-ip=185.246.84.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id EBAC84E41442;
-	Fri, 31 Oct 2025 15:55:23 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 25ABC1A17B1;
+	Fri, 31 Oct 2025 15:55:26 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id BA2A960704;
-	Fri, 31 Oct 2025 15:55:23 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7462911818064;
-	Fri, 31 Oct 2025 16:55:19 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id F070360704;
+	Fri, 31 Oct 2025 15:55:25 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1900311818066;
+	Fri, 31 Oct 2025 16:55:22 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1761926122; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=q63ieI5JMkLvB2SxtHax81YWUkC+9RQd84Qw6wY6yRY=;
-	b=w+hD89nlOvccsSFAKqXY2LnxWzJDHaPe30pDVKl5EZDUkpLv4zgDM9KfHiCEFaqkClaobO
-	96yyH/zVlROP6gL9d+JZ6nxtLs9t/on0+wcevwnWkKNmtIjvFViLj+jLQCT5gjs4zoSWOr
-	a44lVdaFl/MfI8sHzvq2A4LFg7c2T25nu1KBywxS5eVtrGobkzMdLZjQd/Jx5dsttPWdcM
-	bHWuR+a+aRagAc/qu5fyQJ4IZT8Y9KHTt//LuxbVc6p0UefBMesCA1uhbemQ6BbH3mY4NF
-	1DnHzDBD/p75Q661/YKkSjOVa4iEwnJp9W/uGBLzieQGDReRcDNamezs+2GGQA==
+	t=1761926124; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=/YT+5ajEU6aJJ0lNTYWkpsrNNaSWfDxnF665EcKg6Ps=;
+	b=tJ177pesqVpr6TGY/EWGhD8qeHlt7oyipPaVrVN6xBon/QwqHvdv4gEVBVoA6OkNJJYDs0
+	6w3MJPrKuRALBFAcwICxNt9IukAWROCNss1J4WgTfu/b+t/0yiC1rtkFC5opV/kupQ+8Az
+	zq82gHlANAxaqYdWeVVSRMiD5QqYozhkQGMp8UjlT0ZaSci5WBsunosZPFsza/9GXovJJm
+	LUJCXjjxZlJndvw0M2LGjUoxe1h6ctXZOrEAvXwKCpBn880ZQ9/2d6YVo0l1tdOnVM6XXy
+	LdOB9Q3mz2qTQCn3ohle4wCTmT2wxHpjNZG8NfkF3tBPa1ewVYH28HyZO96OJg==
 From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Subject: [PATCH bpf-next 0/4] selftests/bpf: convert test_tc_edt.sh into
- test_progs
-Date: Fri, 31 Oct 2025 16:55:12 +0100
-Message-Id: <20251031-tc_edt-v1-0-5d34a5823144@bootlin.com>
+Date: Fri, 31 Oct 2025 16:55:13 +0100
+Subject: [PATCH bpf-next 1/4] selftests/bpf: rename test_tc_edt.bpf.c
+ section to expose program type
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -59,10 +60,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAODbBGkC/x3MQQqAIBRF0a3EHydoFkhbiQjLV/2JiUoI0d6Th
- gcu96GEyEg0Ng9F3Jz48hWqbWg7rT8g2FVTJ7tBSS1F3ha4LDSsgXHaqR5U4xCxc/lHE61hFx4
- l0/y+H1qQs05iAAAA
-X-Change-ID: 20251030-tc_edt-3ea8e8d3d14e
+Message-Id: <20251031-tc_edt-v1-1-5d34a5823144@bootlin.com>
+References: <20251031-tc_edt-v1-0-5d34a5823144@bootlin.com>
+In-Reply-To: <20251031-tc_edt-v1-0-5d34a5823144@bootlin.com>
 To: Alexei Starovoitov <ast@kernel.org>, 
  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
  Martin KaFai Lau <martin.lau@linux.dev>, 
@@ -79,57 +79,48 @@ Cc: ebpf@linuxfoundation.org,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 
-Hello,
-this is yet another conversion series, this time tackling the
-test_tc_edt.sh. This one was at the bottom of our list due to the fact
-that it is based on some bandwith measurement (and so, increasing the
-risk to make it flaky in CI), but here is an attempt anyway, as it also
-showcases a nice example of BPF-based rate shaping.
+The test_tc_edt BPF program uses a custom section name, which works fine
+when manually loading it with tc, but prevents it from being loaded with
+libbpf.
 
-The converted test roughly follows the original script logic, with two
-veths in two namespaces, a TCP connection between a client and a server,
-and the client pushing as much data as possible during a specific
-period. We then compute the effective data rate, shaped by the eBPF
-program, by reading the RX interface stats, and compare it to the target
-rate. The test passes if the measured rate is within a defined error
-margin.
-
-There are two knobs driving the robustness of the test in CI:
-- the test duration (the higher, the more precise is the effective rate)
-- the tolerated error margin
-
-The original test was configured with a 20s duration and a 1% error
-margin. The new test is configured with a 2s duration and a 2% error
-margin, to:
-- make the duration tolerable in CI
-- while keeping enough margin for rate measure fluctuations depending on
-  the CI machines load
-
-This has been run multiple times locally to ensure that those values are
-sane, and once in CI before sending the series, but I suggest to let it
-live a few days in CI to see how it really behaves. 
+Update the program section name to "tc" to be able to manipulate it with
+a libbpf-based C test.
 
 Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
 ---
-Alexis Lothoré (eBPF Foundation) (4):
-      selftests/bpf: rename test_tc_edt.bpf.c section to expose program type
-      selftests/bpf: integrate test_tc_edt into test_progs
-      selftests/bpf: remove test_tc_edt.sh
-      selftests/bpf: do not hardcode target rate in test_tc_edt BPF program
+ tools/testing/selftests/bpf/progs/test_tc_edt.c | 3 ++-
+ tools/testing/selftests/bpf/test_tc_edt.sh      | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
- tools/testing/selftests/bpf/Makefile               |   2 -
- .../testing/selftests/bpf/prog_tests/test_tc_edt.c | 274 +++++++++++++++++++++
- tools/testing/selftests/bpf/progs/test_tc_edt.c    |   9 +-
- tools/testing/selftests/bpf/test_tc_edt.sh         | 100 --------
- 4 files changed, 279 insertions(+), 106 deletions(-)
----
-base-commit: 1e2d874b04ba46a3b9fe6697097aa437641f4339
-change-id: 20251030-tc_edt-3ea8e8d3d14e
+diff --git a/tools/testing/selftests/bpf/progs/test_tc_edt.c b/tools/testing/selftests/bpf/progs/test_tc_edt.c
+index 950a70b61e74..9b80109d5c3d 100644
+--- a/tools/testing/selftests/bpf/progs/test_tc_edt.c
++++ b/tools/testing/selftests/bpf/progs/test_tc_edt.c
+@@ -99,7 +99,8 @@ static inline int handle_ipv4(struct __sk_buff *skb)
+ 	return TC_ACT_OK;
+ }
+ 
+-SEC("cls_test") int tc_prog(struct __sk_buff *skb)
++SEC("tc")
++int tc_prog(struct __sk_buff *skb)
+ {
+ 	if (skb->protocol == bpf_htons(ETH_P_IP))
+ 		return handle_ipv4(skb);
+diff --git a/tools/testing/selftests/bpf/test_tc_edt.sh b/tools/testing/selftests/bpf/test_tc_edt.sh
+index 76f0bd17061f..8db8e146a431 100755
+--- a/tools/testing/selftests/bpf/test_tc_edt.sh
++++ b/tools/testing/selftests/bpf/test_tc_edt.sh
+@@ -55,7 +55,7 @@ ip -netns ${NS_DST} route add ${IP_SRC}/32  dev veth_dst
+ ip netns exec ${NS_SRC} tc qdisc add dev veth_src root fq
+ ip netns exec ${NS_SRC} tc qdisc add dev veth_src clsact
+ ip netns exec ${NS_SRC} tc filter add dev veth_src egress \
+-	bpf da obj ${BPF_FILE} sec cls_test
++	bpf da obj ${BPF_FILE} sec tc
+ 
+ 
+ # start the listener
 
-Best regards,
 -- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.51.1.dirty
 
 
