@@ -1,87 +1,87 @@
-Return-Path: <bpf+bounces-73116-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73117-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC6CEC23A50
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 09:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DA13C23A62
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 09:04:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6FE8B4F2F81
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 08:00:38 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1742D4F4062
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 08:01:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F121B2FD675;
-	Fri, 31 Oct 2025 08:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B78F732C930;
+	Fri, 31 Oct 2025 08:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y102qaL3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ji1aeolb"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pj1-f67.google.com (mail-pj1-f67.google.com [209.85.216.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BF9F2F260C
-	for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 08:00:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13ED3329C53
+	for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 08:00:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761897619; cv=none; b=dSnxq33oP/NUt3Rk1Qk5OG/KSqtoD0lDqdEspOpJOcJUm5HsYGE1jVUxh/qR5wNH/80kTyo0k3n1gM4SVg9ltibvNEGUL9/dDim3NVIQjTMHK2/GE137iRGj6aWqsIGjmFHEdoMia/yy5R57XxDJAQ7BP+t1XE8ZC2HU47G2kcc=
+	t=1761897628; cv=none; b=IRYoBM64gwIcAaQk/Cf7CvDbfjPATDPgJUm0f5EuwAv2aHDN9piS7Uzpq4rb54e6cnpbI77k4JynVB8YHmxXoBWmtY3wBPl7fAstKc5CtN0mIBkicXFpFlA/J02yZcmH+6n4dkdZV3FeDoK0i7fKsG208ygGFCj2CpkJr97WbuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761897619; c=relaxed/simple;
-	bh=hxFri/KrVTPIFvuVZR/+6IB1+026xsuK0O7ukr/RSDQ=;
+	s=arc-20240116; t=1761897628; c=relaxed/simple;
+	bh=yq5Ld84mvWeaSPZmbqfeRjs+iWZ2K7zR4uHlTNbTICg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FBUfUnHbRRu6en3rEECjJvpNUlkaW+u9uIOL4HwriJMiOrZ/+kKS6iZ0QJP8a1T1wLb32LFbV9Gxb/PZagyAn2H9ckexw0/QcEENLdXU8V/Vg9HM1Ow9QwwVQuszDmWT0kRqL3Os0bRUeJRZlNq8P8Fvaf5lxIq/W6hYqdsw6sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y102qaL3; arc=none smtp.client-ip=209.85.216.67
+	 MIME-Version; b=BVfMmPOk09VS8TO//C+khcNyMeHVBT93GkXTSkDz9F7hSe1x0NgMPZ6EFjWv+HhJ5TheupXgB9FL091yJR8Xe8tBPoxcRNeAG1hTcmsUTn0nQ5IJ/ilYGkhCewMHGbWl6amFe2bIZzTxv2hTjI54BaqDisSAYqYihkwjIZiIAqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ji1aeolb; arc=none smtp.client-ip=209.85.216.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f67.google.com with SMTP id 98e67ed59e1d1-3405f03fe2fso1226652a91.0
-        for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 01:00:16 -0700 (PDT)
+Received: by mail-pj1-f67.google.com with SMTP id 98e67ed59e1d1-340564186e0so1649974a91.0
+        for <bpf@vger.kernel.org>; Fri, 31 Oct 2025 01:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761897616; x=1762502416; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761897624; x=1762502424; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/IBeku+7OSqR7bZxUebGlRtAXA6L2SMktYHxRLyyFCE=;
-        b=Y102qaL3RAjN/7p4Ucew+r84G80G/5HeX9iMd3omMqFnDe431hrkH13/WGfbT+Uw+e
-         Ok+9YE8652h2H9cO3mUXNvDbMOtV/DL3sX8NKac5KyvHLZpymauO5YVJpO6y00Hd6Q38
-         vKVkPDWNRBIyIWI9IuWsVVTX9sidyfv9eMYQTFg0ctldptX/udmUkY0LB9HyqlsgYjqO
-         Eg654rpzPQ2Y8Pm2Nc5nXyqFVvEF8CUO9pk9JtSx+dA/lbtHvsGNnLchBNjZ5f7RopqV
-         BH8Ghq8l2i0RJJzMmH1s6d4p1jQM8tOk4o9SiQBrtZBb8+iNzNkAnN7HYj718dr/QsIQ
-         7vEQ==
+        bh=GGLcR+vDk0i4tFYe5UMZqo2qGNoEKjSp0blyyOlE0s8=;
+        b=Ji1aeolbv9/5WkHNZ5cy/TKmgAdl65m7UDU3Yk+uHaWxHpn+NxO09U7J6721+7tUGL
+         uTAHmx+eHncvniLE4ntYOi/CcmXURAu92NrqRBsLzpPocVrLnyBycuOSsWYOPAIf068k
+         +OXHIwvKileLHYHCeiwKzoOMR+t7TJzjV5NTj1am7iEzVpQxYyiwBkVG5jfCriTcdMPk
+         rkEQmZtC/SzEOKJcf3dk9n8rWL7Ra5dU+Csc/SuBXcpPZwpVYkuIVR+SwvnmTCjBpcfG
+         F8woPDi1CCKfDBMf9TXVrVtz+yal2W3YsJK6bF6F02YG4qYvBXAXU0Ws4MvRw6+n3pq8
+         jOjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761897616; x=1762502416;
+        d=1e100.net; s=20230601; t=1761897624; x=1762502424;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/IBeku+7OSqR7bZxUebGlRtAXA6L2SMktYHxRLyyFCE=;
-        b=QwRE16uzHS11hH+81qhiEclwOK34N+emFpobPxaEuTZxXDwvMuGFThmEJwhoO+AzJp
-         bSkltY2fVK3QmokNgvWkPxU6SCnbaEQkWSofVhliikHAXzbqj1nSSuklX2WtycaKa57A
-         V089OX5iIhaW7C9MbNYlzR4Eaz3lfCgtpNuhSJXV3tnuuRReQFFilfMdVpgzQfz+vrDG
-         PJkYy+iWtNIx9fp2IOG5oE0LVNwzIwq0EsK5hjx0EVWJcoRD1Yiqj1tueTQm0dWUnLoH
-         ipWJadJrAhHd9ve5zbiWAyoX+fQshNHXnV+8ZF4xHxCrjgdjgEjTqAA+7HkuKNIgY+W4
-         SYYg==
-X-Forwarded-Encrypted: i=1; AJvYcCV+yKeJ5rUiDuFt0HAztk+uWwqtYIGfLUJoP0Vnp07i66jOQJwQwiMYOGTZRjqEuTzU1w0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw26mNJQCkXjT4yon+pqP1MgWv6xNEwfih3IyoqTGicNkahBefy
-	81kpStyCdXKu86wkWdBVpXDuzpobae5Y0HtIOEFYN6qcfq3naGA3uQ2J
-X-Gm-Gg: ASbGncufdL0WqOOAY6B1fGy/mv9I8EX8RtvEX98YnCevQBHW/Ia/UEQqBY8AWRE1e4k
-	CRhpJDotewYs16Bdp3tGGqcfy3HqJgea1sT8x3reU0CQOgncNOEvBHiIpheZix23OEVNOl6N1/t
-	RuEF66Oef3no+JATL3JC/SirMEaxRpsXL2WiGlt3BtmD9SNiPX4vyPz5MT9qNzJ6zyjNcUm/e+i
-	xIoRkXc58JkR1aUkln08FkRzYFKvUAn7JJIjCRHvWary3jh0HTNneN6TvHLGQFhUxs2iFaRjfXj
-	74M+fCeuCBSaI7qlkxrFtS90wbuZGhwRIUP61ygVFhDgZ9BqDWvlTHq1thWhD4vr1GG2bxZmnyw
-	u12gIl9Rh/uCgyt8VkJmDPt1TTSpmMKmrVWagcsSjh3XR9oQ1XtINFH+mCxdefJtBUUfkhsu7tZ
-	DODOSemkf5ptdybq1Jmy2bgEwOF8HS
-X-Google-Smtp-Source: AGHT+IGeoo6eVsiB8x7+YUC9Q7dJX+1EQtFsCbAEMK4Lw4YiaING5vuQwYARP7SFKRS2JKK/GaIjJQ==
-X-Received: by 2002:a17:90b:2d81:b0:340:7380:d092 with SMTP id 98e67ed59e1d1-3408307c81emr3765278a91.26.1761897615975;
-        Fri, 31 Oct 2025 01:00:15 -0700 (PDT)
+        bh=GGLcR+vDk0i4tFYe5UMZqo2qGNoEKjSp0blyyOlE0s8=;
+        b=IAkeuBx8FaNJSh4/FuR890S+7BqwAB8FnyMW6gTGiBMpmO13eaYUXakHa5NOU5k8w/
+         UeHVJWn9UjHGR24KxziwiGlPQT+4RbtqwIuuVxJZkQyXWdGNwGbTrQ7zsM9pWkvZBCQi
+         ld6yUg8UJl/Eutq4uy1Sa5z56BZsu/plvMgx2blh93A3W4O+H2R3pigfWNlkz7O9E7Br
+         Pq1KdRAhZLsLmjCMCy53wFGz3gm67RatqugjikkULK7oSJHF8KbMznDDnqt+AR2HKArY
+         RohcZu/OtoukO2q/iI7EibzShKeLk1GNG/yrYKIabEU3vGnnacWvl2MzC9X0IGFoqNLl
+         tPGw==
+X-Forwarded-Encrypted: i=1; AJvYcCWIklHQEu3WwWSm0ybfcFYtEvhQmqGeydxRQSlit1rKBokcqSauR0ThGRkwSkxigQHlJto=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxMNRXS48VlK8vr3RcfVRWb+7JUvEZ73jBqPj6KVDrnABgLtzj5
+	FzE1aYVmhdECdlcZe/uJ6ZrFO/QsUk1mKsIzfqgrpCtCsYnk4kVZT4iYCDvv/whG
+X-Gm-Gg: ASbGnctz50CyhRMgtGP4ty4O9kWSaF3t+060rg9t8sgeIwbFHLqUis7ChnY2S6Sg/bn
+	ukPth6oxEIsjuT/ef52Avh3I/fbRzxuixWRM0fcD1+ja2Tb+HMAglIEMdW9AHy1di5XiFbdLC7S
+	+oDoJvFpgQLzRMOD8TVfvJjo99GkuBGIgJ3Z2xzlCJOiQtoWi9c8yrIDOcoiW6ElU5pfQ84fydl
+	LE0BtA6LfDk/QekRJVG9joncJLcnzhuypnZ9Pf1e56O7J3uBbw2hTPFLrbI2EDcySZUDV8XybfD
+	tavElvXSp2ksWaD8xtEefpcxk4laPrBDpJNv9YLBMt2wDQIwg3ryADmWgrYMxUusL1g4/aAxBaW
+	3ir2hfb2OizJS9NF22auwSFPd4foR/6vO/S/3YHbfYKgHV9wvYUcG7OzwNKIOnKhrKVUSnKPKrg
+	B76YH9MrnGpdeliWvOKwjZSHNEW2U3
+X-Google-Smtp-Source: AGHT+IHvFC5sr7N/yrAoDiwyYNN2PxetDa4jsXkqKkOOoLtvNMqyrcxeH9Y5h1Z4gwtVXit1PESW1w==
+X-Received: by 2002:a17:90b:3c52:b0:32e:64ca:e84e with SMTP id 98e67ed59e1d1-34082fdbf52mr3850629a91.15.1761897623489;
+        Fri, 31 Oct 2025 01:00:23 -0700 (PDT)
 Received: from E07P150077.ecarx.com.cn ([103.52.189.23])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b93be4045fbsm1216575a12.28.2025.10.31.01.00.10
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b93be4045fbsm1216575a12.28.2025.10.31.01.00.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Oct 2025 01:00:15 -0700 (PDT)
+        Fri, 31 Oct 2025 01:00:22 -0700 (PDT)
 From: Jianyun Gao <jianyungao89@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: Jianyun Gao <jianyungao89@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
 	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
@@ -89,14 +89,10 @@ Cc: Jianyun Gao <jianyungao89@gmail.com>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
-	netdev@vger.kernel.org (open list:XDP (eXpress Data Path):Keyword:(?:\b|_)xdp(?:\b|_))
-Subject: [PATCH v2 3/5] libbpf: Add doxygen documentation for bpf_link_* APIs in bpf.h
-Date: Fri, 31 Oct 2025 15:59:05 +0800
-Message-Id: <20251031075908.1472249-4-jianyungao89@gmail.com>
+	bpf@vger.kernel.org (open list:BPF [LIBRARY] (libbpf))
+Subject: [PATCH v2 4/5] libbpf: Add doxygen documentation for bpf_obj_* APIs in bpf.h
+Date: Fri, 31 Oct 2025 15:59:06 +0800
+Message-Id: <20251031075908.1472249-5-jianyungao89@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251031075908.1472249-1-jianyungao89@gmail.com>
 References: <20251031075908.1472249-1-jianyungao89@gmail.com>
@@ -108,15 +104,14 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add doxygen comment blocks for all public bpf_link_* APIs in
+Add doxygen comment blocks for all public bpf_obj_* APIs in
 tools/lib/bpf/bpf.h. These doc comments are for:
 
--bpf_link_create()
--bpf_link_detach()
--bpf_link_update()
--bpf_link_get_next_id()
--bpf_link_get_fd_by_id()
--bpf_link_get_fd_by_id_opts()
+-bpf_obj_pin()
+-bpf_obj_pin_opts()
+-bpf_obj_get()
+-bpf_obj_get_opts()
+-bpf_obj_get_info_by_fd()
 
 Signed-off-by: Jianyun Gao <jianyungao89@gmail.com>
 ---
@@ -124,531 +119,491 @@ v1->v2:
  - Fixed the non-ASCII characters in this patch.
 
 The v1 is here:
-https://lore.kernel.org/lkml/20251031032627.1414462-4-jianyungao89@gmail.com/
+https://lore.kernel.org/lkml/20251031032627.1414462-5-jianyungao89@gmail.com/
 
- tools/lib/bpf/bpf.h | 482 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 479 insertions(+), 3 deletions(-)
+ tools/lib/bpf/bpf.h | 430 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 427 insertions(+), 3 deletions(-)
 
 diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index cd96d7afed6b..9040fc891b81 100644
+index 9040fc891b81..a0cebda09e16 100644
 --- a/tools/lib/bpf/bpf.h
 +++ b/tools/lib/bpf/bpf.h
-@@ -1208,11 +1208,195 @@ struct bpf_link_create_opts {
+@@ -900,8 +900,175 @@ struct bpf_obj_pin_opts {
  	size_t :0;
  };
- #define bpf_link_create_opts__last_field uprobe_multi.pid
+ #define bpf_obj_pin_opts__last_field path_fd
 -
 +/**
-+ * @brief Create a persistent BPF link that attaches a loaded BPF program to a
-+ *        kernel hook or target object.
++ * @brief Pin a BPF object (map, program, BTF, link, etc.) to a persistent
++ *        location in the BPF filesystem (bpffs).
 + *
-+ * bpf_link_create() wraps the BPF_LINK_CREATE syscall command and establishes
-+ * a first-class in-kernel "link" object representing the attachment of
-+ * @p prog_fd to @p target_fd (or to a kernel entity implied by @p attach_type).
-+ * The returned FD (>= 0) owns the lifetime of that attachment: closing it
-+ * cleanly detaches the program without requiring a separate detach syscall.
++ * bpf_obj_pin() wraps the BPF_OBJ_PIN command and creates a bpffs file
++ * at @p pathname that permanently references the in-kernel BPF object
++ * associated with @p fd. Once pinned, the object survives process exit
++ * and can later be reopened (referenced) by other processes via
++ * bpf_obj_get()/bpf_obj_get_opts().
 + *
-+ * Compared to legacy bpf_prog_attach()/bpf_raw_tracepoint_open(), link-based
-+ * attachment:
-+ *   - Provides explicit lifetime control (close(link_fd) == detach).
-+ *   - Enables richer introspection via bpf_link_get_info_by_fd().
-+ *   - Avoids ambiguous detach semantics and races inherent in "implicit detach
-+ *     on last program FD close" patterns.
++ * Typical use cases:
++ *  - Share maps or programs across processes (e.g., loader + consumer).
++ *  - Preserve objects across service restarts.
++ *  - Provide stable, discoverable paths for orchestration tooling.
 + *
-+ * Typical usage:
-+ *   struct bpf_link_create_opts opts = {
-+ *       .sz = sizeof(opts),
-+ *       .flags = 0,
-+ *   };
-+ *   int link_fd = bpf_link_create(prog_fd, target_fd, BPF_TRACE_FENTRY, &opts);
-+ *   if (link_fd < 0) {
-+ *       // handle error
++ * Requirements:
++ *  - The BPF filesystem (usually mounted at /sys/fs/bpf) must be mounted.
++ *  - All parent directories in @p pathname must already exist; this helper
++ *    does NOT create intermediate directories.
++ *  - @p fd must reference a pin-able BPF object (map, program, link, BTF, etc.).
++ *
++ * Idempotency & overwriting:
++ *  - If a file already exists at @p pathname, the call fails (typically
++ *    with -EEXIST). Remove or rename the existing entry before pinning
++ *    a new object to that path.
++ *
++ * Lifetime semantics:
++ *  - Pinning increments the in-kernel object's refcount. The object will
++ *    remain alive until the pinned bpffs entry is removed and all other
++ *    references (FDs, links, attachments) are closed.
++ *  - Closing @p fd after pinning does NOT unpin the object.
++ *
++ * Security & permissions:
++ *  - Usually requires write permission to the bpffs mount and appropriate
++ *    capabilities (CAP_BPF and/or CAP_SYS_ADMIN depending on kernel/LSM).
++ *  - Path components must not traverse outside bpffs (no ".." escapes).
++ *
++ * Example:
++ *   int map_fd = bpf_map_create(...);
++ *   if (map_fd < 0)
++ *       return -1;
++ *   if (bpf_obj_pin(map_fd, "/sys/fs/bpf/myapp/session_map") < 0) {
++ *       perror("bpf_obj_pin");
++ *       // handle error (e.g., create parent dir, adjust permissions)
 + *   }
-+ *   // ... use link_fd; close(link_fd) to detach later.
 + *
-+ * @param prog_fd
-+ *        File descriptor of a previously loaded BPF program (from bpf_prog_load()
-+ *        or libbpf higher-level loader). Must be valid and compatible with
-+ *        @p attach_type.
++ * Re-opening later:
++ *   int pinned_fd = bpf_obj_get("/sys/fs/bpf/myapp/session_map");
++ *   if (pinned_fd >= 0) {
++ *       // use map
++ *       close(pinned_fd);
++ *   }
 + *
-+ * @param target_fd
-+ *        File descriptor of the attach target, when required by @p attach_type
-+ *        (e.g. a cgroup FD, perf event FD, network interface, or another BPF
-+ *        object). For some attach types (e.g. certain tracing variants) this may
-+ *        be -1 or ignored; passing an inappropriate FD yields -EINVAL.
++ * @param fd        File descriptor of the loaded BPF object to pin.
++ * @param pathname  Absolute or relative path inside bpffs where the object
++ *                  should be pinned (e.g. "/sys/fs/bpf/my_map"). Must not be NULL.
 + *
-+ * @param attach_type
-+ *        Enumeration value (enum bpf_attach_type) describing the hook/context
-+ *        at which the program should be executed (e.g. BPF_CGROUP_INET_INGRESS,
-+ *        BPF_TRACE_FENTRY, BPF_PERF_EVENT, BPF_NETFILTER, etc.). The program's
-+ *        bpf_prog_type and expected_attach_type must be compatible; otherwise
-+ *        verification will fail or the syscall returns -EINVAL/-EOPNOTSUPP.
++ * @return 0 on success; < 0 negative error code (libbpf style == -errno) on failure.
 + *
-+ * @param opts
-+ *        Optional pointer to a zero-initialized struct bpf_link_create_opts
-+ *        extended options; may be NULL for defaults. Must set opts->sz to
-+ *        sizeof(struct bpf_link_create_opts) when non-NULL.
-+ *
-+ *        Common fields:
-+ *          - .flags: Link creation flags (most callers set 0; future kernels
-+ *            may define bits for pinning behaviors, exclusivity, etc.).
-+ *          - .target_btf_id: For BTF-enabled tracing/fentry/fexit/kprobe multi
-+ *            scenarios, identifies a BTF entity (function/type) this link
-+ *            targets.
-+ *          - .iter_info / .iter_info_len: Provide iterator-specific metadata
-+ *            for BPF iter programs.
-+ *
-+ *        Attach-type specific nested unions:
-+ *          - .perf_event.bpf_cookie: User-defined cookie visible to program via
-+ *            bpf_get_attach_cookie() for PERF_EVENT and some tracing types.
-+ *          - .kprobe_multi: Batch (multi) kprobe attachment:
-+ *                * flags: KPROBE_MULTI_* flags controlling semantics.
-+ *                * cnt: Number of symbols/addresses.
-+ *                * syms / addrs: Symbol names or raw addresses (one of them
-+ *                  used depending on kernel capabilities).
-+ *                * cookies: Optional per-probe cookies.
-+ *          - .uprobe_multi: Batch uprobes:
-+ *                * path: Target binary path.
-+ *                * offsets / ref_ctr_offsets: Instruction/file offsets and
-+ *                  optional reference counter offsets.
-+ *                * pid: Target PID (0 for any or to let kernel decide).
-+ *                * cookies: Per-uprobe cookies.
-+ *          - .tracing.cookie: Generic tracing cookie for newer tracing types.
-+ *          - .netfilter: Attaching to Netfilter with:
-+ *                * pf (protocol family), hooknum, priority, flags.
-+ *          - .tcx / .netkit / .cgroup: Relative attachment variants allowing
-+ *            multi-attach ordering and revision consistency:
-+ *                * relative_fd / relative_id: Anchor or neighbor link/program.
-+ *                * expected_revision: Revision check to avoid races (fail with
-+ *                  -ESTALE if mismatch).
-+ *
-+ *        Zero any fields you do not explicitly use for forward compatibility.
-+ *
-+ * @return
-+ *   >= 0 : Link file descriptor (attachment active).
-+ *   < 0  : Negative error code (attachment failed; program not attached).
-+ *
-+ * Error Handling (negative libbpf-style codes; errno also set):
-+ *   - -EINVAL: Invalid prog_fd/target_fd/attach_type combination, malformed
-+ *              opts, bad sizes, unsupported flags, or missing required union
-+ *              fields.
-+ *   - -EOPNOTSUPP / -ENOTSUP: Attach type or creation mode unsupported by
-+ *              running kernel.
-+ *   - -EPERM / -EACCES: Insufficient privileges (CAP_BPF/CAP_SYS_ADMIN) or
-+ *              blocked by LSM/lockdown.
-+ *   - -ENOENT: Target object no longer exists (race) or unresolved symbol for
-+ *              kprobe/uprobes multi-attach.
-+ *   - -EBADF: Invalid file descriptor(s).
-+ *   - -ENOMEM: Kernel memory/resource exhaustion.
-+ *   - -ESTALE: Revision mismatch when using expected_revision (atomicity guard).
-+ *   - Other negative codes: Propagated from underlying bpf() syscall failures.
-+ *
-+ * Lifetime & Ownership:
-+ *   - Success returns a link FD. Caller must close() it to detach.
-+ *   - Closing the original program FD does NOT detach the link; only closing
-+ *     the link FD (or explicit bpf_link_detach()) does.
-+ *   - Link FDs can be pinned to bpffs via bpf_obj_pin() for persistence.
-+ *
-+ * Concurrency & Races:
-+ *   - Linking can fail if another concurrent operation changes target's state
-+ *     (revision checks can mitigate using expected_revision).
-+ *   - Multi-attach environments may reorder relative attachments if not using
-+ *     relative_* fields; always inspect returned link state if ordering matters.
-+ *
-+ * Introspection:
-+ *   - Use bpf_link_get_info_by_fd(link_fd, ...) to query link metadata
-+ *     (program ID, attach type, target, cookies, multi-probe details).
-+ *   - Enumerate existing links via bpf_link_get_next_id() then open with
-+ *     bpf_link_get_fd_by_id().
++ * Common errors (negative libbpf-style return codes == -errno):
++ *  - -EBADF: @p fd is not a valid BPF object FD.
++ *  - -EINVAL: @p fd refers to an object type that cannot be pinned, or
++ *             pathname is invalid.
++ *  - -EEXIST: A file already exists at @p pathname.
++ *  - -ENOENT: One or more parent directories in the path do not exist.
++ *  - -ENOTDIR: A path component expected to be a directory is not.
++ *  - -EPERM / -EACCES: Insufficient privileges or denied by security policy.
++ *  - -ENOMEM: Kernel failed to allocate internal metadata.
++ *  - Other -errno codes may be propagated from the underlying syscall.
 + *
 + */
- LIBBPF_API int bpf_link_create(int prog_fd, int target_fd,
- 			       enum bpf_attach_type attach_type,
- 			       const struct bpf_link_create_opts *opts);
--
+ LIBBPF_API int bpf_obj_pin(int fd, const char *pathname);
++
 +/**
-+ * @brief Detach (tear down) an existing BPF link represented by a link file descriptor.
++ * @brief Pin a BPF object (map, program, BTF, link, etc.) to bpffs with
++ *        extended options controlling filesystem open semantics.
 + *
-+ * bpf_link_detach() issues the BPF_LINK_DETACH command to the kernel, breaking
-+ * the association between a previously created BPF link (see bpf_link_create())
-+ * and its target (cgroup, tracing hook, perf event, netfilter hook, etc.). After
-+ * a successful call the program will no longer be invoked at that attach point.
++ * This is an extended variant of bpf_obj_pin() that allows specifying
++ * additional pinning attributes through @p opts. On success a new file
++ * (bpffs inode) at @p pathname references the in-kernel BPF object
++ * associated with @p fd, incrementing its refcount and making it
++ * persist beyond the lifetime of the creating process.
 + *
-+ * In most cases you do not need to call bpf_link_detach() explicitly; simply
-+ * closing the link FD (close(link_fd)) also detaches the link. This helper is
-+ * useful when you want to explicitly detach early while keeping the FD open for
-+ * introspection (e.g., querying link info after detachment) or when building
-+ * higher-level lifecycle abstractions.
-+ *
-+ * Semantics:
-+ *   - Success makes the in-kernel link inactive; subsequent events at the hook
-+ *     no longer trigger the program.
-+ *   - The link FD itself does NOT automatically close; you are still responsible
-+ *     for close(link_fd) to release user space resources.
-+ *   - Repeated calls after a successful detach will fail (idempotency: only the
-+ *     first detach succeeds).
++ * Differences vs bpf_obj_pin():
++ *   - Supports optional struct bpf_obj_pin_opts for forward/backward
++ *     compatibility without breaking older kernels.
++ *   - Allows passing file creation flags (opts->file_flags) and a
++ *     directory file descriptor (opts->path_fd) for path resolution
++ *     using the underlying kernel support (e.g. enabling O_EXCL-style
++ *     semantics if/when supported).
 + *
 + * Typical usage:
-+ *   int link_fd = bpf_link_create(prog_fd, target_fd, attach_type, &opts);
-+ *   ...
-+ *   if (bpf_link_detach(link_fd) < 0)
-+ *       perror("bpf_link_detach");
-+ *   close(link_fd); // optional: now just releases the FD
++ *   struct bpf_obj_pin_opts popts = {
++ *       .sz        = sizeof(popts),
++ *       .file_flags = 0,          // reserved / must be 0 unless documented
++ *       .path_fd    = -1,         // optional dir FD; -1 means unused
++ *   };
++ *   if (bpf_obj_pin_opts(obj_fd, "/sys/fs/bpf/myapp/session_map", &popts) < 0) {
++ *       perror("bpf_obj_pin_opts");
++ *       // handle error (inspect errno or negative return value)
++ *   }
++ *
++ * Notes on @p pathname:
++ *   - Must reside within a mounted BPF filesystem (bpffs), typically
++ *     /sys/fs/bpf.
++ *   - All parent directories must already exist; intermediate directories
++ *     are not created automatically.
++ *   - Existing path results in -EEXIST (no overwrite).
++ *   - Avoid relative paths that could escape bpffs (no ".." traversal).
++ *
++ * opts initialization:
++ *   - If @p opts is non-NULL, opts->sz MUST be set to sizeof(*opts).
++ *   - Unused/unknown fields should be zeroed for forward compatibility.
++ *   - opts->file_flags: Currently reserved; pass 0 unless a kernel
++ *     extension explicitly documents valid bits (non-zero may yield
++ *     -EINVAL on older kernels).
++ *   - opts->path_fd: Optional directory file descriptor that serves as
++ *     the base for relative @p pathname resolution (similar to *at()
++ *     syscalls). Set to -1 or 0 to ignore and use normal absolute path
++ *     semantics. If used, ensure it refers to bpffs.
++ *
++ * Concurrency:
++ *   - Pinning is atomic with respect to path name; two simultaneous
++ *     attempts to pin to the same pathname will result in one success
++ *     and one -EEXIST failure.
++ *   - After success, closing @p fd does NOT unpin; removal of the pinned
++ *     bpffs file (unlink) plus closing all other references is required
++ *     to allow object destruction.
++ *
++ * Security / Privileges:
++ *   - May require CAP_BPF and/or CAP_SYS_ADMIN depending on kernel
++ *     configuration, LSM policy, and lockdown mode.
++ *   - Filesystem permissions on bpffs apply; lack of write/execute on
++ *     parent directories yields -EACCES / -EPERM.
++ *
++ * After pinning:
++ *   - Object can be reopened via bpf_obj_get()/bpf_obj_get_opts() using
++ *     the same pathname.
++ *   - Can be safely shared across processes and persists across
++ *     restarts until explicitly unpinned (unlink).
++ *
++ * Best practices:
++ *   - Zero-initialize opts: struct bpf_obj_pin_opts popts = {};
++ *   - Always set popts.sz = sizeof(popts) when passing opts.
++ *   - Validate that bpffs is mounted (e.g., stat("/sys/fs/bpf")) before
++ *     attempting to pin.
++ *   - Use distinct subdirectories (e.g., /sys/fs/bpf/<app>/...) to avoid
++ *     naming collisions and facilitate cleanup.
++ *
++ * @param fd        File descriptor of the loaded BPF object to pin.
++ * @param pathname  Absolute (recommended) or relative path inside bpffs
++ *                  identifying where to create the pin entry. Must not be NULL.
++ * @param opts      Optional pointer to a struct bpf_obj_pin_opts providing
++ *                  extended pin options; may be NULL for defaults.
++ *
++ * @return 0 on success; < 0 negative error code (libbpf style == -errno) on failure.
++ *
++ * Error handling (negative libbpf-style return codes == -errno):
++ *   - -EBADF: Invalid @p fd, or @p path_fd (if used) not a valid directory FD.
++ *   - -EINVAL: opts->sz mismatch, unsupported file_flags, invalid pathname,
++ *              or object type cannot be pinned.
++ *   - -EEXIST: A file already exists at @p pathname.
++ *   - -ENOENT: Parent directory component missing (or @p path_fd base invalid).
++ *   - -ENOTDIR: A path component expected to be a directory is not.
++ *   - -EPERM / -EACCES: Insufficient privileges or blocked by security policy.
++ *   - -ENOMEM: Kernel failed to allocate internal metadata.
++ *   - Other -errno codes may be propagated from the underlying bpf() syscall.
++ *
++ */
+ LIBBPF_API int bpf_obj_pin_opts(int fd, const char *pathname,
+ 				const struct bpf_obj_pin_opts *opts);
+ 
+@@ -914,8 +1081,190 @@ struct bpf_obj_get_opts {
+ 	size_t :0;
+ };
+ #define bpf_obj_get_opts__last_field path_fd
+-
++/**
++ * @brief Open (re-reference) a pinned BPF object by its bpffs pathname.
++ *
++ * bpf_obj_get() wraps the BPF_OBJ_GET command of the bpf(2) syscall. It
++ * converts a persistent BPF filesystem (bpffs) entry (previously created
++ * with bpf_obj_pin()/bpf_obj_pin_opts()) back into a live file descriptor
++ * that the caller owns and can use for further operations (e.g. map
++ * lookups/updates, program introspection, link detachment, BTF queries).
++ *
++ * Supported object kinds (depending on kernel version):
++ *   - Maps
++ *   - Programs
++ *   - BTF objects
++ *   - Links
++ *   - (Future kinds may also become accessible through the same API)
++ *
++ * Typical usage:
++ *   int fd = bpf_obj_get("/sys/fs/bpf/myapp/session_map");
++ *   if (fd < 0) {
++ *       perror("bpf_obj_get");
++ *       // handle error
++ *   } else {
++ *       // use fd
++ *       close(fd);
++ *   }
++ *
++ * Path requirements:
++ *   - @p pathname must reside inside a mounted BPF filesystem (usually
++ *     /sys/fs/bpf).
++ *   - Intermediate directories must already exist.
++ *   - The path must reference a previously pinned object; regular files
++ *     or non-BPF entries yield errors.
++ *
++ * Lifetime semantics:
++ *   - Success returns a new file descriptor referencing the existing
++ *     in-kernel object; the object's lifetime is extended while this FD
++ *     (and any others) remain open or while the bpffs entry stays pinned.
++ *   - Closing the returned FD does not remove or unpin the object.
++ *   - To permanently remove the object, unlink the bpffs path and close
++ *     all remaining descriptors.
 + *
 + * Concurrency & races:
-+ *   - Detaching can race with another thread closing or detaching the same link.
-+ *     In such cases you may observe -EBADF or -ENOENT.
-+ *   - Once detached, the program can be safely re-attached elsewhere if desired
-+ *     (requires a new link via bpf_link_create()).
++ *   - If the pinned entry is removed (unlink) between name resolution and
++ *     the syscall, the call may fail with -ENOENT.
++ *   - Multiple opens of the same pinned path are safe and return distinct
++ *     FDs.
 + *
-+ * Privileges:
-+ *   - Usually requires CAP_BPF and/or CAP_SYS_ADMIN depending on kernel
-+ *     configuration, LSM, and lockdown mode. Lack of privileges yields -EPERM
-+ *     or -EACCES.
-+ *
-+ * Post-detach:
-+ *   - The program object remains loaded; its own FD is still valid and can be
-+ *     attached again.
-+ *   - Maps referenced by the program are unaffected.
-+ *
-+ * @param link_fd File descriptor of the active BPF link to detach; must have
-+ *                been obtained via bpf_link_create() or equivalent.
-+ *
-+ * @return 0 on success; < 0 on failure (negative error code as described above).
-+ *
-+ * Error handling (negative libbpf-style return codes, errno also set):
-+ *   - -EBADF: link_fd is not a valid open file descriptor.
-+ *   - -EINVAL: link_fd does not refer to a BPF link, or the kernel does not
-+ *              support BPF_LINK_DETACH for this link type.
-+ *   - -ENOENT: Link already detached or no longer exists (race with close()).
-+ *   - -EPERM / -EACCES: Insufficient privileges or denied by security policy.
-+ *   - -EOPNOTSUPP / -ENOTSUP: Kernel lacks support for link detachment of this
-+ *                             specific attach type.
-+ *   - -ENOMEM: Transient kernel resource exhaustion (rare in this path).
-+ *   - Other negative codes may be propagated from the underlying bpf() syscall.
-+ *
-+ */
- LIBBPF_API int bpf_link_detach(int link_fd);
- 
- struct bpf_link_update_opts {
-@@ -1222,7 +1406,89 @@ struct bpf_link_update_opts {
- 	__u32 old_map_fd;  /* expected old map FD */
- };
- #define bpf_link_update_opts__last_field old_map_fd
--
-+/**
-+ * @brief Atomically replace (update) the BPF program or map referenced by an
-+ *        existing link with a new program.
-+ *
-+ * bpf_link_update() wraps the BPF_LINK_UPDATE command of the bpf(2) syscall.
-+ * It allows retargeting an already established BPF link (identified by
-+ * link_fd) to point at a different loaded BPF program (new_prog_fd) without
-+ * having to tear the link down (detach) and recreate it. This is typically
-+ * used for hot-swapping a program while preserving:
-+ *   - Link pinning (bpffs path remains valid).
-+ *   - Relative ordering in multi-attach contexts (TC/XDP/cgroup revisions).
-+ *   - Existing references held by other processes.
-+ *
-+ * Consistency & safety:
-+ *   - The update is performed atomically: events arriving at the hook will
-+ *     either see the old program before the call, or the new one after the
-+ *     call; no window exists with an unattached link.
-+ *   - Optional expectations can be enforced via @p opts to avoid races:
-+ *       * old_prog_fd: Fail with -ESTALE if the link does not currently
-+ *         reference that program.
-+ *       * old_map_fd:  (Kernel dependent) Can be used when links encapsulate
-+ *         a map association; if set and mismatched, update fails.
-+ *       * flags: Future extension bits (must be 0 on current kernels).
-+ *
-+ * Typical usage:
-+ *   struct bpf_link_update_opts u = {
-+ *       .sz = sizeof(u),
-+ *       .flags = 0,
-+ *       .old_prog_fd = old_fd, // set to 0 to skip validation
-+ *   };
-+ *   if (bpf_link_update(link_fd, new_prog_fd, &u) < 0)
-+ *       perror("bpf_link_update");
-+ *
-+ * Preconditions:
-+ *   - link_fd must refer to a valid, updatable BPF link. Not all link types
-+ *     support in-place program replacement; unsupported types return -EOPNOTSUPP.
-+ *   - new_prog_fd must be a loaded BPF program whose type and expected attach
-+ *     type are compatible with the link's attach context.
-+ *   - If @p opts is non-NULL, opts->sz MUST be set to sizeof(*opts).
-+ *
-+ * @param link_fd
-+ *        File descriptor of the existing BPF link to be updated.
-+ * @param new_prog_fd
-+ *        File descriptor of the newly loaded BPF program that should replace
-+ *        the currently attached program.
-+ * @param opts
-+ *        Optional pointer to bpf_link_update_opts controlling validation:
-+ *          - sz: Structure size for forward/backward compatibility.
-+ *          - flags: Reserved; must be 0 (unsupported bits yield -EINVAL).
-+ *          - old_prog_fd: Expected current program FD (0 to skip check).
-+ *          - old_map_fd:  Expected current map FD (0 to skip; kernel-specific).
-+ *        Pass NULL for default (no expectation checks).
-+ *
-+ * @return
-+ *   0        on success (link now points to new_prog_fd).
-+ *  <0        negative libbpf-style error code (typically -errno):
-+ *              - -EBADF: Invalid link_fd or new_prog_fd.
-+ *              - -EINVAL: Malformed opts (bad sz/flags) or incompatible program type.
-+ *              - -EOPNOTSUPP: Link type does not support updates.
-+ *              - -EPERM / -EACCES: Insufficient privileges (CAP_BPF/CAP_SYS_ADMIN) or blocked by LSM.
-+ *              - -ENOENT: Link no longer exists (race) or old_prog_fd refers to a non-existent program.
-+ *              - -ESTALE: Expectation mismatch (old_prog_fd / old_map_fd differs).
-+ *              - -ENOMEM: Kernel resource allocation failure.
-+ *              - Other -errno codes propagated from the bpf() syscall.
-+ *
-+ * Postconditions:
-+ *   - On success, the old program remains loaded; caller should close its FD
-+ *     if no longer needed.
-+ *   - Pinning status and link ID are preserved.
-+ *   - Maps referenced by the new program must be valid; no automatic rebinding
-+ *     occurs beyond program substitution.
-+ *
-+ * Caveats:
-+ *   - If verifier features differ (e.g., CO-RE relocations) ensure the new
-+ *     program was loaded with compatible expectations for the same hook.
-+ *   - Updating to a program of a strictly different attach semantics (e.g.,
-+ *     sleepable vs non-sleepable) is rejected if the link type disallows it.
++ * Privileges & security:
++ *   - May require CAP_BPF and/or CAP_SYS_ADMIN depending on kernel config,
++ *     LSM policies, and lockdown mode.
++ *   - Filesystem permission checks apply (read/search on parent dirs).
 + *
 + * Thread safety:
-+ *   - Safe to call concurrently with other update attempts; only one succeeds.
-+ *   - Consumers of the link see either old or new program; intermediate states
-+ *     are not observable.
++ *   - The function itself is thread-safe; distinct threads can open the
++ *     same pinned path concurrently.
++ *
++ * Performance considerations:
++ *   - Operation cost is dominated by path lookup and a single bpf()
++ *     syscall; typically negligible compared to subsequent map/program
++ *     usage.
++ *
++ * @param pathname Absolute (recommended) or relative bpffs path of the
++ *                 pinned BPF object; must not be NULL.
++ *
++ * @return >= 0 : File descriptor referencing the object (caller must close()).
++ *         < 0  : Negative error code (libbpf style, see list above).
++ *
++ *
++ * Error handling (negative libbpf-style return codes == -errno):
++ *   - -ENOENT: Path does not exist or was unpinned.
++ *   - -ENOTDIR: A path component expected to be a directory is not.
++ *   - -EACCES / -EPERM: Insufficient privileges or denied by security policy.
++ *   - -EINVAL: Path does not refer to a valid pinned BPF object (type mismatch,
++ *              corrupted entry, or unsupported kernel feature).
++ *   - -ENOMEM: Kernel could not allocate internal resources.
++ *   - -EBADF: Rare: internal descriptor handling failed.
++ *   - Other negative codes propagated from the underlying syscall.
++ *
 + */
- LIBBPF_API int bpf_link_update(int link_fd, int new_prog_fd,
- 			       const struct bpf_link_update_opts *opts);
- 
-@@ -1338,6 +1604,72 @@ LIBBPF_API int bpf_prog_get_next_id(__u32 start_id, __u32 *next_id);
-  */
- LIBBPF_API int bpf_map_get_next_id(__u32 start_id, __u32 *next_id);
- LIBBPF_API int bpf_btf_get_next_id(__u32 start_id, __u32 *next_id);
+ LIBBPF_API int bpf_obj_get(const char *pathname);
++
 +/**
-+ * @brief Retrieve the next existing BPF link ID after a given starting ID.
++ * @brief Open (re-reference) a pinned BPF object with extended options.
 + *
-+ * This helper wraps the kernel's BPF_LINK_GET_NEXT_ID command and enumerates
-+ * system-wide BPF link objects (each representing a persistent attachment of
-+ * a BPF program) in strictly ascending order of their kernel-assigned IDs.
-+ * It is typically used to iterate over all currently existing BPF links from
-+ * user space.
++ * bpf_obj_get_opts() is an extended variant of bpf_obj_get() that wraps the
++ * BPF_OBJ_GET command of the bpf(2) syscall. It converts a bpffs pathname
++ * (previously created via bpf_obj_pin()/bpf_obj_pin_opts()) into a process-local
++ * file descriptor referencing the underlying in-kernel BPF object (map, program,
++ * BTF object, link, etc.), honoring additional lookup/open semantics supplied
++ * through @p opts.
 + *
-+ * Enumeration pattern:
-+ *   1. Initialize start_id to 0 to obtain the first (lowest) existing link ID.
-+ *   2. On success, *next_id is set to the first link ID strictly greater than start_id.
-+ *   3. Use the returned *next_id as the new start_id for the subsequent call.
-+ *   4. Repeat until the function returns -ENOENT, indicating there is no link
-+ *      with ID greater than start_id (end of enumeration).
++ * Extended capabilities vs bpf_obj_get():
++ *   - Structured forward/backward compatibility via @p opts->sz.
++ *   - Optional directory FD-relative path resolution (opts->path_fd),
++ *     similar to *at() family syscalls (openat, fstatat, etc.).
++ *   - Future room for file/open semantic modifiers (opts->file_flags).
++ *
++ * Requirements:
++ *   - The target pathname must reside inside a mounted BPF filesystem
++ *     (usually /sys/fs/bpf). Relative paths are resolved either against
++ *     the current working directory (if opts->path_fd is -1 or 0) or
++ *     against the directory represented by opts->path_fd.
++ *   - All parent directories must already exist; intermediate components
++ *     are not created automatically.
++ *   - The bpffs entry at @p pathname must refer to a pinned BPF object.
++ *
++ * Lifetime semantics:
++ *   - Success returns a new file descriptor owning a user space reference
++ *     to the object. Closing this FD does NOT unpin or destroy the object
++ *     if other references (FDs or pinned entries) remain.
++ *   - To remove the persistent reference, unlink(2) the bpffs path and
++ *     close all remaining FDs.
 + *
 + * Concurrency & races:
-+ *   - Links can be created or detached concurrently with enumeration. A link ID
-+ *     you just retrieved might become invalid before you convert it to an FD
-+ *     (via bpf_link_get_fd_by_id()). Always handle failures when opening by ID.
-+ *   - Enumeration does not provide a consistent snapshot; links created after
-+ *     you pass their predecessor ID may appear in later iterations.
++ *   - If the pinned entry is unlinked concurrently, the call may fail
++ *     with -ENOENT.
++ *   - Multiple successful opens of the same path yield distinct FDs.
 + *
-+ * Lifetime considerations:
-+ *   - Link IDs are monotonically increasing and not reused until wraparound
-+ *     (effectively unreachable in normal operation).
-+ *   - Successfully retrieving an ID does not pin or otherwise prevent link
-+ *     detachment; obtain an FD immediately if you need to interact with the link.
++ * Security / privileges:
++ *   - May require CAP_BPF and/or CAP_SYS_ADMIN depending on kernel config,
++ *     LSM policies, or lockdown mode.
++ *   - Filesystem permission checks apply to path traversal and directory
++ *     components (execute/search permissions).
++ *
++ * @param pathname
++ *        Absolute or relative bpffs path of the pinned BPF object. Must
++ *        not be NULL. If relative and opts->path_fd is a valid directory
++ *        FD, resolution is performed relative to that directory; otherwise
++ *        relative to the process's current working directory.
++ * @param opts
++ *        Optional pointer to a zero-initialized bpf_obj_get_opts structure.
++ *        May be NULL for default behavior. Fields:
++ *          - sz: MUST be set to sizeof(struct bpf_obj_get_opts) when @p opts
++ *                is non-NULL; mismatch causes -EINVAL.
++ *          - file_flags: Reserved for future extensions; MUST be 0 on
++ *                current kernels or the call may fail with -EINVAL.
++ *          - path_fd: Directory file descriptor for *at()-style relative
++ *                path resolution. Set to -1 (or 0) to ignore and use normal
++ *                pathname semantics. Must reference a directory within bpffs
++ *                if used with relative @p pathname.
++ *
++ * @return
++ *   >= 0 : File descriptor referencing the pinned BPF object (caller must close()).
++ *   < 0  : Negative libbpf-style error code (== -errno):
++ *            - -ENOENT: Path does not exist or was unpinned.
++ *            - -ENOTDIR: A path component is not a directory; or opts->path_fd
++ *                       is not a directory when required.
++ *            - -EACCES / -EPERM: Insufficient privileges or denied by security policy.
++ *            - -EBADF: Invalid opts->path_fd (not an open FD) or internal FD misuse.
++ *            - -EINVAL: opts->sz mismatch, unsupported file_flags, invalid pathname,
++ *                       or path does not refer to a valid pinned BPF object.
++ *            - -ENOMEM: Kernel failed to allocate internal metadata/resources.
++ *            - Other -errno codes may be propagated from the underlying syscall.
 + *
 + * Usage example:
-+ *   __u32 id = 0, next;
-+ *   while (bpf_link_get_next_id(id, &next) == 0) {
-+ *       int link_fd = bpf_link_get_fd_by_id(next);
-+ *       if (link_fd >= 0) {
-+ *           // Inspect link (e.g., bpf_link_get_info_by_fd(link_fd))
-+ *           close(link_fd);
-+ *       }
-+ *       id = next;
++ *   struct bpf_obj_get_opts gopts = {
++ *       .sz = sizeof(gopts),
++ *       .file_flags = 0,
++ *       .path_fd = -1,
++ *   };
++ *   int fd = bpf_obj_get_opts("/sys/fs/bpf/myapp/session_map", &gopts);
++ *   if (fd < 0) {
++ *       // handle error (inspect -fd or errno)
++ *   } else {
++ *       // use fd
++ *       close(fd);
 + *   }
-+ *   // Loop terminates when -ENOENT is returned.
 + *
-+ * @param start_id
-+ *        Starting point for the search. The helper finds the first link ID
-+ *        strictly greater than start_id. Use 0 to begin enumeration.
-+ * @param next_id
-+ *        Pointer to a __u32 that receives the next link ID on success.
-+ *        Must not be NULL.
++ * Best practices:
++ *   - Always zero-initialize the opts struct before setting recognized fields.
++ *   - Verify bpffs is mounted (e.g., stat("/sys/fs/bpf")) before calling.
++ *   - Avoid passing non-zero file_flags until documented by newer kernels.
++ *   - Treat -ENOENT as a normal condition if the object might have been
++ *     cleaned up asynchronously.
 + *
-+ * @return
-+ *        0        on success (next_id populated);
-+ *        -ENOENT  if there is no link ID greater than start_id (end of iteration);
-+ *        -EINVAL  if next_id is NULL or invalid arguments were supplied;
-+ *        -EPERM / -EACCES if denied by security policy or lacking required privileges;
-+ *        Other negative libbpf-style errors (-errno) on transient or system failures.
++ * Thread safety:
++ *   - Safe to call concurrently from multiple threads; each successful call
++ *     yields its own FD.
 + *
-+ * Error handling notes:
-+ *   - Treat -ENOENT as normal termination (not an error condition).
-+ *   - For other negative returns, errno will also be set to the underlying cause.
-+ *
-+ * After enumeration:
-+ *   - Convert retrieved IDs to FDs with bpf_link_get_fd_by_id() for introspection
-+ *     or detachment (via bpf_link_detach()).
-+ *   - Closing the FD does not destroy the link if other references remain (e.g.,
-+ *     pinned in bpffs); the link persists until explicitly detached or all
-+ *     references are released.
++ * Forward compatibility:
++ *   - Unrecognized future fields must remain zeroed to avoid -EINVAL.
++ *   - Ensure opts->sz matches the libbpf version's struct size to enable
++ *     kernel-side bounds checking and extension handling.
 + */
- LIBBPF_API int bpf_link_get_next_id(__u32 start_id, __u32 *next_id);
- 
- struct bpf_get_fd_by_id_opts {
-@@ -1548,9 +1880,153 @@ LIBBPF_API int bpf_map_get_fd_by_id_opts(__u32 id,
- LIBBPF_API int bpf_btf_get_fd_by_id(__u32 id);
- LIBBPF_API int bpf_btf_get_fd_by_id_opts(__u32 id,
- 				const struct bpf_get_fd_by_id_opts *opts);
-+/**
-+ * @brief Obtain a file descriptor for an existing BPF link given its kernel-assigned ID.
-+ *
-+ * bpf_link_get_fd_by_id() wraps the BPF_LINK_GET_FD_BY_ID command of the bpf(2)
-+ * syscall. A BPF "link" is a persistent in-kernel object representing an
-+ * attachment of a BPF program to some hook (cgroup, tracing point, perf event,
-+ * netfilter hook, tc/xdp chain, etc.). Each link has a unique, monotonically
-+ * increasing ID. This helper converts such an ID into a process-local file
-+ * descriptor, allowing user space to inspect, pin, update, or detach the link.
-+ *
-+ * Typical enumeration + open pattern:
-+ *   __u32 id = 0, next;
-+ *   while (bpf_link_get_next_id(id, &next) == 0) {
-+ *       int link_fd = bpf_link_get_fd_by_id(next);
-+ *       if (link_fd >= 0) {
-+ *           // Use link_fd (e.g. bpf_link_get_info_by_fd(), bpf_link_detach(), pin)
-+ *           close(link_fd);
-+ *       }
-+ *       id = next;
-+ *   }
-+ *   // Loop terminates when bpf_link_get_next_id() returns -ENOENT.
-+ *
-+ * Concurrency & races:
-+ *   - A link may be detached (or otherwise invalidated) between discovering its ID
-+ *     and calling this function. In that case the call fails with -ENOENT.
-+ *   - Successfully retrieving a file descriptor does not prevent later detachment
-+ *     by other processes; always handle subsequent operation failures gracefully.
-+ *
-+ * Lifetime & ownership:
-+ *   - On success, the caller owns the returned FD and must close() it when done.
-+ *   - Closing the FD decreases the user space reference count; the underlying link
-+ *     persists while any references (FDs or pinned bpffs path) remain.
-+ *   - Detaching the link (via bpf_link_detach() or closing the last active FD)
-+ *     invalidates future operations on that FD.
-+ *
-+ * Privileges / access control:
-+ *   - May require CAP_BPF and/or CAP_SYS_ADMIN depending on kernel configuration,
-+ *     LSM policy, or lockdown mode. Lack of privileges yields -EPERM / -EACCES.
-+ *   - Security policies can deny access even if the link ID exists.
-+ *
-+ * Error handling (negative libbpf-style codes; errno is also set):
-+ *   - -ENOENT: No link with the specified ID (never existed or already detached).
-+ *   - -EPERM / -EACCES: Insufficient privilege or blocked by security policy.
-+ *   - -EINVAL: Invalid ID (e.g., 0) or kernel rejected the request (rare).
-+ *   - -ENOMEM: Transient kernel resource exhaustion while creating the FD.
-+ *   - -EBADF, -EFAULT, or other -errno values: Propagated from the underlying syscall.
-+ *
-+ * Usage notes:
-+ *   - Immediately call bpf_link_get_info_by_fd() after acquiring the FD if you need
-+ *     metadata (program ID, attach type, target, cookie, etc.).
-+ *   - To keep a link across process restarts, pin it to bpffs via bpf_obj_pin().
-+ *   - Prefer using bpf_link_get_fd_by_id_opts() if you need extended open semantics
-+ *     (e.g., token-based delegated permissions) on newer kernels.
-+ *
-+ * @param id
-+ *        Kernel-assigned unique ID of the target BPF link (must be > 0). Usually
-+ *        obtained via bpf_link_get_next_id() or from a prior info query.
-+ *
-+ * @return
-+ *        >= 0 : File descriptor referring to the BPF link (caller must close()).
-+ *        < 0  : Negative error code (libbpf-style, typically -errno) on failure.
-+ */
- LIBBPF_API int bpf_link_get_fd_by_id(__u32 id);
-+/**
-+ * @brief Obtain a file descriptor for an existing BPF link by kernel-assigned link ID
-+ *        with extended open options.
-+ *
-+ * bpf_link_get_fd_by_id_opts() is an extended variant of bpf_link_get_fd_by_id().
-+ * It wraps the BPF_LINK_GET_FD_BY_ID command of the bpf(2) syscall and converts a
-+ * stable, monotonically increasing BPF link ID into a process-local file descriptor
-+ * while honoring optional attributes supplied via @p opts.
-+ *
-+ * A BPF "link" represents a persistent attachment of a BPF program to some kernel
-+ * hook (cgroup, tracing point, perf event, netfilter, tc/xdp chain, etc.). Links can
-+ * be enumerated system-wide by first calling bpf_link_get_next_id().
-+ *
-+ * Typical enumeration + open pattern:
-+ *   __u32 id = 0, next;
-+ *   while (bpf_link_get_next_id(id, &next) == 0) {
-+ *       struct bpf_get_fd_by_id_opts o = {
-+ *           .sz = sizeof(o),
-+ *           .open_flags = 0,
-+ *           .token_fd = 0,
-+ *       };
-+ *       int link_fd = bpf_link_get_fd_by_id_opts(next, &o);
-+ *       if (link_fd >= 0) {
-+ *           // inspect link (e.g. bpf_link_get_info_by_fd(link_fd))
-+ *           close(link_fd);
-+ *       }
-+ *       id = next;
-+ *   }
-+ *   // Loop ends when bpf_link_get_next_id() returns -ENOENT (no more links).
-+ *
-+ * Concurrency & races:
-+ *   - A link may detach between enumeration and opening; handle -ENOENT gracefully.
-+ *   - Successfully obtaining a FD does not prevent future detachment by other processes;
-+ *     subsequent operations (e.g., bpf_link_get_info_by_fd()) can still fail.
-+ *
-+ * Lifetime & ownership:
-+ *   - The returned FD holds a user-space reference; close() decrements it.
-+ *   - The underlying link persists while any references remain (FDs or bpffs pin).
-+ *   - Use bpf_obj_pin() to make the link persistent across process lifetimes.
-+ *
-+ * Security:
-+ *   - CAP_BPF and/or CAP_SYS_ADMIN may be required depending on kernel configuration.
-+ *   - Token-based access (token_fd) can allow operations in sandboxed environments.
-+ *
-+ * Follow-up introspection:
-+ *   - Call bpf_link_get_info_by_fd(link_fd, ...) to retrieve program ID, attach type,
-+ *     target info, cookies, and other metadata.
-+ *   - Detach via bpf_link_detach(link_fd) or simply close(link_fd).
-+ *
-+ * Recommended usage notes:
-+ *   - Always zero-initialize the opts struct before setting fields.
-+ *   - Treat -ENOENT after enumeration as normal termination, not an error condition.
-+ *   - Avoid relying on stable ordering beyond ascending ID sequence; links created
-+ *     during enumeration may appear after you pass their predecessor ID.
-+ *
-+ * @param id
-+ *   Kernel-assigned unique (non-zero) BPF link ID. Usually obtained from
-+ *   bpf_link_get_next_id() or from a prior info query. Must be > 0.
-+ *
-+ * @param opts
-+ *   Optional pointer to a zero-initialized struct bpf_get_fd_by_id_opts:
-+ *     - sz: MUST be set to sizeof(struct bpf_get_fd_by_id_opts) if @p opts
-+ *           is non-NULL (enables fwd/backward compatibility).
-+ *     - open_flags: Additional open/access flags (currently most callers set 0;
-+ *                   unsupported bits yield -EINVAL; semantics are kernel-specific).
-+ *     - token_fd: File descriptor of a BPF token granting delegated permissions
-+ *                 (set 0 or -1 if unused). Allows restricted environments to
-+ *                 open the link without elevated global capabilities.
-+ *   Pass NULL for defaults (equivalent to open_flags=0, no token).
-+ *
-+ * @return
-+ *   >= 0 : File descriptor referencing the BPF link (caller owns it; close() when done).
-+ *   < 0  : Negative libbpf-style error code (typically -errno):
-+ *            - -ENOENT  : Link with @p id does not exist (detached or never created).
-+ *            - -EPERM / -EACCES : Insufficient privilege or blocked by LSM/lockdown.
-+ *            - -EINVAL  : Invalid @p id (0), malformed @p opts (bad sz / flags), or
-+ *                         unsupported open_flags.
-+ *            - -ENOMEM  : Transient kernel memory/resource exhaustion.
-+ *            - Other negative codes: Propagated from underlying bpf() syscall.
-+ *
-+ */
- LIBBPF_API int bpf_link_get_fd_by_id_opts(__u32 id,
+ LIBBPF_API int bpf_obj_get_opts(const char *pathname,
+ 				const struct bpf_obj_get_opts *opts);
+ /**
+@@ -1603,6 +1952,7 @@ LIBBPF_API int bpf_prog_get_next_id(__u32 start_id, __u32 *next_id);
+  *        Other negative libbpf-style errors for transient or system failures.
+  */
+ LIBBPF_API int bpf_map_get_next_id(__u32 start_id, __u32 *next_id);
++
+ LIBBPF_API int bpf_btf_get_next_id(__u32 start_id, __u32 *next_id);
+ /**
+  * @brief Retrieve the next existing BPF link ID after a given starting ID.
+@@ -1877,7 +2227,9 @@ LIBBPF_API int bpf_map_get_fd_by_id(__u32 id);
+  */
+ LIBBPF_API int bpf_map_get_fd_by_id_opts(__u32 id,
  				const struct bpf_get_fd_by_id_opts *opts);
 +
+ LIBBPF_API int bpf_btf_get_fd_by_id(__u32 id);
++
+ LIBBPF_API int bpf_btf_get_fd_by_id_opts(__u32 id,
+ 				const struct bpf_get_fd_by_id_opts *opts);
+ /**
+@@ -2026,7 +2378,77 @@ LIBBPF_API int bpf_link_get_fd_by_id(__u32 id);
+  */
+ LIBBPF_API int bpf_link_get_fd_by_id_opts(__u32 id,
+ 				const struct bpf_get_fd_by_id_opts *opts);
+-
++/**
++ * @brief Retrieve information about a BPF object (program, map, BTF, or link) given
++ *        its file descriptor.
++ *
++ * This is a generic libbpf wrapper around the kernel's BPF_OBJ_GET_INFO_BY_FD
++ * command. Depending on what type of BPF object @p bpf_fd refers to, the kernel
++ * expects @p info to point to an appropriately typed info structure:
++ *
++ *   - struct bpf_prog_info  (for program FDs)
++ *   - struct bpf_map_info   (for map FDs)
++ *   - struct bpf_btf_info   (for BTF object FDs)
++ *   - struct bpf_link_info  (for link FDs)
++ *
++ * You must:
++ *   1. Zero-initialize the chosen info structure (to avoid undefined padding contents).
++ *   2. Set *@p info_len to sizeof(struct <relevant_info_type>) before the call.
++ *   3. Pass a pointer to the structure as @p info.
++ *
++ * On success, the kernel fills as much of the structure as it supports/recognizes
++ * for the running kernel version and may update *@p info_len with the actual number
++ * of bytes written (libbpf preserves kernel behavior). Unrecognized future fields
++ * remain zeroed. If *@p info_len is smaller than the minimum required size for that
++ * object type, the call fails with -EINVAL.
++ *
++ * Typical usage (program example):
++ *   struct bpf_prog_info pinfo = {};
++ *   __u32 len = sizeof(pinfo);
++ *   if (bpf_obj_get_info_by_fd(prog_fd, &pinfo, &len) == 0) {
++ *       // pinfo now populated (len bytes). Inspect fields like pinfo.id, pinfo.type, ...
++ *   } else {
++ *       // handle error (errno set; negative return value also provided)
++ *   }
++ *
++ * Concurrency & races:
++ *   - The object referenced by @p bpf_fd remains valid while its FD is open, so
++ *     races are limited. However, fields referring to related kernel entities
++ *     (e.g., map IDs a program references) may change if other management operations
++ *     occur concurrently.
++ *
++ * Forward/backward compatibility:
++ *   - Always zero the entire info struct before calling; newer kernels may fill
++ *     additional fields.
++ *   - Do not assume all fields are populated; check size/version or specific
++ *     feature flags if present.
++ *
++ * Security / privileges:
++ *   - Access may require CAP_BPF and/or CAP_SYS_ADMIN depending on kernel configuration,
++ *     LSM policy, and lockdown mode. Insufficient privilege yields -EPERM / -EACCES.
++ *
++ * @param bpf_fd   File descriptor of a loaded BPF object (program, map, BTF, or link).
++ * @param info     Pointer to a zero-initialized, type-appropriate info structure
++ *                 (see list above).
++ * @param info_len Pointer to a __u32 containing the size of *info* on input; on
++ *                 success updated to the number of bytes actually written. Must
++ *                 not be NULL.
++ *
++ * @return 0 on success;
++ *         < 0 negative error code (libbpf style == -errno) on failure:
++ *           - -EBADF:  @p bpf_fd is not a valid BPF object descriptor.
++ *           - -EINVAL: Wrong object type, info_len too small, malformed arguments.
++ *           - -EFAULT: @p info or @p info_len points to inaccessible user memory.
++ *           - -EPERM / -EACCES: Insufficient privileges / blocked by security policy.
++ *           - -ENOMEM: Kernel failed to allocate internal resources.
++ *           - Other -errno values may be propagated from the underlying syscall.
++ *
++ * Error handling notes:
++ *   - Treat -EINVAL as often indicating a size mismatch; verify that sizeof(your struct)
++ *     matches what the kernel expects for your libbpf/kernel version.
++ *   - Always inspect errno (or the negative return value) for precise failure reasons.
++ *
++ */
  LIBBPF_API int bpf_obj_get_info_by_fd(int bpf_fd, void *info, __u32 *info_len);
  
  /**
+@@ -2230,7 +2652,9 @@ struct bpf_raw_tp_opts {
+ #define bpf_raw_tp_opts__last_field cookie
+ 
+ LIBBPF_API int bpf_raw_tracepoint_open_opts(int prog_fd, struct bpf_raw_tp_opts *opts);
++
+ LIBBPF_API int bpf_raw_tracepoint_open(const char *name, int prog_fd);
++
+ LIBBPF_API int bpf_task_fd_query(int pid, int fd, __u32 flags, char *buf,
+ 				 __u32 *buf_len, __u32 *prog_id, __u32 *fd_type,
+ 				 __u64 *probe_offset, __u64 *probe_addr);
 -- 
 2.34.1
 
