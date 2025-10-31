@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-73193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73197-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0775C27019
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 22:21:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C64C27058
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 22:24:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 55CB7351BF0
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 21:21:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78A9818951D9
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 21:22:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A696329C68;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEDDE32BF25;
 	Fri, 31 Oct 2025 21:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="lhYmRIEV"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="iTNMGTce"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F89030F818;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7DD30F556;
 	Fri, 31 Oct 2025 21:21:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761945694; cv=none; b=euI9EJzmE6e4ZNakPwY8kPIaKRjKRd5aRcpONLM+w7i/zbsJRfoar1AcPmwxF9czg/J1bLMiBMwEx0cnoLtk3kfMgDjI9Aq59kXj/sZ1uMEvPxsYtD2m9kR0t6zynGyra1wCar4+uLwJbM9oHbFqQhFwuuuPS+s0MD8WCllPsaI=
+	t=1761945695; cv=none; b=UpxbdL4RaNccLw7YANVF4w7akEjVQQOQaIh248+WrgN7qRLbNLygo1QQjleVLqEMHvijlwbv/qmy8DtHnuu4LaoQhoEzqs+JjmjZ2wsx6vHyWtrjiwlv8p9JY+N0RKb3xu8uqroyL04u3t3eYAa8yukmke+orHDf2uysBi8h368=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761945694; c=relaxed/simple;
-	bh=snQ0neZMq/SrCCtySQYfezkAXeMFeR8qnBAZCKTrUWo=;
+	s=arc-20240116; t=1761945695; c=relaxed/simple;
+	bh=EpgPg/p5cc7ht4GSCm2wnjnQJutNxY2Ggb26NMyeREc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MxPKthm5z+HpCgf9eVj4OwLcEXRCgak56FblvzINj5V1sH7U8wiEk21zKPgu/uP3PlF01NJChIKsyBfMj1Fdc2qOrtADkvx8d0Yo2idYlr8Mt9ky1Snxze68xjpv+rPd2P6LhngQghVX+8v2WLn6nve76y4is+mzYwiiFQBDvfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=lhYmRIEV; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=nzJbUts3bu43+yNPVXXkELGA+iGSqv2xE/zezuMobyFTojdgWFqe+e7SrSD3/wz4epF+CSMWEdWOfOjWZmXWlr38gK6E1moper+UU+ECZTYbJPFh9h/lk8OdI3CCH1s5ABAdLRLH+PzgH2OZOBbm3gAUy0rZ6dlQTJl1G6/dupw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=iTNMGTce; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,18 +36,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=PXKETdnd9ka6Kgd7Df8Y20jvIe3AAmvb30pim1es7Bo=; b=lhYmRIEV0PppyHSv90WnGWjI8E
-	YwCgaknWY000E/BIn6cnvpJe+ybeFBHblYYummr/+jllmn+8fc1PDyJmR+ExNOPXmhN1nRvxaclTC
-	49P6HkLS4w3uz3Wh9cyPnSypaoZV7TiD0PiqgI169Vp8RaMq8Rn+I3M/wv1RimeIEICWM/UacO5r3
-	n9ybe3Zs1emAxXsIWVd/MB4JHh5pkFR8h4t/ml44XAguSWuWTq3G2EhDDB7RFJlhhYS6aMGRuYXkZ
-	xM9nMRka2bf2aq4P3Bsz+1rYYaa6rgPIMSMyE50BM9ENq9S0sdCllRsWBRCUY+Yi3MIxtFzIW7z3G
-	3p8ya53A==;
+	bh=FKG4KtMnKWAZQiQUkIl012zrdhpKJ6kNdgrkPnRr/L0=; b=iTNMGTceyKRj4GJ7k863aJuw5S
+	+wFvIc7m7ntcglMciilwi/qQXSojwIMGuYP0OO9AlfBWgQSP1sZ1Ox7hKCiIO9hoCswCsLF9cV7+O
+	AmxH7omXGX9JaxXoFBSgdxyKxwG6OtQRMR4o0h2cSotcZH9o+LFhxsWsWAaQGpLkfuUd+R3sfs5H4
+	UwRbXmX0n+w0bf8AiuknrLUObg8SHb3SguCrQrp1B9BRmAu2sw1vFiIzXiYYSYBlzXFNM6omKU0bA
+	TgJfIru0nde/4xOdT0uwppfQbvfKPRoWf5SjgSOT+w6o7XNntFkSEnQHA5q4YDDJ0KxYJHjjpJTpV
+	Yflt843g==;
 Received: from localhost ([127.0.0.1])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1vEwYZ-0005cW-0O;
-	Fri, 31 Oct 2025 22:21:11 +0100
+	id 1vEwYa-0005cn-0n;
+	Fri, 31 Oct 2025 22:21:12 +0100
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -66,9 +66,9 @@ Cc: bpf@vger.kernel.org,
 	toke@redhat.com,
 	yangzhenze@bytedance.com,
 	wangdongdong.6@bytedance.com
-Subject: [PATCH net-next v4 05/14] net: Proxy net_mp_{open,close}_rxq for mapped queues
-Date: Fri, 31 Oct 2025 22:20:54 +0100
-Message-ID: <20251031212103.310683-6-daniel@iogearbox.net>
+Subject: [PATCH net-next v4 06/14] xsk: Move NETDEV_XDP_ACT_ZC into generic header
+Date: Fri, 31 Oct 2025 22:20:55 +0100
+Message-ID: <20251031212103.310683-7-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20251031212103.310683-1-daniel@iogearbox.net>
 References: <20251031212103.310683-1-daniel@iogearbox.net>
@@ -81,175 +81,58 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: Clear (ClamAV 1.0.9/27809/Fri Oct 31 10:42:21 2025)
 
-From: David Wei <dw@davidwei.uk>
+Move NETDEV_XDP_ACT_ZC into xdp_sock_drv.h header such that external code
+can reuse it, and rename it into more generic NETDEV_XDP_ACT_XSK.
 
-When a process in a container wants to setup a memory provider, it will
-use the virtual netdev and a mapped rxq, and call net_mp_{open,close}_rxq
-to try and restart the queue. At this point, proxy the queue restart on
-the real rxq in the physical netdev.
-
-For memory providers (io_uring zero-copy rx and devmem), it causes the
-real rxq in the physical netdev to be filled from a memory provider that
-has DMA mapped memory from a process within a container.
-
-Signed-off-by: David Wei <dw@davidwei.uk>
-Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Co-developed-by: David Wei <dw@davidwei.uk>
+Signed-off-by: David Wei <dw@davidwei.uk>
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
 ---
- include/net/page_pool/memory_provider.h |  4 +-
- net/core/netdev_rx_queue.c              | 55 +++++++++++++++++--------
- 2 files changed, 39 insertions(+), 20 deletions(-)
+ include/net/xdp_sock_drv.h | 4 ++++
+ net/xdp/xsk_buff_pool.c    | 6 +-----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/page_pool/memory_provider.h b/include/net/page_pool/memory_provider.h
-index ada4f968960a..b6f811c3416b 100644
---- a/include/net/page_pool/memory_provider.h
-+++ b/include/net/page_pool/memory_provider.h
-@@ -23,12 +23,12 @@ bool net_mp_niov_set_dma_addr(struct net_iov *niov, dma_addr_t addr);
- void net_mp_niov_set_page_pool(struct page_pool *pool, struct net_iov *niov);
- void net_mp_niov_clear_page_pool(struct net_iov *niov);
+diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
+index 4f2d3268a676..242e34f771cc 100644
+--- a/include/net/xdp_sock_drv.h
++++ b/include/net/xdp_sock_drv.h
+@@ -12,6 +12,10 @@
+ #define XDP_UMEM_MIN_CHUNK_SHIFT 11
+ #define XDP_UMEM_MIN_CHUNK_SIZE (1 << XDP_UMEM_MIN_CHUNK_SHIFT)
  
--int net_mp_open_rxq(struct net_device *dev, unsigned ifq_idx,
-+int net_mp_open_rxq(struct net_device *dev, unsigned int rxq_idx,
- 		    struct pp_memory_provider_params *p);
- int __net_mp_open_rxq(struct net_device *dev, unsigned int rxq_idx,
- 		      const struct pp_memory_provider_params *p,
- 		      struct netlink_ext_ack *extack);
--void net_mp_close_rxq(struct net_device *dev, unsigned ifq_idx,
-+void net_mp_close_rxq(struct net_device *dev, unsigned int rxq_idx,
- 		      struct pp_memory_provider_params *old_p);
- void __net_mp_close_rxq(struct net_device *dev, unsigned int rxq_idx,
- 			const struct pp_memory_provider_params *old_p);
-diff --git a/net/core/netdev_rx_queue.c b/net/core/netdev_rx_queue.c
-index 889b7382cdb6..0e43254b64cd 100644
---- a/net/core/netdev_rx_queue.c
-+++ b/net/core/netdev_rx_queue.c
-@@ -174,49 +174,63 @@ int __net_mp_open_rxq(struct net_device *dev, unsigned int rxq_idx,
- 		      const struct pp_memory_provider_params *p,
- 		      struct netlink_ext_ack *extack)
- {
-+	struct net_device *orig_dev = dev;
- 	struct netdev_rx_queue *rxq;
- 	int ret;
++#define NETDEV_XDP_ACT_XSK	(NETDEV_XDP_ACT_BASIC |		\
++				 NETDEV_XDP_ACT_REDIRECT |	\
++				 NETDEV_XDP_ACT_XSK_ZEROCOPY)
++
+ struct xsk_cb_desc {
+ 	void *src;
+ 	u8 off;
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index aa9788f20d0d..26165baf99f4 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -158,10 +158,6 @@ static void xp_disable_drv_zc(struct xsk_buff_pool *pool)
+ 	}
+ }
  
- 	if (!netdev_need_ops_lock(dev))
- 		return -EOPNOTSUPP;
+-#define NETDEV_XDP_ACT_ZC	(NETDEV_XDP_ACT_BASIC |		\
+-				 NETDEV_XDP_ACT_REDIRECT |	\
+-				 NETDEV_XDP_ACT_XSK_ZEROCOPY)
 -
- 	if (rxq_idx >= dev->real_num_rx_queues) {
- 		NL_SET_ERR_MSG(extack, "rx queue index out of range");
- 		return -ERANGE;
- 	}
--	rxq_idx = array_index_nospec(rxq_idx, dev->real_num_rx_queues);
- 
-+	rxq_idx = array_index_nospec(rxq_idx, dev->real_num_rx_queues);
-+	rxq = netif_get_rx_queue_peer_locked(&dev, &rxq_idx);
-+	if (!rxq) {
-+		NL_SET_ERR_MSG(extack, "rx queue peered to a virtual netdev");
-+		return -EBUSY;
-+	}
-+	if (!dev->dev.parent) {
-+		NL_SET_ERR_MSG(extack, "rx queue is mapped to a virtual netdev");
-+		ret = -EBUSY;
-+		goto out;
-+	}
- 	if (dev->cfg->hds_config != ETHTOOL_TCP_DATA_SPLIT_ENABLED) {
- 		NL_SET_ERR_MSG(extack, "tcp-data-split is disabled");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto out;
- 	}
- 	if (dev->cfg->hds_thresh) {
- 		NL_SET_ERR_MSG(extack, "hds-thresh is not zero");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto out;
- 	}
- 	if (dev_xdp_prog_count(dev)) {
- 		NL_SET_ERR_MSG(extack, "unable to custom memory provider to device with XDP program attached");
--		return -EEXIST;
-+		ret = -EEXIST;
-+		goto out;
- 	}
--
--	rxq = __netif_get_rx_queue(dev, rxq_idx);
- 	if (rxq->mp_params.mp_ops) {
- 		NL_SET_ERR_MSG(extack, "designated queue already memory provider bound");
--		return -EEXIST;
-+		ret = -EEXIST;
-+		goto out;
- 	}
- #ifdef CONFIG_XDP_SOCKETS
- 	if (rxq->pool) {
- 		NL_SET_ERR_MSG(extack, "designated queue already in use by AF_XDP");
--		return -EBUSY;
-+		ret = -EBUSY;
-+		goto out;
- 	}
- #endif
--
- 	rxq->mp_params = *p;
- 	ret = netdev_rx_queue_restart(dev, rxq_idx);
- 	if (ret) {
- 		rxq->mp_params.mp_ops = NULL;
- 		rxq->mp_params.mp_priv = NULL;
- 	}
-+out:
-+	netif_put_rx_queue_peer_locked(orig_dev, dev);
- 	return ret;
- }
- 
-@@ -231,38 +245,43 @@ int net_mp_open_rxq(struct net_device *dev, unsigned int rxq_idx,
- 	return ret;
- }
- 
--void __net_mp_close_rxq(struct net_device *dev, unsigned int ifq_idx,
-+void __net_mp_close_rxq(struct net_device *dev, unsigned int rxq_idx,
- 			const struct pp_memory_provider_params *old_p)
+ int xp_assign_dev(struct xsk_buff_pool *pool,
+ 		  struct net_device *netdev, u16 queue_id, u16 flags)
  {
-+	struct net_device *orig_dev = dev;
- 	struct netdev_rx_queue *rxq;
- 	int err;
+@@ -203,7 +199,7 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
+ 		/* For copy-mode, we are done. */
+ 		return 0;
  
--	if (WARN_ON_ONCE(ifq_idx >= dev->real_num_rx_queues))
-+	if (WARN_ON_ONCE(rxq_idx >= dev->real_num_rx_queues))
- 		return;
- 
--	rxq = __netif_get_rx_queue(dev, ifq_idx);
-+	rxq = netif_get_rx_queue_peer_locked(&dev, &rxq_idx);
-+	if (WARN_ON_ONCE(!rxq))
-+		return;
- 
- 	/* Callers holding a netdev ref may get here after we already
- 	 * went thru shutdown via dev_memory_provider_uninstall().
- 	 */
- 	if (dev->reg_state > NETREG_REGISTERED &&
- 	    !rxq->mp_params.mp_ops)
--		return;
-+		goto out;
- 
- 	if (WARN_ON_ONCE(rxq->mp_params.mp_ops != old_p->mp_ops ||
- 			 rxq->mp_params.mp_priv != old_p->mp_priv))
--		return;
-+		goto out;
- 
- 	rxq->mp_params.mp_ops = NULL;
- 	rxq->mp_params.mp_priv = NULL;
--	err = netdev_rx_queue_restart(dev, ifq_idx);
-+	err = netdev_rx_queue_restart(dev, rxq_idx);
- 	WARN_ON(err && err != -ENETDOWN);
-+out:
-+	netif_put_rx_queue_peer_locked(orig_dev, dev);
- }
- 
--void net_mp_close_rxq(struct net_device *dev, unsigned ifq_idx,
-+void net_mp_close_rxq(struct net_device *dev, unsigned int rxq_idx,
- 		      struct pp_memory_provider_params *old_p)
- {
- 	netdev_lock(dev);
--	__net_mp_close_rxq(dev, ifq_idx, old_p);
-+	__net_mp_close_rxq(dev, rxq_idx, old_p);
- 	netdev_unlock(dev);
- }
+-	if ((netdev->xdp_features & NETDEV_XDP_ACT_ZC) != NETDEV_XDP_ACT_ZC) {
++	if ((netdev->xdp_features & NETDEV_XDP_ACT_XSK) != NETDEV_XDP_ACT_XSK) {
+ 		err = -EOPNOTSUPP;
+ 		goto err_unreg_pool;
+ 	}
 -- 
 2.43.0
 
