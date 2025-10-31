@@ -1,62 +1,65 @@
-Return-Path: <bpf+bounces-73088-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73089-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBEA1C22D27
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 01:50:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D34C2C22D4E
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 01:57:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B75418869BF
-	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 00:50:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EA2D18932EB
+	for <lists+bpf@lfdr.de>; Fri, 31 Oct 2025 00:57:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 515401FF1C4;
-	Fri, 31 Oct 2025 00:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A862B21771C;
+	Fri, 31 Oct 2025 00:56:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EE4pmfa9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oGz25MqT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC3FB17C77;
-	Fri, 31 Oct 2025 00:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DCBF1B78F3;
+	Fri, 31 Oct 2025 00:56:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761871819; cv=none; b=pVlgqbe4Fx41+mqjXNREl8EMxspZnRmWCr/ApoPptGtHM7jlFxshSC4Phsje4XTlbpl99OaqU/yZm/mWA/I3bZl690/rLzHrXr+d9qkOYOZQFUGu/TkwG14skAPm7OJpZC3kqG/qZfbhq2yXmV6JRSrGwLwUehySV2+gU8uYdbk=
+	t=1761872213; cv=none; b=hab3DvW0rTu5vtQ1nUdQ7hu4WCBzkzRit8ZWo9DOH+2iC6s/XGc43PkY+V2B+L5qaY+WIj9BMRFZ/3uaYJ0eMLuBLdeBVaQvGddMguLfYYsopVXpyNWzG38ujpx6brzfUkoCq2uSQUfj/BzaEsNQ4wwrFRaqjHNAxEXrjKNUKT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761871819; c=relaxed/simple;
-	bh=HbM7gMoVX8jsj6bLdXZC/72JdLg6TPgOiocJwLHLyIg=;
+	s=arc-20240116; t=1761872213; c=relaxed/simple;
+	bh=8N1NTpvovWIrm8r+PlFn96LbfAjQIzqsi3XHz4vVQgo=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=K4mufXqD7xLViquiY3/4WGMoV2NGGUiy5ESvUok7HS/lZPomH8RFJiu3ANK8YYJbJ6UCVu38aZXdWl+L/4t+rb3IY7s4okz2S9eaW2sX4zcKNZsyLCKl/+3D8DCyO9HulofZRXnwjlBuOm7G7eM6/tA0xQqsMnCF9hFtJ4N9jV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EE4pmfa9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 045C8C4CEFD;
-	Fri, 31 Oct 2025 00:50:18 +0000 (UTC)
+	 MIME-Version:Content-Type; b=eDrupC0EY6At7z+W+aCSwgrG3jgEidknWO3fDD0J2vX4+hElOSag9SKCkDebTnKs0X3ulSnJ6Mt0MGd28g7q46xxsc5g6OItIYZsdOaLMZWnPzarkdMV40LeTcVdGw+IlwrZntVX/1h/rM5VOBOVa60j0YQnEtchyv2Sul7hyFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oGz25MqT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ADC4C4CEF1;
+	Fri, 31 Oct 2025 00:56:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761871819;
-	bh=HbM7gMoVX8jsj6bLdXZC/72JdLg6TPgOiocJwLHLyIg=;
+	s=k20201202; t=1761872212;
+	bh=8N1NTpvovWIrm8r+PlFn96LbfAjQIzqsi3XHz4vVQgo=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EE4pmfa9hsqFDEqALNPGB2xb+AoFrPh1qEJvlDDVPAKbTOVs9pxMeZT2GjCby/n3t
-	 Mjix1XIpbmhw2HqZae834AxSCh4v8JWWCuvW8XpXz+xQLqGe0L4cTiwVKwx2+/+KI7
-	 5eKCJrohox6UJ4QBXNwMCtYjnOaBrCX7VZKHc5aexXeC3F0UisK5lnN/Q9ivejDL/A
-	 Qj88MxaEOWSpFJzuwOtXibDjvvDjD+Sph5hLB8dJu95j2q0WAFW0S9rBIt1d/SUqNy
-	 ipi+y2uNmbJAGcYaVbwGv/MRR9f8dctrgP+TRSsF8/eoeYuNu5plB1UkJJw7UU53fW
-	 y5KG0Uvr6iizQ==
-Date: Thu, 30 Oct 2025 17:50:18 -0700
+	b=oGz25MqTJssiFwYrHUfgncZWMNpxzghDZfJyuMUwDEDjM6qUQxWCu3U5xlkqdl8ka
+	 h/xWLfwwC90RQkdU5VmTQBqgCpCsUS0vBLTIJlBeuCASC3SoMxB98auuxVasAQ+dMu
+	 Wf03mRBwXXOYMBoxQ2iKCXzfbGAuEUTZBukooSBDFHt92YPafsN1W3khL/Fk+7L7gx
+	 eEK+TdndR7ldVFChqqM+I6zpfVbo0bbOgtntBI296yGvSoX+dWG6soB0aGZ2IiRLmT
+	 YYahT3MW98qw4mNVTMklISSldGSAe79kElBRlzSyOucAgTTxEIX1M8dx4oquMjA9p+
+	 pOTyz+Rl1rgxQ==
+Date: Thu, 30 Oct 2025 17:56:50 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux
- Documentation <linux-doc@vger.kernel.org>, Linux Networking
- <netdev@vger.kernel.org>, Linux BPF <bpf@vger.kernel.org>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
- Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Jonathan Corbet
- <corbet@lwn.net>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>
-Subject: Re: [PATCH net-next] net: Reorganize networking documentation
- toctree
-Message-ID: <20251030175018.01eda2a5@kernel.org>
-In-Reply-To: <20251028113923.41932-2-bagasdotme@gmail.com>
-References: <20251028113923.41932-2-bagasdotme@gmail.com>
+To: chia-yu.chang@nokia-bell-labs.com
+Cc: pabeni@redhat.com, edumazet@google.com, parav@nvidia.com,
+ linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
+ dsahern@kernel.org, kuniyu@google.com, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com,
+ stephen@networkplumber.org, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+ davem@davemloft.net, andrew+netdev@lunn.ch, donald.hunter@gmail.com,
+ ast@fiberby.net, liuhangbin@gmail.com, shuah@kernel.org,
+ linux-kselftest@vger.kernel.org, ij@kernel.org, ncardwell@google.com,
+ koen.de_schepper@nokia-bell-labs.com, g.white@cablelabs.com,
+ ingemar.s.johansson@ericsson.com, mirja.kuehlewind@ericsson.com,
+ cheshire@apple.com, rs.ietf@gmx.at, Jason_Livingood@comcast.com,
+ vidhi_goel@apple.com
+Subject: Re: [PATCH v5 net-next 00/14] AccECN protocol case handling series
+Message-ID: <20251030175650.69d77ddd@kernel.org>
+In-Reply-To: <20251030143435.13003-1-chia-yu.chang@nokia-bell-labs.com>
+References: <20251030143435.13003-1-chia-yu.chang@nokia-bell-labs.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,20 +69,12 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 28 Oct 2025 18:39:24 +0700 Bagas Sanjaya wrote:
-> Current netdev docs has one large, unorganized toctree that makes
-> finding relevant docs harder like a needle in a haystack. Split the
-> toctree into four categories: networking core; protocols; devices; and
-> assorted miscellaneous.
-> 
-> While at it, also sort the toctree entries and reduce toctree depth.
+On Thu, 30 Oct 2025 15:34:21 +0100 chia-yu.chang@nokia-bell-labs.com
+wrote:
+> Plesae find the v5 AccECN case handling patch series, which covers
+> several excpetional case handling of Accurate ECN spec (RFC9768),
+> adds new identifiers to be used by CC modules, adds ecn_delta into
+> rate_sample, and keeps the ACE counter for computation, etc.
 
-Looking at the outcome -- I'm not sure we're achieving sufficient
-categorization here. It's a hard problem to group these things.
-What ends up under Networking devices and Miscellaneous seems
-pretty random. Bunch of the entries under there should be in protocols
-or core. And at the end of the day if we don't have a very intuitive
-categorization the reader has to search anyway. So no point..
--- 
-pw-bot: cr
+Is this a pure repost or you changed something?
 
