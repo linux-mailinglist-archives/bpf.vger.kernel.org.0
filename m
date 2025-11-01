@@ -1,80 +1,137 @@
-Return-Path: <bpf+bounces-73240-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73241-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BE8CC27EF4
-	for <lists+bpf@lfdr.de>; Sat, 01 Nov 2025 14:11:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AEC7C27F34
+	for <lists+bpf@lfdr.de>; Sat, 01 Nov 2025 14:26:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9EF424E6B4B
-	for <lists+bpf@lfdr.de>; Sat,  1 Nov 2025 13:11:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67D82189791C
+	for <lists+bpf@lfdr.de>; Sat,  1 Nov 2025 13:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6057E2264A9;
-	Sat,  1 Nov 2025 13:11:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9852F532C;
+	Sat,  1 Nov 2025 13:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mXkxOZQL"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18EAB1E520E;
-	Sat,  1 Nov 2025 13:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6219F19258E
+	for <bpf@vger.kernel.org>; Sat,  1 Nov 2025 13:26:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762002676; cv=none; b=DpZaCZxowlrbF98xhTWs2PWeQoidgxTAONEN1yJhotZTc7uDlVyA4/1S6R127WD+CSqX4jvxG1tqtkjyGLm8v+O0jSRbc9VuZtHi6+2hlhNpUZ4x59XZnhS+oWFWVz0ns/ih4mlafbrIiORwVrwBjGo5PonVYsYCot1ckAJEF3Y=
+	t=1762003610; cv=none; b=foUxeyhfGdEGmwSbHc6k8DXrJ2t0pGoNK9uWYGaiN93dGdSPZklliBUBQHhkZK409yzw6YSS3LM22qcVjsIjonV5iW3/iLooGmMW+CiZa304ms071pH28Y0TUKqRqGjQKUq1UG4hxpQIhCiFtfEeawEz7FuQsqHICreDp/IZY94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762002676; c=relaxed/simple;
-	bh=AzJn2EhpdKUavXcHL1YNtazEeTIv9k3oI1R5Sb6/0pw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=O8Sr760Yldl/kzIYQc1VXwNV3s8LuU/xXztOgp7egZA8njYOef3V5ZRqT54LPi1JMJdk2jClq7JpupylyNfSeonlnDYntQtrdxcjDKpOakzKuB5kw2EGrSMn/BCl2iE2oRP5ODmNy7nMqvZQRcafCqyhBE2rcXkASGvb8uaEhF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf07.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay06.hostedemail.com (Postfix) with ESMTP id D8A4912BBA1;
-	Sat,  1 Nov 2025 13:11:10 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf07.hostedemail.com (Postfix) with ESMTPA id 25D052002C;
-	Sat,  1 Nov 2025 13:11:08 +0000 (UTC)
-Date: Sat, 1 Nov 2025 09:11:16 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
- linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
- live-patching@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Andrey Grodzovsky <andrey.grodzovsky@crowdstrike.com>, Masami Hiramatsu
- <mhiramat@kernel.org>, Kernel Team <kernel-team@meta.com>, Jiri Olsa
- <olsajiri@gmail.com>
-Subject: Re: [PATCH v4 bpf 0/3] Fix ftrace for livepatch + BPF fexit
- programs
-Message-ID: <20251101091116.763638e5@batman.local.home>
-In-Reply-To: <CAADnVQ+azh4iUmq4_RHYatphAaZUGsW0Zo8=vGOT1_fv-UYOaA@mail.gmail.com>
-References: <20251027175023.1521602-1-song@kernel.org>
-	<CAADnVQ+azh4iUmq4_RHYatphAaZUGsW0Zo8=vGOT1_fv-UYOaA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1762003610; c=relaxed/simple;
+	bh=Mgp89QAtrTjRgM6jWQFTc0jn1YY1UmGe8KsPam+6Ssk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=MioDCKfwaD2mUmmxnxcaIorn1XQy+mJVnpNZn903zv5BUt2jsAgmabdN6dS2WsdHnnHUDPFzRnpBtlpK2G4O/UahUKO7qn6KcCtm9KW8HNr6KOZ/aetZnu38IEFJpnaq1P0oljZSE0mkFmUrGXg8q3oAsUPIfcLG+m39TPwTo2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mXkxOZQL; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-429b72691b4so2852308f8f.3
+        for <bpf@vger.kernel.org>; Sat, 01 Nov 2025 06:26:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1762003607; x=1762608407; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eg53ujn5W1DedX1Vyep0yhtifcPEiIbNUDg4dfuJiow=;
+        b=mXkxOZQLOo/7v+JkoergXHoljqy4zc1MzpCWRuTLPEdmhjfiTLmQPKSUbxOZA+LCI3
+         Lijpx/r4nzNmIBuLh6ZtW17pykbV9+EZ1rR2r5X/OGbpiq0tYgpdTUNb9+p3tyaHmDQj
+         zeZ3RyvnM+2ek/MHXY6aQVkwPXdlGB12Lbv+BjJyAkeHWU/NqicXcn/vpYHSSKSDS15N
+         DWYG571c8l2HiMiXlzFU0P5FmtO6lFhn3EcRLOI0XJZJaYk83w/vljsx9Mnb/qhkCq30
+         dwVDf+gxSikJiNxKpSwAu3pGRtnuK4HCWv8Af6oCjBVpJEYdA5rfh1H+1Zw/MbiuNs5O
+         sY0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762003607; x=1762608407;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eg53ujn5W1DedX1Vyep0yhtifcPEiIbNUDg4dfuJiow=;
+        b=YbTn/xC8t7Q60cP0d1L/1ML86QquHt4+1XP29pyk9iKvbTe6o4O74XENLKuKs41/JK
+         oQlLIMWfeLCYSi7bBy3/d7tIKtrLTuFPzdK0UXDImZZVYs/rGsYbhNIym+IieUT1u3gR
+         7JvYLlEEsJkzadTQD2DCedSfb7gjM8+equbQx5ClYNi7z/4Ip/MKVA4Un4c+LugWNn49
+         WRFTfMr4s+tFSa5nUNOxdQwKigrz9fxiSTom8y+y4bxPYxNE/k8+c5DPmlVJZHn5R5ll
+         J6NBTCDJ8YqGCROQbZVhHj1E7mJ2zIqiUpO3utvt6g+Hx1SN1xZVW1VAbPbaP8Qlc87u
+         FLJw==
+X-Forwarded-Encrypted: i=1; AJvYcCUhHXZLNi0xFT+R9EWPfmBQooi3ZrD+0IIjgyGaAAVYjn/DLMewbKeZklVxvtjLcqeBKsk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzCrd1UmPqTG8J7dKkXJkrlczivLWXKcZ06NarcZCVgOYmM6GKo
+	FSAfvydBFYvUmeVfyqUlSHgbF/FD5EdvuR8ZK7WTCDKWcfOgB01T4AuUVUbJ/Nd58f0=
+X-Gm-Gg: ASbGncsm3hMXW1CJMtcWLuqP4lAJ9kdCqOhxvPPYgvk/uUVQf76GDTcekxXK3qptdZm
+	yfa4jOGkdItzQhSmu/wLcQeCMUrlqHxYVs/Dyyob6hYhu+X9MKDZk9i9w/57W8/QDGisIKTDPSr
+	IkbQrqOsusHEfWBtQwtAJhyjwRTfc2lZVV/wvrg+qWKkHODQ4cD5GXNS+E2aPCy4JZHJTbyPG47
+	1AL61ko4bFd/dRiRgx2Ua5eak/9r8EOu4FMrh390JJFMeylKxYC+EuDYHAjHc7yKDHampR+uzWg
+	35K24Enb4uEWRtKBg8boR8wKdvRTB3SBKPT5lPKfcZTgkYYuknvHAXA6xfobVPoI3WNb6To6k7N
+	M1EEnYdjj1qqdwgvpwn9nK9kFKjYshMG39+Ut5aZ8exdljm+hmcrGcdySVedEAU0vTPxWL0KUD6
+	3e04C31TCJySZE6PbG
+X-Google-Smtp-Source: AGHT+IHWklOzm9hRp2MshFHHpjAPX4YwiYbf/S/L+tv28vs/jH3gOqeBv6O9b8sMd6VBVbyb1K/+5A==
+X-Received: by 2002:a5d:5888:0:b0:425:7c2f:8f98 with SMTP id ffacd0b85a97d-429bd675fc0mr5343738f8f.1.1762003606366;
+        Sat, 01 Nov 2025 06:26:46 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-429c54498dfsm5711594f8f.34.2025.11.01.06.26.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Nov 2025 06:26:45 -0700 (PDT)
+Date: Sat, 1 Nov 2025 16:26:42 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Suman Ghosh <sumang@marvell.com>
+Cc: Sunil Goutham <sgoutham@marvell.com>,
+	Geetha sowjanya <gakula@marvell.com>,
+	Subbaraya Sundeep <sbhatta@marvell.com>,
+	hariprasad <hkelam@marvell.com>,
+	Bharat Bhushan <bbhushan2@marvell.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH net] octeontx2-pf: Fix devm_kcalloc() error checking
+Message-ID: <aQYKkrGA12REb2sj@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout08
-X-Rspamd-Queue-Id: 25D052002C
-X-Stat-Signature: yryycompfdensi6cmw3ygrpxsqrgixsi
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/WMseIXgL+xST54cTWn2OWaUeAAwNYOdg=
-X-HE-Tag: 1762002668-277336
-X-HE-Meta: U2FsdGVkX1+VbKDVvTMG90gnNSTYjxs1WemFaEWHqAb83xKjom5E2rTtTwXrnX+sJTRFB67F6yYYmLreq0fkoE5G6ykVnT/+zmo35uJPqTz/cd37VPZ2kf67u2ET6QiV3FepIKbEiFmi+ay0u/nGAij38nyGBHJ9uEOAgh5R8oFID0JTPcJky2AWXEO+FGyZa5rxXDd5MAoJAFjI5v5bIRuDT8hd2mgCpesnFsaK+OW7VKjOGQnKyMspbCQn6rN4Zx0KFikopcYWBbpGQ+LZ4gV6WfvGngoLLG5EuDUHb9sqvFpaJkmBvRa5UYvs1e6Dgi3QIBuq8fh0LznHLdTDy7BXvjr9I+Ch0w51CPpPqJrU2Ywl5Hb2nQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-On Fri, 31 Oct 2025 17:19:54 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+The devm_kcalloc() function never return error pointers, it returns NULL
+on failure.  Also delete the netdev_err() printk.  These allocation
+functions already have debug output built-in some the extra error message
+is not required.
 
-> can you apply the fixes or should I take them ?
-> If so, pls ack.
+Fixes: efabce290151 ("octeontx2-pf: AF_XDP zero copy receive support")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Let me run them through my full test suite. It takes up to 13 hours to
-run. Then I'll give a ack for you to take them.
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 3378be87a473..75ebb17419c4 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -1530,10 +1530,8 @@ int otx2_pool_aq_init(struct otx2_nic *pfvf, u16 pool_id,
+ 		pool->xdp_cnt = numptrs;
+ 		pool->xdp = devm_kcalloc(pfvf->dev,
+ 					 numptrs, sizeof(struct xdp_buff *), GFP_KERNEL);
+-		if (IS_ERR(pool->xdp)) {
+-			netdev_err(pfvf->netdev, "Creation of xsk pool failed\n");
+-			return PTR_ERR(pool->xdp);
+-		}
++		if (!pool->xdp)
++			return -ENOMEM;
+ 	}
+ 
+ 	return 0;
+-- 
+2.51.0
 
--- Steve
 
