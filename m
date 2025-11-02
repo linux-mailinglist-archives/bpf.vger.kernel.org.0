@@ -1,87 +1,55 @@
-Return-Path: <bpf+bounces-73252-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73254-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42141C2867D
-	for <lists+bpf@lfdr.de>; Sat, 01 Nov 2025 20:34:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34EE1C28E36
+	for <lists+bpf@lfdr.de>; Sun, 02 Nov 2025 12:37:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31E6F189F3A7
-	for <lists+bpf@lfdr.de>; Sat,  1 Nov 2025 19:35:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44EDA3B1782
+	for <lists+bpf@lfdr.de>; Sun,  2 Nov 2025 11:37:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C16294A10;
-	Sat,  1 Nov 2025 19:34:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C29EA2D8DCF;
+	Sun,  2 Nov 2025 11:37:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="aXd5UAmX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KN7z943z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D051C288C25;
-	Sat,  1 Nov 2025 19:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ADA0270551
+	for <bpf@vger.kernel.org>; Sun,  2 Nov 2025 11:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762025668; cv=none; b=e2n+LLshNsnIDbtyR4xuRQyA2k+NBCQB32iKs3pXo6qhDF8e6T8/vzUIcCuAFdmDKwdU9FLpw5QWHM8ACbJYCaYfF341UxpHJ6Y2lTBDRjZFVy2HgncTY+pmd2mSIbY8K77fAhgYz4yvEDOaHVx44kfN42ozWb2hPflV/4HMRSU=
+	t=1762083471; cv=none; b=Xg7sIHx574PSZns0G8K+ZIaPKvgDqhHWGAhnrSbGYPiMQXzAAB0p3ydQ/BZTOIKdI8w5+uLo5mj0NSbFni+BpLLO3SpNWlL3S4d2eyoPo9ZDeq6VAgJ4jf8d5yyMej8VAjKUIQK3R0plLekEdMaItuBpT4TRiE4fB6Mqa+TXV5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762025668; c=relaxed/simple;
-	bh=+2DQeon6j9mTMYJK8OATLAYZm3wQvRAOPPkBzHYky3I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QZQi53d3BhZLJOtGDF5vNynG525Q3EEv1k0onkYJka/DMqyNCfMUpYST7e+jCDM19768WxPmY9km1lTAXSmKoB2FERbF1DSbFVHKT/2FJHWZRTsCvzjAv9OJbXjg6y/0ZE03/R4mer7sn1ryud/6v4+N6qxiRnAO3uw5anL5kJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=aXd5UAmX; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5A1JU2lP004657;
-	Sat, 1 Nov 2025 19:34:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2025-04-25; bh=KrvkO
-	2IKd9SwvBGQEWCgmWIfW7DssO96nFyUoB/6uUs=; b=aXd5UAmXO249L5BVr2YXX
-	lInHVX/Nt/XCfJz4HrqCA4hJWamaYvfS8oXK4OZ3es+qAwVp/HKPwgMNpzAcEz7o
-	zekfu9wwFKMJmrCCtwInolR4+zwu3kMbInVmHYeCn+Q6xREAe30a5VDA16AG1Z2M
-	ImzCMGfk/N6T2b39ZNC8GCeL/SMWBKKrsOtasinOZlNOXdKcQI4I2lwmHxPtp5uo
-	2ny9BGbAUsWB7sLtl13Oh0pHQWbuSgSt+nOC3MFsCy8WiJsyzCZi1QrfIayaKTAX
-	a3Hy/0R0tF8ndle/9l3PBATF1uk9K1o2NDKN2kY0AoM+5h0uNtJzt5uq7c4w0+cH
-	Q==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4a5rdgr029-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 01 Nov 2025 19:34:06 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5A1Gevin020910;
-	Sat, 1 Nov 2025 19:34:05 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4a58n6s26h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 01 Nov 2025 19:34:05 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 5A1JY0Gk007914;
-	Sat, 1 Nov 2025 19:34:04 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 4a58n6s24r-3;
-	Sat, 01 Nov 2025 19:34:04 +0000
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+	s=arc-20240116; t=1762083471; c=relaxed/simple;
+	bh=bTxFJO9yoVX7Uq03Ks7P+vpbNJ7Mnn7qkT+vSkfPxpo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r622L1OPQ6LbQPpvzgGrwjBZjAjl+hI19nRMMLUE5WcxKn5grNcF1ZMviIoimxGIShtpLgffb/cp8o+9kvq4TRrUY43p79lZ9SHIDfs1Iq/DM3usaDYnu0YPLXp9wonoNXWMWTsWAaS/0P1zmGJjtiKCQL1AJp7VEAOVZU07AGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KN7z943z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98258C4CEF7;
+	Sun,  2 Nov 2025 11:37:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762083470;
+	bh=bTxFJO9yoVX7Uq03Ks7P+vpbNJ7Mnn7qkT+vSkfPxpo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KN7z943z9tRf+fI8f3+1mF0n8imgg0cy/Rcjd0CgtFu+f+UR4i5rcZvQcAOrwN9V6
+	 QGTp3/ujH7fyq81/ruJOly3laFGmKmF+Ub9k1KZlyByOUCgsinviHe7quz8aeeVC1A
+	 iB1O16hL+XzvvcsZNHyMW0ycV9ZIdCPXOqoF1M9i9WuLLVgYKoutl1WpUuttwvbr/N
+	 pnVc8N2XmRCnJmoTNdDQmMV6F8vLHfs/mtuiPUaec6PjuTZ9/kCS/dJ0AoBpdwwAA7
+	 x6orZ1oYLXTFqs0XF5AiMIEopkcuRp12rjh3fwGppxGBUVgQcgVgqt99KGg+m0+LKx
+	 ZpGcP8PAQMa6w==
+From: KP Singh <kpsingh@kernel.org>
 To: bpf@vger.kernel.org
-Cc: alan.maguire@oracle.com,
-        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-        Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v3 2/2] selftests/bpf: Add test for bpftool map ID printing
-Date: Sat,  1 Nov 2025 12:33:55 -0700
-Message-ID: <20251101193357.111186-3-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20251101193357.111186-1-harshit.m.mogalapalli@oracle.com>
-References: <20251101193357.111186-1-harshit.m.mogalapalli@oracle.com>
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	clm@meta.com,
+	KP Singh <kpsingh@kernel.org>
+Subject: [PATCH bpf] bpf: Check size of the signature buffer
+Date: Sun,  2 Nov 2025 12:37:42 +0100
+Message-ID: <20251102113742.34908-1-kpsingh@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,88 +57,31 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-01_05,2025-10-29_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- spamscore=0 suspectscore=0 mlxscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
- definitions=main-2511010168
-X-Proofpoint-GUID: JPhcnXOkRQd1HFM52tCKxeZMdfEX3FHK
-X-Proofpoint-ORIG-GUID: JPhcnXOkRQd1HFM52tCKxeZMdfEX3FHK
-X-Authority-Analysis: v=2.4 cv=DoJbOW/+ c=1 sm=1 tr=0 ts=690660ae cx=c_pps
- a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17
- a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
- a=zZ8rhmji2bsAaRzR-ewA:9 a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTAxMDE2OCBTYWx0ZWRfXw/GaT5TC1qtj
- jmj8Ajma87A7MEQVisxUm1V6FQIZMP5Q72SAY0sbKTFP0nUzdsdGCG7g76Qt/Zk17YBXhXqrezN
- AASmktaNHgqd1oBXNV9+LB1c+2LSrT28Yg3YHBW5lz28QBsPIFt5AJW8Epz8xuCsWS+XAK38RFi
- dYzDgPP42UYKauCHGeAou9zHsQFqsn7R+86qcfXE5hdSuDpUlrtjCfauAO03z8Fvh8QXlm3g6Q+
- gmPXBIRGJfxNZhgAwlZDi9Nb0SO7Zf7cPUASoMWKKn/3AdT2Ld+7Q9zLzFSgQmp7rwsBwN5LRV7
- VuxoL0+E98/qZsceK/E1xO9V+gRAkihjZl+YffJjEU5SMChhHhcESj8/ImgxlZlGsDO1j+49Nue
- GARsrUBOK70b9KN3X1c3bUfj4wY3Yw==
 
-Add selftest to check if Map ID is printed on successful creation in
-both plain text and json formats.
+Accept only a SHA256 sized buffer.
 
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Fixes: 349271568303 ("bpf: Implement signature verification for BPF programs")
+Reported-by: Chris Mason <clm@meta.com>
+Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
-v2-->v3: Removes printing for success cases following the pattern used
-in this script. Also remove "FAIL:" prefix for consistency. [ Thanks to
-Quentin for the suggestion]
----
- .../testing/selftests/bpf/test_bpftool_map.sh | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ kernel/bpf/syscall.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/test_bpftool_map.sh b/tools/testing/selftests/bpf/test_bpftool_map.sh
-index 515b1df0501e..d65866497c1b 100755
---- a/tools/testing/selftests/bpf/test_bpftool_map.sh
-+++ b/tools/testing/selftests/bpf/test_bpftool_map.sh
-@@ -361,6 +361,36 @@ test_map_access_with_btf_list() {
- 	fi
- }
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 8a129746bd6c..cc5bce20ec86 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2826,6 +2826,9 @@ static int bpf_prog_verify_signature(struct bpf_prog *prog, union bpf_attr *attr
+ 	void *sig;
+ 	int err = 0;
  
-+# Function to test map ID printing
-+# Parameters:
-+#   $1: bpftool path
-+#   $2: BPF_DIR
-+test_map_id_printing() {
-+	local bpftool_path="$1"
-+	local bpf_dir="$2"
-+	local test_map_name="test_map_id"
-+	local test_map_path="$bpf_dir/$test_map_name"
++	if (attr->signature_size != SHA256_DIGEST_SIZE)
++		return -EINVAL;
 +
-+	local output
-+	output=$("$bpftool_path" map create "$test_map_path" type hash key 4 \
-+		value 8 entries 128 name "$test_map_name")
-+	if ! echo "$output" | grep -q "Map successfully created with ID:"; then
-+		echo "Map ID not printed in plain text output."
-+		exit 1
-+	fi
-+
-+	rm -f "$test_map_path"
-+
-+	output=$("$bpftool_path" map create "$test_map_path" type hash key 4 \
-+		value 8 entries 128 name "$test_map_name" --json)
-+	if ! echo "$output" | jq -e 'has("id")' >/dev/null 2>&1; then
-+		echo "Map ID not printed in JSON output."
-+		exit 1
-+	fi
-+
-+	rm -f "$test_map_path"
-+}
-+
- set -eu
- 
- trap cleanup_skip EXIT
-@@ -395,4 +425,6 @@ test_map_creation_and_map_of_maps "$BPFTOOL_PATH" "$BPF_DIR"
- 
- test_map_access_with_btf_list "$BPFTOOL_PATH"
- 
-+test_map_id_printing "$BPFTOOL_PATH" "$BPF_DIR"
-+
- exit 0
+ 	if (system_keyring_id_check(attr->keyring_id) == 0)
+ 		key = bpf_lookup_system_key(attr->keyring_id);
+ 	else
 -- 
-2.50.1
+2.43.0
 
 
