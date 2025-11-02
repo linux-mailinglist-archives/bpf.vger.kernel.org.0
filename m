@@ -1,197 +1,209 @@
-Return-Path: <bpf+bounces-73275-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73281-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF3E2C29748
-	for <lists+bpf@lfdr.de>; Sun, 02 Nov 2025 22:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A3A30C29781
+	for <lists+bpf@lfdr.de>; Sun, 02 Nov 2025 22:45:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5C5C04E510B
-	for <lists+bpf@lfdr.de>; Sun,  2 Nov 2025 21:40:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CD71D4EAC1D
+	for <lists+bpf@lfdr.de>; Sun,  2 Nov 2025 21:45:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F83233140;
-	Sun,  2 Nov 2025 21:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1434025A2CF;
+	Sun,  2 Nov 2025 21:44:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="RV7uRs3v";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="utcngmW8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y59alB+C"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-b2-smtp.messagingengine.com (fhigh-b2-smtp.messagingengine.com [202.12.124.153])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A31FBA45;
-	Sun,  2 Nov 2025 21:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77484253B5C;
+	Sun,  2 Nov 2025 21:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762119625; cv=none; b=tRO5ospH2AhHktkVhwC8zEzFgOxnW6Bdd6B5I4HtrejM3gHwblBxMs8lMiDWCaWcGYgVZ9ZoBE7MNiUw/0hGHZGkTGDNGsAkPBMxAX1pPZZKS7amNXupHUTlUegeYYCPQPEoRoGpN3jMKkw7qUfgu/ec5OIq6+LQzKgru2ZHlS8=
+	t=1762119879; cv=none; b=F++xHgP+ZVncwpbjvHtMX/Z64jElmquaJgyiwtgBJqtqBQtdfCJts5P+Cx6XfkL7k2O5ST81QU/M7IwIhH319BYbCfTC6g47HgSLXXuO/Exeb25nz0ZAfAqhy6TSRlcz9P54Z2V53pvOvhmtKQDWooqMicoQPr1xDkR1gd0NHb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762119625; c=relaxed/simple;
-	bh=Ji4fYl5V7nF22PzSh+1gNJQ2WcwuRq4RfxI+te+IoVg=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=TvlSmUdoSJasyljdEDkcH+PGSJ5V11wCFw5VZaS8VTlz4CiiUNoz4DLIomeuFJX6gxk5SKDbXR2/N3AMgxcSgyV/VEyHxVAqhYNe84t5c/FAHTFrUajxDnpec8HegYQg1krkzfyW3JMxAHmCFUVFBsM6/i/0ewUeR584q1UB1Do=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=RV7uRs3v; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=utcngmW8; arc=none smtp.client-ip=202.12.124.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 738127A0158;
-	Sun,  2 Nov 2025 16:40:21 -0500 (EST)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-04.internal (MEProxy); Sun, 02 Nov 2025 16:40:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1762119621;
-	 x=1762206021; bh=8B1xp+SmLXggwATnlZ56FNZ4Kfou721p8uoDtFoWNy4=; b=
-	RV7uRs3vimLSXn6Afc+9B4lLmPGColOELBjahtzeRc3gOVIkP88nxF2/LuBNCzU9
-	xz7MXGS0YsfdTM33xxL5jV4r12BYm816kL1YTVASb3eT46kalb7VRw+eVFHzGG9D
-	wlhIQuLWTdzHbYZNxz5zcC4pj6ym+Vt/v5rdm+MCoVgg1CUFbOo6gJH+XlsBldN7
-	fpEJWNmD4tcvNm0Kr/Wwh3dh0pzMwdSkLzYf+iQzyL1zVk2wOVXevEN4PlTijnNY
-	FLRep8oOhdmJiWXaanIDfUhtB9hvMlqAyh8T3WZzto55tlIBve6vRM7HbuHrwzMJ
-	m7Sk5PX35dEHojKA4syKwQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1762119621; x=
-	1762206021; bh=8B1xp+SmLXggwATnlZ56FNZ4Kfou721p8uoDtFoWNy4=; b=u
-	tcngmW8NumqKEtJZRC61dRQcY5oRVtSYld384hctmb6co+AFxgEQknIMtfXquK+b
-	BE4yTtO/aTGUR4i43NyQavxqLW07MBGoFZJ5CjzlSecSDabw4+DxsU7nis7PTNBU
-	4/TcaafzIz1rSvSUtcxxYHOqe02HsBy1P1L3Klzv8rMEcI2ND5i43z+70dt/yR/+
-	tyLgMnjqjDScBQc1lpViE2gIFzwIoTfT8bbyN0k0ADw07wDM/urcbGgnbkjWj+8Z
-	1iKoipFDG20XY+wQdeyBr5fq7su0W3JF/EuZglh0M6UwOay3+3OptwqCZy6sJa5p
-	KpF5SGCd0a/NM6vsvFr6Q==
-X-ME-Sender: <xms:ws8HaRO3Z2R6gtrzw7TOb7KdjsMCj-JgEmab2t6605D0EhlP6Jdp0g>
-    <xme:ws8HaezYtglLhvkuSO4TMO6GZ71_2ei-E_YHrNKdq8BPrFaGAn9xmTKkFMya1292K
-    ANkeq0JPLlLkpeIMbS_E5XVGsxAPQvOW3QcjjtY-u8FGFcj5H_QKqhN>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddujeeifeeiucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtqhertdertdejnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhepvdfhvdekueduveffffetgfdvveefvdelhedvvdegjedvfeehtdeggeevheefleej
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
-    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepvddvpdhmohguvgepshhmthhpohhu
-    thdprhgtphhtthhopehhrghrihhsohhknhesrghmrgiiohhnrdgtohhmpdhrtghpthhtoh
-    eptggrthgrlhhinhdrmhgrrhhinhgrshesrghrmhdrtghomhdprhgtphhtthhopehmrghr
-    khdrrhhuthhlrghnugesrghrmhdrtghomhdprhgtphhtthhopegtlhesghgvnhhtfihord
-    horhhgpdhrtghpthhtohepmhgvmhigohhrsehgmhgrihhlrdgtohhmpdhrtghpthhtohep
-    iihhvghnghhlihhfvghnghdusehhuhgrfigvihdrtghomhdprhgtphhtthhopehpvghtvg
-    hriiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdr
-    ohhrghdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:ws8HaRq9eQIUCLNoV0sLHNJIDsI3IIjDWFNun-OjdPISQPGYv9gxpA>
-    <xmx:ws8HafOGxBOTYFM7_HNmx1Z0WD7tO-j-PZMunUB7QMP53mcHAcnJbw>
-    <xmx:ws8HaeNj6uut1gZb-8vqDSEsN1HNSwIczXM446XhQ1wg7RrmJAM2QQ>
-    <xmx:ws8HaR1tH_q1HG1L6VawcNcKP8QU9co3bJd7lDw4S6Fqbwa5idiMUQ>
-    <xmx:xc8HaZntFxU_iduZUOwzYhm1s0mvM8DwXkvnjdVyDPtbtYFo7WSN8-PV>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id EE582700063; Sun,  2 Nov 2025 16:40:17 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1762119879; c=relaxed/simple;
+	bh=nCGLsD7q2HOJPiSlnIStGPVemKa7l7hTEsNDv1pJevc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=T6/KDLwGk6BAQjtvK73Kif/PNT6LHsXEzbVq/Nuv9YqhFZXabT5oaUbgpRhD1YqMNYTj+cXgdXUqMwZBRmMm9H1QfPa2ikH/stnO2/mbhTjW/9ojckU79GzqNmc4Muplr7b0n0S8RqHSqi2+6Tf57mGVIu533EkEt4mgjJpM/Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y59alB+C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 050D9C19421;
+	Sun,  2 Nov 2025 21:44:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762119879;
+	bh=nCGLsD7q2HOJPiSlnIStGPVemKa7l7hTEsNDv1pJevc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Y59alB+CHMcEw0H2sjInl49oEyk3z0Ql/twC/hBSNaLA4pedhttOz/dPuiwUAkXpg
+	 C3OnLaa9OZA+B9CjBl7H5M4FN7CHJFEY+OZN6QULo4MH5yXBJluZoNz6DMuvRkH3RB
+	 2PUV5OW/MTnXEEXrIKNjGwEI3zY1CdLzmtJblSeKsw4bGs2q240URRZO7uHI6UPYsj
+	 T/DUuPWVYGE8mH+rISnFt65i78JSbUq21or5iP3cGexS4AqXlBeNqHGdxLUbjAoC+t
+	 LwL7Ib/gZlVij6UYfulGK0BTY6+bVC4X58oqiQ7zb5U+Tfx21QDd8pKBNgGLQALKnS
+	 xfxW94zd4fvnQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 7BD65CE0F65; Sun,  2 Nov 2025 13:44:37 -0800 (PST)
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	bpf@vger.kernel.org
+Subject: [PATCH 02/19] srcu: Create an srcu_expedite_current() function
+Date: Sun,  2 Nov 2025 13:44:19 -0800
+Message-Id: <20251102214436.3905633-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
+References: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: Ab2ZwGVH8-qs
-Date: Sun, 02 Nov 2025 22:39:42 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Catalin Marinas" <catalin.marinas@arm.com>,
- "Ankur Arora" <ankur.a.arora@oracle.com>
-Cc: linux-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
- bpf@vger.kernel.org, "Will Deacon" <will@kernel.org>,
- "Peter Zijlstra" <peterz@infradead.org>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Mark Rutland" <mark.rutland@arm.com>,
- "Haris Okanovic" <harisokn@amazon.com>,
- "Christoph Lameter (Ampere)" <cl@gentwo.org>,
- "Alexei Starovoitov" <ast@kernel.org>,
- "Rafael J . Wysocki" <rafael@kernel.org>,
- "Daniel Lezcano" <daniel.lezcano@linaro.org>,
- "Kumar Kartikeya Dwivedi" <memxor@gmail.com>, zhenglifeng1@huawei.com,
- xueshuai@linux.alibaba.com, "Joao Martins" <joao.m.martins@oracle.com>,
- "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
- "Konrad Rzeszutek Wilk" <konrad.wilk@oracle.com>
-Message-Id: <746c2de4-7613-4f13-911c-c2c4e071ed73@app.fastmail.com>
-In-Reply-To: <aQEy6ObvE0s2Gfbg@arm.com>
-References: <20251028053136.692462-1-ankur.a.arora@oracle.com>
- <20251028053136.692462-3-ankur.a.arora@oracle.com>
- <3642cfd1-7da6-4a75-80b7-00c21ab6955f@app.fastmail.com>
- <87qzumq51p.fsf@oracle.com> <aQEy6ObvE0s2Gfbg@arm.com>
-Subject: Re: [RESEND PATCH v7 2/7] arm64: barrier: Support
- smp_cond_load_relaxed_timeout()
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Oct 28, 2025, at 22:17, Catalin Marinas wrote:
-> On Tue, Oct 28, 2025 at 11:01:22AM -0700, Ankur Arora wrote:
->> Arnd Bergmann <arnd@arndb.de> writes:
->> > On Tue, Oct 28, 2025, at 06:31, Ankur Arora wrote:
->> >> +
->> >
->> > Since the caller knows exactly how long it wants to wait for,
->> > we should be able to fit a 'wfet' based primitive in here and
->> > pass the timeout as another argument.
->>=20
->> Per se, I don't disagree with this when it comes to WFET.
->>=20
->> Handling a timeout, however, is messier when we use other mechanisms.
->>=20
->> Some problems that came up in my earlier discussions with Catalin:
->>=20
->>   - when using WFE, we also need some notion of slack
->>     - and if a caller specifies only a small or no slack, then we need
->>       to combine WFE+cpu_relax()
+This commit creates an srcu_expedite_current() function that expedites
+the current (and possibly the next) SRCU grace period for the specified
+srcu_struct structure.  This functionality will be inherited by RCU
+Tasks Trace courtesy of its mapping to SRCU fast.
 
-I don't see the difference to what you have: with the event stream,
-you implicitly define a slack to be the programmed event stream rate
-of ~100=C2=B5s.
+If the current SRCU grace period is already waiting, that wait will
+complete before the expediting takes effect.  If there is no SRCU grace
+period in flight, this function might well create one.
 
+[ paulmck: Apply Zqiang feedback for PREEMPT_RT use. ]
 
-I'm not asking for anything better in this case, only for machines
-with WFET but no event stream to also avoid the spin loop.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: <bpf@vger.kernel.org>
+---
+ include/linux/srcutiny.h |  1 +
+ include/linux/srcutree.h |  8 ++++++
+ kernel/rcu/srcutree.c    | 58 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 67 insertions(+)
 
->>   - for platforms that only use a polling primitive, we want to check
->>     the clock only intermittently for power reasons.
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 51ce25f07930..3bfbd44cb1b3 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -103,6 +103,7 @@ static inline void srcu_barrier(struct srcu_struct *ssp)
+ 	synchronize_srcu(ssp);
+ }
+ 
++static inline void srcu_expedite_current(struct srcu_struct *ssp) { }
+ #define srcu_check_read_flavor(ssp, read_flavor) do { } while (0)
+ #define srcu_check_read_flavor_force(ssp, read_flavor) do { } while (0)
+ 
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 42098e0fa0b7..93ad18acd6d0 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -42,6 +42,8 @@ struct srcu_data {
+ 	struct timer_list delay_work;		/* Delay for CB invoking */
+ 	struct work_struct work;		/* Context for CB invoking. */
+ 	struct rcu_head srcu_barrier_head;	/* For srcu_barrier() use. */
++	struct rcu_head srcu_ec_head;		/* For srcu_expedite_current() use. */
++	int srcu_ec_state;			/*  State for srcu_expedite_current(). */
+ 	struct srcu_node *mynode;		/* Leaf srcu_node. */
+ 	unsigned long grpmask;			/* Mask for leaf srcu_node */
+ 						/*  ->srcu_data_have_cbs[]. */
+@@ -135,6 +137,11 @@ struct srcu_struct {
+ #define SRCU_STATE_SCAN1	1
+ #define SRCU_STATE_SCAN2	2
+ 
++/* Values for srcu_expedite_current() state (->srcu_ec_state). */
++#define SRCU_EC_IDLE		0
++#define SRCU_EC_PENDING		1
++#define SRCU_EC_REPOST		2
++
+ /*
+  * Values for initializing gp sequence fields. Higher values allow wrap arounds to
+  * occur earlier.
+@@ -210,6 +217,7 @@ struct srcu_struct {
+ int __srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp);
+ void synchronize_srcu_expedited(struct srcu_struct *ssp);
+ void srcu_barrier(struct srcu_struct *ssp);
++void srcu_expedite_current(struct srcu_struct *ssp);
+ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf);
+ 
+ // Converts a per-CPU pointer to an ->srcu_ctrs[] array element to that
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 1ff94b76d91f..38b440b0b0c8 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1688,6 +1688,64 @@ void srcu_barrier(struct srcu_struct *ssp)
+ }
+ EXPORT_SYMBOL_GPL(srcu_barrier);
+ 
++/* Callback for srcu_expedite_current() usage. */
++static void srcu_expedite_current_cb(struct rcu_head *rhp)
++{
++	unsigned long flags;
++	bool needcb = false;
++	struct srcu_data *sdp = container_of(rhp, struct srcu_data, srcu_ec_head);
++
++	spin_lock_irqsave_sdp_contention(sdp, &flags);
++	if (sdp->srcu_ec_state == SRCU_EC_IDLE) {
++		WARN_ON_ONCE(1);
++	} else if (sdp->srcu_ec_state == SRCU_EC_PENDING) {
++		sdp->srcu_ec_state = SRCU_EC_IDLE;
++	} else {
++		WARN_ON_ONCE(sdp->srcu_ec_state != SRCU_EC_REPOST);
++		sdp->srcu_ec_state = SRCU_EC_PENDING;
++		needcb = true;
++	}
++	spin_unlock_irqrestore_rcu_node(sdp, flags);
++	// If needed, requeue ourselves as an expedited SRCU callback.
++	if (needcb)
++		__call_srcu(sdp->ssp, &sdp->srcu_ec_head, srcu_expedite_current_cb, false);
++}
++
++/**
++ * srcu_expedite_current - Expedite the current SRCU grace period
++ * @ssp: srcu_struct to expedite.
++ *
++ * Cause the current SRCU grace period to become expedited.  The grace
++ * period following the current one might also be expedited.  If there is
++ * no current grace period, one might be created.  If the current grace
++ * period is currently sleeping, that sleep will complete before expediting
++ * will take effect.
++ */
++void srcu_expedite_current(struct srcu_struct *ssp)
++{
++	unsigned long flags;
++	bool needcb = false;
++	struct srcu_data *sdp;
++
++	migrate_disable();
++	sdp = this_cpu_ptr(ssp->sda);
++	spin_lock_irqsave_sdp_contention(sdp, &flags);
++	if (sdp->srcu_ec_state == SRCU_EC_IDLE) {
++		sdp->srcu_ec_state = SRCU_EC_PENDING;
++		needcb = true;
++	} else if (sdp->srcu_ec_state == SRCU_EC_PENDING) {
++		sdp->srcu_ec_state = SRCU_EC_REPOST;
++	} else {
++		WARN_ON_ONCE(sdp->srcu_ec_state != SRCU_EC_REPOST);
++	}
++	spin_unlock_irqrestore_rcu_node(sdp, flags);
++	// If needed, queue an expedited SRCU callback.
++	if (needcb)
++		__call_srcu(ssp, &sdp->srcu_ec_head, srcu_expedite_current_cb, false);
++	migrate_enable();
++}
++EXPORT_SYMBOL_GPL(srcu_expedite_current);
++
+ /**
+  * srcu_batches_completed - return batches completed.
+  * @ssp: srcu_struct on which to report batch completion.
+-- 
+2.40.1
 
-Right, I missed that bit.
-
->>     Now, this could be done with an architecture specific spin-count.
->>     However, if the caller specifies a small slack, then we might need
->>     to we check the clock more often as we get closer to the deadline=
- etc.
-
-Again, I think this is solved by defining the slack as architecture
-specific as well rather than an explicit argument, which is essentially
-what we already have.
-=20
->> A smaller problem was that different users want different clocks and =
-so
->> folding the timeout in a 'timeout_cond_expr' lets us do away with the
->> interface having to handle any of that.
->>
->> I had earlier versions [v2] [v3] which had rather elaborate policies =
-for
->> handling timeout, slack etc. But, given that the current users of the
->> interface don't actually care about precision, all of that seemed
->> a little overengineered.
->
-> Indeed, we've been through all these options and without a concrete us=
-er
-> that needs a more precise timeout, we decided it's not worth it. It ca=
-n,
-> however, be improved later if such users appear.
-
-The main worry I have is that we get too many users of cpu_poll_relax()
-hardcoding the use of the event stream without a timeout argument, it
-becomes too hard to change later without introducing regressions
-from the behavior change.
-
-As far as I can tell, the only place that currently uses the
-event stream on a functional level is the delay() loop, and that
-has a working wfet based version.
-
-     Arnd
 
