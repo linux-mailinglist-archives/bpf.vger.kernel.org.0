@@ -1,75 +1,64 @@
-Return-Path: <bpf+bounces-73303-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73305-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 978BFC2A325
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 07:33:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1962AC2A476
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 08:19:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 460BE4EBDCE
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 06:32:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 247813B313C
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 07:19:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D7012980A8;
-	Mon,  3 Nov 2025 06:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B44C29CB4D;
+	Mon,  3 Nov 2025 07:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BFOkXztw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ta9J2KOm"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AAD296BAA
-	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 06:32:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9342D299949;
+	Mon,  3 Nov 2025 07:19:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762151558; cv=none; b=NPpwXKPmK8EArUGBL8cT8euWs001q7OfdKEB0YrGROTB4jdYINv4GSZVtcZRB80WxyHK1McmJZezyR6M2VOXqrvlUMUhKwZlFSE8Y0KYSyKoaaZV7Kg05SvC69ET4nLBAFUvlVm5PCp6jd0PJPvrVb8coJH0mp1A2tCSgpf3+wk=
+	t=1762154352; cv=none; b=uyHCHzx9qTmJ+9ghmV+8JTqTxGzNC963G+3++zU0eURZWYHejTXOvL0ztvpHzgU5m4KEZ9dp6EQB6iwG5MNSJe2Y19gJPUsjv5y6tRGwYEA+2lpvwMF3igUIsSeE+J5/o5/6w6tY3Avz/6uMHlRD0gxWhPEammP6rRnt7HhitTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762151558; c=relaxed/simple;
-	bh=kbe8hMT2OvfiqAmCP4GWUa8XfLFY+MoXA/QxrTvkDww=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EpIWtSpXyNZtH/ggMr4uSOfg5+0p4zb4hSOeLOkKu9aSyodie1Us8RjYuMMaEXNAH9dJDj4xi8ZIYg4zR+nyBGMzs+Om7FbbgerbpWgN7Mx8Iop2pyTqM1HVX+moABrxc/0gajzRyepm+jJBao43IbCPPQUwEyfPoZuJIb8ZnJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BFOkXztw; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762151553;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9Co4HTS5uOZjTPA1XBfD/RtU0DY8DXK6Y5uls97p0Vw=;
-	b=BFOkXztwNIL5K8mOH+vAFRaD0ZZkLd1UA9FuPUUuW5dS0hRu5IsyrUUg3PqdK/0YoXhElP
-	cLXB95uuCrazQ9v7FRnqwBUjKZn9g75ncFFabEM/tm/9czjc/T0aXhGdEuf5FFS8OLw7we
-	QpsPF7CfUSYZPdMFHwEmLkUDuKJF8Ec=
-From: KaFai Wan <kafai.wan@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	paul.chaignon@gmail.com,
-	m.shachnai@gmail.com,
-	kafai.wan@linux.dev,
-	harishankar.vishwanathan@gmail.com,
-	colin.i.king@gmail.com,
-	luis.gerhorst@fau.de,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v4 2/2] selftests/bpf: Add test for conditional jumps on same scalar register
-Date: Mon,  3 Nov 2025 14:31:08 +0800
-Message-ID: <20251103063108.1111764-3-kafai.wan@linux.dev>
-In-Reply-To: <20251103063108.1111764-1-kafai.wan@linux.dev>
-References: <20251103063108.1111764-1-kafai.wan@linux.dev>
+	s=arc-20240116; t=1762154352; c=relaxed/simple;
+	bh=hiuAkXJp5N4WN5xE4QgqmeyHlsM9HdyJ3JawANTRqe0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=swQ2PUQZgrddiMHAea5NmXSjdliUEqpmz9CoEBNSrh8qUX8GHOBP+zQLnnsOwSIQ2h8tl6cDXm/MPEFGCZFXR01wdj3JUmGQt7QcGZ1QIS6XZYeAAvn2rXFwpWgKlSbOOokCMxzre8VS1azURwXQ3zx5w1A0LSyee2YjLlmVfww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ta9J2KOm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 319ADC4CEE7;
+	Mon,  3 Nov 2025 07:19:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762154352;
+	bh=hiuAkXJp5N4WN5xE4QgqmeyHlsM9HdyJ3JawANTRqe0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ta9J2KOmcP0dE8kT6rHXaiZCUxjI6HCmKxmOxs+Uctq/FxFOVwOfwmT+6Fd6e38YW
+	 cu0gtLntNkias2xFuULOCA7SrMeL6iQF9QYOfKRG92HVtc6mLB8Uy7I70BjLAgRr74
+	 PyCcZrFbeWppvzWAYIdEq2oOiVhxaJZNd55oLNpnqT8bOET7tGN0AXm0xSP3jYxLnP
+	 p5W3Lbp7ahOLme6SWFJnwIYXf6LMVKLIJSIhV8C9s/BshBMfLUZ+xGDYczABZAEWsl
+	 zFf9Lt+BglAZNMhLXFHLtwgyMdElbG6vyGmLB8SeO285mPXBWGAmJG/khBLYo2NBZr
+	 MGtqO2KBhW78A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 7EA35CE0F8F; Sun,  2 Nov 2025 13:44:37 -0800 (PST)
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	bpf@vger.kernel.org
+Subject: [PATCH 03/19] rcutorture: Test srcu_expedite_current()
+Date: Sun,  2 Nov 2025 13:44:20 -0800
+Message-Id: <20251102214436.3905633-3-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
+References: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,181 +66,78 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Add test cases to verify the correctness of the BPF verifier's branch analysis
-when conditional jumps are performed on the same scalar register. And make sure
-that JGT does not trigger verifier BUG.
+This commit adds a ->exp_current member to the rcu_torture_ops structure
+to test the srcu_expedite_current() function.
 
-Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: <bpf@vger.kernel.org>
 ---
- .../selftests/bpf/progs/verifier_bounds.c     | 154 ++++++++++++++++++
- 1 file changed, 154 insertions(+)
+ kernel/rcu/rcutorture.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-index 0a72e0228ea9..e975dc285db6 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-@@ -1709,4 +1709,158 @@ __naked void jeq_disagreeing_tnums(void *ctx)
- 	: __clobber_all);
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 72619e5e8549..aa1f8240a276 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -389,6 +389,7 @@ struct rcu_torture_ops {
+ 	void (*deferred_free)(struct rcu_torture *p);
+ 	void (*sync)(void);
+ 	void (*exp_sync)(void);
++	void (*exp_current)(void);
+ 	unsigned long (*get_gp_state_exp)(void);
+ 	unsigned long (*start_gp_poll_exp)(void);
+ 	void (*start_gp_poll_exp_full)(struct rcu_gp_oldstate *rgosp);
+@@ -857,6 +858,11 @@ static void srcu_torture_synchronize_expedited(void)
+ 	synchronize_srcu_expedited(srcu_ctlp);
  }
  
-+SEC("socket")
-+__description("conditional jump on same register, branch taken")
-+__not_msg("20: (b7) r0 = 1 {{.*}} R0=1")
-+__success __log_level(2)
-+__retval(0) __flag(BPF_F_TEST_REG_INVARIANTS)
-+__naked void condition_jump_on_same_register(void *ctx)
++static void srcu_torture_expedite_current(void)
 +{
-+	asm volatile("			\
-+	call %[bpf_get_prandom_u32];	\
-+	w8 = 0x80000000;		\
-+	r0 &= r8;			\
-+	if r0 == r0 goto +1;		\
-+	goto l1_%=;			\
-+	if r0 >= r0 goto +1;		\
-+	goto l1_%=;			\
-+	if r0 s>= r0 goto +1;		\
-+	goto l1_%=;			\
-+	if r0 <= r0 goto +1;		\
-+	goto l1_%=;			\
-+	if r0 s<= r0 goto +1;		\
-+	goto l1_%=;			\
-+	if r0 != r0 goto l1_%=;		\
-+	if r0 >  r0 goto l1_%=;		\
-+	if r0 s> r0 goto l1_%=;		\
-+	if r0 <  r0 goto l1_%=;		\
-+	if r0 s< r0 goto l1_%=;		\
-+l0_%=:	r0 = 0;				\
-+	exit;				\
-+l1_%=:	r0 = 1;				\
-+	exit;				\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
++	srcu_expedite_current(srcu_ctlp);
 +}
 +
-+SEC("socket")
-+__description("jset on same register, constant value branch taken")
-+__not_msg("7: (b7) r0 = 1 {{.*}} R0=1")
-+__success __log_level(2)
-+__retval(0) __flag(BPF_F_TEST_REG_INVARIANTS)
-+__naked void jset_on_same_register_1(void *ctx)
-+{
-+	asm volatile("			\
-+	r0 = 0;				\
-+	if r0 & r0 goto l1_%=;		\
-+	r0 = 1;				\
-+	if r0 & r0 goto +1;		\
-+	goto l1_%=;			\
-+l0_%=:	r0 = 0;				\
-+	exit;				\
-+l1_%=:	r0 = 1;				\
-+	exit;				\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("jset on same register, scalar value branch taken")
-+__not_msg("12: (b7) r0 = 1 {{.*}} R0=1")
-+__success __log_level(2)
-+__retval(0) __flag(BPF_F_TEST_REG_INVARIANTS)
-+__naked void jset_on_same_register_2(void *ctx)
-+{
-+	asm volatile("			\
-+	/* range [1;2] */		\
-+	call %[bpf_get_prandom_u32];	\
-+	r0 &= 0x1;			\
-+	r0 += 1;			\
-+	if r0 & r0 goto +1;		\
-+	goto l1_%=;			\
-+	/* range [-2;-1] */		\
-+	call %[bpf_get_prandom_u32];	\
-+	r0 &= 0x1;			\
-+	r0 -= 2;			\
-+	if r0 & r0 goto +1;		\
-+	goto l1_%=;			\
-+l0_%=:	r0 = 0;				\
-+	exit;				\
-+l1_%=:	r0 = 1;				\
-+	exit;				\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("jset on same register, scalar value unknown branch 1")
-+__msg("3: (b7) r0 = 0 {{.*}} R0=0")
-+__msg("5: (b7) r0 = 1 {{.*}} R0=1")
-+__success __log_level(2)
-+__flag(BPF_F_TEST_REG_INVARIANTS)
-+__naked void jset_on_same_register_3(void *ctx)
-+{
-+	asm volatile("			\
-+	/* range [0;1] */		\
-+	call %[bpf_get_prandom_u32];	\
-+	r0 &= 0x1;			\
-+	if r0 & r0 goto l1_%=;		\
-+l0_%=:	r0 = 0;				\
-+	exit;				\
-+l1_%=:	r0 = 1;				\
-+	exit;				\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("jset on same register, scalar value unknown branch 2")
-+__msg("4: (b7) r0 = 0 {{.*}} R0=0")
-+__msg("6: (b7) r0 = 1 {{.*}} R0=1")
-+__success __log_level(2)
-+__flag(BPF_F_TEST_REG_INVARIANTS)
-+__naked void jset_on_same_register_4(void *ctx)
-+{
-+	asm volatile("			\
-+	/* range [-1;0] */		\
-+	call %[bpf_get_prandom_u32];	\
-+	r0 &= 0x1;			\
-+	r0 -= 1;			\
-+	if r0 & r0 goto l1_%=;		\
-+l0_%=:	r0 = 0;				\
-+	exit;				\
-+l1_%=:	r0 = 1;				\
-+	exit;				\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("jset on same register, scalar value unknown branch 3")
-+__msg("4: (b7) r0 = 0 {{.*}} R0=0")
-+__msg("6: (b7) r0 = 1 {{.*}} R0=1")
-+__success __log_level(2)
-+__flag(BPF_F_TEST_REG_INVARIANTS)
-+__naked void jset_on_same_register_5(void *ctx)
-+{
-+	asm volatile("			\
-+	/* range [-1;-1] */		\
-+	call %[bpf_get_prandom_u32];	\
-+	r0 &= 0x2;			\
-+	r0 -= 1;			\
-+	if r0 & r0 goto l1_%=;		\
-+l0_%=:	r0 = 0;				\
-+	exit;				\
-+l1_%=:	r0 = 1;				\
-+	exit;				\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
+ static struct rcu_torture_ops srcu_ops = {
+ 	.ttype		= SRCU_FLAVOR,
+ 	.init		= rcu_sync_torture_init,
+@@ -871,6 +877,7 @@ static struct rcu_torture_ops srcu_ops = {
+ 	.deferred_free	= srcu_torture_deferred_free,
+ 	.sync		= srcu_torture_synchronize,
+ 	.exp_sync	= srcu_torture_synchronize_expedited,
++	.exp_current	= srcu_torture_expedite_current,
+ 	.same_gp_state	= same_state_synchronize_srcu,
+ 	.get_comp_state = get_completed_synchronize_srcu,
+ 	.get_gp_state	= srcu_torture_get_gp_state,
+@@ -919,6 +926,7 @@ static struct rcu_torture_ops srcud_ops = {
+ 	.deferred_free	= srcu_torture_deferred_free,
+ 	.sync		= srcu_torture_synchronize,
+ 	.exp_sync	= srcu_torture_synchronize_expedited,
++	.exp_current	= srcu_torture_expedite_current,
+ 	.same_gp_state	= same_state_synchronize_srcu,
+ 	.get_comp_state = get_completed_synchronize_srcu,
+ 	.get_gp_state	= srcu_torture_get_gp_state,
+@@ -1700,6 +1708,8 @@ rcu_torture_writer(void *arg)
+ 					ulo[i] = cur_ops->get_comp_state();
+ 				gp_snap = cur_ops->start_gp_poll();
+ 				rcu_torture_writer_state = RTWS_POLL_WAIT;
++				if (cur_ops->exp_current && !torture_random(&rand) % 0xff)
++					cur_ops->exp_current();
+ 				while (!cur_ops->poll_gp_state(gp_snap)) {
+ 					gp_snap1 = cur_ops->get_gp_state();
+ 					for (i = 0; i < ulo_size; i++)
+@@ -1720,6 +1730,8 @@ rcu_torture_writer(void *arg)
+ 					cur_ops->get_comp_state_full(&rgo[i]);
+ 				cur_ops->start_gp_poll_full(&gp_snap_full);
+ 				rcu_torture_writer_state = RTWS_POLL_WAIT_FULL;
++				if (cur_ops->exp_current && !torture_random(&rand) % 0xff)
++					cur_ops->exp_current();
+ 				while (!cur_ops->poll_gp_state_full(&gp_snap_full)) {
+ 					cur_ops->get_gp_state_full(&gp_snap1_full);
+ 					for (i = 0; i < rgo_size; i++)
 -- 
-2.43.0
+2.40.1
 
 
