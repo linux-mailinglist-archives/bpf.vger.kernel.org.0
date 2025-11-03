@@ -1,556 +1,111 @@
-Return-Path: <bpf+bounces-73344-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73345-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC9FBC2BBA6
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 13:40:16 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id F256AC2BC83
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 13:46:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B7D91895F4F
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 12:39:50 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 795304F518D
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 12:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0569313E16;
-	Mon,  3 Nov 2025 12:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327BB30F548;
+	Mon,  3 Nov 2025 12:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Hxg5uF7d"
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="SJ2Et410"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5471030E82D
-	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 12:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3995730B511
+	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 12:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762173311; cv=none; b=jwLvyglkAbujLvlsuuSVIneADxZXYJJxlxWvObLzzvgAU3wX1o6fC1BPz819HGvdtAmZaksB3FRyv//ttCifxPvIVPwj4OMacT2U0naHL3KclQ+t1iuV0q7tDr6UKX4/4ehxlto6a/HkY722MLYjsoxlF1DmU/4nTMmD53ijjfM=
+	t=1762173391; cv=none; b=F0chh3oAD+CYVHIreCR0RL+tltvdufamLwMSChZQRFxsn6dgPeLgZlcu0gQSQsm1oew2oJLFT2Ts5RrsYaGV5F4WnAXBfvflxSKEb1dcG/1eI+Jl3LENPg2DahFZoHesj3n2V3EuJiBnq3mSGv3qy2ULETkydPmA+0rUGkshsYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762173311; c=relaxed/simple;
-	bh=BrHANmSqz135iJ6rgC04qJmCezE4SuPX8VM26jPrRxs=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=mxHxLat/8kPwQClZ1+mvzG7opj2/LIq6YkyB2IN9AQpa2uuoiluTeSXxcHmM7RFjwbL/I1YTJR7NlTERW41pwcrGg3g4ezKdBB6/LYRur31/dBgOkaL7ekU6nJw6bMMLKh4QkvimTjjKs0S6nxQgMevtzStVq+iPETYKlLLsjC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Hxg5uF7d; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1762173391; c=relaxed/simple;
+	bh=zVNRFq8Olkjr+ZzEj6HBFovkwSvrH+SAbKaGr6sADBQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=cOV+QK/Al1T+pIAXtsiYk33zGYf7zd1TtfXjHCSPBwNM9uRld83MVHpoZve9GDV9/9AggY/p27sXyZmYF7bZEhsyrkAmoAkef8HBnmEkgGFM8jllpRVLIyohlFRYtVUcFUDJndQT4+zmWDScPDDmPG9vwDfXKnnR5P7+ENb9evo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=SJ2Et410; arc=none smtp.client-ip=198.37.111.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1762173385;
+	bh=zVNRFq8Olkjr+ZzEj6HBFovkwSvrH+SAbKaGr6sADBQ=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=SJ2Et410JgBpRrQuAPPx0C/+16aaE9vVZ0MBN8pEtAnuNIbINHpUujrX76FzARUyv
+	 cEqo+elJWHsk4UAI3qeTZpO91JjWQOgDWqC02T8y31cQ7Duz0MK7i15qXFu/4ltHPP
+	 YNDFITsTdPCwQisD7yZC85IhQYHT/nDB+shlj9Oc=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 662871C0327;
+	Mon, 03 Nov 2025 07:36:25 -0500 (EST)
+Message-ID: <b93a5e30149d8ad43f64f8f0d61b3c89e0a694ec.camel@HansenPartnership.com>
+Subject: Re: [PATCH bpf] bpf: Check size of the signature buffer
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, clm@meta.com
+Date: Mon, 03 Nov 2025 07:36:24 -0500
+In-Reply-To: <20251102113742.34908-1-kpsingh@kernel.org>
+References: <20251102113742.34908-1-kpsingh@kernel.org>
+Autocrypt: addr=James.Bottomley@HansenPartnership.com;
+ prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762173293;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vstW+wjqIPjiCYxZam24Gld8JAMPyQM9Z5et7SY16eQ=;
-	b=Hxg5uF7dtXYqq3hzgQWDGCl6OV7CJBlRrWE/9XXoaiHUoB4d9Nb8OH16CdgyB1XXcjlkI+
-	45s/n2LT/MYddzCewBKbINBtw24CEZK2lB/lswhtToJBmnsKsnzYhdG9gjdbv6s/xZodhf
-	dnd3jkIgi2xkXjMG5E2u+ZMrVwJ27xk=
-Date: Mon, 03 Nov 2025 12:34:45 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
-Message-ID: <55049e76c1e86825ff963c381ef01e38cfc08b10@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH net v3 0/3] mptcp: Fix conflicts between MPTCP and
- sockmap
-To: "Matthieu Baerts" <matttbe@kernel.org>, mptcp@lists.linux.dev
-Cc: "John Fastabend" <john.fastabend@gmail.com>, "Jakub Sitnicki"
- <jakub@cloudflare.com>, "Eric Dumazet" <edumazet@google.com>, "Kuniyuki
- Iwashima" <kuniyu@google.com>, "Paolo Abeni" <pabeni@redhat.com>, "Willem
- de Bruijn" <willemb@google.com>, "David S. Miller" <davem@davemloft.net>,
- "Jakub Kicinski" <kuba@kernel.org>, "Simon Horman" <horms@kernel.org>,
- "Mat Martineau" <martineau@kernel.org>, "Geliang Tang"
- <geliang@kernel.org>, "Alexei Starovoitov" <ast@kernel.org>, "Daniel
- Borkmann" <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>,
- "Martin KaFai Lau" <martin.lau@linux.dev>, "Eduard Zingerman"
- <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong Song"
- <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
- Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
- <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>, "Florian Westphal"
- <fw@strlen.de>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-In-Reply-To: <bc5831bb-cfa3-4327-b129-30ca5d17b45e@kernel.org>
-References: <20251023125450.105859-1-jiayuan.chen@linux.dev>
- <14b565a1-0c2a-420d-ab2a-dc8a46dbf33c@kernel.org>
- <319c419455b73deb312b53d99c30217f6b606208@linux.dev>
- <bc5831bb-cfa3-4327-b129-30ca5d17b45e@kernel.org>
-X-Migadu-Flow: FLOW_OUT
 
-October 29, 2025 at 1:26 AM, "Matthieu Baerts" <matttbe@kernel.org mailto=
-:matttbe@kernel.org?to=3D%22Matthieu%20Baerts%22%20%3Cmatttbe%40kernel.or=
-g%3E > wrote:
-
-Hi Matthieu, apologies for the delayed response.
-
+On Sun, 2025-11-02 at 12:37 +0100, KP Singh wrote:
+> Accept only a SHA256 sized buffer.
 >=20
->=20Hi Jiayuan,
+> Fixes: 349271568303 ("bpf: Implement signature verification for BPF
+> programs")
+> Reported-by: Chris Mason <clm@meta.com>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
+> =C2=A0kernel/bpf/syscall.c | 3 +++
+> =C2=A01 file changed, 3 insertions(+)
 >=20
->=20Thank you for your reply!
->=20
->=20On 24/10/2025 06:13, Jiayuan Chen wrote:
->=20
->=20>=20
->=20> 2025/10/23 22:10, "Matthieu Baerts" <matttbe@kernel.org mailto:matt=
-tbe@kernel.org?to=3D%22Matthieu%20Baerts%22%20%3Cmatttbe%40kernel.org%3E =
-> =E5=86=99=E5=88=B0:
-> >=20=20
->=20>=20=20
->=20>  MPTCP creates subflows for data transmission between two endpoints=
-.
-> >  However, BPF can use sockops to perform additional operations when T=
-CP
-> >  completes the three-way handshake. The issue arose because we used s=
-ockmap
-> >  in sockops, which replaces sk->sk_prot and some handlers.
-> >=20
->=20> >=20
->=20> > Do you know at what stage the sk->sk_prot is modified with sockma=
-p? When
-> > >  switching to TCP_ESTABLISHED?
-> > >  Is it before or after having set "tcp_sk(sk)->is_mptcp =3D 0" (in
-> > >  subflow_ulp_fallback(), coming from subflow_syn_recv_sock() I supp=
-ose)?
-> > >=20
->=20>=20=20
->=20>=20=20
->=20>  Yes, there are two call points. One is after executing subflow_syn=
-_recv_sock():
-> >  tcp_init_transfer(sk, BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB, skb);
-> >=20=20
->=20>  So at this point, is_mptcp =3D 0. The other call point is when use=
-rspace calls
-> >  the BPF interface, passing in an fd while it's not a subflow but a p=
-arent sk
-> >  with its own mptcp_prot we will also reject it.
-> >=20
->=20OK, thank you for the explanations! I think your commit message in pa=
-tch
-> 1/3 should then explain the conditions to have mptcp_fallback_tcp_ops()
-> being called with a different sk_prot. In short: MPTCP listening socket=
-,
-> TCP request without MPTCP, sk_prot reset to TCP (subflow_syn_recv_sock)
-> when SYN RECV, then reset by sockmap when ESTABLISHED, then accept part
-> and sk_prot is not the expected one.
->=20
->=20>=20
->=20> You can refer to my provided selftest, which covers these scenarios=
-.
-> >=20=20
->=20>=20
->=20> >=20
->=20> > If MPTCP is still being used (sk_is_tcp(sk) && sk_is_mptcp(sk)), =
-I guess
-> > >  sockmap should never touch the in-kernel TCP subflows: they will l=
-ikely
-> > >  only carry a part of the data. Instead, sockmap should act on the =
-MPTCP
-> > >  sockets, not the in-kernel TCP subflows.
-> > >=20
->=20>=20=20
->=20>  Yes, I agree.
-> >=20=20
->=20>  For full functionality, we need to retrieve the parent socket from=
- MPTCP
-> >  and integrate it with sockmap, rather than simply rejecting.
-> >=20
->=20We should be careful when adding such exceptions. I will add more
-> details below.
->=20
->=20>=20
->=20> The current implementation rejects MPTCP because I previously attem=
-pted to
-> >  add sockmap support for MPTCP, but it required implementing many int=
-erfaces
-> >  and would take considerable time.
-> >=20=20
->=20>  So for now, I'm proposing this as a fix to resolve the immediate i=
-ssue.
-> >  Subsequently, we can continue working on fully integrating MPTCP wit=
-h sockmap.
-> >=20
->=20It makes sense to start with the fix for stable, then the implementat=
-ion
-> later. I think the implementation should not be that complex: it is jus=
-t
-> that it has to be done at MPTCP level, not TCP. sockmap supports
-> different protocol, and it doesn't seem to be TCP specific, so that
-> should be feasible.
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 8a129746bd6c..cc5bce20ec86 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2826,6 +2826,9 @@ static int bpf_prog_verify_signature(struct
+> bpf_prog *prog, union bpf_attr *attr
+> =C2=A0	void *sig;
+> =C2=A0	int err =3D 0;
+> =C2=A0
+> +	if (attr->signature_size !=3D SHA256_DIGEST_SIZE)
+> +		return -EINVAL;
+> +
 
-I agree with that. From a userspace perspective, we can't really manipula=
-te subflow
-TCP directly, and I also think it's correct to handle this at the MPTCP l=
-ayer.
+That's not going to work unless something really strange is going on: a
+pkcs7 signature is way bigger than a simple hash.  I believe Chris was
+thinking we should do something like modules do: check to see that the
+signature is not bigger than the total size of the passed in file data
+size less the program data before doing the vmalloc.
 
-But I didn't quite get your point about "it has to be done at MPTCP level=
-." Currently,
-BPF provides 'sockops' capability, which invokes BPF programs in the prot=
-ocol stack.
-The input parameter sk for the BPF program is actually a TCP sk (subflow)=
-.
+Regards,
 
-Many helper functions (like sockmap) have no choice but to care about whe=
-ther it's MPTCP
-or not.
-
-> >=20
->=20> >=20
->=20> > There is one particular case to take into consideration: an MPTCP
-> > >  connection can fallback to "plain" TCP before being used by the
-> > >  userspace. Typically, that's when an MPTCP listening socket receiv=
-es a
-> > >  "plain" TCP request (without MPTCP): a "plain" TCP socket will the=
-n be
-> > >  created, and exposed to the userspace. In this case, sk_is_mptcp(s=
-k)
-> > >  will return false. I guess that's the case you are trying to handl=
-e,
-> > >  right? (It might help BPF reviewers to mention that in the commit
-> > >  message(s).)
-> > >=20
->=20>=20=20
->=20>  Yes, this is primarily the case we're addressing. I will add this =
-description
-> >  to the commit message.
-> >=20
->=20Thanks!
->=20
->=20>=20
->=20> >=20
->=20> > I would then say that sk->sk_prot->psock_update_sk_prot should no=
-t point
-> > >  to tcp_bpf_update_proto() when MPTCP is being used (or this callba=
-ck
-> > >  should take the MPTCP case into account, but I guess no). In case =
-of
-> > >  fallback before the accept() stage, the socket can then be used as=
- a
-> > >  "plain" TCP one. I guess when tcp_bpf_update_proto() will be calle=
-d,
-> > >  sk_prot is pointing to tcp(v6)_prot, not the MPTCP subflow overrid=
-e one,
-> > >  right?
-> > >=20
->=20>=20=20
->=20>  Yes, when tcp_bpf_update_proto is called the sk_prot is pointing t=
-o tcp(v6)_prot.
-> >  subflow_syn_recv_sock
-> >  mptcp_subflow_drop_ctx
-> >  subflow_ulp_fallback
-> >  mptcp_subflow_ops_undo_override -> reset sk_prot to original one
-> >=20
->=20I see, it would be good to add that in the commit message as well.
-
-Thanks, I will add it.
-
->=20
->=20>=20
->=20> So [patch 2/3] aims to prevent psock_update_sk_prot from being exec=
-uted on subflows.
-> >=20=20
->=20>  Actually, replacing the subflow's callbacks is also incorrect, as =
-you mentioned earlier,
-> >  because subflows only carry part of the data. By checking for subflo=
-ws early and skipping
-> >  subsequent steps, we avoid incorrect logic.
-> >=20=20
->=20>  Furthermore, there's another risk: if an IPv6 request comes in and=
- we perform the replacement,
-> >  MPTCP will roll it back to inet_stream_ops. I haven't delved too dee=
-ply into the potential
-> >  impact, but I noticed that inet6_release has many V6-specific cleanu=
-p procedures not present
-> >  in inet_release.
-> >=20
->=20That's why we have the WARN_ON_ONCE(): this sk_prot was not expected,=
- a
-> fix in the code is required if another value is accepted.
->=20
->=20>=20
->=20> Since subflows
-> >  also have their own specialized handlers, this creates a conflict an=
-d leads
-> >  to traffic failure. Therefore, we need to reject operations targetin=
-g
-> >  subflows.
-> >=20
->=20> >=20
->=20> > Would it not work to set sk_prot->psock_update_sk_prot to NULL fo=
-r the
-> > >  v4 and v6 subflows (in mptcp_subflow_init()) for the moment while
-> > >  sockmap is not supported with MPTCP? This might save you some chec=
-ks in
-> > >  sock_map.c, no?
-> > >=20
->=20>=20=20
->=20>  This seems like a reliable alternative I hadn't considered initial=
-ly.
-> >=20=20
->=20>  However, adding the check on the BPF side serves another purpose: =
-to explicitly
-> >  warn users that sockmap and MPTCP are incompatible.
-> >=20=20
->=20>  Since the latest Golang version enables MPTCP server by default, a=
-nd if the client
-> >  doesn't support MPTCP, it falls back to TCP logic. We want to print =
-a clear message
-> >  informing users who have upgraded to the latest Golang and are using=
- sockmap.
-> >=20=20
->=20>  Perhaps we could add a function like sk_is_mptcp_subflow() in the =
-MPTCP side?
-> >  The implementation would simply be sk_is_tcp(sk) && sk_is_mptcp(sk).
-> >=20=20
->=20>  Implementing this check logic on the BPF side might become invalid=
- if MPTCP internals
-> >  change later; placing it in the MPTCP side might be a better choice.
-> >=20
->=20I can understand that adding an error message can be helpful, but I
-> don't think we should add MPTCP specific checks in sockmap for the mome=
-nt.
-
-Thanks, I will try to set psock_update_sk_prot to NULL and test it, and i=
-f it works I will send a new patch then.
-
-> >=20
->=20> This patchset simply prevents the combination of subflows and sockm=
-ap
-> >  without changing any functionality.
-> >=20
->=20> >=20
->=20> > In your case, you have an MPTCP listening socket, but you receive=
- a TCP
-> > >  request, right? The "sockmap update" is done when switching to
-> > >  TCP_ESTABLISHED, when !sk_is_mptcp(sk), but that's before
-> > >  mptcp_stream_accept(). That's why sk->sk_prot has been modified, b=
-ut it
-> > >  is fine to look at sk_family, and return inet(6)_stream_ops, right=
-?
-> > >=20
->=20>=20=20
->=20>  I believe so. Since MPTCP is fundamentally based on TCP, using sk_=
-family to
-> >  determine which ops to fall back to should be sufficient.
-> >=20=20
->=20>  However, strictly speaking, this [patch 1/3] might not even be nec=
-essary if we
-> >  prevent the sk_prot replacement for subflows at the sockmap layer.
-> >=20=20
->=20>=20
->=20> >=20
->=20> > A more important question: what will typically happen in your cas=
-e if
-> > >  you receive an MPTCP request and sockmap is then not supported? Wi=
-ll the
-> > >  connection be rejected or stay in a strange state because the user=
-space
-> > >  will not expect that? In these cases, would it not be better to di=
-sallow
-> > >  sockmap usage while the MPTCP support is not available? The usersp=
-ace
-> > >  would then get an error from the beginning that the protocol is no=
-t
-> > >  supported, and should then not create an MPTCP socket in this case=
- for
-> > >  the moment, no?
-> > >=20
->=20> >  I can understand that the switch from TCP to MPTCP was probably =
-done
-> > >  globally, and this transition should be as seamless as possible, b=
-ut it
-> > >  should not cause a regression with MPTCP requests. An alternative =
-could
-> > >  be to force a fallback to TCP when sockmap is used, even when an M=
-PTCP
-> > >  request is received, but not sure if it is practical to do, and mi=
-ght be
-> > >  strange from the user point of view.
-> > >=20
->=20>=20=20
->=20>  Actually, I understand this not as an MPTCP regression, but as a s=
-ockmap
-> >  regression.
-> >=20=20
->=20>  Let me explain how users typically use sockmap:
-> >=20=20
->=20>  Users typically create multiple sockets on a host and program usin=
-g BPF+sockmap
-> >  to enable fast data redirection. This involves intercepting data sen=
-t or received
-> >  by one socket and redirecting it to the send or receive queue of ano=
-ther socket.
-> >=20=20
->=20>  This requires explicit user programming. The goal is that when mul=
-tiple microservices
-> >  on one host need to communicate, they can bypass most of the network=
- stack and avoid
-> >  data copies between user and kernel space.
-> >=20=20
->=20>  However, when an MPTCP request occurs, this redirection flow fails=
-.
-> >=20
->=20This part bothers me a bit. Does it mean that when the userspace crea=
-tes
-> a TCP listening socket (IPPROTO_TCP), MPTCP requests will be accepted,
-> but MPTCP will not be used ; but when an MPTCP socket is used instead,
-> MPTCP requests will be rejected?
-
-"when the userspace creates a TCP listening socket (IPPROTO_TCP), MPTCP r=
-equests will be accepted,
-but MPTCP will not be used"
---- Yes, that's essentially the logic behind MPTCP fallback, right? In th=
-is case, it should work
-fine with sockmap as well. That's exactly what this patch aims to achieve=
-.
-
-"but when an MPTCP socket is used instead, MPTCP requests will be rejecte=
-d?"
---- Exactly. Currently, because sockmap operates directly on the subflow =
-sk, it breaks the MPTCP
-connection. The purpose of this patch is to explicitly return an error wh=
-en users try to replace
-certain handlers of the subflow sk.
-
-This way, users at least get a clear error message instead of just experi=
-encing a mysterious connection
-failure.
-
-> If yes, it might be clearer not to allow sockmap on connections created
-> from MPTCP sockets. But when looking at sockmap and what's happening
-> when a TCP socket is created following a "plain TCP" request, we would
-> need specific MPTCP code to catch that in sockmap...
-
-I know what you're concerned about, and I also don't want to add any MPTC=
-P-specific checks on the
-sockmap or BPF side :).
-
-I will try to set psock_update_sk_prot to NULL first.
+James
 
 
-> >=20
->=20> Since the sockmap workflow typically occurs after the three-way han=
-dshake, rolling
-> >  back at that point might be too late, and undoing the logic for MPTC=
-P would be very
-> >  complex.
-> >=20=20
->=20>  Regardless, the reality is that MPTCP and sockmap are already conf=
-licting, and this
-> >  has been the case for some time. So I think our first step is to cat=
-ch specific
-> >  behavior on the BPF side and print a message
-> >  "sockmap/sockhash: MPTCP sockets are not supported\n", informing use=
-rs to either
-> >  stop using sockmap or not use MPTCP.
-> >=20=20
->=20>  As for the logic to check for subflows, I think implementing it in=
- subflow.c would be
-> >  beneficial, as this logic would likely be useful later if we want to
-> >  support MPTCP + sockmap.
-> >=20
->=20Probably yes.
-> >=20
->=20> Furthermore, this commit also addresses the issue of incorrectly se=
-lecting
-> >  inet_stream_ops due to the subflow prot replacement, as mentioned ab=
-ove.
-> >=20
->=20(indeed, but this seems to happen only when sk_prot has been replaced=
- by
-> sockmap :) )
->=20
->=20>=20
->=20> A complete integration of MPTCP and sockmap would require more effo=
-rt, for
-> >  example, we would need to retrieve the parent socket from subflows i=
-n
-> >  sockmap and implement handlers like read_skb.
-> >=20=20
->=20>  If maintainers don't object, we can further improve this in subseq=
-uent
-> >  work.
-> >=20
->=20> >=20
->=20> > That would be great to add MPTCP support in sockmap! As mentioned=
- above,
-> > >  this should be done on the MPTCP socket. I guess the TCP "in-kerne=
-l"
-> > >  subflows should not be modified.
-> > >=20
->=20>=20=20
->=20>=20=20
->=20>  I think we should first fix the issue by having sockmap reject ope=
-rations on subflows.
-> >  Subsequently, we can work on fully integrating sockmap with MPTCP as=
- a feature
-> >  (which would require implementing some handlers).
-> >=20
->=20OK for me!
->=20
->=20>=20
->=20> [1] truncated warning:
-> >  [ 18.234652] ------------[ cut here ]------------
-> >  [ 18.234664] WARNING: CPU: 1 PID: 388 at net/mptcp/protocol.c:68 mpt=
-cp_stream_accept+0x34c/0x380
-> >  [ 18.234726] Modules linked in:
-> >  [ 18.234755] RIP: 0010:mptcp_stream_accept+0x34c/0x380
-> >  [ 18.234762] RSP: 0018:ffffc90000cf3cf8 EFLAGS: 00010202
-> >  [...]
-> >=20
->=20> >=20
->=20> > Please next time use the ./scripts/decode_stacktrace.sh if possib=
-le.
-> > >  (and strip the timestamps if it is not giving useful info)
-> > >  Just to be sure: is it the warning you get on top of net or net-ne=
-xt? Or
-> > >  an older version? (Always useful to mention the base)
-> > >=20
->=20>=20=20
->=20>  Thank you, Matthieu. I will pay attention to this.
-> >=20=20
->=20>=20=20
->=20>=20
->=20>  ---
-> >  v2: https://lore.kernel.org/bpf/20251020060503.325369-1-jiayuan.chen=
-@linux.dev/T/#t
-> >  Some advice suggested by Jakub Sitnicki
-> >=20=20
->=20>  v1: https://lore.kernel.org/mptcp/a0a2b87119a06c5ffaa51427a0964a05=
-534fe6f1@linux.dev/T/#t
-> >  Some advice from Matthieu Baerts.
-> >=20
->=20> >=20
->=20> > (It usually helps reviewers to add more details in the notes/chan=
-gelog
-> > >  for the individual patch)
-> > >=20
->=20>=20=20
->=20>  Thank you, Matthieu. I will provide more detailed descriptions in =
-the future.
-> >=20
->=20Thanks!
->=20
->=20So for the v4, patch 2/3 would be replaced by one setting ...
->=20
->=20 tcp_prot_override.psock_update_sk_prot =3D NULL;
->  (...)
->  tcpv6_prot_override.psock_update_sk_prot =3D NULL;
->=20
->=20... in mptcp_subflow_init(). (+ more details for patch 1/3).
-> From there, we can discuss with other maintainers what to do with the
-> MPTCP listening socket + sockmap case. And in parallel, we can also
-> discuss MPTCP support with sockmap. WDYT?
->=20
 
-Thanks,=20I will do it.
-
-> Cheers,
-> Matt
-> --=20
->=20Sponsored by the NGI0 Core fund.
->=20
->=20pw-bot: cr
->
 
