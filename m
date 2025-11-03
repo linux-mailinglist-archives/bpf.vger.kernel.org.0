@@ -1,99 +1,64 @@
-Return-Path: <bpf+bounces-73378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2574C2DC64
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 20:00:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 827C5C2DE21
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 20:21:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A7B61898C28
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 19:01:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9E0A422AE2
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 19:19:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06E5266581;
-	Mon,  3 Nov 2025 19:00:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8705131E115;
+	Mon,  3 Nov 2025 19:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GiQwvqaH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cEeNuDTr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C74B299AB3
-	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 19:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F6231D74E;
+	Mon,  3 Nov 2025 19:17:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762196428; cv=none; b=biaaLT/cbzQr/HC5BMztPnsedrYYuHFTwf9pf5Rhl8qOAUP/BMdZjP3DhIXVq7+bC8Ic67pE5pHqa31wrjIcpWHGT79VJnZlLP1zhoHIz6GJ95U3xc6ZNyddo6W/AbP3QlSusfHIgH+wpkHz0CL/R85kCgPG1s2Cf9Li5EYm8iU=
+	t=1762197473; cv=none; b=mcESlDDK8Z1uXxRZIhsA36G5GOAOuFQBZnXb+c2VPsguWw7ND8DGg3PtuQDkDzWXnBRR4ryCreRRyvsdtgmT3R1siq3dOEBLzy5+9pzuQ/i7r64zkhjHhLkE1mG9WMdgMYdFeoiJi6+adxn/p5WgTRsPWEmbr5NU4D5AsIkJass=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762196428; c=relaxed/simple;
-	bh=5Kc76iaR2aicGpXWI2CwVtoEWluQcseYpAvOTgc83Jw=;
+	s=arc-20240116; t=1762197473; c=relaxed/simple;
+	bh=hXuE1VBaSY3RKRgphu5e9Wa0Cavk7sH93K8Brpnelhw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FoLD6GCEld9r6f/ZJN/riKsUZvaLdu9jvoWpoju5pX73AUCTSyheGsG534jMeEnVMD6J5mFGe6tXx0jJrEX29qFc6Qkx61RG4XfR/CRDEmszYjxcOATwnXI+PB7uQ6Drt/GLIr9b/IWxjPDP/nqob7SUQgwXNeTWNeTYFm79f8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GiQwvqaH; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-640b2a51750so3080641a12.0
-        for <bpf@vger.kernel.org>; Mon, 03 Nov 2025 11:00:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762196411; x=1762801211; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QJ3N2WUq/UZ5e0T22UvDFgeGGC9bQkna+j2RgD0j4rQ=;
-        b=GiQwvqaHr9wEq6132VYfm8iKRI4FGC+8x496Pvg6dWe9zodE9zoozX/wrcUk/ZKHgq
-         5ckO9Z4C5FLWzUDAZ8UjroZRrOXlsvMiOtLxGNo4qZeeW4NH50rdjHPh6bIxQy8odj9M
-         wbYZ0cWgsjHgTpxwRdWBCK8KaMUzIJ4ImKPOjHDYUQz1EhFOU09gRENbb87s8jpfXGUF
-         2C3wHSy00Fqm3dbESN3krnSW6XEQ05WgtRYNgMOQ0KIx5MzAXk6AqUqSKN3wubDHrhNd
-         Bhiu5HfFItPP8ebDYvCmtsJOCCPKLQmKGeSyHAtWnU9ey465/YJNfL7I/XIJwFxu1Xch
-         9Drg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762196411; x=1762801211;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QJ3N2WUq/UZ5e0T22UvDFgeGGC9bQkna+j2RgD0j4rQ=;
-        b=kFmPmGcoVBXpdHJjwCnBNQoIkXQdvViQLCgihfwmYBOT/5JIGOO0tatQmFvoY/Vm9X
-         BWUcF2SJFuB/jjUcba03pPrxsSq1G3I3xi3v02vHRK+EpUCXBie8YMfLhlrS5tA5ToIt
-         CH7aPCM1ZyYlybnuZqB/w30IO2jy5omvvIt/5IjPkaZYxVywzZxZLWB0Ly27dYWTiGGa
-         FwbDuu0ohnFL6uKgx2sXLK3mEHWmrEPdzGZ1axVFBeYNo5r1mMloHwiUI1rLFhh8h9fQ
-         i3tCtiWYESjLcGw40yWbeqIkw7PoGJtmblm1GdbwPm4c5ypaBHrI3mdkC4qVPnv3zhD1
-         2ZGg==
-X-Forwarded-Encrypted: i=1; AJvYcCVh9NdEoImXVK/FWcJwjo7IXxeZv5o5FdeemmKR0sVGGSDh1BTVMNT2KuLHZLRncebf0a4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8zwwbfEYpTep6lIB6my0NwVGW2rDfmhNzj2zFTKFu1TtbKb7E
-	p7NSVrZl0NXJs4WweBGSizpNPMsE7rj5hx+Z9zIb2MbgckzPkD9F92GfEo2Na1fPZIk=
-X-Gm-Gg: ASbGnctnntelw0NfEKqdtkUN8FCDbaSp9QJDgWj4EbRQgJrFsq3PBoYh0BtctzcQN5R
-	T6zYyF8McOyDyYnqXvbBRSFd416U2HS30rqnWmQw1bsqz78Ak+U/y0P77TWraVzf0LqIyTxB28T
-	MOPGp8LvDREhNAMpxo5kcQnAGmr46DC1n20Py6GyCGmzbOGA1KePVNbla87YHab00NnEtcszxFy
-	3MIS/CbXNEU0miMyxaOOx/KbSAzGAstYJB579MrksU4Su6fIooebybdp5bK0lOviJcoGkUo4Tvg
-	a0XRaXCV6meUfoB9ZhrCaY/mJNu6PyNN25aj2bfS87GBJMhJo2iynykDtehCqw8zPO5MCX0qAeN
-	u8WmLnZrxs4P31hPuss8xnGJx4JZccx3U+1Fp7grzu1QJLrqbs4MpfUyJSMAxx0OMBWtqgoqNgY
-	56C6CR4ZLX3pe2LVUkYkQBN5qw
-X-Google-Smtp-Source: AGHT+IFhQXFPVDqHyarWQQ7R2subtRafoxgNsFUzIvYeodwBNh8qSwx6VEdKXz8J8S7jSfx/fTTE1Q==
-X-Received: by 2002:a17:906:ad0:b0:b70:a982:ad71 with SMTP id a640c23a62f3a-b70a982f501mr457990366b.33.1762196410649;
-        Mon, 03 Nov 2025 11:00:10 -0800 (PST)
-Received: from localhost (109-81-31-109.rct.o2.cz. [109.81.31.109])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b7077ce927csm1117305366b.63.2025.11.03.11.00.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Nov 2025 11:00:10 -0800 (PST)
-Date: Mon, 3 Nov 2025 20:00:09 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 06/23] mm: introduce BPF struct ops for OOM handling
-Message-ID: <aQj7uRjz668NNrm_@tiehlicka>
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
- <20251027231727.472628-7-roman.gushchin@linux.dev>
- <aQR7HIiQ82Ye2UfA@tiehlicka>
- <875xbsglra.fsf@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=L4PcaMG6u1YBi1F6veBHotmNwZGN+51N96SrUWxIHKdUivyzpv5tK37rp1gXc/y9SFr+JDGrK1GMJlZhrpgItO7PcR0J6z1SsTwRmRqSIihWlMq0uatoOCi7Yam9mZMvifPwK/SfNcL/+3QcSgMr4ovPY6r61s3tIZds5tb66KI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cEeNuDTr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E071C4CEE7;
+	Mon,  3 Nov 2025 19:17:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762197471;
+	bh=hXuE1VBaSY3RKRgphu5e9Wa0Cavk7sH93K8Brpnelhw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=cEeNuDTr1SboNVPsjO50nf9fbgya3TROP191it+xMY0GC6SUqqkeZSHuss3m/OFW1
+	 rWuRFnTf6Mtuv12qSlGbiD03Rq6E6Wl+7KYuRVNdmNBhzsiusb0GHv5PitEUvqhEez
+	 ZyprsnZuAHp8MVZ154qU3gCMzqvr7gHvnqhNMRTqvyO2zW2MynDG2+nuS2pdRtOaFv
+	 +Yrem4yAAvxN9aMqqfUjCl2+Dd0xypZgu6aGCE619PdS9s8BGK5GrR/jSfEJjwIm4f
+	 ACmB5v7t7iTvrEwgQYkzl+rek4TUUJ5lYi7WE+1NEjtwZ+t1rPIb8rmdj9HhuKs6MI
+	 BKre6jda/c4bw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 4330ACE0BB3; Mon,  3 Nov 2025 11:17:50 -0800 (PST)
+Date: Mon, 3 Nov 2025 11:17:50 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 17/19] srcu: Optimize SRCU-fast-updown for arm64
+Message-ID: <8a33bf08-8ca4-4fc1-9481-fff2247e5518@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
+ <20251102214436.3905633-17-paulmck@kernel.org>
+ <b2fb5a99-8dc2-440b-bf52-1dbcf3d7d9a7@efficios.com>
+ <f89a3a56-e48a-4975-b67b-9387fe2e48c6@paulmck-laptop>
+ <7cdecba1-2b30-4296-9862-3dd7bcc013d8@efficios.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,108 +67,65 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <875xbsglra.fsf@linux.dev>
+In-Reply-To: <7cdecba1-2b30-4296-9862-3dd7bcc013d8@efficios.com>
 
-On Sun 02-11-25 13:36:25, Roman Gushchin wrote:
-> Michal Hocko <mhocko@suse.com> writes:
+On Mon, Nov 03, 2025 at 01:16:23PM -0500, Mathieu Desnoyers wrote:
+> On 2025-11-03 12:08, Paul E. McKenney wrote:
+> > On Mon, Nov 03, 2025 at 08:34:10AM -0500, Mathieu Desnoyers wrote:
+> [...]
 > 
-> > On Mon 27-10-25 16:17:09, Roman Gushchin wrote:
-> >> Introduce a bpf struct ops for implementing custom OOM handling
-> >> policies.
-> >> 
-> >> It's possible to load one bpf_oom_ops for the system and one
-> >> bpf_oom_ops for every memory cgroup. In case of a memcg OOM, the
-> >> cgroup tree is traversed from the OOM'ing memcg up to the root and
-> >> corresponding BPF OOM handlers are executed until some memory is
-> >> freed. If no memory is freed, the kernel OOM killer is invoked.
-> >
-> > Do you have any usecase in mind where parent memcg oom handler decides
-> > to not kill or cannot kill anything and hand over upwards in the
-> > hierarchy?
+> > > One example is the libside (user level) rcu implementation which uses
+> > > two counters per cpu [1]. One counter is the rseq fast path, and the
+> > > second counter is for atomics (as fallback).
+> > > 
+> > > If the typical scenario we want to optimize for is thread context, we
+> > > can probably remove the atomic from the fast path with just preempt off
+> > > by partitioning the per-cpu counters further, one possibility being:
+> > > 
+> > > struct percpu_srcu_fast_pair {
+> > > 	unsigned long lock, unlock;
+> > > };
+> > > 
+> > > struct percpu_srcu_fast {
+> > > 	struct percpu_srcu_fast_pair thread;
+> > > 	struct percpu_srcu_fast_pair irq;
+> > > };
+> > > 
+> > > And the grace period sums both thread and irq counters.
+> > > 
+> > > Thoughts ?
+> > 
+> > One complication here is that we need srcu_down_read() at task level
+> > and the matching srcu_up_read() at softirq and/or hardirq level.
+> > 
+> > Or am I missing a trick in your proposed implementation?
 > 
-> I believe that in most cases bpf handlers will handle ooms themselves,
-> but because strictly speaking I don't have control over what bpf
-> programs do or do not, the kernel should provide the fallback mechanism.
-> This is a common practice with bpf, e.g. sched_ext falls back to
-> CFS/EEVDF in case something is wrong.
-
-We do have fallback mechanism - the kernel oom handling. For that we do
-not need to pass to parent handler. Please not that I am not opposing
-this but I would like to understand thinking behind and hopefully start
-with a simpler model and then extend it later than go with a more
-complex one initially and then corner ourselves with weird side
-effects.
- 
-> Specifically to OOM case, I believe someone might want to use bpf
-> programs just for monitoring/collecting some information, without
-> trying to actually free some memory.
+> I think you are indeed missing the crux of the solution here.
 > 
-> >> The struct ops provides the bpf_handle_out_of_memory() callback,
-> >> which expected to return 1 if it was able to free some memory and 0
-> >> otherwise. If 1 is returned, the kernel also checks the bpf_memory_freed
-> >> field of the oom_control structure, which is expected to be set by
-> >> kfuncs suitable for releasing memory. If both are set, OOM is
-> >> considered handled, otherwise the next OOM handler in the chain
-> >> (e.g. BPF OOM attached to the parent cgroup or the in-kernel OOM
-> >> killer) is executed.
-> >
-> > Could you explain why do we need both? Why is not bpf_memory_freed
-> > return value sufficient?
+> Each of task level and soft/hard irq level increments will be
+> dispatched into different counters (thread vs irq). But the
+> grace period will sum, for each the the two periods one after the
+> next, the unlock counts and then the lock counts. It will consider
+> the period as quiescent if the delta between the two sums is zero,
+> e.g.
 > 
-> Strictly speaking, bpf_memory_freed should be enough, but because
-> bpf programs have to return an int and there is no additional cost
-> to add this option (pass to next or in-kernel oom handler), I thought
-> it's not a bad idea. If you feel strongly otherwise, I can ignore
-> the return value on rely on bpf_memory_freed only.
-
-No, I do not feel strongly one way or the other but I would like to
-understand thinking behind that. My slight preference would be to have a
-single return status that clearly describe the intention. If you want to
-have more flexible chaining semantic then an enum { IGNORED, HANDLED,
-PASS_TO_PARENT, ...} would be both more flexible, extensible and easier
-to understand.
-
-> >> The bpf_handle_out_of_memory() callback program is sleepable to enable
-> >> using iterators, e.g. cgroup iterators. The callback receives struct
-> >> oom_control as an argument, so it can determine the scope of the OOM
-> >> event: if this is a memcg-wide or system-wide OOM.
-> >
-> > This could be tricky because it might introduce a subtle and hard to
-> > debug lock dependency chain. lock(a); allocation() -> oom -> lock(a).
-> > Sleepable locks should be only allowed in trylock mode.
+>   (count[period].irq.unlock + count[period].thread.unlock -
+>    count[period].irq.lock - count[period].thread.lock) == 0
 > 
-> Agree, but it's achieved by controlling the context where oom can be
-> declared (e.g. in bpf_psi case it's done from a work context).
-
-but out_of_memory is any sleepable context. So this is a real problem.
- 
-> >> The callback is executed just before the kernel victim task selection
-> >> algorithm, so all heuristics and sysctls like panic on oom,
-> >> sysctl_oom_kill_allocating_task and sysctl_oom_kill_allocating_task
-> >> are respected.
-> >
-> > I guess you meant to say and sysctl_panic_on_oom.
+> so the sum does not care how the counters were incremented
+> (it just does a load-relaxed), but each counter category
+> have its own way of dealing with concurrency (thread: percpu
+> ops, irq: atomics).
 > 
-> Yep, fixed.
-> >
-> >> BPF OOM struct ops provides the handle_cgroup_offline() callback
-> >> which is good for releasing struct ops if the corresponding cgroup
-> >> is gone.
-> >
-> > What kind of synchronization is expected between handle_cgroup_offline
-> > and bpf_handle_out_of_memory?
-> 
-> You mean from a user's perspective?
+> This is effectively a use of split-counters, but the split
+> is across concurrency handling mechanisms rather than across
+> CPUs.
 
-I mean from bpf handler writer POV
+Ah, got it, thank you!  But we would need an additional softirq counter,
+correct?
 
-> E.g. can these two callbacks run in
-> parallel? Currently yes, but it's a good question, I haven't thought
-> about it, maybe it's better to synchronize them.
-> Internally both rely on srcu to pin bpf_oom_ops in memory.
+I will keep this in my back pocket in case Catalin's and Yicong's prefetch
+trick turns out to be problematic, and again, thank you!
 
-This should be really documented.
--- 
-Michal Hocko
-SUSE Labs
+							Thanx, Paul
 
