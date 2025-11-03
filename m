@@ -1,111 +1,142 @@
-Return-Path: <bpf+bounces-73345-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73346-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id F256AC2BC83
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 13:46:14 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C328C2BBFD
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 13:42:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 795304F518D
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 12:40:21 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CEBF034AC2D
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 12:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327BB30F548;
-	Mon,  3 Nov 2025 12:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="SJ2Et410"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 886253101A3;
+	Mon,  3 Nov 2025 12:39:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3995730B511
-	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 12:36:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C252D30E856;
+	Mon,  3 Nov 2025 12:39:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762173391; cv=none; b=F0chh3oAD+CYVHIreCR0RL+tltvdufamLwMSChZQRFxsn6dgPeLgZlcu0gQSQsm1oew2oJLFT2Ts5RrsYaGV5F4WnAXBfvflxSKEb1dcG/1eI+Jl3LENPg2DahFZoHesj3n2V3EuJiBnq3mSGv3qy2ULETkydPmA+0rUGkshsYo=
+	t=1762173596; cv=none; b=KycNY/takeSRYqIxmF7ujkW3qTGgsgTpH7eriYjnziVoT2w09pTD5a85HckBFwU9+HaqrmWuzKYv+SDkt6qUpeEuaW37ynkzeleR1+qm3lqV49+MXs/EuN9rjQ5tvP6PnOpsWy2ZSE1xHP/OS+O7Mc6AX/luLYz5X/0BGQayXCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762173391; c=relaxed/simple;
-	bh=zVNRFq8Olkjr+ZzEj6HBFovkwSvrH+SAbKaGr6sADBQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=cOV+QK/Al1T+pIAXtsiYk33zGYf7zd1TtfXjHCSPBwNM9uRld83MVHpoZve9GDV9/9AggY/p27sXyZmYF7bZEhsyrkAmoAkef8HBnmEkgGFM8jllpRVLIyohlFRYtVUcFUDJndQT4+zmWDScPDDmPG9vwDfXKnnR5P7+ENb9evo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=SJ2Et410; arc=none smtp.client-ip=198.37.111.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1762173385;
-	bh=zVNRFq8Olkjr+ZzEj6HBFovkwSvrH+SAbKaGr6sADBQ=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=SJ2Et410JgBpRrQuAPPx0C/+16aaE9vVZ0MBN8pEtAnuNIbINHpUujrX76FzARUyv
-	 cEqo+elJWHsk4UAI3qeTZpO91JjWQOgDWqC02T8y31cQ7Duz0MK7i15qXFu/4ltHPP
-	 YNDFITsTdPCwQisD7yZC85IhQYHT/nDB+shlj9Oc=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 662871C0327;
-	Mon, 03 Nov 2025 07:36:25 -0500 (EST)
-Message-ID: <b93a5e30149d8ad43f64f8f0d61b3c89e0a694ec.camel@HansenPartnership.com>
-Subject: Re: [PATCH bpf] bpf: Check size of the signature buffer
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, clm@meta.com
-Date: Mon, 03 Nov 2025 07:36:24 -0500
-In-Reply-To: <20251102113742.34908-1-kpsingh@kernel.org>
-References: <20251102113742.34908-1-kpsingh@kernel.org>
-Autocrypt: addr=James.Bottomley@HansenPartnership.com;
- prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1762173596; c=relaxed/simple;
+	bh=NahZnGHbeWb05O39co6q17AfcLe2V4xIORGRnSkMmng=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RWSl7DoTCAVl50Rs5TRBOi21lhb8w6KR8/7sNUdWd4kfUvHK/i6JU6oyjyGbaVwhWJr8lAYEWZyqF33h9G4cefSI0Z5Xla9seJA/upGPaeh1QkLAnH0iXJVB+RChxqxJGNNgoup7e4rtYUzEVXLnGWOLjSL8Sxe961qZ+glGB3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-c2dff70000001609-34-6908a293b816
+Date: Mon, 3 Nov 2025 21:39:42 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+	davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
+	leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+	andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
+	akpm@linux-foundation.org, david@redhat.com,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
+	ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
+	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+	almasrymina@google.com, asml.silence@gmail.com, bpf@vger.kernel.org,
+	linux-rdma@vger.kernel.org, sfr@canb.auug.org.au, dw@davidwei.uk,
+	ap420073@gmail.com, dtatulea@nvidia.com
+Subject: Re: [RFC mm v5 2/2] mm: introduce a new page type for page pool in
+ page type
+Message-ID: <20251103123942.GA64460@system.software.com>
+References: <20251103075108.26437-1-byungchul@sk.com>
+ <20251103075108.26437-3-byungchul@sk.com>
+ <87jz07pajq.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87jz07pajq.fsf@toke.dk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SWUwTYRSF889MZ6YNjUNF+BETTV3jAm6J17ihUfMb18QHN6I2MtLGAqYo
+	glGDiFsVXJBIC8aqEShCwCq0JWKUHdwIbjXK6oJBrMhSqahIUSNvJ+eee777cHla0SIZyWsi
+	9oi6CJVWycoY2WevK9OSr/Ka6dn1AOl5OSzc6I2BzCabBNw5rRSkZxci6Ha/5qC/uAJBV1kl
+	C59KOxFcu+KiIf1JAgM9ed9psBe1ImhLzWXhfUULBzcsq6Ex4wMDd45baWg5U8VCYkIfDcVu
+	JwfxtqyB4ltxHNQWJkngwvfrNFjjmjh4WpTOQkNOvwQ+lCQyUG00M9CRUkZDY1IwVJh8wfWg
+	HUFZnpUC1+lLLDw3FFFQUPycg+Q6EwtvExoR1JW2MJDy4wQLaYeTEPT1DlQ6z3ZLIK28gQsO
+	JIcdDpaUtn+hyW3zK4q8SD3HEMfdGorYjfUcMVn2kltZk4neUUcTS/ZJllg6z3PkzYs7LKlK
+	7WOIvXkusdu6KJJ4xMmuG7FZNj9U1GqiRV3Qwu0ydZU1hdr9zSum9ls5E4ceyvRIymNhNnYd
+	raD+6fziR4xHM8I4XJ/slng0K0zEDoeb1iOe9xEW4we9YXok42nByeH+3FbakxkubMBfHA2D
+	ebkA2PrSPOgrhAO4sib5r++Nqw3vBvtpYSq2F7xhPZ20EIAzf/F/7NH4SEHa4KpUGI8NJz8i
+	jx4hjMX3CispDxcLp6S4tLof/bnZH9/PcjBnkbdxCMI4BGH8jzAOQZgQk40UmojocJVGOztQ
+	HRuhiQncERluQQOfl3HwxxYb6qxdX4IEHim95MTEaxQSVXRUbHgJwjyt9JHrYwcseagqdr+o
+	i9ym26sVo0pQAM8o/eQzXftCFUKYao+4SxR3i7p/U4qXjoxDqcPjQfGoZ9W7sDX2Cf7SkHy/
+	jWE7V+Z68eruoI9PfZucSm/X8qZ7ywzP2uMv7njML22OH2OZsmBYUChp65nVnZ9wLPhyuXvt
+	z3kHTDcNZ6Y0H1tBxr6SjcpcpN3I+EWqAzLaQoT9VujYfKhvyaY5XZO2mv3R15fRD9dytnPl
+	HZfMSiZKrZoxmdZFqX4DHLABhHUDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA03SbUxTZxQH8Dz3eXrvpVp3ZahXCdHVt4woSjLMmRqjwcQnJho/LBr9InXe
+	0AYoplVCF02qEJ2NrSI2QqlaNQMpNZAilHZ0cYC86BYZBFdUwDEtBpQaxUoBRYoa+fbP/5zz
+	+3R4HNskW8RrtIclnVaVqWTlRL5zQ97qwmu8Zm2o+juwV7pYqBjNhbIndTKIuAYYsDtrEYxE
+	HnEw6W9G8KaphYWhxtcIrl8NY7DfzyfwtnIMg9c3gGCw6CYLz5r7Oahw74C+0iCB+lMeDP1n
+	W1kw549j8EeGOThRd2MKrjZy0HipTQbttRYZXBj7DYPH+ISDTp+dhV7XpAyCDWYCbbZyAq+s
+	TRj6LJuh2TEfwvdeIGiq9DAQPnOJha5iHwM1/i4OCjscLPyf34ego7GfgHXiVxZKjlsQjI9O
+	kcPnRmRQcqeX27yGHg8EWNr4IoTprfJuhj4oKiA08MddhnptPRx1uI/Q6huJ1BTowNTtPM1S
+	9+vzHH38oJ6lrUXjhHr/+5F6694w1Jw3zO6av0++8aCUqcmRdGs2pcnVrR4rc+jd7Nz2d3eI
+	Ef0lN6EYXhR+EKv8f5NoJsIysacwIotmVlgpBgIRbEI8HydsEe+NppuQnMfCMCdO3hzA0Z1v
+	hT1iKNA7va8QQPT8Wz7dxwpHxZa7hZ/7uWJb8dNpHwurRG/NYzZqYiFeLPvAf6oXi3k1JdOn
+	McJysfj0cxTN84Sl4u3aFuYcmmObIdlmSLavkm2G5EDEieI02pwslSYzJUmfoTZoNblJP2dn
+	udHUb5UemyioQyOd2xqQwCPlbAV18JpYmSpHb8hqQCKPlXEKk2GqUhxUGX6RdNn7dUcyJX0D
+	iueJcoFi+x4pLVZIVx2WMiTpkKT7MmX4mEVGlFyG1+/NGNiuujbIXCcPLXbmxIr3Pun7Hlib
+	fLFr1jfGKlKfcGVw6M9S24RBedSdVKH90Hbx/SnfyytVJ0vMY/7E+suzxteHljjM/2wLLnT5
+	f3rqSt/6Momk7A6tWubcZbds3RhUr1waVIc749bdTrP+viI1q5saH6U4w6kJ1gNKolerkhOx
+	Tq/6CMKBWTFXAwAA
+X-CFilter-Loop: Reflected
 
-On Sun, 2025-11-02 at 12:37 +0100, KP Singh wrote:
-> Accept only a SHA256 sized buffer.
->=20
-> Fixes: 349271568303 ("bpf: Implement signature verification for BPF
-> programs")
-> Reported-by: Chris Mason <clm@meta.com>
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
-> ---
-> =C2=A0kernel/bpf/syscall.c | 3 +++
-> =C2=A01 file changed, 3 insertions(+)
->=20
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 8a129746bd6c..cc5bce20ec86 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2826,6 +2826,9 @@ static int bpf_prog_verify_signature(struct
-> bpf_prog *prog, union bpf_attr *attr
-> =C2=A0	void *sig;
-> =C2=A0	int err =3D 0;
-> =C2=A0
-> +	if (attr->signature_size !=3D SHA256_DIGEST_SIZE)
-> +		return -EINVAL;
-> +
+On Mon, Nov 03, 2025 at 01:26:01PM +0100, Toke Høiland-Jørgensen wrote:
+> Byungchul Park <byungchul@sk.com> writes:
+> 
+> > Currently, the condition 'page->pp_magic == PP_SIGNATURE' is used to
+> > determine if a page belongs to a page pool.  However, with the planned
+> > removal of ->pp_magic, we should instead leverage the page_type in
+> > struct page, such as PGTY_netpp, for this purpose.
+> >
+> > Introduce and use the page type APIs e.g. PageNetpp(), __SetPageNetpp(),
+> > and __ClearPageNetpp() instead, and remove the existing APIs accessing
+> > ->pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
+> > netmem_clear_pp_magic().
+> >
+> > This work was inspired by the following link:
+> >
+> > [1] https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@gmail.com/
+> >
+> > While at it, move the sanity check for page pool to on free.
+> >
+> > Suggested-by: David Hildenbrand <david@redhat.com>
+> > Co-developed-by: Pavel Begunkov <asml.silence@gmail.com>
+> > Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > Acked-by: David Hildenbrand <david@redhat.com>
+> > Acked-by: Zi Yan <ziy@nvidia.com>
+> > Acked-by: Mina Almasry <almasrymina@google.com>
+> 
+> Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> 
+> IIUC, this will allow us to move the PP-specific fields out of struct
+> page entirely at some point, right? What are the steps needed to get to
+> that point after this?
 
-That's not going to work unless something really strange is going on: a
-pkcs7 signature is way bigger than a simple hash.  I believe Chris was
-thinking we should do something like modules do: check to see that the
-signature is not bigger than the total size of the passed in file data
-size less the program data before doing the vmalloc.
+Yes, it'd be almost done once this set gets merged :-)
 
-Regards,
+Will check if I can safely remove pp fields from struct page, and do it!
 
-James
-
-
-
+	Byungchul
+> 
+> -Toke
 
