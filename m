@@ -1,485 +1,341 @@
-Return-Path: <bpf+bounces-73294-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73295-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5351AC29D03
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 02:50:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3714C29FCA
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 04:45:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D38A63AFC8E
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 01:50:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 337D7188F993
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 03:45:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA21827E045;
-	Mon,  3 Nov 2025 01:50:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41C712877CF;
+	Mon,  3 Nov 2025 03:45:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L878EWiu"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="iOIblLIr";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="bbZns1Rg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946D527AC57
-	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 01:50:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762134618; cv=none; b=PnFyiyT/6vYo3acXpWbWG21b1CdawvfrCRlqXWXClI+TDDi0X4iPKtbOr0CPS/xLsdpldiUwsfZlWyuF55YVrHp8TY+K64DDez4ztlQwisQ1bxsCQchgNUabUpj/gijBJQQoirWQLk0GIpAdnOuIyWa0S34A+IbwK6yHDpxy2yw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762134618; c=relaxed/simple;
-	bh=yUoYVyidpmD8I5QagVm/Su9JMUBnOyDLLTcuTzOlYn4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hjyT3NyDYq3OI+kmp5fEIHRSLbtaTyN14jth9SHGbubleyowSn0l4LnSR5BXiGdPciL1wdjRx6tCM5AM6iDxuxTTakP7Un8G2gHiZNxFj6vdYQg/qJW3Ushl7WQ9mGe097nR9Kf40dX6QzeVpGUEjDdlXU+0dojLaxfk16ZIyLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L878EWiu; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-782e93932ffso3712269b3a.3
-        for <bpf@vger.kernel.org>; Sun, 02 Nov 2025 17:50:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18EFF1F130A;
+	Mon,  3 Nov 2025 03:45:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762141514; cv=fail; b=EH9kX9RDhIzdCyxUhxWMAkixRGIO58/ac3gp1CIaw7wZtcNSERX/2R4/q0lCkzcHdMyDqXzDvwQMb0S34LyKX8fqypuk0X725qsitNnRX9OcTg+EIQWyw9iM6FBVSYm8sesLvQ/ArUSBOMGevNc1/+drJNy2m3ukUS7MBHW4AOY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762141514; c=relaxed/simple;
+	bh=dxI5b9NCvpFRDcdWGKP3sy738i+t4ddcGcivUd5Knbs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=HB66IVTJPN0esflVod5JlDwMakvqImUbJgowdm9QnmbFJvkSfd4hUcHUhkyqRvN8Ibjoq3tn1UeVEyzqm5G+ybc9q9X/5hQmw9ZO6aAZxUL5k/8G/z7MTYYCTXpzZ+1qNmVyFcv0R7lFodOaP3Sf6ImwDJ+EZK8+54pFSsUmL4g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=iOIblLIr; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=bbZns1Rg; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5A32o4LV021529;
+	Mon, 3 Nov 2025 03:44:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=edgCDmWvWTUPNvQknusZvVYf9g5rm/ywalb/PWAyaZg=; b=
+	iOIblLIr41Emx5AjPY/UOPoyNP/hEJ/qJRJreSzQQJsSbp5jzHIlLmzjLzoN25hE
+	KPtAa2BETiV7NoPSOxVMhVSXgiBICLxBRd60m6l3phk94SHUHizbKNe3GAkwXM6U
+	oEFZa6/bu8ak5xAMnGifmzEeVAg5SaK3ENDfTIDjDtz4oPngUx9wf7sdsPR54HR0
+	EUfVxMNNi7lxCOVpDNHiN66G1sAD/QcmLhqUzPfexOln4aB3wOqu+Yy5gKkjukPa
+	13HDAct3LLP3J+d5n1hrrxbKdooh76Q9WiGxuKc73esKCafRkGXHLbqfP4Xys5JX
+	TrotLyl0zJkFDXjRIQmRvQ==
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4a6kxrr26f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 03 Nov 2025 03:44:35 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5A2NU5HH040365;
+	Mon, 3 Nov 2025 03:44:35 GMT
+Received: from byapr05cu005.outbound.protection.outlook.com (mail-westusazon11010039.outbound.protection.outlook.com [52.101.85.39])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4a58nhbqm3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 03 Nov 2025 03:44:35 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HZ1BsOlsn7UqTm4CR0V8oI1VRjTbNnTZ51UCzxh8koaoKY7NEVtywPPSiHPMB99z60pYTPo4Qs01AY5YTPz7d1DOMJcA8JqTpvGB+5VQTtyRJO2WY80VxUk9gOLTy4kQhs9eyni6LFvrv/m6Ugjj5xIuDaZ4HiGoWu+RnOFA+43Zv07zVD6ESb7bZIJbKvCEz6+uOGSPVnmAFHdmDaLlkygcEgLbVSouN/5Fbt6WDUdphSZU/swuvO/jkdjQtm2ZyWPYM5MMzJ5xzzu5TOatNEUcoZJlY5PEBSfSxNOwqNqlhsAivOW4/fBT7inNHOGNtdUoFRPojW2f43rzpfQzYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=edgCDmWvWTUPNvQknusZvVYf9g5rm/ywalb/PWAyaZg=;
+ b=nqlw/LfEb9Six+dSlKE2u2qiXpsvxckxJcCJMVxoghnkh1q+/61L7f3U3uvQq7Im1sVIHrKHKFH5uNU0/CTRvVvDx+rGvIgDhCicj6MYpgBmxuD2sAJuSghwaI+5m3TouWn0ShsgvRW2B+KuRYY1UYQlldULKAzioQ50FPHiw2WN581ZQvZJ/WLWhbNvuLXSW9A4PFziptAaqFz/MZJftJUM+mmBsbd8TdEPWesN7IHA3EOuWP7SyjdTdi7qFnwy8QsxrYc8Xr0tmGIDrUZrgDK39HYHUzLtlqAMYytr4fLIHx/DAyp7PVJXGaHGYtAPSsp/exgF7LitsJJwt6BrcQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762134616; x=1762739416; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ren3ilLe1f16OsS1xbj0H/DuznntzGndDqF1do2st/A=;
-        b=L878EWiujpKs9yFQyDAbI1fc34oRc7TsWM0ALeMpcLxZGdonzO5PKx7XF4wL97X5Lo
-         d3+2NaAq0LKxIOCjHbdH6LsvUC0oXRaNZERTQil3NrIgnuA6V2l2iaSL2LrYNRIhBrfv
-         98MMsFgDm4pxs7OEy2XMzZ3GpqBeqyk74BQxPomZ08aXSvb8j4B+R9MMSodoK0A/g7iF
-         oB/h1+O9gwNmZh1uNi/fwEILZOhlGAmQbPbuk4yppRZtgNDRG5pgbLuwKPUa2idVjkxK
-         0zQLCEMVGYqPqF/bWWPQYmTbZYwnPHxOTsTktZe+zqoGgQ9VBvWZgJwcdrrdn/7uCo8M
-         EzRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762134616; x=1762739416;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ren3ilLe1f16OsS1xbj0H/DuznntzGndDqF1do2st/A=;
-        b=G95UKpyZzoaPd6NdQ/mt3htawMseZTB4tflgTsxuG8nrXWqMuKXzGB97NvwBbkHz2Y
-         ZmTgbKQfRjUCUpVmchzqm5g4Xg4C/+LP8pKxsJe9fiLldVhJLf3hhswUTQ9O570O/mx5
-         t5dOIWo9hSTu3NhlIOrOaBRGPEMqPB2nGGnu5+KZVbMTn4cRD5vLKbWmmoAeMLGW75yc
-         Ow9HtPKGcEEqxg4MMg0bW/1l4fzM07OBzeCXXNwgPr8nmIH/gFpggDWz/RAlbAy50FsB
-         +ayUppOcQhirwZr3v0AvNXQAi885+qCfaA55KRCHsmmJmoj6ma2fBTq4IVhsKDyGqLCb
-         BsbA==
-X-Forwarded-Encrypted: i=1; AJvYcCVq1b6MhTRymuPHlecTSwvGaq9Ia5lwmm/Qd826woSCljggwZB3AnsKD82qfAtDC7li4ns=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxD5rM655NmTpeasF9U26Xt7T/OXbPT42xiQBes1eMPB49BDJXq
-	fgN74Ck2WpuIoAJ6eApx2Cn1l6mtyTuUn/LHVqX2olcqFK0ki/IHJ0gs
-X-Gm-Gg: ASbGncs6K656tAqTahsf6WF7x0/EP/IbZGBtNe1p+YfqbdR+U1yNDVx0INT5C4KdR+v
-	OqCGiWtzRgaLeuj4XR1wSAtfaAu+lpPAl4eHWAZSqPXdnhNMGmu3dp4GYrwgybK7doVojlC/BI8
-	WpJbng0P/9y8zuQVv5geL7OBY77dElZjUIaXR3sJeYhJw4YPn2dP1C1HDH59mrXBoHaZ+fVM6H/
-	fsbeRBEzXuevPoO+Qtx3mbnV4bq0d/iFK3KSwPNzheA17p0JNtVH5T9smeuclAX0iHMfOZiCDox
-	9NAs4oQ4lN/MfYTCFI+12P54a+iTW7vdjEd64dpPYZfxNpInxsDolYu8gSZOJTU21LK7STSbtGo
-	KNJetQqo6KXJhS8jCb62UYjRqKzkiC4NA5eVWwo+v80ex6j0ZDmjlNGeQubg5EF+RB4D4IZJiOx
-	j3IHf5J6v23RzJEv7zjH8EKtdi1A==
-X-Google-Smtp-Source: AGHT+IEqIJl/aXCVxz+PEB1v1A2ESlobe4eE+GU2BwEnu4AgtY/81QZQtD4RHa5zpSlg44Eg5cpqFQ==
-X-Received: by 2002:a05:6a20:918a:b0:2d9:c2:5ce4 with SMTP id adf61e73a8af0-348ca75c0a9mr13598036637.7.1762134615633;
-        Sun, 02 Nov 2025 17:50:15 -0800 (PST)
-Received: from chandna.localdomain ([106.222.233.44])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a7d8a76f00sm9104582b3a.12.2025.11.02.17.50.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Nov 2025 17:50:14 -0800 (PST)
-Date: Mon, 3 Nov 2025 07:19:57 +0530
-From: Sahil Chandna <chandna.sahil@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Tao Chen <chen.dylane@gmail.com>,
-	syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com,
-	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org, listout@listout.xyz,
-	martin.lau@linux.dev, netdev@vger.kernel.org, sdf@fomichev.me,
-	song@kernel.org, syzkaller-bugs@googlegroups.com,
-	linux-rt-devel@lists.linux.dev, bigeasy@linutronix.de
-Subject: Re: [syzbot] [bpf?] WARNING in bpf_bprintf_prepare (3)
-Message-ID: <aQgKRcPQYRUP-r42@chandna.localdomain>
-References: <68f6a4c8.050a0220.1be48.0011.GAE@google.com>
- <14371cf8-e49a-4c68-b763-fa7563a9c764@linux.dev>
- <aPklOxw0W-xUbMEI@chandna.localdomain>
- <8dd359dd-b42f-4676-bb94-07288b38fac1@linux.dev>
- <aP5_JbddrpnDs-WN@chandna.localdomain>
- <95e1fd95-896f-4d33-956f-a0ef0e0f152c@linux.dev>
- <aQH5EtKBbklfH0Wq@chandna.localdomain>
- <541b7765-28eb-4d1f-9409-863db6798395@linux.dev>
- <b9a8890e-9d0c-4ce3-8f10-eefd607b52fc@gmail.com>
- <31779ad7-1e95-4033-8de6-a9afa3b89b8c@linux.dev>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=edgCDmWvWTUPNvQknusZvVYf9g5rm/ywalb/PWAyaZg=;
+ b=bbZns1RgqdcEoHWjU+fCG0u8XihgQXx9X69nAbl7LBgwgdcUmH7f4fasxexLsVAqWXm86BJbgzKuCJmZ3MNOR645mg1NxMDOYH0d3AlETTHoltznistD+i88fc2YslCEe4k+ALwRkYpMjWiSe8MhT85CVVbepS/aF9KnkaHEheg=
+Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
+ by DS0PR10MB7222.namprd10.prod.outlook.com (2603:10b6:8:f2::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9275.15; Mon, 3 Nov
+ 2025 03:44:30 +0000
+Received: from CH3PR10MB7329.namprd10.prod.outlook.com
+ ([fe80::f238:6143:104c:da23]) by CH3PR10MB7329.namprd10.prod.outlook.com
+ ([fe80::f238:6143:104c:da23%5]) with mapi id 15.20.9275.015; Mon, 3 Nov 2025
+ 03:44:30 +0000
+Date: Mon, 3 Nov 2025 12:44:15 +0900
+From: Harry Yoo <harry.yoo@oracle.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@gentwo.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rt-devel@lists.linux.dev,
+        bpf <bpf@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>
+Subject: Re: [PATCH RFC 10/19] slab: remove cpu (partial) slabs usage from
+ allocation paths
+Message-ID: <aQgkzTLZqojS1tbq@harry>
+References: <20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz>
+ <20251023-sheaves-for-all-v1-10-6ffa2c9941c0@suse.cz>
+ <aQLqZjjq1SPD3Fml@hyeyoo>
+ <06241684-e056-40bd-88cc-0eb2d9d062bd@suse.cz>
+ <CAADnVQ+K-gWm6KKzKZ0vVwfT2H1UXSoaD=eA1aRUHpA5MCLAvA@mail.gmail.com>
+ <5e8e6e92-ba8f-4fee-bd01-39aacdd30dbe@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5e8e6e92-ba8f-4fee-bd01-39aacdd30dbe@suse.cz>
+X-ClientProxiedBy: SEWP216CA0006.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:101:2b4::12) To CH3PR10MB7329.namprd10.prod.outlook.com
+ (2603:10b6:610:12c::16)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <31779ad7-1e95-4033-8de6-a9afa3b89b8c@linux.dev>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|DS0PR10MB7222:EE_
+X-MS-Office365-Filtering-Correlation-Id: b9842b8b-19b1-442d-71d3-08de1a8b4b5a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|10070799003|376014|1800799024|7416014|366016|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?VUZoZktYTlNQemNDSTFmY0FXM2hUK2g3WFpEQ1NaWEVab3JEUStDV1pGZUlU?=
+ =?utf-8?B?TDJtcEUzbnpWM1JwZTY2ZndYUHJ3bStMN2djNUZkMGxnenpxTUR6MTkxY25T?=
+ =?utf-8?B?eUtPb2tPbXpmdVFFZ3VaZjR2RDNFOERVcXVXQnlZWnVtbEduSzg3b05RVyty?=
+ =?utf-8?B?V3NBSUJCN1R5UzFBTjA0amk4SGpvU3FueUVBVVB3WDdRazRpYTFKaW5zODBQ?=
+ =?utf-8?B?TkZOQkx6eUhFNE5oNVJiQmNrN1dncEJPUkZtbmxOSGhZN2krRjNUK2UxNHN5?=
+ =?utf-8?B?NDRFSkdmSnl0b1lHd3UxMXJZd3ZlRk9CN3Nxb1Q1Y01hTnJnVTJYN244bmRT?=
+ =?utf-8?B?Tk9yN1IrejVTMFBkNXNjUWpGWHo2eE42U3NHa1lBRHZOeFJUbkdBVERXZWlC?=
+ =?utf-8?B?c0VBSXU2YzE4eVhIbVFRbUlEcmZGSTNBT1NsSjJjdkNtS1llakNMWDdsQmpz?=
+ =?utf-8?B?U3N1RjVsMzRVaFNCanZJWG05MVl0VnZtVVdyWUxYTkN4alpQUnAwRW1Remds?=
+ =?utf-8?B?c1B3UjA4R3g0bjRCak1nVUg4bzd0VWlpdlV3eThvWnV0dlA5K0tteEZ3eEtE?=
+ =?utf-8?B?SzY1V252SXo3dVc3OHFDb0FaSDJ3QVBOZ2srWjh0TmF6aTIvbDRRZmo1WTly?=
+ =?utf-8?B?a2lBNWZCNVE2OFlERHBRM2lJaFRPLzhUMW5NMTJnRFpXK0ZlR1VBZVVhZER0?=
+ =?utf-8?B?b0RXSGpJVWpUODRQTE9PTFlDV0xQRW1uWFVEaUNLTnRoanMxeVFybWYxajU1?=
+ =?utf-8?B?R1FHNTd1MnFwT3ptalBiYWRjRi9DSFRLd3pDaTNnNkdlTHE4eHNFNWsvZ1di?=
+ =?utf-8?B?SnV0ZVc0YXBzWm1ObTdpYVZobElrYUR2b0ZrMnlxbVlNYTNhaHRoNmpsNlp4?=
+ =?utf-8?B?N0tQUms4WjFNaVh3M0ZkTktNLzBBcUNPOGROTjhQaXRFaWdnWDNyYlRmQTR6?=
+ =?utf-8?B?MTk0Q3h4R3I3ODFLbElHMXh5M0ZmS3RzUWJab0FSSGhicEYxMHo1WE1mNnRs?=
+ =?utf-8?B?QVRLNWZmSm8rZlk4SDVrd0Y2MnpTc1lhNXdNTXNWZ2hWcmxUb3FOd0lhSW5D?=
+ =?utf-8?B?ZXV6bGYvQmFMYUpqN0JXeHVDM2VqMkdubzBJVnFYNDloRE1oT0xGTGJjWmVT?=
+ =?utf-8?B?NncrKy94SFRPQk5IbUN3c0J4RU1JUGk5bjNMUkJESjZYR1pGN3lTb3EzcUNp?=
+ =?utf-8?B?ZmxacVE2d0pvTGRqMHhuamNmOU1vY09IK3F3c2Q0cC91RENqWmhxc2UxbGY4?=
+ =?utf-8?B?Y1cvaEg0Vm0yZVBqMitBK0RJdVM5RjRkUkNHRnljdGg4U0ZVODRRcENJSXAw?=
+ =?utf-8?B?eTIzU05FMGp4SE9HSUl6UU5DbmY0c0h1T0luOVFSd0dDbTA2VEIxYUFMYXZy?=
+ =?utf-8?B?ZHZuaVBCaE02UDBkb3p5QkRDbUcrTlVHeW9QMHJkSHNHWmt6a3IxY0xCamRM?=
+ =?utf-8?B?ZW9ncWNYR3lMeHNPKzhTdXpjOTl3WTFDRXY4YXV5MWtVNXJYRmFDVGF2Y2NS?=
+ =?utf-8?B?c2xEeFlzNWl6N09mdlowUGlzUXBzNndWVUNiVkN6d1BRa2NiK1ZqeDFNWUtI?=
+ =?utf-8?B?MkdHbklreHNrZGxOTmk0R1NidUJBb0FRZWJqVDY5T2Eva1ZQa01adFhRc3BT?=
+ =?utf-8?B?V29GUktVZ0o0TW5FZnlDNEFsTmFGdDdydkt4bEJEWFQ4ZDQvc1VmZzRkRmRX?=
+ =?utf-8?B?ZEpxZStxQlVzUk52dENYSytiZThjUlVtcFF0cVNpVXI0TjVOaEsyZUVYMmRK?=
+ =?utf-8?B?RDhSZ29mVFNDRDZna2xyMVFPRUlEMHROMWtGWkp3TGFHMnVGNUxUQm5FdWRk?=
+ =?utf-8?B?UEgyZXhxRVE5aTNFSmkyUmJNZlBWQWNxdmtvVG5MNmtURjNMQThHTW0wWVdR?=
+ =?utf-8?B?eWIybkJzNXl2aFBETGJwTTB3dVh5VVpoRkpmenVVVkcwMkFVOTBZdmFGQmZF?=
+ =?utf-8?Q?Wt4WWFXg+d8RhFFUsI+zWa7RPLk9u33v?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(376014)(1800799024)(7416014)(366016)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Wjl3anpxbHdrTXk3VjREeUEvKytWQlF5M1Q4cEF4TWtTeG80TmJKR3U1NWNs?=
+ =?utf-8?B?emk4VVNXYkdGQjl2eG5KWTFlQW1ubjNST2FiS3NoWUdhN0hLendvS0lSZm13?=
+ =?utf-8?B?QVhyUXUvdXJHQjZ5WXZ4R3FUNFo1a2FVcGtGd3pQTjdBWmVuWHFzUGp3ZnF0?=
+ =?utf-8?B?TkZUOTZUTGVYTVEwT2Q4eWdSdWhPWUtrOXpSTDJSc3hPTlVUZlE0QmJBRUFI?=
+ =?utf-8?B?WklHazFmSmtaZXkyc082dUtESlFxV1pmeUhoNVBDdEtES2dCNlBySWw4TU9q?=
+ =?utf-8?B?TDAwUzhGUHJidXhPRGZZckF6RjlKQysxUEhqUzhnd2o3MFlULzk4djhBb2J0?=
+ =?utf-8?B?dXRzSVBkemsvRldRZHdMTnYzSkEwUllRc0d4VUt3N3luMUdIMzhVRzJWQk5L?=
+ =?utf-8?B?TUhUU2wxOHRoUjVrb1M1OWg2SDBwUHV2cVVqclVXb2ZEa2pwY0w4TlViMkY3?=
+ =?utf-8?B?WFFaWWcvWEljTG1taUNsajA1b0hsUVhXZURpeFVDVzJBRmRZd092R0VjYnZL?=
+ =?utf-8?B?UGthWHBYT1Q5SnUvaEc5RTlLT09jMkMyM3VJc3ArdVgxUy9BZkk2dGZPdlhO?=
+ =?utf-8?B?OU5BcUp0cDRNM2N4a0VYUVFMWEgvdS9ZbFFJZlhxajBUTjFhVFFaTloreHJW?=
+ =?utf-8?B?ZXl5VUFNVUkzK3QyTDdvWTlpN2lhV3I2OTAzSUMybTlHK2N1TGVYejhXSzVi?=
+ =?utf-8?B?Y0FvZEswV29HcHU1bU12Y1FYa1BBM29BVGFralRwR2NVRjd0amFoMFArNWIv?=
+ =?utf-8?B?YnNRUmNhOEw3L2FqdUFQMy9vTFB0U1lXMlFBSllsWDB5SHJ6QU94T1ZuY1Q2?=
+ =?utf-8?B?cXYySTl4YTBodUx1djNoWGRjZ3p5V3hBVHQxaGJTQy9Jd3RnMGcvYVRCS2pa?=
+ =?utf-8?B?ZUlsWkxHb2hERmdrY1VzRW51ZmExZ1BKVmhST2ZsQWRUZ05HNVhwWW5vdnNU?=
+ =?utf-8?B?eUYrYzNQazVnc0ttSlhTV0NSVWFQRHdJYnRpRWMrSHZBTytlbmF1aGtsQURz?=
+ =?utf-8?B?SUlXT1J6T0pnTmVxV1NhU2pQcGs2Y2sxcmV1VFJQQitJeHBuRHJMbFdDYnY4?=
+ =?utf-8?B?MjhDZmp3akpHWWpYMU5EWDJqdVNmOTRYS2lyRitmek9iMkNrWWMwNUJxMDJY?=
+ =?utf-8?B?NDJ4TzVpU21GbEQzQ3NuVVJrenJubk9RTWkvVERvYzE2YkhYZHlNMk1UcWlI?=
+ =?utf-8?B?bVc3V24xbmF5SlU3d1lsc2lvTnpUdTFrODRUWko2NVBkTkl4SnFpZzBaVnQw?=
+ =?utf-8?B?dW0zNW56VjBNUCt6Vk94TzY4ZGsvZlY2RllITWduM21vOWVSYk1kbFFPL0dR?=
+ =?utf-8?B?elZJK1hWVHJSdmV6bUdQOUhJcXJxQUZvekwrYzN6eVF0a0prZ3ZreVA0SFNq?=
+ =?utf-8?B?eWRyb2J4bVUyOUN3T1V1WEk2SHo5OEhxR1J4N05Ydk56cmI2VGRSRUc3QXhh?=
+ =?utf-8?B?aiszUUt5allEeWRTb05OK2kyWmhPeFNraGwrUDUyRngxRTBDYnBDNVFnRXZB?=
+ =?utf-8?B?UmlucEp5amtqTU10N3ZFdjB4UmtzVW5hWFVwdmhTWi9EUWowRmtTSGhkQkYw?=
+ =?utf-8?B?cTRNNkVQQi9jM3kxTmpvcW9hM1RzTE5lZE9Ba0VIMkt4bVU4MFhnNzZmWTd0?=
+ =?utf-8?B?NVo0TUY1WEhUZmhra29PR1pyRVpES2pJOXBiMkRkZzJwWHhJVjZKRjU0NCt0?=
+ =?utf-8?B?Q0k0bjk2cW1rMnFMbWdrbTdvRnFOcUtzRkZYVXdsUHpHRzZjeVA5aVpXMG92?=
+ =?utf-8?B?UTRoL1l1eTh2MkZkRDFTc2dHL0FzeFY2NSsvcW82d0szRXJaSkhEanNNeUw3?=
+ =?utf-8?B?ZlpyaEw2UnBtYjJaZ2l0cWIySFpIK2tnS1l1bXpBKzVtNXFjb3B2KzVHeldI?=
+ =?utf-8?B?ZUNKYzZycEVHTHdzamdXNEZuaVNJRUpRcHRaNll5dHlDVFRMbUZrQll0aXV2?=
+ =?utf-8?B?VEVKYWdoNnNNVnp6UEg1YVhVdnpMODZSR29iRVgxV0lwanBZKy8wd2c4bWto?=
+ =?utf-8?B?aVJ4QUpzdTJhbFBWWjVSeWJ1SUhaSXRob3lab3Mwd2pBcFF6ME1Pcm5xSXpl?=
+ =?utf-8?B?NzhJNWxRV0R1eWxxOFZqQ0g1bjd4NzhtbHZYTjlMQ3RSSzl0MWZmQVZRRDMz?=
+ =?utf-8?B?U1dRSFU1TFlMdE5ZTTNLbktnUTZQZXkzVCtLemVBNWJHeHU4VmZxbXg0RGZD?=
+ =?utf-8?Q?M2w+yZnJSi/666M+Cu2KxyHiF6/Z4YbkW6/egCAk/HZa?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	W5QGABo+nWlvJyF1XSVXw895quU5nppMwhLpbWljXFb0Do4bX8sdZk3K22H10Ru5QKCHqkJOPJQtSJDMU6G7HFVLsMh/I4AmmQLHZ4COzbaC8W2LcLpePtsy/z1bQjxO70oDmtLyy5RdYElqk4hLMiyF2Hj1FkgQa0874f3veS9NwdUSzMn0rD4ho2I2vRbvg9WVFOhfa+zByHaKFPCzI/7uSddqjK92kknP6F/fSTIIOf5m07sL55ImsZE+FzBsHHCgqVir3kzFm5gwuY0oz46FiFgBGV8MwFxsOhFEVoxVTpbidm/QVsVYuCFhaf4R7GbwEE701MOlAwnQnA4MKl/HrG8iJChghQ+yVqZAudQ2pPDCbgD9SVx+4TlPe544h6JJmQj35BsCAcOOb+aUFOfdg8pYAWThN5C1pQ/AuWaToXcCUE8J5tUQ2etvG7rl9hb9Zo50QWvIjvN5Rq/Xg04i9t+geK6QSjdG69PqOla/kyDAHef1fOwbJHAGXkJYFaNqHpcLWzIk+AKgCYipCq9/+yprI59Px5qNqwlyBm/Ae10r1Xxm8SLDffH0Fi+5RqD+DaecaIWNmDS1m8zycHvLoY9+aYN2csTRkoN449Y=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b9842b8b-19b1-442d-71d3-08de1a8b4b5a
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2025 03:44:30.5180
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: q6APQFB3RHADPR6kwHb4pbICk/YpgzMnOvul2YgHAea3LO9OmLsFJo0uYqwlfWsvAwy2v/TUFnI/tQoBHVpuiQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB7222
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-02_02,2025-10-29_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
+ suspectscore=0 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
+ definitions=main-2511030032
+X-Proofpoint-GUID: it3LnOIf2W5WbEPXUR7OFxJOfnhRSmN0
+X-Authority-Analysis: v=2.4 cv=BKS+bVQG c=1 sm=1 tr=0 ts=69082523 b=1 cx=c_pps
+ a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
+ a=6UeiqGixMTsA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=dCXvVEcayhHa0GlPrMcA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 cc=ntf
+ awl=host:12124
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTAzMDAyNCBTYWx0ZWRfX6qf0p/2VOm+H
+ 0O3ZAQ1RITpBV/17RDyKmqk+DvHMuu96NAvYb5gIjPn+PVOsWhFO6SZNV7p3iSat2ihfCFD9Eu7
+ qzTixrtj59nePSPmD1lJr6M0tl4aKAvUXGkXKSZnBPAZGcXXZiMuUgOLsmSACDYyljWdORREqmo
+ 8S6gvL716b2Qd2V5hG39/6lLPT2leFvFkdiBeNetLxsIYyGi3YJfixCx4MsSo54xyp5BXtJG3Ow
+ siVAJ00ibjMca3Top9AkD1NgE+h5jl/7P2PZ6g8OzmaMfOZe8BuNRJssIgHiX8isEfy8sU0ypn3
+ ybFcYGVHQPUjP2nSxjSfrq7F27IsLZWFOUIKwLAQeKcLv3orvbfPpKym4jo2vJBHw5f+ST4Iso2
+ Tk2U++UPcwA4fHf7RmZvgwfRzz23Qp9bbJVoFQ0W6HYPz3e5G9Y=
+X-Proofpoint-ORIG-GUID: it3LnOIf2W5WbEPXUR7OFxJOfnhRSmN0
 
-On Thu, Oct 30, 2025 at 08:52:13AM -0700, Yonghong Song wrote:
->
->
->On 10/30/25 1:50 AM, Tao Chen wrote:
->>在 2025/10/29 23:26, Yonghong Song 写道:
->>>
->>>
->>>On 10/29/25 4:22 AM, Sahil Chandna wrote:
->>>>On Mon, Oct 27, 2025 at 08:45:25PM -0700, Yonghong Song wrote:
->>>>>
->>>>>
->>>>>On 10/26/25 1:05 PM, Sahil Chandna wrote:
->>>>>>On Wed, Oct 22, 2025 at 12:56:25PM -0700, Yonghong Song wrote:
->>>>>>>
->>>>>>>
->>>>>>>On 10/22/25 11:40 AM, Sahil Chandna wrote:
->>>>>>>>On Wed, Oct 22, 2025 at 09:57:22AM -0700, Yonghong Song wrote:
->>>>>>>>>
->>>>>>>>>
->>>>>>>>>On 10/20/25 2:08 PM, syzbot wrote:
->>>>>>>>>>Hello,
->>>>>>>>>>
->>>>>>>>>>syzbot found the following issue on:
->>>>>>>>>>
->>>>>>>>>>HEAD commit:    a1e83d4c0361 selftests/bpf: Fix 
->>>>>>>>>>redefinition of 'off' as d..
->>>>>>>>>>git tree:       bpf
->>>>>>>>>>console output: 
->>>>>>>>>>https://syzkaller.appspot.com/x/log.txt? 
->>>>>>>>>>x=12d21de2580000
->>>>>>>>>>kernel config: 
->>>>>>>>>>https://syzkaller.appspot.com/x/.config? 
->>>>>>>>>>x=9ad7b090a18654a7
->>>>>>>>>>dashboard link: https://syzkaller.appspot.com/bug? 
->>>>>>>>>>extid=b0cff308140f79a9c4cb
->>>>>>>>>>compiler:       Debian clang version 20.1.8 (+ 
->>>>>>>>>>+20250708063551+0c9f909b7976-1~exp1~20250708183702.136), 
->>>>>>>>>>Debian LLD 20.1.8
->>>>>>>>>>syz repro: 
->>>>>>>>>>https://syzkaller.appspot.com/x/repro.syz? 
->>>>>>>>>>x=160cf542580000
->>>>>>>>>>C reproducer: 
->>>>>>>>>>https://syzkaller.appspot.com/x/repro.c? 
->>>>>>>>>>x=128d5c58580000
->>>>>>>>>>
->>>>>>>>>>Downloadable assets:
->>>>>>>>>>disk image: https://storage.googleapis.com/syzbot- 
->>>>>>>>>>assets/2f6a7a0cd1b7/disk-a1e83d4c.raw.xz
->>>>>>>>>>vmlinux: https://storage.googleapis.com/syzbot- 
->>>>>>>>>>assets/873984cfc71e/vmlinux-a1e83d4c.xz
->>>>>>>>>>kernel image: https://storage.googleapis.com/syzbot- 
->>>>>>>>>>assets/16711d84070c/bzImage-a1e83d4c.xz
->>>>>>>>>>
->>>>>>>>>>The issue was bisected to:
->>>>>>>>>>
->>>>>>>>>>commit 7c33e97a6ef5d84e98b892c3e00c6d1678d20395
->>>>>>>>>>Author: Sahil Chandna <chandna.sahil@gmail.com>
->>>>>>>>>>Date:   Tue Oct 14 18:56:35 2025 +0000
->>>>>>>>>>
->>>>>>>>>>    bpf: Do not disable preemption in bpf_test_run().
->>>>>>>>>>
->>>>>>>>>>bisection log: 
->>>>>>>>>>https://syzkaller.appspot.com/x/bisect.txt? 
->>>>>>>>>>x=172fe492580000
->>>>>>>>>>final oops: 
->>>>>>>>>>https://syzkaller.appspot.com/x/report.txt? 
->>>>>>>>>>x=14afe492580000
->>>>>>>>>>console output: 
->>>>>>>>>>https://syzkaller.appspot.com/x/log.txt? 
->>>>>>>>>>x=10afe492580000
->>>>>>>>>>
->>>>>>>>>>IMPORTANT: if you fix the issue, please add the 
->>>>>>>>>>following tag to the commit:
->>>>>>>>>>Reported-by: 
->>>>>>>>>>syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com
->>>>>>>>>>Fixes: 7c33e97a6ef5 ("bpf: Do not disable preemption 
->>>>>>>>>>in bpf_test_run().")
->>>>>>>>>>
->>>>>>>>>>------------[ cut here ]------------
->>>>>>>>>>WARNING: CPU: 1 PID: 6145 at 
->>>>>>>>>>kernel/bpf/helpers.c:781 bpf_try_get_buffers 
->>>>>>>>>>kernel/bpf/helpers.c:781 [inline]
->>>>>>>>>>WARNING: CPU: 1 PID: 6145 at 
->>>>>>>>>>kernel/bpf/helpers.c:781 
->>>>>>>>>>bpf_bprintf_prepare+0x12cf/0x13a0 
->>>>>>>>>>kernel/bpf/helpers.c:834
->>>>>>>>>
->>>>>>>>>Okay, the warning is due to the following WARN_ON_ONCE:
->>>>>>>>>
->>>>>>>>>static DEFINE_PER_CPU(struct 
->>>>>>>>>bpf_bprintf_buffers[MAX_BPRINTF_NEST_LEVEL], 
->>>>>>>>>bpf_bprintf_bufs);
->>>>>>>>>static DEFINE_PER_CPU(int, bpf_bprintf_nest_level);
->>>>>>>>>
->>>>>>>>>int bpf_try_get_buffers(struct bpf_bprintf_buffers **bufs)
->>>>>>>>>{
->>>>>>>>>       int nest_level;
->>>>>>>>>
->>>>>>>>>       nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
->>>>>>>>>       if (WARN_ON_ONCE(nest_level > MAX_BPRINTF_NEST_LEVEL)) {
->>>>>>>>>               this_cpu_dec(bpf_bprintf_nest_level);
->>>>>>>>>               return -EBUSY;
->>>>>>>>>       }
->>>>>>>>>       *bufs = this_cpu_ptr(&bpf_bprintf_bufs[nest_level - 1]);
->>>>>>>>>
->>>>>>>>>       return 0;
->>>>>>>>>}
->>>>>>>>>
->>>>>>>>>Basically without preempt disable, at process level, 
->>>>>>>>>it is possible
->>>>>>>>>more than one process may trying to take bpf_bprintf_buffers.
->>>>>>>>>Adding softirq and nmi, it is totally likely to have more than 3
->>>>>>>>>level for buffers. Also, more than one process with 
->>>>>>>>>bpf_bprintf_buffers
->>>>>>>>>will cause problem in releasing buffers, so we need to have
->>>>>>>>>preempt_disable surrounding bpf_try_get_buffers() and
->>>>>>>>>bpf_put_buffers().
->>>>>>>>Right, but using preempt_disable() may impact builds with
->>>>>>>>CONFIG_PREEMPT_RT=y, similar to bug[1]? Do you think 
->>>>>>>>local_lock() could be used here
->>>>>>>
->>>>>>>We should be okay. for all the kfuncs/helpers I mentioned below,
->>>>>>>with the help of AI, I didn't find any spin_lock in the code path
->>>>>>>and all these helpers although they try to *print* some contents,
->>>>>>>but the kfuncs/helpers itself is only to deal with buffers and
->>>>>>>actual print will happen asynchronously.
->>>>>>>
->>>>>>>>as nest level is per cpu variable and local lock semantics can work
->>>>>>>>for both RT and non rt builds ?
->>>>>>>
->>>>>>>I am not sure about local_lock() in RT as for RT, local_lock() could
->>>>>>>be nested and the release may not in proper order. See
->>>>>>> https://www.kernel.org/doc/html/v5.8/locking/locktypes.html
->>>>>>>
->>>>>>> local_lock is not suitable to protect against preemption 
->>>>>>>or interrupts on a
->>>>>>> PREEMPT_RT kernel due to the PREEMPT_RT specific 
->>>>>>>spinlock_t semantics.
->>>>>>>
->>>>>>>So I suggest to stick to preempt_disable/enable approach.
->>>>>>>
->>>>>>>>>
->>>>>>>>>There are some kfuncs/helpers need such preempt_disable
->>>>>>>>>protection, e.g. bpf_stream_printk, bpf_snprintf,
->>>>>>>>>bpf_trace_printk, bpf_trace_vprintk, bpf_seq_printf.
->>>>>>>>>But please double check.
->>>>>>>>>
->>>>>>>>Sure, thanks!
->>>>>>
->>>>>>Since these helpers eventually call bpf_bprintf_prepare(),
->>>>>>I figured adding protection around bpf_try_get_buffers(),
->>>>>>which triggers the original warning, should be sufficient.
->>>>>>I tried a few approaches to address the warning as below :
->>>>>>
->>>>>>1. preempt_disable() / preempt_enable() around 
->>>>>>bpf_prog_run_pin_on_cpu()
->>>>>>diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
->>>>>>index 1b61bb25ba0e..6a128179a26f 100644
->>>>>>--- a/net/core/flow_dissector.c
->>>>>>+++ b/net/core/flow_dissector.c
->>>>>>@@ -1021,7 +1021,9 @@ u32 bpf_flow_dissect(struct bpf_prog 
->>>>>>*prog, struct bpf_flow_dissector *ctx,
->>>>>>               (int)FLOW_DISSECTOR_F_STOP_AT_ENCAP);
->>>>>>      flow_keys->flags = flags;
->>>>>>
->>>>>>+    preempt_disable();
->>>>>>      result = bpf_prog_run_pin_on_cpu(prog, ctx);
->>>>>>+    preempt_enable();
->>>>>>
->>>>>>      flow_keys->nhoff = clamp_t(u16, flow_keys->nhoff, nhoff, hlen);
->>>>>>      flow_keys->thoff = clamp_t(u16, flow_keys->thoff,
->>>>>>This fixes the original WARN_ON in both PREEMPT_FULL and RT builds.
->>>>>>However, when tested with the syz reproducer of the original 
->>>>>>bug [1], it
->>>>>>still triggers the expected 
->>>>>>DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt)) warning 
->>>>>>from __local_bh_disable_ip(), due to the preempt_disable() 
->>>>>>interacting with RT spinlock semantics.
->>>>>>[1] [https://syzkaller.appspot.com/bug?extid=1f1fbecb9413cdbfbef8
->>>>>>So this approach avoids the buffer nesting issue, but 
->>>>>>re-introduces the following issue:
->>>>>>[  363.968103][T21257] 
->>>>>>DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt))
->>>>>>[  363.968922][T21257] WARNING: CPU: 0 PID: 21257 at kernel/ 
->>>>>>softirq.c:176 __local_bh_disable_ip+0x3d9/0x540
->>>>>>[  363.969046][T21257] Modules linked in:
->>>>>>[  363.969176][T21257] Call Trace:
->>>>>>[  363.969181][T21257]  <TASK>
->>>>>>[  363.969186][T21257]  ? __local_bh_disable_ip+0xa1/0x540
->>>>>>[  363.969197][T21257]  ? sock_map_delete_elem+0xa2/0x170
->>>>>>[  363.969209][T21257]  ? preempt_schedule_common+0x83/0xd0
->>>>>>[  363.969252][T21257]  ? rt_spin_unlock+0x161/0x200
->>>>>>[  363.969269][T21257]  sock_map_delete_elem+0xaf/0x170
->>>>>>[  363.969280][T21257] bpf_prog_464bc2be3fc7c272+0x43/0x47
->>>>>>[  363.969289][T21257]  bpf_flow_dissect+0x22b/0x750
->>>>>>[  363.969299][T21257] bpf_prog_test_run_flow_dissector+0x37c/0x5c0
->>>>>>
->>>>>>2. preempt_disable() inside bpf_try_get_buffers() and 
->>>>>>bpf_put_buffers()
->>>>>>
->>>>>>diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->>>>>>index 8eb117c52817..bc8630833a94 100644
->>>>>>--- a/kernel/bpf/helpers.c
->>>>>>+++ b/kernel/bpf/helpers.c
->>>>>>@@ -777,12 +777,14 @@ int bpf_try_get_buffers(struct 
->>>>>>bpf_bprintf_buffers **bufs)
->>>>>> {
->>>>>>        int nest_level;
->>>>>>
->>>>>>+       preempt_disable();
->>>>>>        nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
->>>>>>        if (WARN_ON_ONCE(nest_level > MAX_BPRINTF_NEST_LEVEL)) {
->>>>>>                this_cpu_dec(bpf_bprintf_nest_level);
->>>>>>                return -EBUSY;
->>>>>>        }
->>>>>>        *bufs = this_cpu_ptr(&bpf_bprintf_bufs[nest_level - 1]);
->>>>>>+       preempt_enable();
->>>>>>
->>>>>>        return 0;
->>>>>> }
->>>>>>@@ -791,7 +793,10 @@ void bpf_put_buffers(void)
->>>>>> {
->>>>>>        if (WARN_ON_ONCE(this_cpu_read(bpf_bprintf_nest_level) == 0))
->>>>>>                return;
->>>>>>+
->>>>>>+       preempt_disable();
->>>>>>        this_cpu_dec(bpf_bprintf_nest_level);
->>>>>>+       preempt_enable();
->>>>>> }
->>>>>>This *still* reproduces the original syz issue, so the 
->>>>>>protection needs to be placed around the entire program run, 
->>>>>>not inside the helper itself as
->>>>>>in above experiment.
->>>>>
->>>>>This does not work. See my earlier suggestions.
->>>>>
->>>>>>Basically without preempt disable, at process level, it is possible
->>>>>>more than one process may trying to take bpf_bprintf_buffers.
->>>>>>Adding softirq and nmi, it is totally likely to have more than 3
->>>>>>level for buffers. Also, more than one process with 
->>>>>>bpf_bprintf_buffers
->>>>>>will cause problem in releasing buffers, so we need to have
->>>>>>preempt_disable surrounding bpf_try_get_buffers() and
->>>>>>bpf_put_buffers().
->>>>>
->>>>>That is,
->>>>> preempt_disable();
->>>>> ...
->>>>> bpf_try_get_buffers()
->>>>> ...
->>>>> bpf_put_buffers()
->>>>> ...
->>>>> preempt_enable();
->>>>>
->>>>>>
->>>>>>3. Using a per-CPU local_lock
->>>>>>Finally, I tested with a per-CPU local_lock around 
->>>>>>bpf_prog_run_pin_on_cpu():
->>>>>>+struct bpf_cpu_lock {
->>>>>>+    local_lock_t lock;
->>>>>>+};
->>>>>>+
->>>>>>+static DEFINE_PER_CPU(struct bpf_cpu_lock, bpf_cpu_lock) = {
->>>>>>+    .lock = INIT_LOCAL_LOCK(),
->>>>>>+};
->>>>>>@@ -1021,7 +1030,9 @@ u32 bpf_flow_dissect(struct bpf_prog 
->>>>>>*prog, struct bpf_flow_dissector *ctx,
->>>>>>                     (int)FLOW_DISSECTOR_F_STOP_AT_ENCAP);
->>>>>>        flow_keys->flags = flags;
->>>>>>
->>>>>>+       local_lock(&bpf_cpu_lock.lock);
->>>>>>        result = bpf_prog_run_pin_on_cpu(prog, ctx);
->>>>>>+       local_unlock(&bpf_cpu_lock.lock);
->>>>>>
->>>>>>This approach avoid the warning on both RT and non-RT 
->>>>>>builds, with both the syz reproducer. The intention of 
->>>>>>introducing the per-CPU local_lock is to maintain consistent 
->>>>>>per-CPU execution semantics between RT and non-RT kernels.
->>>>>>On non-RT builds, local_lock maps to preempt_disable()/enable(),
->>>>>>which provides the same semantics as before.
->>>>>>On RT builds, it maps to an RT-safe per-CPU spinlock, avoiding the
->>>>>>softirq_ctrl.cnt issue.
->>>>>
->>>>>This should work, but local lock disable interrupts which could have
->>>>>negative side effects on the system. We don't want this.
->>>>>That is the reason we have 3 nested level for bpf_bprintf_buffers.
->>>>>
->>>>>Please try my above preempt_disalbe/enable() solution.
->>>>>
->>>>I tried following patch with reproducer from both syzbot [1] and [2]
->>>>and issue *did not reproduce* with them.
->>>>
->>>>diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->>>>index 8eb117c52817..4be6dde89d39 100644
->>>>--- a/kernel/bpf/helpers.c
->>>>+++ b/kernel/bpf/helpers.c
->>>>@@ -777,9 +777,11 @@ int bpf_try_get_buffers(struct 
->>>>bpf_bprintf_buffers **bufs)
->>>> {
->>>>        int nest_level;
->>>>
->>>>+       preempt_disable();
->>>>        nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
->>>>        if (WARN_ON_ONCE(nest_level > MAX_BPRINTF_NEST_LEVEL)) {
->>>>                this_cpu_dec(bpf_bprintf_nest_level);
->>>>+               preempt_enable();
->>>>                return -EBUSY;
->>>>        }
->>>>        *bufs = this_cpu_ptr(&bpf_bprintf_bufs[nest_level - 1]);
->>>>@@ -792,6 +794,7 @@ void bpf_put_buffers(void)
->>>>        if (WARN_ON_ONCE(this_cpu_read(bpf_bprintf_nest_level) == 0))
->>>
->>>For completeness, we need to add preempt_enable() here as well.
->>>
->>>>return;
->>>>        this_cpu_dec(bpf_bprintf_nest_level);
->>>>+       preempt_enable();
->>>> }
->>>>
->>>>[1] https://syzkaller.appspot.com/bug?extid=1f1fbecb9413cdbfbef8
->>>>[2] https://syzkaller.appspot.com/bug?extid=b0cff308140f79a9c4cb
->>>>>>
->>>>>>Let me know if you’d like me to run some more experiments on this.
->>>>>
->>>>Shall I submit a patch with your suggested changes ?
->>>
->>>Please. The change looks good to me.
->>>
->>>>
->>>>Regards,
->>>>Sahil
->>>
->>>
->>
->>Hi Yonghong, Sahil
->>
->>Previously, I removed preempt_disable from bpf_try_get_buffers,
->>In my understanding, it is safe
->>to access this_cpu_inc_return(bpf_bprintf_nest_level), can we just
->>remove the WARN_ON_ONCE? It seems that BPF allows preemption after
->>run under migration disabled. Is it right?
->
->Yes, even with migration disabled, preemption can be disabled on
->top of that.
->
->Probably we can remove WARN_ON_ONCE esp. with preemption disabled.
->But this should be a separate patch.
->
-Hi Yonghong, Tao,
-I printed nested level with the preempt_disable()/enable() patch and
-found nested level remains 1 with this patch(below). I tried this with original
-syzbot reproducer and ran for couple of hours.
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 4be6dde89d39..657d2100f33c 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -779,6 +779,7 @@ int bpf_try_get_buffers(struct bpf_bprintf_buffers **bufs)
+On Thu, Oct 30, 2025 at 04:35:52PM +0100, Vlastimil Babka wrote:
+> On 10/30/25 16:27, Alexei Starovoitov wrote:
+> > On Thu, Oct 30, 2025 at 6:09 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+> >>
+> >> On 10/30/25 05:32, Harry Yoo wrote:
+> >> > On Thu, Oct 23, 2025 at 03:52:32PM +0200, Vlastimil Babka wrote:
+> >> >> diff --git a/mm/slub.c b/mm/slub.c
+> >> >> index e2b052657d11..bd67336e7c1f 100644
+> >> >> --- a/mm/slub.c
+> >> >> +++ b/mm/slub.c
+> >> >> @@ -4790,66 +4509,15 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+> >> >>
+> >> >>      stat(s, ALLOC_SLAB);
+> >> >>
+> >> >> -    if (IS_ENABLED(CONFIG_SLUB_TINY) || kmem_cache_debug(s)) {
+> >> >> -            freelist = alloc_single_from_new_slab(s, slab, orig_size, gfpflags);
+> >> >> -
+> >> >> -            if (unlikely(!freelist))
+> >> >> -                    goto new_objects;
+> >> >> -
+> >> >> -            if (s->flags & SLAB_STORE_USER)
+> >> >> -                    set_track(s, freelist, TRACK_ALLOC, addr,
+> >> >> -                              gfpflags & ~(__GFP_DIRECT_RECLAIM));
+> >> >> -
+> >> >> -            return freelist;
+> >> >> -    }
+> >> >> -
+> >> >> -    /*
+> >> >> -     * No other reference to the slab yet so we can
+> >> >> -     * muck around with it freely without cmpxchg
+> >> >> -     */
+> >> >> -    freelist = slab->freelist;
+> >> >> -    slab->freelist = NULL;
+> >> >> -    slab->inuse = slab->objects;
+> >> >> -    slab->frozen = 1;
+> >> >> -
+> >> >> -    inc_slabs_node(s, slab_nid(slab), slab->objects);
+> >> >> +    freelist = alloc_single_from_new_slab(s, slab, orig_size, gfpflags);
+> >> >>
+> >> >> -    if (unlikely(!pfmemalloc_match(slab, gfpflags) && allow_spin)) {
+> >> >> -            /*
+> >> >> -             * For !pfmemalloc_match() case we don't load freelist so that
+> >> >> -             * we don't make further mismatched allocations easier.
+> >> >> -             */
+> >> >> -            deactivate_slab(s, slab, get_freepointer(s, freelist));
+> >> >> -            return freelist;
+> >> >> -    }
+> >> >> +    if (unlikely(!freelist))
+> >> >> +            goto new_objects;
+> >> >
+> >> > We may end up in an endless loop in !allow_spin case?
+> >> > (e.g., kmalloc_nolock() is called in NMI context and n->list_lock is
+> >> > held in the process context on the same CPU)
+> >> >
+> >> > Allocate a new slab, but somebody is holding n->list_lock, so trylock fails,
+> >> > free the slab, goto new_objects, and repeat.
+> >>
+> >> Ugh, yeah. However, AFAICS this possibility already exists prior to this
+> >> patch, only it's limited to SLUB_TINY/kmem_cache_debug(s). But we should fix
+> >> it in 6.18 then.
 
-         preempt_disable();
-         nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
-+       pr_info("bpf nest inc cpu=%d level=%d\n", smp_processor_id(), nest_level);
-         if (WARN_ON_ONCE(nest_level > MAX_BPRINTF_NEST_LEVEL)) {
-                 this_cpu_dec(bpf_bprintf_nest_level);
-                 preempt_enable();
+Oops, right ;)
 
-I am waiting for Sebastian review on this thread before sending out a patch with
-preempt_disable(), Shall I also
-send out patch after that for removing the WARN_ON_ONCE ?
->>
->>https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=4223bf833c8495e40ae2886acbc0ecbe88fa6306
->>
->>
->
+> >> How? Grab the single object and defer deactivation of the slab minus one
+> >> object? Would work except for kmem_cache_debug(s) we open again a race for
+> >> inconsistency check failure, and we have to undo the simple slab freeing fix
+> >>  and handle the accounting issue differently again.
+
+> >> Fail the allocation for the debug case to avoid the consistency check
+> >> issues? Would it be acceptable for kmalloc_nolock() users?
+
+I think this should work (and is simple)!
+
+> > You mean something like:
+> > diff --git a/mm/slub.c b/mm/slub.c
+> > index a8fcc7e6f25a..e9a8b75f31d7 100644
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -4658,8 +4658,11 @@ static void *___slab_alloc(struct kmem_cache
+> > *s, gfp_t gfpflags, int node,
+> >         if (kmem_cache_debug(s)) {
+> >                 freelist = alloc_single_from_new_slab(s, slab,
+> > orig_size, gfpflags);
+> > 
+> > -               if (unlikely(!freelist))
+> > +               if (unlikely(!freelist)) {
+> > +                       if (!allow_spin)
+> > +                               return NULL;
+> >                         goto new_objects;
+> > +               }
+> > 
+> > or I misunderstood the issue?
+> 
+> Yeah that would be the easiest solution, if you can accept the occasional
+> allocation failures.
+
+Looks good to me.
+
+-- 
+Cheers,
+Harry / Hyeonggon
 
