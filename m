@@ -1,131 +1,135 @@
-Return-Path: <bpf+bounces-73349-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73350-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5FC5C2BDEB
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 13:58:16 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68850C2BE30
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 13:59:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0DC0D4F2716
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 12:52:02 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DC6794F45A2
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 12:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BED330C354;
-	Mon,  3 Nov 2025 12:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9624330C602;
+	Mon,  3 Nov 2025 12:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RTVvodky"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nyGhwC/k"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D923830ACEA;
-	Mon,  3 Nov 2025 12:51:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96A6830BBAE
+	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 12:52:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762174315; cv=none; b=gjXfCp/7WBxz97cMzDlbZh1N6HaD6r+wwOU93x5TTRatTHszKBrTVhCsV6HONDJHIKsO0fPDoEm/1UXIj7YNpoD6t+3MLT9mVxftPyFC0sT1dzAkasr1m8FK0OUnN10jBRHLgHD/MPsnNvG8itkw4GLli7JrfJvQsxbYH+Fa3iY=
+	t=1762174347; cv=none; b=eQ5AmMzv7jVhizCSAjiB3uohQNomnb74TbbcSgxVBCi/y6B08kpAmqVI8lz50+q74lXx20wZBCsvJF3eIPXq95vj4hcw/B8485/Jl3qX3NgupQs5Iq1vx+pJ6j5ujFQ6a/H1i4LGawQC5ol63QKCBagvVwYdXjAkY4Xz6j9gF3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762174315; c=relaxed/simple;
-	bh=qaatkfcleskF5A5nvzlK4r/WGYzHFYOBVI4ibhGc4fY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dNawz8Rt06waK8KG5rD+YTTeQtKKnj3YXi5FAAy3GtOirupRuyLvNpUENAs35TwKaT+DfbRPHmCGqLg+WIC418qqrkIkP13H/uKHq0tFvetWNlEFp8qRwjNb+NtP2ekyfgE06v+05OEFMX4UD6aOyCI9voXon7KeLW8WnDiWyT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RTVvodky; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 216FCC4CEFD;
-	Mon,  3 Nov 2025 12:51:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762174314;
-	bh=qaatkfcleskF5A5nvzlK4r/WGYzHFYOBVI4ibhGc4fY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RTVvodkydVGO/qZA9Kt85/9qV3NeZSbaxJPXmaYb7Du8/VrHlMY9VEBCP54vUMk7P
-	 gYZktn+jvkLtNAPMD9Z3nmUjMftDyLytWc1t301sNoJkj2Gi8G+BEJ023CM/NgzKMd
-	 3J0+FSCY6r/cVQ+DiPDoe1gI/aJRbsSTAa5gjgu90sVjih1bY7Um8jikMRY/jH9Qkw
-	 0lXbHpLzCr9Eu2TlgzDThERnXxxdLaJBwxnjCdphLpmM1h8wKFhtKiVIRATxNCNjIE
-	 BIJqZteaUJ84yylMSt/tFrY27ukojXlyKS4ywH2Ws4a7dH6l0AoDnJW9D+ispoOY4g
-	 fzmQCrMnWHyEw==
-Date: Mon, 3 Nov 2025 12:51:48 +0000
-From: Will Deacon <will@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Catalin Marinas <catalin.marinas@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 17/19] srcu: Optimize SRCU-fast-updown for arm64
-Message-ID: <aQilZAXQv2P-b2eI@willie-the-truck>
-References: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
- <20251102214436.3905633-17-paulmck@kernel.org>
+	s=arc-20240116; t=1762174347; c=relaxed/simple;
+	bh=zknbNUMqtehApA9rsCKAcUn2eRCCK8ipSC6uMSED0SI=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=bKWgf46J3bawyQ18bYQhtwgU1tBoWtD716OllQ9M5z+m3L9JBYYAxWr8sUSR6SJMQkQnZ+6BbCfI1URMYrJIDw7Bysof3JAs6kXZVEcSocondq6pUOW/6R4RsS4d8dSqx57T5YKOwEWceeDOEc2JrtT2i3q0hQhtQpVscyKobD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nyGhwC/k; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251102214436.3905633-17-paulmck@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762174333;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m8V6AyaUjluKuvk/onmZHfKTs0gZnfKFW4ogFQGfP/c=;
+	b=nyGhwC/k4oeCg1b62hJqV8LpEsaBbAdryrVmYKVaC+KORBU1Wu+WEdWrt58TjK63ahz8qF
+	hpzvBCqvdDaafx68ZxAgCRjg8z4FRfPi1bQvGjawhJVa5Drx7JgbFDfLfLn0IANpF+tJFq
+	epg6X+7y+zHfzxPLfrWAWYLapNHJ9yo=
+Date: Mon, 03 Nov 2025 12:52:07 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
+Message-ID: <154ce327ae50ea1e3ebde8a1b73c83ac0b547f61@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH net v3 2/3] bpf,sockmap: disallow MPTCP sockets from
+ sockmap
+To: "Paolo Abeni" <pabeni@redhat.com>, mptcp@lists.linux.dev
+Cc: stable@vger.kernel.org, "Jakub Sitnicki" <jakub@cloudflare.com>, "John
+ Fastabend" <john.fastabend@gmail.com>, "Eric Dumazet"
+ <edumazet@google.com>, "Kuniyuki Iwashima" <kuniyu@google.com>, "Willem
+ de Bruijn" <willemb@google.com>, "David S. Miller" <davem@davemloft.net>,
+ "Jakub Kicinski" <kuba@kernel.org>, "Simon Horman" <horms@kernel.org>,
+ "Matthieu Baerts" <matttbe@kernel.org>, "Mat Martineau"
+ <martineau@kernel.org>, "Geliang Tang" <geliang@kernel.org>, "Andrii
+ Nakryiko" <andrii@kernel.org>, "Eduard Zingerman" <eddyz87@gmail.com>,
+ "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
+ <daniel@iogearbox.net>, "Martin KaFai Lau" <martin.lau@linux.dev>, "Song
+ Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "KP
+ Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>, "Hao
+ Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>, "Shuah Khan"
+ <shuah@kernel.org>, "Florian Westphal" <fw@strlen.de>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+In-Reply-To: <c5021188-593c-431c-bf01-6775f5b2b2ed@redhat.com>
+References: <20251023125450.105859-1-jiayuan.chen@linux.dev>
+ <20251023125450.105859-3-jiayuan.chen@linux.dev>
+ <c5021188-593c-431c-bf01-6775f5b2b2ed@redhat.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hi Paul,
+October 28, 2025 at 20:03, "Paolo Abeni" <pabeni@redhat.com mailto:pabeni=
+@redhat.com?to=3D%22Paolo%20Abeni%22%20%3Cpabeni%40redhat.com%3E > wrote:
 
-On Sun, Nov 02, 2025 at 01:44:34PM -0800, Paul E. McKenney wrote:
-> Some arm64 platforms have slow per-CPU atomic operations, for example,
-> the Neoverse V2.  This commit therefore moves SRCU-fast from per-CPU
-> atomic operations to interrupt-disabled non-read-modify-write-atomic
-> atomic_read()/atomic_set() operations.  This works because
-> SRCU-fast-updown is not invoked from read-side primitives, which
-> means that if srcu_read_unlock_fast() NMI handlers.  This means that
-> srcu_read_lock_fast_updown() and srcu_read_unlock_fast_updown() can
-> exclude themselves and each other
-> 
-> This reduces the overhead of calls to srcu_read_lock_fast_updown() and
-> srcu_read_unlock_fast_updown() from about 100ns to about 12ns on an ARM
-> Neoverse V2.  Although this is not excellent compared to about 2ns on x86,
-> it sure beats 100ns.
-> 
-> This command was used to measure the overhead:
-> 
-> tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --configs NOPREEMPT --kconfig "CONFIG_NR_CPUS=64 CONFIG_TASKS_TRACE_RCU=y" --bootargs "refscale.loops=100000 refscale.guest_os_delay=5 refscale.nreaders=64 refscale.holdoff=30 torture.disable_onoff_at_boot refscale.scale_type=srcu-fast-updown refscale.verbose_batched=8 torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=8 refscale.nruns=100" --trust-make
-> 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: <linux-arm-kernel@lists.infradead.org>
-> Cc: <bpf@vger.kernel.org>
-> ---
->  include/linux/srcutree.h | 56 ++++++++++++++++++++++++++++++++++++----
->  1 file changed, 51 insertions(+), 5 deletions(-)
 
-[...]
+>=20
+>=20On 10/23/25 2:54 PM, Jiayuan Chen wrote:
+>=20
+>=20>=20
+>=20> MPTCP creates subflows for data transmission, and these sockets sho=
+uld not
+> >  be added to sockmap because MPTCP sets specialized data_ready handle=
+rs
+> >  that would be overridden by sockmap.
+> >=20=20
+>=20>  Additionally, for the parent socket of MPTCP subflows (plain TCP s=
+ocket),
+> >  MPTCP sk requires specific protocol handling that conflicts with soc=
+kmap's
+> >  operation(mptcp_prot).
+> >=20=20
+>=20>  This patch adds proper checks to reject MPTCP subflows and their p=
+arent
+> >  sockets from being added to sockmap, while preserving compatibility =
+with
+> >  reuseport functionality for listening MPTCP sockets.
+> >=20
+>=20It's unclear to me why that is safe. sockmap is going to change the
+> listener msk proto ops.
+>=20
+>=20The listener could disconnect and create an egress connection, still
+> using the wrong ops.
 
-> @@ -327,12 +355,23 @@ __srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ctr __percpu *scp)
->  static inline
->  struct srcu_ctr __percpu notrace *__srcu_read_lock_fast_updown(struct srcu_struct *ssp)
->  {
-> -	struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
-> +	struct srcu_ctr __percpu *scp;
->  
-> -	if (!IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
-> +	if (IS_ENABLED(CONFIG_ARM64) && IS_ENABLED(CONFIG_ARM64_USE_LSE_PERCPU_ATOMICS)) {
-> +		unsigned long flags;
-> +
-> +		local_irq_save(flags);
-> +		scp = __srcu_read_lock_fast_na(ssp);
-> +		local_irq_restore(flags); /* Avoids leaking the critical section. */
-> +		return scp;
-> +	}
+sockmap only replaces read/write handler of a sk and keeps another handle=
+r.
 
-Do we still need to pursue this after Catalin's prefetch suggestion for the
-per-cpu atomics?
+But I agree with you; I also don't think sockmap should replace the handl=
+ers of
+the listen socket. Because for a listen socket, sockmap is merely used as=
+ a container,=20
+just=20like hash map or array map. But in reality, that's exactly what it=
+ does...
 
-https://lore.kernel.org/r/aQU7l-qMKJTx4znJ@arm.com
+> I think sockmap should always be prevented for mptcp socket, or at leas=
+t
+> a solid explanation of why such exception is safe should be included in
+> the commit message.
+>=20
+>=20Note that the first option allows for solving the issue entirely in t=
+he
+> mptcp code, setting dummy/noop psock_update_sk_prot for mptcp sockets
+> and mptcp subflows.
 
-Although disabling/enabling interrupts on your system seems to be
-significantly faster than an atomic instruction, I'm worried that it's
-all very SoC-specific and on a mobile part (especially with pseudo-NMI),
-the relative costs could easily be the other way around.
-
-Will
+I will do it.
 
