@@ -1,100 +1,100 @@
-Return-Path: <bpf+bounces-73342-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73343-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79F2BC2BB00
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 13:34:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 704C2C2BA98
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 13:28:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D2C1E4FA308
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 12:26:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 447623A43F1
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 12:26:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3483030E835;
-	Mon,  3 Nov 2025 12:24:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE402DC77C;
+	Mon,  3 Nov 2025 12:26:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K1NT6mGN";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="m3IxmIyC"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gV+oCEZQ";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="UAKuRWa2"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0628B30CDB3
-	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 12:24:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED2682D0C97
+	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 12:26:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762172686; cv=none; b=oJQCJrv56VjVngDzi7LAbd8/5lJkqkeGgLAeW42OEoUgJxez6KJ77n++mdMSCVRGeIpJdKfhfjRbt5FF/3PSpY5E0DYealtcbgS4xfEQ5nsaTTBWiIkHyNNH4TKjQgJ5ZZTTPlijyt+xgaNerHyPKrsGJ+v5SgRhjx35qM4UjK8=
+	t=1762172769; cv=none; b=VEilPB7Qnsr6sLzgOFGdDI60Pz2No+mW+H3HP1fJ99c8ZSnbbvFFmQz4t7JlptWJubtDeUYHE71tlRMhTNs03Prfug4CpyHKHkM0epdCu/fDmBCfiMRhevXZLafvWPBb/3DnX4PcbKZGOskxDMIT9Osf/Arfbc6U07Lp/SREMaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762172686; c=relaxed/simple;
-	bh=0sL3Sqt4pPtcdmPcFr1YF4MWNWB4MKnWEylQFPolhFs=;
+	s=arc-20240116; t=1762172769; c=relaxed/simple;
+	bh=Si/42XMXJCEofqRHH+RrI534o6OjSI0ZZ/KP8a9kKog=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=l43cg4VBkpW6F9doMM6VCLS21paMkabNT3/p2zZAN7hqXZ/6xgF7gi3ZnZr1wdcxCdBSXtfLpTBuzFJ7lLdBNW5GctLz0cA/VKbfx0T+VqktqBjkDUZwjt6LV4UKLjhO/EiDxP/0RvHRKs3glvu+YvNJQb+GDq2vZJuM9heXhEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K1NT6mGN; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=m3IxmIyC; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=Uocp/bvylexV3shXlCXwTnIRMIOP08FgSdKXh5tpe0JCtfBbD9CIgBTM6PpR8A3uB1b7L6WVdkFuEX4O7dkFKswY0Q4W+uXlsrUTinqXRXXfEuRykrXixeQy/ef07eaPFkTp0Hzxgw9CV5Jt3GsbCVbNd7kCYlhfdJ4DlW97+/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gV+oCEZQ; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=UAKuRWa2; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1762172684;
+	s=mimecast20190719; t=1762172766;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GjVp41+JcRNlhKhJQBn7GbDkB8mn6fWxcVLv0a89y4U=;
-	b=K1NT6mGNNof/Q5pobPO0rhIiv5DEWcaPTwXaF4ungMPM9ox4T36JwtuDuV4ZpIIITvoRGF
-	efOQZ8SR5aQQHXbohGQLehGLUhVi70PVcs9wJZZRhDjO6Hmm5Wbr78nfdAK4KO5+fcVwgP
-	RUSRPSewj0lcNuHLYnsYGrXcwIaRR9E=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=g11uOENAhXF6Lz2FLzv66IHWNpx+JPxP5XeReK+9A1c=;
+	b=gV+oCEZQpzCxHcpx8JbLGIpjFUJFXkr7Ce3ilCkiN6rYdE8rVrKBuaDkkNwhFmD4ibCVvg
+	MbM7L7C91ulEYLMNqZ+pO68DWODoHLs4VDa/QCc5YRzoQWaPfSLlkyWLpwr/T2xjcgC20f
+	JNoXO4So/dAVu5i/xwTXldu88ZjWDRY=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-556-3HVivutcMg6RtXpG-Ybctg-1; Mon, 03 Nov 2025 07:24:42 -0500
-X-MC-Unique: 3HVivutcMg6RtXpG-Ybctg-1
-X-Mimecast-MFC-AGG-ID: 3HVivutcMg6RtXpG-Ybctg_1762172682
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-b70a978cd51so248194166b.3
-        for <bpf@vger.kernel.org>; Mon, 03 Nov 2025 04:24:42 -0800 (PST)
+ us-mta-149-DBppyc7fMu69c3OmEJ8Zxg-1; Mon, 03 Nov 2025 07:26:04 -0500
+X-MC-Unique: DBppyc7fMu69c3OmEJ8Zxg-1
+X-Mimecast-MFC-AGG-ID: DBppyc7fMu69c3OmEJ8Zxg_1762172764
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-b70b1778687so72786666b.0
+        for <bpf@vger.kernel.org>; Mon, 03 Nov 2025 04:26:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1762172682; x=1762777482; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1762172764; x=1762777564; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GjVp41+JcRNlhKhJQBn7GbDkB8mn6fWxcVLv0a89y4U=;
-        b=m3IxmIyCpZtxOZ6ZnC9IsL+UpdHCeEAFO+a+UgYr6U67L+yQgbEpqsUMhU2hEFo3N5
-         f2PGIned76BiMzzo/XMQYMrQ693HF1wYbrj7Dd8cC94bzEt0ONtOHSiWfI6ZlJWjZdnj
-         eveZv1xsS1+kiqLlAAcVuk6ufAJSEJO40OK38pQXw2qHPlTZ3rLDcCaljO17r9wIVl++
-         t4qZZuUHfNjEB67HM4pQTBsd5Bsr8bPsGXYxb6gQOeB083j/MBFAj4Qrwib+YWxtKofo
-         s5oDMqMYVnYfjx5d2pvpr00oyBg4sXFQupEjsQsXYbaL67K+gjr/Dje8NtVDck3Uh2rx
-         jWRA==
+        bh=g11uOENAhXF6Lz2FLzv66IHWNpx+JPxP5XeReK+9A1c=;
+        b=UAKuRWa2ThRifoqGXh5Ca1Pvm9cEVooPc+adYv+NBJIR0tYzgRyS4005U5EMGsWCpN
+         Wk6mhPZ8FZ07XSOdHtirRWe1YU2BnyZfq4l8jhKQ5CLWZydkTozvD7Ai5FknlW6+/d8+
+         VMyZsS08ptMgIQY3D5w7RikxAEeKoN/fpkrE+InuhXtvxj+JZMhwuN4zf8/8kgiNj501
+         ow/fF4bR5WGU4NFPgIQaNzvC5OyJ7h3uIMv6fAdUnUVlVrbBixxGdSyGJiuaXhPbCPvI
+         Y6QgPhvn5oV7F7pikEwRX1p4D6BPRAwrhHL0FynP9yGVsJcIhH5hl4pdt7BK1Jpp5VYM
+         8s+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762172682; x=1762777482;
+        d=1e100.net; s=20230601; t=1762172764; x=1762777564;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GjVp41+JcRNlhKhJQBn7GbDkB8mn6fWxcVLv0a89y4U=;
-        b=OYQbMMOxrDmAgFzuUT4sC3V92CjkEteR2g4fyZ6FxOB+IxhbSwK2PkbZ09NNQCqwGO
-         jBsHEnnGgXiFrsdPxxkGOsh9oyDL5uU9837xO8I8fdA0pkbNPP2JzAvyZEl2Yb5l1UK5
-         RbMoe7ZILRel4nILq1cjXPsYuGVj3T+eTrZ81oegstTQz4C8TQdj3sm3H5rlGwdPNid9
-         vP/rFnvLS6oNxKK6IIWfdcN1d2ONVU6Gj66YM9eEljcWgjF3onIOVb7AJeX+3tBn8cBm
-         9Y1MJHaog+s+nTrhRHrzanQ50O2YYa0o7DliQO5W3CzsW3etzkFXfxpHfCfqzeyPERFf
-         Tz1A==
-X-Forwarded-Encrypted: i=1; AJvYcCWLD/cz43SOKktfVUz+hCXB3IqPfA648MOrsBE+GBn/+IDvEJo4Vl2z4DW4OiMNKlbKM/U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwuzxTVBIoWhMUHJHzsePb44VBOJaDOWqclBJc1F5lUhAgw4Wdf
-	Ysz3qGGd+kT+v9lEJdVzAqxQEzTHpMOcbU2FMZRvMpzh5225Baoy6a/nkpS3bX0Z3qAHtPFPgLI
-	jFj4uUIUXdEY6mosIEoXjOduYH/5kiVzwOON+daroKMMzKx37elLHkQ==
-X-Gm-Gg: ASbGncvaOj4pZX5aenimbN/hq9XvtXERC/03KcgaSWt1MCp9CF3EpOFdSSyOWH58+Zq
-	OhpwCPJoiPh/4kF4xrQ1/u2r3hm0KRnm52AcETLZwX7xy5N281VN/gJTZcUMCITndYmpKd5LKpr
-	6WQXUeQfwpEbYAGSM1V/vGcOSyL7E6YqOeAZ0M0YK8fTyxlDO30QIKcRviisfmFirL6f8Iy8GX5
-	n9GvEhJbmzDkzxuLdVrDVYMedNdhqb4M3IQJHL617nAKb0ec4Vcm7NtnmvikdHcH4c6PXt2GYiA
-	qFfb2nqbLSGnBRf9e+d0+e2zfVgqB61Ts0MVLajpkvXUEJ9giAzoT2htOfZEv8p011lqRIcsfdu
-	jxuIl4hYyQfWxiKmAL2JQ5Ig=
-X-Received: by 2002:a17:907:6d20:b0:b70:b83a:73e5 with SMTP id a640c23a62f3a-b70b83a8c35mr359781766b.44.1762172681697;
-        Mon, 03 Nov 2025 04:24:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFL2sLtytpLuUcKWCOkoRDcXckWNNb+evONxAWiMkrqYHa0li9xt3zPEufFR+6cGkgmgzhx/A==
-X-Received: by 2002:a17:907:6d20:b0:b70:b83a:73e5 with SMTP id a640c23a62f3a-b70b83a8c35mr359778466b.44.1762172681211;
-        Mon, 03 Nov 2025 04:24:41 -0800 (PST)
+        bh=g11uOENAhXF6Lz2FLzv66IHWNpx+JPxP5XeReK+9A1c=;
+        b=CPmDFqdXyH8Cu+pLzKk8/p0+Y/+xm/Zcko4jZw9lGmKMxpH/Tw0nmM3sIpf0zvghmo
+         nxDHeQR3h+ThD1Su/t80pmnE/X2I1T4rq/Si0oMTXn4iAVYNop8XiqTxuQhw1Sw5X1qQ
+         lJ8q6c8fxJeTDjJarqd697ieb7kNpflIas9/akNLlr3Ixpmm7TjXMZFbGTQQBq5Rk2O/
+         NdUoSaqPFAKM0wBT8g9yjLpIz5I9tdJDhSwGh8xRTEGHSNSSXwyFBovGK+3dUKolZiA3
+         fwCp0Oq1DGUlfhdDF3DPRl9t9DNXmkDsEHqW+azto5NWrRnfnWalPUB7q5Sxyue8HmwI
+         PmXw==
+X-Forwarded-Encrypted: i=1; AJvYcCW/+nySwxwve8RRqvu+GhpmRcoRxOqRTibvGZOvC6AUOZlouq3spi4p9x3bBq5jrukk04A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxIJyeL9aEnDbiZrIOU/SeHpNblO2q7jXv8vavMcR681eW1ccc5
+	IziX8ZLr+pzJ1+dqT0dV20PCgEW56/i/S2REhaaHmBN1xBYOIhljcGxS5fYmcfnf4zeO2lONp+I
+	o+jxpmL6p3pwDaXIp6euSur029Yj/6Q/Jwlqpe/XYoVrNcWkuogRwyw==
+X-Gm-Gg: ASbGncvGAdAxIfx932A2CPx1Mx8NDmm7lzrp8bAmjNtOP9EaBwG4nDjfcb3TCZEDron
+	e/1eF9qV9J5JppjAobq7KaiPmHsXEQshMb57YqXhMsk188EPXMf+a9a3ZmWPduIlwupi01+h7gK
+	wtsMf+SBw6Z9/F7o4oyNje8KXAL5X30BTJLtuLmB0fQ0noVM/MbLR+Xb9Ap2Y+7HimaFEDtyU3m
+	6Ul+bg1slN0U7r1vWjko7rIbpk+6zhF10KXNsWPKDevq3KVBSkjRjkS7pMumQn2sI6LORJDGzie
+	C4kWq/GZTuYxChyaNJ6Ubg+ZFbbklddt8Ehnk15j8j00vir2MxhZC6cc1l1OPxqXSVGl+V6oR8e
+	58NhP98poDtRfFIKxRJWYNA4=
+X-Received: by 2002:a17:907:2d90:b0:b54:25dc:a644 with SMTP id a640c23a62f3a-b707088d70cmr1143620466b.60.1762172763683;
+        Mon, 03 Nov 2025 04:26:03 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGGDSUZroE2R0agAHuAggyj7GFeJpoD3zlqyuRNs//UwQQu1Iz9F3y2cjiJMrJtGK3MF6tN8A==
+X-Received: by 2002:a17:907:2d90:b0:b54:25dc:a644 with SMTP id a640c23a62f3a-b707088d70cmr1143613966b.60.1762172763188;
+        Mon, 03 Nov 2025 04:26:03 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6407b392d5dsm9676772a12.15.2025.11.03.04.24.40
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b7077975d24sm1032752266b.1.2025.11.03.04.26.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Nov 2025 04:24:40 -0800 (PST)
+        Mon, 03 Nov 2025 04:26:02 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id EE02432844E; Mon, 03 Nov 2025 13:24:39 +0100 (CET)
+	id DCD6D328450; Mon, 03 Nov 2025 13:26:01 +0100 (CET)
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To: Byungchul Park <byungchul@sk.com>, linux-mm@kvack.org,
  netdev@vger.kernel.org
@@ -113,14 +113,14 @@ Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
  almasrymina@google.com, asml.silence@gmail.com, bpf@vger.kernel.org,
  linux-rdma@vger.kernel.org, sfr@canb.auug.org.au, dw@davidwei.uk,
  ap420073@gmail.com, dtatulea@nvidia.com
-Subject: Re: [RFC mm v5 1/2] page_pool: check nmdesc->pp to see its usage as
- page pool for net_iov not page-backed
-In-Reply-To: <20251103075108.26437-2-byungchul@sk.com>
+Subject: Re: [RFC mm v5 2/2] mm: introduce a new page type for page pool in
+ page type
+In-Reply-To: <20251103075108.26437-3-byungchul@sk.com>
 References: <20251103075108.26437-1-byungchul@sk.com>
- <20251103075108.26437-2-byungchul@sk.com>
+ <20251103075108.26437-3-byungchul@sk.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 03 Nov 2025 13:24:39 +0100
-Message-ID: <87ms53pam0.fsf@toke.dk>
+Date: Mon, 03 Nov 2025 13:26:01 +0100
+Message-ID: <87jz07pajq.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -134,22 +134,35 @@ Byungchul Park <byungchul@sk.com> writes:
 
 > Currently, the condition 'page->pp_magic =3D=3D PP_SIGNATURE' is used to
 > determine if a page belongs to a page pool.  However, with the planned
-> removal of ->pp_magic, we will instead leverage the page_type in struct
-> page, such as PGTY_netpp, for this purpose.
+> removal of ->pp_magic, we should instead leverage the page_type in
+> struct page, such as PGTY_netpp, for this purpose.
 >
-> That works for page-backed network memory.  However, for net_iov not
-> page-backed, the identification cannot be based on the page_type.
-> Instead, nmdesc->pp can be used to see if it belongs to a page pool, by
-> making sure nmdesc->pp is NULL otherwise.
+> Introduce and use the page type APIs e.g. PageNetpp(), __SetPageNetpp(),
+> and __ClearPageNetpp() instead, and remove the existing APIs accessing
+> ->pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
+> netmem_clear_pp_magic().
 >
-> For net_iov not page-backed, initialize it using nmdesc->pp =3D NULL in
-> net_devmem_bind_dmabuf() and using kvmalloc_array(__GFP_ZERO) in
-> io_zcrx_create_area() so that netmem_is_pp() can check if nmdesc->pp is
-> !NULL to confirm its usage as page pool.
+> This work was inspired by the following link:
 >
+> [1] https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@gmai=
+l.com/
+>
+> While at it, move the sanity check for page pool to on free.
+>
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Co-developed-by: Pavel Begunkov <asml.silence@gmail.com>
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> Reviewed-by: Mina Almasry <almasrymina@google.com>
+> Acked-by: David Hildenbrand <david@redhat.com>
+> Acked-by: Zi Yan <ziy@nvidia.com>
+> Acked-by: Mina Almasry <almasrymina@google.com>
 
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
+IIUC, this will allow us to move the PP-specific fields out of struct
+page entirely at some point, right? What are the steps needed to get to
+that point after this?
+
+-Toke
 
 
