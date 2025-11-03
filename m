@@ -1,246 +1,309 @@
-Return-Path: <bpf+bounces-73361-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73362-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57D83C2CF3D
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 17:01:51 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1480C2D307
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 17:39:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40C781885B7C
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 15:54:05 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D242C4E448F
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 16:39:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DCBD313E2B;
-	Mon,  3 Nov 2025 15:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1023531A561;
+	Mon,  3 Nov 2025 16:38:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YoDaWuqj"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZXxY4j9M"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A8C304969;
-	Mon,  3 Nov 2025 15:53:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762185210; cv=none; b=RyMCt4XGH7gY+vmvb5JXtlBj3C8n6SikIJMQnv5yLVBB2A8xz2x94y5MpPLmZYdyKjdci3529hmQsb8QN9RQuKra7OEy9OcQMGeFeO4AWTXXkdJsMR9EyMsK74T+ZuLZvt+ugf1ga1RYDjlypDt1qezuK3mB1aFakwRP3S4aiLQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762185210; c=relaxed/simple;
-	bh=zlD987IYcgv0Lcs/dP07a3fW5+8vkcfzEITDz9joQpc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M9miuUIma+U8GUeYjLKq9+gS3QRKFpCFm40KWRuap5Qi3mwzsY0r20rkA+1pkrDJOprBpu241HdVuTUIEsM/My9DwO+Vq8G/0C6EonGmyLmOMtdMk5bud6XAdM5iD6rVghzA6+BhnykKCaOJBtO3gr236vsCPULaLOmoopaQDOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YoDaWuqj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8436DC4CEE7;
-	Mon,  3 Nov 2025 15:53:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762185209;
-	bh=zlD987IYcgv0Lcs/dP07a3fW5+8vkcfzEITDz9joQpc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=YoDaWuqjSCLvmDCn+FWGs6npsxuTUyH4xdREcv27YJEPaSCucdcntn3hrejxFpaZP
-	 SX9LJeCxDB8Xa46q93MGSLZ0Y3AI8BXFS/Xm5b2ZoMEGfe+bsz7T2nwU0nSjq7o0dS
-	 snP23C15CTTMJC2cHsHTiAI3UV52OCK+Ba9Kvjip8EEbMDTHHNZmbJYWlKgxU8L8RV
-	 qXY7uTV37A0qKrOXI0Vlw1i6s9PcjWDchiGhd911vmR9NbVJffgETkzggpaZkpQu3W
-	 G+HIslil2WzmvbyfTUsflNNlXUPGn6C2ggAybWRLaFemFbXJ9L3MwXJyUOmLpe5N50
-	 dza56b75pm/Ag==
-Message-ID: <99bcc333-c451-4409-ae23-1ca3b38950fa@kernel.org>
-Date: Mon, 3 Nov 2025 16:53:18 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97673168F5;
+	Mon,  3 Nov 2025 16:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762187923; cv=fail; b=aUshEAA8541qUvtzncul7D+aV6tkQCvUPGWWJ2Odo5eCfBCv4EkSLZyKrmPq8lTAtclrpCgrj8TakD0mD3qM92g87Eu9YuhyiQJ9SP5oi+xkI25+jn5t3qrAxB0ZBW15QMwPCnj8k9iZrs19nUcfAGp1N00xdYj4Kjy31rdRro4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762187923; c=relaxed/simple;
+	bh=1W+r+o+t3IqavTcNmovLoIbWiayukiMdW01L0zEEWMs=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=NZIlIh1F93h3lfkV4zsGbNINIFwT++kUydglwnlBIuZWn5JF94Yu8Vy1GN1aIqBh6zrsZkXvN18Q5M3dspuUEqsfRrMKxaVeeq/i94ubEenFRI/OC11cgWWT6w2qdkMerZ3ONbFo0ng+IHpAX3BB5Vni6sa24d4TXDLBX7zz3sA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZXxY4j9M; arc=fail smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1762187922; x=1793723922;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=1W+r+o+t3IqavTcNmovLoIbWiayukiMdW01L0zEEWMs=;
+  b=ZXxY4j9Mrq+nSD6vsnwluk+evcZuUwMePml8iiM5upkAe2Pl8TAwME+I
+   4ybj2fXL9pxvA6k4aMB/x72LCO5CcWEH1Rf+c3b14VbJKaVTqrbcs0U5t
+   n5tNshLQ5aUVHysBg0VugiTe10TOU9EWnryhMmEpzGyk6L9Z/d7svbBRP
+   1LZIh9sceF2GtE1udCAmnjmubSrngbjS0TS3Kjx3D2yGiJqCUpWSFyjSi
+   5yfACIK1JrxyepPRdDX9gbVioZ+415uZktTkl31wR2kJlSIZ/A6z8l6J/
+   oUZ1s4j34wNTI1tS5Ipg8DpFJLVU5Yg2ebFkFKyNyg5Oio6CYiORUZ56h
+   Q==;
+X-CSE-ConnectionGUID: C0SQhTutR6+yp5KpAbwvGQ==
+X-CSE-MsgGUID: f5BFt+uYRZ+ClEB4F5v+oQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11602"; a="86892360"
+X-IronPort-AV: E=Sophos;i="6.19,276,1754982000"; 
+   d="scan'208";a="86892360"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2025 08:38:42 -0800
+X-CSE-ConnectionGUID: HESFjc+sR3OCIvRjjGIvqA==
+X-CSE-MsgGUID: jNtUDniqRLuboHB0kOTEfQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,276,1754982000"; 
+   d="scan'208";a="187634254"
+Received: from fmsmsx903.amr.corp.intel.com ([10.18.126.92])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2025 08:38:40 -0800
+Received: from FMSMSX903.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27; Mon, 3 Nov 2025 08:38:40 -0800
+Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
+ FMSMSX903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27 via Frontend Transport; Mon, 3 Nov 2025 08:38:40 -0800
+Received: from PH7PR06CU001.outbound.protection.outlook.com (52.101.201.33) by
+ edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27; Mon, 3 Nov 2025 08:38:39 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=t8dHMWvUhM4a3UUmkeNj7PwYZ9xW001yqhyLZi08u5RL2D2BFL121vpzQr6+rLcCKuobKBgRF6u2A/by9JAE8o6cSjHGaDMGC49FXw2rnThRI0z3O8WHvjfyPInyar+sZcmQ6Zq4Ephc9QfBdb3Fb5FPPjVdKI/BR1OOpOB46S7aGmAHnFdTZZIdoWuGsK/VydPAwuv7MqB1fGsKw8EJQpXzU3DzR0x+sFmtFPJUZ3hDqiQgSxTCamGiiCZTRGlKpINc9c/UsaAyGe4IORiZi6wFhsDYSKFmFL5dy+jSW3khR0oO//n7fM+7BttfYDEq0vSHVQiNBAB3QQDZXCHcjw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OezAB8hYWBTZSdoqChrrOYhV7fEQCymHaLEHMcT99wA=;
+ b=NAF9IzB3ie9xKocJIE/u7BkPToLf134hcXqxDvuEJrnqrQeQ97Z5CB7lUk3Ey6FLc3235BsbTMno3K99bK0ZO9MYhTCKZUtnVeckb3Lci0g1g8MqLt2GxAM9cGhv3RtneIW42VNrHZEVRP6CugNed+emwXIJenDHJwlrchEoq1JWGeLzXpQZKuyp9u4SN0y67HP2Gkcc0XJzJHGnQH+2Xcf6mxx2/UXIHG8j10/yGfKzoO6c6QqlTFmv5HIr2oLRDq1/9M2f1q2DP3ZmoY7DPG8sarapyCiAUUmVb/8Y51Yqi+5Wq2Ac7afDRovZ9fJCmJbgrAN/aTc/MWU3Gnz2Lw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ DS0PR11MB7969.namprd11.prod.outlook.com (2603:10b6:8:120::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9275.16; Mon, 3 Nov 2025 16:38:37 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca%4]) with mapi id 15.20.9275.013; Mon, 3 Nov 2025
+ 16:38:37 +0000
+Date: Mon, 3 Nov 2025 17:38:29 +0100
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: "Nabil S. Alramli" <dev@nalramli.com>
+CC: <anthony.l.nguyen@intel.com>, <przemyslaw.kitszel@intel.com>,
+	<andrew+netdev@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <ast@kernel.org>,
+	<daniel@iogearbox.net>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
+	<lishujin@kuaishou.com>, <xingwanli@kuaishou.com>,
+	<intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<team-kernel@fastly.com>, <khubert@fastly.com>, <nalramli@fastly.com>
+Subject: Re: [RFC ixgbe 1/2] ixgbe: Implement support for ndo_xdp_xmit in skb
+ mode
+Message-ID: <aQjahdk/fl6EBcso@boxer>
+References: <20251009192831.3333763-1-dev@nalramli.com>
+ <20251009192831.3333763-2-dev@nalramli.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20251009192831.3333763-2-dev@nalramli.com>
+X-ClientProxiedBy: VI1P190CA0042.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:800:1bb::14) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH net v3 0/3] mptcp: Fix conflicts between MPTCP and sockmap
-Content-Language: en-GB, fr-BE
-To: Jiayuan Chen <jiayuan.chen@linux.dev>, mptcp@lists.linux.dev
-Cc: John Fastabend <john.fastabend@gmail.com>,
- Jakub Sitnicki <jakub@cloudflare.com>, Eric Dumazet <edumazet@google.com>,
- Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Willem de Bruijn <willemb@google.com>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Simon Horman <horms@kernel.org>, Mat Martineau <martineau@kernel.org>,
- Geliang Tang <geliang@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20251023125450.105859-1-jiayuan.chen@linux.dev>
- <14b565a1-0c2a-420d-ab2a-dc8a46dbf33c@kernel.org>
- <319c419455b73deb312b53d99c30217f6b606208@linux.dev>
- <bc5831bb-cfa3-4327-b129-30ca5d17b45e@kernel.org>
- <55049e76c1e86825ff963c381ef01e38cfc08b10@linux.dev>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <55049e76c1e86825ff963c381ef01e38cfc08b10@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|DS0PR11MB7969:EE_
+X-MS-Office365-Filtering-Correlation-Id: e299c72b-3776-4022-293c-08de1af76ff6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|1800799024|366016|376014|7053199007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?2gGPzvy02PcY0mYNwk09tLudtpirjbd5p75pjN1s63MsCRmx5Y1m9nne27Ab?=
+ =?us-ascii?Q?SVQq/eafUj4HWVUQkOrOTGOwomKsvZpU7ZyJe6FV9UvVN8bBIHXDI1tcV85o?=
+ =?us-ascii?Q?hyndoaUEDHTt8iq65NrV8IDFIJ+XsgnvmWxQHbnOVtH3I0nu7CqO85gJO/Oe?=
+ =?us-ascii?Q?GL2tDYzZW1u5onWoQSMXj8tda11CecrViP1N9skHqGvAPERWjtphfmxh9Scf?=
+ =?us-ascii?Q?KRaBYcGYqM0VzHbUiERDztLUxDx2zVsr7DScVKL8T1ktWWwcOJY724SkEBVo?=
+ =?us-ascii?Q?pnSTsDT0Wti58c+V7gRDzR2meXIbbDluKxXN59sKGtiu2jgD/b7cMm1vF3NB?=
+ =?us-ascii?Q?Uc3QRrnW+KE1yIoAmTO+ubTkt4ocyICQ41GCtgMSrneiHnP1uGQCS3IKo4pH?=
+ =?us-ascii?Q?eiR9lzjWAaFBXc5P9qzNZUT9wSHT9TP8hVRN817oG9JajeDUR6oeNwvKekPZ?=
+ =?us-ascii?Q?2nRbdzvOpjzoFarEXucZ7gauSVSLj5L5VRlSybXPUNww0N2TpPQ5lP9Wr8cd?=
+ =?us-ascii?Q?Pt6vTrGrRtSqrUcWWPQdIi7pKbWI7m+XmmVlcZAsmbHmQny1sl+ABslOlYiU?=
+ =?us-ascii?Q?tulm4shhq1/eUzAzXbp6QvyMbDGYCj75ENS99b9T3Maz4aOP/deus3NudopY?=
+ =?us-ascii?Q?7RUL4Yd4Oj2nHWGLdsMtzbyHmfqok/L9INioG8tn6OnlF46YfcChkrMOoCKW?=
+ =?us-ascii?Q?mYwsDV8CB71EKouKWBXsoqjKT1ZgLnnscah4M6Cz2jhjuy+pK9w/Gz1V9cyd?=
+ =?us-ascii?Q?S/1k9lr7hvg+98JjOrtmzozxg35p4Q9dW5RGgoUVUYqB6xqmciVEDdXBevkN?=
+ =?us-ascii?Q?LwWQ+G1gMsFgSleEgPh8zHdWMN873mFPN9ILuV9fEORUMGGX+TesakrDWzWb?=
+ =?us-ascii?Q?nKy2YedoZaTczdc00LHOwJgsMDOWfZeNDshb5BnCZJgoyyqK2uYUuBAKtyjF?=
+ =?us-ascii?Q?Cv5a5ZlkbYkrNHZRAJydkEDV/HvpAT1xIRwrOm8Q2MqVUFpnRfB3Nl2IPPWV?=
+ =?us-ascii?Q?6veam/CaALfyQCIm6+SYqMAPi3cl9UDX/s19ocx6e01baBtKbw6ezhBU/3ce?=
+ =?us-ascii?Q?HFY72ymr8FUS/DkZHXETARqFnI5Cr7lMQ3mv5WWm/Xh6JQ56tNDepyOiS98/?=
+ =?us-ascii?Q?IQIBG4tRAcCxn5ZzHdRPLFuFYe/Pv0WHz0/KM7oC33eWVyITzEvwBmZIhtT5?=
+ =?us-ascii?Q?MAlGgYLc92DBXjZ8ng9mUM6UK2Bo5YTW4uX5H4HZcG1Yxy7urkRoRg1BBafH?=
+ =?us-ascii?Q?KD4ghb+bRPv34KQgl3N05uxjEhTDmPEV8IMxXkAxeULeIlno/VT0zkpCw5iv?=
+ =?us-ascii?Q?mi9avRw8wNxDSbMcj3WruuOEqpxc2BRUA3yDS+yrIJpxLPuMxRbLsedmb5Q/?=
+ =?us-ascii?Q?NiIKOCx1urN7gorst9zpqKHR1iZwGOfb14BHI7yafgOTMg9Y8DDNxsJQUX1t?=
+ =?us-ascii?Q?SPjsBicWiu2LFusxfjatvDGV3l8+Tece?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(366016)(376014)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hqsDKBmtZqAh2oYnvM9HewtuDr0mxVJyY4zXF+Al+HdYDh2mm6qCoQwycCao?=
+ =?us-ascii?Q?DZt/EibwhETmbaXuLWyhp2lSQ9XjW/BUqsqozN9k18i5IcKPZNgZFWREMDpx?=
+ =?us-ascii?Q?Fpmtzg7QDJU0uUHY0HBD33mp4zIoyF6Pp6BAblXa1XirvH6jscaRFFT8HoNS?=
+ =?us-ascii?Q?/lu3S1Prch5iZIJQHfKBZvoWBTenCdLDJp7syxzduVUadkchTUrN3pdw5nw6?=
+ =?us-ascii?Q?3yhdT0PVKpUVira8Ei+xwIkPfpO1nC0lEJXMJLI8J673ixBHeABqE1eeJh5Y?=
+ =?us-ascii?Q?y6b/7uAwifgd+Xn1Dqs3aokh1NamIG71EWqAoGxHZW6GHv2znLfK3jcugnM3?=
+ =?us-ascii?Q?IoharFsOAey4qLGpWHX5MIEdQ5lrMvrkQeIfjNVioYKOW3MQk8djmaKgIDfx?=
+ =?us-ascii?Q?+g5yUwsIzUwAeVnFuv2UYctW1j1lSHLPbkpa7DngWNiAJTYJg0EJ474HJG8F?=
+ =?us-ascii?Q?YK/9oSQgR36Txns/3AvSi1b3ostMV3P/zPeM9iiZp1gMVUjuavvbg3LHENYH?=
+ =?us-ascii?Q?6rk76cy6TKlAXuin3ZVl8Q032J0uNo4FQzWMQWvn3yFdgTcj5kE4R2c9rc6g?=
+ =?us-ascii?Q?cbQinepe3QcK70yvJRmdOKfXrFKDOdzvZiLuaat62ZSbkkKkYoK6PqDCgUVv?=
+ =?us-ascii?Q?3motp8LxJ4uibqwvS+Bf0dj6IweWB8jbRZvnNRPtdpKKNNkeQefSoz/YfhzM?=
+ =?us-ascii?Q?VP6p9nGRpY4W6xejdRUDEAPD0vU7vNB6K7cXlvDorayCwrY094vBPgYQIJQz?=
+ =?us-ascii?Q?g6QuaeFOVDbBQlG6Z2WOiSxymDdEKKVTpTnkNTsZ9JhFZw0ZcJnJKwAFNyPT?=
+ =?us-ascii?Q?rWkaD27nQQ2FbAsU8nQvyiZLXfNvuqYCw+44IH8cUIT5QJDz61fAnWezmagk?=
+ =?us-ascii?Q?Tr736SZTvFkCax7Zoj6NGJ0dUHQ1WIu1fqTld4qz/+FSsL++prD+Ovuj7SQc?=
+ =?us-ascii?Q?MPxK1CiWmlLbUi3YVgujdr+tUjQiK/qVqXu56LqArRqRQtHFMG51QpiD7O7i?=
+ =?us-ascii?Q?X7Ijl6XI33YEgw++pUW9SFdKme6fKscQKBMyNHuSqFGjB5T4tLPlRbYf81Ju?=
+ =?us-ascii?Q?t+bD57Sfo1qyrJnyfcLPT209zLc8EwiI8WY7R9B/VTN+rbppJEX4Y67jqC1c?=
+ =?us-ascii?Q?01uz1Ibi+tL97smgpszDHTn7cUhAStilNvymHf4RZ4Ek1Nfz40oVZWjoaxWr?=
+ =?us-ascii?Q?XOVLANHVB31fWI/RkO+s403O6TtSItqQjpY6Tjs7qP7/VJB4lQE/qa+nndQf?=
+ =?us-ascii?Q?NsrzzY3LqFBjKYxzsYJrnB1GkBiKu7Dtei+bHlaSELe+iH98coHxRBWRTmVk?=
+ =?us-ascii?Q?d4NuL/1FzUgtxCa7/LzFihNuvtCAsJiP5D0pSUtVwd5oTOAQTPTJA8nKNzZM?=
+ =?us-ascii?Q?3nEfpXr7R6QbutAH+6pejtWEV7R5OspNfca2QOWuywHVGrTDteaED8TIvG2F?=
+ =?us-ascii?Q?zHwIsEkXjliQla8ixnGBnLiBT420E+AmtmPTDoar9hpsdWtQa2coVvzgJ2xI?=
+ =?us-ascii?Q?sprHEiy/wQcfPsPqm1STo8kBQuXx0iQYHej/1lwZFB4LF/afrybJ7ih6o24/?=
+ =?us-ascii?Q?tUSGv+NaCgx+nk+RN0T84InALBjYJefDTBpin//+qqnVv3EBOQWDCb3fmTYS?=
+ =?us-ascii?Q?YA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e299c72b-3776-4022-293c-08de1af76ff6
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2025 16:38:37.2149
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RaQPgqe4a+lBp4rPocCuqkDnlYYLjwznmY/SwkaCJshSMgryVwrirbnhOUJvJ2B2a/701CSIplNac+RPTINctSwnAOkMT6Sv6ROUrYdeMSg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7969
+X-OriginatorOrg: intel.com
 
-Hi Jiayuan,
-
-On 03/11/2025 13:34, Jiayuan Chen wrote:
-> October 29, 2025 at 1:26 AM, "Matthieu Baerts" <matttbe@kernel.org mailto:matttbe@kernel.org?to=%22Matthieu%20Baerts%22%20%3Cmatttbe%40kernel.org%3E > wrote:
->> On 24/10/2025 06:13, Jiayuan Chen wrote:
-
-(...)
-
->>> The current implementation rejects MPTCP because I previously attempted to
->>>  add sockmap support for MPTCP, but it required implementing many interfaces
->>>  and would take considerable time.
->>>  
->>>  So for now, I'm proposing this as a fix to resolve the immediate issue.
->>>  Subsequently, we can continue working on fully integrating MPTCP with sockmap.
->>>
->> It makes sense to start with the fix for stable, then the implementation
->> later. I think the implementation should not be that complex: it is just
->> that it has to be done at MPTCP level, not TCP. sockmap supports
->> different protocol, and it doesn't seem to be TCP specific, so that
->> should be feasible.
+On Thu, Oct 09, 2025 at 03:28:30PM -0400, Nabil S. Alramli wrote:
+> This commit adds support for `ndo_xdp_xmit` in skb mode in the ixgbe
+> ethernet driver, by allowing the call to continue to transmit the packets
+> using `dev_direct_xmit`.
 > 
-> I agree with that. From a userspace perspective, we can't really manipulate subflow
-> TCP directly, and I also think it's correct to handle this at the MPTCP layer.
+> Previously, the driver did not support the operation in skb mode. The
+> handler `ixgbe_xdp_xmit` had the following condition:
 > 
-> But I didn't quite get your point about "it has to be done at MPTCP level." Currently,
-> BPF provides 'sockops' capability, which invokes BPF programs in the protocol stack.
-> The input parameter sk for the BPF program is actually a TCP sk (subflow).
+> ```
+> 	ring = adapter->xdp_prog ? ixgbe_determine_xdp_ring(adapter) : NULL;
+> 	if (unlikely(!ring))
+> 		return -ENXIO;
+> ```
 > 
-> Many helper functions (like sockmap) have no choice but to care about whether it's MPTCP
-> or not.
+> That only works in native mode. In skb mode, `adapter->xdp_prog == NULL` so
+> the call returned an error, which prevented the ability to send packets
+> using `bpf_prog_test_run_opts` with the `BPF_F_TEST_XDP_LIVE_FRAMES` flag.
 
-I see. Maybe new MPTCP equivalent hooks will be needed then?
+Hi Nabil,
 
-(...)
+What stops you from loading a dummy XDP program to interface? This has
+been an approach that we follow when we want to use anything that utilizes
+XDP resources (XDP Tx queues).
 
->>>> A more important question: what will typically happen in your case if
->>>>  you receive an MPTCP request and sockmap is then not supported? Will the
->>>>  connection be rejected or stay in a strange state because the userspace
->>>>  will not expect that? In these cases, would it not be better to disallow
->>>>  sockmap usage while the MPTCP support is not available? The userspace
->>>>  would then get an error from the beginning that the protocol is not
->>>>  supported, and should then not create an MPTCP socket in this case for
->>>>  the moment, no?
->>>>
->>>>  I can understand that the switch from TCP to MPTCP was probably done
->>>>  globally, and this transition should be as seamless as possible, but it
->>>>  should not cause a regression with MPTCP requests. An alternative could
->>>>  be to force a fallback to TCP when sockmap is used, even when an MPTCP
->>>>  request is received, but not sure if it is practical to do, and might be
->>>>  strange from the user point of view.
->>>>
->>>  
->>>  Actually, I understand this not as an MPTCP regression, but as a sockmap
->>>  regression.
->>>  
->>>  Let me explain how users typically use sockmap:
->>>  
->>>  Users typically create multiple sockets on a host and program using BPF+sockmap
->>>  to enable fast data redirection. This involves intercepting data sent or received
->>>  by one socket and redirecting it to the send or receive queue of another socket.
->>>  
->>>  This requires explicit user programming. The goal is that when multiple microservices
->>>  on one host need to communicate, they can bypass most of the network stack and avoid
->>>  data copies between user and kernel space.
->>>  
->>>  However, when an MPTCP request occurs, this redirection flow fails.
->>>
->> This part bothers me a bit. Does it mean that when the userspace creates
->> a TCP listening socket (IPPROTO_TCP), MPTCP requests will be accepted,
->> but MPTCP will not be used ; but when an MPTCP socket is used instead,
->> MPTCP requests will be rejected?
 > 
-> "when the userspace creates a TCP listening socket (IPPROTO_TCP), MPTCP requests will be accepted,
-> but MPTCP will not be used"
-> --- Yes, that's essentially the logic behind MPTCP fallback, right? In this case, it should work
-> fine with sockmap as well. That's exactly what this patch aims to achieve.
-
-That's an MPTCP fallback to TCP for the client side here: the client
-requests to use MPTCP, but the server doesn't support it. In this case,
-MPTCP options will be ignored, and a "plain" TCP SYN+ACK will be sent
-back to the client. In this case, the server using sockmap doesn't
-handle MPTCP, because it created an IPPROTO_TCP.
-
-In other words, the situation you had before GO 1.24, right?
-
-> "but when an MPTCP socket is used instead, MPTCP requests will be rejected?"
-> --- Exactly. Currently, because sockmap operates directly on the subflow sk, it breaks the MPTCP
-> connection. The purpose of this patch is to explicitly return an error when users try to replace
-> certain handlers of the subflow sk.
-
-I don't think a message at that point is that useful. Ideally, the
-userspace should get an error or a notice when setting sockmap up. But I
-understand sockmap are not really attached to listening sockets, and it
-doesn't seem possible to block sockmap at setup time because it is going
-to be used with "accept()ed" connection created from an MPTCP listening
-socket.
-
-So I guess we will still need patch 1/3 (with a better commit message),
-and patch 2/3 should be restricted to remove psock_update_sk_prot for
-MPTCP subflows.
-
-> This way, users at least get a clear error message instead of just experiencing a mysterious connection
-> failure.
+> Signed-off-by: Nabil S. Alramli <dev@nalramli.com>
+> ---
+>  drivers/net/ethernet/intel/ixgbe/ixgbe.h      |  8 ++++
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 43 +++++++++++++++++--
+>  2 files changed, 47 insertions(+), 4 deletions(-)
 > 
->> If yes, it might be clearer not to allow sockmap on connections created
->> from MPTCP sockets. But when looking at sockmap and what's happening
->> when a TCP socket is created following a "plain TCP" request, we would
->> need specific MPTCP code to catch that in sockmap...
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+> index e6a380d4929b..26c378853755 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+> @@ -846,6 +846,14 @@ struct ixgbe_ring *ixgbe_determine_xdp_ring(struct ixgbe_adapter *adapter)
+>  	return adapter->xdp_ring[index];
+>  }
+>  
+> +static inline
+> +struct ixgbe_ring *ixgbe_determine_tx_ring(struct ixgbe_adapter *adapter)
+> +{
+> +	int index = ixgbe_determine_xdp_q_idx(smp_processor_id());
+> +
+> +	return adapter->tx_ring[index];
+> +}
+> +
+>  static inline u8 ixgbe_max_rss_indices(struct ixgbe_adapter *adapter)
+>  {
+>  	switch (adapter->hw.mac.type) {
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> index 467f81239e12..fed70cbdb1b2 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> @@ -10748,7 +10748,8 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
+>  	/* During program transitions its possible adapter->xdp_prog is assigned
+>  	 * but ring has not been configured yet. In this case simply abort xmit.
+>  	 */
+> -	ring = adapter->xdp_prog ? ixgbe_determine_xdp_ring(adapter) : NULL;
+> +	ring = adapter->xdp_prog ? ixgbe_determine_xdp_ring(adapter) :
+> +		ixgbe_determine_tx_ring(adapter);
+>  	if (unlikely(!ring))
+>  		return -ENXIO;
+>  
+> @@ -10762,9 +10763,43 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
+>  		struct xdp_frame *xdpf = frames[i];
+>  		int err;
+>  
+> -		err = ixgbe_xmit_xdp_ring(ring, xdpf);
+> -		if (err != IXGBE_XDP_TX)
+> -			break;
+> +		if (adapter->xdp_prog) {
+> +			err = ixgbe_xmit_xdp_ring(ring, xdpf);
+> +			if (err != IXGBE_XDP_TX)
+> +				break;
+> +		} else {
+> +			struct xdp_buff xdp = {0};
+> +			unsigned int metasize = 0;
+> +			unsigned int size = 0;
+> +			unsigned int truesize = 0;
+> +			struct sk_buff *skb = NULL;
+> +
+> +			xdp_convert_frame_to_buff(xdpf, &xdp);
+> +			size = xdp.data_end - xdp.data;
+> +			metasize = xdp.data - xdp.data_meta;
+> +			truesize = SKB_DATA_ALIGN(xdp.data_end - xdp.data_hard_start) +
+> +				   SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+> +
+> +			skb = napi_alloc_skb(&ring->q_vector->napi, truesize);
+> +			if (likely(skb)) {
+> +				skb_reserve(skb, xdp.data - xdp.data_hard_start);
+> +				skb_put_data(skb, xdp.data, size);
+> +				build_skb_around(skb, skb->data, truesize);
+> +				if (metasize)
+> +					skb_metadata_set(skb, metasize);
+> +				skb->dev = dev;
+> +				skb->queue_mapping = ring->queue_index;
+> +
+> +				err = dev_direct_xmit(skb, ring->queue_index);
+> +				if (!dev_xmit_complete(err))
+> +					break;
+> +			} else {
+> +				break;
+> +			}
+> +
+> +			xdp_return_frame_rx_napi(xdpf);
+> +		}
+> +
+>  		nxmit++;
+>  	}
+>  
+> -- 
+> 2.43.0
 > 
-> I know what you're concerned about, and I also don't want to add any MPTCP-specific checks on the
-> sockmap or BPF side :).
 > 
-> I will try to set psock_update_sk_prot to NULL first.
-
-Thanks!
-
-Cheers,
-Matt
--- 
-Sponsored by the NGI0 Core fund.
-
 
