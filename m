@@ -1,132 +1,103 @@
-Return-Path: <bpf+bounces-73330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D95BC2A9A1
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 09:42:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5DFEC2AA77
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 09:57:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5C603A5771
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 08:42:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06B4A1882728
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 08:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB192E093F;
-	Mon,  3 Nov 2025 08:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E8C2E6CDA;
+	Mon,  3 Nov 2025 08:56:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e2llAf04"
+	dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b="fwlfNyOe"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from smtp-o-1.desy.de (smtp-o-1.desy.de [131.169.56.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C48572DBF75
-	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 08:42:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB44286D4E
+	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 08:56:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.169.56.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762159365; cv=none; b=gBNDOo0u3aYp5bZaNkqSlbdQrkzIi6ng+a7MDiWU3EbziqVRtVJoNQ6aTGDyOru5Pz9iGwLYHccbdlOXSnAKBxaonmchxyAq2bnEnWzTxsMgA98m1Eug8SKXfHlyCtVM/dBQdopHc9tOKMnSO9a/Mmcips1IMjxTLXSKmD5AU5I=
+	t=1762160181; cv=none; b=Qa1VWCXAKmud3n2k/7wnzUIDjxfbYDXKycx2HkT1O0wJhjpLYvlUm7TOUlZnIzJZ/q58DWQZ4tJAKBECjv+CTXkwLWinQtnvDwxt6/w9IjXWjpip9SROLtR1RxaelDFzH5wUPB33TfwdLjkmCpwHeqAno13lT5ZHmoFeKw82VDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762159365; c=relaxed/simple;
-	bh=pL6QkzO6ebFeaF3cWNBoKsDA3L6V2A3jJUIGwOM82Hs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=JCnJpnw7Qi9giqf2Idr+HL6kBZZ8Op6QLY/NBWKc+CZYrTsS2Ap9sCOPcXPA4qU8xeVbYYIWpvZVKEd+vsKaYh3Y9bY6gWYqnmqW1ygY+D0jd11qe11HOOASvkwUuh/JydOuhW55rBiuDqh1afQKgYdvvKjex0Rn3ROFjvAR7I8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e2llAf04; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762159350;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=FQsNfh1GGsfH4N7UPatGUlnLBDtyUYCePR7Ny0Amo+M=;
-	b=e2llAf0407iTPU5zM/bNRIZWphIG7W5OPZgcRieYGV4z6ljt3aBx26CVYQRxpbiNxncQDv
-	Hp659gj5seIIffH4Y+OLmoH+Z5x+Gj3Yj31t3Qpth8gjcA+ZpZbaTpZN2wmpHW31fbJeJk
-	P+YtWKZmspXZwBBUF5ZYt5Wo5b+tgRE=
-From: george <dongtai.guo@linux.dev>
-Date: Mon, 03 Nov 2025 16:42:19 +0800
-Subject: [PATCH] LoongArch: BPF: Fix sign extension for 12-bit immediates
+	s=arc-20240116; t=1762160181; c=relaxed/simple;
+	bh=s9vJOxE5e82pBrvQBPj9ee/OkZ31mtk9zkMdIOCvIJs=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=j2+o9FddQo7DFqQjzPbGaM5dLEJfkxJspvzIp7k2WqiTCJnITOibTPPnCbZUqX068RAImASpodLZGJ23DrQrVbtPEqId5ZHC6sSs4OEiPTRsfA7UBPSpGxKwtqiKki5NlvkWZ1KCn4JafHXt93l8T3MyphiWNoEScppurAYxNZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu; spf=pass smtp.mailfrom=xfel.eu; dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b=fwlfNyOe; arc=none smtp.client-ip=131.169.56.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xfel.eu
+Received: from smtp-buf-1.desy.de (smtp-buf-1.desy.de [131.169.56.164])
+	by smtp-o-1.desy.de (Postfix) with ESMTP id 2284411F74B
+	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 09:56:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp-o-1.desy.de 2284411F74B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xfel.eu; s=default;
+	t=1762160170; bh=nYuMFs25kHrTtG9qeETPPZ0YMqTm+Z3JvCvKGpED0oE=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=fwlfNyOei89FxjMCjZDJNpccAlBPQ+e2l/myG/GuLdHjUzO7kec/jkv6xkaOiql8J
+	 rAlTGfx0JAo+agqlhjA+CWLzcI8cWccWJJFenkLvP1IuQJvYxKwF9MR+e+nhTyAggz
+	 lrJ6nZVEEchmTQQYNCEEQTW97lxiEX7CMU2khwgs=
+Received: from smtp-m-2.desy.de (smtp-m-2.desy.de [131.169.56.130])
+	by smtp-buf-1.desy.de (Postfix) with ESMTP id 14F3C20056;
+	Mon,  3 Nov 2025 09:56:10 +0100 (CET)
+Received: from a1722.mx.srv.dfn.de (a1722.mx.srv.dfn.de [194.95.233.47])
+	by smtp-m-2.desy.de (Postfix) with ESMTP id 0A236160044;
+	Mon,  3 Nov 2025 09:56:10 +0100 (CET)
+Received: from smtp-intra-2.desy.de (smtp-intra-2.desy.de [IPv6:2001:638:700:1038::1:53])
+	by a1722.mx.srv.dfn.de (Postfix) with ESMTP id 29DE73200A8;
+	Mon,  3 Nov 2025 09:56:09 +0100 (CET)
+Received: from z-mbx-6.desy.de (z-mbx-6.desy.de [131.169.55.144])
+	by smtp-intra-2.desy.de (Postfix) with ESMTP id 13AAF2004C;
+	Mon,  3 Nov 2025 09:56:09 +0100 (CET)
+Date: Mon, 3 Nov 2025 09:56:09 +0100 (CET)
+From: "Teichmann, Martin" <martin.teichmann@xfel.eu>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org
+Message-ID: <1564653446.19948617.1762160169008.JavaMail.zimbra@xfel.eu>
+In-Reply-To: <ec29fa64723036f672afd18686454d02857ea4e9.camel@gmail.com>
+References: <20251029105828.1488347-1-martin.teichmann@xfel.eu> <ec29fa64723036f672afd18686454d02857ea4e9.camel@gmail.com>
+Subject: Re: [PATCH bpf] bpf: tail calls do not modify packet data
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251103-1-v1-1-20e6641a57da@linux.dev>
-X-B4-Tracking: v=1; b=H4sIAOpqCGkC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI1NDQwNjXUNdS7O0xEQjE4NUizQTJaC6gqLUtMwKsBnRsbW1ADnkze9TAAA
- A
-X-Change-ID: 20251103-1-96faa240e8f4
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
- Hengqi Chen <hengqi.chen@gmail.com>, Huacai Chen <chenhuacai@kernel.org>, 
- WANG Xuerui <kernel@xen0n.name>, Youling Tang <tangyouling@loongson.cn>
-Cc: bpf@vger.kernel.org, loongarch@lists.linux.dev, 
- linux-kernel@vger.kernel.org, George Guo <guodongtai@kylinos.cn>, 
- Bing Huang <huangbing@kylinos.cn>, george <dongtai.guo@linux.dev>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1762159345; l=1770;
- i=dongtai.guo@linux.dev; s=20251103; h=from:subject:message-id;
- bh=r6iB+4QUzkiglp5aKNaGVGvpWZUg0I6p/aqNCFK0rKM=;
- b=b6fz9sckY6WVUreZ8Lba7h8hRBGk7JGTdKxLeSiwHsv/vtTZiTkhpyg0ZcPubLyabtVrI15zB
- q4+opYAPvg3BJqIiyqbVvRuTGYZx3+srGEKEZtP5sCqew+rPuNmcxb2
-X-Developer-Key: i=dongtai.guo@linux.dev; a=ed25519;
- pk=yHUJPGx/kAXutP/NSHpj7hWW0KQNlv3w9H6ju4qUoTM=
-X-Migadu-Flow: FLOW_OUT
+X-Mailer: Zimbra 10.1.10_GA_4785 (ZimbraWebClient - FF138 (Linux)/10.1.10_GA_4785)
+Thread-Topic: tail calls do not modify packet data
+Thread-Index: tUjAAbWHd9EswUkKPBEFoHc//Db2ZQ==
 
-From: George Guo <guodongtai@kylinos.cn>
+Dear Eduard,
 
-When loading immediate values that fit within 12-bit signed range,
-the move_imm function incorrectly used zero extension instead of
-sign extension.
+thanks for the review!
 
-The bug was exposed when scx_simple scheduler failed with -EINVAL
-in ops.init() after passing node = -1 to scx_bpf_create_dsq().
-Due to incorrect sign extension, `node >= (int)nr_node_ids`
-evaluated to true instead of false, causing BPF program failure.
+> I don't think this is safe to do, consider the following example:
+>
+>  main:
+>    p = pkt
+>    foo()
+>    use p
+>
+>  foo: // assume that 'foo' is a static function (local subprogram)
+>    if (something) do tail call
+>    don't modify packet data
 
-Verified by testing with the scx_simple scheduler (located in
-tools/sched_ext/). After building with `make` and running
-./tools/sched_ext/build/bin/scx_simple, the scheduler now
-initializes successfully with this fix.
+You are absolutely right, this would not work. This should actually be covered by tests... I'll write a test. I also already have an idea how to fix also this problem, and will come back to you once I'm done.
 
-Fix this by using sign extension (sext) instead of zero extension
-for signed immediate values in move_imm.
+> Alexei vaguely remembers discussion about using decl_tag's to mark
+> maps containing programs that don't modify packet pointers.
 
-Fixes: 5dc615520c4d ("LoongArch: Add BPF JIT support")
-Reported-by: Bing Huang <huangbing@kylinos.cn>
-Signed-off-by: George Guo <guodongtai@kylinos.cn>
----
-Signed-off-by: george <dongtai.guo@linux.dev>
----
- arch/loongarch/net/bpf_jit.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I am actually against that, I think this would be the wrong way to go. In my use case, I have written a dispatcher for packets that tail call other programs depending on the content of the packet processed. These programs do change during runtime. Until now I had no restrictions on those programs, they could modify the packet or not, as they wished, as the code does not return at all anyways. Tagging the programs would only limit their usefulness, without giving any benefits.
 
-diff --git a/arch/loongarch/net/bpf_jit.h b/arch/loongarch/net/bpf_jit.h
-index 5697158fd1645fdc3d83f598b00a9e20dfaa8f6d..f1398eb135b69ae61a27ed81f80b4bb0788cf0a0 100644
---- a/arch/loongarch/net/bpf_jit.h
-+++ b/arch/loongarch/net/bpf_jit.h
-@@ -122,7 +122,8 @@ static inline void move_imm(struct jit_ctx *ctx, enum loongarch_gpr rd, long imm
- 	/* addiw rd, $zero, imm_11_0 */
- 	if (is_signed_imm12(imm)) {
- 		emit_insn(ctx, addiw, rd, LOONGARCH_GPR_ZERO, imm);
--		goto zext;
-+		emit_sext_32(ctx, rd, is32);
-+		return;
- 	}
- 
- 	/* ori rd, $zero, imm_11_0 */
+I know that what I am doing is a bit crazy, I actually do motion control with EBPF, and all the EPBF programs are generated directly from Python, so I am not protected by any checking that compilers like LLVM might do. So I am kindof stress testing the EBPF subsystem... (if there is any interest, my code is at https://github.com/tecki/ebpfcat)
 
----
-base-commit: 6146a0f1dfae5d37442a9ddcba012add260bceb0
-change-id: 20251103-1-96faa240e8f4
+Cheers
 
-Best regards,
--- 
-george <dongtai.guo@linux.dev>
-
+Martin
 
