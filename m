@@ -1,118 +1,96 @@
-Return-Path: <bpf+bounces-73395-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73396-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CEA1C2E78B
-	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 00:48:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAA34C2E7F4
+	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 00:57:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EA7844F2619
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 23:47:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9572189AFF1
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 23:58:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812C630DD10;
-	Mon,  3 Nov 2025 23:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD6B30DD2E;
+	Mon,  3 Nov 2025 23:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d1OPMehH"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qLppOKHy"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0575A30B517;
-	Mon,  3 Nov 2025 23:47:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190282FE582
+	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 23:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762213658; cv=none; b=t5Oh2BAWlAOMZKBuwRXCPLaCfhCmUxHU7K24QeEzc3hwTlgbU5YOXKp0k3sjAU4g8Lx+N758l93+mae5eClwr3MHGgzre8cjSL2hLvKSVHV1pmf1rIIyOv///Q/jECsl+MiBYFiBRyaiiRDjFToi11cIY+DxxwbDVSQuKfnrhBA=
+	t=1762214272; cv=none; b=Za5ccIp/40EcRK9WJyB3eRxdU8TgHK0uJOnsiaLxUySwEtmZP+1/ZaQu1FErxsv8AQOOwZXDAk6HHEZxgBpfrh7bu5X1rxP5bDwNZ9Hk/s00WCQqQNqDtLEx5CBIMUKuDCGgCHc35ZldNx8lHaSI0xXgMw6FhhxHGOvpm64vZaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762213658; c=relaxed/simple;
-	bh=++5v+qj/aQU606vtiHtyIuKVbu0YqW3mLq98xG0aOlc=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=YCrMqBuLDku/eYdCIE8yKK+3uxucjHyCAr0xdmEKBo0LLA/h0/LBJK2rAL73X3J1dfIseudQDKq5vVPKVIbsRu4gMnn55Xm/zlEq7wNK+gt/sgEvgBZ3n5BvzWAvsuFJiypI8R05cdjZR19+7jACm34N0xXZ10UtbnY5GL7zqUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d1OPMehH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BD8EC4AF09;
-	Mon,  3 Nov 2025 23:47:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762213657;
-	bh=++5v+qj/aQU606vtiHtyIuKVbu0YqW3mLq98xG0aOlc=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=d1OPMehH7wY3/3U4ttsVgFxUE/l8RnvtHnBSqm2044DJ65S9hEurs19c+zv0gRTdd
-	 hayKTFb7HSNP7A8MyOOf0topQIEV5EzTEvESEM0v7xKfLfQ2JP0hA0RSnQQLzo9shZ
-	 ED3BfUCVfCHs1mUBa8F49Or/ge9dtcIG3r0b4V4zOZ5KqsyUgFRdU0FUU1DGsZN2R2
-	 OVpSF/y5LBAyha7QOTZuJojW+fDFBlIPzlyV33f1pJwqsJz5IqbL0jep7K87AM4/4l
-	 2OFmKvG9ISJ4Y9SMOX7ABNCCfcLsRIK8oY2uJ/kEGLeBCjl9pMGnokXxXSpOn/skvA
-	 0V3ZhRdKn1J7A==
-Content-Type: multipart/mixed; boundary="===============7051654016357934767=="
+	s=arc-20240116; t=1762214272; c=relaxed/simple;
+	bh=y25Fi9R+DV774dACqWt7ANCpRtX6RdoKdfvMXM9/UUY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=hl5FW0PIzC6NsOETTTd0YmU+iiUpUWXAwbSkaKwvmMAQa3g9J3n+JDf0gUcouS4cgCy6sm/nqHEvHdtOfi5+AcolClUX06OBzabR441tHq++5pcvPM9ZRxjk+OVa6ajcEAsbgvNdBFggkHlrDEvW5ZR2w3/66dM9THgPvZngd6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qLppOKHy; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2ab28c85-fc15-438b-aa5c-cfeb2c6917d5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762214258;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=blZkUePTFN0ZGEGKm/2J8vki+7wNvHua0gAAI8x27B0=;
+	b=qLppOKHyWQmL8ghCgXgR2/dToJNjU5th1omqK3tV+0prJw5i+ySuIecVGp98bJMihxMWTK
+	Eu6c3aMiXo6SIEpaxwncMA4LnTVNCPQZMry3MQ0ma85IpQa3Z9wsBjk2dtQnwFyH6Qwvwa
+	WyK6u1x9NwOcQuLIsQs0x/dH49YmoSc=
+Date: Mon, 3 Nov 2025 15:57:30 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <bb44afd60873d171a8482032e466d2827018486ecd13b4047df74632d2df4950@mail.kernel.org>
-In-Reply-To: <20251103220924.36371-3-jolsa@kernel.org>
-References: <20251103220924.36371-3-jolsa@kernel.org>
-Subject: Re: [PATCHv2 2/4] x86/fgraph,bpf: Fix stack ORC unwind from kprobe_multi return probe
-From: bot+bpf-ci@kernel.org
-To: jolsa@kernel.org,mhiramat@kernel.org,rostedt@goodmis.org,jpoimboe@kernel.org
-Cc: peterz@infradead.org,bpf@vger.kernel.org,linux-trace-kernel@vger.kernel.org,x86@kernel.org,yhs@fb.com,songliubraving@fb.com,andrii@kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Mon,  3 Nov 2025 23:47:37 +0000 (UTC)
-
---===============7051654016357934767==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
+Subject: Re: Requests to git.kernel.org return 502
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+To: helpdesk@kernel.org
+Cc: bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <d0ca5bfb-5ead-4f67-8716-d44485a8d8f7@linux.dev>
+Content-Language: en-US
+In-Reply-To: <d0ca5bfb-5ead-4f67-8716-d44485a8d8f7@linux.dev>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-> diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-> index 93156ac4f..b08c95872 100644
-> --- a/arch/x86/include/asm/ftrace.h
-> +++ b/arch/x86/include/asm/ftrace.h
-> @@ -56,6 +56,11 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
->  	return &arch_ftrace_regs(fregs)->regs;
->  }
->
-> +#define arch_ftrace_partial_regs(regs) do {	\
-> +	regs->flags &= ~X86_EFLAGS_FIXED;	\
-> +	regs->cs = __KERNEL_CS;			\
-> +} while (0)
-> +
+On 10/14/25 2:36 PM, Ihor Solodrai wrote:
+> Hi, 
+> 
+> Today we started seeing frequent 502 errors on attempts to fetch from
+> git.kernel.org in BPF CI jobs, which causes many of them to fail.
+> 
+> Kernel Patches Daemon instance is also down because of this. 
+> 
+> Example [1]:
+> 
+> + git remote add origin https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+> Initialized empty Git repository in /tmp/work/vmtest/vmtest/.kernel/.git/
+> + git fetch --depth=64 origin master
+> fatal: unable to access 'https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/': The requested URL returned error: 502
+> Error: Process completed with exit code 128.
+> 
+> https://github.com/kernel-patches/vmtest/actions/runs/18510075579/job/52750495992?pr=404
+> 
+> Any recent changes on kernel.org side? Is this a known issue?
+> 
+> Please let me know. Thanks.
 
-Can arch_ftrace_partial_regs read uninitialized regs->flags?
+Hi all,
 
-In return_to_handler, the ftrace_regs structure is allocated on the
-stack but only a few fields are initialized (RAX, RDX, RBP, RSP).
-The EFLAGS/flags field is never written before
-arch_ftrace_partial_regs reads it:
+HTTP 502 from git.kernel.org picked up again today.
 
-arch/x86/kernel/ftrace_64.S return_to_handler:
-    subq $(FRAME_SIZE), %rsp    # Allocate ftrace_regs on stack
-    movq %rax, RAX(%rsp)
-    movq %rdx, RDX(%rsp)
-    movq %rbp, RBP(%rsp)
-    movq %rsp, RSP(%rsp)
-    # No initialization of EFLAGS field
-
-Then ftrace_partial_regs()->arch_ftrace_partial_regs() executes:
-    regs->flags &= ~X86_EFLAGS_FIXED;
-
-This reads the uninitialized flags field. Stack allocations contain
-garbage, so regs->flags will have whatever data was previously on
-the stack. The &= operation produces undefined results when operating
-on uninitialized memory.
-
-For comparison, ftrace_regs_caller explicitly initializes EFLAGS:
-    movq MCOUNT_REG_SIZE(%rsp), %rcx
-    movq %rcx, EFLAGS(%rsp)
-
-Should return_to_handler initialize regs->flags to 0 (or another
-appropriate value) before arch_ftrace_partial_regs modifies it?
-
-[ ... ]
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19051288274
-
---===============7051654016357934767==--
+Examples:
+* https://github.com/kernel-patches/bpf/actions/runs/19052891379/job/54416890870
+* https://github.com/kernel-patches/bpf/actions/runs/19052904470/job/54416948499
 
