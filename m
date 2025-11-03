@@ -1,63 +1,62 @@
-Return-Path: <bpf+bounces-73363-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73364-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B326C2D5B1
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 18:08:21 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id C224FC2D623
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 18:12:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7793A189E40A
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 17:04:37 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 425904F433E
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 17:08:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8256A31B809;
-	Mon,  3 Nov 2025 17:02:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5DB319605;
+	Mon,  3 Nov 2025 17:08:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YIB6Mk+z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NPLq8Qxj"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC38C31A81D;
-	Mon,  3 Nov 2025 17:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2AF25FA0A;
+	Mon,  3 Nov 2025 17:08:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762189326; cv=none; b=B9UYYF9jRT81esnQV/X9xfUoNtXYygTSHmo+4lJYvqaTsSbjhIjHbHmMjiuh5YaOv9zR+ZflPNof7eXU/KhX7CKnw57EBpJeVXLLd+etRYny4s/myL4mNbLr6rsjxy5NXsyDSyPeEekKBLU3jtz8xdoPrdN8vYHrSUaIUDE9P54=
+	t=1762189721; cv=none; b=V0EdzLrxZX/0EfWUNnytrjf7tSHcRyeRL5A1xvju9L4/TPNAJzRK4UWEHfVH2W30AdoVNrBDu7AXBr8pWvmpOhaPSmp4E4KNQ5LMRKajK+HsXVPNnEYzaD3pom9onZLMyVqGbk0V3LvGPNHKD7NNS7naLjQarJ8jDmKnVU32KIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762189326; c=relaxed/simple;
-	bh=z4bhIkeLe61YGtNnfKtyj+dwQB2OwI+pXpuaZfbsQts=;
+	s=arc-20240116; t=1762189721; c=relaxed/simple;
+	bh=nc9pwfo7tVhfkofi9WsCHyPsawYIqzmCCe2hZfm+ryk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F/NU6i/LNmUNQMmJctPtBPiLaxN3TOT7WmCeJH2BlzM9ucrNdrn+rOSfeUzQxaX2HOp2Y0YL70KBnRIJWgw8bmnnl/vHe+wX4u/PLXzsKM7mpw/DmJPt7UWK3+y1pjxC1rVTYr1kTXsvvXwCAkkY7niNZlA/EtGI+dv5YZHSG98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YIB6Mk+z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44EC1C4CEE7;
-	Mon,  3 Nov 2025 17:02:04 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=lg9AWKa8IR3wtkKhV+MYwffB9Cqw6FQU5G7AARy8fHnRB8zayKGFrEy30atb9pz7f+xFiI0VQhs+GDSWndmRrbAzdJocFs4lF5rGprUi/TItpxL7/pI0byMIhp+5TSRMKcimYGRLAhRRKECrdlmVe4kWWdMp5XMafph+MTx8fIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NPLq8Qxj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C1FFC4CEFD;
+	Mon,  3 Nov 2025 17:08:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762189324;
-	bh=z4bhIkeLe61YGtNnfKtyj+dwQB2OwI+pXpuaZfbsQts=;
+	s=k20201202; t=1762189721;
+	bh=nc9pwfo7tVhfkofi9WsCHyPsawYIqzmCCe2hZfm+ryk=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=YIB6Mk+zbB+GuDbJ0vWKv4vitziT/ejEWmFLfRUmfVLCbHkCc1NoXbUQ8oUDIISbW
-	 OXJnzt8GUPCdEfPwgjFVlp+q3Ey0IuWRWLoZ4jKpoqkVAkJYB7wkZVirI+P/T0gs1D
-	 zczVjmrjN0XRrX1f0wHJcVNwPt5QBOk27UDLUfG52wRylaTiBLO+EVJGtAaZuiuoBz
-	 x1xc4vd2DbaCB4HK2AweVplZg6GowNF6DcS1HSuCkioX7pDEJStFfU5wvE3vHPwrnl
-	 xbCVvjZl4YCUbCIrIwQqVaAF7zn3C5GQBxFCXVdx5HheXwY2ZHhQDUnt4iWqfo4g94
-	 +Mqb1OQrjIztQ==
+	b=NPLq8Qxjk5TF2XoJ3zCNnbZ8M1n51tjVIBvXcBq0DCmi75P9TiTP+gla/3+NQ6kIG
+	 ec171K/lqcI/7q3+JNfTlBvy5eFF+tqfh6FiJEithvtCOfxDJ1P9KFV7X9SQy6R7wm
+	 LLfCZGkKk5NNubTVqLPOHZI3QbET/7DHSJt/ayYOkswXKLJmkjEOD4SStXpJC/MMWX
+	 n1Ls3fQRTAY2MRktVlxsEqKZnTCVpFkB/jSGbVb2W8I5CUq0ydnb1IjUY71U/dLOBK
+	 wJUXvdfqTdj1ffixMOMeJlkD9CQSTvvjOYGgLd0zoO1u5ujBnxFQ/VLkINpSwZDcyA
+	 bTLK6d+XFNUhg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 44EABCE0B94; Mon,  3 Nov 2025 09:02:02 -0800 (PST)
-Date: Mon, 3 Nov 2025 09:02:02 -0800
+	id E6772CE0B94; Mon,  3 Nov 2025 09:08:39 -0800 (PST)
+Date: Mon, 3 Nov 2025 09:08:39 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Will Deacon <will@kernel.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
 	rostedt@goodmis.org, Catalin Marinas <catalin.marinas@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
 Subject: Re: [PATCH 17/19] srcu: Optimize SRCU-fast-updown for arm64
-Message-ID: <c598e85a-4008-4ca7-a424-80c324523bbb@paulmck-laptop>
+Message-ID: <f89a3a56-e48a-4975-b67b-9387fe2e48c6@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
  <20251102214436.3905633-17-paulmck@kernel.org>
- <aQilZAXQv2P-b2eI@willie-the-truck>
+ <b2fb5a99-8dc2-440b-bf52-1dbcf3d7d9a7@efficios.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,12 +65,10 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aQilZAXQv2P-b2eI@willie-the-truck>
+In-Reply-To: <b2fb5a99-8dc2-440b-bf52-1dbcf3d7d9a7@efficios.com>
 
-On Mon, Nov 03, 2025 at 12:51:48PM +0000, Will Deacon wrote:
-> Hi Paul,
-> 
-> On Sun, Nov 02, 2025 at 01:44:34PM -0800, Paul E. McKenney wrote:
+On Mon, Nov 03, 2025 at 08:34:10AM -0500, Mathieu Desnoyers wrote:
+> On 2025-11-02 16:44, Paul E. McKenney wrote:
 > > Some arm64 platforms have slow per-CPU atomic operations, for example,
 > > the Neoverse V2.  This commit therefore moves SRCU-fast from per-CPU
 > > atomic operations to interrupt-disabled non-read-modify-write-atomic
@@ -90,51 +87,63 @@ On Mon, Nov 03, 2025 at 12:51:48PM +0000, Will Deacon wrote:
 > > 
 > > tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --configs NOPREEMPT --kconfig "CONFIG_NR_CPUS=64 CONFIG_TASKS_TRACE_RCU=y" --bootargs "refscale.loops=100000 refscale.guest_os_delay=5 refscale.nreaders=64 refscale.holdoff=30 torture.disable_onoff_at_boot refscale.scale_type=srcu-fast-updown refscale.verbose_batched=8 torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=8 refscale.nruns=100" --trust-make
 > > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Cc: <linux-arm-kernel@lists.infradead.org>
-> > Cc: <bpf@vger.kernel.org>
-> > ---
-> >  include/linux/srcutree.h | 56 ++++++++++++++++++++++++++++++++++++----
-> >  1 file changed, 51 insertions(+), 5 deletions(-)
+> Hi Paul,
 > 
-> [...]
-> 
-> > @@ -327,12 +355,23 @@ __srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ctr __percpu *scp)
-> >  static inline
-> >  struct srcu_ctr __percpu notrace *__srcu_read_lock_fast_updown(struct srcu_struct *ssp)
-> >  {
-> > -	struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
-> > +	struct srcu_ctr __percpu *scp;
-> >  
-> > -	if (!IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
-> > +	if (IS_ENABLED(CONFIG_ARM64) && IS_ENABLED(CONFIG_ARM64_USE_LSE_PERCPU_ATOMICS)) {
-> > +		unsigned long flags;
-> > +
-> > +		local_irq_save(flags);
-> > +		scp = __srcu_read_lock_fast_na(ssp);
-> > +		local_irq_restore(flags); /* Avoids leaking the critical section. */
-> > +		return scp;
-> > +	}
-> 
-> Do we still need to pursue this after Catalin's prefetch suggestion for the
-> per-cpu atomics?
-> 
-> https://lore.kernel.org/r/aQU7l-qMKJTx4znJ@arm.com
-> 
-> Although disabling/enabling interrupts on your system seems to be
-> significantly faster than an atomic instruction, I'm worried that it's
-> all very SoC-specific and on a mobile part (especially with pseudo-NMI),
-> the relative costs could easily be the other way around.
+> At a high level, what are you trying to achieve with this ?
 
-In my testing Catalin's patch wins by at least 10% on microbenchmarks.
-So I am holding this one in my back pocket just in case, but yes, you
-should ignore it, hopefully forever.  ;-)
+I am working around the high single-CPU cost of arm64 LSE instructions,
+as in about 50ns per compared non-LSE of about 5ns per.  The 50ns rules
+them out for uretprobes, for example.
+
+But Catalin's later patch is in all ways better than mine, so I will be
+keeping this one only until Catalin's hits mainline.  Once that happens,
+I will revert this one the following merge window.  (It might be awhile
+because of the testing required on a wide range of platforms.)
+
+> AFAIU, you are trying to remove the cost of atomics on per-cpu
+> data from srcu-fast read lock/unlock for frequent calls for
+> CONFIG_NEED_SRCU_NMI_SAFE=y, am I on the right track ?
+> 
+> [disclaimer: I've looked only briefly at your proposed patch.]
+> Then there are various other less specific approaches to consider
+> before introducing such architecture and use-case specific work-around.
+> 
+> One example is the libside (user level) rcu implementation which uses
+> two counters per cpu [1]. One counter is the rseq fast path, and the
+> second counter is for atomics (as fallback).
+> 
+> If the typical scenario we want to optimize for is thread context, we
+> can probably remove the atomic from the fast path with just preempt off
+> by partitioning the per-cpu counters further, one possibility being:
+> 
+> struct percpu_srcu_fast_pair {
+> 	unsigned long lock, unlock;
+> };
+> 
+> struct percpu_srcu_fast {
+> 	struct percpu_srcu_fast_pair thread;
+> 	struct percpu_srcu_fast_pair irq;
+> };
+> 
+> And the grace period sums both thread and irq counters.
+> 
+> Thoughts ?
+
+One complication here is that we need srcu_down_read() at task level
+and the matching srcu_up_read() at softirq and/or hardirq level.
+
+Or am I missing a trick in your proposed implementation?
 
 							Thanx, Paul
+
+> Thanks,
+> 
+> Mathieu
+> 
+> [1] https://github.com/compudj/libside/blob/master/src/rcu.h#L71
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
 
