@@ -1,287 +1,246 @@
-Return-Path: <bpf+bounces-73360-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73361-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCC09C2CBF7
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 16:32:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57D83C2CF3D
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 17:01:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DDA7565847
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 15:22:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40C781885B7C
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 15:54:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4423161A0;
-	Mon,  3 Nov 2025 15:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DCBD313E2B;
+	Mon,  3 Nov 2025 15:53:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f84g/fgj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YoDaWuqj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D7EF314B63;
-	Mon,  3 Nov 2025 15:14:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762182889; cv=fail; b=ctjZX9t5FNx1xluhKglHzs+bYeWcETimOxTD1roRtVFfBKyBQ1pUZrHBg+i6Sh19OlvIhIUGTKQrbo0dNjHrTP0Fc4VbGAvUJg9w7GM9JFlQfMyhAWyDBg1iwaCWkhVL+XXeloGzMtB0I6K1mUCxdgSt3h0xc4skKmaFJTbdCDY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762182889; c=relaxed/simple;
-	bh=l0NQChHeUFJywsn/xaJ2JqCI1srQ9xWemeBJSLcb97Q=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=bUEqZtLaKdaKKP9GLByT+12+cUE9u7qQ9D1c0nWZ6QoKosDxx0wWm8kqiH8oTWOzZrGhCJ7RSB7+KOKy7APMxm+elHul8onriBrxwKikqudOOXPCBMXMKkFce0dev83NQM8EW7u9BOj7zYi3TVigmdL0AcuErmMJP62rnO0oVpc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f84g/fgj; arc=fail smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1762182888; x=1793718888;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=l0NQChHeUFJywsn/xaJ2JqCI1srQ9xWemeBJSLcb97Q=;
-  b=f84g/fgjrLMBdq0Iup6xCfAxGVoZ5zVene/TLWYXfM3qKYosgR3lpaMI
-   dhR/7RZEC+59ZMr8eqhcH37gdTz3SIXu38JXHu2gp6t+ctUunacn7RUMQ
-   WPBumaW0SFHrJtFGPPBC5/wzTJWNanRpWJ9D76yxvV1bXjNcV2BE8P3jU
-   xRGOj/2P1JJg99ZGBID0mlEO9PbZRWM2aYwH169MTJdJCKaTBPTAdiwyF
-   myCTt9qPn1DpMkM1lEcO6aVj3jDUs/WGjMz0T53xEHRGz5ghZNVvlYYib
-   4mqJQjSCwyZ293YnHoTA8tz2OhpwqBAbHBl5L+exWLv7VGsoylTu0HWXZ
-   A==;
-X-CSE-ConnectionGUID: h/CBHfc6SfOHZsSaZXaulg==
-X-CSE-MsgGUID: wlgeU84iT5WSBNW/8Nl79A==
-X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="64164151"
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
-   d="scan'208";a="64164151"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2025 07:14:46 -0800
-X-CSE-ConnectionGUID: ubfWHu1MSQOOAegC8De9vg==
-X-CSE-MsgGUID: uPooLfRhRaWt/IH6crr8yg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,276,1754982000"; 
-   d="scan'208";a="186758066"
-Received: from fmsmsx902.amr.corp.intel.com ([10.18.126.91])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2025 07:14:46 -0800
-Received: from FMSMSX903.amr.corp.intel.com (10.18.126.92) by
- fmsmsx902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27; Mon, 3 Nov 2025 07:14:46 -0800
-Received: from fmsedg903.ED.cps.intel.com (10.1.192.145) by
- FMSMSX903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27 via Frontend Transport; Mon, 3 Nov 2025 07:14:46 -0800
-Received: from CO1PR03CU002.outbound.protection.outlook.com (52.101.46.3) by
- edgegateway.intel.com (192.55.55.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27; Mon, 3 Nov 2025 07:14:45 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=RVszONWfMkyzb5Y7IKZkqrEfV/Dt6osjk/5Gy/Dy3BAzDBabKT9ulERxdN9Rri7oPgw4JPMf826cCj//qwdRLp2sl7WgMUejrRN9XvJKaxNmWImEgqlGfdGY4ng12TwEQDuQV+/8UYLIHMl5jYLYuhcQTOFyL/+B79rwCcGHx0mDP2J2CVaK0XZT9hCd7WRdjZi8P+2/Ulli/xClU7UedWRc4cjFLvx5qqBsAsmik/RlINR37MSEqYhl2vG9irYpgPexmqIO/c+66ORhWmbPCMtGq42juJuknBXoMj5Yikr0/W7hKblUC/o6f2HyxdzgbUQ4QSty05wuS1bK1RrtWw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jv9XxTkx/+HIjJ+NF0A4IXMpAuboJBdcwPP35LDDETw=;
- b=mTgOVDRDP3wnkh/zJGinZaiUJYaUTzLyg99Wzza3wA0QVkEtOUbKFe4g8n7+64yyniKCVoSV2EXd0poo7xcVSn2nQc9KvXtojZgbFQPiiSBlEnQ34k0deA2AxzLCjkfNcM5wm5iksSb2aJumUoE22PyfoLOiTykvA530BRN22eGSXQFqVBReG4PSUbgI6dL7MyIqXhQs9Upe8mWhqd/7xCIOg5PqvOx6uVWGoKUQrsOIel1jVVNz8CA/TXQZwV5ucX/xTcQXU4CHMZ3MuYf65sczYsjTyVrtnvG7g/0nxyxPbf9j3Z7lZJnOS+p5TTMnPulDfFQYeXDJJBeYE2JOEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- MN2PR11MB4696.namprd11.prod.outlook.com (2603:10b6:208:26d::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9275.16; Mon, 3 Nov
- 2025 15:14:43 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::d19:56fe:5841:77ca%4]) with mapi id 15.20.9275.013; Mon, 3 Nov 2025
- 15:14:43 +0000
-Date: Mon, 3 Nov 2025 16:14:30 +0100
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Your Name <alessandro.d@gmail.com>
-CC: <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, "Alexei
- Starovoitov" <ast@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, "Daniel
- Borkmann" <daniel@iogearbox.net>, Eric Dumazet <edumazet@google.com>, "Jakub
- Kicinski" <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, "John
- Fastabend" <john.fastabend@gmail.com>, Paolo Abeni <pabeni@redhat.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Stanislav Fomichev
-	<sdf@fomichev.me>, Tirthendu Sarkar <tirthendu.sarkar@intel.com>, Tony Nguyen
-	<anthony.l.nguyen@intel.com>, <bpf@vger.kernel.org>,
-	<intel-wired-lan@lists.osuosl.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net v2 1/1] i40e: xsk: advance next_to_clean on status
- descriptors
-Message-ID: <aQjG1jnPmLlROQh9@boxer>
-References: <20251021173200.7908-1-alessandro.d@gmail.com>
- <20251021173200.7908-2-alessandro.d@gmail.com>
- <aPkRoCQikecxLxTS@boxer>
- <aPkW0U5xG3ZOekI0@lima-default>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <aPkW0U5xG3ZOekI0@lima-default>
-X-ClientProxiedBy: VI1PR03CA0071.eurprd03.prod.outlook.com
- (2603:10a6:803:50::42) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A8C304969;
+	Mon,  3 Nov 2025 15:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762185210; cv=none; b=RyMCt4XGH7gY+vmvb5JXtlBj3C8n6SikIJMQnv5yLVBB2A8xz2x94y5MpPLmZYdyKjdci3529hmQsb8QN9RQuKra7OEy9OcQMGeFeO4AWTXXkdJsMR9EyMsK74T+ZuLZvt+ugf1ga1RYDjlypDt1qezuK3mB1aFakwRP3S4aiLQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762185210; c=relaxed/simple;
+	bh=zlD987IYcgv0Lcs/dP07a3fW5+8vkcfzEITDz9joQpc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M9miuUIma+U8GUeYjLKq9+gS3QRKFpCFm40KWRuap5Qi3mwzsY0r20rkA+1pkrDJOprBpu241HdVuTUIEsM/My9DwO+Vq8G/0C6EonGmyLmOMtdMk5bud6XAdM5iD6rVghzA6+BhnykKCaOJBtO3gr236vsCPULaLOmoopaQDOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YoDaWuqj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8436DC4CEE7;
+	Mon,  3 Nov 2025 15:53:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762185209;
+	bh=zlD987IYcgv0Lcs/dP07a3fW5+8vkcfzEITDz9joQpc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=YoDaWuqjSCLvmDCn+FWGs6npsxuTUyH4xdREcv27YJEPaSCucdcntn3hrejxFpaZP
+	 SX9LJeCxDB8Xa46q93MGSLZ0Y3AI8BXFS/Xm5b2ZoMEGfe+bsz7T2nwU0nSjq7o0dS
+	 snP23C15CTTMJC2cHsHTiAI3UV52OCK+Ba9Kvjip8EEbMDTHHNZmbJYWlKgxU8L8RV
+	 qXY7uTV37A0qKrOXI0Vlw1i6s9PcjWDchiGhd911vmR9NbVJffgETkzggpaZkpQu3W
+	 G+HIslil2WzmvbyfTUsflNNlXUPGn6C2ggAybWRLaFemFbXJ9L3MwXJyUOmLpe5N50
+	 dza56b75pm/Ag==
+Message-ID: <99bcc333-c451-4409-ae23-1ca3b38950fa@kernel.org>
+Date: Mon, 3 Nov 2025 16:53:18 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|MN2PR11MB4696:EE_
-X-MS-Office365-Filtering-Correlation-Id: 64345bf0-ff7c-40da-f8e7-08de1aebb752
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|1800799024|366016|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?hl5o+yPA9C9yxQQhRRPbRaSCJRxJuid18ghISJxT3To2CJuxA6PIykIW8LtE?=
- =?us-ascii?Q?C/v8YAnYD09m76nbExbXzoPFsUidLMylXK92YQXibyVV7YUz36DwC3BDL1ug?=
- =?us-ascii?Q?n6g3Nb79mq9DZd5Y4Nxui1E62tsZL9ByyjR22iL+kACvQGHqwwzadKIh3GZr?=
- =?us-ascii?Q?aF919wkDZ5g8fUbB5/NbLS1raDj6mAf5wg8aJrNDvcB4dtQZLsiARJfXCjBp?=
- =?us-ascii?Q?JG3PN6/vIa1LmMlNOM1TkwM3TGcdjAb77uOW64ImDEYSgmEDb3TUtie4/frV?=
- =?us-ascii?Q?+zhoqwIyzGS8+ZUsKBIhEztHPBuRkwv5vIjv3RfnqR12JLAxW5ZfVkR1An6q?=
- =?us-ascii?Q?XO56pk1qj3egCvsrBvgQhxOsjGln9w9cUv0VFmEDF/Nc0snmEDn6WnC/7TOr?=
- =?us-ascii?Q?6uRYkAXldfKjqoY4EpS0YkS1upw+Vi2w9tsfMMexNn0ub5Tyn+472TtWRBQ1?=
- =?us-ascii?Q?+bL9zuTiwblDPFKa7l30qaN4TOKV752a5xgZ0dh0snz97ryIZ5zDYoEX+/jl?=
- =?us-ascii?Q?SiDppmNFupuH/v50kuG2v93HF2CeGte01Es2wHsXxPhcJm2I3FuxLjb2/OBY?=
- =?us-ascii?Q?ceAqD0t5DUpj9MflLEsM48xiMXEpY/jgOQb8IMneYtBzA/xmxuj91ENysrFR?=
- =?us-ascii?Q?CXmHrIqMEIzWGBL2hkTftQxLAcG9+KFIpUCK/MQc/TeBt3GYjJYx6g76fBYw?=
- =?us-ascii?Q?oIxbaNx5xlj2O+0BqDVZs2NWkQcmjbHcg0BfXvNRIlIk9GciS71z/0hQZ+Mj?=
- =?us-ascii?Q?Zl7HX9Zo2fnRc6cJe8yrpYxWJRPPcni3gUndIpH0DQmMjq6p38A3L8qN/4+Y?=
- =?us-ascii?Q?Iq39HZHHC5S5YYjPtIeo1BxcEBuFiE3Fxsx8CYERFxJmKgSsc2WVw3AWkeGf?=
- =?us-ascii?Q?f0i8kOwfrydIaE2gGhR8P5vn+In9iogigMg4kRFWa+CBwBe8CALLPrieRsNJ?=
- =?us-ascii?Q?Dsl2qVdX5qD2zSR6L1MjI6k/aBQwWuXD7yfjhtKullGPNqi0K05l46lhO27c?=
- =?us-ascii?Q?/1yaBwdqboZ59JLr/AFwNWmYuz96mVQAqa59vOYbMmw13W/K+hpUrHgzN5j7?=
- =?us-ascii?Q?rXlbiZvWd146tvnpIvRq7p9HbCpfywrShv6wGfCnjEyo20qFXG9vv70HKA3k?=
- =?us-ascii?Q?57alJ3UOD085LZiNCZ636NYu2rttyssmNKXLNaqBiVRTmSjn8nqa3Eyl1XWr?=
- =?us-ascii?Q?AMPjl2AK0hVgbYu+AO7FFKTZ+Xd5XgykAwo+jLPcH9hAMnxBrTChxlJw1eRl?=
- =?us-ascii?Q?4Ve20dwqlCJIfj2sAs6Sv6wIMVXREGSnBUbSNTbowPfO1g7sWZPPxeMojwTm?=
- =?us-ascii?Q?S6zDcZFr3QEEXHP0/kPk3bDGaJk2Je7zsGPfN3444phzt8BO4dwS06VOoXd4?=
- =?us-ascii?Q?GbipeGiAtOi49vpR4dPFeFaxYxF+WWDwmZSEThsHsJH5p0iriSvoIzjx7V25?=
- =?us-ascii?Q?BzVc/Nt7xog7SEhZ/0XOCqcbS38uAWYJlcK6vxVoBxMt2CsbeessGQ=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(366016)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xNYlXVZwHTZlW8U75Vzj5FkwIYZ5493LQWmwY384B/W0zXMY4+zv/BCqHPcS?=
- =?us-ascii?Q?Kf+lSz00I4R1QABYgQdYd9RjWwu0sJ8QDEy9pd9dN41nEZh/s2csKHHvDit7?=
- =?us-ascii?Q?EoX+R61A+JnDHgsaZHIGtY3ZsWZ4SnecMxjSCdpaU/hPHe0SV3aJbFtWXqxz?=
- =?us-ascii?Q?WHPpe8+VFlTcvOR1wVOafLfpJXzgKWr8UI9eq2zJ+Xy6Q3oJrbSKuKtTtQGo?=
- =?us-ascii?Q?4j+paPOyRTm9yb+jjVz7ykjMEeoQrxHrpvVrTFaBU4urFEsnADO1fFsqTnKF?=
- =?us-ascii?Q?xIYsKjDxsWPIuxtu44J0jNyiMWaYFJTUsfuKr9sIg3gbxMr9z4pO0I2jAWYR?=
- =?us-ascii?Q?p34/88/TTH8nHcI6Jk4T70L9FE33k5hO6/II3L07fHi+rjT3xlIGnQR801dq?=
- =?us-ascii?Q?MmlxjlW/XWZl/wLz5tDzAbfQ9k0Qel+c5xqqeXHvFV64+GlZU02Jw/OMRXpd?=
- =?us-ascii?Q?wu1Yx5FQkzSRQKJ3SfLyX+rA6Imm1iL6M3FniHTjvSHWj0Jj8zn2aepNwETb?=
- =?us-ascii?Q?kSLeJpO8rEQMF3FuKIdr7s7Wo1nKC4nhr+4RL2AOV1SDbzjiRlKToNVIzhH5?=
- =?us-ascii?Q?0PV4ZN6CXDJiW3BIMkRg++1JN3W4clhb+0n1YVnEFPDiu3Z1Wc4a36oUjdur?=
- =?us-ascii?Q?YCOdk4IClcDO4T7SvBye9NnktJFMhoNd7kE8xUM87BvNXSorN4A3dGIafNGn?=
- =?us-ascii?Q?1R1ls7q8xFMknYE/lxZbrlZzvrYdILErG8wOrMIo7ZrpVUTycJkno1N+LqD0?=
- =?us-ascii?Q?c3GhEmvU8MHRV8oOs0sAkB5JOq4TnxQs7uu6FCNUSYEuVZz52zEAngycmU5Z?=
- =?us-ascii?Q?JPVLz0e3iO1AXye6HlOaUGyd8cmf1YJWSzmAZ6FuUqfinNGqDuYXlqHymQlm?=
- =?us-ascii?Q?P9QShub7NhqLHXFWW8ClzO9/Cs8X2+TTLiP6wfN2+9KG6i1k3ctADkkYnLIm?=
- =?us-ascii?Q?nc+6qDHhQfiie48Y2jXXWPHZmCdENrdWctXdNd9v243nTn4JG1iV8iafnh8/?=
- =?us-ascii?Q?RKDZpUAieDHS8WDisiaFrU5Qah2H/GDYJ/3KzQleq7jxc38dtrQ1EOFoly4E?=
- =?us-ascii?Q?zHKIBdmbFNDIAPy/ApwkMpc8bdaffTUJ/h5eIdGG1kgql8YLTb6EEShPjSbU?=
- =?us-ascii?Q?06DCg3/zzXO5Wmguk/vf1N/tTQ672XWw3DpVThyTB/lVWWSZETD8H4+woM1R?=
- =?us-ascii?Q?Qv7ZUiu0hZ/FfF7chJtb8BtT4FpSwOvvpyWv1JEpUhmF4UTe40k3WEG9e/Fz?=
- =?us-ascii?Q?SGl5rYBEC4gWtu3rHlS1p3pV0Qmt7gazBTdxMkqpePqIrhYLYyDUJEE1xOH7?=
- =?us-ascii?Q?Ef0UTX7PH1RiFBOPA0hes+xlfsaTud14KDpaNv97FMsRrcjmHPDXmknoWUj5?=
- =?us-ascii?Q?PZMKMVsOVFFSPvHpze5MUF+f6dcEGMg81Nit5sKHmMcyIeg21VrDE/HTyKnn?=
- =?us-ascii?Q?PVyKUk7Lo9QclRolXiZnQV9D6yBcrGHAkcg1El1i2fQdvHE7i0HxZ759+9qB?=
- =?us-ascii?Q?6kbfTYBzTmoeOIt/5cDzRFKXNpeuTzOEilXhkFsUHYDrGnuICDo4X/f4jPZs?=
- =?us-ascii?Q?YBLg+ofNP7shuuAL9N/+XV6lx+SncedoZpOh6oDa54h/ZND5XVJsH8UEfxuY?=
- =?us-ascii?Q?gg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64345bf0-ff7c-40da-f8e7-08de1aebb752
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2025 15:14:43.0319
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7q0cR/FbTnofhDvWD1vHsVF/cHUSuICLFvCOJEWWsgBrbwAn7xKpCQDokMoGWQVUYNeaNOdJVryE3x+lLUeJPnz3AwQToYBogpNvlbcxyYY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4696
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH net v3 0/3] mptcp: Fix conflicts between MPTCP and sockmap
+Content-Language: en-GB, fr-BE
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, mptcp@lists.linux.dev
+Cc: John Fastabend <john.fastabend@gmail.com>,
+ Jakub Sitnicki <jakub@cloudflare.com>, Eric Dumazet <edumazet@google.com>,
+ Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Willem de Bruijn <willemb@google.com>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Simon Horman <horms@kernel.org>, Mat Martineau <martineau@kernel.org>,
+ Geliang Tang <geliang@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20251023125450.105859-1-jiayuan.chen@linux.dev>
+ <14b565a1-0c2a-420d-ab2a-dc8a46dbf33c@kernel.org>
+ <319c419455b73deb312b53d99c30217f6b606208@linux.dev>
+ <bc5831bb-cfa3-4327-b129-30ca5d17b45e@kernel.org>
+ <55049e76c1e86825ff963c381ef01e38cfc08b10@linux.dev>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <55049e76c1e86825ff963c381ef01e38cfc08b10@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Oct 23, 2025 at 04:39:29AM +1100, Your Name wrote:
-> On Wed, Oct 22, 2025 at 07:17:20PM +0200, Maciej Fijalkowski wrote:
-> > On Wed, Oct 22, 2025 at 12:32:00AM +0700, Alessandro Decina wrote:
-> > 
-> > Hi Alessandro,
-> 
-> Hey,
-> 
-> Thanks for the review!
-> 
-> 
-> > 
-> > > Whenever a status descriptor is received, i40e processes and skips over
-> > > it, correctly updating next_to_process but forgetting to update
-> > > next_to_clean. In the next iteration this accidentally causes the
-> > > creation of an invalid multi-buffer xdp_buff where the first fragment
-> > > is the status descriptor.
-> > > 
-> > > If then a skb is constructed from such an invalid buffer - because the
-> > > eBPF program returns XDP_PASS - a panic occurs:
-> > 
-> > can you elaborate on the test case that would reproduce this? I suppose
-> > AF_XDP ZC with jumbo frames, doing XDP_PASS, but what was FDIR setup that
-> > caused status descriptors?
-> 
-> Doesn't have to be jumbo or multi-frag, anything that does XDP_PASS
-> reproduces, as long as status descriptors are posted. 
-> 
-> See the scenarios here https://lore.kernel.org/netdev/aPkDtuVgbS4J-Og_@lima-default/
-> 
-> As for what's causing the status descriptors, I haven't been able to
-> figure that out. I just know that I periodically get
-> I40E_RX_PROG_STATUS_DESC_FD_FILTER_STATUS. Happy to dig deeper if you
-> have any ideas!
-> 
-> > > diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > > index 9f47388eaba5..dbc19083bbb7 100644
-> > > --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > > +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > > @@ -441,13 +441,18 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
-> > >  		dma_rmb();
-> > >  
-> > >  		if (i40e_rx_is_programming_status(qword)) {
-> > > +			u16 ntp;
-> > > +
-> > >  			i40e_clean_programming_status(rx_ring,
-> > >  						      rx_desc->raw.qword[0],
-> > >  						      qword);
-> > >  			bi = *i40e_rx_bi(rx_ring, next_to_process);
-> > >  			xsk_buff_free(bi);
-> > > -			if (++next_to_process == count)
-> > > +			ntp = next_to_process++;
-> > > +			if (next_to_process == count)
-> > >  				next_to_process = 0;
-> > > +			if (next_to_clean == ntp)
-> > > +				next_to_clean = next_to_process;
-> > 
-> > I wonder if this is more readable?
-> > 
-> > diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > index 9f47388eaba5..36f412a2d836 100644
-> > --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > @@ -446,6 +446,10 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
-> >  						      qword);
-> >  			bi = *i40e_rx_bi(rx_ring, next_to_process);
-> >  			xsk_buff_free(bi);
-> > +			if (next_to_clean == next_to_process) {
-> > +				if (++next_to_clean == count)
-> > +					next_to_clean = 0;
-> > +			}
-> >  			if (++next_to_process == count)
-> >  				next_to_process = 0;
-> >  			continue;
-> > 
-> > >  			continue;
-> > >  		}
-> 
-> Probably because I've looked at it for longer, I find my version clearer
-> (I think I copied it from another driver actually). But I don't really
-> mind, happy to switch to yours if you prefer!
+Hi Jiayuan,
 
-Hmm. After taking a second look, how about we make it into a common
-function shared between i40e_clean_rx_irq() and i40e_clean_rx_irq_zc() ?
+On 03/11/2025 13:34, Jiayuan Chen wrote:
+> October 29, 2025 at 1:26 AM, "Matthieu Baerts" <matttbe@kernel.org mailto:matttbe@kernel.org?to=%22Matthieu%20Baerts%22%20%3Cmatttbe%40kernel.org%3E > wrote:
+>> On 24/10/2025 06:13, Jiayuan Chen wrote:
 
+(...)
+
+>>> The current implementation rejects MPTCP because I previously attempted to
+>>>  add sockmap support for MPTCP, but it required implementing many interfaces
+>>>  and would take considerable time.
+>>>  
+>>>  So for now, I'm proposing this as a fix to resolve the immediate issue.
+>>>  Subsequently, we can continue working on fully integrating MPTCP with sockmap.
+>>>
+>> It makes sense to start with the fix for stable, then the implementation
+>> later. I think the implementation should not be that complex: it is just
+>> that it has to be done at MPTCP level, not TCP. sockmap supports
+>> different protocol, and it doesn't seem to be TCP specific, so that
+>> should be feasible.
 > 
-> Ciao
-> Alessandro
+> I agree with that. From a userspace perspective, we can't really manipulate subflow
+> TCP directly, and I also think it's correct to handle this at the MPTCP layer.
 > 
+> But I didn't quite get your point about "it has to be done at MPTCP level." Currently,
+> BPF provides 'sockops' capability, which invokes BPF programs in the protocol stack.
+> The input parameter sk for the BPF program is actually a TCP sk (subflow).
+> 
+> Many helper functions (like sockmap) have no choice but to care about whether it's MPTCP
+> or not.
+
+I see. Maybe new MPTCP equivalent hooks will be needed then?
+
+(...)
+
+>>>> A more important question: what will typically happen in your case if
+>>>>  you receive an MPTCP request and sockmap is then not supported? Will the
+>>>>  connection be rejected or stay in a strange state because the userspace
+>>>>  will not expect that? In these cases, would it not be better to disallow
+>>>>  sockmap usage while the MPTCP support is not available? The userspace
+>>>>  would then get an error from the beginning that the protocol is not
+>>>>  supported, and should then not create an MPTCP socket in this case for
+>>>>  the moment, no?
+>>>>
+>>>>  I can understand that the switch from TCP to MPTCP was probably done
+>>>>  globally, and this transition should be as seamless as possible, but it
+>>>>  should not cause a regression with MPTCP requests. An alternative could
+>>>>  be to force a fallback to TCP when sockmap is used, even when an MPTCP
+>>>>  request is received, but not sure if it is practical to do, and might be
+>>>>  strange from the user point of view.
+>>>>
+>>>  
+>>>  Actually, I understand this not as an MPTCP regression, but as a sockmap
+>>>  regression.
+>>>  
+>>>  Let me explain how users typically use sockmap:
+>>>  
+>>>  Users typically create multiple sockets on a host and program using BPF+sockmap
+>>>  to enable fast data redirection. This involves intercepting data sent or received
+>>>  by one socket and redirecting it to the send or receive queue of another socket.
+>>>  
+>>>  This requires explicit user programming. The goal is that when multiple microservices
+>>>  on one host need to communicate, they can bypass most of the network stack and avoid
+>>>  data copies between user and kernel space.
+>>>  
+>>>  However, when an MPTCP request occurs, this redirection flow fails.
+>>>
+>> This part bothers me a bit. Does it mean that when the userspace creates
+>> a TCP listening socket (IPPROTO_TCP), MPTCP requests will be accepted,
+>> but MPTCP will not be used ; but when an MPTCP socket is used instead,
+>> MPTCP requests will be rejected?
+> 
+> "when the userspace creates a TCP listening socket (IPPROTO_TCP), MPTCP requests will be accepted,
+> but MPTCP will not be used"
+> --- Yes, that's essentially the logic behind MPTCP fallback, right? In this case, it should work
+> fine with sockmap as well. That's exactly what this patch aims to achieve.
+
+That's an MPTCP fallback to TCP for the client side here: the client
+requests to use MPTCP, but the server doesn't support it. In this case,
+MPTCP options will be ignored, and a "plain" TCP SYN+ACK will be sent
+back to the client. In this case, the server using sockmap doesn't
+handle MPTCP, because it created an IPPROTO_TCP.
+
+In other words, the situation you had before GO 1.24, right?
+
+> "but when an MPTCP socket is used instead, MPTCP requests will be rejected?"
+> --- Exactly. Currently, because sockmap operates directly on the subflow sk, it breaks the MPTCP
+> connection. The purpose of this patch is to explicitly return an error when users try to replace
+> certain handlers of the subflow sk.
+
+I don't think a message at that point is that useful. Ideally, the
+userspace should get an error or a notice when setting sockmap up. But I
+understand sockmap are not really attached to listening sockets, and it
+doesn't seem possible to block sockmap at setup time because it is going
+to be used with "accept()ed" connection created from an MPTCP listening
+socket.
+
+So I guess we will still need patch 1/3 (with a better commit message),
+and patch 2/3 should be restricted to remove psock_update_sk_prot for
+MPTCP subflows.
+
+> This way, users at least get a clear error message instead of just experiencing a mysterious connection
+> failure.
+> 
+>> If yes, it might be clearer not to allow sockmap on connections created
+>> from MPTCP sockets. But when looking at sockmap and what's happening
+>> when a TCP socket is created following a "plain TCP" request, we would
+>> need specific MPTCP code to catch that in sockmap...
+> 
+> I know what you're concerned about, and I also don't want to add any MPTCP-specific checks on the
+> sockmap or BPF side :).
+> 
+> I will try to set psock_update_sk_prot to NULL first.
+
+Thanks!
+
+Cheers,
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
+
 
