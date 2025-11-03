@@ -1,168 +1,144 @@
-Return-Path: <bpf+bounces-73365-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73366-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64716C2D75C
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 18:25:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 341ACC2D7CA
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 18:34:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EE0054E65E0
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 17:24:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4ACA1897C40
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 17:35:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D4631AF3C;
-	Mon,  3 Nov 2025 17:24:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137E531B810;
+	Mon,  3 Nov 2025 17:34:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="glK+3Iz0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A7f5aKLa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5BD33191D6
-	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 17:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21FF631281F
+	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 17:34:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762190691; cv=none; b=ABrMUoktFgoEOehaS2XIScXH4KLStacvBv4zqTv9nyHs8E4Dyv9VLG8cy7ywv7ryPukMqi0YIehhxf1Jr5uMR4s+uoW6gqMf2TUK8uM4IMmsfvAHkQW3LXj6oSOnJdnFH6EKVPjsRg3cp0uyehelIuYV/p83GQA9zjewBeWMRYE=
+	t=1762191273; cv=none; b=i84UwvYiW8jUrchIuJc6UjedGbc/DXcQ4hOtDCAKz/WrCooXeV63mb36uSthrmY5vevd3V3goRzF4sH6aLyYzZqwE7xGmioVqeDwMQRSaTBaRa8vXCbtSg+N+74WQxgx6atB4Q7HvVE1Lkm5v7dw/uM4g93Qteq5XWbkDGS7Ak8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762190691; c=relaxed/simple;
-	bh=RBCrMHl5+r7gIpID5SMw5Uu9xHVvNcBVL8VL8b1svCc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=unbcgC2sbsKURiizTTf1oac8wHLU5/b2oSeJAN1FBf/TKqlHC1YLPRspzqYyPEnzm3GXnx9XyMo7zpSKDyUuzZ/3oxnMxpRs4JoSCOhjjrWaFW2vJrGRsr2QhKiyLSoOvLL2mNe1PPVxPnBR6fpiTAt1gxGTV9L231rbU7xjsmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=glK+3Iz0; arc=none smtp.client-ip=209.85.221.44
+	s=arc-20240116; t=1762191273; c=relaxed/simple;
+	bh=N22f/gnj9rFVOZk9moVxD41IN0Dc/i7u/NCmrOnSO1k=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=rUTHS+XDgoihzcu9PhXFE35zIsZmOeCXMe2wsrhB40/0xMkymK7E6Ksk+yPnctkceUDiSlwkdW+52OjzGpvYFK/ROZiGyCQ7gpsLJWsbz+aKYQ4XEKOEpGNeVLH/eu6SokvWIwrF+ufhLNf6qbIRMN+Yh9uMOHwUlRR0XAl/L6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A7f5aKLa; arc=none smtp.client-ip=209.85.215.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-429c7869704so2650506f8f.2
-        for <bpf@vger.kernel.org>; Mon, 03 Nov 2025 09:24:48 -0800 (PST)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-b67684e2904so3281416a12.2
+        for <bpf@vger.kernel.org>; Mon, 03 Nov 2025 09:34:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762190687; x=1762795487; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ro1EY1qfOe4vUThx0ZqWLeIU2GAit/q1wMhzypsJ0iM=;
-        b=glK+3Iz0UeuapX9ZY5l4oeDdfYwy7nx4bq0znltYU3fkuDByji1uae7g2r4GYybfgM
-         AIa7AEoXItRNitMKCVHKrxivsSAPz2KoUw2NobTt022cy3pSXtIflguMO3XtKtJQCqJ6
-         taThB8RSI2eUtE0G7ZaVvLZYiM+X4QtSwIMkJQrxvahsMIuBWrs3+/Bs97i9bhjCGrmO
-         xrLAbA4+oLcRwNZTi4RNhb77GrVDWL+eDQdffy2rv5mF+QmsDCMLrxVDMMtVcqi67dIY
-         dBKzTxHpBOE1vqiGYLkgAT3x5sIt2X2prDRyLcj0NWA+Jpl2+7O0fT+wS6kXTAusG7bC
-         Zpmw==
+        d=gmail.com; s=20230601; t=1762191271; x=1762796071; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TyeY+bEWbSTlhOjrrlK8/D9Epm1DbcEpnj1aw1ylW08=;
+        b=A7f5aKLaSCaA16xScnQdWmTj0+CDS42mahwwSI6QnSlgtJ2Yj28sZS4DJsBzwHtEvn
+         +UW5+YW7MeGNXdX+FHdNskaqKNwIHSvC+Vt+XvOg7MUCAAWshTzQ9XsXcwsER520deMY
+         mYJ9yC52+yHW+iDrGfuJXJpiEJENYXbV5dxONODAQgDG5tbYfM76roFmiCMbykAZUUHH
+         OOO6g8wogW7CWu260lWsRFWoDM9K77goFc0MpKqFawcxNMsYPvEDWOVKHf+ShMFj7uSf
+         n7V5ZsCSW7I4L2tJGQj69/5xmWctIQUl4OQBlhUC3d2iEAYgRtcRsImJ2lISwlP0UB5f
+         cu3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762190687; x=1762795487;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ro1EY1qfOe4vUThx0ZqWLeIU2GAit/q1wMhzypsJ0iM=;
-        b=wWaebaBnYPswMEbgftaZY99Wdw4egIBYukshzmbWNcnLvzdkItypcJmobJWMbGnbLU
-         cROPmVC2XePgVhox7Yd3GgN0Eu9mJDEM65apWACeQyTHCZRatHzjn5aM5FJFdxeuI2wK
-         LPiPD7ouyb2oJJ7ZEz/lKkTiPpcvpNhjVfQKDKZpqysdiJid5GayQ+ctH8Hc2T7uOAfT
-         qQqyI8ekL9rBoiOF8B897DEK73FGjy1/qzfdhMHVTgM0yJcSp07mp3yMQ/S+4SD++MNC
-         /MNu6Q2cjW9bCQbmwzrrVo17OE6eLKPYL3p593kHyFt8BDrN1pMSjc2rIoYQdqOL8S0y
-         afDQ==
-X-Gm-Message-State: AOJu0YwUAa/VqnhkSFgZhJCWVHKdF37+a31HqvQRGYAe8eAm+gNbfoam
-	X7tsAM8U+e49AnfVGyJHgcE0+IN3Q2kayW3Aett43n599DrhkKUXEbHpU1C9XalLuctZUQhUgnH
-	UL6vlGJmW2X3nD9CmF1TRx8UzcoA0Ao8=
-X-Gm-Gg: ASbGncswBucBtvi9/ItuAquoGnYdFu5UW3slRo+ofN4hfiQkz54KZNUMy4iEzSjvKBe
-	HOsqc9ehOmCQUmnFPcLajxWLf63lxc5B7GsiukYAVD42bHf8Ln5MBOy4CwmlVeLjWAMjZXoNo+j
-	dm4kAWxgWR8ChlgzYoVKhnQ6O7LPJ2QfABSNldd8vWxW3ynrBg+vCFpkAa3ok0Xpho07KGPMu5M
-	OtaD7WrLpyrnD2BMyW3ntxyqG1GbGRgrdTv5STdPTPlAu9kS4/QbJTPEr+uJmwfapeSS8Iq9zHE
-	xi0ZH7Ydl7BDQGQWpVoPnA==
-X-Google-Smtp-Source: AGHT+IEJD1f1OGGvHWmr6ipCmnC/rKjkjLbQjqmUaOn+glW25HAYOi5NjfH97rBU5lFoA/xbTGNntS5+u0C87uDofTk=
-X-Received: by 2002:a05:6000:310a:b0:3de:78c8:120e with SMTP id
- ffacd0b85a97d-429bd676070mr9132749f8f.6.1762190686736; Mon, 03 Nov 2025
- 09:24:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1762191271; x=1762796071;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TyeY+bEWbSTlhOjrrlK8/D9Epm1DbcEpnj1aw1ylW08=;
+        b=kKncN9Xc6D2h+2dX+effvODBm6q+3HnWKHeHu2v/EDtPiZeyxhjI3hx9/GF+KdcKL7
+         ZrCWQZbPaIHxv5T6oC7HRKqK+wBGp89BEYwGMgLAikPZpMgH6JEulUVmnSRv8ZiBZ0aa
+         NlM2OKCK5X7xJg1t3cN8AOBMEBDkSZG+UGPK5dDpDE6XJUxVQfl6aY3Y9LyFx/MS+8tj
+         p066daeA0Tl95GEunhXT2D67tJxsQ87RR6RbkEOw8mLA4lxPYeZQz856OFATL7vOhesL
+         YrGY6/M5lThSYeDwiRG3T9OtDF0dqjGZiPZ96x1uNIfzTGt0DlEcBgIex7yc6A3tof7v
+         h1IQ==
+X-Gm-Message-State: AOJu0YypPcRWulxtxEjToW/JutfSqenshzxSka2qOzvS17wXXwSaRKWW
+	m+FppEiSRKPi4UpKTMoRc4awGCw12Iq5DSZa8iEpnw/TP6udk6In9Jpf
+X-Gm-Gg: ASbGncvhBFLkssMIeTxPuCszj71VX90xoGFhiDCQZI7LiXFLJ4CB86+7J6tuh9it6cc
+	EqfKU3baUWQhgs9U7olsVC0SD5Wg1Wdc1kUCsTN6zj+3Ty6zToNRUlZvaBLJcp8r/TvCZdefHRV
+	yPg3jdxH9LrnZ5+ZwiXKflP5Jhc4lAwa+IlSlg/Nk0m7Np3S0HgcFrWKrIlmhQ7aZzwSUrBM2LG
+	UqA7cDaavadIquGtk0NJvxiZPk6fy2SQmQMzaV5V1fCGwX4Pb/4ieqCGH9M6kf6u7o8TWBH/JKS
+	uAbWiclpqvy0AO51+yfrv8QAZvsd+Gbib0PLX/mDNoKsRQ36nQE/0dSWDx1YoZTUaa2Adg1d2rU
+	LvpmvpHG4riFa996MowkKEO/DXQdbJhzfNWu5ONavIlfO9wi3yIuixWeRW4g1ahH6k3yoLUgVHW
+	eronvDTK1jb3i5N9HbbNVwyIZVVA==
+X-Google-Smtp-Source: AGHT+IF1+2Q0SRzZyPTgJi8RXkawpG+glFb5bP6bRLaAUyVeno+rC/Y5OI42V7Y/WIo6Ip14i+QrcA==
+X-Received: by 2002:a17:902:e54c:b0:295:32ea:4cf6 with SMTP id d9443c01a7336-29532ea4fa8mr152898015ad.5.1762191271344;
+        Mon, 03 Nov 2025 09:34:31 -0800 (PST)
+Received: from ?IPv6:2a03:83e0:115c:1:3eb6:963c:67a2:5992? ([2620:10d:c090:500::5:d721])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2955a5cfc12sm89961975ad.70.2025.11.03.09.34.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Nov 2025 09:34:30 -0800 (PST)
+Message-ID: <c6fdb21818f04bad1235aa1987db0b53aed070ee.camel@gmail.com>
+Subject: Re: [PATCH bpf] bpf: tail calls do not modify packet data
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: "Teichmann, Martin" <martin.teichmann@xfel.eu>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org
+Date: Mon, 03 Nov 2025 09:34:29 -0800
+In-Reply-To: <1564653446.19948617.1762160169008.JavaMail.zimbra@xfel.eu>
+References: <20251029105828.1488347-1-martin.teichmann@xfel.eu>
+	 <ec29fa64723036f672afd18686454d02857ea4e9.camel@gmail.com>
+	 <1564653446.19948617.1762160169008.JavaMail.zimbra@xfel.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251030152451.62778-1-leon.hwang@linux.dev> <20251030152451.62778-4-leon.hwang@linux.dev>
- <CAADnVQLib8ebe8cmGRj98YZiArendX8u=dSKNUrUFz6NGq7LRg@mail.gmail.com> <22f12031-7a19-4824-a9cc-459fb63a5e0e@linux.dev>
-In-Reply-To: <22f12031-7a19-4824-a9cc-459fb63a5e0e@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 3 Nov 2025 09:24:31 -0800
-X-Gm-Features: AWmQ_bm4t42nXKKLY7EleQr5SyGRExs3j12-OPMXVNGKvQ-5I62n-U-Sv767GRs
-Message-ID: <CAADnVQJ9dFOou9jqmDaJKaYagF_KM0YXO+=r9uyM5r48+SFTuA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/4] bpf: Free special fields when update
- local storage maps with BPF_F_LOCK
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Amery Hung <ameryhung@gmail.com>, 
-	LKML <linux-kernel@vger.kernel.org>, kernel-patches-bot@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Nov 2, 2025 at 9:18=E2=80=AFPM Leon Hwang <leon.hwang@linux.dev> wr=
-ote:
+On Mon, 2025-11-03 at 09:56 +0100, Teichmann, Martin wrote:
+> Dear Eduard,
+>=20
+> thanks for the review!
+>=20
+> > I don't think this is safe to do, consider the following example:
+> >=20
+> >  main:
+> >    p =3D pkt
+> >    foo()
+> >    use p
+> >=20
+> >  foo: // assume that 'foo' is a static function (local subprogram)
+> >    if (something) do tail call
+> >    don't modify packet data
+>=20
+> You are absolutely right, this would not work. This should actually
+> be covered by tests... I'll write a test. I also already have an
+> idea how to fix also this problem, and will come back to you once
+> I'm done.
+>=20
+> > Alexei vaguely remembers discussion about using decl_tag's to mark
+> > maps containing programs that don't modify packet pointers.
+>=20
+> I am actually against that, I think this would be the wrong way to
+> go. In my use case, I have written a dispatcher for packets that
+> tail call other programs depending on the content of the packet
+> processed. These programs do change during runtime.
 >
->
->
-> On 31/10/25 06:35, Alexei Starovoitov wrote:
-> > On Thu, Oct 30, 2025 at 8:25=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
-v> wrote:
-> >>
->
-> [...]
->
-> >> @@ -641,6 +642,7 @@ bpf_local_storage_update(void *owner, struct bpf_l=
-ocal_storage_map *smap,
-> >>         if (old_sdata && (map_flags & BPF_F_LOCK)) {
-> >>                 copy_map_value_locked(&smap->map, old_sdata->data, val=
-ue,
-> >>                                       false);
-> >> +               bpf_obj_free_fields(smap->map.record, old_sdata->data)=
-;
-> >>                 selem =3D SELEM(old_sdata);
-> >>                 goto unlock;
-> >>         }
-> >
-> > Even with rqspinlock I feel this is a can of worms and
-> > recursion issues.
-> >
-> > I think it's better to disallow special fields and BPF_F_LOCK combinati=
-on.
-> > We already do that for uptr:
-> >         if ((map_flags & BPF_F_LOCK) &&
-> > btf_record_has_field(map->record, BPF_UPTR))
-> >                 return -EOPNOTSUPP;
-> >
-> > let's do it for all special types.
-> > So patches 2 and 3 will change to -EOPNOTSUPP.
-> >
->
-> Do you mean disallowing the combination of BPF_F_LOCK with other special
-> fields (except for BPF_SPIN_LOCK) on the UAPI side =E2=80=94 for example,=
- in
-> lookup_elem() and update_elem()?
+> Until now I had no restrictions on those programs, they could modify
+> the packet or not, as they wished, as the code does not return at
+> all anyways. Tagging the programs would only limit their usefulness,
+> without giving any benefits.
 
-yes
+The idea behind annotation was that map without annotation would only
+allow programs that do not modify packet data as values, while map
+with annotation would allow programs that do modify and those that
+don't. So, for your use-case it would be sufficient to add annotations
+to the map.
 
-> If so, I'd like to send a separate patch set to implement that after the
-> series
-> =E2=80=9Cbpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for percpu map=
-s=E2=80=9D is
-> applied.
->
-> After that, we can easily add the check in bpf_map_check_op_flags() for
-> the UAPI side, like this:
->
-> static inline int bpf_map_check_op_flags(...)
-> {
->         if ((flags & BPF_F_LOCK) && !btf_record_has_field(map->record,
-> BPF_SPIN_LOCK))
->                 return -EINVAL;
->
->         if ((flags & BPF_F_LOCK) && btf_record_has_field(map->record,
-> ~BPF_SPIN_LOCK))
->                 return -EOPNOTSUPP;
-> }
->
-> Then we can clean up some code, including the bpf_obj_free_fields()
-> calls that follow copy_map_value_locked(), as well as the existing UPTR
-> check.
+But really, I don't see that many options on the table:
+a. Be conservative and assume that every tail call modifies packed data.
+b. Use map annotations as described above.
+c. Assume that the map is pre-filled before main program verification
+   and infer the "allows packet modifying programs" property from
+   programs already there, after which seal the property.
 
-ok. fair enough.
+What do you suggest?
 
