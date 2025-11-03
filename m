@@ -1,174 +1,155 @@
-Return-Path: <bpf+bounces-73325-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73326-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85E0BC2A776
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 09:03:12 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84C6AC2A779
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 09:03:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F39F3BAFC5
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 07:55:52 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8A75F4EEE20
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 07:57:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F7162C2356;
-	Mon,  3 Nov 2025 07:55:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 071872D248D;
+	Mon,  3 Nov 2025 07:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o4oU+Ryh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EyuFXS/5"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0FF299A94;
-	Mon,  3 Nov 2025 07:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6401F2D1907;
+	Mon,  3 Nov 2025 07:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762156536; cv=none; b=rf6HKt0pySXHHskjSf+CoOwq8NNCVNzsLjWy933vyPHmKI7UwCxwB0xoMGdqs/ecMKKWbX25BGzCx/Piage5Nm5vghgpbPsXZqp19NOgzXFXvEPO2PtzrfSjezqmGhy+Q1mdo6LoQoOP3afUQiQjHgPCi00ZIFpYByMAUJG4P/E=
+	t=1762156643; cv=none; b=EF6QRezUPv4F58o2MmNVgGoVZI2R3qeuoni3vwsC7jJna2vEY2dkFw8Q6iXqK9sSZKMuwxV/IAHCiNCMSJscGp+h3JnmE42jKL3MBf58QDzoWneyN31z+V9XdFVS2OVabg4OHMcQd1bB5WZ+Ysg+eVwzb320vLfZK6tt+OB1+2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762156536; c=relaxed/simple;
-	bh=YNPixSJYA3JDbHsT5BALFX8BA9BKMpCbGHtdSmu4c+Y=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=MJCTyfOrX5MrPS5up5n5MJk1iuoI6KoJJrjNdWho6BdrlviIHlkvzyriTOYKUszIUtWoNS6PUrDvBLUuxBBs0bU5mf27JtcAAfny0qUMFDBoukCnwcp46IvoS4f54aA/OKoJXFqlHQb/mNdUjHRSS6Tx9TK0+ZfPAMTtPqfvUCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o4oU+Ryh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86465C4CEE7;
-	Mon,  3 Nov 2025 07:55:35 +0000 (UTC)
+	s=arc-20240116; t=1762156643; c=relaxed/simple;
+	bh=HSj/Z5n0gDZ4meqwx9ffw43W8XomEOuc7B2mT893bzs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=N3M+ucM8M+7Ghcbz26qodnLJtUpcMl+eSg4WI2iWqmH4yKzGdg82SsxvJwrLUrzQczXL4+VEwiTTpfpwK2niD3tzYwUHQw6289ITNh2EyJp4wuOGgeIYCsT1MFRDiVG/OHAVu/8C0kIv9gW4s9NQMtGCgcY4YlHZzli/QASK16Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EyuFXS/5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A78AEC4CEE7;
+	Mon,  3 Nov 2025 07:57:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762156536;
-	bh=YNPixSJYA3JDbHsT5BALFX8BA9BKMpCbGHtdSmu4c+Y=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=o4oU+RyhmIlMbUWlFLmmyQwX32IqXC5AIbMAZseu2CDO3GoHTXudUbw+I/yEpIu77
-	 UjvK2LZDEBk0xVmaaVnq3zJMsx+bMumeyRKMeg9bi5c3vlaOh7xtPd1vXWw/+4dHg+
-	 mY30cdJj2lSezVOXtRYguoKt8s4t2UAcKGZSvkXs7SDXaZ35xTX8VhTV7qWYQ7LI+d
-	 sN8v8JCDgLepVlN4vCsZ3/gTj2hPcO3tjN2R7xNeb9ZPEQuYHRp8upNyDtPegMY8a6
-	 OXeKOTL1hDLenbuVkz2i/mOeN+fKBJ9dAjgqlvZF7sfqv3BYpOm+dfnkrTAbjlAb32
-	 DplqTnvwc2rpA==
-Content-Type: multipart/mixed; boundary="===============7388337055491605420=="
+	s=k20201202; t=1762156642;
+	bh=HSj/Z5n0gDZ4meqwx9ffw43W8XomEOuc7B2mT893bzs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=EyuFXS/5i8cjPsKl1fmDKJwxtvpzPfkDrVD/7Dw9cVg4MIRSZ9pwX9Mwp3TkQNtyw
+	 zoeqzLLyxPRNqLWKH6FXNg+6ZNo7vj4V4K1a2Q2k642McCDmgxisCjpK6A9S/QL1M+
+	 JohKsDSLySE14H0H5z5GG8d356N9+qgQ55m+uwsMsRoTogFqUE9iZVhmwTsjaJxJ0D
+	 rf7CiQwNGNOSkhhNm3a8Kegsyv/wACFQk0qTNci2kW/sBtJn3XjoC3JgBMB4DLxEd1
+	 BxbJrOVgc9EcBq/f6dV64raqbuuFvwCKqXqgbvNuoO3N0Gl4d4KOsuqDiCv8HqbTcE
+	 IGGXAlmxritEQ==
+X-Mailer: emacs 30.2 (via feedmail 11-beta-1 I)
+From: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
+To: "Roy, Patrick" <roypat@amazon.co.uk>
+Cc: "Roy, Patrick" <roypat@amazon.co.uk>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"maz@kernel.org" <maz@kernel.org>,
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+	"joey.gouly@arm.com" <joey.gouly@arm.com>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"yuzenghui@huawei.com" <yuzenghui@huawei.com>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"will@kernel.org" <will@kernel.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"bp@alien8.de" <bp@alien8.de>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+	"luto@kernel.org" <luto@kernel.org>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"willy@infradead.org" <willy@infradead.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"david@redhat.com" <david@redhat.com>,
+	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
+	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+	"vbabka@suse.cz" <vbabka@suse.cz>,
+	"rppt@kernel.org" <rppt@kernel.org>,
+	"surenb@google.com" <surenb@google.com>,
+	"mhocko@suse.com" <mhocko@suse.com>,
+	"song@kernel.org" <song@kernel.org>,
+	"jolsa@kernel.org" <jolsa@kernel.org>,
+	"ast@kernel.org" <ast@kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"andrii@kernel.org" <andrii@kernel.org>,
+	"martin.lau@linux.dev" <martin.lau@linux.dev>,
+	"eddyz87@gmail.com" <eddyz87@gmail.com>,
+	"yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+	"kpsingh@kernel.org" <kpsingh@kernel.org>,
+	"sdf@fomichev.me" <sdf@fomichev.me>,
+	"haoluo@google.com" <haoluo@google.com>,
+	"jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"jhubbard@nvidia.com" <jhubbard@nvidia.com>,
+	"peterx@redhat.com" <peterx@redhat.com>,
+	"jannh@google.com" <jannh@google.com>,
+	"pfalcato@suse.de" <pfalcato@suse.de>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"Cali, Marco" <xmarcalx@amazon.co.uk>, "Kalyazin,
+	Nikita" <kalyazin@amazon.co.uk>, "Thomson,
+	Jack" <jackabt@amazon.co.uk>,
+	"derekmn@amazon.co.uk" <derekmn@amazon.co.uk>,
+	"tabba@google.com" <tabba@google.com>,
+	"ackerleytng@google.com" <ackerleytng@google.com>
+Subject: Re: [PATCH v7 05/12] KVM: guest_memfd: Add flag to remove from
+ direct map
+In-Reply-To: <20250924152214.7292-2-roypat@amazon.co.uk>
+References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
+ <20250924152214.7292-1-roypat@amazon.co.uk>
+ <20250924152214.7292-2-roypat@amazon.co.uk>
+Date: Mon, 03 Nov 2025 13:27:04 +0530
+Message-ID: <yq5ajz07czvz.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <5866d0686028b734879265d8a47af12347e262a26ce86b0ab452b5d2a185d457@mail.kernel.org>
-In-Reply-To: <20251103073124.43077-3-alibuda@linux.alibaba.com>
-References: <20251103073124.43077-3-alibuda@linux.alibaba.com>
-Subject: Re: [PATCH bpf-next v4 2/3] net/smc: bpf: Introduce generic hook for handshake flow
-From: bot+bpf-ci@kernel.org
-To: alibuda@linux.alibaba.com,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,pabeni@redhat.com,song@kernel.org,sdf@google.com,haoluo@google.com,yhs@fb.com,edumazet@google.com,john.fastabend@gmail.com,kpsingh@kernel.org,jolsa@kernel.org,mjambigi@linux.ibm.com,wenjia@linux.ibm.com,wintera@linux.ibm.com,dust.li@linux.alibaba.com,tonylu@linux.alibaba.com,guwen@linux.alibaba.com
-Cc: bpf@vger.kernel.org,davem@davemloft.net,kuba@kernel.org,netdev@vger.kernel.org,sidraya@linux.ibm.com,jaka@linux.ibm.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Mon,  3 Nov 2025 07:55:35 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
---===============7388337055491605420==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+"Roy, Patrick" <roypat@amazon.co.uk> writes:
 
+....
 
-```
-commit b661eee197ec1c841de9195f171863daef37de34
-Author: D. Wythe <alibuda@linux.alibaba.com>
-
-net/smc: bpf: Introduce generic hook for handshake flow
-
-This patch introduces a BPF struct_ops mechanism that allows eBPF
-programs to control SMC protocol handshake decisions at runtime based on
-connection properties like IP addresses and ports.
-
-> diff --git a/net/smc/smc_sysctl.c b/net/smc/smc_sysctl.c
-> index 2fab6456f..918516734 100644
-> --- a/net/smc/smc_sysctl.c
-> +++ b/net/smc/smc_sysctl.c
-
-[ ... ]
-
-> +#if IS_ENABLED(CONFIG_SMC_HS_CTRL_BPF)
-> +static int smc_net_replace_smc_hs_ctrl(struct net *net, const char *name)
+> +static int kvm_gmem_folio_zap_direct_map(struct folio *folio)
 > +{
-> +	struct smc_hs_ctrl *ctrl = NULL;
+> +	if (kvm_gmem_folio_no_direct_map(folio))
+> +		return 0;
 > +
-> +	rcu_read_lock();
-> +	/* null or empty name ask to clear current ctrl */
-> +	if (name && name[0]) {
-> +		ctrl = smc_hs_ctrl_find_by_name(name);
-> +		if (!ctrl) {
-> +			rcu_read_unlock();
-> +			return -EINVAL;
-> +		}
-> +		/* no change, just return */
-> +		if (ctrl == rcu_dereference(net->smc.hs_ctrl)) {
-> +			rcu_read_unlock();
-> +			return 0;
-> +		}
-> +		if (!bpf_try_module_get(ctrl, ctrl->owner)) {
-> +			rcu_read_unlock();
-> +			return -EBUSY;
-> +		}
+> +	int r =3D set_direct_map_valid_noflush(folio_page(folio, 0), folio_nr_p=
+ages(folio),
+> +					 false);
+> +
+> +	if (!r) {
+> +		unsigned long addr =3D (unsigned long) folio_address(folio);
+> +		folio->private =3D (void *) ((u64) folio->private & KVM_GMEM_FOLIO_NO_=
+DIRECT_MAP);
+> +		flush_tlb_kernel_range(addr, addr + folio_size(folio));
 > +	}
-> +	/* xhcg old ctrl with the new one atomically */
-> +	ctrl = unrcu_pointer(xchg(&net->smc.hs_ctrl, RCU_INITIALIZER(ctrl)));
-> +	/* release old ctrl */
-> +	if (ctrl)
-> +		bpf_module_put(ctrl, ctrl->owner);
 > +
-> +	rcu_read_unlock();
-> +	return 0;
+> +	return r;
 > +}
 
-Can concurrent sysctl writes race in smc_net_replace_smc_hs_ctrl? If
-two threads both write the same ctrl name to the hs_ctrl sysctl:
+These 'noflush' functions are actually doing flush_tlb_kernel
 
-Thread A: finds ctrl, bpf_try_module_get(ctrl) succeeds (refcount++)
-Thread B: finds ctrl, bpf_try_module_get(ctrl) succeeds (refcount++)
-Thread A: xchg(&net->smc.hs_ctrl, ctrl) returns old_ctrl
-Thread B: xchg(&net->smc.hs_ctrl, ctrl) returns ctrl (from Thread A)
-Thread A: bpf_module_put(old_ctrl)
-Thread B: bpf_module_put(ctrl)  <- drops ref on ctrl still in use
+[-]  =E2=88=98 flush_tlb_kernel_range
+ |-[-]  =E2=86=90 __change_memory_common
+ |  `-[-]  =E2=86=90 set_memory_valid
+ |     `-   =E2=86=90 set_direct_map_valid_noflush
 
-This leaves ctrl with one less reference than needed while it's assigned
-to net->smc.hs_ctrl, and old_ctrl leaks a reference. The xchg is atomic
-but the overall get-xchg-put sequence is not. Would a mutex around the
-entire operation resolve this?
-
-> +
-> +static int proc_smc_hs_ctrl(const struct ctl_table *ctl, int write,
-> +			    void *buffer, size_t *lenp, loff_t *ppos)
-> +{
-> +	struct net *net = container_of(ctl->data, struct net, smc.hs_ctrl);
-> +	char val[SMC_HS_CTRL_NAME_MAX];
-> +	const struct ctl_table tbl = {
-> +		.data = val,
-> +		.maxlen = SMC_HS_CTRL_NAME_MAX,
-> +	};
-> +	struct smc_hs_ctrl *ctrl;
-> +	int ret;
-> +
-> +	rcu_read_lock();
-> +	ctrl = rcu_dereference(net->smc.hs_ctrl);
-> +	if (ctrl)
-> +		memcpy(val, ctrl->name, sizeof(ctrl->name));
-> +	else
-> +		val[0] = '\0';
-> +	rcu_read_unlock();
-> +
-> +	ret = proc_dostring(&tbl, write, buffer, lenp, ppos);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (write)
-> +		ret = smc_net_replace_smc_hs_ctrl(net, val);
-> +	return ret;
-> +}
-
-[ ... ]
-
-
-```
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-In-Reply-To-Subject: `net/smc: bpf: Introduce generic hook for handshake flow`
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19027307093
-
---===============7388337055491605420==--
+-aneesh
 
