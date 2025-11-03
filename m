@@ -1,150 +1,158 @@
-Return-Path: <bpf+bounces-73370-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73371-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6C65C2D998
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 19:09:45 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97E2BC2D9D7
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 19:14:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2C2104EC8DA
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 18:09:39 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 21E4234A377
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 18:14:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE14031B132;
-	Mon,  3 Nov 2025 18:09:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8F23195FC;
+	Mon,  3 Nov 2025 18:14:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UnKrqmyv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DZeZ5T4s"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E890821E0BB
-	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 18:09:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E84DF23ABA0
+	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 18:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762193369; cv=none; b=I7f+MsnJRgCmn7Aq7yrSGE2aQtLOSZf3uolQsIYymKHkJmCACJ0uBAAOFS6PD6YFt41LciqB89CZqrgPriSeEGTGKnKVCi2H8DI72zsTYni/s0IEoUTFIsZx6dv//vvvWxdJy1UIBt7C5qJsQiglbr9b1K8aSadcU8WQNeWJHNQ=
+	t=1762193675; cv=none; b=bIg9+ooZkTMAQT6cAc0FKBkvwc/aXLAqSearsP/zTDZAV4jvmdalPr3ZV3xAF++hcrQjLBwU1jvuE7dkIKI9TmBNXiZjp/noN0EkG7N8mnD+0O8CQjlv90yiQ7Qlcp9/UgUPbqUHc+xp0LLf+o+vH+swVzhAp1NxQuJpd9a5b54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762193369; c=relaxed/simple;
-	bh=dSZOek6ygkyM8kMLRCDVZKMdCPYWkaopn/XnCYI/Vb8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WUavSwq0lvwC9faf/rpbgLaWMtLMteda7r96R4QKuf8wLUgYjI3TFc+jtJ5NZk8D4lCdLrfN9J1tbHUvWUwSqq22BvceS1PAYBjSaSs7Dv21a6xtVYhUiD+pTUP5LVFGVVRpNHh+3Qj8Fgm98FcYCKdSNC1yKTbFaqa7YVlMXTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UnKrqmyv; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1762193675; c=relaxed/simple;
+	bh=Rw/NfzoIuLB/7y5HVpo8MFDK+bJOp+AVq5UhXwEFFnA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H49ept6P4J4T+AMzAweTKzFH+UY8I5xPkJKTrmyG5K/v3Z7BoaElsh8hINcMdM9f3+g5xWEoipWYNNhx2QXCysN5s86AaW1FZh/4a+D2rlGnh+obMOWVZeZ8ipCuzeqt+TThdiyPtSVRgUlhfQcCX/l6DHRJXhfY0b+qsDUZsWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DZeZ5T4s; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-29599f08202so19121975ad.3
-        for <bpf@vger.kernel.org>; Mon, 03 Nov 2025 10:09:27 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-475dc6029b6so42469675e9.0
+        for <bpf@vger.kernel.org>; Mon, 03 Nov 2025 10:14:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762193367; x=1762798167; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6GMq24IVk2F3a28aOoFMSN6wPIMIYmOKkHFdluZNlp8=;
-        b=UnKrqmyvy6DUp++piPtr188PfaI7oNGWMAM7vbHHUoa8Z9eZ0AnIrrEfDDpRdehICM
-         SoAstZCyWWNpzruPp7eFAMTwRquJwBlqtZL56KudJ8l8Kb3l90Nkx4vxII++gEAjpC90
-         wkr+DtJr11CPMuL+LYZFP70v+H3ETgpNRqooepuWnrSZlFGu3OuFUkfcYWLnM9hNW+QU
-         S8XAKoQ9pJq4TB+PeDtcBwoAZGrKV9T6HI3AJx2PPG1HqBz4Yhd8M0NDjAeDYdhdFIqr
-         wJBRtfK87pOqOYL5EnjZWVoBQrCIMbKE/PacszEDIpNKzu2Yrs7zQOMPSNXizjJtOZQB
-         mwJw==
+        d=gmail.com; s=20230601; t=1762193672; x=1762798472; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7E610/qb1Nrr84i5re5GcL4WuanAHiKtr+tt/vf4ODc=;
+        b=DZeZ5T4scWLQddblsnCjvjnrSLnILfdvkThcCK53xV221+PKOPKjEoGb0l8EoEqumi
+         QQdyJw3fvdyNXEnFJxFc2PCg2EwfrhDxYUqF8B4+9ud+Mo8WDTUcZtgvzeFa1v62F33n
+         tyJytFTmRSIV2aNVFSHDeMlsjfb5lrh1H3VzwAuuRVOLJNuSeNw0pCl6agLyjWGoVxRF
+         a9ZK3JRc8Nh2MF2g5MRUeqP5PlrQh+MNmQAyxQopvutzD4GpzwE+BDVAMVW6LKwkqyCL
+         uWbz2jmZNZDCJBblsrsNdJk3nGjND0zbSgL0XCqFUHmsDkiHX/jNnFSxkzoNqxj3vXW5
+         I0UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762193367; x=1762798167;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6GMq24IVk2F3a28aOoFMSN6wPIMIYmOKkHFdluZNlp8=;
-        b=NtUsQpRI5gez/hVmGkNpLy/qDbDWZVxxw7QcLeA8bptNEzjsC71dsRWQJ8caOOmxg9
-         dB5cn5CbZJeWpzUPXZIml2Sz28sktWYnBhSdHQ/e+Pma0GKQmxp9JpsO+GAYUd3LxzR5
-         LiTUkap7SWS2W4rEe80ZVOS9Q9gufK7gqIl3h5MNFiBl5KoGeuKBjH0R3/5peI7sQd2h
-         RT6yk3iDXmn7Nf7cTk5OAj6/rktPpgT967zcYUm3HpiGKy8cKwpTZq3CkacnF9G505v0
-         /SUrJKO0n7JX5HPbfppkslJmWrqdBp2IpbRXJihJ7mPfRLp3+OiJSX31AGYq+ZCUVsF6
-         mPNw==
-X-Forwarded-Encrypted: i=1; AJvYcCUUxvt9HyTyggPy+Rxy3dyGjLOce+2osR0rn3vqHqTIP48FPSnW0B0YW2ITqNAhf6pWNXs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwE6J2vFtpDveSysRJOxWTwIK9ZqmV59Rz6uqI91lW5xak/E+8g
-	JdTL2aCI+di2rGez6GJflJ5Jl9oIjZITRHMNUh4HdvLPrRU3jbeLMx4s
-X-Gm-Gg: ASbGncvV0xlHAA+cQLZ6yJ/UqClIO3kFTHYwYK3T6h8sUXEagDlLbVoOK/jJ7i5G5ne
-	qxU5hYi3nFEKdmeXshbs7XOzwVZf1MPOjDd/lZo6NtgtOnSCwe3cynmr/JDbIp5+lZNKdqTmnzH
-	tuFNwJsgmmFF9v3fv0CmgderWCgSklKGTocuBu++LdGuR7JV1zCYmXdXYhe6GnPNh5/T8DspDAR
-	brGnBrqC1aUOy+IOBy4ULrj/9HoH6JGM19myxgASC/0chqS78CezQ3TNwjqunNetOwwthUOCKSh
-	bEg1tqIHuCfIpTwjivxsczzuNq9kWb8pGuFh4X9YMDyKxbhlJQNSO5mbUmytSP20m3PENOWK9OE
-	B0hftIHf+i1IiDnWZGZ7/p40o1qh9FULeVAnIURa3QO13U7vhJOa7nMWl1ZXWYZ6zOTuSb1lf43
-	FTYL0n1p8kkKK+mrNdXX7JLbchxA==
-X-Google-Smtp-Source: AGHT+IGZrfXVBo54SYedR/Q9MDC4tdP/p2CLo6tbKfTLBQnHa03b/gxt/4AS9fp/eW4cLQ/lJm333A==
-X-Received: by 2002:a17:902:da87:b0:290:c94b:8381 with SMTP id d9443c01a7336-2951a3905e9mr148631275ad.7.1762193367176;
-        Mon, 03 Nov 2025 10:09:27 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:3eb6:963c:67a2:5992? ([2620:10d:c090:500::5:d721])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-341760c9476sm14136a91.4.2025.11.03.10.09.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Nov 2025 10:09:26 -0800 (PST)
-Message-ID: <a584d6e00a7b78927debb828f252280777d2da6a.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/2] bpf: Skip bounds adjustment for
- conditional jumps on same scalar register
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: KaFai Wan <kafai.wan@linux.dev>, ast@kernel.org, daniel@iogearbox.net, 
-	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, 	yonghong.song@linux.dev, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, 	jolsa@kernel.org, shuah@kernel.org,
- paul.chaignon@gmail.com, m.shachnai@gmail.com, 
-	harishankar.vishwanathan@gmail.com, colin.i.king@gmail.com,
- luis.gerhorst@fau.de, 	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Cc: Kaiyan Mei <M202472210@hust.edu.cn>, Yinhao Hu <dddddd@hust.edu.cn>
-Date: Mon, 03 Nov 2025 10:09:23 -0800
-In-Reply-To: <20251103063108.1111764-2-kafai.wan@linux.dev>
-References: <20251103063108.1111764-1-kafai.wan@linux.dev>
-	 <20251103063108.1111764-2-kafai.wan@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1762193672; x=1762798472;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7E610/qb1Nrr84i5re5GcL4WuanAHiKtr+tt/vf4ODc=;
+        b=EwMN7exqGc379mP8BMI3ytjcnlKpJGC+0xhfdWlT+OKQyX+Kz09wqMxoLH6jS1yCRc
+         lyLz6C6as8r7uebVT+6ny3Ure09P4rUlGtiYEyIql1qdps5GzPvVTkeSDHfkPDD2BQuf
+         CRLGB94DxsKxbVOSLwXug2PXxwTbFeGyPwHOshu1CgPxwgZROATLItgyX8zRFquhO5q4
+         JQsUXPnqexYl1nvm0umm4BZ9hGAlrLtuP3Y32KBtsNC9qzYJsYRllaX3za76MbTEznM6
+         BLGvjH74WeI3nOaAzrzftIL1vbXr8/anCTc1goYRS8P6gKVqos0xVoabQ2043ytuebBI
+         YwSw==
+X-Forwarded-Encrypted: i=1; AJvYcCXgu5R/hW0wPmcyLbrAD+pz5llDQdD4yvTmdjl5P/R8LR5Zyki03D9vupId57B5rimI7AY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy7eEVizd5MKfWc9gcFBhkIyLu+jv1kdTCaeFTQVzs8kkLj99ci
+	jTNcXvey69kN03zLxfosYf+YuHeZWB0h2T3/e15IoXedcdMMG/Fi5bppiGV9EMcoTK6f7lNIt3T
+	k7qrw6eW3WueKaHPbSuj5EhU+hr7Ga7c=
+X-Gm-Gg: ASbGncssJ67hOKGxHoB5koNNPJoDGk6QjTuRARcJjVNwB1s0EbesWpt7v/H5bKJcUcL
+	MFuzHQYKM1FFQ30xRAWo1J+Tqb0edAn7PJeudKogTopyFW+bTmYQT2edkfKNuNBTGwPot3pXw/y
+	1DFmTK1JXXnN2yA+ryECKeHieX1utjB6I7Ajs/YHcUIpnfAo+MsDjsp8MenKlKEXjBtPzicU9Rs
+	3rwhvjSbhkO2MOwcoFgv4UBItVQIxEHRHoRygHtYOkIBdMbEAueudam3bkibccEXNVuU2cnATcp
+X-Google-Smtp-Source: AGHT+IFzn9y68SRBpD5BfjieEYZhNxw/JeraBJAq2sAbcCNbyTXLwnen137k2JeOWui+mIjcbeLWQFrSRany76dT9v4=
+X-Received: by 2002:a05:600c:c16b:b0:477:f9c:67f5 with SMTP id
+ 5b1f17b1804b1-477376d769amr104137685e9.16.1762193672096; Mon, 03 Nov 2025
+ 10:14:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251031-timer_nolock-v1-4-bf8266d2fb20@meta.com> <12c9090b388155c7aaac9f503b30a1b678ac630c6f38eb0bee97feec7b6937e2@mail.kernel.org>
+In-Reply-To: <12c9090b388155c7aaac9f503b30a1b678ac630c6f38eb0bee97feec7b6937e2@mail.kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 3 Nov 2025 10:14:18 -0800
+X-Gm-Features: AWmQ_bnSmrXe_PkFHktDKISqIEGfDeleSZgmWiMpaKE789eGD6ki87IkI4WpwnA
+Message-ID: <CAADnVQ+W0Fmx3BWzV3Gphor-icsgckC_d6brOyEcO_kC9CKGfw@mail.gmail.com>
+Subject: Re: [PATCH RFC v1 4/5] bpf: add refcnt into struct bpf_async_cb
+To: bot+bpf-ci@kernel.org
+Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
+	Kernel Team <kernel-team@meta.com>, Eduard <eddyz87@gmail.com>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	Chris Mason <clm@meta.com>, Ihor Solodrai <ihor.solodrai@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2025-11-03 at 14:31 +0800, KaFai Wan wrote:
-> When conditional jumps are performed on the same scalar register
-> (e.g., r0 <=3D r0, r0 > r0, r0 < r0), the BPF verifier incorrectly
-> attempts to adjust the register's min/max bounds. This leads to
-> invalid range bounds and triggers a BUG warning.
->=20
-> The problematic BPF program:
->    0: call bpf_get_prandom_u32
->    1: w8 =3D 0x80000000
->    2: r0 &=3D r8
->    3: if r0 > r0 goto <exit>
->=20
-> The instruction 3 triggers kernel warning:
->    3: if r0 > r0 goto <exit>
->    true_reg1: range bounds violation u64=3D[0x1, 0x0] s64=3D[0x1, 0x0] u3=
-2=3D[0x1, 0x0] s32=3D[0x1, 0x0] var_off=3D(0x0, 0x0)
->    true_reg2: const tnum out of sync with range bounds u64=3D[0x0, 0xffff=
-ffffffffffff] s64=3D[0x8000000000000000, 0x7fffffffffffffff] var_off=3D(0x0=
-, 0x0)
->=20
-> Comparing a register with itself should not change its bounds and
-> for most comparison operations, comparing a register with itself has
-> a known result (e.g., r0 =3D=3D r0 is always true, r0 < r0 is always fals=
-e).
->=20
-> Fix this by:
-> 1. Enhance is_scalar_branch_taken() to properly handle branch direction
->    computation for same register comparisons across all BPF jump operatio=
-ns
-> 2. Adds early return in reg_set_min_max() to avoid bounds adjustment
->    for unknown branch directions (e.g., BPF_JSET) on the same register
->=20
-> The fix ensures that unnecessary bounds adjustments are skipped, preventi=
-ng
-> the verifier bug while maintaining correct branch direction analysis.
->=20
-> Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
-> Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
-> Closes: https://lore.kernel.org/all/1881f0f5.300df.199f2576a01.Coremail.k=
-aiyanm@hust.edu.cn/
-> Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
-> ---
+On Fri, Oct 31, 2025 at 3:35=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
+>
+>
+> ```
+> commit 10c6a92e712bfb1625f74ea7088ae806ccf9a91e
+> Author: Mykyta Yatsenko <yatsenko@meta.com>
+>
+> bpf: add refcnt into struct bpf_async_cb
+>
+> This patch adds a refcount field to struct bpf_async_cb to manage
+> lifetime guarantees when no lock serializes mutations, and implements
+> bpf_async_tryget() and bpf_async_put() helper functions.
+>
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 2eb2369ca..3d9b370e4 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -1102,6 +1102,7 @@ struct bpf_async_cb {
+> >               struct work_struct delete_work;
+> >       };
+> >       u64 flags;
+> > +     refcount_t refcnt;
+> >  };
+>
+> Is the refcnt field initialized anywhere? In __bpf_async_init(), the
+> bpf_async_cb structure is allocated via bpf_map_kmalloc_nolock() which
+> uses kmalloc_nolock (not kzalloc), so the memory is not zero-filled.
+>
+> After allocation, __bpf_async_init() initializes several fields (map,
+> prog, flags, callback_fn, value, delete_work) but I don't see where
+> refcnt is set to an initial value. The refcount_t APIs require proper
+> initialization (typically via refcount_set()) before use.
+>
+> When bpf_async_tryget() or bpf_async_put() are called later, they will
+> operate on this uninitialized memory:
+>
+> > @@ -1155,6 +1156,33 @@ static DEFINE_PER_CPU(struct bpf_hrtimer *, hrti=
+mer_running);
+> >
+> >  static void bpf_timer_delete(struct bpf_hrtimer *t);
+> >
+> > +static bool bpf_async_tryget(struct bpf_async_cb *cb)
+> > +{
+> > +     return refcount_inc_not_zero(&cb->refcnt);
+> > +}
+> > +
+> > +static void bpf_async_put(struct bpf_async_cb *cb, enum bpf_async_type=
+ type)
+> > +{
+> > +     if (!refcount_dec_and_test(&cb->refcnt))
+> > +             return;
+>
+> Both refcount_inc_not_zero() in bpf_async_tryget() and
+> refcount_dec_and_test() in bpf_async_put() will read the uninitialized
+> refcnt field, leading to undefined behavior.
+>
+> Should __bpf_async_init() call refcount_set(&cb->refcnt, 1) after
+> allocating the structure?
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-
-[...]
+I have to agree with AI.
+It's better to move refcount_set(&cb->refcnt, 1); from patch 5 to this
+patch. Squashing both is an option too.
 
