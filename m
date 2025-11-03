@@ -1,171 +1,191 @@
-Return-Path: <bpf+bounces-73328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 635B6C2A90C
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 09:27:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF8A0C2A99E
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 09:42:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51B4D3A6D80
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 08:23:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53AF13A6934
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 08:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87846271447;
-	Mon,  3 Nov 2025 08:23:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26F82E2644;
+	Mon,  3 Nov 2025 08:41:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l5UL4FHT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gbPSugoH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF7D298CD7
-	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 08:23:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF2D2E0B68
+	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 08:41:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762158208; cv=none; b=muC0qxbAcVXBB0yaUf/qCSz7LGe+BVd5o7A8fv63/WQMNhWxLKTqxWlB5Vzox9Jnq4T16t/3cEaP3xfC9tVxixPF2c+6RHMtZ0INfhOTmkBlBZTTps/GMrq2FLbmy7YM99yiY/uATqyOcmU9QghqB9D2druTGYZ0kF2kxaRrwc4=
+	t=1762159307; cv=none; b=qltKf9Fvo1qAzCMB/hTSdmZh+dohctt2qcdnEa31CSiKHZuRauZZYo7Qpu6FMyAWqKDG1J3EyRdah9v0qqT5FjE4J8426IVZMiAre+M7fxd3V1POIH3ACg2Cx6NHLjTyv6RvIibhB9Kv7sbR+mwyHv5fDrCZgg5SylM907Coh+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762158208; c=relaxed/simple;
-	bh=KO/1hqRDGghAvPjVvchP/FOpodQDU8oF7iuifc2yRzY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lwux/Zmdy3E1tYdqs2xbPirbmiYSpJiWf+vzKC06cVwA5DGz8WhIHGvSgQMY673OMJGpXbmwQiZgB8s77hpiOA19Kfachfj8X9w4Xm+OqKIVczMX4xM7zsDhsfZuAyntsBkmboWbmuRVsALxkJtvHEWSsFZFp1s1WY8/yehDu6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l5UL4FHT; arc=none smtp.client-ip=209.85.218.48
+	s=arc-20240116; t=1762159307; c=relaxed/simple;
+	bh=S54nXXo/aFrvMC7QiuJUF89PwUrNEP2rWkjH7sjr3UQ=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=QrUlr+O3zWdKFdE7lyHXqIXGk2o5wYT4WLG5Bi5Io7vEToaAJ9xg24Qhq/bbdQyjWFslZlr9mp8+1dC/gefVqO/qetjqROy6Vq2roQ1yGNNk76MiMR95sYeKxuX/0TbIi/0FfcCU8ij5uN0hc/Ew3l30RZrPhdsuJiKXW28t5oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gbPSugoH; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b713c7096f9so57976166b.3
-        for <bpf@vger.kernel.org>; Mon, 03 Nov 2025 00:23:26 -0800 (PST)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2955805b7acso10677215ad.1
+        for <bpf@vger.kernel.org>; Mon, 03 Nov 2025 00:41:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762158205; x=1762763005; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qzEaCNkEb8xdsXatLBxRnzGuHLO3xwK5s+ecHWat1E4=;
-        b=l5UL4FHT2QFlGRlLLgDH7UhYBYDNXG5sPafJ1JjiiyGK4+Txxsi6LSbzZTSu3DP+LN
-         N2l1+xG4ERDa9Ne8ur0n+K92HRUC2cXc/iNf7Z/JCPysRX5xy9m9J1Q2XEI1wiq0wBAq
-         T3gkL9wTjPcXCLCoQ1EMgEt3f2zdZAtm4sKJlcv9XJ7b9trQ+lMp0aZCYoqbvVY2wyNA
-         0Zu+qR4tnp/qKrnUx+YntCQlK3Wfkfgzuzw+HxjjG1XhwzhAEXQkNH7VLbCPcA5HBsPW
-         NTS8uaN/OAdJT6DvSCxhUFASO8YHEwOZcZcxQdiBk+FBM5Lah/wprW8kL03glX8XZezJ
-         pmFg==
+        d=gmail.com; s=20230601; t=1762159303; x=1762764103; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9IlYd8PBv158GdcOw6rn4rqU0pymAVgCcTAXsADiI14=;
+        b=gbPSugoHdSCeMmpTd+jHuI8rJyR8vNuPTK6wYW4DH1RiQYNUFx0/znQpX9bAChVbWF
+         roXpw9EHzdff6UPY0GqhwLYxeBDygVt5PxXv1sZGikscpiLXmEdllwUQfSbxMeJ8nhf4
+         6xa1CuGihra5zD+fuLEsdespU1jubzery4pgCIECTg7B064Oj6Y3vme8s/GmcxBj5CSU
+         hVcQ1CcHO7VckrHXDDTfkGdqgoOq8hxU/QNsmUuXSp56J+XbIS3kTn7N/LQSgSHTSo5U
+         d/GlF4nXVeGxkRxTx6GrkT+mNhs1Gn6WkWNPMFS1/DxoMaAkbjae10h5ORkj0D1043Hb
+         zSUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762158205; x=1762763005;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qzEaCNkEb8xdsXatLBxRnzGuHLO3xwK5s+ecHWat1E4=;
-        b=NoqkZPeTox8ulswHxzwJRcF13K7n/YD63fsy0KeAP1Uuqsx4aRV+IqvpIpekXguTls
-         8Ss8HCnKPfW62uUaNbxh5rS3J3+Lp+JKKkff548WGYHMPBerCsfLz2K8fY5X5OuXkQ7d
-         xy7VQ+7s+NOyXBViNtwBgdemd+QiXKRK9Uv7xoUZrplhNS3eEAzLLJpDeVNxQU3SI4AG
-         WodhZHVQJT6lDoJGbySbFTexRzOPq8NEu/Q6GkQjvb0PlmzRYhADge7pIKL1hJVYhonb
-         ZCr1P8umYe5kX9z0s6gYYFjdUSuLXEC6nq4g8O6izK298uOprRaxDbNobFHNXapqrdWQ
-         2KEA==
-X-Forwarded-Encrypted: i=1; AJvYcCWg0kbxE3ZOd1a8J+cva4VCc6qGqmC5dfSnp7Rpg1392789NGB3L8tIG4hZYKppm6f6bVw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxta5F77Hpzs51mF0qL+Du9c33nl+Ec4HwDpc8xOTt9t7zMnmbx
-	8yTtc7FSVfo10PD6DexQOpWw5y26FgigaUZdWZkFGi8FTjC3oj5Z7HlM
-X-Gm-Gg: ASbGnctIvkjvwL3/7tYb9Xn50adqhn3O2Y/oC19ipylUNpMVJE3RuGC3FvVbMXDgVAt
-	VfVCLbbYMDeu/5erMDXDdHSYc8dto7cYLctHMyixirtkIydHzNYdOyEKfXlnHN3SoQV17JkiVrU
-	IjsKweyhLP4BD+jH/RXEA2MzwdR7r6D+7wfK7B9ywZARX1o1ONDeiSwdHz8wEYJht0cofl579TS
-	2EH9JEciojPZ0c3BmMjYpJFlQN6VCoBtAFHey0DOqe6VBjWAMoAt/PhkL7j+PikDgng9o02WB7u
-	b8uG8HkCn+JrWQ/see2xYBHmCyhLwG1zVJlo+JVChYdOzEIfnKsj+PBHZvCOIZy/xiBzDdMZx9a
-	m8OJBYkNM1x3DmnSExGks2uhoyIWDZhEFhZZQnZtsq8SGAjeOe5bluIyu8G8pDgcIaT5Z+VTIsR
-	z+ScI6ldDHI6PrFgohCDL2
-X-Google-Smtp-Source: AGHT+IEwQqvW01GUFpbHhQJUuiPaqiicxGd4xoDJTlPZx1CdeXyvHdN7xPtyiQSvQ7iDsFjWvKm8Yw==
-X-Received: by 2002:a17:907:720e:b0:b6a:694e:472e with SMTP id a640c23a62f3a-b70700c7b2emr1392609966b.12.1762158204533;
-        Mon, 03 Nov 2025 00:23:24 -0800 (PST)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b718f8b52fdsm43470866b.18.2025.11.03.00.23.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Nov 2025 00:23:24 -0800 (PST)
-Date: Mon, 3 Nov 2025 08:29:43 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Chris Mason <clm@meta.com>
-Cc: Ihor Solodrai <ihor.solodrai@linux.dev>, bpf@vger.kernel.org,
-	ast@kernel.org, andrii@kernel.org, aspsk@isovalent.com,
-	daniel@iogearbox.net, eddyz87@gmail.com, qmo@kernel.org,
-	yonghong.song@linux.dev, martin.lau@kernel.org
-Subject: Re: [PATCH v10 bpf-next 08/11] libbpf: support llvm-generated
- indirect jumps
-Message-ID: <aQhn95THkx7zPlB9@mail.gmail.com>
-References: <20251102205722.3266908-9-a.s.protopopov@gmail.com>
- <311fb2ea7bc0de371449e98951bf8366aa8b30be8c50c8c549e2501fc9095878@mail.kernel.org>
- <aQfPbc97GSajDCcc@mail.gmail.com>
- <4a9ba760-c9e4-4851-b971-ac929811c52a@linux.dev>
- <9fdd88c5-2984-4a88-8605-013aa4c2ea09@meta.com>
+        d=1e100.net; s=20230601; t=1762159303; x=1762764103;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9IlYd8PBv158GdcOw6rn4rqU0pymAVgCcTAXsADiI14=;
+        b=bob7G8FjQzSMfdDFzoXh0eDWAtGRE57syiu8iGUnYUaaYwn4Tt8rN4t0w0odL5zHFR
+         MapmZXcqd3mQReHKl4T8H6pTqyTIX2ZrW+1rolmVniDpubKehPFMK7u/S0H4LVdF1tly
+         +gbbdsgyqK4P2VTmMqVLWkErQmF/q0u4T/96R9Xnp2qJQpWmcuJ03eJtBCW1YmPVKJJ9
+         WDQxYcoLHx4E8IxyKHYfokXjIuvrOKHlcS3DIAlNeof48S1c13YEvK7PEgmSBflet2xK
+         RUhC51Irby8Kkjjeb0JswJt9VZUADNwn2l+0cn+8iJzU3ed2aBbKmn++Ok3Oqo3PY/t4
+         9B1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUWLvcGg8760srN24UmaLMeVKKdApRAiIADHTzPIp9aPhJFbAaLDZxnIrHqf1excWhJ3R8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyTIAy88OlzLjLxXNHLPpiWvEKBdRepUlN/YgDylIajgbvcHEV4
+	BGDfgGrDh7lfm5yKH8YzgtPFtbnSDHQ/Lm/DIQaJ0SNkc2dUm7NAGUja
+X-Gm-Gg: ASbGnctLb/TBeflxfvYLBlYkX46HPsl44SHq3cQkQYPupNTXRe8c1KIrjN7r+KzYqCW
+	JWGMT764/FwP0eRuC90YrQ6wRn9YGn7EeNH5BOyiq/hJgGIEpM6q4RijkUS83vPiXdt52a7yW8q
+	CLJc8uUZCfhW1FBnMg2wCz0yuduYaCsn+68/uQ9MnMBkVktR4btQtS7xmK8ykFbAncE7y7sK+yY
+	MW+iyiFKXjd2NEl54TH/Bs0ks5MSbNs8Mq7Qa/MW3mWd5oG8hx0yOefwZYWuc6NExUA/7/eadjb
+	tLnu/6S8JZ9ziffU+KuqjYRI0rkkh8tH3jdaFDGBLA08wktRpcenXHf6aPSZ1MeNbITgkJJvu0n
+	WwVJAKQQVF0/SH6deaUfkoMCx2IG9hjTBHdTeIsi0ieKtbmpXVLq5n+dUrkahKpwEKhl4Z6c/ps
+	OVpv77JWzFMiidaPN1lNkKGVEI9dzHWF+5Cg6fBOrtMOrcr97Ql/KqBaYN3meP1iuG4LjVZVIhm
+	13W5NM1jA8=
+X-Google-Smtp-Source: AGHT+IHVqhieNuVGLPgUB+hpjN6Vf9ZUu7T1hKfxCCQidwT8I97GOgul3IVD0bS7e1uzQqBSFCZNtw==
+X-Received: by 2002:a17:902:d4ce:b0:295:6b98:6d65 with SMTP id d9443c01a7336-2956b986f84mr76085715ad.22.1762159303320;
+        Mon, 03 Nov 2025 00:41:43 -0800 (PST)
+Received: from [192.168.99.24] (i218-47-167-230.s42.a013.ap.plala.or.jp. [218.47.167.230])
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-2952689f15csm110200325ad.29.2025.11.03.00.41.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Nov 2025 00:41:42 -0800 (PST)
+Message-ID: <8b70ba1d-323b-4e76-be7f-9df45b8f53d5@gmail.com>
+Date: Mon, 3 Nov 2025 17:41:37 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9fdd88c5-2984-4a88-8605-013aa4c2ea09@meta.com>
+User-Agent: Mozilla Thunderbird
+From: Toshiaki Makita <toshiaki.makita1@gmail.com>
+Subject: Re: [PATCH net V2 2/2] veth: more robust handing of race to avoid txq
+ getting stuck
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, ihor.solodrai@linux.dev,
+ "Michael S. Tsirkin" <mst@redhat.com>, makita.toshiaki@lab.ntt.co.jp,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel-team@cloudflare.com,
+ netdev@vger.kernel.org, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
+ <toke@toke.dk>
+References: <176159549627.5396.15971398227283515867.stgit@firesoul>
+ <176159553930.5396.4492315010562655785.stgit@firesoul>
+ <aacc9c56-bea9-44eb-90fd-726d41b418dd@gmail.com>
+ <27e74aeb-89f5-4547-8ecc-232570e2644c@kernel.org>
+ <4aa74767-082c-4407-8677-70508eb53a5d@gmail.com>
+ <e3abd249-f348-4504-b1d9-4b5cd3df5822@kernel.org>
+Content-Language: en-US
+In-Reply-To: <e3abd249-f348-4504-b1d9-4b5cd3df5822@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 25/11/02 07:58PM, Chris Mason wrote:
-> On 11/2/25 7:32 PM, Ihor Solodrai wrote:
-> > 
-> > 
-> > On 11/2/25 1:38 PM, Anton Protopopov wrote:
-> >> On 25/11/02 09:13PM, bot+bpf-ci@kernel.org wrote:
->                                                      ^^^^^^^^^^^^
-> >>>
-> >>> Does this error message print the correct offset? Since jt is a pointer
-> >>> to __u64, the array access jt[i] is at byte offset "sym_off + i * 8",
-> >>> not "sym_off + i". All the other error messages in create_jt_map report
-> >>> byte offsets and sizes (sym_off, jt_size, sym_off + jt_size), so this
-> >>> one should probably be "sym_off + i * jt_entry_size" for consistency.
-> >>
-> >> Is there a way to run this AI as part of any PR to
-> >> kernel-patches/bpf, not only those coming from the mailing list?
-> >> Maybe for a selected commit?
-> > 
-> > Hi Anton,
-> > 
-> > If you have access to an "agentic" AI coding tool that runs locally,
-> > such as Claude Code, you can use our prompts repository [1] with a
-> > trigger prompt like this:
-> > 
-> >   Current directory is the root of a Linux Kernel git repository.
-> >   Using the prompt `review/review-core.md` and the prompt directory
-> >   `review` do a code review of the top commit in the Linux repository.
-> > 
-> > The prompts expect the "agent" to be able to read and write files, and
-> > execute basic commands such as grep, find, awk and similar.
-> > 
-> > In principle it's possible to enable the review CI job for arbitrary
-> > pull requests, but the tokens are not free so we haven't considered
-> > that yet.
+On 2025/10/31 4:06, Jesper Dangaard Brouer wrote:
+> On 29/10/2025 16.00, Toshiaki Makita wrote:
+>> On 2025/10/29 19:33, Jesper Dangaard Brouer wrote:
+>>> On 28/10/2025 15.56, Toshiaki Makita wrote:
+>>>> On 2025/10/28 5:05, Jesper Dangaard Brouer wrote:
+>>>>> (3) Finally, the NAPI completion check in veth_poll() is updated. If NAPI is
+>>>>> about to complete (napi_complete_done), it now also checks if the peer TXQ
+>>>>> is stopped. If the ring is empty but the peer TXQ is stopped, NAPI will
+>>>>> reschedule itself. This prevents a new race where the producer stops the
+>>>>> queue just as the consumer is finishing its poll, ensuring the wakeup is not 
+>>>>> missed.
+>>>> ...
+>>>>
+>>>>> @@ -986,7 +979,8 @@ static int veth_poll(struct napi_struct *napi, int budget)
+>>>>>       if (done < budget && napi_complete_done(napi, done)) {
+>>>>>           /* Write rx_notify_masked before reading ptr_ring */
+>>>>>           smp_store_mb(rq->rx_notify_masked, false);
+>>>>> -        if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
+>>>>> +        if (unlikely(!__ptr_ring_empty(&rq->xdp_ring) ||
+>>>>> +                 (peer_txq && netif_tx_queue_stopped(peer_txq)))) {
+>>>>
+>>>> Not sure if this is necessary.
+>>>
+>>> How sure are you that this isn't necessary?
+>>>
+>>>>  From commitlog, your intention seems to be making sure to wake up the queue,
+>>>> but you wake up the queue immediately after this hunk in the same function,
+>>>> so isn't it guaranteed without scheduling another napi?
+>>>>
+>>>
+>>> The above code catches the case, where the ptr_ring is empty and the
+>>> tx_queue is stopped.  It feels wrong not to reach in this case, but you
+>>> *might* be right that it isn't strictly necessary, because below code
+>>> will also call netif_tx_wake_queue() which *should* have a SKB stored
+>>> that will *indirectly* trigger a restart of the NAPI.
+>>
+>> I'm a bit confused.
+>> Wrt (3), what you want is waking up the queue, right?
+>> Or, what you want is actually NAPI reschedule itself?
 > 
-> At least for me, it really helps having the reviews on the list.  It
-> gives me the chance to see what kinds of bugs AI is flagging correctly
-> and where the false positives are.  I do try and fix all the bad reviews
-> that people flag, so the comments here are really helpful.
+> I want NAPI to reschedule itself, the queue it woken up later close to
+> the exit of the function.  Maybe it is unnecessary to for NAPI to
+> reschedule itself here... and that is what you are objecting to?
 > 
-> This isn't meant to discourage people from running reviews locally, I'm
-> happy to help get you setup.  But I also don't want to add a barrier to
-> contributing code.
-
-Thanks. In my case AI, for the most part, finds real bugs, so it looks to be
-helpful and its reviews make sense on the list. If only it could dump more in
-one pass, not squeese them one by one :)
-
-> > [1] https://github.com/masoncl/review-prompts 
-> > 
-> >>
-> >> Also, how deterministinc it is?  Will it generate different comments
-> >> for a given patch for different runs?
-> > 
-> > The short answer is no, the answers are not deterministic.
-> > 
-> > However for typical/obvious bugs you might often get a comment about
-> > the same issue worded differently.
-> Yeah, recent changes to the prompts have made it better, but for some
-> bugs it still wanders off without flagging a percentage of the time.
+>> My understanding was the former (wake up the queue).
+>> If it's correct, (3) seems not necessary because you have already woken up the 
+>> queue in the same function.
+>>
+>> First NAPI
+>>   veth_poll()
+>>     // ptr_ring_empty() and queue_stopped()
+>>    __napi_schedule() ... schedule second NAPI
+>>    netif_tx_wake_queue() ... wake up the queue if queue_stopped()
+>>
+>> Second NAPI
+>>   veth_poll()
+>>    netif_tx_wake_queue() ... this is what you want,
+>>                              but the queue has been woken up in the first NAPI
+>>                              What's the point?
+>>
 > 
-> Also, sometimes it'll get excited about finding a bug (even if a false
-> positive) and skip to the end of the review, so if a patch has multiple
-> problems, we might need multiple submissions to see them.  I've been
-> working on this as well, but there's still room for improvement.
-
-After all, it just mimics how a real reviewer would behave (excited => skip)
-
-> -chris
+> So, yes I agree that there is a potential for restarting NAPI one time
+> too many.  But only *potential* because if NAPI is already/still running
+> then the producer will not actually start NAPI.
 > 
+> I guess this is a kind of optimization, to avoid the time it takes to
+> restart NAPI. When we see that TXQ is stopped and ptr_ring is empty,
+> then we know that a packet will be sitting in the qdisc requeue queue,
+> and netif_tx_wake_queue() will very soon fill "produce" a packet into
+> ptr_ring (via calling ndo_start_xmit/veth_xmit).
+
+In some cases it may be an optimization but not in every case because it can 
+prematurely start NAPI before tx side fills packets?
+
+> As this is a fixes patch I can drop this optimization. It seems both
+> Paolo and you thinks this isn't necessary.
+
+I think it's better to drop (3) as a fix.
+
+Toshiaki Makita
+
 
