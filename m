@@ -1,149 +1,168 @@
-Return-Path: <bpf+bounces-73364-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73365-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C224FC2D623
-	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 18:12:18 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64716C2D75C
+	for <lists+bpf@lfdr.de>; Mon, 03 Nov 2025 18:25:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 425904F433E
-	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 17:08:46 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EE0054E65E0
+	for <lists+bpf@lfdr.de>; Mon,  3 Nov 2025 17:24:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5DB319605;
-	Mon,  3 Nov 2025 17:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D4631AF3C;
+	Mon,  3 Nov 2025 17:24:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NPLq8Qxj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="glK+3Iz0"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2AF25FA0A;
-	Mon,  3 Nov 2025 17:08:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5BD33191D6
+	for <bpf@vger.kernel.org>; Mon,  3 Nov 2025 17:24:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762189721; cv=none; b=V0EdzLrxZX/0EfWUNnytrjf7tSHcRyeRL5A1xvju9L4/TPNAJzRK4UWEHfVH2W30AdoVNrBDu7AXBr8pWvmpOhaPSmp4E4KNQ5LMRKajK+HsXVPNnEYzaD3pom9onZLMyVqGbk0V3LvGPNHKD7NNS7naLjQarJ8jDmKnVU32KIs=
+	t=1762190691; cv=none; b=ABrMUoktFgoEOehaS2XIScXH4KLStacvBv4zqTv9nyHs8E4Dyv9VLG8cy7ywv7ryPukMqi0YIehhxf1Jr5uMR4s+uoW6gqMf2TUK8uM4IMmsfvAHkQW3LXj6oSOnJdnFH6EKVPjsRg3cp0uyehelIuYV/p83GQA9zjewBeWMRYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762189721; c=relaxed/simple;
-	bh=nc9pwfo7tVhfkofi9WsCHyPsawYIqzmCCe2hZfm+ryk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lg9AWKa8IR3wtkKhV+MYwffB9Cqw6FQU5G7AARy8fHnRB8zayKGFrEy30atb9pz7f+xFiI0VQhs+GDSWndmRrbAzdJocFs4lF5rGprUi/TItpxL7/pI0byMIhp+5TSRMKcimYGRLAhRRKECrdlmVe4kWWdMp5XMafph+MTx8fIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NPLq8Qxj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C1FFC4CEFD;
-	Mon,  3 Nov 2025 17:08:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762189721;
-	bh=nc9pwfo7tVhfkofi9WsCHyPsawYIqzmCCe2hZfm+ryk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=NPLq8Qxjk5TF2XoJ3zCNnbZ8M1n51tjVIBvXcBq0DCmi75P9TiTP+gla/3+NQ6kIG
-	 ec171K/lqcI/7q3+JNfTlBvy5eFF+tqfh6FiJEithvtCOfxDJ1P9KFV7X9SQy6R7wm
-	 LLfCZGkKk5NNubTVqLPOHZI3QbET/7DHSJt/ayYOkswXKLJmkjEOD4SStXpJC/MMWX
-	 n1Ls3fQRTAY2MRktVlxsEqKZnTCVpFkB/jSGbVb2W8I5CUq0ydnb1IjUY71U/dLOBK
-	 wJUXvdfqTdj1ffixMOMeJlkD9CQSTvvjOYGgLd0zoO1u5ujBnxFQ/VLkINpSwZDcyA
-	 bTLK6d+XFNUhg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E6772CE0B94; Mon,  3 Nov 2025 09:08:39 -0800 (PST)
-Date: Mon, 3 Nov 2025 09:08:39 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 17/19] srcu: Optimize SRCU-fast-updown for arm64
-Message-ID: <f89a3a56-e48a-4975-b67b-9387fe2e48c6@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
- <20251102214436.3905633-17-paulmck@kernel.org>
- <b2fb5a99-8dc2-440b-bf52-1dbcf3d7d9a7@efficios.com>
+	s=arc-20240116; t=1762190691; c=relaxed/simple;
+	bh=RBCrMHl5+r7gIpID5SMw5Uu9xHVvNcBVL8VL8b1svCc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=unbcgC2sbsKURiizTTf1oac8wHLU5/b2oSeJAN1FBf/TKqlHC1YLPRspzqYyPEnzm3GXnx9XyMo7zpSKDyUuzZ/3oxnMxpRs4JoSCOhjjrWaFW2vJrGRsr2QhKiyLSoOvLL2mNe1PPVxPnBR6fpiTAt1gxGTV9L231rbU7xjsmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=glK+3Iz0; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-429c7869704so2650506f8f.2
+        for <bpf@vger.kernel.org>; Mon, 03 Nov 2025 09:24:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762190687; x=1762795487; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ro1EY1qfOe4vUThx0ZqWLeIU2GAit/q1wMhzypsJ0iM=;
+        b=glK+3Iz0UeuapX9ZY5l4oeDdfYwy7nx4bq0znltYU3fkuDByji1uae7g2r4GYybfgM
+         AIa7AEoXItRNitMKCVHKrxivsSAPz2KoUw2NobTt022cy3pSXtIflguMO3XtKtJQCqJ6
+         taThB8RSI2eUtE0G7ZaVvLZYiM+X4QtSwIMkJQrxvahsMIuBWrs3+/Bs97i9bhjCGrmO
+         xrLAbA4+oLcRwNZTi4RNhb77GrVDWL+eDQdffy2rv5mF+QmsDCMLrxVDMMtVcqi67dIY
+         dBKzTxHpBOE1vqiGYLkgAT3x5sIt2X2prDRyLcj0NWA+Jpl2+7O0fT+wS6kXTAusG7bC
+         Zpmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762190687; x=1762795487;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ro1EY1qfOe4vUThx0ZqWLeIU2GAit/q1wMhzypsJ0iM=;
+        b=wWaebaBnYPswMEbgftaZY99Wdw4egIBYukshzmbWNcnLvzdkItypcJmobJWMbGnbLU
+         cROPmVC2XePgVhox7Yd3GgN0Eu9mJDEM65apWACeQyTHCZRatHzjn5aM5FJFdxeuI2wK
+         LPiPD7ouyb2oJJ7ZEz/lKkTiPpcvpNhjVfQKDKZpqysdiJid5GayQ+ctH8Hc2T7uOAfT
+         qQqyI8ekL9rBoiOF8B897DEK73FGjy1/qzfdhMHVTgM0yJcSp07mp3yMQ/S+4SD++MNC
+         /MNu6Q2cjW9bCQbmwzrrVo17OE6eLKPYL3p593kHyFt8BDrN1pMSjc2rIoYQdqOL8S0y
+         afDQ==
+X-Gm-Message-State: AOJu0YwUAa/VqnhkSFgZhJCWVHKdF37+a31HqvQRGYAe8eAm+gNbfoam
+	X7tsAM8U+e49AnfVGyJHgcE0+IN3Q2kayW3Aett43n599DrhkKUXEbHpU1C9XalLuctZUQhUgnH
+	UL6vlGJmW2X3nD9CmF1TRx8UzcoA0Ao8=
+X-Gm-Gg: ASbGncswBucBtvi9/ItuAquoGnYdFu5UW3slRo+ofN4hfiQkz54KZNUMy4iEzSjvKBe
+	HOsqc9ehOmCQUmnFPcLajxWLf63lxc5B7GsiukYAVD42bHf8Ln5MBOy4CwmlVeLjWAMjZXoNo+j
+	dm4kAWxgWR8ChlgzYoVKhnQ6O7LPJ2QfABSNldd8vWxW3ynrBg+vCFpkAa3ok0Xpho07KGPMu5M
+	OtaD7WrLpyrnD2BMyW3ntxyqG1GbGRgrdTv5STdPTPlAu9kS4/QbJTPEr+uJmwfapeSS8Iq9zHE
+	xi0ZH7Ydl7BDQGQWpVoPnA==
+X-Google-Smtp-Source: AGHT+IEJD1f1OGGvHWmr6ipCmnC/rKjkjLbQjqmUaOn+glW25HAYOi5NjfH97rBU5lFoA/xbTGNntS5+u0C87uDofTk=
+X-Received: by 2002:a05:6000:310a:b0:3de:78c8:120e with SMTP id
+ ffacd0b85a97d-429bd676070mr9132749f8f.6.1762190686736; Mon, 03 Nov 2025
+ 09:24:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2fb5a99-8dc2-440b-bf52-1dbcf3d7d9a7@efficios.com>
+References: <20251030152451.62778-1-leon.hwang@linux.dev> <20251030152451.62778-4-leon.hwang@linux.dev>
+ <CAADnVQLib8ebe8cmGRj98YZiArendX8u=dSKNUrUFz6NGq7LRg@mail.gmail.com> <22f12031-7a19-4824-a9cc-459fb63a5e0e@linux.dev>
+In-Reply-To: <22f12031-7a19-4824-a9cc-459fb63a5e0e@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 3 Nov 2025 09:24:31 -0800
+X-Gm-Features: AWmQ_bm4t42nXKKLY7EleQr5SyGRExs3j12-OPMXVNGKvQ-5I62n-U-Sv767GRs
+Message-ID: <CAADnVQJ9dFOou9jqmDaJKaYagF_KM0YXO+=r9uyM5r48+SFTuA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/4] bpf: Free special fields when update
+ local storage maps with BPF_F_LOCK
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Amery Hung <ameryhung@gmail.com>, 
+	LKML <linux-kernel@vger.kernel.org>, kernel-patches-bot@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 03, 2025 at 08:34:10AM -0500, Mathieu Desnoyers wrote:
-> On 2025-11-02 16:44, Paul E. McKenney wrote:
-> > Some arm64 platforms have slow per-CPU atomic operations, for example,
-> > the Neoverse V2.  This commit therefore moves SRCU-fast from per-CPU
-> > atomic operations to interrupt-disabled non-read-modify-write-atomic
-> > atomic_read()/atomic_set() operations.  This works because
-> > SRCU-fast-updown is not invoked from read-side primitives, which
-> > means that if srcu_read_unlock_fast() NMI handlers.  This means that
-> > srcu_read_lock_fast_updown() and srcu_read_unlock_fast_updown() can
-> > exclude themselves and each other
-> > 
-> > This reduces the overhead of calls to srcu_read_lock_fast_updown() and
-> > srcu_read_unlock_fast_updown() from about 100ns to about 12ns on an ARM
-> > Neoverse V2.  Although this is not excellent compared to about 2ns on x86,
-> > it sure beats 100ns.
-> > 
-> > This command was used to measure the overhead:
-> > 
-> > tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --configs NOPREEMPT --kconfig "CONFIG_NR_CPUS=64 CONFIG_TASKS_TRACE_RCU=y" --bootargs "refscale.loops=100000 refscale.guest_os_delay=5 refscale.nreaders=64 refscale.holdoff=30 torture.disable_onoff_at_boot refscale.scale_type=srcu-fast-updown refscale.verbose_batched=8 torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=8 refscale.nruns=100" --trust-make
-> > 
-> Hi Paul,
-> 
-> At a high level, what are you trying to achieve with this ?
+On Sun, Nov 2, 2025 at 9:18=E2=80=AFPM Leon Hwang <leon.hwang@linux.dev> wr=
+ote:
+>
+>
+>
+> On 31/10/25 06:35, Alexei Starovoitov wrote:
+> > On Thu, Oct 30, 2025 at 8:25=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
+v> wrote:
+> >>
+>
+> [...]
+>
+> >> @@ -641,6 +642,7 @@ bpf_local_storage_update(void *owner, struct bpf_l=
+ocal_storage_map *smap,
+> >>         if (old_sdata && (map_flags & BPF_F_LOCK)) {
+> >>                 copy_map_value_locked(&smap->map, old_sdata->data, val=
+ue,
+> >>                                       false);
+> >> +               bpf_obj_free_fields(smap->map.record, old_sdata->data)=
+;
+> >>                 selem =3D SELEM(old_sdata);
+> >>                 goto unlock;
+> >>         }
+> >
+> > Even with rqspinlock I feel this is a can of worms and
+> > recursion issues.
+> >
+> > I think it's better to disallow special fields and BPF_F_LOCK combinati=
+on.
+> > We already do that for uptr:
+> >         if ((map_flags & BPF_F_LOCK) &&
+> > btf_record_has_field(map->record, BPF_UPTR))
+> >                 return -EOPNOTSUPP;
+> >
+> > let's do it for all special types.
+> > So patches 2 and 3 will change to -EOPNOTSUPP.
+> >
+>
+> Do you mean disallowing the combination of BPF_F_LOCK with other special
+> fields (except for BPF_SPIN_LOCK) on the UAPI side =E2=80=94 for example,=
+ in
+> lookup_elem() and update_elem()?
 
-I am working around the high single-CPU cost of arm64 LSE instructions,
-as in about 50ns per compared non-LSE of about 5ns per.  The 50ns rules
-them out for uretprobes, for example.
+yes
 
-But Catalin's later patch is in all ways better than mine, so I will be
-keeping this one only until Catalin's hits mainline.  Once that happens,
-I will revert this one the following merge window.  (It might be awhile
-because of the testing required on a wide range of platforms.)
+> If so, I'd like to send a separate patch set to implement that after the
+> series
+> =E2=80=9Cbpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for percpu map=
+s=E2=80=9D is
+> applied.
+>
+> After that, we can easily add the check in bpf_map_check_op_flags() for
+> the UAPI side, like this:
+>
+> static inline int bpf_map_check_op_flags(...)
+> {
+>         if ((flags & BPF_F_LOCK) && !btf_record_has_field(map->record,
+> BPF_SPIN_LOCK))
+>                 return -EINVAL;
+>
+>         if ((flags & BPF_F_LOCK) && btf_record_has_field(map->record,
+> ~BPF_SPIN_LOCK))
+>                 return -EOPNOTSUPP;
+> }
+>
+> Then we can clean up some code, including the bpf_obj_free_fields()
+> calls that follow copy_map_value_locked(), as well as the existing UPTR
+> check.
 
-> AFAIU, you are trying to remove the cost of atomics on per-cpu
-> data from srcu-fast read lock/unlock for frequent calls for
-> CONFIG_NEED_SRCU_NMI_SAFE=y, am I on the right track ?
-> 
-> [disclaimer: I've looked only briefly at your proposed patch.]
-> Then there are various other less specific approaches to consider
-> before introducing such architecture and use-case specific work-around.
-> 
-> One example is the libside (user level) rcu implementation which uses
-> two counters per cpu [1]. One counter is the rseq fast path, and the
-> second counter is for atomics (as fallback).
-> 
-> If the typical scenario we want to optimize for is thread context, we
-> can probably remove the atomic from the fast path with just preempt off
-> by partitioning the per-cpu counters further, one possibility being:
-> 
-> struct percpu_srcu_fast_pair {
-> 	unsigned long lock, unlock;
-> };
-> 
-> struct percpu_srcu_fast {
-> 	struct percpu_srcu_fast_pair thread;
-> 	struct percpu_srcu_fast_pair irq;
-> };
-> 
-> And the grace period sums both thread and irq counters.
-> 
-> Thoughts ?
-
-One complication here is that we need srcu_down_read() at task level
-and the matching srcu_up_read() at softirq and/or hardirq level.
-
-Or am I missing a trick in your proposed implementation?
-
-							Thanx, Paul
-
-> Thanks,
-> 
-> Mathieu
-> 
-> [1] https://github.com/compudj/libside/blob/master/src/rcu.h#L71
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
+ok. fair enough.
 
