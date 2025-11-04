@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-73504-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73505-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA366C331D5
-	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 22:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C3A0C331DB
+	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 22:55:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D1CA84E6D81
-	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 21:54:52 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BB70B4E7751
+	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 21:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C550346799;
-	Tue,  4 Nov 2025 21:54:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 799DB3469E3;
+	Tue,  4 Nov 2025 21:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E8GwL116"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rweLj4q5"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A256334678D;
-	Tue,  4 Nov 2025 21:54:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD622FABF7;
+	Tue,  4 Nov 2025 21:54:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762293289; cv=none; b=G6J+cGi2iZHXVmaF93HyEI73ALy35wcCX6SE2ekmrcfqMLObjyqUbyGu2SZ4GYznAxpaGy8MBr0FItQ7alWpt8h4TsD0d5gOQohu6tDtoDnkh0AmTINMLAKb4ndgrrobM9c380RKeION9S7j1n93qyDSW+Qv8bJV94EOAoHCBU0=
+	t=1762293298; cv=none; b=sBs0584TC2m85Ig0s76k4xlz2z4CFJigt/NMM7r7CN3WXhG8m8DJvfMeKo9V8JJB5ecxU17xgGiZhJi+xfrtK/3XzIhZS8LD/dwZfcjK8D6kfqbaymuWcJIhXKiqzoj1GTi+7Zpnmj+dP3M+DtQvyjXgW6vPlNyvO6xc+ys8dQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762293289; c=relaxed/simple;
-	bh=pkfQpo+GbEUDIH7vRI1r5mF97ogVir0MXeOYNkMWYXg=;
+	s=arc-20240116; t=1762293298; c=relaxed/simple;
+	bh=INngzCagyASBga4I+f+q6Xk8A/qGU3KnC77T+Drm3Yc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gzf4Yxm609H0hHqx19OFjfbat7+xbrzExfl0me2hgPEn8Occe3LtCviEmtALlJd8jjcaqQWb8Vk9R+am891Kv8r96oUFySKhiHbl0zfdcBfmdaS9Oo0gZrVuYKj0IqoiH3b1ntqbf6sxd+ymCFFY18Eilsv3OKMKpPr0X9nxGBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E8GwL116; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26FE6C4CEF7;
-	Tue,  4 Nov 2025 21:54:43 +0000 (UTC)
+	 MIME-Version; b=pj+oe4n9MesRoKau2I4hqYIQrBAoTbOXNBqyPjAlLvIKG2m64PmviqNfp3ZEzduDvTvJkmaq+zmu3aIrXhUVPHt96BgORuuag4uJgtwMQAyAk0DCtfsCOlRgp5n06MEyvTcdnSeeNWqUT6jqmiHqYVl4XmM/7gYOv5RyzHmoEJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rweLj4q5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9908CC116B1;
+	Tue,  4 Nov 2025 21:54:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762293287;
-	bh=pkfQpo+GbEUDIH7vRI1r5mF97ogVir0MXeOYNkMWYXg=;
+	s=k20201202; t=1762293297;
+	bh=INngzCagyASBga4I+f+q6Xk8A/qGU3KnC77T+Drm3Yc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=E8GwL116v1WpugUNHL8+PWOgvGIFlZIHPN3Rboer1OGPuZ0+xuGhxcdgsKIc54pqk
-	 24KBGAyfcUN4OOC5ZtzhiHsG5GZRk7HqmWeGqiYah1wcpuMrz1rYRXrfiINXn8sa3M
-	 ZrIfX/aN8QzowV7vrxmDkmuNHPIv9QZTywPDnOcmMgxF9xZ0WxBbgasLqu8xTKZD/l
-	 w+CjQ8gybl1U9Z1E1VvNA6DXkLzIG2fYNqkbf8g98cIvECLQX9soa1mg+YFimCm6r1
-	 BNjttXPSUT426Ts/x+sOdtu/2khKamFvPYn5Jnwt712RYoT01YwYQ2613Pyg5iWCFx
-	 ygoJppDWn5uTg==
+	b=rweLj4q5NWL8QbS5ncki/D2TWohWzDadqvh9+cXva3fVDDAedQVDv9FBS90t7dgQd
+	 TgTP7EjfC1mCVrzhX1izbbvIbxGqA1w70jFwoAASw6lbl0rkx5ltgMfuijzczOnmfH
+	 KJKp9Pbz5XT6zNkUs48LWtnwNDh8/0zOspjjCPRDtYhLcxVl1gHjHgsj7Wo4rJLpys
+	 CCYnAflM/xQBCj3/oRz9wrJ1rg5dbei2eNH3tqNqqVwspVs+C2AfO/kWPS1iUsOBki
+	 pmcoE215jhFNtAxOMfNbhnbdeRqRbryN1kEQ8y4w+kRz4p0m58Pbboo4WNS5ESsyxQ
+	 LsQyeBAHTJvGQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Masami Hiramatsu <mhiramat@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -52,9 +52,9 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Yonghong Song <yhs@fb.com>,
 	Song Liu <songliubraving@fb.com>,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCHv3 3/4] selftests/bpf: Add stacktrace ips test for kprobe_multi/kretprobe_multi
-Date: Tue,  4 Nov 2025 22:54:04 +0100
-Message-ID: <20251104215405.168643-4-jolsa@kernel.org>
+Subject: [PATCHv3 4/4] selftests/bpf: Add stacktrace ips test for raw_tp
+Date: Tue,  4 Nov 2025 22:54:05 +0100
+Message-ID: <20251104215405.168643-5-jolsa@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251104215405.168643-1-jolsa@kernel.org>
 References: <20251104215405.168643-1-jolsa@kernel.org>
@@ -66,86 +66,31 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding test that attaches kprobe/kretprobe multi and verifies the
-ORC stacktrace matches expected functions.
-
-Adding bpf_testmod_stacktrace_test function to bpf_testmod kernel
-module which is called through several functions so we get reliable
-call path for stacktrace.
-
-The test is only for ORC unwinder to keep it simple.
+Adding test that verifies we get expected initial 2 entries from
+stacktrace for rawtp probe via ORC unwind.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../selftests/bpf/prog_tests/stacktrace_ips.c | 104 ++++++++++++++++++
- .../selftests/bpf/progs/stacktrace_ips.c      |  41 +++++++
- .../selftests/bpf/test_kmods/bpf_testmod.c    |  26 +++++
- 3 files changed, 171 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
- create mode 100644 tools/testing/selftests/bpf/progs/stacktrace_ips.c
+ .../selftests/bpf/prog_tests/stacktrace_ips.c | 46 +++++++++++++++++++
+ .../selftests/bpf/progs/stacktrace_ips.c      |  8 ++++
+ 2 files changed, 54 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
-new file mode 100644
-index 000000000000..6fca459ba550
---- /dev/null
+index 6fca459ba550..c9efdd2a5b18 100644
+--- a/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
 +++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
-@@ -0,0 +1,104 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "stacktrace_ips.skel.h"
-+
-+#ifdef __x86_64__
-+static int check_stacktrace_ips(int fd, __u32 key, int cnt, ...)
+@@ -84,12 +84,58 @@ static void test_stacktrace_ips_kprobe_multi(bool retprobe)
+ 	stacktrace_ips__destroy(skel);
+ }
+ 
++static void test_stacktrace_ips_raw_tp(void)
 +{
-+	__u64 ips[PERF_MAX_STACK_DEPTH];
-+	struct ksyms *ksyms = NULL;
-+	int i, err = 0;
-+	va_list args;
-+
-+	/* sorted by addr */
-+	ksyms = load_kallsyms_local();
-+	if (!ASSERT_OK_PTR(ksyms, "load_kallsyms_local"))
-+		return -1;
-+
-+	/* unlikely, but... */
-+	if (!ASSERT_LT(cnt, PERF_MAX_STACK_DEPTH, "check_max"))
-+		return -1;
-+
-+	err = bpf_map_lookup_elem(fd, &key, ips);
-+	if (err)
-+		goto out;
-+
-+	/*
-+	 * Compare all symbols provided via arguments with stacktrace ips,
-+	 * and their related symbol addresses.t
-+	 */
-+	va_start(args, cnt);
-+
-+	for (i = 0; i < cnt; i++) {
-+		unsigned long val;
-+		struct ksym *ksym;
-+
-+		val = va_arg(args, unsigned long);
-+		ksym = ksym_search_local(ksyms, ips[i]);
-+		if (!ASSERT_OK_PTR(ksym, "ksym_search_local"))
-+			break;
-+		ASSERT_EQ(ksym->addr, val, "stack_cmp");
-+	}
-+
-+	va_end(args);
-+
-+out:
-+	free_kallsyms_local(ksyms);
-+	return err;
-+}
-+
-+static void test_stacktrace_ips_kprobe_multi(bool retprobe)
-+{
-+	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts,
-+		.retprobe = retprobe
-+	);
++	__u32 info_len = sizeof(struct bpf_prog_info);
 +	LIBBPF_OPTS(bpf_test_run_opts, topts);
++	struct bpf_prog_info info = {};
 +	struct stacktrace_ips *skel;
++	__u64 bpf_prog_ksym = 0;
++	int err;
 +
 +	skel = stacktrace_ips__open_and_load();
 +	if (!ASSERT_OK_PTR(skel, "stacktrace_ips__open_and_load"))
@@ -156,135 +101,60 @@ index 000000000000..6fca459ba550
 +		goto cleanup;
 +	}
 +
-+	skel->links.kprobe_multi_test = bpf_program__attach_kprobe_multi_opts(
-+							skel->progs.kprobe_multi_test,
-+							"bpf_testmod_stacktrace_test", &opts);
-+	if (!ASSERT_OK_PTR(skel->links.kprobe_multi_test, "bpf_program__attach_kprobe_multi_opts"))
++	skel->links.rawtp_test = bpf_program__attach_raw_tracepoint(
++							skel->progs.rawtp_test,
++							"bpf_testmod_test_read");
++	if (!ASSERT_OK_PTR(skel->links.rawtp_test, "bpf_program__attach_raw_tracepoint"))
++		goto cleanup;
++
++	/* get bpf program address */
++	info.jited_ksyms = ptr_to_u64(&bpf_prog_ksym);
++	info.nr_jited_ksyms = 1;
++	err = bpf_prog_get_info_by_fd(bpf_program__fd(skel->progs.rawtp_test),
++				      &info, &info_len);
++	if (!ASSERT_OK(err, "bpf_prog_get_info_by_fd"))
 +		goto cleanup;
 +
 +	trigger_module_test_read(1);
 +
 +	load_kallsyms();
 +
-+	check_stacktrace_ips(bpf_map__fd(skel->maps.stackmap), skel->bss->stack_key, 4,
-+			     ksym_get_addr("bpf_testmod_stacktrace_test_3"),
-+			     ksym_get_addr("bpf_testmod_stacktrace_test_2"),
-+			     ksym_get_addr("bpf_testmod_stacktrace_test_1"),
-+			     ksym_get_addr("bpf_testmod_test_read"));
++	check_stacktrace_ips(bpf_map__fd(skel->maps.stackmap), skel->bss->stack_key, 2,
++			     bpf_prog_ksym,
++			     ksym_get_addr("bpf_trace_run2"));
 +
 +cleanup:
 +	stacktrace_ips__destroy(skel);
 +}
 +
-+static void __test_stacktrace_ips(void)
-+{
-+	if (test__start_subtest("kprobe_multi"))
-+		test_stacktrace_ips_kprobe_multi(false);
-+	if (test__start_subtest("kretprobe_multi"))
-+		test_stacktrace_ips_kprobe_multi(true);
-+}
-+#else
-+static void __test_stacktrace_ips(void)
-+{
-+	test__skip();
-+}
-+#endif
-+
-+void test_stacktrace_ips(void)
-+{
-+	__test_stacktrace_ips();
-+}
+ static void __test_stacktrace_ips(void)
+ {
+ 	if (test__start_subtest("kprobe_multi"))
+ 		test_stacktrace_ips_kprobe_multi(false);
+ 	if (test__start_subtest("kretprobe_multi"))
+ 		test_stacktrace_ips_kprobe_multi(true);
++	if (test__start_subtest("raw_tp"))
++		test_stacktrace_ips_raw_tp();
+ }
+ #else
+ static void __test_stacktrace_ips(void)
 diff --git a/tools/testing/selftests/bpf/progs/stacktrace_ips.c b/tools/testing/selftests/bpf/progs/stacktrace_ips.c
-new file mode 100644
-index 000000000000..e2eb30945c1b
---- /dev/null
+index e2eb30945c1b..a96c8150d7f5 100644
+--- a/tools/testing/selftests/bpf/progs/stacktrace_ips.c
 +++ b/tools/testing/selftests/bpf/progs/stacktrace_ips.c
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2018 Facebook
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#ifndef PERF_MAX_STACK_DEPTH
-+#define PERF_MAX_STACK_DEPTH         127
-+#endif
-+
-+typedef __u64 stack_trace_t[PERF_MAX_STACK_DEPTH];
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
-+	__uint(max_entries, 16384);
-+	__type(key, __u32);
-+	__type(value, stack_trace_t);
-+} stackmap SEC(".maps");
-+
-+extern bool CONFIG_UNWINDER_ORC __kconfig __weak;
-+
-+/*
-+ * This function is here to have CONFIG_UNWINDER_ORC
-+ * used and added to object BTF.
-+ */
-+int unused(void)
+@@ -38,4 +38,12 @@ int kprobe_multi_test(struct pt_regs *ctx)
+ 	return 0;
+ }
+ 
++SEC("raw_tp/bpf_testmod_test_read")
++int rawtp_test(void *ctx)
 +{
-+	return CONFIG_UNWINDER_ORC ? 0 : 1;
-+}
-+
-+__u32 stack_key;
-+
-+SEC("kprobe.multi")
-+int kprobe_multi_test(struct pt_regs *ctx)
-+{
++	/* Skip ebpf program entry in the stack. */
 +	stack_key = bpf_get_stackid(ctx, &stackmap, 0);
 +	return 0;
 +}
 +
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-index 8074bc5f6f20..ed0a4721d8fd 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-@@ -417,6 +417,30 @@ noinline int bpf_testmod_fentry_test11(u64 a, void *b, short c, int d,
- 	return a + (long)b + c + d + (long)e + f + g + h + i + j + k;
- }
- 
-+noinline void bpf_testmod_stacktrace_test(void)
-+{
-+	/* used for stacktrace test as attach function */
-+	asm volatile ("");
-+}
-+
-+noinline void bpf_testmod_stacktrace_test_3(void)
-+{
-+	bpf_testmod_stacktrace_test();
-+	asm volatile ("");
-+}
-+
-+noinline void bpf_testmod_stacktrace_test_2(void)
-+{
-+	bpf_testmod_stacktrace_test_3();
-+	asm volatile ("");
-+}
-+
-+noinline void bpf_testmod_stacktrace_test_1(void)
-+{
-+	bpf_testmod_stacktrace_test_2();
-+	asm volatile ("");
-+}
-+
- int bpf_testmod_fentry_ok;
- 
- noinline ssize_t
-@@ -497,6 +521,8 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
- 			21, 22, 23, 24, 25, 26) != 231)
- 		goto out;
- 
-+	bpf_testmod_stacktrace_test_1();
-+
- 	bpf_testmod_fentry_ok = 1;
- out:
- 	return -EIO; /* always fail */
+ char _license[] SEC("license") = "GPL";
 -- 
 2.51.0
 
