@@ -1,183 +1,211 @@
-Return-Path: <bpf+bounces-73465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9889FC324FC
-	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 18:23:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1822C3254D
+	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 18:27:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 735184E2B6E
-	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 17:23:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 674EF3A7A03
+	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 17:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35F233B949;
-	Tue,  4 Nov 2025 17:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54E6533971D;
+	Tue,  4 Nov 2025 17:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c1Z4IqLx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zax35KqU"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56AF626CE17
-	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 17:23:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 286BD2E2DC1
+	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 17:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762277000; cv=none; b=bFQimyZpsKywMYAv6fpN+0npRuXVrNFB6+4Fc9fdK8Cl5A+ZwQmh0FRH4KzQsXveJ1ypIaZqyTipZNmv8MhzRGvyJHVvSF4/ysJ+s2JKp2uDaHmm+jHGCrb5aumPVQGRDFO2w1XgeHjSmRtkus+8qcgT+Tyq2gIXOrSekHdECkQ=
+	t=1762277218; cv=none; b=hMMRwaSyFvmvqvoIrqcJXzsr9FonhzvKS+v+WKq1ZhCNP5lKqd1lekZfcyOxpk7sQo/DULBi9b/7pk+sOOAtoq6ktWHTmgih0IoUOYycw+aWQZcNENP5Jo1N3Y/J+FRNVHzx036vU0Jm6fFdO7ov8QWW17soIJ3wHT2cM1md5JA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762277000; c=relaxed/simple;
-	bh=C8AmJj3ClxjTOOEVOO/5YJqxORb8ISHIWhYAHLSuzP4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=juQfn0Moo9EWI/eevO7oAZE66wUehOi5k9jW56E4u8ItcQKKsMujwt8P6wrzGM+ni+G/NTtlPOl1oU2mMF2h1s+mcZl5E4OguRxSujM4laIT3lYlp9HvOGKDwA67eorJ0XBC+ssIMCSMusefVndhUZQ4KfU39pnwVfICWxL+a0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c1Z4IqLx; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <529b54a3-c534-4760-9bec-ed1214e82819@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762276990;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n4JXg9p/ygic1OVGMwWqUaOER+D1TpxCFPECm6BeFwE=;
-	b=c1Z4IqLxfT5W32CM+45bbXLmExvENITJgZcuEQMY0eZmdEIGM0VViZBMnmZoPJbvXK+yqR
-	ph8juWgeKFxK13aLsIK0TqM1b6z8N1o4u0XsAW4Ai0H5kNvW+w62cBsY1S7qlTN+ArEEo8
-	i3k99iUHjNPi9UakaFR2SH8EjI4RtzQ=
-Date: Tue, 4 Nov 2025 09:23:04 -0800
+	s=arc-20240116; t=1762277218; c=relaxed/simple;
+	bh=Wevo2Y4OmrLXFTmuAJOHd+4d+3TkpCLlFEfPIh3FzEw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Pcw56H0keQRr0f7KEBV9kYbTZdgan6iSCumaNUs9cY6beFBe7g598/9NT8shfVvWpglfn+TkWx8g+2BTEN5Eueiujf3mVLk291zjyGQQM3sVdcgrVKjLLoFVRXMPbfSLzBM5p6RgeATu7h5/4uZRu7L2gmazOW/QvgYUmSvnSd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zax35KqU; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-33db8fde85cso5583876a91.0
+        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 09:26:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762277216; x=1762882016; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JSh4mlRZT0Y24WMccxIDboDo6bfkByxubsl31YznsC4=;
+        b=Zax35KqUsSCTmAmObdHYRkgYSP9cY6kqOEb7JSdAV7XHi6GITegAyLr1cSSbt2SfFG
+         rHBwWXhWBTwhfOs6DZRr10ZOldPXQffeQT4VGeRASWhxjxFNGIKf5jOvUGIOgVuzibgg
+         pTUhEtSoxE3hVLKGJGXY/965Z7b5+/9SA8yk09g726v/srpD11ifot9MkKO2ybRvuPRi
+         u7c8OvqmJW4oba2dRAYI13Kh5juI8ajPlJxc4px55vMem96CP4vd8Lpp944GEhHkX11l
+         MFrZLOCy7/IN1xMxDQWGqTc1WHIk5uCW6n/uVCv2VjdKVoivhdWFyVqVh5iSdjjAhvxk
+         mZ4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762277216; x=1762882016;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JSh4mlRZT0Y24WMccxIDboDo6bfkByxubsl31YznsC4=;
+        b=H097jDYW4BVSVtRZXIfniasgslnxSjFinGwUBT/VoLufkOqa1VFCp7OSZCarGaDGkK
+         HpGD6AI+dvsfAtl6iSqYzxDy2rGZtmjHi6rwnoFokUBh5Q/mQpbaDESQuf5KCRyf/J0n
+         Rxh10QL/72NLccP2cAkUmOcK3D2FahxYyAouPEwIjtMiW04yKuPaTpir1NIoXkJGWGgL
+         Z2iWwF+wVZFK2K1IKvdfcnTp/jugga/bMQ635Ikmv27POqOKOWPhA9IhNXo/SMfRNO6H
+         tGNbswVcn3qUuDSJgBPGyBVOrg4PpTH+L1m69iuDuERzl30VKA4JisSNSgLn/AwJHiee
+         GLLA==
+X-Gm-Message-State: AOJu0YwVPH5Hw5nj7fPrtyDcM7qtEmn4xgttG0rgCux8WqeL7XA2ts96
+	Cp3r0iKeK6kFwcZbt5qqq2MBn0u5XXVFeI3DCubhBO43f+mYvZjzYg/8dGIyAA==
+X-Gm-Gg: ASbGncucuIWvSTtZrGznX5lsM+Hdq0laBJ4NqcF+EL1T6g7/zeaw1neO4KEA4n7/MQX
+	sh6vNoVKo8a3Ysz0My9YWU9/FQTd8+Awqc4aBNdRG718z8qQxo+AaAYVemNIvgakR8+uDtG+64f
+	+7FPe4t7sI481qvHXYP9X76y4RS0krLcvZPTmsDKV3LcArUH/37i6KvPm2pCtiuhckY9a+BGrYe
+	HvPnfmuoO+wpPiJcRPhbdMJKvr0oFEtDzBJ3NtA6C4XrTYhqVVtqt0ztSbomRnS0t5QhcdGJeYt
+	cG6uBfk8RF6hoG33uiyMQ8nNcdX8QyVPO6GsLM/ITawJVeJFiQjmljJFtFG7TneVzCxEViuRq4B
+	conGcp/XODYVDm462LdMfl+OHAG0E8PcbbNC6xP+mT+cRWF4MuTq0kLexyq3lZwmE7zA=
+X-Google-Smtp-Source: AGHT+IFw2guSVLHKtwMI2ykXFRrbGXDUlz5eJAzpQePpdyOsYuNehk5p+cRdkY2/ZbSoIywZBVXbbA==
+X-Received: by 2002:a17:903:1ce:b0:292:dca8:c140 with SMTP id d9443c01a7336-2962adb9205mr5441665ad.44.1762277215727;
+        Tue, 04 Nov 2025 09:26:55 -0800 (PST)
+Received: from localhost ([2a03:2880:ff:51::])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29601a3a80esm33281995ad.73.2025.11.04.09.26.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Nov 2025 09:26:55 -0800 (PST)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	tj@kernel.org,
+	martin.lau@kernel.org,
+	ameryhung@gmail.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v5 0/7] Support associating BPF programs with struct_ops
+Date: Tue,  4 Nov 2025 09:26:45 -0800
+Message-ID: <20251104172652.1746988-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf v2 0/2] bpf: add _impl suffix for kfuncs with implicit
- args
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org,
- ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
- kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-References: <20251104-implv2-v2-0-6dbc35f39f28@meta.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <20251104-implv2-v2-0-6dbc35f39f28@meta.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 11/4/25 7:29 AM, Mykyta Yatsenko wrote:
-> We’re introducing support for implicit kfunc arguments and need to
-> rename new kfuncs to comply with the naming convention.
-> This new feature, will for each kfunc of the form:
-> 
-> `bpf_foo_impl(args..., aux__prog)`
-> 
-> generate a public BTF type:
-> 
-> `bpf_foo(args...)`
-> 
-> and the verifier will resolve calls to bpf_foo() to bpf_foo_impl(),
-> supplying a valid struct bpf_prog_aux via aux__prog.
+v4 -> v5
+   - Simplify the API for getting associated struct_ops and dont't
+     expose struct_ops map lifecycle management (Andrii, Alexei)
+   Link: https://lore.kernel.org/bpf/20251024212914.1474337-1-ameryhung@gmail.com/
 
-Hi Mykyta, thank you for submitting this.
+v3 -> v4
+   - Fix potential dangling pointer in timer callback. Protect
+     st_ops_assoc with RCU. The get helper now needs to be paired with
+     bpf_struct_ops_put()
+   - The command should only increase refcount once for a program
+     (Andrii)
+   - Test a struct_ops program reused in two struct_ops maps
+   - Test getting associated struct_ops in timer callback
+   Link: https://lore.kernel.org/bpf/20251017215627.722338-1-ameryhung@gmail.com/
 
-The explanation in this cover is inaccurate. There were a few
-discussions, and the "implicit" feature is in active development, so
-it is confusing... Let me try to elaborate.
+v2 -> v3
+   - Change the type of st_ops_assoc from void* (i.e., kdata) to bpf_map
+     (Andrii)
+   - Fix a bug that clears BPF_PTR_POISON when a struct_ops map is freed
+     (Andrii)
+   - Return NULL if the map is not fully initialized (Martin)
+   - Move struct_ops map refcount inc/dec into internal helpers (Martin)
+   - Add libbpf API, bpf_program__assoc_struct_ops (Andrii)
+   Link: https://lore.kernel.org/bpf/20251016204503.3203690-1-ameryhung@gmail.com/
 
-Currently if a kfunc needs access to struct bpf_prog_aux data, it must
-have an explicit void *aux__prog argument in its declaration. Then on
-BPF side the users must pass a dummy value (conventionally NULL).
+v1 -> v2
+   - Poison st_ops_assoc when reusing the program in more than one
+     struct_ops maps and add a helper to access the pointer (Andrii)
+   - Minor style and naming changes (Andrii)
+   Link: https://lore.kernel.org/bpf/20251010174953.2884682-1-ameryhung@gmail.com/
 
-In the v6.18-rc4 these 4 functions are using aux__prog argument:
-  * bpf_wq_set_callback_impl (note existing _impl suffix)
-  * bpf_task_work_schedule_signal
-  * bpf_task_work_schedule_resume
-  * bpf_stream_vprintk
+---
 
-The goal of the KF_IMPLICIT_ARGS feature is to hide this argument from
-BPF programs, as it is supplied by the verifier.
+Hi,
 
-With it, the kfuncs still require an explicit argument in the
-kernel declaration, for example:
+This patchset adds a new BPF command BPF_PROG_ASSOC_STRUCT_OPS to
+the bpf() syscall to allow associating a BPF program with a struct_ops.
+The command is introduced to address a emerging need from struct_ops
+users. As the number of subsystems adopting struct_ops grows, more
+users are building their struct_ops-based solution with some help from
+other BPF programs. For exmample, scx_layer uses a syscall program as
+a user space trigger to refresh layers [0]. It also uses tracing program
+to infer whether a task is using GPU and needs to be prioritized [1]. In
+these use cases, when there are multiple struct_ops instances, the
+struct_ops kfuncs called from different BPF programs, whether struct_ops
+or not needs to be able to refer to a specific one, which currently is
+not possible.
 
-    __bpf_kfunc int bpf_foo(int arg, struct bpf_prog_aux *aux__implicit);
+The new BPF command will allow users to explicitly associate a BPF
+program with a struct_ops map. The libbpf wrapper can be called after
+loading programs and before attaching programs and struct_ops.
 
-In order to hide it from the BPF users, the following functions will
-be produced in BTF from the above declaration:
+Internally, it will set prog->aux->st_ops_assoc to the struct_ops
+map. struct_ops kfuncs can then get the associated struct_ops struct
+by calling bpf_prog_get_assoc_struct_ops() with prog->aux, which can
+be acquired from a "__prog" argument. The value of the speical
+argument will be fixed up by the verifier during verification.
 
-    /* no aux arg for BPF interface kfunc */
-    __bpf_kfunc int bpf_foo(int arg);
+The command conceptually associates the implementation of BPF programs
+with struct_ops map, not the attachment. A program associated with the
+map will take a refcount of it so that st_ops_assoc always points to a
+valid struct_ops struct. struct_ops implementers can use the helper,
+bpf_prog_get_assoc_struct_ops to get the pointer. The returned
+struct_ops if not NULL is guaranteed to be valid and initialized.
+However, it is not guarantted that the struct_ops is attached. The
+struct_ops implementer still need to take stepis to track and check the
+state of the struct_ops in kdata, if the use case demand the struct_ops
+to be attached.
 
-    /* no kfunc decl_tag for _impl function */
-    int bpf_foo_impl(int arg, struct bpf_prog_aux *aux__implicit);
+We can also consider support associating struct_ops link with BPF
+programs, which on one hand make struct_ops implementer's job easier,
+but might complicate libbpf workflow and does not apply to legacy
+struct_ops attachment.
 
-Now the problem with existing aux__prog users that you're renaming in
-this patchset is that because they don't have an _impl suffix, their
-prototype will change, breaking binary compatibility with existing BPF
-programs. If we simply mark them as KF_IMPLICIT_ARGS, then they lose 
-an argument in BTF, for example:
+[0] https://github.com/sched-ext/scx/blob/main/scheds/rust/scx_layered/src/bpf/main.bpf.c#L557
+[1] https://github.com/sched-ext/scx/blob/main/scheds/rust/scx_layered/src/bpf/main.bpf.c#L754
 
-    bpf_task_work_schedule_signal(task, tw, map__map, callback, aux__prog);
+---
 
-becomes
+Amery Hung (7):
+  bpf: Allow verifier to fixup kernel module kfuncs
+  bpf: Support associating BPF program with struct_ops
+  bpf: Pin associated struct_ops when registering async callback
+  libbpf: Add support for associating BPF program with struct_ops
+  selftests/bpf: Test BPF_PROG_ASSOC_STRUCT_OPS command
+  selftests/bpf: Test ambiguous associated struct_ops
+  selftests/bpf: Test getting associated struct_ops in timer callback
 
-    bpf_task_work_schedule_signal(task, tw, map__map, callback);
+ include/linux/bpf.h                           |  16 ++
+ include/uapi/linux/bpf.h                      |  17 ++
+ kernel/bpf/bpf_struct_ops.c                   |  90 ++++++++
+ kernel/bpf/core.c                             |   3 +
+ kernel/bpf/helpers.c                          | 105 +++++++---
+ kernel/bpf/syscall.c                          |  46 +++++
+ kernel/bpf/verifier.c                         |   3 +-
+ tools/include/uapi/linux/bpf.h                |  17 ++
+ tools/lib/bpf/bpf.c                           |  19 ++
+ tools/lib/bpf/bpf.h                           |  21 ++
+ tools/lib/bpf/libbpf.c                        |  30 +++
+ tools/lib/bpf/libbpf.h                        |  16 ++
+ tools/lib/bpf/libbpf.map                      |   2 +
+ .../bpf/prog_tests/test_struct_ops_assoc.c    | 194 ++++++++++++++++++
+ .../selftests/bpf/progs/struct_ops_assoc.c    | 105 ++++++++++
+ .../bpf/progs/struct_ops_assoc_in_timer.c     |  77 +++++++
+ .../bpf/progs/struct_ops_assoc_reuse.c        |  75 +++++++
+ .../selftests/bpf/test_kmods/bpf_testmod.c    |  17 ++
+ .../bpf/test_kmods/bpf_testmod_kfunc.h        |   1 +
+ 19 files changed, 819 insertions(+), 35 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_assoc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_assoc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_assoc_in_timer.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_assoc_reuse.c
 
-However, if we rename it to "bpf_task_work_schedule_signal_impl", then
-after KF_IMPLICIT_ARGS feature is implemented, we can *add a new
-kfunc* "bpf_task_work_schedule_signal" with an implicit arg.
-
-This way we can avoid breaking BPF progs calling this kfunc, although 
-renaming is still a disruption of course.
-
-See links to previous discussions:
-* https://lore.kernel.org/bpf/20251029190113.3323406-1-ihor.solodrai@linux.dev/
-* https://lore.kernel.org/bpf/20250924211716.1287715-1-ihor.solodrai@linux.dev/
-* https://lore.kernel.org/dwarves/20250924211512.1287298-1-ihor.solodrai@linux.dev/
-
-> 
-> Three kfuncs added in 6.18 don’t follow this *_impl convention and
-> therefore won’t participate in the new mechanism:
->  * bpf_task_work_schedule_resume()
->  * bpf_task_work_schedule_signal()
->  * bpf_stream_vprintk()
-> 
-> Rename them to align with the implicit-arg flow:
-> bpf_task_work_schedule_resume() -> bpf_task_work_schedule_resume_impl()
-> bpf_task_work_schedule_signal() -> bpf_task_work_schedule_signal_impl()
-> bpf_stream_vprintk() -> bpf_stream_vprintk_impl()
-> 
-> The implicit-arg mechanism is not in tree yet, so callers must switch to
-> the *_impl names for now. Once the new mechanism lands, the plain
-> names (without _impl) will be reintroduced as BTF-visible entry points
-> and will resolve to the _impl versions automatically.
-> 
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> ---
-> Changes in v1:
-> - Split commit into 2
-> - Rebase on the correct branch
-> - Link to v1: https://lore.kernel.org/all/20251103232319.122965-1-mykyta.yatsenko5@gmail.com/
-> 
-> ---
-> Mykyta Yatsenko (2):
->       bpf:add _impl suffix for bpf_task_work_schedule* kfuncs
->       bpf:add _impl suffix for bpf_stream_vprintk() kfunc
-> 
->  kernel/bpf/helpers.c                               | 26 +++++++++++---------
->  kernel/bpf/stream.c                                |  3 ++-
->  kernel/bpf/verifier.c                              | 12 +++++-----
->  tools/bpf/bpftool/Documentation/bpftool-prog.rst   |  2 +-
->  tools/lib/bpf/bpf_helpers.h                        | 28 +++++++++++-----------
->  tools/testing/selftests/bpf/progs/stream_fail.c    |  6 ++---
->  tools/testing/selftests/bpf/progs/task_work.c      |  6 ++---
->  tools/testing/selftests/bpf/progs/task_work_fail.c |  8 +++----
->  .../testing/selftests/bpf/progs/task_work_stress.c |  4 ++--
->  9 files changed, 50 insertions(+), 45 deletions(-)
-> ---
-> base-commit: 6146a0f1dfae5d37442a9ddcba012add260bceb0
-> change-id: 20251104-implv2-d6c4be255026
-> 
-> Best regards,
+-- 
+2.47.3
 
 
