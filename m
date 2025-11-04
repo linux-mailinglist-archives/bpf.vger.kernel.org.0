@@ -1,80 +1,81 @@
-Return-Path: <bpf+bounces-73450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73451-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F9E2C31D78
-	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 16:31:20 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B40CC31D9F
+	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 16:33:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCFCC3A7A4B
-	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 15:30:18 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0331B4F1E5E
+	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 15:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AE127467D;
-	Tue,  4 Nov 2025 15:30:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D0C2690E7;
+	Tue,  4 Nov 2025 15:30:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jI5F8Ha7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f3LsXP4+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3924D269D06
-	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 15:30:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAD6F26A1BE
+	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 15:30:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762270215; cv=none; b=MJTQLMaH35C7Yx7zLPB7feL6iikqSoxdA5F+6j6BoxR3YmJLPFQ27YZ3j610IUlJ2MG0fCJFJzKxm2WjVGtoYB5DUEHzkTVrprGhAGQ1sET8ztFQPWt3JVARNxYDDdRyOgw2uJmYYr+ytOjlyuMeFaQzfaRZ54tNt1kvxXCeOvQ=
+	t=1762270216; cv=none; b=nokAYV/YI/pSbfz9TnACuKBSQjuhR8zRFGl6KAvSsxmn53qqOFfv50LkTgUUWFFQuExmzKctluoG0SM6qXhRBuUAFy+e3ltI/ZWsPSmXHjWPUszF3hWV63BZ5/Gb2KU6Y11+7poZ94fHWYqrBLw41JB9bOnBkG087Qmo1ee7uAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762270215; c=relaxed/simple;
-	bh=57dj8uPvxQsBZBw1ICgfwNGGfh34CWNQ/xLOi/SZzTs=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=O26OemzRosiNcsVoh8PR3NwMDOpEFpsg3eE41jdLWu89IVbnE3ehWgs5m065QkPL2eYd+nDvITuPO8pOn65fSHZUFVb8MJEENPjsl3KRMQXVJ4L7RVmqkhoxHmky9Zrr1zhcPpYfQq1NGAXVBaAhcuBcYaXJ1xI+we1tqYA/VrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jI5F8Ha7; arc=none smtp.client-ip=209.85.221.46
+	s=arc-20240116; t=1762270216; c=relaxed/simple;
+	bh=rUu7A/Zg01Zmp2NbySqubT4SvQUJax0k9YW18ueaBzc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=DIANW+tZG1FGoL0BbueoCyCR+VJLX/hcZXCVYrG5IqEa361niS6jNp7aic3GlTMO0OmeNaIfoJus4UXHtEYeqgGsFKgbOdvM2IXYDXdS+8HyBy/KAtRPT1+8iS/16wfkaliSUGJaTx/Y9qrMUHsCq1O3oYBwy5XFQObwGjWjCa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f3LsXP4+; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3ece1102998so3862636f8f.2
-        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 07:30:13 -0800 (PST)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3ee64bc6b90so4390970f8f.0
+        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 07:30:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762270212; x=1762875012; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FTXW29oVq2rOGcxMO1TiwqrUFdRpJ03gDLwEIoLlbjs=;
-        b=jI5F8Ha7OubSPEAnGcUuaxD1WCEt+VBEYwK0xIzT8+V5quuNjD2AhEnlZyE+Q74+6L
-         JCvuvipMV9KSFXUcRkAYczaCJCHQa/R0vT03Mxeoloie67XNP859c3Ru+90+pmYZyUNZ
-         RM1m67xuJgiTJcy/aQwtUJTRM9RBh95f3YzSujYNPpRZTDzmjV1bsNI/bkRc7Ep9YyJL
-         gxVgGGvhh5iXjLwl/3l01Hb2RSRuWyteIzJ+uSZNpgkWPJjUw8JNRpq1DHJCRn1Eikg9
-         YZpEmB4qyy7DV2ta6ySPTmYsKgcJC6ijZ5xtm03baRBJdi6KT+AyUnCGzY/yDypLdl+g
-         Tm/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762270212; x=1762875012;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1762270213; x=1762875013; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FTXW29oVq2rOGcxMO1TiwqrUFdRpJ03gDLwEIoLlbjs=;
-        b=BoOzj+xO8XJO4bPSKTi8Tv9RbQTpdvxF1HB+IOmUzBH3hvFrG2jpKfdw9rSirkJXix
-         r6CaeQ2VTvPnq3TfrSEEwxQXsX9omoIspnOFpiENn05Ex8+G5la9/m2S7jeSgDbhkdL9
-         Cph8emvAaAV/pIRL5SIgiwjlk692ot3wJrC22IguREicKB8/jwoxpWadr1cENlzJ9ZRP
-         KfWKP+/ArD/veFq0qJ7m3xEP2keW8QkCCwGylaonQezOne977MhSaDbzS36+jFZB0BHZ
-         A2uCuPY3c/kB1sUMPve3ZyvWyiNMbpyOQDH11TEoFs8HR2JMBoGEnwM14Icpkdu1Y/6f
-         r6KQ==
-X-Gm-Message-State: AOJu0YzwiajZxQkkDqk4f+iO25lI3AhQAJ211Z0h+Zd/ORAzzTLqLKbP
-	+laDe2+AMZY54/68I+QGf9LP+A/Tgme+nVzhEcnqEWIjRzGBx/1oQH71
-X-Gm-Gg: ASbGncs7xy/kmimvnfbBwULNKfwjEC9nbns2S7EHW/LEOdqUAwZS6dmDM4GKLMMwNbl
-	DbQBkA6EYa0QQwQPCGzrUVXMOcANx6VdFDN5nCJcRsphcBx4LAWpaKsGebLeTQTSS43ySGTmDUG
-	NlZqCdZ1yDFoAtQ+L60x1+HeBHiJltJiKpdUe4eBeN5l0hnqUywG6UO5NUFCCvMCpxdGvAysQW0
-	8A83x5clO3hcCe/FKGWt3oLc9YoEiz863MUnKCR3UHRp7jS4UKn1pgqWngrRrMkaiqLoQ8wrsO3
-	p37SlJP2M1Yg6+bSuVUUhCAtTJwuFy1wANNRixihGDYxrCfMgmsVmdfIGsRUZyC8ml5Oq69EoLu
-	sfB0/cI5bxPPvPQmxfSMvp6zP4lp098AxUvTFRoxClBYEJ/zfjIt0c7S1SxyE
-X-Google-Smtp-Source: AGHT+IFzkzlg5qvwZtEZT8fzkcd3hd2rUaO5hm9g8vonrayjqjoRk3tCk4y+jncoR7uk4ktuUR/GJw==
-X-Received: by 2002:a05:600c:64c6:b0:477:df7:b020 with SMTP id 5b1f17b1804b1-477308303acmr125167635e9.18.1762270211867;
-        Tue, 04 Nov 2025 07:30:11 -0800 (PST)
+        bh=UFJkzbwxxik4oscQ6TXhFhcWTB1PZD+RGt5U5NpFjPk=;
+        b=f3LsXP4+Zzk8eZSgVxQm9DPMblUbXKb3sM1x9ASFyJS/oUP/EccprSHFMyouctSmTT
+         BeBLtqvjvaVp34+fsvl8350zrO0A53MaW0sVgFiMhOZCMjleuapHdLPTZMonTOpTcjD8
+         JFZg8E3hjsK0pSWAwEVcQToyW8raR4Q719MktiWsLW5+T407F2obgqSw85eCDPT0v7eE
+         hVcwNB23+uy5MDLseWmnATB7OatCUWolqOPbEh92kkENEWPuwwG6EdC0y6sUI6NG3c1m
+         cA16x7dqHU/l/KPl9YePQvqtPWgClDHOy2lN1617PPOq5YBg2pn8ExxWceMpzjiumRNC
+         Hx3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762270213; x=1762875013;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UFJkzbwxxik4oscQ6TXhFhcWTB1PZD+RGt5U5NpFjPk=;
+        b=AeYk4GxRoDb1AUbIVCE4UB8FJtrf8SErfX/7rKkqMTf2PW903FPXmHHYNVBilx0YX1
+         atyd+IwAN133JHxrsvMnnVsQCC3zu7cEW1bD1DU96e0WpEFSQSN1TOHUB1NrSvTR2PeQ
+         RVJcW3P/F06T/roYhYjo0angzAfzVtvfvjVelTt6SZBQQ4e4vuM7rJ9fGUGkgycyZr/q
+         0mi5CixQSwYDpsy1lxXkoOJwDs6PWAVP37KlbsqAqf39ug2FQYv5Jj0Pzt/HyTfebBxP
+         DIF46t08xKcXCPovXzu78BLkOGeeBqfcyRkKTzV78APuqdmDtUkpa+BOrBd2OBP/+PM4
+         GSDA==
+X-Gm-Message-State: AOJu0YwOUXkjzZe1lcc7VdwKulrEUxFpoMDQYRtpX8PWbazY0GzZ9qFt
+	rbVoSWh2uBe3CtiWe4h2aT/ftklU4dRq18JNG6x8PTNhp835QcRCkY6u
+X-Gm-Gg: ASbGncu4QPQYi59SXj9jr81A8tb+EOTuDQBLtudCzLtVrlY/fhkatg8B9ONznjbolNt
+	AsS3Oi2O9fDfsEjFf8LnrRZpzHXPqq0+IcjQErx+FIsiysrWGgxSiXh8DLRMtIEaanI9z2gvgjd
+	WabZ7LXPBwa0XHPHHsfLZYdEeV18xOWed73pvt/oC1IqqJWtqp0GYyudR+YoCP8vVk6ViVHbENU
+	LsM/3SHSquM5zP50SKwQQzI+ISkPWluqyuKbiar9kvtYfLqSCGNKwkH2VeaLhKRPzFeFkFBfduo
+	viRwshQ8AgdpT5GUxUVakpZ/eAWPGo7vHxhAHDg7+62SVeuyN9c9opg9vlA8rMx+ayULCNoehbW
+	IvlviKMKbi06fSH/0CHsNZetAtLYuJ4g6+cvZg+a8SGEQVhaDARpVSUSI22Uf
+X-Google-Smtp-Source: AGHT+IHd5SOI6igcRNmU5Z/Jy1JEfWWSiDF4VPrDUu0V1jsosfKgfCmQVvf0rf5IYfkJ8XCo++FCyw==
+X-Received: by 2002:a05:6000:2c0b:b0:428:5860:48c0 with SMTP id ffacd0b85a97d-429bd672650mr12342861f8f.7.1762270212836;
+        Tue, 04 Nov 2025 07:30:12 -0800 (PST)
 Received: from localhost ([2620:10d:c092:500::6:9cb5])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477558e695esm20876385e9.2.2025.11.04.07.30.11
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429dc18efd3sm5172610f8f.5.2025.11.04.07.30.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Nov 2025 07:30:11 -0800 (PST)
+        Tue, 04 Nov 2025 07:30:12 -0800 (PST)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Subject: [PATCH bpf v2 0/2] bpf: add _impl suffix for kfuncs with implicit
- args
-Date: Tue, 04 Nov 2025 15:29:53 +0000
-Message-Id: <20251104-implv2-v2-0-6dbc35f39f28@meta.com>
+Date: Tue, 04 Nov 2025 15:29:54 +0000
+Subject: [PATCH bpf v2 1/2] bpf:add _impl suffix for
+ bpf_task_work_schedule* kfuncs
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,80 +83,220 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAPEbCmkC/x2MywqAIBAAf0X2nGCLduhXokPaVgs9REOK8N+zj
- jMM80CkwBShFQ8EShz52AtgJcAtwz6T5LEwoEJT10pL3vyaUI6N05bQGIUNlNgHmvj6Rx1YP0F
- f5MLxPML9zXPOL9eeyYNsAAAA
-X-Change-ID: 20251104-implv2-d6c4be255026
+Content-Transfer-Encoding: 7bit
+Message-Id: <20251104-implv2-v2-1-6dbc35f39f28@meta.com>
+References: <20251104-implv2-v2-0-6dbc35f39f28@meta.com>
+In-Reply-To: <20251104-implv2-v2-0-6dbc35f39f28@meta.com>
 To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
  daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1762270210; l=2336;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1762270210; l=8781;
  i=yatsenko@meta.com; s=20251031; h=from:subject:message-id;
- bh=57dj8uPvxQsBZBw1ICgfwNGGfh34CWNQ/xLOi/SZzTs=;
- b=ZJ+6RmST390Yzk2dSbpHU45HZO7/6bcmsYZCkp9Ow7B0Zv+qX/X840sctKYZ5GVonMI3Efj8I
- fOal9IVcmqBC7w2QhYElUiV2VzX5noC/v0hMAuO6Rpp4msRfoKjA0oQ
+ bh=PyxQEkOBuveFXjykSxYfjghGFj0Qu8PGyPAsS/HpxM0=;
+ b=xVIrZxmW8hTpWJ7l4tRXgM6gooXIlPEUYF9j+h4BhdabYYCxO0SIoWD6J5Du07EsmhWe+2I0r
+ ZgLLV0MEZydC6AR30oUKu7jzLY3yji4thensD4TWDPEdlIpL7GV+IC0
 X-Developer-Key: i=yatsenko@meta.com; a=ed25519;
  pk=TFoLStOoH/++W4HJHRgNr8zj8vPFB1W+/QECPcQygzo=
 
-We’re introducing support for implicit kfunc arguments and need to
-rename new kfuncs to comply with the naming convention.
-This new feature, will for each kfunc of the form:
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
-`bpf_foo_impl(args..., aux__prog)`
+Rename:
+bpf_task_work_schedule_resume()->bpf_task_work_schedule_resume_impl()
+bpf_task_work_schedule_signal()->bpf_task_work_schedule_signal_impl()
 
-generate a public BTF type:
-
-`bpf_foo(args...)`
-
-and the verifier will resolve calls to bpf_foo() to bpf_foo_impl(),
-supplying a valid struct bpf_prog_aux via aux__prog.
-
-Three kfuncs added in 6.18 don’t follow this *_impl convention and
-therefore won’t participate in the new mechanism:
- * bpf_task_work_schedule_resume()
- * bpf_task_work_schedule_signal()
- * bpf_stream_vprintk()
-
-Rename them to align with the implicit-arg flow:
-bpf_task_work_schedule_resume() -> bpf_task_work_schedule_resume_impl()
-bpf_task_work_schedule_signal() -> bpf_task_work_schedule_signal_impl()
-bpf_stream_vprintk() -> bpf_stream_vprintk_impl()
-
-The implicit-arg mechanism is not in tree yet, so callers must switch to
-the *_impl names for now. Once the new mechanism lands, the plain
-names (without _impl) will be reintroduced as BTF-visible entry points
-and will resolve to the _impl versions automatically.
+This aligns task work scheduling kfuncs with the naming scheme required
+by the implicit-argument feature.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
-Changes in v1:
-- Split commit into 2
-- Rebase on the correct branch
-- Link to v1: https://lore.kernel.org/all/20251103232319.122965-1-mykyta.yatsenko5@gmail.com/
-
----
-Mykyta Yatsenko (2):
-      bpf:add _impl suffix for bpf_task_work_schedule* kfuncs
-      bpf:add _impl suffix for bpf_stream_vprintk() kfunc
-
- kernel/bpf/helpers.c                               | 26 +++++++++++---------
- kernel/bpf/stream.c                                |  3 ++-
- kernel/bpf/verifier.c                              | 12 +++++-----
- tools/bpf/bpftool/Documentation/bpftool-prog.rst   |  2 +-
- tools/lib/bpf/bpf_helpers.h                        | 28 +++++++++++-----------
- tools/testing/selftests/bpf/progs/stream_fail.c    |  6 ++---
- tools/testing/selftests/bpf/progs/task_work.c      |  6 ++---
- tools/testing/selftests/bpf/progs/task_work_fail.c |  8 +++----
+ kernel/bpf/helpers.c                               | 24 +++++++++++++---------
+ kernel/bpf/verifier.c                              | 12 +++++------
+ tools/testing/selftests/bpf/progs/task_work.c      |  6 +++---
+ tools/testing/selftests/bpf/progs/task_work_fail.c |  8 ++++----
  .../testing/selftests/bpf/progs/task_work_stress.c |  4 ++--
- 9 files changed, 50 insertions(+), 45 deletions(-)
----
-base-commit: 6146a0f1dfae5d37442a9ddcba012add260bceb0
-change-id: 20251104-implv2-d6c4be255026
+ 5 files changed, 29 insertions(+), 25 deletions(-)
 
-Best regards,
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index eb25e70e0bdc0332edd21cde66d9aaadb2090312..33173b027ccf8893ce18aad474b88f8544f7b344 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -4169,7 +4169,8 @@ static int bpf_task_work_schedule(struct task_struct *task, struct bpf_task_work
+ }
+ 
+ /**
+- * bpf_task_work_schedule_signal - Schedule BPF callback using task_work_add with TWA_SIGNAL mode
++ * bpf_task_work_schedule_signal_impl - Schedule BPF callback using task_work_add with TWA_SIGNAL
++ * mode
+  * @task: Task struct for which callback should be scheduled
+  * @tw: Pointer to struct bpf_task_work in BPF map value for internal bookkeeping
+  * @map__map: bpf_map that embeds struct bpf_task_work in the values
+@@ -4178,15 +4179,17 @@ static int bpf_task_work_schedule(struct task_struct *task, struct bpf_task_work
+  *
+  * Return: 0 if task work has been scheduled successfully, negative error code otherwise
+  */
+-__bpf_kfunc int bpf_task_work_schedule_signal(struct task_struct *task, struct bpf_task_work *tw,
+-					      void *map__map, bpf_task_work_callback_t callback,
+-					      void *aux__prog)
++__bpf_kfunc int bpf_task_work_schedule_signal_impl(struct task_struct *task,
++						   struct bpf_task_work *tw, void *map__map,
++						   bpf_task_work_callback_t callback,
++						   void *aux__prog)
+ {
+ 	return bpf_task_work_schedule(task, tw, map__map, callback, aux__prog, TWA_SIGNAL);
+ }
+ 
+ /**
+- * bpf_task_work_schedule_resume - Schedule BPF callback using task_work_add with TWA_RESUME mode
++ * bpf_task_work_schedule_resume_impl - Schedule BPF callback using task_work_add with TWA_RESUME
++ * mode
+  * @task: Task struct for which callback should be scheduled
+  * @tw: Pointer to struct bpf_task_work in BPF map value for internal bookkeeping
+  * @map__map: bpf_map that embeds struct bpf_task_work in the values
+@@ -4195,9 +4198,10 @@ __bpf_kfunc int bpf_task_work_schedule_signal(struct task_struct *task, struct b
+  *
+  * Return: 0 if task work has been scheduled successfully, negative error code otherwise
+  */
+-__bpf_kfunc int bpf_task_work_schedule_resume(struct task_struct *task, struct bpf_task_work *tw,
+-					      void *map__map, bpf_task_work_callback_t callback,
+-					      void *aux__prog)
++__bpf_kfunc int bpf_task_work_schedule_resume_impl(struct task_struct *task,
++						   struct bpf_task_work *tw, void *map__map,
++						   bpf_task_work_callback_t callback,
++						   void *aux__prog)
+ {
+ 	return bpf_task_work_schedule(task, tw, map__map, callback, aux__prog, TWA_RESUME);
+ }
+@@ -4377,8 +4381,8 @@ BTF_ID_FLAGS(func, bpf_strnstr);
+ BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
+ #endif
+ BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_task_work_schedule_signal, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_task_work_schedule_resume, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_task_work_schedule_signal_impl, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_task_work_schedule_resume_impl, KF_TRUSTED_ARGS)
+ BTF_KFUNCS_END(common_btf_ids)
+ 
+ static const struct btf_kfunc_id_set common_kfunc_set = {
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ff40e5e65c435862e9ecd3ed37139cc177a13ea1..8314518c8d93ae16235e6f2fe6c5c28c45cb81d2 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12259,8 +12259,8 @@ enum special_kfunc_type {
+ 	KF_bpf_res_spin_lock_irqsave,
+ 	KF_bpf_res_spin_unlock_irqrestore,
+ 	KF___bpf_trap,
+-	KF_bpf_task_work_schedule_signal,
+-	KF_bpf_task_work_schedule_resume,
++	KF_bpf_task_work_schedule_signal_impl,
++	KF_bpf_task_work_schedule_resume_impl,
+ };
+ 
+ BTF_ID_LIST(special_kfunc_list)
+@@ -12331,13 +12331,13 @@ BTF_ID(func, bpf_res_spin_unlock)
+ BTF_ID(func, bpf_res_spin_lock_irqsave)
+ BTF_ID(func, bpf_res_spin_unlock_irqrestore)
+ BTF_ID(func, __bpf_trap)
+-BTF_ID(func, bpf_task_work_schedule_signal)
+-BTF_ID(func, bpf_task_work_schedule_resume)
++BTF_ID(func, bpf_task_work_schedule_signal_impl)
++BTF_ID(func, bpf_task_work_schedule_resume_impl)
+ 
+ static bool is_task_work_add_kfunc(u32 func_id)
+ {
+-	return func_id == special_kfunc_list[KF_bpf_task_work_schedule_signal] ||
+-	       func_id == special_kfunc_list[KF_bpf_task_work_schedule_resume];
++	return func_id == special_kfunc_list[KF_bpf_task_work_schedule_signal_impl] ||
++	       func_id == special_kfunc_list[KF_bpf_task_work_schedule_resume_impl];
+ }
+ 
+ static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
+diff --git a/tools/testing/selftests/bpf/progs/task_work.c b/tools/testing/selftests/bpf/progs/task_work.c
+index 23217f06a3ece641089c1ea6a470eccc82e0d1fa..663a80990f8f8759f470d2f874d02485b072a5e1 100644
+--- a/tools/testing/selftests/bpf/progs/task_work.c
++++ b/tools/testing/selftests/bpf/progs/task_work.c
+@@ -66,7 +66,7 @@ int oncpu_hash_map(struct pt_regs *args)
+ 	if (!work)
+ 		return 0;
+ 
+-	bpf_task_work_schedule_resume(task, &work->tw, &hmap, process_work, NULL);
++	bpf_task_work_schedule_resume_impl(task, &work->tw, &hmap, process_work, NULL);
+ 	return 0;
+ }
+ 
+@@ -80,7 +80,7 @@ int oncpu_array_map(struct pt_regs *args)
+ 	work = bpf_map_lookup_elem(&arrmap, &key);
+ 	if (!work)
+ 		return 0;
+-	bpf_task_work_schedule_signal(task, &work->tw, &arrmap, process_work, NULL);
++	bpf_task_work_schedule_signal_impl(task, &work->tw, &arrmap, process_work, NULL);
+ 	return 0;
+ }
+ 
+@@ -102,6 +102,6 @@ int oncpu_lru_map(struct pt_regs *args)
+ 	work = bpf_map_lookup_elem(&lrumap, &key);
+ 	if (!work || work->data[0])
+ 		return 0;
+-	bpf_task_work_schedule_resume(task, &work->tw, &lrumap, process_work, NULL);
++	bpf_task_work_schedule_resume_impl(task, &work->tw, &lrumap, process_work, NULL);
+ 	return 0;
+ }
+diff --git a/tools/testing/selftests/bpf/progs/task_work_fail.c b/tools/testing/selftests/bpf/progs/task_work_fail.c
+index 77fe8f28facdb60cd69e77b72ea24db8f97004f7..1270953fd0926f83f9ad7112d78e1b86bd1e802c 100644
+--- a/tools/testing/selftests/bpf/progs/task_work_fail.c
++++ b/tools/testing/selftests/bpf/progs/task_work_fail.c
+@@ -53,7 +53,7 @@ int mismatch_map(struct pt_regs *args)
+ 	work = bpf_map_lookup_elem(&arrmap, &key);
+ 	if (!work)
+ 		return 0;
+-	bpf_task_work_schedule_resume(task, &work->tw, &hmap, process_work, NULL);
++	bpf_task_work_schedule_resume_impl(task, &work->tw, &hmap, process_work, NULL);
+ 	return 0;
+ }
+ 
+@@ -65,7 +65,7 @@ int no_map_task_work(struct pt_regs *args)
+ 	struct bpf_task_work tw;
+ 
+ 	task = bpf_get_current_task_btf();
+-	bpf_task_work_schedule_resume(task, &tw, &hmap, process_work, NULL);
++	bpf_task_work_schedule_resume_impl(task, &tw, &hmap, process_work, NULL);
+ 	return 0;
+ }
+ 
+@@ -76,7 +76,7 @@ int task_work_null(struct pt_regs *args)
+ 	struct task_struct *task;
+ 
+ 	task = bpf_get_current_task_btf();
+-	bpf_task_work_schedule_resume(task, NULL, &hmap, process_work, NULL);
++	bpf_task_work_schedule_resume_impl(task, NULL, &hmap, process_work, NULL);
+ 	return 0;
+ }
+ 
+@@ -91,6 +91,6 @@ int map_null(struct pt_regs *args)
+ 	work = bpf_map_lookup_elem(&arrmap, &key);
+ 	if (!work)
+ 		return 0;
+-	bpf_task_work_schedule_resume(task, &work->tw, NULL, process_work, NULL);
++	bpf_task_work_schedule_resume_impl(task, &work->tw, NULL, process_work, NULL);
+ 	return 0;
+ }
+diff --git a/tools/testing/selftests/bpf/progs/task_work_stress.c b/tools/testing/selftests/bpf/progs/task_work_stress.c
+index 90fca06fff56ca9a03fee028ca1b69db145a227b..55e555f7f41be694f9b3d98f324b402f9355f77d 100644
+--- a/tools/testing/selftests/bpf/progs/task_work_stress.c
++++ b/tools/testing/selftests/bpf/progs/task_work_stress.c
+@@ -51,8 +51,8 @@ int schedule_task_work(void *ctx)
+ 		if (!work)
+ 			return 0;
+ 	}
+-	err = bpf_task_work_schedule_signal(bpf_get_current_task_btf(), &work->tw, &hmap,
+-					    process_work, NULL);
++	err = bpf_task_work_schedule_signal_impl(bpf_get_current_task_btf(), &work->tw, &hmap,
++						 process_work, NULL);
+ 	if (err)
+ 		__sync_fetch_and_add(&schedule_error, 1);
+ 	else
+
 -- 
-Mykyta Yatsenko <yatsenko@meta.com>
+2.51.1
 
 
