@@ -1,175 +1,188 @@
-Return-Path: <bpf+bounces-73483-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73484-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47D77C329A1
-	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 19:20:28 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56C35C32983
+	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 19:19:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E15E3BB189
-	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 18:15:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4EF0A4F483E
+	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 18:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 076D834A772;
-	Tue,  4 Nov 2025 18:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE7233EB09;
+	Tue,  4 Nov 2025 18:14:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Og6FUUUG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CYncNzCz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f41.google.com (mail-yx1-f41.google.com [74.125.224.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B765A33E377
-	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 18:10:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52CEE33DEFD
+	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 18:14:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762279846; cv=none; b=D+nrvyIkmjkgWHoK4J8nYwD5yBz9S02buNNUQF3kO4BQXkU2bL8NwUwcINIFhIN3Y7jhzMQKHK8hlbeaXRUa/+zN5WazpNEowwujGGYiDj4MS+VcRW9g5WwKyBhbuC05iLN3XkeQaWvZgfNVfubz1xOM+6pLhVUhmEP9navPNbM=
+	t=1762280059; cv=none; b=nnThWvFRgzTAFGlb7SwZQuuk6LPMmTHbxah+cTeJzOCA0CurcvCkG6otlwvY+Z2qpPTPUGkMiDvQlxsKmkL1RaBp+zDnzyOoKZRKd1My0354o8kW4DsR5AE3w6ykfHHbGn4BNFIiepgpWVNBXiyix1qA74RoNfOjw6g3RN9Qdp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762279846; c=relaxed/simple;
-	bh=gn+1cyCQ/07KM855F/NeAln3hHIcHTws74h6tFo6Okc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dM8ddCpacAYvDSsm/U2Vc7iq/efopECrA/rv2gAl5xMPBDyVj0jCohSMITrsNajQhmNplExKUyhgYxlbpKGhjhOwiYwD/GO3TLxWv4HcMl9m+yB5/qMyr/imY8ToAqKLygFgm5BNMiyS8blWgLX0m9AecbVHuHzPnbdysygOl3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Og6FUUUG; arc=none smtp.client-ip=74.125.224.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f41.google.com with SMTP id 956f58d0204a3-63e2cc1ac4aso5556002d50.2
-        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 10:10:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762279844; x=1762884644; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=23KFcuOuxCVXm913D7qKqfrC6/WNaTrfBBTB+yzkDBg=;
-        b=Og6FUUUGMkVX2fgpRpZ3MLvoY+fyppTtg5agAeVmHO/+VNY4DtVSa5DrKITyHw6ncW
-         wmrDOXBh+ydsthbwf4n6DE314ORsE8b2cdEOneThC44c+aB+rzGNfDPfbV1kAejOAMU6
-         ODvyzd77PJJ17NIRzTK2WQYl7MB3ggSTowtksAkNeClzTjBwTzJrTNN9u3iSa2kEa63L
-         +7G1jXmehA/3p2V8uSpuzsd8a0MzN8kTIAceFrUol9zITe8rateS1WWO9kj0LqvseegT
-         yNNgOmTmGQ6dKfTZkz+NzWVXcxPvThN6IFpbTqIQWqyEbY1a1YRP+mEzX0YLl95NnJS6
-         egiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762279844; x=1762884644;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=23KFcuOuxCVXm913D7qKqfrC6/WNaTrfBBTB+yzkDBg=;
-        b=PNHuLbwatCxnH+2erOiihwYFCFX2qbEPEROd6t6EUaez9uIGx5W1HbjbA45LQ+tQSE
-         jZl3FXQLmNbnzYfvBrvnZP57MD6iS3Qw9WvMtUCvl07kfybcrL+fWCoQpQ1iTHptlWe1
-         TgZS1pvr/Sgo4cashpvxEF3RmO8YjJkhHrsOEXNpAAuaeu76Pap87mV9uJQ5NBoBVN0s
-         UZAtfvAc2IaxkeeglXVs9puR/JkuJvgOeMVlm/axRY+/EJnVXjVy5BOVtzApV+Bc98TU
-         4Dqrfgf8UNJQrIWptpm4Kv7gc+/enpVDsG0lAdILa+JFb7MTmGfP5YHonpsLstDrq7fo
-         ZGpg==
-X-Gm-Message-State: AOJu0YzuLfLEsJRJ7Uk1cXXaGJzVAxTPGuCApek/1tC4T1WDG6R+cjW3
-	ZwDO8/0idTRtT+mt/gASSX4zD9OOG3j9lXOvs3KZTzHlD4MPWiH9cVQIARdSvwPaKlVL/S9IMpx
-	UUb/mGEQ1FirtzpV+uJdoTTytJXtaOHQ=
-X-Gm-Gg: ASbGncvDIYDuPijHHkWhMbma6lDjgEf4ePuHygtE5sFbqJUgOFjAaN/RSLYZhpKfn7b
-	s0HznVdhszjkGCnFJGfvqpZbFebvRC6c7yPaNaKb5B+dErIqq4sDbzLuM3Z7Wzs5TK2gclbtD8v
-	DQo2Pj4ibp22OR9kix2xlH5dt23SwSdQuldB6LtsF7BjJJWo2//w8MlC3rMUoz7P+HuIJ/wweQr
-	GeRg34Yoxs9M/lGElxE6gHtb4aIxdM4E5McZXO9+RTEs+I1GaYxW8bCvmIMTzupYevWJhjf0jxN
-X-Google-Smtp-Source: AGHT+IHTNpRh2KHG6Pbc5u7di/OTCMr9jG612AsDubzWqLWd8MsoVItAKkt/jwmEPvVdEYPbEPahuJtYHKvWl/RrWm4=
-X-Received: by 2002:a05:690e:1559:20b0:63f:c10e:6422 with SMTP id
- 956f58d0204a3-63fd34bb6c0mr380771d50.8.1762279843545; Tue, 04 Nov 2025
- 10:10:43 -0800 (PST)
+	s=arc-20240116; t=1762280059; c=relaxed/simple;
+	bh=eW9gLOYQ4PO/YSLIAFmpY62Rr4JFZ49YbcwqvrnIPBU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=DkCYjG5BSb2P1jyLXBJQr5fzj82OI7W/pTnvktuPwY5hXc/GX1BHyCX60K0/3lgJNpTNjX1D/RMKgaEI6GEiMWybeULOAUodOIe4xMsG2kc6xnN1m01sG2djyE3qmwTpnstv5PGg8oS1rJcJsPcULGubhNqgq3jo8/woLQkA99A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CYncNzCz; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762280054;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NAWdqQAMF5nun7wl28IZyFWxTMsXgZF6tpsdkVCFUVk=;
+	b=CYncNzCzYkQqitwhPYqZZ2XB5M4zBBImGrmM8RswwHaI5fjYIChKwb+qJ+P6ev/4Y8jaEV
+	UINgarZFhBJlyEkb3eGVjNfCyAerXhNhDDKh9POde27z+UNbv9dAnXxmOAcCOohdCIqP0I
+	m20QJOx7Cz/kEmiqvkHdkwAZ8kL8w+w=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+  linux-kernel@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,
+  Suren Baghdasaryan <surenb@google.com>,  Shakeel Butt
+ <shakeel.butt@linux.dev>,  Johannes Weiner <hannes@cmpxchg.org>,  Andrii
+ Nakryiko <andrii@kernel.org>,  JP Kobryn <inwardvessel@gmail.com>,
+  linux-mm@kvack.org,  cgroups@vger.kernel.org,  bpf@vger.kernel.org,
+  Martin KaFai Lau <martin.lau@kernel.org>,  Song Liu <song@kernel.org>,
+  Kumar Kartikeya Dwivedi <memxor@gmail.com>,  Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 06/23] mm: introduce BPF struct ops for OOM handling
+In-Reply-To: <aQm2zqmD9mHE1psg@tiehlicka> (Michal Hocko's message of "Tue, 4
+	Nov 2025 09:18:22 +0100")
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+	<20251027231727.472628-7-roman.gushchin@linux.dev>
+	<aQR7HIiQ82Ye2UfA@tiehlicka> <875xbsglra.fsf@linux.dev>
+	<aQj7uRjz668NNrm_@tiehlicka> <87a512muze.fsf@linux.dev>
+	<aQm2zqmD9mHE1psg@tiehlicka>
+Date: Tue, 04 Nov 2025 10:14:05 -0800
+Message-ID: <87h5v93bte.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251104172652.1746988-4-ameryhung@gmail.com> <6fbae8b38c532ccd1accfa75df7614f56b6a49d6b4a851b525a59b7a07f33d25@mail.kernel.org>
-In-Reply-To: <6fbae8b38c532ccd1accfa75df7614f56b6a49d6b4a851b525a59b7a07f33d25@mail.kernel.org>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Tue, 4 Nov 2025 10:10:31 -0800
-X-Gm-Features: AWmQ_bmSxUWeL0HOMYWBJwMhgEG7HyVRMl5w44JIdR-0dpIc-mlNp10AJxj4nFk
-Message-ID: <CAMB2axN+hsZ0VQHYvw-Z31EK-7wF7SVr2nOv9=e5h=wLW_cq+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/7] bpf: Pin associated struct_ops when
- registering async callback
-To: bot+bpf-ci@kernel.org
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, tj@kernel.org, martin.lau@kernel.org, 
-	kernel-team@meta.com, ast@kernel.org, eddyz87@gmail.com, 
-	yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Nov 4, 2025 at 10:03=E2=80=AFAM <bot+bpf-ci@kernel.org> wrote:
->
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index 865b0dae3..557570479 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
->
-> [ ... ]
->
-> > +static int bpf_async_res_get(struct bpf_async_res *res, struct bpf_pro=
-g *prog)
-> > +{
-> > +     struct bpf_map *st_ops_assoc =3D NULL;
-> > +     int err;
-> > +
-> > +     prog =3D bpf_prog_inc_not_zero(prog);
-> > +     if (IS_ERR(prog))
-> > +             return PTR_ERR(prog);
-> > +
-> > +     st_ops_assoc =3D READ_ONCE(prog->aux->st_ops_assoc);
-> > +     if (prog->type =3D=3D BPF_PROG_TYPE_STRUCT_OPS &&
-> > +         st_ops_assoc && st_ops_assoc !=3D BPF_PTR_POISON) {
-> > +             st_ops_assoc =3D bpf_map_inc_not_zero(st_ops_assoc);
-> > +             if (IS_ERR(st_ops_assoc)) {
-> > +                     err =3D PTR_ERR(st_ops_assoc);
-> > +                     goto put_prog;
-> > +             }
-> > +     }
->
-> Can this race with bpf_prog_disassoc_struct_ops()? Between reading
-> st_ops_assoc and incrementing it, another thread could dissociate the
-> map:
+Michal Hocko <mhocko@suse.com> writes:
 
-This is fine. struct_ops map will wait for struct_ops BPF programs to
-finish running (an RCU gp) before freeing itself. Therefore, when
-another thread is freeing the map and this thread is calling
-bpf_async_res_get(), if this thread still sees
-prog->aux->st_ops_assoc, bpf_map_inc_not_zero() will fail and stop the
-async callback from being registered.
+> On Mon 03-11-25 17:45:09, Roman Gushchin wrote:
+>> Michal Hocko <mhocko@suse.com> writes:
+>> 
+>> > On Sun 02-11-25 13:36:25, Roman Gushchin wrote:
+>> >> Michal Hocko <mhocko@suse.com> writes:
+> [...]
+>> > No, I do not feel strongly one way or the other but I would like to
+>> > understand thinking behind that. My slight preference would be to have a
+>> > single return status that clearly describe the intention. If you want to
+>> > have more flexible chaining semantic then an enum { IGNORED, HANDLED,
+>> > PASS_TO_PARENT, ...} would be both more flexible, extensible and easier
+>> > to understand.
+>> 
+>> The thinking is simple:
+>> 1) Most users will have a single global bpf oom policy, which basically
+>> replaces the in-kernel oom killer.
+>> 2) If there are standalone containers, they might want to do the same on
+>> their level. And the "host" system doesn't directly control it.
+>> 3) If for some reason the inner oom handler fails to free up some
+>> memory, there are two potential fallback options: call the in-kernel oom
+>> killer for that memory cgroup or call an upper level bpf oom killer, if
+>> there is one.
+>> 
+>> I think the latter is more logical and less surprising. Imagine you're
+>> running multiple containers and some of them implement their own bpf oom
+>> logic and some don't. Why would we treat them differently if their bpf
+>> logic fails?
+>
+> I think both approaches are valid and it should be the actual handler to
+> tell what to do next. If the handler would prefer the in-kernel fallback
+> it should be able to enforce that rather than a potentially unknown bpf
+> handler up the chain.
+
+The counter-argument is that cgroups are hierarchical and higher level
+cgroups should be able to enforce the desired behavior for their
+sub-trees. I'm not sure what's more important here and have to think
+more about it.
+Do you have an example when it might be important for container to not
+pass to a higher level bpf handler?
 
 >
->   bpf_async_res_get():
->     READ_ONCE(prog->aux->st_ops_assoc)  // reads valid map pointer
+>> Re a single return value: I can absolutely specify return values as an
+>> enum, my point is that unlike the kernel code we can't fully trust the
+>> value returned from a bpf program, this is why the second check is in
+>> place.
 >
->   bpf_prog_disassoc_struct_ops():
->     guard(mutex)(&prog->aux->st_ops_assoc_mutex)
->     WRITE_ONCE(prog->aux->st_ops_assoc, NULL)
->     bpf_map_put(st_ops_assoc)  // potentially frees map
+> I do not understand this. Could you elaborate? Why we cannot trust the
+> return value but we can trust a combination of the return value and a
+> state stored in a helper structure?
+
+Imagine bpf program which does nothing and simple returns 1. Imagine
+it's loaded as a system-wide oom handler. This will effectively disable
+the oom killer and lead to a potential deadlock on memory.
+But it's a perfectly valid bpf program.
+This is something I want to avoid (and it's a common practice with other
+bpf programs).
+
+What I do I also rely on the value of the oom control's field, which is
+not accessible to the bpf program for write directly, but can be changed
+by calling certain helper functions, e.g. bpf_oom_kill_process.
+
+>> Can we just ignore the returned value and rely on the freed_memory flag?
 >
->   bpf_async_res_get():
->     bpf_map_inc_not_zero(st_ops_assoc)  // use-after-free
+> I do not think having a single freed_memory flag is more helpful. This
+> is just a number that cannot say much more than a memory has been freed.
+> It is not really important whether and how much memory bpf handler
+> believes it has freed. It is much more important to note whether it
+> believes it is done, it needs assistance from a different handler up the
+> chain or just pass over to the in-kernel implementation.
+
+Btw in general in a containerized environment a bpf handler knows
+nothing about bpf programs up in the cgroup hierarchy... So it only
+knows whether it was able to free some memory or not.
+
 >
-> The map could be freed via RCU and memory reused before
-> bpf_map_inc_not_zero() executes. Other functions that access
-> st_ops_assoc (bpf_prog_assoc_struct_ops and bpf_prog_disassoc_struct_ops)
-> hold prog->aux->st_ops_assoc_mutex. Additionally, bpf_map_inc_not_zero's
-> documentation states "map_idr_lock should have been held or the map
-> should have been protected by rcu read lock."
+>> Sure, but I don't think it bus us anything.
+>> 
+>> Also, I have to admit that I don't have an immediate production use case
+>> for nested oom handlers (I'm fine with a global one), but it was asked
+>> by Alexei Starovoitov. And I agree with him that the containerized case
+>> will come up soon, so it's better to think of it in advance.
 >
-> Should bpf_async_res_get() hold the st_ops_assoc_mutex or an RCU read
-> lock around the st_ops_assoc access?
+> I agree it is good to be prepared for that.
 >
-> > +
-> > +     res->prog =3D prog;
-> > +     res->st_ops_assoc =3D st_ops_assoc;
-> > +     return 0;
-> > +put_prog:
-> > +     bpf_prog_put(prog);
-> > +     return err;
-> > +}
+>> >> >> The bpf_handle_out_of_memory() callback program is sleepable to enable
+>> >> >> using iterators, e.g. cgroup iterators. The callback receives struct
+>> >> >> oom_control as an argument, so it can determine the scope of the OOM
+>> >> >> event: if this is a memcg-wide or system-wide OOM.
+>> >> >
+>> >> > This could be tricky because it might introduce a subtle and hard to
+>> >> > debug lock dependency chain. lock(a); allocation() -> oom -> lock(a).
+>> >> > Sleepable locks should be only allowed in trylock mode.
+>> >> 
+>> >> Agree, but it's achieved by controlling the context where oom can be
+>> >> declared (e.g. in bpf_psi case it's done from a work context).
+>> >
+>> > but out_of_memory is any sleepable context. So this is a real problem.
+>> 
+>> We need to restrict both:
+>> 1) where from bpf_out_of_memory() can be called (already done, as of now
+>> only from bpf_psi callback, which is safe).
+>> 2) which kfuncs are available to bpf oom handlers (only those, which are
+>> not trying to grab unsafe locks) - I'll double check it in thenext version.
 >
-> [ ... ]
->
->
-> ---
-> AI reviewed your patch. Please fix the bug or email reply why it's not a =
-bug.
-> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/READM=
-E.md
->
-> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/190776=
-79684
+> OK. All I am trying to say is that only safe sleepable locks are
+> trylocks and that should be documented because I do not think it can be
+> enforced
+
+It can! Not directly, but by controlling which kfuncs/helpers are
+available to bpf programs.
+I agree with you in principle re locks and necessary precaution here.
+
+Thanks!
 
