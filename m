@@ -1,145 +1,291 @@
-Return-Path: <bpf+bounces-73481-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73482-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F4C2C3283E
-	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 19:06:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1808C32854
+	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 19:08:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A64E218919DC
-	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 18:06:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67A6C42808A
+	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 18:08:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343F833E35A;
-	Tue,  4 Nov 2025 18:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6AB33DEFF;
+	Tue,  4 Nov 2025 18:08:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VT35av2h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KJrL8B9V"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 046D233E340
-	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 18:06:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5330226CF6
+	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 18:08:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762279567; cv=none; b=giVpjDguojAM/ATOS0UdX7x1TEdK0MC2GdJhWU+9GE/FTiQTTuikgagNk7Ch5wOhn7ig9JZn2J3BvuW//FBAS/gMRDsfrB4V8+qkun8BJwaJU8cF3Xi9TbKdfZksFosQuxjGPxPRrCmsU6QsLoaxm2yDkLk6aErTOsBT9o4aIW8=
+	t=1762279688; cv=none; b=MVRMVscvVofDXpBuOYxbJjIZiN8YwTL80lXWjH1azUf5fzrUGQI9TYUSJt0+e9MazHMtd1JGvDBTtaSkTMEvqkLrrFgWFHgJf6guocSolc+uZ061hKNDuRvu2h1+0cKPOCXxg6GJkcZMiU2yfDoHdYATtgIShrzfhYkBm0rwhcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762279567; c=relaxed/simple;
-	bh=H8ZLlmKkIwndxxldMhbidqOECMLkh9ZyAv5XpnMBfZ0=;
+	s=arc-20240116; t=1762279688; c=relaxed/simple;
+	bh=H+B0qEVhv/M/Hrjk3KWB9ja4t4CC1iXUb3hu7bcvErk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g/Kx07YhzFGNR/ZaV0XaKqtt1PklkSLo6nDmLGXijF5NF3wV3KZX5/TYUUaNxs3rrY8oEc21mBr13uWL38h2Y1VWXzayL+82lpgXeBpZIIUTLAeNHGkAmcl7l5VuYPhP531gjtCLqpGxoWqO9cMCd2yN/ftYqdJh8PTT2kxRkJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VT35av2h; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-42421b1514fso3437592f8f.2
-        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 10:06:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762279564; x=1762884364; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v+/Wwmhe4gMRlxnfZ9iBQlyHM5zdtf/Tn2dn5Yb0d1M=;
-        b=VT35av2hgQlduzyVHp5Xmk2ejVK/ps93A6K9Xdp/gWGsY4OD6eE9ankbPiRMbnGGyR
-         wC1G6Xz8u8O3Soh9/C27mFXvvDbbACU/AK1z0E+VQ3xH0v9nnwhIbAfmt3/p5JKoahrI
-         w4bNuahryzy97FbTUN6q4AvEI6Gt5NEyTVLTzUF4ocmsrHA3Zg8P2035aVM9QLr3EuNH
-         1QYhfdCqaUFi2RI1fyFflWMhoOp5Co4CPI6G14yATUbLn1a5BafWtO237Jlnqd9hGNZs
-         kpJGKKbfqNh5MRDMx8n4NHWqsHiT/4xSrRsxHZy4W5BobIkAG5ctUwKsw6fjes5LNnWh
-         kh3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762279564; x=1762884364;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v+/Wwmhe4gMRlxnfZ9iBQlyHM5zdtf/Tn2dn5Yb0d1M=;
-        b=wDXN/IkE0G19KLQcjymbUkayxjDCn7Tqq+oa1NjAaVkjJFE3meteJNdsmfC/KoZxiC
-         /D1kdVi/B9qqu+MPrkt6maqttJ4nnTEICePFGMFTwXmi9KWaKVQKK0TSdnhO/hkwxXWd
-         M0bYfMdGp0/xBrYbw3IOqJ6qS7iDaK19eX2lV3vgzkEsAMl0oDfr23+wnbxPADKjPHrQ
-         d2RbEEwaDwKZEXax8EOoVgY4tVDmS6TZIiX9Nn7Po2KA8Msv0EmyeTRiV1lrNTWyrIhK
-         x1AGL6Ma9V3ev6xl+GmzAwQBzrIEmSbM8p8FXq1WnT51Rnxfs7uh+kNvmarPbrUt6txo
-         vlpA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFTeUakJnV175QcjS3PJS9RCWu0HkblggdbWqlxIreEDirpVbO9+d25SsiD0TKMHuqbVo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxvRFWRH0bXFymLfUfgSZIImRVVWc8mHqr26a6as1CkBeGR5pMA
-	tGzC605fcgWE5J7U7maFoZOCidtSEiFTktfUSa9c/BVQhTQkSQJFMlgRaH1RKt03HLNj/RaRzdy
-	fCv6NiFCbDWD6qULEQfK6sSLTSZbG1OE=
-X-Gm-Gg: ASbGncsnsYPuudA8VsQDmv2BPCkZ2chKjid9PoB0ZHEtk/HjsU7to5rEF8yvtFmwrCh
-	AxWigjgGQDm7tmOM8om5Jo9dYFGLKE3b3QSlCOTAC06DfhvGcUUi5nWo1gVP1KW9l71RW3PFLdo
-	OCw2i5+8BJjseekCKdhOr8KUptYJpnPntzxUfhBTKjS/snCVW8KSaAVz44fakvujANmHYKmF2zj
-	7JmYX0uB7KSa+298iVE6FAU1a4PC5npqsx69ygyHdHdM8LGqG4gTHI6D4BnWW24DIhxJkr3Xpcn
-X-Google-Smtp-Source: AGHT+IF8H9oH0nkEuOTElGDe+MYYkeR6f6lN06d+QNuHQiJgkUEmSAkc/vBW6z2J2SwHJz6GDZCPTULxAFWi65X4kdo=
-X-Received: by 2002:a5d:5d09:0:b0:429:c54d:8bd3 with SMTP id
- ffacd0b85a97d-429e331287bmr142157f8f.53.1762279564101; Tue, 04 Nov 2025
- 10:06:04 -0800 (PST)
+	 To:Cc:Content-Type; b=SGzcqIpzLLzmPXCbY1+gmc1Tax3ewSsjnynDRBp+dRGhOwqmSKeumd5tuRIAL/h74SSX/v35FrmvLIDghKmaUJ5nyQoo8cyMnB+Qgvj/aB2wJ2TYmAhFvBg9pecTXZK9E8rtFRD5ZuhA1Nk+CQidi19qVL4UIaQ/MPf8B2Mr5/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KJrL8B9V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48B8BC4AF0D
+	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 18:08:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762279688;
+	bh=H+B0qEVhv/M/Hrjk3KWB9ja4t4CC1iXUb3hu7bcvErk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=KJrL8B9VsSLFRaN5Nv1r2sEA54BPIO+ykvVUGuuC08YenM2w7o8J20Ceh7r/NCmzj
+	 s+/VQhStBW6h0154jcj66OvTOKzoTYmHA4KoQHqhpkqymuqUgSzhPOFK428T7rF5rZ
+	 CM6CIC9CIRUaqwmp3Lf//Y4xAZARt4PPzAXnFBh1okMmZcTGMpRiR8hkrEdk8xS4VD
+	 i0UT0nODeY+9zE3P1Di1G8dOh73jcDZFxvRwDSydikmuYS/0GmWGDUJarf2amWYZWy
+	 3VqVc0kiCG6KaSsXelDoTIeuK9tK5oc0hNTIEeDA6CWKO75wyt5WOIX1UdYmfrRCj1
+	 gSWTA4WPA4vVw==
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-44fe4ba1c1bso240238b6e.2
+        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 10:08:08 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXmTQEQ+Bx3Xf6a/XPmsSPLYpPBgT70C+VP0CCc/LPD5lwgkYIFaBtNqjLR/qXRBDs4Z7Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzxdsmtZnQeyMHNjt/OH/dykVjR63XrnNfhFRgoi6b3h9L/nZ5X
+	AVoeUGped/JDf6TTXRjgupcDphPAILzRs2v4y1yvq/IAJ2VINNHv2rBKKkZxykCEhFG4IDZIMht
+	aIon8y7cVAo10gdwPUceHMOEbarkRBYg=
+X-Google-Smtp-Source: AGHT+IHrSDGsNm50EjcF44D9MNFIEETayiGYgQQjLT67U0YPEVK8ag1wTkiiHIa/UUFfTk6ozb0F0TfYt8pNd0QYGzw=
+X-Received: by 2002:a05:6808:c146:b0:44d:ba5b:ad34 with SMTP id
+ 5614622812f47-44fed503d77mr152270b6e.65.1762279687546; Tue, 04 Nov 2025
+ 10:08:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251104133004.2559222-1-martin.teichmann@xfel.eu> <866547a682b6a159bcbd46a58068c723654e1fcf72b2a09b24d19d927c4f1415@mail.kernel.org>
-In-Reply-To: <866547a682b6a159bcbd46a58068c723654e1fcf72b2a09b24d19d927c4f1415@mail.kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 4 Nov 2025 10:05:50 -0800
-X-Gm-Features: AWmQ_bmGKKFKd_xvv-QeHExL-gNS8D3kjmf-7AngORWzK9mKt7Wz7E8-hA7-INo
-Message-ID: <CAADnVQ+VQ-dE2LK1Lqv19g7GN4C7wP8bcwQu8NC_0CBKkhUnKg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf] bpf: properly verify tail call behavior
-To: bot+bpf-ci@kernel.org
-Cc: martin.teichmann@xfel.eu, bpf <bpf@vger.kernel.org>, 
-	Eduard <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Chris Mason <clm@meta.com>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>
+References: <20251028053136.692462-1-ankur.a.arora@oracle.com>
+ <20251028053136.692462-8-ankur.a.arora@oracle.com> <CAJZ5v0hSvzHfsE4nrEW-Ey0dnJ+m=dSU-f1RywGNU0Xyi3jXtQ@mail.gmail.com>
+ <87ms5ajp4c.fsf@oracle.com> <CAJZ5v0hQ7G9jvOv9VtRmsCKahBpUcPJMMOe07k_2mqsvggWcWg@mail.gmail.com>
+ <874irhjzcf.fsf@oracle.com> <CAJZ5v0i5-8eO6T_-Sr-K=3Up89+_qtJW7NSjDknJSkk3Nhu8BQ@mail.gmail.com>
+ <875xbxifs0.fsf@oracle.com>
+In-Reply-To: <875xbxifs0.fsf@oracle.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 4 Nov 2025 19:07:56 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0izSBR0_DeH5HVnSLFGRfV9WoSzbu9Mh5yvvuyrvw7fLg@mail.gmail.com>
+X-Gm-Features: AWmQ_bntcfH83903HLZKfZK6BYsGABjvLPwboKVkSn1BQkd0aPOXL15UK_L4_Us
+Message-ID: <CAJZ5v0izSBR0_DeH5HVnSLFGRfV9WoSzbu9Mh5yvvuyrvw7fLg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v7 7/7] cpuidle/poll_state: Poll via smp_cond_load_relaxed_timeout()
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pm@vger.kernel.org, bpf@vger.kernel.org, arnd@arndb.de, 
+	catalin.marinas@arm.com, will@kernel.org, peterz@infradead.org, 
+	akpm@linux-foundation.org, mark.rutland@arm.com, harisokn@amazon.com, 
+	cl@gentwo.org, ast@kernel.org, daniel.lezcano@linaro.org, memxor@gmail.com, 
+	zhenglifeng1@huawei.com, xueshuai@linux.alibaba.com, 
+	joao.m.martins@oracle.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 4, 2025 at 5:58=E2=80=AFAM <bot+bpf-ci@kernel.org> wrote:
+On Wed, Oct 29, 2025 at 10:01=E2=80=AFPM Ankur Arora <ankur.a.arora@oracle.=
+com> wrote:
 >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index ff40e5e65..4b7439a48 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
 >
-> [ ... ]
+> Rafael J. Wysocki <rafael@kernel.org> writes:
 >
-> > @@ -11884,6 +11888,24 @@ static int check_helper_call(struct bpf_verifi=
-er_env *env, struct bpf_insn *insn
-> >               env->prog->call_get_func_ip =3D true;
-> >       }
+> > On Wed, Oct 29, 2025 at 8:13=E2=80=AFPM Ankur Arora <ankur.a.arora@orac=
+le.com> wrote:
+> >>
+> >>
+> >> Rafael J. Wysocki <rafael@kernel.org> writes:
+> >>
+> >> > On Wed, Oct 29, 2025 at 5:42=E2=80=AFAM Ankur Arora <ankur.a.arora@o=
+racle.com> wrote:
+> >> >>
+> >> >>
+> >> >> Rafael J. Wysocki <rafael@kernel.org> writes:
+> >> >>
+> >> >> > On Tue, Oct 28, 2025 at 6:32=E2=80=AFAM Ankur Arora <ankur.a.aror=
+a@oracle.com> wrote:
+> >> >> >>
+> >> >> >> The inner loop in poll_idle() polls over the thread_info flags,
+> >> >> >> waiting to see if the thread has TIF_NEED_RESCHED set. The loop
+> >> >> >> exits once the condition is met, or if the poll time limit has
+> >> >> >> been exceeded.
+> >> >> >>
+> >> >> >> To minimize the number of instructions executed in each iteratio=
+n,
+> >> >> >> the time check is done only intermittently (once every
+> >> >> >> POLL_IDLE_RELAX_COUNT iterations). In addition, each loop iterat=
+ion
+> >> >> >> executes cpu_relax() which on certain platforms provides a hint =
+to
+> >> >> >> the pipeline that the loop busy-waits, allowing the processor to
+> >> >> >> reduce power consumption.
+> >> >> >>
+> >> >> >> This is close to what smp_cond_load_relaxed_timeout() provides. =
+So,
+> >> >> >> restructure the loop and fold the loop condition and the timeout=
+ check
+> >> >> >> in smp_cond_load_relaxed_timeout().
+> >> >> >
+> >> >> > Well, it is close, but is it close enough?
+> >> >>
+> >> >> I guess that's the question.
+> >> >>
+> >> >> >> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> >> >> >> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> >> >> >> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> >> >> >> ---
+> >> >> >>  drivers/cpuidle/poll_state.c | 29 ++++++++---------------------
+> >> >> >>  1 file changed, 8 insertions(+), 21 deletions(-)
+> >> >> >>
+> >> >> >> diff --git a/drivers/cpuidle/poll_state.c b/drivers/cpuidle/poll=
+_state.c
+> >> >> >> index 9b6d90a72601..dc7f4b424fec 100644
+> >> >> >> --- a/drivers/cpuidle/poll_state.c
+> >> >> >> +++ b/drivers/cpuidle/poll_state.c
+> >> >> >> @@ -8,35 +8,22 @@
+> >> >> >>  #include <linux/sched/clock.h>
+> >> >> >>  #include <linux/sched/idle.h>
+> >> >> >>
+> >> >> >> -#define POLL_IDLE_RELAX_COUNT  200
+> >> >> >> -
+> >> >> >>  static int __cpuidle poll_idle(struct cpuidle_device *dev,
+> >> >> >>                                struct cpuidle_driver *drv, int i=
+ndex)
+> >> >> >>  {
+> >> >> >> -       u64 time_start;
+> >> >> >> -
+> >> >> >> -       time_start =3D local_clock_noinstr();
+> >> >> >> +       u64 time_end;
+> >> >> >> +       u32 flags =3D 0;
+> >> >> >>
+> >> >> >>         dev->poll_time_limit =3D false;
+> >> >> >>
+> >> >> >> +       time_end =3D local_clock_noinstr() + cpuidle_poll_time(d=
+rv, dev);
+> >> >> >
+> >> >> > Is there any particular reason for doing this unconditionally?  I=
+f
+> >> >> > not, then it looks like an arbitrary unrelated change to me.
+> >> >>
+> >> >> Agreed. Will fix.
+> >> >>
+> >> >> >> +
+> >> >> >>         raw_local_irq_enable();
+> >> >> >>         if (!current_set_polling_and_test()) {
+> >> >> >> -               unsigned int loop_count =3D 0;
+> >> >> >> -               u64 limit;
+> >> >> >> -
+> >> >> >> -               limit =3D cpuidle_poll_time(drv, dev);
+> >> >> >> -
+> >> >> >> -               while (!need_resched()) {
+> >> >> >> -                       cpu_relax();
+> >> >> >> -                       if (loop_count++ < POLL_IDLE_RELAX_COUNT=
+)
+> >> >> >> -                               continue;
+> >> >> >> -
+> >> >> >> -                       loop_count =3D 0;
+> >> >> >> -                       if (local_clock_noinstr() - time_start >=
+ limit) {
+> >> >> >> -                               dev->poll_time_limit =3D true;
+> >> >> >> -                               break;
+> >> >> >> -                       }
+> >> >> >> -               }
+> >> >> >> +               flags =3D smp_cond_load_relaxed_timeout(&current=
+_thread_info()->flags,
+> >> >> >> +                                                     (VAL & _TI=
+F_NEED_RESCHED),
+> >> >> >> +                                                     (local_clo=
+ck_noinstr() >=3D time_end));
+> >> >> >
+> >> >> > So my understanding of this is that it reduces duplication with s=
+ome
+> >> >> > other places doing similar things.  Fair enough.
+> >> >> >
+> >> >> > However, since there is "timeout" in the name, I'd expect it to t=
+ake
+> >> >> > the timeout as an argument.
+> >> >>
+> >> >> The early versions did have a timeout but that complicated the
+> >> >> implementation significantly. And the current users poll_idle(),
+> >> >> rqspinlock don't need a precise timeout.
+> >> >>
+> >> >> smp_cond_load_relaxed_timed(), smp_cond_load_relaxed_timecheck()?
+> >> >>
+> >> >> The problem with all suffixes I can think of is that it makes the
+> >> >> interface itself nonobvious.
+> >> >>
+> >> >> Possibly something with the sense of bail out might work.
+> >> >
+> >> > It basically has two conditions, one of which is checked in every st=
+ep
+> >> > of the internal loop and the other one is checked every
+> >> > SMP_TIMEOUT_POLL_COUNT steps of it.  That isn't particularly
+> >> > straightforward IMV.
+> >>
+> >> Right. And that's similar to what poll_idle().
 > >
-> > +     if (func_id =3D=3D BPF_FUNC_tail_call) {
-> > +             if (env->cur_state->curframe) {
-> > +                     struct bpf_verifier_state *branch;
-
-add empty line.
-
-> > +                     mark_reg_scratched(env, BPF_REG_0);
-> > +                     branch =3D push_stack(env, env->insn_idx + 1, env=
-->insn_idx, false);
-> > +                     if (IS_ERR(branch))
-> > +                             return PTR_ERR(branch);
+> > My point is that the macro in its current form is not particularly
+> > straightforward.
+> >
+> > The code in poll_idle() does what it needs to do.
+> >
+> >> > Honestly, I prefer the existing code.  It is much easier to follow a=
+nd
+> >> > I don't see why the new code would be better.  Sorry.
+> >>
+> >> I don't think there's any problem with the current code. However, I'd =
+like
+> >> to add support for poll_idle() on arm64 (and maybe other platforms) wh=
+ere
+> >> instead of spinning in a cpu_relax() loop, you wait on a cacheline.
+> >
+> > Well, there is MWAIT on x86, but it is not used here.  It just takes
+> > too much time to wake up from.  There are "fast" variants of that too,
+> > but they have been designed with user space in mind, so somewhat
+> > cumbersome for kernel use.
+> >
+> >> And that's what using something like smp_cond_load_relaxed_timeout()
+> >> would enable.
+> >>
+> >> Something like the series here:
+> >>   https://lore.kernel.org/lkml/87wmaljd81.fsf@oracle.com/
+> >>
+> >> (Sorry, should have mentioned this in the commit message.)
+> >
+> > I'm not sure how you can combine that with a proper timeout.
 >
-> Can push_stack() return an ERR_PTR? Looking at the push_stack()
-> function in verifier.c, it returns NULL on all error paths (allocation
-> failure at line 2095, copy failure at line 2105, and stack overflow at
-> line 2110). Every other call site in the verifier checks for NULL:
+> Would taking the timeout as a separate argument work?
 >
->   - cluster_alloc_swap_entry() at line 9017: if (!queued_st)
->   - push_callback_call() at line 10608: if (!callback_state)
->   - check_reference_leaks_function() at line 13852: if (!branch)
->   - check_cond_jmp_op() at line 14314: if (branch && insn)
->   - check_iter_next_call() at line 16739: if (!queued_st)
->   - do_check() at line 16858: if (!other_branch)
+>   flags =3D smp_cond_load_relaxed_timeout(&current_thread_info()->flags,
+>                                          (VAL & _TIF_NEED_RESCHED),
+>                                          local_clock_noinstr(), time_end)=
+;
 >
-> If push_stack() returns NULL due to memory pressure, IS_ERR(NULL)
-> evaluates to false, so the error check won't trigger and the code will
-> continue with a NULL branch pointer.
+> Or you are thinking of something on different lines from the smp_cond_loa=
+d
+> kind of interface?
 
-AI is correct, since it reviewed the patch against bpf tree
-where push_stack() returns NULL.
+I would like it to be something along the lines of
 
-This is a non-trivial change. If we land it it will go to bpf-next.
-So pls respin with bpf-next tag, so CI can process it properly.
+arch_busy_wait_for_need_resched(time_limit);
+dev->poll_time_limit =3D !need_resched();
 
-Overall it's an interesting idea!
+and I don't care much about how exactly this is done in the arch code,
+so long as it does what it says.
 
-pw-bot: cr
+> > The timeout is needed because you want to break out of this when it sta=
+rts
+> > to take too much time, so you can go back to the idle loop and maybe
+> > select a better idle state.
+>
+> Agreed. And that will happen with the version in the patch:
+>
+>      flags =3D smp_cond_load_relaxed_timeout(&current_thread_info()->flag=
+s,
+>                                             (VAL & _TIF_NEED_RESCHED),
+>                                             (local_clock_noinstr() >=3D t=
+ime_end));
+>
+> Just that with waited mode on arm64 the timeout might be delayed dependin=
+g
+> on granularity of the event stream.
+
+That's fine.  cpuidle_poll_time() is not exact anyway.
 
