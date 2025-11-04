@@ -1,296 +1,194 @@
-Return-Path: <bpf+bounces-73530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73531-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7642C33684
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 00:40:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 041A5C3369F
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 00:45:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2070818C50C2
-	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 23:40:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F78C18C5688
+	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 23:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3538534846B;
-	Tue,  4 Nov 2025 23:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E868934A780;
+	Tue,  4 Nov 2025 23:45:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QrH8gtMn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FneBviBs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f45.google.com (mail-yx1-f45.google.com [74.125.224.45])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE80347FFF
-	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 23:39:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 996EC2E1F1F
+	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 23:45:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762299601; cv=none; b=MLY7enGEFdpoK+yyE2qSyaYLwko9sOdKY7csndAt8cb7rJMqs1ofV1wHjZ9WEoi1btBb3Iq/t0U8J6DAJILkFHWLwci7BirklS31GNJ+bDboGLio/7c2axGwdVmv3HmI3+FK1q2PxoQ2tOkB4bwmRYqP2bancz9CplMeMRO5hRs=
+	t=1762299908; cv=none; b=CG0NxJ/vyeegOrv+OpP1SQ+l1+8/NcZRF8g588gr7kT/sd2zuHkm+2K7koI7uQFLXAR6FjTSXfvmSJR7oacURtwsk6kI9gho9VU12dPAZnqXE43kTSrorrnLssz3pmwa4ySB3zehs7D8Y4qOOETG7btKf7yptvIsi5bIav15gF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762299601; c=relaxed/simple;
-	bh=tjQXnZZyLLt51hj7tPir70XOl+Ex2Ui9Pv9WGUHMj/s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RSGNOmTDO1DUsYreAe5NWwlEugYu9LWvXWDLhAPrwIkEuXllTLOGo+HiGY7sz8J9wmR9+uNkbnMZSlVTZOFoCJf8k65vkqfpdeHLXgWJTW/pySeYxVy2FdSbz4cBMpQf+6QnjKtMqon3gbsvQVTqiHe4Arn1GoWwrrpcPPSLmTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QrH8gtMn; arc=none smtp.client-ip=74.125.224.45
+	s=arc-20240116; t=1762299908; c=relaxed/simple;
+	bh=60Le1zZOwSYB0h4p5WegnydYbxsMfqCb1n7BDEfRK/k=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=mwDzINK6t16FJ3jIudh776Dp5B+PMatAZJWvhfyrItY1wajqyXzWCh7xuvdFHxTgmyP47oavImTDMol40A05L6OXSD7ZrOwa9QwvcDw9wA0qLtnevBo+5Ilk08IKE7CsL9wvKiDq3a5QiVeVZ3DqlRbGnkZ5AagvC5ULXxl+urc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FneBviBs; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f45.google.com with SMTP id 956f58d0204a3-63f95dc176fso4137686d50.1
-        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 15:39:59 -0800 (PST)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-78125ed4052so7871938b3a.0
+        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 15:45:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762299599; x=1762904399; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a8iFlyp5kWRCbLD+Ju9OP8zPc8dcgT7lVrrRfNWbPuc=;
-        b=QrH8gtMn7dl0Wvw1XnbKl1kFgoanaajVWuQXi8KVLc2qWtAssGhCosekocNUOZ+Djf
-         A/9/jMYmqc95nGDPlJjyxzQV3fuiZbsxNqGrFekQ0PCkI6FXYbWTdqDal2aWX/Iuih1n
-         mpXxeRgaVBO3t9+OFh2IN1Ju7EKc+dLiwHw1GUknjJq4oJlmqMWItIL71JHTw8t8Cf/L
-         UyUG2KNDY9M7pd4DsaLDWD7xctp9m0+u7DM5fxhKbx/nO+ZVBEqZKBgKessgI7Qvmvk3
-         ufARvmjvQBIzuEZtUGIEq2WKmd+UUzvT1sEtVHDARsTWEWxTE91Txp9Vqrj+mwL1EkGp
-         XcqA==
+        d=gmail.com; s=20230601; t=1762299906; x=1762904706; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8YDObtp5Hii+eUkvK68R56JH6ps+cp0j/ZReQQq/vps=;
+        b=FneBviBsSVEnFjZk4aQ66yqGPXVfjRlIy6YDNrpEPbmIeUEZPiiZAI/86d5QSTS8K4
+         NvTyAAc0EZzy05Kp9C8+m1TcXN59oKb4GR3Ulp41xgD5Y93LkWEbTEsB0yYrFuWIWe85
+         umoH2KSmzn4u/q6TbIPKWxc41jsAlTaYFxy6nStXcf9Ip/cFZRInexNJ3Hf8bkeD1Ybr
+         HaG5LFakagjLvJWOIoxFuAlbsZWXHMnge71UUZDVsTFarsV17qJJegvj37SRyHIv0Xnp
+         uNKhygB0O7hIxVaG/Kcfpmvoal2KcMBBVp9CLRrSjtPuy/H/u/zRPvkjSvKI9K3ihX4a
+         /esQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762299599; x=1762904399;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a8iFlyp5kWRCbLD+Ju9OP8zPc8dcgT7lVrrRfNWbPuc=;
-        b=Slz/5F0s1/u8Pm4jkube7H2xx9WEYl0wdcubOiOWN2vLcf0fL3e8WJICVVQfuVtDt+
-         bOa/RMc3dz+2Lin7/y/+fYk9frTs2+VMDnFOos084Wz8fZ2GT1SOeP98xpvRVdvne15f
-         fVNOTEEal5UL50ER27hwzZm3BICdjyGv6AAuJAjFNR1fYqKj0lYd/ZTOg30cOaGkAEtH
-         qb5E1s5j5wwcV7nNzbx33ZdMRnIBd0jQyQcIMiORq3NvJ/SafHZD/Vgv7nQJgiKG0y9v
-         t/ig+Cob5IyrbWB1uRTK2VQKiRfoPAsVTSEa9X7VF4nJXHSDiw0w7NbZwifh1E8fJoCB
-         OziA==
-X-Gm-Message-State: AOJu0Yzgxmw3N7dejQwNfuGlYFB0c9K/OVkXNIH3Kw6fPQfHQj8GnsE7
-	nWAp4k0TFAc0hobgUtL9GIN47Q1gq6kKU86tdqZnbJ4i0dbh2w8G85/RI3vpFbKDXD814mJZfSq
-	5exghD6aEvn3migYing/awz5yjj3XNJE=
-X-Gm-Gg: ASbGnctH/RjeAaqzIZ2P54QzE82GAaluveZnauSNuh3w4eTsm61pKBCtISVLCocGdfz
-	sGVI7rUftkmdmxkBlSr2SBI0+cFSyZOm4n8IOL8brSpAwZ5WYJ2/7Cc9IcrIhYZKYW1vpH4E1u+
-	5RjKyngQSLInLB8JRfmkUyM2ZZUGiXZIWjDE2DiXtjylNUNkpHyiGqUaGN3oAxmqVON5oPkX868
-	U6PlNdiyDGa9R/oDgAaJ95IRj1iectsQ5TGSDy9e0va2GqagBFQIgR779FIYxtQJpI8f+q/iDe4
-X-Google-Smtp-Source: AGHT+IERdrmAXsM1vCb2GfO+Gg5CSH1XIWbLyk1bfKdic+MpPR9V6JpeoPd+FvpKuGVhzwXKJgLtp4yGAwLH+naz4bk=
-X-Received: by 2002:a05:690e:2596:b0:63f:2bc7:7074 with SMTP id
- 956f58d0204a3-63fd35b90a3mr838935d50.60.1762299598865; Tue, 04 Nov 2025
- 15:39:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1762299906; x=1762904706;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8YDObtp5Hii+eUkvK68R56JH6ps+cp0j/ZReQQq/vps=;
+        b=PpqaI2feB6ZacGyS3cFrOR0svO6cynu1VSQ9Jl//Pqn//a3nWknWzZ0bArZdevdGYF
+         umYIEITNkojWMkFG9Zd2RB5JXM1eFrQFGwMO3BBha4p4dOMmc2MctovbIH1VKcMEUrxj
+         u59EU5qThCkODoWyjPga5XV3shn8BBg5yqJ/qFa7DuIG0+yS5r/5o4S8UXMXSp+odNex
+         Equleb9+SSOrnz2YFpykEEefksYrfX9y3oIW0ISIca1hsX5+voj3FihBuaJwd6GXr4iF
+         1l7j+QHHbXSqMoOFgSZePSUCXqsbcqMpyi7HP15zsZm58WBLceoWU4yZQ6A0N1vI5/iN
+         ziJw==
+X-Forwarded-Encrypted: i=1; AJvYcCU2gDqLGnK8PzAvFbH7WaPTSXoMYwxlYl+JVtqaNVLo+qVhuPeVr/VCaUGphLbe9v/QCK8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxsQbXS3tpFbayzHP1jK7Lfzx02fkZQrhG+y6c5rIayuu+iwnyX
+	soRfiVvrIhOgYkoGwXI6vhC+Xq4gpcFucawMoTN4qwYNLYIBeSd9vhCv
+X-Gm-Gg: ASbGncsZgtcN5eA3Ayq0AdR3PUoW9eJYVZfl/4fyLTVRk2JLTmJecJlvw2oE2ZJUxn4
+	1cEOdDCNh782TnoL41KeanslYfFiiodtMsHpMOfQybKzWHFONIlUJtR/JMwQaNDuFtfn8PRSiY+
+	R4DD2+cv7uNj/v2HweJtzBqtt25vmDDRqliLTp86/mGQiUjPdl6s9m7iHcgkFrWzlu06rxFxEKa
+	wuvo3DsZI342Zr26N3m1e+5kG2d07pxwhdcHJcR6Zu4lYmP0C3jyEq3X5n+BIsv0tsetiTsCMmh
+	LGfULTS1heany+1kO9g46v/jWv1b6+KLGqJZ0Pl7GfCKhDkbFoEbUKdY0QfqAHCmYgTI/8xkZ2C
+	wMYcdD/1GdLwPozmnda+OF8ULR1PHvOSZMo8vkXjBI21WhF/pmCt9YquAxxl/zcWx8CAeZ1YaTL
+	eYzqk97DPb6bgU29QJ81cZaeI=
+X-Google-Smtp-Source: AGHT+IG0wN1/ICg8yWAxSeyGag0gkgugs5xQY54czh3FFL/Hn2a2yBmFXRsdH2j3PsFXuDxVKA4yQQ==
+X-Received: by 2002:a05:6a00:c83:b0:7ad:c017:171e with SMTP id d2e1a72fcca58-7ae1c7685ecmr1429721b3a.2.1762299905889;
+        Tue, 04 Nov 2025 15:45:05 -0800 (PST)
+Received: from ?IPv6:2a03:83e0:115c:1:a643:22b:eb9:c921? ([2620:10d:c090:500::5:99aa])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7acd633bf6bsm4190456b3a.56.2025.11.04.15.45.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Nov 2025 15:45:05 -0800 (PST)
+Message-ID: <f16e34ac93438c9ccb9b174d45060c3b06b45e9d.camel@gmail.com>
+Subject: Re: [RFC PATCH v4 2/7] libbpf: Add BTF permutation support for type
+ reordering
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Andrii Nakryiko	
+ <andrii.nakryiko@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, Song
+ Liu	 <song@kernel.org>, pengdonglin <pengdonglin@xiaomi.com>
+Date: Tue, 04 Nov 2025 15:45:04 -0800
+In-Reply-To: <20251104134033.344807-3-dolinux.peng@gmail.com>
+References: <20251104134033.344807-1-dolinux.peng@gmail.com>
+	 <20251104134033.344807-3-dolinux.peng@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251104172652.1746988-1-ameryhung@gmail.com> <20251104172652.1746988-5-ameryhung@gmail.com>
- <CAEf4BzbqEsZbO4AjKn7iRQCzKVSD0db9WdG7uKXMCA_4ueFYig@mail.gmail.com>
-In-Reply-To: <CAEf4BzbqEsZbO4AjKn7iRQCzKVSD0db9WdG7uKXMCA_4ueFYig@mail.gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Tue, 4 Nov 2025 15:39:45 -0800
-X-Gm-Features: AWmQ_bkEWtH8YUxr3pXS9lAmGhmtQquYoFjCbVl9sa1BSEdb-PfMadkk_YqW90s
-Message-ID: <CAMB2axNi1SRT5=SuRZJayt+az6GM63w++T6stwHEHXHfdMce_Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/7] libbpf: Add support for associating BPF
- program with struct_ops
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, tj@kernel.org, martin.lau@kernel.org, 
-	kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 4, 2025 at 3:27=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Nov 4, 2025 at 9:27=E2=80=AFAM Amery Hung <ameryhung@gmail.com> w=
-rote:
-> >
-> > Add low-level wrapper and libbpf API for BPF_PROG_ASSOC_STRUCT_OPS
-> > command in the bpf() syscall.
-> >
-> > Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> > ---
-> >  tools/lib/bpf/bpf.c      | 19 +++++++++++++++++++
-> >  tools/lib/bpf/bpf.h      | 21 +++++++++++++++++++++
-> >  tools/lib/bpf/libbpf.c   | 30 ++++++++++++++++++++++++++++++
-> >  tools/lib/bpf/libbpf.h   | 16 ++++++++++++++++
-> >  tools/lib/bpf/libbpf.map |  2 ++
-> >  5 files changed, 88 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> > index b66f5fbfbbb2..21b57a629916 100644
-> > --- a/tools/lib/bpf/bpf.c
-> > +++ b/tools/lib/bpf/bpf.c
-> > @@ -1397,3 +1397,22 @@ int bpf_prog_stream_read(int prog_fd, __u32 stre=
-am_id, void *buf, __u32 buf_len,
-> >         err =3D sys_bpf(BPF_PROG_STREAM_READ_BY_FD, &attr, attr_sz);
-> >         return libbpf_err_errno(err);
-> >  }
-> > +
-> > +int bpf_prog_assoc_struct_ops(int prog_fd, int map_fd,
-> > +                             struct bpf_prog_assoc_struct_ops_opts *op=
-ts)
-> > +{
-> > +       const size_t attr_sz =3D offsetofend(union bpf_attr, prog_assoc=
-_struct_ops);
-> > +       union bpf_attr attr;
-> > +       int err;
-> > +
-> > +       if (!OPTS_VALID(opts, bpf_prog_assoc_struct_ops_opts))
-> > +               return libbpf_err(-EINVAL);
-> > +
-> > +       memset(&attr, 0, attr_sz);
-> > +       attr.prog_assoc_struct_ops.map_fd =3D map_fd;
-> > +       attr.prog_assoc_struct_ops.prog_fd =3D prog_fd;
-> > +       attr.prog_assoc_struct_ops.flags =3D OPTS_GET(opts, flags, 0);
-> > +
-> > +       err =3D sys_bpf(BPF_PROG_ASSOC_STRUCT_OPS, &attr, attr_sz);
-> > +       return libbpf_err_errno(err);
-> > +}
-> > diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> > index e983a3e40d61..1f9c28d27795 100644
-> > --- a/tools/lib/bpf/bpf.h
-> > +++ b/tools/lib/bpf/bpf.h
-> > @@ -733,6 +733,27 @@ struct bpf_prog_stream_read_opts {
-> >  LIBBPF_API int bpf_prog_stream_read(int prog_fd, __u32 stream_id, void=
- *buf, __u32 buf_len,
-> >                                     struct bpf_prog_stream_read_opts *o=
-pts);
-> >
-> > +struct bpf_prog_assoc_struct_ops_opts {
-> > +       size_t sz;
-> > +       __u32 flags;
-> > +       size_t :0;
-> > +};
-> > +#define bpf_prog_assoc_struct_ops_opts__last_field flags
-> > +
-> > +/**
-> > + * @brief **bpf_prog_assoc_struct_ops** associates a BPF program with =
-a
-> > + * struct_ops map.
-> > + *
-> > + * @param prog_fd FD for the BPF program
-> > + * @param map_fd FD for the struct_ops map to be associated with the B=
-PF program
-> > + * @param opts optional options, can be NULL
-> > + *
-> > + * @return 0 on success; negative error code, otherwise (errno is also=
- set to
-> > + * the error code)
-> > + */
-> > +LIBBPF_API int bpf_prog_assoc_struct_ops(int prog_fd, int map_fd,
-> > +                                        struct bpf_prog_assoc_struct_o=
-ps_opts *opts);
-> > +
-> >  #ifdef __cplusplus
-> >  } /* extern "C" */
-> >  #endif
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index fbe74686c97d..260e1feaa665 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -13891,6 +13891,36 @@ int bpf_program__set_attach_target(struct bpf_=
-program *prog,
-> >         return 0;
-> >  }
-> >
-> > +int bpf_program__assoc_struct_ops(struct bpf_program *prog, struct bpf=
-_map *map,
-> > +                                 struct bpf_prog_assoc_struct_ops_opts=
- *opts)
-> > +{
-> > +       int prog_fd;
-> > +
-> > +       prog_fd =3D bpf_program__fd(prog);
-> > +       if (prog_fd < 0) {
-> > +               pr_warn("prog '%s': can't associate BPF program without=
- FD (was it loaded?)\n",
-> > +                       prog->name);
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       if (prog->type =3D=3D BPF_PROG_TYPE_STRUCT_OPS) {
-> > +               pr_warn("prog '%s': can't associate struct_ops program\=
-n", prog->name);
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       if (map->fd < 0) {
->
-> heh, this is a bug. we use create_placeholder_fd() to create fixed FDs
-> associated with maps, and later we replace them with the real
-> underlying BPF map kernel objects. It's all details, but the point is
-> that this won't detect map that wasn't created. Use bpf_map__fd()
-> instead, it handles that correctly.
+On Tue, 2025-11-04 at 21:40 +0800, Donglin Peng wrote:
+> From: pengdonglin <pengdonglin@xiaomi.com>
+>=20
+> Introduce btf__permute() API to allow in-place rearrangement of BTF types=
+.
+> This function reorganizes BTF type order according to a provided array of
+> type IDs, updating all type references to maintain consistency.
+>=20
+> The permutation process involves:
+> 1. Shuffling types into new order based on the provided ID mapping
+> 2. Remapping all type ID references to point to new locations
+> 3. Handling BTF extension data if provided via options
+>=20
+> This is particularly useful for optimizing type locality after BTF
+> deduplication or for meeting specific layout requirements in specialized
+> use cases.
+>=20
+> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Alan Maguire <alan.maguire@oracle.com>
+> Cc: Song Liu <song@kernel.org>
+> Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
 
-I saw quite a few libbpf API doing this check (e.g., bpf_map__pin(),
-bpf_link__update_map(), bpf_map__attach_struct_ops()). Should we also
-fix them?
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
->
-> > +               pr_warn("map '%s': can't associate BPF map without FD (=
-was it created?)\n", map->name);
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       if (!bpf_map__is_struct_ops(map)) {
-> > +               pr_warn("map '%s': can't associate non-struct_ops map\n=
-", map->name);
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       return bpf_prog_assoc_struct_ops(prog_fd, map->fd, opts);
-> > +}
-> > +
-> >  int parse_cpu_mask_str(const char *s, bool **mask, int *mask_sz)
-> >  {
-> >         int err =3D 0, n, len, start, end =3D -1;
-> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > index 5118d0a90e24..45720b7c2aaa 100644
-> > --- a/tools/lib/bpf/libbpf.h
-> > +++ b/tools/lib/bpf/libbpf.h
-> > @@ -1003,6 +1003,22 @@ LIBBPF_API int
-> >  bpf_program__set_attach_target(struct bpf_program *prog, int attach_pr=
-og_fd,
-> >                                const char *attach_func_name);
-> >
-> > +struct bpf_prog_assoc_struct_ops_opts; /* defined in bpf.h */
-> > +
-> > +/**
-> > + * @brief **bpf_program__assoc_struct_ops()** associates a BPF program=
- with a
-> > + * struct_ops map.
-> > + *
-> > + * @param prog BPF program
-> > + * @param map struct_ops map to be associated with the BPF program
-> > + * @param opts optional options, can be NULL
-> > + *
-> > + * @return error code; or 0 if no error occurred.
->
-> we normally specify returns like so:
->
-> @return 0, on success; negative error code, otherwise
->
-> keep it consistent?
+[...]
 
-Okay. Will change.
+> --- a/tools/lib/bpf/btf.h
+> +++ b/tools/lib/bpf/btf.h
+> @@ -273,6 +273,40 @@ LIBBPF_API int btf__dedup(struct btf *btf, const str=
+uct btf_dedup_opts *opts);
+>   */
+>  LIBBPF_API int btf__relocate(struct btf *btf, const struct btf *base_btf=
+);
+> =20
+> +struct btf_permute_opts {
+> +	size_t sz;
+> +	/* optional .BTF.ext info along the main BTF info */
+> +	struct btf_ext *btf_ext;
+> +	size_t :0;
+> +};
+> +#define btf_permute_opts__last_field btf_ext
+> +
+> +/**
+> + * @brief **btf__permute()** rearranges BTF types in-place according to =
+specified mapping
+> + * @param btf BTF object to permute
+> + * @param ids Array defining new type order. Must contain exactly btf->n=
+r_types elements,
+> + *        each being a valid type ID in range [btf->start_id, btf->start=
+_id + btf->nr_types - 1]
+> + * @param opts Optional parameters, including BTF extension data for ref=
+erence updates
+> + * @return 0 on success, negative error code on failure
+> + *
+> + * **btf__permute()** performs an in-place permutation of BTF types, rea=
+rranging them
+> + * according to the order specified in @p ids array. After reordering, a=
+ll type references
+> + * within the BTF data and optional BTF extension are updated to maintai=
+n consistency.
+> + *
+> + * The permutation process consists of two phases:
+> + * 1. Type shuffling: Physical reordering of type data in memory
+> + * 2. Reference remapping: Updating all type ID references to new locati=
+ons
 
-BTW. The return comment is copied from bpf_program__set_attach_target().
+Nit: Please drop this paragraph: it is an implementation detail, not
+     user-facing behavior, and it is obvious from the function code.
 
->
-> > + */
-> > +LIBBPF_API int
-> > +bpf_program__assoc_struct_ops(struct bpf_program *prog, struct bpf_map=
- *map,
-> > +                             struct bpf_prog_assoc_struct_ops_opts *op=
-ts);
-> > +
-> >  /**
-> >   * @brief **bpf_object__find_map_by_name()** returns BPF map of
-> >   * the given name, if it exists within the passed BPF object
-> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > index 8ed8749907d4..84fb90a016c9 100644
-> > --- a/tools/lib/bpf/libbpf.map
-> > +++ b/tools/lib/bpf/libbpf.map
-> > @@ -451,4 +451,6 @@ LIBBPF_1.7.0 {
-> >         global:
-> >                 bpf_map__set_exclusive_program;
-> >                 bpf_map__exclusive_program;
-> > +               bpf_prog_assoc_struct_ops;
-> > +               bpf_program__assoc_struct_ops;
-> >  } LIBBPF_1.6.0;
-> > --
-> > 2.47.3
-> >
+> + *
+> + * This is particularly useful for optimizing type locality after BTF de=
+duplication
+> + * or for meeting specific layout requirements in specialized use cases.
+
+Nit: Please drop this paragraph as well.
+
+> + *
+> + * On error, negative error code is returned and errno is set appropriat=
+ely.
+> + * Common error codes include:
+> + *   - -EINVAL: Invalid parameters or invalid ID mapping (e.g., duplicat=
+e IDs, out-of-range IDs)
+> + *   - -ENOMEM: Memory allocation failure during permutation process
+> + */
+> +LIBBPF_API int btf__permute(struct btf *btf, __u32 *ids, const struct bt=
+f_permute_opts *opts);
+> +
+>  struct btf_dump;
+> =20
+>  struct btf_dump_opts {
+
+[...]
 
