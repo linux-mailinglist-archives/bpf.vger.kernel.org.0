@@ -1,214 +1,281 @@
-Return-Path: <bpf+bounces-73493-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73494-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E557C32C37
-	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 20:23:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DE79C32C53
+	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 20:26:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0836D4ED229
-	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 19:22:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F23D427854
+	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 19:26:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692E72D47F6;
-	Tue,  4 Nov 2025 19:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E0302D46DB;
+	Tue,  4 Nov 2025 19:26:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="et7KA9Nj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AqB7o5Pm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C77D228488D
-	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 19:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBE362D3A6A
+	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 19:26:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762284136; cv=none; b=vBzR51zKXkpFrzDIVTixXRqtH0/dX8NZP2ejd8rJqwjEikjwo5oL0hESxmb03dgJucdec3blD13op4Df8zSQOrhulC6+WApZnyBmCJiCE0MI2PnR40o/Lr48Hm51kz4BwyDOzteEXur7UiuSQxm+JJxrmoauXLAzDwVMW6B9IhE=
+	t=1762284369; cv=none; b=MHLOmK0Xti99u0lX0mtLEoosDHn2LjNMOOC7RAyYezqRkfISJPx7imsvZvpDzEUvCajdlwgRUyt+5WS+LZjNcoFNEX7hWUmbL/kW1YnunixazLOoMX7wPwHbfFbGNuUIh/efbFGZegAj9HwI5EELztgtP0jPHRvKJf5xAixVx4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762284136; c=relaxed/simple;
-	bh=WbhMZPXHui4/68TSc/Fw9kwjHb3ZGo9L4Ezoe48x7ZI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OsNmeVG1xv4C28TJUsUF1b2rwZxY5RuUOTgC4XEw+qoJfIqWj6svsFmdE3Mi2OdHE0R4kLoWXlLD1SvCC8hTBgkIX7G8yye1aZnqjTuSgeZ33fm7CPNR7fH4E47tjVeaxf7/X+K3Wxe8UkafwrdouMom6Brmb2AoptU8sH6GY+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=et7KA9Nj; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-640f627d01dso1321542a12.2
-        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 11:22:14 -0800 (PST)
+	s=arc-20240116; t=1762284369; c=relaxed/simple;
+	bh=67UNfqZhAYWMubDm3vCHWN3rZpbzSU5O4DrP7LmnoeY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lnE1o3A6v+wjAss2SxbIQ3XlxyAUtQSlUN+DMjxWlS9woN4Q25fgYLB9HwGbKuxBkYx3qV4qH/W7WgSWVc9dswy9FGHKU20g7k45GGxhCjceHzug8tPcknNrn0hCbgqOrJhqgNs3VyknV/Iy9SQlmp98agnrqdffvpUse0i43/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AqB7o5Pm; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-341988c720aso409356a91.3
+        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 11:26:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762284133; x=1762888933; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Ekbw2JAUHQcxMukPAtOc9LSVhS6WclBdtt7KL4LfcQ=;
-        b=et7KA9Nj65dv1MgQqmoM+bKuQryuUn3xss6RS8d7RwbO9+dc21CuHCv6iHuaEYPQYR
-         hLkIIgQ4a48bhi9EnuKUtm4BA5OKOilVtpwrq7LeA4HMyfDNs5EpwM9oVYJtkNgL5uXp
-         YKfEJONmr+h604CSj/FhxEb9WkDgMvMZm0os/YsKEjStc0fLrHiBjYH9BcZjnmUO2+pq
-         2OQch7LFSQzt+GfTtLa989ISTwJajZmvY3WdXwQSAqZRYqRGcGjbiIVp5TLMatgD0URx
-         8Jh81kT0Xx1/iYs3R/JzDWZCVfFPhKaJWvJZkPHiAoloDxtAmGjToGGAlrNSScVH1QqC
-         i+bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762284133; x=1762888933;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1762284364; x=1762889164; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+Ekbw2JAUHQcxMukPAtOc9LSVhS6WclBdtt7KL4LfcQ=;
-        b=FAdv/ycNal7Bdi29DEWZ084mgX04p1KEyVEWmmHVYAQyW4nDg50+9slbfyDcccMxlQ
-         661HQ34/UCaI0U+9F3TsuLH5lvbu91bgH1PRads3Q6iBL2FO+t+xFYN/naWT3bWz1BKg
-         PXknJPdmZBvJ4c6c3IcDO8kXEagPn+mszsTLW6RY7zXGJuBuEYBFOZSpkFSpFqptufb8
-         208mkCW6u6vyi4vbtK5g1f9MU+1uHA6MTyYBV2ROKQvhVDmeXaJ5XPM2QcjroXxTSYZG
-         gYs2larEolErcaZaxF9yTYJxdE7si4N1mffjO/BVros+eYfJCQCqxG417kXZ9qJklBuZ
-         SdSA==
-X-Forwarded-Encrypted: i=1; AJvYcCUq6trtVb0vOXVOvJ9NYGfK7WrjPMhyUo6gmh5e/2eg8gS1jtaRBfkdnMFIc4isKUPKBXM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzVmmAzwuBsmDisFZgsswV9mdJJmJnBtGQFk8YHeiJ+3yG4rOnJ
-	ndGTKjJXWZrsd2+44hwvBndUWqSn+tG5eEUmTYsLKsrY+NxXxXZuICfTAT8UBQtjvAk=
-X-Gm-Gg: ASbGncsR4FYi+bt4qT3Atp+hcMmR5Qp3IIQsJgmsiw9HT3CMnFkKYfLDEr4sLmFTdT/
-	ybrAc+yOZaGbS58wHmVU0WLTXhsWKgpDuqSivlQW3cWiM7Ud4DpwO2x7VAOTZMhet8CcgedES9a
-	73mOhRdwTwSPcnYWEGWQoSw97g82/m8ybgqQbSEtqpT8ChxhpW0ifo4yIlf1/71mk6PZ2fXWx1E
-	We06tGGFPavB12R6WRRhFuUH7whqCaa5zbGnbvpUywusIsmf/wb6R/sqTBnaMi3lpUrNAj2xh8I
-	Htm91Q9ujpFPgkxBligm333cCjhA+TAkQnF1KbEn/11hD/yBX2fLKGLw9PJU+dhvZ4ZXxQ7EeVV
-	FLTwFXzGdiaqWcFz3edttGhWHIaDVW3af6mgV9cB1XmqExd5j6KfWDKDrYC5yJK3XDaNzADruga
-	LKcg6qRSO4G/4HLg==
-X-Google-Smtp-Source: AGHT+IFik8SalFdLc/bnmoU3LnAmqT4cTwgJ3PvSTxEZQ+CS4V8zLsokvxKnUaET/LmVBxkwZrJpyw==
-X-Received: by 2002:a17:907:9721:b0:b6d:5bc1:4859 with SMTP id a640c23a62f3a-b72653cb70amr25182666b.29.1762284133077;
-        Tue, 04 Nov 2025 11:22:13 -0800 (PST)
-Received: from localhost (109-81-31-109.rct.o2.cz. [109.81.31.109])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b723fe3902bsm285399366b.63.2025.11.04.11.22.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Nov 2025 11:22:12 -0800 (PST)
-Date: Tue, 4 Nov 2025 20:22:06 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 06/23] mm: introduce BPF struct ops for OOM handling
-Message-ID: <aQpSXgUL1fUzRgyL@tiehlicka>
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
- <20251027231727.472628-7-roman.gushchin@linux.dev>
- <aQR7HIiQ82Ye2UfA@tiehlicka>
- <875xbsglra.fsf@linux.dev>
- <aQj7uRjz668NNrm_@tiehlicka>
- <87a512muze.fsf@linux.dev>
- <aQm2zqmD9mHE1psg@tiehlicka>
- <87h5v93bte.fsf@linux.dev>
+        bh=xwAVYhL9BdBkKAgQEax++Z76n7Ya3grnp6EjeTEpSz4=;
+        b=AqB7o5Pme2ANzR2YzqGeF+a1OzyqVD8Azg6zKs+aEwc2umevx8qvt373CBMJDlqmRw
+         nuNcJh80cwBMf2PZLKI82ibTc3HjYRLCVM+iiQbjeQ7HX1w+oTlURW4Hzojr6bF+6fze
+         YBLwhAsTRFIK0R9pMqL3Cwwi5sm8YS0ZFMERrR4O1BqNGk5SSrKcfvQ6isuH0O39BbWX
+         X8T3hmdJXKPI7fT3DteWCKa2ETU2cXcfhoX8fA20WC6JMApHNGZX0FY9h/KckGfaZzyQ
+         v8r8LHYzuHAYZoM0uXaM5UY4eIQ5ZvylxtcEthks07+fFld/hzh9pF+pIjny3N10Jsod
+         OCEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762284364; x=1762889164;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xwAVYhL9BdBkKAgQEax++Z76n7Ya3grnp6EjeTEpSz4=;
+        b=KLfzs9i37yrs7EegUNEEf2XF9aq07erdQh+60HVu3eZzxvfeN0hfDPDrfss/7YL3Gf
+         EMLFVfskx1XxmG7AjRymJ9dzIARuBi7PfhARntI0QqZ+0hGKU6/au3VgAu9XnhLTsmQf
+         AHqonaxqI7a6KCQmfUOhRW3dUtcpe/RmYtvxhLq8H95ar4jxrpS6pykA+sZHkxL/naz2
+         spbFJXEVlgvS4ftMPDZUbw1hpczTgWMYQ3wWL+DE4gxyzf8qiV5hR9NTi3hR346Qdx4C
+         8yUfbzH15YbsM1jECPaca0vOciSpxqChmV0yqXTqRBpXhfmfGYo55w9gK0NKaYZVx54F
+         pOTQ==
+X-Gm-Message-State: AOJu0YwjqpW6w4HPzJpqhzo1o5BGNOcxSiBoyieCQUli4U/KCY8VRXeL
+	CWv8ID7BxVd1twO79uERnSzkdkBIwGOUnJ2bAnS+/m/f9RJzYN71iPvhfRyrfWu1175Tvkn19vT
+	/VWAF5qFg3sqtBrXBiIOLmsHpVwzdIEQ=
+X-Gm-Gg: ASbGncvX/CsMVO17Sc42shnwAVsfpLK3dWHxmm4ajH7Yiv7ic4tMIPQ/hQzVduYOLLd
+	p02XhvlUHauJcDAC+NqbXnGzZwqWcn4nnC0tl9YRGeQgwyIoUdTqbYFMjt6NFC04Sll1jnMEPxP
+	iEaeyba5KNMCNUqzyq7j6DcfEdqRUdFq2K48v0W3KdvCTmq0UKT6GPZodf6kPMcKqrbPCaKnTwT
+	+ZgQ2G9Pgk7/AJRTfYtmrCsd+yQhYnwg3qNZjM7MxJh1aTr9veGQZZnyvRfAKhs1/xUisjs522v
+X-Google-Smtp-Source: AGHT+IGc53GInfRlh/dt8QE08EnT3tHFwPwZZxtnCROPM4cQn6GF4Fht45r9Tgu7VzXQ8SLSkXa9xkhvFNVDVDbc3hA=
+X-Received: by 2002:a17:90b:3908:b0:33b:bed8:891e with SMTP id
+ 98e67ed59e1d1-341a6dcc6b8mr339952a91.19.1762284364160; Tue, 04 Nov 2025
+ 11:26:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h5v93bte.fsf@linux.dev>
+References: <20251104-implv2-v2-0-6dbc35f39f28@meta.com> <20251104-implv2-v2-2-6dbc35f39f28@meta.com>
+In-Reply-To: <20251104-implv2-v2-2-6dbc35f39f28@meta.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 4 Nov 2025 11:25:50 -0800
+X-Gm-Features: AWmQ_bmZxnkCojPZYE7d6GJl8w2rXiov62EDo1LN_z-N03v9YvbFw5V2_Nurg_c
+Message-ID: <CAEf4BzYLgHaAZ2D_6z+d2V2erE3_yDgYF=qHEM0e1YCZvovFmQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 2/2] bpf:add _impl suffix for bpf_stream_vprintk() kfunc
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue 04-11-25 10:14:05, Roman Gushchin wrote:
-> Michal Hocko <mhocko@suse.com> writes:
-> 
-> > On Mon 03-11-25 17:45:09, Roman Gushchin wrote:
-> >> Michal Hocko <mhocko@suse.com> writes:
-> >> 
-> >> > On Sun 02-11-25 13:36:25, Roman Gushchin wrote:
-> >> >> Michal Hocko <mhocko@suse.com> writes:
-> > [...]
-> >> > No, I do not feel strongly one way or the other but I would like to
-> >> > understand thinking behind that. My slight preference would be to have a
-> >> > single return status that clearly describe the intention. If you want to
-> >> > have more flexible chaining semantic then an enum { IGNORED, HANDLED,
-> >> > PASS_TO_PARENT, ...} would be both more flexible, extensible and easier
-> >> > to understand.
-> >> 
-> >> The thinking is simple:
-> >> 1) Most users will have a single global bpf oom policy, which basically
-> >> replaces the in-kernel oom killer.
-> >> 2) If there are standalone containers, they might want to do the same on
-> >> their level. And the "host" system doesn't directly control it.
-> >> 3) If for some reason the inner oom handler fails to free up some
-> >> memory, there are two potential fallback options: call the in-kernel oom
-> >> killer for that memory cgroup or call an upper level bpf oom killer, if
-> >> there is one.
-> >> 
-> >> I think the latter is more logical and less surprising. Imagine you're
-> >> running multiple containers and some of them implement their own bpf oom
-> >> logic and some don't. Why would we treat them differently if their bpf
-> >> logic fails?
-> >
-> > I think both approaches are valid and it should be the actual handler to
-> > tell what to do next. If the handler would prefer the in-kernel fallback
-> > it should be able to enforce that rather than a potentially unknown bpf
-> > handler up the chain.
-> 
-> The counter-argument is that cgroups are hierarchical and higher level
-> cgroups should be able to enforce the desired behavior for their
-> sub-trees. I'm not sure what's more important here and have to think
-> more about it.
+On Tue, Nov 4, 2025 at 7:30=E2=80=AFAM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
+>
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>
+> Rename bpf_stream_vprintk() to bpf_stream_vprintk_impl().
+>
+> This aligns this recently added kfunc with the naming scheme required
+> by the implicit-argument feature.
+> In future BTF type for bpf_stream_vprintk() will be generated and
+> aux__prog argument filled by the valid struct implicitly.
 
-Right and they can enforce that through their limits - hence oom.
+How about this wording?
 
-> Do you have an example when it might be important for container to not
-> pass to a higher level bpf handler?
+This makes bpf_stream_vprintk() follow the already established "_impl"
+suffix-based naming convention for kfuncs with the bpf_prog_aux
+argument provided by the verifier implicitly. This convention will be
+taken advantage of with the upcoming KF_IMPLICIT_ARGS feature to
+preserve backwards compatibility to BPF programs.
 
-Nothing really specific. I still trying to wrap my head around what
-level of flexibility is necessary here. My initial thoughts would be
-just deal with it in the scope of the bpf handler and fallback to the
-kernel implementation if it cannot deal with the situation. Since you
-brought that up you made me think.
 
-I know that we do not provide userspace like no-regression policy to BPF
-programs but it would be still good to have a way to add new potential
-fallback policies without breaking existing handlers.
+Other than that, LGTM.
 
-> >> Re a single return value: I can absolutely specify return values as an
-> >> enum, my point is that unlike the kernel code we can't fully trust the
-> >> value returned from a bpf program, this is why the second check is in
-> >> place.
-> >
-> > I do not understand this. Could you elaborate? Why we cannot trust the
-> > return value but we can trust a combination of the return value and a
-> > state stored in a helper structure?
-> 
-> Imagine bpf program which does nothing and simple returns 1. Imagine
-> it's loaded as a system-wide oom handler. This will effectively disable
-> the oom killer and lead to a potential deadlock on memory.
-> But it's a perfectly valid bpf program.
-> This is something I want to avoid (and it's a common practice with other
-> bpf programs).
-> 
-> What I do I also rely on the value of the oom control's field, which is
-> not accessible to the bpf program for write directly, but can be changed
-> by calling certain helper functions, e.g. bpf_oom_kill_process.
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-OK, now I can see your point. You want to have a line of defense from
-trusted BPF facing interface. This makes sense to me. Maybe it would be
-good to call that out more explicitly. Something like 
-The BPF OOM infrastructure only trusts BPF handlers which are using pre
-selected functions to free up memory e.g. bpf_oom_kill_process. Those
-will set an internal state not available to those handlers directly.
-BPF handler return value is ignored if that state is not set.
-
-I would rather call this differently to freed_memory as the actual
-memory might be freed asynchronously (e.g. oom_reaper) and this is more
-about conformity/trust than actual physical memory being freed. I do not
-care much about naming as long as this is clearly document though.
-Including set of functions that are forming that prescribed API.
-
-[...]
-> > OK. All I am trying to say is that only safe sleepable locks are
-> > trylocks and that should be documented because I do not think it can be
-> > enforced
-> 
-> It can! Not directly, but by controlling which kfuncs/helpers are
-> available to bpf programs.
-
-OK, I see. This is better than relying only on having this documented.
-
--- 
-Michal Hocko
-SUSE Labs
+>
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
+>  kernel/bpf/helpers.c                             |  2 +-
+>  kernel/bpf/stream.c                              |  3 ++-
+>  tools/bpf/bpftool/Documentation/bpftool-prog.rst |  2 +-
+>  tools/lib/bpf/bpf_helpers.h                      | 28 ++++++++++++------=
+------
+>  tools/testing/selftests/bpf/progs/stream_fail.c  |  6 ++---
+>  5 files changed, 21 insertions(+), 20 deletions(-)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 33173b027ccf8893ce18aad474b88f8544f7b344..e4007fea49091c01c1d23af55=
+a25f5567417e978 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -4380,7 +4380,7 @@ BTF_ID_FLAGS(func, bpf_strnstr);
+>  #if defined(CONFIG_BPF_LSM) && defined(CONFIG_CGROUPS)
+>  BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
+>  #endif
+> -BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_stream_vprintk_impl, KF_TRUSTED_ARGS)
+>  BTF_ID_FLAGS(func, bpf_task_work_schedule_signal_impl, KF_TRUSTED_ARGS)
+>  BTF_ID_FLAGS(func, bpf_task_work_schedule_resume_impl, KF_TRUSTED_ARGS)
+>  BTF_KFUNCS_END(common_btf_ids)
+> diff --git a/kernel/bpf/stream.c b/kernel/bpf/stream.c
+> index eb6c5a21c2efee96c41f4c5e43d54062694a4859..ff16c631951bb685e8ecf1707=
+206dad603121a65 100644
+> --- a/kernel/bpf/stream.c
+> +++ b/kernel/bpf/stream.c
+> @@ -355,7 +355,8 @@ __bpf_kfunc_start_defs();
+>   * Avoid using enum bpf_stream_id so that kfunc users don't have to pull=
+ in the
+>   * enum in headers.
+>   */
+> -__bpf_kfunc int bpf_stream_vprintk(int stream_id, const char *fmt__str, =
+const void *args, u32 len__sz, void *aux__prog)
+> +__bpf_kfunc int bpf_stream_vprintk_impl(int stream_id, const char *fmt__=
+str, const void *args,
+> +                                       u32 len__sz, void *aux__prog)
+>  {
+>         struct bpf_bprintf_data data =3D {
+>                 .get_bin_args   =3D true,
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf=
+/bpftool/Documentation/bpftool-prog.rst
+> index 009633294b0934ac282601cf21a0fd03c388de2c..35aeeaf5f71166f0e1e8759da=
+8639c2533d47482 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+> @@ -182,7 +182,7 @@ bpftool prog tracelog
+>
+>  bpftool prog tracelog { stdout | stderr } *PROG*
+>      Dump the BPF stream of the program. BPF programs can write to these =
+streams
+> -    at runtime with the **bpf_stream_vprintk**\ () kfunc. The kernel may=
+ write
+> +    at runtime with the **bpf_stream_vprintk_impl**\ () kfunc. The kerne=
+l may write
+>      error messages to the standard error stream. This facility should be=
+ used
+>      only for debugging purposes.
+>
+> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+> index 80c028540656176376909cb796e56de433ef3aab..d4e4e388e625894f8ec27b5a6=
+278dbb46e658720 100644
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -315,20 +315,20 @@ enum libbpf_tristate {
+>                           ___param, sizeof(___param));          \
+>  })
+>
+> -extern int bpf_stream_vprintk(int stream_id, const char *fmt__str, const=
+ void *args,
+> -                             __u32 len__sz, void *aux__prog) __weak __ks=
+ym;
+> -
+> -#define bpf_stream_printk(stream_id, fmt, args...)                      =
+       \
+> -({                                                                      =
+       \
+> -       static const char ___fmt[] =3D fmt;                              =
+         \
+> -       unsigned long long ___param[___bpf_narg(args)];                  =
+       \
+> -                                                                        =
+       \
+> -       _Pragma("GCC diagnostic push")                                   =
+       \
+> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")           =
+       \
+> -       ___bpf_fill(___param, args);                                     =
+       \
+> -       _Pragma("GCC diagnostic pop")                                    =
+       \
+> -                                                                        =
+       \
+> -       bpf_stream_vprintk(stream_id, ___fmt, ___param, sizeof(___param),=
+ NULL);\
+> +extern int bpf_stream_vprintk_impl(int stream_id, const char *fmt__str, =
+const void *args,
+> +                                  __u32 len__sz, void *aux__prog) __weak=
+ __ksym;
+> +
+> +#define bpf_stream_printk(stream_id, fmt, args...)                      =
+               \
+> +({                                                                      =
+               \
+> +       static const char ___fmt[] =3D fmt;                              =
+                 \
+> +       unsigned long long ___param[___bpf_narg(args)];                  =
+               \
+> +                                                                        =
+               \
+> +       _Pragma("GCC diagnostic push")                                   =
+               \
+> +       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")           =
+               \
+> +       ___bpf_fill(___param, args);                                     =
+               \
+> +       _Pragma("GCC diagnostic pop")                                    =
+               \
+> +                                                                        =
+               \
+> +       bpf_stream_vprintk_impl(stream_id, ___fmt, ___param, sizeof(___pa=
+ram), NULL);   \
+>  })
+>
+>  /* Use __bpf_printk when bpf_printk call has 3 or fewer fmt args
+> diff --git a/tools/testing/selftests/bpf/progs/stream_fail.c b/tools/test=
+ing/selftests/bpf/progs/stream_fail.c
+> index b4a0d0cc8ec8a9483b5967745cd35f8bd940460e..3662515f0107740c147f5a929=
+6b4da06fa508364 100644
+> --- a/tools/testing/selftests/bpf/progs/stream_fail.c
+> +++ b/tools/testing/selftests/bpf/progs/stream_fail.c
+> @@ -10,7 +10,7 @@ SEC("syscall")
+>  __failure __msg("Possibly NULL pointer passed")
+>  int stream_vprintk_null_arg(void *ctx)
+>  {
+> -       bpf_stream_vprintk(BPF_STDOUT, "", NULL, 0, NULL);
+> +       bpf_stream_vprintk_impl(BPF_STDOUT, "", NULL, 0, NULL);
+>         return 0;
+>  }
+>
+> @@ -18,7 +18,7 @@ SEC("syscall")
+>  __failure __msg("R3 type=3Dscalar expected=3D")
+>  int stream_vprintk_scalar_arg(void *ctx)
+>  {
+> -       bpf_stream_vprintk(BPF_STDOUT, "", (void *)46, 0, NULL);
+> +       bpf_stream_vprintk_impl(BPF_STDOUT, "", (void *)46, 0, NULL);
+>         return 0;
+>  }
+>
+> @@ -26,7 +26,7 @@ SEC("syscall")
+>  __failure __msg("arg#1 doesn't point to a const string")
+>  int stream_vprintk_string_arg(void *ctx)
+>  {
+> -       bpf_stream_vprintk(BPF_STDOUT, ctx, NULL, 0, NULL);
+> +       bpf_stream_vprintk_impl(BPF_STDOUT, ctx, NULL, 0, NULL);
+>         return 0;
+>  }
+>
+>
+> --
+> 2.51.1
+>
 
