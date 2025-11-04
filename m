@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-73408-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73409-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDA26C2EDCB
-	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 02:44:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EBA4C2EDD1
+	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 02:44:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46A9E1887F4B
-	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 01:41:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EDB71888D4A
+	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 01:41:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F9A21CC49;
-	Tue,  4 Nov 2025 01:40:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABDB22A1E1;
+	Tue,  4 Nov 2025 01:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UQMdp11x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="po5OyuyF"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB257215F42;
-	Tue,  4 Nov 2025 01:40:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F89A219E8D;
+	Tue,  4 Nov 2025 01:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762220435; cv=none; b=nHQZNnRj28Al5vZPyMjBRMpDcRAhAkvktlAD04HMfR9H8+K/M1oLL9O8X3PPusZmUq9kS4r0wN54ogkC1pW4bJDi7GFxX8hzApG/xaMaBnXIx10l7Y62va1OjcgEcK4D13F1hInC+KpnSweJ+VeJO4VQMOOGLvFmVsdfS/tvQIo=
+	t=1762220442; cv=none; b=VdubnsE/jql2D76c/TplvmqEwMKQW+VoRgi1VG32vnG4Sm6mDNPJEYtVMuz0gASUsBL+1/8MVxwve5BtmbgUHAZH6s1TMq8Ah7wBJ1B7pGQMZLXNoZwqOvYaODeo/AwXCbz+KS7lWu75MBJhc0Ts/MRJtHhWeSKgucvQeHchdVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762220435; c=relaxed/simple;
-	bh=lzOD0CVb2YW225N81+aQO9LxHdybwn5EIDNjriISPz0=;
+	s=arc-20240116; t=1762220442; c=relaxed/simple;
+	bh=VJ2F9710N8l9Zd8t0xRKF/S4f0Ehk5s7Di7kmYu+X60=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=PQracFoUsTUjl+hCJRuvcn3Y0bzr92vjSmhK52T03CHu6eGK9Wwtt9hY9F8Nslsh91yQx+lY8gD97xNJ+yGMJt4AAaey5RS8QgP/GMj++HHZZkQPfOA9ozFP1VJXb6GCGVROMj05zc6+itz2fH1Ea08g5EcVHTXCVSrXOm58Ts8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UQMdp11x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F2B6C4CEE7;
-	Tue,  4 Nov 2025 01:40:35 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=feKaEe+OjZdhfzMLOB15hxUzkPqor3MxHlVHOHYA85iISadJ+rjhkUHY9YdtIeG4CCxzSs3mvA4kQBgB1aTljrpFPlGdsHOFFmZZYCm9E+bmHDCsPwkX7Sdb1CjlOFcL9TpII+LHF8mo55aN3zSIog5yPHs4Kn3PYCs9z2ClMNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=po5OyuyF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE63FC4CEE7;
+	Tue,  4 Nov 2025 01:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762220435;
-	bh=lzOD0CVb2YW225N81+aQO9LxHdybwn5EIDNjriISPz0=;
+	s=k20201202; t=1762220441;
+	bh=VJ2F9710N8l9Zd8t0xRKF/S4f0Ehk5s7Di7kmYu+X60=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=UQMdp11xSxb02bAhmfbmZypSvTMo1odhWNX3rfXzexvPk1C38VqukMF3CvVUqqX+N
-	 hJH13fbUM6iF5GGukBizaevpm0ZhTysRKesf/TCGolVJ6hGgl/Jl9/8q6g+h6hh9s6
-	 LWb08loFlHMZJj4PvMfKDxzNNw5FiMHupL9DLpILRNJnst3iRB4Ay7y/tqy6iuthSh
-	 j9E7CkN4c7jE+9/CpWK/gCt1o7xJlHNdGzObD2FWEepy1qAT/vjNDV2X9YCjULHGni
-	 oJKWKpboRCQA3bcGBQkndsTY5fsWJ7N80JFWpF0GNnsO995FzNOJt6fu1GSd3axLOI
-	 uj3SErnAtuQWA==
+	b=po5OyuyFGBjPDMOOGtgNqhCJ+aILDuOqrzw0f+f47ozjmWoS/3zQTiwCQ8TrUdp0o
+	 ryA1ReymuLrn+QOpFL9YkUCTXs0BC8J05DoZgbJlYxlry8FuwMP2cUx4WDtFcfw1gr
+	 HqELcKMgOSB3KvLT/YenNo6T7sdvDPydawnOjnw7nUSBRLnIJ/qEC9jSF8VomST6m0
+	 RMVanrVmrOYRx2q4vskpJD/1qjThBw3+l2v+64ymKoRTgfqyB4C012lBiP2LAjPmvA
+	 hB2iy1OtKATm7J4CihbAxToddUj8Bb6MoOp7e6V2cF5YEPD2PASsOBw4Ixp7I0l78k
+	 T2iXqdO4U71oQ==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB0203809A8A;
-	Tue,  4 Nov 2025 01:40:10 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70D853809A8A;
+	Tue,  4 Nov 2025 01:40:17 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,44 +52,41 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 bpf 0/3] Fix ftrace for livepatch + BPF fexit programs
+Subject: Re: [PATCH net] octeontx2-pf: Fix devm_kcalloc() error checking
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176222040973.2285814.7620331983451064735.git-patchwork-notify@kernel.org>
-Date: Tue, 04 Nov 2025 01:40:09 +0000
-References: <20251027175023.1521602-1-song@kernel.org>
-In-Reply-To: <20251027175023.1521602-1-song@kernel.org>
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- live-patching@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, rostedt@goodmis.org, andrey.grodzovsky@crowdstrike.com,
- mhiramat@kernel.org, kernel-team@meta.com, olsajiri@gmail.com
+ <176222041599.2285814.11616778386384057545.git-patchwork-notify@kernel.org>
+Date: Tue, 04 Nov 2025 01:40:15 +0000
+References: <aQYKkrGA12REb2sj@stanley.mountain>
+In-Reply-To: <aQYKkrGA12REb2sj@stanley.mountain>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: sumang@marvell.com, sgoutham@marvell.com, gakula@marvell.com,
+ sbhatta@marvell.com, hkelam@marvell.com, bbhushan2@marvell.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-On Mon, 27 Oct 2025 10:50:20 -0700 you wrote:
-> livepatch and BPF trampoline are two special users of ftrace. livepatch
-> uses ftrace with IPMODIFY flag and BPF trampoline uses ftrace direct
-> functions. When livepatch and BPF trampoline with fexit programs attach to
-> the same kernel function, BPF trampoline needs to call into the patched
-> version of the kernel function.
+On Sat, 1 Nov 2025 16:26:42 +0300 you wrote:
+> The devm_kcalloc() function never return error pointers, it returns NULL
+> on failure.  Also delete the netdev_err() printk.  These allocation
+> functions already have debug output built-in some the extra error message
+> is not required.
 > 
-> 1/3 and 2/3 of this patchset fix two issues with livepatch + fexit cases,
-> one in the register_ftrace_direct path, the other in the
-> modify_ftrace_direct path.
+> Fixes: efabce290151 ("octeontx2-pf: AF_XDP zero copy receive support")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 > 
 > [...]
 
 Here is the summary with links:
-  - [v4,bpf,1/3] ftrace: Fix BPF fexit with livepatch
-    https://git.kernel.org/bpf/bpf/c/56b3c85e153b
-  - [v4,bpf,2/3] ftrace: bpf: Fix IPMODIFY + DIRECT in modify_ftrace_direct()
-    https://git.kernel.org/bpf/bpf/c/3e9a18e1c3e9
-  - [v4,bpf,3/3] selftests/bpf: Add tests for livepatch + bpf trampoline
-    https://git.kernel.org/bpf/bpf/c/62d2d0a33839
+  - [net] octeontx2-pf: Fix devm_kcalloc() error checking
+    https://git.kernel.org/netdev/net/c/2e25935ed24d
 
 You are awesome, thank you!
 -- 
