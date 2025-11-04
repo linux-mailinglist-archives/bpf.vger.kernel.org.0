@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-73486-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73487-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8B65C32AD0
-	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 19:33:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 152C8C32AD1
+	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 19:33:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1A2A42370A
-	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 18:30:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0E06424316
+	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 18:31:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243BD33FE04;
-	Tue,  4 Nov 2025 18:30:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37561340286;
+	Tue,  4 Nov 2025 18:30:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aOn3ThBh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZYEwx7vi"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA6133F8AB;
-	Tue,  4 Nov 2025 18:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA38133FE20;
+	Tue,  4 Nov 2025 18:30:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762281036; cv=none; b=da2RhpPCoFdut1BfjtBtA/MB+g0rTBvXbPy032UlIpLD7tUd7Kbw6ajxm+qaT1yrZcbmHce3saMRbHbL1VBzm8yOxzvFCB7UMrV/LX9tMhfWnZ8DdvsP40LNFBrMSVumBgZC6qdzN0786GgDN7BRz55F+VMthceSoiltx53RJKQ=
+	t=1762281037; cv=none; b=DgtZ9oEOWZ1P1avUuUO/5r21XDI9am7+Brfw1rn45C9rBO5asw13k+d5nB1ZJzrqNfMZCTXazxwPrqkbdITM3OJ0wChdaYsJHAhhaHFLIWWDy0Jyi9CJNuRXfdhxggPaeN+QG8gH/lcppIEvXPCyfmU/SfcWYSEaUL57O1Go+Vs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762281036; c=relaxed/simple;
-	bh=a7geEZcE8zgpcKUFaOcbkZCsetwgeMxFqMU9cnrNxTU=;
+	s=arc-20240116; t=1762281037; c=relaxed/simple;
+	bh=4PjbvEITATd/KK+H9RZj7sFJzXr9iIiCoLwDCYfNvms=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=A+gjnKJUddvN2UjS53aHG9CnmP+4TBcBFNVwzaGg6Xl/E2LDtTqVYs1q50I/Zv6vHJjkOyg4J7MMS/psTxfFaRoeEdkuYDXieb45lf77w7Z48ZOMzbksISclhGQF5D96a2/M1xvCSBtX8BzO4PtG+XFK3Bdd4bhyFLSWcBQiXhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aOn3ThBh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07A93C4CEF7;
-	Tue,  4 Nov 2025 18:30:36 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=LANpQenGWD81bmez58/hMg38ESQLd8sQSuzJDFkYRCgVgixHCe/8yOKjkmPrcQT6L8xYVM0W8XKNNXZo55yU7JR/bb2wftAp8xGkzAldDUNb3XP6H3FvRNf9Zahs32zby+4tqhDoIzdB6sbscAruJYSUi/rTXi36aSqOa/xXZXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZYEwx7vi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E3D5C116B1;
+	Tue,  4 Nov 2025 18:30:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762281036;
-	bh=a7geEZcE8zgpcKUFaOcbkZCsetwgeMxFqMU9cnrNxTU=;
+	s=k20201202; t=1762281037;
+	bh=4PjbvEITATd/KK+H9RZj7sFJzXr9iIiCoLwDCYfNvms=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=aOn3ThBheom1P3mRfVzXDhE13YfKRM0T84JuVUSem4VgTTWoS37DXbDh94l3nkYsA
-	 nnAnSknq0kVFPhTwHWPPW/jC2DbGIXmCUZBua4/4UFEYZbPaFeRttFZGtKOCnfqoRm
-	 7H2am7hLmGSKMKwUG88sFk73zckEgGbEgBq/RqIxIa6osW9IB13JB8lDYKe0CRy691
-	 eCI+QU0FCN8wEhCa38kq97jtCmDQ3o2q9WRhghD4g1EILNDQuSEY0rlksow5kg48if
-	 ifetM3bRUq3nZLoDJ2zdV+GuBuI70Tgi1ONDznG5qoWFLRe1srnlFkoV43QV4OKQv6
-	 wB0/vqT/D7rpA==
+	b=ZYEwx7vi5+6/ZnqSKBJkWesI841vPclF4+VExM5gw8BrzH9kPPS1M5KmpooSChWOr
+	 hDLeu8fmQhq3hV+MvJ05C78aIawDNjlVWCBfgIogKGEUOgpCnUe9C2sxyG1AeQgLui
+	 z4YjncEAVV1wv97Xw8bg1TD6GbIYuYv4YADvZ2h3uUzUEYbefGMRJnsjTSqG8RRTgl
+	 2TfRMVk8EebDI1qMjgEmrCzn84KGDQESFipzGWTGHrklsF7hSso6vgJoLEZ+Gd9Vn2
+	 ua/BO/GfzVWICPfiKBRQQqj+0UTULu5akUwq/iSBidfJafys1n6YR2zHAZNbNJz8ei
+	 DELCIfrGiroLA==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D1F380AA44;
-	Tue,  4 Nov 2025 18:30:11 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70DC7380AA44;
+	Tue,  4 Nov 2025 18:30:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,41 +52,43 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4] libbpf: update the comment to remove the reference to
- the
- deprecated interface bpf_program__load().
+Subject: Re: [PATCH bpf-next v2] docs/bpf: Add missing BPF k/uprobe program
+ types
+ to docs
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176228101010.2956689.5611314609382456914.git-patchwork-notify@kernel.org>
-Date: Tue, 04 Nov 2025 18:30:10 +0000
-References: <20251103120727.145965-1-jianyungao89@gmail.com>
-In-Reply-To: <20251103120727.145965-1-jianyungao89@gmail.com>
-To: Jianyun Gao <jianyungao89@gmail.com>
-Cc: linux-kernel@vger.kernel.org, andrii@kernel.org, eddyz87@gmail.com,
- ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+ <176228101125.2956689.5122391754843151442.git-patchwork-notify@kernel.org>
+Date: Tue, 04 Nov 2025 18:30:11 +0000
+References: <20251029180932.98038-1-donald.hunter@gmail.com>
+In-Reply-To: <20251029180932.98038-1-donald.hunter@gmail.com>
+To: Donald Hunter <donald.hunter@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
  yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, corbet@lwn.net,
+ bpf@vger.kernel.org, linux-doc@vger.kernel.org
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Mon,  3 Nov 2025 20:07:27 +0800 you wrote:
-> Commit be2f2d1680df ("libbpf: Deprecate bpf_program__load() API") marked
-> bpf_program__load() as deprecated starting with libbpf v0.6. And later
-> in commit 146bf811f5ac ("libbpf: remove most other deprecated high-level
-> APIs") actually removed the bpf_program__load() implementation and
-> related old high-level APIs.
+On Wed, 29 Oct 2025 18:09:32 +0000 you wrote:
+> Update the table of program types in the libbpf docs with the missing
+> k/uprobe multi and session program types.
 > 
-> This patch update the comment in bpf_program__set_attach_target() to
-> remove the reference to the deprecated interface bpf_program__load().
+> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+> 
+> ---
+> Changes in v2:
+> - Document the correct attach types for kprobe.session, uprobe.multi and
+>   uprobe.session, thanks Jiri Olsa
 > 
 > [...]
 
 Here is the summary with links:
-  - [v4] libbpf: update the comment to remove the reference to the deprecated interface bpf_program__load().
-    https://git.kernel.org/bpf/bpf-next/c/efa47566ad0b
+  - [bpf-next,v2] docs/bpf: Add missing BPF k/uprobe program types to docs
+    https://git.kernel.org/bpf/bpf-next/c/b3387b312226
 
 You are awesome, thank you!
 -- 
