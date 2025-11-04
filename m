@@ -1,164 +1,287 @@
-Return-Path: <bpf+bounces-73421-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81F4DC2FFD3
-	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 09:40:08 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E073C3015D
+	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 09:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A2571886195
-	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 08:36:25 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C6FD334DFE0
+	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 08:56:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE80B3112D5;
-	Tue,  4 Nov 2025 08:35:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B51318139;
+	Tue,  4 Nov 2025 08:53:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="APiNfiQl"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="uabM0aRg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazhn15012045.outbound.protection.outlook.com [52.102.140.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9FAD8634F
-	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 08:35:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762245347; cv=none; b=Dsvnk3WyePz3yIxTSAFK/ZDQBIIsu1Pf5Ozv+X/+wX6nf5GUarehHQ9BEv362oW/ENRQoX/ZdSBmqhg5mjdnAKNNwxlqwe4G1i4tY91ndKm3owDVwvgIYiS6dQah7Eag4fO4T2W2G5yrrPrSy6gRk+nVQxWX2+BT8bj39Ge2TYE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762245347; c=relaxed/simple;
-	bh=N490/TG3XtRjts6kYFyxHc4CGDHNZTtWIrxRlPC+beY=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YMa9LP8czTnDOi4mbGK0j7+AhjXnFrVIvtYoGdntpZEwRaWsSKHK7x0Uz0Sv6rcLV9N/WwOb4vmG0hw+9IBLqfiQErlcwygGZJ992mHNP8iGjAwtZ2207Bgk9Dwsb1u4sX1xIu5T7nqefp27sSkGUEks2gvZFRUzBG0RGzk/pY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=APiNfiQl; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-477442b1de0so16154945e9.1
-        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 00:35:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762245344; x=1762850144; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2iRqZFu43lXJnLAXLjzrSZx/jk9otyggnor3WZ2EbNM=;
-        b=APiNfiQl7NquLOVU/0OHmV00YbaxTltwrSz6kAhBrPe+ZLuryf0HyZsGRJ6xzmBili
-         gMyNhvEklXMs0VWXm6WIKTY3NWINg7hiL023IKpSWuLgX5dhNLROaysj81/oi++zhJn/
-         lw8rrqSKW5JzQT91MONXhEvbxyTNjY6b5s6Kic8Uf+FpSU8dFW+dcODWOjJVPkZ2eJHm
-         XOl1pXojpAGl9CLAKTLQAQFNvfC2+g8WxO787swnv6lXjCuoHYU5P5LAkIrHSaYkdKY2
-         dYS6jybsCCpcfdIZXNsNRzkN3iml15OTVVSK9RHpgn/gYSpXkK1gjgdCzZffqx3fpL4s
-         8B1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762245344; x=1762850144;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2iRqZFu43lXJnLAXLjzrSZx/jk9otyggnor3WZ2EbNM=;
-        b=S8XZu3m1udR7oClatgFCvZ3HIRbbId8GAJv1ag33/yF5t2d8iLM2tYeKBbAxzZWQhh
-         f+GUaDfze9SSxuHkmW+vWq5WCx3VaaQGZRC7OhMwgITXJiFBUWFfBx0GLShqYA/TtNvP
-         mtwV27+g6E2YaulYuwcA+7vgCCqGSwFOK0cF6tLx9tsFWWf/W39Qgud/4mcY/6yvAkug
-         /j2/hks2crcKGdVq+5cuqQRQXEU6AnRThubB8Ul3/Gm2U4LBWsaQ3sYypjrLb1HasUfg
-         hO2U/WQ2lk5qRKqXpP17Oc3ATFgEBqJUBF8PXTFZRXXExZRba71FGrqvGpXf5Myrf6tS
-         fG7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWAIcRua5zjSTRvyfgZVKKkODw7gvkyl+Gmk4oOTV7v9nLQJyQRTUxXxch9YGVcqGzkZl0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/LL6OdBqYsxwInZnIwzyQFzb4Kwa8OGqc5wWeB4/UpjtNgZka
-	4i+mlM++z7Iqaf31NZ35m748DCKvbwTOMq/ku/jTmOta6oojFoDWRoBH
-X-Gm-Gg: ASbGncuhUEfNIBvQ3AQOf61iH6Lah/7eI92+8rVOKDedtRC4IZb98ZqVi00ptq4MRQo
-	12xLqxh/2DKcpQNR+v3zhsdJ9KwuX0h57UD0u3qNTfN0piwaZ2p1UkdS1ZKocrS6ixcBBQ24kxQ
-	t+XPalNckM7NrB5cZlbONo9HL9p5qt/cMuaopStVGNFCd0RjiRN+lF3CvJc3J5hQGwmccSwfcis
-	OSDgI+E7ezUgKqNSNvfAMAUGAGEOCtyoXKhH21235bK3P/FH3q1JdmX7xQvJkPigTjoxdrne779
-	Y1YmehVCzdoHbIxWFFCobGF7xv/fPgGsZLyJ3ZzHkpVM1HumhbTl2Rx1MKcU84KpKOwkKCBvc1m
-	DmVjY73G5WpcteFEmAyHqD5Cf1fRg25lJ+zOPeo3VQ1Gpl23B6A==
-X-Google-Smtp-Source: AGHT+IHu1BecoN7hPPRpZX/FIuxI3kKqiebd5/P0sYSuyDaOBlEppzCMNxt5Ft9U6yUF8ua9knS0tQ==
-X-Received: by 2002:a5d:584a:0:b0:429:cda2:9ffd with SMTP id ffacd0b85a97d-429cda2a24dmr5997729f8f.9.1762245343780;
-        Tue, 04 Nov 2025 00:35:43 -0800 (PST)
-Received: from krava ([2a02:8308:a00c:e200::b44f])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429dc1fdae2sm3322788f8f.41.2025.11.04.00.35.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Nov 2025 00:35:43 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 4 Nov 2025 09:35:41 +0100
-To: bot+bpf-ci@kernel.org
-Cc: mhiramat@kernel.org, rostedt@goodmis.org, jpoimboe@kernel.org,
-	peterz@infradead.org, bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, yhs@fb.com,
-	songliubraving@fb.com, andrii@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
-	yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
-Subject: Re: [PATCHv2 4/4] selftests/bpf: Add stacktrace ips test for raw_tp
-Message-ID: <aQm63ZvtqzEWvRfE@krava>
-References: <20251103220924.36371-5-jolsa@kernel.org>
- <0fc522195058f867d14c8a652b6b698d03751d0d179fcffdf20a44bf4293039a@mail.kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF340313260;
+	Tue,  4 Nov 2025 08:53:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.102.140.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762246437; cv=fail; b=FlHpLm/2SOmofSnNTa+aIvuuSKrTPYn1pFap4xUlmzlTjhqBNu9HI+wpDmLjUSlHKWRoXIyhS2WDzeAo/dni4mJieoqgAVHzMSe+xXYj8m9d+WVwRAuFHKFGdGlsQOrtPW22kHUnDIQUxEpp+P4kXoXVxdyShp15eVN0B6eMpqs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762246437; c=relaxed/simple;
+	bh=5zBNENWWz4oByh0G0NHeTXkOKw+ZPN4i3nM1IwBWmDs=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=UVfx0ApDI4NeGZWTx2bYlomBrtjuMHAvjH7H8X/c5YtpLBEKRMLiP4QEHWOgDe3HHFLGcgKRTHAjajvhjdu5SmykTswd2LGUyY6F1Yr5+Kx52SwseBZGT/mKctmU5OvxyC9l+U0ABoNjmEdEeWA12Vwv3pEB4Hp7Y6DBNdvjvdY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=uabM0aRg; arc=fail smtp.client-ip=52.102.140.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=YJnqhhKGfwOL1HaZTmlyiU+b5jrbZhJmMCxIDiBN+NH7+T9PX+8j+zQl+zwzw3s67QB5lcLN+NoVydk9qDDSeqRqTJRusDbTjBNfDa/DwxlfmaG5S9MZhdSlta2Ym178MtjoS9o/DB4CmoHsKWuZgWkHud3Mfzm6F4DD7gAcWFBOOOgzhJLcFQrVdPeCPSZFPoR9wrDcoTPRq90NoyW2nzqTMgbh0lbf06N+JLUToZPiAOQ4C+EYRKjjiJRn+Py86Q1FIq1Cm01s7ZcaXzqviyZUiTeZ0Y8NBvyrkCxoht8Zt8BQpG4WsGmxUN8dXCsEAVq1c3qQmEx8i/2rY7XrJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2o+GFgh4IBx4CdLDCRMAxzEWR65gnszOF4J3iviVUVw=;
+ b=CYpUoEpb3rYeMd3rOSz8QcKJ4rFjlk/Gy1gz8khKIFLud3lvBXgZZFOEAMzJKLSNJFlgkCxdPVsNT+AwyzmQZIV5//V7SWhS1V1CarAa9yvCpUlBg9OYATF2eJaL5pm3kPzk2Jg9B8wvb7h9FBb4zE+ffY2DhxLdbbFNk/NDmYEPUZ0/7lv5XUd4RJKGVoDspAZls4LkLKXqRLdGOQlVUzaiamns87SJbkyVvedekkwfWcFC0Bb+7uOmZseJniVEj0tQJ9KznbGkq3kHwWVLrXQ3rYOjfKBz2ZAAaz9Nrhp01+GSZNpolxlU/dMWiyRVtSXx06sHbPQN1ocklQgucw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.21.194) smtp.rcpttodomain=kernel.org smtp.mailfrom=ti.com; dmarc=pass
+ (p=quarantine sp=none pct=100) action=none header.from=ti.com; dkim=none
+ (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2o+GFgh4IBx4CdLDCRMAxzEWR65gnszOF4J3iviVUVw=;
+ b=uabM0aRg/IhwdF/Nrah0UySW1CWKB5KVq0dLKeW7SWUpIh/Ck+uU/gYE/O6tpNu08uK/+10k9ByNpsuby1eK0WpwTbj2chueSdGz4u5MXkibVWtMMBAGS74RKBgjmyg0P9XhwSuqpOnLUtWr+ZktfHZdn9ki3FoOZlERLcmZBr8=
+Received: from PH8P220CA0030.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:348::15)
+ by CY8PR10MB7315.namprd10.prod.outlook.com (2603:10b6:930:7e::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9275.16; Tue, 4 Nov
+ 2025 08:53:51 +0000
+Received: from SN1PEPF00036F42.namprd05.prod.outlook.com
+ (2603:10b6:510:348:cafe::aa) by PH8P220CA0030.outlook.office365.com
+ (2603:10b6:510:348::15) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9298.7 via Frontend Transport; Tue, 4
+ Nov 2025 08:53:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.194)
+ smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
+ action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.21.194 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
+Received: from flwvzet200.ext.ti.com (198.47.21.194) by
+ SN1PEPF00036F42.mail.protection.outlook.com (10.167.248.26) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9298.6 via Frontend Transport; Tue, 4 Nov 2025 08:53:49 +0000
+Received: from DFLE203.ent.ti.com (10.64.6.61) by flwvzet200.ext.ti.com
+ (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 4 Nov
+ 2025 02:53:32 -0600
+Received: from DFLE202.ent.ti.com (10.64.6.60) by DFLE203.ent.ti.com
+ (10.64.6.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 4 Nov
+ 2025 02:53:32 -0600
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE202.ent.ti.com
+ (10.64.6.60) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
+ Transport; Tue, 4 Nov 2025 02:53:32 -0600
+Received: from [10.24.69.13] (meghana-pc.dhcp.ti.com [10.24.69.13] (may be forged))
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5A48rPTu1678790;
+	Tue, 4 Nov 2025 02:53:26 -0600
+Message-ID: <c792f4da-3385-4c14-a625-e31b09675c32@ti.com>
+Date: Tue, 4 Nov 2025 14:23:24 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0fc522195058f867d14c8a652b6b698d03751d0d179fcffdf20a44bf4293039a@mail.kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXTERNAL] Re: [PATCH net-next v4 2/6] net: ti: icssg-prueth: Add
+ XSK pool helpers
+From: Meghana Malladi <m-malladi@ti.com>
+To: Paolo Abeni <pabeni@redhat.com>, <horms@kernel.org>,
+	<namcao@linutronix.de>, <vadim.fedorenko@linux.dev>,
+	<jacob.e.keller@intel.com>, <christian.koenig@amd.com>,
+	<sumit.semwal@linaro.org>, <sdf@fomichev.me>, <john.fastabend@gmail.com>,
+	<hawk@kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
+	<kuba@kernel.org>, <edumazet@google.com>, <davem@davemloft.net>,
+	<andrew+netdev@lunn.ch>
+CC: <linaro-mm-sig@lists.linaro.org>, <dri-devel@lists.freedesktop.org>,
+	<linux-media@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <srk@ti.com>, Vignesh Raghavendra
+	<vigneshr@ti.com>, Roger Quadros <rogerq@kernel.org>, <danishanwar@ti.com>
+References: <20251023093927.1878411-1-m-malladi@ti.com>
+ <20251023093927.1878411-3-m-malladi@ti.com>
+ <05efdc9a-8704-476e-8179-1a9fc0ada749@redhat.com>
+ <ba1b48dc-b544-4c4b-be8a-d39b104cda21@ti.com>
+Content-Language: en-US
+In-Reply-To: <ba1b48dc-b544-4c4b-be8a-d39b104cda21@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF00036F42:EE_|CY8PR10MB7315:EE_
+X-MS-Office365-Filtering-Correlation-Id: afa45c00-5f65-40ef-fdf6-08de1b7fac39
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|7416014|376014|1800799024|34020700016|36860700013|921020|12100799066;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?YmU4YnpkdE05dTBzWC9UUDlDRzJjQzVuUTV1eDR4RlA1TUdraWl4VThmMXpD?=
+ =?utf-8?B?WXRNcCtXV2hUcE1vblp3Y2NJbi80K013RVhNYnhyVUJqR0JGTWNXUFlDdExu?=
+ =?utf-8?B?YW9nN2xIbU43emVxaXJFWkh2MWlqTm8rblV2M1pHUm81aGYrUzdpT3V1MHJV?=
+ =?utf-8?B?elA3dGVBMng0RWpwc1BrdUoxaUVJTW9vNzMwQTlMQTA0U0M0czJ3ejdZZCtC?=
+ =?utf-8?B?eVE4OWh3UFJHUXJRWXlnRkoyMUdUWXlvblhHU0JXdEUxRE1HQUdVd2wxbjJk?=
+ =?utf-8?B?aDU2RTBrUlh4OHNUTkNDbFJuTFVXK0tDeFI0dmp0TjYwSUhXYzRlWU1Ydlcr?=
+ =?utf-8?B?RzJnVE9NVGNOL1BnTG1jS0FhTGdvNm4xRldISzVldldBWG9rczRlVHhIWnpi?=
+ =?utf-8?B?UkcyV2luQm95RXhZOFhLd3EvdjRhVTg0bEl5ZmFYaWMzNTJ5V0IrMXQvZ1BH?=
+ =?utf-8?B?YW1mdmtHZ2V3ZEpTWlRxYXdUMjFHOW9UbmVKV0pXZGlLb2ljTXVFaHgwWExj?=
+ =?utf-8?B?bjNsSzNlaEtlTWF3c0Q5ZWpDMlhwN2dicWp6VSs2R3B3L2RHOWZNMXBmZ08x?=
+ =?utf-8?B?WW44ZFpINWYxZXZjMUh4YkRCZW5zaEhhc0RIdVgvQnhkZC9YeXNsYkRGaCtn?=
+ =?utf-8?B?TGMzNTZ6Y3UrcTROZG55Vnp0WVREeFlnUzUrSjNtbTRIL25pSHF2bW1aVkE1?=
+ =?utf-8?B?N042S3Z5MVF0K3p4WmwrWFJOVGpDU3VHdnFybWNHcmk2NHkvcWFMR2NOQnhw?=
+ =?utf-8?B?di9DY2FCNkRGOUNxUk1qcit1K0xLbkhpbVRnMUNlY1RETlpJdWlpWWNBMG91?=
+ =?utf-8?B?M2xmVEd3V2JHdkc4OHF2WE9YQWlNeTJ2ajFQakpMYnNqSlBmVzlESytNRVB0?=
+ =?utf-8?B?OWlwVUs5ZlhYekZEOTlLVHJGUlNscC9DblVNRHI0QW5teE05Mm1ZdVpWNGI2?=
+ =?utf-8?B?WTREWXc0NXBtMXAwMVZDRHdVbXNDWXlLS1J0RmZhaHFnWmtJUXFZeUQvRzBi?=
+ =?utf-8?B?MDY1RjVOdnorUlFjbUJkdHpYZzFYUVdZckNHcXZMVzRDemYyTTQxam9yWDdI?=
+ =?utf-8?B?bXEyVnVmd2d3RXFSdm9QaW94SHVFU3ZWS3c0c3VqY20rZkc3dUxobnV3dU1u?=
+ =?utf-8?B?VE5tNk5OTXFzR054ejFNSWFFc0dycW9GMmJJZGZPaWtIV3RYY0g4VW1BUHMy?=
+ =?utf-8?B?UGpUUFAzWklrWXdFMncwRGlmT3duaE82MWw0Tnh4SkRLL2VYWTNTUUsvZDl0?=
+ =?utf-8?B?MC9hRkowaDlML055Q1ltWnhHbXJHU052TGRyREJwcnFNMGI0cWF0RnRXdjRX?=
+ =?utf-8?B?SHcwSERTa1I2TXByUWVFTEREMDFjSWNaSThHZ2RRLzdvd1dSTGNsRkltRzB5?=
+ =?utf-8?B?NUFrakJSelFrWmxJV1dKNjB1ZFBhaFJVQTAwd1M0c3dDN1N1RnM3dzRrc1pF?=
+ =?utf-8?B?RGd6bWU4WE5FVUhiYmxCTW11MzhJc0JwNUc0bEdBalpDUGRqWEVkeFI3VzB4?=
+ =?utf-8?B?eFdVaHk1ZFZDTXJsci8zZ2tQSmZub2VRVmpISU54R1hLVENGQ3R0dkdvL3hi?=
+ =?utf-8?B?R0hSVHdHZWZ3L1ZiTmRRclFJNHVnaEZoaXFQTkUrZEg5WU0vVTdVdHRRTUFM?=
+ =?utf-8?B?UFJZeWxBdG9MdFdXYzR4OEg1S2JZcnNOQ0hzUlIwaDRUWDk3Yys0bGZKTDRJ?=
+ =?utf-8?B?eXFJRHlvc25KeVpBdm1DSUw2K2tJM3N6c0FCeDBMNXVrdHdOVzRjd1BnbFA0?=
+ =?utf-8?B?MkN2cHFFUEd1SDJFMGYvbWQzK2s3cFZwTGVwbXQvZW9XZitCblBjSHdzS0lF?=
+ =?utf-8?B?NkNtcUxBSnAzaUgyWlJEMlhwUm84QVJDL0krVlhKc3R0MjNQemlnd2FjaFJR?=
+ =?utf-8?B?ZElKY2RVS2xkT0tncXA3b01TcEppcjVrR2ZNUXQ4dm1FNk5wL2pkbU5ia09z?=
+ =?utf-8?B?U2c3VFFHS283b0w1Wkd4QUozYXZQMGNhS1U5OERtN3RDMkhxNUlpbFZYQlBI?=
+ =?utf-8?B?Q0U5SHpuWFZDb1FuSE5ZZDl5OFQraG55b0xPZkZ3RmRsNUNGVXV6QVg5QkZ0?=
+ =?utf-8?Q?mF4wFr?=
+X-Forefront-Antispam-Report:
+	CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(82310400026)(7416014)(376014)(1800799024)(34020700016)(36860700013)(921020)(12100799066);DIR:OUT;SFP:1501;
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2025 08:53:49.6979
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: afa45c00-5f65-40ef-fdf6-08de1b7fac39
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SN1PEPF00036F42.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB7315
 
-On Mon, Nov 03, 2025 at 11:47:36PM +0000, bot+bpf-ci@kernel.org wrote:
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
-> > index 6fca459ba..282a068d2 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
-> > @@ -84,12 +84,58 @@ static void test_stacktrace_ips_kprobe_multi(bool retprobe)
-> >  	stacktrace_ips__destroy(skel);
-> >  }
-> >
-> > +static void test_stacktrace_ips_raw_tp(void)
-> > +{
-> 
-> [ ... ]
-> 
-> > +	/* get bpf program address */
-> > +	info.jited_ksyms = ptr_to_u64(&bpf_prog_ksym);
-> > +	info.nr_jited_ksyms = 1;
-> > +	err = bpf_prog_get_info_by_fd(bpf_program__fd(skel->progs.rawtp_test),
-> > +				      &info, &info_len);
-> > +	if (ASSERT_OK(err, "bpf_prog_get_info_by_fd"))
-> > +		goto cleanup;
->              ^^^^^^^^^^^^^^
-> 
-> Is the error check inverted in test_stacktrace_ips_raw_tp()?
+Hi Paolo,
 
-ugh, it is.. will fix it in next version
+On 10/30/25 10:13, Meghana Malladi wrote:
+> Hi Paolo,
+> 
+> On 10/28/25 16:27, Paolo Abeni wrote:
+>> On 10/23/25 11: 39 AM, Meghana Malladi wrote: > @@ -1200,6 +1218,109 
+>> @@ static int emac_xdp_setup(struct prueth_emac *emac, struct 
+>> netdev_bpf *bpf) > return 0; > } > > +static int 
+>> prueth_xsk_pool_enable(struct prueth_emac *emac,
+>> ZjQcmQRYFpfptBannerStart
+>> This message was sent from outside of Texas Instruments.
+>> Do not click links or open attachments unless you recognize the source 
+>> of this email and know the content is safe.
+>> Report Suspicious
+>> <https://us-phishalarm-ewt.proofpoint.com/EWT/v1/G3vK! 
+>> updqHb0lvOd6ACXFPDODXzFjW2RtkIpblpWr3zui2O2JqWTyRCLKc2i7Pa7uSMBZYpq8H7tTr-jp_nDelg_OUrmNCgZ8_m0$>
+>> ZjQcmQRYFpfptBannerEnd
+>>
+>> On 10/23/25 11:39 AM, Meghana Malladi wrote:
+>>> @@ -1200,6 +1218,109 @@ static int emac_xdp_setup(struct prueth_emac 
+>>> *emac, struct netdev_bpf *bpf)
+>>>      return 0;
+>>>  }
+>>>
+>>> +static int prueth_xsk_pool_enable(struct prueth_emac *emac,
+>>> +                  struct xsk_buff_pool *pool, u16 queue_id)
+>>> +{
+>>> +    struct prueth_rx_chn *rx_chn = &emac->rx_chns;
+>>> +    u32 frame_size;
+>>> +    int ret;
+>>> +
+>>> +    if (queue_id >= PRUETH_MAX_RX_FLOWS ||
+>>> +        queue_id >= emac->tx_ch_num) {
+>>> +        netdev_err(emac->ndev, "Invalid XSK queue ID %d\n", queue_id);
+>>> +        return -EINVAL;
+>>> +    }
+>>> +
+>>> +    frame_size = xsk_pool_get_rx_frame_size(pool);
+>>> +    if (frame_size < PRUETH_MAX_PKT_SIZE)
+>>> +        return -EOPNOTSUPP;
+>>> +
+>>> +    ret = xsk_pool_dma_map(pool, rx_chn->dma_dev, PRUETH_RX_DMA_ATTR);
+>>> +    if (ret) {
+>>> +        netdev_err(emac->ndev, "Failed to map XSK pool: %d\n", ret);
+>>> +        return ret;
+>>> +    }
+>>> +
+>>> +    if (netif_running(emac->ndev)) {
+>>> +        /* stop packets from wire for graceful teardown */
+>>> +        ret = icssg_set_port_state(emac, ICSSG_EMAC_PORT_DISABLE);
+>>> +        if (ret)
+>>> +            return ret;
+>>> +        prueth_destroy_rxq(emac);
+>>> +    }
+>>> +
+>>> +    emac->xsk_qid = queue_id;
+>>> +    prueth_set_xsk_pool(emac, queue_id);
+>>> +
+>>> +    if (netif_running(emac->ndev)) {
+>>> +        ret = prueth_create_rxq(emac);
+>>
+>> It looks like this falls short of Jakub's request on v2:
+>>
+>> https://urldefense.com/v3/__https://lore.kernel.org/ 
+>> netdev/20250903174847.5d8d1c9f@kernel.org/__;!!G3vK! 
+>> TxEOF2PZA-2oagU7Gmq2PdyHrceI_sWFRSCMP2meOxVrs8eqStDUSTPi2kyzjva1rgUzQUtYbd9g$ <https://urldefense.com/v3/__https://lore.kernel.org/netdev/20250903174847.5d8d1c9f@kernel.org/__;!!G3vK!TxEOF2PZA-2oagU7Gmq2PdyHrceI_sWFRSCMP2meOxVrs8eqStDUSTPi2kyzjva1rgUzQUtYbd9g$>
+>>
+>> about not freeing the rx queue for reconfig.
+>>
+> 
+> I tried honoring Jakub's comment to avoid freeing the rx memory wherever 
+> necessary.
+> 
+> "In case of icssg driver, freeing the rx memory is necessary as the
+> rx descriptor memory is owned by the cppi dma controller and can be
+> mapped to a single memory model (pages/xdp buffers) at a given time.
+> In order to remap it, the memory needs to be freed and reallocated."
+> 
+
+Just to make sure we are on the same page, does the above explanation 
+make sense to you or do you want me to make any changes in this series 
+for v5 ?
+
+>> I think you should:
+>> - stop the H/W from processing incoming packets,
+>> - spool all the pending packets
+>> - attach/detach the xsk_pool
+>> - refill the ring
+>> - re-enable the H/W
+>>
+> 
+> Current implementation follows the same sequence:
+> 1. Does a channel teardown -> stop incoming traffic
+> 2. free the rx descriptors from free queue and completion queue -> spool 
+> all pending packets/descriptors
+> 3. attach/detach the xsk pool
+> 4. allocate rx descriptors and fill the freeq after mapping them to the 
+> correct memory buffers -> refill the ring
+> 5. restart the NAPI - re-enable the H/W to recv the traffic
+> 
+> I am still working on skipping 2 and 4 steps but this will be a long 
+> shot. Need to make sure all corner cases are getting covered. If this 
+> approach looks doable without causing any regressions I might post it as 
+> a followup patch later in the future.
+> 
+>> /P
+>>
+> 
 
 thanks,
-jirka
-
-> 
-> The ASSERT_OK macro returns true when err == 0 (success), so the code
-> jumps to cleanup on success and continues on failure. Comparing with
-> test_stacktrace_ips_kprobe_multi() at line 70, the pattern should be:
-> 
->   if (!ASSERT_OK_PTR(...))
->       goto cleanup;
-> 
-> With the current code, bpf_prog_get_info_by_fd() success skips the test
-> (trigger_module_test_read and check_stacktrace_ips), while failure
-> continues with invalid bpf_prog_ksym data.
-> 
-> > +
-> > +	trigger_module_test_read(1);
-> > +
-> > +	load_kallsyms();
-> > +
-> > +	check_stacktrace_ips(bpf_map__fd(skel->maps.stackmap), skel->bss->stack_key, 2,
-> > +			     bpf_prog_ksym,
-> > +			     ksym_get_addr("bpf_trace_run2"));
-> > +
-> > +cleanup:
-> > +	stacktrace_ips__destroy(skel);
-> > +}
-> > +
-> 
-> [ ... ]
-> 
-> 
-> ---
-> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-> 
-> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19051288274
-
+Meghana
 
