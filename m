@@ -1,129 +1,125 @@
-Return-Path: <bpf+bounces-73441-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73442-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C658BC31538
-	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 14:56:30 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7493C315CB
+	for <lists+bpf@lfdr.de>; Tue, 04 Nov 2025 15:02:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2C47E4E8291
-	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 13:56:05 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 215AA4F80A7
+	for <lists+bpf@lfdr.de>; Tue,  4 Nov 2025 14:00:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C759332A3FE;
-	Tue,  4 Nov 2025 13:55:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0DE32ABFE;
+	Tue,  4 Nov 2025 13:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fz3/NXuY"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E31320CC0;
-	Tue,  4 Nov 2025 13:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9FE032AADA
+	for <bpf@vger.kernel.org>; Tue,  4 Nov 2025 13:58:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762264544; cv=none; b=h3KvIo0fmrC3tAx5Tn6GKRjr5hOiHQFN2fMi6FfLW4w8fRgs0DMNVk0Rb5QE2/1zyh/V/tAd2OKiw6WUXnp1w8L7SL2VZc9GUl1XaIqeBc1YONx7m1jiu0rhv1Sbv5GrCuv17bWMcJEPRYK7dw+/ISD6yqlj731WOUK5pJB7ZHU=
+	t=1762264691; cv=none; b=XbwSmzQjjrM8uO6wEtdeT9HSjzY1d1cNSU7sHbcFCra/KGt/QFbW38XH0KlyJFzKIOjJkBle9xvcNRSJ5pV6JK8/HYwCzB1pmrV8sv3ZdIgLqCXyD+eLnp7YcX8612vVSgxc6CazOcADRQdIswWkyYK/ydmp+Jus2SxuMYhvyPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762264544; c=relaxed/simple;
-	bh=WlATIyN7OY1lmmvv+dDA36bx0fRkHJFpAzHG8BwceyI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JJbbhoODmVIfErwzg3/kN3QdgMw0S3w6FtboGRbgec/Ka4ViIJliR4Ndr8grmYrbr2HQrB7jHmfICivrt+pE3l54HnsFDHgW1CdGbcPEHiOASO6b7kYSihJdwUoEWqyuXsXrkPkP/okzb/E7EzpDaO23UbQGx+vsLpLr6gayiYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97F9E1CE0;
-	Tue,  4 Nov 2025 05:55:33 -0800 (PST)
-Received: from arm.com (RQ4T19M611-5.cambridge.arm.com [10.1.31.107])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 004DB3F694;
-	Tue,  4 Nov 2025 05:55:37 -0800 (PST)
-Date: Tue, 4 Nov 2025 13:55:35 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-	Linux-Arch <linux-arch@vger.kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-	bpf@vger.kernel.org, Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Haris Okanovic <harisokn@amazon.com>,
-	"Christoph Lameter (Ampere)" <cl@gentwo.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, zhenglifeng1@huawei.com,
-	xueshuai@linux.alibaba.com,
-	Joao Martins <joao.m.martins@oracle.com>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Subject: Re: [RESEND PATCH v7 2/7] arm64: barrier: Support
- smp_cond_load_relaxed_timeout()
-Message-ID: <aQoF1-uKTgJo89W8@arm.com>
-References: <20251028053136.692462-1-ankur.a.arora@oracle.com>
- <20251028053136.692462-3-ankur.a.arora@oracle.com>
- <3642cfd1-7da6-4a75-80b7-00c21ab6955f@app.fastmail.com>
- <87qzumq51p.fsf@oracle.com>
- <aQEy6ObvE0s2Gfbg@arm.com>
- <746c2de4-7613-4f13-911c-c2c4e071ed73@app.fastmail.com>
- <87ikfqesr2.fsf@oracle.com>
+	s=arc-20240116; t=1762264691; c=relaxed/simple;
+	bh=uMs7GshsEcy8MUMCLltGvsKj4H1TudNFRk7vbV8WNzY=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=jid2TxqdfoWLJnGfWiGXA7rSM25/LrRbvKfeBWGmV1WbvzjVfiTh2hSM0TwXOT9v65MUDUTnA9zPorDK0+x2KHK32lVQMqWN2uun0nL+sBsPZ0b/ffyTzOWdW57RzZNnOSw68gO0EK04KUe0ccnYCVYcOdP+XzaEMghVUve+RXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fz3/NXuY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A3BEC4CEF7;
+	Tue,  4 Nov 2025 13:58:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762264691;
+	bh=uMs7GshsEcy8MUMCLltGvsKj4H1TudNFRk7vbV8WNzY=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=Fz3/NXuYyv1nQKQkseUF9gZ5iQPTctMoW/YfP1zP4qT8uft3fmWkA1NDzBmKDAGql
+	 uQMhfJ49FxANzSfSLelY4WTZXuQt44L1rPMBsquAP20lxSjG+E2nWyDJvRYzCx5vWq
+	 VZdF4XQeMd3wtgXjwn8BOYFy458iBykaoFQirG5FpsxVcolv2WHRNHcx0wzqaqWdNs
+	 irrTvOdYReZEeHWxlhezj2befhgpGSQYFOOyuv5KEku/IW2013u457FVrPs3VpK1Ps
+	 tYDkWg6bHhrAoHTVSx+HEjRLgTgatDYQ7v/3Zv1uNHqS+NvJ9g2po7Qp16qLOy39IX
+	 85IX5jsNJtqlA==
+Content-Type: multipart/mixed; boundary="===============0395455770530490440=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ikfqesr2.fsf@oracle.com>
+Message-Id: <866547a682b6a159bcbd46a58068c723654e1fcf72b2a09b24d19d927c4f1415@mail.kernel.org>
+In-Reply-To: <20251104133004.2559222-1-martin.teichmann@xfel.eu>
+References: <20251104133004.2559222-1-martin.teichmann@xfel.eu>
+Subject: Re: [PATCH v2 bpf] bpf: properly verify tail call behavior
+From: bot+bpf-ci@kernel.org
+To: martin.teichmann@xfel.eu,bpf@vger.kernel.org
+Cc: eddyz87@gmail.com,ast@kernel.org,andrii@kernel.org,martin.teichmann@xfel.eu,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Tue,  4 Nov 2025 13:58:11 +0000 (UTC)
 
-On Mon, Nov 03, 2025 at 01:00:33PM -0800, Ankur Arora wrote:
->     /**
->     * smp_cond_load_relaxed_timeout() - (Spin) wait for cond with no ordering
->     * guarantees until a timeout expires.
->     * @ptr: pointer to the variable to wait on
->     * @cond: boolean expression to wait for
->     * @time_expr: time expression in caller's preferred clock
->     * @time_end: end time in nanosecond (compared against time_expr;
->     * might also be used for setting up a future event.)
->     *
->     * Equivalent to using READ_ONCE() on the condition variable.
->     *
->     * Note that the expiration of the timeout might have an architecture specific
->     * delay.
->     */
->     #ifndef smp_cond_load_relaxed_timeout
->     #define smp_cond_load_relaxed_timeout(ptr, cond_expr, time_expr, time_end_ns)	\
->     ({									\
->             typeof(ptr) __PTR = (ptr);					\
->             __unqual_scalar_typeof(*ptr) VAL;				\
->             u32 __n = 0, __spin = SMP_TIMEOUT_POLL_COUNT;		\
->             u64 __time_end_ns = (time_end_ns);				\
->                                                                         \
->             for (;;) {							\
->                     VAL = READ_ONCE(*__PTR);				\
->                     if (cond_expr)					\
->                             break;					\
->                     cpu_poll_relax(__PTR, VAL, __time_end_ns);		\
+--===============0395455770530490440==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-With time_end_ns being passed to cpu_poll_relax(), we assume that this
-is always the absolute time. Do we still need time_expr in this case?
-It works for WFET as long as we can map this time_end_ns onto the
-hardware CNTVCT.
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index ff40e5e65..4b7439a48 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
 
-Alternatively, we could pass something like remaining_ns, though not
-sure how smp_cond_load_relaxed_timeout() can decide to spin before
-checking time_expr again (we probably went over this in the past two
-years ;)).
+[ ... ]
 
->                     if (++__n < __spin)				\
->                             continue;					\
->                     if ((time_expr) >= __time_end_ns) {		\
->                             VAL = READ_ONCE(*__PTR);			\
->                             break;					\
->                     }							\
->                     __n = 0;						\
->             }								\
->             (typeof(*ptr))VAL;						\
->     })
->     #endif
+> @@ -11884,6 +11888,24 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  		env->prog->call_get_func_ip = true;
+>  	}
+>
+> +	if (func_id == BPF_FUNC_tail_call) {
+> +		if (env->cur_state->curframe) {
+> +			struct bpf_verifier_state *branch;
+> +			mark_reg_scratched(env, BPF_REG_0);
+> +			branch = push_stack(env, env->insn_idx + 1, env->insn_idx, false);
+> +			if (IS_ERR(branch))
+> +				return PTR_ERR(branch);
 
--- 
-Catalin
+Can push_stack() return an ERR_PTR? Looking at the push_stack()
+function in verifier.c, it returns NULL on all error paths (allocation
+failure at line 2095, copy failure at line 2105, and stack overflow at
+line 2110). Every other call site in the verifier checks for NULL:
+
+  - cluster_alloc_swap_entry() at line 9017: if (!queued_st)
+  - push_callback_call() at line 10608: if (!callback_state)
+  - check_reference_leaks_function() at line 13852: if (!branch)
+  - check_cond_jmp_op() at line 14314: if (branch && insn)
+  - check_iter_next_call() at line 16739: if (!queued_st)
+  - do_check() at line 16858: if (!other_branch)
+
+If push_stack() returns NULL due to memory pressure, IS_ERR(NULL)
+evaluates to false, so the error check won't trigger and the code will
+continue with a NULL branch pointer.
+
+> +			clear_all_pkt_pointers(env);
+> +			mark_reg_unknown(env, regs, BPF_REG_0);
+> +			err = prepare_func_exit(env, &env->insn_idx);
+> +			if (err)
+> +				return err;
+> +			env->insn_idx--;
+> +		} else {
+> +			changes_data = false;
+> +		}
+> +	}
+> +
+>  	if (changes_data)
+>  		clear_all_pkt_pointers(env);
+>  	return 0;
+
+[ ... ]
+
+
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19070634029
+
+--===============0395455770530490440==--
 
