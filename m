@@ -1,146 +1,183 @@
-Return-Path: <bpf+bounces-73640-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73641-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2706C35FBB
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 15:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B12C2C3605E
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 15:21:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F4F53A6003
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 14:10:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DAC0461D53
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 14:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA379329373;
-	Wed,  5 Nov 2025 14:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF13B3164A8;
+	Wed,  5 Nov 2025 14:20:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="v2VoqFwH"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="alEaJXtS";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="mPgO2B92"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683CB311955
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 14:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DEC421CFF6
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 14:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762351823; cv=none; b=NdiRlvqhXqx8CO9gjmLkY8/dhjsWDRy+UiTtZ2/SnRFkrommNQ2lJz5W0Z8T8H6hbZQolYc3mwSNTKdMlxtpdrOFAQN0C9qIXZ0TyCnNpYJvg3Cvl04J5grXySc8x0iV4goKDNYYM4ZL8H4nZnjQprcDWcwAKNEbkaaJV/tdwL4=
+	t=1762352459; cv=none; b=ZTJA3imR/UizCasrKEbBn0xZCPCrPDMkhIlvHvgF/s0gKj8N50nNQBxzj0A7kCxcoZf+M696F+dI+1QsIo+YB6X/NcDkYPuocVXxHxdumBN+ZMYhdONUSrTg7IqCwluf5d8Vs8ExKFj4xMCFMfPP0gOqJVzRxsmCTBiLrBDsHHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762351823; c=relaxed/simple;
-	bh=GuO5f1PITMKK40xOY8hKZBftofSvfoaoksU+3KNxcE8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ChQ+PvFfyNYmdUwzlw9SqfLH6TB/EYjwLBFJzB3Egzp3rY2FI2rum7GXtD21IH64uwOH6z377QKfzfyzSZE6s0kWgcxrvilNZJ0mClF7H9k1YHa08PPBzpj3IQb5TAOC6jpu5yDSHHL/LYX7u2aL0GFjBHd8ODrTOMrmMSZ+3z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=v2VoqFwH; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ca11cc02-0cf6-48aa-8840-1662fa61dbbc@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762351807;
+	s=arc-20240116; t=1762352459; c=relaxed/simple;
+	bh=nu4doHrXZq6HHEdqAu78Ax8NqoZY5xgxh+gqivufsTo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rR6Pkf6ZBpsyYJjYuExbMSXcMWwlGFjD6Qyvxfah029S4ZjjdiVq30E9RmXLevV4Ukox7S/6BOnIQbX7orLP71QHQrMxZU09lp2Gj87sd2DhKzT+ZWKXo1G3y3GkGBCjL3za7T2MYgnbYn6MnPu/t5qccy0uNjnzc3K7GbdO7gQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=alEaJXtS; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=mPgO2B92; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762352456;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KxhfdDNOoN0RhEK/rbfglH/AWsOBbZHhZn3FyhV0K/Q=;
-	b=v2VoqFwHDODgvbSmiSJXsBDSRax9kankVfjlgFFBipFw3Rb7OjTqf8QMFNaQ27UOJ9lgjQ
-	/+OcW0uFbg8GnbQhwsqg7MBHnqmcsml6aQfglscx4xEOu3mu6KASCAMNOMmZGswijUrcJD
-	AxnPkN8wj38hldREuf5Q0oWgdO1uv1Y=
-Date: Wed, 5 Nov 2025 22:09:49 +0800
+	bh=G2VtDGz1DOqvvFYKW79um0LglA9g/B0whzTAe9JWcYQ=;
+	b=alEaJXtS//QnOtIayKntPbmqo9nkuUK4SWosxQjo5v7KP+LD7CwpVxCZvlOqv2X/K9OyNh
+	Yl7X+llYECvVLVoZGpd3dZwXOqsCEG0D/dSrN9ZXP7BWjldtI895fPUxKc33heG4CmmqVQ
+	1dGiJf30NVTM4B4R4Gj3UBpSDkLy1sE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-97-Cjlj_vxOMS621sDvW9vc1A-1; Wed, 05 Nov 2025 09:20:55 -0500
+X-MC-Unique: Cjlj_vxOMS621sDvW9vc1A-1
+X-Mimecast-MFC-AGG-ID: Cjlj_vxOMS621sDvW9vc1A_1762352454
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4775f51ce36so7900875e9.1
+        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 06:20:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1762352454; x=1762957254; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=G2VtDGz1DOqvvFYKW79um0LglA9g/B0whzTAe9JWcYQ=;
+        b=mPgO2B92PDF3lGPa8LyEyyaVsD+fIfj/ambGFrS5+OiomVH0r6DnpLautu/XMNsS6P
+         NamliZgSdh/2iNrBtpHuFxKhvXF/tK4+vhP3WaPReCOLZ2etDYJTg8fNhykWWSZyvuLG
+         j0TkCcLAYvQyhUSS5/Pqa2qeOe01ObSLwhOrmXXDtDtBpvZSFB0ifF2LX0QANiL6WpwM
+         O+3gkmZafh+uWAsIwl5BwkYvuZs1HSmvtq4MU3tE7lrRsruQ3bytxSP7npPB2JBWWS+8
+         28eic8gYh1NWOLkfErKUL2QI1AzYr3/cT9mVXecmZpxEJCVfc55rZh96+Zwajq0CuILv
+         yIZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762352454; x=1762957254;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G2VtDGz1DOqvvFYKW79um0LglA9g/B0whzTAe9JWcYQ=;
+        b=pOzSnF38TyXPhAqJj9K2Jlc17Aa8KUN4kguiZ/dYxcQ+Jw/TehEm4iqsNJpgVgdC6d
+         VA5cYtz/6yfYehtpdjfzwjMth7s6oWVlq89hwt+isnkYZPIGFaUlMbi9+ashVXtwaCtF
+         qF0UFZSIjsVll0qZF5sD0ootpWGWQkjU9rWUPerRdcB92wwf+SD0S4E9N9Z9TRMkf9kh
+         i2fOp4Aek70hgHlV6Kr0QedgQWwycjh0cq3T9o2lii9rFMhkX1WTfewABnCfIagK+bHX
+         hrwakcTmrlVfa/VyUMfDylrE+yaw7eDrdnFW7FxWdB5Oz8Vj2N2g8Xc/1/tP24PZCRwy
+         qGaA==
+X-Forwarded-Encrypted: i=1; AJvYcCWzEFRIsgya8hniics3o7zPOB/RyXRDGWwV6HDUjFdpo9+MqM5sHNGDto54hM3nlI7KsI4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOk4g00NXScC1Ry0VmRlYyEnCAZ6cx3A103GXx293goSYPX9xI
+	UIFvOfqJPOpN4gMxPWKGS0tgV7MpGaZ1ogc0Feohp3/uG2zgN2fXy8Jx/VEtw81OFcGdnq4WwHk
+	8RblmqO83KQ8Fjca54GqBtQXkx+wbSqfFBd8qWW5p//MwITg3aIk1Qg==
+X-Gm-Gg: ASbGncsYWw4eVbjvq2aaFQ8SQr5Smjh72I9pjjxXiRid9/5Lgkw68UGms46rmNHrGjG
+	OfIwKpNpLINI9ix45D4MltEfgVljDcv6nl0qk0bMD3/oqssmH2NlqFIlrpv2WamvLOwOKd2FuGq
+	X4DFpCUbVfXefyAQt+QoG1osYE8RphnNS74gxkYc4/5nYQ2A534yZIQDwbvDZHyFnAP+gsU5X+b
+	9uEkN5cPYHmsDrxYDdw28wgn0e6lZtlZDl1A7OnFU3otjbl30YUFlQxyMj1FEG2SWI1QdRwQziw
+	y66TEq8zNWvDemD0wr8aUPr0RqmLD67iHVqqGLt+qY0QVsAOVMNX5lHkB5QHDRjA2YiMKdW4vNt
+	itgw+siMjzw5M10pjsLmtGJ/mFTQnEg==
+X-Received: by 2002:a05:600d:8312:b0:475:de55:9304 with SMTP id 5b1f17b1804b1-4775ce9bc9amr22409215e9.19.1762352454086;
+        Wed, 05 Nov 2025 06:20:54 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGD225S8D0eAzSRqCZNY8jiiXPUZkIB3X3AaRb7e9hIqiHytYJtBJefyIehRQDx2ycUxkcH5w==
+X-Received: by 2002:a05:600d:8312:b0:475:de55:9304 with SMTP id 5b1f17b1804b1-4775ce9bc9amr22408905e9.19.1762352453617;
+        Wed, 05 Nov 2025 06:20:53 -0800 (PST)
+Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.129.40])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429dc192a96sm11270694f8f.13.2025.11.05.06.20.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Nov 2025 06:20:53 -0800 (PST)
+Date: Wed, 5 Nov 2025 15:20:50 +0100
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Andrea Righi <arighi@nvidia.com>, Ingo Molnar <mingo@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	John Stultz <jstultz@google.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>,
+	David Vernet <void@manifault.com>,
+	Changwoo Min <changwoo@igalia.com>, Shuah Khan <shuah@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Christian Loehle <christian.loehle@arm.com>,
+	Emil Tsalapatis <emil@etsalapatis.com>,
+	Luigi De Matteis <ldematteis123@gmail.com>,
+	sched-ext@lists.linux.dev, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHSET v10 sched_ext/for-6.19] Add a deadline server for
+ sched_ext tasks
+Message-ID: <aQtdQnLxnh7z7a0w@jlelli-thinkpadt14gen4.remote.csb>
+References: <20251029191111.167537-1-arighi@nvidia.com>
+ <aQtVe9LKuQ_W3qwY@gpd4>
+ <20251105135911.GQ4067720@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 2/2] selftests/bpf: Add test to verify freeing
- the special fields when update [lru_,]percpu_hash maps
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bot+bpf-ci@kernel.org
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Amery Hung <ameryhung@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
- kernel-patches-bot@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
- Chris Mason <clm@meta.com>, Ihor Solodrai <ihor.solodrai@linux.dev>
-References: <20251104142714.99878-3-leon.hwang@linux.dev>
- <6099162df8322a2198497a8a27e1b0e1e5c017aeb74b20fc1eecde1e67826900@mail.kernel.org>
- <CAADnVQJZbyQWaUTzB0=82mq+hSVqxGb679cW1=t=OFCRuCVdXQ@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAADnVQJZbyQWaUTzB0=82mq+hSVqxGb679cW1=t=OFCRuCVdXQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251105135911.GQ4067720@noisy.programming.kicks-ass.net>
 
-
-
-On 2025/11/5 01:37, Alexei Starovoitov wrote:
-> On Tue, Nov 4, 2025 at 6:52 AM <bot+bpf-ci@kernel.org> wrote:
->>
->>> diff --git a/tools/testing/selftests/bpf/progs/refcounted_kptr.c b/tools/testing/selftests/bpf/progs/refcounted_kptr.c
->>> index 893a4fdb4..87b0cc018 100644
->>> --- a/tools/testing/selftests/bpf/progs/refcounted_kptr.c
->>> +++ b/tools/testing/selftests/bpf/progs/refcounted_kptr.c
->>
->> [ ... ]
->>
->>> @@ -568,4 +568,64 @@ int BPF_PROG(rbtree_sleepable_rcu_no_explicit_rcu_lock,
->>>       return 0;
->>>  }
->>>
->>> +private(kptr_ref) u64 ref;
->>> +
->>> +static int probe_read_refcount(void)
->>> +{
->>> +     u32 refcount;
->>> +
->>> +     bpf_probe_read_kernel(&refcount, sizeof(refcount), (void *) ref);
->>> +     return refcount;
->>> +}
->>> +
->>> +static int __insert_in_list(struct bpf_list_head *head, struct bpf_spin_lock *lock,
->>> +                         struct node_data __kptr **node)
->>> +{
->>> +     struct node_data *n, *m;
->>> +
->>> +     n = bpf_obj_new(typeof(*n));
->>> +     if (!n)
->>> +             return -1;
->>> +
->>> +     m = bpf_refcount_acquire(n);
->>> +     n = bpf_kptr_xchg(node, n);
->>> +     if (n) {
->>> +             bpf_obj_drop(n);
->>> +             bpf_obj_drop(m);
->>> +             return -2;
->>> +     }
->>
->> In __insert_in_list(), after bpf_kptr_xchg() stores the new object in
->> the map and returns the old value in n, can the error path drop both
->> n and m? At this point, the new object (pointed to by m) is already
->> referenced by the map. Dropping m here would free an object that the
->> map still points to, leaving a dangling pointer.
+On 05/11/25 14:59, Peter Zijlstra wrote:
+> On Wed, Nov 05, 2025 at 02:47:39PM +0100, Andrea Righi wrote:
+> > On Wed, Oct 29, 2025 at 08:08:37PM +0100, Andrea Righi wrote:
+> > > sched_ext tasks can be starved by long-running RT tasks, especially since
+> > > RT throttling was replaced by deadline servers to boost only SCHED_NORMAL
+> > > tasks.
+> > > 
+> > > Several users in the community have reported issues with RT stalling
+> > > sched_ext tasks. This is fairly common on distributions or environments
+> > > where applications like video compositors, audio services, etc. run as RT
+> > > tasks by default.
+> > > 
+> > > Example trace (showing a per-CPU kthread stalled due to the sway Wayland
+> > > compositor running as an RT task):
+> > > 
+> > >  runnable task stall (kworker/0:0[106377] failed to run for 5.043s)
+> > >  ...
+> > >  CPU 0   : nr_run=3 flags=0xd cpu_rel=0 ops_qseq=20646200 pnt_seq=45388738
+> > >            curr=sway[994] class=rt_sched_class
+> > >    R kworker/0:0[106377] -5043ms
+> > >        scx_state/flags=3/0x1 dsq_flags=0x0 ops_state/qseq=0/0
+> > >        sticky/holding_cpu=-1/-1 dsq_id=0x8000000000000002 dsq_vtime=0 slice=20000000
+> > >        cpus=01
+> > > 
+> > > This is often perceived as a bug in the BPF schedulers, but in reality
+> > > schedulers can't do much: RT tasks run outside their control and can
+> > > potentially consume 100% of the CPU bandwidth.
+> > > 
+> > > Fix this by adding a sched_ext deadline server, so that sched_ext tasks are
+> > > also boosted and do not suffer starvation.
+> > > 
+> > > Two kselftests are also provided to verify the starvation fixes and
+> > > bandwidth allocation is correct.
+> > 
+> > Peter, Juri, this has now been tested quite extensively on our side and
+> > we're considering applying these patches to Tejun's sched_ext branch.
+> > 
+> > Do you have any objections or concerns?
 > 
-> AI is wrong, but I bet it got confused by reuse of variable 'n'.
-> It's hard for humans too.
-> Leon,
-> please use a different var.
-> n = bpf_kptr_xchg(node, n); is a head scratcher.
-
-No problem.
-
-I'll update the variable names in the next revision.
-
+> Yeah, I want to finish this first:
 > 
-> Also see Yonghong's comment on v4 which I suspect applies to v5.
+>   https://lkml.kernel.org/r/20251101000057.GA2184199@noisy.programming.kicks-ass.net
+> 
+> Because as is, the whole dl_server stuff isn't quite right.
+> 
 
-That was actually a misunderstanding — he didn't run the newly added tests.
-
-Still, I'll update the test name to include "refcounted_kptr" to make it
-clearer and help avoid such confusion in the future.
+And I'm spending time on "[PATCH 04/11] sched/deadline: Add support to
+initialize and remove dl_server bandwidth" which I am still not 100%
+sure is correct (or that is correct how we handle setting runtime to 0
+for fair_server today). Apologies, had some travelling and pto, but
+should be able to write something more about it in the next few days.
 
 Thanks,
-Leon
+Juri
 
 
