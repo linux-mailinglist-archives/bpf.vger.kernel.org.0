@@ -1,93 +1,208 @@
-Return-Path: <bpf+bounces-73671-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73672-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4734C36C14
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 17:43:21 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8DC6C36CC5
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 17:50:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7A603541831
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 16:24:14 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0D26D5030B3
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 16:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D07F33C50C;
-	Wed,  5 Nov 2025 16:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1EFB330313;
+	Wed,  5 Nov 2025 16:29:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uXy3o1HA"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA3133B6E7;
-	Wed,  5 Nov 2025 16:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3156C310777;
+	Wed,  5 Nov 2025 16:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762359730; cv=none; b=gJqOkyxgJzxdqNEuCKGh1YnFsxBDw6U989w/Tw1HOa2jEqXhuUNsy0zb5QA6HaYcbC2cuRXoof23LNm70PfNkP2FiaxC3gXMvzcWpfkuPWZzUH7mbd3bfeaypHmihMAJDO/HuDUFGDADS4Ykc+dfwO2DY2ftnTXOR4zCfX40ExM=
+	t=1762360150; cv=none; b=fO03+xFI8Z1UjJsVySogj3L4hIUZ4rNA0w8UVDHEkRLeiaIEBM9HvPBQWOM4cvVb9S91wQplrIVxLllf+oq45m5ByfOAQ7Z909ehJYmni9Sn7R8Wg3yOTTOd/K0kIEo8QDxZ7l3nzUv7l312hoAd1sAdEdzyBuBPWEJRoklg8zs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762359730; c=relaxed/simple;
-	bh=tPUBcz6wnYsgnuiwKCaxQWvpoQSY/3aWfVi03XYff9o=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dN315qH5+zVNfbvRLbzHfV8C2Cha8cNver/dP1wE6Y46E87YojqYTWl5fk+LDk7q9yHL6ti1cd17HGGlPYNlKr8jT8Yk5QgT4sbqxQ4MLaS6wThjKHDegheLQzQQLDsJvoZZ/e4Q+EwiA1vLxucBC0au2SHCdVLRKlTYBPM+Cfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay07.hostedemail.com (Postfix) with ESMTP id 4225C1601A6;
-	Wed,  5 Nov 2025 16:21:59 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf15.hostedemail.com (Postfix) with ESMTPA id 4094C1D;
-	Wed,  5 Nov 2025 16:21:56 +0000 (UTC)
-Date: Wed, 5 Nov 2025 11:22:04 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Petr Mladek <pmladek@suse.com>
-Cc: Petr Pavlu <petr.pavlu@suse.com>, Alexei Starovoitov <ast@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Kees Cook <kees@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, Luis Chamberlain <mcgrof@kernel.org>,
- Daniel Gomez <da.gomez@kernel.org>, Sami Tolvanen
- <samitolvanen@google.com>, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-modules@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] kallsyms/ftrace: Set module buildid in
- ftrace_mod_address_lookup()
-Message-ID: <20251105112204.4b0ab3d9@gandalf.local.home>
-In-Reply-To: <20251105142319.1139183-5-pmladek@suse.com>
-References: <20251105142319.1139183-1-pmladek@suse.com>
-	<20251105142319.1139183-5-pmladek@suse.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1762360150; c=relaxed/simple;
+	bh=E2LyBpj7sEAtFQd7gW1xNRb7UeJ1t4NfeX3b6rOxki0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M8B/ORUAsuTrZBmdcxqGU2dZAYxvdWR8zzEZwCXjcG23lIGtdY6nuXe/BiUwatpOfMIz09wwlj2bUA+Rufzyg1aLxE+PfZg5DnDsXtJcbKFpL+z/+LU6TwbwLO+fbYDUdtaxTFrLNB9KdJfPyJOge+/24ieQAu7nkmkcChzwQ2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uXy3o1HA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AB4AC4CEF5;
+	Wed,  5 Nov 2025 16:29:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762360147;
+	bh=E2LyBpj7sEAtFQd7gW1xNRb7UeJ1t4NfeX3b6rOxki0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=uXy3o1HAc6d9NI/8sxdtsN8Od/IF2mKpBo2M1OC8+7a3rPFFJIZE/1xZhMQdHrQgp
+	 B5ceNVcaf6DRseXBTphigutFYu/etkAPJ7PfbuTl8mE2KfMCBcFGj2Wz4qhUc5bryP
+	 NT43pikoDUCd7b8GznCic56vIWh/SXcB2c6HrjnwL+WV18Z8WsrLyE3BT2geKicNmH
+	 p3HjuaYnQzdgCDq7btUjfzN9ArS3DsgRn67LpXTmd4vyCZNw5kUHmVg6YDWHz/0UB9
+	 zAk3ljAqawT4zm3+WCQ+u8HBOx5H7bnBFEsQ7ZnTLC2afkeaZnZyr4DTRzxDE9mDEW
+	 ubpy0w4WfFllg==
+Message-ID: <cc5017b8-5802-4cf5-93b1-18b1e2bd8ae5@kernel.org>
+Date: Wed, 5 Nov 2025 17:28:57 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH net v4 3/3] selftests/bpf: Add mptcp test with sockmap
+Content-Language: en-GB, fr-BE
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, mptcp@lists.linux.dev
+Cc: Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20251105113625.148900-1-jiayuan.chen@linux.dev>
+ <20251105113625.148900-4-jiayuan.chen@linux.dev>
+ <665825df-b995-45ee-9e0c-2b40cc4897ee@kernel.org>
+ <b5f67a681be12833efa12e68fc3139954b409446@linux.dev>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <b5f67a681be12833efa12e68fc3139954b409446@linux.dev>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 4094C1D
-X-Stat-Signature: 77sznrhaz1sftejznges1tjcrx55jmnc
-X-Rspamd-Server: rspamout06
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18roVEuMlC6V+iO6y3+SEQU7Yq4Z2pL21E=
-X-HE-Tag: 1762359716-106494
-X-HE-Meta: U2FsdGVkX1+aGzgUQI5G7y6JzBPfxwADzqKUMXneejcwqgPP46obC+lPX4V0xiEOkCLpBcNjwK+bKksvmylU8bQYG52nKUZjEwQDwPA2JZ+/WjRQqjuzOdtqbamz/4lR7pk2J+4EwPxUZYUCAZklOa12kN5uobqf/wMhBoV8nIsvKPT2JNarVZPJEtYlLutKySecvjo8gaYYdMEY/XgtSNZnjLpt/L/qI1NRSWSMRooMO3f6LvYWh6lutIqqPHlqzAsB+2ah9eQY8V2rVBTbcnHm0J2rq8ftFcFSJr121qIUc0wqNtkvlApxxmmmitHVl1/tRitcjhinehRLG+/gXkSqSiKcC28y8LOuu2YWR7WinDBea39co4BP0Sh1HX8EUMXE03McZ0YN2e0CRVaKm2Z32aelwJK+OYIT8YiDOFs4oP5jC+fskMg/HFZ7YwJeP22ND09KsvO6ujutXtQsmA==
 
-On Wed,  5 Nov 2025 15:23:16 +0100
-Petr Mladek <pmladek@suse.com> wrote:
-
-> __sprint_symbol() might access an invalid pointer when
-> kallsyms_lookup_buildid() returns a symbol found by
-> ftrace_mod_address_lookup().
+On 05/11/2025 17:12, Jiayuan Chen wrote:
+> November 5, 2025 at 22:40, "Matthieu Baerts" <matttbe@kernel.org mailto:matttbe@kernel.org?to=%22Matthieu%20Baerts%22%20%3Cmatttbe%40kernel.org%3E > wrote:
 > 
-> The ftrace lookup function must set both @modname and @modbuildid
-> the same way as module_address_lookup().
 > 
-> Fixes: 9294523e3768 ("module: add printk formats to add module build ID to stacktraces")
-> Signed-off-by: Petr Mladek <pmladek@suse.com>
-> ---
->  include/linux/ftrace.h | 6 ++++--
->  kernel/kallsyms.c      | 4 ++--
->  kernel/trace/ftrace.c  | 5 ++++-
->  3 files changed, 10 insertions(+), 5 deletions(-)
+>>
+>> Hi Jiayuan,
+>>
+>> Thank you for this new test!
+>>
+>> I'm not very familiar with the BPF selftests: it would be nice if
+>> someone else can have a quick look.
+> 
+> Thanks for the review. I've seen the feedback on the other patches(1/3, 2/3) and will fix them up.
 
-Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Thanks!
 
--- Steve
+>> On 05/11/2025 12:36, Jiayuan Chen wrote:
+>>
+>>>
+>>> Add test cases to verify that when MPTCP falls back to plain TCP sockets,
+>>>  they can properly work with sockmap.
+>>>  
+>>>  Additionally, add test cases to ensure that sockmap correctly rejects
+>>>  MPTCP sockets as expected.
+>>>  
+>>>  Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+>>>  ---
+>>>  .../testing/selftests/bpf/prog_tests/mptcp.c | 150 ++++++++++++++++++
+>>>  .../selftests/bpf/progs/mptcp_sockmap.c | 43 +++++
+>>>  2 files changed, 193 insertions(+)
+>>>  create mode 100644 tools/testing/selftests/bpf/progs/mptcp_sockmap.c
+>>>  
+>>>  diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+>>>  index f8eb7f9d4fd2..56c556f603cc 100644
+>>>  --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
+>>>  +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+>>>  @@ -6,11 +6,14 @@
+>>>  #include <netinet/in.h>
+>>>  #include <test_progs.h>
+>>>  #include <unistd.h>
+>>>  +#include <error.h>
+>>>
+>> Do you use this new include?
+> 
+> "EOPNOTSUPP" I used was defined in error.h.
+
+Ah OK. I usually only include 'error.h' to use 'error()'.
+Is it not 'errno.h' (or 'linux/errno.h') you want instead?
+
+I'm just surprised it is not already included but another one above. But
+OK if it is not.
+
+(...)
+
+>>> + return;
+>>>  +
+>>>  + skel->bss->trace_port = ntohs(get_socket_local_port(listen_fd));
+>>>  + skel->bss->sk_index = 0;
+>>>  + /* create client with MPTCP enabled */
+>>>  + client_fd1 = connect_to_fd(listen_fd, 0);
+>>>  + if (!ASSERT_OK_FD(client_fd1, "connect_to_fd client_fd1"))
+>>>  + goto end;
+>>>  +
+>>>  + /* bpf_sock_map_update() called from sockops should reject MPTCP sk */
+>>>  + if (!ASSERT_EQ(skel->bss->helper_ret, -EOPNOTSUPP, "should reject"))
+>>>  + goto end;
+>>>
+>> So here, the client is connected, but sockmap doesn't operate on it,
+>> right? So most likely, the connection is stalled until the userspace
+>> realises that and takes an action?
+>>
+> 
+> It depends. Sockmap usually runs as a bypass. The user app (like Nginx)
+> has its own native forwarding logic, and sockmap just kicks in to accelerate
+> it. So in known cases, turning off sockmap falls back to the native logic.
+> But if there's no native logic, the connection just stalls.
+
+Good to know, thanks!
+
+So MPTCP request might still be handled by the "native logic" if any?
+
+Cheers,
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
+
 
