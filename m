@@ -1,176 +1,202 @@
-Return-Path: <bpf+bounces-73565-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73566-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91DBFC33CC3
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 03:45:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38A4DC33D85
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 04:36:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 43EE34F0B73
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 02:43:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E39718C32CB
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 03:36:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3125242D6E;
-	Wed,  5 Nov 2025 02:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE8AB25EFBF;
+	Wed,  5 Nov 2025 03:36:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FPC64YiB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aGBfBYj+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B568C23BD1D
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 02:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC292153E7
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 03:36:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762310618; cv=none; b=Hr13e/vDvgwuKfTcIz4zvOw/zpluPE8SYNtxQ4DYC1+We2BVwGXpBs48TFOWT7QRB1jY6SamGm/jKeVpqUWPslRa5oD9P6x91SByiBMrD74JF7ujcgcsSe+AwTnsTTl/XmxIbZYgODrlNpwuqTY/yPv3XOiSMgmz7Q4zlRiy/Us=
+	t=1762313775; cv=none; b=ed1TQ3g0aPcw1UMkw727qmSK7E/bYG77StYUHr3DuIYRL5uxoFQEBum44uWykzstFk9BgaVnI0qPxvOvh8USQmsnAsx3kYi+fhax1dCN43Ygo64GsbbdVtTU/mnulr2UlNyT+EXHxZrOW/9As7Zk6enDikXiKO3PpRVYFSJxIgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762310618; c=relaxed/simple;
-	bh=SgBFrNhogvdoa8VGxahe1W9m0v06c9gjW1nigepRweQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C9pQ4c3cCK6/CcSPY/lQaGd4+Puq9PseqWPxAjDlMQOgxHPdYRgOE+syWX7O0l4WlFStw5hS3kBHJ0BwFeWIdrLwUlsGzChygyaGQHKVUZwbPRFrGizRHdurW4BvF0cmiWVuLkkatN8LM+yEra3fRHaoE8RnnH83dGCUr2Qz/9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FPC64YiB; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-429c82bf86bso3431081f8f.1
-        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 18:43:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762310615; x=1762915415; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Bf7PBghSo52U1Mjeh5akTeQxAJNH9o/Gf88oU5D228=;
-        b=FPC64YiBp/jQ78UsoRSEvvO1pAnRjK86H8ayhbYIqYVW1y6MRdfRqa9vtxgWDMm/Xj
-         duejNmxVGW17d0BvynrHgM6w7RK31AiDDcZCKezZmZJzDW2xt68Hxr/j4Rp8gjT+WL4Z
-         vcFq6kLtsKCo5sz13vFO+uMGVRGUEobIUwBRLBdbJIOh/+ymFUprUqLgiSfi+GwS1rVN
-         F0DSstkoPSwk+Ku7zEJzajI+5sBw4feqbYTxt5HpSFOgTOmV2CJ0vhA2rLNk4DxfdyBq
-         Hx1FQky28c4VZ7qXiLJjPo06bDNBCR5+cDx0XZ6NbcfBO/6L36TPBuFGI2HW33F4DbIW
-         DONw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762310615; x=1762915415;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/Bf7PBghSo52U1Mjeh5akTeQxAJNH9o/Gf88oU5D228=;
-        b=jw2Xfo5YBm69ngljFKF7I+OMYnRLQ1Rn2T0Xjz//1m9AoZ7jaJFvh1tjVSlUr2r5tg
-         pKPs9eBL75il1TUjdOGhy5QZD6pJmKfBAlcFx1d3z304oelXS7mAq2/BuxmV1GbT6FXD
-         zvoo3BJXlMgaN0KzIDGDqQCBz+ccvQ0jj5pPGmWT8NppGLdmsMvmmVfftI2+3Lksb7JX
-         0xBnDLH1XIuq6CxKwnT+Y++Rl+3pZR/x8AiUoROuKYyzkfYHhVV5xLEPDUz5eFNDiXid
-         Z5tFgnE7qgYS2SNeeeLTuq7AEdGjzjnZRes3XbbinrneDx9uM/iJH0djj/4+Qx/4GD5C
-         Erpg==
-X-Forwarded-Encrypted: i=1; AJvYcCXbobNJFHxfNL8g50krUnT4kHvoFlR7JbTQfZRj7L4pfF5JOxzVNI3P6xRsXN/BzAjJRcA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzYtbjoyRTwZpvqOmuGQAcvTdtbqojJQV0wdlWgPm272HngTWMl
-	4U6nUNVH7GOAojH1vFat7ABBga9TCFCjHmvVRiHcxnyh7fHdbFyVcQRJ9KkDygJ201rluE06Br8
-	WEh7exVkwPi4MbyC+noERT1FvnC2vo00=
-X-Gm-Gg: ASbGnctZjMFT/haWlM5OxlPszaDcaSMqNZzXNfzbLEfLMDq/cU995HVDM7zNO6kKki6
-	XY3jKe1PF+QFJ/SumdQsBnhYLv/Au1Yw+nod68jrmDRtr8o/ODMRI0Z3kTL/F7125k3VwluEDKf
-	UVQGCewRA97jCjTCr7yfgR6/muVH82uAGTcZZBZpRYI9iXlUBdqCufuHPxf7INJIArP4ywVfx+y
-	XD6MukIZbsl5QxKw72v0moaiSgMqwKOsCtRUJS5/ggUlhBoQcmX/GpbPYpp8ZzI30AsoyXQKNzN
-	b5oDmETGUSeTufX5Yg==
-X-Google-Smtp-Source: AGHT+IElw2WYyuP+JJ6JyFhdeXjrplIdVA3eJDD2wPNCnK/SS5SPqimXkO+nmYB4XUQk94VGTnNZ/SssoFvBygPSMhg=
-X-Received: by 2002:a05:6000:1788:b0:429:d6fa:da32 with SMTP id
- ffacd0b85a97d-429e3333edbmr990646f8f.59.1762310614957; Tue, 04 Nov 2025
- 18:43:34 -0800 (PST)
+	s=arc-20240116; t=1762313775; c=relaxed/simple;
+	bh=Grs3ShgDLUGKKSpWpKSVo8zGkRLNBbByj3CMSD53Jtk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NccYi9X/80MUvwGKNJMDx+b5mWzI1DtZrUYbVYmAx9Euwpy3ucMSw7FEyzt7x5GmSvFFVegPRxYvWAXAJNdowTlGJbBIk1/0Lte2MxDV9qn4BzNBO0dAs3EPkZqYQ49ZryzcMGP8a2YHz7RDmDHZxEsJrQpR06a5OWzahBn6rW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aGBfBYj+; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a22dd9a4-94a7-4a9b-ac66-4076caacc9a9@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762313757;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tednmqSeWKE2vdAr3M4CEfIfWy7x4aBJvsASV0JQaog=;
+	b=aGBfBYj+BFhcqH11ToDWbF1TLEW9AHm8XN6/RElHjeD2bJhKi8qfVlh+Aei5A8NkhWg2s1
+	0BtCNQ3cWIC2H4Ns6SdJQjf395HGPCzMVvb3VAb5VU31fzPExu2cxtBIcUbCZclqaR1mx5
+	Pzzt8s40wng1EfL1VJgfjLQplyQaL2A=
+Date: Tue, 4 Nov 2025 19:35:46 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251026030143.23807-1-dongml2@chinatelecom.cn>
- <CADxym3Y4nc2Qaq00Pp7XwmCXJHn0SsEoOejK8ZxhydepcbB8kQ@mail.gmail.com>
- <CAADnVQKDza_ueBFRkZS8rmUVJriynWi_0FqsZE8=VbTzQYuM4w@mail.gmail.com>
- <3577705.QJadu78ljV@7950hx> <CAEf4Bzas7Or4yPzqdHqEcgVpTDx2j26dR5oRnSg7bepr-uDqHw@mail.gmail.com>
-In-Reply-To: <CAEf4Bzas7Or4yPzqdHqEcgVpTDx2j26dR5oRnSg7bepr-uDqHw@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 4 Nov 2025 18:43:23 -0800
-X-Gm-Features: AWmQ_bnCqHk08l-4KYCNW-OmyHCZdl1u1xf5DR7CCUqC-jjbESzGUXgAHgyys20
-Message-ID: <CAADnVQKV_a7NxvWwXDgRab_gakwJ=VadZ0=eC5sHwutVyM0rmg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/7] bpf,x86: add tracing session supporting
- for x86_64
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Menglong Dong <menglong.dong@linux.dev>, Menglong Dong <menglong8.dong@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Leon Hwang <leon.hwang@linux.dev>, jiang.biao@linux.dev, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v4 4/4] selftests/bpf: Add tests to verify
+ freeing the special fields when update hash and local storage maps
+Content-Language: en-GB
+To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, memxor@gmail.com, ameryhung@gmail.com,
+ linux-kernel@vger.kernel.org, kernel-patches-bot@fb.com
+References: <20251030152451.62778-1-leon.hwang@linux.dev>
+ <20251030152451.62778-5-leon.hwang@linux.dev>
+ <02b8c4ba-eb24-41e2-813c-98b83561ef9d@linux.dev>
+ <697dc64e-8707-44ba-8cda-ba48747f2973@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <697dc64e-8707-44ba-8cda-ba48747f2973@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Nov 4, 2025 at 4:40=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Nov 3, 2025 at 3:29=E2=80=AFAM Menglong Dong <menglong.dong@linux=
-.dev> wrote:
-> >
-> > On 2025/11/1 01:57, Alexei Starovoitov wrote:
-> > > On Thu, Oct 30, 2025 at 8:36=E2=80=AFPM Menglong Dong <menglong8.dong=
-@gmail.com> wrote:
-> > > >
-> > > > On Fri, Oct 31, 2025 at 9:42=E2=80=AFAM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Sat, Oct 25, 2025 at 8:02=E2=80=AFPM Menglong Dong <menglong8.=
-dong@gmail.com> wrote:
-> > > > > >
-> > > > > > Add BPF_TRACE_SESSION supporting to x86_64. invoke_bpf_session_=
-entry and
-> > > > > > invoke_bpf_session_exit is introduced for this purpose.
-> > > > > >
-> > > > > > In invoke_bpf_session_entry(), we will check if the return valu=
-e of the
-> > > > > > fentry is 0, and set the corresponding session flag if not. And=
- in
-> > > > > > invoke_bpf_session_exit(), we will check if the corresponding f=
-lag is
-> > > > > > set. If set, the fexit will be skipped.
-> > > > > >
-> > > > > > As designed, the session flags and session cookie address is st=
-ored after
-> > > > > > the return value, and the stack look like this:
-> > > > > >
-> > > > > >   cookie ptr    -> 8 bytes
-> > > > > >   session flags -> 8 bytes
-> > > > > >   return value  -> 8 bytes
-> > > > > >   argN          -> 8 bytes
-> > > > > >   ...
-> > > > > >   arg1          -> 8 bytes
-> > > > > >   nr_args       -> 8 bytes
->
-> Let's look at "cookie ptr", "session flags", and "nr_args". We can
-> combine all of them into a single 8 byte slot: assign each session
-> program index 0, 1, ..., Nsession. 1 bit for entry/exit flag, few bits
-> for session prog index, and few more bits for nr_args, and we still
-> will have tons of space for some other additions in the future. From
-> that session program index you can calculate cookieN address to return
-> to user.
->
-> And we should look whether moving nr_args into bpf_run_ctx would
-> actually minimize amount of trampoline assembly code, as we can
-> implement a bunch of stuff in pure C. (well, BPF verifier inlining is
-> a separate thing, but it can be mostly arch-independent, right?)
 
-Instead of all that I have a different suggestion...
 
-how about we introduce this "session" attach type,
-but won't mess with trampoline and whole new session->nr_links.
-Instead the same prog can be added to 'fentry' list
-and 'fexit' list.
-We lose the ability to skip fexit, but I'm still not convinced
-it's necessary.
-The biggest benefit is that it will work for existing JITs and trampolines.
-No new complex asm will be necessary.
-As far as writable session_cookie ...
-let's add another 8 byte space to bpf_tramp_run_ctx
-and only allow single 'fsession' prog for a given kernel function.
-Again to avoid changing all trampolines.
-This way the feature can be implemented purely in C and no arch
-specific changes.
-It's more limited, but doesn't sound that the use case for multiple
-fsession-s exist. All this is on/off tracing. Not something
-that will be attached 24/7.
+On 11/4/25 6:14 PM, Leon Hwang wrote:
+>
+> On 5/11/25 01:30, Yonghong Song wrote:
+>>
+>> On 10/30/25 8:24 AM, Leon Hwang wrote:
+>>> Add tests to verify that updating hash and local storage maps decrements
+>>> refcount when BPF_KPTR_REF objects are involved.
+>>>
+>>> The tests perform the following steps:
+>>>
+>>> 1. Call update_elem() to insert an initial value.
+>>> 2. Use bpf_refcount_acquire() to increment the refcount.
+>>> 3. Store the node pointer in the map value.
+>>> 4. Add the node to a linked list.
+>>> 5. Probe-read the refcount and verify it is *2*.
+>>> 6. Call update_elem() again to trigger refcount decrement.
+>>> 7. Probe-read the refcount and verify it is *1*.
+>>>
+>>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+>> I applied this patch only (i.e., not including patches 1/2/3) to master
+>> branch and do bpf selftest and all tests succeeded.
+>>
+>> [root@arch-fb-vm1 bpf]# ./test_progs -t refcounted_kptr
+>> #294/1   refcounted_kptr/insert_read_both: remove from tree + list:OK
+>> ...
+>> #294/18  refcounted_kptr/pcpu_hash_refcount_leak:OK
+>> #294/19  refcounted_kptr/check_pcpu_hash_refcount:OK
+>> #294/20  refcounted_kptr/hash_lock_refcount_leak:OK
+>> #294/21  refcounted_kptr/check_hash_lock_refcount:OK
+>> #294/22  refcounted_kptr/rbtree_sleepable_rcu:OK
+>> #294/23  refcounted_kptr/rbtree_sleepable_rcu_no_explicit_rcu_lock:OK
+>> #294/24  refcounted_kptr/cgroup_storage_lock_refcount_leak:OK
+>> #294/25  refcounted_kptr/check_cgroup_storage_lock_refcount:OK
+>> ...
+>>
+>> Did I miss anything?
+>>
+> Oops.
+>
+> You should run:
+> ./test_progs -t kptr_refcount
+>
+> The results are as follows:
+>
+> test_percpu_hash_refcount_leak:PASS:libbpf_num_possible_cpus 0 nsec
+> test_percpu_hash_refcount_leak:PASS:calloc values 0 nsec
+> test_percpu_hash_refcount_leak:PASS:refcounted_kptr__open_and_load 0 nsec
+> test_refcnt_leak:PASS:bpf_map__update_elem init 0 nsec
+> test_refcnt_leak:PASS:bpf_prog_test_run_opts 0 nsec
+> test_refcnt_leak:PASS:refcount 0 nsec
+> test_refcnt_leak:PASS:bpf_map__update_elem dec refcount 0 nsec
+> test_refcnt_leak:PASS:bpf_prog_test_run_opts 0 nsec
+> test_refcnt_leak:FAIL:refcount unexpected refcount: actual 2 != expected 1
+> #158/1   kptr_refcount_leak/percpu_hash_refcount_leak:FAIL
+> test_hash_lock_refcount_leak:PASS:refcounted_kptr__open_and_load 0 nsec
+> test_refcnt_leak:PASS:bpf_map__update_elem init 0 nsec
+> test_refcnt_leak:PASS:bpf_prog_test_run_opts 0 nsec
+> test_refcnt_leak:PASS:refcount 0 nsec
+> test_refcnt_leak:PASS:bpf_map__update_elem dec refcount 0 nsec
+> test_refcnt_leak:PASS:bpf_prog_test_run_opts 0 nsec
+> test_refcnt_leak:FAIL:refcount unexpected refcount: actual 2 != expected 1
+> #158/2   kptr_refcount_leak/hash_lock_refcount_leak:FAIL
+> test_cgroup_storage_lock_refcount_leak:PASS:setup_cgroup_environment 0 nsec
+> test_cgroup_storage_lock_refcount_leak:PASS:get_root_cgroup 0 nsec
+> test_cgroup_storage_lock_refcount_leak:PASS:refcounted_kptr__open_and_load
+> 0 nsec
+> test_refcnt_leak:PASS:bpf_map__update_elem init 0 nsec
+> test_refcnt_leak:PASS:bpf_prog_test_run_opts 0 nsec
+> test_refcnt_leak:PASS:refcount 0 nsec
+> test_refcnt_leak:PASS:bpf_map__update_elem dec refcount 0 nsec
+> test_refcnt_leak:PASS:bpf_prog_test_run_opts 0 nsec
+> test_refcnt_leak:FAIL:refcount unexpected refcount: actual 2 != expected 1
+> #158/3   kptr_refcount_leak/cgroup_storage_lock_refcount_leak:FAIL
+> #158     kptr_refcount_leak:FAIL
+>
+> All error logs:
+> test_percpu_hash_refcount_leak:PASS:libbpf_num_possible_cpus 0 nsec
+> test_percpu_hash_refcount_leak:PASS:calloc values 0 nsec
+> test_percpu_hash_refcount_leak:PASS:refcounted_kptr__open_and_load 0 nsec
+> test_refcnt_leak:PASS:bpf_map__update_elem init 0 nsec
+> test_refcnt_leak:PASS:bpf_prog_test_run_opts 0 nsec
+> test_refcnt_leak:PASS:refcount 0 nsec
+> test_refcnt_leak:PASS:bpf_map__update_elem dec refcount 0 nsec
+> test_refcnt_leak:PASS:bpf_prog_test_run_opts 0 nsec
+> test_refcnt_leak:FAIL:refcount unexpected refcount: actual 2 != expected 1
+> #158/1   kptr_refcount_leak/percpu_hash_refcount_leak:FAIL
+> test_hash_lock_refcount_leak:PASS:refcounted_kptr__open_and_load 0 nsec
+> test_refcnt_leak:PASS:bpf_map__update_elem init 0 nsec
+> test_refcnt_leak:PASS:bpf_prog_test_run_opts 0 nsec
+> test_refcnt_leak:PASS:refcount 0 nsec
+> test_refcnt_leak:PASS:bpf_map__update_elem dec refcount 0 nsec
+> test_refcnt_leak:PASS:bpf_prog_test_run_opts 0 nsec
+> test_refcnt_leak:FAIL:refcount unexpected refcount: actual 2 != expected 1
+> #158/2   kptr_refcount_leak/hash_lock_refcount_leak:FAIL
+> test_cgroup_storage_lock_refcount_leak:PASS:setup_cgroup_environment 0 nsec
+> test_cgroup_storage_lock_refcount_leak:PASS:get_root_cgroup 0 nsec
+> test_cgroup_storage_lock_refcount_leak:PASS:refcounted_kptr__open_and_load
+> 0 nsec
+> test_refcnt_leak:PASS:bpf_map__update_elem init 0 nsec
+> test_refcnt_leak:PASS:bpf_prog_test_run_opts 0 nsec
+> test_refcnt_leak:PASS:refcount 0 nsec
+> test_refcnt_leak:PASS:bpf_map__update_elem dec refcount 0 nsec
+> test_refcnt_leak:PASS:bpf_prog_test_run_opts 0 nsec
+> test_refcnt_leak:FAIL:refcount unexpected refcount: actual 2 != expected 1
+> #158/3   kptr_refcount_leak/cgroup_storage_lock_refcount_leak:FAIL
+> #158     kptr_refcount_leak:FAIL
+> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+>
+> All three tests failed because the refcount remained 2 instead of
+> decreasing to 1 after the second update_elem() call.
+>
+> The CI result [1] also demonstrates this issue.
+>
+> Sorry for the misleading test name earlier.
+
+Sorry. It is my fault. Indeed, with patches 1-3, the tests indeed failed.
+I obviously looked at the wrong selftest.
+
+>
+> Links:
+> [1] https://github.com/kernel-patches/bpf/pull/10203
+>
+> Thanks,
+> Leon
+>
+> [...]
+>
+
 
