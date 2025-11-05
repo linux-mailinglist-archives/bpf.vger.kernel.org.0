@@ -1,97 +1,97 @@
-Return-Path: <bpf+bounces-73603-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73600-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C88BDC34B27
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 10:10:12 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 343F7C34AD3
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 10:05:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACA78562C54
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 09:06:21 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id ACD4F34B457
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 09:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAB0A2FB987;
-	Wed,  5 Nov 2025 09:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A216D2F3C35;
+	Wed,  5 Nov 2025 09:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="g3fD4LL3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GzVO54J1";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="g3fD4LL3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GzVO54J1"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JqN8C7wL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qp3nFStx";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JqN8C7wL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qp3nFStx"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FFE72FB619
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 09:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860422F363A
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 09:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762333547; cv=none; b=JEjCx9Lg50gQDZ69iE1Fng+Yyiq9FnvgjKRJPbcKgLXJ1mYsu3AjolPihZlBUHa5ncgq8k2AK7f4kMPRQer04ChmPlxEN155XhCfvNU+ovzWIkSdRcvoHWnaGauInQ43p3XyjXXg08+U2eqS8yD0CUM79/9KwuoC1rtVHRXbKIM=
+	t=1762333534; cv=none; b=mUq39SkwfEHZ+h5EMiwJ/p+zB48qXT5GmczdGvmsK3tPJh0zsqHsurz2lkPOKhLpidITTgK21cSY3/+MmsNdR9uQCKVNmiHhwlKf/yNV2014uWx0C1G32wQByVaEiyc1KUgyaMOUPj8D4ktIkcrXEwTyrNvOcTRYBMmr36tHGAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762333547; c=relaxed/simple;
-	bh=JVMrOhZxUrybEyFs9el6qiogb1C0tU5myesUpvYuEVw=;
+	s=arc-20240116; t=1762333534; c=relaxed/simple;
+	bh=mKCpFsvDNsc2yiGtg7SQr8oWI/UUG8xVoL88QGsKeYI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To; b=GAqyY76Xqgpolo6cbk6+H1jbgwjFnKczZ5M98uzoyGCoR9JNU7evbrfYHgLPa0+Gz2+Xp5jSH6eHm7+VDDQdUiaRWABm3YnN7+G7kW/NxSi+oEDJeMaKWA4cszZ43SeiW+WZorTBnatv/UqOwvG/Q6ZFZStskaGegj6JD1ksylg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=g3fD4LL3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GzVO54J1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=g3fD4LL3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GzVO54J1; arc=none smtp.client-ip=195.135.223.131
+	 In-Reply-To:To:Cc; b=D/WNebdV4W3kkmbqsF7q+lbOF/xHgJ6BdfrT7WnGutHkUreoeOFEeuKK98I4XmbQxWXUk0mYVMZoUeFVR19HXS/S2Q2D7SBjmMudLSoUkjBb8IzJZBOan9lklK5Y66TPgiLgAajqVY6UELLzPH0bT9lKssC4drz237hXZQnbNGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JqN8C7wL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qp3nFStx; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JqN8C7wL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qp3nFStx; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A05C21F452;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B87E921181;
 	Wed,  5 Nov 2025 09:05:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762333530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1762333530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k3xWBfAUG4JHWgNOrNA/S+tg/3AdmFzQs0YfUSio0A4=;
-	b=g3fD4LL33ECWdz21ko4qzOiUHJYqrVoCocAlITeBCKRkeodmkYBy+qk2Cxoso1KqhqT6f0
-	cqM/y4VAjl5bylqAaXXU+3gb6DxvIcBMqGAUdAnTFYIFroyBGDJDPn8l1VRTZKqKQy+Yxb
-	tP7YIt8FRkr3OCjamXg4CaREc7KrJvc=
+	bh=dS0i3Iby0OJwb+mg8PeOF13C4McpBxa53amtQoTdGRo=;
+	b=JqN8C7wLBSfHWyDRgrkAOSu/ZqlR3yJqJ8KU2mHbmcLeRJR3Puhk1VkHbhS+DnYUo84Rxj
+	Bp6tmt/H6vXLVTlJ9sgHP38KdoeBkJ4wsk6+6RsDMDrAFDbzB/YDGEnUdskgN1Xt4CySuV
+	1i6OfYeQsJhfHbErsMnTeYmaTR8DRSA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1762333530;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k3xWBfAUG4JHWgNOrNA/S+tg/3AdmFzQs0YfUSio0A4=;
-	b=GzVO54J16sRzISTwXLTNgiTawsg7vs94G7phWvyfnZ9EjrcwOqV98XFAb50pHfRSM9GUJa
-	srNKAqDOmfudL8DA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=g3fD4LL3;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=GzVO54J1
+	bh=dS0i3Iby0OJwb+mg8PeOF13C4McpBxa53amtQoTdGRo=;
+	b=qp3nFStxU4c7UxtZa4zaEZis3Q2Owsk6R3hvx8A9339erKrkkHtqvwDTDHrSVq/PWep5rB
+	uEB+BSnmsqmqRqDQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JqN8C7wL;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qp3nFStx
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762333530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1762333530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k3xWBfAUG4JHWgNOrNA/S+tg/3AdmFzQs0YfUSio0A4=;
-	b=g3fD4LL33ECWdz21ko4qzOiUHJYqrVoCocAlITeBCKRkeodmkYBy+qk2Cxoso1KqhqT6f0
-	cqM/y4VAjl5bylqAaXXU+3gb6DxvIcBMqGAUdAnTFYIFroyBGDJDPn8l1VRTZKqKQy+Yxb
-	tP7YIt8FRkr3OCjamXg4CaREc7KrJvc=
+	bh=dS0i3Iby0OJwb+mg8PeOF13C4McpBxa53amtQoTdGRo=;
+	b=JqN8C7wLBSfHWyDRgrkAOSu/ZqlR3yJqJ8KU2mHbmcLeRJR3Puhk1VkHbhS+DnYUo84Rxj
+	Bp6tmt/H6vXLVTlJ9sgHP38KdoeBkJ4wsk6+6RsDMDrAFDbzB/YDGEnUdskgN1Xt4CySuV
+	1i6OfYeQsJhfHbErsMnTeYmaTR8DRSA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1762333530;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k3xWBfAUG4JHWgNOrNA/S+tg/3AdmFzQs0YfUSio0A4=;
-	b=GzVO54J16sRzISTwXLTNgiTawsg7vs94G7phWvyfnZ9EjrcwOqV98XFAb50pHfRSM9GUJa
-	srNKAqDOmfudL8DA==
+	bh=dS0i3Iby0OJwb+mg8PeOF13C4McpBxa53amtQoTdGRo=;
+	b=qp3nFStxU4c7UxtZa4zaEZis3Q2Owsk6R3hvx8A9339erKrkkHtqvwDTDHrSVq/PWep5rB
+	uEB+BSnmsqmqRqDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8699513A88;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A87613A91;
 	Wed,  5 Nov 2025 09:05:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id CAyZIFoTC2lSBAAAD6G6ig
+	id AEN5JVoTC2lSBAAAD6G6ig
 	(envelope-from <vbabka@suse.cz>); Wed, 05 Nov 2025 09:05:30 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Wed, 05 Nov 2025 10:05:29 +0100
-Subject: [PATCH 1/5] slab: make __slab_free() more clear
+Date: Wed, 05 Nov 2025 10:05:30 +0100
+Subject: [PATCH 2/5] slab: move kfence_alloc() out of internal bulk alloc
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,7 +100,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251105-sheaves-cleanups-v1-1-b8218e1ac7ef@suse.cz>
+Message-Id: <20251105-sheaves-cleanups-v1-2-b8218e1ac7ef@suse.cz>
 References: <20251105-sheaves-cleanups-v1-0-b8218e1ac7ef@suse.cz>
 In-Reply-To: <20251105-sheaves-cleanups-v1-0-b8218e1ac7ef@suse.cz>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -110,8 +110,10 @@ To: Andrew Morton <akpm@linux-foundation.org>,
  Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>, 
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
  kasan-dev@googlegroups.com, Vlastimil Babka <vbabka@suse.cz>
+Cc: Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, 
+ Dmitry Vyukov <dvyukov@google.com>
 X-Mailer: b4 0.14.3
-X-Rspamd-Queue-Id: A05C21F452
+X-Rspamd-Queue-Id: B87E921181
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.51 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
@@ -124,7 +126,7 @@ X-Spamd-Result: default: False [-4.51 / 50.00];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	RCVD_TLS_ALL(0.00)[];
 	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_SOME(0.00)[];
 	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
@@ -135,165 +137,139 @@ X-Spamd-Result: default: False [-4.51 / 50.00];
 	R_RATELIMIT(0.00)[to_ip_from(RLfsjnp7neds983g95ihcnuzgq)];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:mid,suse.cz:dkim];
 	DKIM_TRACE(0.00)[suse.cz:+]
 X-Rspamd-Action: no action
 X-Spam-Flag: NO
 X-Spam-Score: -4.51
 X-Spam-Level: 
 
-The function is tricky and many of its tests are hard to understand. Try
-to improve that by using more descriptively named variables and added
-comments.
+SLUB's internal bulk allocation __kmem_cache_alloc_bulk() can currently
+allocate some objects from KFENCE, i.e. when refilling a sheaf. It works
+but it's conceptually the wrong layer, as KFENCE allocations should only
+happen when objects are actually handed out from slab to its users.
 
-- rename 'prior' to 'old_head' to match the head and tail parameters
-- introduce a 'bool was_full' to make it more obvious what we are
-  testing instead of the !prior and prior tests
-- add or improve comments in various places to explain what we're doing
+Currently for sheaf-enabled caches, slab_alloc_node() can return KFENCE
+object via kfence_alloc(), but also via alloc_from_pcs() when a sheaf
+was refilled with KFENCE objects. Continuing like this would also
+complicate the upcoming sheaf refill changes.
 
-Also replace kmem_cache_has_cpu_partial() tests with
-IS_ENABLED(CONFIG_SLUB_CPU_PARTIAL) which are compile-time constants.
-We can do that because the kmem_cache_debug(s) case is handled upfront
-via free_to_partial_list().
+Thus remove KFENCE allocation from __kmem_cache_alloc_bulk() and move it
+to the places that return slab objects to users. slab_alloc_node() is
+already covered (see above). Add kfence_alloc() to
+kmem_cache_alloc_from_sheaf() to handle KFENCE allocations from
+prefilled sheafs, with a comment that the caller should not expect the
+sheaf size to decrease after every allocation because of this
+possibility.
 
+For kmem_cache_alloc_bulk() implement a different strategy to handle
+KFENCE upfront and rely on internal batched operations afterwards.
+Assume there will be at most once KFENCE allocation per bulk allocation
+and then assign its index in the array of objects randomly.
+
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 62 +++++++++++++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 45 insertions(+), 17 deletions(-)
+ mm/slub.c | 44 ++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 36 insertions(+), 8 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index f1a5373eee7b..074abe8e79f8 100644
+index 074abe8e79f8..0237a329d4e5 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -5859,8 +5859,8 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 			unsigned long addr)
+@@ -5540,6 +5540,9 @@ int kmem_cache_refill_sheaf(struct kmem_cache *s, gfp_t gfp,
+  *
+  * The gfp parameter is meant only to specify __GFP_ZERO or __GFP_ACCOUNT
+  * memcg charging is forced over limit if necessary, to avoid failure.
++ *
++ * It is possible that the allocation comes from kfence and then the sheaf
++ * size is not decreased.
+  */
+ void *
+ kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
+@@ -5551,7 +5554,10 @@ kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
+ 	if (sheaf->size == 0)
+ 		goto out;
  
- {
--	void *prior;
--	int was_frozen;
-+	void *old_head;
-+	bool was_frozen, was_full;
- 	struct slab new;
- 	unsigned long counters;
- 	struct kmem_cache_node *n = NULL;
-@@ -5874,20 +5874,37 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 		return;
- 	}
- 
-+	/*
-+	 * It is enough to test IS_ENABLED(CONFIG_SLUB_CPU_PARTIAL) below
-+	 * instead of kmem_cache_has_cpu_partial(s), because kmem_cache_debug(s)
-+	 * is the only other reason it can be false, and it is already handled
-+	 * above.
-+	 */
+-	ret = sheaf->objects[--sheaf->size];
++	ret = kfence_alloc(s, s->object_size, gfp);
 +
- 	do {
- 		if (unlikely(n)) {
- 			spin_unlock_irqrestore(&n->list_lock, flags);
- 			n = NULL;
- 		}
--		prior = slab->freelist;
-+		old_head = slab->freelist;
- 		counters = slab->counters;
--		set_freepointer(s, tail, prior);
-+		set_freepointer(s, tail, old_head);
- 		new.counters = counters;
--		was_frozen = new.frozen;
-+		was_frozen = !!new.frozen;
-+		was_full = (old_head == NULL);
- 		new.inuse -= cnt;
--		if ((!new.inuse || !prior) && !was_frozen) {
--			/* Needs to be taken off a list */
--			if (!kmem_cache_has_cpu_partial(s) || prior) {
-+		/*
-+		 * Might need to be taken off (due to becoming empty) or added
-+		 * to (due to not being full anymore) the partial list.
-+		 * Unless it's frozen.
-+		 */
-+		if ((!new.inuse || was_full) && !was_frozen) {
-+			/*
-+			 * If slab becomes non-full and we have cpu partial
-+			 * lists, we put it there unconditionally to avoid
-+			 * taking the list_lock. Otherwise we need it.
-+			 */
-+			if (!(IS_ENABLED(CONFIG_SLUB_CPU_PARTIAL) && was_full)) {
++	if (likely(!ret))
++		ret = sheaf->objects[--sheaf->size];
  
- 				n = get_node(s, slab_nid(slab));
- 				/*
-@@ -5905,7 +5922,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 		}
+ 	init = slab_want_init_on_alloc(gfp, s);
  
- 	} while (!slab_update_freelist(s, slab,
--		prior, counters,
-+		old_head, counters,
- 		head, new.counters,
- 		"__slab_free"));
+@@ -7399,14 +7405,8 @@ int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+ 	local_lock_irqsave(&s->cpu_slab->lock, irqflags);
  
-@@ -5917,7 +5934,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 			 * activity can be necessary.
- 			 */
- 			stat(s, FREE_FROZEN);
--		} else if (kmem_cache_has_cpu_partial(s) && !prior) {
-+		} else if (IS_ENABLED(CONFIG_SLUB_CPU_PARTIAL) && was_full) {
+ 	for (i = 0; i < size; i++) {
+-		void *object = kfence_alloc(s, s->object_size, flags);
+-
+-		if (unlikely(object)) {
+-			p[i] = object;
+-			continue;
+-		}
++		void *object = c->freelist;
+ 
+-		object = c->freelist;
+ 		if (unlikely(!object)) {
  			/*
- 			 * If we started with a full slab then put it onto the
- 			 * per cpu partial list.
-@@ -5926,6 +5943,11 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 			stat(s, CPU_PARTIAL_FREE);
- 		}
+ 			 * We may have removed an object from c->freelist using
+@@ -7487,6 +7487,7 @@ int kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags, size_t size,
+ 				 void **p)
+ {
+ 	unsigned int i = 0;
++	void *kfence_obj;
  
-+		/*
-+		 * In other cases we didn't take the list_lock because the slab
-+		 * was already on the partial list and will remain there.
-+		 */
+ 	if (!size)
+ 		return 0;
+@@ -7495,6 +7496,20 @@ int kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags, size_t size,
+ 	if (unlikely(!s))
+ 		return 0;
+ 
++	/*
++	 * to make things simpler, only assume at most once kfence allocated
++	 * object per bulk allocation and choose its index randomly
++	 */
++	kfence_obj = kfence_alloc(s, s->object_size, flags);
 +
- 		return;
++	if (unlikely(kfence_obj)) {
++		if (unlikely(size == 1)) {
++			p[0] = kfence_obj;
++			goto out;
++		}
++		size--;
++	}
++
+ 	if (s->cpu_sheaves)
+ 		i = alloc_from_pcs_bulk(s, size, p);
+ 
+@@ -7506,10 +7521,23 @@ int kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags, size_t size,
+ 		if (unlikely(__kmem_cache_alloc_bulk(s, flags, size - i, p + i) == 0)) {
+ 			if (i > 0)
+ 				__kmem_cache_free_bulk(s, i, p);
++			if (kfence_obj)
++				__kfence_free(kfence_obj);
+ 			return 0;
+ 		}
  	}
  
-@@ -5933,19 +5955,24 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 	 * This slab was partially empty but not on the per-node partial list,
- 	 * in which case we shouldn't manipulate its list, just return.
- 	 */
--	if (prior && !on_node_partial) {
-+	if (!was_full && !on_node_partial) {
- 		spin_unlock_irqrestore(&n->list_lock, flags);
- 		return;
- 	}
- 
-+	/*
-+	 * If slab became empty, should we add/keep it on the partial list or we
-+	 * have enough?
-+	 */
- 	if (unlikely(!new.inuse && n->nr_partial >= s->min_partial))
- 		goto slab_empty;
- 
++	if (unlikely(kfence_obj)) {
++		int idx = get_random_u32_below(size + 1);
++
++		if (idx != size)
++			p[size] = p[idx];
++		p[idx] = kfence_obj;
++
++		size++;
++	}
++
++out:
  	/*
- 	 * Objects left in the slab. If it was not on the partial list before
--	 * then add it.
-+	 * then add it. This can only happen when cache has no per cpu partial
-+	 * list otherwise we would have put it there.
- 	 */
--	if (!kmem_cache_has_cpu_partial(s) && unlikely(!prior)) {
-+	if (!IS_ENABLED(CONFIG_SLUB_CPU_PARTIAL) && unlikely(was_full)) {
- 		add_partial(n, slab, DEACTIVATE_TO_TAIL);
- 		stat(s, FREE_ADD_PARTIAL);
- 	}
-@@ -5953,10 +5980,11 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 	return;
- 
- slab_empty:
--	if (prior) {
--		/*
--		 * Slab on the partial list.
--		 */
-+	/*
-+	 * The slab could have a single object and thus go from full to empty in
-+	 * a single free, but more likely it was on the partial list. Remove it.
-+	 */
-+	if (likely(!was_full)) {
- 		remove_partial(n, slab);
- 		stat(s, FREE_REMOVE_PARTIAL);
- 	}
+ 	 * memcg and kmem_cache debug support and memory initialization.
+ 	 * Done outside of the IRQ disabled fastpath loop.
 
 -- 
 2.51.1
