@@ -1,245 +1,128 @@
-Return-Path: <bpf+bounces-73631-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73632-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F271C35CFD
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 14:23:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A3EFC35DA5
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 14:33:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D559B567A93
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 13:23:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABB16189993C
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 13:33:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F6531D393;
-	Wed,  5 Nov 2025 13:23:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6D3322C66;
+	Wed,  5 Nov 2025 13:33:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DBbMX4p4"
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="RqUoAhaY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE15315D22
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 13:23:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E786E31282A;
+	Wed,  5 Nov 2025 13:33:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762348991; cv=none; b=t0WGVLQb1DIjQYWHqnIdGvh0hL8Gw7pvsHR7VOVaqXOZvrjIHVq+DRjLG4IBvQDBf13FZRP82+61Porv9ih3S3VbPL1yH9vagzBkTHBh8jwtahnNj19AswNFZZq3qbr7qJr/TnmQMgdfVW/owpfNFTjiigI83dDYAeHPuMSm9UI=
+	t=1762349594; cv=none; b=CoZVkrHNLfeztZq1C+j0+fgKh99KhvGxWdkETBGL4wOx4YDNQcSHHr1s2DWKVVmzYOeL3KR+7vPY1gobKd2guR8RpasLXsLfp8lMnZ90y2fU2UW7iuz361tuMxmEJKsCZv6IFgvCpIGvnI8lHFl5ruVO/bz+ki1Fji4Xehrj7ZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762348991; c=relaxed/simple;
-	bh=CoMbWSj/vo5HjtiTi+kug+L+kepzqsMVzgo83GiLEC0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PvT4jSDL44XhOtIK0pXh5qtsxRXplJmG2bA5ooWCyGQIRWEbZnx2kwPdogZJa4ouVhFdk7n6ymXwUbiyUNaqEMeMOA+aI4S8wteWLSrLUNjr4d2sjmzTodeu/3PWdNq6Rfvs7Qbq0zLZR2vNhy0Cy+wZoKjW1GtGcYbTCw8BqWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DBbMX4p4; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b3d196b7eeeso1163692266b.0
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 05:23:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762348986; x=1762953786; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K9B8whzP9ipdDMHhFec8IRfTS6Px+ykdqpOPFvCS5A8=;
-        b=DBbMX4p4nYIYKzfKRksZdsdTrpErPY6ko+DDSw/21aVQY9T4WXhyRX1koUthkuuLnI
-         saU7I+ic2YHluHnbV1D9NlF7RzL8N2bFAGDXWD9jkOo3LJ8yLypEWSamPT6+7ixKcA45
-         /fgLjEwvqVAr9VrJeEKqf8LSfu9US9j3wtBW+2BwYvNdqlSkCaMSTV8XikRe3ZUW4tvB
-         vMlmz3OllXRlal2y01GdShYznas00YHq5wR5mT4nTwVDGMf3k2vEJ6Vmn8aUiGpX3/S6
-         4vmQlIhJc1ewHt47fNlAY73MG4nrk2oecHI9xQ1QQtfvpBJauyX96dHrAsXl26kRAjyi
-         D4FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762348986; x=1762953786;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K9B8whzP9ipdDMHhFec8IRfTS6Px+ykdqpOPFvCS5A8=;
-        b=UTG2bNVn3ykaoqYyq9ah4Ff7N1gU7+r84gk0zFEw1hqdCmJxNXJzbHKJFjYpRt7kr+
-         EEuvd7n2LaTe7+HpgefcBdwpneLolkkt01BShb9+aMAkdNiAyNKtUeIwKJ3Le9V+yGhm
-         B+6wwePC3nXx7+6GlugoTMjZq9cIIfGyFNDEATmEDZUtIuHP2c6beMbmd3r8hwiknGvW
-         SVqAHgAb9lNmioKOB3tsNwbhcAlh1Xj21KyK+JoPbvQwB+ZHLf2o7exK6KAUVixWN4Y4
-         kJ+Zd77hvSgNq+1LEl3eu8JYWOs0sWOKYcdM7TQdTQ7kPb6yoNJ2HoKHeWXYpa3MaFej
-         D1Qw==
-X-Forwarded-Encrypted: i=1; AJvYcCWB0jPY28IZU8zqAQyd8Gnhb3iaWD5UOJBWDZF4qGFyay1r2//cy/ErwuJ7JOa5A1ARRrI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyxD4ViWYNtG09BWNwH+hKsaxKk3yI8Owt5M+Az7MxpCK1bWNha
-	bhczcSbrPvHbwJrQjTzwLiDeWriIkeyrOlI4GWxLVUWK64zDtS+PtaGIql5A4saWy4XdCk6BuD2
-	L5WF09rWa5Wdvyde6rrgIzNZYqOQCIeE=
-X-Gm-Gg: ASbGnctBxEG+U+wvKajfv28eg9+kobWOOMA1pGHbQEmOg9i3oxzrGwniU3+aGCnU79U
-	bjF3qK7ZcLS1imTi08crz1RaIc+l5Dk4kACkQs3aPZeZt7+9a1o0u3tW8BLl21htxXuimKG5FRa
-	Z5arxco/RedcBgDI+5LMLgnkt8QJdOMASdze53sF/93ubxE99B7K22e5alijdIuVt4SraOqvLqF
-	tzRq/cSF0LlKv5NPgyZf0XC5t9z0GENROFfH72+iIeT0UHj1dCOlEtyugPaMw==
-X-Google-Smtp-Source: AGHT+IG7CiMn1pVBwCimhQLiSNsKrIR7ykAgVoJCZw98eXg5nYh2eDMcLV7Tpk/mhkz+H4kL/dcU+9JlqS+z8L8UDus=
-X-Received: by 2002:a17:906:9fc8:b0:b6d:a7ad:2fda with SMTP id
- a640c23a62f3a-b726515cf00mr375891566b.12.1762348986473; Wed, 05 Nov 2025
- 05:23:06 -0800 (PST)
+	s=arc-20240116; t=1762349594; c=relaxed/simple;
+	bh=KKPgvqntC9Jnme/QS9WQiXWniOv1IQ3bgzH5SXmU48w=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nq+02wd1zHNHHneNw6Js/8DRUD1rMgkBXheVIA53yC51ikE4rI0CEsTXpPeD6g3YFxZInrCKR0GF+tNBEnGyU/fUkY9WnF7PAOcuVtgwIcoJbY50U2BIsFOEHW95Ml9D6zMiFUqvOkNGZzaQ9jI3spZ2mg8ZacOIq1lry8LbMNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=RqUoAhaY; arc=none smtp.client-ip=198.37.111.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1762349591;
+	bh=KKPgvqntC9Jnme/QS9WQiXWniOv1IQ3bgzH5SXmU48w=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=RqUoAhaYfgLPWN5WuSEuxBIuQmQ36w+PmduQV1UrUTO7zaN33/VQSZI5Lhrv3lMCi
+	 +AC5Lyk69kEwmeUv0Mk1jS/OEnPW2BneRw/u9Xwib1tJOAJtZ7QRUAxfUtwHsIa6lN
+	 CjAt3smkP6ppKWdBWbIzNI7pOhZXunn8ZHf2agCo=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 434991C01E9;
+	Wed, 05 Nov 2025 08:33:11 -0500 (EST)
+Message-ID: <305ff01c159993d8124ae3125f7dacf6b61fa933.camel@HansenPartnership.com>
+Subject: Re: [PATCH v2 22/50] convert efivarfs
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+ linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org, jack@suse.cz,
+  raven@themaw.net, miklos@szeredi.hu, neil@brown.name,
+ a.hindborg@kernel.org,  linux-mm@kvack.org, linux-efi@vger.kernel.org,
+ ocfs2-devel@lists.linux.dev,  kees@kernel.org, rostedt@goodmis.org,
+ gregkh@linuxfoundation.org,  linux-usb@vger.kernel.org,
+ paul@paul-moore.com, casey@schaufler-ca.com, 
+ linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com, 
+ selinux@vger.kernel.org, borntraeger@linux.ibm.com, bpf@vger.kernel.org
+Date: Wed, 05 Nov 2025 08:33:10 -0500
+In-Reply-To: <20251105-sohlen-fenster-e7c5af1204c4@brauner>
+References: <20251028004614.393374-23-viro@zeniv.linux.org.uk>
+	 <66300d81c5e127e3bca8c6c4d997da386b142004.camel@HansenPartnership.com>
+	 <20251028174540.GN2441659@ZenIV> <20251028210805.GP2441659@ZenIV>
+	 <CAMj1kXF6tvg6+CL_1x7h0HK1PoSGtxDjc0LQ1abGQBd5qrbffg@mail.gmail.com>
+	 <9f079d0c8cffb150c0decb673a12bfe1b835efc9.camel@HansenPartnership.com>
+	 <20251029193755.GU2441659@ZenIV>
+	 <CAMj1kXHnEq97bzt-C=zKJdV3BK3EDJCPz3Pfyk52p2735-4wFA@mail.gmail.com>
+	 <20251105-aufheben-ausmusterung-4588dab8c585@brauner>
+	 <423f5cc5352c54fc21e0570daeeddc4a58e74974.camel@HansenPartnership.com>
+	 <20251105-sohlen-fenster-e7c5af1204c4@brauner>
+Autocrypt: addr=James.Bottomley@HansenPartnership.com;
+ prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251104134033.344807-1-dolinux.peng@gmail.com>
- <20251104134033.344807-6-dolinux.peng@gmail.com> <CAADnVQKxqScrBhTKOXcwSL_mVXE36YQ_yQX7qwg8C3X1ZnXHnA@mail.gmail.com>
-In-Reply-To: <CAADnVQKxqScrBhTKOXcwSL_mVXE36YQ_yQX7qwg8C3X1ZnXHnA@mail.gmail.com>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Wed, 5 Nov 2025 21:22:54 +0800
-X-Gm-Features: AWmQ_bnGbmFjJ6q-_y06ft1mm_glR8Lqlb0wd4xHRSwLEGd7iR_eZWmMQUagz04
-Message-ID: <CAErzpmt0t3=Bgn0HJ6C9DH9-=MfuYqyhpvz1NvCF81MsbTshZA@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 5/7] btf: Optimize type lookup with binary search
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Song Liu <song@kernel.org>, pengdonglin <pengdonglin@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 5, 2025 at 1:15=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Nov 4, 2025 at 5:41=E2=80=AFAM Donglin Peng <dolinux.peng@gmail.c=
-om> wrote:
-> >
-> > From: pengdonglin <pengdonglin@xiaomi.com>
-> >
-> > Improve btf_find_by_name_kind() performance by adding binary search
-> > support for sorted types. Falls back to linear search for compatibility=
-.
-> >
-> > Cc: Eduard Zingerman <eddyz87@gmail.com>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Cc: Alan Maguire <alan.maguire@oracle.com>
-> > Cc: Song Liu <song@kernel.org>
-> > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
-> > Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
-> > ---
-> >  kernel/bpf/btf.c | 111 ++++++++++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 101 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 0de8fc8a0e0b..da35d8636b9b 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -259,6 +259,7 @@ struct btf {
-> >         void *nohdr_data;
-> >         struct btf_header hdr;
-> >         u32 nr_types; /* includes VOID for base BTF */
-> > +       u32 nr_sorted_types; /* exclude VOID for base BTF */
-> >         u32 types_size;
-> >         u32 data_size;
-> >         refcount_t refcnt;
-> > @@ -494,6 +495,11 @@ static bool btf_type_is_modifier(const struct btf_=
-type *t)
-> >         return false;
-> >  }
-> >
-> > +static int btf_start_id(const struct btf *btf)
-> > +{
-> > +       return btf->start_id + (btf->base_btf ? 0 : 1);
-> > +}
-> > +
-> >  bool btf_type_is_void(const struct btf_type *t)
-> >  {
-> >         return t =3D=3D &btf_void;
-> > @@ -544,24 +550,109 @@ u32 btf_nr_types(const struct btf *btf)
-> >         return total;
-> >  }
-> >
-> > -s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 =
-kind)
-> > +/* Find BTF types with matching names within the [left, right] index r=
-ange.
-> > + * On success, updates *left and *right to the boundaries of the match=
-ing range
-> > + * and returns the leftmost matching index.
-> > + */
-> > +static s32 btf_find_by_name_kind_bsearch(const struct btf *btf, const =
-char *name,
-> > +                                               s32 *left, s32 *right)
-> >  {
-> >         const struct btf_type *t;
-> >         const char *tname;
-> > -       u32 i, total;
-> > +       s32 l, r, m, lmost, rmost;
-> > +       int ret;
-> >
-> > -       total =3D btf_nr_types(btf);
-> > -       for (i =3D 1; i < total; i++) {
-> > -               t =3D btf_type_by_id(btf, i);
-> > -               if (BTF_INFO_KIND(t->info) !=3D kind)
-> > -                       continue;
-> > +       /* found the leftmost btf_type that matches */
-> > +       l =3D *left;
-> > +       r =3D *right;
-> > +       lmost =3D -1;
-> > +       while (l <=3D r) {
-> > +               m =3D l + (r - l) / 2;
-> > +               t =3D btf_type_by_id(btf, m);
-> > +               tname =3D btf_name_by_offset(btf, t->name_off);
-> > +               ret =3D strcmp(tname, name);
-> > +               if (ret < 0) {
-> > +                       l =3D m + 1;
-> > +               } else {
-> > +                       if (ret =3D=3D 0)
-> > +                               lmost =3D m;
-> > +                       r =3D m - 1;
-> > +               }
-> > +       }
-> >
-> > +       if (lmost =3D=3D -1)
-> > +               return -ENOENT;
-> > +
-> > +       /* found the rightmost btf_type that matches */
-> > +       l =3D lmost;
-> > +       r =3D *right;
-> > +       rmost =3D -1;
-> > +       while (l <=3D r) {
-> > +               m =3D l + (r - l) / 2;
-> > +               t =3D btf_type_by_id(btf, m);
-> >                 tname =3D btf_name_by_offset(btf, t->name_off);
-> > -               if (!strcmp(tname, name))
-> > -                       return i;
-> > +               ret =3D strcmp(tname, name);
-> > +               if (ret <=3D 0) {
-> > +                       if (ret =3D=3D 0)
-> > +                               rmost =3D m;
-> > +                       l =3D m + 1;
-> > +               } else {
-> > +                       r =3D m - 1;
-> > +               }
-> >         }
-> >
-> > -       return -ENOENT;
-> > +       *left =3D lmost;
-> > +       *right =3D rmost;
-> > +       return lmost;
-> > +}
-> > +
-> > +s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 =
-kind)
-> > +{
-> > +       const struct btf *base_btf =3D btf_base_btf(btf);;
-> > +       const struct btf_type *t;
-> > +       const char *tname;
-> > +       int err =3D -ENOENT;
-> > +
-> > +       if (base_btf)
-> > +               err =3D btf_find_by_name_kind(base_btf, name, kind);
-> > +
-> > +       if (err =3D=3D -ENOENT) {
->
-> Please avoid the needless indent.
+On Wed, 2025-11-05 at 14:16 +0100, Christian Brauner wrote:
+> On Wed, Nov 05, 2025 at 08:09:03AM -0500, James Bottomley wrote:
+> > On Wed, 2025-11-05 at 12:47 +0100, Christian Brauner wrote:
+[...]
+> > > And suspend/resume works just fine with freeze/thaw. See commit
+> > > eacfbf74196f ("power: freeze filesystems during suspend/resume")
+> > > which implements exactly that.
+> > >=20
+> > > The reason this didn't work for you is very likely:
+> > >=20
+> > > cat /sys/power/freeze_filesystems
+> > > 0
+> > >=20
+> > > which you must set to 1.
+> >=20
+> > Actually, no, that's not correct.=C2=A0 The efivarfs freeze/thaw logic
+> > must run unconditionally regardless of this setting to fix the
+> > systemd bug, so all the variable resyncing is done in the thaw
+> > call, which isn't conditioned on the above (or at least it
+> > shouldn't be).
+>=20
+> It is conditioned on the above currently but we can certainly fix it
+> easily to not be.
 
-Thanks. I will fix it.
+It still seems to be unconditional in upstream 6.18-rc4
+kernel/power/hibernate.c with only freeze being conditioned on the
+setting of the filesystem_freeze variable but I haven't checked -next.
 
->
-> > +               if (btf->nr_sorted_types) {
->
-> looks buggy,
-> since you init it to btf->nr_sorted_types =3D BTF_NEED_SORT_CHECK;
->
-> Also AI is right. Init the field in the same patch.
+However, if there's anything in the works to change that we would need
+an exception for efivarfs, please ... we can't have a bug fix
+conditioned on a user setting.
 
-Thanks. I will fix it.
+Regards,
 
->
-> pw-bot: cr
+James
+
 
