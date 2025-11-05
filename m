@@ -1,477 +1,224 @@
-Return-Path: <bpf+bounces-73669-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73670-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFC7CC369D8
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 17:16:11 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id B37C1C36A7C
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 17:22:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5909C662774
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 15:59:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 19F21502EAA
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 16:13:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D622E3328E1;
-	Wed,  5 Nov 2025 15:59:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6146B337BB6;
+	Wed,  5 Nov 2025 16:12:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WOxgaeym"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="baFM0iyx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 622DD3328F1
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 15:59:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B18A335579
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 16:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762358359; cv=none; b=aiXwhrnJL6MC/fOl5uehGVgs/wPvgEaC4cwwK4RU3RzmCgsIFFsjzPMqQdfipa2nYODY37oD3MXQ7mPXgE3P7Ca4HwNz8VrTzBJBjH5or0evDvtJ5TETq8ERk6ASyiEQIlkGo1cVQmkUbZaggcculud844ZJJUlKBoY53Ifwivo=
+	t=1762359147; cv=none; b=IaZ13EEn7O3+/qpDZXJ4tfM2KUVbvlzzuyBQCYh+ulES7KoXpIYh5DQsZNiKXczcuQ9zN0caDnO1W0dC3vrnUJRqV1EmI6Bb26da4OBi38HXznjok8lMRRwSQ2dna2QryqS9uvsBOdeoFMdLqYlAi4DQegKDekPVMCp0lqf0oJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762358359; c=relaxed/simple;
-	bh=t3zRb3f/e2CK9xsKTWl9p3kmYPk4ngFmhm3RwfZxqNI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=YieK0nbl/pO4fIdWOF4MniQhMK5IQ9MdMEc7Yw80X/X4i2l2SO8gY8fQmhHqi29sJG/tnsbJPfWiL3qSPwOwnai9mAfVW/bR8h6Wooc0T319dVshOGpwc4sh3GShccEuqQLVi9Eb4w14wnfEQGhdY2us1bCsHmgWkSGGK5B0Dr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WOxgaeym; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-429b895458cso4674433f8f.1
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 07:59:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762358356; x=1762963156; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pHzRhCi/dDjKMqCfqrUpQgRO03jzLrilrpRO+/11gPE=;
-        b=WOxgaeymD5Qj+f1NajLwx5mJ1Fg6/bORf8c/PA30yeWlGRHH8u3JCuhTEC+lNEEm37
-         9CMSdIpyhoevNf0Fk6tm6oRwNRV7Kwslbhova0wum7X74V0B1D6/af9R34/ayCap1yS5
-         ZvsTkLLVi5ahmvVAOOAWwFxpV3iypsW7Tm8pxT+2xznoD/ALl+ETeEmJE6pW9JRi8REr
-         YoWRUN3PYM/VZuKz3KX6d65qoDkX5srd5saJsErNeJbVze8ixF2lk8NYOQ0k017xcESA
-         dYTzxwzPwu2/iL6lBWTexfbmaUVdRyCN5anvfyUQgWOaETWpglrWH4xDTbtbtAHlSTd8
-         yR8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762358356; x=1762963156;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pHzRhCi/dDjKMqCfqrUpQgRO03jzLrilrpRO+/11gPE=;
-        b=n3WIts88bVzlKN1K2gSmH+1Wv5cZGwlJq2P7ZWJs69qno/nF7RamLEp91juUqbFKyn
-         vP2q3zFqxgvsQvpZHZMI54QJbFlp1SzARrdN5/5fo/oF+bK8q0QeFxjQIemod1T/7jjN
-         PruWWh1GfoDsS9rqnwhtsUc4tKLf22+PNhSh74COu7MBr+RefBM6N0Ssb5wEZ8kMoUiO
-         u7xNQ+BXu4hXNMtzyXMRZxWSZmlD1tb9wiJ3q2S3v6pKGZGa/cuLowasCeMEJHUvxXy1
-         NMJSPwHMHSc0bGDBwMEjs3RWNOpBVlWOA/nRzGBUVaGF8Lxcet/uSjYaTObgtkEVxE4I
-         TY0g==
-X-Gm-Message-State: AOJu0YzcnNUZbrRug5Dq0TmIU+DWeHfOO/h9Hk2Gt14LEAYlJOlD9kbP
-	eXr3MA0MV+8v7WTKRyIGi7rn++KX1DeZvHAMSR84ndVtWKG063Hbg2em
-X-Gm-Gg: ASbGncsjRlkwKyw1p+XXMaoxuFlI6cqGjqKRMfBkahjchjD+I5KQuy4Blch5xkcdEU1
-	0RQLl8mTwoU4QHlO0vEhT98pF1KHjVLav/KFvwnJVg8kbi/B4lZwG0EZyF0u5wgZIsKbnEIeSyW
-	YZLF0eHjwHVwbitWA0JMBONFKg5Az1aSUMSyhOptlJ/rH0QeeOJoOrG1VClOPay/znzRAqJO23s
-	oARM+VomFArHEsUSKhSb3EqldlB40JjzpGMcU6uqZCcEWDn3gBYxysg6l1ras1qpXxTHLqBq1Jd
-	YDnFi1vGxkzLV7+UUsppfWUorpMdaPXxozns3Xv6hS4kzm6iECxGmqJRHLfczK9H6BxVh1EXL4m
-	Wm0i4D92cvuZZYtHT7N/dwh9UFY1bx8iBEUv5hM6wqTurpTbthp3luSexIZ7w
-X-Google-Smtp-Source: AGHT+IGZAGfcr+wBTnAnsxnuAh7ErUxMGovMHoU5r3/d9i1KwSLRQOIILFIcJV5ZYuyOh2m8wgHMig==
-X-Received: by 2002:a05:6000:2dc6:b0:429:dbed:28fb with SMTP id ffacd0b85a97d-429e32e46aamr3273979f8f.23.1762358354477;
-        Wed, 05 Nov 2025 07:59:14 -0800 (PST)
-Received: from localhost ([2620:10d:c092:500::7:64d7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429dc192a96sm11764098f8f.13.2025.11.05.07.59.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Nov 2025 07:59:14 -0800 (PST)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Date: Wed, 05 Nov 2025 15:59:07 +0000
-Subject: [PATCH RFC v2 5/5] bpf: remove lock from bpf_async_cb
+	s=arc-20240116; t=1762359147; c=relaxed/simple;
+	bh=JV1piMY9FWz2kSzJwBr1bGiqxTKtVt93I5kC9mSL670=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=tt4QP7Kh5dqaGIsR20DpZ483kmoxjiOd8QA2035cWFpLKhxK2PW3saRd25Gg6EAJIWZc8FLOq8ptnVV7vJirPEmQs5EShAXVRONVGcy8M5LbAzrNYJMwNXDkSk8nvxgLreIcOgN54gYiTlwjxtcI5pxVVRjblD2o5yi5Xc+s1Zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=baFM0iyx; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762359133;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WeV2eLUSuSC3/7iM2Op1hOrd03eB07H/sYIO5UnkqUc=;
+	b=baFM0iyx/644TXbP264AjlW1hrp+adGSBbouysT9eCsZZ3ETuFrLWy9FzSI4zuuvM5TFDC
+	newPzkAqxcA7ZDBXqoi8d/E8pyATVRRdcHzCBzxWE8i87FuUGdvMC8fy061exlb2zZie0x
+	K04dxU9GXpFjCfaBg0nPGYZqRdkyrcY=
+Date: Wed, 05 Nov 2025 16:12:08 +0000
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20251105-timer_nolock-v2-5-32698db08bfa@meta.com>
-References: <20251105-timer_nolock-v2-0-32698db08bfa@meta.com>
-In-Reply-To: <20251105-timer_nolock-v2-0-32698db08bfa@meta.com>
-To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
- daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
- memxor@gmail.com, eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1762358348; l=10558;
- i=yatsenko@meta.com; s=20251031; h=from:subject:message-id;
- bh=ew3A5d1714wrtdaWhTHLsU0tSTqd9UEWSY2Z/Rusukk=;
- b=7EdGSEzIBlxIz3cBgFYEh58ehM6PgNzs7rh8t/v1TJUcf073vwuy76xvYVwditiayneY9Z+Ce
- axk969Ib9NOBr0lp3Xm+KkLKJn2A1e+aR3psW/L/Jom6tb187nO9qxm
-X-Developer-Key: i=yatsenko@meta.com; a=ed25519;
- pk=TFoLStOoH/++W4HJHRgNr8zj8vPFB1W+/QECPcQygzo=
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
+Message-ID: <b5f67a681be12833efa12e68fc3139954b409446@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH net v4 3/3] selftests/bpf: Add mptcp test with sockmap
+To: "Matthieu Baerts" <matttbe@kernel.org>, mptcp@lists.linux.dev
+Cc: "Mat Martineau" <martineau@kernel.org>, "Geliang Tang"
+ <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>, "Simon Horman" <horms@kernel.org>,
+ "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
+ <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>, "Martin
+ KaFai Lau" <martin.lau@linux.dev>, "Eduard Zingerman"
+ <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong Song"
+ <yonghong.song@linux.dev>, "John Fastabend" <john.fastabend@gmail.com>,
+ "KP Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>,
+ "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>, "Shuah
+ Khan" <shuah@kernel.org>, "Florian Westphal" <fw@strlen.de>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+In-Reply-To: <665825df-b995-45ee-9e0c-2b40cc4897ee@kernel.org>
+References: <20251105113625.148900-1-jiayuan.chen@linux.dev>
+ <20251105113625.148900-4-jiayuan.chen@linux.dev>
+ <665825df-b995-45ee-9e0c-2b40cc4897ee@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+November 5, 2025 at 22:40, "Matthieu Baerts" <matttbe@kernel.org mailto:m=
+atttbe@kernel.org?to=3D%22Matthieu%20Baerts%22%20%3Cmatttbe%40kernel.org%=
+3E > wrote:
 
-Remove lock from bpf_async_cb, refactor bpf_timer and bpf_wq kfuncs and
-helpers to run without it.
-bpf_async_cb lifetime is managed by the refcnt and RCU, so every
-function that uses it has to apply RCU guard.
-cancel_and_free() path detaches bpf_async_cb from the map value (struct
-bpf_async_kern) and sets the state to the terminal BPF_ASYNC_FREED
-atomically, concurrent readers may operate on detached bpf_async_cb
-safely under RCU read lock.
 
-Guarantee safe bpf_prog drop from the bpf_async_cb by handling
-BPF_ASYNC_FREED state in bpf_async_update_callback().
+>=20
+>=20Hi Jiayuan,
+>=20
+>=20Thank you for this new test!
+>=20
+>=20I'm not very familiar with the BPF selftests: it would be nice if
+> someone else can have a quick look.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- kernel/bpf/helpers.c | 190 +++++++++++++++++++++++++++------------------------
- 1 file changed, 102 insertions(+), 88 deletions(-)
+Thanks for the review. I've seen the feedback on the other patches(1/3, 2=
+/3) and will fix them up.
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 1cd4011faca519809264b2152c7c446269bee5de..75834338558929cbd0b02a9823629d8be946fb18 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1092,6 +1092,12 @@ static void *map_key_from_value(struct bpf_map *map, void *value, u32 *arr_idx)
- 	return (void *)value - round_up(map->key_size, 8);
- }
- 
-+enum bpf_async_state {
-+	BPF_ASYNC_READY,
-+	BPF_ASYNC_BUSY,
-+	BPF_ASYNC_FREED,
-+};
-+
- struct bpf_async_cb {
- 	struct bpf_map *map;
- 	struct bpf_prog *prog;
-@@ -1103,6 +1109,7 @@ struct bpf_async_cb {
- 	};
- 	u64 flags;
- 	refcount_t refcnt;
-+	enum bpf_async_state state;
- };
- 
- /* BPF map elements can contain 'struct bpf_timer'.
-@@ -1140,11 +1147,6 @@ struct bpf_async_kern {
- 		struct bpf_hrtimer *timer;
- 		struct bpf_work *work;
- 	};
--	/* bpf_spin_lock is used here instead of spinlock_t to make
--	 * sure that it always fits into space reserved by struct bpf_timer
--	 * regardless of LOCKDEP and spinlock debug flags.
--	 */
--	struct bpf_spin_lock lock;
- } __attribute__((aligned(8)));
- 
- enum bpf_async_type {
-@@ -1276,7 +1278,7 @@ static void bpf_timer_delete_work(struct work_struct *work)
- static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u64 flags,
- 			    enum bpf_async_type type)
- {
--	struct bpf_async_cb *cb;
-+	struct bpf_async_cb *cb, *old_cb;
- 	struct bpf_hrtimer *t;
- 	struct bpf_work *w;
- 	clockid_t clockid;
-@@ -1297,18 +1299,13 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
- 		return -EINVAL;
- 	}
- 
--	__bpf_spin_lock_irqsave(&async->lock);
--	t = async->timer;
--	if (t) {
--		ret = -EBUSY;
--		goto out;
--	}
-+	cb = READ_ONCE(async->cb);
-+	if (cb)
-+		return -EBUSY;
- 
- 	cb = bpf_map_kmalloc_nolock(map, size, 0, map->numa_node);
--	if (!cb) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!cb)
-+		return -ENOMEM;
- 
- 	switch (type) {
- 	case BPF_ASYNC_TYPE_TIMER:
-@@ -1331,10 +1328,16 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
- 	cb->map = map;
- 	cb->prog = NULL;
- 	cb->flags = flags;
-+	cb->state = BPF_ASYNC_READY;
- 	rcu_assign_pointer(cb->callback_fn, NULL);
- 	refcount_set(&cb->refcnt, 1); /* map's own ref */
- 
--	WRITE_ONCE(async->cb, cb);
-+	old_cb = cmpxchg(&async->cb, NULL, cb);
-+	if (old_cb) {
-+		/* Lost the race to initialize this bpf_async_kern, drop the allocated object */
-+		kfree_nolock(cb);
-+		return -EBUSY;
-+	}
- 	/* Guarantee the order between async->cb and map->usercnt. So
- 	 * when there are concurrent uref release and bpf timer init, either
- 	 * bpf_timer_cancel_and_free() called by uref release reads a no-NULL
-@@ -1345,12 +1348,17 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
- 		/* maps with timers must be either held by user space
- 		 * or pinned in bpffs.
- 		 */
--		WRITE_ONCE(async->cb, NULL);
--		kfree_nolock(cb);
--		ret = -EPERM;
-+		switch (type) {
-+		case BPF_ASYNC_TYPE_TIMER:
-+			bpf_timer_cancel_and_free(async);
-+			break;
-+		case BPF_ASYNC_TYPE_WQ:
-+			bpf_wq_cancel_and_free(async);
-+			break;
-+		}
-+		return -EPERM;
- 	}
--out:
--	__bpf_spin_unlock_irqrestore(&async->lock);
-+
- 	return ret;
- }
- 
-@@ -1399,41 +1407,42 @@ static int bpf_async_swap_prog(struct bpf_async_cb *cb, struct bpf_prog *prog)
- 		if (IS_ERR(prog))
- 			return PTR_ERR(prog);
- 	}
-+	/* Make sure only one thread runs bpf_prog_put() */
-+	prev = xchg(&cb->prog, prog);
- 	if (prev)
- 		/* Drop prev prog refcnt when swapping with new prog */
- 		bpf_prog_put(prev);
- 
--	cb->prog = prog;
- 	return 0;
- }
- 
--static int bpf_async_update_callback(struct bpf_async_kern *async, void *callback_fn,
-+static int bpf_async_update_callback(struct bpf_async_cb *cb, void *callback_fn,
- 				     struct bpf_prog *prog)
- {
--	struct bpf_async_cb *cb;
-+	enum bpf_async_state state;
- 	int err = 0;
- 
--	__bpf_spin_lock_irqsave(&async->lock);
--	cb = async->cb;
--	if (!cb) {
--		err = -EINVAL;
--		goto out;
--	}
--	if (!atomic64_read(&cb->map->usercnt)) {
--		/* maps with timers must be either held by user space
--		 * or pinned in bpffs. Otherwise timer might still be
--		 * running even when bpf prog is detached and user space
--		 * is gone, since map_release_uref won't ever be called.
--		 */
--		err = -EPERM;
--		goto out;
--	}
-+	state = cmpxchg(&cb->state, BPF_ASYNC_READY, BPF_ASYNC_BUSY);
-+	if (state == BPF_ASYNC_BUSY)
-+		return -EBUSY;
-+	if (state == BPF_ASYNC_FREED)
-+		goto drop;
- 
- 	err = bpf_async_swap_prog(cb, prog);
- 	if (!err)
- 		rcu_assign_pointer(cb->callback_fn, callback_fn);
--out:
--	__bpf_spin_unlock_irqrestore(&async->lock);
-+
-+	state = cmpxchg(&cb->state, BPF_ASYNC_BUSY, BPF_ASYNC_READY);
-+	if (state == BPF_ASYNC_FREED) {
-+		/*
-+		 * cb is freed concurrently, we may have overwritten prog and callback,
-+		 * make sure to drop them
-+		 */
-+drop:
-+		bpf_async_swap_prog(cb, NULL);
-+		rcu_assign_pointer(cb->callback_fn, NULL);
-+		return -EPERM;
-+	}
- 	return err;
- }
- 
-@@ -1442,11 +1451,18 @@ static int __bpf_async_set_callback(struct bpf_async_kern *async, void *callback
- 				    enum bpf_async_type type)
- {
- 	struct bpf_prog *prog = aux->prog;
-+	struct bpf_async_cb *cb;
- 
- 	if (in_nmi())
- 		return -EOPNOTSUPP;
- 
--	return bpf_async_update_callback(async, callback_fn, prog);
-+	guard(rcu)();
-+
-+	cb = READ_ONCE(async->cb);
-+	if (!cb)
-+		return -EINVAL;
-+
-+	return bpf_async_update_callback(cb, callback_fn, prog);
- }
- 
- BPF_CALL_3(bpf_timer_set_callback, struct bpf_async_kern *, timer, void *, callback_fn,
-@@ -1463,7 +1479,7 @@ static const struct bpf_func_proto bpf_timer_set_callback_proto = {
- 	.arg2_type	= ARG_PTR_TO_FUNC,
- };
- 
--BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *, timer, u64, nsecs, u64, flags)
-+BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *, async, u64, nsecs, u64, flags)
- {
- 	struct bpf_hrtimer *t;
- 	int ret = 0;
-@@ -1473,12 +1489,19 @@ BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *, timer, u64, nsecs, u64, fla
- 		return -EOPNOTSUPP;
- 	if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN))
- 		return -EINVAL;
--	__bpf_spin_lock_irqsave(&timer->lock);
--	t = timer->timer;
--	if (!t || !t->cb.prog) {
--		ret = -EINVAL;
--		goto out;
--	}
-+
-+	guard(rcu)();
-+
-+	t = READ_ONCE(async->timer);
-+	if (!t)
-+		return -EINVAL;
-+
-+	/*
-+	 * Hold ref while scheduling timer, to make sure, we only cancel and free after
-+	 * hrtimer_start().
-+	 */
-+	if (!bpf_async_tryget(&t->cb))
-+		return -EINVAL;
- 
- 	if (flags & BPF_F_TIMER_ABS)
- 		mode = HRTIMER_MODE_ABS_SOFT;
-@@ -1489,8 +1512,8 @@ BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *, timer, u64, nsecs, u64, fla
- 		mode |= HRTIMER_MODE_PINNED;
- 
- 	hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
--out:
--	__bpf_spin_unlock_irqrestore(&timer->lock);
-+
-+	bpf_async_put(&t->cb, BPF_ASYNC_TYPE_TIMER);
- 	return ret;
- }
- 
-@@ -1503,18 +1526,7 @@ static const struct bpf_func_proto bpf_timer_start_proto = {
- 	.arg3_type	= ARG_ANYTHING,
- };
- 
--static void drop_prog_refcnt(struct bpf_async_cb *async)
--{
--	struct bpf_prog *prog = async->prog;
--
--	if (prog) {
--		bpf_prog_put(prog);
--		async->prog = NULL;
--		rcu_assign_pointer(async->callback_fn, NULL);
--	}
--}
--
--BPF_CALL_1(bpf_timer_cancel, struct bpf_async_kern *, timer)
-+BPF_CALL_1(bpf_timer_cancel, struct bpf_async_kern *, async)
- {
- 	struct bpf_hrtimer *t, *cur_t;
- 	bool inc = false;
-@@ -1522,13 +1534,12 @@ BPF_CALL_1(bpf_timer_cancel, struct bpf_async_kern *, timer)
- 
- 	if (in_nmi())
- 		return -EOPNOTSUPP;
--	rcu_read_lock();
--	__bpf_spin_lock_irqsave(&timer->lock);
--	t = timer->timer;
--	if (!t) {
--		ret = -EINVAL;
--		goto out;
--	}
-+
-+	guard(rcu)();
-+
-+	t = READ_ONCE(async->timer);
-+	if (!t)
-+		return -EINVAL;
- 
- 	cur_t = this_cpu_read(hrtimer_running);
- 	if (cur_t == t) {
-@@ -1564,16 +1575,15 @@ BPF_CALL_1(bpf_timer_cancel, struct bpf_async_kern *, timer)
- 		goto out;
- 	}
- drop:
--	drop_prog_refcnt(&t->cb);
-+	bpf_async_update_callback(&t->cb, NULL, NULL);
- out:
--	__bpf_spin_unlock_irqrestore(&timer->lock);
- 	/* Cancel the timer and wait for associated callback to finish
- 	 * if it was running.
- 	 */
- 	ret = ret ?: hrtimer_cancel(&t->timer);
- 	if (inc)
- 		atomic_dec(&t->cancelling);
--	rcu_read_unlock();
-+
- 	return ret;
- }
- 
-@@ -1588,22 +1598,17 @@ static struct bpf_async_cb *__bpf_async_cancel_and_free(struct bpf_async_kern *a
- {
- 	struct bpf_async_cb *cb;
- 
--	/* Performance optimization: read async->cb without lock first. */
--	if (!READ_ONCE(async->cb))
--		return NULL;
--
--	__bpf_spin_lock_irqsave(&async->lock);
--	/* re-read it under lock */
--	cb = async->cb;
--	if (!cb)
--		goto out;
--	drop_prog_refcnt(cb);
--	/* The subsequent bpf_timer_start/cancel() helpers won't be able to use
-+	/*
-+	 * The subsequent bpf_timer_start/cancel() helpers won't be able to use
- 	 * this timer, since it won't be initialized.
- 	 */
--	WRITE_ONCE(async->cb, NULL);
--out:
--	__bpf_spin_unlock_irqrestore(&async->lock);
-+	cb = xchg(&async->cb, NULL);
-+	if (!cb)
-+		return NULL;
-+
-+	/* cb is detached, set state to FREED, so that concurrent users drop it */
-+	xchg(&cb->state, BPF_ASYNC_FREED);
-+	bpf_async_update_callback(cb, NULL, NULL);
- 	return cb;
- }
- 
-@@ -3166,11 +3171,20 @@ __bpf_kfunc int bpf_wq_start(struct bpf_wq *wq, unsigned int flags)
- 		return -EOPNOTSUPP;
- 	if (flags)
- 		return -EINVAL;
-+
-+	guard(rcu)();
-+
- 	w = READ_ONCE(async->work);
- 	if (!w || !READ_ONCE(w->cb.prog))
- 		return -EINVAL;
- 
-+	if (!bpf_async_tryget(&w->cb))
-+		return -EINVAL;
-+
- 	schedule_work(&w->work);
-+
-+	bpf_async_put(&w->cb, BPF_ASYNC_TYPE_WQ);
-+
- 	return 0;
- }
- 
 
--- 
-2.51.1
+> On 05/11/2025 12:36, Jiayuan Chen wrote:
+>=20
+>=20>=20
+>=20> Add test cases to verify that when MPTCP falls back to plain TCP so=
+ckets,
+> >  they can properly work with sockmap.
+> >=20=20
+>=20>  Additionally, add test cases to ensure that sockmap correctly reje=
+cts
+> >  MPTCP sockets as expected.
+> >=20=20
+>=20>  Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+> >  ---
+> >  .../testing/selftests/bpf/prog_tests/mptcp.c | 150 +++++++++++++++++=
++
+> >  .../selftests/bpf/progs/mptcp_sockmap.c | 43 +++++
+> >  2 files changed, 193 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/mptcp_sockmap.c
+> >=20=20
+>=20>  diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tool=
+s/testing/selftests/bpf/prog_tests/mptcp.c
+> >  index f8eb7f9d4fd2..56c556f603cc 100644
+> >  --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> >  +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> >  @@ -6,11 +6,14 @@
+> >  #include <netinet/in.h>
+> >  #include <test_progs.h>
+> >  #include <unistd.h>
+> >  +#include <error.h>
+> >=20
+>=20Do you use this new include?
 
+"EOPNOTSUPP" I used was defined in error.h.
+
+> >=20
+>=20>  +
+> >  +end:
+> >  + if (client_fd1 > 1)
+> >  + close(client_fd1);
+> >  + if (client_fd2 > 1)
+> >  + close(client_fd2);
+> >  + if (server_fd1 > 0)
+> >  + close(server_fd1);
+> >  + if (server_fd2 > 0)
+> >  + close(server_fd2);
+> >=20
+>=20Why do you check if it is above 0 or 1? Should you not always check i=
+f
+> it is >=3D 0 for each fd?
+
+My bad, ">=3D0" is correct.
+
+> >=20
+>=20> + close(listen_fd);
+> >  +}
+> >  +
+> >  +/* Test sockmap rejection of MPTCP sockets - both server and client=
+ sides. */
+> >  +static void test_sockmap_reject_mptcp(struct mptcp_sockmap *skel)
+> >  +{
+> >  + int client_fd1 =3D -1, client_fd2 =3D -1;
+> >  + int listen_fd =3D -1, server_fd =3D -1;
+> >  + int err, zero =3D 0;
+> >  +
+> >  + /* start server with MPTCP enabled */
+> >  + listen_fd =3D start_mptcp_server(AF_INET, NULL, 0, 0);
+> >  + if (!ASSERT_OK_FD(listen_fd, "start_mptcp_server"))
+> >=20
+>=20In test_sockmap_with_mptcp_fallback(), you prefixed each error with
+> 'redirect:'. Should you also have a different prefix here? 'sockmap-fb:=
+'
+> vs 'sockmap-mptcp:' eventually?
+
+I will do it.
+
+> >=20
+>=20> + return;
+> >  +
+> >  + skel->bss->trace_port =3D ntohs(get_socket_local_port(listen_fd));
+> >  + skel->bss->sk_index =3D 0;
+> >  + /* create client with MPTCP enabled */
+> >  + client_fd1 =3D connect_to_fd(listen_fd, 0);
+> >  + if (!ASSERT_OK_FD(client_fd1, "connect_to_fd client_fd1"))
+> >  + goto end;
+> >  +
+> >  + /* bpf_sock_map_update() called from sockops should reject MPTCP s=
+k */
+> >  + if (!ASSERT_EQ(skel->bss->helper_ret, -EOPNOTSUPP, "should reject"=
+))
+> >  + goto end;
+> >=20
+>=20So here, the client is connected, but sockmap doesn't operate on it,
+> right? So most likely, the connection is stalled until the userspace
+> realises that and takes an action?
+>
+
+It depends. Sockmap usually runs as a bypass. The user app (like Nginx)
+has its own native forwarding logic, and sockmap just kicks in to acceler=
+ate
+it. So in known cases, turning off sockmap falls back to the native logic=
+.
+But if there's no native logic, the connection just stalls.
+
+
+> >=20
+>=20> + /* set trace_port =3D -1 to stop sockops */
+> >  + skel->bss->trace_port =3D -1;
+> >=20
+>=20What do you want to demonstrate from here? That without the sockmap
+> injection, there are no new entries added? Is it worth checking that he=
+re?
+
+That's redundant. I'll drop it.
+
+
+[...]
+> >  + if (client_fd1 > 0)
+> >  + close(client_fd1);
+> >  + if (client_fd2 > 0)
+> >  + close(client_fd2);
+> >  + if (server_fd > 0)
+> >  + close(server_fd);
+> >=20
+>=20Same here: should it not be "*fd >=3D 0"?
+
+I will fix it.
+
+Thanks.
 
