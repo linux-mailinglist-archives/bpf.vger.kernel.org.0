@@ -1,297 +1,141 @@
-Return-Path: <bpf+bounces-73654-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73655-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 584FBC36217
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 15:44:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1007BC3641A
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 16:12:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1D1A04FBA3C
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 14:41:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9283A6249C8
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 15:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A955132ED43;
-	Wed,  5 Nov 2025 14:40:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09AC432E140;
+	Wed,  5 Nov 2025 14:59:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="toIxm5f5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pfiz2aB9"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E4132E140;
-	Wed,  5 Nov 2025 14:40:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75BB33128D0;
+	Wed,  5 Nov 2025 14:59:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762353636; cv=none; b=MWm/ZSNewDddXI0RTOcOcxdov6QmHy5a9nTkZOyiIwtzx33wuuRFGopaGthJoNMLYtHLsQlpys2C/hVVALufW/u1qs4UE7/ZEef7io1G/XySII8z+LAS8NR8t5iikcB++StolAGTp/jD3R7clXLiZlpEhapunoe6TqL4NQj5u/0=
+	t=1762354794; cv=none; b=Q5hNKn/NJJ1PabfzbqqnszEoY/eTO0UikfozvjD47mQVby1LwoDePK6SG6QNJ36yR59Fr/ivRSu0+uOCstXzPorWwLZUeSLbdCD0KyvfRr7QNquhpXj5eZj6BS94pUUlADyaVPofzkm+eJJBxHLKyXbxpX1FR3Gi/8hxxv1D7zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762353636; c=relaxed/simple;
-	bh=pMttGpkkfeoluMHfyTi4oQM3hPzIQS+KBocEW/rgPTU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ET9voH+ahgaye+94x0sEip6vNb6jtvhU5xw7qs/DhBPX6ix7EiPF5MOgESN69VXVYIsR8ZHiUy1NunIETbaPByyNY3KFF6QiGHm2ex+QwqHuxTSVBBdtc3+EMLrXkycLy5/ISxGOsaqzyIEZ4f0Y3DXQX6GHq9EGUOPslaPckys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=toIxm5f5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAAE3C4CEF5;
-	Wed,  5 Nov 2025 14:40:28 +0000 (UTC)
+	s=arc-20240116; t=1762354794; c=relaxed/simple;
+	bh=ZhyBtgzPeikFKSjIZ69tWkFShHDeHs5VfEJxFcPZVHg=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=R0X3C2bHLNIS+ybkuh6QrdHY9l4q+D7ZgpWhYgGOPA2oOSCTf65V6GE+0N/0axgigf2NSgJwVysO6ljpt9ZEg/DedywUg/ibf0kK3/alw5ZAkpYqooZ2NomrP90QD8ynT+gvwzl6pOHkFRjObwn4TlcCHlcmIitT04ySjuJ6WRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pfiz2aB9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DE61C4CEF5;
+	Wed,  5 Nov 2025 14:59:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762353635;
-	bh=pMttGpkkfeoluMHfyTi4oQM3hPzIQS+KBocEW/rgPTU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=toIxm5f5vWaI0lvkyLXJ1YRYRAcfb85VeTyNIZp0BnDBQwLD46amy5sBV0p+lJfWP
-	 wi4DCNudq051kfFBe0LI/wANATzdvQlVfr5AASBV7P8ypS8C1Jd/rxinhu0vO00xro
-	 cd+efV5H0xzuuMYdCwMTnE/Jklc4wJMA6Gb0jHS0cgvqcQxJW64884k2H4tjo5fzRv
-	 niT4NcbxJIyrOOYxXBNk94CXFzYd24i5cTZH+NVntjiWDem1UnA4k68gd0qJDS7Ibz
-	 roOOcPvAp+bQZJZikssIkATNtHJi6P7l4C7EwnpQg0sbfCZ1SYX6MO7As/IMPClKXV
-	 DgD3eCJ8kHmWg==
-Message-ID: <665825df-b995-45ee-9e0c-2b40cc4897ee@kernel.org>
-Date: Wed, 5 Nov 2025 15:40:24 +0100
+	s=k20201202; t=1762354794;
+	bh=ZhyBtgzPeikFKSjIZ69tWkFShHDeHs5VfEJxFcPZVHg=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=pfiz2aB9Ju/H7axy4bb3UdtyD4oh/ClIC552luOY6w8Swkw5M+xnwXdHrpF8Mx9Pp
+	 Sdi/hFNgEl8KIyOe03BbFxI8WufFKZCd3zxa2PgD0rECZy6cGWMTgZJgVdPdzgUj5O
+	 Jz0d6bh7UnMAlOQSbW+KaKKwtAwXHRTQOGX59qlMEQzJ7aNdk8ELj4qBr7FfKc0DDF
+	 4YxjbD6eVl/H6Nxjzeu5fBPsv46vD6gn2NGgMv0EvLDPXO9E7eK5ToSShEHcvMh97J
+	 fnoynyn8BHHiPgxiSEYWouaBglxy160dvlPWbnhyFElgz8gAgdf+sHY514U7tKuAyD
+	 y0g0nFsW2lRvQ==
+Content-Type: multipart/mixed; boundary="===============3355875946286134360=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH net v4 3/3] selftests/bpf: Add mptcp test with sockmap
-Content-Language: en-GB, fr-BE
-To: Jiayuan Chen <jiayuan.chen@linux.dev>, mptcp@lists.linux.dev
-Cc: Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20251105113625.148900-1-jiayuan.chen@linux.dev>
- <20251105113625.148900-4-jiayuan.chen@linux.dev>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <20251105113625.148900-4-jiayuan.chen@linux.dev>
-Content-Type: text/plain; charset=UTF-8
+Message-Id: <451acb410ee1ce42f7fb2da9f3b8162708f40788cb849cc0f50851ad16813349@mail.kernel.org>
+In-Reply-To: <20251105142319.1139183-3-pmladek@suse.com>
+References: <20251105142319.1139183-3-pmladek@suse.com>
+Subject: Re: [PATCH 2/6] kallsyms: Cleanup code for appending the module buildid
+From: bot+bpf-ci@kernel.org
+To: pmladek@suse.com,petr.pavlu@suse.com,rostedt@goodmis.org,ast@kernel.org,akpm@linux-foundation.org,kees@kernel.org
+Cc: daniel@iogearbox.net,john.fastabend@gmail.com,mhiramat@kernel.org,mark.rutland@arm.com,mcgrof@kernel.org,da.gomez@kernel.org,samitolvanen@google.com,linux-kernel@vger.kernel.org,bpf@vger.kernel.org,linux-modules@vger.kernel.org,linux-trace-kernel@vger.kernel.org,pmladek@suse.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Wed,  5 Nov 2025 14:59:53 +0000 (UTC)
+
+--===============3355875946286134360==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-Hi Jiayuan,
-
-Thank you for this new test!
-
-I'm not very familiar with the BPF selftests: it would be nice if
-someone else can have a quick look.
-
-On 05/11/2025 12:36, Jiayuan Chen wrote:
-> Add test cases to verify that when MPTCP falls back to plain TCP sockets,
-> they can properly work with sockmap.
-> 
-> Additionally, add test cases to ensure that sockmap correctly rejects
-> MPTCP sockets as expected.
-> 
-> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-> ---
->  .../testing/selftests/bpf/prog_tests/mptcp.c  | 150 ++++++++++++++++++
->  .../selftests/bpf/progs/mptcp_sockmap.c       |  43 +++++
->  2 files changed, 193 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/mptcp_sockmap.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> index f8eb7f9d4fd2..56c556f603cc 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> @@ -6,11 +6,14 @@
->  #include <netinet/in.h>
->  #include <test_progs.h>
->  #include <unistd.h>
-> +#include <error.h>
-
-Do you use this new include?
-
->  #include "cgroup_helpers.h"
->  #include "network_helpers.h"
-> +#include "socket_helpers.h"
->  #include "mptcp_sock.skel.h"
->  #include "mptcpify.skel.h"
->  #include "mptcp_subflow.skel.h"
-> +#include "mptcp_sockmap.skel.h"
->  
->  #define NS_TEST "mptcp_ns"
->  #define ADDR_1	"10.0.1.1"
-> @@ -436,6 +439,151 @@ static void test_subflow(void)
->  	close(cgroup_fd);
+> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> index 1e7635864..9455e3bb0 100644
+> --- a/kernel/kallsyms.c
+> +++ b/kernel/kallsyms.c
+> @@ -423,6 +423,37 @@ int lookup_symbol_name(unsigned long addr, char *symname)
+>  	return lookup_module_symbol_name(addr, symname);
 >  }
->  
-> +/* Test sockmap on MPTCP server handling non-mp-capable clients. */
-> +static void test_sockmap_with_mptcp_fallback(struct mptcp_sockmap *skel)
+>
+> +#ifdef CONFIG_STACKTRACE_BUILD_ID
+> +
+> +static int append_buildid(char *buffer,  const char *modname,
+> +			  const unsigned char *buildid)
 > +{
-> +	int listen_fd = -1, client_fd1 = -1, client_fd2 = -1;
-> +	int server_fd1 = -1, server_fd2 = -1, sent, recvd;
-> +	char snd[9] = "123456789";
-> +	char rcv[10];
+> +	if (!modname)
+> +		return 0;
 > +
-> +	/* start server with MPTCP enabled */
-> +	listen_fd = start_mptcp_server(AF_INET, NULL, 0, 0);
-> +	if (!ASSERT_OK_FD(listen_fd, "redirect:start_mptcp_server"))
-> +		return;
-> +
-> +	skel->bss->trace_port = ntohs(get_socket_local_port(listen_fd));
-> +	skel->bss->sk_index = 0;
-> +	/* create client without MPTCP enabled */
-> +	client_fd1 = connect_to_fd_opts(listen_fd, NULL);
-> +	if (!ASSERT_OK_FD(client_fd1, "redirect:connect_to_fd"))
-> +		goto end;
-> +
-> +	server_fd1 = xaccept_nonblock(listen_fd, NULL, NULL);
-> +	skel->bss->sk_index = 1;
-> +	client_fd2 = connect_to_fd_opts(listen_fd, NULL);
-> +	if (!ASSERT_OK_FD(client_fd2, "redirect:connect_to_fd"))
-> +		goto end;
-> +
-> +	server_fd2 = xaccept_nonblock(listen_fd, NULL, NULL);
-> +	/* test normal redirect behavior: data sent by client_fd1 can be
-> +	 * received by client_fd2
-> +	 */
-> +	skel->bss->redirect_idx = 1;
-> +	sent = xsend(client_fd1, snd, sizeof(snd), 0);
-> +	if (!ASSERT_EQ(sent, sizeof(snd), "redirect:xsend(client_fd1)"))
-> +		goto end;
-> +
-> +	/* try to recv more bytes to avoid truncation check */
-> +	recvd = recv_timeout(client_fd2, rcv, sizeof(rcv), MSG_DONTWAIT, 2);
-> +	if (!ASSERT_EQ(recvd, sizeof(snd), "redirect:recv(client_fd2)"))
-> +		goto end;
-> +
-> +end:
-> +	if (client_fd1 > 1)
-> +		close(client_fd1);
-> +	if (client_fd2 > 1)
-> +		close(client_fd2);
-> +	if (server_fd1 > 0)
-> +		close(server_fd1);
-> +	if (server_fd2 > 0)
-> +		close(server_fd2);
+> +	if (!buildid) {
+> +		pr_warn_once("Undefined buildid for the module %s\n", modname);
+> +		return 0;
+> +	}
 
-Why do you check if it is above 0 or 1? Should you not always check if
-it is >= 0 for each fd?
+When ftrace_mod_address_lookup() succeeds in kallsyms_lookup_buildid(),
+it sets *modname but doesn't initialize *modbuildid. This leaves the
+buildid variable uninitialized when __sprint_symbol() calls
+append_buildid(). Can the check above read uninitialized memory?
 
+Looking at kallsyms_lookup_buildid():
+- module_address_lookup() properly initializes both modname and
+  modbuildid
+- bpf_address_lookup() sets modname=NULL (so append_buildid isn't
+  called)
+- ftrace_mod_address_lookup() sets modname=mod_map->mod->name but has
+  no modbuildid parameter
 
-> +	close(listen_fd);
-> +}
+The commit message mentions wanting to catch when lookup functions don't
+handle buildid, but shouldn't kallsyms_lookup_buildid() initialize
+*modbuildid=NULL before calling the lookup functions to avoid undefined
+behavior?
+
 > +
-> +/* Test sockmap rejection of MPTCP sockets - both server and client sides. */
-> +static void test_sockmap_reject_mptcp(struct mptcp_sockmap *skel)
-> +{
-> +	int client_fd1 = -1, client_fd2 = -1;
-> +	int listen_fd = -1, server_fd = -1;
-> +	int err, zero = 0;
+> +	/* build ID should match length of sprintf */
+> +#ifdef CONFIG_MODULES
+> +	static_assert(sizeof(typeof_member(struct module, build_id)) == 20);
+> +#endif
 > +
-> +	/* start server with MPTCP enabled */
-> +	listen_fd = start_mptcp_server(AF_INET, NULL, 0, 0);
-> +	if (!ASSERT_OK_FD(listen_fd, "start_mptcp_server"))
-
-In test_sockmap_with_mptcp_fallback(), you prefixed each error with
-'redirect:'. Should you also have a different prefix here? 'sockmap-fb:'
-vs 'sockmap-mptcp:' eventually?
-
-> +		return;
-> +
-> +	skel->bss->trace_port = ntohs(get_socket_local_port(listen_fd));
-> +	skel->bss->sk_index = 0;
-> +	/* create client with MPTCP enabled */
-> +	client_fd1 = connect_to_fd(listen_fd, 0);
-> +	if (!ASSERT_OK_FD(client_fd1, "connect_to_fd client_fd1"))
-> +		goto end;
-> +
-> +	/* bpf_sock_map_update() called from sockops should reject MPTCP sk */
-> +	if (!ASSERT_EQ(skel->bss->helper_ret, -EOPNOTSUPP, "should reject"))
-> +		goto end;
-
-So here, the client is connected, but sockmap doesn't operate on it,
-right? So most likely, the connection is stalled until the userspace
-realises that and takes an action?
-
-> +	/* set trace_port = -1 to stop sockops */
-> +	skel->bss->trace_port = -1;
-
-What do you want to demonstrate from here? That without the sockmap
-injection, there are no new entries added? Is it worth checking that here?
-
-> +	client_fd2 = connect_to_fd(listen_fd, 0);
-> +	if (!ASSERT_OK_FD(client_fd2, "connect_to_fd client_fd2"))
-> +		goto end;
-> +
-> +	server_fd = xaccept_nonblock(listen_fd, NULL, NULL);
-> +	err = bpf_map_update_elem(bpf_map__fd(skel->maps.sock_map),
-> +				  &zero, &server_fd, BPF_NOEXIST);
-> +	if (!ASSERT_EQ(err, -EOPNOTSUPP, "server should be disallowed"))
-> +		goto end;
-> +
-> +	/* MPTCP client should also be disallowed */
-> +	err = bpf_map_update_elem(bpf_map__fd(skel->maps.sock_map),
-> +				  &zero, &client_fd1, BPF_NOEXIST);
-> +	if (!ASSERT_EQ(err, -EOPNOTSUPP, "client should be disallowed"))
-> +		goto end;
-> +end:
-> +	if (client_fd1 > 0)
-> +		close(client_fd1);
-> +	if (client_fd2 > 0)
-> +		close(client_fd2);
-> +	if (server_fd > 0)
-> +		close(server_fd);
-
-Same here: should it not be "*fd >= 0"?
-
-> +	close(listen_fd);
+> +	return sprintf(buffer, " %20phN", buildid);
 > +}
 
-(...)
+[ ... ]
 
-Cheers,
-Matt
--- 
-Sponsored by the NGI0 Core fund.
+> @@ -445,15 +476,8 @@ static int __sprint_symbol(char *buffer, unsigned long address,
+>
+>  	if (modname) {
+>  		len += sprintf(buffer + len, " [%s", modname);
+> -#if IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID)
+> -		if (add_buildid && buildid) {
+> -			/* build ID should match length of sprintf */
+> -#if IS_ENABLED(CONFIG_MODULES)
+> -			static_assert(sizeof(typeof_member(struct module, build_id)) == 20);
+> -#endif
+> -			len += sprintf(buffer + len, " %20phN", buildid);
+> -		}
+> -#endif
+> +		if (add_buildid)
+> +			len += append_buildid(buffer + len, modname, buildid);
+>  		len += sprintf(buffer + len, "]");
+>  	}
 
+
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19105560191
+
+--===============3355875946286134360==--
 
