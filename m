@@ -1,200 +1,117 @@
-Return-Path: <bpf+bounces-73625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B440C35BF4
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 14:02:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D563FC35C48
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 14:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3D5324F83B6
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 12:59:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84E351A21C68
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 13:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0779F3164C1;
-	Wed,  5 Nov 2025 12:59:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15EDE3168EF;
+	Wed,  5 Nov 2025 13:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lo6PWFFo"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HTabv0Ir"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9F73161BC;
-	Wed,  5 Nov 2025 12:59:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E0F18A921;
+	Wed,  5 Nov 2025 13:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762347588; cv=none; b=eH4aV4SRQsVRdwaKWYFkfFuX6KIrpKc0zImu8RD5tfggw4g+XdtKIZzGtlmukhulBiG6RwEsYFfWlzYEMouwf+kSnHYYn1Qa6w1VBHGnc7XGor4si5Dj++2467Q9Kl2CUnfE1DphHBjU90/uXppwm/x/YRRcSAzsf+PE+DzZKsY=
+	t=1762348130; cv=none; b=H3MTs+FS05Ryys+ZqWvhhnvYDjv9hLZyxHInCtP3X6cyqhueraOCezS02B3wWwHpDZHNTZdZ5Wi7aGa+rxfbIyFmdwUYnSP++14uLPFoaglRloQVSsAC2zUhEpDpihEHmVkHkMpMhM4KoZ7lTpOvCWCtrptJ+tUIZfw1eGsink0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762347588; c=relaxed/simple;
-	bh=pYdcHxsRXCEZFJBLVGty+ksLBg504S9Nj7797A0+RDM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nuzI5r1SFsrvvthO9Koyjl3XtbrAu+HJjTcv0rv/MQ6CPvGtN2QDfuYH/6YT5qNHUp4ba049Mgw520Wn+GA0GqjWTAV46dGEw0IGqCjn80mAO+sOHUI+oHVZLNwdrfbwHZ9yImxGp9niU4zNQyXKbbsESxyfkEhklI2R0yEU0hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lo6PWFFo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7E96C4CEF8;
-	Wed,  5 Nov 2025 12:59:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762347588;
-	bh=pYdcHxsRXCEZFJBLVGty+ksLBg504S9Nj7797A0+RDM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lo6PWFFomtjkMPv9RA6+wNc5mPpF9LdKXUl4uGjIockxE58Bo3dfCp+m7aVZkrxVa
-	 qSHEIK+CmAFYbUKQ5qFuaFjCoLHSvcAnH7fr/jsAQ/ddBCM7szS9Vd6OISh+o/+kpz
-	 yFh43T6Ne8ErIXehYOjWn412WMvKeMLGdKPs764oiZ0WYnxBq3DGSVcNmtbgjEd9/U
-	 76ltNZgtGyCjjTXm0qUADIxuK1aeR0xfE1JjtcHIpeENxkSb5FPJM5IBRsFmfIitGG
-	 tzfqpv11GccEVaYFnvxCgWw5S3xVY9WrwgoslXARgAjqjzvafPBypOnHRVcDkSvMW0
-	 iAcJQJ013PXYw==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Masami Hiramatsu <mhiramat@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Will Deacon <will@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	x86@kernel.org,
-	Yonghong Song <yhs@fb.com>,
-	Song Liu <songliubraving@fb.com>,
+	s=arc-20240116; t=1762348130; c=relaxed/simple;
+	bh=tIXN69NhcMpIUNMTvR0fHGOEfPzcKsrg05Mq0Prh/K4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ehlUJMjIcmPVMQtGzLVta79s8D+oI9bv25+SIXwEMh2rGG2DB/z1gzrc0YH49W9HjKHmD0PU1D8Xn0SjlHRFrdABnhAqNY68xib2dMtIvs15Y+9ENB3HWUKz7j5NvKJu0yEjnpEn8QjlnkH8ApFldXfbdRgpWE09DDJh5sPE4dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HTabv0Ir; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=yagpRY+a+yMfMlbGTqpj5YyUleDnBH+cyCzDbrx1n98=; b=HTabv0IrhUjTaGC+iDA5NWyTyw
+	kPDwLnrjnlGPgKXG4boDqLcwLrIL+rjTJUItAWTPD756A+vne0GUUnW1wT/FBRrAr+jLZk4al6xI3
+	RpFjq6tU45rllMEwjdqPcDWP0NUQZBEonp+008EJgEYSz5UT6UoCKOYrXln/kvuacwpYGCSlZof7z
+	X0EK7q5s6x0b4c6vDM0GX3ynE7b8DGfkdXkaAm1WQD38svy2sNAXf0hJb5wEJpYdXnxQJgttrvFXn
+	MRVh7W8KAf4cd+kaHW2QDBG3ABg7EGWyw9uxP0MLLjFykOvh2GmktSajTcv69rIF4EHeNWhJUqn80
+	uDtMqikg==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vGdFZ-00000006g3w-0c3R;
+	Wed, 05 Nov 2025 13:08:34 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id A1A9E300230; Wed, 05 Nov 2025 14:08:33 +0100 (CET)
+Date: Wed, 5 Nov 2025 14:08:33 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Florian Weimer <fweimer@redhat.com>
+Cc: Jens Remus <jremus@linux.ibm.com>, Steven Rostedt <rostedt@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, x86@kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mahe Tardy <mahe.tardy@gmail.com>
-Subject: [PATCH 2/2] selftests/bpf: Add test for bpf_override_return helper
-Date: Wed,  5 Nov 2025 13:59:24 +0100
-Message-ID: <20251105125924.365205-2-jolsa@kernel.org>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <20251105125924.365205-1-jolsa@kernel.org>
-References: <20251105125924.365205-1-jolsa@kernel.org>
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	"Jose E. Marchesi" <jemarch@gnu.org>,
+	Beau Belgrave <beaub@linux.microsoft.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Sam James <sam@gentoo.org>, Kees Cook <kees@kernel.org>,
+	Carlos O'Donell <codonell@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH v16 0/4] perf: Support the deferred unwinding
+ infrastructure
+Message-ID: <20251105130833.GN3245006@noisy.programming.kicks-ass.net>
+References: <20251007214008.080852573@kernel.org>
+ <20251023150002.GR4067720@noisy.programming.kicks-ass.net>
+ <20251024092926.GI4068168@noisy.programming.kicks-ass.net>
+ <20251024104119.GJ4068168@noisy.programming.kicks-ass.net>
+ <a59509f0-5888-4663-9e82-98e27fc3e813@linux.ibm.com>
+ <20251024140815.GE3245006@noisy.programming.kicks-ass.net>
+ <20251024145156.GM4068168@noisy.programming.kicks-ass.net>
+ <lhuldkmujom.fsf@oldenburg.str.redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <lhuldkmujom.fsf@oldenburg.str.redhat.com>
 
-We do not actualy test the bpf_override_return helper functionality
-itself at the moment, only the bpf program being able to attach it.
+On Tue, Nov 04, 2025 at 12:22:01PM +0100, Florian Weimer wrote:
+> * Peter Zijlstra:
+> 
+> > +/*
+> > + * Heuristic-based check if uprobe is installed at the function entry.
+> > + *
+> > + * Under assumption of user code being compiled with frame pointers,
+> > + * `push %rbp/%ebp` is a good indicator that we indeed are.
+> > + *
+> > + * Similarly, `endbr64` (assuming 64-bit mode) is also a common pattern.
+> > + * If we get this wrong, captured stack trace might have one extra bogus
+> > + * entry, but the rest of stack trace will still be meaningful.
+> > + */
+> > +bool is_uprobe_at_func_entry(struct pt_regs *regs)
+> 
+> Is this specifically for uprobes?  Wouldn't it make sense to tell the
+> kernel when the uprobe is installed whether the frame pointer has been
+> set up at this point?  Userspace can typically figure this out easily
+> enough (it's not much more difficult to find the address of the
+> function).
 
-Adding test that override prctl syscall return value on top of
-kprobe and kprobe.multi.
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../bpf/prog_tests/kprobe_multi_test.c        | 61 +++++++++++++++++++
- .../bpf/progs/kprobe_multi_override.c         | 15 +++++
- 2 files changed, 76 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-index 6cfaa978bc9a..b5e5cc54b89a 100644
---- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-@@ -1,4 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <errno.h>
-+#include <sys/prctl.h>
- #include <test_progs.h>
- #include "kprobe_multi.skel.h"
- #include "trace_helpers.h"
-@@ -540,6 +542,63 @@ static void test_attach_override(void)
- 	kprobe_multi_override__destroy(skel);
- }
- 
-+/* XXX I'll move this to common place and share with
-+ * SYS_NANOSLEEP_KPROBE_NAME macro on repost.
-+ */
-+#ifdef __x86_64__
-+#define SYS_PREFIX "__x64_"
-+#elif defined(__s390x__)
-+#define SYS_PREFIX "__s390x_"
-+#elif defined(__aarch64__)
-+#define SYS_PREFIX "__arm64_"
-+#elif defined(__riscv)
-+#define SYS_PREFIX "__riscv_"
-+#else
-+#define SYS_PREFIX ""
-+#endif
-+
-+static void test_override(void)
-+{
-+	struct kprobe_multi_override *skel = NULL;
-+	int err;
-+
-+	skel = kprobe_multi_override__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "kprobe_multi_empty__open_and_load"))
-+		goto cleanup;
-+
-+	skel->bss->pid = getpid();
-+
-+	/* no override */
-+	err = prctl(0xffff, 0);
-+	ASSERT_EQ(err, -1, "err");
-+
-+	/* kprobe.multi override */
-+	skel->links.test_override = bpf_program__attach_kprobe_multi_opts(skel->progs.test_override,
-+						SYS_PREFIX "sys_prctl", NULL);
-+	if (!ASSERT_OK_PTR(skel->links.test_override, "bpf_program__attach_kprobe_multi_opts")) {
-+		goto cleanup;
-+	}
-+
-+	err = prctl(0xffff, 0);
-+	ASSERT_EQ(err, 123, "err");
-+
-+	bpf_link__destroy(skel->links.test_override);
-+	skel->links.test_override = NULL;
-+
-+	/* kprobe override */
-+	skel->links.test_kprobe_override = bpf_program__attach_kprobe(skel->progs.test_kprobe_override,
-+							false, SYS_PREFIX "sys_prctl");
-+	if (!ASSERT_OK_PTR(skel->links.test_kprobe_override, "bpf_program__attach_kprobe")) {
-+		goto cleanup;
-+	}
-+
-+	err = prctl(0xffff, 0);
-+	ASSERT_EQ(err, 123, "err");
-+
-+cleanup:
-+	kprobe_multi_override__destroy(skel);
-+}
-+
- #ifdef __x86_64__
- static void test_attach_write_ctx(void)
- {
-@@ -597,6 +656,8 @@ void test_kprobe_multi_test(void)
- 		test_attach_api_fails();
- 	if (test__start_subtest("attach_override"))
- 		test_attach_override();
-+	if (test__start_subtest("override"))
-+		test_override();
- 	if (test__start_subtest("session"))
- 		test_session_skel_api();
- 	if (test__start_subtest("session_cookie"))
-diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi_override.c b/tools/testing/selftests/bpf/progs/kprobe_multi_override.c
-index 28f8487c9059..14f39fa6d515 100644
---- a/tools/testing/selftests/bpf/progs/kprobe_multi_override.c
-+++ b/tools/testing/selftests/bpf/progs/kprobe_multi_override.c
-@@ -5,9 +5,24 @@
- 
- char _license[] SEC("license") = "GPL";
- 
-+int pid = 0;
-+
- SEC("kprobe.multi")
- int test_override(struct pt_regs *ctx)
- {
-+	if (bpf_get_current_pid_tgid() >> 32 != pid)
-+		return 0;
-+
-+	bpf_override_return(ctx, 123);
-+	return 0;
-+}
-+
-+SEC("kprobe")
-+int test_kprobe_override(struct pt_regs *ctx)
-+{
-+	if (bpf_get_current_pid_tgid() >> 32 != pid)
-+		return 0;
-+
- 	bpf_override_return(ctx, 123);
- 	return 0;
- }
--- 
-2.51.1
-
+Yeah, I suppose so. Not sure the actual user interface for this allows
+for that. Someone would have to dig into that a bit.
 
