@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-73646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73647-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B91AC360EB
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 15:27:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11C8AC360DC
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 15:26:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3305C465984
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 14:24:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7898E1A22786
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 14:25:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF2132D0FF;
-	Wed,  5 Nov 2025 14:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D0EC32D0C5;
+	Wed,  5 Nov 2025 14:24:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OhANJ+aB";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OhANJ+aB"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZIhE1Iz8";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZIhE1Iz8"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5241C32C950
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 14:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D663E32D445
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 14:24:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762352671; cv=none; b=nzVJIwVr0yEd+WSWaumO0zczYkOelw8pJVbiEAhmd9dPpBRJX79YlkcjvJGXn8wakivDOuXwP/qgOxUpObt9k/n5SuIAj0n/lgadJ1To0in88npbdp4JUFUeLeWrB+izA3dxTKOeCUMPXgSKnZE4VE9dvSdv7PTWUJXalnS8vVY=
+	t=1762352683; cv=none; b=J5nFUOvel855UW8fG4qOUWMV75hphLthdYHzxTONey1kNSmovP7vY2BH92HD8Ua3PYQFIEUfwaSpywTo8zO29nuLGG13mcclgS0yfJBAtSfq3kgOdeaolUTdlE/kHh+hAawVLqoCi9LZwoapPNNde6w8PMQdGdIOUl9gVjIhGYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762352671; c=relaxed/simple;
-	bh=A5IXcVQ5fawZdmTwRPtACTA4pV2MrdTzD4I4MHabeDM=;
+	s=arc-20240116; t=1762352683; c=relaxed/simple;
+	bh=qPNXWEHipoavN9pVpXbfbNKpPRagLspNBeYsffAEsIo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bxa6h3MUMYOdn6MMu/duB77hwB+3brpltU8HBDulWfugZ3C7g1fTAg2WRojS4tb12P5pM3qJ3H1/m4uWha+MpeH3T6KytsME4Y3PyeHCtHh1WAr2XTVdD6IKbYpUo2ojwbYPE4p7BQdfllS7TC9rnHJxIGI/J5GpuP+j8jSKYEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OhANJ+aB; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OhANJ+aB; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=KCY4wzvjeSOO2HvgXvy9Xwiws4odnof5MHsk+g+WNuwQfKUe3RpdV6yKQKz6Q/QLLynmfF7f1VdyotLKvLnnYHPC3xxEz/YNHSI/z8uzdJeuyLsK2JMwew5w6WuuDsUOtsdKBI/SQ68mQU4O0THZA+Pz53E1kV4oWc+Hw9F85sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZIhE1Iz8; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZIhE1Iz8; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from pathway.suse.cz (unknown [10.100.201.202])
-	by smtp-out2.suse.de (Postfix) with ESMTP id 211611F45F;
-	Wed,  5 Nov 2025 14:24:27 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTP id 9746D1F394;
+	Wed,  5 Nov 2025 14:24:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1762352667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1762352677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=q9jdZSA1Uy7m92gbnURla++n6HXEsbaGCgd+TUK6szM=;
-	b=OhANJ+aBCMmDTLZHlShyqsgrTyKXY0Bder0XFQUQwcrxiyvCLKwXx8rTcK/oSpBPW6ECC+
-	FYWtXG1ugBhCrdkBT133UHBYsYAizcQ2cUL6YkcoYgvtm7tbOrvF/GPg+OhDAmdfR8Yjuz
-	xx+AYVWh55JrDq8dkuHSrEjMu5XxW+w=
+	bh=Glw8CB41dEHHbXisbpnYd6qd/VUwdMvAcibSgKx99aY=;
+	b=ZIhE1Iz8PPjn13xSGL+MmieL7h+9wcbaNO4DpHayfLdZqIiakc2buekR++Rda/RvMqhOYs
+	mTGt6bbEk9x0j6GRqMg5wrrNZYJsSZPrB+kBe6FfLLvnQXL14JrJQdYoLhNO+VqlkZkJKm
+	rXnCyM098qYnP+WbLNKMK4U3JguNNGA=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1762352667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1762352677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=q9jdZSA1Uy7m92gbnURla++n6HXEsbaGCgd+TUK6szM=;
-	b=OhANJ+aBCMmDTLZHlShyqsgrTyKXY0Bder0XFQUQwcrxiyvCLKwXx8rTcK/oSpBPW6ECC+
-	FYWtXG1ugBhCrdkBT133UHBYsYAizcQ2cUL6YkcoYgvtm7tbOrvF/GPg+OhDAmdfR8Yjuz
-	xx+AYVWh55JrDq8dkuHSrEjMu5XxW+w=
+	bh=Glw8CB41dEHHbXisbpnYd6qd/VUwdMvAcibSgKx99aY=;
+	b=ZIhE1Iz8PPjn13xSGL+MmieL7h+9wcbaNO4DpHayfLdZqIiakc2buekR++Rda/RvMqhOYs
+	mTGt6bbEk9x0j6GRqMg5wrrNZYJsSZPrB+kBe6FfLLvnQXL14JrJQdYoLhNO+VqlkZkJKm
+	rXnCyM098qYnP+WbLNKMK4U3JguNNGA=
 From: Petr Mladek <pmladek@suse.com>
 To: Petr Pavlu <petr.pavlu@suse.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -73,9 +73,9 @@ Cc: Daniel Borkmann <daniel@iogearbox.net>,
 	linux-modules@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	Petr Mladek <pmladek@suse.com>
-Subject: [PATCH 4/6] kallsyms/ftrace: Set module buildid in ftrace_mod_address_lookup()
-Date: Wed,  5 Nov 2025 15:23:16 +0100
-Message-ID: <20251105142319.1139183-5-pmladek@suse.com>
+Subject: [PATCH 5/6] kallsyms: Clean up @namebuf initialization in kallsyms_lookup_buildid()
+Date: Wed,  5 Nov 2025 15:23:17 +0100
+Message-ID: <20251105142319.1139183-6-pmladek@suse.com>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251105142319.1139183-1-pmladek@suse.com>
 References: <20251105142319.1139183-1-pmladek@suse.com>
@@ -114,79 +114,52 @@ X-Spam-Flag: NO
 X-Spam-Score: -5.30
 X-Spam-Level: 
 
-__sprint_symbol() might access an invalid pointer when
-kallsyms_lookup_buildid() returns a symbol found by
-ftrace_mod_address_lookup().
+The function kallsyms_lookup_buildid() initializes the given @namebuf
+by clearing the first and the last byte. It is not clear why.
 
-The ftrace lookup function must set both @modname and @modbuildid
-the same way as module_address_lookup().
+The 1st byte makes sense because some callers ignore the return code
+and expect that the buffer contains a valid string, for example:
 
-Fixes: 9294523e3768 ("module: add printk formats to add module build ID to stacktraces")
+  - function_stat_show()
+    - kallsyms_lookup()
+      - kallsyms_lookup_buildid()
+
+The initialization of the last byte does not make much sense because it
+can later be overwritten. Fortunately, it seems that all called
+functions behave correctly:
+
+  -  kallsyms_expand_symbol() explicitly adds the trailing '\0'
+     at the end of the function.
+
+  - All *__address_lookup() functions either use the safe strscpy()
+    or they do not touch the buffer at all.
+
+Document the reason for clearing the first byte. And remove the useless
+initialization of the last byte.
+
 Signed-off-by: Petr Mladek <pmladek@suse.com>
 ---
- include/linux/ftrace.h | 6 ++++--
- kernel/kallsyms.c      | 4 ++--
- kernel/trace/ftrace.c  | 5 ++++-
- 3 files changed, 10 insertions(+), 5 deletions(-)
+ kernel/kallsyms.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 7ded7df6e9b5..a003cf1b32d0 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -87,11 +87,13 @@ struct ftrace_hash;
- 	defined(CONFIG_DYNAMIC_FTRACE)
- int
- ftrace_mod_address_lookup(unsigned long addr, unsigned long *size,
--		   unsigned long *off, char **modname, char *sym);
-+			  unsigned long *off, char **modname,
-+			  const unsigned char **modbuildid, char *sym);
- #else
- static inline int
- ftrace_mod_address_lookup(unsigned long addr, unsigned long *size,
--		   unsigned long *off, char **modname, char *sym)
-+			  unsigned long *off, char **modname,
-+			  const unsigned char **modbuildid, char *sym)
- {
- 	return 0;
- }
 diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index efb12b077220..71868a76e9a1 100644
+index 71868a76e9a1..ff7017337535 100644
 --- a/kernel/kallsyms.c
 +++ b/kernel/kallsyms.c
-@@ -378,8 +378,8 @@ static int kallsyms_lookup_buildid(unsigned long addr,
- 					 modname, modbuildid, namebuf);
- 
- 	if (!ret)
--		ret = ftrace_mod_address_lookup(addr, symbolsize,
--						offset, modname, namebuf);
-+		ret = ftrace_mod_address_lookup(addr, symbolsize, offset,
-+						modname, modbuildid, namebuf);
- 
- 	return ret;
- }
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 42bd2ba68a82..11f5096fb60c 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -7678,7 +7678,8 @@ ftrace_func_address_lookup(struct ftrace_mod_map *mod_map,
- 
- int
- ftrace_mod_address_lookup(unsigned long addr, unsigned long *size,
--		   unsigned long *off, char **modname, char *sym)
-+			  unsigned long *off, char **modname,
-+			  const unsigned char **modbuildid, char *sym)
+@@ -352,7 +352,12 @@ static int kallsyms_lookup_buildid(unsigned long addr,
  {
- 	struct ftrace_mod_map *mod_map;
- 	int ret = 0;
-@@ -7690,6 +7691,8 @@ ftrace_mod_address_lookup(unsigned long addr, unsigned long *size,
- 		if (ret) {
- 			if (modname)
- 				*modname = mod_map->mod->name;
-+			if (modbuildid)
-+				*modbuildid = module_buildid(mod_map->mod);
- 			break;
- 		}
- 	}
+ 	int ret;
+ 
+-	namebuf[KSYM_NAME_LEN - 1] = 0;
++	/*
++	 * kallsyms_lookus() returns pointer to namebuf on success and
++	 * NULL on error. But some callers ignore the return value.
++	 * Instead they expect @namebuf filled either with valid
++	 * or empty string.
++	 */
+ 	namebuf[0] = 0;
+ 
+ 	if (is_ksym_addr(addr)) {
 -- 
 2.51.1
 
