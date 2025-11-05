@@ -1,139 +1,143 @@
-Return-Path: <bpf+bounces-73609-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFB5CC34DF4
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 10:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CDEBC34DB8
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 10:32:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 151E5462682
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 09:28:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDDA1565906
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 09:25:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79A4A2FE050;
-	Wed,  5 Nov 2025 09:28:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC53E3081AE;
+	Wed,  5 Nov 2025 09:23:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VuA5fI3s"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GfeE9/kX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3A322FB09B
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 09:28:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8637B306D5F
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 09:23:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762334898; cv=none; b=J27X8hWkZm7ry/7vtzuHSS7kH9seuoF9+EQEfEWBufbUwBpc3xwOrZhWJNvwZuMlGTlC3cmoJ8D0x7o4+xW4ksMSScpwDq0H0jGj9nFQsoQrw7Sxtr8qo5lDJJAuFwObJuKQUbt7WCdGVJjRFWqITb0d9HjtucGap/ssJNTOr3M=
+	t=1762334616; cv=none; b=OVaMDsVKzCotsoz9v4qz2V7ag+oEPq3AI2lpTyafRJMyTcAViSM2ttsBLwSVi5nkTX5BR0GvrqTUqFjm6cPATipFxnupIEGlshQWvku+A7Y83GVsHGNa9EoLkmLKOnJMKpJVFJo5NfQcDnpuEUrvHrWTtWmJIRYCk1jj9koVO58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762334898; c=relaxed/simple;
-	bh=12W3zv8l9J3aM2JFk9SAfq1e+HJwyMuYUPKFjnnH4mA=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=T7tr54FebN3brm6txltXwAoufOH8qWLRbO/U1NY/zxAbn5npiQjMDmTJmTBAGEsDLnl4zya5KZW3zmN+vcp1DQ3Xe2FHjQ/futzsqJZGwKrGo1W/gGosP3CIUu0O8jBJ93JpiqR4eUI9CV8rkBmGp8WajxtGL3ONHtToqDGG2Ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VuA5fI3s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C151C4CEF8;
-	Wed,  5 Nov 2025 09:28:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762334897;
-	bh=12W3zv8l9J3aM2JFk9SAfq1e+HJwyMuYUPKFjnnH4mA=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=VuA5fI3sKU2QIgHSOyHsOFeZtw3yJRZF2k/icor8qaqdJG7ChPtYMKUvmvQz/JwRQ
-	 issCXS/7JrjdkLUqbzuDi+5BwTuq7HTssoJglFxGTPQl3llUJj3j1KnT6qUC3unyNj
-	 iEZLykeu/4vNsevT1dWOySGPt0ExLGQJJBqzPgptN0ogiCJSim+2FeCnQaeaxZzEdN
-	 WdSJtkzoAH7qSpeXgfym5FntclBRsYFpbEee53DkOZFNBBHQcXm9riQHzoPip4cAt8
-	 ayXp6MPrC/aKPS9fytTFkcPMccmuhdr2jJac04stiTEsFnmRhI3cFG/h0LHn2gk356
-	 1i9s/x9XiRFxg==
-Content-Type: multipart/mixed; boundary="===============6219963211263621609=="
+	s=arc-20240116; t=1762334616; c=relaxed/simple;
+	bh=dcKB7CX25PmMaTj2V3g5P2YwGEo6FoROXoFTpwh5csY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pqEAh+AFsRBUu26Rdyim+mCK7M7QfTzFwT3iPBSoUY/524LzCm5wChRyr181Dh6OmKJUrnKrSFel0fkRnpcFs8TzowOsozRkzWC4ByuGRz448jg8g68XxMa5mwzOyUOwDDwpi/apLBxfdhXQidIUY6CCJxOqO1npTpeLrZw/vB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GfeE9/kX; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-b6d2f5c0e8eso1248295966b.3
+        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 01:23:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762334613; x=1762939413; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7wkhE9nY2zSrDr9FoF1jfwlabHo4LZNOFrvJVzM0P7U=;
+        b=GfeE9/kXwiAk1DFcggN5/Y+6JeqMvfMFfWOZelQcI6n3NGCqJtaU1VaPXyJ1H4S32s
+         RZXqoSVlhJGCWudapvuTBbeFKxh0Np29tBNBwIktyoBnUeJ2tbFufceZAsjXlc5DTJHu
+         EJRyRzcJY3ef0iiBnfDXHhducGKT8JsgSByivIvV9/QVOxYi6Anz7/ojQrs0DKHu7v1S
+         4QKmgJDLOSKYxSD8YfCqiU91gCBgxslSUL9wwsks47ktaaig0wYA2pbg+PsNUKzL0vx1
+         BIKbh+mvRkTa/saWd5MtXWM+B72QI4uixjEuqxiC2nyddtESg5iVoGhz7bQ303YbwmuZ
+         Jarg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762334613; x=1762939413;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7wkhE9nY2zSrDr9FoF1jfwlabHo4LZNOFrvJVzM0P7U=;
+        b=UVpPo5oKqJtko7q2xLfnHyzzw9d4Xgoq/yKNru5GGD2EvvL4bJU3O6HqQHr4tfJ69f
+         gvM1LD3dDijQ6dWzmnu8+aO8bWd2n6QZkFhRxbV2bU+4GNwpOxm3u2sWF6agnhVSLTND
+         wotUatkV1734t5dHPpTmf6rnnX8Wl4huST5epxpZ07PUJfx2VukYV9upwucaFuEbZUCw
+         0803D/tNuA0V+6iMAwHpLaXPLC648Z05+uxyMMIsJW80jrN0lzUWSwlf50g32/dU+xQU
+         n0C/G4N57bqBTGSB0SBEbxHxYtSRn1cRMcUDw5Rg+oZ7tD7Osfm4741rZF0QWbxNNPlI
+         k3Zw==
+X-Gm-Message-State: AOJu0YxWUI91yRrsxbmkTH9+loev4920tkJ0MuCelsS/LJOSn4YSx/G0
+	ZTUPI4xSve9K5O2eHsFeMqxpaJQHRW7VmWbR7HijIKsVldNMP+TRhD/q
+X-Gm-Gg: ASbGncty6o2kBwj8hj0lyB/QfpGM7AeCfl4dZWYdXdVEYoxsHL3tsuM9Ee4e2uJykLI
+	zRsE8cdzKVWAdwazdQZtD+gkNhx7Zaj7eGBDoFv30A72HcHVv566PDZBD+i0GK03cUzAj2eaogi
+	nS11GINyDLoHFDT9jnOeNbVLHNZtWIzwn7QVTdApsiEjNGNCDa9zsFI8DUISqqh0Ie2NNMiZT7q
+	1dGSbqzCStWSp22ja2CuMtWX7awIvIpGXS6fPBkFNyYXL6wi4/wLhAMBBXj/V+PUaiHp2o43brS
+	iJGRCcBtFOpvJ81Fnk+OtQCHaNcDLT5ZXUAFBfptu0eRLps05yjTrypsfoPYETSm8voWLafWWHL
+	Y34K+uvnx8bC8FJJejHxqsVYWyDPfJ80XJG7GfI3tu2s2EXDmJmbBzBEMOiAD/3R1EszkHnPT09
+	ffaWJj2YeE4gWxSfaAz9OG
+X-Google-Smtp-Source: AGHT+IH9EfSvRyjMaJNVeguMpciEUCbVbUgb2gTsjayRV7QDqR51OeU3/f83zU2dbXeQiuI9UipWGg==
+X-Received: by 2002:a17:906:c114:b0:b71:df18:9fba with SMTP id a640c23a62f3a-b72652976fcmr223141466b.15.1762334612705;
+        Wed, 05 Nov 2025 01:23:32 -0800 (PST)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b723fe37cb9sm436157966b.61.2025.11.05.01.23.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Nov 2025 01:23:30 -0800 (PST)
+Date: Wed, 5 Nov 2025 09:29:44 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: bot+bpf-ci@kernel.org
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	aspsk@isovalent.com, daniel@iogearbox.net, eddyz87@gmail.com,
+	qmo@kernel.org, yonghong.song@linux.dev, martin.lau@kernel.org,
+	clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCH v11 bpf-next 02/12] bpftool: Recognize insn_array map type
+Message-ID: <aQsZCO6jzuThU7+n@mail.gmail.com>
+References: <20251105090410.1250500-3-a.s.protopopov@gmail.com>
+ <b1df429383fefe439fb19c0ebf0f9f665e37ffbc164c837a307fe2911a520a18@mail.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <9f61c0c4ea50e3a25c4433dd5d5702fb1543931e905e689b9a99dd549f3d8aba@mail.kernel.org>
-In-Reply-To: <20251105090410.1250500-5-a.s.protopopov@gmail.com>
-References: <20251105090410.1250500-5-a.s.protopopov@gmail.com>
-Subject: Re: [PATCH v11 bpf-next 04/12] selftests/bpf: add selftests for new insn_array map
-From: bot+bpf-ci@kernel.org
-To: a.s.protopopov@gmail.com,bpf@vger.kernel.org,ast@kernel.org,andrii@kernel.org,aspsk@isovalent.com,daniel@iogearbox.net,eddyz87@gmail.com,qmo@kernel.org,yonghong.song@linux.dev
-Cc: a.s.protopopov@gmail.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed,  5 Nov 2025 09:28:17 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b1df429383fefe439fb19c0ebf0f9f665e37ffbc164c837a307fe2911a520a18@mail.kernel.org>
 
---===============6219963211263621609==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+On 25/11/05 09:21AM, bot+bpf-ci@kernel.org wrote:
+> > diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+> > index 252e4c538..1af3305ea 100644
+> > --- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
+> > +++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+> > @@ -55,7 +55,8 @@ MAP COMMANDS
+> >  |     | **devmap** | **devmap_hash** | **sockmap** | **cpumap** | **xskmap** | **sockhash**
+> >  |     | **cgroup_storage** | **reuseport_sockarray** | **percpu_cgroup_storage**
+> >  |     | **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf** | **inode_storage**
+> > -|     | **task_storage** | **bloom_filter** | **user_ringbuf** | **cgrp_storage** | **arena** }
+> > +|     | **task_storage** | **bloom_filter** | **user_ringbuf** | **cgrp_storage** | **arena**
+> > +|     | **insn_array** }
+> >
+> >  DESCRIPTION
+> >  ===========
+> > diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+> > index c9de44a45..7ebf7dbcf 100644
+> > --- a/tools/bpf/bpftool/map.c
+> > +++ b/tools/bpf/bpftool/map.c
+> > @@ -1477,7 +1477,8 @@ static int do_help(int argc, char **argv)
+> >  		"                 devmap | devmap_hash | sockmap | cpumap | xskmap | sockhash |\n"
+> >  		"                 cgroup_storage | reuseport_sockarray | percpu_cgroup_storage |\n"
+> >  		"                 queue | stack | sk_storage | struct_ops | ringbuf | inode_storage |\n"
+> > -		"                 task_storage | bloom_filter | user_ringbuf | cgrp_storage | arena }\n"
+> > +		"                 task_storage | bloom_filter | user_ringbuf | cgrp_storage | arena |\n"
+> > +		"                 insn_array }\n"
+> >  		"       " HELP_SPEC_OPTIONS " |\n"
+> >  		"                    {-f|--bpffs} | {-n|--nomount} }\n"
+> >  		"",
+> 
+> The commit message says "Teach bpftool to recognize instruction array
+> map type" but this change only updates documentation strings. Shouldn't
+> libbpf's map_type_name[] array in tools/lib/bpf/libbpf.c also be
+> updated? Without that, when bpftool displays an insn_array map through
+> show_map_header_json() or the plain output function, it will call
+> libbpf_bpf_map_type_str() which returns NULL for BPF_MAP_TYPE_INSN_ARRAY,
+> causing bpftool to fall back to printing "type 39" instead of "insn_array".
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c b/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
-> new file mode 100644
-> index 000000000..96ee9c998
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
+It's done in an adjacent commit.
 
-[ ... ]
+> 
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+> 
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19096860051
 
-> +/* Map can be used only by one BPF program */
-> +static void check_no_map_reuse(void)
-> +{
-> +	struct bpf_insn insns[] = {
-> +		BPF_MOV64_IMM(BPF_REG_0, 0),
-> +		BPF_EXIT_INSN(),
-> +	};
-> +	int prog_fd = -1, map_fd, extra_fd = -1;
-> +	struct bpf_insn_array_value val = {};
-> +	int i;
-> +
-> +	map_fd = map_create(BPF_MAP_TYPE_INSN_ARRAY, ARRAY_SIZE(insns));
-> +	if (!ASSERT_GE(map_fd, 0, "map_create"))
-> +		return;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(insns); i++) {
-> +		val.orig_off = i;
-> +		if (!ASSERT_EQ(bpf_map_update_elem(map_fd, &i, &val, 0), 0, "bpf_map_update_elem"))
-> +			goto cleanup;
-> +	}
-> +
-> +	if (!ASSERT_EQ(bpf_map_freeze(map_fd), 0, "bpf_map_freeze"))
-> +		goto cleanup;
-> +
-> +	prog_fd = prog_load(insns, ARRAY_SIZE(insns), &map_fd, 1);
-> +	if (!ASSERT_GE(prog_fd, 0, "bpf(BPF_PROG_LOAD)"))
-> +		goto cleanup;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(insns); i++) {
-> +		if (!ASSERT_EQ(bpf_map_lookup_elem(map_fd, &i, &val), 0, "bpf_map_lookup_elem"))
-> +			goto cleanup;
-> +
-> +		ASSERT_EQ(val.xlated_off, i, "val should be equal i");
-> +	}
-> +
-> +	extra_fd = prog_load(insns, ARRAY_SIZE(insns), &map_fd, 1);
-> +	if (!ASSERT_EQ(extra_fd, -EBUSY, "program should have been rejected (extra_fd != -EBUSY)"))
-> +		goto cleanup;
-> +
-> +	/* correctness: check that prog is still loadable without fd_array */
-> +	extra_fd = prog_load(insns, ARRAY_SIZE(insns), NULL, 0);
-> +	if (!ASSERT_GE(prog_fd, 0, "bpf(BPF_PROG_LOAD): expected no error"))
->                          ^^^^^^^
-
-In check_no_map_reuse(), is it correct to check prog_fd here? The
-function just loaded a program into extra_fd, so this check appears
-to be validating the wrong variable.
-
-> +		goto cleanup;
-> +
-> +cleanup:
-> +	close(extra_fd);
-> +	close(prog_fd);
-> +	close(map_fd);
-> +}
-
-[ ... ]
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19096860051
-
---===============6219963211263621609==--
 
