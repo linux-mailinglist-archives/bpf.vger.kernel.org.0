@@ -1,332 +1,230 @@
-Return-Path: <bpf+bounces-73571-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73574-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96CF3C340EE
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 07:30:35 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DB3EC34124
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 07:42:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54D2846537C
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 06:29:41 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id F0B75349911
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 06:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 913832BF005;
-	Wed,  5 Nov 2025 06:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64D9D2C21FB;
+	Wed,  5 Nov 2025 06:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="chod+co8"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="mmZJ2Aqh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazhn15012043.outbound.protection.outlook.com [52.102.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28C2B2C028C
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 06:29:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762324177; cv=none; b=ajF0WqzQnkqJG5s8VA89Wf2TuUomT1X4DsKCaiRDgxGcw3mnCWDtKmvnfeWSd30Dk3+DIs7OSC6YYvXbdAhFs9YplYFwRS8Rir6cEoXIWvjeMhHMg7f6hL+LRyJIKBrOH9H1auQHONrxjMGo+Gv785nlu7Ggue51DJ5COdkdvLE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762324177; c=relaxed/simple;
-	bh=BNnYf31qeFUhA4gTuYtYUuncHt0FJSUistjqrgPQl24=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fdULoKX4Y9n9sOcnIqNoyRViXHLsA1IB8TqvpwHCRRK04XzLSZD9IsXbha02yTByW3XNbxgxtNUJtiMgg2pA/6EOWoOIkCLUVX7D4PGOpLkAnLzO9h0elPVySN2OZ78hb6zWfNWr4INVh1Kc3u+koPzm40r4//vlnFpx31sfl8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=chod+co8; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-64088c6b309so7023793a12.0
-        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 22:29:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762324173; x=1762928973; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ty+Gfi/cn+z/Huu8IbahjJOMLzmcD72aj1Rl/wh61ok=;
-        b=chod+co8XCvxXbIqQ4pcmUnP9Mcy1VFxAz//YAkIaDvtgPvZyxBADuPGnfKSR7bKnq
-         DKpW9QCKi2dssKZW5+S8fhTwI1K1zMHVG0OABZTQoG6L5zDThjFVfztArgtS7eICmj1a
-         tca3w+JkvfrANfngJcThzx1iOZmwIneFdRVdmVLoq8exYKTWjacewhWMJbIn6qMK5DO/
-         qhCRHWPIAFYTXkt2EMLxHCEtxxpGzF/QiSQaQ+j4Xkku0X6h7Jn/9zLUjASug+ltT1hy
-         Dgs4S87sM3EwddUzTWPLf1TV7a+S33Tlbyjz6T7m83VEmSr1h0ibEmGOMgA2FE0M/Ju6
-         O5oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762324173; x=1762928973;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ty+Gfi/cn+z/Huu8IbahjJOMLzmcD72aj1Rl/wh61ok=;
-        b=p/9HgKN+RODYcQ/HBq/b7w9Rm4jubNYR5GSOkNlr/XLPDYwti6mLYU7E0REvP8PoXI
-         Ek+mV74eBRtILZu+9Q//d5Wq4nbxs4cU/1CLOudbnn9o49WAePP61+w5MtSjnDKrYlyC
-         FMg8xpLvxqwA5uLKg81twzK7Hosid2vFx71fRMlSdAZXuOQZqbHY/tapP9IcwTKObZBu
-         Ez+QNSTjrjyQJd5VzROyQ4vlHTdAy2HV2s2NrOY5psPIismP1XfzeMNqmZCxKiqJMdS/
-         qLmR105fKUK6yJA7E/ujkFmplFuhsXFTcoGgU8cQWdQl+mkO6CEoZRN85ZQ9ouls700w
-         Ch0w==
-X-Gm-Message-State: AOJu0YynoEmrUmypiwhbGLV+5TTN00vKsp33l5pHiwnmJuf5kEpRPKJX
-	qc1uB2pFhBUmoOr4UHPKKa/UYyoyvjSf4lPwU/wmnA5B3rjcdgptxUbUVuJVxg==
-X-Gm-Gg: ASbGncubOlseB+2KGL0r4NZTJxBtdU6ffy5vrcY3UhVI6rHiFP0CpuflNaTbLAbxyFI
-	clQ6FJc5XHjO8JxdR18xGr16jf/7JLqBBkkbW0QnnDShJtb2Rz8xvsoKhwrhuPjZzrfRYwBzSN8
-	b7x8sVQpPJyVV9VKzRQFFf3GIp2LNwqeuoIj7RIfFcMknyHrred9L+k2Tyx8vwJ1ENAs1qNtgWN
-	nHz3Rljbj8Ilm3nMb/GdTDPMDhhDyD44tZrVtzmnwq6LYAF/N/8t8dmdhwJS5QW+psxD8hbXOUy
-	YNKLvNndjENQ/cHFuzR3D5E7I5FGAW7P72BJeZzaGSKRq2OrzdFJXqC6+dMhvq8fjYGxOGv5Cpu
-	itnSWdFsmKvur5CZzCaScdAqSWnuRttHiM/ZOMfv7H6lo8iZjy2zL9azy4DsE9r458dtrKObO9z
-	L/ujqPRh0xMA==
-X-Google-Smtp-Source: AGHT+IEBn2JutnXu+Icc8WgjEBXhYxdF2I//20hnWmeK2Fp0/TubS1RJQXLY7i/2evavy9RUBhQqMA==
-X-Received: by 2002:a17:906:730f:b0:b70:b7f8:868f with SMTP id a640c23a62f3a-b726543871cmr175689266b.27.1762324173253;
-        Tue, 04 Nov 2025 22:29:33 -0800 (PST)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b725d86b9b1sm249976966b.25.2025.11.04.22.29.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Nov 2025 22:29:32 -0800 (PST)
-Date: Wed, 5 Nov 2025 06:35:47 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH v10 bpf-next 02/11] selftests/bpf: add selftests for new
- insn_array map
-Message-ID: <aQrwQz30+gxWjQ7C@mail.gmail.com>
-References: <20251102205722.3266908-1-a.s.protopopov@gmail.com>
- <20251102205722.3266908-3-a.s.protopopov@gmail.com>
- <CAADnVQ+soo36eMJxcnLhbU+jTz053vd7NU-Dm46U+EJnWAzuTA@mail.gmail.com>
- <aQoFFPSIDLW0YDK1@mail.gmail.com>
- <CAADnVQLvAFt3VUo0vfp8cx-xd7dY0Mx08R5-ezmw3p6e7WnxFA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 553592C0F97;
+	Wed,  5 Nov 2025 06:42:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.102.128.43
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762324945; cv=fail; b=Ddqc1LwvZSzMg8oQeS9jQqlzpNekS4wI3WFIY1YPxgLOZHWBh8xufxhUsvlk0S8YA8X2UAZWQ+CTie5uCusK1Jf3cGnN92iTs5UJ7EqXmS4Nbxx1Cf83M+PHeJB7VgS2e9qCHw2X+75e0K+WD5UVXSmHYJ0ZdclGteMTwZbPoxk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762324945; c=relaxed/simple;
+	bh=DcPbnsFYJXiiIM2yUCtWl3Kzi7ZBRKrHNUO4g2GGo8s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=rUL/ojoCSCmE/huVw2Kl3jOUWZKUoPj6MHk8WL4tD1U+tEZ5l3OuH7Pj2mQ4IgWN5XSzax2bh2T7gdJE+78Nyk4/LGJ/gqovqk2KlKDXvylKpXWNqPorwaqcR0Kgl0VhXXNFPZnyCeMtPHfzjuN5Q6dqpW+ewGemUDqRypgCeoU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=mmZJ2Aqh; arc=fail smtp.client-ip=52.102.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=RgUqongUnsDUJVckLYdaQMSWh0V5dQsb7fsw3XKg1PDdirsav44pKZ56c22zbA8I7vaLkHvLKKoaMQCCvOhj+CGds7gdbkOH92jE/U0EKwfpd1GvpTKnpoFCSZhEmFFlOiJ1s8tPexJDolPvxeKsplVKORl7BQl5p0mx1hpPJPJuJyjcv1ICS1DO+tjbXEbcfLJ15TPRgq5TMtvWBBeEisS2cNtps9trzrJCM7xibN3ivVPbiGN4kyRFtSxXz74AAjzCfNxMQTMvWSwEJNlZ3BykrGEmQ76pOChRi5I4hCGHjnWL27PNTUIeab4LWYtv3mHOVeapsubaa1efbajMKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G6+9KPfEJ5h+OEIBame0A/5A0RWvWSnYqew22Xfcc/w=;
+ b=B8HX07GtNjm3toJVmMCVJBVCwLYDp0RLACaaItsJSs3MuNIWuO7JFk/m2BonPBAGMlktZBHJikP06xNb+kSdy7cSMuVoMWdASfxGebUANRcLuWpZIoSeoCI8eT6ZycuxUc84UVx7G9voSFgrxqp+YmWRw4N+KvW95i9tDd7QecadLSZSJTl9wKQ3KxmwGxIDO4S56XpOiLt6gE4U1w2k0l0uLE2xwGDJdY3kvwrYXsSIyu4f90zMTx6WiNGFJ/l8oKNacUMoTHl3UJpN7VRke7wEXYG3psQN8yZvbSynwiRS9VdesEMxUYhAa0xrArDVI30V/mqzn6v0hjQNpoOkcQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.21.195) smtp.rcpttodomain=kernel.org smtp.mailfrom=ti.com; dmarc=pass
+ (p=quarantine sp=none pct=100) action=none header.from=ti.com; dkim=none
+ (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G6+9KPfEJ5h+OEIBame0A/5A0RWvWSnYqew22Xfcc/w=;
+ b=mmZJ2AqhkC75CdWKwaXBR+vJIXZWJFUxHmbsYUQVdnCvK43bViOSztfm0iAL5PK6QMxtttizoVGBkIbdp4dGzRWX5e2Raia2P8odwZULq04Mku6vJRvMwyVtlqUAItCLueYLnIvVgfsbPTTpyvalhuTw3oRDzUDadiXeFgct54k=
+Received: from BN0PR03CA0015.namprd03.prod.outlook.com (2603:10b6:408:e6::20)
+ by CY5PR10MB5939.namprd10.prod.outlook.com (2603:10b6:930:e::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9298.7; Wed, 5 Nov
+ 2025 06:42:20 +0000
+Received: from BN2PEPF000044AB.namprd04.prod.outlook.com
+ (2603:10b6:408:e6:cafe::52) by BN0PR03CA0015.outlook.office365.com
+ (2603:10b6:408:e6::20) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9298.8 via Frontend Transport; Wed, 5
+ Nov 2025 06:42:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.195)
+ smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
+ action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.21.195 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.195; helo=flwvzet201.ext.ti.com; pr=C
+Received: from flwvzet201.ext.ti.com (198.47.21.195) by
+ BN2PEPF000044AB.mail.protection.outlook.com (10.167.243.106) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9298.6 via Frontend Transport; Wed, 5 Nov 2025 06:42:17 +0000
+Received: from DFLE202.ent.ti.com (10.64.6.60) by flwvzet201.ext.ti.com
+ (10.248.192.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 5 Nov
+ 2025 00:42:14 -0600
+Received: from DFLE204.ent.ti.com (10.64.6.62) by DFLE202.ent.ti.com
+ (10.64.6.60) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 5 Nov
+ 2025 00:42:14 -0600
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE204.ent.ti.com
+ (10.64.6.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
+ Transport; Wed, 5 Nov 2025 00:42:14 -0600
+Received: from [10.24.69.13] (meghana-pc.dhcp.ti.com [10.24.69.13] (may be forged))
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5A56g7JC3271680;
+	Wed, 5 Nov 2025 00:42:07 -0600
+Message-ID: <7fcb1434-2ff1-408c-934b-9b87cee926c8@ti.com>
+Date: Wed, 5 Nov 2025 12:12:06 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXTERNAL] Re: [PATCH net-next v4 2/6] net: ti: icssg-prueth: Add
+ XSK pool helpers
+To: Jakub Kicinski <kuba@kernel.org>
+CC: Paolo Abeni <pabeni@redhat.com>, <horms@kernel.org>,
+	<namcao@linutronix.de>, <vadim.fedorenko@linux.dev>,
+	<jacob.e.keller@intel.com>, <christian.koenig@amd.com>,
+	<sumit.semwal@linaro.org>, <sdf@fomichev.me>, <john.fastabend@gmail.com>,
+	<hawk@kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
+	<edumazet@google.com>, <davem@davemloft.net>, <andrew+netdev@lunn.ch>,
+	<linaro-mm-sig@lists.linaro.org>, <dri-devel@lists.freedesktop.org>,
+	<linux-media@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <srk@ti.com>, Vignesh Raghavendra
+	<vigneshr@ti.com>, Roger Quadros <rogerq@kernel.org>, <danishanwar@ti.com>
+References: <20251023093927.1878411-1-m-malladi@ti.com>
+ <20251023093927.1878411-3-m-malladi@ti.com>
+ <05efdc9a-8704-476e-8179-1a9fc0ada749@redhat.com>
+ <ba1b48dc-b544-4c4b-be8a-d39b104cda21@ti.com>
+ <c792f4da-3385-4c14-a625-e31b09675c32@ti.com>
+ <20251104154828.7aa20642@kernel.org>
+Content-Language: en-US
+From: Meghana Malladi <m-malladi@ti.com>
+In-Reply-To: <20251104154828.7aa20642@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLvAFt3VUo0vfp8cx-xd7dY0Mx08R5-ezmw3p6e7WnxFA@mail.gmail.com>
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN2PEPF000044AB:EE_|CY5PR10MB5939:EE_
+X-MS-Office365-Filtering-Correlation-Id: 001f4920-7315-47c4-f26e-08de1c3676d3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|36860700013|7416014|376014|1800799024|34020700016|12100799066;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?a1RsTGZSQ0tUc211MUdJWGhNWUkyNFc2ekp5MG05MEcvQlBRSFUvdHR1VnFi?=
+ =?utf-8?B?Yzk3NFJHM2NpTVpiVDJmOVdpM1RKaGZ2K29YZUlhdVlWdElDK2FpVEQ0N1pw?=
+ =?utf-8?B?Q0tseGdsalF4VDlBS2VUSFdjR2wyUjcwWkZKOHBMbDNVYzdwUHFGdE1mY2hS?=
+ =?utf-8?B?UThmbytvK3FqRys4RE9NVmFVSDNVZWdubDUvZlJFYVZvWFcxTFVsbHducS9l?=
+ =?utf-8?B?NTV3ZXp6RXpGemQ1Z08rODQ2VFNzMU1kMmtTNTlEYmljZDBHTDFBMXYxaDk0?=
+ =?utf-8?B?MzBjM1laaXhPVmtJeVBjbkhWZEh0YUFWWGNGcUxoUlpybFRiaEJRdklIN1Fr?=
+ =?utf-8?B?L1ROUUJjUGVHb3E1QmRxb1phRy9yYzJtRUxtaER3T2NDTFpocW1mMENHdHh2?=
+ =?utf-8?B?QmtxaXcxY2dkRHM1QWNGZTJKSUdLSjluMXYyZEhnTlZXNWZVMFQ1QlR2NlZJ?=
+ =?utf-8?B?bnptZjc1ZE5ZUjZFaGYwanpvNENIVFhTUTBlMnY4bkx4OTdpeDQrdE5vVjNF?=
+ =?utf-8?B?cUEvSWw5T0VDTGcxMU1XWEhQd1EwMDJRbzFaRk1sallLWGtQbXIxcHVXUXRC?=
+ =?utf-8?B?WnAwTitOWStpT2NlZjMxVUtKYWhTbjRkY0Z2ZG5DdmZmc2hweVgxSzFUeVNj?=
+ =?utf-8?B?a2lCc1l1UDlFTUJ6MmxiU0JSYjdQdWFSNHNaY292eDBQOWpLcEk2Vzh5dm91?=
+ =?utf-8?B?R2hPeVVEZTBCUUt2MTJWSmkzb2p6djIzRlBsU2VEQWk0LzJYNC9od3p1anpC?=
+ =?utf-8?B?NCtyM0Y0bGFQZEEwVldyMkJsZjlHZ0JLN2JjQ0s4L0pPQ0NmZ1JpY2w4T1NI?=
+ =?utf-8?B?ZFNyWndoMUlzRW1zN1c2VEpRazZvVzlQY3RUYnY2VmVneXM3TUljampiNHJD?=
+ =?utf-8?B?OXoxeFdJSTBhbzhpZFc4YmlHWEllVnZGVmtUVE1QRkpIUGpkOTg5b1NXcTh5?=
+ =?utf-8?B?MjNpQ0FTSDlnZFl5aXdUa2Z4R050NzlMeDd4eDV6UkQrUDJNRW53OElSck84?=
+ =?utf-8?B?Ry9YUEVRVEkwZnhCd1c4YkdZd0lVYWF2YVY4SVBoZXJFazk0bDJUTmRXYW9o?=
+ =?utf-8?B?ZlZkQ0pHSmJXaGtEQXkzWjlDS2hNTzBmU0FEb2tUQTBuTnhxaXBQK0JWVEpK?=
+ =?utf-8?B?UzdYQk1POFRiaDNOeUJONFBzNTU2d0tVQzNOeFNSRGZmU3lNL0FqQm5uSG4v?=
+ =?utf-8?B?di9hYlpJWlFtVWZoczhML1h6eDlYMEkzbTB3bkhuVWlSY2cvd1psN0ZaWDlv?=
+ =?utf-8?B?cHozSmJMeDFJY1M4d3FucU56dm9QSk1xSG4wV0dINE52enF2b0lybEIyQ1lQ?=
+ =?utf-8?B?aGVjbHJXLzE3L0hXRGVHRGM4ZzJ2WFB2ajVvUUxHTXVobXpsOTJpUlVqa0RV?=
+ =?utf-8?B?aVdTaFpHNVlnbHJnZmpzMEoxVGIzVzZ5WEJmaDBKcDN2R2E1VnFLQlBRaW9h?=
+ =?utf-8?B?Z3JoVG9rS3lXRDAzVGNWU3FpSkVvakJ0c2pUaDRucDliWGhkWjBiL1c4Ui9a?=
+ =?utf-8?B?ZFdROWQ3WWw5bkZZbDNza1lWNk9OSzhzdy8ycmxlc1pYRWR2d2poc0U2Vk01?=
+ =?utf-8?B?M3AvemZmQUJwU0tYTlJhMmZ4NzRUMHRTbnluRHZlY0FORmd1RUl1Z09YVTZP?=
+ =?utf-8?B?aXBrUWE3dVFiaVpyb0lzbDZ1VURjb1FKMVZYcjNBQmh0Q084aU9XY2h1MUdz?=
+ =?utf-8?B?WWMwSXVySGxoNGFWSkEzVU9wNDZMOXo4S3Q3R0loTkRKdndacEZ5cVlQUGVK?=
+ =?utf-8?B?dmpYVjQ3TVF2VXg1dTZId0pEaVoxMEYxclNnN1Ywc2UwVy9Cd2Zock43OG16?=
+ =?utf-8?B?RmcxdWtUVXEzRDJTcHBEMU5iWUlpR1J1UDdjUDJINGdRbTZzTElBQ0tBdlA1?=
+ =?utf-8?B?b2k4Y29yRGNQdnJQWEF4a2lyM2dpd215SVE5VGgwK0s3cWJBbHJxclkyTDFa?=
+ =?utf-8?B?SWhheUdBUDh0MTV6WWFWeVA2UFl5TlhRdXRsN0xYaW85djFPM1lyalg0Y2pN?=
+ =?utf-8?B?aGVCWnJlVXVSN0dOeTlqbndUeEFjVFcwQi94Smp2U1BpSTlsRGZqT3R0b1Az?=
+ =?utf-8?B?S0psUlh0dHZiM1FJYTZuZnNaN01HSnZyWnk5bnRJNlNEZm1ZcjVXanlLMEhr?=
+ =?utf-8?Q?l0t4=3D?=
+X-Forefront-Antispam-Report:
+	CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(7416014)(376014)(1800799024)(34020700016)(12100799066);DIR:OUT;SFP:1501;
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2025 06:42:17.9367
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 001f4920-7315-47c4-f26e-08de1c3676d3
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.195];Helo=[flwvzet201.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN2PEPF000044AB.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB5939
 
-On 25/11/04 08:49AM, Alexei Starovoitov wrote:
-> On Tue, Nov 4, 2025 at 5:46 AM Anton Protopopov
-> <a.s.protopopov@gmail.com> wrote:
-> >
-> > On 25/11/03 06:10PM, Alexei Starovoitov wrote:
-> > > On Sun, Nov 2, 2025 at 12:52 PM Anton Protopopov
-> > > <a.s.protopopov@gmail.com> wrote:
-> > > >
-> > > > Add the following selftests for new insn_array map:
-> > > >
-> > > >   * Incorrect instruction indexes are rejected
-> > > >   * Two programs can't use the same map
-> > > >   * BPF progs can't operate the map
-> > > >   * no changes to code => map is the same
-> > > >   * expected changes when instructions are added
-> > > >   * expected changes when instructions are deleted
-> > > >   * expected changes when multiple functions are present
-> > > >
-> > > > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> > > > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> > > > ---
-> > > >  .../selftests/bpf/prog_tests/bpf_insn_array.c | 409 ++++++++++++++++++
-> > > >  1 file changed, 409 insertions(+)
-> > > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c b/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
-> > > > new file mode 100644
-> > > > index 000000000000..96ee9c9984f1
-> > > > --- /dev/null
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
-> > > > @@ -0,0 +1,409 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > +
-> > > > +#include <bpf/bpf.h>
-> > > > +#include <test_progs.h>
-> > > > +
-> > > > +#ifdef __x86_64__
-> > > > +static int map_create(__u32 map_type, __u32 max_entries)
-> > > > +{
-> > > > +       const char *map_name = "insn_array";
-> > > > +       __u32 key_size = 4;
-> > > > +       __u32 value_size = sizeof(struct bpf_insn_array_value);
-> > > > +
-> > > > +       return bpf_map_create(map_type, map_name, key_size, value_size, max_entries, NULL);
-> > > > +}
-> > > > +
-> > > > +static int prog_load(struct bpf_insn *insns, __u32 insn_cnt, int *fd_array, __u32 fd_array_cnt)
-> > > > +{
-> > > > +       LIBBPF_OPTS(bpf_prog_load_opts, opts);
-> > > > +
-> > > > +       opts.fd_array = fd_array;
-> > > > +       opts.fd_array_cnt = fd_array_cnt;
-> > > > +
-> > > > +       return bpf_prog_load(BPF_PROG_TYPE_XDP, NULL, "GPL", insns, insn_cnt, &opts);
-> > > > +}
-> > > > +
-> > > > +static void __check_success(struct bpf_insn *insns, __u32 insn_cnt, __u32 *map_in, __u32 *map_out)
-> > > > +{
-> > > > +       struct bpf_insn_array_value val = {};
-> > > > +       int prog_fd = -1, map_fd, i;
-> > > > +
-> > > > +       map_fd = map_create(BPF_MAP_TYPE_INSN_ARRAY, insn_cnt);
-> > > > +       if (!ASSERT_GE(map_fd, 0, "map_create"))
-> > > > +               return;
-> > > > +
-> > > > +       for (i = 0; i < insn_cnt; i++) {
-> > > > +               val.orig_off = map_in[i];
-> > > > +               if (!ASSERT_EQ(bpf_map_update_elem(map_fd, &i, &val, 0), 0, "bpf_map_update_elem"))
-> > > > +                       goto cleanup;
-> > > > +       }
-> > > > +
-> > > > +       if (!ASSERT_EQ(bpf_map_freeze(map_fd), 0, "bpf_map_freeze"))
-> > > > +               goto cleanup;
-> > > > +
-> > > > +       prog_fd = prog_load(insns, insn_cnt, &map_fd, 1);
-> > > > +       if (!ASSERT_GE(prog_fd, 0, "bpf(BPF_PROG_LOAD)"))
-> > > > +               goto cleanup;
-> > > > +
-> > > > +       for (i = 0; i < insn_cnt; i++) {
-> > > > +               char buf[64];
-> > > > +
-> > > > +               if (!ASSERT_EQ(bpf_map_lookup_elem(map_fd, &i, &val), 0, "bpf_map_lookup_elem"))
-> > > > +                       goto cleanup;
-> > > > +
-> > > > +               snprintf(buf, sizeof(buf), "val.xlated_off should be equal map_out[%d]", i);
-> > > > +               ASSERT_EQ(val.xlated_off, map_out[i], buf);
-> > > > +       }
-> > > > +
-> > > > +cleanup:
-> > > > +       close(prog_fd);
-> > > > +       close(map_fd);
-> > > > +}
-> > > > +
-> > > > +/*
-> > > > + * Load a program, which will not be anyhow mangled by the verifier.  Add an
-> > > > + * insn_array map pointing to every instruction. Check that it hasn't changed
-> > > > + * after the program load.
-> > > > + */
-> > > > +static void check_one_to_one_mapping(void)
-> > > > +{
-> > > > +       struct bpf_insn insns[] = {
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 4),
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 3),
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 2),
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 1),
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 0),
-> > > > +               BPF_EXIT_INSN(),
-> > > > +       };
-> > > > +       __u32 map_in[] = {0, 1, 2, 3, 4, 5};
-> > > > +       __u32 map_out[] = {0, 1, 2, 3, 4, 5};
-> > > > +
-> > > > +       __check_success(insns, ARRAY_SIZE(insns), map_in, map_out);
-> > > > +}
-> > > > +
-> > > > +/*
-> > > > + * Load a program with two patches (get jiffies, for simplicity). Add an
-> > > > + * insn_array map pointing to every instruction. Check how it was changed
-> > > > + * after the program load.
-> > > > + */
-> > > > +static void check_simple(void)
-> > > > +{
-> > > > +       struct bpf_insn insns[] = {
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 2),
-> > > > +               BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_jiffies64),
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 1),
-> > > > +               BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_jiffies64),
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 0),
-> > > > +               BPF_EXIT_INSN(),
-> > > > +       };
-> > > > +       __u32 map_in[] = {0, 1, 2, 3, 4, 5};
-> > > > +       __u32 map_out[] = {0, 1, 4, 5, 8, 9};
-> > > > +
-> > > > +       __check_success(insns, ARRAY_SIZE(insns), map_in, map_out);
-> > > > +}
-> > > > +
-> > > > +/*
-> > > > + * Verifier can delete code in two cases: nops & dead code. From insn
-> > > > + * array's point of view, the two cases are the same, so test using
-> > > > + * the simplest method: by loading some nops
-> > > > + */
-> > > > +static void check_deletions(void)
-> > > > +{
-> > > > +       struct bpf_insn insns[] = {
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 2),
-> > > > +               BPF_JMP_IMM(BPF_JA, 0, 0, 0), /* nop */
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 1),
-> > > > +               BPF_JMP_IMM(BPF_JA, 0, 0, 0), /* nop */
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 0),
-> > > > +               BPF_EXIT_INSN(),
-> > > > +       };
-> > > > +       __u32 map_in[] = {0, 1, 2, 3, 4, 5};
-> > > > +       __u32 map_out[] = {0, -1, 1, -1, 2, 3};
-> > > > +
-> > > > +       __check_success(insns, ARRAY_SIZE(insns), map_in, map_out);
-> > > > +}
-> > > > +
-> > > > +/*
-> > > > + * Same test as check_deletions, but also add code which adds instructions
-> > > > + */
-> > > > +static void check_deletions_with_functions(void)
-> > > > +{
-> > > > +       struct bpf_insn insns[] = {
-> > > > +               BPF_JMP_IMM(BPF_JA, 0, 0, 0), /* nop */
-> > > > +               BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_jiffies64),
-> > > > +               BPF_JMP_IMM(BPF_JA, 0, 0, 0), /* nop */
-> > > > +               BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 1, 0, 2),
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 1),
-> > > > +               BPF_EXIT_INSN(),
-> > > > +               BPF_JMP_IMM(BPF_JA, 0, 0, 0), /* nop */
-> > > > +               BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_jiffies64),
-> > > > +               BPF_JMP_IMM(BPF_JA, 0, 0, 0), /* nop */
-> > > > +               BPF_MOV64_IMM(BPF_REG_0, 2),
-> > > > +               BPF_EXIT_INSN(),
-> > > > +       };
-> > > > +       __u32 map_in[] =  { 0, 1,  2, 3, 4, 5, /* func */  6, 7,  8, 9, 10};
-> > > > +       __u32 map_out[] = {-1, 0, -1, 3, 4, 5, /* func */ -1, 6, -1, 9, 10};
-> > > > +
-> > > > +       __check_success(insns, ARRAY_SIZE(insns), map_in, map_out);
-> > > > +}
-> > >
-> > > I was thinking of taking the first 5 patches, but this one fails:
-> > > ./test_progs -t bpf_insn_array
-> > > ...
-> > > #19/4    bpf_insn_array/deletions-with-functions:FAIL
-> > > #19/5    bpf_insn_array/blindness:OK
-> > > #19/6    bpf_insn_array/incorrect-index:OK
-> > > #19/7    bpf_insn_array/load-unfrozen-map:OK
-> > > #19/8    bpf_insn_array/no-map-reuse:OK
-> > > #19/9    bpf_insn_array/bpf-side-ops:OK
-> > > #19      bpf_insn_array:FAIL
-> > >
-> > > I don't see what you're changing later in the patches
-> > > to make it pass, but the failure highlights the issue with
-> > > bisectability. Pls take a look.
-> >
-> > Thanks! I've found the chunk, it was
-> >
-> > @@ -21664,2 +21705,4 @@ static int jit_subprogs(struct bpf_verifier_env *env)
-> >                 func[i]->aux->arena = prog->aux->arena;
-> > +               func[i]->aux->used_maps = env->used_maps;
-> > +               func[i]->aux->used_map_cnt = env->used_map_cnt;
-> >                 num_exentries = 0;
+Hi Jakub,
+
+On 11/5/25 05:18, Jakub Kicinski wrote:
+> On Tue, 4 Nov 2025 14:23:24 +0530 Meghana Malladi wrote:
+>>> I tried honoring Jakub's comment to avoid freeing the rx memory wherever
+>>> necessary.
+>>>
+>>> "In case of icssg driver, freeing the rx memory is necessary as the
+>>> rx descriptor memory is owned by the cppi dma controller and can be
+>>> mapped to a single memory model (pages/xdp buffers) at a given time.
+>>> In order to remap it, the memory needs to be freed and reallocated."
+>>
+>> Just to make sure we are on the same page, does the above explanation
+>> make sense to you or do you want me to make any changes in this series
+>> for v5 ?
 > 
-> argh. No need for this copy. Pls use prog->aux->main_prog_aux instead.
-
-It might be called before the used_maps are copied into aux...
-
-> > > This one also fails:
-> > > #170/3   libbpf_str/bpf_map_type_str:FAIL
-> > > #170     libbpf_str:FAIL
-> > >
-> > > I was thinking of hacking it as an extra patch
-> > > (without full support in patch 8), but gave up when I saw
-> > > deletions-with-functions failing.
-> > >
-> > > Maybe also split the main libbpf patch into prep patch
-> > > with basic introduction of insn_array ?
-> >
-> > I've split a commit that teaches libbpf about insn_array + moved
-> > the bpftool commit lower. All the tests pass now.
-> >
-> > > Or keep it as-is, if respin comes soon.
-> >
-> > I can send the first chunk separately today,
-> > or the whole thing a few days later.
+> No. Based on your reply below you seem to understand what is being
+> asked, so you're expected to do it.
 > 
-> Up to you. Smaller chunks are easier to review.
+
+Yes, this series currently implements whatever Paolo mentioned below.
+
+>>>> I think you should:
+>>>> - stop the H/W from processing incoming packets,
+>>>> - spool all the pending packets
+>>>> - attach/detach the xsk_pool
+>>>> - refill the ring
+>>>> - re-enable the H/W
+>>>
+>>> Current implementation follows the same sequence:
+>>> 1. Does a channel teardown -> stop incoming traffic
+>>> 2. free the rx descriptors from free queue and completion queue -> spool
+>>> all pending packets/descriptors
+>>> 3. attach/detach the xsk pool
+>>> 4. allocate rx descriptors and fill the freeq after mapping them to the
+>>> correct memory buffers -> refill the ring
+>>> 5. restart the NAPI - re-enable the H/W to recv the traffic
+>>>
+
+Sorry for the confusion. Whatever I mentioned below might have given an 
+impression that there was additional required work; that wasn’t my 
+intention. What I described is only a possible design enhancement and 
+not mandatory. The current patch series is complete and does not have 
+gaps in its design.
+
+>>> I am still working on skipping 2 and 4 steps but this will be a long
+>>> shot. Need to make sure all corner cases are getting covered. If this
+>>> approach looks doable without causing any regressions I might post it as
+>>> a followup patch later in the future.
+
+
+
 
