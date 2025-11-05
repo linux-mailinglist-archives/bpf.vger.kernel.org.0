@@ -1,155 +1,152 @@
-Return-Path: <bpf+bounces-73663-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73665-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04151C369AB
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 17:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BE89C36960
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 17:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 894711A26271
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 15:59:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B31241A27516
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 15:59:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 506283314B8;
-	Wed,  5 Nov 2025 15:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F05D83203AA;
+	Wed,  5 Nov 2025 15:59:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gmCH92jc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CI4K1ONh"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 346CD335064
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 15:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A14B5314D29
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 15:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762358287; cv=none; b=CS2BA6DJ6OuZUZSECPgYzkm6/dqgwkkImTx59SwhACD1dkzZr/aN1Uen9llpY+fZwkzpMnPnYyqjutWOYa9od8ZzGglvlmbPaMs3ki0xCC6WmlgULI6XFNSuuUFrlr/RGs5kwh2LOucMbaHR+a/OekoHg679LrgQ5Gw+H4bm01s=
+	t=1762358355; cv=none; b=HzzQJRTnZLr8t2u6ddSe3M1DsGb2yz+Hw0CxiyqxV0lo+437XO8xu1O2EyXr1hppTun5VB5pRaRZSOB+SG20I/lH7W+edmrLpr91WBe5sgwYA0mp2X3DaXBK1Hl+f1jy2pUy24EcfAs1qU7KAvvq1Mi8Q6sLZyhDQstLvrq4Y7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762358287; c=relaxed/simple;
-	bh=Id3U/QMgYsA7txZIIsqU3kVa+6SpJ3CR97XEhVc/l74=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jgniYII0/V/9dNqcOBy7XAAN8WRxZn5jSmJfXzJXipZ9SJAr9O5ccu0DbLJPRIWAPGsG4u1yvgRLHFelRdBXJiGNDCngv6zEgGJeeXZjq+IPIELxHw4M2NBL55HI6/EJ0kETDeQZ/b+j7CYFxGC5sbkjlZ0xi+v6MXPwVC/DKHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gmCH92jc; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1762358282;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Lu8ps8Aict3vmkNspVvPaOoX1BVGPxhk2L02diSQBEE=;
-	b=gmCH92jc7YIZ2hSKpN4Ar1ZYWMNInSZT0iGfcAB4Je9c1fafshdOjSeW3RYDzgWbgJuUoV
-	xyF5sdbS/j7Zckkq5qptJGyB4dSt2hP/1/R4qib0ElGge2cMKNkOPCCLKqctatcyN32TLq
-	bZ2R8aSbdZKJD8+/IxnRIJd10cNgqv0=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-343-R8eNirXANVeN_TZH54-hEw-1; Wed,
- 05 Nov 2025 10:57:58 -0500
-X-MC-Unique: R8eNirXANVeN_TZH54-hEw-1
-X-Mimecast-MFC-AGG-ID: R8eNirXANVeN_TZH54-hEw_1762358277
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C9B0C1954B00;
-	Wed,  5 Nov 2025 15:57:56 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.36])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 71C703000198;
-	Wed,  5 Nov 2025 15:57:50 +0000 (UTC)
-Date: Wed, 5 Nov 2025 23:57:45 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-	Caleb Sander Mateos <csander@purestorage.com>,
-	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH 0/5] io_uring: add IORING_OP_BPF for extending io_uring
-Message-ID: <aQtz-dw7t7jtqALc@fedora>
-References: <20251104162123.1086035-1-ming.lei@redhat.com>
- <891f4413-9556-4f0d-87e2-6b452b08a83f@gmail.com>
+	s=arc-20240116; t=1762358355; c=relaxed/simple;
+	bh=8cAvxL7f8vxFNNXMRtQ+xRH2cP84bfSHHJ50QaLYT8M=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ULmKzf8DYZVELbfv+1jiyWOyfqCgeIAEglhYsCb3Tja5NkQjj8s/UlW6Ffrl3YLsgbcnrEcIuWkchIfa85MIEKjOp7p/XXwJjqXbJ2C30d+5mnAfRCBii4V0g1iJD70486fBFCLRBEwdz1xHJC4l6kdoelLVUWNFMBZEbPCylF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CI4K1ONh; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-4283be7df63so3799785f8f.1
+        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 07:59:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762358350; x=1762963150; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RnZZmzXAYgb48h9KqOSoxBMd314ql7cvy8+1ipCqbBg=;
+        b=CI4K1ONhMlYCkMPlJ4RklxhO7MjS2jwK7K4kmGzps1lsS4n/vTDphJ7K8+/mLcfsMV
+         FgQ3RCGkaXGrpjZ7+L2Z0sjH1jbHoEIvQIFUcnDOWpLrB+f3/7LfaMJkWcNiY2ZlR3QZ
+         5NWFNTaJyOEDP0TvTCwFnOqtKwgww1FKKEe+V0ZkLItZA772b23DpMFxHhe89e9nnpjV
+         EhZmVVV5zo3MT1AMzK4IG+frFDI9R0+9LHwmkAoPw0UdbiqawhRCDEzoNTLyIvG0B4BW
+         kSmqESuQjiJe53r3DHwCxWn1zUV/P6awP3TKmpq+zpJQWxTBfvy3+lHGQeCgGYhSxJph
+         pmig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762358350; x=1762963150;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RnZZmzXAYgb48h9KqOSoxBMd314ql7cvy8+1ipCqbBg=;
+        b=pmMMO53Y/EbJ8Y4t031Nuugv1LS5W/73B0AXuP4Ye5KVPLrBkVYEc0Ur5Iu/+kF9sK
+         NIMV2d1tQehBWdp2Mj5ScAr+Lkt+neWd4IFFnF4sAIcWL00yoeycdqzMVPOnWZq5IGvi
+         6SGc1zZisbux/E8+qlb+WkoKBNG4xGIZJIHRV6GJNurBz0Nu4SaBv0dEVWLKsdxlVitn
+         liFDRHnjBbfQQbKvfvojFFifxWc1c0i/2eQ/hrD+kuvzaWPiFsHIzvv7CGjvhLc6qpBA
+         743tVricfLaurWeIdEHqx8OQ3jqAcAbrEX8NQYS/FT3hbqwuJbG+mOd2LykfmFN2fP35
+         Yp5Q==
+X-Gm-Message-State: AOJu0YznqkShxJi3h0jiEmvNubSdefjQI2xVmPOhOr5BMc5cA/JVH5Y0
+	6/z4pZqtV/I2TGPTuwc2JF6w4rYbLnQEZO8yNbjfMz/gX8B2YTszy8t4
+X-Gm-Gg: ASbGncuLGwN7A/0Y1pMUM9O9i97C3kdgNFlmFkJSIVtLJqX2Aq+g7FxpdjSGGkeUfF9
+	H+AxQUUihldQAw7jBBcph/WTHkVJlP7O/5tuIFqoaM5UwRd7GMKwm3ZFlqxgejBNO6pIBztgiL5
+	BGwUlsgJZCvakPOSBdnrIZdWYI6CXb6rCB49OEABICPFX1J4r9zvZzoGAq2hfKawcthVUby8/oY
+	tDsgK3KSs6lo3156V/jvQlJ4T1aw2J32gbHbQONTXWj6ceSaae5E1wWNOYbbtZrLTR+X6+rRNeP
+	AoegrmxgKs9oq4QfpB8KnbIkgJY9FtYe7BgcYggGDRuQSR8PKdQRkH2ZJCKbz2hzqzbrcBWNM6E
+	SHOK+TxUujzNrMMV78VlxNFzVe4DxWTYDF5Vjzv4Wr+JDlFcaUzKoUxVX71jx
+X-Google-Smtp-Source: AGHT+IF9oxaM5p7P9QrsCR36zkZZg8mnmBDXWWoCUp6O3kLJ34BvPF38sNgdOQcdTTmh6kP9ixR8kw==
+X-Received: by 2002:a05:6000:4112:b0:429:8c3b:c4e2 with SMTP id ffacd0b85a97d-429e32c6c6dmr1887231f8f.7.1762358349302;
+        Wed, 05 Nov 2025 07:59:09 -0800 (PST)
+Received: from localhost ([2620:10d:c092:500::7:64d7])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429dc1fbd1csm11342387f8f.38.2025.11.05.07.59.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Nov 2025 07:59:08 -0800 (PST)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Subject: [PATCH RFC v2 0/5] bpf: avoid locks in bpf_timer and bpf_wq
+Date: Wed, 05 Nov 2025 15:59:02 +0000
+Message-Id: <20251105-timer_nolock-v2-0-32698db08bfa@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <891f4413-9556-4f0d-87e2-6b452b08a83f@gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAEZ0C2kC/1WNywrCMBREf6XctZEkTX2tBMEPcCtFkvTWXjSNJ
+ CUopf9uiCuXZ4Y5M0PEQBjhUM0QMFEkP2aQqwrsoMc7Muoyg+SyEVzu2EQOw230T28fTDXbvjH
+ 7TmuLkCevgD29i+4Kl/MJ2hwOFCcfPuUiiVL9bLX4tyXBODN8ozQqXpveHB1Oem29g3ZZli/5q
+ u9ZrAAAAA==
+X-Change-ID: 20251028-timer_nolock-457f5b9daace
+To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
+ memxor@gmail.com, eddyz87@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1762358348; l=1797;
+ i=yatsenko@meta.com; s=20251031; h=from:subject:message-id;
+ bh=8cAvxL7f8vxFNNXMRtQ+xRH2cP84bfSHHJ50QaLYT8M=;
+ b=+t7GsTrAOHM/jO7NHKluwygARA5r9snpHhBt1VtvoGXz5cepX8Hh+5g5BTORk9bgYKazAuO/E
+ Ceo8nw9xgkcDPxMXK9YV+7Jm1gEeQvkzK4faO84Ehe6H0cO24NZcmfu
+X-Developer-Key: i=yatsenko@meta.com; a=ed25519;
+ pk=TFoLStOoH/++W4HJHRgNr8zj8vPFB1W+/QECPcQygzo=
 
-On Wed, Nov 05, 2025 at 12:47:58PM +0000, Pavel Begunkov wrote:
-> On 11/4/25 16:21, Ming Lei wrote:
-> > Hello,
-> > 
-> > Add IORING_OP_BPF for extending io_uring operations, follows typical cases:
-> 
-> BPF requests were tried long time ago and it wasn't great. Performance
+This series reworks implementation of BPF timer and workqueue APIs.
+The goal is to make both timers and wq non-blocking, enabling their use
+in NMI context.
+Today this code relies on a bpf_spin_lock embedded in the map element to
+serialize:
+ * init of the async object,
+ * setting/changing the callback and bpf_prog
+ * starting/cancelling the timer/work
+ * tearing down when the map element is deleted or the map’s user ref is
+ dropped
 
-Care to share the link so I can learn from the lesson? Maybe things have
-changed now...
+The series apply design similar to existing bpf_task_work
+approach [1]: RCU and refcount to maintain lifetime guarantees and state
+machine to handle data races.
 
-> for short BPF programs is not great because of io_uring request handling
-> overhead. And flexibility was severely lacking, so even simple use cases
+This RFC doesn’t yet fully add NMI support for timers
+and workqueue helpers and kfuncs, but it takes the first step by
+removing the spinlock from bpf_async_cb struct.
 
-What is the overhead? In this patch, OP's prep() and issue() are defined in
-bpf prog, but in typical use case, the code size is pretty small, and bpf
-prog code is supposed to run in fast path.
+---
+1: https://lore.kernel.org/bpf/175864081800.1466288.3242104888617580131.git-patchwork-notify@kernel.org/
 
-> were looking pretty ugly, internally, and for BPF writers as well.
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 
-I am not sure what `simple use cases` you are talking about.
+---
+Changes in v2:
+- Move refcnt initialization and put (from cancel_and_free())
+from patch 5 into the patch 4, so that patch 4 has more clear and full
+implementation and use of refcnt
+- Link to v1: https://lore.kernel.org/r/20251031-timer_nolock-v1-0-b064ae403bfb@meta.com
 
-> 
-> I'm not so sure about your criteria, but my requirement was to at least
-> being able to reuse all io_uring IO handling, i.e. submitting requests,
-> and to wait/process completions, otherwise a lot of opportunities are
-> wasted. My approach from a few months back [1] controlling requests from
+---
+Mykyta Yatsenko (5):
+      bpf: refactor bpf_async_cb callback update
+      bpf: refactor bpf_async_cb prog swap
+      bpf: factor out timer deletion helper
+      bpf: add refcnt into struct bpf_async_cb
+      bpf: remove lock from bpf_async_cb
 
-Please read the patchset.
+ kernel/bpf/helpers.c | 309 +++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 189 insertions(+), 120 deletions(-)
+---
+base-commit: 23f852daa4bab4d579110e034e4d513f7d490846
+change-id: 20251028-timer_nolock-457f5b9daace
 
-This patchset defines new IORING_BPF_OP code, which's ->prep(), ->issue(), ...,
-are hooked with struct_ops prog, so all io_uring core code is used, just the
-exact IORING_BPF_OP behavior is defined by struct_ops prog.
-
-> the outside was looking much better. At least it covered a bunch of needs
-> without extra changes. I was just wiring up io_uring changes I wanted
-> to make BPF writer lifes easier. Let me resend the bpf series with it.
-> 
-> It makes me wonder if they are complementary, but I'm not sure what
-
-I think the two are orthogonal in function, and they can co-exist.
-
-> your use cases are and what capabilities it might need.
-
-The main use cases are described in cover letter and the 3rd patch, please
-find the details there.
-
-So far the main case is to access the registered (kernel)buffer
-from issue() callback of struct_ops, because the buffer doesn't have
-userspace mapping. The last two patches adds support to provide two
-buffers(fixed, plain) for IORING_BPF_OP, and in future vectored buffer
-will be added too, so IORING_BPF_OP can handle buffer flexibly, such as:
-
-- use exported compress kfunc to compress data from kernel buffer
-into another buffer or inplace, then the following linked SQE can be submitted
-to write the built compressed data into storage
-
-- in raid use case, calculate IO data parity from kernel buffer, and store
-the parity data to another plain user buffer, then the following linked SQE
-can be submitted to write the built parity data to storage
-
-Even for userspace buffer, the BPF_OP can support similar handling for saving
-one extra io_uring_enter() syscall.
-
-> 
-> [1] https://lore.kernel.org/io-uring/cover.1749214572.git.asml.silence@gmail.com/
-
-I looked at your patches, in which SQE is generated in bpf prog(kernel),
-and it can't be used in my case.
-
-
-Thanks,
-Ming
+Best regards,
+-- 
+Mykyta Yatsenko <yatsenko@meta.com>
 
 
