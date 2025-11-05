@@ -1,187 +1,106 @@
-Return-Path: <bpf+bounces-73583-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73584-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31157C34727
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 09:23:53 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 652D8C34748
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 09:25:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id ECFEB4F277F
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 08:23:21 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C843B34B2E0
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 08:25:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4717E2D6E5C;
-	Wed,  5 Nov 2025 08:23:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="0rmCMxde"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BCAE2D640A;
+	Wed,  5 Nov 2025 08:25:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B8B253B52
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 08:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C94BC29BD82
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 08:25:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762330985; cv=none; b=rPpC+nhCRFkcWUANKj65i/croaUu7f8NzFl6HY2cr833/tXh+cMUhDPWkMxBqHcNN5vvE8IJIfbzjuRLd/ezszR2L22niqtAv/1Hal8s1dA+RAxQQi/h7I9HrONLThQlI656z7S1M7ZfaAeI59YjdN/i+zL3qMIqvmFPzBANR9s=
+	t=1762331130; cv=none; b=SU7Lh3VnaMTwoztyU/7OkJCbX7rKlU6VEHXRV0c0ZZClbzQANxONmgs0bGW6kYsFRkgMTODtnmWQj8homE0ZtNQ7NsKkIxIC3OpgwhbGaEJEQ5fg4Xu9eZyMVG4H1tiwwzNzQN+gR3nY1uK0lwRREiO0/cCotJFTdEVUqy0Xih4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762330985; c=relaxed/simple;
-	bh=1UFFxHLngwWlfSIzQHo3B1yiskwv5UVLi/aHpHM5Dss=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=KkOFdiPNyOIBfgWI3xxOzb6hJPnDHYCSb+/4kHmIr+OwtvOpJfSTsSQnUfbD+vm3m1PklrXJfR0KNNkCXtkq53urF46wnWNgXEpoQ+fIu/SWmjY5vk0M8jD41U7iZJhhNfyxibDwMnvi7YrxTz4Mp7yWP0US/fNGj5P39imwgGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=0rmCMxde; arc=none smtp.client-ip=185.246.84.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 953281A18B1;
-	Wed,  5 Nov 2025 08:23:02 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 6AA9060693;
-	Wed,  5 Nov 2025 08:23:02 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0DCCA10B51983;
-	Wed,  5 Nov 2025 09:22:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1762330981; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=74ihADtTOc2tE2Hs2544UzjSxwkF3iKFwI1Cs+oyQf8=;
-	b=0rmCMxdeXj2jNn4Uo7ghVfAyZEat//FyRC+TGEL8oZLvuPgDGR0ALHKl38fc/K0zIhx0EH
-	tLOWNi3/TVADbf6xirizl4HuD8leOPvmRykDN10vmy7cME9FKAgjbY2+QrTkqMneiHkAoP
-	XaetKuZcGUKvvurCWOuS5oUHslIrMixuo2Q5/527u+PtxIk8WhSEC9EOIiUjEBPIWBvO68
-	oIsMQX2ZVHY+NPwYOsjVv/qbPCG1ZtoBhH3XLTssbainupZDEJwZQfA/BsRb8iMICgEmu9
-	cAE7buuf2kAXB7Al6tXojrExflx2Y9xK4jCEEpj1J7GgucXHbpsasLE8Th6dxw==
-From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Wed, 05 Nov 2025 09:22:49 +0100
-Subject: [PATCH bpf-next 2/2] selftests/bpf: use start_server_str rather
- than start_reuseport_server in tc_tunnel
+	s=arc-20240116; t=1762331130; c=relaxed/simple;
+	bh=GOE67wpi41jUoSc0MQ4KRzrdZxuBfrvSx9dUaIOHt3E=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=AbPVVkEq7bKvnXgEhhWJQSwSSgm9cvIlb0Nq2ilVg0A+8sKTNO904i6wZGUwi3czZ4OPed3tP2XqPCklSYA5hmjkb63HCbVRd2AzvEVjlArk5CsmiTYUyzBaABuVjnTqipsCJWlHiwDdA9TLsg5GWwsFDHRP8uAjWBbMm8FZvyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-43322c01a48so6190785ab.0
+        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 00:25:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762331128; x=1762935928;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=prkYdn9mJny4BtkC26UzdFHiJbc5mYZSsL43kGm1Grs=;
+        b=SkT8jLzTfqSTaDdGHIs5GmzCmGuRi2i7/7VBy1U4dg8EY/g/JaY2kdc4PzLdvu9LWI
+         6dUCE1UDR1yYlUVUVEaeSLDrEMFnJi9I/F2btm8+Qph6YDRdoKdP83W+l4ZRNlhPR4Ym
+         KvdG1EhODOJhcuAGlPeA0DZyu/td5gTvkxZ5K2UVENV+n/nYFop2iP2pRb3OpRGXxAud
+         7fqNcs1kGOYIRd3jdOgQYlEDZ/WlrBSt1NKDS2UASngS1JTS36INnhYfaGzJOrRAkHc9
+         ye7NGfoFMUu1FrpqiNcBZOQuKm7m04yDouDPzVAlTZdwGeXzr+Vljun1dRGqwjgUT9OA
+         5WQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUFLxt/sdmlDE/foERFpmXfgtLi3BUzpq3H2lOBNapJqRko05+lSquNpPGpENE/KLHJ89s=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxf4XM00sfhqhYAkT7M8PWWmYlr2fRnyPau0i5Rd83G0PYZidnJ
+	3VuDzDg0jZ81kRSSHRY8CfX3AXakd9yluLSdlVjZIJ22FWflnyMxMQFfsI4P1x/udZqtgJZYi6J
+	HHX2j1VjyUXjOKglxjb8BOQxJu0eU9+Vgw12cNY7UzIx1UvoN50+6sir9Mcw=
+X-Google-Smtp-Source: AGHT+IFruNvAMdI/9edBg5y6Se/k77CL/Wgl5vEv9Zw7+7i6D+gB9mL5R5d/B3PTQ4SDd6dJ6HO6W/xGW1llPsREeaZ/LVN76Uci
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20251105-start-server-soreuseaddr-v1-2-1bbd9c1f8d65@bootlin.com>
-References: <20251105-start-server-soreuseaddr-v1-0-1bbd9c1f8d65@bootlin.com>
-In-Reply-To: <20251105-start-server-soreuseaddr-v1-0-1bbd9c1f8d65@bootlin.com>
-To: Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, 
- Bastien Curutchet <bastien.curutchet@bootlin.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
+X-Received: by 2002:a05:6e02:1d9c:b0:433:2920:a0f6 with SMTP id
+ e9e14a558f8ab-433401a3776mr35071045ab.11.1762331127985; Wed, 05 Nov 2025
+ 00:25:27 -0800 (PST)
+Date: Wed, 05 Nov 2025 00:25:27 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <690b09f7.050a0220.baf87.000c.GAE@google.com>
+Subject: [syzbot] Monthly bpf report (Nov 2025)
+From: syzbot <syzbot+list9b8f8e5b91eb4f6d281c@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Now that start_server_str enforces SO_REUSEADDR, there's no need to keep
-using start_reusport_server in tc_tunnel, especially since it only uses
-one server at a time.
+Hello bpf maintainers/developers,
 
-Replace start_reuseport_server with start_server_str in tc_tunnel test.
+This is a 31-day syzbot report for the bpf subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/bpf
 
-Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+During the period, 3 new issues were detected and 1 were fixed.
+In total, 21 issues are still open and 312 have already been fixed.
+
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 10888   Yes   KASAN: invalid-access Write in do_bad_area
+                  https://syzkaller.appspot.com/bug?extid=997752115a851cb0cf36
+<2> 97      No    INFO: task hung in dev_map_free (3)
+                  https://syzkaller.appspot.com/bug?extid=9bb2e1829da8582dcffa
+<3> 21      No    KCSAN: data-race in __htab_map_lookup_elem / bpf_lru_pop_free
+                  https://syzkaller.appspot.com/bug?extid=ad4661d6ca888ce7fe11
+<4> 12      Yes   INFO: rcu detected stall in sys_close (7)
+                  https://syzkaller.appspot.com/bug?extid=393022c13d02e1f680e3
+<5> 5       Yes   INFO: rcu detected stall in vm_area_alloc (6)
+                  https://syzkaller.appspot.com/bug?extid=2ddfdc64a6b68a324ae2
+<6> 2       Yes   possible deadlock in down_trylock (3)
+                  https://syzkaller.appspot.com/bug?extid=c3740bc819eb55460ec3
+
 ---
- .../selftests/bpf/prog_tests/test_tc_tunnel.c      | 27 ++++++++++++----------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tc_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tc_tunnel.c
-index deea90aaefad..4d29256d8714 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_tc_tunnel.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tc_tunnel.c
-@@ -69,7 +69,7 @@ struct subtest_cfg {
- 	int client_egress_prog_fd;
- 	int server_ingress_prog_fd;
- 	char extra_decap_mod_args[TUNNEL_ARGS_MAX_LEN];
--	int *server_fd;
-+	int server_fd;
- };
- 
- struct connection {
-@@ -135,16 +135,18 @@ static int run_server(struct subtest_cfg *cfg)
- {
- 	int family = cfg->ipproto == 6 ? AF_INET6 : AF_INET;
- 	struct nstoken *nstoken;
-+	struct network_helper_opts opts = {
-+		.timeout_ms = TIMEOUT_MS
-+	};
- 
- 	nstoken = open_netns(SERVER_NS);
- 	if (!ASSERT_OK_PTR(nstoken, "open server ns"))
- 		return -1;
- 
--	cfg->server_fd = start_reuseport_server(family, SOCK_STREAM,
--						cfg->server_addr, TEST_PORT,
--						TIMEOUT_MS, 1);
-+	cfg->server_fd = start_server_str(family, SOCK_STREAM, cfg->server_addr,
-+					  TEST_PORT, &opts);
- 	close_netns(nstoken);
--	if (!ASSERT_OK_PTR(cfg->server_fd, "start server"))
-+	if (!ASSERT_OK_FD(cfg->server_fd, "start server"))
- 		return -1;
- 
- 	return 0;
-@@ -152,7 +154,7 @@ static int run_server(struct subtest_cfg *cfg)
- 
- static void stop_server(struct subtest_cfg *cfg)
- {
--	free_fds(cfg->server_fd, 1);
-+	close(cfg->server_fd);
- }
- 
- static int check_server_rx_data(struct subtest_cfg *cfg,
-@@ -188,7 +190,7 @@ static struct connection *connect_client_to_server(struct subtest_cfg *cfg)
- 		return NULL;
- 	}
- 
--	server_fd = accept(*cfg->server_fd, NULL, NULL);
-+	server_fd = accept(cfg->server_fd, NULL, NULL);
- 	if (server_fd < 0) {
- 		close(client_fd);
- 		free(conn);
-@@ -394,29 +396,30 @@ static void run_test(struct subtest_cfg *cfg)
- 
- 	/* Basic communication must work */
- 	if (!ASSERT_OK(send_and_test_data(cfg, true), "connect without any encap"))
--		goto fail;
-+		goto fail_close_server;
- 
- 	/* Attach encapsulation program to client */
- 	if (!ASSERT_OK(configure_encapsulation(cfg), "configure encapsulation"))
--		goto fail;
-+		goto fail_close_server;
- 
- 	/* If supported, insert kernel decap module, connection must succeed */
- 	if (!cfg->expect_kern_decap_failure) {
- 		if (!ASSERT_OK(configure_kernel_decapsulation(cfg),
- 					"configure kernel decapsulation"))
--			goto fail;
-+			goto fail_close_server;
- 		if (!ASSERT_OK(send_and_test_data(cfg, true),
- 			       "connect with encap prog and kern decap"))
--			goto fail;
-+			goto fail_close_server;
- 	}
- 
- 	/* Replace kernel decapsulation with BPF decapsulation, test must pass */
- 	if (!ASSERT_OK(configure_ebpf_decapsulation(cfg), "configure ebpf decapsulation"))
--		goto fail;
-+		goto fail_close_server;
- 	ASSERT_OK(send_and_test_data(cfg, true), "connect with encap and decap progs");
- 
- fail:
- 	stop_server(cfg);
-+fail_close_server:
- 	close_netns(nstoken);
- }
- 
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
--- 
-2.51.2
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
+You may send multiple commands in a single email message.
 
