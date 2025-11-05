@@ -1,296 +1,197 @@
-Return-Path: <bpf+bounces-73577-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73578-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F910C34310
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 08:16:04 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE2D2C34341
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 08:20:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 917103B912B
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 07:14:35 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 211F134C1A2
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 07:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707C22D0C8A;
-	Wed,  5 Nov 2025 07:14:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F272D0C61;
+	Wed,  5 Nov 2025 07:19:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G8dt1cMj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HaJ6aJ+o"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5FE42D2389
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 07:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AAC12C0F97
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 07:19:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762326854; cv=none; b=rIbLEhIZ1YHaCXsgmPYhYcWAe4Q+Acps7f0gUEoLTJ+K4l/a90RYBfptf5GwL1oIUSJ5bhbkEvNFxziV7k0r/60UdIecFlHbhzBNBlvQLnzjrkbsdn8TBbG7QkidUn5d0hli6T1dWVZnzV2u2bH/cC0w/gWLLEuttXyUn3OWr/U=
+	t=1762327196; cv=none; b=ivmTcYgAf/GNBvYWZWpc7nYrfaEqUjtJ257nzH0R/Gm7EYAzl+6udEfLGoo9M0Rm4AHXY9vNdE2+AAA0PmtCrlEEl3qFgb8wu63/R4sFK9DkQfaMLzgKCtFS1tHTnlGKGS+ApNMT80gmXof88Me/bg0Oq7hAFqVvc3yWyV37sUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762326854; c=relaxed/simple;
-	bh=7lWv1Lbyp1KL6LhHGzX+dIbc3TmF9sT/YjApLREzoDc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tMRt9gV1RyMhaQF8HLlbt8xX5Pxpi68UQmWo4pRwSxCgfCbEX2NTgY4953+7WGUYdI9i8drZqhQgzG0Uq3L/IFec9fdQYI1y0tRUV+4uqoIOKBWAeiy4q1BIXLDtNt6819pjdGBav2cGqwpYQ4U3Y9onhlBncqT9BvGEJB3uq3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G8dt1cMj; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762326838;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NfK/agWz/0WkcTINCFySDbMfKDM1u8l6Zttpn4bCw/c=;
-	b=G8dt1cMj9yQ0VdniTzxzBnpH0c0iYXvq2nqFWGjbWP9PZh7a5xW564NdFfkBuR7OJmgM1O
-	rIhNwaguElgYYk5yXJ09ajYWNq2IbEMyj9qk+15h9rBmG+BAtoPOW+/meJjiWpdf/7KFQd
-	go7BXb2SLpbbglhz+ciqHe8HI0JzaIk=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, peterz@infradead.org
-Cc: Menglong Dong <menglong8.dong@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- David Ahern <dsahern@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
- "H. Peter Anvin" <hpa@zytor.com>, jiang.biao@linux.dev,
- bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf,x86: do RSB balance for trampoline
-Date: Wed, 05 Nov 2025 15:13:42 +0800
-Message-ID: <4465519.ejJDZkT8p0@7950hx>
-In-Reply-To:
- <CAADnVQKQXcUxjJ2uYNu1nvhFYt=KhN8QYAiGXrt_YwUsjMFOuA@mail.gmail.com>
-References:
- <20251104104913.689439-1-dongml2@chinatelecom.cn> <5029485.GXAFRqVoOG@7950hx>
- <CAADnVQKQXcUxjJ2uYNu1nvhFYt=KhN8QYAiGXrt_YwUsjMFOuA@mail.gmail.com>
+	s=arc-20240116; t=1762327196; c=relaxed/simple;
+	bh=1pQIxX3yK+8rfBnykhFdVclFo+P44lpGQaEv3MoyRtE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NbyFMmUpcU27Fuv7Z7QxJqtX1iKEVkuQhB8OYAMaPETgmIIOcHuXzCPbnstH3OeObgswuSl7Ft/IDdemZ69ukpnhU/PwWPEg29RWwyaR+k9nhUVhrSVlomEG8PJOPEzcq1wCGyUl+qWb17pQr46vNutG6/k/9rzQjZmx9qWSzTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HaJ6aJ+o; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-6409e985505so6095716a12.2
+        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 23:19:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762327192; x=1762931992; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NpQ4sUrhtspxSzRGtm+kS+yAZk1tIHaT04QvKbBxTMo=;
+        b=HaJ6aJ+oid9FyntHDIwqCkwOuQirpShAvAV6hgfRJXoxFSzunRrcmf/rPtUYFKrhUF
+         S4T6RkNb70uZbOMeZIr+/0glKCM9SYmloqIoUQQeyphX52fAsXnNSO8QzuCOVV08hfxh
+         g8gNRehuf+BmO5Uy+DiWY8ASOpeRjZgFM7HsSayDo1+IshWckRP3FUvAZbB4wmXe6p4j
+         q5hzoPL7xJHEGTk16Sx/3u84M+cAnUhXrNBj1THhs/5+c5m6z8rcH1/7gauDtxpzXVdh
+         SNkxM/3PCdIGelk+mGSDiBQhvKEOP36eq+SrdpInXhZcwzC6vTxebJO+9pFetWPPab/N
+         CKzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762327192; x=1762931992;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NpQ4sUrhtspxSzRGtm+kS+yAZk1tIHaT04QvKbBxTMo=;
+        b=LhvJ5PXopZ+N9trP1LEZ0bNYNSU3xuOMeO/aNenpCeCUb5Qqr1F5KSsMZpjqNQ0PUx
+         ET4zq5i4gkNTgVyErygt8GhuyQCnun1RtVuTVGC8fqYHVhOXruxBIqC2bWkjaLLXeU1o
+         7bNaYPApAqlHDx/lrwXgeGYnRpr36SIUsEE6KPY8cgc56YmcSX9CB386QChpC+GzvMo+
+         gkYfBupfKK5wJQJV/wen3+onvx3Ug3ifwRgXDNMRmPu5DJW4YjG+MzT4Ci3hIG+Q3Zgx
+         ldjaHGwjERKSTlWsKeaAxvwqgUC46ZKQU6JzTm79deF9S7q0l0ZmjzFsILgXJiXpbwSC
+         xj5w==
+X-Gm-Message-State: AOJu0YxPo/tr0C9B/Yc3IpOQ0ZXvmaWzrzoTWuizR77foZtQnzvIB3h3
+	d2S/+6ZfZsLHM5Aan3tFKtUmYGGz84U5ppozptBD6F0J0y8qYLnN7I3cJsgRVA==
+X-Gm-Gg: ASbGncuVKPuKPwPATbzXrhlaELwOgruFyRjzuLwKi2Fr/wWK2po20yYRlrDoFgGou5T
+	KbmyShzk+b/3x810Q64vmYrzIcfe3czAKSiHWPaNG+2MglhWxYQtf3/9uZTEk9b4mrlKnPvPPsi
+	gFRW6GqfUdTn24nyCZO3SajZiLkrCaVpaxf6EAMJSJC5PN5K7Q8IDueP7yKHxf6GZ+I/ab4O48V
+	pv+qO+TdFbJ8yEjakI3cRmMNO327f8RQqyAVYvJcQfOov75SaM017ojNc8PbwVH0HnuetlUg2Br
+	7HQOq6Dajj2dI8GDHe2LVI32tKxdFMnM78GbvRmr9W2Y6+HpRIPzAmAGmSgTDuudH6mAHlApXhG
+	+RsBj7OnWS9zvJTRMAiZVQsBBeohI6n3AJzvkjFKW6CerfY26qJFpLUuRubtFPIMB4zfgQllLHa
+	mJbid1bQKsdf7nX6GtZlHh
+X-Google-Smtp-Source: AGHT+IH7KMFfhDT1gGzkp8h5jxdzHpfZBkC4AsLqf6ObWYqu7cs12RlZJoO91nP5uiHJbnSUaS21sw==
+X-Received: by 2002:a17:907:1c8e:b0:b49:2021:793f with SMTP id a640c23a62f3a-b726553bb4amr214575966b.53.1762327192380;
+        Tue, 04 Nov 2025 23:19:52 -0800 (PST)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b723f6e2231sm413173166b.34.2025.11.04.23.19.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Nov 2025 23:19:51 -0800 (PST)
+Date: Wed, 5 Nov 2025 07:26:06 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Quentin Monnet <qmo@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH v10 bpf-next 11/11] selftests/bpf: add C-level selftests
+ for indirect jumps
+Message-ID: <aQr8Dr+yJRlpm3f3@mail.gmail.com>
+References: <20251102205722.3266908-1-a.s.protopopov@gmail.com>
+ <20251102205722.3266908-12-a.s.protopopov@gmail.com>
+ <e72db29a74ce5e7ac43068e6bf8005c7a3c7cfa2.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e72db29a74ce5e7ac43068e6bf8005c7a3c7cfa2.camel@gmail.com>
 
-On 2025/11/5 10:12, Alexei Starovoitov wrote:
-> On Tue, Nov 4, 2025 at 5:30=E2=80=AFPM Menglong Dong <menglong.dong@linux=
-=2Edev> wrote:
-> >
-> > On 2025/11/5 02:56, Alexei Starovoitov wrote:
-> > > On Tue, Nov 4, 2025 at 2:49=E2=80=AFAM Menglong Dong <menglong8.dong@=
-gmail.com> wrote:
-> > > >
-> > > > In origin call case, we skip the "rip" directly before we return, w=
-hich
-> > > > break the RSB, as we have twice "call", but only once "ret".
-> > >
-> > > RSB meaning return stack buffer?
-> > >
-> > > and by "breaks RSB" you mean it makes the cpu less efficient?
-> >
-> > Yeah, I mean it makes the cpu less efficient. The RSB is used
-> > for the branch predicting, and it will push the "rip" to its hardware
-> > stack on "call", and pop it from the stack on "ret". In the origin
-> > call case, there are twice "call" but once "ret", will break its
-> > balance.
->=20
-> Yes. I'm aware, but your "mov [rbp + 8], rax" screws it up as well,
-> since RSB has to be updated/invalidated by this store.
-> The behavior depends on the microarchitecture, of course.
-> I think:
-> add rsp, 8
-> ret
-> will only screw up the return prediction, but won't invalidate RSB.
->=20
-> > Similar things happen in "return_to_handler" in ftrace_64.S,
-> > which has once "call", but twice "ret". And it pretend a "call"
-> > to make it balance.
->=20
-> This makes more sense to me. Let's try that approach instead
-> of messing with the return address on stack?
+On 25/11/03 12:45PM, Eduard Zingerman wrote:
+> On Sun, 2025-11-02 at 20:57 +0000, Anton Protopopov wrote:
+> 
+> [...]
+> 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c b/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
+> > new file mode 100644
+> > index 000000000000..2a55fa91e1fa
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
+> > @@ -0,0 +1,272 @@
+> 
+> [...]
+> 
+> > +static void check_simple_fentry(struct bpf_gotox *skel,
+> > +				struct bpf_program *prog,
+> > +				__u64 ctx_in,
+> > +				__u64 expected)
+> > +{
+> > +	skel->bss->in_user = ctx_in;
+> > +	skel->bss->ret_user = 0;
+> > +
+> > +	/* trigger */
+> > +	usleep(1);
+> > +
+> > +	if (!ASSERT_EQ(skel->bss->ret_user, expected, "skel->bss->ret_user"))
+> > +		return;
+> > +}
+> 
+> [...]
+> 
+> > +static void check_other_sec(struct bpf_gotox *skel)
+> > +{
+> > +	__u64 in[]   = {0, 1, 2, 3, 4,  5, 77};
+> > +	__u64 out[]  = {2, 3, 4, 5, 7, 19, 19};
+> > +	int i;
+> > +
+> > +	bpf_program__attach(skel->progs.simple_test_other_sec);
+> > +	for (i = 0; i < ARRAY_SIZE(in); i++)
+> > +		check_simple_fentry(skel, skel->progs.simple_test_other_sec, in[i], out[i]);
+> > +}
+> 
+> The above means that fentry programs are accumulated for 'sys_nanosleep', right? 
+> In all 3 test cases that use check_simple_fentry() the identical 'out'
+> values are used.  Should the programs be detached here to avoid
+> possible masking of a misbehaving program?
 
-The way here is similar to the "return_to_handler". For the ftrace,
-the origin stack before the "ret" of the traced function is:
+yes, thanks, will detach it
 
-    POS:
-    rip   ---> return_to_handler
+> 
+> [...]
+> 
+> > diff --git a/tools/testing/selftests/bpf/progs/bpf_gotox.c b/tools/testing/selftests/bpf/progs/bpf_gotox.c
+> > new file mode 100644
+> > index 000000000000..8a84f4b225b2
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/bpf_gotox.c
+> 
+> +SEC("fentry/" SYS_PREFIX "sys_nanosleep")
+> +int use_nonstatic_global_other_sec(void *ctx)
+> +{
+> +	return __nonstatic_global(in_user);
+> +}
+> 
+> Should this check for target process pid?
 
-And the exit of the traced function will jump to return_to_handler.
-In return_to_handler, it will query the real "rip" of the traced function
-and the it call a internal function:
+And here will add a fix as well. Thanks
 
-    call .Ldo_rop
-
-And the stack now is:
-
-    POS:
-    rip   ----> the address after "call .Ldo_rop", which is a "int3"
-
-in the .Ldo_rop, it will modify the rip to the real rip to make
-it like this:
-
-    POS:
-    rip   ---> real rip
-
-And it return. Take the target function "foo" for example, the logic
-of it is:
-
-    call foo -> call ftrace_caller -> return ftrace_caller ->
-    return return_to_handler -> call Ldo_rop -> return foo
-
-As you can see, the call and return address for ".Ldo_rop" is
-also messed up. So I think it works here too. Compared with
-a messed "return address", a missed return maybe have
-better influence?
-
-And the whole logic for us is:
-
-    call foo -> call trampoline -> call origin ->
-    return origin -> return POS -> return foo
-
-=46ollowing is the partial code of return_to_handler:
-
-	/*
-	 * Jump back to the old return address. This cannot be JMP_NOSPEC rdi
-	 * since IBT would demand that contain ENDBR, which simply isn't so for
-	 * return addresses. Use a retpoline here to keep the RSB balanced.
-	 */
-	ANNOTATE_INTRA_FUNCTION_CALL
-	call .Ldo_rop
-	int3
-=2ELdo_rop:
-	mov %rdi, (%rsp)
-	ALTERNATIVE __stringify(RET), \
-		    __stringify(ANNOTATE_UNRET_SAFE; ret; int3), \
-		    X86_FEATURE_CALL_DEPTH
-
->=20
-> > I were wandering why the overhead of fexit is much higher
-> > than fentry. I added the percup-ref-get-and-put stuff to the
-> > fentry, and the performance of it still can be 130M/s. However,
-> > the fexit only has 76M/s. And the only difference is the origin
-> > call.
-> >
-> > The RSB balancing mitigate it, but there are still gap. I
-> > suspect it's still the branch predicting things.
->=20
-> If you have access to intel vtune profiler, check what is
-
-Let me have a study on the "intel vtune profiler" stuff :)
-
-I did a perf stat, and the branch miss increase seriously,
-and the IPC(insn per cycle) decrease seriously.
-
-> actually happening. It can show micro arch details.
-> I don't think there is an open source alternative.
->=20
-> > > Or you mean call depth accounting that is done in sw ?
-> > >
-> > > > Do the RSB balance by pseudo a "ret". Instead of skipping the "rip"=
-, we
-> > > > modify it to the address of a "ret" insn that we generate.
-> > > >
-> > > > The performance of "fexit" increases from 76M/s to 84M/s. Before th=
-is
-> > > > optimize, the bench resulting of fexit is:
-> > > >
-> > > > fexit          :   76.494 =C2=B1 0.216M/s
-> > > > fexit          :   76.319 =C2=B1 0.097M/s
-> > > > fexit          :   70.680 =C2=B1 0.060M/s
-> > > > fexit          :   75.509 =C2=B1 0.039M/s
-> > > > fexit          :   76.392 =C2=B1 0.049M/s
-> > > >
-> > > > After this optimize:
-> > > >
-> > > > fexit          :   86.023 =C2=B1 0.518M/s
-> > > > fexit          :   83.388 =C2=B1 0.021M/s
-> > > > fexit          :   85.146 =C2=B1 0.058M/s
-> > > > fexit          :   85.646 =C2=B1 0.136M/s
-> > > > fexit          :   84.040 =C2=B1 0.045M/s
-> > >
-> > > This is with or without calldepth accounting?
-> >
-> > The CONFIG_MITIGATION_CALL_DEPTH_TRACKING is enabled, but
-> > I did the testing with "mitigations=3Doff" in the cmdline, so I guess
-> > "without"?
->=20
-> Pls benchmark both. It sounds like call_depth_tracking
-> miscounting stuff ?
-
-Sadly, the performance decrease from 28M/s to 26M/s with
-mitigation enabled. I think the addition "ret" increase the
-overhead with "return-thunks" enabled.
-
-Things is not as simple as I thought, let me do more testing,
-and see if ftrace has similar performance decreasing.
-
-Hi, @Peter. Do you have any advice on this ting?
-
-Thanks!
-Menglong Dong
-
->=20
-> > >
-[......]
-> >                            const u32 imm32_hi, const u32 imm32_lo)
-> > {
-> >         u64 imm64 =3D ((u64)imm32_hi << 32) | (u32)imm32_lo;
-> >         u8 *prog =3D *pprog;
-> >
-> >         if (is_uimm32(imm64)) {
-> >                 /*
-> >                  * For emitting plain u32, where sign bit must not be
-> >                  * propagated LLVM tends to load imm64 over mov32
-> >                  * directly, so save couple of bytes by just doing
-> >                  * 'mov %eax, imm32' instead.
-> >                  */
-> >                 emit_mov_imm32(&prog, false, dst_reg, imm32_lo);
-> >         } else if (is_simm32(imm64)) {
-> >                 emit_mov_imm32(&prog, true, dst_reg, imm32_lo);
-> >         } else {
-> >                 /* movabsq rax, imm64 */
-> >                 EMIT2(add_1mod(0x48, dst_reg), add_1reg(0xB8, dst_reg));
-> >                 EMIT(imm32_lo, 4);
-> >                 EMIT(imm32_hi, 4);
->=20
-> This part could be factored out as a separate helper.
-> Then sizeof(movabsq) will be constant.
-> Note, in the verifier we do:
-> #if defined(MODULES_VADDR)
->                         u64 addr =3D MODULES_VADDR;
-> #else
->                         u64 addr =3D VMALLOC_START;
-> #endif
->                         /* jit (e.g. x86_64) may emit fewer instructions
->                          * if it learns a u32 imm is the same as a u64 im=
-m.
->                          * Set close enough to possible prog address.
->                          */
->                         insn[0].imm =3D (u32)addr;
->                         insn[1].imm =3D addr >> 32;
->=20
-> do mitigate this issue.
-> So you could have done:
-> emit_mov_imm64(&prog, BPF_REG_0, VMALLOC_START >> 32, 0);
->=20
-> since 'ret_addr' math is incorrect at that point anyway.
-> But prog +=3D sizeof is imo cleaner.
-
-Great! This make things much more clear. After I figure out all
-the stuff, (which I'm not sure if I'm able), I'll do this way.
-
-Thanks!
-Menglong Dong
-
-> The whole thing might not be necessary with extra call approach.
-> I suspect it should be faster than this approach.
->=20
-
-
-
-
+> [...]
+> 
+> > +#define SKIP_TEST(TEST_NAME)				\
+> > +	SEC("syscall") int TEST_NAME(void *ctx)		\
+> > +	{						\
+> > +		return 0;				\
+> > +	}
+> > +
+> > +SKIP_TEST(one_switch);
+> > +SKIP_TEST(one_switch_non_zero_sec_off);
+> > +SKIP_TEST(simple_test_other_sec);
+> > +SKIP_TEST(two_switches);
+> > +SKIP_TEST(big_jump_table);
+> > +SKIP_TEST(one_jump_two_maps);
+> > +SKIP_TEST(one_map_two_jumps);
+> > +SKIP_TEST(use_static_global1);
+> > +SKIP_TEST(use_static_global2);
+> > +SKIP_TEST(use_static_global_other_sec);
+> > +SKIP_TEST(use_nonstatic_global1);
+> > +SKIP_TEST(use_nonstatic_global2);
+> > +SKIP_TEST(use_nonstatic_global_other_sec);
+> 
+> Nice.
+> I double checked and tests are skipped when old clang is used and pass
+> when new clang is used.
+> 
+> > +#endif /* __BPF_FEATURE_GOTOX */
+> > +
+> > +char _license[] SEC("license") = "GPL";
 
