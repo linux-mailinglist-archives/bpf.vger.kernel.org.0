@@ -1,208 +1,192 @@
-Return-Path: <bpf+bounces-73672-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73673-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8DC6C36CC5
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 17:50:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69F02C370C9
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 18:24:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0D26D5030B3
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 16:29:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA14666416B
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 16:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1EFB330313;
-	Wed,  5 Nov 2025 16:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38F5A336ECD;
+	Wed,  5 Nov 2025 16:52:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uXy3o1HA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dn68VZJz"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3156C310777;
-	Wed,  5 Nov 2025 16:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540AF31C56F
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 16:52:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762360150; cv=none; b=fO03+xFI8Z1UjJsVySogj3L4hIUZ4rNA0w8UVDHEkRLeiaIEBM9HvPBQWOM4cvVb9S91wQplrIVxLllf+oq45m5ByfOAQ7Z909ehJYmni9Sn7R8Wg3yOTTOd/K0kIEo8QDxZ7l3nzUv7l312hoAd1sAdEdzyBuBPWEJRoklg8zs=
+	t=1762361561; cv=none; b=ZHPZxuUbwim/073yw0cp7K6zLEx0K4mXb7QbdyVvyuEuUXaHyHnOXLK+z0dvVio/lQQF4uVp06+Zwcd0Hj83Y+IvKjZ/uWF1pZY+Qsee76Qachd/oEc81ngYlUknRJxaLveggLVj7Wf7TiSRbZ8gXRblRKPF2fUhD+Wjq9y2R08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762360150; c=relaxed/simple;
-	bh=E2LyBpj7sEAtFQd7gW1xNRb7UeJ1t4NfeX3b6rOxki0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M8B/ORUAsuTrZBmdcxqGU2dZAYxvdWR8zzEZwCXjcG23lIGtdY6nuXe/BiUwatpOfMIz09wwlj2bUA+Rufzyg1aLxE+PfZg5DnDsXtJcbKFpL+z/+LU6TwbwLO+fbYDUdtaxTFrLNB9KdJfPyJOge+/24ieQAu7nkmkcChzwQ2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uXy3o1HA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AB4AC4CEF5;
-	Wed,  5 Nov 2025 16:29:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762360147;
-	bh=E2LyBpj7sEAtFQd7gW1xNRb7UeJ1t4NfeX3b6rOxki0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=uXy3o1HAc6d9NI/8sxdtsN8Od/IF2mKpBo2M1OC8+7a3rPFFJIZE/1xZhMQdHrQgp
-	 B5ceNVcaf6DRseXBTphigutFYu/etkAPJ7PfbuTl8mE2KfMCBcFGj2Wz4qhUc5bryP
-	 NT43pikoDUCd7b8GznCic56vIWh/SXcB2c6HrjnwL+WV18Z8WsrLyE3BT2geKicNmH
-	 p3HjuaYnQzdgCDq7btUjfzN9ArS3DsgRn67LpXTmd4vyCZNw5kUHmVg6YDWHz/0UB9
-	 zAk3ljAqawT4zm3+WCQ+u8HBOx5H7bnBFEsQ7ZnTLC2afkeaZnZyr4DTRzxDE9mDEW
-	 ubpy0w4WfFllg==
-Message-ID: <cc5017b8-5802-4cf5-93b1-18b1e2bd8ae5@kernel.org>
-Date: Wed, 5 Nov 2025 17:28:57 +0100
+	s=arc-20240116; t=1762361561; c=relaxed/simple;
+	bh=6wlmdmjnSpQU9fRc7lN675cJD65XkkBg2XnCXVvTink=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=V1tUODd9kOIg273qrRe4KQzlj3n2uBk4PUVzQssEhtJjLepM17PZSdXjYUj8HXRBH67bUtI++75QaJS3uVO8jdSz4UpI5IUAXP9DNgywSoFrfbkuHjfMzm+6jX+6IIZ8az/3PwfxnEVWs87a4Lw2jiD258lS9iDXmkLBXnrF3C4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dn68VZJz; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7a9cdf62d31so106998b3a.3
+        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 08:52:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762361559; x=1762966359; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=St/YlSF/6HVAUWQqHTUl+fK8jNSN2VE1+U7dKILtNmc=;
+        b=dn68VZJzJ5GP9rJXzmNvjgEyPN89FdMLJJ30b9qsVrokmj/Wu5fU/tEsXhVPxcjdEQ
+         dJJygETU28Ca+DBzyaWH8aWABsi8kDYyXXkIcnkc0VQNhhwUSkcZ4rZnhHjX4gT1LgBe
+         F//Q/ELK6ZOeuJ3bealosxzX4K0AxMxp5ofQIhhAYBV37ffQv3JD6rRtzYV29pNGObd0
+         8eQemK8/gpsC12AEaWcgtfN4m0tmiPrsDcnNqHOhsG8XFrHc6+QeqeTH4b9hnGGQ9gU8
+         kBx6lhILl6PZOVsx2Cy867fZOsvwXde1ahMzZOqrJ+TykPmeyUq1Xy+gPpYh4KPfZQ7s
+         yqFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762361559; x=1762966359;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=St/YlSF/6HVAUWQqHTUl+fK8jNSN2VE1+U7dKILtNmc=;
+        b=nHBmTc8sFWsWc0RuGHUvDBMT9fNYpokJffnwcCfM1BaUCuL7+dt/buvn58yWQqPRyB
+         9dDCHurYQaLhRuMLhzvqdnNLKMcswTPXQqK44Az8Q9t3SHYCzRod4PoXN9xHP7uWyNiV
+         JiK8QsiqfFj34rmZyLu6vP8ZZfJl2jELmKTbHeA6KlL8GsvzNXX0GUyZ5TfIl6s4inS0
+         nUrF/vFRHMwhxi7wDbV3r70M2y+u8izFdd+Lgr3rHCYG4tGJRHcYCXJC7JI7mUuksY6w
+         O5/j4+nCLvhKQOmILwLGyI5H9SGqvpRmHIW1yYQHwMfCPzngsq9/nfuGKMjajPFNDNY+
+         BnzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUX9/uzbTEYHJqAiHqaICqxXD5h84RNM6kG69zPB+8aDBKJeghiTZI0BO52JucqeAdR5Ss=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzzUweqs1lwZtSJUs08icV5YPjNluURetsCpf8pmMPTb+RpJl8N
+	Q9t/wzCi2rhN7dgpI5wSki1KEtO3yNCNEweirDdYgUw0sL+vEBZ/xzLi
+X-Gm-Gg: ASbGncuKbRJ+9a4Ywtb7Xalf3Gxfu9cCkxSfRiWjER2sxOd+obyI353qZkblh5vNRfM
+	RRXHf7xleTLki2wSWE7jEEtgSDBQfmUAF8916/Uny4kvUyyL9OesV7uAE/WlNy22PcpBG3PNlYf
+	q5AcILVlhScHUZXgMAOWuRDFarCoWX5EQlpeQcoKDrnkdUKsBRHvye3zZLJr4S7OXiHIw3lHHSY
+	BSdNjqWRJ4IXzaZ6FBCUWLWftAyueJDNau0O07XNZec4E+U923yfluIXOMmHz9hXuph2c3tNus2
+	NSbGO+oatvIN/WGMPVj5UNM3cK6pYH/aKMoTnpz8C4+xikyLfZHJdHPmAk3DyhV4xJdUNgZvgzm
+	/pdq5gaXm8f2GsA5MtyBvaaMsMaKf9RWqmIV8DRG10RnRRwhVJm/rA+WSINQeqpo8/Ns/c8Jgcp
+	YIvwjJelokcJ/P1rug8IsLz07bddgh3qNQjXw=
+X-Google-Smtp-Source: AGHT+IHR2B6DtDaHzOI4A23z85FIW2164BTIShW+IpjXW96KXD/wdqkXo75vpTMPhnVKAlOTsJ7Iyg==
+X-Received: by 2002:a05:6a00:3926:b0:7aa:a8b6:73fe with SMTP id d2e1a72fcca58-7ae1f8804aemr4060602b3a.25.1762361559242;
+        Wed, 05 Nov 2025 08:52:39 -0800 (PST)
+Received: from ?IPv6:2a03:83e0:115c:1:cdf2:29c1:f331:3e1? ([2620:10d:c090:500::6:8aee])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7acd586f857sm6958895b3a.45.2025.11.05.08.52.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Nov 2025 08:52:38 -0800 (PST)
+Message-ID: <f6b2596eadf032516b81c19c6f9a8fd85c8ff195.camel@gmail.com>
+Subject: Re: [RFC PATCH v4 3/7] libbpf: Optimize type lookup with binary
+ search for sorted BTF
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Donglin Peng <dolinux.peng@gmail.com>, Andrii Nakryiko
+	 <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Alan
+ Maguire <alan.maguire@oracle.com>, Song Liu <song@kernel.org>, pengdonglin
+ <pengdonglin@xiaomi.com>
+Date: Wed, 05 Nov 2025 08:52:37 -0800
+In-Reply-To: <CAErzpmtu7UuP9ttf1oQSuVh6f4BAkKsmfZBjj_+OHs9-oDUfjQ@mail.gmail.com>
+References: <20251104134033.344807-1-dolinux.peng@gmail.com>
+	 <20251104134033.344807-4-dolinux.peng@gmail.com>
+	 <CAEf4BzaxU1ea_cVRRD9EenTusDy54tuEpbFqoDQUZVf46zdawg@mail.gmail.com>
+	 <a2aa0996f076e976b8aef43c94658322150443b6.camel@gmail.com>
+	 <CAEf4Bzb73ZGjtbwbBDg9wEPtXkL5zXc3SRqfbeyuqNeiPGhyoA@mail.gmail.com>
+	 <7c77c74a761486c694eba763f9d0371e5c354d31.camel@gmail.com>
+	 <CAErzpmtu7UuP9ttf1oQSuVh6f4BAkKsmfZBjj_+OHs9-oDUfjQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH net v4 3/3] selftests/bpf: Add mptcp test with sockmap
-Content-Language: en-GB, fr-BE
-To: Jiayuan Chen <jiayuan.chen@linux.dev>, mptcp@lists.linux.dev
-Cc: Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20251105113625.148900-1-jiayuan.chen@linux.dev>
- <20251105113625.148900-4-jiayuan.chen@linux.dev>
- <665825df-b995-45ee-9e0c-2b40cc4897ee@kernel.org>
- <b5f67a681be12833efa12e68fc3139954b409446@linux.dev>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <b5f67a681be12833efa12e68fc3139954b409446@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 05/11/2025 17:12, Jiayuan Chen wrote:
-> November 5, 2025 at 22:40, "Matthieu Baerts" <matttbe@kernel.org mailto:matttbe@kernel.org?to=%22Matthieu%20Baerts%22%20%3Cmatttbe%40kernel.org%3E > wrote:
-> 
-> 
->>
->> Hi Jiayuan,
->>
->> Thank you for this new test!
->>
->> I'm not very familiar with the BPF selftests: it would be nice if
->> someone else can have a quick look.
-> 
-> Thanks for the review. I've seen the feedback on the other patches(1/3, 2/3) and will fix them up.
+On Wed, 2025-11-05 at 21:48 +0800, Donglin Peng wrote:
+> On Wed, Nov 5, 2025 at 9:17=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+> >=20
+> > On Tue, 2025-11-04 at 16:54 -0800, Andrii Nakryiko wrote:
+> > > On Tue, Nov 4, 2025 at 4:19=E2=80=AFPM Eduard Zingerman <eddyz87@gmai=
+l.com> wrote:
+> > > >=20
+> > > > On Tue, 2025-11-04 at 16:11 -0800, Andrii Nakryiko wrote:
+> > > >=20
+> > > > [...]
+> > > >=20
+> > > > > > @@ -897,44 +903,134 @@ int btf__resolve_type(const struct btf *=
+btf, __u32 type_id)
+> > > > > >         return type_id;
+> > > > > >  }
+> > > > > >=20
+> > > > > > -__s32 btf__find_by_name(const struct btf *btf, const char *typ=
+e_name)
+> > > > > > +/*
+> > > > > > + * Find BTF types with matching names within the [left, right]=
+ index range.
+> > > > > > + * On success, updates *left and *right to the boundaries of t=
+he matching range
+> > > > > > + * and returns the leftmost matching index.
+> > > > > > + */
+> > > > > > +static __s32 btf_find_type_by_name_bsearch(const struct btf *b=
+tf, const char *name,
+> > > > > > +                                               __s32 *left, __=
+s32 *right)
+> > > > >=20
+> > > > > I thought we discussed this, why do you need "right"? Two binary
+> > > > > searches where one would do just fine.
+> > > >=20
+> > > > I think the idea is that there would be less strcmp's if there is a
+> > > > long sequence of items with identical names.
+> > >=20
+> > > Sure, it's a tradeoff. But how long is the set of duplicate name
+> > > entries we expect in kernel BTF? Additional O(logN) over 70K+ types
+> > > with high likelihood will take more comparisons.
+> >=20
+> > $ bpftool btf dump file vmlinux | grep '^\[' | awk '{print $3}' | sort =
+| uniq -c | sort -k1nr | head
+> >   51737 '(anon)'
+> >     277 'bpf_kfunc'
+> >       4 'long
+> >       3 'perf_aux_event'
+> >       3 'workspace'
+> >       2 'ata_acpi_gtm'
+> >       2 'avc_cache_stats'
+> >       2 'bh_accounting'
+> >       2 'bp_cpuinfo'
+> >       2 'bpf_fastcall'
+> >=20
+> > 'bpf_kfunc' is probably for decl_tags.
+> > So I agree with you regarding the second binary search, it is not
+> > necessary.  But skipping all anonymous types (and thus having to
+> > maintain nr_sorted_types) might be useful, on each search two
+> > iterations would be wasted to skip those.
+>=20
+> Thank you. After removing the redundant iterations, performance increased
+> significantly compared with two iterations.
+>=20
+> Test Case: Locate all 58,719 named types in vmlinux BTF
+> Methodology:
+> ./vmtest.sh -- ./test_progs -t btf_permute/perf -v
+>=20
+> Two iterations:
+> > Condition          | Lookup Time | Improvement |
+> > --------------------|-------------|-------------|
+> > Unsorted (Linear)  | 17,282 ms   | Baseline    |
+> > Sorted (Binary)    | 19 ms       | 909x faster |
+>=20
+> One iteration:
+> Results:
+> > Condition          | Lookup Time | Improvement |
+> > --------------------|-------------|-------------|
+> > Unsorted (Linear)  | 17,619 ms   | Baseline    |
+> > Sorted (Binary)    | 10 ms       | 1762x faster |
+>=20
+> Here is the code implementation with a single iteration approach.
 
-Thanks!
+Could you please also check if there is a difference between having
+nr_sorted_types as is and having it equal to nr_types?
+Want to understand if this optimization is necessary.
 
->> On 05/11/2025 12:36, Jiayuan Chen wrote:
->>
->>>
->>> Add test cases to verify that when MPTCP falls back to plain TCP sockets,
->>>  they can properly work with sockmap.
->>>  
->>>  Additionally, add test cases to ensure that sockmap correctly rejects
->>>  MPTCP sockets as expected.
->>>  
->>>  Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
->>>  ---
->>>  .../testing/selftests/bpf/prog_tests/mptcp.c | 150 ++++++++++++++++++
->>>  .../selftests/bpf/progs/mptcp_sockmap.c | 43 +++++
->>>  2 files changed, 193 insertions(+)
->>>  create mode 100644 tools/testing/selftests/bpf/progs/mptcp_sockmap.c
->>>  
->>>  diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
->>>  index f8eb7f9d4fd2..56c556f603cc 100644
->>>  --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
->>>  +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
->>>  @@ -6,11 +6,14 @@
->>>  #include <netinet/in.h>
->>>  #include <test_progs.h>
->>>  #include <unistd.h>
->>>  +#include <error.h>
->>>
->> Do you use this new include?
-> 
-> "EOPNOTSUPP" I used was defined in error.h.
-
-Ah OK. I usually only include 'error.h' to use 'error()'.
-Is it not 'errno.h' (or 'linux/errno.h') you want instead?
-
-I'm just surprised it is not already included but another one above. But
-OK if it is not.
-
-(...)
-
->>> + return;
->>>  +
->>>  + skel->bss->trace_port = ntohs(get_socket_local_port(listen_fd));
->>>  + skel->bss->sk_index = 0;
->>>  + /* create client with MPTCP enabled */
->>>  + client_fd1 = connect_to_fd(listen_fd, 0);
->>>  + if (!ASSERT_OK_FD(client_fd1, "connect_to_fd client_fd1"))
->>>  + goto end;
->>>  +
->>>  + /* bpf_sock_map_update() called from sockops should reject MPTCP sk */
->>>  + if (!ASSERT_EQ(skel->bss->helper_ret, -EOPNOTSUPP, "should reject"))
->>>  + goto end;
->>>
->> So here, the client is connected, but sockmap doesn't operate on it,
->> right? So most likely, the connection is stalled until the userspace
->> realises that and takes an action?
->>
-> 
-> It depends. Sockmap usually runs as a bypass. The user app (like Nginx)
-> has its own native forwarding logic, and sockmap just kicks in to accelerate
-> it. So in known cases, turning off sockmap falls back to the native logic.
-> But if there's no native logic, the connection just stalls.
-
-Good to know, thanks!
-
-So MPTCP request might still be handled by the "native logic" if any?
-
-Cheers,
-Matt
--- 
-Sponsored by the NGI0 Core fund.
-
+[...]
 
