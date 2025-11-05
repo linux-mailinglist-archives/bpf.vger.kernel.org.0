@@ -1,152 +1,171 @@
-Return-Path: <bpf+bounces-73555-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73556-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BABC2C33A0F
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 02:23:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 064AEC33A96
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 02:30:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD6AF3BA74C
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 01:23:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B430A4645DF
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 01:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C153623D7D9;
-	Wed,  5 Nov 2025 01:23:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514BE27470;
+	Wed,  5 Nov 2025 01:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eyNyCFB7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="esvMdcWF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21821C01
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 01:23:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB4717BA1
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 01:30:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762305797; cv=none; b=JtHnzw8aGZggc1QhaA2IlEc9TC2w4YSSR3qpUrjg3413949YapOrbeViiX3u6rzf3zaGTEfwUZ1yVUNWmDQbEOEvXZ4WYJ42b+yyIrla4ZM1hUQeP/KdCZiqlqiGQ0+DmGhZxA1fp4ZDccDwZLXgMA+A6nzeXVo7CLFAs8oEYHM=
+	t=1762306224; cv=none; b=g8D27gCtO3N+o0SeIHWpvAnRbppvvPf9fP2ReYp+NnQu7pZeDDHD0og+w2JN5wGA2qi/J9OJ/zOQNw5xdgIsuinOBFuIsXd8RIK2KjDnLXZaoTVFC5KKYPV9OpXCBeTxQukOCDF2NvYE/SwBzwfhhTNmPeLbRTKzADYOQ+RV1UQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762305797; c=relaxed/simple;
-	bh=asHptWAIRpCDRG7vCQpbpikZfRL/+LcVaKzT/QlO1ws=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lmXJBjuCYxyvJcQCMORWRUs3VjMhIp3iHrxfrPW5wrCmIHGdvvVgYVJFFoCHZ2AAP2OgyZeT0gohwnt2GlP7upDxd+dqdPHLChSQ/e4zAhlX6gcRm3YrnHVNs8BNok86PH1YGc7ZXS7qYSvN8SP8Ydv8bGcmbaIeoIIIvqpKVwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eyNyCFB7; arc=none smtp.client-ip=209.85.216.43
+	s=arc-20240116; t=1762306224; c=relaxed/simple;
+	bh=+xTRQcfyXFHRB34pXgfjkMG/EJuVA288cQ/JW8hfN9k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nkIW21gP71BQHnmrkhDCs5aoe/kJPMJ1p1EnDr0i2gpyN06aYglibkl7uyPeDAKcIPxVNvQIjMDwM6wCzXxxgLDOKaiWMzQLNQK18ZvjaVVnJDw5VpqPrErhcjCdxD8rN+dFf1PaSl9nP2Xi6j7VYgSAbQRsEe/QgsvmmCocFWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=esvMdcWF; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-340bb1cb9ddso3466255a91.2
-        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 17:23:15 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-47117f92e32so49959555e9.1
+        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 17:30:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762305795; x=1762910595; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qg8PbE+dxmcwjVIqp0Xi3l9ojlu/aC0i4dngxNtaEDY=;
-        b=eyNyCFB7hL2O9NvzTFt/xwYtNqrNuQwi9Efqe3MiLXGUHkyyU/h4nKpZejoFWEmQdF
-         ppL0asckDRH2vxFQ6E/rfUFbcLbeEmf1JHCEOOla+JA7P+7oGnSSqZKBwK3+7jBmTrrx
-         6g2fjRouIK34LXvSpe+QtvZr23k+yu3VHnef91PdjF/DXcVas0uocy2+3aP1v+6ZIOIg
-         Nzy2/FRzOAbhvQSwCtjjrbWdTnUE+HQ62B33kU/RWnEuGKlybXo8OKZ0QLHX/kPzp42x
-         sb9sBCBHKJkw+jLNFOunQgxOu8oMMBRgiU06FjEMM9Y5QTgHL1RGHnQGG1oxOLr+4+Rp
-         ADaQ==
+        d=gmail.com; s=20230601; t=1762306221; x=1762911021; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wXtylUDE+n3W+8CO0qfnAqML65Vl1fNO5GTlg6s0nvo=;
+        b=esvMdcWF60Mh7yModN5PxwgewPf/+WM3M1rNSP7tpHtPkZokkquwkC+5jpHDGWLc9W
+         zU5hn0kOpOTJiTuTn5ipl8P39HSCB/wmPdxcdRgbD7c5FoOEe3LakIbdA37mhF2qwuFc
+         fXvhqZiIR9UZUHKnDJ/yK63wxcEmuy9WKmhyriH4Sa7hrUDBa3PhxRk6ONYPypoLlhgS
+         OrCNp1zNya/SG9bDWfwL0qVQDUQC2XXI66w28+Rj1t5ZjRl0SgNmeXXIChkBofdCYXJL
+         scMYP/+cMtWppsHZmqZrtBIC55GK6ClbnFrcCMmAmO4rU+Cy0DmwdnOuFn48bd5S5WZX
+         7hlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762305795; x=1762910595;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qg8PbE+dxmcwjVIqp0Xi3l9ojlu/aC0i4dngxNtaEDY=;
-        b=xQEEDg9zRzyWCIneCoI2isBzvzt5Riw5XYGLAmdBv7GyuetxIK1/sf+EJfoMyhMFOm
-         XmiwSXEUSI0xCGgWZSz/KZs7IZXlUczcYesYJv8ab8Et9f3tsIdEisP/3IxvcST4HILm
-         lPLKAhMOOFzGSlKycxBv190JHJqbobreQPhScNblKQumEw2hhDoBMJW+me/7PrXmkCFD
-         Tj3O5oDK+bRIP06e+tsB/2xpCrd8RY0Ia67RGISVuhdwNXOjwD6B4VYGs6fjLuctGImG
-         uNlswy1/fdmWLJbFPBOFR7jFHbCXKAsT3fcrqlkOqDkYXQXhm53VROWGXuiGfopkdj7M
-         GpAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVyX3SVt/TVGNLHWeEKBii61Cl/8B41uYmepcUzY/M1ZLDrEQjc4X783/v0FxjVztVJgSY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPXi75+z38PHyjiYAym53dwI4FQKG/Op2Om8OQwEcGXBURISRt
-	RfDVxVxNYyTqbo6QZKyCmfgrf5MpCnnm7JCKxMu4I5uszHIDYB+YqIl9
-X-Gm-Gg: ASbGnctckv79lzroff42b1LETo7cyzZoCZKVKbOzhxZlhgmST6hu0/B6ZoTX2AeUWEN
-	slG+q2mBvVCaJkGrpD2aUG9f2Du5DfKe5LN/gjv+sGW8pJ/7QhIjRpkORMWSablewYwbxhNMcMM
-	BmIkZaSyzfRFcj9QM5qJ0swOPldMCbguFNCLS/BO9oP3Rqn23wQz6yBFaC/eHo/TAmAaBcX2VJa
-	zKOzRCJy9ukxxJB0j6gkPT7cpJ38dWLDlBhvrmZAZledi8Q6OyfHhsIfxOtpJIdBnEW64YsbrKF
-	0asBjbR3hkPF0/lyEqsBn7WAnN+bgE+6hzJDZxCN7cveZhHlkLDBADKU0J37EeujHxIzKHAj/db
-	GPGPOBNLX+KlsPrgCoZlmLWvs0n2/Du+HThDtOz9R7eydYq78BxjsQ8Mn0hWHKlxyxD6q3d4Ujp
-	AT6vKWTUU4x7FHbbvAECkreF2Cb5rTCivBjw==
-X-Google-Smtp-Source: AGHT+IEEF5q2pzOeT+ddol1Ge84bNFSKdXLiqj1O+j3LaeUUjsRbWBWu2E2oABf5RHox9Z71r7KRUA==
-X-Received: by 2002:a17:90b:3842:b0:340:b908:9665 with SMTP id 98e67ed59e1d1-341a7013a7amr1827066a91.37.1762305795224;
-        Tue, 04 Nov 2025 17:23:15 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:a643:22b:eb9:c921? ([2620:10d:c090:500::5:99aa])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-341a68e8029sm941145a91.17.2025.11.04.17.23.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Nov 2025 17:23:14 -0800 (PST)
-Message-ID: <61f94d36d6777b9b84e9bf865edd17476a278e73.camel@gmail.com>
-Subject: Re: [RFC PATCH v4 1/7] libbpf: Extract BTF type remapping logic
- into helper function
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Alan Maguire
-	 <alan.maguire@oracle.com>, Song Liu <song@kernel.org>, pengdonglin
-	 <pengdonglin@xiaomi.com>
-Date: Tue, 04 Nov 2025 17:23:13 -0800
-In-Reply-To: <CAEf4BzanAmmSe84GnvWSR_KLFVmeEvrxVVJAvApFNRjgeRXk8Q@mail.gmail.com>
-References: <20251104134033.344807-1-dolinux.peng@gmail.com>
-	 <20251104134033.344807-2-dolinux.peng@gmail.com>
-	 <CAEf4BzaPDKJvQtCss4Gm1073wyBGXmixv4s9V5twnF7uEHRhPg@mail.gmail.com>
-	 <61e92756ea7f202f2e501747b574e97b2f5bc32f.camel@gmail.com>
-	 <CAEf4BzanAmmSe84GnvWSR_KLFVmeEvrxVVJAvApFNRjgeRXk8Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1762306221; x=1762911021;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wXtylUDE+n3W+8CO0qfnAqML65Vl1fNO5GTlg6s0nvo=;
+        b=ZVh3vPDatEka7AOBpkA3oraQKnETg8qsWQrtO9T3wndVy/E+xenC0X40pOSXVx1hzr
+         y55vQ5cDrdOi3QTpwb/73+QTgRCbfX3/WwY9ADZKN4/qbMLPUVDcXz4dD0xq8aparLhC
+         6+U+HFZgFzcCjCXRYdp/yT3hcYhcS+SVQwszfDxvFnC3ii6YqqEKFXZFgWhdiQpCrEay
+         ZdhAivOt5tnXbSC1fY5pxxlX1EJiW+asOG+WkA8NPAnuouJ1snnG3FAcx3y/izTbnw/o
+         lLyrSOJGK8mWkFKS3bs4HcYYMov8qKew52mSg47/QX94FyNiLmIhChq1P75GFg+vIpOu
+         HUmA==
+X-Gm-Message-State: AOJu0YwOYGnpU4DAtgIf9mpPa5b8AcNirMyTCxAndJymevt0odQjaYYF
+	W5v66LEQmZQmkfp9/M0T8U6vdQpTYRDYybs0kd/AX+xqUR3DGqVhoGiQ8YIAyCdGNbqVJMdG27D
+	h4KTFVAHxljiECxqy1tKZaBz0m2LkLdw=
+X-Gm-Gg: ASbGncu4hnPc2ZVWpnHTSjMT6XPxdCFKykNvkUFA+9TOy0fNUC0AdQy4D1BCVyY+J4b
+	SDhvRDw80+rkFdKHtUoFU8kWWv0tjwKERYJEf7wPYijP7o9Fpaq6ZuOoX2MNJ0Cq3RE8k2wrXcL
+	vSJAmRpelinSSm2V4wLcSXfZdR+KThpgrhCR8P7RYyVu0s+GKQb5FBGi876Mssx8nAwN1Z0+eJH
+	8tJz//aN8uFMhVYYa9zmrGX8S+guMj+lsppf4SPcynZD0/hnPjDGQ+CER6kPQ3a3G0+e85X0fqd
+	Q1TIybmiJX6BLI34gA==
+X-Google-Smtp-Source: AGHT+IGfa5NbatsVs5Q8hZs6k9w2nlCmpYTTpSxMbDnBNpl2dqUlOxc6/H+G2hIymH1812d7RYDhfXsPtgTRdg2Z5hw=
+X-Received: by 2002:a05:600c:1e28:b0:471:13dd:baef with SMTP id
+ 5b1f17b1804b1-4775ce12d09mr7744805e9.26.1762306221337; Tue, 04 Nov 2025
+ 17:30:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251104164948.33408-1-puranjay@kernel.org> <CAADnVQJabNCvyT_b2JcW6YdtwCaSs8YVPcdk1FacLJjpz=KFqQ@mail.gmail.com>
+In-Reply-To: <CAADnVQJabNCvyT_b2JcW6YdtwCaSs8YVPcdk1FacLJjpz=KFqQ@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 4 Nov 2025 17:30:09 -0800
+X-Gm-Features: AWmQ_bmxr-jdjeYtz6U7mMZugcNdQ-ptnzpjosixQDci0VW-g8FZHNja4ITky5s
+Message-ID: <CAADnVQJtq7LeV2afFKVOd5VP8Mo12fZPhSF3-Y1U0UgMbDtafg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Optimize recursion detection for arm64
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Puranjay Mohan <puranjay12@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2025-11-04 at 16:57 -0800, Andrii Nakryiko wrote:
-> On Tue, Nov 4, 2025 at 4:36=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
-> >=20
-> > On Tue, 2025-11-04 at 16:11 -0800, Andrii Nakryiko wrote:
-> >=20
-> > [...]
-> >=20
-> > > > @@ -3400,6 +3400,37 @@ int btf_ext__set_endianness(struct btf_ext *=
-btf_ext, enum btf_endianness endian)
-> > > >         return 0;
-> > > >  }
-> > > >=20
-> > > > +static int btf_remap_types(struct btf *btf, struct btf_ext *btf_ex=
-t,
-> > > > +                          btf_remap_type_fn visit, void *ctx)
-> > >=20
-> > > tbh, my goal is to reduce the amount of callback usage within libbpf,
-> > > not add more of it...
-> > >=20
-> > > I don't like this refactoring. We should convert
-> > > btf_ext_visit_type_ids() into iterators, have btf_field_iter_init +
-> > > btf_field_iter_next usable in for_each() form, and not try to reuse 5
-> > > lines of code. See my comments in the next patch.
-> >=20
-> > Remapping types is a concept.
-> > I hate duplicating code for concepts.
-> > Similarly, having patch #3 =3D=3D patch #5 and patch #4 =3D=3D patch #6=
- is
-> > plain ugly. Just waiting for a bug because we changed the one but
-> > forgot to change another in a year or two.
->=20
-> Tricky and evolving part (iterating all type ID fields) is abstracted
-> behind the iterator (and we should do the same for btf_ext). Iterating
-> types is not something tricky or requiring constant maintenance.
->=20
-> Same for binary search, I don't see why we'd need to adjust it. So no,
-> I don't want to share code between kernel and libbpf just to reuse
-> binary search implementation, sorry.
+On Tue, Nov 4, 2025 at 3:52=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Nov 4, 2025 at 8:49=E2=80=AFAM Puranjay Mohan <puranjay@kernel.or=
+g> wrote:
+> >
+> > BPF programs detect recursion by a per-cpu active flag in struct
+> > bpf_prog. This flag is set/unset in the trampoline using atomic
+> > operations to prevent inter-context recursion.
+> >
+> > Some arm64 platforms have slow per-CPU atomic operations, for example,
+> > the Neoverse V2.  This commit therefore changes the recursion detection
+> > mechanism to allow four levels of recursion (normal -> softirq -> hardi=
+rq
+> > -> NMI). With allowing limited recursion, we can now stop using atomic
+> > operations. This approach is similar to get_recursion_context() in perf=
+.
+> >
+> > Change active to a per-cpu array of four u8 values, one for each contex=
+t
+> > and use non-atomic increment/decrement on them.
+> >
+> > This improves the performance on ARM64 (64-CPU Neoverse-N1):
+> >
+> >  +----------------+-------------------+-------------------+---------+
+> >  |    Benchmark   |     Base run      |   Patched run     |  =CE=94 (%)=
+  |
+> >  +----------------+-------------------+-------------------+---------+
+> >  | fentry         |  3.694 =C2=B1 0.003M/s |  3.828 =C2=B1 0.007M/s | +=
+3.63%  |
+> >  | fexit          |  1.389 =C2=B1 0.006M/s |  1.406 =C2=B1 0.003M/s | +=
+1.22%  |
+> >  | fmodret        |  1.366 =C2=B1 0.011M/s |  1.398 =C2=B1 0.002M/s | +=
+2.34%  |
+> >  | rawtp          |  3.453 =C2=B1 0.026M/s |  3.714 =C2=B1 0.003M/s | +=
+7.56%  |
+> >  | tp             |  2.596 =C2=B1 0.005M/s |  2.699 =C2=B1 0.006M/s | +=
+3.97%  |
+> >  +----------------+-------------------+-------------------+---------+
+>
+> The gain is nice, but absolute numbers look very low.
+> I see fentry doing 52M on the debug kernel with kasan inside VM.
+>
+> The patch itself looks good to me, but I realized that we cannot
+> use this approach for progs with a private stack,
+> since they require a strict one user per cpu.
+>
+> Also tracing progs might have conceptually similar restriction.
+> A prog could use per-cpu map to store some data.
+> If prog is attached to some function that may be called from
+> task and irq context the irq execution will write over per-cpu data
+> and when it returns the same prog in task context will see garbage.
+> I'm afraid get_recursion_context() approach won't work. Sorry for
+> not-thought-through suggestion.
 
-<rant>
+Actually the get_recursion_context() approach can be salvaged.
+Instead of:
++       active =3D this_cpu_ptr(prog->active);
++       if (unlikely(++active[rctx] !=3D 1)) {
 
-Sure binary search is trivial, but did you count how many times you
-asked people to re-implement binary search as in [1]?
+how about
+active =3D this_cpu_ptr(prog->active);
+++active[rctx];
+if (unlikely(*(u32 *)active !=3D 1 << rctx * 8)) {
 
-[1] https://elixir.bootlin.com/linux/v6.18-rc4/source/kernel/bpf/verifier.c=
-#L2952
+that should preserve single prog per cpu rule,
+and hopefully have better performance than this_cpu_inc_return,
+xchg, and this_cpu_xchg.
 
-</rant>
+Also noticed that we use this_cpu_dec() which is probably just as slow.
+So the first experiment to do is:
+- this_cpu_dec(*(prog->active));
++ this_cpu_dec_return(*(prog->active));
+
+
+Also as a pre-patch please wrap inc/dec into two helpers
+and use them everywhere.
+Will simplify all these experiments.
 
