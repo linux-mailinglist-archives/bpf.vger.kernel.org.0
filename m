@@ -1,168 +1,164 @@
-Return-Path: <bpf+bounces-73649-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73650-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECFE2C3615D
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 15:36:31 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD937C3616C
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 15:37:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DC905660FE
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 14:34:49 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CB0304EEF98
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 14:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EBEC32D45E;
-	Wed,  5 Nov 2025 14:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA00D15665C;
+	Wed,  5 Nov 2025 14:37:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNEo0LLq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZQg2G6Zw"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F05032D431
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 14:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6A1320A33;
+	Wed,  5 Nov 2025 14:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762353282; cv=none; b=hl1AkC0o+SEor8A96GfcMf5wxHji6P2ObUjmyDjXtgxQ8mOkpyublid74K6+h2zPI/s6C7I3H4i8cMLMI5CyJthSfE3fRmD1iIVnPem2X1FpF6RjdGxlbl+qrtvBsm72YKGWSha9Xj3qMImIGTQQjo8JtOyvrSZToI+xBczb7QE=
+	t=1762353431; cv=none; b=DztR3T0pQfeSdbdRDKxyPb8N/NgS/VmXwsU70Cf0tsE8UnmMvKDx+vdmc9CZtj59iAGBdmvXWscI7SWQ69ad69JCe2hbDVfGGMRD6WuTYUScFy5Q6H4ZGfQPVFDsofVCDoJhvpyM5xk1SEQ2JAr4XNWeW8044fTtZYkYTbgPU78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762353282; c=relaxed/simple;
-	bh=Lws3O9Q9eWUWHaR1D9jjGEWwx/Fg3c+pD6vwOq6VklQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gnexFXwsDFy0narDb1Scn8gdHk5MUIbMLMG/91zvWsAYpC7fk2yZ3nYBYctLf5VSXd6p66o0Y+RFUrJFlvqrfQ652ecmos7Bh+l+Kyyh/CTuYB1qJQv+5RX/m4sKuofGEyNB1hD8A+yzmezXPzvlvNoUHqu1bOuaKSbkFO/xg7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jNEo0LLq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 310A5C19422
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 14:34:42 +0000 (UTC)
+	s=arc-20240116; t=1762353431; c=relaxed/simple;
+	bh=Z5SbtMpM/KuQHHw5Ea+YCo1vcyY6brvzqA7sJIGK5EI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a1ko1o02nvGvmuxjBAaCwh5lLhyyKrBS9G28Klr5/umZxPtP/Rf0vd769sBlMHtflswvBwJDgIJTnUwN6zzE+HsnVoWtZgU4Zm9lIUbTxBGm0gBix0idig52oOu+sX7aM1sfPdmgpfZt3M0K4bqo3Hh/voQWNAsj7V8MOM3JKHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZQg2G6Zw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79221C4CEF5;
+	Wed,  5 Nov 2025 14:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762353282;
-	bh=Lws3O9Q9eWUWHaR1D9jjGEWwx/Fg3c+pD6vwOq6VklQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=jNEo0LLq3y7G0kgVUMrbEpXmYb3ehE4+PvMmj5C8I1S9nenWUyQVL+d1Zs+aGQfEw
-	 XIQeXrimqWy1UPXQeLY1PvoF4XjNvkwkPHuDptEQ7vmHAw7UCmMjBUyfjru+yvduXW
-	 xuuuiiuemuUeWFe1ahqhXjZB1jqcGhwXV93SaCLxMsc94grTx/qEzh50qMUCkZsOg7
-	 2Ar20hTsrPaQ9PWpUVZOY7Q8GNWB6zuJwkG6tkbFpM2s0cVeufBt3PL+NfSkeDx4S6
-	 FjjAstVpVHXB/xMFVgow1jOqOOXKiDRm5KE6VxwZcjwWwD0iGk73NhlIhY4KbIdVwH
-	 ywZ7cEdR1gxMQ==
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-37a492d3840so14344761fa.1
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 06:34:42 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWsjqDBoTZCo0hcRXAPFdwgC5QqJ1vxrPxcIYQoqES8P+zLc/tGgsTv1M0qecE7IcXhrcE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yymj4WlTaFykck48we9BSwqHKW0mKwJR/Lw39n94STdhxefS57r
-	bcxZGPs5LQtl8aFpn+oZNCy1vAmIzgakHf6Pzn/QTiA/NleTTU0+mEeMrko7OPhXbkSMfw1rpLr
-	rVh7B1Jc5T2/yTrkVb2ZlNCGslbxLwJU=
-X-Google-Smtp-Source: AGHT+IEx5VuhTUzWGT5C3xk1ZCwXIz0HqLNQc4gHIQEVN/RV4yl9TQkUcvj3QI9yqUVwVZWCqZOKOmWyJ6CMatr8gc0=
-X-Received: by 2002:a05:651c:1504:b0:372:904d:add4 with SMTP id
- 38308e7fff4ca-37a51417cf6mr11398531fa.28.1762353280238; Wed, 05 Nov 2025
- 06:34:40 -0800 (PST)
+	s=k20201202; t=1762353430;
+	bh=Z5SbtMpM/KuQHHw5Ea+YCo1vcyY6brvzqA7sJIGK5EI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ZQg2G6ZwBqsKwJRdiFkY/rYwCLGY/YnAR15qvZXZsuX4y0TDE4KR8dAsJ8J85IibG
+	 WLB2WTuVuiX6q8A8KJl/+PInySjninqSC4bIZS3GBKhEnr37ZwIA4DvDubyH3Amvi9
+	 95DIQri8tt9HcZcLouoAWZS0NXhixQx81nsXp+ErxgUfH9VEjqj8SK4HcUdMl8wb4m
+	 z+dSi5X64yhHDoQh7xFX/5g1ju2IPSsgDwTp02koedPRcUEG4DvEtULFsvqU65UKCc
+	 /oDflTneqEOewy9E0YuhiMejfBaSk101uUPyS1Ex1izb/CiN9zWJqk1XHFvKioWDuA
+	 f5csU76CxNB7A==
+Message-ID: <cc0592aa-a360-437b-bbd1-9a1dda14c132@kernel.org>
+Date: Wed, 5 Nov 2025 15:37:01 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251028004614.393374-1-viro@zeniv.linux.org.uk>
- <20251028004614.393374-23-viro@zeniv.linux.org.uk> <66300d81c5e127e3bca8c6c4d997da386b142004.camel@HansenPartnership.com>
- <20251028174540.GN2441659@ZenIV> <20251028210805.GP2441659@ZenIV>
- <CAMj1kXF6tvg6+CL_1x7h0HK1PoSGtxDjc0LQ1abGQBd5qrbffg@mail.gmail.com>
- <9f079d0c8cffb150c0decb673a12bfe1b835efc9.camel@HansenPartnership.com>
- <20251029193755.GU2441659@ZenIV> <CAMj1kXHnEq97bzt-C=zKJdV3BK3EDJCPz3Pfyk52p2735-4wFA@mail.gmail.com>
- <20251105-aufheben-ausmusterung-4588dab8c585@brauner>
-In-Reply-To: <20251105-aufheben-ausmusterung-4588dab8c585@brauner>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Wed, 5 Nov 2025 15:34:28 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEt1i=4iGaum9MoQWMJT55LYxUd6=f+x=NKGCgz5vL4TQ@mail.gmail.com>
-X-Gm-Features: AWmQ_bnxYKD_q_DEqIXXuAAuvtynWG7mNNaOqPYQs_wBysPbMIk9Lu8V4S9c-i8
-Message-ID: <CAMj1kXEt1i=4iGaum9MoQWMJT55LYxUd6=f+x=NKGCgz5vL4TQ@mail.gmail.com>
-Subject: Re: [PATCH v2 22/50] convert efivarfs
-To: Christian Brauner <brauner@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, 
-	James Bottomley <james.bottomley@hansenpartnership.com>, linux-fsdevel@vger.kernel.org, 
-	torvalds@linux-foundation.org, jack@suse.cz, raven@themaw.net, 
-	miklos@szeredi.hu, neil@brown.name, a.hindborg@kernel.org, linux-mm@kvack.org, 
-	linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev, kees@kernel.org, 
-	rostedt@goodmis.org, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
-	paul@paul-moore.com, casey@schaufler-ca.com, linuxppc-dev@lists.ozlabs.org, 
-	john.johansen@canonical.com, selinux@vger.kernel.org, 
-	borntraeger@linux.ibm.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH net v4 0/3] mptcp: Fix conflicts between MPTCP and sockmap
+Content-Language: en-GB, fr-BE
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, mptcp@lists.linux.dev
+Cc: Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20251105113625.148900-1-jiayuan.chen@linux.dev>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <20251105113625.148900-1-jiayuan.chen@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, 5 Nov 2025 at 12:48, Christian Brauner <brauner@kernel.org> wrote:
->
-> On Thu, Oct 30, 2025 at 02:35:51PM +0100, Ard Biesheuvel wrote:
-> > On Wed, 29 Oct 2025 at 20:38, Al Viro <viro@zeniv.linux.org.uk> wrote:
-> > >
-> > > On Wed, Oct 29, 2025 at 02:57:51PM -0400, James Bottomley wrote:
-> > >
-> > > > I think this all looks OK.  The reason for the convolution is that
-> > > > simple_start/done_creating() didn't exist when I did the conversion ...
-> > > > although if they had, I'm not sure I'd have thought of reworking
-> > > > efivarfs_create_dentry to use them.  I tried to update some redundant
-> > > > bits, but it wasn't the focus of what I was trying to fix.
-> > > >
-> > > > So I think the cleanup works and looks nice.
-> > > >
-> > > > >
-> > > > > Relying on the -EEXIST return value to detect duplicates, and
-> > > > > combining the two callbacks seem like neat optimizations to me, so
-> > > > >
-> > > > > Acked-by: Ard Biesheuvel <ardb@kernel.org>
-> > > > >
-> > > > > but I have to confess I am slightly out of my depth when it comes to
-> > > > > VFS stuff.
-> > > >
-> > > > Yes, ack too.
-> > >
-> > >         Umm...  FWIW, I've got a few more followups on top of that (see
-> > > #untested.efivarfs, current head at 36051c773015).  Not sure what would
-> > > be the best way to deal with that stuff - I hope to get the main series
-> > > stabilized and merged in the coming window.  Right now I'm collecting
-> > > feedback (acked-by, etc.), and there's a couple of outright bugfixes
-> > > in front of the series, so I'd expect at least a rebase to -rc4...
-> > >
-> >
-> > I pulled your code and tried to test it. It works fine for the
-> > ordinary case, but only now I realized that commit
-> >
-> > commit 0e4f9483959b785f65a36120bb0e4cf1407e492c
-> > Author: Christian Brauner <brauner@kernel.org>
-> > Date:   Mon Mar 31 14:42:12 2025 +0200
-> >
-> >     efivarfs: support freeze/thaw
-> >
-> > actually broke James's implementation of the post-resume sync with the
-> > underlying variable store.
-> >
-> > So I wonder what the point is of all this complexity if it does not
-> > work for the use case where it is the most important, i.e., resume
-> > from hibernation, where the system goes through an ordinary cold boot
-> > and so the EFI variable store may have gotten out of sync with the
-> > hibernated kernel's view of it.
-> >
-> > If no freeze/thaw support in the suspend/resume path is forthcoming,
-> > would it be better to just revert that change? That would badly
-> > conflict with your changes, though, so I'd like to resolve this before
-> > going further down this path.
->
-> So first of all, this works. I've tested it extensively. If it doesn't
-> work there's a regression.
->
-> And suspend/resume works just fine with freeze/thaw. See commit
-> eacfbf74196f ("power: freeze filesystems during suspend/resume") which
-> implements exactly that.
->
-> The reason this didn't work for you is very likely:
->
-> cat /sys/power/freeze_filesystems
-> 0
->
-> which you must set to 1.
->
+Hi Jiayuan,
 
-Yes, that does the trick, thanks.
+On 05/11/2025 12:36, Jiayuan Chen wrote:
+> Overall, we encountered a warning [1] that can be triggered by running the
+> selftest I provided.
 
-But as James argued as well, this should not be an opt-in, at least
-not for resume from hibernate: from the EFI firmware's PoV, it is just
-a cold boot, and even the tiniest change in hardware state during boot
-(docked vs undocked, USB drive plugged in, etc) could potentially
-affect the state of the variable store. In practice, we are mostly
-interested in some of the non-volatile variables to set the boot order
-etc, so bad things rarely happen, but doing the sync unconditionally
-is the safest choice here.
+Thank you for the v4!
+
+> sockmap works by replacing sk_data_ready, recvmsg, sendmsg operations and
+> implementing fast socket-level forwarding logic:
+> 1. Users can obtain file descriptors through userspace socket()/accept()
+>    interfaces, then call BPF syscall to perform these replacements.
+> 2. Users can also use the bpf_sock_hash_update helper (in sockops programs)
+>    to replace handlers when TCP connections enter ESTABLISHED state
+>   (BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB/BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB)
+> 
+> However, when combined with MPTCP, an issue arises: MPTCP creates subflow
+> sk's and performs TCP handshakes, so the BPF program obtains subflow sk's
+> and may incorrectly replace their sk_prot. We need to reject such
+> operations. In patch 1, we set psock_update_sk_prot to NULL in the
+> subflow's custom sk_prot.
+
+This new version looks good to me. I have some small comments on patches
+1 and 2 that can only be addressed if a v5 is needed I think.
+
+I have some questions for the 3rd patch. It would be good if someone
+else with more experience with the BPF selftests can also look at it.
+
+> Additionally, if the server's listening socket has MPTCP enabled and the
+> client's TCP also uses MPTCP, we should allow the combination of subflow
+> and sockmap. This is because the latest Golang programs have enabled MPTCP
+> for listening sockets by default [2]. For programs already using sockmap,
+> upgrading Golang should not cause sockmap functionality to fail.
+
+Note: even if these patches here are needed to avoid stream corruption
+and other issues, in your specific case with sockmap, I think it would
+be better to set this env var until MPTCP support is added to sockmap:
+
+  GODEBUG=multipathtcp=0
+
+Cheers,
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
+
 
