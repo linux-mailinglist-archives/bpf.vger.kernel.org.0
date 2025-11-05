@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-73703-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73704-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7895C37AF0
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 21:20:28 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12F66C37AFC
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 21:20:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B44E518C1C36
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 20:20:48 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E95A94EAE9B
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 20:20:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11117346A05;
-	Wed,  5 Nov 2025 20:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9515E34B420;
+	Wed,  5 Nov 2025 20:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Zu6jXXKx"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="TmQ2OmUU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB56A347FE8
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 20:19:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D5734A783
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 20:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762373997; cv=none; b=aCjb1fwzlvWN4j9pD2jkJq9CyIrAtb5xKPhT6IdgfG0SxxzTOAKnPVlc6VLB+GsmZml58+HQGXr1iIul1EGliy418WueHNq7QYe2XwBH64Il82+X2zPlxhpajKmNFPRBoYFEfPqxzPjiIX2Rq9BSC86EfCZljyxBWbLYndo0iQY=
+	t=1762373999; cv=none; b=RuYNy9gyWRSX191mccYdMBXErSFycfTklcbEe2egbn1D++v/9tCLv6EY2zy0hcpa4FTOM7i74y9p0ZPkdzjt8iv/4Ii7pqFb5O6/2XaIWNCEa5COU5KgquZiHteL/z59p7JbQsWKb+uZqf153frXNFMsgYOsXARPLZg8a7VEsIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762373997; c=relaxed/simple;
-	bh=gYN6oQsJeTreIpISV5I2QoWCby8ALWACx8QsEt2OAeY=;
+	s=arc-20240116; t=1762373999; c=relaxed/simple;
+	bh=jphV3hLYyJpq5wHhzxxIdaldllEhemXAkq3l8pQxo6c=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=e32E5JZ9OxkSsrH2vhBqEH7wnTGAUVTU6sbZWLZZRwtsR5F+oJL299VD2YzCaQQ1m3GdT/wT8TgiGmAb+SISDePBT+xMyvMu80naUizvVBUfaftLYx9rKbs5obK2QeXr9mJe8Jy/VnHcfSxlaVl/dYKCic4XnZsyJ5D9Vi8w0kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Zu6jXXKx; arc=none smtp.client-ip=209.85.218.42
+	 In-Reply-To:To:Cc; b=IkcG4zRQM69mjg9ahaTDEVqgFVYWk5Bjl4VZq3uR4a5md/wH0gHYFz5h+qpUavTRm4ct3qMSpWdgymwki4xXLviwtmGXljiPV8M9sNfzUWEoBA222rKOCZgeK4pRbKeZNSgL2O1BFg9Ct9jxBz9DjrOlqhG4pqwbDd1ol1tQ2pQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=TmQ2OmUU; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b6d2f5c0e8eso44898766b.3
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 12:19:55 -0800 (PST)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-b7260fc0f1aso48449066b.3
+        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 12:19:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1762373994; x=1762978794; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1762373996; x=1762978796; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=QpMzoQFkKhE0WWczd/SmuvEvZhzMypHVeCaCFMbefns=;
-        b=Zu6jXXKxijLr3+12R1eXZZlB+ypL2LsfGqYRIEeyENK7ggX7UELHd5fNoUnR1rHZn8
-         xDy6glGHzkFpksyoNt/wZreHbg8HeLu+JW//4zlK6x9nsgA1qZnSftDmGRQ8xEFxH+u8
-         YTSmvhCTaucd6iq0ivq9Q4cTmEqJ7RAftOMDlylF0f6aWpxP+akic8F5SVq+58amNTUH
-         NmXn8DeZSROSvquGwuozHWAwdRWmqVweeNy0kFrC2vl6aLmU9xIz5llj/L/42E9UP0Hi
-         VCR/qvUtcxGP5visZXhJh3+RpuffSWh5SPN4p4by3SY5S1iviydJYj8BJgaC8JL/V8WR
-         LCqg==
+        bh=phiaj2apVtnJOs8yCgS1f4Ia15HnRGM+EMU3gmWsJiA=;
+        b=TmQ2OmUUQcbgAtLleqsWKrPvpJARe2KvDz7PKAOiSngv378eiPZpBf3oYGZ54HR4vP
+         xxpi6ef5qM77bafrJma0I9hk3itg9Bbx3cVpWF7GwFb1iuxgNrYM10zTydJVRuBgtTzF
+         wXB6s4I9jk+qookJr03mBFSGFwOig/5P1aR9c22fvjpoMCKd1a9l8BR8v0gQ+Dd17/Hq
+         O3LO/BZ1omMROKsUVyMJSWUNJAxarVa51UZ1tL771QHAC4o2i1BxoZ+RSjAVgvCEihD1
+         JgAB3Zws7LvqYWM3AhWEVaPL5K0h9cw+gotmgrsLiiDTepCYRPVcjeMDsJPR3NJjqeuZ
+         JA2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762373994; x=1762978794;
+        d=1e100.net; s=20230601; t=1762373996; x=1762978796;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QpMzoQFkKhE0WWczd/SmuvEvZhzMypHVeCaCFMbefns=;
-        b=snkUzlmQb9YjOMXMNQbM6LqbDV+E4zPrnir3H7YbeJvY50wj7ArsTVZbDjY2p5C90g
-         Iz/figAiL8QaCjqqQwqeJmW3Z7/JEUGN3bAeHTUhNKU5vCnvuOAvj8VWVyaMe8nBRsPM
-         fQ2oe8kl6vTklUXdax64ZDY2xsPAS7AI9PFEqLjoqMn80VIYJSrn0UJeDud+ISQjH18Q
-         sLG9JTXIlumuRtY3rbTF3AvvEc6aV84xXRJVgwpBrTWdmKxJb1fmLdD2XYiRksD55h61
-         PF0UcR8lz07CwkXrelQX8wtU2q7FFTHSgo9Pp2Hv+H16OeOy0NqOU9PJwhMDCMdlExDY
-         B89g==
-X-Gm-Message-State: AOJu0YzvuJDArqbiGiU8CYWCfCqNQXjzlO7ZPll57sMlYX8j8ZRLnu2w
-	woorunZhHF0y2zngsQb/carGTkL0KIwJExugfQMQzK9AHCl6nWeAR5t3+9i2xUb+nM0=
-X-Gm-Gg: ASbGncsxGTGFVMtQdVQTHiDZ8Q6ajibOdnwOLiRcj9nrCG6nbBzMGrnYGFlYSw4PpmU
-	ll5BjN9KuFPErh6pZIb5Oo9wJzm1FeZ1tWmvemVAfoY+SCMvuoACuxNpy+rZ0TsaSjytidY6VTm
-	2P18j3kcANhEx2shwBwea3a/UFIQJDuALBG3jYzNm5aQXYzTT1pjKnIJjsMscgoUy3Lmjsj0iow
-	eHvC0Jgh34FFnrRlqTbaKew+vksRmAPZ41MLh7cTjWi021Wa3RwCGpZ2GZNTbGesHTukatnyXkI
-	SdLvIZo9rTeMyXHzcPGNKtcV8E+5BoeLNBGK4UYzjb2ktV6bCH5on4JMscKLyxFWSDsv7hMfxR0
-	aN8i5tbd/JUfl8pbzyfP5JGBbB+6dD6d78ZK74as9vV+ZYuUZBGSVMKCYL70JJ50K5i1Rw03vVS
-	dABXs8V1w8N1bm6WLARkg85WmT0zn5nPS7w+rKkYmNRwtgT/CxOquy3mlq
-X-Google-Smtp-Source: AGHT+IFKOU8g6wpirWuWQMHW3413z9v+4YiUIqEJ5zj54J/vQUrGm04np4/erv/xPmOpbqCvy7gC5A==
-X-Received: by 2002:a17:907:7f0f:b0:b6d:7f68:7874 with SMTP id a640c23a62f3a-b726553b051mr444132766b.44.1762373994308;
-        Wed, 05 Nov 2025 12:19:54 -0800 (PST)
+        bh=phiaj2apVtnJOs8yCgS1f4Ia15HnRGM+EMU3gmWsJiA=;
+        b=oNYuylggbjDX/ARL2dp7w90+qNzriMnuoed3pBl6aE8jKeZrTj7r5wzmYqDHeEBIyV
+         FoSk/eoE2QHNJA6xlUrCesOTEyKYWhNmfIKMx9jyKitOy86gvEZfnPGP6p7l6O9Kugl8
+         rbexP1Ko7N3MmCTGdG5AvmmLPn9SQqBy4sarIpgAEGoXyN9SvxGHkfgfdIHLwQktaZg4
+         erGjkO3mR37h96W6vgj38ymNiDSxNzrQyLV5TLSoLbsP3elkoDhlD4hSZ6qi7znIkHau
+         IfAOjwFMKkJt2eln3BgzGxeuaTOT3IonI39KJM/5D5jBdSjG6Z213GkCPMK8Q6sSWJXY
+         wQ6A==
+X-Gm-Message-State: AOJu0YxhGpxmuEl0c0ynVy68WhjFGrsdNiW4XkKvPDQeJ9qgfLZ+kY7Q
+	vvmC8IXvKfMnaQHLzrQFmcDS0rvtWv8pI9oo47RTUwbui4uJrLUfw6sbct3FDXw2L3o=
+X-Gm-Gg: ASbGncsKcU+I/HmBTc9z1OSSmvqNyCrIcbJrb91QJosv0HDcI5XLoFjt0LDnY4RWVIL
+	rAndbA5/oRuC/tmAASAmhFPWeLvFdFscGpY35pHi3uS3IfbaOmECivAi8Pgo0pVi+f5LKFPcrHb
+	8YmvxlmS5blRmiu4tJYfIP7tLqgqoW2X2f4JyK1E+3blgfCXjGnIxJ/ycjnPzQli/u+mgWRMjIE
+	WUS2Fccc57OHBsYvIFsQQt8g3cFMSYroJ1va3mi8ghMzeyU9Dp4ZAw5f7gPV9l9vZFh4OUdc5wY
+	8z+HrD7249y2IcMtpJefbzyK/uBS16rv0RB8O0X1N8B7USNIES8ZZs+vNXuW3JPp2zqHDoHdZgC
+	8ETI7dvOwOHWT9FfTLz0Gx/2DYDEvt4dpTeHXMMxvNGK0K8ZEQYXX37bdnORapbna9tigH9MN8A
+	evG9yARTXR5KxLRg6C0wREkW+KI/niXcDDS1GszqHmZeW9VA==
+X-Google-Smtp-Source: AGHT+IFm9pf1vsVOIIHhPivCTPoKVlXmRUuAQTrkB71LUzQ59fpA8pCc7dnsNTcgjtp5Xl/+1npLuA==
+X-Received: by 2002:a17:907:7e9b:b0:b6d:2c75:3c57 with SMTP id a640c23a62f3a-b72654f55afmr421981466b.39.1762373995677;
+        Wed, 05 Nov 2025 12:19:55 -0800 (PST)
 Received: from cloudflare.com (79.184.211.13.ipv4.supernova.orange.pl. [79.184.211.13])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b72896c93b6sm43126266b.69.2025.11.05.12.19.53
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6411f713a7esm57006a12.7.2025.11.05.12.19.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Nov 2025 12:19:53 -0800 (PST)
+        Wed, 05 Nov 2025 12:19:55 -0800 (PST)
 From: Jakub Sitnicki <jakub@cloudflare.com>
-Date: Wed, 05 Nov 2025 21:19:40 +0100
-Subject: [PATCH bpf-next v4 03/16] bpf: Unclone skb head on
- bpf_dynptr_write to skb metadata
+Date: Wed, 05 Nov 2025 21:19:41 +0100
+Subject: [PATCH bpf-next v4 04/16] vlan: Make vlan_remove_tag return
+ nothing
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,7 +85,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251105-skb-meta-rx-path-v4-3-5ceb08a9b37b@cloudflare.com>
+Message-Id: <20251105-skb-meta-rx-path-v4-4-5ceb08a9b37b@cloudflare.com>
 References: <20251105-skb-meta-rx-path-v4-0-5ceb08a9b37b@cloudflare.com>
 In-Reply-To: <20251105-skb-meta-rx-path-v4-0-5ceb08a9b37b@cloudflare.com>
 To: bpf@vger.kernel.org
@@ -104,108 +104,40 @@ Cc: "David S. Miller" <davem@davemloft.net>,
  kernel-team@cloudflare.com
 X-Mailer: b4 0.15-dev-07fe9
 
-Currently bpf_dynptr_from_skb_meta() marks the dynptr as read-only when
-the skb is cloned, preventing writes to metadata.
+All callers ignore the return value.
 
-Remove this restriction and unclone the skb head on bpf_dynptr_write() to
-metadata, now that the metadata is preserved during uncloning. This makes
-metadata dynptr consistent with skb dynptr, allowing writes regardless of
-whether the skb is cloned.
+Prepare to reorder memmove() after skb_pull() which is a common pattern.
 
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- include/linux/filter.h |  9 +++++++++
- kernel/bpf/helpers.c   |  6 ++----
- net/core/filter.c      | 18 ++++++++++++------
- 3 files changed, 23 insertions(+), 10 deletions(-)
+ include/linux/if_vlan.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index f5c859b8131a..2ff4fc1c2386 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1781,6 +1781,8 @@ int __bpf_xdp_store_bytes(struct xdp_buff *xdp, u32 offset, void *buf, u32 len);
- void *bpf_xdp_pointer(struct xdp_buff *xdp, u32 offset, u32 len);
- void bpf_xdp_copy_buf(struct xdp_buff *xdp, unsigned long off,
- 		      void *buf, unsigned long len, bool flush);
-+int __bpf_skb_meta_store_bytes(struct sk_buff *skb, u32 offset,
-+			       const void *from, u32 len, u64 flags);
- void *bpf_skb_meta_pointer(struct sk_buff *skb, u32 offset);
- #else /* CONFIG_NET */
- static inline int __bpf_skb_load_bytes(const struct sk_buff *skb, u32 offset,
-@@ -1817,6 +1819,13 @@ static inline void bpf_xdp_copy_buf(struct xdp_buff *xdp, unsigned long off, voi
- {
- }
- 
-+static inline int __bpf_skb_meta_store_bytes(struct sk_buff *skb, u32 offset,
-+					     const void *from, u32 len,
-+					     u64 flags)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static inline void *bpf_skb_meta_pointer(struct sk_buff *skb, u32 offset)
- {
- 	return ERR_PTR(-EOPNOTSUPP);
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 865b0dae38d1..050783245c0f 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1890,10 +1890,8 @@ int __bpf_dynptr_write(const struct bpf_dynptr_kern *dst, u64 offset, void *src,
- 			return -EINVAL;
- 		return __bpf_xdp_store_bytes(dst->data, dst->offset + offset, src, len);
- 	case BPF_DYNPTR_TYPE_SKB_META:
--		if (flags)
--			return -EINVAL;
--		memmove(bpf_skb_meta_pointer(dst->data, dst->offset + offset), src, len);
--		return 0;
-+		return __bpf_skb_meta_store_bytes(dst->data, dst->offset + offset, src,
-+						  len, flags);
- 	default:
- 		WARN_ONCE(true, "bpf_dynptr_write: unknown dynptr type %d\n", type);
- 		return -EFAULT;
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 1efec0d70d78..96714eab9c91 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -12023,6 +12023,18 @@ void *bpf_skb_meta_pointer(struct sk_buff *skb, u32 offset)
- 	return skb_metadata_end(skb) - skb_metadata_len(skb) + offset;
- }
- 
-+int __bpf_skb_meta_store_bytes(struct sk_buff *skb, u32 offset,
-+			       const void *from, u32 len, u64 flags)
-+{
-+	if (unlikely(flags))
-+		return -EINVAL;
-+	if (unlikely(bpf_try_make_writable(skb, 0)))
-+		return -EFAULT;
-+
-+	memmove(bpf_skb_meta_pointer(skb, offset), from, len);
-+	return 0;
-+}
-+
- __bpf_kfunc_start_defs();
- __bpf_kfunc int bpf_dynptr_from_skb(struct __sk_buff *s, u64 flags,
- 				    struct bpf_dynptr *ptr__uninit)
-@@ -12050,9 +12062,6 @@ __bpf_kfunc int bpf_dynptr_from_skb(struct __sk_buff *s, u64 flags,
-  * XDP context with bpf_xdp_adjust_meta(). Serves as an alternative to
-  * &__sk_buff->data_meta.
+diff --git a/include/linux/if_vlan.h b/include/linux/if_vlan.h
+index 15e01935d3fa..afa5cc61a0fa 100644
+--- a/include/linux/if_vlan.h
++++ b/include/linux/if_vlan.h
+@@ -731,10 +731,8 @@ static inline void vlan_set_encap_proto(struct sk_buff *skb,
   *
-- * If passed @skb_ is a clone which shares the data with the original, the
-- * dynptr will be read-only. This limitation may be lifted in the future.
+  * Expects the skb to contain a VLAN tag in the payload, and to have skb->data
+  * pointing at the MAC header.
 - *
-  * Return:
-  * * %0         - dynptr ready to use
-  * * %-EINVAL   - invalid flags, dynptr set to null
-@@ -12070,9 +12079,6 @@ __bpf_kfunc int bpf_dynptr_from_skb_meta(struct __sk_buff *skb_, u64 flags,
+- * Returns: a new pointer to skb->data, or NULL on failure to pull.
+  */
+-static inline void *vlan_remove_tag(struct sk_buff *skb, u16 *vlan_tci)
++static inline void vlan_remove_tag(struct sk_buff *skb, u16 *vlan_tci)
+ {
+ 	struct vlan_hdr *vhdr = (struct vlan_hdr *)(skb->data + ETH_HLEN);
  
- 	bpf_dynptr_init(ptr, skb, BPF_DYNPTR_TYPE_SKB_META, 0, skb_metadata_len(skb));
+@@ -742,7 +740,7 @@ static inline void *vlan_remove_tag(struct sk_buff *skb, u16 *vlan_tci)
  
--	if (skb_cloned(skb))
--		bpf_dynptr_set_rdonly(ptr);
--
- 	return 0;
+ 	memmove(skb->data + VLAN_HLEN, skb->data, 2 * ETH_ALEN);
+ 	vlan_set_encap_proto(skb, vhdr);
+-	return __skb_pull(skb, VLAN_HLEN);
++	__skb_pull(skb, VLAN_HLEN);
  }
  
+ /**
 
 -- 
 2.43.0
