@@ -1,234 +1,159 @@
-Return-Path: <bpf+bounces-73659-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73660-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9CCAC3658E
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 16:33:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F8AC3663E
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 16:40:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7214E5004D0
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 15:23:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 453101A428DF
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 15:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE591334C3F;
-	Wed,  5 Nov 2025 15:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB09C334C21;
+	Wed,  5 Nov 2025 15:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GsIrZWgA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uMrvcThp"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A048334C10
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 15:16:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6F1331A59;
+	Wed,  5 Nov 2025 15:23:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762355778; cv=none; b=bTWentcVNd7Q4jiBQKB+3+yZMFy85TmBA8MoAHCvt81buiI6skUsCKGwvDhCcnOlJV9T49xb9TlETzhIDtuXVBTW9UW2EBgOf21lPGDUJDsUiJfIILf0K8+F25jIsPNaIkf+GOpJZ4BuBK1nCeVNaar7drVZ3jpRL83YCLAUL0A=
+	t=1762356227; cv=none; b=S11uMwJaf8FrbcnQifEJz0plYqTOW3WzX0Nf8KvSN8tyIeCPKiZ9pCrHNWuhxh4fbkZnLqLcGXeukGDzVllsUt/g4gP+oqJBsqLKB1A7rF1dRW6aAGszQ7tJnLMMaaCiJu1SvgmbN4M8/s8ojVJGOQQHTZ5rR+bCUSXgeYWspYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762355778; c=relaxed/simple;
-	bh=rJTtHrK1MQ6wRfBIm0WngyG0NegtLpRqfoH9sizKqvk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=vGVCgWk45HbX6v+2Z5EvWLAzSNFTqr5TzSEzjHjXFP2YSSr16rkroeRBe5WqeWNhPkdc1ZWPmeFJ4aRy5upH1zFL4pYEUc+tydtxU5btz1SCTX5ErI7FxKyPBxQtdqcozKNQFgLgF3e0zobrZ7LZyh5dK80oZHzspXA3uvKiClo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GsIrZWgA; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762355774;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gGk84jQ2XkxWi5Eq+6YQXJlTeelSrNDS1DJNo0IH9Lw=;
-	b=GsIrZWgAELCkW+My7cw2E3qDRz8e36W1QnxgBb5fwGfs3SolTJs1BrJ8/JGQ26Lj90cVHc
-	HVgqDK18YBWL1g47wlW4uyLwltX/vrm32uI8YOAd23FJxChBbds9s+juMP9P3Zq/MM6tn7
-	O4FuGTKksDufPed440ymftsbY6PvfC0=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	memxor@gmail.com,
-	ameryhung@gmail.com,
-	linux-kernel@vger.kernel.org,
-	kernel-patches-bot@fb.com,
-	Leon Hwang <leon.hwang@linux.dev>
-Subject: [PATCH bpf-next v6 2/2] selftests/bpf: Add test to verify freeing the special fields when update [lru_,]percpu_hash maps
-Date: Wed,  5 Nov 2025 23:14:07 +0800
-Message-ID: <20251105151407.12723-3-leon.hwang@linux.dev>
-In-Reply-To: <20251105151407.12723-1-leon.hwang@linux.dev>
-References: <20251105151407.12723-1-leon.hwang@linux.dev>
+	s=arc-20240116; t=1762356227; c=relaxed/simple;
+	bh=kUs8Lv2NDX+HzCDICX2X7wBuseMdW6bT2eEf/zscT/4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Aj3T1v/331VyzhdKe9HuEzbzDACObaKZk/f0CION5BGLM1PozB5yuGI9Wymp2UlKrW6pKOfL6kcNCVGmlJNxMyDWfKoDHBvGKonrj9ArOK+3+4Oa3F8X1Ex1t+/IghDsB4fvY9Hj6Yv/U/T60XYXHMaMDj7kKPncOMPonYM6ttg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uMrvcThp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEE3FC4CEF5;
+	Wed,  5 Nov 2025 15:23:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762356226;
+	bh=kUs8Lv2NDX+HzCDICX2X7wBuseMdW6bT2eEf/zscT/4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uMrvcThpY3YAAbWSY9xnzagjiDcwxd3DE9e20MpciQ0mHPg3Rf2Ci/61aau+E4mQM
+	 8nZgzHXJSUUcSaMnT3I6e/kc2OTFqEOU8mhgloW70El8EVP4uFuINodUwyZYdb4wN6
+	 1lFZyctatEB0Ly2mBkqqT1g1f5kszp3d1j2Gfcxbk6+UPzncHihdjKp/ahdU45prxY
+	 rmgoXHjD8Oya/yhaU7KPl20KhLjgM4879Ne2XzlbiGqEnxwVLMRrnoxp2UrzmMsOXc
+	 mmWDqocG56Gn6iM3/+Xaa3pHugJb+dKTjiXrnAV7pXWqqp81/F+Ra04o22uyDpfK++
+	 osL5X75ZbKhQQ==
+Date: Wed, 5 Nov 2025 16:23:39 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org, jack@suse.cz, raven@themaw.net, 
+	miklos@szeredi.hu, neil@brown.name, a.hindborg@kernel.org, linux-mm@kvack.org, 
+	linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev, kees@kernel.org, 
+	rostedt@goodmis.org, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
+	paul@paul-moore.com, casey@schaufler-ca.com, linuxppc-dev@lists.ozlabs.org, 
+	john.johansen@canonical.com, selinux@vger.kernel.org, borntraeger@linux.ibm.com, 
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v2 22/50] convert efivarfs
+Message-ID: <20251105-absatz-zehrt-8d1197f900c9@brauner>
+References: <CAMj1kXF6tvg6+CL_1x7h0HK1PoSGtxDjc0LQ1abGQBd5qrbffg@mail.gmail.com>
+ <9f079d0c8cffb150c0decb673a12bfe1b835efc9.camel@HansenPartnership.com>
+ <20251029193755.GU2441659@ZenIV>
+ <CAMj1kXHnEq97bzt-C=zKJdV3BK3EDJCPz3Pfyk52p2735-4wFA@mail.gmail.com>
+ <20251105-aufheben-ausmusterung-4588dab8c585@brauner>
+ <423f5cc5352c54fc21e0570daeeddc4a58e74974.camel@HansenPartnership.com>
+ <20251105-sohlen-fenster-e7c5af1204c4@brauner>
+ <305ff01c159993d8124ae3125f7dacf6b61fa933.camel@HansenPartnership.com>
+ <20251105-ausfiel-klopapier-599213591ad2@brauner>
+ <ddc9e2efa25d59ae7f1989ac155b9a9043ca830b.camel@HansenPartnership.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <ddc9e2efa25d59ae7f1989ac155b9a9043ca830b.camel@HansenPartnership.com>
 
-Add test to verify that updating [lru_,]percpu_hash maps decrements
-refcount when BPF_KPTR_REF objects are involved.
+On Wed, Nov 05, 2025 at 09:01:59AM -0500, James Bottomley wrote:
+> On Wed, 2025-11-05 at 14:46 +0100, Christian Brauner wrote:
+> > On Wed, Nov 05, 2025 at 08:33:10AM -0500, James Bottomley wrote:
+> > > On Wed, 2025-11-05 at 14:16 +0100, Christian Brauner wrote:
+> > > > On Wed, Nov 05, 2025 at 08:09:03AM -0500, James Bottomley wrote:
+> > > > > On Wed, 2025-11-05 at 12:47 +0100, Christian Brauner wrote:
+> > > [...]
+> > > > > > And suspend/resume works just fine with freeze/thaw. See
+> > > > > > commit
+> > > > > > eacfbf74196f ("power: freeze filesystems during
+> > > > > > suspend/resume") which implements exactly that.
+> > > > > > 
+> > > > > > The reason this didn't work for you is very likely:
+> > > > > > 
+> > > > > > cat /sys/power/freeze_filesystems
+> > > > > > 0
+> > > > > > 
+> > > > > > which you must set to 1.
+> > > > > 
+> > > > > Actually, no, that's not correct.  The efivarfs freeze/thaw
+> > > > > logic must run unconditionally regardless of this setting to
+> > > > > fix the systemd bug, so all the variable resyncing is done in
+> > > > > the thaw call, which isn't conditioned on the above (or at
+> > > > > least it shouldn't be).
+> > > > 
+> > > > It is conditioned on the above currently but we can certainly fix
+> > > > it easily to not be.
+> > > 
+> > > It still seems to be unconditional in upstream 6.18-rc4
+> > > kernel/power/hibernate.c with only freeze being conditioned on the
+> > 
+> > I'm honestly not sure how efivarfs would be frozen if
+> > filesystems_freeze() isn't called... Maybe I missed that memo though.
+> > In any case I just sent you...
+> 
+> We don't need to be frozen: our freeze_fs method is empty, we just need
+> thaw_fs calling.
 
-The tests perform the following steps:
+No, you need to call freeze so the power subsystem can mark the
+filesystem as being exclusively frozen by it because that specific
+freeze must not be undone by anyone else e.g., userspace or some other
+internal unfreeze due to some filesystem (for other filesystems this is
+very relevant) internal freeze for say scrub or whatever.
 
-1. Call update_elem() to insert an initial value.
-2. Use bpf_refcount_acquire() to increment the refcount.
-3. Store the node pointer in the map value.
-4. Add the node to a linked list.
-5. Probe-read the refcount and verify it is *2*.
-6. Call update_elem() again to trigger refcount decrement.
-7. Probe-read the refcount and verify it is *1*.
+If filesystem_thaw() doesn't find efivarfs frozen - and exclusively
+frozen by the power subsyste - it obviously won't call the actual
+efivarfs thaw method. It's all working in order. My patch should fix
+your issue and will ensure efivarfs always runs. We wouldn't even need
+an SB_I_* flag for this. We could equally well just match superblock but
+other filesystems might need or want to opt into this too.
 
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
----
- .../bpf/prog_tests/refcounted_kptr.c          | 57 ++++++++++++++++++
- .../selftests/bpf/progs/refcounted_kptr.c     | 60 +++++++++++++++++++
- 2 files changed, 117 insertions(+)
+Don't implement thaw_super() yourself, please.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/refcounted_kptr.c b/tools/testing/selftests/bpf/prog_tests/refcounted_kptr.c
-index d6bd5e16e6372..086f679fa3f61 100644
---- a/tools/testing/selftests/bpf/prog_tests/refcounted_kptr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/refcounted_kptr.c
-@@ -44,3 +44,60 @@ void test_refcounted_kptr_wrong_owner(void)
- 	ASSERT_OK(opts.retval, "rbtree_wrong_owner_remove_fail_a2 retval");
- 	refcounted_kptr__destroy(skel);
- }
-+
-+void test_percpu_hash_refcounted_kptr_refcount_leak(void)
-+{
-+	struct refcounted_kptr *skel;
-+	int cpu_nr, fd, err, key = 0;
-+	struct bpf_map *map;
-+	size_t values_sz;
-+	u64 *values;
-+	LIBBPF_OPTS(bpf_test_run_opts, opts,
-+		    .data_in = &pkt_v4,
-+		    .data_size_in = sizeof(pkt_v4),
-+		    .repeat = 1,
-+	);
-+
-+	cpu_nr = libbpf_num_possible_cpus();
-+	if (!ASSERT_GT(cpu_nr, 0, "libbpf_num_possible_cpus"))
-+		return;
-+
-+	values = calloc(cpu_nr, sizeof(u64));
-+	if (!ASSERT_OK_PTR(values, "calloc values"))
-+		return;
-+
-+	skel = refcounted_kptr__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "refcounted_kptr__open_and_load")) {
-+		free(values);
-+		return;
-+	}
-+
-+	values_sz = cpu_nr * sizeof(u64);
-+	memset(values, 0, values_sz);
-+
-+	map = skel->maps.percpu_hash;
-+	err = bpf_map__update_elem(map, &key, sizeof(key), values, values_sz, 0);
-+	if (!ASSERT_OK(err, "bpf_map__update_elem"))
-+		goto out;
-+
-+	fd = bpf_program__fd(skel->progs.percpu_hash_refcount_leak);
-+	err = bpf_prog_test_run_opts(fd, &opts);
-+	if (!ASSERT_OK(err, "bpf_prog_test_run_opts"))
-+		goto out;
-+	if (!ASSERT_EQ(opts.retval, 2, "opts.retval"))
-+		goto out;
-+
-+	err = bpf_map__update_elem(map, &key, sizeof(key), values, values_sz, 0);
-+	if (!ASSERT_OK(err, "bpf_map__update_elem"))
-+		goto out;
-+
-+	fd = bpf_program__fd(skel->progs.check_percpu_hash_refcount);
-+	err = bpf_prog_test_run_opts(fd, &opts);
-+	ASSERT_OK(err, "bpf_prog_test_run_opts");
-+	ASSERT_EQ(opts.retval, 1, "opts.retval");
-+
-+out:
-+	refcounted_kptr__destroy(skel);
-+	free(values);
-+}
-+
-diff --git a/tools/testing/selftests/bpf/progs/refcounted_kptr.c b/tools/testing/selftests/bpf/progs/refcounted_kptr.c
-index 893a4fdb4b6e9..1aca85d86aebc 100644
---- a/tools/testing/selftests/bpf/progs/refcounted_kptr.c
-+++ b/tools/testing/selftests/bpf/progs/refcounted_kptr.c
-@@ -568,4 +568,64 @@ int BPF_PROG(rbtree_sleepable_rcu_no_explicit_rcu_lock,
- 	return 0;
- }
- 
-+private(kptr_ref) u64 ref;
-+
-+static int probe_read_refcount(void)
-+{
-+	u32 refcount;
-+
-+	bpf_probe_read_kernel(&refcount, sizeof(refcount), (void *) ref);
-+	return refcount;
-+}
-+
-+static int __insert_in_list(struct bpf_list_head *head, struct bpf_spin_lock *lock,
-+			    struct node_data __kptr **node)
-+{
-+	struct node_data *node_new, *node_ref, *node_old;
-+
-+	node_new = bpf_obj_new(typeof(*node_new));
-+	if (!node_new)
-+		return -1;
-+
-+	node_ref = bpf_refcount_acquire(node_new);
-+	node_old = bpf_kptr_xchg(node, node_new);
-+	if (node_old) {
-+		bpf_obj_drop(node_old);
-+		bpf_obj_drop(node_ref);
-+		return -2;
-+	}
-+
-+	bpf_spin_lock(lock);
-+	bpf_list_push_front(head, &node_ref->l);
-+	ref = (u64)(void *) &node_ref->ref;
-+	bpf_spin_unlock(lock);
-+	return probe_read_refcount();
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_HASH);
-+	__type(key, int);
-+	__type(value, struct map_value);
-+	__uint(max_entries, 1);
-+} percpu_hash SEC(".maps");
-+
-+SEC("tc")
-+int percpu_hash_refcount_leak(void *ctx)
-+{
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&percpu_hash, &key);
-+	if (!v)
-+		return 0;
-+
-+	return __insert_in_list(&head, &lock, &v->node);
-+}
-+
-+SEC("tc")
-+int check_percpu_hash_refcount(void *ctx)
-+{
-+	return probe_read_refcount();
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.51.2
-
+> 
+> Is the trouble that there's now freeze/thaw accounting, so thaw won't
+> be called based on that if freeze wasn't?  In which case might it not
+> be better for us to implement thaw_super, which is called
+> unconditionally and leaves the accounting up to the filesystem?
+> 
+> > > setting of the filesystem_freeze variable but I haven't checked -
+> > > next.
+> > > 
+> > > However, if there's anything in the works to change that we would
+> > > need an exception for efivarfs, please ... we can't have a bug fix
+> > > conditioned on a user setting.
+> > 
+> > ... a patch in another mail.
+> > 
+> > Sorry in case I misunderstood that you _always_ wanted that sync
+> > regardless of userspace enabling it.
+> 
+> We need the thaw method called to get the variable resync to happen. 
+> That fixes a bug on hibernate with systemd (and also accounts for an
+> other efi variable changes the user may have made between hibernate and
+> resume), yes.  And we need that to happen unconditionally to fix the
+> systemd bug.
+> 
+> Regards,
+> 
+> James
+> 
 
