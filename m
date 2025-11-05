@@ -1,190 +1,179 @@
-Return-Path: <bpf+bounces-73694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73695-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E64CC3775C
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 20:24:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A75DEC377FB
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 20:35:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3C753AC6A8
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 19:24:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 481CE3AE1DD
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 19:33:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B578832D431;
-	Wed,  5 Nov 2025 19:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30FA33F389;
+	Wed,  5 Nov 2025 19:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XC+A+6ae"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oZwVT0eg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF432367BA
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 19:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AF5D30FC3A;
+	Wed,  5 Nov 2025 19:33:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762370636; cv=none; b=QynMcdNy4ifmIm+eogEh+ZrSQzP6TyErSM8dd+CcBqcFRpHZBHgFUSgpkXknbigNiz6p99FrxgM+8MH4iCbI/eVKwRxpvbinBlOLsob0cPXqDtTa4UxY9DfNUDj+19UYHwHU4rAfu958EJT5QgONCWEsZ0XEZrh2ooymuExBAt4=
+	t=1762371196; cv=none; b=Y0YMz3qnwxF2LDqmxc4iqEcD/1d1PhIrU6qcLYdH2ZptaDUQ4V+2pdtMZa/1zsGIW3dTahGnJvqJBztFqEs7uGrM927iQQIEKH3XC44zmUI3av3x0x3Crl5i6tDMcOqqUCq+vB8MxnCqwCSwEXXQJBygflf4h0siwntQR9XzL1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762370636; c=relaxed/simple;
-	bh=xumo1NJjI1tSArbHaxlVI/vTMt0zSW0N/aOr2WFfe5c=;
+	s=arc-20240116; t=1762371196; c=relaxed/simple;
+	bh=sC4pVjz5nexJHLhCwpKv2mgis9nGW809FMorwmcxnfI=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=UWYOuxkVtHCegnw5Z12dwSFTcr8TrX1cn8Wd3TnDUVmX1GLoK8pFsQid3M+USz9OMmk2yPkhj2/Q+GVPSijWggLnYxJwoYDDzz3mdHeoXkNKjqBCg8j2/XTFKKDrJPmTnTaefnu+/fAlcmxcLeZaU6HtewxCXjcOPAAztW4ij2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XC+A+6ae; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-782e93932ffso201659b3a.3
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 11:23:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762370634; x=1762975434; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=RREx40hV5tyq0dYa5rX5oC5Z4Ah1UHImj4yHSS+0TPM=;
-        b=XC+A+6aeXtaikgEIpbmvDPTvFpCq7olfeVKY6QWw6ZOD/x6WXKvWRCt8C3sOSf5RQN
-         QWXairb9JaU7Gpgx93CCihV1/aW194smY2aRvujhTin+dTR8PORPiyOPM5hkk6D3FjZc
-         QjAq5Ll1fNNwUJ8zQPADxTOouQ0yfELWUdzfuRFw0oNICrwl6VzINLOG020DNwd1nYo5
-         RVylP6NGmRRXrYSOQphlJUoUYJ20ejY96ppEInqIvAmATOnzPIj9VT2JerdArG0oNJ2L
-         juM5y86njPE7l6v5ZVvmve0Xmdzt+vZuYu60W+xRLpl5orDv5TTc0VPsMH31631U7mvM
-         6XAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762370634; x=1762975434;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RREx40hV5tyq0dYa5rX5oC5Z4Ah1UHImj4yHSS+0TPM=;
-        b=M1/sHeIwnhlGSTXRZEahpKLjKVVAh0wUWduruuCVOk4xq780XDQVbVy1lvt5b9K1FK
-         IsuQ4pinQ12I5kM/aILnx94hgjYo4UN5VaE7eze5GSKXLlYVImaOxvUGNQZvms36UxHi
-         2/02zN3q4AOlSs0MFqQiznVXPp155ei/ch3FKrK+uvZ3lf1d96VapLq6uw/wjXWVg1oo
-         OpwEgkqS7RC+TVcEKGSjCEod/Ckw4msQy7VsjBmi4MAIws8GJz1XI8J3Se+jA6kUT/9g
-         rbBSTC0sa9WR5SVllFGx9nIqHdj4FCI8Oz8T2gVLDc7eqE1ZmL1YTPjQmCt3vwNu38s8
-         d6dQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUig7jgM+YZKTburGnoFXHjefc3hLG+H+TN27KJqm/zcA///KNc+wtkqB4Y5pK1NMxcKqs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx5wXqkfha3e+ngEZDGz+0PMHDTfs7naewBwf6FosjLjJSKaD8j
-	IG70VUaf9J0hJjhjBWZfpRT5YVUD3bYnSTUE64SWDPea01vW/kuVyLyc
-X-Gm-Gg: ASbGncuzDMAuuztczsG8kHC2V4HAjpbqGCvnkUYGP2M8W5XrBo8NqF+D60IdmL9472f
-	wbsY5qevB3+FTXxmFOzTigSFAjXDA8CCnlL1u18ejM0C47jVokBHnqqXbHmE4QFJQ8+Lm8aIWkW
-	my1huEIHaWYoQeEB/JyUzOSxHqTPMqUxReJwsqcR7mllxsHLrCNpbWRjjwaLtyLemYTE77KWP4m
-	JVZIFdW4TDesG88E2iud8zLZspKG71/8As/08YSYqXjlj74tZKU/5wudZHwuLF7DT/mrAKYR+Az
-	eXd708ZzwL4LZXoZM565GJ9sx+2zM1M5Ho5RE8uO+6LIhcmXGLcPXvyQEIqT9tph6y6NeWRW184
-	vEkgiJYG+fU9m118r19ZviljCNP0blf6gI2SeSB4/XEjrIJFjaEwkILo58veHeB9tTwtVSkAfrd
-	7yAFrMoMRQoHAoqN3ngVQrXm9Cr8TAfB5NiyI=
-X-Google-Smtp-Source: AGHT+IEF1f46SRcectCdqICEP1eNEqVAI9FbwInYUxhpGA0Pisokd6E6G3WgcwMjG2n50Dr7nHIlyg==
-X-Received: by 2002:a05:6a00:2e11:b0:7a2:73a9:97e with SMTP id d2e1a72fcca58-7ae1f5937c6mr4969623b3a.26.1762370634009;
-        Wed, 05 Nov 2025 11:23:54 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:cdf2:29c1:f331:3e1? ([2620:10d:c090:500::6:8aee])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7af82204713sm187026b3a.36.2025.11.05.11.23.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Nov 2025 11:23:53 -0800 (PST)
-Message-ID: <2ba0561a653254254a0fa1709bffb3704488f33b.camel@gmail.com>
-Subject: Re: [RFC PATCH v4 2/7] libbpf: Add BTF permutation support for type
- reordering
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Alan Maguire
-	 <alan.maguire@oracle.com>, Song Liu <song@kernel.org>, pengdonglin
-	 <pengdonglin@xiaomi.com>
-Date: Wed, 05 Nov 2025 11:23:52 -0800
-In-Reply-To: <CAEf4BzbVU2sBw4aSOB1+SdKN0Qe-WEtDKo3wn21C6UjfSKiBdQ@mail.gmail.com>
-References: <20251104134033.344807-1-dolinux.peng@gmail.com>
-	 <20251104134033.344807-3-dolinux.peng@gmail.com>
-	 <CAEf4BzaQ9k=_JwpmkjnbN8o0XaA=EGcP-=CBxmXLc3kzh3aY3A@mail.gmail.com>
-	 <3986a6b863be2ec62820ea5d2cf471f7e233fac0.camel@gmail.com>
-	 <CAEf4BzaLmVuPRL4V1VKBmaXtrvT=oLwo=M7sLURgoYU34BkpMQ@mail.gmail.com>
-	 <627795f165b1e66500b9f032ed7474125938f33a.camel@gmail.com>
-	 <CAEf4BzbVU2sBw4aSOB1+SdKN0Qe-WEtDKo3wn21C6UjfSKiBdQ@mail.gmail.com>
+	 Content-Type:MIME-Version; b=VbduDwSuq5rwpgovGKQuok3HsrM8pTyHS4NkiCfH8em+XJX5vv5txhCoSx+rAVWGLVguqihPe/MAIvuPt8cH+VbqaRkjOLvTGiq9l8aDvwHXnFb+uEeXFAKoS05nLHLBud3vD2g5Nlcf6k1FN9l6plrcRUElrw5zYZzsJXRDNzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oZwVT0eg; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5A5GMWtn019236;
+	Wed, 5 Nov 2025 19:32:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=sC4pVj
+	z5nexJHLhCwpKv2mgis9nGW809FMorwmcxnfI=; b=oZwVT0egwC9sgC493PcA9Q
+	3pDsGkrTmTjcVwDEN28XXR78dhbZ8uUv8bR4nDLcHz9g/EniZFjIQjIh7FlSY2st
+	EhFoItQng0VG6Lo378/bTb3fuY6gKSBp6+f9c8g+O9Y16KaYlyBHipR117egAuXE
+	6HLgXzgk2ap8mOXHlO6dvfpyJy7luKPHPgSlVKwYynsP/cTez1qsfiSBimPOualy
+	0EnEBjwdo7oJt7YIOhoVXVToJVGLZ0hoeSbKNw79Nn/pCOKr0yPo2sdT5Z4yYj1c
+	/bi3CDbm25eu9S6jVpQyubxZEKalDctguLU5o1tYwRp2oJt2tCGtXiJ1xWT2+mxQ
+	==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a57mrb0f2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 05 Nov 2025 19:32:56 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5A5IkThu009903;
+	Wed, 5 Nov 2025 19:32:55 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4a5x1khsxq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 05 Nov 2025 19:32:55 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5A5JWphZ51446220
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 5 Nov 2025 19:32:51 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B8E3920043;
+	Wed,  5 Nov 2025 19:32:51 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E909220040;
+	Wed,  5 Nov 2025 19:32:50 +0000 (GMT)
+Received: from [127.0.0.1] (unknown [9.87.135.254])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  5 Nov 2025 19:32:50 +0000 (GMT)
+Message-ID: <ea1f1fd23d1bf4937c91be3bd45744b07b000b1e.camel@linux.ibm.com>
+Subject: Re: [PATCH 0/2] scripts/gdb/symbols: make BPF debug info available
+ to GDB
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Jan Kiszka <jan.kiszka@siemens.com>, Alexei Starovoitov
+ <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko
+ <andrii@kernel.org>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Andrew Morton
+ <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Heiko Carstens
+	 <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev
+	 <agordeev@linux.ibm.com>
+Date: Wed, 05 Nov 2025 20:32:50 +0100
+In-Reply-To: <1eec0bc4-dc4a-4fe1-affa-3b8620dfc79d@siemens.com>
+References: <20250710115920.47740-1-iii@linux.ibm.com>
+	 <1eec0bc4-dc4a-4fe1-affa-3b8620dfc79d@siemens.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: jW2hN8RnbASfzr0LffOBskEKbt18VvdI
+X-Authority-Analysis: v=2.4 cv=MKhtWcZl c=1 sm=1 tr=0 ts=690ba668 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=ypKVNuHTik4TnLp-rxMA:9 a=QEXdDO2ut3YA:10 a=cPQSjfK2_nFv0Q5t_7PE:22
+ a=HhbK4dLum7pmb74im6QT:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
+X-Proofpoint-ORIG-GUID: jW2hN8RnbASfzr0LffOBskEKbt18VvdI
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTAxMDAwMSBTYWx0ZWRfX0p3soDq5jouE
+ H/ZaoJ+OJE3TWU78OnGj+nNItXTTEWbZUBlc4xt8MqAe0eiI1ikFKpumu+5jkCnYEFL2YiGAHe6
+ dGkcmgG1sSQrWZQ9hvQWn/hIlU2cldtolsZAi2w4uOj9baIg8k8YfMXmsFwhFp2SiVpHqclVbTM
+ ZF3f6sRdw07kj4WFHIAzoE396/NFi9YwqrlIBU4bV9GLxw+lMi++oP67FcE+o87MiTQxhUKo0+O
+ N8z9gbPSUWD4EBB4TFAiMIY/ceGCTThDW7G5YW9qhPLeMYPpJYTD6iH1Kfh6VpIqfGKrEEsib2O
+ GWovwWaN7M3WF2mO4Ad/FSY4hqoI2H5KsiKpnohumHMP3Sw+qYUMmaMhOpWWQ7IlDhNWH7RlDgb
+ HbU4Alq6mNvA38vz+xMCFJFX1VRoMQ==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-05_07,2025-11-03_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 suspectscore=0 bulkscore=0 impostorscore=0 clxscore=1011
+ lowpriorityscore=0 malwarescore=0 adultscore=0 phishscore=0 spamscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511010001
 
-On Wed, 2025-11-05 at 10:23 -0800, Andrii Nakryiko wrote:
-> On Tue, Nov 4, 2025 at 5:20=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
+On Thu, 2025-10-30 at 17:47 +0100, Jan Kiszka wrote:
+> On 10.07.25 13:53, Ilya Leoshkevich wrote:
+> > Hi,
 > >=20
-> > On Tue, 2025-11-04 at 17:04 -0800, Andrii Nakryiko wrote:
-> > > On Tue, Nov 4, 2025 at 4:16=E2=80=AFPM Eduard Zingerman <eddyz87@gmai=
-l.com> wrote:
-> > > >=20
-> > > > On Tue, 2025-11-04 at 16:11 -0800, Andrii Nakryiko wrote:
-> > > >=20
-> > > > [...]
-> > > >=20
-> > > > > > +static int btf_permute_remap_type_id(__u32 *type_id, void *ctx=
-)
-> > > > > > +{
-> > > > > > +       struct btf_permute *p =3D ctx;
-> > > > > > +       __u32 new_type_id =3D *type_id;
-> > > > > > +
-> > > > > > +       /* skip references that point into the base BTF */
-> > > > > > +       if (new_type_id < p->btf->start_id)
-> > > > > > +               return 0;
-> > > > > > +
-> > > > > > +       new_type_id =3D p->map[*type_id - p->btf->start_id];
-> > > > >=20
-> > > > > I'm actually confused, I thought p->ids would be the mapping from
-> > > > > original type ID (minus start_id, of course) to a new desired ID,=
- but
-> > > > > it looks to be the other way? ids is a desired resulting *sequenc=
-e* of
-> > > > > types identified by their original ID. I find it quite confusing.=
- I
-> > > > > think about permutation as a mapping from original type ID to a n=
-ew
-> > > > > type ID, am I confused?
-> > > >=20
-> > > > Yes, it is a desired sequence, not mapping.
-> > > > I guess its a bit simpler to use for sorting use-case, as you can j=
-ust
-> > > > swap ids while sorting.
-> > >=20
-> > > The question is really what makes most sense as an interface. Because
-> > > for sorting cases it's just the matter of a two-line for() loop to
-> > > create ID mapping once types are sorted.
-> > >=20
-> > > I have slight preference for id_map approach because it is easy to
-> > > extend to the case of selectively dropping some types. We can just
-> > > define that such IDs should be mapped to zero. This will work as a
-> > > natural extension. With the desired end sequence of IDs, it's less
-> > > natural and will require more work to determine which IDs are missing
-> > > from the sequence.
-> > >=20
-> > > So unless there is some really good and strong reason, shall we go
-> > > with the ID mapping approach?
+> > This series greatly simplifies debugging BPF progs when using QEMU
+> > gdbstub by providing symbol names, sizes, and line numbers to GDB.
 > >=20
-> > If the interface is extended with types_cnt, as you suggest, deleting
-> > types is trivial with sequence interface as well. At-least the way it
-> > is implemented by this patch, you just copy elements from 'ids' one by
-> > one.
+> > Patch 1 adds radix tree iteration, which is necessary for parsing
+> > prog_idr. Patch 2 is the actual implementation; its description
+> > contains some details on how to use this.
+> >=20
+> > Best regards,
+> > Ilya
+> >=20
+> > Ilya Leoshkevich (2):
+> > =C2=A0 scripts/gdb/radix-tree: add lx-radix-tree-command
+> > =C2=A0 scripts/gdb/symbols: make BPF debug info available to GDB
+> >=20
+> > =C2=A0scripts/gdb/linux/bpf.py=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 | 253
+> > ++++++++++++++++++++++++++++++
+> > =C2=A0scripts/gdb/linux/constants.py.in |=C2=A0=C2=A0 3 +
+> > =C2=A0scripts/gdb/linux/radixtree.py=C2=A0=C2=A0=C2=A0 | 139 ++++++++++=
++++++-
+> > =C2=A0scripts/gdb/linux/symbols.py=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=
+=A0 77 ++++++++-
+> > =C2=A04 files changed, 462 insertions(+), 10 deletions(-)
+> > =C2=A0create mode 100644 scripts/gdb/linux/bpf.py
+> >=20
 >=20
-> But it is way less explicit and obvious way to delete element. With ID
-> map it is obvious, that type will be mapped to zero. With list of IDs,
-> you effectively search for elements that are missing, which IMO is way
-> less optimal an interface.
+> This wasn't picked up yet, right? Sorry for the late reply, my part
+> of
+> the "maintenance" here is best effort based.
 >=20
-> So I still favor the ID map approach.
+> Looks good to me regarding integration. I haven't tried it out, I'm
+> just
+> wondering if it has notable performance impact on starting gdb or
+> interacting or when that could be the case. BPF programs are not
+> uncommon in common setups today. But if you don't want to debug them,
+> does this add unneeded overhead?
+>=20
+> Otherwise, I think it could move forward if it still applies (which
+> it
+> likely does).
+>=20
+> Jan
 
-You don't need to search for deleted elements with current
-implementation (assuming the ids_cnt parameter is added).
-Suppose there are 4 types + void in BTF and the 'ids' sequence looks
-as follows: {1, 3, 4}, current implementation will:
-- iterate over 'ids':
-  - copy 1 to new_types, remember to remap 1 to 1
-  - copy 3 to new_types, remember to remap 3 to 2
-  - copy 4 to new_types, remember to remap 4 to 3
-- do the remapping.
+Thanks for taking a look!
 
-Consider the sorting use-case:
-- If 'ids' is the desired final order of types, libbpf needs to
-  allocate the mapping from old id to new id, as described above.
-- If 'ids' is a map from old id to new id:
-  - libbpf will have to allocate a temporary array to hold the desired
-    id sequence, to know in which order to copy the types;
-  - user will have to allocate the array for mapping.
+I have to admit the performance implications are noticeable due to
+having to spawn an external process for each BPF prog.
 
-So, for id map approach it is one more allocation for no benefit.
+What do you think about hiding this behind `lx-symbols --bpf` flag?
 
