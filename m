@@ -1,123 +1,186 @@
-Return-Path: <bpf+bounces-73736-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73737-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A50BC38256
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 23:09:12 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 775B6C382A5
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 23:18:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id DD51F34F3F9
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 22:09:11 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0DDAB4F56EE
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 22:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E39242EFDA2;
-	Wed,  5 Nov 2025 22:09:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1283D2F12A3;
+	Wed,  5 Nov 2025 22:17:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m1ks+Q7t"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jiZyxjTG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB2B287505
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 22:09:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68EFC2E888C
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 22:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762380543; cv=none; b=MNmMM63NRKhBd/glZXKzrIrdtSWUdxOfFLAm+rqGE87Lf8HM1xO5eaed5WGTxumyxV3f/bigyK3xq6k5GUU1sTOdzSHppACWNGXqaM623QTS5c/2gZgwU8zeMJ4+1aNf7XCOFQar5Hb7vuxd3hes9+KH/UIpJq01C0vI0C/ZbpI=
+	t=1762381050; cv=none; b=taS1UQuN89gV/oAkkUsbfSe7bIx27DA9htujX0E76Ol8noQvCosJdmpySbw6G+9M8rf8L3pIkOuUT6m7fNYGvQFrx4q9HL+xncBlCcbRLphk+894SxJpUoTlZTVbu363HVk5q0LhYMq0wk8OgiaOYyVWfKM/rH/3cnuuYzHYIVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762380543; c=relaxed/simple;
-	bh=KgXp3nCnzWJkka6TIDbKkxCGzc5iLi6go3oc5VGCLSc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=kTsrhT+Px3rts+q9J52cB8MtAbIheIfH5Fc1kd/p5UJYY5L9d/b9wMBlGlKKrX/D4MrOH5ti2NGvn8zlZmJcyPAOpb/oL7ySRBT3QQqnxoQHWckjltbGlZIsF4bj2p+xFaeDCi8oj8148sw1c9BKALfWasgUhDgCF5VCNB+8SF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m1ks+Q7t; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-76e2ea933b7so340445b3a.1
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 14:09:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762380541; x=1762985341; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8+4iq6Nh86L1GZyal89LrHUzhbwe/7RnJqO8ZvkHHtE=;
-        b=m1ks+Q7tcLohYFK1Dzo+hWdx5CmHrHwbBoqjjhsgJRTaWmtdiTCZChkUrbaWpneBtv
-         eJXmAJLuVOYwh0+4LO34KowNDrReoK37Tg3l6ea/KJPKVwbcMkYBej4ol9zL3iSWF28S
-         i2IAm5NkcX3grf/41Jx6a4EheZLnMvrnHBMopbgq8a67tH7smqqCNOMLQ1Hp5bO+gCC5
-         Bfhfn8+a5JVgit3WBiezQACOfIsVDX94j1LHrPoXSz8R6+V1KGONOH8JQnMW+/5looJN
-         FwUIgU/3I/ULSOuCtHWAfg8yarPGFTIGO+MdP43GiOpdrCoqwFn2Mn361il5x7VOW9Ci
-         GzHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762380541; x=1762985341;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8+4iq6Nh86L1GZyal89LrHUzhbwe/7RnJqO8ZvkHHtE=;
-        b=O5HngdFtcnSJk5X1z5XPtFUOx5nySox96aL7C3JF6lK0+3AMgsKylQa7Yqxv5NAvJA
-         GJWqF/AE5YraumyGQarVmQK9t9Xn8nTkX6nhuX22Aa0MhSWMRjUI1LjLeYoYKmzY489O
-         6IaLh/thGmJUGpqjE6bJSJSkR71eky0KA2FaMCeftAICR1hLUCy/wfglIEF78ferZtRo
-         mOL+4A3uNMerfx6BX5ziAQi26igqQRFcSMTdgNMgm1ww23wM/YfHrtF2tegNqzTxO2tY
-         1UIzSTpINvTuXFvgCrhKOH9L+3MFb5fGLBaIgejxDWLY+E0l8bwxTm17Kjn53hIbVg1N
-         oKtw==
-X-Gm-Message-State: AOJu0YwSBRrq2c7wHOxjKpJj54k9dlIz2WPSiLOFkECAVEFmJy7mk21l
-	zRgYM0N2ApgOgMlCBVWCGFPygZGyT4ZGaSfcqmPLfCEoSyrSoHn1T1js
-X-Gm-Gg: ASbGncvSDbHBOzKOYdVzQo61zq1CZWKyHvxcynRsS5f8I55FyUeKZRCw1bi2BI/VN2N
-	1NsXBTjtY+SsJlY5B7UKfFYDljzbrEftdd17+Rs3ZZRs2fQsp7HEZlCde6DiZ8Byf/Qt9V0rYkm
-	4bjR2q/FU4oKT/i+xWFdvTJLiOykfa17sveFVdbBniVX1BYVIeMjhpXqv7WWdSFGNEfgZqjP2ZD
-	fFYV+AaHbJDQuAFvTQgCmMiCXzjLV7bMnGENAc4dxXh8pT8QEkSba19F5hu5vOXuM7Bpsmow9GE
-	y09eZHB8AxxIjw4tguSAGT6O4J5eBMj5+JPpsk4mvHpoFCSzSoTc83e5nxoqWMA1nztBGaAc/y+
-	/QoROckd3eKkayMA8HV/LunE52K0g6o+eJxef5rAt1uK1KRl9uLFqbbR8ADYwp9aft4jk/niJ2Q
-	gNSTn5Ouk7z/Zj0mOCUNXoZkE4fhOkr1Xik6U=
-X-Google-Smtp-Source: AGHT+IENaFQ323oqHXktoW9GYmrBP/FWVmxzB76vnO2zIMZUBVCvou6g2s32dv+DxPvmfdHEzD56lg==
-X-Received: by 2002:a05:6a21:3e07:b0:2cf:afc1:cc3c with SMTP id adf61e73a8af0-350de314257mr966411637.16.1762380541043;
-        Wed, 05 Nov 2025 14:09:01 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:cdf2:29c1:f331:3e1? ([2620:10d:c090:500::6:8aee])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-341d11e2336sm84997a91.1.2025.11.05.14.09.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Nov 2025 14:09:00 -0800 (PST)
-Message-ID: <c251bcb61fb1ed225d2ad1b0d865f4b4bb7ffb5c.camel@gmail.com>
-Subject: Re: [PATCH dwarves v3 0/3] btf_encoder: refactor emission of BTF
- funcs
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, dwarves@vger.kernel.org, 
-	alan.maguire@oracle.com, acme@kernel.org
-Cc: bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
- kernel-team@meta.com
-Date: Wed, 05 Nov 2025 14:08:59 -0800
-In-Reply-To: <20251105185926.296539-1-ihor.solodrai@linux.dev>
-References: <20251105185926.296539-1-ihor.solodrai@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1762381050; c=relaxed/simple;
+	bh=IoB9iZlMwRfHd737NI7jBIhjtchxI0N+tT4/xrisp/M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nyAGyGwCHfLr/8x+fhX8W4hA4VJZwr5xbClVcaPbNJBaKpXzuJpWysVf9TsIq6Grw+nrAgfxn9UY0/7Bfasz9KRGjDpwGxvlb0fwsI/ftKdKMrc7K8q7lmDJi8s7pN4DHtmR2gxaU7/o0cqvfXAKOvGb0wf7nl1bTShmLAnf/zU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jiZyxjTG; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c352f357-1417-47b5-9d8c-28d99f20f5a6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762381036;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SKgffc4Q2YFxCE+a40kbJ/fp+ky+zJPizqh+vpPjXZU=;
+	b=jiZyxjTGo46+JtYMDBd6kq8Uwv0MXIdokM3ej89Vla93H2ztbJVIcSyGhtss/qLYJwLxbQ
+	Z0qT5RaIFFmyMBOnUbnWbY6D9mEzPkRe6jKLLLcYu7ZEaPLDF2AgdcC/8fHKbiH370KhLP
+	d+/HWQd3lTolZ+hOiizVKU9ng/cnrP0=
+Date: Wed, 5 Nov 2025 14:16:58 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v4 2/2] bpf: Hold the perf callchain entry until
+ used completely
+Content-Language: en-GB
+To: Tao Chen <chen.dylane@linux.dev>, peterz@infradead.org, mingo@redhat.com,
+ acme@kernel.org, namhyung@kernel.org, mark.rutland@arm.com,
+ alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
+ adrian.hunter@intel.com, kan.liang@linux.intel.com, song@kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20251028162502.3418817-1-chen.dylane@linux.dev>
+ <20251028162502.3418817-3-chen.dylane@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20251028162502.3418817-3-chen.dylane@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 2025-11-05 at 10:59 -0800, Ihor Solodrai wrote:
-> This series refactors a few functions that handle how BTF functions
-> are emitted.
->=20
-> While addressing comments from Eduard, I noticed that we don't
-> actually need to carry the encoder in btf_encoder_func_state, because
-> only one encoder exists at all times. So in v3 I added a patch
-> removing encoder from the state struct, which resolves the ambiguity
-> of where state->encoder should be used.
->=20
-> v2: https://lore.kernel.org/dwarves/20251104233532.196287-1-ihor.solodrai=
-@linux.dev/
-> v1: https://lore.kernel.org/dwarves/20251029190249.3323752-2-ihor.solodra=
-i@linux.dev/
->=20
-> Ihor Solodrai (3):
->   btf_encoder: Remove encoder pointer from btf_encoder_func_state
->   btf_encoder: Refactor btf_encoder__add_func_proto
->   btf_encoder: Factor out BPF kfunc emission
->=20
->  btf_encoder.c | 204 +++++++++++++++++++++++++++++---------------------
->  1 file changed, 117 insertions(+), 87 deletions(-)
 
-No difference in generated BTF with my test kernel config.
 
-Tested-by: Eduard Zingerman <eddyz87@gmail.com>
+On 10/28/25 9:25 AM, Tao Chen wrote:
+> As Alexei noted, get_perf_callchain() return values may be reused
+> if a task is preempted after the BPF program enters migrate disable
+> mode. The perf_callchain_entres has a small stack of entries, and
+> we can reuse it as follows:
+>
+> 1. get the perf callchain entry
+> 2. BPF use...
+> 3. put the perf callchain entry
+>
+> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+> ---
+>   kernel/bpf/stackmap.c | 61 ++++++++++++++++++++++++++++++++++---------
+>   1 file changed, 48 insertions(+), 13 deletions(-)
+>
+> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> index e28b35c7e0b..70d38249083 100644
+> --- a/kernel/bpf/stackmap.c
+> +++ b/kernel/bpf/stackmap.c
+> @@ -188,13 +188,12 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+>   }
+>   
+>   static struct perf_callchain_entry *
+> -get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
+> +get_callchain_entry_for_task(int *rctx, struct task_struct *task, u32 max_depth)
+>   {
+>   #ifdef CONFIG_STACKTRACE
+>   	struct perf_callchain_entry *entry;
+> -	int rctx;
+>   
+> -	entry = get_callchain_entry(&rctx);
+> +	entry = get_callchain_entry(rctx);
+>   
+>   	if (!entry)
+>   		return NULL;
+> @@ -216,8 +215,6 @@ get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
+>   			to[i] = (u64)(from[i]);
+>   	}
+>   
+> -	put_callchain_entry(rctx);
+> -
+>   	return entry;
+>   #else /* CONFIG_STACKTRACE */
+>   	return NULL;
+> @@ -297,6 +294,31 @@ static long __bpf_get_stackid(struct bpf_map *map,
+>   	return id;
+>   }
+>   
+> +static struct perf_callchain_entry *
+> +bpf_get_perf_callchain(int *rctx, struct pt_regs *regs, bool kernel, bool user,
+> +		       int max_stack, bool crosstask)
+> +{
+> +	struct perf_callchain_entry_ctx ctx;
+> +	struct perf_callchain_entry *entry;
+> +
+> +	entry = get_callchain_entry(rctx);
+
+I think this may not work. Let us say we have two bpf programs
+both pinned to a particular cpu (migrate disabled but preempt enabled).
+get_callchain_entry() calls get_recursion_context() to get the
+buffer for a particulart level.
+
+static inline int get_recursion_context(u8 *recursion)
+{
+         unsigned char rctx = interrupt_context_level();
+         
+         if (recursion[rctx])
+                 return -1;
+         
+         recursion[rctx]++;
+         barrier();
+         
+         return rctx;
+}
+
+It is possible that both tasks (at process level) may
+reach right before "recursion[rctx]++;".
+In such cases, both tasks will be able to get
+buffer and this is not right.
+
+To fix this, we either need to have preempt disable
+in bpf side, or maybe we have some kind of atomic
+operation (cmpxchg or similar things), or maybe
+has a preempt disable between if statement and recursion[rctx]++,
+so only one task can get buffer?
+
+
+> +	if (unlikely(!entry))
+> +		return NULL;
+> +
+> +	__init_perf_callchain_ctx(&ctx, entry, max_stack, false);
+> +	if (kernel)
+> +		__get_perf_callchain_kernel(&ctx, regs);
+> +	if (user && !crosstask)
+> +		__get_perf_callchain_user(&ctx, regs);
+> +
+> +	return entry;
+> +}
+> +
+> +static void bpf_put_callchain_entry(int rctx)
+
+we have bpf_get_perf_callchain(), maybe rename the above
+to bpf_put_perf_callchain()?
+
+> +{
+> +	put_callchain_entry(rctx);
+> +}
+> +
+
+[...]
+
 
