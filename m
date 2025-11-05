@@ -1,161 +1,192 @@
-Return-Path: <bpf+bounces-73731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F5E5C37C91
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 21:52:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C6DEC381B7
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 22:52:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 27D584E53FC
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 20:51:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CEB83B22A2
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 21:48:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB3EE2D640A;
-	Wed,  5 Nov 2025 20:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A5B296BB3;
+	Wed,  5 Nov 2025 21:48:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hDZy/Srm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GYBgyUMu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F6C126C02
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 20:51:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01051FDA89
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 21:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762375912; cv=none; b=GoUX5z7cIQHAdTR8rNHswryRkAaUFBAP0zXDEZGAj6cpxhffd2ohYpp7b4CUKPVT2qZwoPlNwe5+n7esULFB2ygVj5be15CtYaaUodw9qRZ9DO/Il/hOfxR3kw6VY7UR+ny6z/I3meGR40X0B22xBI6qeQgODnyqApo47BSd1KM=
+	t=1762379289; cv=none; b=hYlbmY1A1dK5O5z30ZKr3l05KgoFUADSX9BBlxO3zg9oA3QBPhWzQR3L2a5+GYQlnWxXvdRqgw9te50WH6WENQJNliohJaqj4sbBGtxsgJl63Na4ZLZFVLFiCIiMKyAgSZCiQ6G+SdMtkNwOTn+4NjeyrfEMTdagFxGq3ZNkAlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762375912; c=relaxed/simple;
-	bh=enTVJjFvdsr/k7gPB2SrWdjKrIArilg9LPPzcSY9NnE=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=P2OvlVrvgbRcQSf+Ty3fi6+8VRrxySnene0QLVS5LIoRD2qSwHYbaDKPvzg+fNWtEXPInAfP5veTL/Fk4jemrN9PuXKXpKy4H0NmggM2BlC9zPO2tBfGsL9wqFQdMO4LtuAm1SDSV4+DnnQ+mg4IErmwqiLCx4za3BCfCXdgkgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hDZy/Srm; arc=none smtp.client-ip=209.85.214.173
+	s=arc-20240116; t=1762379289; c=relaxed/simple;
+	bh=P0Zq7AmjYBg5aWT8wMjYV+faAPyaxTkSuPunMY+fNCA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gVSNk5YEvDSdrYLZDI0KP2onhTfvHDAjnoPo+XzT7SU+aY6+Jv6siHRNiQdkWlDaDxckpFyyfUNexqE4kJ+bYwmlDFA7QcCfZchNplZHrNii/3r0+YNCpm6d9GzuH4vxpXsY7hjIV7/DbswB1vYvc5C4H0Hxl8MdjMo4qBdJHjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GYBgyUMu; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-29516a36affso2509605ad.3
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 12:51:50 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-640ca678745so496166a12.2
+        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 13:48:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762375910; x=1762980710; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i6wbZfvnN1y0YdoaRz7RbvnA5Pf9Inb0gh2m/oL7gsE=;
-        b=hDZy/Srm+QjGZECPvfsuWeagAHlAx9DkBZLKv2BynlyZtzbgG4sZHEKjKrkKbriLPd
-         RZyRTu9j8pkQazYSuLeVcoXjlIFAGinYQfNGnZSdPgwWpFTNPG1VE4H3d1evMoyW241/
-         W4Z1Z8CXEGxj3ZGRCIOx6JpbHojN0x5Itf/qMtbe8KAz1m4xpcWZH6dmzPttkDqrvfvW
-         TBTFRZohzZN2l5m+ob3+x6WpV6Gvjd7iOG0vMJkhVDrlRaM0D7/nnhDqM4aAd7GRvnCo
-         bEMCB7JL9tDPgMP0tZpsyUBz2ArcL0EGSs6aLIfktKViGIXAkqzKpc5RVxqukssxoziY
-         wUvw==
+        d=gmail.com; s=20230601; t=1762379286; x=1762984086; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iwVhNgclWxcTnKhRN49L9uFV5X+diduJfxI+zvTNccI=;
+        b=GYBgyUMuIe1BytfJd6OAyL/3wMslaLSyY7iEApedkv2xRxZNJ7RrDW29MqRSFVmhqh
+         IQOz5IvRZU6EngVIk8MzLPFJGfEpmh1MrEhRBdleLaeOTX78/Y7VRAGxdZH9uN5vz5kK
+         ar7hT8rpICXi5Bsu0ty6uAWLahyxb9/DG7KCQ0AAikTc1QNNj2gYvwVn78ix9gUTUbKw
+         1JQBpKPyefFeAXv+9U75RC4Nkr0E8ocS5Us4vm9kZz4zC5Wn646NOewcI0fWC163GOj6
+         vOoQSRo/LEYRyEF/kYT1Y3hIj35UA1nWutUExmpFqi1P5DNYtpanv5Vk25pZpaJWBQxT
+         SOSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762375910; x=1762980710;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=i6wbZfvnN1y0YdoaRz7RbvnA5Pf9Inb0gh2m/oL7gsE=;
-        b=oGyW6zTm+I1P3isqOYs0dshwi3y4k4liovzxxH7Hzhg2VexxrQP5tGbADj5ucxJ+Y8
-         /MPAkS0XRpNabxjDyy/daCoxcxkQrap4R+yAsliu9Z1UHexxCldF7BFxMnIBS8/8Dayk
-         /jYDXTquHEwCCTdlbeI56pxIWDjxdIzlJEkXLefGqJDXWEiCz/eX9Kbdow9vOiPGQx0V
-         IdZZq63XZdz6fTa4c3q66KkQtkk/ego0cInmDacwmtV9Hw0+hXirnvY2LsflyIhEwtw3
-         shs7ET0zG0fgx/lWr7uyrrEfCLtvWGgy56CfZBgSBdEfxZPAEqTUinSVzzAORJfcVX6V
-         uMZg==
-X-Forwarded-Encrypted: i=1; AJvYcCXTf6PgRgfzyKMGeUW3G+ySt1OULrMClCVunO1aB/ybFHQE/tn/MYdiCxIENsCqom2XD2A=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxf9JxIwZke2sw/GhV/DxbOCOSJHpNfsLVGjvGSu9cntenN1RoE
-	h97AJxnrwQ1ZSsp3F6SiqRmWQC5dx8RZyiqk2HRgzjjXj9OMehmZ2ldh
-X-Gm-Gg: ASbGnctHRGSv9+rJ80kIArYLYw31tuq7yHGJxjfIFzv9GBSHfOLuz69dQJ02WsV5M+N
-	sZdNR2RjqXVVUyWK7oR+6ASVJma/6kMhVmNAsHfVCi1o71399Fk50Y/qYtSPF3Xi9mJYYFD9vtF
-	hP58IigHN1vJbTKLJr/zdIAhUUf+rcjXqsBbYqXzc/jv2SLXYtAOetxquVad+pb/e3oQB6NMuot
-	1SCLP6vkGbcKhsQvpO5/lgwzlOa/bVF34/zGSv0R2CPOxyeg3tsBpJ9oM1RXCwUExr4otXOREGo
-	gdJcSqCk865MMUDvOVVr4HIexomz5YqZWQAStzPCzJ3BmncSp3NR/c4EJStkMAOhbqpM0+bE65F
-	zzqpJugaW2jEp/ifM/zLKSFMjd9uivcAYH1RE96BIu0jzkKGw/+vjRmT6cjzxOVq3xNfeV+NRKP
-	6U33HPPrMdHXQsgMUu6T3tuYub
-X-Google-Smtp-Source: AGHT+IFneyHjbL3eTm6NZ0WLmjGkIAvpVCGCp/Cu75gh6q5jA/suHpV8CyZMmxilZQEkWBtiPEfZKw==
-X-Received: by 2002:a17:903:1b6d:b0:295:4936:d1e9 with SMTP id d9443c01a7336-2962ada6b5bmr63835245ad.36.1762375910046;
-        Wed, 05 Nov 2025 12:51:50 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:cdf2:29c1:f331:3e1? ([2620:10d:c090:500::6:8aee])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29650c5e5cbsm4636795ad.42.2025.11.05.12.51.49
+        d=1e100.net; s=20230601; t=1762379286; x=1762984086;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iwVhNgclWxcTnKhRN49L9uFV5X+diduJfxI+zvTNccI=;
+        b=IYyV3cFs4xzZXJVrWuQlOex1PbUjxIyc/FREHYYpqyrtDjj5pIwAv/NteSzH6q8F4b
+         1xXt9lAZoJucQq9uM1JNpGDKiKyheI38bfnjtuaj5Hi28jbZnuNlmU2rjmAOWCd7k9qE
+         dCcdouve9SczUdQVo9/Vwts/tAMnEg0hkaGQsSDudUg3u7gBSNKjjFRT3I8AuFHHFZk1
+         E2HXtzDRs5UTXj4izcinaclMxu0hGXjFo5mz7jCwST/aKoV0ld7GhzLoAL+lwbuFZgrq
+         +lkRwB6/TYii3Oqjvf00fs2nHIgTBMbWOQRNcWcPC90VpC0QFGf93rcSkS2ElrgbP9+9
+         jOWA==
+X-Gm-Message-State: AOJu0Yx/k/94MNXPjHhoAw53ruSBZFfsx1tBhj/kKZ7IdA/mqhy3p/7Z
+	gPh+q/AQoBIioGUpo60ZgHn6GFnLRcIiOw38K2ZcYX2REyCCzI22y5GK
+X-Gm-Gg: ASbGncvW1WClN/OTz5ZzaaXqVbs57NPWCNqqLZRRV3LRTFjyQKX7zZl2COiXSA02s0u
+	PofGchbAhFUCkYK7EL7+GoeHl0FwGyK/8q+0nyiTa87nt+9yNN+ugCn7TyXfqutEouZAHPq30Yz
+	Y3WWEKCv1w8+OhgQA4r6SpiijYNf+ACt/xo4VqQ3PBuwo/h2hKWNZIYIsGOOokNca+XtRN4IqG7
+	IT54dTQ9MmpdaMJFxSBSRCqnn81siJvjGd6G4tMmhiycNTMKLbvhbVhCe8lQ+JnOwUkBkhXgRwG
+	tixtmtYBKFzNIVxwVr18z+HsQX33B8JhRoUTNO8nb9SXMFotHP6sH4ezSayqW6IAH5V3vdLeeuU
+	Vm28AbRbwuZRLag9KtFehF6YPwHH5cyrG8GilmnS/ZNWA+7FnOIh7LF48mOZwWOF65Y663juIPs
+	r8gpOPcU2R3kXgTCTSJLw/
+X-Google-Smtp-Source: AGHT+IHiSoqmACR7GcxznuByOi0y211aFOQl8w+2ZM+eKKCHtOADEqzJvcTzsDR1i8wwjCx9oxohZA==
+X-Received: by 2002:a05:6402:1d4a:b0:640:9eb3:366e with SMTP id 4fb4d7f45d1cf-64105b73a19mr4048775a12.25.1762379285855;
+        Wed, 05 Nov 2025 13:48:05 -0800 (PST)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6411f813eb6sm200653a12.14.2025.11.05.13.48.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Nov 2025 12:51:49 -0800 (PST)
-Message-ID: <7463cbcabcd06016d7dfbd858f4e089c4acd88f1.camel@gmail.com>
+        Wed, 05 Nov 2025 13:48:05 -0800 (PST)
+Date: Wed, 5 Nov 2025 21:54:17 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Quentin Monnet <qmo@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
 Subject: Re: [PATCH v11 bpf-next 00/12] BPF indirect jumps
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org, Alexei
- Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Anton
- Protopopov <aspsk@isovalent.com>,  Daniel Borkmann <daniel@iogearbox.net>,
- Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Date: Wed, 05 Nov 2025 12:51:48 -0800
-In-Reply-To: <20251105090410.1250500-1-a.s.protopopov@gmail.com>
+Message-ID: <aQvHiSXN72/Q1qE+@mail.gmail.com>
 References: <20251105090410.1250500-1-a.s.protopopov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+ <7463cbcabcd06016d7dfbd858f4e089c4acd88f1.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7463cbcabcd06016d7dfbd858f4e089c4acd88f1.camel@gmail.com>
 
-On Wed, 2025-11-05 at 09:03 +0000, Anton Protopopov wrote:
-> This patchset implements a new type of map, instruction set, and uses
-> it to build support for indirect branches in BPF (on x86). (The same
-> map will be later used to provide support for indirect calls and static
-> keys.) See [1], [2] for more context.
->=20
-> Short table of contents:
->=20
->   * Patches 1-6 implement the new map of type
->     BPF_MAP_TYPE_INSN_SET and corresponding selftests. This map can
->     be used to track the "original -> xlated -> jitted mapping" for
->     a given program.
->=20
->   * Patches 7-12 implement the support for indirect jumps on x86 and add =
-libbpf
->     support for LLVM-compiled programs containing indirect jumps, and sel=
-ftests.
->=20
-> The jump table support was merged to LLVM and now can be
-> enabled with -mcpu=3Dv4, see [3]. The __BPF_FEATURE_GOTOX
-> macros can be used to check if the compiler supports the
-> feature or not.
->=20
-> See individual patches for more details on the implementation details.
+On 25/11/05 12:51PM, Eduard Zingerman wrote:
+> On Wed, 2025-11-05 at 09:03 +0000, Anton Protopopov wrote:
+> > This patchset implements a new type of map, instruction set, and uses
+> > it to build support for indirect branches in BPF (on x86). (The same
+> > map will be later used to provide support for indirect calls and static
+> > keys.) See [1], [2] for more context.
+> > 
+> > Short table of contents:
+> > 
+> >   * Patches 1-6 implement the new map of type
+> >     BPF_MAP_TYPE_INSN_SET and corresponding selftests. This map can
+> >     be used to track the "original -> xlated -> jitted mapping" for
+> >     a given program.
+> > 
+> >   * Patches 7-12 implement the support for indirect jumps on x86 and add libbpf
+> >     support for LLVM-compiled programs containing indirect jumps, and selftests.
+> > 
+> > The jump table support was merged to LLVM and now can be
+> > enabled with -mcpu=v4, see [3]. The __BPF_FEATURE_GOTOX
+> > macros can be used to check if the compiler supports the
+> > feature or not.
+> > 
+> > See individual patches for more details on the implementation details.
+> 
+> I retested this series with upstream clang [1] (includes latest
+> changes for relocations handling from Yonghong), and all works as
+> expected.
+> 
+> The series is ready to land from my perspective.
+> (AI has a few notes on tests, though).
 
-I retested this series with upstream clang [1] (includes latest
-changes for relocations handling from Yonghong), and all works as
-expected.
+Thanks.  The fixes to the latest AI comments are as follows:
 
-The series is ready to land from my perspective.
-(AI has a few notes on tests, though).
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c b/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
+index ea1cd3cda156..d138cc7b1bda 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
+@@ -90,7 +90,7 @@ static void check_one_map_two_jumps(struct bpf_gotox *skel)
+ 
+ 	for (i = 0; i < prog_info.nr_map_ids; i++) {
+ 		map_fd  = bpf_map_get_fd_by_id(map_ids[i]);
+-		if (!ASSERT_GE(map_fd, 0, "bpf_program__fd(one_map_two_jumps)"))
++		if (!ASSERT_GE(map_fd, 0, "bpf_map_get_fd_by_id"))
+ 			return;
+ 
+ 		len = sizeof(map_info);
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c b/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
+index cf852318eeb2..269870bec941 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
+@@ -406,7 +406,7 @@ static void check_no_map_reuse(void)
+ 
+ 	/* correctness: check that prog is still loadable without fd_array */
+ 	extra_fd = prog_load(insns, ARRAY_SIZE(insns), NULL, 0);
+-	if (!ASSERT_GE(prog_fd, 0, "bpf(BPF_PROG_LOAD): expected no error"))
++	if (!ASSERT_GE(extra_fd, 0, "bpf(BPF_PROG_LOAD): expected no error"))
+ 		goto cleanup;
+ 
+ cleanup:
 
-[1] f60e69315e9e ("[llvm] Emit canonical linkage correct function
-symbol (#166487)")
+> [1] f60e69315e9e ("[llvm] Emit canonical linkage correct function
+> symbol (#166487)")
+> 
+> > v10 -> v11 (this series):
+> > 
+> >   * rearranged patches and split libbpf patch such that first 6 patches
+> >     implementing instruction arrays can be applied independently
+> 
+> I actually tried applying first 6 patches and then removing patch #3
+> "libbpf: Recognize insn_array map type", nothing broke: kernel and
+> selftests compile, relevant selftests passing.
 
-> v10 -> v11 (this series):
->=20
->   * rearranged patches and split libbpf patch such that first 6 patches
->     implementing instruction arrays can be applied independently
+The `test_progs -a libbpf_str` should fail without this patch.
 
-I actually tried applying first 6 patches and then removing patch #3
-"libbpf: Recognize insn_array map type", nothing broke: kernel and
-selftests compile, relevant selftests passing.
-So, not sure if splitting patch #3 as a separate thing is really
-necessary.
-
->=20
->   * instruction arrays:
->     * move [fake] aux->used_maps assignment in this patch
->=20
->   * indirect jumps:
->     * call clear_insn_aux_data before bpf_remove_insns (AI)
->=20
->   * libbpf:
->     * remove the relocations check after the new LLVM is released (Eduard=
-, Yonghong)
->     * libbpf: fix an index printed in pr_warn (AI)
->=20
->   * selftests:
->     * protect programs triggered by nanosleep from fake runs (Eduard)
->     * patch verifier_gotox to not emit .rel.jumptables
->=20
-
-[...]
+> So, not sure if splitting patch #3 as a separate thing is really
+> necessary.
+> 
+> > 
+> >   * instruction arrays:
+> >     * move [fake] aux->used_maps assignment in this patch
+> > 
+> >   * indirect jumps:
+> >     * call clear_insn_aux_data before bpf_remove_insns (AI)
+> > 
+> >   * libbpf:
+> >     * remove the relocations check after the new LLVM is released (Eduard, Yonghong)
+> >     * libbpf: fix an index printed in pr_warn (AI)
+> > 
+> >   * selftests:
+> >     * protect programs triggered by nanosleep from fake runs (Eduard)
+> >     * patch verifier_gotox to not emit .rel.jumptables
+> > 
+> 
+> [...]
 
