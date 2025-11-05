@@ -1,156 +1,155 @@
-Return-Path: <bpf+bounces-73662-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73663-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 296A7C369FA
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 17:17:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04151C369AB
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 17:14:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 117121A41765
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 15:56:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 894711A26271
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 15:59:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EADA3333440;
-	Wed,  5 Nov 2025 15:54:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 506283314B8;
+	Wed,  5 Nov 2025 15:58:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AhPg/B8V"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gmCH92jc"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626E326CE0F;
-	Wed,  5 Nov 2025 15:54:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 346CD335064
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 15:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762358090; cv=none; b=ZkDspg96n13dGYvDezgf41bSwQnYuj59Woht+zIp1YRQAC0f+8rX06W3xhfzNLf44DKQmRTQ27tpgBmRACq970KANL2TnBwJ+U3SE1Qh9Hinf/PEoRSRR3y5d/m+JfjM6XDbPaUkOwZnQ9lPdP3Abw4v1UZNWRG/IEderjlMVW0=
+	t=1762358287; cv=none; b=CS2BA6DJ6OuZUZSECPgYzkm6/dqgwkkImTx59SwhACD1dkzZr/aN1Uen9llpY+fZwkzpMnPnYyqjutWOYa9od8ZzGglvlmbPaMs3ki0xCC6WmlgULI6XFNSuuUFrlr/RGs5kwh2LOucMbaHR+a/OekoHg679LrgQ5Gw+H4bm01s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762358090; c=relaxed/simple;
-	bh=bDmEE2pN81Z2g2YR6bc8i2bpngqkwZUwaRFhJlKpZyg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Yi0hFwUeJjDsMIRyinHLQi4ZABzGcb1qRQbtaGpIH8wxS2ETZr4PdC8wfaTOzLRTPiYS2BQnJ8QHrpxXsHLxgpnyyIabeneL9l9Bz2JZrxzp77HdxcHHFDXtNa484gnlnbAdJC08Or1K+OmPa8PxTAdFDv4vsh8JVaqzJWqpac8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AhPg/B8V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 193C3C4CEF5;
-	Wed,  5 Nov 2025 15:54:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762358090;
-	bh=bDmEE2pN81Z2g2YR6bc8i2bpngqkwZUwaRFhJlKpZyg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=AhPg/B8VjNxHnaY9m3hnZIhVsfN/3ger3hDaKJ9juGhQPT7Q31FIKz1GfEfLm9lBa
-	 wrAPYeNff06W8A4sFdAO2lNwEpLpU2ajxjJ9dUcwuY7m+SscGOKuC5fdhsbPghxw74
-	 zSGTeyl4KBT41Udl3hjxU4mDyLdsKUAgFuNDFVCS8iiV9ISY9HTyt6CmPEaFPFnZGx
-	 QAon7Q7JSmhdpin7RYleSsDcCrNAmrM8ZAI8nmv/Z8dDncdspGea3eRv71ydSLjWyK
-	 0NxQojLJ76Y7QBH+SFUUgf3k5GPK/BjpWc7DYQ28wGu7ZTgORMYRsfITRpaiAuNk/F
-	 eweO4CzhLS7Ug==
-Message-ID: <11b93504-c0a1-4a2a-9061-034e92f84bb4@kernel.org>
-Date: Wed, 5 Nov 2025 16:54:45 +0100
+	s=arc-20240116; t=1762358287; c=relaxed/simple;
+	bh=Id3U/QMgYsA7txZIIsqU3kVa+6SpJ3CR97XEhVc/l74=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jgniYII0/V/9dNqcOBy7XAAN8WRxZn5jSmJfXzJXipZ9SJAr9O5ccu0DbLJPRIWAPGsG4u1yvgRLHFelRdBXJiGNDCngv6zEgGJeeXZjq+IPIELxHw4M2NBL55HI6/EJ0kETDeQZ/b+j7CYFxGC5sbkjlZ0xi+v6MXPwVC/DKHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gmCH92jc; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762358282;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Lu8ps8Aict3vmkNspVvPaOoX1BVGPxhk2L02diSQBEE=;
+	b=gmCH92jc7YIZ2hSKpN4Ar1ZYWMNInSZT0iGfcAB4Je9c1fafshdOjSeW3RYDzgWbgJuUoV
+	xyF5sdbS/j7Zckkq5qptJGyB4dSt2hP/1/R4qib0ElGge2cMKNkOPCCLKqctatcyN32TLq
+	bZ2R8aSbdZKJD8+/IxnRIJd10cNgqv0=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-343-R8eNirXANVeN_TZH54-hEw-1; Wed,
+ 05 Nov 2025 10:57:58 -0500
+X-MC-Unique: R8eNirXANVeN_TZH54-hEw-1
+X-Mimecast-MFC-AGG-ID: R8eNirXANVeN_TZH54-hEw_1762358277
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C9B0C1954B00;
+	Wed,  5 Nov 2025 15:57:56 +0000 (UTC)
+Received: from fedora (unknown [10.72.120.36])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 71C703000198;
+	Wed,  5 Nov 2025 15:57:50 +0000 (UTC)
+Date: Wed, 5 Nov 2025 23:57:45 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+	Caleb Sander Mateos <csander@purestorage.com>,
+	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH 0/5] io_uring: add IORING_OP_BPF for extending io_uring
+Message-ID: <aQtz-dw7t7jtqALc@fedora>
+References: <20251104162123.1086035-1-ming.lei@redhat.com>
+ <891f4413-9556-4f0d-87e2-6b452b08a83f@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net V2 2/2] veth: more robust handing of race to avoid txq
- getting stuck
-To: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- ihor.solodrai@linux.dev, "Michael S. Tsirkin" <mst@redhat.com>,
- makita.toshiaki@lab.ntt.co.jp, toshiaki.makita1@gmail.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel-team@cloudflare.com
-References: <176159549627.5396.15971398227283515867.stgit@firesoul>
- <176159553930.5396.4492315010562655785.stgit@firesoul>
- <154ebe12-6e3c-4b16-9f55-e10a30f5c989@redhat.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <154ebe12-6e3c-4b16-9f55-e10a30f5c989@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <891f4413-9556-4f0d-87e2-6b452b08a83f@gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-
-
-On 30/10/2025 13.28, Paolo Abeni wrote:
-> On 10/27/25 9:05 PM, Jesper Dangaard Brouer wrote:
->> (3) Finally, the NAPI completion check in veth_poll() is updated. If NAPI is
->> about to complete (napi_complete_done), it now also checks if the peer TXQ
->> is stopped. If the ring is empty but the peer TXQ is stopped, NAPI will
->> reschedule itself. This prevents a new race where the producer stops the
->> queue just as the consumer is finishing its poll, ensuring the wakeup is not
->> missed.
+On Wed, Nov 05, 2025 at 12:47:58PM +0000, Pavel Begunkov wrote:
+> On 11/4/25 16:21, Ming Lei wrote:
+> > Hello,
+> > 
+> > Add IORING_OP_BPF for extending io_uring operations, follows typical cases:
 > 
-> [...]
+> BPF requests were tried long time ago and it wasn't great. Performance
+
+Care to share the link so I can learn from the lesson? Maybe things have
+changed now...
+
+> for short BPF programs is not great because of io_uring request handling
+> overhead. And flexibility was severely lacking, so even simple use cases
+
+What is the overhead? In this patch, OP's prep() and issue() are defined in
+bpf prog, but in typical use case, the code size is pretty small, and bpf
+prog code is supposed to run in fast path.
+
+> were looking pretty ugly, internally, and for BPF writers as well.
+
+I am not sure what `simple use cases` you are talking about.
+
 > 
->> @@ -986,7 +979,8 @@ static int veth_poll(struct napi_struct *napi, int budget)
->>   	if (done < budget && napi_complete_done(napi, done)) {
->>   		/* Write rx_notify_masked before reading ptr_ring */
->>   		smp_store_mb(rq->rx_notify_masked, false);
->> -		if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
->> +		if (unlikely(!__ptr_ring_empty(&rq->xdp_ring) ||
->> +			     (peer_txq && netif_tx_queue_stopped(peer_txq)))) {
->>   			if (napi_schedule_prep(&rq->xdp_napi)) {
->>   				WRITE_ONCE(rq->rx_notify_masked, true);
->>   				__napi_schedule(&rq->xdp_napi);
+> I'm not so sure about your criteria, but my requirement was to at least
+> being able to reuse all io_uring IO handling, i.e. submitting requests,
+> and to wait/process completions, otherwise a lot of opportunities are
+> wasted. My approach from a few months back [1] controlling requests from
+
+Please read the patchset.
+
+This patchset defines new IORING_BPF_OP code, which's ->prep(), ->issue(), ...,
+are hooked with struct_ops prog, so all io_uring core code is used, just the
+exact IORING_BPF_OP behavior is defined by struct_ops prog.
+
+> the outside was looking much better. At least it covered a bunch of needs
+> without extra changes. I was just wiring up io_uring changes I wanted
+> to make BPF writer lifes easier. Let me resend the bpf series with it.
 > 
-> Double checking I'm read the code correctly. The above is supposed to
-> trigger when something alike the following happens
+> It makes me wonder if they are complementary, but I'm not sure what
+
+I think the two are orthogonal in function, and they can co-exist.
+
+> your use cases are and what capabilities it might need.
+
+The main use cases are described in cover letter and the 3rd patch, please
+find the details there.
+
+So far the main case is to access the registered (kernel)buffer
+from issue() callback of struct_ops, because the buffer doesn't have
+userspace mapping. The last two patches adds support to provide two
+buffers(fixed, plain) for IORING_BPF_OP, and in future vectored buffer
+will be added too, so IORING_BPF_OP can handle buffer flexibly, such as:
+
+- use exported compress kfunc to compress data from kernel buffer
+into another buffer or inplace, then the following linked SQE can be submitted
+to write the built compressed data into storage
+
+- in raid use case, calculate IO data parity from kernel buffer, and store
+the parity data to another plain user buffer, then the following linked SQE
+can be submitted to write the built parity data to storage
+
+Even for userspace buffer, the BPF_OP can support similar handling for saving
+one extra io_uring_enter() syscall.
+
 > 
-> [producer]				[consumer]
-> 					veth_poll()
-> 					[ring empty]
-> veth_xmit
->    veth_forward_skb
->    [NETDEV_TX_BUSY]		
-> 					napi_complete_done()
-> 					
->    netif_tx_stop_queue
->    __veth_xdp_flush()
->    rq->rx_notify_masked == true
-> 					WRITE_ONCE(rq->rx_notify_masked,
-> 						   false);
-> 
-> ?
-> 
-> I think the above can't happen, the producer should need to fill the
-> whole ring in-between the ring check and napi_complete_done().
+> [1] https://lore.kernel.org/io-uring/cover.1749214572.git.asml.silence@gmail.com/
 
-The race I can see is slightly different.  It is centered around the
-consumer manage to empty the ring after [NETDEV_TX_BUSY].
-We have 256 packets in queue and I observe NAPI packet processing time
-of 7.64 usec on a given ARM64 metal. This means it takes 1956 usec or
-1.96 ms to empty the queue (which is the time needed for the race to
-occur in below during "(something interrupts)").
-
-It would look like this:
-
-  [producer]			[consumer]
-				veth_poll() - already running
-  veth_xmit
-   veth_forward_skb
-   [ring full]
-   [NETDEV_TX_BUSY]
-   (something interrupts)
-				veth_poll()
-				manage to [empty ring]
-				napi_complete_done()
-   netif_tx_stop_queue
-   __veth_xdp_flush()
-    - No effect of flush as:
-    - rq->rx_notify_masked == true
-				WRITE_ONCE(rq->rx_notify_masked, false)
-				[empty ring] don't restart NAPI
-				Observe netif_tx_queue_stopped == true
+I looked at your patches, in which SQE is generated in bpf prog(kernel),
+and it can't be used in my case.
 
 
-Notice: at end (the consumer) do observe netif_tx_queue_stopped is true.
-This is leveraged in the patch by moving the netif_tx_queue_stopped
-check to the end of veth_poll(). This now happens after rx_notify_masked
-is changed to false, which is the race fix.
-
-Other cases where veth_poll() stop NAPI and exits, is recovered by
-__veth_xdp_flush() in producer.
-
---Jesper
+Thanks,
+Ming
 
 
