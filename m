@@ -1,259 +1,119 @@
-Return-Path: <bpf+bounces-73557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9652C33A9C
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 02:30:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9530C33B17
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 02:45:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E77C44647B2
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 01:30:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7733A189F705
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 01:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A31BC22127A;
-	Wed,  5 Nov 2025 01:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA7127453;
+	Wed,  5 Nov 2025 01:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GPSrMHuv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DmiXKcbl"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F5A11CA0
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 01:30:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E8D125B2
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 01:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762306241; cv=none; b=QU4KOMuMGIgw//sOYGewrOnkZL7MCzJV3WQP+Mlo6p7GoFwta1XzelUPJMol8HN2qg9vibIQ8067txTNopTm+TvLj9yFEuVrtsBnVrzM3QXyDxTgwhW63X8GlaNzd0Z+45eTVLKRoFjle6BIiv7kHTOQwJZwnH02qjNiS3JK/0M=
+	t=1762307120; cv=none; b=g4XI1NTmg7zqZKfUNZVT7BYcvmfv0VSUkBrd42ACYEIqH63g37MdlmTKXa2D0vDGMk2LO3553afx2ZxMRCiwJImqVirohHG5cvsK9ZmSjGw+jo65Mr/VtB27OxrPAJJxbeO1F6lTwqYvehW3OCYdXc6iwAgexszSYfZ/nSPHYig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762306241; c=relaxed/simple;
-	bh=DG60yIXuoS/JK2Rk6WVbsnmzXYFCfAiP+7wZk2TghFo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R8Oty63pqUVuOF9CxtcEOuUHq9HflcUoLmOfk2KW8PzC0MDzSIQH4fEpzaBHTihUEX8vlmP0qjV//xckt4Di/ZRbicxiizpNXD28mVIbMNLXyT1GJ8j+FTbn1bG5qc4ofY8WEqXzV034vmBRz2bRFzqoycMqcs3Qo6h/VX53G2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GPSrMHuv; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762306232;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wBeeftk6Pzzwy1nouNj0uXxW2ZCHDcZqmGF8qKbAxoI=;
-	b=GPSrMHuvEftwHZF0gi7UZQnAlsvOAFbQUmql05NmrUixYoy+ieUqf52H3VD81yeS7SYUKc
-	7RG5zQ4IQ/U05bRv1zeaTB53nSRKth1jkFq7j5nkcE4mTmxZc+aJcfwKOkg2J/1W7W4Zyr
-	CVhbpCQpIjjq9LQQ0qUukgNKNuLhjCs=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: Menglong Dong <menglong8.dong@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- David Ahern <dsahern@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
- "H. Peter Anvin" <hpa@zytor.com>, jiang.biao@linux.dev,
- bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf,x86: do RSB balance for trampoline
-Date: Wed, 05 Nov 2025 09:30:16 +0800
-Message-ID: <5029485.GXAFRqVoOG@7950hx>
-In-Reply-To:
- <CAADnVQJTOFjXe5=01KfOnBD86YU_Vy1YGezLQum3LnhFHAD+gg@mail.gmail.com>
-References:
- <20251104104913.689439-1-dongml2@chinatelecom.cn>
- <CAADnVQJTOFjXe5=01KfOnBD86YU_Vy1YGezLQum3LnhFHAD+gg@mail.gmail.com>
+	s=arc-20240116; t=1762307120; c=relaxed/simple;
+	bh=+fMeu6S6+hdh2AO7AJ7kBbTO3lR3XOXXCyxIrAl2zvo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Dl+fKcf4/jvC/zF4CGBNYUFdYMkIpOQj170Bj6tuDLdUqXMAKQPgbp2y51Y6lvllfhp96WjgyYg3txWUATIGsqCyOx3r69aniQHQIdmwfiUa2nSJwDi765+d2zVm5LqC88MakSuAHj1WtEN33ntxUeD4P1wH/CqHlmaUoqNDL98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DmiXKcbl; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2953b321f99so45168725ad.1
+        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 17:45:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762307119; x=1762911919; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KxZDxh7I7x4eGax46NKR/v6t63M0OZYsUiQcPaev0EI=;
+        b=DmiXKcblimxTQf1teNsOcDPLWpN8uP9El5v3YEBXwYyflNk61fi8iu4OpQDGQw7y1Q
+         sn1anS0BDr2mEQ7RGAw0jzMCQ9h32CMFgkQVTtkJcN1sRC2nnoxy7Hsn/YOqDSA02ISq
+         pOLvOiATnrCp27sWcgXfB5l+bkWl4d/VBx99ID3+CSn7fYkTCgebBOvZG+CAqQdjuHoT
+         XkSPbrq2fTrgvNNom5mkhiIJ4RExQMl98oXIsJqPwwh8mMYl0YnDXYC7LqYgxCIdCl51
+         8PC23yHDNKJm5o+qdOR1EMcGcHu7veDYf2lW/YB7nB+5dBTe42Tt8H/i1wTRmYRGfsCs
+         f0Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762307119; x=1762911919;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KxZDxh7I7x4eGax46NKR/v6t63M0OZYsUiQcPaev0EI=;
+        b=VBpYDTu8ystSy7CynQF6qptzS9uYA/m06M0dISVl0NEB2s8tT0S/O4zpvX9uZeOQKY
+         PDvWdpL5s5YAqEkzCqKDqQhtbAU0hofBiZYiD05N7LthxPXjVtgrkrGJaYR5bnwwxkiH
+         dmpYf4oKuT8jtPo3bs0kQh8TurP35XRNAWOPLQtov55Mb3kFKIYoPbu7lAx9cU3PKeum
+         euxn+vRplTuS4TBuM1a6qmRSYjnUKUfxpYLivUG0aXI7PpPPN9Uw3k13ro7V5pTy63kU
+         G2Bwo/qjDZxyNYCdRDARp0qMyjwmeuRtVE3EXJubHBtMSYxR3imQEV+qIxcCfbo+rQrg
+         WMfA==
+X-Gm-Message-State: AOJu0YzTZTSe32BzDw94j0TFRbPdX/R2UJ76FdKxNWPxqbvJZsAsipQC
+	A7oTpthHK4g3nLgDQI7682CLmZiB6q7DCvXwG3WC+cCPhawRU6Lih8vW
+X-Gm-Gg: ASbGncsO23QF1AdxLkL7aEosSTHQp0rVyXrD021SSqhs+J0lDyE7KRUZNiVurr1/iFy
+	REDJ4CllR/XdR+AtiGzTQQnq2UbX+H9YjsX38Fa+V/3bJ0OZGoc4H2FxB1DzEXmSyB1X8QV3tkq
+	shEBqi8o0HklwVcRKRWbfLyA2BX3Iz21T92+k+TLfSIQ40S7wclRNTizP5mYRJpkcJcsLZ6+ZMk
+	+KZb5sRbOP/Whz2/uiEvmw1T4rtNJd5Tu7y+cMn+647zKxVgc0ZwueIn8UAunbRldwxCQJpMprN
+	s47JprNluwnACitGY6PX73s1EJY0maQzNymzCCy+blJ8glP9LQe1C8Gapg6Ho4+BLKSwO17kZ6b
+	DlZI9/DV/pwUEQZKLAB872LXalrPBBg4k6+S3mDEf6WkAEQ4YzxyCDeg80gJoJHE1dguHu1P1Qw
+	+HQIzsngCq1QrOSu5k53fcpjip48hMBoc6qg==
+X-Google-Smtp-Source: AGHT+IHeEavZBNwuat1kGcSsAB0eRT2oAHDkUWWx0WOQQf7szc8HSJbJ/29q+YDY7xjS5ULKOclaog==
+X-Received: by 2002:a17:902:f644:b0:295:5945:2920 with SMTP id d9443c01a7336-2962ada6848mr20749405ad.34.1762307118679;
+        Tue, 04 Nov 2025 17:45:18 -0800 (PST)
+Received: from ?IPv6:2a03:83e0:115c:1:a643:22b:eb9:c921? ([2620:10d:c090:500::5:99aa])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29601a61418sm41376615ad.96.2025.11.04.17.45.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Nov 2025 17:45:18 -0800 (PST)
+Message-ID: <09e212d8cec59ed6de637b62dd974c88fd33a3b0.camel@gmail.com>
+Subject: Re: [PATCH dwarves v2 1/2] btf_encoder: refactor
+ btf_encoder__add_func_proto
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Ihor Solodrai <ihor.solodrai@linux.dev>, dwarves@vger.kernel.org, 
+	alan.maguire@oracle.com, acme@kernel.org
+Cc: bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+ kernel-team@meta.com
+Date: Tue, 04 Nov 2025 17:45:16 -0800
+In-Reply-To: <20251104233532.196287-2-ihor.solodrai@linux.dev>
+References: <20251104233532.196287-1-ihor.solodrai@linux.dev>
+	 <20251104233532.196287-2-ihor.solodrai@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Migadu-Flow: FLOW_OUT
 
-On 2025/11/5 02:56, Alexei Starovoitov wrote:
-> On Tue, Nov 4, 2025 at 2:49=E2=80=AFAM Menglong Dong <menglong8.dong@gmai=
-l.com> wrote:
-> >
-> > In origin call case, we skip the "rip" directly before we return, which
-> > break the RSB, as we have twice "call", but only once "ret".
+On Tue, 2025-11-04 at 15:35 -0800, Ihor Solodrai wrote:
+> btf_encoder__add_func_proto() essentially implements two independent
+> code paths depending on input arguments: one for struct ftype and the
+> other for struct btf_encoder_func_state.
 >=20
-> RSB meaning return stack buffer?
+> Split btf_encoder__add_func_proto() into two variants:
+>   * btf_encoder__add_func_proto_for_ftype()
+>   * func_state__add_func_proto()
 >=20
-> and by "breaks RSB" you mean it makes the cpu less efficient?
-
-Yeah, I mean it makes the cpu less efficient. The RSB is used
-for the branch predicting, and it will push the "rip" to its hardware
-stack on "call", and pop it from the stack on "ret". In the origin
-call case, there are twice "call" but once "ret", will break its
-balance.
-
-Similar things happen in "return_to_handler" in ftrace_64.S,
-which has once "call", but twice "ret". And it pretend a "call"
-to make it balance.
-
-I were wandering why the overhead of fexit is much higher
-than fentry. I added the percup-ref-get-and-put stuff to the
-fentry, and the performance of it still can be 130M/s. However,
-the fexit only has 76M/s. And the only difference is the origin
-call.
-
-The RSB balancing mitigate it, but there are still gap. I
-suspect it's still the branch predicting things.
-
-> Or you mean call depth accounting that is done in sw ?
+> And factor out common btf_encoder__emit_func_proto() subroutine.
 >=20
-> > Do the RSB balance by pseudo a "ret". Instead of skipping the "rip", we
-> > modify it to the address of a "ret" insn that we generate.
-> >
-> > The performance of "fexit" increases from 76M/s to 84M/s. Before this
-> > optimize, the bench resulting of fexit is:
-> >
-> > fexit          :   76.494 =C2=B1 0.216M/s
-> > fexit          :   76.319 =C2=B1 0.097M/s
-> > fexit          :   70.680 =C2=B1 0.060M/s
-> > fexit          :   75.509 =C2=B1 0.039M/s
-> > fexit          :   76.392 =C2=B1 0.049M/s
-> >
-> > After this optimize:
-> >
-> > fexit          :   86.023 =C2=B1 0.518M/s
-> > fexit          :   83.388 =C2=B1 0.021M/s
-> > fexit          :   85.146 =C2=B1 0.058M/s
-> > fexit          :   85.646 =C2=B1 0.136M/s
-> > fexit          :   84.040 =C2=B1 0.045M/s
+> No functional changes.
 >=20
-> This is with or without calldepth accounting?
+> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> ---
 
-The CONFIG_MITIGATION_CALL_DEPTH_TRACKING is enabled, but
-I did the testing with "mitigations=3Doff" in the cmdline, so I guess
-"without"?
+No changes in generated BTF for my test kernel.
 
->=20
-> > Things become a little more complex, not sure if the benefits worth it =
-:/
-> >
-> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> > ---
-> >  arch/x86/net/bpf_jit_comp.c | 32 +++++++++++++++++++++++++++++---
-> >  1 file changed, 29 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > index d4c93d9e73e4..a9c2142a84d0 100644
-> > --- a/arch/x86/net/bpf_jit_comp.c
-> > +++ b/arch/x86/net/bpf_jit_comp.c
-> > @@ -3185,6 +3185,7 @@ static int __arch_prepare_bpf_trampoline(struct b=
-pf_tramp_image *im, void *rw_im
-> >         struct bpf_tramp_links *fmod_ret =3D &tlinks[BPF_TRAMP_MODIFY_R=
-ETURN];
-> >         void *orig_call =3D func_addr;
-> >         u8 **branches =3D NULL;
-> > +       u8 *rsb_pos;
-> >         u8 *prog;
-> >         bool save_ret;
-> >
-> > @@ -3431,17 +3432,42 @@ static int __arch_prepare_bpf_trampoline(struct=
- bpf_tramp_image *im, void *rw_im
-> >                 LOAD_TRAMP_TAIL_CALL_CNT_PTR(stack_size);
-> >         }
-> >
-> > +       if (flags & BPF_TRAMP_F_SKIP_FRAME) {
-> > +               u64 ret_addr =3D (u64)(image + (prog - (u8 *)rw_image));
-> > +
-> > +               rsb_pos =3D prog;
-> > +               /*
-> > +                * reserve the room to save the return address to rax:
-> > +                *   movabs rax, imm64
-> > +                *
-> > +                * this is used to do the RSB balance. For the SKIP_FRA=
-ME
-> > +                * case, we do the "call" twice, but only have one "ret=
-",
-> > +                * which can break the RSB.
-> > +                *
-> > +                * Therefore, instead of skipping the "rip", we make it=
- as
-> > +                * a pseudo return: modify the "rip" in the stack to the
-> > +                * second "ret" address that we build bellow.
-> > +                */
-> > +               emit_mov_imm64(&prog, BPF_REG_0, ret_addr >> 32, (u32)r=
-et_addr);
-> > +               /* mov [rbp + 8], rax */
-> > +               EMIT4(0x48, 0x89, 0x45, 0x08);
-> > +       }
-> > +
-> >         /* restore return value of orig_call or fentry prog back into R=
-AX */
-> >         if (save_ret)
-> >                 emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
-> >
-> >         emit_ldx(&prog, BPF_DW, BPF_REG_6, BPF_REG_FP, -rbx_off);
-> >         EMIT1(0xC9); /* leave */
-> > +       emit_return(&prog, image + (prog - (u8 *)rw_image));
-> >         if (flags & BPF_TRAMP_F_SKIP_FRAME) {
-> > -               /* skip our return address and return to parent */
-> > -               EMIT4(0x48, 0x83, 0xC4, 8); /* add rsp, 8 */
-> > +               u64 ret_addr =3D (u64)(image + (prog - (u8 *)rw_image));
-> > +
-> > +               /* fix the return address to second return address */
-> > +               emit_mov_imm64(&rsb_pos, BPF_REG_0, ret_addr >> 32, (u3=
-2)ret_addr);
->=20
-> So the first "movabs rax, imm64" is not needed ?
-> Why compute ret_addr there and everything ?
-> I mean it could have been prog +=3D sizeof(movabs), right?
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-I did it before, but the thing is that the "sizeof(movabs)" in not
-fixed according to the definition of emit_mov_imm64():
-
-static void emit_mov_imm64(u8 **pprog, u32 dst_reg,
-			   const u32 imm32_hi, const u32 imm32_lo)
-{
-	u64 imm64 =3D ((u64)imm32_hi << 32) | (u32)imm32_lo;
-	u8 *prog =3D *pprog;
-
-	if (is_uimm32(imm64)) {
-		/*
-		 * For emitting plain u32, where sign bit must not be
-		 * propagated LLVM tends to load imm64 over mov32
-		 * directly, so save couple of bytes by just doing
-		 * 'mov %eax, imm32' instead.
-		 */
-		emit_mov_imm32(&prog, false, dst_reg, imm32_lo);
-	} else if (is_simm32(imm64)) {
-		emit_mov_imm32(&prog, true, dst_reg, imm32_lo);
-	} else {
-		/* movabsq rax, imm64 */
-		EMIT2(add_1mod(0x48, dst_reg), add_1reg(0xB8, dst_reg));
-		EMIT(imm32_lo, 4);
-		EMIT(imm32_hi, 4);
-	}
-
-	*pprog =3D prog;
-}
-
-I used "emit_mov_imm64(&prog, BPF_REG_0, 0, 0)" to take the placeholder,
-but I failed, as the insn length is total different with
-"emit_mov_imm64(&rsb_pos, BPF_REG_0, ret_addr >> 32, (u32)ret_addr);".
-
-It's a little confusing here, I have not figure out a better way :/
-
-Thanks!
-Menglong Dong
-
->=20
-> > +               /* this is the second(real) return */
-> > +               emit_return(&prog, image + (prog - (u8 *)rw_image));
-> >         }
-> > -       emit_return(&prog, image + (prog - (u8 *)rw_image));
->=20
-
-
-
-
+[...]
 
