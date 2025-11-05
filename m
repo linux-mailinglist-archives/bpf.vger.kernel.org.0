@@ -1,93 +1,93 @@
-Return-Path: <bpf+bounces-73540-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73541-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6178BC33742
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 01:16:32 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 413DDC33758
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 01:19:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2124442646F
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 00:16:31 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E180D34E254
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 00:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19762253AB;
-	Wed,  5 Nov 2025 00:16:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D81323C512;
+	Wed,  5 Nov 2025 00:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LfTaIBmn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SctNo6F/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DAE54774
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 00:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B534C23958A
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 00:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762301785; cv=none; b=AjflxAoSao7Oe0J4G5ifdyCCC3UnNtMvbMWOgGDsP9KjWydTx37mj//bQQzcsEgxuNrRQfQs8uj2TgvXh+fWDoskykBRxVfUnCn0/VqFME61QN3UZbI4dvCWSlFBy35iXnOVr5YRdSA16Kxxrx/tVpmEh+JfgJs/Syc07q1t5KE=
+	t=1762301963; cv=none; b=UpuXpDF0z9hPMvzm5Cheq9x8XiPmJ/zo/yHXBApBXqhGNHNwsg24zPZkA1ifQBV4YHmJQqKDWzUyhYU4eOnRbV+EcOa1FIX91HJuXMTiauRc2wNvEH44D+kiiuLVSmJiWJQwXjWRqYt8bVVdWxdmjzEI5EVpx6CgR4aZ7Yhkn2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762301785; c=relaxed/simple;
-	bh=48YH2RtI3KW7kaFfM/LY3WnoX8bLd0bwh9yZQxZNDBU=;
+	s=arc-20240116; t=1762301963; c=relaxed/simple;
+	bh=QDwYksSWVzmrhGL6bChdX4vnl8TjAu3iipcMTTMEHVw=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gEDhgURWPHXYkoLxUjrkayacRlBTzd1KPBmgn2SVhAne9WBQtPlLeDLM9P2kp7W1UDcYl0eGCu5Tz6GgG3Vy6+SDuvciG3oT6u6+GQAAvrkAw+hf1oSqeyo8ULcTcarK+npg4FPWp4wF/KkTN1GwSutMZqJS8ORUgFoNkpeacV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LfTaIBmn; arc=none smtp.client-ip=209.85.214.178
+	 Content-Type:MIME-Version; b=gmkeMilo54y0m0YS8dNiAVdN/rRIbsNjDIzEqOs9fK2Yj1qeITUD86zaDx41Dg209I66v5vhU2aP5pVJmQQmtQWgzNgGlLgzCVoFd7rBg+/n8U2J/1DzAtpn2vXXnWeI05W55KG8JOMZjpiB+/LSa7iR52e1HfxbR8YrpVpvbeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SctNo6F/; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-295df6ad56cso22416225ad.3
-        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 16:16:23 -0800 (PST)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7ad1cd0db3bso1074280b3a.1
+        for <bpf@vger.kernel.org>; Tue, 04 Nov 2025 16:19:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762301783; x=1762906583; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1762301961; x=1762906761; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=R14VE183UXTiToDun6FbcmEsUyunklyOPEIanXsq35I=;
-        b=LfTaIBmniUavpTJtQ/0eXlYlafDnHZXjEg8Y1rpb5ko+zVH5Tnp5bK39+nO1LbLpxx
-         cyCLJ14ko5Q6YyaoUaGx6m4GEZ8Puaj18hISU99kQV2bWJPwWAX89m7vBi/Jx3QhxiE5
-         CQSbdDbWRb7JbqA4cSujFyNSfojizcAngLm70Whg6wnfb5ZlzbCtve8zKbCOGibWDPvx
-         IJ+3vhBWFFISya1/6dHPY3KZoAPIHdAX67Lta4DRyXcccmdUT7KCDnyWofMENvfkaWh/
-         CFCbPT+gVCf8IU8L5X26TMDwa7iaRuFrYH3vaR51/VqL+M48Bap/WKq2gH71jW2GEuQZ
-         GZ0g==
+        bh=PQOo5M0i6Q/NGE0WSQPjyiNe2YqX4cEHbsFV38mV+ZI=;
+        b=SctNo6F/QsJfysFeTMPqhhPpAV7IGBx2K1OG8eIsnCRYkKIrnuBDycoLxD9FMCCAqA
+         pIkC6mcmtPfeN8RYXSywm6Z61Cz5TMvBJaadQm0/4Uj5X9tT6gPEpZjnb70s5f/X2aWv
+         nJzCxq4l5YsFP5MyCET4HlQvTigi0VLWJi6vA/qqHDXu6sbTayNX0NXlgd4OtlKU7IWv
+         OulFj+4jNiVq3jigw+EZTz44C13gxv6x8YP89EhgzhgTHlcoo/4t1eNdTMtWVK8wAhW5
+         Z+QqfqBZFmEFaWdluwRGnN+00f6l47VZFGCIbQqi9JbxjaKUef5IOQXxSLTfdDGJew1D
+         5dcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762301783; x=1762906583;
+        d=1e100.net; s=20230601; t=1762301961; x=1762906761;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=R14VE183UXTiToDun6FbcmEsUyunklyOPEIanXsq35I=;
-        b=Ik8RUZf4xlM2roOE2+5cjyYV4IaCVvDvqMRPS58BQoZTjZl9GJ6H5QgjWg0CevDGqu
-         bAwRxfAUFN4OrvVfnisKcQoHO9TA2g2b2Rd9qdGOKwLW7G7eQvb6Nfq2z/pCz56Bz+lx
-         ls0oq6+cml/kb5ifHxY8KZBzbN82nAtNzLM3OkN39SWk7Nla+OQEklvoyftkC9uLwMqw
-         Iclf6zRFivBzDrygh/AMr5A+c71Pt4MBezHrRJLcBxe2QDV7SbAC+kAROb2on5fI6BcA
-         Wk5h7FujSUgpGBcj5tniImakutyqcDMf0hJUPpTf5peLQxr24PWhrWBc8vtSUmQ8frS0
-         P1Rg==
-X-Forwarded-Encrypted: i=1; AJvYcCWFL8sG7W4xSGoN+lvZzSb659+YNYKuiHFG/u/NJhutOvFGHnurJRIFCCBKhOGfipP7Rm8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywevaa7EriqpOx6WoAGsVKWqZ2QCEl/mWLNhug8vb5s4R6ec283
-	OuVKLVJLCXyNce1yTOPezfEiPp1yzX2jXKmjdSOEONaPQzT7gPPEJs02pySXVD4O
-X-Gm-Gg: ASbGncso6H/MBpBjcwmKubrsyGfhYedBiRd9gHCy+12t5K8hyIxJasW7li3LQHq1Aws
-	18pOuaa69yLBk5gHV1EPN07gO7G8L/G0Q1Z/rylgX7X4/jLxkF5WIZJ6euNurWe92waUeVKUUYn
-	fCWsrTbJG9qID5GgKSFX0r+z8p/qGUvxPFLgJr1RfsMYy71jr945UmxklI6V0c7qnLRnJCbhGUZ
-	wEs5JrcQftLgbmYzCHRazlryn2wQ3NGXdxkW1pMtpPcQ/ZCnKso4ckWejdTmv54ZxP1FGz/F8XO
-	xEGyxVyVLyWd038AyJL5UVq/ehNEKR00boQaHDFvm6R5/mSlq5/HWkVIQuvvIz2UQ8BQKqCWPrC
-	WZo/8kcPm9QnBxXz5iXdu/jOt51VIz9kHx/JkSyg8zYzgmb6FSAmGXVycf7iFnQsFWhH/NUCD77
-	vYyHSKVqjJNDjFFybK3SiYqzM=
-X-Google-Smtp-Source: AGHT+IGQ3eQZyWv1ijoQcXgFeW5nEdzJ0bEGgowv/pzjI70FkRTNS0ZWHgI8B0kFFPOf2NtHdfcs7A==
-X-Received: by 2002:a17:902:d4c9:b0:295:7804:13b7 with SMTP id d9443c01a7336-2962adb4071mr19818925ad.10.1762301783060;
-        Tue, 04 Nov 2025 16:16:23 -0800 (PST)
+        bh=PQOo5M0i6Q/NGE0WSQPjyiNe2YqX4cEHbsFV38mV+ZI=;
+        b=GlGr4w5UcSdlDYEa0kBQb26XAKedEPsEx749DE62jSyGubLnvP8Jw4Weq8M8UlLtls
+         9V4DYphSWy6oy74gHu9wDmc3gGNeZonm9jJYRD/CYsXxe2AcjgBPpOVii5wzu5mvse8T
+         f9iuUGW3P/WvsLcKDeapRA8MtgA4IKSreorru6Lr+aAkoofzqxvmvrKUFmNmxbTP+G+T
+         79f7pJrTn7puCAsINUqo07bJrBf00xV7hignKnn2zZ6hKyfcX1p7guL9I4Mf54LNnHQ2
+         O2E1LuYGCDkpJjomyTvmImo7299/VGZNcjG2IhadYyVNe3xreLvlY2AlYY5HZAZb9zTf
+         kyfA==
+X-Forwarded-Encrypted: i=1; AJvYcCWriN/9i88p/1m+RbvOtNkLME3N2dWWa74TJMKgD8chr7cSbVz595y9NRDydPH+FBphPHU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzE7JmRJIP2b7LmWyOYNO4sTypn+QO9niOIygPjPFX2RjcZrMqc
+	cM+L5M51TApeuQCslo7zHc6Jk7VB+DO+//2zvjqfqWZhTYotFwqYET4LxmmE3pbF
+X-Gm-Gg: ASbGnctdIj4ZuWVSlQReTMVBIeObNbqKmwrLUpeYlxNwSXkJv+NLhmkXZAI/orw6kJD
+	apJaNIvrA8G5xr8JOI7DpuREdD2hWmveSfaAhfmZUIwGgjY0iExtz9j6jF6QVqw/AzBo6e9KVB3
+	1ZOorKBXEUYwyv/Vxj1zMT2IlgqSRAkjXU9l5F+8cdygWrMBbuHiziVZMNCywFKchB5yQ2AEU4n
+	2HDomgFxtJTeiIzRfv1xEYQtoz+oNEOEuZb8eHGtPb2sXae3AGAu5fh0/Ol9hAMGKY09AhCMEsI
+	as8ixJwSoeLet8CWxSehCWmiMMoizt2JwoKjBhskA1Uv/j7cTQMy5ecagQJjLeXG0dZZNIQqlqy
+	OkkIh9oIj+/p7hDXXEcCs4t7+1WVC55703oNkQhhmSuYoJPgSRB+2pXKOI0Zf2QLu73FqKrW/O/
+	YdzSRqOWV5d5xitiiXEPwNfSc=
+X-Google-Smtp-Source: AGHT+IHD2NG1fQ3xl98wFzeuOQRvtfU5I7A4mP97EoxmWWPr5Ongqgmj+Ju/4NPWI3gyRmGoE0iydA==
+X-Received: by 2002:a05:6a20:f20:b0:34f:b660:7723 with SMTP id adf61e73a8af0-34fb6608efamr518592637.48.1762301960948;
+        Tue, 04 Nov 2025 16:19:20 -0800 (PST)
 Received: from ?IPv6:2a03:83e0:115c:1:a643:22b:eb9:c921? ([2620:10d:c090:500::5:99aa])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29601972a87sm39852035ad.15.2025.11.04.16.16.21
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ba1f87a710asm3616987a12.30.2025.11.04.16.19.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Nov 2025 16:16:22 -0800 (PST)
-Message-ID: <3986a6b863be2ec62820ea5d2cf471f7e233fac0.camel@gmail.com>
-Subject: Re: [RFC PATCH v4 2/7] libbpf: Add BTF permutation support for type
- reordering
+        Tue, 04 Nov 2025 16:19:20 -0800 (PST)
+Message-ID: <a2aa0996f076e976b8aef43c94658322150443b6.camel@gmail.com>
+Subject: Re: [RFC PATCH v4 3/7] libbpf: Optimize type lookup with binary
+ search for sorted BTF
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Donglin Peng
 	 <dolinux.peng@gmail.com>
 Cc: ast@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Alan
  Maguire <alan.maguire@oracle.com>, Song Liu <song@kernel.org>, pengdonglin
  <pengdonglin@xiaomi.com>
-Date: Tue, 04 Nov 2025 16:16:21 -0800
-In-Reply-To: <CAEf4BzaQ9k=_JwpmkjnbN8o0XaA=EGcP-=CBxmXLc3kzh3aY3A@mail.gmail.com>
+Date: Tue, 04 Nov 2025 16:19:19 -0800
+In-Reply-To: <CAEf4BzaxU1ea_cVRRD9EenTusDy54tuEpbFqoDQUZVf46zdawg@mail.gmail.com>
 References: <20251104134033.344807-1-dolinux.peng@gmail.com>
-	 <20251104134033.344807-3-dolinux.peng@gmail.com>
-	 <CAEf4BzaQ9k=_JwpmkjnbN8o0XaA=EGcP-=CBxmXLc3kzh3aY3A@mail.gmail.com>
+	 <20251104134033.344807-4-dolinux.peng@gmail.com>
+	 <CAEf4BzaxU1ea_cVRRD9EenTusDy54tuEpbFqoDQUZVf46zdawg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -102,25 +102,27 @@ On Tue, 2025-11-04 at 16:11 -0800, Andrii Nakryiko wrote:
 
 [...]
 
-> > +static int btf_permute_remap_type_id(__u32 *type_id, void *ctx)
-> > +{
-> > +       struct btf_permute *p =3D ctx;
-> > +       __u32 new_type_id =3D *type_id;
-> > +
-> > +       /* skip references that point into the base BTF */
-> > +       if (new_type_id < p->btf->start_id)
-> > +               return 0;
-> > +
-> > +       new_type_id =3D p->map[*type_id - p->btf->start_id];
+> > @@ -897,44 +903,134 @@ int btf__resolve_type(const struct btf *btf, __u=
+32 type_id)
+> >         return type_id;
+> >  }
+> >=20
+> > -__s32 btf__find_by_name(const struct btf *btf, const char *type_name)
+> > +/*
+> > + * Find BTF types with matching names within the [left, right] index r=
+ange.
+> > + * On success, updates *left and *right to the boundaries of the match=
+ing range
+> > + * and returns the leftmost matching index.
+> > + */
+> > +static __s32 btf_find_type_by_name_bsearch(const struct btf *btf, cons=
+t char *name,
+> > +                                               __s32 *left, __s32 *rig=
+ht)
 >=20
-> I'm actually confused, I thought p->ids would be the mapping from
-> original type ID (minus start_id, of course) to a new desired ID, but
-> it looks to be the other way? ids is a desired resulting *sequence* of
-> types identified by their original ID. I find it quite confusing. I
-> think about permutation as a mapping from original type ID to a new
-> type ID, am I confused?
+> I thought we discussed this, why do you need "right"? Two binary
+> searches where one would do just fine.
 
-Yes, it is a desired sequence, not mapping.
-I guess its a bit simpler to use for sorting use-case, as you can just
-swap ids while sorting.
+I think the idea is that there would be less strcmp's if there is a
+long sequence of items with identical names.
 
