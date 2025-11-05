@@ -1,206 +1,152 @@
-Return-Path: <bpf+bounces-73740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E880AC3839B
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 23:45:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B57DC38422
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 23:50:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75C0F3B8DB8
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 22:44:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D065188E389
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 22:47:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A82C2F1FD0;
-	Wed,  5 Nov 2025 22:44:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD420223DE5;
+	Wed,  5 Nov 2025 22:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ganiIBbi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eC6p5Eyl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A29B82F39DA
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 22:44:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0845255F22
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 22:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762382677; cv=none; b=isui+hXxEmo62aDuhHZ24vB4WrUEmtgo2AesrUS64KVa/ihSi5SV42Z6lwIV9MnmSI1ZWo84ClZTSJqHgPTVWSppmsctDTAGmMoG4ZM1QdPTSqd8uJ6Cm15EOzff07JFsU6qKPun466CPhfKa13V5PANvOTLnHZjy8BlEJ+vd18=
+	t=1762382764; cv=none; b=OgWRxVcwyIw7OaH0vT+dWHnYHRPC/3x68ocET+1MBANZwbX60AZ4cmI+08ILDxTKaetyEMqljlJtbzBLOlCPn8vZgWYV+zYUPs7FkduJigWl+tAXmeWfeLFi8Zw2XtaIuJRWqwjzDwcIb5S6b9zX5iPN8paHh63pHYM3DMnMTmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762382677; c=relaxed/simple;
-	bh=WLzfimeh+A8BXQKkFsqmN+hYJATJ4LbMICZXminMhdo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CdiMRsr0Egxefeq9quKRUAZd+iHoOALKs8hX6SrhYhT+MYMbuduwHtv6pfEZUajKes2ZafFFZteNji8Ya0CDpF6L/DVSvhxLHOHveIP2rszmCwk7gmVZmtKg8mkyjkbQ8DMA2Vy69LUMj6P4nrJT2GGrVqwc42Hoi8lyjal5N7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ganiIBbi; arc=none smtp.client-ip=209.85.216.49
+	s=arc-20240116; t=1762382764; c=relaxed/simple;
+	bh=kkDNyCXlipn1onJC4ich9C7JgWc17Nuo8XcxAWXvuiM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Gc+isNc9pYCIJAVrgeCPXmjklZKBBnWL3oiivxbnWETHkx6g+dspCALWgH2Jkt0UCKIJ17hnzRPz1aPKqopYBfnZL8Hj15bcpCoGi6TANSL6YrlTeHKrL/94u1N4h8O/yvvffr3r7RukdKfRGjAImptj00I97SgRIAFcYty/0JY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eC6p5Eyl; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-3418ac74bffso296582a91.1
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 14:44:35 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-471b80b994bso2830335e9.3
+        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 14:46:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762382675; x=1762987475; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=9F3hFaMtkL3satTAl3jce6WMA/V5ZrNpG/JNLTagLT8=;
-        b=ganiIBbiYuYZ9Iaog8iaKl2Tle/SVUGBaEGvBmtHNGWpKH+IEpeYWr5rr9qDkZq0w1
-         rONxYq98WpjKaH2fmeZNAr4D87hc5qBV6FymLLW9ugYiZe2zmYInfybBCUx2UrejyEsN
-         qLFiWM7Xr4VejlRL9j35jayzq4aPdE4q0YB4YdHxwKMShktHc/g3MhbU9Jh7+36UvD92
-         NcW2Ap0RmZoQSoU3AwIrvuCEQnSSEsY/4/ymhpxsmW3hCS07DN23ZrxmxLWJtuHSIFJW
-         PFMdree6qQMQ5CENdbki9SRc+btPv0qTTIizLWniZFKiZ73CD+fIszokfHVKK42cOvUq
-         lbCw==
+        d=gmail.com; s=20230601; t=1762382760; x=1762987560; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gGoN6Q1FGu70kxgsHRXjo5ei8Lx6D1HeRQOhJHTTWhA=;
+        b=eC6p5EylkYy/ZW4tzb0rWhTjt6g2gKWz8xUt6PQklcp5gBQO3jXukHiXs4wIJ5636R
+         8swaxwTpj9Puxe0HijMP/L1p/k2w1gqVu/CLAVCuh6wJDJuhIns9meg6t8MwpzNqx6ol
+         h6+bwAy+WXgfNVncowHZtUhiU9mVBBTP/uhWG/togNphF5Kv6ZYUwahAPDLIqLio+dji
+         4DuyE9Fb6rWW+t8WJQ9Vir+jmE6XWxL/1yIByhMLE4VzLamnQOG3Vg4AxtIRKxo96CO1
+         /KNutUp/2QLGZ7FLm+Ff9i+EYkiYl1ZgsZG1Wcr0+JPae7kmidRpPjYJ1dUA3wAnH3YC
+         jbBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762382675; x=1762987475;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9F3hFaMtkL3satTAl3jce6WMA/V5ZrNpG/JNLTagLT8=;
-        b=XKoUbQO2YD7BPf7A0jeDR++fVOMcWCa/VlbvGj0mENH74fkLG63M9jqbelw7VswRCV
-         9Ly8FG3o6Y886Ja/pVYmMo7IWHXJC7p5sp4uAhZU7ppeGZUYooaPK5NBoFOKG8r4WhqY
-         uQkyWIzTGDeKZDtLFFNNtcq/VZjzSKmeI2HRGPqa+j/nF3CWcdl9+UID9koHUh3BboQ7
-         1yYLxBCKeSlLNZix/DJi8QJ5pxV2vXvBbYk2A0XA2HvHqIYNDeVTgIXfvyyhTyRG8A9g
-         evqxCNcHWCnzcMZ/5GhVGQ5RPbyJgRBllr8FaIFxIaWuz7/yEAbijo26gTSket+GEf2A
-         kIcw==
-X-Forwarded-Encrypted: i=1; AJvYcCX70/kMZvOAYTKHbywqExk7eVw/Gb/dzI7o1BuQOYs1MgLP8jeu+oKEpsZVqyWDj4ipBpo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwP86A8a15lIY0x5Vg71hK8nRKJcO4Tgdte+l2fdQLlUJT5mPXq
-	IBuEiIYjKbQAJiZqsuyOOpDvWDeF3XhicODwJp3mbL7VuA6HAbi1IGio
-X-Gm-Gg: ASbGncsOBHz8csG6py2hSKC7vbv9gM239ZucKrfNlkYyu3waXQlo3PoyS8+Epqvme/Z
-	qVHPLOXVfmoAeHqoULcp28Lv0HiGq90xqFefURvPUzYUaZ8S7H+Z4PYl+/MSFBK6g/GCgeRMVbQ
-	w3oiZOOyk4SkEQCQZQo6zVZCB+YjGbTJdbhSgqE/lPKcF3xXtRduw+874vubh9vpl4l5kW7caDV
-	a+bbS8LBANZIB9qKujHicHwTiU6yCJwh143+oHBrfQ4iqFKFckuRVTxUtIMAQqJtlaMd4ASg0Lr
-	+j1BqCy9HM2fgmCxvegluo4Le5O3sqKJ0SBSmSUiThAa1Ke12Dy4DFvQ2rXHjmUAVnudKkw9UKO
-	4No+E39LtnpspyvvKeuegxl6lziNW5jTX8c5sZHt4gyWvYLF6Zx0yLe0IQoBkjqhIA2wG0l4mo5
-	MYWFDcvXZDEmbUW3KzTFQCAU1mciV6Zr9A0pU=
-X-Google-Smtp-Source: AGHT+IGQ1Xn4umn2TlBKI3QGaaimOLmthuWxjTLCDU/flhBF/4PDXG5i5AdwqsSAQfpZ94Bg9+LtBw==
-X-Received: by 2002:a17:90b:134e:b0:340:2a18:1536 with SMTP id 98e67ed59e1d1-341a6dec69amr4666985a91.25.1762382674810;
-        Wed, 05 Nov 2025 14:44:34 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:cdf2:29c1:f331:3e1? ([2620:10d:c090:500::6:8aee])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-341a696f15asm4001251a91.12.2025.11.05.14.44.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Nov 2025 14:44:34 -0800 (PST)
-Message-ID: <e9a2c7fc68b5d69abeadf38350eae375f24c58bf.camel@gmail.com>
-Subject: Re: [PATCH RFC v1 5/5] bpf: remove lock from bpf_async_cb
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com, memxor@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Wed, 05 Nov 2025 14:44:33 -0800
-In-Reply-To: <a85b3b32-57a7-4d0a-b925-27e6a59e7f67@gmail.com>
-References: <20251031-timer_nolock-v1-0-bf8266d2fb20@meta.com>
-	 <20251031-timer_nolock-v1-5-bf8266d2fb20@meta.com>
-	 <80b877f638eef0971bceeb2d4a4d9fd776483379.camel@gmail.com>
-	 <a85b3b32-57a7-4d0a-b925-27e6a59e7f67@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1762382760; x=1762987560;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gGoN6Q1FGu70kxgsHRXjo5ei8Lx6D1HeRQOhJHTTWhA=;
+        b=aKaJU5B+2tl4bso1amwT/VlVc78Zl6mHV8XgbtyXtl78LllPyIHI/JlmskmwtcC6dZ
+         9a0uSYk4oorHFyDTgfyLFfAkHd3cJ6EyAO3D/rWalFvL7M8y+0x55jHKRwOa2/TnbhJH
+         z3gSeboIOUid9YHYPHswZSdPwwGcxODI80UbvRvvNrA1nmYtYioOcHUHKbids/DWRuBO
+         MkXGqiOkq6GAGzSlp6jlp5zqwTIk+Keu+9RxLVkwOuLZvCfOAsbf2LYMTlvMIxJ+qniL
+         0TFbshuUn+ArgNUHU4Tr+WHeHzv8kBN6k+2vbCTgyrwn/z0T9GsFySTBwyX6ULITGKud
+         MaNw==
+X-Forwarded-Encrypted: i=1; AJvYcCUS3rJRYu54MiOBfZMmPAyWilDDoaxuJEGN7Ym0/Xlkii3rA2+lPkdj89LUAE2IA8kkUtc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywxg2nT2vW2WX/cmL6KJ0/T0nXXfWhv/acQO/X8e8YUK7qoGjPx
+	cDYtqRJkXT2Z3TDu3tgZxAFoHbZ15/zjNn1cxO6mjevVET1n/3LKZvSuYe3bMJdJPlFdA1vOyxK
+	Y3OLxg8mEloq4FHCIqYQgC7k0ChBxYmY=
+X-Gm-Gg: ASbGnculQT2CFiFsyr+VNwSlHm7ZE1i8v0vEelSZAAYc93EL3y0DlKhGaGBoLvQU96w
+	6yZerG6pH/QqIVDTwnJNI3qiZ1ifKAqlic6QdL0tj4hsnTP7zZzT/rDtmYnFKSoj3UshnF6lb4p
+	fVvg9FQc3zCRHd0UOEGSXz0l3t7+OQqA25gyy+dMp3bZt8dpfVqrdcuK1rXvnFg3e4fr8N40DLK
+	n+q308mdZpEZunGa9h4tAaBMHZ8WwQo7RwZbenhliYGtP/ohJU6JrclL60Fm6zeIInUGiIUqTNw
+	ufqvBa4IL5xGVlxq+Q==
+X-Google-Smtp-Source: AGHT+IGjDwvUOY1Pq7XzI4RZbgF4ynfBtF8HaZiltB+4JMI7wP597W0WnGnQWn4EsO9dJ3ITS0umhzfO5f/LQShhu9Y=
+X-Received: by 2002:a05:6000:25c2:b0:429:cc1c:c1f with SMTP id
+ ffacd0b85a97d-429e330bb48mr4108376f8f.48.1762382760149; Wed, 05 Nov 2025
+ 14:46:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251105201415.227144-1-hoyeon.lee@suse.com>
+In-Reply-To: <20251105201415.227144-1-hoyeon.lee@suse.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 5 Nov 2025 14:45:48 -0800
+X-Gm-Features: AWmQ_bkCpm1oQayiN7axXx7bpB29hzAn2IfljyRcTIPVqCsMzM4KtipvyswazdA
+Message-ID: <CAADnVQK7Qa5v=fkQtnx_A2OiXDDrWZAYY6qGi8ruVn_dOXmrUw@mail.gmail.com>
+Subject: Re: [bpf-next] selftests/bpf: refactor snprintf_btf test to use bpf_strncmp
+To: Hoyeon Lee <hoyeon.lee@suse.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2025-11-05 at 15:30 +0000, Mykyta Yatsenko wrote:
-
-[...]
-
-> > > @@ -1472,12 +1489,19 @@ BPF_CALL_3(bpf_timer_start, struct bpf_async_=
-kern *, timer, u64, nsecs, u64, fla
-> > >   		return -EOPNOTSUPP;
-> > >   	if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN))
-> > >   		return -EINVAL;
-> > > -	__bpf_spin_lock_irqsave(&timer->lock);
-> > > -	t =3D timer->timer;
-> > > -	if (!t || !t->cb.prog) {
-> > > -		ret =3D -EINVAL;
-> > > -		goto out;
-> > > -	}
-> > > +
-> > > +	guard(rcu)();
-> > > +
-> > > +	t =3D READ_ONCE(async->timer);
-> > > +	if (!t)
-> > > +		return -EINVAL;
-> > > +
-> > > +	/*
-> > > +	 * Hold ref while scheduling timer, to make sure, we only cancel an=
-d free after
-> > > +	 * hrtimer_start().
-> > > +	 */
-> > > +	if (!bpf_async_tryget(&t->cb))
-> > > +		return -EINVAL;
-> >
-> > Could you please explain in a bit more detail why tryget/put pair is
-> > needed here?
+On Wed, Nov 5, 2025 at 12:14=E2=80=AFPM Hoyeon Lee <hoyeon.lee@suse.com> wr=
+ote:
 >
-> Yeah, we need to hold the reference to make sure even if cancel_and_free(=
-)
-> go through, the underlying timer struct is not detached/freed, so we won'=
-t
-> get into the situation when we first free, then schedule, with refcnt hol=
-d,
-> we always first schedule and then free, this allows for cancellation run=
-=20
-> when
-> the last ref is put.
-
-Sorry, I still don't get it.
-In bpf_timer_start() you added `guard(rcu)()`.
-In bpf_timer_cancel_and_free():
-
- - bpf_timer_cancel_and_free
-   - bpf_async_put(cb: &t->cb, type: BPF_ASYNC_TYPE_TIMER)
-     - bpf_timer_delete(t: (struct bpf_hrtimer *)cb);
-       - bpf_timer_delete_work(work: &t->cb.delete_work);
-       	 - call_rcu(head: &t->cb.rcu, func: bpf_async_cb_rcu_free)
-
-So, it looks like `t->cb` is protected by RCU and can't go away
-between `guard(rcu)()` and bpf_timer_start() exit.
-What will go wrong if tryget is removed?
-
-> > >   	if (flags & BPF_F_TIMER_ABS)
-> > >   		mode =3D HRTIMER_MODE_ABS_SOFT;
-> > [...]
-> >=20
-> > > @@ -1587,22 +1598,17 @@ static struct bpf_async_cb *__bpf_async_cance=
-l_and_free(struct bpf_async_kern *a
-> > >   {
-> > >   	struct bpf_async_cb *cb;
-> > >  =20
-> > > -	/* Performance optimization: read async->cb without lock first. */
-> > > -	if (!READ_ONCE(async->cb))
-> > > -		return NULL;
-> > > -
-> > > -	__bpf_spin_lock_irqsave(&async->lock);
-> > > -	/* re-read it under lock */
-> > > -	cb =3D async->cb;
-> > > -	if (!cb)
-> > > -		goto out;
-> > > -	drop_prog_refcnt(cb);
-> > > -	/* The subsequent bpf_timer_start/cancel() helpers won't be able to=
- use
-> > > +	/*
-> > > +	 * The subsequent bpf_timer_start/cancel() helpers won't be able to=
- use
-> > >   	 * this timer, since it won't be initialized.
-> > >   	 */
-> > > -	WRITE_ONCE(async->cb, NULL);
-> > > -out:
-> > > -	__bpf_spin_unlock_irqrestore(&async->lock);
-> > > +	cb =3D xchg(&async->cb, NULL);
-> > > +	if (!cb)
-> > > +		return NULL;
-> > > +
-> > > +	/* cb is detached, set state to FREED, so that concurrent users dro=
-p it */
-> > > +	xchg(&cb->state, BPF_ASYNC_FREED);
-> > > +	bpf_async_update_callback(cb, NULL, NULL);
-> > Calling bpf_async_update_callback() is a bit strange here.
-> > That function protects 'cb' state by checking the 'cb->state',
-> > but here that check is sidestepped.
-> > Is this why you jump to drop for FREED state in bpf_async_update_callba=
-ck()?
+> The netif_receive_skb BPF program used in snprintf_btf test still uses
+> a custom __strncmp. This is unnecessary as the bpf_strncmp helper is
+> available and provides the same functionality.
 >
-> yes, this is probably a bit ugly, but I find it handy to have all the
-> tricky code that mutates callback and prog inside the single function
-> bpf_async_update_callback().
+> This commit refactors the test to use the bpf_strncmp helper, removing
+> the redundant custom implementation.
+>
+> Signed-off-by: Hoyeon Lee <hoyeon.lee@suse.com>
+> ---
+>  .../selftests/bpf/progs/netif_receive_skb.c       | 15 +--------------
+>  1 file changed, 1 insertion(+), 14 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tool=
+s/testing/selftests/bpf/progs/netif_receive_skb.c
+> index 9e067dcbf607..186b8c82b9e6 100644
+> --- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> +++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> @@ -31,19 +31,6 @@ struct {
+>         __type(value, char[STRSIZE]);
+>  } strdata SEC(".maps");
+>
+> -static int __strncmp(const void *m1, const void *m2, size_t len)
+> -{
+> -       const unsigned char *s1 =3D m1;
+> -       const unsigned char *s2 =3D m2;
+> -       int i, delta =3D 0;
+> -
+> -       for (i =3D 0; i < len; i++) {
+> -               delta =3D s1[i] - s2[i];
+> -               if (delta || s1[i] =3D=3D 0 || s2[i] =3D=3D 0)
+> -                       break;
+> -       }
+> -       return delta;
+> -}
+>
+>  #if __has_builtin(__builtin_btf_type_id)
+>  #define        TEST_BTF(_str, _type, _flags, _expected, ...)            =
+       \
+> @@ -69,7 +56,7 @@ static int __strncmp(const void *m1, const void *m2, si=
+ze_t len)
+>                                        &_ptr, sizeof(_ptr), _hflags);   \
+>                 if (ret)                                                \
+>                         break;                                          \
+> -               _cmp =3D __strncmp(_str, _expectedval, EXPECTED_STRSIZE);=
+ \
+> +               _cmp =3D bpf_strncmp(_str, EXPECTED_STRSIZE, _expectedval=
+); \
 
-Probably subjective, but it makes things more confusing for me.
+Though it's equivalent, the point of the test is to be heavy
+for the verifier with open coded __strncmp().
+
+pw-bot: cr
 
