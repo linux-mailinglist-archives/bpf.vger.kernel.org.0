@@ -1,179 +1,136 @@
-Return-Path: <bpf+bounces-73695-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73696-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A75DEC377FB
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 20:35:02 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4F75C37858
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 20:41:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 481CE3AE1DD
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 19:33:21 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2B8A54E5F67
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 19:41:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30FA33F389;
-	Wed,  5 Nov 2025 19:33:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05CBB342C8C;
+	Wed,  5 Nov 2025 19:41:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oZwVT0eg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iuha9v5z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AF5D30FC3A;
-	Wed,  5 Nov 2025 19:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25745340A64
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 19:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762371196; cv=none; b=Y0YMz3qnwxF2LDqmxc4iqEcD/1d1PhIrU6qcLYdH2ZptaDUQ4V+2pdtMZa/1zsGIW3dTahGnJvqJBztFqEs7uGrM927iQQIEKH3XC44zmUI3av3x0x3Crl5i6tDMcOqqUCq+vB8MxnCqwCSwEXXQJBygflf4h0siwntQR9XzL1k=
+	t=1762371668; cv=none; b=NEsf14MRli7JbsknkzyuML6pMOzyu1CSSa1eGQ5/6+9T/MInqrJeNCMZ0iGAVlKzM10lX0Ftj+AyfCEdfcNYPsfmnVxqigz9M1RYXm50EczhJGILu09nJkCYQhNBzzc1CuGJN1ECvF8v1DtS6Dd0gXLeu0mFdAni3Y8/MmEgeYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762371196; c=relaxed/simple;
-	bh=sC4pVjz5nexJHLhCwpKv2mgis9nGW809FMorwmcxnfI=;
+	s=arc-20240116; t=1762371668; c=relaxed/simple;
+	bh=C5B9GxGKynn/bGUHoRkkgvCg0pIh/B+Fhjizl4WzJJk=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VbduDwSuq5rwpgovGKQuok3HsrM8pTyHS4NkiCfH8em+XJX5vv5txhCoSx+rAVWGLVguqihPe/MAIvuPt8cH+VbqaRkjOLvTGiq9l8aDvwHXnFb+uEeXFAKoS05nLHLBud3vD2g5Nlcf6k1FN9l6plrcRUElrw5zYZzsJXRDNzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oZwVT0eg; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5A5GMWtn019236;
-	Wed, 5 Nov 2025 19:32:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=sC4pVj
-	z5nexJHLhCwpKv2mgis9nGW809FMorwmcxnfI=; b=oZwVT0egwC9sgC493PcA9Q
-	3pDsGkrTmTjcVwDEN28XXR78dhbZ8uUv8bR4nDLcHz9g/EniZFjIQjIh7FlSY2st
-	EhFoItQng0VG6Lo378/bTb3fuY6gKSBp6+f9c8g+O9Y16KaYlyBHipR117egAuXE
-	6HLgXzgk2ap8mOXHlO6dvfpyJy7luKPHPgSlVKwYynsP/cTez1qsfiSBimPOualy
-	0EnEBjwdo7oJt7YIOhoVXVToJVGLZ0hoeSbKNw79Nn/pCOKr0yPo2sdT5Z4yYj1c
-	/bi3CDbm25eu9S6jVpQyubxZEKalDctguLU5o1tYwRp2oJt2tCGtXiJ1xWT2+mxQ
-	==
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a57mrb0f2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 05 Nov 2025 19:32:56 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5A5IkThu009903;
-	Wed, 5 Nov 2025 19:32:55 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4a5x1khsxq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 05 Nov 2025 19:32:55 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5A5JWphZ51446220
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 5 Nov 2025 19:32:51 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B8E3920043;
-	Wed,  5 Nov 2025 19:32:51 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E909220040;
-	Wed,  5 Nov 2025 19:32:50 +0000 (GMT)
-Received: from [127.0.0.1] (unknown [9.87.135.254])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  5 Nov 2025 19:32:50 +0000 (GMT)
-Message-ID: <ea1f1fd23d1bf4937c91be3bd45744b07b000b1e.camel@linux.ibm.com>
-Subject: Re: [PATCH 0/2] scripts/gdb/symbols: make BPF debug info available
- to GDB
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Jan Kiszka <jan.kiszka@siemens.com>, Alexei Starovoitov
- <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko
- <andrii@kernel.org>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Andrew Morton
- <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Heiko Carstens
-	 <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev
-	 <agordeev@linux.ibm.com>
-Date: Wed, 05 Nov 2025 20:32:50 +0100
-In-Reply-To: <1eec0bc4-dc4a-4fe1-affa-3b8620dfc79d@siemens.com>
-References: <20250710115920.47740-1-iii@linux.ibm.com>
-	 <1eec0bc4-dc4a-4fe1-affa-3b8620dfc79d@siemens.com>
+	 Content-Type:MIME-Version; b=lqJ8/R3kyo2FQDFNg7BYmSCqx28S37CkGESEJDbXxuK0+vQD8K4VtD5yaaKY8+bCTmYoJZCjdvba1ovDK8hMCwM/PpRyZrHDm2A5qioBxYHv++ZZ8xdEl4KBKJN2bdTdvHNdR3vHxIWYeIA9R+Am4a4aYEmuVaJECL3+RrYR+n0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iuha9v5z; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-294fb21b160so1737885ad.1
+        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 11:41:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762371664; x=1762976464; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=C5B9GxGKynn/bGUHoRkkgvCg0pIh/B+Fhjizl4WzJJk=;
+        b=iuha9v5zBNFWYaSMXmyzZW+Mvr7qqeqpNEa34QQvaNRuSUC8Qcd/B43jY/zfpPdm0U
+         VeKgpXsUpSpmMGLCDDYKJyPTESOeVLSU2oGWYC/dZAelJRTooKHOMpiktegfWtBQtGo/
+         Yhk/NuxbFS3aIToRflOHpGKUVLgIckdVYGdpB5tIIEjGX3EnD7PK+yjVdZUhPkBFJxl3
+         Eb9IwGvllFMNFwZiZI8H79E3O5aquGVCoGCjiEkTah4s+icqAVFtwd8pgfkca1G4Ji7e
+         vcbevePC+eNg+f4c3WMrDJgt1To2d7QfRdR3pXosERZyg0Nrlp3jPPfJvb1MaKqEFEvO
+         Jxgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762371664; x=1762976464;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=C5B9GxGKynn/bGUHoRkkgvCg0pIh/B+Fhjizl4WzJJk=;
+        b=RudQeCUTt6m/yo4voTTEkg0po1oa8T5UOnQj4fZVvw2iK3bRs7mXQGd3LUAqxzyKW8
+         pu1X5RUnOEeVTqGtK+tmz/kgovCrhiXBDjYYeQ6ENYqQDSwiHxQKef7DiFoe6p3EWJ2O
+         oEOnRdq1V3MIPaKKWNc/AtWFHG04jWdmbJKpQBZ7mkNWW1qtX11uy84vPjp8YMdnHV8T
+         wYMkr6v0Sy4tfc1tUb0Ava2atAAtqFkj3JEFvocJ657slOwEKrEkTz1O/jeRl5sfYqFv
+         JkX1P9P94NHQcIpIlnn9qz92NaWZ7CQpU4QP4WQdP1/RPvpuG/Ij/hN5sr+1BXShVN/q
+         2whw==
+X-Forwarded-Encrypted: i=1; AJvYcCVXyh6k7AMeR73PhlX4qc16SypPUnbbWHmQRG9khfWIfN6B9eGb8iWLrXXp50QVuIxbhZo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz6OBoyCrW6c5SQXyUi488n2Nhy6ckBdJZ6xd6QYdCHw8oSCAoO
+	vPbsFAIdlHIavJeMo9GCryF4rwk2UeQ2c12ijaFNOPy8YOscRyMk5XSf
+X-Gm-Gg: ASbGncvXH3qrCZyJeWAAP3P2c5NxT7DNZSiFMxK8wyZ4/rtf00titl97hB26Wpyf9CP
+	Q4WJIWgxSJ3Lto/MoVDwhbSZwJLWIY5yJgGcjnQFEo3P6JADLgria17F5U4TpOIJUqvaPghQjkP
+	uFL8sZ6rCyH7j5ZWmJqT6NNQd+tnXY4b/r0gG8TH4jPQctNBrK7XDTX+ElkltzAHQG93b5fPJ+P
+	Y1Tj7kzYhH35BDBi8sD0BmcBW3vBN0VdXfOMxsbouKcHHPAtWHL4673vS9xulL/G2z3pT1IL1Hh
+	Dd3HtRhdEUTvbifatVJHKuZr0Wcz0QLkSOikR+J6nwqqF94YY48X/uDmwLaeowjXSep9u0zqF6l
+	2EYN7DhEJSVfPwgBgZJKW3oGkZQak2UakjUQUSzTYk1lhumlLX/7++b1b5kxFy3+Af8nLuXd0Lj
+	tYu7fQYCyxMN1y3bZ3h31QJtoF
+X-Google-Smtp-Source: AGHT+IFlDfByK8EQR3VsU/N7Fktp4sRb4vaWqlmdg9izLxvSHW9VykP1tI0nh0Yuf2migfAoNWhLFw==
+X-Received: by 2002:a17:903:19cc:b0:269:aba0:f0a7 with SMTP id d9443c01a7336-2962adb32acmr61556695ad.2.1762371664315;
+        Wed, 05 Nov 2025 11:41:04 -0800 (PST)
+Received: from ?IPv6:2a03:83e0:115c:1:cdf2:29c1:f331:3e1? ([2620:10d:c090:500::6:8aee])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29650c5d0c1sm3413535ad.27.2025.11.05.11.41.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Nov 2025 11:41:03 -0800 (PST)
+Message-ID: <7f3586157e17d0ab2c34b16d2f7daf4955d0692f.camel@gmail.com>
+Subject: Re: [RFC PATCH v4 1/7] libbpf: Extract BTF type remapping logic
+ into helper function
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Alan Maguire
+	 <alan.maguire@oracle.com>, Song Liu <song@kernel.org>, pengdonglin
+	 <pengdonglin@xiaomi.com>
+Date: Wed, 05 Nov 2025 11:41:02 -0800
+In-Reply-To: <CAEf4BzZffw1sTJUBxwUnhx8XjQNMRf2-e+vUzOfyMqgMTpYsdA@mail.gmail.com>
+References: <20251104134033.344807-1-dolinux.peng@gmail.com>
+	 <20251104134033.344807-2-dolinux.peng@gmail.com>
+	 <CAEf4BzaPDKJvQtCss4Gm1073wyBGXmixv4s9V5twnF7uEHRhPg@mail.gmail.com>
+	 <61e92756ea7f202f2e501747b574e97b2f5bc32f.camel@gmail.com>
+	 <CAEf4BzanAmmSe84GnvWSR_KLFVmeEvrxVVJAvApFNRjgeRXk8Q@mail.gmail.com>
+	 <61f94d36d6777b9b84e9bf865edd17476a278e73.camel@gmail.com>
+	 <CAEf4BzZffw1sTJUBxwUnhx8XjQNMRf2-e+vUzOfyMqgMTpYsdA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: jW2hN8RnbASfzr0LffOBskEKbt18VvdI
-X-Authority-Analysis: v=2.4 cv=MKhtWcZl c=1 sm=1 tr=0 ts=690ba668 cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=ypKVNuHTik4TnLp-rxMA:9 a=QEXdDO2ut3YA:10 a=cPQSjfK2_nFv0Q5t_7PE:22
- a=HhbK4dLum7pmb74im6QT:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
-X-Proofpoint-ORIG-GUID: jW2hN8RnbASfzr0LffOBskEKbt18VvdI
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTAxMDAwMSBTYWx0ZWRfX0p3soDq5jouE
- H/ZaoJ+OJE3TWU78OnGj+nNItXTTEWbZUBlc4xt8MqAe0eiI1ikFKpumu+5jkCnYEFL2YiGAHe6
- dGkcmgG1sSQrWZQ9hvQWn/hIlU2cldtolsZAi2w4uOj9baIg8k8YfMXmsFwhFp2SiVpHqclVbTM
- ZF3f6sRdw07kj4WFHIAzoE396/NFi9YwqrlIBU4bV9GLxw+lMi++oP67FcE+o87MiTQxhUKo0+O
- N8z9gbPSUWD4EBB4TFAiMIY/ceGCTThDW7G5YW9qhPLeMYPpJYTD6iH1Kfh6VpIqfGKrEEsib2O
- GWovwWaN7M3WF2mO4Ad/FSY4hqoI2H5KsiKpnohumHMP3Sw+qYUMmaMhOpWWQ7IlDhNWH7RlDgb
- HbU4Alq6mNvA38vz+xMCFJFX1VRoMQ==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-05_07,2025-11-03_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 suspectscore=0 bulkscore=0 impostorscore=0 clxscore=1011
- lowpriorityscore=0 malwarescore=0 adultscore=0 phishscore=0 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511010001
 
-On Thu, 2025-10-30 at 17:47 +0100, Jan Kiszka wrote:
-> On 10.07.25 13:53, Ilya Leoshkevich wrote:
-> > Hi,
-> >=20
-> > This series greatly simplifies debugging BPF progs when using QEMU
-> > gdbstub by providing symbol names, sizes, and line numbers to GDB.
-> >=20
-> > Patch 1 adds radix tree iteration, which is necessary for parsing
-> > prog_idr. Patch 2 is the actual implementation; its description
-> > contains some details on how to use this.
-> >=20
-> > Best regards,
-> > Ilya
-> >=20
-> > Ilya Leoshkevich (2):
-> > =C2=A0 scripts/gdb/radix-tree: add lx-radix-tree-command
-> > =C2=A0 scripts/gdb/symbols: make BPF debug info available to GDB
-> >=20
-> > =C2=A0scripts/gdb/linux/bpf.py=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 | 253
-> > ++++++++++++++++++++++++++++++
-> > =C2=A0scripts/gdb/linux/constants.py.in |=C2=A0=C2=A0 3 +
-> > =C2=A0scripts/gdb/linux/radixtree.py=C2=A0=C2=A0=C2=A0 | 139 ++++++++++=
-+++++-
-> > =C2=A0scripts/gdb/linux/symbols.py=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=
-=A0 77 ++++++++-
-> > =C2=A04 files changed, 462 insertions(+), 10 deletions(-)
-> > =C2=A0create mode 100644 scripts/gdb/linux/bpf.py
-> >=20
->=20
-> This wasn't picked up yet, right? Sorry for the late reply, my part
-> of
-> the "maintenance" here is best effort based.
->=20
-> Looks good to me regarding integration. I haven't tried it out, I'm
-> just
-> wondering if it has notable performance impact on starting gdb or
-> interacting or when that could be the case. BPF programs are not
-> uncommon in common setups today. But if you don't want to debug them,
-> does this add unneeded overhead?
->=20
-> Otherwise, I think it could move forward if it still applies (which
-> it
-> likely does).
->=20
-> Jan
+On Wed, 2025-11-05 at 10:20 -0800, Andrii Nakryiko wrote:
 
-Thanks for taking a look!
+[...]
 
-I have to admit the performance implications are noticeable due to
-having to spawn an external process for each BPF prog.
+> You don't like that I ask people to improve implementation?
 
-What do you think about hiding this behind `lx-symbols --bpf` flag?
+Not at all.
+
+> You don't like the implementation itself? Or are you suggesting that
+> we should add a "generic" C implementation of
+> lower_bound/upper_bound and use callbacks for comparison logic? What
+> are you ranting about, exactly?
+
+Actually, having it as a static inline function in a header would be
+nice. I just tried that, and gcc is perfectly capable of inlining the
+comparison function in -O2 mode.
+
+I'm ranting about patch #5 being 101 insertions(+), 10 deletions(-)
+and patch #4 being 119 insertions(+), 23 deletions(-),
+while doing exactly the same thing.
+
+And yes, this copy of binary search routine probably won't ever
+change. But changes to the comparator logic are pretty much possible,
+if we decide to include 'kind' as a secondary key one day.
+And that change will have to happen twice.
+
+> As I said, once binary search (of whatever kind, bounds or exact) is
+> written for something like this, it doesn't have to ever be modified.
+> I don't see this as a maintainability hurdle at all. But sharing code
+> between libbpf and kernel is something to be avoided. Look at #ifdef
+> __KERNEL__ sections of relo_core.c as one reason why.
 
