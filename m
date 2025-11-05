@@ -1,162 +1,153 @@
-Return-Path: <bpf+bounces-73697-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73699-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8117AC37921
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 20:54:21 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FBA6C37AA4
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 21:15:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7C0D3AB8D3
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 19:52:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B71FB4F7514
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 20:14:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79F0534405D;
-	Wed,  5 Nov 2025 19:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2E2345CD0;
+	Wed,  5 Nov 2025 20:14:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nALGEc/+"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gDUuJ/02"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F7F343D9C
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 19:51:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED31345CAE
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 20:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762372314; cv=none; b=QzyL2uD6M91w/m69Lj6bEGSve4CD7Z15YUG0a/0RTjNaSqMzg8rvL3Qsddkgweu+zauE/zdDy94evOAE5VtBGinzOYfcVtxhusMnMogCrldfKT8OQXCe43jHBNVeaI8e6YwJvo4V80G9/7LkODlAvZhCvcm6M9XpfzDW5MSQ9rU=
+	t=1762373676; cv=none; b=mU7yZKvi7SQy2v1Gcca+/We6xFxOeVqnuJLfoVDJrbqMaGwbAvw/Oe4vg0RRWQfBEI/x0dVTNCeZ8+85fHI5k0pCmWOhBib575iRm2JFW8C59vTxoV4TNttNJg4uOwmPQt0Ajk/DY8RNEHCl/54toyufTK6rtcLEL/ON+d4M5iE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762372314; c=relaxed/simple;
-	bh=SyjnyK2mM7BPl8arvIT1TqAsNFqJsg/GvV58Gk3CgP4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i9+9Cf9gGOo7O9uKMKEfIDd/ohuSo4vMHySX6rldpRtSL0p6ld391jMDRvMnw1oIe/ciSLEy+lITTnljdlVdVplyUJEQlPD2+p05GzNHo5DmMZTInuwLC9PN3VVrb7RSG0K8crCX8M2XYJQM5loZbJV4xPMwfE9BcM153qy3FVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nALGEc/+; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-29558061c68so2786275ad.0
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 11:51:52 -0800 (PST)
+	s=arc-20240116; t=1762373676; c=relaxed/simple;
+	bh=FQzNj/iI21StuEtNBXSJB93avwyumsTpx259DhyFqdM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QzK23EsaYgfHCE5JZNHqTuIAW+ubZhbpsxKgHH6yKMthd+i7G67la9baEKnRrJTDTvcB+wmlM8IhslDweVkMwfQe+e9+q92vVP1mWzG3rCWURMDhYOgzne4mTn66cqxPX+V2ONzNuCr19g4dU+TSGLwRBYeCWH1uHfAUmeYXnAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gDUuJ/02; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b70fb7b531cso34750166b.2
+        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 12:14:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762372312; x=1762977112; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ksJDtaPRfEdf2wyhHYMWN9wPkaygRfw7CbDDkQ9lv28=;
-        b=nALGEc/+SZA0IY4vWvdqu/Tm0hLNqzvjXxAiOUhFBJ/YPAoWxmZv3pHjBkLJroXlDp
-         89/fu6UIEIyEdE6QDrRG8lPGSj9f3wL0sqr4NMW8MUQy6HXcFs1W1YtA5LBtBJ5WX5dm
-         KO8tay4nX9vTQi+7C0CrF5MS7oowmeSkxqXWUXYS7DTqmbowyYKV6eh7693WkweDIhNC
-         gndr3swjfK9qmg2JctGYrCHEEWra5zxcAkU/Akb2+AosAwF3DXc3siUICCCruHiaAiew
-         ecsiEYdTLVSLKPIimVsW6eecIL8jn3/QPdu2cspWQ9SFYAl/GGsLwNRHtYr7neHK2qTX
-         NGKw==
+        d=suse.com; s=google; t=1762373672; x=1762978472; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6YOD+qBBkgg+BsuL1SBWq+3Z34YLCPMyV0Nnl+sTk3w=;
+        b=gDUuJ/02vYyIgH7+jip+SvAFgZlGAZhJAvoSC6XhRPgbvjLFMk4otFzmw7laZ5gzmc
+         icMR/h6bQUqZucrXoqSou/cptL7ThV6lcO5Tfio6cUmp7RnPoKUz70whgjdx1JAdiwNj
+         aNuqfHkxG6dVhf5msmPfD99s5YUhip+HNIs9d2+nk41F3YiV918UvYhdpa19kePTiiDf
+         SgwUM52q/7SBI+DllLta5VWv2C166YCEJifho6MyeqBt7YTONgj8Jae4YVrngWYqt8F4
+         dYxyFQ6nZlqShgQqnbzMXdPu4RoiqMIJT33SkVfPXBO3SXV7LfbPK7lTKbFbITB3S+3m
+         FO6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762372312; x=1762977112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ksJDtaPRfEdf2wyhHYMWN9wPkaygRfw7CbDDkQ9lv28=;
-        b=PrbKE8EqznORgk4zTKTgZ97OLWkMNXW0kDlKKF0O6QgBK92KSGrv+cz2p0d56sH2sR
-         LYH63tR0r6ZHtVxmaYZdkU9HvmvH+xUhZBkXTIwXgnq/ceP9BBRk6GK70nfUgBJDHCF9
-         tYvoqQE2Ilj1kVbhmY6EzNDSBPVsy1GfXnc/YL5zz0s7n78kCG6mZOlQZGpqrMx/WfEh
-         YuMBOIUylt/Q7t6M5FGeYUdcsJpmLKXhdNhAhAyZp/PEHGUWu8EGhe0E6f37xU3G3OAh
-         vmgoJCzWyRVr7kYdD4Rzsw18W/neKc3z5By0io8sUeDB2ufq8fS3rGnAelFaXDMHR7fu
-         ewLg==
-X-Forwarded-Encrypted: i=1; AJvYcCW3VwtXiI14YUlI6np1jKCn0VqemM8bbY6VaTaaFH44keLLGYC3L9O0rM/iCBKK2lny3Tg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxO2vsPuzb9LGAmI/082FN4F+vxm41XRf4b4H5IXrT+9IZZPGE6
-	P1yMJyVQe7QRjubrXhvSmzaUPcwR1R6Y0W7qG/gP1c7ujm/rha+eTO0=
-X-Gm-Gg: ASbGnctRZBZbORhVTbPH/VSepwqf2LyOoOzEU1n9sTbx/bw/ALIU4Ad0zeURKiU3EkH
-	NVep9c6nD0scnJ5Mc/E3XWM2fl7oAiChp7P/8z4GPo/Eq0VfMhodVwbNhitrchft6vogkn3QW6h
-	zmQ6rxfUAvwqq/UKXjGjD2OutrSkQsk5XudVWnPmZ+SnCjsLCSsFTOJLFzey58CcZfeRMhWQz1s
-	TIcRXdvTUpCfUayJ+ULunt45W7eVF1LOy6L/9PfU9zLWyMdQ5FB/dxMNm8q0l5SQ9PsTh6j8QQs
-	sfWFj+Lfhzz98kp+IsKKGGn6FkG5Lmb11CQ97rhX32Awb5YU8TwTCHfANoa104KPGnKWRyYw1PR
-	vL4gMm/EBrSV2R+O7/ODI1mg8T9TMOp8wk3uBcJ1gmy4fQr4nQ5DX/WikPT2wcuq2dTEs5XOosK
-	vJUpdw3dbbEKFiCUenTidqB5YJn32OOsNwCi0x2A4zGtdy8INrYDJ9K7cc2EsfofmVe2EjbPEBU
-	lvSqMAcp5y9LjpZfRUDf19hqtw4v2EATTxnj+bGnVQKBfSY8DLXjHVa
-X-Google-Smtp-Source: AGHT+IHvedoObPI3pxxfxclSW2jn0qBK9jIAa7IzRD3SI3wu5p6eqVzGifMv2Q3vbiXXa0p/BG3eIA==
-X-Received: by 2002:a17:902:d4c7:b0:292:fe19:8896 with SMTP id d9443c01a7336-2962add623emr61147975ad.52.1762372311486;
-        Wed, 05 Nov 2025 11:51:51 -0800 (PST)
-Received: from localhost (c-76-102-12-149.hsd1.ca.comcast.net. [76.102.12.149])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29650c5d790sm3591555ad.26.2025.11.05.11.51.50
+        d=1e100.net; s=20230601; t=1762373672; x=1762978472;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6YOD+qBBkgg+BsuL1SBWq+3Z34YLCPMyV0Nnl+sTk3w=;
+        b=ARSi4dzSEdNCJfcDDpaynK5rHOmq8LwHUj1JaDOvJ065CKO37871x9MD+34T4hvYPF
+         0szALNTnnfY0hs4bKW0l3eFZSIwaM9/ab+DIBFveqILD1jYSDWw94sVlkriG7RLGec0i
+         4f01SwswAKOU1A8Hre+XrMZrTY7DpRLZjzf1LKmODM4psg0Z1qEhWN8k6rLjuK8p/vBB
+         YJ0P12Q+nowe1DqofdOSBHyeIaxZ765tKk1PcaC/BZYIBleDOdATkaqIQwQVtMD6KhXS
+         z7nALFtdq20jmY2Ywky16X+nBe0uJnubhB76vtkUYLymlOFywi70NeAQDbvWQKyIPDdB
+         8USg==
+X-Forwarded-Encrypted: i=1; AJvYcCWI2/4909pag8TCimP77nrxO+tfKcJij7E6FeR1Xre0DSrUTGTs0BdQJMoYHR/8ijY0VE8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxnXW1OKq5hsitXVI211onNyPd70Co0ij2gvjfISZL14jtziSfn
+	Nmubf74LpIMfnh/9XkqNupLzBdv8uU4/cEHGT/295pFVmc5BUsu8uqQ6+MGuV4U+USo=
+X-Gm-Gg: ASbGncvZ6qX5IvuBKUotKuuLFVd+UqCLTcxKRhzS1VzRI4d2RDb0poMPWsW9Is7YtwC
+	mbP4c2Fp6sYZ6+Cs1nUaUE92z3qJEFrAOCgT+ysnRStFz1tP/Z9Z5zcMu81a205rN2tangCh+Fm
+	WR3DbH9eqNH0Pa2oiyl76V+mi4y/glto2vUV+Iu7Nk8kT/8yvUQvIPRE00AFrJB+HC6ypGAR8wo
+	8TlnpNU5BCv+W5U/NoPQtwFvmnbazA5/4wNb1u3VEihnC/l3/XEG1Ciz4IX8HOuIXCEYxAPVUk5
+	zeeL3AiVzEUlMXcBN3QmTaCtiOK8p6lnsWYml+j62gUivQtgkSM3CkSje2WW/Yfpp+6TIP5j+gP
+	TwS1x1Hk+UvdFKHWiBJE4cfWrW7V8fOaT3irb24kLTQV6zTM1xVgGDcQSIfP4ONNpIcehw9HPZO
+	7Csi6Uvtx3jWkLq4IAxYkw5349zRzpe/T/JUvcBgo=
+X-Google-Smtp-Source: AGHT+IHz4N+UDv5hA7YHGT9ZSBnETebYj3ZBuTUrybneyCPcbhb+U0L/RcjMsnvhLc9I+xf3WZ6OKw==
+X-Received: by 2002:a17:907:9815:b0:b71:854:4e49 with SMTP id a640c23a62f3a-b72655edfabmr463264966b.56.1762373672395;
+        Wed, 05 Nov 2025 12:14:32 -0800 (PST)
+Received: from F15.localdomain ([121.167.230.140])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29650967e11sm4101625ad.8.2025.11.05.12.14.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Nov 2025 11:51:51 -0800 (PST)
-Date: Wed, 5 Nov 2025 11:51:50 -0800
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: David Wei <dw@davidwei.uk>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
-	razor@blackwall.org, pabeni@redhat.com, willemb@google.com,
-	sdf@fomichev.me, john.fastabend@gmail.com, martin.lau@kernel.org,
-	jordan@jrife.io, maciej.fijalkowski@intel.com,
-	magnus.karlsson@intel.com, toke@redhat.com,
-	yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
-Subject: Re: [PATCH net-next v4 00/14] netkit: Support for io_uring zero-copy
- and AF_XDP
-Message-ID: <aQuq1mhm7cM8kkLY@mini-arch>
-References: <20251031212103.310683-1-daniel@iogearbox.net>
- <aQqKsGDdeYQqA91s@mini-arch>
- <458d088f-dace-4869-b4af-b381d6ca5af1@davidwei.uk>
+        Wed, 05 Nov 2025 12:14:31 -0800 (PST)
+From: Hoyeon Lee <hoyeon.lee@suse.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	bpf@vger.kernel.org
+Cc: Hoyeon Lee <hoyeon.lee@suse.com>,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [bpf-next] selftests/bpf: refactor snprintf_btf test to use bpf_strncmp
+Date: Thu,  6 Nov 2025 05:14:13 +0900
+Message-ID: <20251105201415.227144-1-hoyeon.lee@suse.com>
+X-Mailer: git-send-email 2.51.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <458d088f-dace-4869-b4af-b381d6ca5af1@davidwei.uk>
+Content-Transfer-Encoding: 8bit
 
-On 11/04, David Wei wrote:
-> On 2025-11-04 15:22, Stanislav Fomichev wrote:
-> > On 10/31, Daniel Borkmann wrote:
-> > > Containers use virtual netdevs to route traffic from a physical netdev
-> > > in the host namespace. They do not have access to the physical netdev
-> > > in the host and thus can't use memory providers or AF_XDP that require
-> > > reconfiguring/restarting queues in the physical netdev.
-> > > 
-> > > This patchset adds the concept of queue peering to virtual netdevs that
-> > > allow containers to use memory providers and AF_XDP at native speed.
-> > > These mapped queues are bound to a real queue in a physical netdev and
-> > > act as a proxy.
-> > > 
-> > > Memory providers and AF_XDP operations takes an ifindex and queue id,
-> > > so containers would pass in an ifindex for a virtual netdev and a queue
-> > > id of a mapped queue, which then gets proxied to the underlying real
-> > > queue. Peered queues are created and bound to a real queue atomically
-> > > through a generic ynl netdev operation.
-> > > 
-> > > We have implemented support for this concept in netkit and tested the
-> > > latter against Nvidia ConnectX-6 (mlx5) as well as Broadcom BCM957504
-> > > (bnxt_en) 100G NICs. For more details see the individual patches.
-> > > 
-> > > v3->v4:
-> > >   - ndo_queue_create store dst queue via arg (Nikolay)
-> > >   - Small nits like a spelling issue + rev xmas (Nikolay)
-> > >   - admin-perm flag in bind-queue spec (Jakub)
-> > >   - Fix potential ABBA deadlock situation in bind (Jakub, Paolo, Stan)
-> > >   - Add a peer dev_tracker to not reuse the sysfs one (Jakub)
-> > >   - New patch (12/14) to handle the underlying device going away (Jakub)
-> > >   - Improve commit message on queue-get (Jakub)
-> > >   - Do not expose phys dev info from container on queue-get (Jakub)
-> > >   - Add netif_put_rx_queue_peer_locked to simplify code (Stan)
-> > >   - Rework xsk handling to simplify the code and drop a few patches
-> > >   - Rebase and retested everything with mlx5 + bnxt_en
-> > 
-> > I mostly looked at patches 1-8 and they look good to me. Will it be
-> > possible to put your sample runs from 13 and 14 into a selftest form? Even
-> > if you require real hw, that should be doable, similar to
-> > tools/testing/selftests/drivers/net/hw/devmem.py, right?
-> 
-> Thanks for taking a look. For io_uring at least, it requires both a
-> routable VIP that can be assigned to the netkit in a netns and a BPF
-> program for skb forwarding. I could add a selftest, but it'll be hard to
-> generalise across all envs. I'm hoping to get self contained QEMU VM
-> selftest support first. WDYT?
+The netif_receive_skb BPF program used in snprintf_btf test still uses
+a custom __strncmp. This is unnecessary as the bpf_strncmp helper is
+available and provides the same functionality.
 
-You can start at least with having what you have in patch 3 as a
-selftest. NIPA runs with fbnic qemu model, you should be able to at
-least test the netns setup, make sure peer-info works as expected, etc.
-You can verify that things like changing the number of channels are
-blocked when you have the queued bound to netkit..
+This commit refactors the test to use the bpf_strncmp helper, removing
+the redundant custom implementation.
 
-But also, regarding the datapath test, not sure you need another qemu. Not
-even sure why you need a vip? You can carve a single port and share
-the same host ip in the netns? Alternatively I think you can carve
-out 192.168.x.y from /32 and assign it to the machine. We have datapath
-devmem tests working without any special qemu vms (besides, well,
-special fbnic qemu, but you should be able to test on it as well).
+Signed-off-by: Hoyeon Lee <hoyeon.lee@suse.com>
+---
+ .../selftests/bpf/progs/netif_receive_skb.c       | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+index 9e067dcbf607..186b8c82b9e6 100644
+--- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
++++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+@@ -31,19 +31,6 @@ struct {
+ 	__type(value, char[STRSIZE]);
+ } strdata SEC(".maps");
+ 
+-static int __strncmp(const void *m1, const void *m2, size_t len)
+-{
+-	const unsigned char *s1 = m1;
+-	const unsigned char *s2 = m2;
+-	int i, delta = 0;
+-
+-	for (i = 0; i < len; i++) {
+-		delta = s1[i] - s2[i];
+-		if (delta || s1[i] == 0 || s2[i] == 0)
+-			break;
+-	}
+-	return delta;
+-}
+ 
+ #if __has_builtin(__builtin_btf_type_id)
+ #define	TEST_BTF(_str, _type, _flags, _expected, ...)			\
+@@ -69,7 +56,7 @@ static int __strncmp(const void *m1, const void *m2, size_t len)
+ 				       &_ptr, sizeof(_ptr), _hflags);	\
+ 		if (ret)						\
+ 			break;						\
+-		_cmp = __strncmp(_str, _expectedval, EXPECTED_STRSIZE);	\
++		_cmp = bpf_strncmp(_str, EXPECTED_STRSIZE, _expectedval); \
+ 		if (_cmp != 0) {					\
+ 			bpf_printk("(%d) got %s", _cmp, _str);		\
+ 			bpf_printk("(%d) expected %s", _cmp,		\
+-- 
+2.51.1
+
 
