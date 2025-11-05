@@ -1,186 +1,114 @@
-Return-Path: <bpf+bounces-73737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 775B6C382A5
-	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 23:18:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84D98C382D5
+	for <lists+bpf@lfdr.de>; Wed, 05 Nov 2025 23:22:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0DDAB4F56EE
-	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 22:17:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4024B3B7F0F
+	for <lists+bpf@lfdr.de>; Wed,  5 Nov 2025 22:22:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1283D2F12A3;
-	Wed,  5 Nov 2025 22:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09762F1FC5;
+	Wed,  5 Nov 2025 22:22:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jiZyxjTG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XjUVa7tk"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68EFC2E888C
-	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 22:17:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 027672E62A2
+	for <bpf@vger.kernel.org>; Wed,  5 Nov 2025 22:22:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762381050; cv=none; b=taS1UQuN89gV/oAkkUsbfSe7bIx27DA9htujX0E76Ol8noQvCosJdmpySbw6G+9M8rf8L3pIkOuUT6m7fNYGvQFrx4q9HL+xncBlCcbRLphk+894SxJpUoTlZTVbu363HVk5q0LhYMq0wk8OgiaOYyVWfKM/rH/3cnuuYzHYIVM=
+	t=1762381357; cv=none; b=NHiKhgPT90vFJE7tJ0Era3I9k9ALPDJwbYHunsZN2aKUlXzHE0Hi3ScXG5DHjMO9OXrKoi0Xp1UM9LIYy2svKFuBKzfsXIcEqH3acxd0aRcWuzvdTZ6c6LMqLGZFxK1Viu8zuopEvtvk3SUXvE5fwUFCYT+bogHUK+bTYOM/4js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762381050; c=relaxed/simple;
-	bh=IoB9iZlMwRfHd737NI7jBIhjtchxI0N+tT4/xrisp/M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nyAGyGwCHfLr/8x+fhX8W4hA4VJZwr5xbClVcaPbNJBaKpXzuJpWysVf9TsIq6Grw+nrAgfxn9UY0/7Bfasz9KRGjDpwGxvlb0fwsI/ftKdKMrc7K8q7lmDJi8s7pN4DHtmR2gxaU7/o0cqvfXAKOvGb0wf7nl1bTShmLAnf/zU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jiZyxjTG; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c352f357-1417-47b5-9d8c-28d99f20f5a6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762381036;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SKgffc4Q2YFxCE+a40kbJ/fp+ky+zJPizqh+vpPjXZU=;
-	b=jiZyxjTGo46+JtYMDBd6kq8Uwv0MXIdokM3ej89Vla93H2ztbJVIcSyGhtss/qLYJwLxbQ
-	Z0qT5RaIFFmyMBOnUbnWbY6D9mEzPkRe6jKLLLcYu7ZEaPLDF2AgdcC/8fHKbiH370KhLP
-	d+/HWQd3lTolZ+hOiizVKU9ng/cnrP0=
-Date: Wed, 5 Nov 2025 14:16:58 -0800
+	s=arc-20240116; t=1762381357; c=relaxed/simple;
+	bh=RvLX/B9HyZgBFy6vMfMFfbx7Z3GJR59vS3ShKrNuy5c=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=h7rXsIILJ+eElLz1jYOs7E/vntPmTa3XHqyECMm6oELgT8UVfLe6vetdaJMYXyJWuSOC0/w0lwvxSeVRfqzRmTnJphO7iyOcwkZfGd0fdEr4U9yEp7/gTcGq73OjpNXxu3vkVnd8i5X8Gnrtz5QokUZRvQb03YbWnTCzdgi+Vco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XjUVa7tk; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-ba507fe592dso172741a12.2
+        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 14:22:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762381355; x=1762986155; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RvLX/B9HyZgBFy6vMfMFfbx7Z3GJR59vS3ShKrNuy5c=;
+        b=XjUVa7tk5vQNbSrCkjSQ21NCTxgLjdenDUJBjiex2/P2nkIpBieQoHuq56b6g/7YrV
+         IbmCNcNxbyXOQ2uBCfI489/JZGD6ppFUb/D1I3IHoO2PvAXbny7yg2I6tDlXHrHxxBRA
+         kEZ2/2VskiyQHdYKr++cz6LgEFGvxeuArADjw7NXnQUgmWQYcByEvQpKuz1/daiIkr3+
+         IiGyk0dSCQyl+YftXEsyHU+/Hm86/h3kbTQ/AvEqCKZPG4GsVnsWR2+YASpwfo5nN2WF
+         Vtvj1k0V4w1fUzmfhOTLo925Ylge8fFvwHDKbcDeBNhYGTxo7VHmoqqiBuF3iwznSJFk
+         5C1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762381355; x=1762986155;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RvLX/B9HyZgBFy6vMfMFfbx7Z3GJR59vS3ShKrNuy5c=;
+        b=B17X4COqPhDEoGIpawmljp8uU+X3L+1T6T/syNKVtThXstlB7WaPu2TSI8k9bgSTKu
+         6ibSLRRaWCGqNbGde0YNwevY623SilAJ5NthJWhRi352r55ijjgebcg2NVpBU4HWkWbE
+         1r32RtPzit8a0MJW4U2Rp6HTLHLn012NM7//W7WSMb3wPPhMe5XhgXg6CrjXuMobpdJF
+         2QeR6ybFhefF9nl5lkaNeE4lDqKDlLKJm5zLtRg5ib/0E6B9lfiuuFITCR6rbElL9Hd5
+         VE0BpRVPySOcsQbGZGAkk/5V1FVG2r0MKXcSa2OaSmX4i+RRC0dlOqBWGTyGd+dntv15
+         T8ig==
+X-Forwarded-Encrypted: i=1; AJvYcCXCM4qbtF29QkXpoQ2z5xAosXCTbRq+ANJSpLGl10ygz+DiZrG6xaP+bibxzg5IjMsUCjI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/4rVBBN1z/E1HmM0rtYpDzOnnFigvqLp5nTpnCPcCftXy0ipQ
+	+pgLWwAA8E5QFO3xutM+T19rV68bWvN6w4fZTftLzLsQzd69GCgGRviG
+X-Gm-Gg: ASbGnctHXby2BzfD/TirOLxlcZ/EiqhFomVONzNjrPdmmT9C0aVKZw6tYHLWLRSmZFk
+	gt7Ab6CcJ98VjE+nfk5Qdfcs1PwzxWf/qJoup6iH5LHLQg9Z2lOvUcPUqmiHL4R2qVLV2g2gLc5
+	9FRXd2BBV6wd1Cx7O+DiXqHEKNvjT6rpZUoqVr6P1LKuguM8a+f0BY7YoVaP92EAgojb01hu233
+	Qh5N4NA5d7QW4zenogovDOvboINiGB8iCB+HgttkKFei3S0eEIEHLcnb9nlnKFiw7n98g+RLm1q
+	QNYaZspkYBp8hevz1nZ6aMFDyWQPAyMw3cSYIgDeQwKALmPHvFihYpo/XaT3snBD3LjM+cko5bg
+	g1Sk+7tXwVf1GL0mKFOd8OJ7Tw6QmvME8ZPRIxTs7t48B0/AYVzs9jSDlSEDCXSrgJ0DN3jbrVR
+	rQhE/6YucmpI2csqSJ5TvEoGSG
+X-Google-Smtp-Source: AGHT+IFNpsrJwWvShOgzTaHvHA8SiGJMawi4S4q7i+YGcAuUdkfNhD0nsFKo1Vh7uDY2cIu5PeeeTA==
+X-Received: by 2002:a17:902:d489:b0:295:702e:66e4 with SMTP id d9443c01a7336-2962ad29f31mr59676325ad.19.1762381355250;
+        Wed, 05 Nov 2025 14:22:35 -0800 (PST)
+Received: from ?IPv6:2a03:83e0:115c:1:cdf2:29c1:f331:3e1? ([2620:10d:c090:500::6:8aee])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29651c8ef47sm5677345ad.74.2025.11.05.14.22.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Nov 2025 14:22:34 -0800 (PST)
+Message-ID: <29784285224aed7ffa9a44434251c75c96c2c26b.camel@gmail.com>
+Subject: Re: [bpf-next] selftests/bpf: refactor snprintf_btf test to use
+ bpf_strncmp
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Hoyeon Lee <hoyeon.lee@suse.com>, ast@kernel.org, daniel@iogearbox.net, 
+	bpf@vger.kernel.org
+Cc: andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Wed, 05 Nov 2025 14:22:33 -0800
+In-Reply-To: <20251105201415.227144-1-hoyeon.lee@suse.com>
+References: <20251105201415.227144-1-hoyeon.lee@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 2/2] bpf: Hold the perf callchain entry until
- used completely
-Content-Language: en-GB
-To: Tao Chen <chen.dylane@linux.dev>, peterz@infradead.org, mingo@redhat.com,
- acme@kernel.org, namhyung@kernel.org, mark.rutland@arm.com,
- alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
- adrian.hunter@intel.com, kan.liang@linux.intel.com, song@kernel.org,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20251028162502.3418817-1-chen.dylane@linux.dev>
- <20251028162502.3418817-3-chen.dylane@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20251028162502.3418817-3-chen.dylane@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-
-
-On 10/28/25 9:25 AM, Tao Chen wrote:
-> As Alexei noted, get_perf_callchain() return values may be reused
-> if a task is preempted after the BPF program enters migrate disable
-> mode. The perf_callchain_entres has a small stack of entries, and
-> we can reuse it as follows:
->
-> 1. get the perf callchain entry
-> 2. BPF use...
-> 3. put the perf callchain entry
->
-> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+On Thu, 2025-11-06 at 05:14 +0900, Hoyeon Lee wrote:
+> The netif_receive_skb BPF program used in snprintf_btf test still uses
+> a custom __strncmp. This is unnecessary as the bpf_strncmp helper is
+> available and provides the same functionality.
+>=20
+> This commit refactors the test to use the bpf_strncmp helper, removing
+> the redundant custom implementation.
+>=20
+> Signed-off-by: Hoyeon Lee <hoyeon.lee@suse.com>
 > ---
->   kernel/bpf/stackmap.c | 61 ++++++++++++++++++++++++++++++++++---------
->   1 file changed, 48 insertions(+), 13 deletions(-)
->
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index e28b35c7e0b..70d38249083 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -188,13 +188,12 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
->   }
->   
->   static struct perf_callchain_entry *
-> -get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
-> +get_callchain_entry_for_task(int *rctx, struct task_struct *task, u32 max_depth)
->   {
->   #ifdef CONFIG_STACKTRACE
->   	struct perf_callchain_entry *entry;
-> -	int rctx;
->   
-> -	entry = get_callchain_entry(&rctx);
-> +	entry = get_callchain_entry(rctx);
->   
->   	if (!entry)
->   		return NULL;
-> @@ -216,8 +215,6 @@ get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
->   			to[i] = (u64)(from[i]);
->   	}
->   
-> -	put_callchain_entry(rctx);
-> -
->   	return entry;
->   #else /* CONFIG_STACKTRACE */
->   	return NULL;
-> @@ -297,6 +294,31 @@ static long __bpf_get_stackid(struct bpf_map *map,
->   	return id;
->   }
->   
-> +static struct perf_callchain_entry *
-> +bpf_get_perf_callchain(int *rctx, struct pt_regs *regs, bool kernel, bool user,
-> +		       int max_stack, bool crosstask)
-> +{
-> +	struct perf_callchain_entry_ctx ctx;
-> +	struct perf_callchain_entry *entry;
-> +
-> +	entry = get_callchain_entry(rctx);
 
-I think this may not work. Let us say we have two bpf programs
-both pinned to a particular cpu (migrate disabled but preempt enabled).
-get_callchain_entry() calls get_recursion_context() to get the
-buffer for a particulart level.
-
-static inline int get_recursion_context(u8 *recursion)
-{
-         unsigned char rctx = interrupt_context_level();
-         
-         if (recursion[rctx])
-                 return -1;
-         
-         recursion[rctx]++;
-         barrier();
-         
-         return rctx;
-}
-
-It is possible that both tasks (at process level) may
-reach right before "recursion[rctx]++;".
-In such cases, both tasks will be able to get
-buffer and this is not right.
-
-To fix this, we either need to have preempt disable
-in bpf side, or maybe we have some kind of atomic
-operation (cmpxchg or similar things), or maybe
-has a preempt disable between if statement and recursion[rctx]++,
-so only one task can get buffer?
-
-
-> +	if (unlikely(!entry))
-> +		return NULL;
-> +
-> +	__init_perf_callchain_ctx(&ctx, entry, max_stack, false);
-> +	if (kernel)
-> +		__get_perf_callchain_kernel(&ctx, regs);
-> +	if (user && !crosstask)
-> +		__get_perf_callchain_user(&ctx, regs);
-> +
-> +	return entry;
-> +}
-> +
-> +static void bpf_put_callchain_entry(int rctx)
-
-we have bpf_get_perf_callchain(), maybe rename the above
-to bpf_put_perf_callchain()?
-
-> +{
-> +	put_callchain_entry(rctx);
-> +}
-> +
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
 [...]
-
 
