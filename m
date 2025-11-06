@@ -1,174 +1,145 @@
-Return-Path: <bpf+bounces-73880-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73882-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71152C3CC0B
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 18:14:01 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17AABC3CC26
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 18:15:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 772D24F4F38
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 17:09:10 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id ED524505309
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 17:09:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20D0134DCDE;
-	Thu,  6 Nov 2025 17:08:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7710834DB64;
+	Thu,  6 Nov 2025 17:09:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CvC3V9jI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JVU1SGMl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB0734403F
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 17:08:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E02341654
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 17:09:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762448930; cv=none; b=F1FjEdzulDFJhxDqTpyisissnslyKnzy8xa8AJJpzqzF+/ZC3k0KS6J2m1rf3UvptS68qvc6f9Sg63ZE5m/mp7zHCNJj5jqfcP4WetlDJvBs/Xz4HrbMMk7PQ3n174GNWhfWj6nhGISABhlGmREOXwEL0QrbghoyhNcks2dftWc=
+	t=1762448971; cv=none; b=NTE4QpEZnDAn9rsFpx84A2VNQVUAHphzSRUCrJwm+fuw9VobJLSX7bjUlUIYr4R8DN1rcfaoCORD4E3w30ey63sJUDopMWaZ9Zdt5pT5G5WIirioeft7tVBQlpDpfLUCgy3NfL3cJC2k6Qs13TjofCcxAauQDwIoMTb6fSVO5xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762448930; c=relaxed/simple;
-	bh=FiQEJZHhrgWbk6SdVOwzhO/6yyO4SwtDkkRFnnDVwIk=;
+	s=arc-20240116; t=1762448971; c=relaxed/simple;
+	bh=JvH3OKqzSA3KvNi+aVsfuhv279eL/y2CtByR2v+3ndA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gQJZXF5KYw9PdtmzrkzGyUgjGhkygJd2FlgJrHzUCZ17vB22Kzrjw6Jswxtl2ISRVHnJ47bvIZfZuTeMlJofiAI5+JSvd204rFpA6zp6P08rdzN2Hm59Z15edtGw5UDK+yvOwT1ZcnPenRmkjmAWdkXe405AtbO4+KbFEdUor9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CvC3V9jI; arc=none smtp.client-ip=209.85.221.50
+	 To:Cc:Content-Type; b=hJb3ELYhPfRtN36nagzrDTeAm2pAn6hsKWNcvO5x3FUnnMGIApPLyWvyL1woDSPxJMY/b+Y9Lj2M/aarAN/gBNddkQNogi+JAtq5cFvhk//IeYX6LnVNLlpZH5vW7ILuwzdnZ9aXEWZxqfwfOrYIKYNrJOajeyHD4t3pFPfhR4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JVU1SGMl; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3f99ac9acc4so891031f8f.3
-        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 09:08:48 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-340a5c58bf1so971289a91.2
+        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 09:09:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762448927; x=1763053727; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1762448969; x=1763053769; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YKYbclEruhZQm4cb2n/Yq4/t3+D+8hQeq1Nkcv2or2U=;
-        b=CvC3V9jIFj6wc6LOa62Db8271DGeizCTrQ/av/u6ovkrqFqp+GUxO7QzuJ9roWSNMR
-         aDOwoKyhHuIhusQI/EO8DdI4ASXv95zvNLg+kJagmVe06uLq5J6zh9i1ilVc1ku3yZ5U
-         ENYlHm5nAnj5yvDgtVzvkrZ6pCZwHwNY89nkkE/t1hGvSjIfnW+bDFi59APqUF7CEv+9
-         fGRS3cHveVX7GR1Il9k6gMRd0P4KAzOy2+yJQeWSI8WteUgh8mUXoiJxzgA1v1ww3vii
-         IyjxuQ47P8fF8kk/DsO3aaZiq0mHBJG2EOAwQpBSyzEgGLMGTrsUB4kwX+VURYJ9OjzH
-         D/Kw==
+        bh=JvH3OKqzSA3KvNi+aVsfuhv279eL/y2CtByR2v+3ndA=;
+        b=JVU1SGMlfzMuCNtb0ml3ClizNTHKHTvp/Ro39qwdSyvzzabbB4gsNzmPbd8WE2JKXW
+         wAI25mESf+uVzSvCLTFWg1uVuLVe9jZNzd3KnvMxdSZZCRwZ54Vt5tVPb7BnNGsuqQR6
+         cbjsKorQvepozzFg41MGnp8bdN90RzCk9KtEGmUHZoMCnN40WVSLdHFBA9TZTOeoiaf8
+         gEgIAKTcVplX5F/w6HPZPRx7OPMkunFeAC1cEKiEPKTc0obOUiuXAuqZc+QaWRSnAIfz
+         d515uqz8WHkixuWDuBBcrOiDW5gbb3oj3hh5z+rydccnGFNqPw5UjD3f3I11Fn2RNO7d
+         N5Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762448927; x=1763053727;
+        d=1e100.net; s=20230601; t=1762448969; x=1763053769;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YKYbclEruhZQm4cb2n/Yq4/t3+D+8hQeq1Nkcv2or2U=;
-        b=gNf6KkDsFli8KGDMyyRzJUd5Mj1H/62jJqmXmtvjIFEm0KPfcr8e6g0rQI9zMA/6px
-         53DRwBXEK0HAjWh1AaI9Hfnv8A8IKxEyR7S+lbYYC/QPqr9CqoUx4itKYAbKUfboS7Fl
-         sVaG59HoACsC+YAr/xe8OjMk5kjWnlcQyA+LLlJQIA0XfaFT1zgrhlWSlDuXKceEU6mZ
-         8SHhNStki4fps5ZnsTWW3Am3WM3ObT2AjqstDnuxKlj157fFGpQvW19oL9jMygLa80yn
-         n0mK8jRHQuGPf0371Huq+lq7JSilcxHdOr5BPt9zRtUfy+ecu9qpme5qsc38D/GEfSa9
-         zHiA==
-X-Gm-Message-State: AOJu0YxyamwYPxBqO2S+ye8E6db0mv1Jzi3tSs0IhFry4RnmMiiBVFQv
-	tYSIjNMg3NemqKtzH/TFe5WceAqTIzh4cDF5zLk3skY/SUQgm0PxnN7FmLRkfQZtYkLEwQ3U9Ai
-	HBX1Klo56xX2ASYkKS8ovao10zysx9oo=
-X-Gm-Gg: ASbGncsTQOIojERt33JMZviPl9JnzJ78p1AJvS2Ev8aG9fssQ/zDg9kvhkip55PKGZ8
-	UurwhuIHfD5cljyzh/Fs9FJx00hkgnEjbf1p4O+CuFhW3o6IpxIENzefTxlKZqb9koV+vKfXcqI
-	Z45dqi+VT/tUjpbXK/OUOtsVPCHyWJXV4gtRgGs4yfxBlzI7lendisLD6A/n3QRItOQRUmB8um4
-	MSTiHVtzf4vMQtppQq5frA/fz/ID6FaC8ILzjYAwxIwmBD6dbANWHJ9wLfmQaTQnbJiq6JWqzsp
-	Yn0Ohlc4Y7I=
-X-Google-Smtp-Source: AGHT+IEZdzkXy8zo+iICLVyIwQ1aZacbsRfjmPMCMylXGRi2gugIQvTpb9uRjXg+2GnfnkgOB1XfR7jzwAxE4F875xs=
-X-Received: by 2002:a05:6000:4210:b0:429:cba7:f773 with SMTP id
- ffacd0b85a97d-429e32e4853mr8592342f8f.19.1762448927249; Thu, 06 Nov 2025
- 09:08:47 -0800 (PST)
+        bh=JvH3OKqzSA3KvNi+aVsfuhv279eL/y2CtByR2v+3ndA=;
+        b=DaB/hovvkuMLA1ZrNIrQ9lo+GswwCyzPAzOc9nLllHUaEIIUWP7Cr3Mx5kBoDAT/xX
+         5aZaRg+pX380y/SHftfHsjtIXqZyQUxeDZe8bjKtVTIIQLSpZWVOZllF+p560/5RPPfQ
+         Fmm3CpSok4iD339d3lSqr8EXfIf8B+S0SxFs2cqihck7PUPyEzJtfX36T0NS4nGqyepW
+         AQbwa/EKTGomavWRZGU8hGHv3IcvdDdgA8ausuT2ubOeGjCSzSqCCmDKOhMKUt1twMhy
+         crM6kLotseU2zsQNHesHQsrVbwmpn12MZsJMTliJH0LLYOeK/RnUMujfcaJ8CsBrSeOz
+         iZew==
+X-Forwarded-Encrypted: i=1; AJvYcCVUwLgzShl8R0awQ7BaT/QERkxKDCYcyv8G2JIDvG4gg9pUWM3dQQKILs67peuizzr+JIw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzMOTnqb4rsSYFO85+Yg5ks9n9G5DvNevkxTMZTOWc8dRTf1Ali
+	o782z7XPlNCV5LH0Z7UwJBrhnmXYWqwFMRVbTuEzL4EyvIgLPi2gUElKWZD5oHvhiLAj9Rb9C23
+	OaC8GTsMbX9N3waFAFIuk7hC3iSRItkq/rg==
+X-Gm-Gg: ASbGncvU38t+qItKWdHf9HuZ2zrs7KbDVEQOn/5bL658403TL0Zva/KS+GaqSGAnoCo
+	pMG0+ComJMGpYXNjhXkSgdZ9e/rFXY/6Wtr55DGQCgdwP+4r8exklsFRV97ltQEN+EGqZSiCyt8
+	AFcjDymNJAxWA9owBXMBaNK+nORqswRXs+XsY0Hcm4pasyhToY70zS+4trOdREpNPYojKgkP3/v
+	ricsMGYP6CqV7tfdQPFIVzEX9VVwGmUGEmTyxaL7QZlAtz0GlHsDjkEI8sBKKiy0YqZOLsRu2M3
+X-Google-Smtp-Source: AGHT+IE3sAMweT/YOE49eQMAMasowJjZCwp1ej2zFTKLi05DHggSCpa4/L/RdLYhewS/IAuki3OKEeKoJj+tKS9pE4o=
+X-Received: by 2002:a17:90b:4b0e:b0:340:6f07:fefa with SMTP id
+ 98e67ed59e1d1-341a6dc8cf5mr9426239a91.20.1762448968766; Thu, 06 Nov 2025
+ 09:09:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251105090410.1250500-1-a.s.protopopov@gmail.com>
- <20251105090410.1250500-2-a.s.protopopov@gmail.com> <CAADnVQ+MmpDpSsQZW42K3nozcuM5yJMRRZRABjiTiybNQpBJRA@mail.gmail.com>
- <aQxx3Zphpu43l1/p@mail.gmail.com>
-In-Reply-To: <aQxx3Zphpu43l1/p@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 6 Nov 2025 09:08:33 -0800
-X-Gm-Features: AWmQ_bm3dACkYppIqmqqU83ZavDjmJxXG6oTxITLUSddx1edFf9DoDyGsmZVKr8
-Message-ID: <CAADnVQJmg17Z9jWWZ8ejCCNWcnSU0YeRiDHSp__+A0C8QtTMvg@mail.gmail.com>
-Subject: Re: [PATCH v11 bpf-next 01/12] bpf, x86: add new map type:
- instructions array
-To: Anton Protopopov <a.s.protopopov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
+References: <20251104134033.344807-1-dolinux.peng@gmail.com>
+ <20251104134033.344807-2-dolinux.peng@gmail.com> <CAEf4BzaPDKJvQtCss4Gm1073wyBGXmixv4s9V5twnF7uEHRhPg@mail.gmail.com>
+ <61e92756ea7f202f2e501747b574e97b2f5bc32f.camel@gmail.com>
+ <CAEf4BzanAmmSe84GnvWSR_KLFVmeEvrxVVJAvApFNRjgeRXk8Q@mail.gmail.com>
+ <61f94d36d6777b9b84e9bf865edd17476a278e73.camel@gmail.com>
+ <CAEf4BzZffw1sTJUBxwUnhx8XjQNMRf2-e+vUzOfyMqgMTpYsdA@mail.gmail.com> <7f3586157e17d0ab2c34b16d2f7daf4955d0692f.camel@gmail.com>
+In-Reply-To: <7f3586157e17d0ab2c34b16d2f7daf4955d0692f.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 6 Nov 2025 09:09:02 -0800
+X-Gm-Features: AWmQ_bnT1dvAw2MHO4-RP6rtgu3KhUSDOQvYSNpF_QjZQHZK3C_FkOyALCAKKW8
+Message-ID: <CAEf4Bzb9Q3u-a0QCv=nTjdn_ufmfUh-hd-0N3dC=0NmjO6u8kw@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 1/7] libbpf: Extract BTF type remapping logic into
+ helper function
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>, Song Liu <song@kernel.org>, 
+	pengdonglin <pengdonglin@xiaomi.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 6, 2025 at 1:54=E2=80=AFAM Anton Protopopov
-<a.s.protopopov@gmail.com> wrote:
+On Wed, Nov 5, 2025 at 11:41=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> On 25/11/05 06:03PM, Alexei Starovoitov wrote:
-> > On Wed, Nov 5, 2025 at 12:58=E2=80=AFAM Anton Protopopov
-> > <a.s.protopopov@gmail.com> wrote:
-> > > @@ -21695,6 +21736,8 @@ static int jit_subprogs(struct bpf_verifier_e=
-nv *env)
-> > >                 func[i]->aux->jited_linfo =3D prog->aux->jited_linfo;
-> > >                 func[i]->aux->linfo_idx =3D env->subprog_info[i].linf=
-o_idx;
-> > >                 func[i]->aux->arena =3D prog->aux->arena;
-> > > +               func[i]->aux->used_maps =3D env->used_maps;
-> > > +               func[i]->aux->used_map_cnt =3D env->used_map_cnt;
-> >
-> > ...
-> >
-> > > It might be called before the used_maps are copied into aux...
-> >
-> > wat?
+> On Wed, 2025-11-05 at 10:20 -0800, Andrii Nakryiko wrote:
 >
-> It is called from fixup_call_arg() which happens before
-> the env->prog->aux->used_maps is populated as a copy of
-> env->used_maps.
+> [...]
 >
-> In any case, I will take a closer look and follow up on
-> this after Kubecon (which is the next week).
+> > You don't like that I ask people to improve implementation?
+>
+> Not at all.
+>
+> > You don't like the implementation itself? Or are you suggesting that
+> > we should add a "generic" C implementation of
+> > lower_bound/upper_bound and use callbacks for comparison logic? What
+> > are you ranting about, exactly?
+>
+> Actually, having it as a static inline function in a header would be
+> nice. I just tried that, and gcc is perfectly capable of inlining the
+> comparison function in -O2 mode.
 
-Pls look at the diff
-and also
-line 22074:
-func[i]->aux->main_prog_aux =3D prog->aux;
-line 22099:
-func[i]->aux->used_maps =3D env->used_maps;
+I dislike callbacks in principle, but I don't mind having such a
+reusable primitive, if it's reasonably abstracted. Do it.
 
-> > on top of the set:
-> > diff --git a/kernel/bpf/bpf_insn_array.c b/kernel/bpf/bpf_insn_array.c
-> > index 61ce52882632..97fcde6d7f07 100644
-> > --- a/kernel/bpf/bpf_insn_array.c
-> > +++ b/kernel/bpf/bpf_insn_array.c
-> > @@ -278,8 +278,8 @@ void bpf_prog_update_insn_ptrs(struct bpf_prog
-> > *prog, u32 *offsets, void *image)
-> >         if (!offsets || !image)
-> >                 return;
-> >
-> > -       for (i =3D 0; i < prog->aux->used_map_cnt; i++) {
-> > -               map =3D prog->aux->used_maps[i];
-> > +       for (i =3D 0; i < prog->aux->main_prog_aux->used_map_cnt; i++) =
-{
-> > +               map =3D prog->aux->main_prog_aux->used_maps[i];
-> >                 if (!is_insn_array(map))
-> >                         continue;
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 1268fa075d4c..53b9a6cee156 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -22096,8 +22096,6 @@ static int jit_subprogs(struct bpf_verifier_env=
- *env)
-> >                 func[i]->aux->jited_linfo =3D prog->aux->jited_linfo;
-> >                 func[i]->aux->linfo_idx =3D env->subprog_info[i].linfo_=
-idx;
-> >                 func[i]->aux->arena =3D prog->aux->arena;
-> > -               func[i]->aux->used_maps =3D env->used_maps;
-> > -               func[i]->aux->used_map_cnt =3D env->used_map_cnt;
-> >                 num_exentries =3D 0;
-> >                 insn =3D func[i]->insnsi;
-> >                 for (j =3D 0; j < func[i]->len; j++, insn++) {
-> >
-> >
-> > all tests still pass.
-> >
-> > If I'm not missing anything, please send a follow up.
-> >
-> > The plan is to split prog_aux into main and subprog,
-> > and subprog will be a fraction of main.
-> > Right now we copy more and more fields for no good reason.
-> > Let's avoid this.
+>
+> I'm ranting about patch #5 being 101 insertions(+), 10 deletions(-)
+> and patch #4 being 119 insertions(+), 23 deletions(-),
+> while doing exactly the same thing.
+
+Understandable, but code reuse is not (at least it should not be) the
+goal for its own sake. It should help manage complexity and improve
+maintainability. Code sharing is not all pros, it creates unnecessary
+entanglement and dependencies.
+
+I don't think sharing this code between libbpf and kernel is justified
+here. 100 lines of code is not a big deal, IMO.
+
+>
+> And yes, this copy of binary search routine probably won't ever
+> change. But changes to the comparator logic are pretty much possible,
+> if we decide to include 'kind' as a secondary key one day.
+> And that change will have to happen twice.
+>
+> > As I said, once binary search (of whatever kind, bounds or exact) is
+> > written for something like this, it doesn't have to ever be modified.
+> > I don't see this as a maintainability hurdle at all. But sharing code
+> > between libbpf and kernel is something to be avoided. Look at #ifdef
+> > __KERNEL__ sections of relo_core.c as one reason why.
 
