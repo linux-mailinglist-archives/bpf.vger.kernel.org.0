@@ -1,190 +1,265 @@
-Return-Path: <bpf+bounces-73790-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73791-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 248F4C395DF
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 08:16:56 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C572C39630
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 08:23:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6AE23BC265
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 07:14:50 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A4EEA34F2FA
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 07:23:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DBB72E54A0;
-	Thu,  6 Nov 2025 07:13:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C30E2DE71B;
+	Thu,  6 Nov 2025 07:23:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I6yd/VU7";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="USLIWSv8"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1ru3bnl6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BsryQK1I";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hkkosBGu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="B0kfOKCP"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB7442DCF47
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 07:13:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D748C2DCF70
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 07:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762413229; cv=none; b=ILtfU7J0YAxgWezHjtImRGkFTuSaP0QeHIxEt5rujsuadwp+frPJm9IEhfEEgChaymnhyc5FxubovvcM9ySq7e7hskvOmBTipHZuvWMKCF9RixYUFFcbOsEUZyqVJD6NxcKo2Ox+n42WprxexLkEHwDWYMccIckaW59JUelOzR4=
+	t=1762413830; cv=none; b=UW3Gtv27TGoTdSIge9WdXveOD7U3CS4dZ6WdfrXbbIONkE8oOAldhWILmeED7R8cBCIhz/EQsYFqhGH62n8iV+pyKlkcmpCEF8JfhES9qYbyi9wp+eRxgZve2amV53nnGwuIokigANbuA/GTqSqRvjrC4yO9pYnWclIoo1Ds6yQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762413229; c=relaxed/simple;
-	bh=O8Kuzgwo8NxVtUGQ/sqROsYTAZBIAHhIOZ8Fv83q4tE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PC8CWAT9GI+6NW2jnPqzp3K3HiUtsTuHD20lxAs4ycZVdcBF/XCKlFLEdAr/BDlfwKOF92PujPSpCQqqcghMn+h+w8tO7ujLVld4q29CVXoL9vYd2jDC8abYXwamUajjKl7bjHlflHdJIwzee826jpngfi4fTG9gmD+M2lQlJdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I6yd/VU7; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=USLIWSv8; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1762413225;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FOLQ/S3FFuFAGuSGNX4WWksMd2R4YXO/SrRbOgkSfy8=;
-	b=I6yd/VU7kFDTDecxOHd4RW+YKdBDkW0WlZlmLccTtbk1Dbrj7aOHDMqdogz2Tth3ZVwVhu
-	WEY/JE5mv9M1aBGIwWtqAK1ZG1qyb/6WfRCZMe6eHciGBw+s7mJQO46rKb3E33bjExIFV8
-	6M3HUu3LxSUCgx1IjrmPL6FiWwuRV3g=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-685-ISuGvjptOj2auuDqONUK2w-1; Thu, 06 Nov 2025 02:13:44 -0500
-X-MC-Unique: ISuGvjptOj2auuDqONUK2w-1
-X-Mimecast-MFC-AGG-ID: ISuGvjptOj2auuDqONUK2w_1762413223
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4775e00b16fso4007735e9.2
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 23:13:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1762413223; x=1763018023; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FOLQ/S3FFuFAGuSGNX4WWksMd2R4YXO/SrRbOgkSfy8=;
-        b=USLIWSv8jzi0XwvpacddR61/GSGBEEnW5HqdAGi9dOuVt5eZynS6+qOaziAkKnePa9
-         WDzk/xevrJWhayw3YcdI52DeJEIyK/22xcwKQJs3uq91aj0whaQmsO2CkZAhe1vgI0Yp
-         cfS2ZgeezRcKoLwpUPPZ9K4bKQu4DiKcp228wb0piIcBSUXXCOcb2zSnUWY7WWswF1K0
-         NB1fPy2YNDQyfSMUrICVtZMABsGHF7kSA0zt4vJ0Sebet5o7DDBjqtuxhsITuURArDct
-         w53a95XJwsFu30b1LXQj04HYoAkKHpHxSU1J2Ntn3P+WQMtSozboh68GD8UkPh2B/8v1
-         Df8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762413223; x=1763018023;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FOLQ/S3FFuFAGuSGNX4WWksMd2R4YXO/SrRbOgkSfy8=;
-        b=L6dgOD+BB9S18DtZUAx5Wv/8r23iSy4u4mgK+ws3st8K7iW4Sz7TfZw1XdawD6spuH
-         lG0bdTPDNXRSmMnJJEG3ucnv6fibLzEV/lTSh9oalkPwx3xpGXWYIbKY22wvmJZTtFQb
-         6kPVxgw55dFDIvzvsx2eVaiDgaRRHazkBXdblPNFj7s4UhNC+rcsR1jHkHlz0woAo4B9
-         oEmq5d6XilwWLu7F9BLPuG75KMFhF8Sv67Fv/9zgwyIIZw+zxiGUgeyYRY1+dK3F4b19
-         tuOCnOODb54R0ddJLW653d9LDM9JDfIO6pi8oyqMMKbKJQXxzsTNlYTjkeSLi7zctEo9
-         wyXA==
-X-Forwarded-Encrypted: i=1; AJvYcCXMxFGufK4sd/erwe4bmpNxj7IrsJwHUKqf5U5f/ZB3PZMC7ZR8bDz/UfwEabAnM2vkJlE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw1whibORWoC10PPLxpILBKTqZlBqSiyuEeGiCFz27UZd8I2n4d
-	MdLVYmgaAc9+FJwJFqKt2oPt1VSPy6Vdvhy7JvuZFs5R64+UBJtax1ZnSuUfB3Cw4fcTPep2f0y
-	dvzyCTJmZCMsFwIZnDGX4fYH10B1hm0VGu24DDMDJLPP1W237tVDS4Q==
-X-Gm-Gg: ASbGnctqfCLF4EUV9Eajo3TpPVlyi1f4VVTM3yqx0Scnj/DqUNaGfNlm9UwUpa6+gPH
-	QFTbEjN/OFc5ZvoW+9nq4t6/5taqnuKDPozyTM7X34Wmd4oDYrad6RHg504gV4XRKiNSwZZsAD6
-	h63Ugphh0o8qeHW9taUgHzmYzVLw0mia3P0l+uKcaZvk2srTWk0vk52+3nl+lF9ur/3lSRlgNME
-	4gPWZ5VSCnYAmpCZwCsPYdqZEXRwLVxFLLN3Ep9djiz2UYnQeYJ42b3IKta/wQx3VisATgTY/2v
-	gx+ReHiHJLsThUigSvuAEr0OT+vh3SKsUy6GOpu17wuUuKdY2z7C7OJkodL+SiM+4O21aFVk4Rh
-	l9mlCQZG2miAgRQxEsCoNK/zl3n0cHA==
-X-Received: by 2002:a05:600c:3112:b0:477:54cd:202f with SMTP id 5b1f17b1804b1-4775cdbd575mr53958425e9.3.1762413223138;
-        Wed, 05 Nov 2025 23:13:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGUu7ukY7OdyVbeRYFijYbMWBIebeXNAL9BcWIWvL8Cng+u4L3PwJcTQmxc3W42nkhzCF1KSg==
-X-Received: by 2002:a05:600c:3112:b0:477:54cd:202f with SMTP id 5b1f17b1804b1-4775cdbd575mr53958155e9.3.1762413222738;
-        Wed, 05 Nov 2025 23:13:42 -0800 (PST)
-Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.129.40])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429eb4adde4sm3235490f8f.46.2025.11.05.23.13.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Nov 2025 23:13:41 -0800 (PST)
-Date: Thu, 6 Nov 2025 08:13:39 +0100
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Andrea Righi <arighi@nvidia.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>,
-	David Vernet <void@manifault.com>,
-	Changwoo Min <changwoo@igalia.com>, Shuah Khan <shuah@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Christian Loehle <christian.loehle@arm.com>,
-	Emil Tsalapatis <emil@etsalapatis.com>,
-	Luigi De Matteis <ldematteis123@gmail.com>,
-	sched-ext@lists.linux.dev, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/11] sched/debug: Stop and start server based on if it
- was active
-Message-ID: <aQxKo68TJge5dRZI@jlelli-thinkpadt14gen4.remote.csb>
-References: <20251029191111.167537-1-arighi@nvidia.com>
- <20251029191111.167537-3-arighi@nvidia.com>
+	s=arc-20240116; t=1762413830; c=relaxed/simple;
+	bh=PpCYZiESS+NYFao5qNfGpf2j/tTFJn3MrA5HeQxrUNk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Jkl/scQJzWHsItgCgycXYMZeSMx93X+XnLHJ3VcwmdThBLrxQe/BOOS7ZXpdIPTq8sadc97BV6MXmbVCFZMPOUyzTS7hVyJAlEBUWXIsWFkJ4SrfYj8hdHf874ey3G9c2xHP3aOFJXAd/MvIi+QmKUJe7bz33IHWtwgVY36UCZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1ru3bnl6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BsryQK1I; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hkkosBGu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B0kfOKCP; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D7F59211C4;
+	Thu,  6 Nov 2025 07:23:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1762413826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=7KuTnD+Lrz4fdyLGJ4uF39ab38gWiaLaVToVQMrbw5E=;
+	b=1ru3bnl6zTaJQ22XU2gMsGWTpkp+gmHjZZ2t57pZnLSE0QjP0E4B1zcCm8TnUwYyfhG/ep
+	OpbTc6WwNFKkMjtP4c8sXl6Ym+xAaFBERP40zXBQU74CT247gS/19DU9MnjP+otQHreMVI
+	vs/S4A7gDgq3TAGLaO4pVQsRsSPNGmQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1762413826;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=7KuTnD+Lrz4fdyLGJ4uF39ab38gWiaLaVToVQMrbw5E=;
+	b=BsryQK1I2wVpamBuHrtZ31BKHFAtMHf9K/Tl5yuw8v+MxsMLHcCbufG/28Lw2pHrIHXDzD
+	PfSNFhbLG5sCPrAw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hkkosBGu;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=B0kfOKCP
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1762413825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=7KuTnD+Lrz4fdyLGJ4uF39ab38gWiaLaVToVQMrbw5E=;
+	b=hkkosBGuczAqLSXJr+/wi6QitrxxQFm0+AGDbamyv1Hy6AxZBklElEY7Ezgt4Bnt4z7fyQ
+	qfBeJRVDWzYhbvr4amFFMTne3KNKcgx/e35xjXNT7ApSqUpDfqFPGM7/uSklQc27gFJD6Y
+	yfvk/tclGtIKrrMi5bXpX6Z0o90D4hg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1762413825;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=7KuTnD+Lrz4fdyLGJ4uF39ab38gWiaLaVToVQMrbw5E=;
+	b=B0kfOKCPU7tEewGxnfh3t5a/1LSwMFkJ2xB7BBlodeWGgw+J1Dj5HeNkwMa/qS9L6oRqlV
+	QFQkN5b/C9x5+NDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B68C9139A9;
+	Thu,  6 Nov 2025 07:23:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id AZ9yKwFNDGk8GAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 06 Nov 2025 07:23:45 +0000
+Message-ID: <2d4356a4-a0c1-423a-bd40-af1f8a28fd84@suse.cz>
+Date: Thu, 6 Nov 2025 08:23:45 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251029191111.167537-3-arighi@nvidia.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] slab: move kfence_alloc() out of internal bulk alloc
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Harry Yoo <harry.yoo@oracle.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>,
+ linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+ bpf <bpf@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>,
+ Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
+ Dmitry Vyukov <dvyukov@google.com>
+References: <20251105-sheaves-cleanups-v1-0-b8218e1ac7ef@suse.cz>
+ <20251105-sheaves-cleanups-v1-2-b8218e1ac7ef@suse.cz>
+ <CAADnVQJY_iZ5a1_GbZ7HUot7tMwpxFyABEdrRU3tcMWPnVyGjg@mail.gmail.com>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <CAADnVQJY_iZ5a1_GbZ7HUot7tMwpxFyABEdrRU3tcMWPnVyGjg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: D7F59211C4
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_DN_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:mid,suse.cz:dkim]
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
+X-Spam-Level: 
 
-Hi,
-
-On 29/10/25 20:08, Andrea Righi wrote:
-> From: Joel Fernandes <joelagnelf@nvidia.com>
+On 11/6/25 03:39, Alexei Starovoitov wrote:
+> On Wed, Nov 5, 2025 at 1:05 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>> SLUB's internal bulk allocation __kmem_cache_alloc_bulk() can currently
+>> allocate some objects from KFENCE, i.e. when refilling a sheaf. It works
+>> but it's conceptually the wrong layer, as KFENCE allocations should only
+>> happen when objects are actually handed out from slab to its users.
+>>
+>> Currently for sheaf-enabled caches, slab_alloc_node() can return KFENCE
+>> object via kfence_alloc(), but also via alloc_from_pcs() when a sheaf
+>> was refilled with KFENCE objects. Continuing like this would also
+>> complicate the upcoming sheaf refill changes.
+>>
+>> Thus remove KFENCE allocation from __kmem_cache_alloc_bulk() and move it
+>> to the places that return slab objects to users. slab_alloc_node() is
+>> already covered (see above). Add kfence_alloc() to
+>> kmem_cache_alloc_from_sheaf() to handle KFENCE allocations from
+>> prefilled sheafs, with a comment that the caller should not expect the
+>> sheaf size to decrease after every allocation because of this
+>> possibility.
+>>
+>> For kmem_cache_alloc_bulk() implement a different strategy to handle
+>> KFENCE upfront and rely on internal batched operations afterwards.
+>> Assume there will be at most once KFENCE allocation per bulk allocation
+>> and then assign its index in the array of objects randomly.
+>>
+>> Cc: Alexander Potapenko <glider@google.com>
+>> Cc: Marco Elver <elver@google.com>
+>> Cc: Dmitry Vyukov <dvyukov@google.com>
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>> ---
+>>  mm/slub.c | 44 ++++++++++++++++++++++++++++++++++++--------
+>>  1 file changed, 36 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index 074abe8e79f8..0237a329d4e5 100644
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+>> @@ -5540,6 +5540,9 @@ int kmem_cache_refill_sheaf(struct kmem_cache *s, gfp_t gfp,
+>>   *
+>>   * The gfp parameter is meant only to specify __GFP_ZERO or __GFP_ACCOUNT
+>>   * memcg charging is forced over limit if necessary, to avoid failure.
+>> + *
+>> + * It is possible that the allocation comes from kfence and then the sheaf
+>> + * size is not decreased.
+>>   */
+>>  void *
+>>  kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
+>> @@ -5551,7 +5554,10 @@ kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
+>>         if (sheaf->size == 0)
+>>                 goto out;
+>>
+>> -       ret = sheaf->objects[--sheaf->size];
+>> +       ret = kfence_alloc(s, s->object_size, gfp);
+>> +
+>> +       if (likely(!ret))
+>> +               ret = sheaf->objects[--sheaf->size];
 > 
-> Currently the DL server interface for applying parameters checks
-> CFS-internals to identify if the server is active. This is error-prone
-> and makes it difficult when adding new servers in the future.
-> 
-> Fix it, by using dl_server_active() which is also used by the DL server
-> code to determine if the DL server was started.
-> 
-> Acked-by: Tejun Heo <tj@kernel.org>
-> Reviewed-by: Juri Lelli <juri.lelli@redhat.com>
-> Reviewed-by: Andrea Righi <arighi@nvidia.com>
-> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
-> ---
->  kernel/sched/debug.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index 6cf9be6eea49a..e71f6618c1a6a 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -354,6 +354,8 @@ static ssize_t sched_fair_server_write(struct file *filp, const char __user *ubu
->  		return err;
->  
->  	scoped_guard (rq_lock_irqsave, rq) {
-> +		bool is_active;
-> +
->  		runtime  = rq->fair_server.dl_runtime;
->  		period = rq->fair_server.dl_period;
->  
-> @@ -376,8 +378,11 @@ static ssize_t sched_fair_server_write(struct file *filp, const char __user *ubu
->  			return  -EINVAL;
->  		}
->  
-> -		update_rq_clock(rq);
-> -		dl_server_stop(&rq->fair_server);
-> +		is_active = dl_server_active(&rq->fair_server);
-> +		if (is_active) {
-> +			update_rq_clock(rq);
-> +			dl_server_stop(&rq->fair_server);
-> +		}
->  
->  		retval = dl_server_apply_params(&rq->fair_server, runtime, period, 0);
->  
-> @@ -385,7 +390,7 @@ static ssize_t sched_fair_server_write(struct file *filp, const char __user *ubu
->  			printk_deferred("Fair server disabled in CPU %d, system may crash due to starvation.\n",
->  					cpu_of(rq));
->  
-> -		if (rq->cfs.h_nr_queued)
-> +		if (is_active)
->  			dl_server_start(&rq->fair_server);
+> Judging by this direction you plan to add it to kmalloc/alloc_from_pcs too?
 
-Something that I noticed while reviewing this series is that we still
-start back a server even if the user put its runtime to zero (disabling
-it) and I don't think we want to do that. It's not of course related to
-this change or this series per-se, but something we probably want to fix
-independently.
+No, kmem_cache_alloc_from_sheaf() is a new API for use cases like maple
+tree, it's different from the internal alloc_from_pcs() caching.
 
-Thanks,
-Juri
+> If so it will break sheaves+kmalloc_nolock approach in
+> your prior patch set, since kfence_alloc() is not trylock-ed.
+> Or this will stay kmem_cache specific?
 
+I rechecked the result of the full RFC and kfence_alloc() didn't appear in
+kmalloc_nolock() path. I would say this patch moved it rather in the
+opposite direction, away from internal layers that could end up in
+kmalloc_nolock() path when kmalloc caches have sheaves.
 
