@@ -1,229 +1,205 @@
-Return-Path: <bpf+bounces-73867-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73868-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9798AC3C3A6
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 17:02:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AFAEC3C451
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 17:09:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99E6418C6A6C
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 16:03:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10ECB3B51B9
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 16:03:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C458C345CB9;
-	Thu,  6 Nov 2025 16:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86B5B2BE051;
+	Thu,  6 Nov 2025 16:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BfxTiQ/f"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C8B3314CB;
-	Thu,  6 Nov 2025 16:02:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A831285CBC
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 16:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762444963; cv=none; b=Npud1A8PzTLDa3l0DjSvtX+rEML4E0ZatGSYJyuwgkSM1fS16/RA6TSAEVUSMY30hd9F3wcvJXVNOgK3gjC55Owu+VZI1Ti1AGFJ2gCOe89iuDMHlU80AXkaFQfBzMRmzrFCWus9OwKnq51yjgpbDNjI4d99fq9yYfi6qFFEuls=
+	t=1762445017; cv=none; b=Z2kD2id5vrTNYU8C6IPcVgNp8UnaUmaRZI0h6yz7JfpZjPA1DqEgQaHK2+PHHy+JxmrjuNLC3gHQNhZ663Dsq2vvi9e+4AB3CREzQkiJhB/hLYL51oQtWfaS6gOaZZvwE/2p3P5XcWgKyl4g/fLj3GDHO5QOV6116QZ+LkJ7IK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762444963; c=relaxed/simple;
-	bh=H+shqCH+Wu91YwAHohrcMFif/PuJQzNKSWZc3R7gQDY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JFfbl1Vddo38SldNbaSxEN1UMXRuUybeMxSZqMs+uMHhjBJqsOQq+k+B/4bzaQUeAbJpKvRGLs2hYLoOOErClEF6/XCBFYsQLyxsYiRccrIV18ovnjnEzTJHRQ+oDK6ZmHm02jYAkoQ8Nfov3dCx5l6ixmU+z8sFhnSbpEdgKgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id 505681401AC;
-	Thu,  6 Nov 2025 16:02:33 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf16.hostedemail.com (Postfix) with ESMTPA id 63B0520018;
-	Thu,  6 Nov 2025 16:02:31 +0000 (UTC)
-Date: Thu, 6 Nov 2025 11:02:30 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Sebastian Andrzej
- Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 10/16] tracing: Guard __DECLARE_TRACE() use of
- __DO_TRACE_CALL() with SRCU-fast
-Message-ID: <20251106110230.08e877ff@batman.local.home>
-In-Reply-To: <20251105203216.2701005-10-paulmck@kernel.org>
-References: <bb177afd-eea8-4a2a-9600-e36ada26a500@paulmck-laptop>
-	<20251105203216.2701005-10-paulmck@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1762445017; c=relaxed/simple;
+	bh=jxxY/V7I7Lg0tRhN/zYFfE+zYQjh2/ExgpaOEMq413U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=liyjBCoQKahOidljVzvfnZafhLdR166gJ1FuLt12NjnphqPGHJEfQiGxbeHnaFi8ErUXHGPnjPIXRy1q2Fd8YzCIWQAJapQDPKhFYdcJDLLU+CIKCcdEd7/uuiF3OjKSSVJsKTIGqnDJjqg5qgob7swguQhnAXNBBh7wl/uHKIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BfxTiQ/f; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-477632d45c9so6671065e9.2
+        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 08:03:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762445013; x=1763049813; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=98FNYdxWtgAVLrdCklXVrdgT9A4fZEk601wUNRIMCh8=;
+        b=BfxTiQ/f3cVOsiIUlx4CF+6ilVeJ2CuValEHWO02W3ZLkjPWMbQ9iBBe+ckI3bqXjs
+         Z8kOJBE+Ndfng2PCIXmCoxJHjBUn4bzdKpYxgiOJzBQ0KtvV4aPWUAYZgJTHTFk5gsC7
+         /BAEIwSlgFkWoEXq+I79cwkKenJ3L6EJf67Shl1JZlWL0mK+R3O50pfcROdZRFnXn0Kg
+         qtp/GdirLjdD6fshvUf1nvXm9rVtGrDe2pBu9PCWGqNcUsCCN6M8P4Sobhk8d2aN6r7n
+         nm76gN9DdKm95qk5KNSZnEdgkOT6fBaB7xXjszD/dT5EKlxJKIsGxNFv24vmdOYMhS4f
+         njhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762445013; x=1763049813;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=98FNYdxWtgAVLrdCklXVrdgT9A4fZEk601wUNRIMCh8=;
+        b=GekG3nKNr+U7e9vLVw8xgwmg5ZOEtISgT6UyGMStkyt3lZBj4US0tHSDMtoyjE/all
+         3turVzSf9E1Oe7QaAv5cWqQpVUY0PY/3Yq6zCr0uylbonJfPgygPJGS52+XU1VIu1sGA
+         HmwtOBgPDw5QiXHLfgMDq8TXzd8IleHsynDWOO0UsaOVHittZg6Rrz8PcjYmrVx5TXmc
+         yD070RunptKIm7hlppond/M6YrNhL1JyTVubLgFwAczvC4wrGwKECJBILjqLo27Yv2y3
+         b5v/qoSHoT92RSpC4hiLgXMWKq7xlZyG5VimEBTg15YzglRUSccwIGfrvAZKxr30vdWQ
+         RaGA==
+X-Forwarded-Encrypted: i=1; AJvYcCX34FBixT/iyKjuhGcFuCgqGAVZbOG3xHDUIVJWDpE3PdEVrWaGGpVlNRMV3NV+GlPMdlg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUrV+4AIiFFF1atdbIs1TDoSH9+RQV6ptxp81JalcQsXZaEjMC
+	EWpVd17IjYYpbxLLdKCpnOJJa2Rwvs/sjdKxAto0EHdvHBbl0lIyA7MG
+X-Gm-Gg: ASbGnctCMmOy9xWWWzY/3TQ1xjPjOjrdiLtfdCjDlFFXjYgGUmfPIsRqIoMQuZAtZkY
+	bgbETMclDev36AKKkj0nGYAVedArG+uGWQTbqJH87w1zw4tZd+mnsuH4QFu/qx4jYfQDlnEVx/x
+	kBXEr/g5La6ozr3Tt4xfpful4Gc0M69AEm0K73irKkjKS8RDecGxVIz+HokNTraCtQhyH75qYSQ
+	PUQJRM14iVN/xoCCMdSUzmCf5jLzFRn4eG56FULduAHG2MlNzHvEA0FZZn9u+lWKx28o3VOHHn2
+	v7/wXfPgi0Ml4l+/Kkgi+ORneFtPnB5u/Dg9229XpnCSPr+6Bsos2pBlIZrrH8v9C3XKVQrjpnr
+	TlIKGNUKOGHnScQWJs+n5W8VzIV8s1e44lL5DIhxhvpKJx333S4jXVUTaTuD/4lBI6nye7yqy33
+	vI4CuiD5AoVp9FWsbd30omvVepGYKCqxRFY1ClKNLpXQrM9GdYFauwAzFuvlP6hA==
+X-Google-Smtp-Source: AGHT+IFWRP8y/NyM444Y+0D0rXNBaoSkXZwHl1OLah3ak5bm/B4pFr0rb2KO0zqaXzMOcIa5k7cjIA==
+X-Received: by 2002:a05:600c:8216:b0:46e:432f:32ab with SMTP id 5b1f17b1804b1-4775ce20fe1mr60031375e9.33.1762445012535;
+        Thu, 06 Nov 2025 08:03:32 -0800 (PST)
+Received: from ?IPV6:2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c? ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429eb4ad993sm5838542f8f.47.2025.11.06.08.03.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Nov 2025 08:03:31 -0800 (PST)
+Message-ID: <58c0e697-2f6a-4b06-bf04-c011057cd6c7@gmail.com>
+Date: Thu, 6 Nov 2025 16:03:29 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/5] io_uring: add IORING_OP_BPF for extending io_uring
+To: Ming Lei <ming.lei@redhat.com>
+Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+ Caleb Sander Mateos <csander@purestorage.com>,
+ Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>
+References: <20251104162123.1086035-1-ming.lei@redhat.com>
+ <891f4413-9556-4f0d-87e2-6b452b08a83f@gmail.com> <aQtz-dw7t7jtqALc@fedora>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <aQtz-dw7t7jtqALc@fedora>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: fmkt714m1m4c6ehxka6831mtzforau8e
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 63B0520018
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19iaTKyFCI0tGtmoCLTDsC8g5M4bk6js8o=
-X-HE-Tag: 1762444951-168403
-X-HE-Meta: U2FsdGVkX1+3moqzzczi8f0rQKt2e3epFUYYRV6jSfaWDCASsq5r4G1RK7MJifKYHjovT+JyKwH8ChPK+7RU67eNBv6Bu8r4z8pgIl9HuANgMN2IBsIoIXsUwZ6WbWDcYZ4/s1SP36ppyeKkTiib4tOzIwA5z5RJ34eoGuRyeqGHY7prfSdShDK+mqGrA0zEJ+LoKS/lcZbAogkHGOXWAg8EsRWy2SifDVUS+ZZo3qAJLQNe49McGcUjZtVRR5SGinnFib8xTQUrTw4mcJbLTqzy/3iBE2eNxlUIEW2HXSGj6E0lIs3OFPgcjRLzZyU0wzHt4TnaMEClDCnG6M6z3eUh531J3eu/
 
-On Wed,  5 Nov 2025 12:32:10 -0800
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+On 11/5/25 15:57, Ming Lei wrote:
+> On Wed, Nov 05, 2025 at 12:47:58PM +0000, Pavel Begunkov wrote:
+>> On 11/4/25 16:21, Ming Lei wrote:
+>>> Hello,
+>>>
+>>> Add IORING_OP_BPF for extending io_uring operations, follows typical cases:
+>>
+>> BPF requests were tried long time ago and it wasn't great. Performance
 > 
-> The current commit can be thought of as an approximate revert of that
-> commit, with some compensating additions of preemption disabling pointed
-> out by Steven Rostedt (thank you, Steven!).  This preemption disabling
+> Care to share the link so I can learn from the lesson? Maybe things have
+> changed now...
 
-> uses guard(preempt_notrace)(), and while in the area a couple of other
-> use cases were also converted to guards.
+https://lore.kernel.org/io-uring/a83f147b-ea9d-e693-a2e9-c6ce16659749@gmail.com/T/#m31d0a2ac6e2213f912a200f5e8d88bd74f81406b
 
-Actually, please don't do any conversions. That code is unrelated to
-this work and I may be touching it. I don't need unneeded conflicts.
+There were some extra features and testing from folks, but I don't
+think it was ever posted to the list.
 
-> ---
->  include/linux/tracepoint.h   | 45 ++++++++++++++++++++++--------------
->  include/trace/perf.h         |  4 ++--
->  include/trace/trace_events.h |  4 ++--
->  kernel/tracepoint.c          | 21 ++++++++++++++++-
->  4 files changed, 52 insertions(+), 22 deletions(-)
+>> for short BPF programs is not great because of io_uring request handling
+>> overhead. And flexibility was severely lacking, so even simple use cases
 > 
-> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-> index 826ce3f8e1f8..9f8b19cd303a 100644
-> --- a/include/linux/tracepoint.h
-> +++ b/include/linux/tracepoint.h
-> @@ -33,6 +33,8 @@ struct trace_eval_map {
->  
->  #define TRACEPOINT_DEFAULT_PRIO	10
->  
-> +extern struct srcu_struct tracepoint_srcu;
-> +
->  extern int
->  tracepoint_probe_register(struct tracepoint *tp, void *probe, void *data);
->  extern int
-> @@ -115,7 +117,10 @@ void for_each_tracepoint_in_module(struct module *mod,
->  static inline void tracepoint_synchronize_unregister(void)
->  {
->  	synchronize_rcu_tasks_trace();
-> -	synchronize_rcu();
-> +	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> +		synchronize_srcu(&tracepoint_srcu);
-> +	else
-> +		synchronize_rcu();
->  }
+> What is the overhead? In this patch, OP's prep() and issue() are defined in
 
-Instead of using the IS_ENABLED(CONFIG_PREEMPT_RT) I think it would be
-somewhat cleaner to add macros (all of this is untested):
+The overhead of creating, freeing and executing a request. If you use
+it with links, it's also overhead of that. That prototype could also
+optionally wait for completions, and it wasn't free either.
 
-#ifdef CONFIG_PREEMPT_RT
-extern struct srcu_struct tracepoint_srcu;
-# define tracepoint_sync() synchronizes_srcu(&tracepoint_srcu)
-# define tracepoint_guard() \
-     guard(srcu_fast_notrace)(&tracepoint_srcu); \
-     guard(migrate)()
-#else
-# define tracepoint_sync() synchronize_rcu();
-# define tracepoint_guard() guard(preempt_notrace)
-#endif
+> bpf prog, but in typical use case, the code size is pretty small, and bpf
+> prog code is supposed to run in fast path.> 
+>> were looking pretty ugly, internally, and for BPF writers as well.
+> 
+> I am not sure what `simple use cases` you are talking about.
 
-And then the above can be:
+As an example, creating a loop reading a file:
+read N bytes; wait for completion; repeat
 
-static inline void tracepoint_synchronize_unregister(void)
-{
- 	synchronize_rcu_tasks_trace();
-	tracepoint_sync();
-}
+>> I'm not so sure about your criteria, but my requirement was to at least
+>> being able to reuse all io_uring IO handling, i.e. submitting requests,
+>> and to wait/process completions, otherwise a lot of opportunities are
+>> wasted. My approach from a few months back [1] controlling requests from
+> 
+> Please read the patchset.
+> 
+> This patchset defines new IORING_BPF_OP code, which's ->prep(), ->issue(), ...,
+> are hooked with struct_ops prog, so all io_uring core code is used, just the
+> exact IORING_BPF_OP behavior is defined by struct_ops prog.
 
-and the below:
+Right, but I'm talking about what the io_uring BPF program is capable
+of doing.
 
-	static inline void __do_trace_##name(proto)			\
-	{								\
-		if (cond) {						\
-			tracepoint_guard();				\
-			__DO_TRACE_CALL(name, TP_ARGS(args));		\
-		}							\
-	}								\
+>> the outside was looking much better. At least it covered a bunch of needs
+>> without extra changes. I was just wiring up io_uring changes I wanted
+>> to make BPF writer lifes easier. Let me resend the bpf series with it.
+>>
+>> It makes me wonder if they are complementary, but I'm not sure what
+> 
+> I think the two are orthogonal in function, and they can co-exist.
+> 
+>> your use cases are and what capabilities it might need.
+> 
+> The main use cases are described in cover letter and the 3rd patch, please
+> find the details there.
+> 
+> So far the main case is to access the registered (kernel)buffer
+> from issue() callback of struct_ops, because the buffer doesn't have
+> userspace mapping. The last two patches adds support to provide two
+> buffers(fixed, plain) for IORING_BPF_OP, and in future vectored buffer
+> will be added too, so IORING_BPF_OP can handle buffer flexibly, such as:
+> 
+> - use exported compress kfunc to compress data from kernel buffer
+> into another buffer or inplace, then the following linked SQE can be submitted
+> to write the built compressed data into storage
+> 
+> - in raid use case, calculate IO data parity from kernel buffer, and store
+> the parity data to another plain user buffer, then the following linked SQE
+> can be submitted to write the built parity data to storage
+> 
+> Even for userspace buffer, the BPF_OP can support similar handling for saving
+> one extra io_uring_enter() syscall.
 
-And not have to duplicate all that code.
+Sure, registered buffer handling was one of the use cases for
+that recent re-itarations as well, and David Wei had some thoughts
+for it as well. Though, it was not exactly about copying.
 
->  static inline bool tracepoint_is_faultable(struct tracepoint *tp)
->  {
-> @@ -266,23 +271,29 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->  		return static_branch_unlikely(&__tracepoint_##name.key);\
->  	}
->  
-> -#define __DECLARE_TRACE(name, proto, args, cond, data_proto)		\
-> +#define __DECLARE_TRACE(name, proto, args, cond, data_proto)			\
->  	__DECLARE_TRACE_COMMON(name, PARAMS(proto), PARAMS(args), PARAMS(data_proto)) \
-> -	static inline void __do_trace_##name(proto)			\
-> -	{								\
-> -		if (cond) {						\
-> -			guard(preempt_notrace)();			\
-> -			__DO_TRACE_CALL(name, TP_ARGS(args));		\
-> -		}							\
-> -	}								\
-> -	static inline void trace_##name(proto)				\
-> -	{								\
-> -		if (static_branch_unlikely(&__tracepoint_##name.key))	\
-> -			__do_trace_##name(args);			\
-> -		if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {		\
-> -			WARN_ONCE(!rcu_is_watching(),			\
-> -				  "RCU not watching for tracepoint");	\
-> -		}							\
-> +	static inline void __do_trace_##name(proto)				\
-> +	{									\
-> +		if (cond) {							\
-> +			if (IS_ENABLED(CONFIG_PREEMPT_RT) && preemptible()) {	\
-> +				guard(srcu_fast_notrace)(&tracepoint_srcu);	\
-> +				guard(migrate)();				\
-> +				__DO_TRACE_CALL(name, TP_ARGS(args));		\
-> +			} else {						\
-> +				guard(preempt_notrace)();			\
-> +				__DO_TRACE_CALL(name, TP_ARGS(args));		\
-> +			}							\
-> +		}								\
-> +	}									\
-> +	static inline void trace_##name(proto)					\
-> +	{									\
-> +		if (static_branch_unlikely(&__tracepoint_##name.key))		\
-> +			__do_trace_##name(args);				\
-> +		if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {			\
-> +			WARN_ONCE(!rcu_is_watching(),				\
-> +				  "RCU not watching for tracepoint");		\
-> +		}								\
->  	
->  
+>> [1] https://lore.kernel.org/io-uring/cover.1749214572.git.asml.silence@gmail.com/
+> 
+> I looked at your patches, in which SQE is generated in bpf prog(kernel),
 
->  /*
-> diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-> index 4f22136fd465..fbc07d353be6 100644
-> --- a/include/trace/trace_events.h
-> +++ b/include/trace/trace_events.h
-> @@ -436,6 +436,7 @@ __DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
->  static notrace void							\
->  trace_event_raw_event_##call(void *__data, proto)			\
->  {									\
-> +	guard(preempt_notrace)();					\
+Quick note: userspace and BPF are both allowed to submit
+requests / generate SQEs.
 
-Note, the tracepoint code expects that there's only one level of
-preemption done, as it records the preempt_count and needs to subtract
-what tracing added. Just calling preempt_notrace here if it had already
-disabled preemption will break that code.
+> and it can't be used in my case.
+Hmm, how so? Let's say ublk registers a buffer and posts a
+completion. Then BPF runs, it sees the completion and does the
+necessary processing, probably using some kfuncs like the ones
+you introduced. After it can optionally queue up requests
+writing it to the storage or anything else.
 
-It should only disable preemption if it hasn't already done that (when
-PREEMPT_RT is enabled).
+The reason I'm asking is because it's supposed to be able to
+do anything the userspace can already achieve (and more). So,
+if it can't be used for this use cases, there should be some
+problem in my design.
 
->  	do_trace_event_raw_event_##call(__data, args);			\
->  }
->  
-> @@ -447,9 +448,8 @@ static notrace void							\
->  trace_event_raw_event_##call(void *__data, proto)			\
->  {									\
->  	might_fault();							\
-> -	preempt_disable_notrace();					\
-> +	guard(preempt_notrace)();					\
->  	do_trace_event_raw_event_##call(__data, args);			\
-> -	preempt_enable_notrace();					\
-
-I may be modifying the above, so I would leave it alone.
-
-Thanks,
-
--- Steve
+-- 
+Pavel Begunkov
 
 
