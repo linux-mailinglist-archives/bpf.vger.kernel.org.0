@@ -1,138 +1,135 @@
-Return-Path: <bpf+bounces-73901-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73902-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AACA4C3D3EF
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 20:29:37 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22121C3D40A
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 20:33:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEF713B84DA
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 19:29:19 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CB41E4E6421
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 19:32:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB77C35581B;
-	Thu,  6 Nov 2025 19:28:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D7362DA75A;
+	Thu,  6 Nov 2025 19:32:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="r1gZxOib"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VWULrYDe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0283035028B
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 19:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243142D877B
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 19:32:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762457301; cv=none; b=JZ2nX+FNg9/XispT8WTi2YCB1EAABaTfYnAgIQ0ktcESp1XR3dnteXOLF2H/jmXuhlivsVSXr8HQ1dTBxWpuFdSoa+psI8RYRyBizQQTLWE2nq2FTemyY8SQb8DCAHJdhEpoTYvXlSu+NTnyV/Abgyc+fHGXZaNbOHFW5ABQedU=
+	t=1762457569; cv=none; b=RGs2UISTS96CCoKp+ypOlQgPi8Srj61MTp43ITdhqDHzLyKf/KLLHLJOnWNJmGobXh13Xd0kH6v7VH9AjAMROPT2m3Doh3QgzVVU9aiYXrCEIcQOyzu5DJi9YCnWeA8kz7KfsPPGY2ZG/19r+8yMtqoxNQJ/7qMVDZ+EgDrNAO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762457301; c=relaxed/simple;
-	bh=1Y+YpubDp1qb7oc7hg3w1PWoz9inIa15b2wdhzuZk9M=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Y3KC/RsDcKePmVZ4kPhwoBro87ocd568iSsoSCz5H37xNdS09LPcOhiu/gKgzWOKy4oSnte2MEIVt4DWjIAXQxiJoqD7+Y0qucnCPZJbQEhDfd5JOnHtBk+3BIdfGvnr3Fh31IDL1aa8Vqb45T7Qk/cKNAB5Yofw/35LnI95+Jk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--joshwash.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=r1gZxOib; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--joshwash.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-3405e02ff45so672a91.3
-        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 11:28:19 -0800 (PST)
+	s=arc-20240116; t=1762457569; c=relaxed/simple;
+	bh=J1HwanVJqmGyUZmqtXsePVvkUL4ixOEFWwb1YQBvcWQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A6Uxt92jt0T2us4hLDfOjq6npUhF192/hyk42kkvWKawdvRbbILBRyNw+fkuk1rCCm2w9vk7+PtKAb+MbBlZ0NvZfGABUBhoLVru/HlHlyseHAX5rBr0Ll9sRFVjlV4tm2no/BHK9sIXgVqCOuo+TSzia5T0kjIvzLPUglCmBX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VWULrYDe; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-47109187c32so6471905e9.2
+        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 11:32:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1762457299; x=1763062099; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=V3U2BLp1AgEXNIvYOhrj08jJ81pfESpJT+bWqtR6/KU=;
-        b=r1gZxOibS8MW3Iw6vmRpRh1GkWyj97wcxCi3EdHBnefAwMvhaahGQ1HvzN2VFfi2bT
-         LrseiW5LMELcRDQX7gf8rwAKhpPzs30pW85AJiCEGU4a2GHseWJP66l/HAeXSYdu5YYu
-         ra2zEZXpyptrzoKZCq/Sdp56e5waWJtZ+KthMiYTXihhLjTKF+nW2/C5vfy8P2G82njP
-         qXKFlyMrqlk+lrFqzI4+K1JNQ5O8PZhWbZbwp1nD+mEauAcU15K1tz7KYHBzAN3hu4T/
-         d8vfXKfjvhUupXPDnQ8hNpLUZ+5DIazI++spbDbKMwUp1XXKwG0Dga8r3nqHVMlDqxsD
-         LUEw==
+        d=gmail.com; s=20230601; t=1762457566; x=1763062366; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3LdX2P425dqJBqqy/BCKowoMdQ+f6XYtt+4UwUATXkU=;
+        b=VWULrYDetgSnQnQNbvVV/Yj0m9YHRbVLZ3URZfLst16nIcGGryCnuGjn9Y97lV5E6X
+         1DG6r9SI34e/DU/inOLbSwl5v5jMPkdnOUNus78RuiJylxWi/OsAdeYFI9dQTqUORCaJ
+         Re+p7Cpq7ZCnfcDAnFurAzwpFrXRmo8QIjB+GcZzdQM5UU9BbtgrOSDoFq9ZvQ2sFsa4
+         FFOxkTT1oZ8uBWze+KiQLIHD2eCUvSlRYAuP5/ULZMNlg14XZZCTVRuQTCSxb5ZQ25Eg
+         +XOoLiB0PdKjKbHVyixDk7rzLtAp7vnzKE1Q3VRmXJt94JDstGPTF5wpEecrY54p2Q5Z
+         oEvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762457299; x=1763062099;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V3U2BLp1AgEXNIvYOhrj08jJ81pfESpJT+bWqtR6/KU=;
-        b=c1Akb7cEsRODxbIbrYkxJyYCuKyGnUsX9NinCGkr27YOEMOvWVwRzy92Qbhm8zYkOx
-         XMzzphLb6w+nWk7R++NviLPTjbYbk1BkcmHEs1aDCYtCmLTJxzCs4bviXwBD7rFp9OcX
-         bMpU2ixq0+YYZ7yOXv8b/281Eirtwufkb+cePbFgwOfaUX+F/c7kvATh6AqeveCrXhJo
-         CMLsnDaq897kSeLKa8F4FvXIErhWW9dZjynNpTAbGk80kag05d3L/lHGtEJ1Rjgs93iq
-         H5AdD0M/dgVJwTiNt+K4lKR/GVQyz8U5L+ldxKaK+q6WpOiSl48CmZkorfqE2YjVrZOd
-         /znQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX0sC0fHSDG8UrLXPPKk7AV7Anpu7BTAvQTw/69oVUIgVfkiGU1J0WN9K6Ui/ecUco7tWU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzyufFuAy+PvjXSDEYbREazj9b9mOfmAwnTn0R4swmpl/uf95j
-	QeT+hZXY6CzRruYWbjRzVtxng/NcXcoNz9Zsgc9lYv7eU8seRF6JE5n6Sg9sJ89DGs3eTur0/ud
-	NXRCRPQFZVquYMQ==
-X-Google-Smtp-Source: AGHT+IEsIfGYhZdZ2tqtBbcVUZ7ueSUHICQoVDbIm+m6yTPLyYNJ4OIu36HZ71hM7vJ6QPPO9Ilb5TFmeTcycw==
-X-Received: from pjbrm14.prod.google.com ([2002:a17:90b:3ece:b0:341:2141:d814])
- (user=joshwash job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:3809:b0:32d:dc3e:5575 with SMTP id 98e67ed59e1d1-3434c4e0e7emr325363a91.5.1762457299298;
- Thu, 06 Nov 2025 11:28:19 -0800 (PST)
-Date: Thu,  6 Nov 2025 11:27:46 -0800
-In-Reply-To: <20251106192746.243525-1-joshwash@google.com>
+        d=1e100.net; s=20230601; t=1762457566; x=1763062366;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=3LdX2P425dqJBqqy/BCKowoMdQ+f6XYtt+4UwUATXkU=;
+        b=h3luMnaEGx+kzJmeJRaVjyPpJENG60cSaiA9aG1nFkXwRcBXstlRrosPZ4BpD6WesL
+         gCuN/xMjeVaof2CQcun0CKNbT0/jMz1hz7vts0cjc8rc8rOuMgB0iAq18B13/vCqphDk
+         0PaNNIzLp4ypi7gGk74zHGvko6cVGyfzyJUZYFLtrHsFG3ET7YIf+mnwRDIBYBKeNDLc
+         g71n/IejYrvewdGDopTvnvo8potYiM3gf8bZQosmLWep0mlwVbvnLp32SssXDLohvISZ
+         I5Ku7B3PgS09CXTq27TzxwuvxgiCygSI9hzRkRMh6KUKbR67dhuh5bG07r5YhuuLOGkI
+         tBZg==
+X-Forwarded-Encrypted: i=1; AJvYcCUviVFMQAyao9wJrZ+mUdKJZ+RfAPwNAF0nGkoK3Zen90gnBnMlJUnRxFc22n+6Fba5c+w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKGhXyzFSyt+QQZXOV0D0hRBg8oCYTqE6tuf+fu3hDwzm7dpOj
+	a3RjR33raAPApN+yhdtyofCx57m/eUPXylF6haf3R2Rp1w4c0StyzupwAi0OGtEEw1VzPktuSW4
+	HwT8Vk3goGhDs/nJ4wkzcOUu3eFKQUWA=
+X-Gm-Gg: ASbGncvB6IFR1ULqw97n/f5a+COUefUsTv8GfqgmaR6ftcat9mhz/+o0/Ae7NOIm7l+
+	Z/tG0Z+TmFJmHqL9tsYlQRoHHssP2/wNT9600Eho7b+8Jker1raqtR9RRCH399l8Xt5h2ZXLr9k
+	1GsFFG1I06h9Ia8CHWEzVJsrIIYxztu/nexvAvV8CGoBnUHBHYrt+OQ4UDSPFHPIO2P4TajFVlG
+	0EcL+vQ6sPBklmdmIFtZO/ezrlgr+CZL+O2Qdl894dGZjnx1u7A5odK8+x0oZlxowherI55hrsN
+	t1IqCv1EVz4=
+X-Google-Smtp-Source: AGHT+IFZ1x5WJx94ejOJ+UHJxQBQIghvIJa+xm2So91Mrkuidp9kOFibRBImuLNpC51GTBEr6bz6CLwxvkvruR0SRmw=
+X-Received: by 2002:a05:6000:240e:b0:429:d391:642d with SMTP id
+ ffacd0b85a97d-42adc68a30fmr406960f8f.5.1762457566294; Thu, 06 Nov 2025
+ 11:32:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20251106192746.243525-1-joshwash@google.com>
-X-Mailer: git-send-email 2.51.2.1041.gc1ab5b90ca-goog
-Message-ID: <20251106192746.243525-5-joshwash@google.com>
-Subject: [PATCH net-next v3 4/4] gve: Default to max_rx_buffer_size for DQO if
- device supported
-From: joshwash@google.com
-To: netdev@vger.kernel.org
-Cc: Joshua Washington <joshwash@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Willem de Bruijn <willemb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Ziwei Xiao <ziweixiao@google.com>, 
-	John Fraker <jfraker@google.com>, "Dr. David Alan Gilbert" <linux@treblig.org>, Ankit Garg <nktgrg@google.com>, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Jordan Rhee <jordanrhee@google.com>
+MIME-Version: 1.0
+References: <20251106170608.4800-1-puranjay@kernel.org> <07d47ff900decea1efa670a5973e6499b0722d7a33609a21e204a616252eef58@mail.kernel.org>
+In-Reply-To: <07d47ff900decea1efa670a5973e6499b0722d7a33609a21e204a616252eef58@mail.kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 6 Nov 2025 11:32:32 -0800
+X-Gm-Features: AWmQ_bncB7ywYtzXnFGhaUB_GIu0BPFF3SetxOH7dzmbmiJ6GPQnrZojOZrJ-WI
+Message-ID: <CAADnVQLDeKVdBvinbV_AO5rLtJzDeYka74M54kWVtqTdPzpm+w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Use kmalloc_nolock() in range tree
+To: bot+bpf-ci@kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Chris Mason <clm@meta.com>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Ankit Garg <nktgrg@google.com>
+On Thu, Nov 6, 2025 at 9:30=E2=80=AFAM <bot+bpf-ci@kernel.org> wrote:
+>
+> > diff --git a/kernel/bpf/range_tree.c b/kernel/bpf/range_tree.c
+> > index 37b80a23a..99c63d982 100644
+> > --- a/kernel/bpf/range_tree.c
+> > +++ b/kernel/bpf/range_tree.c
+>
+> [ ... ]
+>
+> > @@ -150,9 +149,7 @@ int range_tree_clear(struct range_tree *rt, u32 sta=
+rt, u32 len)
+> >               range_it_insert(rn, rt);
+> >
+> >               /* Add a range */
+> > -             migrate_disable();
+> > -             new_rn =3D bpf_mem_alloc(&bpf_global_ma, sizeof(struct ra=
+nge_node));
+> > -             migrate_enable();
+> > +             new_rn =3D kmalloc_nolock(sizeof(struct range_node), 0, N=
+UMA_NO_NODE);
+> >               if (!new_rn)
+> >                       return -ENOMEM;
+>
+> Was the change in memcg accounting behavior intentional here?
+>
+> The old code used bpf_mem_alloc(&bpf_global_ma, ...) which charges
+> allocations to the root memcg (bpf_global_ma is initialized at
+> late_initcall with get_obj_cgroup_from_current()).
+>
+> The new code uses kmalloc_nolock() with gfp_flags=3D0, which does not
+> include __GFP_ACCOUNT, so these allocations are not charged to any
+> memcg.
 
-Change the driver's default behavior to prefer the largest available RX
-buffer length supported by the device for DQO format, rather than always
-using the hardcoded 2K default.
-
-Previously, the driver would initialize with
-`GVE_DEFAULT_RX_BUFFER_SIZE` (2K), even if the device advertised support
-for a larger length (e.g., 4K).
-
-Performance observations:
-- With LRO disabled, we observed >10% improvement in RX single stream
-throughput when MTU >=2048.
-- With LRO enabled, we observed >10% improvement in RX single stream
-throughput when MTU >=1460.
-- No regressions were observed.
-
-Signed-off-by: Ankit Garg <nktgrg@google.com>
-Reviewed-by: Harshitha Ramamurthy <hramamurthy@google.com>
-Reviewed-by: Jordan Rhee <jordanrhee@google.com>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Joshua Washington <joshwash@google.com>
----
- drivers/net/ethernet/google/gve/gve_adminq.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/net/ethernet/google/gve/gve_adminq.c b/drivers/net/ethernet/google/gve/gve_adminq.c
-index 4f33d09..b72cc0f 100644
---- a/drivers/net/ethernet/google/gve/gve_adminq.c
-+++ b/drivers/net/ethernet/google/gve/gve_adminq.c
-@@ -987,6 +987,10 @@ static void gve_enable_supported_features(struct gve_priv *priv,
- 		dev_info(&priv->pdev->dev,
- 			 "BUFFER SIZES device option enabled with max_rx_buffer_size of %u, header_buf_size of %u.\n",
- 			 priv->max_rx_buffer_size, priv->header_buf_size);
-+		if (gve_is_dqo(priv) &&
-+		    priv->max_rx_buffer_size > GVE_DEFAULT_RX_BUFFER_SIZE)
-+			priv->rx_cfg.packet_buffer_size =
-+				priv->max_rx_buffer_size;
- 	}
- 
- 	/* Read and store ring size ranges given by device */
--- 
-2.51.2.997.g839fc31de9-goog
-
+Glad that AI caught this. We're going to revisit this when
+non-sleepable arena allocations land.
+At that time we can set_active_memcg() early on in arena_alloc/free
+paths and all subsequent page_alloc_nolock() and kmalloc_nolock()
+will charge correct memcg, and __GFP_ACCOUNT will return to all of them.
 
