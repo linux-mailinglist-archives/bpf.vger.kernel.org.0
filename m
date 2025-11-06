@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-73839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06729C3B0CF
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 14:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80AB3C3B0DB
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 14:02:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BBA3450086E
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 12:56:26 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 268504FE4DE
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 12:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8FEC3375CB;
-	Thu,  6 Nov 2025 12:53:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DFC3337BA7;
+	Thu,  6 Nov 2025 12:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YaojCmQB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E1Z0gvPY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD3332F75C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED243358C4
 	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 12:53:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762433622; cv=none; b=fiaXpPnj+UsbGDMlQz52h4It184xnJ9TbhIvPE6448geILbywgVJbOdZ6hXn62/MfQdnZAIo7efVGHqgoOGFSWg5Ma5E/WfCS9XmQ1Mmyhk81EMl50INMG105CncpSn5sAIllniYTIK5zeQdTM3DjAD62v1Y+RzWtTqEwd4xh7s=
+	t=1762433623; cv=none; b=fVCB6M1Eo6jyZJF2dGjf3+oiaPqy2XpovyLAUwfCfH3E4RGrI8Odc0LMYrWmwHbafLCQGASOBZ7+OhCCtvwd0+zXmZaiSwv6t77H6M34zezOlsaAqLr0rA88lsWvZ3WZYnMzTE5fQuMTo4k4KtGdgj2oyMDx8LrD6fcEpqh/VTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762433622; c=relaxed/simple;
-	bh=EnSIiRq6VHyzg36EE4lisdtnJkdNAd019Xn1/RbfzCI=;
+	s=arc-20240116; t=1762433623; c=relaxed/simple;
+	bh=Md++fu49nP/8mT6hALlYH/LhcbC4sBZZpRrZuND42z0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MXoFC2OsHFZG7D6Qj+M18/oO/GQdHQv7SKaQvfKlozNLcpchONK4aJh6pn8IkwuzZuM5C3fOH4c2Bj11xfKxmpXDat9n7RXPC8BLG7JTLbG4d9tpEuT4YNTM7TFYfyVS/EXG2xfFjvBEoR+x12vEXnfUMkIEiJZsxedUdXQxHB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YaojCmQB; arc=none smtp.client-ip=209.85.221.46
+	 MIME-Version:Content-Type; b=Hdvms3iMzOWpyby27ALx5ujodeVURozVNxHu8tMwgJbH5PP61DQavq2vb1v/DznJdzAh7PLA7ohcxeGtyDxf+DSH+p8ChP99SUZ63CidlJ0UK1vVCCrIPTbfvv2HTA1QIu0K65sQb2NIPOlr1BQ7RAp8Uhu6KZWETuyM5xDUoVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E1Z0gvPY; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-427007b1fe5so603125f8f.1
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-42557c5cedcso528478f8f.0
         for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 04:53:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762433618; x=1763038418; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1762433619; x=1763038419; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=J5UtbFN3SeUqWauxQUFhPcEKoaIiq/3X5SZjNQXVMzY=;
-        b=YaojCmQB0Fg3OgZso8vv+nvyabzPAmSaWeZXdFQoQpHXACpMIxuVDBFMyyDfYFN8in
-         fVTRbo6/Acqj30Qio+HFABgeffUKSQzl5qvVdpRq8h4o7a3guo3QAw6RxWMPuY84wAuK
-         RWQaAHBdnDSkdsvs9N7ejWKx2coqRHezQkK3w4+2KESWJ7nOiZcAADXORDo8lqFCeQxa
-         DhQg2n3H3ERtmz6niWqEKNmCGUUHfFc3yUk63v3hfDbVOne8cvjRWV3KEELgRJ2Min+h
-         4ZDJU7sAsUJnc6VIXw8R4IKVdcFUf7c0VP47gN3RFpcJwqUkShrm8jcVeGL8PxVPIt1m
-         1EoA==
+        bh=1nHltJPQHHc4nhzlx7aFR/dmXb3N8HOdaeVX4vRP+Gs=;
+        b=E1Z0gvPYUQge1V0DE7GFevt2ny3kcaS4Ti308ebuqTi+G9Or9qzfwOG+BBMCGOP3F8
+         cZ9IoXpgoj6SEER8Bu5y3hJoezuxFH3xk5jgL7dy82E/eEdQ2yCT3vfPZAjJ2ytsl10q
+         pzTnahbpcYMtkmk8rioE7JX/yElZg9XFIkWmGV2ewJDfio/Zmc0ahvAGFSmgXAEneDoj
+         5IIAllv+Vj/Rl/ZbKVV2mYZGgpJHzDeKmwnVwFT5zFZC6lXzekJur7xbVSWE9CIHG9U+
+         Ur7bXRyDkHzl8dhJ2YZR0YGmTNQjx11J4y+75y/3raLJKTk6f4mD7mFj8xwGUir7NUS+
+         bB6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762433618; x=1763038418;
+        d=1e100.net; s=20230601; t=1762433619; x=1763038419;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=J5UtbFN3SeUqWauxQUFhPcEKoaIiq/3X5SZjNQXVMzY=;
-        b=vqHDS8t4R5TOCpjUS2FbsAiTcVkWk+jUYPPeeIurIEquU+/kIaAJGMsVJW0Z+DETDI
-         qCSWH9O6NCw6GQkWfC6zigDweycA7zkkV1Y2kkXmhl3Qkt46j/J+gFs+YLbqUcEsvIms
-         OJkkvS5DjnVRsud20a2uAayzHlcZ+6gDcu/aN7etPJtcxha8rrvncwfWINKphEJVuP/Z
-         kWUXyMgfFx2xqPW5Jhg1MLqgyo678LE6uYOlbmAfh+ORfvsJACv/EhvVlvQvDkymO/z7
-         LeZCvkP2uPRxVEGLsKqzy6tC67JIoeAOiduLezzUu+HIxpy4Ob9qar3Sm9jkIABhfl7+
-         UhBQ==
-X-Gm-Message-State: AOJu0Yz7mkHBsWX9FOkbtkA1D1GlCWHAHWmebtYbGgfGplZit6iWDw1c
-	TTta6/llMCyqH3CcXTl+LTp7HSjVuqcDhf3wRvG/HT9wHWXdr3BJ/Vlszo89
-X-Gm-Gg: ASbGncsMNcUtgvSSjnUxYMT70nfasJLJjlLWliONjKFqDJal6YJM8wz5u3m9EoN34gc
-	2RMlvPSEaEkWvETXsiPs+X+eztN8o2CoNGR2dDptOamWNGhYp9YqDz2ecHNjJj/ok5Jiy+c9Tjl
-	FneFjf5Wc/qHYYWXS4CyE72pDk4luA0lkNLQyYSV0NJzJSNSwZvqmA8SEUOnhCk+a1n85FJeXWA
-	7gja+a9kxE2oUaYm+PnEguqELORuQ03Hed12BaIymSql6xvJjy0LTcvs8HsJB8F1JqmvtyTQvdE
-	An9fjXEXRjwGmY/uL5yl7mJO8XFLD8u3DwJcmqyxvBp55pmTnpGh6RywNyi3Q0cWLYN8q8Kdi6n
-	JMBqcm3fVZ2caYriEAGZbJHIr5Dzvw3vMgnTFp7V//f1si1tIs1efBNczwwqyywnKwij3OreH5d
-	OH54k3w34yU+VK6gXgdBwN8U6qFTd5L8c209oOfOsZ0tV24AjiBc2YcO0=
-X-Google-Smtp-Source: AGHT+IETLShyKsHT25JdeNK9Sz1/yzYm3e12YwX3zT1yZFekr4gNRNP0A8afPQDiZ+0+kfpa/ZLupA==
-X-Received: by 2002:adf:9d91:0:b0:429:ec94:67ec with SMTP id ffacd0b85a97d-429ec9469cbmr1719997f8f.1.1762433618072;
+        bh=1nHltJPQHHc4nhzlx7aFR/dmXb3N8HOdaeVX4vRP+Gs=;
+        b=dFknjDCsWWxRNMk9KuCYEk4b2Qv7JRRmzu3xNW6dQVkiqEJ7d/DqFACKpA4wrvDntX
+         SpksvPVlq4benTOkrjbt5BwmNe76YdjpFAsVBgZNvUS5Kaar8pZ78CATTU7IfO5A0Utp
+         FHxaffmS56GIM87CVRll+cxAg0depm5O24D7TcycFaFkwU26VI1jKq2u50eU6bX8unb2
+         4HvLQsvMywr88HYLOJFzH4gqSxBh/FsRAukiu4UsUl4bou+eoPXpskMZfzLvdS6p5nCi
+         ZB+wfUrDON2+Affd3mYBpxakDQ7wBF0FEkhfVRui6Xh8cY4CpiehPHN1Nf+q2RgNZzsP
+         Ow9A==
+X-Gm-Message-State: AOJu0YyN9uT/kPviXtSvCXq56uDHq/qWJ80tcVj8NWZ36FDLWOuPCWpt
+	1sKuS+KEjpXRhLY1ZDvvpvcM73KoHFNTKiGpkLl1xQm18mtITQTygDJl0aGN
+X-Gm-Gg: ASbGncs4n0dxrgQCF8kPybuIG2SQrCp9D1Xc5+UJEwN8qILR4o+yhC1rMRagc4NE2bS
+	g+0qotE3oIfSWszYV3EDnWeFwtQOW22k5RBFf95TLuvTYUzlbkw9QsGxntZvFDQkvNe7hqySIm2
+	XsMQSAHPmq9/AyYB8udmxui93VmN/6yExeGmTBVrZV+9Iz0FE0WZ2qqbLyx/RSYMvxdYLUe643d
+	YujJjry1EqLhr5avP1GQNIl48LByyTViLRnQPN1CR9J6HLe75YSg4CtO8szomaQ4wVUBKbMdxLY
+	WLMgpeWuriEKjoFNjoGiXCKcAqBlszZnRguky/HAmNYWVFJduRPBekzOR72p5g5gRaV7+78T/S3
+	viFHVC3ZocMlQ0j/yaOIIJrAEhjKvbOS+pHfB21puZLDFpRwuGCdP5dZ116qjbbOr6ItSYJDyre
+	PGASIxYQe0paUilcVIecSBR4XctwWpCfVXkXh7+cyJSA4vYM3NCZlvxoo=
+X-Google-Smtp-Source: AGHT+IFeg37HwbkpqMpKiz0OXhY232Pqm49gtMvdmTd/OAarHIH1KXPvOm+PnlvXfXxurhk4CsA8fA==
+X-Received: by 2002:a05:6000:3111:b0:429:c450:8fad with SMTP id ffacd0b85a97d-429e3311ab5mr6260946f8f.53.1762433618708;
         Thu, 06 Nov 2025 04:53:38 -0800 (PST)
 Received: from ast-epyc5.inf.ethz.ch (ast-epyc5.inf.ethz.ch. [129.132.161.180])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429eb40379esm4788856f8f.9.2025.11.06.04.53.37
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429eb40379esm4788856f8f.9.2025.11.06.04.53.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Nov 2025 04:53:37 -0800 (PST)
+        Thu, 06 Nov 2025 04:53:38 -0800 (PST)
 From: Hao Sun <sunhao.th@gmail.com>
 X-Google-Original-From: Hao Sun <hao.sun@inf.ethz.ch>
 To: bpf@vger.kernel.org
@@ -87,9 +87,9 @@ Cc: ast@kernel.org,
 	linux-kernel@vger.kernel.org,
 	sunhao.th@gmail.com,
 	Hao Sun <hao.sun@inf.ethz.ch>
-Subject: [PATCH RFC 04/17] bpf: Add top-level workflow of bcf_refine()
-Date: Thu,  6 Nov 2025 13:52:42 +0100
-Message-Id: <20251106125255.1969938-5-hao.sun@inf.ethz.ch>
+Subject: [PATCH RFC 05/17] bpf: Add top-level workflow of bcf_track()
+Date: Thu,  6 Nov 2025 13:52:43 +0100
+Message-Id: <20251106125255.1969938-6-hao.sun@inf.ethz.ch>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251106125255.1969938-1-hao.sun@inf.ethz.ch>
 References: <20251106125255.1969938-1-hao.sun@inf.ethz.ch>
@@ -99,251 +99,360 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add the top-level refinement hook `bcf_refine()`:
+Add the top-level `bcf_track()` that symbolically tracks the path suffix
+identified by `backtrack_states()` and records per-register expressions and
+path conditions.
 
-- Add `struct bcf_refine_state` to `struct bpf_verifier_env`: stores the list
-  of parent states forming the relevant path suffix (`parents`, `vstate_cnt`),
-  and traversal cursors (`cur_vstate`, `cur_jmp_entry`). A boolean `available`
-  marks whether BCF can be used in this verification.
+- Extend `struct bpf_reg_state` with `bcf_expr` index. Extend
+  `env->bcf` with tracking state: expression arena (exprs/expr_cnt/expr_size),
+  branch condition list (br_conds/br_cond_cnt), and final `path_cond` and
+  `refine_cond` index.
 
-- Implement `backtrack_states()`: walking parents with `backtrack_insn()` and
-  recorded jump history and find a base state to start the symbolic
-  tracking.
+- Disable liveness/precision/pruning side effects during tracking to ensure
+  single-state, suffix-only analysis (short-circuit early in liveness helpers,
+  jump history/push, speculative sanitization, visited-state pruning).
 
-- Add a stub `bcf_track()` () and `bcf_refine()` routine that: (a) derives
-  default `reg_masks` when not provided by selecting interesting regs,
-  (b) backtracks parents, (c) runs `bcf_track()` and a refinement callback,
-  and (d) marks the aux flag to request a proof when a condition is produced.
+- Implement an env save/restore (`env_backup` + `swap_env_states`) so the
+  tracker can reuse verifier execution without polluting global state. 
 
-The actual symbolic tracking, condition build and concrete refinements
-appear in subsequent patches.
+- After tracking, copy collected `bcf_expr` bindings from the tracked state
+  into the original state’s regs. The path condition is built later,
+
+Follow-ups add instruction-specific tracking, path matching and condition
+construction into this framework.
 
 Signed-off-by: Hao Sun <hao.sun@inf.ethz.ch>
 ---
- include/linux/bpf.h          |   1 +
- include/linux/bpf_verifier.h |  13 +++
- kernel/bpf/verifier.c        | 156 +++++++++++++++++++++++++++++++++++
- 3 files changed, 170 insertions(+)
+ include/linux/bpf_verifier.h |   9 +++
+ kernel/bpf/liveness.c        |  15 ++++
+ kernel/bpf/verifier.c        | 135 +++++++++++++++++++++++++++++++++--
+ 3 files changed, 154 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a47d67db3be5..690b0b2b84ba 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1656,6 +1656,7 @@ struct bpf_prog_aux {
- 	bool changes_pkt_data;
- 	bool might_sleep;
- 	bool kprobe_write_ctx;
-+	bool bcf_requested;
- 	u64 prog_array_member_cnt; /* counts how many times as member of prog_array */
- 	struct mutex ext_mutex; /* mutex for is_extended and prog_array_member_cnt */
- 	struct bpf_arena *arena;
 diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index c6eb68b6389c..090430168523 100644
+index 090430168523..b430702784e2 100644
 --- a/include/linux/bpf_verifier.h
 +++ b/include/linux/bpf_verifier.h
-@@ -732,6 +732,18 @@ struct bpf_scc_info {
- 
- struct bpf_liveness;
- 
-+struct bcf_refine_state {
-+	/* The state list that decides the path suffix, on which bcf_track()
-+	 * collects symbolic information for target registers.
-+	 */
-+	struct bpf_verifier_state **parents;
-+	u32 vstate_cnt;
-+	u32 cur_vstate;
-+	u32 cur_jmp_entry;
-+
-+	bool available; /* if bcf_buf is provided. */
-+};
-+
- /* single container for all structs
-  * one verifier_env per bpf_check() call
-  */
-@@ -838,6 +850,7 @@ struct bpf_verifier_env {
- 	struct bpf_scc_info **scc_info;
- 	u32 scc_cnt;
- 	struct bpf_iarray *succ;
-+	struct bcf_refine_state bcf;
+@@ -204,6 +204,7 @@ struct bpf_reg_state {
+ 	s32 subreg_def;
+ 	/* if (!precise && SCALAR_VALUE) min/max/tnum don't affect safety */
+ 	bool precise;
++	int bcf_expr;
  };
  
- static inline struct bpf_func_info_aux *subprog_aux(struct bpf_verifier_env *env, int subprog)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e4928846e763..7125f7434e6f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -608,6 +608,23 @@ static bool is_atomic_load_insn(const struct bpf_insn *insn)
- 	       insn->imm == BPF_LOAD_ACQ;
+ enum bpf_stack_slot_type {
+@@ -742,6 +743,14 @@ struct bcf_refine_state {
+ 	u32 cur_jmp_entry;
+ 
+ 	bool available; /* if bcf_buf is provided. */
++	bool tracking; /* In bcf_track(). */
++	struct bcf_expr *exprs;
++	u32 expr_size;
++	u32 expr_cnt;
++	u32 *br_conds; /* each branch condition */
++	u32 br_cond_cnt;
++	int path_cond; /* conjunction of br_conds */
++	int refine_cond; /* refinement condition */
+ };
+ 
+ /* single container for all structs
+diff --git a/kernel/bpf/liveness.c b/kernel/bpf/liveness.c
+index bffb495bc933..4e44c3f0404c 100644
+--- a/kernel/bpf/liveness.c
++++ b/kernel/bpf/liveness.c
+@@ -276,6 +276,8 @@ static struct per_frame_masks *alloc_frame_masks(struct bpf_verifier_env *env,
+ 
+ void bpf_reset_live_stack_callchain(struct bpf_verifier_env *env)
+ {
++	if (env->bcf.tracking)
++		return;
+ 	env->liveness->cur_instance = NULL;
  }
  
-+typedef int (*refine_state_fn)(struct bpf_verifier_env *env,
-+			       struct bpf_verifier_state *st, void *ctx);
-+
-+static int bcf_refine(struct bpf_verifier_env *env,
-+		      struct bpf_verifier_state *st, u32 reg_masks,
-+		      refine_state_fn refine_cb, void *ctx);
-+
-+static bool bcf_requested(const struct bpf_verifier_env *env)
-+{
-+	return env->prog->aux->bcf_requested;
-+}
-+
-+static void mark_bcf_requested(struct bpf_verifier_env *env)
-+{
-+	env->prog->aux->bcf_requested = true;
-+}
-+
- static int __get_spi(s32 off)
+@@ -318,6 +320,9 @@ int bpf_mark_stack_read(struct bpf_verifier_env *env, u32 frame, u32 insn_idx, u
  {
- 	return (-off - 1) / BPF_REG_SIZE;
-@@ -23378,6 +23395,145 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+ 	int err;
+ 
++	if (env->bcf.tracking)
++		return 0;
++
+ 	err = ensure_cur_instance(env);
+ 	err = err ?: mark_stack_read(env, env->liveness->cur_instance, frame, insn_idx, mask);
+ 	return err;
+@@ -339,6 +344,9 @@ int bpf_reset_stack_write_marks(struct bpf_verifier_env *env, u32 insn_idx)
+ 	struct bpf_liveness *liveness = env->liveness;
+ 	int err;
+ 
++	if (env->bcf.tracking)
++		return 0;
++
+ 	err = ensure_cur_instance(env);
+ 	if (err)
+ 		return err;
+@@ -349,6 +357,8 @@ int bpf_reset_stack_write_marks(struct bpf_verifier_env *env, u32 insn_idx)
+ 
+ void bpf_mark_stack_write(struct bpf_verifier_env *env, u32 frame, u64 mask)
+ {
++	if (env->bcf.tracking)
++		return;
+ 	env->liveness->write_masks_acc[frame] |= mask;
+ }
+ 
+@@ -398,6 +408,8 @@ static int commit_stack_write_marks(struct bpf_verifier_env *env,
+  */
+ int bpf_commit_stack_write_marks(struct bpf_verifier_env *env)
+ {
++	if (env->bcf.tracking)
++		return 0;
+ 	return commit_stack_write_marks(env, env->liveness->cur_instance);
+ }
+ 
+@@ -675,6 +687,9 @@ int bpf_update_live_stack(struct bpf_verifier_env *env)
+ 	struct func_instance *instance;
+ 	int err, frame;
+ 
++	if (env->bcf.tracking)
++		return 0;
++
+ 	bpf_reset_live_stack_callchain(env);
+ 	for (frame = env->cur_state->curframe; frame >= 0; --frame) {
+ 		instance = lookup_instance(env, env->cur_state, frame);
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 7125f7434e6f..725ea503c1c7 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3924,6 +3924,9 @@ static int push_jmp_history(struct bpf_verifier_env *env, struct bpf_verifier_st
+ 	struct bpf_jmp_history_entry *p;
+ 	size_t alloc_size;
+ 
++	if (env->bcf.tracking)
++		return 0;
++
+ 	/* combine instruction flags if we already recorded this instruction */
+ 	if (env->cur_hist_ent) {
+ 		/* atomic instructions push insn_flags twice, for READ and
+@@ -4735,7 +4738,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env,
+ 	struct bpf_reg_state *reg;
+ 	int i, fr, err;
+ 
+-	if (!env->bpf_capable)
++	if (!env->bpf_capable || env->bcf.tracking)
+ 		return 0;
+ 
+ 	changed = changed ?: &tmp;
+@@ -8878,6 +8881,9 @@ static struct bpf_verifier_state *find_prev_entry(struct bpf_verifier_env *env,
+ 	struct bpf_verifier_state *st;
+ 	struct list_head *pos, *head;
+ 
++	if (env->bcf.tracking)
++		return NULL;
++
+ 	/* Explored states are pushed in stack order, most recent states come first */
+ 	head = explored_state(env, insn_idx);
+ 	list_for_each(pos, head) {
+@@ -14302,7 +14308,8 @@ static bool can_skip_alu_sanitation(const struct bpf_verifier_env *env,
+ {
+ 	return env->bypass_spec_v1 ||
+ 		BPF_SRC(insn->code) == BPF_K ||
+-		cur_aux(env)->nospec;
++		cur_aux(env)->nospec ||
++		env->bcf.tracking;
+ }
+ 
+ static int update_alu_sanitation_state(struct bpf_insn_aux_data *aux,
+@@ -14350,6 +14357,9 @@ static int sanitize_speculative_path(struct bpf_verifier_env *env,
+ 	struct bpf_verifier_state *branch;
+ 	struct bpf_reg_state *regs;
+ 
++	if (env->bcf.tracking)
++		return 0;
++
+ 	branch = push_stack(env, next_idx, curr_idx, true);
+ 	if (!IS_ERR(branch) && insn) {
+ 		regs = branch->frame[branch->curframe]->regs;
+@@ -19415,6 +19425,9 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 	int n, err, states_cnt = 0;
+ 	struct list_head *pos, *tmp, *head;
+ 
++	if (env->bcf.tracking)
++		return 0;
++
+ 	force_new_state = env->test_state_freq || is_force_checkpoint(env, insn_idx) ||
+ 			  /* Avoid accumulating infinitely long jmp history */
+ 			  cur->jmp_history_cnt > 40;
+@@ -20076,7 +20089,7 @@ static int do_check(struct bpf_verifier_env *env)
+ 	struct bpf_insn *insns = env->prog->insnsi;
+ 	int insn_cnt = env->prog->len;
+ 	bool do_print_state = false;
+-	int prev_insn_idx = -1;
++	int prev_insn_idx = env->prev_insn_idx;
+ 
+ 	for (;;) {
+ 		struct bpf_insn *insn;
+@@ -20178,6 +20191,14 @@ static int do_check(struct bpf_verifier_env *env)
+ 		if (err)
+ 			return err;
+ 		err = do_check_insn(env, &do_print_state);
++		/*
++		 * bcf_track() only follows checked insns, errors during it
++		 * indicate a previously refined location; The refinement
++		 * is applied directly (see bcf_refine()), so analyzes the
++		 * insn again with the refined state.
++		 */
++		if (err && env->bcf.tracking)
++			err = do_check_insn(env, &do_print_state);
+ 		if (err >= 0 || error_recoverable_with_nospec(err)) {
+ 			marks_err = bpf_commit_stack_write_marks(env);
+ 			if (marks_err)
+@@ -23275,6 +23296,7 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+ 	struct bpf_reg_state *regs;
+ 	int ret, i;
+ 
++	env->prev_insn_idx = -1;
+ 	env->prev_linfo = NULL;
+ 	env->pass_cnt++;
+ 
+@@ -23388,6 +23410,10 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+ 	}
+ 
+ 	ret = do_check(env);
++
++	/* Invoked by bcf_track(), just return. */
++	if (env->bcf.tracking)
++		return ret;
+ out:
+ 	if (!ret && pop_log)
+ 		bpf_vlog_reset(&env->log, 0);
+@@ -23395,11 +23421,104 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
  	return ret;
  }
  
-+static int bcf_track(struct bpf_verifier_env *env,
-+		     struct bpf_verifier_state *st,
-+		     struct bpf_verifier_state *base)
++struct env_backup {
++	u32 insn_idx;
++	u32 prev_insn_idx;
++	struct bpf_verifier_stack_elem *head;
++	int stack_size;
++	u32 id_gen;
++	struct bpf_verifier_state *cur_state;
++	const struct bpf_line_info *prev_linfo;
++	struct list_head *explored_states;
++	struct list_head free_list;
++	u32 log_level;
++	u32 prev_insn_processed, insn_processed;
++	u32 prev_jmps_processed, jmps_processed;
++};
++
++static void swap_env_states(struct env_backup *env_old,
++			    struct bpf_verifier_env *env)
 +{
-+	return -EOPNOTSUPP;
++	swap(env_old->insn_idx, env->insn_idx);
++	swap(env_old->prev_insn_idx, env->prev_insn_idx);
++	swap(env_old->head, env->head);
++	swap(env_old->stack_size, env->stack_size);
++	swap(env_old->id_gen, env->id_gen);
++	swap(env_old->cur_state, env->cur_state);
++	swap(env_old->prev_linfo, env->prev_linfo);
++	swap(env_old->explored_states, env->explored_states);
++	swap(env_old->free_list, env->free_list);
++	/* Disable log during bcf tracking */
++	swap(env_old->log_level, env->log.level);
++	swap(env_old->prev_insn_processed, env->prev_insn_processed);
++	swap(env_old->insn_processed, env->insn_processed);
++	swap(env_old->prev_jmps_processed, env->prev_jmps_processed);
++	swap(env_old->jmps_processed, env->jmps_processed);
 +}
 +
-+/*
-+ * Backtracks through parent verifier states to identify the suffix of the path
-+ * that is relevant for register refinement in bcf_track(). Using backtrack_insn(),
-+ * this routine locates the instructions that define the target registers and any
-+ * registers that are transitively related. All states visited during this process
-+ * collectively define the path suffix.
-+ *
-+ * Returns the parent state of the last visited state, which serves as the base
-+ * state from which bcf_track() begins its analysis.
-+ * The jump history from the collected states determines the suffix to follow.
-+ */
-+static struct bpf_verifier_state *
-+backtrack_states(struct bpf_verifier_env *env, struct bpf_verifier_state *cur,
-+		 u32 reg_masks)
-+{
-+	struct bpf_verifier_state *base = NULL, *st = cur;
-+	struct backtrack_state *bt = &env->bt;
-+	struct bcf_refine_state *bcf = &env->bcf;
-+	int first_idx = cur->first_insn_idx;
-+	int last_idx = cur->insn_idx;
-+	int subseq_idx = -1;
-+	bool skip_first = true;
-+	int i, err, log_level = 0;
-+	u32 vstate_cnt;
-+
-+	if (!reg_masks)
-+		return ERR_PTR(-EFAULT);
-+
-+	bt_init(bt, st->curframe);
-+	bt->reg_masks[bt->frame] = reg_masks;
-+	swap(env->log.level, log_level); /* Disable backtrack_insn() log. */
-+
-+	for (;;) {
-+		u32 history = st->jmp_history_cnt;
-+		struct bpf_jmp_history_entry *hist;
-+
-+		if (last_idx < 0 || !st->parent)
-+			break;
-+
-+		for (i = last_idx;;) {
-+			if (skip_first) {
-+				err = 0;
-+				skip_first = false;
-+			} else {
-+				hist = get_jmp_hist_entry(st, history, i);
-+				err = backtrack_insn(env, i, subseq_idx, hist, bt);
-+			}
-+			if (err) /* Track the entire path. */
-+				goto out;
-+			if (bt_empty(bt)) { /* Base state found. */
-+				base = st->parent;
-+				goto out;
-+			}
-+			subseq_idx = i;
-+			i = get_prev_insn_idx(st, i, &history);
-+			if (i == -ENOENT)
-+				break;
-+			if (i >= env->prog->len)
-+				goto out;
-+		}
-+
-+		st = st->parent;
-+		subseq_idx = first_idx;
-+		last_idx = st->last_insn_idx;
-+		first_idx = st->first_insn_idx;
-+	}
-+
-+out:
-+	bt_reset(bt);
-+	swap(env->log.level, log_level);
-+
-+	/* Collect parents and follow their jmp history. */
-+	vstate_cnt = 1;
-+	st = cur->parent;
-+	while (st != base) {
-+		vstate_cnt++;
-+		st = st->parent;
-+	}
-+	bcf->parents = kmalloc_array(vstate_cnt, sizeof(st), GFP_KERNEL_ACCOUNT);
-+	if (!bcf->parents)
-+		return ERR_PTR(-ENOMEM);
-+	bcf->vstate_cnt = vstate_cnt;
-+	st = cur;
-+	while (vstate_cnt) {
-+		bcf->parents[--vstate_cnt] = st;
-+		st = st->parent;
-+	}
-+	bcf->cur_vstate = 0;
-+	bcf->cur_jmp_entry = 0;
-+	return base;
-+}
-+
-+static int __used bcf_refine(struct bpf_verifier_env *env,
-+			     struct bpf_verifier_state *st, u32 reg_masks,
-+			     refine_state_fn refine_cb, void *ctx)
-+{
+ static int bcf_track(struct bpf_verifier_env *env,
+ 		     struct bpf_verifier_state *st,
+ 		     struct bpf_verifier_state *base)
+ {
+-	return -EOPNOTSUPP;
 +	struct bpf_reg_state *regs = st->frame[st->curframe]->regs;
-+	struct bpf_verifier_state *base;
-+	int i, err;
++	struct bpf_reg_state *tracked_regs;
++	struct bpf_verifier_state *vstate = NULL;
++	struct env_backup env_old = { 0 };
++	struct bcf_refine_state *bcf = &env->bcf;
++	int err, i;
 +
-+	if (!env->bcf.available || st->speculative)
-+		return 0;
-+	/* BCF requested multiple times in an error path. */
-+	if (bcf_requested(env))
-+		return -EFAULT;
++	bcf->expr_cnt = 0;
++	bcf->path_cond = -1;
++	bcf->refine_cond = -1;
 +
-+	if (!reg_masks) {
-+		for (i = 0; i < BPF_REG_FP; i++) {
-+			if (regs[i].type == NOT_INIT)
-+				continue;
-+			if (regs[i].type != SCALAR_VALUE &&
-+			    tnum_is_const(regs[i].var_off))
-+				continue;
-+			reg_masks |= (1 << i);
++	if (base) {
++		vstate = kzalloc(sizeof(struct bpf_verifier_state),
++				 GFP_KERNEL_ACCOUNT);
++		if (!vstate)
++			return -ENOMEM;
++		err = copy_verifier_state(vstate, base);
++		if (err) {
++			free_verifier_state(vstate, true);
++			return err;
 +		}
++		vstate->parent = vstate->equal_state = NULL;
++		vstate->first_insn_idx = base->insn_idx;
++		clear_jmp_history(vstate);
 +	}
 +
-+	base = backtrack_states(env, st, reg_masks);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
++	/* Continue with the current id. */
++	env_old.id_gen = env->id_gen;
++	swap_env_states(&env_old, env);
 +
-+	err = bcf_track(env, st, base);
-+	if (!err && refine_cb)
-+		err = refine_cb(env, st, ctx);
++	env->bcf.tracking = true;
++	if (vstate) {
++		env->insn_idx = vstate->first_insn_idx;
++		env->prev_insn_idx = vstate->last_insn_idx;
++		env->cur_state = vstate;
++		err = do_check(env);
++	} else {
++		u32 subprog = st->frame[0]->subprogno;
 +
-+	if (!err)
-+		mark_bcf_requested(env);
++		env->insn_idx = env->subprog_info[subprog].start;
++		err = do_check_common(env, subprog);
++	}
++	env->bcf.tracking = false;
 +
-+	kfree(env->bcf.parents);
-+	return err ?: 1;
-+}
++	if (!err && !same_callsites(env->cur_state, st))
++		err = -EFAULT;
 +
- /* Lazily verify all global functions based on their BTF, if they are called
-  * from main BPF program or any of subprograms transitively.
-  * BPF global subprogs called from dead code are not validated.
++	if (!err) {
++		tracked_regs = cur_regs(env);
++		for (i = 0; i < BPF_REG_FP; i++)
++			regs[i].bcf_expr = tracked_regs[i].bcf_expr;
++	}
++
++	free_verifier_state(env->cur_state, true);
++	env->cur_state = NULL;
++	while (!pop_stack(env, NULL, NULL, false))
++		;
++	swap_env_states(&env_old, env);
++	return err;
+ }
+ 
+ /*
+@@ -23507,6 +23626,12 @@ static int __used bcf_refine(struct bpf_verifier_env *env,
+ 	/* BCF requested multiple times in an error path. */
+ 	if (bcf_requested(env))
+ 		return -EFAULT;
++	/* BCF requested during bcf_track(), known safe just refine. */
++	if (env->bcf.tracking) {
++		if (refine_cb)
++			return refine_cb(env, st, ctx);
++		return 0;
++	}
+ 
+ 	if (!reg_masks) {
+ 		for (i = 0; i < BPF_REG_FP; i++) {
+@@ -23527,7 +23652,7 @@ static int __used bcf_refine(struct bpf_verifier_env *env,
+ 	if (!err && refine_cb)
+ 		err = refine_cb(env, st, ctx);
+ 
+-	if (!err)
++	if (!err && (env->bcf.refine_cond >= 0 || env->bcf.path_cond >= 0))
+ 		mark_bcf_requested(env);
+ 
+ 	kfree(env->bcf.parents);
 -- 
 2.34.1
 
