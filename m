@@ -1,202 +1,148 @@
-Return-Path: <bpf+bounces-73784-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73785-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4854BC3924E
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 06:13:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AEDFC39286
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 06:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92C4518C2F64
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 05:13:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1484D3B2465
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 05:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 943F32D8364;
-	Thu,  6 Nov 2025 05:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C0E2D7DEA;
+	Thu,  6 Nov 2025 05:27:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DrU/lOXa"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WT0aHy8l"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015B618E1F
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 05:13:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A9A01DA0E1;
+	Thu,  6 Nov 2025 05:27:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762405984; cv=none; b=pikQIliifPQB3mJO82jdxFf19TDhjH23seJm6RmeruJY2TXFAAGGWBKb0GN00X4J9a5TwCYrQsk/l82G+eix3nWmzxZlWI+Avc385LNVpEsrmXDkAo5giyaw0nScVfdGwuJ7GcTzwBFosR6xE4gNykvkDoMp30bPaUAvSZp8xVg=
+	t=1762406823; cv=none; b=i6fr8DPoGkqlZpO4c0UpmMWqHUkBBVHVrNVvq4++BgD6fD+tNgst5+c8+xGqW0wK4TgJGbjLZloQfwNIwGoYwhMkvXDgoQ7WU+O9ekygvvHrifhb1WkDr4/4vO5H5XyYvFzvU7br4gnsMdZh95dEppDbll7ZuvWHn1l6N5/ZcKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762405984; c=relaxed/simple;
-	bh=dWTRRhraEehfMjgHXaXWo7OBff76j3I9dEbnTVHSZLs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=htVnVz1GR+WCrHYPtYFUESI/3DtXSFlGLv+LQiR9oIB3k37vtEkJVwil5zshWQ/VWB0iM5Zv19WHDKyDsiMdY06qCWr31zWqQGW7pIKGROPBLRq7WtcTuThgNhqw1NciWe5yHNNbabEuzYhYk3qGDDafiBEdZBwo9VtKTpWYM0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DrU/lOXa; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <363717bf-499a-4e47-b2c9-8a6e4105282c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762405970;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I/qhxXZz0JAIUm3sRMPspbyF1ft2vsLDuBxnlxXhzwM=;
-	b=DrU/lOXaxAyRoa3slmTMahv1AhNm6YOLXRkemOflIJCWqQTLd/Uj4zBg02sKXSBBytSpdr
-	iRytZXNVWSrYUwFu1jTYx+8CYRoR1PGqrSK+e2tF3Ljt2mLftlcDKrTGxJGiq/FAzL6oyu
-	qVUHNyn8Xz1mLMhx+4xNknET5Bf36xA=
-Date: Thu, 6 Nov 2025 13:12:24 +0800
+	s=arc-20240116; t=1762406823; c=relaxed/simple;
+	bh=mXTgreNXsFRhorKki4yN3xYOpEhF2wvMnPqdRfWqxek=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BOIOj57jg6h2535QucO/ZO9Bq8cmijsbEoBPuOjeiyVfwg6NqUptyFNORi0Bcrp0VFAuQzB2qlH/Ew3miHKF0JeBx1FKevQpVCAJFjWmJUxkVMmFjHk/7LcKQ7vGTPnzv8i713dx1a++R5P5H6RmUOGossX+eph9ltgEvZaNuDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WT0aHy8l; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5A61tqru009215;
+	Thu, 6 Nov 2025 05:26:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=pp1; bh=noikY+uTrNQtmlKd5SNHQnCBWAXx
+	+LlKyTQx4xBbeLo=; b=WT0aHy8lmLth0OyzkMhzzpoeNqfQDp2/0HU99JGd+wbj
+	ngF7PUQrRuqqKnI1Z2hdwrCPvhUOYSoIE0yvu6+qJBUyvvlZpkWP43Q4BQv/2k3w
+	6TXRcnlDV+Ssyk1nxGkztGwkquirWnoRl9HRVzrtNshvdku/h1KpeKrfteLok/kY
+	hesM+v71TBYzyC1FGCTmoo/O9ENdKw3wDtHj2ZGOMAFjKRA809INlNK7FncYIwaF
+	u0k76tDGJWCSLfMGOmMIXxr57gtsEDU8pTZnu8qQRYc4+u5mvym1NthebdLpwwtN
+	kr8g9y4cgQ5lfZLdwYZxzabeI9vRiaCiXxZot0INaQ==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a59q959ve-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 06 Nov 2025 05:26:38 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5A65Qb7E006803;
+	Thu, 6 Nov 2025 05:26:37 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a59q959vb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 06 Nov 2025 05:26:37 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5A62wISU018757;
+	Thu, 6 Nov 2025 05:26:36 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4a5whnkue0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 06 Nov 2025 05:26:36 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5A65QW3f42008864
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 6 Nov 2025 05:26:32 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0C0FF20043;
+	Thu,  6 Nov 2025 05:26:32 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C57FE20040;
+	Thu,  6 Nov 2025 05:26:28 +0000 (GMT)
+Received: from li-621bac4c-27c7-11b2-a85c-c2bf7c4b3c07.in.ibm.com (unknown [9.109.219.153])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  6 Nov 2025 05:26:28 +0000 (GMT)
+From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+To: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc: hbathini@linux.ibm.com, sachinpb@linux.ibm.com, venkat88@linux.ibm.com,
+        andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
+Subject: [PATCH bpf-next] selftests/bpf: Fix htab_update/reenter_update selftest failure
+Date: Thu,  6 Nov 2025 10:56:28 +0530
+Message-ID: <20251106052628.349117-1-skb99@linux.ibm.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 2/2] bpf: Hold the perf callchain entry until
- used completely
-To: Yonghong Song <yonghong.song@linux.dev>, peterz@infradead.org,
- mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
- mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org,
- irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
- song@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20251028162502.3418817-1-chen.dylane@linux.dev>
- <20251028162502.3418817-3-chen.dylane@linux.dev>
- <c352f357-1417-47b5-9d8c-28d99f20f5a6@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <c352f357-1417-47b5-9d8c-28d99f20f5a6@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=StmdKfO0 c=1 sm=1 tr=0 ts=690c318e cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VnNF1IyMAAAA:8 a=1NhHhBnQiQwb0G_R84kA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-ORIG-GUID: qW8AzHLwrsLqf_bLWMYosheoSwQ32XeB
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTAxMDAxOCBTYWx0ZWRfX9Dp6lBH/4Opa
+ 1OL/wznMklr0+/0tT/zj6iuEqjW+KsIpEptCEbU+hGDyf7w2zJLQ85PQgMPEsNEwD3Ng8zBsILb
+ glklm1600THaSvhcHrLxQEIYISJT+IVz/ccW5+EN5qr2W8vjmnKE+kFfItUA4ML6FhfNnAUPYyb
+ oAxdpVb393CRpfcQtt5iRZ76q5UUilrNMVDR0e/GYhEsFx3m+sYeqAqm0vmASQ/oSW2YW+An6CW
+ yTENnJwoe9vXXWYfx+PlQAMIk/QhnMu4A4i5jJhlR75UPOjUTiAblh2qEZqLBI3uxOKLVYJWvRr
+ pOK35LRWB8vn4bXOhPzvOqXbeJFrHEqHsg+8FUM4pOOV4afYPNcUTSYjm/Pc8E+kV/9eYrt9Fh2
+ M4R4h3l1S496BLDJs3zdSod/fwewzg==
+X-Proofpoint-GUID: tx1A5LVx1KBTqquDUM0sUtKoK4rhl76N
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-05_09,2025-11-03_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 suspectscore=0 phishscore=0 impostorscore=0 priorityscore=1501
+ malwarescore=0 clxscore=1011 adultscore=0 bulkscore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511010018
 
-在 2025/11/6 06:16, Yonghong Song 写道:
-> 
-> 
-> On 10/28/25 9:25 AM, Tao Chen wrote:
->> As Alexei noted, get_perf_callchain() return values may be reused
->> if a task is preempted after the BPF program enters migrate disable
->> mode. The perf_callchain_entres has a small stack of entries, and
->> we can reuse it as follows:
->>
->> 1. get the perf callchain entry
->> 2. BPF use...
->> 3. put the perf callchain entry
->>
->> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->> ---
->>   kernel/bpf/stackmap.c | 61 ++++++++++++++++++++++++++++++++++---------
->>   1 file changed, 48 insertions(+), 13 deletions(-)
->>
->> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
->> index e28b35c7e0b..70d38249083 100644
->> --- a/kernel/bpf/stackmap.c
->> +++ b/kernel/bpf/stackmap.c
->> @@ -188,13 +188,12 @@ static void stack_map_get_build_id_offset(struct 
->> bpf_stack_build_id *id_offs,
->>   }
->>   static struct perf_callchain_entry *
->> -get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
->> +get_callchain_entry_for_task(int *rctx, struct task_struct *task, u32 
->> max_depth)
->>   {
->>   #ifdef CONFIG_STACKTRACE
->>       struct perf_callchain_entry *entry;
->> -    int rctx;
->> -    entry = get_callchain_entry(&rctx);
->> +    entry = get_callchain_entry(rctx);
->>       if (!entry)
->>           return NULL;
->> @@ -216,8 +215,6 @@ get_callchain_entry_for_task(struct task_struct 
->> *task, u32 max_depth)
->>               to[i] = (u64)(from[i]);
->>       }
->> -    put_callchain_entry(rctx);
->> -
->>       return entry;
->>   #else /* CONFIG_STACKTRACE */
->>       return NULL;
->> @@ -297,6 +294,31 @@ static long __bpf_get_stackid(struct bpf_map *map,
->>       return id;
->>   }
->> +static struct perf_callchain_entry *
->> +bpf_get_perf_callchain(int *rctx, struct pt_regs *regs, bool kernel, 
->> bool user,
->> +               int max_stack, bool crosstask)
->> +{
->> +    struct perf_callchain_entry_ctx ctx;
->> +    struct perf_callchain_entry *entry;
->> +
->> +    entry = get_callchain_entry(rctx);
-> 
-> I think this may not work. Let us say we have two bpf programs
-> both pinned to a particular cpu (migrate disabled but preempt enabled).
-> get_callchain_entry() calls get_recursion_context() to get the
-> buffer for a particulart level.
-> 
-> static inline int get_recursion_context(u8 *recursion)
-> {
->          unsigned char rctx = interrupt_context_level();
->          if (recursion[rctx])
->                  return -1;
->          recursion[rctx]++;
->          barrier();
->          return rctx;
-> }
-> 
-> It is possible that both tasks (at process level) may
-> reach right before "recursion[rctx]++;".
-> In such cases, both tasks will be able to get
-> buffer and this is not right.
-> 
-> To fix this, we either need to have preempt disable
-> in bpf side, or maybe we have some kind of atomic
-> operation (cmpxchg or similar things), or maybe
-> has a preempt disable between if statement and recursion[rctx]++,
-> so only one task can get buffer?
-> 
+Since commit 31158ad02ddb ("rqspinlock: Add deadlock detection and recovery")
+the updated path on re-entrancy now reports deadlock via
+-EDEADLK instead of the previous -EBUSY.
 
-Thanks to your reminder, can we add preempt disable before and after 
-get_callchain_entry, avoid affecting the original functions of perf.
+The selftest is updated to align with expected errno
+with the kernel’s current behavior.
 
-Regarding multiple task preemption: if the entry is not released via 
-put_callchain_entry, it appears that perf's buffer does not support 
-recording the second task, so it returns directly here.
+Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/prog_tests/htab_update.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-           if (recursion[rctx])
-                   return -1;
-
-> 
->> +    if (unlikely(!entry))
->> +        return NULL;
->> +
->> +    __init_perf_callchain_ctx(&ctx, entry, max_stack, false);
->> +    if (kernel)
->> +        __get_perf_callchain_kernel(&ctx, regs);
->> +    if (user && !crosstask)
->> +        __get_perf_callchain_user(&ctx, regs);
->> +
->> +    return entry;
->> +}
->> +
->> +static void bpf_put_callchain_entry(int rctx)
-> 
-> we have bpf_get_perf_callchain(), maybe rename the above
-> to bpf_put_perf_callchain()?
-> 
-
-Ack, thanks.
-
->> +{
->> +    put_callchain_entry(rctx);
->> +}
->> +
-> 
-> [...]
-> 
-
-
+diff --git a/tools/testing/selftests/bpf/prog_tests/htab_update.c b/tools/testing/selftests/bpf/prog_tests/htab_update.c
+index 2bc85f4814f4..98d52bb1446f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/htab_update.c
++++ b/tools/testing/selftests/bpf/prog_tests/htab_update.c
+@@ -40,7 +40,7 @@ static void test_reenter_update(void)
+ 	if (!ASSERT_OK(err, "add element"))
+ 		goto out;
+ 
+-	ASSERT_EQ(skel->bss->update_err, -EBUSY, "no reentrancy");
++	ASSERT_EQ(skel->bss->update_err, -EDEADLK, "no reentrancy");
+ out:
+ 	htab_update__destroy(skel);
+ }
 -- 
-Best Regards
-Tao Chen
+2.51.0
+
 
