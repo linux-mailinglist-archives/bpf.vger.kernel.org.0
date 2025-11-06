@@ -1,354 +1,245 @@
-Return-Path: <bpf+bounces-73794-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73795-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7E14C3972C
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 08:49:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45A55C39930
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 09:27:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 87ACE4E6301
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 07:49:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 469E71A205F6
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 08:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C022882D7;
-	Thu,  6 Nov 2025 07:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B8993019D8;
+	Thu,  6 Nov 2025 08:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SmW0aiKS"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="aaf1SSpC";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="PHseMNR4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8393814F70
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 07:49:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762415376; cv=none; b=gqVzzfrMEDyCyltz5cBnrjcnTe2CNE9KMjoyvBxmW8C0H7vSvbJLgOEbKxgRFahUwVhi7jcTvFIorK1YY3YMF5Eeok3OEpo+XxWsIj3Xkq4ogntmgwFsYWiqqsdKodY4BCO1rXVqg1ZwIFiLIN5qmp4SOKKWA6LSNqIDy+U/OjM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762415376; c=relaxed/simple;
-	bh=LaPNV5JwqAPmCbB2AHkLV/E6mdeYaEN1cj3GhiXXACU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gJU81DaktpOGhGxowC85jjxSmBMNmOasfdodDBfkJRV/MNY49dtmN89V3+aiqC+ILAKKRjZflPeZSQSEfuQzMtvlkg3hoxwG4YOLcN4eSX3XeMXAy3uvADgru3TJe72XjBSVmrShK0uK3JGP9ayZQRf203FzP2xpxGFnz9Y/oI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SmW0aiKS; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4e89ac45e61so5858331cf.2
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 23:49:34 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CE3F301709;
+	Thu,  6 Nov 2025 08:27:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762417623; cv=fail; b=bz9zW+OYN5B7QexOZlhugvswZ1ByntPXXlgP9UgDqGlpPVpD5gtm2tXG7ThBIT5rFmrJ64D7tZOEUyzl6MZhJtRGb/ARRlL+aofeIwS4k2GArhfhb5D5OIYz+yA2tVL/+tT3ml+rz7L90fs+mMD/Nvmaf7BDaILmVj3J5T0exVg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762417623; c=relaxed/simple;
+	bh=lskud/HZzJSitCV3P3ObAzADcYUQ5GJy4UbrKq7+dAI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=TxPwK+RNHs8yoUB4ODUgOqv130Ys0Wi7TycX6qkY1gUPTraalf9Jjsbvh1Qsn/sShc+xVSm8+V4/Flye/4rNcUboDaiZDuM1CCDeehb0iW+GBUPnu49YsPPRJ8cxWeIucXC2jtfLnptt59/npA9aKg99ZhZjOj/zmb04lDdRiPw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=aaf1SSpC; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=PHseMNR4; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5A61CRVi017516;
+	Thu, 6 Nov 2025 08:26:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=corp-2025-04-25; bh=swOv+Yn1cxtMZAW9I9
+	RVf54ZT6xLc2DI99gSCCPv5nY=; b=aaf1SSpCOPI7o5umh/sq5DuvZPuhDNCNQ0
+	orCXW0G0IQIF2xAHfPK8XY1pl78k5RREszVhBtUSYhnVaRQ1cmI/NtE276Tiv/In
+	Zhp94CZggbpgVZLmSatHOF+RdqKFz9yOS1p1mzUmycKpu2hYtMh5wHnfS/YGc44g
+	k4lsgkkMx2sj73GGYeelF1jgDDna0ZPArQ8jzgMWt1YOQsQHE0N5sNY6kHOhXzb4
+	bplW0zih0e1vImPFcdTM+BPllRHgpwJo7Fk8BsRHP/3LRwEIQ3JvjV9iX+XGP/e6
+	xDq4hcXuPi4nQs/uEI9PFf9VtyqkuPmd5gu20ObKXysEYV2XZuIQ==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4a8aejshs2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 06 Nov 2025 08:26:33 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5A67Ic7j023183;
+	Thu, 6 Nov 2025 08:26:32 GMT
+Received: from sa9pr02cu001.outbound.protection.outlook.com (mail-southcentralusazon11013014.outbound.protection.outlook.com [40.93.196.14])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4a58nfna8w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 06 Nov 2025 08:26:32 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=jo8GPPi51TRDt4t05Khp4jiZDkDbLKuvyZgGbymc937vIxkvZsz+35UWl6liMiA5tAKU3OdJBpseh42AQn0g9ZGhF/NvFmvfo18k1cPp8U8AzHWjf4LRiVhsqairK726C7XUKHZLWTJjGu01VD4OyB+HBjaIiMAlReHfV+W9VmAaiN+sdWYyBZ2v7gViE8dbLQ1kzHjOtKpWcTt8gONsDHa8i9nxvWZj2b7FK8lexwnkqQM0RrjiR+I/FJ8Xg06f39D66kQN+2+932Rs5RUEc9WmolGeH8xsGlFZVX6xpZ+RJhkUKNklDfwTGBcmDG99/H8+mbrsoRH4MIYbSap3Tw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=swOv+Yn1cxtMZAW9I9RVf54ZT6xLc2DI99gSCCPv5nY=;
+ b=i73BQCp/AXcrFWDMdFOkQJpTi953oDeNGZL72NqNy3JGSSya4Oo8TTbzHXdAmsh4WDVcoc+W8/wle6sRtw4Fvmwa0vKOumpo8el7eqOGI88Lu0nbKOKpCTfWbOwBoQ80szVIQKHgu2ra7JkImLmvPrEOpdiaXX9RlBWpaxOhAl9Py8v3aqqNf8D3pyfBBrUs8CZae96QWPMLqzNqwMStF36R4W0zL++ROboA7dzYHoArh/Gs+G0Xo0yYPNPVSPyru1Eo5meXm7Qb9QQsi2ed193TE8AE3Yj7u27oph5BFPF/XafKMsFFjhJ8+ika2/+/8G4qkxdo+E6AuBIn/UBctw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762415373; x=1763020173; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0tiWx6G2y5VkTXLe9CsWA2Y81nDkdhbh4l0X/t/ec0w=;
-        b=SmW0aiKS/S+6Z5CB76hei2GkhLCKD6Ww7dLdXEDq2ELJlO07eJ3M3GkBUU/6vcL0tw
-         ecJy5DgMS1w3qj+SW1FsQCxZ7fsmjLu0lyq8atwa4p7vbYkbMKKIAPaJIrxKpsc9bAUC
-         rNxALbjOWa59jEbzPztzMQ5upC6+g04/GwsS2J/5NE1PO/Y1zdO3emAiO0CUS+vlFZAx
-         AqYkC+Bon3vftPISW/kwc6keit3JDLNMethkqDPI3h2JgENL2G4hr8fmqBGIw1X5Jp7p
-         Z+alwkSPnc+NVtCdRuttmK9WWwpN6hjwsPeFaBQFpZdU89gtS8NDbgC09Q7YErl8TJdC
-         7jhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762415373; x=1763020173;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0tiWx6G2y5VkTXLe9CsWA2Y81nDkdhbh4l0X/t/ec0w=;
-        b=sFXW83aI5v+WlX5PiGtPIEvM8ysby4y3VAALWsrvC66c6Kn3eJIaJY+8GtfVbgQ/Vw
-         Liz1wOxIyjaErqPsswr9Ry76xIhiU3071jgRhTXqkD/SyTCdLfDipO7g8lkPchDux67p
-         gGBHl+Hisd+FBspq1OS239UZ20sA5FOETKzC68eYmJN8//kaN7JL2uN8In29PPZMORZm
-         hZZmMwt3ZTQPTw0RxDjFkFi92KXqjAN9YOB+TyfdPcCQu19rjFyniTYcyAyfzFlrE5+A
-         MKWlM7+uGX6vj1gu4hYqzoTvuztE+bzAkjb9ZQzcgvv04hRhp/5iA2j0hqQ4cOYmLwtb
-         EzsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV4YPvUgYlrFeAUPmVXIXh7muDLqKq/xQvwQlgF7mV0ErlwlHRkiLJy2buHkSqdrHaw0gw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxuhSGs2WGUE1PAhwnxWuwbnAVpZ4IXG8GqKSjrux7o7TcqrwFq
-	cyantsiiWtb9MLg7V8FpMfph1EeqK9Okk58PNfzpASXw6I4gE/oSy1oEN5RcJAvXEsvUXq9l72x
-	fi61bgbUNqUNsiSkFEAv5BryWPTWsFSg=
-X-Gm-Gg: ASbGncv+/iuMji4woZyLUR/vrXI0SXRsdKnbHCVl2Avlq+Xh4OcWb7Boq9eJTvhqJBa
-	UB1Gm6NwPGZ1yUYQODph9tSXn4tF3WnnhyUy2qrCcf7uJ+8Np7h3t8c+8lMxEaIhHDlYJ890lCz
-	/M9FzytUG5jbtMtr9fnklMUqert0KrLIagMg7lzLTLpzHSn6lzhPKQ1j4O5HZfNCuMWFWqURGrz
-	wfGJJnT6j1d3uD32WOdzh3XBGdU5zf6ULJ0p4SVqzY3aD9TjX94v2eDOYUXtQ==
-X-Google-Smtp-Source: AGHT+IFnfeDempYnux+zQUPN8hPmO1whNM3DVSY4U4bNwH+Nsy3ZE2acm1Goqm/p4GafjK/G+YVJDSv1wBfoOqkJQUI=
-X-Received: by 2002:a05:622a:2d3:b0:4ec:ed9e:7fc1 with SMTP id
- d75a77b69052e-4ed7262f327mr86233571cf.60.1762415373358; Wed, 05 Nov 2025
- 23:49:33 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=swOv+Yn1cxtMZAW9I9RVf54ZT6xLc2DI99gSCCPv5nY=;
+ b=PHseMNR4ZKRvXxuhHVWPSbWZR7SpMGNsiNbcEwjd+dnBeeikAs8mWHjWbDKL0oEE7Y6A5Ga4CGxQT7wHAQGBfmPn3YS9wyN5O94BnnG9Usk3jiYUJdgQy3HkSc4FceLo6TIbr1Cv2y3+zzKNLBebgi8WKj+505sRngXFdj2QYSI=
+Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
+ by SJ2PR10MB7760.namprd10.prod.outlook.com (2603:10b6:a03:574::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9298.7; Thu, 6 Nov
+ 2025 08:26:28 +0000
+Received: from CH3PR10MB7329.namprd10.prod.outlook.com
+ ([fe80::f238:6143:104c:da23]) by CH3PR10MB7329.namprd10.prod.outlook.com
+ ([fe80::f238:6143:104c:da23%5]) with mapi id 15.20.9298.007; Thu, 6 Nov 2025
+ 08:26:27 +0000
+Date: Thu, 6 Nov 2025 17:26:15 +0900
+From: Harry Yoo <harry.yoo@oracle.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@gentwo.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Subject: Re: [PATCH 1/5] slab: make __slab_free() more clear
+Message-ID: <aQxbp0cikSkiON5M@harry>
+References: <20251105-sheaves-cleanups-v1-0-b8218e1ac7ef@suse.cz>
+ <20251105-sheaves-cleanups-v1-1-b8218e1ac7ef@suse.cz>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251105-sheaves-cleanups-v1-1-b8218e1ac7ef@suse.cz>
+X-ClientProxiedBy: SL2P216CA0148.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:101:35::19) To CH3PR10MB7329.namprd10.prod.outlook.com
+ (2603:10b6:610:12c::16)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251104134033.344807-1-dolinux.peng@gmail.com>
- <20251104134033.344807-4-dolinux.peng@gmail.com> <CAEf4BzaxU1ea_cVRRD9EenTusDy54tuEpbFqoDQUZVf46zdawg@mail.gmail.com>
- <a2aa0996f076e976b8aef43c94658322150443b6.camel@gmail.com>
- <CAEf4Bzb73ZGjtbwbBDg9wEPtXkL5zXc3SRqfbeyuqNeiPGhyoA@mail.gmail.com>
- <7c77c74a761486c694eba763f9d0371e5c354d31.camel@gmail.com>
- <CAErzpmtu7UuP9ttf1oQSuVh6f4BAkKsmfZBjj_+OHs9-oDUfjQ@mail.gmail.com> <CAEf4Bzb3Eu0J83O=Y4KA-LkzBMjtx7cbonxPzkiduzZ1Pedajg@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb3Eu0J83O=Y4KA-LkzBMjtx7cbonxPzkiduzZ1Pedajg@mail.gmail.com>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Thu, 6 Nov 2025 15:49:18 +0800
-X-Gm-Features: AWmQ_bmgI8QZNrZYj30gBC8F2EuWnfMCfYQIX_xp3XQmkC4yFPXeguunpIlcKpE
-Message-ID: <CAErzpmtJq5Qqdvy+9B8WmvZFQxDt6jKidNqtTMezesP0b=K8ZA@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 3/7] libbpf: Optimize type lookup with binary
- search for sorted BTF
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, ast@kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>, Song Liu <song@kernel.org>, 
-	pengdonglin <pengdonglin@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|SJ2PR10MB7760:EE_
+X-MS-Office365-Filtering-Correlation-Id: 47e0d1b2-5590-44c7-b223-08de1d0e2e1f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|7416014|376014|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?LxuA+olbTjM0JnlNRbDnrNWn4F0NeFu1urkaEvhwEPtRAvvGKPl9sWcLmF4J?=
+ =?us-ascii?Q?uxNFUcKOxgCm+CStNizir4xEzYst3YpFWa4jJxNc2Lfp8uKJoeDSt9w+oW8F?=
+ =?us-ascii?Q?e7yi+LVcINJ7QLWzng9oOGa8kV3Z6TJaKJHQI29jcEgJcDyTxo0HEc+dKRyt?=
+ =?us-ascii?Q?3JQAj0rMDanW+UlgkHnAW7fxMPMgNC+PMuTYJ3OQ/wrT3hHhvEUjoDlaRQ0E?=
+ =?us-ascii?Q?ita/voamazkiWRbgMkEZoalsOTfaQmLX1iYVA/ti2emXCS0DdvnW2q9jApbW?=
+ =?us-ascii?Q?J5ztGW0g+hvlPhHgzMRoqYfMblGMqqTGRgPD+Fpd2HfJFH1dB/GLxYH6I/np?=
+ =?us-ascii?Q?rs6wW6+9j+O72gF9VOAudSUiJdiT7kU5uQ0H+k6MJBSf3AforxcvhfVP8r0h?=
+ =?us-ascii?Q?i8ks9ibA7vaavO8t8RAq0eW7TKf9V1mHGHKkcdoqO4udhgfriB4KqpQp2E8i?=
+ =?us-ascii?Q?u8WDDfmHJ624JV2jXraWkNoaIB6ZkodfV7UvP03ywzOJBDHSk1qmLIwsin6j?=
+ =?us-ascii?Q?U6+MGDxUeIVIyhM4zmY6S8lRDuLNZx8NP+l/fa/OzqWx4txdupWAxxKacmyv?=
+ =?us-ascii?Q?koXIXSYJfFodkvlCPABn4G49NxBhTewp75QMuOCoCly/PT9DSy73c01sx6d8?=
+ =?us-ascii?Q?lR0msW6+Aqh6370+OYuWDxbyJgEyD/famqgc0tLpyZBPlt1JR8Xvj1PlanZF?=
+ =?us-ascii?Q?mgQw6ZDbX46T1wmEt19HZ0idUBtftz7aKWdqIULZkA2XWX2XLIhEzmRyMQdA?=
+ =?us-ascii?Q?YG9AzZMbvxrDj+WfzAgUgKZdXuT1jwcjj177jnUHNEYTaK2AMKARFf1gC0fF?=
+ =?us-ascii?Q?eWx/ziogFLBiPe8MDwCs7v90fYM+KOo7XBvfw2Ks1XIeb4NioGJxcVylqzoE?=
+ =?us-ascii?Q?oWvdpF3oAAKnDpmFaRlBFcZJG5T6YaJhaCC5B0RM16Nt7tsh4GAxS/VJa0Y7?=
+ =?us-ascii?Q?RLeA/xQqqMXnj3dnu7YWdcMgW07D9VLm4B+6fQbpVN0ryUG7DgCraTawxgP4?=
+ =?us-ascii?Q?Cbfp/b36NqpCsQXlZU4oOJE+4yo3K3DlS/rp4edacxyCT+ExRJ7HdXp/UQid?=
+ =?us-ascii?Q?MtICYJpjd5V0pdcfJxtyq0FOV97Qdpfjqe6UQFFsWy2AltJr5oJZ7La3gKNC?=
+ =?us-ascii?Q?aRRjR0WIeijOD2+IPbXSnmZTETJaVVDNlII1STUdWRKeXanzEwKMcwkjl5kB?=
+ =?us-ascii?Q?eAfuvB0tgLfBzX7qrKuQwo2EyCs7jcm/RrSGyhxaQ5cELyrsbVJA1J05KPrp?=
+ =?us-ascii?Q?+Vg1UHcFMwPezSnmeGYH44QtVzCEbnXPh+xVLV/vTTKpdf7ttM0RUutCjU+6?=
+ =?us-ascii?Q?i2oBp2rnAYYT9XJChHI1L2Sf9rBwCI92mLY+DC6keIJUZYX30Es3nWdlIpjZ?=
+ =?us-ascii?Q?oOzHB4IMw+55mi1ec7uIIF0r2bAjJY2z5CGidRItH2EaiaOdXs4x3feeBa07?=
+ =?us-ascii?Q?/ez2H7QVZqTd/XhYd50ytMYPJ85FdVu0?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Fk3Ig+9x5R5na8EOGJNAFaD97m3tCwa3Z4x8g/j3HFfipnZvcAeCl700ecpQ?=
+ =?us-ascii?Q?zE8TkhP6H5gRm3Vzd+a/d5D0L+p6G4gzB82Gx/0gYx/Xo3jR3u/r14mU6sUG?=
+ =?us-ascii?Q?KgjZrp9ocV36kZO7obh6BUmbivZYWUd5/ZQ0PAQFmmo0ONRjFcGhaJtGvCfv?=
+ =?us-ascii?Q?od+J+MszQFiQJ1cuCZLKpo9y3Jg4vDG2/mAJ/mmpAcHvgXVJbuVR4rfia3/S?=
+ =?us-ascii?Q?RT5tsieRayW5KPhLol3V8N1TA4BbDbPH85d0ybixKFfUV55h3+aa9pk33Dsr?=
+ =?us-ascii?Q?j5IEtsDXLAxcJG6BovHmyyoRp4GDy1fik38qeqGJQ3ciTHXTXrHR1P/3CxJ/?=
+ =?us-ascii?Q?ECb2gAVoBDAo9fDbAEHvTLl7BXzJbHIwU4yTWOGeQNRhYy6584UeG/Fm18KJ?=
+ =?us-ascii?Q?Gp929Pas7hvnqD0xR/tF5FJewEt4yarW22ULveLkNUSAwJb5t0vMmNKAx/8V?=
+ =?us-ascii?Q?hv2w95iEjeNPTzigHCg1AF15QlHaeJokBdLhFGLPd/csF0kwej42IOHKVFIq?=
+ =?us-ascii?Q?tXFqnnny6dZPrXk40Ak63Hew9rVRsaTiyjX9fNrR3PPIj10G3XOC3Rjotm3v?=
+ =?us-ascii?Q?06s6idzGpPzWHLiI3NslW4kSheBsT/lft+pwxAZvL646sOD3xVauG6JIGRER?=
+ =?us-ascii?Q?JVNeK/E+3lyKxE34n9/eh9EksKx30XxUUe1EZ6g8uE8DVQ6V1csMtVDlWxYE?=
+ =?us-ascii?Q?JfNbtZtW3tei8e+TL3NGOAP6gIEQZzwK53hGfBr5LeUsf6bOWpos3Ww22FU1?=
+ =?us-ascii?Q?0NbFcm9k5+7V+Fi9WArR7rsAY9xZ66d9YJqkOHu73MWiQ7mSk4oB4aitocFp?=
+ =?us-ascii?Q?tqRDKcVq7FgxFKPBkWf2li8p5m7lDYmRvZq1Drv/zyY1+Aeh2kVFhPZmkFo+?=
+ =?us-ascii?Q?8QJS/q0gqRDAtB2w1c8dNwi/bSOoc3xuJhauXG/sYQ0cOYl2CEU7+z9rU6xF?=
+ =?us-ascii?Q?mggOYKgDRx8MMxfW+FXPFBTf4n3/l0Yov3bm5ZQN2IX6wVw6W9m8QSULkuSE?=
+ =?us-ascii?Q?8L29Pa4aDqxoztVxzlmF4WVs8OHyLLHNuofeCUsZFN2BObA9J6+Bv5Vah5yt?=
+ =?us-ascii?Q?FogWVln49UMIL6h96MdBR5Vx9tP3Egs2XvKOimb00Qg7de8G83yaInon8A7O?=
+ =?us-ascii?Q?dnKLsepL2CZe8brp2FeFsm/M5ikjX57E/KzIIdhs3d6JmVMwdp2UmQDxP8UD?=
+ =?us-ascii?Q?fu8N08GQNw910TFXMoJx4OYCkjg2Hf0HIIsI8Nyyb3WPOxIhw6vwUhrwbkAa?=
+ =?us-ascii?Q?pq/Dr19CEYzzBOQs2pJKMlbJTsXyIbWcSEdy1I+G36d1eexqGmvaMZ18/8Rk?=
+ =?us-ascii?Q?R4MyuRtJFNnXUQDzQk1b61kpnMmgzHw2HbcumJTosycJ6bLVAIqNGsu9VaRD?=
+ =?us-ascii?Q?+kjbi+DDSx7h6d455uei/G6m2pYD4pZlTvavaeC7kcixyg3+53931B5oIAYY?=
+ =?us-ascii?Q?B2QHtkJxGHj4rxaBwyPbt70P+1MV3My0NNxs22cwcv5jUxph3eZFh+u4eJvg?=
+ =?us-ascii?Q?zRwgpy6dLE3JVI1wdJDbrOPJm/yczM66RpmNt0SE1Flgr9cAvQcNUerywflR?=
+ =?us-ascii?Q?H8EH7UqFeCfDzpRNV02BRfMxO3b0mEAQDfqU+KG8?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	qRq7k+WVcy+fGKng5LQ4/ixQyKZ6XqeaGBmE/bmpN/a+hiAbaTHHmSrPk/30+BEa0SmhyNUJmd5/qDCyvJ1iqzVHSgdfhqi4dFm62VbPmka9HA/1xBiy91edu8pmwt3PJjheH38Ot1I3boYMrrgtSugt3BQDJQRqr8CEeLtQ+Wl91fItiHMlNJnjrsnnQvvSx8fFElJmuy2hI1GdazkFmObOapyTO4oehloqYwMvRXVxUlwJa7vT3hAt8Act40xZ8/gePEfOigfGPNbYhvfW3ClqDECjVx9CdoQ+3XoCYKfDhs4I6txaOCj7ite5Ub5gg6rgIMcckH/OsbQ9JwROj6zSY+OFFrSxG9BpgO6pGN1IPiYH6k52A3ZtoDGk5pLoIOV0kGRCpmd4ChH7Hv4+jF30OGb/YxMiW6jrLs/c739tx5lMd5K3PLL1suDvqcP0FJn0AMEu83qZjyGLSIwx9abTIMyrvi/VXDy33mFTLFXDrPFzxRtAOYSfgfwRCfqpEPhsGpQhZ+RxtUBnxN9pDjv2UnhraBnX50ArPfQAmU8bXiuWq/FEueZsT5sdtmhoepvBXtMX56cpYoxCsCRtnYsSvw9jo03ehZ+kDhV03EA=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 47e0d1b2-5590-44c7-b223-08de1d0e2e1f
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2025 08:26:27.7056
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pLDMyJ2h/9Iqwxozau52dlKA9LaTtPISujM8ZlzH7SodTV9ULxHzi3QjcS/h1XayaN1Dup0PwSNdoMP9mVDiRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR10MB7760
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-06_01,2025-11-06_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 adultscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2510240000 definitions=main-2511060067
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTA1MDEzMCBTYWx0ZWRfX5mlzTtTFNGOM
+ WQKDFptWios967NlwJmk2m05m1m/nQQmuyNdlfeRp5wrxdxN0hSp4k08NLVPd10kwbpVBqDcFco
+ BPJt5idfb67cSWhlV0g/5ASL1wPh7FlUxPmDKS+RigAre7OS9Wc3jU9JkXTVdCK3kxtgcX0dALN
+ 6KYCo9QhRfOTA+NKgJbYkCcG07ykh7CFpPCwGElSE6rYOrHEP46FkiWv4jU8vu6DjnI22h1WbXM
+ Q7Kq6u2flfgzITG2+aWDKhHdLQckZqhjYoKFhb71PtaHF1tVsIlGYq2e0SOsa/kNovVT6WH6gEP
+ xkTr/zNysXJR906fDv74V2LeSDXua06UlOuKPJxmMdBr8JyoY+oiW39MtkakM8SErdQAr5kpo1X
+ sFiwnERyFIrcELw2j/zU7Uqcirtspf7Jx0VWyE/ph2sZVdZAKbw=
+X-Authority-Analysis: v=2.4 cv=R8IO2NRX c=1 sm=1 tr=0 ts=690c5bba b=1 cx=c_pps
+ a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
+ a=6UeiqGixMTsA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=yPCof4ZbAAAA:8 a=nN8h-l-cuGAFRwiFnzwA:9 a=CjuIK1q_8ugA:10 cc=ntf
+ awl=host:12123
+X-Proofpoint-ORIG-GUID: f9kxo_ICtnsK7CDNRqFQjmQpJhmaJMyK
+X-Proofpoint-GUID: f9kxo_ICtnsK7CDNRqFQjmQpJhmaJMyK
 
-On Thu, Nov 6, 2025 at 2:11=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Nov 5, 2025 at 5:48=E2=80=AFAM Donglin Peng <dolinux.peng@gmail.c=
-om> wrote:
-> >
-> > On Wed, Nov 5, 2025 at 9:17=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.=
-com> wrote:
-> > >
-> > > On Tue, 2025-11-04 at 16:54 -0800, Andrii Nakryiko wrote:
-> > > > On Tue, Nov 4, 2025 at 4:19=E2=80=AFPM Eduard Zingerman <eddyz87@gm=
-ail.com> wrote:
-> > > > >
-> > > > > On Tue, 2025-11-04 at 16:11 -0800, Andrii Nakryiko wrote:
-> > > > >
-> > > > > [...]
-> > > > >
-> > > > > > > @@ -897,44 +903,134 @@ int btf__resolve_type(const struct btf=
- *btf, __u32 type_id)
-> > > > > > >         return type_id;
-> > > > > > >  }
-> > > > > > >
-> > > > > > > -__s32 btf__find_by_name(const struct btf *btf, const char *t=
-ype_name)
-> > > > > > > +/*
-> > > > > > > + * Find BTF types with matching names within the [left, righ=
-t] index range.
-> > > > > > > + * On success, updates *left and *right to the boundaries of=
- the matching range
-> > > > > > > + * and returns the leftmost matching index.
-> > > > > > > + */
-> > > > > > > +static __s32 btf_find_type_by_name_bsearch(const struct btf =
-*btf, const char *name,
-> > > > > > > +                                               __s32 *left, =
-__s32 *right)
-> > > > > >
-> > > > > > I thought we discussed this, why do you need "right"? Two binar=
-y
-> > > > > > searches where one would do just fine.
-> > > > >
-> > > > > I think the idea is that there would be less strcmp's if there is=
- a
-> > > > > long sequence of items with identical names.
-> > > >
-> > > > Sure, it's a tradeoff. But how long is the set of duplicate name
-> > > > entries we expect in kernel BTF? Additional O(logN) over 70K+ types
-> > > > with high likelihood will take more comparisons.
-> > >
-> > > $ bpftool btf dump file vmlinux | grep '^\[' | awk '{print $3}' | sor=
-t | uniq -c | sort -k1nr | head
-> > >   51737 '(anon)'
-> > >     277 'bpf_kfunc'
-> > >       4 'long
-> > >       3 'perf_aux_event'
-> > >       3 'workspace'
-> > >       2 'ata_acpi_gtm'
-> > >       2 'avc_cache_stats'
-> > >       2 'bh_accounting'
-> > >       2 'bp_cpuinfo'
-> > >       2 'bpf_fastcall'
-> > >
-> > > 'bpf_kfunc' is probably for decl_tags.
-> > > So I agree with you regarding the second binary search, it is not
-> > > necessary.  But skipping all anonymous types (and thus having to
-> > > maintain nr_sorted_types) might be useful, on each search two
-> > > iterations would be wasted to skip those.
->
-> fair enough, eliminating a big chunk of anonymous types is useful, let's =
-do this
->
-> >
-> > Thank you. After removing the redundant iterations, performance increas=
-ed
-> > significantly compared with two iterations.
-> >
-> > Test Case: Locate all 58,719 named types in vmlinux BTF
-> > Methodology:
-> > ./vmtest.sh -- ./test_progs -t btf_permute/perf -v
-> >
-> > Two iterations:
-> > | Condition          | Lookup Time | Improvement |
-> > |--------------------|-------------|-------------|
-> > | Unsorted (Linear)  | 17,282 ms   | Baseline    |
-> > | Sorted (Binary)    | 19 ms       | 909x faster |
-> >
-> > One iteration:
-> > Results:
-> > | Condition          | Lookup Time | Improvement |
-> > |--------------------|-------------|-------------|
-> > | Unsorted (Linear)  | 17,619 ms   | Baseline    |
-> > | Sorted (Binary)    | 10 ms       | 1762x faster |
-> >
-> > Here is the code implementation with a single iteration approach.
-> > I believe this scenario differs from find_linfo because we cannot
-> > determine in advance whether the specified type name will be found.
-> > Please correct me if I've misunderstood anything, and I welcome any
-> > guidance on this matter.
-> >
-> > static __s32 btf_find_type_by_name_bsearch(const struct btf *btf,
-> > const char *name,
-> >                                                 __s32 start_id)
-> > {
-> >         const struct btf_type *t;
-> >         const char *tname;
-> >         __s32 l, r, m, lmost =3D -ENOENT;
-> >         int ret;
-> >
-> >         /* found the leftmost btf_type that matches */
-> >         l =3D start_id;
-> >         r =3D btf__type_cnt(btf) - 1;
-> >         while (l <=3D r) {
-> >                 m =3D l + (r - l) / 2;
-> >                 t =3D btf_type_by_id(btf, m);
-> >                 if (!t->name_off) {
-> >                         ret =3D 1;
-> >                 } else {
-> >                         tname =3D btf__str_by_offset(btf, t->name_off);
-> >                         ret =3D !tname ? 1 : strcmp(tname, name);
-> >                 }
-> >                 if (ret < 0) {
-> >                         l =3D m + 1;
-> >                 } else {
-> >                         if (ret =3D=3D 0)
-> >                                 lmost =3D m;
-> >                         r =3D m - 1;
-> >                 }
-> >         }
-> >
-> >         return lmost;
-> > }
->
-> There are different ways to implement this. At the highest level,
-> implementation below just searches for leftmost element that has name
-> >=3D the one we are searching for. One complication is that such element
-> might not event exists. We can solve that checking ahead of time
-> whether the rightmost type satisfied the condition, or we could do
-> something similar to what I do in the loop below, where I allow l =3D=3D =
-r
-> and then if that element has name >=3D to what we search, we exit
-> because we found it. And if not, l will become larger than r, we'll
-> break out of the loop and we'll know that we couldn't find the
-> element. I haven't tested it, but please take a look and if you decide
-> to go with such approach, do test it for edge cases, of course.
->
-> /*
->  * We are searching for the smallest r such that type #r's name is >=3D n=
-ame.
->  * It might not exist, in which case we'll have l =3D=3D r + 1.
->  */
-> l =3D start_id;
-> r =3D btf__type_cnt(btf) - 1;
-> while (l < r) {
->     m =3D l + (r - l) / 2;
->     t =3D btf_type_by_id(btf, m);
->     tname =3D btf__str_by_offset(btf, t->name_off);
->
->     if (strcmp(tname, name) >=3D 0) {
->         if (l =3D=3D r)
->             return r; /* found it! */
+On Wed, Nov 05, 2025 at 10:05:29AM +0100, Vlastimil Babka wrote:
+> The function is tricky and many of its tests are hard to understand. Try
+> to improve that by using more descriptively named variables and added
+> comments.
+> 
+> - rename 'prior' to 'old_head' to match the head and tail parameters
+> - introduce a 'bool was_full' to make it more obvious what we are
+>   testing instead of the !prior and prior tests
 
-It seems that this if condition will never hold, because a while(l < r) loo=
-p
-is used. Moreover, even if the condition were to hold, it wouldn't guarante=
-e
-a successful search.
+Yeah I recall these were cryptic when I was analyzing slab few years
+ago :)
 
->         r =3D m;
->     } else {
->         l =3D m + 1;
->     }
-> }
-> /* here we know given element doesn't exist, return index beyond end of t=
-ypes */
-> return btf__type_cnt(btf);
-
-I think that return -ENOENT seems more reasonable.
-
+> - add or improve comments in various places to explain what we're doing
+> 
+> Also replace kmem_cache_has_cpu_partial() tests with
+> IS_ENABLED(CONFIG_SLUB_CPU_PARTIAL) which are compile-time constants.
 >
->
-> We could have checked instead whether strcmp(btf__str_by_offset(btf,
-> btf__type_by_id(btf, btf__type_cnt() - 1)->name_off), name) < 0 and
-> exit early. That's just a bit more code duplication of essentially
-> what we do inside the loop, so that if (l =3D=3D r) seems fine to me, but
-> I'm not married to this.
+> We can do that because the kmem_cache_debug(s) case is handled upfront
+> via free_to_partial_list().
 
-Sorry, I believe that even if strcmp(btf__str_by_offset(btf,
-btf__type_by_id(btf,
-btf__type_cnt() - 1)->name_off), name) >=3D 0, it still doesn't seem to
-guarantee that the search will definitely succeed.
+This makes sense. By the way, should we also check IS_ENABLED(CONFIG_SLUB_TINY)
+in kmem_cache_has_cpu_partial()?
 
->
-> >
-> > static __s32 btf_find_type_by_name_kind(const struct btf *btf, int star=
-t_id,
-> >                                    const char *type_name, __u32 kind)
-> > {
-> >         const struct btf_type *t;
-> >         const char *tname;
-> >         int err =3D -ENOENT;
-> >         __u32 total;
-> >
-> >         if (!btf)
-> >                 goto out;
-> >
-> >         if (start_id < btf->start_id) {
-> >                 err =3D btf_find_type_by_name_kind(btf->base_btf, start=
-_id,
-> >                                                  type_name, kind);
-> >                 if (err =3D=3D -ENOENT)
-> >                         start_id =3D btf->start_id;
-> >         }
-> >
-> >         if (err =3D=3D -ENOENT) {
-> >                 if (btf_check_sorted((struct btf *)btf)) {
-> >                         /* binary search */
-> >                         bool skip_first;
-> >                         int ret;
-> >
-> >                         /* return the leftmost with maching names */
-> >                         ret =3D btf_find_type_by_name_bsearch(btf,
-> > type_name, start_id);
-> >                         if (ret < 0)
-> >                                 goto out;
-> >                         /* skip kind checking */
-> >                         if (kind =3D=3D -1)
-> >                                 return ret;
-> >                         total =3D btf__type_cnt(btf);
-> >                         skip_first =3D true;
-> >                         do {
-> >                                 t =3D btf_type_by_id(btf, ret);
-> >                                 if (btf_kind(t) !=3D kind) {
-> >                                         if (skip_first) {
-> >                                                 skip_first =3D false;
-> >                                                 continue;
-> >                                         }
-> >                                 } else if (skip_first) {
-> >                                         return ret;
-> >                                 }
-> >                                 if (!t->name_off)
-> >                                         break;
-> >                                 tname =3D btf__str_by_offset(btf, t->na=
-me_off);
-> >                                 if (tname && !strcmp(tname, type_name))
-> >                                         return ret;
-> >                                 else
-> >                                         break;
-> >                         } while (++ret < total);
-> >                 } else {
-> >                         /* linear search */
-> > ...
-> >                 }
-> >         }
-> >
-> > out:
-> >         return err;
-> > }
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+
+The code is much cleaner!
+
+Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
+
+-- 
+Cheers,
+Harry / Hyeonggon
 
