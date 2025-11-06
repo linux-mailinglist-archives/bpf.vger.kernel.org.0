@@ -1,153 +1,229 @@
-Return-Path: <bpf+bounces-73866-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73867-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61154C3B9FB
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 15:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9798AC3C3A6
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 17:02:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D140E1AA5381
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 14:15:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99E6418C6A6C
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 16:03:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C344E330D35;
-	Thu,  6 Nov 2025 14:14:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jn4OgOPK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C458C345CB9;
+	Thu,  6 Nov 2025 16:02:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA857303A12
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 14:14:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C8B3314CB;
+	Thu,  6 Nov 2025 16:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762438458; cv=none; b=HOgoWSNqig44kHz1QDgfdC5p3o6m2Ibk562+53EirzFM+3RMmemzjzZ+Yh6hnOhT8XW9e1ZHId778OKlUUDaXc2/9trIDhKa+IpgRZ9hqEl6e6UPSqbb3ENLZjwXV53UYBbDwLrGWuSC8pXGqRtYBrEimIbdABoblUsbnexi/BQ=
+	t=1762444963; cv=none; b=Npud1A8PzTLDa3l0DjSvtX+rEML4E0ZatGSYJyuwgkSM1fS16/RA6TSAEVUSMY30hd9F3wcvJXVNOgK3gjC55Owu+VZI1Ti1AGFJ2gCOe89iuDMHlU80AXkaFQfBzMRmzrFCWus9OwKnq51yjgpbDNjI4d99fq9yYfi6qFFEuls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762438458; c=relaxed/simple;
-	bh=U/AKouqgbPl/F0fdOW+C39rwVERBZcpoopfH3BTj9CQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IwX+c+QIhDgW5XZhl7NJBUc8TBqltmKiBZ9gPBzCqnNb9mYamrbflQYsb947Vt0/X1zcothSGygcG8f3hS9dTxdRVxbCFwD3CVjcFxZrubDvLXXUe5hRsA7IQ5B4tPlJWzL7tCJ6gFqGQmcKoJVsvclzwbBytulUFMey6E5ZKkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jn4OgOPK; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-7aea19fd91cso1352980b3a.0
-        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 06:14:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762438456; x=1763043256; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=72EH5m1JIiQ8HjYUz65OXp9Zw63/fhkgRyPRxQjDTxo=;
-        b=Jn4OgOPKRgLDj62PXrzsFsImmbUkS5m2UTPGpXPU9NumtPGQYGnSlTZfIuTvL2XZDe
-         ElGv7aMYeFoq9+k+8qZRblvrPdX8ub/6PY3dDDBD7pqxxHOstxjtqosynbGr3yMk5OOE
-         n/YC12LEEThowyOiq6CkOoVlPpjqkyL+aIAJEU70G5VTmFb22Zvv3I8sCjRKB9F/Ykcc
-         Hqm8cc0ZoxK2coycvPmP1nM8QSNA9F7y7ymqPvBEX/mcruvLprW0inRoEgns1vvuFKoa
-         hUZ3Ubd932KKvxNi+bmSw73YKatlfx8cS040R7PQJeyRhPnG3gRhcqpW552a7jzhPSr6
-         oWYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762438456; x=1763043256;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=72EH5m1JIiQ8HjYUz65OXp9Zw63/fhkgRyPRxQjDTxo=;
-        b=E2+q9p23TFBQI/4o+l8NiWZEYIc36Hc4WGhxVrx476Xv6dVB1hCLF1Z8TiTXZGiYM5
-         j3SBLrFBMuSnwqA5+E66fvMybaCxpGQ+3/zgrPI3I6Az9Li4KQPMrVjf663P3r4/pDgx
-         T3HmrgyC0aSO5i+t5lvbIcto1XaA0k7ou1/RAuBfmR6/1eOBFH3dDbdcKZwTrImEjmOx
-         A9ohrdvN6HLeuSJ54bPLaLgPNH3idkmT3UaCo6CZQe/KcEC9wwlhw7hz9rGQGOFUeJWU
-         vAdfWrJ0bZF0PM0YKRz5bsWTU7Gh2wbDscQOac4hf8XLSwsD4BZHSOxlRoGwMmn2+JyK
-         5QZw==
-X-Forwarded-Encrypted: i=1; AJvYcCXI5JTptbao+wO+Voodk73HvPIv6IANu0M9qaYdhSoQvPJwjqsGM5kjPbogO7yisl5Mzgg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyg05/g8WTyOruZnRdCAzh2LPWxi9h1+7JMOYSrL3Y5fbqTnhhC
-	NBuhrqyp2yMaKOPLeJFpmOfisK4K9IyDvqY19Z9NvFQHbSq/0ArjIPKs
-X-Gm-Gg: ASbGncu3mPXCravNQ0LwjTqQKQ7I9NcrOagYW5qNm15PZhzQdygWGVzQmIfYRVFKxH2
-	rVhOCZXveov8RQZGm9S5hEmBzDZpyLkaUZNmsvP4UnwmfG14kwg18fC+C5rsgzA3R0YTh1WshZd
-	LTT74FF6DQv4XNuFYVCqR+AHVED8tRKwu0MuKR5Y5wtoIdE8EcayS+0+EOkaqDP2XpeBlgVSzJl
-	O/o3FDs99QE3gh4M8K2WKmZ8LBgZWLZsbYVgqKuNtv9AgXsSpNZpk9REvtloEK1vTmO9oNbuw5d
-	zd0zFz1GRRhCsjHftAmMS/U1FIC95Yj1x1ZhFcwP/kb/ZLuriB1QIUpT/ohghgac+3ihsTTqWq8
-	2r15KJbA2yxSlxEny3+dCdkMqzuDxsdGm7gX55me2coITXfwJE+z84vGOUsyk/CKfr+vqeToF0C
-	SPevBuAmQqDHB1yQ061YcHbtUuhW8sCsRzG1wIg5j0ieXT/Ve7Lckryc7v00XqOMmH9v2HnRcw
-X-Google-Smtp-Source: AGHT+IEo3lyx4SSF6ocI62uHYt7YAX7f4+Hxtin616U9H0IjwoISSx5SOupuX9cHRYryvyjl4G9V4w==
-X-Received: by 2002:a05:6a20:9186:b0:341:c4e5:f626 with SMTP id adf61e73a8af0-34f838e271dmr8901776637.7.1762438456066;
-        Thu, 06 Nov 2025 06:14:16 -0800 (PST)
-Received: from [192.168.99.24] (i218-47-167-230.s42.a013.ap.plala.or.jp. [218.47.167.230])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-7af82208befsm2890508b3a.39.2025.11.06.06.14.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Nov 2025 06:14:15 -0800 (PST)
-Message-ID: <4abd5327-ccb7-4dbc-9b09-e98069312e2f@gmail.com>
-Date: Thu, 6 Nov 2025 23:14:11 +0900
+	s=arc-20240116; t=1762444963; c=relaxed/simple;
+	bh=H+shqCH+Wu91YwAHohrcMFif/PuJQzNKSWZc3R7gQDY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JFfbl1Vddo38SldNbaSxEN1UMXRuUybeMxSZqMs+uMHhjBJqsOQq+k+B/4bzaQUeAbJpKvRGLs2hYLoOOErClEF6/XCBFYsQLyxsYiRccrIV18ovnjnEzTJHRQ+oDK6ZmHm02jYAkoQ8Nfov3dCx5l6ixmU+z8sFhnSbpEdgKgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay08.hostedemail.com (Postfix) with ESMTP id 505681401AC;
+	Thu,  6 Nov 2025 16:02:33 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf16.hostedemail.com (Postfix) with ESMTPA id 63B0520018;
+	Thu,  6 Nov 2025 16:02:31 +0000 (UTC)
+Date: Thu, 6 Nov 2025 11:02:30 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Sebastian Andrzej
+ Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 10/16] tracing: Guard __DECLARE_TRACE() use of
+ __DO_TRACE_CALL() with SRCU-fast
+Message-ID: <20251106110230.08e877ff@batman.local.home>
+In-Reply-To: <20251105203216.2701005-10-paulmck@kernel.org>
+References: <bb177afd-eea8-4a2a-9600-e36ada26a500@paulmck-laptop>
+	<20251105203216.2701005-10-paulmck@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net V3 2/2] veth: more robust handing of race to avoid txq
- getting stuck
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, ihor.solodrai@linux.dev,
- "Michael S. Tsirkin" <mst@redhat.com>, makita.toshiaki@lab.ntt.co.jp,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel-team@cloudflare.com,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
- netdev@vger.kernel.org
-References: <176236363962.30034.10275956147958212569.stgit@firesoul>
- <176236369968.30034.1538535221816777531.stgit@firesoul>
-Content-Language: en-US
-From: Toshiaki Makita <toshiaki.makita1@gmail.com>
-In-Reply-To: <176236369968.30034.1538535221816777531.stgit@firesoul>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Stat-Signature: fmkt714m1m4c6ehxka6831mtzforau8e
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 63B0520018
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19iaTKyFCI0tGtmoCLTDsC8g5M4bk6js8o=
+X-HE-Tag: 1762444951-168403
+X-HE-Meta: U2FsdGVkX1+3moqzzczi8f0rQKt2e3epFUYYRV6jSfaWDCASsq5r4G1RK7MJifKYHjovT+JyKwH8ChPK+7RU67eNBv6Bu8r4z8pgIl9HuANgMN2IBsIoIXsUwZ6WbWDcYZ4/s1SP36ppyeKkTiib4tOzIwA5z5RJ34eoGuRyeqGHY7prfSdShDK+mqGrA0zEJ+LoKS/lcZbAogkHGOXWAg8EsRWy2SifDVUS+ZZo3qAJLQNe49McGcUjZtVRR5SGinnFib8xTQUrTw4mcJbLTqzy/3iBE2eNxlUIEW2HXSGj6E0lIs3OFPgcjRLzZyU0wzHt4TnaMEClDCnG6M6z3eUh531J3eu/
 
-On 2025/11/06 2:28, Jesper Dangaard Brouer wrote:
-> Commit dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to
-> reduce TX drops") introduced a race condition that can lead to a permanently
-> stalled TXQ. This was observed in production on ARM64 systems (Ampere Altra
-> Max).
+On Wed,  5 Nov 2025 12:32:10 -0800
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> The race occurs in veth_xmit(). The producer observes a full ptr_ring and
-> stops the queue (netif_tx_stop_queue()). The subsequent conditional logic,
-> intended to re-wake the queue if the consumer had just emptied it (if
-> (__ptr_ring_empty(...)) netif_tx_wake_queue()), can fail. This leads to a
-> "lost wakeup" where the TXQ remains stopped (QUEUE_STATE_DRV_XOFF) and
-> traffic halts.
-> 
-> This failure is caused by an incorrect use of the __ptr_ring_empty() API
-> from the producer side. As noted in kernel comments, this check is not
-> guaranteed to be correct if a consumer is operating on another CPU. The
-> empty test is based on ptr_ring->consumer_head, making it reliable only for
-> the consumer. Using this check from the producer side is fundamentally racy.
-> 
-> This patch fixes the race by adopting the more robust logic from an earlier
-> version V4 of the patchset, which always flushed the peer:
-> 
-> (1) In veth_xmit(), the racy conditional wake-up logic and its memory barrier
-> are removed. Instead, after stopping the queue, we unconditionally call
-> __veth_xdp_flush(rq). This guarantees that the NAPI consumer is scheduled,
-> making it solely responsible for re-waking the TXQ.
->    This handles the race where veth_poll() consumes all packets and completes
-> NAPI *before* veth_xmit() on the producer side has called netif_tx_stop_queue.
-> The __veth_xdp_flush(rq) will observe rx_notify_masked is false and schedule
-> NAPI.
-> 
-> (2) On the consumer side, the logic for waking the peer TXQ is moved out of
-> veth_xdp_rcv() and placed at the end of the veth_poll() function. This
-> placement is part of fixing the race, as the netif_tx_queue_stopped() check
-> must occur after rx_notify_masked is potentially set to false during NAPI
-> completion.
->    This handles the race where veth_poll() consumes all packets, but haven't
-> finished (rx_notify_masked is still true). The producer veth_xmit() stops the
-> TXQ and __veth_xdp_flush(rq) will observe rx_notify_masked is true, meaning
-> not starting NAPI.  Then veth_poll() change rx_notify_masked to false and
-> stops NAPI.  Before exiting veth_poll() will observe TXQ is stopped and wake
-> it up.
-> 
-> Fixes: dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to reduce TX drops")
-> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+> The current commit can be thought of as an approximate revert of that
+> commit, with some compensating additions of preemption disabling pointed
+> out by Steven Rostedt (thank you, Steven!).  This preemption disabling
 
-Reviewed-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+> uses guard(preempt_notrace)(), and while in the area a couple of other
+> use cases were also converted to guards.
+
+Actually, please don't do any conversions. That code is unrelated to
+this work and I may be touching it. I don't need unneeded conflicts.
+
+> ---
+>  include/linux/tracepoint.h   | 45 ++++++++++++++++++++++--------------
+>  include/trace/perf.h         |  4 ++--
+>  include/trace/trace_events.h |  4 ++--
+>  kernel/tracepoint.c          | 21 ++++++++++++++++-
+>  4 files changed, 52 insertions(+), 22 deletions(-)
+> 
+> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+> index 826ce3f8e1f8..9f8b19cd303a 100644
+> --- a/include/linux/tracepoint.h
+> +++ b/include/linux/tracepoint.h
+> @@ -33,6 +33,8 @@ struct trace_eval_map {
+>  
+>  #define TRACEPOINT_DEFAULT_PRIO	10
+>  
+> +extern struct srcu_struct tracepoint_srcu;
+> +
+>  extern int
+>  tracepoint_probe_register(struct tracepoint *tp, void *probe, void *data);
+>  extern int
+> @@ -115,7 +117,10 @@ void for_each_tracepoint_in_module(struct module *mod,
+>  static inline void tracepoint_synchronize_unregister(void)
+>  {
+>  	synchronize_rcu_tasks_trace();
+> -	synchronize_rcu();
+> +	if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> +		synchronize_srcu(&tracepoint_srcu);
+> +	else
+> +		synchronize_rcu();
+>  }
+
+Instead of using the IS_ENABLED(CONFIG_PREEMPT_RT) I think it would be
+somewhat cleaner to add macros (all of this is untested):
+
+#ifdef CONFIG_PREEMPT_RT
+extern struct srcu_struct tracepoint_srcu;
+# define tracepoint_sync() synchronizes_srcu(&tracepoint_srcu)
+# define tracepoint_guard() \
+     guard(srcu_fast_notrace)(&tracepoint_srcu); \
+     guard(migrate)()
+#else
+# define tracepoint_sync() synchronize_rcu();
+# define tracepoint_guard() guard(preempt_notrace)
+#endif
+
+And then the above can be:
+
+static inline void tracepoint_synchronize_unregister(void)
+{
+ 	synchronize_rcu_tasks_trace();
+	tracepoint_sync();
+}
+
+and the below:
+
+	static inline void __do_trace_##name(proto)			\
+	{								\
+		if (cond) {						\
+			tracepoint_guard();				\
+			__DO_TRACE_CALL(name, TP_ARGS(args));		\
+		}							\
+	}								\
+
+And not have to duplicate all that code.
+
+>  static inline bool tracepoint_is_faultable(struct tracepoint *tp)
+>  {
+> @@ -266,23 +271,29 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  		return static_branch_unlikely(&__tracepoint_##name.key);\
+>  	}
+>  
+> -#define __DECLARE_TRACE(name, proto, args, cond, data_proto)		\
+> +#define __DECLARE_TRACE(name, proto, args, cond, data_proto)			\
+>  	__DECLARE_TRACE_COMMON(name, PARAMS(proto), PARAMS(args), PARAMS(data_proto)) \
+> -	static inline void __do_trace_##name(proto)			\
+> -	{								\
+> -		if (cond) {						\
+> -			guard(preempt_notrace)();			\
+> -			__DO_TRACE_CALL(name, TP_ARGS(args));		\
+> -		}							\
+> -	}								\
+> -	static inline void trace_##name(proto)				\
+> -	{								\
+> -		if (static_branch_unlikely(&__tracepoint_##name.key))	\
+> -			__do_trace_##name(args);			\
+> -		if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {		\
+> -			WARN_ONCE(!rcu_is_watching(),			\
+> -				  "RCU not watching for tracepoint");	\
+> -		}							\
+> +	static inline void __do_trace_##name(proto)				\
+> +	{									\
+> +		if (cond) {							\
+> +			if (IS_ENABLED(CONFIG_PREEMPT_RT) && preemptible()) {	\
+> +				guard(srcu_fast_notrace)(&tracepoint_srcu);	\
+> +				guard(migrate)();				\
+> +				__DO_TRACE_CALL(name, TP_ARGS(args));		\
+> +			} else {						\
+> +				guard(preempt_notrace)();			\
+> +				__DO_TRACE_CALL(name, TP_ARGS(args));		\
+> +			}							\
+> +		}								\
+> +	}									\
+> +	static inline void trace_##name(proto)					\
+> +	{									\
+> +		if (static_branch_unlikely(&__tracepoint_##name.key))		\
+> +			__do_trace_##name(args);				\
+> +		if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {			\
+> +			WARN_ONCE(!rcu_is_watching(),				\
+> +				  "RCU not watching for tracepoint");		\
+> +		}								\
+>  	
+>  
+
+>  /*
+> diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
+> index 4f22136fd465..fbc07d353be6 100644
+> --- a/include/trace/trace_events.h
+> +++ b/include/trace/trace_events.h
+> @@ -436,6 +436,7 @@ __DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
+>  static notrace void							\
+>  trace_event_raw_event_##call(void *__data, proto)			\
+>  {									\
+> +	guard(preempt_notrace)();					\
+
+Note, the tracepoint code expects that there's only one level of
+preemption done, as it records the preempt_count and needs to subtract
+what tracing added. Just calling preempt_notrace here if it had already
+disabled preemption will break that code.
+
+It should only disable preemption if it hasn't already done that (when
+PREEMPT_RT is enabled).
+
+>  	do_trace_event_raw_event_##call(__data, args);			\
+>  }
+>  
+> @@ -447,9 +448,8 @@ static notrace void							\
+>  trace_event_raw_event_##call(void *__data, proto)			\
+>  {									\
+>  	might_fault();							\
+> -	preempt_disable_notrace();					\
+> +	guard(preempt_notrace)();					\
+>  	do_trace_event_raw_event_##call(__data, args);			\
+> -	preempt_enable_notrace();					\
+
+I may be modifying the above, so I would leave it alone.
+
+Thanks,
+
+-- Steve
 
 
