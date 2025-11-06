@@ -1,149 +1,112 @@
-Return-Path: <bpf+bounces-73895-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73896-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C719C3CFA5
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 18:58:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E579C3D3B9
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 20:25:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D8F0A4E5924
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 17:58:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBA843ABD2F
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 19:25:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CE234DB5E;
-	Thu,  6 Nov 2025 17:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4DA35028B;
+	Thu,  6 Nov 2025 19:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HSa0AzFx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="imYraTti"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC2B2D543A
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 17:58:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DBDE266B72
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 19:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762451883; cv=none; b=AcLzsR6gVKcUoiQ0XsYuWk/yP4uEoSO8NW8RkCsto618465rr8ThiHpScQnkLh1D0reoO9YTgeEuF8yP2xs5cdqQwyMh6cZu3DXhp35/EYR3FrWTu1krKGdwmaSXZFXAvDdBV8rkWMgyZb0rqaeCBxvs2H/dGARUpY8DKmqRBds=
+	t=1762457151; cv=none; b=QecdpRZ3rGHo0hhrbaTswUp7LssNsJyIziVcZLEgenaarOTyAVI8zVu/slpCBnlLM8+VAJo/SCWxQmV+tEBa6i9Vj2dkKFey6w1CuLus1mYI9Vg9jFf2XamFE+BptTCBiosz40gDhv1y4Xx03BTP1PSubrihlx9NyH7Zbsxq0+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762451883; c=relaxed/simple;
-	bh=glDJwADkOumTnv2wh0y8hasj3tQrqspeLBN3EP/hPeM=;
+	s=arc-20240116; t=1762457151; c=relaxed/simple;
+	bh=YqUDK2Z3llERrKSf4kgpSMZ06X9HSELoNCNLaFNzNJU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bM6PBTx1yQtMjw3mSvNYOWbh7oueuDAboZOgI2CuBpQUHsOqfjH2ip/RTN3499GPu1iyTQFuMXMkg4lblAvyRi9572baItsP4UjHrVaJWzjG1LiR0htD0AKk9F1aSFL7ccOcdCNAtsnqpC+TCe+0PG6ehuT4kk908SHnfeddYe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HSa0AzFx; arc=none smtp.client-ip=209.85.215.174
+	 To:Cc:Content-Type; b=krOiTm8+hXyrKfk71r5uNTh4yBlSApSjW9vstZodbROvjCcjVpHsRolwgS/NdKqYl5XvkZ6dvf32BPzxyxZdRJ/S4W5CC855WbNwmgmz5UjJsejaCxAhZHTGxn/z1ybQT9qZgaZdJpLy4bF31eCCL03ip6jfREYfAQ/VM75glwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=imYraTti; arc=none smtp.client-ip=209.85.221.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-ba2450aba80so752272a12.1
-        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 09:58:00 -0800 (PST)
+Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-429b7ba208eso829722f8f.1
+        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 11:25:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762451880; x=1763056680; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qq2BG8wI9bIT4TcMCE4faFvSiiQMg+JzNyI7cyMI09g=;
-        b=HSa0AzFxYv7Eywl+uuTcMiBDZCL4x61QFtqaeTalq9vAF+EBARPsAutYojSSzBXY/j
-         HgyJE+Kczrqr/XsUX9wkUO0jm1ekeMQxNjTWYQ6aEfcry9/BrWxs2nxG2C0CZZwngyWL
-         e5a/dtezsaRTnUneG7iAnR4TA4jqBL436pwIqVwc0XmggagxM2jLRTNHmxO0bwUDFeqL
-         VXeGMsQiMuCmT8DtKZlDXcb3Y+BA2LPLPjArZzaRcjwENq4uzZLV/vkRTZWuBlrbphIw
-         KGAUq++7NbOMwv5wnOBWVWpeRTz7duDVEwPCmRbIp5Jp9ksCqL6qiG2Lxy4kRjRzKtom
-         Omvg==
+        d=gmail.com; s=20230601; t=1762457148; x=1763061948; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YqUDK2Z3llERrKSf4kgpSMZ06X9HSELoNCNLaFNzNJU=;
+        b=imYraTtib4Y58GTqUvo0rmNk8/pSp6rQI3ogYQqj6MaOnhdKgld//rdt4tsG/9a+qz
+         U6qntXa+YsxOGqZKGGXFdd6brD457s54qkjyCWJYMV/3esRKkyMLUBLSea4m0jDDDRS/
+         4IlBaTi6A4Hrj/DzcJNJBrK7O253nnb7UABUifXjNVe9M0maLuFGOE08HTW8jgrLQDLB
+         KOOPo6XyQyVzLBpUInQnw1PUetAUXNxdVLGgPGVtHiKL3hleXbZrv3n4xVJ58XBbMYFJ
+         wmRpWkxQz3tU3z1eC17scsNVrMM9wwSFzrSfSy0WNg2f8ajhXt8Rg0MCBQNpyPTj75Cn
+         AseA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762451880; x=1763056680;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Qq2BG8wI9bIT4TcMCE4faFvSiiQMg+JzNyI7cyMI09g=;
-        b=hJdE6hmOZRGPDmZs886KSPLZj6kdoBWYT4MwzRocKLY0jffGYBoybMxG9e8MjxhQZn
-         m01ZVfE3RQTp9dRWQnKYsQJdZ+uNuXb2eCJ8yEpgQfEMdWEZ+j2dgcmUP/pk7ZYzCw6M
-         tXsEkmNuzfI4KQmXLNIGCJp6Sag27kMgECD8Qzf//g4MyyeiiVhA9INrkD7kBD3tt9Rx
-         MSj7aHrY3Xi8l5int88y7+TpqGlXc4+R5zDxfAX41ckMvIQ4Gh7NsSE7f3wHwyqe+riN
-         m8m1jqwrP9C7MQuO4+A3ClUPBse3ckH3Di7YiCGflG6I/P0ZJMWR/L/DdcxRb81d+EIh
-         Wzng==
-X-Forwarded-Encrypted: i=1; AJvYcCWNdBi/RZQ+mvw8sfErgeL0AtQeuDDJgqbGIvrVFejD3cfN5ut6CjCBYShtq+o6ofZU5vQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwTQhQiNnkRBwikdnugAKuk3AZ/gJvMPpoiX4a5aggDgMWKtuOS
-	QlGR5FOeAC1NfdzLoi/hy90/2hY4GPy3PMPGrW7y9S5uxDGn6Df4pDR05bnj8y2z80pe85Slyjw
-	LsSDSP9HJs2E2r56faTOkjNr77ROy6Lo=
-X-Gm-Gg: ASbGncv+/mXulZz+3Iko2HRqYPbdT5QfCCAq6MXwS/aMeGQe53gKjhdPo2OmQ84I7AS
-	FAeEVbD0pD4JWPld7hPurKYWIoFHDl8VHjl6z5805p5+EFqI9Vsh4ZQMr408lmMuz0CMIq1WhuV
-	rQDDeSPrY/Os9uxeSoiUHn9Kf6RdRh3kJb52fBZj2ilL8S7PglkkXS4JguU1FzzfeFDPHxdN1j/
-	7tn0J+PiJQAY5sMZCJR0aRlkk68JGao420ICIR7Zfi5/ea11E/wexjRGweMb+uxzDzAnbWP1c8t
-	gu2x3Cq+ZJ4=
-X-Google-Smtp-Source: AGHT+IEo2c3LTKhoAWPaU5mA29bYX/vQ3YlDfexEaLKPDZKxloUHe6GGY5t624x7bqLaqtKa75S0FMw4WhtkQE0EKKo=
-X-Received: by 2002:a17:902:db0b:b0:297:c048:fb60 with SMTP id
- d9443c01a7336-297c048fb72mr3932805ad.25.1762451880461; Thu, 06 Nov 2025
- 09:58:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1762457148; x=1763061948;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YqUDK2Z3llERrKSf4kgpSMZ06X9HSELoNCNLaFNzNJU=;
+        b=VThZDCMD7MGPyU/rLsJIz9Wq0WWkMcHZU3Kc7nzdSVLrVuJX/1MtnweHW7ZzXl8APN
+         ZQz/h44aTIe9eaaIw77w2vqkEkZxm1E9FhBPv17ZLwbTpl4c79cNB9FbnTHs0AET9QLR
+         4c4MqgFCIN5IlCtPCVfJ5Srdc5YeC/3XKWfnXh0zrScdYje71FpCGfMdsfXnwwOFTUmv
+         yWfHZXEj1bCqMekCV7qX8uAkmuS4qAq5Q9t+a/NYV+kCmyLOrCUvQmfbLtSiYzBd9J0I
+         b7APNneq/lPdy710077+UE9rmeIJ4dfZo/L+KheQuIca3Y22sL3nPhN4Vucqlvl0FsDR
+         gonQ==
+X-Gm-Message-State: AOJu0YxK/f+3EkPXrJm3uwnrh1ie+xghlrOLmY2o2jl2XWhNWMFUEYJK
+	7Z9YpCWf6wiYPqInusSe1Xf5/3n3Frmmw+G33FOEPbV0jhZaOx/DDupqfTo3rMwkn49yqf/bbiM
+	uHYVQxJAXGWehJm5vHwvVClKqecwqRlk=
+X-Gm-Gg: ASbGncuTA9B9v4JzihzKUDuBSjSEfleCh4xN+QBQEsZ9AXIk+ndbbR4ae9WyfTACVSF
+	ZnyNl4NUXxtx01qy5pV9Ftl8Y9+qYYMdagwjJJZaC11RNkhLZyLF17DA5kGMt//4vyqdRRSUzVK
+	I+jeAbydiu1HDO7UYIrANa6EHwUrq7cjA2Tm+ZWk7o2gTpAp1Mf7HQ7xBdrR8T36y69U+jaQyfo
+	+TQoHrprcxsm//5LSgjyS1wZHkY/k2tFU6cxubWEtUVmIxDPkkTIQQ5g3mXdSGaCTgQL3bveMsz
+	EtT3X5Z8gRwwrJBytO4GRMGAdw9jN1wAIF+SevLUH9TsOM6P4oTpuQKexl8B
+X-Google-Smtp-Source: AGHT+IEXQRgWnFsALfDxDA1rFRNDxsKvo0O8zhGaI1ZOkDjeTua7aQruzfJV5/uYolj+DC/9j0wr8ABeUtbJ5fPH2nA=
+X-Received: by 2002:a05:6000:420b:b0:429:8b01:c093 with SMTP id
+ ffacd0b85a97d-42ae587f46cmr378338f8f.15.1762457147440; Thu, 06 Nov 2025
+ 11:25:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251106113519.544d147d@canb.auug.org.au>
-In-Reply-To: <20251106113519.544d147d@canb.auug.org.au>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 6 Nov 2025 09:57:46 -0800
-X-Gm-Features: AWmQ_bm8E-PozACS9d1X9w71i5ba0KKhj-9cPqMEYJ2xotNsfTlmXkti2aB73FA
-Message-ID: <CAEf4BzbDyeMG4KdgryqFTTT3t5EQWRsKf8n1W6AHL_VOW0SC7A@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the bpf-next tree with the bpf tree
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Mykyta Yatsenko <yatsenko@meta.com>, bpf <bpf@vger.kernel.org>, 
-	Networking <netdev@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20251105-timer_nolock-v2-0-32698db08bfa@meta.com> <20251105-timer_nolock-v2-5-32698db08bfa@meta.com>
+In-Reply-To: <20251105-timer_nolock-v2-5-32698db08bfa@meta.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 6 Nov 2025 20:25:10 +0100
+X-Gm-Features: AWmQ_blwALol_j4wqJjOeuoblhL3Y03bGPHaPxzHRA2NVd-ZlK6lq9KmpUUCMTg
+Message-ID: <CAP01T74OKq6b0d94+QsL8iGLe+gTerapqHDY5fzsatR13d-3Sg@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 5/5] bpf: remove lock from bpf_async_cb
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 5, 2025 at 4:35=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org.=
-au> wrote:
+On Wed, 5 Nov 2025 at 16:59, Mykyta Yatsenko <mykyta.yatsenko5@gmail.com> wrote:
 >
-> Hi all,
+> From: Mykyta Yatsenko <yatsenko@meta.com>
 >
-> Today's linux-next merge of the bpf-next tree got a conflict in:
+> Remove lock from bpf_async_cb, refactor bpf_timer and bpf_wq kfuncs and
+> helpers to run without it.
+> bpf_async_cb lifetime is managed by the refcnt and RCU, so every
+> function that uses it has to apply RCU guard.
+> cancel_and_free() path detaches bpf_async_cb from the map value (struct
+> bpf_async_kern) and sets the state to the terminal BPF_ASYNC_FREED
+> atomically, concurrent readers may operate on detached bpf_async_cb
+> safely under RCU read lock.
 >
->   kernel/bpf/helpers.c
+> Guarantee safe bpf_prog drop from the bpf_async_cb by handling
+> BPF_ASYNC_FREED state in bpf_async_update_callback().
 >
-> between commits:
->
->   ea0714d61dea ("bpf:add _impl suffix for bpf_task_work_schedule* kfuncs"=
-)
->   137cc92ffe2e ("bpf: add _impl suffix for bpf_stream_vprintk() kfunc")
->
-> from the bpf tree and commit:
->
->   8d8771dc03e4 ("bpf: add plumbing for file-backed dynptr")
->
-> from the bpf-next tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc kernel/bpf/helpers.c
-> index e4007fea4909,865b0dae38d1..000000000000
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@@ -4380,9 -4531,11 +4535,11 @@@ BTF_ID_FLAGS(func, bpf_strncasestr)
->   #if defined(CONFIG_BPF_LSM) && defined(CONFIG_CGROUPS)
->   BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
->   #endif
->  -BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS)
->  -BTF_ID_FLAGS(func, bpf_task_work_schedule_signal, KF_TRUSTED_ARGS)
->  -BTF_ID_FLAGS(func, bpf_task_work_schedule_resume, KF_TRUSTED_ARGS)
->  +BTF_ID_FLAGS(func, bpf_stream_vprintk_impl, KF_TRUSTED_ARGS)
->  +BTF_ID_FLAGS(func, bpf_task_work_schedule_signal_impl, KF_TRUSTED_ARGS)
->  +BTF_ID_FLAGS(func, bpf_task_work_schedule_resume_impl, KF_TRUSTED_ARGS)
-> + BTF_ID_FLAGS(func, bpf_dynptr_from_file, KF_TRUSTED_ARGS)
-> + BTF_ID_FLAGS(func, bpf_dynptr_file_discard)
->   BTF_KFUNCS_END(common_btf_ids)
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
 
-LGTM, thanks
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
->
->   static const struct btf_kfunc_id_set common_kfunc_set =3D {
+> [...]
 
