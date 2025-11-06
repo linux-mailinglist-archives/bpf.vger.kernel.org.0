@@ -1,135 +1,132 @@
-Return-Path: <bpf+bounces-73902-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73903-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22121C3D40A
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 20:33:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80571C3D42B
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 20:38:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CB41E4E6421
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 19:32:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE3373B1DBC
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 19:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D7362DA75A;
-	Thu,  6 Nov 2025 19:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9527933EB06;
+	Thu,  6 Nov 2025 19:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VWULrYDe"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="h3B2N+bb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243142D877B
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 19:32:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35AED86353;
+	Thu,  6 Nov 2025 19:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762457569; cv=none; b=RGs2UISTS96CCoKp+ypOlQgPi8Srj61MTp43ITdhqDHzLyKf/KLLHLJOnWNJmGobXh13Xd0kH6v7VH9AjAMROPT2m3Doh3QgzVVU9aiYXrCEIcQOyzu5DJi9YCnWeA8kz7KfsPPGY2ZG/19r+8yMtqoxNQJ/7qMVDZ+EgDrNAO0=
+	t=1762457887; cv=none; b=uQY39TdHngM7rEryXP1r5sdUqCOv4MxsFyqSUoxiYONBJTVxfQzoc4vTydv3KNQ2ubrndSIyCIwU3WSIIHF2TYEY5JSgRc3ZrMseXPyaLW2Ta/P1WULVeTUopGp99RtdY1zgpoFJ36+nBVC5pa4LErzrn67wV7w3OswbfSIJbOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762457569; c=relaxed/simple;
-	bh=J1HwanVJqmGyUZmqtXsePVvkUL4ixOEFWwb1YQBvcWQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A6Uxt92jt0T2us4hLDfOjq6npUhF192/hyk42kkvWKawdvRbbILBRyNw+fkuk1rCCm2w9vk7+PtKAb+MbBlZ0NvZfGABUBhoLVru/HlHlyseHAX5rBr0Ll9sRFVjlV4tm2no/BHK9sIXgVqCOuo+TSzia5T0kjIvzLPUglCmBX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VWULrYDe; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-47109187c32so6471905e9.2
-        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 11:32:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762457566; x=1763062366; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3LdX2P425dqJBqqy/BCKowoMdQ+f6XYtt+4UwUATXkU=;
-        b=VWULrYDetgSnQnQNbvVV/Yj0m9YHRbVLZ3URZfLst16nIcGGryCnuGjn9Y97lV5E6X
-         1DG6r9SI34e/DU/inOLbSwl5v5jMPkdnOUNus78RuiJylxWi/OsAdeYFI9dQTqUORCaJ
-         Re+p7Cpq7ZCnfcDAnFurAzwpFrXRmo8QIjB+GcZzdQM5UU9BbtgrOSDoFq9ZvQ2sFsa4
-         FFOxkTT1oZ8uBWze+KiQLIHD2eCUvSlRYAuP5/ULZMNlg14XZZCTVRuQTCSxb5ZQ25Eg
-         +XOoLiB0PdKjKbHVyixDk7rzLtAp7vnzKE1Q3VRmXJt94JDstGPTF5wpEecrY54p2Q5Z
-         oEvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762457566; x=1763062366;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=3LdX2P425dqJBqqy/BCKowoMdQ+f6XYtt+4UwUATXkU=;
-        b=h3luMnaEGx+kzJmeJRaVjyPpJENG60cSaiA9aG1nFkXwRcBXstlRrosPZ4BpD6WesL
-         gCuN/xMjeVaof2CQcun0CKNbT0/jMz1hz7vts0cjc8rc8rOuMgB0iAq18B13/vCqphDk
-         0PaNNIzLp4ypi7gGk74zHGvko6cVGyfzyJUZYFLtrHsFG3ET7YIf+mnwRDIBYBKeNDLc
-         g71n/IejYrvewdGDopTvnvo8potYiM3gf8bZQosmLWep0mlwVbvnLp32SssXDLohvISZ
-         I5Ku7B3PgS09CXTq27TzxwuvxgiCygSI9hzRkRMh6KUKbR67dhuh5bG07r5YhuuLOGkI
-         tBZg==
-X-Forwarded-Encrypted: i=1; AJvYcCUviVFMQAyao9wJrZ+mUdKJZ+RfAPwNAF0nGkoK3Zen90gnBnMlJUnRxFc22n+6Fba5c+w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKGhXyzFSyt+QQZXOV0D0hRBg8oCYTqE6tuf+fu3hDwzm7dpOj
-	a3RjR33raAPApN+yhdtyofCx57m/eUPXylF6haf3R2Rp1w4c0StyzupwAi0OGtEEw1VzPktuSW4
-	HwT8Vk3goGhDs/nJ4wkzcOUu3eFKQUWA=
-X-Gm-Gg: ASbGncvB6IFR1ULqw97n/f5a+COUefUsTv8GfqgmaR6ftcat9mhz/+o0/Ae7NOIm7l+
-	Z/tG0Z+TmFJmHqL9tsYlQRoHHssP2/wNT9600Eho7b+8Jker1raqtR9RRCH399l8Xt5h2ZXLr9k
-	1GsFFG1I06h9Ia8CHWEzVJsrIIYxztu/nexvAvV8CGoBnUHBHYrt+OQ4UDSPFHPIO2P4TajFVlG
-	0EcL+vQ6sPBklmdmIFtZO/ezrlgr+CZL+O2Qdl894dGZjnx1u7A5odK8+x0oZlxowherI55hrsN
-	t1IqCv1EVz4=
-X-Google-Smtp-Source: AGHT+IFZ1x5WJx94ejOJ+UHJxQBQIghvIJa+xm2So91Mrkuidp9kOFibRBImuLNpC51GTBEr6bz6CLwxvkvruR0SRmw=
-X-Received: by 2002:a05:6000:240e:b0:429:d391:642d with SMTP id
- ffacd0b85a97d-42adc68a30fmr406960f8f.5.1762457566294; Thu, 06 Nov 2025
- 11:32:46 -0800 (PST)
+	s=arc-20240116; t=1762457887; c=relaxed/simple;
+	bh=fTFawpEBeEN3E9Du3yS1QFmBq2zY+nhNn+xIkBFqb9U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WRlVb2iSN1vf7UEVQpSoCXmKVs41NA1ZxQTCtyRSS1iKoTvNskFv48Qm65JFJNo6BAnv8pDsMerzfU5Y2U9mTkFu3dBjDqzrDGkdEZGKBWOa5lizLe46zSRdTYPxHpwM6LUBmWDdfkDy0kL0X4PYor3qWWxFYAGjNiDf8X8F8bA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=h3B2N+bb; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <84012d65-e0aa-462f-b62d-14f6ea07e1df@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762457881;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P38CHcD31kemSCFmdZiM5BrR5IcpHLHc8tmuVNEmfCI=;
+	b=h3B2N+bbrpsmG8AK8DBKAOhi7v8g8QfNgInkNyCGaSLjYmMNBJ1Z4flfc/xXdcazd6VHLG
+	IE+njKfrSRsjWWgQr1tnPO6d+F/ns1WRLkSN0r2LTfRs5j/drchjY6hvtwXc4LoxM3oavf
+	n/ru66Sqi8fC/sdWCRkgMXYHKtIH2sg=
+Date: Thu, 6 Nov 2025 11:37:52 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251106170608.4800-1-puranjay@kernel.org> <07d47ff900decea1efa670a5973e6499b0722d7a33609a21e204a616252eef58@mail.kernel.org>
-In-Reply-To: <07d47ff900decea1efa670a5973e6499b0722d7a33609a21e204a616252eef58@mail.kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 6 Nov 2025 11:32:32 -0800
-X-Gm-Features: AWmQ_bncB7ywYtzXnFGhaUB_GIu0BPFF3SetxOH7dzmbmiJ6GPQnrZojOZrJ-WI
-Message-ID: <CAADnVQLDeKVdBvinbV_AO5rLtJzDeYka74M54kWVtqTdPzpm+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Use kmalloc_nolock() in range tree
-To: bot+bpf-ci@kernel.org
-Cc: Puranjay Mohan <puranjay@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Chris Mason <clm@meta.com>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v5 3/7] bpf: Pin associated struct_ops when
+ registering async callback
+To: Amery Hung <ameryhung@gmail.com>
+Cc: netdev@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org,
+ daniel@iogearbox.net, tj@kernel.org, martin.lau@kernel.org,
+ kernel-team@meta.com, bpf@vger.kernel.org
+References: <20251104172652.1746988-1-ameryhung@gmail.com>
+ <20251104172652.1746988-4-ameryhung@gmail.com>
+ <0a3c4937-e4fd-49b6-a48c-88a4aa83e8a1@linux.dev>
+ <CAMB2axPayfZOZnGK83eWxYTg9k0uno_y87_0ePE_FD6V+4tnfA@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAMB2axPayfZOZnGK83eWxYTg9k0uno_y87_0ePE_FD6V+4tnfA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Nov 6, 2025 at 9:30=E2=80=AFAM <bot+bpf-ci@kernel.org> wrote:
->
-> > diff --git a/kernel/bpf/range_tree.c b/kernel/bpf/range_tree.c
-> > index 37b80a23a..99c63d982 100644
-> > --- a/kernel/bpf/range_tree.c
-> > +++ b/kernel/bpf/range_tree.c
->
-> [ ... ]
->
-> > @@ -150,9 +149,7 @@ int range_tree_clear(struct range_tree *rt, u32 sta=
-rt, u32 len)
-> >               range_it_insert(rn, rt);
-> >
-> >               /* Add a range */
-> > -             migrate_disable();
-> > -             new_rn =3D bpf_mem_alloc(&bpf_global_ma, sizeof(struct ra=
-nge_node));
-> > -             migrate_enable();
-> > +             new_rn =3D kmalloc_nolock(sizeof(struct range_node), 0, N=
-UMA_NO_NODE);
-> >               if (!new_rn)
-> >                       return -ENOMEM;
->
-> Was the change in memcg accounting behavior intentional here?
->
-> The old code used bpf_mem_alloc(&bpf_global_ma, ...) which charges
-> allocations to the root memcg (bpf_global_ma is initialized at
-> late_initcall with get_obj_cgroup_from_current()).
->
-> The new code uses kmalloc_nolock() with gfp_flags=3D0, which does not
-> include __GFP_ACCOUNT, so these allocations are not charged to any
-> memcg.
 
-Glad that AI caught this. We're going to revisit this when
-non-sleepable arena allocations land.
-At that time we can set_active_memcg() early on in arena_alloc/free
-paths and all subsequent page_alloc_nolock() and kmalloc_nolock()
-will charge correct memcg, and __GFP_ACCOUNT will return to all of them.
+
+On 11/6/25 9:57 AM, Amery Hung wrote:
+> On Wed, Nov 5, 2025 at 6:13 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> On 11/4/25 9:26 AM, Amery Hung wrote:
+>>> Take a refcount of the associated struct_ops map to prevent the map from
+>>> being freed when an async callback scheduled from a struct_ops program
+>>> runs.
+>>>
+>>> Since struct_ops programs do not take refcounts on the struct_ops map,
+>>> it is possible for a struct_ops map to be freed when an async callback
+>>> scheduled from it runs. To prevent this, take a refcount on prog->aux->
+>>> st_ops_assoc and save it in a newly created struct bpf_async_res for
+>>> every async mechanism. The reference needs to be preserved in
+>>> bpf_async_res since prog->aux->st_ops_assoc can be poisoned anytime
+>>> and reference leak could happen.
+>>>
+>>> bpf_async_res will contain a async callback's BPF program and resources
+>>> related to the BPF program. The resources will be acquired when
+>>> registering a callback and released when cancelled or when the map
+>>> associated with the callback is freed.
+>>>
+>>> Also rename drop_prog_refcnt to bpf_async_cb_reset to better reflect
+>>> what it now does.
+>>>
+>>
+>> [ ... ]
+>>
+>>> +static int bpf_async_res_get(struct bpf_async_res *res, struct bpf_prog *prog)
+>>> +{
+>>> +     struct bpf_map *st_ops_assoc = NULL;
+>>> +     int err;
+>>> +
+>>> +     prog = bpf_prog_inc_not_zero(prog);
+>>> +     if (IS_ERR(prog))
+>>> +             return PTR_ERR(prog);
+>>> +
+>>> +     st_ops_assoc = READ_ONCE(prog->aux->st_ops_assoc);
+>>> +     if (prog->type == BPF_PROG_TYPE_STRUCT_OPS &&
+>>> +         st_ops_assoc && st_ops_assoc != BPF_PTR_POISON) {
+>>> +             st_ops_assoc = bpf_map_inc_not_zero(st_ops_assoc);
+>>
+>> The READ_ONCE and inc_not_zero is an unusual combo. Should it be
+>> rcu_dereference and prog->aux->st_ops_assoc should be "__rcu" tagged?
+>>
+> 
+> Understood the underlying struct_ops map is protected by RCU, but
+> prog->aux->st_ops_assoc is not protected by RCU and can change
+> anytime.
+
+hmm... at least for BPF_PROG_TYPE_STRUCT_OPS, the struct_ops map refcnt 
+is not taken in patch 2. The prog->aux->st_ops_assoc can be used is 
+because of the rcu gp.
+
+Another thing I am likely missing is, the refcnted st_ops_assoc is saved 
+in res->st_ops_assoc. If I read it correctly, the kfunc is using 
+bpf_prog_get_assoc_struct_ops() which is reading from 
+[prog->]aux->st_ops_assoc instead of the saved res->st_ops_assoc. Can 
+the aux->st_ops_assoc be pointing to another struct_ops map different 
+from res->st_ops_assoc?
+
 
