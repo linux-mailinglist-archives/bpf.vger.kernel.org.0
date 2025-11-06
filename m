@@ -1,69 +1,69 @@
-Return-Path: <bpf+bounces-73804-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73803-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5CDDC3A6A1
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 11:59:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81705C3A608
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 11:53:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7A262502A30
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 10:53:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FCFE1A46952
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 10:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162782EC097;
-	Thu,  6 Nov 2025 10:53:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E632EC080;
+	Thu,  6 Nov 2025 10:52:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b="GLIEQ+92"
+	dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b="x90QYBLu"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-o-2.desy.de (smtp-o-2.desy.de [131.169.56.155])
+Received: from smtp-o-1.desy.de (smtp-o-1.desy.de [131.169.56.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B16A62E8B9E
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 10:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.169.56.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179292E7F3E
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 10:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.169.56.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762426379; cv=none; b=s7DpRHfsoCGoD8A5r2lQdf8/h9ovZlH8xLpD4uyuQZ2gRPLr9gIO0JVB17I2AAmeFviw5f7CtQITOpwjtjfPtN50kYZkc/77QPmPj5h5wHmejSJvisbdHEJUzedNsgHE3xUlsTx+VteBKoaEEqf6KKNHdIkqkhfkiUVWXq/h4ZU=
+	t=1762426379; cv=none; b=VVSNAPFUtIzaZgh6i457uQBPq0x80NtKVETacRpkkVDNs0PkFT6kEczB93fo4bOK0A7jNciS0FOlNon3ww9g9Bo3B9lO22o2MT9N4n+B5WpfxRCg1O88+m+T/Cuyz+VYaGVrF7ZmAmC7sOirgO29XDLLG0cDZB2t2/N8LtQzLjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762426379; c=relaxed/simple;
-	bh=krjPMp6VLnU+XGkPJYRFUAiTybmVRHjYjJLja3NFC0U=;
+	bh=MLBwo9RpCJlbsGdVD/SOnAbNgflLxpXS9nP6ZYnbK6c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QBVZ+bqg4FG7eqVhvD43/rAVeFPtOzWRYgD61frBObQ5BQ/OsqxVawW9RBFc8gHpJOhAZUw/AI/Tw6nTlHw9o1dymg+V0iWO/UcoZxLX4IQGrgJ3zD3dWg3gWP2jcyYutmNwby9dNPGqwMbP44kQ012xyhP8IcWKp9iVyYrmD8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu; spf=none smtp.mailfrom=mail.desy.de; dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b=GLIEQ+92; arc=none smtp.client-ip=131.169.56.155
+	 MIME-Version; b=JCUqiRCwxfaMz0c5CpXOv8NFWE1L71a2/nrPVLrowIc5KEd5T0yWFJeCvI+KjYBcIqMfPQsJM3EBEF4Vxo7RRV6XRAqO/sNN68dGUXidDahu9n1/HPwTXdvR/9ksAp4KT0UvC2Nkwy6n89p3Bp0D0FE2ruBZEnDbHSElzI7ggkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu; spf=none smtp.mailfrom=mail.desy.de; dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b=x90QYBLu; arc=none smtp.client-ip=131.169.56.154
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mail.desy.de
-Received: from smtp-buf-2.desy.de (smtp-buf-2.desy.de [IPv6:2001:638:700:1038::1:a5])
-	by smtp-o-2.desy.de (Postfix) with ESMTP id 2ED3A13F651
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 11:52:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp-o-2.desy.de 2ED3A13F651
+Received: from smtp-buf-1.desy.de (smtp-buf-1.desy.de [IPv6:2001:638:700:1038::1:a4])
+	by smtp-o-1.desy.de (Postfix) with ESMTP id 119CC11F749
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 11:52:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp-o-1.desy.de 119CC11F749
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xfel.eu; s=default;
-	t=1762426370; bh=ivaaaFyW+NoKDBx9zX/V26ZrYJrZzrQMy/o9ru4RVO8=;
+	t=1762426374; bh=SH1Rf/3jUhb/Yuzw6mxVWPrHivlOeO/ZfECNxEol03I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GLIEQ+92asn3dg2SMTn3xaOuggrgqyjZ/50qiU+WzpwLFIRMoss2FGrgZsDijKy6e
-	 LpS56K3zEPAdm8VMG4E6pAFwc40xBOFiIHkGiKuoXZTw1FRv1lafu0b9pH4xNxLMI5
-	 sdm2h7WUwFU2m/RXnu9E4pbVUqE9HGcV6R4smD6g=
-Received: from smtp-m-2.desy.de (smtp-m-2.desy.de [IPv6:2001:638:700:1038::1:82])
-	by smtp-buf-2.desy.de (Postfix) with ESMTP id 22E4C120043;
-	Thu,  6 Nov 2025 11:52:50 +0100 (CET)
-Received: from a1722.mx.srv.dfn.de (a1722.mx.srv.dfn.de [194.95.233.47])
-	by smtp-m-2.desy.de (Postfix) with ESMTP id 1710716003F;
-	Thu,  6 Nov 2025 11:52:50 +0100 (CET)
-Received: from smtp-intra-2.desy.de (smtp-intra-2.desy.de [131.169.56.83])
-	by a1722.mx.srv.dfn.de (Postfix) with ESMTP id A05A03200A2;
-	Thu,  6 Nov 2025 11:52:47 +0100 (CET)
+	b=x90QYBLuStKX/FUUID+k7hxh3jp4FvENbq+m+z4fJLc8Ro7omIfe2ugnA7eNWbAEX
+	 35ylNLqtcHWveLhXHRHfe2Mc6rNCidRN30McML45QUcgPxYj1k9MWuh3rCBRQZ7v25
+	 VDPFYOU6CjPpujAVqjnzJ1vItRYlYKxH4XK7wXjc=
+Received: from smtp-m-1.desy.de (smtp-m-1.desy.de [131.169.56.129])
+	by smtp-buf-1.desy.de (Postfix) with ESMTP id 052FC20056;
+	Thu,  6 Nov 2025 11:52:54 +0100 (CET)
+Received: from b1722.mx.srv.dfn.de (b1722.mx.srv.dfn.de [IPv6:2001:638:d:c302:acdc:1979:2:e7])
+	by smtp-m-1.desy.de (Postfix) with ESMTP id EE6E340044;
+	Thu,  6 Nov 2025 11:52:53 +0100 (CET)
+Received: from smtp-intra-2.desy.de (smtp-intra-2.desy.de [IPv6:2001:638:700:1038::1:53])
+	by b1722.mx.srv.dfn.de (Postfix) with ESMTP id 07E17160059;
+	Thu,  6 Nov 2025 11:52:53 +0100 (CET)
 Received: from exflqr30474.desy.de (exflqr30474.desy.de [192.168.177.248])
-	by smtp-intra-2.desy.de (Postfix) with ESMTP id 833912004C;
-	Thu,  6 Nov 2025 11:52:47 +0100 (CET)
+	by smtp-intra-2.desy.de (Postfix) with ESMTP id EFA632004C;
+	Thu,  6 Nov 2025 11:52:52 +0100 (CET)
 Received: by exflqr30474.desy.de (Postfix, from userid 31112)
-	id 7D0D4201A9; Thu,  6 Nov 2025 11:52:47 +0100 (CET)
+	id EC07F201A9; Thu,  6 Nov 2025 11:52:52 +0100 (CET)
 From: Martin Teichmann <martin.teichmann@xfel.eu>
 To: bpf@vger.kernel.org
 Cc: eddyz87@gmail.com,
 	ast@kernel.org,
 	andrii@kernel.org,
 	Martin Teichmann <martin.teichmann@xfel.eu>
-Subject: [PATCH v4 bpf-next 0/2] bpf: properly verify tail call behavior
-Date: Thu,  6 Nov 2025 11:52:36 +0100
-Message-ID: <20251106105238.2926962-1-martin.teichmann@xfel.eu>
+Subject: [PATCH v4 bpf-next 1/2] bpf: properly verify tail call behavior
+Date: Thu,  6 Nov 2025 11:52:37 +0100
+Message-ID: <20251106105238.2926962-2-martin.teichmann@xfel.eu>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <c571ab7af853a3f775be3a518f99ec809f49797f.camel@gmail.com>
 References: <c571ab7af853a3f775be3a518f99ec809f49797f.camel@gmail.com>
@@ -75,49 +75,99 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi Eduard,
+A successful ebpf tail call does not return to the caller, but to the
+caller-of-the-caller, often just finishing the ebpf program altogether.
 
-you are right, backtrack_insn() did not properly deal with tail calls.
-I fixed that, and added your test, which now passes properly.
+Any restrictions that the verifier needs to take into account - notably
+the fact that the tail call might have modified packet pointers - are to
+be checked on the caller-of-the-caller. Checking it on the caller made
+the verifier refuse perfectly fine programs that would use the packet
+pointers after a tail call, which is no problem as this code is only
+executed if the tail call was unsuccessful, i.e. nothing happened.
 
-What my code does is to effectively treat (following your example):
+This patch simulates the behavior of a tail call in the verifier. A
+conditional jump to the code after the tail call is added for the case
+of an unsucessful tail call, and a return to the caller is simulated for
+a successful tail call.
 
-foo(int *a):
-  tail call;
-  *a = 0;
-  return;
+For the successful case we assume that the tail call returns an int,
+as tail calls are currently only allowed in functions that return and
+int. We always assume that the tail call modified the packet pointers,
+as we do not know what the tail call did.
 
-as
+For the unsuccessful case we know nothing happened, so we do not need to
+add new constraints.
 
-foo(int *a);
-  if (prog_map_has_entry) {
-      tail call;
-      return;
-   }
-   *a = 0;
-   return;
+Fixes: 1a4607ffba35 ("bpf: consider that tail calls invalidate packet pointers")
+Link: https://lore.kernel.org/bpf/20251029105828.1488347-1-martin.teichmann@xfel.eu/
+Signed-off-by: Martin Teichmann <martin.teichmann@xfel.eu>
+---
+ kernel/bpf/verifier.c | 31 ++++++++++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 3 deletions(-)
 
-In bpf_insn_successors(), a BPF_EXIT is declared as can_jump=false and
-can_fallthrough=false. This is how the return after tail call should be
-treated. Let's go through the three lines: the if statement has two
-successors, the jump and the fallthrough. The fallthrough is the tail call,
-which has the return as its only successor, which in turn has no successor
-as BPF_EXIT has no successor. So we are left with the jump successor of
-the if statement, which is nothing else than the fallthrough of the entire
-three lines. So if we go back to the original code, we have an effective
-can_jump=false, can_fallthrough=true. This is the default for BPF_CALL in
-bpf_insn_successors(), so no code change is needed.
-
-Martin Teichmann (2):
-  bpf: properly verify tail call behavior
-  bpf: test the proper verification of tail calls
-
- kernel/bpf/verifier.c                         | 31 +++++++++-
- .../selftests/bpf/progs/verifier_live_stack.c | 60 +++++++++++++++++++
- .../selftests/bpf/progs/verifier_sock.c       | 39 +++++++++++-
- .../bpf/progs/verifier_subprog_precision.c    | 47 +++++++++++++++
- 4 files changed, 172 insertions(+), 5 deletions(-)
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1268fa075d4c..7a817777fbb3 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4411,6 +4411,11 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
+ 					     bt_reg_mask(bt));
+ 				return -EFAULT;
+ 			}
++			if (insn->src_reg == BPF_REG_0 && insn->imm == BPF_FUNC_tail_call
++			    && subseq_idx - idx != 1) {
++				if (bt_subprog_enter(bt))
++					return -EFAULT;
++			}
+ 		} else if (opcode == BPF_EXIT) {
+ 			bool r0_precise;
+ 
+@@ -11034,6 +11039,10 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
+ 	bool in_callback_fn;
+ 	int err;
+ 
++	err = bpf_update_live_stack(env);
++	if (err)
++		return err;
++
+ 	callee = state->frame[state->curframe];
+ 	r0 = &callee->regs[BPF_REG_0];
+ 	if (r0->type == PTR_TO_STACK) {
+@@ -11940,6 +11949,25 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 		env->prog->call_get_func_ip = true;
+ 	}
+ 
++	if (func_id == BPF_FUNC_tail_call) {
++		if (env->cur_state->curframe) {
++			struct bpf_verifier_state *branch;
++
++			mark_reg_scratched(env, BPF_REG_0);
++			branch = push_stack(env, env->insn_idx + 1, env->insn_idx, false);
++			if (IS_ERR(branch))
++				return PTR_ERR(branch);
++			clear_all_pkt_pointers(env);
++			mark_reg_unknown(env, regs, BPF_REG_0);
++			err = prepare_func_exit(env, &env->insn_idx);
++			if (err)
++				return err;
++			env->insn_idx--;
++		} else {
++			changes_data = false;
++		}
++	}
++
+ 	if (changes_data)
+ 		clear_all_pkt_pointers(env);
+ 	return 0;
+@@ -20110,9 +20138,6 @@ static int process_bpf_exit_full(struct bpf_verifier_env *env,
+ 		return PROCESS_BPF_EXIT;
+ 
+ 	if (env->cur_state->curframe) {
+-		err = bpf_update_live_stack(env);
+-		if (err)
+-			return err;
+ 		/* exit from nested function */
+ 		err = prepare_func_exit(env, &env->insn_idx);
+ 		if (err)
 -- 
 2.43.0
 
