@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-73845-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73846-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5761FC3B1B3
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 14:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F0EE4C3B24F
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 14:16:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E961423718
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 12:57:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 413B5466A6E
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 12:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6171A333737;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86DB433BBCB;
 	Thu,  6 Nov 2025 12:53:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f85kQUa5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FIC/eUSF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC8D33711C
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 12:53:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9869E337B99
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 12:53:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762433626; cv=none; b=HFwEPHMYKHjqvNO9ilE0jdp8NsWo5q9inMi/Phi8+0tY4c/quGb3kOCc19COL2UC5vbroAbuxXih/ejgaXQICRXMpBSTTIXWSDt4bUH86xavfRLhnCJPqacEEdjnLVZS/VyrCoa+TLDXQfYxOuc/yhd7Rrj+vJ+mXfiRCv3kRv0=
+	t=1762433626; cv=none; b=NEn79sqrGRtmgLgjpzrHb7po6qny/q47B3P1CJgQmIAKEJGInSn9j9VSeVbmc7jI42bXyd6mZ9aq2grRWVXK8rttR6SvGYPHZOrhIb4y4KbzFaikezeU8tkAGg9rhOyP0lNXtiQGKwAJ4ABcFiFEzd9l8qOw4Ood7cUmajy0krA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762433626; c=relaxed/simple;
-	bh=bcHRGOqbqzzhPFu+ojNR6wxaw6xjv4kXNLSndDc36ME=;
+	bh=7aRplSUW6kRxQPV1HlG/HN4UwlXrr6wHRd070gm8Gy4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ua2oyyLnnojIuDbLqAc4FcCTuj6TM4+wKmjQtxmVEXTxoqvyF9hI4Hfn/R/NcTZ5Vv/+CoNd9Qs1yKppjyWRscRwCwfpMg1UfaK4cJIvnW3o1ALFrsIYeuazozsu3j1Uyo7rbaSBhcSXDszK7SphXP+3w5lBR4GfABu6YWejbVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f85kQUa5; arc=none smtp.client-ip=209.85.221.42
+	 MIME-Version; b=tOhuQ9eaUZSfYpaqEaXYnw4A7m8uiA7WE7QWTFGVUV4FBxP6RL+P15GDYbZ+INTyR+e/cnCXumYpGXvcq2lfpl0uQ3LlNUCvuh4wrwQ8Vg9G17kPnyMcOHoFoG3+i4o8yxVpz8njy0k1gY+fOnkOaSmsqkdKXdLBcArvE/dZGGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FIC/eUSF; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-427007b1fe5so603160f8f.1
-        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 04:53:43 -0800 (PST)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-429b7ba208eso586970f8f.1
+        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 04:53:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1762433622; x=1763038422; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DjCst0RmwR8vxuLUXqKmfS8QPtIrCS1B+n9Hqasdjnw=;
-        b=f85kQUa5iJSxf0Et/ff+m7JLvsgQzLhg2mQongDbZuAGXkCAUW//misPdEBKj4hOes
-         kc5h4kTctIZBVISZ2MY7y2EOQLe0AAnu/VFSXlQhISObgOIdQt9V52zxAzVXrmJm+/Gv
-         y2dlS/LSBB6SqaQhvJpd72gfY037Zc5oksQhJy+SdvOS53Fvoq4y6SFnkVHtw14lYFvd
-         6ONOUcRXdLlWUrC/yWZhdbob5iaMBl+xDR7D/sh8hzR7gu2lMo8z3HVXI0yaQm3BW36z
-         wiurrTWyqwzSBsQFZZP0f9lVxBM/iFDGN3Ca7BRw0yyMIhRDNLSdTAYvcWsx36c1gWCI
-         1xWw==
+        bh=o3F/6Pnt47lpVjXos7n4gvnzZgK+tzG4a7nXCFmIfgo=;
+        b=FIC/eUSFRkr68T3/WrgHjrvM1/YhYI/DYHAjvefGMgJktSb/zwNXg+7BQjHvkYKWqq
+         1JYxNOpTzZm7I00RSs1qYUSFv51TdDK6cutj0x3HW6SdQmd+9LVWwHCnoFTR+OgKHGfJ
+         EOywxGWAYX5JEdRgNapQbhpld0zFbKEaXPm24jBs5+fi0cO3umLwP6P3FZIO+syfrNhm
+         ScxEh6PKz5e/C83KXYwhHsrxotC1//MLpF+Tbn4JNmVLKdUc6FXEhL5QYz7G3FIlUP7s
+         uhrZRzfC20KDWdw5Yvw21iTo/CxTNCFX2PI94C29ryCQ9peC+u/x0KJ9dLZcrip2N4Uw
+         6uzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1762433622; x=1763038422;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DjCst0RmwR8vxuLUXqKmfS8QPtIrCS1B+n9Hqasdjnw=;
-        b=R9+1PoMoXHj+LP3Iods/wSvdu+Gap+eDVF01KaEH7IO2YG+JB/WDwcYlP5vDrj9MmU
-         lU5IBKW21HrgaoUPyjHSm42LUESj3mRAa1XOkvlK+TnB04jtL2s75r8laAcVBPfGL3Rq
-         UN8rQEVHPSroH2jZx82JPIe7GAvqUh9oMFvDo4xLJl7/jjsp49a5awygyL8ehgbgakKp
-         6jdLPI+zBCN6lBIpeHzRcjAhVY3TURTC10LplPvtUIOsZB0rn/W68lDEsyB0abyHWirG
-         GeevnpcI3AG40ApYWQbFyCUQDGz/l5hb3+fc+fjAhKUm5SbpAecxnBIIrCLCrrGzfojd
-         3+0Q==
-X-Gm-Message-State: AOJu0Yzz8s+hYzuqDRs4m2p1FSsb/P8zigkFYhfAMfWpqW6oTL9Vpmkd
-	pvzetAMfCDNg48e9+PNfkqopc+tb0HcplWhXQ+K3bSYKntsulsISvLWR8nnK
-X-Gm-Gg: ASbGncuVyUkpq4VgJH+AXSDDEoLoDEWwWK3sRomX/elFu9Yvhd3Ta6EbJK1KCvQ5DT1
-	4AIfpui0Z+Mz8xRYZDAPb+kBje43+tXSmabMoWSlLUV9PipC+VLkRP/rOptwPSY76O93QllqAJs
-	/Oo4WMNvViXWwfwYETliB1+OqysCdUp89W6JQunutSNjNfyKzT9rKTBXWslIa7zGUZ5nLc3OlmZ
-	LCVIFjvrZcT3Vf3021/WVIGoohmstMwcyrhSGEz6P+NCDK1wuuHJR/xai0cbWgbNAEhJLv4huhr
-	tsMX2npzx18RT5b0DzOc9w6RmjZEDqQ4EHOUqRI7tdhjDMzJ+2TgTGu+SFMsnA0Kfm3t/Ki7ID2
-	TzpDQvGslhXDsFzyplTciynpkgOv94Jcrj9DRj7KJ1+Twp6uZSE9uZCN5L/MhuIhO2k2kSaQBJK
-	ZoWCu5xIuYNA4Ov2IJQ+KmSFoj48PPmGu7/dVYlWY0kxc8LXB3wilv390=
-X-Google-Smtp-Source: AGHT+IF59d5GYYpx4VOKuwUgzJ5BNLyqt4IadFejfqDnuxk1Y2oRGUxA032fi9ljWUpPNLgprK4b7A==
-X-Received: by 2002:a05:6000:220d:b0:426:ff2f:9c15 with SMTP id ffacd0b85a97d-429e32c8784mr7110253f8f.5.1762433621744;
-        Thu, 06 Nov 2025 04:53:41 -0800 (PST)
+        bh=o3F/6Pnt47lpVjXos7n4gvnzZgK+tzG4a7nXCFmIfgo=;
+        b=EV4L2pcLWwPmX1nzgy8WKpPtSu7n2FyfS6GTqkN7sEAKGUgGqrB6oB43qs6lhaYjkb
+         YoWwE8JyN3w0fyX84d+dbj7PqiR+cA5MReKLS5ArH0MtWSxc19mcXjmsOB/WzskemJrJ
+         B62VoYHnPb1A10b5W0NK9fAJ5MSGNHYPD3DdXMUDpMK9wAwUUMJP/QWVJr/BisE1BOuU
+         Eb85g4YBc2mpOEgmPLAaGExKLxy511ngUfNdTsm98eOJXEi1Fzz0YjqdiMzO7Z5I7RzY
+         colPakKo/iwWSxEREavdfPm8LYgOmWwS/tnYFehglgtFdFR4Lqm3ASeD0TUofNM0Z9Bv
+         RLTA==
+X-Gm-Message-State: AOJu0Ywrq2rkmoYJq05y1Sg4A+HYwztCyGZDffdbvJy0MeasZcaQr+TE
+	0A92I9a+em6dg73C6eRxq6a/8FSCXIyDwhJ7QSPKsUQDpMjMU9Bq1/u2MTnG
+X-Gm-Gg: ASbGncvld8qOgtsxGphmrKnUhP+I9AnBEQ9IqRYwajzGcUboObWcyQ0xND6XREUACgK
+	GqvcNlRKzFwif6E7T83OE4NpE/nSTxC1l4dI2PLFR8OtgYmhsUZ+C1aTGLn7ZGcGCmvCqpE2kkE
+	iA9ExCkvdfTcTfociRrrpcnsJGQ+x+DYDOIwIRIcWHvq+B151nbTXMygL97Rzf9dcV1mIdNzj6H
+	hFQI+THQiKIDkVxdt7FqWNccbX0E6PHZAeqM2x/wH4f2/zsg6DJw7OjMxN7Infy0qOUo3On8Uuj
+	XKUA04nHBs+NAmb5vWXSgBhKW3i8msKbBDbosNQkTpxAVJJrTEcVgjtJ4tNd938YxeVGVFZDWuS
+	KVvUN8JeuIafAwfsdbwvn3bhEC/Mk3WWdeHfePMYMv4tBoYSVZH5sIpTIzmtRHrC05zxaFyscmG
+	/EalSF4RYWYNb0aBXYwvRWJ0eMuZeyLRBCZLhJkKwEPT+m0lJu+dpxCMY=
+X-Google-Smtp-Source: AGHT+IE5q5ICdDDBK7g4wnCXX0jnjR/QAHVpDJVspbKXccSBPyw3RSDN+ilC4Bc2cp04IBzrsLidPg==
+X-Received: by 2002:a05:6000:615:b0:425:7cf6:5b9e with SMTP id ffacd0b85a97d-429e32c831amr6689558f8f.3.1762433622302;
+        Thu, 06 Nov 2025 04:53:42 -0800 (PST)
 Received: from ast-epyc5.inf.ethz.ch (ast-epyc5.inf.ethz.ch. [129.132.161.180])
         by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429eb40379esm4788856f8f.9.2025.11.06.04.53.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Nov 2025 04:53:41 -0800 (PST)
+        Thu, 06 Nov 2025 04:53:42 -0800 (PST)
 From: Hao Sun <sunhao.th@gmail.com>
 X-Google-Original-From: Hao Sun <hao.sun@inf.ethz.ch>
 To: bpf@vger.kernel.org
@@ -87,9 +87,9 @@ Cc: ast@kernel.org,
 	linux-kernel@vger.kernel.org,
 	sunhao.th@gmail.com,
 	Hao Sun <hao.sun@inf.ethz.ch>
-Subject: [PATCH RFC 10/17] bpf: Add bcf_alu() 32bits optimization
-Date: Thu,  6 Nov 2025 13:52:48 +0100
-Message-Id: <20251106125255.1969938-11-hao.sun@inf.ethz.ch>
+Subject: [PATCH RFC 11/17] bpf: Track stack spill/fill in bcf_track()
+Date: Thu,  6 Nov 2025 13:52:49 +0100
+Message-Id: <20251106125255.1969938-12-hao.sun@inf.ethz.ch>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251106125255.1969938-1-hao.sun@inf.ethz.ch>
 References: <20251106125255.1969938-1-hao.sun@inf.ethz.ch>
@@ -99,144 +99,82 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Lower symbolic ALU nodes to 32-bit when both operands and the resulting dst
-fit in 32 bits, to reduce solver/proof complexity.
+Track symbolic values across stack spills/fills.
 
-- Extend `bcf_alu()` with `op_u32`/`op_s32` hints and derive a `zext` decision:
-  when ALU32 or both operands/results fit u32, emit a 32-bit op and zero-extend
-  to 64; when signed-32 is in effect, sign-extend to 64 after the op.
+- On spill (`save_register_state()`), if tracking and the source is
+  non-constant and the spill is narrower than a full register, derive the
+  appropriate-width for the spill slot using `bcf_mov()`.
 
-- Compute `op_u32`/`op_s32` for pointer and scalar ALUs (using fit_u32/fit_s32)
-  before emitting the node, then mask them again with the post-ALU dst range so
-  the final node width reflects the verifier’s bounds.
+- On data writes to stack slots (`check_stack_write_*`), invalidate any
+  previously spilled pointer symbolic value by setting `spilled_ptr.bcf_expr`
+  to -1 when the slot is clobbered.
 
-This shrinks many BV nodes and helps keep per-node vlen within limits (U8_MAX),
-reducing proof size.
+- On loads that coerce value register sizes (`check_mem_access()`), if the
+  destination already has a symbolic expr, cast it to the loaded size via
+  `bcf_mov()`.
 
 Signed-off-by: Hao Sun <hao.sun@inf.ethz.ch>
 ---
- kernel/bpf/verifier.c | 30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
+ kernel/bpf/verifier.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 66682d365e5e..df6d16a1c6f6 100644
+index df6d16a1c6f6..3f2981db1d40 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -14866,11 +14866,13 @@ static int sanitize_check_bounds(struct bpf_verifier_env *env,
+@@ -5286,6 +5286,10 @@ static void copy_register_state(struct bpf_reg_state *dst, const struct bpf_reg_
+ 	*dst = *src;
  }
  
- static int bcf_alu(struct bpf_verifier_env *env, struct bpf_reg_state *dst_reg,
--		   struct bpf_reg_state *src_reg, u8 op, bool alu32)
-+		   struct bpf_reg_state *src_reg, u8 op, bool alu32,
-+		   bool op_u32, bool op_s32)
- {
- 	DEFINE_RAW_FLEX(struct bcf_expr, alu_expr, args, 2);
- 	bool unary = (op == BPF_NEG);
- 	int dst, src = 0, bits;
-+	bool zext = alu32 || op_u32;
- 
- 	if (!env->bcf.tracking)
- 		return 0;
-@@ -14879,6 +14881,7 @@ static int bcf_alu(struct bpf_verifier_env *env, struct bpf_reg_state *dst_reg,
- 		return 0;
- 	}
- 
-+	alu32 |= (op_u32 || op_s32);
- 	dst = bcf_reg_expr(env, dst_reg, alu32);
- 	if (!unary)
- 		src = bcf_reg_expr(env, src_reg, alu32);
-@@ -14892,8 +14895,11 @@ static int bcf_alu(struct bpf_verifier_env *env, struct bpf_reg_state *dst_reg,
- 	alu_expr->args[0] = dst;
- 	alu_expr->args[1] = src;
- 	dst_reg->bcf_expr = bcf_add_expr(env, alu_expr);
--	if (alu32)
-+	if (zext)
- 		bcf_zext_32_to_64(env, dst_reg);
-+	else if (op_s32)
-+		bcf_sext_32_to_64(env, dst_reg);
++static int bcf_mov(struct bpf_verifier_env *env, struct bpf_reg_state *dst_reg,
++		   struct bpf_reg_state *src_reg, u32 sz, bool bit32,
++		   bool sext);
 +
- 	if (dst_reg->bcf_expr < 0)
- 		return dst_reg->bcf_expr;
+ static void save_register_state(struct bpf_verifier_env *env,
+ 				struct bpf_func_state *state,
+ 				int spi, struct bpf_reg_state *reg,
+@@ -5295,6 +5299,11 @@ static void save_register_state(struct bpf_verifier_env *env,
  
-@@ -14922,6 +14928,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 	u8 opcode = BPF_OP(insn->code);
- 	u32 dst = insn->dst_reg;
- 	int ret, bounds_ret;
-+	bool op_u32, op_s32;
+ 	copy_register_state(&state->stack[spi].spilled_ptr, reg);
  
- 	dst_reg = &regs[dst];
- 	src_reg = dst_reg == ptr_reg ? off_reg : ptr_reg;
-@@ -15034,6 +15041,8 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 			if (dst_reg->bcf_expr < 0)
- 				return dst_reg->bcf_expr;
- 		}
-+		op_u32 = fit_u32(dst_reg) && fit_u32(src_reg);
-+		op_s32 = fit_s32(dst_reg) && fit_s32(src_reg);
- 		/* A new variable offset is created.  Note that off_reg->off
- 		 * == 0, since it's a scalar.
- 		 * dst_reg gets the pointer type and since some positive
-@@ -15062,7 +15071,9 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 			memset(&dst_reg->raw, 0, sizeof(dst_reg->raw));
- 		}
++	if (env->bcf.tracking && !tnum_is_const(reg->var_off) &&
++	    size != BPF_REG_SIZE)
++		bcf_mov(env, &state->stack[spi].spilled_ptr, reg, size * 8,
++			false, false);
++
+ 	for (i = BPF_REG_SIZE; i > BPF_REG_SIZE - size; i--)
+ 		state->stack[spi].slot_type[i - 1] = STACK_SPILL;
  
--		ret = bcf_alu(env, dst_reg, src_reg, opcode, false);
-+		op_u32 &= fit_u32(dst_reg);
-+		op_s32 &= fit_s32(dst_reg);
-+		ret = bcf_alu(env, dst_reg, src_reg, opcode, false, op_u32, op_s32);
- 		if (ret)
- 			return ret;
- 		break;
-@@ -15102,6 +15113,8 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 			if (dst_reg->bcf_expr < 0)
- 				return dst_reg->bcf_expr;
- 		}
-+		op_u32 = fit_u32(dst_reg) && fit_u32(src_reg);
-+		op_s32 = fit_s32(dst_reg) && fit_s32(src_reg);
- 		/* A new variable offset is created.  If the subtrahend is known
- 		 * nonnegative, then any reg->range we had before is still good.
- 		 */
-@@ -15130,7 +15143,9 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 				memset(&dst_reg->raw, 0, sizeof(dst_reg->raw));
- 		}
+@@ -5437,6 +5446,7 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
  
--		ret = bcf_alu(env, dst_reg, src_reg, opcode, false);
-+		op_u32 &= fit_u32(dst_reg);
-+		op_s32 &= fit_s32(dst_reg);
-+		ret = bcf_alu(env, dst_reg, src_reg, opcode, false, op_u32, op_s32);
- 		if (ret)
- 			return ret;
- 		break;
-@@ -15787,6 +15802,7 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 	u8 opcode = BPF_OP(insn->code);
- 	bool alu32 = (BPF_CLASS(insn->code) != BPF_ALU64);
- 	int ret, dst_expr = dst_reg->bcf_expr;
-+	bool op_u32, op_s32;
+ 		/* regular write of data into stack destroys any spilled ptr */
+ 		state->stack[spi].spilled_ptr.type = NOT_INIT;
++		state->stack[spi].spilled_ptr.bcf_expr = -1;
+ 		/* Mark slots as STACK_MISC if they belonged to spilled ptr/dynptr/iter. */
+ 		if (is_stack_slot_special(&state->stack[spi]))
+ 			for (i = 0; i < BPF_REG_SIZE; i++)
+@@ -5566,6 +5576,7 @@ static int check_stack_write_var_off(struct bpf_verifier_env *env,
  
- 	if (!is_safe_to_compute_dst_reg_range(insn, &src_reg)) {
- 		__mark_reg_unknown(env, dst_reg);
-@@ -15806,6 +15822,8 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 		if (dst_expr < 0)
- 			return dst_expr;
+ 		/* Erase all other spilled pointers. */
+ 		state->stack[spi].spilled_ptr.type = NOT_INIT;
++		state->stack[spi].spilled_ptr.bcf_expr = -1;
+ 
+ 		/* Update the slot type. */
+ 		new_type = STACK_MISC;
+@@ -8025,6 +8036,11 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 			coerce_reg_to_size(&regs[value_regno], size);
+ 		else
+ 			coerce_reg_to_size_sx(&regs[value_regno], size);
++
++		if (env->bcf.tracking && regs[value_regno].bcf_expr >= 0)
++			err = bcf_mov(env, &regs[value_regno],
++				      &regs[value_regno], size * 8, false,
++				      is_ldsx);
  	}
-+	op_u32 = fit_u32(dst_reg) && fit_u32(&src_reg);
-+	op_s32 = fit_s32(dst_reg) && fit_s32(&src_reg);
- 
- 	/* Calculate sign/unsigned bounds and tnum for alu32 and alu64 bit ops.
- 	 * There are two classes of instructions: The first class we track both
-@@ -15887,7 +15905,9 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 	reg_bounds_sync(dst_reg);
- 
- 	dst_reg->bcf_expr = dst_expr;
--	ret = bcf_alu(env, dst_reg, &src_reg, opcode, alu32);
-+	op_u32 &= fit_u32(dst_reg);
-+	op_s32 &= fit_s32(dst_reg);
-+	ret = bcf_alu(env, dst_reg, &src_reg, opcode, alu32, op_u32, op_s32);
- 	if (ret)
- 		return ret;
- 
+ 	return err;
+ }
 -- 
 2.34.1
 
