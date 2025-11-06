@@ -1,226 +1,295 @@
-Return-Path: <bpf+bounces-73771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FA29C38D4D
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 03:14:27 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 921BAC38D50
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 03:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CAD4F4E4848
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 02:14:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4D5CD4E1436
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 02:14:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CBD123183A;
-	Thu,  6 Nov 2025 02:14:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NayA01pH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9D1238149;
+	Thu,  6 Nov 2025 02:14:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C247322ACEF
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 02:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9DF1BBBE5
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 02:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762395257; cv=none; b=oqN1u/vI8VYJKtfdzuvAZ6u2EaJEWO3D00GA2PMeU0vtLfFmIidInVq2jP7l78vp4F4VIyeTFWIlP9E9ndTUx7Q8ol10+1zv9b6Mqy1JT0LU3M+KOqDkmvoYNkjwu/vPZ8U9EMoz1iCZe3w/RWD/i7e8uD8565Vb56H5NykrKKM=
+	t=1762395273; cv=none; b=d7aavdGQQV/SrnqHmhaY+tebSVrSTw5RdN4R/PKHmbUeY/5O+oodxkVDAYvQx/uoPPMLOic1kWejmlVX3WPz10Zn+OlZ9ytHe5nRt/AhszoUS6IzuDa63ZonbheOepgi0V5NNqZjCicE3Y1xHMA4QZC7pHdTRV1mw4JILs2BikE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762395257; c=relaxed/simple;
-	bh=vZP6Olr5BkV89fHbnFl2sWgdkU0Nu6NEN5nDJ+HXmt8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tywrziJ4ZGrh/N8wtxTz64YMeyfWLKUzOssDcmaklxdM2r5Fu1URiK2lxl+YmCGQTQwpsLYUS0f1ZcxKuU8Cy3ja+q4XogWSd0xwjF9btV3vEGMCg4M6q4k+W6FIAPMSt9cmsM481mIpqF1AQ2TR5Xz+xvNxFtixkxoWexQNgs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NayA01pH; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-477563bcaacso3052325e9.1
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 18:14:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762395253; x=1763000053; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pID6uUnnVVZ9vUknZjr7R/tHvBIqPxx/hilxjQ4G/4I=;
-        b=NayA01pH7J4QAApvV6oY6JB9WF6zyrc7iVR/2oNn9ntLYTClVYcxFDZqneiLVuoy6t
-         pe3+Ws2RO7Tej5S8Ulx3RaMx8N2E2KO1odP4b5A929XWZNqrWbtix44axXqAIb6gPFkx
-         GlpFkNg0KsxsITlLCUtmQPoy8skXOh0PnXpYK8pcmGsNckYAp/JhiRyYX6FGoV38FsRg
-         3q4xJ+VkUxESZj26RO8rCVai7geBECTyJsEt0fF3jisSwvvWbqBI+RXyHSazb0EvuRix
-         JYKuzNgjhJkkvxkSr1n4QZIxcPw9TpF0mnWfRZTtxwfGSoEfFm9V1ubNoe0iZN5CSk3J
-         TpDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762395253; x=1763000053;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pID6uUnnVVZ9vUknZjr7R/tHvBIqPxx/hilxjQ4G/4I=;
-        b=KhUy2y6qvZK2V9l1HqUk7fAVvIJRihwiGFjGjvsMk2jTYPeDHS/Z1eB20BkRF2Anz2
-         +Y0hMzVomESg/1bLvM8mn0zg/Tgyx8xwqX0a3S60yffTr0Tj/MIhG1PFeWwAAp3vONPH
-         DwMwGKoGfQugqfVBcU60VqKVY5ikMQ9zGHynKHTaNGdKUmg4aNGw9ddxQxi0FC7nia7i
-         9Ecmgs4Z0cxPFidvKXx5i2xK652RnuaqZrIXXQyxJcQXBmW+tBoa7glZoZKSutbdCwdB
-         JNO9p/mSMO/Rr8mneFWGskekwu6wXuheDJ7Fhkh6Bpgzt3UsVfQBOOb8v13YkHlErF7q
-         a72g==
-X-Forwarded-Encrypted: i=1; AJvYcCWR4NmT5Xhk1pzCX6cDVCswTRUYg7mcCpFgHO52+zE/ZumH1lSvy738aLNJ+9LXNxKRpcQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbAoUJ7TAwbTXdjAaLEGoFKeG8vJVFUcL1nopjV71oS5ln/7zq
-	JIV2H4jaCgVnixOap9dgphS+LZC/cN+GfZdKICMvJ4CdPeV4Ah5iVFU4WzcMALJtBQn01SFF5j3
-	AkO4TWagKgJoPFA5eswWHHk1M3BQDdbE=
-X-Gm-Gg: ASbGncuX/1JuKgb4m7HiSqfPONyG7c0ACasvUTLDD+xRKcYpR9BcZydHBDy8665eCNJ
-	uTF6XcrP96EWczOqiPAiVh8xhPd265sN4QNaaB68eFOXtGZrq1xfuvUwKxNKvWYutJoKgRfr+K2
-	yybf7RK1N4Aitzl2TT145bMVMN4B6Be5U+ixFoYIz0f1/qIboXXVNVEFkx/nTSjT0g/p/7m83W8
-	3zerDUbgDvvGPExahJ+mraRNQyTQ5h5uZT63xKBYY8gJW/aRgxZyd9g5JOfzRDUuowi2Fv5wmKB
-	yCCRPwe5l8m6SWAEIU3Qm9ObtOqy
-X-Google-Smtp-Source: AGHT+IHNnfInoqONg+HdDsdA3ANtxnE3sVDgNmGAhLj4s+3clgxi2RV1/L4viLoDYukFGUUERUQj1xR+74oc6GYdLj4=
-X-Received: by 2002:a05:600c:621b:b0:477:fad:acd9 with SMTP id
- 5b1f17b1804b1-4775ce7dfcfmr67517835e9.34.1762395252988; Wed, 05 Nov 2025
- 18:14:12 -0800 (PST)
+	s=arc-20240116; t=1762395273; c=relaxed/simple;
+	bh=1sFdyW9qRISVAMYUOyXqr12NEvALF0ncq6EI6DWkUzk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b0KergJsZrytRy9V5/X7czIBaH/tAdxIAQJwxxJER259W8qGF3+as2oKr+ZgMW1YuL7sJfAlC8ueKyPgLvJMg2Sl0P28yGZkJY7jmRcworrI4V+PNBem3Cab2IuxkBtkd+VG6pOn1FXWd+WiVD4AfwrS1zdIAKal7Uyp7d/iAPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d25NJ3qRxzYQtyT
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 10:14:08 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 2C8A81A0847
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 10:14:26 +0800 (CST)
+Received: from [10.67.108.204] (unknown [10.67.108.204])
+	by APP1 (Coremail) with SMTP id cCh0CgCH90p+BAxpuP5ICw--.12892S2;
+	Thu, 06 Nov 2025 10:14:23 +0800 (CST)
+Message-ID: <6a8bb167-17af-471d-aaaa-9219a7c41583@huaweicloud.com>
+Date: Thu, 6 Nov 2025 10:14:22 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251101193357.111186-1-harshit.m.mogalapalli@oracle.com>
- <20251101193357.111186-2-harshit.m.mogalapalli@oracle.com>
- <CAADnVQLe6a8Kae892sVaND-2p1DQDXGD5gqxHWHHUC85ntLCqw@mail.gmail.com>
- <e9d43dab-cfae-48a8-9039-e050ea392797@kernel.org> <CAADnVQKzSBZYaj0iMkNBk6FvaOket1mWPksX661zwC2rg2FBkQ@mail.gmail.com>
- <7874cfab-3f96-4cfb-9e52-b9d8108bc536@kernel.org>
-In-Reply-To: <7874cfab-3f96-4cfb-9e52-b9d8108bc536@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 5 Nov 2025 18:14:02 -0800
-X-Gm-Features: AWmQ_bkDFU4rnwNyySArAEKJqcvgmyxv0uWO4gd3WyExlNwj1KcULnAVkj1_8jg
-Message-ID: <CAADnVQL7cLYPKEQOLWi1DjTZjhE_Fy4zWLrWG+=NSeN821SyMw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] bpftool: Print map ID upon creation and support
- JSON output
-To: Quentin Monnet <qmo@kernel.org>
-Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>, bpf <bpf@vger.kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf] bpf: Fix invalid mem access when
+ update_effective_progs fails in __cgroup_bpf_detach
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>,
+ Pu Lehui <pulehui@huawei.com>
+References: <20251105100302.2968475-1-pulehui@huaweicloud.com>
+ <a0acd787192bef94c7da88c40c4693bc67876b32.camel@gmail.com>
+Content-Language: en-US
+From: Pu Lehui <pulehui@huaweicloud.com>
+In-Reply-To: <a0acd787192bef94c7da88c40c4693bc67876b32.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgCH90p+BAxpuP5ICw--.12892S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtFWfXw4Utr1UurW7uw47XFb_yoWfXr1UpF
+	yrJa1UCr48G348Jr4fAr4jgr43Jan2y3W8Ar97tr4FqF4YqrykXFyUGw42kF9I9r1kAr17
+	J3WUZ3s0yryqyw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
-On Wed, Nov 5, 2025 at 6:05=E2=80=AFPM Quentin Monnet <qmo@kernel.org> wrot=
-e:
->
-> 2025-11-05 17:29 UTC-0800 ~ Alexei Starovoitov
-> <alexei.starovoitov@gmail.com>
-> > On Wed, Nov 5, 2025 at 1:38=E2=80=AFAM Quentin Monnet <qmo@kernel.org> =
-wrote:
-> >>
-> >> 2025-11-04 09:54 UTC-0800 ~ Alexei Starovoitov
-> >> <alexei.starovoitov@gmail.com>
-> >>> On Sat, Nov 1, 2025 at 12:34=E2=80=AFPM Harshit Mogalapalli
-> >>> <harshit.m.mogalapalli@oracle.com> wrote:
-> >>>>
-> >>>> It is useful to print map ID on successful creation.
-> >>>>
-> >>>> JSON case:
-> >>>> $ ./bpftool -j map create /sys/fs/bpf/test_map4 type hash key 4 valu=
-e 8 entries 128 name map4
-> >>>> {"id":12}
-> >>>>
-> >>>> Generic case:
-> >>>> $ ./bpftool  map create /sys/fs/bpf/test_map5 type hash key 4 value =
-8 entries 128 name map5
-> >>>> Map successfully created with ID: 15
-> >>>>
-> >>>> Bpftool Issue: https://github.com/libbpf/bpftool/issues/121
-> >>>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> >>>> Reviewed-by: Quentin Monnet <qmo@kernel.org>
-> >>>> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com=
->
-> >>>> ---
-> >>>> v2->v3: remove a line break("\n" ) in p_err statement. [Thanks Quent=
-in]
-> >>>> ---
-> >>>>  tools/bpf/bpftool/map.c | 21 +++++++++++++++++----
-> >>>>  1 file changed, 17 insertions(+), 4 deletions(-)
-> >>>>
-> >>>> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-> >>>> index c9de44a45778..f32ae5476d76 100644
-> >>>> --- a/tools/bpf/bpftool/map.c
-> >>>> +++ b/tools/bpf/bpftool/map.c
-> >>>> @@ -1251,6 +1251,8 @@ static int do_create(int argc, char **argv)
-> >>>>         LIBBPF_OPTS(bpf_map_create_opts, attr);
-> >>>>         enum bpf_map_type map_type =3D BPF_MAP_TYPE_UNSPEC;
-> >>>>         __u32 key_size =3D 0, value_size =3D 0, max_entries =3D 0;
-> >>>> +       struct bpf_map_info map_info =3D {};
-> >>>> +       __u32 map_info_len =3D sizeof(map_info);
-> >>>>         const char *map_name =3D NULL;
-> >>>>         const char *pinfile;
-> >>>>         int err =3D -1, fd;
-> >>>> @@ -1353,13 +1355,24 @@ static int do_create(int argc, char **argv)
-> >>>>         }
-> >>>>
-> >>>>         err =3D do_pin_fd(fd, pinfile);
-> >>>> -       close(fd);
-> >>>>         if (err)
-> >>>> -               goto exit;
-> >>>> +               goto close_fd;
-> >>>>
-> >>>> -       if (json_output)
-> >>>> -               jsonw_null(json_wtr);
-> >>>> +       err =3D bpf_obj_get_info_by_fd(fd, &map_info, &map_info_len)=
-;
-> >>>> +       if (err) {
-> >>>> +               p_err("Failed to fetch map info: %s", strerror(errno=
-));
-> >>>> +               goto close_fd;
-> >>>> +       }
-> >>>>
-> >>>> +       if (json_output) {
-> >>>> +               jsonw_start_object(json_wtr);
-> >>>> +               jsonw_int_field(json_wtr, "id", map_info.id);
-> >>>> +               jsonw_end_object(json_wtr);
-> >>>> +       } else {
-> >>>> +               printf("Map successfully created with ID: %u\n", map=
-_info.id);
-> >>>> +       }
-> >>>
-> >>> bpftool doesn't print it today and some scripts may depend on that.
-> >>
-> >>
-> >> Hi Alexei, are you sure we can't add any input at all? I'm concerned
-> >> that users won't ever find the IDs for created maps they might want to
-> >> use, if they never see it in the plain output.
-> >>
-> >>
-> >>> Let's drop this 'printf'. Json can do it unconditionally, since
-> >>> json parsing scripts should filter things they care about.
-> >>
-> >> I'd say the risk is the same. Scripts should filter things, but in
-> >> practise they might just as well be comparing to "null" today, given
-> >> that we didn't have any other output for the command so far. Conversel=
-y,
-> >> what scripts should not do is rely on plain output, we've always
-> >> recommended using bpftool's JSON for automation (or the exit code, in
-> >> the case of map creation). So I'm not convinced it's justified to
-> >> introduce a difference between plain and JSON in the current case.
-> >
-> > tbh the "map create" feature suppose to create and pin and if both
-> > are successful then the map will be there and bpftool will
-> > exit with success.
-> > Now you're arguing that there could be a race with another
-> > bpftool/something that pins a different map in the same location
-> > and success of bpftool doesn't mean that exact that map is there.
-> > Other tool could have unpinned/deleted map, pinned another one, etc.
-> > Sure, such races are possible, but returning map id still
-> > looks pointless. It doesn't solve any race.
-> > So the whole 'lets print id' doesn't quite make sense to me.
->
-> OK "solving races" is not accurate, but returning the ID gives a unique
-> handle to work with the map, if a user runs a follow-up invocation to
-> update entries using the ID they can be sure they're working with the
-> same map - whatever happened with the bpffs. Or they can have the update
-> fail if you really want that particular map but, for example, it's been
-> recreated in the meantime. At the moment there's no way to uniquely
-> identify the map we've created with bpftool, and that seems weird to me.
 
-ID is not unique. If somebody rm -rf bpffs. That ID will not point anywhere=
-.
-Also it's 31-bit space and folks in the past demonstrated an attack
-to recycle the same ID.
-So the users cannot be sure what ID is this.
+
+On 2025/11/6 7:33, Eduard Zingerman wrote:
+> On Wed, 2025-11-05 at 10:03 +0000, Pu Lehui wrote:
+>> From: Pu Lehui <pulehui@huawei.com>
+>>
+>> Syzkaller triggers an invalid memory access issue following fault
+>> injection in update_effective_progs. The issue can be described as
+>> follows:
+>>
+>> __cgroup_bpf_detach
+>>    update_effective_progs
+>>      compute_effective_progs
+>>        bpf_prog_array_alloc <-- fault inject
+>>    purge_effective_progs
+>>      /* change to dummy_bpf_prog */
+>>      array->items[index] = &dummy_bpf_prog.prog
+>>
+>> ---softirq start---
+>> __do_softirq
+>>    ...
+>>      __cgroup_bpf_run_filter_skb
+>>        __bpf_prog_run_save_cb
+>>          bpf_prog_run
+>>            stats = this_cpu_ptr(prog->stats)
+>>            /* invalid memory access */
+>>            flags = u64_stats_update_begin_irqsave(&stats->syncp)
+>> ---softirq end---
+>>
+>>    static_branch_dec(&cgroup_bpf_enabled_key[atype])
+>>
+>> The reason is that fault injection caused update_effective_progs to fail
+>> and then changed the original prog into dummy_bpf_prog.prog in
+>> purge_effective_progs. Then a softirq came, and accessing the members of
+>> dummy_bpf_prog.prog in the softirq triggers invalid mem access.
+>>
+>> To fix it, we can skip executing the prog when it's dummy_bpf_prog.prog.
+>>
+>> Fixes: 4c46091ee985 ("bpf: Fix KASAN use-after-free Read in compute_effective_progs")
+>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> 
+> Is there a link for syzkaller report?
+
+
+Hi Eduard,
+
+This is a local syzkaller test, and I have attached the report at the 
+end of the email.
+
+> 
+> [...]
+> 
+>> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+>> index 248f517d66d0..baad33b34cef 100644
+>> --- a/kernel/bpf/cgroup.c
+>> +++ b/kernel/bpf/cgroup.c
+>> @@ -77,7 +77,9 @@ bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
+>>   	item = &array->items[0];
+>>   	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+>>   	while ((prog = READ_ONCE(item->prog))) {
+>> -		run_ctx.prog_item = item;
+>> +		run_ctx.prog_item = item++;
+>> +		if (prog == &dummy_bpf_prog.prog)
+>> +			continue;
+> 
+> Will the following fix the issue?
+> 
+>      diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>      index d595fe512498..c7c9c78f171a 100644
+>      --- a/kernel/bpf/core.c
+>      +++ b/kernel/bpf/core.c
+>      @@ -2536,11 +2536,14 @@ static unsigned int __bpf_prog_ret1(const void *ctx,
+>              return 1;
+>       }
+> 
+>      +DEFINE_PER_CPU(struct bpf_prog_stats, __dummy_stats);
+>      +
+>       static struct bpf_prog_dummy {
+>              struct bpf_prog prog;
+>       } dummy_bpf_prog = {
+>              .prog = {
+>                      .bpf_func = __bpf_prog_ret1,
+>      +               .stats = &__dummy_stats,
+>              },
+>       };
+> 
+> Or that's too much memory wasted?
+
+In 160 cores system, it will waste 5K bytes for this dummy.
+
+And also, this solution will not suit for 5.10.0 or lower LTS version, 
+as the bpf_prog_stats is embedded in struct bpf_prog_aux, and bpf->aux 
+is empty at this time, which will trigger a null pointer access.
+
+> 
+> [...]
+Report:
+
+[  120.618153][ T3281] FAULT_INJECTION: forcing a failure.
+[  120.618153][ T3281] name failslab, interval 1, probability 0, space 
+0, times 0
+[  120.619946][ T3281] CPU: 1 UID: 0 PID: 3281 Comm: syz.3.476 Not 
+tainted 6.18.0-rc4+ #48 PREEMPT(voluntary)
+[  120.619967][ T3281] Hardware name: QEMU Standard PC (i440FX + PIIX, 
+1996), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
+[  120.619979][ T3281] Call Trace:
+[  120.619984][ T3281]  <TASK>
+[  120.619993][ T3281]  dump_stack_lvl+0xfa/0x120
+[  120.620017][ T3281]  should_fail_ex+0x162/0x170
+[  120.620049][ T3281]  should_failslab+0x49/0x70
+[  120.620071][ T3281]  __kmalloc_noprof+0xcd/0x870
+[  120.620092][ T3281]  ? bpf_prog_array_alloc+0x4b/0x60
+[  120.620117][ T3281]  ? bpf_prog_array_alloc+0x4b/0x60
+[  120.620133][ T3281]  ? prog_list_length.isra.0+0x71/0xa0
+[  120.620155][ T3281]  bpf_prog_array_alloc+0x4b/0x60
+[  120.620174][ T3281]  compute_effective_progs+0xc1/0x350
+[  120.620212][ T3281]  update_effective_progs+0x61/0x1a0
+[  120.620239][ T3281]  __cgroup_bpf_detach+0x147/0x340
+[  120.620269][ T3281]  bpf_cgroup_link_release.part.0+0x44/0x2d0
+[  120.620297][ T3281]  bpf_cgroup_link_release+0x26/0x30
+[  120.620322][ T3281]  bpf_link_free+0x6e/0x120
+[  120.620351][ T3281]  ? __pfx_bpf_link_release+0x10/0x10
+[  120.620379][ T3281]  bpf_link_release+0x39/0x50
+[  120.620416][ T3281]  __fput+0x1e3/0x510
+[  120.620450][ T3281]  task_work_run+0x9e/0x100
+[  120.620481][ T3281]  do_exit+0x2f9/0x820
+[  120.620505][ T3281]  ? get_signal+0x4fc/0xf50
+[  120.620525][ T3281]  ? __lock_release.isra.0+0x5d/0x170
+[  120.620553][ T3281]  do_group_exit+0x59/0xf0
+[  120.620582][ T3281]  get_signal+0xf1d/0xf50
+[  120.620619][ T3281]  arch_do_signal_or_restart+0x34/0x1b0
+[  120.620651][ T3281]  ? __x64_sys_futex+0xbe/0x300
+[  120.620680][ T3281]  ? __x64_sys_futex+0xc7/0x300
+[  120.620712][ T3281]  ? fput+0x5a/0xf0
+[  120.620742][ T3281]  exit_to_user_mode_loop+0xa4/0x160
+[  120.620773][ T3281]  do_syscall_64+0x1f2/0x5a0
+[  120.620804][ T3281]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[  120.620823][ T3281] RIP: 0033:0x7f494a7b772d
+[  120.620835][ T3281] Code: Unable to access opcode bytes at 
+0x7f494a7b7703.
+[  120.620843][ T3281] RSP: 002b:00007f494b61cc48 EFLAGS: 00000246 
+ORIG_RAX: 00000000000000ca
+[  120.620858][ T3281] RAX: fffffffffffffe00 RBX: 00007f494a9e5fa0 RCX: 
+00007f494a7b772d
+[  120.620870][ T3281] RDX: 0000000000000000 RSI: 0000000000000080 RDI: 
+00007f494a9e5fa8
+[  120.620880][ T3281] RBP: 0000000000000000 R08: 0000000000000000 R09: 
+0000000000000000
+[  120.620890][ T3281] R10: 0000000000000000 R11: 0000000000000246 R12: 
+00007f494a9e5fa8
+[  120.620901][ T3281] R13: 00007f494a9e5fac R14: 00007f494a9e6038 R15: 
+00007f494b61cd40
+...
+[  120.653922][ T2249] BUG: unable to handle page fault for address: 
+ffff8882b2cf2000
+[  120.654996][ T2249] #PF: supervisor write access in kernel mode
+[  120.655843][ T2249] #PF: error_code(0x0002) - not-present page
+[  120.656678][ T2249] PGD e201067 P4D e201067 PUD 0
+[  120.657380][ T2249] Oops: Oops: 0002 [#1] SMP PTI
+[  120.658069][ T2249] CPU: 1 UID: 0 PID: 2249 Comm: kworker/1:5 Not 
+tainted 6.18.0-rc4+ #48 PREEMPT(voluntary)
+[  120.659466][ T2249] Hardware name: QEMU Standard PC (i440FX + PIIX, 
+1996), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
+[  120.661153][ T2249] Workqueue: mld mld_ifc_work
+[  120.661821][ T2249] RIP: 0010:__bpf_prog_run_save_cb+0xe8/0x160
+[  120.662682][ T2249] Code: 6a b3 ff 48 8d 73 60 48 89 ef 49 89 c5 48 
+8b 43 48 e8 9c 81 6a 05 41 89 c4 e8 a4 6a b3 ff 48 8b 53 38 65 48 03 15 
+b0 38 78 0b <48> ff 02 4c 29 e8 48 01 42 08 e9 79 ff ff ff e8 54 0db
+[  120.665354][ T2249] RSP: 0018:ffffc90003f5fb38 EFLAGS: 00010286
+[  120.666204][ T2249] RAX: 0000001c19e24793 RBX: ffffffff89710ee0 RCX: 
+ffffffff813d923e
+[  120.667309][ T2249] RDX: ffff8882b2cf2000 RSI: ffffffff813d9247 RDI: 
+0000000000000001
+[  120.668417][ T2249] RBP: ffff8881072b3c00 R08: 0000000000000001 R09: 
+0000000000000000
+[  120.669522][ T2249] R10: 0000000000000000 R11: 0000000000000000 R12: 
+0000000000000001
+[  120.670627][ T2249] R13: 0000001c19e246f0 R14: ffffffff89710ee0 R15: 
+0000000000000000
+[  120.671734][ T2249] FS:  0000000000000000(0000) 
+GS:ffff8882b2cf2000(0000) knlGS:0000000000000000
+[  120.672974][ T2249] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  120.673899][ T2249] CR2: ffff8882b2cf2000 CR3: 000000010adce000 CR4: 
+00000000000006f0
+[  120.675001][ T2249] Call Trace:
+[  120.675468][ T2249]  <TASK>
+[  120.675882][ T2249]  ? lock_is_held_type+0x9e/0x120
+[  120.676609][ T2249]  __cgroup_bpf_run_filter_skb+0x488/0xab0
+[  120.677444][ T2249]  ip6_finish_output+0x37c/0x8b0
+[  120.678148][ T2249]  ip6_output+0x135/0x4b0
+[  120.678770][ T2249]  NF_HOOK.constprop.0+0x7f/0x580
+[  120.679489][ T2249]  mld_sendpack+0x214/0x500
+[  120.680138][ T2249]  mld_send_cr+0x38e/0x630
+[  120.680780][ T2249]  mld_ifc_work+0x37/0x150
+[  120.681416][ T2249]  process_one_work+0x341/0xa80
+[  120.682121][ T2249]  worker_thread+0x2b0/0x560
+[  120.682791][ T2249]  ? __pfx_worker_thread+0x10/0x10
+[  120.683527][ T2249]  kthread+0x18f/0x370
+[  120.684115][ T2249]  ? ret_from_fork+0x2c/0x340
+[  120.684788][ T2249]  ? __pfx_kthread+0x10/0x10
+[  120.685449][ T2249]  ret_from_fork+0x2d3/0x340
+[  120.686105][ T2249]  ? __pfx_kthread+0x10/0x10
+[  120.686765][ T2249]  ret_from_fork_asm+0x1a/0x30
+[  120.687459][ T2249]  </TASK>
+[  120.687888][ T2249] Modules linked in:
+[  120.688447][ T2249] CR2: ffff8882b2cf2000
+[  120.689031][ T2249] ---[ end trace 0000000000000000 ]---
+
 
