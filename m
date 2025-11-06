@@ -1,100 +1,100 @@
-Return-Path: <bpf+bounces-73825-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73826-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0425C3AD98
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 13:18:39 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDFE9C3ADA7
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 13:19:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2A0BC343B02
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 12:18:04 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id ADB20343514
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 12:18:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A495329E54;
-	Thu,  6 Nov 2025 12:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23AFA32A3D7;
+	Thu,  6 Nov 2025 12:18:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Jtb7j9l5";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="eNJfxlhp"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HbHntlqi";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="VGgjJa4W"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27498329373
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 12:17:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A5032D9ED9
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 12:18:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762431478; cv=none; b=tlFLQsqczQaYiVBbGIyBui6fdmLNEAhJtsYggiuFWm4RrbLunmfC7qTfRjqSrb9Uw0T7Ah2Y7VuxFgt59h0WBq45+09fRv4GaNp97KiOhqecL76sjs8vq3QJY3/uGyqMI1jgbnSuDFa5fdBDn++IJBghYrE8gCDPQZdECH9AWDI=
+	t=1762431528; cv=none; b=P7rPNX7TW0sUArN89rVCjaM37J7Ruc7Fx6f5ocCrcsU/sI6fovJJnZ2tJ02SPmYnv4fgk7DMe/rq220Ymob/1K+n7189M4g1aXO87SfEdQQNnJAH0yR7WBQlhMFQb4HbcojmcqC3MvuXmOdBZPLcadnnffzupdM1TznIRvbAl2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762431478; c=relaxed/simple;
-	bh=9LV353o44e7iaytKxoKO3m56wFwJYwJhc6jN9BswQpM=;
+	s=arc-20240116; t=1762431528; c=relaxed/simple;
+	bh=uoFFD9n3hLU6Mq7kB4d0vCBxzAioEZz8yBEJ2YTctco=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=iF56FN9/pBzNGHMsQk8UkfsfBMof9SrzPvbuXSYCmNhw6/zM+PTYT2dzeJQB57cgQxG+hOUQUpKx5Qa61/Cq4D+msZzP/Fsma9keDiIsuAenxMPIBe19If/0b1YzdqmJdtC53/N7u7DLbssVoJNJEsdE2M0s+pmQOhoVYDtsgJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Jtb7j9l5; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=eNJfxlhp; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=bc1K/MQHtDpD2UQjNOppKmCNiPO0TZTABBoOtZFlCF20l+eap2Ew5kI0Rr+OORjNRzjBkhs0jZokuAj/4XbaY9Tq36z5x/bDtIYc5yhgzyXzYOgzsMwaxslT2wcDlkn7UQCUD30ljrEj+rZ6TPxBlotdZlUcc3vTOrBoQ/hhBO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HbHntlqi; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=VGgjJa4W; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1762431468;
+	s=mimecast20190719; t=1762431525;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sJOFsQmt4z32StWI73+K+fCNACFUE/4kjllWzy5Yuds=;
-	b=Jtb7j9l5Dox5h1YcH8NgyYzFs0owW+ttbzl4PBe85JGy2a+PWxaZ3bWwZkECSGnq4lCvcL
-	2upQ7S2d4N9gtlW7ve5n5UxvrthRPXL/87LgvOZ6SQZaVMVMLh2Wi0n1vrpCB3llGFfsea
-	ty62Nx4krvZQhzTJd0BHJ7hWW8AFzXM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Xt6hYilKH7tDfneGToMjji5Pnxk9yLau0emKZyN+R0A=;
+	b=HbHntlqiVt62SX0aecfH/5uSPh1wgWwhEEOCqF1EpghGWnJwetsswW0wv74tymhWI0GkGS
+	2r5HT6skzDP0kOYcimsRszeyluElyhQwVjjOyEIJB8OBH4CUAJ1jKWd5hNEx7YCC6HquDh
+	qWk8oJI7r+s1HHZNS3KGmC2Akr8FP60=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-442-9Trb2bKNNEKCXz6GQccGew-1; Thu, 06 Nov 2025 07:17:47 -0500
-X-MC-Unique: 9Trb2bKNNEKCXz6GQccGew-1
-X-Mimecast-MFC-AGG-ID: 9Trb2bKNNEKCXz6GQccGew_1762431462
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4775e54a70aso8629835e9.0
-        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 04:17:44 -0800 (PST)
+ us-mta-558-A7f_vLIYNM-rrRNGRJ502w-1; Thu, 06 Nov 2025 07:18:44 -0500
+X-MC-Unique: A7f_vLIYNM-rrRNGRJ502w-1
+X-Mimecast-MFC-AGG-ID: A7f_vLIYNM-rrRNGRJ502w_1762431523
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-47717c2737bso4873335e9.2
+        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 04:18:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1762431460; x=1763036260; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1762431523; x=1763036323; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=sJOFsQmt4z32StWI73+K+fCNACFUE/4kjllWzy5Yuds=;
-        b=eNJfxlhpb0EtmNe4zpHP4H+ssnYCTOxUxUbU26NKQVuag87NkWcpY94Docy9z1GEJ7
-         DDIbEuab3l+8e+EhFt4wwYjOBlTYobHeMtKPRRzrqSUnzjK9gbyAOVYq0IChSAiR2zHU
-         tQ+V/8YpvXmhiGpbM7kruWmRFxBTIuKqnWZ19D8NWwVuSieLhA1BOLwZEG3HtLrXcVgm
-         eFD3cDtTYHEXQVI4pFT/NZbjebs4hCfs3K31r3P/ZXufnDZhtZtiPbiJAzhpWJ2vRB1/
-         2djJEqci5M3DGEJg6e+PVFlof00Pck2WSEIFVemog8DopKHFc/qxUKMEG/YLBq1fJAGu
-         yLKA==
+        bh=Xt6hYilKH7tDfneGToMjji5Pnxk9yLau0emKZyN+R0A=;
+        b=VGgjJa4WV6FXNH1haRuo7OMbf4J0XlOOUYLmkFazf38M7tol0v1D6MvEn6F9t8Gm/R
+         VC0JqUdtSQ1hi8XF1i3z/SIhQVqxbWvnsZg+ptWYreGcwNhpLOanY0h6YCtElYZUF4Lx
+         ehfLLg8c+hylcZ3mOJaibK433zLyWrhV1ZsMojakSJJ3xFQRhxOQBXHoWBNpGSo0+Lh6
+         j2oZol6MFxN09/RiMSX1kh3T7PffgYIzgVRIEAcYCLWcznEe8VoyDoqAGFd0aC+DF4ct
+         UxM0HLy15OFhl5YiYKf8WUpP1+HS1h3NgZp5THGDp7PI8EHuZ0MZ9sZF62wSuoy1YYte
+         JoBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762431460; x=1763036260;
+        d=1e100.net; s=20230601; t=1762431523; x=1763036323;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sJOFsQmt4z32StWI73+K+fCNACFUE/4kjllWzy5Yuds=;
-        b=xSnktnThRIqWCjZ2ICOpxdqtLev+Qdd3LUZpbkMqDyIhUOJ6Qv17hseF6UBxxCJwIL
-         teDtFU9M50CB9XsgQPdtAXOdKrmvJ3YNeZcFyx6948uZZsXpZjsTkIMSq8131CvZ4JQD
-         Hi8NmEymKUSnh+ap1q6us4nrRa08hNWz+G8yQOAfz0PRHLGI7ANOwT4vEfbbWpjWDV8M
-         dtW6sNmNjzPKpibmZ7yYTRVq2SCYX5PkmBaFLE76g7gQY3kfx4bOtfXT0wNRWFk4r89+
-         Awy0ddlRLebvrM5ktEl0Zu7gYG9gamA2p6itxEMXAryRwHFumETgiVKY5aJDuUSh2AyY
-         M/5w==
-X-Forwarded-Encrypted: i=1; AJvYcCURUBlu6g6KP9CgcZw9XPM04087EWNc0TghLhgFGbDxdRAIo21X1GjeviERQHyHzChUU3k=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxkgyk7VqUtbQGpTPTN3oBvxRWvqbhVc6Y31ewEGZTFYO+6F4Xd
-	CZbE79n4KC9Viebimq17mwtqFnVOs8OPEHG14KPlqG6Ib17lPP9S2VL710DybpmHdTvjCn8lg3r
-	EpUCc9w6qmJAcjRPPF+3TGikAp8uujskD8yvlry/jZTUd5OMzIJL1xQ==
-X-Gm-Gg: ASbGncsQRopkZdt/9eYu+EDJzHbUlqDsdnUZCLCzEauNyXuLddphYfvjfPPdF+yuZII
-	JS1wNVf7gxgCS97A+nAcRMLonTTs8pr3JZqfe8LZfQvZDD9cLe1prJtJIZgU6hdo/+L1E3RgPKY
-	3PLPpg+a4ZBWLfp9petJAIhMXsEVulJ89Rgp51V1EXit40Uqx25npnRJBQBoiFziGpfos+LkafG
-	dt+UEdKrgrZSEF7N4UO60H0aCotpCUx+/d2bfhpSfLFL05WmEPxWe/biRg2i9DKl2ocPx22ZtxV
-	6Z3txEnDCRyL9wP8Bxcy1jyGAeIj8x7fTPpPdzBlM1tVSYcafN5tJygTHJ79O2C18JDEdIvtNsi
-	7RQ==
-X-Received: by 2002:a05:600c:4ed4:b0:477:3012:d285 with SMTP id 5b1f17b1804b1-4775cdacf5amr60826665e9.3.1762431460408;
-        Thu, 06 Nov 2025 04:17:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFPlniGNFV9Ibj9f6xLOEXX+53/yBS8AakakQvea5myq2HDP+liFvl4AiG9oo5p7c3OOkui0Q==
-X-Received: by 2002:a05:600c:4ed4:b0:477:3012:d285 with SMTP id 5b1f17b1804b1-4775cdacf5amr60826455e9.3.1762431459953;
-        Thu, 06 Nov 2025 04:17:39 -0800 (PST)
+        bh=Xt6hYilKH7tDfneGToMjji5Pnxk9yLau0emKZyN+R0A=;
+        b=lOYVDZsCa/6aF7A/SA7ZQJtS7XECqQHru0mB46hlbdKjrADjEyq8SRnfb2iasCsD5w
+         oXmlgxpK7bUtuYdeQFG/B3gAL1dH0jQSAdhtNkonbpZYb/F78A/bjHxWEk420LZtuT9d
+         /S6c2Z5NK9qThH0XyYvRqRBAfDb7X9Ae7cSB7wO2aLPVBclVCd4KWsi2dMt32JARxkie
+         TmRF2Md2oBVK/woRK6aqIGoodkfnEm/txMUzz3jjPdo/W1xaEsdggfJJz5pNzcDeOLzX
+         EaLtIUVS0UjKLhN8EVvlfBn0SeAbFg1DrMQcDT86eJhKzNmPxWPW3sxEWJ34kDGvc8TX
+         3Low==
+X-Forwarded-Encrypted: i=1; AJvYcCUTD22ncQKYUSfDDuVNV2O3yj+2uWzts5q3S7KkACqYGNB3RIdeW59LAeHhr3hYbL4acSY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwDimpEwAfP9ujB66FG0sb7XMiQMCEfnz6TmpC5wy+JQYQ0yij7
+	6Cac9FZQauJPR5tTALbsDrdtKfui3lAgGVpfeH+O+2YNKjisGgnSoB2fR+FpdSaLO91rhi+1lmp
+	u5SEVmXncX7CdtZ3uJKNw4p9IEdmyQoxZ0QxxWn+nPwbB8lIxVb4xRw==
+X-Gm-Gg: ASbGncs9b+ypNGfDh6ZhhjQ5ik4maEp67KsBJccrA43Pu6qI+4U1ngHuN68OdAdg1Gs
+	N05f3vIKDIQ1qmmIR4s+TirZSDlHZbFFTCeMmtve93xZS1SSEZJRUg/9Kt3Yp4REEdbz3jElNkx
+	sBZ026lmhylY92KM9WVqj+7hFq0rQnhs/8YG8UUbEWWXu7hI1rhZ9q32rfoLJ5e/rFn+P/art1P
+	48iDB3ZQTWRKmud1XZERVmJBAptaysM23dc5SbosmL2FZaIuwW34P31pteV9ulEjtnN7rBSVvCd
+	vjAwXr6+MhFU2cJkfdN/hP2uhFubWA6OdjgzeZrlh5tbCPdDqY71juhEVR3IkWj8WujJsJOjZlu
+	eyg==
+X-Received: by 2002:a05:600c:620f:b0:477:c71:1fd3 with SMTP id 5b1f17b1804b1-4775cdf253dmr62958685e9.28.1762431522950;
+        Thu, 06 Nov 2025 04:18:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGg2T2KZ3KXS1p9s6HYB8H5GhOQWRao0wUciVpoj7nlzP5kx7LVUIS1TvbmMMWe0Fwec2vCYQ==
+X-Received: by 2002:a05:600c:620f:b0:477:c71:1fd3 with SMTP id 5b1f17b1804b1-4775cdf253dmr62958205e9.28.1762431522520;
+        Thu, 06 Nov 2025 04:18:42 -0800 (PST)
 Received: from [192.168.88.32] ([212.105.155.83])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477626eb4fdsm44212655e9.17.2025.11.06.04.17.38
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4775ce20ff3sm100590715e9.10.2025.11.06.04.18.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Nov 2025 04:17:39 -0800 (PST)
-Message-ID: <f88dac3b-3467-44cf-9725-7d8525615bda@redhat.com>
-Date: Thu, 6 Nov 2025 13:17:37 +0100
+        Thu, 06 Nov 2025 04:18:42 -0800 (PST)
+Message-ID: <35a98a1e-588f-44d0-ab99-f4b4508f65cb@redhat.com>
+Date: Thu, 6 Nov 2025 13:18:39 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,8 +102,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 net-next 11/14] tcp: accecn: unset ECT if receive or
- send ACE=0 in AccECN negotiaion
+Subject: Re: [PATCH v5 net-next 12/14] tcp: accecn: fallback outgoing half
+ link to non-AccECN
 To: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com, parav@nvidia.com,
  linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
  dsahern@kernel.org, kuniyu@google.com, bpf@vger.kernel.org,
@@ -117,31 +117,25 @@ To: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com, parav@nvidia.com,
  mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
  Jason_Livingood@comcast.com, vidhi_goel@apple.com
 References: <20251030143435.13003-1-chia-yu.chang@nokia-bell-labs.com>
- <20251030143435.13003-12-chia-yu.chang@nokia-bell-labs.com>
+ <20251030143435.13003-13-chia-yu.chang@nokia-bell-labs.com>
 Content-Language: en-US
 From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20251030143435.13003-12-chia-yu.chang@nokia-bell-labs.com>
+In-Reply-To: <20251030143435.13003-13-chia-yu.chang@nokia-bell-labs.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 10/30/25 3:34 PM, chia-yu.chang@nokia-bell-labs.com wrote:
-> @@ -4006,7 +4008,7 @@ struct sk_buff *tcp_make_synack(const struct sock *sk, struct dst_entry *dst,
->  	memset(th, 0, sizeof(struct tcphdr));
->  	th->syn = 1;
->  	th->ack = 1;
-> -	tcp_ecn_make_synack(req, th);
-> +	tcp_ecn_make_synack((struct sock *)sk, req, th);
->  	th->source = htons(ireq->ir_num);
->  	th->dest = ireq->ir_rmt_port;
->  	skb->mark = ireq->ir_mark;
+> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> 
+> According to Section 3.2.2.1 of AccECN spec (RFC9768), if the Server
+> is in AccECN mode and in SYN-RCVD state, and if it receives a value of
+> zero on a pure ACK with SYN=0 and no SACK blocks, for the rest of the
+> connection the Server MUST NOT set ECT on outgoing packets and MUST
+> NOT respond to AccECN feedback. Nonetheless, as a Data Receiver it
+> MUST NOT disable AccECN feedback.
+> 
+> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
 
-Whoops, I missed the const cast in the previous revisions. This could
-make the code generated by the compiler for the caller incorrect -
-assuming the changed field is actually constant.
-
-I don't have a good idea on how to address this. Changing the argument
-type for the whole call chain looks like a no go.
-
-/P
+Acked-by: Paolo Abeni <pabeni@redhat.com>
 
 
