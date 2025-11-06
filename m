@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-73841-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73843-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C1E4C3B0E7
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 14:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 230AEC3B0EA
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 14:03:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 171EA501C38
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 12:56:41 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6DF03503DC7
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 12:56:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FFC03385BC;
-	Thu,  6 Nov 2025 12:53:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 175E0339716;
+	Thu,  6 Nov 2025 12:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bx+O8LXv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R1M8DFEq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADAD033032D
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 12:53:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AD8336EE7
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 12:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762433624; cv=none; b=gGzqUCQ15K04dnYv18hMhedNGgWJ9x9kVN+mEjBOzWqgfLN7RMiPI4A0eDQtJb1udi1OHMfDo+WzD9OpxZV/Z/PlWwvCqkwue8d2v7RD9SO9V+EhLLMbVLe41Jzc1TEv/epJwvuuPNYRtMxGMgIqXhNAjTDktDEvWzQBolJWAG0=
+	t=1762433625; cv=none; b=ABPJPJY1mWJYKzV8gOCBN0mHDsubzg6i12MgeBrgdUyMO3OYL70tthCPpcbngkArpz1q/2qUo3SQgHKc1oAv2bfSTdhZ5ZdeT9Dq+KChFkkqZYSXZ5NYnT6DdjxIjqdo87K7myzh+64ph2mJWLyd/ZoK9LbKotojyiDSh+l93d8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762433624; c=relaxed/simple;
-	bh=nJMaLGpKEmP3DsyD+IyFFczvrWgzDb+7/77EaIxg+NE=;
+	s=arc-20240116; t=1762433625; c=relaxed/simple;
+	bh=yJ5nI4Pj/e2l438vacBXP4YBnLRHauWN7FXlZehjs1U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qNwiDU6Qi64eAa32krLq5jM8s6FLSjsAkLsB8811GVI4GuluzPrSNJZav0OhGz/pLdjH3JagmHL4N4YW4+h2tX0hVChQfwyMA81+V2ak7jMeovGEe3zXNzBpfNgd3jc9x+SVuahVWJOrW4Bqwdg37xTtiwN7ua7fBEGkCV6iD5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bx+O8LXv; arc=none smtp.client-ip=209.85.221.46
+	 MIME-Version; b=AU/uqRkxF9rd6uXYfEj0YvetpNGfyKgiBDHbeXgQe3M9/6zsNE/S5NDIv86kpLti6j3AWs/waV43mLtrz6/kZ0U2m5qsi3rPyBDjRFAJyseP7xksCjhzgjpunkfXDdV9RbuUKkaEoWyB0Q8Rqac4x3xUf7S/oXQIUtdRFqJbJjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R1M8DFEq; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-429c7f4f8a2so1098571f8f.0
-        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 04:53:41 -0800 (PST)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-421851bcb25so497878f8f.2
+        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 04:53:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762433619; x=1763038419; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1762433621; x=1763038421; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Gboyt37Ov9MOTTH/KPaW8uj5vESoPgNEDU8dO3DpPF0=;
-        b=Bx+O8LXvxiiSTcAE6E8Z0YHAr8UcvU4LFsOvQf/bttKd2WtVNM80bh9xYhBuQ7Scoy
-         WdIIb5Fa+y/+3p6Hy6T+viHpCkl55dsvdGLw9ZCBA0nI89NiCk3MBGMSR+aGDRIk1+Ic
-         hbPgXhSPulZ7VGIAtkFDUX7LRVayoa0gwRiSBazFfpCf5+M2Fx/EkJhBYYTUqM8SrMwK
-         0hCGuSS4wnPXikaQob3ZuWDPTFCrXuTvXceP66MxUNadN+3ToqJet1EnIkqJCD3SupQW
-         znBNlqMxmQOrqhbEp37Mf0NwSL64nsAgZX4OCyAkrBydRvfpPcuh6tvckDD1qht2HRxt
-         6i9g==
+        bh=TeQ1qQssRNVDy6SgVbDGPxE08ddX4PJBvQHFLhXifeI=;
+        b=R1M8DFEqJCZQNRUjCVDryhHFk+KbSPp/UeHeOYMK/0OApOx3+K6WAuh0SAFowvafHM
+         9y3tkfibNU8uQVw/GqI2XYG/V+CViA4IBiwns9LtV0ehBY3P99bSOL+9QPbAGi5tq/up
+         +srnFNoutTJtEzRGmcbjoWEgCRglm/0IuTH4Iom4yKIfFjqFGs6pOX8miioZsCaxWNQf
+         y9MzTneQQLrePWQRulg3HRtNvtJBrmzvzvooObwDssixwjbulUvnG0TJMrtgTCED3qKX
+         COA4EmpyiprnpDYKLpys4vb1dW4q3pGV1OXcFH0AYrKEJx9NjccyXnd+Zs+1/Gn1agn/
+         uraA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762433619; x=1763038419;
+        d=1e100.net; s=20230601; t=1762433621; x=1763038421;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Gboyt37Ov9MOTTH/KPaW8uj5vESoPgNEDU8dO3DpPF0=;
-        b=m5au9jw0JDpfK9vl0cJ29TMhAOhq2889vQ/FLUl52RY4n6Uv/iEt6y+colPWqImz5T
-         0U9ZbUhWd6R914ljgLYHO/rRTubeBnXt/EyQ5iN8cLOu8XLDPYfnfu6IFNN/hejVD4ju
-         smhVheqrvSs6rnyFO8Y+PM/VdqchJY3gbYS72yezQ5GcNBiuFFkaKieekvFtKQ2KcFIQ
-         OTdwI7EB6Q/jG/5tAx6blCyh1j2R2El5jr/loUHSMfpG+Qd7ahTfFD5vTnmLGtgr5Y6/
-         2AH94PKAKEQetMsyGxOK2s8AfIUhXnwZqaLRo73FmJOVLS9ooRY5Mct+C/OqUlBJcLQs
-         SVSg==
-X-Gm-Message-State: AOJu0YzSeQKef3Cs9mZXnmaBtVV+1RPERybGllCw3Um6r0IEEGu/R074
-	1WEEvEANPBtZMRY9mH4xsa3kNcEuBdaLZxSypXlE7JtYCVeq+/d4fhsm8rXq
-X-Gm-Gg: ASbGncvMvkZ5EkX0lwab9z6BAKjnFk883b6DSWMX0xXzRYTShuZYagYHLII94rWnNNb
-	X0h65hoFELf1IPIAiCCut9XVIjcJYSWyTWXDikfBM5/FvCeDyQ5JfhtX/PTHnZ/Grp/ehvVWTzB
-	vwFEu8/8NDd3A9B+Gu6UyhNBdy/MmfjAanksCu7h2/jeFquGrz98eJbfD+HGB7/gxwNVsgH9RS0
-	YPOI3URDIdMQxWiO5Y+c4RWoBuY333sYmvQekJpgv0VMqHWc9AXWyrM3Ckqq3Z8zE3Jbxk8iWtT
-	NpQLIUjuQyy9I1W5ZA40aHU5V+EFj1IPIPjDEWR5pL5os8lYqKpvUyebDTlKXIUnDKIze/lKHeP
-	/nTbP0AzgnZK+eaRtEKIfYnU2UyIfi+ChYplJWpfSA+UzjDZpYVKLTY0ujCTB1KfOjjKNplf4jI
-	KjqaEfI47PJbDZ5Qmt67uJP8POpcO9nS53CpQ8N2ZQxb5GC39RHHxIGM0=
-X-Google-Smtp-Source: AGHT+IE2d3CRUrs2Qxa0+9muOrmRjSuRP78wlr1433ZpQlc/ZIYdsLyGsliVtRU0kPFyTQ8p1N80tw==
-X-Received: by 2002:a5d:5f54:0:b0:429:bb77:5deb with SMTP id ffacd0b85a97d-429eb1d0d12mr3086191f8f.31.1762433619310;
-        Thu, 06 Nov 2025 04:53:39 -0800 (PST)
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TeQ1qQssRNVDy6SgVbDGPxE08ddX4PJBvQHFLhXifeI=;
+        b=wQqhQy7+0z6YEPWfv499TZ5ygvKju0orKdetV7FMAaOo31N89VZ3rAM7R9GtNUFpu7
+         RkcB2fwXLBwzNT2K3e/T/5LBKHK8dbS5FBr01e9VjXwW1R0FpjhGpqJO9whTUlN/HgKj
+         uCy/nguths275ECjEmzxskPnC1PKgv25qLXdqCFDrveDKAn2Y9FoaOdRUOSD3XEtb1D4
+         bd9pwIJJoYOimxxVa+LhpHvOi9Jw0pxzjmRkZ3ga6U+3FhpyberSnVS9vZeKRRiwzhCO
+         K8js2if2NVuOuyLlksTKXQyJ8vsC/i7Qn62LOWYTJx125mNqIbqu5iP2ZV2YUozHg6FU
+         gZHw==
+X-Gm-Message-State: AOJu0YzlJ+BQoDS+MhQ8wLARmIULi1R9/S0Xnr2DY6Mg/LfmyFs9PkyP
+	hpGZDLaeH6Bz9X3ixRfFMr59X1E6k2lnYKE5isN18U/p63EeW6p55Q6ySShs
+X-Gm-Gg: ASbGncteUoO959UoDxQNYCdRsuGYZsRaDH5iB/DQrExRWrY6lD1be7Cm2UKUdMDnPVz
+	tHgv1dwEsRfaRoz8k03FmInbpZwTtyRkocVRjMEhd0wg+Mx2YxlR6ZPGrSHUKhS1RMH78teARJQ
+	sHvENyRKPxepqqHvmhPFLaDXH02vLsaidQ/g0m0gBazHt1P2l1CRBSpJu/7OipLOoJggLGn+nmi
+	d6sga0dykMh/9AMseLvjj+r43YgVVbS5sd7/lBNvhyxWHGrlOKhJJsg+vV5tmcszw2LwwE1i1tn
+	6bur6jts/AMtVJbDW645zjWUpQMw+g6ZNFzacs7OoXp0Jrche+ZVcd6Nsu7gHICSFxosdGuf4mn
+	j43Pm3UYKbjSvdJtDc4bbYOrBbWmnw+cv17m6YQhGQaiPP3ZwxTgs5xtLdTLazgL91CNAVBNxxh
+	ED7fBSOcjuUZ6qM3GFkBAe3nG/Vh4qneTZEbTEZbP0QaiV4zPNGGGqKeJDMUBHBVcDpw==
+X-Google-Smtp-Source: AGHT+IGmXXB3sYTtNVijmZK/dE1I0XwRMENPcN7ucBxdXqW1KCxYeITYB9d4TFOdh1oLXlDVTdzeLg==
+X-Received: by 2002:a05:6000:2304:b0:429:c505:8cb1 with SMTP id ffacd0b85a97d-429e3333c80mr6684600f8f.52.1762433620557;
+        Thu, 06 Nov 2025 04:53:40 -0800 (PST)
 Received: from ast-epyc5.inf.ethz.ch (ast-epyc5.inf.ethz.ch. [129.132.161.180])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429eb40379esm4788856f8f.9.2025.11.06.04.53.38
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429eb40379esm4788856f8f.9.2025.11.06.04.53.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Nov 2025 04:53:39 -0800 (PST)
+        Thu, 06 Nov 2025 04:53:40 -0800 (PST)
 From: Hao Sun <sunhao.th@gmail.com>
 X-Google-Original-From: Hao Sun <hao.sun@inf.ethz.ch>
 To: bpf@vger.kernel.org
@@ -87,9 +87,9 @@ Cc: ast@kernel.org,
 	linux-kernel@vger.kernel.org,
 	sunhao.th@gmail.com,
 	Hao Sun <hao.sun@inf.ethz.ch>
-Subject: [PATCH RFC 06/17] bpf: Add bcf_match_path() to follow the path suffix
-Date: Thu,  6 Nov 2025 13:52:44 +0100
-Message-Id: <20251106125255.1969938-7-hao.sun@inf.ethz.ch>
+Subject: [PATCH RFC 08/17] bpf: Track mov and signed extension
+Date: Thu,  6 Nov 2025 13:52:46 +0100
+Message-Id: <20251106125255.1969938-9-hao.sun@inf.ethz.ch>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251106125255.1969938-1-hao.sun@inf.ethz.ch>
 References: <20251106125255.1969938-1-hao.sun@inf.ethz.ch>
@@ -99,114 +99,130 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add `bcf_match_path()` to constrain `bcf_track()` to the recorded path suffix
-from parent states. The function consumes the per-state jump history arrays in
-order and compares each (prev_idx, idx) pair against the verifier’s current
-(prev_insn_idx, insn_idx):
+Add `bcf_mov()` helpers to model MOV/cast operations in `bcf_track()` and add 
+calls into ALU processing paths. The helpers extract the source to the target
+width and apply zero/sign extension to the final width as needed.
 
-- If the current pair matches the top entry, advance to the next history entry;
-  when the last entry is consumed and the last state's last_insn matches, stop
-  tracking (PATH_DONE).
-- If the pair mismatches at a branch point, abandon the current fork
-  (PATH_MISMATCH) so the tracker pops the path.
-- Otherwise, continue (PATH_MATCH).
+- For MOV32, build a 32-bit expr for src and zero-extend it.
+- For sign-extending MOVs (s8/s16 to W, or s8/s16 to R), extract the sub-width
+  and sign-extend to 32 or 64.
+- If the destination is known-constant, clear `dst_reg->bcf_expr` (-1) to avoid
+  carrying redundant symbolic nodes.
 
-`do_check()` is updated under tracking mode to call `bcf_match_path()` before
-processing each instruction and to terminate early on PATH_DONE, ensuring only
-suffix instructions are symbolically analyzed.
+These routines are only active when `env->bcf.tracking` is set. They are called
+from `check_alu_op()` in the relevant MOV/SEXT cases.
 
 Signed-off-by: Hao Sun <hao.sun@inf.ethz.ch>
 ---
- kernel/bpf/verifier.c | 66 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 66 insertions(+)
+ kernel/bpf/verifier.c | 69 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 66 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 725ea503c1c7..3ecee219605f 100644
+index 7b6d509c773a..4491d665cc49 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -20082,6 +20082,63 @@ static int do_check_insn(struct bpf_verifier_env *env, bool *do_print_state)
+@@ -15959,6 +15959,57 @@ static int adjust_reg_min_max_vals(struct bpf_verifier_env *env,
  	return 0;
  }
  
-+static struct bpf_jmp_history_entry *
-+get_top_jmp_entry(struct bpf_verifier_env *env)
++static int bcf_mov(struct bpf_verifier_env *env, struct bpf_reg_state *dst_reg,
++		   struct bpf_reg_state *src_reg, u32 sz, bool bit32, bool sext)
 +{
-+	struct bcf_refine_state *bcf = &env->bcf;
-+	struct bpf_verifier_state *vstate;
-+next:
-+	if (bcf->cur_vstate >= bcf->vstate_cnt)
-+		return NULL;
-+	vstate = bcf->parents[bcf->cur_vstate];
-+	if (bcf->cur_jmp_entry >= vstate->jmp_history_cnt) {
-+		bcf->cur_vstate++;
-+		bcf->cur_jmp_entry = 0;
-+		goto next;
-+	}
-+	return &vstate->jmp_history[bcf->cur_jmp_entry];
-+}
++	int src_expr, ext_sz, bitsz = bit32 ? 32 : 64;
 +
-+enum { PATH_MATCH, PATH_MISMATCH, PATH_DONE };
-+
-+static int bcf_match_path(struct bpf_verifier_env *env)
-+{
-+	struct bcf_refine_state *bcf = &env->bcf;
-+	struct bpf_jmp_history_entry *top = get_top_jmp_entry(env);
-+	struct bpf_verifier_state *last_state;
-+	int prev_idx;
-+
-+	last_state = bcf->parents[bcf->vstate_cnt - 1];
-+	if (!top)
-+		return last_state->last_insn_idx == env->prev_insn_idx ?
-+			       PATH_DONE :
-+			       PATH_MATCH;
-+
-+	prev_idx = top->prev_idx;
-+	/* entry->prev_idx is u32:20, compiler does not sign extend this */
-+	if (prev_idx == 0xfffff)
-+		prev_idx = -1;
-+
-+	if (prev_idx == env->prev_insn_idx) {
-+		if (top->idx == env->insn_idx) {
-+			bcf->cur_jmp_entry++;
-+			/* Check if we have consumed the last entry */
-+			top = get_top_jmp_entry(env);
-+			if (!top &&
-+			    last_state->last_insn_idx == env->prev_insn_idx)
-+				return PATH_DONE;
-+			return PATH_MATCH;
-+		}
-+		return PATH_MISMATCH;
++	if (!env->bcf.tracking)
++		return 0;
++	if (tnum_is_const(dst_reg->var_off)) {
++		dst_reg->bcf_expr = -1;
++		return 0;
 +	}
 +
-+	/* cur_state is branch taken, but the recorded one is not */
-+	if (is_jmp_point(env, env->insn_idx))
-+		return PATH_MISMATCH;
++	src_expr = bcf_reg_expr(env, src_reg, bit32 || sz == 32);
++	if (sz != 32) /* u/s16 u/s8 */
++		src_expr = bcf_extract(env, sz, src_expr);
 +
-+	return PATH_MATCH;
++	if (sext) {
++		ext_sz = bitsz - sz;
++		dst_reg->bcf_expr =
++			bcf_extend(env, ext_sz, bitsz, true, src_expr);
++		if (bit32)
++			bcf_zext_32_to_64(env, dst_reg);
++	} else {
++		ext_sz = 64 - sz;
++		dst_reg->bcf_expr =
++			bcf_extend(env, ext_sz, 64, false, src_expr);
++	}
++	if (dst_reg->bcf_expr < 0)
++		return dst_reg->bcf_expr;
++
++	return 0;
 +}
 +
- static int do_check(struct bpf_verifier_env *env)
++static int bcf_mov32(struct bpf_verifier_env *env, struct bpf_reg_state *dst,
++		     struct bpf_reg_state *src)
++{
++	return bcf_mov(env, dst, src, 32, true, false);
++}
++
++static int bcf_sext32(struct bpf_verifier_env *env, struct bpf_reg_state *dst,
++		      struct bpf_reg_state *src, u32 sz)
++{
++	return bcf_mov(env, dst, src, sz, true, true);
++}
++
++static int bcf_sext64(struct bpf_verifier_env *env, struct bpf_reg_state *dst,
++		      struct bpf_reg_state *src, u32 sz)
++{
++	return bcf_mov(env, dst, src, sz, false, true);
++}
++
+ /* check validity of 32-bit and 64-bit arithmetic operations */
+ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
  {
- 	bool pop_log = !(env->log.level & BPF_LOG_LEVEL2);
-@@ -20144,6 +20201,15 @@ static int do_check(struct bpf_verifier_env *env)
- 				return err;
- 		}
- 
-+		if (env->bcf.tracking) {
-+			int path = bcf_match_path(env);
-+
-+			if (path == PATH_MISMATCH)
-+				goto process_bpf_exit;
-+			else if (path == PATH_DONE)
-+				return 0;
-+		}
-+
- 		if (signal_pending(current))
- 			return -EAGAIN;
- 
+@@ -16084,8 +16135,12 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
+ 						if (no_sext)
+ 							assign_scalar_id_before_mov(env, src_reg);
+ 						copy_register_state(dst_reg, src_reg);
+-						if (!no_sext)
++						if (!no_sext) {
+ 							dst_reg->id = 0;
++							err = bcf_sext64(env, dst_reg, src_reg, insn->off);
++							if (err)
++								return err;
++						}
+ 						coerce_reg_to_size_sx(dst_reg, insn->off >> 3);
+ 						dst_reg->subreg_def = DEF_NOT_SUBREG;
+ 					} else {
+@@ -16110,8 +16165,12 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
+ 						 * range otherwise dst_reg min/max could be incorrectly
+ 						 * propagated into src_reg by sync_linked_regs()
+ 						 */
+-						if (!is_src_reg_u32)
++						if (!is_src_reg_u32) {
+ 							dst_reg->id = 0;
++							err = bcf_mov32(env, dst_reg, src_reg);
++							if (err)
++								return err;
++						}
+ 						dst_reg->subreg_def = env->insn_idx + 1;
+ 					} else {
+ 						/* case: W1 = (s8, s16)W2 */
+@@ -16120,8 +16179,12 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
+ 						if (no_sext)
+ 							assign_scalar_id_before_mov(env, src_reg);
+ 						copy_register_state(dst_reg, src_reg);
+-						if (!no_sext)
++						if (!no_sext) {
+ 							dst_reg->id = 0;
++							err = bcf_sext32(env, dst_reg, src_reg, insn->off);
++							if (err)
++								return err;
++						}
+ 						dst_reg->subreg_def = env->insn_idx + 1;
+ 						coerce_subreg_to_size_sx(dst_reg, insn->off >> 3);
+ 					}
 -- 
 2.34.1
 
