@@ -1,202 +1,212 @@
-Return-Path: <bpf+bounces-73763-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73764-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AE15C38B5D
-	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 02:30:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31E91C38B8A
+	for <lists+bpf@lfdr.de>; Thu, 06 Nov 2025 02:40:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 92D8134E972
-	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 01:30:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 990D91A23629
+	for <lists+bpf@lfdr.de>; Thu,  6 Nov 2025 01:41:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF4E2236EE;
-	Thu,  6 Nov 2025 01:30:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2324C22E3E9;
+	Thu,  6 Nov 2025 01:40:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YwLE4WPR"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="v882wvdl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABBBB22256F
-	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 01:30:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD6C7221FC6
+	for <bpf@vger.kernel.org>; Thu,  6 Nov 2025 01:40:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762392612; cv=none; b=K9fNoV2S9qLfjnGzaMa+XFlHL7RDTdwsJDfua48Qr7oHx8OrZLqvIcI5guq0D0iNeNsHPiFCTC6Fx5He89rHK91Sd3wfPWdCiCyJzGdpRm/AihVMrpYjaL3pk+UdDlOS6YK562SRd4G3Kxm0np54qaHPGQMCiJIPW8eKwYgjMm0=
+	t=1762393243; cv=none; b=Fj8mlWcSZYJoRpZtr2kXvgKlDKGZSPdkxOKxcckaxYpnyA8BKHtuoYE/nz6hI8CNpdnHFsGZFBuWqTzWzJsUQjx0v3BJTIfBqaJ4K0aEVVRB6M1JLzPXPPC+PsLkKOKBOubec8JEPFDntBycdpNRiDR+EGgnCxtHNYAB2DQIImE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762392612; c=relaxed/simple;
-	bh=NkA6YQMsd3cE26swPPj5IvSf4rNy6eveXek+exPauMk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MJRP+xh4LiNBotu+11K05ubrcbC1+mlj2zFkFoILXknc14K3Sn9lRE5uTuakva6p+b91I8O8gCmLdvXln+N+d2i/pl+Yy9t8GWL064vhftQHKLIUTDOhg8NmK9u/Ui+mnKRcPy0LW4zr8DHi5Dp7Rc4fQaJt6ID/QXo/e+gKcis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YwLE4WPR; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-477632cc932so839725e9.3
-        for <bpf@vger.kernel.org>; Wed, 05 Nov 2025 17:30:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762392608; x=1762997408; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pglOosQTIvBfeYgOgvZ/bymKX6TWUK4RdH77mW1U80s=;
-        b=YwLE4WPR3u/wDpXwTRvR0NS0lZnR87Deef7IDOdx+hR1QW8D2ZYtzZ4hoD6uTGgBZb
-         eKp51udHCrcIcq2e12Ja/wFFYJEXE88vJxUgDRtXPCqVwjzuYwNegw8YrD93PuNzxb5H
-         DJYNJ9td6iN3Vny14OdwK9BXXbRP34RIT424nJPLWIOQo/L+NdSmQO4BAY9oenW/6Enn
-         PB1kicyRiDM7h8JQuB+FFy5PPNGRNroT/Knk+mLanK69LLPs+zIL8k2Q0lTGzY6gMthT
-         Br9/GE8Jmo+Xu7oJkJnsDyc3d9KxeMwXVozHRHUJ+0J/7wdXHTR2neciFabhMJwLmhMK
-         4AOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762392608; x=1762997408;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pglOosQTIvBfeYgOgvZ/bymKX6TWUK4RdH77mW1U80s=;
-        b=tsTcIcWcR2bCS14NxIjC0ejPVJZTQJnrL700ypYZ+H+cLKphLsMGghKaeHjEyBHrVX
-         HG/VWpi7GdBS+kL9dozi0HbV3FTkKo8NYpP9GQQjUPjd7KxgNdNfYEIUfev38Yesk7DA
-         Hk9Ss8udEVbuvaSS0w5BnZVLvbA40oehEsEVn07UmnAHu67fkwTanZFJ3EqzMFOTlEay
-         Jt7g40gbLwty01K4E5THVSB5Itw+mc5NMSb1YZY7YG/0ESlkCoLLzBxG3WxTVNonCnvx
-         GoYJQkb/JoVr0a28laRlhw6QzBGaEbb/sZXlgxb04FY2eFlIaQ7vCQknB5945gVHm6u6
-         EDJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWeQx/9kjh0hqQvdnmhbgWkvB2KvilTpsvEs3nI5O63IXjvrEcbabriAFkynfkgZ5sMoF0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfRrt8ZBzlpD04cC57pTFsUFb76MySBwHM0bm2cSbdJ8rYpvuU
-	gsqp7IzsQUScDiHAi0yD1sh6oCYFtwuLsXbv0lJOCFfTeKDkLEOIihNGfTboKCiWjF3vKtzY7w3
-	VJi+r06AYSn7/aNYaNeu5pT7EUTfjtKY=
-X-Gm-Gg: ASbGnctC2CQX8x4xNNO0qfCcvnJgm0LrOXXuq8CzVaWsJHdeea9h1wlJDz8qC0tkCqs
-	s2T4PhW/WTMjljTGcrWaLNl92uHaAq5ZpTr20Ho0MeH5eAOClus5Ao1c7+yv+j+TEg6n1ayFG1u
-	WPIF3gApQEZH8iSWlMYNrXEdCAWdYXhlRRB27sb+2jl6ureRwweQRfx5QgDCXonZjoc9rN2i3iP
-	URbKq3LjtZnsHPkr0OBn+Nt8D1iE/pVVc/tnK83JnvicAjSHG1M9k79Iez4AY3pOPGXgbKq7s9V
-	UE5LcAV3JyWTW4UlH8IVVN89oVuQ
-X-Google-Smtp-Source: AGHT+IHvs+3XbvYIb+ePg+SGtg47YLsx/nuhBwaLkrgMO/eh+y9lNIxImoFpX1haQWbxriNO9cGrZ9z1XYaVKY0YoC4=
-X-Received: by 2002:a05:600c:5403:b0:46e:3f75:da49 with SMTP id
- 5b1f17b1804b1-4775ce4fcc8mr40655025e9.37.1762392607821; Wed, 05 Nov 2025
- 17:30:07 -0800 (PST)
+	s=arc-20240116; t=1762393243; c=relaxed/simple;
+	bh=8b+UCgStWllzqynScECGPtzxKYbbSqfZQ01uvObfyrI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BZnBiizr1Neim4GTVtZSlGwnn26ZO0EwAIFh1K/YM5V9IqZWLmlVDaXGJDJKCzF+2dX6LHQrgTY5Bc1NGRTFMKzv5T1KksC5Yw3kKDo26h+XAa7g7z9Vw/MxCjDH2miLQjB+P2ueR3QPLiXGroQ3VdzQV3VSRcYCX7BLFaF8YhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=v882wvdl; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762393228;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=npw2S3cvAdwFUuQPq4ZcThlfeG5y4r/hL2rPLz9b8+4=;
+	b=v882wvdlMaCVqDaZo+M5SfeeApykJWjCwO5HrMGcak0Qfqowf7ww+1efAU5o5Wu9WtgSeT
+	qLu1QYJXV7AznarJtH8xl8Yi9sRmg1Zl9wqCF51xGV6p+1hSkjtbCtkflSsAHYp+9glKkB
+	cvTxI7GGAIm16gnhsnfI2ynxZri+Dzc=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+ Menglong Dong <menglong8.dong@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ David Ahern <dsahern@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
+ "H. Peter Anvin" <hpa@zytor.com>, jiang.biao@linux.dev,
+ bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] bpf,x86: do RSB balance for trampoline
+Date: Thu, 06 Nov 2025 09:40:15 +0800
+Message-ID: <5053516.31r3eYUQgx@7950hx>
+In-Reply-To:
+ <CAADnVQLX54sVi1oaHrkSiLqjJaJdm3TQjoVrgU-LZimK6iDcSA@mail.gmail.com>
+References:
+ <20251104104913.689439-1-dongml2@chinatelecom.cn> <1986305.taCxCBeP46@7950hx>
+ <CAADnVQLX54sVi1oaHrkSiLqjJaJdm3TQjoVrgU-LZimK6iDcSA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251101193357.111186-1-harshit.m.mogalapalli@oracle.com>
- <20251101193357.111186-2-harshit.m.mogalapalli@oracle.com>
- <CAADnVQLe6a8Kae892sVaND-2p1DQDXGD5gqxHWHHUC85ntLCqw@mail.gmail.com> <e9d43dab-cfae-48a8-9039-e050ea392797@kernel.org>
-In-Reply-To: <e9d43dab-cfae-48a8-9039-e050ea392797@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 5 Nov 2025 17:29:56 -0800
-X-Gm-Features: AWmQ_bny7FcaG0pHAt7j2zZd3I9EBcjh494p7XVJPwhzbfrPnw_3LfP8rxR-6LM
-Message-ID: <CAADnVQKzSBZYaj0iMkNBk6FvaOket1mWPksX661zwC2rg2FBkQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] bpftool: Print map ID upon creation and support
- JSON output
-To: Quentin Monnet <qmo@kernel.org>
-Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>, bpf <bpf@vger.kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Nov 5, 2025 at 1:38=E2=80=AFAM Quentin Monnet <qmo@kernel.org> wrot=
-e:
->
-> 2025-11-04 09:54 UTC-0800 ~ Alexei Starovoitov
-> <alexei.starovoitov@gmail.com>
-> > On Sat, Nov 1, 2025 at 12:34=E2=80=AFPM Harshit Mogalapalli
-> > <harshit.m.mogalapalli@oracle.com> wrote:
-> >>
-> >> It is useful to print map ID on successful creation.
-> >>
-> >> JSON case:
-> >> $ ./bpftool -j map create /sys/fs/bpf/test_map4 type hash key 4 value =
-8 entries 128 name map4
-> >> {"id":12}
-> >>
-> >> Generic case:
-> >> $ ./bpftool  map create /sys/fs/bpf/test_map5 type hash key 4 value 8 =
-entries 128 name map5
-> >> Map successfully created with ID: 15
-> >>
-> >> Bpftool Issue: https://github.com/libbpf/bpftool/issues/121
-> >> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> >> Reviewed-by: Quentin Monnet <qmo@kernel.org>
-> >> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-> >> ---
-> >> v2->v3: remove a line break("\n" ) in p_err statement. [Thanks Quentin=
-]
-> >> ---
-> >>  tools/bpf/bpftool/map.c | 21 +++++++++++++++++----
-> >>  1 file changed, 17 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-> >> index c9de44a45778..f32ae5476d76 100644
-> >> --- a/tools/bpf/bpftool/map.c
-> >> +++ b/tools/bpf/bpftool/map.c
-> >> @@ -1251,6 +1251,8 @@ static int do_create(int argc, char **argv)
-> >>         LIBBPF_OPTS(bpf_map_create_opts, attr);
-> >>         enum bpf_map_type map_type =3D BPF_MAP_TYPE_UNSPEC;
-> >>         __u32 key_size =3D 0, value_size =3D 0, max_entries =3D 0;
-> >> +       struct bpf_map_info map_info =3D {};
-> >> +       __u32 map_info_len =3D sizeof(map_info);
-> >>         const char *map_name =3D NULL;
-> >>         const char *pinfile;
-> >>         int err =3D -1, fd;
-> >> @@ -1353,13 +1355,24 @@ static int do_create(int argc, char **argv)
-> >>         }
-> >>
-> >>         err =3D do_pin_fd(fd, pinfile);
-> >> -       close(fd);
-> >>         if (err)
-> >> -               goto exit;
-> >> +               goto close_fd;
-> >>
-> >> -       if (json_output)
-> >> -               jsonw_null(json_wtr);
-> >> +       err =3D bpf_obj_get_info_by_fd(fd, &map_info, &map_info_len);
-> >> +       if (err) {
-> >> +               p_err("Failed to fetch map info: %s", strerror(errno))=
-;
-> >> +               goto close_fd;
-> >> +       }
-> >>
-> >> +       if (json_output) {
-> >> +               jsonw_start_object(json_wtr);
-> >> +               jsonw_int_field(json_wtr, "id", map_info.id);
-> >> +               jsonw_end_object(json_wtr);
-> >> +       } else {
-> >> +               printf("Map successfully created with ID: %u\n", map_i=
-nfo.id);
-> >> +       }
+On 2025/11/6 07:31, Alexei Starovoitov wrote:
+> On Tue, Nov 4, 2025 at 11:47=E2=80=AFPM Menglong Dong <menglong.dong@linu=
+x.dev> wrote:
 > >
-> > bpftool doesn't print it today and some scripts may depend on that.
->
->
-> Hi Alexei, are you sure we can't add any input at all? I'm concerned
-> that users won't ever find the IDs for created maps they might want to
-> use, if they never see it in the plain output.
->
->
-> > Let's drop this 'printf'. Json can do it unconditionally, since
-> > json parsing scripts should filter things they care about.
->
-> I'd say the risk is the same. Scripts should filter things, but in
-> practise they might just as well be comparing to "null" today, given
-> that we didn't have any other output for the command so far. Conversely,
-> what scripts should not do is rely on plain output, we've always
-> recommended using bpftool's JSON for automation (or the exit code, in
-> the case of map creation). So I'm not convinced it's justified to
-> introduce a difference between plain and JSON in the current case.
+> > On 2025/11/5 15:13, Menglong Dong wrote:
+> > > On 2025/11/5 10:12, Alexei Starovoitov wrote:
+> > > > On Tue, Nov 4, 2025 at 5:30=E2=80=AFPM Menglong Dong <menglong.dong=
+@linux.dev> wrote:
+> > > > >
+> > > > > On 2025/11/5 02:56, Alexei Starovoitov wrote:
+> > > > > > On Tue, Nov 4, 2025 at 2:49=E2=80=AFAM Menglong Dong <menglong8=
+=2Edong@gmail.com> wrote:
+> > > > > > >
+> > > > > > > In origin call case, we skip the "rip" directly before we ret=
+urn, which
+> > > > > > > break the RSB, as we have twice "call", but only once "ret".
+> > > > > >
+> > > > > > RSB meaning return stack buffer?
+> > > > > >
+> > > > > > and by "breaks RSB" you mean it makes the cpu less efficient?
+> > > > >
+> > > > > Yeah, I mean it makes the cpu less efficient. The RSB is used
+> > > > > for the branch predicting, and it will push the "rip" to its hard=
+ware
+> > > > > stack on "call", and pop it from the stack on "ret". In the origin
+> > > > > call case, there are twice "call" but once "ret", will break its
+> > > > > balance.
+> > > >
+> > > > Yes. I'm aware, but your "mov [rbp + 8], rax" screws it up as well,
+> > > > since RSB has to be updated/invalidated by this store.
+> > > > The behavior depends on the microarchitecture, of course.
+> > > > I think:
+> > > > add rsp, 8
+> > > > ret
+> > > > will only screw up the return prediction, but won't invalidate RSB.
+> > > >
+> > > > > Similar things happen in "return_to_handler" in ftrace_64.S,
+> > > > > which has once "call", but twice "ret". And it pretend a "call"
+> > > > > to make it balance.
+> > > >
+> > > > This makes more sense to me. Let's try that approach instead
+> > > > of messing with the return address on stack?
+> > >
+> > > The way here is similar to the "return_to_handler". For the ftrace,
+> > > the origin stack before the "ret" of the traced function is:
+> > >
+> > >     POS:
+> > >     rip   ---> return_to_handler
+> > >
+> > > And the exit of the traced function will jump to return_to_handler.
+> > > In return_to_handler, it will query the real "rip" of the traced func=
+tion
+> > > and the it call a internal function:
+> > >
+> > >     call .Ldo_rop
+> > >
+> > > And the stack now is:
+> > >
+> > >     POS:
+> > >     rip   ----> the address after "call .Ldo_rop", which is a "int3"
+> > >
+> > > in the .Ldo_rop, it will modify the rip to the real rip to make
+> > > it like this:
+> > >
+> > >     POS:
+> > >     rip   ---> real rip
+> > >
+> > > And it return. Take the target function "foo" for example, the logic
+> > > of it is:
+> > >
+> > >     call foo -> call ftrace_caller -> return ftrace_caller ->
+> > >     return return_to_handler -> call Ldo_rop -> return foo
+> > >
+> > > As you can see, the call and return address for ".Ldo_rop" is
+> > > also messed up. So I think it works here too. Compared with
+> > > a messed "return address", a missed return maybe have
+> > > better influence?
+> > >
+> > > And the whole logic for us is:
+> > >
+> > >     call foo -> call trampoline -> call origin ->
+> > >     return origin -> return POS -> return foo
+> >
+> > The "return POS" will miss the RSB, but the later return
+> > will hit it.
+> >
+> > The origin logic is:
+> >
+> >      call foo -> call trampoline -> call origin ->
+> >      return origin -> return foo
+> >
+> > The "return foo" and all the later return will miss the RBS.
+> >
+> > Hmm......Not sure if I understand it correctly.
+>=20
+> Here another idea...
+> hack tr->func.ftrace_managed =3D false temporarily
+> and use BPF_MOD_JUMP in bpf_arch_text_poke()
+> when installing trampoline with fexit progs.
+> and also do:
+> @@ -3437,10 +3437,6 @@ static int __arch_prepare_bpf_trampoline(struct
+> bpf_tramp_image *im, void *rw_im
+>=20
+>         emit_ldx(&prog, BPF_DW, BPF_REG_6, BPF_REG_FP, -rbx_off);
+>         EMIT1(0xC9); /* leave */
+> -       if (flags & BPF_TRAMP_F_SKIP_FRAME) {
+> -               /* skip our return address and return to parent */
+> -               EMIT4(0x48, 0x83, 0xC4, 8); /* add rsp, 8 */
+> -       }
+>         emit_return(&prog, image + (prog - (u8 *)rw_image));
+>=20
+> Then RSB is perfectly matched without messing up the stack
+> and/or extra calls.
+> If it works and performance is good the next step is to
+> teach ftrace to emit jmp or call in *_ftrace_direct()
 
-tbh the "map create" feature suppose to create and pin and if both
-are successful then the map will be there and bpftool will
-exit with success.
-Now you're arguing that there could be a race with another
-bpftool/something that pins a different map in the same location
-and success of bpftool doesn't mean that exact that map is there.
-Other tool could have unpinned/deleted map, pinned another one, etc.
-Sure, such races are possible, but returning map id still
-looks pointless. It doesn't solve any race.
-So the whole 'lets print id' doesn't quite make sense to me.
+Good idea. I saw the "return_to_handler" used "JMP_NOSPEC", and
+the jmp is converted to the "fake call" to be nice to IBT in this commit:
+
+e52fc2cf3f66 ("x86/ibt,ftrace: Make function-graph play nice")
+
+It's not indirect branch in our case, but let me do more testing to
+see if there are any unexpected effect if we use "jmp" here.
+
+Thanks!
+Menglong Dong
+
+>=20
+
+
+
+
 
