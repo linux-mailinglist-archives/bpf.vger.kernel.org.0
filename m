@@ -1,151 +1,166 @@
-Return-Path: <bpf+bounces-73955-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73956-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1C7C40108
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 14:15:14 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7F53C402AD
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 14:43:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2F0D18852DB
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 13:15:38 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 52EC834DE7A
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 13:43:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763002D7DC3;
-	Fri,  7 Nov 2025 13:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618B52F7AAD;
+	Fri,  7 Nov 2025 13:43:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BlHoPCu3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="APmylv60"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A93B2D7D2F
-	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 13:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2912F2605;
+	Fri,  7 Nov 2025 13:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762521305; cv=none; b=oXsJgUq+UeFkbgDtuLz018DYedPUvzii1HpJA/fJQNx4xxuDOJKUSCq68MyLTOyNKU5OScDnJeWkbGBrbzi16Wjf4MPPX3Y7wPUGwmFl3UPHygyFxRtadx356aWYv5ZhqJLmwHjsTAXBtwItL5Qtc6arGki7b+mXDKepezySXHc=
+	t=1762522982; cv=none; b=Qrg0H+lEzTTE82i9gyB8PX2AG0/fp0gtUmB1C35IgesyVJn6zHqbv/swYidEQT06LfNsFXr8PX6wpaim0wQmzd30JS2w0XribjNzKhJnJydQx2m/StT5hgUUvoC5yU83Ej8kX3AkkRgTVCysehR6n9rLAfZf0GVSuGl95BjQ0jA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762521305; c=relaxed/simple;
-	bh=0mPhFFV27EI4HWkCT/K0CutZwM23pABS/zg6xhegD68=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CDZUUj7GyQsFCrI1Dgn9Q2wbLpd/nWsoRz9PDaX0s+DZGOltrFRzU+EDr0bvw5tGze9PYjZ+RhDEKgQvQPDdZ9h3GLeIRfc8O1722ht4OTonO1lrjxjps0Ofx0KFzbA35t54Isqw6sMrYm0cDOiLbKMjzo/8A5KfuvVteh6Zu74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BlHoPCu3; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-640d0ec9651so1292027a12.3
-        for <bpf@vger.kernel.org>; Fri, 07 Nov 2025 05:15:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762521300; x=1763126100; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8HZ8kO1EbOdno/Z6LWKvw9cCt6xKTq52Mcwxm+AjrMQ=;
-        b=BlHoPCu3NqtLtozYF0ZyHTBdobJJ/cANVGnsDwuY6T8dx2F6BpG8CLWuG2V1KWCPn9
-         rJqzhFhR33ZMV++LnBz96/RuLoQJElQKD/XgdMcwXWV7h9QKhE6GKnV5S15pYGxSNGqu
-         KqaXf2ahPz1ifbkNBO7u8j2yiZH6M0K6PrgMzHi6k6ovXdGBxghrOCwCc/pEwIl/Eo01
-         Pk2HH4fQOf3Bw6VYHGk0nxbI0DXzJSh5ufcLRQ9l6RwgF98tgxr22FjT0cjpknUAGNCF
-         BA2TawykZDjdpivWUQQk7vyA0EjOpZxziWhEOwjmij06OkYHzpG2iI9J48haI79hsRab
-         cxqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762521300; x=1763126100;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8HZ8kO1EbOdno/Z6LWKvw9cCt6xKTq52Mcwxm+AjrMQ=;
-        b=TX9Dz0cPNaG7cLNg4gPZWz7XK0lp4R9H0D17sBgJsG87RXyp2VF6Y5NKZosDGDy5Wl
-         peYAjD55j3DTXVZCGhWLE0HtMrGQQG0zv+3DWDtnoGQbJvMz/TaCvO56FTj9CyXSdrDM
-         /9/s2PEgSXgcC12wPRNhcghv6732qjm/bWwOknd5H1s7T5WCc1bQQxYg+hGsvLX6ST7x
-         pmLkQf9Oogiw861pHw3uBlGUcSvpEvmPhj4JVcX7kEAhwdeKr5nIz5byQ/KFXkErcwpA
-         gXUkmubL/b03r1MiDn8FfwQhcjl+Mi2MnhNAWYw+xxitOvShMSPD9pFiI3PwdNbfcuwm
-         R6/g==
-X-Forwarded-Encrypted: i=1; AJvYcCXdFUuT6cnNq8OdXn08KCEIcSriPIZW9sqD6QOwtmBAy80SNKy6+E6UIFFgdJZai6jDKEs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx4SYnyPyGfIR9BolvK4L5ODKvs1K8OZcalhHNXOhc2ryRaq5Tv
-	QJAaiJAZaI0kqiZ4PFLpwj+6GELW6hJp1JUmPO0IeUZjgb9bVK+qekbo0Zh5KQIXqIU=
-X-Gm-Gg: ASbGncv9cvKt1RmM2uFXfuq/dRRJUg7No1N35Egtpxnh2XUcETR2E9R785yP2qK9zqx
-	Ceg54jLpDahlRUtIQ+hfsHjQS9oh6Xbcgj4ofjw03K541m/Bvx2uwEF/tNWQge/mlslCEuda8ij
-	T1Co2hk3yY3pvoquoKKkplXSScLo9B/oegLvxgc03ymJNTEFsDia3LhenlBoIbYXDTHZov4efJ2
-	1UmqC4/kKOQPTs+29S8pVtIje1kMqVk55Re4YNFjS87sRdrt+HBRdJIsOMah8RuASThHEZ6yQJF
-	n1aq0YexnrFLRVqDKHT6LGu6NxzS/5hNAZGbgvkg7CVNRBTtDKifdYcGEpQBIp0NYkj6xM+tf7z
-	tfoPtLFV2gGtxe84HO07XhSj5fhV+qNiN4pF7SpIlmoWVgjljt6ODr8FMNg2W7yQXuDOvRNmdMZ
-	7E4dc=
-X-Google-Smtp-Source: AGHT+IFE2eYy0+Px5WausE/jRL0XZhUzH9bbFk8nsiudCpX/vMQhbSO5rZNKcgvz0+P/IDwF6D5asw==
-X-Received: by 2002:a17:907:2da2:b0:b6d:5914:30c with SMTP id a640c23a62f3a-b72c090e4b7mr299535266b.34.1762521300369;
-        Fri, 07 Nov 2025 05:15:00 -0800 (PST)
-Received: from pathway.suse.cz ([176.114.240.130])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b72bfa24d1fsm233492666b.73.2025.11.07.05.14.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Nov 2025 05:14:59 -0800 (PST)
-Date: Fri, 7 Nov 2025 14:14:57 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: bot+bpf-ci@kernel.org
-Cc: petr.pavlu@suse.com, rostedt@goodmis.org, ast@kernel.org,
-	akpm@linux-foundation.org, kees@kernel.org, daniel@iogearbox.net,
-	john.fastabend@gmail.com, mhiramat@kernel.org, mark.rutland@arm.com,
-	mcgrof@kernel.org, da.gomez@kernel.org, samitolvanen@google.com,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-modules@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	andrii@kernel.org, martin.lau@kernel.org, eddyz87@gmail.com,
-	yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
-Subject: Re: [PATCH 2/6] kallsyms: Cleanup code for appending the module
- buildid
-Message-ID: <aQ3w0awU61mrS_AF@pathway.suse.cz>
-References: <20251105142319.1139183-3-pmladek@suse.com>
- <451acb410ee1ce42f7fb2da9f3b8162708f40788cb849cc0f50851ad16813349@mail.kernel.org>
+	s=arc-20240116; t=1762522982; c=relaxed/simple;
+	bh=mVhNPlLjxSXohTIokzVQKOtrdJswU2kcvPbGFxRD4Ig=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=msLXmBcTpDeqfXBrzPADj1Umj4W+b+0F2eGlo0fzKE2+o+M8pKOG3pH/xIblL3XyW/yvGd3KNeaofp3aUBhhENAFkgsqfYR+R1eD7e6zUFG4erdbICBh1QFGcGvxDOuEhyKZ7GeKFf4mldQW3Ucun0mCVKH5/oGjTkFqpzKQmDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=APmylv60; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBDA4C4CEF8;
+	Fri,  7 Nov 2025 13:42:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762522982;
+	bh=mVhNPlLjxSXohTIokzVQKOtrdJswU2kcvPbGFxRD4Ig=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=APmylv60JbvoLid/67a1Lg2RUqkHsQeS27fqWkrDCeavaJYQCdjXy8wY6ud5MU+6+
+	 a1aOqgDi7sMGJMx9JkECexe3NyIeh1RM4BxFwBCaxosUXz6bpOByK3siWzcuOVTztW
+	 7MiCzKQ5fV3SvixxCCqyDpaaOC2Yri/TI0XQ4fkRq0h6YTdNDoY7/7VyS2IIuGpJm6
+	 AbjVvRQRI3Q5QG//gwAo8ec5jyhpXynjXbvjOqZQbRjJx4sGfBy8R41S4vu6Wm7Dx9
+	 sbhf1TTMAl+05Vs1ITmxlat8ACZXKISQxktdnP9GlRl/PeqDiZMYPsOK/0IKKAS2tY
+	 S1CgLdwCgUkVw==
+Message-ID: <b9f01e64-f7cc-4f5a-9716-5767b37e2245@kernel.org>
+Date: Fri, 7 Nov 2025 14:42:58 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <451acb410ee1ce42f7fb2da9f3b8162708f40788cb849cc0f50851ad16813349@mail.kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net V3 1/2] veth: enable dev_watchdog for detecting
+ stalled TXQs
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
+ <toke@toke.dk>, Eric Dumazet <eric.dumazet@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ ihor.solodrai@linux.dev, "Michael S. Tsirkin" <mst@redhat.com>,
+ makita.toshiaki@lab.ntt.co.jp, toshiaki.makita1@gmail.com,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel-team@cloudflare.com
+References: <176236363962.30034.10275956147958212569.stgit@firesoul>
+ <176236369293.30034.1875162194564877560.stgit@firesoul>
+ <20251106172919.24540443@kernel.org>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20251106172919.24540443@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed 2025-11-05 14:59:53, bot+bpf-ci@kernel.org wrote:
-> > diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> > index 1e7635864..9455e3bb0 100644
-> > --- a/kernel/kallsyms.c
-> > +++ b/kernel/kallsyms.c
-> > @@ -423,6 +423,37 @@ int lookup_symbol_name(unsigned long addr, char *symname)
-> >  	return lookup_module_symbol_name(addr, symname);
-> >  }
-> >
-> > +#ifdef CONFIG_STACKTRACE_BUILD_ID
-> > +
-> > +static int append_buildid(char *buffer,  const char *modname,
-> > +			  const unsigned char *buildid)
-> > +{
-> > +	if (!modname)
-> > +		return 0;
-> > +
-> > +	if (!buildid) {
-> > +		pr_warn_once("Undefined buildid for the module %s\n", modname);
-> > +		return 0;
-> > +	}
+
+
+On 07/11/2025 02.29, Jakub Kicinski wrote:
+> On Wed, 05 Nov 2025 18:28:12 +0100 Jesper Dangaard Brouer wrote:
+>> The changes introduced in commit dc82a33297fc ("veth: apply qdisc
+>> backpressure on full ptr_ring to reduce TX drops") have been found to cause
+>> a race condition in production environments.
+>>
+>> Under specific circumstances, observed exclusively on ARM64 (aarch64)
+>> systems with Ampere Altra Max CPUs, a transmit queue (TXQ) can become
+>> permanently stalled. This happens when the race condition leads to the TXQ
+>> entering the QUEUE_STATE_DRV_XOFF state without a corresponding queue wake-up,
+>> preventing the attached qdisc from dequeueing packets and causing the
+>> network link to halt.
+>>
+>> As a first step towards resolving this issue, this patch introduces a
+>> failsafe mechanism. It enables the net device watchdog by setting a timeout
+>> value and implements the .ndo_tx_timeout callback.
+>>
+>> If a TXQ stalls, the watchdog will trigger the veth_tx_timeout() function,
+>> which logs a warning and calls netif_tx_wake_queue() to unstall the queue
+>> and allow traffic to resume.
+>>
+>> The log message will look like this:
+>>
+>>   veth42: NETDEV WATCHDOG: CPU: 34: transmit queue 0 timed out 5393 ms
+>>   veth42: veth backpressure stalled(n:1) TXQ(0) re-enable
+>>
+>> This provides a necessary recovery mechanism while the underlying race
+>> condition is investigated further. Subsequent patches will address the root
+>> cause and add more robust state handling.
+>>
+>> Fixes: dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to reduce TX drops")
+>> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
+>> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
 > 
-> When ftrace_mod_address_lookup() succeeds in kallsyms_lookup_buildid(),
-> it sets *modname but doesn't initialize *modbuildid. This leaves the
-> buildid variable uninitialized when __sprint_symbol() calls
-> append_buildid().
-
-Just for record. This is a great analyze. This patchset is fixing
-this bug in a later patch. ;-)
-
-> Can the check above read uninitialized memory?> 
-> Looking at kallsyms_lookup_buildid():
-> - module_address_lookup() properly initializes both modname and
->   modbuildid
-> - bpf_address_lookup() sets modname=NULL (so append_buildid isn't
->   called)
-> - ftrace_mod_address_lookup() sets modname=mod_map->mod->name but has
->   no modbuildid parameter
+> I think this belongs in net-next.. Fail safe is not really a bug fix.
+> I'm slightly worried we're missing a corner case and will cause
+> timeouts to get printed for someone's config.
 > 
-> The commit message mentions wanting to catch when lookup functions don't
-> handle buildid, but shouldn't kallsyms_lookup_buildid() initialize
-> *modbuildid=NULL before calling the lookup functions to avoid undefined
-> behavior?
 
-It seems that we are going this way, see
-https://lore.kernel.org/all/aQ3vWIqG31BgE4YD@pathway.suse.cz/
+This is a recovery fix.  If the race condition fix isn't 100% then this
+patch will allow veth to recover.  Thus, to me it makes sense to group
+these two patches together.
 
-Best Regards,
-Petr
+I'm more worried that we we're missing a corner case that we cannot
+recover from. Than triggering timeouts to get printed, for a config
+where NAPI consumer veth_poll() takes more that 5 seconds to run (budget
+max 64 packets this needs to consume packets at a rate less than 12.8
+pps). It might be good to get some warnings if the system is operating
+this slow.
+
+Also remember this is not the default config that most people use.
+The code is only activated if attaching a qdisc to veth, which isn't
+default. Plus, NAPI mode need to be activated, where in normal NAPI mode
+the producer and consumer usually runs on the same CPU, which makes it
+impossible to overflow the ptr_ring.  The veth backpressure is primarily
+needed when running with threaded-NAPI, where it is natural that
+producer and consumer runs on different CPUs. In our production setup
+the consumer is always slower than the producer (as the product inside
+the namespace have installed too many nftables rules).
+
+
+>> +static void veth_tx_timeout(struct net_device *dev, unsigned int txqueue)
+>> +{
+>> +	struct netdev_queue *txq = netdev_get_tx_queue(dev, txqueue);
+>> +
+>> +	netdev_err(dev, "veth backpressure stalled(n:%ld) TXQ(%u) re-enable\n",
+>> +		   atomic_long_read(&txq->trans_timeout), txqueue);
+> 
+> If you think the trans_timeout is useful, let's add it to the message
+> core prints? And then we can make this msg just veth specific, I don't
+> think we should be repeating what core already printed.
+
+The trans_timeout is a counter for how many times this TXQ have seen a
+timeout.  It is practical as it directly tell us if this a frequent
+event (without having to search log files for similar events).
+
+It does make sense to add this to the core message ("NETDEV WATCHDOG")
+with the same argument.  For physical NICs these logs are present in
+production. Looking at logs through Kibana (right now) and it would make
+my life easier to see the number of times the individual queues have
+experienced timeouts.  The logs naturally gets spaced in time by the
+timeout, making it harder to tell the even frequency. Such a patch would
+naturally go though net-next.
+
+Do you still want me to remove the frequency counter from this message?
+By the same argument it is practical for me to have as a single log line
+when troubleshooting this in practice.  BTW, I've already backported
+this watchdog patch to prod kernel (without race fix) and I'll try to
+reproduce the race in staging/lab on some ARM64 servers.  If I reproduce
+it will be practical to have this counter.
+
+--Jesper
 
