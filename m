@@ -1,204 +1,522 @@
-Return-Path: <bpf+bounces-73938-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73939-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A22CCC3E792
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 05:47:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B925C3E79E
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 05:57:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8714E3ACEB4
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 04:47:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1A043AC89A
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 04:57:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B2926F2B3;
-	Fri,  7 Nov 2025 04:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2F7C286409;
+	Fri,  7 Nov 2025 04:57:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hyx0fEne"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD764315E;
-	Fri,  7 Nov 2025 04:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 617391A254E
+	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 04:57:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762490843; cv=none; b=KG4uMGT3lcZJBGfpyHsYVEL0mdg1T9cngO5OT/VwNfE6SctNa1AI4mrCVlcMtn+jIT9ED17RCdOpVEYjhqZh2PVHNqjPBsih/mSha96pw/DbsnldJYHJ+K5nelYneu6pWhmHebOLcfh2NKdtcC+HMZZIEiLwykVfRXiojNM6sS8=
+	t=1762491464; cv=none; b=ikz7TbkPq6cZ2RrZnFNQuENuG+IRt858rDPKEZJD9EhjQoS47xWYvhcsQTJIaFQ5eSDYhTBqmTEfd1WlDpoX3qEO2yRJo5XgesfvrF+N4oh7w27Qood7A2g5IQ7ieXSnWqfFYai28+8+bhSs8xJzrRcSg4fR+u0a9/+OsrkrouI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762490843; c=relaxed/simple;
-	bh=VCJ59lycIri74X1yqvv8ek1VO/VNrs0puBEdc9NZc2A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ftGa31RkJNVIm6SCKJaQhJRHuYAkEujoUKuWIGHFbEOUZhY/pt1/qWUo7eI9zC4spiSrdad/opZXg4aTCF9k/1XS677LzvXHArmCy2d8XCzjYuCCIMlog5z52imWm9hCbvzhFQWLGt5FDSTnbvk1iwxO3fTPFIkw7UksoX44IpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-c45ff70000001609-0a-690d79d21061
-Date: Fri, 7 Nov 2025 13:47:08 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
-	davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
-	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch,
-	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org,
-	david@redhat.com, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
-	ilias.apalodimas@linaro.org, willy@infradead.org,
-	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
-	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
-	almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
-	bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
-	sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com,
-	dtatulea@nvidia.com
-Subject: Re: [RFC mm v5 1/2] page_pool: check nmdesc->pp to see its usage as
- page pool for net_iov not page-backed
-Message-ID: <20251107044708.GA54407@system.software.com>
-References: <20251103075108.26437-1-byungchul@sk.com>
- <20251103075108.26437-2-byungchul@sk.com>
- <20251106173320.2f8e683a@kernel.org>
- <20251107015902.GA3021@system.software.com>
- <20251106180810.6b06f71a@kernel.org>
+	s=arc-20240116; t=1762491464; c=relaxed/simple;
+	bh=obVSxsp0lgu2QTh9aB9BgbxdmU1tspuG0J8KPjRS9YY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J8t+ovO5ND9wNx5mS5gsKn5Oa9IZb1FRxlk9RN71NkDfpiWp/rRS/Qq4r2uHlAlsN7ijxEXuCgqNByfzjqpnmsELG/pqvOaCY22wtI9SdNBVaoOy95GNfsq3Pj+h5H/KL9VndxJldE9zBvcrepizpKkxe7OcDbxHf8F5YdQi/zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hyx0fEne; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b4736e043f9so45052366b.0
+        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 20:57:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762491461; x=1763096261; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uUvmlQbRioEOhqgx+Ppu7Wngw7C7d6tWofXlwiWr8EY=;
+        b=hyx0fEneOGJXAwgG864r/3Isgkxefm2M17gwwUSNNxRrGy5m2duee77r1HQ8oYXs1B
+         ffaqVPNZh4oiCGKjuIOgEVO2nONMbxDqHxAc1VYu9v+4R3cG4xpSElDf147X4Ny3qVuT
+         qmxrz9T2jV6O56ElTa9aGcpn8B3lq+g3f48efEaMXGOAZ03wfddCtQMEL1drrzbhbMNg
+         sGjVnczekHLU+76ofzoDEd2NZXGJ2qKcuzBoCiFOmvUfMNZ0OlbzcgHaiLPTosmGu61Z
+         nfb7yUuCqq2ow/iA9psDqnyNWZlVO8kXjA9NW2dvxXHYZNNE+1Cta6NE+4kzWDlvYjK4
+         FkXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762491461; x=1763096261;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=uUvmlQbRioEOhqgx+Ppu7Wngw7C7d6tWofXlwiWr8EY=;
+        b=GKGzxAePnlPGmAJ08Y01465IgKGlFZR4d5kt/cReQFRFRxzNAVtwKLhrHYjt7BaqNL
+         s2cC9Siau4RfUJQVTjcRq4fkrVt5h6+0YVZiH8DDqw/mMI6thbW4JyG+Sx4/YgMaj9X7
+         AZSae4hbLU3SZ563CjKrk8vIzk2PmSwsP8AuZSdt5QUVZ0PtFkbH/7mNfUWwoNAHxmEw
+         KFQTC8TR6PEUZ0+m6gDbeLadf2fXl5YsFkprHZnJ/IKq+gzc4oDWCtrWOva/RRaaAbhf
+         7Wmbe1CmJv5/2oJXkqANWPhNkF/w3WSmv7qT6s+YEr1xUcQeQ/m4QMS9YtW7W1DpgCMd
+         E6zQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWp1zcgPGRjLpl9hx9j07/EE4ipkZlIXJWPCzFCiy4f07poTOPZPBRKiBm+/UzZNG5zrqA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzaNgRHh0o35l91+h6FK51tBeoVPCuyy2Nh0EOHXGaf9u4kSHbE
+	ieDvF/sGi1NxJ1r0hS2Xs1POXDb7Ty6EigKJP2zzmjxKEpkhgxDfcDffsAauYFaTgNc3oWSFxig
+	BeNJZQ1K7hEGGMyAEoQpQuVO4ZMIa6og=
+X-Gm-Gg: ASbGncv2RWcHSJgYM2A4BC0YGbTplGwJD9LYE/BDmARJE9fsDD/Zl5tLELoL8c3MlXF
+	vvJw67mXnn6UnPSpXp1wSZ6XqzyKgnvw+//TyN/jfX43o40qfs8jxKtm4e00gcvhTHmHCMlxA24
+	Xkyh3Ngi5lW0bN7tsheBGW3RYs+5iYF/O5oP4+qByQcexaHLnrvWlVFHGLNn73rwuoDaf4brRzJ
+	ET6Q7t6nq+EWayBwFQUhqeq7GJrOT69yApu2CLGY+k+3mTxFhraQ0p3lwW9PQ==
+X-Google-Smtp-Source: AGHT+IEutS9TBc7mmjCecOgGAwsuDbl+YjNZGqV1KE8rfZ4O5r8pRFRuY9qw/wFZg0KwlwFwXhBHFYTyLHx9GhgM3Fk=
+X-Received: by 2002:a17:907:7f87:b0:b72:614a:ab42 with SMTP id
+ a640c23a62f3a-b72c0657cdfmr177605266b.0.1762491460532; Thu, 06 Nov 2025
+ 20:57:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251106180810.6b06f71a@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRzGe885e8/ZcHVat7dEi3URhOxCwT+o6Et0IKKiD0UFdciDDnXG
-	vKTRZZZgSdrVnNNqEdVSYzjzMnGr5l2JxCiPlK5WuUpTcbU0pdqsqG8/nufh938/vByt6VAs
-	4HT6VMmgFxO1WMWoPofdXN6Vqdat7OjWQImtHEPZWAbcfV2rgPFyHwUlpdUIvoy/ZOGnsxmB
-	v7EFw0DDKIJbNwM0lDzNZuCr7TsNjjofgk+m+xjeN3tZKLNvA8+dfgbqc2po8J5vxZCXPUGD
-	c3yIhVO11qC40shCZ3W+Aq58v01DjfE1C8/qSjD0lf9UQL87j4E28z0GRgoaafDkb4Jmy1wI
-	dAwiaLTVUBA4dw3D86I6Cqqcz1m43GXB8Dbbg6CrwctAweQZDMVZ+QgmxoLKoQtfFFDc1Mdu
-	ihGyZBkLDYPDtPDgXg8lvDBdZATZ1U4JDnMvK1jsaUKlNVrIlbtowV56Fgv20Uus8OpFPRZa
-	TROM4HizTnDU+ikh7/QQ3jFnr2p9rJSoS5cMKzYeVMX3D6gPv5yX8fFyIWNEuTNzkZIj/BrS
-	5rxK/eWehxVMiBl+CWnvLqJDjPkoIsvjUzw7mGdXFgU3Ko7mR1hikvsUoWIWn0pGho1TIzUP
-	5LqlkA6NNHwvIib/efy7mEnait5NXaD5aCL/+Bi8zAU5nNz9wYViJb+KWF1NU845/GLyqLqF
-	CnkIP8iRG9eMf146nzy2yswFxJv/05r/05r/aS2ILkUanT49SdQlromJz9TrMmIOJSfZUfCL
-	3Tk+ua8WjXbuciOeQ9ow9ZgrTKdRiOkpmUluRDhaO1u9Vh+M1LFi5lHJkHzAkJYopbhROMdo
-	56lXB47Eavg4MVVKkKTDkuFvS3HKBUbEiMXmyA23FAVHF3nTjrk7E7SWnoRIl7g10u+pcuyP
-	ODu4sPXch5Nvc6aTirhhr8fRNIuLudS5R2XzIay/7XqVvNu/eWfOk27biWWRvoj1vsKWJQcM
-	08pm1E8eG4j6NtkevvaEckuE0bk0C/eWKRvrt6+8aC3VLo8bC1TEgtGmZVLixVXRtCFF/AWh
-	HQ69XgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SW0hTcRzH+Z9zds5xeOJ4KQ/W04qCkZpU9utCWBD9CYp6inqxUx5ypFM2
-	E9fFZo4ukmZZuK0Zi6jMnOY03aSpODMvD8XKmpaXrIzSlqiZU7M2I+rtw/f2e/mxZHiFLJpV
-	qTMljVpMVdBySr5nc16MR8ep1tg2gKWqgoYH09lwb9AhA3/FJwIs5XUIJv1vGPjlakMw0fqU
-	hhH3OILbt6ZIsDwzUPC9aoYEZ8MnBF+MNho+tg0x8MC+GwbuDlPw+Hw9CUOX22koMMyS4PL7
-	GDjrKAsM1+gZcJd2yOB5XaEMrs3cIaFeP8jAiwYLDf0Vv2Qw3FJAQYf5PgVj11tJGChMhDbr
-	EpjqGkXQWlVPwNSlUhq6TQ0EPHJ1M1DssdLw3jCAwOMeouD63AUabuQWIpidDkz6iiZlcONJ
-	P5MYh3O9Xhq7R7+RuPZ+D4FfGa9Q2NvYSWCnuY/BVvtxXFOmxPleD4nt5RdpbB+/yuC3rx7T
-	uN04S2Hnu43Y6ZggcEGej9675KB8S7KUqsqSNHFbD8lThke4jDdR2Z+LSyg9yg/LRyGswK8T
-	epqqqSBT/Aqh87WJDDLNrxK8Xv8CRwZ0Q40pkJGzJD/GCEZvvyxoRPCZwtg3/UKI40G4aS0h
-	g6Fwvg8JxonL9B8jTOgwfVi4QPJKwTv/mchHbICXCvfm2aAcwscLZY1PFjYX88uF5rqnRBHi
-	zP+1zf+1zf/aVkSWo0iVOitNVKWuj9UeS9GpVdmxR9LT7CjwQ3dPz11xoMkXO1sQzyJFKDfd
-	GKoKl4lZWl1aCxJYUhHJrVcHJC5Z1J2QNOlJmuOpkrYFLWUpRRS3a790KJw/KmZKxyQpQ9L8
-	dQk2JFqPNuiKlkX3FCe6T0bGxOWs3H42t2vbNs+ZRQlrdcrakpIcZ+0m7Do82rzHsCbeUDnz
-	tbpL6LI1p4eNvPRx9nbT7I9dlYsP+iLW7Ssd/MmGnVY6bEmrhvy3qeaUS5acn2L5w8SEuaRT
-	ved6Vy9aFn8yxHegf2VGk+jqGNvh7rZ0NtkUlDZFjFeSGq34G6w0CIU/AwAA
-X-CFilter-Loop: Reflected
+References: <20251104134033.344807-1-dolinux.peng@gmail.com>
+ <20251104134033.344807-4-dolinux.peng@gmail.com> <CAEf4BzaxU1ea_cVRRD9EenTusDy54tuEpbFqoDQUZVf46zdawg@mail.gmail.com>
+ <a2aa0996f076e976b8aef43c94658322150443b6.camel@gmail.com>
+ <CAEf4Bzb73ZGjtbwbBDg9wEPtXkL5zXc3SRqfbeyuqNeiPGhyoA@mail.gmail.com>
+ <7c77c74a761486c694eba763f9d0371e5c354d31.camel@gmail.com>
+ <CAErzpmtu7UuP9ttf1oQSuVh6f4BAkKsmfZBjj_+OHs9-oDUfjQ@mail.gmail.com>
+ <CAEf4Bzb3Eu0J83O=Y4KA-LkzBMjtx7cbonxPzkiduzZ1Pedajg@mail.gmail.com>
+ <CAErzpmtJq5Qqdvy+9B8WmvZFQxDt6jKidNqtTMezesP0b=K8ZA@mail.gmail.com> <CAEf4BzZsgrKWwTZkdv-WviXvGkhV-ZyQbpb8wDqBGNventuRcg@mail.gmail.com>
+In-Reply-To: <CAEf4BzZsgrKWwTZkdv-WviXvGkhV-ZyQbpb8wDqBGNventuRcg@mail.gmail.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Date: Fri, 7 Nov 2025 12:57:28 +0800
+X-Gm-Features: AWmQ_bmhz9eWfWc0bL69iohIKFAp0AxBrhKI-9VMIE7X-mruIaPLVpR4x8i2KTY
+Message-ID: <CAErzpmu_FD_mHcU4uL0XpNU00XngY-1vN5OkKcBBfH2Mr-vY9A@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 3/7] libbpf: Optimize type lookup with binary
+ search for sorted BTF
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, ast@kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>, Song Liu <song@kernel.org>, 
+	pengdonglin <pengdonglin@xiaomi.com>, zhangxiaoqin@xiaomi.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 06, 2025 at 06:08:10PM -0800, Jakub Kicinski wrote:
-> On Fri, 7 Nov 2025 10:59:02 +0900 Byungchul Park wrote:
-> > > > page-backed, the identification cannot be based on the page_type.
-> > > > Instead, nmdesc->pp can be used to see if it belongs to a page pool, by
-> > > > making sure nmdesc->pp is NULL otherwise.
+On Fri, Nov 7, 2025 at 1:31=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Nov 5, 2025 at 11:49=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.=
+com> wrote:
+> >
+> > On Thu, Nov 6, 2025 at 2:11=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
 > > >
-> > > Please explain why. Isn't the type just a value in a field?
-> > > Which net_iov could also set accordingly.. ?
+> > > On Wed, Nov 5, 2025 at 5:48=E2=80=AFAM Donglin Peng <dolinux.peng@gma=
+il.com> wrote:
+> > > >
+> > > > On Wed, Nov 5, 2025 at 9:17=E2=80=AFAM Eduard Zingerman <eddyz87@gm=
+ail.com> wrote:
+> > > > >
+> > > > > On Tue, 2025-11-04 at 16:54 -0800, Andrii Nakryiko wrote:
+> > > > > > On Tue, Nov 4, 2025 at 4:19=E2=80=AFPM Eduard Zingerman <eddyz8=
+7@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Tue, 2025-11-04 at 16:11 -0800, Andrii Nakryiko wrote:
+> > > > > > >
+> > > > > > > [...]
+> > > > > > >
+> > > > > > > > > @@ -897,44 +903,134 @@ int btf__resolve_type(const struct=
+ btf *btf, __u32 type_id)
+> > > > > > > > >         return type_id;
+> > > > > > > > >  }
+> > > > > > > > >
+> > > > > > > > > -__s32 btf__find_by_name(const struct btf *btf, const cha=
+r *type_name)
+> > > > > > > > > +/*
+> > > > > > > > > + * Find BTF types with matching names within the [left, =
+right] index range.
+> > > > > > > > > + * On success, updates *left and *right to the boundarie=
+s of the matching range
+> > > > > > > > > + * and returns the leftmost matching index.
+> > > > > > > > > + */
+> > > > > > > > > +static __s32 btf_find_type_by_name_bsearch(const struct =
+btf *btf, const char *name,
+> > > > > > > > > +                                               __s32 *le=
+ft, __s32 *right)
+> > > > > > > >
+> > > > > > > > I thought we discussed this, why do you need "right"? Two b=
+inary
+> > > > > > > > searches where one would do just fine.
+> > > > > > >
+> > > > > > > I think the idea is that there would be less strcmp's if ther=
+e is a
+> > > > > > > long sequence of items with identical names.
+> > > > > >
+> > > > > > Sure, it's a tradeoff. But how long is the set of duplicate nam=
+e
+> > > > > > entries we expect in kernel BTF? Additional O(logN) over 70K+ t=
+ypes
+> > > > > > with high likelihood will take more comparisons.
+> > > > >
+> > > > > $ bpftool btf dump file vmlinux | grep '^\[' | awk '{print $3}' |=
+ sort | uniq -c | sort -k1nr | head
+> > > > >   51737 '(anon)'
+> > > > >     277 'bpf_kfunc'
+> > > > >       4 'long
+> > > > >       3 'perf_aux_event'
+> > > > >       3 'workspace'
+> > > > >       2 'ata_acpi_gtm'
+> > > > >       2 'avc_cache_stats'
+> > > > >       2 'bh_accounting'
+> > > > >       2 'bp_cpuinfo'
+> > > > >       2 'bpf_fastcall'
+> > > > >
+> > > > > 'bpf_kfunc' is probably for decl_tags.
+> > > > > So I agree with you regarding the second binary search, it is not
+> > > > > necessary.  But skipping all anonymous types (and thus having to
+> > > > > maintain nr_sorted_types) might be useful, on each search two
+> > > > > iterations would be wasted to skip those.
+> > >
+> > > fair enough, eliminating a big chunk of anonymous types is useful, le=
+t's do this
+> > >
+> > > >
+> > > > Thank you. After removing the redundant iterations, performance inc=
+reased
+> > > > significantly compared with two iterations.
+> > > >
+> > > > Test Case: Locate all 58,719 named types in vmlinux BTF
+> > > > Methodology:
+> > > > ./vmtest.sh -- ./test_progs -t btf_permute/perf -v
+> > > >
+> > > > Two iterations:
+> > > > | Condition          | Lookup Time | Improvement |
+> > > > |--------------------|-------------|-------------|
+> > > > | Unsorted (Linear)  | 17,282 ms   | Baseline    |
+> > > > | Sorted (Binary)    | 19 ms       | 909x faster |
+> > > >
+> > > > One iteration:
+> > > > Results:
+> > > > | Condition          | Lookup Time | Improvement |
+> > > > |--------------------|-------------|-------------|
+> > > > | Unsorted (Linear)  | 17,619 ms   | Baseline    |
+> > > > | Sorted (Binary)    | 10 ms       | 1762x faster |
+> > > >
+> > > > Here is the code implementation with a single iteration approach.
+> > > > I believe this scenario differs from find_linfo because we cannot
+> > > > determine in advance whether the specified type name will be found.
+> > > > Please correct me if I've misunderstood anything, and I welcome any
+> > > > guidance on this matter.
+> > > >
+> > > > static __s32 btf_find_type_by_name_bsearch(const struct btf *btf,
+> > > > const char *name,
+> > > >                                                 __s32 start_id)
+> > > > {
+> > > >         const struct btf_type *t;
+> > > >         const char *tname;
+> > > >         __s32 l, r, m, lmost =3D -ENOENT;
+> > > >         int ret;
+> > > >
+> > > >         /* found the leftmost btf_type that matches */
+> > > >         l =3D start_id;
+> > > >         r =3D btf__type_cnt(btf) - 1;
+> > > >         while (l <=3D r) {
+> > > >                 m =3D l + (r - l) / 2;
+> > > >                 t =3D btf_type_by_id(btf, m);
+> > > >                 if (!t->name_off) {
+> > > >                         ret =3D 1;
+> > > >                 } else {
+> > > >                         tname =3D btf__str_by_offset(btf, t->name_o=
+ff);
+> > > >                         ret =3D !tname ? 1 : strcmp(tname, name);
+> > > >                 }
+> > > >                 if (ret < 0) {
+> > > >                         l =3D m + 1;
+> > > >                 } else {
+> > > >                         if (ret =3D=3D 0)
+> > > >                                 lmost =3D m;
+> > > >                         r =3D m - 1;
+> > > >                 }
+> > > >         }
+> > > >
+> > > >         return lmost;
+> > > > }
+> > >
+> > > There are different ways to implement this. At the highest level,
+> > > implementation below just searches for leftmost element that has name
+> > > >=3D the one we are searching for. One complication is that such elem=
+ent
+> > > might not event exists. We can solve that checking ahead of time
+> > > whether the rightmost type satisfied the condition, or we could do
+> > > something similar to what I do in the loop below, where I allow l =3D=
+=3D r
+> > > and then if that element has name >=3D to what we search, we exit
+> > > because we found it. And if not, l will become larger than r, we'll
+> > > break out of the loop and we'll know that we couldn't find the
+> > > element. I haven't tested it, but please take a look and if you decid=
+e
+> > > to go with such approach, do test it for edge cases, of course.
+> > >
+> > > /*
+> > >  * We are searching for the smallest r such that type #r's name is >=
+=3D name.
+> > >  * It might not exist, in which case we'll have l =3D=3D r + 1.
+> > >  */
+> > > l =3D start_id;
+> > > r =3D btf__type_cnt(btf) - 1;
+> > > while (l < r) {
+> > >     m =3D l + (r - l) / 2;
+> > >     t =3D btf_type_by_id(btf, m);
+> > >     tname =3D btf__str_by_offset(btf, t->name_off);
+> > >
+> > >     if (strcmp(tname, name) >=3D 0) {
+> > >         if (l =3D=3D r)
+> > >             return r; /* found it! */
 > >
-> > page_type field is in 'struct page', so 'struct page' can check the type.
+> > It seems that this if condition will never hold, because a while(l < r)=
+ loop
+>
+> It should be `while (l <=3D r)`, I forgot to update it, but I mentioned
+> that I do want to allow l =3D=3D r condition.
+>
+> > is used. Moreover, even if the condition were to hold, it wouldn't guar=
+antee
+> > a successful search.
+>
+> Elaborate please on "wouldn't guarantee a successful search".
+
+I think a successful search is that we can successfully find the element th=
+at
+we want.
+
+>
 > >
-> > However, the field is not in 'struct net_iov', so 'struct net_iov' that
-> > is not backed by page, cannot use the type checking to see if it's page
-> > pool'ed instance.
+> > >         r =3D m;
+> > >     } else {
+> > >         l =3D m + 1;
+> > >     }
+> > > }
+> > > /* here we know given element doesn't exist, return index beyond end =
+of types */
+> > > return btf__type_cnt(btf);
 > >
-> > I'm afraid I didn't get your questions.  I will try to explain again
-> > properly if you give me more detail and example about your questions or
-> > requirement.
-> 
-> net_iov has members in the same place as page. page_type is just
-> a field right now.
+> > I think that return -ENOENT seems more reasonable.
+>
+> Think how you will be using this inside btf_find_type_by_name_kind():
+>
+>
+> int idx =3D btf_find_by_name_bsearch(btf, name);
+>
+> for (int n =3D btf__type_cnt(btf); idx < n; idx++) {
+>     struct btf_type *t =3D btf__type_by_id(btf, idx);
+>     const char *tname =3D btf__str_by_offset(btf, t->name_off);
+>     if (strcmp(tname, name) !=3D 0)
+>         return -ENOENT;
+>     if (btf_kind(t) =3D=3D kind)
+>         return idx;
+> }
+> return -ENOENT;
 
-The current layout is:
+Thanks, it seems cleaner.
 
-  struct page {
-	memdesc_flags_t flags;
-	union {
-		...
-		struct {
-			unsigned long pp_magic;
-			struct page_pool *pp;
-			unsigned long _pp_mapping_pad;
-			unsigned long dma_addr;
-			atomic_long_t pp_ref_count;
-		};
-		...
-	};
-	unsigned int page_type;
-	...
-  };
+>
+>
+> Having btf_find_by_name_bsearch() return -ENOENT instead of
+> btf__type_cnt() just will require extra explicit -ENOENT handling. And
+> given the function now can return "error", we'd need to either handle
+> other non-ENOENT errors, to at least leave comment that this should
+> never happen, though interface itself looks like it could.
+>
+> This is relatively minor and its all internal implementation, so we
+> can change that later. But I'm explaining my reasons for why I'd
+> return index of non-existing type after the end, just like you'd do
+> with pointer-based interfaces that return pointer after the last
+> element.
 
-  struct net_iov {
-	union {
-		struct netmem_desc desc;
-		struct
-		{
-			unsigned long _flags;
-			unsigned long pp_magic;
-			struct page_pool *pp;
-			unsigned long _pp_mapping_pad;
-			unsigned long dma_addr;
-			atomic_long_t pp_ref_count;
-		};
-	};
-	struct net_iov_area *owner; // the same offet of page_type
-	enum net_iov_type type;
-  };
+Thanks, I see.
 
-The offset of page_type in struct page cannot be used in struct net_iov
-for the same purpose, since the offset in struct net_iov is for storing
-(struct net_iov_area *)owner.
+>
+>
+> >
+> > >
+> > >
+> > > We could have checked instead whether strcmp(btf__str_by_offset(btf,
+> > > btf__type_by_id(btf, btf__type_cnt() - 1)->name_off), name) < 0 and
+> > > exit early. That's just a bit more code duplication of essentially
+> > > what we do inside the loop, so that if (l =3D=3D r) seems fine to me,=
+ but
+> > > I'm not married to this.
+> >
+> > Sorry, I believe that even if strcmp(btf__str_by_offset(btf,
+> > btf__type_by_id(btf,
+> > btf__type_cnt() - 1)->name_off), name) >=3D 0, it still doesn't seem to
+> > guarantee that the search will definitely succeed.
+>
+> If the last element has >=3D name, search will definitely find at least
+> that element. What do you mean by "succeed"? All I care about here is
 
-Yeah, you can tell 'why don't we add the field, page_type, to struct
-net_iov (or struct netmem_desc)' so as to be like:
+Thank you. By "successful search," I mean finding the exact matching
+element we're looking for=E2=80=94not just the first element that meets the=
+ "=E2=89=A5"
+condition.
 
-  struct net_iov {
-	union {
-		struct netmem_desc desc;
-		struct
-		{
-			unsigned long _flags;
-			unsigned long pp_magic;
-			struct page_pool *pp;
-			unsigned long _pp_mapping_pad;
-			unsigned long dma_addr;
-			atomic_long_t pp_ref_count;
-+			unsigned int page_type; // add this field newly
-		};
-	};
-	struct net_iov_area *owner; // the same offet of page_type
-	enum net_iov_type type;
-  };
+Here's a concrete example to illustrate the issue:
 
-I think we can make it anyway but it makes less sense to add page_type
-to struct net_iov, only for PGTY_netpp.
+Base BTF contains: {"A", "C", "E", "F"}
+Split BTF contains: {"B", "D"}
+Target search: "D" in split BTF
 
-It'd be better to use netmem_desc->pp for that purpose, IMO.
+The current implementation recursively searches from the base BTF first.
+While "D" is lexicographically =E2=89=A4 "F" (the last element in base BTF)=
+, "D" doesn't
+actually exist in the base BTF. When the binary search reaches the l
+=3D=3D r condition,
+it returns the index of "E" instead.
 
-Thoughts?
+This requires an extra name comparison check after btf_find_by_name_bsearch
+returns, which could be avoided in the first loop iteration if the
+search directly
+identified exact matches.
 
-	Byungchul
+int idx =3D btf_find_by_name_bsearch(btf, name);
 
-> static __always_inline int Page##uname(const struct page *page)         \
-> {                                                                       \
->         return data_race(page->page_type >> 24) == PGTY_##lname;        \
-> }                                                                       \
-> 
-> The whole thing works right now by overlaying one struct on top of
-> another, and shared members being in the same places.
-> 
-> Is this clear enough?
+for (int n =3D btf__type_cnt(btf); idx < n; idx++) {
+    struct btf_type *t =3D btf__type_by_id(btf, idx);
+    const char *tname =3D btf__str_by_offset(btf, t->name_off);
+    if (strcmp(tname, name) !=3D 0)  <<< This check is redundant on the fir=
+st loop
+                                                            iteration
+when a matching index is found
+        return -ENOENT;
+    if (btf_kind(t) =3D=3D kind)
+        return idx;
+}
+return -ENOENT;
+
+I tested this with a simple program searching for 3 in {0, 1, 2, 4, 5}:
+
+int main(int argc, char *argv[])
+{
+        int values[] =3D {0, 1, 2, 4, 5};
+        int to_find;
+        int i;
+
+        to_find =3D atoi(argv[1]);;
+
+        for (i =3D 0; i < ARRAY_SIZE(values); i++)
+                printf("[%d] =3D %d\n", i , values[i]);
+
+        printf("To Find %d\n", to_find);
+
+        {
+                int l, m, r;
+
+                l =3D 0;
+                r =3D ARRAY_SIZE(values) - 1;
+
+                while (l <=3D r) {
+                        m =3D l + (r- l) / 2;
+                        if (values[m] >=3D to_find) {
+                                if (l =3D=3D r) {
+                                        printf("!!!! Found: [%d] =3D=3D>
+%d\n", r, values[r]);
+                                        break;
+                                }
+                                r =3D m;
+                        } else {
+                                l =3D m + 1;
+                        }
+                }
+
+                printf("END: l: %d, r: %d\n", l, r);
+        }
+
+        return 0;
+}
+
+Output:
+[0] =3D 0
+[1] =3D 1
+[2] =3D 2
+[3] =3D 4
+[4] =3D 5
+To Find 3
+!!!! Found: [3] =3D=3D> 4
+END: l: 3, r: 3
+
+The search returns index 3 (value 4), which is the first value =E2=89=A5 3,
+but since 4 =E2=89=A0 3,
+it's not an exact match. Thus, the algorithm cannot guarantee a
+successful search
+for the exact element without additional checks.
+
+> that binary search loop doesn't loop forever and it returns correct
+> index (or detects that no element can be found).
+>
+> >
+> > >
+> > > >
+> > > > static __s32 btf_find_type_by_name_kind(const struct btf *btf, int =
+start_id,
+> > > >                                    const char *type_name, __u32 kin=
+d)
+> > > > {
+> > > >         const struct btf_type *t;
+> > > >         const char *tname;
+> > > >         int err =3D -ENOENT;
+> > > >         __u32 total;
+> > > >
+> > > >         if (!btf)
+> > > >                 goto out;
+> > > >
+> > > >         if (start_id < btf->start_id) {
+> > > >                 err =3D btf_find_type_by_name_kind(btf->base_btf, s=
+tart_id,
+> > > >                                                  type_name, kind);
+> > > >                 if (err =3D=3D -ENOENT)
+> > > >                         start_id =3D btf->start_id;
+> > > >         }
+> > > >
+> > > >         if (err =3D=3D -ENOENT) {
+> > > >                 if (btf_check_sorted((struct btf *)btf)) {
+> > > >                         /* binary search */
+> > > >                         bool skip_first;
+> > > >                         int ret;
+> > > >
+> > > >                         /* return the leftmost with maching names *=
+/
+> > > >                         ret =3D btf_find_type_by_name_bsearch(btf,
+> > > > type_name, start_id);
+> > > >                         if (ret < 0)
+> > > >                                 goto out;
+> > > >                         /* skip kind checking */
+> > > >                         if (kind =3D=3D -1)
+> > > >                                 return ret;
+> > > >                         total =3D btf__type_cnt(btf);
+> > > >                         skip_first =3D true;
+> > > >                         do {
+> > > >                                 t =3D btf_type_by_id(btf, ret);
+> > > >                                 if (btf_kind(t) !=3D kind) {
+> > > >                                         if (skip_first) {
+> > > >                                                 skip_first =3D fals=
+e;
+> > > >                                                 continue;
+> > > >                                         }
+> > > >                                 } else if (skip_first) {
+> > > >                                         return ret;
+> > > >                                 }
+> > > >                                 if (!t->name_off)
+> > > >                                         break;
+> > > >                                 tname =3D btf__str_by_offset(btf, t=
+->name_off);
+> > > >                                 if (tname && !strcmp(tname, type_na=
+me))
+> > > >                                         return ret;
+> > > >                                 else
+> > > >                                         break;
+> > > >                         } while (++ret < total);
+> > > >                 } else {
+> > > >                         /* linear search */
+> > > > ...
+> > > >                 }
+> > > >         }
+> > > >
+> > > > out:
+> > > >         return err;
+> > > > }
 
