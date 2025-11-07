@@ -1,217 +1,250 @@
-Return-Path: <bpf+bounces-73962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5D52C40B28
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 16:56:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B50C3C40B3A
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 16:57:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B1673A91EF
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 15:55:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2FD8566B53
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 15:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9237D3314B9;
-	Fri,  7 Nov 2025 15:54:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82A7332E142;
+	Fri,  7 Nov 2025 15:55:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wcv9rb6T"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aFPOghTV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B500132ED46
-	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 15:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C915D32E68E
+	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 15:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762530877; cv=none; b=Jjg9z2rqcRjf1nbbE0WxVDmCI2OpzRf2d7mQq5SxWBWtFHiE4eP0hPOzZpO3Yc42D3JWOtIRGhZtSJp59YPXh6+eeotdJviBS+b8jLWFUgFnkQn4BaUnoja/0Eg6LcH9hAmLIOnmTgWD2XwbbtuUxk/yRdAMbzytDxGTKfIALJw=
+	t=1762530911; cv=none; b=VzeW2vPCReI4Mg3sfjq2WnxSylx/j1J87s+0GgQK1JWypEcMk2zYzyFZ1Gu7+66WfBj8upFiCJSuwY9KU1HviXUWMSc2J+IJAbCzfcRnjmvEE/nx6v2OGA1B9L6GJkU362tSTZXjw3QuGJKmgAPJPd3forRuOQvLQIoaRsmixz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762530877; c=relaxed/simple;
-	bh=EGnBT7eq4xDsLWoMBKHX6mL+kag/LZD0AS27uXDXkfo=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=khmDmUj34uwARVpUyBoC/b6o/SXP+cfelfOv6EY8rbp7Dn8iU6EnrX9lK86+SumPThv3kvIPsf7zssevU/pUq9JavrcseGT1luYYZRhirzjJ4KuoA7yo2IMRSxO6NrfD2hQUbpud66DEe226rqzEcS/ZPCmwltUIFKZGXl2eUMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wcv9rb6T; arc=none smtp.client-ip=209.85.128.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
-Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-47740c1442dso8141425e9.1
-        for <bpf@vger.kernel.org>; Fri, 07 Nov 2025 07:54:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1762530873; x=1763135673; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=k6QqLCiZ3bKYilApTrBVoLgHK6pPaQj/ENLeWCSsRM0=;
-        b=wcv9rb6TSzfzBFLWqmLSaJH42J/xQ4AcXQjsJeJmPZ0+fBvDwOz4cg+ls6IUKzZuLm
-         3MCHUUjO9lMwtvsbwE11cIrQqRuhRWV8k1nTJRnN6lYn130rabjqPnqLgnGMQfGu35AE
-         iWWCRZkDp1q5iD2cFoyXAGkBVaT7kYl7URfXOEyyC4lSCqkiIXbos+EvnRyAXDxkOb2u
-         YuftwD8m3y8bGRE5ybGDioDINhMzYNoso6/qD+98XyAryyUxRTr918wsBji8/feYSaXW
-         YpTYjVKBLK0KxQ6Hbq38TB3uxEEcmttQjPejwVsHmvfOVryb1/dNSNp7DdnvadVlLc4L
-         +qdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762530873; x=1763135673;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k6QqLCiZ3bKYilApTrBVoLgHK6pPaQj/ENLeWCSsRM0=;
-        b=tMqOboXKCWPnh00N2PzQvFKd1rHxGyGS8gq6MhGb5qK6Z/9+0dY8xau535KE4ftjY0
-         kvs/f+dBdz26//wLE4DLWw+3NoAz9JWBjpsRJSIuGFbaN7LlPr78sKNcVSlL5pcCGLRp
-         V5DLsFFom4jP1KwuyDFBX5QmL8n6UHN+MTW9iBKNQQyQV/YLc2NwiiAzS/1N3WiiJ8X/
-         Sv3Er1huumRhQdHULluxgDj+m8IKlS6DDOgOnuFoKMTDi+/g0W1vSfGWkmgim+F25bTP
-         YAk7z7Jj0EORIeq/U1pcIQta7/a+u8JAGICw7q+QnxEAXdpl5Qg07V6lScribPXuUzdI
-         XjQw==
-X-Forwarded-Encrypted: i=1; AJvYcCWzxS2wpleowxrFIIyd3Zt4p0bN3aIh7T8O56dY+GFcQ0rGjJZqY5XDZ7SUORpg33Ng6xw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzC3TuT9/h0GE8cxHI5zyg7ZEVQwLIcoms+hMXef6Bl4j0B7EX4
-	QoivMA6y63dfmLeFWEtx+MU6SUyVt8uBrEAtAlGZA7zQ33wK4Xy6MrP38r91gn+JrnV9RuZ1pS0
-	IOra7IV0kTTDfdQ==
-X-Google-Smtp-Source: AGHT+IF10pfYz/aX86VOtk1/4ToFDHxeKDSFR7QzVJHGBwU7n9WXznaipUt0c+mOTXVDyymnjKnmVDeDshscaw==
-X-Received: from wmbjd18.prod.google.com ([2002:a05:600c:68d2:b0:477:554c:6842])
- (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:4e88:b0:471:14af:c715 with SMTP id 5b1f17b1804b1-4776bc9f963mr29299435e9.3.1762530872213;
- Fri, 07 Nov 2025 07:54:32 -0800 (PST)
-Date: Fri, 07 Nov 2025 15:54:31 +0000
-In-Reply-To: <20250924151101.2225820-1-patrick.roy@campus.lmu.de>
+	s=arc-20240116; t=1762530911; c=relaxed/simple;
+	bh=s0KX0+8Mk3Q0S/GY1L4ckWJnZe8vPO/e3WNe2sEYxKc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aHxMkKMm29XVGIaRP5f1COlVMpr1udYw1netrUhXWgpyfOIM8N6W296SU8pJCkGamQUncUEVBSzr6L9WcldXkj6yLMclFvCa+qFbN/S4s5xnewfG7/myDg4Iyt8iqsJmavttXOYkfJ7wBxYoNajYEqmCMccvdh16KmBb0AFtqqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aFPOghTV; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762530907;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SIZQG/tAM3yt9cw96mCjWh5EbBQYLZDT/7P+Ur1PCV8=;
+	b=aFPOghTVnw/CpJGdmlXzfPaOcBafEAgeZXWzgNTjOx4xEM5VDubh5VYlKXEsPvA4A1vBo2
+	aWxU8XMYroezjnxRxLPr7iPJIL1nhrlH3/y4A+uDRtth2B112FoMrGwYNP5wlF5AZVTtEz
+	TSoB+C9VZ133VIcupkDOZFm/MNSvvPA=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-662-M8OH64nGNxWpdyn1lhDFkA-1; Fri,
+ 07 Nov 2025 10:55:04 -0500
+X-MC-Unique: M8OH64nGNxWpdyn1lhDFkA-1
+X-Mimecast-MFC-AGG-ID: M8OH64nGNxWpdyn1lhDFkA_1762530903
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id ABBBE180035F;
+	Fri,  7 Nov 2025 15:55:02 +0000 (UTC)
+Received: from fedora (unknown [10.72.120.9])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3E0AE1800346;
+	Fri,  7 Nov 2025 15:54:57 +0000 (UTC)
+Date: Fri, 7 Nov 2025 23:54:52 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+	Caleb Sander Mateos <csander@purestorage.com>,
+	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH 0/5] io_uring: add IORING_OP_BPF for extending io_uring
+Message-ID: <aQ4WTLX9ieL5J7ot@fedora>
+References: <20251104162123.1086035-1-ming.lei@redhat.com>
+ <891f4413-9556-4f0d-87e2-6b452b08a83f@gmail.com>
+ <aQtz-dw7t7jtqALc@fedora>
+ <58c0e697-2f6a-4b06-bf04-c011057cd6c7@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250924151101.2225820-1-patrick.roy@campus.lmu.de>
-X-Mailer: aerc 0.21.0
-Message-ID: <DE2L1SAOC55E.E4JY62WJQ2A8@google.com>
-Subject: Re: [PATCH v7 00/12] Direct Map Removal Support for guest_memfd
-From: Brendan Jackman <jackmanb@google.com>
-To: Patrick Roy <patrick.roy@campus.lmu.de>
-Cc: Patrick Roy <roypat@amazon.co.uk>, <pbonzini@redhat.com>, <corbet@lwn.net>, 
-	<maz@kernel.org>, <oliver.upton@linux.dev>, <joey.gouly@arm.com>, 
-	<suzuki.poulose@arm.com>, <yuzenghui@huawei.com>, <catalin.marinas@arm.com>, 
-	<will@kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, 
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>, 
-	<luto@kernel.org>, <peterz@infradead.org>, <willy@infradead.org>, 
-	<akpm@linux-foundation.org>, <david@redhat.com>, <lorenzo.stoakes@oracle.com>, 
-	<Liam.Howlett@oracle.com>, <vbabka@suse.cz>, <rppt@kernel.org>, 
-	<surenb@google.com>, <mhocko@suse.com>, <song@kernel.org>, <jolsa@kernel.org>, 
-	<ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>, 
-	<martin.lau@linux.dev>, <eddyz87@gmail.com>, <yonghong.song@linux.dev>, 
-	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@fomichev.me>, 
-	<haoluo@google.com>, <jgg@ziepe.ca>, <jhubbard@nvidia.com>, 
-	<peterx@redhat.com>, <jannh@google.com>, <pfalcato@suse.de>, 
-	<shuah@kernel.org>, <seanjc@google.com>, <kvm@vger.kernel.org>, 
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, 
-	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>, 
-	<linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>, <bpf@vger.kernel.org>, 
-	<linux-kselftest@vger.kernel.org>, <xmarcalx@amazon.co.uk>, 
-	<kalyazin@amazon.co.uk>, <jackabt@amazon.co.uk>, <derekmn@amazon.co.uk>, 
-	<tabba@google.com>, <ackerleytng@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <58c0e697-2f6a-4b06-bf04-c011057cd6c7@gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-On Wed Sep 24, 2025 at 3:10 PM UTC, Patrick Roy wrote:
-> From: Patrick Roy <roypat@amazon.co.uk>
->
-> [ based on kvm/next ]
->
-> Unmapping virtual machine guest memory from the host kernel's direct map is a
-> successful mitigation against Spectre-style transient execution issues: If the
-> kernel page tables do not contain entries pointing to guest memory, then any
-> attempted speculative read through the direct map will necessarily be blocked
-> by the MMU before any observable microarchitectural side-effects happen. This
-> means that Spectre-gadgets and similar cannot be used to target virtual machine
-> memory. Roughly 60% of speculative execution issues fall into this category [1,
-> Table 1].
->
-> This patch series extends guest_memfd with the ability to remove its memory
-> from the host kernel's direct map, to be able to attain the above protection
-> for KVM guests running inside guest_memfd.
->
-> Additionally, a Firecracker branch with support for these VMs can be found on
-> GitHub [2].
->
-> For more details, please refer to the v5 cover letter [v5]. No
-> substantial changes in design have taken place since.
->
-> === Changes Since v6 ===
->
-> - Drop patch for passing struct address_space to ->free_folio(), due to
->   possible races with freeing of the address_space. (Hugh)
-> - Stop using PG_uptodate / gmem preparedness tracking to keep track of
->   direct map state.  Instead, use the lowest bit of folio->private. (Mike, David)
-> - Do direct map removal when establishing mapping of gmem folio instead
->   of at allocation time, due to impossibility of handling direct map
->   removal errors in kvm_gmem_populate(). (Patrick)
-> - Do TLB flushes after direct map removal, and provide a module
->   parameter to opt out from them, and a new patch to export
->   flush_tlb_kernel_range() to KVM. (Will)
->
-> [1]: https://download.vusec.net/papers/quarantine_raid23.pdf
-> [2]: https://github.com/firecracker-microvm/firecracker/tree/feature/secret-hiding
+On Thu, Nov 06, 2025 at 04:03:29PM +0000, Pavel Begunkov wrote:
+> On 11/5/25 15:57, Ming Lei wrote:
+> > On Wed, Nov 05, 2025 at 12:47:58PM +0000, Pavel Begunkov wrote:
+> > > On 11/4/25 16:21, Ming Lei wrote:
+> > > > Hello,
+> > > > 
+> > > > Add IORING_OP_BPF for extending io_uring operations, follows typical cases:
+> > > 
+> > > BPF requests were tried long time ago and it wasn't great. Performance
+> > 
+> > Care to share the link so I can learn from the lesson? Maybe things have
+> > changed now...
+> 
+> https://lore.kernel.org/io-uring/a83f147b-ea9d-e693-a2e9-c6ce16659749@gmail.com/T/#m31d0a2ac6e2213f912a200f5e8d88bd74f81406b
+> 
+> There were some extra features and testing from folks, but I don't
+> think it was ever posted to the list.
 
-I just got around to trying this out, I checked out this patchset using
-its base-commit and grabbed the Firecracker branch. Things seem OK until
-I set the secrets_free flag in the Firecracker config which IIUC makes
-it set GUEST_MEMFD_FLAG_NO_DIRECT_MAP.
+Thanks for sharing the link:
 
-If I set it, I find the guest doesn't show anything on the console.
-Running it in a VM and attaching GDB suggests that it's entering the
-guest repeatedly, it doesn't seem like the vCPU thread is stuck or
-anything. I'm a bit clueless about how to debug that (so far, whenever
-I've broken KVM, things always exploded very dramatically).
- 
-Anyway, if I then kill the firecracker process, the host sometimes
-crashes, I think this is the most suggestive splat I've seen:
+```
+The main problem solved is feeding completion information of other
+requests in a form of CQEs back into BPF. I decided to wire up support
+for multiple completion queues (aka CQs) and give BPF programs access to
+them, so leaving userspace in control over synchronisation that should
+be much more flexible that the link-based approach.
+```
 
-[   99.673420][    T2] BUG: unable to handle page fault for address: ffff888012804000
-[   99.676216][    T2] #PF: supervisor write access in kernel mode
-[   99.678381][    T2] #PF: error_code(0x0002) - not-present page
-[   99.680499][    T2] PGD 2e01067 P4D 2e01067 PUD 2e02067 PMD 12801063 PTE 800fffffed7fb020
-[   99.683374][    T2] Oops: Oops: 0002 [#1] SMP
-[   99.685004][    T2] CPU: 0 UID: 0 PID: 2 Comm: kthreadd Not tainted 6.17.0-rc7-00366-g473c46a3cb2a #106 NONE 
-[   99.688514][    T2] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.1 11/11/2019
-[   99.691547][    T2] RIP: 0010:clear_page_erms+0x7/0x10
-[   99.693440][    T2] Code: 48 89 47 18 48 89 47 20 48 89 47 28 48 89 47 30 48 89 47 38 48 8d 7f 40 75 d9 90 c3 0f 1f 80 00 00 00 00 b9 00 10 00 00 31 c0 <f3> aa c3 66 0f 1f 44 00 00 48 83 f9 40 73 2a 83 f9 08 73 0f 85 c9
-[   99.700188][    T2] RSP: 0018:ffff88800318fc10 EFLAGS: 00010246
-[   99.702321][    T2] RAX: 0000000000000000 RBX: 0000000000400dc0 RCX: 0000000000001000
-[   99.705100][    T2] RDX: ffffea00004a0100 RSI: ffffea00004a0200 RDI: ffff888012804000
-[   99.707861][    T2] RBP: 0000000000000801 R08: 0000000000000000 R09: 0000000000000000
-[   99.710648][    T2] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
-[   99.713412][    T2] R13: 0000000000000801 R14: ffffea00004a0100 R15: ffffffff81f4df80
-[   99.716191][    T2] FS:  0000000000000000(0000) GS:ffff8880bbf28000(0000) knlGS:0000000000000000
-[   99.719316][    T2] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   99.721648][    T2] CR2: ffff888012804000 CR3: 0000000007583001 CR4: 0000000000372eb0
-[   99.724421][    T2] Call Trace:
-[   99.725608][    T2]  <TASK>
-[   99.726646][    T2]  get_page_from_freelist+0x6fe/0x14b0
-[   99.728583][    T2]  ? fs_reclaim_acquire+0x43/0xe0
-[   99.730325][    T2]  ? find_held_lock+0x2b/0x80
-[   99.731965][    T2]  __alloc_frozen_pages_noprof+0x147/0x2d0
-[   99.734003][    T2]  __alloc_pages_noprof+0x5/0x50
-[   99.735766][    T2]  copy_process+0x1b1/0x1b30
-[   99.737398][    T2]  ? lock_is_held_type+0x89/0x100
-[   99.739157][    T2]  ? kthreadd+0x25/0x190
-[   99.740664][    T2]  kernel_clone+0x59/0x390
-[   99.742213][    T2]  ? kthreadd+0x25/0x190
-[   99.743728][    T2]  kernel_thread+0x55/0x70
-[   99.745310][    T2]  ? kthread_complete_and_exit+0x20/0x20
-[   99.747265][    T2]  kthreadd+0x117/0x190
-[   99.748748][    T2]  ? kthread_is_per_cpu+0x30/0x30
-[   99.750509][    T2]  ret_from_fork+0x16b/0x1e0
-[   99.752193][    T2]  ? kthread_is_per_cpu+0x30/0x30
-[   99.753992][    T2]  ret_from_fork_asm+0x11/0x20
-[   99.755717][    T2]  </TASK>
-[   99.756861][    T2] CR2: ffff888012804000
-[   99.758353][    T2] ---[ end trace 0000000000000000 ]---
-[   99.760319][    T2] RIP: 0010:clear_page_erms+0x7/0x10
-[   99.762209][    T2] Code: 48 89 47 18 48 89 47 20 48 89 47 28 48 89 47 30 48 89 47 38 48 8d 7f 40 75 d9 90 c3 0f 1f 80 00 00 00 00 b9 00 10 00 00 31 c0 <f3> aa c3 66 0f 1f 44 00 00 48 83 f9 40 73 2a 83 f9 08 73 0f 85 c9
-[   99.769129][    T2] RSP: 0018:ffff88800318fc10 EFLAGS: 00010246
-[   99.771297][    T2] RAX: 0000000000000000 RBX: 0000000000400dc0 RCX: 0000000000001000
-[   99.774126][    T2] RDX: ffffea00004a0100 RSI: ffffea00004a0200 RDI: ffff888012804000
-[   99.777013][    T2] RBP: 0000000000000801 R08: 0000000000000000 R09: 0000000000000000
-[   99.779827][    T2] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
-[   99.782641][    T2] R13: 0000000000000801 R14: ffffea00004a0100 R15: ffffffff81f4df80
-[   99.785487][    T2] FS:  0000000000000000(0000) GS:ffff8880bbf28000(0000) knlGS:0000000000000000
-[   99.788671][    T2] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   99.791012][    T2] CR2: ffff888012804000 CR3: 0000000007583001 CR4: 0000000000372eb0
-[   99.793863][    T2] Kernel panic - not syncing: Fatal exception
-[   99.796760][    T2] Kernel Offset: disabled
-[   99.798296][    T2] ---[ end Kernel panic - not syncing: Fatal exception ]---
+Looks it is totally different with my patch in motivation and policy.
 
-This makes me suspect the kvm_gmem_folio_restore_direct_map() path isn't
-working or isn't getting called.
+I do _not_ want to move application logic into kernel by building SQE from
+kernel prog. With IORING_OP_BPF, the whole io_uring application is
+built & maintained completely in userspace, so I needn't to do cumbersome
+kernel/user communication just for setting up one SQE in prog, not mention
+maintaining SQE's relation with userspace side's.
 
-If anyone wants help trying to reproduce this let me know.
+> 
+> > > for short BPF programs is not great because of io_uring request handling
+> > > overhead. And flexibility was severely lacking, so even simple use cases
+> > 
+> > What is the overhead? In this patch, OP's prep() and issue() are defined in
+> 
+> The overhead of creating, freeing and executing a request. If you use
+> it with links, it's also overhead of that. That prototype could also
+> optionally wait for completions, and it wasn't free either.
+
+IORING_OP_BPF is same with existing normal io_uring request and link, wrt
+all above you mentioned.
+
+IORING_OP_BPF's motivation is for being io_uring's supplementary or extention
+in function, not for improving performance.
+
+> 
+> > bpf prog, but in typical use case, the code size is pretty small, and bpf
+> > prog code is supposed to run in fast path.>
+> > > were looking pretty ugly, internally, and for BPF writers as well.
+> > 
+> > I am not sure what `simple use cases` you are talking about.
+> 
+> As an example, creating a loop reading a file:
+> read N bytes; wait for completion; repeat
+
+IORING_OP_BPF isn't supposed to implement FS operation in bpf prog.
+
+It doesn't mean IORING_OP_BPF can't support async issuing:
+
+- issue_wait() can be added for offload in io-wq context
+
+OR
+
+- for typical FS AIO, in theory it can be supported too, just the struct_ops need
+to define one completion callback, and the callback can be called from
+->ki_complete().
+
+> 
+> > > I'm not so sure about your criteria, but my requirement was to at least
+> > > being able to reuse all io_uring IO handling, i.e. submitting requests,
+> > > and to wait/process completions, otherwise a lot of opportunities are
+> > > wasted. My approach from a few months back [1] controlling requests from
+> > 
+> > Please read the patchset.
+> > 
+> > This patchset defines new IORING_BPF_OP code, which's ->prep(), ->issue(), ...,
+> > are hooked with struct_ops prog, so all io_uring core code is used, just the
+> > exact IORING_BPF_OP behavior is defined by struct_ops prog.
+> 
+> Right, but I'm talking about what the io_uring BPF program is capable
+> of doing.
+
+There can be many types of io_uring BPF progs from function viewpoint, we are not
+talking about same type.
+
+> 
+> > > the outside was looking much better. At least it covered a bunch of needs
+> > > without extra changes. I was just wiring up io_uring changes I wanted
+> > > to make BPF writer lifes easier. Let me resend the bpf series with it.
+> > > 
+> > > It makes me wonder if they are complementary, but I'm not sure what
+> > 
+> > I think the two are orthogonal in function, and they can co-exist.
+> > 
+> > > your use cases are and what capabilities it might need.
+> > 
+> > The main use cases are described in cover letter and the 3rd patch, please
+> > find the details there.
+> > 
+> > So far the main case is to access the registered (kernel)buffer
+> > from issue() callback of struct_ops, because the buffer doesn't have
+> > userspace mapping. The last two patches adds support to provide two
+> > buffers(fixed, plain) for IORING_BPF_OP, and in future vectored buffer
+> > will be added too, so IORING_BPF_OP can handle buffer flexibly, such as:
+> > 
+> > - use exported compress kfunc to compress data from kernel buffer
+> > into another buffer or inplace, then the following linked SQE can be submitted
+> > to write the built compressed data into storage
+> > 
+> > - in raid use case, calculate IO data parity from kernel buffer, and store
+> > the parity data to another plain user buffer, then the following linked SQE
+> > can be submitted to write the built parity data to storage
+> > 
+> > Even for userspace buffer, the BPF_OP can support similar handling for saving
+> > one extra io_uring_enter() syscall.
+> 
+> Sure, registered buffer handling was one of the use cases for
+> that recent re-itarations as well, and David Wei had some thoughts
+> for it as well. Though, it was not exactly about copying.
+> 
+> > > [1] https://lore.kernel.org/io-uring/cover.1749214572.git.asml.silence@gmail.com/
+> > 
+> > I looked at your patches, in which SQE is generated in bpf prog(kernel),
+> 
+> Quick note: userspace and BPF are both allowed to submit
+> requests / generate SQEs.
+> 
+> > and it can't be used in my case.
+> Hmm, how so? Let's say ublk registers a buffer and posts a
+> completion. Then BPF runs, it sees the completion and does the
+> necessary processing, probably using some kfuncs like the ones
+
+It is easy to say, how can the BPF prog know the next completion is
+exactly waiting for? You have to rely on bpf map to communicate with userspace
+to understanding what completion is what you are interested in, also
+need all information from userpace for preparing the SQE for submission
+from bpf prog. Tons of userspace and kernel communication.
+
+> you introduced. After it can optionally queue up requests
+> writing it to the storage or anything else.
+
+Again, I do not want to move userspace logic into bpf prog(kernel), what
+IORING_BPF_OP provides is to define one operation, then userspace
+can use it just like in-kernel operations.
+
+Then existing application can apply IORING_BPF_OP just with little small
+change. If submitting SQE from bpf prog, ublk application need re-write
+for supporting register buffer based zero copy.
+
+> The reason I'm asking is because it's supposed to be able to
+> do anything the userspace can already achieve (and more). So,
+> if it can't be used for this use cases, there should be some
+> problem in my design.
+
+BPF prog programming is definitely much more limited compared with
+userspace application because it is safe kernel programming.
+
+Thanks,
+Ming
+
 
