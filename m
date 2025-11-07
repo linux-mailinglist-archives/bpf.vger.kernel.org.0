@@ -1,97 +1,60 @@
-Return-Path: <bpf+bounces-73952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EE74C3FC22
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 12:41:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDBCBC4001B
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 13:59:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1C8194E19E1
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 11:41:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 576E83BE9B2
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 12:58:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8237F322DBB;
-	Fri,  7 Nov 2025 11:41:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DF//1vcs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E9D2D0C82;
+	Fri,  7 Nov 2025 12:58:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 655F031D748
-	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 11:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C460433BC;
+	Fri,  7 Nov 2025 12:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762515695; cv=none; b=SrUM7j6j5yc+hchlaQzOpU42vPvBofjIGkYbf9gIgsF9UyKylhiGY5mloNL7z3/a5ux69gOkBSlHycHC2NuAAcRtrHXwh2bKhQwBfzPATWI+28+ir+73Jm31ckfX9Pi4cqqLs0gn2b0/eSsAnHaffqsiys83JvAbhIZdnOZJsxE=
+	t=1762520332; cv=none; b=lpKDOR6OGZNJUXMMNK7hQXVEV7YuGjnf0KNdvQzfOgUb2xkgpHQX7vmu3llIn/9m0ScfykX7w3WJtQzXAxThE8OuPhKHY30a6l9ehH24Hr4mzIYBXd5AUS1kh9LJ1T5GWID9YgHkzyC8j5Lfw19IHanijmCFG3Mlp0eaTEFzSMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762515695; c=relaxed/simple;
-	bh=67O0HM6LgZ57wI3RHX22DyqBmRYudasdbXg/4Zmqlvs=;
+	s=arc-20240116; t=1762520332; c=relaxed/simple;
+	bh=UgzisQ/iy2XeFzZsuUXeMq1Bh7g2J4JyUxk+b85hknU=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YUQ7LZB7xAuL7SY99cY7fFdXquy09minQ8PHn3OTJDmrtvlhRkCouiYl9GWebhndRGJSf3IHzqOU2yZBFKGXFkEumhu15CJ9zw2M0+r3ROCfssfBYH4hWnAoNaKyfEaIHEDST7TLXByZJ42oxagPlRYz5wdMYozPSm/xWqMEUzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DF//1vcs; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-47118259fd8so4353555e9.3
-        for <bpf@vger.kernel.org>; Fri, 07 Nov 2025 03:41:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762515690; x=1763120490; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fbIyLdjACXlDwnRSKcJQKOcA3uAX0B3KEyjgAmsMwwY=;
-        b=DF//1vcs9RgkCYaYA1vmxFOfcxodUX7AgmJ4wMGQOMSzvi4ZJ+jrvoeiNPe1n+7OYv
-         H0EoZ6CdRhOyFe1B5YaFLaArkP6CCVBWV4lrz6P8JDeXHS6FK+hSRRTl0cyk2LjLSDjv
-         IyLwZE0ZbmWeg6Dqaf9xoHgPpfZm0yIQEVv5EnxjeIMqMcVDI3LOY3nWYURtI1OR3aga
-         NSHzkopQXCN7YDuH2beZwAgEajlsqt1jF/nSQs1SgxMCrnKhWH1I+T+iXX4kh+XpsEbw
-         zmCk6D9P8uvbGuPKk/TKPEnaufeXlMKUUDLDgnGKJgUpiAUffy9IUwWg9vt+Y4UcbFNp
-         oh5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762515690; x=1763120490;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=fbIyLdjACXlDwnRSKcJQKOcA3uAX0B3KEyjgAmsMwwY=;
-        b=r1FCviDyo4PxiA6mkAGHo3Y6fEjtpgr040y8LhwcIsVHZFqSSyi7z4gV5LFh3TwEeR
-         0f51zjxz3CkI6zUsXwaJeLR8x/MtGxqI51ZNhUfquFL8SHVf5PjJMkmWTstalhShMKI7
-         Z1UQ8uYUwj1lrI781BSddiaOb8xOabB2nnla1IGBmqpyC4DumNk1UFWBSOwMsMXKb1E9
-         GwU0tbAW+Q6SSn9xZXUNWPMb1+eQbj9orc5dvD6yeE3l7y7rqGLAB6uaYxL8UCskYf1H
-         0PkH2YLF2ww13BHkzDQpm1M5oeMWvEcdBTcbIMQ/1FqYzzBwaMLM8cu1cH2ly/loueGe
-         3INw==
-X-Forwarded-Encrypted: i=1; AJvYcCUq7qoh7MDNWPKUExXrQUlfSCk0+fzJ5nFusVaK8BVp4YOXPtH/oMkUT/3gBM6trLDCtlw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx9CPCIICw+z3sEsSbzKgSQhrK2vM1RWylfvDi1jUwR7g/pSX0i
-	8zYwtPM/1JZi5RDjzJ0RPUzA9Jxof+/UIp1bZKvs280AHvTm0+SYFvgx
-X-Gm-Gg: ASbGncvZ8nLgJk1XutdZijewNT9JBooYa4cwr17fMqVKKBVgqpl2wG5XcIR4HFfT+ua
-	T2KnRK6ewgcNu2zqbF0XcoytbQqUa/LvchfrCxNJEpG3GjcG+aw495ic95PXnsPIkoFfiE2Kv5T
-	UF2tFTiMbrpcYFxYA19Su8E57Q88aYJZJNatVXN4SonvhKxbHBe7unclELksmUj4YVDzRM5/Df6
-	zjBHZAStHndZrEoYyg2xQ7soTcsBzO6hifqlvdehZt750zl0zmIkn/+s6Oii7rxnihwMYO+TatK
-	DMIrvCNGyCfWbxoqPJsjj8+whSdgNxYlj98lt5vtEOPWD7Qh9pzZvnM1b4jz35Y1SBI7ICS8szD
-	GqEvM7NaCIf+mYC/v0jym1YNzcaoBo7HB3mAfNzUMH6HR4pmhuriarWKaaFBGMLAB13EVo60eF6
-	VkxPYJXKJY5I7K362vBCOJ1DDoAoDc3MOppGfnGyj0aQ==
-X-Google-Smtp-Source: AGHT+IHUAgcMk8bKJDdOhQ/v5qGlnIq+otz2YbimDj6aAcoys0jfZs+7+hhNNkCF/JH+RDCpE4irYw==
-X-Received: by 2002:a05:600c:1c9a:b0:45f:2922:2aef with SMTP id 5b1f17b1804b1-4776bcbf80emr31516085e9.28.1762515689819;
-        Fri, 07 Nov 2025 03:41:29 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4776bcdd833sm43040705e9.9.2025.11.07.03.41.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Nov 2025 03:41:29 -0800 (PST)
-Date: Fri, 7 Nov 2025 11:41:27 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: Alexei Safin <a.safin@rosa.ru>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Yafang Shao <laoar.shao@gmail.com>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- lvc-patches@linuxtesting.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] bpf: hashtab: fix 32-bit overflow in memory usage
- calculation
-Message-ID: <20251107114127.4e130fb2@pumpkin>
-In-Reply-To: <20251107100310.61478-1-a.safin@rosa.ru>
-References: <20251107100310.61478-1-a.safin@rosa.ru>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	 MIME-Version:Content-Type; b=pfaQYnUyE0aTnwDx/jRsE+HhmBauJLl3CviNm8dYkvKtV5PsryFqEi2bd09umHT7OtfR4GTtERjPYAuXkN1Jq9jcIC3wLj4pE73KhhWA4yt6tYb6jBpLWZEDUhXO39QRXu3JZDowlDsVNAtXtaNhtUGcD+7B4sqSurls/j9UvPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay08.hostedemail.com (Postfix) with ESMTP id A1683140479;
+	Fri,  7 Nov 2025 12:58:48 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf06.hostedemail.com (Postfix) with ESMTPA id 8E8C12000E;
+	Fri,  7 Nov 2025 12:58:46 +0000 (UTC)
+Date: Fri, 7 Nov 2025 07:58:47 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Sebastian Andrzej
+ Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org, frederic@kernel.org
+Subject: Re: [PATCH v2 10/16] tracing: Guard __DECLARE_TRACE() use of
+ __DO_TRACE_CALL() with SRCU-fast
+Message-ID: <20251107075847.2f1c61c1@gandalf.local.home>
+In-Reply-To: <827c94b5-f10f-4fa2-a7d5-6f1097808d27@paulmck-laptop>
+References: <bb177afd-eea8-4a2a-9600-e36ada26a500@paulmck-laptop>
+	<20251105203216.2701005-10-paulmck@kernel.org>
+	<20251106110230.08e877ff@batman.local.home>
+	<522b01cf-0cb6-4766-9102-2d08a3983d8a@paulmck-laptop>
+	<20251106121005.76087677@gandalf.local.home>
+	<eb59555d-f3e8-47c9-b519-a7b628e68885@paulmck-laptop>
+	<20251106190314.5a43cc10@gandalf.local.home>
+	<46365769-2b3a-4da1-a926-1b3e489d434a@paulmck-laptop>
+	<20251106201644.3eef6a4a@batman.local.home>
+	<827c94b5-f10f-4fa2-a7d5-6f1097808d27@paulmck-laptop>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,46 +63,25 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout08
+X-Rspamd-Queue-Id: 8E8C12000E
+X-Stat-Signature: dt4uq6ofet1jwxmgmhnuoni6wssk54fy
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+NExT4vdAr5ERldn9JaCip+/hXTWEAAr0=
+X-HE-Tag: 1762520326-178848
+X-HE-Meta: U2FsdGVkX1+IGynjyWveeV69+uX2grWvG6VD/mhdGpUQtsrySnDpLp4XX2Np7A0m4BVFaA4qyxMtmV9m9rvCsiUVH5VJZc/6ARWMj7OjAkoBmp2sU5LKMEZO4AfroBEkoyvaaWXwWYOZnH0yj7Q52Uqad8/S9dLtHuqZMNfCiy3lMcd1K/7uNVs9s6atts3Jttc3GmqF9jzwPupNPo+sDeGkdtObDax/40vFBSWwugqY5OvuHCW6dnuVVFoVAz52D+s+PbnssqR7I9pjkak+I+xTCBj3uZmyFrQNXmO3PuN4JGLx4hYPEM+XsaUrm3nyJ2uDO02j7+fop74g4qmtvY9aAvZ6oWR0
 
-On Fri,  7 Nov 2025 13:03:05 +0300
-Alexei Safin <a.safin@rosa.ru> wrote:
+On Thu, 6 Nov 2025 17:53:53 -0800
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-> The intermediate product value_size * num_possible_cpus() is evaluated
-> in 32-bit arithmetic and only then promoted to 64 bits. On systems with
-> large value_size and many possible CPUs this can overflow and lead to
-> an underestimated memory usage.
+> Again, thank you, and I will start up some testing as well.  Please see
+> below for an attempted commit log.
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> The SRCU commits that this depends on are slated for the upcoming
+> merge window, so we can work out the best way to send this upstreeam.
+> Whatever works.  ;-)
 
-That code is insane.
-The size being calculated looks like a kernel memory size.
-You really don't want to be allocating single structures that exceed 4GB.
+Sounds good. Thanks,
 
-	David
-
-> 
-> Fixes: 304849a27b34 ("bpf: hashtab memory usage")
-> Cc: stable@vger.kernel.org
-> Suggested-by: Yafang Shao <laoar.shao@gmail.com>
-> Signed-off-by: Alexei Safin <a.safin@rosa.ru>
-> ---
-> v2: Promote value_size to u64 at declaration to avoid 32-bit overflow
-> in all arithmetic using this variable (suggested by Yafang Shao)
->  kernel/bpf/hashtab.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 570e2f723144..1f0add26ba3f 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -2252,7 +2252,7 @@ static long bpf_for_each_hash_elem(struct bpf_map *map, bpf_callback_t callback_
->  static u64 htab_map_mem_usage(const struct bpf_map *map)
->  {
->  	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
-> -	u32 value_size = round_up(htab->map.value_size, 8);
-> +	u64 value_size = round_up(htab->map.value_size, 8);
->  	bool prealloc = htab_is_prealloc(htab);
->  	bool percpu = htab_is_percpu(htab);
->  	bool lru = htab_is_lru(htab);
-
+-- Steve
 
