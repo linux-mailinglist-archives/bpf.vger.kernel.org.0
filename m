@@ -1,166 +1,189 @@
-Return-Path: <bpf+bounces-73956-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73957-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F53C402AD
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 14:43:17 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id D53CDC40346
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 14:55:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 52EC834DE7A
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 13:43:17 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 479A44F2EA7
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 13:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618B52F7AAD;
-	Fri,  7 Nov 2025 13:43:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022CA31BC84;
+	Fri,  7 Nov 2025 13:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="APmylv60"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RFms1geu";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="HJEWhZf1"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2912F2605;
-	Fri,  7 Nov 2025 13:43:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C71F2319859
+	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 13:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762522982; cv=none; b=Qrg0H+lEzTTE82i9gyB8PX2AG0/fp0gtUmB1C35IgesyVJn6zHqbv/swYidEQT06LfNsFXr8PX6wpaim0wQmzd30JS2w0XribjNzKhJnJydQx2m/StT5hgUUvoC5yU83Ej8kX3AkkRgTVCysehR6n9rLAfZf0GVSuGl95BjQ0jA=
+	t=1762523590; cv=none; b=rYtAtXhKBGLsSVxMsk4HYueeAeEzhu9xwSbMSmLj4XvKbw4EYvx3ztNIQH0r5PGgYiIYsgxyCuexmqu+zvGdazCKuqNJltijT2LQhaalaSj4CTlUU6s6aQEiRI9z44LGX7WC5MOtA8v0OwcIbkXT9FiU5/gEW/4/TSqXUOKq8C8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762522982; c=relaxed/simple;
-	bh=mVhNPlLjxSXohTIokzVQKOtrdJswU2kcvPbGFxRD4Ig=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=msLXmBcTpDeqfXBrzPADj1Umj4W+b+0F2eGlo0fzKE2+o+M8pKOG3pH/xIblL3XyW/yvGd3KNeaofp3aUBhhENAFkgsqfYR+R1eD7e6zUFG4erdbICBh1QFGcGvxDOuEhyKZ7GeKFf4mldQW3Ucun0mCVKH5/oGjTkFqpzKQmDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=APmylv60; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBDA4C4CEF8;
-	Fri,  7 Nov 2025 13:42:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762522982;
-	bh=mVhNPlLjxSXohTIokzVQKOtrdJswU2kcvPbGFxRD4Ig=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=APmylv60JbvoLid/67a1Lg2RUqkHsQeS27fqWkrDCeavaJYQCdjXy8wY6ud5MU+6+
-	 a1aOqgDi7sMGJMx9JkECexe3NyIeh1RM4BxFwBCaxosUXz6bpOByK3siWzcuOVTztW
-	 7MiCzKQ5fV3SvixxCCqyDpaaOC2Yri/TI0XQ4fkRq0h6YTdNDoY7/7VyS2IIuGpJm6
-	 AbjVvRQRI3Q5QG//gwAo8ec5jyhpXynjXbvjOqZQbRjJx4sGfBy8R41S4vu6Wm7Dx9
-	 sbhf1TTMAl+05Vs1ITmxlat8ACZXKISQxktdnP9GlRl/PeqDiZMYPsOK/0IKKAS2tY
-	 S1CgLdwCgUkVw==
-Message-ID: <b9f01e64-f7cc-4f5a-9716-5767b37e2245@kernel.org>
-Date: Fri, 7 Nov 2025 14:42:58 +0100
+	s=arc-20240116; t=1762523590; c=relaxed/simple;
+	bh=kxMIDSfnPpf8djuYkxMRQ5vJUJ7jfPruX9KKD/WvQKU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BvcWuuaPba45CBVqobv2sR4dieWfWoBSpwS1KNRhgnknaJysKmGAZJTURpZb5wUBaxVWjKvSill+6S6A0Jy/8PXpnnAgcJTMzZtk+TF1Ptc9JxjqXyysduKws9DfG8SeH4GyGA5EbCQ+JzuJur65WyiTbT8qkeHxbA5HGNZhfKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RFms1geu; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=HJEWhZf1; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762523587;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z9/c4QtcuY4C0Ku7AdMAA0akvvVLyJC2D5AYMWNX6jI=;
+	b=RFms1geuhihosBv/1rmmXnIZfDKYWEtnOXw/m+AdF5EC9xAiUm6sTgOAQU/H8Do7uxJh//
+	mLmmk0kwSXmgpNnSREdyxIyd9qfZVI7xmNA5kR2xAA8VZfPbrv9kIRXTjhZyxqb4hS7KxQ
+	jUgIKMTFoWWR3n54920bZNCCZVslUCQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-441-Np9by3KaOSKNaG1lbF8Xlw-1; Fri, 07 Nov 2025 08:53:06 -0500
+X-MC-Unique: Np9by3KaOSKNaG1lbF8Xlw-1
+X-Mimecast-MFC-AGG-ID: Np9by3KaOSKNaG1lbF8Xlw_1762523585
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-471168953bdso5167045e9.1
+        for <bpf@vger.kernel.org>; Fri, 07 Nov 2025 05:53:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1762523585; x=1763128385; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z9/c4QtcuY4C0Ku7AdMAA0akvvVLyJC2D5AYMWNX6jI=;
+        b=HJEWhZf1mrcBFmIn/IGmw/7+PGd9SJPHatOOh8iTLUNs42StTD3mOnU1mDa8hObqso
+         pigOhfyUjkJtSmemaBuouxGNUohWpb/iw0L5ENjM6mIcsRLjfC3sHCM5XchLSSfED/Bi
+         7V00aCz4vIp0GAcyCI5s5LPWHnKrt9gkBBE6ejtLyvOrwq8qUwPMf9fvsg6g+Ci7IZTQ
+         KdnIjbMx9zcDI8k0zOd86q/vHD/COhEhxW/NUsjoTRcv77MAx3bfXR066F24aHyKmgqD
+         2TJyUR5hx6FTiKvhneHtcpbn2on9tb5XmWDo4SGBjiauz70qtGje5FtSRhvfIaFm0DHl
+         vkBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762523585; x=1763128385;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z9/c4QtcuY4C0Ku7AdMAA0akvvVLyJC2D5AYMWNX6jI=;
+        b=AVTcsOEhMmF+4GNXz0HFZGtTSTYd37kV9eK6eZIy9jOuk4PUXAAuW/UD7z8EL+WxtZ
+         qKQ19ueNAE/Oj5DBPAcA9+Y7Vwa69I98JuoDaRnNOczS02bRPelLRNZ88mvUIL7WIZB/
+         DHSEKLVAXKHD9xHsN19GezUFH+6VqxremTKpPF8c24eQbiEZQbakO23VYitN0rxIHxrz
+         3kB52CgnahjOXje48Vl/Lh+i15qLc2z1I9/N7KxMwshdse8fk7OLSndVp+3hhq4IM3U6
+         TN9K7+MeEuqIKipRdyiFC2pypoUDLkQIR+/YEgRQJ9dmuaPhhI/ExpOBP3tjfgUS9sj9
+         1+AA==
+X-Forwarded-Encrypted: i=1; AJvYcCVD6cePbIUgGkGNAUmhoNw4Npr+zxlMszxIQtRfjMgFZFcLuTUcfKYHlB7eikUBRXIalhI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxyCpEcpvHH96dIIQzKlK4DlinOHDfwPnNKmN1hqGmD9grTpYhL
+	Anbh+QAza+k3zLIegZO4xTIG31DHRN+0mQEgzDwYvAgzTFIwuOZj0Irz78qFQcdxxOlIvhZwRIa
+	xnGuMCKhjXV6Dl/KCxatDVmUvfe+mvyh9SJbC2crH4iX9se0/Jp/x9Q==
+X-Gm-Gg: ASbGncu6eIUjrxY1j9/EyOkhaFwXwgJm7pmzvFjuRPW8p8ncmO/GwwnaIjJxHWKfXPZ
+	/7nXLGrMZcTwDNNa676F2SUpN45lQ3xD9pP5qjEek2N60EwZmCBwVijNJk8smMOZ51qAr95MFJA
+	9AP88YgRtwjPG1lAKAF2dIdaNemPaDjH8RgJfxv6wDIqgqv/x4D9ZxN5iPjNtQkE7ivR7AAqyoi
+	14ePL+LV/MV264I5/N1vRgeQiSTARDF9TIKgrrClFVcVVlYJeoEZhQaSd+7qduA+z4rt/56D6eo
+	f2+JInurCpvJVGihE5J4w4o9rzemcbkXNYc6UlUKHcSsPAzmWg9mF0NPGTKnFBXUAUsvbpzYyGJ
+	DqLlHJ5tcEGuM8cENvYZ3uagIqLQGbQ==
+X-Received: by 2002:a05:600c:4251:b0:475:de06:dbaf with SMTP id 5b1f17b1804b1-4776dcd61dfmr10469055e9.17.1762523585206;
+        Fri, 07 Nov 2025 05:53:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IENPFcHgZiedoxSNj/gTHG7HP1mQbGAIXAVzUnhmQo6HdEVRWpGRzBdctMGVXrL+4rI+OT13Q==
+X-Received: by 2002:a05:600c:4251:b0:475:de06:dbaf with SMTP id 5b1f17b1804b1-4776dcd61dfmr10468765e9.17.1762523584724;
+        Fri, 07 Nov 2025 05:53:04 -0800 (PST)
+Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.129.40])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4776bcd51dfsm49260135e9.5.2025.11.07.05.53.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Nov 2025 05:53:03 -0800 (PST)
+Date: Fri, 7 Nov 2025 14:53:01 +0100
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Andrea Righi <arighi@nvidia.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>,
+	David Vernet <void@manifault.com>,
+	Changwoo Min <changwoo@igalia.com>, Shuah Khan <shuah@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Christian Loehle <christian.loehle@arm.com>,
+	Emil Tsalapatis <emil@etsalapatis.com>,
+	Luigi De Matteis <ldematteis123@gmail.com>,
+	sched-ext@lists.linux.dev, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/11] sched/deadline: Add support to initialize and
+ remove dl_server bandwidth
+Message-ID: <aQ35vUAOD6CflvCA@jlelli-thinkpadt14gen4.remote.csb>
+References: <20251029191111.167537-1-arighi@nvidia.com>
+ <20251029191111.167537-5-arighi@nvidia.com>
+ <aQxvIBIwOCDDu60b@jlelli-thinkpadt14gen4.remote.csb>
+ <aQzWM4vv30etfhok@gpd4>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net V3 1/2] veth: enable dev_watchdog for detecting
- stalled TXQs
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
- <toke@toke.dk>, Eric Dumazet <eric.dumazet@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- ihor.solodrai@linux.dev, "Michael S. Tsirkin" <mst@redhat.com>,
- makita.toshiaki@lab.ntt.co.jp, toshiaki.makita1@gmail.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel-team@cloudflare.com
-References: <176236363962.30034.10275956147958212569.stgit@firesoul>
- <176236369293.30034.1875162194564877560.stgit@firesoul>
- <20251106172919.24540443@kernel.org>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20251106172919.24540443@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aQzWM4vv30etfhok@gpd4>
 
-
-
-On 07/11/2025 02.29, Jakub Kicinski wrote:
-> On Wed, 05 Nov 2025 18:28:12 +0100 Jesper Dangaard Brouer wrote:
->> The changes introduced in commit dc82a33297fc ("veth: apply qdisc
->> backpressure on full ptr_ring to reduce TX drops") have been found to cause
->> a race condition in production environments.
->>
->> Under specific circumstances, observed exclusively on ARM64 (aarch64)
->> systems with Ampere Altra Max CPUs, a transmit queue (TXQ) can become
->> permanently stalled. This happens when the race condition leads to the TXQ
->> entering the QUEUE_STATE_DRV_XOFF state without a corresponding queue wake-up,
->> preventing the attached qdisc from dequeueing packets and causing the
->> network link to halt.
->>
->> As a first step towards resolving this issue, this patch introduces a
->> failsafe mechanism. It enables the net device watchdog by setting a timeout
->> value and implements the .ndo_tx_timeout callback.
->>
->> If a TXQ stalls, the watchdog will trigger the veth_tx_timeout() function,
->> which logs a warning and calls netif_tx_wake_queue() to unstall the queue
->> and allow traffic to resume.
->>
->> The log message will look like this:
->>
->>   veth42: NETDEV WATCHDOG: CPU: 34: transmit queue 0 timed out 5393 ms
->>   veth42: veth backpressure stalled(n:1) TXQ(0) re-enable
->>
->> This provides a necessary recovery mechanism while the underlying race
->> condition is investigated further. Subsequent patches will address the root
->> cause and add more robust state handling.
->>
->> Fixes: dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to reduce TX drops")
->> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
->> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+On 06/11/25 18:09, Andrea Righi wrote:
+> On Thu, Nov 06, 2025 at 10:49:20AM +0100, Juri Lelli wrote:
+> > Hi,
+> > 
+> > On 29/10/25 20:08, Andrea Righi wrote:
+> > > During switching from sched_ext to fair tasks and vice-versa, we need
+> > > support for intializing and removing the bandwidth contribution of
+> > > either DL server.
+> > 
+> > My first and more general/design question is do we strictly need this
+> > automagic bandwidth management. We seem to agree [1] that we want to
+> > move towards explicit dl-server(s) and tasks bandwidth handling, so we
+> > might want to consider leaving the burden completely to whomever might
+> > be configuring the system.
 > 
-> I think this belongs in net-next.. Fail safe is not really a bug fix.
-> I'm slightly worried we're missing a corner case and will cause
-> timeouts to get printed for someone's config.
+> I think we decided to take this approach because, once a sched_ext
+> scheduler is loaded and all tasks are moved to the ext class, the fair
+> class becomes "empty", but the fair dl-server would still keep its
+> bandwidth reserved, so somehow we need to release that reservation,
+> right?
+
+Right. I was just alluding to the fact that keeping the "empty"
+fair_server reservations is not wrong, but indeed sub-optimal. I didn't
+want to block this series if we don't get the automagical removal right,
+so wondered if it could be left for later (as we will still have a
+manual way to remove the empty reservations anyway :).
+
+...
+
+> > > +
+> > > +		hrtimer_cancel(&dl_se->inactive_timer);
+> > 
+> > I am not sure we actually need to force cancel the timer (but still
+> > contradicting myself every time I go back at staring at code :). The way
+> > I believe this should work 'in theory' is
+> > 
+> >  - we remove a server (either automagic or user sets runtime to 0 -
+> >    which is probably to fix/look at in current implementation as well
+> >    btw)
+> >  - current bandwidth is retained and only freed (and server reset) at
+> >    0-lag (when inactive_timer fires)
+> >  - if server is activated back before 0-lag it will use it's current
+> >    parameters
+> >  - after 0-lag it's a new instance with new parameters
 > 
-
-This is a recovery fix.  If the race condition fix isn't 100% then this
-patch will allow veth to recover.  Thus, to me it makes sense to group
-these two patches together.
-
-I'm more worried that we we're missing a corner case that we cannot
-recover from. Than triggering timeouts to get printed, for a config
-where NAPI consumer veth_poll() takes more that 5 seconds to run (budget
-max 64 packets this needs to consume packets at a rate less than 12.8
-pps). It might be good to get some warnings if the system is operating
-this slow.
-
-Also remember this is not the default config that most people use.
-The code is only activated if attaching a qdisc to veth, which isn't
-default. Plus, NAPI mode need to be activated, where in normal NAPI mode
-the producer and consumer usually runs on the same CPU, which makes it
-impossible to overflow the ptr_ring.  The veth backpressure is primarily
-needed when running with threaded-NAPI, where it is natural that
-producer and consumer runs on different CPUs. In our production setup
-the consumer is always slower than the producer (as the product inside
-the namespace have installed too many nftables rules).
-
-
->> +static void veth_tx_timeout(struct net_device *dev, unsigned int txqueue)
->> +{
->> +	struct netdev_queue *txq = netdev_get_tx_queue(dev, txqueue);
->> +
->> +	netdev_err(dev, "veth backpressure stalled(n:%ld) TXQ(%u) re-enable\n",
->> +		   atomic_long_read(&txq->trans_timeout), txqueue);
+> Hm... that means just setting the runtime to 0 IIUC. I think I tried that
+> approach in the past, but I was seeing some inconsistencies with the
+> total_bw kselftest, starting/stopping an scx scheduler multiple times
+> seemed to gradually consume all the available bandwidth.
 > 
-> If you think the trans_timeout is useful, let's add it to the message
-> core prints? And then we can make this msg just veth specific, I don't
-> think we should be repeating what core already printed.
+> But I can give it another try, maybe that behavior was caused by other
+> issues, since we've fixed quite a few things since then.
 
-The trans_timeout is a counter for how many times this TXQ have seen a
-timeout.  It is practical as it directly tell us if this a frequent
-event (without having to search log files for similar events).
+Or maybe it could be inactive_timer/dl_non_contending handling that
+still has some problems.
 
-It does make sense to add this to the core message ("NETDEV WATCHDOG")
-with the same argument.  For physical NICs these logs are present in
-production. Looking at logs through Kibana (right now) and it would make
-my life easier to see the number of times the individual queues have
-experienced timeouts.  The logs naturally gets spaced in time by the
-timeout, making it harder to tell the even frequency. Such a patch would
-naturally go though net-next.
+Anyway, I noticed that it is still possible to write runtime values of
+fair_server while/after scx_server took over. Those values get
+overridden when scx_server switches off. Guess we want to prevent writes
+while scx_server has full control?
 
-Do you still want me to remove the frequency counter from this message?
-By the same argument it is practical for me to have as a single log line
-when troubleshooting this in practice.  BTW, I've already backported
-this watchdog patch to prod kernel (without race fix) and I'll try to
-reproduce the race in staging/lab on some ARM64 servers.  If I reproduce
-it will be practical to have this counter.
-
---Jesper
 
