@@ -1,93 +1,204 @@
-Return-Path: <bpf+bounces-73937-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73938-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5E12C3E6FC
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 05:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A22CCC3E792
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 05:47:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE66A3AA54A
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 04:17:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8714E3ACEB4
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 04:47:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0FB92ED871;
-	Fri,  7 Nov 2025 04:17:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WZAgV4NP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B2926F2B3;
+	Fri,  7 Nov 2025 04:47:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 120CA2877D7;
-	Fri,  7 Nov 2025 04:17:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD764315E;
+	Fri,  7 Nov 2025 04:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762489021; cv=none; b=OZqBP7NqEwWIAnSX3NSiRq550Ve1IrRqm/PfPrZ6PGs+o8TVlloMQ6BhztMj+DuYgRXIpeZKN9lnEvggav1ICuab+rodSgZsryg+oaHT405mnV2eaymEK9uTc5pR6Ja2k08270uMrp1a1Ot98a/XW8eS13F1CRhNrZnR0/NEMHg=
+	t=1762490843; cv=none; b=KG4uMGT3lcZJBGfpyHsYVEL0mdg1T9cngO5OT/VwNfE6SctNa1AI4mrCVlcMtn+jIT9ED17RCdOpVEYjhqZh2PVHNqjPBsih/mSha96pw/DbsnldJYHJ+K5nelYneu6pWhmHebOLcfh2NKdtcC+HMZZIEiLwykVfRXiojNM6sS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762489021; c=relaxed/simple;
-	bh=M+OpW1tlcwU9xR2sQ77krJq0ImruRdWMpmRi1kwjCzg=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=Wmamz+KhAUDfj6H1rdb06fo/gNKDXfbJTezbh0b4tLLNFZYIh4ilsHDVoJGgqah/ICUnrKPYzEm8L1vNkJJ6WakmH+JAPFzTqAcmcEGpxiLbQk4Bao772l1vDN4s3GYNFisv1VKQxlb4nwimkyxAzy624+wAZeakHXQuHL7p4Po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WZAgV4NP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01239C4CEF5;
-	Fri,  7 Nov 2025 04:16:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762489020;
-	bh=M+OpW1tlcwU9xR2sQ77krJq0ImruRdWMpmRi1kwjCzg=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=WZAgV4NPFp11KyB/0jIpKkhEDfICAFKacbZRWkRQ/Il9AGcyG+WXK7wmraAIthMQ8
-	 kEFN53FpvqfCsiUuvtJcmszuZIGk+m/6qvX1kjLCCeYoXBfK4a3nTGAcAWZeX8hDnq
-	 tRUu1T3n6nhZukqXG8NmyyGTQX4WvP9/hL60C/9sHZBA/fx9Y7HWY5dNXAr9kNpiPb
-	 AN6oKqQQUjcCzLi2BDtl0RwGx46tqVnnp3+b4JTcl+K33qTrIrV5PULsZpypw8h1/L
-	 r2E8OfvpJ6x+QrLyly0zA/90E2M27LQI3efFZyjJl1fgN3hcmIfQO08E2YCPSKe4i1
-	 F+9gAlEwQAEfg==
-Content-Type: multipart/mixed; boundary="===============1508624635170502900=="
+	s=arc-20240116; t=1762490843; c=relaxed/simple;
+	bh=VCJ59lycIri74X1yqvv8ek1VO/VNrs0puBEdc9NZc2A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ftGa31RkJNVIm6SCKJaQhJRHuYAkEujoUKuWIGHFbEOUZhY/pt1/qWUo7eI9zC4spiSrdad/opZXg4aTCF9k/1XS677LzvXHArmCy2d8XCzjYuCCIMlog5z52imWm9hCbvzhFQWLGt5FDSTnbvk1iwxO3fTPFIkw7UksoX44IpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-c45ff70000001609-0a-690d79d21061
+Date: Fri, 7 Nov 2025 13:47:08 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+	davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
+	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch,
+	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org,
+	david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	ilias.apalodimas@linaro.org, willy@infradead.org,
+	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+	almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+	sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com,
+	dtatulea@nvidia.com
+Subject: Re: [RFC mm v5 1/2] page_pool: check nmdesc->pp to see its usage as
+ page pool for net_iov not page-backed
+Message-ID: <20251107044708.GA54407@system.software.com>
+References: <20251103075108.26437-1-byungchul@sk.com>
+ <20251103075108.26437-2-byungchul@sk.com>
+ <20251106173320.2f8e683a@kernel.org>
+ <20251107015902.GA3021@system.software.com>
+ <20251106180810.6b06f71a@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <85f7a32e705dc34a7e76e4f41727076593fa4ad52ce918549103885c9719821a@mail.kernel.org>
-In-Reply-To: <20251107035632.115950-4-alibuda@linux.alibaba.com>
-References: <20251107035632.115950-4-alibuda@linux.alibaba.com>
-Subject: Re: [PATCH bpf-next v5 3/3] bpf/selftests: add selftest for bpf_smc_hs_ctrl
-From: bot+bpf-ci@kernel.org
-To: alibuda@linux.alibaba.com,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,pabeni@redhat.com,song@kernel.org,sdf@google.com,haoluo@google.com,yhs@fb.com,edumazet@google.com,john.fastabend@gmail.com,kpsingh@kernel.org,jolsa@kernel.org,mjambigi@linux.ibm.com,wenjia@linux.ibm.com,wintera@linux.ibm.com,dust.li@linux.alibaba.com,tonylu@linux.alibaba.com,guwen@linux.alibaba.com
-Cc: bpf@vger.kernel.org,davem@davemloft.net,kuba@kernel.org,netdev@vger.kernel.org,sidraya@linux.ibm.com,jaka@linux.ibm.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Fri,  7 Nov 2025 04:16:59 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251106180810.6b06f71a@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRzGe885e8/ZcHVat7dEi3URhOxCwT+o6Et0IKKiD0UFdciDDnXG
+	vKTRZZZgSdrVnNNqEdVSYzjzMnGr5l2JxCiPlK5WuUpTcbU0pdqsqG8/nufh938/vByt6VAs
+	4HT6VMmgFxO1WMWoPofdXN6Vqdat7OjWQImtHEPZWAbcfV2rgPFyHwUlpdUIvoy/ZOGnsxmB
+	v7EFw0DDKIJbNwM0lDzNZuCr7TsNjjofgk+m+xjeN3tZKLNvA8+dfgbqc2po8J5vxZCXPUGD
+	c3yIhVO11qC40shCZ3W+Aq58v01DjfE1C8/qSjD0lf9UQL87j4E28z0GRgoaafDkb4Jmy1wI
+	dAwiaLTVUBA4dw3D86I6Cqqcz1m43GXB8Dbbg6CrwctAweQZDMVZ+QgmxoLKoQtfFFDc1Mdu
+	ihGyZBkLDYPDtPDgXg8lvDBdZATZ1U4JDnMvK1jsaUKlNVrIlbtowV56Fgv20Uus8OpFPRZa
+	TROM4HizTnDU+ikh7/QQ3jFnr2p9rJSoS5cMKzYeVMX3D6gPv5yX8fFyIWNEuTNzkZIj/BrS
+	5rxK/eWehxVMiBl+CWnvLqJDjPkoIsvjUzw7mGdXFgU3Ko7mR1hikvsUoWIWn0pGho1TIzUP
+	5LqlkA6NNHwvIib/efy7mEnait5NXaD5aCL/+Bi8zAU5nNz9wYViJb+KWF1NU845/GLyqLqF
+	CnkIP8iRG9eMf146nzy2yswFxJv/05r/05r/aS2ILkUanT49SdQlromJz9TrMmIOJSfZUfCL
+	3Tk+ua8WjXbuciOeQ9ow9ZgrTKdRiOkpmUluRDhaO1u9Vh+M1LFi5lHJkHzAkJYopbhROMdo
+	56lXB47Eavg4MVVKkKTDkuFvS3HKBUbEiMXmyA23FAVHF3nTjrk7E7SWnoRIl7g10u+pcuyP
+	ODu4sPXch5Nvc6aTirhhr8fRNIuLudS5R2XzIay/7XqVvNu/eWfOk27biWWRvoj1vsKWJQcM
+	08pm1E8eG4j6NtkevvaEckuE0bk0C/eWKRvrt6+8aC3VLo8bC1TEgtGmZVLixVXRtCFF/AWh
+	HQ69XgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SW0hTcRzH+Z9zds5xeOJ4KQ/W04qCkZpU9utCWBD9CYp6inqxUx5ypFM2
+	E9fFZo4ukmZZuK0Zi6jMnOY03aSpODMvD8XKmpaXrIzSlqiZU7M2I+rtw/f2e/mxZHiFLJpV
+	qTMljVpMVdBySr5nc16MR8ep1tg2gKWqgoYH09lwb9AhA3/FJwIs5XUIJv1vGPjlakMw0fqU
+	hhH3OILbt6ZIsDwzUPC9aoYEZ8MnBF+MNho+tg0x8MC+GwbuDlPw+Hw9CUOX22koMMyS4PL7
+	GDjrKAsM1+gZcJd2yOB5XaEMrs3cIaFeP8jAiwYLDf0Vv2Qw3FJAQYf5PgVj11tJGChMhDbr
+	EpjqGkXQWlVPwNSlUhq6TQ0EPHJ1M1DssdLw3jCAwOMeouD63AUabuQWIpidDkz6iiZlcONJ
+	P5MYh3O9Xhq7R7+RuPZ+D4FfGa9Q2NvYSWCnuY/BVvtxXFOmxPleD4nt5RdpbB+/yuC3rx7T
+	uN04S2Hnu43Y6ZggcEGej9675KB8S7KUqsqSNHFbD8lThke4jDdR2Z+LSyg9yg/LRyGswK8T
+	epqqqSBT/Aqh87WJDDLNrxK8Xv8CRwZ0Q40pkJGzJD/GCEZvvyxoRPCZwtg3/UKI40G4aS0h
+	g6Fwvg8JxonL9B8jTOgwfVi4QPJKwTv/mchHbICXCvfm2aAcwscLZY1PFjYX88uF5rqnRBHi
+	zP+1zf+1zf/aVkSWo0iVOitNVKWuj9UeS9GpVdmxR9LT7CjwQ3dPz11xoMkXO1sQzyJFKDfd
+	GKoKl4lZWl1aCxJYUhHJrVcHJC5Z1J2QNOlJmuOpkrYFLWUpRRS3a790KJw/KmZKxyQpQ9L8
+	dQk2JFqPNuiKlkX3FCe6T0bGxOWs3H42t2vbNs+ZRQlrdcrakpIcZ+0m7Do82rzHsCbeUDnz
+	tbpL6LI1p4eNvPRx9nbT7I9dlYsP+iLW7Ssd/MmGnVY6bEmrhvy3qeaUS5acn2L5w8SEuaRT
+	ved6Vy9aFn8yxHegf2VGk+jqGNvh7rZ0NtkUlDZFjFeSGq34G6w0CIU/AwAA
+X-CFilter-Loop: Reflected
 
---===============1508624635170502900==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+On Thu, Nov 06, 2025 at 06:08:10PM -0800, Jakub Kicinski wrote:
+> On Fri, 7 Nov 2025 10:59:02 +0900 Byungchul Park wrote:
+> > > > page-backed, the identification cannot be based on the page_type.
+> > > > Instead, nmdesc->pp can be used to see if it belongs to a page pool, by
+> > > > making sure nmdesc->pp is NULL otherwise.
+> > >
+> > > Please explain why. Isn't the type just a value in a field?
+> > > Which net_iov could also set accordingly.. ?
+> >
+> > page_type field is in 'struct page', so 'struct page' can check the type.
+> >
+> > However, the field is not in 'struct net_iov', so 'struct net_iov' that
+> > is not backed by page, cannot use the type checking to see if it's page
+> > pool'ed instance.
+> >
+> > I'm afraid I didn't get your questions.  I will try to explain again
+> > properly if you give me more detail and example about your questions or
+> > requirement.
+> 
+> net_iov has members in the same place as page. page_type is just
+> a field right now.
 
-> diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-> index 70b28c1e6..fcd2f9bf7 100644
-> --- a/tools/testing/selftests/bpf/config
-> +++ b/tools/testing/selftests/bpf/config
-> @@ -123,3 +123,8 @@ CONFIG_XDP_SOCKETS=y
->  CONFIG_XFRM_INTERFACE=y
->  CONFIG_TCP_CONG_DCTCP=y
->  CONFIG_TCP_CONG_BBR=y
-> +CONFIG_INFINIBAND=y
-> +CONFIG_SMC=y
-> +CONFIG_SMC_HS_CTRL_BPF=y
-> +CONFIG_DIBS=y
-> +CONFIG_DIBS_LO=y
-\ No newline at end of file
+The current layout is:
 
-The config file is missing a newline at the end. While not a functional
-issue, this violates POSIX text file conventions and git warns about it.
+  struct page {
+	memdesc_flags_t flags;
+	union {
+		...
+		struct {
+			unsigned long pp_magic;
+			struct page_pool *pp;
+			unsigned long _pp_mapping_pad;
+			unsigned long dma_addr;
+			atomic_long_t pp_ref_count;
+		};
+		...
+	};
+	unsigned int page_type;
+	...
+  };
 
-[ ... ]
+  struct net_iov {
+	union {
+		struct netmem_desc desc;
+		struct
+		{
+			unsigned long _flags;
+			unsigned long pp_magic;
+			struct page_pool *pp;
+			unsigned long _pp_mapping_pad;
+			unsigned long dma_addr;
+			atomic_long_t pp_ref_count;
+		};
+	};
+	struct net_iov_area *owner; // the same offet of page_type
+	enum net_iov_type type;
+  };
 
+The offset of page_type in struct page cannot be used in struct net_iov
+for the same purpose, since the offset in struct net_iov is for storing
+(struct net_iov_area *)owner.
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+Yeah, you can tell 'why don't we add the field, page_type, to struct
+net_iov (or struct netmem_desc)' so as to be like:
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19157812097
+  struct net_iov {
+	union {
+		struct netmem_desc desc;
+		struct
+		{
+			unsigned long _flags;
+			unsigned long pp_magic;
+			struct page_pool *pp;
+			unsigned long _pp_mapping_pad;
+			unsigned long dma_addr;
+			atomic_long_t pp_ref_count;
++			unsigned int page_type; // add this field newly
+		};
+	};
+	struct net_iov_area *owner; // the same offet of page_type
+	enum net_iov_type type;
+  };
 
---===============1508624635170502900==--
+I think we can make it anyway but it makes less sense to add page_type
+to struct net_iov, only for PGTY_netpp.
+
+It'd be better to use netmem_desc->pp for that purpose, IMO.
+
+Thoughts?
+
+	Byungchul
+
+> static __always_inline int Page##uname(const struct page *page)         \
+> {                                                                       \
+>         return data_race(page->page_type >> 24) == PGTY_##lname;        \
+> }                                                                       \
+> 
+> The whole thing works right now by overlaying one struct on top of
+> another, and shared members being in the same places.
+> 
+> Is this clear enough?
 
