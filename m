@@ -1,171 +1,125 @@
-Return-Path: <bpf+bounces-73926-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73927-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FF71C3E2E7
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 02:58:58 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86D2FC3E2F3
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 02:59:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D1EE188A96F
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 01:59:22 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3212A4E536C
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 01:59:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C562FBDFF;
-	Fri,  7 Nov 2025 01:58:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gP0s5TO1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F80F2FC034;
+	Fri,  7 Nov 2025 01:59:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F5F2FBE02
-	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 01:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB8D233993;
+	Fri,  7 Nov 2025 01:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762480723; cv=none; b=lGale7OR4zoOJAcwlmL065lPK0X6rNzaK4U0P869rQKGqrc8fc6kl9wmEWFCBXClm+e9bqNLNV3/3ETJKxOpb4lZ9iDkd3UTop33EcNR2MeaBIF7kuM6Rhq8cy3zxjKZmEKLvt8Y/11K8r2WPtLdVD3bn6RlUUHHhMnlEuono54=
+	t=1762480763; cv=none; b=js5SdOC4AiJJ/U1KLJS4EE88TTriKPktADLg2XZdS1o52LzKQcZnYsU+JbpACKIF8uPpNLGozTRuMKjG8eCmVhKBy9i6/qIUfrs9L5t1iwDDOTSgPvborLcw6FVK+xO9c0RUImOiWRPXw1sChZE+y4knlXnBVLEjcFuCtkSUO1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762480723; c=relaxed/simple;
-	bh=uE+Rkygh9horIXIFvnROjufDWX1NgopkGjoPYzMfJYc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BpLFXvxa7ThTD8OekWDPvoikdbwectcoKcAXFOcS/xr6MMknBs+WDkKFbSjAMOi6ffG/m8tBBzzF6du4FvFhseny8gtBmXAbHGcpC0CIDVMWVl/bkyXgUFlRX/Wk8o/BK5Lh1pP0ucWvs7fj5SbmRSwlZBOdVMHElGFsTuRK9WU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gP0s5TO1; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-7866dcf50b1so2443587b3.3
-        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 17:58:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762480721; x=1763085521; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ws1923/IMmVOcT4O7JQ0j2rMySLfeg19gDf6kDjpaRU=;
-        b=gP0s5TO1U7xSlsLirO/yPY7M4TaVxwpNBj98UtcrMyl04CeZ0mDjfpNwy70ahNXHKd
-         t2jjeyNqq7moI9r3VlNkSODiiUCupLurs6cOy4GuVcPXgahwzW8Pi5Nuylke8sGXytLc
-         nzJHVgROcZzPNz1lY9ZdTiYX+yuAdrQ/rca3+5v548xNzOprOwmc6j4oIJCL9y8VjtFI
-         NKrvEJEjMoqqMMNcg9hJTZGIhyjsmvdXflclV76QL3IOPcC5WlXB3MTd73Lriid+P+bb
-         lD1q/OrGsM8dDEHqpvIBiPG/J+gx64hLBBQ5kJfw4a9y6Ba6pUjbZVWrBIXdg+qp1kKg
-         Z2ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762480721; x=1763085521;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Ws1923/IMmVOcT4O7JQ0j2rMySLfeg19gDf6kDjpaRU=;
-        b=rhE15umCdfN1Lj+/lg8LOA/SCy+SoUOr4foQcu9hWlQSsqEgWr4K8RWe3y8sJU59ub
-         /AwiMuo7+VGe5Yw6t3uJUVEvHw0lFWa3VXf73ek9dn07NjQ+nD/FpMImI2AZUSjqdSlr
-         6UT0V6HuLJWzeZk9yD2ywkZBw+iV2MT2NN+aFZCqTWF1evS4Cozx+wEaUwLwLN6vnKQ9
-         qBPmAhyPvQpuhq3216OXUx974SHTUeCgioGy55dUcYykbjrlFY55bwEM5XU8AHCOozxM
-         BSVYR+/cdY6dGFzH6Z86sRw8Bw0CTP23pEoPvJPEUxEnEu0G54QAdbfaGM90xWthFTPm
-         RJuA==
-X-Forwarded-Encrypted: i=1; AJvYcCWSVIYRaSr0o3eaw3wZGPA4v/dxkKRJHtbh62UhvtSqcS6xfwN/5vVTgO152knKYHy+roM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YytWjupLretZOO/pj2MmI8bakHXObzjmhZWboiy45CdcMr9EVTh
-	gmY1VOFdpK4NLjnBaz8ar18H6oAiwbJGEw4F0R7wjiaTWskvwQ9dC6YnavM23pbJ/JJOEjaVIFa
-	H6jklPyKcwIt4SQfZAafv0wZOLzNgTL0=
-X-Gm-Gg: ASbGncsydwNKzG6r++itDzaUUgZOJfquAouvYS/VzQtKHbwVjxUE2lykrbKknLzDZtz
-	zo4mB9OP43SbRcRLU0mqAtAXap8kfaugdFX3NgsUV67kl9SS8FULJDP4xRcOsWDSfWVs2UDpcTP
-	uUR+GsQxw1p9wijeM8OE6INgTka2o/27FPEW5QHZOcXNJtIWASYI1/7iRFgnF9jKn7qngsDJqCc
-	pvWEJDs7keZ3uScrL3FW+svhZi5Gt7vA/cEJhN6bRrV4UpHtZtFe407znTxmA==
-X-Google-Smtp-Source: AGHT+IFD1W4wWaFnX4WWC5V+GTvvDhI/nCF0mztprUtQtCHUG3Xcq5/Li5dJnu2eCXiyQxiY6R9td23BLW3X6YNPej0=
-X-Received: by 2002:a05:690e:dc6:b0:63f:8734:36d5 with SMTP id
- 956f58d0204a3-640c43eb044mr1470211d50.61.1762480720646; Thu, 06 Nov 2025
- 17:58:40 -0800 (PST)
+	s=arc-20240116; t=1762480763; c=relaxed/simple;
+	bh=7DAjkr9cSxRS0fZbyexesbeKd4d8lXU4RfB66rg63DY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fVhEPUdk1/VkP86IzN3nZN8rSyIaxeVS8L91qEZtsKMekNTi3nSH4cQXRd8fiLKpIs7BWvq/aPFhSkJTvIR0eJVvBs6D+AxxY3ii0GTBxXAl2TXAF6XxPTn9JCJryj16irXKOftCfdYdiuYdH7hA3KB+IIBEtGHddSSncip8N3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-c45ff70000001609-41-690d526b4ee5
+Date: Fri, 7 Nov 2025 10:59:02 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+	davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
+	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch,
+	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org,
+	david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	ilias.apalodimas@linaro.org, willy@infradead.org,
+	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+	almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+	sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com,
+	dtatulea@nvidia.com
+Subject: Re: [RFC mm v5 1/2] page_pool: check nmdesc->pp to see its usage as
+ page pool for net_iov not page-backed
+Message-ID: <20251107015902.GA3021@system.software.com>
+References: <20251103075108.26437-1-byungchul@sk.com>
+ <20251103075108.26437-2-byungchul@sk.com>
+ <20251106173320.2f8e683a@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251106205852.45511-1-a.safin@rosa.ru>
-In-Reply-To: <20251106205852.45511-1-a.safin@rosa.ru>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 7 Nov 2025 09:58:04 +0800
-X-Gm-Features: AWmQ_blKz8xkp87Ie3SuRJxJXNqDNP3e1oq6mV_yZNh0EqOO6_kc5GFDmtfaPIg
-Message-ID: <CALOAHbCcfszFFDuABhPHoMioT26GAXOKZzMqww0QY1wKogNm1g@mail.gmail.com>
-Subject: Re: [PATCH] bpf: hashtab: fix 32-bit overflow in memory usage calculation
-To: Alexei Safin <a.safin@rosa.ru>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	lvc-patches@linuxtesting.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251106173320.2f8e683a@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTYRTHefZeHY5eV+ZT9mkFkZXaKjpBFwmKByKQpA9dqEZ70eFctZlp
+	EGw1yCLNlZLOBbPwbhmzdFqW6dQsupnF201tVlIts1XiUrI5k/r2439+/M/5cHhKeZ+Zy+sM
+	6aLRoNGrWDkt/xJesjR1q0IX3z6wBBy1NSxUj2ZCeb+bgUDNoAwcVfUIfgRecTDR3IHgu6eT
+	hc9tfgSXSkYocDyy0vCz9hcFjU2DCD4VXmbhfYeXg2rXFugr+0DDzRMNFHjP3GUhxzpGQXNg
+	iINj7opgcZ2Zg8f1uQzk/yqloMHcz8HTJgcLvTUTDHxozaGhy15Jw3CBh4K+3ATocM6Gkfs+
+	BJ7aBhmMnL7AwrOiJhlcb37GwbluJwsD1j4E3W1eGgrGs1kotuQiGBsNVg7l/WCguL2XS4gl
+	FkliSZvvK0WuVb6QkeeFNppIt+7JSKP9DUecrkOkriKGnJK6KeKqOskSl/8sR14/v8mSu4Vj
+	NGl8u5o0ur/LSM7xITYxcod8jVbU6zJEY9y6vfKUHlsBe8DGZeaP25AZ3WNOoTAeCyuwK2dC
+	Ns21Te30JNPCAux5UB5yWGEhlqQANcmzgrm1rijoyHlKGOZwodQbkmYK6Xj4qzkkKYRV2Ho+
+	LyQphWyEzdceMlODCNxV9C60gRJisPT7Y3AzH+RoXP6bn4zDhGX4ZbGDneRIYT5uqe/8e5yP
+	x/mWGVM8B9+pkOg8JNj/a7X/12r/1+pEVBVS6gwZaRqdfkVsSpZBlxm7b3+aCwVfrOzo+E43
+	8j9OakUCj1ThitFb4Tolo8kwZaW1IsxTqlmKlYZgpNBqso6Ixv17jIf0oqkVRfO0KkqhHjms
+	VQrJmnQxVRQPiMbpqYwPm2tGmgfmnuNnH+0+mKdUETG6M/lKbkJWqbp90TxjprZgV+CqN25V
+	Mlg4v9q9zdG1vqpF/T4+sNvmWxvYbsIZzVe615c7xMhPzprEj6hoMEq/9kZSqSsqgvHoTu7t
+	SWiJ3vBtw4zhMt/yJ/HC6ZLs253ezUcXL9940Q91WvVLQJtUtClFsyyGMpo0fwAGlwewXgMA
+	AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHe8/lPcfh4qRWh4KIGUiCWVD0RFFSVC/dCUGoD7Xy1MZ05bZE
+	g2DmoJI0V4pzrrKrl6zBNJ2SEc57mKVmxywty6Iys1ymadpcRH378/tfni8PTwfdYefxWr1J
+	MujVcSqsYBQ7VqdG6HYrtUsbh4PB4SzBcGs0CQpeuVkYK3lPgaO4HIF3rJuDqep6BMO1DRg+
+	eb4huHZlhAZHq4WB786fNFRWvUfw0XYbQ399Hwe3XNuh9+Y7Bu6dqqCh71wjhnTLOA3VY4Mc
+	nHQX+oZLzRx4Ljax8Lg8g4WsnzdoqDC/4qC9yoGhp2SKhXc16Qw02YsYGMqupaE3Iwrq8+fA
+	yMMBBLXOCgpGzl7E8DS3ioK71U85uNCWj+GNpRdBm6ePgeyJ0xjyUjIQjI/6JgczvSzk1fVw
+	UZEkRZYx8Qx8oUlZURdFOm1Whsj3mylSaX/JkXzXMVJaGE7S5DaauIrPYOL6dp4jLzrvYdJo
+	G2dI5etVpNI9TJH01EG8a84exZpYKU6bKBki1+5XaDqs2fiolUvKmrAiM2pm01AALwrLRWdV
+	HTOtGWGRWNtS4OdYCBNleYye1iE+binN9WUUPC0McaJN7vGHggWTOPTF7A8phZWiJSfTHwoS
+	TiPRXPaI/WPMEpty3/ov0EK4KE9+oNIQ79PzxYJJfhoHCMvE53kOPK1nC6Hig/IGKhMp7f+1
+	7f+17f/a+YguRiFafWK8Whu3YolRp0nWa5OWHDwS70K+L7p5YsLqRt72zTVI4JEqUDl6P1Ab
+	xKoTjcnxNUjkaVWIcoXeh5Sx6uTjkuHIPsOxOMlYg+bzjGquckuMtD9IOKw2STpJOioZ/roU
+	HzDPjCIWShFXTZrV/S11V36sD5W6Cp1FXMZXnRT941JMk+34rkMm3PU46xfbfHiGl3q9lcR0
+	5CRulDXrLjNbyg3DmxIGPd0fo9PDnsxMeNbxxjip++wZMMd+bd0bvKAl8nNdf1H71uvRoTsD
+	E8qiFk+JYQeuP8nZcMZeuC0l1W2n12CvijFq1MvCaYNR/RuahmFKQQMAAA==
+X-CFilter-Loop: Reflected
 
-On Fri, Nov 7, 2025 at 4:59=E2=80=AFAM Alexei Safin <a.safin@rosa.ru> wrote=
-:
->
-> The intermediate product value_size * num_possible_cpus() is evaluated
-> in 32-bit arithmetic and only then promoted to 64 bits. On systems with
-> large value_size and many possible CPUs this can overflow and lead to
-> an underestimated memory usage.
->
-> Cast value_size to u64 before multiplying.
->
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->
-> Fixes: 304849a27b34 ("bpf: hashtab memory usage")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Alexei Safin <a.safin@rosa.ru>
-> ---
->  kernel/bpf/hashtab.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 570e2f723144..7ad6b5137ba1 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -2269,7 +2269,7 @@ static u64 htab_map_mem_usage(const struct bpf_map =
-*map)
->                 usage +=3D htab->elem_size * num_entries;
->
->                 if (percpu)
-> -                       usage +=3D value_size * num_possible_cpus() * num=
-_entries;
-> +                       usage +=3D (u64)value_size * num_possible_cpus() =
-* num_entries;
->                 else if (!lru)
->                         usage +=3D sizeof(struct htab_elem *) * num_possi=
-ble_cpus();
->         } else {
-> @@ -2281,7 +2281,7 @@ static u64 htab_map_mem_usage(const struct bpf_map =
-*map)
->                 usage +=3D (htab->elem_size + LLIST_NODE_SZ) * num_entrie=
-s;
->                 if (percpu) {
->                         usage +=3D (LLIST_NODE_SZ + sizeof(void *)) * num=
-_entries;
-> -                       usage +=3D value_size * num_possible_cpus() * num=
-_entries;
-> +                       usage +=3D (u64)value_size * num_possible_cpus() =
-* num_entries;
->                 }
->         }
->         return usage;
-> --
-> 2.50.1 (Apple Git-155)
->
+On Thu, Nov 06, 2025 at 05:33:20PM -0800, Jakub Kicinski wrote:
+> On Mon,  3 Nov 2025 16:51:07 +0900 Byungchul Park wrote:
+> > However, for net_iov not
+			  ^
+		*not* page-backed
 
-Thanks for the fix. What do you think about this change?
+> > page-backed, the identification cannot be based on the page_type.
+> > Instead, nmdesc->pp can be used to see if it belongs to a page pool, by
+> > making sure nmdesc->pp is NULL otherwise.
+> 
+> Please explain why. Isn't the type just a value in a field?
+> Which net_iov could also set accordingly.. ?
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 4a9eeb7aef85..f9084158bfe2 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -2251,7 +2251,7 @@ static long bpf_for_each_hash_elem(struct
-bpf_map *map, bpf_callback_t callback_
- static u64 htab_map_mem_usage(const struct bpf_map *map)
- {
-        struct bpf_htab *htab =3D container_of(map, struct bpf_htab, map);
--       u32 value_size =3D round_up(htab->map.value_size, 8);
-+       u64 value_size =3D round_up(htab->map.value_size, 8);
-        bool prealloc =3D htab_is_prealloc(htab);
-        bool percpu =3D htab_is_percpu(htab);
-        bool lru =3D htab_is_lru(htab);
+page_type field is in 'struct page', so 'struct page' can check the type.
 
+However, the field is not in 'struct net_iov', so 'struct net_iov' that
+is not backed by page, cannot use the type checking to see if it's page
+pool'ed instance.
 
---=20
-Regards
-Yafang
+I'm afraid I didn't get your questions.  I will try to explain again
+properly if you give me more detail and example about your questions or
+requirement.
+
+	Byungchul
 
