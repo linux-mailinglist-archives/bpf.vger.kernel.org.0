@@ -1,257 +1,246 @@
-Return-Path: <bpf+bounces-73975-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73976-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C7E3C41444
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 19:19:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EB04C41579
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 19:52:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0944B3BFE21
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 18:19:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1901F3A7C6B
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 18:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00DA2339719;
-	Fri,  7 Nov 2025 18:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE0A33B6DB;
+	Fri,  7 Nov 2025 18:52:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bbIqRCGv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IqTCA9zT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CDB02F83BC
-	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 18:19:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E273433B6DE;
+	Fri,  7 Nov 2025 18:52:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762539580; cv=none; b=m/UGauyeW+8/mM4xG3tZY8PRO3YvoC1254t6XQmWQpM/uTzEWFXImCKMqyLB9Sjhl7IUZ9509KxKY008GeInXW8qx0Ce/fqHN1OsoZ9KoVRfMPpKXPV6/1p5ugGR1VI7Ggj3EQbPn4B7P88xoLobYwsMp37fK5jpF385rTK9Yhw=
+	t=1762541535; cv=none; b=Sex+JA5L4xoMip9kh/57a/62iFLvCQoL8wkj5zSYDkXaMuYz/F8wiJr/GvoeW+A2IMNdUw3xA1noQdpj4/17VJn5+U1m5OlISQr25ngmTMcsSytbuv6qvs/NkwLEDiGPeHuVieVlbs46GSR4E5qHlJzSMAv7shaENWyXwQaoqaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762539580; c=relaxed/simple;
-	bh=Nfg8fIlYXrhKTgE7llskapPtirpxksa9elL/wFVTIH4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=iqbAS+MmimPA3wiLEwbp661Ja8pgFFU9zKGS7fRKlaLMF3k5l5acvd1N60eJpRnzljjXFtR6UcWg5hrM4d2z56pUbywxUPFtllRCHXyqd+evZeqK90Q5jc4rFYe0B7thdO+SZioNgk/znud3NEccX/gAXmUVn4EUC7m0HYizMIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bbIqRCGv; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-29524abfba3so10563715ad.1
-        for <bpf@vger.kernel.org>; Fri, 07 Nov 2025 10:19:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762539578; x=1763144378; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Nfg8fIlYXrhKTgE7llskapPtirpxksa9elL/wFVTIH4=;
-        b=bbIqRCGvsm5SgJnmK1OeHVeQXYBrxc/Mc2P1C9XF4II1wOpZggGjUJ8Qd6KDE5dm9v
-         9wVCwD9fTzcPDjPHQeQTWKhCO8nhD7LyyWuOxUksoj8G6Obl6tySUMNkpusKeB6v7wYH
-         bGqFzP/nHqMIuCUBLcGNcNeRHFo54h6GM8hAhoA6R4YdKIR1gnuAe9BaM3A/d28sGrhv
-         80nUSPMOToiS7zMHF7D1GM0yz2Ypeu+KbHeDS0VocJk9BaRvFwcVGEM3fjywgjkGsxoJ
-         xZwYn7LTuQrWoWCJ9AgyMwxsQZne+D0Ex3fsyGRnggqRXvgzb1otaVLz37GgvorCc6ni
-         UElw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762539578; x=1763144378;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nfg8fIlYXrhKTgE7llskapPtirpxksa9elL/wFVTIH4=;
-        b=GME/cOn4OOymKpzY8EcCOk+8bBBp2+g4fumuvSVhJupBmEbg18WnzggM3aEevdTDft
-         0RQAkwUPittDxW3zKS/XfETGCPtq1pHbzr/xFUhYlsOF+oS3vbqUGBvVH08lVqwJOlBG
-         nNuXEYHLEA07+7SkzBo5QH4FMFVmfNEb/nk7Yt6lmaKZnmZjxcy91fvCGc7i+u6Ax9bQ
-         z2SthxO6tuR/KRyFpgfPERDiAyzw+InrrPttWzSbDnvdfxAYpXj8kN5M4tOeCO+KbpDx
-         NFGCpSR1iP86RwdVUA8xC3UJqWnfupjTWnAtWKu0/fyd/oHMHElbg17YwZYMkRAeX0vz
-         OKwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXa2QRHRk50tzcyPfiJWu4ymhbWSIDjj5uToxC4EPbfz+hOZsHh4UOfkPwoOhnsB4C6gRU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfY/1gqFAhrnlPN2Sa7ya7c7yu47B8Hsar6k2afH32uweBDtDn
-	Rfewuf4NvFIaOB7n0s0xGEFv4o8OyXWnJfoAqdgmlUt3PqcM4QC2S+vJ
-X-Gm-Gg: ASbGnctfSeS1ZBUJQBvjHUJ7Pq+IWtc5myiaRBbMWp5rqr7ZxqlYnfPoNe4xRkgMYIy
-	ZmP63PVWfSS5lzG2Mz5NX4bPSD9W2xGICtAl4kP7SbLx6BkdCQT/+rGEXAhiGp8KaSmOW0+oPSP
-	S/vJddG33mSA1LzDNEnaehY+vxpm8lBYGU+VXEDz8z1Xgq4yGKEUdRcMsptHKg1GqMExjH9Zc+r
-	9j8ylNh1fEih90msZ49OH3aNMBTEXHNpmzMxmPznmeuxZoAX7G0Nky5/gnHA66GavUry/qaF8gr
-	lgdrz1s7SYdO0d7lLny0wfhIqfQ9bRAiAChex5vMFj3Zt5AeRHlfQXw5UX1hKP5bcMvSWstoKR7
-	9F5puPp8JmeX6dEfPI/VAkU936PRsMtU5ehgEKY3Pd1GVvHT5Tp0jtbeCT1nKx9Bd5sFFWXJMxn
-	mOnTzweNE=
-X-Google-Smtp-Source: AGHT+IFOtcW0FjrNxyzQVAwg8/hsWcVkY2/+FOGxCrw+aG6ME/j+PMfoUflj60UThewImLHLIJQRzg==
-X-Received: by 2002:a17:903:3848:b0:294:def6:5961 with SMTP id d9443c01a7336-297e56d0868mr419605ad.45.1762539578179;
-        Fri, 07 Nov 2025 10:19:38 -0800 (PST)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29651c93e5dsm68382615ad.81.2025.11.07.10.19.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Nov 2025 10:19:37 -0800 (PST)
-Message-ID: <74d4c8e40e61dad369607ecd8b98f58a515479f0.camel@gmail.com>
-Subject: Re: [PATCH v5 6/7] btf: Add lazy sorting validation for binary
- search
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Donglin Peng <dolinux.peng@gmail.com>, bot+bpf-ci@kernel.org, 
-	ast@kernel.org, andrii.nakryiko@gmail.com
-Cc: zhangxiaoqin@xiaomi.com, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, 	alan.maguire@oracle.com, song@kernel.org,
- pengdonglin@xiaomi.com, 	andrii@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, 	yonghong.song@linux.dev, clm@meta.com,
- ihor.solodrai@linux.dev
-Date: Fri, 07 Nov 2025 10:19:33 -0800
-In-Reply-To: <CAErzpmtRYnSpLuO=oM7GgW0Sss2+kQ2cJsZiDmZmz04fD0Noyg@mail.gmail.com>
-References: <20251106131956.1222864-7-dolinux.peng@gmail.com>
-	 <d57f3e256038e115f7d82b4e6b26d8da80d3c8d8afb4f0c627e0b435dee7eaf6@mail.kernel.org>
-	 <CAErzpmtRYnSpLuO=oM7GgW0Sss2+kQ2cJsZiDmZmz04fD0Noyg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	s=arc-20240116; t=1762541535; c=relaxed/simple;
+	bh=xf4LmEs/vCzWiaf2kAF7AgpX2/Ou3FIf/waiEhnB5/s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OHyJNYmHWrBsEA4F64O+OZaLZpVkz8pDg4iAzYE5o5rRK86I8h8Z2/fAX6KyrfGLnDuPI0sZTSRebRsfSkCbYs0JHNdlQ90+zFjc6kE2DMYxD3mLY2EOSztu0/qmuQNvWkV9yNXZ6wgKUGuNAgCyduRn0XmwUdFNDRWmtBxA0Lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IqTCA9zT; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1762541533; x=1794077533;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xf4LmEs/vCzWiaf2kAF7AgpX2/Ou3FIf/waiEhnB5/s=;
+  b=IqTCA9zT7EXpZda6QzumWMTbj/1RaB1p5kAhuhBo0cvCAzuq1Pr4gD1c
+   ZBhz69MBEBKzFbdJpcgtrVidaCDUyy6Dm4aRAIfG0kHotHIwcGlEYfY4y
+   l8N3eNS+Fg5XspPgMzBjzpwIujgL9D/YFaSwZA90+lbSHwIoFblx+2nmY
+   WvR5jxi2B2+wqDpuI5QwmVmcvbHxvLXlS1CBqJoCQkUj8yukuo3GYgSDM
+   UlhvykSswM3AXHgDQrlRuKqGzojO8V4l5Mc+wKc1xBpXDsmGaT83rQL4B
+   ejb2UlLogT2fEHiF1nnS0RLX9Ml9TOJQtWrFWYwb9E98rhtLtD524ZdFM
+   g==;
+X-CSE-ConnectionGUID: zXxFlq6+S9ONDE1WxZYzhQ==
+X-CSE-MsgGUID: ZRp8qJ2BQrOeywolZpG9Qg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11606"; a="82096504"
+X-IronPort-AV: E=Sophos;i="6.19,287,1754982000"; 
+   d="scan'208";a="82096504"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2025 10:52:12 -0800
+X-CSE-ConnectionGUID: NX74ZQfORwatomIShBOKWA==
+X-CSE-MsgGUID: 6hrU/4eyQliBX8lemlmwqQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,287,1754982000"; 
+   d="scan'208";a="192463422"
+Received: from lkp-server01.sh.intel.com (HELO 6ef82f2de774) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 07 Nov 2025 10:52:10 -0800
+Received: from kbuild by 6ef82f2de774 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vHRZ9-0000G3-2T;
+	Fri, 07 Nov 2025 18:52:07 +0000
+Date: Sat, 8 Nov 2025 02:51:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+	io-uring@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Caleb Sander Mateos <csander@purestorage.com>,
+	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>, Ming Lei <ming.lei@redhat.com>
+Subject: Re: [PATCH 5/5] io_uring: bpf: add io_uring_bpf_req_memcpy() kfunc
+Message-ID: <202511080255.v8F8GrXF-lkp@intel.com>
+References: <20251104162123.1086035-6-ming.lei@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251104162123.1086035-6-ming.lei@redhat.com>
 
-On Fri, 2025-11-07 at 15:08 +0800, Donglin Peng wrote:
-> On Thu, Nov 6, 2025 at 9:47=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
-> >=20
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index 66cb739a0..33c327d3c 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -552,6 +552,70 @@ u32 btf_nr_types(const struct btf *btf)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return total;
-> > > =C2=A0}
-> > >=20
-> > > +/* Verifies that BTF types are sorted in ascending order
-> > > according to their
-> > > + * names, with named types appearing before anonymous types. If
-> > > the ordering
-> > > + * is correct, counts the number of named types and updates the
-> > > BTF object's
-> > > + * nr_sorted_types field.
-> > > + *
-> > > + * Return: true if types are properly sorted, false otherwise
-> > > + */
-> > > +static bool btf_check_sorted(struct btf *btf)
-> > > +{
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 const struct btf_type *t;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 int i, n, k =3D 0, nr_sorted_types;
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (likely(btf->nr_sorted_types !=3D BTF_NE=
-ED_SORT_CHECK))
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 goto out;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 btf->nr_sorted_types =3D 0;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 ^
-> >=20
-> > Can multiple threads race when writing to btf->nr_sorted_types
-> > here?
-> > Looking at btf_find_by_name_kind()->btf_check_sorted(), I see that
-> > btf_find_by_name_kind() receives a const pointer but casts away the
-> > const
-> > to call btf_check_sorted(). The function bpf_find_btf_id() calls
-> > btf_find_by_name_kind() without holding any locks (line 737), and
-> > later
-> > explicitly unlocks before calling it again (lines 756-757).
-> >=20
-> > This means multiple threads can concurrently enter
-> > btf_check_sorted() and
-> > write to btf->nr_sorted_types. While the validation logic is
-> > idempotent
-> > and all threads would compute the same value, the concurrent writes
-> > to the
-> > same memory location without synchronization could trigger KCSAN
-> > warnings.
-> >=20
-> > Should this use atomic operations, or should the validation be
-> > performed
-> > under a lock during BTF initialization before the BTF becomes
-> > visible to
-> > multiple threads?
->=20
-> Hi, is it necessary to address this issue?
-> For example, by using atomic_try_cmpxchg or WRITE/READ_ONCE? Using
-> atomic_try_cmpxchg can prevent race conditions on writes but requires
-> an atomic
-> variable, while WRITE_ONCE/READ_ONCE can avoid KCSAN warnings. Since
-> the race condition is unlikely to cause critical issues, I suggest
-> using
-> WRITE_ONCE/READ_ONCE.
+Hi Ming,
 
-Probably use WRITE_ONCE/READ_ONCE?
+kernel test robot noticed the following build warnings:
 
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (btf->nr_types < 2)
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 goto out;
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 nr_sorted_types =3D 0;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 n =3D btf_nr_types(btf) - 1;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D btf_start_id(btf); i < n; i++) {
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 k =3D i + 1;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 if (btf_compare_type_names(&i, &k, btf) > 0)
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 t =3D btf_type_by_id(btf, i);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 if (t->name_off)
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 nr_sorted_types++;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 t =3D btf_type_by_id(btf, k);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (t->name_off)
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 nr_sorted_types++;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (nr_sorted_types)
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 btf->nr_sorted_types =3D nr_sorted_types;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 ^
-> >=20
-> > The same race condition applies to this write of nr_sorted_types as
-> > well.
-> >=20
-> > > +
-> > > +out:
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 return btf->nr_sorted_types > 0;
-> > > +}
-> >=20
-> > [ ... ]
-> >=20
-> > > @@ -610,7 +674,7 @@ s32 btf_find_by_name_kind(const struct btf
-> > > *btf, const char *name, u8 kind)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > >=20
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 if (btf->nr_sorted_types !=3D BTF_NEED_SORT=
-_CHECK) {
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (btf_check_sorted((struct btf *)btf)) {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
-> >=20
-> > The const cast here enables the concurrent writes discussed above.
-> > Is
-> > there a reason to mark the btf parameter as const if we're
-> > modifying it?
->=20
-> Hi team, is casting away const an acceptable approach for our
-> codebase?
+[auto build test WARNING on next-20251104]
+[cannot apply to bpf-next/net bpf-next/master bpf/master linus/master v6.18-rc4 v6.18-rc3 v6.18-rc2 v6.18-rc4]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Casting away const is undefined behaviour, e.g. see paragraph 6.7.3.6
-N1570 ISO/IEC 9899:201x Programming languages =E2=80=94 C.
+url:    https://github.com/intel-lab-lkp/linux/commits/Ming-Lei/io_uring-prepare-for-extending-io_uring-with-bpf/20251105-002757
+base:   next-20251104
+patch link:    https://lore.kernel.org/r/20251104162123.1086035-6-ming.lei%40redhat.com
+patch subject: [PATCH 5/5] io_uring: bpf: add io_uring_bpf_req_memcpy() kfunc
+config: openrisc-allyesconfig (https://download.01.org/0day-ci/archive/20251108/202511080255.v8F8GrXF-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 15.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251108/202511080255.v8F8GrXF-lkp@intel.com/reproduce)
 
-Both of the problems above can be avoided if kernel will do sorted
-check non-lazily. But Andrii and Alexei seem to like that property.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202511080255.v8F8GrXF-lkp@intel.com/
 
->=20
-> >=20
-> >=20
-> > ---
-> > AI reviewed your patch. Please fix the bug or email reply why it's
-> > not a bug.
-> > See:
-> > https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.m=
-d
-> >=20
-> > CI run summary:
-> > https://github.com/kernel-patches/bpf/actions/runs/19137195500
+All warnings (new ones prefixed by >>):
+
+   io_uring/bpf.c: In function 'io_bpf_import_buffer':
+>> io_uring/bpf.c:423:47: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+     423 |                 return import_ubuf(direction, (void __user *)(addr + offset),
+         |                                               ^
+   In file included from include/linux/bpf_verifier.h:7,
+                    from io_uring/bpf.c:9:
+   io_uring/bpf.c: In function 'io_bpf_init':
+   include/linux/bpf.h:2044:50: warning: statement with no effect [-Wunused-value]
+    2044 | #define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
+         |                                                  ^~~~~~~~~~~~~~~~
+   io_uring/bpf.c:551:15: note: in expansion of macro 'register_bpf_struct_ops'
+     551 |         err = register_bpf_struct_ops(&bpf_uring_bpf_ops, uring_bpf_ops);
+         |               ^~~~~~~~~~~~~~~~~~~~~~~
+   In file included from <command-line>:
+   In function 'io_kiocb_cmd_sz_check',
+       inlined from 'io_uring_bpf_prep' at io_uring/bpf.c:93:32:
+   include/linux/compiler_types.h:603:45: error: call to '__compiletime_assert_598' declared with attribute error: BUILD_BUG_ON failed: cmd_sz > sizeof(struct io_cmd_data)
+     603 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:584:25: note: in definition of macro '__compiletime_assert'
+     584 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:603:9: note: in expansion of macro '_compiletime_assert'
+     603 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |         ^~~~~~~~~~~~~~~~
+   include/linux/io_uring_types.h:655:9: note: in expansion of macro 'BUILD_BUG_ON'
+     655 |         BUILD_BUG_ON(cmd_sz > sizeof(struct io_cmd_data));
+         |         ^~~~~~~~~~~~
+   In function 'io_kiocb_cmd_sz_check',
+       inlined from 'io_uring_bpf_issue' at io_uring/bpf.c:131:32:
+   include/linux/compiler_types.h:603:45: error: call to '__compiletime_assert_598' declared with attribute error: BUILD_BUG_ON failed: cmd_sz > sizeof(struct io_cmd_data)
+     603 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:584:25: note: in definition of macro '__compiletime_assert'
+     584 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:603:9: note: in expansion of macro '_compiletime_assert'
+     603 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |         ^~~~~~~~~~~~~~~~
+   include/linux/io_uring_types.h:655:9: note: in expansion of macro 'BUILD_BUG_ON'
+     655 |         BUILD_BUG_ON(cmd_sz > sizeof(struct io_cmd_data));
+         |         ^~~~~~~~~~~~
+   In function 'io_kiocb_cmd_sz_check',
+       inlined from 'io_uring_bpf_fail' at io_uring/bpf.c:148:32:
+   include/linux/compiler_types.h:603:45: error: call to '__compiletime_assert_598' declared with attribute error: BUILD_BUG_ON failed: cmd_sz > sizeof(struct io_cmd_data)
+     603 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:584:25: note: in definition of macro '__compiletime_assert'
+     584 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:603:9: note: in expansion of macro '_compiletime_assert'
+     603 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |         ^~~~~~~~~~~~~~~~
+   include/linux/io_uring_types.h:655:9: note: in expansion of macro 'BUILD_BUG_ON'
+     655 |         BUILD_BUG_ON(cmd_sz > sizeof(struct io_cmd_data));
+         |         ^~~~~~~~~~~~
+   In function 'io_kiocb_cmd_sz_check',
+       inlined from 'io_uring_bpf_cleanup' at io_uring/bpf.c:159:32:
+   include/linux/compiler_types.h:603:45: error: call to '__compiletime_assert_598' declared with attribute error: BUILD_BUG_ON failed: cmd_sz > sizeof(struct io_cmd_data)
+     603 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:584:25: note: in definition of macro '__compiletime_assert'
+     584 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:603:9: note: in expansion of macro '_compiletime_assert'
+     603 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |         ^~~~~~~~~~~~~~~~
+   include/linux/io_uring_types.h:655:9: note: in expansion of macro 'BUILD_BUG_ON'
+     655 |         BUILD_BUG_ON(cmd_sz > sizeof(struct io_cmd_data));
+         |         ^~~~~~~~~~~~
+
+
+vim +423 io_uring/bpf.c
+
+   401	
+   402	/*
+   403	 * Helper to import a buffer into an iov_iter for BPF memcpy operations.
+   404	 * Handles both plain user buffers and fixed/registered buffers.
+   405	 *
+   406	 * @req: io_kiocb request
+   407	 * @iter: output iterator
+   408	 * @buf_type: buffer type (plain or fixed)
+   409	 * @addr: buffer address
+   410	 * @offset: offset into buffer
+   411	 * @len: length from offset
+   412	 * @direction: ITER_SOURCE for source buffer, ITER_DEST for destination
+   413	 * @issue_flags: io_uring issue flags
+   414	 *
+   415	 * Returns 0 on success, negative error code on failure.
+   416	 */
+   417	static int io_bpf_import_buffer(struct io_kiocb *req, struct iov_iter *iter,
+   418					u8 buf_type, u64 addr, unsigned int offset,
+   419					u32 len, int direction, unsigned int issue_flags)
+   420	{
+   421		if (buf_type == IORING_BPF_BUF_TYPE_PLAIN) {
+   422			/* Plain user buffer */
+ > 423			return import_ubuf(direction, (void __user *)(addr + offset),
+   424					   len - offset, iter);
+   425		} else if (buf_type == IORING_BPF_BUF_TYPE_FIXED) {
+   426			/* Fixed buffer */
+   427			return io_import_reg_buf(req, iter, addr + offset,
+   428						 len - offset, direction, issue_flags);
+   429		}
+   430	
+   431		return -EINVAL;
+   432	}
+   433	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
