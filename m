@@ -1,238 +1,253 @@
-Return-Path: <bpf+bounces-73972-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73973-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E091DC4122A
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 18:45:19 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id D597AC41386
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 19:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32D37188CDFA
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 17:44:56 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 74ED24EAC79
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 18:05:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA403376A5;
-	Fri,  7 Nov 2025 17:44:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48D33396FD;
+	Fri,  7 Nov 2025 18:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hKYRFBi5"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HHRviqZL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-wr1-f73.google.com (mail-wr1-f73.google.com [209.85.221.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F026336ECF
-	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 17:44:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDBDD32E149
+	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 18:04:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762537450; cv=none; b=HjlCv6g6FGrRHOTnDTiXpAoofaDp47DwUh58qEsjZVDaqjQ4rM36yKXhndHEXhLLfA1THxxCQx58WzbRPzVASUBD2LI3JcNid6M6W15QrElOjul6tMs5acx5w3qRzUManUeHkP8wm2JdKPT5FUT3ka8xxS+/hTngVrSKhBs7NGo=
+	t=1762538702; cv=none; b=SzEKVyHjcjqWFHe2qa+v5eLEP/J3XnOn5YpnlRfG3TqEGeDjVRjjMaq1FdICEtXQjDqlX1sF3aGDyUZnW35eT41HG1qDGHYdYrbTnm1fATghiC1/N8I3IfbJhk+8FkKdYGoj6t7hGG+8IeHGoPyZAtM15CS4sVfBCf/g7nJKyXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762537450; c=relaxed/simple;
-	bh=gf0l6JphSC45++jh/l/NcwDRHSom2Kf9ZMm8/TbpCjE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A+Fv4agpZW70JyEJQWy/RCHxAJBthWXN4DRtvkBqmug8ba25GEph2/NulRBqS2K3kQ+5H2f/f9b/FKGtxq2zWrYkU5940oDbJEIJbRR3tOC1uoDR8b8DJogR+98id5XF0fKDPLuIX+IFTV3b6UwpMShiLwX0NacqU0nIv7J6wK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hKYRFBi5; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-3304dd2f119so829960a91.2
-        for <bpf@vger.kernel.org>; Fri, 07 Nov 2025 09:44:08 -0800 (PST)
+	s=arc-20240116; t=1762538702; c=relaxed/simple;
+	bh=yVzlCT5Uu1SxfjDUt0JzOKp9XvXdUS1XaZo2iK8crO0=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=SiGXMqKdUkHnlJ47tlYM9GaA5Vwa3FrnocQu0QtXjtTYlCAS3VQulpMT4iWbslRS02Aj3rYn1OR+C86p5kfV84B/nMRXnbidY+davri8wj+99o0K6OYuESLyRSqa/9cANIdsuPogqW223s/2zCGnzj1mQNncu36INHZn9ud/Ypo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HHRviqZL; arc=none smtp.client-ip=209.85.221.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
+Received: by mail-wr1-f73.google.com with SMTP id ffacd0b85a97d-429cce847c4so619187f8f.2
+        for <bpf@vger.kernel.org>; Fri, 07 Nov 2025 10:04:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762537448; x=1763142248; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9gytpHvgcd7XKnQeia/W2QSEvlqw4E93JDTWduCN6+0=;
-        b=hKYRFBi5CYSrINwS2wbWidt2iOIsR7hj0l95nuslDcWD8sSrThMK5ST4r++AvbGWJQ
-         QtPQBrX9Th8trR2vpiXWVaeYL1JMpNj6MBEoeAGZtKpAVm+HNZ0I3Ajlf694ZTW/j479
-         IoWStvJxTNka0emFEXLkirNs+7Y9xCwbt+ZYx+8Z9dxTpUl5F55bjhVwaWYUQiOOBWVO
-         6siTJ9Eh4A+vwHrI9OftPSjA0QNI4DC40jiBrDxQ0a5hImTxPaYjaJItRa9uM04ZXv40
-         7SyrvbX/ZJKpEY8pfbxffQ1rDKgMiMOKo4h80GU3+Kdeax1jclRB20zQ1P1GWog6vsXW
-         BRww==
+        d=google.com; s=20230601; t=1762538697; x=1763143497; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/AqAgTDxm6jquTqnEsjA3Waymb6wOkAp7ZeQjd8rqgw=;
+        b=HHRviqZL94lptzuP4Yb2YG+7cwZ4Ob8ElK/7SKdqqS6MxSf0awbmKhQdNn3iSZlsvE
+         VmiPypB2CzyHj3BfAiFdMXGcId8M8GnuW7mHiYNsgqUhJI6AsW9GDCEYGaw43UHRRKNv
+         W/ppzeAm+VNohJY2ddFeKl6cXvKC8rxKwn8rrMmbN0D4FjGDQCsLZotqdx9EzoGIUafS
+         rUs5h2N55SRNLdUGiihryVv77RAzziu5gKxiQ6Z8vB/NG4tXY1yFDPmWnVIwpTUyy16M
+         us4KACJqnpB2CNSC5trBovBuJfMf13S/3QdG3Fpl9Dmhqqo5A43rUHUN1CbJp7hAQbkU
+         AtiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762537448; x=1763142248;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=9gytpHvgcd7XKnQeia/W2QSEvlqw4E93JDTWduCN6+0=;
-        b=LB5kcGejfwJXeCAZxQ4vEraGXBWlM0acVMONMHbiNpfXIC0Ji/xVSeP/vcJndCrx9o
-         ZukF21DZvnoSXtkibuHZOjOoWNWyFvwvrGjcjdDaShggZngdYJb/fNhXN3nKnUFWecR1
-         VhL1ApHKjJ8tzQi2Aq/VNYmTP1Ny7O8sZtQtoZavYjuV9FB5BwcVF4IYSeywURM58S07
-         jo3MIaZRd2+1qSZ0LroxEWHASgwX6MIiYGQpZk1Zg16P4gJO72z8rF1UnSS2xlvmD4f+
-         7vVGSQvaXshUppdKo959t76dvy0FFX+5It7OUuxQFVcQJVf6E0uBhl3t3S7c8xqpIECB
-         sIoA==
-X-Forwarded-Encrypted: i=1; AJvYcCU1+r1EQEe22box9dsWva3tNT7luNNL/lVcHue/NYeEodqV9NFpFBDTggMcSCGvdlkvdBI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy+SiwjntieWNytwknpzeV8J20dco6EPkGFFcrkXFnNfLJAg+jp
-	BS0ZjOdx20boJ2BRKtW29XcaYpY763MfCgy86yTt3VvDGih/0OwgJ+AZnC7unaKk8AOheWKQv9E
-	TTc96CFeq1DBBk314jh6n5OGibSD4d/4=
-X-Gm-Gg: ASbGnctaX2AuNJd5v8HoWzvosKxiPEW3CA+7vBgnCFBLqvA99cEfyuTMYRhBZOx2twC
-	Oyv/LBC7C+mrsQAzVZDtZTnIwMaHZijIP4tP+3WQKEh5b4sMoCldAWr42d4Gl9ys7CAZmNjKUJG
-	j67yRP8cg01Z953s4dNCkwoRSdQY1/XrZkWzWnV3eUZUP7jX462pbGQ+LHYPkWRVb/Hp2y9Ys2M
-	T9riplW8f7S5H0Wp3VqZD2748EGJuCwrQfJkFycj/z9Y6EEwwOtkdp6OnixmUmrfyxlMjuL16eQ
-X-Google-Smtp-Source: AGHT+IFxP1rG8EXQd58nFA6ag900h3V3UtY/stl7aRRovAIClvQrijIP0ylrJdKTUURp5+6DJSYk5iDyqHnu3xcKpME=
-X-Received: by 2002:a17:90b:55cf:b0:33f:ebc2:643 with SMTP id
- 98e67ed59e1d1-3434c548d7emr3911414a91.23.1762537447658; Fri, 07 Nov 2025
- 09:44:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1762538697; x=1763143497;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/AqAgTDxm6jquTqnEsjA3Waymb6wOkAp7ZeQjd8rqgw=;
+        b=s4lDsf9QcpoQHRC1PPZyFrTvxZLnwOUtHfa3Z9wf7eFXXIGBWg9XjP6UV2lDF3izXb
+         kex/HzuawAOG6ctlPng/m9eIrStUknKnHJ16dtU8Uzg1Ea+fYcV6G9mIhcKsIt540W2C
+         pvS4vYrrW2WZlmkz/rRg9hOpnjtzgz+r4gZJlsxPtuZSzEFo8k9viKIsSnwaQSSAxJEd
+         /jn9/1RwNIQj+HTNsfWGiZQB9LyFRXzn02Yn06GSnr4Z8DFGeFsiE58JSzgwzdIwp03s
+         MWHv4bHj95zuDO4AOtPZ7vVYFJmGR6AQiQR4kRbnr9spu6WfcYQnX0L1u6De2AcRfhH9
+         KLWg==
+X-Forwarded-Encrypted: i=1; AJvYcCUq2MdQXC2zLbm2QVEYwMrZa9iY3y/nXxNPEeBgu79sNVeWZPx8e5EDQmOqtAilMgJJ8Ug=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxpydK4Ma/i8Cis6DSj1fs5UzrEami12N8/PKO8K0XN9LQQ2ujo
+	ADI6XFQ3u6yV7+x0RK9BSUdHokZGpBYswofP389IwQkVqZRwwzqqYGMa+8Ip9dOvj2xuRQai3/A
+	+klp3hMbiiFg+iA==
+X-Google-Smtp-Source: AGHT+IFOkVmSQK/jYvTSHAXnkCCnA0joruckYbu4Ldmd5HExfLsxuZZgznGEf8JFTpeS7lG61pD7MYDnH/6ugg==
+X-Received: from wrvs14.prod.google.com ([2002:a5d:4ece:0:b0:425:f04a:4d98])
+ (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6000:2408:b0:429:d3b8:7387 with SMTP id ffacd0b85a97d-42aefb4351dmr3543783f8f.42.1762538697024;
+ Fri, 07 Nov 2025 10:04:57 -0800 (PST)
+Date: Fri, 07 Nov 2025 18:04:56 +0000
+In-Reply-To: <add94932-290c-4037-b4e6-c3c760240819@amazon.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20251104134033.344807-1-dolinux.peng@gmail.com>
- <20251104134033.344807-3-dolinux.peng@gmail.com> <CAEf4BzaQ9k=_JwpmkjnbN8o0XaA=EGcP-=CBxmXLc3kzh3aY3A@mail.gmail.com>
- <3986a6b863be2ec62820ea5d2cf471f7e233fac0.camel@gmail.com>
- <CAEf4BzaLmVuPRL4V1VKBmaXtrvT=oLwo=M7sLURgoYU34BkpMQ@mail.gmail.com>
- <627795f165b1e66500b9f032ed7474125938f33a.camel@gmail.com>
- <CAEf4BzbVU2sBw4aSOB1+SdKN0Qe-WEtDKo3wn21C6UjfSKiBdQ@mail.gmail.com> <CAErzpmtnLcVXvcWCY39YHN3VWmLKbM3NJtZhRqi8BQrLCqRemA@mail.gmail.com>
-In-Reply-To: <CAErzpmtnLcVXvcWCY39YHN3VWmLKbM3NJtZhRqi8BQrLCqRemA@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 7 Nov 2025 09:43:53 -0800
-X-Gm-Features: AWmQ_bnxdmL-MIkVALPlbickAdlfDYj6hXbeVyBqOIA9Cme_jOJ8UX_rlNxe4Qo
-Message-ID: <CAEf4BzayHtTppa8GLFViRQRBW-dkYQ6JyVvG7HY1DBy8j_-OBg@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 2/7] libbpf: Add BTF permutation support for type reordering
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, ast@kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>, Song Liu <song@kernel.org>, 
-	pengdonglin <pengdonglin@xiaomi.com>
+Mime-Version: 1.0
+References: <20250924151101.2225820-1-patrick.roy@campus.lmu.de>
+ <DE2L1SAOC55E.E4JY62WJQ2A8@google.com> <add94932-290c-4037-b4e6-c3c760240819@amazon.com>
+X-Mailer: aerc 0.21.0
+Message-ID: <DE2NTMZXQ1MT.2TH9VAKM6WP6I@google.com>
+Subject: Re: [PATCH v7 00/12] Direct Map Removal Support for guest_memfd
+From: Brendan Jackman <jackmanb@google.com>
+To: <kalyazin@amazon.com>, Brendan Jackman <jackmanb@google.com>
+Cc: <pbonzini@redhat.com>, <corbet@lwn.net>, <maz@kernel.org>, 
+	<oliver.upton@linux.dev>, <joey.gouly@arm.com>, <suzuki.poulose@arm.com>, 
+	<yuzenghui@huawei.com>, <catalin.marinas@arm.com>, <will@kernel.org>, 
+	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, 
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>, 
+	<luto@kernel.org>, <peterz@infradead.org>, <willy@infradead.org>, 
+	<akpm@linux-foundation.org>, <david@redhat.com>, <lorenzo.stoakes@oracle.com>, 
+	<Liam.Howlett@oracle.com>, <vbabka@suse.cz>, <rppt@kernel.org>, 
+	<surenb@google.com>, <mhocko@suse.com>, <song@kernel.org>, <jolsa@kernel.org>, 
+	<ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>, 
+	<martin.lau@linux.dev>, <eddyz87@gmail.com>, <yonghong.song@linux.dev>, 
+	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@fomichev.me>, 
+	<haoluo@google.com>, <jgg@ziepe.ca>, <jhubbard@nvidia.com>, 
+	<peterx@redhat.com>, <jannh@google.com>, <pfalcato@suse.de>, 
+	<shuah@kernel.org>, <seanjc@google.com>, <kvm@vger.kernel.org>, 
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, 
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>, 
+	<linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>, <bpf@vger.kernel.org>, 
+	<linux-kselftest@vger.kernel.org>, <xmarcalx@amazon.co.uk>, 
+	<kalyazin@amazon.co.uk>, <jackabt@amazon.co.uk>, <derekmn@amazon.co.uk>, 
+	<tabba@google.com>, <ackerleytng@google.com>, 
+	Patrick Roy <patrick.roy@campus.lmu.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 6, 2025 at 6:36=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.com=
-> wrote:
->
-> On Thu, Nov 6, 2025 at 2:23=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Nov 4, 2025 at 5:20=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.=
-com> wrote:
-> > >
-> > > On Tue, 2025-11-04 at 17:04 -0800, Andrii Nakryiko wrote:
-> > > > On Tue, Nov 4, 2025 at 4:16=E2=80=AFPM Eduard Zingerman <eddyz87@gm=
-ail.com> wrote:
-> > > > >
-> > > > > On Tue, 2025-11-04 at 16:11 -0800, Andrii Nakryiko wrote:
-> > > > >
-> > > > > [...]
-> > > > >
-> > > > > > > +static int btf_permute_remap_type_id(__u32 *type_id, void *c=
-tx)
-> > > > > > > +{
-> > > > > > > +       struct btf_permute *p =3D ctx;
-> > > > > > > +       __u32 new_type_id =3D *type_id;
-> > > > > > > +
-> > > > > > > +       /* skip references that point into the base BTF */
-> > > > > > > +       if (new_type_id < p->btf->start_id)
-> > > > > > > +               return 0;
-> > > > > > > +
-> > > > > > > +       new_type_id =3D p->map[*type_id - p->btf->start_id];
-> > > > > >
-> > > > > > I'm actually confused, I thought p->ids would be the mapping fr=
-om
-> > > > > > original type ID (minus start_id, of course) to a new desired I=
-D, but
-> > > > > > it looks to be the other way? ids is a desired resulting *seque=
-nce* of
-> > > > > > types identified by their original ID. I find it quite confusin=
-g. I
-> > > > > > think about permutation as a mapping from original type ID to a=
- new
-> > > > > > type ID, am I confused?
-> > > > >
-> > > > > Yes, it is a desired sequence, not mapping.
-> > > > > I guess its a bit simpler to use for sorting use-case, as you can=
- just
-> > > > > swap ids while sorting.
-> > > >
-> > > > The question is really what makes most sense as an interface. Becau=
-se
-> > > > for sorting cases it's just the matter of a two-line for() loop to
-> > > > create ID mapping once types are sorted.
-> > > >
-> > > > I have slight preference for id_map approach because it is easy to
-> > > > extend to the case of selectively dropping some types. We can just
-> > > > define that such IDs should be mapped to zero. This will work as a
-> > > > natural extension. With the desired end sequence of IDs, it's less
-> > > > natural and will require more work to determine which IDs are missi=
-ng
-> > > > from the sequence.
-> > > >
-> > > > So unless there is some really good and strong reason, shall we go
-> > > > with the ID mapping approach?
-> > >
-> > > If the interface is extended with types_cnt, as you suggest, deleting
-> > > types is trivial with sequence interface as well. At-least the way it
-> > > is implemented by this patch, you just copy elements from 'ids' one b=
-y
-> > > one.
-> >
-> > But it is way less explicit and obvious way to delete element. With ID
-> > map it is obvious, that type will be mapped to zero. With list of IDs,
-> > you effectively search for elements that are missing, which IMO is way
-> > less optimal an interface.
-> >
-> > So I still favor the ID map approach.
->
-> Hi Andrii,
->
-> I've submitted v5 implementing the sequence-based approach, and I plan
-> to introduce
-> the ID map approach in v6. However, I have a few remaining questions that=
- need
-> clarification:
->
-> 1. ID Map Array Semantics:
->
->    -  When the ID map array specifies `[2] =3D 4`, does this indicate
-> that the original type
->       at `start_id + 2` should be remapped to position `start_id + 4`?
-
-I'd say that 4 should be "absolute type ID" for simplicity. Because
-that's what users work with. I'd say the position ([2]) should also
-map to type ID for non-split case. So for base BTF I'd require [0]=3D0,
-i.e., id_map count should be btf__type_cnt() sized. (I can be
-convinced that's wrong and inconvenient) For split BTF the situation
-is of course more complicated, because requiring btf__type_cnt()-sized
-array for just split BTF would be super wasteful. So for split BTF [2]
-would be as you say 3rd type within split BTF, that is type
-#(btf__start_id() + 2), yes.
-
-> Should the following
->       mapping attempts be rejected:
->       a) If the target index `4` exceeds the total number of types (`nr_t=
-ypes`)?
-
-yes
-
->       b) If multiple source types map to the same target location
-> (e.g., both `[1] =3D 3`
->           and `[2] =3D 3`)?
-
-yes (at least for now, we can lift this if we ever have a good reason
-by adding some option)
-
->
->    - If [3] =3D 0, does this indicate that the type at start_id + 3 shoul=
-d
->      be dropped?
-
-yes, but let's not worry about deletion right now and just reject
-this. I'd like to keep this option for the future, but right now we
-should reject such case.
-
->
->    - Does this also imply that the VOID type (ID 0) cannot be remapped
->      and must always remain unchanged?
-
-yes, it must be always be zero, it's baked into BTF
-
+On Fri Nov 7, 2025 at 5:23 PM UTC, Nikita Kalyazin wrote:
 >
 >
-> 2. ID Map Array Size:
+> On 07/11/2025 15:54, Brendan Jackman wrote:
+>> On Wed Sep 24, 2025 at 3:10 PM UTC, Patrick Roy wrote:
+>>> From: Patrick Roy <roypat@amazon.co.uk>
+>>>
+>>> [ based on kvm/next ]
+>>>
+>>> Unmapping virtual machine guest memory from the host kernel's direct map is a
+>>> successful mitigation against Spectre-style transient execution issues: If the
+>>> kernel page tables do not contain entries pointing to guest memory, then any
+>>> attempted speculative read through the direct map will necessarily be blocked
+>>> by the MMU before any observable microarchitectural side-effects happen. This
+>>> means that Spectre-gadgets and similar cannot be used to target virtual machine
+>>> memory. Roughly 60% of speculative execution issues fall into this category [1,
+>>> Table 1].
+>>>
+>>> This patch series extends guest_memfd with the ability to remove its memory
+>>> from the host kernel's direct map, to be able to attain the above protection
+>>> for KVM guests running inside guest_memfd.
+>>>
+>>> Additionally, a Firecracker branch with support for these VMs can be found on
+>>> GitHub [2].
+>>>
+>>> For more details, please refer to the v5 cover letter [v5]. No
+>>> substantial changes in design have taken place since.
+>>>
+>>> === Changes Since v6 ===
+>>>
+>>> - Drop patch for passing struct address_space to ->free_folio(), due to
+>>>    possible races with freeing of the address_space. (Hugh)
+>>> - Stop using PG_uptodate / gmem preparedness tracking to keep track of
+>>>    direct map state.  Instead, use the lowest bit of folio->private. (Mike, David)
+>>> - Do direct map removal when establishing mapping of gmem folio instead
+>>>    of at allocation time, due to impossibility of handling direct map
+>>>    removal errors in kvm_gmem_populate(). (Patrick)
+>>> - Do TLB flushes after direct map removal, and provide a module
+>>>    parameter to opt out from them, and a new patch to export
+>>>    flush_tlb_kernel_range() to KVM. (Will)
+>>>
+>>> [1]: https://download.vusec.net/papers/quarantine_raid23.pdf
+>>> [2]: https://github.com/firecracker-microvm/firecracker/tree/feature/secret-hiding
+>> 
+>> I just got around to trying this out, I checked out this patchset using
+>> its base-commit and grabbed the Firecracker branch. Things seem OK until
+>> I set the secrets_free flag in the Firecracker config which IIUC makes
+>> it set GUEST_MEMFD_FLAG_NO_DIRECT_MAP.
+>> 
+>> If I set it, I find the guest doesn't show anything on the console.
+>> Running it in a VM and attaching GDB suggests that it's entering the
+>> guest repeatedly, it doesn't seem like the vCPU thread is stuck or
+>> anything. I'm a bit clueless about how to debug that (so far, whenever
+>> I've broken KVM, things always exploded very dramatically).
+>> 
+>> Anyway, if I then kill the firecracker process, the host sometimes
+>> crashes, I think this is the most suggestive splat I've seen:
+>> 
+>> [   99.673420][    T2] BUG: unable to handle page fault for address: ffff888012804000
+>> [   99.676216][    T2] #PF: supervisor write access in kernel mode
+>> [   99.678381][    T2] #PF: error_code(0x0002) - not-present page
+>> [   99.680499][    T2] PGD 2e01067 P4D 2e01067 PUD 2e02067 PMD 12801063 PTE 800fffffed7fb020
+>> [   99.683374][    T2] Oops: Oops: 0002 [#1] SMP
+>> [   99.685004][    T2] CPU: 0 UID: 0 PID: 2 Comm: kthreadd Not tainted 6.17.0-rc7-00366-g473c46a3cb2a #106 NONE
+>> [   99.688514][    T2] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.1 11/11/2019
+>> [   99.691547][    T2] RIP: 0010:clear_page_erms+0x7/0x10
+>> [   99.693440][    T2] Code: 48 89 47 18 48 89 47 20 48 89 47 28 48 89 47 30 48 89 47 38 48 8d 7f 40 75 d9 90 c3 0f 1f 80 00 00 00 00 b9 00 10 00 00 31 c0 <f3> aa c3 66 0f 1f 44 00 00 48 83 f9 40 73 2a 83 f9 08 73 0f 85 c9
+>> [   99.700188][    T2] RSP: 0018:ffff88800318fc10 EFLAGS: 00010246
+>> [   99.702321][    T2] RAX: 0000000000000000 RBX: 0000000000400dc0 RCX: 0000000000001000
+>> [   99.705100][    T2] RDX: ffffea00004a0100 RSI: ffffea00004a0200 RDI: ffff888012804000
+>> [   99.707861][    T2] RBP: 0000000000000801 R08: 0000000000000000 R09: 0000000000000000
+>> [   99.710648][    T2] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
+>> [   99.713412][    T2] R13: 0000000000000801 R14: ffffea00004a0100 R15: ffffffff81f4df80
+>> [   99.716191][    T2] FS:  0000000000000000(0000) GS:ffff8880bbf28000(0000) knlGS:0000000000000000
+>> [   99.719316][    T2] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [   99.721648][    T2] CR2: ffff888012804000 CR3: 0000000007583001 CR4: 0000000000372eb0
+>> [   99.724421][    T2] Call Trace:
+>> [   99.725608][    T2]  <TASK>
+>> [   99.726646][    T2]  get_page_from_freelist+0x6fe/0x14b0
+>> [   99.728583][    T2]  ? fs_reclaim_acquire+0x43/0xe0
+>> [   99.730325][    T2]  ? find_held_lock+0x2b/0x80
+>> [   99.731965][    T2]  __alloc_frozen_pages_noprof+0x147/0x2d0
+>> [   99.734003][    T2]  __alloc_pages_noprof+0x5/0x50
+>> [   99.735766][    T2]  copy_process+0x1b1/0x1b30
+>> [   99.737398][    T2]  ? lock_is_held_type+0x89/0x100
+>> [   99.739157][    T2]  ? kthreadd+0x25/0x190
+>> [   99.740664][    T2]  kernel_clone+0x59/0x390
+>> [   99.742213][    T2]  ? kthreadd+0x25/0x190
+>> [   99.743728][    T2]  kernel_thread+0x55/0x70
+>> [   99.745310][    T2]  ? kthread_complete_and_exit+0x20/0x20
+>> [   99.747265][    T2]  kthreadd+0x117/0x190
+>> [   99.748748][    T2]  ? kthread_is_per_cpu+0x30/0x30
+>> [   99.750509][    T2]  ret_from_fork+0x16b/0x1e0
+>> [   99.752193][    T2]  ? kthread_is_per_cpu+0x30/0x30
+>> [   99.753992][    T2]  ret_from_fork_asm+0x11/0x20
+>> [   99.755717][    T2]  </TASK>
+>> [   99.756861][    T2] CR2: ffff888012804000
+>> [   99.758353][    T2] ---[ end trace 0000000000000000 ]---
+>> [   99.760319][    T2] RIP: 0010:clear_page_erms+0x7/0x10
+>> [   99.762209][    T2] Code: 48 89 47 18 48 89 47 20 48 89 47 28 48 89 47 30 48 89 47 38 48 8d 7f 40 75 d9 90 c3 0f 1f 80 00 00 00 00 b9 00 10 00 00 31 c0 <f3> aa c3 66 0f 1f 44 00 00 48 83 f9 40 73 2a 83 f9 08 73 0f 85 c9
+>> [   99.769129][    T2] RSP: 0018:ffff88800318fc10 EFLAGS: 00010246
+>> [   99.771297][    T2] RAX: 0000000000000000 RBX: 0000000000400dc0 RCX: 0000000000001000
+>> [   99.774126][    T2] RDX: ffffea00004a0100 RSI: ffffea00004a0200 RDI: ffff888012804000
+>> [   99.777013][    T2] RBP: 0000000000000801 R08: 0000000000000000 R09: 0000000000000000
+>> [   99.779827][    T2] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
+>> [   99.782641][    T2] R13: 0000000000000801 R14: ffffea00004a0100 R15: ffffffff81f4df80
+>> [   99.785487][    T2] FS:  0000000000000000(0000) GS:ffff8880bbf28000(0000) knlGS:0000000000000000
+>> [   99.788671][    T2] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [   99.791012][    T2] CR2: ffff888012804000 CR3: 0000000007583001 CR4: 0000000000372eb0
+>> [   99.793863][    T2] Kernel panic - not syncing: Fatal exception
+>> [   99.796760][    T2] Kernel Offset: disabled
+>> [   99.798296][    T2] ---[ end Kernel panic - not syncing: Fatal exception ]---
+>> 
+>> This makes me suspect the kvm_gmem_folio_restore_direct_map() path isn't
+>> working or isn't getting called.
+>> 
+>> If anyone wants help trying to reproduce this let me know.
 >
->    - Must the ID map array size  <=3D  the number of BTF types? If the ar=
-ray
->      is smaller, should any missing types be automatically dropped?
+> Hi Brendan,
+>
+> Thanks for trying to run it!
+>
+> Just as a sanity check, the way it is known for us to work is we apply 
+> all patches from [1].  For booted VMs (as opposed to restored from 
+> snapshot), apart from the v6 of the direct map removal series, the only 
+> additional patch is a fix for kvmclock on x86 [2].  Please let me know 
+> if you see the same issue with that patch applied too.
+>
+> Nikita
+>
+> [1] 
+> https://github.com/firecracker-microvm/firecracker/tree/feature/secret-hiding/resources/hiding_ci/linux_patches
+> [2] 
+> https://github.com/firecracker-microvm/firecracker/tree/feature/secret-hiding/resources/hiding_ci/linux_patches/11-kvm-clock
 
-no, it's an error, id_map size should match the number of types. For
-base it should be btf__type_cnt(), for split BTF it should be
-`btf__type_cnt() - btf__type_cnt(btf__base_btf(split_btf))`. (That's
-one of the reasons I think we should have [0] =3D 0 for base, to keep
-this consistent).
+Ah, thanks! Seems I should have checked my inbox before sending my other
+mail. With the kvmclock fix applied to my host kernel, I start setting
+the other crash immediately when the VM boots. If I comment out the
+actual unmapping of memory, it boots (before, it wouldn't boot even with
+that commented out).
+
+For the other linux_patches, I couldn't apply them on top of this
+series, do you have a branch I can use as a reference?
+
+Anyway, the solution I'm hoping to present for your problem gets rid of
+that explicit unmapping code (the allocator will do it for you), so in
+the meantime I have something I can work with.
 
