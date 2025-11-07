@@ -1,300 +1,343 @@
-Return-Path: <bpf+bounces-73959-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73960-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FCF0C4096F
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 16:29:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E176FC409AE
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 16:34:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 79AE24F1891
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 15:29:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 582ED420B62
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 15:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD08E32C946;
-	Fri,  7 Nov 2025 15:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C62B329C58;
+	Fri,  7 Nov 2025 15:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vb3qAgMG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UZuKBncC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D1532ABD0
-	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 15:29:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8A02E1C7B
+	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 15:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762529380; cv=none; b=JC5he+tQXlE5Zw+ihQboWEpY72X6pCqz3ow+2jOQGfbnSttl/ez9oO6c8VJGTwCFtc1fHQeoJJ7cPeb6r/f90d40vlcV4pk7ZBq/yWauQ7i6YEu2lsZL+8qMzn2ClFcOrA0RM0nvo1ImxVNIOJikssn7/1RrxH5HFzpms8Eygs4=
+	t=1762529683; cv=none; b=oJDawZRPZBeuITd7+Tw7m3cUBDdOpXk1he9mxrGpoDMVOAUHlzkCFX8Yn+B1v55N8B7jKLFen6BTsqleBNU51mTBPcF7STZxRegSolJDU6XvzZPtX2vz05As+NQawcMVJQrFqdWn2pQ/2GQsGI1osgvxct27WMWy75KqU9P96z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762529380; c=relaxed/simple;
-	bh=+ilurqvnGnbEEZ7W3D5HzrDcpmhkK5oAxtaDG3U4ixI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=vChQRnDvjsesnhAxejRHDoAiCIJiBxvndr3DUL8zKV7opVvM4jL0+N17BmZsmFA15S7KRc6TQiQh5x6vgR6D6cRAdQqSk2vh6NXju8x2bU31a1tZAMPNUsQ5AJz1rKpWFCuDEG8NdYKaU2nO4HJkVEN6Md0GozhYvmVU7QzxoCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vb3qAgMG; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-7aac981b333so911446b3a.2
-        for <bpf@vger.kernel.org>; Fri, 07 Nov 2025 07:29:38 -0800 (PST)
+	s=arc-20240116; t=1762529683; c=relaxed/simple;
+	bh=sS1mO9mVY+n0upVSqMY2+JLIYxv51EtgKKHOtGgsa0s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kGgifhn80dp0Df4u86x8EySr/52HBI6/8z2wI+uLTYsPkrM9WguhsfOVCvPCVHsOwJ8/vfmcRELaD7P5yKSQjHqhiXSxIamY7Hd03M5wcmC2KzgPlIXkdr7R7DSN3IvpxiFR7JVkpQXahvMtGYPq+GJ6tC5rGsvHbvsrJGisZcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UZuKBncC; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-421851bcb25so486805f8f.2
+        for <bpf@vger.kernel.org>; Fri, 07 Nov 2025 07:34:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1762529378; x=1763134178; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1NCtP8IGmv+Pw2m+0QbiCX0FT/X+Jg+0AV+Nk5shH04=;
-        b=vb3qAgMGKI26wL0NSNHi2fuOYhVNChgeoErGKgFw1cL1G7EdFfeLhEMU65Wyfop5f4
-         TG0TTvwDcWEvd5p9drEHVW60VTT0RZLpi6aaZk2RmLWVP+BHNmeQyqtxl7WkWflHX60W
-         XYuSK5ox1igH1GgGsEslAo4c10FuKD9v/LE1F0iKDQ56C3MQizHAENRlPa5/5gJBK8XF
-         LWlZm2EEFQp4do8pF7atdyxIhX4uelBYw2SvgDVMGd9i5O0LidjDADK9vVttJXgtN/nu
-         Slav8ia3PzkFdeGG6cz2Us8yCRITw4YCMIr/i0WMQwnC+48S5u58U4N9FSDA9O1f/BlX
-         jIbw==
+        d=gmail.com; s=20230601; t=1762529680; x=1763134480; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gEZVeIp0039U3hcjQwmnwBxA9uxTpd6QC1RB9S7+CrU=;
+        b=UZuKBncCypL+jKCMPscr3E2i4iQJNYuIWpjai0EQJmKJEfbzQbgNX0pa6KjVKl7zt8
+         Obd8nckaYFlhQI81UFFDJlchJTz49BAz66gtTewc5FdRbQHXqovFQIlrBzstKbxW3usA
+         0fX4aSoR7G0GP8xdNLs6xO8gAqyA4zdoxlaWwEZwE3gWWeCKdO0YVdZWp5Fj+xVYtGSk
+         rqafRnMHmvHO6/oJRIGV6J9C1ejaL3U7Kjwebcf0zA7w+0fHxE+e5QT7p5HDwz4fP5w8
+         KSD7PZWOy1gNjJLRUclXeQaYH5OeLD1CANuzh2uIZ/siUav8oYb10MHsJeQEFGt3u9aC
+         ZEPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762529378; x=1763134178;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+        d=1e100.net; s=20230601; t=1762529680; x=1763134480;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=1NCtP8IGmv+Pw2m+0QbiCX0FT/X+Jg+0AV+Nk5shH04=;
-        b=LsC+OgcEJsBv570JRsXnlDG+jPKhLiNnhgsmEDBYOz0Ug1foF2jiJ6M4VhKCoxP1Oj
-         BQFOE/BIztbJ43DepvQN6SR+Dw/3ac88atsQUszXgWEP+03Ge3R1aNM/Dbfim+2cj0Ok
-         DTtMw1qfurmCprkN/fBveI6/ax2ECNyKvOaXOKEXg+OQOn+d28Wgt2dsVL/hpvIM/SM5
-         xE2S3pqrcc/AygEAXxXBTGUNyA0vl+Q/ORQcnNlBv7/QEp5uxGTXqh0EFlh1MiTC49f+
-         +l70KTKUPzjjCIlj2TVeklRdIGjKAiiqYbwWfEWn7E2JA6flo5MZ1GP/pFMjdqscta3D
-         EPzA==
-X-Forwarded-Encrypted: i=1; AJvYcCWZlje2IavExYEIkvsa9V+uJWJwgHcHZMt0KmxBTE5QiA8mlQo2BC1OmXUAgeMVohCJTLc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw0k56lbG9v7keHM+rtgKObeMvDhCcQ9i/IYNhrXfNv5iSN6DYZ
-	XgJ82aLR6rFXHQa6G/rq1IEJTHeCqPDqjXcUCQ1c6mA0aT+r1cYcdHhCfHqoYYTgsH7vwaxY5Qg
-	qLxaKMu4J6UJDNAR3afekK3ffIw==
-X-Google-Smtp-Source: AGHT+IFdBm9PWDkj6mr4favewOwyFDia/jMLQ8Mc88gwVWiHhbOXmm65FevtICCyCLCB04h8IaDFB/VQj/QABmFYNg==
-X-Received: from pfoo25.prod.google.com ([2002:a05:6a00:1a19:b0:7b0:c46:4c56])
- (user=ackerleytng job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a00:3cd1:b0:7ab:6fdb:1d1f with SMTP id d2e1a72fcca58-7b0bdf66564mr4826942b3a.29.1762529377589;
- Fri, 07 Nov 2025 07:29:37 -0800 (PST)
-Date: Fri, 07 Nov 2025 07:29:35 -0800
-In-Reply-To: <d25340e3-2017-4614-a472-c5c7244c7ce4@linux.dev>
+        bh=gEZVeIp0039U3hcjQwmnwBxA9uxTpd6QC1RB9S7+CrU=;
+        b=A6yw/iZPXfSbjLkTP3PLfy7jObGFFYClcwSEAmUYq9jvyupvBBBtO651F/bttMTxn6
+         nqquxrfRQngiMa1aBAJxYnOh5G8mRkambTc91Tl+s3hjQ9E1KzZk+SMoThAAZZVKiC9f
+         8V3rBUKsyTCURQL+dtd0ZY5QXPjVc49HnZH0d1BWrXl0UIS5pex6obcQ2/3aRJ754zt+
+         yosZxQ0N2wovvK/8NaH201lbq8VajEtB4OgPQ9vdmws2/+o5aFTDNxZ0aUeW3d0H0uza
+         71TwMZd9YZYS7s5qMk6wlPe8pVmHGhdDU3yl1BramRGEcfu2t8AkBEnZXYs1gDJFktq1
+         Woog==
+X-Gm-Message-State: AOJu0Yzk31DPWtcanGOwZw5mpHZW9E52RVC1J+YOLNZNFK80UufnKnZ0
+	zp5Xj7YM3oS0J+z9vzEhLIre30vSZJxrefu1E4El33ek+Y8OtlAKGu7B
+X-Gm-Gg: ASbGncuXMeruLBIQcGDkXVZi7mSqw3MwQTZkoZ8Iegpkjfn+lIY9USDv74Wt7D30XhB
+	Bjed07JXk72x+INHZRpy4vdTXs86t/aOp29nlhsftt7ngpWlSgQZLYHrqF5C47YbwpslvmZOC9y
+	sMvOr7sFIbTNLQhjMqodr2C+b2BpEKJR0u75xBVihDq4O08R8+C7Iz2p8r9BaZ3OuKabYel7zVx
+	maoLLnU9+aFsG228JFmSj42u3USQKZ35Q2t5Kt5w2g1BKRJf6atLvvKdEt52HhtbQzi59829in9
+	UiWTkkWXudn96p31HdKOhXt7SLE6psm5pQMR7qGunJFFvLhija0gLwQOeldYbGICT7r5xFJhURG
+	3joq7jDrjuVCZko8caydlOqdgyiz8GyDHaZ90R5+ZnVLrERlCQ3s8WvOK5TRvkj4YjJs9LcEYI/
+	eGLsDil0mD71TzmmcEU7VFrGMgh6/ARlBuM8PYvcRU8J8phzIpDnyqTlWzoi0k0Ufj62MD
+X-Google-Smtp-Source: AGHT+IHhupneGIhhYLefCar228DT2G/CyJxPNnAcGQ7Z0TOciv/vnELQt/uV6goIQtVqRKCfPLfsfQ==
+X-Received: by 2002:a05:6000:2303:b0:429:f050:adbb with SMTP id ffacd0b85a97d-42ae58898c7mr3366126f8f.26.1762529680187;
+        Fri, 07 Nov 2025 07:34:40 -0800 (PST)
+Received: from yd-B55TXL3.. (2a01cb09e0629b811add4a5ce9a2296d.ipv6.abo.wanadoo.fr. [2a01:cb09:e062:9b81:1add:4a5c:e9a2:296d])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42abe62bfa0sm6308130f8f.5.2025.11.07.07.34.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Nov 2025 07:34:39 -0800 (PST)
+From: paulhoussel2@gmail.com
+To: paulhoussel2@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Paul Houssel <paul.houssel@orange.com>,
+	Martin Horth <martin.horth@telecom-sudparis.eu>,
+	Ouail Derghal <ouail.derghal@imt-atlantique.fr>,
+	Guilhem Jazeron <guilhem.jazeron@inria.fr>,
+	Ludovic Paillat <ludovic.paillat@inria.fr>,
+	Robin Theveniaut <robin.theveniaut@irit.fr>,
+	Tristan d'Audibert <tristan.daudibert@gmail.com>
+Subject: [PATCH] libbpf: fix BTF dedup to support recursive typedef definitions
+Date: Fri,  7 Nov 2025 16:34:08 +0100
+Message-ID: <20251107153408.159342-1-paulhoussel2@gmail.com>
+X-Mailer: git-send-email 2.43.0
+Reply-To: paulhoussel2@gmail.com
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
- <20250924152214.7292-1-roypat@amazon.co.uk> <20250924152214.7292-3-roypat@amazon.co.uk>
- <e25867b6-ffc0-4c7c-9635-9b3f47b186ca@intel.com> <c1875a54-0c87-450f-9370-29e7ec4fea3d@redhat.com>
- <82bff1c4-987f-46cb-833c-bd99eaa46e7a@intel.com> <c79173d8-6f18-40fa-9621-e691990501e4@redhat.com>
- <c88514c3-e15f-4853-8acf-15e7b4b979f4@linux.dev> <aNZwmPFAxm_HRYpC@willie-the-truck>
- <5d11b5f7-3208-4ea8-bbff-f535cf62d576@redhat.com> <be89abc6-97ca-47d8-b8e7-95f58ab9cc67@linux.dev>
- <f13e06f3-3c7b-4993-b33a-a6921c14231b@redhat.com> <d25340e3-2017-4614-a472-c5c7244c7ce4@linux.dev>
-Message-ID: <diqzqzu9dfog.fsf@google.com>
-Subject: Re: [PATCH v7 06/12] KVM: guest_memfd: add module param for disabling
- TLB flushing
-From: Ackerley Tng <ackerleytng@google.com>
-To: Patrick Roy <patrick.roy@linux.dev>, David Hildenbrand <david@redhat.com>, 
-	Will Deacon <will@kernel.org>
-Cc: Dave Hansen <dave.hansen@intel.com>, "Roy, Patrick" <roypat@amazon.co.uk>, 
-	"pbonzini@redhat.com" <pbonzini@redhat.com>, "corbet@lwn.net" <corbet@lwn.net>, "maz@kernel.org" <maz@kernel.org>, 
-	"oliver.upton@linux.dev" <oliver.upton@linux.dev>, "joey.gouly@arm.com" <joey.gouly@arm.com>, 
-	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>, "yuzenghui@huawei.com" <yuzenghui@huawei.com>, 
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>, "tglx@linutronix.de" <tglx@linutronix.de>, 
-	"mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, 
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>, 
-	"hpa@zytor.com" <hpa@zytor.com>, "luto@kernel.org" <luto@kernel.org>, 
-	"peterz@infradead.org" <peterz@infradead.org>, "willy@infradead.org" <willy@infradead.org>, 
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, 
-	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>, 
-	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, "vbabka@suse.cz" <vbabka@suse.cz>, 
-	"rppt@kernel.org" <rppt@kernel.org>, "surenb@google.com" <surenb@google.com>, "mhocko@suse.com" <mhocko@suse.com>, 
-	"song@kernel.org" <song@kernel.org>, "jolsa@kernel.org" <jolsa@kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"martin.lau@linux.dev" <martin.lau@linux.dev>, "eddyz87@gmail.com" <eddyz87@gmail.com>, 
-	"yonghong.song@linux.dev" <yonghong.song@linux.dev>, 
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
-	"sdf@fomichev.me" <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, 
-	"jhubbard@nvidia.com" <jhubbard@nvidia.com>, "peterx@redhat.com" <peterx@redhat.com>, 
-	"jannh@google.com" <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>, 
-	"shuah@kernel.org" <shuah@kernel.org>, "seanjc@google.com" <seanjc@google.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Cali, Marco" <xmarcalx@amazon.co.uk>, 
-	"Kalyazin, Nikita" <kalyazin@amazon.co.uk>, "Thomson, Jack" <jackabt@amazon.co.uk>, 
-	"derekmn@amazon.co.uk" <derekmn@amazon.co.uk>, "tabba@google.com" <tabba@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Patrick Roy <patrick.roy@linux.dev> writes:
+From: Paul Houssel <paul.houssel@orange.com>
 
-> Hey all,
->
-> sorry it took me a while to get back to this, turns out moving
-> internationally is move time consuming than I expected.
->
-> On Mon, 2025-09-29 at 12:20 +0200, David Hildenbrand wrote:
->> On 27.09.25 09:38, Patrick Roy wrote:
->>> On Fri, 2025-09-26 at 21:09 +0100, David Hildenbrand wrote:
->>>> On 26.09.25 12:53, Will Deacon wrote:
->>>>> On Fri, Sep 26, 2025 at 10:46:15AM +0100, Patrick Roy wrote:
->>>>>> On Thu, 2025-09-25 at 21:13 +0100, David Hildenbrand wrote:
->>>>>>> On 25.09.25 21:59, Dave Hansen wrote:
->>>>>>>> On 9/25/25 12:20, David Hildenbrand wrote:
->>>>>>>>> On 25.09.25 20:27, Dave Hansen wrote:
->>>>>>>>>> On 9/24/25 08:22, Roy, Patrick wrote:
->>>>>>>>>>> Add an option to not perform TLB flushes after direct map manip=
-ulations.
->>>>>>>>>>
->>>>>>>>>> I'd really prefer this be left out for now. It's a massive can o=
-f worms.
->>>>>>>>>> Let's agree on something that works and has well-defined behavio=
-r before
->>>>>>>>>> we go breaking it on purpose.
->>>>>>>>>
->>>>>>>>> May I ask what the big concern here is?
->>>>>>>>
->>>>>>>> It's not a _big_ concern.
->>>>>>>
->>>>>>> Oh, I read "can of worms" and thought there is something seriously =
-problematic :)
->>>>>>>
->>>>>>>> I just think we want to start on something
->>>>>>>> like this as simple, secure, and deterministic as possible.
->>>>>>>
->>>>>>> Yes, I agree. And it should be the default. Less secure would have =
-to be opt-in and documented thoroughly.
->>>>>>
->>>>>> Yes, I am definitely happy to have the 100% secure behavior be the
->>>>>> default, and the skipping of TLB flushes be an opt-in, with thorough
->>>>>> documentation!
->>>>>>
->>>>>> But I would like to include the "skip tlb flushes" option as part of
->>>>>> this patch series straight away, because as I was alluding to in the
->>>>>> commit message, with TLB flushes this is not usable for Firecracker =
-for
->>>>>> performance reasons :(
->>>>>
->>>>> I really don't want that option for arm64. If we're going to bother
->>>>> unmapping from the linear map, we should invalidate the TLB.
->>>>
->>>> Reading "TLB flushes result in a up to 40x elongation of page faults i=
-n
->>>> guest_memfd (scaling with the number of CPU cores), or a 5x elongation
->>>> of memory population,", I can understand why one would want that optim=
-ization :)
->>>>
->>>> @Patrick, couldn't we use fallocate() to preallocate memory and batch =
-the TLB flush within such an operation?
->>>>
->>>> That is, we wouldn't flush after each individual direct-map modificati=
-on but after multiple ones part of a single operation like fallocate of a l=
-arger range.
->>>>
->>>> Likely wouldn't make all use cases happy.
->>>>
->>>
->>> For Firecracker, we rely a lot on not preallocating _all_ VM memory, an=
-d
->>> trying to ensure only the actual "working set" of a VM is faulted in (w=
-e
->>> pack a lot more VMs onto a physical host than there is actual physical
->>> memory available). For VMs that are restored from a snapshot, we know
->>> pretty well what memory needs to be faulted in (that's where @Nikita's
->>> write syscall comes in), so there we could try such an optimization. Bu=
-t
->>> for everything else we very much rely on the on-demand nature of guest
->>> memory allocation (and hence direct map removal). And even right now,
->>> the long pole performance-wise are these on-demand faults, so really, w=
-e
->>> don't want them to become even slower :(
->>=20
->> Makes sense. I guess even without support for large folios one could imp=
-lement a kind of "fault" around: for example, on access to one addr, alloca=
-te+prepare all pages in the same 2 M chunk, flushing the tlb only once afte=
-r adjusting all the direct map entries.
->>=20
->>>
->>> Also, can we really batch multiple TLB flushes as you suggest? Even if
->>> pages are at consecutive indices in guest_memfd, they're not guaranteed
->>> to be continguous physically, e.g. we couldn't just coalesce multiple
->>> TLB flushes into a single TLB flush of a larger range.
->>=20
->> Well, you there is the option on just flushing the complete tlb of cours=
-e :) When trying to flush a range you would indeed run into the problem of =
-flushing an ever growing range.
->
-> In the last guest_memfd upstream call (over a week ago now), we've
-> discussed the option of batching and deferring TLB flushes, while
-> providing a sort of "deadline" at which a TLB flush will
-> deterministically be done.  E.g. guest_memfd would keep a counter of how
-> many pages got direct map zapped, and do a flush of a range that
-> contains all zapped pages every 512 allocated pages (and to ensure the
-> flushes even happen in a timely manner if no allocations happen for a
-> long time, also every, say, 5 seconds or something like that). Would
-> that work for everyone? I briefly tested the performance of
-> batch-flushes with secretmem in QEMU, and its within of 30% of the "no
-> TLB flushes at all" solution in a simple benchmark that just memsets
-> 2GiB of memory.
->
-> I think something like this, together with the batch-flushing at the end
-> of fallocate() / write() as David suggested above should work for
-> Firecracker.
->
->>> There's probably other things we can try. Backing guest_memfd with
->>> hugepages would reduce the number TLB flushes by 512x (although not all
->>> users of Firecracker at Amazon [can] use hugepages).
->>=20
->> Right.
->>=20
->>>
->>> And I do still wonder if it's possible to have "async TLB flushes" wher=
-e
->>> we simply don't wait for the IPI (x86 terminology, not sure what the
->>> mechanism on arm64 is). Looking at
->>> smp_call_function_many_cond()/invlpgb_kernel_range_flush() on x86, it
->>> seems so? Although seems like on ARM it's actually just handled by a
->>> single instruction (TLBI) and not some interprocess communication
->>> thingy. Maybe there's a variant that's faster / better for this usecase=
-?
->>=20
->> Right, some architectures (and IIRC also x86 with some extension) are ab=
-le to flush remote TLBs without IPIs.
->>=20
->> Doing a quick search, there seems to be some research on async TLB flush=
-ing, e.g., [1].
->>=20
->> In the context here, I wonder whether an async TLB flush would be
->> significantly better than not doing an explicit TLB flush: in both
->> cases, it's not really deterministic when the relevant TLB entries
->> will vanish: with the async variant it might happen faster on average
->> I guess.
->
-> I actually did end up playing around with this a while ago, and it made
-> things slightly better performance wise, but it was still too bad to be
-> useful :(
->
+Handle recursive typedefs in BTF deduplication
 
-Does it help if we add a guest_memfd ioctl that allows userspace to zap
-from the direct map to batch TLB flushes?
+Pahole fails to encode BTF for some Go projects (e.g. Kubernetes and
+Podman) due to recursive type definitions that create reference loops
+not representable in C. These recursive typedefs trigger a failure in
+the BTF deduplication algorithm.
 
-Could usage be something like:
+This patch extends btf_dedup_ref_type() to properly handle potential
+recursion for BTF_KIND_TYPEDEF, similar to how recursion is already
+handled for BTF_KIND_STRUCT. This allows pahole to successfully
+generate BTF for Go binaries using recursive types without impacting
+existing C-based workflows.
 
-0. Create guest_memfd with GUEST_MEMFD_FLAG_NO_DIRECT_MAP.
-1. write() entire VM memory to guest_memfd.
-2. ioctl(guest_memfd, KVM_GUEST_MEMFD_ZAP_DIRECT_MAP, { offset, len })
-3. vcpu_run()
+Co-developed-by: Martin Horth <martin.horth@telecom-sudparis.eu>
+Signed-off-by: Martin Horth <martin.horth@telecom-sudparis.eu>
+Co-developed-by: Ouail Derghal <ouail.derghal@imt-atlantique.fr>
+Signed-off-by: Ouail Derghal <ouail.derghal@imt-atlantique.fr>
+Co-developed-by: Guilhem Jazeron <guilhem.jazeron@inria.fr>
+Signed-off-by: Guilhem Jazeron <guilhem.jazeron@inria.fr>
+Co-developed-by: Ludovic Paillat <ludovic.paillat@inria.fr>
+Signed-off-by: Ludovic Paillat <ludovic.paillat@inria.fr>
+Co-developed-by: Robin Theveniaut <robin.theveniaut@irit.fr>
+Signed-off-by: Robin Theveniaut <robin.theveniaut@irit.fr>
+Suggested-by: Tristan d'Audibert <tristan.daudibert@gmail.com>
+Signed-off-by: Paul Houssel <paul.houssel@orange.com>
 
-This way, we could flush the tlb once for the entire range of { offset,
-len } instead of zapping once per fault.
+---
+The issue was originally observed when attempting to encode BTF for
+Kubernetes binaries (kubectl, kubeadm):
 
-For not-yet-allocated folios, those will get zapped once per fault
-though.
+$ git clone --depth 1 https://github.com/kubernetes/kubernetes
+$ cd ./kubernetes
+$ make kubeadm DBG=1
+$ pahole --btf_encode_detached=kubeadm.btf _output/bin/kubeadm
+btf_encoder__encode: btf__dedup failed!
+Failed to encode BTF
 
-Maybe this won't help much if the intention is to allow on-demand
-loading of memory, since the demands will come to guest_memfd on a
-per-folio basis.
+The root cause lies in recursive type definitions that cannot exist
+in C but are valid in Go.
 
->>=20
->> [1] https://cs.yale.edu/homes/abhishek/kumar-taco20.pdf
->>
->
-> Best,=20
-> Patrick
+program.go:
+
+"package main
+
+type Foo func() Foo
+
+func main() {
+	bar()
+}
+
+func bar() Foo {
+	return nil
+}"
+
+Building and encoding this program with pahole triggers the same
+deduplication failure:
+
+$ go build -gcflags "all=-N -l" ./program.go
+$ pahole --btf_encode_detached=program.btf program
+btf_encoder__encode: btf__dedup failed!
+Failed to encode BTF
+
+As noted in the comment of btf_dedup_ref_type(), the deduplication
+logic previously assumed recursion only occurs through structs or
+unions:
+
+"[...] there is no danger of encountering cycles because in C type
+system the only way to form type cycle is through struct/union, so
+any chain of reference types, even those taking part in a type
+cycle, will inevitably reach struct/union at some point."
+
+However, Go allows such recursion through typedef-like constructs
+(function types, aliases), requiring a special case for
+BTF_KIND_TYPEDEF.
+
+This patch introduces that special handling, ensuring pahole can
+handle Go-generated BTFs while maintaining compatibility with
+existing C workflows.
+---
+ tools/lib/bpf/btf.c | 97 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 95 insertions(+), 2 deletions(-)
+
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 9f141395c074..239f52115c53 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -3408,6 +3408,7 @@ static int btf_dedup_prep(struct btf_dedup *d);
+ static int btf_dedup_strings(struct btf_dedup *d);
+ static int btf_dedup_prim_types(struct btf_dedup *d);
+ static int btf_dedup_struct_types(struct btf_dedup *d);
++static int btf_dedup_typedef_types(struct btf_dedup *d);
+ static int btf_dedup_ref_types(struct btf_dedup *d);
+ static int btf_dedup_resolve_fwds(struct btf_dedup *d);
+ static int btf_dedup_compact_types(struct btf_dedup *d);
+@@ -3590,6 +3591,11 @@ int btf__dedup(struct btf *btf, const struct btf_dedup_opts *opts)
+ 		pr_debug("btf_dedup_struct_types failed: %s\n", errstr(err));
+ 		goto done;
+ 	}
++	err = btf_dedup_typedef_types(d);
++	if (err < 0) {
++		pr_debug("btf_dedup_typedef_types failed: %s\n", errstr(err));
++		goto done;
++	}
+ 	err = btf_dedup_resolve_fwds(d);
+ 	if (err < 0) {
+ 		pr_debug("btf_dedup_resolve_fwds failed: %s\n", errstr(err));
+@@ -3901,6 +3907,20 @@ static int btf_dedup_strings(struct btf_dedup *d)
+ 	return err;
+ }
+ 
++/*
++ * Calculate type signature hash of TYPEDEF, ignoring referenced type IDs,
++ * as referenced type IDs equivalence is established separately during type
++ * graph equivalence check algorithm.
++ */
++static long btf_hash_typedef(struct btf_type *t)
++{
++	long h;
++
++	h = hash_combine(0, t->name_off);
++	h = hash_combine(h, t->info);
++	return h;
++}
++
+ static long btf_hash_common(struct btf_type *t)
+ {
+ 	long h;
+@@ -3918,6 +3938,13 @@ static bool btf_equal_common(struct btf_type *t1, struct btf_type *t2)
+ 	       t1->size == t2->size;
+ }
+ 
++/* Check structural compatibility of two TYPEDEF. */
++static bool btf_equal_typedef(struct btf_type *t1, struct btf_type *t2)
++{
++	return t1->name_off == t2->name_off &&
++	       t1->info == t2->info;
++}
++
+ /* Calculate type signature hash of INT or TAG. */
+ static long btf_hash_int_decl_tag(struct btf_type *t)
+ {
+@@ -4936,10 +4963,77 @@ static int btf_dedup_struct_types(struct btf_dedup *d)
+ 	return 0;
+ }
+ 
++/*
++ * Deduplicate typedef types.
++ *
++ * Similar as for struct/union types, for each typedef type its type
++ * signature hash is calculated, taking into account type's name
++ * and its size, but ignoring type ID's referenced from fields,
++ * because they might not be deduped completely until after
++ * reference types deduplication phase.
++ */
++static int btf_dedup_typedef_type(struct btf_dedup *d, __u32 type_id)
++{
++	struct btf_type *cand_type, *t;
++	struct hashmap_entry *hash_entry;
++	/* if we don't find equivalent type, then we are canonical */
++	__u32 new_id = type_id;
++	__u16 kind;
++	long h;
++
++	if (d->map[type_id] <= BTF_MAX_NR_TYPES)
++		return 0;
++
++	t = btf_type_by_id(d->btf, type_id);
++	kind = btf_kind(t);
++
++	if (kind != BTF_KIND_TYPEDEF)
++		return 0;
++	h = btf_hash_typedef(t);
++	for_each_dedup_cand(d, hash_entry, h) {
++		__u32 cand_id = hash_entry->value;
++		int eq;
++
++		cand_type = btf_type_by_id(d->btf, cand_id);
++		if (!btf_equal_typedef(t, cand_type))
++			continue;
++
++		btf_dedup_clear_hypot_map(d);
++		eq = btf_dedup_is_equiv(d, type_id, cand_id);
++		if (eq < 0)
++			return eq;
++		if (!eq)
++			continue;
++		btf_dedup_merge_hypot_map(d);
++		if (d->hypot_adjust_canon) /* not really equivalent */
++			continue;
++		new_id = cand_id;
++		break;
++	}
++
++	d->map[type_id] = new_id;
++	if (type_id == new_id && btf_dedup_table_add(d, h, type_id))
++		return -ENOMEM;
++
++	return 0;
++}
++
++static int btf_dedup_typedef_types(struct btf_dedup *d)
++{
++	int i, err;
++
++	for (i = 0; i < d->btf->nr_types; i++) {
++		err = btf_dedup_typedef_type(d, d->btf->start_id + i);
++		if (err)
++			return err;
++	}
++	return 0;
++}
++
+ /*
+  * Deduplicate reference type.
+  *
+- * Once all primitive and struct/union types got deduplicated, we can easily
++ * Once all primitive, struct/union and typedef types got deduplicated, we can easily
+  * deduplicate all other (reference) BTF types. This is done in two steps:
+  *
+  * 1. Resolve all referenced type IDs into their canonical type IDs. This
+@@ -4982,7 +5076,6 @@ static int btf_dedup_ref_type(struct btf_dedup *d, __u32 type_id)
+ 	case BTF_KIND_VOLATILE:
+ 	case BTF_KIND_RESTRICT:
+ 	case BTF_KIND_PTR:
+-	case BTF_KIND_TYPEDEF:
+ 	case BTF_KIND_FUNC:
+ 	case BTF_KIND_TYPE_TAG:
+ 		ref_type_id = btf_dedup_ref_type(d, t->type);
+-- 
+2.43.0
+
 
