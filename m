@@ -1,148 +1,148 @@
-Return-Path: <bpf+bounces-73919-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73920-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49569C3E1F7
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 02:25:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 095C1C3E209
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 02:29:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CAFB934CB00
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 01:25:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EA813ADB4A
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 01:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA732F5A3F;
-	Fri,  7 Nov 2025 01:25:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 481912F616F;
+	Fri,  7 Nov 2025 01:29:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PxJdsgmg"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347372D3A77;
-	Fri,  7 Nov 2025 01:25:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8CD3286D64;
+	Fri,  7 Nov 2025 01:29:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762478743; cv=none; b=fzoz1L9UBk3IanOmxFnL2k5G7ONdsoADC09qJTaKEyc/xAjEym10n+eJ64oEHHHlRq3yhwEP4FP0DW/KzMekXCMHwcsEzEtevzu9xl1fld7quJRGatFnCDJNCgRy1X+Uq4wjs9WrctSCmUEc6QTT+LHWP1vyGXYghn2Nx6kCLP4=
+	t=1762478961; cv=none; b=bIAMra/PACckhOcvdGuUkHWRtL/d+jnwWZ85KD8sTD/OgfTJfA0WXpBTUgmShFOAvJGZyOPRAc7eaU7KvuKIEZEWQM8vIBmI/3QrRV7XnPP/MYKT0m2fedDcwi43Icy+sE9+gsy3sy6d6eCH0rJ9FAGVDNCbxGF831c03Ugoo4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762478743; c=relaxed/simple;
-	bh=l+HkW8boKXXIbvN9jqeLG3k3Gf7ksT07ZL9Tg4hUtyU=;
+	s=arc-20240116; t=1762478961; c=relaxed/simple;
+	bh=GbsyoaoMgC5ugJX7CDMoP2LUinPt69SQz5ZnttGKylU=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jiv8jbkxeBtZwF1iseltb2Jw3kti7farGq718DcUdDQfITCTlv1bR7cZmlIlcJRajsLf/MnqdmQAlbX8v3ZxH/67jyH3twd3YyHavccQKd8a5WtHDo1imIFvTvorLQ9Ukm7vuNaUY3z0v563LbbmKRhrUxLjY0dzSLxpS1dkk+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay09.hostedemail.com (Postfix) with ESMTP id 5C2D487C3A;
-	Fri,  7 Nov 2025 01:16:48 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf06.hostedemail.com (Postfix) with ESMTPA id 535202000F;
-	Fri,  7 Nov 2025 01:16:46 +0000 (UTC)
-Date: Thu, 6 Nov 2025 20:16:44 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Sebastian Andrzej
- Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org, frederic@kernel.org
-Subject: Re: [PATCH v2 10/16] tracing: Guard __DECLARE_TRACE() use of
- __DO_TRACE_CALL() with SRCU-fast
-Message-ID: <20251106201644.3eef6a4a@batman.local.home>
-In-Reply-To: <46365769-2b3a-4da1-a926-1b3e489d434a@paulmck-laptop>
-References: <bb177afd-eea8-4a2a-9600-e36ada26a500@paulmck-laptop>
-	<20251105203216.2701005-10-paulmck@kernel.org>
-	<20251106110230.08e877ff@batman.local.home>
-	<522b01cf-0cb6-4766-9102-2d08a3983d8a@paulmck-laptop>
-	<20251106121005.76087677@gandalf.local.home>
-	<eb59555d-f3e8-47c9-b519-a7b628e68885@paulmck-laptop>
-	<20251106190314.5a43cc10@gandalf.local.home>
-	<46365769-2b3a-4da1-a926-1b3e489d434a@paulmck-laptop>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	 MIME-Version:Content-Type; b=cNY8uomGM6fdXslApabJvf4JJISNCHre0seBBpCasebFau3xqfETcXCyxG3lu83qCedFxNS9rdKZrGvgeId1hxkKJyat47PnryPvFSuc13ZAaqPI+iI/rJ3znOEHHDEmbu66NjIjoS4ukgXe8ZJF3HLRduCzQuzalZya0M0WmzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PxJdsgmg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87FB4C4CEF7;
+	Fri,  7 Nov 2025 01:29:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762478961;
+	bh=GbsyoaoMgC5ugJX7CDMoP2LUinPt69SQz5ZnttGKylU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=PxJdsgmg+BdMKGKF2RoB25bnZSE0JPB5UXZySz2/x9cQ0eoqEhJnzGsNRM/PP8VeU
+	 PiNLzTIlwkEPxzPBSo2GYUzwS386Ix8S+rTuRI5WpGxNtWvL1fZiuoGjNxqCmkwopq
+	 gDXGmXV79vMnoz9xJrSJXllSV0IDpLB4pBfm7tdh7BGni0nha6IaCK9d488cLTzUNn
+	 +qa+fUhUgjYHsLBpMkQT83JZtN1UZLzbUrf4Wznb4Puh6wu1EQ9GKndEerhXX++2/p
+	 03UWY8xFnLtf7xh4zjhiSkSVai5Fi9ex/qBu3giLMObs1+tMvXCHOrDXloA0xGdvSx
+	 M0a1B0E33uiag==
+Date: Thu, 6 Nov 2025 17:29:19 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: netdev@vger.kernel.org, Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=
+ <toke@toke.dk>, Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ ihor.solodrai@linux.dev, "Michael S. Tsirkin" <mst@redhat.com>,
+ makita.toshiaki@lab.ntt.co.jp, toshiaki.makita1@gmail.com,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel-team@cloudflare.com
+Subject: Re: [PATCH net V3 1/2] veth: enable dev_watchdog for detecting
+ stalled TXQs
+Message-ID: <20251106172919.24540443@kernel.org>
+In-Reply-To: <176236369293.30034.1875162194564877560.stgit@firesoul>
+References: <176236363962.30034.10275956147958212569.stgit@firesoul>
+	<176236369293.30034.1875162194564877560.stgit@firesoul>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 535202000F
-X-Stat-Signature: ujusm8xsq5jngca3san18n6facuf7mr7
-X-Rspamd-Server: rspamout02
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18J1tqfJ/0WoJd3jGL9TNSLJ6HHk3PrGPk=
-X-HE-Tag: 1762478206-621186
-X-HE-Meta: U2FsdGVkX195KBIqfQ3B8KODLF1oxlJRib/7IceoXWErrBQMnYcdQn8apKV3ByQ7rgJwWG77VJz0PBudH/QbiZYvogdwtJx7QjKJnsS4rvzUZlFVcrAZ3Enr3Nik8saTDhNiEgflpxoe8mvH7hBLEv0uxwiZJR4cLIvVQ/9QgWAH//sN8PuLun8ErOwWFV5AjYANzLhKZcxKiHWiEy3+L7yYgWOfetuu2OZYheQUwlHyknJMl2UfHhN6CgQAGjFDVNK+IgVqtOSoVAdGO6mo6FOQa3VHz9RzKvV9e45hAulDTmDJRfXp6L97/MPcLTjX2i3XSJ8WGtpoSzxzyimneqCEfwejvTcCHycjaJZ80sVQo737aosBJXtowhFr6/9nUrwTh8+zWBeDvGIdOT+Y8Q==
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 6 Nov 2025 17:04:33 -0800
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > 
-> > It gets a bit more confusing. We see "migrate disabled" (the last number)
-> > except when preemption is enabled.  
-> 
-> Huh.  Would something like "...11" indicate that both preemption and
-> migration are disabled?
+On Wed, 05 Nov 2025 18:28:12 +0100 Jesper Dangaard Brouer wrote:
+> The changes introduced in commit dc82a33297fc ("veth: apply qdisc
+> backpressure on full ptr_ring to reduce TX drops") have been found to cau=
+se
+> a race condition in production environments.
+>=20
+> Under specific circumstances, observed exclusively on ARM64 (aarch64)
+> systems with Ampere Altra Max CPUs, a transmit queue (TXQ) can become
+> permanently stalled. This happens when the race condition leads to the TXQ
+> entering the QUEUE_STATE_DRV_XOFF state without a corresponding queue wak=
+e-up,
+> preventing the attached qdisc from dequeueing packets and causing the
+> network link to halt.
+>=20
+> As a first step towards resolving this issue, this patch introduces a
+> failsafe mechanism. It enables the net device watchdog by setting a timeo=
+ut
+> value and implements the .ndo_tx_timeout callback.
+>=20
+> If a TXQ stalls, the watchdog will trigger the veth_tx_timeout() function,
+> which logs a warning and calls netif_tx_wake_queue() to unstall the queue
+> and allow traffic to resume.
+>=20
+> The log message will look like this:
+>=20
+>  veth42: NETDEV WATCHDOG: CPU: 34: transmit queue 0 timed out 5393 ms
+>  veth42: veth backpressure stalled(n:1) TXQ(0) re-enable
+>=20
+> This provides a necessary recovery mechanism while the underlying race
+> condition is investigated further. Subsequent patches will address the ro=
+ot
+> cause and add more robust state handling.
+>=20
+> Fixes: dc82a33297fc ("veth: apply qdisc backpressure on full ptr_ring to =
+reduce TX drops")
+> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
-Preemption was disabled when coming in.
+I think this belongs in net-next.. Fail safe is not really a bug fix.
+I'm slightly worried we're missing a corner case and will cause
+timeouts to get printed for someone's config.
 
-> 
-> >                                    That's because in your code, we only do
-> > the migrate dance when preemption is disabled:
-> >   
-> > > +			if (IS_ENABLED(CONFIG_PREEMPT_RT) && preemptible()) {	\  
-> 
-> You lost me on this one.  Wouldn't the "preemptible()" condition in that
-> "if" statement mean that migration is disabled only when preemption
-> is *enabled*?
-> 
-> What am I missing here?
+> +static void veth_tx_timeout(struct net_device *dev, unsigned int txqueue)
+> +{
+> +	struct netdev_queue *txq =3D netdev_get_tx_queue(dev, txqueue);
+> +
+> +	netdev_err(dev, "veth backpressure stalled(n:%ld) TXQ(%u) re-enable\n",
+> +		   atomic_long_read(&txq->trans_timeout), txqueue);
 
-So preemption is disabled when the event was hit. That would make
-"preemptible()" false, and we will then up the preempt_count again and
-not disable migration.
+If you think the trans_timeout is useful, let's add it to the message
+core prints? And then we can make this msg just veth specific, I don't
+think we should be repeating what core already printed.
 
-The code that records the preempt count expects the tracing code to
-increment the preempt_count, so it decrements it by one. Thus it records;
+> +	netif_tx_wake_queue(txq);
+> +}
+> +
+>  static int veth_open(struct net_device *dev)
+>  {
+>  	struct veth_priv *priv =3D netdev_priv(dev);
+> @@ -1711,6 +1723,7 @@ static const struct net_device_ops veth_netdev_ops =
+=3D {
+>  	.ndo_bpf		=3D veth_xdp,
+>  	.ndo_xdp_xmit		=3D veth_ndo_xdp_xmit,
+>  	.ndo_get_peer_dev	=3D veth_peer_dev,
+> +	.ndo_tx_timeout		=3D veth_tx_timeout,
+>  };
+> =20
+>  static const struct xdp_metadata_ops veth_xdp_metadata_ops =3D {
+> @@ -1749,6 +1762,7 @@ static void veth_setup(struct net_device *dev)
+>  	dev->priv_destructor =3D veth_dev_free;
+>  	dev->pcpu_stat_type =3D NETDEV_PCPU_STAT_TSTATS;
+>  	dev->max_mtu =3D ETH_MAX_MTU;
+> +	dev->watchdog_timeo =3D msecs_to_jiffies(5000);
+> =20
+>  	dev->hw_features =3D VETH_FEATURES;
+>  	dev->hw_enc_features =3D VETH_FEATURES;
+>=20
+>=20
 
-  ...1.
-
-As migrate disable wasn't set.
-
-> 
-> > > +				guard(srcu_fast_notrace)(&tracepoint_srcu);	\
-> > > +				guard(migrate)();				\
-> > > +				__DO_TRACE_CALL(name, TP_ARGS(args));		\
-> > > +			} else {						\
-> > > +				guard(preempt_notrace)();			\
-> > > +				__DO_TRACE_CALL(name, TP_ARGS(args));		\
-> > > +			}  
-> > 
-> > And that will make accounting in the trace event callback much more
-> > difficult, when it's sometimes disabling migration and sometimes disabling
-> > preemption. It must do one or the other. It can't be conditional like that.
-> > 
-> > With my update below, it goes back to normal:
-> > 
-> >             bash-1040    [004] d..2.    49.339890: lock_release: 000000001d24683a tasklist_lock
-> >             bash-1040    [004] d..2.    49.339890: irq_enable: caller=_raw_write_unlock_irq+0x28/0x50 parent=0x0
-> >             bash-1040    [004] ...1.    49.339891: lock_release: 00000000246b21a5 rcu_read_lock
-> >             bash-1040    [004] .....    49.339891: lock_acquire: 0000000084e3738a read &mm->mmap_lock
-> >             bash-1040    [004] .....    49.339892: lock_release: 0000000084e3738a &mm->mmap_lock
-> >             bash-1040    [004] .....    49.339892: lock_acquire: 00000000f5b22878 read rcu_read_lock_trace
-> >             bash-1040    [004] .....    49.339892: lock_acquire: 0000000084e3738a read &mm->mmap_lock
-> >             bash-1040    [004] .....    49.339893: lock_release: 0000000084e3738a &mm->mmap_lock
-> >             bash-1040    [004] .....    49.339893: sys_exit: NR 109 = 0
-> >             bash-1040    [004] .....    49.339893: lock_acquire: 0000000084e3738a read &mm->mmap_lock
-> >             bash-1040    [004] .....    49.339894: lock_release: 0000000084e3738a &mm->mmap_lock
-> >             bash-1040    [004] .....    49.339894: sys_setpgid -> 0x0
-> >             bash-1040    [004] .....    49.339895: lock_release: 00000000f5b22878 rcu_read_lock_trace
-> >             bash-1040    [004] d....    49.339895: irq_disable: caller=do_syscall_64+0x37a/0x9a0 parent=0x0
-> >             bash-1040    [004] d....    49.339895: irq_enable: caller=do_syscall_64+0x167/0x9a0 parent=0x0
-> >             bash-1040    [004] d....    49.339897: irq_disable: caller=irqentry_enter+0x57/0x60 parent=0x0
-> > 
-> > I did some minor testing of this patch both with and without PREEMPT_RT
-> > enabled. This replaces this current patch. Feel free to use it.  
-> 
-> OK, I will add it with your SoB and give it a spin.  Thank you!
-
-Signed-off-by: Steve Rostedt (Google) <rostedt@goodmis.org>
-
-Cheers,
-
--- Steve
 
