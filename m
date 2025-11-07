@@ -1,281 +1,257 @@
-Return-Path: <bpf+bounces-73974-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73975-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 258ECC413AE
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 19:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C7E3C41444
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 19:19:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C247E3B4569
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 18:11:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0944B3BFE21
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 18:19:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7992B339B2D;
-	Fri,  7 Nov 2025 18:11:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00DA2339719;
+	Fri,  7 Nov 2025 18:19:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="qPMh+sGS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bbIqRCGv"
 X-Original-To: bpf@vger.kernel.org
-Received: from fra-out-004.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-004.esa.eu-central-1.outbound.mail-perimeter.amazon.com [3.74.81.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D99933396E1;
-	Fri,  7 Nov 2025 18:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.74.81.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CDB02F83BC
+	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 18:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762539088; cv=none; b=ko1+YLk4LOl6NTIQ6rlrUzTEPALTUgdei5VDiL9jRWknUcsDNPAJkMdoH1JtgZymn+PpvTNEdcTpVMZQG3lAZTERODH1V4HsP+W7vziLsCS+iZorUgxBLwVqr3AuLWmZkispTYimZjIOugs1IpNqu3oR1cTjtl0wPFeTWu9dGdo=
+	t=1762539580; cv=none; b=m/UGauyeW+8/mM4xG3tZY8PRO3YvoC1254t6XQmWQpM/uTzEWFXImCKMqyLB9Sjhl7IUZ9509KxKY008GeInXW8qx0Ce/fqHN1OsoZ9KoVRfMPpKXPV6/1p5ugGR1VI7Ggj3EQbPn4B7P88xoLobYwsMp37fK5jpF385rTK9Yhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762539088; c=relaxed/simple;
-	bh=N4gOSBeRZWqaySZxSBCtzaOl7g3HsBW0KJqcGWerLgo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=JHnTvsHPIMDU0vozm+cQ1p+WpvOdO93xaCFm5sWPwwYOvWmM3zSmG1Ywv/djaTFgw4kIwwkZkSqyMnF0i82IZEm7BPlBlZsfjbapDTUm7xCjrMTG0Cvba8eX9oohVzAG6dzRvXSA8BBMawk5rGnhN73PwtiDivwdq2R22PKdGmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=qPMh+sGS; arc=none smtp.client-ip=3.74.81.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+	s=arc-20240116; t=1762539580; c=relaxed/simple;
+	bh=Nfg8fIlYXrhKTgE7llskapPtirpxksa9elL/wFVTIH4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=iqbAS+MmimPA3wiLEwbp661Ja8pgFFU9zKGS7fRKlaLMF3k5l5acvd1N60eJpRnzljjXFtR6UcWg5hrM4d2z56pUbywxUPFtllRCHXyqd+evZeqK90Q5jc4rFYe0B7thdO+SZioNgk/znud3NEccX/gAXmUVn4EUC7m0HYizMIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bbIqRCGv; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-29524abfba3so10563715ad.1
+        for <bpf@vger.kernel.org>; Fri, 07 Nov 2025 10:19:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1762539085; x=1794075085;
-  h=message-id:date:mime-version:reply-to:subject:to:cc:
-   references:from:in-reply-to:content-transfer-encoding;
-  bh=SCkgHKsCB067+A2QKdQEeR2F/1cDYKaCmk5fyfcip00=;
-  b=qPMh+sGSJZt+z4Nc+DhY/1qTycu+jXWtJcRVfVq9aThqVfhZ7CnGrjbs
-   68J8ryCMsklugfRIIRzKfjio4AWTnd8/O16cOk7o7OJRbctMvBpisAZLd
-   nqU2bdn4xB3Q8OCfXoPqg+mifE4tBiunRgSnSKXqId8l9IYNfWHW1Sh5q
-   B09bCz0jvRk0ABD58ut3l9+naRE6voeFpiY1OBcZG8uXYktiDw/TWojP3
-   piBXzdlKm8Kz6SehvX/bTm2FndIweeX9zrmAnMvV7RYI2XG3W9V/r/YIH
-   5exIyAFKqLp0i+4B+hwJpbb7jmooRqPOnOWLbbaFatsClwVHQR/3alGJ2
-   w==;
-X-CSE-ConnectionGUID: fFJTYbfoSuanuoJNyoUMiw==
-X-CSE-MsgGUID: ItF1NJ0MQ7GmOV9vTi4D2Q==
-X-IronPort-AV: E=Sophos;i="6.19,287,1754956800"; 
-   d="scan'208";a="4852407"
-Received: from ip-10-6-6-97.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.6.97])
-  by internal-fra-out-004.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2025 18:11:07 +0000
-Received: from EX19MTAEUC002.ant.amazon.com [54.240.197.228:6828]
- by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.13.118:2525] with esmtp (Farcaster)
- id 217d753f-5175-4dc1-96ad-8ed664faf6cb; Fri, 7 Nov 2025 18:11:06 +0000 (UTC)
-X-Farcaster-Flow-ID: 217d753f-5175-4dc1-96ad-8ed664faf6cb
-Received: from EX19D022EUC002.ant.amazon.com (10.252.51.137) by
- EX19MTAEUC002.ant.amazon.com (10.252.51.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
- Fri, 7 Nov 2025 18:11:06 +0000
-Received: from [192.168.9.244] (10.106.83.15) by EX19D022EUC002.ant.amazon.com
- (10.252.51.137) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29; Fri, 7 Nov 2025
- 18:11:03 +0000
-Message-ID: <a940044f-3ae4-451f-b9ba-946ec6df5082@amazon.com>
-Date: Fri, 7 Nov 2025 18:11:01 +0000
+        d=gmail.com; s=20230601; t=1762539578; x=1763144378; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Nfg8fIlYXrhKTgE7llskapPtirpxksa9elL/wFVTIH4=;
+        b=bbIqRCGvsm5SgJnmK1OeHVeQXYBrxc/Mc2P1C9XF4II1wOpZggGjUJ8Qd6KDE5dm9v
+         9wVCwD9fTzcPDjPHQeQTWKhCO8nhD7LyyWuOxUksoj8G6Obl6tySUMNkpusKeB6v7wYH
+         bGqFzP/nHqMIuCUBLcGNcNeRHFo54h6GM8hAhoA6R4YdKIR1gnuAe9BaM3A/d28sGrhv
+         80nUSPMOToiS7zMHF7D1GM0yz2Ypeu+KbHeDS0VocJk9BaRvFwcVGEM3fjywgjkGsxoJ
+         xZwYn7LTuQrWoWCJ9AgyMwxsQZne+D0Ex3fsyGRnggqRXvgzb1otaVLz37GgvorCc6ni
+         UElw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762539578; x=1763144378;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nfg8fIlYXrhKTgE7llskapPtirpxksa9elL/wFVTIH4=;
+        b=GME/cOn4OOymKpzY8EcCOk+8bBBp2+g4fumuvSVhJupBmEbg18WnzggM3aEevdTDft
+         0RQAkwUPittDxW3zKS/XfETGCPtq1pHbzr/xFUhYlsOF+oS3vbqUGBvVH08lVqwJOlBG
+         nNuXEYHLEA07+7SkzBo5QH4FMFVmfNEb/nk7Yt6lmaKZnmZjxcy91fvCGc7i+u6Ax9bQ
+         z2SthxO6tuR/KRyFpgfPERDiAyzw+InrrPttWzSbDnvdfxAYpXj8kN5M4tOeCO+KbpDx
+         NFGCpSR1iP86RwdVUA8xC3UJqWnfupjTWnAtWKu0/fyd/oHMHElbg17YwZYMkRAeX0vz
+         OKwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXa2QRHRk50tzcyPfiJWu4ymhbWSIDjj5uToxC4EPbfz+hOZsHh4UOfkPwoOhnsB4C6gRU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfY/1gqFAhrnlPN2Sa7ya7c7yu47B8Hsar6k2afH32uweBDtDn
+	Rfewuf4NvFIaOB7n0s0xGEFv4o8OyXWnJfoAqdgmlUt3PqcM4QC2S+vJ
+X-Gm-Gg: ASbGnctfSeS1ZBUJQBvjHUJ7Pq+IWtc5myiaRBbMWp5rqr7ZxqlYnfPoNe4xRkgMYIy
+	ZmP63PVWfSS5lzG2Mz5NX4bPSD9W2xGICtAl4kP7SbLx6BkdCQT/+rGEXAhiGp8KaSmOW0+oPSP
+	S/vJddG33mSA1LzDNEnaehY+vxpm8lBYGU+VXEDz8z1Xgq4yGKEUdRcMsptHKg1GqMExjH9Zc+r
+	9j8ylNh1fEih90msZ49OH3aNMBTEXHNpmzMxmPznmeuxZoAX7G0Nky5/gnHA66GavUry/qaF8gr
+	lgdrz1s7SYdO0d7lLny0wfhIqfQ9bRAiAChex5vMFj3Zt5AeRHlfQXw5UX1hKP5bcMvSWstoKR7
+	9F5puPp8JmeX6dEfPI/VAkU936PRsMtU5ehgEKY3Pd1GVvHT5Tp0jtbeCT1nKx9Bd5sFFWXJMxn
+	mOnTzweNE=
+X-Google-Smtp-Source: AGHT+IFOtcW0FjrNxyzQVAwg8/hsWcVkY2/+FOGxCrw+aG6ME/j+PMfoUflj60UThewImLHLIJQRzg==
+X-Received: by 2002:a17:903:3848:b0:294:def6:5961 with SMTP id d9443c01a7336-297e56d0868mr419605ad.45.1762539578179;
+        Fri, 07 Nov 2025 10:19:38 -0800 (PST)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29651c93e5dsm68382615ad.81.2025.11.07.10.19.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Nov 2025 10:19:37 -0800 (PST)
+Message-ID: <74d4c8e40e61dad369607ecd8b98f58a515479f0.camel@gmail.com>
+Subject: Re: [PATCH v5 6/7] btf: Add lazy sorting validation for binary
+ search
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Donglin Peng <dolinux.peng@gmail.com>, bot+bpf-ci@kernel.org, 
+	ast@kernel.org, andrii.nakryiko@gmail.com
+Cc: zhangxiaoqin@xiaomi.com, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, 	alan.maguire@oracle.com, song@kernel.org,
+ pengdonglin@xiaomi.com, 	andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@kernel.org, 	yonghong.song@linux.dev, clm@meta.com,
+ ihor.solodrai@linux.dev
+Date: Fri, 07 Nov 2025 10:19:33 -0800
+In-Reply-To: <CAErzpmtRYnSpLuO=oM7GgW0Sss2+kQ2cJsZiDmZmz04fD0Noyg@mail.gmail.com>
+References: <20251106131956.1222864-7-dolinux.peng@gmail.com>
+	 <d57f3e256038e115f7d82b4e6b26d8da80d3c8d8afb4f0c627e0b435dee7eaf6@mail.kernel.org>
+	 <CAErzpmtRYnSpLuO=oM7GgW0Sss2+kQ2cJsZiDmZmz04fD0Noyg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: <kalyazin@amazon.com>
-Subject: Re: [PATCH v7 00/12] Direct Map Removal Support for guest_memfd
-To: Brendan Jackman <jackmanb@google.com>
-CC: <pbonzini@redhat.com>, <corbet@lwn.net>, <maz@kernel.org>,
-	<oliver.upton@linux.dev>, <joey.gouly@arm.com>, <suzuki.poulose@arm.com>,
-	<yuzenghui@huawei.com>, <catalin.marinas@arm.com>, <will@kernel.org>,
-	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>,
-	<luto@kernel.org>, <peterz@infradead.org>, <willy@infradead.org>,
-	<akpm@linux-foundation.org>, <david@redhat.com>,
-	<lorenzo.stoakes@oracle.com>, <Liam.Howlett@oracle.com>, <vbabka@suse.cz>,
-	<rppt@kernel.org>, <surenb@google.com>, <mhocko@suse.com>, <song@kernel.org>,
-	<jolsa@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <martin.lau@linux.dev>, <eddyz87@gmail.com>,
-	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-	<sdf@fomichev.me>, <haoluo@google.com>, <jgg@ziepe.ca>,
-	<jhubbard@nvidia.com>, <peterx@redhat.com>, <jannh@google.com>,
-	<pfalcato@suse.de>, <shuah@kernel.org>, <seanjc@google.com>,
-	<kvm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>, <linux-fsdevel@vger.kernel.org>,
-	<linux-mm@kvack.org>, <bpf@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>, <xmarcalx@amazon.co.uk>,
-	<kalyazin@amazon.co.uk>, <jackabt@amazon.co.uk>, <derekmn@amazon.co.uk>,
-	<tabba@google.com>, <ackerleytng@google.com>, Patrick Roy
-	<patrick.roy@campus.lmu.de>
-References: <20250924151101.2225820-1-patrick.roy@campus.lmu.de>
- <DE2L1SAOC55E.E4JY62WJQ2A8@google.com>
- <add94932-290c-4037-b4e6-c3c760240819@amazon.com>
- <DE2NTMZXQ1MT.2TH9VAKM6WP6I@google.com>
-Content-Language: en-US
-From: Nikita Kalyazin <kalyazin@amazon.com>
-Autocrypt: addr=kalyazin@amazon.com; keydata=
- xjMEY+ZIvRYJKwYBBAHaRw8BAQdA9FwYskD/5BFmiiTgktstviS9svHeszG2JfIkUqjxf+/N
- JU5pa2l0YSBLYWx5YXppbiA8a2FseWF6aW5AYW1hem9uLmNvbT7CjwQTFggANxYhBGhhGDEy
- BjLQwD9FsK+SyiCpmmTzBQJnrNfABQkFps9DAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQr5LK
- IKmaZPOpfgD/exazh4C2Z8fNEz54YLJ6tuFEgQrVQPX6nQ/PfQi2+dwBAMGTpZcj9Z9NvSe1
- CmmKYnYjhzGxzjBs8itSUvWIcMsFzjgEY+ZIvRIKKwYBBAGXVQEFAQEHQCqd7/nb2tb36vZt
- ubg1iBLCSDctMlKHsQTp7wCnEc4RAwEIB8J+BBgWCAAmFiEEaGEYMTIGMtDAP0Wwr5LKIKma
- ZPMFAmes18AFCQWmz0MCGwwACgkQr5LKIKmaZPNTlQEA+q+rGFn7273rOAg+rxPty0M8lJbT
- i2kGo8RmPPLu650A/1kWgz1AnenQUYzTAFnZrKSsXAw5WoHaDLBz9kiO5pAK
-In-Reply-To: <DE2NTMZXQ1MT.2TH9VAKM6WP6I@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D013EUB001.ant.amazon.com (10.252.51.116) To
- EX19D022EUC002.ant.amazon.com (10.252.51.137)
 
+On Fri, 2025-11-07 at 15:08 +0800, Donglin Peng wrote:
+> On Thu, Nov 6, 2025 at 9:47=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
+> >=20
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index 66cb739a0..33c327d3c 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -552,6 +552,70 @@ u32 btf_nr_types(const struct btf *btf)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return total;
+> > > =C2=A0}
+> > >=20
+> > > +/* Verifies that BTF types are sorted in ascending order
+> > > according to their
+> > > + * names, with named types appearing before anonymous types. If
+> > > the ordering
+> > > + * is correct, counts the number of named types and updates the
+> > > BTF object's
+> > > + * nr_sorted_types field.
+> > > + *
+> > > + * Return: true if types are properly sorted, false otherwise
+> > > + */
+> > > +static bool btf_check_sorted(struct btf *btf)
+> > > +{
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 const struct btf_type *t;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 int i, n, k =3D 0, nr_sorted_types;
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (likely(btf->nr_sorted_types !=3D BTF_NE=
+ED_SORT_CHECK))
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 goto out;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 btf->nr_sorted_types =3D 0;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 ^
+> >=20
+> > Can multiple threads race when writing to btf->nr_sorted_types
+> > here?
+> > Looking at btf_find_by_name_kind()->btf_check_sorted(), I see that
+> > btf_find_by_name_kind() receives a const pointer but casts away the
+> > const
+> > to call btf_check_sorted(). The function bpf_find_btf_id() calls
+> > btf_find_by_name_kind() without holding any locks (line 737), and
+> > later
+> > explicitly unlocks before calling it again (lines 756-757).
+> >=20
+> > This means multiple threads can concurrently enter
+> > btf_check_sorted() and
+> > write to btf->nr_sorted_types. While the validation logic is
+> > idempotent
+> > and all threads would compute the same value, the concurrent writes
+> > to the
+> > same memory location without synchronization could trigger KCSAN
+> > warnings.
+> >=20
+> > Should this use atomic operations, or should the validation be
+> > performed
+> > under a lock during BTF initialization before the BTF becomes
+> > visible to
+> > multiple threads?
+>=20
+> Hi, is it necessary to address this issue?
+> For example, by using atomic_try_cmpxchg or WRITE/READ_ONCE? Using
+> atomic_try_cmpxchg can prevent race conditions on writes but requires
+> an atomic
+> variable, while WRITE_ONCE/READ_ONCE can avoid KCSAN warnings. Since
+> the race condition is unlikely to cause critical issues, I suggest
+> using
+> WRITE_ONCE/READ_ONCE.
 
+Probably use WRITE_ONCE/READ_ONCE?
 
-On 07/11/2025 18:04, Brendan Jackman wrote:
-> On Fri Nov 7, 2025 at 5:23 PM UTC, Nikita Kalyazin wrote:
->>
->>
->> On 07/11/2025 15:54, Brendan Jackman wrote:
->>> On Wed Sep 24, 2025 at 3:10 PM UTC, Patrick Roy wrote:
->>>> From: Patrick Roy <roypat@amazon.co.uk>
->>>>
->>>> [ based on kvm/next ]
->>>>
->>>> Unmapping virtual machine guest memory from the host kernel's direct map is a
->>>> successful mitigation against Spectre-style transient execution issues: If the
->>>> kernel page tables do not contain entries pointing to guest memory, then any
->>>> attempted speculative read through the direct map will necessarily be blocked
->>>> by the MMU before any observable microarchitectural side-effects happen. This
->>>> means that Spectre-gadgets and similar cannot be used to target virtual machine
->>>> memory. Roughly 60% of speculative execution issues fall into this category [1,
->>>> Table 1].
->>>>
->>>> This patch series extends guest_memfd with the ability to remove its memory
->>>> from the host kernel's direct map, to be able to attain the above protection
->>>> for KVM guests running inside guest_memfd.
->>>>
->>>> Additionally, a Firecracker branch with support for these VMs can be found on
->>>> GitHub [2].
->>>>
->>>> For more details, please refer to the v5 cover letter [v5]. No
->>>> substantial changes in design have taken place since.
->>>>
->>>> === Changes Since v6 ===
->>>>
->>>> - Drop patch for passing struct address_space to ->free_folio(), due to
->>>>     possible races with freeing of the address_space. (Hugh)
->>>> - Stop using PG_uptodate / gmem preparedness tracking to keep track of
->>>>     direct map state.  Instead, use the lowest bit of folio->private. (Mike, David)
->>>> - Do direct map removal when establishing mapping of gmem folio instead
->>>>     of at allocation time, due to impossibility of handling direct map
->>>>     removal errors in kvm_gmem_populate(). (Patrick)
->>>> - Do TLB flushes after direct map removal, and provide a module
->>>>     parameter to opt out from them, and a new patch to export
->>>>     flush_tlb_kernel_range() to KVM. (Will)
->>>>
->>>> [1]: https://download.vusec.net/papers/quarantine_raid23.pdf
->>>> [2]: https://github.com/firecracker-microvm/firecracker/tree/feature/secret-hiding
->>>
->>> I just got around to trying this out, I checked out this patchset using
->>> its base-commit and grabbed the Firecracker branch. Things seem OK until
->>> I set the secrets_free flag in the Firecracker config which IIUC makes
->>> it set GUEST_MEMFD_FLAG_NO_DIRECT_MAP.
->>>
->>> If I set it, I find the guest doesn't show anything on the console.
->>> Running it in a VM and attaching GDB suggests that it's entering the
->>> guest repeatedly, it doesn't seem like the vCPU thread is stuck or
->>> anything. I'm a bit clueless about how to debug that (so far, whenever
->>> I've broken KVM, things always exploded very dramatically).
->>>
->>> Anyway, if I then kill the firecracker process, the host sometimes
->>> crashes, I think this is the most suggestive splat I've seen:
->>>
->>> [   99.673420][    T2] BUG: unable to handle page fault for address: ffff888012804000
->>> [   99.676216][    T2] #PF: supervisor write access in kernel mode
->>> [   99.678381][    T2] #PF: error_code(0x0002) - not-present page
->>> [   99.680499][    T2] PGD 2e01067 P4D 2e01067 PUD 2e02067 PMD 12801063 PTE 800fffffed7fb020
->>> [   99.683374][    T2] Oops: Oops: 0002 [#1] SMP
->>> [   99.685004][    T2] CPU: 0 UID: 0 PID: 2 Comm: kthreadd Not tainted 6.17.0-rc7-00366-g473c46a3cb2a #106 NONE
->>> [   99.688514][    T2] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.1 11/11/2019
->>> [   99.691547][    T2] RIP: 0010:clear_page_erms+0x7/0x10
->>> [   99.693440][    T2] Code: 48 89 47 18 48 89 47 20 48 89 47 28 48 89 47 30 48 89 47 38 48 8d 7f 40 75 d9 90 c3 0f 1f 80 00 00 00 00 b9 00 10 00 00 31 c0 <f3> aa c3 66 0f 1f 44 00 00 48 83 f9 40 73 2a 83 f9 08 73 0f 85 c9
->>> [   99.700188][    T2] RSP: 0018:ffff88800318fc10 EFLAGS: 00010246
->>> [   99.702321][    T2] RAX: 0000000000000000 RBX: 0000000000400dc0 RCX: 0000000000001000
->>> [   99.705100][    T2] RDX: ffffea00004a0100 RSI: ffffea00004a0200 RDI: ffff888012804000
->>> [   99.707861][    T2] RBP: 0000000000000801 R08: 0000000000000000 R09: 0000000000000000
->>> [   99.710648][    T2] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
->>> [   99.713412][    T2] R13: 0000000000000801 R14: ffffea00004a0100 R15: ffffffff81f4df80
->>> [   99.716191][    T2] FS:  0000000000000000(0000) GS:ffff8880bbf28000(0000) knlGS:0000000000000000
->>> [   99.719316][    T2] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> [   99.721648][    T2] CR2: ffff888012804000 CR3: 0000000007583001 CR4: 0000000000372eb0
->>> [   99.724421][    T2] Call Trace:
->>> [   99.725608][    T2]  <TASK>
->>> [   99.726646][    T2]  get_page_from_freelist+0x6fe/0x14b0
->>> [   99.728583][    T2]  ? fs_reclaim_acquire+0x43/0xe0
->>> [   99.730325][    T2]  ? find_held_lock+0x2b/0x80
->>> [   99.731965][    T2]  __alloc_frozen_pages_noprof+0x147/0x2d0
->>> [   99.734003][    T2]  __alloc_pages_noprof+0x5/0x50
->>> [   99.735766][    T2]  copy_process+0x1b1/0x1b30
->>> [   99.737398][    T2]  ? lock_is_held_type+0x89/0x100
->>> [   99.739157][    T2]  ? kthreadd+0x25/0x190
->>> [   99.740664][    T2]  kernel_clone+0x59/0x390
->>> [   99.742213][    T2]  ? kthreadd+0x25/0x190
->>> [   99.743728][    T2]  kernel_thread+0x55/0x70
->>> [   99.745310][    T2]  ? kthread_complete_and_exit+0x20/0x20
->>> [   99.747265][    T2]  kthreadd+0x117/0x190
->>> [   99.748748][    T2]  ? kthread_is_per_cpu+0x30/0x30
->>> [   99.750509][    T2]  ret_from_fork+0x16b/0x1e0
->>> [   99.752193][    T2]  ? kthread_is_per_cpu+0x30/0x30
->>> [   99.753992][    T2]  ret_from_fork_asm+0x11/0x20
->>> [   99.755717][    T2]  </TASK>
->>> [   99.756861][    T2] CR2: ffff888012804000
->>> [   99.758353][    T2] ---[ end trace 0000000000000000 ]---
->>> [   99.760319][    T2] RIP: 0010:clear_page_erms+0x7/0x10
->>> [   99.762209][    T2] Code: 48 89 47 18 48 89 47 20 48 89 47 28 48 89 47 30 48 89 47 38 48 8d 7f 40 75 d9 90 c3 0f 1f 80 00 00 00 00 b9 00 10 00 00 31 c0 <f3> aa c3 66 0f 1f 44 00 00 48 83 f9 40 73 2a 83 f9 08 73 0f 85 c9
->>> [   99.769129][    T2] RSP: 0018:ffff88800318fc10 EFLAGS: 00010246
->>> [   99.771297][    T2] RAX: 0000000000000000 RBX: 0000000000400dc0 RCX: 0000000000001000
->>> [   99.774126][    T2] RDX: ffffea00004a0100 RSI: ffffea00004a0200 RDI: ffff888012804000
->>> [   99.777013][    T2] RBP: 0000000000000801 R08: 0000000000000000 R09: 0000000000000000
->>> [   99.779827][    T2] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
->>> [   99.782641][    T2] R13: 0000000000000801 R14: ffffea00004a0100 R15: ffffffff81f4df80
->>> [   99.785487][    T2] FS:  0000000000000000(0000) GS:ffff8880bbf28000(0000) knlGS:0000000000000000
->>> [   99.788671][    T2] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> [   99.791012][    T2] CR2: ffff888012804000 CR3: 0000000007583001 CR4: 0000000000372eb0
->>> [   99.793863][    T2] Kernel panic - not syncing: Fatal exception
->>> [   99.796760][    T2] Kernel Offset: disabled
->>> [   99.798296][    T2] ---[ end Kernel panic - not syncing: Fatal exception ]---
->>>
->>> This makes me suspect the kvm_gmem_folio_restore_direct_map() path isn't
->>> working or isn't getting called.
->>>
->>> If anyone wants help trying to reproduce this let me know.
->>
->> Hi Brendan,
->>
->> Thanks for trying to run it!
->>
->> Just as a sanity check, the way it is known for us to work is we apply
->> all patches from [1].  For booted VMs (as opposed to restored from
->> snapshot), apart from the v6 of the direct map removal series, the only
->> additional patch is a fix for kvmclock on x86 [2].  Please let me know
->> if you see the same issue with that patch applied too.
->>
->> Nikita
->>
->> [1]
->> https://github.com/firecracker-microvm/firecracker/tree/feature/secret-hiding/resources/hiding_ci/linux_patches
->> [2]
->> https://github.com/firecracker-microvm/firecracker/tree/feature/secret-hiding/resources/hiding_ci/linux_patches/11-kvm-clock
-> 
-> Ah, thanks! Seems I should have checked my inbox before sending my other
-> mail. With the kvmclock fix applied to my host kernel, I start setting
-> the other crash immediately when the VM boots. If I comment out the
-> actual unmapping of memory, it boots (before, it wouldn't boot even with
-> that commented out).
-> 
-> For the other linux_patches, I couldn't apply them on top of this
-> series, do you have a branch I can use as a reference?
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (btf->nr_types < 2)
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 goto out;
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 nr_sorted_types =3D 0;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 n =3D btf_nr_types(btf) - 1;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D btf_start_id(btf); i < n; i++) {
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 k =3D i + 1;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 if (btf_compare_type_names(&i, &k, btf) > 0)
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 t =3D btf_type_by_id(btf, i);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 if (t->name_off)
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 nr_sorted_types++;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 t =3D btf_type_by_id(btf, k);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (t->name_off)
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 nr_sorted_types++;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (nr_sorted_types)
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 btf->nr_sorted_types =3D nr_sorted_types;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 ^
+> >=20
+> > The same race condition applies to this write of nr_sorted_types as
+> > well.
+> >=20
+> > > +
+> > > +out:
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 return btf->nr_sorted_types > 0;
+> > > +}
+> >=20
+> > [ ... ]
+> >=20
+> > > @@ -610,7 +674,7 @@ s32 btf_find_by_name_kind(const struct btf
+> > > *btf, const char *name, u8 kind)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > >=20
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 if (btf->nr_sorted_types !=3D BTF_NEED_SORT=
+_CHECK) {
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (btf_check_sorted((struct btf *)btf)) {
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
+> >=20
+> > The const cast here enables the concurrent writes discussed above.
+> > Is
+> > there a reason to mark the btf parameter as const if we're
+> > modifying it?
+>=20
+> Hi team, is casting away const an acceptable approach for our
+> codebase?
 
-Instead of having an explicit branch, we apply all the patches on top of 
-[1].  There is a script that performs fetch/build/install end-to-end: [2].
+Casting away const is undefined behaviour, e.g. see paragraph 6.7.3.6
+N1570 ISO/IEC 9899:201x Programming languages =E2=80=94 C.
 
-[1] 
-https://github.com/firecracker-microvm/firecracker/blob/feature/secret-hiding/resources/hiding_ci/kernel_commit_hash
-[2] 
-https://github.com/firecracker-microvm/firecracker/blob/feature/secret-hiding/resources/hiding_ci/build_and_install_kernel.sh
+Both of the problems above can be avoided if kernel will do sorted
+check non-lazily. But Andrii and Alexei seem to like that property.
 
-> 
-> Anyway, the solution I'm hoping to present for your problem gets rid of
-> that explicit unmapping code (the allocator will do it for you), so in
-> the meantime I have something I can work with.
-
+>=20
+> >=20
+> >=20
+> > ---
+> > AI reviewed your patch. Please fix the bug or email reply why it's
+> > not a bug.
+> > See:
+> > https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.m=
+d
+> >=20
+> > CI run summary:
+> > https://github.com/kernel-patches/bpf/actions/runs/19137195500
 
