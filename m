@@ -1,157 +1,158 @@
-Return-Path: <bpf+bounces-73932-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-73934-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23E5CC3E524
-	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 04:16:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25475C3E66B
+	for <lists+bpf@lfdr.de>; Fri, 07 Nov 2025 04:57:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 302A84E8EAE
-	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 03:16:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDCB1188ACB5
+	for <lists+bpf@lfdr.de>; Fri,  7 Nov 2025 03:57:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACDCD21578F;
-	Fri,  7 Nov 2025 03:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ED612459DD;
+	Fri,  7 Nov 2025 03:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ePR9FXCA"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Ia0w6B3Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89952A41
-	for <bpf@vger.kernel.org>; Fri,  7 Nov 2025 03:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61EB71DE2A7;
+	Fri,  7 Nov 2025 03:56:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762485362; cv=none; b=BBc3GwtNz0qGUpw0sNW6a9kvk7/BhCD26fGPVo8CUJYVgwJhkMaqxuT03/PU5XCaTbYNDixX2nmPA4o0iuquY2Qqqj4xHIc5nou7OpPPU38wRqQbyUNwhxZWgOmkRx9w5vYF4qpzq62Bnrm4HzbmTQbEYq0JlMRSQuwrHLFBcJQ=
+	t=1762487809; cv=none; b=jrESG9qZFJHobEJY5wmZV+GyOGnw7+kOpZLQVqk1hOtOj//vjdMwF2IqtX7ULqdK9L96/eVeHfkjOCZFBO4mylPE2JLinksHlCPAKWBMAlqxF4iQq18jcCG51+iNFu/Q0LHuwk4/GV4YFAvs6hWbKv2+iNhG2LntClPNe0h7i3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762485362; c=relaxed/simple;
-	bh=qOndkeinio0OBXH+oxJilwVE2OASODwazwipOjfVY+Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sEWBaUwNR10ImpZqNd/ZNHXNz29XHg9XtqcGZu12zDrw5VQXlLCNeUC5yNGGvjeTH5RLSt+InNicCIrFxJiGnqlSpsFSDOIrzFECk9rSBsCjoZbmSOyWmArMxNXBT6NrpN1k8Rbp2kdP7Z3J3xiYVF7spzaLkUOIB/xsbV7IBC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ePR9FXCA; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3ecde0be34eso113729f8f.1
-        for <bpf@vger.kernel.org>; Thu, 06 Nov 2025 19:16:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762485359; x=1763090159; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q3uHhLvHuYBBRM31ZoWHXMvwzHpz2sb37ptEfDkKdxM=;
-        b=ePR9FXCAJQ4/pTENUz89vjQlxrGKYXMBDe71a1bjew4Wm6Oauf6MbYZ73sumkHRFfw
-         T/aKKhonlcaol1cuz9V0+xWRI7EQ2jMxXU202wLERy6zAiX/rgrTBXtOICT51/0hD8Cv
-         JJqtknp+g/lgbkYwHVFfz/7lxBpWaKX1Wg1GIZekz6lDvlL1fpPYPWSUF7B1xKocobju
-         STKiVjRK9HgRifmp7cAu+kgB/zhlST9mDD00IlpQ74NdfjQTgSWMM19xeQCzCk9xWrXa
-         9Kq+5oF+vMmMEyz6MYGDAGhX+ZIbqaGYxbtN7AGN/TdhOUP9ctKSymDIY6Da7opkx1/u
-         Td7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762485359; x=1763090159;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Q3uHhLvHuYBBRM31ZoWHXMvwzHpz2sb37ptEfDkKdxM=;
-        b=uUywUYt8tgIJcBYLtffk8dd8H4AVp2bEUGp+ZlQu2rRM0cwYJ8E1gcMNlM/S4oNxws
-         8Ax0yxuApjkwhFMECNaLcggvKfjyjlefvmuEX3xd1l+B0LwCl96df1+8TOwb48kBZhpc
-         sJFO1+UBpuCyoPmIcYimf4yHFH3+MyA7dV1bIa8SeW9532JErmCfxJFTAFKGY26D7NSE
-         FUrNeUpwnTD6lOoXqFVuHKh3QM6Gfzm3hrO6/Sng0kpDN0tlP6FlesYeJcM/XAKxpPOw
-         kBEzuy8FZityWNeIAMwLS/Q+WMRvOuRPyu9BAyVKl/1DkvdnpjrgVVc35VUIoDU+cA7E
-         IVcg==
-X-Gm-Message-State: AOJu0YytKZpsmnbhFs+eJv5L7XsaXHF0tJUFxvOWu7CVfw4jIrM2jYAZ
-	pySHkdxmuE4byj3jumTnMyF/u3rAKALiGfauDgvdO5mrAE6zjCsdvym14UVTVpIg95pemAAFVyo
-	j5ATCryHTDAmg8e3WVvVnrNLlF0wmAvQ=
-X-Gm-Gg: ASbGnct2wNPtig0K8mNhurDY5Ru1G8CrOwBabNDIPL1EcSPDlrMgmm90q9CN2O5r7Vy
-	lolWZHzcsKtL+6X0P7b5d9Ehp9P27pbknEHpdVhv3Y6PqnKq/qOOHK/QayjQeVKBaM2uy3/ShhD
-	50SB72u1sgqOFxoWfcK29lNH5bnrsQI4OCtUPzV6JMZitgBw6NmK3f8Kyn3a4Pe+zK0tpkw6G00
-	2B06mIJiT0pPixxw+7wXO8FeTOrtEEx16Vc+Nlo8wWkEMBSg4MMqVXHnt7kmPXmDkRcZRNqW1u8
-	sVOPLiYW9u2zXght3Q==
-X-Google-Smtp-Source: AGHT+IFJWa1vLjCNi2NTij1h52rsknCGoHFoGZpoObAED7d/ax0lDS3VQnJ/Kx5WAxIcCbpNS8gXiiW10bzu42WVbs8=
-X-Received: by 2002:a5d:5d01:0:b0:429:cc35:7032 with SMTP id
- ffacd0b85a97d-42b26fc3d91mr127839f8f.23.1762485358711; Thu, 06 Nov 2025
- 19:15:58 -0800 (PST)
+	s=arc-20240116; t=1762487809; c=relaxed/simple;
+	bh=IVc2RUkhKiVek0AYYU61rEaYNFiTYCteaVBngxzs3Tc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mFI0G0NNV8sKSF0sk2MkxqLt31HzyMHikEbrq5uJn4QE4T4ZAopg17fZYs3Be7EB1uwUHOvEtHW6eKaosWLGrDDaOnaorhgdwlBjU8VA85Qnym2pKIzxoQKOkaX5QnwOm64dUG52iCLsvuI94IcSItWSfz2Av+K5Qs4IY6afYts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Ia0w6B3Q; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1762487798; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=GF2M2zMDikm9WiulQgCUScfge/dNdtBmwtUwBDT7SNU=;
+	b=Ia0w6B3QB3BxqB5+tfiRbW30CiD0nY7A2G2H5UogfOaBdZwM5K0gYBFr2LG9DGcLJ/lPha8ffjtbWsgTy9RNkfP0YDhCorN/vJe1NSgZVh/hwn7RCvw34jw/8EFh6JHitBq0NhkVtzctiKbivJckpeXSXsCqc6KkRxghFQssUSo=
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WrrauKt_1762487792 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Fri, 07 Nov 2025 11:56:36 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	pabeni@redhat.com,
+	song@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	yhs@fb.com,
+	edumazet@google.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	jolsa@kernel.org,
+	mjambigi@linux.ibm.com,
+	wenjia@linux.ibm.com,
+	wintera@linux.ibm.com,
+	dust.li@linux.alibaba.com,
+	tonylu@linux.alibaba.com,
+	guwen@linux.alibaba.com
+Cc: bpf@vger.kernel.org,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	netdev@vger.kernel.org,
+	sidraya@linux.ibm.com,
+	jaka@linux.ibm.com
+Subject: [PATCH bpf-next v5 0/3] net/smc: Introduce smc_hs_ctrl
+Date: Fri,  7 Nov 2025 11:56:29 +0800
+Message-ID: <20251107035632.115950-1-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251105-timer_nolock-v2-0-32698db08bfa@meta.com> <20251105-timer_nolock-v2-5-32698db08bfa@meta.com>
-In-Reply-To: <20251105-timer_nolock-v2-5-32698db08bfa@meta.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 6 Nov 2025 19:15:47 -0800
-X-Gm-Features: AWmQ_bneToJK6puIFib1kf_JUPMsWHa6HMfLb4xJSMkFqVkLn2e2YTOWJ-A8egI
-Message-ID: <CAADnVQK250aA9TjoJWwBtRP+e7j254d4CQ=_2Sr=0N0O2G0E2g@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 5/5] bpf: remove lock from bpf_async_cb
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
-	Kernel Team <kernel-team@meta.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eduard <eddyz87@gmail.com>, 
-	Mykyta Yatsenko <yatsenko@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Nov 5, 2025 at 7:59=E2=80=AFAM Mykyta Yatsenko
-<mykyta.yatsenko5@gmail.com> wrote:
-> +
-> +       guard(rcu)();
-> +
-> +       t =3D READ_ONCE(async->timer);
-> +       if (!t)
-> +               return -EINVAL;
-> +
-> +       /*
-> +        * Hold ref while scheduling timer, to make sure, we only cancel =
-and free after
-> +        * hrtimer_start().
-> +        */
-> +       if (!bpf_async_tryget(&t->cb))
-> +               return -EINVAL;
->
->         if (flags & BPF_F_TIMER_ABS)
->                 mode =3D HRTIMER_MODE_ABS_SOFT;
-> @@ -1489,8 +1512,8 @@ BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *=
-, timer, u64, nsecs, u64, fla
->                 mode |=3D HRTIMER_MODE_PINNED;
->
->         hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
+This patch aims to introduce BPF injection capabilities for SMC and
+includes a self-test to ensure code stability.
 
-This doesn't pass the smell test for me.
-I've seen your reply to Eduard, but
-fundamentally RCU is a replacement for refcnt.
-Protecting an object with both rcu and refcnt
-is extremely unusual and likely indicates that
-something is wrong with rcu or refcnt usage.
-The comment says that extra tryget/put is there to prevent
-the race between timer_start and timer_cancel+free,
-but hrtimer_start/hrtimer_cancel can handle the race.
-Nothing wrong with calling them in parallel.
-The current bpf_timer implementation
-prevents the race, but it's accidental. hrtimer logic can
-deal with it just fine. So tryget/put prevents uaf,
-but free is also done after call_rcu().
-So the whole thing looks dodgy.
-I bet state transitions can handle the race to
-update cb, while rcu can handle lifetime.
+Since the SMC protocol isn't ideal for every situation, especially
+short-lived ones, most applications can't guarantee the absence of
+such scenarios. Consequently, applications may need specific strategies
+to decide whether to use SMC. For example, an application might limit SMC
+usage to certain IP addresses or ports.
 
-The combination of state transition to BPF_ASYNC_BUSY
-and xchg(prog) also looks weird. Why xchg() is needed
-if BUSY indicates a prog being updated?
-Because bpf_async_swap_prog() is called during the free part?
-Then don't call it there and drop xchg.
+To maintain the principle of transparent replacement, we want applications
+to remain unaffected even if they need specific SMC strategies. In other
+words, they should not require recompilation of their code.
 
-Overall I see rcu, refcnt, cmpxchg(state), xchg(prog), cmpxchg(cb)
-used to address various races and life time problems.
-They're different mechanisms and typically are not combined together.
-Mix and match makes them hard to follow and it will be hard to
-change when/if we decide to support in_nmi() here.
-I think the whole algorithm can be rewritten with couple
-more states, then tryget/put can be dropped, and
-xchg(prog) can be dropped too. refcnt will likely not be needed
-anymore. We may need it back to support in_nmi() and
-deferral to irq_work though.
+Additionally, we need to ensure the scalability of strategy implementation.
+While using socket options or sysctl might be straightforward, it could
+complicate future expansions.
 
-Overall I feel we should decide whether we do in_nmi()
-and design the whole thing.
+Fortunately, BPF addresses these concerns effectively. Users can write
+their own strategies in eBPF to determine whether to use SMC, and they can
+easily modify those strategies in the future.
 
-pw-bot: cr
+This is a rework of the series from [1]. Changes since [1] are limited to
+the SMC parts:
+
+1. Rename smc_ops to smc_hs_ctrl and change interface name.
+2. Squash SMC patches, removing standalone non-BPF hook capability.
+3. Fix typos
+
+[1]: https://lore.kernel.org/bpf/20250123015942.94810-1-alibuda@linux.alibaba.com/#t
+
+v2 -> v1:
+  - Removed the fixes patch, which have already been merged on current branch.
+  - Fixed compilation warning of smc_call_hsbpf() when CONFIG_SMC_HS_CTRL_BPF
+    is not enabled.
+  - Changed the default value of CONFIG_SMC_HS_CTRL_BPF to Y.
+  - Fix typo and renamed some variables
+
+v3 -> v2:
+  - Removed the libbpf patch, which have already been merged on current branch.
+  - Fixed sparse warning of smc_call_hsbpf() and xchg().
+
+v4 -> v3:
+   - Rebased on latest bpf-next, updated SMC loopback config from SMC_LO to DIBS_LO
+     per upstream changes.
+
+v5 -> v4:
+    - Removed the redundant sk parameter from smc_call_hsbpf
+    - Reject registration when bpf_link is set, link support will be added in the
+      future.
+    - Updated selftests with new test heplers.
+
+D. Wythe (3):
+  bpf: export necessary symbols for modules with struct_ops
+  net/smc: bpf: Introduce generic hook for handshake flow
+  bpf/selftests: add selftest for bpf_smc_hs_ctrl
+
+ include/net/netns/smc.h                       |   3 +
+ include/net/smc.h                             |  53 +++
+ kernel/bpf/bpf_struct_ops.c                   |   2 +
+ kernel/bpf/syscall.c                          |   1 +
+ net/ipv4/tcp_output.c                         |  31 +-
+ net/smc/Kconfig                               |  10 +
+ net/smc/Makefile                              |   1 +
+ net/smc/af_smc.c                              |   9 +
+ net/smc/smc_hs_bpf.c                          | 140 +++++++
+ net/smc/smc_hs_bpf.h                          |  31 ++
+ net/smc/smc_sysctl.c                          |  91 ++++
+ tools/testing/selftests/bpf/config            |   5 +
+ .../selftests/bpf/prog_tests/test_bpf_smc.c   | 390 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_smc.c   | 117 ++++++
+ 14 files changed, 870 insertions(+), 14 deletions(-)
+ create mode 100644 net/smc/smc_hs_bpf.c
+ create mode 100644 net/smc/smc_hs_bpf.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+
+-- 
+2.45.0
+
 
