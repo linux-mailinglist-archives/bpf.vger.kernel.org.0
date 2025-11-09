@@ -1,162 +1,127 @@
-Return-Path: <bpf+bounces-74002-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74003-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84678C436A8
-	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 01:11:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAF22C43798
+	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 04:01:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 059C94E3E6F
-	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 00:11:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 963E4188C868
+	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 03:01:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06D5814A8B;
-	Sun,  9 Nov 2025 00:11:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3633F1F151C;
+	Sun,  9 Nov 2025 03:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YQfla0ev"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kmIuom7H"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+Received: from mail-yx1-f47.google.com (mail-yx1-f47.google.com [74.125.224.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154494C6D
-	for <bpf@vger.kernel.org>; Sun,  9 Nov 2025 00:11:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA06199939
+	for <bpf@vger.kernel.org>; Sun,  9 Nov 2025 03:01:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762647062; cv=none; b=AgSykJSEIhTSPwmFvtdBP9QlTa38HO7Oi4sy1fClFCFbfPgMNBhNLhH8b/0W+duRM0hke1TkvUelaAeXqMd/m7cg2GSLwmIbFy+70ktoJ4TZkjyaBLCjQc82C4F/tYUx6ceBqX5Yd4wtkRsltRaz+3MWW15nWoxgLadxl3u8KdQ=
+	t=1762657274; cv=none; b=YU2PM1xSqU3n/cjctWIxeoG57q71Az2ehj4C4aMPtXv05vFSp3b4lRASw/iWxfiP2md7sfJEk8v3UwSRPC9ZRRYJ+9gI3JlWyqpASFKZ8yHMXecExgkXNkrVzlL2+5B6MgrwmbZW3T0Fd37mAk85jIIwifP5UvHMvQYHdpwITHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762647062; c=relaxed/simple;
-	bh=uciTLeXnGZa+fHKIKHqbTzuMHbVFCOUEY8frA2QOXIw=;
+	s=arc-20240116; t=1762657274; c=relaxed/simple;
+	bh=qESZOs7qVRRXh6bJdptBB7hTiAoMVKJFzBaPoCkk3EY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C9LptAdYPQ6dxELNeHQt26krPthuw/bHhiO0d09F3ZuH5edq5r/n4UknUNuh7XBN7bH+2JUH6k3kO9qiYYBHJlXjXlodVH9KGPFgDlck4NC1G9Zktgww3Pi9kcCDXR4LetZP7ojHR6r1XzJ0dIq87RPNA/avLscVZghuAiVn/fA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YQfla0ev; arc=none smtp.client-ip=209.85.166.180
+	 To:Cc:Content-Type; b=mEdKBDqN1V3wKTg7a3uBkXBs9oflWvWJlHxj30foyNMSmTyHQyED7FtvONCpAbVPfutXnQJWVNlSuJUw3yRRwbyhtmorwVGjIgoOnZmDUlUWrPAOYMjixYuQ9iz6Th47Yy5i3rdogwk+MeyC3078errf0U5ov/jclSyD3ZtMTe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kmIuom7H; arc=none smtp.client-ip=74.125.224.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-4330ef18daeso8070435ab.3
-        for <bpf@vger.kernel.org>; Sat, 08 Nov 2025 16:11:00 -0800 (PST)
+Received: by mail-yx1-f47.google.com with SMTP id 956f58d0204a3-63f94733d6cso1671305d50.3
+        for <bpf@vger.kernel.org>; Sat, 08 Nov 2025 19:01:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762647060; x=1763251860; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1762657270; x=1763262070; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uciTLeXnGZa+fHKIKHqbTzuMHbVFCOUEY8frA2QOXIw=;
-        b=YQfla0eveU4PkcTFB2oDv0QshlnaEl2LtUOSsB+3Id3XblfdxENF0+CNwWkPMEbOED
-         cHOElH1L25wembKk/zOM+25uKLPcaUuVi8qZvnr4cGV1uyrZ+oRT+GECpgq1uRrCzS+e
-         FvQim8puz5Si9RTkbhq2MQ5fKr4TNzW9Y0hMQIL05/MqfR9H2krTtsD8sh9rOEn5f501
-         rFeWYqF2KlDM21Wn1igqMHxfMO3uUNmnYc/D+OyF5VQo3sFUfyrAXvwZdaibmEl2R4Rz
-         vVxSLAc2BQCyzGBymVduHddoT6+4tHNhtDEComqw5ts/h19LO+KyHQ2jfZEMA4YZtxnP
-         DdEg==
+        bh=e6DNnuqiLsyZO9SJ1ruoojCJDemUC0rmD+JV8URPIgI=;
+        b=kmIuom7HWv5Bw3LKWVZzRD70GEbWouljPMMw3bkvJX2DiBvWEjpum1E3ODjEAe026c
+         ToSXkTv4VBoDYU6JzptKBIn0iM6ngsgZZFOvnLXH9FaqA6Jwgu6qvE4ikHRQxzZPV5Nw
+         CeUp9Y/es4e1VsWIMZtvfSc7YRsjFzEZXH8Lxuu++tX/9g6nFUeEsXav0x1Ox87DfvK5
+         C60uDeX+PgzJjVsUbcTw+gCW+or976Yv5tToowvIHmvKETm9VyiOHhgIFaDcgfRJ44qD
+         MuRK8X1vr31eErv4HL6zoZi4R3iIEdVfbIATpMdTLEptNnExCIWqpiMy7XC9O22Sc/m+
+         5aVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762647060; x=1763251860;
+        d=1e100.net; s=20230601; t=1762657270; x=1763262070;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=uciTLeXnGZa+fHKIKHqbTzuMHbVFCOUEY8frA2QOXIw=;
-        b=UuEE5qKxWVZ56Nk1RUBP6fVB48V/ZKZOhZmsoUgl4dUYnhMj23O8mnXn+5ntobiFz+
-         jAXh6pA0sF7wT1CnVW5Oye98H7snPZQHUaakk5vDEd2G3hORy2wNLvlNysuogCQaonPv
-         RRXerNAH8E9ZcX/I2zE033KpQ1G5tgAvP8fwvEWoN/ttS3bLa8VH7JSAeGcVU1y5rRu5
-         icu3OxLaI2lSBOw9xDvJ7S6vDhYnhhm5BahIkW3OMH5TGV3VtB6jGma6F/V1cJjCktHN
-         6Z/Xk3dmOBRmkqc8OfELAGEgciCvE98AB3ZRJIZc18Y4Fl8KlRMU250r8Zhvi4wegDKB
-         WzcA==
-X-Forwarded-Encrypted: i=1; AJvYcCUew82hhaNZkbyX3k8YGEx5IkmKF820fQRqhOEilOWkkkrX2Ol2PzGo1Od743B7DhD599E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzG6Prtv+sWTlVlBei2MfNABsssjH2onm00CIkW8rnkmK2AyvC4
-	+qYaM9bNNfnQmFSp33RyNXhDZZHHPqCPl5psf8FYfjseYiKV45V2MrIps3hLpb65APeCoF1i/un
-	iLBGC6SZOA05nTlHP4KTqSKXbg6FfIGA=
-X-Gm-Gg: ASbGncswmSGZIE2E1W5VZNem7LVBvuYD753nfwEA1HF/OW201e7twk0R0kXsiPenMC+
-	pZ0En+7i3X+A8htHLXDO04iuZhp4ebZBxew8anSiZSfVr4QirgDZFBYMWf17dW5UNuSpUrb19xY
-	GZdpDyYJCO3Ikh9IvYC2x1hfx15Jj7Mfh2GMjZ271r86DxKoA+RgjqHNf1bzS+IQMZTglJ4MN13
-	mIrAw8CpXuT1EGaXmi4z3FuzxQnV8JsX0eHOyBFtNvRkuUgnJStDdPTiaiQovtU
-X-Google-Smtp-Source: AGHT+IE6q3ZwFR3f7NoF+liqpAJtsjQrZpjUSa+tOSFG0ga97sj8kN0pG548UbIbviTE50Tohd1SyQw9NrBfD4bqVnc=
-X-Received: by 2002:a05:6e02:1606:b0:433:2cca:f004 with SMTP id
- e9e14a558f8ab-43367e65122mr55491525ab.23.1762647060040; Sat, 08 Nov 2025
- 16:11:00 -0800 (PST)
+        bh=e6DNnuqiLsyZO9SJ1ruoojCJDemUC0rmD+JV8URPIgI=;
+        b=w7V4c8rzJp5IwcYMEjmc4sGEkYnuEb7e54uqD7y1nY3e0CAtsBO31DWUnSJy4w7aXC
+         m+8HY8k/QR1xaoM7KPZ3GCOMycxu9Rrjc4xpjdf/OxHnbJLz821bQUYxyjVkqDAZ9BOy
+         xHwibhSah79m4qrY9NdgjeGtl1WqZnhKFCHMX+1EZpOG384Metmr38GbN/3Wfq8cVvhp
+         X/W9iU6yYQX8WpW4AxXXN+Lu7eC4cuzXcSZN7UmZCm/cBRXmjAyyd028PI7QHa2rVr0g
+         Ke9blyCHKXievJ0ZDRauKzjYGNBEH8491oIVV5yvnj5zjkcPKghLd/ahpIh6NDxzs11h
+         dFmw==
+X-Forwarded-Encrypted: i=1; AJvYcCXIP1NzPy0HDVYEf2FXNgHjrfAtG6gFZAtZmp6pdFBQvfrtEDRBg0x5eGh0MG2w27QhD7M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwcIagADHEgfg2EqmDic8pPc01TGYFLHw6wT6x64LPolHe52w24
+	Ao1DJS+lic6LbiJCyWbmSUhRHyFYRah1GeEho2OY7atdAXvavva+S3z1N9ChvEoCoMAZC7pmYFX
+	/qNYSVzHr7/VG1j1Vqrm8xHxVa+lPPl0=
+X-Gm-Gg: ASbGncs6oC0PvfbVhHUc9mLjRKDByMjlRa3uwpD1XHG+5V8I8QocsIGjT3AKWMVRFVp
+	m86KUqCNZdGCT9LeoH3NnsaBMAjc4tJjOahkRz0JuQoAskl1p4QZ5p3gHY5Ybaho4qf6T26KxZF
+	xJb+LL9vIsfNFy7JjLXlkgMNSgnalYq3+5UyJirGNCA4YRFMcbzcwVG4VOfTxCuepBkHRbct4jS
+	v96kdw/KqAST1vchGHaf/7Hj/w/9E2RDAA8rllWV4dH3pzto6ayEEhcOmaqwZrT2f5a2Zcn
+X-Google-Smtp-Source: AGHT+IFl0PygBGVQDcDoux4KUpDZWbMWPvO9pvbbbb8+4rH/xr6b/zEQCBbAmTqX2PhbkuQ7hJB0oosFqP46oGnaGwE=
+X-Received: by 2002:a05:690c:658a:b0:785:aedf:4ac6 with SMTP id
+ 00721157ae682-787d5355527mr68221527b3.6.1762657270013; Sat, 08 Nov 2025
+ 19:01:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0435b904-f44f-48f8-afb0-68868474bf1c@nop.hu> <CAL+tcoA5qDAcnZpmULsnD=X6aVP-ztRxPv5z1OSP-nvtNEk+-w@mail.gmail.com>
- <643fbe8f-ba76-49b4-9fb7-403535fd5638@nop.hu> <CAL+tcoDqgQbs20xV34RFWDoE5YPXS-ne3FBns2n9t4eggx8LAQ@mail.gmail.com>
- <d8808206-0951-4512-91cb-58839ba9b8c4@nop.hu> <7e58078f-8355-4259-b929-c37abbc1f206@suse.de>
- <aQ9YhCAdu7QNyYxu@eldamar.lan>
-In-Reply-To: <aQ9YhCAdu7QNyYxu@eldamar.lan>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Sun, 9 Nov 2025 08:10:23 +0800
-X-Gm-Features: AWmQ_bnqB8P6josJY8yWeOXB9YCvh_6FqaX49H8uEkcVmwtgx1Xz_DKqbz4CsnE
-Message-ID: <CAL+tcoBQPBh_GSeO71=OGx2og_BQ0YaWsA7zzNpC08yYGGfVig@mail.gmail.com>
-Subject: Re: null pointer dereference in interrupt after receiving an ip
- packet on veth from xsk from user space
-To: Salvatore Bonaccorso <carnil@debian.org>
-Cc: Fernando Fernandez Mancera <fmancera@suse.de>, mc36 <csmate@nop.hu>, alekcejk@googlemail.com, 
-	Jonathan Lemon <jonathan.lemon@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Magnus Karlsson <magnus.karlsson@intel.com>, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 1118437@bugs.debian.org, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20251107100310.61478-1-a.safin@rosa.ru> <20251107114127.4e130fb2@pumpkin>
+In-Reply-To: <20251107114127.4e130fb2@pumpkin>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Sun, 9 Nov 2025 11:00:34 +0800
+X-Gm-Features: AWmQ_bl4pAwU4DcdzQl2rZraMoW7kKSb0oYzeEjLEM0Qy75Y6egynRfDTOFL-tw
+Message-ID: <CALOAHbB1cJ3EAmOOQ6oYM4ZJZn-eA7pP07=sDeG3naOM2G9Aew@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf: hashtab: fix 32-bit overflow in memory usage calculation
+To: David Laight <david.laight.linux@gmail.com>
+Cc: Alexei Safin <a.safin@rosa.ru>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	lvc-patches@linuxtesting.org, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Nov 8, 2025 at 10:49=E2=80=AFPM Salvatore Bonaccorso <carnil@debian=
-.org> wrote:
+On Fri, Nov 7, 2025 at 7:41=E2=80=AFPM David Laight
+<david.laight.linux@gmail.com> wrote:
 >
-> Hi,
+> On Fri,  7 Nov 2025 13:03:05 +0300
+> Alexei Safin <a.safin@rosa.ru> wrote:
 >
-> On Tue, Oct 21, 2025 at 12:51:32PM +0200, Fernando Fernandez Mancera wrot=
-e:
+> > The intermediate product value_size * num_possible_cpus() is evaluated
+> > in 32-bit arithmetic and only then promoted to 64 bits. On systems with
+> > large value_size and many possible CPUs this can overflow and lead to
+> > an underestimated memory usage.
 > >
-> >
-> > On 10/20/25 11:31 PM, mc36 wrote:
-> > > hi,
-> > >
-> > > On 10/20/25 11:04, Jason Xing wrote:
-> > > >
-> > > > I followed your steps you attached in your code:
-> > > > ////// gcc xskInt.c -lxdp
-> > > > ////// sudo ip link add veth1 type veth
-> > > > ////// sudo ip link set veth0 up
-> > > > ////// sudo ip link set veth1 up
-> > >
-> > > ip link set dev veth1 address 3a:10:5c:53:b3:5c
-> > >
-> > > > ////// sudo ./a.out
-> > > >
-> > > that will do the trick on a recent kerlek....
-> > >
-> > > its the destination mac in the c code....
-> > >
-> > > ps: chaining in the original reporter from the fedora land.....
-> > >
-> > >
-> > > have a nice day,
-> > >
-> > > cs
-> > >
-> > >
-> >
-> > hi, FWIW I have reproduced this and I bisected it, issue was introduced=
- at
-> > 30f241fcf52aaaef7ac16e66530faa11be78a865 - working on a patch.
+> > Found by Linux Verification Center (linuxtesting.org) with SVACE.
 >
-> Just a qustion in particular for the stable series shipping the commit
-> (now only 6.17.y relevant at this point since 6.16.y is EOL): Give the
-> proper fix will take a bit more time to develop, would it make sense
-> to at least revert the offending commit in the stable series as the
-> issue is, unless I missunderstood the report, remotely(?) triggerable
-> denial of service?
->
-> Or do I miss something here?
+> That code is insane.
+> The size being calculated looks like a kernel memory size.
+> You really don't want to be allocating single structures that exceed 4GB.
 
-We've been working on this already. Please find the patches at
-https://lore.kernel.org/all/20251031093230.82386-1-kerneljasonxing@gmail.co=
-m/
+I failed to get your point.
+The calculation `value_size * num_possible_cpus() * num_entries` can
+overflow. While the creation of a hashmap limits `value_size *
+num_entries` to U32_MAX, this new formula can easily exceed that
+limit. For example, on my test server with just 64 CPUs, the following
+operation will trigger an overflow:
 
-Yes, my solution is to revert first and apply a pre-allocate array to
-temporarily store the descriptors that will be published at the tx
-completion phase.
+          map_fd =3D bpf_map_create(BPF_MAP_TYPE_PERCPU_HASH, "count_map", =
+4, 4,
+                                                     1 << 27, &map_opts)
 
-If you also care about this, please feel free to review the whole
-idea. As long as everyone is on board, I will send an official version
-with more detailed updates. I'm still waiting for more suggestions :)
-
-Thanks,
-Jason
+--=20
+Regards
+Yafang
 
