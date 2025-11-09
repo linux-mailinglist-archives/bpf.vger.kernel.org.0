@@ -1,99 +1,140 @@
-Return-Path: <bpf+bounces-74009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74010-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7687CC43FB3
-	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 15:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94A9BC4426D
+	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 17:36:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 353FC188C065
-	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 14:11:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46D6B188B3AB
+	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 16:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101252FABFE;
-	Sun,  9 Nov 2025 14:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D501303A2A;
+	Sun,  9 Nov 2025 16:36:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TXvEO6m4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169712FB629
-	for <bpf@vger.kernel.org>; Sun,  9 Nov 2025 14:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA6D2036E9
+	for <bpf@vger.kernel.org>; Sun,  9 Nov 2025 16:36:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762697464; cv=none; b=Ybk+bGGtViBR/x8F+2ECwFU3E4TGDBgyq2QG7fuLVQ9BzSLR0XGXcCrv0g9UJySwAbz+ru/bALAxHYp6zVAET4M3K8NctiGstUJXcpYoY2RBQi/wJJ8IpzGIiRtJf2pq5QyKGUbb9hdvp0lHWTH5DyJyqU7teRAgZ58yrxL1Skk=
+	t=1762706184; cv=none; b=IFJVfgD0MwLo3+pRT6y9sPr4EwmPaGa48QuaSp7iCrFsz1SMdE1HWFgf/MsdmHspSrcsFsMbkdGlBPENRfSSu1Cj7QOaOtJ2PGvaSH+3Jh5HLdm85uxA4EZSwA3B6pcpjptNermGAtO13nALtCrhPtz8fry0K+gQaoOe19QSZFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762697464; c=relaxed/simple;
-	bh=y6Dy/w1K3XpX2uFUEe+rBJFRb32lSDcExJhalbXQ5aU=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=rKW72P7BUeF5iSvHfbFumOOALrmlY97VyhoM7XHQAy8vYq2VhXBQPv/tHRwdfW3wnHu+PKWd636pb5r7F93CpFy4cRRBSNADXcT/ywOGf6V33iURbM0rnsV2BdvjYHDl2dQAQZfaIrpVlZVb4P0NnvCTX5OBMdZzTuxojKGBfy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-433817220f5so147995ab.1
-        for <bpf@vger.kernel.org>; Sun, 09 Nov 2025 06:11:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762697462; x=1763302262;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m02kWE5lhyrzZgApWthbB6kQBtAUB+gmZPn3Dt1ZsD4=;
-        b=PPhu/pgxBAEPe2G4PFArxbV+QLYNu03loDmY4Qs9aW8rKXDi7Gt1hvky2VtzM2aENH
-         cpH1bpcVqOGD3+FaxD8JJzMpuOzIehBspfYGsLjvyPo2qJ1HnRwar1sq/FI/VpWd/b5h
-         rCDLpKH6dnmNl2yAdaEWp6VfyUMADmOWJgBBMCg73Tj8SxQN7oBU75pISbETwRV49rR2
-         qJeFuRgHj3/VyYTqkQw0rDq7knj9dddKMSaVVAtEFnkJYVyQCtCiZAZYvAVcum1YoFVP
-         jTACAOz/5HZzc1m9n7TfZF+t1l3J1+Ywe03nhU360tHMO5jZWBAEjDVHjhw5g8R9JzR/
-         LbMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUBTERXCkfTSf9dEpWjAtIz+2b5YldW5dp6NQXG7B5xuurFN6bxsrlFtVTiPcbdLpqEBl0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLqi8rO8/uyMXu7QwYbtaMkDjNOrCImCGTxgLdYPKYTzji6RHK
-	v40h/P33pktkoC0tas7exg19e1sMmpF3nFrUssw7AGvxIELK0OwF+rv8+xVIhGYwppLJYTSJlNO
-	fWPRJTJSM4b1iT+u3dUyg0AYVlQUq9gZi/utLY5kZTnIbpAREwjwaNScDeTI=
-X-Google-Smtp-Source: AGHT+IEw+SyBMcsmvsru2ydmWiAer57ckBKlQAwl2f1WWyRnepHiN7uVkkXdan4vghsxm/ZOPYzm213l8SerzWDt7Il3Poc2ozLJ
+	s=arc-20240116; t=1762706184; c=relaxed/simple;
+	bh=xS9OyXDsV6sEP+l+dxW1QyhGsfoyKaJmzSCEJoMthSE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q1V7lQyzWBplJHo68gB6SyMWtmcG2750tKIEj07IOXC+xM2MvjTSqVBbSLmC1gLuQmR2Cwd0fsZhULxc02eQ6ksBcsfeeETxK1rEOmVNg3iMxPJu9jrHt2DKFd+lE6T6ae+zDOFXKm/BmGHmU0S/6UwFa21tPW2AlWMN4uw6eHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TXvEO6m4; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762706180;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=zSIF66S8Iw2Yjrzagiy23Q2vHg4tjgghLWyJ1qxHEOA=;
+	b=TXvEO6m4XK9ZartZHiMMFes/7fnOmGzKtbeVU6D3ZqDKtg3MelrWkRWvfCWnC2Z0uh6JE6
+	4mlDi9ICODC3RvOsc/gh0stPFn4QBarZOr7oCz2ChbSNTnc/j2EvtDgXtY6hjoWAUG9rca
+	Y706dXEuxjGZ0oddQQAU5jW5PPyQ/O4=
+From: Tao Chen <chen.dylane@linux.dev>
+To: peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	kan.liang@linux.intel.com
+Cc: linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Tao Chen <chen.dylane@linux.dev>
+Subject: [PATCH bpf-next v5 0/3] Pass external callchain entry to get_perf_callchain
+Date: Mon, 10 Nov 2025 00:35:56 +0800
+Message-ID: <20251109163559.4102849-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:4417:20b0:433:7d0b:b377 with SMTP id
- e9e14a558f8ab-4337d0bb530mr14752975ab.15.1762697462239; Sun, 09 Nov 2025
- 06:11:02 -0800 (PST)
-Date: Sun, 09 Nov 2025 06:11:02 -0800
-In-Reply-To: <20251109-lesung-erkaufen-476f6fb00b1b@brauner>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6910a0f6.a70a0220.22f260.00b8.GAE@google.com>
-Subject: Re: [syzbot] [fs?] WARNING in destroy_super_work
-From: syzbot <syzbot+1957b26299cf3ff7890c@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, anna-maria@linutronix.de, bpf@vger.kernel.org, 
-	brauner@kernel.org, bsegall@google.com, cgroups@vger.kernel.org, 
-	david@redhat.com, dietmar.eggemann@arm.com, frederic@kernel.org, 
-	hannes@cmpxchg.org, jack@suse.cz, jsavitz@redhat.com, juri.lelli@redhat.com, 
-	kees@kernel.org, liam.howlett@oracle.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-security-module@vger.kernel.org, lorenzo.stoakes@oracle.com, 
-	mgorman@suse.de, mhocko@suse.com, mingo@redhat.com, mjguzik@gmail.com, 
-	mkoutny@suse.com, oleg@redhat.com, paul@paul-moore.com, peterz@infradead.org, 
-	rostedt@goodmis.org, rppt@kernel.org, sergeh@kernel.org, surenb@google.com, 
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tj@kernel.org, 
-	vbabka@suse.cz, vincent.guittot@linaro.org, viro@zeniv.linux.org.uk, 
-	vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+Background
+==========
+Alexei noted we should use preempt_disable to protect get_perf_callchain
+in bpf stackmap.
+https://lore.kernel.org/bpf/CAADnVQ+s8B7-fvR1TNO-bniSyKv57cH_ihRszmZV7pQDyV=VDQ@mail.gmail.com
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+A previous patch was submitted to attempt fixing this issue. And Andrii
+suggested teach get_perf_callchain to let us pass that buffer directly to
+avoid that unnecessary copy.
+https://lore.kernel.org/bpf/20250926153952.1661146-1-chen.dylane@linux.dev
 
-Reported-by: syzbot+1957b26299cf3ff7890c@syzkaller.appspotmail.com
-Tested-by: syzbot+1957b26299cf3ff7890c@syzkaller.appspotmail.com
+Proposed Solution
+=================
+Add external perf_callchain_entry parameter for get_perf_callchain to
+allow us to use external buffer from BPF side. The biggest advantage is
+that it can reduce unnecessary copies.
 
-Tested on:
+Todo
+====
+But I'm not sure if this modification is appropriate. After all, the
+implementation of get_callchain_entry in the perf subsystem seems much more
+complex than directly using an external buffer.
 
-commit:         241462cd ns: fixes for namespace iteration and active ..
-git tree:       https://github.com/brauner/linux.git namespace-6.19.fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=11e1517c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f1b1a45727d1f117
-dashboard link: https://syzkaller.appspot.com/bug?extid=1957b26299cf3ff7890c
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+Comments and suggestions are always welcome.
 
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+Change list:
+ - v1 -> v2
+   From Jiri
+   - rebase code, fix conflict
+ - v1: https://lore.kernel.org/bpf/20251013174721.2681091-1-chen.dylane@linux.dev
+ 
+ - v2 -> v3:
+   From Andrii
+   - entries per CPU used in a stack-like fashion
+ - v2: https://lore.kernel.org/bpf/20251014100128.2721104-1-chen.dylane@linux.dev
+
+ - v3 -> v4:
+   From Peter
+   - refactor get_perf_callchain and add three new APIs to use perf
+     callchain easily.
+   From Andrii
+   - reuse the perf callchain management.
+
+   - rename patch1 and patch2.
+ - v3: https://lore.kernel.org/bpf/20251019170118.2955346-1-chen.dylane@linux.dev
+ 
+ - v4 -> v5:
+   From Yonghong
+   - keep add_mark false in stackmap when refactor get_perf_callchain in
+     patch1.
+   - add atomic operation in get_recursion_context in patch2.
+   - rename bpf_put_callchain_entry with bpf_put_perf_callchain in
+     patch3.
+   - rebase bpf-next master.
+ - v4: https://lore.kernel.org/bpf/20251028162502.3418817-1-chen.dylane@linux.dev
+
+Tao Chen (3):
+  perf: Refactor get_perf_callchain
+  perf: Add atomic operation in get_recursion_context
+  bpf: Hold the perf callchain entry until used completely
+
+ include/linux/perf_event.h |  9 +++++
+ kernel/bpf/stackmap.c      | 62 +++++++++++++++++++++++++-------
+ kernel/events/callchain.c  | 73 ++++++++++++++++++++++++--------------
+ kernel/events/internal.h   |  5 +--
+ 4 files changed, 107 insertions(+), 42 deletions(-)
+
+-- 
+2.48.1
+
 
