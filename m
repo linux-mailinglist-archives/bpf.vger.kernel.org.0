@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-74030-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74031-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D488AC447E4
-	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 22:38:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D60DC44805
+	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 22:39:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B4E834E3670
-	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 21:38:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4851D3B0417
+	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 21:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06BCB26CE0F;
-	Sun,  9 Nov 2025 21:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A23261573;
+	Sun,  9 Nov 2025 21:38:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O1eA0a4I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iuSWbBXg"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EFE41A0BD6;
-	Sun,  9 Nov 2025 21:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 027BC24469E;
+	Sun,  9 Nov 2025 21:38:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762724319; cv=none; b=onw1jWfhOaMtIVqcJsNEUdHZ4qmGPpKPLPKbiQNUyLbHfY5sQ6hTph5MKAbmY+sFvjmx+4HI3BA6QSvsoFRZTMo5eoy1O8yIjp+JO5fYIjQd5OYd+wdPqqiiWzSvstPvZpttIdQEj+gu8wgtROUxdzlyDNiMRw0TYIPTnj2U700=
+	t=1762724324; cv=none; b=By2LtIbmdy4ljCO+weGGz5M5i0WVm3IPJn02N/Xyd1pKqBmSK4KWg8ZPi0GmRID8eBGq7L1/N+r40UW3qkCecE5xxA7OoUk62CjwdeQmVS3Wk0siBSZwCkzZYUiqD6xWgjH1kPjj+UjneyeMjfJNZZJyYSFm1E3eHwJj4l1c4Bo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762724319; c=relaxed/simple;
-	bh=1OeQ5leuGFX+BMFWlTTG7Yq9Lea1Zl3bo8L1tVXgnJU=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=kp3sL0nCVSeB5yXqi8K3yg+IepvYigjf6seC5cB0AYKo6y+Pl6CpnKTUxIHRtSPPjLb528oSwsEIutNPmk4HChp26+vocFkU9Ocj/+rYyzBn+ienjvAyjJLAvhVwf7p8F+PCIZ5uSBrADMgx1xpAgb7ybnFCEayjLye+bSCRpfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O1eA0a4I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FF65C4CEF7;
-	Sun,  9 Nov 2025 21:38:34 +0000 (UTC)
+	s=arc-20240116; t=1762724324; c=relaxed/simple;
+	bh=mYeKBxdNWxr3l2Xd+2fxH5pR3XRM2UpwbXIymhRfXcA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=WQYT/8YvdabKUUqJf/jfMOgQekiDkcZEAw4P4n0ozKjSWCaO8SRTDUpJTo7SS9VHWE6plWQLmhOmq7r7/XIAaJMUxh0JmGPRXUqkdeuAL1s3BtPfjCPeG4b6YwYmUhdpDvTWOqENIdN1mU0CDES3BJm1kngpUaZwuk2HcdGfFNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iuSWbBXg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 598ACC4CEF8;
+	Sun,  9 Nov 2025 21:38:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762724318;
-	bh=1OeQ5leuGFX+BMFWlTTG7Yq9Lea1Zl3bo8L1tVXgnJU=;
-	h=From:Subject:Date:To:Cc:From;
-	b=O1eA0a4I81B5O2SKORoMD01mc9kPUecIbVVzFtjg/ViiEFGxv6BlC665gvLdbYafW
-	 LuZmT/kfbURcxDUytLyZcSsGgkpbRzPr67rxAu1bTGWSQHv6/8G1o1co4mvAPlZmFa
-	 3iJLJgDleEvwoqDOq/aNAISo9mO22PSpPUTlyo5w+j00TDMYX4XBcXWyQdwGFKZda1
-	 BbOxpDnI/5HC87e/7gvvDuBsMRxF3NCZ9OAbRykdVU8V8/84P4Ll0Hn9NkAWDgbCYZ
-	 xz/jFlavD7iouNq8j41kmaQft50ywKkuOV1RRATIHzqsXEL2vu06Y8YwHLKQyCNelf
-	 FGLWQH5PvvUMQ==
+	s=k20201202; t=1762724323;
+	bh=mYeKBxdNWxr3l2Xd+2fxH5pR3XRM2UpwbXIymhRfXcA=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=iuSWbBXghof79JaI2GX0Ghhh5oDX1JVe6wF7V08+c4bGBKeD83MgJg0X+01WyJ2MM
+	 24Zh5+WF4RaFmPSSMyM/BrE9Q+gibWipI0eQAz9t7TuE3r0DaC6DVZPYC7FjUjcn20
+	 RRdYw5DZAbPT/9GAZ6pU6BhyJU+lSyXG8Gx5/iXbRcbhJmtEbGNwWn1TtQdzNe34fQ
+	 SahDtkZ6jyWduwQJTBeBCK5m2FYjJlHYHE8aEEmni9/1MOwx8XxuCXBGb3GEJPHJ+c
+	 2oRfu9FHeS8tiRWeiSQO4W43n1UDSyQzI/fyIYTQPPN9x987HYN+GCPWIDZECUly6/
+	 SmxQx7sJUOmyQ==
 From: Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH net-next v2 0/7] net: ethernet: ti: am65-cpsw: add AF_XDP
- zero copy support
-Date: Sun, 09 Nov 2025 23:37:50 +0200
-Message-Id: <20251109-am65-cpsw-xdp-zc-v2-0-858f60a09d12@kernel.org>
+Date: Sun, 09 Nov 2025 23:37:51 +0200
+Subject: [PATCH net-next v2 1/7] net: ethernet: ti: am65-cpsw: fix BPF
+ Program change on multi-port CPSW
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -53,11 +53,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIALAJEWkC/2WNQQ6CMBBFr0Jm7ZgyMo264h6GBZYBGrWQllSUc
- Hebbl2+vPz3NwjirQS4Fht4iTbYySWgQwFmbN0gaLvEQIpYETG2L81o5vDGtZvxa5Da/iLVXco
- Ta0iz2Utv15y8gZMFnawLNMmMNiyT/+SvWGafs0zqPxtLVFgx81lR1bPW9UO8k+dx8gM0+77/A
- JZtY9y7AAAA
-X-Change-ID: 20250225-am65-cpsw-xdp-zc-2af9e4be1356
+Message-Id: <20251109-am65-cpsw-xdp-zc-v2-1-858f60a09d12@kernel.org>
+References: <20251109-am65-cpsw-xdp-zc-v2-0-858f60a09d12@kernel.org>
+In-Reply-To: <20251109-am65-cpsw-xdp-zc-v2-0-858f60a09d12@kernel.org>
 To: Siddharth Vadapalli <s-vadapalli@ti.com>, 
  Andrew Lunn <andrew+netdev@lunn.ch>, 
  "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
@@ -73,86 +71,79 @@ Cc: srk@ti.com, Meghana Malladi <m-malladi@ti.com>, netdev@vger.kernel.org,
  linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
  linaro-mm-sig@lists.linaro.org, Roger Quadros <rogerq@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2592; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=1OeQ5leuGFX+BMFWlTTG7Yq9Lea1Zl3bo8L1tVXgnJU=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBpEQnZg6fI6ykKHG3Oz/FNzhRyWQwi6xRL+ysHJ
- oOBN9cLLr+JAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCaREJ2QAKCRDSWmvTvnYw
- k9eWEACMTuUzbaOk1xsjn4XoiN97IIuf/w38NHPAcEaf0tPHMTY7bDyzu5ugTaWwwkmtCeJ7o2U
- OLNFTceVInqiMu4nxpHvhgLo4DCS3HVoT0zI9EiCv0a5Z0CuvCaJHA8QUJa6sbPmqDFd7bbEu6L
- BVvhSPgN9RLKi5DplgGoONmgi81/E4wQ7WUUt8Vf2GjMyI6PXP8zMRYFUG/suRp+6u14QKRTdx3
- fpPondIgeicoUuGaKmjuyVK0VWg8W92+Q+X3yi92exVGN+PF+fd7CEPFY+Sp7MDeoPiGfCHOQkB
- T1l3d6vkvxSig3rcw9l6lx4GffUoRGXbjXW13ud2LIKwEg8UHk4EG0Rzek1orwBItxL5wZXjh5U
- s61ydIdzoV2eT7ED5cVkgNyhZL4pEPPVoZqPFR52W/k9+BuQOCQn6a78x0+cIqxQK3bXHBmEkZx
- h6o8bGpAPhhYYDfzGi+jlAVeJNAyaUlxe7ToHJkY8ZMuKe1TXzi2IMEinK96lBfMCxM244wj9qX
- 8F+dM1Lsje2nJ0OGymksiAeWkmPgwZW8EFCfIQ6RPN2LtPbmsigexz0oIpSga8hdGsTu3N5yewQ
- 2O4zIbs511nvexWNy/G1XuqkyphjcnL2XieKjaJTvn8voP/yH157sfxwSRAVtKf5esuMWe2ixra
- Qe4oJzlWdYn7+Zg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1689; i=rogerq@kernel.org;
+ h=from:subject:message-id; bh=mYeKBxdNWxr3l2Xd+2fxH5pR3XRM2UpwbXIymhRfXcA=;
+ b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBpEQnZcwLY0HMVPPZ/5ui9vfL2GAhL/5dDS3p3K
+ kFMMOKF2SeJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCaREJ2QAKCRDSWmvTvnYw
+ k3maEACi9iTV7eypb48uXJC0Rh1cWcZbkK3adwV37dIK7x+5G8ZmM/4EsZB1KGbnghoKaBxmi8H
+ nWYtXxAOi4IRXoFJ+Zwhm2BILJt0MXSQ4aFa6s09INzw4vzjQNkzuYKDkKPR8lGCGKJ+8d5CcMc
+ gp5dyXlkAE9W4EM9YFGW3HxPR46uYbPW6+L0gNXZeumhjkqMIaXpcUt9ObiZJU4J0Cedyeh6/vt
+ F1QSpFaN+1eDoc57RIlAdYh2ooHYq9vummsn9FHnSOHaXueeMDNdigkS/H+Z5lmUJyWLRM25XI4
+ 4W85nq3nSc2xlNnmas6hMg2nZo+LHZF+g0IAs4ewaUQ0ca4nAH0CJdJdLd2FY2bFVl1gUUJybdG
+ TCoqq/9g44f/9FId7UrSLKFZnr39F5K9JoL4P7Kk1SqYlktqCMdF0VUSAg6H21iCI8dbLi8EzXr
+ /iqn2Y0v259e6D8U7Ccd4+TljRflL1cGibPGO6XCjf/ZL5Q4iAmke6gbJpYbpwut9+8HnkEM07y
+ yLhTM6W0fYiy7H2doBpa2WZtIm0dbjQth4NzbkOj6vAZpb+ZBoGcJVsSmrfoGcCPs+csaDjAcng
+ pmgblzX2IvOkoaZgW9dkd2fE2JaXc0lwp8BUSZJ81/r+DiQcmTnNtJBjcFenlHDGV77gkuDpLL3
+ Iqb9ctE7Y5SSCSA==
 X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
  fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
 
-This series adds AF_XDP zero coppy support to am65-cpsw driver.
+On a multi-port CPSW system, stopping and starting just one port (ndev)
+will not restart the queues if other ports (ndevs) are open.
 
-Tests were performed on AM62x-sk with xdpsock application [1].
-
-A clear improvement is seen in 64 byte packets on Transmit (txonly)
-and receive (rxdrop).
-1500 byte test seems to be limited by line rate (1G link) so no
-improvement seen there in packet rate. A test on higher speed link
-(or PHY-less setup) might be worthwile.
-
-There is some issue during l2fwd with 64 byte packets and benchmark
-results show 0. This issue needs to be debugged further.
-A 512 byte l2fwd test result has been added to compare instead.
-
-AF_XDP performance using 64 byte packets in Kpps.
-Benchmark:	XDP-SKB		XDP-Native	XDP-Native(ZeroCopy)
-rxdrop		322		491		845
-txonly		390		394		723
-l2fwd 		205		257		0
-
-AF_XDP performance using 512 byte packets in Kpps.
-l2fwd		140		167		231
-
-AF_XDP performance using 1500 byte packets in Kpps.
-Benchmark:	XDP-SKB		XDP-Native	XDP-Native(ZeroCopy)
-rxdrop		82		82		82
-txonly		82		82		82
-l2fwd 		82		82		82
-
-[1]: https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-example
+Instead, check the usage_count variable to know if CPSW is running
+and if so restart all the queues.
 
 Signed-off-by: Roger Quadros <rogerq@kernel.org>
 ---
-Changes in v2:
-- Prevent crash on systems with 1 of 2 ports disabled in device tree. check
-  for valid ndev before registering/unregistering XDP RXQ.
-  Reported-by: Meghana Malladi <m-malladi@ti.com>
-- Retain page pool on XDP program exchangae so we don't have to re-alloacate
-  memory.
-- Fix clearing of irq_disabled flag in am65_cpsw_nuss_rx_poll().
-- Link to v1: https://lore.kernel.org/r/20250520-am65-cpsw-xdp-zc-v1-0-45558024f566@kernel.org
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
----
-Roger Quadros (7):
-      net: ethernet: ti: am65-cpsw: fix BPF Program change on multi-port CPSW
-      net: ethernet: ti: am65-cpsw: Retain page_pool on XDP program exchange
-      net: ethernet: ti: am65-cpsw: add XSK pool helpers
-      net: ethernet: ti: am65-cpsw: Add AF_XDP zero copy for RX
-      net: ethernet: ti: am65-cpsw: Add AF_XDP zero copy for TX
-      net: ethernet: ti: am65-cpsw: enable zero copy in XDP features
-      net: ethernet: ti: am65-cpsw: Fix clearing of irq_disabled flag in rx_poll
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+index d5f358ec982050751a63039e73887bf6e7f684e7..f8beb1735fb9cb75577e60f5b22111cb3a66acb9 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+@@ -1919,18 +1919,33 @@ static int am65_cpsw_xdp_prog_setup(struct net_device *ndev,
+ 				    struct bpf_prog *prog)
+ {
+ 	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+-	bool running = netif_running(ndev);
++	struct am65_cpsw_common *common = port->common;
++	bool running = !!port->common->usage_count;
+ 	struct bpf_prog *old_prog;
++	int ret;
+ 
+-	if (running)
+-		am65_cpsw_nuss_ndo_slave_stop(ndev);
++	if (running) {
++		/* stop all queues */
++		am65_cpsw_destroy_txqs(common);
++		am65_cpsw_destroy_rxqs(common);
++	}
+ 
+ 	old_prog = xchg(&port->xdp_prog, prog);
+ 	if (old_prog)
+ 		bpf_prog_put(old_prog);
+ 
+-	if (running)
+-		return am65_cpsw_nuss_ndo_slave_open(ndev);
++	if (running) {
++		/* start all queues */
++		ret = am65_cpsw_create_rxqs(common);
++		if (ret)
++			return ret;
++
++		ret = am65_cpsw_create_txqs(common);
++		if (ret) {
++			am65_cpsw_destroy_rxqs(common);
++			return ret;
++		}
++	}
+ 
+ 	return 0;
+ }
 
- drivers/net/ethernet/ti/Makefile         |   2 +-
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 583 ++++++++++++++++++++++++++-----
- drivers/net/ethernet/ti/am65-cpsw-nuss.h |  37 +-
- drivers/net/ethernet/ti/am65-cpsw-xdp.c  | 155 ++++++++
- 4 files changed, 692 insertions(+), 85 deletions(-)
----
-base-commit: a0c3aefb08cd81864b17c23c25b388dba90b9dad
-change-id: 20250225-am65-cpsw-xdp-zc-2af9e4be1356
-
-Best regards,
 -- 
-Roger Quadros <rogerq@kernel.org>
+2.34.1
 
 
