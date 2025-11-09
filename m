@@ -1,133 +1,117 @@
-Return-Path: <bpf+bounces-74037-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74038-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83D33C44844
-	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 22:41:02 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20F47C44A44
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 00:37:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A6AF84E1E82
-	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 21:40:59 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BBF954E5DC3
+	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 23:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 095EE25D527;
-	Sun,  9 Nov 2025 21:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E7726FDBB;
+	Sun,  9 Nov 2025 23:37:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WEefhM+w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MwnOpyVs"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728BB24469E;
-	Sun,  9 Nov 2025 21:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A08D9243376;
+	Sun,  9 Nov 2025 23:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762724352; cv=none; b=HoSx0SLDeHsWgkg0RJ20SsNcQotSCMStM3OBnh5oFrJ+Q6b47TTWvKJ0kfIY0Ul3N/L8694RLhyYZ6wQBqtFH6abr657/WuR6i1sGsxMhhBfbNEk1r30xCBiEUlbPZZUn3J3UCNOYECGrvurb7+QMdnGX4gDLHUNB/BkNDfXNoc=
+	t=1762731445; cv=none; b=sG7hWsoEm/J8b8BHpKdFcGvH1yo5K8Yp8XIpf54IjJ9ywbkVCpg54YVJCQFK6AniJyydheSv/ToYJG4od0ENMgJlDaA9xPrPu/6zace7NUY/J1BJI2HAYRuKSwvn7qyQdZkiFGeR3ZweaOXTDQLxfjAuugbEDsy7SSN3cULV+q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762724352; c=relaxed/simple;
-	bh=kVgnVQO18a916rVySKF1mV8rRyJyvwESYEk0lLLgQaY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=iv0JD+PS9YFaSNFCUBs3XhH2Ad5bq0rLnV/qbM/qik4JMVu5KYJv2GLGOgIp0fNZWdYf/CAcGdbOklqvjthgMUXRATiiPENGVYMajejQ8yzAl/GhbZyfKnZOvXwGuYyI/GIeUeEhxtZJCFcv4QYZQZUzZGnwZ0Roj2zS+aAbs7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WEefhM+w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BECEAC19423;
-	Sun,  9 Nov 2025 21:39:07 +0000 (UTC)
+	s=arc-20240116; t=1762731445; c=relaxed/simple;
+	bh=5YEOu82QTmZW2HELOApkW8zOPzE/QRgh57UZFjoQzaY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B5ZY42R3WG039uFg08pV3lkZ+DCS0N93+jp5XsztEq8nZAYHhJnC/5WS+CVVgAbOE3KE4TgsVtlXLtkDrsqe3hqHHm1JmqQ75rPN8xuw8VSrMM1V7Crr71byV9Gy5qLffScuCDzuUozIHIHXy4hBeYWEdlgUuDS6WZw4lgRhqKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MwnOpyVs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CD19C4CEF7;
+	Sun,  9 Nov 2025 23:37:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762724352;
-	bh=kVgnVQO18a916rVySKF1mV8rRyJyvwESYEk0lLLgQaY=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=WEefhM+wvXEy1rWWzumJC5RPb0gVAJSBqN7mRuhwxH8PvDdhBWgEqFwZStqMEMNF2
-	 taGAZqeHs/RbkUh58PsASM2X92CWWgOBU29vC8wHuFqIVesO2YFSWtrDJ1g4pA9BWX
-	 Ndwi6/JkinnfIsIFh+LYcbKrXszHMCzdV2Yb05W4D7wHhWEECCbELc8MHuaZoC9pbN
-	 yG55Zlnv+nUJuyCyEbr40jdhms4NDQ30g/7UyhzZFAbnhtSqT3Rsd63NwqT37D79PD
-	 J/AamRW5kFyj6MEW2UI68kpWObmACabj4HDf6WuqwSzA8XYRRMRJKoZqXpL+hqbqTG
-	 JKvmi+4MlwgMg==
-From: Roger Quadros <rogerq@kernel.org>
-Date: Sun, 09 Nov 2025 23:37:57 +0200
-Subject: [PATCH net-next v2 7/7] net: ethernet: ti: am65-cpsw: Fix clearing
- of irq_disabled flag in rx_poll
+	s=k20201202; t=1762731445;
+	bh=5YEOu82QTmZW2HELOApkW8zOPzE/QRgh57UZFjoQzaY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MwnOpyVsRJk5v3uibYeRVnOCS2mEpIYu7UA25lknHfLbVYn5c0tnxogXclky73IXw
+	 yrDTeYj/kkD2tUuLkZnRbrOlrGIlx+gRHuxUgLbIkuRPZEdTMoENUZvLxPWrjXWcXY
+	 TvhOV1UDfUV7n/9tkkg7FkgtHb5nj9cTYTQ0AwmIUpkIC/VkV6yD5XHuPqVF8vK3tU
+	 G7llEsKGssu6wbw7AkmKT+YCjI9Rrl5WWmVGQtqcwALYW6yiBRJqsmDdI0FpEfs6KA
+	 uobnRFDZyqTFZ4mmXZj0E6Mp0YkMnzFCTFeLhtfQBYDeMCopY1sLKNrj/i35WfiMn3
+	 NjCIcAeWhh0LA==
+Date: Sun, 9 Nov 2025 16:37:20 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Jens Reidel <adrian@mainlining.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: Re: [PATCH] mips: Use generic endianness macros instead of
+ MIPS-specific ones
+Message-ID: <20251109233720.GB2977577@ax162>
+References: <20251108-mips-bpf-fix-v1-1-0467c3ee2613@mainlining.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20251109-am65-cpsw-xdp-zc-v2-7-858f60a09d12@kernel.org>
-References: <20251109-am65-cpsw-xdp-zc-v2-0-858f60a09d12@kernel.org>
-In-Reply-To: <20251109-am65-cpsw-xdp-zc-v2-0-858f60a09d12@kernel.org>
-To: Siddharth Vadapalli <s-vadapalli@ti.com>, 
- Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Sumit Semwal <sumit.semwal@linaro.org>, 
- =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
- Stanislav Fomichev <sdf@fomichev.me>, Simon Horman <horms@kernel.org>
-Cc: srk@ti.com, Meghana Malladi <m-malladi@ti.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- linaro-mm-sig@lists.linaro.org, Roger Quadros <rogerq@kernel.org>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1531; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=kVgnVQO18a916rVySKF1mV8rRyJyvwESYEk0lLLgQaY=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBpEQnaoZQaCDOcP2jKXsqaIb7Y4IAM39JiwAlpR
- whm4N5Vn1iJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCaREJ2gAKCRDSWmvTvnYw
- k+n2D/4n3QLBvZL+Ug6lzBiQ3yEIJ54RMQhXfWtoHhcZT+Wor3emaGkM+iZ3o3j+ObQhNfLnaH9
- nqj5dWuuKVXWirrXjeIcgudnU6FcaO1DUY8SH6+H3jAtspFAI0Ne/eaRWCMNtEgdWw+tjR6Hki5
- K/HF/m38zK2UzGqBPhSr/wFUiT7E94Xgvn30dEZEYJ2GMF0F9bDmsQLWkP12bD0U9M0Tkku8r3w
- YZbH/h+iY986+tLVcgL9bV72urrYlAFGtzfkoUzGwTD0CN0Gk8qsiDwPEfwAb/wpJMR1NsOhDiX
- RCa3Errmmt2VRD/ViOAbkobEfNRFsSGke6jrDeQ7VOeNJn6kIzrBtCDWZISg1orpImNpZLht1qF
- mBW2x+s/+/nJLMMTyZA1eo72nRW0gu+ugSQ0JIwcuvdTFPn67sV+LRwgJusoBUUyeUbhdquF/Y5
- EGMIRdGhkkVp+y4wSeZhmrWjyThAbUPh/ECj7mqphqLz4Ecd+osPOwtHjeQfZnJ+rXLSb+PAjqw
- 7+J6wPI83RIPktGVBgGr7kLkPqmSSRCTgs6NEEwDMp9x//wKe+AN1+X/PS48nmxQF2kYsJCzZsO
- NxWZ3LNtNVHwlyhZR7SEvxnM1T77zq0r9uYfJmHk1iqhaaOaUBNk+HA4ER1KeBvte0Fc7iehK80
- Dnd1EZKdXkopKeg==
-X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
- fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251108-mips-bpf-fix-v1-1-0467c3ee2613@mainlining.org>
 
-In am65_cpsw_nuss_rx_poll() there is a possibility that irq_disabled flag
-is cleared but the IRQ is not enabled.
+On Sat, Nov 08, 2025 at 11:05:55PM +0100, Jens Reidel wrote:
+> Compiling bpf_skel for mips currently fails because clang --target=bpf
+> is invoked and the source files include byteorder.h, which uses the
+> MIPS-specific macros to determine the endianness, rather than the generic
+> __LITTLE_ENDIAN__ / __BIG_ENDIAN__. Fix this by using the generic
+> macros, which are also defined when targeting bpf. This is already done
+> similarly for powerpc.
+> 
+> Signed-off-by: Jens Reidel <adrian@mainlining.org>
 
-This patch fixes by that by clearing irq_disabled flag right when enabling
-the irq.
+As far as I can tell, this should be fine since clang defines these
+macros in the generic case since [1] and I assume GCC does as well but
+if there is a risk of this being a problem for userspace, these could be
+added in addition to __MIPSEB__ / __MIPSEL__.
 
-Fixes: da70d184a8c3 ("net: ethernet: ti: am65-cpsw: Introduce multi queue Rx")
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 9d1048eea7e4734873676026906e07babf0345f5..c0f891a91d7471364bd4c8b7d82da9967f1753b8 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -1778,15 +1778,13 @@ static int am65_cpsw_nuss_rx_poll(struct napi_struct *napi_rx, int budget)
- 	dev_dbg(common->dev, "%s num_rx:%d %d\n", __func__, num_rx, budget);
- 
- 	if (num_rx < budget && napi_complete_done(napi_rx, num_rx)) {
--		if (flow->irq_disabled) {
-+		if (unlikely(flow->rx_pace_timeout)) {
-+			hrtimer_start(&flow->rx_hrtimer,
-+				      ns_to_ktime(flow->rx_pace_timeout),
-+				      HRTIMER_MODE_REL_PINNED);
-+		} else if (flow->irq_disabled) {
- 			flow->irq_disabled = false;
--			if (unlikely(flow->rx_pace_timeout)) {
--				hrtimer_start(&flow->rx_hrtimer,
--					      ns_to_ktime(flow->rx_pace_timeout),
--					      HRTIMER_MODE_REL_PINNED);
--			} else {
--				enable_irq(flow->irq);
--			}
-+			enable_irq(flow->irq);
- 		}
- 	}
- 
+[1]: https://github.com/llvm/llvm-project/commit/2c942c64fb521357ed98c380823e79833a121d18
 
--- 
-2.34.1
-
+> ---
+>  arch/mips/include/uapi/asm/byteorder.h | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/mips/include/uapi/asm/byteorder.h b/arch/mips/include/uapi/asm/byteorder.h
+> index b4edc85f9c30c09aafbc189ec820e6e2f7cbe0d8..5e3c3baa24994a9f3637bf2b63ea7c3577cae541 100644
+> --- a/arch/mips/include/uapi/asm/byteorder.h
+> +++ b/arch/mips/include/uapi/asm/byteorder.h
+> @@ -9,12 +9,10 @@
+>  #ifndef _ASM_BYTEORDER_H
+>  #define _ASM_BYTEORDER_H
+>  
+> -#if defined(__MIPSEB__)
+> -#include <linux/byteorder/big_endian.h>
+> -#elif defined(__MIPSEL__)
+> +#ifdef __LITTLE_ENDIAN__
+>  #include <linux/byteorder/little_endian.h>
+>  #else
+> -# error "MIPS, but neither __MIPSEB__, nor __MIPSEL__???"
+> +#include <linux/byteorder/big_endian.h>
+>  #endif
+>  
+>  #endif /* _ASM_BYTEORDER_H */
+> 
+> ---
+> base-commit: 9c0826a5d9aa4d52206dd89976858457a2a8a7ed
+> change-id: 20251108-mips-bpf-fix-8d1f14bc4903
+> 
+> Best regards,
+> -- 
+> Jens Reidel <adrian@mainlining.org>
 
