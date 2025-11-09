@@ -1,98 +1,186 @@
-Return-Path: <bpf+bounces-74020-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74021-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 547C1C446E4
-	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 21:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 17437C4471A
+	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 22:13:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4500F4E3BFF
-	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 20:40:38 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 219B64E5B9B
+	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 21:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E890726B2B0;
-	Sun,  9 Nov 2025 20:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C57226B2DA;
+	Sun,  9 Nov 2025 21:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="wUuaVauM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZXvP0mpx"
 X-Original-To: bpf@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4691A0BD6;
-	Sun,  9 Nov 2025 20:40:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8572D537E9;
+	Sun,  9 Nov 2025 21:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762720829; cv=none; b=ldxVnJWP42q4cCeRkxeF55wYw5RikAc96abFI/iip8NAfw5AzSdO38arU//FxzixTArhMYfkF9paQl2HitnFD3q37P4Le91n6Ug2NnKxtWAJranV/tJFyxjnl/MhSUS0/LDqN5kNn+q60aunP/djSc/sXiVSR33KubhSwksIrDI=
+	t=1762722799; cv=none; b=fwRo4gXk7c5jA0tJPNN0+92BkVgWtLCp+5YSkl94Gc1oAI15n5B2/7MTYmdMpY1nreWz4hU3aWK1WtIEvs38hhTqjoqgMhbXEDh6cRa1kGoVnUHs9b2H1jAUvhjV9CdD18aSXmrYlzuyG98Y8qWe6/bCe4V9ps+NqxmMS2wq5cY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762720829; c=relaxed/simple;
-	bh=IMyNr6qrkO6d2PRolblpwhjRIVpF93t8I4D1MPZrVk4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cXGIxULIPs91Dx2FjONJ7rE6suhFjZbyXRIVWI1nWC2ZjHs0yu1HM2Hv04GxwXVxa+UuctRjiYNT//fPslO0JeO7df5p/6YDx/oteSC8ozuxUj8TaXbzfyobL2NeRnE6PrLUdetMPKJ3Nr22sX955s7Ul3Ka/EIf9nuQ246MIh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=wUuaVauM; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=BfmRhkxrsEs9tOM8wGbk7dXcVXNceBqTXcIhtt2SrKs=; b=wUuaVauMMR7ErCaLipgahv02uK
-	f8zmYZUSkXrkSeIWVD+p2We+E7S0R1h/RkWnDRzYS23UkSGwmELAbRJJxSREYjeqifZdYxQ0MI7Y8
-	whP1b+2iLCrarO1lAoXJmD7YCetyf1ykJN7sVe3HCohmhOOvBIYllaLsgF2qgYoPuJ6bpGVgIgYwX
-	WVTBkowQ1Lmcdjvk4p6fM2kbY7LuhZft2NVC8ulf4OPzi+fEUEktbxyTH2D3vg2+jh6CBx75Obxt7
-	6/7552MEzeebUdxzenriy13HTG10/jzbqdfcj+Rdt/3+FhTjfYrzTwilZk/MP+73IUGSCKVk2vREG
-	7z5iDtNA==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vICCw-00000007AxF-0Wo7;
-	Sun, 09 Nov 2025 20:40:18 +0000
-Date: Sun, 9 Nov 2025 20:40:18 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Christian Brauner <brauner@kernel.org>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Ard Biesheuvel <ardb@kernel.org>, linux-fsdevel@vger.kernel.org,
-	torvalds@linux-foundation.org, jack@suse.cz, raven@themaw.net,
-	miklos@szeredi.hu, neil@brown.name, a.hindborg@kernel.org,
-	linux-mm@kvack.org, linux-efi@vger.kernel.org,
-	ocfs2-devel@lists.linux.dev, kees@kernel.org, rostedt@goodmis.org,
-	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-	paul@paul-moore.com, casey@schaufler-ca.com,
-	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com,
-	selinux@vger.kernel.org, borntraeger@linux.ibm.com,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v2 22/50] convert efivarfs
-Message-ID: <20251109204018.GH2441659@ZenIV>
-References: <20251028174540.GN2441659@ZenIV>
- <20251028210805.GP2441659@ZenIV>
- <CAMj1kXF6tvg6+CL_1x7h0HK1PoSGtxDjc0LQ1abGQBd5qrbffg@mail.gmail.com>
- <9f079d0c8cffb150c0decb673a12bfe1b835efc9.camel@HansenPartnership.com>
- <20251029193755.GU2441659@ZenIV>
- <CAMj1kXHnEq97bzt-C=zKJdV3BK3EDJCPz3Pfyk52p2735-4wFA@mail.gmail.com>
- <20251105-aufheben-ausmusterung-4588dab8c585@brauner>
- <423f5cc5352c54fc21e0570daeeddc4a58e74974.camel@HansenPartnership.com>
- <20251105-sohlen-fenster-e7c5af1204c4@brauner>
- <20251105-vorbild-zutreffen-fe00d1dd98db@brauner>
+	s=arc-20240116; t=1762722799; c=relaxed/simple;
+	bh=7XNqneAJZkD31+B87Un/9oPOJDMkEukENXKqvVQgFwo=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Oz89mSZ4k9+JpXiZ0qbNoFpZybTjPIQ4plW5qiTtaHw+FcWB6VswkVd1sZva24Wdcd5e2T4Wz0i8B4tYe5l1ag9346mE8t2aFbSGbvml3xm/dttto8y6sc2YIrPFD+vr1QxXEjk1umU9qWXUuA8UtlfWSWIZBTfX5S8bd0DKr/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZXvP0mpx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E7BBC4CEF7;
+	Sun,  9 Nov 2025 21:13:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762722798;
+	bh=7XNqneAJZkD31+B87Un/9oPOJDMkEukENXKqvVQgFwo=;
+	h=From:Subject:Date:To:Cc:From;
+	b=ZXvP0mpx2GZlmqqGorpb0j2F325nIpl6OZSi+z14gKFxUbRbwAkaKzbifFZ6bc92Y
+	 +xlGKZ+IP1q0jgnVLPiQ2GwJ6ck0b3vOsBOyKha21SF6THjb7qnOxJR9BfRuqv9mK4
+	 fqpU0Jx7x2N1zkd4hNTvZmQRSh4ii5FMSzR/FG8fOflJlnhmEdGJlTs+cSd68wtVzG
+	 RcHH9uNfhGoTPCVO+yd8fyyTX7E+adNY8UwVhPy7NsVpAidckdYmthqM1HY98dmW37
+	 x8ei81kE4vbiPapdLqEa6ihOy0R6e1wE6DYkiw+nlR3t2ZB3Hgc8886E67Js4+x1lP
+	 pc/nq17c6kvvg==
+From: Christian Brauner <brauner@kernel.org>
+Subject: [PATCH 0/8] ns: fixes for namespace iteration and active reference
+ counting
+Date: Sun, 09 Nov 2025 22:11:21 +0100
+Message-Id: <20251109-namespace-6-19-fixes-v1-0-ae8a4ad5a3b3@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251105-vorbild-zutreffen-fe00d1dd98db@brauner>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHkDEWkC/02MwQrCMAxAf2XkbGQprFJ/RTykNXU5WEcDIoz9u
+ 9lOHh+P91Yw6SoG12GFLh81fTcHOg1QZm5PQX04QxjDRDQmbPwSW7gIRqSEVb9iOOVca6olhng
+ BT5cuh/DydnfObIK5cyvzPvt7nCnBtv0ACoz8G4cAAAA=
+X-Change-ID: 20251109-namespace-6-19-fixes-5bbff9fc6267
+To: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+ Jeff Layton <jlayton@kernel.org>
+Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
+ =?utf-8?q?Zbigniew_J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, 
+ Lennart Poettering <mzxreary@0pointer.de>, 
+ Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+ Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, 
+ Johannes Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+ Christian Brauner <brauner@kernel.org>, 
+ syzbot+1957b26299cf3ff7890c@syzkaller.appspotmail.com
+X-Mailer: b4 0.15-dev-a6db3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5203; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=7XNqneAJZkD31+B87Un/9oPOJDMkEukENXKqvVQgFwo=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQKMr/YfvmA7FrlZeYP1Bi9pshbVHhaGqefctlXEuzgM
+ 81z5Ya0jlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgInoejIyNF2pvWNgdXrelIas
+ sqoItuc/LGeGl4Vw9qz548cszbJuEcNv9rPHc8sFjfyzrtRl3oiVctz6aKbodE6rn+nLE3aHT/j
+ NDAA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-On Wed, Nov 05, 2025 at 02:43:34PM +0100, Christian Brauner wrote:
+* Make sure to initialize the active reference count for the initial
+  network namespace and prevent __ns_common_init() from returning too
+  early.
 
-> -static void filesystems_freeze_callback(struct super_block *sb, void *unused)
-> +static void filesystems_freeze_callback(struct super_block *sb, void *bool_freeze_all)
->  {
-> +	bool freeze_all = *(bool *)bool_freeze_all;
-> +
->  	if (!sb->s_op->freeze_fs && !sb->s_op->freeze_super)
->  		return;
->  
-> +	if (!freeze_all) {
+* Make sure that passive reference counts are dropped outside of rcu
+  read locks as some namespaces such as the mount namespace do in fact
+  sleep when putting the last reference.
 
-Minor nitpick: do we even need a dereference here?  Just check
-whether the argument is NULL and adjust the caller...
+* The setns() system call supports:
+
+  (1) namespace file descriptors (nsfd)
+  (2) process file descriptors (pidfd)
+
+  When using nsfds the namespaces will remain active because they are
+  pinned by the vfs. However, when pidfds are used things are more
+  complicated.
+
+  When the target task exits and passes through exit_nsproxy_namespaces()
+  or is reaped and thus also passes through exit_cred_namespaces() after
+  the setns()'ing task has called prepare_nsset() but before the active
+  reference count of the set of namespaces it wants to setns() to might
+  have been dropped already:
+
+    P1                                                              P2
+
+    pid_p1 = clone(CLONE_NEWUSER | CLONE_NEWNET | CLONE_NEWNS)
+                                                                    pidfd = pidfd_open(pid_p1)
+                                                                    setns(pidfd, CLONE_NEWUSER | CLONE_NEWNET | CLONE_NEWNS)
+                                                                    prepare_nsset()
+
+    exit(0)
+    // ns->__ns_active_ref        == 1
+    // parent_ns->__ns_active_ref == 1
+    -> exit_nsproxy_namespaces()
+    -> exit_cred_namespaces()
+
+    // ns_active_ref_put() will also put
+    // the reference on the owner of the
+    // namespace. If the only reason the
+    // owning namespace was alive was
+    // because it was a parent of @ns
+    // it's active reference count now goes
+    // to zero... --------------------------------
+    //                                           |
+    // ns->__ns_active_ref        == 0           |
+    // parent_ns->__ns_active_ref == 0           |
+                                                 |                  commit_nsset()
+                                                 -----------------> // If setns()
+                                                                    // now manages to install the namespaces
+                                                                    // it will call ns_active_ref_get()
+                                                                    // on them thus bumping the active reference
+                                                                    // count from zero again but without also
+                                                                    // taking the required reference on the owner.
+                                                                    // Thus we get:
+                                                                    //
+                                                                    // ns->__ns_active_ref        == 1
+                                                                    // parent_ns->__ns_active_ref == 0
+
+    When later someone does ns_active_ref_put() on @ns it will underflow
+    parent_ns->__ns_active_ref leading to a splat from our asserts
+    thinking there are still active references when in fact the counter
+    just underflowed.
+
+  So resurrect the ownership chain if necessary as well. If the caller
+  succeeded to grab passive references to the set of namespaces the
+  setns() should simply succeed even if the target task exists or gets
+  reaped in the meantime.
+
+  The race is rare and can only be triggered when using pidfs to setns()
+  to namespaces. Also note that active reference on initial namespaces are
+  nops.
+
+  Since we now always handle parent references directly we can drop
+  ns_ref_active_get_owner() when adding a namespace to a namespace tree.
+  This is now all handled uniformly in the places where the new namespaces
+  actually become active.
+
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+Christian Brauner (8):
+      ns: don't skip active reference count initialization
+      ns: don't increment or decrement initial namespaces
+      ns: make sure reference are dropped outside of rcu lock
+      ns: return EFAULT on put_user() error
+      ns: handle setns(pidfd, ...) cleanly
+      ns: add asserts for active refcount underflow
+      selftests/namespaces: add active reference count regression test
+      selftests/namespaces: test for efault
+
+ fs/nsfs.c                                          |   2 +-
+ include/linux/ns_common.h                          |  49 +-
+ kernel/nscommon.c                                  |  52 +-
+ kernel/nstree.c                                    |  44 +-
+ tools/testing/selftests/namespaces/.gitignore      |   2 +
+ tools/testing/selftests/namespaces/Makefile        |   6 +-
+ .../selftests/namespaces/listns_efault_test.c      | 521 +++++++++++++++++++++
+ .../namespaces/regression_pidfd_setns_test.c       | 113 +++++
+ 8 files changed, 715 insertions(+), 74 deletions(-)
+---
+base-commit: 8ebfb9896c97ab609222460e705f425cb3f0aad0
+change-id: 20251109-namespace-6-19-fixes-5bbff9fc6267
+
 
