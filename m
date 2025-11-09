@@ -1,144 +1,98 @@
-Return-Path: <bpf+bounces-74019-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74020-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C983FC4466B
-	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 20:50:46 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 547C1C446E4
+	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 21:40:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C42B34E3A2C
-	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 19:50:44 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4500F4E3BFF
+	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 20:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 555BC23C39A;
-	Sun,  9 Nov 2025 19:50:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E890726B2B0;
+	Sun,  9 Nov 2025 20:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Frs51qwU"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="wUuaVauM"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEDDB1DF270
-	for <bpf@vger.kernel.org>; Sun,  9 Nov 2025 19:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4691A0BD6;
+	Sun,  9 Nov 2025 20:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762717838; cv=none; b=ZlBG2JkvJAKiiCV9Ik6BTepDLY15jcF3lJPhLXa1TibN3qFQfo1nw2rFWEll39f5azYQNU/lvFoLH6vRXQzwe08C3Gm4i8fi2yutClVugvfV11iDHmzYW9ZBkvNSMLWo3XyYRSn1evv4yApbEUl1UYpIqDUcMSO7TF25zH59pPE=
+	t=1762720829; cv=none; b=ldxVnJWP42q4cCeRkxeF55wYw5RikAc96abFI/iip8NAfw5AzSdO38arU//FxzixTArhMYfkF9paQl2HitnFD3q37P4Le91n6Ug2NnKxtWAJranV/tJFyxjnl/MhSUS0/LDqN5kNn+q60aunP/djSc/sXiVSR33KubhSwksIrDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762717838; c=relaxed/simple;
-	bh=zGSK2b2A+5WfxFnLEQOBOxJL+rPLbdEOyNtBK/Tnxis=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vDd+oI82D5f7nyA9t14rCb//gS1/dB+snxMfBitB4/dLp7pXMg+WijA5vukJp0x1zGRH3la/bezUcDlIWpzDwGm7/7Zel+u3XTne4U1iUdc3BuwGDOF7EXmuVGpWydD4a3aVoE3ftCT/v2SdUyfoOsOK1H+fyLhY9vLOtVMRqeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Frs51qwU; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <893afb17-aac2-47d6-8651-e07ccc37995b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762717835;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=z5wmH7YZFWEC4wfGTybhj2CoQ0yrkoJ7aJUyPCTIAsk=;
-	b=Frs51qwUHTc3Z2BVRSF9UMnqzYpDyaUNLHbcnw2dAvarG4msJfTEccLXomD/5wy+/MdfFk
-	fCtHcvlMwrO3GAINruwDyyYcJw1xOLQL5Tiwx9YALwUsmrewEEWcqFnR2JbZdXI2towiL3
-	QGAA++Fb9P1x87Lw4rX7L06FS+hgCP8=
-Date: Sun, 9 Nov 2025 11:50:29 -0800
+	s=arc-20240116; t=1762720829; c=relaxed/simple;
+	bh=IMyNr6qrkO6d2PRolblpwhjRIVpF93t8I4D1MPZrVk4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cXGIxULIPs91Dx2FjONJ7rE6suhFjZbyXRIVWI1nWC2ZjHs0yu1HM2Hv04GxwXVxa+UuctRjiYNT//fPslO0JeO7df5p/6YDx/oteSC8ozuxUj8TaXbzfyobL2NeRnE6PrLUdetMPKJ3Nr22sX955s7Ul3Ka/EIf9nuQ246MIh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=wUuaVauM; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=BfmRhkxrsEs9tOM8wGbk7dXcVXNceBqTXcIhtt2SrKs=; b=wUuaVauMMR7ErCaLipgahv02uK
+	f8zmYZUSkXrkSeIWVD+p2We+E7S0R1h/RkWnDRzYS23UkSGwmELAbRJJxSREYjeqifZdYxQ0MI7Y8
+	whP1b+2iLCrarO1lAoXJmD7YCetyf1ykJN7sVe3HCohmhOOvBIYllaLsgF2qgYoPuJ6bpGVgIgYwX
+	WVTBkowQ1Lmcdjvk4p6fM2kbY7LuhZft2NVC8ulf4OPzi+fEUEktbxyTH2D3vg2+jh6CBx75Obxt7
+	6/7552MEzeebUdxzenriy13HTG10/jzbqdfcj+Rdt/3+FhTjfYrzTwilZk/MP+73IUGSCKVk2vREG
+	7z5iDtNA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vICCw-00000007AxF-0Wo7;
+	Sun, 09 Nov 2025 20:40:18 +0000
+Date: Sun, 9 Nov 2025 20:40:18 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Christian Brauner <brauner@kernel.org>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Ard Biesheuvel <ardb@kernel.org>, linux-fsdevel@vger.kernel.org,
+	torvalds@linux-foundation.org, jack@suse.cz, raven@themaw.net,
+	miklos@szeredi.hu, neil@brown.name, a.hindborg@kernel.org,
+	linux-mm@kvack.org, linux-efi@vger.kernel.org,
+	ocfs2-devel@lists.linux.dev, kees@kernel.org, rostedt@goodmis.org,
+	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+	paul@paul-moore.com, casey@schaufler-ca.com,
+	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com,
+	selinux@vger.kernel.org, borntraeger@linux.ibm.com,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v2 22/50] convert efivarfs
+Message-ID: <20251109204018.GH2441659@ZenIV>
+References: <20251028174540.GN2441659@ZenIV>
+ <20251028210805.GP2441659@ZenIV>
+ <CAMj1kXF6tvg6+CL_1x7h0HK1PoSGtxDjc0LQ1abGQBd5qrbffg@mail.gmail.com>
+ <9f079d0c8cffb150c0decb673a12bfe1b835efc9.camel@HansenPartnership.com>
+ <20251029193755.GU2441659@ZenIV>
+ <CAMj1kXHnEq97bzt-C=zKJdV3BK3EDJCPz3Pfyk52p2735-4wFA@mail.gmail.com>
+ <20251105-aufheben-ausmusterung-4588dab8c585@brauner>
+ <423f5cc5352c54fc21e0570daeeddc4a58e74974.camel@HansenPartnership.com>
+ <20251105-sohlen-fenster-e7c5af1204c4@brauner>
+ <20251105-vorbild-zutreffen-fe00d1dd98db@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [BPF selftests]:bpf_arena_common.h: error: conflicting types for
- 'bpf_arena_alloc_pages'
-Content-Language: en-GB
-To: Vincent Li <vincent.mc.li@gmail.com>, bpf <bpf@vger.kernel.org>
-Cc: ast <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>
-References: <CAK3+h2yuppeOisqT+G6pf9zsP7sTbbbgKWpMe6s5TL6fZ-coWg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAK3+h2yuppeOisqT+G6pf9zsP7sTbbbgKWpMe6s5TL6fZ-coWg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251105-vorbild-zutreffen-fe00d1dd98db@brauner>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
+On Wed, Nov 05, 2025 at 02:43:34PM +0100, Christian Brauner wrote:
 
+> -static void filesystems_freeze_callback(struct super_block *sb, void *unused)
+> +static void filesystems_freeze_callback(struct super_block *sb, void *bool_freeze_all)
+>  {
+> +	bool freeze_all = *(bool *)bool_freeze_all;
+> +
+>  	if (!sb->s_op->freeze_fs && !sb->s_op->freeze_super)
+>  		return;
+>  
+> +	if (!freeze_all) {
 
-On 11/9/25 9:09 AM, Vincent Li wrote:
-> Hi,
->
-> Sorry if this is a known issue,  but I could not find it.  my build environment:
->
-> [root@fedora linux-loongson]# pahole --version
-> v1.30
-> [root@fedora linux-loongson]# clang --version
-> clang version 21.1.5
-> Target: loongarch64-redhat-linux
-> Thread model: posix
-> InstalledDir: /usr/bin
->
-> [root@fedora linux-loongson]# bpftool version
-> bpftool v7.6.0
-> using libbpf v1.6
-> features: llvm, skeletons
->
-> I got errors below while building bpf selftests with bpf-next branch,
-> I had to comment out the bpf_arena_alloc_pages,
-> bpf_arena_reserve_pages, bpf_arena_free_pages in
-> tools/include/vmlinux.h, then progs/stream.c build succeeded. It looks
-> like these functions in tools/include/vmlinux.h generated by bpftool
-> are not the same as in bpf_arena_common.h. is there something wrong in
-> my build environment?
-
-Could you try pahole master branch? See the conversion in
-   https://lore.kernel.org/bpf/8a94c764c5fa4ff04fa7dd69ed47fcdf782b814e@linux.dev/
-
->
->
-> In file included from progs/stream.c:8:
-> /usr/src/linux-loongson/tools/testing/selftests/bpf/bpf_arena_common.h:47:15:
-> error:
->        conflicting types for 'bpf_arena_alloc_pages'
->     47 | void __arena* bpf_arena_alloc_pages(void *map, void __arena
-> *addr, __u32 page_cnt,
->        |               ^
-> /usr/src/linux-loongson/tools/testing/selftests/bpf/tools/include/vmlinux.h:180401:14:
-> note:
->        previous declaration is here
->   180401 | extern void *bpf_arena_alloc_pages(void *p__map, void
-> *addr__ign, u32 page_cnt, int node_i...
->          |              ^
-> In file included from progs/stream.c:8:
-> /usr/src/linux-loongson/tools/testing/selftests/bpf/bpf_arena_common.h:49:5:
-> error:
->        conflicting types for 'bpf_arena_reserve_pages'
->     49 | int bpf_arena_reserve_pages(void *map, void __arena *addr,
-> __u32 page_cnt) __ksym __weak;
->        |     ^
-> /usr/src/linux-loongson/tools/testing/selftests/bpf/tools/include/vmlinux.h:180403:12:
-> note:
->        previous declaration is here
->   180403 | extern int bpf_arena_reserve_pages(void *p__map, void
-> *ptr__ign, u32 page_cnt) __weak __ksym;
->          |            ^
-> In file included from progs/stream.c:8:
-> /usr/src/linux-loongson/tools/testing/selftests/bpf/bpf_arena_common.h:50:6:
-> error:
->        conflicting types for 'bpf_arena_free_pages'
->     50 | void bpf_arena_free_pages(void *map, void __arena *ptr, __u32
-> page_cnt) __ksym __weak;
->        |      ^
-> /usr/src/linux-loongson/tools/testing/selftests/bpf/tools/include/vmlinux.h:180402:13:
-> note:
->        previous declaration is here
->   180402 | extern void bpf_arena_free_pages(void *p__map, void
-> *ptr__ign, u32 page_cnt) __weak __ksym;
->          |             ^
-> 3 errors generated.
->
-> Vincent
-
+Minor nitpick: do we even need a dereference here?  Just check
+whether the argument is NULL and adjust the caller...
 
