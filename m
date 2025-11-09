@@ -1,101 +1,134 @@
-Return-Path: <bpf+bounces-74005-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74006-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E367DC43A2A
-	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 09:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E609BC43C80
+	for <lists+bpf@lfdr.de>; Sun, 09 Nov 2025 12:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECC053B1C20
-	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 08:24:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C4BD3A7E67
+	for <lists+bpf@lfdr.de>; Sun,  9 Nov 2025 11:07:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CF6D273D81;
-	Sun,  9 Nov 2025 08:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B862DF709;
+	Sun,  9 Nov 2025 11:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=rosa.ru header.i=@rosa.ru header.b="DZaCzS7h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from forward500b.mail.yandex.net (forward500b.mail.yandex.net [178.154.239.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D73B4C6D
-	for <bpf@vger.kernel.org>; Sun,  9 Nov 2025 08:24:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF032DC338;
+	Sun,  9 Nov 2025 11:06:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762676644; cv=none; b=RH7KPCcnwEZgab6uoGDkwFDwnzUGNIBXN+QcVLXzGAhc4JpllduZBB6UVZr1hKFhTawpOjeu5IAmbo1V9p9y07LWb+o4tpbk8ByHg713/TOT2WQ+3I8I4meVhfqEVtdyG+Mc1zoB3qvMX+3rQ000l12Uxc7rf4x76MkY5bt76gI=
+	t=1762686384; cv=none; b=GFW9fo594HZbqhiNsSqP/schaai0iOsOYDPAzS3F7dQNqzOoBfYsKxmV/b9DoQRSHFdc/mFZJOmOH34ajyJwKSFTmS/LTUI41vjzJzDo6Oi1EJH8nYH/Qv029A3wGYd9kYpTgRjFKcaJ+UzP/MegyJV5IZuHyargLt5xKzomktM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762676644; c=relaxed/simple;
-	bh=/wa1QJzC1lG4pLKjSXBlRzkDHnFybIm8qOXkdf+F1xo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=jOg2mL186jvkTGC4Exzxhv4Ce3SffzcvFiFekzdN44uHO5o6l2cSf8rVUrHMWqUBiHAkPtDxhX/g3j6emvEMFZvwTCH26FddAHQrkzMxCVCAS6q181hUItbd8ZIUmdxmN6+1bFSL4cqD/aRWpDLBhoVVvWI+lNHlofA3YEQ0+QY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-9486e1db3d9so80235039f.2
-        for <bpf@vger.kernel.org>; Sun, 09 Nov 2025 00:24:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762676642; x=1763281442;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mL3FxTXejtzhr5abhLD58XcrwrPM61KGMnvXhlFjr4E=;
-        b=Z4iSxJkp9sywuDDhwCYKnIsXX5fLBgSRCx/WW7CsSUFW3h5/IFbHbh5j8VG8H+RxS2
-         k4kpvAUO6RpbhfSJZ8V4sttVxrdF0Gx81IzDnfHen8n69ruaBmm0zaief1qzaYxwOx+e
-         fQ1ETD02bKL2Yj7Bz4XgtkaKiNvvj04XOGT8cbhkRLEKTvU97D4KFItmpWPGkQFlK9bt
-         jsub7+z+ghFJACROAO9PEJ17ziAJl4g/xagENvMH/GtNsQvUhNfoRRsspTA53A4qo25C
-         kZ2UGhdIsLUwnjsZ85bsOW+Pi4wgO9XMG6FLiRD7yjl2ufOyaT62s41HzcPYEKJ6zXnp
-         MPYg==
-X-Forwarded-Encrypted: i=1; AJvYcCWj+HTuagX/1wPhr+9kKlY6tmitDUQxmU1ZAmA7sIlN9TKGjJQRBGSPG3wemvoZvKig5l4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwK6WVceLkeCLJV4ZKs6hn3lMNyNnnISTu82kM0ii1NvCd0sgR7
-	D93qJA1UZL4cplC1uFcfBfWfPxvbHj+Qu9J1WvguSHhA0aypiPwb7a86/TKHzQmgsgPafj7pHZa
-	Hmn5R+ZywVYV+4exm13TcjMKqYsYg9bqhKbWSMSCS5853CxDsSkVQ/fEA95k=
-X-Google-Smtp-Source: AGHT+IHOqUl2FIWzqMdoU47l5Gxi7c0kUdVzP4da94Ci7TzBLeLq0JKA4Ol0t1W4WTRGmKRyGXfPx3vt9pTfOQ1/fi74ObEhuKjW
+	s=arc-20240116; t=1762686384; c=relaxed/simple;
+	bh=628j+T4NN4U3fieq61FSy/7vinhuQ5xHDPEojaikKO8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ev3RrQiZ2ezthSht4Da2Fj4tBq06Qg6Q8dtbTpJzTOBszJIxPbTPuKZyKbtrnpXhl3RWeMKlMmA6zJrBpTaYebVzcmG7naE8eu2g9CeGmBnJnUVqqk1GFOOj1AFhmqlJOYBnOmybptJgy8EI/iNosubkkgyoOkVaX2SWWGXjdY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosa.ru; spf=pass smtp.mailfrom=rosa.ru; dkim=pass (1024-bit key) header.d=rosa.ru header.i=@rosa.ru header.b=DZaCzS7h; arc=none smtp.client-ip=178.154.239.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosa.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rosa.ru
+Received: from mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net [IPv6:2a02:6b8:c37:8120:0:640:c15b:0])
+	by forward500b.mail.yandex.net (Yandex) with ESMTPS id 61A51C092A;
+	Sun, 09 Nov 2025 14:00:19 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id G0KGd3lLrOs0-kx0gRr5n;
+	Sun, 09 Nov 2025 14:00:18 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rosa.ru; s=mail;
+	t=1762686018; bh=Ul+neqMs6+35CzJCWIQokzZfipMzxkGIjAKa5XhFakA=;
+	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
+	b=DZaCzS7hgPVQJUlGFb5xbirfZ+cGgJ0+JN/6nvvT9eyi2+toQ8pmKvGGbLtUaBvIK
+	 c/lTu+WdWozu8PqR8hIQiDLNvb5PhUmeZUOcQwEZu0IXO3jD8JubbW2KOinVjEFKaN
+	 B0uQ8oLH5FVCCcVhFz2xOw6x2WJGOWUz2Zrwc/ZA=
+Authentication-Results: mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net; dkim=pass header.i=@rosa.ru
+Message-ID: <8a4aae40-46d3-403a-a1cf-117343c584f6@rosa.ru>
+Date: Sun, 9 Nov 2025 14:00:16 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2388:b0:433:7728:b17e with SMTP id
- e9e14a558f8ab-4337728b3damr42151785ab.17.1762676642611; Sun, 09 Nov 2025
- 00:24:02 -0800 (PST)
-Date: Sun, 09 Nov 2025 00:24:02 -0800
-In-Reply-To: <690bfb9e.050a0220.2e3c35.0013.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <69104fa2.a70a0220.22f260.00a5.GAE@google.com>
-Subject: Re: [syzbot] [fs?] WARNING in nsproxy_ns_active_put
-From: syzbot <syzbot+0b2e79f91ff6579bfa5b@syzkaller.appspotmail.com>
-To: Liam.Howlett@Oracle.com, Liam.Howlett@oracle.com, 
-	akpm@linux-foundation.org, bpf@vger.kernel.org, brauner@kernel.org, 
-	bsegall@google.com, david@redhat.com, dietmar.eggemann@arm.com, jack@suse.cz, 
-	jsavitz@redhat.com, juri.lelli@redhat.com, kartikey406@gmail.com, 
-	kees@kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
-	lorenzo.stoakes@oracle.com, mgorman@suse.de, mhocko@suse.com, 
-	mingo@redhat.com, mjguzik@gmail.com, oleg@redhat.com, paul@paul-moore.com, 
-	peterz@infradead.org, rostedt@goodmis.org, rppt@kernel.org, sergeh@kernel.org, 
-	surenb@google.com, syzkaller-bugs@googlegroups.com, vbabka@suse.cz, 
-	vincent.guittot@linaro.org, viro@zeniv.linux.org.uk, vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] bpf: hashtab: fix 32-bit overflow in memory usage
+ calculation
+To: Yafang Shao <laoar.shao@gmail.com>,
+ David Laight <david.laight.linux@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, lvc-patches@linuxtesting.org,
+ stable@vger.kernel.org
+References: <20251107100310.61478-1-a.safin@rosa.ru>
+ <20251107114127.4e130fb2@pumpkin>
+ <CALOAHbB1cJ3EAmOOQ6oYM4ZJZn-eA7pP07=sDeG3naOM2G9Aew@mail.gmail.com>
+ <CALOAHbCz+9T349GCmyMkork=Nc_08OnXCoVCz+WO0kdXgx3MDA@mail.gmail.com>
+Content-Language: ru
+From: =?UTF-8?B?0JDQu9C10LrRgdC10Lkg0KHQsNGE0LjQvQ==?= <a.safin@rosa.ru>
+In-Reply-To: <CALOAHbCz+9T349GCmyMkork=Nc_08OnXCoVCz+WO0kdXgx3MDA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-syzbot has bisected this issue to:
+Thanks for the follow-up.
 
-commit 3a18f809184bc5a1cfad7cde5b8b026e2ff61587
-Author: Christian Brauner <brauner@kernel.org>
-Date:   Wed Oct 29 12:20:24 2025 +0000
+Just to clarify: the overflow happens before the multiplication by
+num_entries. In C, the * operator is left-associative, so the expression is
+evaluated as (value_size * num_possible_cpus()) * num_entries. Since
+value_size was u32 and num_possible_cpus() returns int, the first product is
+performed in 32-bit arithmetic due to usual integer promotions. If that
+intermediate product overflows, the result is already incorrect before it is
+promoted when multiplied by u64 num_entries.
 
-    ns: add active reference count
+A concrete example within allowed limits:
+value_size = 1,048,576 (1 MiB), num_possible_cpus() = 4096
+=> 1,048,576 * 4096 = 2^32 => wraps to 0 in 32 bits, even with 
+num_entries = 1.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11a350b4580000
-start commit:   9c0826a5d9aa Add linux-next specific files for 20251107
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13a350b4580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15a350b4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f2ebeee52bf052b8
-dashboard link: https://syzkaller.appspot.com/bug?extid=0b2e79f91ff6579bfa5b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1639d084580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1625aa92580000
+This isn’t about a single >4GiB allocation - it’s about aggregated memory
+usage (percpu), which can legitimately exceed 4GiB in total.
 
-Reported-by: syzbot+0b2e79f91ff6579bfa5b@syzkaller.appspotmail.com
-Fixes: 3a18f809184b ("ns: add active reference count")
+v2 promotes value_size to u64 at declaration, which avoids the 32-bit
+intermediate overflow cleanly.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+09.11.2025 11:20, Yafang Shao пишет:
+> On Sun, Nov 9, 2025 at 11:00 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+>> On Fri, Nov 7, 2025 at 7:41 PM David Laight
+>> <david.laight.linux@gmail.com> wrote:
+>>> On Fri,  7 Nov 2025 13:03:05 +0300
+>>> Alexei Safin <a.safin@rosa.ru> wrote:
+>>>
+>>>> The intermediate product value_size * num_possible_cpus() is evaluated
+>>>> in 32-bit arithmetic and only then promoted to 64 bits. On systems with
+>>>> large value_size and many possible CPUs this can overflow and lead to
+>>>> an underestimated memory usage.
+>>>>
+>>>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>>> That code is insane.
+>>> The size being calculated looks like a kernel memory size.
+>>> You really don't want to be allocating single structures that exceed 4GB.
+>> I failed to get your point.
+>> The calculation `value_size * num_possible_cpus() * num_entries` can
+>> overflow. While the creation of a hashmap limits `value_size *
+>> num_entries` to U32_MAX, this new formula can easily exceed that
+>> limit. For example, on my test server with just 64 CPUs, the following
+>> operation will trigger an overflow:
+>>
+>>            map_fd = bpf_map_create(BPF_MAP_TYPE_PERCPU_HASH, "count_map", 4, 4,
+>>                                                       1 << 27, &map_opts)
+> Upon reviewing the code, I see that `num_entries` is declared as u64,
+> which prevents overflow in the calculation `value_size *
+> num_possible_cpus() * num_entries`. Therefore, this change is
+> unnecessary.
+>
+> It seems that the Linux Verification Center (linuxtesting.org) needs
+> to be improved ;-)
+>
 
