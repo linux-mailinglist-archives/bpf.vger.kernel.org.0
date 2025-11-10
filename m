@@ -1,145 +1,88 @@
-Return-Path: <bpf+bounces-74103-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74104-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76B2DC494CA
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 21:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F0F65C495CF
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 22:09:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C77D53B038A
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 20:44:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C52783AE48D
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 21:08:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38422F3600;
-	Mon, 10 Nov 2025 20:44:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D842F7ABA;
+	Mon, 10 Nov 2025 21:08:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JiRFOmOZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SzK2pMWu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C082F0C69
-	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 20:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2432F5A3E;
+	Mon, 10 Nov 2025 21:08:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762807466; cv=none; b=VPqClTww2BoHqvxAGsOKJJjM1bBQX5ycndGk3N1KYhdYuoKwlXZKcAFmkpI12OWzwFyqYrZAmmDTQdNxTn7euY3s/1C5e8jL10tPbxm7EmFBBp1N4AFk1+vJGaaGOJ0ZBq8cUucbK5TASJK04ge2Oh1HL7LPFPnbHHI+qBr/+80=
+	t=1762808920; cv=none; b=WiSNx0GHub7JAu923VihQ+bFB+cclFFVw4lfEAmmMWSBkx+q+YNr4vKYUC49gbnYfx2+k2YumRd7yV5MQv7/T5z0bLidX8DgpAuSDZCn2+qvNJzkiS6Ywh26pDiQbmphQdxRS3pyc0cuRDOMwqPJmXTaTf6CNzAGxWEpxFtlb50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762807466; c=relaxed/simple;
-	bh=1pRo6FcYmFekXp6UMZ3cZqMsEhMk7Ue52qE3SPSdaiA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hv1ygNMgV48wm7NjN3Kjq77O45rGyuY86/RD5WvF8H6bChdyrbMpUy6CVFXBYVU9wrwXTvVThOKvl9PDyeF5lUwKkGeJSpEppv3auWwgwS3lRpQ+NPjoVx6UtPUtu+cxaGdm3IHDsW8fQq3ZRnRDbYWNZSzUKuyO8hzJ+cG9aUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JiRFOmOZ; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7aa9be9f03aso3040968b3a.2
-        for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 12:44:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762807464; x=1763412264; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=iKPfFuPx59pn0UpS2AdXRDeAfpJEQ1HphTQyjMZvYAg=;
-        b=JiRFOmOZX2Eq+5qgWUjRa2X3kbqiBt5jOO8rZAIrdytPrNh45dVjPnmzxlqhZz76Cy
-         ZDrNapc5UCBTMvFwx5a2l1HeXXR1QZv8Azd2YTbQFppeRNbQXGWyeQzBzkF/xrSzMCLM
-         fZHbtY7/brz7XKRy+RT21YF6yo/aEuQ7rbw6iwZLAuDRRlE/7eWWbe1Gv3JFXFGzpDb1
-         kod0FZd5/1V7jRnWvU7Rv3EPkOEi1SmdVMnzg5231H9yQXDgiPib6UXSr0Z0dQmJF1qP
-         V+0F2VdnU9/a+5wal9AmqZkz4JLvhEQwl84L4KoWcP/5VdchsIfK3p52Gmh14O//Hs1Q
-         INcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762807464; x=1763412264;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iKPfFuPx59pn0UpS2AdXRDeAfpJEQ1HphTQyjMZvYAg=;
-        b=bbn2DVsyL2/oRA2019Gd7KVjm+Jfixivz398bICuAVj71PN2RgthLkyajQ/0B9Gv6K
-         FEgvmjPBOeNfwuuc4mZtDUwwHupnrCvQAuTsnZta5CYMrizI3jIcVF1284KhZDb69YXg
-         hJAkoC/eE/9HCu0SkfR/LL1PfDGUgS9myOltqwJIpIoiZeECZ5aEM7VeJA7ocqRihzLK
-         9ezyhLDMFLho1rG8YmER4In88zPqqRXFlQrfjmqm1w6RrdGUioZng4OIVCzEIH8fPIIc
-         VuT5GzqSlccu9DkflDofT46EVRPkrMDRAI6s7ngAhjRkZYDoV64Q71jgCudz+YuQbyV4
-         N+RQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUaqJ6dTJNpFYa1q8Nw6lAcL/Er/T+zdzZt2vWB1FgGxxkX1yrpJN4C0thaqzE0St8U90o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmrFoxNCViZ/VuuH96ZohfkBix0blYfE5DuUi5APlLYrnOZXDo
-	irT84giLhiXc58Nbc2MBXyssylppglmQYnDrg1ufNn24Jfx3qZ2nIFkq
-X-Gm-Gg: ASbGncsfZgB/vAqdd1K9wWgFHpOJNc3ZL+mVZch5CLB2dcHsi/NSdBcRlJ4Y2pG6nl1
-	MhvMBpftG3IkRo/BMm6ufhAMQIX7Y7gyfYXk6JJHAbZgi3g/m3jnHv4wXV6tztc5ZI0Vq51P3gl
-	lY3JCbIG4hNCwTH7hYgq7VO53pdzBhQY4eXXV6xCKQAQA3pdKIvSkhifqHyfK/s82tmNjuj8rWh
-	JRWaQSE4fDHUCUO8lTXT9wRZ5BIt41veWPT9WZTrV5Dn0aymaK/Ke/zXJejn2HhBJho7L/NkICP
-	Nflpelc3o/6bfnODHhencTdyJLztGsoLgeYl4Vi2Y8z1n3o/UvubArPJ2hY9sGp/pp9Fo1VJvS5
-	/OKL9oBEAk3E/0lXRQWBFpdZfnn9HAmB9osgUCnjed52v+0P83S2Slk/mSm1YrUlHe5RJBRFTzE
-	/aihtACYpI66kHi44ZgoBwZwYp
-X-Google-Smtp-Source: AGHT+IGLQ+TKStFopEippXXCOLfymt5XyhUQ0gz+x+HlNHUomSsmKq2g8X5d42p43jRwj51NHHo8YA==
-X-Received: by 2002:a17:903:988:b0:297:dde4:8024 with SMTP id d9443c01a7336-297e56622c0mr113277145ad.23.1762807464301;
-        Mon, 10 Nov 2025 12:44:24 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:5ff:e0da:7503:b2a7? ([2620:10d:c090:500::7:ecb1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-297dfcbe798sm92498915ad.19.2025.11.10.12.44.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Nov 2025 12:44:23 -0800 (PST)
-Message-ID: <854a2c2ceaa52f1ad26fb803d1ad5668fd3200b3.camel@gmail.com>
-Subject: Re: [PATCH v5 6/7] btf: Add lazy sorting validation for binary
- search
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Donglin Peng <dolinux.peng@gmail.com>, Alexei Starovoitov	
- <alexei.starovoitov@gmail.com>, Andrii Nakryiko
- <andrii.nakryiko@gmail.com>,  Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: bot+bpf-ci@kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	zhangxiaoqin@xiaomi.com, LKML <linux-kernel@vger.kernel.org>, bpf	
- <bpf@vger.kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Song Liu	
- <song@kernel.org>, pengdonglin <pengdonglin@xiaomi.com>, Andrii Nakryiko	
- <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
- Lau	 <martin.lau@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- Chris Mason	 <clm@meta.com>
-Date: Mon, 10 Nov 2025 12:44:21 -0800
-In-Reply-To: <CAErzpmtViehGv3uLMFwv5bnRJi4HJu=wE6an6S0Gv2up3vncgA@mail.gmail.com>
-References: <20251106131956.1222864-7-dolinux.peng@gmail.com>
-	 <d57f3e256038e115f7d82b4e6b26d8da80d3c8d8afb4f0c627e0b435dee7eaf6@mail.kernel.org>
-	 <CAErzpmtRYnSpLuO=oM7GgW0Sss2+kQ2cJsZiDmZmz04fD0Noyg@mail.gmail.com>
-	 <74d4c8e40e61dad369607ecd8b98f58a515479f0.camel@gmail.com>
-	 <CAADnVQLkS0o+fzh8SckPpdSQ+YZgbBBwsCgeqHk_76pZ+cchXQ@mail.gmail.com>
-	 <5a8c765f8e2b4473d9833d468ea43ad8ea7e57b6.camel@gmail.com>
-	 <CAADnVQKbgno=yGjshJpo+fwRDMTfXXVPWq0eh7avBj154dCq_g@mail.gmail.com>
-	 <6cbeb051a6bebb75032bc724ad10efed5b65cbf7.camel@gmail.com>
-	 <CAErzpmtViehGv3uLMFwv5bnRJi4HJu=wE6an6S0Gv2up3vncgA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1762808920; c=relaxed/simple;
+	bh=WmucaFrI7bJuofCDaZRNIC+CayWlzp1M5K5cIAKTE1k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LKk2vRFCvkUK2ns3/Y0RAKI86Qat60c6vBUBJ1MocpvuP/c2E8DUXM7wtImySk8quyp8NFRFyQnDNn5RuMKtEo1Wwg2Iqv2dI2DnS+WHaYHSWe+TQZsVTIpXLLA1zn9dJavdP8s3kpmmo+3zvBGhKbKraG8h853/QkR1XEqrWmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SzK2pMWu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E35F1C116B1;
+	Mon, 10 Nov 2025 21:08:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762808919;
+	bh=WmucaFrI7bJuofCDaZRNIC+CayWlzp1M5K5cIAKTE1k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SzK2pMWuVz3sx1/VAZ+bnvTBIVzDeFyWdopXWJCN0QXNVvvAgz/CLqWvLeb2jH6Sv
+	 BNpAFiMMFNItLBfwv3XcKAV7CAvM3IcEnlyJTZqaDemuhfKuxQYD6PTiUwyJ+VEM6Q
+	 VN0I+K4SrpW0OeqrCjFWuhud2QfcT2FWMXCottIz8tYwdP1XUFR999gJrC8EVxcrdi
+	 vSjgLwplYB/q7R1wlkF0r5q9M63nr9Eho62ZHjovpbJsPoGl100MDYqr0cslBdZD8z
+	 ZvHY8I8AXzZYtrxI262MqH213vGMGcx08l2AIeiaEeGz20lPLgogHfNOHhdSNS/RH0
+	 uThAo/VD5hBxQ==
+Date: Mon, 10 Nov 2025 14:08:35 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: Jens Reidel <adrian@mainlining.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: Re: [PATCH] mips: Use generic endianness macros instead of
+ MIPS-specific ones
+Message-ID: <20251110210835.GA302594@ax162>
+References: <20251108-mips-bpf-fix-v1-1-0467c3ee2613@mainlining.org>
+ <20251109233720.GB2977577@ax162>
+ <alpine.DEB.2.21.2511100050330.25436@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2511100050330.25436@angie.orcam.me.uk>
 
-On Mon, 2025-11-10 at 09:42 +0800, Donglin Peng wrote:
+On Mon, Nov 10, 2025 at 01:34:19AM +0000, Maciej W. Rozycki wrote:
+>  Also please don't review changes based on assumptions, "I assume GCC 
+> does[...]" means that you just don't know (and it's trivial to check).
 
-[...]
+Yes, that is totally valid. I hastily reviewed this when I should have
+taken the time to check but I did not have a MIPS cross compiler
+available locally to test and I forgot that I can use Godbolt for that
+test. I'll be more mindful of that in the future (or at least being
+clear that I did not actually check but it should be verified before the
+change is merged without providing a tag).
 
-> [[Resending in plain text format - previous HTML email was rejected]
->=20
-> Thanks for the feedback. Based on the previous discussions, I plan
-> to implement the following changes in the next version:
->=20
-> 1. Modify the btf__permute interface to adopt the ID map approach, as
->     suggested by Andrii.
->=20
-> 2. Remove the lazy sort check and move the verification to the BTF
->     parsing phase. This addresses two concerns: potential race conditions
->     with write operations and const-cast issues. The overhead is negligib=
-le
->      (approximately 1.4ms for vmlinux BTF).
->=20
-> 3. Invoke the btf__permute interface to implement BTF sorting in resolve_=
-btfids.
->=20
-> I welcome any further suggestions.
+> target macros.  Since our current GCC requirement is 5.1 it will be fine 
 
-Hi Donglin,
+Just an FYI, the minimum GCC version is 8.1 since commit 118c40b7b503
+("kbuild: require gcc-8 and binutils-2.30") in 6.16.
 
-I think this summarizes the discussion pretty well.
-One thing to notice about (2): if sorting is done by resolve_btfids,
-there is no need to check for BTF being sorted in vmlinux BTF.
-So, maybe it's a good idea to skip this check for it, as Alexei suggested
-(but not for programs BTF).
-
-Thanks,
-Eduard.
+Cheers,
+Nathan
 
