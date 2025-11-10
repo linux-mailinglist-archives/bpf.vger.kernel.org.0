@@ -1,117 +1,157 @@
-Return-Path: <bpf+bounces-74050-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74051-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35AEBC45A0C
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 10:27:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66C7BC45A18
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 10:28:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFE971889A4E
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 09:28:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1F011890F8B
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 09:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9976F2FF157;
-	Mon, 10 Nov 2025 09:27:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5DF2FFDC9;
+	Mon, 10 Nov 2025 09:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jqbUXIZB"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="0obFlvpp"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from canpmsgout07.his.huawei.com (canpmsgout07.his.huawei.com [113.46.200.222])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C462FE045
-	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 09:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D312FF157
+	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 09:27:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.222
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762766853; cv=none; b=R9TMZwWsCYwCcFC2/HfwF8vEJ6+w1zFuCrpyuO5SIJzeKwd165kjQhfsqmMw+iZbPDE/MkmrHLPuUzkbauOdlxW20myftgF+KGVb4LpDhMrQ0UEXTGlxmwIKtEYQZLnKed/DFpWC+X4yQLHFcJo4ySzt273XEg9peBzIrHjSKFo=
+	t=1762766864; cv=none; b=BnI1dht1LgxTQZN3IglPkG6FHoQ5xAhFfXsdv5U3PECeu0ZnoDXSXSQkk/8g9xzd+iJ0uLulkmdaQgeYvYAuJt4Vv41/poY6V0Ia4ez2pDSOAg7pySx77u5EphiaHbjkIme1LFo6S4O+Vq+lx02HFdWJVJCLuEU8UpfTGofUUpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762766853; c=relaxed/simple;
-	bh=0y1x6vuTqY1a4bcKRJr6zJO92StO1GY4H2TcgO+Dxqc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uin0OoRpgSdIYya8MZkrf5vgZ+GG1IIV0mSBmX2j/b7k+txgvBpQUS6OtLKpMc7hT6F2qNUxhZl7qbH4fn9UOHMarvQdYwc9/DBXYRaH6R9jneldpoL3nKRTsYbS2vIdLdcxc6ZCADTXGjaAScVdaAo2NV58eczjr+0IdmHIXYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jqbUXIZB; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <3d26b162-d218-41ec-b5ab-3657eaffadf6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762766839;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=45w11IYUjkqWJv5rhQ2qNwbknmdZ/cYVdBVIbaYQLFQ=;
-	b=jqbUXIZBGWeJW5cmG+92WJ8dqj1WnvF2UMEmTKPmyy9OR0qwI2HnIxlJoJ6pLhgHZFPSt+
-	oxAI4CVUjt05ctOjeDqz1kJbcPlRq4IjY8xQG9yj7VZ/fl4fk+E3CtCI98048kWYEuNiWv
-	9BjBMMN9l63HZs6F8oxK3TSoTpGJBBc=
-Date: Mon, 10 Nov 2025 17:26:42 +0800
+	s=arc-20240116; t=1762766864; c=relaxed/simple;
+	bh=Xo7kfg+ZDQZT6iJKQYVgjc2Y3prdJvEfkVbclTnsIQ0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=c7szNqbfapsDlFS9riSXU7gK1m4E53jrqiiMaA6gmhP6UJdHoxWiTABRDJio4wQ8gl1pzlklXJoCz+japaVQ4qtphD9Ox6S4voPhLIO35spmUkhtqviMt625hGIP9ettoG4ARPiueVe+1GRXDeuSGo47pHvbVH+xEWpWF2C+6N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=0obFlvpp; arc=none smtp.client-ip=113.46.200.222
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=SeMA90UAoYzSixXIqCuRm5fshxQIuN//PDzpWPTSEN4=;
+	b=0obFlvpphDj6QyerDzk5qw8CRSzAnUo2WvBw4GcFtj5y2OwMY+Bbu2M/nbcHfqpjL3IIjDxVw
+	ZVERBrS7Lo3SdBKsog/uAI0mjjBRIXgZAxsYGW/ISSHP7RFOVOHw70YzSuMyoXA0nU80wbGGxEX
+	/7HbV5l30KZhyRfUXzf/imM=
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4d4kmf3LvMzLlT9;
+	Mon, 10 Nov 2025 17:25:54 +0800 (CST)
+Received: from kwepemf100007.china.huawei.com (unknown [7.202.181.221])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5DDA0140155;
+	Mon, 10 Nov 2025 17:27:32 +0800 (CST)
+Received: from [10.67.108.204] (10.67.108.204) by
+ kwepemf100007.china.huawei.com (7.202.181.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 10 Nov 2025 17:27:31 +0800
+Message-ID: <c934be76-3918-4b84-8e7a-ca1ddd64a0b3@huawei.com>
+Date: Mon, 10 Nov 2025 17:27:31 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 2/3] perf: Add atomic operation in
- get_recursion_context
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
- mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org,
- irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Yonghong Song <yonghong.song@linux.dev>
-References: <20251109163559.4102849-1-chen.dylane@linux.dev>
- <20251109163559.4102849-3-chen.dylane@linux.dev>
- <20251110085210.GV3245006@noisy.programming.kicks-ass.net>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <20251110085210.GV3245006@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf v2] bpf: Fix invalid mem access when
+ update_effective_progs fails in __cgroup_bpf_detach
+Content-Language: en-US
+To: Pu Lehui <pulehui@huaweicloud.com>, Eduard Zingerman <eddyz87@gmail.com>,
+	<bpf@vger.kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+	<martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+	<yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Alan Maguire
+	<alan.maguire@oracle.com>
+References: <20251110071714.4069712-1-pulehui@huaweicloud.com>
+From: Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <20251110071714.4069712-1-pulehui@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ kwepemf100007.china.huawei.com (7.202.181.221)
 
-在 2025/11/10 16:52, Peter Zijlstra 写道:
-> On Mon, Nov 10, 2025 at 12:35:58AM +0800, Tao Chen wrote:
->>  From BPF side, preemption usually is enabled. Yonghong said, it is
->> possible that both tasks (at process level) may reach right before
->> "recursion[rctx]++;". In such cases, both tasks will be able to get
->> buffer and this is not right.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->> ---
+CI report the following warning, and I've post new version [0]. Sorry 
+for the noise.
+
+warning: symbol '__pcpu_scope___dummy_stats' was not declared. Should it 
+be static?
+
+Link: 
+https://lore.kernel.org/bpf/20251110092536.4082324-1-pulehui@huaweicloud.com/ 
+[0]
+
+On 2025/11/10 15:17, Pu Lehui wrote:
+> From: Pu Lehui <pulehui@huawei.com>
 > 
-> Nope, this function really is meant to be used with preemption disabled.
-> If BPF doesn't abide, fix that.
+> Syzkaller triggers an invalid memory access issue following fault
+> injection in update_effective_progs. The issue can be described as
+> follows:
 > 
-
-Ok, let us use preempt_disable in bpf stackmap, thanks. I will change it 
-in v6.
-
->>   kernel/events/internal.h | 5 +----
->>   1 file changed, 1 insertion(+), 4 deletions(-)
->>
->> diff --git a/kernel/events/internal.h b/kernel/events/internal.h
->> index d9cc5708309..684bde972ba 100644
->> --- a/kernel/events/internal.h
->> +++ b/kernel/events/internal.h
->> @@ -214,12 +214,9 @@ static inline int get_recursion_context(u8 *recursion)
->>   {
->>   	unsigned char rctx = interrupt_context_level();
->>   
->> -	if (recursion[rctx])
->> +	if (cmpxchg(&recursion[rctx], 0, 1) != 0)
->>   		return -1;
->>   
->> -	recursion[rctx]++;
->> -	barrier();
->> -
->>   	return rctx;
->>   }
->>   
->> -- 
->> 2.48.1
->>
-
-
--- 
-Best Regards
-Tao Chen
+> __cgroup_bpf_detach
+>    update_effective_progs
+>      compute_effective_progs
+>        bpf_prog_array_alloc <-- fault inject
+>    purge_effective_progs
+>      /* change to dummy_bpf_prog */
+>      array->items[index] = &dummy_bpf_prog.prog
+> 
+> ---softirq start---
+> __do_softirq
+>    ...
+>      __cgroup_bpf_run_filter_skb
+>        __bpf_prog_run_save_cb
+>          bpf_prog_run
+>            stats = this_cpu_ptr(prog->stats)
+>            /* invalid memory access */
+>            flags = u64_stats_update_begin_irqsave(&stats->syncp)
+> ---softirq end---
+> 
+>    static_branch_dec(&cgroup_bpf_enabled_key[atype])
+> 
+> The reason is that fault injection caused update_effective_progs to fail
+> and then changed the original prog into dummy_bpf_prog.prog in
+> purge_effective_progs. Then a softirq came, and accessing the stats of
+> dummy_bpf_prog.prog in the softirq triggers invalid mem access.
+> 
+> To fix it, we can use static per-cpu variables to initialize the stats
+> of dummy_bpf_prog.prog.
+> 
+> Fixes: 4c46091ee985 ("bpf: Fix KASAN use-after-free Read in compute_effective_progs")
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+> v2:
+> - Use static per-cpu variables to initialize the stats of
+>    dummy_bpf_prog.prog suggested by Eduard.
+> 
+> v1: https://lore.kernel.org/all/20251105100302.2968475-1-pulehui@huaweicloud.com
+> 
+>   kernel/bpf/core.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index d595fe512498..c7c9c78f171a 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2536,11 +2536,14 @@ static unsigned int __bpf_prog_ret1(const void *ctx,
+>   	return 1;
+>   }
+>   
+> +DEFINE_PER_CPU(struct bpf_prog_stats, __dummy_stats);
+> +
+>   static struct bpf_prog_dummy {
+>   	struct bpf_prog prog;
+>   } dummy_bpf_prog = {
+>   	.prog = {
+>   		.bpf_func = __bpf_prog_ret1,
+> +		.stats = &__dummy_stats,
+>   	},
+>   };
+>   
 
