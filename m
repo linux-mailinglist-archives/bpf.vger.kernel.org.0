@@ -1,165 +1,151 @@
-Return-Path: <bpf+bounces-74063-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74064-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEF86C46A09
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 13:35:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A90DC46E1C
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 14:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEC39188E1ED
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 12:35:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 740B21891B66
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 13:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18DD30E0F7;
-	Mon, 10 Nov 2025 12:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CDB13101DC;
+	Mon, 10 Nov 2025 13:25:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bjyLkioR"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CL/ziG+d";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YuHyusdp"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252FF2F690D;
-	Mon, 10 Nov 2025 12:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2734623C516
+	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 13:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762778110; cv=none; b=KY/PD4iESgPlzDDJ5xHXQhkJ+Reby9TIPyWWp8fD1+1g8Ps6hx8VVUHdxNcxltR4z7Rq2gnxLcLXADcyjikHehykSUmkC3gf6tVjEVtXNDKtNMZy4iFR7G/RpL2fuVQWB2lSin/CnRy55jv0omrREZ6pf25n2POFrBvqWDMp3uM=
+	t=1762781153; cv=none; b=TVC0YZMVEqEPoTDnUoic2vT8dfh9Yudgyd2KU/hC/r/9n6F1dv7+GCUpQ+tObqDj/bH9uwwpwpCarpRKiPS139l5NmTMSkcHr/4Q7xTQgRoxkM72z2hC9jbgLGf7hY7CtYGDOQXwGLuI/im4sY1E1hZV+RH0vwSLcSxZxqhdDvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762778110; c=relaxed/simple;
-	bh=Aqloc7BOWQNjYEGGJL4VNHIwvX0puHEXVUArW0wY5yM=;
+	s=arc-20240116; t=1762781153; c=relaxed/simple;
+	bh=EeR12cpmuusHZgWY5C4HbNEoA5hSwHLr8ty5TKjmSVc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XMom9hifIeP2N1qEPtjd4xPU5RqUvszFMiCYEeTZMmK0nCWsRnMvh+GjykJlQ2Mkv/vJZk97/f+qK0HBaMlxLCM2We37EVTSVSwg3D8bzAonyNksWpdsEtttxQrYTephNUf9QPm10YiwP4c2ZRoAR1f2hOg3o7F9mYBCe71AoL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bjyLkioR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4C89C19425;
-	Mon, 10 Nov 2025 12:34:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762778107;
-	bh=Aqloc7BOWQNjYEGGJL4VNHIwvX0puHEXVUArW0wY5yM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bjyLkioRQTNOQX7WV1Bvgk28/2Npo87/4O/DYvYxhvdIkzERkIF4YWgs3zpThh4Nb
-	 nk4DxXanbkMIWVH7rVuKqkYHYeYKOOPFEthmKGnYEIAObYRKAndU3l8nRk9CvViRux
-	 65l/SP8udZTmUVNRLT5uXlJoPFSAOuwJ8MFyqobPnPc/FGkeiRAg+O5ICkw1tnUxZ9
-	 nw59ACFdY/BU2F4GziHlZTo7UgjLJ3h/vdd4gyK6wH9qrNK6e1DhackPpUZT9njHNg
-	 FBi/N8QIzRNuYSKNnCDyU3rxchuLO1kRHhf4q/nx8ccSCm7L7vHbfETFkVt/ILm193
-	 OzCXZMlkxupeQ==
-Date: Mon, 10 Nov 2025 14:34:44 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Brendan Jackman <jackmanb@google.com>
-Cc: "Roy, Patrick" <roypat@amazon.co.uk>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"corbet@lwn.net" <corbet@lwn.net>,
-	"maz@kernel.org" <maz@kernel.org>,
-	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-	"joey.gouly@arm.com" <joey.gouly@arm.com>,
-	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-	"yuzenghui@huawei.com" <yuzenghui@huawei.com>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"will@kernel.org" <will@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"bp@alien8.de" <bp@alien8.de>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"willy@infradead.org" <willy@infradead.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"david@redhat.com" <david@redhat.com>,
-	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
-	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
-	"vbabka@suse.cz" <vbabka@suse.cz>,
-	"surenb@google.com" <surenb@google.com>,
-	"mhocko@suse.com" <mhocko@suse.com>,
-	"song@kernel.org" <song@kernel.org>,
-	"jolsa@kernel.org" <jolsa@kernel.org>,
-	"ast@kernel.org" <ast@kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"andrii@kernel.org" <andrii@kernel.org>,
-	"martin.lau@linux.dev" <martin.lau@linux.dev>,
-	"eddyz87@gmail.com" <eddyz87@gmail.com>,
-	"yonghong.song@linux.dev" <yonghong.song@linux.dev>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"kpsingh@kernel.org" <kpsingh@kernel.org>,
-	"sdf@fomichev.me" <sdf@fomichev.me>,
-	"haoluo@google.com" <haoluo@google.com>,
-	"jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"jhubbard@nvidia.com" <jhubbard@nvidia.com>,
-	"peterx@redhat.com" <peterx@redhat.com>,
-	"jannh@google.com" <jannh@google.com>,
-	"pfalcato@suse.de" <pfalcato@suse.de>,
-	"shuah@kernel.org" <shuah@kernel.org>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"Cali, Marco" <xmarcalx@amazon.co.uk>,
-	"Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
-	"Thomson, Jack" <jackabt@amazon.co.uk>,
-	"derekmn@amazon.co.uk" <derekmn@amazon.co.uk>,
-	"tabba@google.com" <tabba@google.com>,
-	"ackerleytng@google.com" <ackerleytng@google.com>
-Subject: Re: [PATCH v7 05/12] KVM: guest_memfd: Add flag to remove from
- direct map
-Message-ID: <aRHb5FJ2TUMtktVz@kernel.org>
-References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
- <20250924152214.7292-1-roypat@amazon.co.uk>
- <20250924152214.7292-2-roypat@amazon.co.uk>
- <DDWOP8GKHESP.2EOY2HGM9RXHU@google.com>
- <aQXVNuBwEIRBtOc0@kernel.org>
- <DDYZRG8A99D1.2MYZVGBKJNHJW@google.com>
- <aQiJAfO8wiVPko_N@kernel.org>
- <DDZV32U60137.1HE9JGMU6P1KD@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fN10glF/ABLYT5E99IgFfuObWxkG5ds1N9kIyswrE8q9qkNAYd+Z8BfuHxu3x+BFDwF1/ltCjM98ecvaIumN7DGX0tYjruBuM5CiA9WJXto0GBTOMTA5rH6mQC+zefnlg2tF8IwIa5MZiy59ZVdc2YRL35ILUopy9lXiVlbuQj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CL/ziG+d; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YuHyusdp; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 10 Nov 2025 14:25:46 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1762781149;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mvgdCM1ejcaF/+cp43uA2Axad0gMApJhoH/v8OPB9h8=;
+	b=CL/ziG+dvLEwnN0v1l/kdboYXKORjIhhzX15LAUQ+gA/vDLWTXXLBkWeLixDskVUXh+QwE
+	y+9rFqJrT+lJKsWusuiJw3Ni31Zo7fxFKBaqOd3vLWD8uo3+VUaVwZKB/XS9+MAdxzrhnn
+	/4c3r0FokMTWladwwySwP7DySYgvTL/R3HTHibN3OXV1oSdTJVGcIQ4OQZShq0PYVL6+uS
+	wb0sS8/ibVYBlalFjcf2ogcY2H8IfZoleVKB05e3gVMZf2PzTUjGEh8Z8LaGjUt2COgs4B
+	4pkpss0rOaZqgtEBYBiZuMVemTQaQvSIA91dcpzSAQVtvbaw1XW2Vi7/NQvMzA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1762781149;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mvgdCM1ejcaF/+cp43uA2Axad0gMApJhoH/v8OPB9h8=;
+	b=YuHyusdpX9sD1fnshGSumuFBdqPLb47j1hUpkzESsIOyobsf44mc8oV/ooqFMN0WtdOjUN
+	bhv9ia/+PbFnwfBw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bot+bpf-ci@kernel.org, chandna.sahil@gmail.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	eddyz87@gmail.com, song@kernel.org, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	jolsa@kernel.org, bpf@vger.kernel.org,
+	syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.comi,
+	martin.lau@kernel.org, clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCH bpf-next] bpf: use preempt_disable/enable() to protect
+ bpf_bprintf_buffers nesting
+Message-ID: <20251110132546.eE4o18h6@linutronix.de>
+References: <20251109173648.401996-1-chandna.sahil@gmail.com>
+ <588e208637619b6c256f2a70dc35faeafda1a843b6410def9fa53ef8876a46e8@mail.kernel.org>
+ <2ed9877e-77e4-4f18-84fd-dc8b1ffe810f@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <DDZV32U60137.1HE9JGMU6P1KD@google.com>
+In-Reply-To: <2ed9877e-77e4-4f18-84fd-dc8b1ffe810f@linux.dev>
 
-On Tue, Nov 04, 2025 at 11:08:23AM +0000, Brendan Jackman wrote:
-> On Mon Nov 3, 2025 at 10:50 AM UTC, Mike Rapoport wrote:
-> >
-> >> >> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> >> >> > index 1d0585616aa3..73a15cade54a 100644
-> >> >> > --- a/include/linux/kvm_host.h
-> >> >> > +++ b/include/linux/kvm_host.h
-> >> >> > @@ -731,6 +731,12 @@ static inline bool kvm_arch_has_private_mem(struct kvm *kvm)
-> >> >> >  bool kvm_arch_supports_gmem_mmap(struct kvm *kvm);
-> >> >> >  #endif
-> >> >> >  
-> >> >> > +#ifdef CONFIG_KVM_GUEST_MEMFD
-> >> >> > +#ifndef kvm_arch_gmem_supports_no_direct_map
-> >> >> > +#define kvm_arch_gmem_supports_no_direct_map can_set_direct_map
-> >> >> > +#endif
-> >> >> > +#endif /* CONFIG_KVM_GUEST_MEMFD */
-> >> >> 
-> 
-> But this is for CONFIG_ARCH_HAS_DIRECT_MAP? I am reading this as a stub
-> to fill in for archs that have set_direct_map_*, but don't have runtime
-> disablement like arm64.
+On 2025-11-09 11:44:48 [-0800], Yonghong Song wrote:
 
-You are right.
+Could we do this instead?
+There is  __bpf_stream_push_str() => bpf_stream_page_reserve_elem() =>
+bpf_stream_page_replace() => alloc_pages_nolock().
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index b469878de25c8..5a4965724c374 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1598,6 +1598,7 @@ struct task_struct {
+ 	void				*security;
+ #endif
+ #ifdef CONFIG_BPF_SYSCALL
++	s8				bpf_bprintf_idx;
+ 	/* Used by BPF task local storage */
+ 	struct bpf_local_storage __rcu	*bpf_storage;
+ 	/* Used for BPF run context */
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index eb25e70e0bdc0..62e37c845ec5a 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -770,28 +770,39 @@ static int bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+ /* Support executing three nested bprintf helper calls on a given CPU */
+ #define MAX_BPRINTF_NEST_LEVEL	3
  
-> Whereas my concern is archs that don't have set_direct_map_* at all,
-> i.e. where we need to unconditionally fail
-> GUEST_MEMFG_FLAG_NO_DIRECT_MAP.
-> 
-> (Or would we prefer to just not define it at all on those archs? Not
-> sure what the norms are there, I guess that's a question for KVM/arch
-> maintainers).
-
-It makes sense to define can_set_direct_map to false for arches that don't
-support set_direct_map. 
-
--- 
-Sincerely yours,
-Mike.
+-static DEFINE_PER_CPU(struct bpf_bprintf_buffers[MAX_BPRINTF_NEST_LEVEL], bpf_bprintf_bufs);
+-static DEFINE_PER_CPU(int, bpf_bprintf_nest_level);
++struct bpf_cpu_buffer {
++	struct bpf_bprintf_buffers bufs[MAX_BPRINTF_NEST_LEVEL];
++	local_lock_t	lock[MAX_BPRINTF_NEST_LEVEL];
++};
++
++static DEFINE_PER_CPU(struct bpf_cpu_buffer, bpf_cpu_bprintf) = {
++	.lock = { [0 ... MAX_BPRINTF_NEST_LEVEL - 1] = INIT_LOCAL_LOCK(bpf_cpu_bprintf.lock) },
++};
+ 
+ int bpf_try_get_buffers(struct bpf_bprintf_buffers **bufs)
+ {
+-	int nest_level;
++	s8 nest_level;
+ 
+-	nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
+-	if (WARN_ON_ONCE(nest_level > MAX_BPRINTF_NEST_LEVEL)) {
+-		this_cpu_dec(bpf_bprintf_nest_level);
++	nest_level = current->bpf_bprintf_idx++;
++	if (WARN_ON_ONCE(nest_level >= MAX_BPRINTF_NEST_LEVEL)) {
++		current->bpf_bprintf_idx--;
+ 		return -EBUSY;
+ 	}
+-	*bufs = this_cpu_ptr(&bpf_bprintf_bufs[nest_level - 1]);
+ 
++	local_lock(&bpf_cpu_bprintf.lock[nest_level]);
++	*bufs = this_cpu_ptr(&bpf_cpu_bprintf.bufs[nest_level]);
+ 	return 0;
+ }
+ 
+ void bpf_put_buffers(void)
+ {
+-	if (WARN_ON_ONCE(this_cpu_read(bpf_bprintf_nest_level) == 0))
++	s8 nest_level;
++
++	nest_level = current->bpf_bprintf_idx;
++	if (WARN_ON_ONCE(nest_level == 0))
+ 		return;
+-	this_cpu_dec(bpf_bprintf_nest_level);
++	local_unlock(&bpf_cpu_bprintf.lock[nest_level - 1]);
++	current->bpf_bprintf_idx--;
+ }
+ 
+ void bpf_bprintf_cleanup(struct bpf_bprintf_data *data)
 
