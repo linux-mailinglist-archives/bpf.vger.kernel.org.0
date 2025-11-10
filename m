@@ -1,210 +1,147 @@
-Return-Path: <bpf+bounces-74039-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74040-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEDB8C44AC8
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 01:45:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 793A3C44B5A
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 02:09:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3552B1889CB8
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 00:45:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50B133B06EB
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 01:09:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993FE1C8FBA;
-	Mon, 10 Nov 2025 00:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cU/lA2at"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2E4217705;
+	Mon, 10 Nov 2025 01:09:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576754C81
-	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 00:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45DE71A58D;
+	Mon, 10 Nov 2025 01:09:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762735509; cv=none; b=eYKpZJREsrJ8ia4PDzzTe04bafNcmcLyZG3Jm5nXWbRG0jm/N1PDtrPlIrvctRaOT/LioaSP3F8O7u8pxD4Kb/CqZRNs4LDbId/TmlIUk/XcZeezLtO88ecb2t41v4mjnULeXEffYS3BhVjkeXQV3JmwcSdlTJcvmm3bgtIjqOM=
+	t=1762736987; cv=none; b=fyeM4p78VsU4Kesps1UmH//+zZBkZIw9xng4rdUkarrUx8NC5w62jWKnoH4bDxAik4Bq+VxlL2CurRcOgfoF/YE0BHcSFGqMqPLdZRyKoonUoYrGArpK3/+14bSiPmpEUqZMlXR/u7ycnvMJxfU7MRRtYhiSvlkvcDWibevHCzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762735509; c=relaxed/simple;
-	bh=nscrX5q0V9+IiSB6g1Ihy59OGQnsnX1NvjsHMFtBXRA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bqlbf4dqgAFd1Re+V9+rT1GDOd/tviJHizDQXBqUJ4ILA89rqMSTFSdFGw/5E7XoLKkISw1QTvUsoNpCUi3VLuCuqWJFTJcKgV1GtQQdA05VLR3pvwQ6IfPO2+ETNybsuaAN59aGh8HmPsZp0/3GYkVZSMWHgO2eux7Sfh0sYLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cU/lA2at; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4edb166b4e3so8033751cf.3
-        for <bpf@vger.kernel.org>; Sun, 09 Nov 2025 16:45:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762735506; x=1763340306; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RG9+esmtn2iSOL2wvO1i8kRVD0mkler7unxM+L1HKt8=;
-        b=cU/lA2at4v+gHU17lWAyMLbL6j8NMDjgmHK8/LM+C+h1M1wVbRjS9q6vU0BG76FTBK
-         EK5CU/QKpqMw2irVCZun0SsN+dm9ZeiIR7KWWbyFpwOxEv8YRnl7XaqizZ4NlE7shFjc
-         FiborlmFlyoKDqgN45AORdFwRNR0TaA7+RXkqKC6bOI+yFWErv5pBCUl959JQyABF6OB
-         DpgYCGxRVHiFpeSjEc0/4eV6dbagbIS27rWn1klXm/On/tnDJT76aF3Vn7+nQ2T3xvwk
-         gtiw2YstCL+JwzToJ0i9UK33wKG8NL4Ybu9DaosK0Ow2uzuzjFsDp92WwOfRLusS2G50
-         oN2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762735506; x=1763340306;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=RG9+esmtn2iSOL2wvO1i8kRVD0mkler7unxM+L1HKt8=;
-        b=BJvx9wPCSXbEc7tCaA+bI2PF8vGkIs9q/C9j45EaopkjC1gUbbD1K+h7aybe3UZ1AQ
-         lhorEiQbpHiBYZ8RxKzyQ6lpZ/bW85w4GjKrIQwAfNg6W/cFMwzxvhxegyeKEc+krhy1
-         7mnhxr5K+LqqXCgmqxb4UaFtiJAFjfd6Al3bowZMCg1p4eFT6I0QOueQyedvQCD8P7pc
-         friViD5I/2tvyBdES7sgKSDN8m/J2ZxjXyB35oB/pvkvHw9w9Y0ZZTnjb1rIlwzpdQlv
-         mER6n4tEoG3ubkoaXpjAKSifMsa1aBzWPjRBWgrgwKsTHBV2haeya5QPWEOTo8rYnPW4
-         9c1w==
-X-Gm-Message-State: AOJu0Yyk3IelxWpazjkaNwrFxGwW9n9whi9c5C+6Jrgd02bDQzcXTA2X
-	pzXZ9JuY68l3YyDwf3EFLS9vs7BwkjP9SRUneJBmifw+IANGbslZmgxgg7icyltlwIU13ZJNrGQ
-	GY08eq4MxgVETJ/5D8ut3D5bKSBXrv7U=
-X-Gm-Gg: ASbGncvIw6EoWVgVLAcQfd6Otb2Tt2ylSZYbcGxpxyAM5AMtH0JW7kAHm1hIhG6gvtr
-	/6WZ9yd2dupxBvhT+4ijz9AcNEbOj+p5b3WQo5O2FGteN55d0YUyv7b8a/nxkBEfO6R2KX3lek6
-	fOK9RJVxsTowIdEczhBC0VAm/QR1K56pRU6sxiwjQhHBBE8243UNUCBRV7iwlycbVUY4XRPitJV
-	QcTsqtjNm9cfWNpn4g8q9AFGXw2TlbzkNxAHdHqboAuO5e0EIARE84RkCyRQeoULF9Zlus=
-X-Google-Smtp-Source: AGHT+IFbsKvPo4QOdZdH1Hs6UEx2eQFogP6cNT3FFamLxD0jTz/gDjn1rgE9WLWUyJwYh0limZ9DA+vXX+q9LKZty1o=
-X-Received: by 2002:a05:622a:353:b0:4ec:efdd:938e with SMTP id
- d75a77b69052e-4eda4e7bbc6mr77601811cf.11.1762735506093; Sun, 09 Nov 2025
- 16:45:06 -0800 (PST)
+	s=arc-20240116; t=1762736987; c=relaxed/simple;
+	bh=6lBX/PQAGMpxyYl0SnTFFRgoUlmWnhp6tbfnUe4KM5s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X281fVe7sJFmXHiBfJXoTkSo0BDgahSlchpHWVl7mx2GGanIWsRr+52GI/0g4kmUxWIRBHDqH01Jc04yDMLh0r7AQGsSF5jQ9HqI3A1XfT3pxNwSt7UP0Cw2LDknjHaCe3YqeTZG6OgzU9XKqeiWhpbrg3Uh3KbQ2cZaXYUV1ME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-c2dff70000001609-52-69113b4c406e
+Date: Mon, 10 Nov 2025 10:09:26 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+	davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
+	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch,
+	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org,
+	david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	ilias.apalodimas@linaro.org, willy@infradead.org,
+	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+	almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+	sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com,
+	dtatulea@nvidia.com
+Subject: Re: [RFC mm v5 1/2] page_pool: check nmdesc->pp to see its usage as
+ page pool for net_iov not page-backed
+Message-ID: <20251110010926.GA70011@system.software.com>
+References: <20251103075108.26437-1-byungchul@sk.com>
+ <20251103075108.26437-2-byungchul@sk.com>
+ <20251106173320.2f8e683a@kernel.org>
+ <20251107015902.GA3021@system.software.com>
+ <20251106180810.6b06f71a@kernel.org>
+ <20251107044708.GA54407@system.software.com>
+ <20251107174129.62a3f39c@kernel.org>
+ <20251108022458.GA65163@system.software.com>
+ <20251107183712.36228f2a@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAK3+h2yuppeOisqT+G6pf9zsP7sTbbbgKWpMe6s5TL6fZ-coWg@mail.gmail.com>
- <893afb17-aac2-47d6-8651-e07ccc37995b@linux.dev>
-In-Reply-To: <893afb17-aac2-47d6-8651-e07ccc37995b@linux.dev>
-From: Vincent Li <vincent.mc.li@gmail.com>
-Date: Sun, 9 Nov 2025 16:44:54 -0800
-X-Gm-Features: AWmQ_bk1E9eooG2UAoLJY5E7fAz0tG_AOuxXuF32u7oh2XVYvkqd328mhNU6F1Y
-Message-ID: <CAK3+h2yZ=RS1SM_NvycfiBM_16HEc5apZdKiCv6_75Ts8Ps6=g@mail.gmail.com>
-Subject: Re: [BPF selftests]:bpf_arena_common.h: error: conflicting types for 'bpf_arena_alloc_pages'
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, ast <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251107183712.36228f2a@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA03Se0hUaRjHcd7znpuDQ2fG2t50o2W6gZVdttinCxVFcLCCwCK6N+UhD40a
+	42QaFWMNlFNa7eY2jhOZUV5raCx1poy8rE5FOegaJ7Ydy7ba7WKDNxoddGeKqP8+8Pz48v7x
+	8ljrZWJ5Oc0kGdP0Bh2rolUfoktmrVmskecUdWjA4axiofJTFpQ+r2MgWPWGAkdFDYL+4F8c
+	jNa3IOhrbmXhXVMvgsuXBjE42iw0DDiHMLg9bxC8tV1j4VVLNweVrrXQdfU1DXeO12LoPu1l
+	Ic8yjKE+2MPB0bqycLjazIGvJp+Bc0NXMNSan3PQ4XGw4K8aZeB1Yx4N9+3lNAQKmjF05S+H
+	luIfYPDhewTNzloKBk9dYKGz0EPBrfpODn5rL2bhpaULQXtTNw0FoRMsFOXkIxj+FE72nOln
+	oOgPP7c8QcxRFFZsev8RizfLn1LiE9tZWlTuPqBEt/1vTix27Rery+JFq9KORVdFLiu6en/l
+	xGdP7rCi1zZMi+4XC0V3XR8l5h3rYdeN26xakiwZ5EzJOHvpTlWKJ1TC7Hs8Jst//QJjRuXR
+	VhTFE2E+Od1Qhr7aUnCCi5gWppJe79Bns8J0oihBHPFYYQqxVBfSVqTisRDgiE3xM5FDjGAi
+	gY/m8Ijj1QKQG6bIRCvkYmK1Vn/uqAUNuV/4Dx0xFuKJMvIfZUV82HGkdISPMEqYS8w3f4os
+	xgmTyb2aVurLywI8abi9/osnkIYyhT6DBPt3Uft3Ufu3aDHCFUgrp2Wm6mXD/ISU7DQ5K2F3
+	eqoLhf/X1cOhLXWo15fUiAQe6aLVCqeRtYw+MyM7tRERHuvGqkO7BFmrTtZnH5SM6TuM+w1S
+	RiOK42ndePW8wQPJWmGP3iTtlaR9kvHrleKjYs3IdKSId46G/BP5xH9jfC99Jeka77pfJv3Y
+	zjEzAsscizyznbV/rh7N3rYkCa+vXHWp85Xthudp4YEj3dM2l5zPfzTG8IJKXNmWm9gx8CzY
+	3+k+OW9VQexF+dzZmZ4FkzZmxW0f2MQv3epKMve1/jz+9742+90pK7oOjhyKU6X6cnx7Nujo
+	jBT93HhszND/D1lxqNNbAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTYRyG+c53bg5Hx2V10KBYSmGUCgW/UsQg6KM7SQlC2cxTjrzEprIF
+	wcyFtdIsE3RpWZHltLRp3sioaV4KLBTjRKVmZRfNli3zsrItiPzvgfd93r9eHqsqmQBem5ou
+	6VI1yWpWQSu2R2Sv2hLhpw3r+wVQUl3FQuWkAW4MNjIwVfWBghJbPQLX1EsOZlvaEXxv62Bh
+	pHUcwbUrExhKnppp+FE9jaGp+QOCz0W3WHjfPsRBpX0bDJQP03AvpwHD0NlOFnLNMxhapsY4
+	ON540zNca+KgtbSLgWf1eQxcmL6OocE0yEFvcwkL/VWzDAw7cmnoslbQ4CxswzCQFw3tZQth
+	4skogrbqBgomzpSy0FfcTMHdlj4OCnrKWHhrHkDQ0zpEQ6H7JAsXs/IQzEx6JsfyXQxcfNTP
+	RYeSLFlmSevoV0zqKl5Q5HnROZrI9x9TpMn6miNl9gxSezOEWOQeTOy2Uyyxj5/nyKvn91jS
+	WTRDk6Y360hT43eK5GaPsTsXxikiE6VkbaakC43ar0hqdl9ljnTPM/TfLmVMqMLXgnx4UVgj
+	mgtPcl6mhWBxvHP6L7PCclGWp7CX/YUg0VxbTFuQgseCkxOL5H7GG8wX0kXnV5OnxPFKAcQ7
+	6d6KSjiFRYul9u+OUvATu4rf0V7GQogo//5EWRDv4UDxxm/eiz5CuGiqW+ptLBCWiQ/qO6h8
+	pLTOka1zZOt/uQxhG/LXpmamaLTJa1frDycZU7WG1QfSUuzIc6HyY+5zjcjVu8mBBB6pfZUy
+	56dVMZpMvTHFgUQeq/2V7gRBq1ImaoxHJV1avC4jWdI7UCBPqxcpN8dK+1XCIU26dFiSjki6
+	fynF+wSYEA7W/3wQtSdkfKNzxjia9m393kD3/Wj7pcT8rQldMb07bo+scuhiEwtWmg2+xbaY
+	2d0Ng5FLvix+aHg5FPRRrbgc52rbVZMhhy8Ocp0e7tzXHWPM2lP3o/v0qzUpX6btJxKWqzpQ
+	QQAJXGu31WzYFr/i4Gw5ziERH8mvOh9n2F6lmtYnacJDsE6v+QPGyCplPgMAAA==
+X-CFilter-Loop: Reflected
 
-On Sun, Nov 9, 2025 at 11:50=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
->
-> On 11/9/25 9:09 AM, Vincent Li wrote:
-> > Hi,
+On Fri, Nov 07, 2025 at 06:37:12PM -0800, Jakub Kicinski wrote:
+> On Sat, 8 Nov 2025 11:24:58 +0900 Byungchul Park wrote:
+> > On Fri, Nov 07, 2025 at 05:41:29PM -0800, Jakub Kicinski wrote:
+> > > On Fri, 7 Nov 2025 13:47:08 +0900 Byungchul Park wrote:
+> > > > The offset of page_type in struct page cannot be used in struct net_iov
+> > > > for the same purpose, since the offset in struct net_iov is for storing
+> > > > (struct net_iov_area *)owner.
+> > >
+> > > owner does not have to be at a fixed offset. Can we not move owner
+> > > to _pp_mapping_pad ? Or reorder it with type, enum net_iov_type
+> > > only has 2 values we can smoosh it with page_type easily.
 > >
-> > Sorry if this is a known issue,  but I could not find it.  my build env=
-ironment:
+> > I'm still confused.  I think you probably understand what this work is
+> > for.  (I've explained several times with related links.)  Or am I
+> > missing something from your questions?
 > >
-> > [root@fedora linux-loongson]# pahole --version
-> > v1.30
-> > [root@fedora linux-loongson]# clang --version
-> > clang version 21.1.5
-> > Target: loongarch64-redhat-linux
-> > Thread model: posix
-> > InstalledDir: /usr/bin
+> > I've answered your question directly since you asked, but the point is
+> > that, struct net_iov will no longer overlay on struct page.
 > >
-> > [root@fedora linux-loongson]# bpftool version
-> > bpftool v7.6.0
-> > using libbpf v1.6
-> > features: llvm, skeletons
-> >
-> > I got errors below while building bpf selftests with bpf-next branch,
-> > I had to comment out the bpf_arena_alloc_pages,
-> > bpf_arena_reserve_pages, bpf_arena_free_pages in
-> > tools/include/vmlinux.h, then progs/stream.c build succeeded. It looks
-> > like these functions in tools/include/vmlinux.h generated by bpftool
-> > are not the same as in bpf_arena_common.h. is there something wrong in
-> > my build environment?
->
-> Could you try pahole master branch? See the conversion in
->    https://lore.kernel.org/bpf/8a94c764c5fa4ff04fa7dd69ed47fcdf782b814e@l=
-inux.dev/
->
+> > Instead, struct netmem_desc will be responsible for keeping the pp
+> > fields while struct page will lay down the resonsibility, once the pp
+> > fields will be removed from struct page like:
+> 
+> I understand the end goal. I don't understand why patch 1 is a step
+> in that direction, and you seem incapable of explaining it. So please
+> either follow my suggestion on how to proceed with patch 2 without
 
-Thanks Yonghong! I just tried the pahole master branch which shows
-1.30 version, and pahole next branch which shows 1.31 version, same
-problem.
+struct page and struct netmem_desc should keep difference information.
+Even though they are sharing some fields at the moment, it should
+eventually be decoupled, which I'm working on now.
 
-[root@fedora dwarves]# pahole --version
-v1.31
+> patch 1 in current form. Or come back when have the full conversion
+> ready.
 
-[root@fedora build]# cd /usr/src/linux-loongson/tools/testing/selftests/bpf=
-/
-[root@fedora bpf]# make clean
-  CLEAN
-  CLEAN   Module.symvers
-  CLEAN   eBPF_helpers-manpage
-  CLEAN   eBPF_syscall-manpage
-[root@fedora bpf]# make -j6
+This patch set represents the final phase of the full conversion process,
+awaiting the next steps. Once this patch is completed, the entire
+conversion will be finished, allowing for the final patch that removes
+the pp fields from the struct page to be carried out.
 
-Auto-detecting system features:
-...                                    llvm: [ on  ]
-...
-  INSTALL bpftool
-  GEN      vmlinux.h
-...
-CLNG-BPF [test_progs] strobemeta.bpf.o
-In file included from progs/stream.c:8:
-/usr/src/linux-loongson/tools/testing/selftests/bpf/bpf_arena_common.h:47:1=
-5:
-error: conflicting types for 'bpf_arena_alloc_pages'
-   47 | void __arena* bpf_arena_alloc_pages(void *map, void __arena
-*addr, __u32 page_cnt,
-
-> >
-> >
-> > In file included from progs/stream.c:8:
-> > /usr/src/linux-loongson/tools/testing/selftests/bpf/bpf_arena_common.h:=
-47:15:
-> > error:
-> >        conflicting types for 'bpf_arena_alloc_pages'
-> >     47 | void __arena* bpf_arena_alloc_pages(void *map, void __arena
-> > *addr, __u32 page_cnt,
-> >        |               ^
-> > /usr/src/linux-loongson/tools/testing/selftests/bpf/tools/include/vmlin=
-ux.h:180401:14:
-> > note:
-> >        previous declaration is here
-> >   180401 | extern void *bpf_arena_alloc_pages(void *p__map, void
-> > *addr__ign, u32 page_cnt, int node_i...
-> >          |              ^
-> > In file included from progs/stream.c:8:
-> > /usr/src/linux-loongson/tools/testing/selftests/bpf/bpf_arena_common.h:=
-49:5:
-> > error:
-> >        conflicting types for 'bpf_arena_reserve_pages'
-> >     49 | int bpf_arena_reserve_pages(void *map, void __arena *addr,
-> > __u32 page_cnt) __ksym __weak;
-> >        |     ^
-> > /usr/src/linux-loongson/tools/testing/selftests/bpf/tools/include/vmlin=
-ux.h:180403:12:
-> > note:
-> >        previous declaration is here
-> >   180403 | extern int bpf_arena_reserve_pages(void *p__map, void
-> > *ptr__ign, u32 page_cnt) __weak __ksym;
-> >          |            ^
-> > In file included from progs/stream.c:8:
-> > /usr/src/linux-loongson/tools/testing/selftests/bpf/bpf_arena_common.h:=
-50:6:
-> > error:
-> >        conflicting types for 'bpf_arena_free_pages'
-> >     50 | void bpf_arena_free_pages(void *map, void __arena *ptr, __u32
-> > page_cnt) __ksym __weak;
-> >        |      ^
-> > /usr/src/linux-loongson/tools/testing/selftests/bpf/tools/include/vmlin=
-ux.h:180402:13:
-> > note:
-> >        previous declaration is here
-> >   180402 | extern void bpf_arena_free_pages(void *p__map, void
-> > *ptr__ign, u32 page_cnt) __weak __ksym;
-> >          |             ^
-> > 3 errors generated.
-> >
-> > Vincent
->
+	Byungchul
 
