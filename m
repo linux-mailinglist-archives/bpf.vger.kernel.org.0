@@ -1,151 +1,157 @@
-Return-Path: <bpf+bounces-74064-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74065-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A90DC46E1C
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 14:26:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A76FBC46E5B
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 14:30:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 740B21891B66
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 13:26:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 826993AC008
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 13:27:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CDB13101DC;
-	Mon, 10 Nov 2025 13:25:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F422B3101C8;
+	Mon, 10 Nov 2025 13:26:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CL/ziG+d";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YuHyusdp"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="E5qqUFsl"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2734623C516
-	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 13:25:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2883101BB
+	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 13:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762781153; cv=none; b=TVC0YZMVEqEPoTDnUoic2vT8dfh9Yudgyd2KU/hC/r/9n6F1dv7+GCUpQ+tObqDj/bH9uwwpwpCarpRKiPS139l5NmTMSkcHr/4Q7xTQgRoxkM72z2hC9jbgLGf7hY7CtYGDOQXwGLuI/im4sY1E1hZV+RH0vwSLcSxZxqhdDvE=
+	t=1762781218; cv=none; b=dm0NVembmeUJLJ7g6sgEatrbK+TCVRSY4G+65FER0PtsisDfbm7u9KL53+nkxRjc0PEF2RShPyd3/hagnNaDcP76IFZaYRhZQmr9L8j/nBRzc45u2aq1WuQas8fSzgPfUj6H61fAkP82IcvUVTBW/P9MYL3pe1uhTpVm3oxksAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762781153; c=relaxed/simple;
-	bh=EeR12cpmuusHZgWY5C4HbNEoA5hSwHLr8ty5TKjmSVc=;
+	s=arc-20240116; t=1762781218; c=relaxed/simple;
+	bh=7zBlKI19nm4l57l+GSpU34xDjL4DbJLxfBwZWCrg3No=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fN10glF/ABLYT5E99IgFfuObWxkG5ds1N9kIyswrE8q9qkNAYd+Z8BfuHxu3x+BFDwF1/ltCjM98ecvaIumN7DGX0tYjruBuM5CiA9WJXto0GBTOMTA5rH6mQC+zefnlg2tF8IwIa5MZiy59ZVdc2YRL35ILUopy9lXiVlbuQj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CL/ziG+d; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YuHyusdp; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 10 Nov 2025 14:25:46 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1762781149;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mvgdCM1ejcaF/+cp43uA2Axad0gMApJhoH/v8OPB9h8=;
-	b=CL/ziG+dvLEwnN0v1l/kdboYXKORjIhhzX15LAUQ+gA/vDLWTXXLBkWeLixDskVUXh+QwE
-	y+9rFqJrT+lJKsWusuiJw3Ni31Zo7fxFKBaqOd3vLWD8uo3+VUaVwZKB/XS9+MAdxzrhnn
-	/4c3r0FokMTWladwwySwP7DySYgvTL/R3HTHibN3OXV1oSdTJVGcIQ4OQZShq0PYVL6+uS
-	wb0sS8/ibVYBlalFjcf2ogcY2H8IfZoleVKB05e3gVMZf2PzTUjGEh8Z8LaGjUt2COgs4B
-	4pkpss0rOaZqgtEBYBiZuMVemTQaQvSIA91dcpzSAQVtvbaw1XW2Vi7/NQvMzA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1762781149;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mvgdCM1ejcaF/+cp43uA2Axad0gMApJhoH/v8OPB9h8=;
-	b=YuHyusdpX9sD1fnshGSumuFBdqPLb47j1hUpkzESsIOyobsf44mc8oV/ooqFMN0WtdOjUN
-	bhv9ia/+PbFnwfBw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bot+bpf-ci@kernel.org, chandna.sahil@gmail.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	eddyz87@gmail.com, song@kernel.org, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org, bpf@vger.kernel.org,
-	syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.comi,
-	martin.lau@kernel.org, clm@meta.com, ihor.solodrai@linux.dev
-Subject: Re: [PATCH bpf-next] bpf: use preempt_disable/enable() to protect
- bpf_bprintf_buffers nesting
-Message-ID: <20251110132546.eE4o18h6@linutronix.de>
-References: <20251109173648.401996-1-chandna.sahil@gmail.com>
- <588e208637619b6c256f2a70dc35faeafda1a843b6410def9fa53ef8876a46e8@mail.kernel.org>
- <2ed9877e-77e4-4f18-84fd-dc8b1ffe810f@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wu07nGpzMrPbrVpM0IrD14+vgG2OUfjlpoVu70OYtklo5/bOTDb6dKz9cagI2Ij6DELnnNxjmtKTiXcPoSuBN80jlzmDqkRyt2rNEmrqH4qhsqkEVFCVm8PTqDNTYJoUBEwMsLjKfTHctnVvT9bhniT/OA6mV6tnBXnisnLqGis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=E5qqUFsl; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b5a8184144dso389585566b.1
+        for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 05:26:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1762781215; x=1763386015; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WhaZSZSH3JxixsGOb3+NSOpxTTK16V/bDeAhAAUpFzE=;
+        b=E5qqUFslVJXWPHhafsxsLihzT2Hp1H7ZL3bmTpHc1vF2FQcxh/aQ06ldMfj/Vuroos
+         6hElXI3/nIMU2tmAI7rb47W4ouuJ2zEDvb8xbb8ffZIju8HaIU51HE4S6tnw71CNQ3Bf
+         SgKBbPLG2cJ7UoeLIsWfFCk78xyOgWyvCGN2fFCZjODv9YM0tjvAzWt8o0pPmpRbmKjq
+         5gvS9Pg1mDvRrHYdnSJIGr093yv9UAsFVNVIGZbrH8Ga2I9QDAIM+z0ttJolmmxcgcpQ
+         aZjjcynCrC/094+Dg13xfDzZR5iiIEW/g6WMD43PJ1HEEajIHDCWJfXyimpxSn2TnjQ4
+         JyOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762781215; x=1763386015;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WhaZSZSH3JxixsGOb3+NSOpxTTK16V/bDeAhAAUpFzE=;
+        b=IBUlRuputH7QBVTsxYTY47XKW7aoP2mjdcAd16SvzfUObgqPSr9kdnJE2V6cJsFbYm
+         x8/c1dTAuqAyvrcjCL0UgERZm1ZFCZsbpvjDNmLvq1kENEVsCE5Jl4BGIiPUIy2M9srF
+         1OIDqz4VHq5nI40l1UXTm9n8A4qalxQdBEhHlTGUy2tL2Cs5I1UWIJrX1E+C34sZ4eEF
+         rBhkpmEw8YLKNSgpu/x5jAgXzF2xqsYyAtTQPYNNmsH0MTxraTfIfFiLaiIEzwkM1o2j
+         CMFRf4yz5vbmwegjYT3q+MSgnGSAO+sJ4vMwuGVoDzHq4D7htKLGLW42J/FmMxfWhZX7
+         gDEg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQ8fu2d8EdduHKwm6pr81lJ0KwHnaUComFe7XFrZXsW8Rh40Pwh908DuLMt6B1gQYxuYc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbSLUJihg9LTXlyjYwQG6c/Un4BHtLR5qUwCqh9LuznGqumzKS
+	5kla7XZpCA64yj/rEvO5z8aQVi1oePYHs2MAW7j4k9dfvL5ILmA+IBqmuRPQJrKAcbs=
+X-Gm-Gg: ASbGncvJal+uP6tEd8NUtPPxIZhJ3FkJo25MpRFuxMhfiDCQntCyd/Pi87zsWduEUyc
+	Jfe9VW90KrIFZS0X9s6yxMny3G0t5XjLWndjgHB8bzqhB7x3SEb6cuDgU4xtlNIt7x/ibHH/K51
+	/hmpyjqDExHK2ecuqhjCRU9yysWNlOB+VpoIyGtdNhFcdGHxpL5RE8c5iWk3Xs1C5OBfe4y2y6U
+	6n1eHHVkKGjnfiebn9i+0DwlrLEiRmylwT12DXFBjfPnJDRhJvqkV7ivnNdcPd+M6Wo7SO84Yce
+	2Rft0LZwspxBzv4PDHzdTZBa8c603JjW5lY+afV8YJEHdMmoAjM+BiCl2FJEVK+X0B5V0jVoLlM
+	mDTMnlRkX3IbPimYAAdAVHrT7o994jaWxLZoAFuLDlQ9QjL9nIpqDODtkthC2AqFvPWxKW7vWNi
+	N80jGWJQ0qfFFEkw==
+X-Google-Smtp-Source: AGHT+IEFvin7sLruegH2ZxQ0SW44BHRX6xFr54ZAVGaHqC0y7M8M930cBHeCWlcadsxgJM1CQZ9cXw==
+X-Received: by 2002:a17:907:7b96:b0:b40:fba8:4491 with SMTP id a640c23a62f3a-b72e0310d6fmr928514366b.17.1762781214802;
+        Mon, 10 Nov 2025 05:26:54 -0800 (PST)
+Received: from pathway.suse.cz ([176.114.240.130])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b72bf97d43bsm1129492566b.45.2025.11.10.05.26.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Nov 2025 05:26:54 -0800 (PST)
+Date: Mon, 10 Nov 2025 14:26:52 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Aaron Tomlin <atomlin@atomlin.com>
+Cc: Petr Pavlu <petr.pavlu@suse.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <kees@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Daniel Gomez <da.gomez@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-modules@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] kallsyms: Prevent module removal when printing
+ module name and buildid
+Message-ID: <aRHoHMJYAhSoEh1e@pathway.suse.cz>
+References: <20251105142319.1139183-1-pmladek@suse.com>
+ <20251105142319.1139183-7-pmladek@suse.com>
+ <kubk2a4ydmja45dfnwxkkhpdbov27m6errnenc6eljbgdmidzl@is24eqefukit>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2ed9877e-77e4-4f18-84fd-dc8b1ffe810f@linux.dev>
+In-Reply-To: <kubk2a4ydmja45dfnwxkkhpdbov27m6errnenc6eljbgdmidzl@is24eqefukit>
 
-On 2025-11-09 11:44:48 [-0800], Yonghong Song wrote:
+On Fri 2025-11-07 19:36:35, Aaron Tomlin wrote:
+> On Wed, Nov 05, 2025 at 03:23:18PM +0100, Petr Mladek wrote:
+> > kallsyms_lookup_buildid() copies the symbol name into the given buffer
+> > so that it can be safely read anytime later. But it just copies pointers
+> > to mod->name and mod->build_id which might get reused after the related
+> > struct module gets removed.
+> > 
+> > The lifetime of struct module is synchronized using RCU. Take the rcu
+> > read lock for the entire __sprint_symbol().
+> > 
+> > Signed-off-by: Petr Mladek <pmladek@suse.com>
+> > ---
+> >  kernel/kallsyms.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> > index ff7017337535..1fda06b6638c 100644
+> > --- a/kernel/kallsyms.c
+> > +++ b/kernel/kallsyms.c
+> > @@ -468,6 +468,9 @@ static int __sprint_symbol(char *buffer, unsigned long address,
+> >  	unsigned long offset, size;
+> >  	int len;
+> >  
+> > +	/* Prevent module removal until modname and modbuildid are printed */
+> > +	guard(rcu)();
+> > +
+> >  	address += symbol_offset;
+> >  	len = kallsyms_lookup_buildid(address, &size, &offset, &modname, &buildid,
+> >  				       buffer);
+> > -- 
+> > 2.51.1
+> > 
+> > 
+> 
+> Hi Petr,
+> 
+> If I am not mistaken, this is handled safely within the context of
+> module_address_lookup() since f01369239293e ("module: Use RCU in
+> find_kallsyms_symbol()."), no?
 
-Could we do this instead?
-There is  __bpf_stream_push_str() => bpf_stream_page_reserve_elem() =>
-bpf_stream_page_replace() => alloc_pages_nolock().
+The above mention commit fixed an API which is looking only for
+the symbol name. It seems to be used, for example, in kprobe
+or ftrace code.
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index b469878de25c8..5a4965724c374 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1598,6 +1598,7 @@ struct task_struct {
- 	void				*security;
- #endif
- #ifdef CONFIG_BPF_SYSCALL
-+	s8				bpf_bprintf_idx;
- 	/* Used by BPF task local storage */
- 	struct bpf_local_storage __rcu	*bpf_storage;
- 	/* Used for BPF run context */
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index eb25e70e0bdc0..62e37c845ec5a 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -770,28 +770,39 @@ static int bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
- /* Support executing three nested bprintf helper calls on a given CPU */
- #define MAX_BPRINTF_NEST_LEVEL	3
- 
--static DEFINE_PER_CPU(struct bpf_bprintf_buffers[MAX_BPRINTF_NEST_LEVEL], bpf_bprintf_bufs);
--static DEFINE_PER_CPU(int, bpf_bprintf_nest_level);
-+struct bpf_cpu_buffer {
-+	struct bpf_bprintf_buffers bufs[MAX_BPRINTF_NEST_LEVEL];
-+	local_lock_t	lock[MAX_BPRINTF_NEST_LEVEL];
-+};
-+
-+static DEFINE_PER_CPU(struct bpf_cpu_buffer, bpf_cpu_bprintf) = {
-+	.lock = { [0 ... MAX_BPRINTF_NEST_LEVEL - 1] = INIT_LOCAL_LOCK(bpf_cpu_bprintf.lock) },
-+};
- 
- int bpf_try_get_buffers(struct bpf_bprintf_buffers **bufs)
- {
--	int nest_level;
-+	s8 nest_level;
- 
--	nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
--	if (WARN_ON_ONCE(nest_level > MAX_BPRINTF_NEST_LEVEL)) {
--		this_cpu_dec(bpf_bprintf_nest_level);
-+	nest_level = current->bpf_bprintf_idx++;
-+	if (WARN_ON_ONCE(nest_level >= MAX_BPRINTF_NEST_LEVEL)) {
-+		current->bpf_bprintf_idx--;
- 		return -EBUSY;
- 	}
--	*bufs = this_cpu_ptr(&bpf_bprintf_bufs[nest_level - 1]);
- 
-+	local_lock(&bpf_cpu_bprintf.lock[nest_level]);
-+	*bufs = this_cpu_ptr(&bpf_cpu_bprintf.bufs[nest_level]);
- 	return 0;
- }
- 
- void bpf_put_buffers(void)
- {
--	if (WARN_ON_ONCE(this_cpu_read(bpf_bprintf_nest_level) == 0))
-+	s8 nest_level;
-+
-+	nest_level = current->bpf_bprintf_idx;
-+	if (WARN_ON_ONCE(nest_level == 0))
- 		return;
--	this_cpu_dec(bpf_bprintf_nest_level);
-+	local_unlock(&bpf_cpu_bprintf.lock[nest_level - 1]);
-+	current->bpf_bprintf_idx--;
- }
- 
- void bpf_bprintf_cleanup(struct bpf_bprintf_data *data)
+This patch is fixing another API which is used in vsprintf() for
+printing backtraces. It looks for more information: symbol name,
+module name, and buildid. It needs its own RCU read protection.
+
+Best Regards,
+Petr
 
