@@ -1,178 +1,136 @@
-Return-Path: <bpf+bounces-74066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 688CDC47038
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 14:49:23 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17CFEC47690
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 16:08:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 143B7188F73A
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 13:49:44 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 66E3E349BBE
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 15:08:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A1B30E849;
-	Mon, 10 Nov 2025 13:49:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74A9314D22;
+	Mon, 10 Nov 2025 15:08:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZR29Dl4K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uLm0/4Ev"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2457122D780
-	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 13:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100AE1A7AE3;
+	Mon, 10 Nov 2025 15:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762782551; cv=none; b=AF/UlKpo2PAS1bMzKxoqySLgOF9+GT6aaa1Y+Xvkhp0d1Tjv/Jnky8HBTa6zeE4HqHlDb8zfr7fGEsFh0/1ORTLaM0SdcjvArioyKb8VO3k3iIerlsTPN4IkcLAT7fmz91GjEXApX22z8at7heF1MG+dAtChj+TSOZvyw04nmmQ=
+	t=1762787322; cv=none; b=MpvA/76q5WBhBMMmErudHZoA0S46RT1gI9ZxXleeQp7ZPSMmwm4pFLSr8piti7XLknDisijgaLrKdRkCB5FQdoqV0ga5zHygBpHDKL4curnU77wXn7zj8/zkzTbabwpzlRIj7fpOK5pZaL+GjKqEM6zcpOxG2xdNWKUfgugmGyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762782551; c=relaxed/simple;
-	bh=TQ7h6Mz2s/JbJILiZ/3bEy00deZQ+pPh63bYADHti9I=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e40l1hVQ4AiWQ1lkr6EeG4M1V5AomaH2wutqEnyw1jjYGLC+0LSu4GahJ7cfyUNq/+AF+tHbQegsK9/alEfFRO5mPfz8bDtWjdjoWmmXd+BB2iV/WcLGAIRlS3NLrK44peF34qq/cQbFU9jWUPt0MwLKSOQcfxVrERNX4FH3/gQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZR29Dl4K; arc=none smtp.client-ip=209.85.214.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-2958db8ae4fso25165675ad.2
-        for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 05:49:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762782547; x=1763387347; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=p/QXwQnS4eai1OeNWeo93T9s/bj/XOu9GVduo6Pa63U=;
-        b=ZR29Dl4KN1Zo58bbUU+Ac+1Q2bFeTsgjFrXYOD5LbL4xxNITq8aq24ahp49uM2fZxs
-         /+2Kko/5gsbrtw+oEcjz+feHL5dtKEzTo5c4yjM2ezHFKpO5oDthn8AXoAIvfoRsGQE4
-         dnas0Ar1lNsFT00QPcBGPPvDiLWWFTgfbuUfeOUv0VTmSIM5lYazX73gY7XYMtjWtFcC
-         9J3qho6jmbnhW/yrtS9yxwvpPK+pijgUWmhtO9nYYVprrGl29hN0jDUjcwhUSKtF/gPY
-         yacupPyZOz7vOG6oG6VuOeLtNquK6YOBkDsm8ayJ7Db7Jy4JTDm6Qwvsozp66UmkY85G
-         u1SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762782547; x=1763387347;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p/QXwQnS4eai1OeNWeo93T9s/bj/XOu9GVduo6Pa63U=;
-        b=pS59i+FGpr6EiSabvtDE/5ttbPvJR3i2HDMptiPHmHvzexYYNoSm3uQBayhRnwZKzs
-         Jj3ni0+YhbpLA37pu3C4/2GN7KOfkciezb5Xzp2Cv3wGRU8LXu/l+VDFaK261Enk95aK
-         sSvwQLHZ2A9Pq7a0gZbKXYD0gNTCGLFSYIikW1zVLDJ3X9n1qyz1YIEKjpGyhRAXUP9A
-         aW8TBSYduVqwmOxTJBkt6lN5Xps7OnBjANj5rJkcXS1evJjdLz4TJF8nwgGbUZSNb2Qz
-         pnJDkNIMfr/Ke1LI5Dgd2RJLnxSnMR88ODUQXaQ1rOI8SGGXRD5FzjBGf0LWZ8g2E2zn
-         UNhg==
-X-Forwarded-Encrypted: i=1; AJvYcCVA8N3F89MFeqsWD5oZFK1p+EM06PpSCnBaPSvK9NAEDk0KBoAvxU2VvLLI+gI41lXenuY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwFDejpzk9wYszWT88Var1WqTctTyv60n4gXy1FVxiP76qa2SQc
-	oQhY+OZG5SRC3bbSAQJBwgqHdmLRIT9HH0BrmqfqFa8ViXN6SJVz4O5n
-X-Gm-Gg: ASbGncsRAOIXbSRZEC9AILqOWZYH7VXU5Q5YIoH8GZjx98MGYo3XUXdVMEXfZHyssla
-	1vlWJB+jhdu8mP1evYZw5YqLLPF4/WBRXIqfDaYB1zR4N4wvR+Z4WFYYZJpOzHuUuM9gaYSD0fA
-	tcUyGgVZmXBNasVE3jkpcuSdQY/x9J+XIqZDNFiDm/UWtGMMZ1PwYarQHsLNYJEoU5a1koowO6H
-	QoRbP4W5H0aBH5aVPwMG/ie046MHIP5RFINwW7k3V3309cvVbBeO60gCd5O3USPrmZDe479Rxem
-	gEDdTujiYVRLmDmpzOoo5tfDWxCVwkDN5RFsNtuPzQKSjAOrrdxzhhnFFd3/zBP/IE8ZB8S10vl
-	Ao7napU7ZntEYHfYbu6ODwON/9R/ke0p/TBdrpV8P1aJ1ckZBfgTyf+6tsuWpntH6o/i2bJpb8m
-	1Z6bhYWPNFREI=
-X-Google-Smtp-Source: AGHT+IEoH96+sjPLREqC+n2bvCIzOJwtJGtj0Xw/w+23Qs6yfYObqzh3NEEEQcrylABhRl8Rgvzm6g==
-X-Received: by 2002:a17:902:fc8f:b0:27e:eabd:4b41 with SMTP id d9443c01a7336-297e5413468mr105009555ad.7.1762782547210;
-        Mon, 10 Nov 2025 05:49:07 -0800 (PST)
-Received: from 7950hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29651ccca64sm146648475ad.105.2025.11.10.05.49.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Nov 2025 05:49:06 -0800 (PST)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: andrii@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	mingo@kernel.org,
-	jiang.biao@linux.dev,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: simplify the kernel_count bench trigger
-Date: Mon, 10 Nov 2025 21:48:58 +0800
-Message-ID: <20251110134858.1664471-1-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.51.2
+	s=arc-20240116; t=1762787322; c=relaxed/simple;
+	bh=6KSwsK8hJ3VsxaX3vSZfCo2wVNblyfeSCIhlDo7+M8s=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QAAvSfisKgZ0lhvOLuS/5ICYa4T8x82tcpaAd9HNrZqrpHlLc73H9qsjrr1JD0baRbtA+/qXUA75qdS5zPDGYMdZOCzAyEB3jfgBWYuFPorhjyRoVV3b/plT9HFUzBhkiR6Kj2vf6+14bFTZkJkIYjATQeDkQBPuMmEo+k8WKFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uLm0/4Ev; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77677C113D0;
+	Mon, 10 Nov 2025 15:08:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762787321;
+	bh=6KSwsK8hJ3VsxaX3vSZfCo2wVNblyfeSCIhlDo7+M8s=;
+	h=From:Subject:Date:To:Cc:From;
+	b=uLm0/4EvJE1j74j9QrirPiPyBOSzPMEk/h/hXjnZIEdQ180jK+CQjUqfYCuGpk4Vf
+	 5mobfv4yPgkePiyxcD6931VgiqR944gHEROE/Wyih0wahEAMNE4JxyyBJdAueainrp
+	 uh4+nQKWGr+in+771km0LEE5tCpV4pYhQi11wdGREl7LqMC60DbVDYpGq5OHabFy2d
+	 UngFeoTeREhmgCy/D+pwkHjnlxonZgRPbAycgSi/7aEVXNrHqc4GgTScMbV1sOZIvX
+	 8sqnHIUyfO+j/10N487rOEaY33MQvYwCyujkiHEvYinl5EYVJFDdhtbcECrpcDWpGA
+	 8VKES//ZwEnWQ==
+From: Christian Brauner <brauner@kernel.org>
+Subject: [PATCH 00/17] ns: header cleanups and initial namespace reference
+ count improvements
+Date: Mon, 10 Nov 2025 16:08:12 +0100
+Message-Id: <20251110-work-namespace-nstree-fixes-v1-0-e8a9264e0fb9@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANz/EWkC/0XMQQrCQAxA0auUrE2ZTFGoVxEXmTG1g5iWpKhQe
+ nenblw+PvwVXKyIw7lZweRVvExaQYcG8sh6Fyy3aoghHoko4HuyByo/xWfOguqLieBQPuI4xK7
+ viENIHKEeZpNfqIPLtTqxCyZjzeP+3Nn+V6eWeti2Lx80KNOTAAAA
+X-Change-ID: 20251110-work-namespace-nstree-fixes-f23931a00ba2
+To: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+ Jeff Layton <jlayton@kernel.org>
+Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
+ =?utf-8?q?Zbigniew_J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, 
+ Lennart Poettering <mzxreary@0pointer.de>, 
+ Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+ Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, 
+ Johannes Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+ Christian Brauner <brauner@kernel.org>
+X-Mailer: b4 0.15-dev-a6db3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2728; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=6KSwsK8hJ3VsxaX3vSZfCo2wVNblyfeSCIhlDo7+M8s=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQK/v+sx9I829Vx/dJT0dYO/bk8rzg27U5LYN7h9iE3S
+ vKfgIFsRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwETS2hkZ1p+8KSZhx8wk4XH/
+ 3y1F57kChquubJ0gVh50I+jinRlX+BgZ9lwRMytQ1/zhUerw06P496wDmdHWVvofdxteP25TMzG
+ WGQA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-Remove the "trigger_count" in trigger_bench.c and reuse trigger_driver()
-instead for trigger_kernel_count_setup().
+Cleanup the namespace headers by splitting them into types and helpers.
+Better separate common namepace types and functions from namespace tree
+types and functions.
 
-With the calling to bpf_get_numa_node_id(), the result for "kernel_count"
-will become a little more accurate.
+Fix the reference counts of initial namespaces so we don't do any
+pointless cacheline ping-pong for them when we know they can never go
+away. Add a bunch of asserts for both the passive and active reference
+counts to catch any changes that would break it.
 
-It will also easier if we want to test the performance of livepatch, just
-hook the bpf_get_numa_node_id() and run the "kernel_count" bench trigger.
-
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+Signed-off-by: Christian Brauner <brauner@kernel.org>
 ---
- .../selftests/bpf/benchs/bench_trigger.c        |  5 +----
- .../testing/selftests/bpf/progs/trigger_bench.c | 17 +++++------------
- 2 files changed, 6 insertions(+), 16 deletions(-)
+Christian Brauner (17):
+      ns: move namespace types into separate header
+      nstree: decouple from ns_common header
+      nstree: move nstree types into separate header
+      nstree: add helper to operate on struct ns_tree_{node,root}
+      nstree: switch to new structures
+      nstree: simplify owner list iteration
+      nstree: use guards for ns_tree_lock
+      ns: make is_initial_namespace() argument const
+      ns: rename is_initial_namespace()
+      fs: use boolean to indicate anonymous mount namespace
+      ipc: enable is_ns_init_id() assertions
+      ns: make all reference counts on initial namespace a nop
+      ns: add asserts for initial namespace reference counts
+      ns: add asserts for initial namespace active reference counts
+      pid: rely on common reference count behavior
+      ns: drop custom reference count initialization for initial namespaces
+      selftests/namespaces: fix nsid tests
 
-diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-index 1e2aff007c2a..34fd8fa3b803 100644
---- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-@@ -179,11 +179,8 @@ static void trigger_syscall_count_setup(void)
- static void trigger_kernel_count_setup(void)
- {
- 	setup_ctx();
--	bpf_program__set_autoload(ctx.skel->progs.trigger_driver, false);
--	bpf_program__set_autoload(ctx.skel->progs.trigger_count, true);
-+	ctx.skel->rodata->kernel_count = 1;
- 	load_ctx();
--	/* override driver program */
--	ctx.driver_prog_fd = bpf_program__fd(ctx.skel->progs.trigger_count);
- }
- 
- static void trigger_kprobe_setup(void)
-diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/testing/selftests/bpf/progs/trigger_bench.c
-index 3d5f30c29ae3..6564d1909c7b 100644
---- a/tools/testing/selftests/bpf/progs/trigger_bench.c
-+++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-@@ -39,26 +39,19 @@ int bench_trigger_uprobe_multi(void *ctx)
- 	return 0;
- }
- 
-+const volatile int kernel_count = 0;
- const volatile int batch_iters = 0;
- 
--SEC("?raw_tp")
--int trigger_count(void *ctx)
--{
--	int i;
--
--	for (i = 0; i < batch_iters; i++)
--		inc_counter();
--
--	return 0;
--}
--
- SEC("?raw_tp")
- int trigger_driver(void *ctx)
- {
- 	int i;
- 
--	for (i = 0; i < batch_iters; i++)
-+	for (i = 0; i < batch_iters; i++) {
- 		(void)bpf_get_numa_node_id(); /* attach point for benchmarking */
-+		if (kernel_count)
-+			inc_counter();
-+	}
- 
- 	return 0;
- }
--- 
-2.51.2
+ fs/mount.h                                     |   3 +-
+ fs/namespace.c                                 |   9 +-
+ include/linux/ns/ns_common_types.h             | 196 ++++++++++++++++
+ include/linux/ns/nstree_types.h                |  55 +++++
+ include/linux/ns_common.h                      | 266 +++++-----------------
+ include/linux/nstree.h                         |  38 ++--
+ include/linux/pid_namespace.h                  |   3 +-
+ init/version-timestamp.c                       |   2 +-
+ ipc/msgutil.c                                  |   2 +-
+ ipc/namespace.c                                |   3 +-
+ kernel/cgroup/cgroup.c                         |   2 +-
+ kernel/nscommon.c                              |  15 +-
+ kernel/nstree.c                                | 304 ++++++++++++++-----------
+ kernel/pid.c                                   |   2 +-
+ kernel/pid_namespace.c                         |   2 +-
+ kernel/time/namespace.c                        |   2 +-
+ kernel/user.c                                  |   2 +-
+ tools/testing/selftests/namespaces/nsid_test.c | 107 +++++----
+ 18 files changed, 576 insertions(+), 437 deletions(-)
+---
+base-commit: c9255cbe738098e46c9125c6b409f7f8f4785bf6
+change-id: 20251110-work-namespace-nstree-fixes-f23931a00ba2
 
 
