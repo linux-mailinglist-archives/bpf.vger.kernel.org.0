@@ -1,132 +1,125 @@
-Return-Path: <bpf+bounces-74090-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74091-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C30D2C48064
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 17:39:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C7A3C4855E
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 18:29:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9FD8A4F6229
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 16:32:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE83F188CCD5
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 17:30:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3732428003A;
-	Mon, 10 Nov 2025 16:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E6D2C0263;
+	Mon, 10 Nov 2025 17:29:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KFzqDuqB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K4OHUePh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F2B26E6F7
-	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 16:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C485283682;
+	Mon, 10 Nov 2025 17:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762792364; cv=none; b=ZSLfBZNLyKDpFodNRbDOk6YQ8DxPLUqo/PJQvbnuSAtRAREiF0KiYpRvQ1skgDqtEiJoP7hHEUNOSsaDXCw6EQbW4ROPcGGVLbBS6gddE3kDRPt0CEF1W8l6vkDLJV1EjCvqz71JcSvjlXmw8oBmJktYvcNydjMr/yjMXsYI5JM=
+	t=1762795784; cv=none; b=TvSui1LXQRuiIHWu9XR98bYe9lmXmMHWCUmUqyRiwmK+57zrnEJwEgCtnY/fZZci8LIV5mPCrePE98CB7nnxR+LfCz0HEV3OpYrUAcCiW2T+j476dBs0yYBw6CrDzbNKruFxhZ3htTmqGdO85VxHSmuFCcqlcxsZVCfiqKo8fLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762792364; c=relaxed/simple;
-	bh=2EZi6jKwgm9I2wh6xZdb5ldE7GJF25G3X3fcAOG3YPg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g69Pua/YPaVhR+Zi+ZHPYe/5t51qjtb2LHRiwi4sbySESVJdWO4dr/mDkBig4u1YAwU08UDMOJt7vdfmu4K4hdaDfg0dNiHkamrLyS6re1Haahtu7R1uU+KoiPm3IlSeGjvijmf4GVAiQuJCpQl9KKZU0TWBccdbeaXjMZJrK0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KFzqDuqB; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-42b3c965df5so574046f8f.1
-        for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 08:32:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762792361; x=1763397161; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2EZi6jKwgm9I2wh6xZdb5ldE7GJF25G3X3fcAOG3YPg=;
-        b=KFzqDuqBGcQym1zjkunveCl/qENOHmwxIGYbhdtWfwJXbyKuuVdQPExYff7s1x3VgS
-         Ks1POVmraO5hzCN55lGSdQB4tiKb43hqLUwKXs+V9SO2BikoXqwSp14AlQZz5Y2tC1gh
-         5dovYPV7L7Hsp96kUy1wB7Fl5CUL5JXJl2WR/W4aRwk8hDXgujhHOAnGmxHRXej7Q4tM
-         7s9WEDnYuZyTH6RLlRFj6yFBb71wejKl7hkRNb/Gwfk9+obrYoUlFragSVe8dOelOGJA
-         nv5wiJ7OwCaqfCwGvxCY1rkmsWWXIoHjLI/NAf7Bl5weA8QF+1ATILxR0OtNnY1RbVbW
-         jx5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762792361; x=1763397161;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=2EZi6jKwgm9I2wh6xZdb5ldE7GJF25G3X3fcAOG3YPg=;
-        b=WfPG+t3ofhafOtvPeW/yUBMW1fNQzTB7fr/cO3Q4adMaVKJbfw2ZjEiI8FPDRDLdMm
-         9x8iPQrnpZt44ZpGrkQeSikF+nXxUYrm9T7fJvq213TEVhIlqEGdDC+D5iERPKRYDWpu
-         Cx2bAg9wBc7QpgKGvIrDD/SKWQTRdVWv60me0Ek+5P6sWz7KUbraUubsQJLRhaIJP3Fk
-         mGAsTsIs5JP7BIZzyfqcAFpST779AUr4dIOXCsOevyMtjSI+iwzG3elfeoYa/beBdEii
-         WnMu50pPH7tAFDMZRO7CdHsg+TgTTosL5HdnL0BsChiJ3xlPj5UF7nvg1OY1TxKJdYw8
-         Tjhw==
-X-Forwarded-Encrypted: i=1; AJvYcCUF6el5nlUljcrth2eBk9wwVRuGR001ZeHRl2XPu/EMA+P9XBZ/YuEU+IDvnPbXTuBpuIg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDr1XhQD0NRPeBy1l+BgfKJenf52uG2VB46ef6LmtDNUqzl8Ed
-	ZqpsoIbOIIMBriTwctV0zlQdg/ueaENU80Dtq/nmO8CgRSWbAOPthvYOn0ZcDujKMkszUEAwrwm
-	2OasP9cjNVnKWWT0vIAEnQ48mHIrFrXk=
-X-Gm-Gg: ASbGnctQEqdXES4Ats4dkAolD3QKez+T9FmYinssKLd76tR8LoOdGAkrFSiubWZXdG5
-	R+ilGKzb5cqgW/nqMH8bm2Urr1629Fss1Guwthgxepk7XLpv9FRf+KUJFBoTD911xu7sBhoApIO
-	5zsdikMQArBqhd0wzuCgID8IjHfQxRkMnG4YrOJfAxAieNofF+jPjGLwNGh95FuRBrpn7RyQiCB
-	rHuD8ULG/9N/btGpEsn3Lpfpu9AirW5E9LmV2jNRU2f68GQwmSsNm360kEzKvyTTEH9EWJFtP23
-X-Google-Smtp-Source: AGHT+IESaTzl2YjaPic/68VsYA9tLWSz9buPfpL2rLQvUoP21k+abXTvq24TsJrQA1TS5C/2kdb5XjyMjjTGgVQvWV0=
-X-Received: by 2002:a05:6000:1888:b0:42b:40b5:e64c with SMTP id
- ffacd0b85a97d-42b40b5e9dfmr1641240f8f.30.1762792361129; Mon, 10 Nov 2025
- 08:32:41 -0800 (PST)
+	s=arc-20240116; t=1762795784; c=relaxed/simple;
+	bh=irSNmNU33uoNE+xtcXh4F9V8GNWZBQMnuLEnS4K0yYc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LhgHTEzdQ9CfkcwKJNcRuZT1DkrYD/r5EhdkqmjYbJZuNtgEzkQk3SDz3izGrxN0Te545aDSz5P+xsTAQtN1az6I2iFJovgnJTVdeqqDsVbWxP7+rWUkWbSBwh+tBsJOLFzoECoAUKTGQBvuSuMblLerPR1Is8ixGSvfErlTRho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K4OHUePh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BEEFC4CEF5;
+	Mon, 10 Nov 2025 17:29:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762795784;
+	bh=irSNmNU33uoNE+xtcXh4F9V8GNWZBQMnuLEnS4K0yYc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=K4OHUePh1JIsul5wTckByN1KX/imTS4vSvdMW+PZoScGRsl31xGewJCuQm6s4E0KS
+	 z7oXMfRhvjcoC+Zbm98jZBfe/DoOaIA08oq9qGMG5jbZh/+/UZOcV+EGk2M1E6Pt+l
+	 N6SktXEKUtDTREzGJDNVPwrSwOhfB/tMIz/HygZvk2TXZ2wS+WQifhL1PJF+++YNyj
+	 QLEB+vHDw17Lcm8XEHxe9XytipxMSKEU+fdg5egk2S/sBK0+s2tgVbPy6wxclE1Ial
+	 LJh2kNZZQqQVx8Bf8xixbBuKug/ddARm23lNi8DvLONJLIlQW9JsKWfgNFfjIapzDp
+	 gU7fYw5Qdmehg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 3B6DECE0D0D; Mon, 10 Nov 2025 09:29:43 -0800 (PST)
+Date: Mon, 10 Nov 2025 09:29:43 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Will Deacon <will@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Catalin Marinas <catalin.marinas@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
+	frederic@kernel.org
+Subject: Re: [PATCH v2 15/16] srcu: Optimize SRCU-fast-updown for arm64
+Message-ID: <ab6cd1c2-39c5-4b39-9585-6123835a6229@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <bb177afd-eea8-4a2a-9600-e36ada26a500@paulmck-laptop>
+ <20251105203216.2701005-15-paulmck@kernel.org>
+ <aQ9AoauJKLYeYvrn@willie-the-truck>
+ <d53a5852-f84a-4dae-9bf4-312751880452@paulmck-laptop>
+ <aRHLV8lLX0fxQICR@willie-the-truck>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251104104913.689439-1-dongml2@chinatelecom.cn>
- <2388519.ElGaqSPkdT@7950hx> <CAADnVQ+tUO_BJV8w1aPLiY50p7F+uk0GCWFgH0k5zLQBqAif1g@mail.gmail.com>
- <13884259.uLZWGnKmhe@7950hx>
-In-Reply-To: <13884259.uLZWGnKmhe@7950hx>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 10 Nov 2025 08:32:29 -0800
-X-Gm-Features: AWmQ_blde-Om93LZ8uH2LbpRe5eXO2GqX0LA_EpxNj-rGvCG6KH_W84-SJVDMLg
-Message-ID: <CAADnVQKQ2Pqhb9wNjRuEP5AoGc6-MfLhQLD++gQPf3VB_rV+fQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf,x86: do RSB balance for trampoline
-To: Menglong Dong <menglong.dong@linux.dev>
-Cc: sjenning@redhat.com, Peter Zijlstra <peterz@infradead.org>, 
-	Menglong Dong <menglong8.dong@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
-	"H. Peter Anvin" <hpa@zytor.com>, jiang.biao@linux.dev, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aRHLV8lLX0fxQICR@willie-the-truck>
 
-On Mon, Nov 10, 2025 at 3:43=E2=80=AFAM Menglong Dong <menglong.dong@linux.=
-dev> wrote:
->
->
-> Do you think if it is worth to implement the livepatch with
-> bpf trampoline by introduce the CONFIG_LIVEPATCH_BPF?
-> It's easy to achieve it, I have a POC for it, and the performance
-> of the livepatch increase from 99M/s to 200M/s according to
-> my bench testing.
+On Mon, Nov 10, 2025 at 11:24:07AM +0000, Will Deacon wrote:
+> On Sat, Nov 08, 2025 at 10:38:32AM -0800, Paul E. McKenney wrote:
+> > On Sat, Nov 08, 2025 at 01:07:45PM +0000, Will Deacon wrote:
+> > > On Wed, Nov 05, 2025 at 12:32:15PM -0800, Paul E. McKenney wrote:
+> > > > Some arm64 platforms have slow per-CPU atomic operations, for example,
+> > > > the Neoverse V2.  This commit therefore moves SRCU-fast from per-CPU
+> > > > atomic operations to interrupt-disabled non-read-modify-write-atomic
+> > > > atomic_read()/atomic_set() operations.  This works because
+> > > > SRCU-fast-updown is not invoked from read-side primitives, which
+> > > > means that if srcu_read_unlock_fast() NMI handlers.  This means that
+> > > > srcu_read_lock_fast_updown() and srcu_read_unlock_fast_updown() can
+> > > > exclude themselves and each other
+> > > > 
+> > > > This reduces the overhead of calls to srcu_read_lock_fast_updown() and
+> > > > srcu_read_unlock_fast_updown() from about 100ns to about 12ns on an ARM
+> > > > Neoverse V2.  Although this is not excellent compared to about 2ns on x86,
+> > > > it sure beats 100ns.
+> > > > 
+> > > > This command was used to measure the overhead:
+> > > > 
+> > > > tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --configs NOPREEMPT --kconfig "CONFIG_NR_CPUS=64 CONFIG_TASKS_TRACE_RCU=y" --bootargs "refscale.loops=100000 refscale.guest_os_delay=5 refscale.nreaders=64 refscale.holdoff=30 torture.disable_onoff_at_boot refscale.scale_type=srcu-fast-updown refscale.verbose_batched=8 torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=8 refscale.nruns=100" --trust-make
+> > > > 
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > > Cc: Will Deacon <will@kernel.org>
+> > > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > > > Cc: <linux-arm-kernel@lists.infradead.org>
+> > > > Cc: <bpf@vger.kernel.org>
+> > > > ---
+> > > >  include/linux/srcutree.h | 51 +++++++++++++++++++++++++++++++++++++---
+> > > >  1 file changed, 48 insertions(+), 3 deletions(-)
+> > > 
+> > > I've queued the per-cpu tweak from Catalin in the arm64 fixes tree [1]
+> > > for 6.18, so please can you drop this SRCU commit from your tree?
+> > 
+> > Very good!  Adding Frederic on CC since he is doing the pull request
+> > for the upcoming merge window.
+> > 
+> > But if this doesn't show up in -rc1, we reserve the right to put it
+> > back in.
+> > 
+> > Sorry, couldn't resist!   ;-)
+> 
+> I've merged it as a fix, so hopefully it will show up in v6.18-rc6.
 
-what do you mean exactly?
-I don't want to add more complexity to bpf trampoline.
-Improve current livepatching logic ? jmp vs call isn't special.
+Even better, thank you!!!
 
-> The results above is tested with return-trunk disabled. With the
-> return-trunk enabled, the performance decrease from 58M/s to
-> 52M/s. The main performance improvement comes from the RSB,
-> and the return-trunk will always break the RSB, which makes it has
-> no improvement. The calling to per-cpu-ref get and put make
-> the bpf trampoline based livepatch has a worse performance
-> than ftrace based.
->
-> Thanks!
-> Menglong Dong
->
-> >
->
->
->
->
+							Thanx, Paul
 
