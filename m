@@ -1,240 +1,404 @@
-Return-Path: <bpf+bounces-74056-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74057-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 765C6C45C50
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 10:57:33 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 380A0C461CD
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 12:06:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A602F3ACA56
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 09:55:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1ABA84E7692
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 11:06:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4000302CA2;
-	Mon, 10 Nov 2025 09:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5773074B1;
+	Mon, 10 Nov 2025 11:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="oydbHTQP";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="eGDmh4jw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SiW2B8mL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76C58302158;
-	Mon, 10 Nov 2025 09:54:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762768465; cv=fail; b=i7CkP8G4owATZWng/cJ1gm9b6pDT5WuEzcFAvezvu1+Uu6YGn1RquH44zgOlb1GC5GQibj9lVePrEBZ5BMLOW1I5II//RT2xPpWUwKHNQhW3NjBUu4IGejifrxqBR0Kg3NP8vug4uQyqbLj09SDm2gnLQ2rVTCRwewLSPspjDHE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762768465; c=relaxed/simple;
-	bh=LtBDqzEtAA+6pW3o2tLdNQOj4/XxPyVevLgvHRBybAs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=InNrNkjuNARe7DdoSL+NO2InbrOaR8bIbq6BHuuYA2G4IwLQI0WhF7Ypp1VxU/Wjntyuig34XCaRzekrU7TCp0Y8FaF9eMJ7cPex+/b8zCOJyYkoUCVHNlIozjfkxjwMfpxkn8Mm1jYenCjhq7CeWtYTwQp3XrzS8Z6yt5ToH4g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=oydbHTQP; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=eGDmh4jw; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AA9NbuL010590;
-	Mon, 10 Nov 2025 09:54:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=IfGibePj8O7QTRpwz0
-	RBLnLO32n7MD+f0y5RLmU7uzM=; b=oydbHTQPEWdUGheiRr+yjW3ej61K+GjuXK
-	npF/ptnke9QQNV5JZzE5FBYR0jE/6hFniA2GaGOYYyy71q7XBFegFCWBbHupNBmb
-	pP8c/Mbh3uPoT+8cI2nbQWwM2sT0NtVfWGilvG2Hrq3L7ssb7OatYtcoP8CLwLbI
-	CpWrpzS7n2yN/2/mitJeBNLchKx2VkvDAOXbbcb+JotiloZe7P3GYvIeM+2Ogwwa
-	Ajl4Gci7R/I8pu/MIfUYt8yC1q1hNDr5rHQHlhpH0t9q2Tq2ZGGIlTVvEPNEO85A
-	CPjLiRCJHWCNRtpxAqETdZ18/I1p+iPILX5b4hleran3Pa+7subw==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4abbss09gh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 10 Nov 2025 09:54:08 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5AA7eVhq007388;
-	Mon, 10 Nov 2025 09:54:07 GMT
-Received: from ph0pr06cu001.outbound.protection.outlook.com (mail-westus3azon11011042.outbound.protection.outlook.com [40.107.208.42])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4a9va8eshm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 10 Nov 2025 09:54:06 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mmFa4y4jJ/UjzH6Rpb1ooF35gwm0041+DpWGqfpetNcLMoR0ajKo+Ikfgj7GMzqa1sXH1Ylvo6dkjAaINcffKgh/mlVDjjKQgzDt+KKJUBXt5O2WcVH91l87vyVxyFI3hc0aJ3FM/NW1gqFGiJJZ6nkMTfzNdEVpj6MoauiOWTaGCLyG2S6Oxan8LzUSO1KfrRUDxdqWFUwJoM5hSFUJP8HuPOCdYmTIoF5FTtbapAGGsMNqSQ7lM6oOBDCxO0EK1zUHY2BOnJfTcnrxrSx7l/resGZWi/zphQE2DjwG0thV4xu/DTXGcTRatK+USvHmu3iTk4hgUhnMu170L0WSOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IfGibePj8O7QTRpwz0RBLnLO32n7MD+f0y5RLmU7uzM=;
- b=cypoiJQ2tFiSKhgVAjQg8DLbw01V0GyNd7CJ1LKBZGfgX95nzN+FQqWiqrrXzkglK7A5gGyV3DurPuHMThgfqj88JO/Me+gSc78IYQ8LfGK8q1tQCG6dbzTXVFF34Tm3cfjxtgW8obWI/MOxmmli8UZhUofn3sWviIBh29kNP73PJ6DmphLxQ30VDg5OLZlsXUEpZUVdXI/MRM0Q7J8theJZ1xST2Bearjv/okc17flcbURUruXqtp14rZopVoKnKLzrYGn4FSlMZA0Uldx5xI/0EVGm/QVBbe7+fIj+A9Y/HgGIFYsZ4VXL7HxsB7vo3YMD7Os6uk7kFdCHkIz31Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IfGibePj8O7QTRpwz0RBLnLO32n7MD+f0y5RLmU7uzM=;
- b=eGDmh4jwnntPTLib+BYP30zEvqzGEBokSfrRFbEY7s/v5rL7yskOYPMZk9oH6tXPl3Cd8i7gHqf2oB3OugkSLHavRee37lq374q9l4p81+MqWJ1tfey+HuBCDf8yVIPEjJqgG+6adS6Bf97kc4iylH6S4Ip5omw5s6Pf/ySvgRE=
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by CH3PR10MB6903.namprd10.prod.outlook.com (2603:10b6:610:151::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9298.16; Mon, 10 Nov
- 2025 09:53:54 +0000
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::f238:6143:104c:da23]) by CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::f238:6143:104c:da23%5]) with mapi id 15.20.9298.015; Mon, 10 Nov 2025
- 09:53:54 +0000
-Date: Mon, 10 Nov 2025 18:53:47 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@gentwo.org>,
-        David Rientjes <rientjes@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Subject: Re: [PATCH 3/5] slab: handle pfmemalloc slabs properly with sheaves
-Message-ID: <aRG2K8YCqCZa2Yfx@hyeyoo>
-References: <20251105-sheaves-cleanups-v1-0-b8218e1ac7ef@suse.cz>
- <20251105-sheaves-cleanups-v1-3-b8218e1ac7ef@suse.cz>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251105-sheaves-cleanups-v1-3-b8218e1ac7ef@suse.cz>
-X-ClientProxiedBy: SE2P216CA0036.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:116::18) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2A62E63C;
+	Mon, 10 Nov 2025 11:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762772777; cv=none; b=hftJx4mZXjcEmMv1vclROtzhVEz5noP7PVSbk+yq5Jh3lnUt5gEyPz6TrfQrno56ZPOLK4/jASPD+15I4kjIy746+gtIRlppd4swDgf3MrkOWemyPZoX0P2dGT+jITqvQl+tue4ZMOEFtxAB0ji5owIq3nTV8nNn9cwlXgjAYfA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762772777; c=relaxed/simple;
+	bh=qIObqiroWcgVL4Dt8RU7ppjIuvnj+Y2jxYFSiNagdVI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=q/ZEl3LEjeh/xdQhp2ObOa7biHd4I4x+27f637OPOhlUrYXiL9f+yMYNUoeUhutF3ocAVnh/cUBMsv51yIqZzw0Ht1W+C36+EUCJPX0y7OQfjrqT9W29N8yO7J8hVw3KdYi+27qCxM1qRNaSCToiTC5oaVUAtTLIClSzJ6kMVwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SiW2B8mL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1998C116B1;
+	Mon, 10 Nov 2025 11:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762772775;
+	bh=qIObqiroWcgVL4Dt8RU7ppjIuvnj+Y2jxYFSiNagdVI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=SiW2B8mLy3S8XHCuBpY45fj0nYxsGJyTG/9aTuD1a2SZlHAhUsitzqjyNmv5Y6JKV
+	 5dHk55Kdu6crkKN1/RxlEoiPlD/bybWYtegP8WYr1dS4FJSfTKAXi7SQvRsDFlR+vW
+	 j/jHxAfg2dAkNwu2MipHANxx5fAARWe6cexWsUZkP/p80NtR3uGspMTltkJnmDtQ2K
+	 r61cIiaLO6MgTXP8hjlEkeHjR9eMGTTN2fFutZwdyiA9gH0taIi8ffr1ATOOiCqEwK
+	 2DXRAz0+8eTi0RCLQiAzWiqF9RLJJEhj2vV967F/fYnR810sWqPDRvDtcrQphrFY25
+	 M2FunhX11Etjg==
+Message-ID: <d0fc4c6a-c4d7-4d62-9e6f-6c05c96a51de@kernel.org>
+Date: Mon, 10 Nov 2025 12:06:08 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|CH3PR10MB6903:EE_
-X-MS-Office365-Filtering-Correlation-Id: b265e0b0-ad35-413f-1fc6-08de203f0ec9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?ecfb9c3SQGSsVXENOeU7fk/wzFGX7UKlebO9d0wo/bCigB8kb1PluWoSKOHG?=
- =?us-ascii?Q?DnKB5M91CHNnFBPyYH7oWTlgnU+ZabVsIAfZYGDT9EvVUU+OL0VhFI+FMrwy?=
- =?us-ascii?Q?PPdEVIk00G8qfVkI2sQLX8Ug7fH6ztli2XQMnjmxszsbNuYl+TIM6/3ERyds?=
- =?us-ascii?Q?c/bEvTuhq3kDfKSyflMBCfqFSTzVb4zyuFo7wLQ3Bcsro9ubKyFtnhalnhQm?=
- =?us-ascii?Q?68gxHxRF8yq0oUPxbYmlazX8UNwBzbG3Ev4D+J9HDs4p/OJOABEXfxX4vKxk?=
- =?us-ascii?Q?2mrY30VcIORxKQ5eeP1Q3geNiYYeCoV4T3ZJ7s4zikdzuzmsB87O+IWR0DE8?=
- =?us-ascii?Q?+XXIKoWS0iZGNJxUXqohQUOY52hUnSNMZgBRpznW8kiLsG3sPaGhGSKg2vmD?=
- =?us-ascii?Q?1v9tBcQ0xF7LFxgLuJ8nXY8i/joyH58+wCx8QIpn4ZyCwrdYV8Pawmx8OGYP?=
- =?us-ascii?Q?z52DLOpJ6xirHt1wY/8Ugdc/grPG4+FXa1rf2DqyttAE2HdbuNrDmtakf9Jz?=
- =?us-ascii?Q?BrubDseHaUCzCMQbyzE9hMz8BKi4+ctmnnsY3B5FVm7gwaHGMhfRc/5NWbqS?=
- =?us-ascii?Q?ZtLxNt8qbDpMdybQu0FVjPxBZw6Kx3d//3uYyNp/geos53owOQvThZGPYdv6?=
- =?us-ascii?Q?amPFBD/WMO6NIwCIeqJq1C70RHSfDLXfvM7U3KF+v4cSEmeiqlv/0EJYAs0E?=
- =?us-ascii?Q?28TBfIa072WQ46FgpHPRGn0H+09HB1XJYdX+EAR0ThwJcP6r2I+X7nLe44zN?=
- =?us-ascii?Q?3JOYPAlXGN9cGJMON3RXc17Z83bc1kKhTT837uzwpTauXyKx6C/kAjVTz3z3?=
- =?us-ascii?Q?EULiDgmpZ1jKj98dF/PoF0kuSYzIDJTp0kSYMxPze/I23F/Hwywjn2B9Huo+?=
- =?us-ascii?Q?cmm9DTzS+dPLE0EZ8ql83iBrjAsCYCnWldKjGxaG7+UyHyTne8dHcycAibum?=
- =?us-ascii?Q?g2s5DmoSOYKuvnJaDFw9MKEalpQNinRVnAPP94oIysWQL/oaZMRAxpF4ePsy?=
- =?us-ascii?Q?J61H2zN1JvddpBhl/QTDme8C3DGFj/jyzru4YTiME11dH7tQEjtICLp6AYCj?=
- =?us-ascii?Q?WfUx87gqIH2m2/MWEMYswqmAtrv8aEvAlYxEisF+hRmnsf5zDnCvF9IJh8td?=
- =?us-ascii?Q?C/o3D/gnq1PjqSwJetF7J9nNQEyj5piAi+fom1HID9Kkwb9tdHR1jSAw1okr?=
- =?us-ascii?Q?dpkWzI0skaBs15a2nDvweu1xnWuIl5STWskW/NL0lj1oMJSIJTxvsxcnYd+C?=
- =?us-ascii?Q?Gpyaf2cXd9/DjvHMtor4DVVNJJJZ/viiSO75B0T8tqiJUlSkDWwjIdRoc72z?=
- =?us-ascii?Q?uo6csHGPHXPa0EKXNsTu9/jryqyetQoTmnUzLNZeY9uvtV08dKhNxypD97g+?=
- =?us-ascii?Q?0AoaQ/t0tHf1bVWP0dblkRaFKCkPNuuracHKsRabjCNO51O3QZPOJHCSE3g3?=
- =?us-ascii?Q?tDv3Z1zJNOwujAMOHOk7oo8NsoLa/eDO?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?QJgi0468xbEVaUw9gyAjOsr2Zh8ZcbN5aQPmTfp+G5Rwf+G/VUnxQEowr5XU?=
- =?us-ascii?Q?HElPVeaA2Cf4hB96spGirs5GZOJ/0dlJJuRPAmKwPtwgyM7Q+08B40rF6sg0?=
- =?us-ascii?Q?FzhGX3JK9YELSlEIT7IxseClXvFr8nzYf+aXwSeOzD4+YDY0M9kBsV0AGaY/?=
- =?us-ascii?Q?F0ZpQqmX2zHTgGS5lSmviHljmBghIT1PEezLgfIjAK4ItHvWIOTdQjGDFTvE?=
- =?us-ascii?Q?PhtifQYvoT22XAMV776ZFokHck7nt1xi1mlf5mllxc9Cjo6kK1zWueybrJBp?=
- =?us-ascii?Q?y5/3mHogthZC/DDIBh66Li9ADr9wV5ev1ngRsfIx3rdxWlHtnexicslP44c2?=
- =?us-ascii?Q?VE81GInmXjOsj5vyAMa7fogqhp+NEoZW9A+7DRQUx1KItRoVuemWVMwaHlDQ?=
- =?us-ascii?Q?f78dP1vcH/quXhEkHAv2FQ9kugFeuPAzVPhFZnEenuwM8yfXddV8qsf6qqHp?=
- =?us-ascii?Q?tjwTnN63c47N7Z26fQhyOR18xmTcrQAiRqMRt5NofXItJgTK3ma8ODG46RIw?=
- =?us-ascii?Q?fTbsBxQZaOHikpfvwyZoeVcyvZYkkg7f9vvoMxuaa8Fx3OBTQB2hhCAKhm9/?=
- =?us-ascii?Q?hCYpZ2QVwra/SeGquuuVvjCNc0GcEmPq7K22lklR6glVz8rNWg1/JKu6shBL?=
- =?us-ascii?Q?CtXWSP2oNb9glcObP62Io7LLNIheH9LbT4LM8S0DDTqRa61mQy9rna5q0KSw?=
- =?us-ascii?Q?CTlxGvtU5W3ze3Rc8zRcnkq+GZvh5AlmjtffQZ5UXqnQOr+5no01vE9W928F?=
- =?us-ascii?Q?70WOjsgNmQLWshAdF+yYeXzwPnTSch1eiPNx/TrHZzSUd0YwT9c5rlraF3lr?=
- =?us-ascii?Q?BykvDcu36Os+CI6V09fzx7av97kQ419txKFL92n5Xda0BIVE71iduwFFHMbV?=
- =?us-ascii?Q?GA1fmbB4TDHs8hqZG4OfEIGGtqgaXeeQEmSFCYElZ3O7SObPJq5cvxzFMfPN?=
- =?us-ascii?Q?54wTPHvsVx/LBTr/+Fhimdl+v/xPGxsfXXdS2yLqG/I4dZF7+tS13lxm4iw1?=
- =?us-ascii?Q?pHp+xCuiTteIsU4YAKfS2m/5FUtqTGCn94HC1Da55+oXwJY3MomBUsHCkMQP?=
- =?us-ascii?Q?71ejIDGZqsZS5gJP3WDnMQfYl5UDfr8vXjabmvOr6c4+1S9dQUZ/SGMRJrud?=
- =?us-ascii?Q?WB0taRtPyRG/vZ9v9Z/L5PFeejbXrA335yn0RbrUyKQaQY3sX8AcVEPzv1v4?=
- =?us-ascii?Q?TwOnsCrpjmQyWbSvDfnCv+0RKd53G08v6eUsJdVp6wCaBLG0VDz+q2SeAn+R?=
- =?us-ascii?Q?x6O0PaEYw8WC/9UwxZGCtAftMuozYt4ybZcnnXqcyisqICjQUFGhfoAzElVd?=
- =?us-ascii?Q?NVbjNklu9UbyK/BWOFqVzIBoZCpPeRUskdRj6GrDDht6yP0TJrIEZ+ztVRjA?=
- =?us-ascii?Q?2zDm9muFC7P+f6qJycBeVIY/QltRe68u+TcOAMaCHRS6mrM7NcrPsN2yTvzy?=
- =?us-ascii?Q?smc3MuMTqMU7jiTtzbGQ7XSDmn4NNQGtBeQNO9L2uVpJ34GmFF68hr1r4CXJ?=
- =?us-ascii?Q?9W0ysp7LHfUUZ/4zucR2IU8fmkWL5FS/jOeDN42sgNg6Bm1WBFubYJuAIWdM?=
- =?us-ascii?Q?csDot+XCK8PydcGJlfQ3KDj1GmO5lW7YJWu2+1tt?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	f8vZ/ZFLd+qI+S5W+c8UVxXT69foYD2JC5yHcf5mBdVMRrnsSzQRBKYPf6ZMWqH4ixGY1RfbuYNEUPxQBUhG4igRBIoM/SKQDVed6U0f/scF1jPn99AidKdNVVkHuLy5E/0nyQUxRa5G4IXbr5CmzXWAfNvJkOyzZ/XgIajDNyC78QDs1HyJI7sBNHMcvmSGeuXEMT0umDrKJGuvFvUstyapwweR4keadZvIOcjvaOCzjEyqOqzDbhm/Dq6cW2+gplGPU+jfq6b6GHrPSkbuwaY2jN+AdbqPLb84Br65H1HxMNLiHoDwAElfTuRAZvpb6eeGLv1QYnVsT/+T4NUmjeyZJiXXCti0fdMeLZPDAUS4F1E5SNOI2KsT/CUwF+gBqVUyAHAliV36GpH4/C13S3lXKsnFI6qW9TvchjSSqMlaROcUGy0v8V6pX2UiHMrNHBJssClYE6YgZ3se2n4cW3QSloUTA2isy3nk0/ASTev+cU01psgq/7IbOYkFW04MWVPPEMgKVdAGxUgNoemza+qBScyXvSUmCOWNojHR6c4cYGyOC0i6ZFIuzCzn4M+CmUGV0IVwmv67V1cgdoW/it+VxE2gdZjIuwYPblTW+og=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b265e0b0-ad35-413f-1fc6-08de203f0ec9
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2025 09:53:54.1554
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vwopuvu71u01svUlGSoD1Dx6oNBUTIieLlHsKPp6zOrP7R1OMHV/+E6gjD0qZ9pnUZu5x/iKk9hfa1VxiYk9lw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB6903
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-10_04,2025-11-06_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
- mlxscore=0 bulkscore=0 suspectscore=0 mlxlogscore=924 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
- definitions=main-2511100086
-X-Proofpoint-ORIG-GUID: avIVK6MeXggzdI4ey0PDGhG7gOfsgRgK
-X-Proofpoint-GUID: avIVK6MeXggzdI4ey0PDGhG7gOfsgRgK
-X-Authority-Analysis: v=2.4 cv=f+tFxeyM c=1 sm=1 tr=0 ts=6911b640 cx=c_pps
- a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=6UeiqGixMTsA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=yPCof4ZbAAAA:8 a=HqxLjavZxCgagS_tWHYA:9 a=CjuIK1q_8ugA:10
- a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTEwMDA2NSBTYWx0ZWRfX2tB7iniY8jMw
- zinHLodhV9OyNhQlKrlHX2PfKsmS0Kqk9xRUIN13cO1ixaXx5wuA3xriN1EvJamCcLpwjSrA97v
- 12iDoMgAwwNeFDIzi9oscOJbaB9jiExYrEDCEjeDBEhjgLyWVshA1Z4KiXoGGlnztIemf5vg6X9
- ikD1wlzP9JAu146CgH6bHv73wDSNEW0E6fToy10nR+yijZYsDR4hsQaDHtoaOVQewDXIsaeRDuS
- RqtZ5HM1MObIRXyMetAQE/exirWvSP+3TJaYaM7/d2/rwWd9I02x7aoJANRcUn+7aStgKcydJJM
- AaMjlTRwdHPcJjXcm8F7ZzlP/t/BTHByfxQoVuB+VfKQtOzSC1BEs9WOyHCP9n3er96X8ZdVdK/
- Bhix79bwnm2ZKkZ2b7lvPWbpunUVDQ==
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 2/2] xdp: Delegate fast path return decision to page_pool
+To: Dragos Tatulea <dtatulea@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Simon Horman <horms@kernel.org>,
+ Toshiaki Makita <toshiaki.makita1@gmail.com>,
+ David Ahern <dsahern@kernel.org>
+Cc: Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ Martin KaFai Lau <martin.lau@linux.dev>, KP Singh <kpsingh@kernel.org>
+References: <20251107102853.1082118-2-dtatulea@nvidia.com>
+ <20251107102853.1082118-5-dtatulea@nvidia.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20251107102853.1082118-5-dtatulea@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Nov 05, 2025 at 10:05:31AM +0100, Vlastimil Babka wrote:
-> When a pfmemalloc allocation actually dips into reserves, the slab is
-> marked accordingly and non-pfmemalloc allocations should not be allowed
-> to allocate from it. The sheaves percpu caching currently doesn't follow
-> this rule, so implement it before we expand sheaves usage to all caches.
+
+
+On 07/11/2025 11.28, Dragos Tatulea wrote:
+> XDP uses the BPF_RI_F_RF_NO_DIRECT flag to mark contexts where it is not
+> allowed to do direct recycling, even though the direct flag was set by
+> the caller. This is confusing and can lead to races which are hard to
+> detect [1].
 > 
-> Make sure objects from pfmemalloc slabs don't end up in percpu sheaves.
-> When freeing, skip sheaves when freeing an object from pfmemalloc slab.
-> When refilling sheaves, use __GFP_NOMEMALLOC to override any pfmemalloc
-> context - the allocation will fallback to regular slab allocations when
-> sheaves are depleted and can't be refilled because of the override.
+> Furthermore, the page_pool already contains an internal
+> mechanism which checks if it is safe to switch the direct
+> flag from off to on.
 > 
-> For kfree_rcu(), detect pfmemalloc slabs after processing the rcu_sheaf
-> after the grace period in __rcu_free_sheaf_prepare() and simply flush
-> it if any object is from pfmemalloc slabs.
->
-> For prefilled sheaves, try to refill them first with __GFP_NOMEMALLOC
-> and if it fails, retry without __GFP_NOMEMALLOC but then mark the sheaf
-> pfmemalloc, which makes it flushed back to slabs when returned.
+> This patch drops the use of the BPF_RI_F_RF_NO_DIRECT flag and always
+> calls the page_pool release with the direct flag set to false. The
+> page_pool will decide if it is safe to do direct recycling. This
+> is not free but it is worth it to make the XDP code safer. The
+> next paragrapsh are discussing the performance impact.
 > 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Performance wise, there are 3 cases to consider. Looking from
+> __xdp_return() for MEM_TYPE_PAGE_POOL case:
+> 
+> 1) napi_direct == false:
+>    - Before: 1 comparison in __xdp_return() + call of
+>      page_pool_napi_local() from page_pool_put_unrefed_netmem().
+>    - After: Only one call to page_pool_napi_local().
+> 
+> 2) napi_direct == true && BPF_RI_F_RF_NO_DIRECT
+>    - Before: 2 comparisons in __xdp_return() + call of
+>      page_pool_napi_local() from page_pool_put_unrefed_netmem().
+>    - After: Only one call to page_pool_napi_local().
+> 
+> 3) napi_direct == true && !BPF_RI_F_RF_NO_DIRECT
+>    - Before: 2 comparisons in __xdp_return().
+>    - After: One call to page_pool_napi_local()
+> 
+> Case 1 & 2 are the slower paths and they only have to gain.
+> But they are slow anyway so the gain is small.
+> 
+> Case 3 is the fast path and is the one that has to be considered more
+> closely. The 2 comparisons from __xdp_return() are swapped for the more
+> expensive page_pool_napi_local() call.
+> 
+> Using the page_pool benchmark between the fast-path and the
+> newly-added NAPI aware mode to measure [2] how expensive
+> page_pool_napi_local() is:
+> 
+>    bench_page_pool: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+>    bench_page_pool: Type:tasklet_page_pool01_fast_path Per elem: 15 cycles(tsc) 7.537 ns (step:0)
+> 
+>    bench_page_pool: time_bench_page_pool04_napi_aware(): in_serving_softirq fast-path
+>    bench_page_pool: Type:tasklet_page_pool04_napi_aware Per elem: 20 cycles(tsc) 10.490 ns (step:0)
+> 
+
+IMHO fast-path slowdown is significant.  This fast-path is used for the
+XDP_DROP use-case in drivers.  The fast-path is competing with the speed
+of updating an (per-cpu) array and a function-call overhead. The
+performance target for XDP_DROP is NIC *wirespeed* which at 100Gbit/s is
+148Mpps (or 6.72ns between packets).
+
+I still want to seriously entertain this idea, because (1) because the
+bug[1] was hard to find, and (2) this is mostly an XDP API optimization
+that isn't used by drivers (they call page_pool APIs directly for
+XDP_DROP case).
+Drivers can do this because they have access to the page_pool instance.
+
+Thus, this isn't a XDP_DROP use-case.
+  - This is either XDP_REDIRECT or XDP_TX use-case.
+
+The primary change in this patch is, changing the XDP API call 
+xdp_return_frame_rx_napi() effectively to xdp_return_frame().
+
+Looking at code users of this call:
+  (A) Seeing a number of drivers using this to speed up XDP_TX when 
+*completing* packets from TX-ring.
+  (B) drivers/net/xen-netfront.c use looks incorrect.
+  (C) drivers/net/virtio_net.c use can easily be removed.
+  (D) cpumap.c and drivers/net/tun.c should not be using this call.
+  (E) devmap.c is the main user (with multiple calls)
+
+The (A) user will see a performance drop for XDP_TX, but these driver
+should be able to instead call the page_pool APIs directly as they
+should have access to the page_pool instance.
+
+Users (B)+(C)+(D) simply needs cleanup.
+
+User (E): devmap is the most important+problematic user (IIRC this was
+the cause of bug[1]).  XDP redirecting into devmap and running a new
+XDP-prog (per target device) was a prime user of this call
+xdp_return_frame_rx_napi() as it gave us excellent (e.g. XDP_DROP)
+performance.
+
+Perhaps we should simply measure the impact on devmap + 2nd XDP-prog
+doing XDP_DROP.  Then, we can see if overhead is acceptable... ?
+
+> ... and the slow path for reference:
+> 
+>    bench_page_pool: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+>    bench_page_pool: Type:tasklet_page_pool02_ptr_ring Per elem: 30 cycles(tsc) 15.395 ns (step:0)
+
+The devmap user will basically fallback to using this code path.
+
+> So the impact is small in the fast-path, but not negligible. One thing
+> to consider is the fact that the comparisons from napi_direct are
+> dropped. That means that the impact will be smaller than the
+> measurements from the benchmark.
+> 
+> [1] Commit 2b986b9e917b ("bpf, cpumap: Disable page_pool direct xdp_return need larger scope")
+> [2] Intel Xeon Platinum 8580
+> 
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
 > ---
+>   drivers/net/veth.c     |  2 --
+>   include/linux/filter.h | 22 ----------------------
+>   include/net/xdp.h      |  2 +-
+>   kernel/bpf/cpumap.c    |  2 --
+>   net/bpf/test_run.c     |  2 --
+>   net/core/filter.c      |  2 +-
+>   net/core/xdp.c         | 24 ++++++++++++------------
+>   7 files changed, 14 insertions(+), 42 deletions(-)
+> 
+> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> index a3046142cb8e..6d5c1e0b05a7 100644
+> --- a/drivers/net/veth.c
+> +++ b/drivers/net/veth.c
+> @@ -975,7 +975,6 @@ static int veth_poll(struct napi_struct *napi, int budget)
+>   
+>   	bq.count = 0;
+>   
+> -	xdp_set_return_frame_no_direct();
+>   	done = veth_xdp_rcv(rq, budget, &bq, &stats);
+>   
+>   	if (stats.xdp_redirect > 0)
+> @@ -994,7 +993,6 @@ static int veth_poll(struct napi_struct *napi, int budget)
+>   
+>   	if (stats.xdp_tx > 0)
+>   		veth_xdp_flush(rq, &bq);
+> -	xdp_clear_return_frame_no_direct();
+>   
+>   	return done;
+>   }
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index f5c859b8131a..877e40d81a4c 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -764,7 +764,6 @@ struct bpf_nh_params {
+>   };
+>   
+>   /* flags for bpf_redirect_info kern_flags */
+> -#define BPF_RI_F_RF_NO_DIRECT	BIT(0)	/* no napi_direct on return_frame */
+>   #define BPF_RI_F_RI_INIT	BIT(1)
+>   #define BPF_RI_F_CPU_MAP_INIT	BIT(2)
+>   #define BPF_RI_F_DEV_MAP_INIT	BIT(3)
+> @@ -1163,27 +1162,6 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
+>   				       const struct bpf_insn *patch, u32 len);
+>   int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt);
+>   
+> -static inline bool xdp_return_frame_no_direct(void)
+> -{
+> -	struct bpf_redirect_info *ri = bpf_net_ctx_get_ri();
+> -
+> -	return ri->kern_flags & BPF_RI_F_RF_NO_DIRECT;
+> -}
+> -
+> -static inline void xdp_set_return_frame_no_direct(void)
+> -{
+> -	struct bpf_redirect_info *ri = bpf_net_ctx_get_ri();
+> -
+> -	ri->kern_flags |= BPF_RI_F_RF_NO_DIRECT;
+> -}
+> -
+> -static inline void xdp_clear_return_frame_no_direct(void)
+> -{
+> -	struct bpf_redirect_info *ri = bpf_net_ctx_get_ri();
+> -
+> -	ri->kern_flags &= ~BPF_RI_F_RF_NO_DIRECT;
+> -}
+> -
+>   static inline int xdp_ok_fwd_dev(const struct net_device *fwd,
+>   				 unsigned int pktlen)
+>   {
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index aa742f413c35..2a44d84a7611 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -446,7 +446,7 @@ struct xdp_frame *xdp_convert_buff_to_frame(struct xdp_buff *xdp)
+>   }
+>   
+>   void __xdp_return(netmem_ref netmem, enum xdp_mem_type mem_type,
+> -		  bool napi_direct, struct xdp_buff *xdp);
+> +		  struct xdp_buff *xdp);
+>   void xdp_return_frame(struct xdp_frame *xdpf);
+>   void xdp_return_frame_rx_napi(struct xdp_frame *xdpf);
+>   void xdp_return_buff(struct xdp_buff *xdp);
+> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+> index 703e5df1f4ef..3ece03dc36bd 100644
+> --- a/kernel/bpf/cpumap.c
+> +++ b/kernel/bpf/cpumap.c
+> @@ -253,7 +253,6 @@ static void cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
+>   
+>   	rcu_read_lock();
+>   	bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
+> -	xdp_set_return_frame_no_direct();
+>   
+>   	ret->xdp_n = cpu_map_bpf_prog_run_xdp(rcpu, frames, ret->xdp_n, stats);
+>   	if (unlikely(ret->skb_n))
+> @@ -263,7 +262,6 @@ static void cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
+>   	if (stats->redirect)
+>   		xdp_do_flush();
+>   
+> -	xdp_clear_return_frame_no_direct();
+>   	bpf_net_ctx_clear(bpf_net_ctx);
+>   	rcu_read_unlock();
+>   
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index 8b7d0b90fea7..a0fe03e9e527 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -289,7 +289,6 @@ static int xdp_test_run_batch(struct xdp_test_data *xdp, struct bpf_prog *prog,
+>   	local_bh_disable();
+>   	bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
+>   	ri = bpf_net_ctx_get_ri();
+> -	xdp_set_return_frame_no_direct();
+>   
+>   	for (i = 0; i < batch_sz; i++) {
+>   		page = page_pool_dev_alloc_pages(xdp->pp);
+> @@ -352,7 +351,6 @@ static int xdp_test_run_batch(struct xdp_test_data *xdp, struct bpf_prog *prog,
+>   			err = ret;
+>   	}
+>   
+> -	xdp_clear_return_frame_no_direct();
+>   	bpf_net_ctx_clear(bpf_net_ctx);
+>   	local_bh_enable();
+>   	return err;
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 16105f52927d..5622ec5ac19c 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4187,7 +4187,7 @@ static bool bpf_xdp_shrink_data(struct xdp_buff *xdp, skb_frag_t *frag,
+>   	}
+>   
+>   	if (release) {
+> -		__xdp_return(netmem, mem_type, false, zc_frag);
+> +		__xdp_return(netmem, mem_type, zc_frag);
+>   	} else {
+>   		if (!tail)
+>   			skb_frag_off_add(frag, shrink);
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 9100e160113a..cf8eab699d9a 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -431,18 +431,18 @@ EXPORT_SYMBOL_GPL(xdp_rxq_info_attach_page_pool);
+>    * of xdp_frames/pages in those cases.
+>    */
+>   void __xdp_return(netmem_ref netmem, enum xdp_mem_type mem_type,
+> -		  bool napi_direct, struct xdp_buff *xdp)
+> +		  struct xdp_buff *xdp)
+>   {
+>   	switch (mem_type) {
+>   	case MEM_TYPE_PAGE_POOL:
+>   		netmem = netmem_compound_head(netmem);
+> -		if (napi_direct && xdp_return_frame_no_direct())
+> -			napi_direct = false;
+> +
+>   		/* No need to check netmem_is_pp() as mem->type knows this a
+>   		 * page_pool page
+> +		 *
+> +		 * page_pool can detect direct recycle.
+>   		 */
+> -		page_pool_put_full_netmem(netmem_get_pp(netmem), netmem,
+> -					  napi_direct);
+> +		page_pool_put_full_netmem(netmem_get_pp(netmem), netmem, false);
+>   		break;
+>   	case MEM_TYPE_PAGE_SHARED:
+>   		page_frag_free(__netmem_address(netmem));
+> @@ -471,10 +471,10 @@ void xdp_return_frame(struct xdp_frame *xdpf)
+>   	sinfo = xdp_get_shared_info_from_frame(xdpf);
+>   	for (u32 i = 0; i < sinfo->nr_frags; i++)
+>   		__xdp_return(skb_frag_netmem(&sinfo->frags[i]), xdpf->mem_type,
+> -			     false, NULL);
+> +			     NULL);
+>   
+>   out:
+> -	__xdp_return(virt_to_netmem(xdpf->data), xdpf->mem_type, false, NULL);
+> +	__xdp_return(virt_to_netmem(xdpf->data), xdpf->mem_type, NULL);
+>   }
+>   EXPORT_SYMBOL_GPL(xdp_return_frame);
+>   
+> @@ -488,10 +488,10 @@ void xdp_return_frame_rx_napi(struct xdp_frame *xdpf)
+>   	sinfo = xdp_get_shared_info_from_frame(xdpf);
+>   	for (u32 i = 0; i < sinfo->nr_frags; i++)
+>   		__xdp_return(skb_frag_netmem(&sinfo->frags[i]), xdpf->mem_type,
+> -			     true, NULL);
+> +			     NULL);
+>   
+>   out:
+> -	__xdp_return(virt_to_netmem(xdpf->data), xdpf->mem_type, true, NULL);
+> +	__xdp_return(virt_to_netmem(xdpf->data), xdpf->mem_type, NULL);
+>   }
+>   EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
 
-Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
+The changed to xdp_return_frame_rx_napi() makes it equvilent to 
+xdp_return_frame().
 
--- 
-Cheers,
-Harry / Hyeonggon
+>   
+> @@ -542,7 +542,7 @@ EXPORT_SYMBOL_GPL(xdp_return_frame_bulk);
+>    */
+>   void xdp_return_frag(netmem_ref netmem, const struct xdp_buff *xdp)
+>   {
+> -	__xdp_return(netmem, xdp->rxq->mem.type, true, NULL);
+> +	__xdp_return(netmem, xdp->rxq->mem.type, NULL);
+>   }
+>   EXPORT_SYMBOL_GPL(xdp_return_frag);
+>   
+> @@ -556,10 +556,10 @@ void xdp_return_buff(struct xdp_buff *xdp)
+>   	sinfo = xdp_get_shared_info_from_buff(xdp);
+>   	for (u32 i = 0; i < sinfo->nr_frags; i++)
+>   		__xdp_return(skb_frag_netmem(&sinfo->frags[i]),
+> -			     xdp->rxq->mem.type, true, xdp);
+> +			     xdp->rxq->mem.type, xdp);
+>   
+>   out:
+> -	__xdp_return(virt_to_netmem(xdp->data), xdp->rxq->mem.type, true, xdp);
+> +	__xdp_return(virt_to_netmem(xdp->data), xdp->rxq->mem.type, xdp);
+>   }
+>   EXPORT_SYMBOL_GPL(xdp_return_buff);
+>   
+
 
