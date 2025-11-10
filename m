@@ -1,275 +1,267 @@
-Return-Path: <bpf+bounces-74087-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74088-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E505C4784F
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 16:26:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02EF3C479B9
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 16:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8DE614EE98B
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 15:19:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01B073B8826
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 15:36:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B56312512E6;
-	Mon, 10 Nov 2025 15:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98C2126C3BF;
+	Mon, 10 Nov 2025 15:36:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b="S+9sTsuK"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0deuG2kE"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-o-2.desy.de (smtp-o-2.desy.de [131.169.56.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f74.google.com (mail-ej1-f74.google.com [209.85.218.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0551E492A
-	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 15:19:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.169.56.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 224671AAE13
+	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 15:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762787942; cv=none; b=HoGeqhVAsBe2wI+S0lHICocH3eQKOVXKNlxxf/579SVvYy/CcqiKjtrwgw7BMFumFBAxCuENZydb8BsirS372UjMUthhy6ZtC/FV4nZAEyIfFoiMr4qlu4A72QlEN9B51CKNRtX6uPIAjKH1H8Aie1vIgE6+lk7jt9vHIcN6T0c=
+	t=1762788982; cv=none; b=YN9wm1I4DcanQZjg2ov57zq3KqT78bNvrFN7W+x+kKJQIxy2pz3ItUWBBb86jVp6wKM7KivQJ8f+gmcr+qQg6raOF/BMFe98HdTj/M1wn+4q/r+62ECCZ9rzeOpC+kcvlj5H/Lhm/HgXblWYrp4f/c7FTj+UHMS1rx+buetXZZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762787942; c=relaxed/simple;
-	bh=TAuujbCCnA3FJHDvi1YZ6fcC3Z3u5aktjr6jlLdYwCU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CRR32NbKDLqzWjxL3tjIxvX+0esMu79QvUQYhNudn6E4y6NtLE3APFZ6Z12MrRxtIXYhsJ7IJXm2c41/yzrXTRU6BFWlF0+3/rS15ankH68GYbnshXKGWmEvcfkeQoEaV3Y/hjwE8Rot+gNwaRCU/OXTH1A3UBeor+MfwxXW3i0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu; spf=none smtp.mailfrom=mail.desy.de; dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b=S+9sTsuK; arc=none smtp.client-ip=131.169.56.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mail.desy.de
-Received: from smtp-buf-2.desy.de (smtp-buf-2.desy.de [IPv6:2001:638:700:1038::1:a5])
-	by smtp-o-2.desy.de (Postfix) with ESMTP id C4FA113F648
-	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 16:18:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp-o-2.desy.de C4FA113F648
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xfel.eu; s=default;
-	t=1762787932; bh=ibl0oJDw4ncCE3552EKUTkStALab7K8p2Wb5JxAi8ds=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=S+9sTsuKD0sCrxx/r5bEgvwNJyWU1sRS+0zRgadOjaktXu2DrN8n8dZI0AtRHw3KZ
-	 IdPjWHzdOJu5G6/L9qDsb9fRnPqfvq4XyV1NAHT6IBoKiPxTKVbHV7k3E6I2j7MoiD
-	 SpSyshJlYjMjrAjyzvvElhtuF7ccSVBXoRzapjfw=
-Received: from smtp-m-2.desy.de (smtp-m-2.desy.de [IPv6:2001:638:700:1038::1:82])
-	by smtp-buf-2.desy.de (Postfix) with ESMTP id B85A1120043;
-	Mon, 10 Nov 2025 16:18:52 +0100 (CET)
-Received: from a1722.mx.srv.dfn.de (a1722.mx.srv.dfn.de [194.95.233.47])
-	by smtp-m-2.desy.de (Postfix) with ESMTP id AAEB716003F;
-	Mon, 10 Nov 2025 16:18:52 +0100 (CET)
-Received: from smtp-intra-1.desy.de (smtp-intra-1.desy.de [IPv6:2001:638:700:1038::1:52])
-	by a1722.mx.srv.dfn.de (Postfix) with ESMTP id C0188320090;
-	Mon, 10 Nov 2025 16:18:51 +0100 (CET)
-Received: from exflqr30474.desy.de (exflqr30474.desy.de [192.168.177.248])
-	by smtp-intra-1.desy.de (Postfix) with ESMTP id AF3618004E;
-	Mon, 10 Nov 2025 16:18:51 +0100 (CET)
-Received: by exflqr30474.desy.de (Postfix, from userid 31112)
-	id ABC38201A6; Mon, 10 Nov 2025 16:18:51 +0100 (CET)
-From: Martin Teichmann <martin.teichmann@xfel.eu>
-To: bpf@vger.kernel.org
-Cc: eddyz87@gmail.com,
-	ast@kernel.org,
-	andrii@kernel.org,
-	Martin Teichmann <martin.teichmann@xfel.eu>
-Subject: [PATCH v4 bpf-next 2/2] bpf: test the proper verification of tail calls
-Date: Mon, 10 Nov 2025 16:18:44 +0100
-Message-ID: <20251110151844.3630052-3-martin.teichmann@xfel.eu>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <998304ddd050ef81ce6281ebb88130e836c07fc3.camel@gmail.com>
-References: <998304ddd050ef81ce6281ebb88130e836c07fc3.camel@gmail.com>
+	s=arc-20240116; t=1762788982; c=relaxed/simple;
+	bh=6dsX1nap/ClvsXK7KrTRSd4Tz0PaTzKIHfmrOcuYTvQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=uw3JC7f05qlqo13DafirDMuIRjmGZI6Slr17mWH6SHOwM8HEO/3urcaeymPg4ReVBZu9ksiY1fj3nJHPWa5DufcxztsCrnSvSEgniV12VLo6CubztgWF7k9ClHxH7f0waySFlMynyf8YCAV8Y082RM4JroRVoleASbvK3NP8Q1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0deuG2kE; arc=none smtp.client-ip=209.85.218.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
+Received: by mail-ej1-f74.google.com with SMTP id a640c23a62f3a-b70a978cd51so425039966b.3
+        for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 07:36:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1762788978; x=1763393778; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GaWutXseEM49NYYHvmu1piLSnNhRd63IQT+QthHzxAo=;
+        b=0deuG2kEWMF/6g9rM6XhekMoGiPnBy4VakFsAiejf9rhz3V8KsN5hO3bnoMNszQDxF
+         hGugU0Xht6eooCGB4hqJxqwzQG0eU2bJRqxpEYT81pF3lTq74nFgYxZYDO9jG/V4wEhX
+         xAGFZxaBJuVCCs7uibJ0/zJWnbH+DKM8RNOJcGkOQLcPla47UrQRtHFuKqmUnoMvms5T
+         bf4+8vazv0d/JpAWQ9rBFcdBHnEoRsxCc7MwjJfdrARo6xrH75ImPXXy0dY3ZBFzFxP+
+         YmnB02/VWJGgwzl3zBW0dADB2kP3k1zlmHZa1cMS93j8BfTZGxjsbjJVNlIws/E6zjab
+         Ootw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762788978; x=1763393778;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GaWutXseEM49NYYHvmu1piLSnNhRd63IQT+QthHzxAo=;
+        b=G2K2PUR9nkxPqKSMrqHjNQK9sm3n2+fxC2DB3GddFfj4QJ1ocpOyqXvWLVZT7buD2M
+         Jmd4G721CsrdhXYfCv/mdT9KqgcIgXFEqeQ9lzXA3PY2Zx1zvx/AA20wBGTysFRzwPww
+         b8LZEmndb7tbx+DQBhMLwkpZY8jAVu9ymPCLRNtuz224xeEHIel8aeFqKh8aU3etT3L1
+         3fkbRNfyvBmT2T/4DqApEHcnLMUXq7E6uiQNCQTISjLTwwl85W0LQ8nVYeK4k4l6YFAZ
+         uwdOLNH4flUrk+/kMsDr23jUxrzOl/KQQ7svfbM/2EXS9+S+pdLIhlA5cHP4c1gpxcBV
+         j2OQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWAumsk6WslkoqVoUDlZ9l5vGujx66Hy8sun0P3OJqWmOrss9muMdHqjnrMSRz/evF4I4I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzbrXcCjV951Vo5EIoSWNGyArVLPs3TY+kL5gbm2xW0wKzQoamz
+	6S9XVmirRxcpIjrEwP5yKU/HKKAcXLzDD9z17GXx/vJ7bhyei5YTKBQ/r4EFlCNB64QzXDbtfhv
+	LhkZVgjNmwYvGqA==
+X-Google-Smtp-Source: AGHT+IHTU5FXzUFeb1nI9cPK796M7PgT3DwXYMV5kcA8PjpI6OADg2Z/FZfwu9WOGlr1GmkIIQ0Qzc++hauFnA==
+X-Received: from ejcsq16.prod.google.com ([2002:a17:907:3890:b0:b72:b433:246f])
+ (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:907:72c5:b0:b70:be84:5183 with SMTP id a640c23a62f3a-b72e0591830mr875999666b.60.1762788978060;
+ Mon, 10 Nov 2025 07:36:18 -0800 (PST)
+Date: Mon, 10 Nov 2025 15:36:17 +0000
+In-Reply-To: <a940044f-3ae4-451f-b9ba-946ec6df5082@amazon.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20250924151101.2225820-1-patrick.roy@campus.lmu.de>
+ <DE2L1SAOC55E.E4JY62WJQ2A8@google.com> <add94932-290c-4037-b4e6-c3c760240819@amazon.com>
+ <DE2NTMZXQ1MT.2TH9VAKM6WP6I@google.com> <a940044f-3ae4-451f-b9ba-946ec6df5082@amazon.com>
+X-Mailer: aerc 0.21.0
+Message-ID: <DE54JGHVJ4QH.KW6CD73R58AU@google.com>
+Subject: Re: [PATCH v7 00/12] Direct Map Removal Support for guest_memfd
+From: Brendan Jackman <jackmanb@google.com>
+To: <kalyazin@amazon.com>, Brendan Jackman <jackmanb@google.com>
+Cc: <pbonzini@redhat.com>, <corbet@lwn.net>, <maz@kernel.org>, 
+	<oliver.upton@linux.dev>, <joey.gouly@arm.com>, <suzuki.poulose@arm.com>, 
+	<yuzenghui@huawei.com>, <catalin.marinas@arm.com>, <will@kernel.org>, 
+	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, 
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>, 
+	<luto@kernel.org>, <peterz@infradead.org>, <willy@infradead.org>, 
+	<akpm@linux-foundation.org>, <david@redhat.com>, <lorenzo.stoakes@oracle.com>, 
+	<Liam.Howlett@oracle.com>, <vbabka@suse.cz>, <rppt@kernel.org>, 
+	<surenb@google.com>, <mhocko@suse.com>, <song@kernel.org>, <jolsa@kernel.org>, 
+	<ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>, 
+	<martin.lau@linux.dev>, <eddyz87@gmail.com>, <yonghong.song@linux.dev>, 
+	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@fomichev.me>, 
+	<haoluo@google.com>, <jgg@ziepe.ca>, <jhubbard@nvidia.com>, 
+	<peterx@redhat.com>, <jannh@google.com>, <pfalcato@suse.de>, 
+	<shuah@kernel.org>, <seanjc@google.com>, <kvm@vger.kernel.org>, 
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, 
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>, 
+	<linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>, <bpf@vger.kernel.org>, 
+	<linux-kselftest@vger.kernel.org>, <xmarcalx@amazon.co.uk>, 
+	<kalyazin@amazon.co.uk>, <jackabt@amazon.co.uk>, <derekmn@amazon.co.uk>, 
+	<tabba@google.com>, <ackerleytng@google.com>, 
+	Patrick Roy <patrick.roy@campus.lmu.de>
+Content-Type: text/plain; charset="UTF-8"
 
-Four tests are added:
+On Fri Nov 7, 2025 at 6:11 PM UTC, Nikita Kalyazin wrote:
+>
+>
+> On 07/11/2025 18:04, Brendan Jackman wrote:
+>> On Fri Nov 7, 2025 at 5:23 PM UTC, Nikita Kalyazin wrote:
+>>>
+>>>
+>>> On 07/11/2025 15:54, Brendan Jackman wrote:
+>>>> On Wed Sep 24, 2025 at 3:10 PM UTC, Patrick Roy wrote:
+>>>>> From: Patrick Roy <roypat@amazon.co.uk>
+>>>>>
+>>>>> [ based on kvm/next ]
+>>>>>
+>>>>> Unmapping virtual machine guest memory from the host kernel's direct map is a
+>>>>> successful mitigation against Spectre-style transient execution issues: If the
+>>>>> kernel page tables do not contain entries pointing to guest memory, then any
+>>>>> attempted speculative read through the direct map will necessarily be blocked
+>>>>> by the MMU before any observable microarchitectural side-effects happen. This
+>>>>> means that Spectre-gadgets and similar cannot be used to target virtual machine
+>>>>> memory. Roughly 60% of speculative execution issues fall into this category [1,
+>>>>> Table 1].
+>>>>>
+>>>>> This patch series extends guest_memfd with the ability to remove its memory
+>>>>> from the host kernel's direct map, to be able to attain the above protection
+>>>>> for KVM guests running inside guest_memfd.
+>>>>>
+>>>>> Additionally, a Firecracker branch with support for these VMs can be found on
+>>>>> GitHub [2].
+>>>>>
+>>>>> For more details, please refer to the v5 cover letter [v5]. No
+>>>>> substantial changes in design have taken place since.
+>>>>>
+>>>>> === Changes Since v6 ===
+>>>>>
+>>>>> - Drop patch for passing struct address_space to ->free_folio(), due to
+>>>>>     possible races with freeing of the address_space. (Hugh)
+>>>>> - Stop using PG_uptodate / gmem preparedness tracking to keep track of
+>>>>>     direct map state.  Instead, use the lowest bit of folio->private. (Mike, David)
+>>>>> - Do direct map removal when establishing mapping of gmem folio instead
+>>>>>     of at allocation time, due to impossibility of handling direct map
+>>>>>     removal errors in kvm_gmem_populate(). (Patrick)
+>>>>> - Do TLB flushes after direct map removal, and provide a module
+>>>>>     parameter to opt out from them, and a new patch to export
+>>>>>     flush_tlb_kernel_range() to KVM. (Will)
+>>>>>
+>>>>> [1]: https://download.vusec.net/papers/quarantine_raid23.pdf
+>>>>> [2]: https://github.com/firecracker-microvm/firecracker/tree/feature/secret-hiding
+>>>>
+>>>> I just got around to trying this out, I checked out this patchset using
+>>>> its base-commit and grabbed the Firecracker branch. Things seem OK until
+>>>> I set the secrets_free flag in the Firecracker config which IIUC makes
+>>>> it set GUEST_MEMFD_FLAG_NO_DIRECT_MAP.
+>>>>
+>>>> If I set it, I find the guest doesn't show anything on the console.
+>>>> Running it in a VM and attaching GDB suggests that it's entering the
+>>>> guest repeatedly, it doesn't seem like the vCPU thread is stuck or
+>>>> anything. I'm a bit clueless about how to debug that (so far, whenever
+>>>> I've broken KVM, things always exploded very dramatically).
+>>>>
+>>>> Anyway, if I then kill the firecracker process, the host sometimes
+>>>> crashes, I think this is the most suggestive splat I've seen:
+>>>>
+>>>> [   99.673420][    T2] BUG: unable to handle page fault for address: ffff888012804000
+>>>> [   99.676216][    T2] #PF: supervisor write access in kernel mode
+>>>> [   99.678381][    T2] #PF: error_code(0x0002) - not-present page
+>>>> [   99.680499][    T2] PGD 2e01067 P4D 2e01067 PUD 2e02067 PMD 12801063 PTE 800fffffed7fb020
+>>>> [   99.683374][    T2] Oops: Oops: 0002 [#1] SMP
+>>>> [   99.685004][    T2] CPU: 0 UID: 0 PID: 2 Comm: kthreadd Not tainted 6.17.0-rc7-00366-g473c46a3cb2a #106 NONE
+>>>> [   99.688514][    T2] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.1 11/11/2019
+>>>> [   99.691547][    T2] RIP: 0010:clear_page_erms+0x7/0x10
+>>>> [   99.693440][    T2] Code: 48 89 47 18 48 89 47 20 48 89 47 28 48 89 47 30 48 89 47 38 48 8d 7f 40 75 d9 90 c3 0f 1f 80 00 00 00 00 b9 00 10 00 00 31 c0 <f3> aa c3 66 0f 1f 44 00 00 48 83 f9 40 73 2a 83 f9 08 73 0f 85 c9
+>>>> [   99.700188][    T2] RSP: 0018:ffff88800318fc10 EFLAGS: 00010246
+>>>> [   99.702321][    T2] RAX: 0000000000000000 RBX: 0000000000400dc0 RCX: 0000000000001000
+>>>> [   99.705100][    T2] RDX: ffffea00004a0100 RSI: ffffea00004a0200 RDI: ffff888012804000
+>>>> [   99.707861][    T2] RBP: 0000000000000801 R08: 0000000000000000 R09: 0000000000000000
+>>>> [   99.710648][    T2] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
+>>>> [   99.713412][    T2] R13: 0000000000000801 R14: ffffea00004a0100 R15: ffffffff81f4df80
+>>>> [   99.716191][    T2] FS:  0000000000000000(0000) GS:ffff8880bbf28000(0000) knlGS:0000000000000000
+>>>> [   99.719316][    T2] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>> [   99.721648][    T2] CR2: ffff888012804000 CR3: 0000000007583001 CR4: 0000000000372eb0
+>>>> [   99.724421][    T2] Call Trace:
+>>>> [   99.725608][    T2]  <TASK>
+>>>> [   99.726646][    T2]  get_page_from_freelist+0x6fe/0x14b0
+>>>> [   99.728583][    T2]  ? fs_reclaim_acquire+0x43/0xe0
+>>>> [   99.730325][    T2]  ? find_held_lock+0x2b/0x80
+>>>> [   99.731965][    T2]  __alloc_frozen_pages_noprof+0x147/0x2d0
+>>>> [   99.734003][    T2]  __alloc_pages_noprof+0x5/0x50
+>>>> [   99.735766][    T2]  copy_process+0x1b1/0x1b30
+>>>> [   99.737398][    T2]  ? lock_is_held_type+0x89/0x100
+>>>> [   99.739157][    T2]  ? kthreadd+0x25/0x190
+>>>> [   99.740664][    T2]  kernel_clone+0x59/0x390
+>>>> [   99.742213][    T2]  ? kthreadd+0x25/0x190
+>>>> [   99.743728][    T2]  kernel_thread+0x55/0x70
+>>>> [   99.745310][    T2]  ? kthread_complete_and_exit+0x20/0x20
+>>>> [   99.747265][    T2]  kthreadd+0x117/0x190
+>>>> [   99.748748][    T2]  ? kthread_is_per_cpu+0x30/0x30
+>>>> [   99.750509][    T2]  ret_from_fork+0x16b/0x1e0
+>>>> [   99.752193][    T2]  ? kthread_is_per_cpu+0x30/0x30
+>>>> [   99.753992][    T2]  ret_from_fork_asm+0x11/0x20
+>>>> [   99.755717][    T2]  </TASK>
+>>>> [   99.756861][    T2] CR2: ffff888012804000
+>>>> [   99.758353][    T2] ---[ end trace 0000000000000000 ]---
+>>>> [   99.760319][    T2] RIP: 0010:clear_page_erms+0x7/0x10
+>>>> [   99.762209][    T2] Code: 48 89 47 18 48 89 47 20 48 89 47 28 48 89 47 30 48 89 47 38 48 8d 7f 40 75 d9 90 c3 0f 1f 80 00 00 00 00 b9 00 10 00 00 31 c0 <f3> aa c3 66 0f 1f 44 00 00 48 83 f9 40 73 2a 83 f9 08 73 0f 85 c9
+>>>> [   99.769129][    T2] RSP: 0018:ffff88800318fc10 EFLAGS: 00010246
+>>>> [   99.771297][    T2] RAX: 0000000000000000 RBX: 0000000000400dc0 RCX: 0000000000001000
+>>>> [   99.774126][    T2] RDX: ffffea00004a0100 RSI: ffffea00004a0200 RDI: ffff888012804000
+>>>> [   99.777013][    T2] RBP: 0000000000000801 R08: 0000000000000000 R09: 0000000000000000
+>>>> [   99.779827][    T2] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
+>>>> [   99.782641][    T2] R13: 0000000000000801 R14: ffffea00004a0100 R15: ffffffff81f4df80
+>>>> [   99.785487][    T2] FS:  0000000000000000(0000) GS:ffff8880bbf28000(0000) knlGS:0000000000000000
+>>>> [   99.788671][    T2] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>> [   99.791012][    T2] CR2: ffff888012804000 CR3: 0000000007583001 CR4: 0000000000372eb0
+>>>> [   99.793863][    T2] Kernel panic - not syncing: Fatal exception
+>>>> [   99.796760][    T2] Kernel Offset: disabled
+>>>> [   99.798296][    T2] ---[ end Kernel panic - not syncing: Fatal exception ]---
+>>>>
+>>>> This makes me suspect the kvm_gmem_folio_restore_direct_map() path isn't
+>>>> working or isn't getting called.
+>>>>
+>>>> If anyone wants help trying to reproduce this let me know.
+>>>
+>>> Hi Brendan,
+>>>
+>>> Thanks for trying to run it!
+>>>
+>>> Just as a sanity check, the way it is known for us to work is we apply
+>>> all patches from [1].  For booted VMs (as opposed to restored from
+>>> snapshot), apart from the v6 of the direct map removal series, the only
+>>> additional patch is a fix for kvmclock on x86 [2].  Please let me know
+>>> if you see the same issue with that patch applied too.
+>>>
+>>> Nikita
+>>>
+>>> [1]
+>>> https://github.com/firecracker-microvm/firecracker/tree/feature/secret-hiding/resources/hiding_ci/linux_patches
+>>> [2]
+>>> https://github.com/firecracker-microvm/firecracker/tree/feature/secret-hiding/resources/hiding_ci/linux_patches/11-kvm-clock
+>> 
+>> Ah, thanks! Seems I should have checked my inbox before sending my other
+>> mail. With the kvmclock fix applied to my host kernel, I start setting
+>> the other crash immediately when the VM boots. If I comment out the
+>> actual unmapping of memory, it boots (before, it wouldn't boot even with
+>> that commented out).
+>> 
+>> For the other linux_patches, I couldn't apply them on top of this
+>> series, do you have a branch I can use as a reference?
+>
+> Instead of having an explicit branch, we apply all the patches on top of 
+> [1].  There is a script that performs fetch/build/install end-to-end: [2].
+>
+> [1] 
+> https://github.com/firecracker-microvm/firecracker/blob/feature/secret-hiding/resources/hiding_ci/kernel_commit_hash
+> [2] 
+> https://github.com/firecracker-microvm/firecracker/blob/feature/secret-hiding/resources/hiding_ci/build_and_install_kernel.sh
 
-- invalidate_pkt_pointers_by_tail_call checks that one can use the
-  packet pointer after a tail call. This was originally possible
-  and also poses not problems, but was made impossible by 1a4607ffba35.
-
-- invalidate_pkt_pointers_by_static_tail_call tests a corner case
-  found by Eduard Zingerman during the discussion of the original fix,
-  which was broken in that fix.
-
-- subprog_result_tail_call tests that precision propagation works
-  correctly across tail calls. This did not work before.
-
-- caller_stack_write_tail_call tests that the live stack is correctly
-  tracked for a tail call, again a corner case found by Eduard
-  Zingerman.
-
-Signed-off-by: Martin Teichmann <martin.teichmann@xfel.eu>
----
- .../selftests/bpf/progs/verifier_live_stack.c | 49 +++++++++++++++++++
- .../selftests/bpf/progs/verifier_sock.c       | 39 ++++++++++++++-
- .../bpf/progs/verifier_subprog_precision.c    | 47 ++++++++++++++++++
- 3 files changed, 133 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/verifier_live_stack.c b/tools/testing/selftests/bpf/progs/verifier_live_stack.c
-index c0e808509268..9cc53eb1a545 100644
---- a/tools/testing/selftests/bpf/progs/verifier_live_stack.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_live_stack.c
-@@ -292,3 +292,52 @@ __naked void syzbot_postorder_bug1(void)
- 	"exit;"
- 	::: __clobber_all);
- }
-+
-+struct {
-+        __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+        __uint(max_entries, 1);
-+        __type(key, __u32);
-+        __type(value, __u32);
-+} map_array SEC(".maps");
-+
-+SEC("socket")
-+__failure __msg("invalid read from stack R2 off=-1024 size=8")
-+__naked unsigned long caller_stack_write_tail_call(void)
-+{
-+        asm volatile (
-+	"r6 = r1;"
-+	"*(u64 *)(r10 - 8) = -8;"
-+        "call %[bpf_get_prandom_u32];"
-+        "if r0 != 42 goto 1f;"
-+        "goto 2f;"
-+  "1:"
-+        "*(u64 *)(r10 - 8) = -1024;"
-+  "2:"
-+        "r1 = r6;"
-+        "r2 = r10;"
-+        "r2 += -8;"
-+        "call write_tail_call;"
-+        "r1 = *(u64 *)(r10 - 8);"
-+        "r2 = r10;"
-+        "r2 += r1;"
-+        "r0 = *(u64 *)(r2 + 0);"
-+        "exit;"
-+        :: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+static __used __naked unsigned long write_tail_call(void)
-+{
-+        asm volatile (
-+        "r6 = r2;"
-+        "r2 = %[map_array] ll;"
-+        "r3 = 0;"
-+        "call %[bpf_tail_call];"
-+        "*(u64 *)(r6 + 0) = -16;"
-+        "r0 = 0;"
-+        "exit;"
-+	:
-+	: __imm(bpf_tail_call),
-+          __imm_addr(map_array)
-+        : __clobber_all);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/verifier_sock.c b/tools/testing/selftests/bpf/progs/verifier_sock.c
-index 2b4610b53382..a2132c72d3b8 100644
---- a/tools/testing/selftests/bpf/progs/verifier_sock.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_sock.c
-@@ -1117,10 +1117,17 @@ int tail_call(struct __sk_buff *sk)
- 	return 0;
- }
- 
--/* Tail calls invalidate packet pointers. */
-+static __noinline
-+int static_tail_call(struct __sk_buff *sk)
-+{
-+	bpf_tail_call_static(sk, &jmp_table, 0);
-+	return 0;
-+}
-+
-+/* Tail calls in sub-programs invalidate packet pointers. */
- SEC("tc")
- __failure __msg("invalid mem access")
--int invalidate_pkt_pointers_by_tail_call(struct __sk_buff *sk)
-+int invalidate_pkt_pointers_by_global_tail_call(struct __sk_buff *sk)
- {
- 	int *p = (void *)(long)sk->data;
- 
-@@ -1131,4 +1138,32 @@ int invalidate_pkt_pointers_by_tail_call(struct __sk_buff *sk)
- 	return TCX_PASS;
- }
- 
-+/* Tail calls in static sub-programs invalidate packet pointers. */
-+SEC("tc")
-+__failure __msg("invalid mem access")
-+int invalidate_pkt_pointers_by_static_tail_call(struct __sk_buff *sk)
-+{
-+	int *p = (void *)(long)sk->data;
-+
-+	if ((void *)(p + 1) > (void *)(long)sk->data_end)
-+		return TCX_DROP;
-+	static_tail_call(sk);
-+	*p = 42; /* this is unsafe */
-+	return TCX_PASS;
-+}
-+
-+/* Direct tail calls do not invalidate packet pointers. */
-+SEC("tc")
-+__success
-+int invalidate_pkt_pointers_by_tail_call(struct __sk_buff *sk)
-+{
-+	int *p = (void *)(long)sk->data;
-+
-+	if ((void *)(p + 1) > (void *)(long)sk->data_end)
-+		return TCX_DROP;
-+	bpf_tail_call_static(sk, &jmp_table, 0);
-+	*p = 42; /* this is NOT unsafe: tail calls don't return */
-+	return TCX_PASS;
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c b/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c
-index ac3e418c2a96..de5ef3152567 100644
---- a/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c
-@@ -793,4 +793,51 @@ __naked int stack_slot_aliases_precision(void)
- 	);
- }
- 
-+struct {
-+        __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+        __uint(max_entries, 1);
-+        __type(key, __u32);
-+        __type(value, __u32);
-+} map_array SEC(".maps");
-+
-+__naked __noinline __used
-+static unsigned long identity_tail_call(void)
-+{
-+	/* the simplest identity function involving a tail call */
-+        asm volatile (
-+		"r6 = r2;"
-+		"r2 = %[map_array] ll;"
-+		"r3 = 0;"
-+		"call %[bpf_tail_call];"
-+		"r0 = r6;"
-+		"exit;"
-+		:
-+		: __imm(bpf_tail_call),
-+		  __imm_addr(map_array)
-+		: __clobber_all);
-+}
-+
-+SEC("?raw_tp")
-+__failure __log_level(2)
-+__msg("6: (0f) r1 += r0")
-+__msg("mark_precise: frame0: regs=r0 stack= before 5: (bf) r1 = r6")
-+__msg("mark_precise: frame0: regs=r0 stack= before 4: (27) r0 *= 4")
-+__msg("mark_precise: frame0: parent state regs=r0 stack=:  R0=Pscalar() R6=map_value(map=.data.vals,ks=4,vs=16) R10=fp0")
-+__msg("math between map_value pointer and register with unbounded min value is not allowed")
-+__naked int subprog_result_tail_call(void)
-+{
-+	asm volatile (
-+		"r2 = 3;"
-+		"call identity_tail_call;"
-+		"r0 *= 4;"
-+		"r1 = %[vals];"
-+		"r1 += r0;"
-+		"r0 = *(u32 *)(r1 + 0);"
-+		"exit;"
-+		:
-+		: __imm_ptr(vals)
-+		: __clobber_common
-+	);
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.43.0
-
+Thanks, I was able to construct a branch and confirm the crashes go
+away. I guess this should block merging the feature though, right? Do
+you know which particular of the patches are the likely relevant ones
+here?
 
