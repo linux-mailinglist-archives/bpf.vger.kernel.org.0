@@ -1,88 +1,127 @@
-Return-Path: <bpf+bounces-74104-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74105-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0F65C495CF
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 22:09:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45A54C4961E
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 22:18:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C52783AE48D
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 21:08:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D29C3A45F8
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 21:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D842F7ABA;
-	Mon, 10 Nov 2025 21:08:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8312FB624;
+	Mon, 10 Nov 2025 21:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SzK2pMWu"
+	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="Akeb/ucT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2432F5A3E;
-	Mon, 10 Nov 2025 21:08:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDADE2FB0AE;
+	Mon, 10 Nov 2025 21:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762808920; cv=none; b=WiSNx0GHub7JAu923VihQ+bFB+cclFFVw4lfEAmmMWSBkx+q+YNr4vKYUC49gbnYfx2+k2YumRd7yV5MQv7/T5z0bLidX8DgpAuSDZCn2+qvNJzkiS6Ywh26pDiQbmphQdxRS3pyc0cuRDOMwqPJmXTaTf6CNzAGxWEpxFtlb50=
+	t=1762809425; cv=none; b=SqzW+J88Cf3AqeFkt9DeFgtijKU9KG1DUP+X7F3Xe9EIcS2dhFU9nZ0c6yWxkNMgpGAJRtA3WjG1btcdN/4UFzow50J8m0LsUrSScQ29+XWajZd3Ex+fpeL/PVbBo/qIXCHLb+M8tREP2W7WEN0zDUtlIJTz86WXNNMO7WhnqUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762808920; c=relaxed/simple;
-	bh=WmucaFrI7bJuofCDaZRNIC+CayWlzp1M5K5cIAKTE1k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LKk2vRFCvkUK2ns3/Y0RAKI86Qat60c6vBUBJ1MocpvuP/c2E8DUXM7wtImySk8quyp8NFRFyQnDNn5RuMKtEo1Wwg2Iqv2dI2DnS+WHaYHSWe+TQZsVTIpXLLA1zn9dJavdP8s3kpmmo+3zvBGhKbKraG8h853/QkR1XEqrWmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SzK2pMWu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E35F1C116B1;
-	Mon, 10 Nov 2025 21:08:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762808919;
-	bh=WmucaFrI7bJuofCDaZRNIC+CayWlzp1M5K5cIAKTE1k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SzK2pMWuVz3sx1/VAZ+bnvTBIVzDeFyWdopXWJCN0QXNVvvAgz/CLqWvLeb2jH6Sv
-	 BNpAFiMMFNItLBfwv3XcKAV7CAvM3IcEnlyJTZqaDemuhfKuxQYD6PTiUwyJ+VEM6Q
-	 VN0I+K4SrpW0OeqrCjFWuhud2QfcT2FWMXCottIz8tYwdP1XUFR999gJrC8EVxcrdi
-	 vSjgLwplYB/q7R1wlkF0r5q9M63nr9Eho62ZHjovpbJsPoGl100MDYqr0cslBdZD8z
-	 ZvHY8I8AXzZYtrxI262MqH213vGMGcx08l2AIeiaEeGz20lPLgogHfNOHhdSNS/RH0
-	 uThAo/VD5hBxQ==
-Date: Mon, 10 Nov 2025 14:08:35 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: Jens Reidel <adrian@mainlining.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: Re: [PATCH] mips: Use generic endianness macros instead of
- MIPS-specific ones
-Message-ID: <20251110210835.GA302594@ax162>
-References: <20251108-mips-bpf-fix-v1-1-0467c3ee2613@mainlining.org>
- <20251109233720.GB2977577@ax162>
- <alpine.DEB.2.21.2511100050330.25436@angie.orcam.me.uk>
+	s=arc-20240116; t=1762809425; c=relaxed/simple;
+	bh=j/GmLtZD81Iakg1ssg53qGb/gdl098Mso9zN3dxXF8Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=DCNIhcykPtNBjV5e5Dg0Qvli/rrzm6FwQiZ6ktLZeZxX/lO426BgDDez57TwDoJvUpO3aM3A2+OwbkPNy7m3Ppf0FMcZw1Y5LSF3+9xO42ZgHWMX2O1XCeHhJo1DW2eZBt061vJ/zBPBdWV30kZKPkAgMyPiXb2a7k454qJt14Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=Akeb/ucT; arc=none smtp.client-ip=80.241.56.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4d52Y70Q67z9tgM;
+	Mon, 10 Nov 2025 22:16:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
+	t=1762809419;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TVpqQbrl3dN+EaWCdEE3H3CfbfxcMD+thTTN9Y4oXtk=;
+	b=Akeb/ucTn5gL0dBj/U3LkeUyBQVab++NskUlESsxW4DZf/QH1qzFbQehJjkkU+4oBrRSKh
+	7/+eIuoYtCIend49R8rzyJB0rVtjUuhESLZX91oRrD/wASrWg5DdNq/hnYhfY5n/9MfTrd
+	jxyVaD7OvGRte88EuDDGp8PieJkQZRoVNtE/vHJ8ghA5y5McSsNzEVUHj1bXz0lLRulsKP
+	75R8p8lsJuQlDPiH8lJfRGBlHuJlhKdAyF5N8/8bK/jbb4pVio10B+29/rVg3SX3md/EuZ
+	olYsyii1kGxUEFYLTpJBHuhUcRpbugJ+em9NOiFcv3MTKVtU4F5LmS0cewIZMw==
+From: Brahmajit Das <listout@listout.xyz>
+To: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	contact@arnaud-lcm.com,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	sdf@fomichev.me,
+	song@kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	yonghong.song@linux.dev
+Subject: [RFC bpf-next PATCH] bpf: Clamp trace length in __bpf_get_stack to fix OOB write
+Date: Tue, 11 Nov 2025 02:46:40 +0530
+Message-ID: <20251110211640.963-1-listout@listout.xyz>
+In-Reply-To: <691231dc.a70a0220.22f260.0101.GAE@google.com>
+References: <691231dc.a70a0220.22f260.0101.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2511100050330.25436@angie.orcam.me.uk>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 10, 2025 at 01:34:19AM +0000, Maciej W. Rozycki wrote:
->  Also please don't review changes based on assumptions, "I assume GCC 
-> does[...]" means that you just don't know (and it's trivial to check).
+syzbot reported a stack-out-of-bounds write in __bpf_get_stack()
+triggered via bpf_get_stack() when capturing a kernel stack trace.
 
-Yes, that is totally valid. I hastily reviewed this when I should have
-taken the time to check but I did not have a MIPS cross compiler
-available locally to test and I forgot that I can use Godbolt for that
-test. I'll be more mindful of that in the future (or at least being
-clear that I did not actually check but it should be verified before the
-change is merged without providing a tag).
+After the recent refactor that introduced stack_map_calculate_max_depth(),
+the code in stack_map_get_build_id_offset() (and related helpers) stopped
+clamping the number of trace entries (`trace_nr`) to the number of elements
+that fit into the stack map value (`num_elem`).
 
-> target macros.  Since our current GCC requirement is 5.1 it will be fine 
+As a result, if the captured stack contained more frames than the map value
+can hold, the subsequent memcpy() would write past the end of the buffer,
+triggering a KASAN report like:
 
-Just an FYI, the minimum GCC version is 8.1 since commit 118c40b7b503
-("kbuild: require gcc-8 and binutils-2.30") in 6.16.
+    BUG: KASAN: stack-out-of-bounds in __bpf_get_stack+0x...
+    Write of size N at addr ... by task syz-executor...
 
-Cheers,
-Nathan
+Restore the missing clamp by limiting `trace_nr` to `num_elem` before
+computing the copy length. This mirrors the pre-refactor logic and ensures
+we never copy more bytes than the destination buffer can hold.
+
+No functional change intended beyond reintroducing the missing bound check.
+
+Reported-by: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
+Fixes: e17d62fedd10 ("bpf: Refactor stack map trace depth calculation into helper function")
+Signed-off-by: Brahmajit Das <listout@listout.xyz>
+---
+ kernel/bpf/stackmap.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 2365541c81dd..885130e4ab0d 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -480,6 +480,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 	}
+ 
+ 	trace_nr = trace->nr - skip;
++	trace_nr = min_t(u32, trace_nr, size / elem_size);
+ 	copy_len = trace_nr * elem_size;
+ 
+ 	ips = trace->ip + skip;
+-- 
+2.51.2
+
 
