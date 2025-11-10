@@ -1,94 +1,104 @@
-Return-Path: <bpf+bounces-74102-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74103-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 673F3C4942E
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 21:36:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76B2DC494CA
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 21:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 744094EA915
-	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 20:36:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C77D53B038A
+	for <lists+bpf@lfdr.de>; Mon, 10 Nov 2025 20:44:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E53B2F069E;
-	Mon, 10 Nov 2025 20:36:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38422F3600;
+	Mon, 10 Nov 2025 20:44:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aQQUlKc2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JiRFOmOZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76BFF2EF662
-	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 20:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C082F0C69
+	for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 20:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762806976; cv=none; b=E8ZNNfi2caOT2zJlvi0z34n6MfMhvc1/NC7fgSmgkuXdebeRTxVwHkwE2v6U+a+gd0/D1HVg9YwNxNQqIUSfxEvYcgiWoLvl8vv/7z6p20FPQ76Nzw3aDrmLnio1vtygSltG/7poFuSyUyqxyIr1KJkPz+PWW89U2xn5pyswkxk=
+	t=1762807466; cv=none; b=VPqClTww2BoHqvxAGsOKJJjM1bBQX5ycndGk3N1KYhdYuoKwlXZKcAFmkpI12OWzwFyqYrZAmmDTQdNxTn7euY3s/1C5e8jL10tPbxm7EmFBBp1N4AFk1+vJGaaGOJ0ZBq8cUucbK5TASJK04ge2Oh1HL7LPFPnbHHI+qBr/+80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762806976; c=relaxed/simple;
-	bh=RCe9ghHYriRY4OGs9GstKBzLP7BBe0ijz6IOUCcDgKg=;
+	s=arc-20240116; t=1762807466; c=relaxed/simple;
+	bh=1pRo6FcYmFekXp6UMZ3cZqMsEhMk7Ue52qE3SPSdaiA=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=J9WwXO4OVufEcJRZ6Qkix8E+V/OI0dl/IH2UMgSpZ2kz8i1roOcTFiwjfzfGSZGx+agR4n00wdoCxi9Ll0X8J3xOgm1ffOt0hlqGBiG5R8G0DDX0l2arCZubU/CIKMvTsnYSalmL9mPzYjWcJn8XQpon16I8nUXiwW8LfAxtEE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aQQUlKc2; arc=none smtp.client-ip=209.85.215.179
+	 Content-Type:MIME-Version; b=hv1ygNMgV48wm7NjN3Kjq77O45rGyuY86/RD5WvF8H6bChdyrbMpUy6CVFXBYVU9wrwXTvVThOKvl9PDyeF5lUwKkGeJSpEppv3auWwgwS3lRpQ+NPjoVx6UtPUtu+cxaGdm3IHDsW8fQq3ZRnRDbYWNZSzUKuyO8hzJ+cG9aUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JiRFOmOZ; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-b55517e74e3so3043420a12.2
-        for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 12:36:15 -0800 (PST)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7aa9be9f03aso3040968b3a.2
+        for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 12:44:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762806975; x=1763411775; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1762807464; x=1763412264; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=fdW94pbkRdOwe2jA8pItfkO2oVchwyib+YCLYUN3HF8=;
-        b=aQQUlKc2+cthQfTaLOVRIKpT4ZV0ctrc9ehUYKGIq6U5X6U7/YNgWWCOInS2GZ5zI4
-         7wqbUzlXWgMvzEGxVnpLUkhC5DU3+ztOo2hRWwaTJ7zdRssYY8osDmBK73hjSscoEzFv
-         nWVOcCsbxCxNcF66wf4KK7Ttt6gJVe8jUFaECJKV7hdvf17u7pSeO1cG2n5lYoD56zU4
-         ZCtDBdlWiPBJcHWsEDH0KcYhhW9EbKKQvPCZPKivE5CbdnZ4MX9Wgbu+IvCDrHwHfPa/
-         pb3fmresOgEh+oBeHghlEX6dcGJxaE3Ibsq0G6FjF0chV3/ys1HABLgzMiqlg8aTfE6O
-         tyoQ==
+        bh=iKPfFuPx59pn0UpS2AdXRDeAfpJEQ1HphTQyjMZvYAg=;
+        b=JiRFOmOZX2Eq+5qgWUjRa2X3kbqiBt5jOO8rZAIrdytPrNh45dVjPnmzxlqhZz76Cy
+         ZDrNapc5UCBTMvFwx5a2l1HeXXR1QZv8Azd2YTbQFppeRNbQXGWyeQzBzkF/xrSzMCLM
+         fZHbtY7/brz7XKRy+RT21YF6yo/aEuQ7rbw6iwZLAuDRRlE/7eWWbe1Gv3JFXFGzpDb1
+         kod0FZd5/1V7jRnWvU7Rv3EPkOEi1SmdVMnzg5231H9yQXDgiPib6UXSr0Z0dQmJF1qP
+         V+0F2VdnU9/a+5wal9AmqZkz4JLvhEQwl84L4KoWcP/5VdchsIfK3p52Gmh14O//Hs1Q
+         INcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762806975; x=1763411775;
+        d=1e100.net; s=20230601; t=1762807464; x=1763412264;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fdW94pbkRdOwe2jA8pItfkO2oVchwyib+YCLYUN3HF8=;
-        b=To4X+HTqZHRV6XHVcWW3FC47J9mXPvp6Fd4idTfFHVQ61eUDgCKSrzPHoa17yCtoQe
-         R3vXz7vHIxEYvp7nPftqa0YMRjOtslfwa3wmSloF85GSMPAgFvS10+1YsRgCrViR3QAI
-         0wByoMN4SheHH4ykRBBKCN8E0D3LOQ2ZlFIJ+1M1sP1AfYXASEQUqzFhE0xjNh6fUszk
-         lTDwuvycWBqbIesYGfTQyvGEFAXAtzDfN4tdZ7aoxe9S3Oin9qLFwCFKMdXZ6y8R4JjU
-         xFwMJ2b/E77t8H9xc5w6GZAxWjerMSg/3TSaWriFZo3b+SosDzT57n6LDwh0QeInkXTP
-         aLAw==
-X-Forwarded-Encrypted: i=1; AJvYcCWuw9rws/Q7IgeWj3w7o3OxPPtWbqEaweZH4Fje1Qz0+2vx770vLeb4a9EB61cH9oQ8S6o=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzvswqgi/4r00LAu3q4fk/AaTevsuT3mJGm6fuDD4TmADD5Rjik
-	P2HHkNojTPRU2Hftyrjpw51TEu+1sGbhtrJsVbcyKGd6vpHjQ8Ehy/Hk
-X-Gm-Gg: ASbGncteAZTZ4dij9rI2ZZF7/R53UDju6VZi3GricPDNCZVAByVt8emzUEJROHE65PP
-	YKKxPAhSvqhNefWyOBM0ghp7UjbEzMmiJGmIDO8iY7/UIO6IZ+5qhqDaNWzNiTJO6l+fr4B6tCD
-	yrVoWXNkihd7mT7mtgJH9DdVeSmIoqAhko/2AhuVNw1B6FdxsHsql6VtgXnjCsYNqKvO1Mrf1YH
-	yt6ANTsvSh5I9HzhXccTDk2PTkpD6gURpEnfHjT4n5X1btSD96Z8kEMnwdtbj6OBmEOXoOCeBAP
-	LQ6EZEHoh5Vk/50JEvy3w1z/OZR8WfC/k0UcIzQ2aYdR+3E5zfFUNe39Kpr/WLEH+pICe8BYDiw
-	g2KNtAMOGbUikd8Jvn+dUDFFMkCE2XCqwQFbC6+JkGSr9Cob6aRyDExIsuTPZdztoELo8BAYqEz
-	NT3HRfFQFMLKBKV2Y//eBXbQFb
-X-Google-Smtp-Source: AGHT+IG5FsvYqOiL8dLwOS1VEeS41ABkv99P3qnf6jkgeRdwW81L8bVYBq0MYEPYlPhTK5gGmKhKqQ==
-X-Received: by 2002:a17:903:110f:b0:298:2afd:c4c1 with SMTP id d9443c01a7336-2982afdc5acmr48309695ad.50.1762806974669;
-        Mon, 10 Nov 2025 12:36:14 -0800 (PST)
+        bh=iKPfFuPx59pn0UpS2AdXRDeAfpJEQ1HphTQyjMZvYAg=;
+        b=bbn2DVsyL2/oRA2019Gd7KVjm+Jfixivz398bICuAVj71PN2RgthLkyajQ/0B9Gv6K
+         FEgvmjPBOeNfwuuc4mZtDUwwHupnrCvQAuTsnZta5CYMrizI3jIcVF1284KhZDb69YXg
+         hJAkoC/eE/9HCu0SkfR/LL1PfDGUgS9myOltqwJIpIoiZeECZ5aEM7VeJA7ocqRihzLK
+         9ezyhLDMFLho1rG8YmER4In88zPqqRXFlQrfjmqm1w6RrdGUioZng4OIVCzEIH8fPIIc
+         VuT5GzqSlccu9DkflDofT46EVRPkrMDRAI6s7ngAhjRkZYDoV64Q71jgCudz+YuQbyV4
+         N+RQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUaqJ6dTJNpFYa1q8Nw6lAcL/Er/T+zdzZt2vWB1FgGxxkX1yrpJN4C0thaqzE0St8U90o=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwmrFoxNCViZ/VuuH96ZohfkBix0blYfE5DuUi5APlLYrnOZXDo
+	irT84giLhiXc58Nbc2MBXyssylppglmQYnDrg1ufNn24Jfx3qZ2nIFkq
+X-Gm-Gg: ASbGncsfZgB/vAqdd1K9wWgFHpOJNc3ZL+mVZch5CLB2dcHsi/NSdBcRlJ4Y2pG6nl1
+	MhvMBpftG3IkRo/BMm6ufhAMQIX7Y7gyfYXk6JJHAbZgi3g/m3jnHv4wXV6tztc5ZI0Vq51P3gl
+	lY3JCbIG4hNCwTH7hYgq7VO53pdzBhQY4eXXV6xCKQAQA3pdKIvSkhifqHyfK/s82tmNjuj8rWh
+	JRWaQSE4fDHUCUO8lTXT9wRZ5BIt41veWPT9WZTrV5Dn0aymaK/Ke/zXJejn2HhBJho7L/NkICP
+	Nflpelc3o/6bfnODHhencTdyJLztGsoLgeYl4Vi2Y8z1n3o/UvubArPJ2hY9sGp/pp9Fo1VJvS5
+	/OKL9oBEAk3E/0lXRQWBFpdZfnn9HAmB9osgUCnjed52v+0P83S2Slk/mSm1YrUlHe5RJBRFTzE
+	/aihtACYpI66kHi44ZgoBwZwYp
+X-Google-Smtp-Source: AGHT+IGLQ+TKStFopEippXXCOLfymt5XyhUQ0gz+x+HlNHUomSsmKq2g8X5d42p43jRwj51NHHo8YA==
+X-Received: by 2002:a17:903:988:b0:297:dde4:8024 with SMTP id d9443c01a7336-297e56622c0mr113277145ad.23.1762807464301;
+        Mon, 10 Nov 2025 12:44:24 -0800 (PST)
 Received: from ?IPv6:2a03:83e0:115c:1:5ff:e0da:7503:b2a7? ([2620:10d:c090:500::7:ecb1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-297dacd1e93sm99771625ad.2.2025.11.10.12.36.13
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-297dfcbe798sm92498915ad.19.2025.11.10.12.44.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Nov 2025 12:36:14 -0800 (PST)
-Message-ID: <92ba87bbc6b11234be1925a4dc7262e11cd07305.camel@gmail.com>
-Subject: Re: [PATCH bpf v3] bpf: Fix invalid mem access when
- update_effective_progs fails in __cgroup_bpf_detach
+        Mon, 10 Nov 2025 12:44:23 -0800 (PST)
+Message-ID: <854a2c2ceaa52f1ad26fb803d1ad5668fd3200b3.camel@gmail.com>
+Subject: Re: [PATCH v5 6/7] btf: Add lazy sorting validation for binary
+ search
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,  Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh	 <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo	
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Alan Maguire	
- <alan.maguire@oracle.com>, Pu Lehui <pulehui@huawei.com>
-Date: Mon, 10 Nov 2025 12:36:12 -0800
-In-Reply-To: <20251110092536.4082324-1-pulehui@huaweicloud.com>
-References: <20251110092536.4082324-1-pulehui@huaweicloud.com>
+To: Donglin Peng <dolinux.peng@gmail.com>, Alexei Starovoitov	
+ <alexei.starovoitov@gmail.com>, Andrii Nakryiko
+ <andrii.nakryiko@gmail.com>,  Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: bot+bpf-ci@kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	zhangxiaoqin@xiaomi.com, LKML <linux-kernel@vger.kernel.org>, bpf	
+ <bpf@vger.kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Song Liu	
+ <song@kernel.org>, pengdonglin <pengdonglin@xiaomi.com>, Andrii Nakryiko	
+ <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
+ Lau	 <martin.lau@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ Chris Mason	 <clm@meta.com>
+Date: Mon, 10 Nov 2025 12:44:21 -0800
+In-Reply-To: <CAErzpmtViehGv3uLMFwv5bnRJi4HJu=wE6an6S0Gv2up3vncgA@mail.gmail.com>
+References: <20251106131956.1222864-7-dolinux.peng@gmail.com>
+	 <d57f3e256038e115f7d82b4e6b26d8da80d3c8d8afb4f0c627e0b435dee7eaf6@mail.kernel.org>
+	 <CAErzpmtRYnSpLuO=oM7GgW0Sss2+kQ2cJsZiDmZmz04fD0Noyg@mail.gmail.com>
+	 <74d4c8e40e61dad369607ecd8b98f58a515479f0.camel@gmail.com>
+	 <CAADnVQLkS0o+fzh8SckPpdSQ+YZgbBBwsCgeqHk_76pZ+cchXQ@mail.gmail.com>
+	 <5a8c765f8e2b4473d9833d468ea43ad8ea7e57b6.camel@gmail.com>
+	 <CAADnVQKbgno=yGjshJpo+fwRDMTfXXVPWq0eh7avBj154dCq_g@mail.gmail.com>
+	 <6cbeb051a6bebb75032bc724ad10efed5b65cbf7.camel@gmail.com>
+	 <CAErzpmtViehGv3uLMFwv5bnRJi4HJu=wE6an6S0Gv2up3vncgA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -99,84 +109,37 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Mon, 2025-11-10 at 09:25 +0000, Pu Lehui wrote:
-> From: Pu Lehui <pulehui@huawei.com>
->=20
-> Syzkaller triggers an invalid memory access issue following fault
-> injection in update_effective_progs. The issue can be described as
-> follows:
->=20
-> __cgroup_bpf_detach
->   update_effective_progs
->     compute_effective_progs
->       bpf_prog_array_alloc <-- fault inject
->   purge_effective_progs
->     /* change to dummy_bpf_prog */
->     array->items[index] =3D &dummy_bpf_prog.prog
->=20
-> ---softirq start---
-> __do_softirq
->   ...
->     __cgroup_bpf_run_filter_skb
->       __bpf_prog_run_save_cb
->         bpf_prog_run
->           stats =3D this_cpu_ptr(prog->stats)
->           /* invalid memory access */
->           flags =3D u64_stats_update_begin_irqsave(&stats->syncp)
-> ---softirq end---
->=20
->   static_branch_dec(&cgroup_bpf_enabled_key[atype])
->=20
-> The reason is that fault injection caused update_effective_progs to fail
-> and then changed the original prog into dummy_bpf_prog.prog in
-> purge_effective_progs. Then a softirq came, and accessing the stats of
-> dummy_bpf_prog.prog in the softirq triggers invalid mem access.
->=20
-> To fix it, we can use static per-cpu variable to initialize the stats
-> of dummy_bpf_prog.prog.
->=20
-> Fixes: 4c46091ee985 ("bpf: Fix KASAN use-after-free Read in compute_effec=
-tive_progs")
-> Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> ---
+On Mon, 2025-11-10 at 09:42 +0800, Donglin Peng wrote:
 
-Hi Pu,
+[...]
 
-Sorry for the delayed response. This patch looks good to me, but I
-think that your argument about memory consumption makes total sense.
-It might be the case that v1 is a better fix. Let's hear from Alexei.
+> [[Resending in plain text format - previous HTML email was rejected]
+>=20
+> Thanks for the feedback. Based on the previous discussions, I plan
+> to implement the following changes in the next version:
+>=20
+> 1. Modify the btf__permute interface to adopt the ID map approach, as
+>     suggested by Andrii.
+>=20
+> 2. Remove the lazy sort check and move the verification to the BTF
+>     parsing phase. This addresses two concerns: potential race conditions
+>     with write operations and const-cast issues. The overhead is negligib=
+le
+>      (approximately 1.4ms for vmlinux BTF).
+>=20
+> 3. Invoke the btf__permute interface to implement BTF sorting in resolve_=
+btfids.
+>=20
+> I welcome any further suggestions.
+
+Hi Donglin,
+
+I think this summarizes the discussion pretty well.
+One thing to notice about (2): if sorting is done by resolve_btfids,
+there is no need to check for BTF being sorted in vmlinux BTF.
+So, maybe it's a good idea to skip this check for it, as Alexei suggested
+(but not for programs BTF).
 
 Thanks,
 Eduard.
-
-> v3:
-> - add static for the per-cpu variable.
->=20
-> v2:
-> - Use static per-cpu variables to initialize the stats of
->   dummy_bpf_prog.prog suggested by Eduard.
->=20
->  kernel/bpf/core.c | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index d595fe512498..14c15275b424 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2536,11 +2536,14 @@ static unsigned int __bpf_prog_ret1(const void *c=
-tx,
->  	return 1;
->  }
-> =20
-> +static DEFINE_PER_CPU(struct bpf_prog_stats, __dummy_stats);
-> +
->  static struct bpf_prog_dummy {
->  	struct bpf_prog prog;
->  } dummy_bpf_prog =3D {
->  	.prog =3D {
->  		.bpf_func =3D __bpf_prog_ret1,
-> +		.stats =3D &__dummy_stats,
->  	},
->  };
-> =20
 
