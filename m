@@ -1,136 +1,106 @@
-Return-Path: <bpf+bounces-74114-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74115-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC4FFC49E29
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 01:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C29EEC4A1A5
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 02:00:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F8083ABB1B
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 00:37:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20BBF3AD442
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 00:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FC6A24676B;
-	Tue, 11 Nov 2025 00:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FDF42586C8;
+	Tue, 11 Nov 2025 00:59:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="v17SCKU7"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CcYNdGr/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FE2334D38D;
-	Tue, 11 Nov 2025 00:37:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1CD4C97
+	for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 00:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762821471; cv=none; b=NEEr7hAznofbIpZtQY27jWhZPM43iQK9/yTopuVv3Mejvkidvrzgcpgfgec/tzd0N/KhIMGXYF+kxQwbZx8FSvxXcTOAMYLcKcTShTy+YbBUoMl3vVGM9BDV+f4OCpgEy4kijCdkLHRH6upLZ9dmLHv1wc3lRpb4iOZxfHRf75o=
+	t=1762822768; cv=none; b=DVcQ1yt/cHzztiGiMGVTkfNlxedS53y838IQ64L6/ToNdf5wwfgbB5+nNm4pXIeRD3T1JmBayf24zvjNovWiHtLHKQCa0uNn/HeJmZZvJZZ2GOOYr2wgQVvbnQr3xehVZ9uVvrVwJuKK8KmIBPYHocpeEhM5mEUK5QaEc1LfYJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762821471; c=relaxed/simple;
-	bh=CXUca8YX0lqu5nzun2xmmizNpx8K/emG0bVPAISOubw=;
+	s=arc-20240116; t=1762822768; c=relaxed/simple;
+	bh=lH4MtGKoPnrI1sXdA0bQ14rxZPD3TPNVJddPSUsj7jA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ua/yabWCBqnLLJBTfz9Rm/kLMm4v71ovsRJNzqT+91U1557ecSbP6qdQhOCZsPYh3TiLbRCgNm3nASAaq4SiQzts0hVqe2SrrBbF3uNZPaPvj1+P+wlcY/v5X6jQI76gMuKlUtsM11YK7YNzr5AJ8jktBjNh3X1sscnTS72YAIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=v17SCKU7; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4d570g0Z3vz9t7M;
-	Tue, 11 Nov 2025 01:37:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
-	t=1762821459;
+	 MIME-Version:Content-Type; b=ZtSY3+4wJ6w5kBiKWiXSGZE2bxLIzRipEuWV2G6/DqlbjPMc7cnkQAtRZuwoizk89oqmeMbDRVDUk5/ICqC5kwxR6M14+bLS2gEBRJhvcIDBe05mSztp+sQXpPsp2kGJwn2bsi2exHn/yjNDVdhsVyKBeKixfjEUTiHetZHXT+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CcYNdGr/; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762822763;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EuZRMwi3IQuVG4xNekc3Mlt/5lCSesgrsdugH2WI734=;
-	b=v17SCKU7lI2YxrvALwwN5vaDSCmgNUkQ8omYw6b2hWo/KGwT1T43RNMQXAAAQ3U+qm7+pv
-	m9xjAria+e9+ctG8aOLpp0/1kpXze/ENKP+cB0IUiTQg51vnbRX4Uyx4c4hMI3VVrZvLjq
-	kpiYRW0Kuzq00YOJQaPCS5nORTfqphVscfysXSJtScnDU986waoeP/bDVxo7llLcULM13b
-	xnJg0kFqbvSL7ocazO5yGkaCMWJIm4d77ZyiYSzvdu5m7IGR3eIzrJkISXIlM5zErgWmaa
-	IPb0NM7Y+GA0aB1bR0R38el4WdPQX5qrKQ5LWgoVHv5A+1agvET3gGw5S6aKZA==
-From: Brahmajit Das <listout@listout.xyz>
-To: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	contact@arnaud-lcm.com,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	sdf@fomichev.me,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: [PATCH bpf-next v2] bpf: Clamp trace length in __bpf_get_stack to fix OOB write
-Date: Tue, 11 Nov 2025 06:07:21 +0530
-Message-ID: <20251111003721.7629-1-listout@listout.xyz>
-In-Reply-To: <691231dc.a70a0220.22f260.0101.GAE@google.com>
-References: <691231dc.a70a0220.22f260.0101.GAE@google.com>
+	bh=p0LiTT3vfQ1evUTRc258iJ2UQXRFMLtdgeURzgP5nP4=;
+	b=CcYNdGr/ZQ2ALgZjdu15qzCjLR8NjvhzT96eXM6jCEx200Zavj3FCjETGxQd76L3wKXX8L
+	tqqKp3sP1gp09ZzxqYmgQmNILXrgtuvcPnqgZEEfFDOXMpmJYzMSvKWfcf6w27r9h74GcG
+	EdwsheoLi61WtK9JOsfXW+6Tvg9dXq0=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Menglong Dong <menglong8.dong@gmail.com>, Song Liu <song@kernel.org>
+Cc: ast@kernel.org, song@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, yonghong.song@linux.dev, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, jiang.biao@linux.dev,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject:
+ Re: [PATCH bpf] bpf: handle the return of ftrace_set_filter_ip in
+ register_fentry
+Date: Tue, 11 Nov 2025 08:59:10 +0800
+Message-ID: <2806193.mvXUDI8C0e@7950hx>
+In-Reply-To:
+ <CAHzjS_vj26p7SwVupAb0XyTZs__NProJ+CN6DKy+-E1R+Wk33Q@mail.gmail.com>
+References:
+ <20251110120705.1553694-1-dongml2@chinatelecom.cn>
+ <CAHzjS_vj26p7SwVupAb0XyTZs__NProJ+CN6DKy+-E1R+Wk33Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-syzbot reported a stack-out-of-bounds write in __bpf_get_stack()
-triggered via bpf_get_stack() when capturing a kernel stack trace.
+On 2025/11/10 23:49, Song Liu wrote:
+> On Mon, Nov 10, 2025 at 4:07=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
+> >
+> > The error that returned by ftrace_set_filter_ip() in register_fentry() =
+is
+> > not handled properly. Just fix it.
+> >
+> > Fixes: 00963a2e75a8 ("bpf: Support bpf_trampoline on functions with IPM=
+ODIFY (e.g. livepatch)")
+> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> > ---
+> >  kernel/bpf/trampoline.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> LGTM. Thanks for the fix!
+>=20
+> Acked-by: Song Liu <song@kernel.org>
+>=20
+> Can we add a test for this code path?
 
-After the recent refactor that introduced stack_map_calculate_max_depth(),
-the code in stack_map_get_build_id_offset() (and related helpers) stopped
-clamping the number of trace entries (`trace_nr`) to the number of elements
-that fit into the stack map value (`num_elem`).
+I think it can be done by attach a fentry to a notrace function and
+check the error number.
 
-As a result, if the captured stack contained more frames than the map value
-can hold, the subsequent memcpy() would write past the end of the buffer,
-triggering a KASAN report like:
+Let me have a try.
 
-    BUG: KASAN: stack-out-of-bounds in __bpf_get_stack+0x...
-    Write of size N at addr ... by task syz-executor...
+>=20
+> Song
+>=20
+>=20
 
-Restore the missing clamp by limiting `trace_nr` to `num_elem` before
-computing the copy length. This mirrors the pre-refactor logic and ensures
-we never copy more bytes than the destination buffer can hold.
 
-No functional change intended beyond reintroducing the missing bound check.
 
-Reported-by: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
-Fixes: e17d62fedd10 ("bpf: Refactor stack map trace depth calculation into helper function")
-Signed-off-by: Brahmajit Das <listout@listout.xyz>
----
-Changes in v2:
-- Use max_depth instead of num_elem logic, this logic is similar to what
-we are already using __bpf_get_stackid
-
-Changes in v1:
-- RFC patch that restores the number of trace entries by setting
-trace_nr to trace_nr or num_elem based on whichever is the smallest.
-Link: https://lore.kernel.org/all/20251110211640.963-1-listout@listout.xyz/
----
- kernel/bpf/stackmap.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 2365541c81dd..f9081de43689 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -480,6 +480,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 	}
- 
- 	trace_nr = trace->nr - skip;
-+	trace_nr = min_t(u32, trace_nr, max_depth - skip);
- 	copy_len = trace_nr * elem_size;
- 
- 	ips = trace->ip + skip;
--- 
-2.51.2
 
 
