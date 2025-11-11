@@ -1,104 +1,156 @@
-Return-Path: <bpf+bounces-74210-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74211-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE12CC4D08F
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 11:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A7247C4D12B
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 11:35:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 065C21887C67
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 10:30:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32B64189CE41
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 10:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDEFA24DD17;
-	Tue, 11 Nov 2025 10:30:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0E6E34D91E;
+	Tue, 11 Nov 2025 10:35:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="q4HHA45X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fTzMknut"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA7BE34CFDE
-	for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 10:30:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642652727EB;
+	Tue, 11 Nov 2025 10:35:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762857006; cv=none; b=UtRaDdP2KAfXA4pGxA+PkuSfX3ZT2QviUom93608uYEd8X+3Rl3qvUh/VmASED28C1btI18Jsb/hD6+L52uo/ZKTgHHyS4n47Wpy5EVV+1PGfNlAM8c0xu0KNPIbpql6l/Rvhn3jzp0m+kzla10yohZ60+Mg9TxNhWKISiFtxwA=
+	t=1762857321; cv=none; b=lFiSfrqdORLWeNui72vgUzLWxFQ7to32nvkck0TBoFnDIAQGem6uFbc6dsNMo7o7Fa3CrtRiN08WsISadnp7ADIcL+bozrimbu3U/bHgHIUp3KMkGAeaTmfbw6iQoGEP6ZdBL3pik+VgWZaCWzhgFeUSfYFTtjxVJW24ZOGn6ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762857006; c=relaxed/simple;
-	bh=ErpvLu+msmOQH+DLoUzEraHYQEPe7HwAu5dxR8qbtAo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Rpcggl86yhfzmdRy2i++wUvgDOEJ6CC3BkwpclEJD4xiqVLY+TYZdPRZho+KRbi6FF6Bsxzyq+y3Qx4H+lTS0hNd3OJ8cTHB1RbNT9f7hZlTm0TPfKs4CJX7KGwvJvVQDvRFRBAPpo0Kifz2Dryt2CESF1bJPHGoequYtgv2RfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=q4HHA45X; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4e4d9fc4316so40133691cf.2
-        for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 02:30:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1762857004; x=1763461804; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ErpvLu+msmOQH+DLoUzEraHYQEPe7HwAu5dxR8qbtAo=;
-        b=q4HHA45Xx0xTDskll4DjSU6SWhWolRSlpTtA8cDnYPTI/9mbRIiB52rjVByj7Xz8ay
-         nFP0//QDDttEQdXDUPTQYuhtZxg4E9Z6etcMAQhjvLkWtzN7d8du6hlQT4fTRYhV57g2
-         fSGQ47hY+Biwn3/0+lGUjV8ol/iJevVJFrQy0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762857004; x=1763461804;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ErpvLu+msmOQH+DLoUzEraHYQEPe7HwAu5dxR8qbtAo=;
-        b=vxPt6m1j79XjQnJrSQxnhgbG9mQ6T1Jmuc168pKECoIAqO8GMoBUFTNCuqKwiDXKYs
-         e6NoLxmSVuCMUKB8/efd7LvnolClG3/BUBqvR+QBGC3cmUdj9BuYcdyroyjoORumV0PR
-         p2fZfLpAcATDy51ffGZM9EZ6+Gg07Su4/dP6pFCT/FiJLy4Jrc5k9xaj4UlbvADSmJ84
-         jJwDNMfq4JaERa8pm5hbt7G00KlIEyKw0laxkuKE2L3FcdpUYpXZTp8Lj2vE9dF0QAfH
-         GXCulCZ5fD1f8iihFzycm8lZoNME13yTnoNeE8AoYYNEh/Xz+FReJbUXUbLUUVo4hyjz
-         xdDw==
-X-Forwarded-Encrypted: i=1; AJvYcCWgUqX6uEczNFAZus21LH+vhO8T2z3yq8Foa7akPkxxpZdbMcgnACpB/zpNbYqIpa71BeY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YylTw9cbOAX3IhHH15aTAe8LPQMjcb42DDIkwNG3913QD3DZ9nI
-	jw43/UUONVzHjBqsO38kZagZrOAZMJntstkz0n73dnKwUsePMBHwUhxm/vCbwtWQjgJWQz/l+5q
-	4rNCE5RvRZ9G8IM9lcCxZZB6oeG2HLkt+38BmzjVINA==
-X-Gm-Gg: ASbGncthzxBBjUFyvKooqWJ2Y7mII/hVTlszKgmlwF1k45faDGd50BWYFHmO6k8dyp/
-	2ikWt24hk2/FfDuTm8FYJrcna5P/WVbG4ossKS+3mmZdMYsko/eCIIOEnJXpznCYLgwwN5WkNaa
-	5VRSYc+WVg5YFR2XhYpdi+U4rryYL90yhjjwSuJHDpdYLh/ZS8fkBQiyVtN8xDBY1wstNJMxVle
-	7g+5sbELOppdxUNr6Ym5gpIf0bPhdoT74hdzWSTedU5QfUcSTHu6bF936vPeX4G3SnwyA==
-X-Google-Smtp-Source: AGHT+IG1vPc79jE1NxMTWUcAkMOFXJ1dO7xwNLHncVzXeQGMi6M4ZcaWG7wZ9Wn4xgn8RqaQcm4UKxcrnMz8XFw/71I=
-X-Received: by 2002:ac8:7d8b:0:b0:4ed:b378:145d with SMTP id
- d75a77b69052e-4edb3781c5fmr87056701cf.45.1762857003684; Tue, 11 Nov 2025
- 02:30:03 -0800 (PST)
+	s=arc-20240116; t=1762857321; c=relaxed/simple;
+	bh=ikQYTPKgrxxcM1o7K2HzJax8zvKLGPAKsPsUyvfZnuc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tZIGsQK9HgY5bt1YokkRRQGtZXm1YSL1TQ7NPVRFi5lXO7vmUAW4yGovUu1TcstOtMF83xyRzKYYHN3Y0Qh3WbGyRyIzQOe19IGKDqWY/OYUbbbvqDFPe0IDzTHQpPOT6rQbVEa+35GJSOOVmXkA31QgTdv6mB02mipKSoKh5WQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fTzMknut; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA237C19421;
+	Tue, 11 Nov 2025 10:35:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762857320;
+	bh=ikQYTPKgrxxcM1o7K2HzJax8zvKLGPAKsPsUyvfZnuc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=fTzMknut7KPkiX2bHCUR3JOuB+GG4kAuKCaG/5lsqdZWT777xr1KDWircJZqHYVvA
+	 7Q65jEMzVWQ5n7gw1QRS1tlzCGBX5JsdzqXRkKGRshJzhtLnv/F10Jol1OEHvDM6ku
+	 cbdTQvZMYSw2QPpC1d6MKVax3MmSpB9cT93Kb4vYuo3tzvQ5PahDTQNyT+/2/cFUor
+	 jJX8bkTCbBLbO9/OoM/Gkj5hjCgbMlXbCUb0h7/He9guZLxX1i1iBqsv1fInKO9PAQ
+	 uwT49md1HR6A9eUiBTsVTGqTjzAf67R4N9y06gKKUmH3Onghw193ADqwMCB5H3BHb2
+	 9ojFwAHCi1kNA==
+Message-ID: <cf035c68-fe96-49e0-acdb-bf813ae71d57@kernel.org>
+Date: Tue, 11 Nov 2025 11:35:04 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251111065520.2847791-1-viro@zeniv.linux.org.uk> <20251111065520.2847791-4-viro@zeniv.linux.org.uk>
-In-Reply-To: <20251111065520.2847791-4-viro@zeniv.linux.org.uk>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Tue, 11 Nov 2025 11:29:52 +0100
-X-Gm-Features: AWmQ_bnbS5BGnOdlDcNli2J3_mWe2QdNv2AalQvWZZg8jjhCbQzLKZqYiVdFPQQ
-Message-ID: <CAJfpegv5eZK=70GEdbofg8u-CKS7gL6Ur5PD86Ay4h3Z8D986A@mail.gmail.com>
-Subject: Re: [PATCH v3 03/50] new helper: simple_remove_by_name()
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org, 
-	brauner@kernel.org, jack@suse.cz, raven@themaw.net, neil@brown.name, 
-	a.hindborg@kernel.org, linux-mm@kvack.org, linux-efi@vger.kernel.org, 
-	ocfs2-devel@lists.linux.dev, kees@kernel.org, rostedt@goodmis.org, 
-	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, paul@paul-moore.com, 
-	casey@schaufler-ca.com, linuxppc-dev@lists.ozlabs.org, 
-	john.johansen@canonical.com, selinux@vger.kernel.org, 
-	borntraeger@linux.ibm.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH net v5 0/3] mptcp: Fix conflicts between MPTCP and sockmap
+Content-Language: en-GB, fr-BE
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, mptcp@lists.linux.dev
+Cc: Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Christoph Paasch <cpaasch@apple.com>, Florian Westphal <fw@strlen.de>,
+ Peter Krystad <peter.krystad@linux.intel.com>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20251111060307.194196-1-jiayuan.chen@linux.dev>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <20251111060307.194196-1-jiayuan.chen@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 11 Nov 2025 at 07:55, Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> simple_recursive_removal(), but instead of victim dentry it takes
-> parent + name.
->
-> Used to be open-coded in fs/fuse/control.c, but there's no need to expose
-> the guts of that thing there and there are other potential users, so
-> let's lift it into libfs...
->
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Hi net and bpf-net maintainers,
 
-Acked-by: Miklos Szeredi <mszeredi@redhat.com>
+On 11/11/2025 07:02, Jiayuan Chen wrote:
+> Overall, we encountered a warning [1] that can be triggered by running the
+> selftest I provided.
+> 
+> sockmap works by replacing sk_data_ready, recvmsg, sendmsg operations and
+> implementing fast socket-level forwarding logic:
+> 1. Users can obtain file descriptors through userspace socket()/accept()
+>    interfaces, then call BPF syscall to perform these replacements.
+> 2. Users can also use the bpf_sock_hash_update helper (in sockops programs)
+>    to replace handlers when TCP connections enter ESTABLISHED state
+>   (BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB/BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB)
+> 
+> However, when combined with MPTCP, an issue arises: MPTCP creates subflow
+> sk's and performs TCP handshakes, so the BPF program obtains subflow sk's
+> and may incorrectly replace their sk_prot. We need to reject such
+> operations. In patch 1, we set psock_update_sk_prot to NULL in the
+> subflow's custom sk_prot.
+> 
+> Additionally, if the server's listening socket has MPTCP enabled and the
+> client's TCP also uses MPTCP, we should allow the combination of subflow
+> and sockmap. This is because the latest Golang programs have enabled MPTCP
+> for listening sockets by default [2]. For programs already using sockmap,
+> upgrading Golang should not cause sockmap functionality to fail.
+> 
+> Patch 2 prevents the WARNING from occurring.
+
+I think this series can be applied directly in 'net', if that's OK for
+both of you.
+
+Cheers,
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
+
 
