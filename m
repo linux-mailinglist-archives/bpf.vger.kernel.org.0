@@ -1,249 +1,847 @@
-Return-Path: <bpf+bounces-74243-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74C3CC4F28B
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 18:01:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51372C4F2DD
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 18:05:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14C88188560C
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 17:01:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50CA618C0C49
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 17:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72F5F377E82;
-	Tue, 11 Nov 2025 17:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e52L5gGY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F98377EA8;
+	Tue, 11 Nov 2025 17:04:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB543730DB
-	for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 17:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 441A43730D5
+	for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 17:04:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762880479; cv=none; b=ShoMYFNV5DfG1S+dXXy15jq4nNHgUsfAgElM3AuyinOQXHOT9bTIvTL/bKqtAaTOiAjtJgiwOZgV+8rsxB0EI4oHaN0BMhK29IeenGaj6FvvUUE5my26E/qRGZeAbF7qVeUDoWKnvSzKPLZ52lG4jiEG+mu3VBbRKFJ15p1EQYM=
+	t=1762880694; cv=none; b=HCKXd6lSiYJVgZZlqc9kfed1Dc51uMyiPRF2jqqF6ZdL5BI95Fd2UHdnMKp3bOVNVMNzW3ZXjWkPd5B/vYOukPz9SS1TEk2O+8/fz4NJzrNQlkJIHXuwSshVI0T3nr9O3jJZvo0v7e2vw0SaZOroERwmrzOZbOkajXPu3+Hiizc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762880479; c=relaxed/simple;
-	bh=GG8uHV0FmaqMPOs5Q6aTAzqlFriQK9XSeM8KFTVlID4=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=WUuSWGOOrwsjc/VBYQ5h+c5Mzzq5EceLMYsdKIVw0vnUmYLcPg5HtPcb7spL+wPbTar+t/oPvvqzLQQBepdvDvNXeQ4OQHQ5OQeqpPTe+8j6U8gJdAbs42l6xH5DdcRXvd/1UDLOVe8v7yc5q2y83gBdtlnMMQ32srFVfpWpVWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e52L5gGY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DD52C4CEFB;
-	Tue, 11 Nov 2025 17:01:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762880478;
-	bh=GG8uHV0FmaqMPOs5Q6aTAzqlFriQK9XSeM8KFTVlID4=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=e52L5gGYG0Y2wO6QINYG9SEbwyxCTt2w/pljtEh4YAPIedU1yCySBphpzF5zNf8Fz
-	 EMXzQffyn42RVqUunsoz2w06R1o5s6hYx4nJ36ikCbuQDMygvUV+Ej2/fBROeAn/SC
-	 XH63GskBEXoQ/qDvgRgKJpcG3EpL7aSMJWl8WduQ7VNh236ZR2Uy6ZnAHB4tgAQT84
-	 BTIhRAnHSrHw4JU7aubOgpY3m+Adg6xJn+M6x15VND10J6Jb78lT9E5W5oZ7sZgaFD
-	 mGFGKgdH+QvqGPwclBw5a+pU5jJLDODEVHBCCQ6MCN0J8Tg0ukSusAH6KfRCfjQCTu
-	 2Y52BVhy8D+vA==
-Content-Type: multipart/mixed; boundary="===============7128587919362208443=="
+	s=arc-20240116; t=1762880694; c=relaxed/simple;
+	bh=OK+D3lee2zoUoAfFSI1bI5pDoijkXCsiNM9vqL1GdAo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=HwmqnLROCnLVV9Mw+euSDBz7smfF2CibrVCfsl2DqjkewADneUvIVoefupfaQrxeV+s6CmEadLlpc1mkUcwB6ihUW/ZlTi3AG2VmJayU6FBkBgTF6K8nyn2q1BkdyPOf9CjAsD4/yXRCTHDVHrJo32pwHp9dVsjavpcK6GEIayU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id 1B10514B81A47; Tue, 11 Nov 2025 09:04:40 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: Alan Maguire <alan.maguire@oracle.com>,
+	Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+	dwarves@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	bpf@vger.kernel.org,
+	David Faust <david.faust@oracle.com>,
+	"Jose E . Marchesi" <jose.marchesi@oracle.com>,
+	kernel-team@fb.com
+Subject: [PATCH dwarves 3/3] pahole: Replace or add functions with true signatures in btf
+Date: Tue, 11 Nov 2025 09:04:40 -0800
+Message-ID: <20251111170440.288485-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251111170424.286892-1-yonghong.song@linux.dev>
+References: <20251111170424.286892-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <10e3bbd8dc718b20a0182ac11bfc44ed521f3857495e756972c79d205a9ea4eb@mail.kernel.org>
-In-Reply-To: <20251111163424.16471-2-puranjay@kernel.org>
-References: <20251111163424.16471-2-puranjay@kernel.org>
-Subject: Re: [PATCH bpf-next 1/4] bpf: arena: populate vm_area without allocating memory
-From: bot+bpf-ci@kernel.org
-To: puranjay@kernel.org,bpf@vger.kernel.org
-Cc: puranjay@kernel.org,puranjay12@gmail.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,memxor@gmail.com,kernel-team@meta.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Tue, 11 Nov 2025 17:01:18 +0000 (UTC)
+Content-Transfer-Encoding: quoted-printable
 
---===============7128587919362208443==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Overview
+=3D=3D=3D=3D=3D=3D=3D=3D
 
-> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-> index 1074ac445..dd5100a2f 100644
-> --- a/kernel/bpf/arena.c
-> +++ b/kernel/bpf/arena.c
+The llvm pull request ([1]) is able to emit dwarf data for
+changed-signature and new functions. The new dwarf format has
+tag DW_TAG_inlined_subroutine and directly under CU. There
+is no other change for existing dwarf. See further down examples.
 
-[ ... ]
+When building linux kernel with [1], additional functions will
+be added to dwarf:
+  - A function with signature changed compared to source.
+    For example, original function foo(int a, int b) is optimized
+    too foo(int b). The foo(int b) will be added to dwarf
+    and the original foo(int a, int b) is not touched.
+  - A function generated by the compiler which typically will have
+    '.' in the function name, for example, in thin-lto mode,
+    a function could be foo.llvm.<hash>.
 
-> @@ -92,6 +92,63 @@ static long compute_pgoff(struct bpf_arena *arena, long uaddr)
->  	return (u32)(uaddr - (u32)arena->user_vm_start) >> PAGE_SHIFT;
->  }
->
-> +struct apply_range_data {
-> +	struct page **pages;
-> +	int i;
-> +};
-> +
-> +static int apply_range_set_cb(pte_t *pte, unsigned long addr, void *data)
-> +{
-> +	struct apply_range_data *d = data;
-> +	struct page *page;
-> +
-> +	if (!data)
-> +		return 0;
-> +	/* sanity check */
-> +	if (unlikely(!pte_none(ptep_get(pte))))
-> +		return -EBUSY;
-> +
-> +	page = d->pages[d->i++];
-> +	/* paranoia, similar to vmap_pages_pte_range() */
-> +	if (WARN_ON_ONCE(!pfn_valid(page_to_pfn(page))))
-> +		return -EINVAL;
-> +
-> +	set_pte_at(&init_mm, addr, pte, mk_pte(page, PAGE_KERNEL));
-> +	return 0;
-> +}
-> +
-> +static int apply_range_clear_cb(pte_t *pte, unsigned long addr, void *data)
-> +{
-> +	struct mm_struct *mm = &init_mm;
-> +	pte_t old_pte;
-> +	struct page *page;
-> +
-> +	/* sanity check */
-> +	old_pte = ptep_get(pte);
-> +	if (pte_none(old_pte) || !pte_present(old_pte))
-> +		return 0; /* nothing to do */
-> +
-> +	/* get page and free it */
-> +	page = pte_page(old_pte);
-> +	if (WARN_ON_ONCE(!page))
-> +		return -EINVAL;
-> +
-> +	pte_clear(mm, addr, pte);
-> +
-> +	/* ensure no stale TLB entries */
-> +	flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-> +
-> +	__free_page(page);
-> +
-> +	return 0;
-> +}
-> +
-> +static int populate_pgtable_except_pte(struct bpf_arena *arena)
-> +{
-> +	return apply_to_page_range(&init_mm, bpf_arena_get_kern_vm_start(arena),
-> +				   KERN_VM_SZ - GUARD_SZ, apply_range_set_cb, NULL);
-> +}
-> +
->  static struct bpf_map *arena_map_alloc(union bpf_attr *attr)
->  {
->  	struct vm_struct *kern_vm;
+A new feature 'true_signature' is introduced in pahole. Only if
+'true_signature' is enabled by pahole in linux kernel, pahole will
+either replace the old function with new function for correct
+signature in vmlinux/module btf, or add new functions to the btf
+like foo.llvm.<hash>.
 
-[ ... ]
+Below are some more detailed illustration of new dwarf format,
+how compiler controls what to generate, and how newly added
+functions (e.g., foo.llvm.<hash>) could be used, etc.
 
-> @@ -144,6 +201,9 @@ static struct bpf_map *arena_map_alloc(union bpf_attr *attr)
->  		goto err;
->  	}
->  	mutex_init(&arena->lock);
-> +	err = populate_pgtable_except_pte(arena);
-> +	if (err)
-> +		goto err;
+Added Dwarf Contents
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Does this leak the arena and range_tree on error? The error path at the
-range_tree_set() failure (above these lines) calls bpf_map_area_free(arena)
-before goto err, but this new error path doesn't clean up arena or call
-range_tree_destroy() before jumping to err.
+The following are some examples from linux kernel.
 
->
->  	return &arena->map;
->  err:
+Example 1
+---------
 
-[ ... ]
+  0x000411f0:   DW_TAG_inlined_subroutine
+                  DW_AT_name      ("split_fs_names")
+                  DW_AT_type      (0x00023368 "int")
+                  DW_AT_artificial        (true)
+                  DW_AT_specification     (0x00040d1f "split_fs_names")
 
-> @@ -286,6 +346,7 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
->  	if (ret)
->  		return VM_FAULT_SIGSEGV;
->
-> +	struct apply_range_data data = { .pages = &page, .i = 0 };
->  	/* Account into memcg of the process that created bpf_arena */
->  	ret = bpf_map_alloc_pages(map, NUMA_NO_NODE, 1, &page);
->  	if (ret) {
->  		range_tree_set(&arena->rt, vmf->pgoff, 1);
->  		return VM_FAULT_SIGSEGV;
->  	}
->
-> -	ret = vm_area_map_pages(arena->kern_vm, kaddr, kaddr + PAGE_SIZE, &page);
-> +	ret = apply_to_page_range(&init_mm, kaddr, PAGE_SIZE, apply_range_set_cb, &data);
->  	if (ret) {
->  		range_tree_set(&arena->rt, vmf->pgoff, 1);
->  		__free_page(page);
+  0x000411fc:     DW_TAG_formal_parameter
+                    DW_AT_name    ("page")
+                    DW_AT_type    (0x000233bb "char *")
 
-[ ... ]
+  0x00041204:     NULL
 
-> @@ -428,7 +489,7 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
->  	/* user_vm_end/start are fixed before bpf prog runs */
->  	long page_cnt_max = (arena->user_vm_end - arena->user_vm_start) >> PAGE_SHIFT;
->  	u64 kern_vm_start = bpf_arena_get_kern_vm_start(arena);
-> -	struct page **pages;
-> +	struct page **pages = NULL;
->  	long pgoff = 0;
->  	u32 uaddr32;
->  	int ret, i;
+vmlinux BTF:
+  [131534] FUNC_PROTO '(anon)' ret_type_id=3D14 vlen=3D1
+          'page' type_id=3D100
+  [131535] FUNC 'split_fs_names' type_id=3D131534 linkage=3Dstatic
 
-[ ... ]
+Signature changed due to optimization. The source signature is
+  static int __init split_fs_names(char *page, size_t size) { ... }
 
-> @@ -465,6 +526,7 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
->  	if (ret)
->  		goto out_free_pages;
->
-> +	struct apply_range_data data = { .pages = pages, .i = 0 };
->  	ret = bpf_map_alloc_pages(&arena->map, node_id, page_cnt, pages);
->  	if (ret)
->  		goto out;
-> @@ -477,8 +539,8 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
->  	 * kern_vm_start + uaddr32 + page_cnt * PAGE_SIZE - 1 can overflow
->  	 * lower 32-bit and it's ok.
->  	 */
-> -	ret = vm_area_map_pages(arena->kern_vm, kern_vm_start + uaddr32,
-> -				kern_vm_start + uaddr32 + page_cnt * PAGE_SIZE, pages);
-> +	ret = apply_to_page_range(&init_mm, kern_vm_start + uaddr32,
-> +				  page_cnt << PAGE_SHIFT, apply_range_set_cb, &data);
->  	if (ret) {
->  		for (i = 0; i < page_cnt; i++)
->  			__free_page(pages[i]);
+The vmlinux BTF will encode 'int split_fs_names(char *page)'.
 
-[ ... ]
+Example 2
+---------
 
-> @@ -545,8 +607,8 @@ static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
->  			 * page_cnt is big it's faster to do the batched zap.
->  			 */
->  			zap_pages(arena, full_uaddr, 1);
-> -		vm_area_unmap_pages(arena->kern_vm, kaddr, kaddr + PAGE_SIZE);
-> -		__free_page(page);
-> +		apply_to_existing_page_range(&init_mm, kaddr, page_cnt << PAGE_SHIFT,
-> +					     apply_range_clear_cb, NULL);
+  0x01886077:   DW_TAG_inlined_subroutine
+                  DW_AT_name      ("map_create")
+                  DW_AT_type      (0x01854182 "int")
+                  DW_AT_artificial        (true)
+                  DW_AT_specification     (0x01870e96 "map_create")
 
-Can this free pages multiple times? This is inside a loop that iterates
-page_cnt times, with kaddr incrementing by PAGE_SIZE each iteration. But
-apply_to_existing_page_range() is called with size page_cnt << PAGE_SHIFT,
-which processes page_cnt pages starting from kaddr.
+  0x01886083:     DW_TAG_formal_parameter
+                    DW_AT_name    ("attr")
+                    DW_AT_type    (0x01854370 "bpf_attr *")
 
-On the first iteration (i=0), it processes pages [0..page_cnt-1].
-On the second iteration (i=1, kaddr+=PAGE_SIZE), it processes pages
-[1..page_cnt], overlapping with the first iteration.
+  0x0188608b:     DW_TAG_formal_parameter
+                    DW_AT_name    ("uattr__coerce1")
+                    DW_AT_type    (0x01855b14 "bool")
 
-Since apply_range_clear_cb() calls __free_page() for each page, page 0
-gets freed page_cnt times, page 1 gets freed page_cnt-1 times, etc.
+  0x01886093:     NULL
 
-The original code called vm_area_unmap_pages() with size PAGE_SIZE,
-processing one page per iteration. Should the new code use PAGE_SIZE
-instead of page_cnt << PAGE_SHIFT?
+vmlinux BTF:
+  [119] TYPEDEF 'bool' type_id=3D120
+  [120] INT '_Bool' size=3D1 bits_offset=3D0 nr_bits=3D8 encoding=3DBOOL
+  ...
+  [106699] FUNC_PROTO '(anon)' ret_type_id=3D14 vlen=3D2
+          'attr' type_id=3D707
+          'uattr__coerce1' type_id=3D119
+  [106700] FUNC 'map_create' type_id=3D106699 linkage=3Dstatic
 
->  	}
->  }
->
+Signature changed due to optimization. The source signature is
+  static int map_create(union bpf_attr *attr, bpfptr_t uattr) { ... }
 
+Example 3
+---------
 
+  0x0060dd56:   DW_TAG_inlined_subroutine
+                  DW_AT_name      ("enable_step.llvm.569499763459584554")
+                  DW_AT_artificial        (true)
+                  DW_AT_specification     (0x0060d396 "enable_step")
+
+  0x0060dd5d:     DW_TAG_formal_parameter
+                    DW_AT_name    ("child")
+                    DW_AT_type    (0x006046b9 "task_struct *")
+
+  0x0060dd64:     DW_TAG_formal_parameter
+                    DW_AT_name    ("block")
+                    DW_AT_type    (0x00605b99 "bool")
+
+  0x0060dd6b:     NULL
+
+  [90683] FUNC_PROTO '(anon)' ret_type_id=3D0 vlen=3D2
+          'child' type_id=3D321
+          'block' type_id=3D45
+  [90684] FUNC 'enable_step' type_id=3D90683 linkage=3Dstatic
+  [90685] FUNC 'enable_step.llvm.569499763459584554' type_id=3D90683 link=
+age=3Dstatic
+
+No signature change. But the thin-lto promoted the function enable_step()=
+ to global,
+hence enable_step.llvm.<hash>. The existing dwarf should already have
+'enable_step' so the above puts 'enable_step.llvm.569499763459584554'
+as the name.
+
+Example 4
+---------
+
+  0x00b920fb:   DW_TAG_inlined_subroutine
+                  DW_AT_name      ("__ioremap_caller")
+                  DW_AT_linkage_name      ("__ioremap_caller.llvm.7660766=
+26088609549")
+                  DW_AT_type      (0x00b83dd6 "void *")
+                  DW_AT_artificial        (true)
+                  DW_AT_specification     (0x00b8420d "__ioremap_caller")
+
+  0x00b92109:     DW_TAG_formal_parameter
+                    DW_AT_name    ("phys_addr")
+                    DW_AT_type    (0x00b850b2 "resource_size_t")
+
+  0x00b92111:     DW_TAG_formal_parameter
+                    DW_AT_name    ("size")
+                    DW_AT_type    (0x00b841dd "unsigned long")
+
+  0x00b92119:     DW_TAG_formal_parameter
+                    DW_AT_name    ("pcm")
+                    DW_AT_type    (0x00b84562 "page_cache_mode")
+
+  0x00b92121:     DW_TAG_formal_parameter
+                    DW_AT_name    ("caller")
+                    DW_AT_type    (0x00b83dd6 "void *")
+
+  0x00b92129:     NULL
+
+The corresponding vmlinux BTF:
+  [60222] FUNC_PROTO '(anon)' ret_type_id=3D17 vlen=3D4
+          'phys_addr' type_id=3D56
+          'size' type_id=3D15
+          'pcm' type_id=3D5633
+          'caller' type_id=3D17
+  [60223] FUNC '__ioremap_caller' type_id=3D60222 linkage=3Dstatic
+  [60224] FUNC '__ioremap_caller.llvm.766076626088609549' type_id=3D60222=
+ linkage=3Dstatic
+
+For this one, the signature and func name changed for __ioremap_caller().
+The original signature is
+  static void __iomem *
+  __ioremap_caller(resource_size_t phys_addr, unsigned long size,
+                   enum page_cache_mode pcm, void *caller, bool encrypted=
+) { ... }
+
+Build Linux Kernel
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+The following kernel patch is needed to support true signatures:
+  diff --git a/Makefile b/Makefile
+  index 088565edc911..a35dd86c7639 100644
+  --- a/Makefile
+  +++ b/Makefile
+  @@ -1002,6 +1002,11 @@ endif
+   ifdef CONFIG_LTO_CLANG
+   ifdef CONFIG_LTO_CLANG_THIN
+   CC_FLAGS_LTO   :=3D -flto=3Dthin -fsplit-lto-unit
+  +ifeq ($(call test-ge, $(CONFIG_PAHOLE_VERSION), 130),y)
+  +ifeq ($(call clang-min-version, 220000),y)
+  +KBUILD_LDFLAGS  +=3D $(call ld-option, -mllvm -enable-changed-func-dbi=
+nfo)
+  +endif
+  +endif
+   else
+   CC_FLAGS_LTO   :=3D -flto
+   endif
+  @@ -1009,6 +1014,12 @@ CC_FLAGS_LTO     +=3D -fvisibility=3Dhidden
+
+   # Limit inlining across translation units to reduce binary size
+   KBUILD_LDFLAGS +=3D -mllvm -import-instr-limit=3D5
+  +else
+  +ifeq ($(call test-ge, $(CONFIG_PAHOLE_VERSION), 130),y)
+  +ifeq ($(call clang-min-version, 220000),y)
+  +KBUILD_CFLAGS  +=3D -mllvm -enable-changed-func-dbinfo
+  +endif
+  +endif
+   endif
+
+   ifdef CONFIG_LTO
+  diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
+  index db76335dd917..2f66cc0bc2b5 100644
+  --- a/scripts/Makefile.btf
+  +++ b/scripts/Makefile.btf
+  @@ -23,7 +23,7 @@ else
+   # Switch to using --btf_features for v1.26 and later.
+   pahole-flags-$(call test-ge, $(pahole-ver), 126)  =3D -j$(JOBS) --btf_=
+features=3Dencode_force,var,float,enum64,decl_tag,type_tag,optimized_func=
+,consistent_func,decl_tag_kfuncs
+
+  -pahole-flags-$(call test-ge, $(pahole-ver), 130) +=3D --btf_features=3D=
+attributes
+  +pahole-flags-$(call test-ge, $(pahole-ver), 130) +=3D --btf_features=3D=
+attributes --btf_features=3Dtrue_signature
+
+Option to avoid import <foo>.<...> functions
+--------------------------------------------
+
+There is a debate whether we should really introduce dwarf function like =
+<foo>.llvm.<hash>
+into BTF. Current pahole searches kallsyms and for symbol like <foo>.llvm=
+.<hash>, only
+<foo> is represented as an elf symbol. This typically is true as if <foo>=
+.llvm.<hash>
+symbol exists, symbol <foo> should not exist. In such cases, one symbol c=
+orresponds to
+one dwarf function entry should work.
+
+However, in llvm, there is a pass FunctionSpecializer which can do specia=
+lization of
+original functions ([1]). For example, there is a static function foo(a, =
+b, c, d) and it
+is used in multiple call sites in the same function. It is possible the l=
+lvm
+may generate the following clones:
+  foo.specialized.1(a, b, c)
+  foo.specialized.2(a, b, d)
+  foo.specialized.3(b, c, d)
+The default maximum number of specialization is 3. If the original functi=
+on foo()
+is not used, then the function foo() will be removed. In such cases, we p=
+robably
+should import foo.<...>() functions if we want to trace those functions. =
+In [1],
+I give one example where print_cpu.specialized.1(...) is created. But I a=
+gree that
+this is a corner case. Not sure whether gcc has similar situation or not.
+
+Anyway, the llvm option "-mllvm -skip-dotted-func" can be used to skip al=
+l functions
+with <foo>.<...>. The following is the related build flag:
+
+  KBUILD_LDFLAGS  +=3D $(call ld-option, -mllvm -enable-changed-func-dbin=
+fo -mllvm -skip-dotted-func)
+  KBUILD_CFLAGS  +=3D -mllvm -enable-changed-func-dbinfo -mllvm -skip-dot=
+ted-func
+
+In this case, the function like __ioremap_caller.llvm.766076626088609549 =
+will not appear in
+generated new dwarfs.
+
+Remarks
+=3D=3D=3D=3D=3D=3D=3D
+
+The llvm patch [1] supports remarks which help dump out some debug info,
+e.g., why a particular function is skipped or generated in special way. T=
+he
+below kernel build option can enable remarks:
+
+  KBUILD_LDFLAGS  +=3D $(call ld-option, -mllvm -enable-changed-func-dbin=
+fo \
+      --opt-remarks-filename --opt-remarks-passes emit-changed-func-debug=
+info)
+  KBUILD_CFLAGS  +=3D -mllvm -enable-changed-func-dbinfo -fsave-optimizat=
+ion-record \
+      -foptimization-record-passes=3Demit-changed-func-debuginfo
+
+For non-lto mode, the remark files will be in the same directory as
+the corresponding object file. For lto mode, the remark files will be
+in the build directory as invoked by ld.lld. The following command
+can help find any non-empty remark file which can help debugging.
+  find . -type f -name '*.opt.yaml.*' -size +0c
+
+Currently, there are no remarks generated. The following is a remark exam=
+ple
+in the commit message in [1].
+
+  $ cat test.opt.yaml
+  --- !Passed
+  Pass:            emit-changed-func-debuginfo
+  Name:            FindNoDIVariable
+  DebugLoc:        { File: test.c, Line: 1, Column: 0 }
+  Function:        callee
+  Args:
+    - String:          'create a new int type '
+    - ArgName:         ''
+    - String:          '('
+    - ArgIndex:        '0'
+    - String:          ')'
+  ...
+
+Some Statictics
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Comparing with and without dotted functions:
+-------------------------------------------
+
+  without -mllvm -enable-changed-func-dbinfo:
+    non-lto: 66051 functions
+    lto:     66227 functions
+  additional functions with -mllvm -enable-changed-func-dbinfo:
+    non-lto: 894  new DW_TAG_inlined_subroutine entries
+    lto:     2993 ...
+  additional functions with -mllvm -enable-changed-func-dbinfo -mllvm -sk=
+ip-dotted-func
+    non-lto: 894  ...
+    lto:     1152 ...
+
+So the option '-mllvm -skip-dotted-func' does filter out lots of
+funcitons like <foo>.llvm.<hash>.
+
+vmlinux BTF size:
+----------------
+                                               size
+  non-lto without new signatures:              0x623a4a
+  non-lto with default new signatures:         0x6274c7
+  non-lto with additional -skip-dotted-func:   0x6274c7
+
+  lto without new signatures:                  0x63386e
+  lto with default new signatures:             0x651281
+  lto with additional -skip-dotted-func:       0x63776b
+
+For non-lto build, the vmlinux BTF increases 14973 bytes compared to
+the build without default new signatures.
+
+For lto build, the vmlinux BTF increases 121363 bytes compared to
+the build without default new signatures. If enabling -skip-dotted-func,
+the increase will be 16125 bytes.
+
+So looks like the BTF increase should not be a concern here.
+
+Should We Import Functions with Dot?
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Current pahole removed ".<...>" suffix in kallsyms so the function
+name can match the existing dwarf. This way, the BTF can be generated
+based on dwarf subprogram entries.
+
+In [1], function with dot (e.g., foo.llvm.<hash>) is allowed to be
+in dwarf. This paves the way to have such functions in kernel BTF as well=
+.
+
+Previously, fentry/fexit for function enable_step.llvm.569499763459584554=
+() won't work
+since in vmlinux BTF, the name is 'enable_step'. But 'enable_step' is not=
+ in kallsyms,
+so bpf program load will fail. Now we can have a function entry with name
+enable_step.llvm.569499763459584554 in BTF and the name matches with kern=
+el, so
+fentry/fexit can be successful although this needs a little bit user work=
+:
+
+        skel =3D fentry_lto__open();
+        if (!ASSERT_OK_PTR(skel, "fentry_lto__open"))
+                return;
+
+        /* The fentry target is 'start_thread_common' or 'start_thread_co=
+mmon.llvm.<hash>' */
+        /* User need to find out whether either or them exist in ksyms.
+         * Let start_thread_common.llvm.<hash> exists.
+         */
+
+        prog =3D skel->progs.test1;
+        bpf_program__set_attach_target(prog, 0, "start_thread_common.llvm=
+.<hash>");
+
+        err =3D fentry_lto__load(skel);
+        if (!ASSERT_OK(err, "fentry_lto__load"))
+                goto out;
+
+But there are alternative solutions to handle the above.
+
+Solution 1: In [2] which utilize the kprobe_multi with option 'unique_mat=
+ch'.
+It should work in most cases except something like functions foobar() and
+foo.llvm.<hash>(). In such cases, unique_match 'foo*' will not work since
+it will match both functions. But maybe regex could be 'foo.llvm.*'?
+
+Solution 2: With function name 'foo', the kernel can search both 'foo' an=
+d
+'foo.<...>' in kallsyms. If any of two symbols is uniquely available, the
+kernel just picks it and proceed as normal.
+
+Linux Kernel BPF Selftest Resutls
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+
+Tried with both non-lto and lto mode, there are no additional selftest
+failures compared to without this patch set.
+
+Future Work
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+We need gcc side to generate true signatures as well with ideally
+the same dwarf format.
+
+  [1] https://github.com/llvm/llvm-project/pull/165310
+  [2] https://lore.kernel.org/bpf/20250109174023.3368432-1-yonghong.song@=
+linux.dev/
+
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+ btf_encoder.c  | 55 +++++++++++++++++++++++++++----
+ dwarf_loader.c | 89 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ dwarves.h      |  4 +++
+ pahole.c       |  9 +++++
+ 4 files changed, 150 insertions(+), 7 deletions(-)
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19272481461
+diff --git a/btf_encoder.c b/btf_encoder.c
+index d28af58..0f9a4e3 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -89,6 +89,7 @@ struct btf_encoder_func_state {
+ 	uint8_t inconsistent_proto:1;
+ 	uint8_t uncertain_parm_loc:1;
+ 	uint8_t ambiguous_addr:1;
++	uint8_t true_signature:1;
+ 	int ret_type_id;
+ 	struct btf_encoder_func_parm *parms;
+ 	struct btf_encoder_func_annot *annots;
+@@ -145,11 +146,13 @@ struct btf_encoder {
+ 			  skip_encoding_decl_tag,
+ 			  tag_kfuncs,
+ 			  gen_distilled_base,
+-			  encode_attributes;
++			  encode_attributes,
++			  dotted_true_signature;
+ 	uint32_t	  array_index_id;
+ 	struct elf_secinfo *secinfo;
+ 	size_t             seccnt;
+ 	int                encode_vars;
++	int		   nr_true_signature_funcs;
+ 	struct {
+ 		struct btf_encoder_func_state *array;
+ 		int cnt;
+@@ -185,7 +188,7 @@ static inline void elf_functions__delete(struct elf_f=
+unctions *funcs)
+ 	free(funcs);
+ }
+=20
+-static int elf_functions__collect(struct elf_functions *functions);
++static int elf_functions__collect(struct btf_encoder *encoder, struct el=
+f_functions *functions);
+=20
+ struct elf_functions *elf_functions__new(struct btf_encoder *encoder)
+ {
+@@ -207,7 +210,7 @@ struct elf_functions *elf_functions__new(struct btf_e=
+ncoder *encoder)
+ 	}
+=20
+ 	funcs->elf =3D elf;
+-	err =3D elf_functions__collect(funcs);
++	err =3D elf_functions__collect(encoder, funcs);
+ 	if (err < 0)
+ 		goto out_delete;
+=20
+@@ -1250,6 +1253,7 @@ static int32_t btf_encoder__save_func(struct btf_en=
+coder *encoder, struct functi
+ 	state->elf =3D func;
+ 	state->nr_parms =3D ftype->nr_parms + (ftype->unspec_parms ? 1 : 0);
+ 	state->ret_type_id =3D ftype->tag.type =3D=3D 0 ? 0 : encoder->type_id_=
+off + ftype->tag.type;
++	state->true_signature =3D ftype->true_signature;
+ 	if (state->nr_parms > 0) {
+ 		state->parms =3D zalloc(state->nr_parms * sizeof(*state->parms));
+ 		if (!state->parms) {
+@@ -1409,7 +1413,20 @@ static int saved_functions_cmp(const void *_a, con=
+st void *_b)
+ 	const struct btf_encoder_func_state *a =3D _a;
+ 	const struct btf_encoder_func_state *b =3D _b;
+=20
+-	return elf_function__name_cmp(a->elf, b->elf);
++	int ret =3D strcmp(a->elf->name, b->elf->name);
++	if (ret)
++		return ret;
++
++	/* Two identical names, if one has true_signture attribute, make sure t=
+he
++	 * one has true_attirube in earlier place. This way, the other function
++	 * will be filtered out during later btf generation.
++	 */
++	if (a->true_signature)
++		return -1;
++	else if (b->true_signature)
++		return 1;
++
++	return 0;
+ }
+=20
+ static int saved_functions_combine(struct btf_encoder_func_state *a, str=
+uct btf_encoder_func_state *b)
+@@ -1419,6 +1436,10 @@ static int saved_functions_combine(struct btf_enco=
+der_func_state *a, struct btf_
+ 	if (a->elf !=3D b->elf)
+ 		return 1;
+=20
++	/* Skip if any of the func states represents a true_signature function.=
+ */
++	if (a->true_signature || b->true_signature)
++		return 0;
++
+ 	optimized =3D a->optimized_parms | b->optimized_parms;
+ 	unexpected =3D a->unexpected_reg | b->unexpected_reg;
+ 	inconsistent =3D a->inconsistent_proto | b->inconsistent_proto;
+@@ -2194,9 +2215,10 @@ static int elf_function__check_and_push_sym(struct=
+ elf_function *func, const cha
+ 	return elf_function__push_sym(func, &func_sym);
+ }
+=20
+-static int elf_functions__collect(struct elf_functions *functions)
++static int elf_functions__collect(struct btf_encoder *encoder, struct el=
+f_functions *functions)
+ {
+ 	uint32_t nr_symbols =3D elf_symtab__nr_symbols(functions->symtab);
++	bool dotted_true_signature =3D encoder->dotted_true_signature;
+ 	struct elf_function *func, *tmp;
+ 	const char *sym_name, *suffix;
+ 	Elf32_Word sym_sec_idx;
+@@ -2204,10 +2226,10 @@ static int elf_functions__collect(struct elf_func=
+tions *functions)
+ 	uint32_t core_id;
+ 	GElf_Sym sym;
+=20
+-	/* We know that number of functions is less than number of symbols,
++	/* We know that number of functions is less than number of symbols plus=
+ number of true signature funcs,
+ 	 * so we can overallocate temporarily.
+ 	 */
+-	functions->entries =3D calloc(nr_symbols, sizeof(*functions->entries));
++	functions->entries =3D calloc(nr_symbols + encoder->nr_true_signature_f=
+uncs, sizeof(*functions->entries));
+ 	if (!functions->entries) {
+ 		err =3D -ENOMEM;
+ 		goto out_free;
+@@ -2241,6 +2263,23 @@ static int elf_functions__collect(struct elf_funct=
+ions *functions)
+ 			goto out_free;
+=20
+ 		functions->cnt++;
++
++		/* If the dwarf true signature addition does not have any function wit=
+h dot,
++		 * do nothing. Otherwise, if the suffix is not NULL, i.e, it has '.' i=
+n the
++		 * function, proceed to record this elf function so later BTF encoding
++		 * can succeed.
++		 */
++		if (!dotted_true_signature || !suffix)
++			continue;
++
++		func =3D &functions->entries[functions->cnt];
++		func->name =3D strdup(sym_name);
++
++		err =3D elf_function__check_and_push_sym(func, sym_name, sym.st_value)=
+;
++		if (err)
++			goto out_free;
++
++		functions->cnt++;
+ 	}
+=20
+ 	/* At this point functions->entries is an unordered array of elf_functi=
+on
+@@ -2546,6 +2585,8 @@ struct btf_encoder *btf_encoder__new(struct cu *cu,=
+ const char *detached_filenam
+ 		encoder->tag_kfuncs	 =3D conf_load->btf_decl_tag_kfuncs;
+ 		encoder->gen_distilled_base =3D conf_load->btf_gen_distilled_base;
+ 		encoder->encode_attributes =3D conf_load->btf_attributes;
++		encoder->dotted_true_signature =3D conf_load->dotted_true_signature;
++		encoder->nr_true_signature_funcs =3D conf_load->nr_true_signature_func=
+s;
+ 		encoder->verbose	 =3D verbose;
+ 		encoder->has_index_type  =3D false;
+ 		encoder->need_index_type =3D false;
+diff --git a/dwarf_loader.c b/dwarf_loader.c
+index 79be3f5..1c1cfb2 100644
+--- a/dwarf_loader.c
++++ b/dwarf_loader.c
+@@ -537,6 +537,19 @@ static void tag__init(struct tag *tag, struct cu *cu=
+, Dwarf_Die *die)
+ 	INIT_LIST_HEAD(&tag->node);
+ }
+=20
++static void tag__init_true_signature(struct tag *tag, struct cu *cu, Dwa=
+rf_Die *die)
++{
++	struct dwarf_tag *dtag =3D tag__dwarf(tag);
++
++	tag->tag =3D DW_TAG_subprogram;
++	dtag->id  =3D dwarf_dieoffset(die);
++	dwarf_tag__set_attr_type(dtag, type, die, DW_AT_type);
++	tag->recursivity_level =3D 0;
++	tag->attributes =3D NULL;
++
++	INIT_LIST_HEAD(&tag->node);
++}
++
+ static struct tag *tag__new(Dwarf_Die *die, struct cu *cu)
+ {
+ 	struct tag *tag =3D tag__alloc(cu, sizeof(*tag));
+@@ -1487,6 +1500,22 @@ static void ftype__init(struct ftype *ftype, Dwarf=
+_Die *die, struct cu *cu)
+ 	ftype->template_parameter_pack =3D NULL;
+ }
+=20
++static void ftype__init_true_signature(struct ftype *ftype, Dwarf_Die *d=
+ie, struct cu *cu)
++{
++#ifndef NDEBUG
++	const uint16_t tag =3D dwarf_tag(die);
++	assert(tag =3D=3D DW_TAG_inlined_subroutine);
++#endif
++	tag__init_true_signature(&ftype->tag, cu, die);
++	INIT_LIST_HEAD(&ftype->parms);
++	INIT_LIST_HEAD(&ftype->template_type_params);
++	INIT_LIST_HEAD(&ftype->template_value_params);
++	ftype->nr_parms	    =3D 0;
++	ftype->unspec_parms =3D 0;
++	ftype->template_parameter_pack =3D NULL;
++	ftype->true_signature =3D 1;
++}
++
+ static struct ftype *ftype__new(Dwarf_Die *die, struct cu *cu)
+ {
+ 	struct ftype *ftype =3D tag__alloc(cu, sizeof(*ftype));
+@@ -2468,9 +2497,69 @@ static struct tag *__die__process_tag(Dwarf_Die *d=
+ie, struct cu *cu,
+ 	return tag;
+ }
+=20
++static int die__process_inline_subroutine(Dwarf_Die *die, struct cu *cu,=
+ struct conf_load *conf, const char *name)
++{
++	struct function *function =3D tag__alloc(cu, sizeof(*function));
++
++	if (function !=3D NULL) {
++		ftype__init_true_signature(&function->proto, die, cu);
++		lexblock__init(&function->lexblock, cu, die);
++		function->name =3D name;
++		tag__set_spec(&function->proto.tag, die);
++		INIT_LIST_HEAD(&function->annots);
++		function->cu_total_size_inline_expansions =3D 0;
++		function->cu_total_nr_inline_expansions =3D 0;
++		function->priv =3D NULL;
++	}
++
++	if (function !=3D NULL &&
++	    die__process_function(die, &function->proto, &function->lexblock, c=
+u, conf) !=3D 0) {
++		function__delete(function, cu);
++		function =3D NULL;
++	}
++
++	struct tag *tag =3D function ? &function->proto.tag : NULL;
++	if (tag =3D=3D NULL)
++		return -ENOMEM;
++
++	uint32_t id =3D 0;
++	tag->top_level =3D 1;
++	cu__add_tag(cu, tag, &id);
++	cu__hash(cu, tag);
++	struct dwarf_tag *dtag =3D tag__dwarf(tag);
++	dtag->small_id =3D id;
++
++	conf->nr_true_signature_funcs++;
++	if (!conf->dotted_true_signature && !!strchr(name, '.'))
++		conf->dotted_true_signature =3D true;
++
++	return 0;
++}
++
+ static int die__process_unit(Dwarf_Die *die, struct cu *cu, struct conf_=
+load *conf)
+ {
+ 	do {
++		// special process DW_TAG_inlined_subroutine
++		if (conf->true_signature && dwarf_tag(die) =3D=3D DW_TAG_inlined_subro=
+utine) {
++			const char *name;
++			int ret;
++
++			name =3D attr_string(die, DW_AT_name, conf);
++			ret =3D die__process_inline_subroutine(die, cu, conf, name);
++			if (ret)
++				return ret;
++
++			name =3D attr_string(die, DW_AT_linkage_name, conf);
++			if (!name)
++				continue;
++
++			ret =3D die__process_inline_subroutine(die, cu, conf, name);
++			if (ret)
++				return ret;
++
++			continue;
++		}
++
+ 		struct tag *tag =3D die__process_tag(die, cu, 1, conf);
+ 		if (tag =3D=3D NULL)
+ 			return -ENOMEM;
+diff --git a/dwarves.h b/dwarves.h
+index 21d4166..dfd43e1 100644
+--- a/dwarves.h
++++ b/dwarves.h
+@@ -79,6 +79,7 @@ struct conf_load {
+ 	void			*cookie;
+ 	char			*format_path;
+ 	int			nr_jobs;
++	int			nr_true_signature_funcs;
+ 	bool			extra_dbg_info;
+ 	bool			use_obstack;
+ 	bool			fixup_silly_bitfields;
+@@ -101,6 +102,8 @@ struct conf_load {
+ 	bool			btf_decl_tag_kfuncs;
+ 	bool			btf_gen_distilled_base;
+ 	bool			btf_attributes;
++	bool			true_signature;
++	bool			dotted_true_signature;
+ 	uint8_t			hashtable_bits;
+ 	uint8_t			max_hashtable_bits;
+ 	uint16_t		kabi_prefix_len;
+@@ -1023,6 +1026,7 @@ struct ftype {
+ 	uint8_t		 processed:1;
+ 	uint8_t		 inconsistent_proto:1;
+ 	uint8_t		 uncertain_parm_loc:1;
++	uint8_t		 true_signature:1;
+ 	struct list_head template_type_params;
+ 	struct list_head template_value_params;
+ 	struct template_parameter_pack *template_parameter_pack;
+diff --git a/pahole.c b/pahole.c
+index ef01e58..b81d03a 100644
+--- a/pahole.c
++++ b/pahole.c
+@@ -1153,6 +1153,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF =3D dwarves_print_ver=
+sion;
+ #define ARG_padding		   348
+ #define ARGP_with_embedded_flexible_array 349
+ #define ARGP_btf_attributes	   350
++#define ARGP_true_signature	   351
+=20
+ /* --btf_features=3Dfeature1[,feature2,..] allows us to specify
+  * a list of requested BTF features or "default" to enable all default
+@@ -1234,6 +1235,7 @@ struct btf_feature {
+ 	BTF_NON_DEFAULT_FEATURE(global_var, encode_btf_global_vars, false),
+ 	BTF_NON_DEFAULT_FEATURE_CHECK(attributes, btf_attributes, false,
+ 				      attributes_check),
++	BTF_NON_DEFAULT_FEATURE(true_signature, true_signature, false),
+ };
+=20
+ #define BTF_MAX_FEATURE_STR	1024
+@@ -1817,6 +1819,11 @@ static const struct argp_option pahole__options[] =
+=3D {
+ 		.key  =3D ARGP_btf_attributes,
+ 		.doc  =3D "Allow generation of attributes in BTF. Attributes are the t=
+ype tags and decl tags with the kind_flag set to 1.",
+ 	},
++	{
++		.name =3D "true_signature",
++		.key  =3D ARGP_true_signature,
++		.doc  =3D "Replace existing functions and add new functions with true =
+signatures.",
++	},
+ 	{
+ 		.name =3D NULL,
+ 	}
+@@ -2013,6 +2020,8 @@ static error_t pahole__options_parser(int key, char=
+ *arg,
+ 		parse_btf_features(arg, true);		break;
+ 	case ARGP_btf_attributes:
+ 		conf_load.btf_attributes =3D true;	break;
++	case ARGP_true_signature:
++		conf_load.true_signature =3D true;	break;
+ 	default:
+ 		return ARGP_ERR_UNKNOWN;
+ 	}
+--=20
+2.47.3
 
---===============7128587919362208443==--
 
