@@ -1,150 +1,140 @@
-Return-Path: <bpf+bounces-74125-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74126-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99B96C4B2E4
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 03:15:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D9D4C4B300
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 03:18:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FF783AE5BF
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 02:08:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98AEF188EA4E
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 02:18:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA3B344032;
-	Tue, 11 Nov 2025 02:07:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VxgXzIuy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D56346FD2;
+	Tue, 11 Nov 2025 02:17:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE1E2FF673
-	for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 02:07:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A39B03446C5;
+	Tue, 11 Nov 2025 02:17:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762826870; cv=none; b=MvjaOP7mjVCHmXeXGB/7ccTXm5zIPpfiNlO3ZZM1kmLemGc8IC0VlE9UnzpKzjCGu7hz/fxkHzl6N/E8y2WgfH+6UimMoXZN3vNIU1UiHzPJv1Kobe/fjiHSke76plYa0yggHhQW1LFzevWceodPClalDISoRUc2AN3ivbbLhzA=
+	t=1762827477; cv=none; b=D9ScVo+1Cms2iGcS1KxLVVbKNS7DJOLFHgvS1kN1ycCDYHOP/e9RadtELfXvBuvj9zijAGOx6IdjAUfVr3rKgW+wLldDRynHZYXvQwCibswg/dWtMJJGXqmPFPJdrmeH+N9S4gVebIuvBZ123AI/MZHpDECwxyLGvi6S8ippKBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762826870; c=relaxed/simple;
-	bh=T460uL9FiOLYoivH40F2G/WPk7NwyWw3CNdv0gT0zbY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U0p10yoBQ39CIPcKaepWHfCuIUMakItsnQcQGeipDDhF3ZZm8wFUtQDqW1Z954Tz9rD4lDPqLBAAsyOrFArxrsYHZ6z+l1TUTBr1kwF+ENtUM6GQK+3dBExi+2TtmyfGgEZvWlzvOON9k38aaOQyCFP8tO1QjfkZbyFVLylBK7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VxgXzIuy; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b728a43e410so791854866b.1
-        for <bpf@vger.kernel.org>; Mon, 10 Nov 2025 18:07:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762826867; x=1763431667; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UvXEtas7awGSG20JiUM7wOBwde2r+GQBbDrxF85hmLI=;
-        b=VxgXzIuy0Am0PPJHRX41/HvtJeW7mBXXIfrTFDE1oH9fsysv44Kd+22n2197bAC6Op
-         7MJ1G4QHVjZ3GqTBRtmrWdfREDAiO953Qhrmyl/nd6N7g4qgwjkMN+msW6l0OxIp9O0S
-         fgEzEkIbuL25pMDbNw0F1D2Eg2cZP7HeyTVEjaKJ2T0YXgAqRFCEMCth5d4tiCGwN2Aa
-         U4HmHd40oO1Xtnzb26caCBlEScJpjzcFxYzfiIQqH77ACKYWC44xoixA6NMQ4ijXS94v
-         7zRXOTXHgyS6JLPP3NxNgLjvkTtoKd6ZVzSjhcr6U2K/3U+evh4ttEw2dTnyTDcmEUB3
-         wJyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762826867; x=1763431667;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=UvXEtas7awGSG20JiUM7wOBwde2r+GQBbDrxF85hmLI=;
-        b=qhSyXNIMwQcZ4NJIevZsU6WsjiCAlj97QABcnUrkWuHwb5WBYif1OFqAq/MrWtnAfF
-         4B+p0gMW4ql9Kz2USjxIn+u3e7Qbq09VqfWfeR/oUzyf/xjop4mHHWsPLhZvjUs8kjgD
-         4xAbvOoNmjDkxgAo52o2JS/NneklXXMrFxjptF+MawLSWaeCUCINHpgt+Ja8lmQ2hxFY
-         IbEc0S/yOv/eDlYYqujpem9kaFFlkNNYajeSnjnmh43JQPbNe81qjS8dM3wI8UOboezk
-         NmyU/oDrWRGepTVYzPeC8HNTdbX+tKwl6t8NK0VZPzZxS3NYHT2oOKV+b2W4w+lgfRBe
-         Zluw==
-X-Forwarded-Encrypted: i=1; AJvYcCVAcgRyE1zHSm8KLkuBphMl3kmuR/ISfJOK6UewRteKLZZYYo7LBFqOA7Afc8Uiz45gL+g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMX+gFTHE3yQGsOCW5EaPI+Vv4I35rKWO+IvZUnWfHzat/DvsD
-	I6JC2WKqeLQYOa/sWsfVKDbgNdrTBYJPpx/7Uj/Dhoi5sm8q8qI3FnUzEH7WFcAWbqN7b8eFMUE
-	hInjWjdMcWdfSUajCLb7G7nqKxdD4E0o=
-X-Gm-Gg: ASbGncv5Ap+sy0X1luywu72bSpvEfpCCUi/n9MEMPwvNH2UCUuNSaWOWib3cjx9sA0a
-	fS2KxuiTjc9ZH7RpyxHR8UXg5b+nepGsrXHqgvqJAwbKFDhDXF0Z2HH1CNt/tgzeAVWyPMM8q4T
-	aZFtLJhjbFEdGZbWsZVI9AB7fpEReyA28KXOV1cokGeku5vCyn/JWPl41Ece+ZdoKmE5Je+Ydp/
-	1YucpE2Kxwhu32mUKJ4xdSdvZB6W5Uc9pwdeHtDBLlgFFFaEhCU8uYvBkIUT4obGPt8UGqz
-X-Google-Smtp-Source: AGHT+IFuLZi1fgS0EEtiHw5TT0FBLfHLMo9uIcW5Vnf6D1qmNTB1jUjVtcsDiBNTYYr2WHBLKWaaNTLBG/+n9MTWAQw=
-X-Received: by 2002:a17:907:5c9:b0:b4a:d0cf:873f with SMTP id
- a640c23a62f3a-b72e036c31emr1095265066b.2.1762826866999; Mon, 10 Nov 2025
- 18:07:46 -0800 (PST)
+	s=arc-20240116; t=1762827477; c=relaxed/simple;
+	bh=bYsZjtJawtkd8QLTuI04PFok1Qb8IgGzTJfuLXKRcDU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QWDqb9yRMcvMmzx8HKJNLCgil5gMp1emQgpqWgHfBak+Kkux8umIx700O8vladKTRsxE91oNWEYX6O/2b3h0NEzAPySbsxAljy7+GMzHsrtSY/F1zgscAlhNPz+zjZD8IuD7Lz02pmo3H1aodCYS9XIUKP8Y2jw95lREm08TpoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-c45ff70000001609-71-69129ccbaebc
+Date: Tue, 11 Nov 2025 11:17:41 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+	davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
+	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch,
+	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org,
+	david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	ilias.apalodimas@linaro.org, willy@infradead.org,
+	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+	almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+	sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com,
+	dtatulea@nvidia.com
+Subject: Re: [RFC mm v5 1/2] page_pool: check nmdesc->pp to see its usage as
+ page pool for net_iov not page-backed
+Message-ID: <20251111021741.GB51630@system.software.com>
+References: <20251106173320.2f8e683a@kernel.org>
+ <20251107015902.GA3021@system.software.com>
+ <20251106180810.6b06f71a@kernel.org>
+ <20251107044708.GA54407@system.software.com>
+ <20251107174129.62a3f39c@kernel.org>
+ <20251108022458.GA65163@system.software.com>
+ <20251107183712.36228f2a@kernel.org>
+ <20251110010926.GA70011@system.software.com>
+ <20251111014052.GA51630@system.software.com>
+ <20251110175650.78902c74@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251106131956.1222864-7-dolinux.peng@gmail.com>
- <d57f3e256038e115f7d82b4e6b26d8da80d3c8d8afb4f0c627e0b435dee7eaf6@mail.kernel.org>
- <CAErzpmtRYnSpLuO=oM7GgW0Sss2+kQ2cJsZiDmZmz04fD0Noyg@mail.gmail.com>
- <74d4c8e40e61dad369607ecd8b98f58a515479f0.camel@gmail.com>
- <CAADnVQLkS0o+fzh8SckPpdSQ+YZgbBBwsCgeqHk_76pZ+cchXQ@mail.gmail.com>
- <5a8c765f8e2b4473d9833d468ea43ad8ea7e57b6.camel@gmail.com>
- <CAADnVQKbgno=yGjshJpo+fwRDMTfXXVPWq0eh7avBj154dCq_g@mail.gmail.com>
- <6cbeb051a6bebb75032bc724ad10efed5b65cbf7.camel@gmail.com>
- <CAErzpmtViehGv3uLMFwv5bnRJi4HJu=wE6an6S0Gv2up3vncgA@mail.gmail.com> <854a2c2ceaa52f1ad26fb803d1ad5668fd3200b3.camel@gmail.com>
-In-Reply-To: <854a2c2ceaa52f1ad26fb803d1ad5668fd3200b3.camel@gmail.com>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Tue, 11 Nov 2025 10:07:35 +0800
-X-Gm-Features: AWmQ_bnAM2kObujKR5ov0jYGM4otiJtvPUgJ9CCt6W7Ix9UXpf3LPSTc2FVCuE0
-Message-ID: <CAErzpmvgzLwxFDRPQqXjkj_a2b6X4kA1DMhP1Tew_AY0Q_JUcg@mail.gmail.com>
-Subject: Re: [PATCH v5 6/7] btf: Add lazy sorting validation for binary search
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Ihor Solodrai <ihor.solodrai@linux.dev>, 
-	bot+bpf-ci@kernel.org, Alexei Starovoitov <ast@kernel.org>, zhangxiaoqin@xiaomi.com, 
-	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Song Liu <song@kernel.org>, 
-	pengdonglin <pengdonglin@xiaomi.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Chris Mason <clm@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251110175650.78902c74@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SXUxTZxjH95739JxDY5PXivqu7EI7jQmJ+JGaPCRmEm88F86Y6GKiF3qU
+	EzlaqraAsGWxSLOJWlSUCLUzdR+KgKJF+ahgFBAVgxAUPW6s1aowHRSkFflS1rIYvfvn+f+f
+	3/O/eASsb9UYBMWSIVstktnIaVlt/7RfF95z65XF718ZwF1ZwUH5SDace1qrgdGKXgbcZdUI
+	IqN/8TDZ0IIg3Hybg3+bhhD8dmYYg7vdwcLbyjEMdb5eBK+LL3DwsiXIQ7n3Wwic7WGh/uca
+	DMEjdzhwOsYxNIyGeNhfWxoFV9l56Kgu0MCJsT8w1Nif8vDA5+bAXzGpgZ5GJwt3XedZGCxq
+	xhAoSIEWzywYvteHoLmyhoHhw79w0FXiY+BqQxcPxzs9HDx3BBB0NgVZKJo4wMGp3AIE4yNR
+	ZOhoRAOnbvn5lCQxV1U5salvAItXzj9hxEfFx1hRvd7KiHWuv3nR480Uq0oTxYNqJxa9Zfmc
+	6B0q5MXuR/WceKd4nBXrniWLdbVhRnTmhbi1Mzdql6fKZiVLti76Zos2zec5xu8+qc1uc/xg
+	R2P8QRQnUGKik++D7Ed98kGEi2mWzKf54dM4pjmygKrq6JSOJ/Ooo6okmtcKmAzytFj1a2LG
+	DJJBBwfs0ZAg6AhQe0Aby+hJNaa/P+mbWtaR6fRuyYupY5gkUvXDKyaWxySBnvsgxMZxZAkt
+	zA1OdZhJvqY3qm8zMQ4leXH0z4cvmP+LfklvlqrsUURcn2Fdn2Fdn7AehMuQXrFkpUuK2ZSU
+	lmNRspO27Ur3ouiHnf1xYlMtGupY14iIgIzTdOo/0xW9Rsqy5aQ3IipgY7xuYitR9LpUKed7
+	2bprszXTLNsaUYLAGmfrlg7vTdWT7VKGvFOWd8vWjy4jxBnsaH9h/QrTMs2NpIsJY93zTKS/
+	3nitYUD6aXHAMBnfHX5+IC3SdV+2ODe0P043HCrvf7PpZoi5orwLrTNfCqsj9lZpx57Vc/K2
+	PzalXNv63ZEVMy5/1Z45d5V/QXbyF7bImlUP12du2cy0JYcPSb0nmjp6Vq4vUtr8Vanh/Ouv
+	W52+fUbWliYtScRWm/Qf6eEt3l0DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUiTaxjHuZ/7eXO0uJvLngoi1jl4kNSCoit6YRSd7hMV5/SlwzlBTn3I
+	ka7azDSJZi0yT3o0i3StWlRmuhKmzRcywi3NpBcU5enNlb2oJTZziVN7cULUtx/X9f/9uT5c
+	Ita4uDmi0ZQum02GVB2vYlWbVxyOvefQGBcVP1gBjioXD5WjmXDlRR0HIVcvA44KD4Jg6KkA
+	XxubEQz7Wnh47/2I4OKFEQyOhzYWPlWNYahv6EXwruQaD2+aewSodG8Cf9lbFm4ercXQ8/9d
+	HvJt4xgaQ4MCHKornyyutgrgPdvKwSNPAQcnxy5jqLW+EKCjwcFDt+srB2+b8llotV9lIXDK
+	h8FfoIdmZxSMtA0g8FXVMjBy/CwPnaUNDNxo7BSguN3JwyubH0G7t4eFUxO5PJzJKUAwPjpZ
+	OVgY5ODMnW5BH09zFIWn3oEPmNZcfczQrpIiliq37jG03v5coE73XlpdHkPzlHZM3RXHeOr+
+	eEKgz7pu8vRuyThL618up/V1wwzNPzzI/xn1j2plspxqzJDN8asTVCkNziJh92lV5n1bthWN
+	CXkoQpTIEul0R5APM0t+lY4Nn8Nh5km0pCihKdaSXyRbdSmbh1QiJgFBKlG6ufAikqRLgQ/W
+	yZAoqglIVr8qnNEQD5YuPR6YktVkhtRa+poNMyYxkvKlnwnnMZkrXfkihscRZLF0Iqdn6oaZ
+	ZIF029PCFCK1/Sfb/pNt/2E7Ea5AWqMpI81gTF0aZ9mZkmUyZsYl7Upzo8kfKjswUVSHgh3r
+	mxARkW6aWumbYdRwhgxLVloTkkSs06onEolRo042ZO2Xzbu2m/emypYmNFdkdbPUG7bKCRqy
+	w5Au75Tl3bL5+5YRI+ZYUey69Y7/MqJ+S6Lbsmfrn5VOd81v4/ZfH++NWxZ5Z2joZP+nls9b
+	RufFayv8f5H3Pl1fdeXB7AjTnn/XxBaeS/o9cXVie/SryH0b9nkclsDaRUs3Thvq7YrUdp4P
+	BIs1n1f6juhzvZbcZfq/3/Wte7KwrKhM1fbHteTQqpqhuGHzqukHdawlxbA4Bpsthm+MZrNg
+	PwMAAA==
+X-CFilter-Loop: Reflected
 
-On Tue, Nov 11, 2025 at 4:44=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Mon, 2025-11-10 at 09:42 +0800, Donglin Peng wrote:
->
-> [...]
->
-> > [[Resending in plain text format - previous HTML email was rejected]
+On Mon, Nov 10, 2025 at 05:56:50PM -0800, Jakub Kicinski wrote:
+> On Tue, 11 Nov 2025 10:40:52 +0900 Byungchul Park wrote:
+> > > > I understand the end goal. I don't understand why patch 1 is a step
+> > > > in that direction, and you seem incapable of explaining it. So please
+> > > > either follow my suggestion on how to proceed with patch 2 without
+> > >
+> > > struct page and struct netmem_desc should keep difference information.
+> > > Even though they are sharing some fields at the moment, it should
+> > > eventually be decoupled, which I'm working on now.
 > >
-> > Thanks for the feedback. Based on the previous discussions, I plan
-> > to implement the following changes in the next version:
+> > I'm removing the shared space between struct page and struct net_iov so
+> > as to make struct page look its own way to be shrinked and let struct
+> > net_iov be independent.
 > >
-> > 1. Modify the btf__permute interface to adopt the ID map approach, as
-> >     suggested by Andrii.
-> >
-> > 2. Remove the lazy sort check and move the verification to the BTF
-> >     parsing phase. This addresses two concerns: potential race conditio=
-ns
-> >     with write operations and const-cast issues. The overhead is neglig=
-ible
-> >      (approximately 1.4ms for vmlinux BTF).
-> >
-> > 3. Invoke the btf__permute interface to implement BTF sorting in resolv=
-e_btfids.
-> >
-> > I welcome any further suggestions.
->
-> Hi Donglin,
->
-> I think this summarizes the discussion pretty well.
-> One thing to notice about (2): if sorting is done by resolve_btfids,
-> there is no need to check for BTF being sorted in vmlinux BTF.
-> So, maybe it's a good idea to skip this check for it, as Alexei suggested
-> (but not for programs BTF).
+> > Introduing a new shared space for page type is non-sense.  Still not
+> > clear to you?
+> 
+> I've spent enough time reasoning with out and suggesting alternatives.
 
-Thanks. I noticed that we still need an additional iteration in
-btf_parse_base() and
-btf_parse_module() to compute nr_sorted_types for lookup performance
-optimization.
+I'm not trying to be arguing but trying my best to understand you and
+want to adopt your opinion.  However, it's not about objection but I
+really don't understand what you meant.  Can anyone explain what he
+meant who understood?
 
-Thanks,
-Donglin
->
-> Thanks,
-> Eduard.
+	Byungchul
+
+> If you respin this please carry:
+> 
+> Nacked-by: Jakub Kicinski <kuba@kernel.org>
+> 
+> Until I say otherwise.
 
