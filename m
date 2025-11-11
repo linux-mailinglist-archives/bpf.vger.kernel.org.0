@@ -1,108 +1,77 @@
-Return-Path: <bpf+bounces-74207-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74208-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC27C4D0C2
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 11:32:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4541C4D053
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 11:29:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0FEB44F1252
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 10:22:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 211B11883632
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 10:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E19C34AAF9;
-	Tue, 11 Nov 2025 10:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7519434B69F;
+	Tue, 11 Nov 2025 10:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="Cxh7bLzT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G+gQANG+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2770F34A796
-	for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 10:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC08B340275;
+	Tue, 11 Nov 2025 10:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762856574; cv=none; b=PeE0+qnOVvRrt6jDMtKsrktIGYRcTlzYRTBloqyKWgjAHSIjsEYPqIkjv2kSIve1uanfbeC4fORvWgSFxgc+k/XTs4w1t+Y5r7bbANpMuUKxlfqErDL6+lr1yX2sEDt/cmMkLR2K8Vo5Lpr/PA5sHCTEQ7Qnq6bcWZKnvZzg+YU=
+	t=1762856795; cv=none; b=R+pbQo9smaY5AycsYq43bsXBDcRHtvBHsVv7obCkxzDujhd0LAUhM9JisTT1XEzAbBvxux374YFNKn6t/0TZXtkwpT9+us23+jfxNTkCE20zyvnEPLcN8JOce6UWYPQGDPVD0C8AY2QEmxbGOHsbZmzIb+23ZrQGrytHbiBB6qM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762856574; c=relaxed/simple;
-	bh=JrxCJS6doR540ni5O4K+fTfT2J1vhfEKtnYrNkU/J6o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DZXReL1VXzhQpUGv5Kb+hj2D9uh0rlv3zjjqdvBcoUmLqI2+b3GyN//dKRn1NmrlTQoGX+pkCt8dIAxV7Yl92Vqd733gLOh+83ngdeXqolbdPOQy7yc/j1E9OYZ+UJsiagOXA+kCI9vJ9OO8yvasQf7r7D9NGUITL/vXh1kF1G8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=Cxh7bLzT; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-4edb7c8232aso28519791cf.3
-        for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 02:22:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1762856571; x=1763461371; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gr4TOuugTT1EseGcVB5iZB82tbqvLcivaLR74+txrKo=;
-        b=Cxh7bLzTrr9BQePvVGjJ40vDC0NZ2fTThVB7BYFO3Iak6qyEFFlUvplymWg0joF7Q3
-         HVvSugfkZBwk1iaxvYjWFo+NLRPZYh1e5zW3LFB3CpoBIX+SjOYunRJ+TM2+q8sIqGZU
-         epcQ5oRizTN8F+VsWK6pLYxh6lReG0wjdPWAg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762856571; x=1763461371;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gr4TOuugTT1EseGcVB5iZB82tbqvLcivaLR74+txrKo=;
-        b=wCO59bohAxYmwzWQD0jwFMZJxjtOYKWkxBsXnrGfSSIOUzIYndg3MnLCCQ5nHlo26T
-         nU3vn6gXyTTteC5Cfk/rnqNI/Gw0jdwyGQLZDUtMDi78TP+FKzgixF3nKxCtpBcjV/bo
-         7ypIBSv9mtvgqttH3J34thBMaF/aEsmifylD0LGUmx05DtDafc4ljit1uoLOMFoDOLY+
-         OcIn8yRx+Ne9wLYQnVrtOQeps6pmuZ4p8srQM3fDJfDbk/lQGRxb57JUsfLifqfpEvVs
-         fIXqXaNFKytAnQLsmORSDzl5PKNwcGQpnp890HxaZg2royORnsOvefv3dCZRNBxgCm1B
-         Gt2A==
-X-Forwarded-Encrypted: i=1; AJvYcCVQxyaUD3gUSAIA8np17cdAq7IHSZbI+6FwmubeDGdtP7F43ZXqT7JhsMN3pGm+jnNqy0c=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzmxWpOhhjUr66G+RFAOGRq9MoX7U1nVflrvSmuFISN7OvDyDcW
-	7JjvKV8IleU9rYnAuSsWxAUHWSBJrcee5jzkmxLwJc+dr2lfs7LZvEdtVqKLERDihlKNd5h5EuH
-	1/w9qCBxWe1v/CWob1j+PZ9T3fFEuQGI8vGOX/3COoA==
-X-Gm-Gg: ASbGnctlhfIqWY6x0WiMoTQhTdZ5P3Zu/8WDaS384zTuOGoUHG9evK5lNvuaWQbzpdC
-	/UXVjyo+9nDaYIIEzdBj2NVIpUj5Jc4MuOpE3BuLGJNO12IxvW9buOtrpngk69Ac8N7Az/HCG5y
-	1krl6X/VhnpJXiOmWmK6KavnoB6kLj/lz4brUPUlK5clgtNacNWS91qRSj39DDmUWYTiDR0ZQ8F
-	LQyDDO5SpYJMC5ifog0RWUqPQw5g33Irefb3WBvwbNYVpJEs2LzMOg0GVk=
-X-Google-Smtp-Source: AGHT+IElRIVhqCvDTFpSgFEYkQvi9Gos4SnKPGf8Juir9zGtxxq03gYdBJSCGUUe4Ii0djCwuMFVWPO3CN8YKO0f0p8=
-X-Received: by 2002:ac8:57d3:0:b0:4ec:f073:4239 with SMTP id
- d75a77b69052e-4eda4e7cbb2mr148255861cf.6.1762856570888; Tue, 11 Nov 2025
- 02:22:50 -0800 (PST)
+	s=arc-20240116; t=1762856795; c=relaxed/simple;
+	bh=ZFmSKSzww2nd88jhXy9fnDkVPC8RGIF3BfU2aAp/Ois=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NEhkzBWO6BTfyJSiN7tezztURQwobrsrx0s86bpT0E0Qh7sExUUSytajOvESOtXm6ZUQ1V4tznJZTxjNkehtdU3AHAabsFApADyi6/qs+bRaxUtEd6e2thuGBP9+fN4j+yUspP+9UO7PEqHooDB+TbEqmqp7FPAJlrvWMT/+uUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G+gQANG+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D584C4CEF7;
+	Tue, 11 Nov 2025 10:26:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762856794;
+	bh=ZFmSKSzww2nd88jhXy9fnDkVPC8RGIF3BfU2aAp/Ois=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=G+gQANG+7egL6t5GUK+eCidFmr3UuP7Wp4UMLin5Nw8rpGOqF9w9FnHfo0bgUlh7z
+	 Hrc8YOfMH+fQYgnd9Lbxq+GBlTlSQBCsKjVPX8MQlI4MIoZqhwLLtAn0I3DnQnMTOw
+	 KcliZkNR2+mzIwmIV8DL74kbHA/EM8UuEPyNev1QrrjeKFLJx5ffNn/XV+hZInt7Ju
+	 UdSlVRE4Dvu3bgj+WGaB+oS+uxXtipXzGfzvea/ZGZcWFZIiTG7Ws3KelpnLs+GVez
+	 mmGY+Ytz8gNOUsOT+ASDs4FqyemnLkPwNFlU8W6yf5Z9h4eohw6nYvJTDCefh/p7x6
+	 TMwb+7Hfu+UwA==
+Date: Tue, 11 Nov 2025 11:26:25 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: syzbot <syzbot+0b2e79f91ff6579bfa5b@syzkaller.appspotmail.com>
+Cc: akpm@linux-foundation.org, bpf@vger.kernel.org, bsegall@google.com, 
+	david@redhat.com, dietmar.eggemann@arm.com, jack@suse.cz, jsavitz@redhat.com, 
+	juri.lelli@redhat.com, kartikey406@gmail.com, kees@kernel.org, liam.howlett@oracle.com, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-security-module@vger.kernel.org, lorenzo.stoakes@oracle.com, mgorman@suse.de, mhocko@suse.com, 
+	mingo@redhat.com, mjguzik@gmail.com, oleg@redhat.com, paul@paul-moore.com, 
+	peterz@infradead.org, rostedt@goodmis.org, rppt@kernel.org, sergeh@kernel.org, 
+	surenb@google.com, syzkaller-bugs@googlegroups.com, vbabka@suse.cz, 
+	vincent.guittot@linaro.org, viro@zeniv.linux.org.uk, vschneid@redhat.com
+Subject: Re: [syzbot] [fs?] WARNING in nsproxy_ns_active_put
+Message-ID: <20251111-anbraten-suggerieren-da8ca707af2c@brauner>
+References: <20251111-lausbub-wieweit-76ec521875b2@brauner>
+ <691305db.a70a0220.22f260.0130.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251111065520.2847791-1-viro@zeniv.linux.org.uk> <20251111065520.2847791-2-viro@zeniv.linux.org.uk>
-In-Reply-To: <20251111065520.2847791-2-viro@zeniv.linux.org.uk>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Tue, 11 Nov 2025 11:22:38 +0100
-X-Gm-Features: AWmQ_bn6E4e4WTTnqqQ9ptsMdEgyTHjWIJOU4-smQyjZiT3MKecFKgj620d_-Vc
-Message-ID: <CAJfpeguqvHUDVzR7N=To8keErrF8Bn9kuojoFtM_58sLY_XXDw@mail.gmail.com>
-Subject: Re: [PATCH v3 01/50] fuse_ctl_add_conn(): fix nlink breakage in case
- of early failure
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org, 
-	brauner@kernel.org, jack@suse.cz, raven@themaw.net, neil@brown.name, 
-	a.hindborg@kernel.org, linux-mm@kvack.org, linux-efi@vger.kernel.org, 
-	ocfs2-devel@lists.linux.dev, kees@kernel.org, rostedt@goodmis.org, 
-	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, paul@paul-moore.com, 
-	casey@schaufler-ca.com, linuxppc-dev@lists.ozlabs.org, 
-	john.johansen@canonical.com, selinux@vger.kernel.org, 
-	borntraeger@linux.ibm.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <691305db.a70a0220.22f260.0130.GAE@google.com>
 
-On Tue, 11 Nov 2025 at 07:55, Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> fuse_ctl_remove_conn() used to decrement the link count of root
-> manually; that got subsumed by simple_recursive_removal(), but
-> in case when subdirectory creation has failed the latter won't
-> get called.
->
-> Just move the modification of parent's link count into
-> fuse_ctl_add_dentry() to keep the things simple.  Allows to
-> get rid of the nlink argument as well...
->
-> Fixes: fcaac5b42768 "fuse_ctl: use simple_recursive_removal()"
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+On Tue, Nov 11, 2025 at 01:46:03AM -0800, syzbot wrote:
+> Hello,
+> 
+> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> WARNING in __ns_ref_active_put
 
-Acked-by: Miklos Szeredi <mszeredi@redhat.com>
+#syz test: https://github.com/brauner/linux.git namespace-6.19.fixes
 
