@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-74148-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74144-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E24DC4BCFB
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 07:58:49 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3852C4BCD7
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 07:58:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AA403A4D59
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 06:57:11 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4D5F4345159
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 06:58:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27EF34E770;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F018634E769;
 	Tue, 11 Nov 2025 06:55:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="HiKTZzZ/"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="OsRGle84"
 X-Original-To: bpf@vger.kernel.org
 Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A217434402B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3471344037;
 	Tue, 11 Nov 2025 06:55:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762844132; cv=none; b=doYmHcOaxT2InUQG0sjqhMCrSskfRgf3nUYXlGljSvjDOrw17j6qoIiCb69I5EeAmgz32MIr8WjdhXD2URczRHOQluKQhf4bv0RZJVdc9d6zJzs1b3zoSvD1MPwV4s0Md+GV3/4bOMZWR8rnMIcv3BTBMp9BdjQgivxXII1P5gU=
+	t=1762844131; cv=none; b=EWx0gVbhp4H7gle+pI5t92CEIq6U9IDK+3Oe5VZBRV0Kvbhrhw89FVXVjuC2mS7RXjTPMcoV1Ml6quCA0qqlldK6vr+bY2M5KpH4+TE281J5u5LldMwPz09IPtmdr84L747XF6fIxoVw+5Pq7JiKuWKL0bWxP3gTs2Odhp1w67Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762844132; c=relaxed/simple;
-	bh=jGXLbtBoU52kB5fq2se2ip0WlsiUE6GUM8W8byZni/8=;
+	s=arc-20240116; t=1762844131; c=relaxed/simple;
+	bh=X6JFnoVtKD57NvZa94J2H+MWO1OHhaAUlhfoIPR5JFk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=px/SPc6Jqb556BYShkwCPl84q32GUQq9i1G2S4GPvs1E8YgVKZVUOKo+5CRhjB4+LQqXKMQ2ECyWMY3lYF861CnoMjbHD57WKnjjDlDLLpSdfde2ykKg5vbKnSxfGuz7dO9xpAR2ZOTUMDWHgE+szf1wtQrdo5i104/KtCe6+go=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=HiKTZzZ/; arc=none smtp.client-ip=62.89.141.173
+	 MIME-Version; b=FsMTLyTv2TmVqlLSCp4yfOXP2den+syeDZ726+Mhix9AxGdXKNRdOnzF5frC29ovvjVgcFhdSmJYcsI032jPh8nigrm1ZT9amXBH3Vm7CvEs+eoF35jN7IlGlqr946i1amFUrCst54M0551BF7VQMwqJbeJqQIabmXtR5JJ4bbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=OsRGle84; arc=none smtp.client-ip=62.89.141.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=XM4FZa0do0+xkZhNaAyLfkF8FdfO7rZo+6nC0ji7Cc4=; b=HiKTZzZ/q4UOe5+JDM6CDFXNw+
-	HyDR5VqKNtpjR2amfKboMkRHLZr4PaGe7CCAYJP+76LUWUXz8vpbtEKAIPStBmmhP8Sjxzs+thRRb
-	rJWYPOUAtvnPrutA0+F0/TY1GdkWOThpY2oCwiyCD0KsJ/zHRyjJ4bPea0L/z8x5fffm3GVWTUX/F
-	C1klgokjca5tCzuxZN45ZPaBHqDRnIqHcrhKNk50YL8SEnnGxVsxtfM/mF0CaVVxuNE6g5P/XIX9V
-	OIeVgxtX/90DlBBBiZxd8xJJxrKK6b8c92oeeg8BBKwc8nngThjXp3MfbnCwxU5TS6sArZUNYqKB0
-	MGm2kVNA==;
+	bh=bkByHERsS9JuCtqGS9wCvZ7R+EhcIoCC8ci4VG063fc=; b=OsRGle84xX6lCMsOqbmX88O9Vv
+	QCGMmghlcMX+6qLKlD9YKtDKt/l7fD3/fJuRQCcxCewWhB6+puUIARCAP4cdHhdwrk97PNTrKy26Q
+	8csjifXGqpFVsO9ko9DNm/2juQyXZvXFmkWFAeWU+31WAdIv7cfWan9d4z/6lgn5AjPSiVVRTdXaU
+	VhylboWKmDvf+1FPY/jegeXzt69CLtlo6J62v6F96sm5LguMFUuvDL6c0RASnXkK+tYJuZ/c+7FMb
+	jUPSTT+hCcfBeXvrWHIi3KnwppTrUqUdM5EsI3H7rnVi1AuKn23uRGHjcgBa/LO4606zdkJpk/K1m
+	OCyq9HEQ==;
 Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vIiHj-0000000BwyW-3XSb;
-	Tue, 11 Nov 2025 06:55:23 +0000
+	id 1vIiHk-0000000Bwyi-0fof;
+	Tue, 11 Nov 2025 06:55:24 +0000
 From: Al Viro <viro@zeniv.linux.org.uk>
 To: linux-fsdevel@vger.kernel.org
 Cc: torvalds@linux-foundation.org,
@@ -67,9 +67,9 @@ Cc: torvalds@linux-foundation.org,
 	selinux@vger.kernel.org,
 	borntraeger@linux.ibm.com,
 	bpf@vger.kernel.org
-Subject: [PATCH v3 17/50] convert fuse_ctl
-Date: Tue, 11 Nov 2025 06:54:46 +0000
-Message-ID: <20251111065520.2847791-18-viro@zeniv.linux.org.uk>
+Subject: [PATCH v3 19/50] convert tracefs
+Date: Tue, 11 Nov 2025 06:54:48 +0000
+Message-ID: <20251111065520.2847791-20-viro@zeniv.linux.org.uk>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20251111065520.2847791-1-viro@zeniv.linux.org.uk>
 References: <20251111065520.2847791-1-viro@zeniv.linux.org.uk>
@@ -82,52 +82,96 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: Al Viro <viro@ftp.linux.org.uk>
 
-objects are created in fuse_ctl_add_dentry() by d_alloc_name()+d_add(),
-removed by simple_remove_by_name().
+A mix of persistent and non-persistent dentries in there.  Strictly
+speaking, no need for kill_litter_super() anyway - it pins an internal
+mount whenever a persistent dentry is created, so at fs shutdown time
+there won't be any to deal with.
 
-What we return is a borrowed reference - it is valid until the call of
-fuse_ctl_remove_conn() and we depend upon the exclusion (on fuse_mutex)
-for safety.  Return value is used only within the caller
-(fuse_ctl_add_conn()).
+However, let's make it explicit - replace d_instantiate() with
+d_make_persistent() + dput() (the latter in tracefs_end_creating(),
+where it folds with inode_unlock() into simple_done_creating())
+for dentries we want persistent and have d_make_discardable() done
+either by simple_recursive_removal() (used by tracefs_remove())
+or explicitly in eventfs_remove_events_dir().
 
-Replace d_add() with d_make_persistent() + dput().  dput() is paired
-with d_alloc_name() and return value is the result of d_make_persistent().
-
+Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- fs/fuse/control.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ fs/tracefs/event_inode.c |  4 ++--
+ fs/tracefs/inode.c       | 13 ++++++-------
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/fs/fuse/control.c b/fs/fuse/control.c
-index 3dca752127ff..140bd5730d99 100644
---- a/fs/fuse/control.c
-+++ b/fs/fuse/control.c
-@@ -236,8 +236,14 @@ static struct dentry *fuse_ctl_add_dentry(struct dentry *parent,
- 		inc_nlink(inode);
- 	}
- 	inode->i_private = fc;
--	d_add(dentry, inode);
--
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 93c231601c8e..61cbdafa2411 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -823,7 +823,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
+ 	 * something not worth much. Keeping directory links at 1
+ 	 * tells userspace not to trust the link number.
+ 	 */
+-	d_instantiate(dentry, inode);
 +	d_make_persistent(dentry, inode);
-+	dput(dentry);
-+
-+	/*
-+	 * We are returning a borrowed reference here - it's only good while
-+	 * fuse_mutex is held.  Actually it's d_make_persistent() return
-+	 * value...
-+	 */
- 	return dentry;
+ 	/* The dentry of the "events" parent does keep track though */
+ 	inc_nlink(dentry->d_parent->d_inode);
+ 	fsnotify_mkdir(dentry->d_parent->d_inode, dentry);
+@@ -910,5 +910,5 @@ void eventfs_remove_events_dir(struct eventfs_inode *ei)
+ 	 * and destroyed dynamically.
+ 	 */
+ 	d_invalidate(dentry);
+-	dput(dentry);
++	d_make_discardable(dentry);
+ }
+diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
+index 0c023941a316..d9d8932a7b9c 100644
+--- a/fs/tracefs/inode.c
++++ b/fs/tracefs/inode.c
+@@ -538,7 +538,7 @@ static struct file_system_type trace_fs_type = {
+ 	.name =		"tracefs",
+ 	.init_fs_context = tracefs_init_fs_context,
+ 	.parameters	= tracefs_param_specs,
+-	.kill_sb =	kill_litter_super,
++	.kill_sb =	kill_anon_super,
+ };
+ MODULE_ALIAS_FS("tracefs");
+ 
+@@ -571,16 +571,15 @@ struct dentry *tracefs_start_creating(const char *name, struct dentry *parent)
+ 
+ struct dentry *tracefs_failed_creating(struct dentry *dentry)
+ {
+-	inode_unlock(d_inode(dentry->d_parent));
+-	dput(dentry);
++	simple_done_creating(dentry);
+ 	simple_release_fs(&tracefs_mount, &tracefs_mount_count);
+ 	return NULL;
  }
  
-@@ -346,7 +352,7 @@ static void fuse_ctl_kill_sb(struct super_block *sb)
- 	fuse_control_sb = NULL;
- 	mutex_unlock(&fuse_mutex);
- 
--	kill_litter_super(sb);
-+	kill_anon_super(sb);
+ struct dentry *tracefs_end_creating(struct dentry *dentry)
+ {
+-	inode_unlock(d_inode(dentry->d_parent));
+-	return dentry;
++	simple_done_creating(dentry);
++	return dentry;	// borrowed
  }
  
- static struct file_system_type fuse_ctl_fs_type = {
+ /* Find the inode that this will use for default */
+@@ -661,7 +660,7 @@ struct dentry *tracefs_create_file(const char *name, umode_t mode,
+ 	inode->i_private = data;
+ 	inode->i_uid = d_inode(dentry->d_parent)->i_uid;
+ 	inode->i_gid = d_inode(dentry->d_parent)->i_gid;
+-	d_instantiate(dentry, inode);
++	d_make_persistent(dentry, inode);
+ 	fsnotify_create(d_inode(dentry->d_parent), dentry);
+ 	return tracefs_end_creating(dentry);
+ }
+@@ -692,7 +691,7 @@ static struct dentry *__create_dir(const char *name, struct dentry *parent,
+ 
+ 	/* directory inodes start off with i_nlink == 2 (for "." entry) */
+ 	inc_nlink(inode);
+-	d_instantiate(dentry, inode);
++	d_make_persistent(dentry, inode);
+ 	inc_nlink(d_inode(dentry->d_parent));
+ 	fsnotify_mkdir(d_inode(dentry->d_parent), dentry);
+ 	return tracefs_end_creating(dentry);
 -- 
 2.47.3
 
