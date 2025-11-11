@@ -1,139 +1,110 @@
-Return-Path: <bpf+bounces-74213-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74214-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6ED2C4D1DF
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 11:42:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C88EC4D203
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 11:42:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 469EC4F9DFD
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 10:36:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F07AA3B811A
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 10:37:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4AD34DB7F;
-	Tue, 11 Nov 2025 10:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A03634D4F5;
+	Tue, 11 Nov 2025 10:37:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XNzcP4Jx"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="nnCBA1vZ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tZ6UEQ/n"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1932741AC;
-	Tue, 11 Nov 2025 10:35:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC2D634C81F
+	for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 10:37:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762857345; cv=none; b=ktcKOQGN8/yURDDKv2UzWoUZbfq4rA66EII02I7hA5jTz3QD+C0Py7Pxpug0jg0tyvgoRnfNBqjZYP2tMZ6SKSQ/VsMEgJMtuIFo6KcTGSfAWjeVRZPFGAsGHB31Aozim+gzbIFZbAhaplxfaxK3vPRvaYapq5zcbNejqBH1zxU=
+	t=1762857432; cv=none; b=nCJK7Zl9i8fL/bOwLnIn4QSrFW+z4dWVQaAnrua8CP4M6erGJgkTk7S1iDJ44o2VBRxdE4iXzQXhOLMMXp5Ucbwbn6Asq8MldaM5cPrZBY3GI4xSLBnuGAUys/QYu/CQcUcOdnWIEUyYJqygYMXfNIVsCAVBHARxa127BJF8wkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762857345; c=relaxed/simple;
-	bh=Xq140z8t2Lz9tMLDdMmjzX8uNuNbzNJxr107yZ7r5/o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bY59AMdHU7XuVyPTb3eEdUTeVQ4D3vcta4I8hIqA6He0atvTSfF8nLl3Y4rYE0+D+gZEV+lp4XAT3qhP1/xQEARtC008Y7DBFOtPPhQlExACUshsjWOnFmsgmJxblv/opXgBEW41wzKN43PmFgoyxVgQSkShj3pDRLuZRqrTqs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XNzcP4Jx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 702C5C116D0;
-	Tue, 11 Nov 2025 10:35:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762857344;
-	bh=Xq140z8t2Lz9tMLDdMmjzX8uNuNbzNJxr107yZ7r5/o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=XNzcP4JxLcsq+v9Gh+HF0DTywnT1mFmvi7yAfyY5RW8Kk6f1dn/zMn6bi49eFCzFf
-	 03qQqT/jWGf9Zlz+J8IuOaHuegSCrMykqwybKOTMVNZLcWUs8Tgl3498RVQCXqDB7h
-	 g8Q7KFBQ+pvtZIdR830u68faptBVurqTFmc28LTu5DoloSbAk+oTbGvllcysqWbjO+
-	 usqZ4XYfF2fKzbeYY+LnQELFECpM53q7d14bsL7hzphs5k7QqLP3W8mg4gwQgGodw9
-	 PgDUubK/O7YU0CQH8YzAJl8jhHija1+4mQE1VTOzVJfKwzRDMXtGtPNKxPhisBdkf1
-	 oMJ94yacWuAgQ==
-Message-ID: <d2cb9d64-ecda-4cda-83e0-fd5d5758972d@kernel.org>
-Date: Tue, 11 Nov 2025 11:35:34 +0100
+	s=arc-20240116; t=1762857432; c=relaxed/simple;
+	bh=IYd4RbaYiFXlX49+n60igcRzzIxKYBIgAXdbixl54lk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LfhPqqW7ZjQgOxrS4VYXQfywdHznso13eKb/6Yo9ib1um196xxt2dZsYy8oY5uBGUL+J1gDKSfRo+GKWIW7zTl2Epof73JJGl0vTE+qetzCNgwTfKTzrV+eLSoHAwAa5G8FWDqarm6X6evwuCGaGRBkywaSfFxGIEWOdfUtE9wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=nnCBA1vZ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tZ6UEQ/n; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 11 Nov 2025 11:37:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1762857428;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7cdbhjjUs2OWaCR+gciF/9acBbcmGeleDDJakfvORTs=;
+	b=nnCBA1vZC5nWd6Q5gryJJqyRe7S+DmHo3OH4UMBr9f5OI7ZFJWD8wlANK83L0fXqKUNDPj
+	1FsQDAIGqP7roOhKR/jvqu9HVjl4Uys8hXQTc6fon28dauQ4l42mTqq6OAxKmV5vptwSnn
+	VYiaY3EwFVYfad4Yymzc6eASjhe+dytDAlvTo54l1YiD/1ns6QEGrgtjmepU3CW5zw12T/
+	e9ts7mL97c1CLWJXnd+7DUzkcxdZPpV3ax9Ip2iBxPQZg1GrUVPaJ/z+T9+1dIRIpL05hz
+	f0vh+dg/6pzHuroMw68UynsCWm0S/jtHSh2aCkzDHlXXAHA8PgKk8wOmcpXevg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1762857428;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7cdbhjjUs2OWaCR+gciF/9acBbcmGeleDDJakfvORTs=;
+	b=tZ6UEQ/nbThHxJx6eLCt5N/lXZ8TtYQLLBGvGiygxWhPwrv7WxbrUeHupq5ElHcA+bNOYa
+	UnPcLhWH+LMiiGAw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bot+bpf-ci@kernel.org, chandna.sahil@gmail.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	eddyz87@gmail.com, song@kernel.org, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	jolsa@kernel.org, bpf@vger.kernel.org,
+	syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.comi,
+	martin.lau@kernel.org, clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCH bpf-next] bpf: use preempt_disable/enable() to protect
+ bpf_bprintf_buffers nesting
+Message-ID: <20251111103705.B_sEhO6r@linutronix.de>
+References: <20251109173648.401996-1-chandna.sahil@gmail.com>
+ <588e208637619b6c256f2a70dc35faeafda1a843b6410def9fa53ef8876a46e8@mail.kernel.org>
+ <2ed9877e-77e4-4f18-84fd-dc8b1ffe810f@linux.dev>
+ <20251110132546.eE4o18h6@linutronix.de>
+ <03bc2787-b5e7-42e7-9812-8c50da912c0b@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH net v5 3/3] selftests/bpf: Add mptcp test with sockmap
-Content-Language: en-GB, fr-BE
-To: Jiayuan Chen <jiayuan.chen@linux.dev>, mptcp@lists.linux.dev
-Cc: Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Florian Westphal <fw@strlen.de>, Christoph Paasch <cpaasch@apple.com>,
- Peter Krystad <peter.krystad@linux.intel.com>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20251111060307.194196-1-jiayuan.chen@linux.dev>
- <20251111060307.194196-4-jiayuan.chen@linux.dev>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <20251111060307.194196-4-jiayuan.chen@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <03bc2787-b5e7-42e7-9812-8c50da912c0b@linux.dev>
 
-Hi Jiayuan,
-
-On 11/11/2025 07:02, Jiayuan Chen wrote:
-> Add test cases to verify that when MPTCP falls back to plain TCP sockets,
-> they can properly work with sockmap.
+On 2025-11-10 09:44:55 [-0800], Yonghong Song wrote:
 > 
-> Additionally, add test cases to ensure that sockmap correctly rejects
-> MPTCP sockets as expected.
+> 
+> On 11/10/25 5:25 AM, Sebastian Andrzej Siewior wrote:
+> > On 2025-11-09 11:44:48 [-0800], Yonghong Song wrote:
+> > 
+> > Could we do this instead?
+> > There is  __bpf_stream_push_str() => bpf_stream_page_reserve_elem() =>
+> > bpf_stream_page_replace() => alloc_pages_nolock().
+> 
+> I would suggest to stick to preempt_disable/enable().
+> In the bpf-next (newer change), for function
+> bpf_stream_elem_alloc(), kmalloc_nolock() is used
+> and no local_lock usage any more.
 
-Thank you for the v5.
+Okay. This is then basically a revert of the removal of
+preempt_disable(). If it doesn't break anything, fine then. I don't have
+a strong argument against other than it would impose limitations as
+mentioned previously (but this is no longer the case).
+Unless it breaks anything, fine by me :)
 
-Acked-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+The correct tags would be:
 
-Cheers,
-Matt
--- 
-Sponsored by the NGI0 Core fund.
+ Reported-by: syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com
+ Closes: https://lore.kernel.org/all/68f6a4c8.050a0220.1be48.0011.GAE@google.com/
+ Fixes: 4223bf833c849 ("bpf: Remove preempt_disable in bpf_try_get_buffers")
 
+Sebastian
 
