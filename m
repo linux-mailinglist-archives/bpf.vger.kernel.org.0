@@ -1,131 +1,115 @@
-Return-Path: <bpf+bounces-74196-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74197-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6EA9C4CC70
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 10:53:42 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2C09C4CCB8
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 10:56:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EC6794FBA57
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 09:47:27 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2B1CC4F9B45
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 09:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67232F2915;
-	Tue, 11 Nov 2025 09:46:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763DE2F25E8;
+	Tue, 11 Nov 2025 09:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="WXA69s3/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00D92EB872
-	for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 09:46:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D273E256C87;
+	Tue, 11 Nov 2025 09:50:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762854365; cv=none; b=pKqZbIMMwUahgscx49gWHmO7rYKZr1TKLLWBt24xDzccEX9PLqVZMpqfd9vRq/71B5xYs/RGc2cVntl404iU9fcBMYa5/6m/D9g9h2TpX0quzSEoKgugcU5LUxECbIxEuRb3nfAHXGOFxJjAjJXH4vVjAz+Us0dvpOtVBX9bTxE=
+	t=1762854603; cv=none; b=XEEvzNwvt7G1skMKwHDDzttBvBr1PAkLGKutrIZE9O5RhBGstNREAwaMjRdqk5Xjbm5GSCAcsF9zQUCK3cmbmxqCoTf/z46dr8aqrCiwz/bossJfSLnDZiZeqnXKuDRL6QjXRqfXNpHU42RBqM3C9nRaUiCT7mKii0YVl+qagZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762854365; c=relaxed/simple;
-	bh=MGqkyJPAh4zW65+tZYFbDdGQAx3QF87Y101n3ZZIGWc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=AmoAl4MaHqjEkmkvE0XYl2fnNTwzojtzZ62pJtBNIcqcj49sjekPkmKA0HJPpBUJUD2U0DIromHASj1qooZ1Ahuol27/mD+UGMmzo3qsGJ+anqce+vp7Hjw3pyeHm/O8snWObUMmqbASrQYNqXZEd9E+lDI9oKYf8H+xELerzUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-4337853ffbbso29209595ab.0
-        for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 01:46:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762854363; x=1763459163;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pxx43rg5vTwPZ2wNbygdxPupwm5jqNPgGIjEmJm74aE=;
-        b=BQJmO5ptH9DHXdJyLP+hFZNuVTsp8tsBxjwLUzCJ5iKDIe6Z0vx1bQWfaQd48dlrax
-         GkTv8JfAE3DTNhK3CYnfCiZ4sd24kkS9+vufjBM0T/zSP5AVQ+GCbNW3ZLjFpKhb+AKJ
-         QI7CRqwIU7u3i0b0c5MislzGWqmRFDFj0e9SjSXnwyVhkkDdZOl1L99aRAE+72S0RrO4
-         Ttt/j6dV0VjLQshrh22Q+NcaAlBf6hs+xTegcIiw0Lbihq/uDJXsCkcR1xEggjK0CKzX
-         7UBBrcuutN07MPTUAlk8BueVHwby5cwi74qIJXBZo5VRhW+JbVpAjbyTCtYjFWaF4+Ei
-         6u4g==
-X-Forwarded-Encrypted: i=1; AJvYcCXM+viZlZ0RlZJWdZlHGmrD0j3IrVCmhQWHQ3xinNhJTNmuDgXhV+xJnja7DDG1eoSAQhI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBsVvm8quLCUp2VPH5I+TmorXfu5weWtuXDQVem4sE1hM8WkGR
-	w0X537xWk1DtdPICBPG0/L8Um12IjRrJ/mMfJSFHu1bSymeie9PgNa+1/d7sQqMagFG9WXTNNUp
-	g3NjxrtyCNFugG0ybTQoYoHmHQGW6xEl3RqDyQ6hbn64EpEhZOlheIQnodJI=
-X-Google-Smtp-Source: AGHT+IFqLPDPKBiPRu3uu7IeP812DZQb4h/dmZnbCd8SnvgWxvVU1yv/z8fN5lQPvlaeArHHV0ZoY+wPaoICTLGVJWFDgk3ltdWI
+	s=arc-20240116; t=1762854603; c=relaxed/simple;
+	bh=D36LveqlJs6QkLgZQAhRPR+Lxgos/gtCjDPl8hDAgYw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dYPKS9dvpG1wsLawvEa11bgustnkaii0gykLIx3dymWAUt+CV59nDG0ENMWaYUZUDYwrpUpAJvKuyMNMGRoDlB7eo8Tt7qyayzM5lR0Q5ymmO6hysdjIHvAtqfWN50K8CyLALMBtkgNpAm3PkFDbsjIXdqBlQWRa5AkLLud8POQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=WXA69s3/; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=6bsPdtBaqJ4UPF5R7K+ouK1dJ6DCyxBWv0w/QZnr7cE=; b=WXA69s3/ndSSCDKncRmaO/hjic
+	O1y94fGm7YG4wpp1EnXG6yDbvuMjQmTNWvtrC7zZiZbJKSJQ3qPVVV+wFbvU9CFAsYmwuwFWd9TQz
+	502RxsFSRuMlb+ZsoiAw/Eyy0gQ2krWPMw0fEZQ3Z1ZbYzdnWOQhbqHDcknhoQE/b6LUe5OiGj/uX
+	ilItJNCZJAw3WeivKD5Fmg/6ibDscl4juFxBkBG0efupSFSIBUUIdS3DG4fn/rMt/0u9B5d/iqbE3
+	VTHj0bLhd9xu7SVaxQVogoLmue/J7I9fcpgSO2MhCBANTrOxCwyy94lXIyVk5oV9wmikQTnsNUf6U
+	oFmhH9OQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vIl0f-0000000FPaa-0OxV;
+	Tue, 11 Nov 2025 09:49:57 +0000
+Date: Tue, 11 Nov 2025 09:49:57 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: bot+bpf-ci@kernel.org
+Cc: linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org,
+	brauner@kernel.org, jack@suse.cz, raven@themaw.net,
+	miklos@szeredi.hu, neil@brown.name, a.hindborg@kernel.org,
+	linux-mm@kvack.org, linux-efi@vger.kernel.org,
+	ocfs2-devel@lists.linux.dev, kees@kernel.org, rostedt@goodmis.org,
+	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+	paul@paul-moore.com, casey@schaufler-ca.com,
+	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com,
+	selinux@vger.kernel.org, borntraeger@linux.ibm.com,
+	bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
+	yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCH v3 34/50] selinuxfs: new helper for attaching files to
+ tree
+Message-ID: <20251111094957.GT2441659@ZenIV>
+References: <20251111065520.2847791-35-viro@zeniv.linux.org.uk>
+ <70d825699c6e0a7e6cb978fdefba5935d5a515702e22e732d5c2ad919cfe010b@mail.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:349d:b0:433:4ac7:13bb with SMTP id
- e9e14a558f8ab-43367dd8a03mr188557675ab.11.1762854363073; Tue, 11 Nov 2025
- 01:46:03 -0800 (PST)
-Date: Tue, 11 Nov 2025 01:46:03 -0800
-In-Reply-To: <20251111-lausbub-wieweit-76ec521875b2@brauner>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <691305db.a70a0220.22f260.0130.GAE@google.com>
-Subject: Re: [syzbot] [fs?] WARNING in nsproxy_ns_active_put
-From: syzbot <syzbot+0b2e79f91ff6579bfa5b@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, bpf@vger.kernel.org, brauner@kernel.org, 
-	bsegall@google.com, david@redhat.com, dietmar.eggemann@arm.com, jack@suse.cz, 
-	jsavitz@redhat.com, juri.lelli@redhat.com, kartikey406@gmail.com, 
-	kees@kernel.org, liam.howlett@oracle.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-security-module@vger.kernel.org, lorenzo.stoakes@oracle.com, 
-	mgorman@suse.de, mhocko@suse.com, mingo@redhat.com, mjguzik@gmail.com, 
-	oleg@redhat.com, paul@paul-moore.com, peterz@infradead.org, 
-	rostedt@goodmis.org, rppt@kernel.org, sergeh@kernel.org, surenb@google.com, 
-	syzkaller-bugs@googlegroups.com, vbabka@suse.cz, vincent.guittot@linaro.org, 
-	viro@zeniv.linux.org.uk, vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <70d825699c6e0a7e6cb978fdefba5935d5a515702e22e732d5c2ad919cfe010b@mail.kernel.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Hello,
+On Tue, Nov 11, 2025 at 07:53:18AM +0000, bot+bpf-ci@kernel.org wrote:
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in __ns_ref_active_put
+> Can this leak the parent directory's reference count? The parent inode's
+> link count is incremented with inc_nlink(d_inode(dir)) before calling
+> sel_attach(). When sel_attach()->d_alloc_name() fails and returns NULL,
+> sel_attach() correctly cleans up the child inode with iput() and returns
+> ERR_PTR(-ENOMEM). However, the parent directory's link count has already
+> been incremented and is never decremented on this error path.
+> 
+> In the original code, the parent link count increment happened after
+> d_add() succeeded, ensuring it only occurred when the full operation
+> completed successfully.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 6489 at kernel/nscommon.c:171 __ns_ref_active_put+0x3d7/0x450 kernel/nscommon.c:171
-Modules linked in:
-CPU: 0 UID: 0 PID: 6489 Comm: syz.0.18 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/02/2025
-RIP: 0010:__ns_ref_active_put+0x3d7/0x450 kernel/nscommon.c:171
-Code: 4d 8b 3e e9 1b fd ff ff e8 b6 61 32 00 90 0f 0b 90 e9 29 fd ff ff e8 a8 61 32 00 90 0f 0b 90 e9 59 fd ff ff e8 9a 61 32 00 90 <0f> 0b 90 e9 72 ff ff ff e8 8c 61 32 00 90 0f 0b 90 e9 64 ff ff ff
-RSP: 0018:ffffc90003457d50 EFLAGS: 00010293
-RAX: ffffffff818e5b86 RBX: 00000000ffffffff RCX: ffff88802cc69e40
-RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 0000000000000000
-RBP: ffffc90003457e00 R08: ffff8880320be42b R09: 1ffff11006417c85
-R10: dffffc0000000000 R11: ffffed1006417c86 R12: dffffc0000000000
-R13: 1ffff11006417c84 R14: ffff8880320be420 R15: ffff8880320be428
-FS:  00007fe11c3746c0(0000) GS:ffff888125cf3000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2d863fff CR3: 000000007798c000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- nsproxy_ns_active_put+0x4a/0x200 fs/nsfs.c:701
- free_nsproxy+0x21/0x140 kernel/nsproxy.c:190
- put_nsset kernel/nsproxy.c:341 [inline]
- __do_sys_setns kernel/nsproxy.c:594 [inline]
- __se_sys_setns+0x1459/0x1c60 kernel/nsproxy.c:559
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fe11b590ef7
-Code: 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 34 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fe11c373fd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000134
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fe11b590ef7
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000000c9
-RBP: 00007fe11b611f91 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fe11b7e6038 R14: 00007fe11b7e5fa0 R15: 00007ffcd9b83d18
- </TASK>
+All callers of sel_make_dir() proceed to remove the parent in case of
+failure.  All directories are created either at mount time or at
+policy reload afterwards.  A failure in the former will have
+sel_fill_super() return an error, with the entire filesystem instance
+being torn apart by the cleanup path in its caller (get_tree_single()).
+No directories survive that.  A failure in the latter (in something
+called from sel_make_policy_nodes()) will be taken care of by the
+call of simple_recursive_removal() in the end of sel_make_policy_nodes() -
+there we
+	1.  create a temporary directory ("/.swapover").  We do *NOT*
+use sel_make_dir() for that - see sel_make_swapover_dir().  If that has
+failed, we return an error.
+	2.  create and populate two subtrees in it ("booleans" and "classes").
+That's the step where we would create subdirectories and that's where
+sel_make_dir() failures might occur.
+	3.  if the subtree creation had been successful, swap "/.swapover/booleans"
+with "/booleans" and "/.swapover/classes" with "/classes" respectively.
+	4.  recursively remove "/.swapover", along with anything that might
+be in it.  In case of success that would be the old "/classes" and "/booleans"
+that got replaced, in case of failure - whatever we have partially created.
 
-
-Tested on:
-
-commit:         18b5c400 Merge patch series "ns: header cleanups and i..
-git tree:       https://github.com/brauner/linux.git namespace-6.19
-console output: https://syzkaller.appspot.com/x/log.txt?x=12c08658580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=59952e73920025e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=0b2e79f91ff6579bfa5b
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-
-Note: no patches were applied.
+That's the same reason why we don't need to bother with failure cleanups in
+the functions that populate directories - if they fail halfway through, the
+entire (sub)tree is going to be wiped out in one pass.
 
