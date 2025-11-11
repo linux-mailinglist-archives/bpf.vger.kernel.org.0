@@ -1,111 +1,131 @@
-Return-Path: <bpf+bounces-74195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0060AC4CB26
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 10:36:00 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6EA9C4CC70
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 10:53:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D89F04FA717
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 09:31:22 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EC6794FBA57
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 09:47:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2B12F618F;
-	Tue, 11 Nov 2025 09:30:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wel3RcIu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67232F2915;
+	Tue, 11 Nov 2025 09:46:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 889702F60D6;
-	Tue, 11 Nov 2025 09:30:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00D92EB872
+	for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 09:46:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762853432; cv=none; b=jKVHt9873K6bhNsI2smMolLZygaQUAOT+4x4Rc3EZoc4oWlzsQJL48fHX5UbtGkchDqQpE0P4zcBpBXSnGAO8hzzAsLsmlnoqgoR6bS8xzlHEb4twoLFZGw9UbnBkxKwsB80mygEnvKgdT7Fbi9ORpQlmBrwT2P1YrBUfzAp2Ms=
+	t=1762854365; cv=none; b=pKqZbIMMwUahgscx49gWHmO7rYKZr1TKLLWBt24xDzccEX9PLqVZMpqfd9vRq/71B5xYs/RGc2cVntl404iU9fcBMYa5/6m/D9g9h2TpX0quzSEoKgugcU5LUxECbIxEuRb3nfAHXGOFxJjAjJXH4vVjAz+Us0dvpOtVBX9bTxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762853432; c=relaxed/simple;
-	bh=FABYtlEqY2mS5o9frfhx1zgALjceFTO/BSa/J+igp2U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=teQ4i1GVViJV1EJe+i/j6uB43CNVKdqmABbHJAetswcvh8SSs3gfv5fAbflCj0qtPwCvxKVkI4cw839XZ1sWys7CakRfUbjJCVQcvt/opLNKkt112xTNRzj/OSXhpJkD1dAVfxVh+aktP1qAXXA8eDTQY0bqokXYwzadBTwGGUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wel3RcIu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B728C19421;
-	Tue, 11 Nov 2025 09:30:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762853432;
-	bh=FABYtlEqY2mS5o9frfhx1zgALjceFTO/BSa/J+igp2U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Wel3RcIuS5j+o/v6AaFglHplRlVo9sjzdy86FsNvkTS5k7A/kuydEY9YQDtDQNrkU
-	 1JCCFOApt8LXWbOxCeqS0vlhGpfcI0c8jf2RAsKomtysjY/RFbLTstpdKXu40yGTYn
-	 FLxjdS45rZweVEmhZDxCWOTnPuYWbymg3w5CfiOvkb1Zp/DixWYVSWmBkR6D86LVRS
-	 90pZQhDvDQUp5C//Nl5fU0nZLj6njdPQoX9etWjUUWT7zS1p8r3mKbTo7WJJiVw2Eh
-	 1ZXIc9VtvUtautgBEOReKPpMqPkOF85M+AtRNgbRjY4ZeYjO80kCfOZdnWtEAjEE0Q
-	 TQ0u/1s2TNihQ==
-Date: Tue, 11 Nov 2025 10:30:22 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: bot+bpf-ci@kernel.org, linux-fsdevel@vger.kernel.org, 
-	torvalds@linux-foundation.org, jack@suse.cz, raven@themaw.net, miklos@szeredi.hu, 
-	neil@brown.name, a.hindborg@kernel.org, linux-mm@kvack.org, 
-	linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev, kees@kernel.org, 
-	rostedt@goodmis.org, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
-	paul@paul-moore.com, casey@schaufler-ca.com, linuxppc-dev@lists.ozlabs.org, 
-	john.johansen@canonical.com, selinux@vger.kernel.org, borntraeger@linux.ibm.com, 
-	bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
-	martin.lau@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev, clm@meta.com, 
-	ihor.solodrai@linux.dev
-Subject: Re: [PATCH v3 36/50] functionfs: switch to simple_remove_by_name()
-Message-ID: <20251111-verelendung-unpolitisch-1bdcd153611e@brauner>
-References: <20251111065520.2847791-37-viro@zeniv.linux.org.uk>
- <20754dba9be498daeda5fe856e7276c9c91c271999320ae32331adb25a47cd4f@mail.kernel.org>
- <20251111092244.GS2441659@ZenIV>
+	s=arc-20240116; t=1762854365; c=relaxed/simple;
+	bh=MGqkyJPAh4zW65+tZYFbDdGQAx3QF87Y101n3ZZIGWc=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=AmoAl4MaHqjEkmkvE0XYl2fnNTwzojtzZ62pJtBNIcqcj49sjekPkmKA0HJPpBUJUD2U0DIromHASj1qooZ1Ahuol27/mD+UGMmzo3qsGJ+anqce+vp7Hjw3pyeHm/O8snWObUMmqbASrQYNqXZEd9E+lDI9oKYf8H+xELerzUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-4337853ffbbso29209595ab.0
+        for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 01:46:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762854363; x=1763459163;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pxx43rg5vTwPZ2wNbygdxPupwm5jqNPgGIjEmJm74aE=;
+        b=BQJmO5ptH9DHXdJyLP+hFZNuVTsp8tsBxjwLUzCJ5iKDIe6Z0vx1bQWfaQd48dlrax
+         GkTv8JfAE3DTNhK3CYnfCiZ4sd24kkS9+vufjBM0T/zSP5AVQ+GCbNW3ZLjFpKhb+AKJ
+         QI7CRqwIU7u3i0b0c5MislzGWqmRFDFj0e9SjSXnwyVhkkDdZOl1L99aRAE+72S0RrO4
+         Ttt/j6dV0VjLQshrh22Q+NcaAlBf6hs+xTegcIiw0Lbihq/uDJXsCkcR1xEggjK0CKzX
+         7UBBrcuutN07MPTUAlk8BueVHwby5cwi74qIJXBZo5VRhW+JbVpAjbyTCtYjFWaF4+Ei
+         6u4g==
+X-Forwarded-Encrypted: i=1; AJvYcCXM+viZlZ0RlZJWdZlHGmrD0j3IrVCmhQWHQ3xinNhJTNmuDgXhV+xJnja7DDG1eoSAQhI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwBsVvm8quLCUp2VPH5I+TmorXfu5weWtuXDQVem4sE1hM8WkGR
+	w0X537xWk1DtdPICBPG0/L8Um12IjRrJ/mMfJSFHu1bSymeie9PgNa+1/d7sQqMagFG9WXTNNUp
+	g3NjxrtyCNFugG0ybTQoYoHmHQGW6xEl3RqDyQ6hbn64EpEhZOlheIQnodJI=
+X-Google-Smtp-Source: AGHT+IFqLPDPKBiPRu3uu7IeP812DZQb4h/dmZnbCd8SnvgWxvVU1yv/z8fN5lQPvlaeArHHV0ZoY+wPaoICTLGVJWFDgk3ltdWI
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20251111092244.GS2441659@ZenIV>
+X-Received: by 2002:a05:6e02:349d:b0:433:4ac7:13bb with SMTP id
+ e9e14a558f8ab-43367dd8a03mr188557675ab.11.1762854363073; Tue, 11 Nov 2025
+ 01:46:03 -0800 (PST)
+Date: Tue, 11 Nov 2025 01:46:03 -0800
+In-Reply-To: <20251111-lausbub-wieweit-76ec521875b2@brauner>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <691305db.a70a0220.22f260.0130.GAE@google.com>
+Subject: Re: [syzbot] [fs?] WARNING in nsproxy_ns_active_put
+From: syzbot <syzbot+0b2e79f91ff6579bfa5b@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, bpf@vger.kernel.org, brauner@kernel.org, 
+	bsegall@google.com, david@redhat.com, dietmar.eggemann@arm.com, jack@suse.cz, 
+	jsavitz@redhat.com, juri.lelli@redhat.com, kartikey406@gmail.com, 
+	kees@kernel.org, liam.howlett@oracle.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-security-module@vger.kernel.org, lorenzo.stoakes@oracle.com, 
+	mgorman@suse.de, mhocko@suse.com, mingo@redhat.com, mjguzik@gmail.com, 
+	oleg@redhat.com, paul@paul-moore.com, peterz@infradead.org, 
+	rostedt@goodmis.org, rppt@kernel.org, sergeh@kernel.org, surenb@google.com, 
+	syzkaller-bugs@googlegroups.com, vbabka@suse.cz, vincent.guittot@linaro.org, 
+	viro@zeniv.linux.org.uk, vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Nov 11, 2025 at 09:22:44AM +0000, Al Viro wrote:
-> On Tue, Nov 11, 2025 at 07:53:16AM +0000, bot+bpf-ci@kernel.org wrote:
-> 
-> > When ffs_epfiles_create() calls ffs_epfiles_destroy(epfiles, i - 1) after
-> > the first ffs_sb_create_file() call fails (when i=1), it passes count=0.
-> > The initialization loop starts at i=1, so epfiles[0].ffs is never
-> > initialized.
-> 
-> Incorrect.  The loop in question is
+Hello,
 
-Are you aware that you're replying to a bot-generated email?
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in __ns_ref_active_put
 
-> 
-> 	epfile = epfiles;
-> 	for (i = 1; i <= count; ++i, ++epfile) {
-> 		epfile->ffs = ffs;
-> 		mutex_init(&epfile->mutex);
-> 		mutex_init(&epfile->dmabufs_mutex);
-> 		INIT_LIST_HEAD(&epfile->dmabufs);
-> 		if (ffs->user_flags & FUNCTIONFS_VIRTUAL_ADDR)
-> 			sprintf(epfile->name, "ep%02x", ffs->eps_addrmap[i]);
-> 		else   
-> 			sprintf(epfile->name, "ep%u", i);
-> 		err = ffs_sb_create_file(ffs->sb, epfile->name,
-> 					 epfile, &ffs_epfile_operations);
-> 		if (err) {
-> 			ffs_epfiles_destroy(epfiles, i - 1);
-> 			return err;
-> 		}
-> 	}
-> 
-> and invariant maintained through the loop is epfile == epfiles + (i - 1).
-> We start with i == 1 and epfile == epfiles, modify neither variable in
-> the loop body and increment both i and epfile by the same amount in
-> the step.
-> 
-> In other words, on the first pass through the loop we access epfiles[0],
-> not epfiles[1].  Granted, the loop could've been more idiomatic, but
-> it is actually correct.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6489 at kernel/nscommon.c:171 __ns_ref_active_put+0x3d7/0x450 kernel/nscommon.c:171
+Modules linked in:
+CPU: 0 UID: 0 PID: 6489 Comm: syz.0.18 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/02/2025
+RIP: 0010:__ns_ref_active_put+0x3d7/0x450 kernel/nscommon.c:171
+Code: 4d 8b 3e e9 1b fd ff ff e8 b6 61 32 00 90 0f 0b 90 e9 29 fd ff ff e8 a8 61 32 00 90 0f 0b 90 e9 59 fd ff ff e8 9a 61 32 00 90 <0f> 0b 90 e9 72 ff ff ff e8 8c 61 32 00 90 0f 0b 90 e9 64 ff ff ff
+RSP: 0018:ffffc90003457d50 EFLAGS: 00010293
+RAX: ffffffff818e5b86 RBX: 00000000ffffffff RCX: ffff88802cc69e40
+RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 0000000000000000
+RBP: ffffc90003457e00 R08: ffff8880320be42b R09: 1ffff11006417c85
+R10: dffffc0000000000 R11: ffffed1006417c86 R12: dffffc0000000000
+R13: 1ffff11006417c84 R14: ffff8880320be420 R15: ffff8880320be428
+FS:  00007fe11c3746c0(0000) GS:ffff888125cf3000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2d863fff CR3: 000000007798c000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ nsproxy_ns_active_put+0x4a/0x200 fs/nsfs.c:701
+ free_nsproxy+0x21/0x140 kernel/nsproxy.c:190
+ put_nsset kernel/nsproxy.c:341 [inline]
+ __do_sys_setns kernel/nsproxy.c:594 [inline]
+ __se_sys_setns+0x1459/0x1c60 kernel/nsproxy.c:559
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fe11b590ef7
+Code: 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 34 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe11c373fd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000134
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fe11b590ef7
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000000c9
+RBP: 00007fe11b611f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fe11b7e6038 R14: 00007fe11b7e5fa0 R15: 00007ffcd9b83d18
+ </TASK>
+
+
+Tested on:
+
+commit:         18b5c400 Merge patch series "ns: header cleanups and i..
+git tree:       https://github.com/brauner/linux.git namespace-6.19
+console output: https://syzkaller.appspot.com/x/log.txt?x=12c08658580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=59952e73920025e4
+dashboard link: https://syzkaller.appspot.com/bug?extid=0b2e79f91ff6579bfa5b
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+
+Note: no patches were applied.
 
