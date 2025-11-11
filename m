@@ -1,444 +1,272 @@
-Return-Path: <bpf+bounces-74216-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74217-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2829EC4D543
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 12:11:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40AECC4D549
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 12:11:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 288394E7AB3
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 11:03:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D97CD189FFA2
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 11:04:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A023557E9;
-	Tue, 11 Nov 2025 11:02:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8984034F475;
+	Tue, 11 Nov 2025 11:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="SeIq6w5u"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from PA4PR04CU001.outbound.protection.outlook.com (mail-francecentralazon11013013.outbound.protection.outlook.com [40.107.162.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF625355034
-	for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 11:02:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762858926; cv=none; b=XMVp3pkYqyoaoDn4DZZvyC3n0VEcUD+kDVszk++1iXilwWH1SBgsVGO67ZZR5PAm0a/pf1S72dJ4FmmR6uVx4/iVSvIPgsUKf2j0z0I9iL9ms5zyKfQ4eTEvUjAPFAaVxx8tvO6W0EAE8JLagQkR9tn8ajcftgh2YR3XjPEYaLk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762858926; c=relaxed/simple;
-	bh=7at3DdS4SBOQ5/UffOU1WuD7089k25Qufv1tlcVeHaQ=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=XIsT4TdlwQtNHEouFRoemDxZbdwNGHcRPc8G5THg7NARMSWc3y8GFzeclc//TZVAwZ2YJJn+fpMcTBgvn/GiV0heOKl6QzCsNMgfhhWidqfJznHGoOLkUl1k01/qGaCHKP5hAsF3wD/p+sPDKpF0l1XUOkFGkc17BxWR5Q3e0Ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-43322fcfae7so47571095ab.1
-        for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 03:02:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762858923; x=1763463723;
-        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+sc5Korg4AeoqU0s5Fw2spKKbv5zLv8ORI3OPdKe6uo=;
-        b=oP7/FQ6d3tf/tHkd9vDE4QuzqBEgLn8o0cXZX7QG14yFqK+2RMpup01OL/rU5OcHUL
-         jOYdKwdPpswZS/e6Jb1ZVDqCrfZUC/Nz7+4PVtCgQLlN4JAi5EgF9utG3mmICiVjZY5Y
-         zSsgtqWByfUPZNQz4AQRh8SoV6wWWLOVjTA3HulgPv1E6iOPD+HUXkTfcb2QTfh+x0pl
-         aA4tnS3oXl4IXREcVoVf7+y5hg3KhWxKYLIKT9JmMd8j9N19ZuL8xAwcdiGHgFl9ycZp
-         eaLM1KcOaLifEgGFwPt78s8jSZjLGkBERa+Pb1DQ8g6LZV7G57IgpczdFuudazmkJLBI
-         MqiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWteX3exgBnCXsYXIiropUI/9OQgD+vPz9RFDN2T23HLJKRwHN7Lup/YzjRc6bKHXDkDdo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxdBizePh2ooENE0ogY//L0XqNVDYuuHCUo3/u9LxVm5rYPPtEP
-	oBRRYCEbzH3SVim4PRZLTe2V4jFnN4mhKU09NA9mVmmkxgh1wY1saWV4efrm2i5R7qGO75INewM
-	gKhUM6vafHikZdwChYIJiCAzpzCjoFd5ApT5cjl+Ep6AwAU72vb/yUAViqoU=
-X-Google-Smtp-Source: AGHT+IHBXZBrFdLIgyjkqvfIg4gI6jmA+raw0msokREm6gzLfpI+vebjMuP2WkaEvf5arCqGjEKDOXDu/EIdYaBd0UwInqtN5ON6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D4A82EAB61;
+	Tue, 11 Nov 2025 11:02:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.162.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762858974; cv=fail; b=S7lH3dBITkTw/5auu3XkfMk2EC/vfxf6rflhvYSDGWIDLCa429MfdlLceIk3RJfvUokWVBE0jxyXJrirdcOQR/XyFXKwJ2Q5YiqZGXM6Ly7Gf1Gs305CnptmqKRI8xkRGiwSQKfHa6NVErzDIrk2POqK217bMSeEEdsPx9/axvE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762858974; c=relaxed/simple;
+	bh=97rB6o63dt3y79G+ucbUVg6Ch7U1knynuWb4k8FfkAk=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=u8WkNBTOZHNWS9pP6gnrd9Au0NIyzpCu5Uv6JOACmMaitJjH+ZNYqVk8kc1Nfa7zQfvhfxWDQnT0GugewMRw0CDGvokM6LjzkyDcKxv4UjjN5A3IWBTmI36mRUZqgquaB3HpSMCaqVRHnA91ex5LJyvZudQlWjXSpfzGFEhWTRg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=SeIq6w5u; arc=fail smtp.client-ip=40.107.162.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=RyeFzosXQLQKV6ZBXqMt5p3HTf4B+Jj7nGfeswTrLlrT/x3g0FGYuj8Kb0YmxN2nmcp9iEHq1TtCJiQ0SFq1tILkWV4TJVZZNVIL8odik0u5Kp6b0wf7tT7+7BXChFhM5Oibp26V5RTa0J/odrmt8yNxmdiIj0ITyS9nJsloEN9pCazYThTu3Imk3nih0C9e719ebGKePdltDKtOOwG1gR4qzVrM/UaSWr97PyEBd+FEBtshnzdxizGnhwccHkPlmIfWXdJ0xU9fYqyJwswyWApRCGE7Spi7BG7Coiv2h6k7Zd20t7GPBMsgUcPP0aVwpC77OucssnNepEEvnrCRCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=97rB6o63dt3y79G+ucbUVg6Ch7U1knynuWb4k8FfkAk=;
+ b=nJkz8riapdT52MJkDDXflS6SHwE2rfUuhzbcH0NsGu88we/arcDWKfIhvJtLPzciPc8QcLPT3a99qI9WRa24Yx69flNuGrEsJfWQAmqzJwWUZK+QlRaA0NO8IkGu5BTFnN5aUR0gUduypZOQEQOHDNMBSCRwO2Hb4b2nonvCe1KA+ziNjNawPgO6v7zRB1cyBoYFRnEcorajNl6adXJ9g/KpgTXdk4LCoUu84kE57oKbSReTPiWwkoSf21Gak3Xc0CO4DwerEESP+/7x5mrTh1twrjj4wOWhUbrNsmAkTiqpGHQutfVAic1nm1MDkbdZlrJ/57OLN06TlhXlcBD9hA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia-bell-labs.com; dmarc=pass action=none
+ header.from=nokia-bell-labs.com; dkim=pass header.d=nokia-bell-labs.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=97rB6o63dt3y79G+ucbUVg6Ch7U1knynuWb4k8FfkAk=;
+ b=SeIq6w5uzaf0EdjR8XZas5fCs1v+NPpsv9rFhkii4fu0S2lcYP/BYkadjhsKVt4JXj4fXKbuom7OGw/F62Pu7LvVjjREqh2JK1T2lX/sJI1ZQ7vw7/49814AMp/JgCA20amKmAC5MCyuRuw2yE1M04tpTC9a8oWEh+YJELUqZe6h5Ppqe3p4yXeWw1UNc7u5Ih/FXNlgQgC4PiuIXIsSdRJcOcZaGpeXyF5239FNq4bJ2B7s4UijBwuxKQjv47fN6UaBj1R5Xg+Qym9fJzZRbyGGU/YgI2btSn1/pWdVwk/ZYMIsgqflkAKM48DqtAAhy8FcxDt/FE23J8gILMGZNw==
+Received: from PAXPR07MB7984.eurprd07.prod.outlook.com (2603:10a6:102:133::12)
+ by VI1PR07MB6335.eurprd07.prod.outlook.com (2603:10a6:800:136::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9298.16; Tue, 11 Nov
+ 2025 11:02:47 +0000
+Received: from PAXPR07MB7984.eurprd07.prod.outlook.com
+ ([fe80::b7f8:dc0a:7e8d:56]) by PAXPR07MB7984.eurprd07.prod.outlook.com
+ ([fe80::b7f8:dc0a:7e8d:56%2]) with mapi id 15.20.9298.015; Tue, 11 Nov 2025
+ 11:02:47 +0000
+From: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>
+To: Paolo Abeni <pabeni@redhat.com>, "edumazet@google.com"
+	<edumazet@google.com>, "parav@nvidia.com" <parav@nvidia.com>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "corbet@lwn.net"
+	<corbet@lwn.net>, "horms@kernel.org" <horms@kernel.org>, "dsahern@kernel.org"
+	<dsahern@kernel.org>, "kuniyu@google.com" <kuniyu@google.com>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "dave.taht@gmail.com" <dave.taht@gmail.com>,
+	"jhs@mojatatu.com" <jhs@mojatatu.com>, "kuba@kernel.org" <kuba@kernel.org>,
+	"stephen@networkplumber.org" <stephen@networkplumber.org>,
+	"xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>, "jiri@resnulli.us"
+	<jiri@resnulli.us>, "davem@davemloft.net" <davem@davemloft.net>,
+	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, "donald.hunter@gmail.com"
+	<donald.hunter@gmail.com>, "ast@fiberby.net" <ast@fiberby.net>,
+	"liuhangbin@gmail.com" <liuhangbin@gmail.com>, "shuah@kernel.org"
+	<shuah@kernel.org>, "linux-kselftest@vger.kernel.org"
+	<linux-kselftest@vger.kernel.org>, "ij@kernel.org" <ij@kernel.org>,
+	"ncardwell@google.com" <ncardwell@google.com>, "Koen De Schepper (Nokia)"
+	<koen.de_schepper@nokia-bell-labs.com>, "g.white@cablelabs.com"
+	<g.white@cablelabs.com>, "ingemar.s.johansson@ericsson.com"
+	<ingemar.s.johansson@ericsson.com>, "mirja.kuehlewind@ericsson.com"
+	<mirja.kuehlewind@ericsson.com>, cheshire <cheshire@apple.com>,
+	"rs.ietf@gmx.at" <rs.ietf@gmx.at>, "Jason_Livingood@comcast.com"
+	<Jason_Livingood@comcast.com>, Vidhi Goel <vidhi_goel@apple.com>
+Subject: RE: [PATCH v5 net-next 10/14] tcp: accecn: retransmit SYN/ACK without
+ AccECN option or non-AccECN SYN/ACK
+Thread-Topic: [PATCH v5 net-next 10/14] tcp: accecn: retransmit SYN/ACK
+ without AccECN option or non-AccECN SYN/ACK
+Thread-Index: AQHcSapcgflniMzwkEOUH36l3bIQK7TlmHeAgAS10oA=
+Date: Tue, 11 Nov 2025 11:02:47 +0000
+Message-ID:
+ <PAXPR07MB7984CE5A8244BCE2D4911A0CA3CFA@PAXPR07MB7984.eurprd07.prod.outlook.com>
+References: <20251030143435.13003-1-chia-yu.chang@nokia-bell-labs.com>
+ <20251030143435.13003-11-chia-yu.chang@nokia-bell-labs.com>
+ <d1045b08-2cc9-42c7-816b-ba467c27086c@redhat.com>
+In-Reply-To: <d1045b08-2cc9-42c7-816b-ba467c27086c@redhat.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nokia-bell-labs.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR07MB7984:EE_|VI1PR07MB6335:EE_
+x-ms-office365-filtering-correlation-id: 9d753ff7-1ba2-4557-fc54-08de2111d967
+x-ld-processed: 5d471751-9675-428d-917b-70f44f9630b0,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|376014|7416014|1800799024|38070700021|921020;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?MGxXUStLU05JYktncm1uVnBzeHg2TExMMWM4Y0pTSEZ5dFVOdTNRdmJvNlhW?=
+ =?utf-8?B?ZE9UcFZoek5jYW9ldHF5VFl0dmlHRXFqNWp3eFNvZlg0SFlCUHpTbk1tUEdT?=
+ =?utf-8?B?bUhZYW5kdE02c1A3YlF0WlVxQzBNTUJZZlk0SkN0bTVHZi9jMEYrbmhKWHNh?=
+ =?utf-8?B?Y1JKMG1FSU5WZFF5QTlKOHFUWk9BeE94WnZrWERIZUhoSGc1aU5UVGdacEdO?=
+ =?utf-8?B?SzRubWlIVTlzSXozbmRWVDJsby9Wbkl2NEtkVWtnRlFxN2NWVGd4bDA0c1VE?=
+ =?utf-8?B?bEt3NzVGbDNXVitYTkVxOWdHWGtUU2JPdDZXNUp5QlgwQ0NpbDRLSVJYWElO?=
+ =?utf-8?B?bE9RRzhHZ3ZMS205RzdNQ3A0SEV5ZU9kUGFpSUxta1RoZTZoTEtoRE1hdEpV?=
+ =?utf-8?B?TGIrSG9iOG5HSXZhemF5QzNhMG1hc0Fkem03blBkSWt6c3ZmbTFod1hsVGh1?=
+ =?utf-8?B?ZnpTZVU4K2wzQm1wZWlVLys1c2VHVG5RVTM3c0FBSXlmcnFGM3lCMVM2RlhH?=
+ =?utf-8?B?NU9RQXZkNVZ4bHd1dHFHSklnams4dDlqb1ViMjBObkFkQmQrcmVNUlUvakZS?=
+ =?utf-8?B?eld6M1dMQjBOanEyLy81clJiaGZGUlBaTmY4OWtsTGk5M3dpUnhOUW82ZmhB?=
+ =?utf-8?B?eFRHZVVaSlZnUjViVEUrK3NQbk9BQUV6U0tSZjdBUFgzWFQ0N00xbjh1MXpx?=
+ =?utf-8?B?bTAzeWQwa2JDMk5XTm9ETTNiYU1QREVNbWpRSEZXZllzSnROdWNuZnB4RTRu?=
+ =?utf-8?B?enNDVExmN2JLMmFJR3QvZlVFOEl6SDZBZTQ2YURqTzdsTmlkUnpDMWYyT1Jr?=
+ =?utf-8?B?Q1NYRDM3bitjS0RKdjNMVnRBUUV0QXIvdzlpcGpuZWVnR3QzQ0dGSXFoaWww?=
+ =?utf-8?B?ZEx3ZktKelptLzM2OERiWFRpd2tsV3U1MVNNTGNHd0FzczJZbWcrN0pwNTgw?=
+ =?utf-8?B?L1Z3UkVMVXNnS25WaWhPOHVyK2Z5NnJPM0kvUFBtT2Q0QjB1b3VwTXhHOXJo?=
+ =?utf-8?B?NUo2NEp3azRxZVdHMnUrVTRoaWtnVVE5QUFYYzhFcXlscXoxZGpjWVBwdGNv?=
+ =?utf-8?B?U0w4REZFYURESmVuSVZmbWJpV01ONEFIL2ZGNlJOTTBtWk91WTJBU3JTQlNO?=
+ =?utf-8?B?Y2hRaHByL1R4UUMyR3JCeU5LNzM3YVBCRm9OVUw3ME9MVGlxN3Z0QkV5YVEr?=
+ =?utf-8?B?VEo2d2ZtdWRHdkl6cWN0cXdENy9Oa2hZNWYvWG9hRXI4SUZUeWJQaTdDUzVx?=
+ =?utf-8?B?NFU2OFl1K1dXeFV2L2ZSTm1rWjMvaWN1K25VemVsQ0hOK3dEeXROWTBOTER1?=
+ =?utf-8?B?UElPT01aSXFZMkxyWUJwQjVzeW40N2NvdkxUcGRuSm9WbnpVMnpYaDNCUmxF?=
+ =?utf-8?B?MFdnU1lINUlQRCs4NE1LOVgzRnlYakJUUGlOaFZFN1V3ZmVvaWpGbFJUeE0r?=
+ =?utf-8?B?V0locnVJcEhxV095V0t4SzF4L0NMemc4N1BxUWcxeGl4ZWd5eTh4QU9GZHVY?=
+ =?utf-8?B?TUZoUElPcVRoV3I1Uzlob2JWOWMvSGJxWjl2WWt0K2hVRW9xQXgweVBlWk1r?=
+ =?utf-8?B?NzlzWjhkZEx2dkM5OXJnSldQdGVQVVRBdEhpZGhHOU5UUURjaGsyai9DYVJp?=
+ =?utf-8?B?OG9yOWlLRnJEUWpxbFJieE54bnJwVVV5Wkd3ZU0yNU5CeEorZEZGcXVPczhp?=
+ =?utf-8?B?WWJqbm9UZjFaTURiSkIybkhjR3FkbDF6b2E3bnJkWWRUMDNwSXlSYkY1ajlZ?=
+ =?utf-8?B?T0QyeUk0Tml3OXpHa0ExZXp3S2lIRWhrZk13NmZQVjhPdFk5YWZzNzZuRDJI?=
+ =?utf-8?B?ck1KbTNuWklOSERNL1YvY20zWExET2JpbjUzOGJoMzR5b1h2S2ROYTcybE5z?=
+ =?utf-8?B?dHlQd0NlM21NVkhYcVBkYjQwdDVCWkEvanpNV1RrZC83MlE3bW1VNGdEOXcw?=
+ =?utf-8?B?QW4yc1ZVaDhYSEpjaVRyMk1MWVdQbC9PZXpWMXFVU0Z2anBkQXpOU1lGUUNS?=
+ =?utf-8?B?cy9PaWs0cjRMdHMzaHZXaFd4K3llVDB6a1J4c1FvUU9oUnlkRnRHcmJYM0k5?=
+ =?utf-8?B?Y0FmZGRLS1FnckczanRSRnY2aUVxM3FvQy9BZz09?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR07MB7984.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(38070700021)(921020);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?VFNTNElKakJkZUdjL2xPRFZRRWs4ODZFb3loSVpJMUZIK2c2SXk3Q3hBaGZH?=
+ =?utf-8?B?WmJxNnVhaktNdXF0aWNheUkwM0Fzamx6dlY2VC83eUtITlNaa2tzVW9WdXIy?=
+ =?utf-8?B?UGFyWjNqSzE4RXBjWWhDUUJjQmpMdXU3aStwQzdxcHRmT29haXZiZGVNWno1?=
+ =?utf-8?B?TGxIdFppUUtnQ1IwRXBWQnZpNlI5aUZHODF5M25QTmo2and0eHBuakpVSVho?=
+ =?utf-8?B?dGNvYVBoUVdQUENoSjdqZ0QzRG1TdDNnYUgxRmh1NUc3c0RYRnBLNkdkSzA1?=
+ =?utf-8?B?VjY1SDRtb0FBYTdpVlhkSkE3ZTJOOG5KTmhWM1VkNEJtVkZabTJkTXRDcVI4?=
+ =?utf-8?B?WjF0Y3A2QlNyKy9LZS9WNFZiL2xzZE4yNzhXckUzaUEvanMrQkc2Nkp0ZWxa?=
+ =?utf-8?B?UTdqNUxyQkxVQW16MHNIZTJSdHpWMmRHeVJzcFNLRmNiMHBObHJrSzJ5VDRH?=
+ =?utf-8?B?bmxHMXQ3cmk5ZEI5T0U0ajdvNWYrbnZ2MzFGdEYva1hBNDA4NjVGbytBdFIz?=
+ =?utf-8?B?R2FZU0kyYytrM2JmZkJ3MmVKNFFXY3hWMHJ5TzRZUVQ2N1V3SmF2VE1xZlBm?=
+ =?utf-8?B?T2RzTlRrbWM3QWxPNFljcU1vc2JPdTNESUNtQndCRHpFcEszOGg1U0pJNGY2?=
+ =?utf-8?B?aC9MRDd0cEdHZmVJckhmS3hlc0VpT1FLamdTUU1mYVRDQ0N6enFkb25ac0JK?=
+ =?utf-8?B?ZHQvRS9pVWVxbkdGRlRwbmxkNXR4bG5IZy9aMW9DdllIVDZwS2NRdG1UZTFK?=
+ =?utf-8?B?T3JwMHRYWGtRUzE0dzB2LzY1NXltQmp4Q2VWdzh3NEZMUFlic3pSQlBvRG80?=
+ =?utf-8?B?Y09nYWd4NXIrd1B2bWVnSTRsbEVxdWhTbFdFNHBTZXE4bnlaYUYwc0w5dnZh?=
+ =?utf-8?B?Y1Q0UGZEcUtpYzk2TVBldFpvQnB2YWNRSFcvQ2l2RzVKbEhkdGVyTDNWcnJF?=
+ =?utf-8?B?Vk9zQkRkVGxsckd0ei9MN1ZaaWUyYnZLNHZseHdPbDFyUytVWHRGL1hpTGNL?=
+ =?utf-8?B?anljOHBZZDNHSko5NnVrWDI2TGs3aGFWMVB4RlFtNll1RFp3NmpycWszQm1w?=
+ =?utf-8?B?SmFad1RlNS9QSW8zaU04dnEvL0I4WnNyaU9GU2pYU3NSMWVCbXpha0c3dDFL?=
+ =?utf-8?B?ZG9uOHVoS3hQOFlwNnoyY0N3T245ZjkyWi92UWFHOEQwNGlBZm9UaGx2STBn?=
+ =?utf-8?B?emV2QllNSEZiOVJVTklyVmNVTHhQNjRYS3JDemlydXNER252ZFZHQXJWTlNL?=
+ =?utf-8?B?VGVhOUxnQ3hLbnZhdDFza2s0eW1WYXlLS1dsQ01MeS9PSlYvNXFBSUJmcVpH?=
+ =?utf-8?B?NTZPMFRRQUJVcFZCcWJsY285MjlLTFdGaUJHekZ3VTVKOUEyRldlYldYQnpD?=
+ =?utf-8?B?WFBBRUxsMUNua0prZ3FKVy9oMVBNbDB1RTRKT1BWSkFtQUU5VWliZHJyb05N?=
+ =?utf-8?B?WkFTKzBreVo5L1lpYUNOdTNxSjBjV3R0SGNSOEVhMjZFNkg2U21lTEFmRU92?=
+ =?utf-8?B?R2FxUFQycTM1eVV5RkNmUFNTV0x4QnZFbXp6M2RNZTUvaGlTdnVaMWhhMlN2?=
+ =?utf-8?B?Z2ZKVEU3SktVTjNJNkdQckprWXB0ZzVTdjdIam1HenhYZ2taRytNSFB3Y1dK?=
+ =?utf-8?B?UVc1VTg5YVZrQW5mQXp6R0lHWkYwR3RtT21YSFNLdDJYVWpXMExhS1Z6d0l4?=
+ =?utf-8?B?eVVxV2pDK1l2ditJY2hLYzVFYTc5TlU0QlYzRFA1ZlZGMktnaGZzMkxzT3cv?=
+ =?utf-8?B?b042NnBsdnR4V3A1aTRwWmEvTXBGUEp3QndhOW9aNGVTckpqNEVUWmwvaERU?=
+ =?utf-8?B?UFhXWkNVRWZIaEdLU2hnOFY1ZGczSmx0aWtZeWVZVW45NGdBYURSWDN1WGtk?=
+ =?utf-8?B?L3JYSEFpbEpaeEt5NmpTamlaZ2liNFFtVmt4Ujk4QnBwbTdKcHVDZFdiUVNP?=
+ =?utf-8?B?L3B5R3k4RDFVMkRaVi9OZlZyYWQveFo4a2xUajAxRzdocXJGVjVYdHpkOEFs?=
+ =?utf-8?B?QjB5VVB4VTBsR3dESWhiZ0N1SUlnL2tGTk0wTk82bTZlMkFhT0d4WnBlVlFP?=
+ =?utf-8?B?SE9XalNWb2p2UTJzQ0tyekFhdENwWkRDcGFTa0k3MFJZVHJkbGI3a0prTHJz?=
+ =?utf-8?B?MmF6c04yWmh1VzBWZHRVa0U2NDg2eUJXcUhQbUo5Y1VETEU3d014RVJvdWdC?=
+ =?utf-8?B?elE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b2b:b0:433:29c3:c4f6 with SMTP id
- e9e14a558f8ab-43367e46ac6mr167710345ab.15.1762858923047; Tue, 11 Nov 2025
- 03:02:03 -0800 (PST)
-Date: Tue, 11 Nov 2025 03:02:03 -0800
-In-Reply-To: <20251111-anbraten-suggerieren-da8ca707af2c@brauner>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <691317ab.a70a0220.22f260.0135.GAE@google.com>
-Subject: Re: [syzbot] [fs?] WARNING in nsproxy_ns_active_put
-From: syzbot <syzbot+0b2e79f91ff6579bfa5b@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, bpf@vger.kernel.org, brauner@kernel.org, 
-	bsegall@google.com, david@redhat.com, dietmar.eggemann@arm.com, jack@suse.cz, 
-	jsavitz@redhat.com, juri.lelli@redhat.com, kartikey406@gmail.com, 
-	kees@kernel.org, liam.howlett@oracle.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-security-module@vger.kernel.org, lorenzo.stoakes@oracle.com, 
-	mgorman@suse.de, mhocko@suse.com, mingo@redhat.com, mjguzik@gmail.com, 
-	oleg@redhat.com, paul@paul-moore.com, peterz@infradead.org, 
-	rostedt@goodmis.org, rppt@kernel.org, sergeh@kernel.org, surenb@google.com, 
-	syzkaller-bugs@googlegroups.com, vbabka@suse.cz, vincent.guittot@linaro.org, 
-	viro@zeniv.linux.org.uk, vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: nokia-bell-labs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR07MB7984.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d753ff7-1ba2-4557-fc54-08de2111d967
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Nov 2025 11:02:47.8434
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YbUsWPcoeXtg5ajvq0xm4vje9N6DR3Qx9Q/h3r25sLUG6ELlma00SRO4phRLhjcXI6P+1gsUl4eVaJpW1Zsymxxvra9Bdc+KL62al4cvB8H1YMRzuZ9W34Xo8AOumIwa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR07MB6335
 
-Hello,
-
-syzbot tried to test the proposed patch but the build/boot failed:
-
-SYZFAIL: failed to recv rpc
-
-SYZFAIL: failed to recv rpc
-
-
-Warning: Permanently added '10.128.1.29' (ED25519) to the list of known hos=
-ts.
-2025/11/11 11:01:12 parsed 1 programs
-[   92.366829][  T894] cfg80211: failed to load regulatory.db
-[   94.101317][ T5831] cgroup: Unknown subsys name 'net'
-[   94.208868][ T5831] cgroup: Unknown subsys name 'cpuset'
-[   94.218695][ T5831] cgroup: Unknown subsys name 'rlimit'
-Setting up swapspace version 1, size =3D 127995904 bytes
-[   95.913996][ T5831] Adding 124996k swap on ./swap-file.  Priority:0 exte=
-nts:1 across:124996k=20
-[   99.210494][ T5845] soft_limit_in_bytes is deprecated and will be remove=
-d. Please report your usecase to linux-mm@kvack.org if you depend on this f=
-unctionality.
-[   99.368014][   T52] Bluetooth: hci0: unexpected cc 0x0c03 length: 249 > =
-1
-[   99.376801][   T52] Bluetooth: hci0: unexpected cc 0x1003 length: 249 > =
-9
-[   99.385991][   T52] Bluetooth: hci0: unexpected cc 0x1001 length: 249 > =
-9
-[   99.394090][   T52] Bluetooth: hci0: unexpected cc 0x0c23 length: 249 > =
-4
-[   99.403295][   T52] Bluetooth: hci0: unexpected cc 0x0c38 length: 249 > =
-2
-[   99.760048][   T67] wlan0: Created IBSS using preconfigured BSSID 50:50:=
-50:50:50:50
-[   99.769465][   T67] wlan0: Creating new IBSS network, BSSID 50:50:50:50:=
-50:50
-[   99.812956][   T13] wlan1: Created IBSS using preconfigured BSSID 50:50:=
-50:50:50:50
-[   99.820978][   T13] wlan1: Creating new IBSS network, BSSID 50:50:50:50:=
-50:50
-[  101.094305][ T5880] chnl_net:caif_netlink_parms(): no params data found
-[  101.244059][ T5880] bridge0: port 1(bridge_slave_0) entered blocking sta=
-te
-[  101.252746][ T5880] bridge0: port 1(bridge_slave_0) entered disabled sta=
-te
-[  101.261818][ T5880] bridge_slave_0: entered allmulticast mode
-[  101.270392][ T5880] bridge_slave_0: entered promiscuous mode
-[  101.283473][ T5880] bridge0: port 2(bridge_slave_1) entered blocking sta=
-te
-[  101.291198][ T5880] bridge0: port 2(bridge_slave_1) entered disabled sta=
-te
-[  101.298667][ T5880] bridge_slave_1: entered allmulticast mode
-[  101.307108][ T5880] bridge_slave_1: entered promiscuous mode
-[  101.360560][ T5880] bond0: (slave bond_slave_0): Enslaving as an active =
-interface with an up link
-[  101.373330][ T5880] bond0: (slave bond_slave_1): Enslaving as an active =
-interface with an up link
-[  101.413565][ T5880] team0: Port device team_slave_0 added
-[  101.422832][ T5880] team0: Port device team_slave_1 added
-[  101.463069][ T5880] batman_adv: batadv0: Adding interface: batadv_slave_=
-0
-[  101.470261][ T5880] batman_adv: batadv0: The MTU of interface batadv_sla=
-ve_0 is too small (1500) to handle the transport of batman-adv packets. Pac=
-kets going over this interface will be fragmented on layer2 which could imp=
-act the performance. Setting the MTU to 1532 would solve the problem.
-[  101.497282][ T5880] batman_adv: batadv0: Not using interface batadv_slav=
-e_0 (retrying later): interface not active
-[  101.511788][ T5880] batman_adv: batadv0: Adding interface: batadv_slave_=
-1
-[  101.518889][ T5880] batman_adv: batadv0: The MTU of interface batadv_sla=
-ve_1 is too small (1500) to handle the transport of batman-adv packets. Pac=
-kets going over this interface will be fragmented on layer2 which could imp=
-act the performance. Setting the MTU to 1532 would solve the problem.
-[  101.545058][ T5880] batman_adv: batadv0: Not using interface batadv_slav=
-e_1 (retrying later): interface not active
-[  101.590841][ T5880] hsr_slave_0: entered promiscuous mode
-[  101.597434][ T5880] hsr_slave_1: entered promiscuous mode
-[  101.741572][ T5880] netdevsim netdevsim0 netdevsim0: renamed from eth0
-[  101.754163][ T5880] netdevsim netdevsim0 netdevsim1: renamed from eth1
-[  101.764799][ T5880] netdevsim netdevsim0 netdevsim2: renamed from eth2
-[  101.774770][ T5880] netdevsim netdevsim0 netdevsim3: renamed from eth3
-[  101.805511][ T5880] bridge0: port 2(bridge_slave_1) entered blocking sta=
-te
-[  101.812788][ T5880] bridge0: port 2(bridge_slave_1) entered forwarding s=
-tate
-[  101.820983][ T5880] bridge0: port 1(bridge_slave_0) entered blocking sta=
-te
-[  101.828371][ T5880] bridge0: port 1(bridge_slave_0) entered forwarding s=
-tate
-[  101.843110][   T13] bridge0: port 1(bridge_slave_0) entered disabled sta=
-te
-[  101.851795][   T13] bridge0: port 2(bridge_slave_1) entered disabled sta=
-te
-[  101.904027][ T5880] 8021q: adding VLAN 0 to HW filter on device bond0
-[  101.928006][ T5880] 8021q: adding VLAN 0 to HW filter on device team0
-[  101.942529][ T3448] bridge0: port 1(bridge_slave_0) entered blocking sta=
-te
-[  101.950392][ T3448] bridge0: port 1(bridge_slave_0) entered forwarding s=
-tate
-[  101.964563][   T13] bridge0: port 2(bridge_slave_1) entered blocking sta=
-te
-[  101.971799][   T13] bridge0: port 2(bridge_slave_1) entered forwarding s=
-tate
-[  102.152983][ T5880] 8021q: adding VLAN 0 to HW filter on device batadv0
-[  102.197805][ T5880] veth0_vlan: entered promiscuous mode
-[  102.210102][ T5880] veth1_vlan: entered promiscuous mode
-[  102.244663][ T5880] veth0_macvtap: entered promiscuous mode
-[  102.254634][ T5880] veth1_macvtap: entered promiscuous mode
-[  102.273656][ T5880] batman_adv: batadv0: Interface activated: batadv_sla=
-ve_0
-[  102.289496][ T5880] batman_adv: batadv0: Interface activated: batadv_sla=
-ve_1
-[  102.304731][   T67] netdevsim netdevsim0 netdevsim0: set [1, 0] type 2 f=
-amily 0 port 6081 - 0
-[  102.314238][   T67] netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 f=
-amily 0 port 6081 - 0
-[  102.324278][   T67] netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 f=
-amily 0 port 6081 - 0
-[  102.334159][   T67] netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 f=
-amily 0 port 6081 - 0
-[  102.469673][   T67] netdevsim netdevsim0 netdevsim3 (unregistering): uns=
-et [1, 0] type 2 family 0 port 6081 - 0
-[  102.543054][   T67] netdevsim netdevsim0 netdevsim2 (unregistering): uns=
-et [1, 0] type 2 family 0 port 6081 - 0
-[  102.622429][   T67] netdevsim netdevsim0 netdevsim1 (unregistering): uns=
-et [1, 0] type 2 family 0 port 6081 - 0
-[  102.698368][   T67] netdevsim netdevsim0 netdevsim0 (unregistering): uns=
-et [1, 0] type 2 family 0 port 6081 - 0
-2025/11/11 11:01:26 executed programs: 0
-[  104.788606][   T52] Bluetooth: hci0: unexpected cc 0x0c03 length: 249 > =
-1
-[  104.799432][   T52] Bluetooth: hci0: unexpected cc 0x1003 length: 249 > =
-9
-[  104.807512][   T52] Bluetooth: hci0: unexpected cc 0x1001 length: 249 > =
-9
-[  104.816410][   T52] Bluetooth: hci0: unexpected cc 0x0c23 length: 249 > =
-4
-[  104.824560][   T52] Bluetooth: hci0: unexpected cc 0x0c38 length: 249 > =
-2
-[  104.982601][ T5940] chnl_net:caif_netlink_parms(): no params data found
-[  105.059249][ T5940] bridge0: port 1(bridge_slave_0) entered blocking sta=
-te
-[  105.066542][ T5940] bridge0: port 1(bridge_slave_0) entered disabled sta=
-te
-[  105.073685][ T5940] bridge_slave_0: entered allmulticast mode
-[  105.081124][ T5940] bridge_slave_0: entered promiscuous mode
-[  105.089124][ T5940] bridge0: port 2(bridge_slave_1) entered blocking sta=
-te
-[  105.096583][ T5940] bridge0: port 2(bridge_slave_1) entered disabled sta=
-te
-[  105.104018][ T5940] bridge_slave_1: entered allmulticast mode
-[  105.111771][ T5940] bridge_slave_1: entered promiscuous mode
-[  105.143334][ T5940] bond0: (slave bond_slave_0): Enslaving as an active =
-interface with an up link
-[  105.155734][ T5940] bond0: (slave bond_slave_1): Enslaving as an active =
-interface with an up link
-[  105.191407][ T5940] team0: Port device team_slave_0 added
-[  105.201031][ T5940] team0: Port device team_slave_1 added
-[  105.235802][ T5940] batman_adv: batadv0: Adding interface: batadv_slave_=
-0
-[  105.242802][ T5940] batman_adv: batadv0: The MTU of interface batadv_sla=
-ve_0 is too small (1500) to handle the transport of batman-adv packets. Pac=
-kets going over this interface will be fragmented on layer2 which could imp=
-act the performance. Setting the MTU to 1532 would solve the problem.
-[  105.269608][ T5940] batman_adv: batadv0: Not using interface batadv_slav=
-e_0 (retrying later): interface not active
-[  105.296300][ T5940] batman_adv: batadv0: Adding interface: batadv_slave_=
-1
-[  105.303516][ T5940] batman_adv: batadv0: The MTU of interface batadv_sla=
-ve_1 is too small (1500) to handle the transport of batman-adv packets. Pac=
-kets going over this interface will be fragmented on layer2 which could imp=
-act the performance. Setting the MTU to 1532 would solve the problem.
-[  105.331738][ T5940] batman_adv: batadv0: Not using interface batadv_slav=
-e_1 (retrying later): interface not active
-[  105.417552][ T5940] hsr_slave_0: entered promiscuous mode
-[  105.424204][ T5940] hsr_slave_1: entered promiscuous mode
-[  105.430828][ T5940] debugfs: 'hsr0' already exists in 'hsr'
-[  105.437317][ T5940] Cannot create hsr debugfs directory
-[  105.454873][   T67] bridge_slave_1: left allmulticast mode
-[  105.460813][   T67] bridge_slave_1: left promiscuous mode
-[  105.467853][   T67] bridge0: port 2(bridge_slave_1) entered disabled sta=
-te
-[  105.479304][   T67] bridge_slave_0: left allmulticast mode
-[  105.485065][   T67] bridge_slave_0: left promiscuous mode
-[  105.491001][   T67] bridge0: port 1(bridge_slave_0) entered disabled sta=
-te
-[  105.729562][   T67] bond0 (unregistering): (slave bond_slave_0): Releasi=
-ng backup interface
-[  105.741503][   T67] bond0 (unregistering): (slave bond_slave_1): Releasi=
-ng backup interface
-[  105.752583][   T67] bond0 (unregistering): Released all slaves
-[  105.835828][   T67] hsr_slave_0: left promiscuous mode
-[  105.842862][   T67] hsr_slave_1: left promiscuous mode
-[  105.849433][   T67] batman_adv: batadv0: Interface deactivated: batadv_s=
-lave_0
-[  105.857469][   T67] batman_adv: batadv0: Removing interface: batadv_slav=
-e_0
-[  105.865850][   T67] batman_adv: batadv0: Interface deactivated: batadv_s=
-lave_1
-[  105.873344][   T67] batman_adv: batadv0: Removing interface: batadv_slav=
-e_1
-[  105.890846][   T67] veth1_macvtap: left promiscuous mode
-[  105.897610][   T67] veth0_macvtap: left promiscuous mode
-[  105.903553][   T67] veth1_vlan: left promiscuous mode
-[  105.910171][   T67] veth0_vlan: left promiscuous mode
-[  106.222498][   T67] team0 (unregistering): Port device team_slave_1 remo=
-ved
-[  106.255035][   T67] team0 (unregistering): Port device team_slave_0 remo=
-ved
-[  106.849861][   T52] Bluetooth: hci0: command tx timeout
-[  107.366951][ T5940] netdevsim netdevsim0 netdevsim0: renamed from eth0
-[  107.390747][ T5940] netdevsim netdevsim0 netdevsim1: renamed from eth1
-[  107.409101][ T5940] netdevsim netdevsim0 netdevsim2: renamed from eth2
-[  107.429220][ T5940] netdevsim netdevsim0 netdevsim3: renamed from eth3
-[  107.687917][ T5940] 8021q: adding VLAN 0 to HW filter on device bond0
-[  107.729157][ T5940] 8021q: adding VLAN 0 to HW filter on device team0
-[  107.757652][ T1309] bridge0: port 1(bridge_slave_0) entered blocking sta=
-te
-[  107.764863][ T1309] bridge0: port 1(bridge_slave_0) entered forwarding s=
-tate
-[  107.814393][ T1309] bridge0: port 2(bridge_slave_1) entered blocking sta=
-te
-[  107.821819][ T1309] bridge0: port 2(bridge_slave_1) entered forwarding s=
-tate
-[  108.188295][ T5940] 8021q: adding VLAN 0 to HW filter on device batadv0
-[  108.234481][ T5940] veth0_vlan: entered promiscuous mode
-[  108.246943][ T5940] veth1_vlan: entered promiscuous mode
-[  108.277479][ T5940] veth0_macvtap: entered promiscuous mode
-[  108.288108][ T5940] veth1_macvtap: entered promiscuous mode
-[  108.306578][ T5940] batman_adv: batadv0: Interface activated: batadv_sla=
-ve_0
-[  108.321859][ T5940] batman_adv: batadv0: Interface activated: batadv_sla=
-ve_1
-[  108.336901][ T1322] netdevsim netdevsim0 netdevsim0: set [1, 0] type 2 f=
-amily 0 port 6081 - 0
-[  108.346834][ T1322] netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 f=
-amily 0 port 6081 - 0
-[  108.358941][ T1322] netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 f=
-amily 0 port 6081 - 0
-[  108.368475][ T1322] netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 f=
-amily 0 port 6081 - 0
-[  108.430497][ T1309] wlan0: Created IBSS using preconfigured BSSID 50:50:=
-50:50:50:50
-[  108.438794][ T1309] wlan0: Creating new IBSS network, BSSID 50:50:50:50:=
-50:50
-[  108.474331][   T67] wlan1: Created IBSS using preconfigured BSSID 50:50:=
-50:50:50:50
-[  108.484170][   T67] wlan1: Creating new IBSS network, BSSID 50:50:50:50:=
-50:50
-SYZFAIL: failed to recv rpc
-
-
-syzkaller build log:
-go env (err=3D<nil>)
-AR=3D'ar'
-CC=3D'gcc'
-CGO_CFLAGS=3D'-O2 -g'
-CGO_CPPFLAGS=3D''
-CGO_CXXFLAGS=3D'-O2 -g'
-CGO_ENABLED=3D'1'
-CGO_FFLAGS=3D'-O2 -g'
-CGO_LDFLAGS=3D'-O2 -g'
-CXX=3D'g++'
-GCCGO=3D'gccgo'
-GO111MODULE=3D'auto'
-GOAMD64=3D'v1'
-GOARCH=3D'amd64'
-GOAUTH=3D'netrc'
-GOBIN=3D''
-GOCACHE=3D'/syzkaller/.cache/go-build'
-GOCACHEPROG=3D''
-GODEBUG=3D''
-GOENV=3D'/syzkaller/.config/go/env'
-GOEXE=3D''
-GOEXPERIMENT=3D''
-GOFIPS140=3D'off'
-GOFLAGS=3D''
-GOGCCFLAGS=3D'-fPIC -m64 -pthread -Wl,--no-gc-sections -fmessage-length=3D0=
- -ffile-prefix-map=3D/tmp/go-build3388558029=3D/tmp/go-build -gno-record-gc=
-c-switches'
-GOHOSTARCH=3D'amd64'
-GOHOSTOS=3D'linux'
-GOINSECURE=3D''
-GOMOD=3D'/syzkaller/jobs/linux/gopath/src/github.com/google/syzkaller/go.mo=
-d'
-GOMODCACHE=3D'/syzkaller/jobs/linux/gopath/pkg/mod'
-GONOPROXY=3D''
-GONOSUMDB=3D''
-GOOS=3D'linux'
-GOPATH=3D'/syzkaller/jobs/linux/gopath'
-GOPRIVATE=3D''
-GOPROXY=3D'https://proxy.golang.org,direct'
-GOROOT=3D'/usr/local/go'
-GOSUMDB=3D'sum.golang.org'
-GOTELEMETRY=3D'local'
-GOTELEMETRYDIR=3D'/syzkaller/.config/go/telemetry'
-GOTMPDIR=3D''
-GOTOOLCHAIN=3D'auto'
-GOTOOLDIR=3D'/usr/local/go/pkg/tool/linux_amd64'
-GOVCS=3D''
-GOVERSION=3D'go1.24.4'
-GOWORK=3D''
-PKG_CONFIG=3D'pkg-config'
-
-git status (err=3D<nil>)
-HEAD detached at 4e1406b4def
-nothing to commit, working tree clean
-
-
-tput: No value for $TERM and no -T specified
-tput: No value for $TERM and no -T specified
-Makefile:31: run command via tools/syz-env for best compatibility, see:
-Makefile:32: https://github.com/google/syzkaller/blob/master/docs/contribut=
-ing.md#using-syz-env
-go list -f '{{.Stale}}' -ldflags=3D"-s -w -X github.com/google/syzkaller/pr=
-og.GitRevision=3D4e1406b4defac0e2a9d9424c70706f79a7750cf3 -X github.com/goo=
-gle/syzkaller/prog.gitRevisionDate=3D20251106-151142"  ./sys/syz-sysgen | g=
-rep -q false || go install -ldflags=3D"-s -w -X github.com/google/syzkaller=
-/prog.GitRevision=3D4e1406b4defac0e2a9d9424c70706f79a7750cf3 -X github.com/=
-google/syzkaller/prog.gitRevisionDate=3D20251106-151142"  ./sys/syz-sysgen
-make .descriptions
-tput: No value for $TERM and no -T specified
-tput: No value for $TERM and no -T specified
-Makefile:31: run command via tools/syz-env for best compatibility, see:
-Makefile:32: https://github.com/google/syzkaller/blob/master/docs/contribut=
-ing.md#using-syz-env
-bin/syz-sysgen
-touch .descriptions
-GOOS=3Dlinux GOARCH=3Damd64 go build -ldflags=3D"-s -w -X github.com/google=
-/syzkaller/prog.GitRevision=3D4e1406b4defac0e2a9d9424c70706f79a7750cf3 -X g=
-ithub.com/google/syzkaller/prog.gitRevisionDate=3D20251106-151142"  -o ./bi=
-n/linux_amd64/syz-execprog github.com/google/syzkaller/tools/syz-execprog
-mkdir -p ./bin/linux_amd64
-g++ -o ./bin/linux_amd64/syz-executor executor/executor.cc \
-	-m64 -O2 -pthread -Wall -Werror -Wparentheses -Wunused-const-variable -Wfr=
-ame-larger-than=3D16384 -Wno-stringop-overflow -Wno-array-bounds -Wno-forma=
-t-overflow -Wno-unused-but-set-variable -Wno-unused-command-line-argument -=
-static-pie -std=3Dc++17 -I. -Iexecutor/_include   -DGOOS_linux=3D1 -DGOARCH=
-_amd64=3D1 \
-	-DHOSTGOOS_linux=3D1 -DGIT_REVISION=3D\"4e1406b4defac0e2a9d9424c70706f79a7=
-750cf3\"
-/usr/bin/ld: /tmp/ccimHo7N.o: in function `Connection::Connect(char const*,=
- char const*)':
-executor.cc:(.text._ZN10Connection7ConnectEPKcS1_[_ZN10Connection7ConnectEP=
-KcS1_]+0x104): warning: Using 'gethostbyname' in statically linked applicat=
-ions requires at runtime the shared libraries from the glibc version used f=
-or linking
-./tools/check-syzos.sh 2>/dev/null
-
-
-
-Tested on:
-
-commit:         ae901e5e Merge patch series "ns: fixes for namespace i..
-git tree:       https://github.com/brauner/linux.git namespace-6.19.fixes
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3D7b0bf36f8860281=
-7
-dashboard link: https://syzkaller.appspot.com/bug?extid=3D0b2e79f91ff6579bf=
-a5b
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-=
-1~exp1~20250708183702.136), Debian LLD 20.1.8
-
-Note: no patches were applied.
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBQYW9sbyBBYmVuaSA8cGFiZW5p
+QHJlZGhhdC5jb20+IA0KPiBTZW50OiBUaHVyc2RheSwgTm92ZW1iZXIgNiwgMjAyNSAxOjA3IFBN
+DQo+IFRvOiBDaGlhLVl1IENoYW5nIChOb2tpYSkgPGNoaWEteXUuY2hhbmdAbm9raWEtYmVsbC1s
+YWJzLmNvbT47IGVkdW1hemV0QGdvb2dsZS5jb207IHBhcmF2QG52aWRpYS5jb207IGxpbnV4LWRv
+Y0B2Z2VyLmtlcm5lbC5vcmc7IGNvcmJldEBsd24ubmV0OyBob3Jtc0BrZXJuZWwub3JnOyBkc2Fo
+ZXJuQGtlcm5lbC5vcmc7IGt1bml5dUBnb29nbGUuY29tOyBicGZAdmdlci5rZXJuZWwub3JnOyBu
+ZXRkZXZAdmdlci5rZXJuZWwub3JnOyBkYXZlLnRhaHRAZ21haWwuY29tOyBqaHNAbW9qYXRhdHUu
+Y29tOyBrdWJhQGtlcm5lbC5vcmc7IHN0ZXBoZW5AbmV0d29ya3BsdW1iZXIub3JnOyB4aXlvdS53
+YW5nY29uZ0BnbWFpbC5jb207IGppcmlAcmVzbnVsbGkudXM7IGRhdmVtQGRhdmVtbG9mdC5uZXQ7
+IGFuZHJldytuZXRkZXZAbHVubi5jaDsgZG9uYWxkLmh1bnRlckBnbWFpbC5jb207IGFzdEBmaWJl
+cmJ5Lm5ldDsgbGl1aGFuZ2JpbkBnbWFpbC5jb207IHNodWFoQGtlcm5lbC5vcmc7IGxpbnV4LWtz
+ZWxmdGVzdEB2Z2VyLmtlcm5lbC5vcmc7IGlqQGtlcm5lbC5vcmc7IG5jYXJkd2VsbEBnb29nbGUu
+Y29tOyBLb2VuIERlIFNjaGVwcGVyIChOb2tpYSkgPGtvZW4uZGVfc2NoZXBwZXJAbm9raWEtYmVs
+bC1sYWJzLmNvbT47IGcud2hpdGVAY2FibGVsYWJzLmNvbTsgaW5nZW1hci5zLmpvaGFuc3NvbkBl
+cmljc3Nvbi5jb207IG1pcmphLmt1ZWhsZXdpbmRAZXJpY3Nzb24uY29tOyBjaGVzaGlyZSA8Y2hl
+c2hpcmVAYXBwbGUuY29tPjsgcnMuaWV0ZkBnbXguYXQ7IEphc29uX0xpdmluZ29vZEBjb21jYXN0
+LmNvbTsgVmlkaGkgR29lbCA8dmlkaGlfZ29lbEBhcHBsZS5jb20+DQo+IFN1YmplY3Q6IFJlOiBb
+UEFUQ0ggdjUgbmV0LW5leHQgMTAvMTRdIHRjcDogYWNjZWNuOiByZXRyYW5zbWl0IFNZTi9BQ0sg
+d2l0aG91dCBBY2NFQ04gb3B0aW9uIG9yIG5vbi1BY2NFQ04gU1lOL0FDSw0KPiANCj4gDQo+IENB
+VVRJT046IFRoaXMgaXMgYW4gZXh0ZXJuYWwgZW1haWwuIFBsZWFzZSBiZSB2ZXJ5IGNhcmVmdWwg
+d2hlbiBjbGlja2luZyBsaW5rcyBvciBvcGVuaW5nIGF0dGFjaG1lbnRzLiBTZWUgdGhlIFVSTCBu
+b2suaXQvZXh0IGZvciBhZGRpdGlvbmFsIGluZm9ybWF0aW9uLg0KPiANCj4gDQo+IA0KPiBPbiAx
+MC8zMC8yNSAzOjM0IFBNLCBjaGlhLXl1LmNoYW5nQG5va2lhLWJlbGwtbGFicy5jb20gd3JvdGU6
+DQo+ID4gRnJvbTogQ2hpYS1ZdSBDaGFuZyA8Y2hpYS15dS5jaGFuZ0Bub2tpYS1iZWxsLWxhYnMu
+Y29tPg0KPiA+DQo+ID4gRm9yIEFjY3VyYXRlIEVDTiwgdGhlIGZpcnN0IFNZTi9BQ0sgc2VudCBi
+eSB0aGUgVENQIHNlcnZlciBzaGFsbCBzZXQgDQo+ID4gdGhlIEFDRSBmbGFnIChzZWUgVGFibGUg
+MSBvZiBSRkM5NzY4KSBhbmQgdGhlIEFjY0VDTiBvcHRpb24gdG8gDQo+ID4gY29tcGxldGUgdGhl
+IGNhcGFiaWxpdHkgbmVnb3RpYXRpb24uIEhvd2V2ZXIsIGlmIHRoZSBUQ1Agc2VydmVyIG5lZWRz
+IA0KPiA+IHRvIHJldHJhbnNtaXQgc3VjaCBhIFNZTi9BQ0sgKGZvciBleGFtcGxlLCBiZWNhdXNl
+IGl0IGRpZCBub3QgcmVjZWl2ZSANCj4gPiBhbiBBQ0sgYWNrbm93bGVkZ2luZyBpdHMgU1lOL0FD
+Sywgb3IgcmVjZWl2ZWQgYSBzZWNvbmQgU1lOIHJlcXVlc3RpbmcgDQo+ID4gQWNjRUNOIHN1cHBv
+cnQpLCB0aGUgVENQIHNlcnZlciByZXRyYW5zbWl0cyB0aGUgU1lOL0FDSyB3aXRob3V0IHRoZSAN
+Cj4gPiBBY2NFQ04gb3B0aW9uLiBUaGlzIGlzIGJlY2F1c2UgdGhlIFNZTi9BQ0sgbWF5IGJlIGxv
+c3QgZHVlIHRvIA0KPiA+IGNvbmdlc3Rpb24sIG9yIGEgbWlkZGxlYm94IG1heSBibG9jayB0aGUg
+QWNjRUNOIG9wdGlvbi4gRnVydGhlcm1vcmUsIA0KPiA+IGlmIHRoaXMgcmV0cmFuc21pc3Npb24g
+YWxzbyB0aW1lcyBvdXQsIHRvIGV4cGVkaXRlIGNvbm5lY3Rpb24gDQo+ID4gZXN0YWJsaXNobWVu
+dCwgdGhlIFRDUCBzZXJ2ZXIgc2hvdWxkIHJldHJhbnNtaXQgdGhlIFNZTi9BQ0sgd2l0aA0KPiA+
+IChBRSxDV1IsRUNFKSA9ICgwLDAsMCkgYW5kIHdpdGhvdXQgdGhlIEFjY0VDTiBvcHRpb24sIHdo
+aWxlIA0KPiA+IG1haW50YWluaW5nIEFjY0VDTiBmZWVkYmFjayBtb2RlLg0KPiA+DQo+ID4gVGhp
+cyBjb21wbGllcyB3aXRoIFNlY3Rpb24gMy4yLjMuMi4yIG9mIHRoZSBBY2NFQ04gc3BlY2lmaWNh
+dGlvbiAoUkZDOTc2OCkuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaGlhLVl1IENoYW5nIDxj
+aGlhLXl1LmNoYW5nQG5va2lhLWJlbGwtbGFicy5jb20+DQo+ID4gLS0tDQo+ID4gIGluY2x1ZGUv
+bmV0L3RjcF9lY24uaCB8IDE0ICsrKysrKysrKystLS0tICBuZXQvaXB2NC90Y3Bfb3V0cHV0LmMg
+fCAgMiANCj4gPiArLQ0KPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDExIGluc2VydGlvbnMoKyksIDUg
+ZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9uZXQvdGNwX2Vjbi5o
+IGIvaW5jbHVkZS9uZXQvdGNwX2Vjbi5oIGluZGV4IA0KPiA+IGM2NmYwZDk0NGUxYy4uOTlkMDk1
+ZWQwMWIzIDEwMDY0NA0KPiA+IC0tLSBhL2luY2x1ZGUvbmV0L3RjcF9lY24uaA0KPiA+ICsrKyBi
+L2luY2x1ZGUvbmV0L3RjcF9lY24uaA0KPiA+IEBAIC02NTEsMTAgKzY1MSwxNiBAQCBzdGF0aWMg
+aW5saW5lIHZvaWQgdGNwX2Vjbl9jbGVhcl9zeW4oc3RydWN0IHNvY2sgDQo+ID4gKnNrLCBzdHJ1
+Y3Qgc2tfYnVmZiAqc2tiKSAgc3RhdGljIGlubGluZSB2b2lkICANCj4gPiB0Y3BfZWNuX21ha2Vf
+c3luYWNrKGNvbnN0IHN0cnVjdCByZXF1ZXN0X3NvY2sgKnJlcSwgc3RydWN0IHRjcGhkciAqdGgp
+ICANCj4gPiB7DQo+ID4gLSAgICAgaWYgKHRjcF9yc2socmVxKS0+YWNjZWNuX29rKQ0KPiA+IC0g
+ICAgICAgICAgICAgdGNwX2FjY2Vjbl9lY2hvX3N5bl9lY3QodGgsIHRjcF9yc2socmVxKS0+c3lu
+X2VjdF9yY3YpOw0KPiA+IC0gICAgIGVsc2UgaWYgKGluZXRfcnNrKHJlcSktPmVjbl9vaykNCj4g
+PiAtICAgICAgICAgICAgIHRoLT5lY2UgPSAxOw0KPiA+ICsgICAgIGlmICghcmVxLT5udW1fcmV0
+cmFucyB8fCAhcmVxLT5udW1fdGltZW91dCkgew0KPiANCj4gV2h5IGBpZiAoIXJlcS0+bnVtX3Rp
+bWVvdXQpYCBpcyBub3QgYSBzdWZmaWNpZW50IGNvbmRpdGlvbiBoZXJlPw0KPiANCj4gU2ltcGxp
+ZnlpbmcgdGhlIGFib3ZlIGNvbmRpdGlvbiB3aWxsIG1ha2UgdGhlIFRDUF9TWU5BQ0tfUkVUUkFO
+UyBhbHRlcm5hdGl2ZSBzaW1wbGVyLCBJIHRoaW5rLg0KPiANCj4gL1ANCg0KSGkgUGFvbG8sDQoN
+CkFGQUlLLCByZXEtPm51bV90aW1lb3V0IHdpbGwgYmUgaW5jcmVhc2VkIGFmdGVyIHRjcF9ydHhf
+c3luYWNrKCkgaXMgZG9uZSBkdWUgdG8gdGltZW91dCwgYWJ1dCBpdCBkb2VzIG5vdCBjb3ZlciB0
+aGUgY2FzZSB3aGVuIDJuZCBTWU4gaXMgcmVjZWl2ZWQuDQoNCkJ1dCBzbyBmYXIgdGhlIEFjY0VD
+TiBzcGVjIHJlcXVlc3RzIHRvIGRvIHRoZSBzYW1lIGZhbGxiYWNrIGluIGJvdGggY2FzZXMgKGku
+ZS4sIGVpdGhlciB0aW1lb3V0IG9yIHJlY2VpdmUgMm5kIFNZTikuDQoNClNvLCBoZXJlIEkgd291
+bGQgc3RpbGwgdGhpbmsgdG8gdXNlIGVpdGhlciBudW1fcmV0cmFucyAob3IgbGlrZSB5b3Ugc3Vn
+Z2VzdGVkIHRvIHVzZSBkaWZmZXJlbnQgU1lOX0FDSyB0eXBlcz8pDQoNCkNoaWEtWXUNCg==
 
