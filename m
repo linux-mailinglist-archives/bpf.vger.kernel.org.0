@@ -1,174 +1,112 @@
-Return-Path: <bpf+bounces-74191-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74192-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5056C4C5A6
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 09:20:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E2BC4CA1E
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 10:24:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1A3564F6A1E
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 08:14:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5B8D1888749
+	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 09:23:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21666330300;
-	Tue, 11 Nov 2025 08:13:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF04238166;
+	Tue, 11 Nov 2025 09:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="x1GkMJjg"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="Ctp6Ovrm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF7AA3195EB;
-	Tue, 11 Nov 2025 08:13:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C092F1FCF;
+	Tue, 11 Nov 2025 09:22:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762848800; cv=none; b=ZPCYDVxsvvq+ryTf6dtLdFt02I9GCnNkSjI7De5Wxf2t/8RQr5WKm/m6PIUhn+dN55mJSFIILCwrO8nRZPVa1JnQg4jEgy+elAqxZx2gDKds2aGlGeHtS/un1cnJqdA/rdsqfzaUnpwfHgWUI3hsctUmeoYvNpRvvzVnkxrFdh8=
+	t=1762852974; cv=none; b=FdXbhe1qSyDhGlx233zZGpsKLSed0W7L2rzxzqqXmXqwaC4pj5snwgHsNijgm8YyOIgR0mzahXvujOte5YH1SXQLNeZU2uaKrlQf0MOAoc+zPjJvc+Je07EMbkC8pNlRzToARNrVsl0RdhMwrvi+hOnn93JBNzZbHh93kBmbXUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762848800; c=relaxed/simple;
-	bh=R/ssoBsXWb6sflro9YrhGdrY25IqwtWiz1h6+wsE/T0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mr1dB/GSTyx2dW6722pmbfd464LCcUNKC0qK+NyAApHFi9zTBmENXOsL/J1w1JqL0AGkUumsobkS4V0DMuoMAKYTytJIrAFiZpEhlgfyZUv/mqsiqv4zi66WFDR/PNE4+hpF4oAWmy2g4Eh7C8WCHGSmlA9lc7cB+t2d0qsij2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=x1GkMJjg; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4d5K6H5JKcz9tKq;
-	Tue, 11 Nov 2025 09:13:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
-	t=1762848791;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=imzhVMup//2ffpyDtioFEjTxYvW8FouyExcfdyRpW2E=;
-	b=x1GkMJjgkJYoYbiV8LMtZu5UcfOYdsFUA3NkHmy4qTI81xd9zZaeB8K94fmi6057tKCKOJ
-	8QcP0INhKYOURMyNOyIKAswwaUQ2RXERTDFey2tIRzjVxtalpawNYy4z6fMDrMBhx7gnSP
-	9BpNCeHNkx9StWMBR9hEzqpBvz6Jle+9uRShx+rBTgjmBmvk4xnrEj8aOLracSCOOIt8+f
-	0mooEuhFSkDR9+SBBtg06urTZHATDY9YI4eB4ymcPP5V6r8A8y+LzpwbhK+AGfPGtZXxrQ
-	kJ85WFG6/WzMxXy5bOZmojJissiySNZG1FlyzXMnK29YvB6OTMLqrDxD+D2J/Q==
-Authentication-Results: outgoing_mbo_mout;
-	dkim=none;
-	spf=pass (outgoing_mbo_mout: domain of listout@listout.xyz designates 2001:67c:2050:b231:465::102 as permitted sender) smtp.mailfrom=listout@listout.xyz
-From: Brahmajit Das <listout@listout.xyz>
-To: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	contact@arnaud-lcm.com,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	sdf@fomichev.me,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: [PATCH bpf-next v3] bpf: Clamp trace length in __bpf_get_stack to fix OOB write
-Date: Tue, 11 Nov 2025 13:42:54 +0530
-Message-ID: <20251111081254.25532-1-listout@listout.xyz>
-In-Reply-To: <691231dc.a70a0220.22f260.0101.GAE@google.com>
-References: <691231dc.a70a0220.22f260.0101.GAE@google.com>
+	s=arc-20240116; t=1762852974; c=relaxed/simple;
+	bh=p9uT5LhYuBjH+4JyrxTaYxUmHijhBh4UdewuaPfrgMw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mtxQvz0MYTEhhhaFG9yUqEKK/1nXuXTJpxp73PWV1jGlHe6MOSBUVeG9CQkTiaV3pvUxLpi6wVQ2QSHrSpPaOd8yujVouBfFLM8y3Gbqu3G/t366Q/AfdxpfSkGT6OGM/veutDcakAOPQ6Ct1br6Fblugf/FGdhuBq2Ur9yK+bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=Ctp6Ovrm; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=bCwfGiKgiQS98umgjWmA+KBFsrU1nv1bSQtZVL8GWA8=; b=Ctp6OvrmDlcVhrBE/X7ZoCQ3Mm
+	Xi1Kuu3v9A9ck3YoCXmK1op9I0Yetdw8qK2AI5vba1hMAaukWnfiIROdNGM8k5hNagIn8U6f/DbXc
+	7SZCLXg+DPFvAEv7YeV+N51icIvjvJ4BA9fxzcVndktupx8dikc0ru0OeO7NEL1neFlRBRclduioP
+	+A1kk/KvWFGGdvC4O13Hn/THru23xl8DN4aVx/jxZMA3LSZjPRX+yCV6jcDqkkisGDgxSNnWutSwz
+	Dcn0UUwFkqHJ9NqIOreSg8eqyHMhfZXRsou5CfivhK1+HdjFA+eAI2Bchqrs8kQSodD9NTx+AIU8l
+	Ejvj79bw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vIkaK-0000000EqIA-1xuT;
+	Tue, 11 Nov 2025 09:22:44 +0000
+Date: Tue, 11 Nov 2025 09:22:44 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: bot+bpf-ci@kernel.org
+Cc: linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org,
+	brauner@kernel.org, jack@suse.cz, raven@themaw.net,
+	miklos@szeredi.hu, neil@brown.name, a.hindborg@kernel.org,
+	linux-mm@kvack.org, linux-efi@vger.kernel.org,
+	ocfs2-devel@lists.linux.dev, kees@kernel.org, rostedt@goodmis.org,
+	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+	paul@paul-moore.com, casey@schaufler-ca.com,
+	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com,
+	selinux@vger.kernel.org, borntraeger@linux.ibm.com,
+	bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
+	yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCH v3 36/50] functionfs: switch to simple_remove_by_name()
+Message-ID: <20251111092244.GS2441659@ZenIV>
+References: <20251111065520.2847791-37-viro@zeniv.linux.org.uk>
+ <20754dba9be498daeda5fe856e7276c9c91c271999320ae32331adb25a47cd4f@mail.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4d5K6H5JKcz9tKq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20754dba9be498daeda5fe856e7276c9c91c271999320ae32331adb25a47cd4f@mail.kernel.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-syzbot reported a stack-out-of-bounds write in __bpf_get_stack()
-triggered via bpf_get_stack() when capturing a kernel stack trace.
+On Tue, Nov 11, 2025 at 07:53:16AM +0000, bot+bpf-ci@kernel.org wrote:
 
-After the recent refactor that introduced stack_map_calculate_max_depth(),
-the code in stack_map_get_build_id_offset() (and related helpers) stopped
-clamping the number of trace entries (`trace_nr`) to the number of elements
-that fit into the stack map value (`num_elem`).
+> When ffs_epfiles_create() calls ffs_epfiles_destroy(epfiles, i - 1) after
+> the first ffs_sb_create_file() call fails (when i=1), it passes count=0.
+> The initialization loop starts at i=1, so epfiles[0].ffs is never
+> initialized.
 
-As a result, if the captured stack contained more frames than the map value
-can hold, the subsequent memcpy() would write past the end of the buffer,
-triggering a KASAN report like:
+Incorrect.  The loop in question is
 
-    BUG: KASAN: stack-out-of-bounds in __bpf_get_stack+0x...
-    Write of size N at addr ... by task syz-executor...
+	epfile = epfiles;
+	for (i = 1; i <= count; ++i, ++epfile) {
+		epfile->ffs = ffs;
+		mutex_init(&epfile->mutex);
+		mutex_init(&epfile->dmabufs_mutex);
+		INIT_LIST_HEAD(&epfile->dmabufs);
+		if (ffs->user_flags & FUNCTIONFS_VIRTUAL_ADDR)
+			sprintf(epfile->name, "ep%02x", ffs->eps_addrmap[i]);
+		else   
+			sprintf(epfile->name, "ep%u", i);
+		err = ffs_sb_create_file(ffs->sb, epfile->name,
+					 epfile, &ffs_epfile_operations);
+		if (err) {
+			ffs_epfiles_destroy(epfiles, i - 1);
+			return err;
+		}
+	}
 
-Restore the missing clamp by limiting `trace_nr` to `num_elem` before
-computing the copy length. This mirrors the pre-refactor logic and ensures
-we never copy more bytes than the destination buffer can hold.
+and invariant maintained through the loop is epfile == epfiles + (i - 1).
+We start with i == 1 and epfile == epfiles, modify neither variable in
+the loop body and increment both i and epfile by the same amount in
+the step.
 
-No functional change intended beyond reintroducing the missing bound check.
-
-Reported-by: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
-Fixes: e17d62fedd10 ("bpf: Refactor stack map trace depth calculation into helper function")
-Signed-off-by: Brahmajit Das <listout@listout.xyz>
----
-Changes in v3:
-Revert back to num_elem based logic for setting trace_nr. This was
-suggested by bpf-ci bot, mainly pointing out the chances of underflow
-when  max_depth < skip.
-
-Quoting the bot's reply:
-The stack_map_calculate_max_depth() function can return a value less than
-skip when sysctl_perf_event_max_stack is lowered below the skip value:
-
-    max_depth = size / elem_size;
-    max_depth += skip;
-    if (max_depth > curr_sysctl_max_stack)
-        return curr_sysctl_max_stack;
-
-If sysctl_perf_event_max_stack = 10 and skip = 20, this returns 10.
-
-Then max_depth - skip = 10 - 20 underflows to 4294967286 (u32 wraps),
-causing min_t() to not limit trace_nr at all. This means the original OOB
-write is not fixed in cases where skip > max_depth.
-
-With the default sysctl_perf_event_max_stack = 127 and skip up to 255, this
-scenario is reachable even without admin changing sysctls.
-
-Changes in v2:
-- Use max_depth instead of num_elem logic, this logic is similar to what
-we are already using __bpf_get_stackid
-Link: https://lore.kernel.org/all/20251111003721.7629-1-listout@listout.xyz/
-
-Changes in v1:
-- RFC patch that restores the number of trace entries by setting
-trace_nr to trace_nr or num_elem based on whichever is the smallest.
-Link: https://lore.kernel.org/all/20251110211640.963-1-listout@listout.xyz/
----
- kernel/bpf/stackmap.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 2365541c81dd..cef79d9517ab 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -426,7 +426,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 			    struct perf_callchain_entry *trace_in,
- 			    void *buf, u32 size, u64 flags, bool may_fault)
- {
--	u32 trace_nr, copy_len, elem_size, max_depth;
-+	u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
- 	bool user_build_id = flags & BPF_F_USER_BUILD_ID;
- 	bool crosstask = task && task != current;
- 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
-@@ -480,6 +480,8 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 	}
- 
- 	trace_nr = trace->nr - skip;
-+	num_elem = size / elem_size;
-+	trace_nr = min_t(u32, trace_nr, num_elem);
- 	copy_len = trace_nr * elem_size;
- 
- 	ips = trace->ip + skip;
--- 
-2.51.2
-
+In other words, on the first pass through the loop we access epfiles[0],
+not epfiles[1].  Granted, the loop could've been more idiomatic, but
+it is actually correct.
 
