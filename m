@@ -1,79 +1,80 @@
-Return-Path: <bpf+bounces-74271-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74272-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFD26C5106A
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 08:55:15 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 920D1C5104D
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 08:53:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9845C3A5D2F
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 07:50:18 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6680E4EC7C6
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 07:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4AD2EF66E;
-	Wed, 12 Nov 2025 07:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EB32F12B0;
+	Wed, 12 Nov 2025 07:52:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="hEHdimdQ"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JGwKsVaH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41A62ECEA7
-	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 07:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3F42F0676
+	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 07:52:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762933810; cv=none; b=BCT0P91N/3w3wxTCoXJ71LwvNSxjCS5jXHn2rA3mOTLc1E4YtuLWAUG4mnyHw733q7xd2SVdH9kb929eW/Dku1iFviFQurMoNGqUhyzZ2FfYY/CM3J51A57vx7cqBwSeQsm0TViAYVzDh1TTgEr2ohwGQk5rJd2bZoEsvwr/NRY=
+	t=1762933935; cv=none; b=EsnRYSolmKNNJvTpVgHhhF2MxLIotO77UyQP+9y7+w0OMDAZbMv1LLeNnOhC91iaf3otelikFK+09y3WWaYaclXp6uwfbhsx+RikLcAUQp7LAXbXS10LJI0iszMZqD0jg8pP4hUx6kMfUo8dYKFCBRSupDCfaOWoaMA1HRVTbOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762933810; c=relaxed/simple;
-	bh=vQGEuOEI5CcliGhoSpli1L+Hj54P/8blyd40sP9gSxI=;
+	s=arc-20240116; t=1762933935; c=relaxed/simple;
+	bh=PI6ZGWyo084vtAmcwr3XK4acwTrj1OVP/mypm1sK568=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qdDryfraQGBn3YBk6apNNfR+Pb3iiXejqtm5oX/DM8+a6YEvlT1RLohksZnRVBomBK50PZTb6DG2Mi4YmcPkhuqfllSSfEhjhjs5XKw6BFXX7HrbNYfn/O99v7VwVfinBIC78A9junGUi3RHYgADNnJG/Vy0XEE0nw2GqZ/9NbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=hEHdimdQ; arc=none smtp.client-ip=209.85.208.50
+	 Content-Type:Content-Disposition:In-Reply-To; b=dmH+Hzz857TuTTOzpwxM8A6gnYctd/Kg4y6YmwCthhb4LKfil7/jufmrul+BmkM+6teKtAz6qQVS8RxeskbDe6X1qdypWnD1qeLPAeXKnEQc3maWal8PgInXTEPr+UReEpZ3mwEfxRaswzeNRdpdcVnRWs/Gk74HOtoUnilfPKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JGwKsVaH; arc=none smtp.client-ip=209.85.208.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-64166a57f3bso706901a12.1
-        for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 23:50:08 -0800 (PST)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-6419b7b4b80so691542a12.2
+        for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 23:52:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762933807; x=1763538607; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1762933930; x=1763538730; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ipL3Z/6wC6GRR63sS5vId/ptcyhjHxEgUXfHm/LakcE=;
-        b=hEHdimdQqrJZbhfw9mvGHyq7rfhp84Azrx0gry1bPRHTdG8f22gD2OL0GA2oGBU5Gf
-         ekAfxxBO4vHF56sNu2h8bQq2IM8btoSuuTlnPATXj7/Jk3Z8Z1QiU/BnJdVgibbr0BI4
-         T5mbbqn8lFDxNp1J7cLdJ/p7F49KY1OXaIxqK9eWVHOxiB8MK5TpI9uJ+XcHPETqhb8G
-         xwwyTIFjEu3d7uLd5nsbndZXfPog6fGyKLJ8oJ6UL4N6Zw3P9xf9YRLAZlSe2oeZblQD
-         gWaKa1LJWRF0DeXl9elOZFE7jKzh2EEXOdKDe642naCoXfMsr/anzAk9+AITTOAryKF+
-         VxcQ==
+        bh=baF77Nd6PddrT+NcaQcnWaJHYcsWM5/03L4b2UgZmEs=;
+        b=JGwKsVaHr8J3u8f5yM34xz/z8I/lHfkBPaYAZw0pV1K7/gIreV8H31BSZwAZfUpuLt
+         82gmiOm4YXWwNV9/GzKQZxn4JtsNt3da7H5Ea6H/2BLCDXEXDG6UnCXwSUpSVZiMSy/f
+         tFY4hfutCH4ZCU/dvvHNXxJdhgk1Ti1yvb8WVPlurWwApCeJqvNWy4apz3WwtGa+buWC
+         hKKFAFAuiDNASaA4QwTeSm02zC5LhHtL0d3WPW126LkZTyLldCFGvNzKER8PjTY5K8OI
+         xTEouHlEqwXXtFhNrM80CoFN9ZHGu0U7+HnlCA/GjXU2VDKqfx28yzq9q/VGhc2tbxFe
+         o1Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762933807; x=1763538607;
+        d=1e100.net; s=20230601; t=1762933930; x=1763538730;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ipL3Z/6wC6GRR63sS5vId/ptcyhjHxEgUXfHm/LakcE=;
-        b=HdOEAm6CZSgSHc/Wh78G3K3EzlzB4ONH8T20Rw07otKFoCt0YnVl52wBefpX3S3T64
-         w8zZb+L781WEsPuQC6X4xdyv2xfb/GxJB0rIPEegd0rF35UAm+ctzLoFFHfNycxf8w21
-         UYnU7cA9hJb2ouRIDxwKhc6o+NsnEflXNHp4lUqPgHsWkP4KuQALiUeyoET4zZrHPZVu
-         12IO48qUcCr9TsohO3OA08aKZDQf6ynmvrDjudBan90mHbz36DJkBy4dVMT2qHE27Ukp
-         Jt8xVlOAW6RvIBdzkCV8CikByjeG28vREGYxB9G0ZRVS/oGr1FSyg7+N7RXcpbVzKFUL
-         zcCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW89LsLmTnACBbwVSxFmcsxJJ0JufIdVGhjQib/sgdZUvphBtQ8IkawXeEwZJuPouueDpo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxccX1PxrmEx9BPQaEj5eNfu9Ajx+1m7LEJcFgEEPLxskpfVGgr
-	mn0kmkk4e24T2dPD3WG+YfSGMnmoybgTet5cx7mCgpZse1aa+R10M8pyNzqTTU1oNBg=
-X-Gm-Gg: ASbGncvzZ8KyBYFkhp4N8pa6x74RLWWw9iXAy/JQMY5LpV/liznBqNorRq54wqaX89u
-	ouI/Mf0+6qEPrnJpjrDip2ed3hCKzW9wY5bpJ7KlN46FX3arXV+3tRZUmPMXHj+BkP7/D3Mhu0l
-	4j8Sj52GFW3zX9To5GZEy6xv9C99hCmO9/0/WDHewzkKJ0dfPDbVTA0P2TKIpbw3dckG7fvf3tD
-	Tx0kY2rhOwVV4bq1n2NAqsKEo/1yxlYOrRjJpZ/S69v0FGhvYvgXf3MXKirpAU/eeuoxsULcL8i
-	/UYC1SiZquzUSMWD1hQ05Pd9aO3I8s+JOH/XM3RQaam5AbOsTa0Xrc2x33IuMu7sE9hw+DYIffc
-	EsarbculNU37EtHfM2dYtcXWv1zJ8SfZopiqJNPA04wQ/D5/c9HT5Abpk78pj4v4X5AFnQ87aPf
-	Jmb024T0ZS6liJ5A==
-X-Google-Smtp-Source: AGHT+IFkrb3GSMhhW1bzYaSDD1E5kGgIrUWkWimOuuxU6/CLGbZTn7iNA2cGrP2NCWseV/3pUPbNoQ==
-X-Received: by 2002:a17:907:7e8e:b0:b73:2bc4:ebf with SMTP id a640c23a62f3a-b73319649c1mr168849366b.2.1762933806298;
-        Tue, 11 Nov 2025 23:50:06 -0800 (PST)
+        bh=baF77Nd6PddrT+NcaQcnWaJHYcsWM5/03L4b2UgZmEs=;
+        b=LMCo8Slt79yHpR0LEaSf6J49rhzqQDNyNpWACV7F9Ok92oVa3enIBXGsethaCLb19u
+         +HIf0+mIaMPpVfoUx+WZ4iaEZCHyrQVPZa7WXsw1HBh6aMJnereXoULgkOwbd/tDwAHL
+         BFZjR1Lp6cSawT/x5zzq2RFo8cgbeioAG2HCYcZl6IXFASOJ8Q5tArfUY3/Ug4ifiRYV
+         N92Sj+Gy2jDx8+M6vmHz48FL9u50ik3oKHKgkQo6gsWm00+W27xSf1QfKb6+3aiZpDMx
+         J4iPZMxhIIqwfTGCpPMWSsHBLsp8kNr1EsMnNNUTpGXvaPmCVSP3NCb97v5H5vIq1MZw
+         PGug==
+X-Forwarded-Encrypted: i=1; AJvYcCUGL6ZP+CxMiwJi1GjdTDsVhXtmXL31eglwoht00/BdTB9XjQDAkxRzrlKhF5R8sUosZ4M=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/Pl6PCgWQuH09slaTzWwVkH9wptvaLq8PfSX5nVi03Ak06jyy
+	WWLip/VmO9OttwRaACjeBb1wN1/If157WVWJMo2eZp2YGxoW2GOqyPy80AvjI2+10VMUuw5UH3P
+	JsrKk
+X-Gm-Gg: ASbGncukdEDiSSkLo1F5l8kHETlDkyYi3GdrJw6dlRjWBsKRxa+FdZh5syx5Yitn77W
+	aNNB+o8onDCciqUEuLbOaodL1CZ+1Q1ajVsmM7hreStiUg7RO0uRL2t57sNR5uoWW10DE79ueP0
+	9TLwDcC29MFC/zs8f74FD3vBlaq7T3KV3/sVEAg0T0fQDX1OV2YnJhmGyWazRJ+fZi2nVllypPi
+	WcePv+Fl3nx2ar0+ircAAmHl5M2Izf5NjDawHR7bayrl5czMqAp6a/qL3sCzDmZZvUP5/dH2pkt
+	5lekTsSb2uS3UIlaOGBpfkeDEJKOZdcvav0GtzN+/Il1jGCOQqs8IVTfHzB0Q5ryS8XRrKwPsYO
+	Uw/hSHGHGFFmk0V9sM/A5JsEF3CjY2DRWU0wrF/cGnx485olBKucgWY5lHGpNBhSClQqxU/cSHM
+	7MY6s0NbqHdqRfGA==
+X-Google-Smtp-Source: AGHT+IHrUFgBXB0mlhlDx5ulVZ/CWC4rg/lpc+ghJAkmKWSBb8GGXulAMnQrIW2KVp+058faH6NYGw==
+X-Received: by 2002:a05:6402:218c:20b0:640:93b2:fd07 with SMTP id 4fb4d7f45d1cf-6431a579409mr1286553a12.33.1762933930379;
+        Tue, 11 Nov 2025 23:52:10 -0800 (PST)
 Received: from localhost (109-81-31-109.rct.o2.cz. [109.81.31.109])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b72bf9bc214sm1583946166b.52.2025.11.11.23.50.05
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6415d91f486sm10653900a12.22.2025.11.11.23.52.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Nov 2025 23:50:06 -0800 (PST)
-Date: Wed, 12 Nov 2025 08:50:05 +0100
+        Tue, 11 Nov 2025 23:52:10 -0800 (PST)
+Date: Wed, 12 Nov 2025 08:52:06 +0100
 From: Michal Hocko <mhocko@suse.com>
 To: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
@@ -88,12 +89,13 @@ Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
 	Song Liu <song@kernel.org>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 13/23] mm: introduce bpf_out_of_memory() BPF kfunc
-Message-ID: <aRQ8LQWxoRF0kgXk@tiehlicka>
+Subject: Re: [PATCH v2 14/23] mm: allow specifying custom oom constraint for
+ BPF triggers
+Message-ID: <aRQ8pu_57IeA_Jn_@tiehlicka>
 References: <20251027232206.473085-1-roman.gushchin@linux.dev>
- <20251027232206.473085-3-roman.gushchin@linux.dev>
- <aRG0ZyL93jWm4TAa@tiehlicka>
- <87qzu4pem7.fsf@linux.dev>
+ <20251027232206.473085-4-roman.gushchin@linux.dev>
+ <aRGw6sSyoJiyXb8i@tiehlicka>
+ <871pm4peeb.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,40 +104,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87qzu4pem7.fsf@linux.dev>
+In-Reply-To: <871pm4peeb.fsf@linux.dev>
 
-On Tue 11-11-25 11:13:04, Roman Gushchin wrote:
+On Tue 11-11-25 11:17:48, Roman Gushchin wrote:
 > Michal Hocko <mhocko@suse.com> writes:
 > 
-> > On Mon 27-10-25 16:21:56, Roman Gushchin wrote:
-> >> Introduce bpf_out_of_memory() bpf kfunc, which allows to declare
-> >> an out of memory events and trigger the corresponding kernel OOM
-> >> handling mechanism.
-> >> 
-> >> It takes a trusted memcg pointer (or NULL for system-wide OOMs)
-> >> as an argument, as well as the page order.
-> >> 
-> >> If the BPF_OOM_FLAGS_WAIT_ON_OOM_LOCK flag is not set, only one OOM
-> >> can be declared and handled in the system at once, so if the function
-> >> is called in parallel to another OOM handling, it bails out with -EBUSY.
-> >> This mode is suited for global OOM's: any concurrent OOMs will likely
-> >> do the job and release some memory. In a blocking mode (which is
-> >> suited for memcg OOMs) the execution will wait on the oom_lock mutex.
+> > On Mon 27-10-25 16:21:57, Roman Gushchin wrote:
+> >> Currently there is a hard-coded list of possible oom constraints:
+> >> NONE, CPUSET, MEMORY_POLICY & MEMCG. Add a new one: CONSTRAINT_BPF.
+> >> Also, add an ability to specify a custom constraint name
+> >> when calling bpf_out_of_memory(). If an empty string is passed
+> >> as an argument, CONSTRAINT_BPF is displayed.
 > >
-> > Rather than relying on BPF_OOM_FLAGS_WAIT_ON_OOM_LOCK would it make
-> > sense to take the oom_lock based on the oc->memcg so that this is
-> > completely transparent to specific oom bpf handlers?
+> > Constrain is meant to define the scope of the oom handler but to me it
+> > seems like you want to specify the oom handler and (ab)using scope for
+> > that. In other words it still makes sense to distinguesh memcg, global,
+> > mempolicy wide OOMs with global vs. bpf handler, right?
 > 
-> Idk, I don't have a super-strong opinion here, but giving the user the
-> flexibility seems to be more future-proof. E.g. if we split oom lock
-> so that we can have competing OOMs in different parts of the memcg tree,
-> will we change the behavior?
+> I use the word "constraint" as the "reason" why an OOM was declared (in
+> other words which constraint was violated). And memcg vs global define
+> the scope. Right now the only way to trigger a memcg oom is to exceed
+> the memory.max limit. But with bpf oom there will others, e.g. exceed a
+> certain PSI threshold. So you can have different constraints violated
+> within the same scope.
 
-The point I've tried to make is that this OOM invocation is no different
-from the global one from the locking perspective. Adding an external
-flag to control the behavior might be slightly more flexible but it adds
-a new element. Unless there is a very strong reason for that I would go
-with the existing locking model.
+Please use a different placeholder for that. Current constrains have a
+well defined semantic. They are not claiming why the OOM happened but
+what is the scope of the oom action (domain if you will). The specific
+handler has a sufficient knowledge to explain why the OOM killing is
+happening and on which domain/scope/constrain.
 
 -- 
 Michal Hocko
