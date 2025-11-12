@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-74298-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74299-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47C72C52BB5
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 15:33:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CBA1C52BEE
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 15:39:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B79104A6CE7
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 14:21:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F21D84A725A
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 14:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9F533343F;
-	Wed, 12 Nov 2025 14:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D082C08BA;
+	Wed, 12 Nov 2025 14:20:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TrfHGZSV";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TrfHGZSV"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mZcww2C1";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qYriiYqz"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC6A31DD87
-	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 14:20:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B3D32951B3
+	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 14:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762957244; cv=none; b=LFdwKQsaAqEGfxJmg5m4OPr1A6lBdV7mh6g4RpbdPvxkWACMcBMqlf474iUIzJt1aDkLnkJ1WQiSlr6kiyy9Y00Y7U8ctl5/r0UV6tvkDtIkKi1/mM0ARC8nSgxEdJRq4pcsNotBYPt6vufT1IRWWhF3wISOCc4jKb3lhkRrmr0=
+	t=1762957254; cv=none; b=XIJOhh0sOAgU8m3d9klsgCxtnN1ZIU3LlEBy5kP/NO8hIjyqSDDPPpurdcXA6NbaUseOGqVm9Ttt3dIpUEx7ymXMOcibqZstD0yADTrocyYKnDu0q9yi+II0EjWiO0JxRjDD6hET+EN4G081TomW3u+D8T4RnN7YXXtIAPsdnCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762957244; c=relaxed/simple;
-	bh=NPULls7NkZK7K8UN1fMarpplKLfCVpzfoJgnXnPgubc=;
+	s=arc-20240116; t=1762957254; c=relaxed/simple;
+	bh=PMLe2NtTfO8x7SDcutb9xCSuVGGAXm1wxNPsTX8IEsg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TvNBIZ8XJv6H8rFOKgm4mBBI2XYzRwVP423F/mrCQp76w0ElyVSoTUpvAao6UYKl171YwG+j7Xr06ol7I4jsJeBojCYtLzXLFPvo1pemCDmRW4NiFf7t/IBYKtjdIa8Qx3pRjvin2OUz1XgoCb9jCDP5e4IENGgH1sdTGZYNTX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TrfHGZSV; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TrfHGZSV; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=ClC/26V6JHl1PksUMd5+wJ8/eDw1KKl+xgDHT6XWgRLGVwwoZbR3KuPSzibnPbUHcLksVGOjUTBjvkkrkr7GicsCmS2M1PXCV3R3fcHFsdLK5iJ0PQRoLofoLQdxaWTFAh3k6MvkIkdwEoIdtWSmX67pHhrQlIz22mgrUpF+c8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mZcww2C1; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qYriiYqz; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from pathway.suse.cz (unknown [10.100.208.146])
-	by smtp-out2.suse.de (Postfix) with ESMTP id 79C641F811;
-	Wed, 12 Nov 2025 14:20:39 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTP id 78D051F807;
+	Wed, 12 Nov 2025 14:20:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1762957239; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1762957251; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cCOyARWGSi/xRdC07nt6pnjrsJIRTjWjs9bqoN8osVM=;
-	b=TrfHGZSVK23k5MKwRs1KajqP/vUjGuEmN67vyNHectie79yXG77mc/IHmx2uNraCUpwJ6w
-	To49NkA9SgRoINCE++e0NW34So/Ajsf7+gcaDPMFZyGKgLNprZV4L2SG0B41CuHDEg7iDb
-	mKJXx+r9VBra9lJjdygDTKEVKxzfzYI=
+	bh=FfvF234vWKCKB1nLJCrpAZU8zDmOaaizZkH1U/ILFM0=;
+	b=mZcww2C16TuWjdqIjkr/hhIXrVdisUWC3wT7I9hXmg97M7bp/Y2MzU5N0q+GLM/XimUci0
+	Jxj6SwL0z1eca1n8hpjx8PjCSTIN/4ZMzfDlDcZ6Pk67sF79R0iBBXraAuR84kZ/RhCWme
+	zo3a/zWDoQ5fRe9iP2pKbSQRM5C6iS4=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1762957239; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1762957250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cCOyARWGSi/xRdC07nt6pnjrsJIRTjWjs9bqoN8osVM=;
-	b=TrfHGZSVK23k5MKwRs1KajqP/vUjGuEmN67vyNHectie79yXG77mc/IHmx2uNraCUpwJ6w
-	To49NkA9SgRoINCE++e0NW34So/Ajsf7+gcaDPMFZyGKgLNprZV4L2SG0B41CuHDEg7iDb
-	mKJXx+r9VBra9lJjdygDTKEVKxzfzYI=
+	bh=FfvF234vWKCKB1nLJCrpAZU8zDmOaaizZkH1U/ILFM0=;
+	b=qYriiYqzeyLyODTQdOw1Ee1YbpQlGRW0dWpbG1E0mDkBxGh8ZA03iOuCH61+fgV/LISsWj
+	1CUQEbN5eLbzksZS/4Rut8L0gw7JIIjSfGQjGPYZpOjadHyEbf/npKJv5jfjYs6z1tGSn/
+	crLLfNIlK1JOErgPZlf6VSbNBBo/Azw=
 From: Petr Mladek <pmladek@suse.com>
 To: Petr Pavlu <petr.pavlu@suse.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -74,9 +74,9 @@ Cc: Aaron Tomlin <atomlin@atomlin.com>,
 	linux-modules@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	Petr Mladek <pmladek@suse.com>
-Subject: [PATCH v2 1/7] kallsyms: Clean up @namebuf initialization in kallsyms_lookup_buildid()
-Date: Wed, 12 Nov 2025 15:19:57 +0100
-Message-ID: <20251112142003.182062-2-pmladek@suse.com>
+Subject: [PATCH v2 2/7] kallsyms: Clean up modname and modbuildid initialization in kallsyms_lookup_buildid()
+Date: Wed, 12 Nov 2025 15:19:58 +0100
+Message-ID: <20251112142003.182062-3-pmladek@suse.com>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251112142003.182062-1-pmladek@suse.com>
 References: <20251112142003.182062-1-pmladek@suse.com>
@@ -87,6 +87,7 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
 X-Spamd-Result: default: False [-5.30 / 50.00];
 	REPLY(-4.00)[];
 	BAYES_HAM(-3.00)[100.00%];
@@ -107,61 +108,58 @@ X-Spamd-Result: default: False [-5.30 / 50.00];
 	FREEMAIL_CC(0.00)[atomlin.com,iogearbox.net,gmail.com,kernel.org,arm.com,google.com,vger.kernel.org,suse.com];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_ZERO(0.00)[0];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,atomlin.com:email];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
 	R_RATELIMIT(0.00)[to_ip_from(RLw9bydq1j5bti46rxed9sjz7y)];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com]
 X-Spam-Flag: NO
 X-Spam-Score: -5.30
-X-Spam-Level: 
 
-The function kallsyms_lookup_buildid() initializes the given @namebuf
-by clearing the first and the last byte. It is not clear why.
+The @modname and @modbuildid optional return parameters are set only
+when the symbol is in a module.
 
-The 1st byte makes sense because some callers ignore the return code
-and expect that the buffer contains a valid string, for example:
+Always initialize them so that they do not need to be cleared when
+the module is not in a module. It simplifies the logic and makes
+the code even slightly more safe.
 
-  - function_stat_show()
-    - kallsyms_lookup()
-      - kallsyms_lookup_buildid()
+Note that bpf_address_lookup() function will get updated in a separate
+patch.
 
-The initialization of the last byte does not make much sense because it
-can later be overwritten. Fortunately, it seems that all called
-functions behave correctly:
-
-  -  kallsyms_expand_symbol() explicitly adds the trailing '\0'
-     at the end of the function.
-
-  - All *__address_lookup() functions either use the safe strscpy()
-    or they do not touch the buffer at all.
-
-Document the reason for clearing the first byte. And remove the useless
-initialization of the last byte.
-
-Reviewed-by: Aaron Tomlin <atomlin@atomlin.com>
 Signed-off-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/kallsyms.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ kernel/kallsyms.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index 1e7635864124..e08c1e57fc0d 100644
+index e08c1e57fc0d..ffb64eaa0505 100644
 --- a/kernel/kallsyms.c
 +++ b/kernel/kallsyms.c
-@@ -352,7 +352,12 @@ static int kallsyms_lookup_buildid(unsigned long addr,
- {
- 	int ret;
- 
--	namebuf[KSYM_NAME_LEN - 1] = 0;
-+	/*
-+	 * kallsyms_lookus() returns pointer to namebuf on success and
-+	 * NULL on error. But some callers ignore the return value.
-+	 * Instead they expect @namebuf filled either with valid
-+	 * or empty string.
-+	 */
+@@ -359,6 +359,14 @@ static int kallsyms_lookup_buildid(unsigned long addr,
+ 	 * or empty string.
+ 	 */
  	namebuf[0] = 0;
++	/*
++	 * Initialize the module-related return values. They are not set
++	 * when the symbol is in vmlinux or it is a bpf address.
++	 */
++	if (modname)
++		*modname = NULL;
++	if (modbuildid)
++		*modbuildid = NULL;
  
  	if (is_ksym_addr(addr)) {
+ 		unsigned long pos;
+@@ -367,10 +375,6 @@ static int kallsyms_lookup_buildid(unsigned long addr,
+ 		/* Grab name */
+ 		kallsyms_expand_symbol(get_symbol_offset(pos),
+ 				       namebuf, KSYM_NAME_LEN);
+-		if (modname)
+-			*modname = NULL;
+-		if (modbuildid)
+-			*modbuildid = NULL;
+ 
+ 		return strlen(namebuf);
+ 	}
 -- 
 2.51.1
 
