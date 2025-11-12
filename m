@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-74287-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74288-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9608C51FFA
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 12:34:11 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49BB7C51FB5
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 12:30:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87272189441D
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 11:28:58 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E7ECE34DE87
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 11:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2360A30E854;
-	Wed, 12 Nov 2025 11:28:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF4330FC31;
+	Wed, 12 Nov 2025 11:30:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="InzW8DU0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BjVdOQYk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5932D8DB1
-	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 11:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16850306B11
+	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 11:30:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762946891; cv=none; b=HM5+vduMay8iJ0vCe+JJ6ptn/3MPnblZB3IozGXc1x0MYyK22TK4e4Hjeog0oXesvNvnso+vbNu6ygbcqN0+ulKGXcSPUIUHSQXgRslRiKU6Ywpo71iJBKXWdtQX8gD6BeqJkH6rS11Ab+rsgckLVF+KAu47+zsl5x1+QssJRkY=
+	t=1762947037; cv=none; b=p223P6o/aYwooK1b4S03t8J5HrKeiZqrVoyx1xeGmFAXIuZTjxlFIPNtZ14l7f1TQTeS2lswUnwTqL9TH8ny57s1QzGgt4RTfwqrZNwh0hfMt7MTxNKvOd27+qs/oiWqvRJ/QDt0TnSIRXjPyKROUlPKYcwA3d39zuADV2AkXMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762946891; c=relaxed/simple;
-	bh=3yZy0mK7fi7h6dEgV7OqbQEEpOmuSBi+BOgpbLpu8Xo=;
+	s=arc-20240116; t=1762947037; c=relaxed/simple;
+	bh=iTAh58xsSTK/DPrCrA9XXO9oOUT/gyUSwdPtMZDZRY4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dChLA3tP54STOHI+HuEsv9GonQRAaVoBDIt9DYTHvOcqAqaGymYwRG6966GqJ65iMnwrdoiAGVDCmycyfRm3hqfhib0dyHMd0SvnOU4ehPHHQrPba7rkPcfnusVGb3/d9OH/VkmPndBuXVGsiyw1t8DyBYpRE7CAhejP1yqHtuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=InzW8DU0; arc=none smtp.client-ip=209.85.128.46
+	 In-Reply-To:Content-Type; b=STvXr1VDi7jlEm6VGs2IA7ttLxO6l2P02kUu7I4TCLOEbufUrPwEGAi4ynqwuIM4YKdbQdNu8glS4yrq6YYl4YIbKMdAGXIVF/KE5hzZ9SlgYvGn5D9FGBTJsOBVXMmPhNQ9PQYgL4JPy8km1Q4pQOHE4BkkOMeErWHKR6lY8LU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BjVdOQYk; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47789cd2083so2562845e9.2
-        for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 03:28:09 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-47778704516so3659685e9.3
+        for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 03:30:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762946888; x=1763551688; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1762947034; x=1763551834; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=mmJ4jMrcViTktpRfcYtKz9oOeK7QX8lRd9IhgtDkEoo=;
-        b=InzW8DU0QLvbnIx8lXgh/SZICb/2z8/shpDpoGlryNAdfLGQzNTchwxoIYyC9Eg+j8
-         pk3+L/VUHgj8uz038kRnt/S0jKoE9PxNvpMegevwR52xijYY1ugkbo+s6uGygHrGgGSR
-         wKWBa+o4JUqPOyk7MqM67EHj7Oxa1vDTF64X63A2sJkybiQ9lzRbx902Lyq7NUdZMa1r
-         MK35WZ3ur901ELRLoepo+yDIatToXYLansuulph6pPIxm2R0dZ5n2c3e6F7vbQzlu30D
-         j8Q+ZXSl226LpaNjVLkaf5e/Ao/p5F3Siup7e5KZseh/3MM5t6jnDOUg4KVOARtDWSji
-         HueQ==
+        bh=l/oUH46h86/olGMZU+XghYpDhfAZ96DwWr356lECM4A=;
+        b=BjVdOQYkNn1GugyEtpXSuZbkJ+6NMebvOiOl+vQATSk4DKzy9dP0IzIfF7t7DTxIc0
+         h79Cayo4rd1tZHnm3UF6iP16NquA/XmQD1sqR08B0brtBRUm4ITnOXvc+1xwtwV2k7jX
+         IqISyf0r5iDNq2JTyIpuefvmlX6xXMDkd9TrEWPtwqTgWsn4oyqRRTyIYNo4RHtFR6mP
+         09DYULt2CWaTGcv8PemxgkCUZjwV0kIiNzt5YSy402YM+Flyd34wvMhjIH7WNREJLZoB
+         3ZNkEHdsDRfFf3C6aBNo8t5pZGT8AXJXDZZepxyvwuUsqBbgn11CFPp+iptlcxfzy8jr
+         FszA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762946888; x=1763551688;
+        d=1e100.net; s=20230601; t=1762947034; x=1763551834;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mmJ4jMrcViTktpRfcYtKz9oOeK7QX8lRd9IhgtDkEoo=;
-        b=aZ5lhLr4hThu1rRQUKpd4MExxN5ZbQ8B6oIsEuW9fZhKyeI5wTClHKFHsPoGW3HpkI
-         DCL/otjqXiz488XlNeV1tm/JTE0gt9qL1tyrTLcSHfjlnt1s5vHN1dpfKIhs8s66Vq17
-         v2vOahmdB0FPNKKS7lNqI0/vsIZAFf27sNTjIHnSa+3OYJ/RXWK8KzgeD1vIZKq7PH4H
-         NydC/kStmfZNltGCCSxo3A7/60zGdr26HAeWd7mrlGtqvhgcBafsdarx73ZBO71csJx1
-         Z6zMymptUL0pvo16EeUdTZgk0GehhgEKukbEP0bo0RMlfUEjSY94kpN6QnCP8y25Hrol
-         LXeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXwY7WStU0udNh3qZvxZ0eGPXC3DptgggUKJs4YNI5DzycxZDOiwmsGIADtuKs+cianOlw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+mEhqwg4XQSvCrGYwMD/VpVAECS7pevhcYERCt15xjwU45rxL
-	52A9SPncYRabN0oF6PWZFVn+ccV36HMRD/59dTa4a4p11svuGq/K1m1M
-X-Gm-Gg: ASbGncs3/tkJQ1whUAO97t13IfxxFE+Ls/vNYc4i2cua3/VVvd5wyYFNeV+MWK/FZNN
-	HrBLjipuP4/nqNbZVU1aZC/vIoxbyMMPuMJqm6ppupDq+8WhZ/i+X3lthriR9pyHjoRuyZp8mR5
-	5aJOsXE6ccTvm6yiubybLsLPdCQTneZs0fmzUTJ7U9KBNUJ26GO1tctfNby4Fn/4GtihSs0umlF
-	ridchjQBT4qF/7r42Fhb3jXDZX5INVSUedUcWs9ImZBDzONBmnX9DOUJUiuyVqmgTl+/iT3XF+T
-	MgRpByj7O7au76eOcGNiVHN4LQ7dECA8NH36YpwSeryBhZUE+xkkvD+C5IjdhWknAQGCqB1ydhq
-	q5xF2J1YIRJ8N65foNYNvUMPCIUfSJH0P2r5nr4Qmlz8S5LT4D32cMLI1TyYcJ589hPNaagxQzl
-	JKkd+ijvZOX5dOGKcGjdH28Z4=
-X-Google-Smtp-Source: AGHT+IHUkDj9skJWx5O8Mgj0/LeNZAj9+4nbV8r5lwtFtUHPHAFFww+gS/qpBq+lZu7XXIyqqV4v1w==
-X-Received: by 2002:a05:600c:4fd3:b0:46e:37a7:48d1 with SMTP id 5b1f17b1804b1-477871c588emr26721795e9.34.1762946887589;
-        Wed, 12 Nov 2025 03:28:07 -0800 (PST)
+        bh=l/oUH46h86/olGMZU+XghYpDhfAZ96DwWr356lECM4A=;
+        b=ep3sJjqw2oEO/t0IwSLAweG/fzokFgeMmWYIfQwuHJSqLNlsVGN0X/kOAsJBgj0UMU
+         0JxeX4K3BBBDxtP+JCyvWTGdCrheDVzvlyKFW6fUIB2yIZaZjbEKGVSCqBZ3On+Lnu/i
+         RFHFlRG/qYCd3Lz7c0br+/qMfLTpsFD8LfjOvHB1i1tfxj7MJBd8I8oNaCMHNXJ61DK0
+         7EdCnrb0ThRY+KVs8U6my20ruQtl1QNzNOitpdNZWxqnfgw383m6hgepiqG9dCDN4Zz2
+         bYL9mBxyuWAgkPqVmF/YKleQzrq0dzQ9+6zwrFusO5KpvX7KSjwTHqrRAJ3rflDl3afj
+         gxjg==
+X-Forwarded-Encrypted: i=1; AJvYcCVczfHOz5T4IWX9V6xuTuKrJ7x8Eo59PJgG7g1ffphdQfvmuZtmlOxOX8yF0i/4COLvizY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2By2hPzvt2XdwodcFQnZNvO4EuuG2dOoFByA1XkvbwfUD+ZP8
+	/SOaxn9Ot3s+OABSssIu3m7WsEBaNDt4nQ4JwY/tYCdO9WJBsuQXlsfZ
+X-Gm-Gg: ASbGncv0JWr9qg84mWz/bsWACUN5CqB0dAk/E7gU5zhQUtUeJ6vQY882dhQ4NG1oaZo
+	dp/ODTk4fTKBqTTr77SPsZWWBCVf6UX1vvCEcG9GxQDBODzL4fHTEtUruMfty4+AciFDEBpFOjR
+	QO07g9TA06JtBdQgibRy9twCu0PzDSo4HALGOtA83SeaofbIylM2cVIo1cdnFCQnzpsqAz72Jfu
+	wkOGQv3FKW8CuWFjiDdTvkeevbUuC5ft9l1kLZXJZYmOJhdBUBIpkeyPryO0/K33Bkc+9BjTK7b
+	lQSF/j5JE2QZPdq4Mx1IymGA0mL9sv2/mGwBKftDvFm1T9TWT7UdtqhvBeXUb8cunkRUJeDN6ms
+	pS1Ua2Syyjp3iMXl82F+odbR01kXo4gTCbzIRkJ9gQ0bckqQg430WwzcGadfH8BvnZmvyZ5y6/V
+	kfJm6jurFr3LwxSkTgIH7rx2A=
+X-Google-Smtp-Source: AGHT+IFzZn82+HqmV7Z5oaduLfvBaDy2CYnyKKDWs/rhY5yLhynN3LzPM9CdU2cQ0vUhoC+2FQjWgA==
+X-Received: by 2002:a05:600c:4f93:b0:477:bcb:24cd with SMTP id 5b1f17b1804b1-47787095d98mr24817395e9.22.1762947034215;
+        Wed, 12 Nov 2025 03:30:34 -0800 (PST)
 Received: from [10.125.200.88] ([165.85.126.46])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47787ea39ccsm29171795e9.15.2025.11.12.03.28.05
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47787e2ad4csm31122115e9.1.2025.11.12.03.30.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Nov 2025 03:28:07 -0800 (PST)
-Message-ID: <893e8d23-121b-43ef-90a9-370a745d4341@gmail.com>
-Date: Wed, 12 Nov 2025 13:28:05 +0200
+        Wed, 12 Nov 2025 03:30:33 -0800 (PST)
+Message-ID: <89e33ec4-051d-4ca5-8fcd-f500362dee91@gmail.com>
+Date: Wed, 12 Nov 2025 13:30:32 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,8 +84,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 6/6] net/mlx5e: Support XDP target xmit with
- dummy program
+Subject: Re: [PATCH net-next 0/6] net/mlx5e: Speedup channel configuration
+ operations
 To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
  Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
@@ -101,49 +101,35 @@ Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
  William Tu <witu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>,
  Nimrod Oren <noren@nvidia.com>, Alex Lazar <alazar@nvidia.com>
 References: <1762939749-1165658-1-git-send-email-tariqt@nvidia.com>
- <1762939749-1165658-7-git-send-email-tariqt@nvidia.com>
- <877bvvlf19.fsf@toke.dk>
+ <874iqzldvq.fsf@toke.dk>
 Content-Language: en-US
 From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <877bvvlf19.fsf@toke.dk>
+In-Reply-To: <874iqzldvq.fsf@toke.dk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-On 12/11/2025 12:29, Toke Høiland-Jørgensen wrote:
+On 12/11/2025 12:54, Toke Høiland-Jørgensen wrote:
 > Tariq Toukan <tariqt@nvidia.com> writes:
 > 
->> Save per-channel resources in default.
+>> Hi,
 >>
->> As no better API exist, make the XDP-redirect-target SQ available by
->> loading a dummy XDP program.
+>> This series significantly improves the latency of channel configuration
+>> operations, like interface up (create channels), interface down (destroy
+>> channels), and channels reconfiguration (create new set, destroy old
+>> one).
 > 
-> This is a user-visible change, though, no? I.e., after this patch
-> xdp_redirect mlx5 devices will no longer work as an xdp_redirect target
-> out of the box?
-> 
-
-Right, we introduce an explicit behavior change here.
-Due to the lack of a standard control, we're aligning to other drivers 
-and use the dummy program trick.
-Having the feature always on by default wastes HW and SW resources for 
-users who are not interested in the feature (and cannot explicitly 
-disable it), in addition to the significant extra latency it adds in 
-configuration flow.
-
-> We have userspace code listing the driver support in various places
-> (e.g., here in xdp-tools:
-> https://github.com/xdp-project/xdp-tools/commit/1dad1d6e0ccb086b8a31496931f21a165b42b700);
-> I'm sure there will be other places. Since such code would up until now
-> assume that mlx5 just works, this will end up being a regression in such
-> cases, no?
+> On the topic of improving ifup/ifdown times, I noticed at some point
+> that mlx5 will call synchronize_net() once for every queue when they are
+> deactivated (in mlx5e_deactivate_txqsq()). Have you considered changing
+> that to amortise the sync latency over the full interface bringdown? :)
 > 
 > -Toke
 > 
 > 
 
-Yes, it is indeed a change in behavior.
-Now the feature can be turned off, and actually defaults to off.
-Now we should add "mlx5" to this list driver_pass_list[].
+Correct!
+This can be improved and I actually have WIP patches for this, as I'm 
+revisiting this code area recently.
 
