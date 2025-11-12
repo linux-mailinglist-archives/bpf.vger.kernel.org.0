@@ -1,186 +1,123 @@
-Return-Path: <bpf+bounces-74335-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74336-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DB77C54BB1
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 23:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 74CA2C54CC9
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 00:24:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7164B4E4C26
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 22:38:46 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 621D64E0674
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 23:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86A62EC0B6;
-	Wed, 12 Nov 2025 22:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9B62F2606;
+	Wed, 12 Nov 2025 23:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YTY/Rh8K"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FtabXl5d"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4214C2EA755;
-	Wed, 12 Nov 2025 22:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5CCF35CBAF
+	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 23:24:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762987119; cv=none; b=uqiH2podZwTa/mQEtktnFKy5In7hoYUzEHOMuYO48jlIMTufyr+6LBHdQVgfZ1YrEWCDIzAnoFoCjX+LoAayyoDOhna7nlMp2pED8pInoWL+ztHOg86Q9kIdssjfNd6i4J9VzFABTpbSU4Zk0JNN7OoIjAD7HhvzxEPgJ7XgY2g=
+	t=1762989854; cv=none; b=b7D7ih/1K2CXZd8xnVnTB5R3jUk0THmJLgJPDBfHL6b3ANl/bI1gbKuznCIzriPMsZfQ914+8D4NB+8XzCuSp62aAzc2e+hj3zlCgF3mC+fE010xDqswLTBwIyaTEy15m5eDvbFeQXHomX8eOMoPSQqhbwtk5aOSqd2+X1Y/Mjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762987119; c=relaxed/simple;
-	bh=o2EQqaZZAsWkT6r39TusYsLK6a8IzHKn3703XsIxWpg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g8qOjSJlXdNv452/O3+c7Ov8j2LcEYPQi41xPI2NsnxNTaRpMe1mu9C74GfutDvO4BrWCVFgC48/ot5nZdfTWXyIiyKgtAeraaUiqJVKI/eSmMaWJgQ8ccEKIuy6Vz95COQAHb5Bxtb0iBhZEFyZqyGf1oeYKld/BEUDrn5+yQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YTY/Rh8K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A849C4CEF1;
-	Wed, 12 Nov 2025 22:38:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762987118;
-	bh=o2EQqaZZAsWkT6r39TusYsLK6a8IzHKn3703XsIxWpg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YTY/Rh8KpY36C75hev3BjCBZb7EDXufixbscLxlLsHG9ueTWZLz9RvIRjIs0W7sMY
-	 CfW4QMJD3/t1m2IoJqkP9lMlYBdXMyjuMG4ONpEyfwvAg9RTH1udFhHm6hX9zDM52b
-	 vyZBzLupt+h9QBFd+9D21T9dNPjCMiznKczjhzE36fxVjLg0yQwW1nPVvuh3SjoudI
-	 7DNDpWX5/3NswF/LWKpj9UmCf4uwHFNATj7b71XaZ3QezG/6heLgzBJL+mWWsLEHke
-	 sT1/5knwSEb13gskvno39Yvhv7QeU8WrgOKbIWDD+UC+xAcKTfpJO5Yrv6JNZiq7qJ
-	 qOAdTkPnBbyZA==
-Date: Wed, 12 Nov 2025 14:38:34 -0800
-From: Namhyung Kim <namhyung@kernel.org>
-To: Jens Remus <jremus@linux.ibm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Indu Bhagat <indu.bhagat@oracle.com>,
-	"Jose E. Marchesi" <jemarch@gnu.org>,
-	Beau Belgrave <beaub@linux.microsoft.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>,
-	Kees Cook <kees@kernel.org>, Carlos O'Donell <codonell@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v16 4/4] perf tools: Merge deferred user callchains
-Message-ID: <aRUMauhbs_jJ6-3P@google.com>
-References: <20250908175319.841517121@kernel.org>
- <20250908175430.639412649@kernel.org>
- <20251002134938.756db4ef@gandalf.local.home>
- <20251024130203.GC3245006@noisy.programming.kicks-ass.net>
- <f543231e-a71c-4600-9cf3-f999ca104d86@linux.ibm.com>
+	s=arc-20240116; t=1762989854; c=relaxed/simple;
+	bh=/rrqrWefr6Be8/0xwOqC6LYKV/EgTwyOcbreEBWCCuM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Sn8XYzPEc0vLv2j4VzrUIJ8pBM5D9USl5FRpWVtCjDUt4W5gEh6Y0lXQVEqQIt80kbPcz6oM2MwsrTsW0IoBb8ZFw4/I30CSVyA/pUJQjKoW2ltRn/82nEUta4hq1glHAdhpbJaKl0Bug9TPZpOQoP7sfeHSsIOxJ+9e+OviPIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FtabXl5d; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762989847;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Ae3Y9wLC7e7ztA80BXItavwEzFGlDsl4crb0Mx/OgXA=;
+	b=FtabXl5dLrk+jCbT6Y9bZm8NdSH0StZRFNjxqiKkDpSgpmpCI9EB50QX4Dwn2Mh/JQDXhq
+	uWDxxdkvrvANJfd10xVkxqTeU50xPvEzJiajee/TgnLeecoyB+rnHi0QW2bzmewAZ/LdaZ
+	YW/WvQwZILBFJcHBucFPNmuRsQgSvtQ=
+From: Martin KaFai Lau <martin.lau@linux.dev>
+To: bpf@vger.kernel.org
+Cc: 'Alexei Starovoitov ' <ast@kernel.org>,
+	'Andrii Nakryiko ' <andrii@kernel.org>,
+	'Daniel Borkmann ' <daniel@iogearbox.net>,
+	netdev@vger.kernel.org,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Kaiyan Mei <M202472210@hust.edu.cn>,
+	Yinhao Hu <dddddd@hust.edu.cn>
+Subject: [PATCH bpf-next 1/2] bpf: Check skb->transport_header is set in bpf_skb_check_mtu
+Date: Wed, 12 Nov 2025 15:23:30 -0800
+Message-ID: <20251112232331.1566074-1-martin.lau@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f543231e-a71c-4600-9cf3-f999ca104d86@linux.ibm.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+From: Martin KaFai Lau <martin.lau@kernel.org>
 
-On Wed, Nov 12, 2025 at 11:05:59AM +0100, Jens Remus wrote:
-> Hello Namhyung,
-> 
-> could you please adapt your patches from this series to Peter's latest
-> changes to unwind user and related perf support, especially his new
-> version c69993ecdd4d ("perf: Support deferred user unwind") available
-> at:
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
+The bpf_skb_check_mtu helper needs to use skb->transport_header when
+the BPF_MTU_CHK_SEGS flag is used:
 
-Sure, will take a look.
+	bpf_skb_check_mtu(skb, ifindex, &mtu_len, 0, BPF_MTU_CHK_SEGS)
 
-Thanks,
-Namhyung
+The transport_header is not always set. There is a WARN_ON_ONCE
+report when CONFIG_DEBUG_NET is enabled + skb->gso_size is set +
+bpf_prog_test_run is used:
 
-> 
-> On 10/24/2025 3:02 PM, Peter Zijlstra wrote:
-> > On Thu, Oct 02, 2025 at 01:49:38PM -0400, Steven Rostedt wrote:
-> >> On Mon, 08 Sep 2025 13:53:23 -0400
-> >> Steven Rostedt <rostedt@kernel.org> wrote:
-> >>
-> >>> +static int evlist__deliver_deferred_samples(struct evlist *evlist,
-> >>> +					    const struct perf_tool *tool,
-> >>> +					    union  perf_event *event,
-> >>> +					    struct perf_sample *sample,
-> >>> +					    struct machine *machine)
-> >>> +{
-> >>> +	struct deferred_event *de, *tmp;
-> >>> +	struct evsel *evsel;
-> >>> +	int ret = 0;
-> >>> +
-> >>> +	if (!tool->merge_deferred_callchains) {
-> >>> +		evsel = evlist__id2evsel(evlist, sample->id);
-> >>> +		return tool->callchain_deferred(tool, event, sample,
-> >>> +						evsel, machine);
-> >>> +	}
-> >>> +
-> >>> +	list_for_each_entry_safe(de, tmp, &evlist->deferred_samples, list) {
-> >>> +		struct perf_sample orig_sample;
-> >>
-> >> orig_sample is not initialized and can then contain junk.
-> >>
-> >>> +
-> >>> +		ret = evlist__parse_sample(evlist, de->event, &orig_sample);
-> >>> +		if (ret < 0) {
-> >>> +			pr_err("failed to parse original sample\n");
-> >>> +			break;
-> >>> +		}
-> >>> +
-> >>> +		if (sample->tid != orig_sample.tid)
-> >>> +			continue;
-> >>> +
-> >>> +		if (event->callchain_deferred.cookie == orig_sample.deferred_cookie)
-> >>> +			sample__merge_deferred_callchain(&orig_sample, sample);
-> >>
-> >> The sample__merge_deferred_callchain() initializes both
-> >> orig_sample.deferred_callchain and the callchain. But now that it's not
-> >> being called, it can cause the below free to happen with junk as the
-> >> callchain. This needs:
-> >>
-> >> 		else
-> >> 			orig_sample.deferred_callchain = false;
-> > 
-> > Ah, so I saw crashes from here and just deleted both free()s and got on
-> > with things ;-)
-> 
-> This needs to be properly resolved.  In the meantime I am using Steven's
-> suggestion above to continue my work on unwind user sframe (s390).
-> 
-> > 
-> >>> +
-> >>> +		evsel = evlist__id2evsel(evlist, orig_sample.id);
-> >>> +		ret = evlist__deliver_sample(evlist, tool, de->event,
-> >>> +					     &orig_sample, evsel,> machine); +
-> >>> +		if (orig_sample.deferred_callchain)
-> >>> +			free(orig_sample.callchain);
-> >>> +
-> >>> +		list_del(&de->list);
-> >>> +		free(de);
-> >>> +
-> >>> +		if (ret)
-> >>> +			break;
-> >>> +	}
-> >>> +	return ret;
-> >>> +}
-> >>
-> >> -- Steve
-> 
-> Thanks and regards,
-> Jens
-> -- 
-> Jens Remus
-> Linux on Z Development (D3303)
-> +49-7031-16-1128 Office
-> jremus@de.ibm.com
-> 
-> IBM
-> 
-> IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
-> IBM Data Privacy Statement: https://www.ibm.com/privacy/
-> 
+WARNING: CPU: 1 PID: 2216 at ./include/linux/skbuff.h:3071
+ skb_gso_validate_network_len
+ bpf_skb_check_mtu
+ bpf_prog_3920e25740a41171_tc_chk_segs_flag # A test in the next patch
+ bpf_test_run
+ bpf_prog_test_run_skb
+
+For a normal ingress skb (not test_run), skb_reset_transport_header
+is performed but there is plan to avoid setting it as described in
+commit 2170a1f09148 ("net: no longer reset transport_header in __netif_receive_skb_core()").
+
+This patch fixes the bpf helper by checking
+skb_transport_header_was_set(). The check is done just before
+skb->transport_header is used, to avoid breaking the existing bpf prog.
+The WARN_ON_ONCE is limited to bpf_prog_test_run, so targeting bpf-next.
+
+Fixes: 34b2021cc616 ("bpf: Add BPF-helper for MTU checking")
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
+Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+---
+ net/core/filter.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 1efec0d70d78..df6ce85e48dc 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -6429,9 +6429,12 @@ BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, skb,
+ 	 */
+ 	if (skb_is_gso(skb)) {
+ 		ret = BPF_MTU_CHK_RET_SUCCESS;
+-		if (flags & BPF_MTU_CHK_SEGS &&
+-		    !skb_gso_validate_network_len(skb, mtu))
+-			ret = BPF_MTU_CHK_RET_SEGS_TOOBIG;
++		if (flags & BPF_MTU_CHK_SEGS) {
++			if (!skb_transport_header_was_set(skb))
++				return -EINVAL;
++			if (!skb_gso_validate_network_len(skb, mtu))
++				ret = BPF_MTU_CHK_RET_SEGS_TOOBIG;
++		}
+ 	}
+ out:
+ 	*mtu_len = mtu;
+-- 
+2.47.3
+
 
