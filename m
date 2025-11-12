@@ -1,190 +1,109 @@
-Return-Path: <bpf+bounces-74290-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74291-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DD7BC525F8
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 14:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 843B3C52785
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 14:26:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A43B73AADC8
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 12:55:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4822042541D
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 13:13:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401013370FF;
-	Wed, 12 Nov 2025 12:55:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE4E2741AC;
+	Wed, 12 Nov 2025 13:13:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HBqw4pgo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LHZN+FnV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4ACE3358C6
-	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 12:55:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF4C30C364;
+	Wed, 12 Nov 2025 13:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762952129; cv=none; b=GaNgyTWezAgyDK0Ccghq8970h6+nz0q9Xjffp2etsHeF6qffsAlhNdqF5fvd/VZ8FqL+erMCdxFajC1yK2Rjp1ntFF0s5LnkBMPjxQqXsVXaBI11crATCVvIFcKZUGmvPq+U3kXOx3Z81OEZvRcH8lMIKLJPv3hv4mGHW7B3wEg=
+	t=1762953231; cv=none; b=h0qhDvsVPphwu3SUUJmcveRL7mOuq7aRr4FyBmE59YsnmMweYUOMoxhJ+vdnXMFh8CXIQ+LqMGE4C13pSHhUVJBJ+XDExhg6+woX6oLi8ngd6zZYWBqvP3FFjMx2QTrzWF9U39vuQ7oqXY0PGesbUaGFwlRw2ZXRhG5u2DxW1gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762952129; c=relaxed/simple;
-	bh=wl6Xo0IXSzmb0uTVxkVrEryJxhav9P1MiVf1FF2pDsw=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=BkxX03eIck9k6xNhOJvPDc6fWFBzT6FoI4/qzPnoUcvvNb6P5SBZbmbluWiUwGup5dY2qTH30ywVdW32G1ExxSjUosj+LUOjHEU9qM38pSeYEnxUpkTvgdkrS3+lW5Sg1SE5pVqWK7tEIudQWuWleLP6rpek4gfvgbHg7+OiPQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edumazet.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HBqw4pgo; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edumazet.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-7849d90b742so9784917b3.0
-        for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 04:55:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1762952127; x=1763556927; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1VGJUzn5WtQBVoTTrQyM2FX5ydLOnFLFtVi21N9cUAY=;
-        b=HBqw4pgobZwj+V0UGfwqcjoY609yUgTZZ7Q0/3yC4pOZGfMkJBQ872wbJKbVmUuZnn
-         Mxdx6S8dIuzoTKXXfp3FVdCD7fQpOnaUcRQ/ITEBWc8LUxGC87DaTyiMSLNnXg6WN1na
-         sdcD4felEuEVxkYAEpTBdAEOBOpPHHmGckCiNlYrnkBMQ/mAf/JU1KKXtgfWoZMU+iRC
-         i+UD7hnJgpABsHhzYO73NLQal4dgU1/7B8RdTboVCIwnxqpoqjzera3XKaDKq2J7v3ZO
-         1O8D86cJs4tF3fIsMbnuZTDlupUQ8pObkLMXlBrbkGrXWmSpg+DlJcU1TLhHm4T8pwZT
-         x1+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762952127; x=1763556927;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1VGJUzn5WtQBVoTTrQyM2FX5ydLOnFLFtVi21N9cUAY=;
-        b=LLUSbvyXF0i+VhXST114L3MTxfCbdnsjI52Zn6ar7RuUdCCuyE0CzRho9nYLt83wJf
-         wYbvkyXeW6ilPZcqiOh/kIgUvtWVqtMiUKCxMPSPv6edDyqzx5sqHugnOqQF+1HMOUqF
-         KIJEevv70XojDZN6qNtazsdTxSa19eY/AwtTsjkeoRmG6L3IX9SE6cx0t1VlLF/IJueX
-         hja7XbqYLyvNgYol7GdmdPi8IX1A2b5Z48ewP+ABqvAK1rHINOeHAPJ+Nr5x1rOO0k0X
-         IyloBMCHt5kyX+Hr0T0mlwBWlicuuoeZ0+MMB3GD8qJx/Xr8pB/vkSrSgiEKxSxxKMwC
-         mCQA==
-X-Forwarded-Encrypted: i=1; AJvYcCWy5yqmgoSw8c7w2TcbuR+BNPBhdf9Ay+GjSEH5i370zJ8m8b7i9apDWIEaAtKSnjBfpCQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3W7VDdf0OBEiVd5HO8ACQs5l1a4E/hIN97nCy3/GC6qLetfWP
-	X3zoXu5tIF+MYl8KpCrEHi8gdHIjOvGIEGwLlLezKrv0UsW+CZpLLhto1oHVkk1FhyspWy9Xl01
-	svEZnBsFSp3DQ/g==
-X-Google-Smtp-Source: AGHT+IFKfHvm1zPt56Z+EIU7I8V5Sxnqk8D6FIACRhXohV4MLib7Je6Hv9q4Dbu8q6IiXFWl/QnGz62pdOGScQ==
-X-Received: from ywll26.prod.google.com ([2002:a05:690c:a1da:b0:787:ce47:7423])
- (user=edumazet job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:690c:9692:b0:787:f043:1eed with SMTP id 00721157ae682-788136e4a15mr20671387b3.53.1762952126885;
- Wed, 12 Nov 2025 04:55:26 -0800 (PST)
-Date: Wed, 12 Nov 2025 12:55:16 +0000
+	s=arc-20240116; t=1762953231; c=relaxed/simple;
+	bh=dvz7hRmiuiAhbxgowOiFwTCdoSQOqn4Z/6EIk6czuZs=;
+	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=hpn2jV/Y0gI3TaGNvRRx7DSb8hMXvM41J4IqdRcbYwCBd+NFHyF4HUe68cZ7/yoICQXbuQpiBJsyCyuuBcqGmOLw4swgG8KmFu5duY/nTTqV2ZBuNYV4UGypmSDRg+5irAwKbJg57xQUQbJGJcBLTZhS0DliZeq2pLx9Aax5FLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LHZN+FnV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47389C4CEF8;
+	Wed, 12 Nov 2025 13:13:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762953231;
+	bh=dvz7hRmiuiAhbxgowOiFwTCdoSQOqn4Z/6EIk6czuZs=;
+	h=Subject:From:To:Cc:Date:From;
+	b=LHZN+FnV1ZxAOGspdw1QFuAH/vbK0L2ttX08AKV1nQ5VBW4DLCFpDgSj7S/smKYI5
+	 b1bece4HG6ckAzOjBQAq0m2f/J23jNVKcLFufbnUB+3JKVrrTKVI3eYVtM2UDYZO+/
+	 IRL6D1U03rkIoRlgb3hSJ5jXB3gW+i3FpO0V4LP850Bhr+xiVkc+RfBxFf6gM+lx5N
+	 K7V4v4OCnZ97azw/uA0XwEzoxhRH73+7KealfQ2yXQ9c17wKPw/Aw0TiOue5yX8AIy
+	 bKPYs2kNeZX+bKME+LgA/xFrUP2pSiryuRRtCyJF8FFA9hOjzXUfGLbog4yuxJrxQl
+	 qngVtDQrz05vg==
+Subject: [PATCH net V4] veth: Fix TXQ stall race condition
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+To: netdev@vger.kernel.org,
+ =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>,
+ Eric Dumazet <eric.dumazet@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, ihor.solodrai@linux.dev,
+ "Michael S. Tsirkin" <mst@redhat.com>, makita.toshiaki@lab.ntt.co.jp,
+ toshiaki.makita1@gmail.com, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kernel-team@cloudflare.com
+Date: Wed, 12 Nov 2025 14:13:46 +0100
+Message-ID: <176295319819.307447.6162285688886096284.stgit@firesoul>
+User-Agent: StGit/1.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.51.2.1041.gc1ab5b90ca-goog
-Message-ID: <20251112125516.1563021-1-edumazet@google.com>
-Subject: [PATCH net/bpf] bpf: add bpf_prog_run_data_pointers()
-From: Eric Dumazet <edumazet@google.com>
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	Simon Horman <horms@kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>, 
-	Victor Nogueira <victor@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
-	Jiri Pirko <jiri@resnulli.us>, 
-	"=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?=" <toke@redhat.com>, eric.dumazet@gmail.com, 
-	Eric Dumazet <edumazet@google.com>, syzbot <syzkaller@googlegroups.com>, 
-	Paul Blakey <paulb@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-syzbot found that cls_bpf_classify() is able to change
-tc_skb_cb(skb)->drop_reason triggering a warning in sk_skb_reason_drop().
+This patchset addresses a race condition introduced in commit dc82a33297fc
+("veth: apply qdisc backpressure on full ptr_ring to reduce TX drops"). In
+production, this has been observed to cause a permanently stalled transmit
+queue (TXQ) on ARM64 (Ampere Altra Max) systems, leading to a "lost wakeup"
+scenario where the TXQ remains in the QUEUE_STATE_DRV_XOFF state and traffic
+halts.
 
-WARNING: CPU: 0 PID: 5965 at net/core/skbuff.c:1192 __sk_skb_reason_drop net/core/skbuff.c:1189 [inline]
-WARNING: CPU: 0 PID: 5965 at net/core/skbuff.c:1192 sk_skb_reason_drop+0x76/0x170 net/core/skbuff.c:1214
+The root cause is a racy use of the__ptr_ring_empty() API from the producer
+side (veth_xmit). The producer stops the queue and then checks the ptr_ring
+consumer's head, but this is not guaranteed to be correct, when observed from
+the producer side, when the NAPI consumer on another CPU has just finished
+consuming.
 
-struct tc_skb_cb has been added in commit ec624fe740b4 ("net/sched:
-Extend qdisc control block with tc control block"), which added a wrong
-interaction with db58ba459202 ("bpf: wire in data and data_end for
-cls_act_bpf").
+This series fixes the race bug, making the driver more resilient to recover is
+postponed to net-next as maintainers don't see this as an actual fix.
 
-drop_reason was added later.
+V4:
+ - Focus on race fix for stable net-tree
+ - Watchdog recovery patch is postponed to net-next tree
 
-Add bpf_prog_run_data_pointers() helper to save/restore the net_sched
-storage colliding with BPF data_meta/data_end.
+V3: https://lore.kernel.org/all/176236363962.30034.10275956147958212569.stgit@firesoul/
+ - Don't keep NAPI running when detecting race, because end of veth_poll will
+   see TXQ is stopped anyway and wake queue, making it responsibility of the
+   producer veth_xmit to do a "flush" that restarts NAPI.
 
-Fixes: ec624fe740b4 ("net/sched: Extend qdisc control block with tc control block")
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Closes: https://lore.kernel.org/netdev/6913437c.a70a0220.22f260.013b.GAE@google.com/
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Paul Blakey <paulb@nvidia.com>
+V2: https://lore.kernel.org/all/176159549627.5396.15971398227283515867.stgit@firesoul/
+ - Drop patch that changed up/down NDOs
+ - For race fix add a smb_rmb and improve commit message reasoning for race cases
+
+V1: https://lore.kernel.org/all/176123150256.2281302.7000617032469740443.stgit@firesoul/
+
 ---
- include/linux/filter.h | 20 ++++++++++++++++++++
- net/sched/act_bpf.c    |  7 +++----
- net/sched/cls_bpf.c    |  6 ++----
- 3 files changed, 25 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index f5c859b8131a3e5fa5111b60cc291cedd44f096d..973233b82dc1fd422f26ac221eeb46c66c47767a 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -901,6 +901,26 @@ static inline void bpf_compute_data_pointers(struct sk_buff *skb)
- 	cb->data_end  = skb->data + skb_headlen(skb);
- }
- 
-+static inline int bpf_prog_run_data_pointers(
-+	const struct bpf_prog *prog,
-+	struct sk_buff *skb)
-+{
-+	struct bpf_skb_data_end *cb = (struct bpf_skb_data_end *)skb->cb;
-+	void *save_data_meta, *save_data_end;
-+	int res;
-+
-+	save_data_meta = cb->data_meta;
-+	save_data_end = cb->data_end;
-+
-+	bpf_compute_data_pointers(skb);
-+	res = bpf_prog_run(prog, skb);
-+
-+	cb->data_meta = save_data_meta;
-+	cb->data_end = save_data_end;
-+
-+	return res;
-+}
-+
- /* Similar to bpf_compute_data_pointers(), except that save orginal
-  * data in cb->data and cb->meta_data for restore.
-  */
-diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
-index 396b576390d00aad56bca6a18b7796e5324c0aef..3f5a5dc55c29433525b319f1307725d7feb015c6 100644
---- a/net/sched/act_bpf.c
-+++ b/net/sched/act_bpf.c
-@@ -47,13 +47,12 @@ TC_INDIRECT_SCOPE int tcf_bpf_act(struct sk_buff *skb,
- 	filter = rcu_dereference(prog->filter);
- 	if (at_ingress) {
- 		__skb_push(skb, skb->mac_len);
--		bpf_compute_data_pointers(skb);
--		filter_res = bpf_prog_run(filter, skb);
-+		filter_res = bpf_prog_run_data_pointers(filter, skb);
- 		__skb_pull(skb, skb->mac_len);
- 	} else {
--		bpf_compute_data_pointers(skb);
--		filter_res = bpf_prog_run(filter, skb);
-+		filter_res = bpf_prog_run_data_pointers(filter, skb);
- 	}
-+
- 	if (unlikely(!skb->tstamp && skb->tstamp_type))
- 		skb->tstamp_type = SKB_CLOCK_REALTIME;
- 	if (skb_sk_is_prefetched(skb) && filter_res != TC_ACT_OK)
-diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
-index 7fbe42f0e5c2b7aca0a28c34cd801c3a767c804e..a32754a2658bb7d21e8ceb62c67d6684ed4f9fcc 100644
---- a/net/sched/cls_bpf.c
-+++ b/net/sched/cls_bpf.c
-@@ -97,12 +97,10 @@ TC_INDIRECT_SCOPE int cls_bpf_classify(struct sk_buff *skb,
- 		} else if (at_ingress) {
- 			/* It is safe to push/pull even if skb_shared() */
- 			__skb_push(skb, skb->mac_len);
--			bpf_compute_data_pointers(skb);
--			filter_res = bpf_prog_run(prog->filter, skb);
-+			filter_res = bpf_prog_run_data_pointers(prog->filter, skb);
- 			__skb_pull(skb, skb->mac_len);
- 		} else {
--			bpf_compute_data_pointers(skb);
--			filter_res = bpf_prog_run(prog->filter, skb);
-+			filter_res = bpf_prog_run_data_pointers(prog->filter, skb);
- 		}
- 		if (unlikely(!skb->tstamp && skb->tstamp_type))
- 			skb->tstamp_type = SKB_CLOCK_REALTIME;
--- 
-2.51.2.1041.gc1ab5b90ca-goog
+Jesper Dangaard Brouer (1):
+      veth: more robust handing of race to avoid txq getting stuck
+
+
+ drivers/net/veth.c | 38 ++++++++++++++++++++------------------
+ 1 file changed, 20 insertions(+), 18 deletions(-)
+
+--
 
 
