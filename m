@@ -1,228 +1,146 @@
-Return-Path: <bpf+bounces-74284-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74285-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5800EC51902
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 11:09:25 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3E77C51BCE
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 11:43:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF3B4188715A
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 10:07:31 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 882524F426A
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 10:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 534C22FE573;
-	Wed, 12 Nov 2025 10:07:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16D73043B4;
+	Wed, 12 Nov 2025 10:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="EP9mZzAw"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="djVxInjL";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="O/xEfp7Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DAD2FD1D5;
-	Wed, 12 Nov 2025 10:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972C32FF673
+	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 10:35:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762942020; cv=none; b=KrKg6jTbOlPl+n2H2Nqw4nrpqxyoljFZjGuyKgt/gsbcEI6mVpWC0g5iMClw2yNIeaKHTbbJHAJPOTqaWygCX7J0OF0x9Puj1zOqVguNI2fLYyFmJp+jRbKYLmvVfpCkNVMCBCui/exftxO7A0/HMR5w6/7OGVGbiPc7qplBQvs=
+	t=1762943714; cv=none; b=lFSNqWr3+a6PIraLwjuzJDsp1ciK0ZYzgWykd1XXOHWRIEdTRLAeomi8fWM2ABqLuagHDyvCrRMJ5+vTUVR67j5FIHx4CD7jIx7uDpW8Jxjdn0nMtm+HqdpRi2vwV22Hz48DW0wPj0WzFUfpRRMi9UI82QPBUfrp2BjZiyP8b5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762942020; c=relaxed/simple;
-	bh=hTysW8ldnhzhr1+7+t+schbzT3i7HS0zbqEdHYIEosg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uq26eWTBGkPaY61F6XyctzArByFELThLcH1Poi4px+Ea68BbaC4wWuzT5Pg+f3GUHtGIsrz1JPQg9pLlXs/OV/MrrujKS2XmA25zrOp4umjWX5z4fZKci1tmRMFiVVD9YpZW2S+DCcK1I6+/kluaNdfxiHBkQCAGtisLhfMURCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=EP9mZzAw; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AC3V5lS007136;
-	Wed, 12 Nov 2025 10:06:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=TfObaI
-	bP9JQo5NnryYlf8giRFUtoQnidA+p6jOSi7ME=; b=EP9mZzAw73DpsHbsLG++k/
-	xXfWO4ScFdBcq5TQPrUeFfE/+gRILlrK5tbMQhTE/IpYXzCNIcpbeWPMDryjoVzC
-	jeMH5Nm0ufUz7Nhpm0S7PDb8eSNcdSZXGMLvGss1bOET6NcOxaZVXyDUUKduMGBO
-	xoz2236w1LtOlpyrDse9LkFlSQMHL9Hfpm3ay7zO2YGbytauaEcGAYzATT9Ytpsj
-	XxKc9KgYQc5N5a/2oE9YE6XJGURT9DcZMvJ08I6byeNUAFHeXqnlf4I1uaFVwNnM
-	Evx3UkqlXVmx27lAqBcaAyOv7V7jZpfU/pjYo+laDo4rlUweQ/NqAdAUa9O+EN6w
-	==
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a9wgx0fhu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 12 Nov 2025 10:06:03 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AC6LvA6014755;
-	Wed, 12 Nov 2025 10:06:02 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4aahpk7ged-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 12 Nov 2025 10:06:02 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5ACA605039125464
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 12 Nov 2025 10:06:00 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B178B20076;
-	Wed, 12 Nov 2025 10:06:00 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1550220074;
-	Wed, 12 Nov 2025 10:06:00 +0000 (GMT)
-Received: from [9.155.200.37] (unknown [9.155.200.37])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 12 Nov 2025 10:06:00 +0000 (GMT)
-Message-ID: <f543231e-a71c-4600-9cf3-f999ca104d86@linux.ibm.com>
-Date: Wed, 12 Nov 2025 11:05:59 +0100
+	s=arc-20240116; t=1762943714; c=relaxed/simple;
+	bh=E+tvlKSlf/4Wz9KSvYrxWC/QgGC9Mmj94VvKntU4n/A=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=MsIWCHxxRUnH7QiRho4VChg+kBkkJiJcejlKwtEBfeEA39CtrxmMixM+OOoMPbHVTPcJ2tz2tuUf1zN6ouzKxJ9RnBS53sr2dzz4uW2ewWH52SqVq6DcRt2hUknxk56IzljCOGXy5wOrW+hyG42UlQTSfx4AhdDuSEgd0LWa/pI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=djVxInjL; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=O/xEfp7Y; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762943711;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E+tvlKSlf/4Wz9KSvYrxWC/QgGC9Mmj94VvKntU4n/A=;
+	b=djVxInjLuLu9rPixoAOJG3jcdCyUpkESYda4kSVX+m5f7FB2FM69sLZ51a6bZAJN5gPTYo
+	DuyOeF8mYB5A1buDhgq64TZM21lGzORUKgofE9zieK6orpUtF6cM7GqPwKut0D41k/gkas
+	HgOvn5IZGjB0A6shTbovZsR7SCLTtx8=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-277-JieTvXHgOgaTfCptGKOQrA-1; Wed, 12 Nov 2025 05:35:10 -0500
+X-MC-Unique: JieTvXHgOgaTfCptGKOQrA-1
+X-Mimecast-MFC-AGG-ID: JieTvXHgOgaTfCptGKOQrA_1762943709
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-b71043a0e4fso64809366b.2
+        for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 02:35:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1762943709; x=1763548509; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=E+tvlKSlf/4Wz9KSvYrxWC/QgGC9Mmj94VvKntU4n/A=;
+        b=O/xEfp7YWmTmvHPNePKBPS7LOLgpU6Rh/qjwQolnaee3YDJcfoNHYlc6hLUklp/WQm
+         0cDIiAV5Tg8D6Kgk5Rvdz1/B0rxC9x7xim1rvQ6giiIAZxM7/tYTc5NbyFlClqu4q8Ns
+         D0AelqmdOAZQRFfxLYfgndSoJdfUrd/vlgnypx58P3WqFkz4OdYn6ZFUWxRXp9GYrQtb
+         RciT85XY9v7bTFkaWoI2GCj3AEL7Oo0orIKqtF5YI3DZDyK8xR8HAdl7SrsnacjTm9ir
+         mu88aBxtMmysQSaqE10yFZdNCWrb45I8Bd/Vq0A2JI/Pv8YKnLt8yobxlNa1+568bDG8
+         NxLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762943709; x=1763548509;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E+tvlKSlf/4Wz9KSvYrxWC/QgGC9Mmj94VvKntU4n/A=;
+        b=pK7Afih3yXfVr8gaLGh1EWDjcOUmAy4uHPUFKd2qOP9tw8yryupWaKhJETfQM+OzOu
+         xSz+KqZ7XGXzVMMgHI2OrxedAvC7pHErDhxzQi+GC8W1KtGSY+TFj9bVzrY4Xg/ZHBg/
+         HBuI4jlJhQhSSPjUxUsQZ9TWgLjFsq7NwvBDt57hxOjVBSeu9eFQU3w0Ebh5aPiYOvZd
+         puIXLz9wqLKEDsdG0LMPsYZ/I0ng8E+V7QbDJ79ciI0WQqR21jMQiBlTH23UxqZlbjds
+         MVNkf456sMqeq2IL6M0TLZ0HAewsY9EXv8wuhbD0pMhKSaMOTIsZeMwSDco+TbpLZ65f
+         x+ww==
+X-Forwarded-Encrypted: i=1; AJvYcCXNTr5CJBgIYmOFYqArtkDxGKmLkxtWFCyjqfWvTDaE9tUzu9JuVDs9nAMdM1nEkKWt8cU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyMd1Jg5QfKKC2aunM0+/YliYmvyY8yENxq2e2EdOCrgz//Vckr
+	dXwCaTN6IJ0dB5ZY04X72D93Hl2zLdo9WM3xCstY/1C+tK3AVffhtuZHtE7L5gv5jRoJOgLw8XM
+	ybHhe2neHQIVG5sfvuBIyDqys68v4qyzlCgaI9nZepJthqrWEftTY+Q==
+X-Gm-Gg: ASbGnctMVywK8diCeg0M8d6ck+tTQHh+69N2FGqn96xGtsvnKqBuiPu1nXKPBGFpJyz
+	7bQTE0KjR+sHYF+bIWPMfXFhiOBLnk6PLnnvOUWFfLloiow6dFYOEGJYbp5nzvXXPop/l6ch5of
+	4NRuKtyTpLDd4pp4iiBu5anKjQ5rQ0NhKUCzrRy94A1dfNEM7LUmthCF+GsmQjgI6v2tZ/8WQXA
+	gAR8N+iEMknDTc/4vgJTY8+OvV6HqStYtHN0mShBVsf2Jzfkp85Vqnsvt0eqMdxpK78AW++v4L1
+	X11X7AP/Hn/whAYsX7bwwbaKKw2qjaBh8wacdhGTYy0VRQCt3+V2zqBf4ovRNKHunxNEE+83KrE
+	BBs0QS6Py5NkqLzGMt00dgdk=
+X-Received: by 2002:a17:907:c1c:b0:b49:5103:c0b4 with SMTP id a640c23a62f3a-b7331ace073mr291846066b.56.1762943709051;
+        Wed, 12 Nov 2025 02:35:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE0/W7QILhc20zuI/PbypJ8sMQLsdF6TH22S7u7UG3VgCM2TlPgQLQWKEl5Bf/jjsWA11F+4Q==
+X-Received: by 2002:a17:907:c1c:b0:b49:5103:c0b4 with SMTP id a640c23a62f3a-b7331ace073mr291842966b.56.1762943708631;
+        Wed, 12 Nov 2025 02:35:08 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-64179499189sm8607152a12.8.2025.11.12.02.35.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Nov 2025 02:35:07 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 2C7A2329674; Wed, 12 Nov 2025 11:29:54 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Andrew
+ Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Gal Pressman <gal@nvidia.com>, Leon Romanovsky
+ <leonro@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, William Tu
+ <witu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, Nimrod Oren
+ <noren@nvidia.com>, Alex Lazar <alazar@nvidia.com>
+Subject: Re: [PATCH net-next 6/6] net/mlx5e: Support XDP target xmit with
+ dummy program
+In-Reply-To: <1762939749-1165658-7-git-send-email-tariqt@nvidia.com>
+References: <1762939749-1165658-1-git-send-email-tariqt@nvidia.com>
+ <1762939749-1165658-7-git-send-email-tariqt@nvidia.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 12 Nov 2025 11:29:54 +0100
+Message-ID: <877bvvlf19.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v16 4/4] perf tools: Merge deferred user callchains
-To: Namhyung Kim <namhyung@kernel.org>, Steven Rostedt <rostedt@goodmis.org>
-Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Indu Bhagat <indu.bhagat@oracle.com>,
-        "Jose E. Marchesi" <jemarch@gnu.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>,
-        Kees Cook <kees@kernel.org>, "Carlos O'Donell" <codonell@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20250908175319.841517121@kernel.org>
- <20250908175430.639412649@kernel.org>
- <20251002134938.756db4ef@gandalf.local.home>
- <20251024130203.GC3245006@noisy.programming.kicks-ass.net>
-Content-Language: en-US
-From: Jens Remus <jremus@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20251024130203.GC3245006@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: L_7sfh61mwnig6fGCcLLmEZrHnaQHDuI
-X-Proofpoint-ORIG-GUID: L_7sfh61mwnig6fGCcLLmEZrHnaQHDuI
-X-Authority-Analysis: v=2.4 cv=VMPQXtPX c=1 sm=1 tr=0 ts=69145c0b cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VnNF1IyMAAAA:8 a=VwQbUJbxAAAA:8 a=Vs_kanKWfxrV1IkLjT4A:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=nl4s5V0KI7Kw-pW0DWrs:22 a=pHzHmUro8NiASowvMSCR:22
- a=xoEH_sTeL_Rfw54TyV31:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTA4MDAyMiBTYWx0ZWRfX9yuxxvyN78Og
- 69SPfChu8C26Ui7EH/rN9p/nPA8ApOGKgjl3fx4SMJtdZ0NkHEHvL573DxDpej4bUkc6Vw25+pC
- xFy74vg0QORXjXqQekG6shZ5IPcDavRtDxY/8MtXSt4ph69AFwTGBPpqT6yzyfdRmFR01xD2Gtv
- bk0il8sBGlxnJURQW0pvPa4JYOnzSlYKi4e+WVOxwIPof/1+ziwe4hQvuofMRrwzPdyglHF3H02
- IchSUpkPcjvPuZbbO3veyqynNcwRL0bm3Wu5qtA3YPJdvmMdQvF/je4LMDkPbF3wDpGNVt1fWrZ
- sbc6etbnf9FULaU1o/N91tHnSOrqVYnzRNOuF4b3hG4lU8ye/hYDRu+qvgNNY8Oefwg8OiQEFjA
- Y60tXmEVofdQJHIkppKmjPZhQv8f5w==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-12_03,2025-11-11_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0
- clxscore=1015 phishscore=0 spamscore=0 malwarescore=0 adultscore=0
- suspectscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2510240000
- definitions=main-2511080022
+Content-Type: text/plain
 
-Hello Namhyung,
+Tariq Toukan <tariqt@nvidia.com> writes:
 
-could you please adapt your patches from this series to Peter's latest
-changes to unwind user and related perf support, especially his new
-version c69993ecdd4d ("perf: Support deferred user unwind") available
-at:
+> Save per-channel resources in default.
+>
+> As no better API exist, make the XDP-redirect-target SQ available by
+> loading a dummy XDP program.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
+This is a user-visible change, though, no? I.e., after this patch
+xdp_redirect mlx5 devices will no longer work as an xdp_redirect target
+out of the box?
 
-On 10/24/2025 3:02 PM, Peter Zijlstra wrote:
-> On Thu, Oct 02, 2025 at 01:49:38PM -0400, Steven Rostedt wrote:
->> On Mon, 08 Sep 2025 13:53:23 -0400
->> Steven Rostedt <rostedt@kernel.org> wrote:
->>
->>> +static int evlist__deliver_deferred_samples(struct evlist *evlist,
->>> +					    const struct perf_tool *tool,
->>> +					    union  perf_event *event,
->>> +					    struct perf_sample *sample,
->>> +					    struct machine *machine)
->>> +{
->>> +	struct deferred_event *de, *tmp;
->>> +	struct evsel *evsel;
->>> +	int ret = 0;
->>> +
->>> +	if (!tool->merge_deferred_callchains) {
->>> +		evsel = evlist__id2evsel(evlist, sample->id);
->>> +		return tool->callchain_deferred(tool, event, sample,
->>> +						evsel, machine);
->>> +	}
->>> +
->>> +	list_for_each_entry_safe(de, tmp, &evlist->deferred_samples, list) {
->>> +		struct perf_sample orig_sample;
->>
->> orig_sample is not initialized and can then contain junk.
->>
->>> +
->>> +		ret = evlist__parse_sample(evlist, de->event, &orig_sample);
->>> +		if (ret < 0) {
->>> +			pr_err("failed to parse original sample\n");
->>> +			break;
->>> +		}
->>> +
->>> +		if (sample->tid != orig_sample.tid)
->>> +			continue;
->>> +
->>> +		if (event->callchain_deferred.cookie == orig_sample.deferred_cookie)
->>> +			sample__merge_deferred_callchain(&orig_sample, sample);
->>
->> The sample__merge_deferred_callchain() initializes both
->> orig_sample.deferred_callchain and the callchain. But now that it's not
->> being called, it can cause the below free to happen with junk as the
->> callchain. This needs:
->>
->> 		else
->> 			orig_sample.deferred_callchain = false;
-> 
-> Ah, so I saw crashes from here and just deleted both free()s and got on
-> with things ;-)
+We have userspace code listing the driver support in various places
+(e.g., here in xdp-tools:
+https://github.com/xdp-project/xdp-tools/commit/1dad1d6e0ccb086b8a31496931f21a165b42b700);
+I'm sure there will be other places. Since such code would up until now
+assume that mlx5 just works, this will end up being a regression in such
+cases, no?
 
-This needs to be properly resolved.  In the meantime I am using Steven's
-suggestion above to continue my work on unwind user sframe (s390).
-
-> 
->>> +
->>> +		evsel = evlist__id2evsel(evlist, orig_sample.id);
->>> +		ret = evlist__deliver_sample(evlist, tool, de->event,
->>> +					     &orig_sample, evsel,> machine); +
->>> +		if (orig_sample.deferred_callchain)
->>> +			free(orig_sample.callchain);
->>> +
->>> +		list_del(&de->list);
->>> +		free(de);
->>> +
->>> +		if (ret)
->>> +			break;
->>> +	}
->>> +	return ret;
->>> +}
->>
->> -- Steve
-
-Thanks and regards,
-Jens
--- 
-Jens Remus
-Linux on Z Development (D3303)
-+49-7031-16-1128 Office
-jremus@de.ibm.com
-
-IBM
-
-IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
-IBM Data Privacy Statement: https://www.ibm.com/privacy/
+-Toke
 
 
