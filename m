@@ -1,190 +1,358 @@
-Return-Path: <bpf+bounces-74269-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74270-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B7CEC50911
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 05:53:58 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8AD5C50FA7
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 08:42:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 51B944ECAA9
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 04:52:35 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 69EAD4ECC35
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 07:41:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E405C23E330;
-	Wed, 12 Nov 2025 04:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978332DC77F;
+	Wed, 12 Nov 2025 07:41:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1090257835
-	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 04:52:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BFE635CBC5;
+	Wed, 12 Nov 2025 07:41:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762923149; cv=none; b=JiFUDfeP/Stda9Ub2olKDS4rcnqwH3ojIl/edO3eu5FrDuv3gqcvN8GNVkd434EuwjLhk8tnuTpHP2FV+gxg8cMxYzb1+zdPCXQ7RO1aKyCYErpyF6bfTTlxaLzCuncwKpCDqtnHy3ecIIb41cmPGJahesDJAgvfBwEjcppnZkY=
+	t=1762933295; cv=none; b=s0IfG8F05Yo6VpzSFeg0S35YtAvSb78gTzujR5TEGuy8r9irIXcAspF14yfr05qQnujqg6Dupo1jB1MzazenxF5GMwmpVuMbP12Dr0mBtZiru9KzWbmWZ3WBX+bkGZ+MA18c2XMVNdA421ARZzk2jEkQ7mX4kNIOOnAbEngCOSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762923149; c=relaxed/simple;
-	bh=CIvLkOUS047TucL7cgNJmviXjqebQR1vjTOiVoJgcGA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Vmd+UTCjIwz8g3BvfespyG62Pzr8c+onwu0DXVH3PkvhfzPQEHcqb0PDeNsbS4quXT63UDjv9RNDchOUi5m2CznBUPOWpXquAADBbwDHQByIBJHGyeIP61DEKpHzZDyoMIDiBrdgSOldmAv4BbldtXyo/esGSL2FIAD1eWK8koA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-43377268125so6041965ab.0
-        for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 20:52:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762923147; x=1763527947;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/xR/S0akTM9IizGbyH/pcTSsfCiAbNA5aO/SzN0S+qc=;
-        b=v6/XFfD8SrpfZBYiTkeOHBnrBeNQGO7sBa3dYyOfE3QQPRgb3byTJpVMdflJ7dzY6P
-         6QOgYu6IK4s7WzPhw5c2Z0DEVXTOgEMw2UMLfA9ZorCNhK1fdeXEauwMnxGfY3CHjh7M
-         89t3rUwZqXMYNWFVy3327T6miCS3IZMe0XTsYbpadp7xCHpaze1rKyDNsyXFsOrfNOoz
-         JG2xHOZ8FKc6k4wTL1hen+4528GCqvdQHnjfZqCaTPpI4KVoKoJ/mneDHMbgV1SgTblf
-         dV21zI7DuBik76L5r8Lamevms9JuDcuGpe4k6kamCoqqi0jX6hTMzKvILtKMHwdJpBju
-         ESMw==
-X-Forwarded-Encrypted: i=1; AJvYcCUKXTTP63fJXH9+J62r+97ABPPd680z3C5O6u4eM+88JTjniXh5gprKWKhbWhQ3HZo9hSg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxOfhmMh5gIntKaxlUsN4E9PaGWkiXYDxzIBavGAPsh3XRO+ncb
-	NA7ruHiPy2HCYMOKOJEtlqqmjyaxtZ6P+n9pcI5Pr9XULuuA/AxtyneIgHz6i6qSySK2rybkYRs
-	dEfiLTAGi0i3qH/5oHcx2pYVJSPQpcVOzXUzZuSN6vDcDCK1vs/PxuxBAUck=
-X-Google-Smtp-Source: AGHT+IEalNLm4nKk8fLi4y0xYX+5Nao4o3HK0geVhuKlrQfqUMB7hx94C8r2EruYYup9yM47XvRjz6EN4BkpAlS+Fzf0/eO5s8G7
+	s=arc-20240116; t=1762933295; c=relaxed/simple;
+	bh=i3IPLPbblBL///PR2REpEMhn05zkGbRtvoLEmg418Qc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tfWPNUW/FcqRZ/Q1gGQha88vg5lkRAAXZBDfsGzgKwmUoKlf9HI7rt5x40cvYUAJ5sw9tkQWOPavDv0VxtJS5g3h915qgfBQFAE1eK7NK9/ruM/VjyflnmMpQj9sub62zR7aZZeVXSccnKbwN/z89ePeiTrq4bUftEsTqhfNmJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-c2dff70000001609-5a-69143a24e040
+Date: Wed, 12 Nov 2025 16:41:18 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+	davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
+	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch,
+	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org,
+	david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	ilias.apalodimas@linaro.org, willy@infradead.org,
+	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+	almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+	sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com,
+	dtatulea@nvidia.com
+Subject: Re: [RFC mm v5 1/2] page_pool: check nmdesc->pp to see its usage as
+ page pool for net_iov not page-backed
+Message-ID: <20251112074118.GA31149@system.software.com>
+References: <20251103075108.26437-1-byungchul@sk.com>
+ <20251103075108.26437-2-byungchul@sk.com>
+ <20251106173320.2f8e683a@kernel.org>
+ <20251107015902.GA3021@system.software.com>
+ <20251106180810.6b06f71a@kernel.org>
+ <20251107044708.GA54407@system.software.com>
+ <20251107174129.62a3f39c@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1fcc:b0:433:7a2f:a40a with SMTP id
- e9e14a558f8ab-43473cff396mr21170735ab.4.1762923147120; Tue, 11 Nov 2025
- 20:52:27 -0800 (PST)
-Date: Tue, 11 Nov 2025 20:52:27 -0800
-In-Reply-To: <68af39ae.a70a0220.3cafd4.002c.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6914128b.050a0220.417c2.0004.GAE@google.com>
-Subject: Re: [syzbot] [hams?] WARNING: ODEBUG bug in handle_softirqs
-From: syzbot <syzbot+60db000b8468baeddbb1@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	horms@kernel.org, kuba@kernel.org, linux-hams@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	peterz@infradead.org, syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251107174129.62a3f39c@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa1BMYRjH5z3n7DmnHavXFl76wKwME1IG8zCGPr7GZcwwY1wGh85otYUt
+	q8xgaQdFKypqLTbXbqaZjdpSLpWED5lMOgbdL4i2qcQq0mYM337zf575/Z8Pj8hqn6umivro
+	WNkYLRl0vJpTfxl3bV7gUn99iOW0L9gL8nnI+x4Ht5tdKvDkdzFgzy1CMOB5K8BIeTWC/qqn
+	PHRX9iG4njXIgr3WwsHXgh8slJR2IfiUcYeHjupWAfKca6DpVicHZSeLWWg9W8NDsmWIhXJP
+	jwDHXdmj4kKzAC+LrCpI+3GThWJzswCvSu08NOaPqKCzIpmDZ7YcDnrTq1hosoZBtWMSDL74
+	jKCqoJiBwTOXeajPLGXgXnm9AKl1Dh7aLE0I6ipbOUgfPsXDpWNWBEPfR5U9KQMquPSkUQgL
+	pscUhaeVn90svZvzhqGvM85xVHnwnKEltvcCdTgP0MLsIJqk1LHUmZvIU2ffeYG+e13G05qM
+	IY6WtCyhJa5+hiYn9PDrJm5WLwuXDXqTbJy/fIc6ovjC3H1dq+MST6SxZnRxRRLyEQleSH6e
+	rRH+sj03e4w5PJO03CwYYx7PIoriYb3sjwOJpTCTS0JqkcW9AslQGlXegR+OJb1u89iSBgOx
+	1TYgL2txIUPaL/j+ySeQZ5ntnJdZHESUXx+ZJCSOcgC5/Uv0xj44lFz92D7WOxHPII+KnjLe
+	LoIHRNJQ14L+HDqFPM5WuBSEbf9pbf9pbf+0DsTmIq0+2hQl6Q0LgyPio/Vxwbv2RjnR6Ifd
+	Ojy8xYX6Xq6vQFhEunEa0uan16okU0x8VAUiIqvz1wzvxHqtJlyKPyQb9243HjDIMRUoQOR0
+	kzULBg+Ga/FuKVaOlOV9svHvlBF9ppqRabHf1vmbG9a+WJa2cVH/pnOORM2T7mk9Rz5sq38Y
+	mjlZezEtfXvOyYDhspaE+3Mip+wv7X0054bbJR1tbl8Vid9fS3GvDKlNjd/BJdxL/eb+kjX9
+	Td/V4Lw93Xs2hEVq27aGb5I2WpeaX20Y8Z3ta73il5WzfL3ZMG/8oYOmDuoJDLmh42IipNAg
+	1hgj/QYWkDtbXQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+59zds7ZanSal05mBbMIVmlB5duFEqL6E13pQ9CXXHXSg/PS
+	ZqKBuMoyLU0ra85Fq8h7jGY5JxqxmTqtDMVaVGpmmiYq3sg0zRlR3348z/s875eHJRUlEj9W
+	jIoVtFFqjZKWUbL9Wy6sCdjsLa6trQwGk6WEhuIf8ZDfXi6B8ZJuAkxFZQhGxj8wMF1Vg2C4
+	upaG784hBA/ujZFgakymYNTykwR7RTeCXsMjGr7WdDBQbN0HbXldFFSm2EjouFZHQ3ryBAlV
+	4/0MnC8vmCku1TPgvOOSwJuyDAnc/PmQBJu+nYHmChMNrSXTEuhypFPgMhZSMJhdTUJbRgjU
+	mH1hrKEPQbXFRsDY1Ts0tORUEPC0qoWBG01mGr4ktyFocnZQkD15mYbccxkIJn7MVPZnjkgg
+	90UrExKEz7ndNHb2DZD4SeF7Ar81ZFHY/ayewHbjJwabrWdwaYEKp7mbSGwtSqWxdeg6gz++
+	raRxnWGCwvbPm7C9fJjA6Rf66YO+R2VbTwoaMU7QBm0LlYXbbq2O6d4bn3rpJqlHt7enISnL
+	c+t5U1EB42GKW8F/fmiZZZpbybvd46SHvbnlfHJpDpWGZCzJDTK8wd0q8RheXCw/OKCfPZJz
+	wBsb3yEPK7hSgu+8Nf+PvoB35XRSHiY5Fe+e6iHSEDvDi/n8KdYjS7l1/N2eztm/PlwA/7ys
+	lshEcuN/aeN/aeO/tBmRRchbjIqLVIuaDYG6iPCEKDE+8ER0pBXNbCgvcTKrHI0073YgjkXK
+	efKQFV6iQqKO0yVEOhDPkkpv+eRxTlTIT6oTzgra6GPaMxpB50CLWUq5UL7niBCq4MLUsUKE
+	IMQI2r8uwUr99GhHkCrPR6i66L/pyqLszFOhxtMRYmOjPslmq0s05c9zNJ2tbnnk2EgsCZ4z
+	mqS6tKOYeFMz2huQH2afGj7Ue3+qwcw9oxa4TAZXin13bjQrrZc2W745MzseE4ca8Ou5p19t
+	/qX5stRyQm33mzzgtUp7uPBxV+rrXcte3t7pP/icUFK6cPU6FanVqX8DpSw1ej8DAAA=
+X-CFilter-Loop: Reflected
 
-syzbot has found a reproducer for the following issue on:
+On Fri, Nov 07, 2025 at 05:41:29PM -0800, Jakub Kicinski wrote:
+> On Fri, 7 Nov 2025 13:47:08 +0900 Byungchul Park wrote:
+> > The offset of page_type in struct page cannot be used in struct net_iov
+> > for the same purpose, since the offset in struct net_iov is for storing
+> > (struct net_iov_area *)owner.
+> 
+> owner does not have to be at a fixed offset. Can we not move owner
+> to _pp_mapping_pad ? Or reorder it with type, enum net_iov_type
+> only has 2 values we can smoosh it with page_type easily.
 
-HEAD commit:    2666975a8905 Add linux-next specific files for 20251111
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13748212580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e82ba9dc816af74c
-dashboard link: https://syzkaller.appspot.com/bug?extid=60db000b8468baeddbb1
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10646b42580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=133eec12580000
+At the beginning I tried to smoosh it with page_type but it requires the
+additional logic or something to save and restore the value of enum
+net_iov_type if the netmem is net_iov when updating page_type like:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/26ac789d9bdd/disk-2666975a.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/fabfe7978a23/vmlinux-2666975a.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/82f010d50b37/bzImage-2666975a.xz
+  if (netmem_is_net_iov(netmem))
+	type = get_type_from_niov(netmem_to_niov(netmem));
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+60db000b8468baeddbb1@syzkaller.appspotmail.com
+  /* Unconditionally clear the value of enum net_iov_type. */
+  __{Set,Clear}PageNetpp(__netmem_to_page((__force unsigned long)netmem & ~NET_IOV));
 
-------------[ cut here ]------------
-ODEBUG: free active (active state 0) object: ffff888028ee8090 object type: timer_list hint: rose_t0timer_expiry+0x0/0x350 net/rose/rose_link.c:-1
-WARNING: lib/debugobjects.c:615 at debug_print_object+0x16b/0x1e0 lib/debugobjects.c:612, CPU#1: syz.2.1147/9544
-Modules linked in:
-CPU: 1 UID: 0 PID: 9544 Comm: syz.2.1147 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
-RIP: 0010:debug_print_object+0x16b/0x1e0 lib/debugobjects.c:612
-Code: 4c 89 ff e8 d7 19 86 fd 4d 8b 0f 48 c7 c7 80 1b e1 8b 48 8b 34 24 4c 89 ea 89 e9 4d 89 f0 41 54 e8 0a 38 e2 fc 48 83 c4 08 90 <0f> 0b 90 90 ff 05 47 22 1e 0b 48 83 c4 08 5b 41 5c 41 5d 41 5e 41
-RSP: 0018:ffffc90000a08a00 EFLAGS: 00010296
-RAX: cfc2b002eab41900 RBX: dffffc0000000000 RCX: ffff888031311e80
-RDX: 0000000000000100 RSI: 0000000000000000 RDI: 0000000000000002
-RBP: 0000000000000000 R08: 0000000000000003 R09: 0000000000000004
-R10: dffffc0000000000 R11: fffffbfff1c3a744 R12: ffffffff8a5327d0
-R13: ffffffff8be11d00 R14: ffff888028ee8090 R15: ffffffff8b8cf8e0
-FS:  00007fda22dbb6c0(0000) GS:ffff888125b82000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000020000000d000 CR3: 0000000078a42000 CR4: 00000000003526f0
-Call Trace:
- <IRQ>
- __debug_check_no_obj_freed lib/debugobjects.c:1099 [inline]
- debug_check_no_obj_freed+0x3a2/0x470 lib/debugobjects.c:1129
- slab_free_hook mm/slub.c:2470 [inline]
- slab_free mm/slub.c:6661 [inline]
- kfree+0x10c/0x6e0 mm/slub.c:6869
- rose_neigh_put include/net/rose.h:166 [inline]
- rose_timer_expiry+0x4cb/0x600 net/rose/rose_timer.c:183
- call_timer_fn+0x16e/0x600 kernel/time/timer.c:1747
- expire_timers kernel/time/timer.c:1798 [inline]
- __run_timers kernel/time/timer.c:2372 [inline]
- __run_timer_base+0x61a/0x860 kernel/time/timer.c:2384
- run_timer_base kernel/time/timer.c:2393 [inline]
- run_timer_softirq+0xb7/0x180 kernel/time/timer.c:2403
- handle_softirqs+0x27d/0x880 kernel/softirq.c:626
- __do_softirq kernel/softirq.c:660 [inline]
- invoke_softirq kernel/softirq.c:496 [inline]
- __irq_exit_rcu+0xca/0x1f0 kernel/softirq.c:727
- irq_exit_rcu+0x9/0x30 kernel/softirq.c:743
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1055 [inline]
- sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1055
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:697
-RIP: 0010:lock_release+0x2ac/0x3d0 kernel/locking/lockdep.c:5893
-Code: 51 48 c7 44 24 20 00 00 00 00 9c 8f 44 24 20 f7 44 24 20 00 02 00 00 75 56 f7 c3 00 02 00 00 74 01 fb 65 48 8b 05 64 98 1b 11 <48> 3b 44 24 28 0f 85 8b 00 00 00 48 83 c4 30 5b 41 5c 41 5d 41 5e
-RSP: 0018:ffffc90004e8f918 EFLAGS: 00000206
-RAX: cfc2b002eab41900 RBX: 0000000000000283 RCX: cfc2b002eab41900
-RDX: 0000000000000000 RSI: ffffffff8dc71e5c RDI: ffffffff8be111e0
-RBP: ffff8880313129b0 R08: 0000000000000000 R09: ffffffff820eec00
-R10: dffffc0000000000 R11: fffffbfff1f7eeef R12: 0000000000000000
-R13: 0000000000000000 R14: ffff888034a18ca0 R15: ffff888031311e80
- _inline_copy_from_user include/linux/uaccess.h:169 [inline]
- _copy_from_user+0x28/0xb0 lib/usercopy.c:18
- copy_from_user include/linux/uaccess.h:219 [inline]
- snd_rawmidi_kernel_write1+0x3ab/0x650 sound/core/rawmidi.c:1560
- snd_rawmidi_write+0x5a8/0xbc0 sound/core/rawmidi.c:1629
- do_loop_readv_writev fs/read_write.c:850 [inline]
- vfs_writev+0x4b6/0x960 fs/read_write.c:1059
- do_writev+0x14d/0x2d0 fs/read_write.c:1103
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fda21f8f6c9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fda22dbb038 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
-RAX: ffffffffffffffda RBX: 00007fda221e5fa0 RCX: 00007fda21f8f6c9
-RDX: 0000000000000002 RSI: 0000200000000840 RDI: 0000000000000004
-RBP: 00007fda22011f91 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fda221e6038 R14: 00007fda221e5fa0 R15: 00007ffd404da6b8
- </TASK>
-----------------
-Code disassembly (best guess):
-   0:	51                   	push   %rcx
-   1:	48 c7 44 24 20 00 00 	movq   $0x0,0x20(%rsp)
-   8:	00 00
-   a:	9c                   	pushf
-   b:	8f 44 24 20          	pop    0x20(%rsp)
-   f:	f7 44 24 20 00 02 00 	testl  $0x200,0x20(%rsp)
-  16:	00
-  17:	75 56                	jne    0x6f
-  19:	f7 c3 00 02 00 00    	test   $0x200,%ebx
-  1f:	74 01                	je     0x22
-  21:	fb                   	sti
-  22:	65 48 8b 05 64 98 1b 	mov    %gs:0x111b9864(%rip),%rax        # 0x111b988e
-  29:	11
-* 2a:	48 3b 44 24 28       	cmp    0x28(%rsp),%rax <-- trapping instruction
-  2f:	0f 85 8b 00 00 00    	jne    0xc0
-  35:	48 83 c4 30          	add    $0x30,%rsp
-  39:	5b                   	pop    %rbx
-  3a:	41 5c                	pop    %r12
-  3c:	41 5d                	pop    %r13
-  3e:	41 5e                	pop    %r14
+  if (netmem_is_net_iov(netmem))
+	set_type_to_niov(netmem_to_niov(netmem), type);
 
+Or page_pool_{set,clear}_pp_info() callers should handle it in a similar
+way.  I'd like to check if you are okay with this approach.
+
+Or I can make it simpler by adding page_type to struct net_iov like the
+following.  Jakub, do these approachs work for you?
+
+	Byungchul
 
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+index 5d51600935a6..def274f5c1ca 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+@@ -707,7 +707,7 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
+ 				xdpi = mlx5e_xdpi_fifo_pop(xdpi_fifo);
+ 				page = xdpi.page.page;
+ 
+-				/* No need to check page_pool_page_is_pp() as we
++				/* No need to check PageNetpp() as we
+ 				 * know this is a page_pool page.
+ 				 */
+ 				page_pool_recycle_direct(pp_page_to_nmdesc(page)->pp,
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index a3f97c551ad8..081e365caa1a 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -4252,10 +4252,9 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
+  * DMA mapping IDs for page_pool
+  *
+  * When DMA-mapping a page, page_pool allocates an ID (from an xarray) and
+- * stashes it in the upper bits of page->pp_magic. We always want to be able to
+- * unambiguously identify page pool pages (using page_pool_page_is_pp()). Non-PP
+- * pages can have arbitrary kernel pointers stored in the same field as pp_magic
+- * (since it overlaps with page->lru.next), so we must ensure that we cannot
++ * stashes it in the upper bits of page->pp_magic. Non-PP pages can have
++ * arbitrary kernel pointers stored in the same field as pp_magic (since
++ * it overlaps with page->lru.next), so we must ensure that we cannot
+  * mistake a valid kernel pointer with any of the values we write into this
+  * field.
+  *
+@@ -4290,26 +4289,6 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
+ #define PP_DMA_INDEX_MASK GENMASK(PP_DMA_INDEX_BITS + PP_DMA_INDEX_SHIFT - 1, \
+ 				  PP_DMA_INDEX_SHIFT)
+ 
+-/* Mask used for checking in page_pool_page_is_pp() below. page->pp_magic is
+- * OR'ed with PP_SIGNATURE after the allocation in order to preserve bit 0 for
+- * the head page of compound page and bit 1 for pfmemalloc page, as well as the
+- * bits used for the DMA index. page_is_pfmemalloc() is checked in
+- * __page_pool_put_page() to avoid recycling the pfmemalloc page.
+- */
+-#define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
+-
+-#ifdef CONFIG_PAGE_POOL
+-static inline bool page_pool_page_is_pp(const struct page *page)
+-{
+-	return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
+-}
+-#else
+-static inline bool page_pool_page_is_pp(const struct page *page)
+-{
+-	return false;
+-}
+-#endif
+-
+ #define PAGE_SNAPSHOT_FAITHFUL (1 << 0)
+ #define PAGE_SNAPSHOT_PG_BUDDY (1 << 1)
+ #define PAGE_SNAPSHOT_PG_IDLE  (1 << 2)
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 0091ad1986bf..edf5418c91dd 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -934,6 +934,7 @@ enum pagetype {
+ 	PGTY_zsmalloc		= 0xf6,
+ 	PGTY_unaccepted		= 0xf7,
+ 	PGTY_large_kmalloc	= 0xf8,
++	PGTY_netpp		= 0xf9,
+ 
+ 	PGTY_mapcount_underflow = 0xff
+ };
+@@ -1078,6 +1079,11 @@ PAGE_TYPE_OPS(Zsmalloc, zsmalloc, zsmalloc)
+ PAGE_TYPE_OPS(Unaccepted, unaccepted, unaccepted)
+ FOLIO_TYPE_OPS(large_kmalloc, large_kmalloc)
+ 
++/*
++ * Marks page_pool allocated pages.
++ */
++PAGE_TYPE_OPS(Netpp, netpp, netpp)
++
+ /**
+  * PageHuge - Determine if the page belongs to hugetlbfs
+  * @page: The page to test.
+diff --git a/include/net/netmem.h b/include/net/netmem.h
+index 651e2c62d1dd..b42d75ecd411 100644
+--- a/include/net/netmem.h
++++ b/include/net/netmem.h
+@@ -114,10 +114,21 @@ struct net_iov {
+ 			atomic_long_t pp_ref_count;
+ 		};
+ 	};
++
++	unsigned int page_type;
+ 	struct net_iov_area *owner;
+ 	enum net_iov_type type;
+ };
+ 
++/* Make sure 'the offset of page_type in struct page == the offset of
++ * type in struct net_iov'.
++ */
++#define NET_IOV_ASSERT_OFFSET(pg, iov)			\
++	static_assert(offsetof(struct page, pg) ==	\
++		      offsetof(struct net_iov, iov))
++NET_IOV_ASSERT_OFFSET(page_type, page_type);
++#undef NET_IOV_ASSERT_OFFSET
++
+ struct net_iov_area {
+ 	/* Array of net_iovs for this area. */
+ 	struct net_iov *niovs;
+@@ -260,7 +271,7 @@ static inline unsigned long netmem_pfn_trace(netmem_ref netmem)
+  */
+ #define pp_page_to_nmdesc(p)						\
+ ({									\
+-	DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(p));		\
++	DEBUG_NET_WARN_ON_ONCE(!PageNetpp(p));				\
+ 	__pp_page_to_nmdesc(p);						\
+ })
+ 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 600d9e981c23..01dd14123065 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1041,7 +1041,6 @@ static inline bool page_expected_state(struct page *page,
+ #ifdef CONFIG_MEMCG
+ 			page->memcg_data |
+ #endif
+-			page_pool_page_is_pp(page) |
+ 			(page->flags.f & check_flags)))
+ 		return false;
+ 
+@@ -1068,8 +1067,6 @@ static const char *page_bad_reason(struct page *page, unsigned long flags)
+ 	if (unlikely(page->memcg_data))
+ 		bad_reason = "page still charged to cgroup";
+ #endif
+-	if (unlikely(page_pool_page_is_pp(page)))
+-		bad_reason = "page_pool leak";
+ 	return bad_reason;
+ }
+ 
+@@ -1378,9 +1375,12 @@ __always_inline bool free_pages_prepare(struct page *page,
+ 		mod_mthp_stat(order, MTHP_STAT_NR_ANON, -1);
+ 		folio->mapping = NULL;
+ 	}
+-	if (unlikely(page_has_type(page)))
++	if (unlikely(page_has_type(page))) {
++		/* networking expects to clear its page type before releasing */
++		WARN_ON_ONCE(PageNetpp(page));
+ 		/* Reset the page_type (which overlays _mapcount) */
+ 		page->page_type = UINT_MAX;
++	}
+ 
+ 	if (is_check_pages_enabled()) {
+ 		if (free_page_is_bad(page))
+diff --git a/net/core/netmem_priv.h b/net/core/netmem_priv.h
+index 23175cb2bd86..6b7d90b8ebb9 100644
+--- a/net/core/netmem_priv.h
++++ b/net/core/netmem_priv.h
+@@ -8,21 +8,15 @@ static inline unsigned long netmem_get_pp_magic(netmem_ref netmem)
+ 	return netmem_to_nmdesc(netmem)->pp_magic & ~PP_DMA_INDEX_MASK;
+ }
+ 
+-static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long pp_magic)
+-{
+-	netmem_to_nmdesc(netmem)->pp_magic |= pp_magic;
+-}
+-
+-static inline void netmem_clear_pp_magic(netmem_ref netmem)
+-{
+-	WARN_ON_ONCE(netmem_to_nmdesc(netmem)->pp_magic & PP_DMA_INDEX_MASK);
+-
+-	netmem_to_nmdesc(netmem)->pp_magic = 0;
+-}
+-
+ static inline bool netmem_is_pp(netmem_ref netmem)
+ {
+-	return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) == PP_SIGNATURE;
++	/* XXX: Now that the offset of page_type is shared between
++	 * struct page and net_iov, just cast the netmem to struct page
++	 * unconditionally by clearing NET_IOV if any, no matter whether
++	 * it comes from struct net_iov or struct page.  This should be
++	 * adjusted once the offset is no longer shared.
++	 */
++	return PageNetpp(__netmem_to_page((__force unsigned long)netmem & ~NET_IOV));
+ }
+ 
+ static inline void netmem_set_pp(netmem_ref netmem, struct page_pool *pool)
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index 1a5edec485f1..27650ca789d1 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -699,7 +699,14 @@ s32 page_pool_inflight(const struct page_pool *pool, bool strict)
+ void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
+ {
+ 	netmem_set_pp(netmem, pool);
+-	netmem_or_pp_magic(netmem, PP_SIGNATURE);
++
++	/* XXX: Now that the offset of page_type is shared between
++	 * struct page and net_iov, just cast the netmem to struct page
++	 * unconditionally by clearing NET_IOV if any, no matter whether
++	 * it comes from struct net_iov or struct page.  This should be
++	 * adjusted once the offset is no longer shared.
++	 */
++	__SetPageNetpp(__netmem_to_page((__force unsigned long)netmem & ~NET_IOV));
+ 
+ 	/* Ensuring all pages have been split into one fragment initially:
+ 	 * page_pool_set_pp_info() is only called once for every page when it
+@@ -714,7 +721,14 @@ void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
+ 
+ void page_pool_clear_pp_info(netmem_ref netmem)
+ {
+-	netmem_clear_pp_magic(netmem);
++	/* XXX: Now that the offset of page_type is shared between
++	 * struct page and net_iov, just cast the netmem to struct page
++	 * unconditionally by clearing NET_IOV if any, no matter whether
++	 * it comes from struct net_iov or struct page.  This should be
++	 * adjusted once the offset is no longer shared.
++	 */
++	__ClearPageNetpp(__netmem_to_page((__force unsigned long)netmem & ~NET_IOV));
++
+ 	netmem_set_pp(netmem, NULL);
+ }
+ 
 
