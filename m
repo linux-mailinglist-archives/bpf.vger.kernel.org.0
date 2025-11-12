@@ -1,111 +1,78 @@
-Return-Path: <bpf+bounces-74296-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74297-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B9F3C52B4F
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 15:27:59 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5671C52AC2
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 15:21:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 755B342425E
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 14:13:12 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 45B9D341C80
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 14:21:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F55A26B2D3;
-	Wed, 12 Nov 2025 14:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ECA328B4E2;
+	Wed, 12 Nov 2025 14:20:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T5w+yE4d"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lES8bcEp";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lES8bcEp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1589226ED41
-	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 14:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B9F628A701
+	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 14:20:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762956780; cv=none; b=KeqyKpAWS/lAPAYUjJv8sKr1Mot0w6BN1FXsehXIvD3HMb/73DsgkzMm1vtyO6Jhzx0Fv4oyILSEuBQElcmOUkS6ut2K5EPuq6myhA4SgHLNn4yNawg5DGSue9YvZWTTlwO9BEznMLd9FddlSnWtijm1WH/pIHaDNao70KnIIGY=
+	t=1762957233; cv=none; b=acfFsTospGGtkql0jtoXeJpFI1HeBXSAp02O8kUiUk9T1aqs/swJNELRYcDOgiFW7EYRsd75hj9sZsAGwjK00oTYYcTLMepc2SUU+0QK43d1WRQIdmH8WqPDpDJp8hQ34+zKKqqFkfctAjloJAY7w71Mwc5inevtN9LOfCUSicg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762956780; c=relaxed/simple;
-	bh=pVP2OILUU+1rzWIBbsAl/6YtKwi9rPRCel6NowAfs78=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HuPG5hYh5W3lBAPyD9ZjClv7m7RRybukunWkFl/I5YPmrGcck2aDef2z+C85W/1QFn2KKHQGa2STL80ZteyUxqs6BxqJaaprG2A+kGQwpY9NXqGSuqGEdmG/8Ws9m4jrTnv13Dpov4vxqRHx/GVHuFjlrkFiko7sizF/uHtfXCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T5w+yE4d; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-42b3377aaf2so528329f8f.2
-        for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 06:12:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762956777; x=1763561577; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l/iGYxZtLORX3ELbLt9jFe4ep67d1sKTixtTlZRLqY0=;
-        b=T5w+yE4dv6WzPr49oYvFbx6sySmsxGSB3B0Qbk4nQ2iXQcTVwvIyzXUoisE+/TLziq
-         TJVaIpGg2MbmfBQe30SmDez0fy42VSR8vs0HewNTfCLOh5eigM301YfCkS2UeG204nu2
-         06weNRsHhJ7lOHlcdEWPg/rF7BbGfX7y8t3UxipFzhB4UsvlYcQwLfP8ZRpyNaJ1GLVZ
-         I7NgmN0W9ZyzMfChyFfVqFdgvcdHYNj0KBhKw1xXfFAOMDeOqGmBQQW/6PQChHxtgVEp
-         wC51XPZ7P9xdRJ321g9P8g/VhRB6EcfCs+OuWSO+HZU8newRbhtALUAxQuCVR+DAYWK6
-         T4Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762956777; x=1763561577;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=l/iGYxZtLORX3ELbLt9jFe4ep67d1sKTixtTlZRLqY0=;
-        b=ZDh0Dym2FwzNv+Qu3yzFlhvLAg7gYz/2s9Z/g0+JGp4i1NqhrjV6M9oCSkm+MZAkOV
-         Lm6U/rYnkxneitkv1fjjlACF+QZGkFbC0O+PBPu/+0dUUbaB/rZ8mzCoBysHLsVBf5P9
-         v7NqjLJvBlsAwe/EPNk9MMa4hL1ROhJRsZe1bZfvq+mLsc6joOIuZKes961tC3IPF8wl
-         THp9G1uLsBZgvk8XORCDYq7CI+dhkC8rdbn7I6aoDgXgeNxdyFoVjHdUsn81ohnBGFR9
-         +BjEUHzRlMgVmUnokh2APFXtaNTv0MjFhtITBh3VCqACnudnIhAmuQtj+nD5Cp8BA2es
-         Fkow==
-X-Forwarded-Encrypted: i=1; AJvYcCU4+CSyW3q9EMlTPTQ+H8p0v4w6dai4/hvd2zIpvzwni1/KDDh5GvtxpmGW0viWRKj/2x4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx94O7kUDKAYcuGYWk5NIThtlc5l287iDqVI+kMIL8Ny2Nf+/vE
-	MocKdK1K0ZTPYrubCI31rxRmQTvtUioSahvBE4++KNX7zIFvGfH7CFcg
-X-Gm-Gg: ASbGncvyZaXvW9CR7xewqU0nEDjbIit3EYdPEHcvSmGZzrDBtyK/DJpVlhAr1FGusZ5
-	5gPDx4JgNrV+m5KtM+jvGXLnzK2IcdTMuT7LCXLM0UdxppLC5jdXtyTUjV5DE2G4ma6TD9ts5j0
-	qZONqCWwQY60WaYb+3v7m+6gquBMeWrynDZy3r/YQkatWnfynBmZ0Rjdhkc/sRZLwTyokWAI377
-	LyFY2Z4lwtY/+fseeMGu31ekCrdCkaQv27ivKnlOiG5T7H0Y9jUhJpnGlEbBTsImdaaj43l3Wlm
-	P8xBvDLRCTiQrCzMJNOUHRCt7VZlc0WB7/QuBwD+RnZ2mTbYjHS+LMvcCdvPyD6DS0eRPZUyZxL
-	0ZCwjngv+SjERKCJ3YUx99RTi0oY7RO4Yx5CVDoyyFOWTkWkySrWTAx+yweMPGZ/RHqnevW38gL
-	tZMQ5/gqtUldCm
-X-Google-Smtp-Source: AGHT+IGYNoOTXnre/4ceRR7yKQ/OoOBBVZ7Ao+Bo2jO9uF7B6Yz0Tq6gekxjquRjIP2nqgGKT+RdVQ==
-X-Received: by 2002:a05:6000:4210:b0:429:d66b:508f with SMTP id ffacd0b85a97d-42b4bdb03a9mr2990959f8f.30.1762956777196;
-        Wed, 12 Nov 2025 06:12:57 -0800 (PST)
-Received: from paul-Precision-5770 ([80.12.41.68])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b2b08a91esm28303603f8f.2.2025.11.12.06.12.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Nov 2025 06:12:56 -0800 (PST)
-From: Paul Houssel <paulhoussel2@gmail.com>
-X-Google-Original-From: Paul Houssel <paul.houssel@orange.com>
-To: Paul Houssel <paulhoussel2@gmail.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Martin Horth <martin.horth@telecom-sudparis.eu>,
-	Ouail Derghal <ouail.derghal@imt-atlantique.fr>,
-	Guilhem Jazeron <guilhem.jazeron@inria.fr>,
-	Ludovic Paillat <ludovic.paillat@inria.fr>,
-	Robin Theveniaut <robin.theveniaut@irit.fr>,
-	Tristan d'Audibert <tristan.daudibert@gmail.com>,
+	s=arc-20240116; t=1762957233; c=relaxed/simple;
+	bh=1qqDyrTlpYDcAvnMx/FE29JJGMAv3JNQmxC22TOy6+0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NVV3SoLiSCQ+AZhlCzMGQj0uGDMJxBkB/de/jIFg9OsAlnFaGMzE7r7H1jYyM2KIqWi12UUeNpwiWFgDJ0eZYfmap32flYEn5hpdR+Uy3hzXPq1Q/P2PRuxnrBomwssGWhQwLpoVF14Q08pfDks3K/7lt9M7sA+oRZjjbTDofxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lES8bcEp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lES8bcEp; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from pathway.suse.cz (unknown [10.100.208.146])
+	by smtp-out2.suse.de (Postfix) with ESMTP id BA3BA1F7FA;
+	Wed, 12 Nov 2025 14:20:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1762957229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=r4Iq2LGXG2cpf5OLzUafa6cxsLKtW2O0HZc3exA1+gI=;
+	b=lES8bcEpgEegzUzPK3ih+zfC5mqj2Uf58X1Vs9JMNE3zs3j+xG62iz3EmQmpuQw8Zrd2ha
+	zUJlDYsScOxGzbIBGl06vLNnTwglheCzOB9S9zhVR8ICi0PLFgBvjNq+J5x6XqojxAxje4
+	BnjqktgcrG/YWGj6Fe/R7FenvRnYrSA=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1762957229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=r4Iq2LGXG2cpf5OLzUafa6cxsLKtW2O0HZc3exA1+gI=;
+	b=lES8bcEpgEegzUzPK3ih+zfC5mqj2Uf58X1Vs9JMNE3zs3j+xG62iz3EmQmpuQw8Zrd2ha
+	zUJlDYsScOxGzbIBGl06vLNnTwglheCzOB9S9zhVR8ICi0PLFgBvjNq+J5x6XqojxAxje4
+	BnjqktgcrG/YWGj6Fe/R7FenvRnYrSA=
+From: Petr Mladek <pmladek@suse.com>
+To: Petr Pavlu <petr.pavlu@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
 	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <kees@kernel.org>
+Cc: Aaron Tomlin <atomlin@atomlin.com>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Paul Houssel <paul.houssel@orange.com>
-Subject: [PATCH v2 2/2] selftests/bpf: add BTF dedup tests for recursive typedef definitions
-Date: Wed, 12 Nov 2025 15:11:34 +0100
-Message-ID: <c381ca44fccbde23fec1d67131c13fec162603d7.1762956565.git.paul.houssel@orange.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <cover.1762956564.git.paul.houssel@orange.com>
-References: <cover.1762956564.git.paul.houssel@orange.com>
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Daniel Gomez <da.gomez@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-modules@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Petr Mladek <pmladek@suse.com>
+Subject: [PATCH v2 0/7] kallsyms: Prevent invalid access when showing module buildid
+Date: Wed, 12 Nov 2025 15:19:56 +0100
+Message-ID: <20251112142003.182062-1-pmladek@suse.com>
+X-Mailer: git-send-email 2.51.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -113,91 +80,83 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FREEMAIL_CC(0.00)[atomlin.com,iogearbox.net,gmail.com,kernel.org,arm.com,google.com,vger.kernel.org,suse.com];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_ZERO(0.00)[0];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com]
+X-Spam-Flag: NO
+X-Spam-Score: -1.30
 
-Add several ./test_progs tests:
-    1.  btf/dedup:recursive typedef ensures that deduplication no
-	longer fails on recursive typedefs.
-    2.  btf/dedup:typedef ensures that typedefs are deduplicated correctly
-	just as they were before this patch.
+This patchset is cleaning up kallsyms code related to module buildid.
+It is fixing an invalid access when printing backtraces, see [v1] for
+more details:
 
-Signed-off-by: Paul Houssel <paul.houssel@orange.com>
----
- tools/testing/selftests/bpf/prog_tests/btf.c | 61 ++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+  + 1st..4th patches are preparatory.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-index 8a9ba4292109..a19db159475a 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-@@ -7495,6 +7495,67 @@ static struct btf_dedup_test dedup_tests[] = {
- 		BTF_STR_SEC("\0t\0m1\0m2\0tag1\0tag2\0tag3"),
- 	},
- },
-+{
-+	.descr = "dedup: recursive typedef",
-+	/*
-+	 * This test simulates a recursive typedef, which in GO is defined as such:
-+	 *
-+	 *   type Foo func() Foo
-+	 *
-+	 * In BTF terms, this is represented as a TYPEDEF referencing
-+	 * a FUNC_PROTO that returns the same TYPEDEF.
-+	 */
-+	.input = {
-+		.raw_types = {
-+			/*
-+			 * [1] typedef Foo -> func() Foo
-+			 * [2] func_proto() -> Foo
-+			 */
-+			BTF_TYPEDEF_ENC(NAME_NTH(1), 2),	/* [1] */
-+			BTF_FUNC_PROTO_ENC(1, 0),		/* [2] */
-+			BTF_END_RAW,
-+		},
-+		BTF_STR_SEC("\0Foo"),
-+	},
-+	.expect = {
-+		.raw_types = {
-+			BTF_TYPEDEF_ENC(NAME_NTH(1), 2),	/* [1] */
-+			BTF_FUNC_PROTO_ENC(1, 0),		/* [2] */
-+			BTF_END_RAW,
-+		},
-+		BTF_STR_SEC("\0Foo"),
-+	},
-+},
-+{
-+	.descr = "dedup: typedef",
-+    /*
-+     * // CU 1:
-+     * typedef int foo;
-+     *
-+     * // CU 2:
-+     * typedef int foo;
-+     */
-+	.input = {
-+		.raw_types = {
-+			/* CU 1 */
-+			BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
-+			BTF_TYPEDEF_ENC(NAME_NTH(1), 1),		/* [2] */
-+			/* CU 2 */
-+			BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [3] */
-+			BTF_TYPEDEF_ENC(NAME_NTH(1), 3),		/* [4] */
-+			BTF_END_RAW,
-+		},
-+		BTF_STR_SEC("\0foo"),
-+	},
-+	.expect = {
-+		.raw_types = {
-+			BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
-+			BTF_TYPEDEF_ENC(NAME_NTH(1), 1),		/* [2] */
-+			BTF_END_RAW,
-+		},
-+		BTF_STR_SEC("\0foo"),
-+	},
-+},
- {
- 	.descr = "dedup: typedef tags",
- 	.input = {
+  + 5th and 6th patches are fixing bpf and ftrace related APIs.
+
+  + 7th patch prevents a potential race.
+
+
+Changes against [v1]:
+
+  + Added existing Reviewed-by tags.
+
+  + Shuffled patches to update the kallsyms_lookup_buildid() initialization
+    code 1st.
+
+  + Initialized also *modname and *modbuildid in kallsyms_lookup_buildid().
+
+  + Renamed __bpf_address_lookup() to bpf_address_lookup() and used it
+    in kallsyms_lookup_buildid(). Did this instead of passing @modbuildid
+    parameter just to clear it.
+
+
+[v1] https://lore.kernel.org/r/20251105142319.1139183-1-pmladek@suse.com
+
+
+Petr Mladek (7):
+  kallsyms: Clean up @namebuf initialization in
+    kallsyms_lookup_buildid()
+  kallsyms: Clean up modname and modbuildid initialization in
+    kallsyms_lookup_buildid()
+  module: Add helper function for reading module_buildid()
+  kallsyms: Cleanup code for appending the module buildid
+  kallsyms/bpf: Rename __bpf_address_lookup() to bpf_address_lookup()
+  kallsyms/ftrace: Set module buildid in ftrace_mod_address_lookup()
+  kallsyms: Prevent module removal when printing module name and buildid
+
+ arch/arm64/net/bpf_jit_comp.c   |  2 +-
+ arch/powerpc/net/bpf_jit_comp.c |  2 +-
+ include/linux/filter.h          | 26 ++----------
+ include/linux/ftrace.h          |  6 ++-
+ include/linux/module.h          |  9 ++++
+ kernel/bpf/core.c               |  4 +-
+ kernel/kallsyms.c               | 73 ++++++++++++++++++++++++---------
+ kernel/module/kallsyms.c        |  9 +---
+ kernel/trace/ftrace.c           |  5 ++-
+ 9 files changed, 81 insertions(+), 55 deletions(-)
+
 -- 
-2.51.0
+2.51.1
 
 
