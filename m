@@ -1,226 +1,165 @@
-Return-Path: <bpf+bounces-74314-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74315-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8223FC53CF7
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 18:56:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B42FC53DAB
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 19:07:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 56FE24FC458
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 17:35:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B52BF3BC46D
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 17:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CE04346FB9;
-	Wed, 12 Nov 2025 17:35:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB3E1348866;
+	Wed, 12 Nov 2025 17:59:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="crI3bkCH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nJOzGbuo"
 X-Original-To: bpf@vger.kernel.org
-Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012032.outbound.protection.outlook.com [40.93.195.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7576431814A;
-	Wed, 12 Nov 2025 17:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762968933; cv=fail; b=pkxUhpy2IzF1+Q80w39DMPXht51HR44mowDhnV/U2d8nXBAptqwVgs40ZOxuUDlZa7brtKcnZC/Y7QYCQ2ifsFDvrPyNfHhh1RCncOBp8C5wIVRnmIPA5tjNACVwHVfl3tT/u7BJpFuqfBLb4TsqAgrfdxG2PLchBt8HvKsy8kA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762968933; c=relaxed/simple;
-	bh=8aqnjt1QINcSunhibwJ9RTZzcWaTV4r/QkUBdUIzk08=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=kkXxzhwTjaWupU1GcUIULRYQ3IWiewNcq+L+sYDUEt+Yjyz9EzOT2kUn7SsMGvYXdXk1HKVTQiILarnQJZ7RPdm09BAogE/YDGgJd/500RmiTMFjtc/EaH4JaT/RAA/QQ4QBwC14Hy4vI+6XJUw0glNTWHj2kIh0wNLUTNRWy2c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=crI3bkCH; arc=fail smtp.client-ip=40.93.195.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Y9eGwVEna0dwCTQ0A+/y8/eIXjSiVLiJBMIleku+q7ICyNAd7nHIGBhVQwuFtQ+k7ny8S3I9KF/JIuEQlo7IlqopGpVe7s1T7GK+AnGqKGaTXX0o0rDHNl28nx3oPHc7JpUHnUvKha9GjzJMIWbvoSkXK78nuUlW6ZyDlJFYIqhLWPhoA7S48RogrWWG+RUQoRE+lQ4cMU1tO2Dy76u+n1+EV6Uj2Fu3I/hX2tUaFLQ3fCrKwlQ3QPz3/BVHFVJuVOW6zhF38MYk5/i/y2g04Vrzvif3wqjMU1m4vaab5oqoO998TYSR5BvFsmn2nP7wSKGVVW86wLncqcGYwQwRaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4DLmBB+uX9yvS29E2/w3Xd8FiP8zUNiusupBJZGa6Bg=;
- b=o5nB828FoRmK9KGaqMqatgYPcQrEkwDiGsEF4LgG0wh5HuYMZsLIiJBLhieXpj3OkEnFjZ/EMSnMcwWTv/po/O078gV54dAfaib9fKXrrKvjN21NbMP0gBejrEAWBhY7l4WX9rT9W8TBT74pjjqWWkVo5w6h+UhoPZ87nm4RF9NcjR2aSTXGbezS/2pl4Gw7c4I0WduGk3Y4Yeei1GH37eIOFJtX4/cIQ5Ax6OKL9G5+f+JUJJG157IcWwb1chONGcwceaUBJc5LnZ3ZQOQqsvemKhElWpFkeUJvkjO5FzcRtwH12vMGVyPCs8Ax2pnQPgg3Kwnvw2WjHqUUrIaHpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4DLmBB+uX9yvS29E2/w3Xd8FiP8zUNiusupBJZGa6Bg=;
- b=crI3bkCHMfQ0+h5jDD95l9JJkTeVt+qxE8CvIlsdUyydmGymdG6UkZidlb3908OBmly8c0mOydEAtCE/nmMJXpQijOvo71wqM1YVKqYMlU4aP73/pHk465dZfscfsoGQOZNkowVbuc7h+vY3/MEQhxnw+5j3wdsW4VJphVYQ9XzKanIQlDYCdrfrmgIonsJaTM7IPl/Cxuwz6mQhcyTwXQfvr79c3qp67k69xVBgZ02O+W52sKsLELhuviciT1ttltPCYfIsZJ74OaIQLjFEKmu2JUGK9Zk8pDapX9j10VZk6np3H/CwgDXW9smKYkRnSPXurg16mzQhm57qW3Zyfg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
- by DS4PR12MB9633.namprd12.prod.outlook.com (2603:10b6:8:27f::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.16; Wed, 12 Nov
- 2025 17:35:27 +0000
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::1b59:c8a2:4c00:8a2c]) by LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::1b59:c8a2:4c00:8a2c%3]) with mapi id 15.20.9298.015; Wed, 12 Nov 2025
- 17:35:27 +0000
-Date: Wed, 12 Nov 2025 18:35:19 +0100
-From: Andrea Righi <arighi@nvidia.com>
-To: Juri Lelli <juri.lelli@redhat.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>,
-	David Vernet <void@manifault.com>,
-	Changwoo Min <changwoo@igalia.com>, Shuah Khan <shuah@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Christian Loehle <christian.loehle@arm.com>,
-	Emil Tsalapatis <emil@etsalapatis.com>,
-	Luigi De Matteis <ldematteis123@gmail.com>,
-	sched-ext@lists.linux.dev, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/11] sched/debug: Stop and start server based on if it
- was active
-Message-ID: <aRTFVzQlph4VwbiW@gpd4>
-References: <20251029191111.167537-1-arighi@nvidia.com>
- <20251029191111.167537-3-arighi@nvidia.com>
- <aQxKo68TJge5dRZI@jlelli-thinkpadt14gen4.remote.csb>
- <aQzPVuI-dHEfee4W@gpd4>
- <aQ2XBQ4vGGFWaykj@jlelli-thinkpadt14gen4.remote.csb>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aQ2XBQ4vGGFWaykj@jlelli-thinkpadt14gen4.remote.csb>
-X-ClientProxiedBy: MI1P293CA0006.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:2::16) To LV8PR12MB9620.namprd12.prod.outlook.com
- (2603:10b6:408:2a1::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D161128FFF6
+	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 17:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762970383; cv=none; b=TqbYllqTjqt8nd+vyUYUkQDqS1wBwJ0Q6TO7VSVrbR9HGvObXR/85HMXT5hdWpTDt/3e/E+4zhlBI05weJnE9YdkaNKny4f9UPfWbBESqr2SNTdWpwNUCopa+ANkfrtYw9uUvnx5ISCvPtn71j+0yIwv/2sdB+muCwv7TZ9E7D4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762970383; c=relaxed/simple;
+	bh=jI3VWN3ADwpJwIXRCeV0B1Eop8ytKizhCylFoP60k7A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KgtyAZ9kqxmy5GiOQtyPVJT25v5uZuKpB/HQt8Uo2LDNUeVw3P6IqP4RCg38LeDMV4KFHzHIOPknCKDb/MetIlHD5RcJicdGVcGpd9tA3U6R48PXzt2HbpU/s6P+d1m0eZqek7LEbUQ+xM28rADhqPf/MqLSpUjnKWEgxOJoDoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nJOzGbuo; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7b8eff36e3bso35704b3a.2
+        for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 09:59:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762970381; x=1763575181; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tQOfuJqavTu38cNA6pks4fJDQNJUesRiRlsLxK7cd4U=;
+        b=nJOzGbuouN2huUw8/aagapVCws7x4IEb+TTrfjX66c8rcKsBzmW/1uRldXEazBM4oI
+         zEDEkJzNZrvLvBtxEyInQK32g7htAg7yt9FyGHe4zjV1oASdMAsJr3JoIpqxuCFIIFQO
+         fN67KLDHESlPV4ciSwuhFjXq/BddU68TNA4aY1HRTIQC0D+fB7RfikN7AjrIXqQLoojM
+         Wfp+bXE4ney599VZlgCbTx1oG1zgmOr9BdMhsvieuP6qNS+4O9houQvRirV9/Ve9B0FT
+         k6jXkj9oaGKAWOfz6g8+t3vQ7XcNaR1jUCKV/uEzid7htETl1c4hfAf/SjxFKRmfRpvV
+         saUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762970381; x=1763575181;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tQOfuJqavTu38cNA6pks4fJDQNJUesRiRlsLxK7cd4U=;
+        b=XRQC9guCOGgWgOxQgMuq+9gb33F66YZ25SkoWrIe6H+m9x3vg5F/qdBY6XxaLi22ZS
+         BdejSiUnvvEqAeI+Us2SNvxIxfaTNL/DHrT/FT/7Zj+9LHviWjqjhHNIFW9q56AogcOI
+         +BkGbhTXMkPGwGcuX5rVaGRpJJNAudRqLyq8J3JaufYVL5hr6eVEX9ZrcNmrjFXqZh+L
+         lcHVWzjrw917dwrHIHaQL695mHtReJxI8f2oFenNAmuIDouc1817gQhPYz0b+an8izeq
+         KXgJw62TB0SYUy08hyaiT9h2UFqpLgemPdqBq9+sxwDqqoXroj0K77N795wI4JlOdxXx
+         U8Ng==
+X-Gm-Message-State: AOJu0YwLAA3g270DGIgm1VSyYas5JZnMjQwWWZw3xxwMLC6DYOEBIAXm
+	uunux1ZZlMRWBQU/huPmYjYfBAOiXukEOTEeh9Ww00EHqG5NAD8XHZ5iip26dA==
+X-Gm-Gg: ASbGnct5ishXjMooz7CkKqHMa/hjq2bJqmlC4EqpibsZfn4B1AZ4UmuHVXGBOr+Cdqv
+	pE8sdtV4EC29cnM2PBDn3WmFPPGrHaIg5njxFnKx2duoUIpCkWs98RXWDviDalul/hXibfyRUE2
+	5E0bvDcD3eQ8xJGB8Kf27JcDa4/RVeJUJyV69xRzikLGDIz3XymtSJsGclGdbd6R935T3GiejmO
+	/SPv4jIX62Awky7+fGYU1qB876indMAUz35MwMIU0+WBEAk1uN4Wi9cEwYoFvrwA4z80iHiczET
+	+tJBKSyiNT/xh2Dw6vFMnXKaxhKXjWbTtX8WdRIzMM6iKXsliu35XcsmtNIK5Nh0GrI8GD2eBh8
+	+4w/B784SJ1jS4+Wo4TNDxsKXh/xg7Ab0DYrS8xa2H4XX+s/6fnFmQBhewC/UWOSIcw==
+X-Google-Smtp-Source: AGHT+IEKOE4rT1sMg/mZpwUozkPb1oBAAAKc4IxHTrhCh5DN0O31+oHVoMPu0zHGcy21alRC6uEisg==
+X-Received: by 2002:a05:6a20:6a20:b0:342:5ba7:df9f with SMTP id adf61e73a8af0-3590b812ac2mr5349152637.55.1762970380790;
+        Wed, 12 Nov 2025 09:59:40 -0800 (PST)
+Received: from localhost ([2a03:2880:ff:7::])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b0ccd5c75bsm19177460b3a.70.2025.11.12.09.59.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Nov 2025 09:59:40 -0800 (PST)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org,
+	memxor@gmail.com,
+	kpsingh@kernel.org,
+	yonghong.song@linux.dev,
+	song@kernel.org,
+	ameryhung@gmail.com,
+	kernel-team@meta.com
+Subject: [PATCH RFC bpf-next 0/2] Switch to kmalloc_nolock() in BPF local storage
+Date: Wed, 12 Nov 2025 09:59:34 -0800
+Message-ID: <20251112175939.2365295-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|DS4PR12MB9633:EE_
-X-MS-Office365-Filtering-Correlation-Id: 691081e1-0ff1-4a44-074f-08de2211de69
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?bpql+G4YG5bUMZyjCWSvXyVlVf/QPZD0TVcAy6WzwQJf/A6HLh+KzWB3VVxO?=
- =?us-ascii?Q?rIUKSL5i09bI2QXniYoSIf/IryjWa/Ml13QpyhbCLzW6FlsnIK3gmKvlzuHg?=
- =?us-ascii?Q?tMA0ZQwaawbOgVFlN3w83Zd5+PSnBLd5vOljUOUoWnFX9o5kleleRd5SRCWf?=
- =?us-ascii?Q?/6ZDLY2Ti+D+/WMU9rwvBd3apgz7qItyyrLo5ZUQAFvPZ/Mth/BwPkMjXb6v?=
- =?us-ascii?Q?53I+ypUG5fhx2OR6oAuV9N+325dqU/GX01mvZCAJ6ZLUZsmTb6VQ3cVuYZVK?=
- =?us-ascii?Q?C/NzFvYqwkq9rqOcatXMRne2IxOf+YTHpbR4BT5ZE+sgqKdNDK6dt4+YVtmj?=
- =?us-ascii?Q?/0sHwjcLdqHuTaQ222ulKMqUtFIbiTCOWnqxYolFP6Dcelwh0rS5VQybPq3a?=
- =?us-ascii?Q?MyVY+cegn78G5zJZlbs7lKAbnzvJtdGN2JrnJdZSg14fSdTlIvQGmsfk0QiH?=
- =?us-ascii?Q?Ah2N27zn25a0aSh7ZfCQJotS9b/y3QVwLhDUxqmzyHp1K7SpeSeq5kL4msHk?=
- =?us-ascii?Q?eVvVD4sgM2Uo9437Saf+0dOkW+z8yBvWG/rWJPUlj6S+wLnNNvxkbqhkOGVZ?=
- =?us-ascii?Q?rSy0A2/e8r2SDWZeU6NWbJYH7K+hRlc+3KeRlfQtRTNoSK9JMaoclZHUQ+X6?=
- =?us-ascii?Q?B26PlxMjlU8OD1fUL46J3XFlBtlO21s3uvyU4fQ7rroIKjkOmjdDIfw8UO8B?=
- =?us-ascii?Q?EwuEZ45PrHg5QqzWt2MNvl1dQEvQLbrEE+3K3Nzf4m26Nf7I/dl/2tENOpYG?=
- =?us-ascii?Q?mlmHT0vrd/uDmc+V8508QU/FI6BgAXRNlE2NtgXvdTY50Kt6/b69SDErJlO9?=
- =?us-ascii?Q?m6KOG6AFh2Wae+NExgkNnCY6oP5E2yjc9M8Klr/C0D7h4/XIS+8dVezHb2U/?=
- =?us-ascii?Q?DfkIWwvn0gngmFuD7peq8avVx5ubV9hz2Qme9uEErbhTA8msld7sd6CmKATC?=
- =?us-ascii?Q?IZ3mjI8Tgoz72lZgziuaC0YcdjSMROzearxD7JNgDnE07dzOKnTeiDFEDQpy?=
- =?us-ascii?Q?EHLTKivPDFBR7dfzd6GQl/IgimaM18Wmr91oMQzwKX5IP6RBjrfYocKo8y/Y?=
- =?us-ascii?Q?6cim7LXR3WuZXbnCOquzq+tBSqduubzL0fmOHcEZwR5TBYCxoTP4WmKaK4Rb?=
- =?us-ascii?Q?BvsXtt/zLCVKTGv4jd0Posk/Wk5LO4505xebAXMPzE6NGj0Cgh/lPv/wkd1y?=
- =?us-ascii?Q?cFieiti3w65jX9vcZdQgQmBEU7LsY0UH4sF3LrUlYTQmPKRJZhxXIfXkuEuu?=
- =?us-ascii?Q?/0SvU4mQx5wrsawqrY8tLAoiqEZGAkgKQw7/n5CIfJk2Lc/iHvBHj9Cflyzz?=
- =?us-ascii?Q?czf0xcGwv71w2dcL41rqISJDHznUiXG3Rs5IwjmZbdIcFO9xPopPssp7RNHA?=
- =?us-ascii?Q?GngbuKHVFL/HvyCxnK8tTBQpffq6JYZ2U6MCDqSQug0XtQETQIrKW8U+MjYk?=
- =?us-ascii?Q?+8bvtIGrTVuNU2+gQNUdIYQ0mZe9QOlx?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?2iB8hMbwdWf+tbXTQY5mfleEj+qThIeSehtUVHIK4DVenNvwqB9QqmVFJtT8?=
- =?us-ascii?Q?7ayLwqnDVrVf+O6m2nBPEp0cC2fnB88+JQWT11sKBe0b5FTvW3SbfC17h2Ha?=
- =?us-ascii?Q?RCs39kANINmfGmd8ptCsiRs6jEAcKWorJVZdRswxxjFKRQyea5BFfHJ+w2My?=
- =?us-ascii?Q?sxJvW42Ow6rhMOSpjOGR6Dm2UaJsBeSXqiA4Si43NftMx1/iJocZ/t5NL5z+?=
- =?us-ascii?Q?VRBI4y7WldlvV7HTzf+Z3yLTOfhoIsqd4NGVg3kjwY/XXaX+2KhzF4aqtzQj?=
- =?us-ascii?Q?BfyQWn5ijT/HtZonOSABOdWY2v/vaCYYq6h3D0y4Pzm862eYA+Ml4ZFvguDx?=
- =?us-ascii?Q?yBlRie0B39RzCDZYEt6yrWWp6As24WnCdL1Go9jIcQ4hqyRWhZbGmopUNm2m?=
- =?us-ascii?Q?RQBBXhVz7+uYNY7+vwgGuYBd3f1l7HnSkemQEpnJ6kCsyPKeefRE/n6mx/4L?=
- =?us-ascii?Q?eDzhLbofpfcr4PM4KM5B65P1iJD/bFIn7sx7KjBoSTfSAQeL7/Az2ALnmIxe?=
- =?us-ascii?Q?EIEJ3SEzfyI/0IWTJ+Xvx0NgoM5S1Ao9WYch6xxrnxIshXdFWestA6srB0C2?=
- =?us-ascii?Q?ZEvUns2vB7KX+CRt1mUpRtVAUOB18R7Jf80tUKXb6ewsixiG+g7VDHVRQvEq?=
- =?us-ascii?Q?lk2GpIzHFUQDxn2yQLuO6WbiIwtEEuip/gzdfQCtq7k1zpGSrDOml2oz/URY?=
- =?us-ascii?Q?k92TefLtjV92CfW7pQZqDlBVw/lymtexxVS7MAQOz5UOTIRP1fExyxaKNI/X?=
- =?us-ascii?Q?Rt7cWAh89dFISwU21plSqEtmvyCONMF+IjK1Nmn/T5bxJpARDdeFq7CXyOXd?=
- =?us-ascii?Q?fAsQdELUWEHsSOMrklZ4fQ+a6DnhWiOb9nW0HKW5QI1fB3/2eXFpTpm1w4e6?=
- =?us-ascii?Q?Dz1t8vXjSr2BIodA8vRxscTUf7j+a9qDwGMtPq+gneGFebTHcYHPtPw/E59M?=
- =?us-ascii?Q?GJuiJEDA2DkD0OCaOA+dRLtR2QuxK0/HQ37G6jwN4YENhD+irWH04a7OvTK1?=
- =?us-ascii?Q?6KH8E/vZ63aR359f2hUJbdHyT566tON/VQGG9CPvCcfwVzg6MSSxlSKhGr7g?=
- =?us-ascii?Q?fhmY5XYYfRqwV3AFkJCNOcBDgxFYj82pjUT1jI76Zz9YF0+ssGPH/bUsBOqO?=
- =?us-ascii?Q?ljhup8ZCWFhwvd7F4GB63wmR6ZWdVmyLd6h11lzI1HuXAd9OyWNJcTDDkYLm?=
- =?us-ascii?Q?u+WC93vtX7qYhDShgBL2tNmmiAuHYZ92pFvRLxo9pZqRnmXRykWYy6OZ/P/M?=
- =?us-ascii?Q?ocAE5xDOkH3o206KPfGxPSgyMV1hIPr8n/pu7leznE6BEfxdIzkCoJPRV5uK?=
- =?us-ascii?Q?qPMcEA7IL5Yi/QOA+WzuFvN6SboVZzF94EvRuWr/KoI1tKcr5uOTnCZRZt5v?=
- =?us-ascii?Q?Z5JdQKT9psB04oEQ/8htsLs2zilevPh6eR10s4x6zuy91xb6+I0QKBA9a7si?=
- =?us-ascii?Q?CLuai2P63O3U1/qbneboZHkHGvcqFsxY/s1VqjjANuTa/ylPNsXyLIRrV7mC?=
- =?us-ascii?Q?T0djlzQSOwVdDIn/8WljTx0BoArRwzaE8fxiCiHuEOm8D2hPB7kVAwxPaECu?=
- =?us-ascii?Q?ai4ShD0PGEGNvwmkXGasdhaVryWAMODTSYPdxWdB?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 691081e1-0ff1-4a44-074f-08de2211de69
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2025 17:35:27.6795
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aBE6sxxdqsJFlHIqpIaJNTh/y1kP3FHsbDagzY1pJy33K6R8H25Hqw2QYS97bS/c94/i4LImc0bHS4cz0oRTLA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS4PR12MB9633
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Nov 07, 2025 at 07:51:49AM +0100, Juri Lelli wrote:
-> On 06/11/25 17:39, Andrea Righi wrote:
-> > On Thu, Nov 06, 2025 at 08:13:39AM +0100, Juri Lelli wrote:
-> 
-> ...
-> 
-> > > > @@ -376,8 +378,11 @@ static ssize_t sched_fair_server_write(struct file *filp, const char __user *ubu
-> > > >  			return  -EINVAL;
-> > > >  		}
-> > > >  
-> > > > -		update_rq_clock(rq);
-> > > > -		dl_server_stop(&rq->fair_server);
-> > > > +		is_active = dl_server_active(&rq->fair_server);
-> > > > +		if (is_active) {
-> > > > +			update_rq_clock(rq);
-> > > > +			dl_server_stop(&rq->fair_server);
-> > > > +		}
-> > > >  
-> > > >  		retval = dl_server_apply_params(&rq->fair_server, runtime, period, 0);
-> > > >  
-> > > > @@ -385,7 +390,7 @@ static ssize_t sched_fair_server_write(struct file *filp, const char __user *ubu
-> > > >  			printk_deferred("Fair server disabled in CPU %d, system may crash due to starvation.\n",
-> > > >  					cpu_of(rq));
-> > > >  
-> > > > -		if (rq->cfs.h_nr_queued)
-> > > > +		if (is_active)
-> > > >  			dl_server_start(&rq->fair_server);
-> > > 
-> > > Something that I noticed while reviewing this series is that we still
-> > > start back a server even if the user put its runtime to zero (disabling
-> > > it) and I don't think we want to do that. It's not of course related to
-> > > this change or this series per-se, but something we probably want to fix
-> > > independently.
-> > 
-> > Should we just call dl_server_remove_params() when runtime is zero?
-> 
-> Looking again at it I actually wonder if wouldn't it be better to use
-> dl_server_apply_params(dl_se, 0, dl_se->dl_period, false) in both cases.
-> dl_rq_change_utilization() deals with dl_non_contending (inactive_timer
-> armed) case already (even though sub-optimally, but we can fix/change it
-> later), so we can probably remove the special handling you do in
-> dl_server_remove_params(). The WARN_ON_ONCE(on_dl_rq()) could be moved
-> to dl_server_apply_params() as well.
-> 
-> What do you think?
+Hi,
 
-As you said, it's probably sub-optimal, but I think it's still better than
-missing scx dl_server entirely. :)
+This patchset tries to simplify bpf_local_storage.c by switching to
+kmalloc_nolock() unconditionally. Currently, local storage adopted
+BPF memory allocator in task and cgroup local storage or when PREEMPT_RT
+is enabled to allow getting memory in different context without deadlock.
+However, due to performance reasons socket local storage did not switch.
+Using different memory allocators added a decent amount of complexity.
+Therefore, to make [1] and other future work in local storage simpler,
+this patchset consolidates the memory allocation/deallocation paths by
+switching to kmalloc_nolock() unconditionally.
+ 
+Benchmark
 
-I'll give this approach a try and check if everything works as expected.
+./bench -p 1 local-storage-create --storage-type <socket,task> \
+  --batch-size <16,32,64>
 
-Thanks (and sorry for the late response)!
+The benchmark is a microbenchmark stress-testing how fast local storage
+can be created. For task local storage, switching from BPF memory
+allocator to kmalloc_nolock() yields a small amount of improvement. For
+socket local storage, it losses some when switching from kzalloc() to
+kmalloc_nolock().
 
--Andrea
+
+Socket local storage
+memory alloc     batch  creation speed              creation speed diff
+---------------  ----   ------------------                         ----
+kzalloc           16    104.217 ± 0.974k/s  4.15 kmallocs/create
+(before)          32    104.355 ± 0.606k/s  4.13 kmallocs/create
+                  64    103.611 ± 0.707k/s  4.15 kmallocs/create
+                  
+kmalloc_nolock    16    100.566 ± 0.560k/s  1.13 kmallocs/create  -3.5%
+(after)           32     99.708 ± 0.684k/s  1.15 kmallocs/create  -4.5%
+                  64     98.375 ± 1.757k/s  1.13 kmallocs/create  -5.1%
+                   
+Task local storage
+memory alloc     batch  creation speed              creation speed diff
+---------------  ----   ------------------                         ----
+BPF memory        16     24.668 ± 0.121k/s  2.54 kmallocs/create
+allocator         32     22.899 ± 0.097k/s  2.67 kmallocs/create
+(before)          64     22.559 ± 0.076k/s  2.56 kmallocs/create
+                  
+kmalloc_nolock    16     25.399 ± 0.142k/s  2.51 kmallocs/create  +3.0%
+(after)           32     23.495 ± 1.285k/s  2.66 kmallocs/create  +2.6%
+                  64     23.701 ± 0.207k/s  2.63 kmallocs/create  +5.1%
+
+[1] https://lore.kernel.org/bpf/20251002225356.1505480-1-ameryhung@gmail.com/
+
+---
+
+Amery Hung (2):
+  bpf: Always charge/uncharge memory when allocating/unlinking storage
+    elements
+  bpf: Use kmalloc_nolock() in local storage unconditionally
+
+ include/linux/bpf_local_storage.h |  12 +-
+ kernel/bpf/bpf_cgrp_storage.c     |   2 +-
+ kernel/bpf/bpf_inode_storage.c    |   2 +-
+ kernel/bpf/bpf_local_storage.c    | 283 +++++-------------------------
+ kernel/bpf/bpf_task_storage.c     |   2 +-
+ net/core/bpf_sk_storage.c         |   6 +-
+ 6 files changed, 53 insertions(+), 254 deletions(-)
+
+-- 
+2.47.3
+
 
