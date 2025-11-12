@@ -1,203 +1,190 @@
-Return-Path: <bpf+bounces-74289-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74290-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62120C523B9
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 13:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DD7BC525F8
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 14:05:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02C5F3BC18B
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 12:13:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A43B73AADC8
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 12:55:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959053195EC;
-	Wed, 12 Nov 2025 12:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401013370FF;
+	Wed, 12 Nov 2025 12:55:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ff2O0KeH"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HBqw4pgo"
 X-Original-To: bpf@vger.kernel.org
-Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013056.outbound.protection.outlook.com [40.107.201.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C837B3176E0;
-	Wed, 12 Nov 2025 12:12:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.56
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762949577; cv=fail; b=mzXU+8YhO7+FLHT93xYrIePZjKUJ/4V77+QNSVpFiU33rsIDBE+CRiIpBB4tFDeHWCBm83sJ/mzgEJWbVqeVbFvjuqzSqUdt+dPIPmjpu80H6dEwhAss3jHBO/7d7eRueOyxtcbCT2siiDSyuGDDLolKW54BWF1JfGUvdY2dGi8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762949577; c=relaxed/simple;
-	bh=3QCX3xpOpAtuqSv5jL82xR2YMZo3nMUTzE/3uRhkVZ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=neq8JSCnQ1pzGFFZCvuXn+K4ZwMo+VO6Vos6qqzU0fCZOD9ihEAXDWlE5y/XLtgg08zan+ck+FqogEpQe3YaWXMZSz3B9Ofte2dzb1pU8oyzvLrIXQbrFgUD5zXkoJ76t1bQDUqaF0ADTMwT9iOLqkQYJ6VKDoOU1yd8gqTP5uE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ff2O0KeH; arc=fail smtp.client-ip=40.107.201.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=XNhykh/K31scJr0Xeo2uQwBIJMZav23Sw+HDiiHPoQF5dexiYqUFqxsGFfaKTkND0oCi0W7lboc6NwYBxY09lXGR12/+UKuBcHw4Fgoa9UqkukosNAIHXkze7fb7siN1RawwQWYyYFoPu9Yg6lJOWHbCljje0Hq9QdN9HXL04aX6df1hZmJO7stM9B1/MqeaX63qinFMQN9DP1OkXCizOSGDLS+8RJQTZiD5+ohlvcYOUlvvsVhZEWDnBeUdzCqyvhtbMka9zfR5ipkpnlewboog+QkSaAHtibHqanPiQxnavIFuj9YAxMzfPvo7rlSLh8b6KrssitDXLiFvAb7sCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=roz4TLf//9hbY+fQ0h5ew8qbVt1wKQ6zi7dge/IokNQ=;
- b=j/r/eIzA7fGi38UF7vd/pJRlSq9QDvf5UVxKi3UwWZKKubq77sakYUB93l04AH7qlJ118reCMNrJN65qlOLDESCCHzdi1kSsj4RKqkN23Qpsf8YvOLa2eQCD7lPZPrz7ukzKzo1yANzNeYfs871zLU3LD0pGO8R9oXdlVppCLWLkkytDg6L6PrsQesQIY22nQc0Z5GqBaFkZwVrJ6mCFwJWgga1r80MhrgaPWLU2n4pGaQ09IxDI6faY4lzy4GZk5vrLKBf/bY5Di01bO+mYgh1Tqv91MBe3RikDVJAGBixqzqB/ADArzwRxxbX03OO45+l0b00EtDxwwUa+azguig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.21.194) smtp.rcpttodomain=lists.linaro.org smtp.mailfrom=ti.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=roz4TLf//9hbY+fQ0h5ew8qbVt1wKQ6zi7dge/IokNQ=;
- b=ff2O0KeHOZ4k52cpw7UtMYKM9seEh1/aaxn+AtFKqhYKcE7n6O6M4r1JFjJ69I8BR1hyu5rupHKKoVKpk3JoxK2bsEYTGMy98Y9mssXfvbawmPH9L5Qf173uQopg12TdPxhOTsRy8okN+anbgRvU1CQNNUR3Kf6Kx0J6u2fuydQ=
-Received: from SN6PR08CA0029.namprd08.prod.outlook.com (2603:10b6:805:66::42)
- by CO1PR10MB4724.namprd10.prod.outlook.com (2603:10b6:303:96::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.16; Wed, 12 Nov
- 2025 12:12:52 +0000
-Received: from SN1PEPF0002BA50.namprd03.prod.outlook.com
- (2603:10b6:805:66:cafe::6f) by SN6PR08CA0029.outlook.office365.com
- (2603:10b6:805:66::42) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9298.16 via Frontend Transport; Wed,
- 12 Nov 2025 12:12:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.194)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.21.194 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
-Received: from flwvzet200.ext.ti.com (198.47.21.194) by
- SN1PEPF0002BA50.mail.protection.outlook.com (10.167.242.73) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9320.13 via Frontend Transport; Wed, 12 Nov 2025 12:12:51 +0000
-Received: from DFLE205.ent.ti.com (10.64.6.63) by flwvzet200.ext.ti.com
- (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 12 Nov
- 2025 06:12:45 -0600
-Received: from DFLE212.ent.ti.com (10.64.6.70) by DFLE205.ent.ti.com
- (10.64.6.63) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 12 Nov
- 2025 06:12:44 -0600
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE212.ent.ti.com
- (10.64.6.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
- Transport; Wed, 12 Nov 2025 06:12:44 -0600
-Received: from [172.24.231.164] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.231.164])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5ACCCc4v2661507;
-	Wed, 12 Nov 2025 06:12:39 -0600
-Message-ID: <6eb4e9c0-debe-4643-a5b6-bd5ef0f72070@ti.com>
-Date: Wed, 12 Nov 2025 17:42:38 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4ACE3358C6
+	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 12:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762952129; cv=none; b=GaNgyTWezAgyDK0Ccghq8970h6+nz0q9Xjffp2etsHeF6qffsAlhNdqF5fvd/VZ8FqL+erMCdxFajC1yK2Rjp1ntFF0s5LnkBMPjxQqXsVXaBI11crATCVvIFcKZUGmvPq+U3kXOx3Z81OEZvRcH8lMIKLJPv3hv4mGHW7B3wEg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762952129; c=relaxed/simple;
+	bh=wl6Xo0IXSzmb0uTVxkVrEryJxhav9P1MiVf1FF2pDsw=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=BkxX03eIck9k6xNhOJvPDc6fWFBzT6FoI4/qzPnoUcvvNb6P5SBZbmbluWiUwGup5dY2qTH30ywVdW32G1ExxSjUosj+LUOjHEU9qM38pSeYEnxUpkTvgdkrS3+lW5Sg1SE5pVqWK7tEIudQWuWleLP6rpek4gfvgbHg7+OiPQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edumazet.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HBqw4pgo; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edumazet.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-7849d90b742so9784917b3.0
+        for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 04:55:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1762952127; x=1763556927; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1VGJUzn5WtQBVoTTrQyM2FX5ydLOnFLFtVi21N9cUAY=;
+        b=HBqw4pgobZwj+V0UGfwqcjoY609yUgTZZ7Q0/3yC4pOZGfMkJBQ872wbJKbVmUuZnn
+         Mxdx6S8dIuzoTKXXfp3FVdCD7fQpOnaUcRQ/ITEBWc8LUxGC87DaTyiMSLNnXg6WN1na
+         sdcD4felEuEVxkYAEpTBdAEOBOpPHHmGckCiNlYrnkBMQ/mAf/JU1KKXtgfWoZMU+iRC
+         i+UD7hnJgpABsHhzYO73NLQal4dgU1/7B8RdTboVCIwnxqpoqjzera3XKaDKq2J7v3ZO
+         1O8D86cJs4tF3fIsMbnuZTDlupUQ8pObkLMXlBrbkGrXWmSpg+DlJcU1TLhHm4T8pwZT
+         x1+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762952127; x=1763556927;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1VGJUzn5WtQBVoTTrQyM2FX5ydLOnFLFtVi21N9cUAY=;
+        b=LLUSbvyXF0i+VhXST114L3MTxfCbdnsjI52Zn6ar7RuUdCCuyE0CzRho9nYLt83wJf
+         wYbvkyXeW6ilPZcqiOh/kIgUvtWVqtMiUKCxMPSPv6edDyqzx5sqHugnOqQF+1HMOUqF
+         KIJEevv70XojDZN6qNtazsdTxSa19eY/AwtTsjkeoRmG6L3IX9SE6cx0t1VlLF/IJueX
+         hja7XbqYLyvNgYol7GdmdPi8IX1A2b5Z48ewP+ABqvAK1rHINOeHAPJ+Nr5x1rOO0k0X
+         IyloBMCHt5kyX+Hr0T0mlwBWlicuuoeZ0+MMB3GD8qJx/Xr8pB/vkSrSgiEKxSxxKMwC
+         mCQA==
+X-Forwarded-Encrypted: i=1; AJvYcCWy5yqmgoSw8c7w2TcbuR+BNPBhdf9Ay+GjSEH5i370zJ8m8b7i9apDWIEaAtKSnjBfpCQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3W7VDdf0OBEiVd5HO8ACQs5l1a4E/hIN97nCy3/GC6qLetfWP
+	X3zoXu5tIF+MYl8KpCrEHi8gdHIjOvGIEGwLlLezKrv0UsW+CZpLLhto1oHVkk1FhyspWy9Xl01
+	svEZnBsFSp3DQ/g==
+X-Google-Smtp-Source: AGHT+IFKfHvm1zPt56Z+EIU7I8V5Sxnqk8D6FIACRhXohV4MLib7Je6Hv9q4Dbu8q6IiXFWl/QnGz62pdOGScQ==
+X-Received: from ywll26.prod.google.com ([2002:a05:690c:a1da:b0:787:ce47:7423])
+ (user=edumazet job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:690c:9692:b0:787:f043:1eed with SMTP id 00721157ae682-788136e4a15mr20671387b3.53.1762952126885;
+ Wed, 12 Nov 2025 04:55:26 -0800 (PST)
+Date: Wed, 12 Nov 2025 12:55:16 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 0/7] net: ethernet: ti: am65-cpsw: add AF_XDP
- zero copy support
-To: Jakub Kicinski <kuba@kernel.org>, Roger Quadros <rogerq@kernel.org>
-CC: Siddharth Vadapalli <s-vadapalli@ti.com>, Andrew Lunn
-	<andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, "Eric
- Dumazet" <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, "Alexei
- Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-	"Jesper Dangaard Brouer" <hawk@kernel.org>, John Fastabend
-	<john.fastabend@gmail.com>, Sumit Semwal <sumit.semwal@linaro.org>,
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, Stanislav
- Fomichev <sdf@fomichev.me>, "Simon Horman" <horms@kernel.org>, <srk@ti.com>,
-	Meghana Malladi <m-malladi@ti.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-	<linaro-mm-sig@lists.linaro.org>
-References: <20251109-am65-cpsw-xdp-zc-v2-0-858f60a09d12@kernel.org>
- <20251111171848.1a4c8c03@kernel.org>
-Content-Language: en-US
-From: Chintan Vankar <c-vankar@ti.com>
-In-Reply-To: <20251111171848.1a4c8c03@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA50:EE_|CO1PR10MB4724:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4b88ebc5-613f-45a6-a1c5-08de21e4cd3a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|36860700013|7416014|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?MzVrTmNxeFlKOXZXS0dvaDhpYXBCZklXWXhiblEvSEpieHpkakVoNUVZYW5X?=
- =?utf-8?B?a25mM1JUbWptNHEzOTI5bytqMnhGMjMyamlUTVd3VmJWc2RYUjNIbU1GaTcv?=
- =?utf-8?B?MVNyb2c2YkRzeDN4NUxMK1VJK0lsWlVhVWNvd09iNXQzV3Y3NUVtL1Fxdy9R?=
- =?utf-8?B?enVocEJjZ1NmY0Z6TmpMZithb3paN1dRTlNKWlErL1pKWFpWUDFuU25tdlVw?=
- =?utf-8?B?enZRUU9DdkFoVCtvblZFOTlkLzZ6cUVsODFwQUpmR1RUazZodjF1b29GTm8y?=
- =?utf-8?B?VElnaTN2UXFrNkxia3RFZXZIQXljdmVBT0FhalhwdUZEZDdBMm1USDFpZkth?=
- =?utf-8?B?NU5GMkN0QWhiNm5kSVhpOGdsZloybmRac2ttZldGWnBWUjZNZ3NsRVRNc1hJ?=
- =?utf-8?B?eGZBNEVsRGJqM3gydll4UWRNYlNnbWJqcnl1UHQ2aXhBVzJtL29ST3RYUUtE?=
- =?utf-8?B?dXdWSzQyaXNGTWNIMkdQWExDL2xtWmxtVEVQWUFmSVdUbEk5amhWUmcxd2Mw?=
- =?utf-8?B?SHN5dDNoWUY3SzNlV1ZDaUU2OUIwQ3RyeC8yeXUrQ3haczRHc1ljaXNtb1F0?=
- =?utf-8?B?dE8xTytOSStlVWdqRG1VQm9OOUFGakUwclV1Y3pGcGF1OU9ZS0dvQlEzdWZG?=
- =?utf-8?B?SWsvaXZnK2NKaUVZM21HMjJ3VEFRS0dWd2pRMEltMTcwT1FnNmVhMkRKbDNy?=
- =?utf-8?B?NW5HYitLQm9sWlQ4VTdubCtTYm5EVllMYVlMYURGaEVLT3hXN1dnTTBuS3Zi?=
- =?utf-8?B?TVJQYUhHQnhWWGdwTHovSFJTUmNTWTRBN2NjTkdwWSt5ZXBiUDJ2NkNFRUtG?=
- =?utf-8?B?aDhYZnZkQjFIazdXeVpqZEE0U1ZXMUZLWE5rd2xiSzE3MmtOciswNG9nSVFZ?=
- =?utf-8?B?N0hvdGlsTll5M0tGL1BxamVTYU5YTUdoNWhxaE0yS1NUUG94b2hzZytrVmxw?=
- =?utf-8?B?NE5YZ29JZkphRjJlUnFQQUxxZkNSZWphTUY3djF3VmgyTTR0OGEvRHl4VzRw?=
- =?utf-8?B?T1lybTgvcTB0Vmd4RmZGZUdXSjZXZ2ZFdHBTZis2clZCOXBhekxVMnV1a1V0?=
- =?utf-8?B?a3pKTmJLNS9aallqK1hIYmdBNUFGN3l6dEM4Nkl4aTBzZTdWSDNNeVl1amlF?=
- =?utf-8?B?Rm9mbFFpMlpOdU9xc3BEWlB5ZjJEUlZQUVBaY0E5K2t3bGFIM0xqTm9KbEp6?=
- =?utf-8?B?cS9vWGdTcVJ1OVdCZGRrSFNyZm9uSW92NmNkTGthcXcvWDZoRXI0dFJlZmZ0?=
- =?utf-8?B?WjhqRWZjL2hhTTcrcUkwT2E3UlNYTk5WMzAycGc1cG9Qcy9ndDdLQkJpZWFE?=
- =?utf-8?B?UnZuOW40aEZIeHRMa3RzUWMxR1N1c1lqTFZobU5tdFE1WGpkdU05WFN5TmpV?=
- =?utf-8?B?KzdXcStLdm9BZ3FmVGZ4UTlNa3BWanBvVjVIUVZqN3JRVkRSbkRFNm1aRFM3?=
- =?utf-8?B?TDZsODc5TW9CSnVlNTY0ZkVNdEVrWjVPY1BDbGRoRjlPQ2xOcW1aMFpOYTZG?=
- =?utf-8?B?SmVpMVdWNzBqeUpZWUd0bVVtb2FOanRmcjVoOXZnRjRaSkRJdXduQnpwYTM2?=
- =?utf-8?B?VVRCWTdsKzIwSHYyM1JTZXZWZ0NxZFpjT1ZFK1h0azlpVTRSbkI2ZWc3T3hG?=
- =?utf-8?B?bVZHc1lQY2JoeEFWUXgraEFMcU1SOE9SUldOMmI3NXlRclBiYWxZbC91anpz?=
- =?utf-8?B?WmFXaUh6SzlWdnNwT1dMT3dNSXN3b21FdGNoK2lrYlN0RmRYTU9uZ2xOK0ZR?=
- =?utf-8?B?Z0cxMWxKdFFqTmN2eFVVN1lQdWhDRk9hWnZMUFlSNitOcXU2TmJSWEVpbE9O?=
- =?utf-8?B?cXp6TVFPc2ZKclhpYmcveXFRWnU5c2FJcVhWVWtQRjhtTnlndlBSa3cyN05Y?=
- =?utf-8?B?RHZIQ292VWhhaElGeHM5UG5LSWxKTmlMTDJDZUgxeFlFZTV1OFZ2RC9GYlZx?=
- =?utf-8?B?YVZmaHkrU2ovZEI3SXlwbWJuK0FKVWI1emgxOGd4YjhMMEdVdmtLNTQ2Vzla?=
- =?utf-8?B?Uk5JQkVHYWNlL1RlaTVYcTZ0MDlHT1FxRldZRVR2N0M5Ukx1dzVqR0VZTEp5?=
- =?utf-8?B?U1FYelNaN0FGSnRjMlVnSGdXMCtQc293NmlCYi80NTRYVHJ3Zkx6Y2ZKYUdo?=
- =?utf-8?Q?oPGY=3D?=
-X-Forefront-Antispam-Report:
-	CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700013)(7416014)(376014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2025 12:12:51.2090
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b88ebc5-613f-45a6-a1c5-08de21e4cd3a
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002BA50.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4724
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.51.2.1041.gc1ab5b90ca-goog
+Message-ID: <20251112125516.1563021-1-edumazet@google.com>
+Subject: [PATCH net/bpf] bpf: add bpf_prog_run_data_pointers()
+From: Eric Dumazet <edumazet@google.com>
+To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	Simon Horman <horms@kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>, 
+	Victor Nogueira <victor@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
+	Jiri Pirko <jiri@resnulli.us>, 
+	"=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?=" <toke@redhat.com>, eric.dumazet@gmail.com, 
+	Eric Dumazet <edumazet@google.com>, syzbot <syzkaller@googlegroups.com>, 
+	Paul Blakey <paulb@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hello Jakub,
+syzbot found that cls_bpf_classify() is able to change
+tc_skb_cb(skb)->drop_reason triggering a warning in sk_skb_reason_drop().
 
-On 12/11/25 06:48, Jakub Kicinski wrote:
-> On Sun, 09 Nov 2025 23:37:50 +0200 Roger Quadros wrote:
->> This series adds AF_XDP zero coppy support to am65-cpsw driver.
->>
->> Tests were performed on AM62x-sk with xdpsock application [1].
->>
->> A clear improvement is seen in 64 byte packets on Transmit (txonly)
->> and receive (rxdrop).
->> 1500 byte test seems to be limited by line rate (1G link) so no
->> improvement seen there in packet rate. A test on higher speed link
->> (or PHY-less setup) might be worthwile.
->>
->> There is some issue during l2fwd with 64 byte packets and benchmark
->> results show 0. This issue needs to be debugged further.
->> A 512 byte l2fwd test result has been added to compare instead.
-> 
-> It appears that the drivers/net/ethernet/ti/am65-* files do not fall
-> under any MAINTAINERS entry. Please add one or extend the existing CPSW
-> entry as the first patch of the series.
-> 
+WARNING: CPU: 0 PID: 5965 at net/core/skbuff.c:1192 __sk_skb_reason_drop net/core/skbuff.c:1189 [inline]
+WARNING: CPU: 0 PID: 5965 at net/core/skbuff.c:1192 sk_skb_reason_drop+0x76/0x170 net/core/skbuff.c:1214
 
-I am mainly working on am65-cpsw-nuss.c driver and volunteering myself
-to be the MAINTAINER of am65-cpsw-nuss.c and other CPSW drivers.
+struct tc_skb_cb has been added in commit ec624fe740b4 ("net/sched:
+Extend qdisc control block with tc control block"), which added a wrong
+interaction with db58ba459202 ("bpf: wire in data and data_end for
+cls_act_bpf").
 
-Regards,
-Chintan.
+drop_reason was added later.
+
+Add bpf_prog_run_data_pointers() helper to save/restore the net_sched
+storage colliding with BPF data_meta/data_end.
+
+Fixes: ec624fe740b4 ("net/sched: Extend qdisc control block with tc control block")
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Closes: https://lore.kernel.org/netdev/6913437c.a70a0220.22f260.013b.GAE@google.com/
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Paul Blakey <paulb@nvidia.com>
+---
+ include/linux/filter.h | 20 ++++++++++++++++++++
+ net/sched/act_bpf.c    |  7 +++----
+ net/sched/cls_bpf.c    |  6 ++----
+ 3 files changed, 25 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index f5c859b8131a3e5fa5111b60cc291cedd44f096d..973233b82dc1fd422f26ac221eeb46c66c47767a 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -901,6 +901,26 @@ static inline void bpf_compute_data_pointers(struct sk_buff *skb)
+ 	cb->data_end  = skb->data + skb_headlen(skb);
+ }
+ 
++static inline int bpf_prog_run_data_pointers(
++	const struct bpf_prog *prog,
++	struct sk_buff *skb)
++{
++	struct bpf_skb_data_end *cb = (struct bpf_skb_data_end *)skb->cb;
++	void *save_data_meta, *save_data_end;
++	int res;
++
++	save_data_meta = cb->data_meta;
++	save_data_end = cb->data_end;
++
++	bpf_compute_data_pointers(skb);
++	res = bpf_prog_run(prog, skb);
++
++	cb->data_meta = save_data_meta;
++	cb->data_end = save_data_end;
++
++	return res;
++}
++
+ /* Similar to bpf_compute_data_pointers(), except that save orginal
+  * data in cb->data and cb->meta_data for restore.
+  */
+diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
+index 396b576390d00aad56bca6a18b7796e5324c0aef..3f5a5dc55c29433525b319f1307725d7feb015c6 100644
+--- a/net/sched/act_bpf.c
++++ b/net/sched/act_bpf.c
+@@ -47,13 +47,12 @@ TC_INDIRECT_SCOPE int tcf_bpf_act(struct sk_buff *skb,
+ 	filter = rcu_dereference(prog->filter);
+ 	if (at_ingress) {
+ 		__skb_push(skb, skb->mac_len);
+-		bpf_compute_data_pointers(skb);
+-		filter_res = bpf_prog_run(filter, skb);
++		filter_res = bpf_prog_run_data_pointers(filter, skb);
+ 		__skb_pull(skb, skb->mac_len);
+ 	} else {
+-		bpf_compute_data_pointers(skb);
+-		filter_res = bpf_prog_run(filter, skb);
++		filter_res = bpf_prog_run_data_pointers(filter, skb);
+ 	}
++
+ 	if (unlikely(!skb->tstamp && skb->tstamp_type))
+ 		skb->tstamp_type = SKB_CLOCK_REALTIME;
+ 	if (skb_sk_is_prefetched(skb) && filter_res != TC_ACT_OK)
+diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
+index 7fbe42f0e5c2b7aca0a28c34cd801c3a767c804e..a32754a2658bb7d21e8ceb62c67d6684ed4f9fcc 100644
+--- a/net/sched/cls_bpf.c
++++ b/net/sched/cls_bpf.c
+@@ -97,12 +97,10 @@ TC_INDIRECT_SCOPE int cls_bpf_classify(struct sk_buff *skb,
+ 		} else if (at_ingress) {
+ 			/* It is safe to push/pull even if skb_shared() */
+ 			__skb_push(skb, skb->mac_len);
+-			bpf_compute_data_pointers(skb);
+-			filter_res = bpf_prog_run(prog->filter, skb);
++			filter_res = bpf_prog_run_data_pointers(prog->filter, skb);
+ 			__skb_pull(skb, skb->mac_len);
+ 		} else {
+-			bpf_compute_data_pointers(skb);
+-			filter_res = bpf_prog_run(prog->filter, skb);
++			filter_res = bpf_prog_run_data_pointers(prog->filter, skb);
+ 		}
+ 		if (unlikely(!skb->tstamp && skb->tstamp_type))
+ 			skb->tstamp_type = SKB_CLOCK_REALTIME;
+-- 
+2.51.2.1041.gc1ab5b90ca-goog
+
 
