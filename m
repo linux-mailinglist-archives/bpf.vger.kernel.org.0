@@ -1,126 +1,135 @@
-Return-Path: <bpf+bounces-74323-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74324-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C46C540AA
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 20:00:20 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F250C54363
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 20:43:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 440333470B0
-	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 18:59:57 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 06A8134B6C4
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 19:38:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E2134DCF2;
-	Wed, 12 Nov 2025 18:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CC4F3538A0;
+	Wed, 12 Nov 2025 19:35:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZVshVBD+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fj7x8n/e"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A22D34D4F2
-	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 18:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA68E27B34E
+	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 19:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762973929; cv=none; b=Ik7/5tD3duIDSqvKEChBzIoj6NmRJ9yvts4eEwQu+9HlYqYb8w97IofLqq8jx8fPTQJdjQSGBgujO+LLGCvkW5VCVBZYZqqGu2AmB/mgZVszZhMQD2XAUBowPCiWS5iFLjqXXstiraGebxsCKA7rxNmao5GAWWRrOitVKOjtnlQ=
+	t=1762976138; cv=none; b=rtvwI4KViU37uo+SdGsBwDdVzCXyPT9G3JRdWw8ObJDepB0JdH53l/9qe/noxPRtfgyYTiJ7nfVLJ26XMP/YgNRCh+AM1Fe+dmOBI2Pxx7o/kpEW31ZgRudK7xl83LR/SFyGa8119FnEVeYPZoZ6lqK9p1klhrATp9tRGrQGegk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762973929; c=relaxed/simple;
-	bh=nN2xdyMdxFwpjMYxAIENipm0YmxDg71Krkxhb9aKY4I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j8o82J4ts7U+5fl/VEv40Xrbkq5b1wvpTnreY6fUckCX4gKkcgp+4ilp/VLn1ICqu4iMKe0rlPvReMSO9wY9OWK9lM+EAj3HiUg4d7QlRCQonCXyy8UbJSj3sDwGejTrKQ6zuZ8h4kMXOMC8K6rywwJeaIMbmRRVSXzYIlTeMi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZVshVBD+; arc=none smtp.client-ip=209.85.216.41
+	s=arc-20240116; t=1762976138; c=relaxed/simple;
+	bh=u3vP+1V++RPcKeq861ABhRpvKQacT/dp6yqLD0pJfU4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iPPehrQNUc8DLf+kyIQCPONIraAiBJ1HXG1L8TG1ENQZeueoJHE2DKqONn8EYSswStOi4voutzaQow/miXfodFRJ9PBYZ3SaakS7HpQ3zaSFKeOkb4/BGfzl/j84yFy1iBZ/XmMMw565s0gBW6XL26ESk85gbvlTxsx6rjUZ82A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fj7x8n/e; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-3436a328bbbso1506737a91.2
-        for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 10:58:47 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4775ae5684fso387175e9.1
+        for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 11:35:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762973927; x=1763578727; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1762976135; x=1763580935; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1I7Klz6oAgGe3SSsI7DSFPvLctg25agoEpI/CIFVteM=;
-        b=ZVshVBD+H7nQZbmin4+TWKQ25Ec8t8VPG2t9u5h/4+svhvojw/5egcqDlKKU6j1Hk3
-         HDFXEaxNj+7puIGW70+jhmyb6F1UFbHTqSYANOj3hTxMmE6EkfGvD8vk7Tw+vgpwpFis
-         Q5wgQin+KJTMJAod/CbY37Df4MhbbF68YyKj0MkKV8lj7uuxU9jopaQ5gchPRysjlmrd
-         SKJ51BnrJuMZLsw9sJPz2qTyc0BbvHfkE1VR77Uv1vmDTntfpdKf4xsJjINWCnvwEXog
-         1frmystghLhelG2oUMe8btewmCH2QwOpfYcSSd1UqaDXKeuBGY/HjybqKCgCTX0YG4fP
-         JxPw==
+        bh=ovc76Z83NcUuR4lF7mtent9uAX4Ys7J9eQXpzf0/W3Q=;
+        b=Fj7x8n/evak1N9YHPpiTbvsUvHExqSJP/5EtKtlS1qwLg4hAAkKOiIfcDOM1CCUDDj
+         ktvjfJe90GmMWU9C442DEWBBnSVllvfLKF5S3gvSbi0ll7C9juBx0YUjlSfKqHseREL8
+         YLMohecz9pU34QB+EATGzoS1n3R6pkFoHypBNXebVJ657BonTB/pU5rDDFDxFf90lm/Y
+         y+5LuK//LKRTpFu0zzenkVVXFkOgaMY5cO/wGSwYS/e/xMj35p6elCngACMp1jNo6w3z
+         wmf83Djo85nhM1Q2ba71WLCp5GPEZlidy7WJzEyZxGD1C1J5bh7YjTJoEaYguQHtVgFJ
+         EZew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762973927; x=1763578727;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20230601; t=1762976135; x=1763580935;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=1I7Klz6oAgGe3SSsI7DSFPvLctg25agoEpI/CIFVteM=;
-        b=tXXzVL0oYkR6iYGdwoFyQAsZiBgklV/INpwcXu6jjXFohIafSrzD4ar8BS3EvRTPyz
-         lYkoJKEHupOc/bSaym4gQKPzyaHTs9+8csyxn6+3P1vtMR9ceozHxm3b8NWNLoN+Mami
-         qMDGvCkajTztxBeQhLM5ZH7z326sXsdaEkiMTXlk6LHHa7H+2A/6rcngFI8/LE2JWVKf
-         AeXC8u/y+cC2UBokhyCi8cUb6oJM8z0TBZSM5JPgfbyxgWlCrt96eq5xJfBUk9vZkPEQ
-         uYj6+yzCZ9w//JGVbSNcycWaP3CSbyKqYLXdsz0nj/ZWWC4k28qi9fVuScSE9HhVyqRI
-         ya4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWaPL3ZO75ktgYgWCF9hpeWlv0rWVaeCNoLm8wt04SilTkkLScuyZSODKXbNrC0XuvI5g8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQcgbtU2kIRdToQHhMBLPAQQ5bnH3VWlcCh86XKBSpFRHC7vj/
-	doSyhzdBfj1dQt7l4+f51D3dYeSUogk4B/j/GYcTTLALXcFDV0NLrs0G
-X-Gm-Gg: ASbGncstLJwdhO04hXJ6OuYhyLGLOsc2j8kGTnCWJQ0rj3Y4NmaVwZ0GFA4wCuOtRuu
-	uoXXRIwg9UEWht/Mz4GHds89U0aBhwCuIA4OYpX07mwliaSKqEwqfeWKt0vlMk/xN61RavRkwcX
-	ziox730NiXBlKBXfVHjq8VtV+M1CH1jvPiZKiME0BvF6HqmgAdRJwkyr0tGlcmxDABNTDYrJLdJ
-	ihWWp77oX1suOHOLqfTDunx16uZ2lgeGkID6hedCsrjqUwXCiTubcIQQerovfEXy/hxasVczW8d
-	spyBY3f0mZ0lx760L0GALNjCWYFvsMRWycR/tCzXQnK0Yd2cBuDqIgZ7Kq87crEVgxpKJc51/rH
-	BLhoQLt3L/pLz76QjcgAlkA4C/kVAIJZw9TWWbMXaiB7tupedEdzn1ML2/dCNLgytbshS8sKO0y
-	J62GI4VUKazeWiCGaCbnvsDbaTKGXHQs0N
-X-Google-Smtp-Source: AGHT+IEXSRKPlnUmANkCKnv2Ry+gqRz/FWfvHlbIj2RgqDD993fXyqdwaPS9bBtM9eHGXaWe2sWATQ==
-X-Received: by 2002:a17:90b:590b:b0:343:7714:4cad with SMTP id 98e67ed59e1d1-343dddeefbfmr4942912a91.5.1762973927256;
-        Wed, 12 Nov 2025 10:58:47 -0800 (PST)
-Received: from fedora (c-67-164-59-41.hsd1.ca.comcast.net. [67.164.59.41])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-343e06fe521sm3491565a91.1.2025.11.12.10.58.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Nov 2025 10:58:46 -0800 (PST)
-From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-To: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: [PATCH v2 4/4] mm/vmalloc: cleanup gfp flag use in new_vmap_block()
-Date: Wed, 12 Nov 2025 10:58:33 -0800
-Message-ID: <20251112185834.32487-5-vishal.moola@gmail.com>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <20251112185834.32487-1-vishal.moola@gmail.com>
-References: <20251112185834.32487-1-vishal.moola@gmail.com>
+        bh=ovc76Z83NcUuR4lF7mtent9uAX4Ys7J9eQXpzf0/W3Q=;
+        b=fbWCRNE1gYLorACdFsgN/IN6u2yLICCgbHzyzScoZQO2heDoESLfGnwcjkUJhjIroB
+         xQJjNQ5q0DGmBS/On8D52uep4UeTwJNbb1agfcrIVhMW+j3NJ4cL9n/apyeJu1vICj2+
+         lw/c8emc4Hzr3qCn6hPR5/IiJygyZ+IYArehwQaGx60rPWPXLbn63M71ObIha1xIFxMx
+         KSdIfTsCsm5j28CZvMBjUlkHUgVZbZm1tV07fdTxNC7U2Hzo6wudRsnwfHf8w3ujDya8
+         ZbToMlbY3fWKEB5V2gNGQf1GU/pEHo6WyAIHfLmWE9ZDpHt9LpzQu6UCxvpBn21xAq1Q
+         N6bw==
+X-Gm-Message-State: AOJu0YyEFOGFXnp2sytL5zqQJqOGKzBUrzMzWAZASi6139CQWu5RvDAx
+	5VhIkmdH03pVRjLKH8H+tFdczzXDjiwhj0urO3srg7gjB7QoNcRUoB9DbYNW9qcx5E83J4jeHru
+	FuC1IGCrvtC0fZ1tvrKQKkgUV6k3V/Sk=
+X-Gm-Gg: ASbGnctOG3S4fV3PG6TzAcqI71fTOwOgz1i6IzTOBBjwNfyoA8+GTimOMoWLjMmgbgx
+	NWtdlIY6kBNoYSnntx8uXsePbVRCXbwfjS/soLym3B3ysenF7zYAXKEM0ePgQD6n8yRCz5bYTfU
+	9VVmuPZ34VnuOxWfdzCz0YJH4QJjfOXHQZka3UNxaw3TqucdJ5GGPMtxKhXnl4ERYiGr166IJSV
+	8LejjI4m+vbCPbPfC78VLfE24f8ykNLS6lfb9Mx3jYnFXLo2HlIkkCEIPOBVuxkdjkUfg742ze4
+	wXQ6ksw5NMfuDZo70g==
+X-Google-Smtp-Source: AGHT+IGlyQ0QaEFrKxBFF96zByiUlKpiqv8/ugPXOnbVB+mrwb9tXtuiPq33A+5rz7IMdJ6AHF++ClxMYi84DSK32+U=
+X-Received: by 2002:a05:600c:26d1:b0:477:8985:4039 with SMTP id
+ 5b1f17b1804b1-4778a01e47amr15400055e9.17.1762976135022; Wed, 12 Nov 2025
+ 11:35:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20251112175939.2365295-1-ameryhung@gmail.com> <20251112175939.2365295-3-ameryhung@gmail.com>
+In-Reply-To: <20251112175939.2365295-3-ameryhung@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 12 Nov 2025 11:35:22 -0800
+X-Gm-Features: AWmQ_bl7MLHWzyjVcuKM4hdvoIwlqldAKlytvr8F-mSBLUB1IB7_hX8Jsae4F6A
+Message-ID: <CAADnVQ+2OXNo99B2krjwOb5XeFhi6GUagotcyf36xvLDoHqmjw@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 2/2] bpf: Use kmalloc_nolock() in local
+ storage unconditionally
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The only caller, vb_alloc(), passes GFP_KERNEL into new_vmap_block()
-which is a subset of GFP_RECLAIM_MASK. Since there's no reason to use
-this mask here, remove it.
+On Wed, Nov 12, 2025 at 9:59=E2=80=AFAM Amery Hung <ameryhung@gmail.com> wr=
+ote:
+>
+> @@ -80,23 +80,12 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, v=
+oid *owner,
+>         if (mem_charge(smap, owner, smap->elem_size))
+>                 return NULL;
+>
+> -       if (smap->bpf_ma) {
+> -               selem =3D bpf_mem_cache_alloc_flags(&smap->selem_ma, gfp_=
+flags);
+> -               if (selem)
+> -                       /* Keep the original bpf_map_kzalloc behavior
+> -                        * before started using the bpf_mem_cache_alloc.
+> -                        *
+> -                        * No need to use zero_map_value. The bpf_selem_f=
+ree()
+> -                        * only does bpf_mem_cache_free when there is
+> -                        * no other bpf prog is using the selem.
+> -                        */
+> -                       memset(SDATA(selem)->data, 0, smap->map.value_siz=
+e);
+> -       } else {
+> -               selem =3D bpf_map_kzalloc(&smap->map, smap->elem_size,
+> -                                       gfp_flags | __GFP_NOWARN);
+> -       }
+> +       selem =3D bpf_map_kmalloc_nolock(&smap->map, smap->elem_size, gfp=
+_flags, NUMA_NO_NODE);
 
-Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- mm/vmalloc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 6a3ee36d77c5..49e0b68768d7 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2699,8 +2699,7 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
- 
- 	node = numa_node_id();
- 
--	vb = kmalloc_node(sizeof(struct vmap_block),
--			gfp_mask & GFP_RECLAIM_MASK, node);
-+	vb = kmalloc_node(sizeof(struct vmap_block), gfp_mask, node);
- 	if (unlikely(!vb))
- 		return ERR_PTR(-ENOMEM);
- 
--- 
-2.51.1
+Pls enable CONFIG_DEBUG_VM=3Dy then you'll see that the above triggers:
+void *kmalloc_nolock_noprof(size_t size, gfp_t gfp_flags, int node)
+{
+        gfp_t alloc_gfp =3D __GFP_NOWARN | __GFP_NOMEMALLOC | gfp_flags;
+...
+        VM_WARN_ON_ONCE(gfp_flags & ~(__GFP_ACCOUNT | __GFP_ZERO |
+                                      __GFP_NO_OBJ_EXT));
 
+and benchmarking numbers have to be redone, since with
+unsupported gfp flags kmalloc_nolock() is likely doing something wrong.
 
