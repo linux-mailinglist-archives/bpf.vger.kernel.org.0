@@ -1,282 +1,187 @@
-Return-Path: <bpf+bounces-74260-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74261-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 851F2C4FEFF
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 22:58:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB22C501A4
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 01:01:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ADA13A60F5
-	for <lists+bpf@lfdr.de>; Tue, 11 Nov 2025 21:58:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06394189736C
+	for <lists+bpf@lfdr.de>; Wed, 12 Nov 2025 00:01:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6622F12DA;
-	Tue, 11 Nov 2025 21:58:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44231290F;
+	Wed, 12 Nov 2025 00:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AA/LiJKr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lp0o7r+B"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CAE9326947
-	for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 21:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B9335CBC4
+	for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 00:01:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762898314; cv=none; b=up6dlzhMZBnBbM65upZjBpzehkTLHCpt3aGx8bSglwpArVyg/zEW8N3rTcbKqIIVZt5PWbNDYLm2pHOvq+YS4+drEmJ3q06qKQSzW4cgt59RGjvxU9JSGtzm437ykmn2/AZw+xqDwB7nXi8oAjahdn3tWQz6RsTGL1wkjfhE+Ak=
+	t=1762905683; cv=none; b=K5rz9SK8GZ5AzdF8b2Kb1B8EOcG+ljCdVj1C5xYBG6n5+7P0loquw4Hgx/5V3LlzcJMAyS/Y6eqn2cmnHl2SAP2pDyufvxuWK6mTm5gTCcEMEtrIUgFqoRJjqmgzln+oLttV9lSLk4fgzO3r37hms8cHpCIajvSLw7WPf9Enhc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762898314; c=relaxed/simple;
-	bh=IsT/Ijx6MJ304UQGh6k7PVN1xPsIejqXWAH0Rw8shmo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KnH6IlSwmGkidE5hhxK8I6s0VlSmdW+jOsCoog3K0aKdW7HMNZAh35UkWlsueaYUlOTMXA9LVC3VltD8ESzqTFgMDKnvBlHMJiAaOirFc8ZCD72GReI45zQi3p3YXILF/XtOT2pTXBItlVET3D83PKuBtrejAInm1d6BhPY9qAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AA/LiJKr; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6a2a6f41-f24a-4e87-94d0-8cb147725279@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762898307;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wUYbFL/fpxRZwYDcmQ9wRgGEW7uuUm0Ax++uoIKTY60=;
-	b=AA/LiJKr4qWH8mfpe1MiYV1Vf+PuuA77hDLNw5g5yeJHtaVYw/JkzqwvrNoctD11uu5F3M
-	bIDtWOikTflpuHHX0SLSBxxBREZYMppoIxBq/q8AWGZjmnBsDjwjWNsZYoKr+terIBvPyK
-	vjFQZWvHveqcC10WONLgnsJbEMqQ7zk=
-Date: Tue, 11 Nov 2025 13:58:18 -0800
+	s=arc-20240116; t=1762905683; c=relaxed/simple;
+	bh=CXZjKfAzksLGZaLX9G+mjGAL8cWkdLyNmA6onnJtDH4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YJTES6W+agwF8XwqfSwhcb8WvCcM399KgIFC3ICHq0CCnVFQ/cmL7Y/ePy55SJGBC1HM4rFSSzYxMF6nRalEfpez+8CH5rWexvyYAMnR45xQv4hYadEGKjqouSmDY74xZo28VlIl6Wks3jdGyOYZ8NwPgzJwJVe9T+ip2UYedx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lp0o7r+B; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-64074f01a6eso362642a12.2
+        for <bpf@vger.kernel.org>; Tue, 11 Nov 2025 16:01:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762905680; x=1763510480; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L1c65TA/qlfWizahDeIPj92hA2Tnvs0ON89Itog2UtY=;
+        b=lp0o7r+BJFNYRXJdz1kWXPPp+yWfuptjDyEj9GS8C5C47vH1Igm1DADrmfI/KC+uPN
+         QZ01ffXCuhq2SwA2VlwCuqRW/02B33cLjga/8iSaC0p1JHAMDevqRo/Qx26WCh7BBqPQ
+         rcGmubiLvdk7B8KKc0Kzs3lH5d7P5pdGwdbQoORYtDECgRyRd6UvyWEEL/PCL/dXSx9U
+         XwLd+4fjgI60pCdc1kBhDWR4lmvkh/RcbP9RGb5kCkB6lD5BaEC5a0yGz3MHkcGOGYuP
+         LK035P70JHhs7n/Pi/JUsEgUi6ULKXtKZuZoc9ewcYN2Jxk0qGeLsF/29C0V7dwCYJ5M
+         gwNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762905680; x=1763510480;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=L1c65TA/qlfWizahDeIPj92hA2Tnvs0ON89Itog2UtY=;
+        b=CoxMXdlnFUAZSrbhPkVC5CcMWl7xfp1tM8ktWTiO64WawKKptcw83VEOdZ+YcATH0M
+         NHIQMzoc0B2voiFJMRXe2mwILRwqLn2D1rdJ85NbpYOhSu+6Qil2q7DekGXUkTz9jQTt
+         d9j3DGAwTn07gzPetbUDFhrtPGPugd6YAHn7ypPKYZjzku4onqBKo/0wPVuaYGCpPR8g
+         j2X7Ih7oPJ8MNDebNVOZfElCcs3TtsYEVjnMtIswPo9peW4K2DdDzlVZfsoqdzrhzoUM
+         JyixS7rdMLBKJuo2MeJrnWfU1QlhJhn8gRgM61T3R27l2cyJOLSzWBEfhoWTcg/yesmP
+         GNOg==
+X-Forwarded-Encrypted: i=1; AJvYcCX8Y+A4+XbhvScSUzeyPlBJC6UlDnwIX0k/DyH3lc45v9Ny9IxXp5k/ziJdsNgoglajPI0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzx3JLqNqlUX4e0PuZvFGQjZxbra6hQ6adpmSHAjLClnOrj7BxT
+	Bb/iKNM/rZQze22iZ1kJNH6cUnOinFRIhBcSspSvvXY07jVa1/MZK7Q/Q1U66qeSRClYF+J4EoE
+	GOghgD1pGRNJwrMqQN+eGvVk71xCXgfw=
+X-Gm-Gg: ASbGncuzK5wlWgGRrUYplDizZqb9bdyCRtgfNJH7Y04gt5timXr0Se2357QY8Ij8Mol
+	cb0+B0PULZc6/zI2W5BsG6zDh7ilKTTM+mXLjwl5sXXRQXVKl5ZKNIgzmT7vmlCGA2AkFysTmMR
+	TcH+VSVWnk1ETnhWKmIaj6E3yLpoEg/gxiFmP19WsqUoWpV0CDCHLMvisG2j/okmxF54q2h9MzI
+	rRfH/uFwA1YGtof7Vb5PwGjB0INt+kpHXbwE9D6Pf9ShhA+O+6xR0vUbWjOJ4Yx5Sut33P//+1R
+	C0L2alcUTlCbHbjz
+X-Google-Smtp-Source: AGHT+IGAHCAVV06XKvp+l9AdAkG2fV/+IdH9G34Rp60840q1TRUTw1crOZt1MnrCX3JqWPV1kINreRlf75NoH/qhvxw=
+X-Received: by 2002:a05:6402:5112:b0:643:1659:7593 with SMTP id
+ 4fb4d7f45d1cf-6431a5755ccmr783569a12.30.1762905680187; Tue, 11 Nov 2025
+ 16:01:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 2/2] selftests/bpf: Add test to verify freeing
- the special fields when update [lru_,]percpu_hash maps
-Content-Language: en-GB
-To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
-Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, memxor@gmail.com, ameryhung@gmail.com,
- linux-kernel@vger.kernel.org, kernel-patches-bot@fb.com
-References: <20251105151407.12723-1-leon.hwang@linux.dev>
- <20251105151407.12723-3-leon.hwang@linux.dev>
- <9f662e2c-7370-4f99-bdec-bc123495e1c5@linux.dev>
- <04c35045-ef5b-4e92-9da9-6710ce8fdabf@linux.dev>
- <22251785-789d-43f8-8031-86406cd4c12b@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <22251785-789d-43f8-8031-86406cd4c12b@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20251111160949.45623-1-puranjay@kernel.org> <052b04eb-9b97-40be-965c-bb5aa8c88a49@gmail.com>
+In-Reply-To: <052b04eb-9b97-40be-965c-bb5aa8c88a49@gmail.com>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Wed, 12 Nov 2025 01:01:08 +0100
+X-Gm-Features: AWmQ_bmiaeEEmwymaPgyiTUD7K9iSOrvC-_iGJZ_kCP55Ut4Ui8_XPn6kDFSN90
+Message-ID: <CANk7y0hQw_B-7hcmgK6hTExTvcghcXCFhH-N0TkyJsbRokzDaA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: verifier: initialize imm in kfunc_tab in add_kfunc_call()
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: Puranjay Mohan <puranjay@kernel.org>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 11/11/25 5:52 AM, Leon Hwang wrote:
+On Tue, Nov 11, 2025 at 7:38=E2=80=AFPM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
 >
-> On 2025/11/11 21:38, Leon Hwang wrote:
->>
->> On 2025/11/7 10:00, Yonghong Song wrote:
->>>
->>> On 11/5/25 7:14 AM, Leon Hwang wrote:
->>>> Add test to verify that updating [lru_,]percpu_hash maps decrements
->>>> refcount when BPF_KPTR_REF objects are involved.
->>>>
->>>> The tests perform the following steps:
->>>>
->>>> 1. Call update_elem() to insert an initial value.
->>>> 2. Use bpf_refcount_acquire() to increment the refcount.
->>>> 3. Store the node pointer in the map value.
->>>> 4. Add the node to a linked list.
->>>> 5. Probe-read the refcount and verify it is *2*.
->>>> 6. Call update_elem() again to trigger refcount decrement.
->>>> 7. Probe-read the refcount and verify it is *1*.
->>>>
->>>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
->>> LGTM with a few nits below.
->>>
->>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
->>>
->> Hi Yonghong,
->>
->> Thanks for your review and ack.
->>
->>>> ---
->>>>    .../bpf/prog_tests/refcounted_kptr.c          | 57 ++++++++++++++++++
->>>>    .../selftests/bpf/progs/refcounted_kptr.c     | 60 +++++++++++++++++++
->>>>    2 files changed, 117 insertions(+)
->>>>
->>>> diff --git a/tools/testing/selftests/bpf/prog_tests/refcounted_kptr.c
->>>> b/tools/testing/selftests/bpf/prog_tests/refcounted_kptr.c
->>>> index d6bd5e16e6372..086f679fa3f61 100644
->>>> --- a/tools/testing/selftests/bpf/prog_tests/refcounted_kptr.c
->>>> +++ b/tools/testing/selftests/bpf/prog_tests/refcounted_kptr.c
->>>> @@ -44,3 +44,60 @@ void test_refcounted_kptr_wrong_owner(void)
->>>>        ASSERT_OK(opts.retval, "rbtree_wrong_owner_remove_fail_a2 retval");
->>>>        refcounted_kptr__destroy(skel);
->>>>    }
->>>> +
->>>> +void test_percpu_hash_refcounted_kptr_refcount_leak(void)
->>>> +{
->>>> +    struct refcounted_kptr *skel;
->>>> +    int cpu_nr, fd, err, key = 0;
->>>> +    struct bpf_map *map;
->>>> +    size_t values_sz;
->>>> +    u64 *values;
->>>> +    LIBBPF_OPTS(bpf_test_run_opts, opts,
->>>> +            .data_in = &pkt_v4,
->>>> +            .data_size_in = sizeof(pkt_v4),
->>>> +            .repeat = 1,
->>>> +    );
->>>> +
->>>> +    cpu_nr = libbpf_num_possible_cpus();
->>>> +    if (!ASSERT_GT(cpu_nr, 0, "libbpf_num_possible_cpus"))
->>>> +        return;
->>>> +
->>>> +    values = calloc(cpu_nr, sizeof(u64));
->>>> +    if (!ASSERT_OK_PTR(values, "calloc values"))
->>>> +        return;
->>>> +
->>>> +    skel = refcounted_kptr__open_and_load();
->>>> +    if (!ASSERT_OK_PTR(skel, "refcounted_kptr__open_and_load")) {
->>>> +        free(values);
->>>> +        return;
->>>> +    }
->>>> +
->>>> +    values_sz = cpu_nr * sizeof(u64);
->>>> +    memset(values, 0, values_sz);
->>>> +
->>>> +    map = skel->maps.percpu_hash;
->>>> +    err = bpf_map__update_elem(map, &key, sizeof(key), values,
->>>> values_sz, 0);
->>>> +    if (!ASSERT_OK(err, "bpf_map__update_elem"))
->>>> +        goto out;
->>>> +
->>>> +    fd = bpf_program__fd(skel->progs.percpu_hash_refcount_leak);
->>>> +    err = bpf_prog_test_run_opts(fd, &opts);
->>>> +    if (!ASSERT_OK(err, "bpf_prog_test_run_opts"))
->>>> +        goto out;
->>>> +    if (!ASSERT_EQ(opts.retval, 2, "opts.retval"))
->>>> +        goto out;
->>>> +
->>>> +    err = bpf_map__update_elem(map, &key, sizeof(key), values,
->>>> values_sz, 0);
->>>> +    if (!ASSERT_OK(err, "bpf_map__update_elem"))
->>>> +        goto out;
->>>> +
->>>> +    fd = bpf_program__fd(skel->progs.check_percpu_hash_refcount);
->>>> +    err = bpf_prog_test_run_opts(fd, &opts);
->>>> +    ASSERT_OK(err, "bpf_prog_test_run_opts");
->>>> +    ASSERT_EQ(opts.retval, 1, "opts.retval");
->>>> +
->>>> +out:
->>>> +    refcounted_kptr__destroy(skel);
->>>> +    free(values);
->>>> +}
->>>> +
->>> Empty line here.
->>>
->>>> diff --git a/tools/testing/selftests/bpf/progs/refcounted_kptr.c b/
->>>> tools/testing/selftests/bpf/progs/refcounted_kptr.c
->>>> index 893a4fdb4b6e9..1aca85d86aebc 100644
->>>> --- a/tools/testing/selftests/bpf/progs/refcounted_kptr.c
->>>> +++ b/tools/testing/selftests/bpf/progs/refcounted_kptr.c
->>>> @@ -568,4 +568,64 @@ int
->>>> BPF_PROG(rbtree_sleepable_rcu_no_explicit_rcu_lock,
->>>>        return 0;
->>>>    }
->>>>    +private(kptr_ref) u64 ref;
->>>> +
->>>> +static int probe_read_refcount(void)
->>>> +{
->>>> +    u32 refcount;
->>>> +
->>>> +    bpf_probe_read_kernel(&refcount, sizeof(refcount), (void *) ref);
->>>> +    return refcount;
->>>> +}
->>>> +
->>>> +static int __insert_in_list(struct bpf_list_head *head, struct
->>>> bpf_spin_lock *lock,
->>>> +                struct node_data __kptr **node)
->>>> +{
->>>> +    struct node_data *node_new, *node_ref, *node_old;
->>>> +
->>>> +    node_new = bpf_obj_new(typeof(*node_new));
->>>> +    if (!node_new)
->>>> +        return -1;
->>>> +
->>>> +    node_ref = bpf_refcount_acquire(node_new);
->>>> +    node_old = bpf_kptr_xchg(node, node_new);
->>> Change the above to node_old = bpf_kptr_xchg(node, node_node_ref); might
->>> be better for reasoning although node_ref/node_new are the same.
->>>
->> Nope — node_ref and node_new are different for the verifier.
-> They are the same in theory.
+> On 11/11/25 16:09, Puranjay Mohan wrote:
+> > Metadata about a kfunc call is added to the kfunc_tab in
+> > add_kfunc_call() but the call instruction itself could get removed by
+> > opt_remove_dead_code() later if it is not reachable.
+> >
+> > If the call instruction is removed, specialize_kfunc() is never called
+> > for it and the desc->imm in the kfunc_tab is never initialized for this
+> > kfunc call. In this case, sort_kfunc_descs_by_imm_off(env->prog); in
+> > do_misc_fixups() doesn't sort the table correctly.
+> > This is a problem from s390 as its JIT uses this table to find the
+> > addresses for kfuncs, and if this table is not sorted properly, JIT can
+> > fail to find addresses for valid kfunc calls.
+> >
+> > This was exposed by:
+> >
+> > commit d869d56ca848 ("bpf: verifier: refactor kfunc specialization")
+> >
+> > as before this commit, desc->imm was initialised in add_kfunc_call().
+> >
+> > Initialize desc->imm to func_id, it will be overwritten in
+> > specialize_kfunc() if the instruction is not removed.
+> >
+> > Fixes: d869d56ca848 ("bpf: verifier: refactor kfunc specialization")
+> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> > ---
+> >
+> > This bug is not triggered by the CI currently, I am working on another
+> > set for non-sleepbale arena allocations and as part of that I am adding
+> > a new selftest that triggers this bug.
+> >
+> > Selftest: https://github.com/kernel-patches/bpf/pull/10242/commits/1f68=
+1f022c6d685fd76695e5eafbe9d9ab4c0002
+> > CI run: https://github.com/kernel-patches/bpf/actions/runs/19238699806/=
+job/54996376908
+> >
+> > ---
+> >   kernel/bpf/verifier.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 1268fa075d4c..a667f761173c 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -3371,6 +3371,7 @@ static int add_kfunc_call(struct bpf_verifier_env=
+ *env, u32 func_id, s16 offset)
+> >
+> >       desc =3D &tab->descs[tab->nr_descs++];
+> >       desc->func_id =3D func_id;
+> > +     desc->imm =3D func_id;
+> >       desc->offset =3D offset;
+> >       desc->addr =3D addr;
+> >       desc->func_model =3D func_model;
+> Thanks for sending the fix.
+> I'm not sure if this is enough, though. Don't you need to run entire
+> calculation
+> for the desc->imm, like in the original, before
+> d869d56ca848 ("bpf: verifier: refactor kfunc specialization")?
 >
-> The verifier failure was likely caused by something else, but I'm not
-> sure of the exact reason.
-
-I did some analysis and your code works as expected:
-
-     node_ref = bpf_refcount_acquire(node_new);
-     node_old = bpf_kptr_xchg(node, node_new);
-     if (node_old) {
-             bpf_obj_drop(node_old);
-             bpf_obj_drop(node_ref);
-             return -2;
-     }
-
-     bpf_spin_lock(lock);
-     bpf_list_push_front(head, &node_ref->l);
-     ref = (u64)(void *) &node_ref->ref;
-     bpf_spin_unlock(lock);
-
-In the above, after the following insn:
-     node_old = bpf_kptr_xchg(node, node_new);
-the second argument 'node_new' will become a scalar since it
-may be changed by another bpf program accessing the same map.
-
-So your code is okay as node_ref still valid ptr_node_data
-and can be used in following codes.
-
-
-My suggestion to replace
-     node_old = bpf_kptr_xchg(node, node_new);
-with
-     node_old = bpf_kptr_xchg(node, node_ref);
-will not work since node_ref will be a scalar
-so subsequent bpf_obj_drop(node_ref) and bpf_list_push_front(...)
-won't work.
-
-In summary, your change look okay to me. Sorry for noise.
-
+>      if (bpf_jit_supports_far_kfunc_call()) {
+>          call_imm =3D func_id;
+>      } else {
+>          call_imm =3D BPF_CALL_IMM(addr);
+>          /* Check whether the relative offset overflows desc->imm */
+>          if ((unsigned long)(s32)call_imm !=3D call_imm) {
+>              verbose(env, "address of kernel func_id %u is out of
+> range\n", func_id);
+>              return -EINVAL;
+>          }
+>      }
+>      desc->imm =3D call_imm;
 >
->> When trying node_old = bpf_kptr_xchg(node, node_ref), the verifier reported:
->>
->> [verifier log snipped for brevity...]
->> ; bpf_obj_drop(node_ref); @ refcounted_kptr.c:594
->> 26: (bf) r1 = r6                      ; R1=scalar(id=7) R6=scalar(id=7)
->> refs=3
->> 27: (b7) r2 = 0                       ; R2=0 refs=3
->> 28: (85) call bpf_obj_drop_impl#54490
->> R1 must be referenced or trusted
->> processed 27 insns (limit 1000000) max_states_per_insn 0 total_states 2
->> peak_states 2 mark_read 0
->>
->> So the verifier rejected it because R6 became scalar(id=7) from
->> ptr_node_data(ref_obj_id=4).
->>
->> ---
->>
->> Hi Alexei, could you please drop the extra empty line when applying this
->> patch?
->>
->> Then I don't need to send another revision.
->>
->> Thanks,
->> Leon
->>
->> [...]
->>
+> I think it would be right to reuse that hunk in both places:
+>   add_kfunc_call() and specialize_kfunc().
 
+Yes, I agree with you. Currently it doesn't make a difference because
+only s390 uses it
+and it needs the func_id to be in desc->imm, but for completeness we
+should do the proper
+calculation to not introduce bugs for later developments.
+
+I will send v2 with this entire calculation. and we can remove:
+
+ if (bpf_jit_supports_far_kfunc_call()) {
+                call_imm =3D func_id;
+
+from specialize_kfunc() as it is redundant.
+
+
+Thanks,
+Puranjay
 
