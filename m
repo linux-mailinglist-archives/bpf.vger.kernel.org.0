@@ -1,123 +1,110 @@
-Return-Path: <bpf+bounces-74377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C813C57417
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 12:46:38 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECB68C57432
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 12:49:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4E9F3B0DE1
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 11:42:48 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B173F354291
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 11:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAEE9340274;
-	Thu, 13 Nov 2025 11:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E471234889A;
+	Thu, 13 Nov 2025 11:46:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gSsSfW5n"
+	dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b="f0UAbtfS"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-o-2.desy.de (smtp-o-2.desy.de [131.169.56.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690CA2DAFB9;
-	Thu, 13 Nov 2025 11:42:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3406E33F8AD
+	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 11:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.169.56.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763034162; cv=none; b=bmLlF0mLgDDDKvBM4G6pF2nkPP3D0p4AHNbFJR18UunMeOODIAOpNMSGjq1FtM3quQsCoEvsCsJ8SVC9FPbKvm92r7KfoQwE1MAn0MnlVBGX7iXQ6oJUCv/SRFInj2mraawEJa/hUz6JRQdD+sOcS99CUd7QBCcvAIFw8iKzMhw=
+	t=1763034373; cv=none; b=d00rjusQQAabMGov/Iap4kNgMSmPUOCqJf1iKhhBirgz/aXHVKFl6Cp9OWNjSAij3epFxs4toKGYtFe+6w2C0C/80sF7QL8LAp0zLvTC994oymBGlITyP/LjIa2V7JQDbkO9weS7jgffH22niOYCQ6KrG4RBNzZBhLYGBB2GcuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763034162; c=relaxed/simple;
-	bh=oH5KU5/6HrAVYqg3IqBO/mqMxwAJncA9peHsf4tgYN8=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=rbNCuBfZ7ZVbmNcPYB6Rp7K6B3j0MCW7dumqZrBEHnP/9qzLlVfBwbP+C1YsXWKayh8Hs2trs6xJYqlUjxaLs/haUsnGHx46ictc/tWItBX0CnDZO30+ehp9CWWA7OJCIGDhekbeF6L0vUa6greVVBbftGxc2sSjGlPQ0yVIFvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gSsSfW5n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 493AFC19423;
-	Thu, 13 Nov 2025 11:42:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763034161;
-	bh=oH5KU5/6HrAVYqg3IqBO/mqMxwAJncA9peHsf4tgYN8=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=gSsSfW5nwmXMPLyuX1Qr2im6sYq9oPgwlLcF8ObWxDW5Vv8wDNcluBSVQ+9+ZxWYb
-	 JhsKQEq3Y9ZLLtnAQvzSseQCPXuzr8If8/WFuOZeh4GassghQCrQItbxR/pn21WXTn
-	 8yYEMrRx25fURyYlppoZJyTLEflm4UWgjCq3RXN8qRD5UGdiZy/hsrfzRdN8chzdtX
-	 FRWhSPFTBktKI/GG/59M2vTAvDBu7pId3PvvjIE9tKadNEUu0lSSfKx/mk0Oy8herp
-	 kOegFZWfheJA6+bdxy5MtM7jBdItTntTebunjW4cZdCNQyPNqb12xqIo4YG/+PHbbD
-	 yZnCIYOSyjIsQ==
-Content-Type: multipart/mixed; boundary="===============1700948574828837009=="
+	s=arc-20240116; t=1763034373; c=relaxed/simple;
+	bh=NzWR2vTaR9mgjHFEuT9kPxhCPg1E4stbtor0uZGgP2E=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=AD246Vky2YJ8xHL53tkt4w2yjRo4ueqf6satqfVRve1TzICAOiz2OKg5wJewgPrtwVyweBDkxuyHDcFdMdpUz4k35DxVu1nSNFi1pUqagUCZWPIqRR7F7zTaF6CrgNfZxduS15IiUVknUNIWQW/+CQHj0enCgvfgtNDvGr2LXwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu; spf=pass smtp.mailfrom=xfel.eu; dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b=f0UAbtfS; arc=none smtp.client-ip=131.169.56.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xfel.eu
+Received: from smtp-buf-2.desy.de (smtp-buf-2.desy.de [IPv6:2001:638:700:1038::1:a5])
+	by smtp-o-2.desy.de (Postfix) with ESMTP id 84CED13F654
+	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 12:46:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp-o-2.desy.de 84CED13F654
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xfel.eu; s=default;
+	t=1763034361; bh=NzWR2vTaR9mgjHFEuT9kPxhCPg1E4stbtor0uZGgP2E=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=f0UAbtfSuaf1kzrURYG9VQQrxA+yeU0LIWC09skcfLIw5K8dmXZTrRMjYTic0n50a
+	 0l9YNFNQs6WbwLSqIP09jvKiBQd5XX6Dh6eIV2CDdnRjE+/WKNn+tUTr1CKzg1kNc1
+	 FlODUBMJa7EUV/NarluResm1ao49JcQHmWEB1bdc=
+Received: from smtp-m-2.desy.de (smtp-m-2.desy.de [IPv6:2001:638:700:1038::1:82])
+	by smtp-buf-2.desy.de (Postfix) with ESMTP id 78231120043;
+	Thu, 13 Nov 2025 12:46:01 +0100 (CET)
+Received: from a1722.mx.srv.dfn.de (a1722.mx.srv.dfn.de [194.95.233.47])
+	by smtp-m-2.desy.de (Postfix) with ESMTP id 6C77A16003F;
+	Thu, 13 Nov 2025 12:46:01 +0100 (CET)
+Received: from smtp-intra-3.desy.de (smtp-intra-3.desy.de [131.169.56.69])
+	by a1722.mx.srv.dfn.de (Postfix) with ESMTP id CA031320093;
+	Thu, 13 Nov 2025 12:46:00 +0100 (CET)
+Received: from z-mbx-6.desy.de (z-mbx-6.desy.de [131.169.55.144])
+	by smtp-intra-3.desy.de (Postfix) with ESMTP id B25251A0048;
+	Thu, 13 Nov 2025 12:46:00 +0100 (CET)
+Date: Thu, 13 Nov 2025 12:46:00 +0100 (CET)
+From: "Teichmann, Martin" <martin.teichmann@xfel.eu>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, ast <ast@kernel.org>, andrii <andrii@kernel.org>
+Message-ID: <745490756.25826958.1763034360662.JavaMail.zimbra@xfel.eu>
+In-Reply-To: <4952b7bf8a0b50352b31bee7ddf89e7809101af6.camel@gmail.com>
+References: <998304ddd050ef81ce6281ebb88130e836c07fc3.camel@gmail.com> <20251110151844.3630052-2-martin.teichmann@xfel.eu> <4952b7bf8a0b50352b31bee7ddf89e7809101af6.camel@gmail.com>
+Subject: Re: [PATCH v4 bpf-next 1/2] bpf: properly verify tail call behavior
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <8a586dfbb76e489a4dadc1852769a24c3ef79ffcc4007df2084d047052bdde05@mail.kernel.org>
-In-Reply-To: <d0458ec2290e85a8c885432359a33ba8596ba992.1763024337.git.paul.houssel@orange.com>
-References: <d0458ec2290e85a8c885432359a33ba8596ba992.1763024337.git.paul.houssel@orange.com>
-Subject: Re: [PATCH v3 1/2] libbpf: fix BTF dedup to support recursive typedef definitions
-From: bot+bpf-ci@kernel.org
-To: paulhoussel2@gmail.com,paulhoussel2@gmail.com,eddyz87@gmail.com,bpf@vger.kernel.org,linux-kselftest@vger.kernel.org,linux-kernel@vger.kernel.org
-Cc: martin.horth@telecom-sudparis.eu,ouail.derghal@imt-atlantique.fr,guilhem.jazeron@inria.fr,ludovic.paillat@inria.fr,robin.theveniaut@irit.fr,tristan.daudibert@gmail.com,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,shuah@kernel.org,paul.houssel@orange.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Thu, 13 Nov 2025 11:42:41 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Zimbra 10.1.10_GA_4785 (ZimbraWebClient - FF134 (Linux)/10.1.10_GA_4785)
+Thread-Topic: properly verify tail call behavior
+Thread-Index: Komk6PpYxid9d2tpJEWTjgasObzC5A==
 
---===============1700948574828837009==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Hi Eduard, Hi List,
 
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index 9f141395c..5c4035eb9 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
+sorry for the late response.
 
-[ ... ]
+> This is a clever hack and I like it, but let's not do that.
+> It is going to be a footgun if e.g. someone would use
+> bpf_insn_successors() to build intra-procedural CFG.
 
-> @@ -4844,14 +4865,31 @@ static void btf_dedup_merge_hypot_map(struct btf_dedup *d)
->  	}
->  }
->
-> +static inline long btf_hash_by_kind(struct btf_type *t, __u16 kind)
-> +{
-> +	if (kind == BTF_KIND_TYPEDEF)
-> +		return btf_hash_typedef(t);
-> +	else
-> +		return btf_hash_struct(t);
-> +}
-> +
-> +static inline bool btf_equal_by_kind(struct btf_type *t1, struct btf_type *t2, __u16 kind)
-> +{
-> +	if (kind == BTF_KIND_TYPEDEF)
-> +		return btf_equal_typedef(t1, t2);
-> +	else
-> +		return btf_shallow_equal_struct(t1, t2);
-> +}
-> +
->  /*
-> - * Deduplicate struct/union types.
-> + * Deduplicate struct/union and typedef types.
->   *
->   * For each struct/union type its type signature hash is calculated, taking
->   * into account type's name, size, number, order and names of fields, but
->   * ignoring type ID's referenced from fields, because they might not be deduped
-> - * completely until after reference types deduplication phase. This type hash
-> - * is used to iterate over all potential canonical types, sharing same hash.
-> + * completely until after reference types deduplication phase. For each typedef
-> + * type, the hash is computed based on the type's name and size. This type hash
-> + * is used to iterate over all potential canonical types, sharingsame hash.
-                                                                   ^^^^^^^^^^
+I appreciate the effort you've put into your solution. However, I feel that=
+ we might be leaning towards a YAGNI (You Ain't Gonna Need It) situation he=
+re. Sure, if somebody wants to do something like your CFG, my "hack" might =
+pose problems. But what if not? In that case, your proposed solution just l=
+eads to additional complexity and unused code.
 
-This isn't a bug, but there's a typo here - "sharingsame" should be
-"sharing same" (two words).
+My implementation is quite concise at just three lines, making it straightf=
+orward to replace if necessary. It maintains clarity by using BPF_FUNC_tail=
+_call markers, which can help anyone reviewing the code quickly identify it=
+s purpose. If someone is not focused on tail calls, they can easily bypass =
+that section, ensuring minimal distractions.
 
->   * For each canonical candidate we check whether type graphs that they form
->   * (through referenced types in fields and so on) are equivalent using algorithm
->   * implemented in `btf_dedup_is_equiv`. If such equivalence is found and
+Additionally, I've discovered that the bug in the stack liveness code is ac=
+tually independent of the bug I=E2=80=99m addressing. My patch doesn=E2=80=
+=99t introduce this issue, so it doesn=E2=80=99t need to resolve it.
 
-[ ... ]
+In line with the tradition of the Linux kernel of keeping patches small, I =
+can extract my three lines and the corresponding test, allowing us to proce=
+ed with my patch as a bug fix. You can then apply your adjustments for the =
+stack liveness issue in your preferred manner.
 
+I hope that helps.
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+Greetings
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19329986070
-
---===============1700948574828837009==--
+Martin
 
