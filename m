@@ -1,126 +1,177 @@
-Return-Path: <bpf+bounces-74426-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74427-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 915DFC595F9
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 19:09:08 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DA8FC59272
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 18:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 723224F7D90
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 17:19:56 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4719535E888
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 17:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 184FB2FD665;
-	Thu, 13 Nov 2025 17:12:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC4022FABE0;
+	Thu, 13 Nov 2025 17:17:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bo8Wgh48"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KeuNiak9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 395C6328604
-	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 17:11:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C362727F3
+	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 17:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763053920; cv=none; b=Vn6eRcv5d/l2lODVODepXns7h+ch2Gv0P2AWpXZjXMb2Vlc03tCTJSUvf5Ifvz99ofFeOC5c/wSU3JV/Csd15h7c90xmGfAxRXD+cdjAwCGgng/JwYpwyLw4sgjhajkDUSVA7xTM7qFlQCkTW/KJGFCA1Sge2x5mEA66vWnAWfY=
+	t=1763054235; cv=none; b=tN5hYpR3H/23uVUGg4oFbY/pxAwCkeISBSlDg4uBlZhxNuE37zUTlbHio+64egSvY8wMbbllvoeYmnkYjhOkoGIE9rr4vZBdKo9U2yFPKivbKVpM1tqRyM8VaAci6hv2Kw7A7c+xjgO2i4uNjD62wZryOB8tEz6Gyj56+2AFT0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763053920; c=relaxed/simple;
-	bh=A2yvD6N2Jk/m2YwKMP22cLRunU+AO8Pb+GA7lFeY9Sc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hU+g39YWzv/kh3Nw8PD4xbJUqd0hBtCsgwa5ur43ivbMv00IKUQBPPRyighrw1UJFInadwZEDcPmt3cxV7/pR7zH+a2YpOMAbBGXyz6nSQJm6nBrl7o0ANXvacrS6ilafMErS3Zy+N+tDy3SlRHjH9g5uDXDTH1RK1x0PAHtw7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bo8Wgh48; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1763054235; c=relaxed/simple;
+	bh=Zhz80cMnx8q+UfKEIXA1zXdhSkoVcxlOP4yVhENwo98=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EwxtZ7CPCeki4kpTjTa3cNYnqJTm8Br3ZsaTfrSaWH3jtN9C2Fo4uNwO0oThD6eWVdXhJjI0GUMjsiC3wP4v+va5Td3U15tewnUq/Mt7X5jALcPazQ97FbTqhITUlDY4eyyarsGgQ17jpDzzz34sfecXXwb7iPV9x95ITXV13XI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KeuNiak9; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-29568d93e87so9709765ad.2
-        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 09:11:59 -0800 (PST)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-477632b0621so6946515e9.2
+        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 09:17:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763053918; x=1763658718; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ijEU4GEqOKNn00v0sia2ZeusZLe48+/8pscbpafCUPg=;
-        b=Bo8Wgh48HJUEYN34hCqCDOMFGcRZQjlxOiNa6uTPnkb+sbFtxEp5nq6rAjv6+k7kqC
-         ooZbAN2Vf995whny3mOnJQg8FsUT6j6y4XGDkMFK5O9bb8vpXX4d8QuyP6VcwNYYeCWo
-         dXYpgWvgkyBIwyrlasCi1RtJIfoFxh6SaVfO5yZ5tiBMDO/n8VnW1erxF2pmk4WFYe0A
-         BDW9ZxGeakowIigYOeAzWez81nm9oLipegmk5qDxnXwQiT+vjS5weZP/mYypWbwHK5bH
-         Acqf5xmpjAfb/ZIaNPfeW/lDY2PGDqBn1GA1g4ocVJmrVb14fA9zw1+1Tb0StmRy/rHK
-         iOnA==
+        d=gmail.com; s=20230601; t=1763054232; x=1763659032; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M5KyfVieqHXba+u7m0lOAZosFkzUNJCY6nPeemJTYVw=;
+        b=KeuNiak9sgzJ/vV+87wlKAvU8PeROUS37BNuZ1g3HKGUMFPg4G1gMy0qMpzJiLEnDk
+         ZwS5Xog3MyXZU7t/HW3XSTfcZ+h9VMSe8gDvm4E8TsiDUBHNWgJWgdVuGCsQqBglSbMD
+         JiUnropLIHHqKkrs/DlpD0hSM/auQ51OyPjXZtLpv5+6wg6yUvOcopD3N+f2GJuT15Ov
+         vwZicy68xeAViw9m5IabG2NrUET90ieVWORe84d4L7vBOr3S5AtGeLJMNpsSxsxRP0Qb
+         ymO+DVXJL7ghoZapeHuXnyOwu1B4ecOQq+oXw3entHz5UFDjjrbJ4m3XT4lFr4cI5xFC
+         6Rcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763053918; x=1763658718;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ijEU4GEqOKNn00v0sia2ZeusZLe48+/8pscbpafCUPg=;
-        b=DO0od4+brZ+gooTwyYpJMl6c+gAiAh/svhUhDxfWOnYIjUYHdow91l7NNlF0PkSdSD
-         vmHCFyn3m4or+gQGfFuplSObbZeBMxCgR4IFuTGUexk2qhp4xV0HN74DM+Fug1q25ldL
-         SYZMbRoZeTaQZtXHClOzBGYesqfPruBIiVFMDkKNhDeGfQWMjjx82y7JqnPFfqRJgLQL
-         Nk5P3Gn0hZn4V0pDfXlZL0kAIAcO+2uFqLvsVxNHxG8hDvJtMYlSGC76qtP+hHb9xMt5
-         +1GP9CItlBEoyRPcuGljEXr0/Plg70hU0fXn50sgPMesTFNA3Cj4m0PpQTjuPCjFWSPp
-         q+dA==
-X-Gm-Message-State: AOJu0Ywin+4Fmw7+9PmcB+49B+R+ziy02Ew9BjEYEDGEqt49wBsVWDt8
-	3SpuLdUTcf70RebWPSD50tGHWYWvvO2Y+v6N9u6wT1NML13z+jBum2KAc1nt7A==
-X-Gm-Gg: ASbGncvJqzSk4slVDZicTHz2Qf9Xsebp0dc++qTax2ky5bw5ZeZkXYVNwDO3vzNy6Pg
-	c6V3cYN0I4cmJlkQmmgc87AUf6BrtiofhDwvxmsWFZoKe4UlnPIUHBXyl0+gduqPiypNfODcLp2
-	wcqUFlxpeeKrIC4/MMLzOUDc20EnYvXMCRacdAPuXGG+NEn2ew6PHux0xI6LVHL0BlYqw2GW2NJ
-	b3gg9H8xfPDnS+m7E+iKJKl1PDpFkiyqt2ZAqAGUlaMqUROUvOksqU/5NaeDALIeqWz1CTC57lm
-	4/0E/85okaY1jROv5azCBLX2vWHODYMqeyoaGL0Je9Q6TVD0MKahjVKx+uBdZsb6ptDNEr0qwyK
-	WcNtopWW7Qt+JFEw7a6CUrKdphMPoYxmCN3uH2EsEFO+OHbm4V3W0YMGiB6J4g4yRtvubiQmlMT
-	25AXpjFRYuTk2QVgp7TuyZLflg8MTcgAseYjmK2eYR
-X-Google-Smtp-Source: AGHT+IGrzWdbY4fjX2NHDLznFw/iN7GJVDQ4ZyeesWyKRZbPjKqwssQ4W5YR2leSBB1xfk/bancUDQ==
-X-Received: by 2002:a17:902:e801:b0:295:5da6:6011 with SMTP id d9443c01a7336-2984ed79fbemr105158075ad.11.1763053918024;
-        Thu, 13 Nov 2025 09:11:58 -0800 (PST)
-Received: from ast-mac.thefacebook.com ([2620:10d:c090:500::5:8872])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c234726sm31647045ad.8.2025.11.13.09.11.57
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 13 Nov 2025 09:11:57 -0800 (PST)
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: bpf@vger.kernel.org
-Cc: daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@kernel.org
-Subject: [PATCH v2 bpf-next] selftests/bpf: Fix failure paths in send_signal test
-Date: Thu, 13 Nov 2025 09:11:53 -0800
-Message-Id: <20251113171153.2583-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+        d=1e100.net; s=20230601; t=1763054232; x=1763659032;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M5KyfVieqHXba+u7m0lOAZosFkzUNJCY6nPeemJTYVw=;
+        b=vb89dQN657tFi45cb9WwsYB2one7/X7AKDpB2sHZM4g64ggCn4TT3RdfwRV5JPiyXj
+         JtRrBCeuIrDaANWE1MqgEzsGe+csY2gxrFhRGUVJw260Fawoyjr/y+XVMr7KmppEiTUs
+         uyjKGv0NP5MUprtJiJ5kHJab0OH2FzAOwI9cigTfK8QkgrWzmNc+NI7CisuuFUK7BBa7
+         ZUhpe+W5D3o30xvJJToR9VHdchreZA8Zchbg/4AeUhOQYp4ndF+K4zZA0NWXD1P/y8G6
+         5TdzCO0awNtkm6BpctfBqjDlqlLSPi2kiwRkE7mz0ntxsJ48gN1/Q4fpbg+JHwwGhhAF
+         9EPw==
+X-Forwarded-Encrypted: i=1; AJvYcCVjzj30kIc7W8AzLm08Y388RdgiYwO9BUrdrD33QBefQ+Ut8fIkr8wXPfTF8ldR7PrLi0k=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyry8vkpB3VtzCJWJDht0LyOh/8s9LVvwwR/+a3YDu6TXLtLrbd
+	is4ehTS6Qzajmzii1H5GRB+4Uf/IO1X2FtN8yQ3k87gxndjUKB4rQ5dU
+X-Gm-Gg: ASbGnct7JoB+aSo/m1ShI+AtCHLPK/yr/xHwOX6rK5Q15GSAAEiWXBCxxCR0I/jx3kw
+	rU5WT23nABcqPyXDaeC5lZrH/mO6Q9lmbj8u2dzFeWbV3qKYoilbTItOzs3R7W+m38AMOm0NdjD
+	20fZlfE4uMXxchFqDyJPHIGNpOqUGizRvtipCPToyz4NqXnyDekhc9a1e6PPze1/Op3WRALgSiz
+	R0s3aapoRGbo5BWVETcFqDYg6OaDckeZoMz/4ORs90/2GKxYxL0S94yFSPLdUzro0FLnSzoBi9L
+	ePBMEvbKUETRa5LqyTAfBB1PsmtSyebHZq+so+HJ+SDTC0pm0oCCxIguz1RvZSapnFSS0LVVBcV
+	YNNVfUjRZNcmlOV4MGJP/I1cDLx7WP4OwVxNzt5Ame6rhKn+IXDMfFUVRUFvaWfE+CNZUzx0k3Y
+	FGmrWAQbCkeWQW9Bzdied4Itd1OnGT1CpmjlQxENtCMz8bEEOSDkC6i0/rDVtFyO2cmiMFCrtHA
+	ks=
+X-Google-Smtp-Source: AGHT+IHw0+dMsmHzK7SKkNNLgtvqsvSU9cN0flfGWOToSbXh1gwkLoXOxo+8crIR20brH6TmHylItQ==
+X-Received: by 2002:a05:600c:450f:b0:46e:1abc:1811 with SMTP id 5b1f17b1804b1-4778fea51cemr2086535e9.27.1763054231540;
+        Thu, 13 Nov 2025 09:17:11 -0800 (PST)
+Received: from mail.gmail.com (2a01cb0889497e00f96f7d4f53fe5ba7.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:f96f:7d4f:53fe:5ba7])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4778c847bbasm45065975e9.1.2025.11.13.09.17.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Nov 2025 09:17:10 -0800 (PST)
+Date: Thu, 13 Nov 2025 18:17:08 +0100
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+Cc: ast@kernel.org, m.shachnai@rutgers.edu, srinivas.narayana@rutgers.edu,
+	santosh.nagarakatte@rutgers.edu,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/1] bpf, verifier: Detect empty intersection between
+ tnum and ranges
+Message-ID: <aRYSlGmmQM1kfF_b@mail.gmail.com>
+References: <20251107192328.2190680-1-harishankar.vishwanathan@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251107192328.2190680-1-harishankar.vishwanathan@gmail.com>
 
-From: Alexei Starovoitov <ast@kernel.org>
+On Fri, Nov 07, 2025 at 02:23:27PM -0500, Harishankar Vishwanathan wrote:
+> This RFC introduces an algorithm called tnum_step that can be used to
+> detect when a tnum and the range have an empty intersection. This can
+> help the verifier avoid walking dead branches that lead to range
+> invariant violations. I am sending this as a patchset to keep the
+> motivation (this email) separate from the details of algorithm
+> (following email).
+> 
+> Several fuzzing campaigns have reported programs that trigger "REG
+> INVARIANTS VIOLATION" errors in the verifier [1, 2, 3, 4]. These
+> invariant violations happen when the verifier refines register bounds in
+> a branch that is actually dead. When reg_bounds_sync() attempts to
+> update the tnum and the range in such a dead branch, it can produce
+> inconsistent ranges, for example, a register state with umin > umax or
+> var_off values incompatible with the range bounds.
 
-When test_send_signal_kern__open_and_load() fails parent closes the
-pipe which cases ASSERT_EQ(read(pipe_p2c...)) to fail, but child
-continues and enters infinite loop, while parent is stuck in wait(NULL).
-Other error paths have similar issue, so kill the child before waiting on it.
+I think an open question here is whether such patterns of tnum/ranges
+happen in practice, outside of syzkaller. We probably don't want to
+introduce additional logic for something that doesn't help "real"
+programs. I'm happy to check the impact on Cilium for example, but that
+would require a patch to actually start using the new tnum helper.
 
-The bug was discovered while compiling all of selftests with -O1 instead of -O2
-which caused progs/test_send_signal_kern.c to fail to load.
+> 
+> There is a solution is in the works by Eduard [5] to modify verifier's
+> logic to use the fact that the register's tnum and range bounds are
+> incompatible to detect that a branch cannot be taken. Detecting an empty
+> intersection between the range and the tnum could be a useful primitive
+> to detect incompatiblity.
+> 
+> * Detecting Empty Intersections
 
-Fixes: ab8b7f0cb358 ("tools/bpf: Add self tests for bpf_send_signal_thread()")
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/send_signal.c | 5 +++++
- 1 file changed, 5 insertions(+)
+[...]
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-index 1702aa592c2c..7ac4d5a488aa 100644
---- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-+++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-@@ -206,6 +206,11 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- skel_open_load_failure:
- 	close(pipe_c2p[0]);
- 	close(pipe_p2c[1]);
-+	/*
-+	 * Child is either about to exit cleanly or stuck in case of errors.
-+	 * Nudge it to exit.
-+	 */
-+	kill(pid, SIGKILL);
- 	wait(NULL);
- }
- 
--- 
-2.47.3
+> * Usage in the verifier and next steps
+> 
+> The tnum_step() procedure is self-contained and can be incorporated
+> as-is.
+> 
+> Regarding incorporating the range-tnum intersection test, as it
+> stands, if is_branch_taken() cannot determine that a branch is dead,
+> reg_set_min_max()->regs_refine_cond_op() are called to update the
+> register bounds.
+> 
+> We can incorporate the range-tnum intersection test after the calls to
+> regs_refine_cond_op() or the calls to reg_bounds_sync(). If there is no
+> intersection between the ranges and the tnum, we are on a dead branch.
 
+Couldn't we incorporate such a test in is_branch_taken() today?
+
+> 
+> Alternatively, the range-tnum intersection check could be incorporated
+> as part of Eduard's upcoming patchset, which is expected to rework the
+> logic in reg_set_min_max() and is_branch_taken().
+> 
+> Looking forward to hearing any feedback and suggestions.
+> 
+> [1] https://lore.kernel.org/bpf/aKWytdZ8mRegBE0H@mail.gmail.com/
+> [2] https://lore.kernel.org/bpf/75b3af3d315d60c1c5bfc8e3929ac69bb57d5cea.1752099022.git.paul.chaignon@gmail.com/
+> [3] https://lore.kernel.org/bpf/CACkBjsZen6AA1jXqgmA=uoZZJt5bLu+7Hz3nx3BrvLAP=CqGuA@mail.gmail.com/T/#e6604e4092656b192cf617c98f9a00b16c67aad87
+> [4] https://lore.kernel.org/bpf/aPJZs5h7ihqOb-e6@mail.gmail.com/
+> [5] https://lore.kernel.org/bpf/CAEf4BzY_f=iNKC2CVz-myfe_OERN9XWHiuNG6vng43-MXUAvSw@mail.gmail.com/
+> 
+> Harishankar Vishwanathan (1):
+>   bpf, verifier: Introduce tnum_step to step through tnum's members
+> 
+>  include/linux/tnum.h |  3 ++-
+>  kernel/bpf/tnum.c    | 52 ++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 54 insertions(+), 1 deletion(-)
+> 
+> -- 
+> 2.45.2
+> 
 
