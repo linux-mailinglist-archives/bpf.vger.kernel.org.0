@@ -1,228 +1,106 @@
-Return-Path: <bpf+bounces-74438-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74439-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63122C5A15B
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 22:21:10 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CBCAC5A3B3
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 22:49:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BA0094E74CF
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 21:20:23 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2B4DD4EEF81
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 21:40:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9836322C70;
-	Thu, 13 Nov 2025 21:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684C0324B36;
+	Thu, 13 Nov 2025 21:40:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="S6rUH8FB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MIHr7e5x"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01974261B6D;
-	Thu, 13 Nov 2025 21:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB020244670;
+	Thu, 13 Nov 2025 21:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763068810; cv=none; b=bBPI+T4Ot/+EfAELaILSBXTG2z71TFTVS1Nnh2BERdcK+SRwQAGCdNG6XgKhsOt+hI5iWGJhYabQCUllwzT8h2/QlxPKgRQdugcMlgfbIiSDA+a+RxNImcpPcJYG9GajzvWAE0Ml3VZ151tBo4+Qex2dNn6IPkteOzkiXCFhYHs=
+	t=1763070042; cv=none; b=c5WSygSL7hTN0bW6sKIQkb/8lQ9iPdX1sJDak/wN29Bquo2RXoH7WxQqWTpfWA/8n0P6XxaQhRQD+ATyX0baQ7lUan96dH8q79zmBEw6zcFrcn4Ek27Z1SvrEW/psg2ojyXdjTBjvnNz0tQgPCHqypJ3+1WZxoU03Tz2xtcjmQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763068810; c=relaxed/simple;
-	bh=9y9a2c/jVOu6lhfw2KQmK7c70gHOg4s3VbgeD47eFJc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gNuAzWsoblvxysl4MQ6sbrHLRNYKKox5Eo/Gw7+hVtWe17M8V/fSBIpVZm4avNvVZgbRCgrf9NOZuZSF4GJGMJGc2rzraUh4NQWR1TSSPAtIdapMkRX/tq+WsbAkyXBajTYZ7qiumTLCVzbyEuJQ61UZpGmh+1X0yKXtDFFvNN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=S6rUH8FB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60C0AC4CEF5;
-	Thu, 13 Nov 2025 21:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1763068809;
-	bh=9y9a2c/jVOu6lhfw2KQmK7c70gHOg4s3VbgeD47eFJc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=S6rUH8FB57R/UUe04bwBSoaGOYGmurKvFQGiKjaRp+69RaYMny8aJztzOQraBcrQq
-	 2lwrKakpi4mw3npKSHEcLjHJYPumZM6bSLsdqs+5vrFZt/jlpgeaTIxOM5qITJXPz9
-	 vcfnIkmnsJ7qWYDomwahLU7DQW/0LJ2QhI+mOxNo=
-Date: Thu, 13 Nov 2025 16:20:08 -0500
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: bot+bpf-ci@kernel.org, linux-fsdevel@vger.kernel.org,
-	torvalds@linux-foundation.org, brauner@kernel.org, jack@suse.cz,
-	raven@themaw.net, miklos@szeredi.hu, neil@brown.name,
-	a.hindborg@kernel.org, linux-mm@kvack.org,
-	linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev,
-	kees@kernel.org, rostedt@goodmis.org, linux-usb@vger.kernel.org,
-	paul@paul-moore.com, casey@schaufler-ca.com,
-	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com,
-	selinux@vger.kernel.org, borntraeger@linux.ibm.com,
-	bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-	daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
-	yonghong.song@linux.dev, ihor.solodrai@linux.dev,
-	Chris Mason <clm@meta.com>
-Subject: Re: [functionfs] mainline UAF (was Re: [PATCH v3 36/50] functionfs:
- switch to simple_remove_by_name())
-Message-ID: <2025111316-cornfield-sphinx-ba89@gregkh>
-References: <20251111065520.2847791-37-viro@zeniv.linux.org.uk>
- <20754dba9be498daeda5fe856e7276c9c91c271999320ae32331adb25a47cd4f@mail.kernel.org>
- <20251111092244.GS2441659@ZenIV>
- <e6b90909-fdd7-4c4d-b96e-df27ea9f39c4@meta.com>
- <20251113092636.GX2441659@ZenIV>
+	s=arc-20240116; t=1763070042; c=relaxed/simple;
+	bh=CvzcH2D9TtcpWhWA42+if0rgeOPmOZeRHXxaeTWupCI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=OLfrjq+RB4h+3UuXsQbyQagJJTl+nuqMhIQAGgKY/4prebv1MQO6wEISI+7l/qr7F702LsA1JMV2RKb19j6Lam1ombxyixnMHr2OzepxpDJp5rtMds8PekK5F+mA2yOfLP7t8EuLu1AbHDPcVEvYWerR0VixY9KCnTcJ15ZUDFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MIHr7e5x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30EBFC2BCB1;
+	Thu, 13 Nov 2025 21:40:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763070042;
+	bh=CvzcH2D9TtcpWhWA42+if0rgeOPmOZeRHXxaeTWupCI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=MIHr7e5x0wHu/EVCxWB6ZOTBFZbIwJ4yI4RHXYOsqUntu1d/lXhiKkqNK6pIKIbil
+	 GicAcvRKwvPNhzvxtOInTYm7iBk1YqVvLQ5H8luIrN71owBQ2lV9Bi53M20wLKjHcG
+	 vUfWE14KH6pCuDYoeldL/0ruHUGHsQdKAuyDL6SaUDpvCybWJzLKDFHHOb80aGnnH5
+	 VMCWqGOzvO78Z6Y11RSgcBIbdAThilnl94w3YYG3XP2/qU0daIDQ+4NmolHBXlNPwb
+	 xyMV3LdsF4fEIatjcy0/XQ6R8r0peUlpaNOqprMOnWIopeoPn+OpODwPkWl4zJxsZv
+	 9bdm2zURDYFTQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33FAA3A549BD;
+	Thu, 13 Nov 2025 21:40:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251113092636.GX2441659@ZenIV>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v5 0/3] mptcp: Fix conflicts between MPTCP and sockmap
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176307001100.1015375.9798268991526020883.git-patchwork-notify@kernel.org>
+Date: Thu, 13 Nov 2025 21:40:11 +0000
+References: <20251111060307.194196-1-jiayuan.chen@linux.dev>
+In-Reply-To: <20251111060307.194196-1-jiayuan.chen@linux.dev>
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: mptcp@lists.linux.dev, matttbe@kernel.org, martineau@kernel.org,
+ geliang@kernel.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, cpaasch@apple.com,
+ fw@strlen.de, peter.krystad@linux.intel.com, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
 
-On Thu, Nov 13, 2025 at 09:26:36AM +0000, Al Viro wrote:
-> On Tue, Nov 11, 2025 at 10:44:26PM -0500, Chris Mason wrote:
-> 
-> > We're wandering into fuzzing territory here, and I honestly have no idea
-> > if this is a valid use of any of this code, but AI managed to make a
-> > repro that crashes only after your patch.  So, I'll let you decide.
-> > 
-> > The new review:
-> > 
-> > Can this dereference ZERO_SIZE_PTR when eps_count is 0?
-> > 
-> > When ffs->eps_count is 0, ffs_epfiles_create() calls kcalloc(0, ...) which
-> > returns ZERO_SIZE_PTR (0x10). The loop never executes so epfiles[0].ffs is
-> > never initialized. Later, cleanup paths (ffs_data_closed and ffs_data_clear)
-> > check if (epfiles) which is true for ZERO_SIZE_PTR, and call
-> > ffs_epfiles_destroy(epfiles, 0).
-> > 
-> > In the old code, the for loop condition prevented any dereferences when
-> > count=0. In the new code, "root = epfile->ffs->sb->s_root" dereferences
-> > epfile before checking count, which would fault on ZERO_SIZE_PTR.
-> 
-> Lovely.  OK, this is a bug.  It is trivial to work around (all callers
-> have ffs avaible, so just passing it as an explicit argument solves
-> the problem), but there is a real UAF in functionfs since all the way
-> back to original merge.  Take a look at
-> 
-> static int
-> ffs_epfile_open(struct inode *inode, struct file *file)
-> {
-> 	struct ffs_epfile *epfile = inode->i_private;
-> 
-> 	if (WARN_ON(epfile->ffs->state != FFS_ACTIVE))
-> 		return -ENODEV;
-> 
-> 	file->private_data = epfile;
-> 	ffs_data_opened(epfile->ffs);
-> 
-> 	return stream_open(inode, file);
-> }
-> 
-> and think what happens if that (->open() of dynamic files in there)
-> races with file removal.  Specifically, if we get called with ffs->opened
-> equal to 1 due to opened ep0 and get preempted away just before the
-> call ffs_data_opened().  Another thread closes ep0, hitting
-> ffs_data_closed(), dropping ffs->opened to 0 and getting
-> 			ffs->state = FFS_CLOSING;
-> 			ffs_data_reset(ffs);
-> which calls ffs_data_clear(), where we hit
-> 		ffs_epfiles_destroy(epfiles, ffs->eps_count);
-> All files except ep0 are removed and epfiles gets freed, leaving the
-> first thread (in ffs_epfile_open()) with file->private_data pointing
-> into a freed array.
-> 
-> open() succeeds, with any subsequent IO on the resulting file leading
-> to calls of
-> static ssize_t ffs_epfile_io(struct file *file, struct ffs_io_data *io_data)
-> {
-> 	struct ffs_epfile *epfile = file->private_data;
-> 
-> and a bunch of accesses to *epfile later in that function, all of them
-> UAF.
-> 
-> As far as I can tell, the damn thing intends to prevent removals between
-> ffs_data_opened() and ffs_data_closed(), so other methods would be safe
-> if ->open() had been done right.  I'm not happy with the way that FSM
-> is done (the real state is a mix of ffs->state, ffs->opened and ffs->mutex,
-> and rules bloody awful; I'm still not entirely convinced that ffs itself
-> can't be freed with ffs->reset_work scheduled for execution), but that's
-> a separate story.  
-> 
-> Another variant of that scenario is with ffs->no_disconnect set;
-> in a sense, it's even nastier.  In that case ffs_data_closed() won't
-> remove anything - it will set ffs->state to FFS_DEACTIVATED, leaving
-> the removals for ffs_data_open().  If we have *two* threads in open(),
-> the first one to call ffs_data_open() will do removal; on another CPU
-> the second will just get past its increment of ->opened (from 1 to 2)
-> and move on, without waiting for anything.
-> 
-> IMO we should just take ffs->mutex in there, getting to ffs via
-> inode->i_sb->s_fs_info.  And yes, compare ffs->state with FFS_ACTIVE -
-> under ->mutex, without WARN_ON() and after having bumped ->opened
-> so that racing ffs_data_closed() would do nothing.  Not FFS_ACTIVE -
-> call ffs_data_closed() ourselves on failure exit.
-> 
-> As in
-> 
-> static int
-> ffs_epfile_open(struct inode *inode, struct file *file)
-> {
-> 	strict ffs_data *ffs = inode->i_sb->s_fs_info;
-> 	int ret;
-> 
->         /* Acquire mutex */
-> 	ret = ffs_mutex_lock(&ffs->mutex, file->f_flags & O_NONBLOCK);
-> 	if (ret < 0)
-> 		return ret;
-> 
-> 	ffs_data_opened(ffs);
-> 	/*
-> 	 * not FFS_ACTIVE - there might be a pending removal;
-> 	 * FFS_ACITVE alone is not enough, though - we might have
-> 	 * been through FFS_CLOSING and back to FFS_ACTIVE,
-> 	 * with our file already removed.
-> 	 */
-> 	if (unlikely(ffs->state != FFS_ACTIVE ||
-> 		     !simple_positive(file->f_path.dentry))) {
-> 		ffs_data_closed(ffs);
-> 		mutex_unlock(&ffs->mutex);
-> 		return -ENODEV;
-> 	}
-> 	mutex_unlock(&ffs->mutex);
-> 
-> 	file->private_data = inode->i_private;
-> 	return stream_open(inode, file);
-> }
-> 
-> and
-> 
-> static int ffs_ep0_open(struct inode *inode, struct file *file)
-> {
->         struct ffs_data *ffs = inode->i_private;
-> 	int ret;
-> 
->         /* Acquire mutex */
-> 	ret = ffs_mutex_lock(&ffs->mutex, file->f_flags & O_NONBLOCK);
-> 	if (ret < 0)
-> 		return ret;
-> 
-> 	ffs_data_opened(ffs);
-> 	if (ffs->state == FFS_CLOSING) {
-> 		ffs_data_closed(ffs);
-> 		mutex_unlock(&ffs->mutex);
-> 		return -EBUSY;
-> 	}
-> 	mutex_unlock(&ffs->mutex);
-> 
-> 	file->private_data = ffs;
-> 	return stream_open(inode, file);
-> }
-> 
-> Said that, I'm _NOT_ familiar with that code; this is just from a couple
-> of days digging through the driver, so I would like to hear comments from
-> the maintainer...  Greg?
-> 
+Hello:
 
-Sorry for the delay.  Yes, we should be grabing the mutex in there, good
-catch.  There's been more issues pointed out with the gadget code in the
-past year or so as more people are starting to actually use it and
-stress it more.  So if you have a patch for this, I'll gladly take it :)
+This series was applied to bpf/bpf.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-thanks,
+On Tue, 11 Nov 2025 14:02:49 +0800 you wrote:
+> Overall, we encountered a warning [1] that can be triggered by running the
+> selftest I provided.
+> 
+> sockmap works by replacing sk_data_ready, recvmsg, sendmsg operations and
+> implementing fast socket-level forwarding logic:
+> 1. Users can obtain file descriptors through userspace socket()/accept()
+>    interfaces, then call BPF syscall to perform these replacements.
+> 2. Users can also use the bpf_sock_hash_update helper (in sockops programs)
+>    to replace handlers when TCP connections enter ESTABLISHED state
+>   (BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB/BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB)
+> 
+> [...]
 
-greg k-h
+Here is the summary with links:
+  - [net,v5,1/3] mptcp: disallow MPTCP subflows from sockmap
+    https://git.kernel.org/bpf/bpf/c/fbade4bd08ba
+  - [net,v5,2/3] net,mptcp: fix proto fallback detection with BPF
+    https://git.kernel.org/bpf/bpf/c/c77b3b79a92e
+  - [net,v5,3/3] selftests/bpf: Add mptcp test with sockmap
+    https://git.kernel.org/bpf/bpf/c/cb730e4ac1b4
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
