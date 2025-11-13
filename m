@@ -1,118 +1,148 @@
-Return-Path: <bpf+bounces-74366-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74367-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9E5DC57103
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 12:00:57 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDB18C57139
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 12:04:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8DCCF356588
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 10:56:40 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BBC784EA767
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 11:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F00F3346A1;
-	Thu, 13 Nov 2025 10:56:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 203D53376BC;
+	Thu, 13 Nov 2025 10:59:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bIRp1jLY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iQ3gJ3CK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C8C2D0C9D
-	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 10:56:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D28D2FE582
+	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 10:59:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763031394; cv=none; b=p2julbxp1GfPQ128j89u8/NPqzNu8P1cXZCZ89nKaVmvXg+AErmzdetiu4Yr/NgP0k9n+pa0B4lDF0qqREVCMHbr+KG5/1LX3BJGDvQcEWbju7+pua7pqKLHuJzejbbO1JM+DdrykVZo36DD53XAibP3ipWY9cpRdwA8WuDo+Ck=
+	t=1763031590; cv=none; b=EqeyPAHpQ5VMToDDJFrJdnyBqito5fwJ4+8vsYYKDkO0xiQB7/T8zS7vNm3J85jJTo8GlLSL0uqIOfFrBkXFsCtzn2Ekuu/JPpwX0nG/YzCTk4ftzio639TKtpUP00+JhGxvwmrGpgCcxmdnpgXIliBv9VNYQXV2Ut3vJOfMLF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763031394; c=relaxed/simple;
-	bh=rseXxlu7uEyyNMzYO8cBR2VPyb1joXBKfGdoItwDyD4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fb7swC2SADFPtsTacYWdBRDho+e2KoFoVcaLQcys/ghK16jWscXG9NgAub2mSK/e3U46xRRGSlZpKJH+2hDbTFf5Eg84bMTH6rpSY8Jk5LU9nH9tD+VO0ba1wZARZa9zpw2jR50z6ONJ2yBrPspmRndIBrepQfTz9y+a8awyJIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bIRp1jLY; arc=none smtp.client-ip=209.85.221.67
+	s=arc-20240116; t=1763031590; c=relaxed/simple;
+	bh=ugZFlfc+l2S+0zWCSf1PxybsJPWJGmiF5NzWiKPgTzM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o6+stalsECuk2D60NRB7R8nL7JwrRZSbzKXXcdoxsy3DTXsd+kc52yUk2bjJCbyUVxzkJekXqBP22XYzcroCoRDsmY8aTKvg3HAcePLSzR/pGBYoyi6Wh7waYPq9ZMhs2iafYNoQQ/mUx/2bNkV10GC3/iO2foMOD567jp0baPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iQ3gJ3CK; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-42b3ad51fecso563849f8f.1
-        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 02:56:32 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4711810948aso4608055e9.2
+        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 02:59:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763031391; x=1763636191; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rseXxlu7uEyyNMzYO8cBR2VPyb1joXBKfGdoItwDyD4=;
-        b=bIRp1jLY9Eq1F7jz863+H9JZvECEvpjL8otUGf8H7wjP/KoSZiSNJ1rCI65fHCV6V8
-         GwyNOcBDVoSzYLjaIEv6zRAhHnr60JUyF5ceErDbCJlgdToFSr924M0/J/XosuA39pX8
-         NXrBYEyGV1lOE4kUrcX33vieonsBCug09BNA2pApmkKJUXqH+2+5Ocv2jlso2YGNTDbF
-         54Y1miT50e9Vof+Qk0vK7NCuZiRYZffSLa9t+LB8jXonYJIKRCxQKJ/xXohWoepjo1s9
-         DiJozNWi0SbWD/vKu5L91q2W6J/yprFumNbJtjQBEr3qrHNHfUTyqnv1YdPdjm1IFHk/
-         stwA==
+        d=gmail.com; s=20230601; t=1763031586; x=1763636386; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DEJC7gRTebDUaxwAOnQ9BV9gIzheu37nMO4ePUyMYEM=;
+        b=iQ3gJ3CK+EvoGocot/Chl1ETCyQHG6GXKwpS32/w52vYJtH8PF+c+cxZV/V6Y1PWxe
+         qQBxxItLa7wBBe1zZ9JtuCwAePN8hF0IEfGpf7mwgZHswAUr5F5z5W2+oHO8d/5u8Kqn
+         ZcpzG3QzVsMaDloGTcuam0H7i2Vx7Tf3pNPAOErn3+NNfXOeDcu5CkOla0vCNq6j0eRq
+         kb7ALrEYpAPxkYAqzmZhzie7mwW91sUlFc0t5W5GEqiI2Wu+s3s92KmvLriUjGRIAv08
+         Sp/gVpLYzBsC4LCG1dy2lrfz5a117+bAMyb8ZQCcKJw3j3+ZsX69A4qprDhlEiWVh4NE
+         qEcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763031391; x=1763636191;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rseXxlu7uEyyNMzYO8cBR2VPyb1joXBKfGdoItwDyD4=;
-        b=hPzNG7UCNYXre0f95yJRXB1DT5AhG64lSK4+0OmiuP9xsal1RaBTKde5SbEe1fMcm4
-         83iJym9roOi9nZ++FK57mxhlJZuk9PwOIa0rWkAJrMi+CIMvp5Ln7PUVRTSoWajpUmlE
-         cnR1FhskQsdUDYiOnDZNJadeseRyjFSOXARtT6ayXGIqtJ3UhjvSW4DGyhyu0Vl4g9zV
-         RyMPUixwiKttCqsylCSm6J9y8XBqWczTHvUO3uCHCFdagTyIW6TpYCFD35cI/SPJDYYx
-         KNGSJyaFz+Jsg9Kz+a+DSC+F+OZQRHAAx5kOF7omryeQvnPuazpwpWdTCMRvviMuz4+0
-         ju8g==
-X-Gm-Message-State: AOJu0YzFW6bA7ATpuuNc+qyjJmRxCA0wJgTN2W+4/cfsFUTZdrh3OMK5
-	vStXHTudUTVWfQhDM4E7CYDC+Xcimrd9xiENqOEHhkXPJal2rVpv1Lh0uhhLkhdI2cRqZ7UdCNK
-	+K5ACLEKDzNahG1RtZECCZXVA4nQQ/Zk=
-X-Gm-Gg: ASbGncskjdcwdT9fAaivOyfWGStvmTLQq+gWTC6d651sPvJfnsG95kKKI3xCS8q1a28
-	BOKVdHM3EhbPoov19YFA1dJtbyqDdUiw7N1E/kvxftu89M89SCQ2ZPERYeU6WTts2pQhnC1wiRd
-	Cecc6jNQowyhBYHIbf/eS0R4uBoBATvDYFxwP2EeRJGsYT+QG/+fVUfddaNsDHs0RZnpnjRlOfn
-	saJcCmShwBWsNMHpKv0NXEhGJyc/MQymIi8DfSWqLwgTCTL4B0XuEp848NLBSDf1VaaB84AWL+t
-	Cb75EUuoiwy5+yKAky0=
-X-Google-Smtp-Source: AGHT+IE2myf/PerVI9T4OIFuvtQywaE/Q0ZzpeEhaDmYWvE3doDAQIztX4lxBfOlUCU2LMrQtLCd0VdYp6aOYkKbKgs=
-X-Received: by 2002:a05:6000:1869:b0:42b:3878:beef with SMTP id
- ffacd0b85a97d-42b4bddea9emr6141017f8f.61.1763031390463; Thu, 13 Nov 2025
- 02:56:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1763031586; x=1763636386;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DEJC7gRTebDUaxwAOnQ9BV9gIzheu37nMO4ePUyMYEM=;
+        b=fPtOEah/9mtxNwlF8ldfDJcZKNMif7N94WzU4ryKNYFEMYQ5/VWNl6w7Zwt+oj8C8P
+         VvN3C2pF28gpUvyAA7pyeJuWS0EWAauspqe+LM6NPENUWlDpvLfmOsU23a7ntz+ikW2N
+         F5UAAWtnBz+iZ3YPWHM42Jj/JQYoxAH/EGm/+NvRaE7ld2Rt+VvlFONXE5sQvXUGz0n3
+         TFtIXCE7IA1pcS7k8clhOCDDlnQ8kIivkDsGifLWDyABv8jZkPHW/VjameuCw7Av6LTX
+         Z3Iu7nbABoO5AXMIsVlcF2iMVPKZBrhchfIpNuBNiMjRlbQL4Qr/Hwb9qruAIejehmT6
+         OPtg==
+X-Forwarded-Encrypted: i=1; AJvYcCUPIFebiDasj2e1XKnPJNe/6a3mt5TaJc02RmyEs/HAlLEgs27dUhzGd0sbVBxrS+UruJ4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzm5etJ+uT48oCeOlfaD7IV5dzWUPKQPRgStStIt2Thy8AtrTv/
+	0AzvkukoyzKVFr7QXYZk7FLcVMSbsR4/7EmfKeg7CNDtj/ri8jBuifBD
+X-Gm-Gg: ASbGncv+PDCRd5x0P3FOeknKdfm8dQVU0dEL0xY+Njg56LelXJ8XSWd/T8c58L9+zxv
+	sloOuyBQBJqbZMhkCKmJYMBXo9v1tGQQ+VQw7waYquhhsOAFU9lXOkdwLNPC031YIVCKd43Wszw
+	Klnh9uk7P2r48i4DUgObhEZzvQ/BS94yv8TOpwS3spoW/mVcorMYObwfmPZaOEs6Kcj2oGka0e9
+	lfW31j+Xzf21ebj+aIfA+26s6XCWAM6KYsZaV3+7NeHpMkypqH1npayW4GCvNFiTycDFXyDdNBG
+	VT11ltxQDDo5y0hX0x7YVihWGSiJxews35a0X9PpVnW9EudubD6QUf2boP9PRqtSQGWNI761yux
+	ctbQib6BePc4IBP/cR3H9dwNU4nesS3renhz+yIgNSFNKyNlfmfFmEzciBmks98hGQPa+HdFZCP
+	4KIHa1uPH7ilhJnMaG1Eub
+X-Google-Smtp-Source: AGHT+IFCpVKEMNGa1TiGFz1du/mkrAjFihX7xaQjFh0qLSpjr6GgH+cPEzn+8D8uBc5acStTR7O0cA==
+X-Received: by 2002:a05:600c:4694:b0:477:7f4a:44ae with SMTP id 5b1f17b1804b1-477870bf2fdmr57386475e9.39.1763031586191;
+        Thu, 13 Nov 2025 02:59:46 -0800 (PST)
+Received: from [10.158.36.109] ([72.25.96.17])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b53f0b513sm3255195f8f.30.2025.11.13.02.59.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Nov 2025 02:59:45 -0800 (PST)
+Message-ID: <60c0b805-92e9-48c0-a4dc-5ea071728b3d@gmail.com>
+Date: Thu, 13 Nov 2025 12:59:43 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251113104053.18107-1-puranjay@kernel.org>
-In-Reply-To: <20251113104053.18107-1-puranjay@kernel.org>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Thu, 13 Nov 2025 11:55:54 +0100
-X-Gm-Features: AWmQ_bnIvujod4vY7vdkRUSoG9i6kVzodlxqdDiRND0VB7IS-U8H4Z34w6g1bmM
-Message-ID: <CAP01T77Rr7j9ySowwY=Q6avEJRbV=ehTr7+HMSfPfNrzVD4zAA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: verifier: initialize imm in kfunc_tab in add_kfunc_call()
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: bpf@vger.kernel.org, Puranjay Mohan <puranjay12@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 0/6] net/mlx5e: Speedup channel configuration
+ operations
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Mark Bloch <mbloch@nvidia.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
+ Leon Romanovsky <leonro@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>,
+ William Tu <witu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>,
+ Nimrod Oren <noren@nvidia.com>, Alex Lazar <alazar@nvidia.com>
+References: <1762939749-1165658-1-git-send-email-tariqt@nvidia.com>
+ <874iqzldvq.fsf@toke.dk> <89e33ec4-051d-4ca5-8fcd-f500362dee91@gmail.com>
+ <87ms4rjjm0.fsf@toke.dk>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <87ms4rjjm0.fsf@toke.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, 13 Nov 2025 at 11:40, Puranjay Mohan <puranjay@kernel.org> wrote:
->
-> Metadata about a kfunc call is added to the kfunc_tab in
-> add_kfunc_call() but the call instruction itself could get removed by
-> opt_remove_dead_code() later if it is not reachable.
->
-> If the call instruction is removed, specialize_kfunc() is never called
-> for it and the desc->imm in the kfunc_tab is never initialized for this
-> kfunc call. In this case, sort_kfunc_descs_by_imm_off(env->prog); in
-> do_misc_fixups() doesn't sort the table correctly.
-> This is a problem from s390 as its JIT uses this table to find the
-> addresses for kfuncs, and if this table is not sorted properly, JIT can
-> fail to find addresses for valid kfunc calls.
->
-> This was exposed by:
->
-> commit d869d56ca848 ("bpf: verifier: refactor kfunc specialization")
->
-> as before this commit, desc->imm was initialised in add_kfunc_call().
->
-> Initialize desc->imm in add_kfunc_call(), it will be overwritten with new
-> imm in specialize_kfunc() if the instruction is not removed.
->
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+
+On 12/11/2025 18:33, Toke Høiland-Jørgensen wrote:
+> Tariq Toukan <ttoukan.linux@gmail.com> writes:
+> 
+>> On 12/11/2025 12:54, Toke Høiland-Jørgensen wrote:
+>>> Tariq Toukan <tariqt@nvidia.com> writes:
+>>>
+>>>> Hi,
+>>>>
+>>>> This series significantly improves the latency of channel configuration
+>>>> operations, like interface up (create channels), interface down (destroy
+>>>> channels), and channels reconfiguration (create new set, destroy old
+>>>> one).
+>>>
+>>> On the topic of improving ifup/ifdown times, I noticed at some point
+>>> that mlx5 will call synchronize_net() once for every queue when they are
+>>> deactivated (in mlx5e_deactivate_txqsq()). Have you considered changing
+>>> that to amortise the sync latency over the full interface bringdown? :)
+>>>
+>>> -Toke
+>>>
+>>>
+>>
+>> Correct!
+>> This can be improved and I actually have WIP patches for this, as I'm
+>> revisiting this code area recently.
+> 
+> Excellent! We ran into some issues with this a while back, so would be
+> great to see this improved.
+> 
+> -Toke
+> 
+
+Can you elaborate on the test case and issues encountered?
+To make sure I'm addressing them.
 
