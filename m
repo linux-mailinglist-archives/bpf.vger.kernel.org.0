@@ -1,132 +1,228 @@
-Return-Path: <bpf+bounces-74437-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74438-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B06AC59F63
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 21:25:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63122C5A15B
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 22:21:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7A3484E2087
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 20:23:55 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BA0094E74CF
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 21:20:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD9EE31326E;
-	Thu, 13 Nov 2025 20:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9836322C70;
+	Thu, 13 Nov 2025 21:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CZWiGAAc"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="S6rUH8FB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F083E2877F2
-	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 20:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01974261B6D;
+	Thu, 13 Nov 2025 21:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763065432; cv=none; b=jNDhXahN+JI74lIwJ847kmVZzEWyQj+cfleTBk8QaJMDFSNzu79Q2wt6Y2FSxsevS4s+lDI8KKTCit+eu+ikwWrrmtgKDdRmY/VuuN2Qra24qMtCjxDmMA4N2N5lbor8aUgj2yzTMh46aAvpPLENALaKPOkIZ+Pc7ykL2CuI1CY=
+	t=1763068810; cv=none; b=bBPI+T4Ot/+EfAELaILSBXTG2z71TFTVS1Nnh2BERdcK+SRwQAGCdNG6XgKhsOt+hI5iWGJhYabQCUllwzT8h2/QlxPKgRQdugcMlgfbIiSDA+a+RxNImcpPcJYG9GajzvWAE0Ml3VZ151tBo4+Qex2dNn6IPkteOzkiXCFhYHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763065432; c=relaxed/simple;
-	bh=1vQa73EzE7c16+W4pulKpHQrRgU4+7y9W9WORppn8K4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MoAB5vTvTpzdQrHwUHo+yI87UzcgGQqxbku+9u+3VJmXgxbC0fqWFbOVnXyab7K2lEnzZlLNElm6mBMyybO+GBHwIq7PxAiFYkmksE/V3wFth91QGBKo/JNi5oszKSGPys/dSp1RLRLUhjrHFAm8tPOG46yeuIjGyEZxIC8vPoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CZWiGAAc; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7a9c64dfa8aso1136618b3a.3
-        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 12:23:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763065430; x=1763670230; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rU5LnM79UuU+YlEBTlTGRnareORo2+Hc/rRFWzixC1M=;
-        b=CZWiGAAcEj7OSxDhjVbqcSA3b9qCoXR6CHAYQRJSQIhmy4UYqngxtffOOM8OIEuAwR
-         7zXt3GfhvKSgRFdZtjycX/nHWiNFBYi8Um8inN0WPXApnqoehRtp2PMwmpcWEwksiLQV
-         Dn634PK383kWZG1x3467kGqJ19+QJimqvpGWaq67sBQaOe2EYoGMhWBeEzPkvi5d977b
-         B1mxvChmxRsLNC2RDPu0ByuWaaSlA8SoSeN5mFcSXrnlL7fFkxOGG05b1srL31SWuMNM
-         20Lv5oVpoBh0GcxdJ25oYMZ+xQjFiUovsj5oHmtb18nDhRVFl9tbUmjgxYfMPfrHF6X4
-         GQGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763065430; x=1763670230;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rU5LnM79UuU+YlEBTlTGRnareORo2+Hc/rRFWzixC1M=;
-        b=ByXpp44ZR74rTMmbCJz8xJOtgIgesi6Vq5w/yBgtI1eNkKuLcPHYMAZ8IgiR8vRgzl
-         BUq4U8aezG602gFmjUb5Ldnf9zF1hLOPGB/QENj08+SBYBU1UoBdS+o3QkN43WSuVvAc
-         DahivTf8N78UPt6aqqtl9ssTvkiUJz9O/pB6kR0XaX6hdfuy++Czj4faWrtAVN1TTjZO
-         cM+6Sipl2GNNi1i/YCUTr41W1rETthOyZYRIs+Q/JldDWCAHLbPUCiLmQTQ45FuB2+87
-         QQ6l4jmedQjafGrWW7ROFXx5iPBrHpR0JWVvrOcHivpzx6KzqgNj5VUcN9asDYsTWbxJ
-         IMwA==
-X-Forwarded-Encrypted: i=1; AJvYcCWanqmugGejC5oLh9EynYDd+Z4fezkND5oAeS7JNIDP049+Pmmlf4crKfxQPW1QX8gTzSI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4PujGzkTN3vPhtvm8yX6snjsDSDhNwA0KPn7f+dxyixvkhEnk
-	Uo9b7SXiulME1frXwLnx4BDUfu6viQTHPKFj/1k1gsU+cdIyEubvbCJf
-X-Gm-Gg: ASbGncuRjHD8cRdJx6/ShDYfJ7imdQCp/bkBhH7qHLlyIM9vvIG3sZ21eXYTEVEA/kD
-	7xqfiAkGbsBk2LHfe5o0zJxfR/5ktkq5wFXsdksyFikLlYsWIjsqUnDvVUcszOIGE3DhMUnW5GX
-	/zALITbXI2LFoS2fsI6TF5bNQ0OxhJ5Lz+QwieD0t93FS4Aw8WHoefd3bOJnr2BH++GuACCyco6
-	vy0/YU+05ZCkNLbEKXgWIhV3ma0yrT02NzNMIrUtZe4QvI/6cP7HZUDKn/c0iKa+ZX3aSriuMah
-	1SirTQgze6ebpTHzV4O2IUGExMbuEvz7Zco8c3z+lbKW4ZxxbSda9yLa0Q0xcfr9qExPxH3CwJS
-	U/6KEGGggHn8PWtUS5gBe+Dqt+abotOfN2+Wh3KIfJp4MHQVIiOB9W/i53HG4SHVY0Dok39Id4b
-	AM6qgGELuH
-X-Google-Smtp-Source: AGHT+IHA0Cqi3BtvgZ4A5D/OWLtsAoH22cOGbRRwl3o3enq3btlGo/59DrzsosXC3lSc9F8u/pSepw==
-X-Received: by 2002:aa7:8046:0:b0:7b8:10b9:9bec with SMTP id d2e1a72fcca58-7ba3c080d10mr551290b3a.19.1763065430129;
-        Thu, 13 Nov 2025 12:23:50 -0800 (PST)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b9250d195fsm3094568b3a.18.2025.11.13.12.23.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Nov 2025 12:23:49 -0800 (PST)
-Message-ID: <1faf09abc5a468a025ba784430cf697bd125f74d.camel@gmail.com>
-Subject: Re: [PATCH v2 bpf-next] selftests/bpf: Fix failure paths in
- send_signal test
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
-Cc: daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org
-Date: Thu, 13 Nov 2025 12:23:47 -0800
-In-Reply-To: <20251113171153.2583-1-alexei.starovoitov@gmail.com>
-References: <20251113171153.2583-1-alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1763068810; c=relaxed/simple;
+	bh=9y9a2c/jVOu6lhfw2KQmK7c70gHOg4s3VbgeD47eFJc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gNuAzWsoblvxysl4MQ6sbrHLRNYKKox5Eo/Gw7+hVtWe17M8V/fSBIpVZm4avNvVZgbRCgrf9NOZuZSF4GJGMJGc2rzraUh4NQWR1TSSPAtIdapMkRX/tq+WsbAkyXBajTYZ7qiumTLCVzbyEuJQ61UZpGmh+1X0yKXtDFFvNN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=S6rUH8FB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60C0AC4CEF5;
+	Thu, 13 Nov 2025 21:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1763068809;
+	bh=9y9a2c/jVOu6lhfw2KQmK7c70gHOg4s3VbgeD47eFJc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S6rUH8FB57R/UUe04bwBSoaGOYGmurKvFQGiKjaRp+69RaYMny8aJztzOQraBcrQq
+	 2lwrKakpi4mw3npKSHEcLjHJYPumZM6bSLsdqs+5vrFZt/jlpgeaTIxOM5qITJXPz9
+	 vcfnIkmnsJ7qWYDomwahLU7DQW/0LJ2QhI+mOxNo=
+Date: Thu, 13 Nov 2025 16:20:08 -0500
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: bot+bpf-ci@kernel.org, linux-fsdevel@vger.kernel.org,
+	torvalds@linux-foundation.org, brauner@kernel.org, jack@suse.cz,
+	raven@themaw.net, miklos@szeredi.hu, neil@brown.name,
+	a.hindborg@kernel.org, linux-mm@kvack.org,
+	linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+	kees@kernel.org, rostedt@goodmis.org, linux-usb@vger.kernel.org,
+	paul@paul-moore.com, casey@schaufler-ca.com,
+	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com,
+	selinux@vger.kernel.org, borntraeger@linux.ibm.com,
+	bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
+	yonghong.song@linux.dev, ihor.solodrai@linux.dev,
+	Chris Mason <clm@meta.com>
+Subject: Re: [functionfs] mainline UAF (was Re: [PATCH v3 36/50] functionfs:
+ switch to simple_remove_by_name())
+Message-ID: <2025111316-cornfield-sphinx-ba89@gregkh>
+References: <20251111065520.2847791-37-viro@zeniv.linux.org.uk>
+ <20754dba9be498daeda5fe856e7276c9c91c271999320ae32331adb25a47cd4f@mail.kernel.org>
+ <20251111092244.GS2441659@ZenIV>
+ <e6b90909-fdd7-4c4d-b96e-df27ea9f39c4@meta.com>
+ <20251113092636.GX2441659@ZenIV>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251113092636.GX2441659@ZenIV>
 
-On Thu, 2025-11-13 at 09:11 -0800, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> When test_send_signal_kern__open_and_load() fails parent closes the
-> pipe which cases ASSERT_EQ(read(pipe_p2c...)) to fail, but child
-> continues and enters infinite loop, while parent is stuck in wait(NULL).
-> Other error paths have similar issue, so kill the child before waiting on=
- it.
->
-> The bug was discovered while compiling all of selftests with -O1 instead =
-of -O2
-> which caused progs/test_send_signal_kern.c to fail to load.
->
-> Fixes: ab8b7f0cb358 ("tools/bpf: Add self tests for bpf_send_signal_threa=
-d()")
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
+On Thu, Nov 13, 2025 at 09:26:36AM +0000, Al Viro wrote:
+> On Tue, Nov 11, 2025 at 10:44:26PM -0500, Chris Mason wrote:
+> 
+> > We're wandering into fuzzing territory here, and I honestly have no idea
+> > if this is a valid use of any of this code, but AI managed to make a
+> > repro that crashes only after your patch.  So, I'll let you decide.
+> > 
+> > The new review:
+> > 
+> > Can this dereference ZERO_SIZE_PTR when eps_count is 0?
+> > 
+> > When ffs->eps_count is 0, ffs_epfiles_create() calls kcalloc(0, ...) which
+> > returns ZERO_SIZE_PTR (0x10). The loop never executes so epfiles[0].ffs is
+> > never initialized. Later, cleanup paths (ffs_data_closed and ffs_data_clear)
+> > check if (epfiles) which is true for ZERO_SIZE_PTR, and call
+> > ffs_epfiles_destroy(epfiles, 0).
+> > 
+> > In the old code, the for loop condition prevented any dereferences when
+> > count=0. In the new code, "root = epfile->ffs->sb->s_root" dereferences
+> > epfile before checking count, which would fault on ZERO_SIZE_PTR.
+> 
+> Lovely.  OK, this is a bug.  It is trivial to work around (all callers
+> have ffs avaible, so just passing it as an explicit argument solves
+> the problem), but there is a real UAF in functionfs since all the way
+> back to original merge.  Take a look at
+> 
+> static int
+> ffs_epfile_open(struct inode *inode, struct file *file)
+> {
+> 	struct ffs_epfile *epfile = inode->i_private;
+> 
+> 	if (WARN_ON(epfile->ffs->state != FFS_ACTIVE))
+> 		return -ENODEV;
+> 
+> 	file->private_data = epfile;
+> 	ffs_data_opened(epfile->ffs);
+> 
+> 	return stream_open(inode, file);
+> }
+> 
+> and think what happens if that (->open() of dynamic files in there)
+> races with file removal.  Specifically, if we get called with ffs->opened
+> equal to 1 due to opened ep0 and get preempted away just before the
+> call ffs_data_opened().  Another thread closes ep0, hitting
+> ffs_data_closed(), dropping ffs->opened to 0 and getting
+> 			ffs->state = FFS_CLOSING;
+> 			ffs_data_reset(ffs);
+> which calls ffs_data_clear(), where we hit
+> 		ffs_epfiles_destroy(epfiles, ffs->eps_count);
+> All files except ep0 are removed and epfiles gets freed, leaving the
+> first thread (in ffs_epfile_open()) with file->private_data pointing
+> into a freed array.
+> 
+> open() succeeds, with any subsequent IO on the resulting file leading
+> to calls of
+> static ssize_t ffs_epfile_io(struct file *file, struct ffs_io_data *io_data)
+> {
+> 	struct ffs_epfile *epfile = file->private_data;
+> 
+> and a bunch of accesses to *epfile later in that function, all of them
+> UAF.
+> 
+> As far as I can tell, the damn thing intends to prevent removals between
+> ffs_data_opened() and ffs_data_closed(), so other methods would be safe
+> if ->open() had been done right.  I'm not happy with the way that FSM
+> is done (the real state is a mix of ffs->state, ffs->opened and ffs->mutex,
+> and rules bloody awful; I'm still not entirely convinced that ffs itself
+> can't be freed with ffs->reset_work scheduled for execution), but that's
+> a separate story.  
+> 
+> Another variant of that scenario is with ffs->no_disconnect set;
+> in a sense, it's even nastier.  In that case ffs_data_closed() won't
+> remove anything - it will set ffs->state to FFS_DEACTIVATED, leaving
+> the removals for ffs_data_open().  If we have *two* threads in open(),
+> the first one to call ffs_data_open() will do removal; on another CPU
+> the second will just get past its increment of ->opened (from 1 to 2)
+> and move on, without waiting for anything.
+> 
+> IMO we should just take ffs->mutex in there, getting to ffs via
+> inode->i_sb->s_fs_info.  And yes, compare ffs->state with FFS_ACTIVE -
+> under ->mutex, without WARN_ON() and after having bumped ->opened
+> so that racing ffs_data_closed() would do nothing.  Not FFS_ACTIVE -
+> call ffs_data_closed() ourselves on failure exit.
+> 
+> As in
+> 
+> static int
+> ffs_epfile_open(struct inode *inode, struct file *file)
+> {
+> 	strict ffs_data *ffs = inode->i_sb->s_fs_info;
+> 	int ret;
+> 
+>         /* Acquire mutex */
+> 	ret = ffs_mutex_lock(&ffs->mutex, file->f_flags & O_NONBLOCK);
+> 	if (ret < 0)
+> 		return ret;
+> 
+> 	ffs_data_opened(ffs);
+> 	/*
+> 	 * not FFS_ACTIVE - there might be a pending removal;
+> 	 * FFS_ACITVE alone is not enough, though - we might have
+> 	 * been through FFS_CLOSING and back to FFS_ACTIVE,
+> 	 * with our file already removed.
+> 	 */
+> 	if (unlikely(ffs->state != FFS_ACTIVE ||
+> 		     !simple_positive(file->f_path.dentry))) {
+> 		ffs_data_closed(ffs);
+> 		mutex_unlock(&ffs->mutex);
+> 		return -ENODEV;
+> 	}
+> 	mutex_unlock(&ffs->mutex);
+> 
+> 	file->private_data = inode->i_private;
+> 	return stream_open(inode, file);
+> }
+> 
+> and
+> 
+> static int ffs_ep0_open(struct inode *inode, struct file *file)
+> {
+>         struct ffs_data *ffs = inode->i_private;
+> 	int ret;
+> 
+>         /* Acquire mutex */
+> 	ret = ffs_mutex_lock(&ffs->mutex, file->f_flags & O_NONBLOCK);
+> 	if (ret < 0)
+> 		return ret;
+> 
+> 	ffs_data_opened(ffs);
+> 	if (ffs->state == FFS_CLOSING) {
+> 		ffs_data_closed(ffs);
+> 		mutex_unlock(&ffs->mutex);
+> 		return -EBUSY;
+> 	}
+> 	mutex_unlock(&ffs->mutex);
+> 
+> 	file->private_data = ffs;
+> 	return stream_open(inode, file);
+> }
+> 
+> Said that, I'm _NOT_ familiar with that code; this is just from a couple
+> of days digging through the driver, so I would like to hear comments from
+> the maintainer...  Greg?
+> 
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Sorry for the delay.  Yes, we should be grabing the mutex in there, good
+catch.  There's been more issues pointed out with the gadget code in the
+past year or so as more people are starting to actually use it and
+stress it more.  So if you have a patch for this, I'll gladly take it :)
 
-From the same test:
+thanks,
 
-                 /* wait a little for signal handler */
-                 for (int i =3D 0; i < 1000000000 && !sigusr1_received; i++=
-) {
-                         j /=3D i + j + 1;
-                         if (remote)
-                                 sleep(seconds: 1);
-                         else
-                                 if (!attr)
-                                         /* trigger the nanosleep tracepoin=
-t program. */
-                                         usleep(useconds: 1);
-                 }
-
-Constants are probably a bit too high: from 10**3 to 10**9 seconds.
+greg k-h
 
