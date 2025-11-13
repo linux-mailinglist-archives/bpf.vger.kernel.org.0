@@ -1,124 +1,142 @@
-Return-Path: <bpf+bounces-74414-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74415-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD20FC5882F
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 16:54:14 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1EE2C58C20
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 17:35:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 516AC347DD4
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 15:44:37 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3DD874FF9A5
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 16:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5AC337681;
-	Thu, 13 Nov 2025 15:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA2742F0C46;
+	Thu, 13 Nov 2025 16:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kNN3kQT0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jByxble7"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E432332F771
-	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 15:35:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C402FA0C4
+	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 15:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763048121; cv=none; b=W3F++ANaw5aUaLiIATnLtILqQ3QCIznc/069ujp1z84sH8AgiUswGxsmvEVMygC/81AVp/Fu0j+gcAPWjzMP0SNZSrdAm8p9PutDQcxbmpVIUmQIFPDXOuHb5uBI8YqYQVAMR0HeL6/Gt8hgyAGxQhsqgdqP3oVMDllMG8ckZKk=
+	t=1763049601; cv=none; b=b3tkcCJUrjFZTKg2zZGd+jKuoPNM/QwGJ2E+VVbQPRmK9EOI6i4n15OOyHmZnZMXYocC3DlhRQ04G5a5eOwjKx7g36QbFJbJDWPyxngvEgwktRqBMErCA0CnYY/0SJs01lL/ZxSGfzuZrvwJkO/QOUgx8LPom3Sql317SUj0kuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763048121; c=relaxed/simple;
-	bh=7y97fQ5anqKPljbcJwEjLuD7ZGbwhoE7qAa90lGJPtw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DH+uST+zUkdjTcHyaVHLiOJveKj8HzVVZJYRHOUnTFb9PSRrsEO1TPC3zXbMxmfCo1iV7p1QodUy3HGXCEn3VPM32RgqaXue0vYx3GhX3BZaAcNmowA2hZUz02Rbin+XeZDwGtxZ/8QA0tG4BN6gd/8k/psfYkPBngyrljwTa/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kNN3kQT0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0D97C113D0
-	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 15:35:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763048120;
-	bh=7y97fQ5anqKPljbcJwEjLuD7ZGbwhoE7qAa90lGJPtw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=kNN3kQT09Vu1lJHMPXHaFstAWj/37XFx6oSuGdar0db28Wt7PRoeZhZ/Y6Z91H1or
-	 JzMN3Z/s8BIwF2N+NI2eJrqxdTa75B1nQm+3JuPGIbrXqPD3+MG2Z4LJcdRCqmbp1+
-	 fgCrrni2/GHcu8nnAbbzhZZ5gk3+0qTh4q+ohKuzeS3LTDscvGcjLVK2DsS+WL6jMa
-	 luu+52cf40KsPFuSFk7i3fp0r2tuHy/4oFSn2GAFqmGyHaSfnX7ddoXpSyM0/OP6s+
-	 v3IWEKymsswBFwDs8zkcjeh+6dViLvI4vAIp2uG5/DmVJTgY/yiR7nMSczIRvi4haP
-	 LQScSTfHl7eOw==
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-37a5bc6b491so7640811fa.0
-        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 07:35:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW5ewNOtD6DBYzP1RioSSDZ2gnhPQL0BqCV3jcBa0R3+tCFvX0MFlvQ/Cock+lLu6YO9ZA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw8Ibpavk7fVBL31f8Et9bXRTAr5VbtXtVt05J9ctgGBivWIOqC
-	qTrMfcNCXLhrvdkik731xHsgs6b4VdcBh40NP18cYGP5tJufNZQ7gDF7IYe7Q2Mj1Q1UBA6j7tr
-	oTCtQO/4Qdr9f1ykOpKZM0SR0dNjGnR0=
-X-Google-Smtp-Source: AGHT+IFSYtlQ0Ik6SQdcIxTxPW7UMALLWKETzooevgZgxo2E3TFUk/0TVwKl+Z8PWkRPVlHulNC7+/9hXtr5ug1/GIY=
-X-Received: by 2002:a05:6512:68f:b0:593:f74:9088 with SMTP id
- 2adb3069b0e04-59576e2e9b7mr2377457e87.43.1763048118988; Thu, 13 Nov 2025
- 07:35:18 -0800 (PST)
+	s=arc-20240116; t=1763049601; c=relaxed/simple;
+	bh=7IAIbw8sUkJ3o5wJTa1jHQt6cOZpyAPl1Nc270silZc=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tGX9VU0ARCeUQL91iZk+uPZLi5IrfXRL8pIlgI69Jq05fJrwgRCvfoDoCgWpQbWFqVlGIGamDvnEpcSX9ort9y+S7xY8Y60+TL61rFZJciRaf7R89XNFaCrgWPFm8il2NjIDd7pYTDsakaJMZwXWk46knpj+ElTBBgbZxiThTeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jByxble7; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-640aa1445c3so1651162a12.1
+        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 07:59:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763049598; x=1763654398; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oSWIHRyyO3hooO64JACSCpnVieSk/9Ppr4dvEYGltzw=;
+        b=jByxble7o6DshXjcI0EPPa7DkVmHoAFdAPxfcaruTGYZGcp2H6gq9OE3fuNEvaoMNW
+         Zygpz6ycJ1HXX/mcIv5pCOtvk6YAmKuzWju3ritevEYKcWQ8p9scRqkgCzCqmwDCenDX
+         lJCbFYkLXLMTnULmLJ+6pPgvWZNQP0kMnkP4k08fsp3LDFDYJlkrlp7b1BTocKL6o9rb
+         heQ3Z/Bv0xvEpjvcBTkWMeJkCTbDjzgJXc4TT5HygIYBb5ppvWpN4DeBjHNtMTFnY3lg
+         q9djjueyjEecbXx1BjRtaFcJ8gDpX7UmVcQg83CpgwRQ/VBIuxGNLVpIXVcxtx4XMKFA
+         9bWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763049598; x=1763654398;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oSWIHRyyO3hooO64JACSCpnVieSk/9Ppr4dvEYGltzw=;
+        b=TELOGH6bxjoNYEW71Pe8qTIRQMHjUdwjjsyGBZOLbjKOHYGJjEZHCDZCk4dUtULpP0
+         o8lLymjaYr3aW/V1hqrPKp8I3x/wk8TrF5dAkz/QSVWudHnP/NRRq1RQTvVykNgBHLLB
+         FotaFIC9CRcwWgi2I9FPuAs22Z8OWmj0rtZ6YnmMjLPXUWi1evvcBDPDvw4vTvNmLrtt
+         zo1nJ5PXkhb+az6k6frMzh1yvkaZS/sWMEuxqV0kLJyDSomHswU2SWQ7FESFMPmmGpkE
+         +BuzvUruMc6iAnn1X7H1TAulL0h9/vCBzUszW4JYZsbUBy2u6MYnOZI11g+fqATAfXt/
+         FzGg==
+X-Forwarded-Encrypted: i=1; AJvYcCWyklFNxE6IaHEaec40Gun4GroXrGipL9nnl0iTn62nmtq1NdWpyMAnk/8VYuA6kOGIRK0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9duic1I41uIJZnYDP+bm0NVLo1BWBHTf/6fGzkz1lCfWRDJCR
+	+uqUsSyiOqLCDIYm0dGHARoMJqCrURGIg3EaknMer/glZLWFSXJZk+Zp
+X-Gm-Gg: ASbGncs6Ngws65l9om4FBvwsijpR0+U2fiST+srrRD7dOiZm7zdyGZjFN/KdBoUzpNh
+	XrqZybIRVpPoMnKThfW+xg6fWcuUFhiSginasBBE3egjzj94kBdbT4oUrwDsAz6KDRUSSCilBNs
+	G/MlTWrD8+x/ns0Hlabt2AkwmmtbzNGB0TLOMNk1XaBgR5Y3gI7Bvi9oKMu8KfVlI64pVe13zWj
+	BbLgmSh674rhxkb1GbBerksqOPVSz5uvH1ueR8acgFTAwAYMzIkJ5+Gdap+QJ8LIdPg8YRbgkZz
+	6Kc8PKNJJHSMP1SI/2QN8ypK4QvDfPolCkvzjGIEFNSpIzEx9MKMOTGKFg+Eb1oWC48w5dMdHSo
+	ZyM60uIoQphWr/b/nEC9OHpm6WMtbr1UudrUUkH83biipZlhHc8aPiqF/NZUawl2khy12AvzEtg
+	VzZ92UwgLWkGqa/HLsCtcoBTM=
+X-Google-Smtp-Source: AGHT+IFoy3Qrt2T/zWrqrEncmeovSM7PWIvEMpppfNPTs0PN5vcTlJFJgXzZBDKyyQYJxY9NrZnMDA==
+X-Received: by 2002:a05:6402:40c6:b0:640:c454:e9 with SMTP id 4fb4d7f45d1cf-6431a395d46mr6335604a12.4.1763049597599;
+        Thu, 13 Nov 2025 07:59:57 -0800 (PST)
+Received: from krava (37-188-200-155.red.o2.cz. [37.188.200.155])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6433a4b2615sm1675323a12.32.2025.11.13.07.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Nov 2025 07:59:57 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 13 Nov 2025 16:59:50 +0100
+To: bot+bpf-ci@kernel.org
+Cc: rostedt@kernel.org, revest@google.com, mark.rutland@arm.com,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, menglong8.dong@gmail.com,
+	song@kernel.org, martin.lau@kernel.org, eddyz87@gmail.com,
+	yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCHv2 bpf-next 3/8] ftrace: Add update_ftrace_direct_add
+ function
+Message-ID: <aRYAdoHh0S95C4wA@krava>
+References: <20251113123750.2507435-4-jolsa@kernel.org>
+ <c341189e76b2cf9bb2fe712c074bdd652f73edd5ea2f409655b2d78a62bd332f@mail.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250929194648.145585-1-ebiggers@kernel.org> <20251112121212.66e15a2d@phoenix>
- <CAMj1kXEM62YLP2oLEA447hCFidTqE0E76XrTO02B373=sa0Jkw@mail.gmail.com> <c4028d3f-69f1-47f2-bd76-f9f5fb432fb7@hogyros.de>
-In-Reply-To: <c4028d3f-69f1-47f2-bd76-f9f5fb432fb7@hogyros.de>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Thu, 13 Nov 2025 16:35:07 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEF2iQ_EO2kiwqwqGL=br4FjEt=9QF0MXs4ATzLes7uOQ@mail.gmail.com>
-X-Gm-Features: AWmQ_bmsczc6-5DSYNKgFaTPCnPO7lGTY1Pd1cuVDihMrI5Rufc5_S7Ihn_wzuw
-Message-ID: <CAMj1kXEF2iQ_EO2kiwqwqGL=br4FjEt=9QF0MXs4ATzLes7uOQ@mail.gmail.com>
-Subject: Re: [PATCH iproute2-next v2] lib/bpf_legacy: Use userspace SHA-1 code
- instead of AF_ALG
-To: Simon Richter <Simon.Richter@hogyros.de>
-Cc: Stephen Hemminger <stephen@networkplumber.org>, Eric Biggers <ebiggers@kernel.org>, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org, linux-crypto@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c341189e76b2cf9bb2fe712c074bdd652f73edd5ea2f409655b2d78a62bd332f@mail.kernel.org>
 
-On Thu, 13 Nov 2025 at 09:51, Simon Richter <Simon.Richter@hogyros.de> wrote:
->
-> Hi,
->
-> On 11/13/25 4:25 PM, Ard Biesheuvel wrote:
->
-> > Also, I strongly agree with Eric that a syscall interface to perform
-> > crypto s/w arithmetic that could easily execute in user space is
-> > something that should have never been added, and creates portability
-> > concerns for no good reason.
->
-> Would it make sense to add crypto (and other transform) operations to
-> the vdso, and make the decision whether the syscall is beneficial from
-> there, depending on request/batch size (speed vs overhead tradeoff),
-> data source/sink and available hardware?
->
+On Thu, Nov 13, 2025 at 01:02:18PM +0000, bot+bpf-ci@kernel.org wrote:
+> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> > index e23e6a859..ded3a306a 100644
+> > --- a/include/linux/ftrace.h
+> > +++ b/include/linux/ftrace.h
+> 
+> [ ... ]
+> 
+> > @@ -568,6 +570,11 @@ static inline int modify_ftrace_direct_nolock(struct ftrace_ops *ops, unsigned l
+> >  	return -ENODEV;
+> >  }
+> >
+> > +int update_ftrace_direct_add(struct ftrace_ops *ops, struct ftrace_hash *hash)
+> > +{
+> > +	return -ENODEV;
+> > +}
+> > +
+> >  /*
+> >   * This must be implemented by the architecture.
+> >   * It is the way the ftrace direct_ops helper, when called
+> 
+> Should this stub function have static inline qualifiers? All the other
+> stub functions in this section (ftrace_find_rec_direct,
+> register_ftrace_direct, unregister_ftrace_direct, modify_ftrace_direct,
+> and modify_ftrace_direct_nolock) use static inline. Without it, this
+> could cause multiple definition linker errors when the header is
+> included in multiple compilation units.
 
-No. User space has all the tools it needs to make his determination
-itself, and OpenSSL (for example) already supports the 'afalg' engine,
-which will use AF_ALG, but transparently fall back to software crypto
-if the engine does not support the algorithm in question. So there is
-prior art, and therefore no need to complicate the kernel for this.
+yep, also the other ones are missing it, will add.. thanks
 
-Note that taking the SHA-1 of a BPF program is guaranteed to be way
-below the threshold of being worth the overhead of using a crypto
-offload engine, so in the context of this thread, it is kind of a moot
-point.
+jirka
 
-> For example, "gzip -d" pulling data from a file and writing to a file
-> will need to transfer the data to userspace first, process it there,
-> then transfer it back to kernelspace so it can be written to a file.
->
+> 
+> 
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+> 
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19332026793
 
-That is a different matter, and AF_ALG does not really help here at
-all. The crypto equivalent of what you describe already exists in
-fscrypt, which can transparently encrypt files, making use of
-whichever flavor of crypto is available, including inline crypto,
-where the h/w accelerator is in the storage controller, and not in a
-separate IP block. I'm not a file system expert, but AFAIK, some file
-systems already support compression at the file level as well, in
-which case h/w offload will be used where available, and the
-compressed data never travels to user space.
-
-Similarly, on the networking side, there are things like VPN
-acceleration and kTLS, where the crypto offload is combined with the
-networking hardware.
-
-Discrete crypto offload hardware is simply not something that has a
-lot of good use cases anymore.
 
