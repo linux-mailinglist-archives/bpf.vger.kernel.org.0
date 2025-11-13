@@ -1,123 +1,324 @@
-Return-Path: <bpf+bounces-74343-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74344-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3863C55971
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 04:51:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74C7AC55A23
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 05:18:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 422924E75F4
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 03:48:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA5B83B0B1D
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 04:18:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12FB9296BB6;
-	Thu, 13 Nov 2025 03:48:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22CF32877DC;
+	Thu, 13 Nov 2025 04:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="oXdIpCao"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MTm2DW5a"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CD3C274B23;
-	Thu, 13 Nov 2025 03:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90FCA25A321
+	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 04:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763005698; cv=none; b=k5cq8hYkX/X3w2Ot64e3Tsdv8bNEoa1gnWO0TXuTRnApCLB6oMIP2tZ92BtAzqRcIvn3PnW1RMzbl4grusWD77xPH6uQ+guP+13jpgt5tfOjoN/HZ8Dskmc5BHwnAg/CWcvIXADRZ/i2WIc4gWCEi4k3x/99RpMWVX8Lo2uxBq0=
+	t=1763007511; cv=none; b=SCWIkoPVlp3fY2t4qHmQG7PpacskeQSooylR5T1uf9Qg9bNpiSx7oMhM3MhKNP9JihI7mM2GAniK/ACJgK9jr5O5TYSIQ9HxWd6UFZMUtbrae6Z1THrkO+qLYHrVJlM2QSQf31wHDnC8vSYR6T6LtXT0rTDju180FDMcuc0ghQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763005698; c=relaxed/simple;
-	bh=/pGO0fdusEy8QxI603Svb6mphEh80MlylAtLpdXdDPc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t+IHcryfOTkNzd6fZhfon3ZDeUaxGq1b+669CAwPEZn/kT4UTIgeYI0XmYU5K75t7Tj5qnsPBw7kmFbz890BT4OJA5ZpheZ4FeRxgRBcxGFFLPq1oFNS75i7VRDyBjQpxjs8Zy0Y3RNbdxJLeygmR3vUd+rKXK9ZBe0eMgJ0A3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=oXdIpCao; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1763005687; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=NQ0cb143Fk6+kUWaeT8PET+2Q8tlg6Zp5AevuF4vT2M=;
-	b=oXdIpCaok8o64rgHN9BMuepstqP9QIRy9Ffq5EXx7/qR66Goo4yS73wtpcwZFWTpPNZLTPAcDHh/WR1D9199cNnNAjO3OqKBvOvPXUso7cdAEsKsTkPYkbQBX4WCRXB3dRhw75dPSkKH4wGL/Yp064Nl3tBiku4NdTzwGjLkcRE=
-Received: from 30.180.123.14(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0WsI3wdv_1763005686 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 13 Nov 2025 11:48:07 +0800
-Message-ID: <e1d26f84-7ea2-46de-8ab9-31e49b485832@linux.alibaba.com>
-Date: Thu, 13 Nov 2025 11:48:05 +0800
+	s=arc-20240116; t=1763007511; c=relaxed/simple;
+	bh=sLROp/YkDbpN/w32RtOpHtpMpzX7u9dDrpVr3kzbi+E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HbBUsJN76/4qVi+I21pG2esGdvl3wwsj/LJ1zOJv2t22SrbelMV5VKCtHZf7eQAY2NGNw2XpdrbASfBkMwcPRMN49biNhNYt+1NCo/NXvqqraS9ekvFecMRtDN/5I64iwDwMsRU6k4h31KCr9XxbEphbk95iB7j1+3OwBj5qLRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MTm2DW5a; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1763007508;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=drC7S4phDKiP+TILDj00BjqZygv8s7Qb+MZ6MbtuVmM=;
+	b=MTm2DW5aqB8TQkwQAbHXdy3TJFazu7ITKa9mfyyNi4zwmVaAotRNNnDjKZH5Chluu8zhr5
+	yo0wcFgM9RfySNnp5G25X+7i73FWDeptjUPmYM/hVX3io9RZ+9KQH6+j+ZvKSujy9V16pk
+	UV1rQL9/uVnoxdDTwRnAc8LLw6tf/QM=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-139-WvQOQ56rMTS-TpDJYdkH8A-1; Wed,
+ 12 Nov 2025 23:18:19 -0500
+X-MC-Unique: WvQOQ56rMTS-TpDJYdkH8A-1
+X-Mimecast-MFC-AGG-ID: WvQOQ56rMTS-TpDJYdkH8A_1763007498
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6E2E51956096;
+	Thu, 13 Nov 2025 04:18:18 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.134])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DD36119560A2;
+	Thu, 13 Nov 2025 04:18:13 +0000 (UTC)
+Date: Thu, 13 Nov 2025 12:18:08 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+	Caleb Sander Mateos <csander@purestorage.com>,
+	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH 0/5] io_uring: add IORING_OP_BPF for extending io_uring
+Message-ID: <aRVcAFOsb7X3kxB9@fedora>
+References: <20251104162123.1086035-1-ming.lei@redhat.com>
+ <891f4413-9556-4f0d-87e2-6b452b08a83f@gmail.com>
+ <aQtz-dw7t7jtqALc@fedora>
+ <58c0e697-2f6a-4b06-bf04-c011057cd6c7@gmail.com>
+ <aQ4WTLX9ieL5J7ot@fedora>
+ <9b59b165-1f57-4cb6-ae62-403d922ad4da@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/4] make vmalloc gfp flags usage more apparent
-To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc: Uladzislau Rezki <urezki@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Christoph Hellwig <hch@infradead.org>
-References: <20251112185834.32487-1-vishal.moola@gmail.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20251112185834.32487-1-vishal.moola@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9b59b165-1f57-4cb6-ae62-403d922ad4da@gmail.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-Hi,
-
-On 2025/11/13 02:58, Vishal Moola (Oracle) wrote:
-> We should do a better job at enforcing gfp flags for vmalloc. Right now, we
-> have a kernel-doc for __vmalloc_node_range(), and hope callers pass in
-> supported flags. If a caller were to pass in an unsupported flag, we may
-> BUG, silently clear it, or completely ignore it.
+On Tue, Nov 11, 2025 at 02:07:47PM +0000, Pavel Begunkov wrote:
+> On 11/7/25 15:54, Ming Lei wrote:
+> > On Thu, Nov 06, 2025 at 04:03:29PM +0000, Pavel Begunkov wrote:
+> > > On 11/5/25 15:57, Ming Lei wrote:
+> > > > On Wed, Nov 05, 2025 at 12:47:58PM +0000, Pavel Begunkov wrote:
+> > > > > On 11/4/25 16:21, Ming Lei wrote:
+> > > > > > Hello,
+> > > > > > 
+> > > > > > Add IORING_OP_BPF for extending io_uring operations, follows typical cases:
+> > > > > 
+> > > > > BPF requests were tried long time ago and it wasn't great. Performance
+> > > > 
+> > > > Care to share the link so I can learn from the lesson? Maybe things have
+> > > > changed now...
+> > > 
+> > > https://lore.kernel.org/io-uring/a83f147b-ea9d-e693-a2e9-c6ce16659749@gmail.com/T/#m31d0a2ac6e2213f912a200f5e8d88bd74f81406b
+> > > 
+> > > There were some extra features and testing from folks, but I don't
+> > > think it was ever posted to the list.
+> > 
+> > Thanks for sharing the link:
+> > 
+> > ```
+> > The main problem solved is feeding completion information of other
+> > requests in a form of CQEs back into BPF. I decided to wire up support
+> > for multiple completion queues (aka CQs) and give BPF programs access to
+> > them, so leaving userspace in control over synchronisation that should
+> > be much more flexible that the link-based approach.
+> > ```
 > 
-> If we are more proactive about enforcing gfp flags, we can making sure
-> callers know when they may be asking for unsupported behavior.
+> FWIW, and those extensions were the sign telling that the approach
+> wasn't flexible enough.
 > 
-> This patchset lets vmalloc control the incoming gfp flags, and cleans up
-> some hard to read gfp code.
+> > Looks it is totally different with my patch in motivation and policy.
+> > 
+> > I do _not_ want to move application logic into kernel by building SQE from
+> > kernel prog. With IORING_OP_BPF, the whole io_uring application is
+> > built & maintained completely in userspace, so I needn't to do cumbersome
+> > kernel/user communication just for setting up one SQE in prog, not mention
+> > maintaining SQE's relation with userspace side's.
 > 
-> ---
-> Linked rfc [1] and rfc v2[2] for convenience.
+> It's built and maintained in userspace in either case, and in
 
-Just FYI, I hit this warning when booting today's mm-new branch.
+No.
 
-[    1.238451] ------------[ cut here ]------------
-[    1.238453] Unexpected gfp: 0x400000 (__GFP_ACCOUNT). Fixing up to 
-gfp: 0xdc0 (GFP_KERNEL|__GFP_ZERO). Fix your code!
-[    1.249347] WARNING: CPU: 27 PID: 338 at mm/vmalloc.c:3937 
-__vmalloc_noprof+0x74/0x80
-[    1.249352] Modules linked in:
-[    1.249354] CPU: 27 UID: 0 PID: 338 Comm: (journald) Not tainted 
-6.18.0-rc5+ #55 PREEMPT(none)
-[    1.249357] RIP: 0010:__vmalloc_noprof+0x74/0x80
-[    1.249359] Code: 00 5d e9 6f f8 ff ff 89 d1 49 89 e0 48 8d 54 24 04 
-89 74 24 04 81 e1 e0 ad 11 00 48 c7 c7 68 b0 75 82 89 0c 24 e8 7c bf ce 
-ff <0f> 0b 8b 14 24 eb ab e8 f0 61 a5 00 90
-  90 90 90 90 90 90 90 90 90
-[    1.249360] RSP: 0018:ffffc90000bebe08 EFLAGS: 00010286
-[    1.249362] RAX: 0000000000000000 RBX: 0000000000001000 RCX: 
-ffffffff82fdee68
-[    1.249363] RDX: 000000000000001b RSI: 0000000000000000 RDI: 
-ffffffff82a5ee60
-[    1.249364] RBP: 0000000000001000 R08: 0000000000000000 R09: 
-ffffc90000bebcb8
-[    1.249364] R10: ffffc90000bebcb0 R11: ffffffff8315eea8 R12: 
-ffff88810aac98c0
-[    1.249365] R13: 0000000000000000 R14: ffffffff8141abe0 R15: 
-fffffffffffffff3
-[    1.249368] FS:  00007fbc9436ee80(0000) GS:ffff88bec00e1000(0000) 
-knlGS:0000000000000000
-[    1.249370] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.249371] CR2: 0000562248eda010 CR3: 00000001028a8005 CR4: 
-0000000000770ef0
-[    1.249371] PKRU: 55555554
-[    1.249372] Call Trace:
-[    1.249373]  <TASK>
-[    1.249374]  bpf_prog_alloc_no_stats+0x37/0x250
-[    1.249377]  ? __pfx_seccomp_check_filter+0x10/0x10
-[    1.249379]  bpf_prog_alloc+0x1a/0xa0
-[    1.249381]  bpf_prog_create_from_user+0x51/0x130
-[    1.249385]  seccomp_set_mode_filter+0x117/0x410
-[    1.249387]  do_syscall_64+0x5b/0xda0
-[    1.249390]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[    1.249392] RIP: 0033:0x7fbc94f4c9cd
+BPF prog is not userspace, it is definitely kernel stuff, but it belongs to
+application scope.
+
+> both cases you have bpf implementing some logic that was previously
+> done in userspace. To emphasize, you can do the desired parts of
+> handling in BPF, and I'm not suggesting moving the entirety of
+> request processing in there.
+
+The problem with your patch is that SQE is built in bpf prog(kernel), then
+inevitable application logic is moved to bpf prog, which isn't good at
+handling complicated logic.
+
+Then people have to run kernel<->user communication for setting up the SQE.
+
+And the SQE in bpf prog may need to be linked with previous and following SQEs in
+usersapce, which basically partitions application logic into two parts: one
+is in userspace, another is in bpf prog(kernel).
+
+The patch I am suggesting doesn't have this problem, all SQEs are built in
+userspace, and just the minimized part(standalone and well defined function) is
+done in bpf prog.
+
+> 
+> > > > > for short BPF programs is not great because of io_uring request handling
+> > > > > overhead. And flexibility was severely lacking, so even simple use cases
+> > > > 
+> > > > What is the overhead? In this patch, OP's prep() and issue() are defined in
+> > > 
+> > > The overhead of creating, freeing and executing a request. If you use
+> > > it with links, it's also overhead of that. That prototype could also
+> > > optionally wait for completions, and it wasn't free either.
+> > 
+> > IORING_OP_BPF is same with existing normal io_uring request and link, wrt
+> > all above you mentioned.
+> 
+> It is, but it's an extra request, and in previous testing overhead
+> for that extra request was affecting total performance, that's why
+> linking or not is also important.
+
+Yes, but does the extra request matters for whole performance?
+
+I did have such test:
+
+1) in tools/testing/selftests/ublk/null.c
+
+- for zero copy test, one extra nop is submitted
+
+2) rublk test
+
+- for zero copy test, it simply returns without submitting nop
+
+The IOPS gap is pretty small.
+
+Also in your approach, without allocating one new SQE in bpf, how to
+provide generic interface for bpf prog to work on different functions, such
+as, memory copy or raid5 parity or compression ..., all require flexible
+handling, such as, variable parameters, buffer could be plain user memory
+, fixed, vectored or fixed vectored,..., so one SQE or new operation is the
+easiest way for providing the abstraction and generic bpf prog interface.
+
+> 
+> > IORING_OP_BPF's motivation is for being io_uring's supplementary or extention
+> > in function, not for improving performance.
+> > 
+> > > 
+> > > > bpf prog, but in typical use case, the code size is pretty small, and bpf
+> > > > prog code is supposed to run in fast path.>
+> > > > > were looking pretty ugly, internally, and for BPF writers as well.
+> > > > 
+> > > > I am not sure what `simple use cases` you are talking about.
+> > > 
+> > > As an example, creating a loop reading a file:
+> > > read N bytes; wait for completion; repeat
+> > 
+> > IORING_OP_BPF isn't supposed to implement FS operation in bpf prog.
+> > 
+> > It doesn't mean IORING_OP_BPF can't support async issuing:
+> > 
+> > - issue_wait() can be added for offload in io-wq context
+> > 
+> > OR
+> > 
+> > - for typical FS AIO, in theory it can be supported too, just the struct_ops need
+> > to define one completion callback, and the callback can be called from
+> > ->ki_complete().
+> 
+> There is more to IO than read/write, and I'm afraid each new type of
+> operation would need some extra kfunc glue. And even then there is
+> enough of handling for rw requests in io_uring than just calling the
+> callback. It's nicer to be able to reuse all io_uring request
+> handling, which wouldn't even need extra kfuncs.
+
+Looks you are trying to propose generic bpf io_uring request, which is
+ambitious goal, :-)
+
+But that isn't my patchset's motivation, which just serves as supplement or
+extention of existing io_uring.
+
+Another big case could be network IO, which could be covered -EAGAIN,
+or other main cases?
+
+> 
+> ...
+> > > > and it can't be used in my case.
+> > > Hmm, how so? Let's say ublk registers a buffer and posts a
+> > > completion. Then BPF runs, it sees the completion and does the
+> > > necessary processing, probably using some kfuncs like the ones
+> > 
+> > It is easy to say, how can the BPF prog know the next completion is
+> > exactly waiting for? You have to rely on bpf map to communicate with userspace
+> 
+> By taking a peek at and maybe dereferencing cqe->user_data.
+
+Yes, but you have to pass the interested ->user_data to bpf prog first.
+
+There could be many inflight interested IOs, how to query them efficiently?
+
+Scan each one after every CQE is posted? But ebpf just support bound loops,
+the complexity may be run out of easily[1].
+
+https://docs.ebpf.io/linux/concepts/loops/
+
+> 
+> > to understanding what completion is what you are interested in, also
+> > need all information from userpace for preparing the SQE for submission
+> > from bpf prog. Tons of userspace and kernel communication.
+> 
+> You can setup a BPF arena, and all that comm will be working with
+> a block of shared memory. Or same but via io_uring parameter region.
+> That sounds pretty simple.
+
+But application logic has to splitted into two parts, both two have to
+rely on the shared memory to communicate.
+
+The exiting io_uring application has been complicated enough, adding one
+extra shared memory communication for holding application logic just makes
+things worse. Even in userspace programming, it is horrible to model logic
+into data, that is why state machine pattern is usually not readable.
+
+Think about writing high performance raid5 application based on ublk zero
+copy & io_uring, for example, handling one simple write:
+
+- one ublk write command comes for raid5
+
+- suppose the command just writes data to one single stripe exactly
+
+- submitting each write to N - 1 disks
+
+- When all N writes are done, the new SQE needs to work:
+
+	- calculate parity by reading buffers from the N request kernel buffer
+	  and writing resulted XOR parity to one user specified buffer
+
+- then new FS IO need to be submitted to write the parity data to one calculated
+disk(N)
+
+So the involved things for bpf prog SQE:
+
+	- monitoring N - 1 writes
+	- do the parity calculation job, which has to define one kfunc
+	- mark parity is ready & notify userspace for writing parity(how to
+	  notify?)
+
+Now there can be variable(many) such WRITEs to handle concurrently, and the
+bpf prog has to cover them all.
+
+The above just the simplest case, the write command may not align with
+stripe, so parity calculation may need to read data from other stripes.
+
+If you think it is `pretty simple`, care to provide one example to show your
+approach is workable?
+
+> 
+> > > you introduced. After it can optionally queue up requests
+> > > writing it to the storage or anything else.
+> > 
+> > Again, I do not want to move userspace logic into bpf prog(kernel), what
+> > IORING_BPF_OP provides is to define one operation, then userspace
+> > can use it just like in-kernel operations.
+> 
+> Right, but that's rather limited. I want to cover all those
+> use cases with one implementation instead of fragmenting users,
+> if that can be achieved.
+
+I don't know when your ambitious plan can land or be doable.
+
+I am going to write V2 with the approach of IORING_BPF_OP which is at least
+workable for some cases, and much easier to take in userspace. Also it
+doesn't conflict with your approach.
+
+
+Thanks,
+Ming
 
 
