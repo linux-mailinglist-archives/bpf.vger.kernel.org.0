@@ -1,289 +1,150 @@
-Return-Path: <bpf+bounces-74346-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74347-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E70FC55A6B
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 05:31:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65BCDC55B1E
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 05:50:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id F0817344513
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 04:31:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 419CC3AD07A
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 04:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A40424BD03;
-	Thu, 13 Nov 2025 04:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE34305053;
+	Thu, 13 Nov 2025 04:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PCmvK5Nh"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GCV/DECI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A10A2940B
-	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 04:31:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4AE301000
+	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 04:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763008266; cv=none; b=QXPh2GPxtQ5oPsxpJHD+d9RdBrZJ/VtY9DnTI4tWUnoPW+i3ONZLgJGXVRDDdNzVD6FNgdNWWpIF8cnwB6F5m6g4UL+QAMdouSegHHBXIgWaLB9guMD97dSPfhCXapmpF+cV+Ka+9yfexzhu1YlXEdEoAPp9keDTqKcgnT75jWo=
+	t=1763009426; cv=none; b=NOj+ULS+uRxt/laHTjPcBltfNqg/lzg+VdnpO3zNpRAxdS6spixu6pzQ+y3WwSpnKRjhKN7gEH2hrcvzbXT3Zm070qMCBMwGm1MLk2TFYyNYYVxGIYzbULQ3OVnjuTSBV7508TnCYkYjvzPrx32jLdRnYN7WcKlzJVGbV5mHI6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763008266; c=relaxed/simple;
-	bh=c263BORVt9zh1SNppfW30PEA0OUxdyPYJ/ly3G1wWyk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TXyiBPgBZyeZMG8Kj7Ld5g1+UJn/K1/b/q6Al4/pHI2442S37HBPYiHDPWwHJdJIaUlLw/9hVSJaYGLFfigQivIcesP2Mg4Dgvua2isBYUnNwSWa7G+RMHL4OvQ8yRoYAXca+4wx5lU6ArFjCDvD4jnLAIqePihbznYTLQyD1Yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PCmvK5Nh; arc=none smtp.client-ip=209.85.160.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-3e4228e0fb7so191689fac.3
-        for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 20:31:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763008263; x=1763613063; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6WDt5Zh4CY8eJs4W8ykxXmnnsDaX4tUrTU5JY25ZhXw=;
-        b=PCmvK5NhK/zfqGEwS+4ra208qV3q15+BPBhh7TEjORYEjnzvtS/KR4D9TpU51awZzi
-         JSoZmEruFEi9rTEtMfqpVBc3n2dMXo8iL/KxVh4x1SbE6rTPoWUQoYEEy7herM5LkAP/
-         2lidpr07JZdYoRuzOyXbEwb0lquKiwlE0ZCvjPs3n+qkH1YZ9tELotIcigdOAx1v69vS
-         009eCrDyrKdM6lCYIKbKUo4PzUvop0U1V2A8+LbFIr6qQLsD9EImDlbMrCmmNr7gYAt/
-         IRMUvTcpUw0dt1R/aw3NbxiCLh/9hpOOb/gM4oG3EfnZ3MC9/kWaLq8E5RM75vt+/VTF
-         kAIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763008263; x=1763613063;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6WDt5Zh4CY8eJs4W8ykxXmnnsDaX4tUrTU5JY25ZhXw=;
-        b=bImUJenIbxN3IwIuodU5sYSsOkxh5kCrVcZLOBuGpjzG7xKTDIYI3OiuOgigS8t0Ij
-         LPX+Vzq7Irp5HfudzvIKlpJ1oguSmyvl0X2nyBP7LMPfxBT1jsfefdu25+4+DkBKz/V1
-         TdfYD8OoUhmrW6Z8VN+HqMU/VHmekL+ji5IZj3/31DT3T1Ma0O0+63Qmug+pkCx/LqNJ
-         eTyWYx9V2lPGXc1UCfPMjDywmhwwUvkHIp7mW+uM1r6h/Io5WmenGmehT0asSIh0n7qS
-         ySSzeWgQ+c33uQj1flVtQtj7bcpKPvkUUZQPycN0sKJneNVpYC3Jy1+3OK8aa/jGngU4
-         JhVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX481mA8sg8kXcF8zUCevi0NHgIPIhwWTInKgiWdVt7tkDcOCyzXMh3pFHua/CshZXoKa4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyrqhLzbXyPBz3f30habEWF124fIkbvXMIFRz4m+wj38wHFqANQ
-	jwIwai/n3Y8fLVukpACXlCE/D+Lldh3jgRW61lPrrE9s1IrGuiNxcyQ/
-X-Gm-Gg: ASbGncsG1receYg0pVSXa9aTt+iQvToEzjXi3qWTT4rtLlbacHRMoPOuqROD35Oqrh/
-	b/fKmIehW8d5elRiAU1gymOFAnjMemVCTc8ToL9M881Sezj4ArdFufhSSPmetAfcDrK8pt1Nd3n
-	c9mE6y+bMxaPh4cKbbqjNxmf95NkLcLcnsTnTl15K3Kkr2vinbFTeng8MbK4KMLWE5eF42OOPDF
-	sMINuKnCCnD+CPD210F3y/ku+sf9Uw70YFlJc2zS8FCNDtI5rIkJQME2LcOiaD6fOAYqD5V7DQo
-	QSvNNaU2LW1n7LmMo1OSjNmQQHgdnKKiBmt7Dv1AOaTV/suMFofk/4j+hOah11JlrrJBj4noOdG
-	BwJAMeOVKrUfly1mi6kNjTu/Otp4+ILaImM2YEH5psIVSw2fWapLBL6zxFy8sS/95Ny5t8YVQCi
-	Uj6tE8TGfShdrPvAI6vMg=
-X-Google-Smtp-Source: AGHT+IGJ4ELwLXwPJt2nOCnAR00gAs+/s2qXEwZaFNHtL1hCNbx4GfuHDxZu3clFmqhPvKkDtNncdA==
-X-Received: by 2002:a05:6871:c317:b0:3d3:599d:fe98 with SMTP id 586e51a60fabf-3e8341d01bamr2451306fac.41.1763008263207;
-        Wed, 12 Nov 2025 20:31:03 -0800 (PST)
-Received: from localhost ([2a03:2880:12ff:73::])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-3e851d64d3dsm742607fac.0.2025.11.12.20.31.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Nov 2025 20:31:02 -0800 (PST)
-From: Dimitri Daskalakis <dimitri.daskalakis1@gmail.com>
-To: "David S . Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
+	s=arc-20240116; t=1763009426; c=relaxed/simple;
+	bh=vj11y1lwKZD2kwb5TCZMGnzf37/CZwEIwmuELzhZsFM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c0fWC9LuxZT0+mL9jSlyxqAfOvxWbqgJH8me83RqjPUACM3WTPu+IiXAG3rDmtNJgHjD1+Uv+RP4FxmXkXMLOrTDu0QJjj1PjLm+VjynvFtp22j6DIS7w6noLPJsXpozPGEq5/a2dY2GrwEcjw5bdsNUdMwIXlQITr55JuVgQWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GCV/DECI; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1763009425; x=1794545425;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vj11y1lwKZD2kwb5TCZMGnzf37/CZwEIwmuELzhZsFM=;
+  b=GCV/DECIXXNbz+orrTH20lKtN4mfCLM4pgT5nWCA5VBpj36RPrAsKD/v
+   0wiDyPtY+mHQTUKHErY9p2SyC9EcuBfDAfzHoW292kq1CrW45VpzDffPE
+   Hoa8G3jsaZHFDdgo1Q3PPyX3tbtKm7Bwrzk6BSe//uiIwEmYyXg8sAc6Z
+   5cGp8hUy3Yc7V1hquTntFIi3shc/LmwiYnZhNzBiShu1hLE3q5C+P/Dpz
+   wWROZd5E+ziQQQGwiEQIH35UxWNUts5XiUiaAk9jNq3zd1dqbnXpcwvP0
+   xZBhMQq0aOl3C5ac1EYI2WspfLFEqlPafEOd+sL7CODXuYlT0p0S3Ti/+
+   A==;
+X-CSE-ConnectionGUID: BVSc8dR4RG61SqMCwRX5uQ==
+X-CSE-MsgGUID: 2WZwo4f9RUSziMvme5PKbQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11611"; a="68947836"
+X-IronPort-AV: E=Sophos;i="6.19,301,1754982000"; 
+   d="scan'208";a="68947836"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2025 20:50:23 -0800
+X-CSE-ConnectionGUID: ObfaRa59Tha3zyqhECHhig==
+X-CSE-MsgGUID: pWpA78LRRXK7yFi0Ut8iuQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,301,1754982000"; 
+   d="scan'208";a="212789105"
+Received: from lkp-server01.sh.intel.com (HELO 7b01c990427b) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 12 Nov 2025 20:50:20 -0800
+Received: from kbuild by 7b01c990427b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vJPHm-0004sd-28;
+	Thu, 13 Nov 2025 04:50:18 +0000
+Date: Thu, 13 Nov 2025 12:49:33 +0800
+From: kernel test robot <lkp@intel.com>
+To: Puranjay Mohan <puranjay@kernel.org>, bpf@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Puranjay Mohan <puranjay@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Mohsin Bashir <mohsin.bashr@gmail.com>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
-	Amery Hung <ameryhung@gmail.com>,
-	netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next] selftests: drv-net: xdp: Fix register spill error with clang 20
-Date: Wed, 12 Nov 2025 20:31:02 -0800
-Message-ID: <20251113043102.4062150-1-dimitri.daskalakis1@gmail.com>
-X-Mailer: git-send-email 2.47.3
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 1/4] bpf: arena: populate vm_area without
+ allocating memory
+Message-ID: <202511122229.mivV7opC-lkp@intel.com>
+References: <20251111163424.16471-2-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251111163424.16471-2-puranjay@kernel.org>
 
-On clang 20.1.8 the XDP program fails to load with a register spill error.
-Since hdr_len is a __u32, the compiler decided it only needed the lower
-32-bits of ctx->data, which later triggers the register spill verifier
-error.
+Hi Puranjay,
 
-Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
-Signed-off-by: Dimitri Daskalakis <dimitri.daskalakis1@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-libbpf: prog 'xdp_prog': BPF program load failed: Permission denied
-libbpf: prog 'xdp_prog': -- BEGIN PROG LOAD LOG --
-0: R1=ctx() R10=fp0
-; return xdp_prog_common(ctx); @ xdp_native.bpf.c:670
-0: (85) call pc+1
-caller:
- R10=fp0
-callee:
- frame1: R1=ctx() R10=fp0
-2: frame1: R1=ctx() R10=fp0
-; static int xdp_prog_common(struct xdp_md *ctx) @ xdp_native.bpf.c:635
-2: (bf) r7 = r1                       ; frame1: R1=ctx() R7_w=ctx()
-3: (b4) w1 = 0                        ; frame1: R1_w=0
-; key = XDP_MODE; @ xdp_native.bpf.c:640
-4: (63) *(u32 *)(r10 -336) = r1       ; frame1: R1_w=0 R10=fp0 fp-336=????0
-5: (bf) r2 = r10                      ; frame1: R2_w=fp0 R10=fp0
-6: (07) r2 += -336                    ; frame1: R2_w=fp-336
-; mode = bpf_map_lookup_elem(&map_xdp_setup, &key); @ xdp_native.bpf.c:641
-7: (18) r1 = 0xff110001099ada00       ; frame1: R1_w=map_ptr(map=map_xdp_setup,ks=4,vs=4)
-9: (85) call bpf_map_lookup_elem#1    ; frame1: R0=map_value(map=map_xdp_setup,ks=4,vs=4)
-10: (bf) r8 = r0                      ; frame1: R0=map_value(map=map_xdp_setup,ks=4,vs=4) R8_w=map_value(map=map_xdp_setup,ks=4,vs=4)
-11: (b4) w6 = 2                       ; frame1: R6_w=2
-; if (!mode) @ xdp_native.bpf.c:642
-12: (15) if r8 == 0x0 goto pc+669     ; frame1: R8_w=map_value(map=map_xdp_setup,ks=4,vs=4)
-13: (b4) w1 = 1                       ; frame1: R1_w=1
-; key = XDP_PORT; @ xdp_native.bpf.c:645
-14: (63) *(u32 *)(r10 -336) = r1      ; frame1: R1_w=1 R10=fp0 fp-336=????1
-15: (bf) r2 = r10                     ; frame1: R2_w=fp0 R10=fp0
-16: (07) r2 += -336                   ; frame1: R2_w=fp-336
-; port = bpf_map_lookup_elem(&map_xdp_setup, &key); @ xdp_native.bpf.c:646
-17: (18) r1 = 0xff110001099ada00      ; frame1: R1_w=map_ptr(map=map_xdp_setup,ks=4,vs=4)
-19: (85) call bpf_map_lookup_elem#1   ; frame1: R0=map_value(map=map_xdp_setup,ks=4,vs=4)
-; if (!port) @ xdp_native.bpf.c:647
-20: (15) if r0 == 0x0 goto pc+661     ; frame1: R0=map_value(map=map_xdp_setup,ks=4,vs=4)
-; switch (*mode) { @ xdp_native.bpf.c:650
-21: (61) r1 = *(u32 *)(r8 +0)         ; frame1: R1_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff)) R8=map_value(map=map_xdp_setup,ks=4,vs=4)
-22: (66) if w1 s> 0x1 goto pc+20 43: frame1: R0=map_value(map=map_xdp_setup,ks=4,vs=4) R1=scalar(smin=umin=smin32=umin32=2,smax=umax=umax32=0x7fffffff,var_off=(0x0; 0x7fffffff)) R6=2 R7=ctx() R8=map_value(map=map_xdp_setup,ks=4,vs=4) R10=fp0 fp-336=????1
-; switch (*mode) { @ xdp_native.bpf.c:650
-43: (16) if w1 == 0x2 goto pc+26      ; frame1: R1=scalar(smin=umin=smin32=umin32=3,smax=umax=umax32=0x7fffffff,var_off=(0x0; 0x7fffffff))
-44: (16) if w1 == 0x3 goto pc+123 168: frame1: R0=map_value(map=map_xdp_setup,ks=4,vs=4) R1=3 R6=2 R7=ctx() R8=map_value(map=map_xdp_setup,ks=4,vs=4) R10=fp0 fp-336=????1
-; return xdp_adjst_tail(ctx, (__u16)(*port)); @ xdp_native.bpf.c:658
-168: (61) r2 = *(u32 *)(r0 +0)        ; frame1: R0=map_value(map=map_xdp_setup,ks=4,vs=4) R2_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-; udph = filter_udphdr(ctx, port); @ xdp_native.bpf.c:430
-169: (54) w2 &= 65535                 ; frame1: R2_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=0xffff,var_off=(0x0; 0xffff))
-170: (bf) r1 = r7                     ; frame1: R1_w=ctx() R7=ctx()
-171: (85) call pc+512
-caller:
- frame1: R6=2 R7=ctx() R8=map_value(map=map_xdp_setup,ks=4,vs=4) R10=fp0 fp-336=????1
-callee:
- frame2: R1_w=ctx() R2_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=0xffff,var_off=(0x0; 0xffff)) R10=fp0
-684: frame2: R1=ctx() R2=scalar(smin=smin32=0,smax=umax=smax32=umax32=0xffff,var_off=(0x0; 0xffff)) R10=fp0
-; static struct udphdr *filter_udphdr(struct xdp_md *ctx, __u16 port) @ xdp_native.bpf.c:71
-684: (bc) w6 = w2                     ; frame2: R2=scalar(id=54,smin=smin32=0,smax=umax=smax32=umax32=0xffff,var_off=(0x0; 0xffff)) R6_w=scalar(id=54,smin=smin32=0,smax=umax=smax32=umax32=0xffff,var_off=(0x0; 0xffff))
-685: (bf) r7 = r1                     ; frame2: R1=ctx() R7_w=ctx()
-; err = bpf_xdp_pull_data(ctx, sizeof(*eth)); @ xdp_native.bpf.c:78
-686: (b4) w2 = 14                     ; frame2: R2_w=14
-687: (85) call bpf_xdp_pull_data#85514        ; frame2: R0_w=scalar()
-688: (bc) w1 = w0                     ; frame2: R0_w=scalar() R1_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-689: (b7) r0 = 0                      ; frame2: R0_w=0
-; if (err) @ xdp_native.bpf.c:79
-690: (56) if w1 != 0x0 goto pc+55     ; frame2: R1_w=0
-; data_end = (void *)(long)ctx->data_end; @ xdp_native.bpf.c:82
-691: (61) r2 = *(u32 *)(r7 +4)        ; frame2: R2_w=pkt_end() R7_w=ctx()
-; data = eth = (void *)(long)ctx->data; @ xdp_native.bpf.c:83
-692: (61) r1 = *(u32 *)(r7 +0)        ; frame2: R1_w=pkt(r=0) R7_w=ctx()
-; if (data + sizeof(*eth) > data_end) @ xdp_native.bpf.c:85
-693: (bf) r3 = r1                     ; frame2: R1_w=pkt(r=0) R3_w=pkt(r=0)
-694: (07) r3 += 14                    ; frame2: R3=pkt(off=14,r=0)
-695: (2d) if r3 > r2 goto pc+50       ; frame2: R2=pkt_end() R3=pkt(off=14,r=14)
-; if (eth->h_proto == bpf_htons(ETH_P_IP)) { @ xdp_native.bpf.c:88
-696: (71) r2 = *(u8 *)(r1 +12)        ; frame2: R1=pkt(r=14) R2_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff))
-697: (71) r1 = *(u8 *)(r1 +13)        ; frame2: R1_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff))
-698: (64) w1 <<= 8                    ; frame2: R1_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=0xff00,var_off=(0x0; 0xff00))
-699: (4c) w1 |= w2                    ; frame2: R1_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=0xffff,var_off=(0x0; 0xffff)) R2_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff))
-700: (16) if w1 == 0xdd86 goto pc+15          ; frame2: R1_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=0xffff,var_off=(0x0; 0xffff))
-701: (56) if w1 != 0x8 goto pc+44     ; frame2: R1_w=8
-; err = bpf_xdp_pull_data(ctx, sizeof(*eth) + sizeof(*iph) + @ xdp_native.bpf.c:91
-702: (bf) r1 = r7                     ; frame2: R1_w=ctx() R7=ctx()
-703: (b4) w2 = 42                     ; frame2: R2_w=42
-704: (85) call bpf_xdp_pull_data#85514        ; frame2: R0=scalar()
-705: (bc) w1 = w0                     ; frame2: R0=scalar() R1_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-706: (b7) r0 = 0                      ; frame2: R0_w=0
-; if (err) @ xdp_native.bpf.c:93
-707: (56) if w1 != 0x0 goto pc+38     ; frame2: R1_w=0
-; data_end = (void *)(long)ctx->data_end; @ xdp_native.bpf.c:96
-708: (61) r1 = *(u32 *)(r7 +4)        ; frame2: R1_w=pkt_end() R7=ctx()
-; data = (void *)(long)ctx->data; @ xdp_native.bpf.c:97
-709: (61) r2 = *(u32 *)(r7 +0)        ; frame2: R2_w=pkt(r=0) R7=ctx()
-; if (iph + 1 > (struct iphdr *)data_end || @ xdp_native.bpf.c:101
-710: (bf) r7 = r2                     ; frame2: R2_w=pkt(r=0) R7_w=pkt(r=0)
-711: (07) r7 += 34                    ; frame2: R7_w=pkt(off=34,r=0)
-712: (2d) if r7 > r1 goto pc+33       ; frame2: R1_w=pkt_end() R7_w=pkt(off=34,r=34)
-; iph->protocol != IPPROTO_UDP) @ xdp_native.bpf.c:102
-713: (71) r2 = *(u8 *)(r2 +23)        ; frame2: R2=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff))
-; if (iph + 1 > (struct iphdr *)data_end || @ xdp_native.bpf.c:101
-714: (16) if w2 == 0x11 goto pc+14 729: frame2: R0=0 R1=pkt_end() R2=17 R6=scalar(id=54,smin=smin32=0,smax=umax=smax32=umax32=0xffff,var_off=(0x0; 0xffff)) R7=pkt(off=34,r=34) R10=fp0
-; if (udph + 1 > (struct udphdr *)data_end) @ xdp_native.bpf.c:128
-729: (bf) r2 = r7                     ; frame2: R2_w=pkt(off=34,r=34) R7=pkt(off=34,r=34)
-730: (07) r2 += 8                     ; frame2: R2=pkt(off=42,r=34)
-731: (2d) if r2 > r1 goto pc+14       ; frame2: R1=pkt_end() R2=pkt(off=42,r=42)
-; if (udph->dest != bpf_htons(port)) @ xdp_native.bpf.c:131
-732: (dc) r6 = be16 r6                ; frame2: R6_w=scalar()
-733: (69) r1 = *(u16 *)(r7 +2)        ; frame2: R1_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=0xffff,var_off=(0x0; 0xffff)) R7=pkt(off=34,r=42)
-734: (5e) if w1 != w6 goto pc+11      ; frame2: R1_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=0xffff,var_off=(0x0; 0xffff)) R6_w=scalar(smax=0x7fffffff0000ffff,umax=0xffffffff0000ffff,smin32=0,smax32=umax32=0xffff,var_off=(0x0; 0xffffffff0000ffff))
-735: (b4) w1 = 0                      ; frame2: R1_w=0
-736: (63) *(u32 *)(r10 -4) = r1       ; frame2: R1_w=0 R10=fp0 fp-8=0000????
-737: (bf) r2 = r10                    ; frame2: R2_w=fp0 R10=fp0
-738: (07) r2 += -4                    ; frame2: R2_w=fp-4
-; count = bpf_map_lookup_elem(&map_xdp_stats, &stat_type); @ xdp_native.bpf.c:65
-739: (18) r1 = 0xff110001099ad200     ; frame2: R1_w=map_ptr(map=map_xdp_stats,ks=4,vs=8)
-741: (85) call bpf_map_lookup_elem#1          ; frame2: R0=map_value(map=map_xdp_stats,ks=4,vs=8)
-; if (count) @ xdp_native.bpf.c:67
-742: (15) if r0 == 0x0 goto pc+2      ; frame2: R0=map_value(map=map_xdp_stats,ks=4,vs=8)
-743: (b7) r1 = 1                      ; frame2: R1_w=1
-; __sync_fetch_and_add(count, 1); @ xdp_native.bpf.c:68
-744: (db) r1 = atomic64_fetch_add((u64 *)(r0 +0), r1)         ; frame2: R0=map_value(map=map_xdp_stats,ks=4,vs=8) R1_w=scalar()
-745: (bf) r0 = r7                     ; frame2: R0_w=pkt(off=34,r=42) R7=pkt(off=34,r=42)
-; } @ xdp_native.bpf.c:137
-746: (95) exit
-returning from callee:
- frame2: R0_w=pkt(off=34,r=42) R1_w=scalar() R6=scalar(smax=0x7fffffff0000ffff,umax=0xffffffff0000ffff,smin32=0,smax32=umax32=0xffff,var_off=(0x0; 0xffffffff0000ffff)) R7=pkt(off=34,r=42) R10=fp0 fp-8=0000????
-to caller at 172:
- frame1: R0_w=pkt(off=34,r=42) R6=2 R7=ctx() R8=map_value(map=map_xdp_setup,ks=4,vs=4) R10=fp0 fp-336=????1
-; udph = filter_udphdr(ctx, port); @ xdp_native.bpf.c:430
-172: (bf) r8 = r0                     ; frame1: R0_w=pkt(off=34,r=42) R8_w=pkt(off=34,r=42)
-; if (!udph) @ xdp_native.bpf.c:431
-173: (15) if r8 == 0x0 goto pc+508    ; frame1: R8_w=pkt(off=34,r=42)
-; hdr_len = (void *)udph - (void *)(long)ctx->data + @ xdp_native.bpf.c:434
-174: (61) r9 = *(u32 *)(r7 +0)        ; frame1: R7=ctx() R9_w=pkt(r=0)
-; key = XDP_ADJST_OFFSET; @ xdp_native.bpf.c:436
-175: (63) *(u32 *)(r10 -328) = r6     ; frame1: R6=2 R10=fp0 fp-328=????2
-176: (bf) r2 = r10                    ; frame1: R2_w=fp0 R10=fp0
-177: (07) r2 += -328                  ; frame1: R2_w=fp-328
-; adjust_offset = bpf_map_lookup_elem(&map_xdp_setup, &key); @ xdp_native.bpf.c:437
-178: (18) r1 = 0xff110001099ada00     ; frame1: R1_w=map_ptr(map=map_xdp_setup,ks=4,vs=4)
-180: (85) call bpf_map_lookup_elem#1          ; frame1: R0=map_value(map=map_xdp_setup,ks=4,vs=4)
-; if (!adjust_offset) @ xdp_native.bpf.c:438
-181: (15) if r0 == 0x0 goto pc+500    ; frame1: R0=map_value(map=map_xdp_setup,ks=4,vs=4)
-182: (63) *(u32 *)(r10 -344) = r9
-invalid size of register spill
-processed 2736 insns (limit 1000000) max_states_per_insn 5 total_states 190 peak_states 156 mark_read 19
--- END PROG LOAD LOG --
-libbpf: prog 'xdp_prog': failed to load: -13
-libbpf: failed to load object '/root/ksft-net-drv/net/lib/xdp_native.bpf.o'
+kernel test robot noticed the following build errors:
 
- tools/testing/selftests/net/lib/xdp_native.bpf.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+[auto build test ERROR on bpf-next/master]
 
-diff --git a/tools/testing/selftests/net/lib/xdp_native.bpf.c b/tools/testing/selftests/net/lib/xdp_native.bpf.c
-index c368fc045f4b..64f05229ab24 100644
---- a/tools/testing/selftests/net/lib/xdp_native.bpf.c
-+++ b/tools/testing/selftests/net/lib/xdp_native.bpf.c
-@@ -332,7 +332,7 @@ static __u16 csum_fold_helper(__u32 csum)
- }
- 
- static int xdp_adjst_tail_shrnk_data(struct xdp_md *ctx, __u16 offset,
--				     __u32 hdr_len)
-+				     unsigned long hdr_len)
- {
- 	char tmp_buff[MAX_ADJST_OFFSET];
- 	__u32 buff_pos, udp_csum = 0;
-@@ -422,8 +422,9 @@ static int xdp_adjst_tail(struct xdp_md *ctx, __u16 port)
- {
- 	struct udphdr *udph = NULL;
- 	__s32 *adjust_offset, *val;
--	__u32 key, hdr_len;
-+	unsigned long hdr_len;
- 	void *offset_ptr;
-+	__u32 key;
- 	__u8 tag;
- 	int ret;
- 
+url:    https://github.com/intel-lab-lkp/linux/commits/Puranjay-Mohan/bpf-arena-populate-vm_area-without-allocating-memory/20251112-004253
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20251111163424.16471-2-puranjay%40kernel.org
+patch subject: [PATCH bpf-next 1/4] bpf: arena: populate vm_area without allocating memory
+config: loongarch-defconfig (https://download.01.org/0day-ci/archive/20251112/202511122229.mivV7opC-lkp@intel.com/config)
+compiler: clang version 19.1.7 (https://github.com/llvm/llvm-project cd708029e0b2869e80abe31ddb175f7c35361f90)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251112/202511122229.mivV7opC-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202511122229.mivV7opC-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> kernel/bpf/arena.c:139:2: error: call to undeclared function 'flush_tlb_kernel_range'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     139 |         flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+         |         ^
+   1 error generated.
+
+
+vim +/flush_tlb_kernel_range +139 kernel/bpf/arena.c
+
+   119	
+   120	static int apply_range_clear_cb(pte_t *pte, unsigned long addr, void *data)
+   121	{
+   122		struct mm_struct *mm = &init_mm;
+   123		pte_t old_pte;
+   124		struct page *page;
+   125	
+   126		/* sanity check */
+   127		old_pte = ptep_get(pte);
+   128		if (pte_none(old_pte) || !pte_present(old_pte))
+   129			return 0; /* nothing to do */
+   130	
+   131		/* get page and free it */
+   132		page = pte_page(old_pte);
+   133		if (WARN_ON_ONCE(!page))
+   134			return -EINVAL;
+   135	
+   136		pte_clear(mm, addr, pte);
+   137	
+   138		/* ensure no stale TLB entries */
+ > 139		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+   140	
+   141		__free_page(page);
+   142	
+   143		return 0;
+   144	}
+   145	
+
 -- 
-2.47.3
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
