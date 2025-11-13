@@ -1,208 +1,376 @@
-Return-Path: <bpf+bounces-74374-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74375-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E32CEC5727B
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 12:23:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65655C57287
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 12:24:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AA6D3B34B9
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 11:19:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C80203B54EA
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 11:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D647338900;
-	Thu, 13 Nov 2025 11:19:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB8A33B6D2;
+	Thu, 13 Nov 2025 11:19:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="JNwz+Q3K"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tEx0PXpS";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LOUAPU0D";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TPAANJvU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IMDALd4J"
 X-Original-To: bpf@vger.kernel.org
-Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43DC1207A20;
-	Thu, 13 Nov 2025 11:19:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 211BD2E4247
+	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 11:19:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763032778; cv=none; b=WOuDniqnrEJlhMVm6hg3xgxLRaPv78uA2eQMwny9rsMv+acmXqBa5qzc55uohcpJSXArWK1CvwmCQ9IK28mVxOXl3l839Xqe/N5kDU/Z5fPDevbCUkbWxYkEY9IKCGChSox5aGUzRmgQzKSFyIlcNqOTt9IUsTXXdfTXgOkclhM=
+	t=1763032786; cv=none; b=uqQhJYkyitX5hTbiFLGhOpl+Ojl3WVVAHQD3UA3Ek5BHmrOGcS2t7qzvAJ9yuxIqDlugJVJgYVTh9F2HKMi/PHXyHaFqHSKZ5NveuaKutCfBUz64MMdkddNqIy2N3SfamTHgxlq2fIB5LqTMfBUwoBZr4fXuIiQ0sjVtmGKEpQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763032778; c=relaxed/simple;
-	bh=1BA0qGcTC9HLsasXGE9EAwBRoUKjKOmVZ0fWU+i/pDk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TN23UJwncIqkugmHFBpYQ2oUaVK6LsdvesaSrq0n9uOWhWYb+NRfLb0EDXWwqs4nA8fIyvaSHZ4H46rzFu3gXqMTRG8AUgYYKCJzuc2F9Ky7Z/08m6+vKbzMA5Ii7QSjARB9+q221lvj1/Os/FxCAhMz6p/W/BMZfc3HqTflRCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=JNwz+Q3K; arc=none smtp.client-ip=144.76.82.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-	s=42; h=From:Cc:To:Date:Message-ID;
-	bh=MjQfLvu/KtASAd5uKnK8YtGVX5qN/NhGDnJltU+QqcQ=; b=JNwz+Q3KcIW2f6w0/PCKLCbUeZ
-	kOF3FMprhC8ozhkKHRVIjElZ/sv1l1RSk0GeGFizXgS8aNTj1TlhgcDZZL9302tS76AZUGghP8lUo
-	JEISYSjYUGvFHviPGxw62XSZissO8OO4SO2THOI0HFAK8oDah8WrsYRoJ3a6OtfIu6atkEEMCsIjw
-	9dp9kaQmgbVkm59rKafROZUHmg3SirNy0LcRrj6e7sS5Y2tOlAUscC5fjV1LHt3rLAJ3+98AHUeWx
-	YoXZn///c2vS3tvGzlp+cZFYY/mQ/TS9wEb4raNlvkdDnL+brzuT7zCjXajbG2fLmOcQSgKyjLRmB
-	MPazf70No0ixJPidh7j3BOoBla3U0C8eVKninim9AeaWQ3LUlShb+Dc9NkaZ0b88WftBCmJtpY4ET
-	gBnFWiHzXpayHxYxlUDWsUCDxk8OfpCbAUzCJjpZQ3bCbfUARCE1EuozS0HqdXzjT78MZRq7tXcXK
-	1oUWJYy2RIBxillSc02WlLzm;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-	(Exim)
-	id 1vJVMU-00DtWT-0D;
-	Thu, 13 Nov 2025 11:19:34 +0000
-Message-ID: <05a37623-c78c-4a86-a9f3-c78ce133fa66@samba.org>
-Date: Thu, 13 Nov 2025 12:19:33 +0100
+	s=arc-20240116; t=1763032786; c=relaxed/simple;
+	bh=3rFO83tVJVFEQkZ468DFpQrekAqbDzV1/0JoUWHKE0c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U/sCZYAyvGxZGNUTyeu2odK9eOYsCjdxD7PVcA7DcgaXmowEZ4dE6bFGBNfFP5mM6afVPnThM5H3jUQq05i5fKN0tycz8EdROfxwEoAw3lsGtxjM4D1IB1nQojOooR7wa5cVq0gQuyAJjERlDv2hq9kDeIOAGi9KwZWWOG2/LcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tEx0PXpS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LOUAPU0D; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TPAANJvU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IMDALd4J; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B45DC21281;
+	Thu, 13 Nov 2025 11:19:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763032782; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lczhD1MzObRMKndPkZG3oPhNpz/T85+A7Y0PvHv3zA4=;
+	b=tEx0PXpSR9fC2UvG0u7MJFp2BSlhdeqm6tfjJPlZS4pzGQmOwabgT+ii7BsgRYsefYOMF3
+	VvsJYx6JmgiNnIkc2NCbUzK9WMs4Iesgm99E+qFwo8H8q29+lEmIo9rS5V2MjR+2UAS7Qp
+	XFnzrWjacC8RlMPSp7qTqHvuw+qVCws=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763032782;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lczhD1MzObRMKndPkZG3oPhNpz/T85+A7Y0PvHv3zA4=;
+	b=LOUAPU0DI5ldL7amV9RP5y5ZRcrOsqlJWe+yGqm+w1F5fGBdUOw3+MjMsiQwLq6RLZlsah
+	z1b+3BWuTShjlLBQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=TPAANJvU;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IMDALd4J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763032780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lczhD1MzObRMKndPkZG3oPhNpz/T85+A7Y0PvHv3zA4=;
+	b=TPAANJvULtvZbKY9kTlFDj3fHaqwcTQ7QSHepORPj1SmGNXAVQl+h4cThVAzOE6Yl7BCLK
+	P+mNsKLJnjLZvTwsl3qRAtpBElJ625a6hag5mPaMbQZLS4fmnximef6W0ci53Jrf6gupH/
+	2n45l6UZt9TFhva3h8X/wtCXAWukFSU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763032780;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lczhD1MzObRMKndPkZG3oPhNpz/T85+A7Y0PvHv3zA4=;
+	b=IMDALd4JeMlPI9Mxv0/hWb4imPPdPuOJsIg/iIEqAN8lny7MqpgtZO9x5EjyCnO6vYkjJ5
+	0uFVDgatEsam+WBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A65493EA61;
+	Thu, 13 Nov 2025 11:19:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 2zOKKMy+FWnVYgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 13 Nov 2025 11:19:40 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 63A30A0976; Thu, 13 Nov 2025 12:19:40 +0100 (CET)
+Date: Thu, 13 Nov 2025 12:19:40 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christian Brauner <brauner@kernel.org>
+Cc: syzbot <syzbot+0b2e79f91ff6579bfa5b@syzkaller.appspotmail.com>, 
+	akpm@linux-foundation.org, bpf@vger.kernel.org, bsegall@google.com, david@redhat.com, 
+	dietmar.eggemann@arm.com, jack@suse.cz, jsavitz@redhat.com, juri.lelli@redhat.com, 
+	kartikey406@gmail.com, kees@kernel.org, liam.howlett@oracle.com, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-security-module@vger.kernel.org, lorenzo.stoakes@oracle.com, mgorman@suse.de, mhocko@suse.com, 
+	mingo@redhat.com, mjguzik@gmail.com, oleg@redhat.com, paul@paul-moore.com, 
+	peterz@infradead.org, rostedt@goodmis.org, rppt@kernel.org, sergeh@kernel.org, 
+	surenb@google.com, syzkaller-bugs@googlegroups.com, vbabka@suse.cz, 
+	vincent.guittot@linaro.org, viro@zeniv.linux.org.uk, vschneid@redhat.com, 
+	syzbot+0a8655a80e189278487e@syzkaller.appspotmail.com
+Subject: Re: [PATCH] nsproxy: fix free_nsproxy() and simplify
+ create_new_namespaces()
+Message-ID: <3yjawi3c72ieiss7ivefckuua55e2yvo55z4m4ykp2pzw2snpa@ym34e3d7cnoi>
+References: <691360cc.a70a0220.22f260.013e.GAE@google.com>
+ <20251111-sakralbau-guthaben-7dcc277d337f@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/5] io_uring: bpf: extend io_uring with bpf struct_ops
-To: Ming Lei <ming.lei@redhat.com>
-Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
- Caleb Sander Mateos <csander@purestorage.com>,
- Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>
-References: <20251104162123.1086035-1-ming.lei@redhat.com>
- <20251104162123.1086035-4-ming.lei@redhat.com>
- <94f94f0e-7086-4f44-a658-9cb3b5496faf@samba.org> <aRW6LfJi63X7wbPm@fedora>
-Content-Language: en-US
-From: Stefan Metzmacher <metze@samba.org>
-In-Reply-To: <aRW6LfJi63X7wbPm@fedora>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251111-sakralbau-guthaben-7dcc277d337f@brauner>
+X-Rspamd-Queue-Id: B45DC21281
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_TWELVE(0.00)[35];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.cz:email,suse.cz:dkim,appspotmail.com:email];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[syzkaller.appspotmail.com,linux-foundation.org,vger.kernel.org,google.com,redhat.com,arm.com,suse.cz,gmail.com,kernel.org,oracle.com,kvack.org,suse.de,suse.com,paul-moore.com,infradead.org,goodmis.org,googlegroups.com,linaro.org,zeniv.linux.org.uk];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,appspotmail.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	TAGGED_RCPT(0.00)[0a8655a80e189278487e,0b2e79f91ff6579bfa5b];
+	R_RATELIMIT(0.00)[to_ip_from(RLuhuubkxd663ptcywq6p8zkwd)];
+	MISSING_XM_UA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -2.51
+X-Spam-Level: 
 
-Am 13.11.25 um 11:59 schrieb Ming Lei:
-> On Thu, Nov 13, 2025 at 11:32:56AM +0100, Stefan Metzmacher wrote:
->> Hi Ming,
->>
->>> io_uring can be extended with bpf struct_ops in the following ways:
->>>
->>> 1) add new io_uring operation from application
->>> - one typical use case is for operating device zero-copy buffer, which
->>> belongs to kernel, and not visible or too expensive to export to
->>> userspace, such as supporting copy data from this buffer to userspace,
->>> decompressing data to zero-copy buffer in Android case[1][2], or
->>> checksum/decrypting.
->>>
->>> [1] https://lpc.events/event/18/contributions/1710/attachments/1440/3070/LPC2024_ublk_zero_copy.pdf
->>>
->>> 2) extend 64 byte SQE, since bpf map can be used to store IO data
->>>      conveniently
->>>
->>> 3) communicate in IO chain, since bpf map can be shared among IOs,
->>> when one bpf IO is completed, data can be written to IO chain wide
->>> bpf map, then the following bpf IO can retrieve the data from this bpf
->>> map, this way is more flexible than io_uring built-in buffer
->>>
->>> 4) pretty handy to inject error for test purpose
->>>
->>> bpf struct_ops is one very handy way to attach bpf prog with kernel, and
->>> this patch simply wires existed io_uring operation callbacks with added
->>> uring bpf struct_ops, so application can define its own uring bpf
->>> operations.
->>
->> This sounds useful to me.
->>
->>> Signed-off-by: Ming Lei <ming.lei@redhat.com>
->>> ---
->>>    include/uapi/linux/io_uring.h |   9 ++
->>>    io_uring/bpf.c                | 271 +++++++++++++++++++++++++++++++++-
->>>    io_uring/io_uring.c           |   1 +
->>>    io_uring/io_uring.h           |   3 +-
->>>    io_uring/uring_bpf.h          |  30 ++++
->>>    5 files changed, 311 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
->>> index b8c49813b4e5..94d2050131ac 100644
->>> --- a/include/uapi/linux/io_uring.h
->>> +++ b/include/uapi/linux/io_uring.h
->>> @@ -74,6 +74,7 @@ struct io_uring_sqe {
->>>    		__u32		install_fd_flags;
->>>    		__u32		nop_flags;
->>>    		__u32		pipe_flags;
->>> +		__u32		bpf_op_flags;
->>>    	};
->>>    	__u64	user_data;	/* data to be passed back at completion time */
->>>    	/* pack this to avoid bogus arm OABI complaints */
->>> @@ -427,6 +428,13 @@ enum io_uring_op {
->>>    #define IORING_RECVSEND_BUNDLE		(1U << 4)
->>>    #define IORING_SEND_VECTORIZED		(1U << 5)
->>> +/*
->>> + * sqe->bpf_op_flags		top 8bits is for storing bpf op
->>> + *				The other 24bits are used for bpf prog
->>> + */
->>> +#define IORING_BPF_OP_BITS	(8)
->>> +#define IORING_BPF_OP_SHIFT	(24)
->>> +
->>>    /*
->>>     * cqe.res for IORING_CQE_F_NOTIF if
->>>     * IORING_SEND_ZC_REPORT_USAGE was requested
->>> @@ -631,6 +639,7 @@ struct io_uring_params {
->>>    #define IORING_FEAT_MIN_TIMEOUT		(1U << 15)
->>>    #define IORING_FEAT_RW_ATTR		(1U << 16)
->>>    #define IORING_FEAT_NO_IOWAIT		(1U << 17)
->>> +#define IORING_FEAT_BPF			(1U << 18)
->>>    /*
->>>     * io_uring_register(2) opcodes and arguments
->>> diff --git a/io_uring/bpf.c b/io_uring/bpf.c
->>> index bb1e37d1e804..8227be6d5a10 100644
->>> --- a/io_uring/bpf.c
->>> +++ b/io_uring/bpf.c
->>> @@ -4,28 +4,95 @@
->>>    #include <linux/kernel.h>
->>>    #include <linux/errno.h>
->>>    #include <uapi/linux/io_uring.h>
->>> +#include <linux/init.h>
->>> +#include <linux/types.h>
->>> +#include <linux/bpf_verifier.h>
->>> +#include <linux/bpf.h>
->>> +#include <linux/btf.h>
->>> +#include <linux/btf_ids.h>
->>> +#include <linux/filter.h>
->>>    #include "io_uring.h"
->>>    #include "uring_bpf.h"
->>> +#define MAX_BPF_OPS_COUNT	(1 << IORING_BPF_OP_BITS)
->>> +
->>>    static DEFINE_MUTEX(uring_bpf_ctx_lock);
->>>    static LIST_HEAD(uring_bpf_ctx_list);
->>> +DEFINE_STATIC_SRCU(uring_bpf_srcu);
->>> +static struct uring_bpf_ops bpf_ops[MAX_BPF_OPS_COUNT];
->>
->> This indicates to me that the whole system with all applications in all namespaces
->> need to coordinate in order to use these 256 ops?
+On Tue 11-11-25 22:29:44, Christian Brauner wrote:
+> Make it possible to handle NULL being passed to the reference count
+> helpers instead of forcing the caller to handle this. Afterwards we can
+> nicely allow a cleanup guard to handle nsproxy freeing.
 > 
-> So far there is only 62 in-tree io_uring operation defined, I feel 256
-> should be enough.
->
->> I think in order to have something useful, this should be per
->> struct io_ring_ctx and each application should be able to load
->> its own bpf programs.
+> Active reference count handling is not done in nsproxy_free() but rather
+> in free_nsproxy() as nsproxy_free() is also called from setns() failure
+> paths where a new nsproxy has been prepared but has not been marked as
+> active via switch_task_namespaces().
 > 
-> per-ctx requirement looks reasonable, and it shouldn't be hard to
-> support.
+> Fixes: 3c9820d5c64a ("ns: add active reference count")
+> Reported-by: syzbot+0b2e79f91ff6579bfa5b@syzkaller.appspotmail.com
+> Reported-by: syzbot+0a8655a80e189278487e@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/690bfb9e.050a0220.2e3c35.0013.GAE@google.com
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+
+I believe having free_nsproxy() and nsproxy_free() functions with
+the same signature and slightly different semantics is making things too
+easy to get wrong. Maybe call free_nsproxy() say deactivate_nsproxy()?
+
+Otherwise the patch looks correct to me. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  include/linux/ns_common.h |  11 ++--
+>  kernel/nsproxy.c          | 107 +++++++++++++++-----------------------
+>  2 files changed, 48 insertions(+), 70 deletions(-)
 > 
->>
->> Something that uses bpf_prog_get_type() based on a bpf_fd
->> like SIOCKCMATTACH in net/kcm/kcmsock.c.
+> diff --git a/include/linux/ns_common.h b/include/linux/ns_common.h
+> index 136f6a322e53..825f5865bfc5 100644
+> --- a/include/linux/ns_common.h
+> +++ b/include/linux/ns_common.h
+> @@ -114,11 +114,14 @@ static __always_inline __must_check bool __ns_ref_dec_and_lock(struct ns_common
+>  }
+>  
+>  #define ns_ref_read(__ns) __ns_ref_read(to_ns_common((__ns)))
+> -#define ns_ref_inc(__ns) __ns_ref_inc(to_ns_common((__ns)))
+> -#define ns_ref_get(__ns) __ns_ref_get(to_ns_common((__ns)))
+> -#define ns_ref_put(__ns) __ns_ref_put(to_ns_common((__ns)))
+> +#define ns_ref_inc(__ns) \
+> +	do { if (__ns) __ns_ref_inc(to_ns_common((__ns))); } while (0)
+> +#define ns_ref_get(__ns) \
+> +	((__ns) ? __ns_ref_get(to_ns_common((__ns))) : false)
+> +#define ns_ref_put(__ns) \
+> +	((__ns) ? __ns_ref_put(to_ns_common((__ns))) : false)
+>  #define ns_ref_put_and_lock(__ns, __ns_lock) \
+> -	__ns_ref_dec_and_lock(to_ns_common((__ns)), __ns_lock)
+> +	((__ns) ? __ns_ref_dec_and_lock(to_ns_common((__ns)), __ns_lock) : false)
+>  
+>  #define ns_ref_active_read(__ns) \
+>  	((__ns) ? __ns_ref_active_read(to_ns_common(__ns)) : 0)
+> diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
+> index 94c2cfe0afa1..2c94452dc793 100644
+> --- a/kernel/nsproxy.c
+> +++ b/kernel/nsproxy.c
+> @@ -60,6 +60,27 @@ static inline struct nsproxy *create_nsproxy(void)
+>  	return nsproxy;
+>  }
+>  
+> +static inline void nsproxy_free(struct nsproxy *ns)
+> +{
+> +	put_mnt_ns(ns->mnt_ns);
+> +	put_uts_ns(ns->uts_ns);
+> +	put_ipc_ns(ns->ipc_ns);
+> +	put_pid_ns(ns->pid_ns_for_children);
+> +	put_time_ns(ns->time_ns);
+> +	put_time_ns(ns->time_ns_for_children);
+> +	put_cgroup_ns(ns->cgroup_ns);
+> +	put_net(ns->net_ns);
+> +	kmem_cache_free(nsproxy_cachep, ns);
+> +}
+> +
+> +DEFINE_FREE(nsproxy_free, struct nsproxy *, if (_T) nsproxy_free(_T))
+> +
+> +void free_nsproxy(struct nsproxy *ns)
+> +{
+> +	nsproxy_ns_active_put(ns);
+> +	nsproxy_free(ns);
+> +}
+> +
+>  /*
+>   * Create new nsproxy and all of its the associated namespaces.
+>   * Return the newly created nsproxy.  Do not attach this to the task,
+> @@ -69,76 +90,45 @@ static struct nsproxy *create_new_namespaces(u64 flags,
+>  	struct task_struct *tsk, struct user_namespace *user_ns,
+>  	struct fs_struct *new_fs)
+>  {
+> -	struct nsproxy *new_nsp;
+> -	int err;
+> +	struct nsproxy *new_nsp __free(nsproxy_free) = NULL;
+>  
+>  	new_nsp = create_nsproxy();
+>  	if (!new_nsp)
+>  		return ERR_PTR(-ENOMEM);
+>  
+>  	new_nsp->mnt_ns = copy_mnt_ns(flags, tsk->nsproxy->mnt_ns, user_ns, new_fs);
+> -	if (IS_ERR(new_nsp->mnt_ns)) {
+> -		err = PTR_ERR(new_nsp->mnt_ns);
+> -		goto out_ns;
+> -	}
+> +	if (IS_ERR(new_nsp->mnt_ns))
+> +		return ERR_CAST(new_nsp->mnt_ns);
+>  
+>  	new_nsp->uts_ns = copy_utsname(flags, user_ns, tsk->nsproxy->uts_ns);
+> -	if (IS_ERR(new_nsp->uts_ns)) {
+> -		err = PTR_ERR(new_nsp->uts_ns);
+> -		goto out_uts;
+> -	}
+> +	if (IS_ERR(new_nsp->uts_ns))
+> +		return ERR_CAST(new_nsp->uts_ns);
+>  
+>  	new_nsp->ipc_ns = copy_ipcs(flags, user_ns, tsk->nsproxy->ipc_ns);
+> -	if (IS_ERR(new_nsp->ipc_ns)) {
+> -		err = PTR_ERR(new_nsp->ipc_ns);
+> -		goto out_ipc;
+> -	}
+> +	if (IS_ERR(new_nsp->ipc_ns))
+> +		return ERR_CAST(new_nsp->ipc_ns);
+>  
+> -	new_nsp->pid_ns_for_children =
+> -		copy_pid_ns(flags, user_ns, tsk->nsproxy->pid_ns_for_children);
+> -	if (IS_ERR(new_nsp->pid_ns_for_children)) {
+> -		err = PTR_ERR(new_nsp->pid_ns_for_children);
+> -		goto out_pid;
+> -	}
+> +	new_nsp->pid_ns_for_children = copy_pid_ns(flags, user_ns,
+> +						   tsk->nsproxy->pid_ns_for_children);
+> +	if (IS_ERR(new_nsp->pid_ns_for_children))
+> +		return ERR_CAST(new_nsp->pid_ns_for_children);
+>  
+>  	new_nsp->cgroup_ns = copy_cgroup_ns(flags, user_ns,
+>  					    tsk->nsproxy->cgroup_ns);
+> -	if (IS_ERR(new_nsp->cgroup_ns)) {
+> -		err = PTR_ERR(new_nsp->cgroup_ns);
+> -		goto out_cgroup;
+> -	}
+> +	if (IS_ERR(new_nsp->cgroup_ns))
+> +		return ERR_CAST(new_nsp->cgroup_ns);
+>  
+>  	new_nsp->net_ns = copy_net_ns(flags, user_ns, tsk->nsproxy->net_ns);
+> -	if (IS_ERR(new_nsp->net_ns)) {
+> -		err = PTR_ERR(new_nsp->net_ns);
+> -		goto out_net;
+> -	}
+> +	if (IS_ERR(new_nsp->net_ns))
+> +		return ERR_CAST(new_nsp->net_ns);
+>  
+>  	new_nsp->time_ns_for_children = copy_time_ns(flags, user_ns,
+> -					tsk->nsproxy->time_ns_for_children);
+> -	if (IS_ERR(new_nsp->time_ns_for_children)) {
+> -		err = PTR_ERR(new_nsp->time_ns_for_children);
+> -		goto out_time;
+> -	}
+> +						     tsk->nsproxy->time_ns_for_children);
+> +	if (IS_ERR(new_nsp->time_ns_for_children))
+> +		return ERR_CAST(new_nsp->time_ns_for_children);
+>  	new_nsp->time_ns = get_time_ns(tsk->nsproxy->time_ns);
+>  
+> -	return new_nsp;
+> -
+> -out_time:
+> -	put_net(new_nsp->net_ns);
+> -out_net:
+> -	put_cgroup_ns(new_nsp->cgroup_ns);
+> -out_cgroup:
+> -	put_pid_ns(new_nsp->pid_ns_for_children);
+> -out_pid:
+> -	put_ipc_ns(new_nsp->ipc_ns);
+> -out_ipc:
+> -	put_uts_ns(new_nsp->uts_ns);
+> -out_uts:
+> -	put_mnt_ns(new_nsp->mnt_ns);
+> -out_ns:
+> -	kmem_cache_free(nsproxy_cachep, new_nsp);
+> -	return ERR_PTR(err);
+> +	return no_free_ptr(new_nsp);
+>  }
+>  
+>  /*
+> @@ -185,21 +175,6 @@ int copy_namespaces(u64 flags, struct task_struct *tsk)
+>  	return 0;
+>  }
+>  
+> -void free_nsproxy(struct nsproxy *ns)
+> -{
+> -	nsproxy_ns_active_put(ns);
+> -
+> -	put_mnt_ns(ns->mnt_ns);
+> -	put_uts_ns(ns->uts_ns);
+> -	put_ipc_ns(ns->ipc_ns);
+> -	put_pid_ns(ns->pid_ns_for_children);
+> -	put_time_ns(ns->time_ns);
+> -	put_time_ns(ns->time_ns_for_children);
+> -	put_cgroup_ns(ns->cgroup_ns);
+> -	put_net(ns->net_ns);
+> -	kmem_cache_free(nsproxy_cachep, ns);
+> -}
+> -
+>  /*
+>   * Called from unshare. Unshare all the namespaces part of nsproxy.
+>   * On success, returns the new nsproxy.
+> @@ -338,7 +313,7 @@ static void put_nsset(struct nsset *nsset)
+>  	if (nsset->fs && (flags & CLONE_NEWNS) && (flags & ~CLONE_NEWNS))
+>  		free_fs_struct(nsset->fs);
+>  	if (nsset->nsproxy)
+> -		free_nsproxy(nsset->nsproxy);
+> +		nsproxy_free(nsset->nsproxy);
+>  }
+>  
+>  static int prepare_nsset(unsigned flags, struct nsset *nsset)
+> -- 
+> 2.47.3
 > 
-> I considered per-ctx prog before, one drawback is the prog can't be shared
-> among io_ring_ctx, which could waste memory. In my ublk case, there can be
-> lots of devices sharing same bpf prog.
-
-Can't the ublk instances coordinate and use the same bpf_fd?
-new instances could request it via a unix socket and SCM_RIGHTS
-from a long running loading process. On the other hand do they
-really want to share?
-
-I don't know much about bpf in details, so I'm wondering in your
-example from
-https://github.com/ming1/liburing/commit/625b69ddde15ad80e078c684ba166f49c1174fa4
-
-Would memory_map be global in the whole system or would
-each loaded instance of the program have it's own instance of memory_map?
-
-Thanks!
-metze
-
-
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
