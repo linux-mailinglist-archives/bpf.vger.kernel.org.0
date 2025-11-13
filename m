@@ -1,148 +1,205 @@
-Return-Path: <bpf+bounces-74367-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74368-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDB18C57139
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 12:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A32AC57181
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 12:07:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BBC784EA767
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 11:00:00 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C94FF4ED000
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 11:01:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 203D53376BC;
-	Thu, 13 Nov 2025 10:59:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 129D433858A;
+	Thu, 13 Nov 2025 11:01:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iQ3gJ3CK"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LchsgSqo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D28D2FE582
-	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 10:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 078572DC33B
+	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 11:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763031590; cv=none; b=EqeyPAHpQ5VMToDDJFrJdnyBqito5fwJ4+8vsYYKDkO0xiQB7/T8zS7vNm3J85jJTo8GlLSL0uqIOfFrBkXFsCtzn2Ekuu/JPpwX0nG/YzCTk4ftzio639TKtpUP00+JhGxvwmrGpgCcxmdnpgXIliBv9VNYQXV2Ut3vJOfMLF0=
+	t=1763031676; cv=none; b=Zd6Xd41q4aGWnxjD+bbDhW3qaMvYB3l+2oxWnYMdhTB9RsX3lO4ELgrNKlgpaZpVvZ27kEuLnDm2aaH/BYUe6IKeOsrjBZukO9lY4t7zT2opoHvdSJ0uTUrGmz0X02jcNkL7GnT1EnEjbTiTQuoOa7AfaR2S8X41n7Y0SxJCAWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763031590; c=relaxed/simple;
-	bh=ugZFlfc+l2S+0zWCSf1PxybsJPWJGmiF5NzWiKPgTzM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o6+stalsECuk2D60NRB7R8nL7JwrRZSbzKXXcdoxsy3DTXsd+kc52yUk2bjJCbyUVxzkJekXqBP22XYzcroCoRDsmY8aTKvg3HAcePLSzR/pGBYoyi6Wh7waYPq9ZMhs2iafYNoQQ/mUx/2bNkV10GC3/iO2foMOD567jp0baPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iQ3gJ3CK; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4711810948aso4608055e9.2
-        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 02:59:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763031586; x=1763636386; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DEJC7gRTebDUaxwAOnQ9BV9gIzheu37nMO4ePUyMYEM=;
-        b=iQ3gJ3CK+EvoGocot/Chl1ETCyQHG6GXKwpS32/w52vYJtH8PF+c+cxZV/V6Y1PWxe
-         qQBxxItLa7wBBe1zZ9JtuCwAePN8hF0IEfGpf7mwgZHswAUr5F5z5W2+oHO8d/5u8Kqn
-         ZcpzG3QzVsMaDloGTcuam0H7i2Vx7Tf3pNPAOErn3+NNfXOeDcu5CkOla0vCNq6j0eRq
-         kb7ALrEYpAPxkYAqzmZhzie7mwW91sUlFc0t5W5GEqiI2Wu+s3s92KmvLriUjGRIAv08
-         Sp/gVpLYzBsC4LCG1dy2lrfz5a117+bAMyb8ZQCcKJw3j3+ZsX69A4qprDhlEiWVh4NE
-         qEcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763031586; x=1763636386;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DEJC7gRTebDUaxwAOnQ9BV9gIzheu37nMO4ePUyMYEM=;
-        b=fPtOEah/9mtxNwlF8ldfDJcZKNMif7N94WzU4ryKNYFEMYQ5/VWNl6w7Zwt+oj8C8P
-         VvN3C2pF28gpUvyAA7pyeJuWS0EWAauspqe+LM6NPENUWlDpvLfmOsU23a7ntz+ikW2N
-         F5UAAWtnBz+iZ3YPWHM42Jj/JQYoxAH/EGm/+NvRaE7ld2Rt+VvlFONXE5sQvXUGz0n3
-         TFtIXCE7IA1pcS7k8clhOCDDlnQ8kIivkDsGifLWDyABv8jZkPHW/VjameuCw7Av6LTX
-         Z3Iu7nbABoO5AXMIsVlcF2iMVPKZBrhchfIpNuBNiMjRlbQL4Qr/Hwb9qruAIejehmT6
-         OPtg==
-X-Forwarded-Encrypted: i=1; AJvYcCUPIFebiDasj2e1XKnPJNe/6a3mt5TaJc02RmyEs/HAlLEgs27dUhzGd0sbVBxrS+UruJ4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzm5etJ+uT48oCeOlfaD7IV5dzWUPKQPRgStStIt2Thy8AtrTv/
-	0AzvkukoyzKVFr7QXYZk7FLcVMSbsR4/7EmfKeg7CNDtj/ri8jBuifBD
-X-Gm-Gg: ASbGncv+PDCRd5x0P3FOeknKdfm8dQVU0dEL0xY+Njg56LelXJ8XSWd/T8c58L9+zxv
-	sloOuyBQBJqbZMhkCKmJYMBXo9v1tGQQ+VQw7waYquhhsOAFU9lXOkdwLNPC031YIVCKd43Wszw
-	Klnh9uk7P2r48i4DUgObhEZzvQ/BS94yv8TOpwS3spoW/mVcorMYObwfmPZaOEs6Kcj2oGka0e9
-	lfW31j+Xzf21ebj+aIfA+26s6XCWAM6KYsZaV3+7NeHpMkypqH1npayW4GCvNFiTycDFXyDdNBG
-	VT11ltxQDDo5y0hX0x7YVihWGSiJxews35a0X9PpVnW9EudubD6QUf2boP9PRqtSQGWNI761yux
-	ctbQib6BePc4IBP/cR3H9dwNU4nesS3renhz+yIgNSFNKyNlfmfFmEzciBmks98hGQPa+HdFZCP
-	4KIHa1uPH7ilhJnMaG1Eub
-X-Google-Smtp-Source: AGHT+IFCpVKEMNGa1TiGFz1du/mkrAjFihX7xaQjFh0qLSpjr6GgH+cPEzn+8D8uBc5acStTR7O0cA==
-X-Received: by 2002:a05:600c:4694:b0:477:7f4a:44ae with SMTP id 5b1f17b1804b1-477870bf2fdmr57386475e9.39.1763031586191;
-        Thu, 13 Nov 2025 02:59:46 -0800 (PST)
-Received: from [10.158.36.109] ([72.25.96.17])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b53f0b513sm3255195f8f.30.2025.11.13.02.59.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Nov 2025 02:59:45 -0800 (PST)
-Message-ID: <60c0b805-92e9-48c0-a4dc-5ea071728b3d@gmail.com>
-Date: Thu, 13 Nov 2025 12:59:43 +0200
+	s=arc-20240116; t=1763031676; c=relaxed/simple;
+	bh=dWZ57ctAvh6zYSImXe3rOe28g+rysrCLCpD2RZJukd8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jpL90B565mZ49VIrFtwMDNLsR9Z03YQTSrY2PHBBSUhai4SRyMeKj9BydYv4ygjG8PwMHAvR9wfHcehFBDo/gX0D9/R2LIX98PMnOYAekvatgi6LXS7ovsnWXFqGqa72/Z/p3hZaHg/iakWOsca6Qr6ljP0Jf02amSRtSUqP/KU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LchsgSqo; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1763031672;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xkwPanruht+tVCaTSjqmyz1RwODzJHjVCA3D3SgXxaA=;
+	b=LchsgSqoNJ7vEhhJmhUh63ZdztjGEZBPYVRj6jLXC/N2TzovW8efjhGphSs/ghpaRWmfRd
+	HYPzfnZniRPb/hDIQLl1H1P901k5VlFo4VkwGFph/zvY2CYYxK18+tcnq96lVZ+kX1kS3M
+	MHXCujoVgiOfzgg3JdGyBR3QtJySot0=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-444-MaKrvlBuNZ-BTZZXknTIww-1; Thu,
+ 13 Nov 2025 06:00:16 -0500
+X-MC-Unique: MaKrvlBuNZ-BTZZXknTIww-1
+X-Mimecast-MFC-AGG-ID: MaKrvlBuNZ-BTZZXknTIww_1763031614
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2B31418002F8;
+	Thu, 13 Nov 2025 11:00:07 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.82])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DD2DA18004A3;
+	Thu, 13 Nov 2025 11:00:02 +0000 (UTC)
+Date: Thu, 13 Nov 2025 18:59:57 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Stefan Metzmacher <metze@samba.org>
+Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+	Caleb Sander Mateos <csander@purestorage.com>,
+	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH 3/5] io_uring: bpf: extend io_uring with bpf struct_ops
+Message-ID: <aRW6LfJi63X7wbPm@fedora>
+References: <20251104162123.1086035-1-ming.lei@redhat.com>
+ <20251104162123.1086035-4-ming.lei@redhat.com>
+ <94f94f0e-7086-4f44-a658-9cb3b5496faf@samba.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 0/6] net/mlx5e: Speedup channel configuration
- operations
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Mark Bloch <mbloch@nvidia.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
- Leon Romanovsky <leonro@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>,
- William Tu <witu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>,
- Nimrod Oren <noren@nvidia.com>, Alex Lazar <alazar@nvidia.com>
-References: <1762939749-1165658-1-git-send-email-tariqt@nvidia.com>
- <874iqzldvq.fsf@toke.dk> <89e33ec4-051d-4ca5-8fcd-f500362dee91@gmail.com>
- <87ms4rjjm0.fsf@toke.dk>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <87ms4rjjm0.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <94f94f0e-7086-4f44-a658-9cb3b5496faf@samba.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+
+On Thu, Nov 13, 2025 at 11:32:56AM +0100, Stefan Metzmacher wrote:
+> Hi Ming,
+> 
+> > io_uring can be extended with bpf struct_ops in the following ways:
+> > 
+> > 1) add new io_uring operation from application
+> > - one typical use case is for operating device zero-copy buffer, which
+> > belongs to kernel, and not visible or too expensive to export to
+> > userspace, such as supporting copy data from this buffer to userspace,
+> > decompressing data to zero-copy buffer in Android case[1][2], or
+> > checksum/decrypting.
+> > 
+> > [1] https://lpc.events/event/18/contributions/1710/attachments/1440/3070/LPC2024_ublk_zero_copy.pdf
+> > 
+> > 2) extend 64 byte SQE, since bpf map can be used to store IO data
+> >     conveniently
+> > 
+> > 3) communicate in IO chain, since bpf map can be shared among IOs,
+> > when one bpf IO is completed, data can be written to IO chain wide
+> > bpf map, then the following bpf IO can retrieve the data from this bpf
+> > map, this way is more flexible than io_uring built-in buffer
+> > 
+> > 4) pretty handy to inject error for test purpose
+> > 
+> > bpf struct_ops is one very handy way to attach bpf prog with kernel, and
+> > this patch simply wires existed io_uring operation callbacks with added
+> > uring bpf struct_ops, so application can define its own uring bpf
+> > operations.
+> 
+> This sounds useful to me.
+> 
+> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > ---
+> >   include/uapi/linux/io_uring.h |   9 ++
+> >   io_uring/bpf.c                | 271 +++++++++++++++++++++++++++++++++-
+> >   io_uring/io_uring.c           |   1 +
+> >   io_uring/io_uring.h           |   3 +-
+> >   io_uring/uring_bpf.h          |  30 ++++
+> >   5 files changed, 311 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
+> > index b8c49813b4e5..94d2050131ac 100644
+> > --- a/include/uapi/linux/io_uring.h
+> > +++ b/include/uapi/linux/io_uring.h
+> > @@ -74,6 +74,7 @@ struct io_uring_sqe {
+> >   		__u32		install_fd_flags;
+> >   		__u32		nop_flags;
+> >   		__u32		pipe_flags;
+> > +		__u32		bpf_op_flags;
+> >   	};
+> >   	__u64	user_data;	/* data to be passed back at completion time */
+> >   	/* pack this to avoid bogus arm OABI complaints */
+> > @@ -427,6 +428,13 @@ enum io_uring_op {
+> >   #define IORING_RECVSEND_BUNDLE		(1U << 4)
+> >   #define IORING_SEND_VECTORIZED		(1U << 5)
+> > +/*
+> > + * sqe->bpf_op_flags		top 8bits is for storing bpf op
+> > + *				The other 24bits are used for bpf prog
+> > + */
+> > +#define IORING_BPF_OP_BITS	(8)
+> > +#define IORING_BPF_OP_SHIFT	(24)
+> > +
+> >   /*
+> >    * cqe.res for IORING_CQE_F_NOTIF if
+> >    * IORING_SEND_ZC_REPORT_USAGE was requested
+> > @@ -631,6 +639,7 @@ struct io_uring_params {
+> >   #define IORING_FEAT_MIN_TIMEOUT		(1U << 15)
+> >   #define IORING_FEAT_RW_ATTR		(1U << 16)
+> >   #define IORING_FEAT_NO_IOWAIT		(1U << 17)
+> > +#define IORING_FEAT_BPF			(1U << 18)
+> >   /*
+> >    * io_uring_register(2) opcodes and arguments
+> > diff --git a/io_uring/bpf.c b/io_uring/bpf.c
+> > index bb1e37d1e804..8227be6d5a10 100644
+> > --- a/io_uring/bpf.c
+> > +++ b/io_uring/bpf.c
+> > @@ -4,28 +4,95 @@
+> >   #include <linux/kernel.h>
+> >   #include <linux/errno.h>
+> >   #include <uapi/linux/io_uring.h>
+> > +#include <linux/init.h>
+> > +#include <linux/types.h>
+> > +#include <linux/bpf_verifier.h>
+> > +#include <linux/bpf.h>
+> > +#include <linux/btf.h>
+> > +#include <linux/btf_ids.h>
+> > +#include <linux/filter.h>
+> >   #include "io_uring.h"
+> >   #include "uring_bpf.h"
+> > +#define MAX_BPF_OPS_COUNT	(1 << IORING_BPF_OP_BITS)
+> > +
+> >   static DEFINE_MUTEX(uring_bpf_ctx_lock);
+> >   static LIST_HEAD(uring_bpf_ctx_list);
+> > +DEFINE_STATIC_SRCU(uring_bpf_srcu);
+> > +static struct uring_bpf_ops bpf_ops[MAX_BPF_OPS_COUNT];
+> 
+> This indicates to me that the whole system with all applications in all namespaces
+> need to coordinate in order to use these 256 ops?
+
+So far there is only 62 in-tree io_uring operation defined, I feel 256
+should be enough.
+
+> 
+> I think in order to have something useful, this should be per
+> struct io_ring_ctx and each application should be able to load
+> its own bpf programs.
+
+per-ctx requirement looks reasonable, and it shouldn't be hard to
+support.
+
+> 
+> Something that uses bpf_prog_get_type() based on a bpf_fd
+> like SIOCKCMATTACH in net/kcm/kcmsock.c.
+
+I considered per-ctx prog before, one drawback is the prog can't be shared
+among io_ring_ctx, which could waste memory. In my ublk case, there can be
+lots of devices sharing same bpf prog.
 
 
 
-On 12/11/2025 18:33, Toke Høiland-Jørgensen wrote:
-> Tariq Toukan <ttoukan.linux@gmail.com> writes:
-> 
->> On 12/11/2025 12:54, Toke Høiland-Jørgensen wrote:
->>> Tariq Toukan <tariqt@nvidia.com> writes:
->>>
->>>> Hi,
->>>>
->>>> This series significantly improves the latency of channel configuration
->>>> operations, like interface up (create channels), interface down (destroy
->>>> channels), and channels reconfiguration (create new set, destroy old
->>>> one).
->>>
->>> On the topic of improving ifup/ifdown times, I noticed at some point
->>> that mlx5 will call synchronize_net() once for every queue when they are
->>> deactivated (in mlx5e_deactivate_txqsq()). Have you considered changing
->>> that to amortise the sync latency over the full interface bringdown? :)
->>>
->>> -Toke
->>>
->>>
->>
->> Correct!
->> This can be improved and I actually have WIP patches for this, as I'm
->> revisiting this code area recently.
-> 
-> Excellent! We ran into some issues with this a while back, so would be
-> great to see this improved.
-> 
-> -Toke
-> 
+thanks,
+Ming
 
-Can you elaborate on the test case and issues encountered?
-To make sure I'm addressing them.
 
