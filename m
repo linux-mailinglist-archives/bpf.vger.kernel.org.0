@@ -1,121 +1,100 @@
-Return-Path: <bpf+bounces-74428-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74429-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A243C59686
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 19:16:34 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23B38C59368
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 18:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D32A650329C
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 17:23:11 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8C61A34A5E5
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 17:30:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E81A2F83AE;
-	Thu, 13 Nov 2025 17:21:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993DD30AAD7;
+	Thu, 13 Nov 2025 17:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a70/uYfQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lT2zvH4V"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8481930CD88
-	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 17:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 764022F0C68;
+	Thu, 13 Nov 2025 17:30:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763054461; cv=none; b=MUJrEcIF8IAky2GMhTSC2/sabKYKvDOIkQba18iK2t48TFjG7eqT65h3i1cQF7CgcZs1Ee8LNRQb6H3TD362n37eirSQUT19YzUtKipPn8/nXP0a4YMGd8hRXjwtGnzrJ6K3MwzGXILHKS3IDhL0BjJn7G7URAweTxY1B+MeMVM=
+	t=1763055040; cv=none; b=FXSQxbTQzuwA4MJV/bk4f0WcLq2jwWcW4zz39/NFT1r4ZlTNQSwgayFFNgjo1eZW1gwDntJ5bfVtxZxdt4j6CrOK6bVCyG61EB0jByeM9LAe3L/OxxN7HTMzCzGvQqpA27MXJjWEZW2hierlGlIF1ZBztMM0TUbf9PzKizC5MHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763054461; c=relaxed/simple;
-	bh=ztuiaKnD+yWEMM5b9BFNroowD4ifQN+vT3IcDBlsurA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tbxcHGNop/St6tizUgiHkK4Rc1l6kOn7QtFjFJy4jM3u8aNwg7nwrhtRmTdI8OHzDF7QZTL4jVAEaXLnhP7NCMABT9f3r+oSQKt+8OVf9MKvV4xRJBo/kbZawVGfwE1vplyB0CO+faKO7C9Cs9JzNcOXIkUrmfvWedCWLukh+7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a70/uYfQ; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-42b3669ca3dso647781f8f.0
-        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 09:20:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763054458; x=1763659258; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ztuiaKnD+yWEMM5b9BFNroowD4ifQN+vT3IcDBlsurA=;
-        b=a70/uYfQuTgr3k2xxALfpdE+QRYDRDG+ZiUFDfexK4i1vPMjSizPrsckDusIlSM2NG
-         T7qAMg7PPMCxqq7a+aXY5ieyiNlfovDQTxd9UidCc1aYqUdlgIcUCyhtxFnmmcxK+pNx
-         WQdaaReNYvBh6B5K1sM0xF07zKpLnKnOlXn5S3CbeZK1VXEZmkVUP6yhC0KLMBtVvh/D
-         T4Zk7m2JYWjRSDZz6ikVZQAOyqhd6od2U+NvqurxXGEwUV+Qi8LNxWavyY5Wa2tSWBwx
-         HHw9oKNuG/DpTQnCyGAxnRsxXhfnklfz/6OuCU7k1Iz0+/N94YNyNmtZN/5/THOnGJDH
-         YVpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763054458; x=1763659258;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ztuiaKnD+yWEMM5b9BFNroowD4ifQN+vT3IcDBlsurA=;
-        b=prZ0F7kI3eFKgW2WQFR/WheHEbuugeTkOZpinHPDfqHqibU/1wgINTvm/SIXCZ1k7Y
-         DDQ1m0ANR4VCufkf1EO/I29GkfHRlURUmSJJ+iyqR/zIsrt2fzuCGFZ1NS21DtQKXeJY
-         1HGezPwe3lQ9BjRKv5IAfN065u14TD6/QcmkYRIKiEWiAcvqGK5z5OWozhrgMeBXuSop
-         VmmG52U6Bi+r4e5VNjxSDb03eL2LsCSFSMtkVf4TTBwiqkZ2b2o29blQ1D1zz+uVJL4A
-         +ujpJpUd/Ycw65QSAdaTLZSdP1lU4cKhEym2JW5jTCQOG8Vur+Cb12UHIoLDGjM8VTtD
-         IH0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW9LHP1Y9U9AZsyUaP8PBx9M/GU7YE/k4P6m5TOr3P60rHyiLcbq0GhmHbzXwtV2q9Jwpk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx0Rx1ZF1nkq3NOA13IbuWZ7tqfrbjx7rZLcDLXuT+tm1NEVZvA
-	mkGL4qNBDVAEtmUCo1oU95pRqALjEN91ISKXJWf6oQm2ooDQk71rlMQQRG22kYth5exuRrvQl2p
-	8k16YwIJVRsaXxG8L+8HPDPm96Ka1+sY=
-X-Gm-Gg: ASbGnct53opvHkmWJG6JKuHE3tya4n2I8RJUZo0R39MJ+qe7iefXzkDzIt9FqzUnSMw
-	cxM5eSTJsJB90HlA7g9GDEOgGn5Q2Q5Z7CuOoMh2/3X1nRGClC2PWe6sE5hiMhEFxn/K4RYp7V6
-	8pa6MrPmb+qMmNRkmSDtjgaF1FFhVva5dvxl7PgFngvpeMJnRvqMNmh7gPsXLTBDef/lpBjCwP4
-	1/te0YlmA5RQ4oTem9uoIOkMT0euCJOovYLsNR63vI48lBL5tND4302VgFqA8bMrfmkCEHEVtMK
-	an+3krV2bLQ=
-X-Google-Smtp-Source: AGHT+IFexBzERRqEOeduYo/jq8Gjn9rqtZFbfZHoVzMREkhVjwVRm9s8zp4/bVSVMyhcijrbYEejga9scygQSLJEjjQ=
-X-Received: by 2002:a05:6000:651:b0:429:66bf:1475 with SMTP id
- ffacd0b85a97d-42b5935df1dmr187498f8f.3.1763054457715; Thu, 13 Nov 2025
- 09:20:57 -0800 (PST)
+	s=arc-20240116; t=1763055040; c=relaxed/simple;
+	bh=IsyoqrzoCOJp9rocvy9Us55RNkvt8nivVRqFjtj1iV8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=R+VcP6MDRRyDtpbG3JhkvPeIBt6k69JySB1OwmW0F4TY+8CK+RV5uYnwpzCqEDGcmTW/VTRg5oe04KRdaoKss9Frprogjj/whNh67wRdSgRNDcC2Mzb/DYFAKjVryF7FBB8AP85LYoTQWSXQ9D4ejBCOm+LQsw7d/snhiJqsBh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lT2zvH4V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEF18C113D0;
+	Thu, 13 Nov 2025 17:30:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763055039;
+	bh=IsyoqrzoCOJp9rocvy9Us55RNkvt8nivVRqFjtj1iV8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=lT2zvH4VWtI3w+IBNwgFo9yXYEW2ce1kOtA6vPEm9zkSMCG5a4ZWMVwEYgOwNdZ7T
+	 vFG6TKoHuO09SWT8oExIGO+A5zXSKZk1JOAmrTLGx/r9zJOlSKGXylNvrPQjiJuseT
+	 G5Fn3niOW/Dp2RCESlNeuL9PRWuyUmhchHO/ykbSapO63ZKZxp4WiKKUuEtCl7ZiYG
+	 Zs9pf7Z264ph0y8fEBHK5CRDuAhjF/lyTQ8sfFXrav3oXYvYAhAklVDVSkZzxzwSXV
+	 2Kcqpi3z9hMnrwGxD6G6JhzIp+P0v6p6BQi37MIWeSKi8y7IIDA0InRVTywUalLFl7
+	 IOvcvgVoOm4vw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAF5E3A54999;
+	Thu, 13 Nov 2025 17:30:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251106012835.260373-1-ihor.solodrai@linux.dev> <520bd6d8-b0a1-40f2-a674-b4c6ed02e254@oracle.com>
-In-Reply-To: <520bd6d8-b0a1-40f2-a674-b4c6ed02e254@oracle.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 13 Nov 2025 09:20:44 -0800
-X-Gm-Features: AWmQ_bkdhBLkmzEsx2PBtYFukuxhtCYUyvi6M7hnPybNPl0_2PlSHrkAKxPSNTg
-Message-ID: <CAADnVQJj6EcntgiAm6Kv8FJvP3tQcG=EzWt-uFuzszHtcw4gmg@mail.gmail.com>
-Subject: Re: [PATCH dwarves v4 0/3] btf_encoder: refactor emission of BTF funcs
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Ihor Solodrai <ihor.solodrai@linux.dev>, dwarves <dwarves@vger.kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Eduard <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v6 0/2] bpf: Free special fields when update
+ [lru_,]percpu_hash maps
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176305500875.938410.4075435196303800400.git-patchwork-notify@kernel.org>
+Date: Thu, 13 Nov 2025 17:30:08 +0000
+References: <20251105151407.12723-1-leon.hwang@linux.dev>
+In-Reply-To: <20251105151407.12723-1-leon.hwang@linux.dev>
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
+ song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ memxor@gmail.com, ameryhung@gmail.com, linux-kernel@vger.kernel.org,
+ kernel-patches-bot@fb.com
 
-On Thu, Nov 13, 2025 at 8:37=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
->
-> On 06/11/2025 01:28, Ihor Solodrai wrote:
-> > This series refactors a few functions that handle how BTF functions
-> > are emitted.
-> >
-> > v3->v4: Error handling nit from Eduard
-> > v2->v3: Add patch removing encoder from btf_encoder_func_state
-> >
-> > v3: https://lore.kernel.org/dwarves/20251105185926.296539-1-ihor.solodr=
-ai@linux.dev/
-> > v2: https://lore.kernel.org/dwarves/20251104233532.196287-1-ihor.solodr=
-ai@linux.dev/
-> > v1: https://lore.kernel.org/dwarves/20251029190249.3323752-2-ihor.solod=
-rai@linux.dev/
-> >
->
-> series applied to the next branch of
-> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/
+Hello:
 
-Same rant as before...
-Can we please keep it normal with all changes going to master ?
-This 'next' branch confused people in the past.
-I see no value in this 'next' thing.
-All development should happen in master and every developer
-should base their changes on top of it.
-Eventually the release happens out of master too when it's deemed stable.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Wed,  5 Nov 2025 23:14:05 +0800 you wrote:
+> In the discussion thread
+> "[PATCH bpf-next v9 0/7] bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for percpu maps"[1],
+> it was pointed out that missing calls to bpf_obj_free_fields() could
+> lead to memory leaks.
+> 
+> A selftest was added to confirm that this is indeed a real issue - the
+> refcount of BPF_KPTR_REF field is not decremented when
+> bpf_obj_free_fields() is missing after copy_map_value[,_long]().
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v6,1/2] bpf: Free special fields when update [lru_,]percpu_hash maps
+    https://git.kernel.org/bpf/bpf-next/c/6af6e49a76c9
+  - [bpf-next,v6,2/2] selftests/bpf: Add test to verify freeing the special fields when update [lru_,]percpu_hash maps
+    (no matching commit)
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
