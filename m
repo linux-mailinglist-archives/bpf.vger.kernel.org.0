@@ -1,73 +1,108 @@
-Return-Path: <bpf+bounces-74368-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74369-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A32AC57181
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 12:07:26 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E834C5719D
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 12:08:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C94FF4ED000
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 11:01:21 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D9A803501E2
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 11:04:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 129D433858A;
-	Thu, 13 Nov 2025 11:01:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9620833B958;
+	Thu, 13 Nov 2025 11:03:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LchsgSqo"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="k/vHGMR0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YuyFlFd5";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="chw1No4n";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZUKDf9Xf"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 078572DC33B
-	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 11:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C3AF3385B3
+	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 11:03:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763031676; cv=none; b=Zd6Xd41q4aGWnxjD+bbDhW3qaMvYB3l+2oxWnYMdhTB9RsX3lO4ELgrNKlgpaZpVvZ27kEuLnDm2aaH/BYUe6IKeOsrjBZukO9lY4t7zT2opoHvdSJ0uTUrGmz0X02jcNkL7GnT1EnEjbTiTQuoOa7AfaR2S8X41n7Y0SxJCAWg=
+	t=1763031830; cv=none; b=JEodB87Kges6G1K0JmAwR6x+/WG5MEI34/PDBkkVqnXgCFGbtCNyBm39LfpBouxSLku8Ybj2FSaMPK7mKdPvSx6LzBiZ1bvGWvMt40x5l2Rqv8TdsicX/17iJJUawrHP8nEZEyk5+OE0kqv09PagkOuLATdCm68ujhnaU7p0UWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763031676; c=relaxed/simple;
-	bh=dWZ57ctAvh6zYSImXe3rOe28g+rysrCLCpD2RZJukd8=;
+	s=arc-20240116; t=1763031830; c=relaxed/simple;
+	bh=7pvprqGCaxvYR0EsvIa4Xj239Fj5fSjRW6OvMYmHi1E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jpL90B565mZ49VIrFtwMDNLsR9Z03YQTSrY2PHBBSUhai4SRyMeKj9BydYv4ygjG8PwMHAvR9wfHcehFBDo/gX0D9/R2LIX98PMnOYAekvatgi6LXS7ovsnWXFqGqa72/Z/p3hZaHg/iakWOsca6Qr6ljP0Jf02amSRtSUqP/KU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LchsgSqo; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1763031672;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xkwPanruht+tVCaTSjqmyz1RwODzJHjVCA3D3SgXxaA=;
-	b=LchsgSqoNJ7vEhhJmhUh63ZdztjGEZBPYVRj6jLXC/N2TzovW8efjhGphSs/ghpaRWmfRd
-	HYPzfnZniRPb/hDIQLl1H1P901k5VlFo4VkwGFph/zvY2CYYxK18+tcnq96lVZ+kX1kS3M
-	MHXCujoVgiOfzgg3JdGyBR3QtJySot0=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-444-MaKrvlBuNZ-BTZZXknTIww-1; Thu,
- 13 Nov 2025 06:00:16 -0500
-X-MC-Unique: MaKrvlBuNZ-BTZZXknTIww-1
-X-Mimecast-MFC-AGG-ID: MaKrvlBuNZ-BTZZXknTIww_1763031614
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	 Content-Type:Content-Disposition:In-Reply-To; b=RxD0c7AWrRNZ688Il6z6wiK+O2A1Azxhl+IHFLkgbFGjR1NljssDtNDk9LN5higJO/4jjuUIpYx2LwLLXccKVqWt+urcuuusByfPPgxwY8ohJrpEhfj6Q0znOxVsGdnc3BzNfBYuTjZ3VhTshykCCr9AVJOLmP9uwC4EqR7NBsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=k/vHGMR0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YuyFlFd5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=chw1No4n; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZUKDf9Xf; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2B31418002F8;
-	Thu, 13 Nov 2025 11:00:07 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.82])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DD2DA18004A3;
-	Thu, 13 Nov 2025 11:00:02 +0000 (UTC)
-Date: Thu, 13 Nov 2025 18:59:57 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Stefan Metzmacher <metze@samba.org>
-Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-	Caleb Sander Mateos <csander@purestorage.com>,
-	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH 3/5] io_uring: bpf: extend io_uring with bpf struct_ops
-Message-ID: <aRW6LfJi63X7wbPm@fedora>
-References: <20251104162123.1086035-1-ming.lei@redhat.com>
- <20251104162123.1086035-4-ming.lei@redhat.com>
- <94f94f0e-7086-4f44-a658-9cb3b5496faf@samba.org>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D5F642126F;
+	Thu, 13 Nov 2025 11:03:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763031825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y/4XRvnt2+9/BGxrNjMgTCeqhd+ANIFzSSFsqPyLNwc=;
+	b=k/vHGMR0+PWvJeo+y7ipIqryMVC8Y8R6I6NPUSmyB+K51V7MF/VHE4nN7ZwTeW1b5ayDpM
+	MRnVV2ZD2yZeZw5fgLuwk4P3Dl42eR4QJBfM5COASPoQhtIG+BadzshiiewgPJBrOPFFRA
+	zfmyxU1dlEHKFY2cSlk/rdE2PNasg3M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763031825;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y/4XRvnt2+9/BGxrNjMgTCeqhd+ANIFzSSFsqPyLNwc=;
+	b=YuyFlFd5vJr90MC0cQWKSfwNZIDG1txChoSaNQSA2ddOh2ko5fi4FNollB9v2nk3STq8ov
+	xL9XXR/1w0m0EWDg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=chw1No4n;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZUKDf9Xf
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763031824; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y/4XRvnt2+9/BGxrNjMgTCeqhd+ANIFzSSFsqPyLNwc=;
+	b=chw1No4n9v1MzhzqfZtk7TG3kgcaPxaCvjAhmISTlsIK9U7XfUEUIIpLu14xyzV0raqdqW
+	+rm5EEfVil1cvgqm41jtmVXiPtm2Fr0AxIaD2iYOOU0wVarANNtcgALzcxfVeLcQBrJHMr
+	X6a8l2nZYKGNpC26dKQbPDjXd4OF/I0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763031824;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y/4XRvnt2+9/BGxrNjMgTCeqhd+ANIFzSSFsqPyLNwc=;
+	b=ZUKDf9XfjOZIOuC4/6r+5Q895+NgzMHhaQfiJ7D10yrMHAWhrmNDrp8CehJ+VAi2ICn4E5
+	BDQyJ5d6UCmH7GDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BD1C23EA61;
+	Thu, 13 Nov 2025 11:03:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id tT8yLhC7FWlsUwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 13 Nov 2025 11:03:44 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 47636A0976; Thu, 13 Nov 2025 12:03:44 +0100 (CET)
+Date: Thu, 13 Nov 2025 12:03:44 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Jeff Layton <jlayton@kernel.org>, Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 00/17] ns: header cleanups and initial namespace
+ reference count improvements
+Message-ID: <byhojbx5x73zxickqy4uje6fmcn3nuugau7afia6thsyomfnlx@exrz3jpwdfgs>
+References: <20251110-work-namespace-nstree-fixes-v1-0-e8a9264e0fb9@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,130 +111,109 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <94f94f0e-7086-4f44-a658-9cb3b5496faf@samba.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+In-Reply-To: <20251110-work-namespace-nstree-fixes-v1-0-e8a9264e0fb9@kernel.org>
+X-Rspamd-Queue-Id: D5F642126F
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	RCVD_COUNT_THREE(0.00)[3];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,toxicpanda.com,kernel.org,google.com,yhndnzj.com,in.waw.pl,0pointer.de,gmail.com,cyphar.com,cmpxchg.org,linutronix.de,zeniv.linux.org.uk,suse.cz,arndb.de];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.cz:email,suse.cz:dkim]
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -2.51
+X-Spam-Level: 
 
-On Thu, Nov 13, 2025 at 11:32:56AM +0100, Stefan Metzmacher wrote:
-> Hi Ming,
+On Mon 10-11-25 16:08:12, Christian Brauner wrote:
+> Cleanup the namespace headers by splitting them into types and helpers.
+> Better separate common namepace types and functions from namespace tree
+> types and functions.
 > 
-> > io_uring can be extended with bpf struct_ops in the following ways:
-> > 
-> > 1) add new io_uring operation from application
-> > - one typical use case is for operating device zero-copy buffer, which
-> > belongs to kernel, and not visible or too expensive to export to
-> > userspace, such as supporting copy data from this buffer to userspace,
-> > decompressing data to zero-copy buffer in Android case[1][2], or
-> > checksum/decrypting.
-> > 
-> > [1] https://lpc.events/event/18/contributions/1710/attachments/1440/3070/LPC2024_ublk_zero_copy.pdf
-> > 
-> > 2) extend 64 byte SQE, since bpf map can be used to store IO data
-> >     conveniently
-> > 
-> > 3) communicate in IO chain, since bpf map can be shared among IOs,
-> > when one bpf IO is completed, data can be written to IO chain wide
-> > bpf map, then the following bpf IO can retrieve the data from this bpf
-> > map, this way is more flexible than io_uring built-in buffer
-> > 
-> > 4) pretty handy to inject error for test purpose
-> > 
-> > bpf struct_ops is one very handy way to attach bpf prog with kernel, and
-> > this patch simply wires existed io_uring operation callbacks with added
-> > uring bpf struct_ops, so application can define its own uring bpf
-> > operations.
+> Fix the reference counts of initial namespaces so we don't do any
+> pointless cacheline ping-pong for them when we know they can never go
+> away. Add a bunch of asserts for both the passive and active reference
+> counts to catch any changes that would break it.
 > 
-> This sounds useful to me.
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+
+FWIW I've read the series and I like it. It looks like very nice cleanups.
+I don't feel *very* confident with this code so it isn't worth much but
+still feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+> Christian Brauner (17):
+>       ns: move namespace types into separate header
+>       nstree: decouple from ns_common header
+>       nstree: move nstree types into separate header
+>       nstree: add helper to operate on struct ns_tree_{node,root}
+>       nstree: switch to new structures
+>       nstree: simplify owner list iteration
+>       nstree: use guards for ns_tree_lock
+>       ns: make is_initial_namespace() argument const
+>       ns: rename is_initial_namespace()
+>       fs: use boolean to indicate anonymous mount namespace
+>       ipc: enable is_ns_init_id() assertions
+>       ns: make all reference counts on initial namespace a nop
+>       ns: add asserts for initial namespace reference counts
+>       ns: add asserts for initial namespace active reference counts
+>       pid: rely on common reference count behavior
+>       ns: drop custom reference count initialization for initial namespaces
+>       selftests/namespaces: fix nsid tests
 > 
-> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> > ---
-> >   include/uapi/linux/io_uring.h |   9 ++
-> >   io_uring/bpf.c                | 271 +++++++++++++++++++++++++++++++++-
-> >   io_uring/io_uring.c           |   1 +
-> >   io_uring/io_uring.h           |   3 +-
-> >   io_uring/uring_bpf.h          |  30 ++++
-> >   5 files changed, 311 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-> > index b8c49813b4e5..94d2050131ac 100644
-> > --- a/include/uapi/linux/io_uring.h
-> > +++ b/include/uapi/linux/io_uring.h
-> > @@ -74,6 +74,7 @@ struct io_uring_sqe {
-> >   		__u32		install_fd_flags;
-> >   		__u32		nop_flags;
-> >   		__u32		pipe_flags;
-> > +		__u32		bpf_op_flags;
-> >   	};
-> >   	__u64	user_data;	/* data to be passed back at completion time */
-> >   	/* pack this to avoid bogus arm OABI complaints */
-> > @@ -427,6 +428,13 @@ enum io_uring_op {
-> >   #define IORING_RECVSEND_BUNDLE		(1U << 4)
-> >   #define IORING_SEND_VECTORIZED		(1U << 5)
-> > +/*
-> > + * sqe->bpf_op_flags		top 8bits is for storing bpf op
-> > + *				The other 24bits are used for bpf prog
-> > + */
-> > +#define IORING_BPF_OP_BITS	(8)
-> > +#define IORING_BPF_OP_SHIFT	(24)
-> > +
-> >   /*
-> >    * cqe.res for IORING_CQE_F_NOTIF if
-> >    * IORING_SEND_ZC_REPORT_USAGE was requested
-> > @@ -631,6 +639,7 @@ struct io_uring_params {
-> >   #define IORING_FEAT_MIN_TIMEOUT		(1U << 15)
-> >   #define IORING_FEAT_RW_ATTR		(1U << 16)
-> >   #define IORING_FEAT_NO_IOWAIT		(1U << 17)
-> > +#define IORING_FEAT_BPF			(1U << 18)
-> >   /*
-> >    * io_uring_register(2) opcodes and arguments
-> > diff --git a/io_uring/bpf.c b/io_uring/bpf.c
-> > index bb1e37d1e804..8227be6d5a10 100644
-> > --- a/io_uring/bpf.c
-> > +++ b/io_uring/bpf.c
-> > @@ -4,28 +4,95 @@
-> >   #include <linux/kernel.h>
-> >   #include <linux/errno.h>
-> >   #include <uapi/linux/io_uring.h>
-> > +#include <linux/init.h>
-> > +#include <linux/types.h>
-> > +#include <linux/bpf_verifier.h>
-> > +#include <linux/bpf.h>
-> > +#include <linux/btf.h>
-> > +#include <linux/btf_ids.h>
-> > +#include <linux/filter.h>
-> >   #include "io_uring.h"
-> >   #include "uring_bpf.h"
-> > +#define MAX_BPF_OPS_COUNT	(1 << IORING_BPF_OP_BITS)
-> > +
-> >   static DEFINE_MUTEX(uring_bpf_ctx_lock);
-> >   static LIST_HEAD(uring_bpf_ctx_list);
-> > +DEFINE_STATIC_SRCU(uring_bpf_srcu);
-> > +static struct uring_bpf_ops bpf_ops[MAX_BPF_OPS_COUNT];
+>  fs/mount.h                                     |   3 +-
+>  fs/namespace.c                                 |   9 +-
+>  include/linux/ns/ns_common_types.h             | 196 ++++++++++++++++
+>  include/linux/ns/nstree_types.h                |  55 +++++
+>  include/linux/ns_common.h                      | 266 +++++-----------------
+>  include/linux/nstree.h                         |  38 ++--
+>  include/linux/pid_namespace.h                  |   3 +-
+>  init/version-timestamp.c                       |   2 +-
+>  ipc/msgutil.c                                  |   2 +-
+>  ipc/namespace.c                                |   3 +-
+>  kernel/cgroup/cgroup.c                         |   2 +-
+>  kernel/nscommon.c                              |  15 +-
+>  kernel/nstree.c                                | 304 ++++++++++++++-----------
+>  kernel/pid.c                                   |   2 +-
+>  kernel/pid_namespace.c                         |   2 +-
+>  kernel/time/namespace.c                        |   2 +-
+>  kernel/user.c                                  |   2 +-
+>  tools/testing/selftests/namespaces/nsid_test.c | 107 +++++----
+>  18 files changed, 576 insertions(+), 437 deletions(-)
+> ---
+> base-commit: c9255cbe738098e46c9125c6b409f7f8f4785bf6
+> change-id: 20251110-work-namespace-nstree-fixes-f23931a00ba2
 > 
-> This indicates to me that the whole system with all applications in all namespaces
-> need to coordinate in order to use these 256 ops?
-
-So far there is only 62 in-tree io_uring operation defined, I feel 256
-should be enough.
-
-> 
-> I think in order to have something useful, this should be per
-> struct io_ring_ctx and each application should be able to load
-> its own bpf programs.
-
-per-ctx requirement looks reasonable, and it shouldn't be hard to
-support.
-
-> 
-> Something that uses bpf_prog_get_type() based on a bpf_fd
-> like SIOCKCMATTACH in net/kcm/kcmsock.c.
-
-I considered per-ctx prog before, one drawback is the prog can't be shared
-among io_ring_ctx, which could waste memory. In my ublk case, there can be
-lots of devices sharing same bpf prog.
-
-
-
-thanks,
-Ming
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
