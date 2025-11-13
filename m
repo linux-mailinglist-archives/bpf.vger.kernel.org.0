@@ -1,106 +1,167 @@
-Return-Path: <bpf+bounces-74439-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74440-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CBCAC5A3B3
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 22:49:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C003C5A2F3
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 22:44:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2B4DD4EEF81
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 21:40:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEEB33B94AD
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 21:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684C0324B36;
-	Thu, 13 Nov 2025 21:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C62E324B38;
+	Thu, 13 Nov 2025 21:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MIHr7e5x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WG42Nn5x"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB020244670;
-	Thu, 13 Nov 2025 21:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3B13128AE;
+	Thu, 13 Nov 2025 21:43:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763070042; cv=none; b=c5WSygSL7hTN0bW6sKIQkb/8lQ9iPdX1sJDak/wN29Bquo2RXoH7WxQqWTpfWA/8n0P6XxaQhRQD+ATyX0baQ7lUan96dH8q79zmBEw6zcFrcn4Ek27Z1SvrEW/psg2ojyXdjTBjvnNz0tQgPCHqypJ3+1WZxoU03Tz2xtcjmQ0=
+	t=1763070181; cv=none; b=AoSvnv1xxDdkE+Ilxe4UStNOTDbzSqiS/nJcggpfhMHAkQczyQFsDy0QnV31h7ToBUJnytJohLt9IvEW2ViwWuy1PDKueOY7h2buiU8j2yLB1fHo5ULxyw3ECcNvvWyi/hHOFHxn/XdaZrPRCiAPhzG9bRRPtMdEQddvHhHUjCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763070042; c=relaxed/simple;
-	bh=CvzcH2D9TtcpWhWA42+if0rgeOPmOZeRHXxaeTWupCI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=OLfrjq+RB4h+3UuXsQbyQagJJTl+nuqMhIQAGgKY/4prebv1MQO6wEISI+7l/qr7F702LsA1JMV2RKb19j6Lam1ombxyixnMHr2OzepxpDJp5rtMds8PekK5F+mA2yOfLP7t8EuLu1AbHDPcVEvYWerR0VixY9KCnTcJ15ZUDFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MIHr7e5x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30EBFC2BCB1;
-	Thu, 13 Nov 2025 21:40:42 +0000 (UTC)
+	s=arc-20240116; t=1763070181; c=relaxed/simple;
+	bh=Sy8fSwsiCqo2MUBArmak9vO3BmeKFB1GLq51Nm5ahBM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tcMKOkNtMGR+mggB9sLXVmQ2GlEr0DWvzP7+pE0S1sWJEJAvNFHudqsA6RLXH73EGI1ThKsmZfh7vZZ6EEuB6oRIhFpCuKavgVBIl9Z7FIOpuGiVXcZ9zwrIHdGBXbvuQ4fL1rdDvbWgqLgGvhAGYakRVDy1tXxf0A93dj+4SSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WG42Nn5x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D536C16AAE;
+	Thu, 13 Nov 2025 21:42:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763070042;
-	bh=CvzcH2D9TtcpWhWA42+if0rgeOPmOZeRHXxaeTWupCI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=MIHr7e5x0wHu/EVCxWB6ZOTBFZbIwJ4yI4RHXYOsqUntu1d/lXhiKkqNK6pIKIbil
-	 GicAcvRKwvPNhzvxtOInTYm7iBk1YqVvLQ5H8luIrN71owBQ2lV9Bi53M20wLKjHcG
-	 vUfWE14KH6pCuDYoeldL/0ruHUGHsQdKAuyDL6SaUDpvCybWJzLKDFHHOb80aGnnH5
-	 VMCWqGOzvO78Z6Y11RSgcBIbdAThilnl94w3YYG3XP2/qU0daIDQ+4NmolHBXlNPwb
-	 xyMV3LdsF4fEIatjcy0/XQ6R8r0peUlpaNOqprMOnWIopeoPn+OpODwPkWl4zJxsZv
-	 9bdm2zURDYFTQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33FAA3A549BD;
-	Thu, 13 Nov 2025 21:40:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1763070181;
+	bh=Sy8fSwsiCqo2MUBArmak9vO3BmeKFB1GLq51Nm5ahBM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WG42Nn5xugxIcRbkicAE1uHbMQehF5xPJaqAPNy6PlDOD9UEHUp4dnBgY8PZJ+INi
+	 CiQQF2bn9eNj+KsNQsP4hi0Jt9BMddX7qbZ1k8PLI/khh8Y8yMIy/X8bvJOodeimyz
+	 lOsveQQYc3ynBzw2ABMaGp3RM2SyArXIYzE4jaaUUHtVzihlH64HVrXeRDYfuqQs6j
+	 b/ZfO6A1+Vr1j39eo9F51h98nGCyukXGDqX+Urb2F2EhYyq5UElf40K0TZG1mmsL6k
+	 pydPJzGfC7xXZVt5BrKbg6+uYLOgcObpJKUGIOVYdGJpY2bYab1LuJ2u6No5eEeteE
+	 cbjQFRuvdJrBw==
+Date: Thu, 13 Nov 2025 13:42:56 -0800
+From: Namhyung Kim <namhyung@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	"Jose E. Marchesi" <jemarch@gnu.org>,
+	Beau Belgrave <beaub@linux.microsoft.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>,
+	Kees Cook <kees@kernel.org>, Carlos O'Donell <codonell@redhat.com>
+Subject: Re: [PATCH v16 4/4] perf tools: Merge deferred user callchains
+Message-ID: <aRZQ4PMG0zmoF-rQ@google.com>
+References: <20250908175319.841517121@kernel.org>
+ <20250908175430.639412649@kernel.org>
+ <20251002134938.756db4ef@gandalf.local.home>
+ <20251024130203.GC3245006@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v5 0/3] mptcp: Fix conflicts between MPTCP and sockmap
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176307001100.1015375.9798268991526020883.git-patchwork-notify@kernel.org>
-Date: Thu, 13 Nov 2025 21:40:11 +0000
-References: <20251111060307.194196-1-jiayuan.chen@linux.dev>
-In-Reply-To: <20251111060307.194196-1-jiayuan.chen@linux.dev>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: mptcp@lists.linux.dev, matttbe@kernel.org, martineau@kernel.org,
- geliang@kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, cpaasch@apple.com,
- fw@strlen.de, peter.krystad@linux.intel.com, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20251024130203.GC3245006@noisy.programming.kicks-ass.net>
 
-Hello:
+Hello,
 
-This series was applied to bpf/bpf.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+Sorry for the delay.  And I'm happy that the kernel part is merge to the
+tip tree! :)
 
-On Tue, 11 Nov 2025 14:02:49 +0800 you wrote:
-> Overall, we encountered a warning [1] that can be triggered by running the
-> selftest I provided.
+On Fri, Oct 24, 2025 at 03:02:03PM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 02, 2025 at 01:49:38PM -0400, Steven Rostedt wrote:
+> > On Mon, 08 Sep 2025 13:53:23 -0400
+> > Steven Rostedt <rostedt@kernel.org> wrote:
+> > 
+> > > +static int evlist__deliver_deferred_samples(struct evlist *evlist,
+> > > +					    const struct perf_tool *tool,
+> > > +					    union  perf_event *event,
+> > > +					    struct perf_sample *sample,
+> > > +					    struct machine *machine)
+> > > +{
+> > > +	struct deferred_event *de, *tmp;
+> > > +	struct evsel *evsel;
+> > > +	int ret = 0;
+> > > +
+> > > +	if (!tool->merge_deferred_callchains) {
+> > > +		evsel = evlist__id2evsel(evlist, sample->id);
+> > > +		return tool->callchain_deferred(tool, event, sample,
+> > > +						evsel, machine);
+> > > +	}
+> > > +
+> > > +	list_for_each_entry_safe(de, tmp, &evlist->deferred_samples, list) {
+> > > +		struct perf_sample orig_sample;
+> > 
+> > orig_sample is not initialized and can then contain junk.
+
+Yep.
+
+> > 
+> > > +
+> > > +		ret = evlist__parse_sample(evlist, de->event, &orig_sample);
+
+But here you call evlist__parse_sample() and evsel__parse_sample() which
+should initialize the sample properly.
+
+
+> > > +		if (ret < 0) {
+> > > +			pr_err("failed to parse original sample\n");
+> > > +			break;
+> > > +		}
+> > > +
+> > > +		if (sample->tid != orig_sample.tid)
+> > > +			continue;
+> > > +
+> > > +		if (event->callchain_deferred.cookie == orig_sample.deferred_cookie)
+> > > +			sample__merge_deferred_callchain(&orig_sample, sample);
+> > 
+> > The sample__merge_deferred_callchain() initializes both
+> > orig_sample.deferred_callchain and the callchain. But now that it's not
+> > being called, it can cause the below free to happen with junk as the
+> > callchain. This needs:
+> > 
+> > 		else
+> > 			orig_sample.deferred_callchain = false;
 > 
-> sockmap works by replacing sk_data_ready, recvmsg, sendmsg operations and
-> implementing fast socket-level forwarding logic:
-> 1. Users can obtain file descriptors through userspace socket()/accept()
->    interfaces, then call BPF syscall to perform these replacements.
-> 2. Users can also use the bpf_sock_hash_update helper (in sockops programs)
->    to replace handlers when TCP connections enter ESTABLISHED state
->   (BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB/BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB)
-> 
-> [...]
+> Ah, so I saw crashes from here and just deleted both free()s and got on
+> with things ;-)
 
-Here is the summary with links:
-  - [net,v5,1/3] mptcp: disallow MPTCP subflows from sockmap
-    https://git.kernel.org/bpf/bpf/c/fbade4bd08ba
-  - [net,v5,2/3] net,mptcp: fix proto fallback detection with BPF
-    https://git.kernel.org/bpf/bpf/c/c77b3b79a92e
-  - [net,v5,3/3] selftests/bpf: Add mptcp test with sockmap
-    https://git.kernel.org/bpf/bpf/c/cb730e4ac1b4
+I don't understand how it can have the garbage.  But having the else
+part would be safer.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thanks,
+Namhyung
 
-
+> > > +
+> > > +		evsel = evlist__id2evsel(evlist, orig_sample.id);
+> > > +		ret = evlist__deliver_sample(evlist, tool, de->event,
+> > > +					     &orig_sample, evsel,> machine); +
+> > > +		if (orig_sample.deferred_callchain)
+> > > +			free(orig_sample.callchain);
+> > > +
+> > > +		list_del(&de->list);
+> > > +		free(de);
+> > > +
+> > > +		if (ret)
+> > > +			break;
+> > > +	}
+> > > +	return ret;
+> > > +}
+> > 
+> > -- Steve
 
