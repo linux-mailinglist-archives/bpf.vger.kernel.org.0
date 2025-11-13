@@ -1,174 +1,135 @@
-Return-Path: <bpf+bounces-74356-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74357-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39697C5645D
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 09:30:06 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D443C56430
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 09:27:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EF033ABC04
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 08:23:27 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 359A8346F49
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 08:25:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 231A732F773;
-	Thu, 13 Nov 2025 08:23:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66A46330B21;
+	Thu, 13 Nov 2025 08:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kxUaeeNe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z6+m9Kgg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A47DDD2
-	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 08:23:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943C9DDD2
+	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 08:24:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763022203; cv=none; b=KQKcexaL+zori2dUWujK2T/syuyT3wrVBkgOSW0aCaww4Q7hNfRzlC4SGvoZfZq1Nw2DpJksFbb9dnDInILGx/Q7XULhtdvLCNlhA3se4yrK8FURQS6Z0j5khMtJ0hNzYjTWiCT0/YruSY8nYIxjeKjXfWQIhuTeM5LFxG/HnEI=
+	t=1763022300; cv=none; b=ADrXEQp3+N0dxYn227tOahRk/sdh1VE5Q/74fAujy3LtQUlS5BafTHC9sRK5IEbPzrlCVoRWBwwpbZiG/vbUTcAo4zvTDvFU+bu3NMOBbG1kQvxd7qcRSdj94GN3TncdvOTxoJrjuBjtYCkdJth+wy4N6+HKYri11Xa2IaajDDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763022203; c=relaxed/simple;
-	bh=K8xFaUM45Rc2eym91RaAXlCY2N2WZaUBd8uJ7LstWEE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LzeR+vgswmJFmqrO/fae1mOGhboSBdZ+KngZw0Q2kNXOoMsczsvtaX+J9rkWDzmRCU6pyd2ykhDyQG7HR7FhE+J52NpAfaNYJd4sH+xH/8zM+gyEtaV9WLhnGMklbvaeheeIlOWYHqq/KqThJNvBhoqufGHkonyV3gzzItiClbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kxUaeeNe; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-640a3317b89so882152a12.0
-        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 00:23:21 -0800 (PST)
+	s=arc-20240116; t=1763022300; c=relaxed/simple;
+	bh=pXLpg1P+NszGM8RZ98JaLiDfJk2ejEBhbCKCWa8Wy4o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g5vltt6ZnzIAmaHGPFLqDuGyC42S1ATfelTYYH0gNca+Pkr814+dh0Gsqlezr2q+Rkib0bfwB/b92R+iMa32i1ZAJwP9C9jvjnJPz4qA2R7Q+4DBrWQ3EK0PaVNgAqCiWSUs6FJSQ+BajBvElprfpKxxbaaB6oBlSaGQRx+ZbUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z6+m9Kgg; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2953ad5517dso6473975ad.0
+        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 00:24:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1763022200; x=1763627000; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wTQvzXen4jMzNUuA8MVAmEa0VA06kmSQN8VHIBNXvGI=;
-        b=kxUaeeNeExHl3WAd1TvEh91k10qtuvvRJMd8yOG9gzQ9bO2TSl4Ifane5BKippkudj
-         oAUaUVWWsRPQgM/NbVb4GtjaadA4P2yiNWcZ644qiBVJisa62Btv0qaizaM2qhR23RfH
-         XTZgME6Bhgrd5PR+oWN1JL0blIu+JSqF020RJgtBECVsQmshRf8S0FAnmxemmBf4qZEh
-         iVVOhrb2781BplPLE7bF76WXLBt45yqp754yeZRRcPfKMGZrsRAQg0HVgwlVmyEIJRNn
-         Hx4E1RqhaJzU1xe7Ygb5sY6iVzIhSpH0LmHjxbctYtw7NrelHWzNdELTr/dXpkZstXnc
-         Q96w==
+        d=gmail.com; s=20230601; t=1763022299; x=1763627099; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=E29I21iTFgmKy+IbzDTMyuzYhhbOKWzxr4diSFn7ScU=;
+        b=Z6+m9Kgg4ATLxOnbYbxDYu3dpm05yxztNZa8oQ1pGTD3kk9DR5YRcxn4TcSSbC3Nuq
+         2kI8VJTcTVuLj2N3P8x1sXf/zYvzJfCR1nCx2SIFBRTLNQBbu9NX/XaXUxR2xR/RG2eY
+         WmfjJoEtBkzxY/G57J7RkhV4FaTfHYswK8/U8CFBvHeu0HWNjTTrvP95P4vZ4G5udc/6
+         rTHN3A93A+CfRaX0UrD0MjqQ9intF/RYDGB2+khUaZ+9W95LU0kIzlTEi1VmnnstO+sF
+         6k7WhvHAhs1JepKhG+Z4igiU9J8ZxfWXfpFH+hIBRMX3TO+t5d5ObsSOJZblvx6m+9nC
+         8qMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763022200; x=1763627000;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wTQvzXen4jMzNUuA8MVAmEa0VA06kmSQN8VHIBNXvGI=;
-        b=c24Vs0HdQAzfiLXNXy+JzIFAP3SlatQfLfJs9QEpBL8fdiWR0Piu/jEfGjp9cd9oBi
-         0z9zbiFvLsngQVe9bi5MJecRCxzf/PX+NniXyhkBrdgHCJHGVzch7xzP1C2aVjuOltH2
-         ovDrO/6YNaMLccxM3NPh6fApa2vIWZxPvsq8UW+IGcxKA04HQw4FRUTAxRy2VlQttyn1
-         l0Ii5qMwyNPaDss5+tkt946Pw7DXs65nxJ7xX/n48txpEKOoTLVJmqg5Snz13V/YcDTJ
-         CFPDv3asNfYqZ+uqS6/ycX3020xrBuCwFNaPF5d5yeV8c+cKc5VCwcmjrrmb3yKfVfNO
-         a5Cw==
-X-Gm-Message-State: AOJu0Yw/TyVpUc5gLdnLVNynDCTSDsDPlMeB9h002VQ94oF5A0inDpTC
-	VPlCX+wR0H3GkdL2B2abO6ytSBNSYXCtBRvv2lBbHe7RvSQaUI8aB/XNpIfSUl4atg==
-X-Gm-Gg: ASbGnctIe/uAT1ZMUd6ZWhoR4N8zAY8sq2ticB2+5t0qwPuOp0ScYTvLyt89aXsugh6
-	Ssd3wSKe2Fm1gq/MT0fF8KwsO/kgLNoptYlNO2Du+BmfuglkfTwYkVlLhbF5iz4rzVcIU0iBABz
-	dZh+arQfQ9UNHm3xKoewvK/5j4mLQYXYRwMW2DUjB20O9IwgSIMAoO442lTKPo2HquaVZiIHkHm
-	qxZW1S9T0Pb2hx+bFVklC5TehNKeUQ1KaKXM41XfJXvHjOqi6IHWsZU5ml5Xz+amK7aNjJ0grVD
-	vNHHkgbcmRCC6GaNc4t1Q2+ejuVHLPFwEaUFeMjqIFXofKdFpkZUKn1heUMMEjrJloV1J/vxvvb
-	UC4hP7MR+LdT52tWQPPvuuSsZEENYQZuA16fT/PtEQzUoVRA6OHqkzsVUPTltIa5aOePFSaPV87
-	k2EZcOEEN32Mb8ykWbMk4STWiQn8OHdT49P0pF4zQ6SX+iFYyPGOmFjZz2rzP1jS9HkS0=
-X-Google-Smtp-Source: AGHT+IHxLcxl6enluDjUhPJsAplPafUkDZt5tKRVDtuSiNBwI+frJndkXJ8DTdDUqpLWQOcZT2C0Dw==
-X-Received: by 2002:a17:907:1c25:b0:b6d:2c75:3c57 with SMTP id a640c23a62f3a-b7331a970demr622477466b.39.1763022200060;
-        Thu, 13 Nov 2025 00:23:20 -0800 (PST)
-Received: from google.com (166.173.90.34.bc.googleusercontent.com. [34.90.173.166])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b734fad800dsm116711566b.29.2025.11.13.00.23.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Nov 2025 00:23:18 -0800 (PST)
-Date: Thu, 13 Nov 2025 08:23:15 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        d=1e100.net; s=20230601; t=1763022299; x=1763627099;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E29I21iTFgmKy+IbzDTMyuzYhhbOKWzxr4diSFn7ScU=;
+        b=k78mtnhs6xUci9C79CtkxtIS9hX6ERKBjYrE9BH8SmQfkh8Zy+KGsyT18Z2ToZgmke
+         LhygqvOgV6fxYm8zxSKfDiuW0CmBnxHydtcS/esGjsXOftyHopEL2pvT8HvTZz1fMuHZ
+         ToQX+Psa9u0xFY+oHWKcOBP0jRujFbytgu35PNZBmXfMTyUPyZXI2Jn3iJB1sS6bIRWB
+         iYJg4A4Kgzmm5QhkirlSqijJtM7jvdLLAI02DDFmvLU8q2HbI1qjX/+dM9yxZLJKQE81
+         8PJ6XUDu9FlX7qyB7zMFky7OV8oNkHMKdvtZ2GOYk6xN19ZyxTtCGLr5Vcr1WySJkveZ
+         LR+w==
+X-Forwarded-Encrypted: i=1; AJvYcCWmBXWoLp196bZarrwX2CEs9Wnt/uw8Io/ugRbxLJQovNd5L4uxI6WcFtz2LIXMYoe5elg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwPkMWy7JfTBfnNMMh+DyZUhzbSBWZgfiN2UXoqDi4mCzNWHKXm
+	mDp/WOUpD1K3pCCVvZ5jgMMCZzilMfyfb5WiYeXTo44/VPKDLRvynmwh
+X-Gm-Gg: ASbGnctVSQcBRDpDKQZIifSUYctc3kLWyHjOAy5FazdJUgb6FF1Gc9Fi4LXGb+3yiWx
+	BQ+kKdUO1dinZPHXPg2XyFuVKPnDw3aNlX4LxBnl9sxMuMkpKav0U3CN78U2jo2bRQxir2gQH5y
+	pNX4ZubHmpiFQqZy9aaf/0cxvPGuGC5niqNvY7aPZ496c4KN+xO86lvBooM0+POCI+jGHRMhyJZ
+	QApMe5miMcqM33n/cRBtryZLOzNJzilLaNUvGe/5MBSsl6V+ODJm24NHElfCZEDcI2ggL/rxN5f
+	vHcaojhzLV22GpEncnvN+tcXsmtwNwerrT2y6tA4o6BSfvJhAO0IXj9ND+I7kzqCCMBitzYvqnr
+	7LyoywYLrwA1+m7AJjZksf+LUFx6SflYpd36R3a/KDAdhwRjdR8HVxAyy+mbRePJ5aVri+PHu6y
+	N0bROwqBSo67M77ZJ/gqQQ1GQad5f2wz7VLlO2Dxw=
+X-Google-Smtp-Source: AGHT+IG6G8bRlTc+7WY76hJfvUTnoph43OEFDRSFR5ryUFHLWUxOfe6SWPhcIlsJWUCZ9XOhzdKiwg==
+X-Received: by 2002:a17:903:110f:b0:298:34b:492c with SMTP id d9443c01a7336-2984ee1df94mr76201095ad.54.1763022298884;
+        Thu, 13 Nov 2025 00:24:58 -0800 (PST)
+Received: from localhost.localdomain ([103.246.102.164])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2b1055sm16332635ad.59.2025.11.13.00.24.52
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Thu, 13 Nov 2025 00:24:58 -0800 (PST)
+From: Alessandro Decina <alessandro.d@gmail.com>
+To: netdev@vger.kernel.org
+Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	ohn Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: retry bpf_map_update_elem() when
- E2BIG is returned
-Message-ID: <aRWVc1tne5vNffqU@google.com>
-References: <20251112083153.3125631-1-mattbobrowski@google.com>
- <CAHzjS_s=+qgkt0RRFqvVORhWBt8jsFS8RDy4Kq1Vwr8fPRzfag@mail.gmail.com>
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Tirthendu Sarkar <tirthendu.sarkar@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	bpf@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	linux-kernel@vger.kernel.org,
+	Alessandro Decina <alessandro.d@gmail.com>
+Subject: [PATCH net v3 0/1] i40e: xsk: advance next_to_clean on status descriptors
+Date: Thu, 13 Nov 2025 19:24:37 +1100
+Message-Id: <20251113082438.54154-1-alessandro.d@gmail.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHzjS_s=+qgkt0RRFqvVORhWBt8jsFS8RDy4Kq1Vwr8fPRzfag@mail.gmail.com>
 
-On Wed, Nov 12, 2025 at 05:00:50PM -0800, Song Liu wrote:
-> On Wed, Nov 12, 2025 at 12:32 AM Matt Bobrowski
-> <mattbobrowski@google.com> wrote:
-> >
-> > Executing the test_maps binary on platforms with extremely high core
-> > counts may cause intermittent assertion failures in
-> > test_update_delete() (called via test_map_parallel()). This can occur
-> > because bpf_map_update_elem() under some circumstances (specifically
-> > in this case while performing bpf_map_update_elem() with BPF_NOEXIST
-> > on a BPF_MAP_TYPE_HASH with its map_flags set to BPF_F_NO_PREALLOC)
-> > can return an E2BIG error code i.e.
-> >
-> > error -7 7
-> > tools/testing/selftests/bpf/test_maps.c:#: void test_update_delete(unsigned int, void *): Assertion `err == 0' failed.
-> > tools/testing/selftests/bpf/test_maps.c:#: void
-> > __run_parallel(unsigned int, void (*)(unsigned int, void *), void *): Assertion `status == 0' failed.
-> >
-> > As it turns out, is_map_full() which is called from alloc_htab_elem()
-> > can take on a conservative approach when htab->use_percpu_counter is
-> > true (which is the case here because the percpu_counter is used when a
-> > BPF_MAP_TYPE_HASH is created with its map_flags set to
-> > BPF_F_NO_PREALLOC). This conservative approach approach prioritizes
-> 
-> s/approach approach/approach
-> 
-> AFAICT checkpatch.pl also warns double "approach", as well as line exceed
-> 75 character above.
+Hello,
 
-ACK. Will respin with nits addressed at some point today.
+As suggested by Maciej, submitting v3 which makes i40e_clean_rx_irq and
+i40e_clean_rx_irq_zc use similar logic and a shared function
+i40e_inc_ntp_ntc() to advance next_to_process and next_to_clean when
+handling status descriptors. 
 
-> > preventing over-allocation and potential issues that could arise from
-> > possibly exceeding htab->map.max_entries in highly concurrent
-> > environments, even if it means slightly under-utilizing the htab map's
-> > capacity.
-> >
-> > Given that bpf_map_update_elem() from test_update_delete() can return
-> > E2BIG, update can_retry() such that it also accounts for the E2BIG
-> > error code (specifically only when running with map_flags being set to
-> > BPF_F_NO_PREALLOC). The retry loop will allow the global count
-> > belonging to the percpu_counter to become synchronized and better
-> > reflect the current htab map's capacity.
-> >
-> > Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
-> 
-> Other than the nitpick above, this looks good to me.
-> 
-> Acked-by: Song Liu <song@kernel.org>
-> 
-> 
-> > ---
-> >  tools/testing/selftests/bpf/test_maps.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-> > index 3fae9ce46ca9..ccc5acd55ff9 100644
-> > --- a/tools/testing/selftests/bpf/test_maps.c
-> > +++ b/tools/testing/selftests/bpf/test_maps.c
-> > @@ -1399,7 +1399,8 @@ static void test_map_stress(void)
-> >  static bool can_retry(int err)
-> >  {
-> >         return (err == EAGAIN || err == EBUSY ||
-> > -               (err == ENOMEM && map_opts.map_flags == BPF_F_NO_PREALLOC));
-> > +               ((err == ENOMEM || err == E2BIG) &&
-> > +                map_opts.map_flags == BPF_F_NO_PREALLOC));
-> >  }
-> >
-> >  int map_update_retriable(int map_fd, const void *key, const void *value, int flags, int attempts,
-> > --
-> > 2.51.2.1041.gc1ab5b90ca-goog
-> >
+I've left the rest of the i40e_clean_rx_irq logic unchanged or this
+patch would snowball. I think it'd be nice to change the function to
+work with local variables and update the rx_ring only at the end like
+_zc, but seems out of scope for this patch. 
+
+Changes since v2:
+ * use common utility function i40e_inc_ntp_ntc to advance indexes
+
+Alessandro Decina (1):
+  i40e: xsk: advance next_to_clean on status descriptors
+
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 33 ++++++++++++-------
+ .../ethernet/intel/i40e/i40e_txrx_common.h    |  2 ++
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 17 ++++++----
+ 3 files changed, 34 insertions(+), 18 deletions(-)
+
+
+base-commit: 96a9178a29a6b84bb632ebeb4e84cf61191c73d5
+-- 
+2.43.0
+
 
