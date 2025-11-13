@@ -1,184 +1,174 @@
-Return-Path: <bpf+bounces-74355-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74356-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32764C561E2
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 08:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39697C5645D
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 09:30:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C29A3A5BEB
-	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 07:51:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EF033ABC04
+	for <lists+bpf@lfdr.de>; Thu, 13 Nov 2025 08:23:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D11732ED5A;
-	Thu, 13 Nov 2025 07:51:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 231A732F773;
+	Thu, 13 Nov 2025 08:23:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V4a7/pke"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kxUaeeNe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F308329382
-	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 07:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A47DDD2
+	for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 08:23:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763020270; cv=none; b=sdr7su4IT5UrlMOnYp8A+vRhMcRDmD1EAkHRc8eOUuURELbTXQCoksFkq1aIOL7WSeEFMoC/HLdn4dEhOAgUpf6g6PxNJcCUf1NfLg72KgKtggFvLoEGek0wiFCMk/mur2GIGnmR3ODxuoCKdZ6KEBhA7sbCL+MsRLOwEzSq37E=
+	t=1763022203; cv=none; b=KQKcexaL+zori2dUWujK2T/syuyT3wrVBkgOSW0aCaww4Q7hNfRzlC4SGvoZfZq1Nw2DpJksFbb9dnDInILGx/Q7XULhtdvLCNlhA3se4yrK8FURQS6Z0j5khMtJ0hNzYjTWiCT0/YruSY8nYIxjeKjXfWQIhuTeM5LFxG/HnEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763020270; c=relaxed/simple;
-	bh=9cETCkpZu+73CbYMxqUO2XKUMgco4Nbh9FZ9O75Z47M=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JCsi/2hZ3jWUDpOjWVaqTkYd/f85KmdgObb7KaWkcjBt6aHK37iVOoJadznFmaWPdrzoSxQnByEUcT/Xza9T21DYImD9WULEbKcAmFZjIkabADMVTRmHFVpMjlRiZ/hoDtjs+TKzrhNbcLh6+9DyTJfek2DwU0/Y3DLL8no/0IM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V4a7/pke; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-641677916b5so957142a12.0
-        for <bpf@vger.kernel.org>; Wed, 12 Nov 2025 23:51:07 -0800 (PST)
+	s=arc-20240116; t=1763022203; c=relaxed/simple;
+	bh=K8xFaUM45Rc2eym91RaAXlCY2N2WZaUBd8uJ7LstWEE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LzeR+vgswmJFmqrO/fae1mOGhboSBdZ+KngZw0Q2kNXOoMsczsvtaX+J9rkWDzmRCU6pyd2ykhDyQG7HR7FhE+J52NpAfaNYJd4sH+xH/8zM+gyEtaV9WLhnGMklbvaeheeIlOWYHqq/KqThJNvBhoqufGHkonyV3gzzItiClbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kxUaeeNe; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-640a3317b89so882152a12.0
+        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 00:23:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763020266; x=1763625066; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=z4ie9nWkncZ3cv8xdi5OzMmGRGX86lWEjgjZYnVw6xo=;
-        b=V4a7/pketx4PI1pk3qXO7rHoShCutUZFeGIPk34JACA3z5JKMz2SNcBP2sw9SxSAlq
-         Er00k7/k7x+X44VB+r3tIA2Xftd1jafD77H8vqJbFLTC31Gu+vZTcI8qMylcJjXg8AdY
-         2fEBA3gW17qlSLqbmATSpceBocin6eRZ+5ObhzcPEeW6fOoQBy16BkLlGj65ckQp49tt
-         AB1sB3wqPUeHhQfqG4yjvroXdVzIWXgRwT7qZUR9EzXnxxNrGGNbf5tJ2tLaP2C6Pn61
-         AvZU5ju9/drUNr+5tQzQz8HD5obsA0w+fLx8dgzQ/jBETMuIbhpuP4q43gTBG/zmMIIu
-         uJMg==
+        d=google.com; s=20230601; t=1763022200; x=1763627000; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wTQvzXen4jMzNUuA8MVAmEa0VA06kmSQN8VHIBNXvGI=;
+        b=kxUaeeNeExHl3WAd1TvEh91k10qtuvvRJMd8yOG9gzQ9bO2TSl4Ifane5BKippkudj
+         oAUaUVWWsRPQgM/NbVb4GtjaadA4P2yiNWcZ644qiBVJisa62Btv0qaizaM2qhR23RfH
+         XTZgME6Bhgrd5PR+oWN1JL0blIu+JSqF020RJgtBECVsQmshRf8S0FAnmxemmBf4qZEh
+         iVVOhrb2781BplPLE7bF76WXLBt45yqp754yeZRRcPfKMGZrsRAQg0HVgwlVmyEIJRNn
+         Hx4E1RqhaJzU1xe7Ygb5sY6iVzIhSpH0LmHjxbctYtw7NrelHWzNdELTr/dXpkZstXnc
+         Q96w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763020266; x=1763625066;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z4ie9nWkncZ3cv8xdi5OzMmGRGX86lWEjgjZYnVw6xo=;
-        b=AXneqpFXeuWntzPG3WEiO/6ae7zY4Kq79/YegCxpHGsfRi6AKRzFVxH6AxJggFE6yc
-         kCog71mcHx5nASav6Y7WppsMIDQk8hGFp19+hlAHhNa1GPjHkOaVyqNbkb/Yx4Ev7+Wh
-         7zR0f48qXd3q+l5QIHZdZrnhg5gySl1JIzszQwZOw1FmKt9jS29XBme+l5Esg8coXwR6
-         hbEBv9+AtS1GWws+I1W9kk3csisl4vgJAC3ms639dnZOAhjMhETnstW4W04mo47vSO3o
-         OiDB2yIG4tZExvrONM5YrAc0EAiE0RT2Uyc+780Bw5lV9n1O0NChd+rpiQLlUo6GaiCn
-         VYGw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJombLQV4ga7m5MuNRY1EhMpFE/YOGR2RHBh41tfAeLngoOv9RJYMKwFFi+JZHEKTgUgI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQkLwcO7n1Bs1c9QyJ25Sb1wOsyDhGXBp/dYCH8NzdKrO4la7A
-	sv90KZia37Qsz6cMLwzmE4/gIvhWCzKwL6pika2bMoksKIfl5H5a7m7I
-X-Gm-Gg: ASbGncusMYKyBSbHtr53IQPtun0x8+ibOtfIm2FW5+ZtL3AhJ7NPEsZvBDOoXlLC5Us
-	euK9mmXM1GtpbC58ftRreEadUSQNke+UCaUhoeh+dt9p/kt0ySlOVxeR5KJdCiNyrNng43NZh76
-	LLMzLR0zeRZJLId2Z1BU7kLN9CiuprNdoO7kxY+3PKLpDI/6TNUyw1IQJtUY0FTMIsO/iF2Z01p
-	3ooMPPFadchABaMdRmoMhX2ipd2j42T7S/Rxd4eXld9VUCTEBKhpEdj7bggl9zOD/xTLC0pvAyY
-	6qkfp9t+x55kBnaER7v2Bz41oQJIaRRDP37R1uChEgu/ERuXumhK8zAGLvu0Q+kc3C4H6LYoPo9
-	2O/gUpEw0N3mv1I92XWwwhk8ijubuAg7iwUyvDYd3S1QhbpNCsY7OVHJJNUINe8dAaPZuMxYzGN
-	Zoxu/XP6BnfV7y9n3NsVfJwBQ=
-X-Google-Smtp-Source: AGHT+IHVrkl5ftPUCc2idnw2qC4J8BRUimnWx6JJY1s/gQB+ln/cURHHPYk7pTtS8ycN6UhNj5km9g==
-X-Received: by 2002:a17:906:794e:b0:b3d:98fa:b3fe with SMTP id a640c23a62f3a-b7331b307e2mr650559466b.63.1763020266209;
-        Wed, 12 Nov 2025 23:51:06 -0800 (PST)
-Received: from krava (37-188-200-155.red.o2.cz. [37.188.200.155])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b7359bfb238sm13421466b.14.2025.11.12.23.51.03
+        d=1e100.net; s=20230601; t=1763022200; x=1763627000;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wTQvzXen4jMzNUuA8MVAmEa0VA06kmSQN8VHIBNXvGI=;
+        b=c24Vs0HdQAzfiLXNXy+JzIFAP3SlatQfLfJs9QEpBL8fdiWR0Piu/jEfGjp9cd9oBi
+         0z9zbiFvLsngQVe9bi5MJecRCxzf/PX+NniXyhkBrdgHCJHGVzch7xzP1C2aVjuOltH2
+         ovDrO/6YNaMLccxM3NPh6fApa2vIWZxPvsq8UW+IGcxKA04HQw4FRUTAxRy2VlQttyn1
+         l0Ii5qMwyNPaDss5+tkt946Pw7DXs65nxJ7xX/n48txpEKOoTLVJmqg5Snz13V/YcDTJ
+         CFPDv3asNfYqZ+uqS6/ycX3020xrBuCwFNaPF5d5yeV8c+cKc5VCwcmjrrmb3yKfVfNO
+         a5Cw==
+X-Gm-Message-State: AOJu0Yw/TyVpUc5gLdnLVNynDCTSDsDPlMeB9h002VQ94oF5A0inDpTC
+	VPlCX+wR0H3GkdL2B2abO6ytSBNSYXCtBRvv2lBbHe7RvSQaUI8aB/XNpIfSUl4atg==
+X-Gm-Gg: ASbGnctIe/uAT1ZMUd6ZWhoR4N8zAY8sq2ticB2+5t0qwPuOp0ScYTvLyt89aXsugh6
+	Ssd3wSKe2Fm1gq/MT0fF8KwsO/kgLNoptYlNO2Du+BmfuglkfTwYkVlLhbF5iz4rzVcIU0iBABz
+	dZh+arQfQ9UNHm3xKoewvK/5j4mLQYXYRwMW2DUjB20O9IwgSIMAoO442lTKPo2HquaVZiIHkHm
+	qxZW1S9T0Pb2hx+bFVklC5TehNKeUQ1KaKXM41XfJXvHjOqi6IHWsZU5ml5Xz+amK7aNjJ0grVD
+	vNHHkgbcmRCC6GaNc4t1Q2+ejuVHLPFwEaUFeMjqIFXofKdFpkZUKn1heUMMEjrJloV1J/vxvvb
+	UC4hP7MR+LdT52tWQPPvuuSsZEENYQZuA16fT/PtEQzUoVRA6OHqkzsVUPTltIa5aOePFSaPV87
+	k2EZcOEEN32Mb8ykWbMk4STWiQn8OHdT49P0pF4zQ6SX+iFYyPGOmFjZz2rzP1jS9HkS0=
+X-Google-Smtp-Source: AGHT+IHxLcxl6enluDjUhPJsAplPafUkDZt5tKRVDtuSiNBwI+frJndkXJ8DTdDUqpLWQOcZT2C0Dw==
+X-Received: by 2002:a17:907:1c25:b0:b6d:2c75:3c57 with SMTP id a640c23a62f3a-b7331a970demr622477466b.39.1763022200060;
+        Thu, 13 Nov 2025 00:23:20 -0800 (PST)
+Received: from google.com (166.173.90.34.bc.googleusercontent.com. [34.90.173.166])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b734fad800dsm116711566b.29.2025.11.13.00.23.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Nov 2025 23:51:05 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 13 Nov 2025 08:51:00 +0100
-To: Masami Hiramatsu <mhiramat@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>, Will Deacon <will@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-	Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+        Thu, 13 Nov 2025 00:23:18 -0800 (PST)
+Date: Thu, 13 Nov 2025 08:23:15 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mahe Tardy <mahe.tardy@gmail.com>
-Subject: Re: [BUG/RFC 1/2] arm64/ftrace,bpf: Fix partial regs after
- bpf_prog_run
-Message-ID: <aRWN5EnjEekA5VE4@krava>
-References: <20251105125924.365205-1-jolsa@kernel.org>
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	ohn Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH bpf-next] selftests/bpf: retry bpf_map_update_elem() when
+ E2BIG is returned
+Message-ID: <aRWVc1tne5vNffqU@google.com>
+References: <20251112083153.3125631-1-mattbobrowski@google.com>
+ <CAHzjS_s=+qgkt0RRFqvVORhWBt8jsFS8RDy4Kq1Vwr8fPRzfag@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20251105125924.365205-1-jolsa@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHzjS_s=+qgkt0RRFqvVORhWBt8jsFS8RDy4Kq1Vwr8fPRzfag@mail.gmail.com>
 
-ping, thanks
+On Wed, Nov 12, 2025 at 05:00:50PM -0800, Song Liu wrote:
+> On Wed, Nov 12, 2025 at 12:32 AM Matt Bobrowski
+> <mattbobrowski@google.com> wrote:
+> >
+> > Executing the test_maps binary on platforms with extremely high core
+> > counts may cause intermittent assertion failures in
+> > test_update_delete() (called via test_map_parallel()). This can occur
+> > because bpf_map_update_elem() under some circumstances (specifically
+> > in this case while performing bpf_map_update_elem() with BPF_NOEXIST
+> > on a BPF_MAP_TYPE_HASH with its map_flags set to BPF_F_NO_PREALLOC)
+> > can return an E2BIG error code i.e.
+> >
+> > error -7 7
+> > tools/testing/selftests/bpf/test_maps.c:#: void test_update_delete(unsigned int, void *): Assertion `err == 0' failed.
+> > tools/testing/selftests/bpf/test_maps.c:#: void
+> > __run_parallel(unsigned int, void (*)(unsigned int, void *), void *): Assertion `status == 0' failed.
+> >
+> > As it turns out, is_map_full() which is called from alloc_htab_elem()
+> > can take on a conservative approach when htab->use_percpu_counter is
+> > true (which is the case here because the percpu_counter is used when a
+> > BPF_MAP_TYPE_HASH is created with its map_flags set to
+> > BPF_F_NO_PREALLOC). This conservative approach approach prioritizes
+> 
+> s/approach approach/approach
+> 
+> AFAICT checkpatch.pl also warns double "approach", as well as line exceed
+> 75 character above.
 
-jirka
+ACK. Will respin with nits addressed at some point today.
 
-On Wed, Nov 05, 2025 at 01:59:23PM +0100, Jiri Olsa wrote:
-> hi,
-> Mahe reported issue with bpf_override_return helper not working
-> when executed from kprobe.multi bpf program on arm.
+> > preventing over-allocation and potential issues that could arise from
+> > possibly exceeding htab->map.max_entries in highly concurrent
+> > environments, even if it means slightly under-utilizing the htab map's
+> > capacity.
+> >
+> > Given that bpf_map_update_elem() from test_update_delete() can return
+> > E2BIG, update can_retry() such that it also accounts for the E2BIG
+> > error code (specifically only when running with map_flags being set to
+> > BPF_F_NO_PREALLOC). The retry loop will allow the global count
+> > belonging to the percpu_counter to become synchronized and better
+> > reflect the current htab map's capacity.
+> >
+> > Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
 > 
-> The problem seems to be that on arm we use alternate storage for
-> pt_regs object that is passed to bpf_prog_run and if any register
-> is changed (which is the case of bpf_override_return) it's not
-> propagated back to actual pt_regs object.
+> Other than the nitpick above, this looks good to me.
 > 
-> The change below seems to fix the issue, but I have no idea if
-> that's proper fix for arm, thoughts?
-> 
-> I'm attaching selftest to actually test bpf_override_return helper
-> functionality, because currently we only test that we are able to
-> attach a program with it, but not the override itself.
-> 
-> thanks,
-> jirka
+> Acked-by: Song Liu <song@kernel.org>
 > 
 > 
-> ---
->  arch/arm64/include/asm/ftrace.h | 11 +++++++++++
->  include/linux/ftrace.h          |  3 +++
->  kernel/trace/bpf_trace.c        |  1 +
->  3 files changed, 15 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
-> index ba7cf7fec5e9..ad6cf587885c 100644
-> --- a/arch/arm64/include/asm/ftrace.h
-> +++ b/arch/arm64/include/asm/ftrace.h
-> @@ -157,6 +157,17 @@ ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs *regs)
->  	return regs;
->  }
->  
-> +static __always_inline void
-> +ftrace_partial_regs_fix(const struct ftrace_regs *fregs, struct pt_regs *regs)
-> +{
-> +	struct __arch_ftrace_regs *afregs = arch_ftrace_regs(fregs);
-> +
-> +	if (afregs->pc != regs->pc) {
-> +		afregs->pc = regs->pc;
-> +		afregs->regs[0] = regs->regs[0];
-> +	}
-> +}
-> +
->  #define arch_ftrace_fill_perf_regs(fregs, _regs) do {		\
->  		(_regs)->pc = arch_ftrace_regs(fregs)->pc;			\
->  		(_regs)->regs[29] = arch_ftrace_regs(fregs)->fp;		\
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index 7ded7df6e9b5..4cb1315522bb 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -205,6 +205,9 @@ ftrace_partial_regs(struct ftrace_regs *fregs, struct pt_regs *regs)
->  	return &arch_ftrace_regs(fregs)->regs;
->  }
->  
-> +static __always_inline void
-> +ftrace_partial_regs_fix(struct ftrace_regs *fregs, struct pt_regs *regs) { }
-> +
->  #endif /* !CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS || CONFIG_HAVE_FTRACE_REGS_HAVING_PT_REGS */
->  
->  #ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index a795f7afbf3d..7b5768ced9b3 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -2564,6 +2564,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
->  	old_run_ctx = bpf_set_run_ctx(&run_ctx.session_ctx.run_ctx);
->  	err = bpf_prog_run(link->link.prog, regs);
->  	bpf_reset_run_ctx(old_run_ctx);
-> +	ftrace_partial_regs_fix(fregs, bpf_kprobe_multi_pt_regs_ptr());
->  	rcu_read_unlock();
->  
->   out:
-> -- 
-> 2.51.1
-> 
+> > ---
+> >  tools/testing/selftests/bpf/test_maps.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+> > index 3fae9ce46ca9..ccc5acd55ff9 100644
+> > --- a/tools/testing/selftests/bpf/test_maps.c
+> > +++ b/tools/testing/selftests/bpf/test_maps.c
+> > @@ -1399,7 +1399,8 @@ static void test_map_stress(void)
+> >  static bool can_retry(int err)
+> >  {
+> >         return (err == EAGAIN || err == EBUSY ||
+> > -               (err == ENOMEM && map_opts.map_flags == BPF_F_NO_PREALLOC));
+> > +               ((err == ENOMEM || err == E2BIG) &&
+> > +                map_opts.map_flags == BPF_F_NO_PREALLOC));
+> >  }
+> >
+> >  int map_update_retriable(int map_fd, const void *key, const void *value, int flags, int attempts,
+> > --
+> > 2.51.2.1041.gc1ab5b90ca-goog
+> >
 
