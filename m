@@ -1,98 +1,66 @@
-Return-Path: <bpf+bounces-74455-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFDB5C5BA1A
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 07:53:34 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2A92C5BAAA
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 08:04:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D42F44232A4
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 06:49:38 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E50C74F2441
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 07:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC6E2F39D4;
-	Fri, 14 Nov 2025 06:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 152042E4274;
+	Fri, 14 Nov 2025 07:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PTgee5cC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jrkdr4yo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C0A220F5D
-	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 06:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B0E1F91E3;
+	Fri, 14 Nov 2025 07:00:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763102975; cv=none; b=nI1Xb0ZbP9AByxRhgmex9lnwadBbnmU8/yj6BqIwS1qljCsfEOJ0uYt4Dl9HhBRG0RV5eJYsLage1zOY5A85YfU4if29xRB1rvKASJThtXHUnyFFrK+YOXIBjE2GCgRI5ZgIYHo4c6O7DH7NwRJzJ9sVKbV8YOty7J2y863M13k=
+	t=1763103621; cv=none; b=uwuRWST7bEPYHPUZPIMkh5pBVAROVm5zeRMDIh/0rO3CKyoR8bspOE7PqL5j8gcEBrR4aj74+0PDz+OCFbm9RT6/Mk4NvsqAiy1hLpGB3foy87Ui9k2y9WQGLSp0qhMixHJy2xpJcx0RMLN/ZArlb74REq921ZGVZ37tF2IgtKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763102975; c=relaxed/simple;
-	bh=JSE/oS9CAZGvd5rzA4CQnkZVj/6bzRf90ev/Zw+qB2U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k9fNNFL+XISkQEl53kOC1HrApP8XPC8xuA75jMbikcGfseooQrC8LZy6TJ3axcuFZ7omZNgI/aI/ETbF33ZZGtlPDgbIzVqbHEryXe9fJiO9HpOjkcTLDcYpXOto8btXsWmh1YlDiIuxLr1baB1G0nnrzEoK4eLRaK3bAkL4vDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PTgee5cC; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-29812589890so20546495ad.3
-        for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 22:49:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763102972; x=1763707772; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iKvtS8zNPbBhND72za3ddTz84FeeQznesMDJ57+V13Y=;
-        b=PTgee5cC1iNjyb8GT7En07Nf9ISF0T8v7MpFc6W+8pYBr15r1PEfwyJDXR5mzun/bz
-         yLmrXstNmRueipndnVa1SiALV+gcXVxr9WLu0VMpAJIt9isrKl3mgMhPh1RSwsQHsbIF
-         kPOoShGsb8dyo+nf2pPeD7L1Ah0E8FiDKyRFXDxt2+WPWVC2QsDbs4SmZQNVQQrNQxgp
-         jB5B+LNpEqvNnOAxqyeelldZhYKBleaHGyPl9fPhquWb5J0VOaFJUYslcyowucGFdW/U
-         NsM+P6enlKZ2ZoT+7qufWhlBdqHLY0Gl3H+UeMbAEqCOGNGMatDlcT2/IHoCFFKPfTU6
-         wQ/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763102972; x=1763707772;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iKvtS8zNPbBhND72za3ddTz84FeeQznesMDJ57+V13Y=;
-        b=GShDgBPH4vTWO2gPjWn7kRATdtMwyWAUTcy66ogG3Wlc3U+Nf/giKcuCPZXUxqw6IW
-         U8DTJu5SV/VLKo4+FMxrVhbiwMWuImIQbCqIBP71TRTuogaTcribK9UuBMY/lJT74eFP
-         OHwLlmp+XGElHgcYf2Ivz38oios69VuC9ioyX8pK1cn+STvre4a8M2Jt4TyA+QqMy6u5
-         PwfxRWECJV3o4GN70x3xYOude3QwMDutxgXXvN3NOhmdrCO1vGL6O9xMblmLQbY3Pzmt
-         owAVMEQnZ6zerXKTZL1Ei1Gr9tO5tFQrfyxmZ/PEC3iLjUN2XBTkd6zbhtEGl8j6mDUP
-         PlRA==
-X-Forwarded-Encrypted: i=1; AJvYcCWtwgKzwC2iEDQdrWBLs+trfIQUfzrTPN7Rlu6b6GddvlyczORlfVCrDtPwAVVboXHeQgg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzEoQxEezK4333neAQJQm5rp2yj3cJdOW8j4Xns0zJQpEc75wUs
-	WNoWGfkhf+33hV6TJnegaC0BKc9wEzpqC4EG3eny9qoqp5s4z2DlHd3Y
-X-Gm-Gg: ASbGnct/I1S+g/Z9vMHpxrG9NqHjGXSVbUyZC42cWIxtXDkHjCxcgN8ug4MQBMd1Ism
-	+FAZkSs5IVkIlGfvlQP+ic+C2aSEQYBED+UUtbNx0ji3rWBQW1xH9dEBcZh9CBmETAJJH/diJks
-	vebaz9nk5iL95ehvOFz466YcupXn5gYru5CbJ/IaajfZZVJB9Hlplep39yrYJtPhk9I2aK+ps3L
-	ikTQXIWsNz54mcTN2GZ2Lsm7lcQyUpz9HtgnruSG8BR0jXDRymfFmp9PwiTeRB6pdRNuVNLcUC/
-	39PWMSy/i4w77hm64kTtOckgSHJSgJc+dX4F5Q7V9/PMRTgzddhuYyKGDB/NqQ/C/H5bfL5+jdf
-	GFjjQWCt8sFxhKRoEQvdwA0INAL+BNvHrEmPwMbRLYBGpfIw8kDohY1NyIpSlpLWOxDiDGRF8f5
-	AXysZf4AfbxfhX/lwQ
-X-Google-Smtp-Source: AGHT+IGkKh2kbL3kBbYsTBEIKFPMIHVI3BnGOx8dSxRlWjUI8hUMMhPyqzc3c/DDAYwX2WeHF159xw==
-X-Received: by 2002:a17:902:e5c3:b0:295:596f:84ef with SMTP id d9443c01a7336-2986a72e380mr20356825ad.31.1763102972503;
-        Thu, 13 Nov 2025 22:49:32 -0800 (PST)
-Received: from chandna.localdomain ([106.222.228.139])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2346dasm45771085ad.7.2025.11.13.22.49.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Nov 2025 22:49:31 -0800 (PST)
-From: Sahil Chandna <chandna.sahil@gmail.com>
-To: yonghong.song@linux.dev,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bigeasy@linutronix.de,
+	s=arc-20240116; t=1763103621; c=relaxed/simple;
+	bh=ISwBolgxx7hbnB3Y8sXW5Udjn4UVs3WolZP3+PcKh9E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SFd61oHEykBDml/M8LyP6ubXvr7KA6fljFPM5qfvPBGtXcvC61DVM5p0lKDALxpV0WIjfR9fDtllKPRld8/KNcstJGPmvNEv4GBGwhruGw/8plevfTDhAyNFXtEEjOJZbG4+aAeczJI61duKHypvu9Po7sDNYXR4CK6mrdOfIPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jrkdr4yo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C85E4C4CEFB;
+	Fri, 14 Nov 2025 07:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763103620;
+	bh=ISwBolgxx7hbnB3Y8sXW5Udjn4UVs3WolZP3+PcKh9E=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Jrkdr4yovuwHfBaiqq6cH8Fp9P2fRQM+yJhg2+ZqjPr9BZulmbx78TSz8K0chGKtS
+	 GR/mHxqBqNYce2zp4UfoadV7jfxAuRV7kC9a47F8SgY21n6R+4YcgRHkCSjxGfTTWV
+	 2QNsSIZEMbh7IZmnnc7N7d2YTVVLUkjxnxmfPxpkRSD+rm8mRyMLA89kz7WF+qHbZx
+	 W5ard6xcaTcp4B/G6/H1QVZWTJ01soJcxEcB7vx1/y6tohTBwyQ682iCEKqy0iDv48
+	 MUC1hyyNGXmemGYXc1EXdLvFwJcXz7GDBf/Qmr9+SLMk87dI78sNZIrHqI8aX/xKxn
+	 ixvfBDnA9TkKQ==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	James Clark <james.clark@linaro.org>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-trace-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Cc: Sahil Chandna <chandna.sahil@gmail.com>,
-	syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com
-Subject: [PATCH bpf-next v3] bpf: prevent nesting overflow in bpf_try_get_buffers
-Date: Fri, 14 Nov 2025 12:19:22 +0530
-Message-ID: <20251114064922.11650-1-chandna.sahil@gmail.com>
-X-Mailer: git-send-email 2.50.1
+Subject: [PATCHSET v3 0/5] perf tools: Add deferred callchain support
+Date: Thu, 13 Nov 2025 23:00:13 -0800
+Message-ID: <20251114070018.160330-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,73 +69,105 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-bpf_try_get_buffers() returns one of multiple per-CPU buffers based on a
-per-CPU nesting counter. This mechanism expects that buffers are not
-endlessly acquired before being returned. migrate_disable() ensures that a
-task remains on the same CPU, but it does not prevent the task from being
-preempted by another task on that CPU.
+Hello,
 
-Without disabled preemption, a task may be preempted while holding a
-buffer, allowing another task to run on same CPU and acquire an 
-additional buffer. Several such preemptions can cause the per-CPU
-nest counter to exceed MAX_BPRINTF_NEST_LEVEL and trigger the warning in
-bpf_try_get_buffers(). Adding preempt_disable()/preempt_enable() around
-buffer acquisition and release prevents this task preemption and
-preserves the intended bounded nesting behavior.
+This is a new version of deferred callchain support as the kernel part
+is merged to the tip tree.  Actually this is based on Steve's work (v16).
 
-Reported-by: syzbot+b0cff308140f79a9c4cb@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/68f6a4c8.050a0220.1be48.0011.GAE@google.com/
-Fixes: 4223bf833c849 ("bpf: Remove preempt_disable in bpf_try_get_buffers")
-Suggested-by: Yonghong Song <yonghong.song@linux.dev>
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Sahil Chandna <chandna.sahil@gmail.com>
----
-changes since v2 :
-Updated commit message as per suggestion from Sebastian
+  https://lore.kernel.org/r/20250908175319.841517121@kernel.org
 
-changes since v1:
-- Remove additional call to preempt_enable() which may lead to
-inconsistent preempt state if invoked without preempt_disable() called.
-- Correct tags as suggested by Sebastian
+This version has the following changes.
 
-Link to v2:https://lore.kernel.org/all/20251111170628.410641-1-chandna.sahil@gmail.com/
-Link to v1:https://lore.kernel.org/all/20251109173648.401996-1-chandna.sahil@gmail.com/
+* handle new attr.defer_output to generate deferred callchains
+* fix crash when cookies don't match  (Steven)
+* disable merging for perf inject
+* fix missing feature detection bug
+* symbolize merged callchains properly
 
-Testing:
-Tested using syzkaller reproducers from:
-  [1] https://syzkaller.appspot.com/bug?extid=1f1fbecb9413cdbfbef8
-  [2] https://syzkaller.appspot.com/bug?extid=b0cff308140f79a9c4cb
+Here's an example session.
 
-Validation was done on PREEMPT_FULL and PREEMPT_RT configurations.
----
- kernel/bpf/helpers.c | 3 +++
- 1 file changed, 3 insertions(+)
+  $ perf record -g pwd
+  /home/namhyung/project/linux
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.010 MB perf.data (29 samples) ]
+  
+  $ perf evlist -v
+  cpu/cycles/P: type: 0 (PERF_TYPE_HARDWARE), size: 136, config: 0 (PERF_COUNT_HW_CPU_CYCLES),
+  { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CALLCHAIN|PERIOD,
+  read_format: ID|LOST, disabled: 1, inherit: 1, mmap: 1, comm: 1, freq: 1, enable_on_exec: 1,
+  task: 1, sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1, build_id: 1,
+  defer_callchain: 1, defer_output: 1
+  
+  $ perf script
+  ...
+  pwd    2312   121.163435:     249113 cpu/cycles/P:
+          ffffffff845b78d8 __build_id_parse.isra.0+0x218 ([kernel.kallsyms])
+          ffffffff83bb5bf6 perf_event_mmap+0x2e6 ([kernel.kallsyms])
+          ffffffff83c31959 mprotect_fixup+0x1e9 ([kernel.kallsyms])
+          ffffffff83c31dc5 do_mprotect_pkey+0x2b5 ([kernel.kallsyms])
+          ffffffff83c3206f __x64_sys_mprotect+0x1f ([kernel.kallsyms])
+          ffffffff845e6692 do_syscall_64+0x62 ([kernel.kallsyms])
+          ffffffff8360012f entry_SYSCALL_64_after_hwframe+0x76 ([kernel.kallsyms])
+              7f18fe337fa7 mprotect+0x7 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+              7f18fe330e0f _dl_sysdep_start+0x7f (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+              7f18fe331448 _dl_start_user+0x0 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+  ...
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index eb25e70e0bdc..3879eb42a681 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -777,9 +777,11 @@ int bpf_try_get_buffers(struct bpf_bprintf_buffers **bufs)
- {
- 	int nest_level;
- 
-+	preempt_disable();
- 	nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
- 	if (WARN_ON_ONCE(nest_level > MAX_BPRINTF_NEST_LEVEL)) {
- 		this_cpu_dec(bpf_bprintf_nest_level);
-+		preempt_enable();
- 		return -EBUSY;
- 	}
- 	*bufs = this_cpu_ptr(&bpf_bprintf_bufs[nest_level - 1]);
-@@ -792,6 +794,7 @@ void bpf_put_buffers(void)
- 	if (WARN_ON_ONCE(this_cpu_read(bpf_bprintf_nest_level) == 0))
- 		return;
- 	this_cpu_dec(bpf_bprintf_nest_level);
-+	preempt_enable();
- }
- 
- void bpf_bprintf_cleanup(struct bpf_bprintf_data *data)
+  $ perf script --no-merge-callchains
+  ...
+  pwd    2312   121.163435:     249113 cpu/cycles/P:
+          ffffffff845b78d8 __build_id_parse.isra.0+0x218 ([kernel.kallsyms])
+          ffffffff83bb5bf6 perf_event_mmap+0x2e6 ([kernel.kallsyms])
+          ffffffff83c31959 mprotect_fixup+0x1e9 ([kernel.kallsyms])
+          ffffffff83c31dc5 do_mprotect_pkey+0x2b5 ([kernel.kallsyms])
+          ffffffff83c3206f __x64_sys_mprotect+0x1f ([kernel.kallsyms])
+          ffffffff845e6692 do_syscall_64+0x62 ([kernel.kallsyms])
+          ffffffff8360012f entry_SYSCALL_64_after_hwframe+0x76 ([kernel.kallsyms])
+                 b00000006 [unknown] ([unknown])
+      
+  pwd    2312   121.163447: DEFERRED CALLCHAIN
+              7f18fe337fa7 mprotect+0x7 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+              7f18fe330e0f _dl_sysdep_start+0x7f (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+              7f18fe331448 _dl_start_user+0x0 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+  ...
+
+The code is available at 'perf/defer-callchain-v3' branch in
+
+  git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (5):
+  tools headers UAPI: Sync linux/perf_event.h for deferred callchains
+  perf tools: Minimal DEFERRED_CALLCHAIN support
+  perf record: Enable defer_callchain for user callchains
+  perf script: Display PERF_RECORD_CALLCHAIN_DEFERRED
+  perf tools: Merge deferred user callchains
+
+ tools/include/uapi/linux/perf_event.h     | 21 +++++-
+ tools/lib/perf/include/perf/event.h       |  8 ++
+ tools/perf/Documentation/perf-script.txt  |  5 ++
+ tools/perf/builtin-inject.c               |  1 +
+ tools/perf/builtin-report.c               |  1 +
+ tools/perf/builtin-script.c               | 92 +++++++++++++++++++++++
+ tools/perf/util/callchain.c               | 29 +++++++
+ tools/perf/util/callchain.h               |  3 +
+ tools/perf/util/event.c                   |  1 +
+ tools/perf/util/evlist.c                  |  1 +
+ tools/perf/util/evlist.h                  |  2 +
+ tools/perf/util/evsel.c                   | 43 +++++++++++
+ tools/perf/util/evsel.h                   |  1 +
+ tools/perf/util/machine.c                 |  1 +
+ tools/perf/util/perf_event_attr_fprintf.c |  2 +
+ tools/perf/util/sample.h                  |  2 +
+ tools/perf/util/session.c                 | 85 +++++++++++++++++++++
+ tools/perf/util/tool.c                    |  2 +
+ tools/perf/util/tool.h                    |  4 +-
+ 19 files changed, 302 insertions(+), 2 deletions(-)
+
 -- 
-2.50.1
+2.52.0.rc1.455.g30608eb744-goog
 
 
