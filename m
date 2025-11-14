@@ -1,116 +1,99 @@
-Return-Path: <bpf+bounces-74531-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74532-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86344C5E64F
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 18:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C846C5EB46
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 19:00:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 054713612EB
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 16:39:24 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2678C3C643C
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 17:12:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A9F334C01;
-	Fri, 14 Nov 2025 16:39:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC2FE28A704;
+	Fri, 14 Nov 2025 17:12:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c7adpCz5"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8145032D451;
-	Fri, 14 Nov 2025 16:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4C632A3D8;
+	Fri, 14 Nov 2025 17:12:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763138355; cv=none; b=buEUeSsFsDpycXFTPi9nmRWUWuVwvQ2Ups4Lf2EQQawbracwB+QWMtkFTgYbEGBe6/kE8nP5lN1Q0wzkb2R7kg7canhFYEu5BfndHxaupZBkvx0VLdKlnLEpn39Q4RGvJL3CqBoUzwtkUMeMlTfm/N2AWpyUy2HmqoP5uX5FOR0=
+	t=1763140350; cv=none; b=oZ8IxxsePAxiQ+x8Vd807lFFObkD1BA0glX8/ddymAqEPRBKVN18HmyxCGhQPe6MM9yDibmw8Dr42vyjxfjX/7VDGPqvJ2X06JHa3qa0lqtAjH3JQNcrOcxvJ4WFnhdFT5NaZ9VBirAkjE1dOCN4mQqj2q7GIVB9CbPy79ZpmEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763138355; c=relaxed/simple;
-	bh=RwQ5mBu41FTdmMcHeQQ+BL2LOJuuxM/eMSPYCuTNbro=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=G9tFwlvZAdOzLkBpycd9MfnMf/p2vJ1+vMNVEVq0Ml29gs9U0DL/juvG624jV+eR/NdV/ZbMZq2yBBQHzJ0Jzs+Pj3QZqrpWjwXdbzL/cOg4NeQ2PCbLYzKc0h/azxWe1Y19Fekm3aOxlVFF80giJBnOz0fC+PDvVcHXKJ4xQ0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay01.hostedemail.com (Postfix) with ESMTP id B62054BB7A;
-	Fri, 14 Nov 2025 16:39:10 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf06.hostedemail.com (Postfix) with ESMTPA id C86BC2000E;
-	Fri, 14 Nov 2025 16:39:06 +0000 (UTC)
-Date: Fri, 14 Nov 2025 11:39:24 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
- song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mhiramat@kernel.org,
- mark.rutland@arm.com, mathieu.desnoyers@efficios.com, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next 2/7] x86/ftrace: implement
- DYNAMIC_FTRACE_WITH_JMP
-Message-ID: <20251114113924.723f6fde@gandalf.local.home>
-In-Reply-To: <20251114092450.172024-3-dongml2@chinatelecom.cn>
-References: <20251114092450.172024-1-dongml2@chinatelecom.cn>
-	<20251114092450.172024-3-dongml2@chinatelecom.cn>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1763140350; c=relaxed/simple;
+	bh=9ITbYM0wOomqZyJzEoKV5L4gvbymEyxm24AJEqTWAMQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=E8Hh2UjgBhp2bS3HnDrZhgAOqOZfnsiRXDGzj60wtuEetdL93qCO0uomrwgC9NRUzbFHybCkZPY1XFOH58fDFjze2iQZyVmWRmbXfHiHatvbMt8LTvE8C4psPwDVZ6Gcj10FXBNBp/XP9znEDdVjgQRRaQ9sj/J4gucK9T0ry1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c7adpCz5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5072C4CEFB;
+	Fri, 14 Nov 2025 17:12:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763140349;
+	bh=9ITbYM0wOomqZyJzEoKV5L4gvbymEyxm24AJEqTWAMQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=c7adpCz5ELKvyvMGDuIxWhiuep6KvY/OKRt+c/AQ1l2r2z85hLHBEPGjtEKEuIe1I
+	 LYuVEn6VqKxP4/epuCWDDM4+XkA2NryN6GU4ThA36fgIG6X3clagX+4l9aRmKQVf7d
+	 wVI+YjxO+thx7cLpVzXL7yXja8mcpUrdt6foz4I+ADamHXsoGNhwt3GFz64u+jr/2H
+	 VrSdgYBtCV0kfjaIdFqWavVTCyHs3NjLT5wR3gL4jmxXwH7PfqY+qCfN0N+vcjizRQ
+	 pzNhjxgDt/4ucG5uBqJzNc/CYfTYf959CxBI4qjPe78T8ud8wH9kxbAQPCk6YbyAoc
+	 fxbXkd51/7LoQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E763A7859C;
+	Fri, 14 Nov 2025 17:11:59 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: gk8zf381pa1b9txskaj34u6h7wx7umx3
-X-Rspamd-Server: rspamout07
-X-Rspamd-Queue-Id: C86BC2000E
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/iIms73HQALe8U/aBD2Grsb4qbU8gNfcY=
-X-HE-Tag: 1763138346-303519
-X-HE-Meta: U2FsdGVkX19m7moKREZT9FFaq0yf9jFEsjW2WiULS003bXnsqnpbm+OWYyE6jZFyj6J7XmTXcZpBbU24ZtxQ7omUnDM7ivOJz84Nye1S76CdrHx2s0ikAvMmHYQQqWLVd2L38r141v7igke7loz8c/PM6WwAdwTD/+Tgfswwkt1VRlMet5bPzccu9iymq5LGQTUTCmc2sPkZlUdiVzrePpnwlwRJKo+pNlgEm9pXS4888k8+PMllOXuBjRJhAV5WqE95yvSet7CqxEX+RoVzQcDtB3+HB9xVjGb1pS2Zw8EtiwldJnas8SuldQ+uiqf7XxK8EgiNo1uKNkJ70+YxRAChcj1SHixo
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net/bpf] bpf: add bpf_prog_run_data_pointers()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176314031800.1740925.6385057833740804551.git-patchwork-notify@kernel.org>
+Date: Fri, 14 Nov 2025 17:11:58 +0000
+References: <20251112125516.1563021-1-edumazet@google.com>
+In-Reply-To: <20251112125516.1563021-1-edumazet@google.com>
+To: Eric Dumazet <edumazet@google.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, horms@kernel.org,
+ jhs@mojatatu.com, victor@mojatatu.com, xiyou.wangcong@gmail.com,
+ jiri@resnulli.us, toke@redhat.com, eric.dumazet@gmail.com,
+ syzkaller@googlegroups.com, paulb@nvidia.com
 
-On Fri, 14 Nov 2025 17:24:45 +0800
-Menglong Dong <menglong8.dong@gmail.com> wrote:
+Hello:
 
-> --- a/arch/x86/kernel/ftrace_64.S
-> +++ b/arch/x86/kernel/ftrace_64.S
-> @@ -285,8 +285,18 @@ SYM_INNER_LABEL(ftrace_regs_caller_end, SYM_L_GLOBAL)
->  	ANNOTATE_NOENDBR
->  	RET
->  
-> +1:
-> +	testb	$1, %al
-> +	jz	2f
-> +	andq $0xfffffffffffffffe, %rax
-> +	movq %rax, MCOUNT_REG_SIZE+8(%rsp)
-> +	restore_mcount_regs
-> +	/* Restore flags */
-> +	popfq
-> +	RET
-> +
->  	/* Swap the flags with orig_rax */
-> -1:	movq MCOUNT_REG_SIZE(%rsp), %rdi
-> +2:	movq MCOUNT_REG_SIZE(%rsp), %rdi
->  	movq %rdi, MCOUNT_REG_SIZE-8(%rsp)
->  	movq %rax, MCOUNT_REG_SIZE(%rsp)
->  
+This patch was applied to bpf/bpf.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-So in this case we have:
+On Wed, 12 Nov 2025 12:55:16 +0000 you wrote:
+> syzbot found that cls_bpf_classify() is able to change
+> tc_skb_cb(skb)->drop_reason triggering a warning in sk_skb_reason_drop().
+> 
+> WARNING: CPU: 0 PID: 5965 at net/core/skbuff.c:1192 __sk_skb_reason_drop net/core/skbuff.c:1189 [inline]
+> WARNING: CPU: 0 PID: 5965 at net/core/skbuff.c:1192 sk_skb_reason_drop+0x76/0x170 net/core/skbuff.c:1214
+> 
+> struct tc_skb_cb has been added in commit ec624fe740b4 ("net/sched:
+> Extend qdisc control block with tc control block"), which added a wrong
+> interaction with db58ba459202 ("bpf: wire in data and data_end for
+> cls_act_bpf").
+> 
+> [...]
 
- original_caller:
- call foo -> foo:
-             call fentry -> fentry:
-                            [do ftrace callbacks ]
-                            move tramp_addr to stack
-                            RET -> tramp_addr
-                                            tramp_addr:
-                                            [..]
-                                            call foo_body -> foo_body:
-                                                             [..]
-                                                             RET -> back to tramp_addr
-                                            [..]
-                                            RET -> back to original_caller
+Here is the summary with links:
+  - [net/bpf] bpf: add bpf_prog_run_data_pointers()
+    https://git.kernel.org/bpf/bpf/c/4ef927436258
 
-I guess that looks balanced.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
--- Steve
 
-                                                         
 
