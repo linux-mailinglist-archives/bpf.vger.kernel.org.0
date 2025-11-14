@@ -1,258 +1,189 @@
-Return-Path: <bpf+bounces-74493-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74494-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3BF2C5C4F6
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 10:37:44 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12832C5C5C5
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 10:47:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3AADD5036BB
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 09:27:07 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C4D2D351B4D
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 09:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4379F307489;
-	Fri, 14 Nov 2025 09:25:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A2321CC60;
+	Fri, 14 Nov 2025 09:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yzd8SLfN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qifu6Yrl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BB0130B52E
-	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 09:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C11E307481;
+	Fri, 14 Nov 2025 09:39:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763112336; cv=none; b=sa0i5z+Rfvqw8cvwe7c7433p//fIfWuIdnABnE+yTDxT9fk60+RBVBbw++yz9Jyd6YRmUHpuQ2d5EEbxFClPj4ru95nydSQKXOlnPL/ILjEW9pyHAz7y6U8JzT0tPQtxRfdBHdrxPOj7A7xfztM55uWx3qH54GBuTFOMZRYs6Sc=
+	t=1763113166; cv=none; b=YpdMp8OWCy392ecrVww8HN61oOkWwnF6yoYKFFXw0ONhfXXi27M7XI3wmU0GDA/fXOt3+Hw+Ma33Nm9R6YdOYAoQRXT2/+LgGdEt10hJeGUjr6e/oB/c6aD7dGSF8CNFPFZgJsnlhCESniGpJJ+Xwlkx6rWzB89BiVcZtMG7OrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763112336; c=relaxed/simple;
-	bh=TIjsGgErGjhnsODM1Ph/ITY27XoQ96fhmRIiGKpLPac=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TO42TdBSwp981Bpo/DLUT0WXegCSbqDNtVOQ3TJfL7K1rukuEMBViDEdl4jItitJwmSanQMPQT/QiHtgw+vPfEsyfa3s3jqTJEuHhhZoCabM6/UCMBbCsIaahqIqP0XJLqnmYlr5UpIMLU2J4m5LifncU7Y8p9qHoAxzk3cGcfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yzd8SLfN; arc=none smtp.client-ip=209.85.214.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-298039e00c2so21870305ad.3
-        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 01:25:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763112334; x=1763717134; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0GH1XgjhxGvH7eOvtS78BjGizHMW/kgqOUJowiQXUBA=;
-        b=Yzd8SLfNYUGICSEwn2XJUh+BrNTaUlFEeE2/2izq4OQlev4UEVBlmPG9MumotdLadi
-         6VfjXjDSQtHlJpcq7X9DfD6RQt4PBKeNr5+xBQmZEVu+GADo1eM3CdM89Rxk9tZsWo5m
-         vIndcC9wXByLWG44c9AUDHCCOOXcQ2QDcXCN17zaEzR0mz3IYugeTpppNXpL+Hn2vdyF
-         84Si5QUrCjnhR5Tumgz2lSCWvv/6vMXr3e5OQwqcTGQ7MzN7aDbjkWMQhphMMVawxged
-         8gb6dUxrsi7tKKyvjaMvSK3SUV+W6jASh/7AzvpcqCyx2dbUBzfOZvWdCJBeTWEwqTgi
-         PMxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763112334; x=1763717134;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=0GH1XgjhxGvH7eOvtS78BjGizHMW/kgqOUJowiQXUBA=;
-        b=l4WWIgR4QOXmQgVvX+qMzOm4FC4lvh8X6cGtxlaW0o0RQWqQKPYEJ3zXLjITxkzU9a
-         GIWy/Vfg2DMuIsCrchcO2aU3oDADsBn1Na0Sduwe9wh15W+fEUL3Ld/OGH0n6ldzLzyT
-         jpYrqmyR1mBoGFRpkSBswR5fnucS1tOi52l2aFJJkO7kYL1Ra6xzeLiTEuZLYH6To6hx
-         apzgWVyGeVqmgTZpg2m0JWzlPT4ABhT1w65QfGqvv92nhTLjbc93XRYT40Z6kmtEqsem
-         47RYMTDQ7VN01oQENdSzC2UGWVls3HanPAB+HLvXfJoAKNGl/HvmnsTiepAKDZtK9ifv
-         EUaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX/PhC0G52PiRlVgSSxtkAvdFBXcjpgQkyAcyWA6chrm9sIiuurLM+w6gstb3h9fh0oghY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz4Oq3TjlKWn1XOUKPoI4iyAnWbKVxWO/pqO0wZug/NyXG1DQqq
-	D06/P8YE4/aUvyArT0uRg0zHEpH1lBBXKteQ/maTsYOIsyqBjwfqq6zY
-X-Gm-Gg: ASbGncvYJpxpswu+/CAi/dPpwM7xNYH9u2zhGaoTPyZSC2TbixE17thZ+bw4HKqLWl1
-	ldOygs5t17YG1buzsWKN5CCKxy632hNTZE60K3vboYEXvw8mk8bq3tnmluAOX9ap8LUw3JxZz7M
-	c5bAZRGnEueQ+Zczd8DehjwFwt7hfs4HdhoZXRKgu7O1eue+kV6xuHiRyAcfpVBGBPBuDJrNlIw
-	e0BXcqYuna5JZfMkeMvzdqch0h7WsGoRt9PRuQMQcqNjYUQI1liVSsto8XhLLLtG8h9wSFadkxJ
-	W+vXuJfnFVoZrxRtcpMZ+p24kPaTJIFbGGNYkQuhdOAMKaQF7R/9LB1s9t4PIlow/WadtOGMG0p
-	94wJsShUvZSFpdVxjKC2njg7cymVpRJIsRRGti5tNx61vzFHG66t0saaveE7MH6YHlyDusXunx7
-	Kf
-X-Google-Smtp-Source: AGHT+IH8JdBL4kgG2wlYs/vtfYVs3OXl9lPqSBwJDQ1zGrYP08Gk8O6hyA6D59Y+JlLxX9WZiLPJ4w==
-X-Received: by 2002:a17:903:2f0e:b0:295:8c51:64ff with SMTP id d9443c01a7336-2986a7420ebmr27102945ad.29.1763112334321;
-        Fri, 14 Nov 2025 01:25:34 -0800 (PST)
-Received: from 7950hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2346dasm50451525ad.7.2025.11.14.01.25.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Nov 2025 01:25:33 -0800 (PST)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: ast@kernel.org,
-	rostedt@goodmis.org
-Cc: daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mhiramat@kernel.org,
-	mark.rutland@arm.com,
-	mathieu.desnoyers@efficios.com,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH RFC bpf-next 7/7] bpf: implement "jmp" mode for trampoline
-Date: Fri, 14 Nov 2025 17:24:50 +0800
-Message-ID: <20251114092450.172024-8-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.51.2
-In-Reply-To: <20251114092450.172024-1-dongml2@chinatelecom.cn>
-References: <20251114092450.172024-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1763113166; c=relaxed/simple;
+	bh=CmN3G295tVKXGOX+2QoIMHDwTDXiIyuU1Z0dgsv+BPI=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=uKjP/FW+hijEJxUVbYZgQ+Wf2PSrKvKRB2sg9tefW+pkRAtGRc2qtPgZF974wln+64VHBAluLDMfuVPxDemxipZvhfXysp9RUc/+om/N8MAUBE7mnbd3Bn63Qd6fD5125k5d0yzoWFzSBMAd5Iry+eB5V1Bek9G01KX12iqdKHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qifu6Yrl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5B03C16AAE;
+	Fri, 14 Nov 2025 09:39:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763113166;
+	bh=CmN3G295tVKXGOX+2QoIMHDwTDXiIyuU1Z0dgsv+BPI=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=qifu6YrlgEr+Z/zT8GwTBisuCnJAPzAbDnYgMkYCMlVCsBfuhFCpSAuQMrXlXYRDE
+	 PrMdmNp5NqHIhuoKGgUuVRqYs03l9XSILk/bThxVPz6NnskVMg+pEpfQlXwVYj2Hku
+	 BoYuodunlutrmZukXwNi3pV+0UirsydJ1HGpPYOS4iRzTabhnLcterxUkCDI4zsAKV
+	 OkTpuayoHQ9SdgcDXcvwOeD+1OWlpbIw2trLBPZUkrGzGcRebYsRKZsG6LJzvdg6mK
+	 IRnk6Hm0vsFDoCdICvXhooSNiQaJx1qKUNInUPL0rb4vgFscsso0fvgMN12ZA9SsR6
+	 wi9JByHmDaASQ==
+Content-Type: multipart/mixed; boundary="===============6868097212165816017=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <39c391d944fa3db4426d0c1f9b4a22ccd1660133231a02efbcb78e0b55ac84b2@mail.kernel.org>
+In-Reply-To: <20251114090231.2786984-3-dolinux.peng@gmail.com>
+References: <20251114090231.2786984-3-dolinux.peng@gmail.com>
+Subject: Re: [RFC PATCH 2/2] selftests/bpf: Add test cases for btf__permute functionality
+From: bot+bpf-ci@kernel.org
+To: dolinux.peng@gmail.com,ast@kernel.org
+Cc: eddyz87@gmail.com,andrii.nakryiko@gmail.com,zhangxiaoqin@xiaomi.com,linux-kernel@vger.kernel.org,bpf@vger.kernel.org,pengdonglin@xiaomi.com,alan.maguire@oracle.com,song@kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Fri, 14 Nov 2025 09:39:25 +0000 (UTC)
 
-Implement the "jmp" mode for the bpf trampoline. For the ftrace_managed
-case, we need only to set the FTRACE_OPS_FL_JMP on the tr->fops if "jmp"
-is needed.
+--===============6868097212165816017==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-For the bpf poke case, the new flag BPF_TRAMP_F_JMPED is introduced to
-store and check if the trampoline is in the "jmp" mode.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/btf_permute.c b/tools/testing/selftests/bpf/prog_tests/btf_permute.c
+> new file mode 100644
+> index 000000000..c1a47b846
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/btf_permute.c
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+[ ... ]
+
+> @@ -0,0 +1,626 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2025 Xiaomi */
+> +
+> +#include <test_progs.h>
+> +#include <bpf/btf.h>
+> +#include "btf_helpers.h"
+
+[ ... ]
+
+> +/* Verify btf__permute then btf__dedup work correctly */
+> +static void test_permute_drop_dedup(void)
+> +{
+> +	struct btf *btf, *new_btf;
+                              ^^^^^^^^
+Can this crash if the test fails before new_btf is initialized?  Looking
+at the declaration above, new_btf is uninitialized, and if ASSERT_EQ()
+fails at line 570 before new_btf is assigned, the code jumps to the done
+label which calls btf__free(new_btf). While btf__free() checks for NULL,
+it doesn't protect against uninitialized garbage values and may
+dereference an invalid pointer.
+
+> +	const struct btf_header *hdr;
+> +	const void *btf_data;
+> +	char expect_strs[] = "\0int\0s1\0m\0tag1\0tag2\0tag3";
+> +	char expect_strs_dedupped[] = "\0int\0s1\0m\0tag1";
+> +	__u32 permute_ids[6], btf_size;
+> +	int err;
+> +
+> +	btf = btf__new_empty();
+> +	if (!ASSERT_OK_PTR(btf, "empty_main_btf"))
+> +		return;
+> +
+> +	btf__add_int(btf, "int", 4, BTF_INT_SIGNED);	/* [1] int */
+> +	btf__add_struct(btf, "s1", 4);			/* [2] struct s1 { */
+> +	btf__add_field(btf, "m", 1, 0, 0);		/*       int m; */
+> +							/* } */
+> +	btf__add_decl_tag(btf, "tag1", 2, -1);		/* [3] tag -> s1: tag1 */
+> +	btf__add_decl_tag(btf, "tag2", 2, 1);		/* [4] tag -> s1/m: tag2 */
+> +	btf__add_decl_tag(btf, "tag3", 2, 1);		/* [5] tag -> s1/m: tag3 */
+> +
+> +	VALIDATE_RAW_BTF(
+> +		btf,
+> +		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
+> +		"[2] STRUCT 's1' size=4 vlen=1\n"
+> +		"\t'm' type_id=1 bits_offset=0",
+> +		"[3] DECL_TAG 'tag1' type_id=2 component_idx=-1",
+> +		"[4] DECL_TAG 'tag2' type_id=2 component_idx=1",
+> +		"[5] DECL_TAG 'tag3' type_id=2 component_idx=1");
+> +
+> +	btf_data = btf__raw_data(btf, &btf_size);
+> +	hdr = btf_data;
+> +	if (!ASSERT_EQ(hdr->str_len, ARRAY_SIZE(expect_strs), "expect_strs"))
+               ^^^^^^^^^^^^^^
+Does this need a NULL check for btf_data?  The btf__raw_data() function
+can return NULL on allocation failure (returns NULL at btf.c:1596), and
+dereferencing hdr->str_len without checking would cause a segfault and
+crash the test program.
+
+> +		goto done;
+> +
+> +	new_btf = btf__new(btf_data, btf_size);
+> +	if (!ASSERT_OK_PTR(new_btf, "btf__new"))
+> +		goto done;
+> +
+> +	/* Drop 2 IDs result in unreferenced strings */
+> +	permute_ids[0] = 0;
+> +	permute_ids[1] = 3; /* [1] -> [3] */
+> +	permute_ids[2] = 1; /* [2] -> [1] */
+> +	permute_ids[3] = 2; /* [3] -> [2] */
+> +	permute_ids[4] = 0; /* Drop result in unreferenced "tag2" */
+> +	permute_ids[5] = 0; /* Drop result in unreferenced "tag3" */
+> +	err = btf__permute(new_btf, permute_ids, ARRAY_SIZE(permute_ids), NULL);
+> +	if (!ASSERT_OK(err, "btf__permute"))
+> +		goto done;
+> +
+> +	VALIDATE_RAW_BTF(
+> +		new_btf,
+> +		"[1] STRUCT 's1' size=4 vlen=1\n"
+> +		"\t'm' type_id=3 bits_offset=0",
+> +		"[2] DECL_TAG 'tag1' type_id=1 component_idx=-1",
+> +		"[3] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED");
+> +
+> +	btf_data = btf__raw_data(new_btf, &btf_size);
+> +	hdr = btf_data;
+> +	if (!ASSERT_EQ(hdr->str_len, ARRAY_SIZE(expect_strs), "expect_strs"))
+               ^^^^^^^^^^^^^^
+Same NULL check issue here with btf__raw_data().
+
+> +		goto done;
+> +
+> +	err = btf__dedup(new_btf, NULL);
+> +	if (!ASSERT_OK(err, "btf__dedup"))
+> +		goto done;
+> +
+> +	btf_data = btf__raw_data(new_btf, &btf_size);
+> +	hdr = btf_data;
+> +	if (!ASSERT_EQ(hdr->str_len, ARRAY_SIZE(expect_strs_dedupped), "expect_strs_dedupped"))
+               ^^^^^^^^^^^^^^
+And again here.
+
+> +		goto done;
+> +
+> +done:
+> +	btf__free(btf);
+> +	btf__free(new_btf);
+> +}
+
+
 ---
- include/linux/bpf.h     |  6 +++++
- kernel/bpf/trampoline.c | 53 ++++++++++++++++++++++++++++++++++-------
- 2 files changed, 50 insertions(+), 9 deletions(-)
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index aec7c65539f5..3598785ac8d1 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1201,6 +1201,12 @@ struct btf_func_model {
-  */
- #define BPF_TRAMP_F_INDIRECT		BIT(8)
- 
-+/*
-+ * Indicate that the trampoline is using "jmp" instead of "call". This flag
-+ * is only used in the !ftrace_managed case.
-+ */
-+#define BPF_TRAMP_F_JMPED		BIT(9)
-+
- /* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is ~50
-  * bytes on x86.
-  */
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 5949095e51c3..02a9f33d8f6c 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -175,15 +175,37 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
- 	return tr;
- }
- 
--static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
-+static int bpf_text_poke(struct bpf_trampoline *tr, void *old_addr,
-+			 void *new_addr)
- {
-+	enum bpf_text_poke_type new_t = BPF_MOD_CALL, old_t = BPF_MOD_CALL;
- 	void *ip = tr->func.addr;
- 	int ret;
- 
-+	if (bpf_trampoline_need_jmp(tr->flags))
-+		new_t = BPF_MOD_JUMP;
-+	if (tr->flags & BPF_TRAMP_F_JMPED)
-+		old_t = BPF_MOD_JUMP;
-+
-+	ret = bpf_arch_text_poke_type(ip, old_t, new_t, old_addr, new_addr);
-+	if (!ret) {
-+		if (new_t == BPF_MOD_JUMP)
-+			tr->flags |= BPF_TRAMP_F_JMPED;
-+		else
-+			tr->flags &= ~BPF_TRAMP_F_JMPED;
-+	}
-+
-+	return ret;
-+}
-+
-+static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
-+{
-+	int ret;
-+
- 	if (tr->func.ftrace_managed)
- 		ret = unregister_ftrace_direct(tr->fops, (long)old_addr, false);
- 	else
--		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, NULL);
-+		ret = bpf_text_poke(tr, old_addr, NULL);
- 
- 	return ret;
- }
-@@ -191,7 +213,6 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
- static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void *new_addr,
- 			 bool lock_direct_mutex)
- {
--	void *ip = tr->func.addr;
- 	int ret;
- 
- 	if (tr->func.ftrace_managed) {
-@@ -200,7 +221,7 @@ static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void *new_ad
- 		else
- 			ret = modify_ftrace_direct_nolock(tr->fops, (long)new_addr);
- 	} else {
--		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, new_addr);
-+		ret = bpf_text_poke(tr, old_addr, new_addr);
- 	}
- 	return ret;
- }
-@@ -223,7 +244,7 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
- 		ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 0, 1);
- 		ret = register_ftrace_direct(tr->fops, (long)new_addr);
- 	} else {
--		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr);
-+		ret = bpf_text_poke(tr, NULL, new_addr);
- 	}
- 
- 	return ret;
-@@ -415,7 +436,8 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
- 	}
- 
- 	/* clear all bits except SHARE_IPMODIFY and TAIL_CALL_CTX */
--	tr->flags &= (BPF_TRAMP_F_SHARE_IPMODIFY | BPF_TRAMP_F_TAIL_CALL_CTX);
-+	tr->flags &= (BPF_TRAMP_F_SHARE_IPMODIFY | BPF_TRAMP_F_TAIL_CALL_CTX |
-+		      BPF_TRAMP_F_JMPED);
- 
- 	if (tlinks[BPF_TRAMP_FEXIT].nr_links ||
- 	    tlinks[BPF_TRAMP_MODIFY_RETURN].nr_links) {
-@@ -432,9 +454,17 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- again:
--	if ((tr->flags & BPF_TRAMP_F_SHARE_IPMODIFY) &&
--	    (tr->flags & BPF_TRAMP_F_CALL_ORIG))
--		tr->flags |= BPF_TRAMP_F_ORIG_STACK;
-+	if (tr->flags & BPF_TRAMP_F_CALL_ORIG) {
-+		if (tr->flags & BPF_TRAMP_F_SHARE_IPMODIFY) {
-+			tr->flags |= BPF_TRAMP_F_ORIG_STACK;
-+		} else if (IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_JMP)) {
-+			/* Use "jmp" instead of "call" for the trampoline
-+			 * in the origin call case, and we don't need to
-+			 * skip the frame.
-+			 */
-+			tr->flags &= ~BPF_TRAMP_F_SKIP_FRAME;
-+		}
-+	}
- #endif
- 
- 	size = arch_bpf_trampoline_size(&tr->func.model, tr->flags,
-@@ -465,6 +495,11 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
- 	if (err)
- 		goto out_free;
- 
-+	if (bpf_trampoline_need_jmp(tr->flags))
-+		tr->fops->flags |= FTRACE_OPS_FL_JMP;
-+	else
-+		tr->fops->flags &= ~FTRACE_OPS_FL_JMP;
-+
- 	WARN_ON(tr->cur_image && total == 0);
- 	if (tr->cur_image)
- 		/* progs already running at this address */
--- 
-2.51.2
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19359945665
 
+--===============6868097212165816017==--
 
