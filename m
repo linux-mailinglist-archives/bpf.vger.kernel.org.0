@@ -1,264 +1,246 @@
-Return-Path: <bpf+bounces-74521-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74522-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E184C5E03F
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 16:54:56 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9967C5E0CA
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 17:01:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CED6424DA8
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 15:38:46 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 877BB3A4149
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 15:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D8232E130;
-	Fri, 14 Nov 2025 15:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09F7333449;
+	Fri, 14 Nov 2025 15:28:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FKuE8306"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oEzkNrUj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B0132C94F;
-	Fri, 14 Nov 2025 15:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E93C333433
+	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 15:28:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763134068; cv=none; b=aPZDhs6gwvvmhhqFkmvK9OHJvsyI9fvvyZwQ1hY8v3vTxbbadanB1i4FXEwMVZXOAvqzF3+e8F+Y2dtm8EcCPRhVXzkTPsizimIq+2GnVPsATI70LfFCoTaLZl9E2OGa0+vKQPbI94ca0Pmnalb+77/IisjmwaKVr47Hhy4/YKM=
+	t=1763134139; cv=none; b=KLZYBMZUC6MP5L1wZLjYcZxfxesV12An2Jo7gICJxKLAcvyqSa4um/ZijUXhe0ChKfjZYHipTpShmc8/iYy+bOLJP2wRSBT1yagmvQXHTC4adqdKq6hJusjS9M6XNq5RraOFVtoNj7znY/wO4iFv2u0POn4O+5vTF6RZzKH58ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763134068; c=relaxed/simple;
-	bh=NIUEqizwog69PtK/Ivh6wwK/p+ljJCckrpyJJjfVuo4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NQjmzmRixfCp4i0Eq647KRnayN1J+QF3LlYGL992AKr/QgMAGAQW2uMdNsLQj8mSPa7EVQgDgWisz1ooBpUuxItT8J0WRLYoTHHqFAbn+1PAyGH9W/tUwg5ba1mtK81fZBzCH2sPNWqKmJ0Jxy2xTEr7+nQlOr+BoWx3tCQROV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=FKuE8306; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AEDt58c032654;
-	Fri, 14 Nov 2025 15:27:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=pp1; bh=2Fqj906GjlMjAlLgzD4pKgJIN2dw
-	RMppQ/s7YfSh8nM=; b=FKuE8306d86rR56CtPu7/cET0i37Sz1CRLaz3QSCDIuV
-	qyKe3xmVOgAKSlfIsNt+0UT0TuwVkJ1CX8VBrXAsFSbZYKwgL641b/VJJWAkIpLG
-	YTOtigyp9hDno144J7F+zPDMdOHUMJWy8SXy4O4jKI/uizPjXENTkWcPDbQnC5dl
-	ei8xy2/khntC2XBOtYhdnK/dxPuhqywZzsCqIFfMP3Hn37bViEohV5v3LXP9fAOT
-	AbmB/GpdEoDbiq8LZSNnLqSvTtkPKSuyOxyvURdf23Bn+SSw0bSCJSFiiONkI57X
-	qEXhO0v+5FNlKORdkH5WtEZW4n2RzKO7Gxqx/2zQ+w==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4adreek83t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 14 Nov 2025 15:27:10 +0000 (GMT)
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5AEFR9sB030042;
-	Fri, 14 Nov 2025 15:27:09 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4adreek83p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 14 Nov 2025 15:27:09 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AEFQv1J007375;
-	Fri, 14 Nov 2025 15:27:08 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4aajdjusqp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 14 Nov 2025 15:27:08 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5AEFR4iV31850822
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 14 Nov 2025 15:27:04 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B3A1E2004B;
-	Fri, 14 Nov 2025 15:27:04 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7B57F20040;
-	Fri, 14 Nov 2025 15:26:56 +0000 (GMT)
-Received: from li-621bac4c-27c7-11b2-a85c-c2bf7c4b3c07.ibm.com.com (unknown [9.43.106.27])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 14 Nov 2025 15:26:56 +0000 (GMT)
-From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-To: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc: hbathini@linux.ibm.com, sachinpb@linux.ibm.com, venkat88@linux.ibm.com,
-        andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
-Subject: [PATCH bpf-next v2] selftests/bpf: Fix htab_update/reenter_update selftest failure
-Date: Fri, 14 Nov 2025 20:56:53 +0530
-Message-ID: <20251114152653.356782-1-skb99@linux.ibm.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1763134139; c=relaxed/simple;
+	bh=BkiH5i1C/buo+Pujknbw9+FtNagEYS43EmbJKZI147w=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=hx8Fte5lWK4rYynji2yKILEiTHqB1ECIGgsGFzkXHAErj576UXiSjvLBjEaM8Xg/1oqv1/0N4C4iHqLtnnssGyiDYDIdkhF9UeysAW2fOiq7+CPSXNzKUVwusqum1LPxtGuGW12TtNty12qVI2Rp8X65JtjasMJQKdde8MCN/vM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oEzkNrUj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 672BAC19422;
+	Fri, 14 Nov 2025 15:28:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763134138;
+	bh=BkiH5i1C/buo+Pujknbw9+FtNagEYS43EmbJKZI147w=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=oEzkNrUjmQfPFUlancX63ZXlMkdQJk4atVZ7w1gd67mMzn7/O1L36oQ6it22voH9k
+	 SXZyhGSyTZXsoAQIhcEDddhzqI+07p1mpnUE7Ko6gE0RE/qYgFogjSDXLCRMngnxQr
+	 iZERO3AWOVGdKfm3dEHMBLwBawFfnOj9hhm9LF7kGYccQkgawb5de1KvstUB8BXfoW
+	 blsCdQCdMPwLHIrU5dbig2k3x1QwMeVDNQlMjatPF1tavHyOOtu4KUACann/DeNSiQ
+	 pqODL38RD/36/IOrLi2XBMVvfZN9noWcNojG6VkEEkkdtTVzVJeiEtgvJIh3o+BgKq
+	 mhFpfMwfw7bZg==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bot+bpf-ci@kernel.org, bpf@vger.kernel.org
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@kernel.org, eddyz87@gmail.com, memxor@gmail.com,
+ kernel-team@meta.com, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
+ yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCH bpf-next v2 3/4] bpf: arena: make arena kfuncs any
+ context safe
+In-Reply-To: <b0a8bdc792e9424566da4b764770c86f4af787e6bd714162917163768f2af4b4@mail.kernel.org>
+References: <20251114111700.43292-4-puranjay@kernel.org>
+ <b0a8bdc792e9424566da4b764770c86f4af787e6bd714162917163768f2af4b4@mail.kernel.org>
+Date: Fri, 14 Nov 2025 15:28:54 +0000
+Message-ID: <mb61pqzu01vm1.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTEzMDE3OSBTYWx0ZWRfX4KpgJtGqpyGf
- m5ZNQd8A/688UWenYdvz8rUk+xdpmhJ4+nTleUKp4IqBQQhpjx/DdRsyLXPGp01fVP0w2tEyVIc
- KZ1MZ4cM9mZqBSA7ZfSWXXVSiKw7+W+oJGO1KboEdg3Difj6Vy4oxHOxJJir4hvp0VhgHa1lt65
- YBxhPGyNWlFh0CWVr0hriquulYlwrFqN/Qtn5bNj0iqVE7U4zEiW0ksTU4Rpv0MlvWmAueTwK+e
- evkbjvTAb1k045z26SnPje9uNVNEEYlhIlwIVgJfPMtfIUgFnAFF/9KeBEJhDcdKgiy1UhwsFuN
- ODBvzuFYRLEPEcBeiwTMRctsP03umi1KARnSzdNcUqrincKZO52na2Fi8jsXJYFNZsf5G1FLH1A
- wSANvqdrykvj9r2i2uUNvHRb5FO+qA==
-X-Proofpoint-ORIG-GUID: K6NxuYnrRqbLt1gHrS6G-K_cO0hT9tUX
-X-Authority-Analysis: v=2.4 cv=HIrO14tv c=1 sm=1 tr=0 ts=69174a4e cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=OWyWG0mZGF1_bIHabSUA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-GUID: NzijLG-N19HbQwnSD8esOD7Svoaekl4u
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-14_04,2025-11-13_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 impostorscore=0 suspectscore=0 adultscore=0 clxscore=1015
- spamscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511130179
+Content-Type: text/plain
 
-Since commit 31158ad02ddb ("rqspinlock: Add deadlock detection
-and recovery") the updated path on re-entrancy now reports deadlock
-via -EDEADLK instead of the previous -EBUSY.
+bot+bpf-ci@kernel.org writes:
 
-Also, the way reentrancy was exercised (via fentry/lookup_elem_raw)
-has been fragile because lookup_elem_raw may be inlined
-(find_kernel_btf_id() will return -ESRCH).
+>> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+>> index 7fa6e40ab..ca443c113 100644
+>> --- a/kernel/bpf/arena.c
+>> +++ b/kernel/bpf/arena.c
+>
+> [ ... ]
+>
+>> @@ -331,12 +355,19 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
+>>  	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
+>>  	struct page *page;
+>>  	long kbase, kaddr;
+>> +	unsigned long flags;
+>>  	int ret;
+>>
+>>  	kbase = bpf_arena_get_kern_vm_start(arena);
+>>  	kaddr = kbase + (u32)(vmf->address);
+>>
+>> -	guard(mutex)(&arena->lock);
+>> +	if (raw_res_spin_lock_irqsave(&arena->spinlock, flags))
+>> +		/*
+>> +		 * This is an impossible case and would only trigger if res_spin_lock is buggy or
+>> +		 * due to another kernel bug.
+>> +		 */
+>> +		return VM_FAULT_RETRY;
+>> +
+>>  	page = vmalloc_to_page((void *)kaddr);
+>>  	if (page)
+>>  		/* already have a page vmap-ed */
+>> @@ -348,26 +379,30 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
+>>
+>>  	ret = range_tree_clear(&arena->rt, vmf->pgoff, 1);
+>>  	if (ret)
+>> -		return VM_FAULT_SIGSEGV;
+>> +		goto out_unlock_sigsegv;
+>>
+>>  	struct apply_range_data data = { .pages = &page, .i = 0 };
+>>  	/* Account into memcg of the process that created bpf_arena */
+>>  	ret = bpf_map_alloc_pages(map, NUMA_NO_NODE, 1, &page);
+>>  	if (ret) {
+>>  		range_tree_set(&arena->rt, vmf->pgoff, 1);
+>> -		return VM_FAULT_SIGSEGV;
+>> +		goto out_unlock_sigsegv;
+>>  	}
+>>
+>>  	ret = apply_to_page_range(&init_mm, kaddr, PAGE_SIZE, apply_range_set_cb, &data);
+>>  	if (ret) {
+>>  		range_tree_set(&arena->rt, vmf->pgoff, 1);
+>> -		__free_page(page);
+>> -		return VM_FAULT_SIGSEGV;
+>> +		free_pages_nolock(page, 0);
+>> +		goto out_unlock_sigsegv;
+>>  	}
+>>  out:
+>>  	page_ref_add(page, 1);
+>> +	raw_res_spin_unlock_irqrestore(&arena->spinlock, flags);
+>>  	vmf->page = page;
+>>  	return 0;
+>
+> In arena_vm_fault(), there's a path between acquiring the spinlock and
+> the new goto labels that doesn't release the lock:
+>
+>>  	if (arena->map.map_flags & BPF_F_SEGV_ON_FAULT)
+>>  		return VM_FAULT_SIGSEGV;
+>
+> This return statement is reached after raw_res_spin_lock_irqsave()
+> succeeds but before any of the unlock paths. If BPF_F_SEGV_ON_FAULT is
+> set, subsequent page faults on this arena will deadlock. All other
+> return paths in the function properly jump to out_unlock_sigsegv to
+> release the lock.
 
-To fix this fentry is attached to bpf_obj_free_fields() instead of
-lookup_elem_raw() and:
+Good catch, this needs to be goto out_unlock_sigsegv;
 
-- The htab map is made to use a BTF-described struct val with a
-  struct bpf_timer so that check_and_free_fields() reliably calls
-  bpf_obj_free_fields() on element replacement.
+>> +out_unlock_sigsegv:
+>> +	raw_res_spin_unlock_irqrestore(&arena->spinlock, flags);
+>> +	return VM_FAULT_SIGSEGV;
+>>  }
+>
+> [ ... ]
+>
+>> @@ -594,42 +633,65 @@ static void zap_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
+>>  {
+>>  	struct vma_list *vml;
+>>
+>> +	guard(mutex)(&arena->lock);
+>> +	/* iterate link list under lock */
+>>  	list_for_each_entry(vml, &arena->vma_list, head)
+>>  		zap_page_range_single(vml->vma, uaddr,
+>>  				      PAGE_SIZE * page_cnt, NULL);
+>>  }
+>>
+>> -static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
+>> +static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt, bool sleepable)
+>>  {
+>>  	u64 full_uaddr, uaddr_end;
+>> -	long kaddr, pgoff, i;
+>> +	long kaddr, pgoff;
+>>  	struct page *page;
+>> +	struct llist_head free_pages;
+>> +	struct llist_node *pos, *t;
+>> +	struct arena_free_span *s;
+>> +	unsigned long flags;
+>> +	int ret = 0;
+>>
+>>  	/* only aligned lower 32-bit are relevant */
+>>  	uaddr = (u32)uaddr;
+>>  	uaddr &= PAGE_MASK;
+>> +	kaddr = bpf_arena_get_kern_vm_start(arena) + uaddr;
+>>  	full_uaddr = clear_lo32(arena->user_vm_start) + uaddr;
+>>  	uaddr_end = min(arena->user_vm_end, full_uaddr + (page_cnt << PAGE_SHIFT));
+>>  	if (full_uaddr >= uaddr_end)
+>>  		return;
+>>
+>>  	page_cnt = (uaddr_end - full_uaddr) >> PAGE_SHIFT;
+>> +	pgoff = compute_pgoff(arena, uaddr);
+>>
+>> -	guard(mutex)(&arena->lock);
+>> +	if (!sleepable)
+>> +		goto defer;
+>> +
+>> +	ret = raw_res_spin_lock_irqsave(&arena->spinlock, flags);
+>> +	/*
+>> +	 * Can't proceed without holding the spinlock so defer the free
+>> +	 */
+>> +	if (ret)
+>> +		goto defer;
+>
+> [ ... ]
+>
+>> +	return;
+>> +
+>> +defer:
+>> +	s = kmalloc_nolock(sizeof(struct arena_free_span), 0, -1);
+>> +	if (!s)
+>> +		return;
+>
+> In arena_free_pages(), when the deferred free path is taken but
+> kmalloc_nolock() fails, the function returns silently without freeing
+> the pages. These pages remain mapped in the kernel page tables and
+> marked as allocated in the range tree, but become unusable.
+>
+> This can happen when:
+> - The function is called from a non-sleepable context (sleepable=false)
+> - Lock acquisition fails and falls through to defer
+> - kmalloc_nolock() returns NULL (PREEMPT_RT+IRQ, lock contention, or
+>   unsupported arch)
+>
+> The deferred free path is called from arena_alloc_pages() error
+> handling and bpf_arena_free_pages_non_sleepable(). In both cases, the
+> pages that should be freed will leak.
+>
+> Should there be a fallback mechanism or at least a warning when
+> deferral fails?
 
-- The selftest is updated to do two updates to the same key (insert +
-  replace) in prog_test.
+Yes, this is expected because if kmalloc_nolock() fails in non-sleepable
+context, we don't have another way to get memory for arena_free_span, we
+are accepting this trade-off, failing a 24 byte allocation here is
+highly unlikely, but we can have a WARN_ONCE here. We had an offline
+discussion about having debug counters from arena, maybe we can add a
+counter here.
 
-- The selftest is updated to align with expected errno with the
-  kernel’s current behavior.
+And for failure path of arena_alloc_pages, we could make
+arena_alloc_pages get a sleepable parameter and call arena_free_pages()
+with this parameter so we don't defer unnecessarily when
+arena_alloc_pages() is called in sleepable context.
 
-Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
----
-Changes since v1:
-Addressed comments from Alexei:
-* Fixed the scenario where test may fail when lookup_elem_raw()
-  is inlined.
-
-v1: https://lore.kernel.org/all/20251106052628.349117-1-skb99@linux.ibm.com/
-
- .../selftests/bpf/prog_tests/htab_update.c    | 38 ++++++++++++++-----
- .../testing/selftests/bpf/progs/htab_update.c | 19 +++++++---
- 2 files changed, 41 insertions(+), 16 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/htab_update.c b/tools/testing/selftests/bpf/prog_tests/htab_update.c
-index 2bc85f4814f4..96b65c1a321a 100644
---- a/tools/testing/selftests/bpf/prog_tests/htab_update.c
-+++ b/tools/testing/selftests/bpf/prog_tests/htab_update.c
-@@ -15,17 +15,17 @@ struct htab_update_ctx {
- static void test_reenter_update(void)
- {
- 	struct htab_update *skel;
--	unsigned int key, value;
-+	void *value = NULL;
-+	unsigned int key, value_size;
- 	int err;
- 
- 	skel = htab_update__open();
- 	if (!ASSERT_OK_PTR(skel, "htab_update__open"))
- 		return;
- 
--	/* lookup_elem_raw() may be inlined and find_kernel_btf_id() will return -ESRCH */
--	bpf_program__set_autoload(skel->progs.lookup_elem_raw, true);
-+	bpf_program__set_autoload(skel->progs.bpf_obj_free_fields, true);
- 	err = htab_update__load(skel);
--	if (!ASSERT_TRUE(!err || err == -ESRCH, "htab_update__load") || err)
-+	if (!ASSERT_TRUE(!err, "htab_update__load") || err)
- 		goto out;
- 
- 	skel->bss->pid = getpid();
-@@ -33,14 +33,32 @@ static void test_reenter_update(void)
- 	if (!ASSERT_OK(err, "htab_update__attach"))
- 		goto out;
- 
--	/* Will trigger the reentrancy of bpf_map_update_elem() */
--	key = 0;
--	value = 0;
--	err = bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, &value, 0);
--	if (!ASSERT_OK(err, "add element"))
-+	value_size = bpf_map__value_size(skel->maps.htab);
-+
-+	value = calloc(1, value_size);
-+	if (!ASSERT_OK_PTR(value, "calloc value"))
-+		goto out;
-+	/*
-+	 * First update: plain insert. This should NOT trigger the re-entrancy
-+	 * path, because there is no old element to free yet.
-+	 */
-+	err = bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, &value, BPF_ANY);
-+	if (!ASSERT_OK(err, "first update (insert)"))
-+		goto out;
-+
-+	/*
-+	 * Second update: replace existing element with same key and trigger
-+	 * the reentrancy of bpf_map_update_elem().
-+	 * check_and_free_fields() calls bpf_obj_free_fields() on the old
-+	 * value, which is where fentry program runs and performs a nested
-+	 * bpf_map_update_elem(), triggering -EDEADLK.
-+	 */
-+	memset(&value, 0, sizeof(value));
-+	err = bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, &value, BPF_ANY);
-+	if (!ASSERT_OK(err, "second update (replace)"))
- 		goto out;
- 
--	ASSERT_EQ(skel->bss->update_err, -EBUSY, "no reentrancy");
-+	ASSERT_EQ(skel->bss->update_err, -EDEADLK, "no reentrancy");
- out:
- 	htab_update__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/htab_update.c b/tools/testing/selftests/bpf/progs/htab_update.c
-index 7481bb30b29b..195d3b2fba00 100644
---- a/tools/testing/selftests/bpf/progs/htab_update.c
-+++ b/tools/testing/selftests/bpf/progs/htab_update.c
-@@ -6,24 +6,31 @@
- 
- char _license[] SEC("license") = "GPL";
- 
-+/* Map value type: has BTF-managed field (bpf_timer) */
-+struct val {
-+	struct bpf_timer t;
-+	__u64 payload;
-+};
-+
- struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
- 	__uint(max_entries, 1);
--	__uint(key_size, sizeof(__u32));
--	__uint(value_size, sizeof(__u32));
-+	__type(key, __u32);
-+	__type(value, struct val);
- } htab SEC(".maps");
- 
- int pid = 0;
- int update_err = 0;
- 
--SEC("?fentry/lookup_elem_raw")
--int lookup_elem_raw(void *ctx)
-+SEC("?fentry/bpf_obj_free_fields")
-+int bpf_obj_free_fields(void *ctx)
- {
--	__u32 key = 0, value = 1;
-+	__u32 key = 0;
-+	struct val value = { .payload = 1 };
- 
- 	if ((bpf_get_current_pid_tgid() >> 32) != pid)
- 		return 0;
- 
--	update_err = bpf_map_update_elem(&htab, &key, &value, 0);
-+	update_err = bpf_map_update_elem(&htab, &key, &value, BPF_ANY);
- 	return 0;
- }
--- 
-2.51.0
-
+>> +
+>> +	s->page_cnt = page_cnt;
+>> +	s->uaddr = uaddr;
+>> +	llist_add(&s->node, &arena->free_spans);
+>> +	irq_work_queue(&arena->free_irq);
+>>  }
+>
+>
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+>
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19363121319
 
