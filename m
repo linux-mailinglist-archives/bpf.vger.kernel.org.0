@@ -1,125 +1,109 @@
-Return-Path: <bpf+bounces-74526-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74527-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 430B2C5E3AB
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 17:28:59 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1140AC5E477
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 17:38:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5890638619A
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 16:00:28 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3D8565070C4
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 16:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1901632D7CC;
-	Fri, 14 Nov 2025 15:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1538B330B32;
+	Fri, 14 Nov 2025 15:57:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IgddwB4d"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="T1rLepw4";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="U6ZkWTi7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B23FC329E6E;
-	Fri, 14 Nov 2025 15:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3B42192F2;
+	Fri, 14 Nov 2025 15:57:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763135597; cv=fail; b=K4sN0MXxL5L5dOOGawKZRUhw4OnAgS+o834ZY5VuY88pibPmoAFR4rqzeykltUyhWm0hxgFmSicMV8NdoYZfc55rolnJ41HCehPsSustihpY2KMOOu6KIZ6A+6jlPd7TQVgJb4+QV066iAVz7avagK8PYmKFZL8kKaPhF/HaxFw=
+	t=1763135855; cv=fail; b=MuYqq5YjufIGq9pc/i5dRiQy5H/EpmpAORE8eZj1ZHkQtJ1Mz0wG4PXLqNN8P2i0+YbRD9G70e3033258Uspry9ajBHvxJ5sKeBIIFraRaLrLbedOx3jO7ZEJ+ocjfz+P3POtX9AXCA22cGXvaCY7vDt2KMP0zn9Xfy744w0frE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763135597; c=relaxed/simple;
-	bh=ypY4Hb+H74sRIDm+gQqybCEg4F1RT60jLcc5KCorc+Y=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=YcemNpje2bBi9wo0cxlSGUAbM1nutEddma6VWEi1leqgNhgf+vSYzCe9rEMHrL91rQnF8fWntHykUdM7m1GtPR7kW/EC6q+kJH6dPhbdE7W0WAss15zq6oA3n3JYcwWoC8Njzdn9sufvFLr5N+Ow9ousd7bM/RZPKitAVUcJVuw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IgddwB4d; arc=fail smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1763135596; x=1794671596;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=ypY4Hb+H74sRIDm+gQqybCEg4F1RT60jLcc5KCorc+Y=;
-  b=IgddwB4drmSd8eAdoM+ubnOIrMVK5e860P5L+yAJ0S/pTEX2YAoFi2Vv
-   nBgZ6y+ebu5MgZm5hBt2nM7LuV//OtwDxBM6VgiTtMOMh+WAF8FPWDkA6
-   AfQp4irNz+rztw+j0eMoSIOmQVycH7JGs3eBtK+dTOHjml9fpm6DeP1+5
-   AcG2QNKpZCnK13/SoqAOeJVh3ojxhAD0lK9jTbzTr+WvYuO8n2JSy88vw
-   73RKGfma0Lb3+MuGIwURPJ3APYeAnEzb7+UgU5FrgshYtkO0kF/mxSr9l
-   +18RZC/+7Axdwqe4XEH/RAT9cspENaN6XRq7MzYw/ygm5UhtlBb2mfhO6
-   w==;
-X-CSE-ConnectionGUID: EiJneawhSVCKEY3yQxDyfQ==
-X-CSE-MsgGUID: VbsvKugnT0K1+7K5fwdVVQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11613"; a="75912670"
-X-IronPort-AV: E=Sophos;i="6.19,305,1754982000"; 
-   d="scan'208";a="75912670"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2025 07:53:15 -0800
-X-CSE-ConnectionGUID: ZSTte16gSjChH41QhKF/iA==
-X-CSE-MsgGUID: x9MxKLV4QaGAfIoQM3fC9g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,305,1754982000"; 
-   d="scan'208";a="220448294"
-Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
-  by orviesa002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2025 07:53:15 -0800
-Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
- ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27; Fri, 14 Nov 2025 07:53:14 -0800
-Received: from ORSEDG903.ED.cps.intel.com (10.7.248.13) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27 via Frontend Transport; Fri, 14 Nov 2025 07:53:14 -0800
-Received: from DM5PR21CU001.outbound.protection.outlook.com (52.101.62.5) by
- edgegateway.intel.com (134.134.137.113) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27; Fri, 14 Nov 2025 07:53:14 -0800
+	s=arc-20240116; t=1763135855; c=relaxed/simple;
+	bh=+dFhxFqYU1jRvdAvYjHw3EzmyFrvkkwjfEaQ9T5tAEY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=iMv4vesxOH8kBbk61NeLkIGrJ/hqqiUAGEKqsaikxROQ67dJk2uNR+wHvKFP9lUcfr+RrhV6O72xf/DGoUF7U+B980cvo/PvEmKNcNQ0tM2e3ntaARX6IUa2I9hDSBEYwCGhTupfe5FznB3H5Q6gIFUAbWUuVKfGI8u2hIdAUNY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=T1rLepw4; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=U6ZkWTi7; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AECuPtF018172;
+	Fri, 14 Nov 2025 15:57:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=vxCLJLTebtdzPqRNdD81h4+HXxC7MM7fjEo6NkV8UfE=; b=
+	T1rLepw4lc+oguAfl+PfEWMqofkbWHh+zkJrUlnFLL8GBD3GCXnDE06t+PwLdrNU
+	4po9/EftbuK/idvsjIVikOismz/DHCKa0x2u/ypE4rAzj6lFIdrGo6REDeZMM91J
+	to+REuf933coDFaErzmbAnyTz/8S5ir6GSG8dWoHSIrJmd35PHv4OUFVNyISqkHA
+	2oRUH0SX97021pbHN6/FG/Rhh7inL2eJhmkXQtF4Azd+4WyTJNCwjJmyv/EsoxQR
+	nLJ7vvvKUiJ3TSVymVVq8ziDn/rAvp7dhibGEtFmgt1qF/+MIUnqqorVRny5xSRO
+	0Pu0FkK/11oenvfKJxXlKw==
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4adr8sserw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 14 Nov 2025 15:57:20 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5AEFtI6a010877;
+	Fri, 14 Nov 2025 15:57:19 GMT
+Received: from co1pr03cu002.outbound.protection.outlook.com (mail-westus2azon11010001.outbound.protection.outlook.com [52.101.46.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4a9vaqfjwn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 14 Nov 2025 15:57:19 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=qNg62bb3Cl4L4vRGfpCXoIGbmu9eZwdfCHXaMyZGOR4I4AAYE4XOX/EU7uQ1uOkWAHjWitjWw9zzoqme4sbfIwdQYVXoqghLWqw22cqvDfbb8t2nAk2JdB6kfhu2IhsM/m4ZskoQvdhqdVxO58aH848SkgPQYJgsFQOUtCXTofMPtocD37gsfPfuj9/RXk5rkJ7YCPJAfHnGxknlaYtXZdwiAHIAg3c8oGzTCugRjk3wwJ39ZcQ/Uwk/6pknn+TJJijYFlSIykuglCzjrSD3zkcEsGVBH6fQE26bse5IeSgvRzN+viWZIUvBgV5sAlMaPxXiZS/mvVr+ubsLta7v4Q==
+ b=WhEi/PbPafqKfJ1n7OWDRfZpiOCfb6B2JzDV7ON5rC2S2NSqcgGoURmpLsGQxW5Os5fgBeFokxoL/KEBJK+5ypYBLRcvf0i5uxtY6Qtkoc8wQeBBX7rDV/SIwM8Ziu43XycjtluAg6eEzr9iS9vyxCNN7a24mqHhF7M2KSbgAR3oZaZ+qq4e2Fedlb/tRo36MzbA4Hi0ScT0frrJsYxXas6wohwCiosZwaZpToOUMbIL6QWdi/DTiYzVPOc/cm794o9Cj+uN8wrwjcm37iMcM8H3lR0CaJkghOuJVY2o03boAXO5Ux6dJ5ALKAwjzZ98AdgoTZR9gt+L1zTzLMguRQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BHQpPxywcv6QbqQd8yS2+klE+0iCCB/5EnzS4/5mB8Q=;
- b=qPZ35xe/FawGsqVMiMjgRnluWywFNclyZCE6uT162jPaIQwH7+zWijYiF6QFwjDzi3f/DB3V6JBWM3swTNSWy9iNm64ZArfGA+S8QK93xlzSRqRmflB/FEjWO0kOgwZdQHY9eNdofoSfWvSr1r3HQ7SqtE0422Jldef6zZgWMXwVGoGDO/GMBTcblW3ApmEc/KNOjovHHDdVAaoptZc6hl/HW1Ot/fQlJvdZOAMVJeca7ba8TuudVLJQjmOmmzLmhoKu69gQbtPPrZxmVEXPBBCeO+z7158pMHgPwTsImJW88KQ4L0AkrojRIiaEBh7lLn3oEFAwPu3JmX4hv5GPXw==
+ bh=vxCLJLTebtdzPqRNdD81h4+HXxC7MM7fjEo6NkV8UfE=;
+ b=sYb/ypN/UAMqUlpQwm0VTZBVcDt/jqDDMFBk2oS87Plzw05o7U/jlP7ynzcbyYmAwxZ2PO0TA5JsTl2i06HGkbW+x2XuPBGBmVtWcVnAPUBOQvzvoKU1Km5/XSueDBm2gOUZrPMDo+llpTsEe5wRImgAOw7Fp9eqxbaPmd1lg0LGtS6ABNKkxD6VxVTA1ltx3DmEtuPaJXC1gxkMVOe7nA/9fFH899US+OYIdLcJS4uLGs8z+rKOUP/RoevU7pXmVHEpSFQwR3XlWI542liDFfvAmVrpeC3ePwsNlRxfdxohuPbkz3C9rdd5wHLAzTwN5qeHEvQbBBcY7BCkHwdJpQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com (2603:10b6:208:3d7::17)
- by SA1PR11MB7132.namprd11.prod.outlook.com (2603:10b6:806:29e::22) with
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vxCLJLTebtdzPqRNdD81h4+HXxC7MM7fjEo6NkV8UfE=;
+ b=U6ZkWTi722HwrxJxZeTiPWwtpkV+dsP0DAVY9n8/utB6vhYCMDxn6+aVWYXvsp5IcQAtun8pJfs0HnIOJr2Va/0eSL1jXhVYvlrsDa+TBuS8nl6AnD1FXe0QhbpetiSA+NZJcw6tsbSdGhCmThtk7csmpADx3DxlQ9loCr9H9bU=
+Received: from CY5PR10MB6261.namprd10.prod.outlook.com (2603:10b6:930:43::22)
+ by CH3PR10MB6836.namprd10.prod.outlook.com (2603:10b6:610:14f::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.17; Fri, 14 Nov
- 2025 15:53:09 +0000
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::61e9:afe6:c2c0:722]) by IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::61e9:afe6:c2c0:722%3]) with mapi id 15.20.9320.013; Fri, 14 Nov 2025
- 15:53:09 +0000
-Date: Fri, 14 Nov 2025 16:52:58 +0100
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Jason Xing <kerneljasonxing@gmail.com>
-CC: Magnus Karlsson <magnus.karlsson@gmail.com>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<bjorn@kernel.org>, <magnus.karlsson@intel.com>, <jonathan.lemon@gmail.com>,
-	<sdf@fomichev.me>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<hawk@kernel.org>, <john.fastabend@gmail.com>, <joe@dama.to>,
-	<willemdebruijn.kernel@gmail.com>, <fmancera@suse.de>, <csmate@nop.hu>,
-	<bpf@vger.kernel.org>, <netdev@vger.kernel.org>, Jason Xing
-	<kernelxing@tencent.com>
-Subject: Re: [PATCH RFC net-next 2/2] xsk: introduce a cached cq to
- temporarily store descriptor addrs
-Message-ID: <aRdQWqKs29U7moXq@boxer>
-References: <20251031093230.82386-1-kerneljasonxing@gmail.com>
- <20251031093230.82386-3-kerneljasonxing@gmail.com>
- <aQTBajODN3Nnskta@boxer>
- <CAL+tcoDGiYogC=xiD7=K6HBk7UaOWKCFX8jGC=civLDjsBb3fA@mail.gmail.com>
- <aQjDjaQzv+Y4U6NL@boxer>
- <CAL+tcoBkO98eBGX0uOUo_bvsPFbnGvSYvY-ZaKJhSn7qac464g@mail.gmail.com>
- <CAJ8uoz2ZaJ5uYhd-MvSuYwmWUKKKBSfkq17rJGO98iTJ+iUrQg@mail.gmail.com>
- <CAL+tcoBw4eS8QO+AxSk=-vfVSb-7VtZMMNfZTZtJCp=SMpy0GQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.16; Fri, 14 Nov
+ 2025 15:57:15 +0000
+Received: from CY5PR10MB6261.namprd10.prod.outlook.com
+ ([fe80::f46a:ffe2:b67f:7884]) by CY5PR10MB6261.namprd10.prod.outlook.com
+ ([fe80::f46a:ffe2:b67f:7884%2]) with mapi id 15.20.9320.013; Fri, 14 Nov 2025
+ 15:57:15 +0000
+Message-ID: <3f95f01b-9cc4-499b-a18d-5c4975f0b0e5@oracle.com>
+Date: Fri, 14 Nov 2025 15:57:09 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH dwarves 0/3] pahole: Replace or add functions with true
+ signatures in btf
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves <dwarves@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        David Faust <david.faust@oracle.com>,
+        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
+        Kernel Team <kernel-team@fb.com>
+References: <20251111170424.286892-1-yonghong.song@linux.dev>
+ <a9ebf236-78c8-439a-b427-cb817efe23ae@oracle.com>
+ <CAADnVQKr+9gneG4ZZHBKWjTo-AiqPCf_Mxv_sCi9acqEKkKShw@mail.gmail.com>
+Content-Language: en-GB
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <CAADnVQKr+9gneG4ZZHBKWjTo-AiqPCf_Mxv_sCi9acqEKkKShw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL+tcoBw4eS8QO+AxSk=-vfVSb-7VtZMMNfZTZtJCp=SMpy0GQ@mail.gmail.com>
-X-ClientProxiedBy: DB8P191CA0027.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:10:130::37) To IA1PR11MB6097.namprd11.prod.outlook.com
- (2603:10b6:208:3d7::17)
+X-ClientProxiedBy: FR4P281CA0118.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:bb::9) To CY5PR10MB6261.namprd10.prod.outlook.com
+ (2603:10b6:930:43::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -127,246 +111,259 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR11MB6097:EE_|SA1PR11MB7132:EE_
-X-MS-Office365-Filtering-Correlation-Id: b8a5b0eb-dd6c-493b-82cf-08de2395e8ab
+X-MS-TrafficTypeDiagnostic: CY5PR10MB6261:EE_|CH3PR10MB6836:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6e61d823-c28f-4686-b2a2-08de23967b08
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016|7053199007;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?TW5DbU9sQlh6eEhlaFJud2dGVjNuOEZMeU9CYXB2VXQ3OVIxTE5vODVxS0Vv?=
- =?utf-8?B?SnNqVWNseDlwdDJadWZCL1VQRUo2emlqYUFPbWNvdTRGcXY3TkpmbkpvZU1J?=
- =?utf-8?B?cDRkdFJJNmJZQkEzY0IyYmlnUW0yeGFDUk10Vk5oaStxUVFTUTlOdUMyV1Rx?=
- =?utf-8?B?WVE4aXFuSzNycE0zYkNRR0JoUEJ4WG02cWxpRlFKdUFvWkpyU2VYSjFua0tk?=
- =?utf-8?B?cHVOMWJ3dFNHR1VWN3c1UkRwV2c5U1pVYVUyV0twOFpHWkhZRHFCQ1lWSENj?=
- =?utf-8?B?YnNPcWlUeUVRL3pSODJVbld0TXlIRWZxU0hEU0pHZTJhN1JGL3pnaURQeXJJ?=
- =?utf-8?B?YlpmaHV5cHpnL01QK3dLS1IvZktLTkd6bGgyb2lBdjRYN2l2ejExTllOeTBt?=
- =?utf-8?B?b2xrSlM3T3BZc1VMOEk0R29OQWJ4MmNEeHpKbHBXanNwMlZ3MDZxWlF3emR2?=
- =?utf-8?B?UUdjYlgySTVzWGtrSGozdHZ5ZlZUN2VTS1dwaHBBcGdMZ1ZZS0lQSC9yRERt?=
- =?utf-8?B?ZUxteUhEUVMxdzRjTUNDdWErdTNvMS84VGxWbTZYek5RbGZVdWM4WVp5SW0x?=
- =?utf-8?B?NExSVUFYcWJtbEVpMll2NUo5cFRWbE90dUczWUNtK3B6M1JzSTBmY1VsNHdC?=
- =?utf-8?B?N1ViN3RrSEpZWUtDZE1lUXdnV0oyMFVFdG1TOThKeFRYS0JJNEdNVEFsemRD?=
- =?utf-8?B?Mm56Z21mYVE2cGtRWVdMOEZTY2Q3V3VUZkZGdlRlazdIYVRZQmhaVm92b0lz?=
- =?utf-8?B?QlU1OG00TXlPcFAyQ3ZOdjExbHV4VmtBSW0yaXVTNGVKbDJxVHo0Ty8vbCtZ?=
- =?utf-8?B?Y3p5OVVmK0NyazZJa1VvZ1pzZHFpbk1HV1NSMGtURllLQTVXRlozQUY4ZFdC?=
- =?utf-8?B?dExwVWo4UUszbjNPLzR3OUVMVUJIN1lIOUxRaTZYSDc3cDNHNzhTWmlwVCtR?=
- =?utf-8?B?Vkl1WjNCclBzVzh0RTAzbjZ3bDQ4ZzV1UCtvYlR5dnNNb0pRSlV2dUt6eXJS?=
- =?utf-8?B?TVZqK2h0Z0RNKzhpbGt6YVhtdXZYUTlzNDQxZnhGeXRSZ0xSZnpuZVByUUFM?=
- =?utf-8?B?bTVUekk0d1ZraGZwMnV0ejVXc0R0MjZ3cmJheGQvYlBESFozaVp5K2hjMytX?=
- =?utf-8?B?c0h3ZlZicTZINUlvK0xYQ211U05nOVlieEZ1SEQ5T0RoYndKS3dVb2YycUtm?=
- =?utf-8?B?VllUL2ppRTdHM2hMNkh3L3RlaFVQOVkwVkdpMlJmQnZqckJNN0FyNTlxdzEv?=
- =?utf-8?B?SHlNRDRvRm9IWGs0c2FLdEFyOVEybnVBY0dnc0lKZERyRTI5NktnTEdnSnpZ?=
- =?utf-8?B?bnNadFJVZ3RMdEhCbkhheWErQTFKZUtUSlVLVXdLK0w0QVBnUFZCTjhvdjJT?=
- =?utf-8?B?NDcxS1J6cjJIYmlwQUE1ZnRxM3FTSXRiVzArdUtXU05QM2ZKNjlYWFJ4U2py?=
- =?utf-8?B?OFJuZFVLbk5RNjByQUFxbld1NG92cy8rYmFEc2ZuVks3RW5oZ2lpaERqYkEz?=
- =?utf-8?B?N2ZUWklTMWNoV1pDNkFJMHRvVVpmUHZnNndQT05jd09OM3NCbU10MEZWN2hW?=
- =?utf-8?B?RjFLSEFwSFFCVWhDd0QzaFg1UWJFQTNLbCtpSUJIQ1YremdnZVV2SXFIeHdJ?=
- =?utf-8?B?TE5uMEx1YVdVV2NpYWw3Z2ZPZjEyWnp6MjFqUEk2ZzE0NkNUUzlLYm1ObFJK?=
- =?utf-8?B?blFrajdNTXNZdXJhdm5aOXU5b2pCTi9BMFUyM3ZqU1dTUEFVSW5Ld0k4TStW?=
- =?utf-8?B?b3lmamIxbmIzYnN1Qy9WelhxM1lyUjNuWng1ZW0yamYrSiszUTBSMXNNbWs1?=
- =?utf-8?B?b3poMHBDM3NWeXpVdStmekNQVFE3NVlMY1FXbHkwVmdtSVV4OU1EdTBSL0N5?=
- =?utf-8?B?d0RTeHB4WkhhOU9DRjFIUS8rYy8zU1VLZlFocWtzUTlHSDlKOTZtaXlzcEdn?=
- =?utf-8?B?enFYM21laGFLNktkekh2Sk1vcjVUOTBTbTBjd0JCNkNhdkxRTjBUdWRWa2FB?=
- =?utf-8?B?SFJEcVNTczBRPT0=?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6097.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(7053199007);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?MGwrNjRETmpJTldIb1FBaThzUy82am5QaHBqM0NEMGVTa242NjhSaUFKZHo0?=
+ =?utf-8?B?Yk5LeU15K3c3VDNQbXhpVDIrWWNZNWxVZ1lORU1sYk1PNi9PNXhET3c2djRW?=
+ =?utf-8?B?Q3U0RHlqSnI5TjZ6VnVEVG5kQW9DRFBtSHVZd24ybEltVDhRcTBiZzZ3Zi9E?=
+ =?utf-8?B?SEoyQTNUOXJrNGdWbWh0Z1E0c1QydEEreGpHanBEZDIzTGlEOVdXY1JYUjNJ?=
+ =?utf-8?B?VnlQNFRlbGV5Sm5NYVhnVjZxY21iQ2RXMjZQd0Jtc1BXaFdiS1M0dzFQVFE4?=
+ =?utf-8?B?SG5BUmp0MFZKeDhWbE1mSEIvYWQ1RDhrZ2FIZHdobWR3WmErN0txQUhTK1B1?=
+ =?utf-8?B?MUZZcWIvTDNkd0F2YzZJdWR0UW5FR3V2UGVXYzdHSFVJYUl5cmd5YnN6cHJp?=
+ =?utf-8?B?UFVVZ2lrT01RMTBzcW9UL2FzQjkrc29HRmlrWHJmRlRIalRYc2cyQXJ4cy94?=
+ =?utf-8?B?ZGt6NGQ1cy9nQXZhL2FyY1hiSUo0a2xnb2lsRy9Pc1h0RnR0QzFqdTJ2N0Fu?=
+ =?utf-8?B?TzgzenB6dXRUVlFMdEw0UWNqcVhUUjRxNjN1eUcwUGdFeTBMZXYwQ2V0Snp0?=
+ =?utf-8?B?UE9BWEZVdElQYzlERVJvUmNIdUhHUEpaemVIWFR4UTNxK01yaG12VWJ4bSs3?=
+ =?utf-8?B?WTNZNktXSFF4VkxnQ3dwVXUvY3hCM0U2QnhLT1gyQzNuclRpWUlLWU95OFB1?=
+ =?utf-8?B?N0s4ZXVTZkFlRklKTXl1ZUl1TUxIekJESFBISVRZKzJ6NlhCd3FleC9ZdTBI?=
+ =?utf-8?B?R1pnY0ZDclZ2OG9hK0pSVk1MT2srVHBBL3l0M1JvcUpIdS9RemJqU01Ib0RE?=
+ =?utf-8?B?dVhnR2FCRkx1MVJwN0RZcDhIbWVxUDA2NExzVkFCQlVUN2xzeDBrdVFJRlpL?=
+ =?utf-8?B?Y2duYlFmdkRRSnlTTWs2SG5ZUXpGK1U3QTFtTzZvcTZ2TW1FNjJNTm4xc0hX?=
+ =?utf-8?B?UktTcEw3N0pucGNuZndZUGlGMXRNbjd3V1QzODBkckFmRWFvTytjcHRpQ2pI?=
+ =?utf-8?B?dzRwcUVBN1g2RmdXQkgydEtOb1VKNS80OUZPbzg3dVZtTk1mYmR2MWRROEpz?=
+ =?utf-8?B?Q3hDQkZHQU5FZThONEZBdG1mVGRGdnVkWlloY1gwbVZNVXBaaW13Lzh1U0Vs?=
+ =?utf-8?B?eWJFbGJSNCtOWlhySWNzdHhlQVZ1NFNxTHd6eUZEK0oxWUkwVVBRZE5BbUc5?=
+ =?utf-8?B?UnZlVWVJcERvYXQ2SVp2ZjIyZnRkblp5NG4xYzRnc09SdXFtajBnZ0VESW5v?=
+ =?utf-8?B?RjZVcktQSm85b3NKdm9VeDFSZE9zZldXbDNVL3dKd3hJc2hBdHZFUFpVb1RQ?=
+ =?utf-8?B?MXZOZXBqaUVUbmkyNzN4MnowYWNEdmhsSzRpZTVxOUVTcHhnSEg0a0ZCZXVz?=
+ =?utf-8?B?MjNUMkJhOUYrWkVxbmxVQlh5N243NHgya2tlLzlQM3VGN3E3aXJsRzE4QU9R?=
+ =?utf-8?B?Y2x1bG92RTFLRG5xaWVQL0pOTmNpcmhKZEthdmkwamdCYVhOMGg2VGZ4NGs4?=
+ =?utf-8?B?WkRtMXdxMk0vRkJqcnRkYlhWS0VET2NiNnJKbERSRVFjYmdlUVNOMVh0Wnlm?=
+ =?utf-8?B?WW9DZE1mOVIrcmY4THdmYjZjMzY0bmVieFZsYWpzWkZpTnE0OHZVTVN0TFdq?=
+ =?utf-8?B?M0svYnFPMklZc3JFNXY2N1Q3b1dQRlpvS2dteURNRTNPUEo0QjRmc2tPV0I0?=
+ =?utf-8?B?ZTdDZmg1b0NPNXljTHBETlVnWmpGeVhNMFQxejYyYmJDVGxzWStQcmhIc1ZR?=
+ =?utf-8?B?WmV0Y3Z3Z1ljMklBWm5UMm4xTzBkWnVjMzlrajlFSTExNzExT3QwNnJ2WTIy?=
+ =?utf-8?B?OEZTZEptL0hFZmVab1pNT3BVQlo4WnF4KzZ6enMzSm1JR0R5MmNqVUR1alhQ?=
+ =?utf-8?B?eUxBU3RvREVIeGdlVUN0TDFmM3RPbTc0U0xCOU03anNFdCswa3RCT0w2ODdS?=
+ =?utf-8?Q?V+jDKVp2cuiq+rn/I+xpBK4tzvAbQJcS?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR10MB6261.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M1JsMFdIOHR0QnVaYlYrUGpTNVNVMmprTGhGOE9BUC9ZUWFyZEFvaElwTC9s?=
- =?utf-8?B?THRvRGdVaytjdWwwbSthQU5kSHVhYUkxMzJ6UGFlVFFNbDd1V0RINzNnZ3Rx?=
- =?utf-8?B?allJQWpGL1NTTTYra2FySXhKVE5MZWFaWGkvUHlHMWhmUTNpUTZ4ZEJSeUwx?=
- =?utf-8?B?YUMxYzRpU3haSjl6UUwvRDdaR0grVzFac2tLcmtXSSs2aitRNWFuUzI0Tk9T?=
- =?utf-8?B?ZnMyL1JXZUxXZVVrVnYwdlF4QmtLOW5oVmREcTdqWnlwYW9XQTE3QTg1ck03?=
- =?utf-8?B?UHpEOEFoQXF2UUp0TXZVaXdZVE5FY0xrUXRSNkNkdU9va05XaWszL1ZWRDdz?=
- =?utf-8?B?V1NBSWU3OWZ2cWdHUjlldHF6WmFRK3Nxd0VzU1FuMDVPcjVQdFp5WGhLdDVk?=
- =?utf-8?B?UGtpdlZPOTFZQzZ1cXEzOE1YMUJRYkpWUllkVmVUNjdESVFnRkdaWHBBV0Vx?=
- =?utf-8?B?L3dEcll6OERGQ2VneDh0SVVVYmxDbFBLb1R6RmpEM3V3S010VGxmdW5WMWlG?=
- =?utf-8?B?SXprUnlJaWtOUEVDa0owNTdwNTNRTzJGTEtZVHg5QWd2OFFTODNvak5TMi80?=
- =?utf-8?B?enlWTk9ONEJDTEw2b255YmlhZThvaWdaVTVHaWt4TVNRK011OGZGZ2dCaG80?=
- =?utf-8?B?WkJBNmxjYS9pRWNscklsRmZYZ3liWDJrbzVVdzNnc0d4bXZMY25hTEI0UXg1?=
- =?utf-8?B?amI5WDUxSFZReG1KMEZRSFBNMUZQUVdpWlRDZEQ5dWc4TVFvakVTYkhlVndB?=
- =?utf-8?B?SkNoNXZiVjZHRGtIdTZvK0N5blg5VmN2V0h4S0UzWTdXT3FCckR5c0FOMmVE?=
- =?utf-8?B?ZmpobkhyZncwdXZEZTRTWEU0eUFuNjhkUlJOeFFmTEtKQjFvRGNmbUpPUHli?=
- =?utf-8?B?dFBoRjdFLzJxWk96VDIzVWNEMEgrOHV6V0gzY2ZjWWlMTXBVNjEyWEZnc0Z6?=
- =?utf-8?B?VTJPS09PZ1FzR2JFVzlaQStkNGw0ZnRpVSttMmZkL2FUWm5vRE1mQ1doMlhP?=
- =?utf-8?B?UnhvRndFVE5yVEJRaExhMjlPRkVKSk1JMi96cVBTaVVZeTlyWENyTDdjaUFv?=
- =?utf-8?B?R3B5OGM3SitsRWZ2MTdiUTBia2RFVUZHS1NrSHR1OXBXWm90RDZyUVA5cWtJ?=
- =?utf-8?B?QlZkWUFnazhyZ3JSdUdRVWhNMzJRTkwxK09jclp5Q0VRaGhoRGJINitweXYz?=
- =?utf-8?B?RFB3QUNQNDU0eU1BM1JZWU51SFVFblMrdDNwb1VPdzBMM0tLYnZmQTBvc0li?=
- =?utf-8?B?UlRRNkxsTEpHS3loQVU3S0xUVEpaZ010N1ZMcTdWaWVEK1RzKzcwUFpEYWhL?=
- =?utf-8?B?d0loK2ZZQ21oYjdFL1B1Y2F0U0gxMDVsUExKaUV6K1RtMjh5TDVnYW1mRU8w?=
- =?utf-8?B?UzVBc0lqUTRqTHFubXFaNEJWaFFmai95VXFwMFRBUVYvSG5KOFNaYkZLY3E5?=
- =?utf-8?B?ZG1rZ08vZEFRVjJmOXY0STRucFVQSnZUYVpVMTFkc1N3cVhzM2c0RFNlNnBY?=
- =?utf-8?B?S3lLM0cyMmMzNHRQRXp2VC9Uby9aenpUMkZBN29kL1ZlV29XdWlNdXJiUTZ6?=
- =?utf-8?B?Mml5QW9OcHVSMjg0YVVXclBkeUxUMEp1Q3ZXdHFsVHNvYnVIWDVYMW5LaG95?=
- =?utf-8?B?c3l3L2syT3Fxd2NDcGRVcHVnTCtQaU5HRGNYcEJDNXRmWld6U05tQ3gzeElO?=
- =?utf-8?B?akdoNDZWQVJ6WklZN0ZkSlQ5a3Z3UmZJdnlPYkUvM3RNcnRoWmptbkhWOGlr?=
- =?utf-8?B?ZGtQdlIwY1hkRk5NV09HTllxTTFDSHh5L00wekwwb2dhSUltcTRQT1hKY0x1?=
- =?utf-8?B?ZE9BZEk0MUE4eXhTZjk0TVp2dG5kN2JCcUlnU3lWRFZQUnAzQ1BUWEdYZE1N?=
- =?utf-8?B?emJSUUJRMmh3OGNMZ0RJU3BtZnhmQzRNQkh1R1VCVTVDRllSb3dLZk5Dc0w0?=
- =?utf-8?B?RXFab2RuZGh1bGsvV2Flcm83NnZYVmhSS3BkLy84dENTZ3VGU242M09EV29W?=
- =?utf-8?B?amNsdWkyWGtQVmpNRGl2Y1hZeVZxWmtKM3ZJQUR1MTRVQXlNZm5EZ0pBQ1pa?=
- =?utf-8?B?MjFmRzFnSGkvU01xaE80bmoxSDI1cEI1WGZKMkl5c25GZW80RnJKSkM4Z1ZC?=
- =?utf-8?B?UEIxV1BmOGYzQThYNUVsdWEzV3BDeXJkTkViYUxKMUJnb3prb1p0N3N2MEEw?=
- =?utf-8?B?VHc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8a5b0eb-dd6c-493b-82cf-08de2395e8ab
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6097.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WEdFbHdIZ3FqdFlXUEhaek9UdEVCRW9YS2ZYTUhYTXBiVmxFZE03ejN6SXg0?=
+ =?utf-8?B?MndQMk1wejlPVzdHSGJTSnNXQ0hzeENJR2ZSU3gzT0JJdjlUQUVYQ2wvN0t0?=
+ =?utf-8?B?YXFlUEhPdW5sVVRYRjhLR1cydmkwQUI2K2lHRU1VVkpLRkpNdDZTZEhPRWJN?=
+ =?utf-8?B?OU5paTZ1WWtCTXQyUWF4MEw5dUZVTXhCay9SOXMvc3k1enViNlB0UTFyQVBa?=
+ =?utf-8?B?M0paN0x5NnBBMU94dTRGVnd6cXdlRjVvYkVKVjFOSk1aNEd5eXBOdG5zVjJT?=
+ =?utf-8?B?SmMzelliQWYzVlEwcWUrQXZRTTZqRkhjMzJnK2lwNDZPOUE3eGlwZFNZTXpw?=
+ =?utf-8?B?VDN2aWhYN0hkMklyZ21wc2UvcjFCVGNHQWtkVWpvNkszRkpraDluYzRHbS9S?=
+ =?utf-8?B?aTJDcXFTUFhraENVUkJzSktubEUrbHhPdUd0N3c3S3NmT0dSTDNTMU41aDQ3?=
+ =?utf-8?B?ekw0M2U5Lyswc29oQ2RxNVhzNXlKNlh2MDA2eWt3bnhRRk9mWnZyYmliRmtN?=
+ =?utf-8?B?MGs5bkZkKzZDbUpCSStsNUxiT3B5dkxvTFNTRmxQSisrLzV0d3V4STVJMks2?=
+ =?utf-8?B?WjQ5b2lrT1drM0g3YlZLa2hrZ0pnbFg3ems2eG1NekJuVGJTRmJWWGllTXVx?=
+ =?utf-8?B?MXdITFZSODhVejFWVVEyOGFGRnpiN0V3NVZyNk1NakxqV0JQWTV3NDE3STlk?=
+ =?utf-8?B?MS9nMDNoZXcyMms2M3dTRHdvSWsxZUxwTzgwdmMwMnNTeFRMNlZtSXNMNmZv?=
+ =?utf-8?B?Y3BWWU1HRHREdFJzMmMvTlZOSVJsN0YweHdnNmtOdXR4akRVY21GZ29YYXRC?=
+ =?utf-8?B?N1pBK0ZyMW56NStpV0hSTTI5MmczSGcrQjVUaGZlZWhXdW5pODRvbDhCem9H?=
+ =?utf-8?B?ai9kVDEyd0x3Tmc2QUtacW9EckZNcXFqMkZ3SHpGcUNpZE9jVlhGR2I2N1d2?=
+ =?utf-8?B?WDM1RzJNYWEzNFJSVWZ1MmZkVnZLV0lxV1dBV2ZFd3FPWlhERU01MzBaNEpI?=
+ =?utf-8?B?anV1a2E0ckVUd1FKRlE5L0d4bEpaZkszY0ZiaE1lR0lqa1g4cHA1Rm1UZGFs?=
+ =?utf-8?B?ZU5xd2lyTkNRc09PQUVCclZ4WmdPZUpIMjVrbWhSWWVQZ2hyTDJ6aFFUZFps?=
+ =?utf-8?B?WXZuYXlyUldFMGl4ZmV2LzMvaEZETUR6RkI5U3BQWjZJK3E5L2U3TUlEeWY2?=
+ =?utf-8?B?eENuT0YyanFiNUhMRXJRSEsrcVVkdFhSbUFjQWJYRUFieE93YnFtdHd6b2t6?=
+ =?utf-8?B?MFArUXFadWVEbkF3TFFuYVMyK3pzYUJCYTRiZmZRUDNzenJoSWNLVUhWcTUx?=
+ =?utf-8?B?U1lPTmpwWjMvK3dWVkdhbGxuZEhZa2QrY3JERUtOeEpuRS9TcmIrTCsvTVVY?=
+ =?utf-8?B?bUJ4aXJ1bGhmVnRTU1BxRjEzUlpRYVdGL1hqclJtU3FCb3VvckZFOU8vdGta?=
+ =?utf-8?B?VDV0bldhM243N3dUaEQ0d3N4THcxeGRvcytoVlZCZXVxaVVrMm9yUEZyUVVy?=
+ =?utf-8?B?YjZoYzI2a041OW9PUEpNb1JvUG1BVVA3RmFPZ1U0YTN5TkxBditqRlJNcDlV?=
+ =?utf-8?B?ckFnSGF0eUtKM1dCb3dNeWxmSEJLVXhXUFU1S0w2aUplRm9meVV6S0hpcHdv?=
+ =?utf-8?B?cXp2ZTUvZWNSRmV2SHhzWXFkc3ZJMStzbUsxMGVFV3FpejMxTGlyNjRVMDhX?=
+ =?utf-8?B?bndrcGtMSFdOZFZtT0F5eGpwUnF6MXlNejg4UVpyZnphcTE4SHVqUlcyM3Zk?=
+ =?utf-8?B?aEdYVzg4VEZET0t1Rm9sVzdXZDNmWHIyRCtmckxDclVIYWs0c3lNUUo5S0pt?=
+ =?utf-8?B?aDFzQ3dOaTZaODgvZmhRT0xEOE8rZVRyT05KZUR4QXpZaXk1MUpQZDNtQUN6?=
+ =?utf-8?B?UEFsVmRYaVhEM1VkS0hqYUNMZXJOZzVTRXlNZXZUVFZ4MmtzaWF4SGJDdURS?=
+ =?utf-8?B?Q2gvK2x2V1cvVzlCVlhKekdBTEZ2YnZaRkpyRXdRdFVVMklYQTJ5WXIxbWg4?=
+ =?utf-8?B?OXZsVzh3L1EwbFZTN0NLZkdqbFUwTzgxbFNGamF6WnZaSTVrcENJNkQyMlln?=
+ =?utf-8?B?aW9VcGd4aFA1TTZPR3pHYkV2R2t2Q1VaS3JWQVErZVY2bWFWa3YwUnhCa0NP?=
+ =?utf-8?B?NGNoNzBmM0sweXJwdzkwTnpIMHhERUtqdEVpZisvbTRmYzltVnJVSDBqRE93?=
+ =?utf-8?B?Ync9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	nNt4z5to3z2GTCmH6bEHUbj8Hmnc0KdgoVwUZO732UyZMTBdynBWz0otSypl+FNNWisTc3t2LeR8BHX6VJgzxkScW4vHtqzFkGQBbbfg7tzrzVBCO8IvrwMULhthcuTpECJ7naX4MbSyyEoheiES7/nSqOwrPiEYAONd0/EpyVq2iRVW0agC2ojsfwMsN9MZmYXHtxsUaY0FLMEEvlfrWOLlaledlkBQqN4tK9QuKCZSxd0l1Grg3yMSzrTrxhdoP3dpnj42l0TfSwtcyT5rRZP4yJ8rr/3pCpRjDpxPQ+dYwaDwmFU5HSMIv4DMO8NUSev1GKxnJQyfU6D6XE8yetiOAxJzbQx83d+m9x3G/8Q1R6lrxh7wb3t+hkt6wBQOwWQPvXU3zkgEohjw1zWt6EqtYQjPXYDIQF+d4HphB8U6lsCKPF5WMKElmbSoN5iODYp/3pSC/lCxi01YtiC82WILJcL0X/j31rygZWPdy2AMfUHRdlNC1SVfdhvL7571GqOyoRcySqsT+MWp7c/D+2nSGW67335I2xTGmu20DLfZQrEQbWGszomdQT82DY3dUKwaL3b0CjBKxWk0K61wkSjKzqyMHTwM8bjcrU6Pzes=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e61d823-c28f-4686-b2a2-08de23967b08
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR10MB6261.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2025 15:53:09.6743
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2025 15:57:15.2275
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sfb4noajm2se+tslG9UfUkyrr176wv6OQJq7mwXrh6xFqQ6LPl3rjEF+Txq09kZVv7RIWKd8VmFaBtcqLWFtkVIdo436YHpGqXa2BziZRxM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB7132
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: uCzzxffWDgXdPqgeMatfy3LD0F7OJrANvAShaOb7Mfyr8xfy8bNT+kyHBSnMooxX+DklyatAfz6ziK89DhWwVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB6836
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-14_04,2025-11-13_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
+ definitions=main-2511140128
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTEzMDE3OCBTYWx0ZWRfXznWBW6H/HTlS
+ URRj0JHQFiL7BmG0cZpWg2q0EXvI/66CJWGQGePvFbtBLUnjxVfEHJeYe6yotmPs4MVT/rScj8C
+ 4hMNTRkpbYJS3IQNS2adOQRhnVimrzkW1abQ9TI5xyl10DV0r2aLZPK6cJ33hp+3eaxDQQGEkJ6
+ CZc+Tw1Ymxhri1bn11CFG3/GOBgnKhwPH+1jvnCwVnQHQYtVPASFLw8mj2sKXYoS9htzesl54dR
+ zwmeqpKE0cczA4jJEnv2reQMLtS/O/3ZSokhj8t7nQB2+XPSr6Mq6KOoQLRSaqdUWeUF/ICzFFs
+ eV0bg6a7puGvA9U1gxSZP7fGnGFD2aMIDk1A/7sD1Lc4Ir6sjv7V+73o1890+t/IA/jYxSOeUcA
+ +JPQc9zQ/OcJpYlIHDS/JM28EnsxRdCZwjAXdCe37+wB/FIcn+E=
+X-Authority-Analysis: v=2.4 cv=WuYm8Nfv c=1 sm=1 tr=0 ts=69175160 b=1 cx=c_pps
+ a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
+ a=6UeiqGixMTsA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=yPCof4ZbAAAA:8 a=qjZvip1IlP7GuCz0IFMA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ cc=ntf awl=host:12099
+X-Proofpoint-GUID: wRkXZUUZgwob6lMgNnqc0KsxWEGBkZ7F
+X-Proofpoint-ORIG-GUID: wRkXZUUZgwob6lMgNnqc0KsxWEGBkZ7F
 
-On Tue, Nov 11, 2025 at 10:02:58PM +0800, Jason Xing wrote:
-> Hi Magnus,
+On 13/11/2025 17:36, Alexei Starovoitov wrote:
+> On Thu, Nov 13, 2025 at 8:45 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>>
+>> On 11/11/2025 17:04, Yonghong Song wrote:
+>>> Current vmlinux BTF encoding is based on the source level signatures.
+>>> But the compiler may do some optimization and changed the signature.
+>>> If the user tried with source level signature, their initial implementation
+>>> may have wrong results and then the user need to check what is the
+>>> problem and work around it, e.g. through kprobe since kprobe does not
+>>> need vmlinux BTF.
+>>>
+>>> The following is a concrete example for [1].
+>>> The original source signature:
+>>>   typedef struct {
+>>>         union {
+>>>                 void            *kernel;
+>>>                 void __user     *user;
+>>>         };
+>>>         bool            is_kernel : 1;
+>>>   } sockptr_t;
+>>>   typedef sockptr_t bpfptr_t;
+>>>   static int map_create(union bpf_attr *attr, bpfptr_t uattr) { ... }
+>>> After compiler optimization, the signature becomes:
+>>>   static int map_create(union bpf_attr *attr, bool uattr__coerce1) { ... }
+>>>
+>>> In the above, uattr__coerce1 corresponds to 'is_kernel' field in sockptr_t.
+>>> Here, the suffix '__coerce1' refers to the second 64bit value in
+>>> sockptr_t. The first 64bit value will be '__coerce0' if that value
+>>> is used instead.
+>>>
+>>> To do proper tracing, it would be good for the users to know the
+>>> changed signature. With the actual signature, both kprobe and fentry
+>>> should work as usual. This can avoid user surprise and improve
+>>> developer productivity.
+>>>
+>>> The llvm compiler patch [1] collects true signature and encoded those
+>>> functions in dwarf. pahole will process these functions and
+>>> replace old signtures with true signatures. Additionally,
+>>> new functions (e.g., foo.llvm.<hash>) can be encoded in
+>>> vmlinux BTF as well.
+>>>
+>>> Patches 1/2 are refactor patches. Patch 3 has the detailed explanation
+>>> in commit message and implements the logic to encode replaced or new
+>>> signatures to vmlinux BTF. Please see Patch 3 for details.
+>>>
+>>
+>>
+>> Thanks for sending the series Yonghong! I think the thing we need to
+>> discuss at a high level is this; what is the proposed relationship
+>> between source code and BTF function encoding? The approach we have
+>> taken thus far is to use source level as the basis for encoding, and as
+>> part of that we attempt to identify cases where the source-level
+>> expectations are violated by the compiled (optimized) code. We currently
+>> do not encode those cases as in the case of optimized-out parameters,
+>> source-level expectations of parameter position could lead to bad
+>> behaviour. There are probably cases we miss in this, but that is the
+>> intent at least.
+>>
+>> There are however cases where .isra-suffixed functions retain the
+>> expected parameter representations; in such cases we encode with the
+>> prefix name ("foo" not "foo.isra.0") as DWARF does.
+>>
+>> So in moving away from that, I think we need to make a clear decision
+>> and have handling in place. My practical worry is that users trying to
+>> write BPF progs cannot easily predict if a parameter is optimized out
+>> and so on, so it's hard to write stable BPF programs for such
+>> signatures. Less of a problem if using a high-level tracer I suppose.
+>>
+>> The approach I had been thinking about was to utilize BTF location
+>> information for such cases, but the RFC [1] didn't get around to
+>> implementing the support. So the idea would be have location info with
+>> parameter types and locations, but because we don't encode a function
+>> fentry can't be used (but kprobes still could as for inline sites). So
+>> under that scheme the foo.llvm.hash functions could still be called
+>> "foo" since we have address information for the sites we can match foo
+>> to foo.llvm.hash.
+>>
+>> Anyway I'd appreciate other perspectives here. We have implicitly tied
+>> BTF function encoding thus for to source-level representation for
+>> reasons of fentry safety, but we could potentially move away from that.
+>> Doing so though would I think at a minimum require machinery for fentry
+>> safety to preserved, but we could find other ways to flag this in the
+>> BTF function representation potentially. Thanks!
 > 
-> On Tue, Nov 11, 2025 at 9:44 PM Magnus Karlsson
-> <magnus.karlsson@gmail.com> wrote:
-> >
-> > On Tue, 11 Nov 2025 at 14:06, Jason Xing <kerneljasonxing@gmail.com> wrote:
-> > >
-> > > Hi Maciej,
-> > >
-> > > On Mon, Nov 3, 2025 at 11:00 PM Maciej Fijalkowski
-> > > <maciej.fijalkowski@intel.com> wrote:
-> > > >
-> > > > On Sat, Nov 01, 2025 at 07:59:36AM +0800, Jason Xing wrote:
-> > > > > On Fri, Oct 31, 2025 at 10:02 PM Maciej Fijalkowski
-> > > > > <maciej.fijalkowski@intel.com> wrote:
-> > > > > >
-> > > > > > On Fri, Oct 31, 2025 at 05:32:30PM +0800, Jason Xing wrote:
-> > > > > > > From: Jason Xing <kernelxing@tencent.com>
-> > > > > > >
-> > > > > > > Before the commit 30f241fcf52a ("xsk: Fix immature cq descriptor
-> > > > > > > production"), there is one issue[1] which causes the wrong publish
-> > > > > > > of descriptors in race condidtion. The above commit fixes the issue
-> > > > > > > but adds more memory operations in the xmit hot path and interrupt
-> > > > > > > context, which can cause side effect in performance.
-> > > > > > >
-> > > > > > > This patch tries to propose a new solution to fix the problem
-> > > > > > > without manipulating the allocation and deallocation of memory. One
-> > > > > > > of the key points is that I borrowed the idea from the above commit
-> > > > > > > that postpones updating the ring->descs in xsk_destruct_skb()
-> > > > > > > instead of in __xsk_generic_xmit().
-> > > > > > >
-> > > > > > > The core logics are as show below:
-> > > > > > > 1. allocate a new local queue. Only its cached_prod member is used.
-> > > > > > > 2. write the descriptors into the local queue in the xmit path. And
-> > > > > > >    record the cached_prod as @start_addr that reflects the
-> > > > > > >    start position of this queue so that later the skb can easily
-> > > > > > >    find where its addrs are written in the destruction phase.
-> > > > > > > 3. initialize the upper 24 bits of destructor_arg to store @start_addr
-> > > > > > >    in xsk_skb_init_misc().
-> > > > > > > 4. Initialize the lower 8 bits of destructor_arg to store how many
-> > > > > > >    descriptors the skb owns in xsk_update_num_desc().
-> > > > > > > 5. write the desc addr(s) from the @start_addr from the cached cq
-> > > > > > >    one by one into the real cq in xsk_destruct_skb(). In turn sync
-> > > > > > >    the global state of the cq.
-> > > > > > >
-> > > > > > > The format of destructor_arg is designed as:
-> > > > > > >  ------------------------ --------
-> > > > > > > |       start_addr       |  num   |
-> > > > > > >  ------------------------ --------
-> > > > > > > Using upper 24 bits is enough to keep the temporary descriptors. And
-> > > > > > > it's also enough to use lower 8 bits to show the number of descriptors
-> > > > > > > that one skb owns.
-> > > > > > >
-> > > > > > > [1]: https://lore.kernel.org/all/20250530095957.43248-1-e.kubanski@partner.samsung.com/
-> > > > > > >
-> > > > > > > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > > > > > > ---
-> > > > > > > I posted the series as an RFC because I'd like to hear more opinions on
-> > > > > > > the current rought approach so that the fix[2] can be avoided and
-> > > > > > > mitigate the impact of performance. This patch might have bugs because
-> > > > > > > I decided to spend more time on it after we come to an agreement. Please
-> > > > > > > review the overall concepts. Thanks!
-> > > > > > >
-> > > > > > > Maciej, could you share with me the way you tested jumbo frame? I used
-> > > > > > > ./xdpsock -i enp2s0f1 -t -q 1 -S -s 9728 but the xdpsock utilizes the
-> > > > > > > nic more than 90%, which means I cannot see the performance impact.
-> > > > >
-> > > > > Could you provide the command you used? Thanks :)
-> > > > >
-> > > > > > >
-> > > > > > > [2]:https://lore.kernel.org/all/20251030140355.4059-1-fmancera@suse.de/
-> > > > > > > ---
-> > > > > > >  include/net/xdp_sock.h      |   1 +
-> > > > > > >  include/net/xsk_buff_pool.h |   1 +
-> > > > > > >  net/xdp/xsk.c               | 104 ++++++++++++++++++++++++++++--------
-> > > > > > >  net/xdp/xsk_buff_pool.c     |   1 +
-> > > > > > >  4 files changed, 84 insertions(+), 23 deletions(-)
-> > > > > >
-> > > > > > (...)
-> > > > > >
-> > > > > > > diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-> > > > > > > index aa9788f20d0d..6e170107dec7 100644
-> > > > > > > --- a/net/xdp/xsk_buff_pool.c
-> > > > > > > +++ b/net/xdp/xsk_buff_pool.c
-> > > > > > > @@ -99,6 +99,7 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
-> > > > > > >
-> > > > > > >       pool->fq = xs->fq_tmp;
-> > > > > > >       pool->cq = xs->cq_tmp;
-> > > > > > > +     pool->cached_cq = xs->cached_cq;
-> > > > > >
-> > > > > > Jason,
-> > > > > >
-> > > > > > pool can be shared between multiple sockets that bind to same <netdev,qid>
-> > > > > > tuple. I believe here you're opening up for the very same issue Eryk
-> > > > > > initially reported.
-> > > > >
-> > > > > Actually it shouldn't happen because the cached_cq is more of the
-> > > > > temporary array that helps the skb store its start position. The
-> > > > > cached_prod of cached_cq can only be increased, not decreased. In the
-> > > > > skb destruction phase, only those skbs that go to the end of life need
-> > > > > to sync its desc from cached_cq to cq. For some skbs that are released
-> > > > > before the tx completion, we don't need to clear its record in
-> > > > > cached_cq at all and cq remains untouched.
-> > > > >
-> > > > > To put it in a simple way, the patch you proposed uses kmem_cached*
-> > > > > helpers to store the addr and write the addr into cq at the end of
-> > > > > lifecycle while the current patch uses a pre-allocated memory to
-> > > > > store. So it avoids the allocation and deallocation.
-> > > > >
-> > > > > Unless I'm missing something important. If so, I'm still convinced
-> > > > > this temporary queue can solve the problem since essentially it's a
-> > > > > better substitute for kmem cache to retain high performance.
+> Looks like we have a big disconnect here.
+> To me BTF was never about the source, but about vmlinux final binary.
+> Compile flags, configs change both types and functions significantly.
+> For types it's easy to see in the vmlinux BTF how they got transformed
+> from the original types in the source. Some source types disappear
+> altogether. Similar situation with functions. They mutate.
+> Partial inling, function renames are all part of the same category.
+> BTF has to describe the final result, so that tracers/users can
+> actually debug/introspect the kernel they have and not an abstract
+> kernel source. pahole was conservative and removed functions that
+> don't match BTF. loc* set is going to bring back these functions
+> into BTF with their arguments. True signature support is complementary
+> and mandatory part to loc* set. We need both. Compiler has to
+> store the true signature in dwarf and pahole has to pass it to BTF
+> along with location of arguments and actual name of function symbol table.
+>
 
-Back after health issues!
+I don't object to having a representation tied to the final binary;
+however I will say there is huge value in _knowing_ things changed from
+source to final representation. Now if we encode function names with '.'
+suffixes that is one way of knowing, and it may be enough, but I think
+we should think about mechanisms to ease overall developer experience in
+that new world.
 
-Jason, I am still not convinced about this solution.
+When I write a BPF program for fentry(), it seems to me to be deeply
+inconsistent that I can make it work across multiple kernel versions
+from a data structure perspective via CO-RE while also having to worry
+about the risk of compiler optimizations transforming or eliminating
+function parameters. It is a step forward in some ways that we can trace
+such functions at all, but I still think we will need a better story
+there. For example it is often the case that a BPF program only uses one
+parameter from a function signature; if we don't access transformed or
+eliminated parameters, can the verifier accept the fentry() even if the
+signature doesn't exactly match? We don't need to add these things
+today, but I think it would be good to discuss some of the consequences
+and how we would possibly handle them.
 
-In shared pool setups, the temp cq will also be shared, which means that
-two parallel processes can produce addresses onto temp cq and therefore
-expose address to a socket that it does not belong to. In order to make
-this work you would have to know upfront the descriptor count of given
-frame and reserve this during processing the first descriptor.
 
-socket 0			socket 1
-prod addr 0xAA
-prod addr 0xBB
-				prod addr 0xDD
-prod addr 0xCC
-				prod addr 0xEE
+> Re: whether to strip .llvm or not, I think it's better to keep BTF
+> matching symbol table which is kallsyms. If it has .llvm suffix in kallsyms
+> it should have the same name in BTF. Tracing tools can attach
+> with "func_name.*" pattern. libbpf already supports it.
+> And thanks to BTF the fentry prog should match what is true
+> kernel function signature. What was the source signature is secondary.
+> The users cannot write their progs based on source, since such
+> source code doesn't exist in the binary, so nothing to trace.
+> While true signature with actual parameters is traceable.
 
-socket 0 calls skb destructor with num desc == 3, placing 0xDD onto cq
-which has not been sent yet, therefore potentially corrupting it.
+Yeah I think if we are passing through the changed function signatures
+we definitely need a way to know such changes happened; the "." suffix
+will tell us that.
 
-For now, I think we should move forward with Fernando's fix as there have
-been multiple reports already regarding broken state of xsk copy mode.
-
-> > > >
-> > > > I need a bit more time on this, probably I'll respond tomorrow.
-> > >
-> > > I'd like to know if you have any further comments on this? And should
-> > > I continue to post as an official series?
-> >
-> > Hi Jason,
-> >
-> > Maciej has been out-of-office for a couple of days. He should
-> > hopefully be back later this week, so please wait for his comments.
-> 
-> Thanks for letting me know. I will wait :)
-> 
-> Thanks,
-> Jason
+Alan
 
