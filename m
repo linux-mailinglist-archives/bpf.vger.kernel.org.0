@@ -1,174 +1,168 @@
-Return-Path: <bpf+bounces-74485-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74486-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA348C5C332
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 10:17:13 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2C1AC5C4D5
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 10:36:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C6B7A4EF118
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 09:11:01 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id AD0EA36285A
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 09:25:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F78D3016F3;
-	Fri, 14 Nov 2025 09:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB31306495;
+	Fri, 14 Nov 2025 09:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mDNAzr8k"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W+my3Y+n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14FD92222C4
-	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 09:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F09F2FDC26
+	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 09:24:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763111455; cv=none; b=GUfT/C1G5wNUCYdhN1zhzfm/z4GiY9ioojPqsHotd9YPegfoxiUQMFAboND/WwbpnDEw4XlA6DI87pOIIFsdpD3G0w2CIuerWsERt5F9YlLxLBPJcFZegKNyrjOxuWbpw0++ETDXTa3/pMHVlfysih3p3u89meHY28GOl5/QWn8=
+	t=1763112300; cv=none; b=izq7gPSgCfR5FRkNg/FYDxgfNjaqN/YMTpKCEjHZMnWHjodorFs7Mlucjt5uvgiFjYzXJADSNG5GXaXT3WHDqZTkElvL2ZBBkPGW0ZqjjNn2bulw8vlTOmT9BnVtMuLg4lE/PFI0YXEPF2j/AHHJDwzHN0l/OBED9JyWkEc2ln8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763111455; c=relaxed/simple;
-	bh=Ms/SfMWuBCtQi21G533jex8/GiyaNJTb6vUj7oApzmc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mlpR9XutZABv5qAwjhk4jv88ulU8TUyGTzxMQvCDADnZqHMQYdcVHwW/djeXCqUVee+2vYXRzP/Yg1awRhlStnpiGtdklcc3DXzTFIlNvDC0Q7NJP3ytfBPIRnwSn3LFCNOwqWONUU3+/XN8+NPjDPk9TaUds227TEd96peW7pw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mDNAzr8k; arc=none smtp.client-ip=209.85.208.53
+	s=arc-20240116; t=1763112300; c=relaxed/simple;
+	bh=+9RQ5SYWcNd1cbzkAGMGzwz/84lSrZPPq5qPr6vkn4c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WC8HHvi5iXW6YXumZbJeQY7G3QeIPV7USMZODPT/xefhK8u4dnMXzf+Ma9TwJMhXKSBh4ordUbEeP7nxaqCvCTuG+kXZYwbWjHou5Y21UwCj7ZpMvfQxMTNE4bhR5Ozpn11XHSG3hWRSBVAfvIloEplHSZfOyWlKGK5+6b1oJSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W+my3Y+n; arc=none smtp.client-ip=209.85.214.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-63c489f1e6cso2945462a12.1
-        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 01:10:53 -0800 (PST)
+Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-29555b384acso19248515ad.1
+        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 01:24:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763111452; x=1763716252; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k1WY4KV4VQJH6YUB4BYCyh7D75ZeFou5KLEbTS6qDAs=;
-        b=mDNAzr8k7zOj2E6VV1POPiBSDWwyToaOMfd4LAt7NLACWRS1wETDgapQLg3pCvZbFm
-         BxU+hSGUkyf/zsZj88q0EPAcSOgXYYc51V2VxtY6F6PRGfkS44YS24+d2tU7r58SXY1r
-         FMpTxwsZbYoXWAndIa2VRmP2/ZFy/HuAJoPU+16EL4xWfGjEtdCGXC7xSPMyC+mVmRxh
-         YmEGFzBLbr/bNLZb6roPR8ymhkeJ9s+yftomV+79Pjn3mAS6vXRU/7kzyiyZeNbLdt7j
-         4ImbSH/4oB/SXbfCHJbcUEJiSQouQTwoZWR7s7psZaMrlyRtXi6sVS5SYbI+6SgQOor9
-         5R7g==
+        d=gmail.com; s=20230601; t=1763112299; x=1763717099; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=j9SsUCl/7bEhicMcDwyeLe+NHqi3g02wXIdTa14uJ8Y=;
+        b=W+my3Y+n5olYkTaDnXUuhnD01ZXhZqudCA+hZ53hbOf70wgTGCCsJeDlT4oIBp8d8J
+         VXRbthXIjxV7QTs5zkKdtQBSAChYZVM8mfNmV94DfqxgQvuBGKBeCuzkNA8JhwYRpQYj
+         +LQ9LIybK6KkIG7EMmWgSyaqapjX+5RJPthRe+dzno9S8eUoyNKNbtp9LzbbWRD3K7lm
+         v9Bwrm7F+SyrUv7/5J4gun8mRzRJ2AENicnTI9J7znmaMmhbm9tC/ulp39z21N5Xage7
+         nRzZsw/xt3aUqRvoH077FiFNFqgeLStdcfuIkkAQ9zq4oBau8uA5XpgkdR6XOQRe3g3n
+         hE5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763111452; x=1763716252;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=k1WY4KV4VQJH6YUB4BYCyh7D75ZeFou5KLEbTS6qDAs=;
-        b=hN8ivKS3MQW0XsFwBxWQJ4L4oe8yT6TttP4mMKNcZn0ouwgiqcz/HfodbybyglxdX4
-         l/ijT8YKDBA9FhBuxdb5oMvarWy+B8nhe12iTU//ZgcZ5v7/1ZTbe5rubWte0KyI+RSN
-         1wVJGEMPeE4UCu09mPduGrnAtaqgLMF6CQPnG3AD8dkwEqJa1caa2N6T1MyV6gcLnLWL
-         HCuaiBJNEvI3yG3QJUBw42p5L80JDdqtYEG1bUnSg4ivEhhDHaGqrnyAQBwgAM9Nbul/
-         6yA5ldkwGCCSmT+Y2elfCQHxRAI0o2teBCAQjDW6ICrZgBIUcebSz6Y/cf/L+dnmHh8/
-         kmsg==
-X-Gm-Message-State: AOJu0YyRqe3uPZn0OJIMkpF5ozqNcCB1BdjBlzcxOUnGHZsvhcznVVLw
-	9+BZnDSTLeYJFru84gl2Oo5FzOyVM4kt6Uhyijxh9kl+BInqY5kztHuc6vwHSRf4oxDIuyzwepT
-	6B71J4u1wQTqx9EvjMs+va77EFqwUJaFcxGhLhw==
-X-Gm-Gg: ASbGncvgZX1RnsjodVSzJIkHzdZNtdaqDkXrs8m4vzEYGPLqORTuTyJF2YahIdpo1PQ
-	ZnRD482lnuxiVJdaZ7kVwZXN0/XTWJ/pR/10fsYSHLi1TP91/oq9OrBDmp4byFBQhS9sNk6+P/b
-	v1vhc1asZlD7AZ8erkmNWsi1FqOVZTO2DAQLzT5z1b/a3FqBZA+FAhkaa1hl9iz16rT1+vwuI/c
-	oHwy9ncIG0QzHndS1JAbbIX5efX/0iJwAB8gUneNb0DjXblxUC/IIYEKUHDJHDSXfXLue9+BZdf
-	JZj7Uf26MK9HXA==
-X-Google-Smtp-Source: AGHT+IFL5hh9QWPEwoI+1N4Nsk20ZlAEZqMnBb0RUWYGxHGkUwN4du2mxqK5lhlxxQlv2xTZrnHwKpHFkO4/qsEzVb0=
-X-Received: by 2002:a05:6402:44d7:b0:640:9611:99d3 with SMTP id
- 4fb4d7f45d1cf-64334f0ef96mr4211045a12.18.1763111452172; Fri, 14 Nov 2025
- 01:10:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1763112299; x=1763717099;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j9SsUCl/7bEhicMcDwyeLe+NHqi3g02wXIdTa14uJ8Y=;
+        b=B29KwBsMPMIYLGKXCJ6NdzR84qIg+rlb7j4WHK8LehRF5VTsuLuWn3vyHExsxo5hPn
+         UVgiELgsGaIXV3Qgbv0IpSRzWIKzebGsXY8Of+AoP/PLI4mKF0qWQxg1IWHxUUEHNMQz
+         TLjoEqAKPejhDRYzR3YHCx8iw76mUqo7YEjQmV6ub+aSlOn+5LLlf/P8BcOh/lkbl2vo
+         2DIyb+pqayu7psb8dQ6Y1wkokAAWv6AZhgOfXWUdOLd58iRFX+UQYf8MexSFImgz6Qfe
+         azydXuQwA8GRw7JdROlrBf4K6kvc03Bi5CM+snS5OcGQFhj/EI5D++lSR+w/zDwqkHEG
+         Qw7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXi05uFsJcUrcC/h1tCSVcOAp7soxpLpeBpYSz5smPT/llUH9hqiZVKmb/zX7UwxHqLPPs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxmD1IFqC0BQbGVp4ezohn61dDfK+6QWo97ou/pPBp9kNncaeo/
+	EY6JKOVTzjMAPrx2au2Jvr+dgt+nOvzQ6s62LLc5RabdkCmOZABHP2vR
+X-Gm-Gg: ASbGncuFe39t8YPteEgRNlvKhRXUlzmQ79T+zz3GdP9C6ZTj843pZQ3zB7iYYHExoIf
+	SR7BosLVsaqim/jKseItMAhwrjJde0/tQ7xgGZkQwk62/x8uOfWVwnwqasOhzY5NMu6tKObHFIv
+	9+u3da4aX5WJRkSJXIUDeJG/g9p5FX5f1OmmxFcyoDy1tIhqBG5yzkr2uVboHCA1AubfJXT8Yk8
+	KJAKzVGvAQMrkrjqYRHKG9ehYlzseCGu2vOVgR4jKMqx0X22KOc7J9qmCfTogg7L2XUzdVfU2yT
+	Vr1fNlUSR+11FHQXUDg9HpG8JfOwCxe3uaqWxUFcRfjhk1trlWYU9kKjBWdy4c3GbevQYzobv4k
+	06SPbdqGgCoX1SYaV3+WzAsiVr5AqRcRD3WjnGugvSGgfzSwZt8Wbr6O0FY0fRgldkRsUeguu1D
+	PYY4ttKc962y4=
+X-Google-Smtp-Source: AGHT+IGGH96fiP4Mtc9aNQbmVe0Ea4kytDhImVoRCMVSUzVPcH6o18mB6xdLlzUY/ylcw8DGmsc9sQ==
+X-Received: by 2002:a17:903:1b08:b0:295:20c5:5453 with SMTP id d9443c01a7336-2986a73b26bmr26556915ad.29.1763112298644;
+        Fri, 14 Nov 2025 01:24:58 -0800 (PST)
+Received: from 7950hx ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2346dasm50451525ad.7.2025.11.14.01.24.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Nov 2025 01:24:58 -0800 (PST)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: ast@kernel.org,
+	rostedt@goodmis.org
+Cc: daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	mhiramat@kernel.org,
+	mark.rutland@arm.com,
+	mathieu.desnoyers@efficios.com,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH RFC bpf-next 0/7] bpf trampoline support "jmp" mode
+Date: Fri, 14 Nov 2025 17:24:43 +0800
+Message-ID: <20251114092450.172024-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.51.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251114031039.63852-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20251114031039.63852-1-alexei.starovoitov@gmail.com>
-From: Hao Sun <sunhao.th@gmail.com>
-Date: Fri, 14 Nov 2025 10:10:40 +0100
-X-Gm-Features: AWmQ_bmwvzZwnV2YHptuPkC5845LsF0803AWn7DxPeNcm8mgPKcDf7zL1YtygtE
-Message-ID: <CACkBjsa+J9iW+HoBfWh5V1P6raQGeoL2Ax6=V1HKA-kmWP54+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Recognize special arithmetic shift in
- the verifier
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Nov 14, 2025 at 4:10=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-[...]
+For now, the bpf trampoline is called by the "call" instruction. However,
+it break the RSB and introduce extra overhead in x86_64 arch.
 
-> The conditional branch in dsr_set_ipip6() and its return values
-> are optimized into BPF_ARSH plus BPF_AND:
->
-> 227: (85) call bpf_skb_store_bytes#9
-> 228: (bc) w2 =3D w0
-> 229: (c4) w2 s>>=3D 31   ; R2=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,=
-smin32=3D-1,smax32=3D0,var_off=3D(0x0; 0xffffffff))
-> 230: (54) w2 &=3D -134   ; R2=3Dscalar(smin=3D0,smax=3Dumax=3Dumax32=3D0x=
-ffffff7a,smax32=3D0x7fffff7a,var_off=3D(0x0; 0xffffff7a))
->
-> after insn 230 the register w2 can only be 0 or -134,
-> but the verifier approximates it, since there is no way to
-> represent two scalars in bpf_reg_state.
-> After fallthough at insn 232 the w2 can only be -134,
-> hence the branch at insn
-> 239: (56) if w2 !=3D -136 goto pc+210
-> should be always taken, and trapping insn 258 should never execute.
-> LLVM generated correct code, but the verifier follows impossible
-> path and rejects valid program. To fix this issue recognize this
-> special LLVM optimization and fork the verifier state.
-> So after insn 229: (c4) w2 s>>=3D 31
-> the verifier has two states to explore:
-> one with w2 =3D 0 and another with w2 =3D 0xffffffff
-> which makes the verifier accept bpf_wiregard.bpf.c
->
+For example, we hook the function "foo" with fexit, the call and return
+logic will be like this:
+  call foo -> call trampoline -> call foo-body ->
+  return foo-body -> return foo
 
-Tested on my local setup, it solves the Cilium cases as expected.
+As we can see above, there are 3 call, but 2 return, which break the RSB
+balance. We can pseudo a "return" here, but it's not the best choice,
+as it will still cause once RSB miss:
+  call foo -> call trampoline -> call foo-body ->
+  return foo-body -> return dummy -> return foo
 
-However, this feels ad hoc: spitting states on very specific ranges.
-For 1588 false rejections collected here[1], after this patch, 1561/1588
-are still rejected. One can confirm this with the `load_progs.py` in my
-repo (disable the `-d` option for bpftool if too slow).
+The "return dummy" doesn't pair the "call trampoline", which can also
+cause the RSB miss.
 
-I am wondering why not adopting the general solution introduced in this RFC=
-[2].
-What are the concerns and (potential) confusions? With this design, those
-false rejections can be solved in a unified way (e.g., 1226/1588 are loaded=
-,
-the rest can be improved with a bit more refinement, except for the ones
-requiring better loop handling).
+Therefore, we introduce the "jmp" mode for bpf trampoline, as advised by
+Alexei in [1]. And the logic will become this:
+  call foo -> jmp trampoline -> call foo-body ->
+  return foo-body -> return foo
 
-[1] Progs: https://github.com/SunHao-0/BCF/tree/main/bpf-progs
-[2] RFC: https://lore.kernel.org/bpf/20251106125255.1969938-1-hao.sun@inf.e=
-thz.ch
+As we can see above, the RSB is totally balanced. After the modification,
+the performance of fexit increases from 76M/s to 130M/s.
 
-[...]
-> +static int maybe_fork_scalars(struct bpf_verifier_env *env, struct bpf_i=
-nsn *insn,
-> +                             struct bpf_reg_state *dst_reg)
-> +{
-> +       struct bpf_verifier_state *branch;
-> +       struct bpf_reg_state *regs;
-> +       bool alu32;
-> +
-> +       if (dst_reg->smin_value =3D=3D -1 && dst_reg->smax_value =3D=3D 0=
-)
-> +               alu32 =3D false;
-> +       else if (dst_reg->s32_min_value =3D=3D -1 && dst_reg->s32_max_val=
-ue =3D=3D 0)
-> +               alu32 =3D true;
-> +       else
-> +               return 0;
-> +
-> +       branch =3D push_stack(env, env->insn_idx + 1, env->insn_idx, fals=
-e);
-> +       if (IS_ERR(branch))
-> +               return PTR_ERR(branch);
-> +
-> +       regs =3D branch->frame[branch->curframe]->regs;
-> +       __mark_reg_known(&regs[insn->dst_reg], 0);
+In this series, we introduce the FTRACE_OPS_FL_JMP for ftrace to make it
+use the "jmp" instruction instead of "call".
 
-Here, the hidden assumption is: smax=3Ds32_max=3D0, which is true if it's c=
-alled
-by ALU32 ops or some ALU64 (e.g., ARSH), but not for all ALU64. Should
-we add some comments for this in maybe_fork_scalars(), in case it's used
-in other locations?
+And we introduce the bpf_arch_text_poke_type(), which is able to specify
+both the current and new opcode.
 
-[...]
+Not sure if I should split the first 2 patches into a separate series and
+send to the ftrace tree.
+
+Link: https://lore.kernel.org/bpf/CAADnVQLX54sVi1oaHrkSiLqjJaJdm3TQjoVrgU-LZimK6iDcSA@mail.gmail.com/[1]
+Menglong Dong (7):
+  ftrace: introduce FTRACE_OPS_FL_JMP
+  x86/ftrace: implement DYNAMIC_FTRACE_WITH_JMP
+  bpf: fix the usage of BPF_TRAMP_F_SKIP_FRAME
+  bpf,x86: adjust the "jmp" mode for bpf trampoline
+  bpf: introduce bpf_arch_text_poke_type
+  bpf,x86: implement bpf_arch_text_poke_type for x86_64
+  bpf: implement "jmp" mode for trampoline
+
+ arch/riscv/net/bpf_jit_comp64.c |  2 +-
+ arch/x86/Kconfig                |  1 +
+ arch/x86/kernel/ftrace.c        |  7 ++++-
+ arch/x86/kernel/ftrace_64.S     | 12 +++++++-
+ arch/x86/net/bpf_jit_comp.c     | 45 ++++++++++++++++++++--------
+ include/linux/bpf.h             | 22 ++++++++++++++
+ include/linux/ftrace.h          | 48 +++++++++++++++++++++++++++++
+ kernel/bpf/core.c               | 10 +++++++
+ kernel/bpf/trampoline.c         | 53 +++++++++++++++++++++++++++------
+ kernel/trace/Kconfig            | 12 ++++++++
+ kernel/trace/ftrace.c           |  9 +++++-
+ 11 files changed, 195 insertions(+), 26 deletions(-)
+
+-- 
+2.51.2
+
 
