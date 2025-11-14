@@ -1,132 +1,174 @@
-Return-Path: <bpf+bounces-74518-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74519-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0777C5D76B
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 15:04:34 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4200C5DF97
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 16:48:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E2C064E9938
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 13:59:25 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2661A3863C7
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 15:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F98131C595;
-	Fri, 14 Nov 2025 13:59:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2A32331235;
+	Fri, 14 Nov 2025 14:57:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bmmnRfk8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qbbyIwY9"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF75831B82E
-	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 13:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A7033122A
+	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 14:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763128753; cv=none; b=GSm9h1AlI2LVpfLlkFwE4eLMB15ZLi4gR2y7vvia1AvcAQ/PnvLP79l+WlONUPqQcevIkexVoR0URKsW6D/1y7aSTFLiYxbrGDjC+fHzXLy0/1a0Z+zruPuIv0boChPbPrUJnfbJlDNCtxWzUw6UeLmHCi4qQMWfFutHryzwlNE=
+	t=1763132274; cv=none; b=m3wM7NNhB8hNtg9f/yFvImZ3IoRXMZjMbSvAOAITSefeIJ7DO/Wl+ee/KbIIng5jH16wHfBrllz3Z+N0B2nOOeDOewKlZpOfFN1pdQVrlhSagB1Nk6MYADoPp+xvggdGyp50gaTA1E8odoVkMlXLlqULmAczwQZOx1fr+EemUEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763128753; c=relaxed/simple;
-	bh=+2xXoxcrj33LVtF+hB/b2Rh2JNRUywbpIspebsMHDz4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MIAi+BsyBJEdO5O/IW3wFk/2lOH2DuGvy5RDUtL/zXGR6h6ya5VQA7NvFzOJ3r0ALyo/zbVJByhhmXBT5s2zr19HEZfSryulXVoulpaJdyR5WTY2ysilnRvwX0WwHI2CScbwQkq9oWKwZShKU+VF4RU27OMROQjKTFKVTn8Tq7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bmmnRfk8; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1763128739;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=toKX1URGmb2SbH2LNgIDppLk/rcSMomN2gf7jmelaI4=;
-	b=bmmnRfk8NTffIOKE8mprer3zreew1THAFTUqHfBYnrK+3C/yNLhJrreDQJZLqVcrr0CBeu
-	a8+pxSyyRFMqtqPP63xNbi1chfBnR0n+hV3LcQJI8Fe7EP3s3tzUS+vtRfx/u2pL6tLsZN
-	6TcPb4V992uFsaqQ5z11L170K8RJM/U=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: Menglong Dong <menglong8.dong@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, mhiramat@kernel.org,
- mark.rutland@arm.com, mathieu.desnoyers@efficios.com, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next 0/7] bpf trampoline support "jmp" mode
-Date: Fri, 14 Nov 2025 21:58:34 +0800
-Message-ID: <117548898.nniJfEyVGO@7950hx>
-In-Reply-To: <20251114083835.553c9480@gandalf.local.home>
-References:
- <20251114092450.172024-1-dongml2@chinatelecom.cn>
- <20251114083835.553c9480@gandalf.local.home>
+	s=arc-20240116; t=1763132274; c=relaxed/simple;
+	bh=MY7clR5dNniRtgMJSoCyTwnIZV58Ijn96Zxx4z/ZHlQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Hri1lrrxuHNY+hgpX10ODVXGXAJO34pRD4cERbczcdUyr3VJWlgtuW4MMjCDjOLgcKV1qT9qsVqW5Ug4YQhz94/Xzk2//NjnkNjhPU+9usndrJub4jpvs6Q67dHSrpNhQ6DOBYW/Q/aUuKbxxgvTPcUJZo17qgM/Q16R82bl38Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qbbyIwY9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3A6AC4CEF5;
+	Fri, 14 Nov 2025 14:57:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763132273;
+	bh=MY7clR5dNniRtgMJSoCyTwnIZV58Ijn96Zxx4z/ZHlQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=qbbyIwY9l3vEoQFs6OqspJwgLhC0TQzbbEVlRpWIpCI7VXujcUc/p5efHxZuvVdqA
+	 dI9rVE78ZXWEhfUJY5BHK9qIsCzIlrxbEb2r8918RAScXxQtMzCi07cAE8XcV8O4rh
+	 CvIKpyK5Gsi9QTX/qbRP0qJo/xHrLHCVcjacd0r+UcE82Ln5CCWGtQtW+kg1tOCwda
+	 3+r/kyAbUwF8VgVPKSi4lK9maG+LnDXWiaVbrdFSY+fe5j3eO7kPJq7nf0znBBtIy0
+	 mVLQ7gL9fJPz1p89ApsTEXKACF/rZnXYAdM22ANqR+EVWRl/38ugxotQKDFb3yz7jc
+	 yPE3S5l3GlsmA==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bot+bpf-ci@kernel.org, bpf@vger.kernel.org
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@kernel.org, eddyz87@gmail.com, memxor@gmail.com,
+ kernel-team@meta.com, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
+ yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCH bpf-next v2 1/4] bpf: arena: populate vm_area without
+ allocating memory
+In-Reply-To: <5542c931e3200fd81c95abc6bbdfc1e37ca2951a9a480164558c05fe1b9044a4@mail.kernel.org>
+References: <20251114111700.43292-2-puranjay@kernel.org>
+ <5542c931e3200fd81c95abc6bbdfc1e37ca2951a9a480164558c05fe1b9044a4@mail.kernel.org>
+Date: Fri, 14 Nov 2025 14:57:50 +0000
+Message-ID: <mb61pms4ofyq9.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
 
-On 2025/11/14 21:38, Steven Rostedt wrote:
-> On Fri, 14 Nov 2025 17:24:43 +0800
-> Menglong Dong <menglong8.dong@gmail.com> wrote:
-> 
-> > Therefore, we introduce the "jmp" mode for bpf trampoline, as advised by
-> > Alexei in [1]. And the logic will become this:
-> >   call foo -> jmp trampoline -> call foo-body ->
-> >   return foo-body -> return foo
-> 
-> This obviously only works when there's a single function used by that
-> trampoline. It also doesn't allow tracing of the return side (it's
-> basically just the function tracer for a single function).
+bot+bpf-ci@kernel.org writes:
 
-Hi, Steven. I think you misunderstand something? For the fentry/fexit,
-the whole process is:
+>> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+>> index 1074ac445..48b8ffba3 100644
+>> --- a/kernel/bpf/arena.c
+>> +++ b/kernel/bpf/arena.c
+>
+> [ ... ]
+>
+>> @@ -92,6 +93,62 @@ static long compute_pgoff(struct bpf_arena *arena, long uaddr)
+>>  	return (u32)(uaddr - (u32)arena->user_vm_start) >> PAGE_SHIFT;
+>>  }
+>>
+>> +struct apply_range_data {
+>> +	struct page **pages;
+>> +	int i;
+>> +};
+>> +
+>> +static int apply_range_set_cb(pte_t *pte, unsigned long addr, void *data)
+>> +{
+>> +	struct apply_range_data *d = data;
+>> +	struct page *page;
+>> +
+>> +	if (!data)
+>> +		return 0;
+>> +	/* sanity check */
+>> +	if (unlikely(!pte_none(ptep_get(pte))))
+>> +		return -EBUSY;
+>> +
+>> +	page = d->pages[d->i++];
+>> +	/* paranoia, similar to vmap_pages_pte_range() */
+>> +	if (WARN_ON_ONCE(!pfn_valid(page_to_pfn(page))))
+>> +		return -EINVAL;
+>> +
+>> +	set_pte_at(&init_mm, addr, pte, mk_pte(page, PAGE_KERNEL));
+>> +	return 0;
+>> +}
+>> +
+>> +static int apply_range_clear_cb(pte_t *pte, unsigned long addr, void *data)
+>> +{
+>> +	pte_t old_pte;
+>> +	struct page *page;
+>> +
+>> +	/* sanity check */
+>> +	old_pte = ptep_get(pte);
+>> +	if (pte_none(old_pte) || !pte_present(old_pte))
+>> +		return 0; /* nothing to do */
+>> +
+>> +	/* get page and free it */
+>> +	page = pte_page(old_pte);
+>> +	if (WARN_ON_ONCE(!page))
+>> +		return -EINVAL;
+>> +
+>> +	pte_clear(&init_mm, addr, pte);
+>> +
+>> +	/* ensure no stale TLB entries */
+>> +	flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+>> +
+>> +	__free_page(page);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int populate_pgtable_except_pte(struct bpf_arena *arena)
+>> +{
+>> +	return apply_to_page_range(&init_mm, bpf_arena_get_kern_vm_start(arena),
+>> +				   KERN_VM_SZ - GUARD_SZ, apply_range_set_cb, NULL);
+>> +}
+>> +
+>>  static struct bpf_map *arena_map_alloc(union bpf_attr *attr)
+>>  {
+>>  	struct vm_struct *kern_vm;
+>
+> [ ... ]
+>
+>> @@ -144,6 +201,11 @@ static struct bpf_map *arena_map_alloc(union bpf_attr *attr)
+>>  		goto err;
+>>  	}
+>>  	mutex_init(&arena->lock);
+>> +	err = populate_pgtable_except_pte(arena);
+>> +	if (err) {
+>> +		bpf_map_area_free(arena);
+>> +		goto err;
+>> +	}
+>                      ^^^^
+>
+> Can this leak the range tree? Looking at the code, range_tree_set() was
+> called earlier in this function and can allocate range_node structures
+> via range_tree_clear()->kmalloc_nolock(). If populate_pgtable_except_pte()
+> fails here, the error path calls bpf_map_area_free(arena) but doesn't call
+> range_tree_destroy(&arena->rt) first. Compare with arena_map_free() which
+> always calls range_tree_destroy() before freeing the arena.
 
-call foo -> jmp trampoline -> call all the fentry bpf progs ->
-call foo-body -> return foo-body -> call all the fexit bpf progs
--> return foo.
+As the range tree is empty at this point, we can be sure that
+range_tree_clear() in range_tree_set() will not allocate anything. 
 
-The "call foo-body" means "origin call", and it will store the
-return value of the traced function to the stack, therefore the
-fexit progs can get it.
-
-So it can trace the return side with the "fexit". And it's almost the
-same as the origin logic of the bpf trampoline:
-
-call foo -> call trampoline -> call all the fentry bpf progs ->
-call foo-body -> return foo-body -> call all the fexit bpf progs
--> skip the rip -> return foo.
-
-What I did here is just replace the "call trampoline" to
-"jmp trampoline".
-
-> 
-> Is there any mechanism to make sure that the trampoline being called is
-> only used by that one function? I haven't looked at the code yet, but
-> should there be a test that makes sure a trampoline isn't registered for
-> two or more different functions?
-
-As for now, the bpf trampoline is per-function. Every trampoline
-has a unique key, and we find the trampoline for the target function
-by that key. So it can't be used by two or more different functions.
-
-If the trampoline need to get the ip of the origin call from the stack,
-such as BPF_TRAMP_F_SHARE_IPMODIFY case, we will fallback to the
-"call" mode, as we can't get the rip from the stack in the "jmp" mode.
-And I think this is what you mean "only work for a single function"?
-Yeah, we fallback on such case.
-
-Thanks!
-Menglong Dong
-
-> 
-> -- Steve
-> 
-> 
-
-
-
-
+>>
+>>  	return &arena->map;
+>>  err:
+>
+> [ ... ]
+>
+>
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+>
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19363121319
 
