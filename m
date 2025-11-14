@@ -1,76 +1,78 @@
-Return-Path: <bpf+bounces-74449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74450-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4CB6C5B0A0
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 03:57:54 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99CEDC5B0A3
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 03:58:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 823534E39C0
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 02:57:53 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 14025350627
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 02:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E0323EAB6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9D9D246BBA;
 	Fri, 14 Nov 2025 02:57:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ei31hcfP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FeyCJZiP"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3858227456
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 193C1186E2E
 	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 02:57:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763089067; cv=none; b=mx6APEBeFpgXb0LRTX6H2hHlv1gkJmR5OsbTe/BxRfB3QnjHjCz/VuzMeVCxJ1N1JWbgypY2eGP7v2z+p06ow1NJzfT2iHtQ3B4JNPIfCyHMdesKWiul5EBy0PCx2r19dBDwK9TQbc+DRnZmF6SQDl4M6hGKTbFAVBoAkVsHE2E=
+	t=1763089068; cv=none; b=UHEvVzuV3dtL4nEa1fOLVza+53irW/lvKFNIKniLnWC2enXcZBYFDVUnD9a0GjuUZ6XW46FjcqdYnj9NecG09LHpJmpiHYat50iAKWvyQokRB6ac2LDZRGhUWnwevJSQBDeWLz7t3EsvYod3RfsRZsJkFz6086xdi/3dcpBTcuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763089067; c=relaxed/simple;
-	bh=5QfNJ3e4bOz9jjpXVHnuveL+F0hR+Rfb7Jtx/6Higaw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Wyjqh/twiuifJLnwQDoycSs+LaczAm2hGx1pNOEU9N5Ybdt6QTgVwx7Mt4qgaRs7LlM+GBT+faDAEKxGxfgTcDOaQl32bb0SDRJ/pCyZ6PE9E4c+oTUOyrAO/W5clysg/lPpP7498B9tTGBOlZSwSOBsKtWdWgAd1/KzImGWRYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ei31hcfP; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1763089068; c=relaxed/simple;
+	bh=C5I/KLKyzvI6VI2cHJok+9pbr+u3j0S6xw0EYoqQmJQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=l0mHr69BKh4Uku7d5n5kmApt28UHxvqsxdYdOfsyuTNy6MKACbfFJYX3Z4/+NRL2dzxfTkGms+OLz0XKEKRuKnCeOs8dodWz8YX7VnAo/sXu0WQSFFV2UoiQaW8kk5AO7yuKVyMWsIyHkB74fivwKc0pUDH/KsVZg5itrjLvV+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FeyCJZiP; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-29808a9a96aso14601875ad.1
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-297d4a56f97so14741165ad.1
         for <bpf@vger.kernel.org>; Thu, 13 Nov 2025 18:57:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763089065; x=1763693865; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gcSJBFfOSAXquc2dHpscciy0yYklrvzEdyu/rvfXh5Y=;
-        b=ei31hcfPaeUt+WkYn5sOZs8O7SE+eKIVxerS552V3Cm8F6UXEDWg4AKK98nDqBjcKv
-         UkLmqTMs1dwcxiJ1UW8+LAp+ZdOjPb0pDI/MDRBzewKDlmIHbdI4o3DIW1UZ0OQNTO/D
-         DPYmfFtvoEMggphMQd/PsqGTG1kkA5myMJe7aVrpHpvZtx93cq0bn4RZNkoAfUROiFbF
-         dnSIZB87/oDE4jeVPcE00nmdx+lAVzjS5zDOhvp1mGkbPp1iBHgmjbJoZ4uSlV5BLRWJ
-         VYF7gKc9wTTEWxlzaTUs+c0xr1LU3UZA7J08i+XRpSnRp2vkPyY1mRaWZLe9GccdYj0i
-         FrWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763089065; x=1763693865;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1763089066; x=1763693866; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gcSJBFfOSAXquc2dHpscciy0yYklrvzEdyu/rvfXh5Y=;
-        b=lbqubVCFYc+KDMhUSnSXKIgiN3z9hewfhfrk1qdSNakVpMvb6chXPQs4lIA/70xXcJ
-         dhXaDsM4q4mbRaBSYkPZBfi95MVs6CeGj0uklnbdWzHy0T/BUC/O04e7KR4/XbOiY3lB
-         S69bE4kpOYWFZRxHWDMFcDRsLw1WDN+LwbSYB2ZxukHvYlP3soo3YEMqLHHLgBfn5Ei9
-         kQnNqv0l3Sv8UQDJANq2j2pqtbi61gu3Z2xRDPlsOshuHVV3mC06x2yTqZ+Kiu4blR+o
-         n1nFHsk6chpe6qSyGS7sCY8A3DCavrcu+AdfaCs6CNBuOolKGGdzhTjdnulFIbtZ1Ixo
-         Dqhg==
-X-Gm-Message-State: AOJu0YyzB59g8+Wc6Kw7nhtLUQJVOjYm5UxA+TYAv985mZbUws+ZuwCX
-	4Iws8bu2K52wgrYhskUysJUhk+OZhr0TKETEQp+oLrjkB/Cz0FUrUES0TwINeNXO
-X-Gm-Gg: ASbGncuH+BvR0PVujxhHuViqrJovVycW5+nhjkJ+2P0WRsaHUB5IN1/YUPu1bQ9MWMj
-	gyFA7i8A7H6pGxccEkxg0zQ6f4d+6RBXIG2jiT7dQh1bEydESYYj4frX3+QzKL0/sYI8bExwWFD
-	8qqrC/l0fXjmJDEd4PPLmt1FffifUcdBtoU4hI2nOj3gOU/gKe5msrgO95ZBHFFowIvCiqZxnMV
-	sR7gHhr1p4O8WLnojCoNU/eXgMjDQSEwmoIGePK2Byq3RimuxhVmEzb22yxVWDX1b6ovRz1ADtB
-	Lu6iFXbrL8y2ff1aGuei18Me9nTFrpDMk7QYi+/7x/VqMjm+QM/tbhNj6b7FeeFCQZMzo+ZOEiU
-	RafHtxd6UvP7cNM7mEZ0pdw7o87gGdDFqz1C1Ll87kJ6bC57FrlQcpaYnabV2RJ7r+3ms/iUvzt
-	jpm3ZKnCJ2nnN8
-X-Google-Smtp-Source: AGHT+IGjfxvsWp+7Y/CIH9DTM/E9Bs/4QksfsWh/XK7X88d8nqrf+tctERIhFz0HbbagJaAlQuQqfQ==
-X-Received: by 2002:a17:903:8cc:b0:298:33c9:eda2 with SMTP id d9443c01a7336-2986a73b4b2mr14061215ad.33.1763089065189;
-        Thu, 13 Nov 2025 18:57:45 -0800 (PST)
+        bh=gY5A8PSndCLem0Ud36nWLWvC+uy4Wv2W4G029MRrrZo=;
+        b=FeyCJZiPW+LeBiU/DmHF3uslLHFX0jvG/7cRQKfBMxZq5WfFaJ3aVecscSWj3CM4gu
+         0+ZO4crtlLTtNUjw+USIT4lrmAPNVQqhp5SLdJTThIVsDJlgatvwVhJnEEGhLWmhAXuq
+         VXE9jqba8/k3wVgM/yxLFMwfPBY04WR8R8kAWO4Va+6FOXw93D+I4wM+sUD9WgGmNrNx
+         meh09zBhCCIQoFoPUdpMnZ5phVEP2ZBuaqPTZYjsInyOXBgHcZSENqDyWyllCh1q08r5
+         851flOoIjd5t1pYcqmcy6ziBIklBVBHDzYRVEv7kinXER95lra1SWLM2MCpXNl2zNRvF
+         iskA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763089066; x=1763693866;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=gY5A8PSndCLem0Ud36nWLWvC+uy4Wv2W4G029MRrrZo=;
+        b=naPCgbgdN/8qDPRCwUIrwBmGw7SYWfLauXaTSSACmAWZ9Jbk9D6f0E4PaEaHSreUt9
+         w8h2iAAyLGsUfKvkwiBCRSg3Sn95ITT8UBEwT2B0XJLj8Fu1KPNMOBpNy+olAyENBNw8
+         QDWDMElCT0d6xmucD5qY8a//GeQh43Sr0jWJPinQsCrKnFzdjeQE5Bf2EP3Lm/yzsQVM
+         GMrb0O+98+Y2T3uUJ3W7uhDxe7V3JBlM9YIMumjy53F+xgUd9nh2JtnZlrusqFZwiKVM
+         YmqimG2iIVuqmVRllmu/cC1Dlu0V+gsymExb26vihlMpqx2N4k52enJ5QpbQ+CTfyzTu
+         6K7A==
+X-Gm-Message-State: AOJu0YwIJVBktTSMk5/HvRlcsTe0DYjNU4vcbEYd2T0iXHb8ZSQAPTEM
+	dNglcaOzTfN7+z90YJEOhfmZt74s75pvroEPbtEPEplGRlf/rakIIsUhNTjyg54B
+X-Gm-Gg: ASbGncuGwl4CEm7pdpyJf2xTWES3bxo8gKWMwV0bOayoXt9yab6/gDSVG32y/1di4RX
+	13k+dnM0mFpDipNtXNzurkCbBVvTeMatDsCMeUXPiK4kNlIdnK73IidoDJCTAKgChUr80lwUfk3
+	PIAO4x3KlZ7lNoNZELOPjsKZHM5tcNCPWUIHHyCEroGbWo/EagGZw0d/HqpIji2EN/w/oDThYPF
+	5id9UTWq/k9C+mUjUXT4qjAlPPaJlK4yOxSW8DGjZjN12ByLjZ2Cb1vPhQX2agU8LrjkMdeUd7V
+	aIlQhWrbpPEZ1fVOQhwIVxQrFe5flZeT+WbVtxrzFKVvhxWvF2vAWkWQsG2lnjjbdtotmpPTclw
+	awp6hvajVG7dkpPeXK7jrRIU7rM3OA1eQsP90KnfJkDszfYBzE4+kNupgw6vUZoq6MFm1QTSJID
+	PSWb8WaLzNwd3T
+X-Google-Smtp-Source: AGHT+IEcBXexXIxbZDSjsv0ZQKpGyhfd9oQhxM8JbmlUnpG73+Tyun0RHx2OcBb0sH3OXUhGG/Fepg==
+X-Received: by 2002:a17:903:230f:b0:297:d741:d28a with SMTP id d9443c01a7336-2986a72cb1fmr15864385ad.31.1763089066074;
+        Thu, 13 Nov 2025 18:57:46 -0800 (PST)
 Received: from ezingerman-fedora-PF4V722J ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2b0c92sm38579195ad.69.2025.11.13.18.57.44
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2b0c92sm38579195ad.69.2025.11.13.18.57.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Nov 2025 18:57:44 -0800 (PST)
+        Thu, 13 Nov 2025 18:57:45 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -79,12 +81,13 @@ Cc: daniel@iogearbox.net,
 	martin.lau@linux.dev,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
-	eddyz87@gmail.com,
-	Emil Tsalapatis <emil@etsalapatis.com>
-Subject: [PATCH bpf v1 1/2] bpf: account for current allocated stack depth in widen_imprecise_scalars()
-Date: Thu, 13 Nov 2025 18:57:29 -0800
-Message-ID: <20251114025730.772723-1-eddyz87@gmail.com>
+	eddyz87@gmail.com
+Subject: [PATCH bpf v1 2/2] selftests/bpf: widen_imprecise_scalars() and different stack depth
+Date: Thu, 13 Nov 2025 18:57:30 -0800
+Message-ID: <20251114025730.772723-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.51.1
+In-Reply-To: <20251114025730.772723-1-eddyz87@gmail.com>
+References: <20251114025730.772723-1-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,61 +96,91 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The usage pattern for widen_imprecise_scalars() looks as follows:
+A test case for a situation when widen_imprecise_scalars() is called
+with old->allocated_stack > cur->allocated_stack. Test structure:
 
-    prev_st = find_prev_entry(env, ...);
-    queued_st = push_stack(...);
-    widen_imprecise_scalars(env, prev_st, queued_st);
+    def widening_stack_size_bug():
+      r1 = 0
+      for r6 in 0..1:
+        iterator_with_diff_stack_depth(r1)
+        r1 = 42
 
-Where prev_st is an ancestor of the queued_st in the explored states
-tree. This ancestor is not guaranteed to have same allocated stack
-depth as queued_st. E.g. in the following case:
-
-    def main():
-      for i in 1..2:
-        foo(i)        // same callsite, differnt param
-
-    def foo(i):
-      if i == 1:
+    def iterator_with_diff_stack_depth(r1):
+      if r1 != 42:
         use 128 bytes of stack
       iterator based loop
 
-Here, for a second 'foo' call prev_st->allocated_stack is 128,
-while queued_st->allocated_stack is much smaller.
-widen_imprecise_scalars() needs to take this into account and avoid
-accessing bpf_verifier_state->frame[*]->stack out of bounds.
+iterator_with_diff_stack_depth() is verified with r1 == 0 first and
+r1 == 42 next. Causing stack usage of 128 bytes on a first visit and 8
+bytes on a second. Such arrangement triggered a KASAN error in
+widen_imprecise_scalars().
 
-Fixes: 2793a8b015f7 ("bpf: exact states comparison for iterator convergence checks")
-Reported-by: Emil Tsalapatis <emil@etsalapatis.com>
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../selftests/bpf/progs/iters_looping.c       | 53 +++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 8314518c8d93..fbe4bb91c564 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8866,7 +8866,7 @@ static int widen_imprecise_scalars(struct bpf_verifier_env *env,
- 				   struct bpf_verifier_state *cur)
- {
- 	struct bpf_func_state *fold, *fcur;
--	int i, fr;
-+	int i, fr, num_slots;
+diff --git a/tools/testing/selftests/bpf/progs/iters_looping.c b/tools/testing/selftests/bpf/progs/iters_looping.c
+index 05fa5ce7fc59..d00fd570255a 100644
+--- a/tools/testing/selftests/bpf/progs/iters_looping.c
++++ b/tools/testing/selftests/bpf/progs/iters_looping.c
+@@ -161,3 +161,56 @@ int simplest_loop(void *ctx)
  
- 	reset_idmap_scratch(env);
- 	for (fr = old->curframe; fr >= 0; fr--) {
-@@ -8879,7 +8879,9 @@ static int widen_imprecise_scalars(struct bpf_verifier_env *env,
- 					&fcur->regs[i],
- 					&env->idmap_scratch);
- 
--		for (i = 0; i < fold->allocated_stack / BPF_REG_SIZE; i++) {
-+		num_slots = min(fold->allocated_stack / BPF_REG_SIZE,
-+				fcur->allocated_stack / BPF_REG_SIZE);
-+		for (i = 0; i < num_slots; i++) {
- 			if (!is_spilled_reg(&fold->stack[i]) ||
- 			    !is_spilled_reg(&fcur->stack[i]))
- 				continue;
+ 	return 0;
+ }
++
++__used
++static void iterator_with_diff_stack_depth(int x)
++{
++	struct bpf_iter_num iter;
++
++	asm volatile (
++		"if r1 == 42 goto 0f;"
++		"*(u64 *)(r10 - 128) = 0;"
++	"0:"
++		/* create iterator */
++		"r1 = %[iter];"
++		"r2 = 0;"
++		"r3 = 10;"
++		"call %[bpf_iter_num_new];"
++	"1:"
++		/* consume next item */
++		"r1 = %[iter];"
++		"call %[bpf_iter_num_next];"
++		"if r0 == 0 goto 2f;"
++		"goto 1b;"
++	"2:"
++		/* destroy iterator */
++		"r1 = %[iter];"
++		"call %[bpf_iter_num_destroy];"
++		:
++		: __imm_ptr(iter), ITER_HELPERS
++		: __clobber_common, "r6"
++	);
++}
++
++SEC("socket")
++__success
++__naked int widening_stack_size_bug(void *ctx)
++{
++	/*
++	 * Depending on iterator_with_diff_stack_depth() parameter value,
++	 * subprogram stack depth is either 8 or 128 bytes. Arrange values so
++	 * that it is 128 on a first call and 8 on a second. This triggered a
++	 * bug in verifier's widen_imprecise_scalars() logic.
++	 */
++	asm volatile (
++		"r6 = 0;"
++		"r1 = 0;"
++	"1:"
++		"call iterator_with_diff_stack_depth;"
++		"r1 = 42;"
++		"r6 += 1;"
++		"if r6 < 2 goto 1b;"
++		"r0 = 0;"
++		"exit;"
++		::: __clobber_all);
++}
 -- 
 2.51.1
 
