@@ -1,193 +1,138 @@
-Return-Path: <bpf+bounces-74560-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74561-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0218C5F43D
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 21:46:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEC6DC5F496
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 21:53:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6448734DBD6
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 20:46:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D3AB3A3E0A
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 20:53:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3FF2F9D8C;
-	Fri, 14 Nov 2025 20:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACBD2FB0B4;
+	Fri, 14 Nov 2025 20:52:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QliCtM4G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QihUmuow"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3082B27A904
-	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 20:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B250F286891;
+	Fri, 14 Nov 2025 20:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763153190; cv=none; b=Ut67QCLhxUQQSsLNq4cFb11bRdJxNysxXH+38ff0M8mrAG6y2jBXfWGUGtM4R/tBefeJYpdE6Od0xE3EqdHS66467ar6cDXw/MgJU/fRdvEVcGZmQJppQFkfK3mpURZnDyM9/K/RTS4Wsp9X+EhETzJo8H+6vJ9UrvkXQJwMiPk=
+	t=1763153561; cv=none; b=rMYZiuPwQlVJ1Vg0IAGwUVxqjGgWaiYIs50tIboA3DLxJLGpAmqIhHe7UfbMauNH3db3RgeTIIS5vvMbUUiSOzgsEevC+u+8nO8tF2FM4h0krOz29iw+1deADmjkc8arjqhhCwYpQ7kLBKI9J+miqHi4yHgHV8Ee47MGAgVCoAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763153190; c=relaxed/simple;
-	bh=fkJyLxM6G311HUbnd0uOXkIFlsLw30lols6Y8zCLca0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PpwKpN9q12IJ4ixvBobf4AdWDiDg+MTKKhSMvg0BCS37O3I7BdgdIxFsiWBR0Zz1uyBWSnvzq63SHC+QiifCV+WyHTf/bivvzocKZ/LJd6JI2GSacIjLV+QkTyUbTWsgogz26cTwOrvRU4XJW81WMMsgq/IDKGMKg3pIEpgTdIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QliCtM4G; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-343ff854297so1565226a91.1
-        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 12:46:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763153188; x=1763757988; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R91BPIHvF+PMEK++tWfFQzcocSH9XXfZoUO7yz1bj9s=;
-        b=QliCtM4G0DUk2ndcXx/ZXyACb180hys0FWHgMlEg2O8SkbPt67LBcPFCGWluBdC/Bx
-         BcdeGQK+w/JGc9rUS52AykI65HoHc36cihQuKoRBv4oV6luU86uiBSYykumP+0+tQ8mg
-         u8NGPhWpihacFrJAbBPo6ldw95+WC6UggSwW9QAYoTaZLhtkn5Tk7Qdt7HoBq0xjOJ46
-         Y+vvgHLKYALIbySuwXt841z4YA44lg3+2a06D+c+yj1Ov0o6XLSqcKqcotsgu5scqODb
-         PMvQsNcI7JY7bfq9NVSIXnpu8cx8w5P3y9oxPns6wA+FZplnqxsLRo5JQycCKP1bMXwu
-         mgTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763153188; x=1763757988;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=R91BPIHvF+PMEK++tWfFQzcocSH9XXfZoUO7yz1bj9s=;
-        b=cQ02okf5QYRvCsd9E8ubv7VJIDl5/umCyomaIznc4ERUizZMLxAgEbidncjmAk4y/V
-         qlJ+8zndwQztqX2jZ3QvvSE8ZQsYecq9U0zce7+U9AWxY5RgtH9yuHVMlmqnJ0k/dw3/
-         SXds6yuB9RnHrcGkBo/FFxCfPJ8U/0eiYUTjF/HVMFuEMfvgU3w2l6dyXz/KrUiDsOhm
-         G3G2P3VzB0XXrN3FWbv94gZTCkdr7ceShtMRHLTIVLjy66xfeA+mJzPINnUzxl/nNV9B
-         bBxt/vrwMDUV269XTI0OLvuQBCXYIJMRPiYmxCZPoN3a2tuQD13lTQFiNiuMonObOO+E
-         4wOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXNmjeHFFCMR/cZ67JC2yXY9tiQO1GXWlyt4QqOYqof1/g90gU5PWYL3L6uK615/bnDEu8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNxZ64dWqD0KLK3dcDH+e9VwNxCJkZRAPxIJfIv8Fi1YGl1Gw3
-	9AZxoWYvMpkUrBrCI2BgxcrRizHDD02huWpE2OsYJBgNbCk8ZxHazAqZYYAOCtlIDncUkNvTFdP
-	ET5abyQ7pabuoN6nabjG3UffhfDTF5FU=
-X-Gm-Gg: ASbGncsV8ITUdsYVTbra2XbPgJPctdNR2IHvxxPEVlAUoSszMJPvAeYoWYDfSx89Apf
-	zgXTW03xU9cqy6NtVYQYKtqwhsRqgJgHM6on4kNlnXY+vEdLyRXjpVTJpWBeboHxWV6K1hq3MBv
-	gsZKdphX44/iJIq9cMW4i+mv0iG0LnhuyipWMGsMsoDhj0vd+SPFNjw5zFmo0N32jeCbf/X7h2M
-	Vb71gJ4vhPdM4c4WlsjeGGKlc5aFZTfN1XMukJ5XpvbK/eXsUItKYySaut4cTmde4GpmWWDG6Vh
-X-Google-Smtp-Source: AGHT+IGonQLSQ7El5G2Eyqdwn9GRI6w19sMs5o+hd2d0mhS2v00lquD7zdm9pZWOXD7cxJ2dWcbWoWRhx5b4Anm1T8Q=
-X-Received: by 2002:a17:90b:528a:b0:32e:7270:9499 with SMTP id
- 98e67ed59e1d1-343f99d60a6mr4973231a91.0.1763153188434; Fri, 14 Nov 2025
- 12:46:28 -0800 (PST)
+	s=arc-20240116; t=1763153561; c=relaxed/simple;
+	bh=dnukIf+Itv7To5FosMRzEicpsoJhQHkfdpQJ7VgOFSE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rh8rYe+bsB5FB5/vWiWiFaMwI0VReZwSbaXvW0H8i8LAymWLloGpGBaASvUXCbiJGV7+iqS9S2Eq9C16Xw9PJFIcZB+4vEbuCS/IAeNRUIIoZgaBJeYj6VWJJ3VhpWyAxTugWDGpj/4O6wR2s20wF4P32f8MWdYMUjs/YRSJwfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QihUmuow; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7E48C19421;
+	Fri, 14 Nov 2025 20:52:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763153561;
+	bh=dnukIf+Itv7To5FosMRzEicpsoJhQHkfdpQJ7VgOFSE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QihUmuowvkp+ZQpLbfPEugLiINU6M3LlJqrXkkCxWS1wlddteYGoZBrwRKQnVvgX/
+	 FgEO6FqbpD+vAarbOuK9BFcBOfbrjnkIlwLKAvqz7jV+JRoFciM4jTRursaZm227pB
+	 /imBPybiBYFmpLVjC8/8CeYi5z5u+JY+3KOrJx20/9t41GPXkobBUNIhjicYOONYhs
+	 KeZwNWhe3NLZElIIBi5Hx/DCF5zx4Mm1gK3YgkdLlGY14ZChHn4s3dYtqUKETLoZUV
+	 QSwDZDR++B2fAGElwbR877t0RgcEAFNP7h5RXphoQ/13MjT94Ygr7DNSPjaccrBdal
+	 D8SK2dbWFepiw==
+Date: Fri, 14 Nov 2025 17:52:36 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Ihor Solodrai <ihor.solodrai@linux.dev>,
+	dwarves <dwarves@vger.kernel.org>, Eduard <eddyz87@gmail.com>,
+	bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Kernel Team <kernel-team@meta.com>
+Subject: Re: [PATCH dwarves v4 0/3] btf_encoder: refactor emission of BTF
+ funcs
+Message-ID: <aReWlPqSGWnj8sPf@x1>
+References: <20251106012835.260373-1-ihor.solodrai@linux.dev>
+ <520bd6d8-b0a1-40f2-a674-b4c6ed02e254@oracle.com>
+ <CAADnVQJj6EcntgiAm6Kv8FJvP3tQcG=EzWt-uFuzszHtcw4gmg@mail.gmail.com>
+ <aRaPnq2QJN1iFF_3@x1>
+ <cf503462-6616-4cdc-ae63-b126b28ae66a@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251110134858.1664471-1-dongml2@chinatelecom.cn>
-In-Reply-To: <20251110134858.1664471-1-dongml2@chinatelecom.cn>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 14 Nov 2025 12:46:15 -0800
-X-Gm-Features: AWmQ_bnFSn90eGJnYXtk327GJ7mk0u-qVfi-2ZxUYSjHcnGme8GfwxWhZkvS1yk
-Message-ID: <CAEf4BzZ3oX-=zX0_HbeUHsPw7AOZVvi_LNkwugQnybpQvZS_Mw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: simplify the kernel_count bench trigger
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, 
-	mingo@kernel.org, jiang.biao@linux.dev, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cf503462-6616-4cdc-ae63-b126b28ae66a@oracle.com>
 
-On Mon, Nov 10, 2025 at 5:49=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
->
-> Remove the "trigger_count" in trigger_bench.c and reuse trigger_driver()
-> instead for trigger_kernel_count_setup().
->
-> With the calling to bpf_get_numa_node_id(), the result for "kernel_count"
-> will become a little more accurate.
+On Fri, Nov 14, 2025 at 03:40:36PM +0000, Alan Maguire wrote:
+> On 14/11/2025 02:10, Arnaldo Carvalho de Melo wrote:
+> > On Thu, Nov 13, 2025 at 09:20:44AM -0800, Alexei Starovoitov wrote:
+> >> On Thu, Nov 13, 2025 at 8:37 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+> >>>
+> >>> On 06/11/2025 01:28, Ihor Solodrai wrote:
+> >>>> This series refactors a few functions that handle how BTF functions
+> >>>> are emitted.
+> >>>>
+> >>>> v3->v4: Error handling nit from Eduard
+> >>>> v2->v3: Add patch removing encoder from btf_encoder_func_state
 
-"more accurate" is a bit misleading here. I think you meant that it
-will do same amount of helper calls as fentry and other benchmarks,
-and in that sense will be closer as a baseline comparison, is that
-right? Can you clarify that in the next revision, please?
+> >>>> v3: https://lore.kernel.org/dwarves/20251105185926.296539-1-ihor.solodrai@linux.dev/
+> >>>> v2: https://lore.kernel.org/dwarves/20251104233532.196287-1-ihor.solodrai@linux.dev/
+> >>>> v1: https://lore.kernel.org/dwarves/20251029190249.3323752-2-ihor.solodrai@linux.dev/
 
->
-> It will also easier if we want to test the performance of livepatch, just
-> hook the bpf_get_numa_node_id() and run the "kernel_count" bench trigger.
->
-> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> ---
->  .../selftests/bpf/benchs/bench_trigger.c        |  5 +----
->  .../testing/selftests/bpf/progs/trigger_bench.c | 17 +++++------------
->  2 files changed, 6 insertions(+), 16 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/t=
-esting/selftests/bpf/benchs/bench_trigger.c
-> index 1e2aff007c2a..34fd8fa3b803 100644
-> --- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
-> +++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-> @@ -179,11 +179,8 @@ static void trigger_syscall_count_setup(void)
->  static void trigger_kernel_count_setup(void)
->  {
->         setup_ctx();
-> -       bpf_program__set_autoload(ctx.skel->progs.trigger_driver, false);
-> -       bpf_program__set_autoload(ctx.skel->progs.trigger_count, true);
-> +       ctx.skel->rodata->kernel_count =3D 1;
->         load_ctx();
-> -       /* override driver program */
-> -       ctx.driver_prog_fd =3D bpf_program__fd(ctx.skel->progs.trigger_co=
-unt);
->  }
->
->  static void trigger_kprobe_setup(void)
-> diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/te=
-sting/selftests/bpf/progs/trigger_bench.c
-> index 3d5f30c29ae3..6564d1909c7b 100644
-> --- a/tools/testing/selftests/bpf/progs/trigger_bench.c
-> +++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-> @@ -39,26 +39,19 @@ int bench_trigger_uprobe_multi(void *ctx)
->         return 0;
->  }
->
-> +const volatile int kernel_count =3D 0;
+> >>> series applied to the next branch of
+> >>> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/
 
-nit: use bool? it's not a counter, no need to use int here
+> >> Same rant as before...
+> >> Can we please keep it normal with all changes going to master ?
+> >> This 'next' branch confused people in the past.
+> > 
+> > I think the problem before was that it sat there for far too long.
+> > 
+> > I see value in it staying there for a short period for some eventual
+> > rebase and for some CI thing, to avoid polluting, think of it as some
+> > topic branch on the way to master.
 
->  const volatile int batch_iters =3D 0;
->
-> -SEC("?raw_tp")
-> -int trigger_count(void *ctx)
-> -{
-> -       int i;
-> -
-> -       for (i =3D 0; i < batch_iters; i++)
-> -               inc_counter();
-> -
-> -       return 0;
-> -}
-> -
->  SEC("?raw_tp")
->  int trigger_driver(void *ctx)
->  {
->         int i;
->
-> -       for (i =3D 0; i < batch_iters; i++)
-> +       for (i =3D 0; i < batch_iters; i++) {
->                 (void)bpf_get_numa_node_id(); /* attach point for benchma=
-rking */
-> +               if (kernel_count)
-> +                       inc_counter();
-> +       }
+Somehow my reply via the smartphone didn't seem to have made to the
+list...
+ 
+> Yeah, I think if we can augment CI to cover more we can narrow this
+> window, aiming for zero as the test coverage improves.
 
+So the 'next' is an artifact for CI usage, i.e. if we just don't
+announce that it was merged, do it for the CI sake and then when it runs
+and don't detect any problem we go ahead and merge into master and
+announce that it was merged, nothing of this drama would take place.
 
-tbh, I wouldn't touch trigger_driver() adding unnecessary if
-conditions to it. It's fine, IMO, to have bpf_get_numa_node_id() call
-in trigger_count() for being closer in terms of actual work being
-done, but I'd keep trigger_driver and trigger_count separate (maybe
-renaming trigger_count to trigger_kernel_count would help, I don't
-know)
+The best thing going forward I think is to have AI reviewing just like
+with the BPF patches, having the patches, once posted to the list by the
+contributors, trigger the CI, that amongst other things do the AI
+reviewing, if all is ok, maintainers get some nudge that AI bot is ok,
+etc and merge it in master, annouce publicly, yadda, yadda.
 
-pw-bot: cr
+> The other thing we should think about maybe is syncing
+> github.com/acmel/dwarves with pahole.git as many people are pulling
+> from github.
+> Should we discourage using the github repo, or just find a way to
+> mirror pahole.git automatically? Thanks!
 
->
->         return 0;
->  }
-> --
-> 2.51.2
->
+I think we should have a https://github.com/pahole/ area that is
+administered by the pahole maintainer(s), just like there are:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/
+
+For the project (current merge window, next merge window) and my
+personal, previously canonical, perf and other kernel work repo:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/
+
+:-)
+
+- Arnaldo
 
