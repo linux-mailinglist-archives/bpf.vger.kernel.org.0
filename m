@@ -1,192 +1,193 @@
-Return-Path: <bpf+bounces-74559-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74560-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0817DC5F404
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 21:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E0218C5F43D
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 21:46:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A325435A4AB
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 20:33:52 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6448734DBD6
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 20:46:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D15F734678E;
-	Fri, 14 Nov 2025 20:33:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3FF2F9D8C;
+	Fri, 14 Nov 2025 20:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aMn9qFWZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QliCtM4G"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88A222F6926
-	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 20:33:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3082B27A904
+	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 20:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763152427; cv=none; b=Ljl/a0ob92KTaE8cwVFmx82gERWg0gwjmZH5+nBuIjtKW0ON46dgMPpw0LGGWBFZxvfdKPRHhNYQjAx+dM7MgG77XzczrfmeKfZLVF+2gHQAigk8coog8gz9bGt53iGQwxTm1rR6F5TvaIfNkXKXRO2F8NH4uE5uUNp7jeOtpWM=
+	t=1763153190; cv=none; b=Ut67QCLhxUQQSsLNq4cFb11bRdJxNysxXH+38ff0M8mrAG6y2jBXfWGUGtM4R/tBefeJYpdE6Od0xE3EqdHS66467ar6cDXw/MgJU/fRdvEVcGZmQJppQFkfK3mpURZnDyM9/K/RTS4Wsp9X+EhETzJo8H+6vJ9UrvkXQJwMiPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763152427; c=relaxed/simple;
-	bh=9kfm8M92j+rRKrDGYq6tIsJjpA3uV5Xfu6DwwcoiX8E=;
+	s=arc-20240116; t=1763153190; c=relaxed/simple;
+	bh=fkJyLxM6G311HUbnd0uOXkIFlsLw30lols6Y8zCLca0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L0ffsYC0uJDFsnnqbeyAdnRL/HER4CT6wFworxvy9drUqXttquB2irToZk4SdrNVddeCjZFfNuhJmtN6Iq107AYhtYXBfWX+FQ8OtTXmC2dh9aHV2e2uxOE119Km2mTaEXRW10im1H5FSe1cO/WTq87qbWWMQ99qzZ3PRCe7L1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aMn9qFWZ; arc=none smtp.client-ip=209.85.128.42
+	 To:Cc:Content-Type; b=PpwKpN9q12IJ4ixvBobf4AdWDiDg+MTKKhSMvg0BCS37O3I7BdgdIxFsiWBR0Zz1uyBWSnvzq63SHC+QiifCV+WyHTf/bivvzocKZ/LJd6JI2GSacIjLV+QkTyUbTWsgogz26cTwOrvRU4XJW81WMMsgq/IDKGMKg3pIEpgTdIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QliCtM4G; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-47775fb6c56so27155545e9.1
-        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 12:33:45 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-343ff854297so1565226a91.1
+        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 12:46:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763152424; x=1763757224; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763153188; x=1763757988; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5ESgW7nTNdkcnPF/xdJJlNyxkEEhguzWkspsjp4IVyk=;
-        b=aMn9qFWZ+oQeLAmXns8q4gzpdfoUfWuZ05BtnwNfJ4UpFiXARq8uv0kHRKi3ApBkkH
-         d3e+JLzc8yhChwKME6mGk2+6kAMsImDI3q3AgUWU/wuu497yE22geVdFxBKRQ9XPS6Xe
-         rZ7NhlBNujFqL920H20bx+rdOAnCztwL4YQ76mrAxkEpPIqPp177DmehN4v/hGe15Pyz
-         GunBE2vzPVfmdAzvjFGLMnnJYIIgwHi4XO8EjXMGqUImWnf5W5aVxumGH1NmtbA8isBX
-         r/7IIIE5HanyAbNuPOA/TNOhy7aJlRl8tEiTlisnN+FPoOqwAinjwdQEXJbHhCuAhtZL
-         GNlw==
+        bh=R91BPIHvF+PMEK++tWfFQzcocSH9XXfZoUO7yz1bj9s=;
+        b=QliCtM4G0DUk2ndcXx/ZXyACb180hys0FWHgMlEg2O8SkbPt67LBcPFCGWluBdC/Bx
+         BcdeGQK+w/JGc9rUS52AykI65HoHc36cihQuKoRBv4oV6luU86uiBSYykumP+0+tQ8mg
+         u8NGPhWpihacFrJAbBPo6ldw95+WC6UggSwW9QAYoTaZLhtkn5Tk7Qdt7HoBq0xjOJ46
+         Y+vvgHLKYALIbySuwXt841z4YA44lg3+2a06D+c+yj1Ov0o6XLSqcKqcotsgu5scqODb
+         PMvQsNcI7JY7bfq9NVSIXnpu8cx8w5P3y9oxPns6wA+FZplnqxsLRo5JQycCKP1bMXwu
+         mgTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763152424; x=1763757224;
+        d=1e100.net; s=20230601; t=1763153188; x=1763757988;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=5ESgW7nTNdkcnPF/xdJJlNyxkEEhguzWkspsjp4IVyk=;
-        b=Dr/wkpfpN0jE+XRFYewYFJCKbr28nj/8RuQlr5PlXutcvByjw3hDYDIPuKmIaMCa2B
-         yMSNluOBcH9IQapqcYgoBm8/OjVisLyx87rhpyKBUSW4BdJsotWyfy75FD2E8pqT0vaZ
-         Q8pw7drlll9teCTuPl7zq+b1QR9Oie8zFifCv6UHOGDkt4Ljhc0zZpOna/8cZ8SawWN4
-         OELMPfwOOzInVTKw09JT10ijphBa8MD9SyuiWieyK5Fk24fmH2xXnPo2kh0GNGghk7On
-         a4NLXV/V2Y483lXHuW2PJoI/xrlN/ooLOTpshdm6ozJCLVjCOAzKrXVxjeJiCkob8jK7
-         2G1g==
-X-Gm-Message-State: AOJu0Yylh09SE6F36sZQw0giE/0wlOor9+cUS/wVCGCy8UZN/krWXtwV
-	zDQje3D8XAK+wST+RkDkQO3oLkLpEOp35r4EBYSPkxuhiE1UqECp1a+chIir+aFwKppXiNHFe+a
-	P6lM5lYAYfTMzudkv9bwbSxQ0tCyUhql4j1im
-X-Gm-Gg: ASbGncvtcQKm+5plhEna5uAyiwffRZgWhqbrLPnmMJYJOCYV/A/tgrnoSx8/aDDBH31
-	RnJKQmDNOZBAmRdJ8e3JNKv1aHQEaw6QRzI/RjuL4PuIYZOOs154aR5RxRKefVCD+/mfcEWHS+h
-	cyENAtlfP/qj+e4xmcbj9WdDCy1B/oeWb/RfZjkU0sk48riQt7+wjllFWxX0r/9flKNRfNLrgoM
-	MAhv78i0N4t+s6NgBtqnFGvCOxiQoKw3nRhG5D9D+xDYqjflPjwz3tkPMgUlpWfXKf1kiJb8Fdb
-	0tZmxYlel8PBG9OoRUtYgBVu3q2c
-X-Google-Smtp-Source: AGHT+IHUuRF9RQsrIgVr4ZNkxU/WJmFYkNeUAvAe4CMYCgFhr3N9Iglgbocp5+21m9jvYLC+JjAuCKDaIXUgxnh10o4=
-X-Received: by 2002:a05:600c:c494:b0:477:54cd:200e with SMTP id
- 5b1f17b1804b1-4778fe4ec42mr45353965e9.1.1763152423705; Fri, 14 Nov 2025
- 12:33:43 -0800 (PST)
+        bh=R91BPIHvF+PMEK++tWfFQzcocSH9XXfZoUO7yz1bj9s=;
+        b=cQ02okf5QYRvCsd9E8ubv7VJIDl5/umCyomaIznc4ERUizZMLxAgEbidncjmAk4y/V
+         qlJ+8zndwQztqX2jZ3QvvSE8ZQsYecq9U0zce7+U9AWxY5RgtH9yuHVMlmqnJ0k/dw3/
+         SXds6yuB9RnHrcGkBo/FFxCfPJ8U/0eiYUTjF/HVMFuEMfvgU3w2l6dyXz/KrUiDsOhm
+         G3G2P3VzB0XXrN3FWbv94gZTCkdr7ceShtMRHLTIVLjy66xfeA+mJzPINnUzxl/nNV9B
+         bBxt/vrwMDUV269XTI0OLvuQBCXYIJMRPiYmxCZPoN3a2tuQD13lTQFiNiuMonObOO+E
+         4wOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNmjeHFFCMR/cZ67JC2yXY9tiQO1GXWlyt4QqOYqof1/g90gU5PWYL3L6uK615/bnDEu8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzNxZ64dWqD0KLK3dcDH+e9VwNxCJkZRAPxIJfIv8Fi1YGl1Gw3
+	9AZxoWYvMpkUrBrCI2BgxcrRizHDD02huWpE2OsYJBgNbCk8ZxHazAqZYYAOCtlIDncUkNvTFdP
+	ET5abyQ7pabuoN6nabjG3UffhfDTF5FU=
+X-Gm-Gg: ASbGncsV8ITUdsYVTbra2XbPgJPctdNR2IHvxxPEVlAUoSszMJPvAeYoWYDfSx89Apf
+	zgXTW03xU9cqy6NtVYQYKtqwhsRqgJgHM6on4kNlnXY+vEdLyRXjpVTJpWBeboHxWV6K1hq3MBv
+	gsZKdphX44/iJIq9cMW4i+mv0iG0LnhuyipWMGsMsoDhj0vd+SPFNjw5zFmo0N32jeCbf/X7h2M
+	Vb71gJ4vhPdM4c4WlsjeGGKlc5aFZTfN1XMukJ5XpvbK/eXsUItKYySaut4cTmde4GpmWWDG6Vh
+X-Google-Smtp-Source: AGHT+IGonQLSQ7El5G2Eyqdwn9GRI6w19sMs5o+hd2d0mhS2v00lquD7zdm9pZWOXD7cxJ2dWcbWoWRhx5b4Anm1T8Q=
+X-Received: by 2002:a17:90b:528a:b0:32e:7270:9499 with SMTP id
+ 98e67ed59e1d1-343f99d60a6mr4973231a91.0.1763153188434; Fri, 14 Nov 2025
+ 12:46:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251114031039.63852-1-alexei.starovoitov@gmail.com> <CACkBjsa+J9iW+HoBfWh5V1P6raQGeoL2Ax6=V1HKA-kmWP54+w@mail.gmail.com>
-In-Reply-To: <CACkBjsa+J9iW+HoBfWh5V1P6raQGeoL2Ax6=V1HKA-kmWP54+w@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 14 Nov 2025 12:33:32 -0800
-X-Gm-Features: AWmQ_bkd-rFHhZKD5QPG8yXZqwgUG6nLQ5MwRohffZ51ZQnjdOWIjRHHuYJgwSw
-Message-ID: <CAADnVQJRqNm-v-Q5ix5h2eULx3xEzhf47fY6KF=sX0Rj0OF4oA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Recognize special arithmetic shift in
- the verifier
-To: Hao Sun <sunhao.th@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Kernel Team <kernel-team@fb.com>
+References: <20251110134858.1664471-1-dongml2@chinatelecom.cn>
+In-Reply-To: <20251110134858.1664471-1-dongml2@chinatelecom.cn>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 14 Nov 2025 12:46:15 -0800
+X-Gm-Features: AWmQ_bnFSn90eGJnYXtk327GJ7mk0u-qVfi-2ZxUYSjHcnGme8GfwxWhZkvS1yk
+Message-ID: <CAEf4BzZ3oX-=zX0_HbeUHsPw7AOZVvi_LNkwugQnybpQvZS_Mw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: simplify the kernel_count bench trigger
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, 
+	mingo@kernel.org, jiang.biao@linux.dev, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 14, 2025 at 1:10=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrote=
-:
+On Mon, Nov 10, 2025 at 5:49=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
 >
-> On Fri, Nov 14, 2025 at 4:10=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> [...]
+> Remove the "trigger_count" in trigger_bench.c and reuse trigger_driver()
+> instead for trigger_kernel_count_setup().
 >
-> > The conditional branch in dsr_set_ipip6() and its return values
-> > are optimized into BPF_ARSH plus BPF_AND:
-> >
-> > 227: (85) call bpf_skb_store_bytes#9
-> > 228: (bc) w2 =3D w0
-> > 229: (c4) w2 s>>=3D 31   ; R2=3Dscalar(smin=3D0,smax=3Dumax=3D0xfffffff=
-f,smin32=3D-1,smax32=3D0,var_off=3D(0x0; 0xffffffff))
-> > 230: (54) w2 &=3D -134   ; R2=3Dscalar(smin=3D0,smax=3Dumax=3Dumax32=3D=
-0xffffff7a,smax32=3D0x7fffff7a,var_off=3D(0x0; 0xffffff7a))
-> >
-> > after insn 230 the register w2 can only be 0 or -134,
-> > but the verifier approximates it, since there is no way to
-> > represent two scalars in bpf_reg_state.
-> > After fallthough at insn 232 the w2 can only be -134,
-> > hence the branch at insn
-> > 239: (56) if w2 !=3D -136 goto pc+210
-> > should be always taken, and trapping insn 258 should never execute.
-> > LLVM generated correct code, but the verifier follows impossible
-> > path and rejects valid program. To fix this issue recognize this
-> > special LLVM optimization and fork the verifier state.
-> > So after insn 229: (c4) w2 s>>=3D 31
-> > the verifier has two states to explore:
-> > one with w2 =3D 0 and another with w2 =3D 0xffffffff
-> > which makes the verifier accept bpf_wiregard.bpf.c
-> >
->
-> Tested on my local setup, it solves the Cilium cases as expected.
->
-> However, this feels ad hoc: spitting states on very specific ranges.
-> For 1588 false rejections collected here[1], after this patch, 1561/1588
+> With the calling to bpf_get_numa_node_id(), the result for "kernel_count"
+> will become a little more accurate.
 
-1588, but the paper said 503 ? ;)
-Yeah. I did look at them.
+"more accurate" is a bit misleading here. I think you meant that it
+will do same amount of helper calls as fentry and other benchmarks,
+and in that sense will be closer as a baseline comparison, is that
+right? Can you clarify that in the next revision, please?
 
-> are still rejected. One can confirm this with the `load_progs.py` in my
-> repo (disable the `-d` option for bpftool if too slow).
 >
-> I am wondering why not adopting the general solution introduced in this R=
-FC[2].
-> What are the concerns and (potential) confusions? With this design, those
+> It will also easier if we want to test the performance of livepatch, just
+> hook the bpf_get_numa_node_id() and run the "kernel_count" bench trigger.
+>
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> ---
+>  .../selftests/bpf/benchs/bench_trigger.c        |  5 +----
+>  .../testing/selftests/bpf/progs/trigger_bench.c | 17 +++++------------
+>  2 files changed, 6 insertions(+), 16 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/t=
+esting/selftests/bpf/benchs/bench_trigger.c
+> index 1e2aff007c2a..34fd8fa3b803 100644
+> --- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
+> +++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
+> @@ -179,11 +179,8 @@ static void trigger_syscall_count_setup(void)
+>  static void trigger_kernel_count_setup(void)
+>  {
+>         setup_ctx();
+> -       bpf_program__set_autoload(ctx.skel->progs.trigger_driver, false);
+> -       bpf_program__set_autoload(ctx.skel->progs.trigger_count, true);
+> +       ctx.skel->rodata->kernel_count =3D 1;
+>         load_ctx();
+> -       /* override driver program */
+> -       ctx.driver_prog_fd =3D bpf_program__fd(ctx.skel->progs.trigger_co=
+unt);
+>  }
+>
+>  static void trigger_kprobe_setup(void)
+> diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/te=
+sting/selftests/bpf/progs/trigger_bench.c
+> index 3d5f30c29ae3..6564d1909c7b 100644
+> --- a/tools/testing/selftests/bpf/progs/trigger_bench.c
+> +++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
+> @@ -39,26 +39,19 @@ int bench_trigger_uprobe_multi(void *ctx)
+>         return 0;
+>  }
+>
+> +const volatile int kernel_count =3D 0;
 
-yeah. Will reply in that thread.
+nit: use bool? it's not a counter, no need to use int here
 
-> false rejections can be solved in a unified way (e.g., 1226/1588 are load=
-ed,
-> the rest can be improved with a bit more refinement, except for the ones
-> requiring better loop handling).
+>  const volatile int batch_iters =3D 0;
 >
-> [1] Progs: https://github.com/SunHao-0/BCF/tree/main/bpf-progs
-> [2] RFC: https://lore.kernel.org/bpf/20251106125255.1969938-1-hao.sun@inf=
-.ethz.ch
+> -SEC("?raw_tp")
+> -int trigger_count(void *ctx)
+> -{
+> -       int i;
+> -
+> -       for (i =3D 0; i < batch_iters; i++)
+> -               inc_counter();
+> -
+> -       return 0;
+> -}
+> -
+>  SEC("?raw_tp")
+>  int trigger_driver(void *ctx)
+>  {
+>         int i;
 >
-> [...]
-> > +static int maybe_fork_scalars(struct bpf_verifier_env *env, struct bpf=
-_insn *insn,
-> > +                             struct bpf_reg_state *dst_reg)
-> > +{
-> > +       struct bpf_verifier_state *branch;
-> > +       struct bpf_reg_state *regs;
-> > +       bool alu32;
-> > +
-> > +       if (dst_reg->smin_value =3D=3D -1 && dst_reg->smax_value =3D=3D=
- 0)
-> > +               alu32 =3D false;
-> > +       else if (dst_reg->s32_min_value =3D=3D -1 && dst_reg->s32_max_v=
-alue =3D=3D 0)
-> > +               alu32 =3D true;
-> > +       else
-> > +               return 0;
-> > +
-> > +       branch =3D push_stack(env, env->insn_idx + 1, env->insn_idx, fa=
-lse);
-> > +       if (IS_ERR(branch))
-> > +               return PTR_ERR(branch);
-> > +
-> > +       regs =3D branch->frame[branch->curframe]->regs;
-> > +       __mark_reg_known(&regs[insn->dst_reg], 0);
->
-> Here, the hidden assumption is: smax=3Ds32_max=3D0, which is true if it's=
- called
-> by ALU32 ops or some ALU64 (e.g., ARSH), but not for all ALU64. Should
-> we add some comments for this in maybe_fork_scalars(), in case it's used
-> in other locations?
+> -       for (i =3D 0; i < batch_iters; i++)
+> +       for (i =3D 0; i < batch_iters; i++) {
+>                 (void)bpf_get_numa_node_id(); /* attach point for benchma=
+rking */
+> +               if (kernel_count)
+> +                       inc_counter();
+> +       }
 
-Well, it's done specifically for ARSH. We won't be calling it blindly
-for all operations. Forking for 3 distinct scalars likely doesn't
-make sense either.
-Here it's targeting a specific compiler optimization.
-I was thinking of doing it at AND instead when it sees [-1, 0] in dst_reg,
-but doing it in ARSH is more generic, since compiler can do:
-// and (not (sra X, size(X)-1))
-and we'd need to special case both AND and XOR.
+
+tbh, I wouldn't touch trigger_driver() adding unnecessary if
+conditions to it. It's fine, IMO, to have bpf_get_numa_node_id() call
+in trigger_count() for being closer in terms of actual work being
+done, but I'd keep trigger_driver and trigger_count separate (maybe
+renaming trigger_count to trigger_kernel_count would help, I don't
+know)
+
+pw-bot: cr
+
+>
+>         return 0;
+>  }
+> --
+> 2.51.2
+>
 
