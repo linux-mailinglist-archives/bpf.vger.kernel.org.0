@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-74488-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74489-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BD14C5C4A8
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 10:34:24 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49953C5C4DE
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 10:36:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id AD77D3628CC
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 09:25:51 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A568F35E203
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 09:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B7DE3081BF;
-	Fri, 14 Nov 2025 09:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9B3306B2C;
+	Fri, 14 Nov 2025 09:25:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PjmZXHsv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KrHL9VWt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com [209.85.214.194])
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC7C30748A
-	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 09:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88274305E38
+	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 09:25:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763112310; cv=none; b=EIxUEomvhzeyrAw+G3Di31R71Hpelj4FBpNQ0nPk28YSThSt34Xm+lXgjSs5WUVJyckovBevMg50moUF3ZzxFdVgGFEW1b+X1LwVC1l+2pqoXMPbqHrA+KSKRIX7VntgHFt86fMh2WvEORQNJzSIbEXNi7SMQQdttpnI0/fiM7o=
+	t=1763112316; cv=none; b=sqzS8pC81q2luH1KoQoQIe7lmccs9mtTbfn9Py5mDa+qEuTkNSVhV7qYA9ZLmaMEeOoKLM+XNTObvbdENSlhba+TS8Fz9+cZiU4s2woPuJ2o7VHiyTJBYQ2GoOF9TOAF8MmW1g1VQGwcpPfljSUTJj8+PNQt9eHgD195dXly/I8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763112310; c=relaxed/simple;
-	bh=gokrqToajl3qLeodPuzcgSTB9cabw/WpaV1bSGQlVLA=;
+	s=arc-20240116; t=1763112316; c=relaxed/simple;
+	bh=13rTaiSsL0NTZ1YOaRxf6oSc1Dy8agBuYumvqKAnvQk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qqR6donxolWeuglZTYAKgxo6SzDSUStf/ocjBzvISIPN5Qg79gSv1WIsHLnjA99Nv/nmKA9waJ0QxmLk58sL+LjWnbkb3q19i243bRr7GnMiCT6sBEIS2hegco4AMd2Uf9REWncflWl4biJHr0fQpliqmiBL4TUtkLyv1VitblA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PjmZXHsv; arc=none smtp.client-ip=209.85.214.194
+	 MIME-Version; b=a4ICd22PwH2KEim8UwI/SdrSpg3aJkmU8JaMMb962zV3kyHJqH/DMkpEBj47V90TFsFRTO5BoBjUYuOizb6Yy1yPAJ0lDxMx4HtbrTDDx25GBFPun1jX2+8dksm7yL+uZx1FVhpITakmqdPCMuvhtPhRr6qjNp+cOQx7AdHQkYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KrHL9VWt; arc=none smtp.client-ip=209.85.214.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f194.google.com with SMTP id d9443c01a7336-29853ec5b8cso19943265ad.3
-        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 01:25:09 -0800 (PST)
+Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-2953ad5517dso20817445ad.0
+        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 01:25:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763112309; x=1763717109; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763112314; x=1763717114; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c2wIn/kARIOhJ0xgPL8i1YkD6/QkhYtCyZijlaHlovw=;
-        b=PjmZXHsvrHkZX1BfPdMHG1LHO+98ercxeRnouDfeem7fxEpj+PUhudvllYXeEuQ4/U
-         FuT6ehPHuJspLMumi9AINBr1vPA2JVl8S2YQLy4FKYSZ6aSZF48ZLZofhFbvOxWJ/02/
-         +LF+cz/cia+PdpH0TvPIjwx1CV4uiTfIsCQFIq2IyxzpsujoFwm6UWx/v2m/bqbzoJFD
-         ef8XIhouSlk/N3xz6iEFvQuI/U3MjK0ieSITtEbufSq0P8QmdA9sZXuT4iTfOrlzLUnf
-         IRfnShm2o5/zgstgFCRkgWEoI2RGObF7GMJB/d10XZX/TZdxprnqQrmgqzF73LpIXbOr
-         +ldw==
+        bh=CR4G2sTlGki2siCN1jOZFPTFr3TbudN4PF6c7ryHzjk=;
+        b=KrHL9VWtE4O82KxpyXvhAlHSQMbpyLBZwKUcaF4AbRQCceK+D0jWXXwEcDe9XZa/o9
+         wyE8FYRpIctdMJ7CAHP+l3qIBfo1b5cHCqcRWDzELndSENhLcw0ooW7g6Og4T6roba4r
+         CaX90a2FMRbyAVPFARRBcCC4rrTFqE6SSBJYk88oUK1Fb5MHM8rGR66D8kUNsIyRIfkZ
+         xQvX/uUFXgjuYlLocgrzDZKyzj4aoC4pg4yYkE3h/+lRVy4GZjpmNwsM7bYVTPbJN3wq
+         PY1FDC2TnuVuNIEfteqFI9zr5zHORNi1i+y+IeQMf0yV5Hss7tyqxGcwlsQHGLud3r0s
+         wSSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763112309; x=1763717109;
+        d=1e100.net; s=20230601; t=1763112314; x=1763717114;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=c2wIn/kARIOhJ0xgPL8i1YkD6/QkhYtCyZijlaHlovw=;
-        b=TCBhM1ovkXjgbrS19kvXz9SakKRcxFQcgDKv9/Tx8awmf4V9TxenQc5Hmcxh0Hn3vW
-         HnQ4y9fUqyP1Y8YjVy7RYDot2sPX3/OxdQ2p9IMcOpdCfqnJz5VyXp0oKEAnKF3Z2bAb
-         zVIBys1zJEHVo9E70ElEIyr6bC/LEV7DFvl6iqLbUolKLDp/YZl8Nyob1AJ9fBjhvQOL
-         paYs7YFdoB3Vn42eeAtFWSHapBzaMRIfuNEhZBnJKjYXkXdEb2ZCDUjeki+kbUvd3EqV
-         2AHOrYmi/zjthz+zwXyxfaMuEUpvHsdNTqQMebg8wPJ2rNmhIT5Qhtdd16fSD6ebF0j6
-         D/hg==
-X-Forwarded-Encrypted: i=1; AJvYcCVkJVatEGgNx0HIhHUglcDLmiqQiic9dsTzpLX4d58zZNExcEZY1fc9Whv79BbeDftuh1I=@vger.kernel.org
-X-Gm-Message-State: AOJu0YziwYUhyPq8FT7zrFpRs1zr/YAmHOWevgb9wmsjZwCbgU50+Va7
-	pDMsxDTazLfUYZ2VsG64OT0ujqCJMrwFoYUgNMA25dPKof/MUN1K39Fq
-X-Gm-Gg: ASbGnctgD5o9tur113Ek6lSgoSILqj7Z64Us1nNS8JEyU3qiBnINf717v06jWW5PvXB
-	CZU0R6G2yDnolvMVme3sHHY8G3V+yGLjl5EuakjLUkFLf+NG/PDsnx/oCUWHnKPQZud/YnDTL66
-	MFrXS2wk5t54k4oE3xhentI0Y/fXyv6Vq0wpz/5cwopelBI0G8T2baAY0lhErMhUcRX1hYCO+ze
-	hy+CyXSrw9u0o5FMtuTtPgaeyoYGQPJ4E+Gxpo/a3rqVBBYwzHjmSarmW5QjsO55Bumbo0F7H9X
-	oKi18is94zW1EpXJJOY2SmKreQJp0bG0q+5JrI5eci39rGqFP03uuE7aA8WyjDwWTJ9Hx5E/uAk
-	WlD1eHkY6daMcD/yRKV8BqdFRB5DIDoyNHGHz2TsQYGcyOmTDYh54yS95W+c/pmzVNbi1xTi0Bc
-	Z6
-X-Google-Smtp-Source: AGHT+IG5VnwBl+1lxPrp6qdos/kEJNYbsFAuD4akbBy67+ZoqlT1tPAQmEIH9GoRP72WFoHDwsjAMw==
-X-Received: by 2002:a17:902:f60e:b0:290:c0ed:de42 with SMTP id d9443c01a7336-2986a7417b8mr26050145ad.36.1763112308699;
-        Fri, 14 Nov 2025 01:25:08 -0800 (PST)
+        bh=CR4G2sTlGki2siCN1jOZFPTFr3TbudN4PF6c7ryHzjk=;
+        b=F4D5E6ytT/4spJXOchbcpoyHCN5liAhIbXkWkb7+mpruKX8G9YeEdHXxlY7zbMRKkf
+         nzLZUE31EXYpztWAMOPIZ6kKtxaQ2iuO6GkK+zfnWvG9f3ezYQ9W01RpMt6MdArCK4k5
+         b1GZnIOdCvz7rbxRPIQGvzwdGDDdlGVhsykKiy8QlKfc5zynqu0+/N1sDsCJKSHn6yBg
+         syaDG1QgPc2La8Bie6z4uxhMI1FpjaOUv32k7djGFfgxhcv/bOHkG2PReqUiWRxOWFp2
+         5QEarWSx9xF+0qa0vpWlG2rmpIIxalT80OPAF0+DgdOnd6KPCxoyw2erTxDW/jUwDXNt
+         Ekmw==
+X-Forwarded-Encrypted: i=1; AJvYcCXKAce506opU1xAvenP/U7/z5jmu+fJx9TlChKkgLIeiBMDUNcdIUGsMKcxCpne837Mqn8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxB5zIT6GdEya04owgWlz9N6HZt8jSV0WLKMN2B+KaXn5CJu4PV
+	fWy1poJPhDw8emfiZsSPTUdHidjgaaTu4/Krj7iAE5MhuPuQBivxp4lL
+X-Gm-Gg: ASbGncvVoSGLzswNkZ4ajIAGBizRsFtBEhs5WECowbv51jYmBIakeVZZVnvwoiXBgjY
+	57QjzfeiE/+vDSlN0hL475nsOrr8n1dyd5Rh5u0uWU32a42c2BKwX5gLcqwHaKLW+NKPtMdJjwg
+	phSP5vqp9TBakCmJz0HfocP5B76+YE8JCZWgBLCfmuus75NKwbPFgsAFgrkpTc+mQWgA7AnkFBq
+	V5rzTtPhCVdh1GUk+tKVF5meJDoJIt4hsyCFSZ3SstYIOk4QFzWNrJ4C5TNBsYD9GHx88vFAzih
+	ucSdyaHMvJGj3cJr0YT3lSULDWiny5SLTBvjUXd/ALT4QOhjs80Ly74Xq6qA4xIZmz7CvCJqVku
+	C2Pvm/i3CwX+O9E/BL+p5T10IBD1gr1XCU+w8pZUxkPU+o+tyxzCdAEeEluNm5EX/kfIfdf0K6r
+	E0uDSnMmw9MOo=
+X-Google-Smtp-Source: AGHT+IHcncu3fCVBTRgs6cuHPXbsXwtrJ/13HcgbxbxqCj94e5Leoiq1IYCMd5ZzNeVgfN5DkjRaag==
+X-Received: by 2002:a17:903:22c5:b0:295:2c8e:8e44 with SMTP id d9443c01a7336-2986a76bc1dmr29990775ad.59.1763112313782;
+        Fri, 14 Nov 2025 01:25:13 -0800 (PST)
 Received: from 7950hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2346dasm50451525ad.7.2025.11.14.01.25.03
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2346dasm50451525ad.7.2025.11.14.01.25.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Nov 2025 01:25:08 -0800 (PST)
+        Fri, 14 Nov 2025 01:25:13 -0800 (PST)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: ast@kernel.org,
@@ -95,9 +95,9 @@ Cc: daniel@iogearbox.net,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH RFC bpf-next 2/7] x86/ftrace: implement DYNAMIC_FTRACE_WITH_JMP
-Date: Fri, 14 Nov 2025 17:24:45 +0800
-Message-ID: <20251114092450.172024-3-dongml2@chinatelecom.cn>
+Subject: [PATCH RFC bpf-next 3/7] bpf: fix the usage of BPF_TRAMP_F_SKIP_FRAME
+Date: Fri, 14 Nov 2025 17:24:46 +0800
+Message-ID: <20251114092450.172024-4-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.51.2
 In-Reply-To: <20251114092450.172024-1-dongml2@chinatelecom.cn>
 References: <20251114092450.172024-1-dongml2@chinatelecom.cn>
@@ -109,73 +109,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement the DYNAMIC_FTRACE_WITH_JMP for x86_64. In ftrace_call_replace,
-we will use JMP32_INSN_OPCODE instead of CALL_INSN_OPCODE if the address
-should use "jmp".
-
-Meanwhile, adjust the direct call in the ftrace_regs_caller.
+Some places calculate the origin_call by checking if
+BPF_TRAMP_F_SKIP_FRAME is set. However, it should use
+BPF_TRAMP_F_ORIG_STACK for this propose. Just fix them.
 
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
- arch/x86/Kconfig            |  1 +
- arch/x86/kernel/ftrace.c    |  7 ++++++-
- arch/x86/kernel/ftrace_64.S | 12 +++++++++++-
- 3 files changed, 18 insertions(+), 2 deletions(-)
+ arch/riscv/net/bpf_jit_comp64.c | 2 +-
+ arch/x86/net/bpf_jit_comp.c     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index fa3b616af03a..462250a20311 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -230,6 +230,7 @@ config X86
- 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS	if X86_64
- 	select HAVE_FTRACE_REGS_HAVING_PT_REGS	if X86_64
- 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+	select HAVE_DYNAMIC_FTRACE_WITH_JMP	if X86_64
- 	select HAVE_SAMPLE_FTRACE_DIRECT	if X86_64
- 	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI	if X86_64
- 	select HAVE_EBPF_JIT
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index 4450acec9390..0543b57f54ee 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -74,7 +74,12 @@ static const char *ftrace_call_replace(unsigned long ip, unsigned long addr)
- 	 * No need to translate into a callthunk. The trampoline does
- 	 * the depth accounting itself.
- 	 */
--	return text_gen_insn(CALL_INSN_OPCODE, (void *)ip, (void *)addr);
-+	if (ftrace_is_jmp(addr)) {
-+		addr = ftrace_jmp_get(addr);
-+		return text_gen_insn(JMP32_INSN_OPCODE, (void *)ip, (void *)addr);
-+	} else {
-+		return text_gen_insn(CALL_INSN_OPCODE, (void *)ip, (void *)addr);
-+	}
- }
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 45cbc7c6fe49..21c70ae3296b 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -1131,7 +1131,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
+ 	store_args(nr_arg_slots, args_off, ctx);
  
- static int ftrace_verify_code(unsigned long ip, const char *old_code)
-diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-index 367da3638167..068242e9c857 100644
---- a/arch/x86/kernel/ftrace_64.S
-+++ b/arch/x86/kernel/ftrace_64.S
-@@ -285,8 +285,18 @@ SYM_INNER_LABEL(ftrace_regs_caller_end, SYM_L_GLOBAL)
- 	ANNOTATE_NOENDBR
- 	RET
+ 	/* skip to actual body of traced function */
+-	if (flags & BPF_TRAMP_F_SKIP_FRAME)
++	if (flags & BPF_TRAMP_F_ORIG_STACK)
+ 		orig_call += RV_FENTRY_NINSNS * 4;
  
-+1:
-+	testb	$1, %al
-+	jz	2f
-+	andq $0xfffffffffffffffe, %rax
-+	movq %rax, MCOUNT_REG_SIZE+8(%rsp)
-+	restore_mcount_regs
-+	/* Restore flags */
-+	popfq
-+	RET
-+
- 	/* Swap the flags with orig_rax */
--1:	movq MCOUNT_REG_SIZE(%rsp), %rdi
-+2:	movq MCOUNT_REG_SIZE(%rsp), %rdi
- 	movq %rdi, MCOUNT_REG_SIZE-8(%rsp)
- 	movq %rax, MCOUNT_REG_SIZE(%rsp)
+ 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index de5083cb1d37..2d300ab37cdd 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -3272,7 +3272,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
  
+ 	arg_stack_off = stack_size;
+ 
+-	if (flags & BPF_TRAMP_F_SKIP_FRAME) {
++	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+ 		/* skip patched call instruction and point orig_call to actual
+ 		 * body of the kernel function.
+ 		 */
 -- 
 2.51.2
 
