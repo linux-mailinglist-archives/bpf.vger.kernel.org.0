@@ -1,130 +1,127 @@
-Return-Path: <bpf+bounces-74596-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 783C6C5F91B
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 00:15:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED1BDC5F922
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 00:17:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 64CC4357E63
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 23:14:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F7113AFC41
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 23:17:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C460306D58;
-	Fri, 14 Nov 2025 23:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C927309EEB;
+	Fri, 14 Nov 2025 23:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CTHrX7wE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i6aIzRa0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932A97261B
-	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 23:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B4927281E
+	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 23:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763162062; cv=none; b=iWWb84/z0WzVhR4ycG01JVc2StOPzt3BNp1aqrPg6Ak2+V0FPWqXrdl5h5Lv/Ui4PHfHXB6Xdi9/AH6SCcsiJqnGHKoDR8+Jje6Zi0v8eAxBzuQRGAcIdnnhn5uqpcWK6EfOSCrG7IFj1GWX2/QTCmTH6L8g1wt6IhEoobZ8+sw=
+	t=1763162272; cv=none; b=cAgPeeGpVZi8ktzgQnVzPAgxaBk+CDwoWWB/Wp8/bcVgFenmeWLq4G6Sx8S3LxZIchzuZ38qL/3Xzxa6B2XnZQS2TWw0UwsGr9I63gfu8JY+mWOThJkjwV8CyDcitXpX4YDGtAehad1pgtsQzdIjw7vRmOEJkqMVYwHJJYE0UJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763162062; c=relaxed/simple;
-	bh=A8qRLw6Hbx66aMdXpwepwcyloa/AcKP/iENTuIPls8s=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LWg6kXyfOWpPWs71ITsOumAf006p9DHlA7MQNHMiLTd7YXcaVlcToK4/+O/kbjkEgluEp9jBvVysKjityH070a0RnF3jrz0IwkY7EHCWbybWidR8A3hKjqhlsSeDgh/gKIcdr+TIpydsER3xGaP7GXpqjcJjwkdg1V5OtqY9TpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CTHrX7wE; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-295548467c7so29013625ad.2
-        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 15:14:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763162061; x=1763766861; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=A8qRLw6Hbx66aMdXpwepwcyloa/AcKP/iENTuIPls8s=;
-        b=CTHrX7wEPI/m1IIoXRQ3H9HaAyQY8lmMB1sMEu4NdSjPxTqpMB8emNs6LRpMhMVOjO
-         gcyaCU7cdKAyENfVke9oqQ8UFGXv13zwwIFGe1GdGSKznizsPT6cbsYpAF5D4dXjUcue
-         /py29sIZZmOy7gmf9PQ7cf2h2PPsWjBFYmNDX1wMb3nQV2ZzvGuRIdCQvPwVdeFrgkVL
-         yvuMKLGa/tGocwhv9VhqYpL2KzFissSCK4psPbRyFQxNAzMnIGWSgfmWgAjB3ABhe1nx
-         LY4gbe8SFAs9krlWOlX0wxUPBGtylPyHs19NhZ4LswycmF7HeWsp1LMvuzXQK6oszrxQ
-         80Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763162061; x=1763766861;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A8qRLw6Hbx66aMdXpwepwcyloa/AcKP/iENTuIPls8s=;
-        b=isbpzUPh6ec+GDneC2A1lv9W+RVNVqQ6bIKNFoi1+UFeSgBVlEZsnog/iTM/rfkS5P
-         00htRojQYls150FSiK3BpM2T+pNIVsbl1a46tr59GAvQBry7IPJxijGZLLxjWZgnq2is
-         l28MNLKwSC3wXjj41NA8OqpTG4xEJPj0uMbSmcyE99eDqSE6Bv7UGEnLy6rh/h13b/aU
-         R5797P1x4oGPqrm2hbKfnotxXTmAvzQSgoWKfb02N8R1yTmxAIg1FU8d/vQz7sLNdFxv
-         Sj00/tBGc9dv8vO0psWqwVFR6Ln4+hSV5i8EmhuL8DQXiHWXbFNg/Hy5zc74fbUs47lP
-         BeRA==
-X-Forwarded-Encrypted: i=1; AJvYcCXc1w/6LFlwwA/CVxldW9P67s//zJ74XFRBXKZJYkPeIFXRBaKRThOk/WFvbRnLdipFssA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxY2WHR2PbOATQ21eGyof7U5nUXZDIHNcMTRlcn/xqLFjKjGnb4
-	o2EkMe8uYMlPbmrUB9VJqmY4avE/FiFJQBCev3UWckEjSaGC8ePxyxKj
-X-Gm-Gg: ASbGnctp5TyZ4GgI9RG6VCoelvBIdCngeVvWhAkLlqc4Hef2NKdWNF6tOEb8FFyBrqg
-	nofkNDTPJsll7O43L7Vi1i9lRg6E1g0K1IklNrzoeb1GHn8REFEbaUFsT5aBFtBSLFsUWtOqnx8
-	EuhIZ5Ny1MoCOQmnLV8PNEVzvtKvy5NsCs4x/5S3uHLFpyRyguKP8EpdQJVRMlPZTfieXvTYIfm
-	WPE3NRAmtSDVU8uw/nUUEF4MvYnCT5zGTABQnCWOlk6eXkWHEQDBnxXPA6fMW/xeZI5cJHGPyU1
-	W7+C9UfgLwH8897YoThJb/egZPpSCgiA+jfh4TQP3htarQLoSK1cT4xJmFsUePEYIpAGURNmZl2
-	ygxnzjUm2GzOYr+aIjNgSKfvBTtBbZeXnDbES6z+Fl3ZCBySDbcoPjzb280pjaH+mxgfoX49Y2F
-	z/K1d9R4Ig
-X-Google-Smtp-Source: AGHT+IHtj/37pOGhzlnTY8wvsuRbJHALTtQnc+ELdtezyZXGNgvBYtn0DBhI+HwI++mc37rCe/9e3Q==
-X-Received: by 2002:a17:903:120a:b0:28e:756c:707e with SMTP id d9443c01a7336-2986a72e30emr53656965ad.33.1763162060818;
-        Fri, 14 Nov 2025 15:14:20 -0800 (PST)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b9250cda04sm6206121b3a.19.2025.11.14.15.14.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Nov 2025 15:14:20 -0800 (PST)
-Message-ID: <0d189513013887b93a3645f95d043965c3359840.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpf: verifier: Move desc->imm setup to
- sort_kfunc_descs_by_imm_off()
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Puranjay Mohan <puranjay@kernel.org>, bpf@vger.kernel.org
-Cc: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov
- <ast@kernel.org>,  Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@kernel.org>, Kumar
- Kartikeya Dwivedi <memxor@gmail.com>, 	kernel-team@meta.com
-Date: Fri, 14 Nov 2025 15:14:17 -0800
-In-Reply-To: <20251114154023.12801-1-puranjay@kernel.org>
-References: <20251114154023.12801-1-puranjay@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1763162272; c=relaxed/simple;
+	bh=vC/SFwwHH5ERwHKHFXjn+dmNfWYgSW5aTxMRn0nqvIY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rFfFc/V8wLSXrdPuDLhjCbaGLg446J9z5wlGHA1N6l6YlPFfq8LqiCWvOQch/3NQ6adSCFxOgjoijvYo6eYUqhj/HahicUvkhXvMD5EhI2sHGr5lPDJ/yfdl1F9JdhsEXs6crpmArcrEExSxqgN0hXCe36WlKJjb3yj3R3xb/q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i6aIzRa0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 381C3C2BCAF
+	for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 23:17:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763162272;
+	bh=vC/SFwwHH5ERwHKHFXjn+dmNfWYgSW5aTxMRn0nqvIY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=i6aIzRa08B/+5ez4cWtc3N6o2bwCYYvJqu9bjXCpxeeK44ttUqtoaVsgZ0fiFgVKx
+	 Hl2SKb6zYf4dllvv4nEzLO4MP7AQMRN7EGn6LhwTf0vSK2uN8e7VLBpKMj+BWB/i4c
+	 x40UnMQB0zpnAkgCC8OlK/z8K0B7DoY1NlpaPjZePmzRFSaHjEomkLwXJIO687Z0Pz
+	 cm8mlpIB+/ZBSnS5l6920AisUd7gv1dcNOXa0Lep6YT+pZm94fn4goPiUMZF0VQaxz
+	 E0vFiKkRuZS2Ztzj2GC5su48Rvv4ypkU2BZ+mtpiZu9I8RCb6jw2GJIZDW3NH1tzms
+	 wYstNejJjigFw==
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-71d71bcab69so22844547b3.0
+        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 15:17:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWxcEr2SJdvZAhy4MiTa2afXBOl2PxNXCljKXIxKFjUjExvTZ6T4XokMbEXWZebRVXq6vw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHuX1kILsLW+wilHhe46kJOnb23YZfpLUId4kg2SSt5yi15kJ8
+	z2DhxngXgOvuzbKbFjw/aucuTnClpGNO4KuMt8K+idXjEO8DmOJJMsTn5FODC1CYo6Fji4BAH2/
+	/EpVhIKUuOarp7ORyPO8/PCr9Z7AAgyM=
+X-Google-Smtp-Source: AGHT+IHlSnNZwkER98sQW0oFNCEVL3aA3sMAlC6Fmge+0KqbGsJsAmPRPyUpXrgvErJfDmcpa9przrKqaGGnmBd9ifQ=
+X-Received: by 2002:a05:690c:8b19:b0:787:d0d5:808e with SMTP id
+ 00721157ae682-78929f15937mr35746277b3.50.1763162271349; Fri, 14 Nov 2025
+ 15:17:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251114222249.30122-1-alan.maguire@oracle.com>
+ <20251114222249.30122-2-alan.maguire@oracle.com> <CAHzjS_vO3GseC0MsUpGDFdTULNYsj4rmWXt6kADa26zioSswgQ@mail.gmail.com>
+ <cd326ce3-bff1-4003-912c-659db8da6bf9@oracle.com>
+In-Reply-To: <cd326ce3-bff1-4003-912c-659db8da6bf9@oracle.com>
+From: Song Liu <song@kernel.org>
+Date: Fri, 14 Nov 2025 15:17:40 -0800
+X-Gmail-Original-Message-ID: <CAHzjS_vOOiHuTCygx1xSV-6mc12YHRnuhSew_f54chetc3zEpQ@mail.gmail.com>
+X-Gm-Features: AWmQ_bk-xxwIcy42wc13TBonJ3WN4bDiCB6o_Ol-gd2_mHG98jg317hL7NhhKF0
+Message-ID: <CAHzjS_vOOiHuTCygx1xSV-6mc12YHRnuhSew_f54chetc3zEpQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpftool: Allow bpftool to build with openssl
+ < 3
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Song Liu <song@kernel.org>, qmo@kernel.org, kpsingh@kernel.org, ast@kernel.org, 
+	andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	eddyz87@gmail.com, yonghong.song@linux.dev, john.fastabend@gmail.com, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2025-11-14 at 15:40 +0000, Puranjay Mohan wrote:
-> Metadata about a kfunc call is added to the kfunc_tab in
-> add_kfunc_call() but the call instruction itself could get removed by
-> opt_remove_dead_code() later if it is not reachable.
->=20
-> If the call instruction is removed, specialize_kfunc() is never called
-> for it and the desc->imm in the kfunc_tab is never initialized for this
-> kfunc call. In this case, sort_kfunc_descs_by_imm_off(env->prog); in
-> do_misc_fixups() doesn't sort the table correctly.
-> This is a problem for s390 as its JIT uses this table to find the
-> addresses for kfuncs, and if this table is not sorted properly, JIT may
-> fail to find addresses for valid kfunc calls.
->=20
-> This was exposed by:
->=20
-> commit d869d56ca848 ("bpf: verifier: refactor kfunc specialization")
->=20
-> as before this commit, desc->imm was initialised in add_kfunc_call()
-> which happens before dead code elimination.
->=20
-> Move desc->imm setup down to sort_kfunc_descs_by_imm_off(), this fixes
-> the problem and also saves us from having the same logic in
-> add_kfunc_call() and specialize_kfunc().
->=20
-> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
+On Fri, Nov 14, 2025 at 3:04=E2=80=AFPM Alan Maguire <alan.maguire@oracle.c=
+om> wrote:
+>
+> On 14/11/2025 22:55, Song Liu wrote:
+> > On Fri, Nov 14, 2025 at 2:23=E2=80=AFPM Alan Maguire <alan.maguire@orac=
+le.com> wrote:
+> >>
+> >> ERR_get_error_all()[1] is a openssl v3 API, so to make code
+> >> compatible with openssl v1 utilize ERR_get_err_line_data
+> >> instead.  Since openssl is already a build requirement for
+> >> the kernel (minimum requirement openssl 1.0.0), this will
+> >> allow bpftool to compile where opensslv3 is not available.
+> >> Signing-related BPF selftests pass with openssl v1.
+> >>
+> >> [1] https://docs.openssl.org/3.4/man3/ERR_get_error/
+> >>
+> >> Fixes: 40863f4d6ef2 ("bpftool: Add support for signing BPF programs")
+> >> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> >> ---
+> >>  tools/bpf/bpftool/sign.c | 6 ++++++
+> >>  1 file changed, 6 insertions(+)
+> >>
+> >> diff --git a/tools/bpf/bpftool/sign.c b/tools/bpf/bpftool/sign.c
+> >> index b34f74d210e9..f9b742f4bb10 100644
+> >> --- a/tools/bpf/bpftool/sign.c
+> >> +++ b/tools/bpf/bpftool/sign.c
+> >> @@ -28,6 +28,12 @@
+> >>
+> >>  #define OPEN_SSL_ERR_BUF_LEN 256
+> >>
+> >> +/* Use deprecated in 3.0 ERR_get_error_line_data for openssl < 3 */
+> >> +#if !defined(OPENSSL_VERSION_MAJOR) || (OPENSSL_VERSION_MAJOR < 3)
+> >> +#define ERR_get_error_all(file, line, func, data, flags) \
+> >> +       ERR_get_error_line_data(file, line, data, flags)
+> >> +#endif
+> >> +
+> >
+> > We have func=3DNULL in display_openssl_errors(). Shall we just use
+> > ERR_get_error_line_data instead?
+> >
+>
+> It's a good idea, and I tried it - unfortunately we then get a
+> "deprecated in v3" warning when we build with opensslv3. So this was the
+> only way I could think of to build on v1 and not get warnings with v3.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+I see. Thanks for the explanation. This looks good to me.
 
-[...]
+Acked-by: Song Liu <song@kernel.org>
 
