@@ -1,99 +1,207 @@
-Return-Path: <bpf+bounces-74532-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74533-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C846C5EB46
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 19:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E8D95C5EAE6
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 18:56:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2678C3C643C
-	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 17:12:36 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B0AD0386754
+	for <lists+bpf@lfdr.de>; Fri, 14 Nov 2025 17:21:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC2FE28A704;
-	Fri, 14 Nov 2025 17:12:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C09A304985;
+	Fri, 14 Nov 2025 17:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c7adpCz5"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Mvpa56aB"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4C632A3D8;
-	Fri, 14 Nov 2025 17:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44452D5432;
+	Fri, 14 Nov 2025 17:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763140350; cv=none; b=oZ8IxxsePAxiQ+x8Vd807lFFObkD1BA0glX8/ddymAqEPRBKVN18HmyxCGhQPe6MM9yDibmw8Dr42vyjxfjX/7VDGPqvJ2X06JHa3qa0lqtAjH3JQNcrOcxvJ4WFnhdFT5NaZ9VBirAkjE1dOCN4mQqj2q7GIVB9CbPy79ZpmEU=
+	t=1763140881; cv=none; b=nWSrwOyXpYL1bti21KaE+izZDuLShV3HCrMo6IwWSYwfseeLEGt+NVcjv3X7jwFjkySiM0y1FKrPfrkFN1TQ2C+X2n0TJafNikxw0FNk6uN/TcE3mrjL4IHLIwThqOIv/NU6NSGNuKLBInoMYmwc/oeosyILP5e3xTwTHVQ1jYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763140350; c=relaxed/simple;
-	bh=9ITbYM0wOomqZyJzEoKV5L4gvbymEyxm24AJEqTWAMQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=E8Hh2UjgBhp2bS3HnDrZhgAOqOZfnsiRXDGzj60wtuEetdL93qCO0uomrwgC9NRUzbFHybCkZPY1XFOH58fDFjze2iQZyVmWRmbXfHiHatvbMt8LTvE8C4psPwDVZ6Gcj10FXBNBp/XP9znEDdVjgQRRaQ9sj/J4gucK9T0ry1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c7adpCz5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5072C4CEFB;
-	Fri, 14 Nov 2025 17:12:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763140349;
-	bh=9ITbYM0wOomqZyJzEoKV5L4gvbymEyxm24AJEqTWAMQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=c7adpCz5ELKvyvMGDuIxWhiuep6KvY/OKRt+c/AQ1l2r2z85hLHBEPGjtEKEuIe1I
-	 LYuVEn6VqKxP4/epuCWDDM4+XkA2NryN6GU4ThA36fgIG6X3clagX+4l9aRmKQVf7d
-	 wVI+YjxO+thx7cLpVzXL7yXja8mcpUrdt6foz4I+ADamHXsoGNhwt3GFz64u+jr/2H
-	 VrSdgYBtCV0kfjaIdFqWavVTCyHs3NjLT5wR3gL4jmxXwH7PfqY+qCfN0N+vcjizRQ
-	 pzNhjxgDt/4ucG5uBqJzNc/CYfTYf959CxBI4qjPe78T8ud8wH9kxbAQPCk6YbyAoc
-	 fxbXkd51/7LoQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E763A7859C;
-	Fri, 14 Nov 2025 17:11:59 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1763140881; c=relaxed/simple;
+	bh=JVMpqOWcLMFCAWU33olBZTr+K7wf1Is8jZBAtaqK55Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jt7bxzYjD4s+D6QgNTO+j5IZxwILbcOlmQVz9wM1EBh7QgoeegsUhctroqcuKxo59BYq3D6bawHWnF9iZ692ZrUId1EnMhYxYvA+Wgpm1eUOXyN7rvVvWA9rcNMsTYlPxJD/mkt4R6oU8CdNhv87U6hhEG7Rk1R0pBjnl0SHy2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Mvpa56aB; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AEDmiEj029027;
+	Fri, 14 Nov 2025 17:19:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=P2Nm6Onw0q8fHzAEfmXvyG5IXHnkvj
+	b10mJ/VAqkb3Q=; b=Mvpa56aBX/l9Glh810ag3gV6Fy7Bym1IJzWjuviNZ5SNdg
+	SM0j4sLV6IYc6d+aWnJQrgFzVFXx6Ne9B/cJfWhskV5Hu1bYCSid8n3x0Qw/MHLf
+	4irsnF1A+gSrGdUk33/iJJj14jEmtwjFf9QaSjp2tseluRqAp1NRW6CQyI9zhJJS
+	G2oj9QLfYQNDRbWBE0EQjfAaCCjxu7HDRuO5Mw6gpDEh7+tRemv25ZDdrfz3Mrw/
+	hzT2yMPJdo56zJAJ20/D9GrwbOQZisGCUMiwTwCfdlcJVeHiaZInk6GDYeIsxwdX
+	BweOTctQeJArioYMSP5FnX9kw7CfX/LfNkdDY9nQ==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4adree3t48-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 14 Nov 2025 17:19:54 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5AEHFf0S026695;
+	Fri, 14 Nov 2025 17:19:53 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4adree3t43-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 14 Nov 2025 17:19:53 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AEG2iFw004748;
+	Fri, 14 Nov 2025 17:19:53 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4aagjycpp7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 14 Nov 2025 17:19:53 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5AEHJnXQ38339028
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 14 Nov 2025 17:19:49 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 26BE520043;
+	Fri, 14 Nov 2025 17:19:49 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8D70820040;
+	Fri, 14 Nov 2025 17:19:39 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.43.106.27])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 14 Nov 2025 17:19:39 +0000 (GMT)
+Date: Fri, 14 Nov 2025 22:49:35 +0530
+From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+To: bot+bpf-ci@kernel.org
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hbathini@linux.ibm.com,
+        sachinpb@linux.ibm.com, venkat88@linux.ibm.com, andrii@kernel.org,
+        eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+        martin.lau@kernel.org, clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix
+ htab_update/reenter_update selftest failure
+Message-ID: <aRdkp7ztSM1JNZME@linux.ibm.com>
+References: <20251114152653.356782-1-skb99@linux.ibm.com>
+ <3b15cc4d71bfa87ffcd49f69c1453d88c6457ef0c9c312c11b8a550f862e8f2b@mail.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net/bpf] bpf: add bpf_prog_run_data_pointers()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176314031800.1740925.6385057833740804551.git-patchwork-notify@kernel.org>
-Date: Fri, 14 Nov 2025 17:11:58 +0000
-References: <20251112125516.1563021-1-edumazet@google.com>
-In-Reply-To: <20251112125516.1563021-1-edumazet@google.com>
-To: Eric Dumazet <edumazet@google.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- netdev@vger.kernel.org, bpf@vger.kernel.org, horms@kernel.org,
- jhs@mojatatu.com, victor@mojatatu.com, xiyou.wangcong@gmail.com,
- jiri@resnulli.us, toke@redhat.com, eric.dumazet@gmail.com,
- syzkaller@googlegroups.com, paulb@nvidia.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3b15cc4d71bfa87ffcd49f69c1453d88c6457ef0c9c312c11b8a550f862e8f2b@mail.kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTEzMDE3OSBTYWx0ZWRfX5dJT8FhEp3G7
+ pRYU/5oPDzqqYE7N59JDoMbV3e5dbqgf+UPECycscxPZ94oeFT8oB3hrGjAAtG/kxAKBoDbFV6r
+ 1Li92Juu3s3GFgnfwNQ9z7hdcm51f645wgcioxfTWokww0kxSzosoFVaiGhuZk8kbAzSx3VLDqf
+ PdYR9oT1JdvYr8OhkPqEbG6eUZK5d02G3KnOvm0PNbj/RS+qQQRKFyUFX8ylcDNnqPuIPESbDQj
+ XTCQtgaQRDxvEu81P0UsikcbGbItmn4Pv6dnMZOg/x0ItFMiPLekmQqokm+1Upr5myAdFdqP/lV
+ EEbkgG2j2XIzu11YU1b6FCtX+xwuF5a6d8MZTbuFMGMeRDmlTIZCEcXqzipZZdxrGxGQKDxV6BX
+ ztC9AUdMdtrRZ35Yp5cRAl6qYbOVYQ==
+X-Proofpoint-ORIG-GUID: pqaLkmWo8Etjl-kk7Y2e8IxlrwyVcFDJ
+X-Proofpoint-GUID: yK6CtMW2pTuKf1YjF4kzwejkSzk1fPmb
+X-Authority-Analysis: v=2.4 cv=J/GnLQnS c=1 sm=1 tr=0 ts=691764ba cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=kj9zAlcOel0A:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=iFABrAoMAAAA:20 a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8 a=NrwLQqnjwQ5ZMmIj2uUA:9
+ a=CjuIK1q_8ugA:10 a=bA3UWDv6hWIuX7UZL3qL:22 a=yULaImgL6KKpOYXvFmjq:22
+ a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-14_05,2025-11-13_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 bulkscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
+ phishscore=0 clxscore=1011 spamscore=0 adultscore=0 priorityscore=1501
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511130179
 
-Hello:
-
-This patch was applied to bpf/bpf.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Wed, 12 Nov 2025 12:55:16 +0000 you wrote:
-> syzbot found that cls_bpf_classify() is able to change
-> tc_skb_cb(skb)->drop_reason triggering a warning in sk_skb_reason_drop().
+On Fri, Nov 14, 2025 at 03:50:44PM +0000, bot+bpf-ci@kernel.org wrote:
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/htab_update.c b/tools/testing/selftests/bpf/prog_tests/htab_update.c
+> > index 2bc85f481..96b65c1a3 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/htab_update.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/htab_update.c
+> > @@ -15,17 +15,17 @@ struct htab_update_ctx {
+> >  static void test_reenter_update(void)
+> >  {
+> >  	struct htab_update *skel;
+> > -	unsigned int key, value;
+> > +	void *value = NULL;
+> > +	unsigned int key, value_size;
+>                            ^^^
 > 
-> WARNING: CPU: 0 PID: 5965 at net/core/skbuff.c:1192 __sk_skb_reason_drop net/core/skbuff.c:1189 [inline]
-> WARNING: CPU: 0 PID: 5965 at net/core/skbuff.c:1192 sk_skb_reason_drop+0x76/0x170 net/core/skbuff.c:1214
+> Is key supposed to be initialized? The old code had 'unsigned int key = 0,
+> value = 0;' but the new code drops the initialization. Later uses of key
+> at the bpf_map_update_elem() calls will pass uninitialized stack memory.
 > 
-> struct tc_skb_cb has been added in commit ec624fe740b4 ("net/sched:
-> Extend qdisc control block with tc control block"), which added a wrong
-> interaction with db58ba459202 ("bpf: wire in data and data_end for
-> cls_act_bpf").
+> >  	int err;
+> >
+> >  	skel = htab_update__open();
+> >  	if (!ASSERT_OK_PTR(skel, "htab_update__open"))
+> >  		return;
 > 
-> [...]
-
-Here is the summary with links:
-  - [net/bpf] bpf: add bpf_prog_run_data_pointers()
-    https://git.kernel.org/bpf/bpf/c/4ef927436258
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+> [ ... ]
+> 
+> > @@ -33,14 +33,32 @@ static void test_reenter_update(void)
+> >  	if (!ASSERT_OK(err, "htab_update__attach"))
+> >  		goto out;
+> >
+> > -	/* Will trigger the reentrancy of bpf_map_update_elem() */
+> > -	key = 0;
+> > -	value = 0;
+> > -	err = bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, &value, 0);
+> > -	if (!ASSERT_OK(err, "add element"))
+> > +	value_size = bpf_map__value_size(skel->maps.htab);
+> > +
+> > +	value = calloc(1, value_size);
+> > +	if (!ASSERT_OK_PTR(value, "calloc value"))
+> > +		goto out;
+> > +	/*
+> > +	 * First update: plain insert. This should NOT trigger the re-entrancy
+> > +	 * path, because there is no old element to free yet.
+> > +	 */
+> > +	err = bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, &value, BPF_ANY);
+> > +	if (!ASSERT_OK(err, "first update (insert)"))
+> > +		goto out;
+> > +
+> > +	/*
+> > +	 * Second update: replace existing element with same key and trigger
+> > +	 * the reentrancy of bpf_map_update_elem().
+> > +	 * check_and_free_fields() calls bpf_obj_free_fields() on the old
+> > +	 * value, which is where fentry program runs and performs a nested
+> > +	 * bpf_map_update_elem(), triggering -EDEADLK.
+> > +	 */
+> > +	memset(&value, 0, sizeof(value));
+>                ^^^^^^^
+> 
+> Does this memset zero the allocated memory? It looks like this zeros the
+> pointer variable itself (8 bytes) rather than the memory it points to.
+> Should this be 'memset(value, 0, value_size)' instead?
+> 
+> > +	err = bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, &value, BPF_ANY);
+> > +	if (!ASSERT_OK(err, "second update (replace)"))
+> >  		goto out;
+> >
+> > -	ASSERT_EQ(skel->bss->update_err, -EBUSY, "no reentrancy");
+> > +	ASSERT_EQ(skel->bss->update_err, -EDEADLK, "no reentrancy");
+> >  out:
+> >  	htab_update__destroy(skel);
+> >  }
+> 
+> 
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+> 
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19369517166
+Will fix these.
 
 
