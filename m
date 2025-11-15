@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-74623-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74624-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26E48C5FE40
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 03:27:21 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B216CC5FE37
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 03:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 395F14E70A0
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 02:26:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id 8D72D2419E
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 02:26:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6311F3BAC;
-	Sat, 15 Nov 2025 02:26:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812FC1FCFFC;
+	Sat, 15 Nov 2025 02:26:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EzhKRD0K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m7VkYkNp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5495719F127
-	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 02:26:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A522E1FBC92
+	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 02:26:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763173579; cv=none; b=SjH0x5BYrDl5o/Cgp8i/1+gcVU3jg0J33cYSR7rznt4/HQBjma68PvIqCyw5NpEhiUwU+67tOCkpaZtg+73nzhiCL1wbwKwVZVuhj0lSSvrjRGW4RgIpTYYE9i/hrquf4dqYLZz/wz7mlWVu80nc4bOUkIZcQ7aiGO9Lr1VYkxY=
+	t=1763173582; cv=none; b=lA0GO/4XKrDRIAG60VXzktXYs9mVPv1UcQ63XqjK1BYKFZ0NVnYwVgUCWHyQC8IknOfcozAKGggthnLe4bprroMS1uuxdnuNvjn6hoTOp+EEr5U9ITcwrWTr7/vT3LljVJb0uo69AKXHayZkwwEW5/JUEcBbemAcWxDpS4JL0H4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763173579; c=relaxed/simple;
-	bh=yB1eDRE33zRXNdndH8N32mkNLep0BPAw8nk/vLl4eAU=;
+	s=arc-20240116; t=1763173582; c=relaxed/simple;
+	bh=2JRz98L/X4J1/7s/INiuMS0uj/Cxzt2tyKvKgaEgvys=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MZ4lhxWqr0trt+A2bHsd/hfwcj/MYG3L5GEEvwQ9nfa0fXmvHxFUY7JxiY1OFBlv6kZH2w51fyrXUgnAdE4w5W1mnnutxofcHbpcr2nkey2Zk1UTDNpe0RvtFt4tyEOGb2vKZQslXOFVu+jXfirRUGTrStdqYnSBq/SzwAIyjoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EzhKRD0K; arc=none smtp.client-ip=209.85.210.181
+	 MIME-Version; b=Bug8vr7OFeM/qwp3EeSre0xQDL1c1H8R6/wxjvDHGxK9XNcTnQDloE2Sq/wMelvz1rUTeSScnvt9woL+wbAPHJaA5daOfN/OGfxLkYMOo4oCKCigR2ADBV2YopHGsLEQrQ2fuQb+fauNmaDwnh0v8NxG8rJ9T4NjbJ7vayhlf68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m7VkYkNp; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7bb710d1d1dso1175051b3a.1
-        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 18:26:17 -0800 (PST)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-34372216275so2980371a91.2
+        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 18:26:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763173577; x=1763778377; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763173580; x=1763778380; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ghpovdBxFfxriUeKX3qALpZF1AcpoAwx1e5Jl3r/naY=;
-        b=EzhKRD0KnsFlYtS8muFBC3TNunbk1Ml6Wh2JKtPrhJKrU/Dfh5aRnK17GBvtsVSE6a
-         ZuS/x0aGIFDEkRYhfRWV1eHNZ12+AvEJNQJBect21VGU5R2KLF7ocGYccDR5lqMV5qv/
-         lJ10misMn2NhoQ8boS0gJ9YS4PTGnWxjOLho4uRA+YKtwOmjPTkEB2rpI7sGpp6R9IYD
-         AIGVZGwW/s61QOJXHruXPZLdL05bIy7YbBy9oIKobCw9Te7z8+JZim3KGGpDpaJDSaj/
-         N+I2fce/zGz2xfHMotQHP2IEgSLV8wytmo9okCpRT0ucBHKKqdpRPjZxCpMDAXOzPWEC
-         XwXg==
+        bh=RxPT9UhCi8aCP6tdRDy3fIrULkn1E4KC08krXo7/Dno=;
+        b=m7VkYkNp3CjqEim7FE+jHLA/25nc7rKR8oWLe3tdr1kE+P7XZSoXg1ZrMNdPp1/icL
+         amRmAPTT/BfPR9cpNn50dY/48GaWn+CywwacwkXDaCn5cDCSmZsKBU/7km8sffdg0oZV
+         W0Zpo4uHLDzI1ljMO2nIxrGsMK3r4nmQdjYyW63wqOdQbzPgssCdn24ylinxbMPx83iH
+         mTzSLDoeYiq5mWr3gH5e9Pf3nVZ8imCV8gFj93x6HeUX6L+OdDp9IG4bByh5lnagKIaP
+         u/VRLYNF+QfQAU7MsXCPANxzbXMxNnYwLfyv4UVGNpDa4fsq8lGBctQDnLyHqKEUwfpm
+         uAfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763173577; x=1763778377;
+        d=1e100.net; s=20230601; t=1763173580; x=1763778380;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=ghpovdBxFfxriUeKX3qALpZF1AcpoAwx1e5Jl3r/naY=;
-        b=evz45ekNYuq1Y0fFCgfVEmrtu08lM8yFmxTPBn4zvd3Tp8RIz6P6dP8TsoCJrEhZ80
-         ZmE35no9ipcRda/NqCsq2Z678d/D3Y6yaL+RKvPJBdZo+RucoLe5nc3ZqKctKG5ivfEg
-         pG2yB8qpKPYUpDQTXKVLPvEY4orX/rOdoShwpGgb9DR+WPIzWUDCeUWTUAEZQmhZCqSG
-         r5KiRSpaIeB+0jn4Zhevp2Q6KQULXc0XLavInnebaBM75xA+Px0czgF38eSpts91zB+v
-         uB8S2VMAH+Lij+Y+z17GDzfShUrRNWuqEO/BTbYfxvzmmmc3YdgRM1TQwphIvLumuLaa
-         YHGw==
-X-Gm-Message-State: AOJu0YzckOA34oLI+BENbeugOG/QGnSKWrmFW3hiYgHVahv1LdLLnN0X
-	VQ6DpLQjZb140uUEE3gBwzXvJrfxKoKvbpVIAjpU20ZW2uihXnvc8NtvRckDmw==
-X-Gm-Gg: ASbGnctqgtyiALXLUMgoP6ehdsRgYV+MbYv3H3KfE4gSwlKjsj3VCTRh4Xa/fNiPWsx
-	qzlnQDR20mAidR0dKUopUooa8LuDiuS93OteWE+3pKxUx3yr+6GqHlAqa0kvz+uSq0E5B4C4BaU
-	b2DVVFr2JoL1LlP40Y1sSoKmdYFSJCJZH6zPNnqdGQCqVecLeuN9LtpPzb1JhucDLxvykyghWd5
-	XPwmeVkgENnArt+h7qUee9r5B/do/1XuwrR2FDiavl0PAg/llFevJZIuhM3x2vbvIBKvIHxIeXh
-	9Vd5Ar2n2t39PKVKU38b1LepWiyMkuwnIdd36UZgz112UZCM1SkDMgqZLpWoJr5bHQ1rs7YYDaw
-	i0HUnH4uQVSdGHEQNunnQ4Ap/RKhpjsxkQ1PLEOHUpszalgSU+SiZeZDMM6tcovG040+Cvd8NZE
-	jDSS76lfTPzSxCvPxrhSI5Sptl9BB7/rvDWIKhP1eTjly9p+vqMOtwTIw=
-X-Google-Smtp-Source: AGHT+IGyNayktaeABVDJH70WrFISwrPOudBBIminvuZcJiiQ8goKn0VrFeRXpi2WDMWd1anUdLNwSw==
-X-Received: by 2002:a05:6a00:2408:b0:7a9:c21a:559a with SMTP id d2e1a72fcca58-7ba39bc0c02mr6224811b3a.8.1763173577123;
-        Fri, 14 Nov 2025 18:26:17 -0800 (PST)
+        bh=RxPT9UhCi8aCP6tdRDy3fIrULkn1E4KC08krXo7/Dno=;
+        b=bdq8TVM3AfEhjx7Dp7oS3cVQ3OwCpgI/GjG8vuwkXvuDgwAy5P5x3coceqB6qbzSh7
+         GODBfON1U4+/df2a+xzJoqALk08GdIGptWVnP2KcZMv2I97Zr1QJko5syhrE4OFX0H/Y
+         LbfblSOq5fJgBckk1S0F9a3P708pODHtNLgwxGytFpSuxQsFdMBQoes+7GWujdvSXTjs
+         BMRBAssBSNBpShK+piqMilrYrWRjkkI9d4xDMI4PHdmLVRnwi59r1v3Jx12nShxJu4G4
+         I1DY0EtYGxS1jydDlExRs6ZlXyaotHik93h5C3PxJOHUBasj5Bo3sqczy+zcR+B9qU09
+         F+YQ==
+X-Gm-Message-State: AOJu0YxjH4V+/5sfaOD/rz7Fdw7WbuCm0+W/bDlMR+z4KrojJ0Z/nxUQ
+	zQycYEIMDzlim5WYTFXpDmaaKJGwqULKimz9L5zLbIc+CyJsooT5qxKwdvt5uQ==
+X-Gm-Gg: ASbGncvppMNzyeCSh6bTqvIgXUMHdSM/zvAShcLoyNIPl0ZbaX+BMbUtapPQ2JprK2c
+	gfBEH/6YiFz2LLdlaQkHQ+fgnoqhv7XbQDCY492pxDWPz2YqfOqCdS5smMxFV8Afoh5COUF3yxS
+	E4MiVZsPbrIiFVgs9pX9rLizAJsVv2DIOpyEoObxZ+oAguv0ZSOAT8vIQ9uKunlfwkaBgYaz7qA
+	1eA2pRYziAOHvjBe1VbREnef8S6Tshr3Ikpv86oIds743uGAIBleOBh9GbnmSPYuP9crIa9pNde
+	tC9SVHhqaI+BN6oB+3YW5ONTJ7zalHXP4SCPJVKLwAmkQqq/bihluDV2UEiIiDs1BrVTzSk8GgP
+	5HnEWio5N4u0koa9RJTKsRt6YAlRNy3NLb0cmoTQzdms1ovYh3ICpBgyucBxhG1/iwo1zSHVCoM
+	XC3khSAuv8hUnby6sHtuD/iMnSVw3X7np/2cPL2HCOdeJOLbn6AHCPtWY=
+X-Google-Smtp-Source: AGHT+IHYwCIG8f57LIdCg7pHh2OM+6I5tW0tnajzsVDiPSb3lm69yciyPh8/RH44LZXv3NX+NiFQFg==
+X-Received: by 2002:a17:90b:2b8b:b0:313:1c7b:fc62 with SMTP id 98e67ed59e1d1-343fa634737mr4879395a91.22.1763173579657;
+        Fri, 14 Nov 2025 18:26:19 -0800 (PST)
 Received: from localhost.localdomain ([2601:600:837f:c6b0:18cf:ab6c:cac0:3007])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b9250d332asm6570716b3a.25.2025.11.14.18.26.16
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3456511845asm1899366a91.4.2025.11.14.18.26.18
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 14 Nov 2025 18:26:16 -0800 (PST)
+        Fri, 14 Nov 2025 18:26:19 -0800 (PST)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: daniel@iogearbox.net,
@@ -80,9 +80,9 @@ Cc: daniel@iogearbox.net,
 	martin.lau@kernel.org,
 	sunhao.th@gmail.com,
 	kernel-team@fb.com
-Subject: [PATCH v2 bpf-next 1/2] bpf: Recognize special arithmetic shift in the verifier
-Date: Fri, 14 Nov 2025 18:26:10 -0800
-Message-ID: <20251115022611.64898-2-alexei.starovoitov@gmail.com>
+Subject: [PATCH v2 bpf-next 2/2] selftests/bpf: Add tests for s>>=31 and s>>=63
+Date: Fri, 14 Nov 2025 18:26:11 -0800
+Message-ID: <20251115022611.64898-3-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20251115022611.64898-1-alexei.starovoitov@gmail.com>
 References: <20251115022611.64898-1-alexei.starovoitov@gmail.com>
@@ -96,154 +96,65 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-cilium bpf_wiregard.bpf.c when compiled with -O1 fails to load
-with the following verifier log:
+Add tests for special arithmetic shift right.
 
-192: (79) r2 = *(u64 *)(r10 -304)     ; R2=pkt(r=40) R10=fp0 fp-304=pkt(r=40)
-...
-227: (85) call bpf_skb_store_bytes#9          ; R0=scalar()
-228: (bc) w2 = w0                     ; R0=scalar() R2=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-229: (c4) w2 s>>= 31                  ; R2=scalar(smin=0,smax=umax=0xffffffff,smin32=-1,smax32=0,var_off=(0x0; 0xffffffff))
-230: (54) w2 &= -134                  ; R2=scalar(smin=0,smax=umax=umax32=0xffffff7a,smax32=0x7fffff7a,var_off=(0x0; 0xffffff7a))
-...
-232: (66) if w2 s> 0xffffffff goto pc+125     ; R2=scalar(smin=umin=umin32=0x80000000,smax=umax=umax32=0xffffff7a,smax32=-134,var_off=(0x80000000; 0x7fffff7a))
-...
-238: (79) r4 = *(u64 *)(r10 -304)     ; R4=scalar() R10=fp0 fp-304=scalar()
-239: (56) if w2 != 0xffffff78 goto pc+210     ; R2=0xffffff78 // -136
-...
-258: (71) r1 = *(u8 *)(r4 +0)
-R4 invalid mem access 'scalar'
-
-The error might confuse most bpf authors, since fp-304 slot had 'pkt'
-pointer at insn 192 and became 'scalar' at 238. That happened because
-bpf_skb_store_bytes() clears all packet pointers including those in
-the stack. On the first glance it might look like a bug in the source
-code, since ctx->data pointer should have been reloaded after the call
-to bpf_skb_store_bytes().
-
-The relevant part of cilium source code looks like this:
-
-// bpf/lib/nodeport.h
-int dsr_set_ipip6()
-{
-	if (ctx_adjust_hroom(...))
-		return DROP_INVALID; // -134
-	if (ctx_store_bytes(...))
-		return DROP_WRITE_ERROR; // -141
-	return 0;
-}
-
-bool dsr_fail_needs_reply(int code)
-{
-	if (code == DROP_FRAG_NEEDED) // -136
-		return true;
-	return false;
-}
-
-tail_nodeport_ipv6_dsr()
-{
-	ret = dsr_set_ipip6(...);
-	if (!IS_ERR(ret)) {
-		...
-	} else {
-		if (dsr_fail_needs_reply(ret))
-			return dsr_reply_icmp6(...);
-	}
-}
-
-The code doesn't have arithmetic shift by 31 and it reloads ctx->data
-every time it needs to access it. So it's not a bug in the source code.
-
-The reason is DAGCombiner::foldSelectCCToShiftAnd() LLVM transformation:
-
-  // If this is a select where the false operand is zero and the compare is a
-  // check of the sign bit, see if we can perform the "gzip trick":
-  // select_cc setlt X, 0, A, 0 -> and (sra X, size(X)-1), A
-  // select_cc setgt X, 0, A, 0 -> and (not (sra X, size(X)-1)), A
-
-The conditional branch in dsr_set_ipip6() and its return values
-are optimized into BPF_ARSH plus BPF_AND:
-
-227: (85) call bpf_skb_store_bytes#9
-228: (bc) w2 = w0
-229: (c4) w2 s>>= 31   ; R2=scalar(smin=0,smax=umax=0xffffffff,smin32=-1,smax32=0,var_off=(0x0; 0xffffffff))
-230: (54) w2 &= -134   ; R2=scalar(smin=0,smax=umax=umax32=0xffffff7a,smax32=0x7fffff7a,var_off=(0x0; 0xffffff7a))
-
-after insn 230 the register w2 can only be 0 or -134,
-but the verifier approximates it, since there is no way to
-represent two scalars in bpf_reg_state.
-After fallthough at insn 232 the w2 can only be -134,
-hence the branch at insn
-239: (56) if w2 != -136 goto pc+210
-should be always taken, and trapping insn 258 should never execute.
-LLVM generated correct code, but the verifier follows impossible
-path and rejects valid program. To fix this issue recognize this
-special LLVM optimization and fork the verifier state.
-So after insn 229: (c4) w2 s>>= 31
-the verifier has two states to explore:
-one with w2 = 0 and another with w2 = 0xffffffff
-which makes the verifier accept bpf_wiregard.c
-
-Note there are 20+ such patterns in bpf_wiregard.o compiled
-with -O1 and -O2, but they're rarely seen in other production
-bpf programs, so push_stack() approach is not a concern.
-
-Reported-by: Hao Sun <sunhao.th@gmail.com>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/verifier.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ .../selftests/bpf/progs/verifier_subreg.c     | 43 +++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 098dd7f21c89..c6e9bf38815a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -15470,6 +15470,35 @@ static bool is_safe_to_compute_dst_reg_range(struct bpf_insn *insn,
- 	}
+diff --git a/tools/testing/selftests/bpf/progs/verifier_subreg.c b/tools/testing/selftests/bpf/progs/verifier_subreg.c
+index 8613ea160dcd..0b572c067276 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_subreg.c
++++ b/tools/testing/selftests/bpf/progs/verifier_subreg.c
+@@ -670,4 +670,47 @@ __naked void ldx_w_zero_extend_check(void)
+ 	: __clobber_all);
  }
  
-+static int maybe_fork_scalars(struct bpf_verifier_env *env, struct bpf_insn *insn,
-+			      struct bpf_reg_state *dst_reg)
++SEC("socket")
++__description("s>>=31")
++__success __success_unpriv __retval(0)
++__naked void arsh_31(void)
 +{
-+	struct bpf_verifier_state *branch;
-+	struct bpf_reg_state *regs;
-+	bool alu32;
-+
-+	if (dst_reg->smin_value == -1 && dst_reg->smax_value == 0)
-+		alu32 = false;
-+	else if (dst_reg->s32_min_value == -1 && dst_reg->s32_max_value == 0)
-+		alu32 = true;
-+	else
-+		return 0;
-+
-+	branch = push_stack(env, env->insn_idx + 1, env->insn_idx, false);
-+	if (IS_ERR(branch))
-+		return PTR_ERR(branch);
-+
-+	regs = branch->frame[branch->curframe]->regs;
-+	if (alu32) {
-+		__mark_reg32_known(&regs[insn->dst_reg], 0);
-+		__mark_reg32_known(dst_reg, -1ull);
-+	} else {
-+		__mark_reg_known(&regs[insn->dst_reg], 0);
-+		__mark_reg_known(dst_reg, -1ull);
-+	}
-+	return 0;
++	/* Below is what LLVM generates in cilium's bpf_wiregard.o */
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w2 = w0;					\
++	w2 s>>= 31;					\
++	w2 &= -134; /* w2 becomes 0 or -134 */		\
++	if w2 s> -1 goto +2;				\
++	if w2 != -136 goto +1;				\
++	w0 /= 0;					\
++	w0 = 0;						\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
 +}
 +
- /* WARNING: This function does calculations on 64-bit values, but the actual
-  * execution may occur on 32-bit values. Therefore, things like bitshifts
-  * need extra checks in the 32-bit case.
-@@ -15563,6 +15592,9 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 			scalar32_min_max_arsh(dst_reg, &src_reg);
- 		else
- 			scalar_min_max_arsh(dst_reg, &src_reg);
-+		ret = maybe_fork_scalars(env, insn, dst_reg);
-+		if (ret)
-+			return ret;
- 		break;
- 	default:
- 		break;
++SEC("socket")
++__description("s>>=63")
++__success __success_unpriv __retval(0)
++__naked void arsh_63(void)
++{
++	/* Copy of arsh_31 with s/w/r/ */
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r2 = r0;					\
++	r2 <<= 32;					\
++	r2 s>>= 63;					\
++	r2 &= -134;					\
++	if r2 s> -1 goto +2;				\
++	if r2 != -136 goto +1;				\
++	r0 /= 0;					\
++	r0 = 0;						\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.47.3
 
