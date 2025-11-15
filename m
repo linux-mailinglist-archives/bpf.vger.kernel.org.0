@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-74616-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74617-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54103C5FDAB
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 03:03:20 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA9A8C5FDBA
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 03:04:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0EFE3B72B9
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 02:02:23 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E829935A4D1
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 02:02:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8F11DF273;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED361DF247;
 	Sat, 15 Nov 2025 02:02:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jXZEW2I9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F3LjFYe6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954711991B6
-	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 02:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439361C2324
+	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 02:02:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763172139; cv=none; b=ThDX8jPqjJmq7+Su76UGhme4MLxF64NqAmZUKIIRztNKAQqsYnFAtwNf/jJFlP1P5YPZ39eqbeEUBEoPAnFgR2C3BJjxQq+qdu/SsZuT5L8STVrucxPpv+cneKGrFZ35MfjeocvzhNosNM8XA/eq9fu3gqqeiY4MTEdzQFEOUOE=
+	t=1763172140; cv=none; b=O3qaisqpBQwYLrt0KhYOxgnMvpevuTahtIMk3bfLmOY86+DD09ra6sNzV4rpy1ivAnM3TiKOzanBbmBOdNTICOPUKMvASqiGBOXvqTjuqlqBGwSa7s6DH8tVzkVbM6eKuvoGGDqF0X8WSS1YgfjPRECJGNEodcoX/L4TpcdUM5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763172139; c=relaxed/simple;
-	bh=laahksX39FR+yzamh/kc4lhR5MJ0kXBayQxcHLEmHUM=;
+	s=arc-20240116; t=1763172140; c=relaxed/simple;
+	bh=CpQ7r5DiLF/ytiOlHQ0b/NRcD9HKD6TB52KoN5ErrFc=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=cntAQOU7H9a6qAbnZZQypisyRGLNj+VT4kQrT597WRtJ4gR7FI+52BTJQc7U/h7B1wWmnhGIKaBqOJO6+YljpfOfO735Qp4v9ulIakUdL+ymgfMszUdPx3Tu5vHalCbMxyW1pqZP5x3S4ib1xcPadibXBifBQVFkP15Wqg1US8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jXZEW2I9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0580AC113D0;
-	Sat, 15 Nov 2025 02:02:19 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=sf9c+P5cLPA7a5QOpP78iMlTeawp2k4ifp+SV+iLfv9ZxYuBoospKt1ILA+c+LmurffyYaqm9LlJAPGpORhP0pf2WKuT6Q7jdMeqqwC/ywihIf03ITeHOarzpNWA+Baio8avgS8vZWSeo34GsmJD6AT/P26PK8SnuwELL340x+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F3LjFYe6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 131E6C4CEF1;
+	Sat, 15 Nov 2025 02:02:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763172139;
-	bh=laahksX39FR+yzamh/kc4lhR5MJ0kXBayQxcHLEmHUM=;
+	s=k20201202; t=1763172140;
+	bh=CpQ7r5DiLF/ytiOlHQ0b/NRcD9HKD6TB52KoN5ErrFc=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=jXZEW2I9iLM1ZzIEqDyCjTHvQ3L8g15xvry0bok7EP388oWkL26tYScAaQB9oNW7W
-	 tfqgLvR1gOnNkN/fPuYBEx4/q/UhqjmKw0BhEp9Qka91SzhpsxlJPxlN7dK4t3boi3
-	 8H5iBY41K+mSwDQDQaBo5l/4VbweW93wimejjXDnK65IYNbatovAVyTnJmtWZhr0iP
-	 KPAOVZJZ7j6ZgXeYlpjfKi4i4wSSDtHF01QXM7HyozkRnN9ORHDi8dc3sN+uarPWDp
-	 ascGrGZ16tIoTS3E7DyHnRyWCvXjqqK+ONBfssSajni2H5Unz78lp/NJVcgHoqnK41
-	 oOIPZCmmvxjJg==
+	b=F3LjFYe6e8eC0vcx8M8lbFgqI1bw1PsiNHLAXzfkttEUgZLR/uUi1yJduUBrTXcc6
+	 CJDYZO+3IHAjyqSkiRakur8CMquP5BA1hSQJ0nfKb/z2EBMjCwfCpIhnB8Hv7TQE3b
+	 0zgTYDGMyqkqyzk4/V/VpUTJfjGcvfIjTXPxrtFUJ2ghIe6hcYLlwQkdWmdAC0tYNN
+	 YdgxbErJ7nqusfZYBnE3Alp7Ff6GSNtLjC8S5rwTdadNmewiYX0o1+ZVY9BpNhqn0S
+	 +MeSU5YTYUwZsPd5TzrSicxGG00LW7PlKSQREZ7W4CgOJEjTBlikCy7xORP13hv0Bv
+	 pOkIulo/DHRbA==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70C433A78A62;
-	Sat, 15 Nov 2025 02:01:48 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADD093A78A62;
+	Sat, 15 Nov 2025 02:01:49 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,40 +52,42 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v1] selftests/bpf: align kfuncs renamed in bpf
- tree
+Subject: Re: [PATCH bpf-next v3] bpf: verifier: Move desc->imm setup to
+ sort_kfunc_descs_by_imm_off()
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176317210727.1905277.5246260123359446508.git-patchwork-notify@kernel.org>
-Date: Sat, 15 Nov 2025 02:01:47 +0000
-References: <20251105132105.597344-1-mykyta.yatsenko5@gmail.com>
-In-Reply-To: <20251105132105.597344-1-mykyta.yatsenko5@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, yatsenko@meta.com
+ <176317210850.1905277.7296912042800942452.git-patchwork-notify@kernel.org>
+Date: Sat, 15 Nov 2025 02:01:48 +0000
+References: <20251114154023.12801-1-puranjay@kernel.org>
+In-Reply-To: <20251114154023.12801-1-puranjay@kernel.org>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: bpf@vger.kernel.org, puranjay12@gmail.com, ast@kernel.org,
+ andrii@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+ eddyz87@gmail.com, memxor@gmail.com, kernel-team@meta.com
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Wed,  5 Nov 2025 13:21:05 +0000 you wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
+On Fri, 14 Nov 2025 15:40:22 +0000 you wrote:
+> Metadata about a kfunc call is added to the kfunc_tab in
+> add_kfunc_call() but the call instruction itself could get removed by
+> opt_remove_dead_code() later if it is not reachable.
 > 
-> bpf_task_work_schedule_resume() and bpf_task_work_schedule_signal() have
-> been renamed in bpf tree to bpf_task_work_schedule_resume_impl() and
-> bpf_task_work_schedule_signal_impl() accordingly.
-> There are few uses of these kfuncs in selftests that are not in bpf
-> tree, so that when we port [1] into bpf-next, those BPF programs will
-> not compile.
-> This patch aligns those remaining callsites with the kfunc renaming.
-> It should go on top of [1] when applying on bpf-next.
+> If the call instruction is removed, specialize_kfunc() is never called
+> for it and the desc->imm in the kfunc_tab is never initialized for this
+> kfunc call. In this case, sort_kfunc_descs_by_imm_off(env->prog); in
+> do_misc_fixups() doesn't sort the table correctly.
+> This is a problem for s390 as its JIT uses this table to find the
+> addresses for kfuncs, and if this table is not sorted properly, JIT may
+> fail to find addresses for valid kfunc calls.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v1] selftests/bpf: align kfuncs renamed in bpf tree
-    https://git.kernel.org/bpf/bpf-next/c/a4d31f451d5b
+  - [bpf-next,v3] bpf: verifier: Move desc->imm setup to sort_kfunc_descs_by_imm_off()
+    https://git.kernel.org/bpf/bpf-next/c/4f7bc83b9837
 
 You are awesome, thank you!
 -- 
