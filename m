@@ -1,173 +1,133 @@
-Return-Path: <bpf+bounces-74660-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74661-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78C9AC60C57
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 23:58:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1344FC60C6B
+	for <lists+bpf@lfdr.de>; Sun, 16 Nov 2025 00:05:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A25AF35A6B9
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 22:57:36 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 64DB435293D
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 23:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FC426A0B9;
-	Sat, 15 Nov 2025 22:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402EE239594;
+	Sat, 15 Nov 2025 23:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Xamextw8"
+	dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b="GlW30HqG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE817261B9C
-	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 22:56:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB5122D781
+	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 23:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763247420; cv=none; b=Kar81SCtvyOH3GMShp2m53cKOR9rQPl1Y7BsKhnagCURfHFXiSoz5v9emIW7QEvGdSNmkuMRTsYxdzVJS6aU7Y5pnUSovbat+FJdvOqALUnjXnEKwfikmK4DHCSshBjVbQ1h6I+T/GoyjeI/CSwWCxy3nG0fCRAUq9s746CqHDY=
+	t=1763247899; cv=none; b=ULEe0IlZrY5I7jT88YTdlydDPloHcdm9ej22FSWKoNUlKPKCELIs6u8iYYdJUk0y6c7JC2N+OL/fDNBOnVhRVpjmYKEPNGfEdSmkif322s5gh29g+AggEGdcb25mV4PK4f98WWr9zdqgYUzp5RWn5T+7yNrOBKM1HDr5NTjJ+xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763247420; c=relaxed/simple;
-	bh=r6WDjhpIq3Wd/J0Y+qOKRxylI1swOi5e1ZWkbyl+O9I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ge1HGNGghq1PKuMF399r1lwAaUaketrFNo16olIKjrqliD63DNJzPpPF0FcYWGJTg4FVo/l9zWXbjs54EQEyqRn/kIooFT8uiyXaT3o4r8KID5YuMKxlXnI0blS1V1l8sMXGV4HJR8jEE1jEJhIlbqXbURQWt/foInqPL4ymmsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Xamextw8; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-47775fb6c56so34783005e9.1
-        for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 14:56:57 -0800 (PST)
+	s=arc-20240116; t=1763247899; c=relaxed/simple;
+	bh=R+Yzc8cW+nfD5JfEsBKaXXo9dpl7WafNOik7nvt9UpE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SxJD6mUn07ebHeIm9THalFrAEsVDezY+vm+6fnzn/HeRezrQm7S5P2NX2lKazhCGsPNqCaXC1fmOcr0ugKhhUZUTIj5wPiM2vJimG/JDwG8VZC0BXQ3gryzNVLLRoLT78u4W+btXu0r/DFtSlB8N8QGzasrqsrYukqjQkfXTWI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu; spf=pass smtp.mailfrom=superluminal.eu; dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b=GlW30HqG; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=superluminal.eu
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-298145fe27eso39584155ad.1
+        for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 15:04:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763247416; x=1763852216; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=superluminal.eu; s=google; t=1763247895; x=1763852695; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VoQmqXz6sGsQU+5pMM6WGkJhNb0pQ0+RIfWOvYniKT8=;
-        b=Xamextw82DwYWSqntdG9MeMF44K+zJGdTXjxlixvbMixa1LhzCfuGxJEsWK8y2wffB
-         p8mjHPGSVyfllguJ3rxr8mWceC0E7Y1YohNhq/clTwaucKbqJHsvENTxExIKfvj4twiS
-         06a8yRjDgdL3jdN/NisfjIq5LJZPrpyo12Tl3olydU+1ONl17WnU+kkpsM0zZRtMFexl
-         WP6k7gwJOy5wo765vt48hGQxR2E5NEV6fXWzsMVnsemlDYk7uAsQa3GWXyvoDzv21L23
-         /QdVzggCCMbclhpTBCK+HNCv5CJLshKWHfeXwQE4ApvmetMo3rWkaEC+RI8++StGcoG/
-         m1GA==
+        bh=TLJ5VnTJbC7vQ6bZl12YPnQhs8ULpbswUF2fA4Crn6k=;
+        b=GlW30HqGiFpySiF5AhcULsXMYB+90lFGlUSX7IqBVnc6Dskrbu7nISEJLR97sNfReH
+         Q7bzp9GTZbeyW0vn5q90QwHazzvt62YZpVaya2EiKm5cTWC/CA1+l3z3jzFufDMUcFoG
+         G+AR45z9kQOaNE8nG0lTmrvE+LmwiXclmGBC1cM01vnQvmAOy4F4A9qVyCDYOpLgAjm+
+         MRXKTd/fWSiHzByR3rHuurDqDockP7lUtrRltNHuUBOf/UTcYUAXKCCba1Oixpuht2/4
+         vJYPx28aDyTUdhVNa6cY0kz7sx6140X4v4v5FxzUcjbUNhz3fI/ExthkFWFltFcP/hhu
+         nggQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763247416; x=1763852216;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20230601; t=1763247895; x=1763852695;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=VoQmqXz6sGsQU+5pMM6WGkJhNb0pQ0+RIfWOvYniKT8=;
-        b=pxfzbli+aKiM1l11skfp1BtSWMZr5e5kyZMXLUQGO2sPv05IO/gTqsfI44/RpoU95V
-         mtnCMAKmsxu67wI0SMuRrwkGG1iy9jzxy60FausN4iejVKD15oQho3428LtxKDoVD+S/
-         Lo9LL/vGkcnV+syV3fGo60VmeHUw++0y4ubpYJID+nostMeHD7zmBh77Jh5gGWVnWkSB
-         aAk3EzPtai5Ens+ClvBZFUkKUUrPAI8PZNfT7fP1n9FqdSdfCAnRRMfQgL6iRZKp1zoF
-         8JYOjI9BsbWqCfNabjyfWagGrOIUmnCBO9e/qTTWlD/RVSabEF/4/WW5qUD1NNmdK8+L
-         qRFw==
-X-Gm-Message-State: AOJu0Yw9j7nDfd9K0tvKVYGEFPgr5/jIMMJigVTTLIhUV1OXpuSJIm2Z
-	mcbGFYHj+IzGpw3mIkGNKd9Mlg/g/kUKfIHg+hKddX0edtnOnUZX3cikComw6BvMGe2H96d1yR/
-	LbfkqAqs=
-X-Gm-Gg: ASbGncusJpqyDx5rigIu9dWQsKadA1pZLpYB+KO/MHkfzU8weuWUcCr119eXuh2VkT+
-	0J8TRs2GPJ3XLuLlRZSPfya6DfOReckqJVnFQ3b9kSJMIkD+Y2LVtR7oHiI8v2QoEtas2EDUfVC
-	TEAhBJ6sYO/hmFU/gb9eY9jRn1lD8xhsi1ZZ3L793OLRoTMNdss5Q5wH5RA26G9ndIy7dYr1ul7
-	sl6rNoIXnd/ux02UdWC3BGCNLb0S+RoU/N+9S8U7GLbOAmlpHt7Cj/RcQRr+kLVBGHR9iidT5kh
-	FNV+ooEu9v/6tRLxZV6bj+WmT7XIVW5ELkbGRS8eMrQoBfc9YQMJPFhgU2SiYuC5SXLfAlLWP1/
-	h0Kexm1gs8IzyuzjFdpYYKqnqUpWzhnbrw3ot30DYxUEOtLa73wtanLaUqAhxMcFCnmuURHS+AO
-	J/FLnwRE3hyUGcFeLxFbveIZ3842Cwiz5V6p/ByJFTdQBASvEW8w==
-X-Google-Smtp-Source: AGHT+IHzTCVjlD7bxRYPCcVQyJMUetvvQL/GhvoPlqWuHIenUBMbxrAsm/jIQ3IT68GtJnvxF1gisQ==
-X-Received: by 2002:a05:600c:3b19:b0:471:989:9d7b with SMTP id 5b1f17b1804b1-4778fe95fe2mr74546895e9.21.1763247416137;
-        Sat, 15 Nov 2025 14:56:56 -0800 (PST)
-Received: from F15.localdomain ([121.167.230.140])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7ba1462c605sm6641971b3a.21.2025.11.15.14.56.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Nov 2025 14:56:55 -0800 (PST)
-From: Hoyeon Lee <hoyeon.lee@suse.com>
-To: bpf@vger.kernel.org
-Cc: Hoyeon Lee <hoyeon.lee@suse.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [bpf-next v1 5/5] selftests/bpf: propagate LLVM toolchain to runqslower build
-Date: Sun, 16 Nov 2025 07:55:40 +0900
-Message-ID: <20251115225550.1086693-6-hoyeon.lee@suse.com>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <20251115225550.1086693-1-hoyeon.lee@suse.com>
-References: <20251115225550.1086693-1-hoyeon.lee@suse.com>
+        bh=TLJ5VnTJbC7vQ6bZl12YPnQhs8ULpbswUF2fA4Crn6k=;
+        b=Bh/wbHlvi7oL3cW0ICyl82ViLffoomDpeEX/rHl+xITnFFrcFnMzZMsX97Qd+DgkgS
+         yJlB5L09QvDpBpHEhXqncPM2AO/lfV8c4X5D6NxpViH6rr45D7D9rO31BiZqjkLqK6Ax
+         tz46AyR+AbJdzJHYRAgW85kZBgA2Ph0O3WKo0PCvurDRkilWULh0tkU2IPyLH07ITwOO
+         zR275eese6/GQgrGCcNfc6bOsu9kWd95tWjs8KqNaY/431B0tKu5+/ivFbrO/aLilWgl
+         cwZgsHApB8T1MB9HyJ1O9nao8+tnAFzCv43UUHHK4TQH4u8DsDX9pkBtHvfax2KmmKyi
+         EzNA==
+X-Forwarded-Encrypted: i=1; AJvYcCXrzbqmi5p0uT1mAaarvSFhtlyh8yxWND+dEQXFp/9lp2wl/S8q8hSF6tY6ozodUNzNSBU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbGV+c9UdQSnEGNMH9DwqZjWagfo6Z9LL708paYcNJ6WRnowBE
+	t8E0TyKs8XMNjyXyIiIhaLiBtGsHoIQSPaqaGTVH4ogdV8tSb87bgY4byXNHk/FEwTSeVRv+roh
+	099a1g66FaZFdccTYQ2GAW7olQg/ydZkL31qjTVeIIQ==
+X-Gm-Gg: ASbGncuiq9FeGXynB1ZGJPjP8GEFiRn8d158pAMFbyjTLm+JrSEcxpTIPQgpz0cU3nX
+	ynJ3sHs2271wU1Y3kNq9KSn0QnAq3gwAGI8pZB64hr8OC8jasVd0aigWSZH8WJ7au3lXX7RI4ny
+	BgZW4E60N0+s4qmL8buIes0w+09qkHvx6o0wPLzRvg5MJJVAIEAIlMhBP7NPOzKglLL6nfHVg+4
+	/RSFvZPCgoAFrPFx54xbEowATAuq9w9rwJq2FJiP7QV7vjQ4c6tOFaSFwi/eg==
+X-Google-Smtp-Source: AGHT+IFiAAVWADaPlFXapZr6yz6TL2Rq8lseso7lsPZEaJ9kEMA81G6lmJU+LbNp9Bx0MdxSQQ3oVYMlil5tIzs+yNA=
+X-Received: by 2002:a17:902:e84c:b0:295:9e4e:4092 with SMTP id
+ d9443c01a7336-2986a76b624mr94324725ad.56.1763247895088; Sat, 15 Nov 2025
+ 15:04:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAH6OuBTjG+N=+GGwcpOUbeDN563oz4iVcU3rbse68egp9wj9_A@mail.gmail.com>
+ <CAADnVQLXJyMhfqr=ZEUWsov3TC155OkGvuaOHL5j+aK5Pv=F7A@mail.gmail.com>
+In-Reply-To: <CAADnVQLXJyMhfqr=ZEUWsov3TC155OkGvuaOHL5j+aK5Pv=F7A@mail.gmail.com>
+From: Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>
+Date: Sun, 16 Nov 2025 00:04:44 +0100
+X-Gm-Features: AWmQ_bkhgH1vmZHnVOIE1dFBea0-P6ObqDSwSP9TR_1Vn9K6MuI9Y3a8LT_kwM0
+Message-ID: <CAH6OuBTXwW9WKHRNS53kRgZ3Y5GdH3n0EY4YogOGGSTGnYL9og@mail.gmail.com>
+Subject: Re: bpf: system freezes due to recursive lock in bpf_ringbuf_reserve()
+ caused by commit a650d38 ("bpf: Convert ringbuf map to rqspinlock")
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Jiri Olsa <olsajiri@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Jelle van der Beek <jelle@superluminal.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The selftests/bpf invokes a nested make when building runqslower, but
-LLVM toolchain version (clang/llvm-strip) is not propagated. As a
-result, runqslower is built with system default clang, not respecting
-specified LLVM version.
+Hi Alexei,
 
-    # LLVM=-21 make -C tools/testing/selftests/bpf
-    ...
-    make feature_display=0 -C /bpf/tools/bpf/runqslower                        \
-        OUTPUT=/bpf/tools/testing/selftests/bpf/tools/build/runqslower/        \
-        BPFOBJ_OUTPUT=/bpf/tools/testing/selftests/bpf/tools/build/libbpf/     \
-        BPFOBJ=/bpf/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a    \
-        BPF_INCLUDE=/bpf/tools/testing/selftests/bpf/tools/include             \
-        BPFTOOL_OUTPUT=/bpf/tools/testing/selftests/bpf/tools/build/bpftool/   \
-        VMLINUX_BTF=/sys/kernel/btf/vmlinux BPF_TARGET_ENDIAN=--target=bpfel   \
-        EXTRA_CFLAGS='-g -O0  ' EXTRA_LDFLAGS=' ' &&                           \
-        cp  /bpf/tools/testing/selftests/bpf/tools/build/runqslower/runqslower \
-            /bpf/tools/testing/selftests/bpf/runqslower
-    clang -g -O2 --target=bpfel -I/bpf/tools/testing/selftests/bpf/tools/build/runqslower/ \
-          -I/bpf/tools/testing/selftests/bpf/tools/include -I/bpf/tools/include/uapi       \
-          -c runqslower.bpf.c -o /bpf/tools/testing/selftests/bpf/tools/build/runqslower/runqslower.bpf.o && \
-          llvm-strip -g /bpf/tools/testing/selftests/bpf/tools/build/runqslower//runqslower.bpf.o
-    /bin/sh: 1: clang: not found
+Thanks for the info! I wasn't aware of that fix, but I just checked,
+and my kernel *does* have that fix. I'm on 6.17.1-300.fc43.x86_64.
 
-Explicitly propagate CLANG and LLVM_STRIP to the runqslower sub-make so
-that the LLVM toolchain selection from lib.mk is preserved.
+I just installed the kernel sources locally to make sure, and the code
+for rqspinlock matches that of the commit you linked (i.e. the
+is_nmi() check added in the commit is there). The code for the related
+commit  164c246 ("rqspinlock: Protect waiters in queue from stalls")
+is also present. You can verify this yourself on Fedora's 6.17.1 git
+tree: https://gitlab.com/cki-project/kernel-ark/-/blob/kernel-6.17.1-1/kern=
+el/bpf/rqspinlock.c#L474
 
-Signed-off-by: Hoyeon Lee <hoyeon.lee@suse.com>
----
- tools/testing/selftests/bpf/Makefile | 1 +
- tools/testing/selftests/lib.mk       | 1 +
- 2 files changed, 2 insertions(+)
+So it's good to know issues have already been fixed in this area since
+the original commit, but it looks like there's still something lurking
+here. To clarify, I'm not exactly sure which of the various timeout
+cases in raw_res_spin_lock_irqsave() this recursive lock situation is
+hitting.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 34ea23c63bd5..79ab69920dca 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -306,6 +306,7 @@ endif
- 
- $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
- 	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower	       \
-+		    CLANG=$(CLANG) LLVM_STRIP=$(LLVM_STRIP)		       \
- 		    OUTPUT=$(RUNQSLOWER_OUTPUT) VMLINUX_BTF=$(VMLINUX_BTF)     \
- 		    BPFTOOL_OUTPUT=$(HOST_BUILD_DIR)/bpftool/		       \
- 		    BPFOBJ_OUTPUT=$(BUILD_DIR)/libbpf/			       \
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index a448fae57831..f14255b2afbd 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -8,6 +8,7 @@ LLVM_SUFFIX := $(LLVM)
- endif
- 
- CLANG := $(LLVM_PREFIX)clang$(LLVM_SUFFIX)
-+LLVM_STRIP := $(LLVM_PREFIX)llvm-strip$(LLVM_SUFFIX)
- 
- CLANG_TARGET_FLAGS_arm          := arm-linux-gnueabi
- CLANG_TARGET_FLAGS_arm64        := aarch64-linux-gnu
--- 
-2.51.1
+Thanks,
+Ritesh
 
+On Sat, Nov 15, 2025 at 10:59=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sat, Nov 15, 2025 at 1:52=E2=80=AFPM Ritesh Oedayrajsingh Varma
+> <ritesh@superluminal.eu> wrote:
+> >
+> > Hi,
+> >
+> > We're developing an eBPF-based sampling CPU profiler, and we've been
+> > investigating a bug that causes periodic, brief system freezes on
+> > Fedora 43. We've tracked this down to commit a650d38 ("bpf: Convert
+> > ringbuf map to rqspinlock") [1], which was introduced to fix a
+> > deadlock reported by syzbot [2].
+>
+> Sounds like your kernel is missing the fix:
+> commit 0d80e7f951be ("rqspinlock: Choose trylock fallback for NMI waiters=
+")
 
