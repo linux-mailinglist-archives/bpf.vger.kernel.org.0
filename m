@@ -1,212 +1,261 @@
-Return-Path: <bpf+bounces-74631-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74632-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70437C5FED3
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 03:46:19 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id B658CC5FED6
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 03:46:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CA5CE4E6388
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 02:45:31 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CE4BF4E8E0C
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 02:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75F6B221F13;
-	Sat, 15 Nov 2025 02:45:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 308A821CC7B;
+	Sat, 15 Nov 2025 02:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="biX5T468"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XovaOPLd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f194.google.com (mail-yw1-f194.google.com [209.85.128.194])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F7B6137932
-	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 02:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFEFC17C21E
+	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 02:45:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763174724; cv=none; b=fNeEOJugJnFpF4Utp/YmxooPys4UT5VpSETgc8qthPju6bgTZp3S/fNir9dMw+cDLpdOimofsh/IcCuf/P48fdA1ef8k2HXW4LAlVbVeV5xzm1GPwtdhrCeer1wi4uLUpeP9H0iDE8dm2mzaMGaI/UPzB8Ta8mNiw8/zqXmArOw=
+	t=1763174733; cv=none; b=U+w79sdqO2Ivyfajsfj8WzB8qeBtyHUw+DTvEJIC0Mf8boGLgzYjCMgYW8Oc8NazXYPdpLIR0vktWbHtXG8hHijfSHhMXCQ3GgTWUaFChKRJ2nCz8Sk8TYlvdcYCSF7Wiu4wxgNNBYdNz+Gv36di2t41d6yzxBCi25uy37XByfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763174724; c=relaxed/simple;
-	bh=QgQoA1oMCRhoLrz1xB6vwIvr2sOg0pFJdAiGIvKOPdk=;
+	s=arc-20240116; t=1763174733; c=relaxed/simple;
+	bh=qovHNVA8a4Cke1vsSaThgOVLaAnwW+r0ouVdZKEFgkE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O3ZZcaNN8JdgjLz/9x0yztksAwzQ0rwpUeLsUuf1r1/SHd520aTngPFpcZLjTMu191W0eTqaTnB+RAiP3WN31+IVZZQa8sYq8fpb67grXs7yQWA2rSr4FuHaIsHbmcFInL/WfTRMEVx8+lc5aQJRzdQZvFwKHa40qtnMADfML3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=biX5T468; arc=none smtp.client-ip=209.85.128.194
+	 To:Cc:Content-Type; b=P7wDLIswaE/2ht1beF3BV/QgjP4rXc1lOz9O6Gf+35QhJs6mt1aAY9d+PoF/6YShPvPC6JxQJd9x+TH54i/9Gthnp9UjRGfQD/ibXFcFrbogNN/Q9SpWMgeOYBTy+y4WWS/nB3UQbMggwTjnA5zHgZdmBpgc2ZVJ5Jpce2JoB8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XovaOPLd; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f194.google.com with SMTP id 00721157ae682-7866bca6765so25341047b3.1
-        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 18:45:21 -0800 (PST)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-42b3ac40ae4so1369812f8f.0
+        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 18:45:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763174720; x=1763779520; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763174730; x=1763779530; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DvCG/LkvighatCxQcwWFOP8i6iT+iOW0XMsHIFsyAJQ=;
-        b=biX5T468DtCnyuqLXOBvg/AifzVchKd2RyYf0sfJLDd61OZpcWI37qBFJOZhXFAJtL
-         u7+UkGIGiBMF9LE4sC/ppVCKVodk3ipWztDV6S2rotWGD5r2NejsmBC9MgdD/uhbhECy
-         WjLVoffZR9HHSFGJLV/5fLT+ln3w/Y2NT9XpLdjpf95rmPUem6hxu6fUVUWWqAlwO8Nh
-         mukJHv0jR0q1hguE6XlLXUvHQMHIUjLudmSD7bfQ45kUCo+z2JF1Y0WBxcLLdUHS5pgN
-         LxAHfp6BQhhbKphIU3Wjifg1LRedCL68HXBcf+oO3Bm8BgusV2fP/dCFQ+8n6hoWIlhY
-         janw==
+        bh=9Iznb+ycCaFjwy0sjiThVROPdc3gzb1wG0QEJqjrcsQ=;
+        b=XovaOPLdNBYPhd8S3M684PvgKr1CMCJ3WL/abz4l3sAYnNKjADjweP/8xsoxcSZSlM
+         Qu4CCvIP9VJXcNJ6sqPmOVIoC1Yf+KvzNhOr6q2rqGE37uDH9w+PZNEkWFMDZYcoNlCT
+         e+Q97T4GXlnCjRnbEnY59iRub7eyU5Qi2urj2/9KP7+6stN29tOv0Fa6LpfHgQetfhmM
+         7CbtG/1gYnISV1XK/ZBF8dHG5lyFvSqa4eCd2D/NYMb0oQ/K1+dr5yw9f/S5ucLYv6Jj
+         bjvAIWrLbHkfsOv2qRV5lxytsGPXfiEnVJ2qDdNqZgj63oQ0z0EYBFMVyX69Dkd3cmrr
+         WrzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763174720; x=1763779520;
+        d=1e100.net; s=20230601; t=1763174730; x=1763779530;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=DvCG/LkvighatCxQcwWFOP8i6iT+iOW0XMsHIFsyAJQ=;
-        b=tAkXxeZiyK5SKSHO7GTzHmIDRBOyCTQq6BZIYxDK+4Evk9A1uutFQHiw4rNWPddw71
-         VghDj3mIe6Thu/6o27A/GTa+3gh9j8cidy94DCmqHCV2wAVQRwqryb+U3nsvuj2ABvLu
-         g1vchbg+kjn8KCD6RgzzM9D/wQtCARfopJpHGWFttW3TemCoQuVXrw7XN6zS9bwvwuom
-         CXkVWVpZcdoeSeNVP8a8nXLioorQL5q1ncKBxXU2IMdR7RFh+ufHdNgYSp+m/9jZu/UO
-         J/6JBgl+h8oEKBbk0FtPyj5sKvAoxRb3aUmASClPp45nncNwFX3I/mbE+kqCDEKF2zhh
-         aO3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVuuCl/D/AV83aLqFGAW1L04Ch71X2gkZgRJf5/2zF57wycJSpNlVu9/MXiwwzu8e5xOk8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3G3DyP1nqzP5AOM94d5rq9Grg9rBTVcECpD1VtrBoDcgKt2Ol
-	7esP6hoMEB5RYajte4MsGp8saU9V7jMU74Yf14qKy9rtWnXGVZYvNTsZ2PDMqNcNG1YydLa+tBh
-	CbjechnhHagmrZi+uOYAotkRw1v/Oz98=
-X-Gm-Gg: ASbGnct1p2WgRhhFUYl9iECugT8VxV69vriPmPoJYBwBPqEl1SrZh/MKvbNAsRZfmU+
-	T+ZPhO9S3Hn35cF5cTqcWsvq1VcdDgP1+Kmxtg7/zdwMpHVlKRMZqgvwZOl4SasmV6Zh7c/LXHq
-	qTB/4JHMwEw0aOFMSdZM5esU8hQtxXIqwpr94ZJXhB0a+0Lh8AcSnGPE9gE7uw2/vLT+/uVHFUz
-	3AhKumVujy4jkLAK93T7RZt027kiFmGPmK5CYY0pzNso/fqqeYB3PkkY2pJ
-X-Google-Smtp-Source: AGHT+IFYJ2/DFCYkBHvkGgyTOY/QDa8mebFzcO5f1baR7nsHhNcsvTScfI8nJm0kV8YKUSROcJCXAqFMKxgv51vQ55k=
-X-Received: by 2002:a05:690c:8311:10b0:788:1d35:1093 with SMTP id
- 00721157ae682-78929effd17mr42849487b3.63.1763174720339; Fri, 14 Nov 2025
- 18:45:20 -0800 (PST)
+        bh=9Iznb+ycCaFjwy0sjiThVROPdc3gzb1wG0QEJqjrcsQ=;
+        b=BvSzhjInnHfqkisO0KpQj9O8wmjxyKsosje4AtHEI0OmtvvXg8kClfbIuP2lBlFOSZ
+         AvhqibM5Ko6b8o5LPhDVo4FP+7ftCKZUnfe/T591ssCgfwmDhwwuhRZl4VEMh4GVCgU/
+         +DpCNg9c3tQ1AJwZNL8MosHmLyiHu7AVpqDY3sF16iU9Uq+a6nxwqYaI7PU6tFmxjveT
+         G1ty7Zk3E+JLYmIVQUZ8NPT/ztjsrb0OLHGkQjnPueJ7D5DnBPIg1llec7KV2etPfyGF
+         43ju4cf6HcKtuLOTVX67POoxMfuwCTf+I9d4Pi2uZJUfUJtHWKz7wLJg8uV0ha+O8Fqk
+         cLdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWHlrWHQ+hRt/XF3My3T++kNdiqxgMBiPuxzDPRbmgD+zxpUQkU2wdnohxmYndOf2QYYTw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzxZG43+Rvq5Bvxty2ylk3Cr/thT2Out2B8h9Ww0nTivhDckvEo
+	33Zfzvorf/6SjNQKKQfx2CG1OZVWJqwJ/uaWCs2N150ygsZm5tP36HgcpJHuN/lDbIEoYJJi4oH
+	cSWkzByoa2i6H+UvKnurkBgSwagTUnOM=
+X-Gm-Gg: ASbGnctR2btWUK7GZcQowYK0BVBNAqAKbpio5XfrGtJj535kMZi2s4uLB/cj9p7FzYb
+	cusDnk5Men2XPFNQZN+7PbksN35x8fYvLnc1IcLj3lJglznx70olVFz/pk52YfnzAddgzQKkp5q
+	P4sxNbGs2XGOMbWONUDG+VvNK+tMx/S9Vrb62rMZyMK5AgJGh1SMK8vpWBYON5WnYWK4MMvpj+C
+	/GJGTDYq1cDGDyMyl5lF7T3TbJyCp6o2+/ITMP9js1VYaKY1aCnvT7b7RK9C/h7MdJhE5n0Ugkf
+	LjaEHMHaP3xb9LURgYvqQP+PqTP0
+X-Google-Smtp-Source: AGHT+IHpHF7RLkAKKDo+UXhAc3BNnfVhkf4Zmb/ighVBv3/ib/f/Ie/fE6cabwZouQpwiz1Vi5M4DGf98dCCtDBQd/o=
+X-Received: by 2002:a05:6000:2911:b0:429:b9bc:e810 with SMTP id
+ ffacd0b85a97d-42b59388427mr4571227f8f.45.1763174730036; Fri, 14 Nov 2025
+ 18:45:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251110134858.1664471-1-dongml2@chinatelecom.cn> <CAEf4BzZ3oX-=zX0_HbeUHsPw7AOZVvi_LNkwugQnybpQvZS_Mw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ3oX-=zX0_HbeUHsPw7AOZVvi_LNkwugQnybpQvZS_Mw@mail.gmail.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Sat, 15 Nov 2025 10:45:09 +0800
-X-Gm-Features: AWmQ_blAFJ3hl5eVmRfpa2d2JMXS8aAVn_TR_4yg5YjO_-YeBjxqOcixOgmdshI
-Message-ID: <CADxym3ZBmr1USGY08HcbpV6=G0SjZ6khoOb0R+L2R11AEOKzFA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: simplify the kernel_count bench trigger
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, 
-	mingo@kernel.org, jiang.biao@linux.dev, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20251110092536.4082324-1-pulehui@huaweicloud.com>
+ <92ba87bbc6b11234be1925a4dc7262e11cd07305.camel@gmail.com>
+ <CAADnVQ+2jdSD=HMMq3tKvu08gF49T=290LNzvc5LDOf4AycEuw@mail.gmail.com>
+ <fb7f62db-4dc6-4614-a0c4-3b2a1904aadb@huawei.com> <CAADnVQLPJGPwx3CfgXBCZPHi_niGYTy+VFnyd50oNrDSkvyqPw@mail.gmail.com>
+ <2612eeec-8948-41d6-9d41-4f1ec813d514@huaweicloud.com>
+In-Reply-To: <2612eeec-8948-41d6-9d41-4f1ec813d514@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 14 Nov 2025 18:45:18 -0800
+X-Gm-Features: AWmQ_bkgPtam_dyklmGctQDadlcEgvGA7apCMBsk4Ckf9TWYLPmi6muWSQvZsS4
+Message-ID: <CAADnVQJ_jZ+Cz9n3N=0b7xYwc-Vx_iwZLXrHTR8Mk4aytcEjKw@mail.gmail.com>
+Subject: Re: [PATCH bpf v3] bpf: Fix invalid mem access when
+ update_effective_progs fails in __cgroup_bpf_detach
+To: Pu Lehui <pulehui@huaweicloud.com>
+Cc: Pu Lehui <pulehui@huawei.com>, Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Nov 15, 2025 at 4:46=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Nov 14, 2025 at 6:42=E2=80=AFPM Pu Lehui <pulehui@huaweicloud.com> =
+wrote:
 >
-> On Mon, Nov 10, 2025 at 5:49=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
-il.com> wrote:
-> >
-> > Remove the "trigger_count" in trigger_bench.c and reuse trigger_driver(=
-)
-> > instead for trigger_kernel_count_setup().
-> >
-> > With the calling to bpf_get_numa_node_id(), the result for "kernel_coun=
-t"
-> > will become a little more accurate.
 >
-> "more accurate" is a bit misleading here. I think you meant that it
-> will do same amount of helper calls as fentry and other benchmarks,
-> and in that sense will be closer as a baseline comparison, is that
-> right? Can you clarify that in the next revision, please?
-
-Yeah, this is what I mean. The call to "bpf_get_numa_node_id" should
-be considered as the baseline comparison.
-
 >
-> >
-> > It will also easier if we want to test the performance of livepatch, ju=
-st
-> > hook the bpf_get_numa_node_id() and run the "kernel_count" bench trigge=
-r.
-> >
-> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> > ---
-> >  .../selftests/bpf/benchs/bench_trigger.c        |  5 +----
-> >  .../testing/selftests/bpf/progs/trigger_bench.c | 17 +++++------------
-> >  2 files changed, 6 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools=
-/testing/selftests/bpf/benchs/bench_trigger.c
-> > index 1e2aff007c2a..34fd8fa3b803 100644
-> > --- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
-> > +++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-> > @@ -179,11 +179,8 @@ static void trigger_syscall_count_setup(void)
-> >  static void trigger_kernel_count_setup(void)
-> >  {
-> >         setup_ctx();
-> > -       bpf_program__set_autoload(ctx.skel->progs.trigger_driver, false=
+> On 2025/11/15 5:08, Alexei Starovoitov wrote:
+> > On Mon, Nov 10, 2025 at 7:20=E2=80=AFPM Pu Lehui <pulehui@huawei.com> w=
+rote:
+> >>
+> >>
+> >> On 2025/11/11 9:13, Alexei Starovoitov wrote:
+> >>> On Mon, Nov 10, 2025 at 12:36=E2=80=AFPM Eduard Zingerman <eddyz87@gm=
+ail.com> wrote:
+> >>>>
+> >>>> On Mon, 2025-11-10 at 09:25 +0000, Pu Lehui wrote:
+> >>>>> From: Pu Lehui <pulehui@huawei.com>
+> >>>>>
+> >>>>> Syzkaller triggers an invalid memory access issue following fault
+> >>>>> injection in update_effective_progs. The issue can be described as
+> >>>>> follows:
+> >>>>>
+> >>>>> __cgroup_bpf_detach
+> >>>>>     update_effective_progs
+> >>>>>       compute_effective_progs
+> >>>>>         bpf_prog_array_alloc <-- fault inject
+> >>>>>     purge_effective_progs
+> >>>>>       /* change to dummy_bpf_prog */
+> >>>>>       array->items[index] =3D &dummy_bpf_prog.prog
+> >>>>>
+> >>>>> ---softirq start---
+> >>>>> __do_softirq
+> >>>>>     ...
+> >>>>>       __cgroup_bpf_run_filter_skb
+> >>>>>         __bpf_prog_run_save_cb
+> >>>>>           bpf_prog_run
+> >>>>>             stats =3D this_cpu_ptr(prog->stats)
+> >>>>>             /* invalid memory access */
+> >>>>>             flags =3D u64_stats_update_begin_irqsave(&stats->syncp)
+> >>>>> ---softirq end---
+> >>>>>
+> >>>>>     static_branch_dec(&cgroup_bpf_enabled_key[atype])
+> >>>>>
+> >>>>> The reason is that fault injection caused update_effective_progs to=
+ fail
+> >>>>> and then changed the original prog into dummy_bpf_prog.prog in
+> >>>>> purge_effective_progs. Then a softirq came, and accessing the stats=
+ of
+> >>>>> dummy_bpf_prog.prog in the softirq triggers invalid mem access.
+> >>>>>
+> >>>>> To fix it, we can use static per-cpu variable to initialize the sta=
+ts
+> >>>>> of dummy_bpf_prog.prog.
+> >>>>>
+> >>>>> Fixes: 4c46091ee985 ("bpf: Fix KASAN use-after-free Read in compute=
+_effective_progs")
+> >>>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> >>>>> ---
+> >>>>
+> >>>> Hi Pu,
+> >>>>
+> >>>> Sorry for the delayed response. This patch looks good to me, but I
+> >>>> think that your argument about memory consumption makes total sense.
+> >>>> It might be the case that v1 is a better fix. Let's hear from Alexei=
+.
+> >>>
+> >>
+> >> Hi Alexei,
+> >>
+> >>> I don't particularly like either v1 or v2.
+> >>> Runtime penalty to bpf_prog_run_array_cg() is not nice.
+> >>> Memory waste with __dummy_stats is not good as well.
+> >>
+> >> Indeed a trade-off between time and space before better solution.
+> >>
+> >>>
+> >>> Also v1 doesn't really fix it, since prog_array is
+> >>> used not only by cgroup.
+> >>> perf_event_detach_bpf_prog() does bpf_prog_array_delete_safe() too.
+> >>
+> >> I noticed that too, but before syncing to other parts of the
+> >> bpf_prog_array, I found there were some shotgun-style modifications, s=
+o
+> >> I switched to initializing per-cpu variables to minimize changes.
+> >>
+> >>>
+> >>> Another option is to add a runtime check to __bpf_prog_run()
+> >>> but it isn't great either.
+> >>
+> >> Yep, same runtime penalty, but simpler than v1 =E2=80=93 will we use t=
+his to patch?
+> >>
+> >> --- a/include/linux/filter.h
+> >> +++ b/include/linux/filter.h
+> >> @@ -712,11 +712,13 @@ static __always_inline u32 __bpf_prog_run(const
+> >> struct bpf_prog *prog,
+> >>                   ret =3D dfunc(ctx, prog->insnsi, prog->bpf_func);
+> >>
+> >>                   duration =3D sched_clock() - start;
+> >> -               stats =3D this_cpu_ptr(prog->stats);
+> >> -               flags =3D u64_stats_update_begin_irqsave(&stats->syncp=
 );
-> > -       bpf_program__set_autoload(ctx.skel->progs.trigger_count, true);
-> > +       ctx.skel->rodata->kernel_count =3D 1;
-> >         load_ctx();
-> > -       /* override driver program */
-> > -       ctx.driver_prog_fd =3D bpf_program__fd(ctx.skel->progs.trigger_=
-count);
-> >  }
+> >> -               u64_stats_inc(&stats->cnt);
+> >> -               u64_stats_add(&stats->nsecs, duration);
+> >> -               u64_stats_update_end_irqrestore(&stats->syncp, flags);
+> >> +               if (likely(prog->stats)) {
+> >> +                       stats =3D this_cpu_ptr(prog->stats);
+> >> +                       flags =3D
+> >> u64_stats_update_begin_irqsave(&stats->syncp);
+> >> +                       u64_stats_inc(&stats->cnt);
+> >> +                       u64_stats_add(&stats->nsecs, duration);
+> >> +                       u64_stats_update_end_irqrestore(&stats->syncp,
+> >> flags);
+> >> +               }
 > >
-> >  static void trigger_kprobe_setup(void)
-> > diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/=
-testing/selftests/bpf/progs/trigger_bench.c
-> > index 3d5f30c29ae3..6564d1909c7b 100644
-> > --- a/tools/testing/selftests/bpf/progs/trigger_bench.c
-> > +++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-> > @@ -39,26 +39,19 @@ int bench_trigger_uprobe_multi(void *ctx)
-> >         return 0;
-> >  }
-> >
-> > +const volatile int kernel_count =3D 0;
+> > Yeah. Let's do this. Pls submit it as a proper patch.
 >
-> nit: use bool? it's not a counter, no need to use int here
+> Hi Alexei,
 >
-> >  const volatile int batch_iters =3D 0;
-> >
-> > -SEC("?raw_tp")
-> > -int trigger_count(void *ctx)
-> > -{
-> > -       int i;
-> > -
-> > -       for (i =3D 0; i < batch_iters; i++)
-> > -               inc_counter();
-> > -
-> > -       return 0;
-> > -}
-> > -
-> >  SEC("?raw_tp")
-> >  int trigger_driver(void *ctx)
-> >  {
-> >         int i;
-> >
-> > -       for (i =3D 0; i < batch_iters; i++)
-> > +       for (i =3D 0; i < batch_iters; i++) {
-> >                 (void)bpf_get_numa_node_id(); /* attach point for bench=
-marking */
-> > +               if (kernel_count)
-> > +                       inc_counter();
-> > +       }
+> How about making the stats update a callback function? That is, the
+> dummy flow does nothing, while the others follow the normal process.
 >
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index d808253f2e94..7bd784c58309 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1738,6 +1738,7 @@ struct bpf_prog {
+>                 u8 tag[BPF_TAG_SIZE];
+>         };
+>         struct bpf_prog_stats __percpu *stats;
+> +       void (*update_stats)(struct bpf_prog_stats __percpu *stats, u64 d=
+uration);
+>         int __percpu            *active;
+>         unsigned int            (*bpf_func)(const void *ctx,
+>                                             const struct bpf_insn *insn);
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index f5c859b8131a..eb2c464880fd 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -705,18 +705,12 @@ static __always_inline u32 __bpf_prog_run(const
+> struct bpf_prog *prog,
 >
-> tbh, I wouldn't touch trigger_driver() adding unnecessary if
-> conditions to it. It's fine, IMO, to have bpf_get_numa_node_id() call
-> in trigger_count() for being closer in terms of actual work being
-> done, but I'd keep trigger_driver and trigger_count separate (maybe
-> renaming trigger_count to trigger_kernel_count would help, I don't
-> know)
+>         cant_migrate();
+>         if (static_branch_unlikely(&bpf_stats_enabled_key)) {
+> -               struct bpf_prog_stats *stats;
+>                 u64 duration, start =3D sched_clock();
+> -               unsigned long flags;
+>
+>                 ret =3D dfunc(ctx, prog->insnsi, prog->bpf_func);
+>
+>                 duration =3D sched_clock() - start;
+> -               stats =3D this_cpu_ptr(prog->stats);
+> -               flags =3D u64_stats_update_begin_irqsave(&stats->syncp);
+> -               u64_stats_inc(&stats->cnt);
+> -               u64_stats_add(&stats->nsecs, duration);
+> -               u64_stats_update_end_irqrestore(&stats->syncp, flags);
+> +               prog->update_stats(prog->stats, duration);
 
-Ah, OK! I'll add the call to bpf_get_numa_node_id() in trigger_count()
-instead. I think the "trigger_kernel_count" makes more sense to me.
-
-Thanks!
-Menglong Dong
-
->
-> pw-bot: cr
->
-> >
-> >         return 0;
-> >  }
-> > --
-> > 2.51.2
-> >
+Interesting idea, but no. Indirect calls are slow. Especially
+with retpoline. Even if you static_call() it. It is still slower
+than extra 'if'.
 
