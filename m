@@ -1,99 +1,90 @@
-Return-Path: <bpf+bounces-74633-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74634-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECF13C5FED9
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 03:46:35 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90E4AC5FEDC
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 03:49:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 37A0F4E7647
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 02:45:42 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 63F0C35819F
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 02:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64601221269;
-	Sat, 15 Nov 2025 02:45:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4449F1E9B35;
+	Sat, 15 Nov 2025 02:48:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZiGaS10j"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JPGRF6jD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D4F17C21E
-	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 02:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796D617A300
+	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 02:48:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763174737; cv=none; b=uagIH1hwLubk8qi7Zqeo8K3G1FBvFx2dgK871g3mNEQh7f4bv0cv9tqjwnqiuNzajDE78Yxur+iIfKxob2aruaqFlXOwLSPJ5r5VOf6jXf4jkGZyyhZtwXVFjlvoR+5xLs3mb5XMfsVbQcL/6aeeZxQu3FZ66zYmEPNvAhFv6AA=
+	t=1763174931; cv=none; b=s/lVePMwzw5KZVHqfgSzAZvOAVqzWR/xs4HOqxH4vnVLCG5tRhI7mBbN5ntcDEaZlKwsBSaUWZRwn5e361tJZv3fpj9t2ecHJID6Y7M43XxCItc1Mr6VE1I4e2avibrg+FbGbAmEVglt/UvRiFmuAdo7IWqETO0vQO2LyTHIzF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763174737; c=relaxed/simple;
-	bh=DV19atzgnPVtT88dK9S1W0tz+51hu2L+tkCKgn5f6N0=;
+	s=arc-20240116; t=1763174931; c=relaxed/simple;
+	bh=A542wW2tt6U1hCZi9ET9sypR0K4UXL8BjpTEGoFdQpE=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=h/3XGVhDlB7epQ2mf0XeYeSC5BTHwEKDQcNUnrZoJ5I/pNaxO00Kd9jolxoNjcRKz8veVm9oXKqRyjnYEeDYPMUEwwVbzB4w9w6vMB1RgK7jjasBqP/dUoTWkpy7wXOpbAEI6iobky3N6lvX53wMr8/tInkyxppm/ZpoCobVp0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZiGaS10j; arc=none smtp.client-ip=209.85.210.169
+	 Content-Type:MIME-Version; b=uXUBTyIZZFJhJAMVRk7rWB9JscOVqfd46X93pBAEgBZr1y0CY9YSJQNT+dvbboQgUYD4EdwhBuddTA/YUH0CX2cCZxoW3NTqS0pRY5djlOY3KAMBWn7LFjEc5l1IyMBt+fhHPugTV0NnrQ7NKEyAnRuP9Td6cAHExaA90fz2eRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JPGRF6jD; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7bc248dc16aso648425b3a.0
-        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 18:45:36 -0800 (PST)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-297d4ac44fbso27600475ad.0
+        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 18:48:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763174736; x=1763779536; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763174930; x=1763779730; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=DV19atzgnPVtT88dK9S1W0tz+51hu2L+tkCKgn5f6N0=;
-        b=ZiGaS10j3jCp5ZVQtgXxV4cjB2nxYcwykMjFnC55pRYVgyk/77EiHZqNFFrUme3Q5s
-         HVP773FdkvZ+LscOVTdyoJXgakbXCDR5tkZSWBfjxm76HUnDBjd6nXvWY+cn+NDI+zk9
-         xvwdEBBXtX10/+WcrnLhe2GII0LXg0lMZCf8SyAspe8lEnTyvsXGBGNqBZQ4aHuj+L0B
-         oPrV8npFQqvFvjjU1XRGllVsgVgMpJWJteUv9LKt5N5SDB/tAtx6wenaWdiEcv8h+qyf
-         sDtFEx0KV7+qCdXPgXSaOdgNXU7Aa6oAGkm9q+KqA294H7FazjVuOdqR/1gpgXo7gKFC
-         cYxg==
+        bh=dfk+MbsLbFdAdM8FyWm7dTdZHIb10yDkH6iaeIr2SP8=;
+        b=JPGRF6jD4NjFs2K+UIEcVfFFQdhx6ms6QeNzJTCO8hbpnpj2R3MSiKPjWP/2LUnlbO
+         Ff/L0JucQ5D3S6tFkDzzIz14U9Ixx9u0keCbyxGogwUqlZsx63JJJb2aXRF3jfoV0cnA
+         ME0Vjzqu0qKnWxBAWIi9uFxU3xvCI4qV0Kudxqfpy1KYFjlrmMFdWqNM7Faogwl/TIhC
+         iHOsyqXk2liiyzN8+UUpwjSt+MTnlYiHKnnKhk51Tq/OvD5IYHqHQL/5ADzOltkZ+Jcx
+         m0rqGBKIvnuEP8b+/guEGV7AZw2Be+6G6KAMdzbOXDExx6dEP3p4219jJrpyWFWnmsar
+         q5Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763174736; x=1763779536;
+        d=1e100.net; s=20230601; t=1763174930; x=1763779730;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DV19atzgnPVtT88dK9S1W0tz+51hu2L+tkCKgn5f6N0=;
-        b=NqYZJcrtG7eYJcNQD4Whv16fpYCrf66iTRSoIrnIgQISQ0RDK53jzPpjJfXYZGBnxe
-         1eU5StBLDqAhIByl9eqdCY8KZXWySs18lL30Xb8OHFM/I8goISIREyRCBr5kDydKopDo
-         5THvvzxonZDPeO1jEb/42PMSokYjSUG/S5AJF8x+6+kAXGv+D5V/ZuHJcN9ftWT6f1ZY
-         CMWLBy+xpQ11rHvJtRQqStEJMsEZKjMID02pl3Mds6XCNYRJe/qNH6sV/Bb/IX+l+TWl
-         aL1tZ7sixXOEXkPkcJsrH00NpdrTVY46FZ0bEC3UnlD9x5U2rjh7tQ0X2Si4Fa0ozDTN
-         Pm0Q==
-X-Gm-Message-State: AOJu0YxdSx7aSAQQ9RuVe/PYN6hwP9YfPHVMFQN/Rb5RcRNRysvpt7xy
-	4cY2dRiZ4leogzDu2eR09k8CVBXRD3wYxUyfF8nEvLiynjXwTXgtXP8V
-X-Gm-Gg: ASbGncsmEU1EfZ85dK0gFo0LquVUrF31TmIfP9tox3IPIGtV328GaQBaOvLs2hM/YXz
-	6DYjNKbcmkXUlIIVhFuJERZLSMNoAWsXRFtWc0sDsK3tTSw0m8t/BZG8aah9XZdJ57AGHOUG+Nh
-	cO/hNm8a7ti/gXbmW5U645Rn6rUHOue+un7jmWsmWAhuXI5BnEIlHR2zK1jqO2o4IFxovrhseEs
-	HimoTYsJumc/H9oQn4l2jWr5h3YpjNIFyrz/ldYmuwWqxsOnENd8+ZScKbdjkPI116juJcIEPGD
-	LpWxi85pEJKgFOBnt4V4yk9WSN7wyDdtzseMiWf7beOjn6uyugpyoZCEj7/b0C0JLT1TCskFJIT
-	ygA43iQWw+vw74p41NvLzQ2Jxg9DUi5g4dYhGSwZAe6D1Qq2JMStERDNDiFEzg5KzhpyqqItmfA
+        bh=dfk+MbsLbFdAdM8FyWm7dTdZHIb10yDkH6iaeIr2SP8=;
+        b=ibnNBNU088q0hevWKIV39MdD38hrs2xU+Ihf+3AUIbbR1AGLrsXSWIXJgNXPthcRSb
+         s2aZRHLjnYiVRjJK4oy04vyAMgfMC6bMuubl5kZnED/rQPQinkL3AvTC+N1K6psQ2xS4
+         wRMWbl/z7oyWHDDDILkvBoSEkza0hgClCYQh1zDWEvB440Y6K7oexp9hULlYvLpUSdXe
+         b9fViquYdEaF0mX0noOpdbE7iBSPfjrUgC0CNhH4CpDNtMuDAHvMMXbRJaXU5IXbgQRB
+         ublJJoqWNYDf5L8Qh6dGwiMKGd7OpUOxmzeeLT9JMT7jtLQFeGlD9HdwxWlTpJdmoXBO
+         hfEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWBVDr08YUr6xTthtp1/xNo8db5DfqRVhtnPD/C5o4YgrLwULRP4f6+RugAQ/24ulIrHQs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz0iMDIYqsNoI4fU0PDZEW3TOdy2LA1DEDC4J/t1eu643rGCLhW
+	pBzQwp0CYxeSa8eftDOrEnUuSiG762oLPu0mKbIJFSmbljHbgDfV7+P7
+X-Gm-Gg: ASbGncvmMROPjE+P0SgYYJLd7FVO3zq0oybhxpc+BxuTxo3HBvv6AuKurVzvCJ6Via2
+	4Kol4f3+g6y4Kf+bAQYqA4kimrXvgMR71NlC4/UrnOslZrdedfZti+jzogRvCXgniUtC/VLZm+6
+	cNvahjkbvwn+jtDeLfBnppQ83NRalNktUMF5BqcuPz+w1Pc5W2n+ZrIS1FajRpX+YbvXONQPgc2
+	RZ6wk3f5ApNdRx626jRgb/VtRizxrrHa9IZ3fklbueuCSy0+sp9auvN7H2ZPOSUFU09gM+z6HkN
+	lkjN2z4DTegoLPcAY2p5iqrkCCeYasosC0V8Wud36BRiBJ71+sGeaSYnc/BLkpckhYDmtbhyxFX
+	09tUfMyg0FCv87jegjeSczoGAIfvyZJqs+X9MPuXOQ+ZOyav9MkOfF4401EERCXep6sZ7u01oeA
 	==
-X-Google-Smtp-Source: AGHT+IG2pOV6LSNaXuTlc26/BlskR5yf2gjd0jfWSi8YpxrlMOtzk7XLskhi+Vis9wKfojqFZ//HnA==
-X-Received: by 2002:a05:6a20:4329:b0:33e:779e:fa7f with SMTP id adf61e73a8af0-35b9f8851efmr7503240637.1.1763174735919;
-        Fri, 14 Nov 2025 18:45:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEZbs3xjIKZ6gJ9leTVv5QHlhnvrPX+vb2s/ZmkPHUDFA22JttV9lUP9SclfOPz4QaDYleySg==
+X-Received: by 2002:a17:902:e748:b0:294:fc77:f041 with SMTP id d9443c01a7336-29868010076mr64374825ad.25.1763174929715;
+        Fri, 14 Nov 2025 18:48:49 -0800 (PST)
 Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7ba1462c605sm4258567b3a.21.2025.11.14.18.45.35
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2b0c92sm68869525ad.69.2025.11.14.18.48.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Nov 2025 18:45:35 -0800 (PST)
-Message-ID: <4d22c2f6bdf8327a02d6b03b9e19b0e5df2da4c1.camel@gmail.com>
-Subject: Re: [PATCH bpf v3] bpf: Fix invalid mem access when
- update_effective_progs fails in __cgroup_bpf_detach
+        Fri, 14 Nov 2025 18:48:49 -0800 (PST)
+Message-ID: <2dcd9e0d2fc573cc55bec7029eda3edac7b685b7.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Recognize special arithmetic shift
+ in the verifier
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Pu Lehui <pulehui@huaweicloud.com>, Alexei Starovoitov
-	 <alexei.starovoitov@gmail.com>, Pu Lehui <pulehui@huawei.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau	 <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song	 <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh	 <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo	 <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Alan Maguire	 <alan.maguire@oracle.com>
-Date: Fri, 14 Nov 2025 18:45:32 -0800
-In-Reply-To: <2612eeec-8948-41d6-9d41-4f1ec813d514@huaweicloud.com>
-References: <20251110092536.4082324-1-pulehui@huaweicloud.com>
-	 <92ba87bbc6b11234be1925a4dc7262e11cd07305.camel@gmail.com>
-	 <CAADnVQ+2jdSD=HMMq3tKvu08gF49T=290LNzvc5LDOf4AycEuw@mail.gmail.com>
-	 <fb7f62db-4dc6-4614-a0c4-3b2a1904aadb@huawei.com>
-	 <CAADnVQLPJGPwx3CfgXBCZPHi_niGYTy+VFnyd50oNrDSkvyqPw@mail.gmail.com>
-	 <2612eeec-8948-41d6-9d41-4f1ec813d514@huaweicloud.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
+Cc: daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
+	sunhao.th@gmail.com, kernel-team@fb.com
+Date: Fri, 14 Nov 2025 18:48:46 -0800
+In-Reply-To: <20251115022611.64898-2-alexei.starovoitov@gmail.com>
+References: <20251115022611.64898-1-alexei.starovoitov@gmail.com>
+	 <20251115022611.64898-2-alexei.starovoitov@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -104,18 +95,41 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Sat, 2025-11-15 at 10:41 +0800, Pu Lehui wrote:
+On Fri, 2025-11-14 at 18:26 -0800, Alexei Starovoitov wrote:
 
 [...]
 
-> Hi Alexei,
+> 227: (85) call bpf_skb_store_bytes#9
+> 228: (bc) w2 =3D w0
+> 229: (c4) w2 s>>=3D 31   ; R2=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,=
+smin32=3D-1,smax32=3D0,var_off=3D(0x0; 0xffffffff))
+> 230: (54) w2 &=3D -134   ; R2=3Dscalar(smin=3D0,smax=3Dumax=3Dumax32=3D0x=
+ffffff7a,smax32=3D0x7fffff7a,var_off=3D(0x0; 0xffffff7a))
 >=20
-> How about making the stats update a callback function? That is, the=20
-> dummy flow does nothing, while the others follow the normal process.
+> after insn 230 the register w2 can only be 0 or -134,
+> but the verifier approximates it, since there is no way to
+> represent two scalars in bpf_reg_state.
+> After fallthough at insn 232 the w2 can only be -134,
+> hence the branch at insn
+> 239: (56) if w2 !=3D -136 goto pc+210
+> should be always taken, and trapping insn 258 should never execute.
+> LLVM generated correct code, but the verifier follows impossible
+> path and rejects valid program. To fix this issue recognize this
+> special LLVM optimization and fork the verifier state.
+> So after insn 229: (c4) w2 s>>=3D 31
+> the verifier has two states to explore:
+> one with w2 =3D 0 and another with w2 =3D 0xffffffff
+> which makes the verifier accept bpf_wiregard.c
+>=20
+> Note there are 20+ such patterns in bpf_wiregard.o compiled
+> with -O1 and -O2, but they're rarely seen in other production
+> bpf programs, so push_stack() approach is not a concern.
+>=20
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
 
-Not Alexei, but am curious.
-Is there a performance differnece between "if" check, dummy stats
-struct or function pointer?
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
 [...]
 
