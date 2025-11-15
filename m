@@ -1,226 +1,135 @@
-Return-Path: <bpf+bounces-74609-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74610-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2623C5FD50
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 02:26:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E96F8C5FD56
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 02:28:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78E483BA851
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 01:26:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EC4D3BADE5
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 01:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F841DC997;
-	Sat, 15 Nov 2025 01:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEFA81DC997;
+	Sat, 15 Nov 2025 01:28:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R4uB2QLb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hthcC5Tx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D261CD1E4
-	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 01:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35AF224D6
+	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 01:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763170012; cv=none; b=rYqxFI5nhOtqhao7ToEiE8LRd76nFTxnMC8n2IQHpzHA5M/S84XIN2YUOhrBt9aaE6NL4EiDlXACrL5vfdwKzaxthQ7kBU+zL8s6xx0njTIIXeex44UpMOBzfHme2mrOwBaBGGDt53TmyTDbmqUGvrUH/ecME7lXi+ymJLvdYxo=
+	t=1763170114; cv=none; b=rJPobL87uoT8CAOcx6nPKa/Adm2hTFvLIKceyTDJx5Qe7LvQ6dnIP5Cw79vAmCT2x8rqQjW1+e+vx3dt/7tRVSwm77aVJWJjYuI2UEjvkgBlwek5XnmUjW2gkGzJrFSfCiynAhRdSaHY7SF5kpAGtNrYtT1ZHyp88u2buwo1Udo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763170012; c=relaxed/simple;
-	bh=qK7BzIAro2xRXnca+vqzfR0yervIbn1WARpUYZJioww=;
+	s=arc-20240116; t=1763170114; c=relaxed/simple;
+	bh=YnaVSj8yADVQUmQp28lsoLztmyuw6NCNuUNpgdI51RI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hgGTMDVhI1q4gdexrrce0rJHnHnB0NWGcew/3gRiYa7Lx+X5vy3/1Hi7bz8Xlgy7gBxyyF4jpelWpCKs9ATwoTjQ5kvpjMoMEuvwjVPpREDe39gKsNj51k2qnF4kNZLDG1MwmLJDYtq6cdpofvj50b0o1A02hZkbFgYWsLcy6JI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R4uB2QLb; arc=none smtp.client-ip=209.85.221.45
+	 To:Cc:Content-Type; b=R5Iq3k8GkEqXPJZ7WWtcg16F0dE6NNpXB/a8AiktsvQkPsilCM2aZJ3mOgTos5Ww4Wqk0Y5A1Jv9JkhR7r/sgact9A4+efOrJ9UMKMGmBO2bDe+QJiyW/lYka/UZreHSgpiLf7uT9aSMqtYc/7TPtWZAyJc9srpHil0t0ngm8qI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hthcC5Tx; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-429c8632fcbso1766812f8f.1
-        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 17:26:50 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-47775fb6cb4so18378905e9.0
+        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 17:28:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763170009; x=1763774809; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763170111; x=1763774911; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gljCO8qBTb3+vxMDJZXaimG2Gvgg53YhZHTieEq6cSg=;
-        b=R4uB2QLbNb0bnrJVvwydG9Rdnha37QhFkzPznvixBZ2WZpimohDACzZeWfq/HYTYUA
-         qrMNrdkPNuwWFE2bbWd87UklqF96Bqmo4XbljbsTlHDskKFjsYhczcYKax5skoY9i5gu
-         w2Xw3b0TBufi+eUXr+R4y9+ab1aNuNjyVgCnk08OMnwXdoUQftcUkI7kOOasRKTJdTIq
-         /URmL8tLCZZ3RJL18JFD1zplaN4bxA7W/+kfMjiUTrbQ76+pfgJRnMb4cXaYC50IiB9L
-         kH8scuAkEjRgHpbyH58n3+/yuSOild4L9IJPF0fEvUvZUZLvk6r6uG0UWJar8kRHr1X/
-         nBkA==
+        bh=pO2aIGpEQBMBFUxzvU7FUJsMFELNUwwDn6axnPvHhyE=;
+        b=hthcC5TxxB+Wh5oz/EDz4oJbpdI5RPa4Lef36YQR6sdvFniF41M+ZCHgqaMuZ/5yPh
+         QlZYKLL3uLHnx5kfN6/Aop+nFglGrZeOfmF4WOXUTHF8UzbZlo3mvDfB3L5Tquqg6yzU
+         xj7jQ66kZs6Vk3Qc7zG/vjMuAAlWvTigvG6AZuPz4vwpIigb4XxbfXmEt/SOTnjn8R7b
+         qtm9kyZQGcxypAAFj6lOWUltXK/Mk7o4id8jrADlQlS8IQA9x7+ly9aA0pEtiwQC0Iig
+         4pFy1E9GwDYeDGI1xbcH3/wSre0UAgN83JBW6IsR+PRdjb0UYUQ5ZMA0XdL56AsQejne
+         EE9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763170009; x=1763774809;
+        d=1e100.net; s=20230601; t=1763170111; x=1763774911;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=gljCO8qBTb3+vxMDJZXaimG2Gvgg53YhZHTieEq6cSg=;
-        b=m2rG2rjRyFAZ7NN43Qy5s/eZ5dsC+wAeD+cgW77tidhtMMuxBuZNSd8Oi7nznfBQ5s
-         HLLFm0GRxQQDixiLLJhunjn/YiC5UzNU6wN0lWfXXObZZp6JoT1M/DJ43MNULQaCefE/
-         LeGT8bh8I3MqSeULYao9zt09DdORBpCszIjwflPjKTL67wkk9LHbJte+QTHJZd/JQ3F8
-         InQ/0OUzFhd4uQ9NCXtgjLVhRpXPQJOV+gq2KUcJdNp0Ug1VT9XdJJ86+v6wXr+CvL2N
-         vNM1nljaTNz5T46QPr5dHI3QuBdpk8jzBKEcF2QVEcYuXZ7qxHCluhVkPrHOjTG1OiJS
-         yrUA==
-X-Forwarded-Encrypted: i=1; AJvYcCUhSIZdOshHEVKMpDUvTrJXBlOmKUTWvCM817A5X1kJg7K3+nfpuSc7piz6BRnn4THcQj8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXoS7VsJtOAZxaT8hro+/kUuCgshBL6TwX4QhjVfHFbSrK+qCf
-	AWvpLLHY5a3AjsvDvbbBOwHdc2QLHQLMDYt6SFJOAqF2ZC+TZS0OIAM4is9PCVhvqZlDRtomAfc
-	ZFE3iIF+fT2cmX2vt22xgD+/TXhvl+cU=
-X-Gm-Gg: ASbGncv2tVJ+9F0BOl0ZAKRfzMyLjHDXmY+LEcp03LNS7JlRAtHcpdBPCP/nUHK1h0K
-	aFeFXAwfrrwXBpzK61kNYc4kgg7KvF/UNjbwmY0YAcAEKCD9/rYypJeHopX1FSVPh942RoPuSYc
-	9sN0waVl1Z/AXkW51Nqr1+Fcwu5ncAPBelcuGGcTX77XnahtGrYwXcXyfXxmSJI9zrnHL2GRTwN
-	CGQVak29KOw+mWfUCYwfGU6OgdAbCcNFo8V6RrDS51gkhHWAuzwjTJOUQaJtB26lAnULsDcSxA/
-	7rgD+mHEfiT9HAuvg3rufvjoNolvTCP95TTae8pySo4laJ4j0g==
-X-Google-Smtp-Source: AGHT+IFCUWCxEOGufukMH7cltQlk6RfoKM0HF060oQEqfizI5G5APwcvECs24GycnuW5BJtS4zeodCZ+FkU5ijXgqdY=
-X-Received: by 2002:a05:6000:228a:b0:42b:4223:e63c with SMTP id
- ffacd0b85a97d-42b5932346amr5183991f8f.11.1763170009361; Fri, 14 Nov 2025
- 17:26:49 -0800 (PST)
+        bh=pO2aIGpEQBMBFUxzvU7FUJsMFELNUwwDn6axnPvHhyE=;
+        b=nZfbpex6Bf/6IPzGLQLxJkpK05Mv1+5HJUz/zT56x2ey/NN8M7HouSvmbHzoQWZ/jQ
+         68ALUEY88CGyMvlM7XFmD/UztV1bUZEqMsZSFLR3idvdm8GF0qLDf0kvSg/MXBQ0BwDP
+         0pQoWY7wmXZ/M6fe6rhQzPdqw5jSVqcuw/R9dWbPU+F2iPAoCEkjCt8ffGe15cq5JdOt
+         OUDpEYb0ZPLOxbV36CMsHJIwWm0bKBv5QWc2KK9L+uCQIhLgBf/qC/V3JVFwwCfYEfnI
+         UWMz3BcQgh247zC07tt66+Rby51jEzM3ws1EcTq+kYsWZ05idfigr0MXKEPoCztQvJzc
+         xBsA==
+X-Gm-Message-State: AOJu0YyjpsX+lScI4gxk8B7FgA75F6RaBbC5w+kS+F/h4gXYjz4YfyeB
+	BPGI4F5M5WkMjP63+OMevK1gziZonZM4el2aEDHhre8yKyUa3UwAnds96rGPbejop1GSO5WA32O
+	B3MP6QUVe3CiQzt97MNqSJo4izNq/COE=
+X-Gm-Gg: ASbGnctLcOER7QBqJk5ddG8FBxUy4TjT4w333DfBgWZI2ai6q6nuW0v3OH2IfwWS/BF
+	ggQuO/N8xzlXslTsVfpeOoBXYhMHGapeHF5IX+fq3TD9I401p3vJtpoGlETz/7ua5X4743B4sxr
+	8qPCuvcNbkulMRJfn7r7dD6UaGZdMd5hcejjq1ZCruIzNh0o/5KXqADg7RGPyebr5W7Gw8z77rM
+	vHrkgpG0feKmV3YaDQF7LycugfWj0ICmyrkDsTJxTo7zdMEmmSO9ZMBKtM5PxTOtl02jgauvwrq
+	ie1ZoKcb/Nvobzq44f6+fl3wyWPWivwTv5ZbFgg=
+X-Google-Smtp-Source: AGHT+IFlWZ60c8zRKMBukb/LZO+midunpx3KIwo4jEs5aNxTyQIdQXe0ws53xQrwqD2/LSZL8cVy1gcZZtgmstqWrN0=
+X-Received: by 2002:a05:600c:4fd2:b0:471:9da:5232 with SMTP id
+ 5b1f17b1804b1-4778fe62164mr45052705e9.15.1763170110919; Fri, 14 Nov 2025
+ 17:28:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251114111700.43292-2-puranjay@kernel.org> <5542c931e3200fd81c95abc6bbdfc1e37ca2951a9a480164558c05fe1b9044a4@mail.kernel.org>
- <mb61pms4ofyq9.fsf@kernel.org> <CAADnVQJBkRCNts86ug+B7H3kFiF4LfBGEw4acVoPyLz7350SkQ@mail.gmail.com>
- <mb61pbjl43ynu.fsf@kernel.org>
-In-Reply-To: <mb61pbjl43ynu.fsf@kernel.org>
+References: <20251114111700.43292-1-puranjay@kernel.org> <20251114111700.43292-4-puranjay@kernel.org>
+ <CAADnVQLyv-90hcgrp+DkmSv1b3bt4V8Nz6mdeiLJxV-w0oztjw@mail.gmail.com> <mb61p8qg83ygm.fsf@kernel.org>
+In-Reply-To: <mb61p8qg83ygm.fsf@kernel.org>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 14 Nov 2025 17:26:36 -0800
-X-Gm-Features: AWmQ_bn-OZfDKILFTXfPEKlgJPYhxttA9oD9C5iuuYyNYC_Q4PHbZN1c3bbIoi8
-Message-ID: <CAADnVQL8fgreswikfBQY1nEnaVtPc9NkZKid1YDuTTHvN+Ckcg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/4] bpf: arena: populate vm_area without
- allocating memory
+Date: Fri, 14 Nov 2025 17:28:19 -0800
+X-Gm-Features: AWmQ_bkHTH7FOPcyZRzG_26fUJlq8YVS7ab58q4HYl-ObQAO9oeeWADtbI3-72M
+Message-ID: <CAADnVQK3ta20iz48Z_kQj__gkyP4c6MXxapeqt-25VUcsO1VkQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] bpf: arena: make arena kfuncs any context safe
 To: Puranjay Mohan <puranjay@kernel.org>
-Cc: bot+bpf-ci@kernel.org, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Chris Mason <clm@meta.com>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 14, 2025 at 4:52=E2=80=AFPM Puranjay Mohan <puranjay@kernel.org=
+On Fri, Nov 14, 2025 at 4:56=E2=80=AFPM Puranjay Mohan <puranjay@kernel.org=
 > wrote:
 >
 > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 >
-> > On Fri, Nov 14, 2025 at 6:57=E2=80=AFAM Puranjay Mohan <puranjay@kernel=
+> > On Fri, Nov 14, 2025 at 3:17=E2=80=AFAM Puranjay Mohan <puranjay@kernel=
 .org> wrote:
 > >>
-> >> bot+bpf-ci@kernel.org writes:
 > >>
-> >> >> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-> >> >> index 1074ac445..48b8ffba3 100644
-> >> >> --- a/kernel/bpf/arena.c
-> >> >> +++ b/kernel/bpf/arena.c
-> >> >
-> >> > [ ... ]
-> >> >
-> >> >> @@ -92,6 +93,62 @@ static long compute_pgoff(struct bpf_arena *aren=
-a, long uaddr)
-> >> >>      return (u32)(uaddr - (u32)arena->user_vm_start) >> PAGE_SHIFT;
-> >> >>  }
-> >> >>
-> >> >> +struct apply_range_data {
-> >> >> +    struct page **pages;
-> >> >> +    int i;
-> >> >> +};
-> >> >> +
-> >> >> +static int apply_range_set_cb(pte_t *pte, unsigned long addr, void=
- *data)
-> >> >> +{
-> >> >> +    struct apply_range_data *d =3D data;
-> >> >> +    struct page *page;
-> >> >> +
-> >> >> +    if (!data)
-> >> >> +            return 0;
-> >> >> +    /* sanity check */
-> >> >> +    if (unlikely(!pte_none(ptep_get(pte))))
-> >> >> +            return -EBUSY;
-> >> >> +
-> >> >> +    page =3D d->pages[d->i++];
-> >> >> +    /* paranoia, similar to vmap_pages_pte_range() */
-> >> >> +    if (WARN_ON_ONCE(!pfn_valid(page_to_pfn(page))))
-> >> >> +            return -EINVAL;
-> >> >> +
-> >> >> +    set_pte_at(&init_mm, addr, pte, mk_pte(page, PAGE_KERNEL));
-> >> >> +    return 0;
-> >> >> +}
-> >> >> +
-> >> >> +static int apply_range_clear_cb(pte_t *pte, unsigned long addr, vo=
-id *data)
-> >> >> +{
-> >> >> +    pte_t old_pte;
-> >> >> +    struct page *page;
-> >> >> +
-> >> >> +    /* sanity check */
-> >> >> +    old_pte =3D ptep_get(pte);
-> >> >> +    if (pte_none(old_pte) || !pte_present(old_pte))
-> >> >> +            return 0; /* nothing to do */
-> >> >> +
-> >> >> +    /* get page and free it */
-> >> >> +    page =3D pte_page(old_pte);
-> >> >> +    if (WARN_ON_ONCE(!page))
-> >> >> +            return -EINVAL;
-> >> >> +
-> >> >> +    pte_clear(&init_mm, addr, pte);
-> >> >> +
-> >> >> +    /* ensure no stale TLB entries */
-> >> >> +    flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-> >> >> +
-> >> >> +    __free_page(page);
-> >> >> +
-> >> >> +    return 0;
-> >> >> +}
-> >> >> +
-> >> >> +static int populate_pgtable_except_pte(struct bpf_arena *arena)
-> >> >> +{
-> >> >> +    return apply_to_page_range(&init_mm, bpf_arena_get_kern_vm_sta=
-rt(arena),
-> >> >> +                               KERN_VM_SZ - GUARD_SZ, apply_range_=
-set_cb, NULL);
-> >> >> +}
-> >> >> +
-> >> >>  static struct bpf_map *arena_map_alloc(union bpf_attr *attr)
-> >> >>  {
-> >> >>      struct vm_struct *kern_vm;
-> >> >
-> >> > [ ... ]
-> >> >
-> >> >> @@ -144,6 +201,11 @@ static struct bpf_map *arena_map_alloc(union b=
-pf_attr *attr)
-> >> >>              goto err;
-> >> >>      }
-> >> >>      mutex_init(&arena->lock);
-> >> >> +    err =3D populate_pgtable_except_pte(arena);
-> >> >> +    if (err) {
-> >> >> +            bpf_map_area_free(arena);
-> >> >> +            goto err;
-> >> >> +    }
-> >> >                      ^^^^
-> >> >
-> >> > Can this leak the range tree? Looking at the code, range_tree_set() =
-was
-> >> > called earlier in this function and can allocate range_node structur=
-es
-> >> > via range_tree_clear()->kmalloc_nolock(). If populate_pgtable_except=
-_pte()
-> >> > fails here, the error path calls bpf_map_area_free(arena) but doesn'=
-t call
-> >> > range_tree_destroy(&arena->rt) first. Compare with arena_map_free() =
-which
-> >> > always calls range_tree_destroy() before freeing the arena.
+> >> +       init_llist_head(&free_pages);
+> >> +       /* clear ptes and collect struct pages */
+> >> +       apply_to_existing_page_range(&init_mm, kaddr, page_cnt << PAGE=
+_SHIFT,
+> >> +                                    apply_range_clear_cb, &free_pages=
+);
+> >> +
+> >> +       /* drop the lock to do the tlb flush and zap pages */
+> >> +       raw_res_spin_unlock_irqrestore(&arena->spinlock, flags);
+> >> +
+> >> +       /* ensure no stale TLB entries */
+> >> +       flush_tlb_kernel_range(kaddr, kaddr + (page_cnt * PAGE_SIZE));
+> >> +
+> >>         if (page_cnt > 1)
+> >>                 /* bulk zap if multiple pages being freed */
+> >>                 zap_pages(arena, full_uaddr, page_cnt);
 > >>
-> >> As the range tree is empty at this point, we can be sure that
-> >> range_tree_clear() in range_tree_set() will not allocate anything.
+> >> -       kaddr =3D bpf_arena_get_kern_vm_start(arena) + uaddr;
+> >> -       for (i =3D 0; i < page_cnt; i++, kaddr +=3D PAGE_SIZE, full_ua=
+ddr +=3D PAGE_SIZE) {
+> >> -               page =3D vmalloc_to_page((void *)kaddr);
+> >> -               if (!page)
+> >> -                       continue;
+> >> +       llist_for_each_safe(pos, t, llist_del_all(&free_pages)) {
 > >
-> > range_tree_clear() won't clear anything, but AI pointed in
-> > the right direction.
-> > Look at what range_tree_set() does. It will allocate for sure.
+> > llist_del_all() ?! Why? it's a variable on stack. There is no race.
 >
-> If I am understanding it correctly, range_tree_set() allocates memory
-> using kmalloc_nolock() and it fails when this allocation fails, so in
-> the error path we don't need to do anything as no allocation was successf=
-ul.
+> Yeah, I should have used __llist_del_all() which doesn't do an xchg() or
+> in this case I can just use free_pages.first
 
-Not following. Why would kmalloc_nolock() inside range tree fail?
-range_tree_set() will allocate memory and above hunk
-after failed populate_pgtable_except_pte() will leak it.
+Either one works. Slight preference for __llist_del_all() to avoid
+peaking into llist details.
 
