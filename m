@@ -1,290 +1,115 @@
-Return-Path: <bpf+bounces-74629-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74630-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DE0EC5FEC7
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 03:45:18 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id F38B8C5FEC4
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 03:45:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E3C754E5115
-	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 02:42:09 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1C92534FC59
+	for <lists+bpf@lfdr.de>; Sat, 15 Nov 2025 02:43:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A950E2116F6;
-	Sat, 15 Nov 2025 02:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01ADA21507F;
+	Sat, 15 Nov 2025 02:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="InKzF0/L"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E626B1E5B78
-	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 02:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DB914B950
+	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 02:43:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763174526; cv=none; b=r5i7sRsSoer4T1UVkyK0K6Y8H7Yd/v6Zm1yu/+UXK2/5A8HuUSLa+m5D/lmpB9V0Ys6+3FUfYm2zuku0qzPM/kk2cY+t4UqPFnc4xDZWpcPCvd8kvij4FEl0uB3W8cGRjtye7QWk+1yP1C2iSv9W8dtxI2BXfUbgz4e+Gh5jPg0=
+	t=1763174582; cv=none; b=DivBDS6dB6QifA6Y6RFOsZy+1+8sKMTWUE6eNyUWS3Xh2OhK7FG6B4/OznvhWcwOSQj7QOvHD2B4UVWLFouJdwV4mcUIiYZwaSZdZP8hWdLzRfgs2K2Y30i5M4p0YR9Li9ZN55uCFTBdN3OLGqlvwLfsMg9wjAqtm7+bve/Td8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763174526; c=relaxed/simple;
-	bh=N+0Guy2LFLpTnhFS4NAEeov8EFzcm93lKZL2pVB4lS0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GyeJ0+/HKCfacQFiySgROzyv16XJTYRGN6nT7kad9Ls+ycm3n3H7O3iIvJu/DbU26Leeq0N8xtt2ey51ULj/RppIBUGnBunb5zcTB/dLz8SxxqHqCNLodilIXv8G83htmUnEsX5b2JwJd5ZaUUVYLh2sAOjnTyPln/20oGBjF0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d7dYt4QGjzKHMfF
-	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 10:41:38 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 1AFEC1A0E70
-	for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 10:42:00 +0800 (CST)
-Received: from [10.67.108.204] (unknown [10.67.108.204])
-	by APP2 (Coremail) with SMTP id Syh0CgDXM3p26BdpfuwkAw--.20113S2;
-	Sat, 15 Nov 2025 10:41:59 +0800 (CST)
-Message-ID: <2612eeec-8948-41d6-9d41-4f1ec813d514@huaweicloud.com>
-Date: Sat, 15 Nov 2025 10:41:58 +0800
+	s=arc-20240116; t=1763174582; c=relaxed/simple;
+	bh=w5wgG1MKR91CsxuNvAx7QjHjZXdAXzWJYTL4WmJ8MPA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=isODxo6OeFRB8iPRUQmxGuFbrwygpUSIRG1avKEoJMdlIMpeySYt9//Yzr5mn8JSY0ul9xDor+70AoFcUV69p4YuF6IkE++CoPRhyRZmrIrEkZhHCjFeDdeTIwN9r+3pORiJaRnkb1PEjs++f7xpAlybcjrZNElMfgVmt3p+7cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=InKzF0/L; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-42b3669ca3dso1489290f8f.0
+        for <bpf@vger.kernel.org>; Fri, 14 Nov 2025 18:43:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763174579; x=1763779379; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w5wgG1MKR91CsxuNvAx7QjHjZXdAXzWJYTL4WmJ8MPA=;
+        b=InKzF0/L+mUs9nIhjx41agXCOdcSEgjmWDXJOLZZUGTePezDe+yNhNaahbD8PZTLnK
+         vogOTEV+tPcnozcuGTdIfCI97MTmr0oQoeKQMzRCNceJlnlRJ+icTlOg2TYGXARjKo/m
+         /96eeDVl/Q1uN3dpIYZbWejR22QABMKPq8MvaVu6oGnVxre5UjjbA7r+GBKI93HJKTdu
+         QPrsDo3gEWsFaU/T98DjY6GeBK/TJf8Y6bYQLwEbUdrofbELwdeP25sSAkeVXBNeXcuP
+         ruDRBROV+fvINebdCsCN5EccAuhXDiuIjmtrd8XEA2FncTCbW8/pceXH4n0ivg5pmgg3
+         9ZyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763174579; x=1763779379;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=w5wgG1MKR91CsxuNvAx7QjHjZXdAXzWJYTL4WmJ8MPA=;
+        b=ODJq2qXesu2Tcwnl94FqMK5c6YuXT5p3sbQa2UeNopjRHo+u3iBCA0yZLCjY7w9DIL
+         F9vMpd6Me8IVXmS09QTzZT4qxuxrdeY4kAlAtrMYWMkY0uxC9/jNuC/ibWrAncjs74kf
+         02hTHHqSH286zcQzZV9sa66vwbxUheZzRYovVFcmImAEt9f1twsIAB1Ws/qhC3qG0ZGt
+         mV/FiQLaEXINV7Bu8okFO6RMRaFzv5TbvBAMyAjnIFqsdCyXkV24+bJ755SyknJTbGZR
+         lOGF7W8kFsONf4bhuM3Kfr1w3d4H0aqPbiRvqKMRwC/Wshi8YN+gRlrU3sFrrJW9pkgE
+         dBXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWAQov8brSGIw3RonWKZcQGmryFnGjLiGgqMXkzP3qnwhCjMfAri2kwA2AuSQAEKQznBzE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxtTQhAM5tVxP9Vezmma2YeiH7qyuK3e9Fc5sYCv5ccSHOSPLYl
+	2y0VqDKAQEZjFhxhiTYATmbJKZLKD8yAQ2BH7A+H2nJy2wX3R+ufdAaVlcts2ufwC2qJ8VJ51Aj
+	4x/GYXGUBl6kJPUhHobtM2wlZ/beKdGM=
+X-Gm-Gg: ASbGncsr+B5dFhWgWnBQlyP7U/3Wx8N1Z+pQ3qc0LqZEU/vavqL9Q+RWsXMkOM4iBTq
+	i1+LibudvFgmUQbIsYo6D9RCeljq/xz4oHWQhuDuIih/2Ar9yLltMEpNYLKE4lgWLnmIGluuf+e
+	JkSDdZefduwzQBePcXD7bbQLJOWGCLYj0X03qKSr3ELKtWypdRYRmUNJ85RhnK1gMBn1CsXRslU
+	gbNkN5N6GhK9V3El+6vmK9svq3F4e76tMKrnuDkKC0fO4SNJgTSU6LMxUN+AW5D9UwmhSbDXG1t
+	2GA951kwQq2S6OP/I8pOeDdDRtZ1smoYDQnhWM0=
+X-Google-Smtp-Source: AGHT+IHVzQscXXmrUSEQCZZL1CtQ82WdcojH4qYjNbQi464TgTrJ4qRsKMtK0vCa8hnqpYgaM17ur3cDY1FZhF1FUhc=
+X-Received: by 2002:a05:6000:290d:b0:427:6a3:e72f with SMTP id
+ ffacd0b85a97d-42b595a4daamr4462844f8f.34.1763174579433; Fri, 14 Nov 2025
+ 18:42:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf v3] bpf: Fix invalid mem access when
- update_effective_progs fails in __cgroup_bpf_detach
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Pu Lehui <pulehui@huawei.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>
-References: <20251110092536.4082324-1-pulehui@huaweicloud.com>
- <92ba87bbc6b11234be1925a4dc7262e11cd07305.camel@gmail.com>
- <CAADnVQ+2jdSD=HMMq3tKvu08gF49T=290LNzvc5LDOf4AycEuw@mail.gmail.com>
- <fb7f62db-4dc6-4614-a0c4-3b2a1904aadb@huawei.com>
- <CAADnVQLPJGPwx3CfgXBCZPHi_niGYTy+VFnyd50oNrDSkvyqPw@mail.gmail.com>
-From: Pu Lehui <pulehui@huaweicloud.com>
-In-Reply-To: <CAADnVQLPJGPwx3CfgXBCZPHi_niGYTy+VFnyd50oNrDSkvyqPw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgDXM3p26BdpfuwkAw--.20113S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ar1rKrWfGF4UKrW5Ww45KFg_yoWxCw47pF
-	WDGa4xAay8Xr4DZr4Dtryxtr45tw1rWF18urWUG34FgF9Fqrn3Kr18CrWYkr15urZFkw10
-	v3WjqrZxJ3y7Zw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+References: <20251114092450.172024-1-dongml2@chinatelecom.cn>
+ <20251114092450.172024-8-dongml2@chinatelecom.cn> <CAADnVQKw9PtRYooO+qKQ70xgNusEn8qusBFfzU+bZ7WXRg3-3A@mail.gmail.com>
+ <CADxym3bKsw=mrG+wNErLouhPSeobuqY7sTZRS=HrNeQ=0=p4Jg@mail.gmail.com>
+In-Reply-To: <CADxym3bKsw=mrG+wNErLouhPSeobuqY7sTZRS=HrNeQ=0=p4Jg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 14 Nov 2025 18:42:48 -0800
+X-Gm-Features: AWmQ_bmXHzn1ZQkddhrB5SugZxEfOGbPyMWJGgz5O7479flWgWW2q2yLLox05JA
+Message-ID: <CAADnVQJiHExkioeh3t=4y1CWPiUkeV08ZHjeJfpZChkY6dNvhg@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 7/7] bpf: implement "jmp" mode for trampoline
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Nov 14, 2025 at 6:39=E2=80=AFPM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
+> >
+> > How about bpf_trampoline_must_jmp() ?
+> > and drop if (!ret) fallback and BPF_TRAMP_F_JMPED bit.
+> > It doesn't look to be necessary.
+>
+> I think you are right. We can check if current trampoline is in "jmp"
+> mode with the "orig_flags" instead, and remove the
+> BPF_TRAMP_F_JMPED. That means that I need to pass the
+> "orig_flags" to
+> modify_fentry -> bpf_trampoline_update_fentry(bpf_text_poke).
 
-
-On 2025/11/15 5:08, Alexei Starovoitov wrote:
-> On Mon, Nov 10, 2025 at 7:20 PM Pu Lehui <pulehui@huawei.com> wrote:
->>
->>
->> On 2025/11/11 9:13, Alexei Starovoitov wrote:
->>> On Mon, Nov 10, 2025 at 12:36 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
->>>>
->>>> On Mon, 2025-11-10 at 09:25 +0000, Pu Lehui wrote:
->>>>> From: Pu Lehui <pulehui@huawei.com>
->>>>>
->>>>> Syzkaller triggers an invalid memory access issue following fault
->>>>> injection in update_effective_progs. The issue can be described as
->>>>> follows:
->>>>>
->>>>> __cgroup_bpf_detach
->>>>>     update_effective_progs
->>>>>       compute_effective_progs
->>>>>         bpf_prog_array_alloc <-- fault inject
->>>>>     purge_effective_progs
->>>>>       /* change to dummy_bpf_prog */
->>>>>       array->items[index] = &dummy_bpf_prog.prog
->>>>>
->>>>> ---softirq start---
->>>>> __do_softirq
->>>>>     ...
->>>>>       __cgroup_bpf_run_filter_skb
->>>>>         __bpf_prog_run_save_cb
->>>>>           bpf_prog_run
->>>>>             stats = this_cpu_ptr(prog->stats)
->>>>>             /* invalid memory access */
->>>>>             flags = u64_stats_update_begin_irqsave(&stats->syncp)
->>>>> ---softirq end---
->>>>>
->>>>>     static_branch_dec(&cgroup_bpf_enabled_key[atype])
->>>>>
->>>>> The reason is that fault injection caused update_effective_progs to fail
->>>>> and then changed the original prog into dummy_bpf_prog.prog in
->>>>> purge_effective_progs. Then a softirq came, and accessing the stats of
->>>>> dummy_bpf_prog.prog in the softirq triggers invalid mem access.
->>>>>
->>>>> To fix it, we can use static per-cpu variable to initialize the stats
->>>>> of dummy_bpf_prog.prog.
->>>>>
->>>>> Fixes: 4c46091ee985 ("bpf: Fix KASAN use-after-free Read in compute_effective_progs")
->>>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->>>>> ---
->>>>
->>>> Hi Pu,
->>>>
->>>> Sorry for the delayed response. This patch looks good to me, but I
->>>> think that your argument about memory consumption makes total sense.
->>>> It might be the case that v1 is a better fix. Let's hear from Alexei.
->>>
->>
->> Hi Alexei,
->>
->>> I don't particularly like either v1 or v2.
->>> Runtime penalty to bpf_prog_run_array_cg() is not nice.
->>> Memory waste with __dummy_stats is not good as well.
->>
->> Indeed a trade-off between time and space before better solution.
->>
->>>
->>> Also v1 doesn't really fix it, since prog_array is
->>> used not only by cgroup.
->>> perf_event_detach_bpf_prog() does bpf_prog_array_delete_safe() too.
->>
->> I noticed that too, but before syncing to other parts of the
->> bpf_prog_array, I found there were some shotgun-style modifications, so
->> I switched to initializing per-cpu variables to minimize changes.
->>
->>>
->>> Another option is to add a runtime check to __bpf_prog_run()
->>> but it isn't great either.
->>
->> Yep, same runtime penalty, but simpler than v1 – will we use this to patch?
->>
->> --- a/include/linux/filter.h
->> +++ b/include/linux/filter.h
->> @@ -712,11 +712,13 @@ static __always_inline u32 __bpf_prog_run(const
->> struct bpf_prog *prog,
->>                   ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
->>
->>                   duration = sched_clock() - start;
->> -               stats = this_cpu_ptr(prog->stats);
->> -               flags = u64_stats_update_begin_irqsave(&stats->syncp);
->> -               u64_stats_inc(&stats->cnt);
->> -               u64_stats_add(&stats->nsecs, duration);
->> -               u64_stats_update_end_irqrestore(&stats->syncp, flags);
->> +               if (likely(prog->stats)) {
->> +                       stats = this_cpu_ptr(prog->stats);
->> +                       flags =
->> u64_stats_update_begin_irqsave(&stats->syncp);
->> +                       u64_stats_inc(&stats->cnt);
->> +                       u64_stats_add(&stats->nsecs, duration);
->> +                       u64_stats_update_end_irqrestore(&stats->syncp,
->> flags);
->> +               }
-> 
-> Yeah. Let's do this. Pls submit it as a proper patch.
-
-Hi Alexei,
-
-How about making the stats update a callback function? That is, the 
-dummy flow does nothing, while the others follow the normal process.
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index d808253f2e94..7bd784c58309 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1738,6 +1738,7 @@ struct bpf_prog {
-  		u8 tag[BPF_TAG_SIZE];
-  	};
-  	struct bpf_prog_stats __percpu *stats;
-+	void (*update_stats)(struct bpf_prog_stats __percpu *stats, u64 duration);
-  	int __percpu		*active;
-  	unsigned int		(*bpf_func)(const void *ctx,
-  					    const struct bpf_insn *insn);
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index f5c859b8131a..eb2c464880fd 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -705,18 +705,12 @@ static __always_inline u32 __bpf_prog_run(const 
-struct bpf_prog *prog,
-
-  	cant_migrate();
-  	if (static_branch_unlikely(&bpf_stats_enabled_key)) {
--		struct bpf_prog_stats *stats;
-  		u64 duration, start = sched_clock();
--		unsigned long flags;
-
-  		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
-
-  		duration = sched_clock() - start;
--		stats = this_cpu_ptr(prog->stats);
--		flags = u64_stats_update_begin_irqsave(&stats->syncp);
--		u64_stats_inc(&stats->cnt);
--		u64_stats_add(&stats->nsecs, duration);
--		u64_stats_update_end_irqrestore(&stats->syncp, flags);
-+		prog->update_stats(prog->stats, duration);
-  	} else {
-  		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
-  	}
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index d595fe512498..8d5312eb221f 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -144,6 +144,18 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned 
-int size, gfp_t gfp_extra_flag
-  	return fp;
-  }
-
-+static void bpf_update_stats(struct bpf_prog_stats __percpu *stats, u64 
-duration)
-+{
-+	struct bpf_prog_stats *pstats;
-+	unsigned long flags;
-+
-+	pstats = this_cpu_ptr(stats);
-+	flags = u64_stats_update_begin_irqsave(&pstats->syncp);
-+	u64_stats_inc(&pstats->cnt);
-+	u64_stats_add(&pstats->nsecs, duration);
-+	u64_stats_update_end_irqrestore(&pstats->syncp, flags);
-+}
-+
-  struct bpf_prog *bpf_prog_alloc(unsigned int size, gfp_t gfp_extra_flags)
-  {
-  	gfp_t gfp_flags = bpf_memcg_flags(GFP_KERNEL | __GFP_ZERO | 
-gfp_extra_flags);
-@@ -168,6 +180,8 @@ struct bpf_prog *bpf_prog_alloc(unsigned int size, 
-gfp_t gfp_extra_flags)
-  		pstats = per_cpu_ptr(prog->stats, cpu);
-  		u64_stats_init(&pstats->syncp);
-  	}
-+
-+	prog->update_stats = bpf_update_stats;
-  	return prog;
-  }
-  EXPORT_SYMBOL_GPL(bpf_prog_alloc);
-@@ -2536,11 +2550,17 @@ static unsigned int __bpf_prog_ret1(const void *ctx,
-  	return 1;
-  }
-
-+static void
-+__dummy_update_stats(struct bpf_prog_stats __percpu *stats, u64 duration)
-+{
-+}
-+
-  static struct bpf_prog_dummy {
-  	struct bpf_prog prog;
-  } dummy_bpf_prog = {
-  	.prog = {
-  		.bpf_func = __bpf_prog_ret1,
-+		.update_stats = __dummy_update_stats,
-  	},
-  };
-
+Yep. Makes sense to me.
 
