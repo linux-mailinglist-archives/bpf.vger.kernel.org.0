@@ -1,160 +1,250 @@
-Return-Path: <bpf+bounces-74670-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74671-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 040A1C60E9D
-	for <lists+bpf@lfdr.de>; Sun, 16 Nov 2025 02:43:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F38CC610B6
+	for <lists+bpf@lfdr.de>; Sun, 16 Nov 2025 07:31:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 584634E21A5
-	for <lists+bpf@lfdr.de>; Sun, 16 Nov 2025 01:42:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 001EA3B9656
+	for <lists+bpf@lfdr.de>; Sun, 16 Nov 2025 06:31:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6417217F2E;
-	Sun, 16 Nov 2025 01:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E2D223AB87;
+	Sun, 16 Nov 2025 06:31:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g4U8zbLZ"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="v87ep+8s"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f65.google.com (mail-pj1-f65.google.com [209.85.216.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29BC1E5B88
-	for <bpf@vger.kernel.org>; Sun, 16 Nov 2025 01:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230E21465B4;
+	Sun, 16 Nov 2025 06:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763257373; cv=none; b=E2y7/HsrK06yGSfvOn7IPd22gG8yScUvR6T3tbVJRTsO40eNrujYYYyOGIqipRzwH+HZx9vG6fztmT3kPY7SoprXSPIGF2Vt1S7ykDDzx9iJfFFwBwuk6bMHkaxNZYsKve+vCRRFCjesvhzcG1vfBn5rYftXFyMzj0yc1byhqx4=
+	t=1763274663; cv=none; b=Cg6D7IwYGX8JsBi6ZeZS6FU4/21APdNs9XT3XDyAz4W6cUrE/lFsXmjDgZ7EYJJ0w6d6+Swr3dMpCcVDSrZSqWkxTWW/VbnYdkKsXgED4Y1dH6QBDTj0E0LvWBO7ns2JIT46XFohuGUshJfu5hqMjESm7gHV1mh6a9gt25KcG2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763257373; c=relaxed/simple;
-	bh=qYNdzOMrVfyqOsFIUuLtig4HQ4c3gJxVv6JUEuRa8uc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=meuW/CTQHTrj5kkRv5nDFqDd/rK0qd7addbaRDp6dfKZbrD9tGadIXbTshMamVIxRcmwizMRDs8R8AMUQp5VZPxuJtebdGhY8+PF9tWK+73oR6eT0STHpW/laD5SMbmpOxmuSO5QxCiFG2dfaRm8XIJ3ebm5QbW3LJ9I9jbMd6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g4U8zbLZ; arc=none smtp.client-ip=209.85.216.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f65.google.com with SMTP id 98e67ed59e1d1-3438d4ae152so4088916a91.1
-        for <bpf@vger.kernel.org>; Sat, 15 Nov 2025 17:42:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763257371; x=1763862171; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FAy9YPVCu7bLfM4qk+fenh6vAk3C+JyPIshXGIHtStU=;
-        b=g4U8zbLZsOmhccacd4609clPw5cpQtgJRp1jR58mkCMPXJh5DCw6MNawZhv8s20fBl
-         ELbqErx/O8J1VC/hFOv0lvLN3xH8CHdcAya80HwP9Id5zqziXYUfWS4GDVD6/YoELprK
-         TQGiZowMk91CigMdXrhWqQ0H3rdCF6CDcBVrsC1JDN5RN2Nz98kRz/9j2wdT4HRTF9Wl
-         khrGnGJD7FkG8HfHzAYIUptsZBgfuvf7womsSjr03ucn0YSLtHKYgiDTEFvLFC0E8GME
-         mXWk4VV16lFgh6b10puD3Lq+Y6Z2wFienLvXNsc5DkL/8U6roIaksuHIRuVnZXf4VpCw
-         G6QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763257371; x=1763862171;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FAy9YPVCu7bLfM4qk+fenh6vAk3C+JyPIshXGIHtStU=;
-        b=iDDrTM4S0F8VzDgCR/p5BOF23dl5DMMQziK4s0EKEIjtWs18EUCedBJPGtpXWfJud9
-         lu1Ff8BCD6WHWkNftZO+xWlcUN32Neh2fKMuLDkKIcoWORJPjRQqpJzBnHX340J3WDQ8
-         2zTk/YapMkgqyVfopLBWYhofzKaE0C0PQgOUmNSf3cE/+cfHGmx5LgKiUTUokYpqhCcU
-         cMldMbenCbRJgB4mMQkgcMsA9sOSbMzbjNiOUSmDfqaEY0X9b9NH1EnigJSmOfTmtFkF
-         nokhmUtdyK4Ax6JzfgBxbbp1ktqvSKbzsATHLBNqAPzDLjE0tSxe5Bzqb2qs/yhOvA32
-         UPEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUJ+wJUZx4Ou4HQNUYRmRXof5LM3dYgiQBTnuIseOZwBBRIjQgYZP87azgHbun6Lo96xjg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YziyhGLBeTpNSVX7AQfAnmmGKY9KvvifSRUg9xEgPMFg4dmAajp
-	0zkr2qWfJ/M/KAGeJWF3cuyc4gCWrwW+rzZq4IQtAReIsNDkwj8rkwoU
-X-Gm-Gg: ASbGncun+K6NVZl5MJHObGjQzv471XBoxChHnG0Bl6Osv60iCS2Q1Jn9Z6eRWMeK+C6
-	akp7Ug73RFq6krv6edx+l0LrIcVxSJEq9iGa0OduExPhq4MguDdvr8LYfdntbjat32dj+tuohin
-	seU9YtHwDQA1eQFH4hotcVZl2eRDA2+rG4fQZA47JccruRItO1c64n1aLTsvy1y4GEEejJLbAXG
-	Ma5R1lexohAiZ0A/hF0ZHRz7PHbrRv0vZLyupWUQSw8wwlKAh+Bzxe2jeQH4CHPhZ1eDTDxrfhB
-	cgBnZkA/5rzdD8vUZIt40dZNieBWDXwud+m66pLMU+vHTvY4Hc8LfZ5xJwS3zBGx2Ca/dKmKJ6L
-	XAqmlhXDwrGH3GTf9bmD1LiJ+46/mkvzdO9AGdlEKTFOZ5sotFbI4nY7C82tW8AXMY8UvUoKHcK
-	9+
-X-Google-Smtp-Source: AGHT+IHwMTm+3w4Hi6aGuV3EFYma9rpYV2hO6neS7/j59k0gNdUR5jovUBVjsn0Kg939TBxdL+1jaQ==
-X-Received: by 2002:a17:90b:2f08:b0:33b:dec9:d9aa with SMTP id 98e67ed59e1d1-343fa7493admr8502869a91.25.1763257371056;
-        Sat, 15 Nov 2025 17:42:51 -0800 (PST)
-Received: from 7950hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bc36f61bea9sm8243757a12.14.2025.11.15.17.42.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Nov 2025 17:42:50 -0800 (PST)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: andrii@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	mingo@kernel.org,
-	jiang.biao@linux.dev,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: call bpf_get_numa_node_id() in trigger_count()
-Date: Sun, 16 Nov 2025 09:42:42 +0800
-Message-ID: <20251116014242.151110-1-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.51.2
+	s=arc-20240116; t=1763274663; c=relaxed/simple;
+	bh=dLIBx9wnRf4ju6UVlPQmOJFWndyfpiiKv2OWpaEs5rw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k10FFZqhYIMrGhit8AR2qarqyMQNHvZSZTVvKQoVKYv1tzAlRgOF2vD9V6TkmjRD7W6bARQQhfEO31X8N8ZsDU44aNcpld1ouLNY3U0MYc4tHHsinnTIbhEQxPF/mZL/+6zn6qQPuXG5U7A+J3NvYyuhJoPp3KdjtoYV8xYpPmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=v87ep+8s; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+	bh=CSaTv+g6iTeyfNwAPb2UZSBv3rc0hQYoL1YvQs/TGcA=; b=v87ep+8sGAj47MEf8Vt4uadQZk
+	43mSG/U79MDARH/6bYNHWYEijJCkGJlTApHxDreiHLLZkq2qjparHOIa8lh4alzW34fB6LARDpvoq
+	a0tzMldguNQi01Y3KE+ZamiC2CGY+r1XBlYwAhZvQT42pRdi83POrqpQ/KgmCrP2H9U6V/h9J+URe
+	7TZKT/6AEJtzbW1csZg/Nf9SbWs9D/NPnstDd2Jkzk2xyIjQO+HzNXWvKJIhrZhTAqyNMImpj9WXS
+	2UDAdfdak31c1xzZAJF2F3bpuo5eTczIsPAO7ceypi0uEUZb4ZieasuxVGFqwzwJDx4l0egDgHhP7
+	bvKKdfyQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vKWHj-0000000Ccfr-1WoW;
+	Sun, 16 Nov 2025 06:30:51 +0000
+Date: Sun, 16 Nov 2025 06:30:51 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: bot+bpf-ci@kernel.org, linux-fsdevel@vger.kernel.org,
+	torvalds@linux-foundation.org, brauner@kernel.org, jack@suse.cz,
+	raven@themaw.net, miklos@szeredi.hu, neil@brown.name,
+	a.hindborg@kernel.org, linux-mm@kvack.org,
+	linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+	kees@kernel.org, rostedt@goodmis.org, linux-usb@vger.kernel.org,
+	paul@paul-moore.com, casey@schaufler-ca.com,
+	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com,
+	selinux@vger.kernel.org, borntraeger@linux.ibm.com,
+	bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
+	yonghong.song@linux.dev, ihor.solodrai@linux.dev,
+	Chris Mason <clm@meta.com>
+Subject: Re: [functionfs] mainline UAF (was Re: [PATCH v3 36/50] functionfs:
+ switch to simple_remove_by_name())
+Message-ID: <20251116063051.GA2441659@ZenIV>
+References: <20251111065520.2847791-37-viro@zeniv.linux.org.uk>
+ <20754dba9be498daeda5fe856e7276c9c91c271999320ae32331adb25a47cd4f@mail.kernel.org>
+ <20251111092244.GS2441659@ZenIV>
+ <e6b90909-fdd7-4c4d-b96e-df27ea9f39c4@meta.com>
+ <20251113092636.GX2441659@ZenIV>
+ <2025111316-cornfield-sphinx-ba89@gregkh>
+ <20251114074614.GY2441659@ZenIV>
+ <2025111555-spoon-backslid-8d1f@gregkh>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <2025111555-spoon-backslid-8d1f@gregkh>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-The bench test "trig-kernel-count" can be used as a baseline comparison
-for fentry and other benchmarks, and the calling to bpf_get_numa_node_id()
-should be considered as composition of the baseline. So, let's call it in
-trigger_count(). Meanwhile, rename trigger_count() to
-trigger_kernel_count() to make it easier understand.
+On Sat, Nov 15, 2025 at 08:21:34AM -0500, Greg Kroah-Hartman wrote:
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- tools/testing/selftests/bpf/benchs/bench_trigger.c | 4 ++--
- tools/testing/selftests/bpf/progs/trigger_bench.c  | 6 ++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+> Ugh, messy.  But yes, this does look better, thanks for that.  Want me
+> to take it through the USB tree, or will you take it through one of
+> yours? (I don't remember what started this thread...)
 
-diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-index 1e2aff007c2a..34018fc3927f 100644
---- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-@@ -180,10 +180,10 @@ static void trigger_kernel_count_setup(void)
- {
- 	setup_ctx();
- 	bpf_program__set_autoload(ctx.skel->progs.trigger_driver, false);
--	bpf_program__set_autoload(ctx.skel->progs.trigger_count, true);
-+	bpf_program__set_autoload(ctx.skel->progs.trigger_kernel_count, true);
- 	load_ctx();
- 	/* override driver program */
--	ctx.driver_prog_fd = bpf_program__fd(ctx.skel->progs.trigger_count);
-+	ctx.driver_prog_fd = bpf_program__fd(ctx.skel->progs.trigger_kernel_count);
+I'll carve it up in several chunks and push to #work.functionfs; will post
+tomorrow morning.  Minimal fix for ffs_epfiles_destroy() bug folded into #36
+in #work.persistency - replacement for that commit below; are you OK with
+that one?  It's orthogonal to the rest of the mess in there.
+
+commit b9c24b7499916a1dbee50a4429fc04ebf7e21f03
+Author: Al Viro <viro@zeniv.linux.org.uk>
+Date:   Wed Sep 17 22:55:33 2025 -0400
+
+    functionfs: switch to simple_remove_by_name()
+    
+    No need to return dentry from ffs_sb_create_file() or keep it around
+    afterwards.
+    
+    To avoid subtle issues with getting to ffs from epfiles in
+    ffs_epfiles_destroy(), pass the superblock as explicit argument.
+    Callers have it anyway.
+    
+    Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+
+diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+index 47cfbe41fdff..6e6933a9fe45 100644
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -160,8 +160,6 @@ struct ffs_epfile {
+ 	struct ffs_data			*ffs;
+ 	struct ffs_ep			*ep;	/* P: ffs->eps_lock */
+ 
+-	struct dentry			*dentry;
+-
+ 	/*
+ 	 * Buffer for holding data from partial reads which may happen since
+ 	 * we’re rounding user read requests to a multiple of a max packet size.
+@@ -271,11 +269,11 @@ struct ffs_desc_helper {
+ };
+ 
+ static int  __must_check ffs_epfiles_create(struct ffs_data *ffs);
+-static void ffs_epfiles_destroy(struct ffs_epfile *epfiles, unsigned count);
++static void ffs_epfiles_destroy(struct super_block *sb,
++				struct ffs_epfile *epfiles, unsigned count);
+ 
+-static struct dentry *
+-ffs_sb_create_file(struct super_block *sb, const char *name, void *data,
+-		   const struct file_operations *fops);
++static int ffs_sb_create_file(struct super_block *sb, const char *name,
++			      void *data, const struct file_operations *fops);
+ 
+ /* Devices management *******************************************************/
+ 
+@@ -1866,9 +1864,8 @@ ffs_sb_make_inode(struct super_block *sb, void *data,
  }
  
- static void trigger_kprobe_setup(void)
-diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/testing/selftests/bpf/progs/trigger_bench.c
-index 3d5f30c29ae3..2898b3749d07 100644
---- a/tools/testing/selftests/bpf/progs/trigger_bench.c
-+++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-@@ -42,12 +42,14 @@ int bench_trigger_uprobe_multi(void *ctx)
- const volatile int batch_iters = 0;
- 
- SEC("?raw_tp")
--int trigger_count(void *ctx)
-+int trigger_kernel_count(void *ctx)
+ /* Create "regular" file */
+-static struct dentry *ffs_sb_create_file(struct super_block *sb,
+-					const char *name, void *data,
+-					const struct file_operations *fops)
++static int ffs_sb_create_file(struct super_block *sb, const char *name,
++			      void *data, const struct file_operations *fops)
  {
- 	int i;
+ 	struct ffs_data	*ffs = sb->s_fs_info;
+ 	struct dentry	*dentry;
+@@ -1876,16 +1873,16 @@ static struct dentry *ffs_sb_create_file(struct super_block *sb,
  
--	for (i = 0; i < batch_iters; i++)
-+	for (i = 0; i < batch_iters; i++) {
- 		inc_counter();
-+		bpf_get_numa_node_id();
-+	}
+ 	dentry = d_alloc_name(sb->s_root, name);
+ 	if (!dentry)
+-		return NULL;
++		return -ENOMEM;
  
+ 	inode = ffs_sb_make_inode(sb, data, fops, NULL, &ffs->file_perms);
+ 	if (!inode) {
+ 		dput(dentry);
+-		return NULL;
++		return -ENOMEM;
+ 	}
+ 
+ 	d_add(dentry, inode);
+-	return dentry;
++	return 0;
+ }
+ 
+ /* Super block */
+@@ -1928,10 +1925,7 @@ static int ffs_sb_fill(struct super_block *sb, struct fs_context *fc)
+ 		return -ENOMEM;
+ 
+ 	/* EP0 file */
+-	if (!ffs_sb_create_file(sb, "ep0", ffs, &ffs_ep0_operations))
+-		return -ENOMEM;
+-
+-	return 0;
++	return ffs_sb_create_file(sb, "ep0", ffs, &ffs_ep0_operations);
+ }
+ 
+ enum {
+@@ -2161,7 +2155,7 @@ static void ffs_data_closed(struct ffs_data *ffs)
+ 							flags);
+ 
+ 			if (epfiles)
+-				ffs_epfiles_destroy(epfiles,
++				ffs_epfiles_destroy(ffs->sb, epfiles,
+ 						 ffs->eps_count);
+ 
+ 			if (ffs->setup_state == FFS_SETUP_PENDING)
+@@ -2226,7 +2220,7 @@ static void ffs_data_clear(struct ffs_data *ffs)
+ 	 * copy of epfile will save us from use-after-free.
+ 	 */
+ 	if (epfiles) {
+-		ffs_epfiles_destroy(epfiles, ffs->eps_count);
++		ffs_epfiles_destroy(ffs->sb, epfiles, ffs->eps_count);
+ 		ffs->epfiles = NULL;
+ 	}
+ 
+@@ -2323,6 +2317,7 @@ static int ffs_epfiles_create(struct ffs_data *ffs)
+ {
+ 	struct ffs_epfile *epfile, *epfiles;
+ 	unsigned i, count;
++	int err;
+ 
+ 	count = ffs->eps_count;
+ 	epfiles = kcalloc(count, sizeof(*epfiles), GFP_KERNEL);
+@@ -2339,12 +2334,11 @@ static int ffs_epfiles_create(struct ffs_data *ffs)
+ 			sprintf(epfile->name, "ep%02x", ffs->eps_addrmap[i]);
+ 		else
+ 			sprintf(epfile->name, "ep%u", i);
+-		epfile->dentry = ffs_sb_create_file(ffs->sb, epfile->name,
+-						 epfile,
+-						 &ffs_epfile_operations);
+-		if (!epfile->dentry) {
+-			ffs_epfiles_destroy(epfiles, i - 1);
+-			return -ENOMEM;
++		err = ffs_sb_create_file(ffs->sb, epfile->name,
++					 epfile, &ffs_epfile_operations);
++		if (err) {
++			ffs_epfiles_destroy(ffs->sb, epfiles, i - 1);
++			return err;
+ 		}
+ 	}
+ 
+@@ -2352,16 +2346,15 @@ static int ffs_epfiles_create(struct ffs_data *ffs)
  	return 0;
  }
--- 
-2.51.2
-
+ 
+-static void ffs_epfiles_destroy(struct ffs_epfile *epfiles, unsigned count)
++static void ffs_epfiles_destroy(struct super_block *sb,
++				struct ffs_epfile *epfiles, unsigned count)
+ {
+ 	struct ffs_epfile *epfile = epfiles;
++	struct dentry *root = sb->s_root;
+ 
+ 	for (; count; --count, ++epfile) {
+ 		BUG_ON(mutex_is_locked(&epfile->mutex));
+-		if (epfile->dentry) {
+-			simple_recursive_removal(epfile->dentry, NULL);
+-			epfile->dentry = NULL;
+-		}
++		simple_remove_by_name(root, epfile->name, NULL);
+ 	}
+ 
+ 	kfree(epfiles);
 
