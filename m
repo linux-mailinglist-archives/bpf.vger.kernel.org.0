@@ -1,128 +1,100 @@
-Return-Path: <bpf+bounces-74674-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74675-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20FEBC6172B
-	for <lists+bpf@lfdr.de>; Sun, 16 Nov 2025 15:59:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45B2AC619DB
+	for <lists+bpf@lfdr.de>; Sun, 16 Nov 2025 18:45:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1D3394ECE4B
-	for <lists+bpf@lfdr.de>; Sun, 16 Nov 2025 14:58:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0A7B3B34EB
+	for <lists+bpf@lfdr.de>; Sun, 16 Nov 2025 17:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F9730B52A;
-	Sun, 16 Nov 2025 14:58:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0071530FC16;
+	Sun, 16 Nov 2025 17:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="EbyHrP1l"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GWNTQiM4"
 X-Original-To: bpf@vger.kernel.org
-Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFDD92F39AF
-	for <bpf@vger.kernel.org>; Sun, 16 Nov 2025 14:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2511CD15;
+	Sun, 16 Nov 2025 17:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763305108; cv=none; b=XSimNaLCK0EQXEEPKe1PrVx3n//ib1IzGSIxbevELgWJOsoAMOoN9TN4V9BAfZVpzn2VzXgG9vAax0qmQXGsNOcZBge09dqEpqYHmce/z54AjlFjzRT6UmlLDiq0lQ8kDHmwrV9RF+5FSN4cUkS9377BpxBF+1LCN9sSCRlJHdM=
+	t=1763315149; cv=none; b=rePWZRl2GY61ecfA5VSAtPCUQzhIx7rNJoRWYUBDdGZgoijyrzaIgn4EbWWvZTGyyfVZyHB933MBh5h7dQcs/GzVhdXJz8rg4ILYjf15nHlWj6/AGbwQ8SWowg8TPbtGHMoCeCKQMkHFuEcqyTFrxrKGk6/PSCtraX2a19vGb/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763305108; c=relaxed/simple;
-	bh=sDLWQB1chOnQ+OXFkW8rsNT/cW1nZdopWnWP4PoVKB4=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=snt/KbRXkKf7F/j2zpyuIozsD21WRsvQ+h1zb9RYfMXnCn/KkqsXhX6J4RJR/TURbZAppw0cn9nrunQl/iFC96OZxgL45aydoonAv1+KnGXVCMuZOHmK8pxxQlze4iHMUnNxNLDwg0XZCk9GZcaNlC6jyKmIA5hxPkmq6LQX3pY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=EbyHrP1l; arc=none smtp.client-ip=203.205.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1763305096; bh=UClAcNxcWUrwNakyC1v8MBC40xhrBlUFaVXLPYMUnr4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=EbyHrP1lrmvTIQWcRGStqqN7I4Wv95OJA1hjcQD/tbaIH2x+HeM+zs1U5d6SMZ68S
-	 kdxOQJvewDrf558V6YeozJBWZOgz+Bu4zQ1nJAvPKOuzbSI7UJEQEhANGYgbCoea4i
-	 hlBB3+cprUueu/kj7bhSRcBzJkCrl030Cb9OAH1Q=
-Received: from lxu-ped-host.. ([111.201.7.117])
-	by newxmesmtplogicsvrsza36-0.qq.com (NewEsmtp) with SMTP
-	id E8C9BCB4; Sun, 16 Nov 2025 22:58:12 +0800
-X-QQ-mid: xmsmtpt1763305092tbh6zvk9v
-Message-ID: <tencent_3F226F882CE56DCC94ACE90EED1ECCFC780A@qq.com>
-X-QQ-XMAILINFO: MDbayGdXPuoemJsVEB6ryQkkB0ir3RrhBULE99wMSjaQGh8vIT4I4eUB+BBI7E
-	 gr9+BBcrYUX+uSKVU/4PN6PFpQBMirC3+L1lUsTVX+3M0SsPGknh3220KSlzxuXy3wVn+acaAKdL
-	 ydnZYkiW2+RnFxFYEcXvkHuA2IPljBJAKfS2YXUMXleWwdSWeozShccoOmszokuZpA79ue2mbOgj
-	 /f2hMO9o9fh90m+HCdJdMyQ5KmOn1Xhfz2ZlInT/uK6NrMwttkXrDzqhR1vpnBkkGM3MAbs25BX2
-	 3zDMa/MJSRAr18bKe1D95mJR78ZEH9WEzx4BEvHVOWfy9NGqWmKOnnhrVxlFfG2IClE+WW5Gi07V
-	 /X6Dj8XFC2AdxYiHYr0DoxNZKin4yrQ2TWhxFKzCk0v/J13Po3/62Ud22BYS8fXsQjC/ts1Vsw6R
-	 OcC8/G1Zje60fc2BgmfRht8UeQ1Ly0ZsH7eWLqpT43Cb6eXG7SFv9blZ+duw1xwmDo+3a7suA9jK
-	 dSNhiuh9UY136aY2eClOEL20gqXzAw7SIQlk+VBlC0J0Tl1qzJH0h9VP1gQsl9dAtEnqcyd8tNAy
-	 cKdwHA5h1WATqDXDx2KGr4vMoDTJOyJpmqAvhq1gKbXWRFNuGE5Bd/aSlyUKAh56Scao3xTVMuna
-	 PDEWj2x9ywHMk2tIkEYnx54Ktm99alZktG+8ICHiDfAfXSUv8PtbIOM0ucRyfiv0FCQyAlAICQSS
-	 z1Z3FvyINsLAl9rH/sb1qDDaQOC4rYRpxklvfdOHsjWUfbwAMTvDXCjZ9mqh4dIWxB9DGQdJ7GPu
-	 hfSafXIBZPJdQTnaOhrPga10IxoG2O4cnSzuD6aN4WUKwnX6mUeYK1KZjl8msmEOW2lwUvtOwcaZ
-	 BgxS1Rtpj1CWNggiW4IeGMwVx1EHhbXxWkbTZbTccSmWL32J9jPeDMvcc5PcqJautjOGxFCkje3/
-	 +r8qty0K9dkfjlxTZ19TqS4AI8vV3DRXwFx1kw/CmOBWjUm7FIJ/QuPGy4fymHc6mY3DzLffH8rw
-	 oi7sltsw==
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+cf08c551fecea9fd1320@syzkaller.appspotmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	sdf@fomichev.me,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: [PATCH] bpf: Plug a potential exclusive map memory leak
-Date: Sun, 16 Nov 2025 22:58:13 +0800
-X-OQ-MSGID: <20251116145812.64225-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <6919bd8f.a70a0220.3124cb.007d.GAE@google.com>
-References: <6919bd8f.a70a0220.3124cb.007d.GAE@google.com>
+	s=arc-20240116; t=1763315149; c=relaxed/simple;
+	bh=mIMof+j6xW8EbtWWouxNGS8h1imgmKlIsYXitSco97I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u3CeAwEjwgHNnir6c/4gyc1cDnMHUJlt+WSVwpRVPIhlaFRFKYecSpzSlQKg+0T9EpCB4/La2ErkoMOpDu4Aon7xlBwKsAJ/t4wieox6z7MxfB5/qG1Tn9cUv1mu8ddTo4l37w1j7j9Bv4AxO/cywNB1XE00DuUucEHu+mh59Z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GWNTQiM4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1E8EC4CEFB;
+	Sun, 16 Nov 2025 17:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763315149;
+	bh=mIMof+j6xW8EbtWWouxNGS8h1imgmKlIsYXitSco97I=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=GWNTQiM4QKHL1hTXslK0h0UIB+ahqAweF4kMbt8g6fpGq4sp/jQ+bXRloojTBtUR6
+	 4cr/uBAGL9uzQ6RnWR9jo4BJrSzu5W7/dM0HOebdgORuszGIAsP9zDunSLbW7NftiS
+	 lMY/ZTCTpHt2OmyCTEWS0+P24oPVSQVjO1rFG9sfySiK35/O7o9cEqw0ks9Xy/vW6K
+	 ly5QvYRlsCZNPBhfzZruRNjIFqmNPWojhglGlM5y/lTSsjks1G9gIxwuiXfMhjm5wd
+	 rEaLgqqA5C3J0VD/eehKCk+GpiyMCJ1TiZFL89DGqmfnaxOkImHR8V+C418CUKScKK
+	 y3FwdbDiXp7gQ==
+Message-ID: <59755b49-fb81-41bf-8875-17e0215f1d8e@kernel.org>
+Date: Sun, 16 Nov 2025 10:45:47 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH iproute2-next v2] lib/bpf_legacy: Use userspace SHA-1 code
+ instead of AF_ALG
+Content-Language: en-US
+To: Eric Biggers <ebiggers@kernel.org>,
+ Stephen Hemminger <stephen@networkplumber.org>
+Cc: linux-crypto@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+ netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20250929194648.145585-1-ebiggers@kernel.org>
+ <20251112040719.GB2832160@google.com>
+From: David Ahern <dsahern@kernel.org>
+In-Reply-To: <20251112040719.GB2832160@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-When excl_prog_hash is 0 and excl_prog_hash_size is non-zero, the map also
-needs to be freed. Otherwise, the map memory will not be reclaimed, just
-like the memory leak problem reported by syzbot [1]. 
+On 11/11/25 9:07 PM, Eric Biggers wrote:
+> [Adding David Ahern.  I overlooked that iproute2 has separate
+> maintainers for the main tree and the next tree.]
+> 
+> On Mon, Sep 29, 2025 at 12:46:48PM -0700, Eric Biggers wrote:
+>> Add a basic SHA-1 implementation to lib/, and make lib/bpf_legacy.c use
+>> it to calculate SHA-1 digests instead of the previous AF_ALG-based code.
+>>
+>> This eliminates the dependency on AF_ALG, specifically the kernel config
+>> options CONFIG_CRYPTO_USER_API_HASH and CONFIG_CRYPTO_SHA1.
+>>
+>> Over the years AF_ALG has been very problematic, and it is also not
+>> supported on all kernels.  Escalating to the kernel's privileged
+>> execution context merely to calculate software algorithms, which can be
+>> done in userspace instead, is not something that should have ever been
+>> supported.  Even on kernels that support it, the syscall overhead of
+>> AF_ALG means that it is often slower than userspace code.
+>>
+>> Let's do the right thing here, and allow people to disable AF_ALG
+>> support (or not enable it) on systems where iproute2 is the only user.
+>>
+>> Acked-by: Ard Biesheuvel <ardb@kernel.org>
+>> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+> 
+> Stephen and David, any interest in applying this patch?
+> 
+> - Eric
 
-syzbot reported:
-BUG: memory leak
-  backtrace (crc 7b9fb9b4):
-    map_create+0x322/0x11e0 kernel/bpf/syscall.c:1512
-    __sys_bpf+0x3556/0x3610 kernel/bpf/syscall.c:6131
+I do not have a strong opinion in either direction.
 
-Fixes: baefdbdf6812 ("bpf: Implement exclusive map creation")
-Reported-by: syzbot+cf08c551fecea9fd1320@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=cf08c551fecea9fd1320
-Tested-by: syzbot+cf08c551fecea9fd1320@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- kernel/bpf/syscall.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 8a129746bd6c..aa0979e8de15 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1585,7 +1585,8 @@ static int map_create(union bpf_attr *attr, bpfptr_t uattr)
- 			goto free_map;
- 		}
- 	} else if (attr->excl_prog_hash_size) {
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto free_map;
- 	}
- 
- 	err = security_bpf_map_create(map, attr, token, uattr.is_kernel);
--- 
-2.43.0
-
+If we are going to entertain removing AF_ALG code, we should apply the
+patch to iproute2-next at the beginning of a dev cycle to give maximum
+time for testing before it rolls out.
 
