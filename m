@@ -1,266 +1,157 @@
-Return-Path: <bpf+bounces-74695-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74696-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45E20C626AD
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 06:37:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 288F7C62776
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 07:04:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by tor.lore.kernel.org (Postfix) with ESMTPS id 41FD923ECB
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 05:37:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 765B43B3059
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 06:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E791A30EF7A;
-	Mon, 17 Nov 2025 05:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D6230EF7C;
+	Mon, 17 Nov 2025 06:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="mn0odtuj"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y209mvOS"
 X-Original-To: bpf@vger.kernel.org
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012057.outbound.protection.outlook.com [40.107.209.57])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC8452F5B;
-	Mon, 17 Nov 2025 05:37:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763357844; cv=fail; b=DHArR0Pvi0asgVoubS89WEbpXRt3iJox5QVRPpwmqyzMQogY3lNEtd+DLKe0+7ZbAMszu4Yx+GEuE1rnSioub+G63uXBhxDtrEhykU0TWQFzRNsO1B6q/+XoqvC3CtfroaCzywuxA3VZH85tj9PY7JTw3ISDInDaLq7eh5VGEWc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763357844; c=relaxed/simple;
-	bh=qv4UaZckx6be089CGUPCntUtF1O9cazVTyIkYdqb5lE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=UnNXgPonRVmvsqKvoPjIAB856F4odKaqICy8ZEFVotii7jauOi5i7bTYXwe38FuGHmCwN4pyPlvgSHJe/2PXye7L7dtFwpOseuboOjwJ2NScJzlvm7snZcFRf4bHuatNWaT3JyGQgoZlhFkUTF1F6lImaIPSpOshC0Jqny528OM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=mn0odtuj; arc=fail smtp.client-ip=40.107.209.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=o5ozpKGuFYnYWuK0inrGH87stAaeb5csejMpjl5EbK7IZOxwl1+WBlLxcZ+We9er0WzD8dakbM6BWUFO50iEdyh5J+uxjuxQ4CZcfEdS7HNo0uhw8RvazVozJuz99Oo/PrL8unO2ufahEEu7W4r9YRuvfPC0X6ElE52Mcj5gGXyb5OXWeAIPTrlaHs4OZ2PRT+rybNK4NDA4dkTywLdyCe2hlGF808nrBgKBgFKOE07swol26NDOMEPnD4GSXUMs4aYDfDDn2ZHSllC6Pbf4/CeTVABobgx1RC0gwachCiHT/Z+jPLA0ndP4eeFSVnRX0EJL70b02CHc/TPzBdfobA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tgVPTNkgcqqRAjMiSa5MkUYxqofolhv3Y6VhGeWTTcQ=;
- b=ALS8Oe2VzlD70MDS3eqzGGg5IrXX2ywTzCswK8T2c58HpBMuvE3sbcUlbYqhOLht0NZrdWE5DGmrAw9WTCmhLzpjbd3c6pGn8TZ6bl2Uos/LXtR/yy9nNL9HSNK352nCERUObXnyTBjeCHgxPdpiOguFvLSq94mXN40/9LAJJV3G++Gmky5tYEdY7zuoaHO5NFuc3p5qGWOFELwFAyjvfQBJkMG70J/bq7wSaRvHhCn/jNwdpKJX/1y16CVVbLGvB2xUZIuT2NGGELpJo7Ubdlpy3ZmSprK/Ul5ON2YNAE5KLYWgqJfRXj118P0w1tSzNdeHUe42BP5HBthCLkpkDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.21.195) smtp.rcpttodomain=lists.linaro.org smtp.mailfrom=ti.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tgVPTNkgcqqRAjMiSa5MkUYxqofolhv3Y6VhGeWTTcQ=;
- b=mn0odtuj2388eDxqOtMN2Hu30/uehIJuNpvSlNMge51HNP8hhuPN2CiFhN6e+pixhniIQLEtK4qoLbyM0EgfG2ezpUzUIWjYKQnd8kMUSS4gbYMDHcdmxM7VZXQbS9nF2xkkjS7Pvr4ggB6mkRxuv6f+OvzwGalh4mfCXHaacOI=
-Received: from CH0PR04CA0082.namprd04.prod.outlook.com (2603:10b6:610:74::27)
- by SJ2PR10MB7597.namprd10.prod.outlook.com (2603:10b6:a03:53d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.21; Mon, 17 Nov
- 2025 05:37:16 +0000
-Received: from DS3PEPF000099DF.namprd04.prod.outlook.com
- (2603:10b6:610:74:cafe::b9) by CH0PR04CA0082.outlook.office365.com
- (2603:10b6:610:74::27) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9320.22 via Frontend Transport; Mon,
- 17 Nov 2025 05:37:21 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.195)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.21.195 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.21.195; helo=flwvzet201.ext.ti.com; pr=C
-Received: from flwvzet201.ext.ti.com (198.47.21.195) by
- DS3PEPF000099DF.mail.protection.outlook.com (10.167.17.202) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9343.9 via Frontend Transport; Mon, 17 Nov 2025 05:37:15 +0000
-Received: from DFLE201.ent.ti.com (10.64.6.59) by flwvzet201.ext.ti.com
- (10.248.192.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 16 Nov
- 2025 23:37:09 -0600
-Received: from DFLE203.ent.ti.com (10.64.6.61) by DFLE201.ent.ti.com
- (10.64.6.59) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 16 Nov
- 2025 23:37:09 -0600
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE203.ent.ti.com
- (10.64.6.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
- Transport; Sun, 16 Nov 2025 23:37:09 -0600
-Received: from [10.24.69.13] (meghana-pc.dhcp.ti.com [10.24.69.13] (may be forged))
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5AH5b37d1941015;
-	Sun, 16 Nov 2025 23:37:04 -0600
-Message-ID: <83137569-d34b-4cd1-bff5-81a115c1923d@ti.com>
-Date: Mon, 17 Nov 2025 11:07:03 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C18613A244
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 06:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763359478; cv=none; b=WSIREOLr8xn9jHJQH4gi0Ho6yx8C5bE/nZ9OAN8IflePtyjc/HxwOq6ZbyC0rN9bTIwZ+xhjfDYXEVD4+EYNlYmLddV1pl0mDGbqnu3LaRd8j3ELYGO597Q0FQ787Etubwur8rK+gxnrfzr1kAEb+XZ7EfVCuRHTLi1+jqV5H+0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763359478; c=relaxed/simple;
+	bh=hm8EksoT+/2DgQxjoNjEl6sU6Krkby9Edu+5zlSFhUQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=suzNFxiB99hXH48fN5cSPuuqFq1F2FfYOgiAzP58T6X/wqcSeKhJXjDDaimKaQY7QQMCWfz3ZqsZg1VRdELFqULd8wJ7N0U+bSdvN0QwKvAtoWD6dDhec7i7LLBxpUGqsN8wNB8A0mJH31xX+DEnTRLsz14dwDrF7Rxd7BICfbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y209mvOS; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <fa987c2b-b806-4aa7-a318-812fc7d0f414@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1763359464;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nZ5qcZGVMGt/z/po/hYAoZDHUji+2tgr7hoNqPgP1tY=;
+	b=Y209mvOS+8SFicxLVtTN/H4nWqCGMOmkm6X2ejyNYHLyj6Lw6/L1tocqVNo0ioSsv5HDss
+	L6RqtEQzeUUFksMAdOTyCHffKPnKfv72Nx3jzIA/sa+DG58xavSohzFrx7b0XfySp17lD+
+	J9YCIG2yFe4crEL+74N3EFCzPHqPz+A=
+Date: Sun, 16 Nov 2025 22:04:15 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [EXTERNAL] [PATCH net-next v2 0/7] net: ethernet: ti: am65-cpsw:
- add AF_XDP zero copy support
-To: Roger Quadros <rogerq@kernel.org>, Siddharth Vadapalli
-	<s-vadapalli@ti.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, "Jesper Dangaard
- Brouer" <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, "Sumit
- Semwal" <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?=
-	<christian.koenig@amd.com>, Stanislav Fomichev <sdf@fomichev.me>, "Simon
- Horman" <horms@kernel.org>
-CC: <srk@ti.com>, <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
-	<dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>
-References: <20251109-am65-cpsw-xdp-zc-v2-0-858f60a09d12@kernel.org>
-Content-Language: en-US
-From: Meghana Malladi <m-malladi@ti.com>
-In-Reply-To: <20251109-am65-cpsw-xdp-zc-v2-0-858f60a09d12@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099DF:EE_|SJ2PR10MB7597:EE_
-X-MS-Office365-Filtering-Correlation-Id: 04d948d2-5ab0-4f75-ba7b-08de259b5dda
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|1800799024|36860700013|82310400026|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?aHkyOUVCY3pXbmF6Smw4TFFvNVRBTE5zMW1tUmZTRHozU3B5VlFnKzhGYVhJ?=
- =?utf-8?B?ZFptSUNFeTIzVm40UVN4bFVWS0lwWW10Ulp1ZTBCWVJvditaMEd3U1RDQlgz?=
- =?utf-8?B?RVpTbmVEMWNUQUZXa1g0S29ZWE5IRjl3YmpoRmc5WDRXUUVjdEhDRTFYeW9L?=
- =?utf-8?B?TG93amxGME1henkxRjNaT1EwVHlyZU95b2YyVWVmeWNxTDgxcmIwSSttcEFh?=
- =?utf-8?B?NW1adGVKVjVzK1dqY1huSWIrYzBEMWNlNTZIWjNZcExjNVFWZ1orTmpOQkhx?=
- =?utf-8?B?WUdLL3dNL2ZKOWpDSnMwLzNvVkYwRHdNd2t1YUJubVU0SXpSRUppMmlqUm5y?=
- =?utf-8?B?MG1pQ3UyUFhqU2NmNy8yc2EyMnRCeExpWXpxeURZLy9EWEMyei9NdUs3VXAr?=
- =?utf-8?B?V3NTZlkrVTB6NmVBUmV5cjdzM2JzNUJLS20rQUZyMjZPeTdiek05TDl0RVdR?=
- =?utf-8?B?d05ldnZhdHIva2lRZStNTmdpMHdrRmFYdkwvY053QnBiMlVhOUNUL21RYjhK?=
- =?utf-8?B?dm5VYjlxWStLTEtldEQ4b1dvUDNhSlEyVjhrd3FGUjFCNG5jYTVqNEh3YVcz?=
- =?utf-8?B?YXBtWlFkRWJuN0ZaMERvWDJXWHovOGZOMWwvdGhGQWFVaS9sV2svZy9nMWJ0?=
- =?utf-8?B?QnpYS3dlcVIzenhzdHdzOVBxUm52ZE1aRkRDcjJOQnd5NkcyWHNFTDhHNGRz?=
- =?utf-8?B?eG53d0NzSWE0elBTaUlmZjFuT05jY0ptaEpzeDVpYUI2NzdlSE1nZzJyV1BR?=
- =?utf-8?B?US96RmFJTkRQRkNGcERXcDZPTkFjaFBHMnk3Zm1vR0VVRmdIZmJDaUFBa0hE?=
- =?utf-8?B?cmJJTThvc2xxTTdRd2VCMEdaNVZzR2pOSURWRXppL3ZSdDBQSHFnTklGKzBR?=
- =?utf-8?B?V3h0ZXhCN3BLdlV3OHNxaEdKVFB1VjRnN0RsNk56RkptRGowRUltL1hRYzJN?=
- =?utf-8?B?ZkUzM3ZBZEFxaVp3QzVpNHhpZkN3ekVicHhxL0E4ODhIS2NnTTlubmV3dkFa?=
- =?utf-8?B?cTA4M3hpQVBkUFJ1Y2V6aGhEK2JiMnc0MVhpZThBU3JjTkU2bkJFUE1rWGlm?=
- =?utf-8?B?ZXZlZUF2TFdMN1h5U3BWR0VlUjV2SzJsUHhBWHUySENyUGE0blJFUjRacGlu?=
- =?utf-8?B?MmZDMEx2ZHMxUkxlTHY1VUE5U2NYMmUrdWZNRnBLNkp1NVppU0NuNXJYU2Jl?=
- =?utf-8?B?cEs5T2t5SHA3V1c3SlIrVzdyN0t5Rlo1Yk1XK1hnNDQ4MEtZU0c1cVNXdG16?=
- =?utf-8?B?Q2h3SjBTcXdjN3ZyR2pvMm9oemVQeEdxMmk0Y25jdm5Hc3lBazdLR0tRNVhH?=
- =?utf-8?B?akFQZFRsS0s0RThQMkoxM1VVOWl0dnE5eElhYnhIVGN2b3lCRStBdzJ5bEZX?=
- =?utf-8?B?Y3V0QmUwSXROZzdQMGMrUDYwbUVsTHV2aXF3bDVMZC9FUEY5Z0tCQy90bDNN?=
- =?utf-8?B?UVVPN0E0RmQydzk0QmhMcDhQakRIa3pWZURHU3NzNTZ2eFdaZEJRaTRkY0dX?=
- =?utf-8?B?VXQ3WTRVblIyMkh0UFFVNkt1MStVSjdrTTZSNytNMGQycnJpYW0yOUJNaTB5?=
- =?utf-8?B?VjFIeSswcER2dWRyY1ZMUlk1eUI0OTk0UVo5c3BwL3BkZVR1cEMxZmxKSXJJ?=
- =?utf-8?B?VzkwM21QWHIzQVVOWTVsemxybHJqRVFrU1ROOHlDdlI4dGFLZFBtaURZbGVR?=
- =?utf-8?B?U2FGbkpma25IT0x0SElGTXB4WEhjMTh1UGhBTlNkelpLblN4UWZEL1NVUlJ2?=
- =?utf-8?B?RU1yODBIdEI4ZEU2anNsQUJvd3N4NFFNZnVlTGUxRG5XNy9mWXoyNzFkblRq?=
- =?utf-8?B?SXZjbkVESUNITlptTWRsaWFmNW9BNWdQeU44RkxNekJ2NkVnalh3MEtVREQw?=
- =?utf-8?B?MjdUZlo2MS93NU8rUDFNbkUySDNmNWMvakhEZWdzMVNYUDd6TEg1aHZPT1lt?=
- =?utf-8?B?bHpqU0hFa2ltWnk1YWFla1dJTEFKNzRWSUpHTjArT3R3Q3I3ZXNNNmU1WE1q?=
- =?utf-8?B?cm5lRE96Qk5Xc3Vnd2o0NXFlY25ueVp6eUtCaElYUEhrcTNNQjZ5amxCKzVr?=
- =?utf-8?Q?i5wI2b?=
-X-Forefront-Antispam-Report:
-	CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(36860700013)(82310400026)(921020);DIR:OUT;SFP:1101;
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2025 05:37:15.6767
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04d948d2-5ab0-4f75-ba7b-08de259b5dda
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.195];Helo=[flwvzet201.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099DF.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR10MB7597
+Subject: Re: [bpf-next v1 5/5] selftests/bpf: propagate LLVM toolchain to
+ runqslower build
+Content-Language: en-GB
+To: Hoyeon Lee <hoyeon.lee@suse.com>, bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev
+References: <20251115225550.1086693-1-hoyeon.lee@suse.com>
+ <20251115225550.1086693-6-hoyeon.lee@suse.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20251115225550.1086693-6-hoyeon.lee@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Roger,
 
-On 11/10/25 03:07, Roger Quadros wrote:
-> This series adds AF_XDP zero coppy support to am65-cpsw driver. Tests 
-> were performed on AM62x-sk with xdpsock application [1]. A clear 
-> improvement is seen in 64 byte packets on Transmit (txonly) and receive 
-> (rxdrop). 1500 byte test seems to
-> ZjQcmQRYFpfptBannerStart
-> This message was sent from outside of Texas Instruments.
-> Do not click links or open attachments unless you recognize the source 
-> of this email and know the content is safe.
-> Report Suspicious
-> <https://us-phishalarm-ewt.proofpoint.com/EWT/v1/G3vK! 
-> u7dqXRfP1k07KyXOF3NDf8vo0my_AFaH4vPAPLVnKCsqFWj_bXKNsRmhTJBE82Rrr_w736hROV-tgpjEGb6O7cQAClKjG9x9il73ZT70$>
-> ZjQcmQRYFpfptBannerEnd
-> 
-> This series adds AF_XDP zero coppy support to am65-cpsw driver.
-> 
-> Tests were performed on AM62x-sk with xdpsock application [1].
-> 
-> A clear improvement is seen in 64 byte packets on Transmit (txonly)
-> and receive (rxdrop).
-> 1500 byte test seems to be limited by line rate (1G link) so no
-> improvement seen there in packet rate. A test on higher speed link
-> (or PHY-less setup) might be worthwile.
-> 
-> There is some issue during l2fwd with 64 byte packets and benchmark
-> results show 0. This issue needs to be debugged further.
-> A 512 byte l2fwd test result has been added to compare instead.
-> 
-> AF_XDP performance using 64 byte packets in Kpps.
-> Benchmark:	XDP-SKB		XDP-Native	XDP-Native(ZeroCopy)
-> rxdrop		322		491		845
-> txonly		390		394		723
-> l2fwd 		205		257		0
-> 
-> AF_XDP performance using 512 byte packets in Kpps.
-> l2fwd		140		167		231
-> 
-> AF_XDP performance using 1500 byte packets in Kpps.
-> Benchmark:	XDP-SKB		XDP-Native	XDP-Native(ZeroCopy)
-> rxdrop		82		82		82
-> txonly		82		82		82
-> l2fwd 		82		82		82
-> 
-> [1]:https://urldefense.com/v3/__https://github.com/xdp-project/bpf-examples/ 
-> tree/master/AF_XDP-example__;!!G3vK! 
-> SX4J82NfOn_sfwizSTYO-8W3GRuffFIHyCngO1J2CT4Alea18pIGiBI4l5XKFKVUbxESDgb4GkCb$ <https://urldefense.com/v3/__https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-example__;!!G3vK!SX4J82NfOn_sfwizSTYO-8W3GRuffFIHyCngO1J2CT4Alea18pIGiBI4l5XKFKVUbxESDgb4GkCb$>
-> 
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
 
-After applying this series patches, I tried booting am64xx-hsevm in 
-prueth dual-emac mode by applying k3-am642-evm-icssg1-dualemac.dtbo 
-overlay, and I am getting the following kernel crash: 
-https://gist.github.com/MeghanaMalladiTI/784fd2262d95b19fe9573c553c4a6a24
+On 11/15/25 2:55 PM, Hoyeon Lee wrote:
+> The selftests/bpf invokes a nested make when building runqslower, but
+> LLVM toolchain version (clang/llvm-strip) is not propagated. As a
+> result, runqslower is built with system default clang, not respecting
+> specified LLVM version.
+>
+>      # LLVM=-21 make -C tools/testing/selftests/bpf
+>      ...
+>      make feature_display=0 -C /bpf/tools/bpf/runqslower                        \
+>          OUTPUT=/bpf/tools/testing/selftests/bpf/tools/build/runqslower/        \
+>          BPFOBJ_OUTPUT=/bpf/tools/testing/selftests/bpf/tools/build/libbpf/     \
+>          BPFOBJ=/bpf/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a    \
+>          BPF_INCLUDE=/bpf/tools/testing/selftests/bpf/tools/include             \
+>          BPFTOOL_OUTPUT=/bpf/tools/testing/selftests/bpf/tools/build/bpftool/   \
+>          VMLINUX_BTF=/sys/kernel/btf/vmlinux BPF_TARGET_ENDIAN=--target=bpfel   \
+>          EXTRA_CFLAGS='-g -O0  ' EXTRA_LDFLAGS=' ' &&                           \
+>          cp  /bpf/tools/testing/selftests/bpf/tools/build/runqslower/runqslower \
+>              /bpf/tools/testing/selftests/bpf/runqslower
+>      clang -g -O2 --target=bpfel -I/bpf/tools/testing/selftests/bpf/tools/build/runqslower/ \
+>            -I/bpf/tools/testing/selftests/bpf/tools/include -I/bpf/tools/include/uapi       \
+>            -c runqslower.bpf.c -o /bpf/tools/testing/selftests/bpf/tools/build/runqslower/runqslower.bpf.o && \
+>            llvm-strip -g /bpf/tools/testing/selftests/bpf/tools/build/runqslower//runqslower.bpf.o
+>      /bin/sh: 1: clang: not found
 
-Can you please take a look at this.
+I tried with LLVM=-20 make -C tools/testing/selftests/bpf in my system and
+there is no build error.
 
+Also could you try with command line
+    make -C tools/testing/selftests/bpf LLVM=1
+for clang build kernel or selftests, LLVM=1 is recommended as it
+encodes a bunch of clang command lines:
+   CC              = $(LLVM_PREFIX)clang$(LLVM_SUFFIX)
+   LD              = $(LLVM_PREFIX)ld.lld$(LLVM_SUFFIX)
+   AR              = $(LLVM_PREFIX)llvm-ar$(LLVM_SUFFIX)
+   NM              = $(LLVM_PREFIX)llvm-nm$(LLVM_SUFFIX)
+   OBJCOPY         = $(LLVM_PREFIX)llvm-objcopy$(LLVM_SUFFIX)
+   OBJDUMP         = $(LLVM_PREFIX)llvm-objdump$(LLVM_SUFFIX)
+   READELF         = $(LLVM_PREFIX)llvm-readelf$(LLVM_SUFFIX)
+   STRIP           = $(LLVM_PREFIX)llvm-strip$(LLVM_SUFFIX)
+
+
+
+
+>
+> Explicitly propagate CLANG and LLVM_STRIP to the runqslower sub-make so
+> that the LLVM toolchain selection from lib.mk is preserved.
+>
+> Signed-off-by: Hoyeon Lee <hoyeon.lee@suse.com>
 > ---
-> Changes in v2:
-> - Prevent crash on systems with 1 of 2 ports disabled in device tree. check
->    for valid ndev before registering/unregistering XDP RXQ.
->    Reported-by: Meghana Malladi <m-malladi@ti.com>
-> - Retain page pool on XDP program exchangae so we don't have to re-alloacate
->    memory.
-> - Fix clearing of irq_disabled flag in am65_cpsw_nuss_rx_poll().
-> - Link to v1:https://urldefense.com/v3/__https://lore.kernel.org/r/20250520-am65- 
-> cpsw-xdp-zc-v1-0-45558024f566@kernel.org__;!!G3vK! 
-> SX4J82NfOn_sfwizSTYO-8W3GRuffFIHyCngO1J2CT4Alea18pIGiBI4l5XKFKVUbxESDgAECR9g$ <https://urldefense.com/v3/__https://lore.kernel.org/r/20250520-am65-cpsw-xdp-zc-v1-0-45558024f566@kernel.org__;!!G3vK!SX4J82NfOn_sfwizSTYO-8W3GRuffFIHyCngO1J2CT4Alea18pIGiBI4l5XKFKVUbxESDgAECR9g$>
-> 
-> ---
-> Roger Quadros (7):
->        net: ethernet: ti: am65-cpsw: fix BPF Program change on multi-port CPSW
->        net: ethernet: ti: am65-cpsw: Retain page_pool on XDP program exchange
->        net: ethernet: ti: am65-cpsw: add XSK pool helpers
->        net: ethernet: ti: am65-cpsw: Add AF_XDP zero copy for RX
->        net: ethernet: ti: am65-cpsw: Add AF_XDP zero copy for TX
->        net: ethernet: ti: am65-cpsw: enable zero copy in XDP features
->        net: ethernet: ti: am65-cpsw: Fix clearing of irq_disabled flag in rx_poll
-> 
->   drivers/net/ethernet/ti/Makefile         |   2 +-
->   drivers/net/ethernet/ti/am65-cpsw-nuss.c | 583 ++++++++++++++++++++++++++-----
->   drivers/net/ethernet/ti/am65-cpsw-nuss.h |  37 +-
->   drivers/net/ethernet/ti/am65-cpsw-xdp.c  | 155 ++++++++
->   4 files changed, 692 insertions(+), 85 deletions(-)
-> ---
-> base-commit: a0c3aefb08cd81864b17c23c25b388dba90b9dad
-> change-id: 20250225-am65-cpsw-xdp-zc-2af9e4be1356
-> 
-> Best regards,
-> -- 
-> Roger Quadros <rogerq@kernel.org>
-> 
+>   tools/testing/selftests/bpf/Makefile | 1 +
+>   tools/testing/selftests/lib.mk       | 1 +
+>   2 files changed, 2 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 34ea23c63bd5..79ab69920dca 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -306,6 +306,7 @@ endif
+>   
+>   $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
+>   	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower	       \
+> +		    CLANG=$(CLANG) LLVM_STRIP=$(LLVM_STRIP)		       \
+>   		    OUTPUT=$(RUNQSLOWER_OUTPUT) VMLINUX_BTF=$(VMLINUX_BTF)     \
+>   		    BPFTOOL_OUTPUT=$(HOST_BUILD_DIR)/bpftool/		       \
+>   		    BPFOBJ_OUTPUT=$(BUILD_DIR)/libbpf/			       \
+> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+> index a448fae57831..f14255b2afbd 100644
+> --- a/tools/testing/selftests/lib.mk
+> +++ b/tools/testing/selftests/lib.mk
+> @@ -8,6 +8,7 @@ LLVM_SUFFIX := $(LLVM)
+>   endif
+>   
+>   CLANG := $(LLVM_PREFIX)clang$(LLVM_SUFFIX)
+> +LLVM_STRIP := $(LLVM_PREFIX)llvm-strip$(LLVM_SUFFIX)
+>   
+>   CLANG_TARGET_FLAGS_arm          := arm-linux-gnueabi
+>   CLANG_TARGET_FLAGS_arm64        := aarch64-linux-gnu
 
 
