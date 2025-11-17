@@ -1,273 +1,221 @@
-Return-Path: <bpf+bounces-74698-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74699-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65E0BC62791
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 07:08:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2B84C628BC
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 07:39:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 842204E4C97
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 06:08:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C0AA3AE221
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 06:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9151930F812;
-	Mon, 17 Nov 2025 06:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C583164BE;
+	Mon, 17 Nov 2025 06:38:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="eOrUM3k0"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gf5NFbf1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E591DE4F1;
-	Mon, 17 Nov 2025 06:08:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EB4315789
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 06:38:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763359716; cv=none; b=g+LkxEV9AaqcVtKFkmPdDHopKlK4hTF7DloHVCQhnQ8iR1H0UJ264uvwygXMSjz4mNatq68c4opKoqxoD1JAXwcc3o0JZ9cfmpQu01TlJw4U+F5SHGOy+LtDAFQ5tDxEB/fhaNVSrmeUpwVsOYqykWV4iqxZ40heZSk0vNJimDY=
+	t=1763361507; cv=none; b=OkuLCkSQW0VXnTQ3ENH0pRRycrfDMiR5LJjuq/tn1QDQ3V2t3onjde7pVoAdiAr6R+OkJGBYGGiv9sH2WX+S3QV6LrxglXcTTB0vkIP3w9YZmj2rYBH7+K9hgVU0CmXrlZfOtCv17/bw4sLqlAx5YRjf8bXm5lt4VZXH2qpa0Yo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763359716; c=relaxed/simple;
-	bh=5exeFA4PvWa9zGC34Jv+GN0zgLA37PX93/hZLeLRQho=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Z7jcQCDUlQGs3dCUZa10WJ1eVngFAiuf1S7bpPxs175cBNrSif6P8vcQxQOqmsbLz0/aE3IE/QDFWacfsgIRvwETNK5rjuRNEaGBZXzilgTYAupb6MsKXunn8L0bFvjUvIHi441yxgqyPN6aRFjxJ5/pN09VlQjPKcYgqx4vx8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=eOrUM3k0; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AGNrRW7023733;
-	Mon, 17 Nov 2025 06:08:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=pp1; bh=Of90jTA9Jm6O+wSu9R8qa7EHyFJq
-	DApeDmaEYYYzUJg=; b=eOrUM3k0HmTQ96YShyjzwNy1+64wipyRyPmLROgi2QvF
-	rTKgc0DexkFXaYN4NGRPlqSS0PM9DaQ0KfedpnLO8QSO4GMJkG6fIFlHsjq++5bg
-	p+CyoIrpiYWnMGDTWsGVEr4qBFkGC7veFeHbf8xpWR4TWKbHZaK7tlLplO9LFCa8
-	HNK3fBWcotpmRseCKNVgX90l/69maSebllZk7WCv6QJlGcp7dJWjQ87fuBGl0Urh
-	CoORoNqnIEVVupRr/lkI6c5KXA4pshfNZuCBnSi00/7z3JrCBZPPbJfAbn9TcgM1
-	Iv6VCWKpJr7YJdjQ0+ffEskk3UMRmwhqjeAlrLm4LQ==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aejjtmjwf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 17 Nov 2025 06:08:01 +0000 (GMT)
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5AH66c94013809;
-	Mon, 17 Nov 2025 06:08:01 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aejjtmjwc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 17 Nov 2025 06:08:01 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AH2K7YW030778;
-	Mon, 17 Nov 2025 06:08:00 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4af47xmccv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 17 Nov 2025 06:08:00 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5AH67ua937159204
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 17 Nov 2025 06:07:56 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5B81520043;
-	Mon, 17 Nov 2025 06:07:56 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 08D2E20040;
-	Mon, 17 Nov 2025 06:07:53 +0000 (GMT)
-Received: from li-621bac4c-27c7-11b2-a85c-c2bf7c4b3c07.in.ibm.com (unknown [9.109.219.153])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 17 Nov 2025 06:07:52 +0000 (GMT)
-From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-To: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc: hbathini@linux.ibm.com, sachinpb@linux.ibm.com, venkat88@linux.ibm.com,
-        andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
-Subject: [PATCH bpf-next v3] selftests/bpf: Fix htab_update/reenter_update selftest failure
-Date: Mon, 17 Nov 2025 11:37:52 +0530
-Message-ID: <20251117060752.129648-1-skb99@linux.ibm.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1763361507; c=relaxed/simple;
+	bh=A3rPgwriz9b4YMnOHBRbVV8RhIKuGfNGKqAw/aSnWR0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d26F+1EzyIHJnKU7FlsdkfgTSAQMI6t3BfbD7/nGRNRXKn9swmH7Cnvnwvi9JwbI3GrjNvjW9yYrB9pCcgoq1CpKP6dh3Wrv3AyJVnFPRP8ReFYAR0cJQAQw0c+7I6WsQ8hSpKh3BotctIriVuqIly2/raAjjgJra2DXPQCDmBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gf5NFbf1; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5957e017378so4466155e87.3
+        for <bpf@vger.kernel.org>; Sun, 16 Nov 2025 22:38:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1763361502; x=1763966302; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mKPR8K5JHXfnzVilFNApKLVvNZlS9+8kqXfsjfMNXqI=;
+        b=gf5NFbf1JXmj3AGYkhkTLg/oETWuiJ81BRLbW9KHkG4aPxxhP09VYdkFChl5ISNsvW
+         B1cRpQaFmpw31ymrVP55jw00Dm0KgFGGPLBjKfxcwfQKdGw5aOdW1E9yK+1ZJfs42gfF
+         pbr3OaePXjI/o7NmANcZad9rrsNLIv50WjcGeOXFHvVnH9mLyunPsjcBuMfL31IfLX/8
+         9XF0tWe/m7n4hoPamVdKEbO5iDMK+0X2ADJc+oCrfBdvRMqs1LZ9+xGdlGwonBORFD12
+         +7VRMj5EQvFIoTWUo4+BuHAublOfKXlrxAt0xdmQLo7rLSQBLdEUBUJyNKIMiXQ6wbG3
+         fxpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763361502; x=1763966302;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=mKPR8K5JHXfnzVilFNApKLVvNZlS9+8kqXfsjfMNXqI=;
+        b=WOLVLZChLjrrDNEJe+D3cNzq1x6+f8JaPuZ9uOr4JNXb7LcUjbfWVJyQUn5srLF2vg
+         6+E7BIDxvPxKnGnP+/CqIawHdWkAqRUaX9yp39wvYTlENhhmdvwx5Y2XOUGH5mK+t1a8
+         faJEIogWSvipEW9oxXi07uVctmFzPj15jhe2hiKj+UOaxwrGnYFdV4XAyMmuvMtfOYNw
+         pFlGVP1B8uJIK1aOWIyWC2eE6ZgVzwY5Uahe+/16L1aOX85wpgYwPLbdU70wMRI6tsGF
+         XtGkh74y00f0/Oe7zwLparRWLmv35/pb53VOat231/v7kHREYlHo/IJ76qShq1ifYw++
+         z4Mw==
+X-Gm-Message-State: AOJu0YxoEasPAw4KWkhn6FPUX2zRGg/ZCUmJeFHREpZwSWQzsb1Eee4n
+	zzCP3xe1c/Tibo/1ZU1pouQdlKc7xTz250sh/dur5C6nGKh2tEtrj7cxIasIxPDTzs9bG4YWuUT
+	BO5nLezKXHwPZCVNVYVAC33Im2N24DhX2XkjbAkrYkA==
+X-Gm-Gg: ASbGncsnzOVnnqsHzEYQswBB8RNutjcKZtFKf/4W5656+csPudFy+l1BBQHcuZfVAo/
+	FhS5GdT1cnPA7yukfygnbvKl3R0oZge5ptUaBUCUv9RPAX1CNNYrHfHw1xsT2Z8VkbdYKeDKSYd
+	vy9SWJEhvljpOpUJp6wvCgK0X5BPxi9IzVgzFz//7AhHCCcHAujoTG8s8IajloDxCts3300aziy
+	DT3jw3tHejW4bJWIF/R3LH0fEdxtaC8josgee4CT9lmI5T9kf2LIPksBrIRviMtIt3QM1WZ2I1x
+	EH5nBKPoAd/GH4koCn4=
+X-Google-Smtp-Source: AGHT+IF2nuhg87qiUvcOswURQNG1UrXLxNTg9RKGJWjZh7RuDRmzJpvcQFqpdeQyNJOrQ9CjFviUwVaU1c282AQ/H5Y=
+X-Received: by 2002:a05:6512:3a8f:b0:595:83f5:c33e with SMTP id
+ 2adb3069b0e04-59584198566mr3695392e87.11.1763361502263; Sun, 16 Nov 2025
+ 22:38:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: xxILBiZnEYgMM_d-xKtle5G55zeeC96H
-X-Proofpoint-ORIG-GUID: 4dErHjxhjFCEKGysii-MQbGMkt-bLPCG
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE1MDAzMiBTYWx0ZWRfX19seRaKeOscm
- XwAni5SvrUjJDFOF8YMLWbBbLEWX4cDhHBESwHbGB9IgVV11aWBi8DD5+qM9EjddkW3Aep2/opp
- ucvVgPwHR/Fw4k5Rn+TDIhRYsI1Bd6HP1uumBNtBeB+AZ77xFhhgX+QJsiEbFRcm2xQXeDj58Y7
- EaPLIKxLpkGu7z6Kes92ajKrMfaJ7iQqD3b3y5pbScB6ghYBA+psH4gNTN9ZHGugqOkdN1n4yoI
- b1qCqcs3RtxQIQ5dla09u4jcfD/l2HwtKh0jVWElRKIAoGZGupdNTh4HtWmNX9gF3M+L55gXjtn
- DkfMNhF7YsrSXY5y9Dbe0gW/pmEOuspL/t4Yk0nBVRMNEoTpS3K6J/vn2ZjdEFj5LRW3RO75hcH
- eog4vwD0ARyOXscyLGGTw9SadRB1qw==
-X-Authority-Analysis: v=2.4 cv=SvOdKfO0 c=1 sm=1 tr=0 ts=691abbc1 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=VtCtHh7gqfizx-1pb5MA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-17_02,2025-11-13_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 lowpriorityscore=0 spamscore=0 clxscore=1015
- suspectscore=0 phishscore=0 adultscore=0 bulkscore=0 impostorscore=0
- malwarescore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2510240000
- definitions=main-2511150032
+References: <20251115225550.1086693-1-hoyeon.lee@suse.com> <20251115225550.1086693-6-hoyeon.lee@suse.com>
+ <fa987c2b-b806-4aa7-a318-812fc7d0f414@linux.dev>
+In-Reply-To: <fa987c2b-b806-4aa7-a318-812fc7d0f414@linux.dev>
+From: Hoyeon Lee <hoyeon.lee@suse.com>
+Date: Mon, 17 Nov 2025 15:37:50 +0900
+X-Gm-Features: AWmQ_bnRlBGsS_F9znam2aLrWmZfBD5qK6FdCrSiGBUG8wo4GZBjDq9kjSkoE4U
+Message-ID: <CAK7-dKYDqV97K+hbw651zbu3-UZ1WSOf2a07uqWWtiRSfJV_zQ@mail.gmail.com>
+Subject: Re: [bpf-next v1 5/5] selftests/bpf: propagate LLVM toolchain to
+ runqslower build
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Since commit 31158ad02ddb ("rqspinlock: Add deadlock detection
-and recovery") the updated path on re-entrancy now reports deadlock
-via -EDEADLK instead of the previous -EBUSY.
+On Mon, Nov 17, 2025 at 3:04=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
+>
+>
+> On 11/15/25 2:55 PM, Hoyeon Lee wrote:
+> > The selftests/bpf invokes a nested make when building runqslower, but
+> > LLVM toolchain version (clang/llvm-strip) is not propagated. As a
+> > result, runqslower is built with system default clang, not respecting
+> > specified LLVM version.
+> >
+> >      # LLVM=3D-21 make -C tools/testing/selftests/bpf
+> >      ...
+> >      make feature_display=3D0 -C /bpf/tools/bpf/runqslower             =
+           \
+> >          OUTPUT=3D/bpf/tools/testing/selftests/bpf/tools/build/runqslow=
+er/        \
+> >          BPFOBJ_OUTPUT=3D/bpf/tools/testing/selftests/bpf/tools/build/l=
+ibbpf/     \
+> >          BPFOBJ=3D/bpf/tools/testing/selftests/bpf/tools/build/libbpf/l=
+ibbpf.a    \
+> >          BPF_INCLUDE=3D/bpf/tools/testing/selftests/bpf/tools/include  =
+           \
+> >          BPFTOOL_OUTPUT=3D/bpf/tools/testing/selftests/bpf/tools/build/=
+bpftool/   \
+> >          VMLINUX_BTF=3D/sys/kernel/btf/vmlinux BPF_TARGET_ENDIAN=3D--ta=
+rget=3Dbpfel   \
+> >          EXTRA_CFLAGS=3D'-g -O0  ' EXTRA_LDFLAGS=3D' ' &&              =
+             \
+> >          cp  /bpf/tools/testing/selftests/bpf/tools/build/runqslower/ru=
+nqslower \
+> >              /bpf/tools/testing/selftests/bpf/runqslower
+> >      clang -g -O2 --target=3Dbpfel -I/bpf/tools/testing/selftests/bpf/t=
+ools/build/runqslower/ \
+> >            -I/bpf/tools/testing/selftests/bpf/tools/include -I/bpf/tool=
+s/include/uapi       \
+> >            -c runqslower.bpf.c -o /bpf/tools/testing/selftests/bpf/tool=
+s/build/runqslower/runqslower.bpf.o && \
+> >            llvm-strip -g /bpf/tools/testing/selftests/bpf/tools/build/r=
+unqslower//runqslower.bpf.o
+> >      /bin/sh: 1: clang: not found
+>
+> I tried with LLVM=3D-20 make -C tools/testing/selftests/bpf in my system =
+and
+> there is no build error.
+>
+> Also could you try with command line
+>     make -C tools/testing/selftests/bpf LLVM=3D1
+> for clang build kernel or selftests, LLVM=3D1 is recommended as it
+> encodes a bunch of clang command lines:
+>    CC              =3D $(LLVM_PREFIX)clang$(LLVM_SUFFIX)
+>    LD              =3D $(LLVM_PREFIX)ld.lld$(LLVM_SUFFIX)
+>    AR              =3D $(LLVM_PREFIX)llvm-ar$(LLVM_SUFFIX)
+>    NM              =3D $(LLVM_PREFIX)llvm-nm$(LLVM_SUFFIX)
+>    OBJCOPY         =3D $(LLVM_PREFIX)llvm-objcopy$(LLVM_SUFFIX)
+>    OBJDUMP         =3D $(LLVM_PREFIX)llvm-objdump$(LLVM_SUFFIX)
+>    READELF         =3D $(LLVM_PREFIX)llvm-readelf$(LLVM_SUFFIX)
+>    STRIP           =3D $(LLVM_PREFIX)llvm-strip$(LLVM_SUFFIX)
+>
+>
+Thanks for the review.
 
-Also, the way reentrancy was exercised (via fentry/lookup_elem_raw)
-has been fragile because lookup_elem_raw may be inlined
-(find_kernel_btf_id() will return -ESRCH).
+Just to clarify, the issue is not the build failure itself. The error
+"clang: not found" only appeared because I intentionally did not set
+update-alternatives to avoid falling back to the system default compiler.
 
-To fix this fentry is attached to bpf_obj_free_fields() instead of
-lookup_elem_raw() and:
+The real issue is that the runqslower sub-make invokes "clang" instead
+of "clang-21" when LLVM=3D-21 is specified. This shows that the selected
+LLVM toolchain version is not being propagated into the nested build.
 
-- The htab map is made to use a BTF-described struct val with a
-  struct bpf_timer so that check_and_free_fields() reliably calls
-  bpf_obj_free_fields() on element replacement.
+LLVM=3D1 works well for general builds, but in this case the intention is
+to verify that a specific LLVM version is consistently applied across
+all sub-makes. That propagation does not currently happen, and the patch
+addresses exactly that.
 
-- The selftest is updated to do two updates to the same key (insert +
-  replace) in prog_test.
-
-- The selftest is updated to align with expected errno with the
-  kernel’s current behavior.
-
-Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
----
-Changes since v2:
-Addressed CI failures:
-* Initialize key to 0 before the first update.
-* Used pointer value to pass for update and memset rather than
-  &value.
-
-v2: https://lore.kernel.org/all/20251114152653.356782-1-skb99@linux.ibm.com/
-
-Changes since v1:
-Addressed comments from Alexei:
-* Fixed the scenario where test may fail when lookup_elem_raw()
-  is inlined.
-
-v1: https://lore.kernel.org/all/20251106052628.349117-1-skb99@linux.ibm.com/
-
- .../selftests/bpf/prog_tests/htab_update.c    | 37 ++++++++++++++-----
- .../testing/selftests/bpf/progs/htab_update.c | 19 +++++++---
- 2 files changed, 41 insertions(+), 15 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/htab_update.c b/tools/testing/selftests/bpf/prog_tests/htab_update.c
-index 2bc85f4814f4..d0b405eb2966 100644
---- a/tools/testing/selftests/bpf/prog_tests/htab_update.c
-+++ b/tools/testing/selftests/bpf/prog_tests/htab_update.c
-@@ -15,17 +15,17 @@ struct htab_update_ctx {
- static void test_reenter_update(void)
- {
- 	struct htab_update *skel;
--	unsigned int key, value;
-+	void *value = NULL;
-+	unsigned int key, value_size;
- 	int err;
- 
- 	skel = htab_update__open();
- 	if (!ASSERT_OK_PTR(skel, "htab_update__open"))
- 		return;
- 
--	/* lookup_elem_raw() may be inlined and find_kernel_btf_id() will return -ESRCH */
--	bpf_program__set_autoload(skel->progs.lookup_elem_raw, true);
-+	bpf_program__set_autoload(skel->progs.bpf_obj_free_fields, true);
- 	err = htab_update__load(skel);
--	if (!ASSERT_TRUE(!err || err == -ESRCH, "htab_update__load") || err)
-+	if (!ASSERT_TRUE(!err, "htab_update__load") || err)
- 		goto out;
- 
- 	skel->bss->pid = getpid();
-@@ -33,14 +33,33 @@ static void test_reenter_update(void)
- 	if (!ASSERT_OK(err, "htab_update__attach"))
- 		goto out;
- 
--	/* Will trigger the reentrancy of bpf_map_update_elem() */
-+	value_size = bpf_map__value_size(skel->maps.htab);
-+
-+	value = calloc(1, value_size);
-+	if (!ASSERT_OK_PTR(value, "calloc value"))
-+		goto out;
-+	/*
-+	 * First update: plain insert. This should NOT trigger the re-entrancy
-+	 * path, because there is no old element to free yet.
-+	 */
- 	key = 0;
--	value = 0;
--	err = bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, &value, 0);
--	if (!ASSERT_OK(err, "add element"))
-+	err = bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, value, BPF_ANY);
-+	if (!ASSERT_OK(err, "first update (insert)"))
-+		goto out;
-+
-+	/*
-+	 * Second update: replace existing element with same key and trigger
-+	 * the reentrancy of bpf_map_update_elem().
-+	 * check_and_free_fields() calls bpf_obj_free_fields() on the old
-+	 * value, which is where fentry program runs and performs a nested
-+	 * bpf_map_update_elem(), triggering -EDEADLK.
-+	 */
-+	memset(value, 0, value_size);
-+	err = bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, value, BPF_ANY);
-+	if (!ASSERT_OK(err, "second update (replace)"))
- 		goto out;
- 
--	ASSERT_EQ(skel->bss->update_err, -EBUSY, "no reentrancy");
-+	ASSERT_EQ(skel->bss->update_err, -EDEADLK, "no reentrancy");
- out:
- 	htab_update__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/htab_update.c b/tools/testing/selftests/bpf/progs/htab_update.c
-index 7481bb30b29b..195d3b2fba00 100644
---- a/tools/testing/selftests/bpf/progs/htab_update.c
-+++ b/tools/testing/selftests/bpf/progs/htab_update.c
-@@ -6,24 +6,31 @@
- 
- char _license[] SEC("license") = "GPL";
- 
-+/* Map value type: has BTF-managed field (bpf_timer) */
-+struct val {
-+	struct bpf_timer t;
-+	__u64 payload;
-+};
-+
- struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
- 	__uint(max_entries, 1);
--	__uint(key_size, sizeof(__u32));
--	__uint(value_size, sizeof(__u32));
-+	__type(key, __u32);
-+	__type(value, struct val);
- } htab SEC(".maps");
- 
- int pid = 0;
- int update_err = 0;
- 
--SEC("?fentry/lookup_elem_raw")
--int lookup_elem_raw(void *ctx)
-+SEC("?fentry/bpf_obj_free_fields")
-+int bpf_obj_free_fields(void *ctx)
- {
--	__u32 key = 0, value = 1;
-+	__u32 key = 0;
-+	struct val value = { .payload = 1 };
- 
- 	if ((bpf_get_current_pid_tgid() >> 32) != pid)
- 		return 0;
- 
--	update_err = bpf_map_update_elem(&htab, &key, &value, 0);
-+	update_err = bpf_map_update_elem(&htab, &key, &value, BPF_ANY);
- 	return 0;
- }
--- 
-2.51.0
-
+Thanks again for taking a look.
+>
+>
+> >
+> > Explicitly propagate CLANG and LLVM_STRIP to the runqslower sub-make so
+> > that the LLVM toolchain selection from lib.mk is preserved.
+> >
+> > Signed-off-by: Hoyeon Lee <hoyeon.lee@suse.com>
+> > ---
+> >   tools/testing/selftests/bpf/Makefile | 1 +
+> >   tools/testing/selftests/lib.mk       | 1 +
+> >   2 files changed, 2 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selft=
+ests/bpf/Makefile
+> > index 34ea23c63bd5..79ab69920dca 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -306,6 +306,7 @@ endif
+> >
+> >   $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUT=
+PUT)
+> >       $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower      =
+      \
+> > +                 CLANG=3D$(CLANG) LLVM_STRIP=3D$(LLVM_STRIP)          =
+          \
+> >                   OUTPUT=3D$(RUNQSLOWER_OUTPUT) VMLINUX_BTF=3D$(VMLINUX=
+_BTF)     \
+> >                   BPFTOOL_OUTPUT=3D$(HOST_BUILD_DIR)/bpftool/          =
+        \
+> >                   BPFOBJ_OUTPUT=3D$(BUILD_DIR)/libbpf/                 =
+        \
+> > diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/l=
+ib.mk
+> > index a448fae57831..f14255b2afbd 100644
+> > --- a/tools/testing/selftests/lib.mk
+> > +++ b/tools/testing/selftests/lib.mk
+> > @@ -8,6 +8,7 @@ LLVM_SUFFIX :=3D $(LLVM)
+> >   endif
+> >
+> >   CLANG :=3D $(LLVM_PREFIX)clang$(LLVM_SUFFIX)
+> > +LLVM_STRIP :=3D $(LLVM_PREFIX)llvm-strip$(LLVM_SUFFIX)
+> >
+> >   CLANG_TARGET_FLAGS_arm          :=3D arm-linux-gnueabi
+> >   CLANG_TARGET_FLAGS_arm64        :=3D aarch64-linux-gnu
+>
 
