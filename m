@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-74727-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74728-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A59D6C642C2
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 13:50:22 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 322F4C6439A
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 13:59:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F4023B2EE9
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 12:50:21 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 64D304F1FCC
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 12:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6C53321D6;
-	Mon, 17 Nov 2025 12:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BCB33C50D;
+	Mon, 17 Nov 2025 12:42:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oFll8DXq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aRY0mm8X"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F1F337688;
-	Mon, 17 Nov 2025 12:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2109C3328F3;
+	Mon, 17 Nov 2025 12:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763383347; cv=none; b=NlxteKD1HW3c7r5OeCU+Hnww+oULMeT8O08UfJxA9OykdXYbpU/CEDMMeFdSfnrbCwKq/5f/TC9OBL9dsODPSPnRj26AzQ59NIiOKB/MAgcQ5lSP2QYjsGcSzhxJpj1ePBmlh/JUj84J+iSrWXebv5QrDagXTWuNLdYukMJmjK4=
+	t=1763383358; cv=none; b=AzsUH0sZVrxZ+Ow2Owj0VlgI2Y9dX+H7PVmj9UGncnbb5ZHxqCWoQA0MKIELq7ft1SFrXrkKXmhw6cwMMkHNGvR8IvNBLQJ4w8oh6PXCVR2+sAppK04H9E7HerNnnIpvJb5TNpuqaQpULfDCiQHFYTq5/5CRXravNWBNRZv2KO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763383347; c=relaxed/simple;
-	bh=cE4vQD/v8RCVF+qyXCZu+VSYXoW/3YpROOS/NObDU50=;
+	s=arc-20240116; t=1763383358; c=relaxed/simple;
+	bh=krID4USAu/VFMjYRujB6HjwRNiyiLnLONylIJbyfjr0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=huW3Y/Raa0cxawXnxfqXFiP3X2l1lRur4B8zqkyGxJN7Bv5U0HF1lkoH/qrCH6HHry8XFARBmsLJaWjaxMxJsoQp97EvjiTEbAwWNKlNMLy91bR8W5AD216RVlBpfEBIM4gEIL6U8VwQIMp41JszR0gYwBkbjKDcAUlV1EG2BJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oFll8DXq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E928C19424;
-	Mon, 17 Nov 2025 12:42:23 +0000 (UTC)
+	 MIME-Version; b=nlDmKylOUfkNpAomOPLtksq09ol1zrJQbaf0Mvj5M3nZFpgS6xCNZxDf8Ynzruy8B3QFA5tcmqTw5Fo7OHDLyyjxZXkKQuZlhYVohEcShljkPS8mKyMqQqct8C+ZdPemBzUPC6btgaWnxP3fcUOSJci3YDyn8/9EjenmQb+4gnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aRY0mm8X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49E18C4CEFB;
+	Mon, 17 Nov 2025 12:42:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763383347;
-	bh=cE4vQD/v8RCVF+qyXCZu+VSYXoW/3YpROOS/NObDU50=;
+	s=k20201202; t=1763383357;
+	bh=krID4USAu/VFMjYRujB6HjwRNiyiLnLONylIJbyfjr0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oFll8DXq8tlNWl9wJQCmyvynVkTMO5vBLDzAllNGd/aEu2URZWqxqqQT6dztNbMnA
-	 C4XsJ4LgVkQ5A/NlpPnjjZDk/bMXPcn+1xmqLQaZUf+Hdr8wgzuMvs48WstwXmp1eA
-	 1WTuTWNnkdaBe/vl7gjL8PuHeJvtKXB0rs0njPfsoKEe8HuY5ps5NP5WwmCSTShzmX
-	 UMGZ65z6W2zI578BpSKIJVIAXAhhrpLUYihJ/WgkXfBY8oFHX89FJHiGJHqU4wrZYF
-	 ZDR/VDR7eMZoG4PrxJPYjTUSRjaeryFmYaEmsPJHDB+tphLbvMGbPMavRiJWs6k3cm
-	 MtyR2aYt0xJ/g==
+	b=aRY0mm8X9uQlQN3P2nZoW7GfrzSyqoVX98DyAXdccm0zaLBt7GgoeIK6MRU4lXWzH
+	 hIoMEbVIUla1jFR0Ty24KiJmEsQmfIZuw1dyWuu8Mpvpe4WZKPlOQ0x71X3Njaw5U6
+	 9O9XgD7ipljVmNwGG9EUkqe0EQcnPzfMBOOD9PxxRQc9Rp2qW+KMAmlvNj8IQTOYkF
+	 vVznioDU0T83XNTJMhLSnJQXpWevrHarPihdVVFnpS3gTDiLsPbnXabZrzI16U6sQk
+	 MBaYORnfTVtKpBDgSkiD/PIXHDKUOVcTNHZV6X4If0e21FuF/NUReDL4mg7kvx2Akw
+	 xGCMPQDYPVGbA==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
@@ -56,9 +56,9 @@ Cc: bpf@vger.kernel.org,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	David Laight <David.Laight@ACULAB.COM>
-Subject: [RFC PATCH 7/8] selftests/bpf: Add test for uprobe prologue optimization
-Date: Mon, 17 Nov 2025 13:40:56 +0100
-Message-ID: <20251117124057.687384-8-jolsa@kernel.org>
+Subject: [RFC PATCH 8/8] selftests/bpf: Add race test for uprobe proglog optimization
+Date: Mon, 17 Nov 2025 13:40:57 +0100
+Message-ID: <20251117124057.687384-9-jolsa@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251117124057.687384-1-jolsa@kernel.org>
 References: <20251117124057.687384-1-jolsa@kernel.org>
@@ -70,155 +70,78 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding test that places uprobe on top of supported prologue
-and checks that the uprobe gets properly optimized.
+Adding uprobe race test on top of prologue instructions.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../selftests/bpf/prog_tests/uprobe_syscall.c | 63 ++++++++++++++++---
- 1 file changed, 53 insertions(+), 10 deletions(-)
+ .../selftests/bpf/prog_tests/uprobe_syscall.c    | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-index 27fa6f309188..c6a58afc7ace 100644
+index c6a58afc7ace..8793fbd61ffd 100644
 --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
 +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-@@ -428,21 +428,21 @@ static void *check_attach(struct uprobe_syscall_executed *skel, trigger_t trigge
- 	return tramp;
- }
+@@ -654,10 +654,11 @@ static USDT_DEFINE_SEMA(race);
  
--static void check_detach(void *addr, void *tramp)
-+static void check_detach(void *addr, void *tramp, unsigned char *orig)
+ static void *worker_trigger(void *arg)
  {
- 	/* [uprobes_trampoline] stays after detach */
- 	ASSERT_OK(find_uprobes_trampoline(tramp), "uprobes_trampoline");
--	ASSERT_OK(memcmp(addr, nop5, 5), "nop5");
-+	ASSERT_OK(memcmp(addr, orig, 5), "orig");
- }
++	trigger_t trigger = (trigger_t) arg;
+ 	unsigned long rounds = 0;
  
- static void check(struct uprobe_syscall_executed *skel, struct bpf_link *link,
--		  trigger_t trigger, void *addr, int executed)
-+		  trigger_t trigger, void *addr, int executed, unsigned char *orig)
+ 	while (!race_stop) {
+-		uprobe_test();
++		trigger();
+ 		rounds++;
+ 	}
+ 
+@@ -667,6 +668,7 @@ static void *worker_trigger(void *arg)
+ 
+ static void *worker_attach(void *arg)
  {
- 	void *tramp;
++	trigger_t trigger = (trigger_t) arg;
+ 	LIBBPF_OPTS(bpf_uprobe_opts, opts);
+ 	struct uprobe_syscall_executed *skel;
+ 	unsigned long rounds = 0, offset;
+@@ -677,7 +679,7 @@ static void *worker_attach(void *arg)
+ 	unsigned long *ref;
+ 	int err;
  
- 	tramp = check_attach(skel, trigger, addr, executed);
- 	bpf_link__destroy(link);
--	check_detach(addr, tramp);
-+	check_detach(addr, tramp, orig);
+-	offset = get_uprobe_offset(&uprobe_test);
++	offset = get_uprobe_offset(trigger);
+ 	if (!ASSERT_GE(offset, 0, "get_uprobe_offset"))
+ 		return NULL;
+ 
+@@ -722,7 +724,7 @@ static useconds_t race_msec(void)
+ 	return 500;
  }
  
- static void test_uprobe_legacy(void)
-@@ -470,7 +470,7 @@ static void test_uprobe_legacy(void)
- 	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_opts"))
- 		goto cleanup;
- 
--	check(skel, link, uprobe_test, uprobe_test, 2);
-+	check(skel, link, uprobe_test, uprobe_test, 2, nop5);
- 
- 	/* uretprobe */
- 	skel->bss->executed = 0;
-@@ -480,7 +480,7 @@ static void test_uprobe_legacy(void)
- 	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_opts"))
- 		goto cleanup;
- 
--	check(skel, link, uprobe_test, uprobe_test, 2);
-+	check(skel, link, uprobe_test, uprobe_test, 2, nop5);
- 
- cleanup:
- 	uprobe_syscall_executed__destroy(skel);
-@@ -512,7 +512,7 @@ static void test_uprobe_multi(void)
- 	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_multi"))
- 		goto cleanup;
- 
--	check(skel, link, uprobe_test, uprobe_test, 2);
-+	check(skel, link, uprobe_test, uprobe_test, 2, nop5);
- 
- 	/* uretprobe.multi */
- 	skel->bss->executed = 0;
-@@ -522,7 +522,7 @@ static void test_uprobe_multi(void)
- 	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_multi"))
- 		goto cleanup;
- 
--	check(skel, link, uprobe_test, uprobe_test, 2);
-+	check(skel, link, uprobe_test, uprobe_test, 2, nop5);
- 
- cleanup:
- 	uprobe_syscall_executed__destroy(skel);
-@@ -555,7 +555,7 @@ static void test_uprobe_session(void)
- 	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_multi"))
- 		goto cleanup;
- 
--	check(skel, link, uprobe_test, uprobe_test, 4);
-+	check(skel, link, uprobe_test, uprobe_test, 4, nop5);
- 
- cleanup:
- 	uprobe_syscall_executed__destroy(skel);
-@@ -584,7 +584,7 @@ static void test_uprobe_usdt(void)
- 	if (!ASSERT_OK_PTR(link, "bpf_program__attach_usdt"))
- 		goto cleanup;
- 
--	check(skel, link, usdt_test, addr, 2);
-+	check(skel, link, usdt_test, addr, 2, nop5);
- 
- cleanup:
- 	uprobe_syscall_executed__destroy(skel);
-@@ -813,6 +813,47 @@ static void test_emulate(void)
- 	uprobe_syscall__destroy(skel);
- }
- 
-+__attribute__((aligned(16)))
-+__nocf_check __weak __naked void prologue_trigger(void)
-+{
-+	asm volatile (
-+		"pushq %rbp\n"
-+		"movq  %rsp,%rbp\n"
-+		"subq  $0xb0,%rsp\n"
-+		"addq  $0xb0,%rsp\n"
-+		"pop %rbp\n"
-+		"ret\n"
-+	);
-+}
-+
-+static void test_optimize_prologue(void)
-+{
-+	struct uprobe_syscall_executed *skel = NULL;
-+	struct bpf_link *link;
-+	unsigned long offset;
-+
-+	offset = get_uprobe_offset(&prologue_trigger);
-+	if (!ASSERT_GE(offset, 0, "get_uprobe_offset"))
-+		goto cleanup;
-+
-+	/* uprobe */
-+	skel = uprobe_syscall_executed__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_syscall_executed__open_and_load"))
-+		return;
-+
-+	skel->bss->pid = getpid();
-+
-+	link = bpf_program__attach_uprobe_opts(skel->progs.test_uprobe,
-+				0, "/proc/self/exe", offset, NULL);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_opts"))
-+		goto cleanup;
-+
-+	check(skel, link, prologue_trigger, prologue_trigger, 2, (unsigned char *) prologue_trigger);
-+
-+cleanup:
-+	uprobe_syscall_executed__destroy(skel);
-+}
-+
- static void __test_uprobe_syscall(void)
+-static void test_uprobe_race(void)
++static void test_uprobe_race(trigger_t trigger)
  {
- 	if (test__start_subtest("uretprobe_regs_equal"))
-@@ -839,6 +880,8 @@ static void __test_uprobe_syscall(void)
- 		test_regs_change();
- 	if (test__start_subtest("emulate_mov"))
- 		test_emulate();
-+	if (test__start_subtest("optimize_prologue"))
-+		test_optimize_prologue();
- }
- #else
- static void __test_uprobe_syscall(void)
+ 	int err, i, nr_threads;
+ 	pthread_t *threads;
+@@ -738,7 +740,7 @@ static void test_uprobe_race(void)
+ 
+ 	for (i = 0; i < nr_threads; i++) {
+ 		err = pthread_create(&threads[i], NULL, i % 2 ? worker_trigger : worker_attach,
+-				     NULL);
++				     trigger);
+ 		if (!ASSERT_OK(err, "pthread_create"))
+ 			goto cleanup;
+ 	}
+@@ -870,8 +872,10 @@ static void __test_uprobe_syscall(void)
+ 		test_uprobe_session();
+ 	if (test__start_subtest("uprobe_usdt"))
+ 		test_uprobe_usdt();
+-	if (test__start_subtest("uprobe_race"))
+-		test_uprobe_race();
++	if (test__start_subtest("uprobe_race_nop5"))
++		test_uprobe_race(uprobe_test);
++	if (test__start_subtest("uprobe_race_prologue"))
++		test_uprobe_race(prologue_trigger);
+ 	if (test__start_subtest("uprobe_error"))
+ 		test_uprobe_error();
+ 	if (test__start_subtest("uprobe_regs_equal"))
 -- 
 2.51.1
 
