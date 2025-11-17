@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-74683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E230DC61F75
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 01:47:48 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9F19C61F69
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 01:47:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 97DBF352FEB
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 00:47:21 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTPS id EBB4422EE3
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 00:47:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629731C54A9;
-	Mon, 17 Nov 2025 00:47:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABE691B4257;
+	Mon, 17 Nov 2025 00:47:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="THqWYE+c"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ufVYJHQ1"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD14C7261A
-	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 00:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF9C1A5B8A
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 00:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763340436; cv=none; b=Vm1m3ZPemqeBTHrOvclJpEp8bDY3p58sFTD/3bAcveei6FmX9H2eEWmCWeYLM02tuKNsbtBmS3UlUkSZ2vc3IRFnJk+pLZGD5/eHh3BimImL0JUu4MpUXQL8OFKKL3GWO15ngB5zSIzsh9nQ89PGxQmoomFza48v2rBc6ED/pGo=
+	t=1763340441; cv=none; b=MACshj+eAj9yu2JGTN7fcR6zJlJ+mMoPLoYNnN2cO/oyfnTaNQRNwRFu5pZy4RthP3W8DyJxNcoBLF0me7DiawVpdN1/Cm9ajiAPA6v33tjEcyJhcM69mCpJsRktoo0dXbvffOm5ppDNaDCzua9AmogAbhpebphvYrCP96r0+og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763340436; c=relaxed/simple;
-	bh=ryhcmIpqI4T2MVr1XTaj+b7GXxgULrcErPHTWGQ2rLE=;
+	s=arc-20240116; t=1763340441; c=relaxed/simple;
+	bh=KqFoPh2849hGDfx0eJgTZV2DNbz6HOm3atcQFNx1Lzo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=akApeDHOfHalrH3a987VPf2Dck4odiyGOuDjMq9AgHXrA/CVZxcbn3N537x3sXQt0gWk8UjBd+vPZmeXEheG8Q+EKdKdG9YY0x9ICF2SHf+VgzRvO7F6Ex2ki+CCHHzjPUok4gbiYCirRPMJ3ykryyhtyNOlSEg+kbLq4SAIOBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=THqWYE+c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 209D7C113D0;
-	Mon, 17 Nov 2025 00:47:16 +0000 (UTC)
+	 MIME-Version; b=l6PCpSgXVmfJJEpZ6DYyTTZjNTeeYJ9w7Cg+kG9NBv23UT+fpE7/sid7OyB7mtm6D8abvJkHOr57tzogdUZ9gygoX28BjRbTKPTPhplEao5yD9+jv5yXNlf2zSn3EO66T3XAgCEpoAnmovG4ap7hXTgLa5VPFG4QQUeCzXQrUEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ufVYJHQ1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70440C4CEF5;
+	Mon, 17 Nov 2025 00:47:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763340436;
-	bh=ryhcmIpqI4T2MVr1XTaj+b7GXxgULrcErPHTWGQ2rLE=;
+	s=k20201202; t=1763340440;
+	bh=KqFoPh2849hGDfx0eJgTZV2DNbz6HOm3atcQFNx1Lzo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=THqWYE+cWOyKEVxlPXR/sv02kGc5o0+qnRLkAS+0rsQMPgDymrJU6wDg81W/pktp3
-	 f00F8lYO14SpgAsKHCCiDeOsn0ZiPnxsE59TRsEFguA/gQ6+BtJ9VpZJNKghm1LlzA
-	 adqjq8PtnyauX8YkNyYAZZCUIHNFRto9nJUg80rcUA8cV2I3mfVdZ+RIT9fik0fabH
-	 600a+9qZV8zKKnS41zq07rvqCsgt6SYJXhT2PsvC/bFTYcHms/9G04W3Tkhxdae/vc
-	 GSOxmuBB6zAgFMa+5IUTHdpkjffYZtNDvyNnRn/HEpesb7CVyXlMbwRJrgrlsrrOAq
-	 oy3XGu5IUH8ig==
+	b=ufVYJHQ1/Gf29cf1oBWrnkcq6uK5uBVL9kQ7/AS4pu+hiLpwIB9EfJ3RcLgL0WYoB
+	 0z70bBo0Id/g9U6/p51DmZNxf56dQiF1G7rSFAC7M4wI7BnbGBC/tZpx9+AVr0ZBgy
+	 B/S/BayuR3c9nfW1ZgSIvSV3jMcZuNiORndT408O4h/J5yQ87dU0SD89K0R04N2YfR
+	 Ae3/73nUQkSyybBRwUJAsXSFTH71xBVU1nFcXOADa2ZmLU36BnvtywWOiMBGfCN1Wz
+	 V1GfzMq7faHHYT8OuDxUXunBcXVpwyovRwzx9IHSarBAISVkwhqlZFvXvtYtY5xXRp
+	 CP0N95GN5du1A==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: bpf@vger.kernel.org
 Cc: Puranjay Mohan <puranjay@kernel.org>,
@@ -54,9 +54,9 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next 2/4] bpf: arm64: Add support for indirect jumps
-Date: Mon, 17 Nov 2025 00:46:37 +0000
-Message-ID: <20251117004656.33292-3-puranjay@kernel.org>
+Subject: [PATCH bpf-next 3/4] libbpf: Ignore relocations for .jumptables sections
+Date: Mon, 17 Nov 2025 00:46:38 +0000
+Message-ID: <20251117004656.33292-4-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251117004656.33292-1-puranjay@kernel.org>
 References: <20251117004656.33292-1-puranjay@kernel.org>
@@ -66,41 +66,51 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add support for a new instruction
+.jumptables sections generated by LLVM store byte offsets from the start
+of the section to the jump's target instruction. On arm64 builds of
+LLVM, it generates a rel section to add the section address to each
+entry in the jump table, therefore storing the absolute address of the
+jump target into the table. For BPF usage of .jumptables, we only care
+about the instruction offsets and calculate the final address much later
+after the JIT has finished, and called bpf_prog_update_insn_ptrs()
 
-	BPF_JMP|BPF_X|BPF_JA, SRC=0, DST=Rx, off=0, imm=0
+Without the change in this commit, compilation fails with:
 
-which does an indirect jump to a location stored in Rx.  The register
-Rx should have type PTR_TO_INSN. This new type assures that the Rx
-register contains a value (or a range of values) loaded from a
-correct jump table – map of type instruction array.
+libbpf: relocation against STT_SECTION in non-exec section is not
+supported!  Error: failed to link
+'tools/testing/selftests/bpf/cpuv4/bpf_gotox.bpf.o': Invalid argument (22)
 
-ARM64 JIT supports indirect jumps to all registers through the A64_BR()
-macro, use it to implement this new instruction.
+This is due to the presence of a relocation section for .jumptables
+(non-exec) against syscall (STT_SECTION):
+
+Relocation section '.rel.jumptables' at offset 0x5b50 contains 263 entries:
+  Offset        Info             Type         Symbol's Value  Symbol's Name
+000000000000  0000000300000002 R_BPF_64_ABS64  0000000000000000 syscall
+000000000008  0000000300000002 R_BPF_64_ABS64  0000000000000000 syscall
+[...]
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- arch/arm64/net/bpf_jit_comp.c | 4 ++++
+ tools/lib/bpf/linker.c | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 4a2afc0cefc4..4cfb549f2b43 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -1452,6 +1452,10 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 		emit(A64_ASR(is64, dst, dst, imm), ctx);
- 		break;
+diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+index f4403e3cf994..f4295962983b 100644
+--- a/tools/lib/bpf/linker.c
++++ b/tools/lib/bpf/linker.c
+@@ -634,6 +634,10 @@ static bool is_ignored_sec(struct src_sec *sec)
+ 		if (strcmp(name, BTF_ELF_SEC) == 0 ||
+ 		    strcmp(name, BTF_EXT_ELF_SEC) == 0)
+ 			return true;
++
++		/* .jumptables don't need relocations */
++		if (strcmp(name, JUMPTABLES_SEC) == 0)
++			return true;
+ 	}
  
-+	/* JUMP reg */
-+	case BPF_JMP | BPF_JA | BPF_X:
-+		emit(A64_BR(dst), ctx);
-+		break;
- 	/* JUMP off */
- 	case BPF_JMP | BPF_JA:
- 	case BPF_JMP32 | BPF_JA:
+ 	return false;
 -- 
 2.47.3
 
