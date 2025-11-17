@@ -1,379 +1,167 @@
-Return-Path: <bpf+bounces-74717-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAFBCC63C30
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 12:18:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46E3DC63C9C
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 12:24:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 594343A9FA8
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 11:15:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2C233B4D1A
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 11:21:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA46A330D25;
-	Mon, 17 Nov 2025 11:08:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A87126CE1E;
+	Mon, 17 Nov 2025 11:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I8bYIGgX";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="Un8PpfQv"
 X-Original-To: bpf@vger.kernel.org
-Received: from localhost.localdomain (unknown [147.136.157.3])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CAA1330323;
-	Mon, 17 Nov 2025 11:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.136.157.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F0FE1DE2D8
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 11:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763377696; cv=none; b=uMKzzXA+EwV8Y+ON35+u9gi36n2hzK4ZhqBxRaRb8ioGK9bE8isx/9esc6twWcL4vxGuD1TiC7V6KqghBYChRdu+cZecRlFf/p3vGF2GzF9g5ihmIou6KXlg1nEnOdiZ3MT0oiCrsNZPnXE2jxVLRc67B3ss1UIR4XfjRBiT0Ug=
+	t=1763378462; cv=none; b=NvLa5n5g/e+eoqxw+qOdu60IkJokDWkZV+/tzTRo9ElEi+DcDl23RRD/0gBwJStlrsmTBUqU+U1ujGLUIMJvXal39zUN1sESKbsoP3TYPrFM0esA+ODQ3/aj5TZqUXBwuhjkwDuPmUp2QWlSH/TEEr2hlcDhLH8btM0LXg+ZBzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763377696; c=relaxed/simple;
-	bh=2xuQUNjye5SH0spf/BntnQEjEUG+Ko7KqGYOWawkBnM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SuiMHXfcxzvpX14xFixBvqf1LA/NEWscjU93p/sr/roDvY2/rIyC8hC9Fpw2Ybd0qZu3nkdbv1o5SctvTkQ3BzvGxhn4Et4iTm6EkYKHquyMlDgoOA04Ijw0Qptj+Vp26gWTY832I69A7dcOXPE2GhcjLQSx8z0zpzlnOxzJ/0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=none smtp.mailfrom=localhost.localdomain; arc=none smtp.client-ip=147.136.157.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=localhost.localdomain
-Received: by localhost.localdomain (Postfix, from userid 1007)
-	id 1CBBD8B2A0F; Mon, 17 Nov 2025 19:08:05 +0800 (+08)
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: bpf@vger.kernel.org
-Cc: jiayuan.chen@linux.dev,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Neal Cardwell <ncardwell@google.com>,
-	Kuniyuki Iwashima <kuniyu@google.com>,
-	David Ahern <dsahern@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Michal Luczaj <mhal@rbox.co>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	Cong Wang <cong.wang@bytedance.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v1 3/3] bpf, selftest: Add tests for FIONREAD and copied_seq
-Date: Mon, 17 Nov 2025 19:07:07 +0800
-Message-ID: <20251117110736.293040-4-jiayuan.chen@linux.dev>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20251117110736.293040-1-jiayuan.chen@linux.dev>
-References: <20251117110736.293040-1-jiayuan.chen@linux.dev>
+	s=arc-20240116; t=1763378462; c=relaxed/simple;
+	bh=dPcOQIPBIBCLa/NKsa8a0L2Mq5wMH471wz/f//gTuWU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=SisYW4B/HuNaAwS4T8dpWXJHyOIpwK80h2znTLoSZq/HLAcUBTVN4AV3nht+3AvTlPokgFB0sr/OdwpG8Mmh/oZbNCr+0jOzNdD+lVUucmWvSuISS6iF+0o1A1IUrMZqv0nT8PfVtjLT2Q75ZCnpixRyeyZCscUsz2URN4/stZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I8bYIGgX; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Un8PpfQv; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1763378459;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QVf9LxNdBO8TaOKgZFNSQsuTbNOO3hmBDaXVsTWiiWA=;
+	b=I8bYIGgXifOH20wmS9+zXtI6/O28rgITo46ljUCAfuNK9KFeoDV4GFP+ayX56s8zODiBrX
+	3Dzkwj3TDLulB8RyEXQhdfjrdXNqxjHfdAf/PgDEA2O2K11s4h88z/g05q2Sz55pRaoFb3
+	NQX/2Srd7fH1KA5tXOYfTIbNA/Uc4bA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-208-a8V6LvsQM_q9WZVVeTlINA-1; Mon, 17 Nov 2025 06:20:58 -0500
+X-MC-Unique: a8V6LvsQM_q9WZVVeTlINA-1
+X-Mimecast-MFC-AGG-ID: a8V6LvsQM_q9WZVVeTlINA_1763378457
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-64097bef0e2so5325973a12.3
+        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 03:20:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1763378457; x=1763983257; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QVf9LxNdBO8TaOKgZFNSQsuTbNOO3hmBDaXVsTWiiWA=;
+        b=Un8PpfQvqC5wTzErk38aMO3hEdRvYC+9HtuNTDGBm9eo9yKT41VxFEqSkHgp8wYcnf
+         8aQAQoGDUFWK8yN26R0WEYsVQtyGmapOQoHTSi81dPLUDDC6bb2IO9WJdnQxAHMIlIuX
+         SJK4J5GZQz/Hq3fbkdDS/Y8Waxb7c7eqBKR9wG7T2mfSFdiLGYd989bXAn0vLTvsC8SL
+         bhk3wrqgrmYDyWLgLqUsCJOW6lpgbg3TMTlG8qCGxSrCmY8Ru2F9SC3ir0YU8HoFtzu6
+         wq8rR1SU1XpJQR4UMj9DuCQLWS6Lz4Tiz3HXvtBPEEshYksNe8mE3S05vEV4AY2u0gu5
+         OH5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763378457; x=1763983257;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QVf9LxNdBO8TaOKgZFNSQsuTbNOO3hmBDaXVsTWiiWA=;
+        b=kdAUR8VtV9yhVCMf6LA8Y8NBEd3eRey1fNdGW5vkRRDod4ugLKtt+O2m55O2+RGST1
+         iZ11IQP6PeVX3DKB3nKp6J5iNHrBByX3m/szBIhqyytbfR2OOgFmjgaicZlWNo+kWvpU
+         vru4vKHzjqGk6BHMYcPHwq7d/fF4bcQuRxD3+mXjEqcPI/ixDY1vUQzlj2GdJQuUUeBt
+         y+o8v010f8RyxB0DceWf74YyjjWpQ/semVcfBA8QRBCVdzK5kbVqVQrlcQQUVnze5iXy
+         fyyiODSnZs22t3Ka+zte0iYBwlEodk9k/oxl7XTBZIfsYfVWMAnV6weGDtFZ3Ym84+Xf
+         3U6g==
+X-Forwarded-Encrypted: i=1; AJvYcCUq/Hl6dUZNBUZMlxOf+vJRU9q1IhFAGYdf3AAr0ky3JnSMb+Knore7vIw+4VPSHsFGsSY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywr1Dlv2LpwC5qQsMSUpPI0vfukG0UtWLWqFUbOTslAA14PFmtr
+	FBZQg/LI0UQRzb+QCw+O4zZ4rtjkBGEI661mUCk/Id59Pp6OQGxeNdJWp0jSVaTUtAtAeYZZjoD
+	62Kh1gJeIV4HtFYo4nW9QfaH3nr0vzpwUMMeY2udX7ReBxNZIUcFddA==
+X-Gm-Gg: ASbGnct+sNEqQBxbUsaBiGXT7XiMHYNopApzoAaTt091RJ3lopY6KjyhVnI0kQdwF27
+	YPbuaD9DP0lMmEt7cbj2R1fbaw0KZ+qv21DcJU3T8lvcO1aDoUN4MMY9XDEhm9sw/64ykH/m+qN
+	gIalsztOF6K3jvpj/h8SW/cCcjUNvXGy9Y45/Fk0qU3vqCAJVhK7zv9AzBxVIbS9ezdvZcouhr5
+	0KXULLC+hWdFa8nLNfdUrRIdYOXvh9r8V1F1w0Jtb2IuHJxg8ms1rjvvltcZ7EuIW4L7JJuIMG4
+	c/V2gXkFQz4lbCpkV/WVOaogk3y0dyTjHmj6Z8mSJMOO/zX4vEXcMXelN6s85u2LcxKKAF+2Atm
+	K6ziNWaxuORRAy+QrCVIyM341Hw==
+X-Received: by 2002:a05:6402:51d0:b0:640:b736:6c15 with SMTP id 4fb4d7f45d1cf-64350e23625mr11703535a12.10.1763378456964;
+        Mon, 17 Nov 2025 03:20:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF4Wdj00OQMd3S1KCNlU9xBz46Uej0UIJ1gNeKRvwBEkwOcay/vlwA/7tWC70CgNVFMvt+NUw==
+X-Received: by 2002:a05:6402:51d0:b0:640:b736:6c15 with SMTP id 4fb4d7f45d1cf-64350e23625mr11703494a12.10.1763378456453;
+        Mon, 17 Nov 2025 03:20:56 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk (alrua-x1.borgediget.toke.dk. [2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6433a49806csm9992622a12.18.2025.11.17.03.20.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Nov 2025 03:20:55 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 1D7AF329B3D; Mon, 17 Nov 2025 12:20:54 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Byungchul Park <byungchul@sk.com>, linux-mm@kvack.org,
+ netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+ harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+ davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
+ leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
+ akpm@linux-foundation.org, david@redhat.com, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+ surenb@google.com, mhocko@suse.com, horms@kernel.org, jackmanb@google.com,
+ hannes@cmpxchg.org, ziy@nvidia.com, ilias.apalodimas@linaro.org,
+ willy@infradead.org, brauner@kernel.org, kas@kernel.org,
+ yuzhao@google.com, usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+ almasrymina@google.com, asml.silence@gmail.com, bpf@vger.kernel.org,
+ linux-rdma@vger.kernel.org, sfr@canb.auug.org.au, dw@davidwei.uk,
+ ap420073@gmail.com, dtatulea@nvidia.com
+Subject: Re: [RFC mm v6] mm: introduce a new page type for page pool in page
+ type
+In-Reply-To: <20251117052041.52143-1-byungchul@sk.com>
+References: <20251117052041.52143-1-byungchul@sk.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 17 Nov 2025 12:20:53 +0100
+Message-ID: <87o6p0oqga.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-This commit adds two new test functions: one to reproduce the bug reported
-by syzkaller [1], and another to cover the calculation of copied_seq.
+Byungchul Park <byungchul@sk.com> writes:
 
-The tests primarily involve installing  and uninstalling sockmap on
-sockets, then reading data to verify proper functionality.
+> Currently, the condition 'page->pp_magic == PP_SIGNATURE' is used to
+> determine if a page belongs to a page pool.  However, with the planned
+> removal of @pp_magic, we should instead leverage the page_type in struct
+> page, such as PGTY_netpp, for this purpose.
+>
+> Introduce and use the page type APIs e.g. PageNetpp(), __SetPageNetpp(),
+> and __ClearPageNetpp() instead, and remove the existing APIs accessing
+> @pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
+> netmem_clear_pp_magic().
+>
+> Plus, add @page_type to struct net_iov at the same offset as struct page
+> so as to use the page_type APIs for struct net_iov as well.  While at it,
+> reorder @type and @owner in struct net_iov to avoid a hole and
+> increasing the struct size.
+>
+> This work was inspired by the following link:
+>
+>   https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@gmail.com/
+>
+> While at it, move the sanity check for page pool to on the free path.
+>
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Co-developed-by: Pavel Begunkov <asml.silence@gmail.com>
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> Acked-by: David Hildenbrand <david@redhat.com>
+> Acked-by: Zi Yan <ziy@nvidia.com>
+> ---
+> I dropped all the Reviewed-by and Acked-by given for network changes
+> since I changed how to implement the part on the request from Jakub.
+> Can I keep your tags?  Jakub, are you okay with this change?
 
-Additionally, extend the do_test_sockmap_skb_verdict_fionread() function
-to support UDP FIONREAD testing.
+LGTM, you can keep mine :)
 
-[1] https://syzkaller.appspot.com/bug?extid=06dbd397158ec0ea4983
-
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 192 +++++++++++++++++-
- .../bpf/progs/test_sockmap_pass_prog.c        |   8 +
- 2 files changed, 194 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 1e3e4392dcca..e6cff25f4b75 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -1,7 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2020 Cloudflare
- #include <error.h>
--#include <netinet/tcp.h>
-+#include <linux/tcp.h>
-+#include <linux/socket.h>
- #include <sys/epoll.h>
- 
- #include "test_progs.h"
-@@ -22,6 +23,16 @@
- #define TCP_REPAIR_ON		1
- #define TCP_REPAIR_OFF_NO_WP	-1	/* Turn off without window probes */
- 
-+/**
-+ * SOL_TCP is defined in <netinet/tcp.h> while field
-+ * copybuf_address of tcp_zerocopy_receive is not in it
-+ * Although glibc has merged my patch to sync headers,
-+ * the fix will take time to propagate, hence this workaround.
-+ */
-+#ifndef SOL_TCP
-+#define SOL_TCP 6
-+#endif
-+
- static int connected_socket_v4(void)
- {
- 	struct sockaddr_in addr = {
-@@ -536,13 +547,14 @@ static void test_sockmap_skb_verdict_shutdown(void)
- }
- 
- 
--static void test_sockmap_skb_verdict_fionread(bool pass_prog)
-+static void do_test_sockmap_skb_verdict_fionread(int sotype, bool pass_prog)
- {
- 	int err, map, verdict, c0 = -1, c1 = -1, p0 = -1, p1 = -1;
- 	int expected, zero = 0, sent, recvd, avail;
- 	struct test_sockmap_pass_prog *pass = NULL;
- 	struct test_sockmap_drop_prog *drop = NULL;
- 	char buf[256] = "0123456789";
-+	int split_len = sizeof(buf) / 2;
- 
- 	if (pass_prog) {
- 		pass = test_sockmap_pass_prog__open_and_load();
-@@ -550,7 +562,10 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
- 			return;
- 		verdict = bpf_program__fd(pass->progs.prog_skb_verdict);
- 		map = bpf_map__fd(pass->maps.sock_map_rx);
--		expected = sizeof(buf);
-+		if (sotype == SOCK_DGRAM)
-+			expected = split_len; /* FIONREAD for UDP is different from TCP */
-+		else
-+			expected = sizeof(buf);
- 	} else {
- 		drop = test_sockmap_drop_prog__open_and_load();
- 		if (!ASSERT_OK_PTR(drop, "open_and_load"))
-@@ -566,7 +581,7 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
- 	if (!ASSERT_OK(err, "bpf_prog_attach"))
- 		goto out;
- 
--	err = create_socket_pairs(AF_INET, SOCK_STREAM, &c0, &c1, &p0, &p1);
-+	err = create_socket_pairs(AF_INET, sotype, &c0, &c1, &p0, &p1);
- 	if (!ASSERT_OK(err, "create_socket_pairs()"))
- 		goto out;
- 
-@@ -574,8 +589,9 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
- 	if (!ASSERT_OK(err, "bpf_map_update_elem(c1)"))
- 		goto out_close;
- 
--	sent = xsend(p1, &buf, sizeof(buf), 0);
--	ASSERT_EQ(sent, sizeof(buf), "xsend(p0)");
-+	sent = xsend(p1, &buf, split_len, 0);
-+	sent += xsend(p1, &buf, sizeof(buf) - split_len, 0);
-+	ASSERT_EQ(sent, sizeof(buf), "xsend(p1)");
- 	err = ioctl(c1, FIONREAD, &avail);
- 	ASSERT_OK(err, "ioctl(FIONREAD) error");
- 	ASSERT_EQ(avail, expected, "ioctl(FIONREAD)");
-@@ -597,6 +613,12 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
- 		test_sockmap_drop_prog__destroy(drop);
- }
- 
-+static void test_sockmap_skb_verdict_fionread(bool pass_prog)
-+{
-+	do_test_sockmap_skb_verdict_fionread(SOCK_STREAM, pass_prog);
-+	do_test_sockmap_skb_verdict_fionread(SOCK_DGRAM, pass_prog);
-+}
-+
- static void test_sockmap_skb_verdict_change_tail(void)
- {
- 	struct test_sockmap_change_tail *skel;
-@@ -1042,6 +1064,160 @@ static void test_sockmap_vsock_unconnected(void)
- 	xclose(map);
- }
- 
-+/* it used to reproduce WARNING */
-+static void test_sockmap_zc(void)
-+{
-+	int map, err, sent, recvd, zero = 0, one = 1, on = 1;
-+	char buf[10] = "0123456789", rcv[11], addr[100];
-+	struct test_sockmap_pass_prog *skel = NULL;
-+	int c0 = -1, p0 = -1, c1 = -1, p1 = -1;
-+	struct tcp_zerocopy_receive zc;
-+	socklen_t zc_len = sizeof(zc);
-+	struct bpf_program *prog;
-+
-+	skel = test_sockmap_pass_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	if (create_socket_pairs(AF_INET, SOCK_STREAM, &c0, &c1, &p0, &p1))
-+		goto end;
-+
-+	prog = skel->progs.prog_skb_verdict_ingress;
-+	map = bpf_map__fd(skel->maps.sock_map_rx);
-+
-+	err = bpf_prog_attach(bpf_program__fd(prog), map, BPF_SK_SKB_STREAM_VERDICT, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach"))
-+		goto end;
-+
-+	err = bpf_map_update_elem(map, &zero, &p0, BPF_ANY);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem"))
-+		goto end;
-+
-+	err = bpf_map_update_elem(map, &one, &p1, BPF_ANY);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem"))
-+		goto end;
-+
-+	sent = xsend(c0, buf, sizeof(buf), 0);
-+	if (!ASSERT_EQ(sent, sizeof(buf), "xsend"))
-+		goto end;
-+
-+	/* trigger tcp_bpf_recvmsg_parser and inc copied_seq of p1 */
-+	recvd = recv_timeout(p1, rcv, sizeof(rcv), MSG_DONTWAIT, 1);
-+	if (!ASSERT_EQ(recvd, sent, "recv_timeout(p1)"))
-+		goto end;
-+
-+	/* uninstall sockmap of p1 */
-+	bpf_map_delete_elem(map, &one);
-+
-+	/* trigger tcp stack and the rcv_nxt of p1 is less than copied_seq */
-+	sent = xsend(c1, buf, sizeof(buf) - 1, 0);
-+	if (!ASSERT_EQ(sent, sizeof(buf) - 1, "xsend"))
-+		goto end;
-+
-+	err = setsockopt(p1, SOL_SOCKET, SO_ZEROCOPY, &on, sizeof(on));
-+	if (!ASSERT_OK(err, "setsockopt"))
-+		goto end;
-+
-+	memset(&zc, 0, sizeof(zc));
-+	zc.copybuf_address = (__u64)((unsigned long)addr);
-+	zc.copybuf_len = sizeof(addr);
-+
-+	err = getsockopt(p1, IPPROTO_TCP, TCP_ZEROCOPY_RECEIVE, &zc, &zc_len);
-+	if (!ASSERT_OK(err, "getsockopt"))
-+		goto end;
-+
-+end:
-+	if (c0 >= 0)
-+		close(c0);
-+	if (p0 >= 0)
-+		close(p0);
-+	if (c1 >= 0)
-+		close(c1);
-+	if (p1 >= 0)
-+		close(p1);
-+	test_sockmap_pass_prog__destroy(skel);
-+}
-+
-+/* it used to check whether copied_seq of sk is correct */
-+static void test_sockmap_copied_seq(void)
-+{
-+	int map, err, sent, recvd, zero = 0, one = 1;
-+	struct test_sockmap_pass_prog *skel = NULL;
-+	int c0 = -1, p0 = -1, c1 = -1, p1 = -1;
-+	char buf[10] = "0123456789", rcv[11];
-+	struct bpf_program *prog;
-+
-+	skel = test_sockmap_pass_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	if (create_socket_pairs(AF_INET, SOCK_STREAM, &c0, &c1, &p0, &p1))
-+		goto end;
-+
-+	prog = skel->progs.prog_skb_verdict_ingress;
-+	map = bpf_map__fd(skel->maps.sock_map_rx);
-+
-+	err = bpf_prog_attach(bpf_program__fd(prog), map, BPF_SK_SKB_STREAM_VERDICT, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach"))
-+		goto end;
-+
-+	err = bpf_map_update_elem(map, &zero, &p0, BPF_ANY);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem(p0)"))
-+		goto end;
-+
-+	err = bpf_map_update_elem(map, &one, &p1, BPF_ANY);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem(p1)"))
-+		goto end;
-+
-+	/* just trigger sockamp: data sent by c0 will be received by p1 */
-+	sent = xsend(c0, buf, sizeof(buf), 0);
-+	if (!ASSERT_EQ(sent, sizeof(buf), "xsend(c0), bpf"))
-+		goto end;
-+
-+	recvd = recv_timeout(p1, rcv, sizeof(rcv), MSG_DONTWAIT, 1);
-+	if (!ASSERT_EQ(recvd, sent, "recv_timeout(p1), bpf"))
-+		goto end;
-+
-+	/* uninstall sockmap of p1 and p0 */
-+	err = bpf_map_delete_elem(map, &one);
-+	if (!ASSERT_OK(err, "bpf_map_delete_elem(1)"))
-+		goto end;
-+	err = bpf_map_delete_elem(map, &zero);
-+	if (!ASSERT_OK(err, "bpf_map_delete_elem(0)"))
-+		goto end;
-+
-+	/* now all sockets become plain socket, they should work */
-+
-+	/* test copied_seq of p1 by running tcp native stack */
-+	sent = xsend(c1, buf, sizeof(buf), 0);
-+	if (!ASSERT_EQ(sent, sizeof(buf), "xsend(c1), native"))
-+		goto end;
-+
-+	recvd = recv(p1, rcv, sizeof(rcv), MSG_DONTWAIT);
-+	if (!ASSERT_EQ(recvd, sent, "recv_timeout(p1), native"))
-+		goto end;
-+
-+	/* p0 previously redirected skb to p1, we also check copied_seq of p0 */
-+	sent = xsend(c0, buf, sizeof(buf), 0);
-+	if (!ASSERT_EQ(sent, sizeof(buf), "xsend(c0), native"))
-+		goto end;
-+
-+	recvd = recv(p0, rcv, sizeof(rcv), MSG_DONTWAIT);
-+	if (!ASSERT_EQ(recvd, sent, "recv_timeout(p0), native"))
-+		goto end;
-+
-+end:
-+	if (c0 >= 0)
-+		close(c0);
-+	if (p0 >= 0)
-+		close(p0);
-+	if (c1 >= 0)
-+		close(c1);
-+	if (p1 >= 0)
-+		close(p1);
-+	test_sockmap_pass_prog__destroy(skel);
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -1108,4 +1284,8 @@ void test_sockmap_basic(void)
- 		test_sockmap_skb_verdict_vsock_poll();
- 	if (test__start_subtest("sockmap vsock unconnected"))
- 		test_sockmap_vsock_unconnected();
-+	if (test__start_subtest("sockmap with zc"))
-+		test_sockmap_zc();
-+	if (test__start_subtest("sockmap recover"))
-+		test_sockmap_copied_seq();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c b/tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
-index 69aacc96db36..4bc97da15a69 100644
---- a/tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
-@@ -44,4 +44,12 @@ int prog_skb_parser(struct __sk_buff *skb)
- 	return SK_PASS;
- }
- 
-+SEC("sk_skb/stream_parser")
-+int prog_skb_verdict_ingress(struct __sk_buff *skb)
-+{
-+	int one = 1;
-+
-+	return bpf_sk_redirect_map(skb, &sock_map_rx, one, BPF_F_INGRESS);
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.43.0
+-Toke
 
 
