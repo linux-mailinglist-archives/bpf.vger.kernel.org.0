@@ -1,229 +1,237 @@
-Return-Path: <bpf+bounces-74712-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74713-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5B77C6321A
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 10:20:58 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73D98C63961
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 11:37:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD19E3A9C8E
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 09:19:38 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AD3F64EDE7E
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 10:30:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53E0B326947;
-	Mon, 17 Nov 2025 09:19:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF21D2F6189;
+	Mon, 17 Nov 2025 10:30:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="vYccNuXM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QhQ/y9Os"
 X-Original-To: bpf@vger.kernel.org
-Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013013.outbound.protection.outlook.com [40.107.201.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46A9324B1C;
-	Mon, 17 Nov 2025 09:19:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.13
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763371168; cv=fail; b=hSh3oaWQhOwRZtgcFbsU/Qrnh0WsQStiuxch1dKJPSmjtcmZUB2mgXgG9Pa5Re3qo7XU8bDqIwT3g7T2JpjT4R8Zli1FqZS0mhfAMlt+PB0XLAMijuvB/NjD9XUw2WC9PGSpDn/wdUZ9MFvR/wfDCdjVZXnBlNNy1XS6hLfcP94=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763371168; c=relaxed/simple;
-	bh=sSwAimri53ZpqaxGMofsug+mGOlCKaqv1drZ6Kq1Qq0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=lRkA3PZPuhconuKA3ilRisVxdm7J5Ra/LPn8kN2rFfjb39lJwgGAw0BWMMVj21YteFgYRucBZnCOdXv2QN2pUNZy8SsCU683QNOMuBOKBZtEx3O95C1UrKW3IwmXRrBFhRlO83V5kyVZzaM29IQCIY6ZpUcFDoVA3wDtQ+urmPk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=vYccNuXM; arc=fail smtp.client-ip=40.107.201.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=M1xho5q6gK6nLoM26l+75eOBMu7tFMNcUdnsViOMem1mrViu1Ox/HR1BumuKjH2Kzpdk7tJtp1cYVoH1e313EVyLDME6jhs/jZ14L6k1ZXLopaI/cKxsfvFXMy1Zw0jeHWwIcEh5MUdQLnjAmn5KehChA+qe4z2bGxn66A03eTvzJBQ55YAAf62nn0Vud6F4Nv+/En6MZRt4EFKyYGztxjJ6/ULHpRMSl3fvc1Xg4qxEzMvu/e/AZd5nEfrEkDXFsWckhzaqVWwstC4le9TwpHfcTE9u/+VJ4uxvgudv5QxhYLbmoefLFJ+tb3OFeXG9pjFqzqzze4HaiGFUncSx8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5vXWvCvUE0dOVfLT8XLz/Xwe5MDyHfj8CzkR4lEGFMI=;
- b=kY9LXlJm8g2kDkkqpCQxpbe+Lx2gDvs0v48QZS30eppmyItE3LOKrpd03t3u+Y9cDe+iqo0W/vwmrT8MA1wytBQJc3nevrO6tKbcV5BP4ZS76+AYmIqgFXxrK9rSztvd7Zi4C022cGXonXdMMiidwkcyHU8aFeGHmT+FK/C0+GdDm0WEeSGXrh9HtqPI9ajS3iG5+ZdnFqX3SBDav3gw+z0pjMV4pvi+YVmxcx283jJXOgXOpiSqDdvcmrpfN857IO6TFnVkM7cgfWeX5JPMedbdAlkEUyz6O5R/jTDDBlztzP3No7MwtPuBglwexBYE3e26KAchBFNr1QsOG6QlPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.23.194) smtp.rcpttodomain=kernel.org smtp.mailfrom=ti.com; dmarc=pass
- (p=quarantine sp=none pct=100) action=none header.from=ti.com; dkim=none
- (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5vXWvCvUE0dOVfLT8XLz/Xwe5MDyHfj8CzkR4lEGFMI=;
- b=vYccNuXM5PJC2uBCDdtWlpTvUKNzTVSwcqYbpy8maMmGUFE9F+hiDggk9O4orqHg98a80yA8e18nQ8KYdcuPwze8f09BqfDIO5um1uUin4f1MLlwlDYFJve3xHhXUq2aOj38/w+kmOZOwpA1riXlRqqnpagW8RDAFaTijU6q82Y=
-Received: from SJ2PR07CA0002.namprd07.prod.outlook.com (2603:10b6:a03:505::25)
- by DS7PR10MB4878.namprd10.prod.outlook.com (2603:10b6:5:3a8::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.20; Mon, 17 Nov
- 2025 09:19:21 +0000
-Received: from SJ1PEPF00002324.namprd03.prod.outlook.com
- (2603:10b6:a03:505:cafe::14) by SJ2PR07CA0002.outlook.office365.com
- (2603:10b6:a03:505::25) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9320.22 via Frontend Transport; Mon,
- 17 Nov 2025 09:19:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.23.194)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.23.194 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.23.194; helo=lewvzet200.ext.ti.com; pr=C
-Received: from lewvzet200.ext.ti.com (198.47.23.194) by
- SJ1PEPF00002324.mail.protection.outlook.com (10.167.242.87) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9343.9 via Frontend Transport; Mon, 17 Nov 2025 09:19:21 +0000
-Received: from DLEE201.ent.ti.com (157.170.170.76) by lewvzet200.ext.ti.com
- (10.4.14.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 17 Nov
- 2025 03:19:18 -0600
-Received: from DLEE211.ent.ti.com (157.170.170.113) by DLEE201.ent.ti.com
- (157.170.170.76) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 17 Nov
- 2025 03:19:18 -0600
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE211.ent.ti.com
- (157.170.170.113) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
- Transport; Mon, 17 Nov 2025 03:19:18 -0600
-Received: from [10.24.69.13] (meghana-pc.dhcp.ti.com [10.24.69.13] (may be forged))
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5AH9J89Y2242206;
-	Mon, 17 Nov 2025 03:19:09 -0600
-Message-ID: <b547779d-8dad-4e01-b9f4-a291d70ba6be@ti.com>
-Date: Mon, 17 Nov 2025 14:49:07 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28AC827467E
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 10:30:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763375420; cv=none; b=TQ51H+nD2epDwieoz8HjJvTVRGVbrgOS6vX9Nzh0iuueZ8IUPbdewnO6E4EJJUQ2+A11ELs7STyWWOHSs7C0Qhfb3fRRSgfhKGfIBPiIcrM//oddYSCNntfz+ek/goq3pP/aCP9no2waHc/FsRBaA49q3B+McwwWB+CTylXK2rY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763375420; c=relaxed/simple;
+	bh=SDIhl0Wf5uJy7LMweM1GvOygaJTp2FtmNpW20YBGiCA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GWuDMCARinRpYrAlGkJhfljasIEHKTAfbH4bDl7SsoSuUMaC2K3RL8betbgx7NtlcgLNPoJzlpoL5kOEmidBMxuBbq/pt0NigFCM3OZ6mnL+SA5UPaW23Dm1/remYuwSm2e3gzAigPRonP7warZPuqv3EY5Rb51hxqCKn3BJQUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QhQ/y9Os; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-64149f78c0dso6295285a12.3
+        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 02:30:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763375416; x=1763980216; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Sr7f5N16qvmWUfUsmezCBPyPi6fPqUsa1uGo+ZkQUg=;
+        b=QhQ/y9Os/C93MMoFa9/MzfxrL2G2h/3+q//4d1IhV2lEUBbEVfLH6EpU9E3jP/9LKJ
+         fI2kjDoV4CPQjQlBO5mZIcoFLzilon+GKN4YiwUTLU3ltKOswoOGqWpAHuU17JXKIONd
+         CBB13tUmVnvun8uC1Y2ydpYOdh2XA1DU6oe6Ph0uT64IkYXLIYmTcwAXDzVDePACJJSA
+         4YTHkrANfBB2lJcV787AA34Ssy6bZ7PD+zqTvpUpaetv2ldEUl7Hf8CM+4VpRE9Z77d1
+         fNrSu89I2D0wl3QYionecIOrqofP1bCBbSW/ekqS0KuzO57lbESyeQnimZyu5avv2cvy
+         AFVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763375416; x=1763980216;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=+Sr7f5N16qvmWUfUsmezCBPyPi6fPqUsa1uGo+ZkQUg=;
+        b=WDj9SLua9dcTQOivXWrTbb4MkCvhscua9Fu59WDXNBF1T37HWgoEPuk4r60boJY6Rw
+         kvpLVxrDlT4UeIoyd+PuWEWvpV17wQ4npkEmteMrseVSLB9tUPW9tBRbaQ3wxoCUD8ph
+         uAo/HS+TtQ41EuESHoZ6KaMqu/UFfru05kAWzMEy/y8JsJBRuztaPPw+raPLL1asyxSJ
+         mYWyKmDp3SMW6o4HKXpVx4RFkqS3+UKAfC8ptRVzZq6E91m/Y8j+mWPkhiRfsrx+m22Y
+         KDaMxwA8pp5OU6aos4NVNYolKuzAtsh0OUNvh1EGLldvpEcd4q5v+6nNnCFiOptnTnfJ
+         U8FA==
+X-Gm-Message-State: AOJu0Yy2rWHqILcmG5dMN440Et3/EY3tCq4TMn7SX8pYnpVsGzmMKAw5
+	yQhMduoM0exZiuOy5CEwATx53l99dt7SUh48mfqAbFvwWS57zm0GssLWvqXEETJRFEW/YGzHx7t
+	fpVDetb1a8pKg7LYAl3QKaQFjjrWFKg==
+X-Gm-Gg: ASbGnctCzBkUl0pbv1X/8IPQa5Y2xm6iKOy4vCeQQ3rjpVoxKryXGeiDqBNwu3bBd+/
+	WJ1bt6uNO07iETd5ctZoC8Lt6uH6ZjEKPJu2YsBIqiP9n0KLPcGYW/+AmJzG0LPyVP7A6DMpANW
+	vlbDxDPp1ho7n6Ok0FHrs7XHgYkxAbD6Jfh0OO9ImN/vEx43hAyjiGjT74aMZmYJ+NwCDuADCwp
+	Wxq02gg8dDUepXtWOMSc9ykmChkOFlXXYm8hip6AJE/mqhGkXBLDPeqv2AzKvYyjDDZG5rSVIdl
+	TG6Wzixs/PhGDg==
+X-Google-Smtp-Source: AGHT+IE5+VyvpJumg2dzIPu6yyk0dBC4e0+1bnkh8uQxLyLzp9Zo/yiSoJYeMRt7217cL7FFfaDemE5UibdWoYZVAc4=
+X-Received: by 2002:a05:6402:35d5:b0:640:b31a:8439 with SMTP id
+ 4fb4d7f45d1cf-64350e2360bmr11041294a12.12.1763375416182; Mon, 17 Nov 2025
+ 02:30:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 5/6] net: ti: icssg-prueth: Add AF_XDP zero
- copy for RX
-To: Simon Horman <horms@kernel.org>
-CC: <namcao@linutronix.de>, <vadim.fedorenko@linux.dev>,
-	<jacob.e.keller@intel.com>, <christian.koenig@amd.com>,
-	<sumit.semwal@linaro.org>, <sdf@fomichev.me>, <john.fastabend@gmail.com>,
-	<hawk@kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
-	<pabeni@redhat.com>, <kuba@kernel.org>, <edumazet@google.com>,
-	<davem@davemloft.net>, <andrew+netdev@lunn.ch>,
-	<linaro-mm-sig@lists.linaro.org>, <dri-devel@lists.freedesktop.org>,
-	<linux-media@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <srk@ti.com>, Vignesh Raghavendra
-	<vigneshr@ti.com>, Roger Quadros <rogerq@kernel.org>, <danishanwar@ti.com>
-References: <20251111101523.3160680-1-m-malladi@ti.com>
- <20251111101523.3160680-6-m-malladi@ti.com>
- <aRcFb-vsoLw24MbU@horms.kernel.org>
-Content-Language: en-US
-From: Meghana Malladi <m-malladi@ti.com>
-In-Reply-To: <aRcFb-vsoLw24MbU@horms.kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00002324:EE_|DS7PR10MB4878:EE_
-X-MS-Office365-Filtering-Correlation-Id: dc9abde0-0dc2-455c-dbaf-08de25ba645b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|1800799024|36860700013|7416014|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?SGxld001YmhKVFlsTDl5VmFpOGNvWFlrTlVtUG9qZVRMTTRoYXE2d2ZDMTA2?=
- =?utf-8?B?Qm9kTDdEMzlYdW1mMVhucmk2dkw2cjMrdjZDdjcwOWlWSmJ5Ky9peWFjeWhB?=
- =?utf-8?B?NnJ4NHdaS3ZidVYrSHdMRnMyeVVteUZ1eTFsejMxeUhwQjlIcmhyN01YaUZ6?=
- =?utf-8?B?VUNpSGRxdDNWa2s0KzVBNzUyZUlaam9FSVF1WFFnczl1T3hFUnNnNm4wNWMv?=
- =?utf-8?B?OXYzNUh2WXFWTFNJK0lVL1pQd2RpMWh3eFBkQXdsaDFpUjMxOEpJTk1YajVJ?=
- =?utf-8?B?OFBnUWU2WmJtd0k2Y2MxcW83cWpta2RDc2hPQXJLYTdzY211c255UWJPREx1?=
- =?utf-8?B?dVlYY3FJWmJDK3M3WWhXWXZ6QnhVdnd1cTYvd0R5SmQwODBhMTgwQlhVSC9Q?=
- =?utf-8?B?M1A2dFBnNTRCS1N6eDR0Tm9iMEFFZkp2Rk9mVFJOTm1Lc3NTV3RDanUzMWJo?=
- =?utf-8?B?TU1wMlk5aFNnMHFYS2NNa0xHVlhOMmNLNkhuUENGaUw0NzYvOFBVUDB1ZzZZ?=
- =?utf-8?B?YnQ5WXk4WmR4ekFLbzEvU2RYU3ZzZElxT2p3Y3FDNUhFVnZkdktGWWhBeEdH?=
- =?utf-8?B?QUxMLzBaYVlBaWdrd3p2TzhNRWdabkNhQ0hta0p4aUh5WVdNeG85ZjFQSmFE?=
- =?utf-8?B?cnlPTTVoMXNYdlFlK0R0a2czelhTT0hvUWcrMURvZmd3dlJhRC8zRnVyS2VV?=
- =?utf-8?B?L3VrN2k1OXhyL3l1WkdIdHhTL0x6SWs0V215YVkxc3AwZlNiOXJMdHhRaWFN?=
- =?utf-8?B?aDhKVXg3LzVTWm9BQnJCUldOYm82RTg3dXJ0UDhNN3hEZVJjV0p4elczcU13?=
- =?utf-8?B?THNEU3pkV1pkL2plU0ZUU0JYUUNBY2xDSjBwUm9HOUtOWlpCSWRGYnFINUFy?=
- =?utf-8?B?eXpFMHg5K3dOdUw1QjlkSzRWb245REhVc0hpSjJHb0R5UGZVbUszYmtTc2x6?=
- =?utf-8?B?dE9uRW9WYW9zbkNMd3ppblRZMVljbFIyUGE2eFk4dkpFTWFCM3ZaeU51Y1Mv?=
- =?utf-8?B?dTZUWWt3ZG5RUy9jWkV2dW5vQjkzZ1YzT2VndEN3UmV4ZmN6eElHTDEwYlkr?=
- =?utf-8?B?SlI2d1lrQ082U2RvN2Z5SWh3eXpLczdneU5CNzBKelNqdjduWWxSWGpRWFhP?=
- =?utf-8?B?SHYxRUZ2SzM4U0FkSlhhQXhxcFdVZjlpb1ZSaEdmVTVQNHo4amNlcURxaGJz?=
- =?utf-8?B?dTBTM0FqZ0VZQTR1eERnbmZBaHdBeVhRenR0M2wvaDNSdTMveTdjQ3hnNnQ2?=
- =?utf-8?B?eUNJYTViVTdqTTFUektuSTNYbFBmWEcydExWSlgxU0twMWRuRkxGQ21iTTlZ?=
- =?utf-8?B?bFEvWUFwY0ZGdFFCWW4wa1UwSUhIMEFMdk9qeFpkUCtZcVpBQitvYk1TaGYr?=
- =?utf-8?B?RTJtVXF0Qjd0MW5wZUR2ZmFiZEIwNUZWWTg1QVM4dEFxa3NBTURLNHA3MkVU?=
- =?utf-8?B?MVlxMG1MeUZ5ZnJHYTlxbFoxNTlCdEkxQXo5YU8xTDJXZTBXVlliUXBWZkgy?=
- =?utf-8?B?MStQbzZYVHN6aTJIN2crM0NVOTh3SjRYZGMzN2RlSTd4N2dDUTkrci9xSGJm?=
- =?utf-8?B?OUZHdkkrSDlDd1Q4c0JKdTBXTUxOOHZMYXNwNzYzSm15K0w2WmxhdEZSWGZh?=
- =?utf-8?B?L3N4UUJwVFEvb3MycXhINU5pTFZ3UzY1dklvWG1IY1Mvd0xBeFZFUWo4Znlr?=
- =?utf-8?B?eTBYNzRyUXFTc2NFalF2SGw2c1djTUh4d0hic0hSakpSVmN1bzNpMDZud3ph?=
- =?utf-8?B?enlCNGpta1U4dEVoaGFSSmN5Tkc1WXg2NmVoM2JDZ0tJMlJrMXRmMTZDbmpj?=
- =?utf-8?B?d2tidFRpVDNNSElTelkwZy96R2pkUEFRWjFJOXN5NGV0M0piYkJOWnBzUjBQ?=
- =?utf-8?B?VzFrUGg2ZUZGVmVuSkQ2TUp1aUdhT2RObE1QSFcvTlZldTdXRWlVSjFFNDBM?=
- =?utf-8?B?VTVzNnNNeDJkSitkdlh1RXpBZ2hzWHdsWUJXbi9NcHhjUHplVkdnR3hZdUp1?=
- =?utf-8?B?TS95eGlyQlN3VlJlb05vam9OMTZHZENOS0ZDRVp2dXoxNE9ObTZXZmVJbXRa?=
- =?utf-8?B?VEx6Smd5Si9OQk0yL3FqL3FlQ0xTbHhITVNoL0pwc2x4QWtwTDNNdjZRL0Yr?=
- =?utf-8?Q?RIw4=3D?=
-X-Forefront-Antispam-Report:
-	CIP:198.47.23.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet200.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(36860700013)(7416014)(376014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2025 09:19:21.0396
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc9abde0-0dc2-455c-dbaf-08de25ba645b
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.23.194];Helo=[lewvzet200.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00002324.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB4878
+References: <20251106125255.1969938-1-hao.sun@inf.ethz.ch> <CAADnVQ+AsvqZZOPmga0VsavQNt0Qc4Gbh9+KPSkaxoOsstELxQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+AsvqZZOPmga0VsavQNt0Qc4Gbh9+KPSkaxoOsstELxQ@mail.gmail.com>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Mon, 17 Nov 2025 11:30:04 +0100
+X-Gm-Features: AWmQ_bnH9KnHhsR1B1Uoa8mbNqjxptJw4skEM36CG1l8ptxc3b62NuHFA2Sghn4
+Message-ID: <CACkBjsauBbmKRAgEhOujtpGBeAWksar9yS+0hk1i9pLYwtQN3A@mail.gmail.com>
+Subject: Re: [PATCH RFC 00/17] bpf: Introduce proof-based verifier enhancement
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	LKML <linux-kernel@vger.kernel.org>, Hao Sun <hao.sun@inf.ethz.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Simon,
+On Sat, Nov 15, 2025 at 3:27=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> I tried to categorize failures from many of these ~1500
+> and lots of them are similar.
+>
+> In paper you mention 3 examples:
+> - ptr + str_pos, with size MAX - str_pos
+> - s>>=3D 31
+> - &=3D 0xffff
+>
+> Did you categorize all 1500 failures into categories?
+>
+> What are the specific gaps in the verifier beyond these 3 cases ?
 
-On 11/14/25 16:03, Simon Horman wrote:
-> On Tue, Nov 11, 2025 at 03:45:22PM +0530, Meghana Malladi wrote:
-> 
-> ...
-> 
->> diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
-> 
-> ...
-> 
->> +static int prueth_dma_rx_push_mapped_zc(struct prueth_emac *emac,
->> +					struct prueth_rx_chn *rx_chn,
->> +					struct xdp_buff *xdp)
->> +{
->> +	struct net_device *ndev = emac->ndev;
->> +	struct cppi5_host_desc_t *desc_rx;
->> +	struct prueth_swdata *swdata;
->> +	dma_addr_t desc_dma;
->> +	dma_addr_t buf_dma;
->> +	int buf_len;
->> +
->> +	buf_dma = xsk_buff_xdp_get_dma(xdp);
->> +	desc_rx = k3_cppi_desc_pool_alloc(rx_chn->desc_pool);
->> +	if (!desc_rx) {
->> +		netdev_err(ndev, "rx push: failed to allocate descriptor\n");
->> +		return -ENOMEM;
->> +	}
->> +	desc_dma = k3_cppi_desc_pool_virt2dma(rx_chn->desc_pool, desc_rx);
->> +
->> +	cppi5_hdesc_init(desc_rx, CPPI5_INFO0_HDESC_EPIB_PRESENT,
->> +			 PRUETH_NAV_PS_DATA_SIZE);
->> +	k3_udma_glue_rx_dma_to_cppi5_addr(rx_chn->rx_chn, &buf_dma);
->> +	buf_len = xsk_pool_get_rx_frame_size(rx_chn->xsk_pool);
->> +	cppi5_hdesc_attach_buf(desc_rx, buf_dma, buf_len, buf_dma, buf_len);
->> +	swdata = cppi5_hdesc_get_swdata(desc_rx);
->> +	swdata->type = PRUETH_SWDATA_XSK;
->> +	swdata->data.xdp = xdp;
->> +
->> +	return k3_udma_glue_push_rx_chn(rx_chn->rx_chn, PRUETH_RX_FLOW_DATA,
->> +					desc_rx, desc_dma);
->> +
->> +	return 0;
-> 
-> nit: The line above is dead code.
-> 
+There are additional patterns beyond the three cases mentioned
+earlier. I reviewed
+several other object files and their verifier logs, and in some
+instances, the root
+are insufficient tracking of relationships between registers.
 
-Yes, this is a silly miss. Thanks for pointing this out. Will fix it for 
-v6. Thanks.
+The example below was analyzed manually by me. Let me know if you spot
+any mistakes.
 
->> +}
-> 
-> ...
+clang-15_-O1_felix_bin_bpf_from_wep_debug_v6.o/calico_tc_skb_accepted_entry=
+point:
+```
+...
+572: (61) r1 =3D *(u32 *)(r10 -272)     ;
+R1=3Dscalar(id=3D70,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D0xfff=
+f,var_off=3D(0x0;
+0xffff))
+573: (54) w1 &=3D 255                   ;
+R1=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D255,var_off=
+=3D(0x0;
+0xff))
+574: (bc) w2 =3D w1                     ;
+R1=3Dscalar(id=3D233,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D255,=
+var_off=3D(0x0;
+0xff)) R2=3Dscalar(id=3D233,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=
+=3D255,var_off=3D(0x0;
+0xff))
+575: (04) w2 +=3D -4                    ;
+R2=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D251,var_=
+off=3D(0x0;
+0xffffffff))
+576: (a6) if w2 < 0x2 goto pc+130     ;
+R2=3Dscalar(smin=3Dumin=3Dumin32=3D2,smax=3Dumax=3D0xffffffff,smin32=3D-4,s=
+max32=3D251,var_off=3D(0x0;
+0xffffffff))
+577: (56) if w1 !=3D 0x0 goto pc+8      ; R1=3D0
+578: (61) r1 =3D *(u32 *)(r8 +432)
+...
+R3 !read_ok
+```
+From 576 to 577, (w1&255) + -4 >=3D 2, so w1&255 >=3D 6; hence, 577 to 578
+is unreachable.
 
+clang-19_-O1_seccomp_x86_bpfel.o/ig_seccomp_e:
+```
+30: (79) r8 =3D *(u64 *)(r7 +8)         ; R7=3Dctx() R8=3Dscalar()
+...
+41: (bf) r1 =3D r8                      ; R1=3Dscalar(id=3D2) R8=3Dscalar(i=
+d=3D2)
+42: (67) r1 <<=3D 32                    ;
+R1=3Dscalar(smax=3D0x7fffffff00000000,umax=3D0xffffffff00000000,smin32=3D0,=
+smax32=3Dumax32=3D0,var_off=3D(0x0;
+0xffffffff00000000))
+43: (77) r1 >>=3D 32                    ;
+R1=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xffffffff))
+44: (25) if r1 > 0x1f3 goto pc+98     ;
+R1=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D499,var_off=
+=3D(0x0;
+0x1ff))
+45: (bf) r1 =3D r10                     ; R1=3Dfp0 R10=3Dfp0
+...
+139: (57) r8 &=3D 511                   ;
+R8=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D511,var_off=
+=3D(0x0;
+0x1ff))
+140: (0f) r0 +=3D r8                    ;
+R0=3Dmap_value(map=3Dsyscalls_per_mn,ks=3D8,vs=3D501,smin=3Dsmin32=3D0,smax=
+=3Dumax=3Dsmax32=3Dumax32=3D511,var_off=3D(0x0;
+0x1ff)) R8=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D511,v=
+ar_off=3D(0x0;
+0x1ff))
+141: (b7) r1 =3D 1                      ; R1=3D1
+142: (73) *(u8 *)(r0 +0) =3D r1
+invalid access to map value, value_size=3D501 off=3D511 size=3D1
+```
+From 44 to 45, r1<=3D499; hence, w8<=3D499 After r8&=3D511, the access is s=
+afe.
+The above cases are hard to address with small improvements to the verifier=
+.
+
+I did find lots of similar cases where the imprecision causes were similar.
+This is limited by the way we reveal those false rejections (i.e., compile
+the same source with different compiler configurations).
+
+clang-17_-O1_felix_bin_bpf_to_l3_debug.o/calico_tc_host_ct_conflict:
+```
+1899: (63) *(u32 *)(r10 -296) =3D r8    ;
+R8=3Dscalar(id=3D56,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D255,v=
+ar_off=3D(0x0;
+0xff))
+1900: (16) if w8 =3D=3D 0x6 goto pc+1     ;
+R8=3Dscalar(id=3D56,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D255,v=
+ar_off=3D(0x0;
+0xff))
+1901: (b7) r3 =3D 0                     ; R3=3D0
+1902: (61) r6 =3D *(u32 *)(r10 -216)    ; R6=3D0 R10=3Dfp0 fp-216=3D????0
+1903: (61) r1 =3D *(u32 *)(r10 -296)    ;
+R1=3Dscalar(id=3D56,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D255,v=
+ar_off=3D(0x0;
+0xff)) R10=3Dfp0 fp-296=3D????scalar(id=3D56,smin=3Dsmin32=3D0,smax=3Dumax=
+=3Dsmax32=3Dumax32=3D255,var_off=3D(0x0;
+0xff))
+...
+1907: (56) if w1 !=3D 0x6 goto pc+10    ; R1=3D6
+1908: (69) r1 =3D *(u16 *)(r3 +12)
+R3 invalid mem access 'scalar'
+```
+The fact w8!=3D6 (from 1900 to 1901) is not 'remembered', the unreachable p=
+ath
+(from 1907 to 1908) is mistakenly taken. One possible fix is another
+state forking
+on the neq path to remember this information and propagate this information=
+ to
+all the regs and slots that share the same ID. But again, this leads more s=
+tates
+to explore on neq/eq branches.
+
+Another case that is trivially the same:
+clang-15_-O1_felix_bin_bpf_from_hep_dsr_no_log_co-re.o/calico_tc_skb_accept=
+ed_entrypoint:
+```
+262: (56) if w8 !=3D 0x5 goto pc+4 267: R3=3Dscalar(id=3D171,...)
+R8=3Dscalar(id=3D171,var_off=3D(0x0; 0xff))
+267: (56) if w8 !=3D 0x5 goto pc+16     ; R8=3D5
+268: (61) r4 =3D *(u32 *)(r7 +372)      ; unreachable
+269: (61) r3 =3D *(u32 *)(r1 +0)
+R1 invalid mem access 'scalar'
+```
 
