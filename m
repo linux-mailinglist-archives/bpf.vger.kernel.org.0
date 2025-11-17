@@ -1,139 +1,150 @@
-Return-Path: <bpf+bounces-74680-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74681-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54E96C61C2B
-	for <lists+bpf@lfdr.de>; Sun, 16 Nov 2025 21:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D193C61F6F
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 01:47:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 00E6D35C2D4
-	for <lists+bpf@lfdr.de>; Sun, 16 Nov 2025 20:11:56 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0B88334EE45
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 00:47:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 044F725A357;
-	Sun, 16 Nov 2025 20:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33ED15A864;
+	Mon, 17 Nov 2025 00:47:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b="PzgA6oFL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TmjeNNR6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A77231A55
-	for <bpf@vger.kernel.org>; Sun, 16 Nov 2025 20:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C494C9D
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 00:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763323908; cv=none; b=o+hGL77ACfN/gPSWhiC4DgBGbtZCVfDpgwZQTGVaSZr6f0mMuMj+yJ2HGUhfkqt8ZOwUAte8mZbr6e/cLU6kArOeT8TfeQGQSNxrynPAdFHD7qH4oLo0YeGFQ6IogNrXn1G3ci7JTNqha5KvhIt6LcdGXm+w+9MEyXQKwRA96WI=
+	t=1763340431; cv=none; b=epjkuTCxSpiPRCHGZ5/y3Ey4jDZ2FsVmdJ02pblm2Jdd7OzwkjkOVIgz2r857DpCqg5JkqG52dKGgr2Wr8sGFeKFdW8Fll0TivhcI0ReTAbvWqmaS8a3eO8PBnqh1P7l9rV9p5pRuRnMbq+WIHaNaKUYMvhj62aGBGV8+ryS56o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763323908; c=relaxed/simple;
-	bh=O/Vjk1Xh8eYR8Ur3eWl+sAxXffr4Y9FnqGqkh9A6umE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HCcQm8CAm8dhAET0ItgkgVcWQvfdXuE+GQ+YtX4vx1AUBrpveVnEB1Y8LUJRmSGzs8peoI19peY8vw8AvxOo/XOcEyrUamaUCVE/2FwP4rcCtWyO6FVDbGMkO4DopL+49xcMrimn+45nze180oU89AwKNzJ8ocuGK/oUvSAJpHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu; spf=pass smtp.mailfrom=superluminal.eu; dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b=PzgA6oFL; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=superluminal.eu
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-3436d6ca17bso3901584a91.3
-        for <bpf@vger.kernel.org>; Sun, 16 Nov 2025 12:11:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=superluminal.eu; s=google; t=1763323904; x=1763928704; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i6s8G8P9JvtfPhs/P97BHamC8MDASN+3jiglPXbUicI=;
-        b=PzgA6oFLAjEgKf/hYA0AdGdVOdlOnwt+GNQGft8PRplHl4ksxRggorkAbR5vmW72xq
-         1+ZA3cqEX6vHlh7jg8reIDNcqF0+vi0RLG4xBPmWc7MI8PlbZX6S/yvQsNQLejnlOPOD
-         OJZb3eF5/7PX7VRA2k9an/I8UQjDUx6qgJmSR/KIVJ8H0eatYZb+BWW2+f+uEBdBtIXu
-         4FzAzvWJzcaKiVOnYee9GgVWNaWS9m/GslqotkXNDxycCmIIM4CxNCeTeHqDPKaP1mcm
-         BwbwW57SxQORcYiIhhB3WQTb8PxwdjNK8xBqVyQ/glcq/mv5GnXhYIB6xiHc6Zqr82Vq
-         NlAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763323904; x=1763928704;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=i6s8G8P9JvtfPhs/P97BHamC8MDASN+3jiglPXbUicI=;
-        b=rCktSdlWOucp+XzF1mvNjNgRAYklVN9WDAza6l+Q55yDvQXa6C/mfwNimWSgeoxsFt
-         X4DYMRvBwtzhfUYZVEmt5T0jCV00muIgqicUibPaFZ0q03xj9F01yg6cbPTp4WRXutZH
-         P8vFgYdvYf2Jlb5bxyMn4v1+cyQp8AY6QKm0Iuo63S9luF8n0HmJ7TQYXOs2mvK67sTj
-         LLlz6XSQPLCQCRMM7CdY2LgoYWLgNujG3+V9ISuv3geuz7z528J8VD+9JgCMWaRa/Q2A
-         6FZnxMwwmUx+TV49LuJBD/b5c8VTsByY2NNeiQlD6yLecpS0R5UmfknrOB1UStHiTnMR
-         zTYg==
-X-Forwarded-Encrypted: i=1; AJvYcCWvIJm2G48piRdpP91g5KBRgVw7L7oPc3XY/9Rpm2SA+9gmbvtW5Crb8hiorMWbIqPHx5w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzFqoEicXGftsPbjuyI+FyB5Wg14x0vO1IHuIGvSBziVLakMrMD
-	SIIggmuA99hZQ/ufO62fsJ1WWQe7Yeqv3rMppDXmUZXbWuQ0KEmIm3VUzeoqPSuEUe8cFOJO32N
-	tCKElBNWsdQpOVGxxcuEgim5nS0LZTsqV1f+Tv1uysT9/q5+IAnOgwzw=
-X-Gm-Gg: ASbGncstMjgeIh+mNhat2agcqJTxR3xl/PILpCwYP7vYCUh4jl2U7mUs19lZHi3T5ao
-	iMyn1Vx1xijPXu4JhmZp3AmKESFNqlAphcHTnz/koi34sFzQJk6+LT4dgg9rxWg0ymg6G5enYln
-	bcV7+VZHHx1tAB/IWGUNucIITR+gBaGyxAFe3AtdxtEosdvVgR7vUrjWb+y+1V5ssMxQEtDNn4d
-	+m0Yib/yHuKQFScREPoYIhh9OoMolgrex4DFvflWg0IPf9aDpQPjEC760h1fQ==
-X-Google-Smtp-Source: AGHT+IFBJXOCk3BfQUhUlU9G/ttvy7/dKS+0r8ommAcsJ2pmnQf4zHTY16AW13lZtIdknagx6qjLUyoqNImQEam/YpI=
-X-Received: by 2002:a17:90b:5444:b0:339:d1f0:c740 with SMTP id
- 98e67ed59e1d1-343f9ea688fmr10542349a91.1.1763323904225; Sun, 16 Nov 2025
- 12:11:44 -0800 (PST)
+	s=arc-20240116; t=1763340431; c=relaxed/simple;
+	bh=8+OxfMJRZukPSQDiqAaIH0jG1XyOdpSWU++IDXiOpps=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=e5CyiorN7EoiqQnyBFTK6YmELa1YbBrnUYzThD0UcS0I8DV9z9ZcmoJr0zBco4lDjGuwl28mUL3UZjzUBCA9klBwJjB/BnO9LdPos8tIzYLWV7cQl+3zVDQb5tF6E+5fsKOAbpVf1xI5OtlZY2/Ok/sw3UwND1b0LBxBSOXeRVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TmjeNNR6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 661DCC19422;
+	Mon, 17 Nov 2025 00:47:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763340427;
+	bh=8+OxfMJRZukPSQDiqAaIH0jG1XyOdpSWU++IDXiOpps=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TmjeNNR6Yh1zZofnGsKjR2HmSeO3i0zeL2/0uKAKNTvjJBelY/qzIrNTbcGHeffdt
+	 YO06dhCLka0fnyIkr7mXmT4goNoG+tN3JLTb8qvDltQb4tSwFTjzMZy5lAiXVq6XCb
+	 7/+dNrEfaoZCbSdGq1zio6xgdZCD2ASzO9Is3vsRAg0EUaDQwSE8jaWbvyMbJS9GlJ
+	 t/p6fE0qgl6cSBG6jDWXCL5UQB34xzeHN9pHlGRrwzTWAnbakbA7Q8HStZvdRi00Sh
+	 /60Zk41fH4xBK/sxHhwQKmec5q8PJxE9H54dTCYQn1qjsn/GIP86f2jbrv+knVwHmJ
+	 Ygahhpdk5FcsA==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next 0/4] bpf: arm64: Indirect jumps
+Date: Mon, 17 Nov 2025 00:46:35 +0000
+Message-ID: <20251117004656.33292-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAH6OuBTjG+N=+GGwcpOUbeDN563oz4iVcU3rbse68egp9wj9_A@mail.gmail.com>
- <CAADnVQLXJyMhfqr=ZEUWsov3TC155OkGvuaOHL5j+aK5Pv=F7A@mail.gmail.com>
- <CAH6OuBTXwW9WKHRNS53kRgZ3Y5GdH3n0EY4YogOGGSTGnYL9og@mail.gmail.com> <CAADnVQ+DycJQ7eW_FDE59Qc1SzJseYy2f8yniqh0C354ruLdCw@mail.gmail.com>
-In-Reply-To: <CAADnVQ+DycJQ7eW_FDE59Qc1SzJseYy2f8yniqh0C354ruLdCw@mail.gmail.com>
-From: Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>
-Date: Sun, 16 Nov 2025 21:11:32 +0100
-X-Gm-Features: AWmQ_blGSsz2lbdMvzp2BaeQnhrwr2EeNt7qLtty5VDkhPvJIqMjnvK8XvmChOE
-Message-ID: <CAH6OuBRtCyRhvn4E3yQSqpynoqRiB+sYbiZP1ATqXE4LQDTQmA@mail.gmail.com>
-Subject: Re: bpf: system freezes due to recursive lock in bpf_ringbuf_reserve()
- caused by commit a650d38 ("bpf: Convert ringbuf map to rqspinlock")
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	Jiri Olsa <olsajiri@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Jelle van der Beek <jelle@superluminal.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, Nov 16, 2025 at 1:23=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sat, Nov 15, 2025 at 3:04=E2=80=AFPM Ritesh Oedayrajsingh Varma
-> <ritesh@superluminal.eu> wrote:
-> >
-> > Hi Alexei,
-> >
-> > Thanks for the info! I wasn't aware of that fix, but I just checked,
-> > and my kernel *does* have that fix. I'm on 6.17.1-300.fc43.x86_64.
-> >
-> > I just installed the kernel sources locally to make sure, and the code
-> > for rqspinlock matches that of the commit you linked (i.e. the
-> > is_nmi() check added in the commit is there). The code for the related
-> > commit  164c246 ("rqspinlock: Protect waiters in queue from stalls")
-> > is also present. You can verify this yourself on Fedora's 6.17.1 git
-> > tree: https://gitlab.com/cki-project/kernel-ark/-/blob/kernel-6.17.1-1/=
-kernel/bpf/rqspinlock.c#L474
-> >
-> > So it's good to know issues have already been fixed in this area since
-> > the original commit, but it looks like there's still something lurking
-> > here. To clarify, I'm not exactly sure which of the various timeout
-> > cases in raw_res_spin_lock_irqsave() this recursive lock situation is
-> > hitting.
->
-> Ohh. Interesting. It's a new issue then. We thought that
-> that commit fixed it for good.
-> How quickly does your reproducer hit it ?
+This set adds the support of indirect jumps to the arm64 JIT. It
+involves calling bpf_prog_update_insn_ptrs() to support instructions
+array map. The second piece is supporting BPF_JMP|BPF_X|BPF_JA, SRC=0,
+DST=Rx, off=0, imm=0 instruction that is trivial to implement on arm64.
 
-It reproduces ~instantly on the machines I've tested on, which is a
-bit surprising given the inherently racy nature of this issue.
+When running the selftests after doing the above changes, I found that
+on arm64 builds of llvm, a relocation section was being generated for
+.jumptables sections and it was making libbpf fail like:
 
-I've reproduced this on 4 core / 8 threads and 16 core / 32 threads
-machines myself (kernel 6.17.1-300.fc43.x86_64 on both). The user who
-first reported the issue was also on a 16 core / 32 thread machine
-(kernel 6.17.4-200.fc42.x86_64).
+libbpf: relocation against STT_SECTION in non-exec section is not supported!
+Error: failed to link 'tools/testing/selftests/bpf/cpuv4/bpf_gotox.bpf.o': Invalid argument (22)
 
-I'll be out of town for a few days from tomorrow, but I'll try to put
-together a more complete repro before then if possible. I can also
-provide more diagnostic information if needed.
+Which is due to:
 
->
-> Kumar,
-> please take a look.
+Relocation section '.rel.jumptables' at offset 0x5b50 contains 263 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name
+0000000000000000  0000000300000002 R_BPF_64_ABS64         0000000000000000 syscall
+0000000000000008  0000000300000002 R_BPF_64_ABS64         0000000000000000 syscall
+0000000000000010  0000000300000002 R_BPF_64_ABS64         0000000000000000 syscall
+
+This rel section is not generated by x86 builds of LLVM. The third patch
+of this set makes libbpf ignore relocation sections for .jumptables.
+
+The final patch enables selftests on arm64:
+
+ [root@localhost bpf]# ./test_progs-cpuv4 -a "*gotox*"
+ #20/1    bpf_gotox/one-switch:OK
+ #20/2    bpf_gotox/one-switch-non-zero-sec-offset:OK
+ #20/3    bpf_gotox/two-switches:OK
+ #20/4    bpf_gotox/big-jump-table:OK
+ #20/5    bpf_gotox/static-global:OK
+ #20/6    bpf_gotox/nonstatic-global:OK
+ #20/7    bpf_gotox/other-sec:OK
+ #20/8    bpf_gotox/static-global-other-sec:OK
+ #20/9    bpf_gotox/nonstatic-global-other-sec:OK
+ #20/10   bpf_gotox/one-jump-two-maps:OK
+ #20/11   bpf_gotox/one-map-two-jumps:OK
+ #20      bpf_gotox:OK
+ #537/1   verifier_gotox/jump_table_ok:OK
+ #537/2   verifier_gotox/jump_table_reserved_field_src_reg:OK
+ #537/3   verifier_gotox/jump_table_reserved_field_non_zero_off:OK
+ #537/4   verifier_gotox/jump_table_reserved_field_non_zero_imm:OK
+ #537/5   verifier_gotox/jump_table_no_jump_table:OK
+ #537/6   verifier_gotox/jump_table_incorrect_dst_reg_type:OK
+ #537/7   verifier_gotox/jump_table_invalid_read_size_u32:OK
+ #537/8   verifier_gotox/jump_table_invalid_read_size_u16:OK
+ #537/9   verifier_gotox/jump_table_invalid_read_size_u8:OK
+ #537/10  verifier_gotox/jump_table_misaligned_access:OK
+ #537/11  verifier_gotox/jump_table_invalid_mem_acceess_pos:OK
+ #537/12  verifier_gotox/jump_table_invalid_mem_acceess_neg:OK
+ #537/13  verifier_gotox/jump_table_add_sub_ok:OK
+ #537/14  verifier_gotox/jump_table_no_writes:OK
+ #537/15  verifier_gotox/jump_table_use_reg_r0:OK
+ #537/16  verifier_gotox/jump_table_use_reg_r1:OK
+ #537/17  verifier_gotox/jump_table_use_reg_r2:OK
+ #537/18  verifier_gotox/jump_table_use_reg_r3:OK
+ #537/19  verifier_gotox/jump_table_use_reg_r4:OK
+ #537/20  verifier_gotox/jump_table_use_reg_r5:OK
+ #537/21  verifier_gotox/jump_table_use_reg_r6:OK
+ #537/22  verifier_gotox/jump_table_use_reg_r7:OK
+ #537/23  verifier_gotox/jump_table_use_reg_r8:OK
+ #537/24  verifier_gotox/jump_table_use_reg_r9:OK
+ #537/25  verifier_gotox/jump_table_outside_subprog:OK
+ #537/26  verifier_gotox/jump_table_contains_non_unique_values:OK
+ #537     verifier_gotox:OK
+ Summary: 2/37 PASSED, 0 SKIPPED, 0 FAILED
+
+Puranjay Mohan (4):
+  bpf: arm64: Add support for instructions array
+  bpf: arm64: Add support for indirect jumps
+  libbpf: Ignore relocations for .jumptables sections
+  selftests: bpf: Enable gotox tests from arm64
+
+ arch/arm64/net/bpf_jit_comp.c                      | 11 +++++++++++
+ tools/lib/bpf/linker.c                             |  4 ++++
+ tools/testing/selftests/bpf/progs/verifier_gotox.c |  4 ++--
+ 3 files changed, 17 insertions(+), 2 deletions(-)
+
+-- 
+2.47.3
+
 
