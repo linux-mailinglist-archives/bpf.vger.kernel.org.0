@@ -1,148 +1,104 @@
-Return-Path: <bpf+bounces-74728-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74729-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 322F4C6439A
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 13:59:04 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33E41C64473
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 14:07:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 64D304F1FCC
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 12:52:29 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8E5CB4E5271
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 13:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BCB33C50D;
-	Mon, 17 Nov 2025 12:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C07732C31A;
+	Mon, 17 Nov 2025 13:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aRY0mm8X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HNfcJfVs"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2109C3328F3;
-	Mon, 17 Nov 2025 12:42:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762EF283FD4
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 13:01:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763383358; cv=none; b=AzsUH0sZVrxZ+Ow2Owj0VlgI2Y9dX+H7PVmj9UGncnbb5ZHxqCWoQA0MKIELq7ft1SFrXrkKXmhw6cwMMkHNGvR8IvNBLQJ4w8oh6PXCVR2+sAppK04H9E7HerNnnIpvJb5TNpuqaQpULfDCiQHFYTq5/5CRXravNWBNRZv2KO8=
+	t=1763384469; cv=none; b=pbZsugaNMgfENGKPjP2id1GX1QphIFeJjgv2DjlwhoVSs3viMiZ75I0LO3ITnJ8pMXrFhrYCnK7i07YdifcTBDzqk0QLZ+01DaHCS21AOTu00ig3+5lhEKTtP2QwMk8RTrvfWx9UfuT0w8ysf9NL2F/xb4530qnOq4quhVT0jzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763383358; c=relaxed/simple;
-	bh=krID4USAu/VFMjYRujB6HjwRNiyiLnLONylIJbyfjr0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nlDmKylOUfkNpAomOPLtksq09ol1zrJQbaf0Mvj5M3nZFpgS6xCNZxDf8Ynzruy8B3QFA5tcmqTw5Fo7OHDLyyjxZXkKQuZlhYVohEcShljkPS8mKyMqQqct8C+ZdPemBzUPC6btgaWnxP3fcUOSJci3YDyn8/9EjenmQb+4gnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aRY0mm8X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49E18C4CEFB;
-	Mon, 17 Nov 2025 12:42:34 +0000 (UTC)
+	s=arc-20240116; t=1763384469; c=relaxed/simple;
+	bh=1XaobrZ1iSKa/N6CAfU+omnCxFx7705Pzw14VqgAit0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QqteZSWY4u6uM3gam6lcte99VBqRM4V1NTnMktmbAJPgnR3HhXWnG5ob9jpXelwh9msOR5u4qtDo/w92Tj9ntDZq65fyT948xzAl4P6m3SzfXhfGXY6Dluf1u5yF2hwByrIdYB7P6e4tqNqYgV2vfUmd5n+C8MD0cSqGQjYT2Pw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HNfcJfVs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E012C4CEFB;
+	Mon, 17 Nov 2025 13:01:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763383357;
-	bh=krID4USAu/VFMjYRujB6HjwRNiyiLnLONylIJbyfjr0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aRY0mm8X9uQlQN3P2nZoW7GfrzSyqoVX98DyAXdccm0zaLBt7GgoeIK6MRU4lXWzH
-	 hIoMEbVIUla1jFR0Ty24KiJmEsQmfIZuw1dyWuu8Mpvpe4WZKPlOQ0x71X3Njaw5U6
-	 9O9XgD7ipljVmNwGG9EUkqe0EQcnPzfMBOOD9PxxRQc9Rp2qW+KMAmlvNj8IQTOYkF
-	 vVznioDU0T83XNTJMhLSnJQXpWevrHarPihdVVFnpS3gTDiLsPbnXabZrzI16U6sQk
-	 MBaYORnfTVtKpBDgSkiD/PIXHDKUOVcTNHZV6X4If0e21FuF/NUReDL4mg7kvx2Akw
-	 xGCMPQDYPVGbA==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	David Laight <David.Laight@ACULAB.COM>
-Subject: [RFC PATCH 8/8] selftests/bpf: Add race test for uprobe proglog optimization
-Date: Mon, 17 Nov 2025 13:40:57 +0100
-Message-ID: <20251117124057.687384-9-jolsa@kernel.org>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <20251117124057.687384-1-jolsa@kernel.org>
-References: <20251117124057.687384-1-jolsa@kernel.org>
+	s=k20201202; t=1763384468;
+	bh=1XaobrZ1iSKa/N6CAfU+omnCxFx7705Pzw14VqgAit0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=HNfcJfVsKbD4CcAJsIQIrXttPDO8ew5XSMhlmY1F9H7lXg6umHDbOZ997ae3c7K+H
+	 fnnW3ZSnM7Se6vJekdwyZ34HS/+v7XJDrzba+m1xixCsCaSlKGT2Lkgl87nHL6gdrM
+	 DhB/r7EaEZnElcojZ2yymWdwNoKHJeV1Veap79F+TOFO5lVGP5TXSZnrRCjywG6/cy
+	 eHq3o1rHKQHMOJr0zBzIHcV21BfYvvnF/XH/u7AA1BAUy5HJOKjRJ/lu/4R+FS3uu2
+	 IeGF79jDhkr0yJPd1NS6EI1QQFbHT4vkddDVJZq0ds8kawU06O0Zv530E6cUdWbpPf
+	 F2os22cFtp00Q==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ kernel-team@meta.com, Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH bpf-next 0/4] bpf: arm64: Indirect jumps
+In-Reply-To: <aRrX7eXoWL1RhtJO@mail.gmail.com>
+References: <20251117004656.33292-1-puranjay@kernel.org>
+ <aRrX7eXoWL1RhtJO@mail.gmail.com>
+Date: Mon, 17 Nov 2025 13:01:05 +0000
+Message-ID: <mb61p4iqsn78u.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Adding uprobe race test on top of prologue instructions.
+Anton Protopopov <a.s.protopopov@gmail.com> writes:
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../selftests/bpf/prog_tests/uprobe_syscall.c    | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+> On 25/11/17 12:46AM, Puranjay Mohan wrote:
+>> This set adds the support of indirect jumps to the arm64 JIT. It
+>> involves calling bpf_prog_update_insn_ptrs() to support instructions
+>> array map. The second piece is supporting BPF_JMP|BPF_X|BPF_JA, SRC=0,
+>> DST=Rx, off=0, imm=0 instruction that is trivial to implement on arm64.
+>>
+>> When running the selftests after doing the above changes, I found that
+>> on arm64 builds of llvm, a relocation section was being generated for
+>> .jumptables sections and it was making libbpf fail like:
+>> 
+>> libbpf: relocation against STT_SECTION in non-exec section is not supported!
+>> Error: failed to link 'tools/testing/selftests/bpf/cpuv4/bpf_gotox.bpf.o': Invalid argument (22)
+>> 
+>> Which is due to:
+>> 
+>> Relocation section '.rel.jumptables' at offset 0x5b50 contains 263 entries:
+>>     Offset             Info             Type               Symbol's Value  Symbol's Name
+>> 0000000000000000  0000000300000002 R_BPF_64_ABS64         0000000000000000 syscall
+>> 0000000000000008  0000000300000002 R_BPF_64_ABS64         0000000000000000 syscall
+>> 0000000000000010  0000000300000002 R_BPF_64_ABS64         0000000000000000 syscall
+>> 
+>> This rel section is not generated by x86 builds of LLVM. The third patch
+>> of this set makes libbpf ignore relocation sections for .jumptables.
+>
+> I added Yonghong to this thread. He had fixed this problem in
+> https://github.com/llvm/llvm-project/pull/166301 changes doesn't seem to be
+> x86-specific...
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-index c6a58afc7ace..8793fbd61ffd 100644
---- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-@@ -654,10 +654,11 @@ static USDT_DEFINE_SEMA(race);
- 
- static void *worker_trigger(void *arg)
- {
-+	trigger_t trigger = (trigger_t) arg;
- 	unsigned long rounds = 0;
- 
- 	while (!race_stop) {
--		uprobe_test();
-+		trigger();
- 		rounds++;
- 	}
- 
-@@ -667,6 +668,7 @@ static void *worker_trigger(void *arg)
- 
- static void *worker_attach(void *arg)
- {
-+	trigger_t trigger = (trigger_t) arg;
- 	LIBBPF_OPTS(bpf_uprobe_opts, opts);
- 	struct uprobe_syscall_executed *skel;
- 	unsigned long rounds = 0, offset;
-@@ -677,7 +679,7 @@ static void *worker_attach(void *arg)
- 	unsigned long *ref;
- 	int err;
- 
--	offset = get_uprobe_offset(&uprobe_test);
-+	offset = get_uprobe_offset(trigger);
- 	if (!ASSERT_GE(offset, 0, "get_uprobe_offset"))
- 		return NULL;
- 
-@@ -722,7 +724,7 @@ static useconds_t race_msec(void)
- 	return 500;
- }
- 
--static void test_uprobe_race(void)
-+static void test_uprobe_race(trigger_t trigger)
- {
- 	int err, i, nr_threads;
- 	pthread_t *threads;
-@@ -738,7 +740,7 @@ static void test_uprobe_race(void)
- 
- 	for (i = 0; i < nr_threads; i++) {
- 		err = pthread_create(&threads[i], NULL, i % 2 ? worker_trigger : worker_attach,
--				     NULL);
-+				     trigger);
- 		if (!ASSERT_OK(err, "pthread_create"))
- 			goto cleanup;
- 	}
-@@ -870,8 +872,10 @@ static void __test_uprobe_syscall(void)
- 		test_uprobe_session();
- 	if (test__start_subtest("uprobe_usdt"))
- 		test_uprobe_usdt();
--	if (test__start_subtest("uprobe_race"))
--		test_uprobe_race();
-+	if (test__start_subtest("uprobe_race_nop5"))
-+		test_uprobe_race(uprobe_test);
-+	if (test__start_subtest("uprobe_race_prologue"))
-+		test_uprobe_race(prologue_trigger);
- 	if (test__start_subtest("uprobe_error"))
- 		test_uprobe_error();
- 	if (test__start_subtest("uprobe_regs_equal"))
--- 
-2.51.1
+My arm64 build didn't have this change, that is why it was failing.
+After pulling the latest changes and building again, it works without
+the libbpf patch.
 
+So, I will send v2 and drop the libbpf patch.
+
+Thanks,
+Puranjay
 
