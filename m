@@ -1,141 +1,138 @@
-Return-Path: <bpf+bounces-74813-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74814-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7377FC66894
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 00:16:55 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 300B5C66906
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 00:36:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B6DF43553C8
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 23:16:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTPS id 490D6298A7
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 23:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59A352989BF;
-	Mon, 17 Nov 2025 23:16:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F158B26E6F5;
+	Mon, 17 Nov 2025 23:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EOSF2ZKq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gnhTdCVM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0168018DF9D
-	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 23:16:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A61D0240611
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 23:36:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763421396; cv=none; b=hMdyJVp5nWNlQP93+4EXfWgwJUcthQ1WHIJKmYqvgmS7HQOItTtkdz7wfgWqBtK+qj9CsP6Y3s2DmlhvVqdcwhh9b+PTLIiMlF0B/X/5/RUaBfyOthZLOa1RcDPg0wlGD5Aow5+kEX0GSgkqIhwfHDYdSng1o6OUqGyldz7K1ts=
+	t=1763422583; cv=none; b=OPaCG8IpY6cZu6TTIXc/R06elsDIEUf0hnhJOWsHiaQQqQ9B2HI/bs5jZdog/2+3OoepVS2TZVwHQRapDnc4cVFYIaggmZIQSB9r3ng4tJcmtmWGFGQwNr3EAKV2GFEWL8DrHnxTMwqElgbAo0L+4TPNRBiR6Hw7xJTwZKDRHcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763421396; c=relaxed/simple;
-	bh=jxLodLca7ewiKe1f9MT5tlc0H0ctntQd5FX8FHuwEis=;
+	s=arc-20240116; t=1763422583; c=relaxed/simple;
+	bh=dvDswBxG/btwda3Ai60E1wT6+jXBfwo3Ud4F9hlCrdg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fw4Ky1oUl0JdfNJ5mWkvx3MhmKOUxr1gZaKtM5bWXqlv6Sri03eNYMp/CJgn+EIc0UjIzAYnwDvUDa6F9aVPkUUPRIdREWf9GFCVYS/RFu74o1fpeqrlX1Zwh8DY/hwJO+plbjz6co22SdkJ7dj92+EQRF5SKyylaGmalso8O3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EOSF2ZKq; arc=none smtp.client-ip=209.85.128.173
+	 To:Cc:Content-Type; b=LumsSSU9MugMNuzHpP1DnQjhuSTolRbEVDTgI+0+MJOBbm6xq9BGUJZdB75ksGisPeWtICCXYKcSFw3KJ56ZmvL0mKNq8xTB3V4IGgUBoUp+NmHc9RtPXI516aVVx8xrOOdYAzS/JxtQveJQBdwRxC5cBJ7ASpiJ8ipoVB+Tdfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gnhTdCVM; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-787f28f89faso46782197b3.1
-        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 15:16:34 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-47789cd2083so33778095e9.2
+        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 15:36:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763421394; x=1764026194; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763422580; x=1764027380; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nIzs5G7K9p0I4vbdZrShECv8LDggXVlaKJcjtUKpClU=;
-        b=EOSF2ZKqfxGQotUMUh1XB42VA+6YG1p9d4us4KnuK1ZETm8eeItSVH724vRo+9B9m3
-         UvMHP91NTZS+vYLl37Ck31Y7oM8bIBlfN1oxsj7iN+Vo1yuV+yIazIKDnqYkFehwKJ18
-         XO8fRkjPsUISK2u++0xHe2aIDO80BvN3V2EhsxC+Md8TfKM8WCxyoAbOahHRJlECS0dC
-         g+FoPt4Czuv1OTocN0FTtKMDnhWQYgoqXIIvqJlrWQWhXK9V7aUeJzQ/C3hKFQ44aH+E
-         nVzU6wBg5CwxJ6Td874CqS2QRXhZ/BiFA6KNPeS+CxInP+oD/WCCjwhJo46g/TEU+Zb9
-         Spww==
+        bh=wD2j0INhVFK9W4YyL9gKWByj8HQYLmc3TcGpp9WolVw=;
+        b=gnhTdCVMdYLKFB/51VJnqhWQ1qQPLnyHm7Xz4yRhsQbfdI2JcSkwlnhVVnInIRalcZ
+         7v9HB+XzFAjcFqlkx3rdft/rSCSYLXaCklJnddLJs5VnINSVjVH0o/auoMwiDmz9DF5P
+         bGZXwvuUBudquqpg4oNNhDWSjn3F9sZ7jLzD3HrUgO77hAfMknsSAPla9+sGpxB8pQ4r
+         51wAsiZY/u/6G7ykcEo+RSEQqOUrp3r0mxWUejQfEPByu3UEvgXhrrQoDBNQD+jKQ8Mn
+         tuzxN//Ly2AIaUV4w0CeRRu7XFkXuqwzJZvqlQwQON+qM7dr8SwpFA1g0cemSbOAKCRZ
+         4jBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763421394; x=1764026194;
+        d=1e100.net; s=20230601; t=1763422580; x=1764027380;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=nIzs5G7K9p0I4vbdZrShECv8LDggXVlaKJcjtUKpClU=;
-        b=li28n8vFvQdhjpk4GakFuk98b21jOaIYlbUIfo7IImcjNeLwmCgfOPEP7Sxzr3qeTT
-         LNMjNFetp2Q1+fR79+AKzpE74rBkVBrzh65+oFW5tf0mkKNaZKSNKItsXtoo+QorCxPu
-         N7hABP1/O71H9LVV4c6pNfDaTcRkiS/p+8E3tLa79MMuh7d+q73TIsOHZSUPlgz852Jx
-         VuQwUgxT2pJ6zMK/QXDw6FLdQ34Y0m3pMXP9DkLn0T7IS4uRS1jS6VNv2TkwmzNyKnGr
-         xqbCcxgcW4hpH3VVI9fHtOvlaURbd7MAILZqEwtnPtKzvYwkEVR6Df8WwyCFh69ojE9V
-         Jnmw==
-X-Gm-Message-State: AOJu0YwH0ECiMfQTo4CxyCx8WLcNUhGPvf2mPA6Qy4yZmFrNPuhXNcCo
-	bHqjda70sahaXAj+ZXEtFPLldtsXe3kzYSDrWUpLoai0ZMvGqs30bDQsDzf1iIgI6DaHUv58/53
-	gI9r+PzfIec/58cbrtrwoeoyAH29y1vA=
-X-Gm-Gg: ASbGncujVJ70sr5uKeNg8+3IaarOLEyM+YRaDCjJdGKfnfLufiPhdiCWxv0+1P6Pd5F
-	UVpTj+Gq95aqjYOo9k/6gSUXzX/P8V7x7elfh9lX+K3LJ7W4AoPdogcgQFmRQNY0P+bVuSXA2+f
-	BKcp/vp4vq5Pb/G+qqtU3sBsa7peuTcZwwkzfwsTLwn/Mmb43dNFjbSzSTGOvVRLn8EVq4umtw0
-	k6ToGxpNbFWjBQ20r4lSUdVSPtndxnsoyagaJ8nOUiiqS1nNkr1yMqMl6P+mpU4Hl893QuMpHWO
-	vPSdcg==
-X-Google-Smtp-Source: AGHT+IHq8mFdaWAwTH5NweYkAifSFQ6Db/XmUJ6O4Ebx8lkQwBoyAEHCQmSnoznZ7K01d/QRU2wTN08P1ghJarvmDGw=
-X-Received: by 2002:a53:c049:0:20b0:63e:350c:aea4 with SMTP id
- 956f58d0204a3-641e75e617dmr9907487d50.32.1763421393869; Mon, 17 Nov 2025
- 15:16:33 -0800 (PST)
+        bh=wD2j0INhVFK9W4YyL9gKWByj8HQYLmc3TcGpp9WolVw=;
+        b=QUdZvGc3UE5LFgJtDKA5ll5XnoCfWkL2sC8RaowVy5DzH3Jjv7oHOwRzwwHX5X7wb4
+         tGsHTJb2zKHl3Ugb2OExAGO9VyrZVf6DneJVyBVujkgPeGLZhVIX36zZK7WbKzgtsHpE
+         QuAJuqbX0k/1FaeYZ7O+DmDj6LIJF+CPOjVqEKR2aD3vDuf+m5/yn8/zNK63n7nM9b3I
+         eDijnBadtkKmwK/L4niCZLe7v6qkm/iLEVqSdZrBAqJiICXcz2/bcKJ3+eE0KLk6ohQi
+         t8ERdlt2in5tnmO7hJXdnH5bycKU2k0IFzNuJXDaA+WC3fgfganG0A6dAfJzv8fVzdCT
+         vtzA==
+X-Gm-Message-State: AOJu0YxKNntgFswrzgvhzTR224MGBX6rHCpXFKvNkgtRH8hIAe00IhCD
+	QDI0gBK9BxTAXFdfhmMGIST386WtYW0IWBdNpt4bjcjnHE1s825bqNiNLlesceERRPsOXcqzgN8
+	Ts4LnmsbdltMjd9F/I8ParhO7bdhy/yk=
+X-Gm-Gg: ASbGncvBbqc+Ax5yfmnNC5ck9e93ONS3U2IuAW81c0OwjTmiWv84SEYgEHIKrw70Imv
+	T3vqjrnsvDd6W3oEoI7t3YcER6ghXpvyWbApB7LAc6KDN1XXicIwu5RSLg3aaq9CchyYDCd8qHg
+	F5rc1nSPJm2eTXoTn9uMoHGpgCaaxS2rwGPDDD9se54aAQ9Go/gmpicy4vsD3D+gM1bNnovWLRP
+	+BUexGQJUqhaIlsN6fVBhsagam4YyLZfX9h9TXmvGatWPQHYPT7r9kDZLo8GI4Ql++WHt2/RGqt
+	k4tWwlvf
+X-Google-Smtp-Source: AGHT+IHWmwKsJOJq7Cro7aBvFC3PbCIZnNHuABuErCA0Fb/nyzdx3fF/EEiqnshVY7WD1ncXFTqvGYKjjFGOE5zQYAI=
+X-Received: by 2002:a05:600c:1d19:b0:477:582e:7a81 with SMTP id
+ 5b1f17b1804b1-4778fe50bb3mr108159915e9.4.1763422579560; Mon, 17 Nov 2025
+ 15:36:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251115225550.1086693-1-hoyeon.lee@suse.com>
-In-Reply-To: <20251115225550.1086693-1-hoyeon.lee@suse.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Mon, 17 Nov 2025 15:16:21 -0800
-X-Gm-Features: AWmQ_bnh7sdfaFebeRQSEnluv2kSf8mibeBxu_b7E56z0al6w3nF10mPIwtzUEg
-Message-ID: <CAMB2axPYM6xa0q_8B-r5PNedW-WeOGFHE+UH_fHrtq=AYXAG2g@mail.gmail.com>
-Subject: Re: [bpf-next v1 0/5] selftests/bpf: networking test cleanups and
- build fix
-To: Hoyeon Lee <hoyeon.lee@suse.com>
-Cc: bpf@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, llvm@lists.linux.dev
+References: <20251114201329.3275875-1-ameryhung@gmail.com> <20251114201329.3275875-5-ameryhung@gmail.com>
+ <CAADnVQJD0xLa=bWUerdYsRg8R4S54yqnPnuwkHWL1R663U3Xcg@mail.gmail.com> <CAMB2axPEmykdt2Wcvb49j1iG8b+ZTxvDoRgRYKmJAnTvbLsN9g@mail.gmail.com>
+In-Reply-To: <CAMB2axPEmykdt2Wcvb49j1iG8b+ZTxvDoRgRYKmJAnTvbLsN9g@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 17 Nov 2025 15:36:08 -0800
+X-Gm-Features: AWmQ_bl1Mcu2D_uXpTbT6jUHtda0p1E6L-Tev-DafrdteNWz5zoJfwVWpvdPCHc
+Message-ID: <CAADnVQ+FC5dscjW0MQbG2qYP7KSQ2Ld6LCt5uK8+M2xreyeU7w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 4/4] bpf: Replace bpf memory allocator with
+ kmalloc_nolock() in local storage
+To: Amery Hung <ameryhung@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Nov 15, 2025 at 2:56=E2=80=AFPM Hoyeon Lee <hoyeon.lee@suse.com> wr=
-ote:
+On Mon, Nov 17, 2025 at 12:37=E2=80=AFPM Amery Hung <ameryhung@gmail.com> w=
+rote:
 >
-> This series refactors several networking-related BPF selftests and fixes
-> a toolchain propagation issue in runqslower.
+> On Fri, Nov 14, 2025 at 6:01=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Fri, Nov 14, 2025 at 12:13=E2=80=AFPM Amery Hung <ameryhung@gmail.co=
+m> wrote:
+> > >
+> > >
+> > > -       if (smap->bpf_ma) {
+> > > +       if (smap->use_kmalloc_nolock) {
+> > >                 rcu_barrier_tasks_trace();
+> > > -               if (!rcu_trace_implies_rcu_gp())
+> > > -                       rcu_barrier();
+> > > -               bpf_mem_alloc_destroy(&smap->selem_ma);
+> > > -               bpf_mem_alloc_destroy(&smap->storage_ma);
+> > > +               rcu_barrier();
+> >
+> > Why unconditional rcu_barrier() ?
+> > It's implied in rcu_barrier_tasks_trace().
 >
-> The first four patches simplify networking selftests by removing custom
-> IPv4/IPv6 address wrappers, migrating to sockaddr_storage, dropping
-> duplicated TCP helpers, and replacing open-coded congestion-control
-> string checks with bpf_strncmp(). These changes reduce duplication and
-> improve consistency without altering test behavior.
+> Hmm, I am not sure.
+>
+> > What am I missing?
+>
+> I hit a UAF in v1 in bpf_selem_free_rcu() when running selftests and
+> making rcu_barrier() unconditional addressed it. I think the bug was
+> due to map_free() not waiting for bpf_selem_free_rcu() (an RCU
+> callback) to finish.
+>
+> Looking at rcu_barrier() and rcu_barrier_tasks_trace(), they pass
+> different rtp to rcu_barrier_tasks_generic() so I think both are
+> needed to make sure in-flight RCU and RCU tasks trace callbacks are
+> done.
+>
+> Not an expert in RCU so I might be wrong and it was something else.
 
-Patch 1-4 look good to me. All selftests changed also passed on my test VM.
+Paul,
 
-Reviewed-by: Amery Hung <ameryhung@gmail.com>
-
->
-> The final patch fixes a build issue where the runqslower sub-make does
-> not inherit the LLVM toolchain selected for the main selftests build.
-> By forwarding CLANG and LLVM_STRIP, the intended toolchain will be used
-> for the nested build.
->
-> Hoyeon Lee (5):
->   selftests/bpf: use sockaddr_storage instead of addr_port in
->     cls_redirect test
->   selftests/bpf: use sockaddr_storage instead of sa46 in
->     select_reuseport test
->   selftests/bpf: move common TCP helpers into bpf_tracing_net.h
->   selftests/bpf: replace TCP CC string comparisons with bpf_strncmp
->   selftests/bpf: propagate LLVM toolchain to runqslower build
->
->  tools/testing/selftests/bpf/Makefile          |  1 +
->  .../selftests/bpf/prog_tests/cls_redirect.c   | 95 ++++++-------------
->  .../bpf/prog_tests/select_reuseport.c         | 67 ++++++-------
->  .../selftests/bpf/progs/bpf_cc_cubic.c        |  9 --
->  tools/testing/selftests/bpf/progs/bpf_cubic.c |  7 --
->  tools/testing/selftests/bpf/progs/bpf_dctcp.c |  6 --
->  .../selftests/bpf/progs/bpf_iter_setsockopt.c | 17 +---
->  .../selftests/bpf/progs/bpf_tracing_net.h     | 11 +++
->  .../selftests/bpf/progs/connect4_prog.c       | 21 ++--
->  .../bpf/progs/tcp_ca_write_sk_pacing.c        |  2 -
->  tools/testing/selftests/lib.mk                |  1 +
->  11 files changed, 87 insertions(+), 150 deletions(-)
->
-> --
-> 2.51.1
->
->
+Please help us here.
+Does rcu_barrier_tasks_trace() imply rcu_barrier() ?
 
