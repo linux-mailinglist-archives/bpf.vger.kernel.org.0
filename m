@@ -1,74 +1,74 @@
-Return-Path: <bpf+bounces-74775-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74776-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D118C65C13
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 19:42:40 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CDF7C65C4C
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 19:45:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by tor.lore.kernel.org (Postfix) with ESMTPS id 808C828EE1
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 18:42:39 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4F5994E7EF6
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 18:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD94317701;
-	Mon, 17 Nov 2025 18:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DAB33161B1;
+	Mon, 17 Nov 2025 18:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GIKVZNAg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NDT9Jk/0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FEBB315790
-	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 18:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B8DE28D83D
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 18:45:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763404950; cv=none; b=Ybl4duC8qYFcMwybQ553cp46AcufZv9C8lDRW+CGVR9aVbc/AW1if0tZWrwIDX/+mJtjqPz5697CFoQ3JNmZWiJyF2P7dBsYrO94SocwQEwiKde8zlxosSdoMhc3VApKiOh8SCusdNKL0YU9OyNYPg1Hlqi9pq6yAvsPiLthDYk=
+	t=1763405146; cv=none; b=VqCge9Asgc+P7GHZeCGSetOqkDMPHtIIx9XHFFMh9JIiTCeprpt9Q8xfe9H15DxMdFfGjCnVCJXWMWZxsERa3xpVfBHUYp+VHsrY3T8DnSxvz5zM4YUqI+g6+VkbqLK0Sg2WPMyx2NOWXcB5ZxmM8PiQhFgeaasapyLX8kbnj30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763404950; c=relaxed/simple;
-	bh=9pRuuZLVf8exleeu5aME3a+ZFOSFZVB2RRP475jUT0o=;
+	s=arc-20240116; t=1763405146; c=relaxed/simple;
+	bh=XfpLeaMZaftJPa7XH4d6g3rAc3/MCc5v2eE3X/twjBg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S+hu/L+w1YgjJiXH1V9rfYWlJppMIRU69q/JJ4U4c8FOUB2fXZ2t5p7A4lna5r+0TluA7hfJMBSpMIDWBTBFsh3W5gWmFAuPBvyG6FBBzNzdUmpBuSaBIRfEP/gjtmQJPebORw2Gh8GcBO51Ea2Ti6/YvH2A/8D0nMK6Kd61omU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GIKVZNAg; arc=none smtp.client-ip=209.85.214.181
+	 To:Cc:Content-Type; b=iCR2qH3RSkNiFaGksdGA3CmACLUtm+zYduDfINH/ZStXgBV9T2OG0Pea68yE8HhqAxJ30j7W22ftpPdaY8t+dM7YCe5wgxRBVxIZv6O+GIKeqYp1PO08bb4mepwRWQ6B1DBE5NYQZWMET4QJKSLmPxWiR6x0pewG00HTX0gj8Xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NDT9Jk/0; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-298144fb9bcso49287685ad.0
-        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 10:42:28 -0800 (PST)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-343dfb673a8so4414531a91.0
+        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 10:45:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763404948; x=1764009748; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763405144; x=1764009944; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+GT+Mvcn48BVfqy5/WD1n2ZA/hN2dz1BCZmhQdhw608=;
-        b=GIKVZNAgAxjmU4lnE5Y4BFk5dlkELgKM5Fkh/dWmNle5s0R4ZR3Gms7tLgFK5uAiSH
-         /260LVr9LwpjxAEAwBk7ydCIbPENF1nL8Q9nQZa17W1oWEqqAHqIg3ZIQIKgr2UZsUi9
-         vhOOWZ6J963McjkW5XlppgZVZBbCzskUIWQ0arX5slHHx+8OdZsmESg6Hsjbv+MoMMn3
-         GLGDOm/8T+QtzwFtROEkftyU9IedheAM9GNk3I1RFaxXaWa0E9QwEDDunA/jettHslLC
-         aK6iUNEb3/1/rZTvV0YcXD3Kdob380QLmIl5ABTkWOrqoSbMf+QKunWDpH3BJV5kBgFm
-         EcHQ==
+        bh=7wucYSeQ2nsQ8Jk+wJRdH9jEs+0g/nJs2i4hQi0un/g=;
+        b=NDT9Jk/03fRZAfArZZL/XY7N7/BgR+DWtY00ece4zt7N+HqmLihjkUv8R0YivBeRvf
+         M95T5gF4dtM7eXldobq0fZCXDV9YIRxIDed3tD5GfktI9Myix88xMOqZdhf9mI+OcYCc
+         eCemSmoUxF3oCqBfqS88oNrmnMqPejhSdg3rDhuffI1novuF4pHYe3vXum+WIO72Hefm
+         WR39u1HzPKPrIIoGoVCHtKKgmluVghyvL0VsrryBsKOiw+g6VhD9MOQ+synLhNYQSW5Y
+         cItMPmOiyn7+L6I2a1/h3WZHDFef5GPviPHZqza2KdnZa/ZWjO00e4GBLBwRDxu56gNY
+         +8pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763404948; x=1764009748;
+        d=1e100.net; s=20230601; t=1763405144; x=1764009944;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=+GT+Mvcn48BVfqy5/WD1n2ZA/hN2dz1BCZmhQdhw608=;
-        b=VkuGNLUuKK7eMUTR8GLMEoB2G+iMTtQvPAqfORiNlL2wbr3IwOZteb6Xj1vnPY8KGW
-         iSFiasVHFbwD3BeroBHjBXRdvWF/KEBRG1T2He6zG8bZBZCn4Smtpd9/vxoNZVKB9a+O
-         SX54L43mjZx6AHMaMPU+keb1deiyTD0ANI7aBds44aYINGk/6+eS+5ezJ/w8J3qDvqTJ
-         q/O4cpg8jlnOuTdJtAB6/1lAELl8OCa2L8Kls7/x24XjJLQ5YNJ2pVFjeGasJTgWsi3C
-         joJsf1QSGS6tgSKZJT+52RLchk8kFEvb36a7kpK3yF6PfixNln+mA0iBgI2C4vnzJwaW
-         jo3w==
-X-Forwarded-Encrypted: i=1; AJvYcCXr4jtcsfm15zcLB8dckPqYCT7EUDTP1nMkJqL3i4e4YnyuMEI+UMZKhAPlQQJqx5Ib3h8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyNGUCoJyL+RQoZaOVj0+0trQQ6x/Zx4VLKd3ZC6utbCNb/kdUW
-	N+BbrLOsCTZ1yOdxM0JNqzwJcGYP6gM58CVmpbfHPEu5v+OjgHjFXxUmGSij9jWhJys1sQGU2jt
-	uXg+MFcTsIvzNiXcaka2tUCANytHS5uY=
-X-Gm-Gg: ASbGncsWCqo+DN3/SBzf2SbvKO1DI06koCESMWQejklyWwvH6z/wi2TFLmK3qqvE5OE
-	CYh1LKYB0MLjStLUZvPEgE2/EmoLtE4WcPNeiY13ISDus0lqjxcQqaiI85qILf+QF7r0+TRrtNU
-	NFAlDQxXmfNqHN4RQq18TidJBGlzb+7X+9aCxaZBSZlK3tG0A8dGDFbtp7rH6VtNAMj4cx18VNL
-	kLQIA1aN7mfNezgSlk3PTP+wLq84LjRtBDHxTIyu1zQyG+7wp4zws6iZDsTrAJ5PsvsRB3SNSCy
-X-Google-Smtp-Source: AGHT+IGlCOta17/ddsZWnD9v3ffWOGOnFpGs6oqmTfDQtnnrJ2sc9E7ozUdVinCK+4CGR9Q0e/Sf5CFPt1dugRYiBPM=
-X-Received: by 2002:a17:903:1aed:b0:297:d764:9874 with SMTP id
- d9443c01a7336-2986a6cbe5cmr156328205ad.21.1763404947533; Mon, 17 Nov 2025
- 10:42:27 -0800 (PST)
+        bh=7wucYSeQ2nsQ8Jk+wJRdH9jEs+0g/nJs2i4hQi0un/g=;
+        b=PD9Tj+R4vO/igq69Iexpo2p84ecDEM8j6ftTy05HFs29YMFxhi9yMifP/jQ0v1zc4k
+         yuFcoQeDodqGdJtsxsk8mEjztKmyKx5+KFWTFAnQ9h3kVYIUcK3QfmhuEZydCApQzBSq
+         DdUoG7vxpqXVvMiFPNYcsVdAKUSh+PouwE01HgPllh6Q9VkiYx6bvv+0na7dOAKHtd3l
+         GGYdWJVhMw7Sl53ROV6ZpyElvKx3doKqsBSBPL63bWAh+kWJWx8ReBsBDJNzBZafeJsi
+         rfxxn9CDp4age5ZKMSDShVU8zfTWxQ7Qth0dzUmV6DlYHF+2DJzg4hdP6RiDqFD8Pu7T
+         QGig==
+X-Forwarded-Encrypted: i=1; AJvYcCWzKSFl34Yy+HvMxReteJ3REHM5KvYCta+lybWW7qF0EWLq9n1lAWhRveCqzWuN0PTYWx8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxboM7NPnwRZr5NSwyOkcVeWyvKv4JhxjchkTXtQJycBYGjy3R1
+	6ze9ADR0udk1+cCg5JA9nIGnX9igmsCDKiH22VSmUqBEBEyC4TlcPeU1GA7JOKQHzLJj3A6NrCD
+	6qz0W4n2o1xm5sukFyBAk6dptS4xjvew=
+X-Gm-Gg: ASbGncs83KBT1koO2Wc51CqDxztwSM2CjpselHXp6mNjURmfMY+D1gumcBiKzN8C39r
+	bYa6KyMzCUnAysi/E6+5C4Zx/XQ23PZR4V+OI1dljlR0ONsO1+Kxhg9MBSl4HFVcXZlSq5Wq5xt
+	WJpbjiVIsnlufA/XXm4twFN8KvjqmV1PFsJUJolNXdy5ypn6X9LvBaQoX7Rm2LFLrl7tY2hixCJ
+	/+QTmy4uF8HN0gzDb6sH265teisQhRmH4fpaVRmcoMxZ6J1anPvv2XdZO19EpE+0nd2vuB4OOnp
+X-Google-Smtp-Source: AGHT+IHaGw3phEOQw4Qpur0eLmyhxso8M4IG4GnZLwbf/2toORgNJUKXRKe/uLp0l71+D3q3BCbIbJuZDTs9RGbD+0c=
+X-Received: by 2002:a17:90b:510c:b0:343:b610:901c with SMTP id
+ 98e67ed59e1d1-343fa74be77mr14049811a91.26.1763405144456; Mon, 17 Nov 2025
+ 10:45:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,19 +77,21 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20251114193729.251892-1-ssranevjti@gmail.com> <aReUv1kVACh3UKv-@casper.infradead.org>
  <CANNWa07Y_GPKuYNQ0ncWHGa4KX91QFosz6WGJ9P6-AJQniD3zw@mail.gmail.com>
- <aRpQ7LTZDP-Xz-Sr@casper.infradead.org> <aRsqwndQ459VN8I9@ranegod-HP-ENVY-x360-Convertible-13-bd0xxx>
-In-Reply-To: <aRsqwndQ459VN8I9@ranegod-HP-ENVY-x360-Convertible-13-bd0xxx>
+ <aRpQ7LTZDP-Xz-Sr@casper.infradead.org> <20251117164155.GB196362@frogsfrogsfrogs>
+ <aRtjfN7sC6_Bv4bx@casper.infradead.org>
+In-Reply-To: <aRtjfN7sC6_Bv4bx@casper.infradead.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 17 Nov 2025 10:42:15 -0800
-X-Gm-Features: AWmQ_blI9jblEa7JMJ2vTFmsIQ2D6lp_5HRLH235a5mwf0VK6MfqNFE0M2tzyYY
-Message-ID: <CAEf4Bzboqf+1KUZCb2fBnLZUkzi5X4zOk+wy72eTu3VLB+z7RQ@mail.gmail.com>
+Date: Mon, 17 Nov 2025 10:45:31 -0800
+X-Gm-Features: AWmQ_bnuhsyqplW3EwmS5X2rilTR8nQ_4xwujfWlx5dY8gU3dMEgLDCj7uI7O6I
+Message-ID: <CAEf4BzZu+u-F9SjhcY5GN5vumOi6X=3AwUom+KJXeCpvC+-ppQ@mail.gmail.com>
 Subject: Re: [PATCH] mm/filemap: fix NULL pointer dereference in do_read_cache_folio()
-To: Shaurya Rane <ssrane_b23@ee.vjti.ac.in>
-Cc: Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org, shakeel.butt@linux.dev, 
-	eddyz87@gmail.com, andrii@kernel.org, ast@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev, 
-	skhan@linuxfoundation.org, david.hunter.linux@gmail.com, khalid@kernel.org, 
+To: Matthew Wilcox <willy@infradead.org>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, SHAURYA RANE <ssrane_b23@ee.vjti.ac.in>, 
+	akpm@linux-foundation.org, shakeel.butt@linux.dev, eddyz87@gmail.com, 
+	andrii@kernel.org, ast@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	linux-kernel-mentees@lists.linux.dev, skhan@linuxfoundation.org, 
+	david.hunter.linux@gmail.com, khalid@kernel.org, 
 	syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com, 
 	bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -97,162 +99,111 @@ Content-Transfer-Encoding: quoted-printable
 
 + bpf@
 
-On Mon, Nov 17, 2025 at 6:10=E2=80=AFAM Shaurya Rane <ssrane_b23@ee.vjti.ac=
-.in> wrote:
+On Mon, Nov 17, 2025 at 10:03=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
+g> wrote:
 >
-> On Sun, Nov 16, 2025 at 10:32:12PM +0000, Matthew Wilcox wrote:
-> > First, some process things ;-)
-> >
-> > 1. Thank you for working on this.  Andrii has been ignoring it since
-> > August, which is bad.  So thank you for picking it up.
-
-It is bad, I'm sorry for this. I was surprised to read this, though,
-as I was not aware of any bug related to build ID parsing code, so I
-went looking at syzbot history of the issue. August timeframe you are
-referring to implies those "Monthly fs report" emails, which
-unfortunately I didn't receive as I'm not subscribed to linux-fsdevel,
-but I do see that there was earlier report back in April, which I did
-get in my inbox, apparently. So I'm sorry again for dropping the ball.
-Please feel free to ping me or BPF mailing list next time when you see
-something not being addressed in a timely manner.
-
-> >
-> > 2. Sending a v2 while we're having a discussion is generally a bad idea=
-.
-> > It's fine to send a patch as a reply, but going as far as a v2 isn't
-> > necessary.  If conversation has died down, then a v2 is definitely
-> > warranted, but you and I are still having a discussion ;-)
-> >
-> > 3. When you do send a v2 (or, now that you've sent a v2, send a v3),
-> > do it as a new thread rather then in reply to the v1 thread.  That play=
-s
-> > better with the tooling we have like b4 which will pull in all patches
-> > in a thread.
-> >
-> Apologies for the process errors regarding the v2 submission. I appreciat=
-e the guidance on the workflow and threading; I will ensure the next versio=
-n is sent as a clean, new thread once we have agreed on the technical solut=
-ion.
-> > With that over with, on to the fun technical stuff.
-> >
-> > On Sun, Nov 16, 2025 at 11:13:42AM +0530, SHAURYA RANE wrote:
-> > > On Sat, Nov 15, 2025 at 2:14=E2=80=AFAM Matthew Wilcox <willy@infrade=
-ad.org> wrote:
-> > > >
-> > > > On Sat, Nov 15, 2025 at 01:07:29AM +0530, ssrane_b23@ee.vjti.ac.in =
-wrote:
-> > > > > When read_cache_folio() is called with a NULL filler function on =
-a
-> > > > > mapping that does not implement read_folio, a NULL pointer
-> > > > > dereference occurs in filemap_read_folio().
-> > > > >
-> > > > > The crash occurs when:
-> > > > >
-> > > > > build_id_parse() is called on a VMA backed by a file from a
-> > > > > filesystem that does not implement ->read_folio() (e.g. procfs,
-> > > > > sysfs, or other virtual filesystems).
-> > > >
-> > > > Not a fan of this approach, to be honest.  This should be caught at
-> > > > a higher level.  In __build_id_parse(), there's already a check:
-> > > >
-> > > >         /* only works for page backed storage  */
-> > > >         if (!vma->vm_file)
-> > > >                 return -EINVAL;
-> > > >
-> > > > which is funny because the comment is correct, but the code is not.
-> > > > I suspect the right answer is to add right after it:
-> > > >
-> > > > +       if (vma->vm_file->f_mapping->a_ops =3D=3D &empty_aops)
-> > > > +               return -EINVAL;
-> > > >
-> > > > Want to test that out?
-> > > Thanks for the suggestion.
-> > > Checking for
-> > >     a_ops =3D=3D &empty_aops
-> > > is not enough. Certain filesystems for example XFS with DAX use
-> > > their own a_ops table (not empty_aops) but still do not implement
-> > > ->read_folio(). In those cases read_cache_folio() still ends up with
-> > > filler =3D NULL and filemap_read_folio(NULL) crashes.
-> >
-> > Ah, right.  I had assumed that the only problem was synthetic
-> > filesystems like sysfs and procfs which can't have buildids because
-> > buildids only exist in executables.  And neither procfs nor sysfs
-> > contain executables.
-> >
-> > But DAX is different.  You can absolutely put executables on a DAX
-> > filesystem.  So we shouldn't filter out DAX here.  And we definitely
-> > shouldn't *silently* fail for DAX.  Otherwise nobody will ever realise
-> > that the buildid people just couldn't be bothered to make DAX work.
-> >
-> > I don't think it's necessarily all that hard to make buildid work
-> > for DAX.  It's probably something like:
-> >
-> >       if (IS_DAX(file_inode(file)))
-> >               kernel_read(file, buf, count, &pos);
-> >
-> > but that's just off the top of my head.
-> >
-> >
-> I agree that DAX needs proper support rather than silent filtering.
-> However, investigating the actual syzbot reproducer revealed that the iss=
-ue extends beyond just DAX. The crash is actually triggering on tmpfs (shme=
-m).I verified via debug logging that the crashing VMA is backed by `shmem_a=
-ops`. Looking at `mm/shmem.c`, tmpfs legitimately lacks a `.read_folio` imp=
-lementation by design.
-> It seems there are several "real" filesystems that can contain executable=
-s/libraries but lack `.read_folio`:
-> 1. tmpfs/shmem
-> 2. OverlayFS (delegates I/O)
-> 3. DAX filesystems
-> Given that this affects multiple filesystem types, handling them all corr=
-ectly via `kernel_read` might be a larger scope than fixing the immediate c=
-rash. I worry about missing edge cases in tmpfs or OverlayFS if we try to i=
-mplement the fallback immediately in this patch.
-> > I really don't want the check for filler being NULL in read_cache_folio=
-().
-> > I want it to crash noisily if callers are doing something stupid.
-> I propose the following approach for v3. It avoids the silent failure you=
- are concerned about, but prevents the kernel panic:
+> On Mon, Nov 17, 2025 at 08:41:55AM -0800, Darrick J. Wong wrote:
+> > I wondered why this whole thing opencodes kernel_read, but then I
+> > noticed zero fstests for it and decid*******************************
+> > *****.
 >
-> 1. Silent reject for `empty_aops` (procfs/sysfs), as they legitimately ca=
-n't contain build IDs.
-> 2. Loud warning + Error for other cases (DAX, tmpfs, OverlayFS).
+> I wondered the same thing!  And the answer is that it's special BPF
+> stuff:
 >
-
-Tbh, it seems a bit fragile to have to hard-code such file
-system-specific logic in higher-level build ID fetching logic, where
-all we really ask for from filemap_get_folio() + read_cache_folio()
-combo is to give us requested piece of file or let us know (without
-crashing) that this was not possible.
-
-But if there is no way to abstract this away, then I think Shaurya
-proposed with failing known-not-supported cases and warning on
-unexpected ones would be a reasonable solution, I suppose. I see that
-Matthew is discussing generalizing kernel_read, so maybe that will be
-a better solution, let's see.
-
-
-> The code would look like this:
+>         /* if sleeping is allowed, wait for the page, if necessary */
+>         if (r->may_fault && (IS_ERR(r->folio) || !folio_test_uptodate(r->=
+folio))) {
+>                 filemap_invalidate_lock_shared(r->file->f_mapping);
+>                 r->folio =3D read_cache_folio(r->file->f_mapping, file_of=
+f >> PAGE_SHIFT,
+>                                             NULL, r->file);
+>                 filemap_invalidate_unlock_shared(r->file->f_mapping);
+>         }
 >
->     /* pseudo-filesystems */
->     if (vma->vm_file->f_mapping->a_ops =3D=3D &empty_aops)
+> if 'may_fault' (a misnomer since it really means "may sleep"), then we
+> essentially do kernel_read().
+>
+> Now, maybe the right thing to do here is rip out almost all of
+> lib/buildid.c and replace it with an iocb with IOCB_NOWAIT set (or not).
+> I was hesitant to suggest this earlier as it's a bit of a big ask of
+> someone who was just trying to submit a one-line change.  But now that
+> "it's also shmem" has entered the picture, I'm leaning more towards this
+> approach anyway.
+
+As I replied on another email, ideally we'd have some low-level file
+reading interface where we wouldn't have to know about secretmem, or
+XFS+DAX, or whatever other unusual combination of conditions where
+exposed internal APIs like filemap_get_folio() + read_cache_folio()
+can crash.
+
+The only real limitation is that we'd like to be able to control
+whether we are ok sleeping or not, as this code can be called from
+pretty much anywhere BPF might run, which includes NMI context.
+
+Would this kiocb_read() approach work under those circumstances?
+
+>
+> Looking at it though, it's a bit weird that we don't have a
+> kiocb_read().  It feels like __kernel_read() needs to be split into
+> half like:
+>
+> diff --git a/fs/read_write.c b/fs/read_write.c
+> index 833bae068770..a3bf962836a7 100644
+> --- a/fs/read_write.c
+> +++ b/fs/read_write.c
+> @@ -503,14 +503,29 @@ static int warn_unsupported(struct file *file, cons=
+t char *op)
 >         return -EINVAL;
+>  }
 >
->     /* Real filesystems missing read_folio (DAX, tmpfs, OverlayFS, etc.) =
-*/
->     if (!vma->vm_file->f_mapping->a_ops->read_folio) {
->         /*
->          * TODO: Implement kernel_read() fallback for DAX/tmpfs.
->          * For now, fail loudly so we know what we are missing.
->          */
->         pr_warn_once("build_id_parse: filesystem %s lacks read_folio supp=
-ort\n",
->                      vma->vm_file->f_path.dentry->d_sb->s_type->name);
->         return -EOPNOTSUPP;
->     }
+> -ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t=
+ *pos)
+> +ssize_t kiocb_read(struct kiocb *iocb, void *buf, size_t count)
+>  {
+> +       struct file *file =3D iocb->ki_filp;
+>         struct kvec iov =3D {
+>                 .iov_base       =3D buf,
+>                 .iov_len        =3D min_t(size_t, count, MAX_RW_COUNT),
+>         };
+> -       struct kiocb kiocb;
+>         struct iov_iter iter;
+> +       int ret;
+> +
+> +       iov_iter_kvec(&iter, ITER_DEST, &iov, 1, iov.iov_len);
+> +       ret =3D file->f_op->read_iter(iocb, &iter);
+> +       if (ret > 0) {
+> +               fsnotify_access(file);
+> +               add_rchar(current, ret);
+> +       }
+> +       inc_syscr(current);
+> +       return ret;
+> +}
+> +
+> +ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t=
+ *pos)
+> +{
+> +       struct kiocb kiocb;
+>         ssize_t ret;
 >
-> This highlights exactly which filesystems are missing support in the logs=
- without crashing the machine
-> Thanks,
-> Shaurya
+>         if (WARN_ON_ONCE(!(file->f_mode & FMODE_READ)))
+> @@ -526,15 +541,9 @@ ssize_t __kernel_read(struct file *file, void *buf, =
+size_t count, loff_t *pos)
+>
+>         init_sync_kiocb(&kiocb, file);
+>         kiocb.ki_pos =3D pos ? *pos : 0;
+> -       iov_iter_kvec(&iter, ITER_DEST, &iov, 1, iov.iov_len);
+> -       ret =3D file->f_op->read_iter(&kiocb, &iter);
+> -       if (ret > 0) {
+> -               if (pos)
+> -                       *pos =3D kiocb.ki_pos;
+> -               fsnotify_access(file);
+> -               add_rchar(current, ret);
+> -       }
+> -       inc_syscr(current);
+> +       ret =3D kiocb_read(&kiocb, buf, count);
+> +       if (pos && ret > 0)
+> +               *pos =3D kiocb.ki_pos;
+>         return ret;
+>  }
+>
 
