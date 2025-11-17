@@ -1,121 +1,90 @@
-Return-Path: <bpf+bounces-74792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FA09C65F3E
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 20:26:40 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD0E0C660EE
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 21:05:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id F341F4EA1C3
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 19:22:19 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6864A35D9C8
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 20:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08E192F2916;
-	Mon, 17 Nov 2025 19:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD2D330BF70;
+	Mon, 17 Nov 2025 20:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SaZRkxyr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OUZzIs//"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB1D3148C6
-	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 19:22:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 607FE283FCF
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 20:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763407338; cv=none; b=Xum4v//1e9MSBZzYPo1ytjGoU5ejOt51N5CNlTtdehaZ3eBIRZgzbl3xHSVTpgUDIeYnG9t98sRhTUlQS75KUtE+3lRoTz039Vq6QecTWZbgOjKfjL6VMEyDawj7h9jYYml0hRxHI1+2plFrhUi/ZN5pxdC9ssJW7GsTsWHSc00=
+	t=1763409903; cv=none; b=Ln9WebG7JQvXenEu/QP7xW9lZl5tTitDe3cagLSvljHNY5G15V6FzpoOYmdLyImQgXrkYiZ2wwdoeTdKv91tyi1uDvjfWB8CB6li/gx+0QdXlLWiGK0uOUs+hows4msviCPGsNkRqOe/vYvlUuZ7HxGkyKVDb27DpMgYsMumQUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763407338; c=relaxed/simple;
-	bh=6OzAaa8iDws0lcwjqF+XKbYPhYhAfB1q4BqeCW3R5JQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XgALV+ehr+5jHOcci6hCVz2rDG3uayjCws0k/1WLzDGatkTuBoNvIr0bERtD9y7P+NU2rTP+h4HJCE/3fg5rE+jTGGzDg0WeXnXuYx+evqz9ihe2B7TFMVgulnbXuujFge9IMh67viebVZf4csiv9y8zWi+67m5kz1/O8GJ0JFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SaZRkxyr; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ebbf8915-1404-4d4f-9b5a-b2f3924ec43a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1763407323;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cbe+9JyBXKDiB3Lmr5harb1LuYhqhGndoF1DwtiK2Wc=;
-	b=SaZRkxyrfN0vRx6wzM50Jmklt08m7NIoAgk4YCVnJUPh9TNLat3ooxU+Jl+8namMz/jRw3
-	VJ4rLD9/6dbgiVBuDVc0/BOG/3GTs90YdonudQiN7Je433jZ8w0ce8ySzUU01ywS26P+JY
-	o6U7fvsAOJn7Qw7CkSk25glE4jkV04o=
-Date: Mon, 17 Nov 2025 11:21:57 -0800
+	s=arc-20240116; t=1763409903; c=relaxed/simple;
+	bh=cLYJI8Tthujbbiv/8gLZscsd3VwQ1TxzrfqJ565Kxhk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TBAxT1d0zmUskOKt1A2HiQugsye+nKsUwUyRpdbROJ+OuGH8/dzsBAMe1VPgy9jW0Wrvy2VrGFcJOXySDZ1Tn7J8JyvmfQ654GoYttCdUQx8zY+C+mkMCUB3qrAUtX0LSWbsQ9tzXfnOXwqyaj0lU6N30S7ce0hUs1dSJimllLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OUZzIs//; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F34D0C113D0;
+	Mon, 17 Nov 2025 20:05:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763409901;
+	bh=cLYJI8Tthujbbiv/8gLZscsd3VwQ1TxzrfqJ565Kxhk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=OUZzIs//Td1TFZvTYmbRMXZfSl7c1mwSE1DH9yrbnhXU1KF+KfP1EdEmwgeT1/XIR
+	 XwZsZ7FyK6xhAM6hGvDtfU4qneUSIO31lW/7FfCggUFfOV5+x04AynY6fkCVoRG3ma
+	 3CARhNXD2VSZXjqv8XnqpKr5sNRIDmMwTmp0ZR5L4wkon4veGl8EQF2LkGnEVLQ5jl
+	 2yXzt1IMWzGkGu5ZB8r1XRVhqqEjfdpNF88a95QR/u/UkODczuShk1fiyeBBz6xzV6
+	 OS6aHnSZz62XqhqP/eT6yS5/vJwQfM28nGuXHM2RLw1aiT8Gee0Bung9iDQ0puJuBN
+	 Io6z7wNcdhrDw==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	kkd@meta.com,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	kernel-team@fb.com
+Subject: [PATCH bpf-next v2 0/2] bpf: Nested rcu critical sections
+Date: Mon, 17 Nov 2025 20:04:08 +0000
+Message-ID: <20251117200411.25563-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 bpf-next 4/4] bpf: Replace bpf memory allocator with
- kmalloc_nolock() in local storage
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Amery Hung <ameryhung@gmail.com>, bpf <bpf@vger.kernel.org>,
- Network Development <netdev@vger.kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@kernel.org>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>,
- Kernel Team <kernel-team@meta.com>
-References: <20251114201329.3275875-1-ameryhung@gmail.com>
- <20251114201329.3275875-5-ameryhung@gmail.com>
- <CAADnVQJD0xLa=bWUerdYsRg8R4S54yqnPnuwkHWL1R663U3Xcg@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAADnVQJD0xLa=bWUerdYsRg8R4S54yqnPnuwkHWL1R663U3Xcg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 11/14/25 6:01 PM, Alexei Starovoitov wrote:
-> On Fri, Nov 14, 2025 at 12:13 PM Amery Hung <ameryhung@gmail.com> wrote:
->>
->>
->> -       if (smap->bpf_ma) {
->> +       if (smap->use_kmalloc_nolock) {
->>                  rcu_barrier_tasks_trace();
->> -               if (!rcu_trace_implies_rcu_gp())
->> -                       rcu_barrier();
->> -               bpf_mem_alloc_destroy(&smap->selem_ma);
->> -               bpf_mem_alloc_destroy(&smap->storage_ma);
->> +               rcu_barrier();
-> 
-> Why unconditional rcu_barrier() ?
-> It's implied in rcu_barrier_tasks_trace().
-> What am I missing?
+v1: https://lore.kernel.org/bpf/20250916113622.19540-1-puranjay@kernel.org/
+Changes in v1->v2:
+- Move the addition of new tests to a separate patch (Alexei)
+- Avoid incrementing active_rcu_locks at two places (Eduard)
 
-Amery probably can confirm. I think the bpf_obj_free_fields() may only need to
-wait for a rcu gp without going through a rcu_tasks_trace gp and the tasks_trace
-cb, so it needs to ensure all rcu callbacks has finished.
+Support nested rcu critical sections by making the boolean flag
+active_rcu_lock a counter and use it to manage rcu critical section
+state. bpf_rcu_read_lock() increments this counter and
+bpf_rcu_read_unlock() decrements it, MEM_RCU -> PTR_UNTRUSTED transition
+happens when active_rcu_locks drops to 0.
 
-@@ -247,18 +231,11 @@ void bpf_selem_free(struct bpf_local_storage_elem *selem,
-  	}
-  
-  	if (reuse_now) {
--		/* reuse_now == true only happens when the storage owner
--		 * (e.g. task_struct) is being destructed or the map itself
--		 * is being destructed (ie map_free). In both cases,
--		 * no bpf prog can have a hold on the selem. It is
--		 * safe to unpin the uptrs and free the selem now.
--		 */
--		bpf_obj_free_fields(smap->map.record, SDATA(selem)->data);
--		/* Instead of using the vanilla call_rcu(),
--		 * bpf_mem_cache_free will be able to reuse selem
--		 * immediately.
-+		/*
-+		 * While it is okay to call bpf_obj_free_fields() that unpins uptr when
-+		 * reuse_now == true, keep it in bpf_selem_free_rcu() for simplicity.
-  		 */
--		bpf_mem_cache_free(&smap->selem_ma, selem);
-+		call_rcu(&selem->rcu, bpf_selem_free_rcu);
-  		return;
-  	}
+Puranjay Mohan (2):
+  bpf: support nested rcu critical sections
+  selftests: bpf: Add tests for unbalanced rcu_read_lock
 
+ include/linux/bpf_verifier.h                  |  2 +-
+ kernel/bpf/verifier.c                         | 47 +++++++++----------
+ .../selftests/bpf/prog_tests/rcu_read_lock.c  |  4 +-
+ .../selftests/bpf/progs/rcu_read_lock.c       | 40 ++++++++++++++++
+ 4 files changed, 66 insertions(+), 27 deletions(-)
 
-Others lgtm also,
+-- 
+2.47.1
 
-Reviewed-by: Martin KaFai Lau <martin.lau@kernel.org>
 
