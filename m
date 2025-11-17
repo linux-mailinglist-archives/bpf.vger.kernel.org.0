@@ -1,197 +1,141 @@
-Return-Path: <bpf+bounces-74812-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74813-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87185C667B7
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 23:52:12 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7377FC66894
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 00:16:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id BAD3D2A407
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 22:50:41 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B6DF43553C8
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 23:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9B8E342514;
-	Mon, 17 Nov 2025 22:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59A352989BF;
+	Mon, 17 Nov 2025 23:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dzgI7Myr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EOSF2ZKq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1564239E7D;
-	Mon, 17 Nov 2025 22:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0168018DF9D
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 23:16:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763419811; cv=none; b=kFEFWm9w1p4HQt9GV2e169f9X9a8f0r86XhqJyyZQ1M8QXhlpGV5xnH+W3nE5yI0tuEEuDz8q0pYeLNaP4cZ/wppcMJyQptivKPO/2dlkbpwyGaMVG31ufN0HrkuKA2AdV4V15tmL+88oDxRFGfVdiONrvFIeaEIq4sZgiRyeh4=
+	t=1763421396; cv=none; b=hMdyJVp5nWNlQP93+4EXfWgwJUcthQ1WHIJKmYqvgmS7HQOItTtkdz7wfgWqBtK+qj9CsP6Y3s2DmlhvVqdcwhh9b+PTLIiMlF0B/X/5/RUaBfyOthZLOa1RcDPg0wlGD5Aow5+kEX0GSgkqIhwfHDYdSng1o6OUqGyldz7K1ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763419811; c=relaxed/simple;
-	bh=ho1p3QGA7T1hhyD52Dd36WHe1Q9s1Ct6l/6u2zLQ20A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UJTDGRxe7dJyb6kNQKoDTis94IfMBnf4zBNJpkafAxjeJpd1kqqtUA1vH3HTGmdjQldVt85ZCwCXIrzmJqDXhXR69zNc0Iy2BHZvBY59EADaWieP89KIYfKmjtyupsyeALJXRQAar9D1WQKOalUHdZOrnsy9wFrkHcT2V5Fr/L4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dzgI7Myr; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1763419808; x=1794955808;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ho1p3QGA7T1hhyD52Dd36WHe1Q9s1Ct6l/6u2zLQ20A=;
-  b=dzgI7MyrWYItYeDkjZaBwIvNEErQBlmBlpHmwutKQn8crtMRBZA2zWlC
-   0Ag46fAjYolxFc2YJFEBrKlYKkJLnb/M5hFj0t9S4r3P8I/pcbcFfVH6f
-   aepgZGiUQ5TvQT8GEOC3tiF4phMFfKQTpRnBG8zMfY4ceCau/JdiVf8SN
-   BXLcILPBEsOZP7JAmai9FtX6V5i/5D5nRyEdcUXLYlmm5wJarVUWM1lH6
-   CZPXETVnGwA/iyeCMxa2C8VMEJCsN0oOii5biWBhfP7jKjrmBv0LkBsTq
-   5c9k5b6MvcG5vWrk5nhDqY9onJcCO/UgToNOh9Wvr2uaKhrAlcGL/RLoD
-   g==;
-X-CSE-ConnectionGUID: YTQrUMVnSKC6TYAUPlMyeg==
-X-CSE-MsgGUID: JAXOd9kMRX2XwFpq5iVGjQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11616"; a="76533893"
-X-IronPort-AV: E=Sophos;i="6.19,313,1754982000"; 
-   d="scan'208";a="76533893"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2025 14:50:05 -0800
-X-CSE-ConnectionGUID: xK3yYl6ATSG32EPXWS2EjQ==
-X-CSE-MsgGUID: WhMk9VMjQ+eqOU4N8nUaFw==
-X-ExtLoop1: 1
-Received: from lkp-server01.sh.intel.com (HELO adf6d29aa8d9) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 17 Nov 2025 14:50:01 -0800
-Received: from kbuild by adf6d29aa8d9 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1vL82n-00017f-37;
-	Mon, 17 Nov 2025 22:49:57 +0000
-Date: Tue, 18 Nov 2025 06:49:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org,
-	rostedt@goodmis.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, jolsa@kernel.org, mhiramat@kernel.org,
-	mark.rutland@arm.com, mathieu.desnoyers@efficios.com,
-	jiang.biao@linux.dev, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 6/6] bpf: implement "jmp" mode for trampoline
-Message-ID: <202511180613.Om7k1nP1-lkp@intel.com>
-References: <20251117034906.32036-7-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1763421396; c=relaxed/simple;
+	bh=jxLodLca7ewiKe1f9MT5tlc0H0ctntQd5FX8FHuwEis=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Fw4Ky1oUl0JdfNJ5mWkvx3MhmKOUxr1gZaKtM5bWXqlv6Sri03eNYMp/CJgn+EIc0UjIzAYnwDvUDa6F9aVPkUUPRIdREWf9GFCVYS/RFu74o1fpeqrlX1Zwh8DY/hwJO+plbjz6co22SdkJ7dj92+EQRF5SKyylaGmalso8O3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EOSF2ZKq; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-787f28f89faso46782197b3.1
+        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 15:16:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763421394; x=1764026194; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nIzs5G7K9p0I4vbdZrShECv8LDggXVlaKJcjtUKpClU=;
+        b=EOSF2ZKqfxGQotUMUh1XB42VA+6YG1p9d4us4KnuK1ZETm8eeItSVH724vRo+9B9m3
+         UvMHP91NTZS+vYLl37Ck31Y7oM8bIBlfN1oxsj7iN+Vo1yuV+yIazIKDnqYkFehwKJ18
+         XO8fRkjPsUISK2u++0xHe2aIDO80BvN3V2EhsxC+Md8TfKM8WCxyoAbOahHRJlECS0dC
+         g+FoPt4Czuv1OTocN0FTtKMDnhWQYgoqXIIvqJlrWQWhXK9V7aUeJzQ/C3hKFQ44aH+E
+         nVzU6wBg5CwxJ6Td874CqS2QRXhZ/BiFA6KNPeS+CxInP+oD/WCCjwhJo46g/TEU+Zb9
+         Spww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763421394; x=1764026194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=nIzs5G7K9p0I4vbdZrShECv8LDggXVlaKJcjtUKpClU=;
+        b=li28n8vFvQdhjpk4GakFuk98b21jOaIYlbUIfo7IImcjNeLwmCgfOPEP7Sxzr3qeTT
+         LNMjNFetp2Q1+fR79+AKzpE74rBkVBrzh65+oFW5tf0mkKNaZKSNKItsXtoo+QorCxPu
+         N7hABP1/O71H9LVV4c6pNfDaTcRkiS/p+8E3tLa79MMuh7d+q73TIsOHZSUPlgz852Jx
+         VuQwUgxT2pJ6zMK/QXDw6FLdQ34Y0m3pMXP9DkLn0T7IS4uRS1jS6VNv2TkwmzNyKnGr
+         xqbCcxgcW4hpH3VVI9fHtOvlaURbd7MAILZqEwtnPtKzvYwkEVR6Df8WwyCFh69ojE9V
+         Jnmw==
+X-Gm-Message-State: AOJu0YwH0ECiMfQTo4CxyCx8WLcNUhGPvf2mPA6Qy4yZmFrNPuhXNcCo
+	bHqjda70sahaXAj+ZXEtFPLldtsXe3kzYSDrWUpLoai0ZMvGqs30bDQsDzf1iIgI6DaHUv58/53
+	gI9r+PzfIec/58cbrtrwoeoyAH29y1vA=
+X-Gm-Gg: ASbGncujVJ70sr5uKeNg8+3IaarOLEyM+YRaDCjJdGKfnfLufiPhdiCWxv0+1P6Pd5F
+	UVpTj+Gq95aqjYOo9k/6gSUXzX/P8V7x7elfh9lX+K3LJ7W4AoPdogcgQFmRQNY0P+bVuSXA2+f
+	BKcp/vp4vq5Pb/G+qqtU3sBsa7peuTcZwwkzfwsTLwn/Mmb43dNFjbSzSTGOvVRLn8EVq4umtw0
+	k6ToGxpNbFWjBQ20r4lSUdVSPtndxnsoyagaJ8nOUiiqS1nNkr1yMqMl6P+mpU4Hl893QuMpHWO
+	vPSdcg==
+X-Google-Smtp-Source: AGHT+IHq8mFdaWAwTH5NweYkAifSFQ6Db/XmUJ6O4Ebx8lkQwBoyAEHCQmSnoznZ7K01d/QRU2wTN08P1ghJarvmDGw=
+X-Received: by 2002:a53:c049:0:20b0:63e:350c:aea4 with SMTP id
+ 956f58d0204a3-641e75e617dmr9907487d50.32.1763421393869; Mon, 17 Nov 2025
+ 15:16:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251117034906.32036-7-dongml2@chinatelecom.cn>
+References: <20251115225550.1086693-1-hoyeon.lee@suse.com>
+In-Reply-To: <20251115225550.1086693-1-hoyeon.lee@suse.com>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Mon, 17 Nov 2025 15:16:21 -0800
+X-Gm-Features: AWmQ_bnh7sdfaFebeRQSEnluv2kSf8mibeBxu_b7E56z0al6w3nF10mPIwtzUEg
+Message-ID: <CAMB2axPYM6xa0q_8B-r5PNedW-WeOGFHE+UH_fHrtq=AYXAG2g@mail.gmail.com>
+Subject: Re: [bpf-next v1 0/5] selftests/bpf: networking test cleanups and
+ build fix
+To: Hoyeon Lee <hoyeon.lee@suse.com>
+Cc: bpf@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Menglong,
+On Sat, Nov 15, 2025 at 2:56=E2=80=AFPM Hoyeon Lee <hoyeon.lee@suse.com> wr=
+ote:
+>
+> This series refactors several networking-related BPF selftests and fixes
+> a toolchain propagation issue in runqslower.
+>
+> The first four patches simplify networking selftests by removing custom
+> IPv4/IPv6 address wrappers, migrating to sockaddr_storage, dropping
+> duplicated TCP helpers, and replacing open-coded congestion-control
+> string checks with bpf_strncmp(). These changes reduce duplication and
+> improve consistency without altering test behavior.
 
-kernel test robot noticed the following build errors:
+Patch 1-4 look good to me. All selftests changed also passed on my test VM.
 
-[auto build test ERROR on bpf-next/master]
+Reviewed-by: Amery Hung <ameryhung@gmail.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Menglong-Dong/ftrace-introduce-FTRACE_OPS_FL_JMP/20251117-115243
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20251117034906.32036-7-dongml2%40chinatelecom.cn
-patch subject: [PATCH bpf-next v2 6/6] bpf: implement "jmp" mode for trampoline
-config: arm64-randconfig-002-20251118 (https://download.01.org/0day-ci/archive/20251118/202511180613.Om7k1nP1-lkp@intel.com/config)
-compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 0bba1e76581bad04e7d7f09f5115ae5e2989e0d9)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251118/202511180613.Om7k1nP1-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202511180613.Om7k1nP1-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   kernel/bpf/trampoline.c:500:11: error: incomplete definition of type 'struct ftrace_ops'
-     500 |                 tr->fops->flags |= FTRACE_OPS_FL_JMP;
-         |                 ~~~~~~~~^
-   include/linux/ftrace.h:40:8: note: forward declaration of 'struct ftrace_ops'
-      40 | struct ftrace_ops;
-         |        ^
->> kernel/bpf/trampoline.c:500:22: error: use of undeclared identifier 'FTRACE_OPS_FL_JMP'
-     500 |                 tr->fops->flags |= FTRACE_OPS_FL_JMP;
-         |                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/trampoline.c:502:11: error: incomplete definition of type 'struct ftrace_ops'
-     502 |                 tr->fops->flags &= ~FTRACE_OPS_FL_JMP;
-         |                 ~~~~~~~~^
-   include/linux/ftrace.h:40:8: note: forward declaration of 'struct ftrace_ops'
-      40 | struct ftrace_ops;
-         |        ^
-   kernel/bpf/trampoline.c:502:23: error: use of undeclared identifier 'FTRACE_OPS_FL_JMP'
-     502 |                 tr->fops->flags &= ~FTRACE_OPS_FL_JMP;
-         |                                     ^~~~~~~~~~~~~~~~~
-   kernel/bpf/trampoline.c:534:12: error: incomplete definition of type 'struct ftrace_ops'
-     534 |                         tr->fops->flags |= FTRACE_OPS_FL_JMP;
-         |                         ~~~~~~~~^
-   include/linux/ftrace.h:40:8: note: forward declaration of 'struct ftrace_ops'
-      40 | struct ftrace_ops;
-         |        ^
-   kernel/bpf/trampoline.c:534:23: error: use of undeclared identifier 'FTRACE_OPS_FL_JMP'
-     534 |                         tr->fops->flags |= FTRACE_OPS_FL_JMP;
-         |                                            ^~~~~~~~~~~~~~~~~
-   kernel/bpf/trampoline.c:536:12: error: incomplete definition of type 'struct ftrace_ops'
-     536 |                         tr->fops->flags &= ~FTRACE_OPS_FL_JMP;
-         |                         ~~~~~~~~^
-   include/linux/ftrace.h:40:8: note: forward declaration of 'struct ftrace_ops'
-      40 | struct ftrace_ops;
-         |        ^
-   kernel/bpf/trampoline.c:536:24: error: use of undeclared identifier 'FTRACE_OPS_FL_JMP'
-     536 |                         tr->fops->flags &= ~FTRACE_OPS_FL_JMP;
-         |                                             ^~~~~~~~~~~~~~~~~
-   8 errors generated.
-
-
-vim +/FTRACE_OPS_FL_JMP +500 kernel/bpf/trampoline.c
-
-   470	
-   471		size = arch_bpf_trampoline_size(&tr->func.model, tr->flags,
-   472						tlinks, tr->func.addr);
-   473		if (size < 0) {
-   474			err = size;
-   475			goto out;
-   476		}
-   477	
-   478		if (size > PAGE_SIZE) {
-   479			err = -E2BIG;
-   480			goto out;
-   481		}
-   482	
-   483		im = bpf_tramp_image_alloc(tr->key, size);
-   484		if (IS_ERR(im)) {
-   485			err = PTR_ERR(im);
-   486			goto out;
-   487		}
-   488	
-   489		err = arch_prepare_bpf_trampoline(im, im->image, im->image + size,
-   490						  &tr->func.model, tr->flags, tlinks,
-   491						  tr->func.addr);
-   492		if (err < 0)
-   493			goto out_free;
-   494	
-   495		err = arch_protect_bpf_trampoline(im->image, im->size);
-   496		if (err)
-   497			goto out_free;
-   498	
-   499		if (bpf_trampoline_use_jmp(tr->flags))
- > 500			tr->fops->flags |= FTRACE_OPS_FL_JMP;
-   501		else
-   502			tr->fops->flags &= ~FTRACE_OPS_FL_JMP;
-   503	
-   504		WARN_ON(tr->cur_image && total == 0);
-   505		if (tr->cur_image)
-   506			/* progs already running at this address */
-   507			err = modify_fentry(tr, orig_flags, tr->cur_image->image,
-   508					    im->image, lock_direct_mutex);
-   509		else
-   510			/* first time registering */
-   511			err = register_fentry(tr, im->image);
-   512	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> The final patch fixes a build issue where the runqslower sub-make does
+> not inherit the LLVM toolchain selected for the main selftests build.
+> By forwarding CLANG and LLVM_STRIP, the intended toolchain will be used
+> for the nested build.
+>
+> Hoyeon Lee (5):
+>   selftests/bpf: use sockaddr_storage instead of addr_port in
+>     cls_redirect test
+>   selftests/bpf: use sockaddr_storage instead of sa46 in
+>     select_reuseport test
+>   selftests/bpf: move common TCP helpers into bpf_tracing_net.h
+>   selftests/bpf: replace TCP CC string comparisons with bpf_strncmp
+>   selftests/bpf: propagate LLVM toolchain to runqslower build
+>
+>  tools/testing/selftests/bpf/Makefile          |  1 +
+>  .../selftests/bpf/prog_tests/cls_redirect.c   | 95 ++++++-------------
+>  .../bpf/prog_tests/select_reuseport.c         | 67 ++++++-------
+>  .../selftests/bpf/progs/bpf_cc_cubic.c        |  9 --
+>  tools/testing/selftests/bpf/progs/bpf_cubic.c |  7 --
+>  tools/testing/selftests/bpf/progs/bpf_dctcp.c |  6 --
+>  .../selftests/bpf/progs/bpf_iter_setsockopt.c | 17 +---
+>  .../selftests/bpf/progs/bpf_tracing_net.h     | 11 +++
+>  .../selftests/bpf/progs/connect4_prog.c       | 21 ++--
+>  .../bpf/progs/tcp_ca_write_sk_pacing.c        |  2 -
+>  tools/testing/selftests/lib.mk                |  1 +
+>  11 files changed, 87 insertions(+), 150 deletions(-)
+>
+> --
+> 2.51.1
+>
+>
 
