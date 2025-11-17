@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-74755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C7B3C651A9
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 17:21:08 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06B48C651AC
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 17:21:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id 30A6C28EE4
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 16:21:06 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTPS id 57E5624125
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 16:21:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4072D28DB46;
-	Mon, 17 Nov 2025 16:21:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FAC32C027A;
+	Mon, 17 Nov 2025 16:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LcIG99RN"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YF+fda+H"
 X-Original-To: bpf@vger.kernel.org
 Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B97C23D28C
-	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 16:20:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD7728E5
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 16:21:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763396459; cv=none; b=WoHrVNO+CspGhkJCQFAY0e7s9yH2FK695eaNoLezk2r95KNdcgxFwbL5fW02fYyRwOFvcizVtSlBTlEZYt4G9df+yxO1GTcKBYJLI86p4wo3+52BTbzy8BPhIzoHfDjnc5TltMwOBnGGZPJJYDJR0sJzW3EixK4d+RtTre1Ox24=
+	t=1763396469; cv=none; b=gCDBsE1nN5NowRE8U1RW4gMFlBJaAfSKVjIgICMopg/p84qmd7lbXMqywsl57b++QEmLsKRFcU4R5ym3buG5wpI+Q4n2gnhMEW6fIa7ub3s7IUKbkzT2taNwJA+ROruVLEWRrFpqwpONiAvNjVJoyusaK4/V9rfKYYiIKAj84kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763396459; c=relaxed/simple;
-	bh=Ov9iuOmcLm2wLkl+Duufok1qoz+D6Jtj5fyC9fkrws4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=p1wmNCga/qUwaZpb4BNEAA1wLIr90Eaao5nUjOCu0Ut67eJPltreRyt8K0mPaPVdPYJVvNO7tMgO7lbZY0CyLpSa1neiObJI94nrpyEL/n3SDFkDHLgdwjOfuCxwdqFMrGi0mBJjJraUMggZk3MMO7QEeBBfGCeDF/ldm56f1LY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LcIG99RN; arc=none smtp.client-ip=95.215.58.171
+	s=arc-20240116; t=1763396469; c=relaxed/simple;
+	bh=2ztbj4mPd31QuTuK5bnL2U2Lf7/tSl1r1lIzhSigxbA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AuRFQ7O6+kbVpiV0gFkDhLceKpBPrUfhD03ciYIdCUL6Bn8zOfpLemD/1Zl1ycy1yuQxpW4QMfY/k1uwOcgmUrmxW61iqx4y/zdZKLvG9MgYG7v3fB1pcT8tUwz2YXgM3nxof/Q5bHn57+sRorqckqsqPFWXYXfq2qOSWzdVjOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YF+fda+H; arc=none smtp.client-ip=95.215.58.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1763396454;
+	t=1763396464;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=mIcWgka4CgRJZLXYvw90pre7ZdtAVL9XesUCcWBnk60=;
-	b=LcIG99RNqaNfSJYFQJjfTIpGa9m27kJco0MNB+yJLArxudGYruowFcYpAjLXR296RagnFj
-	Zs5M5rHVgriy+oW2GBXDHCnlHYvOxrGexmmOR+EiIfY7D1g92+d4PL/0cEqE2vk5J/ZTQd
-	04eCbA6pn52vRK66V1XRe6GGGTk7UVQ=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nKXwMeuhN2JRrI0RevMzdYsiWcZ8g/Ifit1TxNI7Jq4=;
+	b=YF+fda+Hh6KQfp6KcVut0vdPkT8q2sqzdkzFnYMP3I5cYfse85bSpAe/pglGvGIHKVPBej
+	yJc95E/Qmh4WLJTLrEZ5lMzLGzW86VmqlVLYz1dcq/Y1ACU4fX6jt8MXbwwLqraQ1JOeNT
+	FchzaGUU4bu5HZ/2esACFe6D5VinSEw=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -69,9 +71,11 @@ Cc: ast@kernel.org,
 	kernel-patches-bot@fb.com,
 	linux-kernel@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v10 0/8] bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for percpu maps
-Date: Tue, 18 Nov 2025 00:20:25 +0800
-Message-ID: <20251117162033.6296-1-leon.hwang@linux.dev>
+Subject: [PATCH bpf-next v10 1/8] bpf: Introduce internal bpf_map_check_op_flags helper function
+Date: Tue, 18 Nov 2025 00:20:26 +0800
+Message-ID: <20251117162033.6296-2-leon.hwang@linux.dev>
+In-Reply-To: <20251117162033.6296-1-leon.hwang@linux.dev>
+References: <20251117162033.6296-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -81,135 +85,114 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-This patch set introduces the BPF_F_CPU and BPF_F_ALL_CPUS flags for
-percpu maps, as the requirement of BPF_F_ALL_CPUS flag for percpu_array
-maps was discussed in the thread of
-"[PATCH bpf-next v3 0/4] bpf: Introduce global percpu data"[1].
+It is to unify map flags checking for lookup_elem, update_elem,
+lookup_batch and update_batch APIs.
 
-The goal of BPF_F_ALL_CPUS flag is to reduce data caching overhead in light
-skeletons by allowing a single value to be reused to update values across all
-CPUs. This avoids the M:N problem where M cached values are used to update a
-map on N CPUs kernel.
+Therefore, it will be convenient to check BPF_F_CPU and BPF_F_ALL_CPUS
+flags in it for these APIs in next patch.
 
-The BPF_F_CPU flag is accompanied by *flags*-embedded cpu info, which
-specifies the target CPU for the operation:
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+---
+ include/linux/bpf.h  | 11 +++++++++++
+ kernel/bpf/syscall.c | 34 +++++++++++-----------------------
+ 2 files changed, 22 insertions(+), 23 deletions(-)
 
-* For lookup operations: the flag field alongside cpu info enable querying
-  a value on the specified CPU.
-* For update operations: the flag field alongside cpu info enable
-  updating value for specified CPU.
-
-Links:
-[1] https://lore.kernel.org/bpf/20250526162146.24429-1-leon.hwang@linux.dev/
-
-Changes:
-v9 -> v10:
-* Add tests to verify array and hash maps do not support BPF_F_CPU and
-  BPF_F_ALL_CPUS flags.
-* Address comment from Andrii:
-  * Copy map value using copy_map_value_long for percpu_cgroup_storage
-    maps in a separate patch.
-
-v8 -> v9:
-* Change value type from u64 to u32 in selftests.
-* Address comments from Andrii:
-  * Keep value_size unaligned and update everywhere for consistency when
-    cpu flags are specified.
-  * Update value by getting pointer for percpu hash and percpu
-    cgroup_storage maps.
-
-v7 -> v8:
-* Address comments from Andrii:
-  * Check BPF_F_LOCK when update percpu_array, percpu_hash and
-    lru_percpu_hash maps.
-  * Refactor flags check in __htab_map_lookup_and_delete_batch().
-  * Keep value_size unaligned and copy value using copy_map_value() in
-    __htab_map_lookup_and_delete_batch() when BPF_F_CPU is specified.
-  * Update warn message in libbpf's validate_map_op().
-  * Update comment of libbpf's bpf_map__lookup_elem().
-
-v6 -> v7:
-* Get correct value size for percpu_hash and lru_percpu_hash in
-  update_batch API.
-* Set 'count' as 'max_entries' in test cases for lookup_batch API.
-* Address comment from Alexei:
-  * Move cpu flags check into bpf_map_check_op_flags().
-
-v5 -> v6:
-* Move bpf_map_check_op_flags() from 'bpf.h' to 'syscall.c'.
-* Address comments from Alexei:
-  * Drop the refactoring code of data copying logic for percpu maps.
-  * Drop bpf_map_check_op_flags() wrappers.
-
-v4 -> v5:
-* Address comments from Andrii:
-  * Refactor data copying logic for all percpu maps.
-  * Drop this_cpu_ptr() micro-optimization.
-  * Drop cpu check in libbpf's validate_map_op().
-  * Enhance bpf_map_check_op_flags() using *allowed flags* instead of
-    'extra_flags_mask'.
-
-v3 -> v4:
-* Address comments from Andrii:
-  * Remove unnecessary map_type check in bpf_map_value_size().
-  * Reduce code churn.
-  * Remove unnecessary do_delete check in
-    __htab_map_lookup_and_delete_batch().
-  * Introduce bpf_percpu_copy_to_user() and bpf_percpu_copy_from_user().
-  * Rename check_map_flags() to bpf_map_check_op_flags() with
-    extra_flags_mask.
-  * Add human-readable pr_warn() explanations in validate_map_op().
-  * Use flags in bpf_map__delete_elem() and
-    bpf_map__lookup_and_delete_elem().
-  * Drop "for alignment reasons".
-v3 link: https://lore.kernel.org/bpf/20250821160817.70285-1-leon.hwang@linux.dev/
-
-v2 -> v3:
-* Address comments from Alexei:
-  * Use BPF_F_ALL_CPUS instead of BPF_ALL_CPUS magic.
-  * Introduce these two cpu flags for all percpu maps.
-* Address comments from Jiri:
-  * Reduce some unnecessary u32 cast.
-  * Refactor more generic map flags check function.
-  * A code style issue.
-v2 link: https://lore.kernel.org/bpf/20250805163017.17015-1-leon.hwang@linux.dev/
-
-v1 -> v2:
-* Address comments from Andrii:
-  * Embed cpu info as high 32 bits of *flags* totally.
-  * Use ERANGE instead of E2BIG.
-  * Few format issues.
-
-Leon Hwang (8):
-  bpf: Introduce internal bpf_map_check_op_flags helper function
-  bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags
-  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_array
-    maps
-  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_hash
-    and lru_percpu_hash maps
-  bpf: Copy map value using copy_map_value_long for
-    percpu_cgroup_storage maps
-  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for
-    percpu_cgroup_storage maps
-  libbpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu maps
-  selftests/bpf: Add cases to test BPF_F_CPU and BPF_F_ALL_CPUS flags
-
- include/linux/bpf-cgroup.h                    |   4 +-
- include/linux/bpf.h                           |  44 ++-
- include/uapi/linux/bpf.h                      |   2 +
- kernel/bpf/arraymap.c                         |  29 +-
- kernel/bpf/hashtab.c                          |  94 ++++--
- kernel/bpf/local_storage.c                    |  27 +-
- kernel/bpf/syscall.c                          |  65 ++--
- tools/include/uapi/linux/bpf.h                |   2 +
- tools/lib/bpf/bpf.h                           |   8 +
- tools/lib/bpf/libbpf.c                        |  26 +-
- tools/lib/bpf/libbpf.h                        |  21 +-
- .../selftests/bpf/prog_tests/percpu_alloc.c   | 312 ++++++++++++++++++
- .../selftests/bpf/progs/percpu_alloc_array.c  |  32 ++
- 13 files changed, 562 insertions(+), 104 deletions(-)
-
---
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 09d5dc541d1ce..a900bc022b1cc 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -3813,4 +3813,15 @@ bpf_prog_update_insn_ptrs(struct bpf_prog *prog, u32 *offsets, void *image)
+ }
+ #endif
+ 
++static inline int bpf_map_check_op_flags(struct bpf_map *map, u64 flags, u64 allowed_flags)
++{
++	if (flags & ~allowed_flags)
++		return -EINVAL;
++
++	if ((flags & BPF_F_LOCK) && !btf_record_has_field(map->record, BPF_SPIN_LOCK))
++		return -EINVAL;
++
++	return 0;
++}
++
+ #endif /* _LINUX_BPF_H */
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index a2a441185f810..f3dc6e2c82411 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1725,9 +1725,6 @@ static int map_lookup_elem(union bpf_attr *attr)
+ 	if (CHECK_ATTR(BPF_MAP_LOOKUP_ELEM))
+ 		return -EINVAL;
+ 
+-	if (attr->flags & ~BPF_F_LOCK)
+-		return -EINVAL;
+-
+ 	CLASS(fd, f)(attr->map_fd);
+ 	map = __bpf_map_get(f);
+ 	if (IS_ERR(map))
+@@ -1735,9 +1732,9 @@ static int map_lookup_elem(union bpf_attr *attr)
+ 	if (!(map_get_sys_perms(map, f) & FMODE_CAN_READ))
+ 		return -EPERM;
+ 
+-	if ((attr->flags & BPF_F_LOCK) &&
+-	    !btf_record_has_field(map->record, BPF_SPIN_LOCK))
+-		return -EINVAL;
++	err = bpf_map_check_op_flags(map, attr->flags, BPF_F_LOCK);
++	if (err)
++		return err;
+ 
+ 	key = __bpf_copy_key(ukey, map->key_size);
+ 	if (IS_ERR(key))
+@@ -1800,11 +1797,9 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
+ 		goto err_put;
+ 	}
+ 
+-	if ((attr->flags & BPF_F_LOCK) &&
+-	    !btf_record_has_field(map->record, BPF_SPIN_LOCK)) {
+-		err = -EINVAL;
++	err = bpf_map_check_op_flags(map, attr->flags, ~0);
++	if (err)
+ 		goto err_put;
+-	}
+ 
+ 	key = ___bpf_copy_key(ukey, map->key_size);
+ 	if (IS_ERR(key)) {
+@@ -2008,13 +2003,9 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+ 	void *key, *value;
+ 	int err = 0;
+ 
+-	if (attr->batch.elem_flags & ~BPF_F_LOCK)
+-		return -EINVAL;
+-
+-	if ((attr->batch.elem_flags & BPF_F_LOCK) &&
+-	    !btf_record_has_field(map->record, BPF_SPIN_LOCK)) {
+-		return -EINVAL;
+-	}
++	err = bpf_map_check_op_flags(map, attr->batch.elem_flags, BPF_F_LOCK);
++	if (err)
++		return err;
+ 
+ 	value_size = bpf_map_value_size(map);
+ 
+@@ -2071,12 +2062,9 @@ int generic_map_lookup_batch(struct bpf_map *map,
+ 	u32 value_size, cp, max_count;
+ 	int err;
+ 
+-	if (attr->batch.elem_flags & ~BPF_F_LOCK)
+-		return -EINVAL;
+-
+-	if ((attr->batch.elem_flags & BPF_F_LOCK) &&
+-	    !btf_record_has_field(map->record, BPF_SPIN_LOCK))
+-		return -EINVAL;
++	err = bpf_map_check_op_flags(map, attr->batch.elem_flags, BPF_F_LOCK);
++	if (err)
++		return err;
+ 
+ 	value_size = bpf_map_value_size(map);
+ 
+-- 
 2.51.2
 
 
