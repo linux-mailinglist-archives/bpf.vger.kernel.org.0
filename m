@@ -1,165 +1,96 @@
-Return-Path: <bpf+bounces-74806-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74807-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FEC4C665F1
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 22:57:52 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F772C66624
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 23:04:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 37E8B35BA2E
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 21:54:15 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTPS id 4E5DB29830
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 22:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D464134B190;
-	Mon, 17 Nov 2025 21:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD2DA3451BA;
+	Mon, 17 Nov 2025 22:04:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GkbDLrjI"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="bommFxq7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C03CA31A046
-	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 21:53:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44CF191F91;
+	Mon, 17 Nov 2025 22:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763416428; cv=none; b=QAbI0k+feypATtSSu57kkO98ai5yJN073wS1qUMM9oMkuR7Dv9EmYwbaBi7BNtugo3FrkpBt3JBqVvfspdHbyhfz2pT5FkrYAngz7OMpj+ihq2FBGvMYVLsoFGb7Xf01LqLmsdI8ncv70YJsYZAewnTtFk2gvvuul2vW/DKOAus=
+	t=1763417067; cv=none; b=BymgiJ6tc5WZ/ld9RE1XLQsXxiDhF3DsJQ7YlyD5g59DyfLaNP3MZArY/dkrKm5VAcBMct70P6k38uEH8oAprWg27rjQBWCmGJJxpm6c/f/A3xR7E+aVR3hV/bnr7+3LXyGQXZ6XNZFo7K0wwE3pzgGPX8Niez3/wmEojBj5kGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763416428; c=relaxed/simple;
-	bh=HTJ3eLKna4TP+p8VyJ5dKdx8lRHlt7F7zGYv0LwV0wE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rsasulWiVOkqqD/eIc+hbNt2YrPe9qX+a5X7HIdtVs+8wmf0Kso1qZH4igz4dcRWUcCtHwLTrXJZfy6L+uGOGDs1l/1sSN+QoOMtGGgBEJvmfMYu4o4trH5fr2tJxI/NWjfv20olACowauuU4jhQCPYH9MwvQ3HBRJX9W4VlSyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GkbDLrjI; arc=none smtp.client-ip=74.125.224.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-63fca769163so4452612d50.2
-        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 13:53:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763416426; x=1764021226; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QRpEc91gJgm396nD4yAqSc5cg7ZEzKjtcQzeuqnnQ2Q=;
-        b=GkbDLrjIcFm1t5yab9rfxOUYFpZKUu+u+cheTtK7KnnJlNBapKnPnT4gM5M44XJVX/
-         GHDoi15lkzfawQfJC/lWqJ5NJj+nFqrv6Abidhm9lAclkI8gR2IbDpLPPEX9R06OtChA
-         jpDnKWvLYV6ByjCBWiUPOjn+lwAQ1T0HgBAVab7WHapI+lAmCQtMIBbmLQb4Du76KXE2
-         eqbFabf0+6jouqN5nZMQnAYpeUJuvtUkzf3IDHc7Yjr7EnMbRfRpGFr3VQcUTcwX+a1T
-         1MiQFopEZOQvA6Ag98aM5o1ZvlCBJahPlQhO67wzD3HGqVO+mcorhYkTnw/MpVGnRV5X
-         +ECQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763416426; x=1764021226;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=QRpEc91gJgm396nD4yAqSc5cg7ZEzKjtcQzeuqnnQ2Q=;
-        b=o6IITMT7YQEiNCJ/rvGvTLTyw0FZ8j1TrTbujncyqq1wNfKU2XAs8qUWR4v1Cxu8xR
-         Qi/tqY6gbUsAzWlE0qeggZCaiajCpBUfmmpqUrvdobD+9Tw0CgFRY20kPrVg1VsGHkfH
-         lOjn+6SBRypCL4rR9EajO6vftczUs7jV4X5R4toYd+is+xhCm4Sm4cfvCVfm4DD1th2S
-         oPbKMvgyFfHMI4G8XolGRA5D1fkiXULjSWOT12Z7s7ssbXL8ZummO8pUYnBYrEYjyhR2
-         PJOVKFpu1PRIcljJenA2L2NFwcUNBBn9TmjZKkbAg4aKNTyQXPatycGa0w9szadLW240
-         UJJw==
-X-Forwarded-Encrypted: i=1; AJvYcCXfTrMwkOu+hnxuabw5csQj+PrLDS/nhll3e7SBJde2TqEFwibtYsxrv2p3iDqVCQnU00A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzUZdYIfZizeOjaT4EgIQOiFQLouVjvW8AnAOWHJ6BitBEt+//q
-	w53FrmuG/ZsHHNQdJ6097YhYlfD7RZQJmxMFFG1dcp9GyUTiXFodSWsR5xKIDz9npolmJXy2f8A
-	ebxYINuTIOnEPnkIsYUuRmVSMtdF5jis=
-X-Gm-Gg: ASbGncs1O5tjtq9QlUdorAKJo25EN3jQmpaTMtv+nMERd9R2vyNIkptwcWqQF214Mhh
-	M67R/dSy4e5vwhEWiuFoe4B+Ih5hMv0lBRYudOZqGEmkWv8ajT8G1i5mBEAnA60Hs3WIYKGIHj8
-	2oQWEFt/WwPZt+hLmuW17MIpBVv5MC1cUmUu2pxUgVYRo/Degzca6G1KfWak86AOfq95VtnDi9N
-	n9KW74e++Ju5z1AgY+hYZDnoyPGON0lKdmxlxc5HLR/CnCU4SfjgKBUBBxr2kIRuEdzKtDty46s
-	4PTlpg==
-X-Google-Smtp-Source: AGHT+IEjt+SgKJgvqZfIWTt3iBRLNEkiTQgsh8E8Ozy14q1xT0QTWKgZXkWXJrZSKQeoqfKoNoZyyR/KwS3Ce6QEtc8=
-X-Received: by 2002:a05:690e:2514:20b0:641:f5bc:6949 with SMTP id
- 956f58d0204a3-641f5bc6ebamr6521194d50.77.1763416425718; Mon, 17 Nov 2025
- 13:53:45 -0800 (PST)
+	s=arc-20240116; t=1763417067; c=relaxed/simple;
+	bh=OWk69CcgDplGRjwOx6Tl5yDcCY20HqQfCP8TDdquZeE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KkkyrWqB05OiBq0gYebHBRImejhyxOtY49+ACeRXETE0QLCop2Zb/xubTC8SwTun3HyFMEikzvrp4L9BZUo1woJetSrIEagLMCob7I6H7nS/xs83bSArBvBZ0XP83tv0zdRWL5TTz66ddlmtDle/0KxF9CDdPjPhS7JkwM7Dv/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=bommFxq7; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=x4vYLxHITOk7FY5Vha316u1XPKmx4CmxosD+41s+PrI=; b=bommFxq7sliAeyjvLPQEoXoIVd
+	pKa5o1Yb4IZq/+Xwuf716utrTFwG+e1EsNxYWcpzPTbdpHRsyC+gnwvbW2CxCuCIULA7mQDMxwK5/
+	AD9OstpSMVU2Lx+nYqPNClApquHbL/pPqjnm6CSLnpit0oArJLDk/9tAqD/lIMvZ5qr2Fe2hFo0DW
+	O1QvQUtGp8okxdB0iNSpx11sF0WGBhQtqqPRzaeS3gnJrqxtzofIHkzHybBV0AkLPLWQ3z6hODug1
+	LIuAWXCkHx6YuL1QuzIbhbKRobQAT7Rzt9v5JNZjbJHnm8L2IAhzA7JyTKsGV5a7GQI7nzes/1y1g
+	a0CeNx3Q==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vL7KZ-00000007Jyi-1gmT;
+	Mon, 17 Nov 2025 22:04:15 +0000
+Date: Mon, 17 Nov 2025 22:04:15 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: bot+bpf-ci@kernel.org, linux-fsdevel@vger.kernel.org,
+	torvalds@linux-foundation.org, brauner@kernel.org, jack@suse.cz,
+	raven@themaw.net, miklos@szeredi.hu, neil@brown.name,
+	a.hindborg@kernel.org, linux-mm@kvack.org,
+	linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+	kees@kernel.org, rostedt@goodmis.org, linux-usb@vger.kernel.org,
+	paul@paul-moore.com, casey@schaufler-ca.com,
+	linuxppc-dev@lists.ozlabs.org, john.johansen@canonical.com,
+	selinux@vger.kernel.org, borntraeger@linux.ibm.com,
+	bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
+	yonghong.song@linux.dev, ihor.solodrai@linux.dev,
+	Chris Mason <clm@meta.com>
+Subject: Re: [functionfs] mainline UAF (was Re: [PATCH v3 36/50] functionfs:
+ switch to simple_remove_by_name())
+Message-ID: <20251117220415.GB2441659@ZenIV>
+References: <20251111065520.2847791-37-viro@zeniv.linux.org.uk>
+ <20754dba9be498daeda5fe856e7276c9c91c271999320ae32331adb25a47cd4f@mail.kernel.org>
+ <20251111092244.GS2441659@ZenIV>
+ <e6b90909-fdd7-4c4d-b96e-df27ea9f39c4@meta.com>
+ <20251113092636.GX2441659@ZenIV>
+ <2025111316-cornfield-sphinx-ba89@gregkh>
+ <20251114074614.GY2441659@ZenIV>
+ <2025111555-spoon-backslid-8d1f@gregkh>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251114221741.317631-3-ameryhung@gmail.com> <16d43cdc90504cad5143df62b3d40f325a271aeca0adc521c6fef711023f90ef@mail.kernel.org>
- <c891d752-33cc-413d-8311-dcf8afbf339d@linux.dev>
-In-Reply-To: <c891d752-33cc-413d-8311-dcf8afbf339d@linux.dev>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Mon, 17 Nov 2025 13:53:35 -0800
-X-Gm-Features: AWmQ_bllaccjMOakNQGT5Qu09mBjvusObW0uY6jWy3hdesVzuIyVmf42SM1SzgA
-Message-ID: <CAMB2axPrnaEf981+drX-MPBZOrPhZvFxuq0d+2Ue-sTqvEQZ8w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 2/6] bpf: Support associating BPF program with struct_ops
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: netdev@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org, 
-	daniel@iogearbox.net, tj@kernel.org, martin.lau@kernel.org, 
-	kernel-team@meta.com, ast@kernel.org, eddyz87@gmail.com, 
-	yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev, 
-	bpf@vger.kernel.org, bot+bpf-ci@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2025111555-spoon-backslid-8d1f@gregkh>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Mon, Nov 17, 2025 at 1:39=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
->
->
->
-> On 11/14/25 2:51 PM, bot+bpf-ci@kernel.org wrote:
-> >> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> >> index a41e6730e..626aa9197 100644
-> >> --- a/kernel/bpf/bpf_struct_ops.c
-> >> +++ b/kernel/bpf/bpf_struct_ops.c
-> >
-> > [ ... ]
-> >
-> >> @@ -811,6 +822,12 @@ static long bpf_struct_ops_map_update_elem(struct=
- bpf_map *map, void *key,
-> >>              bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS,
-> >>                            &bpf_struct_ops_link_lops, prog, prog->expe=
-cted_attach_type);
-> >>              *plink++ =3D &link->link;
-> >> +
-> >> +            err =3D bpf_prog_assoc_struct_ops(prog, &st_map->map);
-> >> +            if (err) {
-> >> +                    bpf_prog_put(prog);
-> >> +                    goto reset_unlock;
-> >> +            }
-> >
-> > Can this double-put the prog reference? In bpf_struct_ops_map_update_el=
-em:
-> >
-> >    prog =3D bpf_prog_get(prog_fd);              // refcnt =3D 1
-> >    bpf_link_init(..., prog, ...);             // link takes ownership
-> >    *plink++ =3D &link->link;                    // link stored in st_ma=
-p
-> >    err =3D bpf_prog_assoc_struct_ops(prog, ...);
-> >    if (err) {
-> >      bpf_prog_put(prog);                      // refcnt =3D 0, prog fre=
-ed
-> >      goto reset_unlock;
-> >    }
-> >
-> > Then at reset_unlock:
-> >
-> >    bpf_struct_ops_map_put_progs(st_map);      // calls bpf_link_put(lin=
-k)
-> >
-> > The bpf_link_put will eventually call bpf_link_dealloc()->bpf_prog_put(=
-link->prog),
-> > attempting to put the already-freed prog reference. This looks like a u=
-se-after-free
-> > if bpf_prog_assoc_struct_ops fails (which can happen when a non-struct_=
-ops program
-> > is already associated and returns -EBUSY).
->
-> The ai-review should be correct in general on the double bpf_prog_put.
->
-> >
-> > Should the error path skip the bpf_prog_put and let bpf_struct_ops_map_=
-put_progs
-> > handle the cleanup via the link?
->
-> bpf_prog_assoc_struct_ops will never return error for
-> BPF_PROG_TYPE_STRUCT_OPS. If that is the case, maybe completely remove
-> the err check.
+On Sat, Nov 15, 2025 at 08:21:34AM -0500, Greg Kroah-Hartman wrote:
 
-Thanks for reviewing
+> Ugh, messy.  But yes, this does look better, thanks for that.  Want me
+> to take it through the USB tree, or will you take it through one of
+> yours? (I don't remember what started this thread...)
 
-Will remove the check and add comments about why the error can be ignored.
-
->
+See #work.functionfs in my tree - that patch carved up + fix for UAF
+on uncancelled scheduled work.  Individual patches in followups.
+If you have problems with that series, please say so.  Otherwise
+I'm merging it with #work.persistence (with #36 in there updated as
+posted)...
 
