@@ -1,209 +1,176 @@
-Return-Path: <bpf+bounces-74776-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74791-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CDF7C65C4C
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 19:45:57 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 892C9C65F06
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 20:22:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4F5994E7EF6
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 18:45:56 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8B3F7346C27
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 19:17:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DAB33161B1;
-	Mon, 17 Nov 2025 18:45:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6919033FE08;
+	Mon, 17 Nov 2025 19:15:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NDT9Jk/0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UBW5IjnH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B8DE28D83D
-	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 18:45:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 147B133F8C7
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 19:15:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763405146; cv=none; b=VqCge9Asgc+P7GHZeCGSetOqkDMPHtIIx9XHFFMh9JIiTCeprpt9Q8xfe9H15DxMdFfGjCnVCJXWMWZxsERa3xpVfBHUYp+VHsrY3T8DnSxvz5zM4YUqI+g6+VkbqLK0Sg2WPMyx2NOWXcB5ZxmM8PiQhFgeaasapyLX8kbnj30=
+	t=1763406918; cv=none; b=d5z0kd05WlsM4XzagCUxs5+MjCz0sI5OXNxZ/bZzC67BhB7hPXQ7VoZyw26CX7fOPZ9iTmACy2hn8nd/7FrWH5y/KdCY6e8k7qCq+RFmY6QX6uyT315P6Plms5VPD+LZ+ljT2jLMx4kBb9Phmdg45Oc7j0fK93M85sW1XbB4dUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763405146; c=relaxed/simple;
-	bh=XfpLeaMZaftJPa7XH4d6g3rAc3/MCc5v2eE3X/twjBg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iCR2qH3RSkNiFaGksdGA3CmACLUtm+zYduDfINH/ZStXgBV9T2OG0Pea68yE8HhqAxJ30j7W22ftpPdaY8t+dM7YCe5wgxRBVxIZv6O+GIKeqYp1PO08bb4mepwRWQ6B1DBE5NYQZWMET4QJKSLmPxWiR6x0pewG00HTX0gj8Xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NDT9Jk/0; arc=none smtp.client-ip=209.85.216.52
+	s=arc-20240116; t=1763406918; c=relaxed/simple;
+	bh=8XYMyZUxzf2Gu/EkbhT25ijmIzyv6Q+HEDxpFUrbxvI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZOesoDmsIbsu1uiybFQ59OqRFMSht+SsCf8DQR4cyLIDL+vMPyj5be6mU9cUz1WKnpyl7QLVCRoSUwtDQ2RS7dGv+ch6/pjaTFfyuFFBpCiiq+PRdhS3tBaEzemyRG0589cx2iyw4xoGLFAu0m+SxYApQoJ8gMo7Buqh4nlggxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UBW5IjnH; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-343dfb673a8so4414531a91.0
-        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 10:45:45 -0800 (PST)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7aae5f2633dso5222093b3a.3
+        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 11:15:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763405144; x=1764009944; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7wucYSeQ2nsQ8Jk+wJRdH9jEs+0g/nJs2i4hQi0un/g=;
-        b=NDT9Jk/03fRZAfArZZL/XY7N7/BgR+DWtY00ece4zt7N+HqmLihjkUv8R0YivBeRvf
-         M95T5gF4dtM7eXldobq0fZCXDV9YIRxIDed3tD5GfktI9Myix88xMOqZdhf9mI+OcYCc
-         eCemSmoUxF3oCqBfqS88oNrmnMqPejhSdg3rDhuffI1novuF4pHYe3vXum+WIO72Hefm
-         WR39u1HzPKPrIIoGoVCHtKKgmluVghyvL0VsrryBsKOiw+g6VhD9MOQ+synLhNYQSW5Y
-         cItMPmOiyn7+L6I2a1/h3WZHDFef5GPviPHZqza2KdnZa/ZWjO00e4GBLBwRDxu56gNY
-         +8pQ==
+        d=gmail.com; s=20230601; t=1763406916; x=1764011716; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FxBy++oAoQMduY8bXug9aUHF7Mi2DRiPPKfNcmF1Q+w=;
+        b=UBW5IjnHvP7rgwE7fl33PNvEAlfa6E/3ozwNVrWigUbOhmqrBN7DiVX8wKey/ABjiK
+         iI0Zf7Ovz4q76e9oI5nOifPSXf5TTzJied57fWoIvio55/DQtXdarS+shkZXvzafDnuQ
+         GasTPj/htUUI3itm76hNpDsiC7MxRHh0tyMrwiV9GhAAk/zk0pCqGplFZx8+9IHqO9GY
+         NqEwHlz2R7u8vLrsQID7PNHu53PYHqOXXUd6KRh8rX29Ay7Lbwjo4G5mWPKlzDCQnBqS
+         6l4TP63MuSJyQDdTuhFqxCnCcQRJ7hjtnx3KdKrvWFkTYWffu1MXqnvci4o0TCJwlJuY
+         hmMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763405144; x=1764009944;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=7wucYSeQ2nsQ8Jk+wJRdH9jEs+0g/nJs2i4hQi0un/g=;
-        b=PD9Tj+R4vO/igq69Iexpo2p84ecDEM8j6ftTy05HFs29YMFxhi9yMifP/jQ0v1zc4k
-         yuFcoQeDodqGdJtsxsk8mEjztKmyKx5+KFWTFAnQ9h3kVYIUcK3QfmhuEZydCApQzBSq
-         DdUoG7vxpqXVvMiFPNYcsVdAKUSh+PouwE01HgPllh6Q9VkiYx6bvv+0na7dOAKHtd3l
-         GGYdWJVhMw7Sl53ROV6ZpyElvKx3doKqsBSBPL63bWAh+kWJWx8ReBsBDJNzBZafeJsi
-         rfxxn9CDp4age5ZKMSDShVU8zfTWxQ7Qth0dzUmV6DlYHF+2DJzg4hdP6RiDqFD8Pu7T
-         QGig==
-X-Forwarded-Encrypted: i=1; AJvYcCWzKSFl34Yy+HvMxReteJ3REHM5KvYCta+lybWW7qF0EWLq9n1lAWhRveCqzWuN0PTYWx8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxboM7NPnwRZr5NSwyOkcVeWyvKv4JhxjchkTXtQJycBYGjy3R1
-	6ze9ADR0udk1+cCg5JA9nIGnX9igmsCDKiH22VSmUqBEBEyC4TlcPeU1GA7JOKQHzLJj3A6NrCD
-	6qz0W4n2o1xm5sukFyBAk6dptS4xjvew=
-X-Gm-Gg: ASbGncs83KBT1koO2Wc51CqDxztwSM2CjpselHXp6mNjURmfMY+D1gumcBiKzN8C39r
-	bYa6KyMzCUnAysi/E6+5C4Zx/XQ23PZR4V+OI1dljlR0ONsO1+Kxhg9MBSl4HFVcXZlSq5Wq5xt
-	WJpbjiVIsnlufA/XXm4twFN8KvjqmV1PFsJUJolNXdy5ypn6X9LvBaQoX7Rm2LFLrl7tY2hixCJ
-	/+QTmy4uF8HN0gzDb6sH265teisQhRmH4fpaVRmcoMxZ6J1anPvv2XdZO19EpE+0nd2vuB4OOnp
-X-Google-Smtp-Source: AGHT+IHaGw3phEOQw4Qpur0eLmyhxso8M4IG4GnZLwbf/2toORgNJUKXRKe/uLp0l71+D3q3BCbIbJuZDTs9RGbD+0c=
-X-Received: by 2002:a17:90b:510c:b0:343:b610:901c with SMTP id
- 98e67ed59e1d1-343fa74be77mr14049811a91.26.1763405144456; Mon, 17 Nov 2025
- 10:45:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1763406916; x=1764011716;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FxBy++oAoQMduY8bXug9aUHF7Mi2DRiPPKfNcmF1Q+w=;
+        b=Z2P4zja5J0gpBy/mS6+udnFQWuXVYkYIP78sdRTGdOMdSZu7xW8/HSXfLWyTlkuHiw
+         WPJqERBpW5CYNICsI0dBRlKSyWsYu4F6t1PzLABcE5l8h8HcStbRjhLkNko2I5fyD+cp
+         44Em5Ss6GYs1EORfwuTYb5uMyphXntsr+2xCV6/cc/zcOXygqr5J4whGTPh9QaK0+WNW
+         KraR10NrB0LtSvTijHLvovcv1Zgc1L4Hdv3mDgcE6PsTlETrxnNpxvvbWgQLgRaJWmsn
+         YMXGPWxzxjcBGHPaFQ1q1H5JT2fpZ/+SSgjajTa+9VHoehvaO9lQxakMrmcW9hVSBYQ4
+         1Pnw==
+X-Gm-Message-State: AOJu0YyuFh6B4nKP6z5KuQXwgBMyFLFNS4fT1q7WdwwI9gPHzsttr2Hd
+	YiDAUheC8vnyen6h/94ISLBBdG1KaXe0FV1+ZKHRBa1falm0T+soJKT735Votw==
+X-Gm-Gg: ASbGnctrhd+3T7GfBz3bNdbiiuWenaBxk7ONlLi2+xtfe+lNJ7KGMxu9/gm13MXsQVG
+	pCo7wze/wAK2oHm9Ll0qV9F7PS8ebQlTrA7kpzhWmljB9ciXxGXhQRRa9flAqb/ty2HegpHHPzu
+	6Lea7bPNrPibFBxaTerXZW3ZgR1UaideisPMIOO2APW9WCW1aY5zRRH9/3ki5RtAuPKLS/DLgSX
+	ni0sEiXcI/X0BQxYzM6yR+Ds3rzAoA4gwX+DnxvYZelhX5D2KgqG/Yvtws3vbvauOU6ShxMWL5+
+	WOh+ACwy6ObsVM8kfw0scBMn3FcJrbA6S1Ro1IKxH9y1C8o/4hV8cEHocniFGwVQPGUWzV5xsmo
+	BG9xBUGJqLocAWE2BQM9z4fszRSEri5kDCWjZtmUqH+fsN7/BRw+m2QtihaUnTp+s31aUeEQ4F+
+	dtaMkWBUTFTaYl9A==
+X-Google-Smtp-Source: AGHT+IFg9m2V8IGb7kvHuVx3MlddcQxQnC06pKFHTVSj+DnxLfz6b9fR/ZfBVQmI4UhIgu60FR0jIw==
+X-Received: by 2002:a05:6a00:174c:b0:7ad:df61:e686 with SMTP id d2e1a72fcca58-7ba3bb96782mr14320319b3a.16.1763406915969;
+        Mon, 17 Nov 2025 11:15:15 -0800 (PST)
+Received: from localhost ([2a03:2880:ff:10::])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b924aea0f8sm14155354b3a.5.2025.11.17.11.15.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Nov 2025 11:15:15 -0800 (PST)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	memxor@gmail.com,
+	ameryhung@gmail.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v1 1/1] bpf: Annotate rqspinlock lock acquiring functions with __must_check
+Date: Mon, 17 Nov 2025 11:15:15 -0800
+Message-ID: <20251117191515.2934026-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251114193729.251892-1-ssranevjti@gmail.com> <aReUv1kVACh3UKv-@casper.infradead.org>
- <CANNWa07Y_GPKuYNQ0ncWHGa4KX91QFosz6WGJ9P6-AJQniD3zw@mail.gmail.com>
- <aRpQ7LTZDP-Xz-Sr@casper.infradead.org> <20251117164155.GB196362@frogsfrogsfrogs>
- <aRtjfN7sC6_Bv4bx@casper.infradead.org>
-In-Reply-To: <aRtjfN7sC6_Bv4bx@casper.infradead.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 17 Nov 2025 10:45:31 -0800
-X-Gm-Features: AWmQ_bnuhsyqplW3EwmS5X2rilTR8nQ_4xwujfWlx5dY8gU3dMEgLDCj7uI7O6I
-Message-ID: <CAEf4BzZu+u-F9SjhcY5GN5vumOi6X=3AwUom+KJXeCpvC+-ppQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/filemap: fix NULL pointer dereference in do_read_cache_folio()
-To: Matthew Wilcox <willy@infradead.org>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, SHAURYA RANE <ssrane_b23@ee.vjti.ac.in>, 
-	akpm@linux-foundation.org, shakeel.butt@linux.dev, eddyz87@gmail.com, 
-	andrii@kernel.org, ast@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-kernel-mentees@lists.linux.dev, skhan@linuxfoundation.org, 
-	david.hunter.linux@gmail.com, khalid@kernel.org, 
-	syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-+ bpf@
+Locking a resilient queued spinlock can fail when deadlock or timeout
+happen. Mark the lock acquring functions with __must_check to make sure
+callers always handle the returned error.
 
-On Mon, Nov 17, 2025 at 10:03=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
-g> wrote:
->
-> On Mon, Nov 17, 2025 at 08:41:55AM -0800, Darrick J. Wong wrote:
-> > I wondered why this whole thing opencodes kernel_read, but then I
-> > noticed zero fstests for it and decid*******************************
-> > *****.
->
-> I wondered the same thing!  And the answer is that it's special BPF
-> stuff:
->
->         /* if sleeping is allowed, wait for the page, if necessary */
->         if (r->may_fault && (IS_ERR(r->folio) || !folio_test_uptodate(r->=
-folio))) {
->                 filemap_invalidate_lock_shared(r->file->f_mapping);
->                 r->folio =3D read_cache_folio(r->file->f_mapping, file_of=
-f >> PAGE_SHIFT,
->                                             NULL, r->file);
->                 filemap_invalidate_unlock_shared(r->file->f_mapping);
->         }
->
-> if 'may_fault' (a misnomer since it really means "may sleep"), then we
-> essentially do kernel_read().
->
-> Now, maybe the right thing to do here is rip out almost all of
-> lib/buildid.c and replace it with an iocb with IOCB_NOWAIT set (or not).
-> I was hesitant to suggest this earlier as it's a bit of a big ask of
-> someone who was just trying to submit a one-line change.  But now that
-> "it's also shmem" has entered the picture, I'm leaning more towards this
-> approach anyway.
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Amery Hung <ameryhung@gmail.com>
+---
+ include/asm-generic/rqspinlock.h | 47 +++++++++++++++++++-------------
+ 1 file changed, 28 insertions(+), 19 deletions(-)
 
-As I replied on another email, ideally we'd have some low-level file
-reading interface where we wouldn't have to know about secretmem, or
-XFS+DAX, or whatever other unusual combination of conditions where
-exposed internal APIs like filemap_get_folio() + read_cache_folio()
-can crash.
+diff --git a/include/asm-generic/rqspinlock.h b/include/asm-generic/rqspinlock.h
+index 6d4244d643df..855c09435506 100644
+--- a/include/asm-generic/rqspinlock.h
++++ b/include/asm-generic/rqspinlock.h
+@@ -171,7 +171,7 @@ static __always_inline void release_held_lock_entry(void)
+  * * -EDEADLK	- Lock acquisition failed because of AA/ABBA deadlock.
+  * * -ETIMEDOUT - Lock acquisition failed because of timeout.
+  */
+-static __always_inline int res_spin_lock(rqspinlock_t *lock)
++static __always_inline __must_check int res_spin_lock(rqspinlock_t *lock)
+ {
+ 	int val = 0;
+ 
+@@ -223,27 +223,36 @@ static __always_inline void res_spin_unlock(rqspinlock_t *lock)
+ #define raw_res_spin_lock_init(lock) ({ *(lock) = (rqspinlock_t){0}; })
+ #endif
+ 
+-#define raw_res_spin_lock(lock)                    \
+-	({                                         \
+-		int __ret;                         \
+-		preempt_disable();                 \
+-		__ret = res_spin_lock(lock);	   \
+-		if (__ret)                         \
+-			preempt_enable();          \
+-		__ret;                             \
+-	})
++static __always_inline __must_check int raw_res_spin_lock(rqspinlock_t *lock)
++{
++	int ret;
++
++	preempt_disable();
++	ret = res_spin_lock(lock);
++	if (ret)
++		preempt_enable();
++
++	return ret;
++}
+ 
+ #define raw_res_spin_unlock(lock) ({ res_spin_unlock(lock); preempt_enable(); })
+ 
+-#define raw_res_spin_lock_irqsave(lock, flags)    \
+-	({                                        \
+-		int __ret;                        \
+-		local_irq_save(flags);            \
+-		__ret = raw_res_spin_lock(lock);  \
+-		if (__ret)                        \
+-			local_irq_restore(flags); \
+-		__ret;                            \
+-	})
++static __always_inline __must_check int
++__raw_res_spin_lock_irqsave(rqspinlock_t *lock, unsigned long *flags)
++{
++	unsigned long __flags;
++	int ret;
++
++	local_irq_save(__flags);
++	ret = raw_res_spin_lock(lock);
++	if (ret)
++		local_irq_restore(__flags);
++
++	*flags = __flags;
++	return ret;
++}
++
++#define raw_res_spin_lock_irqsave(lock, flags) __raw_res_spin_lock_irqsave(lock, &flags)
+ 
+ #define raw_res_spin_unlock_irqrestore(lock, flags) ({ raw_res_spin_unlock(lock); local_irq_restore(flags); })
+ 
+-- 
+2.47.3
 
-The only real limitation is that we'd like to be able to control
-whether we are ok sleeping or not, as this code can be called from
-pretty much anywhere BPF might run, which includes NMI context.
-
-Would this kiocb_read() approach work under those circumstances?
-
->
-> Looking at it though, it's a bit weird that we don't have a
-> kiocb_read().  It feels like __kernel_read() needs to be split into
-> half like:
->
-> diff --git a/fs/read_write.c b/fs/read_write.c
-> index 833bae068770..a3bf962836a7 100644
-> --- a/fs/read_write.c
-> +++ b/fs/read_write.c
-> @@ -503,14 +503,29 @@ static int warn_unsupported(struct file *file, cons=
-t char *op)
->         return -EINVAL;
->  }
->
-> -ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t=
- *pos)
-> +ssize_t kiocb_read(struct kiocb *iocb, void *buf, size_t count)
->  {
-> +       struct file *file =3D iocb->ki_filp;
->         struct kvec iov =3D {
->                 .iov_base       =3D buf,
->                 .iov_len        =3D min_t(size_t, count, MAX_RW_COUNT),
->         };
-> -       struct kiocb kiocb;
->         struct iov_iter iter;
-> +       int ret;
-> +
-> +       iov_iter_kvec(&iter, ITER_DEST, &iov, 1, iov.iov_len);
-> +       ret =3D file->f_op->read_iter(iocb, &iter);
-> +       if (ret > 0) {
-> +               fsnotify_access(file);
-> +               add_rchar(current, ret);
-> +       }
-> +       inc_syscr(current);
-> +       return ret;
-> +}
-> +
-> +ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t=
- *pos)
-> +{
-> +       struct kiocb kiocb;
->         ssize_t ret;
->
->         if (WARN_ON_ONCE(!(file->f_mode & FMODE_READ)))
-> @@ -526,15 +541,9 @@ ssize_t __kernel_read(struct file *file, void *buf, =
-size_t count, loff_t *pos)
->
->         init_sync_kiocb(&kiocb, file);
->         kiocb.ki_pos =3D pos ? *pos : 0;
-> -       iov_iter_kvec(&iter, ITER_DEST, &iov, 1, iov.iov_len);
-> -       ret =3D file->f_op->read_iter(&kiocb, &iter);
-> -       if (ret > 0) {
-> -               if (pos)
-> -                       *pos =3D kiocb.ki_pos;
-> -               fsnotify_access(file);
-> -               add_rchar(current, ret);
-> -       }
-> -       inc_syscr(current);
-> +       ret =3D kiocb_read(&kiocb, buf, count);
-> +       if (pos && ret > 0)
-> +               *pos =3D kiocb.ki_pos;
->         return ret;
->  }
->
 
