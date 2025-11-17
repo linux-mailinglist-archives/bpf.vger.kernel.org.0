@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-74689-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74690-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2415C62474
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 04:50:26 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 202CCC6247D
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 04:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4DDC54EA486
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 03:49:54 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 27F4D4E90F2
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 03:50:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BBBF2ED168;
-	Mon, 17 Nov 2025 03:49:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93D471A9FB5;
+	Mon, 17 Nov 2025 03:49:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UQsrDH3T"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YL1u8HAd"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F41631576D
-	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 03:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91FAA2E9EAA
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 03:49:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763351373; cv=none; b=VzQsTR61pU/J1uqboLLh5RB1dxRidMYOi3+fgvKAov+ghYKbwj6M6gJ7LZFChzIXfuNqEDhS97lL4OC1Fn1vJcHp2XFCHZaD6EMouXaA9xewZP9EBhzQSLfuhaoYf4OI+PFD/1qbuJT2Zlz9JoWQDeCfpAC3imYwQ6p1VL+J51c=
+	t=1763351379; cv=none; b=HlAYShSZY85qrjanbbgKO0jsVskYMCG82CclnkiPK6l6S6tfk8C39KA9EJZG9fhr+09gSa6csgdaId/7PhzeZzTQO8oNJY/XYiKE31TZ31BPStJiSkK9rtroUwkYY0n34Z8rYhyCPqudiAdkGlZfJftoeEWp2qZzK2xbvRzmaLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763351373; c=relaxed/simple;
-	bh=CuZzfhxpaY2RwGDUn1Vx9bQnsJNO8QHP2g34k19NaVo=;
+	s=arc-20240116; t=1763351379; c=relaxed/simple;
+	bh=6lH5TThLt0iLUPf10EryfpP2LJ24tamdXbqQbNSY8i0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=abGLP9vvBfYMy++hpsqhnHLF7p2RsMyUjiLgnr3sq/mca4XZs58FUEz8rPQjOdukOosf83FZFjY1SGJcXjU6Gi3Scqj4W0uIu4zbiO6iraYPSv9QNQqwMqmmzXg8zv3/Iidmxco2tkqHSE9cO/3rkmyaKZtnFXsrwSaqg6gE/SE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UQsrDH3T; arc=none smtp.client-ip=209.85.210.193
+	 MIME-Version; b=j6pA9Qd4fBzwiDz1pobxXx04cm0aKHUm8vDIhj5i5Bh6n+AjID5s3E6ggoiZueMFJk272CbzyayCHGcAlcorHyqo+bQS1UrzQnNTVz5+MAG3RwVa1ZkCgo23fVaZQ2ZVwngoZqfC3c3rSrMBM8exgHYyz/XlozTwyQwZHd311gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YL1u8HAd; arc=none smtp.client-ip=209.85.210.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-7b8bbf16b71so4091680b3a.2
-        for <bpf@vger.kernel.org>; Sun, 16 Nov 2025 19:49:32 -0800 (PST)
+Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-7ade456b6abso3310988b3a.3
+        for <bpf@vger.kernel.org>; Sun, 16 Nov 2025 19:49:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763351371; x=1763956171; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763351377; x=1763956177; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Gr5zFCvf3ujgW8K/MBn3EvZvT1zNiYJuY8EfOcbbjUE=;
-        b=UQsrDH3TOamJbHpZtRnA99ovxE1K3pPfoCmqViPWdqB4HAPDC0nO+Y4kS0jF7gt8K+
-         8DxNUovN4945HxYrK/nkDAAUrkT305H1YHCteTmbjqejdCGtG4miGTD8RbvsFdczjp6k
-         mq4P89LG+RBLIu2iSCBv9s/iWP5hnfHR+8b/D+ukcsVgnyTEEqe92zJy/rWZSgEpzkHW
-         ULTZC8rzkZ8S6qYNNlMA+LgjjaBm96siPwUMHtmun0pvp5SH2kfZQ2cbCQtj5u+VASVm
-         +Y3GcdYH2lPqFA7wWI8zoorKttncUBPE632qVmzIjHo9U6KJ7vokLgjeSmt0TGN4FZMc
-         9Scw==
+        bh=Og8VZW3HRIC9jFqJjaOXGmdza1e4WZ/zf5HErz8QF0g=;
+        b=YL1u8HAdC+EmxxgcbAAHN6iUsh9SGoW76xQlpOkKwIsqAUNPfItWv6s1PeOJ2O4oFz
+         bScm7+NOOcCeYGuF2fNbZaiuBLRzzdgVf4USojVjkXV7ARaauZtHOJuqS1lQvRinEDUN
+         dl9OC7jg31HRBUP6PQ5+cYCCm919t90umGCpXqGKLw76bE4yWZGuXnFuEEsHtDIMecra
+         E3xgGq2iu20aWcXDtO53FeCfyCvVcD7IxNoc8J2G3IWod9+tj0PGNi1EfIO7BEs7y2OL
+         Wgfvp3Zq5Hj+NPvdpEABOEnUahotq0Fd9xs1R0AnbnIFwfY6bH67NsEEPU/EF6vXxKwm
+         /zew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763351371; x=1763956171;
+        d=1e100.net; s=20230601; t=1763351377; x=1763956177;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Gr5zFCvf3ujgW8K/MBn3EvZvT1zNiYJuY8EfOcbbjUE=;
-        b=P43PbrHu7wf0hDDta1qA3hTbpSUTo5Q5SgsH+k8EaMCBtGi+OgOdqA9u9f4dhVeL8Y
-         GZYpgrIcjTx+kr3Hf1i/qQdwVIcGKxj1nVar0vaXOyd0vQHyFThiiM1j8kbPIaLDPRO+
-         JcAWsT7wG1ho5NQOuRyY7DOiVjSH9FCR0ZoMr42WuZPlWY0WENVczaXV5nX8Nd12lHbE
-         ovDgqgokhOc5wjChhQ8AEclaVFw+zk/VXITUwJx1OpDFgsz2OY1lsR5Ax4i8pW0F1U+w
-         b7l1ElhuC3Wv3ZL+ZSBn2xUIuBk4qSp+n9yz3LbTCuKKZMpMBsyHd6zXsdDzKmc+XcFh
-         qRlA==
-X-Forwarded-Encrypted: i=1; AJvYcCU5KMpKbT7IGfpD7sOcvcIGj+gCwVLHHUclJwxS9xaTbV6dOUkXNioFNc25r0ZtwENlOv4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywpc9GoOJUm5+Tp/4OJhN7KCXqCca4UkHqyB1dc1KPHr4wI0l+x
-	Y5WhiesPke5bcZmrtSBMLZ8K4sKjNkKL0XaIzrkvGPHVQN60UXlmC7i4
-X-Gm-Gg: ASbGnct+j+B2S5I7TPDNABZrDrbYNk6m66oglmHkv/+b7Dg9y2GnzYLSvkTgER0uVWU
-	vaJrEftk4KqaSJksvE1Qdq5U5NSWTpuJsMwH6gcSfJeYImboW1VqcCWL7mk8tmHH36kLDvTL78b
-	OjUg5rK8YwsR/SbMcouw5UVptCTEQyQgSfgLJbJzqecQyn9asTgcT+9VAbEhpd4DlyOiUCU4JcN
-	lEvoEDKE4sdo1aLcoE4yjzxrwZB/1lqhOpxC2bIeYgKZhpvnYo8V17NuTJucutXJMo5wkKt8Vb3
-	TMxoyplA3m0sa5iRSNxHriJwWKJwqsV/uCEPITm42h8EqFGgG4c9RUDkSyiYEEFw/vtZscrKGU3
-	1zSg9L19xtgBX3Z0AkyPstFZGiQa1oJDFvsEQPKSXVo+Jf6qFUwSlJ42taXOtSgYlMQ/3eXKPtA
-	Se
-X-Google-Smtp-Source: AGHT+IEsiDE6ta++Kmx6LtSUk5n6u7iPjxOL8FLATJIsjty7oKbw7jcSClMzSU49gt+/kqfQxb+meQ==
-X-Received: by 2002:a05:6a20:244e:b0:33b:f418:c3e8 with SMTP id adf61e73a8af0-35ba259aaebmr12228233637.60.1763351371537;
-        Sun, 16 Nov 2025 19:49:31 -0800 (PST)
+        bh=Og8VZW3HRIC9jFqJjaOXGmdza1e4WZ/zf5HErz8QF0g=;
+        b=QkAMSX0iHhPcyZDKMKk6PxbQP2CtCimc45c2NoKVogVJYxPRpOGsCqTtZzWBtNJgaY
+         5izeBdtakI97Bzar8Z5CepJBfNqRqxgyUTxpreegsKNoeGQNdwCC4QkO1dg9msfp9oVz
+         Ppt0pKuM+Ign/WGa5lxVPyRg6x2w6V3FvLqOQqfDaekl9OZT8VbcOCZq2zx0Lqnle1zM
+         s9spQPEgqdvytKgTOFif45swdcCX7PnfapGhLLdd2D1OnRYp+nZuLdPTNcCgq8vwxc8f
+         ZCsUG4fckhyEV2AEnyErB/DjM64k1XKsmhEC8zSoaNcXEupgIUyumizkKMUx1oNZKM7e
+         9woA==
+X-Forwarded-Encrypted: i=1; AJvYcCUoFZ10T+wzY8q/26U66a1IQK8OelIKqImbAQe2RRJKxRLjgXB8vR907Zi/RfsdfY8j33Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjJH90BqW97JKU2GCTzCEwpkPMPS+SKRTUn9lYe0xxlKNu2yQY
+	0eA/TjyPuOJV2lkkR4WvoGD4x91MYO75718xpVwtJc7GGATraSxg7i2y
+X-Gm-Gg: ASbGncv/hYidKZ41t7f/M8v8PGFYmQ8zgU1ph+2Qa94lL1sLMiVQrxI/+Qf+vZvKHbH
+	bVqZIVVDWiNWhgK+KVQ6qfvdo8PjwlfPW6SfQ64yxNVgPSWszL0e9h1rIu1vzzT17Fwd9YRUIX6
+	7beptb6RzjnLNBsexjIFxAVXOMSd4yvIuypBP4H2mDl+zkPad2JOD62Fd41OrvjPVGXc+YEMRFK
+	R6I2UcGE645TYwD+HbmOg+GqoY4al+crQ79J2WaEzPq8+uTHJAgJ7EKlVJ7TNP0uAnYGv05LTpA
+	fIkasboelAu18jTsKrTeah1rMiuPiHFjBWAhiyqELXdiDIF5gBppEBmzQHCDuouQuaU90rkIBif
+	aCkxjj7AL2JGnsE9C1L2Dilr8i5Sb6O67pNURf6D3/2J3XjaLsqIbuZB3nLRYJZLHiu5Fx0hgNb
+	msJCkzz2SPyn8=
+X-Google-Smtp-Source: AGHT+IEUOmv/ReRY/yBeh3xXoJkne3X/8LUXnfbP2zr6UY7lHFdyFxyv4QbxObXeKQfZgd/S48fgrQ==
+X-Received: by 2002:a05:6a20:7349:b0:35d:58d3:2904 with SMTP id adf61e73a8af0-35d58d33edcmr7364200637.31.1763351376830;
+        Sun, 16 Nov 2025 19:49:36 -0800 (PST)
 Received: from 7950hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bc37703a0d9sm10348179a12.31.2025.11.16.19.49.26
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bc37703a0d9sm10348179a12.31.2025.11.16.19.49.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Nov 2025 19:49:31 -0800 (PST)
+        Sun, 16 Nov 2025 19:49:36 -0800 (PST)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: ast@kernel.org,
@@ -96,9 +96,9 @@ Cc: daniel@iogearbox.net,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/6] bpf: fix the usage of BPF_TRAMP_F_SKIP_FRAME
-Date: Mon, 17 Nov 2025 11:49:03 +0800
-Message-ID: <20251117034906.32036-4-dongml2@chinatelecom.cn>
+Subject: [PATCH bpf-next v2 4/6] bpf,x86: adjust the "jmp" mode for bpf trampoline
+Date: Mon, 17 Nov 2025 11:49:04 +0800
+Message-ID: <20251117034906.32036-5-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.51.2
 In-Reply-To: <20251117034906.32036-1-dongml2@chinatelecom.cn>
 References: <20251117034906.32036-1-dongml2@chinatelecom.cn>
@@ -110,43 +110,106 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some places calculate the origin_call by checking if
-BPF_TRAMP_F_SKIP_FRAME is set. However, it should use
-BPF_TRAMP_F_ORIG_STACK for this propose. Just fix them.
+In the origin call case, if BPF_TRAMP_F_SKIP_FRAME is not set, it means
+that the trampoline is not called, but "jmp".
+
+Introduce the function bpf_trampoline_use_jmp() to check if the trampoline
+is in "jmp" mode.
+
+Do some adjustment on the "jmp" mode for the x86_64. The main adjustment
+that we make is for the stack parameter passing case, as the stack
+alignment logic changes in the "jmp" mode without the "rip". What's more,
+the location of the parameters on the stack also changes.
 
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
 ---
- arch/riscv/net/bpf_jit_comp64.c | 2 +-
- arch/x86/net/bpf_jit_comp.c     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+v2:
+- rename bpf_trampoline_need_jmp() to bpf_trampoline_use_jmp()
+---
+ arch/x86/net/bpf_jit_comp.c | 16 +++++++++++-----
+ include/linux/bpf.h         | 12 ++++++++++++
+ 2 files changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 45cbc7c6fe49..21c70ae3296b 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -1131,7 +1131,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 	store_args(nr_arg_slots, args_off, ctx);
- 
- 	/* skip to actual body of traced function */
--	if (flags & BPF_TRAMP_F_SKIP_FRAME)
-+	if (flags & BPF_TRAMP_F_ORIG_STACK)
- 		orig_call += RV_FENTRY_NINSNS * 4;
- 
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
 diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 36a0d4db9f68..808d4343f6cf 100644
+index 808d4343f6cf..632a83381c2d 100644
 --- a/arch/x86/net/bpf_jit_comp.c
 +++ b/arch/x86/net/bpf_jit_comp.c
-@@ -3289,7 +3289,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+@@ -2847,9 +2847,10 @@ static int get_nr_used_regs(const struct btf_func_model *m)
+ }
+ 
+ static void save_args(const struct btf_func_model *m, u8 **prog,
+-		      int stack_size, bool for_call_origin)
++		      int stack_size, bool for_call_origin, u32 flags)
+ {
+ 	int arg_regs, first_off = 0, nr_regs = 0, nr_stack_slots = 0;
++	bool use_jmp = bpf_trampoline_use_jmp(flags);
+ 	int i, j;
+ 
+ 	/* Store function arguments to stack.
+@@ -2890,7 +2891,7 @@ static void save_args(const struct btf_func_model *m, u8 **prog,
+ 			 */
+ 			for (j = 0; j < arg_regs; j++) {
+ 				emit_ldx(prog, BPF_DW, BPF_REG_0, BPF_REG_FP,
+-					 nr_stack_slots * 8 + 0x18);
++					 nr_stack_slots * 8 + 16 + (!use_jmp) * 8);
+ 				emit_stx(prog, BPF_DW, BPF_REG_FP, BPF_REG_0,
+ 					 -stack_size);
+ 
+@@ -3284,7 +3285,12 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 		 * should be 16-byte aligned. Following code depend on
+ 		 * that stack_size is already 8-byte aligned.
+ 		 */
+-		stack_size += (stack_size % 16) ? 0 : 8;
++		if (bpf_trampoline_use_jmp(flags)) {
++			/* no rip in the "jmp" case */
++			stack_size += (stack_size % 16) ? 8 : 0;
++		} else {
++			stack_size += (stack_size % 16) ? 0 : 8;
++		}
+ 	}
  
  	arg_stack_off = stack_size;
+@@ -3344,7 +3350,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ip_off);
+ 	}
  
--	if (flags & BPF_TRAMP_F_SKIP_FRAME) {
-+	if (flags & BPF_TRAMP_F_CALL_ORIG) {
- 		/* skip patched call instruction and point orig_call to actual
- 		 * body of the kernel function.
- 		 */
+-	save_args(m, &prog, regs_off, false);
++	save_args(m, &prog, regs_off, false, flags);
+ 
+ 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+ 		/* arg1: mov rdi, im */
+@@ -3377,7 +3383,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 
+ 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+ 		restore_regs(m, &prog, regs_off);
+-		save_args(m, &prog, arg_stack_off, true);
++		save_args(m, &prog, arg_stack_off, true, flags);
+ 
+ 		if (flags & BPF_TRAMP_F_TAIL_CALL_CTX) {
+ 			/* Before calling the original function, load the
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 09d5dc541d1c..4187b7578580 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1264,6 +1264,18 @@ typedef void (*bpf_trampoline_exit_t)(struct bpf_prog *prog, u64 start,
+ bpf_trampoline_enter_t bpf_trampoline_enter(const struct bpf_prog *prog);
+ bpf_trampoline_exit_t bpf_trampoline_exit(const struct bpf_prog *prog);
+ 
++#ifdef CONFIG_DYNAMIC_FTRACE_WITH_JMP
++static inline bool bpf_trampoline_use_jmp(u64 flags)
++{
++	return flags & BPF_TRAMP_F_CALL_ORIG && !(flags & BPF_TRAMP_F_SKIP_FRAME);
++}
++#else
++static inline bool bpf_trampoline_use_jmp(u64 flags)
++{
++	return false;
++}
++#endif
++
+ struct bpf_ksym {
+ 	unsigned long		 start;
+ 	unsigned long		 end;
 -- 
 2.51.2
 
