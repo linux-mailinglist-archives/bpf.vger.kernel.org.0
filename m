@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-74703-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74704-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1453CC62D46
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 09:01:38 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7CD9C62DFA
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 09:16:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1BEDF4E69B7
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 08:01:26 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 78BDA34F99D
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 08:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E898223F429;
-	Mon, 17 Nov 2025 08:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84D022F744A;
+	Mon, 17 Nov 2025 08:15:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VBxVfjMn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hza2anhR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B682A8462
-	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 08:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC33220F37
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 08:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763366481; cv=none; b=BSc/Wlv1WtUb53v4ubCSMb1t6jPwpMcgLcke30TMgdR/DhDpru0HjR0hcyLpzO+0JWoP06KG3ekiVYKiiDSZwZITFHBABsjjR6mZP04ayjIU0z6FgzqEY59YT9F7kZ1aVpWmciBKtVSMVkxlZMm+SZ6OqrFx9U5DmpvGyXeTkS8=
+	t=1763367334; cv=none; b=a0EtbSdufmFZQ3FABuaRcHV4AnMaq7xn7rA3rE//ITgCy7Y/SEvchnCknHKuEFP3L7KOQL29uiFnLWb6BVEGpzt4nrNRF+Y0aZsyAYFvwXqvJ3IY8mJd6j+PtqZOAxJxta9LMQLwEZuyN7Wyz2Fz319TESz9LqkJKTFRSBJDGxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763366481; c=relaxed/simple;
-	bh=ldWrn4/4dGN5tyDYADFjeNSDikUmn5bLbi1mO0yfGTs=;
+	s=arc-20240116; t=1763367334; c=relaxed/simple;
+	bh=HKXsYNaGD7855NAn1CVtPmZ0L17N2YLtYIVTxaRmxBg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V9NqG1e2vxZWuIsWJW4NmRhHAqKqwZYaD4boKLCFYMhGck+BWNeXAhz5sZdgPUcZOOAsefW59S2eYagDj/SgwIF/0gLqGBKCDMwUkBZ+3qZ9qDNo42IuO5EtrAEfXz9+tbcB95ZEPU2lPlfB6h2g1wuM7ER9m0Q0C0SNYGNFfHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VBxVfjMn; arc=none smtp.client-ip=209.85.128.42
+	 Content-Type:Content-Disposition:In-Reply-To; b=V5kV1+qM/qB18EO/MDqUmf5n6nUDosBRky3JsQkIWPKbLE670mRYULfraI8hFj4oLLhnP/YeY6ERO+RntFKoSdatu6M7QS0Wq6TWiKJ2ewBO08Sn2NR+z0YvIVf2IxQuHmrhuYXBoIEdO9t7R+s3XymANTxzYxekxYaLW87QG6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hza2anhR; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4775e891b5eso20195015e9.2
-        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 00:01:19 -0800 (PST)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4777771ed1aso25890225e9.2
+        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 00:15:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763366478; x=1763971278; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763367330; x=1763972130; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BZ2V3ClwzvtK5ZGuVjKWlrVxcpGffy1Lae3rK4VNwNI=;
-        b=VBxVfjMnQjreMt9osVt+wT5oz+D+kTFCKU/G9tPpndqX40qBouR1EAuvDgZVB4XNbx
-         COaOmmrA8EI/D6OrIGrfk8p5n97qSLO1v/CVtYpT21zA0ypZF/C+xubGQvdIjNfam7tH
-         86IAqKM5O4h1yAg+hzE7UnI1BhxQnTZ52g+/8AuNwTcMkEG3jIvwXGVnWrXQUnIY6tzc
-         uF8HknyUK0tw/abm8QfC3SHtb33Pojk6gZjFxZ729QUV+w1EBOYqRCFHg7Idce16Z7Dn
-         A0VmTOkOiqt6SG9Utx00eH3QSzx6sbnST8+lYwI7fZj/9uX+CU8Uf7JMQEFYACv9WptQ
-         BJgw==
+        bh=v2l4BuUOpntiilgAU0uTWmh+wmTyOVxCQrKtqYTkhQs=;
+        b=Hza2anhRvaoUv+TlEEIJwrpKd5GzjrOXCzdmAFtIApDxNMlaX1j6yXtrvZgyN8Mqa7
+         ICAazIljxPdjlRhwLlxDtl2FbuYH1GZX8aES9MeTp6JwaUKUXosB96yS248BFTZFBWlC
+         sHbGvc8R6IuSLU9St550fNkX8pj+Gas6g03HzAhWKXLiRegDe42MljNSj8jpseQYP6mW
+         9Buke5+AZ3KRnrvNPL0yCqr+PghsDh4bqqOs6yfIF/Q7DPpoy3SnrgBYBR9+M07SsJpf
+         2/OOKd2u/0ecXN8Zk45YJR56nQc9iemXVOq3WZwzQ5rzE666GgVsh5C9dR/EnJA05pJm
+         TL+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763366478; x=1763971278;
+        d=1e100.net; s=20230601; t=1763367330; x=1763972130;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BZ2V3ClwzvtK5ZGuVjKWlrVxcpGffy1Lae3rK4VNwNI=;
-        b=W8eYtajXvxV9ELWIGiWjSJIIgv16StyZ4jGK3O9bVSjQdHEuABlwLa/kdWRxOBjARh
-         AArBwjGI7UVwQ5qEJ6mzZ6TEYjHMJFZecN4b37I19L3nC6uqmitNzH7ThRWudUBr6W/o
-         lysrdW4dCPuTRnEXw7Ls4pP5HqrVLk0PNqUuCxSVqDEb2wYWw7ikbkOw9jr2A5RVApfN
-         XR1XayZkIwjMVyhmGDTBSYvNbElbgoBP66BsIU228gnSsNIttnLofVKiVPK2CXcRLozl
-         6uYKhRFR1m+ZjJ18UKo+Dqtbh+tU+SN/ttPAqPIikZ+hndg5oLf9SYBU6s/fh963VGOS
-         DDIg==
-X-Gm-Message-State: AOJu0Yzk1ZgFMMW4nDzSxNbFBzl2ziVcPZRV52FPt1fHjEgSYJuKl6vo
-	rlCZkQpsaJn6j8rUiKS3ujFSKoAxXfB/0HOaMu59/LtQls8ht4JAhRZD
-X-Gm-Gg: ASbGncsXvmWtekvprHH93qrXsAPH4uIJlnwwn6XOdh6I1/UPpA+P5QYyJ0hldKsPGo6
-	xIcixIOBXZBhULm4otqhGVg+03HLewU+JMCUsn+2SkWXmMl8ZkUbAnCGJTsnBAuy2XA+ktmmoXs
-	pxJHpUWVbx64bQO8t5V8hWDmF4Fp28ugg6xAxywhpt3Dn2+mkaOA1wkVAAFQbwS42fiEFIlPmPA
-	jyVMN+DPHIEc7IhaSgvSiPkw4XAOfQAJq1IN4MP0qbwJD8HaQwrYwM3+i4jzTgbea9rUWRrxzN5
-	2xbpCZ8hWtRroRouH8e+Lyr4eXEy4Wx2fa6ZD9YY4Eh57jhVliVVzpwvoNYWjRJGFOqhYRItTlg
-	A8SVNtS45/lgdm7o/pnwsJcCJIovNHU+y4ZJls2YTfIVU6EwjTcWhHU/N65gBo4DU/GHvfHPdS/
-	JourYBK47xFQVDFXadOGhI
-X-Google-Smtp-Source: AGHT+IEhwXWnh2PDBFttyEHjm0POpI/lLrbUZ8xaDLMLJTs2KphK+Y5wvtZEhdvs+QS0FF8TSNNItA==
-X-Received: by 2002:a05:600c:c178:b0:475:da1a:53f9 with SMTP id 5b1f17b1804b1-4778fe5732cmr97775695e9.14.1763366477391;
-        Mon, 17 Nov 2025 00:01:17 -0800 (PST)
+        bh=v2l4BuUOpntiilgAU0uTWmh+wmTyOVxCQrKtqYTkhQs=;
+        b=POrboojz5fca1zYF3nZc4nqGNivEjm9KWx+fsiFs7qS8RotZIH6qNp8GN93pidcBdO
+         q4XQuFH34m9S1gRnSHgVUeuD3bJ3TTLLupqk4R7RB1spBSpMnhwNMauyZM69EW7Ev3yC
+         VQaqlBaOEbCypNQn3U+EQZed/5F8y3vVXvbWgYuXptaM6mR+WxM1vMsAvFNnMmELN9eW
+         joZ1MJb2j5uVsj6bsmKh+WmRv9UHHIxQErERPNtCgIwLbqUrT8SEtIPSejeqtbgVJwyw
+         K6uCxHwyBGB0YnxrlfTvEjtjvAwyH/YT2H+fpJSdx2bVmVStpwnHAveQDUEqyQ27fC15
+         BUwA==
+X-Gm-Message-State: AOJu0YyBBRDmToHBaS/gotwBR2VZHvjIr3sT6QdqN8dJM50jLLW5QRKe
+	zTam1deFZRezbLBxTxPD7MsFgiFRETI2cAi2g6v7sSw24yeHcEUoSi6HB5vp0Q==
+X-Gm-Gg: ASbGncsHcRHYQ7y4S8Ju8NYoO7TWijArKie4Tq7RycmdDxe8QpxKZ7hZGPiE50Zh5q/
+	shYHnr7kXd9at004O7oT10kFhz1Ez8skXS5lPudprHULNQUY/Slz8TVfWzYMt3pM6VWmoIuem9d
+	E9xEjyTgePhbECNoBSSI2833QOHyV/3DwZeaKttT5au2p/kc2mtSPgh0VlsBMXbLakdySl1m0KG
+	ESBDR/T5xOAC6Cee4p3eYoHG8/X63eHXrouE1g8QAhmv1UgT1rq8o0M1yMZaZgzFDIEX1+UU+0f
+	swoe4Nmz2AKDYWvuZA83kLf+i1qsj4eSjbO+dXYWHuLOuQeMAAi9kvCBWQ4b5NC5lIPkx9RXmxT
+	+H8tJsT+Dm/3ltcrMezwBI78zyUZR7NdAzLjSwGMb3O1OQwUrL297RN8ECduW3JaM2l3Vib2AHt
+	VuUf87NlgibP7ukMFZQXxg
+X-Google-Smtp-Source: AGHT+IHutYjnQ+JySVUn+8IcJL7RyOEDexJUvMpBGsRYFPquHhLlUrxVA6uQ8a9T8zPHJg9vt+sahg==
+X-Received: by 2002:a05:600c:3587:b0:477:79f8:daa8 with SMTP id 5b1f17b1804b1-4778fe7e760mr114298645e9.17.1763367329828;
+        Mon, 17 Nov 2025 00:15:29 -0800 (PST)
 Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4779525d2bcsm151309385e9.5.2025.11.17.00.01.16
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47787e2bcf9sm295900245e9.3.2025.11.17.00.15.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Nov 2025 00:01:16 -0800 (PST)
-Date: Mon, 17 Nov 2025 08:08:13 +0000
+        Mon, 17 Nov 2025 00:15:29 -0800 (PST)
+Date: Mon, 17 Nov 2025 08:22:26 +0000
 From: Anton Protopopov <a.s.protopopov@gmail.com>
 To: Puranjay Mohan <puranjay@kernel.org>
 Cc: bpf@vger.kernel.org, Puranjay Mohan <puranjay12@gmail.com>,
@@ -83,11 +83,12 @@ Cc: bpf@vger.kernel.org, Puranjay Mohan <puranjay12@gmail.com>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Xu Kuohai <xukuohai@huaweicloud.com>,
 	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, kernel-team@meta.com,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH bpf-next 0/4] bpf: arm64: Indirect jumps
-Message-ID: <aRrX7eXoWL1RhtJO@mail.gmail.com>
+	Will Deacon <will@kernel.org>, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 1/4] bpf: arm64: Add support for instructions
+ array
+Message-ID: <aRrbQtct2X1IqwIC@mail.gmail.com>
 References: <20251117004656.33292-1-puranjay@kernel.org>
+ <20251117004656.33292-2-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -96,95 +97,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251117004656.33292-1-puranjay@kernel.org>
+In-Reply-To: <20251117004656.33292-2-puranjay@kernel.org>
 
 On 25/11/17 12:46AM, Puranjay Mohan wrote:
-> This set adds the support of indirect jumps to the arm64 JIT. It
-> involves calling bpf_prog_update_insn_ptrs() to support instructions
-> array map. The second piece is supporting BPF_JMP|BPF_X|BPF_JA, SRC=0,
-> DST=Rx, off=0, imm=0 instruction that is trivial to implement on arm64.
->
-> When running the selftests after doing the above changes, I found that
-> on arm64 builds of llvm, a relocation section was being generated for
-> .jumptables sections and it was making libbpf fail like:
+> Add support for the instructions array map type in the arm64 JIT by
+> calling bpf_prog_update_insn_ptrs() with the offsets that map
+> xlated_offset to the jited_offset in the final image. arm64 JIT already
+> has this offset array which was being used for
+> bpf_prog_fill_jited_linfo() and can be used directly for
+> bpf_prog_update_insn_ptrs.
 > 
-> libbpf: relocation against STT_SECTION in non-exec section is not supported!
-> Error: failed to link 'tools/testing/selftests/bpf/cpuv4/bpf_gotox.bpf.o': Invalid argument (22)
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>  arch/arm64/net/bpf_jit_comp.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> Which is due to:
-> 
-> Relocation section '.rel.jumptables' at offset 0x5b50 contains 263 entries:
->     Offset             Info             Type               Symbol's Value  Symbol's Name
-> 0000000000000000  0000000300000002 R_BPF_64_ABS64         0000000000000000 syscall
-> 0000000000000008  0000000300000002 R_BPF_64_ABS64         0000000000000000 syscall
-> 0000000000000010  0000000300000002 R_BPF_64_ABS64         0000000000000000 syscall
-> 
-> This rel section is not generated by x86 builds of LLVM. The third patch
-> of this set makes libbpf ignore relocation sections for .jumptables.
-
-I added Yonghong to this thread. He had fixed this problem in
-https://github.com/llvm/llvm-project/pull/166301 changes doesn't seem to be
-x86-specific...
-
-> 
-> The final patch enables selftests on arm64:
-> 
->  [root@localhost bpf]# ./test_progs-cpuv4 -a "*gotox*"
->  #20/1    bpf_gotox/one-switch:OK
->  #20/2    bpf_gotox/one-switch-non-zero-sec-offset:OK
->  #20/3    bpf_gotox/two-switches:OK
->  #20/4    bpf_gotox/big-jump-table:OK
->  #20/5    bpf_gotox/static-global:OK
->  #20/6    bpf_gotox/nonstatic-global:OK
->  #20/7    bpf_gotox/other-sec:OK
->  #20/8    bpf_gotox/static-global-other-sec:OK
->  #20/9    bpf_gotox/nonstatic-global-other-sec:OK
->  #20/10   bpf_gotox/one-jump-two-maps:OK
->  #20/11   bpf_gotox/one-map-two-jumps:OK
->  #20      bpf_gotox:OK
->  #537/1   verifier_gotox/jump_table_ok:OK
->  #537/2   verifier_gotox/jump_table_reserved_field_src_reg:OK
->  #537/3   verifier_gotox/jump_table_reserved_field_non_zero_off:OK
->  #537/4   verifier_gotox/jump_table_reserved_field_non_zero_imm:OK
->  #537/5   verifier_gotox/jump_table_no_jump_table:OK
->  #537/6   verifier_gotox/jump_table_incorrect_dst_reg_type:OK
->  #537/7   verifier_gotox/jump_table_invalid_read_size_u32:OK
->  #537/8   verifier_gotox/jump_table_invalid_read_size_u16:OK
->  #537/9   verifier_gotox/jump_table_invalid_read_size_u8:OK
->  #537/10  verifier_gotox/jump_table_misaligned_access:OK
->  #537/11  verifier_gotox/jump_table_invalid_mem_acceess_pos:OK
->  #537/12  verifier_gotox/jump_table_invalid_mem_acceess_neg:OK
->  #537/13  verifier_gotox/jump_table_add_sub_ok:OK
->  #537/14  verifier_gotox/jump_table_no_writes:OK
->  #537/15  verifier_gotox/jump_table_use_reg_r0:OK
->  #537/16  verifier_gotox/jump_table_use_reg_r1:OK
->  #537/17  verifier_gotox/jump_table_use_reg_r2:OK
->  #537/18  verifier_gotox/jump_table_use_reg_r3:OK
->  #537/19  verifier_gotox/jump_table_use_reg_r4:OK
->  #537/20  verifier_gotox/jump_table_use_reg_r5:OK
->  #537/21  verifier_gotox/jump_table_use_reg_r6:OK
->  #537/22  verifier_gotox/jump_table_use_reg_r7:OK
->  #537/23  verifier_gotox/jump_table_use_reg_r8:OK
->  #537/24  verifier_gotox/jump_table_use_reg_r9:OK
->  #537/25  verifier_gotox/jump_table_outside_subprog:OK
->  #537/26  verifier_gotox/jump_table_contains_non_unique_values:OK
->  #537     verifier_gotox:OK
->  Summary: 2/37 PASSED, 0 SKIPPED, 0 FAILED
-
-Cool!
-
-> Puranjay Mohan (4):
->   bpf: arm64: Add support for instructions array
->   bpf: arm64: Add support for indirect jumps
->   libbpf: Ignore relocations for .jumptables sections
->   selftests: bpf: Enable gotox tests from arm64
-> 
->  arch/arm64/net/bpf_jit_comp.c                      | 11 +++++++++++
->  tools/lib/bpf/linker.c                             |  4 ++++
->  tools/testing/selftests/bpf/progs/verifier_gotox.c |  4 ++--
->  3 files changed, 17 insertions(+), 2 deletions(-)
-> 
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 0c9a50a1e73e..4a2afc0cefc4 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -2231,6 +2231,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>  		for (i = 0; i <= prog->len; i++)
+>  			ctx.offset[i] *= AARCH64_INSN_SIZE;
+>  		bpf_prog_fill_jited_linfo(prog, ctx.offset + 1);
+> +		/*
+> +		 * The bpf_prog_update_insn_ptrs function expects offsets to
+> +		 * point to the first byte of the jitted instruction (unlike
+> +		 * the bpf_prog_fill_jited_linfo above, which, for historical
+> +		 * reasons, expects to point to the next instruction)
+> +		 */
+> +		bpf_prog_update_insn_ptrs(prog, ctx.offset, ctx.ro_image);
+>  out_off:
+>  		if (!ro_header && priv_stack_ptr) {
+>  			free_percpu(priv_stack_ptr);
 > -- 
 > 2.47.3
 > 
+
+Reviewed-by: Anton Protopopov <a.s.protopopov@gmail.com>
 
