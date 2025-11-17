@@ -1,233 +1,215 @@
-Return-Path: <bpf+bounces-74754-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74755-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FD17C6511B
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 17:14:57 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C7B3C651A9
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 17:21:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 40D903652B8
-	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 16:12:06 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTPS id 30A6C28EE4
+	for <lists+bpf@lfdr.de>; Mon, 17 Nov 2025 16:21:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 739682C08BC;
-	Mon, 17 Nov 2025 16:11:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4072D28DB46;
+	Mon, 17 Nov 2025 16:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Km6+Fm08";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="JKnh4CN4";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Km6+Fm08";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="JKnh4CN4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LcIG99RN"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4271D61BC
-	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 16:11:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B97C23D28C
+	for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 16:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763395919; cv=none; b=PvrrcMpr1QEb8XOwAIIutqgv9W8SJ2sp1L/1ytrMh3nFn5B2S0oYCiXrbE4brQZnH10T6ibhaYT6IrHTal9Q7kBNI6GB47N2tY/xVDHkwIztDjdgJ0rhvzadVinW+zZtBGFpCq72Hid0O1V93DrCjFYBHH/r5JMSX7zw7DnGE4A=
+	t=1763396459; cv=none; b=WoHrVNO+CspGhkJCQFAY0e7s9yH2FK695eaNoLezk2r95KNdcgxFwbL5fW02fYyRwOFvcizVtSlBTlEZYt4G9df+yxO1GTcKBYJLI86p4wo3+52BTbzy8BPhIzoHfDjnc5TltMwOBnGGZPJJYDJR0sJzW3EixK4d+RtTre1Ox24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763395919; c=relaxed/simple;
-	bh=ot8gjWm1bgwLw+5eMeJ/IER6zzTWkz2LXpbS4mcWXQI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VdanLpf0rYAtaofbSIq9Iq3VPQDX/rREmTCE7WgsN2XQjVpqTDH4xU1dBKQ4UiH26vD48cofsvY+QvRkCOg53t/7h6y/NzEhzYnLXkj3Hj98LABs2NfvMLJu5aJtS3CkSN9w+MKKV63Zo20Z7eCs8WHZYLPaeiWXYa4H3qIq4Ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Km6+Fm08; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=JKnh4CN4; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Km6+Fm08; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=JKnh4CN4; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 615411F7B4;
-	Mon, 17 Nov 2025 16:11:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1763395915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mBUBnaTIzsm0SlnbQPCeTBjXpAcWxSMAN7X2xrq3Ku0=;
-	b=Km6+Fm08CJbPSGJJRSwsUeprWBfb41+VzR5/8vTwC+Pw66bFiLYxAZVu5yoM0tbYk/Xb0J
-	hZf5LezDbcQHsY1767JQj+Tk0w26P+QyGbYuM6fOSjOpuFL4nB2hnEWvE5q7m4J3kibq+t
-	0aMUEBvLt3a641InUixHn1ujV6v7Gz8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1763395915;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mBUBnaTIzsm0SlnbQPCeTBjXpAcWxSMAN7X2xrq3Ku0=;
-	b=JKnh4CN4ISrbverMx5dO9YV7cgGUAb4CvPTzB7yyf9mhhioZQvx/7d/Qsg71FXiK89hYeL
-	HGHtGOu4cqoSvcAw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Km6+Fm08;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=JKnh4CN4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1763395915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mBUBnaTIzsm0SlnbQPCeTBjXpAcWxSMAN7X2xrq3Ku0=;
-	b=Km6+Fm08CJbPSGJJRSwsUeprWBfb41+VzR5/8vTwC+Pw66bFiLYxAZVu5yoM0tbYk/Xb0J
-	hZf5LezDbcQHsY1767JQj+Tk0w26P+QyGbYuM6fOSjOpuFL4nB2hnEWvE5q7m4J3kibq+t
-	0aMUEBvLt3a641InUixHn1ujV6v7Gz8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1763395915;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mBUBnaTIzsm0SlnbQPCeTBjXpAcWxSMAN7X2xrq3Ku0=;
-	b=JKnh4CN4ISrbverMx5dO9YV7cgGUAb4CvPTzB7yyf9mhhioZQvx/7d/Qsg71FXiK89hYeL
-	HGHtGOu4cqoSvcAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A4D513EA61;
-	Mon, 17 Nov 2025 16:11:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 85pXJUpJG2meFAAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Mon, 17 Nov 2025 16:11:54 +0000
-Message-ID: <4cf22f51-c3d4-4c02-b5b6-0cb38985d0f8@suse.de>
-Date: Mon, 17 Nov 2025 17:11:48 +0100
+	s=arc-20240116; t=1763396459; c=relaxed/simple;
+	bh=Ov9iuOmcLm2wLkl+Duufok1qoz+D6Jtj5fyC9fkrws4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=p1wmNCga/qUwaZpb4BNEAA1wLIr90Eaao5nUjOCu0Ut67eJPltreRyt8K0mPaPVdPYJVvNO7tMgO7lbZY0CyLpSa1neiObJI94nrpyEL/n3SDFkDHLgdwjOfuCxwdqFMrGi0mBJjJraUMggZk3MMO7QEeBBfGCeDF/ldm56f1LY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LcIG99RN; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1763396454;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=mIcWgka4CgRJZLXYvw90pre7ZdtAVL9XesUCcWBnk60=;
+	b=LcIG99RNqaNfSJYFQJjfTIpGa9m27kJco0MNB+yJLArxudGYruowFcYpAjLXR296RagnFj
+	Zs5M5rHVgriy+oW2GBXDHCnlHYvOxrGexmmOR+EiIfY7D1g92+d4PL/0cEqE2vk5J/ZTQd
+	04eCbA6pn52vRK66V1XRe6GGGTk7UVQ=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	jolsa@kernel.org,
+	yonghong.song@linux.dev,
+	song@kernel.org,
+	eddyz87@gmail.com,
+	dxu@dxuuu.xyz,
+	deso@posteo.net,
+	martin.lau@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	shuah@kernel.org,
+	kerneljasonxing@gmail.com,
+	chen.dylane@linux.dev,
+	willemb@google.com,
+	paul.chaignon@gmail.com,
+	a.s.protopopov@gmail.com,
+	memxor@gmail.com,
+	yatsenko@meta.com,
+	tklauser@distanz.ch,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v10 0/8] bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for percpu maps
+Date: Tue, 18 Nov 2025 00:20:25 +0800
+Message-ID: <20251117162033.6296-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3] xsk: avoid data corruption on cq descriptor number
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: netdev@vger.kernel.org, csmate@nop.hu, kerneljasonxing@gmail.com,
- bjorn@kernel.org, sdf@fomichev.me, jonathan.lemon@gmail.com,
- bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, horms@kernel.org
-References: <20251030140355.4059-1-fmancera@suse.de> <aRtIiIvfVwJCmcn1@boxer>
-Content-Language: en-US
-From: Fernando Fernandez Mancera <fmancera@suse.de>
-In-Reply-To: <aRtIiIvfVwJCmcn1@boxer>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 615411F7B4
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[vger.kernel.org,nop.hu,gmail.com,kernel.org,fomichev.me,davemloft.net,google.com,redhat.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.de:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,intel.com:email,suse.de:email,suse.de:mid,suse.de:dkim]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
+This patch set introduces the BPF_F_CPU and BPF_F_ALL_CPUS flags for
+percpu maps, as the requirement of BPF_F_ALL_CPUS flag for percpu_array
+maps was discussed in the thread of
+"[PATCH bpf-next v3 0/4] bpf: Introduce global percpu data"[1].
 
+The goal of BPF_F_ALL_CPUS flag is to reduce data caching overhead in light
+skeletons by allowing a single value to be reused to update values across all
+CPUs. This avoids the M:N problem where M cached values are used to update a
+map on N CPUs kernel.
 
-On 11/17/25 5:08 PM, Maciej Fijalkowski wrote:
-> On Thu, Oct 30, 2025 at 03:03:55PM +0100, Fernando Fernandez Mancera wrote:
->> Since commit 30f241fcf52a ("xsk: Fix immature cq descriptor
->> production"), the descriptor number is stored in skb control block and
->> xsk_cq_submit_addr_locked() relies on it to put the umem addrs onto
->> pool's completion queue.
->>
->> skb control block shouldn't be used for this purpose as after transmit
->> xsk doesn't have control over it and other subsystems could use it. This
->> leads to the following kernel panic due to a NULL pointer dereference.
->>
->>   BUG: kernel NULL pointer dereference, address: 0000000000000000
->>   #PF: supervisor read access in kernel mode
->>   #PF: error_code(0x0000) - not-present page
->>   PGD 0 P4D 0
->>   Oops: Oops: 0000 [#1] SMP NOPTI
->>   CPU: 2 UID: 1 PID: 927 Comm: p4xsk.bin Not tainted 6.16.12+deb14-cloud-amd64 #1 PREEMPT(lazy)  Debian 6.16.12-1
->>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.17.0-debian-1.17.0-1 04/01/2014
->>   RIP: 0010:xsk_destruct_skb+0xd0/0x180
->>   [...]
->>   Call Trace:
->>    <IRQ>
->>    ? napi_complete_done+0x7a/0x1a0
->>    ip_rcv_core+0x1bb/0x340
->>    ip_rcv+0x30/0x1f0
->>    __netif_receive_skb_one_core+0x85/0xa0
->>    process_backlog+0x87/0x130
->>    __napi_poll+0x28/0x180
->>    net_rx_action+0x339/0x420
->>    handle_softirqs+0xdc/0x320
->>    ? handle_edge_irq+0x90/0x1e0
->>    do_softirq.part.0+0x3b/0x60
->>    </IRQ>
->>    <TASK>
->>    __local_bh_enable_ip+0x60/0x70
->>    __dev_direct_xmit+0x14e/0x1f0
->>    __xsk_generic_xmit+0x482/0xb70
->>    ? __remove_hrtimer+0x41/0xa0
->>    ? __xsk_generic_xmit+0x51/0xb70
->>    ? _raw_spin_unlock_irqrestore+0xe/0x40
->>    xsk_sendmsg+0xda/0x1c0
->>    __sys_sendto+0x1ee/0x200
->>    __x64_sys_sendto+0x24/0x30
->>    do_syscall_64+0x84/0x2f0
->>    ? __pfx_pollwake+0x10/0x10
->>    ? __rseq_handle_notify_resume+0xad/0x4c0
->>    ? restore_fpregs_from_fpstate+0x3c/0x90
->>    ? switch_fpu_return+0x5b/0xe0
->>    ? do_syscall_64+0x204/0x2f0
->>    ? do_syscall_64+0x204/0x2f0
->>    ? do_syscall_64+0x204/0x2f0
->>    entry_SYSCALL_64_after_hwframe+0x76/0x7e
->>    </TASK>
->>   [...]
->>   Kernel panic - not syncing: Fatal exception in interrupt
->>   Kernel Offset: 0x1c000000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
->>
->> Instead use the skb destructor_arg pointer along with pointer tagging.
->> As pointers are always aligned to 8B, use the bottom bit to indicate
->> whether this a single address or an allocated struct containing several
->> addresses.
->>
->> Fixes: 30f241fcf52a ("xsk: Fix immature cq descriptor production")
->> Closes: https://lore.kernel.org/netdev/0435b904-f44f-48f8-afb0-68868474bf1c@nop.hu/
->> Suggested-by: Jakub Kicinski <kuba@kernel.org>
->> Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
-> 
-> Tested-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> 
-> Fernando thanks for stepping in and providing this fix!
-> And thanks Jakub for ptr tagging trick.
-> 
-> @BPF maintainers, please apply this patch.
-> 
+The BPF_F_CPU flag is accompanied by *flags*-embedded cpu info, which
+specifies the target CPU for the operation:
 
-Thank you, please note that if rebasing is needed I can send a rebased 
-version. Just let me know.
+* For lookup operations: the flag field alongside cpu info enable querying
+  a value on the specified CPU.
+* For update operations: the flag field alongside cpu info enable
+  updating value for specified CPU.
 
-Thanks,
-Fernando.
+Links:
+[1] https://lore.kernel.org/bpf/20250526162146.24429-1-leon.hwang@linux.dev/
+
+Changes:
+v9 -> v10:
+* Add tests to verify array and hash maps do not support BPF_F_CPU and
+  BPF_F_ALL_CPUS flags.
+* Address comment from Andrii:
+  * Copy map value using copy_map_value_long for percpu_cgroup_storage
+    maps in a separate patch.
+
+v8 -> v9:
+* Change value type from u64 to u32 in selftests.
+* Address comments from Andrii:
+  * Keep value_size unaligned and update everywhere for consistency when
+    cpu flags are specified.
+  * Update value by getting pointer for percpu hash and percpu
+    cgroup_storage maps.
+
+v7 -> v8:
+* Address comments from Andrii:
+  * Check BPF_F_LOCK when update percpu_array, percpu_hash and
+    lru_percpu_hash maps.
+  * Refactor flags check in __htab_map_lookup_and_delete_batch().
+  * Keep value_size unaligned and copy value using copy_map_value() in
+    __htab_map_lookup_and_delete_batch() when BPF_F_CPU is specified.
+  * Update warn message in libbpf's validate_map_op().
+  * Update comment of libbpf's bpf_map__lookup_elem().
+
+v6 -> v7:
+* Get correct value size for percpu_hash and lru_percpu_hash in
+  update_batch API.
+* Set 'count' as 'max_entries' in test cases for lookup_batch API.
+* Address comment from Alexei:
+  * Move cpu flags check into bpf_map_check_op_flags().
+
+v5 -> v6:
+* Move bpf_map_check_op_flags() from 'bpf.h' to 'syscall.c'.
+* Address comments from Alexei:
+  * Drop the refactoring code of data copying logic for percpu maps.
+  * Drop bpf_map_check_op_flags() wrappers.
+
+v4 -> v5:
+* Address comments from Andrii:
+  * Refactor data copying logic for all percpu maps.
+  * Drop this_cpu_ptr() micro-optimization.
+  * Drop cpu check in libbpf's validate_map_op().
+  * Enhance bpf_map_check_op_flags() using *allowed flags* instead of
+    'extra_flags_mask'.
+
+v3 -> v4:
+* Address comments from Andrii:
+  * Remove unnecessary map_type check in bpf_map_value_size().
+  * Reduce code churn.
+  * Remove unnecessary do_delete check in
+    __htab_map_lookup_and_delete_batch().
+  * Introduce bpf_percpu_copy_to_user() and bpf_percpu_copy_from_user().
+  * Rename check_map_flags() to bpf_map_check_op_flags() with
+    extra_flags_mask.
+  * Add human-readable pr_warn() explanations in validate_map_op().
+  * Use flags in bpf_map__delete_elem() and
+    bpf_map__lookup_and_delete_elem().
+  * Drop "for alignment reasons".
+v3 link: https://lore.kernel.org/bpf/20250821160817.70285-1-leon.hwang@linux.dev/
+
+v2 -> v3:
+* Address comments from Alexei:
+  * Use BPF_F_ALL_CPUS instead of BPF_ALL_CPUS magic.
+  * Introduce these two cpu flags for all percpu maps.
+* Address comments from Jiri:
+  * Reduce some unnecessary u32 cast.
+  * Refactor more generic map flags check function.
+  * A code style issue.
+v2 link: https://lore.kernel.org/bpf/20250805163017.17015-1-leon.hwang@linux.dev/
+
+v1 -> v2:
+* Address comments from Andrii:
+  * Embed cpu info as high 32 bits of *flags* totally.
+  * Use ERANGE instead of E2BIG.
+  * Few format issues.
+
+Leon Hwang (8):
+  bpf: Introduce internal bpf_map_check_op_flags helper function
+  bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags
+  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_array
+    maps
+  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_hash
+    and lru_percpu_hash maps
+  bpf: Copy map value using copy_map_value_long for
+    percpu_cgroup_storage maps
+  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for
+    percpu_cgroup_storage maps
+  libbpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu maps
+  selftests/bpf: Add cases to test BPF_F_CPU and BPF_F_ALL_CPUS flags
+
+ include/linux/bpf-cgroup.h                    |   4 +-
+ include/linux/bpf.h                           |  44 ++-
+ include/uapi/linux/bpf.h                      |   2 +
+ kernel/bpf/arraymap.c                         |  29 +-
+ kernel/bpf/hashtab.c                          |  94 ++++--
+ kernel/bpf/local_storage.c                    |  27 +-
+ kernel/bpf/syscall.c                          |  65 ++--
+ tools/include/uapi/linux/bpf.h                |   2 +
+ tools/lib/bpf/bpf.h                           |   8 +
+ tools/lib/bpf/libbpf.c                        |  26 +-
+ tools/lib/bpf/libbpf.h                        |  21 +-
+ .../selftests/bpf/prog_tests/percpu_alloc.c   | 312 ++++++++++++++++++
+ .../selftests/bpf/progs/percpu_alloc_array.c  |  32 ++
+ 13 files changed, 562 insertions(+), 104 deletions(-)
+
+--
+2.51.2
+
 
