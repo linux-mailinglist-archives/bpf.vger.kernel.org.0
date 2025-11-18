@@ -1,95 +1,58 @@
-Return-Path: <bpf+bounces-75006-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F136CC6BCC1
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 23:02:11 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 907CFC6BE37
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 23:45:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id 1194C2AD2B
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 22:02:09 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3D34C4E4D19
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 22:45:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC142F28EA;
-	Tue, 18 Nov 2025 22:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A024A2EAB64;
+	Tue, 18 Nov 2025 22:44:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="klUd2EZY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JLTGDx4j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B53F26A1B9
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 22:02:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 139542BEC42;
+	Tue, 18 Nov 2025 22:44:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763503324; cv=none; b=cLa+CbX/8vK9ITneZhHTO1uGcfDhmGpuno6xbvFK0x2Xc+CeE2d1dGfsZf6/nEvJstuI4Qo5hkWbPRwJ361gskuz9BdVHUkKPZji5yoIYXHIuMYCeS3gdT0PrRD9cwDNE7KZ6l3f0JSw+0ItPg5nd6tlsq1+WAtQp9KtoCcG8IU=
+	t=1763505896; cv=none; b=S4OeXW2DtrCGfdX76Mxrpk9sFgCri0rgYumcRWN5hnsPqtY35a5Bbct0oJ5+cLuiWX/pckBKj9qJogTLrpiZZnrRHeen71fW74Z6zNUtQ893yosRFMutk1rqiKeLGbqiYFhpTYpN+ePVnMT1Ajhl3Ib9Z2kvEjc9rvJtlBkg80U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763503324; c=relaxed/simple;
-	bh=ntvVGR4qtfpL8K6iEH3IM2PbXNyI4dcwND/L0wZFGQc=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gOjWU3IzwshZH4ub0I8nL03QqdCEG1hB3o7GLMsBg1yCsasmRJq8+qXndnheNKJsbAr2BFLKzLEyFNu3J2zRZ3B/JWxe3delIrpuUyVELs2l/5XrBjKwSqB3k37jla6QWpNPYFKbO1/5SYanFsMNYZVwrtRLZASk6v0B/rdMotE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=klUd2EZY; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4775895d69cso32272505e9.0
-        for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 14:02:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763503320; x=1764108120; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EV5ZlV/r4PmNeNEl8WOn4Jz8XFUkWFRulyEcsSdt9nA=;
-        b=klUd2EZYq3HTS6I6pv4U7ilV/SqD0L1zd0G0eKd8VtPW6BwuPJ1FfUUzpTRwm0l9mZ
-         liRv0TZavrzX6abX4GEC77dHx76gBPqCiOYOxlH2PrKapGqC1LcPdf8qoW5o89s8g+Eo
-         7Xt3P+1x3CeVWQaUnlAhGn47ml/g0pDlRjcxE1a0U1ulVfNgQ+yKGOhrA4UWzxESw1zg
-         E3uTqXY5ucOvMSJitUHlaoMD4BDSfj1SMBEkS1AUtgDyfC5J0UPZDT0PR6eV09T2WlIZ
-         B50iZO49ZLJappSn/mn7WYEUAPjOVyBHE1pjBJO+OQm3OxJd6xtwIy+VRTu1sPPpstY4
-         mmDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763503320; x=1764108120;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EV5ZlV/r4PmNeNEl8WOn4Jz8XFUkWFRulyEcsSdt9nA=;
-        b=kjwRtVQ73PO6YEBFKf37YhSmnYGTze6f7N4xuY6ranzgHPg8iShvGEmXqfl5+/DBF1
-         F9ZEpqH8HYHtmKsa9ew7UrsrbkJqUpsLzE60scP7mnI9dFUP//MqLeYv+Hc8gYpTsbU+
-         R7vSH0zgebY4czd3xjjcV38kQ1h5jj/ATouUcUvyDBXNHXSQ2aKYm9RR7dszpFIYorpf
-         TFNB7UqPqOijqM2oTKHaCssFAc9f4xxTfHlFn85gYoSKRFhcltg2EJyMDt7xNgcjXBdS
-         l+e0mK6eloCkkSFptQ21aGjxwn1U+iyGpA/PpHs+Votk2D2CxOO4VexEeYUlPCAY6rCp
-         UP6w==
-X-Forwarded-Encrypted: i=1; AJvYcCVXFwJSm6Zgg8AgpmfuhjZJBGIsN9CdJ7evIm7xKSySK96VeA3ehckBGbC/A45iQPGPQHA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwSXRpWtiGaPjzik9QFkLV5l8dO/NfgvIO7ZSTXJcjTHIiXcEt8
-	0NctJ4sQrL/f8tFyiyzBs7v8ZyCZ/9d41Awydbryo1L+EckE1hZuPj+y
-X-Gm-Gg: ASbGncuBGeaaAd9/IYWSzr54jlnuJPuYmPlV9B9UZFcwv3S/2wCSz7sF4mlHpaTLjeD
-	fpNCwMLcNbZ6sr/6DIxryt8qNJplbM1yE/cEtVIW0JBzIPGT4IG73LWr9+U6Z06Xcx20jo8gWN/
-	q/Q54qeROVhpAkZWjca9Jx1K6NDv2B2kcQfjguf/eH0hHsz5kqJzSwD0ND63PXPRk3AE79feK+4
-	Iit1kC7TIp6AKI7NeLF8GgBK0lrU8tN/YLjKDo/Uw1YSpH3uAH4+1BP3OKnO7gQERWcdHhytGgT
-	b5LBXqByolD3zvPLzpftUJrdMIGvWi7R/aIUPc91EYUCgILtPGgfVnV1XG6VYVeHNRZfB0jLCJZ
-	5Mo2xRdybzHoNTThdz9vCcR/PMqnZzPABzTzNmTfNtUxlGRBNp4I0tKqOQUFxhNX957qaBO8xAF
-	+naLYSlCuWVQ==
-X-Google-Smtp-Source: AGHT+IF/OhkurrwdOZ6kPNeXhKWxi8ctcdf4yOCE/6q75hLzkXUfFrkHbSkcxerxH8L/9+nbFF3bSw==
-X-Received: by 2002:a05:600c:1d19:b0:46e:5100:326e with SMTP id 5b1f17b1804b1-4778fea835dmr160650775e9.23.1763503319442;
-        Tue, 18 Nov 2025 14:01:59 -0800 (PST)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477a9d198a0sm26974015e9.1.2025.11.18.14.01.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Nov 2025 14:01:58 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 18 Nov 2025 23:01:56 +0100
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: ast@kernel.org, rostedt@goodmis.org, daniel@iogearbox.net,
-	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	mhiramat@kernel.org, mark.rutland@arm.com,
-	mathieu.desnoyers@efficios.com, jiang.biao@linux.dev,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 2/6] x86/ftrace: implement
- DYNAMIC_FTRACE_WITH_JMP
-Message-ID: <aRzs1GGLCm5svW5_@krava>
-References: <20251118123639.688444-1-dongml2@chinatelecom.cn>
- <20251118123639.688444-3-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1763505896; c=relaxed/simple;
+	bh=KvM4sw5d11P00xzno+X5e9UaJIpcGEJfE9v6laupK1E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kr4gs+Nwbga7KMjl5kSEtuf6J5iIJiK5SW6sIAXawBmrhdGuTU00N8dvlJnsbfOGsxa/M5EWa7iFpMhfAsv4ks3BsNz6IhOhw4GmjR3V01EEuJia8HsE4pUlzZUqmaMtHMtSnPDKycbTEBAS0JxGAHm+etN5eRdfS/1vb24FOmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JLTGDx4j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F3A7C2BCAF;
+	Tue, 18 Nov 2025 22:44:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763505894;
+	bh=KvM4sw5d11P00xzno+X5e9UaJIpcGEJfE9v6laupK1E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JLTGDx4jkYO6rCsLPTkfwcGiYcDeLR7/nVDsghDGniU+c6haoY7REaiN1wy3sBlq9
+	 S1Nx/SQUNHYJzFYW4DRllsixtoyyp/z5EwPSAfaxytqjmLjM5Dyz9qZOt9GuNlhP9S
+	 CEDQmNM5EHH2448doM3f0Cx8X+uz/iUSnP+Ojva/p3O6299cR8zioP7BcoYWpmAUo2
+	 8TrFbVfbFfqiy5367kLCW+wwOTigWd0zQxJceJ5lXZ+N1IwOPma7GgW0fQskrRVRo2
+	 PPso+aj/XoqEE0emE98JGMwkcULoKFxl0uhcw0ahNwqCoY4uoeT7hW5MCZUSasVRxk
+	 Uc9tZlxit/BCg==
+Date: Tue, 18 Nov 2025 15:44:48 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@lst.de>, kvmarm@lists.linux.dev
+Subject: Re: [PATCH v3 1/4] mm/vmalloc: warn on invalid vmalloc gfp flags
+Message-ID: <20251118224448.GA998046@ax162>
+References: <20251117173530.43293-1-vishal.moola@gmail.com>
+ <20251117173530.43293-2-vishal.moola@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,89 +61,110 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251118123639.688444-3-dongml2@chinatelecom.cn>
+In-Reply-To: <20251117173530.43293-2-vishal.moola@gmail.com>
 
-On Tue, Nov 18, 2025 at 08:36:30PM +0800, Menglong Dong wrote:
-> Implement the DYNAMIC_FTRACE_WITH_JMP for x86_64. In ftrace_call_replace,
-> we will use JMP32_INSN_OPCODE instead of CALL_INSN_OPCODE if the address
-> should use "jmp".
+Hi Vishal,
+
+On Mon, Nov 17, 2025 at 09:35:27AM -0800, Vishal Moola (Oracle) wrote:
+> Vmalloc explicitly supports a list of flags, but we never enforce them.
+> vmalloc has been trying to handle unsupported flags by clearing and
+> setting flags wherever necessary. This is messy and makes the code
+> harder to understand, when we could simply check for a supported input
+> immediately instead.
 > 
-> Meanwhile, adjust the direct call in the ftrace_regs_caller. The RSB is
-> balanced in the "jmp" mode. Take the function "foo" for example:
+> Define a helper mask and function telling callers they have passed in
+> invalid flags, and clear those unsupported vmalloc flags.
 > 
->  original_caller:
->  call foo -> foo:
->          call fentry -> fentry:
->                  [do ftrace callbacks ]
->                  move tramp_addr to stack
->                  RET -> tramp_addr
->                          tramp_addr:
->                          [..]
->                          call foo_body -> foo_body:
->                                  [..]
->                                  RET -> back to tramp_addr
->                          [..]
->                          RET -> back to original_caller
-> 
-> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> Suggested-by: Christoph Hellwig <hch@infradead.org>
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 > ---
->  arch/x86/Kconfig            |  1 +
->  arch/x86/kernel/ftrace.c    |  7 ++++++-
->  arch/x86/kernel/ftrace_64.S | 12 +++++++++++-
->  3 files changed, 18 insertions(+), 2 deletions(-)
+>  mm/vmalloc.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
 > 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index fa3b616af03a..462250a20311 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -230,6 +230,7 @@ config X86
->  	select HAVE_DYNAMIC_FTRACE_WITH_ARGS	if X86_64
->  	select HAVE_FTRACE_REGS_HAVING_PT_REGS	if X86_64
->  	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-> +	select HAVE_DYNAMIC_FTRACE_WITH_JMP	if X86_64
->  	select HAVE_SAMPLE_FTRACE_DIRECT	if X86_64
->  	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI	if X86_64
->  	select HAVE_EBPF_JIT
-> diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-> index 4450acec9390..0543b57f54ee 100644
-> --- a/arch/x86/kernel/ftrace.c
-> +++ b/arch/x86/kernel/ftrace.c
-> @@ -74,7 +74,12 @@ static const char *ftrace_call_replace(unsigned long ip, unsigned long addr)
->  	 * No need to translate into a callthunk. The trampoline does
->  	 * the depth accounting itself.
->  	 */
-> -	return text_gen_insn(CALL_INSN_OPCODE, (void *)ip, (void *)addr);
-> +	if (ftrace_is_jmp(addr)) {
-> +		addr = ftrace_jmp_get(addr);
-> +		return text_gen_insn(JMP32_INSN_OPCODE, (void *)ip, (void *)addr);
-> +	} else {
-> +		return text_gen_insn(CALL_INSN_OPCODE, (void *)ip, (void *)addr);
-> +	}
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 0832f944544c..5dc467c6cab4 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -3911,6 +3911,28 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  	return NULL;
 >  }
 >  
->  static int ftrace_verify_code(unsigned long ip, const char *old_code)
-> diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-> index 823dbdd0eb41..a132608265f6 100644
-> --- a/arch/x86/kernel/ftrace_64.S
-> +++ b/arch/x86/kernel/ftrace_64.S
-> @@ -285,8 +285,18 @@ SYM_INNER_LABEL(ftrace_regs_caller_end, SYM_L_GLOBAL)
->  	ANNOTATE_NOENDBR
->  	RET
->  
-> +1:
-> +	testb	$1, %al
-> +	jz	2f
-> +	andq $0xfffffffffffffffe, %rax
-> +	movq %rax, MCOUNT_REG_SIZE+8(%rsp)
-> +	restore_mcount_regs
-> +	/* Restore flags */
-> +	popfq
-> +	RET
+> +/*
+> + * See __vmalloc_node_range() for a clear list of supported vmalloc flags.
+> + * This gfp lists all flags currently passed through vmalloc. Currently,
+> + * __GFP_ZERO is used by BPF and __GFP_NORETRY is used by percpu. Both drm
+> + * and BPF also use GFP_USER. Additionally, various users pass
+> + * GFP_KERNEL_ACCOUNT.
+> + */
+> +#define GFP_VMALLOC_SUPPORTED (GFP_KERNEL | GFP_ATOMIC | GFP_NOWAIT |\
+> +				__GFP_NOFAIL |  __GFP_ZERO | __GFP_NORETRY |\
+> +				GFP_NOFS | GFP_NOIO | GFP_KERNEL_ACCOUNT |\
+> +				GFP_USER)
+> +
+> +static gfp_t vmalloc_fix_flags(gfp_t flags)
+> +{
+> +	gfp_t invalid_mask = flags & ~GFP_VMALLOC_SUPPORTED;
+> +
+> +	flags &= GFP_VMALLOC_SUPPORTED;
+> +	WARN(1, "Unexpected gfp: %#x (%pGg). Fixing up to gfp: %#x (%pGg). Fix your code!\n",
+> +			invalid_mask, &invalid_mask, flags, &flags);
+> +	return flags;
+> +}
 
-is this hunk the reason for the 0x1 jmp-bit you set in the address?
+I am seeing this warning trigger when starting a VM on one of my arm64
+boxes.
 
-I wonder if we introduced new flag in dyn_ftrace::flags for this,
-then we'd need to have extra ftrace trampoline for jmp ftrace_ops
+  [ 6345.145795] ------------[ cut here ]------------
+  [ 6345.145803] Unexpected gfp: 0x2 (__GFP_HIGHMEM). Fixing up to gfp: 0x400dc0 (GFP_KERNEL_ACCOUNT|__GFP_ZERO). Fix your code!
+  [ 6345.145819] WARNING: mm/vmalloc.c:3940 at vmalloc_fix_flags+0x60/0x90, CPU#32: qemu-system-aar/4325
+  [ 6345.176990] Modules linked in: ...
+  [ 6345.254421] CPU: 32 UID: 1000 PID: 4325 Comm: qemu-system-aar Not tainted 6.18.0-rc6-next-20251118-00002-g2331e73a4769 #1 PREEMPT(voluntary)
+  [ 6345.267101] Hardware name: To be filled by O.E.M Ampere Altra Developer Platform/Ampere Altra Developer Platform, BIOS TianoCore 2.10.100.02 (SYS: 2.10.20
+  [ 6345.280907] pstate: 60400009 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+  [ 6345.287856] pc : vmalloc_fix_flags+0x60/0x90
+  [ 6345.292115] lr : vmalloc_fix_flags+0x58/0x90
+  [ 6345.296374] sp : ffff80008d5b3a10
+  [ 6345.299676] x29: ffff80008d5b3a20 x28: ffff07ff8a148000 x27: 0000000000000000
+  [ 6345.306800] x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
+  [ 6345.313923] x23: 000000000000000b x22: 000000000000ae01 x21: 0000000000000028
+  [ 6345.321047] x20: ffffc682ea643fbc x19: 0000000000001040 x18: ffff800083465050
+  [ 6345.328170] x17: 00000000d949c370 x16: 00000000d949c370 x15: 0000000000000004
+  [ 6345.335294] x14: 0000000000000002 x13: 0000000000000002 x12: 0000000000000000
+  [ 6345.342417] x11: 0000000000000001 x10: ffffc682ec577744 x9 : bf6a46a6bf3b7900
+  [ 6345.349541] x8 : bf6a46a6bf3b7900 x7 : 65646f632072756f x6 : 7920786946202e29
+  [ 6345.356664] x5 : ffff081f6fcdc678 x4 : 0000000000000000 x3 : ffff80008d5b3688
+  [ 6345.363788] x2 : 0000000000000021 x1 : 0000000000000000 x0 : 000000000000006f
+  [ 6345.370911] Call trace:
+  [ 6345.373346]  vmalloc_fix_flags+0x60/0x90 (P)
+  [ 6345.377606]  __vmalloc_noprof+0xa0/0xb0
+  [ 6345.381431]  kvm_arch_alloc_vm+0x64/0x70
+  [ 6345.385344]  kvm_dev_ioctl+0x9c/0x58c
+  [ 6345.388997]  __arm64_sys_ioctl+0xb0/0x100
+  [ 6345.392995]  invoke_syscall+0x84/0xf4
+  [ 6345.396648]  el0_svc_common.llvm.4390888008543260363+0x90/0xf4
+  [ 6345.402469]  do_el0_svc+0x2c/0x3c
+  [ 6345.405773]  el0_svc+0x54/0x2a8
+  [ 6345.408905]  el0t_64_sync_handler+0x88/0x134
+  [ 6345.413164]  el0t_64_sync+0x1b8/0x1bc
+  [ 6345.416815] ---[ end trace 0000000000000000 ]---
 
-jirka
+where kvm_arch_alloc_vm() from arch/arm64/kvm/arm.c is
+
+  struct kvm *kvm_arch_alloc_vm(void)
+  {
+      size_t sz = sizeof(struct kvm);
+
+      if (!has_vhe())
+          return kzalloc(sz, GFP_KERNEL_ACCOUNT);
+
+      return __vmalloc(sz, GFP_KERNEL_ACCOUNT | __GFP_HIGHMEM | __GFP_ZERO);
+  }
+
+Should __GFP_HIGHMEM be dropped from the call to __vmalloc? It looks
+like it was added by commit 115bae923ac8 ("KVM: arm64: Add memcg
+accounting to KVM allocations") back in 5.16.
+
+Cheers,
+Nathan
 
