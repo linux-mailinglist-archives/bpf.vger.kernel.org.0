@@ -1,167 +1,174 @@
-Return-Path: <bpf+bounces-74824-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74825-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E97F1C66A1E
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 01:18:33 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85847C66A73
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 01:25:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sea.lore.kernel.org (Postfix) with ESMTPS id A1E32293C9
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 00:18:32 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTPS id 86C54298DB
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 00:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B84D72417DE;
-	Tue, 18 Nov 2025 00:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3BC5277017;
+	Tue, 18 Nov 2025 00:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="utN2wdt5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZDYnXp23"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B1613AD26
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 00:18:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C8E6272816
+	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 00:25:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763425109; cv=none; b=UcoLP+JE+MVFXLmFT2vvmIoYY0yDvikCs2U7+7GT5caQSmwmDhb2P2EfRGOrffkqw32ty0kosZ0JVjguulTBLc3P7mpRSVEctWGraGY/3dV1HQQjJWLalt9prLbJcZz7qZ/Z9+qrVIrnBx9Lf7p8JP9ZfyF0SoNH14+yD77PTOU=
+	t=1763425510; cv=none; b=jpwwtHbdqzDXN9qIR0qZ1XcxxBMCe18EYdKIxX/R5ndsjI+8+y5VQy2Edl1lDUkXGV6J8a47+7vuX1ryj5Q79MucXy3dmmthp7bLHRe+jCSEMmW3MJGShONj0UhWg/o/crbJLXHqOWhFa4dV1UC7K2vqazLrwqYEJyBINivZdFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763425109; c=relaxed/simple;
-	bh=qBhAKg20qoDgWvtC5epSiL0NufQXuEY4Y8OL6stT5yY=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=IjQGR7UZdtCb1aT/ma53eYlr6YMZX+hDDbFP+bZ2Rq8xUcl8oZAr0c7X/rwxnnuu5JxlUztPG/31k5b+/CuU6qzMyI4lQqfrleS6OTce3h1fzeXjT/ljSrS2tfyGeJ5j2S+X1LtoGnwBNEnlDAVcitd0RrJr4NaGnsmTTyCGwUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=utN2wdt5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0B33C2BCB1;
-	Tue, 18 Nov 2025 00:18:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763425108;
-	bh=qBhAKg20qoDgWvtC5epSiL0NufQXuEY4Y8OL6stT5yY=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=utN2wdt5Eyz4WLgIL9yS2UnectR3d/XEkfgm02pyyNZ3+rTIA6XE806zmvZ+t2Z70
-	 7KYnweacfYu2yFOhwCQb5FZAiO3UlLgVEzhVepNA6CjR9BkEPHlyUXT19nQ353Bgyl
-	 pv/MBGHhvu4q/k9y9Ed9UePw7lHg+sqEeX6kQ9svEuVn9ZWkhboi8b+foEEioce6Eu
-	 RTIbXtvx1fISdmbOVSnQSp45yQLasfw/dNFRpwz1bGgXVhE9xaG0NyldUSbWlH0dlc
-	 i5PfkRYkpJgbE9ky+G7SfDFUyIw1SMh7OzgHrKO0N9V6Qi65hWQdyYkU3YMxdaeBgm
-	 NmeAeMlfKYAdg==
-Content-Type: multipart/mixed; boundary="===============0036236790022755823=="
+	s=arc-20240116; t=1763425510; c=relaxed/simple;
+	bh=4mzWxm0FExzAVQfP+Nggm4NdLPQI9ceVCiBNtj72gag=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dYEERnhsdYloIb2SerN4afYiV7Iw5iOVd1hCdPf+EmIkY65CEBhahNa/x9xbOC/lyi9qXzBobBkNvyEy76aE2iSnAxzVEkSPsuiMBqiJJIYZyPryawjxyWK3iPzB0Gja6Le1HWh3xVFuS6/eUo/LuaJv5IAuGpvhaEGoxpNttCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZDYnXp23; arc=none smtp.client-ip=74.125.224.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-6420c0cf4abso1089285d50.1
+        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 16:25:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763425507; x=1764030307; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cXfCa+oVsDITgwK8E28o89vmmOunafNUqzYLlmnNM/U=;
+        b=ZDYnXp23Qe5lguiuBJvK3Svm7I3EnDmSpwh4WEPt19man5kNf+eNE026RKR7NXB46N
+         8nWQyfM9QMTJMQvI4B2+ijaQWmawyFtavUpmKkw0Z0D2j2TrFQhGuOAiKnkQl9Fqa2sC
+         xqrfNn+QaaDFFAuroy1ncAhRqe5kTXKU2OrecFvsJk4JY61jOVdd3Ymq4GDJ+uxa4pq1
+         p02SpiBON5WjjAny6AneA4Sqj7jd9IePYJkI+DVmYbPxaBNoos/ODikTEgwRDrfmV2pk
+         6kSNNzcnW3ACl2sWf1fvpzrW0+yQM0DiBnAiFULG9miE+bDkRWDiWKmc8nw6iKjUOUgQ
+         Zbsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763425507; x=1764030307;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=cXfCa+oVsDITgwK8E28o89vmmOunafNUqzYLlmnNM/U=;
+        b=FxsoNJzNEeNfN32hhRrvIXJ7qHwPi+S0kt1Mqn9M959R8FspUHeDwyzLp2K/YuSUcK
+         dInG8krUyRtQRINu6MHxIaeqL2+V411cc1qydv3xrSvY8Pb+LXe0+MjmeWYeJ+jIDG95
+         /r30E+23SUpCflLSOUIbF/Oh65zlwjSWAlvHcjyZDXoT8VMi9XTu8cCRfSr8JZGsWMBr
+         fxMbjyZMxpz4x01xYju4//vL/iD7+pA9sBfzGi6X/LGp8FtV1VQEvcX2uf+FoNbKc/Wa
+         av/QDp8UzldNHJT4d70gNWeLIX8V7IE3UPNFn1Uh47QAg1Jbw082jNbPmWTS0Qyc879B
+         t0YQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXoaXGDHOGN+iV67Z6naiKtTG4IRn/p61XELjNsSZvjrXPE7Q6MYTsyfFox6yffoeqee2o=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwSF7zuOgnJFEDSOzHuy7GJxP2G81i6xTWbG6jGQxn/YxChzfNj
+	iLJouzEQXaH+eEee9DR6fXThLqnbYwMfeWU3zyEZSmVGK8gxDQD+lJBTJ3glAzq5rZZoCNGgapO
+	Zl9YUCj/pBZKJKfmK4HCkPxGk466u6D4=
+X-Gm-Gg: ASbGncvggaHZ90SsqUk2oyptagtXIBbiHPZubi7fA6rj1jmMt3WROaY90vea6olXs3x
+	/XfF2UGqgj6OBhAPxDJo1HpJviAkLf6ewjqMHJGSLr9Giy42MuusIXqSCsI274XSy1wTY2RskV3
+	Q84+rXZFpWWNAfqz/77xfYKR1w+vrBTQ/LDmwNKaZf6IguO0UzW3U61eyvoUcQlL9ZQyAI6hnDB
+	IQINQcVueTGWUaNG49SEMt+wuL7rizRoLkiJSo9phP8nJwsfFbdVklPrE/ZoNwewm9Fm0wkfSyh
+	k4P8UUhVuoUM3jEw
+X-Google-Smtp-Source: AGHT+IHAbfGoyHsYKH3jzHgG0RQdTWgI5Lr057GSg4HE7cHSIAb0B6av2FDxAkjEWfHyMd+mdAfguAzO/NjFZpbRp+4=
+X-Received: by 2002:a05:690e:4101:b0:642:84a:7bdc with SMTP id
+ 956f58d0204a3-642084a7ee2mr3479239d50.83.1763425507022; Mon, 17 Nov 2025
+ 16:25:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <0d256ee4485ea2c5142e8692b7dbbd559d05c41afb1f4ed81b78fd59eed9eb15@mail.kernel.org>
-In-Reply-To: <20251117235636.140259-3-emil@etsalapatis.com>
-References: <20251117235636.140259-3-emil@etsalapatis.com>
-Subject: Re: [PATCH 2/4] libbpf: add stub for offset-related skeleton padding
-From: bot+bpf-ci@kernel.org
-To: emil@etsalapatis.com,bpf@vger.kernel.org
-Cc: ast@kernel.org,daniel@iogearbox.net,john.fastabend@gmail.com,memxor@gmail.com,andrii@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,emil@etsalapatis.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Tue, 18 Nov 2025 00:18:27 +0000 (UTC)
+References: <20251114201329.3275875-1-ameryhung@gmail.com> <20251114201329.3275875-5-ameryhung@gmail.com>
+ <CAADnVQJD0xLa=bWUerdYsRg8R4S54yqnPnuwkHWL1R663U3Xcg@mail.gmail.com>
+ <CAMB2axPEmykdt2Wcvb49j1iG8b+ZTxvDoRgRYKmJAnTvbLsN9g@mail.gmail.com>
+ <CAADnVQ+FC5dscjW0MQbG2qYP7KSQ2Ld6LCt5uK8+M2xreyeU7w@mail.gmail.com> <450751b2-5bc4-4c76-b9ca-019b87b96074@paulmck-laptop>
+In-Reply-To: <450751b2-5bc4-4c76-b9ca-019b87b96074@paulmck-laptop>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Mon, 17 Nov 2025 16:24:56 -0800
+X-Gm-Features: AWmQ_blKF7jNU3eJ3H4uPhlx_7GuSkI4zHWsuVPdxNFvoNJJVys8ZBeiZMnjxas
+Message-ID: <CAMB2axM==X6+WJFenbuwTn82=2iRL-5_GCmj5RmK_fsGf07x7w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 4/4] bpf: Replace bpf memory allocator with
+ kmalloc_nolock() in local storage
+To: paulmck@kernel.org
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
---===============0036236790022755823==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index 993c7d948..6ed125b1b 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-
-[ ... ]
-
-> @@ -269,7 +269,8 @@ static int codegen_datasec_def(struct bpf_object *obj,
->  static bool is_mmapable_map(const struct bpf_map *map, char *buf, size_t sz)
->  {
->  	size_t tmp_sz;
+On Mon, Nov 17, 2025 at 3:46=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
 >
->  	if (bpf_map__type(map) == BPF_MAP_TYPE_ARENA && bpf_map__initial_value(map, &tmp_sz)) {
->  		snprintf(buf, sz, "arena");
->  		return true;
->  	}
+> On Mon, Nov 17, 2025 at 03:36:08PM -0800, Alexei Starovoitov wrote:
+> > On Mon, Nov 17, 2025 at 12:37=E2=80=AFPM Amery Hung <ameryhung@gmail.co=
+m> wrote:
+> > >
+> > > On Fri, Nov 14, 2025 at 6:01=E2=80=AFPM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Fri, Nov 14, 2025 at 12:13=E2=80=AFPM Amery Hung <ameryhung@gmai=
+l.com> wrote:
+> > > > >
+> > > > >
+> > > > > -       if (smap->bpf_ma) {
+> > > > > +       if (smap->use_kmalloc_nolock) {
+> > > > >                 rcu_barrier_tasks_trace();
+> > > > > -               if (!rcu_trace_implies_rcu_gp())
+> > > > > -                       rcu_barrier();
+> > > > > -               bpf_mem_alloc_destroy(&smap->selem_ma);
+> > > > > -               bpf_mem_alloc_destroy(&smap->storage_ma);
+> > > > > +               rcu_barrier();
+> > > >
+> > > > Why unconditional rcu_barrier() ?
+> > > > It's implied in rcu_barrier_tasks_trace().
+> > >
+> > > Hmm, I am not sure.
+> > >
+> > > > What am I missing?
+> > >
+> > > I hit a UAF in v1 in bpf_selem_free_rcu() when running selftests and
+> > > making rcu_barrier() unconditional addressed it. I think the bug was
+> > > due to map_free() not waiting for bpf_selem_free_rcu() (an RCU
+> > > callback) to finish.
+> > >
+> > > Looking at rcu_barrier() and rcu_barrier_tasks_trace(), they pass
+> > > different rtp to rcu_barrier_tasks_generic() so I think both are
+> > > needed to make sure in-flight RCU and RCU tasks trace callbacks are
+> > > done.
+> > >
+> > > Not an expert in RCU so I might be wrong and it was something else.
+> >
+> > Paul,
+> >
+> > Please help us here.
+> > Does rcu_barrier_tasks_trace() imply rcu_barrier() ?
 >
->  	if (!bpf_map__is_internal(map) || !(bpf_map__map_flags(map) & BPF_F_MMAPABLE))
->  		return false;
+> I am sorry, but no, it does not.
+
+Thanks for the clarification, Paul!
+
 >
->  	if (!get_map_ident(map, buf, sz))
->  		return false;
+> If latency proves to be an issue, one approach is to invoke rcu_barrier()
+> and rcu_barrier_tasks_trace() each in its own workqueue handler.  But as
+> always, I suggest invoking them one after the other to see if a latency
+> problem really exists before adding complexity.
 >
->  	return true;
->  }
+> Except that rcu_barrier_tasks_trace() is never invoked by rcu_barrier(),
+> only rcu_barrier_tasks() and rcu_barrier_tasks_trace().  So do you really
+> mean rcu_barrier()?  Or rcu_barrier_tasks()?
 
-[ ... ]
+Sorry for the confusion. I misread the code. I was trying to say that
+rcu_barrier() and rcu_barrier_tasks_trace() seem to wait on different
+callacks but then referring to rcu_barrier_tasks() implementation
+wrongly.
 
-> @@ -287,6 +291,7 @@ static int codegen_datasecs(struct bpf_object *obj, const char *obj_name)
->  	struct bpf_map *map;
->  	const struct btf_type *sec;
->  	char map_ident[256];
-> +	int var_off;
->  	int err = 0;
 >
->  	d = btf_dump__new(btf, codegen_btf_dump_printf, NULL, NULL);
-
-[ ... ]
-
-> @@ -303,7 +316,13 @@ static int codegen_datasecs(struct bpf_object *obj, const char *obj_name)
->  			printf("	struct %s__%s {\n", obj_name, map_ident);
->  			printf("	} *%s;\n", map_ident);
->  		} else {
-> -			err = codegen_datasec_def(obj, btf, d, sec, obj_name);
-> +			var_off = bpf_map__data_offset(map);
-> +			if (var_off < 0)  {
-> +				p_err("bpf_map__data_offset called on unmapped map\n");
-> +				err = var_off;
-> +				goto out;
-> +			}
-> +			err = codegen_datasec_def(obj, btf, d, sec, obj_name, var_off);
->  			if (err)
->  				goto out;
->  		}
-
-Can bpf_map__data_offset() be called here on an arena map that doesn't
-have its mmaped field set yet?
-
-During skeleton generation in do_skeleton(), the code calls
-bpf_object__open_mem() but never calls bpf_object__load(). Looking at
-is_mmapable_map() above, arena maps return true and will reach this code
-path. However, arena maps only get their mmaped field set during
-bpf_object__load() in libbpf.c around line 5615, not during
-bpf_object__open().
-
-This means bpf_map__data_offset() will be called on arena maps with
-map->mmaped == NULL, causing it to return -EINVAL, which would fail
-skeleton generation for any program with arena maps.
-
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 706e7481b..32dac36ba 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -10552,6 +10552,16 @@ const char *bpf_map__name(const struct bpf_map *map)
->  	return map->name;
->  }
+> Either way, rcu_barrier_tasks() and rcu_barrier_tasks_trace() are also
+> independent of each other in the sense that if you need tw wait on
+> callbacks from both call_rcu_tasks() and call_rcu_tasks_trace(), you
+> need both rcu_barrier_tasks() and rcu_barrier_tasks_trace() to be invoked=
+.
 >
-> +int bpf_map__data_offset(const struct bpf_map *map)
-> +{
-> +	if (!map->mmaped)
-> +		return -EINVAL;
-> +
-> +	/* No offsetting for now. */
-> +	return 0;
-> +}
-         ^^^^
-
-The check for map->mmaped here causes the problem described above. Since
-this function is called during skeleton generation (before load), the
-mmaped field won't be set for arena maps yet. Should this check be
-removed, or should the skeleton generation code path be changed?
-
-[ ... ]
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19448868610
-
---===============0036236790022755823==--
+>                                                         Thanx, Paul
 
