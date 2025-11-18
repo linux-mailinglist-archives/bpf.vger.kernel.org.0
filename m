@@ -1,82 +1,83 @@
-Return-Path: <bpf+bounces-74983-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74985-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC89CC6A105
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 15:43:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BE35CC6A115
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 15:44:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id 61E302F3F8
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 14:33:27 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTPS id D8C862F5CF
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 14:33:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980C43546E9;
-	Tue, 18 Nov 2025 14:31:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0760A3624D2;
+	Tue, 18 Nov 2025 14:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YimM73WG"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="m2SldIXA"
 X-Original-To: bpf@vger.kernel.org
-Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011059.outbound.protection.outlook.com [40.107.208.59])
+Received: from BL2PR02CU003.outbound.protection.outlook.com (mail-eastusazon11011027.outbound.protection.outlook.com [52.101.52.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AEBA30AAB8;
-	Tue, 18 Nov 2025 14:31:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.208.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A075F3587BF;
+	Tue, 18 Nov 2025 14:31:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.52.27
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763476294; cv=fail; b=nFd2/CbQ7IyovoW4nwW4aSt8zPR6iIXhZdMhyM3AbsgLcOShdquDja5/UCFlOmKrwAknWsaEpwr7FxOu0rQsOjDEdhbCe3/rWPFdqXVI5r5nDBLL7Ax8jgOaFL6gs0GWpWQtLfJoBEwSyScQqu9+nUhqcTORZUbXvaMdujZQ1Hs=
+	t=1763476300; cv=fail; b=hlou3hWMihX6rkOODsNpfWLj1dlRejmqKmeTjlItoCqJ+iJYz39ahMyv1p9XbsFSbaxTmdHnIX6SPVUC1VRXY0b9Lp6yHhRIs148KV6Q4suIkfJelznQtR849FSfnucMBkVCeX0j+dbKFcw9hGwUbZJ7L/q+FYJA2EWbW5qoZM8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763476294; c=relaxed/simple;
-	bh=ITBcYEiJ9KrBmaVbpN/FMUWj+5u6S3geLo5SZ0WB1Oo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iTFoa2RwUbRSoLGUCkuUXrP9IM8XY9O3R46nWyg7RT1N6+HD2cF4q10AQeEbm8jVXgZlQbTFECBzj+qfNHyByvJnEpPkrI4WRoFTv7/11FUDkD13QbPku8V519KhSweDvWazWFZRkcv1r2riu9Bfe3M32A+mWzS258pcm4Fs7fw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YimM73WG; arc=fail smtp.client-ip=40.107.208.59
+	s=arc-20240116; t=1763476300; c=relaxed/simple;
+	bh=0syKOd9E+T3dlP3R8YAyKADYty5DSnrNMmp3Sh/e8Qw=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cTdd24vJTVQSdDwsHetrbYB1lb10PA7wZ2YB80p8zB4MFaANTvS1u1gdTKnx3XXztv/sVZ5fBE0f5V92n8nIWmmSAKq/XplMWe6M5cJOvAk+fhB7tyUW6yFwzCVSdW0lb0Sy16B70oS+yC8mU5qI6Lmof+T/2X0DqSvc993JE2k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=m2SldIXA; arc=fail smtp.client-ip=52.101.52.27
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=cZR1rRnr6T1WPCwIb7RztSmugooemlZpDk/sEyzrk8FWhvef1VLWnK5i3nTQUT1nssD4RiuIwS20HLRGMEgKglmCx5JvhPb9C7qrN/3yp8UMyCqyXrqcCKb83RX5lb7aJBBw1WIrrgT6a/gty4mT7mKjMEYBdPg8Sg6XYKIe6mceVpwVM5Ko9G8hNxMNZ3+A4dN0RfAkOybHhcZyoHj4gBoXK4LZmzgczcmPKQuU4sjCOu42vgXUYGhxkpAOA1loEK88cF5uZOZvQ2R0y9sRdFCS52cVa6PPZqXCLwZjjfZP1l77qiZQ4oIodwM4zbkJu+b93Lk4qRGvvnuNfwCZjw==
+ b=ODRraR/hRV0eHlgGSIh5P4reaMkKtQ1m5QzyAvnOhXWwrAIWEEWy8mP63waWCOPjUS2ZKu+qnVvJszLsTqBw05I7UL9Ek3820Jb//159b1letDmk1kLSlRvdnIxGZTsGQM+JZZApOL2NpXuKRjTS9gR3bobBdZxDD6wcDPHOARs2b5W4Ro9WqOT9HpfQtwGg/52bGYl5JPcMRA6XlxYRKy9biDw76dRmbKiqaejE32BLQ3ToqQvlLvLYZuyOH1yzLtokvXczvU/nqUBo77FaLaFeFfx7ykd5qw+yM1fYwz9rxOBlfIbi7JTyG1QbuukkAKzQXIWip3ebgQYHeWim5A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q/lss/7U0Jn93LufNxXrcNE/8ANPUQG9mwTfaJDa8tE=;
- b=kOn/Mx0fvEUMYz3ucL9liieg38jdGm/fEElg+MxGdBcRyp78lG6jNxkG/kW2wnKtLk/2HEVz1XbV8gE5bpz4/IH09ug7JxnTntyB7r2X2QAeANbACC1Q148agN8vMeox5figFvaak1f/CCrVQTurM+CHX1A39uL6nLaVkKC+BguZRu2phpMVhQ2rDCbBYsN9jNKHWLZXdSZXE2x14Lqv8MFHh99coC7JPRxqxa+RYkwndzPodL+VdDcDLAaSZ0XKrVPKqIDi26PJj35iSDcmlf9T/dmO0fXDioayfrXM8LAFdX2ZhRNe2ndrdt2DYjFRrP06x2Khxg1IsVnLLlEFPA==
+ bh=VOIpDzCRN1+wGVTGbQRyAecFnvNyBaMB+TyfrpbqfW4=;
+ b=WkcQNfVXpKRDbACkJSpvXKTCN6BWT7Fe3fWGd597aW3086cBC0O0lLD5xFSzioEq7PX275uaN26mKmzpDsrBL3zeQFu2HVF5nFzMvy3gEEKtaRSeNdFdG2/KB7Td2S1tm4lWKCalTblEfSc6P0DZEt/2/16cKbI6BmEqmyTDDCDhPnpPA4efWfRhmMwUQOzqozxs17WpcTkJpV+8fbEZz+dYc8FYXQWT2YWhLd6eQ7AAPYkFn/EnOaC1MXSy3AuMwpqj9n3MsThvY6Kzd8+wLl9ozBThKYLefKk1GkwK91+VSnyd6FRJonz05XHDC95uxlmDf8v8+PnjL53ndJE6NA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ 216.228.118.232) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q/lss/7U0Jn93LufNxXrcNE/8ANPUQG9mwTfaJDa8tE=;
- b=YimM73WGP0ndAw77hj3ilUHRkWWVOZDqEzthECYeDNnXW1i7YV/X/zUmmUupIsj8A8Ko/CGKb6e5RnvO6xzGGH4Fagb/M7tQ82BWuP+71nBDS4xq6Td3qOakx9I+H+uUHADW0MrTcGoQoTgPRtQwdUmgeBb+QaO00nc7R6z6QTCPetHLKC9L8ujx3bAKoqm36WQpuPlDC7dPv9Vjb1MtMVKar7hY9nL6avjcFKYdx62yRP0h4uCWR7Kz809TJff/1XKTF07EHDDAexLuWhHerD3Goq7BY41oXwKfVNe5vSyuJgYheb+YQNY3FAb/PU50kguHLt+xeZsT/qInvOftIg==
-Received: from MN2PR08CA0026.namprd08.prod.outlook.com (2603:10b6:208:239::31)
- by SJ2PR12MB8832.namprd12.prod.outlook.com (2603:10b6:a03:4d0::5) with
+ bh=VOIpDzCRN1+wGVTGbQRyAecFnvNyBaMB+TyfrpbqfW4=;
+ b=m2SldIXAarZpjZurnpnZeCnd2H+uUknX5DBQFPSX8FmFAyzllZNpxDXeA+bjJJQkLkx6Bqr7Mwp9H0PpRvvJLeA6nff5cGF561+CZNQFz0VzVRqbDXlflcq+X8RBKL8FbKSX0TER6t0BqGVUoo3W4059UFIGuDgOVBuqD1rvZmfSUiVsTp3p5KX4MVf7Z2PbfLKkmu/jmKPBb/V3gKnT9dHF0mbNqbJhVgRWPhu8vnVD/Um/Pzic7TyzaWzpWqFt0U3gD2GzatIMQIJ6SEPIDfFzW1ExGTIBzGOTMmGRfGI4T18fcH/8tVpuEhbrp5ViVnogMsnI544zydWQotj4rA==
+Received: from BYAPR11CA0085.namprd11.prod.outlook.com (2603:10b6:a03:f4::26)
+ by PH0PR12MB8050.namprd12.prod.outlook.com (2603:10b6:510:26e::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.10; Tue, 18 Nov
- 2025 14:31:24 +0000
-Received: from MN1PEPF0000ECD4.namprd02.prod.outlook.com
- (2603:10b6:208:239:cafe::c1) by MN2PR08CA0026.outlook.office365.com
- (2603:10b6:208:239::31) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9320.23 via Frontend Transport; Tue,
- 18 Nov 2025 14:31:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.22; Tue, 18 Nov
+ 2025 14:31:28 +0000
+Received: from SJ1PEPF00001CE8.namprd03.prod.outlook.com
+ (2603:10b6:a03:f4:cafe::1d) by BYAPR11CA0085.outlook.office365.com
+ (2603:10b6:a03:f4::26) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9320.22 via Frontend Transport; Tue,
+ 18 Nov 2025 14:31:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- MN1PEPF0000ECD4.mail.protection.outlook.com (10.167.242.132) with Microsoft
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ SJ1PEPF00001CE8.mail.protection.outlook.com (10.167.242.24) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9343.9 via Frontend Transport; Tue, 18 Nov 2025 14:31:22 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9343.9 via Frontend Transport; Tue, 18 Nov 2025 14:31:27 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 18 Nov
- 2025 06:30:59 -0800
+ 2025 06:31:03 -0800
 Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Tue, 18 Nov 2025 06:30:58 -0800
+ 15.2.2562.20; Tue, 18 Nov 2025 06:31:03 -0800
 Received: from vdi.nvidia.com (10.127.8.12) by mail.nvidia.com
  (10.126.190.182) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Tue, 18 Nov 2025 06:30:55 -0800
+ Transport; Tue, 18 Nov 2025 06:30:59 -0800
 From: Gal Pressman <gal@nvidia.com>
 To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
 	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
@@ -86,11 +87,14 @@ CC: Donald Hunter <donald.hunter@gmail.com>, Simon Horman <horms@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
 	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
 	<john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>,
-	<bpf@vger.kernel.org>, Gal Pressman <gal@nvidia.com>
-Subject: [PATCH net-next v2 0/3] YNL CLI --list-attrs argument
-Date: Tue, 18 Nov 2025 16:32:05 +0200
-Message-ID: <20251118143208.2380814-1-gal@nvidia.com>
+	<bpf@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Nimrod Oren
+	<noren@nvidia.com>
+Subject: [PATCH net-next v2 1/3] tools: ynl: cli: Add --list-attrs option to show operation attributes
+Date: Tue, 18 Nov 2025 16:32:06 +0200
+Message-ID: <20251118143208.2380814-2-gal@nvidia.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20251118143208.2380814-1-gal@nvidia.com>
+References: <20251118143208.2380814-1-gal@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,79 +106,187 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD4:EE_|SJ2PR12MB8832:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2234cb13-bd24-47fc-1ee7-08de26af25cb
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE8:EE_|PH0PR12MB8050:EE_
+X-MS-Office365-Filtering-Correlation-Id: fc9857a2-fa1f-4ee6-dbf3-08de26af28aa
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|36860700013|82310400026|7416014|13003099007;
+	BCL:0;ARA:13230040|1800799024|82310400026|36860700013|376014|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?2o9kRZUweLtWUiDXWpc3hlcyPJaEfJvpsaaeEQ9k2hwCsssR1mZsd1DYj92U?=
- =?us-ascii?Q?/7Gx8xkVT2tqfOvSW7aN+m8F43zweVunaXeA8aG0JCMihvzhsVlThA/Depq6?=
- =?us-ascii?Q?dZiQ3vL8MTTMmhPlfQ4v+zzPXyogpMi7IPUk5rjmGzc0VFzml/61uCqvZBZS?=
- =?us-ascii?Q?lx99lQvcCKDqGM56CWnwklBWbSvHYDeV9S48e5UZBUILmxwDnzXG6ptAdcVY?=
- =?us-ascii?Q?i5pz918O3H3pI/tECGobbzrmN/bSKw6W6lVjnbSH7/bL6G91R9WdDYvAZAKU?=
- =?us-ascii?Q?jjlyzal7hALM0YZV9CDV7YKCMHtfpZEiSIpwZzWBobG91TIzBdZeSVfxfmbx?=
- =?us-ascii?Q?OHWyi2Olx4MzrpvM86ucaCzWx5mDfNPQLEq8S4SURlFC+JMYQX21CHhPlFPf?=
- =?us-ascii?Q?o6DfKpWSCJ1P/ZNluDP7SMZYaMMdBbIYmKNYVEVyk65NGr+GAODrLssdx0QS?=
- =?us-ascii?Q?kq4hUUL+yX0tQzZ1xBPjkRkGgSQ5nbExxD54Mm6x6xCRajuN0XKFzEFrZKnE?=
- =?us-ascii?Q?WOW86N1MP1AM3tZqc4myf10W77IhYuC3P+JIhDetISoIv0xts/CflfvZtotp?=
- =?us-ascii?Q?dmaynm150VxQOPg6Hq5K8f9i1gC1VJdewr/aC9WW+p0Skx0oJKmgf9pnyaeU?=
- =?us-ascii?Q?IuFT/l/j94LS7NHcCl0e7HFMq0EBt5K1Lp6KRhqaHwoumPGEmUBaetifYOzA?=
- =?us-ascii?Q?nTkda7otfCGUzsYAUwh0PArZ8dymkThKPggMiFmYuMDd2diVV6mII9w3LLNM?=
- =?us-ascii?Q?gW1k5otWYwxDmGCRZCl9DaLZ7tTC0P1Km3/mkcV9mxoEKBd5RwM4+oeLJ0I/?=
- =?us-ascii?Q?AnHIvnuOqgcz42ElvqGf9Uzcg2hBB4pp7MGLn15hH3b7vulyhPbbW1cUfOHi?=
- =?us-ascii?Q?HLey+uGnZqFYziq+8q6PMxjHmekUXrkmN4U+dl2teGnIOenjAAaux2dIH1o4?=
- =?us-ascii?Q?3ZBDVm757YIvvkqBC3lpi4eXXfvM/67JoCqLesEUlkHm3RFAocbQU4iw3fLG?=
- =?us-ascii?Q?fe+dU4AwPEStZAglAW7nwEBDzc8IgF+9XBRzQjQx5PmlqZv1zproLWJYrF5C?=
- =?us-ascii?Q?eshxmI7jlD5HA8axWPHv1fWM10kVedHcRDRBgtMSiuAaEPuKo4Grtc49lRWo?=
- =?us-ascii?Q?NVhTFmYIZTVUxg80ext0f68EbwMJEW9en2m91JuQ5jAKv8zPjjepEBFBGPZk?=
- =?us-ascii?Q?7IIAnfytaBxxU3A176vnCewBavQCS86rLihu9jSi1X6QGe5wJPPvKRkWoe9C?=
- =?us-ascii?Q?3Dd+53fLyZrTkcyEbwJ1/kxPe34PM8AwtphrIlWzTML4nR5wccsFgXmy/5eZ?=
- =?us-ascii?Q?BVTwG06sdU3jYTyAT2btLwVvA4yERqn2HCR1O65590NLF8lUcSUUCDHur8eX?=
- =?us-ascii?Q?/cptirJraGeTLzeipDq+9bxKAXiUyPoJuCO4X8U12evq1OLuVxF/EGTXnbS4?=
- =?us-ascii?Q?b4C8o8w3w6HFRKPLzla29n/8OqHQ5HhW4cf9MWPuKh3/Um/BA45uOkQdMYmP?=
- =?us-ascii?Q?arwCGjtnMAnrBP7uqxo+87meIcPjL0K24RDim0llKSKqVk4vYPLaOgV3MCA3?=
- =?us-ascii?Q?BwPCaATO4NRhVXeaHgg=3D?=
+	=?us-ascii?Q?+FJmOKlacrMt8z9//7stONxxHtTeoCp/yufYIU4u6peJw+kqdXedHbSxRoRy?=
+ =?us-ascii?Q?LmLTLdC8wPzg7722rwPhJ4Bguw3NDL50/bb78NcE28zN1KnFnELHH2rnfd4j?=
+ =?us-ascii?Q?GH3cHkcxMs9IKTRFifnlxDhn+b1YQan5zgDxKicUzq2IE6nW8m1x1o0Nl8Lc?=
+ =?us-ascii?Q?OPWpxKmvgDg4di1OlK3N4wYWmsk9k0NMlxubpQsd0/kxwflkoM6xeJ3ZB1OX?=
+ =?us-ascii?Q?D8/NcQav4xx2bSdbgD8ikrvGc1yGziWedQQv9e28T/Bk+KhqgW9snQR4S1+C?=
+ =?us-ascii?Q?qiwAwyX6i/R5OcCEmKRO3Y4jDkJEvX0hybS32w2ydkjJ8OefLDD4b6U1X5Mf?=
+ =?us-ascii?Q?/bHtKndmA2nwgs2DFYs8Gt74kiO/+cxfCcaWwa3V8WUFQCR2W8BhB9TWdkW/?=
+ =?us-ascii?Q?y+afS/+HJW55O8Z4NtIh0Zq58kCc9iUoioocBkKkNFd9UYexlyWF0Q/P8yt6?=
+ =?us-ascii?Q?4f3Akh5WKz/yDg8uNOUZ6g8xCmW7rOFD7EDyX6fMEWtRCREK7JCdhyCvByKo?=
+ =?us-ascii?Q?WFqed/VnZLBOlpb8qgiPAcSHSj9qsb3g5SwNrIxL6pjbKGFAtlRBRwJgcLye?=
+ =?us-ascii?Q?HEqhdzV8dkCCmbXFVwTkyVwSGO0KGD4jUf/aUsG1zVV++Ueq1pMdmb3xPwO+?=
+ =?us-ascii?Q?kHESpYItMu+bF0N4kB0/dti8UEQ1mHBGWClbDtuZr1t5mldiKfSPaeeiglIB?=
+ =?us-ascii?Q?NNr8oAdz9A1R0XdOA7cqfg8oV6w26xz/weA+5xmJ8rhHjmyEoffNk0yM6ex1?=
+ =?us-ascii?Q?CltI7kCfk2SoqptF+fyPbCDzZ+m/mmRJlaZp9enfOMAUZuUhkhLxqLTfc7KW?=
+ =?us-ascii?Q?IvHCvo1ysPR4y49cMrQ5gi9wc6B1pOou086WL6yqrYvlTQFugxSrDONBpV39?=
+ =?us-ascii?Q?O1g8qlCfULUXn/NXEl2kLLNsXLQFOmXmbTBjmAtCRrd4FpTVF2nwgWeWWR7J?=
+ =?us-ascii?Q?s104darlxuDvWxAX0nCpdhjPboSKAI/yI8ViBbXQJLYwnyKU3OercTwWyxSG?=
+ =?us-ascii?Q?DFg4eFXEnXLg//ti1oZNXWK+nlGE8ss3eIp136/f7ArVpafgpQyBHtn2dLev?=
+ =?us-ascii?Q?dml0u6kq2JcFeDba4ksZ9ZmOFe2FdDqF3gvVvtqHkyE1cxI2E2xQEQ65cFDd?=
+ =?us-ascii?Q?z/ZpIEeK0yHZ64fGv1aeSmdpxj4Iwe+jhyrpMeG8lDc+tCzvcbJ8LeQyP+NX?=
+ =?us-ascii?Q?4x0dG9reeTlaMZqIx0rLQ0Ix2aOcrWbRQiDkUdjCr7fFb1UleZ22TuQw2a+s?=
+ =?us-ascii?Q?uzbmx7fwyZLzlF7rZtHP9jLZWKosZUFrytR5licwuD1Spmc/4lwANZPUJeQg?=
+ =?us-ascii?Q?ERrPSrygPcurwN+k+e40a8fImWhXIEXWamjP1e81Yp8Gl1U7e5LZoOAytaG8?=
+ =?us-ascii?Q?V1OKBjCyRnVaXVBAIljAXia7KNF0bXnHJTtq8zrL4QfsMLU4JogGFhClYZ7L?=
+ =?us-ascii?Q?9JNVLvn93/vaCyBoBhVKX9CO1kjrSo/QvMe75FkZaSMOnkZcZsXkVi6KHfVm?=
+ =?us-ascii?Q?9b/a6n/82i4imr6U9PgETnc3jp0Y/oekzQlZCzT7t+PdBd2WqEX5ZX4K/MZj?=
+ =?us-ascii?Q?F+XBIpeoCOfpAyw1LMw=3D?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(36860700013)(82310400026)(7416014)(13003099007);DIR:OUT;SFP:1101;
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700013)(376014)(7416014);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2025 14:31:22.6641
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2025 14:31:27.6443
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2234cb13-bd24-47fc-1ee7-08de26af25cb
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc9857a2-fa1f-4ee6-dbf3-08de26af28aa
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000ECD4.namprd02.prod.outlook.com
+	SJ1PEPF00001CE8.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8832
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8050
 
-While experimenting with the YNL CLI, I found the process of going back
-and forth to examine the YAML spec files in order to figure out how to
-use each command quite tiring.
+Add a --list-attrs option to the YNL CLI that displays information about
+netlink operations, including request and reply attributes.
+This eliminates the need to manually inspect YAML spec files to
+determine the JSON structure required for operations, or understand the
+structure of the reply.
 
-The addition of --list-attrs helps by providing all information needed
-directly in the tool. I figured others would likely find it useful as
-well.
+Example usage:
+  # ./cli.py --family netdev --list-attrs dev-get
+  Operation: dev-get
+  Get / dump information about a netdev.
 
-Changelog -
-v1->v2: https://lore.kernel.org/all/20251116192845.1693119-1-gal@nvidia.com/
-* Remove dead print in else case.
-* Pass 'notify' explicitly in notify operation.
-* Move nested functions out of main().
-* Fix pylint issues.
-* Add a print of the op documentation at the beginning.
-* Specify enum vs. flags when displaying enum values.
+  Do request attributes:
+    - ifindex: u32
+      netdev ifindex
 
-Gal Pressman (3):
-  tools: ynl: cli: Add --list-attrs option to show operation attributes
-  tools: ynl: cli: Parse nested attributes in --list-attrs output
-  tools: ynl: cli: Display enum values in --list-attrs output
+  Do reply attributes:
+    - ifindex: u32
+      netdev ifindex
+    - xdp-features: u64 (enum: xdp-act)
+      Bitmask of enabled xdp-features.
+    - xdp-zc-max-segs: u32
+      max fragment count supported by ZC driver
+    - xdp-rx-metadata-features: u64 (enum: xdp-rx-metadata)
+      Bitmask of supported XDP receive metadata features. See Documentation/networking/xdp-rx-metadata.rst for more details.
+    - xsk-features: u64 (enum: xsk-flags)
+      Bitmask of enabled AF_XDP features.
 
- tools/net/ynl/pyynl/cli.py | 79 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 79 insertions(+)
+  Dump reply attributes:
+    - ifindex: u32
+      netdev ifindex
+    - xdp-features: u64 (enum: xdp-act)
+      Bitmask of enabled xdp-features.
+    - xdp-zc-max-segs: u32
+      max fragment count supported by ZC driver
+    - xdp-rx-metadata-features: u64 (enum: xdp-rx-metadata)
+      Bitmask of supported XDP receive metadata features. See Documentation/networking/xdp-rx-metadata.rst for more details.
+    - xsk-features: u64 (enum: xsk-flags)
+      Bitmask of enabled AF_XDP features.
 
+Reviewed-by: Nimrod Oren <noren@nvidia.com>
+Signed-off-by: Gal Pressman <gal@nvidia.com>
+---
+ tools/net/ynl/pyynl/cli.py | 56 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+
+diff --git a/tools/net/ynl/pyynl/cli.py b/tools/net/ynl/pyynl/cli.py
+index 8c192e900bd3..4d91a2cee381 100755
+--- a/tools/net/ynl/pyynl/cli.py
++++ b/tools/net/ynl/pyynl/cli.py
+@@ -7,6 +7,7 @@ import os
+ import pathlib
+ import pprint
+ import sys
++import textwrap
+ 
+ sys.path.append(pathlib.Path(__file__).resolve().parent.as_posix())
+ from lib import YnlFamily, Netlink, NlError
+@@ -39,6 +40,37 @@ class YnlEncoder(json.JSONEncoder):
+         return json.JSONEncoder.default(self, obj)
+ 
+ 
++def print_attr_list(attr_names, attr_set):
++    """Print a list of attributes with their types and documentation."""
++    for attr_name in attr_names:
++        if attr_name in attr_set.attrs:
++            attr = attr_set.attrs[attr_name]
++            attr_info = f'  - {attr_name}: {attr.type}'
++            if 'enum' in attr.yaml:
++                attr_info += f" (enum: {attr.yaml['enum']})"
++            if attr.yaml.get('doc'):
++                doc_text = textwrap.indent(attr.yaml['doc'], '    ')
++                attr_info += f"\n{doc_text}"
++            print(attr_info)
++
++
++def print_mode_attrs(mode, mode_spec, attr_set, print_request=True):
++    """Print a given mode (do/dump/event/notify)."""
++    mode_title = mode.capitalize()
++
++    if print_request and 'request' in mode_spec and 'attributes' in mode_spec['request']:
++        print(f'\n{mode_title} request attributes:')
++        print_attr_list(mode_spec['request']['attributes'], attr_set)
++
++    if 'reply' in mode_spec and 'attributes' in mode_spec['reply']:
++        print(f'\n{mode_title} reply attributes:')
++        print_attr_list(mode_spec['reply']['attributes'], attr_set)
++
++    if 'attributes' in mode_spec:
++        print(f'\n{mode_title} attributes:')
++        print_attr_list(mode_spec['attributes'], attr_set)
++
++
+ def main():
+     description = """
+     YNL CLI utility - a general purpose netlink utility that uses YAML
+@@ -70,6 +102,8 @@ def main():
+     group.add_argument('--dump', dest='dump', metavar='DUMP-OPERATION', type=str)
+     group.add_argument('--list-ops', action='store_true')
+     group.add_argument('--list-msgs', action='store_true')
++    group.add_argument('--list-attrs', dest='list_attrs', metavar='OPERATION', type=str,
++                       help='List attributes for an operation')
+ 
+     parser.add_argument('--duration', dest='duration', type=int,
+                         help='when subscribed, watch for DURATION seconds')
+@@ -135,6 +169,28 @@ def main():
+         for op_name, op in ynl.msgs.items():
+             print(op_name, " [", ", ".join(op.modes), "]")
+ 
++    if args.list_attrs:
++        op = ynl.msgs.get(args.list_attrs)
++        if not op:
++            print(f'Operation {args.list_attrs} not found')
++            exit(1)
++
++        print(f'Operation: {op.name}')
++        print(op.yaml['doc'])
++
++        for mode in ['do', 'dump', 'event']:
++            if mode in op.yaml:
++                print_mode_attrs(mode, op.yaml[mode], op.attr_set, True)
++
++        if 'notify' in op.yaml:
++            mode_spec = op.yaml['notify']
++            ref_spec = ynl.msgs.get(mode_spec).yaml.get('do')
++            if ref_spec:
++                print_mode_attrs('notify', ref_spec, op.attr_set, False)
++
++        if 'mcgrp' in op.yaml:
++            print(f"\nMulticast group: {op.yaml['mcgrp']}")
++
+     try:
+         if args.do:
+             reply = ynl.do(args.do, attrs, args.flags)
 -- 
 2.40.1
 
