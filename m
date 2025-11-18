@@ -1,114 +1,176 @@
-Return-Path: <bpf+bounces-75001-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75002-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27768C6B6D7
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 20:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 53A83C6B6EC
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 20:28:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0E8A44E7CE7
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 19:26:30 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 34CB84E5CA2
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 19:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2122253FC;
-	Tue, 18 Nov 2025 19:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708BE2E9ECE;
+	Tue, 18 Nov 2025 19:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UTgOVNUF"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6EC82E1F02;
-	Tue, 18 Nov 2025 19:26:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8195E2E88B7
+	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 19:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763493977; cv=none; b=XT2JXwlFUPhVMNXPjwjmt6vAtgHibFFFL3pBwo1EG0FN1MfrZM8vqS/7uuAjezWRcJaSqWEPqYFozl4lWNibRAriGYjL4O67hFi1ei6WIrP9uwdarbH5B5tWefBJWtMeMPQfnPSuseD2v3iQCMW2ln4uLRWNk+pWXpDJT0QsX0o=
+	t=1763494082; cv=none; b=Phff/xza+dXgqIxaZ1bsCOF95bhTVf1XHVTiLFOeYjW32BQ9MJGU+TiiPQBz9AMLhE30Ai/mgN88r+qNtGLuHhkYhHBRii0YTt0WvmnXgwpT5B7617/pugRRBNtqaUvrzRQ+s4LlBbAyO6zq63P6Oz+KMOmvdh/oShWYKlQlV1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763493977; c=relaxed/simple;
-	bh=TdE/U+7RQXi4SqrRnPOBPwoC1Yp2VMYbtN8CNa8ePG8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GFnNJumle5f8wapKgYWHAtUj1BXgO2n3FEmFGjsJat5Cw6aR6aeLdBy8Q1TqfYS1ChutZ3oxsFqG1CHc0g4fAM6Cuusbrel2ZhHME2C9o7p/8/h1rYuSZfM5uN1nVl8rh0LcfOcThgAdTnWdqoPDGpClj779EBCw3BAMMW2mwY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf04.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay04.hostedemail.com (Postfix) with ESMTP id 49FED1A01AD;
-	Tue, 18 Nov 2025 19:26:05 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf04.hostedemail.com (Postfix) with ESMTPA id 6318220030;
-	Tue, 18 Nov 2025 19:25:56 +0000 (UTC)
-Date: Tue, 18 Nov 2025 14:26:23 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Jens Remus <jremus@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, x86@kernel.org, linux-mm@kvack.org, Steven Rostedt
- <rostedt@kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
- Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>,
- Indu Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>,
- Beau Belgrave <beaub@linux.microsoft.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>,
- Florian Weimer <fweimer@redhat.com>, Kees Cook <kees@kernel.org>, "Carlos
- O'Donell" <codonell@redhat.com>, Sam James <sam@gentoo.org>, Borislav
- Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, David
- Hildenbrand <david@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "Liam R.
- Howlett" <Liam.Howlett@oracle.com>, Lorenzo Stoakes
- <lorenzo.stoakes@oracle.com>, Michal Hocko <mhocko@suse.com>, Mike Rapoport
- <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Vlastimil Babka
- <vbabka@suse.cz>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>
-Subject: Re: [PATCH v11 03/15] unwind_user/sframe: Add support for reading
- .sframe headers
-Message-ID: <20251118142623.57a60a62@gandalf.local.home>
-In-Reply-To: <e5c5e17f-1efd-4f9e-be2d-c6f65003ba3d@linux.ibm.com>
-References: <20251022144326.4082059-1-jremus@linux.ibm.com>
-	<20251022144326.4082059-4-jremus@linux.ibm.com>
-	<e5c5e17f-1efd-4f9e-be2d-c6f65003ba3d@linux.ibm.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1763494082; c=relaxed/simple;
+	bh=CEu2HX49eMyL/fkGI6RcH7NRGSH9WLfbLJE7zmZxVOM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QqlyMkrZ3jdBmZYH5udpcVyNQyDYlJcftDY1zojeUtlP/jZ3z9LCPMGge8K1V6Vkckgp5DMfwY55jNw7tORSKJ08CxmqErqAm0uw4AUHz2jYn0AjEzoILRQ/tZ/oAR6wT+40vF75Mh2aKSh+754ceetkf3idIq3OsI2N59lWgRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UTgOVNUF; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-340c39ee02dso5085891a91.1
+        for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 11:28:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763494080; x=1764098880; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=doC9uXNUqoKejMIunGd/jGTKolDii5Qguk+TBihyyxM=;
+        b=UTgOVNUF4YpJm2RoWUs9xUzFoRdfh2RjAWltGH57IvYSvOV7+I5TuIb6aznu4BoBRR
+         s+QA87jnQshVZlnbenmKM/axYdPIO8ir/M3xZcUCbQ2uSLc7tIkimBYhskv5nL3gnfHr
+         NAbt0XxmQG2lZzxG04m6IPu/M/Zvh/TEYMQ3f2IqPZHpg0xy7WnKMJcySH63KutG4RSO
+         x82lTJiHBmo/zQLyHz9TvwDJApxu4V/lkwKXkCDC0QlgZ0Guwy3j+QyeK02oWnAjHWbC
+         q7QgDNWiovhrvKh0ZMCdja1GKRu61rbec99GOTg13PbXmHnfuISeP7FK9xCm7cMeit6a
+         Bizg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763494080; x=1764098880;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=doC9uXNUqoKejMIunGd/jGTKolDii5Qguk+TBihyyxM=;
+        b=CREC3b6OogelPaAX4VF2l1lc9OHflR/TiN2eO8cJEsk7SykPgzftHGi9N7zsrFm4aS
+         plk2sfw9Ovt/3inat8zYCFn7KVhjPVfCV3JE15U4UAow/0SNL6qZ7A2xYvCO/WNpHi+a
+         S9w0akTNQNZTUui0rTpxkhU9YITkaobnx4aJlxssZcUSSONnWB01ZzzuKtKNl/kcTPzC
+         aYJ5UfZvAMdz9sNT+Fwu6U/VCREb9sy6fyxolsM8EH4yJTi8YOuLmECwMdbQBj4bCcep
+         xmriMdM8yQzs0JR8Af86KILSfLxKssDMwGdoPE3ATlOLACWLvgYK0X40QtVNtn74wfsG
+         +A6A==
+X-Forwarded-Encrypted: i=1; AJvYcCXGERiiTVJ9Lo+G995ChtlEImL3n0gpA+U253kafHdG5EqtCMjH7Uoa3MfCQvuslL5LEH0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwhK7pci1ILLYELxb9mxChIDGRxyiO+FPK0f616znpciby1imDW
+	Wk9RlIekgB66zV6XjdToa7XCFiPKq87maIpU86r/ZCfCqGgwVg+g9lhYY4OZNFkCsB9VQkhSXfG
+	nOHsFk7SemtzxDBGl6YvbNpmktjjYsAo=
+X-Gm-Gg: ASbGncsFM2CabokdanH0E6I2bHwNfUqqdxprmiKC7yepSDC4GoUGb1Aczh3SSupkR5k
+	opIIrJtytaaePfJCldXD6MNnLCiqM49e2NOegXDCo2XC11Gc4OZnGTVfDh3dmBYhtqThq3rXI4M
+	IglwcAKcDF/cB4MW1MFBZ9jRRZ7hpbIIeQm01Ex7lbbNpy4ahgRR7Z2zVyhDqtgZdYaCcJwAeZZ
+	v3kjsvlMQUKtmYwT4F8ds4UR7v18vWA1mX9ZKt0xr8ksdVJTG8mN6Z+KcWXg/1P5TMErgT/3zct
+	9NxUn/VqWfcO3FjmFJQdXQ==
+X-Google-Smtp-Source: AGHT+IG58zG+XluUaIiZAZv9m1uRF7fwmOmXIq4KeWpc40NILlovsL0nA2fYLe6y5JHtEDDylDzt5ytVO+jnJ5EKrZo=
+X-Received: by 2002:a17:90b:2788:b0:340:ad5e:cb with SMTP id
+ 98e67ed59e1d1-343f9eaa41dmr17041894a91.8.1763494079727; Tue, 18 Nov 2025
+ 11:27:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: tbzdfz6xijjf1nsx9rf5cecaz6t1797w
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 6318220030
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18kMxDuWA1tAF9m0DoMD/Jf6AhXJD9G9Y4=
-X-HE-Tag: 1763493956-237256
-X-HE-Meta: U2FsdGVkX187IrvkH90ckrHBgaHws/CDDckN7oWOSHQjYNUrMmyzebyXREW0G5QsO8LWPgB7KUXrlIl53TbVunkyTH7yH6013m9YXFffYOwssCNgJobXZ42EzqvfFBlvuBf1bDwTdo/cPGPnxjh7EcAhSP0F1bNcPPsTwG6CxpKVWybID+0QFOB0gq1aLVm1YKfNghJNuA7rARi3zkYltVvQULz7rE1Ewqmd0/GNKcO+e3P9xl+9pGtp+4dSugY0O4tKiekgg3+E9xuViKe0/aJvKMAdftbtsFgOa2PIxhuKrghkQmTozwPhe97I/b8vgxn0XYhcL7DlbF/TRMZC+t+3ihZyz2MU
+References: <20251114193729.251892-1-ssranevjti@gmail.com> <aReUv1kVACh3UKv-@casper.infradead.org>
+ <CANNWa07Y_GPKuYNQ0ncWHGa4KX91QFosz6WGJ9P6-AJQniD3zw@mail.gmail.com>
+ <aRpQ7LTZDP-Xz-Sr@casper.infradead.org> <20251117164155.GB196362@frogsfrogsfrogs>
+ <aRtjfN7sC6_Bv4bx@casper.infradead.org> <CAEf4BzZu+u-F9SjhcY5GN5vumOi6X=3AwUom+KJXeCpvC+-ppQ@mail.gmail.com>
+ <aRxunCkc4VomEUdo@infradead.org> <aRySpQbNuw3Y5DN-@casper.infradead.org>
+In-Reply-To: <aRySpQbNuw3Y5DN-@casper.infradead.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 18 Nov 2025 11:27:47 -0800
+X-Gm-Features: AWmQ_bn356VQg7AFLndJgLd27HF_zQfgIMoqrhbk6mAt-2PXr32Xi9lJz8Nh9GM
+Message-ID: <CAEf4BzY1fu+7pqotaW6DxH_vvwCY8rTuX=+0RO96-baKJDeB_Q@mail.gmail.com>
+Subject: Re: [PATCH] mm/filemap: fix NULL pointer dereference in do_read_cache_folio()
+To: Matthew Wilcox <willy@infradead.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christoph Hellwig <hch@infradead.org>, "Darrick J. Wong" <djwong@kernel.org>, 
+	SHAURYA RANE <ssrane_b23@ee.vjti.ac.in>, akpm@linux-foundation.org, 
+	shakeel.butt@linux.dev, eddyz87@gmail.com, andrii@kernel.org, ast@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev, 
+	skhan@linuxfoundation.org, david.hunter.linux@gmail.com, khalid@kernel.org, 
+	syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com, 
+	bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 18 Nov 2025 18:04:27 +0100
-Jens Remus <jremus@linux.ibm.com> wrote:
+On Tue, Nov 18, 2025 at 7:37=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Tue, Nov 18, 2025 at 05:03:24AM -0800, Christoph Hellwig wrote:
+> > On Mon, Nov 17, 2025 at 10:45:31AM -0800, Andrii Nakryiko wrote:
+> > > As I replied on another email, ideally we'd have some low-level file
+> > > reading interface where we wouldn't have to know about secretmem, or
+> > > XFS+DAX, or whatever other unusual combination of conditions where
+> > > exposed internal APIs like filemap_get_folio() + read_cache_folio()
+> > > can crash.
+> >
+> > The problem is that you did something totally insane and it kinda works
+> > most of the time.
+>
+> ... on 64-bit systems.  The HIGHMEM handling is screwed up too.
+>
+> > But bpf or any other file system consumer has
+> > absolutely not business poking into the page cache to start with.
+>
+> Agreed.
 
-> I wonder whether the series should be restructured as follows:
-> 
-> unwind_user/sframe: Store .sframe section data in per-mm maple tree
-> unwind_user/sframe: Detect .sframe sections in executables
-> unwind_user/sframe: Add support for reading .sframe headers
-> unwind_user/sframe: Add support for reading .sframe contents
-> unwind_user/sframe: Wire up unwind_user to sframe
-> x86/uaccess: Add unsafe_copy_from_user() implementation
-> unwind_user/sframe/x86: Enable sframe unwinding on x86
-> unwind_user: Stop when reaching an outermost frame
-> unwind_user/sframe: Add support for outermost frame indication
-> unwind_user/sframe: Remove .sframe section on detected corruption
-> unwind_user/sframe: Show file name in debug output
-> unwind_user/sframe: Add .sframe validation option
-> unwind_user/sframe: Add prctl() interface for registering .sframe sections
-> 
-> While moving sframe_add_section() and sframe_remove_section() from
-> "unwind_user/sframe: Add support for reading .sframe headers" to
-> "unwind_user/sframe: Store .sframe section data in per-mm maple tree" or
-> into a new second patch, as they depend on the first and are required
-> by the third.
-> 
-> What are your thoughts?  The reordering might be wasted effort.
+Then please help make it better, give us interfaces you think are
+appropriate. People do use this functionality in production, it's
+important and we are not going to drop it. In non-sleepable mode it's
+best-effort, if the requested part of the file is paged in, we'll
+successfully read data (such as ELF's build ID), and if not, we'll
+report that to the BPF program as -EFAULT. In sleepable mode, we'll
+wait for that part of the file to be paged in before proceeding.
+PROCMAP_QUERY ioctl() is always in sleepable mode, so it will wait for
+file data to be read.
 
-If you feel it makes it better, sure, go ahead and do it.
+If you don't like the implementation, please help improve it, don't
+just request dropping it "because BPF folks" or anything like that.
 
--- Steve
+>
+> > And I'm really pissed off that you wrote and merged this code without
+> > ever bothering to talk to a FS or MM person who have immediately told
+> > you so.  Let's just rip out this buildid junk for now and restart
+> > because the problem isn't actually that easy.
+>
+> Oh, they did talk to fs & mm people originally and were told NO, so they
+> sneaked it in through the BPF tree.
+
+This patch set was never landed and has *NO* relation to the
+lib/buildid.c stuff we are discussing. There was no sneaking anything
+in. The patch set in question that added folio-based reading logic was
+developed in the open with both mm and fsdevel in CC. Matthew himself
+looked at it, he NAKed page-based initial implementation but suggested
+folio-based one ([0]). Shakeel did review this (the patch set went
+through 10 revisions, plenty of time to object).
+
+  [0] https://lore.kernel.org/bpf/ZrOStYOrlFr21jRc@casper.infradead.org/
+
+>
+> https://lore.kernel.org/all/20230316170149.4106586-1-jolsa@kernel.org/
+>
+> > > The only real limitation is that we'd like to be able to control
+> > > whether we are ok sleeping or not, as this code can be called from
+> > > pretty much anywhere BPF might run, which includes NMI context.
+> > >
+> > > Would this kiocb_read() approach work under those circumstances?
+> >
+> > No.  IOCB_NOWAIT is just a hint to avoid blocking function calls.
+> > It is not guarantee and a guarantee is basically impossible.
+>
+> I'm not sure I'd go that far -- I think we're pretty good about not
+> sleeping when IOCB_NOWAIT is specified and any remaining places can
+> be fixed up.
+>
+> But I am inclined to rip out the buildid code, just because the
+> authors have been so rude.
+
+Can you please elaborate on "authors have been so rude" a bit more?
+Besides that link to an absolutely unrelated patch set?..
 
