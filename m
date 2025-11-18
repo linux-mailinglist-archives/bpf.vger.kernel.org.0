@@ -1,340 +1,346 @@
-Return-Path: <bpf+bounces-74943-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74944-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B151DC69245
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 12:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DFC9C692C3
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 12:47:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A5B66368A2F
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 11:37:35 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3A18F387840
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 11:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C865E355037;
-	Tue, 18 Nov 2025 11:32:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C508314B71;
+	Tue, 18 Nov 2025 11:41:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DyUt7bx2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O7FS7X9x"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532E93563C6
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 11:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4DA7276046
+	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 11:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763465541; cv=none; b=AzwFJeWCBVGiGvhGm1Zgy5F4sixWIXlz64gHZ5EJpBmo60DRykPBGxIsY1Za1uvXU5eWFfN5P5MjwwVJPlroWyPGWzOyP9llUU7A8qC9TICk0yC4kfJslMzzkl67eNEdPAXVostV1+O6e998Wx5Hff8e9Lr1boex7QJuGkyDdCk=
+	t=1763466091; cv=none; b=DPPLgziqriLobV8awGutZTwFC1/t0SmOWq9IKRW9y/GgMZQe1o+Jvs5RQFuRmg+7KcVIpD2VDBHPDNdDoz6ML+0UQSe4UlesIEpvvq/MqUZi5wQEEYtK7zJdeRfNPTYI0h+/11NdU6k5fnRbSYgegpj8KnwS/1XzPO4WmOcq7N4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763465541; c=relaxed/simple;
-	bh=K8Wyd2To1BmAKFVUmUbQOinghXJ6DrKZBtPEPb4ilFQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JBjfs1iIGtghlZ6Q85H808ZmJt2BooXEUAGHgE0zqCWXJ+6xTMsNzZvuj0qzzwH4gzztSQSHkQTwn1rWZrjgkfc+amkteRupgSHb4O0T99pTm5kDIS357uNizj9QEzrt5N8tN7Yqzs9XfRtPiLcugA2TjTVCjVKkplqCr0gd/gY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DyUt7bx2; arc=none smtp.client-ip=209.85.216.53
+	s=arc-20240116; t=1763466091; c=relaxed/simple;
+	bh=GCasney/+v/3JF7ZuKtH0cYYKb5MzrRqbecjXZrV8Uc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uXElhbU+ThKmPLyGg8JWRcg679v/nxDEV5r3epIERBG2pMPlm+42ssiOSiYGIMJPDnDiUawT0kM1RcJ11VUW5q3sk8S1M+TfK3LE8Ru1OBvKHQpyOW02iYBM7HT4qxg7BcUCFf5hXJUB4TPCTFy/RifopyObbCpi3I8sSNhS4Nw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O7FS7X9x; arc=none smtp.client-ip=209.85.166.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-340ba29d518so3786737a91.3
-        for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 03:32:19 -0800 (PST)
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-431d65ad973so19917075ab.3
+        for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 03:41:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763465539; x=1764070339; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1763466089; x=1764070889; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U36EJ4GyvUj1c+KWVQBGEQGDIxcP9pTwbj0Nc88XDlE=;
-        b=DyUt7bx2GXMi8+9f09ff1Db3Ptbgbilvu41PK7cNugTb8O4Slv7rpO18YVhSWSs/3b
-         w1Vc8G8u/PofGGeQE1W+zJpZz4ddZU07S2XvTHhGf6ZNW2l1F0AWvFJZmtYZCLnu+42Y
-         1lgAmniLcS41LWTB400k3bSYfqredbE/aPdXyiURjtXadGgxay5k4IC6ybuXfZa/qTV4
-         y/cv2MN+uODKjX7uZnmpJZR+diqThGndYdnISGWCQ3q5MdA7r+gSU3lx7n5RB2/1Hra2
-         fIf6Db3txOL1jRjGBL9cnGCNNyUlLZJ+y1e2oOz51JZO8lZOfm6spwib89uDMP5sVWj7
-         9BzA==
+        bh=e0rdrQ0bR9gp8rN3RGfKes678Yrgs/gwNY/GEhcsxfg=;
+        b=O7FS7X9xS+ZOT8cWKJQRfVCA2OtXUmhvrSqaxHJDK4Jst0hBOFhCRse8sFOYQ544gp
+         RgnJs46bwL19daEe/5Fhmzm55/E3KH7QLF5sRwwRSYv6oVDXZsJqCaVBUMFXPnb7SZLW
+         UXAj/DEx/zFjH/p/vSYZ8QVfKC+h1uTjzhzDPlkA18OwOx5s10JzJPgq8j4TK1xA7DaA
+         phLiV5mk4ZbW9vc8w4kYA6a/fskNoDEKMzEeQ3PcXxLrN3/fZFfkKHbL2V38hTobPRpU
+         Ye8z0GwMPj5cNSiGrZ3iSnXDkDbLGiufXmAlt2o7pCk4mOcifoqn8ZOWtGt+obPruH1Q
+         vFOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763465539; x=1764070339;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20230601; t=1763466089; x=1764070889;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=U36EJ4GyvUj1c+KWVQBGEQGDIxcP9pTwbj0Nc88XDlE=;
-        b=s6I5X9JMiWVMakhofuRqC7Xdiqw4+1ZOu2ze8WD3GSayRH8zl2rApXqYF9vIUowY/0
-         F0vaPlBzXoTfzuBUQ5q9f67wv7pO+h60NC2ExpmmxlMhOXI3dkb0k4X/8VVjs9ky91di
-         ZNDJLhRWhEqQ7fwaicDLzbzEEes5sgxgqbZwKtbG7uR/0aSelqgtCRApEbYybYpiRRFa
-         EFEfuqJv9IHZ55zXdJkSst2lovTAMLxMwaqLCwoyAGIlnsj4kmhdn6eq4y+9Pe+sSF+A
-         vEIbuDoZrztH06xXZ9LdpKXOqFO+dNqxfT3YIE4clMksbsujNuClb9equOJy261vRtS0
-         /nmg==
-X-Forwarded-Encrypted: i=1; AJvYcCWgauJ54Uz4KuFinJZ32BywrB6MmZRg0hGHU1bXHSW+UrFlByiTN/L5tdP90VDy8xHnWmM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRJ9FVwDyju4g9c1ekmJPGqOYq5HCoNc2LUMXIRBXO2aqnt8qW
-	dX8eDRexeGpytZ8LQB662UVlDiPQF1XtYnQrscNBU5u7QWRF8FTsCx3z
-X-Gm-Gg: ASbGncs7IEzhPecgRxmA8Cc2PIPjZ+cy4PwayeCEmVXKqDoVVRkuBTIHMo/ETCk7UmD
-	xY4DxqdVsSEEBkp6buYNNwXPriSlBOWnigq5lJSJlKeQMhD8K720tfCp+QSJorKrq6eRmX4Dvjk
-	2BVei5QcphYo0BTlJnQXwOHGuMXHBZWI+mm2tpzpRsCM7gLxgSIVXgxlIOfPjLcovDUUMBmtgIg
-	rJDXiPkTwqzJvfgKtWyHjxnCkJXnsh4UeAs9114r3u7LD+vncKEPyuCBJ+zzMIRJzIMWdVbw45U
-	J9WxL943XQbQz6bljxEzwOf6szPK6pZrXtfamER3wgS3V1hglER72tLwjfNjKMjrBkSCBDNGMP6
-	ftZcRy1zLrTQn6bJrIDr0lA7CSZI5Is4CCnrNk45IWWdmdgFahoYY3jBxJHG7P8uQBcnW/d9gtD
-	FV2lCjnJYJrftgDOiXWZXYGRe5S+EbbN4dUliHIgCWXSC4qu60hA==
-X-Google-Smtp-Source: AGHT+IEXgXhQS/PPrYJbpAo06A+LbwNc11z1gcGQgtP5bDqE6cvj/3xMoRUdO7/TieS5wkj2K+854Q==
-X-Received: by 2002:a17:90b:2552:b0:340:ec8f:82d8 with SMTP id 98e67ed59e1d1-343f9ea40c1mr19277977a91.12.1763465538566;
-        Tue, 18 Nov 2025 03:32:18 -0800 (PST)
-Received: from localhost.localdomain ([103.246.102.164])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3456516d4a9sm12583736a91.11.2025.11.18.03.32.12
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 18 Nov 2025 03:32:18 -0800 (PST)
-From: Alessandro Decina <alessandro.d@gmail.com>
-To: netdev@vger.kernel.org
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Tirthendu Sarkar <tirthendu.sarkar@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	bpf@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org,
-	linux-kernel@vger.kernel.org,
-	Alessandro Decina <alessandro.d@gmail.com>
-Subject: [PATCH net v4 1/1] i40e: xsk: advance next_to_clean on status descriptors
-Date: Tue, 18 Nov 2025 22:31:17 +1100
-Message-Id: <20251118113117.11567-2-alessandro.d@gmail.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <20251118113117.11567-1-alessandro.d@gmail.com>
-References: <20251118113117.11567-1-alessandro.d@gmail.com>
+        bh=e0rdrQ0bR9gp8rN3RGfKes678Yrgs/gwNY/GEhcsxfg=;
+        b=lMIsNASjwZMF4dTgqktSH4C0YKd0v35edLefUaqghI/5F7WvSQdmCN9vh5bQW/9JfN
+         v0zhq9ehKQTJxEccSASx3yOkD2rKpJO+sEPBKfYfAUw5F0VvBze8PnCeaGsikrC2W+SP
+         Um6YDGYztfiNyJ+vAdZDrmyNvOSkgfJd/Py8gIwsMcU09VCdjZssv/GoVT3mNULJYbV4
+         dAhm6ClRqFav6S1EwIH2BGuwumP29OiUNhhWG/8aRbpn+8Xp5IxfgRXssnrbc4PzZqcQ
+         X7KHtjpvrTEt5lTqiY2OXEk+ceMo/PuGPDfpkTcUYK3iZHOrakr6ntafoQniHX2+m2HG
+         4zYg==
+X-Forwarded-Encrypted: i=1; AJvYcCWu0uPa6GVPAS7567pSY0njClKTWq7PGlSpBv9skEwoNak4XubfC6jfYT4yAKRJ/neb96I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzrGlUTRh9QHpChN3nPSi7OvkOCOkiZvZzkP70hRK4EFT5V75hT
+	Zz3T7w1265BGMK36epVVdoQlVAUTN2lTkwQKs5uze7H26Q+yNAODciuXmnGqtmhgobI57edKoDs
+	zxkVNmfBlffgaisxQ16KyozTszlzPeN0=
+X-Gm-Gg: ASbGncsQbaU6DV5aFB5qoWUrAR61QPSrL7V1/XERwjvHbedsBspJdwKXIXQEq5kHuF9
+	BC0PZ88iMybGW0GYJwEZi2w8G55Lwx41HIr3UnsdR3QzQBHFxUB3cnSnFhqVeaGFepK07g1tnkg
+	WU886n6AjvHn9EIXkGZLghJ1K2LDuds75y21jzF+OL5W7/R28jFFPRY/aErtGQnWyxqTa4VaC7p
+	pO49aTCKPteKKBAE87c0lCNBVsZEl6iaj0BDx+noLTzV/ZhMUPdY+Hx/BbW
+X-Google-Smtp-Source: AGHT+IFNMcTLPQ3/iVJQDUWjnyBtLiy0PPA/isYlypVTbpMoaXEFPmjqZSHowotKXExsMIWOGX+vb5BSyfcL+4GeF4I=
+X-Received: by 2002:a05:6e02:3f0b:b0:434:70bd:8b36 with SMTP id
+ e9e14a558f8ab-4348c896102mr192757725ab.7.1763466088557; Tue, 18 Nov 2025
+ 03:41:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <aQTBajODN3Nnskta@boxer> <CAL+tcoDGiYogC=xiD7=K6HBk7UaOWKCFX8jGC=civLDjsBb3fA@mail.gmail.com>
+ <aQjDjaQzv+Y4U6NL@boxer> <CAL+tcoBkO98eBGX0uOUo_bvsPFbnGvSYvY-ZaKJhSn7qac464g@mail.gmail.com>
+ <CAJ8uoz2ZaJ5uYhd-MvSuYwmWUKKKBSfkq17rJGO98iTJ+iUrQg@mail.gmail.com>
+ <CAL+tcoBw4eS8QO+AxSk=-vfVSb-7VtZMMNfZTZtJCp=SMpy0GQ@mail.gmail.com>
+ <aRdQWqKs29U7moXq@boxer> <CAL+tcoAv+dTK-Z=HNGUJNohxRu_oWCPQ4L1BRQT9nvB4WZMd7Q@mail.gmail.com>
+ <aRtHvooD0IWWb4Cx@boxer> <CAL+tcoBTuOnnhAUD9gwbt8VBf+m=c08c-+cOUyjuPLyx29xUWw@mail.gmail.com>
+ <aRxHDvUBcr+jx49C@boxer>
+In-Reply-To: <aRxHDvUBcr+jx49C@boxer>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Tue, 18 Nov 2025 19:40:52 +0800
+X-Gm-Features: AWmQ_bn2TIX4xwq_x119sDR85ikZkRX9XDHY1Ly4Rm9ZYlCQ7P380Nqe5zxJ9gM
+Message-ID: <CAL+tcoCPiDq807u4wmqNx+j_jMmYYzNVA5ySGmp_V5gDLYz02A@mail.gmail.com>
+Subject: Re: [PATCH RFC net-next 2/2] xsk: introduce a cached cq to
+ temporarily store descriptor addrs
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: Magnus Karlsson <magnus.karlsson@gmail.com>, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, bjorn@kernel.org, 
+	magnus.karlsson@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
+	john.fastabend@gmail.com, joe@dama.to, willemdebruijn.kernel@gmail.com, 
+	fmancera@suse.de, csmate@nop.hu, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Whenever a status descriptor is received, i40e processes and skips over
-it, correctly updating next_to_process but forgetting to update
-next_to_clean. In the next iteration this accidentally causes the
-creation of an invalid multi-buffer xdp_buff where the first fragment
-is the status descriptor.
+On Tue, Nov 18, 2025 at 6:15=E2=80=AFPM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> On Tue, Nov 18, 2025 at 08:01:52AM +0800, Jason Xing wrote:
+> > On Tue, Nov 18, 2025 at 12:05=E2=80=AFAM Maciej Fijalkowski
+> > <maciej.fijalkowski@intel.com> wrote:
+> > >
+> > > On Sat, Nov 15, 2025 at 07:46:40AM +0800, Jason Xing wrote:
+> > > > On Fri, Nov 14, 2025 at 11:53=E2=80=AFPM Maciej Fijalkowski
+> > > > <maciej.fijalkowski@intel.com> wrote:
+> > > > >
+> > > > > On Tue, Nov 11, 2025 at 10:02:58PM +0800, Jason Xing wrote:
+> > > > > > Hi Magnus,
+> > > > > >
+> > > > > > On Tue, Nov 11, 2025 at 9:44=E2=80=AFPM Magnus Karlsson
+> > > > > > <magnus.karlsson@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Tue, 11 Nov 2025 at 14:06, Jason Xing <kerneljasonxing@gma=
+il.com> wrote:
+> > > > > > > >
+> > > > > > > > Hi Maciej,
+> > > > > > > >
+> > > > > > > > On Mon, Nov 3, 2025 at 11:00=E2=80=AFPM Maciej Fijalkowski
+> > > > > > > > <maciej.fijalkowski@intel.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On Sat, Nov 01, 2025 at 07:59:36AM +0800, Jason Xing wrot=
+e:
+> > > > > > > > > > On Fri, Oct 31, 2025 at 10:02=E2=80=AFPM Maciej Fijalko=
+wski
+> > > > > > > > > > <maciej.fijalkowski@intel.com> wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > On Fri, Oct 31, 2025 at 05:32:30PM +0800, Jason Xing =
+wrote:
+> > > > > > > > > > > > From: Jason Xing <kernelxing@tencent.com>
+> > > > > > > > > > > >
+> > > > > > > > > > > > Before the commit 30f241fcf52a ("xsk: Fix immature =
+cq descriptor
+> > > > > > > > > > > > production"), there is one issue[1] which causes th=
+e wrong publish
+> > > > > > > > > > > > of descriptors in race condidtion. The above commit=
+ fixes the issue
+> > > > > > > > > > > > but adds more memory operations in the xmit hot pat=
+h and interrupt
+> > > > > > > > > > > > context, which can cause side effect in performance=
+.
+> > > > > > > > > > > >
+> > > > > > > > > > > > This patch tries to propose a new solution to fix t=
+he problem
+> > > > > > > > > > > > without manipulating the allocation and deallocatio=
+n of memory. One
+> > > > > > > > > > > > of the key points is that I borrowed the idea from =
+the above commit
+> > > > > > > > > > > > that postpones updating the ring->descs in xsk_dest=
+ruct_skb()
+> > > > > > > > > > > > instead of in __xsk_generic_xmit().
+> > > > > > > > > > > >
+> > > > > > > > > > > > The core logics are as show below:
+> > > > > > > > > > > > 1. allocate a new local queue. Only its cached_prod=
+ member is used.
+> > > > > > > > > > > > 2. write the descriptors into the local queue in th=
+e xmit path. And
+> > > > > > > > > > > >    record the cached_prod as @start_addr that refle=
+cts the
+> > > > > > > > > > > >    start position of this queue so that later the s=
+kb can easily
+> > > > > > > > > > > >    find where its addrs are written in the destruct=
+ion phase.
+> > > > > > > > > > > > 3. initialize the upper 24 bits of destructor_arg t=
+o store @start_addr
+> > > > > > > > > > > >    in xsk_skb_init_misc().
+> > > > > > > > > > > > 4. Initialize the lower 8 bits of destructor_arg to=
+ store how many
+> > > > > > > > > > > >    descriptors the skb owns in xsk_update_num_desc(=
+).
+> > > > > > > > > > > > 5. write the desc addr(s) from the @start_addr from=
+ the cached cq
+> > > > > > > > > > > >    one by one into the real cq in xsk_destruct_skb(=
+). In turn sync
+> > > > > > > > > > > >    the global state of the cq.
+> > > > > > > > > > > >
+> > > > > > > > > > > > The format of destructor_arg is designed as:
+> > > > > > > > > > > >  ------------------------ --------
+> > > > > > > > > > > > |       start_addr       |  num   |
+> > > > > > > > > > > >  ------------------------ --------
+> > > > > > > > > > > > Using upper 24 bits is enough to keep the temporary=
+ descriptors. And
+> > > > > > > > > > > > it's also enough to use lower 8 bits to show the nu=
+mber of descriptors
+> > > > > > > > > > > > that one skb owns.
+> > > > > > > > > > > >
+> > > > > > > > > > > > [1]: https://lore.kernel.org/all/20250530095957.432=
+48-1-e.kubanski@partner.samsung.com/
+> > > > > > > > > > > >
+> > > > > > > > > > > > Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> > > > > > > > > > > > ---
+> > > > > > > > > > > > I posted the series as an RFC because I'd like to h=
+ear more opinions on
+> > > > > > > > > > > > the current rought approach so that the fix[2] can =
+be avoided and
+> > > > > > > > > > > > mitigate the impact of performance. This patch migh=
+t have bugs because
+> > > > > > > > > > > > I decided to spend more time on it after we come to=
+ an agreement. Please
+> > > > > > > > > > > > review the overall concepts. Thanks!
+> > > > > > > > > > > >
+> > > > > > > > > > > > Maciej, could you share with me the way you tested =
+jumbo frame? I used
+> > > > > > > > > > > > ./xdpsock -i enp2s0f1 -t -q 1 -S -s 9728 but the xd=
+psock utilizes the
+> > > > > > > > > > > > nic more than 90%, which means I cannot see the per=
+formance impact.
+> > > > > > > > > >
+> > > > > > > > > > Could you provide the command you used? Thanks :)
+> > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > > [2]:https://lore.kernel.org/all/20251030140355.4059=
+-1-fmancera@suse.de/
+> > > > > > > > > > > > ---
+> > > > > > > > > > > >  include/net/xdp_sock.h      |   1 +
+> > > > > > > > > > > >  include/net/xsk_buff_pool.h |   1 +
+> > > > > > > > > > > >  net/xdp/xsk.c               | 104 ++++++++++++++++=
+++++++++++++--------
+> > > > > > > > > > > >  net/xdp/xsk_buff_pool.c     |   1 +
+> > > > > > > > > > > >  4 files changed, 84 insertions(+), 23 deletions(-)
+> > > > > > > > > > >
+> > > > > > > > > > > (...)
+> > > > > > > > > > >
+> > > > > > > > > > > > diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_=
+buff_pool.c
+> > > > > > > > > > > > index aa9788f20d0d..6e170107dec7 100644
+> > > > > > > > > > > > --- a/net/xdp/xsk_buff_pool.c
+> > > > > > > > > > > > +++ b/net/xdp/xsk_buff_pool.c
+> > > > > > > > > > > > @@ -99,6 +99,7 @@ struct xsk_buff_pool *xp_create_a=
+nd_assign_umem(struct xdp_sock *xs,
+> > > > > > > > > > > >
+> > > > > > > > > > > >       pool->fq =3D xs->fq_tmp;
+> > > > > > > > > > > >       pool->cq =3D xs->cq_tmp;
+> > > > > > > > > > > > +     pool->cached_cq =3D xs->cached_cq;
+> > > > > > > > > > >
+> > > > > > > > > > > Jason,
+> > > > > > > > > > >
+> > > > > > > > > > > pool can be shared between multiple sockets that bind=
+ to same <netdev,qid>
+> > > > > > > > > > > tuple. I believe here you're opening up for the very =
+same issue Eryk
+> > > > > > > > > > > initially reported.
+> > > > > > > > > >
+> > > > > > > > > > Actually it shouldn't happen because the cached_cq is m=
+ore of the
+> > > > > > > > > > temporary array that helps the skb store its start posi=
+tion. The
+> > > > > > > > > > cached_prod of cached_cq can only be increased, not dec=
+reased. In the
+> > > > > > > > > > skb destruction phase, only those skbs that go to the e=
+nd of life need
+> > > > > > > > > > to sync its desc from cached_cq to cq. For some skbs th=
+at are released
+> > > > > > > > > > before the tx completion, we don't need to clear its re=
+cord in
+> > > > > > > > > > cached_cq at all and cq remains untouched.
+> > > > > > > > > >
+> > > > > > > > > > To put it in a simple way, the patch you proposed uses =
+kmem_cached*
+> > > > > > > > > > helpers to store the addr and write the addr into cq at=
+ the end of
+> > > > > > > > > > lifecycle while the current patch uses a pre-allocated =
+memory to
+> > > > > > > > > > store. So it avoids the allocation and deallocation.
+> > > > > > > > > >
+> > > > > > > > > > Unless I'm missing something important. If so, I'm stil=
+l convinced
+> > > > > > > > > > this temporary queue can solve the problem since essent=
+ially it's a
+> > > > > > > > > > better substitute for kmem cache to retain high perform=
+ance.
+> > > > >
+> > > > > Back after health issues!
+> > > >
+> > > > Hi Maciej,
+> > > >
+> > > > Hope you're fully recovered:)
+> > > >
+> > > > >
+> > > > > Jason, I am still not convinced about this solution.
+> > > > >
+> > > > > In shared pool setups, the temp cq will also be shared, which mea=
+ns that
+> > > > > two parallel processes can produce addresses onto temp cq and the=
+refore
+> > > > > expose address to a socket that it does not belong to. In order t=
+o make
+> > > > > this work you would have to know upfront the descriptor count of =
+given
+> > > > > frame and reserve this during processing the first descriptor.
+> > > > >
+> > > > > socket 0                        socket 1
+> > > > > prod addr 0xAA
+> > > > > prod addr 0xBB
+> > > > >                                 prod addr 0xDD
+> > > > > prod addr 0xCC
+> > > > >                                 prod addr 0xEE
+> > > > >
+> > > > > socket 0 calls skb destructor with num desc =3D=3D 3, placing 0xD=
+D onto cq
+> > > > > which has not been sent yet, therefore potentially corrupting it.
+> > > >
+> > > > Thanks for spotting this case!
+> > > >
+> > > > Yes, it can happen, so let's turn into a per-xsk granularity? If ea=
+ch
+> > > > xsk has its own temp queue, then the problem would disappear and go=
+od
+> > > > news is that we don't need extra locks like pool->cq_lock to preven=
+t
+> > > > multiple parallel xsks accessing the temp queue.
+> > >
+> > > Sure, when you're confident this is working solution then you can pos=
+t it.
+> > > But from my POV we should go with Fernando's patch and then you can s=
+end
+> > > patches to bpf-next as improvements. There are people out there with
+> > > broken xsk waiting for a fix.
+> >
+> > Fine, I will officially post it on the next branch. But I think at
+> > that time, I have to revert both patches (your and Fernando's
+> > patches)? Will his patch be applied to the stable branch only so that
+> > I can make it on the next branch?
+>
+> Give it some time and let Fernando repost patch and then after applying
+> all the backport machinery will kick in. I suppose after bpf->bpf-next
+> merge you could step in and in the meantime I assume you've got plenty of
+> stuff to work on. My point here is we already hesitated too much in this
+> matter IMHO.
 
-If then a skb is constructed from such an invalid buffer - because the
-eBPF program returns XDP_PASS - a panic occurs:
+I have no intention to stop that patch from being merged :)
 
-[ 5866.367317] BUG: unable to handle page fault for address: ffd31c37eab1c980
-[ 5866.375050] #PF: supervisor read access in kernel mode
-[ 5866.380825] #PF: error_code(0x0000) - not-present page
-[ 5866.386602] PGD 0
-[ 5866.388867] Oops: Oops: 0000 [#1] SMP NOPTI
-[ 5866.393575] CPU: 34 UID: 0 PID: 0 Comm: swapper/34 Not tainted 6.17.0-custom #1 PREEMPT(voluntary)
-[ 5866.403740] Hardware name: Supermicro AS -2115GT-HNTR/H13SST-G, BIOS 3.2 03/20/2025
-[ 5866.412339] RIP: 0010:memcpy+0x8/0x10
-[ 5866.416454] Code: cc cc 90 cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 90 48 89 f8 48 89 d1 <f3> a4 e9 fc 26 c0 fe 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
-[ 5866.437538] RSP: 0018:ff428d9ec0bb0ca8 EFLAGS: 00010286
-[ 5866.443415] RAX: ff2dd26dbd8f0000 RBX: ff2dd265ad161400 RCX: 00000000000004e1
-[ 5866.451435] RDX: 00000000000004e1 RSI: ffd31c37eab1c980 RDI: ff2dd26dbd8f0000
-[ 5866.459454] RBP: ff428d9ec0bb0d40 R08: 0000000000000000 R09: 0000000000000000
-[ 5866.467470] R10: 0000000000000000 R11: 0000000000000000 R12: ff428d9eec726ef8
-[ 5866.475490] R13: ff2dd26dbd8f0000 R14: ff2dd265ca2f9fc0 R15: ff2dd26548548b80
-[ 5866.483509] FS:  0000000000000000(0000) GS:ff2dd2c363592000(0000) knlGS:0000000000000000
-[ 5866.492600] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 5866.499060] CR2: ffd31c37eab1c980 CR3: 0000000178d7b040 CR4: 0000000000f71ef0
-[ 5866.507079] PKRU: 55555554
-[ 5866.510125] Call Trace:
-[ 5866.512867]  <IRQ>
-[ 5866.515132]  ? i40e_clean_rx_irq_zc+0xc50/0xe60 [i40e]
-[ 5866.520921]  i40e_napi_poll+0x2d8/0x1890 [i40e]
-[ 5866.526022]  ? srso_alias_return_thunk+0x5/0xfbef5
-[ 5866.531408]  ? raise_softirq+0x24/0x70
-[ 5866.535623]  ? srso_alias_return_thunk+0x5/0xfbef5
-[ 5866.541011]  ? srso_alias_return_thunk+0x5/0xfbef5
-[ 5866.546397]  ? rcu_sched_clock_irq+0x225/0x1800
-[ 5866.551493]  __napi_poll+0x30/0x230
-[ 5866.555423]  net_rx_action+0x20b/0x3f0
-[ 5866.559643]  handle_softirqs+0xe4/0x340
-[ 5866.563962]  __irq_exit_rcu+0x10e/0x130
-[ 5866.568283]  irq_exit_rcu+0xe/0x20
-[ 5866.572110]  common_interrupt+0xb6/0xe0
-[ 5866.576425]  </IRQ>
-[ 5866.578791]  <TASK>
+I meant his patch will be _only_ merged into the net/stable branch and
+_not_ be merged into the next branch, right? If so, I can continue my
+approach only targetting the next branch without worrying about his
+patch which can cause conflicts.
 
-Advance next_to_clean to ensure invalid xdp_buff(s) aren't created.
-
-Move the common logic to i40e_clean_programming_status and update both
-i40e_clean_rx_irq and i40e_clean_rx_irq_zc accordingly.
-
-Fixes: 1c9ba9c14658 ("i40e: xsk: add RX multi-buffer support")
-Signed-off-by: Alessandro Decina <alessandro.d@gmail.com>
----
- drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 59 +++++++++++--------
- .../ethernet/intel/i40e/i40e_txrx_common.h    |  5 +-
- drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 14 ++---
- 3 files changed, 42 insertions(+), 36 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index cc0b9efc2637..fe2190f4b9bc 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -1386,22 +1386,36 @@ static void i40e_reuse_rx_page(struct i40e_ring *rx_ring,
-  * @rx_ring: the rx ring that has this descriptor
-  * @qword0_raw: qword0
-  * @qword1: qword1 representing status_error_len in CPU ordering
-+ * @next_to_process: pointer to next_to_process index
-+ * @next_to_clean: pointer to next_to_clean index
-  *
-  * Flow director should handle FD_FILTER_STATUS to check its filter programming
-  * status being successful or not and take actions accordingly. FCoE should
-  * handle its context/filter programming/invalidation status and take actions.
-  *
-- * Returns an i40e_rx_buffer to reuse if the cleanup occurred, otherwise NULL.
-+ * Returns false if what is passed is not a status descriptor.
-  **/
--void i40e_clean_programming_status(struct i40e_ring *rx_ring, u64 qword0_raw,
--				   u64 qword1)
-+bool i40e_clean_programming_status(struct i40e_ring *rx_ring, u64 qword0_raw,
-+				   u64 qword1, u16 *next_to_process,
-+				   u16 *next_to_clean)
- {
-+	u16 ntp = *next_to_process;
- 	u8 id;
- 
-+	if (!i40e_rx_is_programming_status(qword1))
-+		return false;
-+
- 	id = FIELD_GET(I40E_RX_PROG_STATUS_DESC_QW1_PROGID_MASK, qword1);
- 
- 	if (id == I40E_RX_PROG_STATUS_DESC_FD_FILTER_STATUS)
- 		i40e_fd_handle_status(rx_ring, qword0_raw, qword1, id);
-+
-+	if (++*next_to_process == rx_ring->count)
-+		*next_to_process = 0;
-+	if (ntp == *next_to_clean)
-+		*next_to_clean = *next_to_process;
-+
-+	return true;
- }
- 
- /**
-@@ -1971,19 +1985,18 @@ static void i40e_rx_buffer_flip(struct i40e_rx_buffer *rx_buffer,
- }
- 
- /**
-- * i40e_get_rx_buffer - Fetch Rx buffer and synchronize data for use
-+ * i40e_prepare_rx_buffer - Synchronize the buffer for use by the CPU
-  * @rx_ring: rx descriptor ring to transact packets on
-+ * @rx_buffer: the rx buffer
-  * @size: size of buffer to add to skb
-  *
-- * This function will pull an Rx buffer from the ring and synchronize it
-- * for use by the CPU.
-+ * This function will synchronize the given buffer for use by the CPU.
-  */
--static struct i40e_rx_buffer *i40e_get_rx_buffer(struct i40e_ring *rx_ring,
--						 const unsigned int size)
-+static struct i40e_rx_buffer *
-+i40e_prepare_rx_buffer(struct i40e_ring *rx_ring,
-+		       struct i40e_rx_buffer *rx_buffer,
-+		       const unsigned int size)
- {
--	struct i40e_rx_buffer *rx_buffer;
--
--	rx_buffer = i40e_rx_bi(rx_ring, rx_ring->next_to_process);
- 	rx_buffer->page_count =
- #if (PAGE_SIZE < 8192)
- 		page_count(rx_buffer->page);
-@@ -2450,6 +2463,7 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget,
- 
- 	while (likely(total_rx_packets < (unsigned int)budget)) {
- 		u16 ntp = rx_ring->next_to_process;
-+		u16 ntc = rx_ring->next_to_clean;
- 		struct i40e_rx_buffer *rx_buffer;
- 		union i40e_rx_desc *rx_desc;
- 		struct sk_buff *skb;
-@@ -2480,21 +2494,15 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget,
- 		 */
- 		dma_rmb();
- 
--		if (i40e_rx_is_programming_status(qword)) {
--			i40e_clean_programming_status(rx_ring,
--						      rx_desc->raw.qword[0],
--						      qword);
--			rx_buffer = i40e_rx_bi(rx_ring, ntp);
--			i40e_inc_ntp(rx_ring);
-+		rx_buffer = i40e_rx_bi(rx_ring, ntp);
-+
-+		if (i40e_clean_programming_status(rx_ring,
-+						  rx_desc->raw.qword[0], qword,
-+						  &rx_ring->next_to_process,
-+						  &rx_ring->next_to_clean)) {
- 			i40e_reuse_rx_page(rx_ring, rx_buffer);
--			/* Update ntc and bump cleaned count if not in the
--			 * middle of mb packet.
--			 */
--			if (rx_ring->next_to_clean == ntp) {
--				rx_ring->next_to_clean =
--					rx_ring->next_to_process;
-+			if (ntc != rx_ring->next_to_clean)
- 				cleaned_count++;
--			}
- 			continue;
- 		}
- 
-@@ -2503,8 +2511,7 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget,
- 			break;
- 
- 		i40e_trace(clean_rx_irq, rx_ring, rx_desc, xdp);
--		/* retrieve a buffer from the ring */
--		rx_buffer = i40e_get_rx_buffer(rx_ring, size);
-+		i40e_prepare_rx_buffer(rx_ring, rx_buffer, size);
- 
- 		neop = i40e_is_non_eop(rx_ring, rx_desc);
- 		i40e_inc_ntp(rx_ring);
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx_common.h b/drivers/net/ethernet/intel/i40e/i40e_txrx_common.h
-index e26807fd2123..21d9ed878bf0 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx_common.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx_common.h
-@@ -7,8 +7,9 @@
- #include "i40e.h"
- 
- int i40e_xmit_xdp_tx_ring(struct xdp_buff *xdp, struct i40e_ring *xdp_ring);
--void i40e_clean_programming_status(struct i40e_ring *rx_ring, u64 qword0_raw,
--				   u64 qword1);
-+bool i40e_clean_programming_status(struct i40e_ring *rx_ring, u64 qword0_raw,
-+				   u64 qword1, u16 *next_to_clean,
-+				   u16 *next_to_process);
- void i40e_process_skb_fields(struct i40e_ring *rx_ring,
- 			     union i40e_rx_desc *rx_desc, struct sk_buff *skb);
- void i40e_xdp_ring_update_tail(struct i40e_ring *xdp_ring);
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-index 9f47388eaba5..f8accc266c2c 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-@@ -440,14 +440,13 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
- 		 */
- 		dma_rmb();
- 
--		if (i40e_rx_is_programming_status(qword)) {
--			i40e_clean_programming_status(rx_ring,
--						      rx_desc->raw.qword[0],
--						      qword);
--			bi = *i40e_rx_bi(rx_ring, next_to_process);
-+		bi = *i40e_rx_bi(rx_ring, next_to_process);
-+
-+		if (i40e_clean_programming_status(rx_ring,
-+						  rx_desc->raw.qword[0],
-+						  qword, &next_to_process,
-+						  &next_to_clean)) {
- 			xsk_buff_free(bi);
--			if (++next_to_process == count)
--				next_to_process = 0;
- 			continue;
- 		}
- 
-@@ -455,7 +454,6 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
- 		if (!size)
- 			break;
- 
--		bi = *i40e_rx_bi(rx_ring, next_to_process);
- 		xsk_buff_set_size(bi, size);
- 		xsk_buff_dma_sync_for_cpu(bi);
- 
--- 
-2.43.0
-
+Thanks,
+Jason
 
