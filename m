@@ -1,223 +1,230 @@
-Return-Path: <bpf+bounces-74853-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC099C67267
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 04:30:45 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE1FBC67496
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 05:42:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8B1504E1FA4
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 03:30:44 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTPS id 5EDA4242B2
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 04:42:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46169254AF5;
-	Tue, 18 Nov 2025 03:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD312BE020;
+	Tue, 18 Nov 2025 04:42:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SCI1/r1/"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ilLhvtZI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f68.google.com (mail-pj1-f68.google.com [209.85.216.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A4D1805E
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 03:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A765629E10C;
+	Tue, 18 Nov 2025 04:42:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763436639; cv=none; b=BwqOCBRQJMwUxxG3ayGFxgpAzwi4fIAnm0EqGf8UidEdUGEA42WAemsyJ0xjqL0HIBeFb1xQC77STgPbwmrYtV/ricN/1cx5ZeAcnVZyv8N58D8BPKsCtOtBhVSt2IIgqnSWRgGS0rd7L4O8mtp+szIIYczdZPomt4CD3hTE4Kw=
+	t=1763440936; cv=none; b=hYYW1uIAwbYityfRpwXeNhHNP3V67HOTb8WlOctf++mSRBb+Ra7Y7Nhb3K+1iSLlw5Zuxwb6Weo0tgi9026vwtEF/lgYOhA2S5jP3NVmX0IBat/7TE/PeApqizYOG8No7FmrG5w0ZXB6h++99Lwu5zWFEpl/WS5YMhwczQMXuTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763436639; c=relaxed/simple;
-	bh=BE9zsbvHGFfp+7aYyid9mP7IxTpWTd0oLS1V3AxM4xc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Tm7Fyq6Cxo45pGrktKswkT1nak1rMg/E8bgQuqTGznUYqm3u1OMVykL/aOzp3PJ+dO9XqSqVLFhYJ6HSvwcSVO9oHt234Xib1TPile3HfHkyNIsZ+ZnBXTM9zXHba0tVNx8MRg1/u4Hlic6Y263k1roUrRmdVKBSfaxPpHjB9dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SCI1/r1/; arc=none smtp.client-ip=209.85.216.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f68.google.com with SMTP id 98e67ed59e1d1-3437c093ef5so5019023a91.0
-        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 19:30:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763436637; x=1764041437; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AIpio3BmxnaLKRtG46m9gb4TEer3dPT7GOk9htkcR9A=;
-        b=SCI1/r1/+s/lZFLoFqbF9sRBLLS9sLVLDV5qEELTpQZe6hax5JXqpGkABuUnsCXH83
-         txDm3jo3zjJ6jcHZ5ISqB3kjXh1XMFD42fMQ6Qdctvd4/vDFtrCxxXWY04vi101erKZt
-         swBnpCcWesczc4Eeu7t7TXYw2EmZ6oT/0b/5fzHDAsLFvSG3LCf1HZapvrnmhirvM17I
-         V855Rcj7dI1HnJf8g3AFPt9r/Av/Z3ZlcNzF5zadhXuaIDsMeZwbG12waupM+JYM3jTY
-         SQZ+1OZJFIk0MX0LjvJKFdYxepDEyxb1pDoybLQ3onhMMi6qqY7PM9MgozEh8TB5z4YM
-         pzkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763436637; x=1764041437;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AIpio3BmxnaLKRtG46m9gb4TEer3dPT7GOk9htkcR9A=;
-        b=cWvsQwEjrnz5hIlG8iZXOYgCSrpzOKe3hSMqF36AWJ+RPxjFVq7/es/aLImW6bWrsS
-         4yc/jLh59HUsJaFdPkwpFQjP6/dJ0iyJr6lvLs6Bg8QvpQrCWibOPJvQcC+qeT4q7ZgY
-         OcBo86l9X38uEVi9lLkNosZEMxBhGLGa1qnYbSQ0MCFqxX5bnAzvAYANgHIPoFwh43Pt
-         FSXzBqYhq9I/d7D4i+jlhF6zYdG0XrV0G881IKTGkAEzjk0l/Okxk0kgd1lCd3WM//JT
-         LsxbhkNL2V+aCRRjAKqpHBAqRCOmgof+IUO5J2ZRSrZVIty6AxKf+jaVEz4RZlQc60QI
-         QlNg==
-X-Forwarded-Encrypted: i=1; AJvYcCW5heRS2qs9OeplaIwPsLwsICpHL8rFPvnNJjr7QKoswH5BbDYMnZrar4VVS5Re8VGpTxU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwTYubiEEdpZIOriTvHqmP6E3BJwYLY3FFa36JbgvMQDWMucet3
-	2g+AHoDkOnKxs+V8Mp8CxiSfA+3oCSiYfroubNXlKZxVlsVa87tkQDjwk3G1Bj7K
-X-Gm-Gg: ASbGncuSlKiefr5DeShB5Pkcft38NchLQuf5AW38JhbY0afkolgrgAiioYtv4X1d5Ik
-	h8RSGJxNrACZGH1Xn7Kp0tC1nqGWfHmVysBqq6LBQbP9QSkDnnTr9mTGDKvvO7+bFcvF+zBXvx9
-	MnltGXfkFaheNi9gWf9fvZ+oGTaoDSsQMBkNfQzaUSYB19YrBWJDFCUtE3c1Q10v7rwQ9cl9IQu
-	hfe0rUSqWoW3z4tMrHX0Pek8M5nNScJIEr8nerlQ0PpCfs1GBMO4SVSI0JBaGf1DzVrDXYejRFt
-	VmxZLPMyWBeSdDwq1NUDf2D17MQ5pxlqsbjuL+Efg+lUaQf0mdPTtxtdXDEdqwjevz0hPIwfv61
-	873SSY0ctZ98sl75VsSvCvyMRlPDNfgf2IRZEo40LHQoy9+SzO0Qq2ZBe3+EysbfHmtf5PC2y6K
-	p5wVh8vIUkfyME8fyWf4Zk+QypHxIgW1vBaA==
-X-Google-Smtp-Source: AGHT+IG+IgR1Db1XjCV8ThNxAgsCmbbRs2M3HCU1m2p26WBqCzV20SgGglln8zkiaE2/Jgyz3VELZg==
-X-Received: by 2002:a17:90b:55c6:b0:335:2823:3683 with SMTP id 98e67ed59e1d1-343f9eadd5bmr14823336a91.9.1763436637031;
-        Mon, 17 Nov 2025 19:30:37 -0800 (PST)
-Received: from DESKTOP-P5RIK7I.localdomain ([103.52.189.22])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3456513e090sm11172110a91.6.2025.11.17.19.30.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Nov 2025 19:30:36 -0800 (PST)
-From: Jianyun Gao <jianyungao89@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: Jianyun Gao <jianyungao89@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools))
-Subject: [PATCH] libbpf: fix some incorrect @param descriptions in the comment of libbpf.h
-Date: Tue, 18 Nov 2025 11:30:24 +0800
-Message-Id: <20251118033025.11804-1-jianyungao89@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1763440936; c=relaxed/simple;
+	bh=2sLWAmGCVEjs6fFb/t61jUqvCI8T1tt1YSiC1qRJNoA=;
+	h=MIME-Version:Date:From:To:Cc:Subject:Message-ID:Content-Type; b=Aemft4/CU4+XTcr6EKefHA9CgmhOgKoaocduHRVxF+TG7yghP8KaM2xvbDsz5W1eGg7PdoXzQ32XvTFAqD0mYNpSMuy4kL7UZ54V9R/39ZUv2LhtqvCWqOA3WE7e6kf2rNDap4zK4N2jE4cQFaForpLpDV/evCqOBafQM0r2ucs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ilLhvtZI; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AHFV2qd019708;
+	Tue, 18 Nov 2025 04:42:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=pp1; bh=nRFhvq2Uz4NA8JO4R785yYCp5GN2
+	GZ3XDrcXeOP+C1o=; b=ilLhvtZI3yN55Daa9evGhhYcZHd8smX7BqL9S8hrQFYk
+	7S74jOfi73w/cZt6ag53f0emBsWk0Q+QKvU940ky8orkhGrjRYH81ZKa/naHgJhs
+	SDTH1WUItX5quVYkbDv0SWNC52krgUiWATcLeMxrhev/7TeR3UaiK4CDS17YffQT
+	QJRuab4UDdvfZSzkCz78y/Tb6sLLkqW30f3aaqISHgo3/2a/xP9kRcO4/0ka+G1k
+	rO4TbfHK/yK06VQMm9m3qHLf3B4k4KCwHzycrwX6MQ036JO+5irmfssTrV+JZ+b6
+	xYZpiFVyS37O8vm7LVVbU8tWVbgTkvdAtXVsAZxKfw==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aejgwruyf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 18 Nov 2025 04:42:05 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AI1NdLC010419;
+	Tue, 18 Nov 2025 04:42:04 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4af3us1gfd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 18 Nov 2025 04:42:04 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5AI4fn2A27132500
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 18 Nov 2025 04:41:49 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 79EA158055;
+	Tue, 18 Nov 2025 04:42:03 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E606F5804B;
+	Tue, 18 Nov 2025 04:42:02 +0000 (GMT)
+Received: from ltc.linux.ibm.com (unknown [9.5.196.140])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 18 Nov 2025 04:42:02 +0000 (GMT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date: Tue, 18 Nov 2025 10:12:02 +0530
+From: Misbah Anjum N <misanjum@linux.ibm.com>
+To: linux-next@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [REGRESSION] [next-20251117] ppc64le: WARNING in vmalloc_fix_flags
+ with __GFP_ACCOUNT in BPF/seccomp path
+Message-ID: <dbe42ce9543dbc3af95f95d6a6d9540b@linux.ibm.com>
+X-Sender: misanjum@linux.ibm.com
+Organization: IBM
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: dl3jukZaATzcvyZbsrEt5xz6YXoakvzG
+X-Authority-Analysis: v=2.4 cv=YqwChoYX c=1 sm=1 tr=0 ts=691bf91d cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=kj9zAlcOel0A:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VnNF1IyMAAAA:8 a=eDBbsAWTgkdve4Kpa_YA:9 a=CjuIK1q_8ugA:10
+ a=HhbK4dLum7pmb74im6QT:22 a=cPQSjfK2_nFv0Q5t_7PE:22 a=pHzHmUro8NiASowvMSCR:22
+ a=Ew2E2A-JSTLzCXPT_086:22
+X-Proofpoint-ORIG-GUID: dl3jukZaATzcvyZbsrEt5xz6YXoakvzG
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE1MDAzMiBTYWx0ZWRfX64yia7Fiuaql
+ EWJIRt/dqFz0YVbI7vJiUa7wAgeZLr0WJY7g5gdDJ15f7doSh2PF/L84JjWRv6W8kb6aIhkbjNT
+ FOO8ZE4aschFbZA4vUUa/O9eXQFyw2L7Fh9QhlgrB8Y5p3C4yNeA9mxNd96HJnZzd0jDnl4gPCZ
+ l1A0waUMoy0PplYoy3uF7oJaypN8+2k7tCOA0TtG7ZbHNIS9wM7b/128BcRoY1VlHKuALmGvqzj
+ qag7OQ9vN0Xszg92OjJL0OW46pexRdBvl0jGdaWz3TUMtoNq29rbC+ljfr72laOCS7nUfyF+FlA
+ gzCu8i1p56UiY1TRoe9rtxzHLAnHl4w9GamC5VHRWnr50Std5j8jaaj04k78kN4PYlwwmJh7kwP
+ p/1AcUkQg6wyi1mQMuR6rhb7j1UQ1A==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-17_04,2025-11-13_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 malwarescore=0
+ clxscore=1011 adultscore=0 bulkscore=0 phishscore=0 spamscore=0
+ suspectscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2510240000
+ definitions=main-2511150032
 
-There are some incorrect @param descriptions in the comment of libbpf.h
-file. The following is a case:
+Hi,
 
-  /**
-  * @brief **bpf_link__unpin()** unpins the BPF link from a file
-  * in the BPFFS specified by a path. This decrements the links
-  * reference count.
-  *
-  * The file pinning the BPF link can also be unlinked by a different
-  * process in which case this function will return an error.
-  *
-  * @param prog BPF program to unpin
-  * @param path file path to the pin in a BPF file system
-  * @return 0, on success; negative error code, otherwise
-  */
-  LIBBPF_API int bpf_link__unpin(struct bpf_link *link);
+I'm reporting a regression in linux-next that was introduced between 
+20251114 and 20251117.
 
-In the parameters of the bpf_link__unpin() function, there are no 'prog'
-and 'path' parameters.
+Regression Info:
+- Working: 6.18.0-rc5-next-20251114
+- Broken: 6.18.0-rc6-next-20251117
 
-This patch fixes this kind of issues present in the comments of the
-libbpf.h file.
+Environment:
+- IBM Power11 pSeries (ppc64le)
+- Fedora43 Distro
 
-Signed-off-by: Jianyun Gao <jianyungao89@gmail.com>
----
- tools/lib/bpf/libbpf.h | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+Issue:
+WARNING: mm/vmalloc.c:3937 at vmalloc_fix_flags+0x6c/0xa0
+"Unexpected gfp: 0x400000 (__GFP_ACCOUNT). Fixing up to gfp: 0xdc0 
+(GFP_KERNEL|__GFP_ZERO). Fix your code!"
 
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 5118d0a90e24..8ca7957c8dd4 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -481,14 +481,12 @@ LIBBPF_API int bpf_link__pin(struct bpf_link *link, const char *path);
- 
- /**
-  * @brief **bpf_link__unpin()** unpins the BPF link from a file
-- * in the BPFFS specified by a path. This decrements the links
-- * reference count.
-+ * in the BPFFS. This decrements the links reference count.
-  *
-  * The file pinning the BPF link can also be unlinked by a different
-  * process in which case this function will return an error.
-  *
-- * @param prog BPF program to unpin
-- * @param path file path to the pin in a BPF file system
-+ * @param link BPF link to unpin
-  * @return 0, on success; negative error code, otherwise
-  */
- LIBBPF_API int bpf_link__unpin(struct bpf_link *link);
-@@ -995,8 +993,13 @@ LIBBPF_API __u32 bpf_program__line_info_cnt(const struct bpf_program *prog);
-  *   - fentry/fexit/fmod_ret;
-  *   - lsm;
-  *   - freplace.
-- * @param prog BPF program to set the attach type for
-- * @param type attach type to set the BPF map to have
-+ * @param prog BPF program to configure; must be not yet loaded.
-+ * @param attach_prog_fd FD of target BPF program (for freplace/extension).
-+ * If >0 and func name omitted, defers BTF ID resolution.
-+ * @param attach_func_name Target function name. Used either with
-+ * attach_prog_fd to find its BTF ID in that program, or alone
-+ * (no attach_prog_fd) to resolve kernel (vmlinux/module) BTF ID. Must be
-+ * provided if attach_prog_fd is 0.
-  * @return error code; or 0 if no error occurred.
-  */
- LIBBPF_API int
-@@ -1098,6 +1101,7 @@ LIBBPF_API __u32 bpf_map__value_size(const struct bpf_map *map);
- /**
-  * @brief **bpf_map__set_value_size()** sets map value size.
-  * @param map the BPF map instance
-+ * @param size the new value size
-  * @return 0, on success; negative error, otherwise
-  *
-  * There is a special case for maps with associated memory-mapped regions, like
-@@ -1202,7 +1206,7 @@ LIBBPF_API struct bpf_map *bpf_map__inner_map(struct bpf_map *map);
-  * per-CPU values value size has to be aligned up to closest 8 bytes for
-  * alignment reasons, so expected size is: `round_up(value_size, 8)
-  * * libbpf_num_possible_cpus()`.
-- * @flags extra flags passed to kernel for this operation
-+ * @param flags extra flags passed to kernel for this operation
-  * @return 0, on success; negative error, otherwise
-  *
-  * **bpf_map__lookup_elem()** is high-level equivalent of
-@@ -1226,7 +1230,7 @@ LIBBPF_API int bpf_map__lookup_elem(const struct bpf_map *map,
-  * per-CPU values value size has to be aligned up to closest 8 bytes for
-  * alignment reasons, so expected size is: `round_up(value_size, 8)
-  * * libbpf_num_possible_cpus()`.
-- * @flags extra flags passed to kernel for this operation
-+ * @param flags extra flags passed to kernel for this operation
-  * @return 0, on success; negative error, otherwise
-  *
-  * **bpf_map__update_elem()** is high-level equivalent of
-@@ -1242,7 +1246,7 @@ LIBBPF_API int bpf_map__update_elem(const struct bpf_map *map,
-  * @param map BPF map to delete element from
-  * @param key pointer to memory containing bytes of the key
-  * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
-- * @flags extra flags passed to kernel for this operation
-+ * @param flags extra flags passed to kernel for this operation
-  * @return 0, on success; negative error, otherwise
-  *
-  * **bpf_map__delete_elem()** is high-level equivalent of
-@@ -1265,7 +1269,7 @@ LIBBPF_API int bpf_map__delete_elem(const struct bpf_map *map,
-  * per-CPU values value size has to be aligned up to closest 8 bytes for
-  * alignment reasons, so expected size is: `round_up(value_size, 8)
-  * * libbpf_num_possible_cpus()`.
-- * @flags extra flags passed to kernel for this operation
-+ * @param flags extra flags passed to kernel for this operation
-  * @return 0, on success; negative error, otherwise
-  *
-  * **bpf_map__lookup_and_delete_elem()** is high-level equivalent of
-@@ -1637,6 +1641,7 @@ struct perf_buffer_opts {
-  * @param sample_cb function called on each received data record
-  * @param lost_cb function called when record loss has occurred
-  * @param ctx user-provided extra context passed into *sample_cb* and *lost_cb*
-+ * @param opts optional parameters for the perf buffer, mainly *sample_period*
-  * @return a new instance of struct perf_buffer on success, NULL on error with
-  * *errno* containing an error code
-  */
--- 
-2.34.1
+Call Trace:
+[  523.921345] Unexpected gfp: 0x400000 (__GFP_ACCOUNT). Fixing up to 
+gfp: 0xdc0 (GFP_KERNEL|__GFP_ZERO). Fix your code!
+[  523.921356] WARNING: mm/vmalloc.c:3937 at 
+vmalloc_fix_flags+0x6c/0xa0, CPU#69: (ostnamed)/6500
+[  523.921365] Modules linked in: rpcrdma rdma_cm iw_cm ib_cm ib_core 
+kvm_hv kvm bonding rfkill binfmt_misc pseries_rng vmx_crypto nfsd 
+auth_rpcgss drm nfs_acl lockd grace loop drm_panel_orientation_quirks 
+vsock_loopback vmw_vsock_virtio_transport_common vsock zram ext4 crc16 
+mbcache jbd2 sr_mod sd_mod cdrom ibmvscsi ibmveth scsi_transport_srp 
+btrfs blake2b libblake2b xor raid6_pq zstd_compress sunrpc dm_mirror 
+dm_region_hash dm_log be2iscsi bnx2i cnic uio cxgb4i cxgb4 tls libcxgbi 
+libcxgb qla4xxx iscsi_boot_sysfs iscsi_tcp libiscsi_tcp libiscsi 
+scsi_transport_iscsi i2c_dev dm_multipath fuse dm_mod nfnetlink
+[  523.921485] CPU: 69 UID: 0 PID: 6500 Comm: (ostnamed) Kdump: loaded 
+Tainted: G        W           6.18.0-rc6-next-20251117 #1 VOLUNTARY
+[  523.921504] Tainted: [W]=WARN
+[  523.921511] Hardware name: IBM,9824-42A Power11 (architected) 
+0x820200 0xf000007 of:IBM,FW1110.00 (RB1110_082) hv:phyp pSeries
+[  523.921523] NIP:  c00000000063f8fc LR: c00000000063f8f8 CTR: 
+00000000005d7e44
+[  523.921537] REGS: c0000001ad0f78e0 TRAP: 0700   Tainted: G        W   
+          (6.18.0-rc6-next-20251117)
+[  523.921544] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 
+2824222f  XER: 0000000a
+[  523.921564] CFAR: c00000000023225c IRQMASK: 0
+[  523.921564] GPR00: c00000000063f8f8 c0000001ad0f7b80 c0000000017f8100 
+0000000000000069
+[  523.921564] GPR04: 00000000ffff7fff c0000001ad0f7970 00000027f9c50000 
+0000000000000001
+[  523.921564] GPR08: 0000000000000027 0000000000000000 0000000000000000 
+0000000000000003
+[  523.921564] GPR12: c0000000028fe748 c0000027fde3c300 0000000000000000 
+0000000000000000
+[  523.921564] GPR16: 0000000000000000 0000000000000000 0000000000000000 
+0000000000000000
+[  523.921564] GPR20: 0000000000000000 0000000000000000 0000000000000000 
+0000000000000000
+[  523.921564] GPR24: c000000001711608 0000000000000000 0000000000000000 
+c0000001270c7858
+[  523.921564] GPR28: 0000000000000000 0000000000000dc0 0000000000010000 
+0000000000400000
+[  523.921626] NIP [c00000000063f8fc] vmalloc_fix_flags+0x6c/0xa0
+[  523.921631] LR [c00000000063f8f8] vmalloc_fix_flags+0x68/0xa0
+[  523.921636] Call Trace:
+[  523.921639] [c0000001ad0f7b80] [c00000000063f8f8] 
+vmalloc_fix_flags+0x68/0xa0 (unreliable)
+[  523.921646] [c0000001ad0f7c00] [c00000000064a7a0] 
+__vmalloc_noprof+0x90/0xa0
+[  523.921653] [c0000001ad0f7c80] [c0000000004addf4] 
+bpf_prog_alloc_no_stats+0x54/0x270
+[  523.921660] [c0000001ad0f7cd0] [c0000000004ae03c] 
+bpf_prog_alloc+0x2c/0x130
+[  523.921665] [c0000001ad0f7d10] [c000000000f39d24] 
+bpf_prog_create_from_user+0x74/0x180
+[  523.921673] [c0000001ad0f7d80] [c0000000003f2400] 
+seccomp_set_mode_filter+0x1e0/0x790
+[  523.921690] [c0000001ad0f7e10] [c000000000033758] 
+system_call_exception+0x128/0x310
+[  523.921701] [c0000001ad0f7e50] [c00000000000d05c] 
+system_call_vectored_common+0x15c/0x2ec
+[  523.921716] ---- interrupt: 3000 at 0x7fffa8750d3c
+[  523.921725] NIP:  00007fffa8750d3c LR: 00007fffa8750d3c CTR: 
+0000000000000000
+[  523.921737] REGS: c0000001ad0f7e80 TRAP: 3000   Tainted: G        W   
+          (6.18.0-rc6-next-20251117)
+[  523.921750] MSR:  800000000280f033 
+<SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 44244224  XER: 00000000
+[  523.921775] IRQMASK: 0
+[  523.921775] GPR00: 0000000000000166 00007fffeec77650 00007fffa8837c00 
+0000000000000001
+[  523.921775] GPR04: 0000000000000000 00000001524c2af0 0000000000000000 
+0000000000000000
+[  523.921775] GPR08: 0000000040000000 0000000000000000 0000000000000000 
+0000000000000000
+[  523.921775] GPR12: 0000000000000000 00007fffa9571520 00007fffeec77a90 
+000000013fa85300
+[  523.921775] GPR16: 0000000000000001 0000000000000000 000000013fa8a610 
+0000000000000093
+[  523.921775] GPR20: 000000007fff0000 000000013face248 0000000152102d28 
+000000007ffffffe
+[  523.921775] GPR24: 0000000000050026 0000000000050001 0000000000000092 
+00000001524c4e30
+[  523.921775] GPR28: 000000013fae0088 00000000c0000015 0000000000000000 
+00000001524c4e30
+[  523.921835] NIP [00007fffa8750d3c] 0x7fffa8750d3c
+[  523.921841] LR [00007fffa8750d3c] 0x7fffa8750d3c
+[  523.921850] ---- interrupt: 3000
+[  523.921857] Code: 79440020 79260020 38e1006c 38a10074 9101006c 
+e90d0c78 f9010078 39000000 91410074 9121006c 4bbf2885 60000000 
+<0fe00000> e9410078 e92d0c78 7d4a4a79
+[  523.921882] ---[ end trace 0000000000000000 ]---
 
+
+Reported-by: Misbah Anjum N <misanjum@linux.ibm.com>
+
+Regards,
+Misbah Anjum N
 
