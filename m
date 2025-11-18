@@ -1,124 +1,471 @@
-Return-Path: <bpf+bounces-74960-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3480C6972F
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 13:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A4EEC69786
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 13:49:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7A9174E3DC7
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 12:43:52 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4FB584F053A
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 12:48:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C79D3126C4;
-	Tue, 18 Nov 2025 12:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBBD239E7D;
+	Tue, 18 Nov 2025 12:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="0a7cjqk0";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Sr+Qb074";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KGsvIpH6";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zj5pnyUY"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F09428D8ED
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 12:43:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE27ED531
+	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 12:48:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763469828; cv=none; b=V3wzKLRbDRjb8aQKpQmePwv8Umtj9hjIxpiqPu8t3KIFUIddKf3kTXn2cmvlxrvI7nx9FMn1QDGObD0lxh46CBAv9Cz2NzkQb/t0+AK8f+4Y7AN0eCmn6/se6e8ohKLWQc/ulna8asacdXqAGrdoOkJH222tc8ynmTp5k/Sz4fM=
+	t=1763470109; cv=none; b=NiMO3fvezdjVCORT9Ob+sqICxMAczddDyJlTdMYz8O6PgXPrLdLcbEyVhGh/ozRHKYEsLssUppV3avFJ7N5KDgLzYXXcYr47WR56Gp3d2mSrWdmp68DIp6QxMZVoIlRrmQ38bQQcNCmTRyJhZZSVuyhkaoF/G/FmhW6TuWUvUrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763469828; c=relaxed/simple;
-	bh=Ez61A4MScOh5dQBXEUv8On+qvwEap1mzHj9g8DpB638=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=czXjLpjFF4ETGmGsGt7qdiXIHmeZ8zp0nl395ebiFFXmDxESloPV1vFEFjZ2GjQdMGz0eFr6QHfLwKrZRVViZbhlsGdtnWXby84z8eco2r7r0rrREsxZATVi4sGx8SEbWDBHNVS7/RBkqs4k2ykmJdIwr0Pn0Mqu5a8Nb4nRrmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d9kmg3BrvzKHMfc
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 20:43:15 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 1D0BC1A08FD
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 20:43:42 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP4 (Coremail) with SMTP id gCh0CgA3qlf7aRxpHRS2BA--.42068S3;
-	Tue, 18 Nov 2025 20:43:41 +0800 (CST)
-Message-ID: <be9978a6-5b22-4c52-8c7d-3a65e0fa335f@huaweicloud.com>
-Date: Tue, 18 Nov 2025 20:43:41 +0800
+	s=arc-20240116; t=1763470109; c=relaxed/simple;
+	bh=+iiRO64rxB2R7GBcuGX4/JoKYzG6IrfGsDIZr2Q+wjE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g2Oqh32WZ4WiNqmZ6SJeCv3Q5dzStaTnZOcGG3E5VhJjmjy3NXwZI4KK43dlgbRO4CHxTrwSNb4/xRvwut4pGyAzSp/wYaZdHAKvFeko0p0IGLgrfGo9BK4y4HHhL75xl45gGqLpVTBB9zqyYuDy/Nuot0e7HxJNW9JerTJK0ZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=0a7cjqk0; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Sr+Qb074; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=KGsvIpH6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=zj5pnyUY; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D8A341FE52;
+	Tue, 18 Nov 2025 12:48:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1763470105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=euzdhG+9GU+4GZQelWFPALdCyA3LQnDdXUjOob1aeD0=;
+	b=0a7cjqk0JlQgO7wAGTD5e7R1CpPQbmu6Lp/Z3x6Z/PQXOZyLiTpYaMqSS3di2vUFiYxIo2
+	CdzTp9Jnb4VH0E23tIwjZuIaFmWBJ8FRQfqU02jzENXDf2WVgYFqmA0NWgPGZU7teO4Kka
+	8jolh5LRc9dklwnoNVHpdcfIhOCfCrg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1763470105;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=euzdhG+9GU+4GZQelWFPALdCyA3LQnDdXUjOob1aeD0=;
+	b=Sr+Qb07437CZAkmbyW9Gl1NUrS5Po6pg092Tm3kHRf7epqxBLcj2HtAS4Ueyju9tec3/Hr
+	DPVMIwvAzpdN6FBg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=KGsvIpH6;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=zj5pnyUY
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1763470104; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=euzdhG+9GU+4GZQelWFPALdCyA3LQnDdXUjOob1aeD0=;
+	b=KGsvIpH6lCNBxWXjrMYxzeqEcJ7JR6kIKsseMGUR/1C1bbjRxuchuK0VWvSGsQwEHk35uU
+	NE0700Sc8OxEMKhBuPLN9+baMK3XEGNkeJnzyC+ozZOuU8781aXpK/TIns3SzbYW9p7TeK
+	x7kQuA9SMuymjtytcfHx7nQJG6oIoWg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1763470104;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=euzdhG+9GU+4GZQelWFPALdCyA3LQnDdXUjOob1aeD0=;
+	b=zj5pnyUYVrbCic2kANi1RXWx+c+V0v/eLykSObRuXqJKh1wOqhD7oUAFP7BpNBd7FPo0yU
+	PA7XW5WwP/kTPNDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1DF203EA61;
+	Tue, 18 Nov 2025 12:48:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 4jLuAxhrHGm3HgAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Tue, 18 Nov 2025 12:48:24 +0000
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+To: netdev@vger.kernel.org
+Cc: csmate@nop.hu,
+	kerneljasonxing@gmail.com,
+	maciej.fijalkowski@intel.com,
+	bpf@vger.kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	Fernando Fernandez Mancera <fmancera@suse.de>
+Subject: [PATCH net v4] xsk: avoid data corruption on cq descriptor number
+Date: Tue, 18 Nov 2025 13:48:07 +0100
+Message-ID: <20251118124807.3229-1-fmancera@suse.de>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: arm64: Add support for indirect
- jumps
-Content-Language: en-US
-To: Puranjay Mohan <puranjay@kernel.org>, bpf@vger.kernel.org
-Cc: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- kernel-team@meta.com, Anton Protopopov <a.s.protopopov@gmail.com>
-References: <20251117130732.11107-1-puranjay@kernel.org>
- <20251117130732.11107-3-puranjay@kernel.org>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <20251117130732.11107-3-puranjay@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgA3qlf7aRxpHRS2BA--.42068S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFy7tF4DCrW3CrWrZr47Jwb_yoW8JFW3pa
-	1Duw13urWkWr13WFWUXa17Wry3Kan5Jr47ury5X3y3GFZIq3s5KF1rK3sIkrs5ArW7ua13
-	uFyjkrnxCa4DAa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw
-	0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AK
-	xVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrx
-	kI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v2
-	6r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8Jw
-	CI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2uyIUUUU
-	U
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: D8A341FE52
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim,suse.de:mid,suse.de:email];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	FREEMAIL_CC(0.00)[nop.hu,gmail.com,intel.com,vger.kernel.org,davemloft.net,google.com,kernel.org,redhat.com,suse.de];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim,suse.de:mid,suse.de:email];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_TRACE(0.00)[suse.de:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com]
+X-Spam-Score: -3.01
 
-On 11/17/2025 9:07 PM, Puranjay Mohan wrote:
-> Add support for a new instruction
-> 
-> 	BPF_JMP|BPF_X|BPF_JA, SRC=0, DST=Rx, off=0, imm=0
-> 
-> which does an indirect jump to a location stored in Rx.  The register
-> Rx should have type PTR_TO_INSN. This new type assures that the Rx
-> register contains a value (or a range of values) loaded from a
-> correct jump table – map of type instruction array.
-> 
-> ARM64 JIT supports indirect jumps to all registers through the A64_BR()
-> macro, use it to implement this new instruction.
-> 
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> Reviewed-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> ---
->   arch/arm64/net/bpf_jit_comp.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> index 4a2afc0cefc4..4cfb549f2b43 100644
-> --- a/arch/arm64/net/bpf_jit_comp.c
-> +++ b/arch/arm64/net/bpf_jit_comp.c
-> @@ -1452,6 +1452,10 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
->   		emit(A64_ASR(is64, dst, dst, imm), ctx);
->   		break;
->   
-> +	/* JUMP reg */
-> +	case BPF_JMP | BPF_JA | BPF_X:
-> +		emit(A64_BR(dst), ctx);
-> +		break;
->   	/* JUMP off */
->   	case BPF_JMP | BPF_JA:
->   	case BPF_JMP32 | BPF_JA:
+Since commit 30f241fcf52a ("xsk: Fix immature cq descriptor
+production"), the descriptor number is stored in skb control block and
+xsk_cq_submit_addr_locked() relies on it to put the umem addrs onto
+pool's completion queue.
 
-Acked-by: Xu Kuohai <xukuohai@huawei.com>
+skb control block shouldn't be used for this purpose as after transmit
+xsk doesn't have control over it and other subsystems could use it. This
+leads to the following kernel panic due to a NULL pointer dereference.
+
+ BUG: kernel NULL pointer dereference, address: 0000000000000000
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: Oops: 0000 [#1] SMP NOPTI
+ CPU: 2 UID: 1 PID: 927 Comm: p4xsk.bin Not tainted 6.16.12+deb14-cloud-amd64 #1 PREEMPT(lazy)  Debian 6.16.12-1
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.17.0-debian-1.17.0-1 04/01/2014
+ RIP: 0010:xsk_destruct_skb+0xd0/0x180
+ [...]
+ Call Trace:
+  <IRQ>
+  ? napi_complete_done+0x7a/0x1a0
+  ip_rcv_core+0x1bb/0x340
+  ip_rcv+0x30/0x1f0
+  __netif_receive_skb_one_core+0x85/0xa0
+  process_backlog+0x87/0x130
+  __napi_poll+0x28/0x180
+  net_rx_action+0x339/0x420
+  handle_softirqs+0xdc/0x320
+  ? handle_edge_irq+0x90/0x1e0
+  do_softirq.part.0+0x3b/0x60
+  </IRQ>
+  <TASK>
+  __local_bh_enable_ip+0x60/0x70
+  __dev_direct_xmit+0x14e/0x1f0
+  __xsk_generic_xmit+0x482/0xb70
+  ? __remove_hrtimer+0x41/0xa0
+  ? __xsk_generic_xmit+0x51/0xb70
+  ? _raw_spin_unlock_irqrestore+0xe/0x40
+  xsk_sendmsg+0xda/0x1c0
+  __sys_sendto+0x1ee/0x200
+  __x64_sys_sendto+0x24/0x30
+  do_syscall_64+0x84/0x2f0
+  ? __pfx_pollwake+0x10/0x10
+  ? __rseq_handle_notify_resume+0xad/0x4c0
+  ? restore_fpregs_from_fpstate+0x3c/0x90
+  ? switch_fpu_return+0x5b/0xe0
+  ? do_syscall_64+0x204/0x2f0
+  ? do_syscall_64+0x204/0x2f0
+  ? do_syscall_64+0x204/0x2f0
+  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+  </TASK>
+ [...]
+ Kernel panic - not syncing: Fatal exception in interrupt
+ Kernel Offset: 0x1c000000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+
+Instead use the skb destructor_arg pointer along with pointer tagging.
+As pointers are always aligned to 8B, use the bottom bit to indicate
+whether this a single address or an allocated struct containing several
+addresses.
+
+Fixes: 30f241fcf52a ("xsk: Fix immature cq descriptor production")
+Closes: https://lore.kernel.org/netdev/0435b904-f44f-48f8-afb0-68868474bf1c@nop.hu/
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
+---
+v2: remove some leftovers on skb_build and simplify fragmented traffic
+logic
+
+v3: drop skb extension approach, instead use pointer tagging in
+destructor_arg to know whether we have a single address or an allocated
+struct with multiple ones. Also, move from bpf to net as requested
+
+v4: repost after rebasing
+---
+ net/xdp/xsk.c | 130 ++++++++++++++++++++++++++++----------------------
+ 1 file changed, 74 insertions(+), 56 deletions(-)
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 7b0c68a70888..d7354a3e2545 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -36,20 +36,13 @@
+ #define TX_BATCH_SIZE 32
+ #define MAX_PER_SOCKET_BUDGET 32
+ 
+-struct xsk_addr_node {
+-	u64 addr;
+-	struct list_head addr_node;
+-};
+-
+-struct xsk_addr_head {
++struct xsk_addrs {
+ 	u32 num_descs;
+-	struct list_head addrs_list;
++	u64 addrs[MAX_SKB_FRAGS + 1];
+ };
+ 
+ static struct kmem_cache *xsk_tx_generic_cache;
+ 
+-#define XSKCB(skb) ((struct xsk_addr_head *)((skb)->cb))
+-
+ void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
+ {
+ 	if (pool->cached_need_wakeup & XDP_WAKEUP_RX)
+@@ -558,29 +551,53 @@ static int xsk_cq_reserve_locked(struct xsk_buff_pool *pool)
+ 	return ret;
+ }
+ 
++static bool xsk_skb_destructor_is_addr(struct sk_buff *skb)
++{
++	return (uintptr_t)skb_shinfo(skb)->destructor_arg & 0x1UL;
++}
++
++static u64 xsk_skb_destructor_get_addr(struct sk_buff *skb)
++{
++	return (u64)((uintptr_t)skb_shinfo(skb)->destructor_arg & ~0x1UL);
++}
++
++static u32 xsk_get_num_desc(struct sk_buff *skb)
++{
++	struct xsk_addrs *xsk_addr;
++
++	if (xsk_skb_destructor_is_addr(skb))
++		return 1;
++
++	xsk_addr = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
++
++	return xsk_addr->num_descs;
++}
++
+ static void xsk_cq_submit_addr_locked(struct xsk_buff_pool *pool,
+ 				      struct sk_buff *skb)
+ {
+-	struct xsk_addr_node *pos, *tmp;
++	u32 num_descs = xsk_get_num_desc(skb);
++	struct xsk_addrs *xsk_addr;
+ 	u32 descs_processed = 0;
+ 	unsigned long flags;
+-	u32 idx;
++	u32 idx, i;
+ 
+ 	spin_lock_irqsave(&pool->cq_lock, flags);
+ 	idx = xskq_get_prod(pool->cq);
+ 
+-	xskq_prod_write_addr(pool->cq, idx,
+-			     (u64)(uintptr_t)skb_shinfo(skb)->destructor_arg);
+-	descs_processed++;
++	if (unlikely(num_descs > 1)) {
++		xsk_addr = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
+ 
+-	if (unlikely(XSKCB(skb)->num_descs > 1)) {
+-		list_for_each_entry_safe(pos, tmp, &XSKCB(skb)->addrs_list, addr_node) {
++		for (i = 0; i < num_descs; i++) {
+ 			xskq_prod_write_addr(pool->cq, idx + descs_processed,
+-					     pos->addr);
++					     xsk_addr->addrs[i]);
+ 			descs_processed++;
+-			list_del(&pos->addr_node);
+-			kmem_cache_free(xsk_tx_generic_cache, pos);
+ 		}
++		kmem_cache_free(xsk_tx_generic_cache, xsk_addr);
++	} else {
++		xskq_prod_write_addr(pool->cq, idx,
++				     xsk_skb_destructor_get_addr(skb));
++		descs_processed++;
+ 	}
+ 	xskq_prod_submit_n(pool->cq, descs_processed);
+ 	spin_unlock_irqrestore(&pool->cq_lock, flags);
+@@ -595,16 +612,6 @@ static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
+ 	spin_unlock_irqrestore(&pool->cq_lock, flags);
+ }
+ 
+-static void xsk_inc_num_desc(struct sk_buff *skb)
+-{
+-	XSKCB(skb)->num_descs++;
+-}
+-
+-static u32 xsk_get_num_desc(struct sk_buff *skb)
+-{
+-	return XSKCB(skb)->num_descs;
+-}
+-
+ static void xsk_destruct_skb(struct sk_buff *skb)
+ {
+ 	struct xsk_tx_metadata_compl *compl = &skb_shinfo(skb)->xsk_meta;
+@@ -621,27 +628,22 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+ static void xsk_skb_init_misc(struct sk_buff *skb, struct xdp_sock *xs,
+ 			      u64 addr)
+ {
+-	BUILD_BUG_ON(sizeof(struct xsk_addr_head) > sizeof(skb->cb));
+-	INIT_LIST_HEAD(&XSKCB(skb)->addrs_list);
+ 	skb->dev = xs->dev;
+ 	skb->priority = READ_ONCE(xs->sk.sk_priority);
+ 	skb->mark = READ_ONCE(xs->sk.sk_mark);
+-	XSKCB(skb)->num_descs = 0;
+ 	skb->destructor = xsk_destruct_skb;
+-	skb_shinfo(skb)->destructor_arg = (void *)(uintptr_t)addr;
++	skb_shinfo(skb)->destructor_arg = (void *)((uintptr_t)addr | 0x1UL);
+ }
+ 
+ static void xsk_consume_skb(struct sk_buff *skb)
+ {
+ 	struct xdp_sock *xs = xdp_sk(skb->sk);
+ 	u32 num_descs = xsk_get_num_desc(skb);
+-	struct xsk_addr_node *pos, *tmp;
++	struct xsk_addrs *xsk_addr;
+ 
+ 	if (unlikely(num_descs > 1)) {
+-		list_for_each_entry_safe(pos, tmp, &XSKCB(skb)->addrs_list, addr_node) {
+-			list_del(&pos->addr_node);
+-			kmem_cache_free(xsk_tx_generic_cache, pos);
+-		}
++		xsk_addr = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
++		kmem_cache_free(xsk_tx_generic_cache, xsk_addr);
+ 	}
+ 
+ 	skb->destructor = sock_wfree;
+@@ -701,7 +703,6 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ {
+ 	struct xsk_buff_pool *pool = xs->pool;
+ 	u32 hr, len, ts, offset, copy, copied;
+-	struct xsk_addr_node *xsk_addr;
+ 	struct sk_buff *skb = xs->skb;
+ 	struct page *page;
+ 	void *buffer;
+@@ -727,16 +728,27 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ 				return ERR_PTR(err);
+ 		}
+ 	} else {
+-		xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
+-		if (!xsk_addr)
+-			return ERR_PTR(-ENOMEM);
++		struct xsk_addrs *xsk_addr;
++
++		if (xsk_skb_destructor_is_addr(skb)) {
++			xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache,
++						     GFP_KERNEL);
++			if (!xsk_addr)
++				return ERR_PTR(-ENOMEM);
++
++			xsk_addr->num_descs = 1;
++			xsk_addr->addrs[0] = xsk_skb_destructor_get_addr(skb);
++			skb_shinfo(skb)->destructor_arg = (void *)xsk_addr;
++		} else {
++			xsk_addr = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
++		}
+ 
+ 		/* in case of -EOVERFLOW that could happen below,
+ 		 * xsk_consume_skb() will release this node as whole skb
+ 		 * would be dropped, which implies freeing all list elements
+ 		 */
+-		xsk_addr->addr = desc->addr;
+-		list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
++		xsk_addr->addrs[xsk_addr->num_descs] = desc->addr;
++		xsk_addr->num_descs++;
+ 	}
+ 
+ 	len = desc->len;
+@@ -813,7 +825,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 			}
+ 		} else {
+ 			int nr_frags = skb_shinfo(skb)->nr_frags;
+-			struct xsk_addr_node *xsk_addr;
++			struct xsk_addrs *xsk_addr;
+ 			struct page *page;
+ 			u8 *vaddr;
+ 
+@@ -828,11 +840,20 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 				goto free_err;
+ 			}
+ 
+-			xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
+-			if (!xsk_addr) {
+-				__free_page(page);
+-				err = -ENOMEM;
+-				goto free_err;
++			if (xsk_skb_destructor_is_addr(skb)) {
++				xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache,
++							     GFP_KERNEL);
++				if (!xsk_addr) {
++					__free_page(page);
++					err = -ENOMEM;
++					goto free_err;
++				}
++
++				xsk_addr->num_descs = 1;
++				xsk_addr->addrs[0] = xsk_skb_destructor_get_addr(skb);
++				skb_shinfo(skb)->destructor_arg = (void *)xsk_addr;
++			} else {
++				xsk_addr = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
+ 			}
+ 
+ 			vaddr = kmap_local_page(page);
+@@ -842,13 +863,11 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 			skb_add_rx_frag(skb, nr_frags, page, 0, len, PAGE_SIZE);
+ 			refcount_add(PAGE_SIZE, &xs->sk.sk_wmem_alloc);
+ 
+-			xsk_addr->addr = desc->addr;
+-			list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
++			xsk_addr->addrs[xsk_addr->num_descs] = desc->addr;
++			xsk_addr->num_descs++;
+ 		}
+ 	}
+ 
+-	xsk_inc_num_desc(skb);
+-
+ 	return skb;
+ 
+ free_err:
+@@ -857,7 +876,6 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 
+ 	if (err == -EOVERFLOW) {
+ 		/* Drop the packet */
+-		xsk_inc_num_desc(xs->skb);
+ 		xsk_drop_skb(xs->skb);
+ 		xskq_cons_release(xs->tx);
+ 	} else {
+@@ -1904,7 +1922,7 @@ static int __init xsk_init(void)
+ 		goto out_pernet;
+ 
+ 	xsk_tx_generic_cache = kmem_cache_create("xsk_generic_xmit_cache",
+-						 sizeof(struct xsk_addr_node),
++						 sizeof(struct xsk_addrs),
+ 						 0, SLAB_HWCACHE_ALIGN, NULL);
+ 	if (!xsk_tx_generic_cache) {
+ 		err = -ENOMEM;
+-- 
+2.51.1
 
 
