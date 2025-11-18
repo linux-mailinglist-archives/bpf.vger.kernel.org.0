@@ -1,107 +1,103 @@
-Return-Path: <bpf+bounces-75010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50BB9C6BE8B
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 23:55:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50DD1C6BF41
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 00:10:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id EF6A734C9AA
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 22:55:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id 053242C2BE
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 23:10:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D2030DD25;
-	Tue, 18 Nov 2025 22:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A5D62DC79F;
+	Tue, 18 Nov 2025 23:10:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NXy1uKR2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="atAQhMNB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16224309F0A
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 22:55:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E45C1A0B15;
+	Tue, 18 Nov 2025 23:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763506545; cv=none; b=ZBCFS88Zi7TcK8C4pvLgn1XgR3NwN4e2o+JeeTR/hK0L04jgB+P3ipGNGjqEvQ8n9Sh2NGateCUgAFHwCA8Qw8A84PMKgJbJVJ4OZfIyK7hGgaZ8EyKH8q7JqjPYAl+2YBoS1Pv0J/XrIaFA2bfk5d7Bh+o6cgZhZkFSpq5GHfQ=
+	t=1763507442; cv=none; b=PQKCpXZH70Wmz0TBxPVqSvib9RM8/Q1BUlD7d73tQ/ou+/H7+pXLpWKxFVLnDvN9H1T2vKawxB0YQzvYTrnqpkDvt8bcRL1NV/qCzgR9rcFOepgaX+z+7hTog0oxQ9R6OfhtOHANh800SBW9ikfjHT81xMaL9rxXzdl1+5L0Bok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763506545; c=relaxed/simple;
-	bh=JLFaPVWDIgTD39+/bMjIyLUd3/StZk7hWCfgSQcYabE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LeT7FbgUzzoOTCb8VqCvNRDe2tFG3W4mjDi7s0RyrBDBst1GQvafpFKqqZqJYJqYTep/zLG2jth9jd+78kKifZioE4vTk1pBZpAUknT7nCAosvOlmh101wy1INsYGPtru1nHDBg1ggCb+jjc05D1pmQLC5E0Sg1GNkbREWbn+As=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NXy1uKR2; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7b8e49d8b35so6883234b3a.3
-        for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 14:55:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763506543; x=1764111343; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JLFaPVWDIgTD39+/bMjIyLUd3/StZk7hWCfgSQcYabE=;
-        b=NXy1uKR2wev5dP99WAk18I4XffUHGSGGZoB9in0Lig+U/F+I0X0V+u1e0S7WdAbZJM
-         Go7mVUz5XgYkvTycTYND7cQB5sePbzRWI2xNDTTzMztbjqngSI/AmZoO7R7M4cebHDjq
-         Jn6sl5J+jIs52o1VOVO2rMk06qp0RWiGYv0oeYZxpkxaeAdEhBCbZY5dTza9whTLA+Aa
-         MznIEL2qcZ4jk2QTCy6mEmjgNCBm6AUDfjAq3A/0gxeYusx+33Kk/zlK+C17sXyh64Wh
-         sq+txgS9241jONvTyZ4Ta5Kqu9BU7TkRdUx0YrJ2X3Pm9Ab4V2r9zTcPQvSaM3QHEtwb
-         ReBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763506543; x=1764111343;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JLFaPVWDIgTD39+/bMjIyLUd3/StZk7hWCfgSQcYabE=;
-        b=TuVgwf4pE64mqfR5ydRRUpZb86jkbuUwSmlLFXIM28ejVciYD8jbHbJ2X1tKlL5FT+
-         uQ2BqKqo0NJDUCexJVEEMn5uru8oEFoYX5ZwXKqaaPsY9R+GzkK40VvXPROqKn1t9+q9
-         P+QZdivsyIc79I9x/D6sNElmCuBbTvE2fTw6e2MAsn12PJDrZlR0/7AD99/rcMwY+AZO
-         OAs82zTl0ppWd5n14aRoles8N+1DnKmRDJDy4ehnz3GwJLxI2LwzHSVYuaPSqLtYOgem
-         gi2wnjb4odxJenZtHGbJNmmAfaZ39U4IOmvb+wSpPiSQxHAP2A8Vr6uhhLg1HKYEGnzL
-         P3Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCW2m9wEjpEPLRM/9siSRIC8pkPvH0ybnBuK1Ro2iBINLduIQBrzjHYRd7pCtySTLucLAAk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwinJ9QAstLaQsa0zKV99wxqA4ZHHbdn38yXjVzLYDgwLoyPF4Y
-	j2WbrmzLEnjDSIK4rEpXDjPYlbe4OLiTpJofn7YhlppyUS4mF3eU6Ept
-X-Gm-Gg: ASbGncstFILts8H0GZKNw6OcDhNChcF4jhKNZagTLi/Dta6EdHX2fK4x1KlKlPh2+Ud
-	S1wmJW/SbSq/TvkSJm5WkRfQEAW84Fr7lHfwGQzLQ+dQQw8oQvGCcjerEfRU2f0f5xXZWr4CnGc
-	aQcZRMOmKkPRto/EtfMzx91hFEltNiqMMdkGu/UE4hlHTE9AOMTWg62FR8RqiiaImielYMv9P+5
-	fqV0lojGE6tQhx6SuajweTkuO27/Kh2bWvAD+TeVwhE1s+ntS9d7wIUOKtdIEy2ugbK7JkoVzhH
-	1HmjXZt6t1QmbkgaspgxAMICNNKI1aW/ScE9sVtH0xHgO393NQlUlSMpKTD3x0yKujY6IanezJp
-	2MF5vAbfyo4oH8son9NO4o/V1rVOI2/FkJY1h+6YkwsU8F/rVyObQnPZtBwPMZGeFgZ/4uRfm5d
-	5lybG+SPf9miFAQ4OOyarO9hJZUP0SGucOwVJUHQ0I2ZmF3PQ=
-X-Google-Smtp-Source: AGHT+IHnPO+xc7WSiz6vXKgyoPPQMvIiqxT5hbFJiDX2Amw5+RMPl3QEzwHd20vibnIsp+H87YekRQ==
-X-Received: by 2002:a05:6a00:1a93:b0:7ab:21ca:a3be with SMTP id d2e1a72fcca58-7ba39bb1decmr22397926b3a.12.1763506543341;
-        Tue, 18 Nov 2025 14:55:43 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:a9d4:ea4c:ca6f:e5fd? ([2620:10d:c090:500::5:ee25])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b9250d32e8sm17623649b3a.24.2025.11.18.14.55.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Nov 2025 14:55:43 -0800 (PST)
-Message-ID: <21961a5ba6f9e3c08a1b0386ca98ffca07e18068.camel@gmail.com>
-Subject: Re: [PATCH v5 bpf-next 4/4] bpf: test the correct stack liveness of
- tail calls
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Martin Teichmann <martin.teichmann@xfel.eu>, bpf@vger.kernel.org
-Cc: ast@kernel.org, andrii@kernel.org
-Date: Tue, 18 Nov 2025 14:55:42 -0800
-In-Reply-To: <20251118133944.979865-5-martin.teichmann@xfel.eu>
-References: <4952b7bf8a0b50352b31bee7ddf89e7809101af6.camel@gmail.com>
-	 <20251118133944.979865-5-martin.teichmann@xfel.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	s=arc-20240116; t=1763507442; c=relaxed/simple;
+	bh=LKUMkLY9wh6mOUnIETlwyHZQ7VI7TGLDUCofqm2ji7c=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=tjes0CttPU0gIiJJ23S5Q3aG8SvOOtb0OEmJVeTZrfNiHYUc12C8wHL7qe9M5LD5V75mE9hAvGbev1TZ5d/I9NEZlfPRnUOoFnd7L4iVCr/Kjn8CgWPhWKrGky1BvfSDRF1ecF38fVSIJrCkwV1+4etU+4SDV6QqR+WSNCPP8Gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=atAQhMNB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6F35C2BCB2;
+	Tue, 18 Nov 2025 23:10:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763507441;
+	bh=LKUMkLY9wh6mOUnIETlwyHZQ7VI7TGLDUCofqm2ji7c=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=atAQhMNBYaPUtUSsjXV7DWH77b/wxc12t1tFV4dUHxd+D2v+jwv7C0NSQsk+FQ2m8
+	 BuWNG4iHjiBzdiBAPWJK/ZXd5rYDpfBj+AvhVLRRcwC2rexYdCdbi0abUyRAHZ0xuY
+	 ALu2q2Ai2oMN95NZr17rx9TPz6+b8uxIgGG3cHLUjclL9Fi7Qflo7EeXZJmNKHehDT
+	 ZQWGm3G3O+VB6opOfCwAU/j/jMVvCX6h8pe9Tye1L4l8w4SPa+5nm5xdrdBFUVzMPG
+	 49IeHWy4IEO/dDkfj4V4T3qWvpnL08p5kGW00oWGR5bcIPsQm7hOLsjyyDroFFvqQj
+	 Ho4jlzCJzHkJw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E97380A94B;
+	Tue, 18 Nov 2025 23:10:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [bpf-next v1 0/5] selftests/bpf: networking test cleanups and
+ build
+ fix
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176350740725.137683.16243703644793290914.git-patchwork-notify@kernel.org>
+Date: Tue, 18 Nov 2025 23:10:07 +0000
+References: <20251115225550.1086693-1-hoyeon.lee@suse.com>
+In-Reply-To: <20251115225550.1086693-1-hoyeon.lee@suse.com>
+To: Hoyeon Lee <hoyeon.lee@suse.com>
+Cc: bpf@vger.kernel.org, nathan@kernel.org, nick.desaulniers+lkml@gmail.com,
+ morbo@google.com, justinstitt@google.com, llvm@lists.linux.dev
 
-On Tue, 2025-11-18 at 14:39 +0100, Martin Teichmann wrote:
-> A new test is added: caller_stack_write_tail_call tests that the live
-> stack is correctly tracked for a tail call.
-> ---
+Hello:
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+This series was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-Same here, please add signed-off-by.
+On Sun, 16 Nov 2025 07:55:35 +0900 you wrote:
+> This series refactors several networking-related BPF selftests and fixes
+> a toolchain propagation issue in runqslower.
+> 
+> The first four patches simplify networking selftests by removing custom
+> IPv4/IPv6 address wrappers, migrating to sockaddr_storage, dropping
+> duplicated TCP helpers, and replacing open-coded congestion-control
+> string checks with bpf_strncmp(). These changes reduce duplication and
+> improve consistency without altering test behavior.
+> 
+> [...]
 
-[...]
+Here is the summary with links:
+  - [bpf-next,v1,1/5] selftests/bpf: use sockaddr_storage instead of addr_port in cls_redirect test
+    (no matching commit)
+  - [bpf-next,v1,2/5] selftests/bpf: use sockaddr_storage instead of sa46 in select_reuseport test
+    (no matching commit)
+  - [bpf-next,v1,3/5] selftests/bpf: move common TCP helpers into bpf_tracing_net.h
+    https://git.kernel.org/bpf/bpf-next/c/f700b37314d9
+  - [bpf-next,v1,4/5] selftests/bpf: replace TCP CC string comparisons with bpf_strncmp
+    https://git.kernel.org/bpf/bpf-next/c/ec12ab2cda66
+  - [bpf-next,v1,5/5] selftests/bpf: propagate LLVM toolchain to runqslower build
+    (no matching commit)
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
