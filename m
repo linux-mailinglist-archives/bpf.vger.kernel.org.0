@@ -1,171 +1,85 @@
-Return-Path: <bpf+bounces-75004-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75005-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A749AC6B77C
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 20:39:05 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2583C6B80C
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 20:57:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by tor.lore.kernel.org (Postfix) with ESMTPS id 9BC8A292D6
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 19:39:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id 54DD92A316
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 19:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C752E8B9B;
-	Tue, 18 Nov 2025 19:38:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430812ECE8F;
+	Tue, 18 Nov 2025 19:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gio1JkrR"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="lbaXHhds"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A2F72E1F05
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 19:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE9A32E1747;
+	Tue, 18 Nov 2025 19:57:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763494731; cv=none; b=oYzKLF0/d6BdMLz44zXJX8RhcLiXW1tN2K7tmS/fXxP6PL/00GeGOfiG0eof2rUkXzB2aPs+rJyjpd1AvII21YY7+v4OuqgbMXUGeIRQdU2ElS+QsDRs1JJd37LtMRLmO9/2PIXZVCDMRdvfyuDoi235O3rTwcws/ddl9df8yjo=
+	t=1763495856; cv=none; b=G6uR/hAYt7veKGy58NrEfBgYIU/B5oIAxXw4uG5Gw37gJ8/btAF1zP+I26DLvEMUPSbTw6b5pr3tBHWuLA2Wiv4PEWDv34oVQuTHfdwMk3zUlPJLe4tZ3lfGS0EyyAry/CGCO4AT+BAnTfGTEhvzlkQEtTpaFaP3ZYANlNW4oDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763494731; c=relaxed/simple;
-	bh=8o/mKyv3A3lFC7y0XtOvzYtcPxEWOuachx5Hy4zXOOo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mj/mDbiHIqXb0JEwZa03FMKcXxno0kxIOCxuvEfYrmR1Xq642DPYyxe8RVKwlnNjiuYkkWnNbIm9c5rc4A5c/T5gYF/n3B4EC/61s8PIVyjMGuV/9RsGANirT5cUnPK0vKOaRvDTjGFgMUn6ujQaXKv8zeNXfO0hqBmZS7E9ywo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gio1JkrR; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-3436cbb723fso4515699a91.2
-        for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 11:38:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763494729; x=1764099529; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xP8obOsgLV+Mi7QU5SctjthhRGiNVWVhn+AWfuje1og=;
-        b=gio1JkrRtXa0JWCCqwBGY4AUvzlRNAG4qW+qsdqiI8DSwBPqBmU7bIzVw+lMg2hYjz
-         ohwVIYI1amhnS7ZBiLxw3q5H039FWvlX4NPVIY6PUftmfymkNj5RpLUcspLIloP/a1Af
-         /3+H1RvemGSRpEJ59kFESK0EpUTLCHSzyP668sNwgZgi+y6IN97XzGPep2xz9A4bdq46
-         mvN2i5X+ZOXAzVop2e+o0J4fQXvwe6B3pzWu8dg8NTP/4/gJO9lwGPjTGnQBgnH+rYcJ
-         vf9hIXJBnl2RMd3mXuSDkvJjdgIfDLS5lg1uZ82G8KrqXjw4YQTIV66LHxPA+bBMswEn
-         Phcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763494729; x=1764099529;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=xP8obOsgLV+Mi7QU5SctjthhRGiNVWVhn+AWfuje1og=;
-        b=Ilm3eWZ0kc0e2ZIjVo21gCZ+k9661G0aIkFIY8iLUYPGhITJ6cjsOjBzqnX2FSjK45
-         rkrUiMCPhYN6jSI7gVVOgwOOCmOaum1sPwRwxPubmxfQQARu/FZOnxvFUgHP+7ABLjju
-         g17cjOZWYHLfwOlEly6zOsIcsJlW7cn2iJrHeTOb0asnbhy7q32DWxHVJvN5Ic+0iYK7
-         iiHEsQ34OyxBT0848grjDSJD/NdgOQ77AS4xoKk2qXlZRMPs+8+AbOd2SAa3RWFzZQYI
-         3JiH96s/TQ+A+vR0aR1zOnkupdbcw4iv0Q+u3BydV703VGRZD9vHaXiN4K5NeopAZCFN
-         1xag==
-X-Forwarded-Encrypted: i=1; AJvYcCXlrVEsYhnmCdTZSUhkBAEOp2XnArQaE543XUlxTu5aYD7ylMsGGwCnPzum0Xtqnz+bJUo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyc0frSM6D5eHA/7g8GERpSiYXkLS3EbsSx9KzJtwyJzCbk1kbZ
-	UVeOMXWT0mB5IJXL/Wu4qAVYOa1KMxYuCxREfDlZM7EYXTB5XtkcPH8YswiVyRu5oDopNXjvtnS
-	sJd9N9EDYWRBLYrXYo0PF1O1sxFPWpfM=
-X-Gm-Gg: ASbGncvcIluFZWpuxo1iRiuNHw9oSGcXqmWP5oeMMfWn2beMlLzV/AaE6PfIEdBXOFw
-	8y3sz60nDyUIOFuuZBch1rZUcEniI4i5JWOWGn3HPGkTOU7YLrTfJkAFW+bHOAkf6qpGPdagZei
-	M+qP0f1okhBlkNG6xMfCIDqoO3qktcHqiKosd9E70iOg1D0S1XLI+rvhCrYO9y/ftWMJwFvd3dz
-	IZUjSJK7/I2mZo1q96lqPbS8lDGLDLuHIrRlUNJuiuO93lzDbHFKSuYBH5nOTUZqXo1/XJKpWp9
-	AHxwfynmVtVooDwU0RMvCA==
-X-Google-Smtp-Source: AGHT+IHjQ5qI54V48OaD9lOMuf97MRj94VnLpjJI2NcKNfYtXCw0gbO/k0nfKsSQ9TEAtm7URf1eXdHMpVdLUVZFnJg=
-X-Received: by 2002:a17:90b:58ef:b0:343:7714:4ca6 with SMTP id
- 98e67ed59e1d1-343fa62be93mr16554523a91.22.1763494728613; Tue, 18 Nov 2025
- 11:38:48 -0800 (PST)
+	s=arc-20240116; t=1763495856; c=relaxed/simple;
+	bh=1FSG1V3qR27LXMlsNMFduFdy2LjWczTQ+/qtiHeFEfo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B0N2A+DapyQYWSk18DEMZpksRJpo/qkj4b4q9gXVNG6j4pdo0yCwlKMAEA9p1uCytSJAVmtocFk4k3HX+Sm5+Lq37hPFdwFM98swiwVJOIRAb4cU6z39UVj3x/h3OwQ7Z7udUQ+G5rlIP+TPrmUueulgmGAYmCuIlu08a3XJ904=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=lbaXHhds; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=W1Y1wX4hmQMJFdqAY8ThVoyxh2X0uPU7pKbMV844lBw=; b=lbaXHhdsH2npNGMQXpllRKoSUy
+	0MCDp1l9wu37uJ7l0yMpcAoaRkm3t9gz/LH/7JtA0nAAu7WkplrxFe0X3nPyaJO3rOzqshSYjtUoQ
+	W1PM/N3t0EcXeLb82mhVGZ4l9B/YbdbTrBun+X+ooGzcOVIzArNua9tTCVv2yDIn0t9kgTXguLmnS
+	1lZoFgeYaLodhgLjGbttW+S4OABTA6xXB2HRXO9gLb/dd/s3/VPwKKIW7E8e/Qrmn5CwKRY2BkXvs
+	/g729uocHjpGQWKMvqwNmErPVAIFSQKXP6y52R9/w6Uux06eX+QIFlFAOCOH1gwxcA2YKSNg889sS
+	osHx2fAw==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vLRpS-0000000Fz8x-0Vhn;
+	Tue, 18 Nov 2025 19:57:30 +0000
+Date: Tue, 18 Nov 2025 19:57:29 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: Biju Das <biju.das.jz@bp.renesas.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"hch@infradead.org" <hch@infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"urezki@gmail.com" <urezki@gmail.com>
+Subject: Re: [PATCH v3 0/4] make vmalloc gfp flags usage more apparent
+Message-ID: <aRzPqYfXc6mtR1U9@casper.infradead.org>
+References: <TY3PR01MB11346E8536B69E11A9A9DAB0886D6A@TY3PR01MB11346.jpnprd01.prod.outlook.com>
+ <aRyn7Ibaqa5rlHHx@fedora>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251114193729.251892-1-ssranevjti@gmail.com> <aReUv1kVACh3UKv-@casper.infradead.org>
- <CANNWa07Y_GPKuYNQ0ncWHGa4KX91QFosz6WGJ9P6-AJQniD3zw@mail.gmail.com>
- <aRpQ7LTZDP-Xz-Sr@casper.infradead.org> <20251117164155.GB196362@frogsfrogsfrogs>
- <aRtjfN7sC6_Bv4bx@casper.infradead.org> <CAEf4BzZu+u-F9SjhcY5GN5vumOi6X=3AwUom+KJXeCpvC+-ppQ@mail.gmail.com>
- <aRxunCkc4VomEUdo@infradead.org> <aRySpQbNuw3Y5DN-@casper.infradead.org> <20251118161220.GE196362@frogsfrogsfrogs>
-In-Reply-To: <20251118161220.GE196362@frogsfrogsfrogs>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 18 Nov 2025 11:38:36 -0800
-X-Gm-Features: AWmQ_bk9sXea8jL7B_XWSvq1NtCko5Jbx6_OaVtFvyVo8HnLwKRsCuuE1XHa0Cc
-Message-ID: <CAEf4BzYkPxUcQK2VWEE+8N=U5CXjtUNs6GfbfW2+GoTDebk19A@mail.gmail.com>
-Subject: Re: [PATCH] mm/filemap: fix NULL pointer dereference in do_read_cache_folio()
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>, Christoph Hellwig <hch@infradead.org>, 
-	SHAURYA RANE <ssrane_b23@ee.vjti.ac.in>, akpm@linux-foundation.org, 
-	shakeel.butt@linux.dev, eddyz87@gmail.com, andrii@kernel.org, ast@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev, 
-	skhan@linuxfoundation.org, david.hunter.linux@gmail.com, khalid@kernel.org, 
-	syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aRyn7Ibaqa5rlHHx@fedora>
 
-On Tue, Nov 18, 2025 at 8:12=E2=80=AFAM Darrick J. Wong <djwong@kernel.org>=
- wrote:
->
-> On Tue, Nov 18, 2025 at 03:37:09PM +0000, Matthew Wilcox wrote:
-> > On Tue, Nov 18, 2025 at 05:03:24AM -0800, Christoph Hellwig wrote:
-> > > On Mon, Nov 17, 2025 at 10:45:31AM -0800, Andrii Nakryiko wrote:
-> > > > As I replied on another email, ideally we'd have some low-level fil=
-e
-> > > > reading interface where we wouldn't have to know about secretmem, o=
-r
-> > > > XFS+DAX, or whatever other unusual combination of conditions where
-> > > > exposed internal APIs like filemap_get_folio() + read_cache_folio()
-> > > > can crash.
-> > >
-> > > The problem is that you did something totally insane and it kinda wor=
-ks
-> > > most of the time.
-> >
-> > ... on 64-bit systems.  The HIGHMEM handling is screwed up too.
-> >
-> > > But bpf or any other file system consumer has
-> > > absolutely not business poking into the page cache to start with.
-> >
-> > Agreed.
-> >
-> > > And I'm really pissed off that you wrote and merged this code without
-> > > ever bothering to talk to a FS or MM person who have immediately told
-> > > you so.  Let's just rip out this buildid junk for now and restart
-> > > because the problem isn't actually that easy.
-> >
-> > Oh, they did talk to fs & mm people originally and were told NO, so the=
-y
-> > sneaked it in through the BPF tree.
-> >
-> > https://lore.kernel.org/all/20230316170149.4106586-1-jolsa@kernel.org/
-> >
-> > > > The only real limitation is that we'd like to be able to control
-> > > > whether we are ok sleeping or not, as this code can be called from
-> > > > pretty much anywhere BPF might run, which includes NMI context.
-> > > >
-> > > > Would this kiocb_read() approach work under those circumstances?
-> > >
-> > > No.  IOCB_NOWAIT is just a hint to avoid blocking function calls.
-> > > It is not guarantee and a guarantee is basically impossible.
-> >
-> > I'm not sure I'd go that far -- I think we're pretty good about not
-> > sleeping when IOCB_NOWAIT is specified and any remaining places can
-> > be fixed up.
-> >
-> > But I am inclined to rip out the buildid code, just because the
-> > authors have been so rude.
->
-> Which fstest actually checks the functionality of the buildid code?
-> I don't find any, which means none of the fs people have a good signal
-> for breakage in this, um, novel file I/O path.
+On Tue, Nov 18, 2025 at 09:07:56AM -0800, Vishal Moola (Oracle) wrote:
+> On Tue, Nov 18, 2025 at 04:14:01PM +0000, Biju Das wrote:
+> > Hi All,
+> > 
+> > I get below warning with today's next. Can you please suggest how to fix this warning?
+> 
+> Thanks Biju. This has been fixed and will be in whenever Andrews tree
+> gets merged again.
 
-We have plenty of build ID tests in BPF selftest that validate this
-functionality:
+I see:
 
-  - tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-  - tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-  - tools/testing/selftests/bpf/prog_tests/build_id.c
+Unexpected gfp: 0x1000000 (__GFP_NOLOCKDEP). Fixing up to gfp: 0x2dc0 (GFP_KERNEL|__GFP_ZERO|__GFP_NOWARN). Fix your code!
 
-This functionality is exposed to BPF (and PROCMAP_QUERY, which has its
-own mm selftests), so that's where we test this. So we'll know at the
-very least when trees merge that something is broken.
-
->
-> --D
+I suspect __GFP_NOLOCKDEP should also be permitted by vmalloc.
 
