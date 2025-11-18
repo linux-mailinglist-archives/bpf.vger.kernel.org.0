@@ -1,156 +1,144 @@
-Return-Path: <bpf+bounces-74827-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74828-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB0F0C66AED
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 01:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FB47C66C1F
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 01:58:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6E553352A90
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 00:42:15 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id BCC683528A3
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 00:55:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119212EC08C;
-	Tue, 18 Nov 2025 00:41:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134CF2FD663;
+	Tue, 18 Nov 2025 00:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qpVea7XV"
+	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="SZ62LKPT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723A3254AE1;
-	Tue, 18 Nov 2025 00:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133C42737F8
+	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 00:53:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763426518; cv=none; b=u7eNxl65KaCY7tYiVlZ2UUP02PMfFcbTiGl86fZmB+f6Hi3apPR5WN7lq2qNzRdW+UljAlPmEK+8gsLX8qFjeiFxnV1eiamN9Qq+s9jRFjiibosc3MB4YjcHPOvdGDJopd+SdV+Ih8/QCOI2AdsI/LJQQ93gYsBETcdxSrJu1Kc=
+	t=1763427195; cv=none; b=ktVAR75wdkhMrZSLM47yn+PPza25aGtTZRz+CpS5ptzw57fzc97rBH1uftUfDxCyYY2xhrAbtivI25nV0aD1TyEE5VVek66fxbJjTCkdw0QyhurYKqiuPEVH92Iu9bDtb3FoI7YC6lbPQ2sDSuM/YvBGMQnTliduEXsyTdXsijs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763426518; c=relaxed/simple;
-	bh=xfZHz3v2ewR46Sew96PsxefW8LblD1BtQqdSnA7/hpo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tgl7Lj02o3ZLlfv9zeYANLq8vxNnfM5OHYykJCo8uhu/UwyJy5UVseBSXcQumdRkIgzcGC8ithvpUGzDW/tm9bQ0y86xVzBfjnlx9uud4z22oFl83ZVdzpLAYr3xtNrWxZHyVRakPSJftxDYq8apW+8Qu0jc4qakSYgLMTlTyM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qpVea7XV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6F94C2BCB2;
-	Tue, 18 Nov 2025 00:41:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763426518;
-	bh=xfZHz3v2ewR46Sew96PsxefW8LblD1BtQqdSnA7/hpo=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=qpVea7XV0nMdbO4MV5Lx+3Ws+eBv2q7EP4DClJwAdF/2T02uPz9jQrSr7BEPRv+C7
-	 9RzQvw0qrC+NhGG3tfHCFxu5+8xTl6gm/xKAuWbEFeap/+IimihgnM3+bE4izdIcYS
-	 UaCFCdNYXJpgejbFa6dNUquhexQVxfdYG2hPnLXt/SR5InFqTj7IqPNJb/am0Qa3Z/
-	 FyR0pij0iYGySQNoo8V6enBRRrppmGZ4xJhwbrizGPzqoCPdWqCDh5swyNZA3mQTWt
-	 8nobIMiW4aIy/Iu5P4TcLsS9AcIw1KSxIbbOZYfIG5Cg2N/YPQhik08zhKuLXfVBkz
-	 WtLfqFH5cptZg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B889CCE0B6A; Mon, 17 Nov 2025 16:41:56 -0800 (PST)
-Date: Mon, 17 Nov 2025 16:41:56 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Amery Hung <ameryhung@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	bpf <bpf@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
+	s=arc-20240116; t=1763427195; c=relaxed/simple;
+	bh=pfVZo5pq81wNsPJgUa90qDINb3FW9xgTlXqCyicI4LE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ECiLmAl0+10JHnxDqfau3EWrw4th155ARqwV3RPVbHK0ykAnu0qFqxQf0N31nq+WowOSeDhPtOnp4BIDOKh1ub1BooMLWklYQ4EcKEmzUHBCx2l4ZjbLZ0TuhK42TEmFB+jGt9OUEwZOQWcBiKbofy3cwnyZhnXlzIfXnNShEPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=SZ62LKPT; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-299e43c1adbso2068835ad.3
+        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 16:53:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1763427192; x=1764031992; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ECcRFPnZSJ/74qLcUT1nDtXwbFmCLS0/Z+AkSmPgFFQ=;
+        b=SZ62LKPTWjF6hTBBYSlyaox+K/WBPQXcYPxjjrjtA/949L02VfY5p8P9uDDxZXRlOz
+         R1o5oVkGdqbqqK8Y0ZkO3B9hbvNl1LmXl3AsZA4jjz85zF0+Hq/JplC/Kzh3d1K7YwYT
+         hjB6D8v46JaV5zmLdFat+rgySdm6PyqK0gCuhp8cRFXs9wwCqOi6S0x2x+Mtaxlfg+/a
+         aMoCcjWjrA7apOCO//WGPWb+flSNVGC0lHXuaQETt8B8aNYhggtGNrImLe2NAD9AKoT3
+         0qoGOvh1xNjSFPtaa+F7vuoPe3gJLtXw2mV3yri+1WJt5C8gKGf0aD4ylnkdtAgdPHGS
+         xmPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763427192; x=1764031992;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ECcRFPnZSJ/74qLcUT1nDtXwbFmCLS0/Z+AkSmPgFFQ=;
+        b=wgQclMVmsYY5sVrXPUIzNwaZ+QgEk3WyCMBOv2VEIZzslGzo2oo9WX7ImlAphvDsdv
+         VF3w4hpPXFVAadl5qcHsCbw4ayfLhqEvP53MDOD8GAPFAqM4du0WIbztPTOXhZVUTOse
+         hUACeSNf1M/Vqm/6Pv+5rf3LVczgQIf3l0UKrqZds/zpO+WbF0O1rSDgL5I/lbwT0pBz
+         M867XduEK+yc24oObRmqHir7JBY/l11f/xAHLPkimGpsHPFE6sXglck/fLJt8huxCFQ3
+         xqZfNxNEx28iMapiVEl7fkJxNIYOldFPNrIWvIdse4OcgLOS55YbCa3h7pz+YbM/mVg8
+         YIMg==
+X-Gm-Message-State: AOJu0YyE8TVyQd1xnbdCerP+IkY0ZpDRktaYuQkaiSXB4CbKtcTPIXIz
+	MxbMyTkv0wldSurb5PIRAjnS4PIr1AOXQ+h0anOEed5JGRy54WcJnQfTeeGzauZwKCJLZOizUz9
+	lgK/4
+X-Gm-Gg: ASbGncsKTrXANlfAtXi4JxjSx4h6j2gemmnQSONjUOrWJ3Px1N0sv85w3mzVOlJHGWP
+	pR+bPz5Kq9o5R415DTJM2SHJ6sZSjXxfXlrERBnsHkFaU8Gf1G9kQpBib6Vek9A6iH2rlJ0jSfr
+	leZ3cvIsKmnIWDJ7IVaAzGvCOlXHtEXw96E3ncMN1/sRfcbjr4xlTVFMyBoYNq8k58my+Hpt6zv
+	cRn4iX8zBkF2GcbC2kJKFsbX1LRk12Cy0NTBH/fXD1lWjX1on+evwsl9qFrayXm0im5gAsud6DZ
+	NTfXtKZ3JGLhxLgblM2hHuXdaHdt4gmITwO6+KRYI8rrf7UxjUUT5s9fc+mcT1OfALnHbEdJdoz
+	+Il4TCPND3/yuB7r4Z0dfq2xUcWoLLS3NJYPNNA7dDh5Qzp7/gXxXYcHHn+7qPNbm
+X-Google-Smtp-Source: AGHT+IEjPzaJypGOyu7ighv5aVAvafyjybl9abS/IeF+SU6SIlOj40X9SRbCB6CrI/miT/nJFjWaxw==
+X-Received: by 2002:a05:7300:fb05:b0:2a4:3593:5fc8 with SMTP id 5a478bee46e88-2a4abb56fe7mr4474649eec.2.1763427191866;
+        Mon, 17 Nov 2025 16:53:11 -0800 (PST)
+Received: from t14.. ([2001:5a8:47ec:d700:ef59:f68f:7ffe:54f2])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2a49d9ead79sm67568555eec.1.2025.11.17.16.53.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Nov 2025 16:53:11 -0800 (PST)
+From: Jordan Rife <jordan@jrife.io>
+To: bpf@vger.kernel.org
+Cc: Jordan Rife <jordan@jrife.io>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	x86@kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>,
-	Kernel Team <kernel-team@meta.com>
-Subject: Re: [PATCH v2 bpf-next 4/4] bpf: Replace bpf memory allocator with
- kmalloc_nolock() in local storage
-Message-ID: <db1fb12b-dfd1-4f2e-bc0c-c29515963bc1@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20251114201329.3275875-1-ameryhung@gmail.com>
- <20251114201329.3275875-5-ameryhung@gmail.com>
- <CAADnVQJD0xLa=bWUerdYsRg8R4S54yqnPnuwkHWL1R663U3Xcg@mail.gmail.com>
- <CAMB2axPEmykdt2Wcvb49j1iG8b+ZTxvDoRgRYKmJAnTvbLsN9g@mail.gmail.com>
- <CAADnVQ+FC5dscjW0MQbG2qYP7KSQ2Ld6LCt5uK8+M2xreyeU7w@mail.gmail.com>
- <450751b2-5bc4-4c76-b9ca-019b87b96074@paulmck-laptop>
- <CAMB2axM==X6+WJFenbuwTn82=2iRL-5_GCmj5RmK_fsGf07x7w@mail.gmail.com>
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	Ingo Molnar <mingo@redhat.com>
+Subject: [RFC PATCH bpf-next 0/7] bpf: Implement BPF_LINK_UPDATE for tracing links
+Date: Mon, 17 Nov 2025 16:52:52 -0800
+Message-ID: <20251118005305.27058-1-jordan@jrife.io>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMB2axM==X6+WJFenbuwTn82=2iRL-5_GCmj5RmK_fsGf07x7w@mail.gmail.com>
 
-On Mon, Nov 17, 2025 at 04:24:56PM -0800, Amery Hung wrote:
-> On Mon, Nov 17, 2025 at 3:46 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Mon, Nov 17, 2025 at 03:36:08PM -0800, Alexei Starovoitov wrote:
-> > > On Mon, Nov 17, 2025 at 12:37 PM Amery Hung <ameryhung@gmail.com> wrote:
-> > > >
-> > > > On Fri, Nov 14, 2025 at 6:01 PM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Nov 14, 2025 at 12:13 PM Amery Hung <ameryhung@gmail.com> wrote:
-> > > > > >
-> > > > > >
-> > > > > > -       if (smap->bpf_ma) {
-> > > > > > +       if (smap->use_kmalloc_nolock) {
-> > > > > >                 rcu_barrier_tasks_trace();
-> > > > > > -               if (!rcu_trace_implies_rcu_gp())
-> > > > > > -                       rcu_barrier();
-> > > > > > -               bpf_mem_alloc_destroy(&smap->selem_ma);
-> > > > > > -               bpf_mem_alloc_destroy(&smap->storage_ma);
-> > > > > > +               rcu_barrier();
-> > > > >
-> > > > > Why unconditional rcu_barrier() ?
-> > > > > It's implied in rcu_barrier_tasks_trace().
-> > > >
-> > > > Hmm, I am not sure.
-> > > >
-> > > > > What am I missing?
-> > > >
-> > > > I hit a UAF in v1 in bpf_selem_free_rcu() when running selftests and
-> > > > making rcu_barrier() unconditional addressed it. I think the bug was
-> > > > due to map_free() not waiting for bpf_selem_free_rcu() (an RCU
-> > > > callback) to finish.
-> > > >
-> > > > Looking at rcu_barrier() and rcu_barrier_tasks_trace(), they pass
-> > > > different rtp to rcu_barrier_tasks_generic() so I think both are
-> > > > needed to make sure in-flight RCU and RCU tasks trace callbacks are
-> > > > done.
-> > > >
-> > > > Not an expert in RCU so I might be wrong and it was something else.
-> > >
-> > > Paul,
-> > >
-> > > Please help us here.
-> > > Does rcu_barrier_tasks_trace() imply rcu_barrier() ?
-> >
-> > I am sorry, but no, it does not.
-> 
-> Thanks for the clarification, Paul!
+Implement update_prog for bpf_tracing_link_lops to enable
+BPF_LINK_UPDATE for fentry, fexit, fmod_ret, freplace, etc. links.
 
-No problem!
+My initial motivation for this was to enable a use case where one
+process creates and owns links pointing to "hooks" within a tc, xdp, ...
+attachment and an external "plugin" loads freplace programs and updates
+links to these hooks. Aside from that though, it seemed like it could
+be useful to be able to atomically swap out the program associated with
+an freplace/fentry/fexit/fmod_ret link more generally.
 
-> > If latency proves to be an issue, one approach is to invoke rcu_barrier()
-> > and rcu_barrier_tasks_trace() each in its own workqueue handler.  But as
-> > always, I suggest invoking them one after the other to see if a latency
-> > problem really exists before adding complexity.
-> >
-> > Except that rcu_barrier_tasks_trace() is never invoked by rcu_barrier(),
-> > only rcu_barrier_tasks() and rcu_barrier_tasks_trace().  So do you really
-> > mean rcu_barrier()?  Or rcu_barrier_tasks()?
-> 
-> Sorry for the confusion. I misread the code. I was trying to say that
-> rcu_barrier() and rcu_barrier_tasks_trace() seem to wait on different
-> callacks but then referring to rcu_barrier_tasks() implementation
-> wrongly.
+Implementing program updates for freplace links was fairly
+straightforward but proved more difficult for the other link types. The
+third patch in this series discusses some other approaches I considered
+before settling on the current approach, but I'd appreciate others'
+input here to see if there is a better way to implement this that
+doesn't require architecture-specific changes.
 
-Well, you did reach the correct conclusion, even if by dubious means.  ;-)
+Thanks!
 
-							Thanx, Paul
+Jordan
 
-> > Either way, rcu_barrier_tasks() and rcu_barrier_tasks_trace() are also
-> > independent of each other in the sense that if you need tw wait on
-> > callbacks from both call_rcu_tasks() and call_rcu_tasks_trace(), you
-> > need both rcu_barrier_tasks() and rcu_barrier_tasks_trace() to be invoked.
-> >
-> >                                                         Thanx, Paul
+Jordan Rife (7):
+  bpf: Set up update_prog scaffolding for bpf_tracing_link_lops
+  bpf: Enable BPF_LINK_UPDATE for freplace links
+  bpf: Enable BPF_LINK_UPDATE for fentry/fexit/fmod_ret links
+  bpf, x86: Make program update work for trampoline ops
+  bpf, s390: Make program update work for trampoline ops
+  bpf, arm64: Make program update work for trampoline ops
+  selftests/bpf: Test BPF_LINK_UPDATE behavior for tracing links
+
+ arch/arm64/net/bpf_jit_comp.c                 |  23 +-
+ arch/s390/net/bpf_jit_comp.c                  |  24 +-
+ arch/x86/net/bpf_jit_comp.c                   |  17 +-
+ include/linux/bpf.h                           |  21 +
+ kernel/bpf/syscall.c                          |  68 +++
+ kernel/bpf/trampoline.c                       |  75 ++-
+ .../bpf/prog_tests/prog_update_tracing.c      | 460 ++++++++++++++++++
+ .../selftests/bpf/progs/prog_update_tracing.c | 133 +++++
+ 8 files changed, 796 insertions(+), 25 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/prog_update_tracing.c
+ create mode 100644 tools/testing/selftests/bpf/progs/prog_update_tracing.c
+
+-- 
+2.43.0
+
 
