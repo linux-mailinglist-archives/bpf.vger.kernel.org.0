@@ -1,149 +1,86 @@
-Return-Path: <bpf+bounces-74995-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74996-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29BB5C6ADFC
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 18:15:41 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CD99C6AE37
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 18:18:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8703A4F1DFF
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 17:09:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTPS id 350A62CCFE
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 17:18:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06DCA3A5E7F;
-	Tue, 18 Nov 2025 17:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24E63A79A2;
+	Tue, 18 Nov 2025 17:13:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="flHbb+kv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r409iXWd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127D6377E94
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 17:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB453A5E86;
+	Tue, 18 Nov 2025 17:13:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763485683; cv=none; b=g2S6DNM5pP2uAJq8TJpDuXiHDX63BWhbsK1vbqc9VD/dbJqy1WpUdeiy3/ieamVq7LRPadVWyUjDmiMQgFYzmyAhDN/vxS3KMTy83Saout/vcg0Dne0suQB49x8HGIqulob9woL4AwzSwlCycP6Ruvr3/sEIEtToaDODKpPeWFs=
+	t=1763486012; cv=none; b=NkS/JtZOnK6hF7bawM4LLaUI/WSCjet6dppenY5Row++HtlHJEjjp4acvEGhUjyFE7gEhyvJuRCO1R2VGGIGrJ68y/7387il8p1vtpVwVAXhEx6ljLzD3OIpoVfq4GOKPHhT0GCv2kjzB+/+6F6ywsQwmoO0iiKfNGruflfaaVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763485683; c=relaxed/simple;
-	bh=F8CuJeWElMS9iOXMP2He2vLpEk/N7ohjPoqnU46dw5Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pRXCLfbFR7gGDr6STOiLKxEdOK1imHpSfujghvohmOA7+LxiUKRWu+lmy1q5APYRjo28oHJlzoNUYoWwzUcCtZYXifeEhaVJ/A2DQgFR2TYvuL8vrvX1cuoXC3JEtm89v3Cz3QB71GqUr4TKIqCp4qcCg5Qes2kRtCZoDK6D1Sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=flHbb+kv; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7aa2170adf9so4996430b3a.0
-        for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 09:08:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763485680; x=1764090480; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=irwlmmJ0MMkznpqLMQ8QH3n1XaAIkdzPe81PjobofI4=;
-        b=flHbb+kvz76jrpKRlW0XXOWHe2wGf/Y1Y6jotFUGfaA9vFeqaYcNhVZzykG2gFYbVm
-         9DTjlK142ijxN4FBb42UPYBIUxetfcF/RE0gCDRayBrsefd+ZxAtHcH6kguQUuGJU7e6
-         /2XVPq/KMae2Z6TWrH65G7CCb8DLirGbUqCvAC5bZSETCKUyLT5GKtxb07IQW1xSxqzp
-         nxfBrI8ihzUZ0kCQowXAQrCyOQAWvWFrl4FQiRZ7Ctv7bUWGHD4elq/PUyo52gz9P882
-         PV24GkD5zqG/dgFpFcXUQKM/9lEF9/ECpkxGF+5BSr1JIpsVlkx43Tcc+ktYLYiHSqUZ
-         iH7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763485680; x=1764090480;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=irwlmmJ0MMkznpqLMQ8QH3n1XaAIkdzPe81PjobofI4=;
-        b=tDPOU5chbsB5uIgzWE2BE+XtsqKXsvfu0a2jm5geUOUKCwho5OI5SwyUt7Womf6IA9
-         H/dD/zUlZSXnMkZYzvlp20t0yPiCFg1N7OFAqj7zfpIqVsVq9dxd1bGPw+niSUPwBK6P
-         5zYVQLofyFU9KtlQetdeRll3RiU30QL929KhqSJCJbR+eaYW+iB3bvdlDk0fAAr+jFr6
-         wb9DEY+gsNNSEXYdOjq34W0NhlVrWRjPZ5eXm/JeOo9achx4qPzZU7xG8Km1FWTpHFxE
-         1hsodS9/tnJjQCKnCDKIFPnje8ErPiQiP25hEJqvlnvpaLhR3MLf88KodDUoe3GEYSKn
-         y51g==
-X-Forwarded-Encrypted: i=1; AJvYcCU4FUJHqNBZAmWcLKhJwrzgxJ4QXH6DIKzUhSNEKekNawZZ01PhXpvKSN0pci+Qv/gz9DU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyGp86PFMkJZoieJpRdinonSv1xknz6IPCMubjocHErWVKElmcX
-	uxe3ArPFjdwrw/0rIYqoavuh5cYwshzL2+5+piimhyNr80FfmGqth/HX
-X-Gm-Gg: ASbGncsqfB1CVf0pLCDQUfYFrEigOT6iZmHn0OFfW2KrdYG/C+bJOUlrDv9sZz56lzY
-	2IZ5LD9AE+scPFHFXQ8w9cPOtHoGkligLwlsgcRWw/LjoCfT51GnwHK+wDGvOVvio47by9hsByo
-	zcp3Lqkg9T2o6XKddkSPWLdBT4SG2CbUrsxLJdljBVsuHSeI//EKaDWdArGbiNAn8Wlo92htNLm
-	ygS10qhiSZ5VIs7i398iOs9nYJcVXooRHUGyXVy2fShCQOAjEZIHNZ0cZKyvyJI4j6afoN9YEGG
-	/7wGhxm8t9zq0uTrpNq6vh/1VO4e5R3gez4z1kZTo9HAzuBqitnewwfyHqdaD/NdB+nl3akGd+n
-	cn0UeUi9686z0DSPAsD6J9BkEIw7n8XXzdABGF10qrI2CRZDRbSly/uoIJ/o5xYV/kZdOoeiaRr
-	bYM1wClAkLfNLp5Ix0Szl9+ybqcHGxxTIdJeu8Od89HNkt4brn7nSoMY2XIM3Z2gxr
-X-Google-Smtp-Source: AGHT+IFp7aKWRAnpg/nz3uAMMrTccHCEVazeBR6Eybowi+fOK2iM3BI0IvxR7anyhC7bwx7kDFbgOQ==
-X-Received: by 2002:a05:7022:43aa:b0:119:e55a:9be4 with SMTP id a92af1059eb24-11b40b30ecamr9630301c88.0.1763485679910;
-        Tue, 18 Nov 2025 09:07:59 -0800 (PST)
-Received: from fedora (c-67-164-59-41.hsd1.ca.comcast.net. [67.164.59.41])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-11b0608860fsm52235294c88.5.2025.11.18.09.07.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Nov 2025 09:07:59 -0800 (PST)
-Date: Tue, 18 Nov 2025 09:07:56 -0800
-From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-To: Biju Das <biju.das.jz@bp.renesas.com>
-Cc: "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"hch@infradead.org" <hch@infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"urezki@gmail.com" <urezki@gmail.com>
-Subject: Re: [PATCH v3 0/4] make vmalloc gfp flags usage more apparent
-Message-ID: <aRyn7Ibaqa5rlHHx@fedora>
-References: <TY3PR01MB11346E8536B69E11A9A9DAB0886D6A@TY3PR01MB11346.jpnprd01.prod.outlook.com>
+	s=arc-20240116; t=1763486012; c=relaxed/simple;
+	bh=ggNhrLVSuJqH6QwhZSmvni68NhR4jn+ys9UmYoZ2dS0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KI5zJmsqk1wXEGXd3dmqSdbsGxK5lg1Hpf4RQpZX8J0KZtbPevq4xdU9KTrctMyHmUDYeXHJv9tJzb+6p5VHohBapOEy9ErJ+d2fFw9il0qRMDaCRTBuf5mUIT7RQVlaVv9Hsg0BPwxzVRRusZ6YIRTFq8k8lm5XjOpUVg1c9jI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r409iXWd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80EB1C4CEF5;
+	Tue, 18 Nov 2025 17:13:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763486011;
+	bh=ggNhrLVSuJqH6QwhZSmvni68NhR4jn+ys9UmYoZ2dS0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=r409iXWdNYBga6hQ7E3WWFb7ae2KNM0nZsNpiuC7qlBvrll0LfrENOCdRBrnGQe24
+	 O+JM46sKT4thoYF5rSaN4lJespIamyHTIGNyhTFYATdaffmwH58ImmpCBfrOHbKGCz
+	 PKMtGB/+zIgRFH0qANQcCJNmIu/wLRGv81lUs5dfYmmGROvI5ws8LJgQnRGY75tYE7
+	 3naGu8OSlgAR8kaLPfRs2j/3q5joJ3mjpuS1SujjWwFVMsMZQtZ+x4JAWJn0RUXKzn
+	 wflRTOgActJedaD/u8wMYpOWa3GEBa3bWZ5caEbZOqTSRQNQi3F+bl0aupmZLwqmCn
+	 4ZJFfaPRcYskQ==
+Date: Tue, 18 Nov 2025 09:13:28 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Gal Pressman <gal@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, netdev@vger.kernel.org, Donald Hunter
+ <donald.hunter@gmail.com>, Simon Horman <horms@kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>,
+ bpf@vger.kernel.org, Nimrod Oren <noren@nvidia.com>
+Subject: Re: [PATCH net-next 1/3] tools: ynl: cli: Add --list-attrs option
+ to show operation attributes
+Message-ID: <20251118091328.052c88d6@kernel.org>
+In-Reply-To: <e634a466-a968-4422-a30a-49f6261d8703@nvidia.com>
+References: <20251116192845.1693119-1-gal@nvidia.com>
+	<20251116192845.1693119-2-gal@nvidia.com>
+	<20251117173503.3774c532@kernel.org>
+	<e634a466-a968-4422-a30a-49f6261d8703@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TY3PR01MB11346E8536B69E11A9A9DAB0886D6A@TY3PR01MB11346.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Nov 18, 2025 at 04:14:01PM +0000, Biju Das wrote:
-> Hi All,
+On Tue, 18 Nov 2025 11:38:04 +0200 Gal Pressman wrote:
+> > Could you try to detect that do and dump replies are identical 
+> > and combine them? They are the same more often than not so 
+> > I think it'd be nice to avoid printing the same info twice.  
 > 
-> I get below warning with today's next. Can you please suggest how to fix this warning?
+> We need to take care of both cases where the whole operation is
+> identical (e.g., ethtool debug-get), and cases where only the replies
+> are identical (e.g., netdev dev-get). This kind of complicates the code.
 
-Thanks Biju. This has been fixed and will be in whenever Andrews tree
-gets merged again.
+I was thinking just the reply. This is mostly for GET type operations.
+Request doesn't exist for DUMP, but for DO it carries ID.
 
-> 
-> [   13.122280] systemd[1]: File System Check on Root Device was skipped because of an unmet condition check (ConditionPathIsReadWrite=!/).
-> [   13.142562] ------------[ cut here ]------------
-> [   13.147308] Unexpected gfp: 0x400000 (__GFP_ACCOUNT). Fixing up to gfp: 0x100dc0 (GFP_USER|__GFP_ZERO). Fix your code!
-> [   13.158526] WARNING: mm/vmalloc.c:3937 at vmalloc_fix_flags+0x9c/0xac, CPU#1: systemd/1
-> [   13.166576] Modules linked in: backlight ipv6
-> [   13.170983] CPU: 1 UID: 0 PID: 1 Comm: systemd Not tainted 6.18.0-rc6-next-20251118-gcc318393a5df #175 PREEMPT
-> [   13.181082] Hardware name: Renesas SMARC EVK based on r9a07g054l2 (DT)
-> [   13.187641] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [   13.194675] pc : vmalloc_fix_flags+0x9c/0xac
-> [   13.194705] lr : vmalloc_fix_flags+0x9c/0xac
-> [   13.194715] sp : ffff8000828fbab0
-> [   13.194719] x29: ffff8000828fbad0 x28: 0000000000000000 x27: 0000000000000000
-> [   13.194734] x26: 0000000000000000 x25: 0000000000000000 x24: 000000000000000f
-> [   13.194746] x23: 0000ffffcc595b58 x22: 0000000000001000 x21: 0000000000100cc0
-> [   13.194757] x20: ffff8000801d7af0 x19: 0000000000001000 x18: 0000000000000006
-> [   13.194768] x17: 0000000000000000 x16: 0000000000000000 x15: 006c326703000000
-> [   13.194779] x14: 00000000000001da x13: 00000000000001da x12: 0000000000000000
-> [   13.194790] x11: 00000000000000c0 x10: 0000000000000ac0 x9 : ffff8000828fb920
-> [   13.194802] x8 : ffff00000aca8b20 x7 : 00000000021cb08a x6 : 0000000000000186
-> [   13.194813] x5 : 000000009d17f2f7 x4 : ffff800037e00000 x3 : 0000000000000010
-> [   13.194824] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00000aca8000
-> [   13.194836] Call trace:
-> [   13.194842]  vmalloc_fix_flags+0x9c/0xac (P)
-> [   13.194855]  __vmalloc_noprof+0x60/0x74
-> [   13.194865]  bpf_prog_alloc_no_stats+0x44/0x218
-> [   13.194879]  bpf_prog_alloc+0x28/0xec
-> [   13.194888]  bpf_prog_load+0x168/0xcdc
-> [   13.194899]  __sys_bpf+0x814/0x211c
-> [   13.194907]  __arm64_sys_bpf+0x24/0x40
-> [   13.194916]  invoke_syscall+0x48/0x104
-> [   13.194927]  el0_svc_common.constprop.0+0x40/0xe0
-> [   13.194935]  do_el0_svc+0x1c/0x28
-> [   13.194943]  el0_svc+0x34/0x108
-> [   13.194955]  el0t_64_sync_handler+0xa0/0xf0
-> [   13.194964]  el0t_64_sync+0x198/0x19c
-> [   13.194975] ---[ end trace 0000000000000000 ]---
-> [   13.328233] fuse: init (API version 7.45)
-> [   13.339395] systemd[1]: Starting Journal Service...
-> 
-> 
-> Cheers,
-> Biju
+> I'll give it a few more attempts, but maybe this should come as a
+> followup to this series.
 
