@@ -1,212 +1,92 @@
-Return-Path: <bpf+bounces-74949-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74950-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF64EC69524
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 13:16:43 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15587C69543
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 13:17:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 97CAD4E6641
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 12:14:28 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTPS id CAF342BB5E
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 12:16:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B67C2350A17;
-	Tue, 18 Nov 2025 12:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 858B034F486;
+	Tue, 18 Nov 2025 12:16:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NtmhhHlD";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="oLIeIMCE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tZSI97HY"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68367224D6
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 12:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF3C31B815;
+	Tue, 18 Nov 2025 12:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763468063; cv=none; b=Ulavcehjq1jEi3NxNoWZNUGPHNO5SAVljdKWh3BD0KRCSX8EhAmBGAwRM12SpuvWybCw/YmlIa0QJFe1NObTxAtpS9JUylO6JKZTP7ql67z/6UNtNQ60Vwzt/6BLPwdBlOdVpiZufUqeBv38zJ9fwVc+0FvhO1kBhYL8j+XVnnI=
+	t=1763468183; cv=none; b=cQ6h6ZUYS5Me6zbm02AWwN+lcx7mqvgETv91m2VZtZdZ0cUlUWTdrnLxqYnMa1wBO//cjeT2fAWe7oDVHAqEXqnsV4hegLEzmIF/zzOte7GkrqipBdbOYef8H0+mR2u9b2OzX5w0KDZZ7NBLbbklszYPfSVzG2wwfMc5v2Q0FGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763468063; c=relaxed/simple;
-	bh=ImZWzph7mTWwkohu9lyvahWKCLQchy6l2VlEx8q1Poc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=fKt70ujeYI0soqrmK98jum6K9ME2CHpv9LyMaAhWVF1Lb4rAPFrYV0lLoKd3mfyIYIfMgGADT33NYxsW2KjSlmU1Z2xa0kA1W6C9RBqbwlfYtBP7olEvwGPURLhPRSthZAIfleTIlOW6NtIy/O+c4GrOR/Ikl4gsYPv8TBF50BU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NtmhhHlD; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=oLIeIMCE; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1763468060;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3BCjv/CGdgcWSx02tEn5XWDlQF9iUwwpCMljkc4+gpo=;
-	b=NtmhhHlDHr+Q5skV8Oi9OkYo1XPHL0dB56XuO6NwAwlZCKiFd7qG9cL+udOW4TmLqjOCyQ
-	SJVyroCOP1/5xwq189n8OgBsfuFW3HGQnQZcmef+fp2+GdA6pjU+7sXzpfqoQvkrNl1u6P
-	WniXR1UVvQCa9Lc+qVOymNzRcv4vXuw=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-616-lmGqSa89MYS5YTZy-u3eWg-1; Tue, 18 Nov 2025 07:14:19 -0500
-X-MC-Unique: lmGqSa89MYS5YTZy-u3eWg-1
-X-Mimecast-MFC-AGG-ID: lmGqSa89MYS5YTZy-u3eWg_1763468058
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-42b3c965ce5so3712935f8f.2
-        for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 04:14:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1763468057; x=1764072857; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=3BCjv/CGdgcWSx02tEn5XWDlQF9iUwwpCMljkc4+gpo=;
-        b=oLIeIMCElJTKvOrIRloJeEjKzP/+i8UlXsW3TG37K6DPDuom3PBXUFYoJf/wMcCHyN
-         oNebRpWyM/UJjHLDg5AzQmehE9aVF7OiijMX8mR4M/uFi51lL/R95pWLghcFcnJXzSst
-         48jORu4dVC3TOaVGaaCg7nQGO1DSthhgzjrLFvcO9FcL/7mMon+1SBY2xlNrJAr+eC1r
-         UjgTeseIO70sV+BCldlo2LkwysEhyWoFMjnwcRVSi+3hqR+eFmqMLEhJMSn91d8zQGIX
-         y+ScJl29Ocjwn6qz1zU5o9PuNzEY970o+cRC90H99Juo7CEIfUBi3VD6zuPYkI0cttma
-         KfYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763468057; x=1764072857;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3BCjv/CGdgcWSx02tEn5XWDlQF9iUwwpCMljkc4+gpo=;
-        b=af9Yk+xbhnGVVhH9eFLW4FjvmVRVkPT0B36tcvoexAMdB0FDP+ezS0UJjAkboi/LPP
-         36t6WRJpPJ7ymeZ12QLoWXQykZhpPvnJFfwNkZnPxKPdz3WSBp0dpbw3FWL+BBmMobl2
-         1hzPNPrA2HZ9YSDQEJORil/Mfz/tiaKGFs1Fvo6811hbo8lLVkk7akDbE3s+Z7TNbh3S
-         IUQMcytNJqwjxQ1nZp3O4lLPQpsWjqu0K8rgw9lT6L1GjRAzrkIQzJmmpZ/JUf3inT2D
-         iruw587RudoQcU/m4ngpPF/iBA++qFd1fkfPII4qyZYb5QHChUDRm2SZ36lvK/kTdSZQ
-         6JDw==
-X-Forwarded-Encrypted: i=1; AJvYcCVf3SOgVe6+3b6qyyCx8YxDkjkSZki3bC6RhQpAHTCyndasSJnofFqgK67Lw4mcN1TOn9E=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yylpra7hnhcVPqLU3hWmb1LT3FP7SOYJZONbbhCzD63eopquSZJ
-	8kXe08u5XTRIcFx6J/l0XzfSiNuL7YtivOlG1hLUwtvw/ufO7nKM25LWxP2aSVpnMAYL+iR+md9
-	V3HHbsrft9qxJaSw9LvpjPvqKPl3G2PpP3eQqXg7tD94/MgnMRg01k8p+u3tdpQ==
-X-Gm-Gg: ASbGnctwwXfivJzekxBD5hlxhQuDthFEUizjFQ4++zak9QPs8wqp6C8aim3eJ4x7iVD
-	U2p/i99EKC9hYq5FMPFqvkGRn5zzWD62bhG4kI/EcHTFCzNgrwpw7VEWr9USQjL8PvAbcmqyxPP
-	Tis8sS+Mq0+j0XfKe7xOMgkuCP+O5RsOPqXLnpYz7I327DLpnnhr3EG5MY6sVj8TtYF9PZal9/K
-	iGU03xLiVzXqHX25MIpFGG0NguIwCogPiP7MyzNXoySFY04bVU7xXYpjVrGTgh5glNd2wxu2KKu
-	lOc5M4sf6KwDonhOVWhMpOZ81CaXcH8Jgvr0yOlVkLOIlxYH4Qyw0rbWdXZfhu8P9RpeikxykUE
-	2I7tLZP3VPyG9
-X-Received: by 2002:a05:6000:4186:b0:429:d19f:d959 with SMTP id ffacd0b85a97d-42b5934d6f1mr14360735f8f.15.1763468057538;
-        Tue, 18 Nov 2025 04:14:17 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IErQTLe3bQ/i474JHpwGcSyu8Y7j1VvytPeuMCoBPNChkmE/I6UW+IYqaTo4xS93xhgJz9RAA==
-X-Received: by 2002:a05:6000:4186:b0:429:d19f:d959 with SMTP id ffacd0b85a97d-42b5934d6f1mr14360710f8f.15.1763468057114;
-        Tue, 18 Nov 2025 04:14:17 -0800 (PST)
-Received: from [192.168.88.32] ([212.105.155.41])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b53e97a87sm32474774f8f.20.2025.11.18.04.14.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Nov 2025 04:14:16 -0800 (PST)
-Message-ID: <92c77477-9945-49c2-90bd-6e05761e2a3e@redhat.com>
-Date: Tue, 18 Nov 2025 13:14:13 +0100
+	s=arc-20240116; t=1763468183; c=relaxed/simple;
+	bh=NDB8zwmWSTVU1id8kMQajfeIzzTo3lZzUCYfR5Bj2DU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=D0DXIlNAyW2AExwbCet7b7CkoZqe2BtHvYr2U9Dp3wa68ibp+PB8w8McHX5xSiLq8Y98XCN3ud8VNa6iiKAEzCodUY50qGu8/g04uOXtDBs2uW3BpHeGr15gce+GGXPkGJ6hZyMpfC3nXbosW9kqXx853o9HD/RHL2tBJsurzRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tZSI97HY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DFC3C2BC87;
+	Tue, 18 Nov 2025 12:16:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763468181;
+	bh=NDB8zwmWSTVU1id8kMQajfeIzzTo3lZzUCYfR5Bj2DU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=tZSI97HYHNPl3L5KUfMb0dR2U/wzbcuAVrIyCM+H/wCGCfA2wLZHJ4RGsLch320Po
+	 2yoQr43fJVMkBUZxQxd3tLZbOO4CZ14+mPIxzGrDRo7lPxFUNPGuPAsVxYcgxLN+jI
+	 cBSBDcmOPiFmzpSl7nX0M9/3boiGVlava4RfB0/6t9jpP9sNd1GSPtwpJLLSQ1HasJ
+	 9dVgZOUGZLTkItL9p9rtPj05L7O6tmqq5K6X7rBZ4NDXSjcqBTamOJykSybjx76/+q
+	 lC8FabexGv7q2NLxXGDWr1AaISDLUp/JGBxuiN5AYU4weEv7vJ7mg0YImxN0gbu2zH
+	 MQoRvbG+okbAg==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Saket Kumar Bhaskar <skb99@linux.ibm.com>, bpf@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc: hbathini@linux.ibm.com, sachinpb@linux.ibm.com, venkat88@linux.ibm.com,
+ andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ christophe.leroy@csgroup.eu, naveen@kernel.org, maddy@linux.ibm.com,
+ mpe@ellerman.id.au, npiggin@gmail.com
+Subject: Re: [PATCH bpf-next v2 0/2] bpf: Inline helper in powerpc JIT
+In-Reply-To: <cover.1762422548.git.skb99@linux.ibm.com>
+References: <cover.1762422548.git.skb99@linux.ibm.com>
+Date: Tue, 18 Nov 2025 12:16:16 +0000
+Message-ID: <mb61pbjkzmt7z.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 net-next 04/14] selftests/net: gro: add self-test for
- TCP CWR flag
-To: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com, parav@nvidia.com,
- linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
- dsahern@kernel.org, kuniyu@google.com, bpf@vger.kernel.org,
- netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com,
- kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com,
- jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch,
- donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com,
- shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org,
- ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
- g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
- mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
- Jason_Livingood@comcast.com, vidhi_goel@apple.com
-References: <20251114071345.10769-1-chia-yu.chang@nokia-bell-labs.com>
- <20251114071345.10769-5-chia-yu.chang@nokia-bell-labs.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20251114071345.10769-5-chia-yu.chang@nokia-bell-labs.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 11/14/25 8:13 AM, chia-yu.chang@nokia-bell-labs.com wrote:
-> +/* send extra flags of the (NUM_PACKETS / 2) and (NUM_PACKETS / 2 - 1)
-> + * pkts, not first and not last pkt
-> + */
-> +static void send_flags(int fd, struct sockaddr_ll *daddr, int psh, int syn,
-> +		       int rst, int urg, int cwr)
-> +{
-> +	static char flag_buf[2][MAX_HDR_LEN + PAYLOAD_LEN];
-> +	static char buf[MAX_HDR_LEN + PAYLOAD_LEN];
-> +	int payload_len, pkt_size, i;
-> +	struct tcphdr *tcph;
-> +	int flag[2];
-> +
-> +	payload_len = PAYLOAD_LEN * (psh || cwr);
-> +	pkt_size = total_hdr_len + payload_len;
-> +	flag[0] = NUM_PACKETS / 2;
-> +	flag[1] = NUM_PACKETS / 2 - 1;
-> +
-> +	// Create and configure packets with flags
+Saket Kumar Bhaskar <skb99@linux.ibm.com> writes:
 
-Please use /* */ for comments.
+> This series add support for internal only per-CPU instructions,
+> inlines the bpf_get_smp_processor_id() and bpf_get_current_task()
+> helper calls for powerpc BPF JIT.
+>
+> Changes since v1:
+> * Addressed Christophe's comments.
+> * Inlined bpf_get_current_task() as well.
+>
+> v1: https://lore.kernel.org/all/20250311160955.825647-1-skb99@linux.ibm.com/ 
+>
+> Saket Kumar Bhaskar (2):
+>   powerpc64/bpf: Support internal-only MOV instruction to resolve
+>     per-CPU addrs
+>   powerpc64/bpf: Inline bpf_get_smp_processor_id() and
+>     bpf_get_current_task()
+>
+>  arch/powerpc/net/bpf_jit_comp.c   | 16 ++++++++++++++++
+>  arch/powerpc/net/bpf_jit_comp64.c | 19 +++++++++++++++++++
+>  2 files changed, 35 insertions(+)
 
-Other than that:
+For both the patches:
 
-Acked-by: Paolo Abeni <pabeni@redhat.com>
-
-> +	for (i = 0; i < 2; i++) {
-> +		if (flag[i] > 0) {
-> +			create_packet(flag_buf[i], flag[i] * payload_len, 0,
-> +				      payload_len, 0);
-> +			tcph = (struct tcphdr *)(flag_buf[i] + tcp_offset);
-> +			set_flags(tcph, payload_len, psh, syn, rst, urg, cwr);
-> +		}
-> +	}
->  
->  	for (i = 0; i < NUM_PACKETS + 1; i++) {
-> -		if (i == flag) {
-> -			write_packet(fd, flag_buf, pkt_size, daddr);
-> +		if (i == flag[0]) {
-> +			write_packet(fd, flag_buf[0], pkt_size, daddr);
-> +			continue;
-> +		} else if (i == flag[1] && cwr) {
-> +			write_packet(fd, flag_buf[1], pkt_size, daddr);
->  			continue;
->  		}
->  		create_packet(buf, i * PAYLOAD_LEN, 0, PAYLOAD_LEN, 0);
-> @@ -1020,16 +1045,19 @@ static void gro_sender(void)
->  		send_ack(txfd, &daddr);
->  		write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
->  	} else if (strcmp(testname, "flags") == 0) {
-> -		send_flags(txfd, &daddr, 1, 0, 0, 0);
-> +		send_flags(txfd, &daddr, 1, 0, 0, 0, 0);
->  		write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
->  
-> -		send_flags(txfd, &daddr, 0, 1, 0, 0);
-> +		send_flags(txfd, &daddr, 0, 1, 0, 0, 0);
->  		write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
->  
-> -		send_flags(txfd, &daddr, 0, 0, 1, 0);
-> +		send_flags(txfd, &daddr, 0, 0, 1, 0, 0);
->  		write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
->  
-> -		send_flags(txfd, &daddr, 0, 0, 0, 1);
-> +		send_flags(txfd, &daddr, 0, 0, 0, 1, 0);
-> +		write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
-> +
-> +		send_flags(txfd, &daddr, 0, 0, 0, 0, 1);
->  		write_packet(txfd, fin_pkt, total_hdr_len, &daddr);
->  	} else if (strcmp(testname, "tcp") == 0) {
->  		send_changed_checksum(txfd, &daddr);
-> @@ -1163,6 +1191,12 @@ static void gro_receiver(void)
->  
->  		printf("urg flag ends coalescing: ");
->  		check_recv_pkts(rxfd, correct_payload, 3);
-> +
-> +		correct_payload[0] = PAYLOAD_LEN;
-> +		correct_payload[1] = PAYLOAD_LEN * 2;
-> +		correct_payload[2] = PAYLOAD_LEN * 2;
-> +		printf("cwr flag ends coalescing: ");
-> +		check_recv_pkts(rxfd, correct_payload, 3);
->  	} else if (strcmp(testname, "tcp") == 0) {
->  		correct_payload[0] = PAYLOAD_LEN;
->  		correct_payload[1] = PAYLOAD_LEN;
-
+Reviewed-by: Puranjay Mohan <puranjay@kernel.org>
 
