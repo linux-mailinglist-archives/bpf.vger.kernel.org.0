@@ -1,120 +1,129 @@
-Return-Path: <bpf+bounces-74941-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74942-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2629C68E13
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 11:43:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADD72C69205
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 12:37:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id 895D02A815
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 10:42:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id 6B86D2A93D
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 11:37:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FA134889B;
-	Tue, 18 Nov 2025 10:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCED0344025;
+	Tue, 18 Nov 2025 11:32:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WWmgDaQF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RmUOcx1z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D3233C515
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 10:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7482BD030
+	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 11:32:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763462572; cv=none; b=b/fCVRL1Xq+iQoG+wezK8dtQ6cp4MDQZJ2umanH9x5WHcvVTrADGBSc0oswpkupi8qxTe07d1IaOhHjltYWIiaaKystxVNaz0sJqBgnGqruFgq56sWaYNaLmCULq4wbduRFicICHDeYSBJs3fVGn03BDCypAdw7BS6OPfBid7jE=
+	t=1763465535; cv=none; b=iQa+hRnrQo+QGN7YsxmYJXLAOAkfszLrTXrh/9m6jrY3kwKpDDML7r47/ig2rRkv6Fh3u/d7Q8f4xMqaaa4ocaYXAeMowTKbqkgFupT9EK+CVyQgAHhZdGHgWI8NCRjeyh+nXjb/cIgzfhiOnHB8Go6zqe/kNvv13mmBsGDApfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763462572; c=relaxed/simple;
-	bh=vpkBfMqQ3K5js2CMNGkRdtr+acWamucEKHJA/OdeC2U=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YAffI5WYMf+SWHA5dAmSYmkbPOhBfHFpg0i7zhE+obV9I010Ptxq/LFHH+2EZHAgpfiQ+UrnPnXV6fi6Th+SPFSL6/KTcxnLrgQCDBNpR6mHfd7dd+bn/fynySO4dgPNjvforaRO2KX777FatzXyTL2h8aTWcc55bV5GAxuo3YE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WWmgDaQF; arc=none smtp.client-ip=209.85.128.43
+	s=arc-20240116; t=1763465535; c=relaxed/simple;
+	bh=ZSYPQPCcxbyR8zWwisBrVYv9dYR/LlXu7hMPPvqRZKE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gvALM8Umr9KlDuTog5kpaECDX3Xuxb3G7WfVBIjz+fL6Gt/2zMEQ18II6N4ip4y7x1GKa7goXiVX2L5F8pHgcKrb018oUkl/ngmYmRl4zzPwlVoqPy8iAw4mgo3MMYjRT5vwSdUz2ktzuHqC9oCImN6lAZYPDzoLVEAItr5M/Hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RmUOcx1z; arc=none smtp.client-ip=209.85.216.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-47774d3536dso43970165e9.0
-        for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 02:42:51 -0800 (PST)
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-34372216275so5838255a91.2
+        for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 03:32:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763462569; x=1764067369; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3LNZ7kLM8T15IVuj4fqsK7U08DBmLHPEhW/eCbNKEog=;
-        b=WWmgDaQFyhvA/kqq9+cGI1FJ/H6FW/W44bkeDaGERbIO/AXZBJivXy+ypDfuWnAFD1
-         +/VFdfwGgBqEZ/S59jv4HiM+a22nr8gf1qRxYIq2kcRsECzq9VyK+ZX+2yYnpQGz7jXT
-         k/m80+DtX0eBQh2TU28o1LJT9AWlzmlPfbiu/2B7FptO6t4P04aUL5Z52VPDwx6eI1r0
-         GQ/KiznA/t2/qHN6ik/6zMliHWuefZEYdxDtIga09tuxUD7M0YOT1PPQZtxfkY2ITcb8
-         lXgd3OnyatTkYqccTkaVB26IkgScY8c97vm30Jjs/t/60v/U/s4lyYT5PwsNrMYJ40E9
-         S+5Q==
+        d=gmail.com; s=20230601; t=1763465532; x=1764070332; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wj03nqtcPgmxcon+GCPvYB3CYWne1EFGms665/lYYBY=;
+        b=RmUOcx1zwMaypuoh8LLXaReBq1XiGuL8EVpQzTm7kmr/WAJabMVdZhTpBcUUMTVFTu
+         4x17YtRUIANplQ5hAUs7DEAAfE+EhnKDU+tr3GhPU0UB9vzBXX0EO8Hd7HGhqznoocWD
+         HsYE1L+UcWs6qUasEwjTvAZyZJXlXctFtDc8LtZrBKXalJkqdMsic9QMC6iq0jAa5QhK
+         61OUPA6s6C3FrBkCcq2nRsrXgKWxfe4cyVGfF0P390vNrN6x68ecAG1vNYfi6VnXsqEL
+         T36KYO/l7kGvEWDuCuWAjwJIjJXCtZn3LRWCRGTRm1CVjbUm5LKvMFHVbsysAWmyDSK0
+         2PRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763462569; x=1764067369;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=3LNZ7kLM8T15IVuj4fqsK7U08DBmLHPEhW/eCbNKEog=;
-        b=RcNUqSh8IHg5R8DczmEg/zsFr1ey8aSuS3nxGzn+cdUd4Fc74MThCnbroijawU6ZP/
-         Sojb8T/+mdcfxL+PSS4hRQQ5pnfi2CHCzuqCb/37Ba1dEmNXZsbpN+gPguc6HQhWhlHn
-         NTBmS1iKBk+ex2BYX003uCxvRfGmt0z213DrXLrEJpKUcjGYch+AxkzZOfMIgZPej7y2
-         EjY2SXqapj5hsJMxARY5yoyrVcIbiWQ+BsnGnqBGKsq70cvTKgdbfkZKm9iQLdS95OJZ
-         82nDztlMuEYzrpgz9L1f+ajsgFiX6gawFoki6sONMaDbu59vEwhYvD016LU52KbbscDa
-         rUrw==
-X-Forwarded-Encrypted: i=1; AJvYcCVLmWzSmZUOtk/ifFvxCr4NTWcLmUa4YNci+YE/JGoCiIO7ERLD4SZLjw62kqsQSDVW8qA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy0J3Pvn47vZgJKhruIdwTKRphsIfaKKgXGGYRz4tvwIt+SrNFN
-	kytJYYOo1Vct1mDRWYL7g7r8saokfxKtZIlYonWLgqkBJvqbeqXO3kbC
-X-Gm-Gg: ASbGncugoIJPOuG8HiMFpiyYu+3fw2Y6EEsJIoMjQxn7jUrS0YTwvLPVm7GsTkMCMiA
-	z6NhyVd+Z0KWnSocHki+5qXngJFAcS54y0xYL6/aPbxElXVXGtE8CpUK0DZjEj87AtvsnVnqg2S
-	lm32JRqP7mvl13db/QCjr4Ai9B/U3m7GDuuCSDY+1VdteKDZxg40sXU1DE8ArBIM/IGPYJzfG4B
-	p4uAoZceGYHIoKA7hGLuPftWywFrXPGyiaxSY92keApF+kPuHNhoAYP7U0o0eyeynUYNoYCpnJw
-	oobNsVeA9P5kmxDcz0vBHeNjNvXr4Y/FwrO0u0fN2xWbKR+lLmJg/S5SAAIdF+jG+wPRnRfra5g
-	d3n4CdYOMFkXRgPssy3VdaXAiWGRoMxPdHPHM5wmUgEgPooG4IT248OGy8SKcn7uHLPM3iFsA01
-	DoSxQQqJ+bVxJd5xHbQkbDGfvBa9M1OYjIcD0ruI1oOAN0LeVfEmhdPTu+KFvfna9/+ZKdiuxSc
-	w==
-X-Google-Smtp-Source: AGHT+IEBUYaX4Bp2LkqHG3fEIEVxQRNem8L5c5rq2F9Th3HxY/EOPdLBnO8LsPHmltiaFAAMNb258A==
-X-Received: by 2002:a05:600c:3b13:b0:477:9890:9ab8 with SMTP id 5b1f17b1804b1-477a94acd85mr27682085e9.3.1763462569245;
-        Tue, 18 Nov 2025 02:42:49 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4779a2892c8sm182555035e9.1.2025.11.18.02.42.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Nov 2025 02:42:49 -0800 (PST)
-Date: Tue, 18 Nov 2025 10:42:47 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Amery Hung <ameryhung@gmail.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org,
- daniel@iogearbox.net, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v1 1/1] bpf: Annotate rqspinlock lock acquiring
- functions with __must_check
-Message-ID: <20251118104247.0bf0b17d@pumpkin>
-In-Reply-To: <CAP01T74CcZqt9W8Y5T3NYheU8HyGataKXFw99cnLC46ZV9oFPQ@mail.gmail.com>
-References: <20251117191515.2934026-1-ameryhung@gmail.com>
-	<CAP01T74CcZqt9W8Y5T3NYheU8HyGataKXFw99cnLC46ZV9oFPQ@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        d=1e100.net; s=20230601; t=1763465532; x=1764070332;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wj03nqtcPgmxcon+GCPvYB3CYWne1EFGms665/lYYBY=;
+        b=SjC8xh3C/dDh+JVevSshVyAL1qv2wEg/KDlhp3gWoHob41TV3yzPeWDOAxWgXxM6xS
+         Z1yXhDcPkqAyIR51w7mgwoaHv4SMlgGYjVKLzTBU4d7lt1NJFMO/YCCOZjQCwpvYZtDV
+         By5WuVrdmv6XDc1P/vhT6wFWKCrTfyS9Cfrdccr8ONthEFq5DZTaISUTdm89oF1e6++L
+         vZ52KEeOnbykU6GtFApuIOuPffGlFM11a1BiWOqX02mHjopOYa/BWpNxfNwUO+kiw94z
+         2tS1q0tWVEq1yEtpYB5LsYGYfzsafx/3EmiC0wG0/+LD9DYfFfWciiUhacPpj4Mu5Gyk
+         v89Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUrGznlq6pSIucEoVbpMRJuLN5RQAcIEU/qFRxbS6tt+WFGbLIaz4Dklo+KVGX3SmoP8Yw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKaaIwCgW4G+hhfV9e6D6hvdA65z7ZqhRhPnIk0NMHas/kqjjW
+	S1foYHh4SrfSQKsXA5FFgS0Ycrl2baAbTRJEB+H7KzutMknpc7XCuB8d
+X-Gm-Gg: ASbGncvHgD0aG25ZZdD61SLdLbTii+1umYFxM+RdiCmKvxud8PDjrJ8xGvdGpx5oQr0
+	zgn3eU61aHeaKBdFiK0EQj+OSnXCtq56q6gHkgeWLUgJ36/JIsxMQIFz+rhEsPyDZDFk3SDqi4x
+	9X0mL2zRZXDXhPFXBGvWtaI1WvDdnvR8Dhw6A3jvnWDGc86c/hIa6TwddqPcXUvJd65KpaJ+oNT
+	wdclpjuPGiAaFkdW4VMumV8Y/c06+Sfza1MKScNI4xCTC7bv4aWs7KlN+hzOcmnPh+1FiG1+uh4
+	PsmiSFPmSEedlVjj3Rt/WqNFcRQTS61HwAG1DlAaTqd9bINK7PlqnDyIgqyHnGktY6OsKbA0C+6
+	sgtXMC64aibXK6c4OqibzBUoXeKGuFxhbklwgfSwZgB4i45bOcM505VSmicJqx7mcgoaO0DE3AS
+	B1RKplYLCWMua1qbAXp2nr32j8zFvNJcqCRa2zVhJbUERBc304ww==
+X-Google-Smtp-Source: AGHT+IG5VaG6Q0GIZPMrPaqT5GuUqUFcmdC9/5IBvB6VhxiJ4DPZkDYWpqxjta4C8WIbFOkh7vfiXg==
+X-Received: by 2002:a17:90b:3c90:b0:340:dd2c:a3d9 with SMTP id 98e67ed59e1d1-343f9ec8d58mr19036285a91.12.1763465531943;
+        Tue, 18 Nov 2025 03:32:11 -0800 (PST)
+Received: from localhost.localdomain ([103.246.102.164])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3456516d4a9sm12583736a91.11.2025.11.18.03.32.05
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 18 Nov 2025 03:32:11 -0800 (PST)
+From: Alessandro Decina <alessandro.d@gmail.com>
+To: netdev@vger.kernel.org
+Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Tirthendu Sarkar <tirthendu.sarkar@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	bpf@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	linux-kernel@vger.kernel.org,
+	Alessandro Decina <alessandro.d@gmail.com>
+Subject: [PATCH net v4 0/1] i40e: xsk: advance next_to_clean on status descriptors
+Date: Tue, 18 Nov 2025 22:31:16 +1100
+Message-Id: <20251118113117.11567-1-alessandro.d@gmail.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Tue, 18 Nov 2025 05:16:50 -0500
-Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+Alright, hopefully last time I spam you with this.
 
-> On Mon, 17 Nov 2025 at 14:15, Amery Hung <ameryhung@gmail.com> wrote:
-> >
-> > Locking a resilient queued spinlock can fail when deadlock or timeout
-> > happen. Mark the lock acquring functions with __must_check to make sure
-> > callers always handle the returned error.
-> >
-> > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> > ---  
-> 
-> Looks like it's working :)
-> I would just explicitly ignore with (void) cast the locktorture case.
+The status descriptor handling code is now shared in
+i40e_clean_programming_status. 
 
-I'm not sure that works - I usually have to try a lot harder to ignore
-a '__must_check' result.
+Changes since v3:
 
-	David
+* move the shared code in i40e_clean_programming_status
+
+Alessandro Decina (1):
+  i40e: xsk: advance next_to_clean on status descriptors
+
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 59 +++++++++++--------
+ .../ethernet/intel/i40e/i40e_txrx_common.h    |  5 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 14 ++---
+ 3 files changed, 42 insertions(+), 36 deletions(-)
+
+
+base-commit: 896f1a2493b59beb2b5ccdf990503dbb16cb2256
+-- 
+2.43.0
+
 
