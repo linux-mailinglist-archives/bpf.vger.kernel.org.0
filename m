@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-74972-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74970-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BC65C69A93
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 14:45:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73C7DC69A8B
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 14:45:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by tor.lore.kernel.org (Postfix) with ESMTPS id A77A02B863
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 13:45:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id 370162AD53
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 13:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07653559F3;
-	Tue, 18 Nov 2025 13:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20CED35581F;
+	Tue, 18 Nov 2025 13:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b="zAOzhpAC"
+	dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b="Jpf/J2Ev"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-o-3.desy.de (smtp-o-3.desy.de [131.169.56.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1233D30E822
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122BD302CD9
 	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 13:45:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.169.56.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763473534; cv=none; b=Fm7xogv7DoS9A8WEHX7xcIvPQDhvwFRpANrs09BCR4iNwOAKJWqw5rzmo7ve+rOVsfba9WXB4Hg5D4fNY9org5/l+aYhsDEDHVaYgg1941fdSaPWHDHcuLeWdfGUC/k1LDyN5bu4IXdn77Jsgx/LaIcJYGCotzed/B4L9Ak/Y7M=
+	t=1763473533; cv=none; b=dgzG4f+fxAFd4srlWs6N3Eu+HWQTN8Kc1AP5B1Q5hLdA8VwYM692lj/G3gNM8UXRm92xFqFU9McgxXnAQBrb3cLzSgC1626YOXF4X2EGnth7u3+PwdHMGO7THfKh4m+6SKDL5Xanfkfe/YjMVHfd0CW2y+nKCuiwfy4vxUnaoCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763473534; c=relaxed/simple;
-	bh=vbE5K4Y746+sHwqO28XZSBD4PdqpNRk4xBnN2bP1N6w=;
+	s=arc-20240116; t=1763473533; c=relaxed/simple;
+	bh=mcZ4LhawogliqBVIkG3C3rIlwFNUTxjXQ8NOYDdUIV0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IfsjhaACBceY2JWc3pboaCl8XsU0Z7mcOE0LV70dhIzGjhPlG6mXfsqQUeXrluRtaURWKoQbdxAcqREbyPUa2hgSsKdWaPOxKFgFhuAI9oV+e4Zd3SGmya2S9plHzUQGLKTqMKfMXuxM92DcPdiaSozGijSEqWJ15fXbVcWp7X4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu; spf=none smtp.mailfrom=mail.desy.de; dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b=zAOzhpAC; arc=none smtp.client-ip=131.169.56.156
+	 MIME-Version; b=tKqDR8m2PFNWuIq/4rf6w6tNu62mgIrIelMYMjguGeUc/a32qdBAnIFhPRm4T3aQZ4Pa4rhurIRRu16RhkypIzo6aWKuoDJHsFYKqUhYnyD4cxhVcaEVt8nl2qFdTSHfPKpkV9Bqzy1qnKphR4mkH+O/oLvyrtkomHeEAhwY5Tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu; spf=none smtp.mailfrom=mail.desy.de; dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b=Jpf/J2Ev; arc=none smtp.client-ip=131.169.56.156
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mail.desy.de
 Received: from smtp-o-1.desy.de (smtp-o-1.desy.de [131.169.56.154])
-	by smtp-o-3.desy.de (Postfix) with ESMTP id C326E11F99C
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 14:40:01 +0100 (CET)
-Received: from smtp-buf-2.desy.de (smtp-buf-2.desy.de [131.169.56.165])
-	by smtp-o-1.desy.de (Postfix) with ESMTP id 1A60511F749
+	by smtp-o-3.desy.de (Postfix) with ESMTP id A6DB411F99D
+	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 14:40:02 +0100 (CET)
+Received: from smtp-buf-1.desy.de (smtp-buf-1.desy.de [131.169.56.164])
+	by smtp-o-1.desy.de (Postfix) with ESMTP id BE51311F752
 	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 14:39:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp-o-1.desy.de 1A60511F749
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp-o-1.desy.de BE51311F752
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xfel.eu; s=default;
-	t=1763473194; bh=ah4vA3D3uUt2djqAovafZOm4YSoqWrMvwdl0gIqpAA4=;
+	t=1763473194; bh=tkjCRDPQ765txlV8JZ+ABr9PS/7sfDaodlYcpIi9qns=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=zAOzhpACvBs0mzq6HwKn5OiFMcagc5bF8SLh5GXcZxFvAxarcGPkvedvI4fBxsgon
-	 KfDyLg5Cqb+YWMAfao3CNagVakCzC+OqFN1fJBkRCFQB6v3gmmyrkpml+RwqiBEM+x
-	 yrBk0RBcJHzzpsyD+jAs8wDTa05k96aMM9TO6vao=
-Received: from smtp-m-2.desy.de (smtp-m-2.desy.de [IPv6:2001:638:700:1038::1:82])
-	by smtp-buf-2.desy.de (Postfix) with ESMTP id 0D41C120043;
+	b=Jpf/J2EvIPDWtbVPuP/AKcWYhjS7zzNNDXdunkcATBdEFJuw3IyqMW/XhdOQLPz3U
+	 utG6I3bXz30hzosIM3EJVVgK6DJfWZkGqWZhpLjOn9oD29bl6hbWWHxdEyYmv5Cuxh
+	 0qcyXECbM1HkG/WZie/lICBNLk08BY1CNDdX7KDA=
+Received: from smtp-m-2.desy.de (smtp-m-2.desy.de [131.169.56.130])
+	by smtp-buf-1.desy.de (Postfix) with ESMTP id B024220056;
 	Tue, 18 Nov 2025 14:39:54 +0100 (CET)
-Received: from b1722.mx.srv.dfn.de (b1722.mx.srv.dfn.de [IPv6:2001:638:d:c302:acdc:1979:2:e7])
-	by smtp-m-2.desy.de (Postfix) with ESMTP id F3F8216003F;
-	Tue, 18 Nov 2025 14:39:53 +0100 (CET)
+Received: from a1722.mx.srv.dfn.de (a1722.mx.srv.dfn.de [IPv6:2001:638:d:c301:acdc:1979:2:e7])
+	by smtp-m-2.desy.de (Postfix) with ESMTP id A4C5B16003F;
+	Tue, 18 Nov 2025 14:39:54 +0100 (CET)
 Received: from smtp-intra-1.desy.de (smtp-intra-1.desy.de [131.169.56.82])
-	by b1722.mx.srv.dfn.de (Postfix) with ESMTP id 3051E160058;
-	Tue, 18 Nov 2025 14:39:53 +0100 (CET)
+	by a1722.mx.srv.dfn.de (Postfix) with ESMTP id 2ABE13200A8;
+	Tue, 18 Nov 2025 14:39:54 +0100 (CET)
 Received: from exflqr30474.desy.de (exflqr30474.desy.de [192.168.177.248])
-	by smtp-intra-1.desy.de (Postfix) with ESMTP id 23D2080046;
-	Tue, 18 Nov 2025 14:39:53 +0100 (CET)
+	by smtp-intra-1.desy.de (Postfix) with ESMTP id 0EDBC80046;
+	Tue, 18 Nov 2025 14:39:54 +0100 (CET)
 Received: by exflqr30474.desy.de (Postfix, from userid 31112)
-	id 1EF95201AE; Tue, 18 Nov 2025 14:39:53 +0100 (CET)
+	id 0B119201AE; Tue, 18 Nov 2025 14:39:54 +0100 (CET)
 From: Martin Teichmann <martin.teichmann@xfel.eu>
 To: bpf@vger.kernel.org
 Cc: eddyz87@gmail.com,
 	ast@kernel.org,
 	andrii@kernel.org,
 	Martin Teichmann <martin.teichmann@xfel.eu>
-Subject: [PATCH v5 bpf-next 2/4] bpf: test the proper verification of tail calls
-Date: Tue, 18 Nov 2025 14:39:42 +0100
-Message-ID: <20251118133944.979865-3-martin.teichmann@xfel.eu>
+Subject: [PATCH v5 bpf-next 3/4] bpf: correct stack liveness for tail calls
+Date: Tue, 18 Nov 2025 14:39:43 +0100
+Message-ID: <20251118133944.979865-4-martin.teichmann@xfel.eu>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <4952b7bf8a0b50352b31bee7ddf89e7809101af6.camel@gmail.com>
 References: <4952b7bf8a0b50352b31bee7ddf89e7809101af6.camel@gmail.com>
@@ -78,138 +78,137 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Three tests are added:
-
-- invalidate_pkt_pointers_by_tail_call checks that one can use the
-  packet pointer after a tail call. This was originally possible
-  and also poses not problems, but was made impossible by 1a4607ffba35.
-
-- invalidate_pkt_pointers_by_static_tail_call tests a corner case
-  found by Eduard Zingerman during the discussion of the original fix,
-  which was broken in that fix.
-
-- subprog_result_tail_call tests that precision propagation works
-  correctly across tail calls. This did not work before.
-
-Signed-off-by: Martin Teichmann <martin.teichmann@xfel.eu>
+This updates bpf_insn_successors() reflecting that control flow might
+jump over the instructions between tail call and function exit, verifier
+might assume that some writes to parent stack always happen, which is
+not the case.
 ---
- .../selftests/bpf/progs/verifier_sock.c       | 39 ++++++++++++++-
- .../bpf/progs/verifier_subprog_precision.c    | 47 +++++++++++++++++++
- 2 files changed, 84 insertions(+), 2 deletions(-)
+ include/linux/bpf_verifier.h |  5 +++--
+ kernel/bpf/liveness.c        |  7 ++++---
+ kernel/bpf/verifier.c        | 29 +++++++++++++++++++++++++++--
+ 3 files changed, 34 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_sock.c b/tools/testing/selftests/bpf/progs/verifier_sock.c
-index 2b4610b53382..a2132c72d3b8 100644
---- a/tools/testing/selftests/bpf/progs/verifier_sock.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_sock.c
-@@ -1117,10 +1117,17 @@ int tail_call(struct __sk_buff *sk)
- 	return 0;
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 5441341f1ab9..8d0b60fa5f2b 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -527,7 +527,6 @@ struct bpf_insn_aux_data {
+ 		struct {
+ 			u32 map_index;		/* index into used_maps[] */
+ 			u32 map_off;		/* offset from value base address */
+-			struct bpf_iarray *jt;	/* jump table for gotox instruction */
+ 		};
+ 		struct {
+ 			enum bpf_reg_type reg_type;	/* type of pseudo_btf_id */
+@@ -550,6 +549,7 @@ struct bpf_insn_aux_data {
+ 		/* remember the offset of node field within type to rewrite */
+ 		u64 insert_off;
+ 	};
++	struct bpf_iarray *jt;	/* jump table for gotox or bpf_tailcall call instruction */
+ 	struct btf_struct_meta *kptr_struct_meta;
+ 	u64 map_key_state; /* constant (32 bit) key tracking for maps */
+ 	int ctx_field_size; /* the ctx field size for load insn, maybe 0 */
+@@ -652,6 +652,7 @@ struct bpf_subprog_info {
+ 	u32 start; /* insn idx of function entry point */
+ 	u32 linfo_idx; /* The idx to the main_prog->aux->linfo */
+ 	u32 postorder_start; /* The idx to the env->cfg.insn_postorder */
++	u32 exit_idx; /* Index of one of the BPF_EXIT instructions in this subprogram */
+ 	u16 stack_depth; /* max. stack depth used by this function */
+ 	u16 stack_extra;
+ 	/* offsets in range [stack_depth .. fastcall_stack_off)
+@@ -669,9 +670,9 @@ struct bpf_subprog_info {
+ 	bool keep_fastcall_stack: 1;
+ 	bool changes_pkt_data: 1;
+ 	bool might_sleep: 1;
++	u8 arg_cnt:3;
+ 
+ 	enum priv_stack_mode priv_stack_mode;
+-	u8 arg_cnt;
+ 	struct bpf_subprog_arg_info args[MAX_BPF_FUNC_REG_ARGS];
+ };
+ 
+diff --git a/kernel/bpf/liveness.c b/kernel/bpf/liveness.c
+index a7240013fd9d..60db5d655495 100644
+--- a/kernel/bpf/liveness.c
++++ b/kernel/bpf/liveness.c
+@@ -482,11 +482,12 @@ bpf_insn_successors(struct bpf_verifier_env *env, u32 idx)
+ 	struct bpf_prog *prog = env->prog;
+ 	struct bpf_insn *insn = &prog->insnsi[idx];
+ 	const struct opcode_info *opcode_info;
+-	struct bpf_iarray *succ;
++	struct bpf_iarray *succ, *jt;
+ 	int insn_sz;
+ 
+-	if (unlikely(insn_is_gotox(insn)))
+-		return env->insn_aux_data[idx].jt;
++	jt = env->insn_aux_data[idx].jt;
++	if (unlikely(jt))
++		return jt;
+ 
+ 	/* pre-allocated array of size up to 2; reset cnt, as it may have been used already */
+ 	succ = env->succ;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 117a2b1cf87c..f564150ec807 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3555,8 +3555,12 @@ static int check_subprogs(struct bpf_verifier_env *env)
+ 			subprog[cur_subprog].has_ld_abs = true;
+ 		if (BPF_CLASS(code) != BPF_JMP && BPF_CLASS(code) != BPF_JMP32)
+ 			goto next;
+-		if (BPF_OP(code) == BPF_EXIT || BPF_OP(code) == BPF_CALL)
++		if (BPF_OP(code) == BPF_CALL)
+ 			goto next;
++		if (BPF_OP(code) == BPF_EXIT) {
++			subprog[cur_subprog].exit_idx = i;
++			goto next;
++		}
+ 		off = i + bpf_jmp_offset(&insn[i]) + 1;
+ 		if (off < subprog_start || off >= subprog_end) {
+ 			verbose(env, "jump out of range from insn %d to %d\n", i, off);
+@@ -18150,6 +18154,25 @@ static int visit_gotox_insn(int t, struct bpf_verifier_env *env)
+ 	return keep_exploring ? KEEP_EXPLORING : DONE_EXPLORING;
  }
  
--/* Tail calls invalidate packet pointers. */
-+static __noinline
-+int static_tail_call(struct __sk_buff *sk)
++static int visit_tailcall_insn(struct bpf_verifier_env *env, int t)
 +{
-+	bpf_tail_call_static(sk, &jmp_table, 0);
++	static struct bpf_subprog_info *subprog;
++	struct bpf_iarray *jt;
++
++	if (env->insn_aux_data[t].jt)
++		return 0;
++
++	jt = iarray_realloc(NULL, 2);
++	if (!jt)
++		return -ENOMEM;
++
++	subprog = bpf_find_containing_subprog(env, t);
++	jt->items[0] = t + 1;
++	jt->items[1] = subprog->exit_idx;
++	env->insn_aux_data[t].jt = jt;
 +	return 0;
 +}
 +
-+/* Tail calls in sub-programs invalidate packet pointers. */
- SEC("tc")
- __failure __msg("invalid mem access")
--int invalidate_pkt_pointers_by_tail_call(struct __sk_buff *sk)
-+int invalidate_pkt_pointers_by_global_tail_call(struct __sk_buff *sk)
- {
- 	int *p = (void *)(long)sk->data;
+ /* Visits the instruction at index t and returns one of the following:
+  *  < 0 - an error occurred
+  *  DONE_EXPLORING - the instruction was fully explored
+@@ -18210,6 +18233,8 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
+ 				mark_subprog_might_sleep(env, t);
+ 			if (bpf_helper_changes_pkt_data(insn->imm))
+ 				mark_subprog_changes_pkt_data(env, t);
++			if (insn->imm == BPF_FUNC_tail_call)
++				visit_tailcall_insn(env, t);
+ 		} else if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+ 			struct bpf_kfunc_call_arg_meta meta;
  
-@@ -1131,4 +1138,32 @@ int invalidate_pkt_pointers_by_tail_call(struct __sk_buff *sk)
- 	return TCX_PASS;
- }
+@@ -21471,7 +21496,7 @@ static void clear_insn_aux_data(struct bpf_verifier_env *env, int start, int len
+ 	int i;
  
-+/* Tail calls in static sub-programs invalidate packet pointers. */
-+SEC("tc")
-+__failure __msg("invalid mem access")
-+int invalidate_pkt_pointers_by_static_tail_call(struct __sk_buff *sk)
-+{
-+	int *p = (void *)(long)sk->data;
-+
-+	if ((void *)(p + 1) > (void *)(long)sk->data_end)
-+		return TCX_DROP;
-+	static_tail_call(sk);
-+	*p = 42; /* this is unsafe */
-+	return TCX_PASS;
-+}
-+
-+/* Direct tail calls do not invalidate packet pointers. */
-+SEC("tc")
-+__success
-+int invalidate_pkt_pointers_by_tail_call(struct __sk_buff *sk)
-+{
-+	int *p = (void *)(long)sk->data;
-+
-+	if ((void *)(p + 1) > (void *)(long)sk->data_end)
-+		return TCX_DROP;
-+	bpf_tail_call_static(sk, &jmp_table, 0);
-+	*p = 42; /* this is NOT unsafe: tail calls don't return */
-+	return TCX_PASS;
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c b/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c
-index ac3e418c2a96..de5ef3152567 100644
---- a/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c
-@@ -793,4 +793,51 @@ __naked int stack_slot_aliases_precision(void)
- 	);
- }
- 
-+struct {
-+        __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+        __uint(max_entries, 1);
-+        __type(key, __u32);
-+        __type(value, __u32);
-+} map_array SEC(".maps");
-+
-+__naked __noinline __used
-+static unsigned long identity_tail_call(void)
-+{
-+	/* the simplest identity function involving a tail call */
-+        asm volatile (
-+		"r6 = r2;"
-+		"r2 = %[map_array] ll;"
-+		"r3 = 0;"
-+		"call %[bpf_tail_call];"
-+		"r0 = r6;"
-+		"exit;"
-+		:
-+		: __imm(bpf_tail_call),
-+		  __imm_addr(map_array)
-+		: __clobber_all);
-+}
-+
-+SEC("?raw_tp")
-+__failure __log_level(2)
-+__msg("6: (0f) r1 += r0")
-+__msg("mark_precise: frame0: regs=r0 stack= before 5: (bf) r1 = r6")
-+__msg("mark_precise: frame0: regs=r0 stack= before 4: (27) r0 *= 4")
-+__msg("mark_precise: frame0: parent state regs=r0 stack=:  R0=Pscalar() R6=map_value(map=.data.vals,ks=4,vs=16) R10=fp0")
-+__msg("math between map_value pointer and register with unbounded min value is not allowed")
-+__naked int subprog_result_tail_call(void)
-+{
-+	asm volatile (
-+		"r2 = 3;"
-+		"call identity_tail_call;"
-+		"r0 *= 4;"
-+		"r1 = %[vals];"
-+		"r1 += r0;"
-+		"r0 = *(u32 *)(r1 + 0);"
-+		"exit;"
-+		:
-+		: __imm_ptr(vals)
-+		: __clobber_common
-+	);
-+}
-+
- char _license[] SEC("license") = "GPL";
+ 	for (i = start; i < end; i++) {
+-		if (insn_is_gotox(&insns[i])) {
++		if (aux_data[i].jt) {
+ 			kvfree(aux_data[i].jt);
+ 			aux_data[i].jt = NULL;
+ 		}
 -- 
 2.43.0
 
