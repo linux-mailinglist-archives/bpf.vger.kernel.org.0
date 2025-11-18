@@ -1,219 +1,149 @@
-Return-Path: <bpf+bounces-74846-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74847-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F353EC670E6
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 03:48:28 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E424C67147
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 04:01:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by tor.lore.kernel.org (Postfix) with ESMTPS id 02BB029B05
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 02:48:28 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTPS id D323D29B75
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 03:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9836328619;
-	Tue, 18 Nov 2025 02:48:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E642123E23C;
+	Tue, 18 Nov 2025 03:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="wa2Ajy1W"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="cYl+PDXv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09881328241
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 02:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FCBDD515
+	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 03:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763434096; cv=none; b=bSjC8MM57PTvOT9aQhE4lHYqywuENjJIYux6o/KhQrmFEfIB1qhWAvuCltwY8boG9e2/nVh01u2ScFYkOuxqYVphDcfHJ6Zj/Nrp47GxCT/azeA1BE8IOWFVhWtSpCkZSVR8ym2LuwuF3Wz8TM/VKiSeCdPCc4Y0SHoYDUiNOp4=
+	t=1763434866; cv=none; b=psShg6Ymv/gJG/44NnhWdpAHHhBT5l6ceqJStBLV/9x/i1xRNgeQ3HTDhvTXvTFpGmgYl/p3R6/vqrNJQy0CzrxDerleb+faLDjYT7s/nuYBZ+/hwa9OWReJinYrWqyNI9+NlEtFf/LoUnYtSulLFdYtAu3NbdKs7TXjy38nqg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763434096; c=relaxed/simple;
-	bh=MEg6VBEVV2m8SvfiO9CWhvWYZd5LbSfbjXaNkQlbk9w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X4ZkHocfBJG7IQp6iPM/7n0dSUDiJazj/NC1+xqqNlxb6iFgWOtSA+MXe9COJ6bRtUX3wSTX5Q5bcFZh1Dp70zAwihON4eMANhXIdurd/NQ8mlrauWpBAxjTqMWy3BVt+hUPscKsAUyvjgvHtnIM2X0HjAo5W6NUEfa3B3cYFt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=wa2Ajy1W; arc=none smtp.client-ip=209.85.128.181
+	s=arc-20240116; t=1763434866; c=relaxed/simple;
+	bh=VT5Mqbr0H9U5jZ6tvnfKGudfzjuLEZn82jDiZmcoseM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kib8tfvAteaApNmt5BKU8oqz2b8hSarc68s6aSZya2jUHjBzLtk+W/WSRK1yfEUlD9/SDfLwNjcU0edhEwMltayS8q272Mff66sodwGDBGwWbInyvdVr+d9frNXkuaR6drlkyEMr5HkyKQGbEh+CPaOL6iKNH6LYeEaNLqVemSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=cYl+PDXv; arc=none smtp.client-ip=209.85.222.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-786a85a68c6so52572037b3.3
-        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 18:48:12 -0800 (PST)
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-8b28f983333so520617785a.3
+        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 19:01:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1763434092; x=1764038892; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c06NGCM9VdYp1GTTRIFTmtkJd9Z8kFTzkNdLeCh5FMA=;
-        b=wa2Ajy1W9yUIBYkcZMx8mmUUEJuY7fLgrOgNRMt+c3a8D+Qo8/rP7tRL/3TvSq7MK9
-         sbxpqNnxgQPvYQOorpMu9/K9AKML1jKyFahpZgYEN5cYOP/ZtkuulmuxhGfLbpdLCRAU
-         JivII6Mx1QLEveykBE3TTcXKuvppBIEpruJFfd/MSt/GAmj0zZhNZvUJE4OOigfO/KKP
-         yuwzTl0a3M8uW2ibDzC2552sGhWJD3g3Uxz2dYF/wE6CLFaUGjiDZ3I3CQ/vXhICjSHk
-         LHbw1GOFV9lfzHnPrd07ecgO+fQ4Tw3qmuHC2ACqdsjo7pVMfQZRMennu4dWg+ueAuqj
-         2/EA==
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1763434863; x=1764039663; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=a4RA5qcwtRAcDK+scEe8d7frLMYjRRdNWkIMIlWZXOY=;
+        b=cYl+PDXvBwwyshEnODQqTI0fB0XPcAYoIHhauQQZQxNcdyCo87UUXHIy8/OHv4meyn
+         gX3xNJKo16E15CfdxwTXaKEBGDx0yq4MZQQ6siwGGSa2cfMUpTrFvNn3t7M19k2bMu4N
+         BVsHvyiDajSJNr/a6etIqHTzaVJndgeDKPCP4kKvx+O4P2qgcNrms42bWrqasNJ53tIV
+         W4pWh2TbQ/8a0joskN/IwiF/YoSnmgCzvhAg5Ge8lvbMdrhwbsc9SIdVMaLyGp+EuTop
+         Ug4WgmAlgkjdYCHjGUxS0/c6CkRqwK7bAcTlZlk3xmHw78MsEtHSojKyn+I/3sLy0fb1
+         MjhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763434092; x=1764038892;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=c06NGCM9VdYp1GTTRIFTmtkJd9Z8kFTzkNdLeCh5FMA=;
-        b=L5tKOPoG/6pzSAAZD3dgQvv654esDrjh1drF9KpahYWXSgdTp7xgXuAH8UYQYb5GMt
-         1C67uAdbnrq42uLYorjJTXzf5IzpaHK/IBaeVoSVRHcUTWkGerBkYpLwN7Y0N8E9sWMn
-         6VtKLWDxqNmQ5GhrqJJkH9sr5wn7PZSbUDpj471S3Iq0TgeMHx0WT9njg9eRVC69kk4b
-         uzS+xwALVC39MGH0g7Isac0ZCpwXJLW+1gtuXpIpkbHDlfkoOqLVt3dTXaHD6gzOjGIh
-         tNmwvCTDUCpN9thBCbiJ+UMpKMT1V9UH2LC5qksyVu2WjToG+YbO013MsnH30vmADmvJ
-         HMMw==
-X-Gm-Message-State: AOJu0YzaEoi5S7bDK9RP+M3+poICPHOym5f1i8bDyVFiHNjaqJXevppQ
-	tW3G8IZ7cAgctkFRdoOKW6px0iRdqCetaLLp5W3o6Q+/zMV/pUFSS+99q6gRv55+zuhLttsldkh
-	ErNYPcESHc257L3E7hfGVukr3l/LkvOGli7mQ2843EA==
-X-Gm-Gg: ASbGncvEIEShnur2skkeK72ddHI7PhAHnWSt0G2rGVsCrgb/GK7jhwJjcnAaLyFPrcn
-	JD9mrk5CNx6yo0i1bZqAESBWy88zO7qQ2Wk0Nf8l+Cn44ry2BLLj0teeG5hzk+P1b6CH2ITIItx
-	lLP5veNXvxZbycCXna/EHYkEgxEDlsQZqQ//pOhDFSxB0iHL2fZfWpkH86FRjioMa5byG/yD9tq
-	oUFeRq5U9dSxfwPz25iJn+BZcqv5eEMNQjD9V/YRSrKFzzXbSTvJASK2Sfr4FI=
-X-Google-Smtp-Source: AGHT+IG0loNlbECLjmeTx+poBV/J1pUD+sDNUAhBS1hC33E+Qs+Ku/+A/b4ne0VDIwf1oUZtkS+1gPfv7AgEvTbm44E=
-X-Received: by 2002:a05:690c:4489:b0:786:59d3:49b7 with SMTP id
- 00721157ae682-78929e43b90mr135878527b3.13.1763434091889; Mon, 17 Nov 2025
- 18:48:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1763434863; x=1764039663;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a4RA5qcwtRAcDK+scEe8d7frLMYjRRdNWkIMIlWZXOY=;
+        b=iM+XFkWbr8og/2pCKl1OowOposKx0Uv1EKO3doBYmZ+zKbnTxonei93cPA5nahhx/K
+         NX8aRtImaZ8KQ1qKKpOAywsCdlTkotU+FIMaf0fJpQ6teUwQBHa3HWRQb6l5jhq6lIc0
+         Euzi5hrtNqwhXCtqqMyjbxmHsQQuVj6vDjba1ToBMDfWw70sohfMqcY8lS/3iaaIK8Ax
+         gZznV9Ps/VLBGOb/8xCNR8DZNNHGrVd7s2K/+c+UPOfjpmjFKI94uWukdHtfiGsZo2+U
+         mmJgO0hFf9+Aqa5oYzvpATSqLPyPqRflFQn6aaY8HkLLfkoekUHXPGn8vLSAikguIAGS
+         Rhkg==
+X-Gm-Message-State: AOJu0YzgKvVb4qWhhZJhrNZJ9p/3YTVO1soVqP48dnbEgF8R1r0uAEF6
+	zEXq9L7eQlU0QJJzMT0OfDvS8dvA4mucG+kD2vq+mKyYZ4Dn2xq6w3uR7FeQHwfahb9OnK7rnb8
+	7NcQGJRg=
+X-Gm-Gg: ASbGncujom5+18Duvq44DJertB79U+WpiC46H6olpyQMb0ATHKso0fmVUb3GaunuAUY
+	EIjEPtF/jxWvArOl6w/ZCKkGVE8sEanEqaHmerdSpI8Td1vDalXgOkinzUuatk71oZ+fk6LOuXX
+	+oo3mQAZBpXGicn2vrNjjDhbP6BGh9H3BkYCkTRd4LC6NmJQCeyAgHkd9JHsJ3p/Jz1a3pl6OfG
+	MbPcqCAplyaQKu5XZb2igmTkH6xXAgQlyemeTBtV/vcdyPR8YUlira39OHNXKxWtTh6Np10KykC
+	rkSI+I/avg+JbshGrRkmi8ZonHiRrFBwxW2tmTCics8hK3iNPVKhxtCuMeMnb+aIfnF5FNYT/s6
+	LE+dWG9fvRU5sC3VTe2qMWrxnAAfF/6oGFYYCildaQ/1cZgW+1+TFkhOSjsy1O6z+MpS1uaZDGs
+	UNZk4mWCUy5g==
+X-Google-Smtp-Source: AGHT+IF/uZVymeZv1Bf4HaxNmmqi2auMwAyLMsUgUcrjuSmjGDG8aQpb/Dm6PHj+2BDYfEFoKjQ4tg==
+X-Received: by 2002:a05:620a:2915:b0:8ad:5014:53e3 with SMTP id af79cd13be357-8b2c31c9406mr1723547385a.80.1763434863246;
+        Mon, 17 Nov 2025 19:01:03 -0800 (PST)
+Received: from boreas.. ([140.174.219.137])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b2af043037sm1117130185a.48.2025.11.17.19.01.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Nov 2025 19:01:02 -0800 (PST)
+From: Emil Tsalapatis <emil@etsalapatis.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	memxor@gmail.com,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	yonghong.song@linux.dev,
+	Emil Tsalapatis <emil@etsalapatis.com>
+Subject: [PATCH v2 0/4] libbpf: move arena variables out of the zero page
+Date: Mon, 17 Nov 2025 22:00:54 -0500
+Message-ID: <20251118030058.162967-1-emil@etsalapatis.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251117235636.140259-3-emil@etsalapatis.com> <0d256ee4485ea2c5142e8692b7dbbd559d05c41afb1f4ed81b78fd59eed9eb15@mail.kernel.org>
-In-Reply-To: <0d256ee4485ea2c5142e8692b7dbbd559d05c41afb1f4ed81b78fd59eed9eb15@mail.kernel.org>
-From: Emil Tsalapatis <emil@etsalapatis.com>
-Date: Mon, 17 Nov 2025 21:48:01 -0500
-X-Gm-Features: AWmQ_bk-jximTozMYqE9OyzGFbp0wWsjVNYTI9cekv9TpjgOKO5HKwxB_-i_zLQ
-Message-ID: <CABFh=a6njNeSbOL3BHhMaPRcZ+PE0mQSQicH0mSX79GDOZG-+w@mail.gmail.com>
-Subject: Re: [PATCH 2/4] libbpf: add stub for offset-related skeleton padding
-To: bot+bpf-ci@kernel.org
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	john.fastabend@gmail.com, memxor@gmail.com, andrii@kernel.org, 
-	eddyz87@gmail.com, yonghong.song@linux.dev, martin.lau@kernel.org, 
-	clm@meta.com, ihor.solodrai@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 17, 2025 at 7:18=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
->
-> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> > index 993c7d948..6ed125b1b 100644
-> > --- a/tools/bpf/bpftool/gen.c
-> > +++ b/tools/bpf/bpftool/gen.c
->
-> [ ... ]
->
-> > @@ -269,7 +269,8 @@ static int codegen_datasec_def(struct bpf_object *o=
-bj,
-> >  static bool is_mmapable_map(const struct bpf_map *map, char *buf, size=
-_t sz)
-> >  {
-> >       size_t tmp_sz;
-> >
-> >       if (bpf_map__type(map) =3D=3D BPF_MAP_TYPE_ARENA && bpf_map__init=
-ial_value(map, &tmp_sz)) {
-> >               snprintf(buf, sz, "arena");
-> >               return true;
-> >       }
-> >
-> >       if (!bpf_map__is_internal(map) || !(bpf_map__map_flags(map) & BPF=
-_F_MMAPABLE))
-> >               return false;
-> >
-> >       if (!get_map_ident(map, buf, sz))
-> >               return false;
-> >
-> >       return true;
-> >  }
->
-> [ ... ]
->
-> > @@ -287,6 +291,7 @@ static int codegen_datasecs(struct bpf_object *obj,=
- const char *obj_name)
-> >       struct bpf_map *map;
-> >       const struct btf_type *sec;
-> >       char map_ident[256];
-> > +     int var_off;
-> >       int err =3D 0;
-> >
-> >       d =3D btf_dump__new(btf, codegen_btf_dump_printf, NULL, NULL);
->
-> [ ... ]
->
-> > @@ -303,7 +316,13 @@ static int codegen_datasecs(struct bpf_object *obj=
-, const char *obj_name)
-> >                       printf("        struct %s__%s {\n", obj_name, map=
-_ident);
-> >                       printf("        } *%s;\n", map_ident);
-> >               } else {
-> > -                     err =3D codegen_datasec_def(obj, btf, d, sec, obj=
-_name);
-> > +                     var_off =3D bpf_map__data_offset(map);
-> > +                     if (var_off < 0)  {
-> > +                             p_err("bpf_map__data_offset called on unm=
-apped map\n");
-> > +                             err =3D var_off;
-> > +                             goto out;
-> > +                     }
-> > +                     err =3D codegen_datasec_def(obj, btf, d, sec, obj=
-_name, var_off);
-> >                       if (err)
-> >                               goto out;
-> >               }
->
-> Can bpf_map__data_offset() be called here on an arena map that doesn't
-> have its mmaped field set yet?
->
-> During skeleton generation in do_skeleton(), the code calls
-> bpf_object__open_mem() but never calls bpf_object__load(). Looking at
-> is_mmapable_map() above, arena maps return true and will reach this code
-> path. However, arena maps only get their mmaped field set during
-> bpf_object__load() in libbpf.c around line 5615, not during
-> bpf_object__open().
->
-> This means bpf_map__data_offset() will be called on arena maps with
-> map->mmaped =3D=3D NULL, causing it to return -EINVAL, which would fail
-> skeleton generation for any program with arena maps.
->
+Modify libbpf to place arena globals in a small offset inside the arena
+mapping instead of at the very beginning. This allows programs to leave
+the "zero page" of the arena unmapped, so that NULL arena pointer 
+dereferences trigger a page fault and associated backtrace in BPF streams.
+In contrast, the current policy of placing global data in the zero pages
+means that NULL dereferences silently corrupt global data, e.g, arena 
+qspinlock state. This makes arena bugs more difficult to debug.
 
-This analysis seems incorrect. bpf_object__open_mem -> bpf_object_open ->
-bpf_object__init_maps -> bpf_object__init_user_btf_maps -> init_arena_map_d=
-ata
-happens at opening time, and this call chain properly populates the ->mmape=
-d
-field of the arena map.
+The patchset adds code to libbpf to move global arena data 16 pages into 
+the arena mapping. If this move is impossible, libbpf tries progressively
+smaller increments, and finally defaults to 0 if there is not enough
+space in the arena. At load time, libbpf adjusts each symbol's location
+within the arena by that offset. The patchset also adds padding to the 
+BPF skeleton struct arena datasec to ensure the arena's fields are 
+pointing in the right locations within the mapping.
 
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 706e7481b..32dac36ba 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -10552,6 +10552,16 @@ const char *bpf_map__name(const struct bpf_map=
- *map)
-> >       return map->name;
-> >  }
-> >
-> > +int bpf_map__data_offset(const struct bpf_map *map)
-> > +{
-> > +     if (!map->mmaped)
-> > +             return -EINVAL;
-> > +
-> > +     /* No offsetting for now. */
-> > +     return 0;
-> > +}
->          ^^^^
->
-> The check for map->mmaped here causes the problem described above. Since
-> this function is called during skeleton generation (before load), the
-> mmaped field won't be set for arena maps yet. Should this check be
-> removed, or should the skeleton generation code path be changed?
->
+Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
 
-See above.
+HISTORY
+-------
 
-> [ ... ]
->
->
-> ---
-> AI reviewed your patch. Please fix the bug or email reply why it's not a =
-bug.
-> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/READM=
-E.md
->
-> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/194488=
-68610
+v1->v2
+------
+
+v1: https://lore.kernel.org/bpf/20251117235636.140259-1-emil@etsalapatis.com/
+
+- Fix ifdef guards causing unused variable errors for
+  architectures/compilers without addr_space_cast support (CI)
+
+Emil Tsalapatis (4):
+  selftests/bpf: explicitly account for globals in verifier_arena_large
+  libbpf: add stub for offset-related skeleton padding
+  libbpf: offset global arena data into the arena if possible
+  selftests/bpf: add tests for the arena offset of globals
+
+ tools/bpf/bpftool/gen.c                       | 23 ++++++-
+ tools/lib/bpf/libbpf.c                        | 36 ++++++++++-
+ tools/lib/bpf/libbpf.h                        |  9 +++
+ tools/lib/bpf/libbpf.map                      |  1 +
+ .../selftests/bpf/prog_tests/verifier.c       |  6 ++
+ .../bpf/progs/verifier_arena_globals1.c       | 60 ++++++++++++++++++
+ .../bpf/progs/verifier_arena_globals2.c       | 49 +++++++++++++++
+ .../bpf/progs/verifier_arena_globals3.c       | 61 +++++++++++++++++++
+ .../bpf/progs/verifier_arena_large.c          | 25 ++++++--
+ 9 files changed, 261 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_arena_globals1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_arena_globals2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_arena_globals3.c
+
+-- 
+2.49.0
+
 
