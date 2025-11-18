@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-74849-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74850-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19C4EC6714B
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 04:01:21 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D4FCC67153
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 04:02:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7E36435B85E
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 03:01:20 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CF26A4EAFC6
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 03:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3083E28D8ED;
-	Tue, 18 Nov 2025 03:01:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C577926ED3A;
+	Tue, 18 Nov 2025 03:01:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="KRPGJ8V/"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="ww+9BbOO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D12D515
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 03:01:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 627161DF963
+	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 03:01:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763434876; cv=none; b=dSqMDAc5sWCYXmrzqcn1RqpGCoCI0lPrhiloJJEzjNaVwmeCQJe0gD3Q8fEHuCI2PQcgv4dxrTl3k7/8yyZU3bohHh9pdj0gsCQx6MGOoD0XYYmwrWmT6pX24jPGFADZYIE4qbQAZHO7Z7sgppPS0xo9H700XQag2y8sFndUXFg=
+	t=1763434878; cv=none; b=lX3K8gOgmn/IrkfIEPIJNLz2AORLZNikzYxL5ik0vgeGKopWgXfXry72V4crtF9NgmIofcNPXjuPz0XLQHBcSw5vzTDmP2zRIZnWQTesj9QdSo1tp4vbqm1+ZpcdCQrv/GhqEcu8vopOSPPZgwaMzLfUDvVFMySk+QEUmoRDjXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763434876; c=relaxed/simple;
-	bh=c1IyFbHOX2idMINBtXrX7GH+BKTeybjwVnG+q9GqabI=;
+	s=arc-20240116; t=1763434878; c=relaxed/simple;
+	bh=Hwx7aVYImdS+Ac3R+5iIp9X4tYPObnFSADm3yjneK9w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I7bbJSorLx2clRUKDax59G02fzSX2dsAdSugJ0DpE1nWyAJBBTz5+4rszRvA3hylrrA7eosZdl+0XfW2IbeomPe2AoOfjKT9CVqff8YKaF59uuYvBgCjnH0QSXJAML+GuI0LnVaNAZG2UZ1rrv048g/rEzvOLouKvVLTew/SjPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=KRPGJ8V/; arc=none smtp.client-ip=209.85.222.176
+	 MIME-Version; b=jykGz3jq4bPRBt3RIYu4tJGpCwNluO75CvIEXukU9WvBWZ4imy3mzp+we3O1xpCyCr2JlYOszTN60tcZnB+c08u1VYpfGavL2oBnMYSJqieCfnMuV8YIef2GNfOSEsAt1RBmqN/FWCujA40adpq95l0VWazoKNvW+rjZIOG6mcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=ww+9BbOO; arc=none smtp.client-ip=209.85.222.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-8b2ec756de0so156978485a.3
-        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 19:01:14 -0800 (PST)
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-8b1f2fbaed7so396822085a.2
+        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 19:01:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1763434874; x=1764039674; darn=vger.kernel.org;
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1763434875; x=1764039675; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LvtCJMihnDhsJMQjgOrRxxwn67jxIU81fxfJ5Bb1Nr4=;
-        b=KRPGJ8V/h8aDcDj2NyGaiRNGU9vCVrwNywzgsZFwpurd/5lts5PfRBGK6ALgasUCzB
-         GS56HkiwsW4JtIlqjdm2QmX8r9CN4zLLHr+fcuutbn6V3kbwi8Sgr28BLMM5jnGSGrcO
-         EJwazXfz/YXzeNrjdk7sKwzkL5mHeneaF9maF8xub34NGhQizv4Ip4o1PNBInuQ9RkJq
-         oAKJw/xaEkpXP9QqcEUyZmCATlv/osmra9NXXWYz2H8grbdpHMxaYahqu9as1aX8pmTE
-         np7S6k8ax9F5BUWkvta9AwbXmAfwlHAac+W/V2828qfrpnSJbfMh1WyvXh8SFI8pCrmg
-         kolQ==
+        bh=Vo8eszMObAKbDdr3cj2DycamsfkXDpRcvmTtsqHABD0=;
+        b=ww+9BbOOu2ReEvBId4owN76ovt6t7Pmit4EWMxnoWaAGMGEtS1cn2R+TysSb40dkwj
+         OtiyjmMSbZWmecoF+RwggM1lpF5X53arXdoLauXblY0pIQgC6XTnAiwuq2Y5NI2bomNM
+         WzmVMZJ44TdObSPS36wvOjKat6XNP2F5oHTEe5EshJ463ODr1x6G5dmJd1UxPIMyBJy/
+         EHvVwnBt2qKNAD8cEVR4Uwo96bsbwKgpcTGJQ6yF24+igtD3bYM6EAs7EOEsMyHdAIQr
+         eHRaZB4qCuzA7G4Td0d3tSxBTv2TrvYbdwn8MkbyWT8GBqGnHPLXYZfQXp9yA7Cf+aYo
+         C2bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763434874; x=1764039674;
+        d=1e100.net; s=20230601; t=1763434875; x=1764039675;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=LvtCJMihnDhsJMQjgOrRxxwn67jxIU81fxfJ5Bb1Nr4=;
-        b=S7DWzLVFHEzfsv3/0nRPEAvTPJeSb71JUuYtLmWdmLmG611pfODKt6dAhsEeAjqg/2
-         K/cACwOEBCpUfPvgYcwwpChsMphgPwqdurVaG3E1y4apTt3HvJVivozEjV6CucKrUsCZ
-         JjrkEwpDC9AnaefcAgR7sMtTgxRYdPI0bs7uxnHNjd10DGU9VY8W2UaKhhx0oEI56cSY
-         MWyUA3qmh2xhCIU5/JyOWHYLhPBNESRYXkjr9RGSoi8PlaBbxlplWdMTmDk8LRhDZxbk
-         VyqN+RXXnxLrjskjFrVUShh15cPgJ+SXqktpr9lxWStYWdgGPQDPGCRRTOlEO6iOGtRm
-         hq+g==
-X-Gm-Message-State: AOJu0YwfgXIrw2FhBMTjKLQRtRBzAqh6Y02P0L1q53NaaQoXthD3ouOn
-	uZADr5s9ysryfAHR89yLy5nKbQEpeFs9xpvOarSeH49uPMlqUI3KzQrwHDONmpqppDnj+BFyVvX
-	ilRa6hOs=
-X-Gm-Gg: ASbGncvoMt6LyTKCPA30yARGDLVpkP99ZTtqiEo30Wj7nYK6Mkj9q+iMFJ6frCrh9G2
-	ejyXSy6RlvmeL4KTxK3frKzvBDXypuj2pZ/ZsCuonZ/DeTIXDjkL+XKp951SvZSVxHIJodDWiF/
-	qZPFK0Z3x7Sgl+V2LDzHrgwYjBJE4Vf2bhToccip4m0rbvdQIWfSk8AI2749m0heDhUvviGDWAL
-	ndDnGYbKAfeZi0QpTnpPDCAiWSODXTncUeLk7s5dgTInuFYuQPqm/iowPDf0ePfEQnJvfns42Sy
-	9kktt/ASbdvIiSzLY496DTXnjYtgArbquPN8MAYGUprjodG9xy2ErOZOiAaSQgMrr43DoNkJa4g
-	7jYqxpdFCii1m1r9mx4bujjMxZaq7oSZkZCcbJVYDPok6TqINbbec7azk7cZLKLvicUbj7AfSoM
-	UDs++XDbbyRErZDytZrgGv
-X-Google-Smtp-Source: AGHT+IEHefWqH3R7isF/F3QsPtVn+H/6wht7zJiZngsHcnluc/N3uk/rlZSUFdthryiwIQOfnBQTmg==
-X-Received: by 2002:a05:620a:1a91:b0:8b2:6bdf:3d14 with SMTP id af79cd13be357-8b2c3148065mr2013611685a.17.1763434873565;
-        Mon, 17 Nov 2025 19:01:13 -0800 (PST)
+        bh=Vo8eszMObAKbDdr3cj2DycamsfkXDpRcvmTtsqHABD0=;
+        b=L0TQg3+6JQuX2LPb9/V10ctD6MCLP86Mwq9SrSJqGmao4fHVylXWWOYgy3gbx7c3iJ
+         pKjdMGC6AnyZfWY5rEoyofFXZcv9ZRRaMHgwSBanqcQzM7tDOAYS4hPFoIOuf6oX3/JR
+         GQX1HAYVJtLLd1hvReI9msTXOjbEHrdMz3oSA3DnWEuB/dmoseCS8rB0aIpDxNbT9d9L
+         aRh6Nhbc2KG0qCGvBukcOd/Ng2/bS2z6ESLic3sRWyWKgKvHtBrWxHl3s2n0Ia2jboXs
+         2QvNRlAlEAI7DDn02MqIa2i5AhKvOI6Xsr9gNZaFW0rpD40syBbabCq3koFoQxOzSxB2
+         YhwQ==
+X-Gm-Message-State: AOJu0YwPUpsOwGQ6m0Y7ijd3oBblcB3dMLDgZiCFgeJYXWpXU3MFGvWV
+	cLhvPHT3NyANa6VU+OfnixgOSIO+rRFvK8taTidE9kBQGqBVKdZMevTCjIo/nWIQWytn98j9xWX
+	wadX/rjs=
+X-Gm-Gg: ASbGnct8qFn0Qgw2QOv0Zxx1MPrVPKZvyUr9qIe4vy96DV1EBIgmWgb9JD5scFVs+lH
+	GdUH3ArhFeaE23qnhZGfpGsvxoz3EWDErUAmj6VgRWbgfzGQCXqFh9lhFGmVECakVqEMv/0OQrs
+	Wlwg5Czr9uA24VEvjVGDBoDMdXuFPv33+6/xhdEK/uPtkR6LULCQuUGh5bYYFhjE+EabI6N9SDX
+	OKf1TibfVUdSybeDAXfzZ0GC7Bb9/yXHOFFbSrMTkmsPkR74QtSAplccuFMb7oGOuvPp4A/S0Wn
+	lBXDxltUfW7PMPDCN7P0W312ndihvDjSxpAOjcZXCAloBbpvpidPtyOIDd9EY+VFLUPFK3EtPrb
+	Zd0EBdQIbMz1/uedRo9G7e5Wj0plMYUmAzYT5JTVkgA6C80wHAAMFWjP1nf9wnUa0qMcfqNNkfb
+	E=
+X-Google-Smtp-Source: AGHT+IFGCc/HCHpVmMrIs/YHvpHnD47JZh/mMFzoyVB3SCypUg4WWF1ee5IqXSkQ6xsSaKhkHfpUJA==
+X-Received: by 2002:a05:620a:1726:b0:8a4:4156:16e with SMTP id af79cd13be357-8b2c3164ddfmr1796131385a.20.1763434875089;
+        Mon, 17 Nov 2025 19:01:15 -0800 (PST)
 Received: from boreas.. ([140.174.219.137])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b2af043037sm1117130185a.48.2025.11.17.19.01.12
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b2af043037sm1117130185a.48.2025.11.17.19.01.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Nov 2025 19:01:13 -0800 (PST)
+        Mon, 17 Nov 2025 19:01:14 -0800 (PST)
 From: Emil Tsalapatis <emil@etsalapatis.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -84,9 +84,9 @@ Cc: ast@kernel.org,
 	eddyz87@gmail.com,
 	yonghong.song@linux.dev,
 	Emil Tsalapatis <emil@etsalapatis.com>
-Subject: [PATCH v2 2/4] libbpf: add stub for offset-related skeleton padding
-Date: Mon, 17 Nov 2025 22:00:56 -0500
-Message-ID: <20251118030058.162967-3-emil@etsalapatis.com>
+Subject: [PATCH v2 3/4] libbpf: offset global arena data into the arena if possible
+Date: Mon, 17 Nov 2025 22:00:57 -0500
+Message-ID: <20251118030058.162967-4-emil@etsalapatis.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20251118030058.162967-1-emil@etsalapatis.com>
 References: <20251118030058.162967-1-emil@etsalapatis.com>
@@ -98,129 +98,146 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a stub function for reporting in which offset within a mapping
-libbpf places the map's data. This will be used in a subsequent
-patch to support offsetting arena variables within the mapped region.
+Currently, libbpf places global arena data at the very beginning of
+the arena mapping. Stray NULL dereferences into the arena then find
+valid data and lead to silent corruption instead of causing an arena
+page fault. The data is placed in the mapping at load time, preventing
+us from reserving the region using bpf_arena_reserve_pages().
 
-Adjust skeleton generation to account for the new arena memory layout
-by adding padding corresponding to the offset into the arena map. Add
-a libbbpf API function to get the data offset within the map's mapping
-during skeleton generation.
+Adjust the arena logic to attempt placing the data from an offset within
+the arena (currently 16 pages in) instead of the very beginning. If
+placing the data at an offset would lead to an allocation failure due
+to global data being as large as the entire arena, progressively reduce
+the offset down to 0 until placement succeeds.
+
+Adjust existing arena tests in the same commit to account for the new
+global data offset. New tests that explicitly consider the new feature
+are introduced in the next patch.
 
 Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
 ---
- tools/bpf/bpftool/gen.c  | 23 +++++++++++++++++++++--
- tools/lib/bpf/libbpf.c   | 10 ++++++++++
- tools/lib/bpf/libbpf.h   |  9 +++++++++
- tools/lib/bpf/libbpf.map |  1 +
- 4 files changed, 41 insertions(+), 2 deletions(-)
+ tools/lib/bpf/libbpf.c                        | 30 +++++++++++++++----
+ .../bpf/progs/verifier_arena_large.c          | 14 +++++++--
+ 2 files changed, 37 insertions(+), 7 deletions(-)
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 993c7d9484a4..6ed125b1b465 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -148,7 +148,8 @@ static int codegen_datasec_def(struct bpf_object *obj,
- 			       struct btf *btf,
- 			       struct btf_dump *d,
- 			       const struct btf_type *sec,
--			       const char *obj_name)
-+			       const char *obj_name,
-+			       int var_off)
- {
- 	const char *sec_name = btf__name_by_offset(btf, sec->name_off);
- 	const struct btf_var_secinfo *sec_var = btf_var_secinfos(sec);
-@@ -163,6 +164,17 @@ static int codegen_datasec_def(struct bpf_object *obj,
- 		strip_mods = true;
- 
- 	printf("	struct %s__%s {\n", obj_name, sec_ident);
-+
-+	/*
-+	 * Arena variables may be placed in an offset within the section.
-+	 * Represent this in the skeleton using a padding struct.
-+	 */
-+	if (var_off > 0) {
-+		printf("\t\tchar __pad%d[%d];\n",
-+			pad_cnt, var_off);
-+		pad_cnt++;
-+	}
-+
- 	for (i = 0; i < vlen; i++, sec_var++) {
- 		const struct btf_type *var = btf__type_by_id(btf, sec_var->type);
- 		const char *var_name = btf__name_by_offset(btf, var->name_off);
-@@ -279,6 +291,7 @@ static int codegen_datasecs(struct bpf_object *obj, const char *obj_name)
- 	struct bpf_map *map;
- 	const struct btf_type *sec;
- 	char map_ident[256];
-+	int var_off;
- 	int err = 0;
- 
- 	d = btf_dump__new(btf, codegen_btf_dump_printf, NULL, NULL);
-@@ -303,7 +316,13 @@ static int codegen_datasecs(struct bpf_object *obj, const char *obj_name)
- 			printf("	struct %s__%s {\n", obj_name, map_ident);
- 			printf("	} *%s;\n", map_ident);
- 		} else {
--			err = codegen_datasec_def(obj, btf, d, sec, obj_name);
-+			var_off = bpf_map__data_offset(map);
-+			if (var_off < 0)  {
-+				p_err("bpf_map__data_offset called on unmapped map\n");
-+				err = var_off;
-+				goto out;
-+			}
-+			err = codegen_datasec_def(obj, btf, d, sec, obj_name, var_off);
- 			if (err)
- 				goto out;
- 		}
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 706e7481bdf6..32dac36ba8db 100644
+index 32dac36ba8db..6f40c6321935 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
-@@ -10552,6 +10552,16 @@ const char *bpf_map__name(const struct bpf_map *map)
- 	return map->name;
+@@ -757,6 +757,7 @@ struct bpf_object {
+ 	int arena_map_idx;
+ 	void *arena_data;
+ 	size_t arena_data_sz;
++	__u32 arena_data_off;
+ 
+ 	void *jumptables_data;
+ 	size_t jumptables_data_sz;
+@@ -2991,10 +2992,14 @@ static int init_arena_map_data(struct bpf_object *obj, struct bpf_map *map,
+ 			       void *data, size_t data_sz)
+ {
+ 	const long page_sz = sysconf(_SC_PAGE_SIZE);
++	const size_t data_alloc_sz = roundup(data_sz, page_sz);
++	/* default offset into the arena, may be resized */
++	const long max_off_pages = 16;
+ 	size_t mmap_sz;
++	long off_pages;
+ 
+ 	mmap_sz = bpf_map_mmap_sz(map);
+-	if (roundup(data_sz, page_sz) > mmap_sz) {
++	if (data_alloc_sz > mmap_sz) {
+ 		pr_warn("elf: sec '%s': declared ARENA map size (%zu) is too small to hold global __arena variables of size %zu\n",
+ 			sec_name, mmap_sz, data_sz);
+ 		return -E2BIG;
+@@ -3006,6 +3011,17 @@ static int init_arena_map_data(struct bpf_object *obj, struct bpf_map *map,
+ 	memcpy(obj->arena_data, data, data_sz);
+ 	obj->arena_data_sz = data_sz;
+ 
++	/*
++	 * find the largest offset for global arena variables
++	 * where they still fit in the arena
++	 */
++	for (off_pages = max_off_pages; off_pages > 0; off_pages >>= 1) {
++		if (off_pages * page_sz + data_alloc_sz <= mmap_sz)
++			break;
++	}
++
++	obj->arena_data_off = off_pages * page_sz;
++
+ 	/* make bpf_map__init_value() work for ARENA maps */
+ 	map->mmaped = obj->arena_data;
+ 
+@@ -4663,7 +4679,7 @@ static int bpf_program__record_reloc(struct bpf_program *prog,
+ 		reloc_desc->type = RELO_DATA;
+ 		reloc_desc->insn_idx = insn_idx;
+ 		reloc_desc->map_idx = obj->arena_map_idx;
+-		reloc_desc->sym_off = sym->st_value;
++		reloc_desc->sym_off = sym->st_value + obj->arena_data_off;
+ 
+ 		map = &obj->maps[obj->arena_map_idx];
+ 		pr_debug("prog '%s': found arena map %d (%s, sec %d, off %zu) for insn %u\n",
+@@ -5624,7 +5640,8 @@ bpf_object__create_maps(struct bpf_object *obj)
+ 					return err;
+ 				}
+ 				if (obj->arena_data) {
+-					memcpy(map->mmaped, obj->arena_data, obj->arena_data_sz);
++					memcpy(map->mmaped + obj->arena_data_off, obj->arena_data,
++						obj->arena_data_sz);
+ 					zfree(&obj->arena_data);
+ 				}
+ 			}
+@@ -10557,8 +10574,11 @@ int bpf_map__data_offset(const struct bpf_map *map)
+ 	if (!map->mmaped)
+ 		return -EINVAL;
+ 
+-	/* No offsetting for now. */
+-	return 0;
++	/* Only arenas have offsetting. */
++	if (map->def.type != BPF_MAP_TYPE_ARENA)
++		return 0;
++
++	return map->obj->arena_data_off;
  }
  
-+int bpf_map__data_offset(const struct bpf_map *map)
-+{
-+	if (!map->mmaped)
-+		return -EINVAL;
-+
-+	/* No offsetting for now. */
-+	return 0;
-+}
-+
-+
- enum bpf_map_type bpf_map__type(const struct bpf_map *map)
- {
- 	return map->def.type;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 5118d0a90e24..549289dd9891 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -1314,6 +1314,15 @@ LIBBPF_API int bpf_map__set_exclusive_program(struct bpf_map *map, struct bpf_pr
-  */
- LIBBPF_API struct bpf_program *bpf_map__exclusive_program(struct bpf_map *map);
  
-+/*
-+ * @brief **bpf_map__data_offset** returns the offset of the map's data
-+ * within the address mapping.
-+ * @param BPF map whose variable offset we are looking into.
-+ * @return the offset >= 0 of the map's contents within its mapping; negative
-+ * error code, otherwise.
-+ */
-+LIBBPF_API int bpf_map__data_offset(const struct bpf_map *map);
+diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_large.c b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
+index bd430a34c3ab..f72198596889 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_arena_large.c
++++ b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
+@@ -10,6 +10,7 @@
+ #include "bpf_arena_common.h"
+ 
+ #define ARENA_SIZE (1ull << 32)
++#define GLOBAL_PGOFF (16)
+ 
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_ARENA);
+@@ -31,8 +32,7 @@ int big_alloc1(void *ctx)
+ 	if (!page1)
+ 		return 1;
+ 
+-	/* Account for global arena data. */
+-	if ((u64)page1 != base + PAGE_SIZE)
++	if ((u64)page1 != base)
+ 		return 15;
+ 
+ 	*page1 = 1;
+@@ -216,6 +216,16 @@ int big_alloc2(void *ctx)
+ 	__u8 __arena *pg;
+ 	int i, err;
+ 
++	/*
++	 * The global data is placed in a page with global offset 16.
++	 * This test is about page allocation contiguity, so avoid
++	 * accounting for the stray allocation by also allocating
++	 * all pages before it. We never use the page range, so leak it.
++	 */
++	pg = bpf_arena_alloc_pages(&arena, NULL, GLOBAL_PGOFF, NUMA_NO_NODE, 0);
++	if (!pg)
++		return 10;
 +
- struct bpf_xdp_set_link_opts {
- 	size_t sz;
- 	int old_fd;
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 8ed8749907d4..ac932ee3a932 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -451,4 +451,5 @@ LIBBPF_1.7.0 {
- 	global:
- 		bpf_map__set_exclusive_program;
- 		bpf_map__exclusive_program;
-+		bpf_map__data_offset;
- } LIBBPF_1.6.0;
+ 	base = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
+ 	if (!base)
+ 		return 1;
 -- 
 2.49.0
 
