@@ -1,256 +1,220 @@
-Return-Path: <bpf+bounces-74908-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74907-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F1AAC67967
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 06:42:38 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61F05C678AA
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 06:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2CAB24E2F8A
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 05:42:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTPS id B4F0A2A260
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 05:26:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41D602D7388;
-	Tue, 18 Nov 2025 05:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 482782D94BD;
+	Tue, 18 Nov 2025 05:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="W02RSBpz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TDiebEdZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30F96225A35;
-	Tue, 18 Nov 2025 05:42:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B211D2D9ED7;
+	Tue, 18 Nov 2025 05:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763444540; cv=none; b=OqXvxJ4L00Em5Dz11jrL6wjbp939h4hzm+liWOTFXGpyykRXyWmrd6IDR6etYXm6rbP29c9/IPYL5kF7n/sPOtRVdlVKEcvjbKTsnYYLJH8D5pHcG+pRQDvvSbDKEO97Z5ntx9Puyfi4zRRHd73iqCJoEBwmWsehfzyRpsttZJ0=
+	t=1763443181; cv=none; b=POC5JmOLuOcmd0+HKxExu05s84C7J60T0qKAyF7x9EB3mVVX3lSYc/QrhpM6rAWBPwdRdr1JtOP8Dl9SbWU8RcdkAFdVdcOdqO9ww+DdJ4apkl9x7x1C5+giCruajDEkbNRc7CaGilE0wybGXdXwAkJZKs0tAvyUUzT9gG6fasA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763444540; c=relaxed/simple;
-	bh=EPwXfKzUq6WB4Lo0fSXpMaiMt3x+BzpT0g03SMuKZHY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t2VY6ZZSlODJ91AvYDEsKgNpOwXOfL1jbKE89Y8U/2jzUKnPDDQzlPACXaniR6tiJAg18aCmqaQsKpA6yf2n2CeHoZrglUyVa76XDqx+kPb0EopxZYx30YR0ESpyaZbvZ9BX8mE43rz0BgUQEezBSMaQ/hOJtf+Yz7w1Ro+jApU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=W02RSBpz; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=q+YJfK1JQC1qMGUqrxdt1F1Oxcx2pv8iNDDBzggBjk0=; b=W02RSBpzlMqLVn0YEvFbpQLGIB
-	B1xtSWS2Xpn5FsRTVUCuXxS441ywMkx4Q4tChzkjpM7OdOos6vsjpmlA1Z2zqliUAdAeOUrCkl4yA
-	twLanctiYTm2TrhF2JuqprNKCx5C1OgDEb5VhVrEDOG4oYqHSyhhlHLvUdR7ySIDu1QcIqufjvDFz
-	fg3BoTHlt4zzzoBRHhd9UFriLRJjA2XkCxlzuQgjqFrQEqBFrbljk+W561fXXGncu3vcxrWfCZ3rA
-	av77KdzetMrnx0X53ANKFtJe4tSqLpECx0Ve4j/MSoRKo15Xs40u5Op0OOtatpBT+hfkjzgtievvq
-	B+fD3mwg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLE4b-0000000GEl1-2wuq;
-	Tue, 18 Nov 2025 05:16:13 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: linux-fsdevel@vger.kernel.org
-Cc: torvalds@linux-foundation.org,
-	brauner@kernel.org,
-	jack@suse.cz,
-	raven@themaw.net,
-	miklos@szeredi.hu,
-	neil@brown.name,
-	a.hindborg@kernel.org,
-	linux-mm@kvack.org,
-	linux-efi@vger.kernel.org,
-	ocfs2-devel@lists.linux.dev,
-	kees@kernel.org,
-	rostedt@goodmis.org,
-	gregkh@linuxfoundation.org,
-	linux-usb@vger.kernel.org,
-	paul@paul-moore.com,
-	casey@schaufler-ca.com,
-	linuxppc-dev@lists.ozlabs.org,
-	john.johansen@canonical.com,
-	selinux@vger.kernel.org,
-	borntraeger@linux.ibm.com,
-	bpf@vger.kernel.org,
-	clm@meta.com
-Subject: [PATCH v4 54/54] d_make_discardable(): warn if given a non-persistent dentry
-Date: Tue, 18 Nov 2025 05:16:03 +0000
-Message-ID: <20251118051604.3868588-55-viro@zeniv.linux.org.uk>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20251118051604.3868588-1-viro@zeniv.linux.org.uk>
-References: <20251118051604.3868588-1-viro@zeniv.linux.org.uk>
+	s=arc-20240116; t=1763443181; c=relaxed/simple;
+	bh=/YPyjtmS64rqD8F/37sAXvIOgLg0opOwbtldDJY85/w=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=BalYTGPeWcoFzQRh+SKQOO7X4z/ThF+rYZmZcxsg523wMA0mTQwafrYW9O6/dhJlq1Vw9HHkwXl6YG06HPVBAH87UWtcJbZHOXqmjZkX3dUAptozZOR7JXF576a/1Q3r0dncK0qM2xZDc47J/ZgKyJtV1iAQlzpjJXIAFLMVCp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TDiebEdZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88228C4CEF1;
+	Tue, 18 Nov 2025 05:19:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763443181;
+	bh=/YPyjtmS64rqD8F/37sAXvIOgLg0opOwbtldDJY85/w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=TDiebEdZoU4qXG0Nhd8ffcMViKp2wgqy+xh2/9cssPBEZiDYOeD/76J56TH2C8gUO
+	 QZavxwl304j5vLz9b5DG/OkATMV/6x080MUrL3WX3TqJrFdLM0v2oRps+jQtHtIhrY
+	 fJxk6rh6d443TfCpeem9b3sJ3IM3hZ+usY/2Hmux0bZG9jaUmCeETYrueWkFlauBbU
+	 eZ9JCRDSFXRV3mCWaxTHvk5sreOYyI3DY+b0G1tiIWV4rxTyorTz0uVTZY46RoQS++
+	 z2HKKHlJq0Y4YQprRW9MIO6kRl7maqvjg3piENKgbwXpD3eDudEzENONDeA0HQxb2Y
+	 MtBOuh0FNVtUA==
+Date: Tue, 18 Nov 2025 14:19:34 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: ast@kernel.org, rostedt@goodmis.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ mhiramat@kernel.org, mark.rutland@arm.com, mathieu.desnoyers@efficios.com,
+ jiang.biao@linux.dev, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 1/6] ftrace: introduce FTRACE_OPS_FL_JMP
+Message-Id: <20251118141934.ddf14aabf371d0939415b588@kernel.org>
+In-Reply-To: <20251117034906.32036-2-dongml2@chinatelecom.cn>
+References: <20251117034906.32036-1-dongml2@chinatelecom.cn>
+	<20251117034906.32036-2-dongml2@chinatelecom.cn>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-At this point there are very few call chains that might lead to
-d_make_discardable() on a dentry that hadn't been made persistent:
-calls of simple_unlink() and simple_rmdir() in configfs and
-apparmorfs.
+On Mon, 17 Nov 2025 11:49:01 +0800
+Menglong Dong <menglong8.dong@gmail.com> wrote:
 
-Both filesystems do pin (part of) their contents in dcache, but
-they are currently playing very unusual games with that.  Converting
-them to more usual patterns might be possible, but it's definitely
-going to be a long series of changes in both cases.
+> For now, the "nop" will be replaced with a "call" instruction when a
+> function is hooked by the ftrace. However, sometimes the "call" can break
+> the RSB and introduce extra overhead. Therefore, introduce the flag
+> FTRACE_OPS_FL_JMP, which indicate that the ftrace_ops should be called
+> with a "jmp" instead of "call". For now, it is only used by the direct
+> call case.
+> 
+> When a direct ftrace_ops is marked with FTRACE_OPS_FL_JMP, the last bit of
+> the ops->direct_call will be set to 1. Therefore, we can tell if we should
+> use "jmp" for the callback in ftrace_call_replace().
+> 
 
-For now the easiest solution is to have both stop using simple_unlink()
-and simple_rmdir() - that allows to make d_make_discardable() warn
-when given a non-persistent dentry.
+nit: Is it sure the last bit is always 0?
+At least register_ftrace_direct() needs to reject if @addr
+parameter has the last bit.
 
-Rather than giving them full-blown private copies (with calls of
-d_make_discardable() replaced with dput()), let's pull the parts of
-simple_unlink() and simple_rmdir() that deal with timestamps and link
-counts into separate helpers (__simple_unlink() and __simple_rmdir()
-resp.) and have those used by configfs and apparmorfs.
+Thanks,
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- fs/configfs/dir.c              | 10 ++++++++--
- fs/configfs/inode.c            |  3 ++-
- fs/dcache.c                    |  9 +--------
- fs/libfs.c                     | 21 +++++++++++++++++----
- include/linux/fs.h             |  2 ++
- security/apparmor/apparmorfs.c | 13 +++++++++----
- 6 files changed, 39 insertions(+), 19 deletions(-)
 
-diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
-index 81f4f06bc87e..e8f2f44012e9 100644
---- a/fs/configfs/dir.c
-+++ b/fs/configfs/dir.c
-@@ -400,8 +400,14 @@ static void remove_dir(struct dentry * d)
- 
- 	configfs_remove_dirent(d);
- 
--	if (d_really_is_positive(d))
--		simple_rmdir(d_inode(parent),d);
-+	if (d_really_is_positive(d)) {
-+		if (likely(simple_empty(d))) {
-+			__simple_rmdir(d_inode(parent),d);
-+			dput(d);
-+		} else {
-+			pr_warn("remove_dir (%pd): attributes remain", d);
-+		}
-+	}
- 
- 	pr_debug(" o %pd removing done (%d)\n", d, d_count(d));
- 
-diff --git a/fs/configfs/inode.c b/fs/configfs/inode.c
-index 1d2e3a5738d1..bcda3372e141 100644
---- a/fs/configfs/inode.c
-+++ b/fs/configfs/inode.c
-@@ -211,7 +211,8 @@ void configfs_drop_dentry(struct configfs_dirent * sd, struct dentry * parent)
- 			dget_dlock(dentry);
- 			__d_drop(dentry);
- 			spin_unlock(&dentry->d_lock);
--			simple_unlink(d_inode(parent), dentry);
-+			__simple_unlink(d_inode(parent), dentry);
-+			dput(dentry);
- 		} else
- 			spin_unlock(&dentry->d_lock);
- 	}
-diff --git a/fs/dcache.c b/fs/dcache.c
-index 5ee2e78a91b3..824d620bb563 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -931,14 +931,7 @@ EXPORT_SYMBOL(dput);
- void d_make_discardable(struct dentry *dentry)
- {
- 	spin_lock(&dentry->d_lock);
--	/*
--	 * By the end of the series we'll add
--	 * WARN_ON(!(dentry->d_flags & DCACHE_PERSISTENT);
--	 * here, but while object removal is done by a few common helpers,
--	 * object creation tends to be open-coded (if nothing else, new inode
--	 * needs to be set up), so adding a warning from the very beginning
--	 * would make for much messier patch series.
--	 */
-+	WARN_ON(!(dentry->d_flags & DCACHE_PERSISTENT));
- 	dentry->d_flags &= ~DCACHE_PERSISTENT;
- 	dentry->d_lockref.count--;
- 	rcu_read_lock();
-diff --git a/fs/libfs.c b/fs/libfs.c
-index 80f288a771e3..0aa630e7eb00 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -790,13 +790,27 @@ int simple_empty(struct dentry *dentry)
- }
- EXPORT_SYMBOL(simple_empty);
- 
--int simple_unlink(struct inode *dir, struct dentry *dentry)
-+void __simple_unlink(struct inode *dir, struct dentry *dentry)
- {
- 	struct inode *inode = d_inode(dentry);
- 
- 	inode_set_mtime_to_ts(dir,
- 			      inode_set_ctime_to_ts(dir, inode_set_ctime_current(inode)));
- 	drop_nlink(inode);
-+}
-+EXPORT_SYMBOL(__simple_unlink);
-+
-+void __simple_rmdir(struct inode *dir, struct dentry *dentry)
-+{
-+	drop_nlink(d_inode(dentry));
-+	__simple_unlink(dir, dentry);
-+	drop_nlink(dir);
-+}
-+EXPORT_SYMBOL(__simple_rmdir);
-+
-+int simple_unlink(struct inode *dir, struct dentry *dentry)
-+{
-+	__simple_unlink(dir, dentry);
- 	d_make_discardable(dentry);
- 	return 0;
- }
-@@ -807,9 +821,8 @@ int simple_rmdir(struct inode *dir, struct dentry *dentry)
- 	if (!simple_empty(dentry))
- 		return -ENOTEMPTY;
- 
--	drop_nlink(d_inode(dentry));
--	simple_unlink(dir, dentry);
--	drop_nlink(dir);
-+	__simple_rmdir(dir, dentry);
-+	d_make_discardable(dentry);
- 	return 0;
- }
- EXPORT_SYMBOL(simple_rmdir);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 95933ceaae51..ef842adbd418 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3621,6 +3621,8 @@ extern int simple_open(struct inode *inode, struct file *file);
- extern int simple_link(struct dentry *, struct inode *, struct dentry *);
- extern int simple_unlink(struct inode *, struct dentry *);
- extern int simple_rmdir(struct inode *, struct dentry *);
-+extern void __simple_unlink(struct inode *, struct dentry *);
-+extern void __simple_rmdir(struct inode *, struct dentry *);
- void simple_rename_timestamp(struct inode *old_dir, struct dentry *old_dentry,
- 			     struct inode *new_dir, struct dentry *new_dentry);
- extern int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
-diff --git a/security/apparmor/apparmorfs.c b/security/apparmor/apparmorfs.c
-index 391a586d0557..9b9090d38ea2 100644
---- a/security/apparmor/apparmorfs.c
-+++ b/security/apparmor/apparmorfs.c
-@@ -358,10 +358,15 @@ static void aafs_remove(struct dentry *dentry)
- 	dir = d_inode(dentry->d_parent);
- 	inode_lock(dir);
- 	if (simple_positive(dentry)) {
--		if (d_is_dir(dentry))
--			simple_rmdir(dir, dentry);
--		else
--			simple_unlink(dir, dentry);
-+		if (d_is_dir(dentry)) {
-+			if (!WARN_ON(!simple_empty(dentry))) {
-+				__simple_rmdir(dir, dentry);
-+				dput(dentry);
-+			}
-+		} else {
-+			__simple_unlink(dir, dentry);
-+			dput(dentry);
-+		}
- 		d_delete(dentry);
- 		dput(dentry);
- 	}
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> ---
+>  include/linux/ftrace.h | 33 +++++++++++++++++++++++++++++++++
+>  kernel/trace/Kconfig   | 12 ++++++++++++
+>  kernel/trace/ftrace.c  |  9 ++++++++-
+>  3 files changed, 53 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index 07f8c309e432..015dd1049bea 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -359,6 +359,7 @@ enum {
+>  	FTRACE_OPS_FL_DIRECT			= BIT(17),
+>  	FTRACE_OPS_FL_SUBOP			= BIT(18),
+>  	FTRACE_OPS_FL_GRAPH			= BIT(19),
+> +	FTRACE_OPS_FL_JMP			= BIT(20),
+>  };
+>  
+>  #ifndef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+> @@ -577,6 +578,38 @@ static inline void arch_ftrace_set_direct_caller(struct ftrace_regs *fregs,
+>  						 unsigned long addr) { }
+>  #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
+>  
+> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_JMP
+> +static inline bool ftrace_is_jmp(unsigned long addr)
+> +{
+> +	return addr & 1;
+> +}
+> +
+> +static inline unsigned long ftrace_jmp_set(unsigned long addr)
+> +{
+> +	return addr | 1UL;
+> +}
+> +
+> +static inline unsigned long ftrace_jmp_get(unsigned long addr)
+> +{
+> +	return addr & ~1UL;
+> +}
+> +#else
+> +static inline bool ftrace_is_jmp(unsigned long addr)
+> +{
+> +	return false;
+> +}
+> +
+> +static inline unsigned long ftrace_jmp_set(unsigned long addr)
+> +{
+> +	return addr;
+> +}
+> +
+> +static inline unsigned long ftrace_jmp_get(unsigned long addr)
+> +{
+> +	return addr;
+> +}
+> +#endif /* CONFIG_DYNAMIC_FTRACE_WITH_JMP */
+> +
+>  #ifdef CONFIG_STACK_TRACER
+>  
+>  int stack_trace_sysctl(const struct ctl_table *table, int write, void *buffer,
+> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+> index d2c79da81e4f..4661b9e606e0 100644
+> --- a/kernel/trace/Kconfig
+> +++ b/kernel/trace/Kconfig
+> @@ -80,6 +80,12 @@ config HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+>  	  If the architecture generates __patchable_function_entries sections
+>  	  but does not want them included in the ftrace locations.
+>  
+> +config HAVE_DYNAMIC_FTRACE_WITH_JMP
+> +	bool
+> +	help
+> +	  If the architecture supports to replace the __fentry__ with a
+> +	  "jmp" instruction.
+> +
+>  config HAVE_SYSCALL_TRACEPOINTS
+>  	bool
+>  	help
+> @@ -330,6 +336,12 @@ config DYNAMIC_FTRACE_WITH_ARGS
+>  	depends on DYNAMIC_FTRACE
+>  	depends on HAVE_DYNAMIC_FTRACE_WITH_ARGS
+>  
+> +config DYNAMIC_FTRACE_WITH_JMP
+> +	def_bool y
+> +	depends on DYNAMIC_FTRACE
+> +	depends on DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+> +	depends on HAVE_DYNAMIC_FTRACE_WITH_JMP
+> +
+>  config FPROBE
+>  	bool "Kernel Function Probe (fprobe)"
+>  	depends on HAVE_FUNCTION_GRAPH_FREGS && HAVE_FTRACE_GRAPH_FUNC
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index 59cfacb8a5bb..a6c060a4f50b 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -5951,7 +5951,8 @@ static void remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long
+>  	for (i = 0; i < size; i++) {
+>  		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+>  			del = __ftrace_lookup_ip(direct_functions, entry->ip);
+> -			if (del && del->direct == addr) {
+> +			if (del && ftrace_jmp_get(del->direct) ==
+> +				   ftrace_jmp_get(addr)) {
+>  				remove_hash_entry(direct_functions, del);
+>  				kfree(del);
+>  			}
+> @@ -6018,6 +6019,9 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+>  
+>  	mutex_lock(&direct_mutex);
+>  
+> +	if (ops->flags & FTRACE_OPS_FL_JMP)
+> +		addr = ftrace_jmp_set(addr);
+> +
+>  	/* Make sure requested entries are not already registered.. */
+>  	size = 1 << hash->size_bits;
+>  	for (i = 0; i < size; i++) {
+> @@ -6138,6 +6142,9 @@ __modify_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+>  
+>  	lockdep_assert_held_once(&direct_mutex);
+>  
+> +	if (ops->flags & FTRACE_OPS_FL_JMP)
+> +		addr = ftrace_jmp_set(addr);
+> +
+>  	/* Enable the tmp_ops to have the same functions as the direct ops */
+>  	ftrace_ops_init(&tmp_ops);
+>  	tmp_ops.func_hash = ops->func_hash;
+> -- 
+> 2.51.2
+> 
+
+
 -- 
-2.47.3
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
