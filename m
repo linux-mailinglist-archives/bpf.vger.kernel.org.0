@@ -1,312 +1,145 @@
-Return-Path: <bpf+bounces-74935-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74936-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9B9CC68A49
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 10:50:16 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 560A5C68BE7
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 11:14:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E9E5034924B
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 09:48:15 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1AD444EAA4D
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 10:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C035031E0FA;
-	Tue, 18 Nov 2025 09:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FB43396F8;
+	Tue, 18 Nov 2025 10:12:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Dn5nPlgd"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d7PtrbVs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E621A9F82;
-	Tue, 18 Nov 2025 09:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D5A337690;
+	Tue, 18 Nov 2025 10:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763459289; cv=none; b=S09YEDyini1vtWLtrgddFnexcUS7loLy/IzEz19FVmX8SORLqwYO6IS89vsAuC6H5TmdQIZeA4Izah+7jMIq9YT7jKk/b4MoHucCY2o9+Cm9cSPrFY9r8mGzvUowlyX0rR6wLgZCY4S76PgXRF0GkDgLrtL700b9ppqf9fqeEJE=
+	t=1763460736; cv=none; b=cS4LaH8ZKJgiwF4VVT4mYqNRrz33AxEpc/DacnmLSGilAMkHmVpdMrkyatJPxYFqL43frNcpQIs5+CzE2mE2Xh290icv9LE7Bmw2pmFKFbwv406dCGghSu5M3POJN58sZmg5J9wxFc0ljNnzAVrWekzHmiC6D6QDepFAgriVPe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763459289; c=relaxed/simple;
-	bh=Xf6zS75W+Xui/UTgREpxQFXtMLhIQdKtQosLwHmVb7o=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=AVsaIPWmZ6ykplIxhLWw6iY0ggblwlDWeY46fr4hl3FsGvbDEGwjy60sat0b3jjazFfEjLnDLlLZpCVWzgUtSXQN1Q0VWSQLPBxh9YLiEDAAbnLL6BBVRpNS1gZ7xIwNJqDjZAeuTxXnoitfCYh5pqdTquAGAcaijQ7tadggfqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Dn5nPlgd; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AI6U9eH006798;
-	Tue, 18 Nov 2025 09:47:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=97DCAF
-	CSQ1XM+EF/mPqIa768fNtqRdF1r0y2YGqmM1Y=; b=Dn5nPlgdOn3yLyjQHU/e2g
-	7N6iWk4PK8m37iQtqU5rTgyb44Rq1rRaqMWDG7mAurui5LmSwV3zkSGSxvkK9i/d
-	KHEoBZ94nCrsKD18n85EUP9jcnAmE3220SiLdcxSg5HCpBYvaJ99IZAiUe6lTkZI
-	Vb5RNLGynkpLd4GL2mPzIgGaM4YAekk3Who+Eu4/1JU3A7XnFH4RLi/qBhZ7JP0b
-	Y5EqRAc7L8u3LS3xqoggaJk95kSXjInAN3giLrcUvgALHvM/cAMKo8KRK0GlwfbA
-	HISQpvruxX2VlnJgeOMwDUhDrDPSIzI3ShrDYIaVyq2gNJYSLMueavA1bmlGymQQ
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aejk9t11b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 18 Nov 2025 09:47:24 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5AI9bJ5N030415;
-	Tue, 18 Nov 2025 09:47:23 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aejk9t117-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 18 Nov 2025 09:47:23 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AI7NnnW010448;
-	Tue, 18 Nov 2025 09:47:22 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4af3us2jat-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 18 Nov 2025 09:47:22 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5AI9lKJN8585846
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 18 Nov 2025 09:47:20 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3335058052;
-	Tue, 18 Nov 2025 09:47:20 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id AFAB85805A;
-	Tue, 18 Nov 2025 09:47:14 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.98.109.80])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 18 Nov 2025 09:47:14 +0000 (GMT)
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1763460736; c=relaxed/simple;
+	bh=gk0h5FpCXE+PG+HTwVWGDvvFZruVVCeqEVAMOfYDads=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d+4M8W5coYJS3nod6Wyd0V8pTI3r/4TtlvvUqq6KYGetqoXNOCTcBMkON0HTPNh5neuAVy4BcioHSmckG4cSQLLSwb7PxfZAOUakkSaz4K2OSziPxx59y/LcwWkHnJKTzdnnniNYKytIf4AEtsPB3JPqm9XFRX5WmXHlVesHZtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d7PtrbVs; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1763460734; x=1794996734;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gk0h5FpCXE+PG+HTwVWGDvvFZruVVCeqEVAMOfYDads=;
+  b=d7PtrbVs7dvDW/ombpruBbVb2j30Gm/YvP2S1sQTshedETTRNV+CjMaH
+   dU+xXgA6jdMiMaEiHI45cAKs4O83L6SpunJpf0Cc3Z6MPMoM3PdJl6Zjc
+   nAol98vDKFMBfe8u+n3rJh8FoUdNChspa/bd79jgWbJxZ5AZUDq/114Ht
+   uI9ysBEnYPPE4f1khu2gWjxNr7/OiNwSdIpLIhRd3s0Oc4FS/AbQehp72
+   4UCFnezptf2BlhNMf6WeXSatbNeavplA05aXePh+DTaApvULUQrWzGWd2
+   x5q6sAbmSotnxL6XbCGUu0UhAVEni+UdHzZ/9wZzkr8s+bxL6jDjoaru6
+   Q==;
+X-CSE-ConnectionGUID: zCWN1WVnQhivcWWaAtGtpQ==
+X-CSE-MsgGUID: /iXH6yVTQyS0jClL+0rtWA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11616"; a="65358554"
+X-IronPort-AV: E=Sophos;i="6.19,314,1754982000"; 
+   d="scan'208";a="65358554"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2025 02:12:14 -0800
+X-CSE-ConnectionGUID: C96R7XknTHWwLz8vIsNeig==
+X-CSE-MsgGUID: v4jF1IhnTPW+WmL8geMZvQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,314,1754982000"; 
+   d="scan'208";a="191157959"
+Received: from lkp-server01.sh.intel.com (HELO adf6d29aa8d9) ([10.239.97.150])
+  by fmviesa009.fm.intel.com with ESMTP; 18 Nov 2025 02:12:12 -0800
+Received: from kbuild by adf6d29aa8d9 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vLIgz-0001bF-2W;
+	Tue, 18 Nov 2025 10:12:09 +0000
+Date: Tue, 18 Nov 2025 18:11:58 +0800
+From: kernel test robot <lkp@intel.com>
+To: Amery Hung <ameryhung@gmail.com>, bpf@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com, andrii@kernel.org,
+	daniel@iogearbox.net, memxor@gmail.com, ameryhung@gmail.com,
+	kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v1 1/1] bpf: Annotate rqspinlock lock acquiring
+ functions with __must_check
+Message-ID: <202511181704.SFwhGJOb-lkp@intel.com>
+References: <20251117191515.2934026-1-ameryhung@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.600.62\))
-Subject: Re: [PATCH bpf-next v3] selftests/bpf: Fix htab_update/reenter_update
- selftest failure
-From: Venkat <venkat88@linux.ibm.com>
-In-Reply-To: <20251117060752.129648-1-skb99@linux.ibm.com>
-Date: Tue, 18 Nov 2025 15:17:01 +0530
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hari Bathini <hbathini@linux.ibm.com>, sachinpb@linux.ibm.com,
-        andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8A43B87B-A478-4AA1-8154-D459D25B3320@linux.ibm.com>
-References: <20251117060752.129648-1-skb99@linux.ibm.com>
-To: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-X-Mailer: Apple Mail (2.3774.600.62)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: KMM4gIWZK2X-z6EtX4YMI80LvX1VKp7o
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE1MDAzMiBTYWx0ZWRfXzutXR4bg0xFI
- koA/V0INLXSqqEicJtw/JFEbKoIZ8e/7D2qWOyaYzlbLK7KIZyTf8gJjaAhE5G0aq+K0Pi17zjt
- Y2Sekf0iX9ABzNB9nB1Ka7OqLtlskiOmUQP1iwrgnDXH8uwv6g8ZMjy0/OZq5cXkNjo8USnp8bt
- NrmtMgbQXD4NUBomQbcr5INL9iab6tW09SEwUpOivh+mwrzoqakdfv6MsSJ+JfH+EMf93xPpDBW
- m60+0CSF42t5uS+3I3wpFo1moY6mPJts73eBu3cB0S9oxlnSwS6brc2i1OBULMQ42ucH9hqO1Z1
- CtMZUL6G7fB1/sC7TtlsUue4kRY9n+u1ayzSpmud7O0fr96vuRvgucxHju4IykDAbaY5Zke/4o9
- NHU0buBefripP2hoN1KZHLMGB3AEtg==
-X-Proofpoint-ORIG-GUID: JaQ19AOOl--rxcJTnj4pCPfWUknE21uZ
-X-Authority-Analysis: v=2.4 cv=XtL3+FF9 c=1 sm=1 tr=0 ts=691c40ac cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=LI0gvHg8sEG1FREOOLkA:9 a=QEXdDO2ut3YA:10
- a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-17_04,2025-11-13_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1011 spamscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- adultscore=0 lowpriorityscore=0 phishscore=0 suspectscore=0 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511150032
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251117191515.2934026-1-ameryhung@gmail.com>
+
+Hi Amery,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Amery-Hung/bpf-Annotate-rqspinlock-lock-acquiring-functions-with-__must_check/20251118-031838
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20251117191515.2934026-1-ameryhung%40gmail.com
+patch subject: [PATCH bpf-next v1 1/1] bpf: Annotate rqspinlock lock acquiring functions with __must_check
+config: arm-randconfig-002-20251118 (https://download.01.org/0day-ci/archive/20251118/202511181704.SFwhGJOb-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 10.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251118/202511181704.SFwhGJOb-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202511181704.SFwhGJOb-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from ./arch/arm/include/generated/asm/rqspinlock.h:1,
+                    from kernel/locking/locktorture.c:367:
+   kernel/locking/locktorture.c: In function 'torture_raw_res_spin_write_lock_irq':
+>> include/asm-generic/rqspinlock.h:255:48: warning: ignoring return value of '__raw_res_spin_lock_irqsave' declared with attribute 'warn_unused_result' [-Wunused-result]
+     255 | #define raw_res_spin_lock_irqsave(lock, flags) __raw_res_spin_lock_irqsave(lock, &flags)
+         |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/locking/locktorture.c:396:2: note: in expansion of macro 'raw_res_spin_lock_irqsave'
+     396 |  raw_res_spin_lock_irqsave(&rqspinlock, flags);
+         |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/locking/locktorture.c: In function 'torture_raw_res_spin_write_lock':
+>> kernel/locking/locktorture.c:372:2: warning: ignoring return value of 'raw_res_spin_lock' declared with attribute 'warn_unused_result' [-Wunused-result]
+     372 |  raw_res_spin_lock(&rqspinlock);
+         |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+   In file included from arch/arm/include/generated/asm/rqspinlock.h:1,
+                    from locktorture.c:367:
+   locktorture.c: In function 'torture_raw_res_spin_write_lock_irq':
+>> include/asm-generic/rqspinlock.h:255:48: warning: ignoring return value of '__raw_res_spin_lock_irqsave' declared with attribute 'warn_unused_result' [-Wunused-result]
+     255 | #define raw_res_spin_lock_irqsave(lock, flags) __raw_res_spin_lock_irqsave(lock, &flags)
+         |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   locktorture.c:396:2: note: in expansion of macro 'raw_res_spin_lock_irqsave'
+     396 |  raw_res_spin_lock_irqsave(&rqspinlock, flags);
+         |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   locktorture.c: In function 'torture_raw_res_spin_write_lock':
+   locktorture.c:372:2: warning: ignoring return value of 'raw_res_spin_lock' declared with attribute 'warn_unused_result' [-Wunused-result]
+     372 |  raw_res_spin_lock(&rqspinlock);
+         |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+vim +255 include/asm-generic/rqspinlock.h
 
-> On 17 Nov 2025, at 11:37=E2=80=AFAM, Saket Kumar Bhaskar =
-<skb99@linux.ibm.com> wrote:
->=20
-> Since commit 31158ad02ddb ("rqspinlock: Add deadlock detection
-> and recovery") the updated path on re-entrancy now reports deadlock
-> via -EDEADLK instead of the previous -EBUSY.
->=20
-> Also, the way reentrancy was exercised (via fentry/lookup_elem_raw)
-> has been fragile because lookup_elem_raw may be inlined
-> (find_kernel_btf_id() will return -ESRCH).
->=20
-> To fix this fentry is attached to bpf_obj_free_fields() instead of
-> lookup_elem_raw() and:
->=20
-> - The htab map is made to use a BTF-described struct val with a
->  struct bpf_timer so that check_and_free_fields() reliably calls
->  bpf_obj_free_fields() on element replacement.
->=20
-> - The selftest is updated to do two updates to the same key (insert +
->  replace) in prog_test.
->=20
-> - The selftest is updated to align with expected errno with the
->  kernel=E2=80=99s current behavior.
->=20
-> Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+   254	
+ > 255	#define raw_res_spin_lock_irqsave(lock, flags) __raw_res_spin_lock_irqsave(lock, &flags)
+   256	
 
-Tested this patch by applying on top of bpd-next and it works as =
-expected. Please add below tag.
-
-Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-
-With this change:
-
-./test_progs -t htab_update
-#144/1   htab_update/reenter_update:OK
-#144/2   htab_update/concurrent_update:OK
-#144     htab_update:OK
-Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-
-Regards,
-Venkat.
-
-> ---
-> Changes since v2:
-> Addressed CI failures:
-> * Initialize key to 0 before the first update.
-> * Used pointer value to pass for update and memset rather than
->  &value.
->=20
-> v2: =
-https://lore.kernel.org/all/20251114152653.356782-1-skb99@linux.ibm.com/
->=20
-> Changes since v1:
-> Addressed comments from Alexei:
-> * Fixed the scenario where test may fail when lookup_elem_raw()
->  is inlined.
->=20
-> v1: =
-https://lore.kernel.org/all/20251106052628.349117-1-skb99@linux.ibm.com/
->=20
-> .../selftests/bpf/prog_tests/htab_update.c    | 37 ++++++++++++++-----
-> .../testing/selftests/bpf/progs/htab_update.c | 19 +++++++---
-> 2 files changed, 41 insertions(+), 15 deletions(-)
->=20
-> diff --git a/tools/testing/selftests/bpf/prog_tests/htab_update.c =
-b/tools/testing/selftests/bpf/prog_tests/htab_update.c
-> index 2bc85f4814f4..d0b405eb2966 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/htab_update.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/htab_update.c
-> @@ -15,17 +15,17 @@ struct htab_update_ctx {
-> static void test_reenter_update(void)
-> {
-> struct htab_update *skel;
-> - unsigned int key, value;
-> + void *value =3D NULL;
-> + unsigned int key, value_size;
-> int err;
->=20
-> skel =3D htab_update__open();
-> if (!ASSERT_OK_PTR(skel, "htab_update__open"))
-> return;
->=20
-> - /* lookup_elem_raw() may be inlined and find_kernel_btf_id() will =
-return -ESRCH */
-> - bpf_program__set_autoload(skel->progs.lookup_elem_raw, true);
-> + bpf_program__set_autoload(skel->progs.bpf_obj_free_fields, true);
-> err =3D htab_update__load(skel);
-> - if (!ASSERT_TRUE(!err || err =3D=3D -ESRCH, "htab_update__load") || =
-err)
-> + if (!ASSERT_TRUE(!err, "htab_update__load") || err)
-> goto out;
->=20
-> skel->bss->pid =3D getpid();
-> @@ -33,14 +33,33 @@ static void test_reenter_update(void)
-> if (!ASSERT_OK(err, "htab_update__attach"))
-> goto out;
->=20
-> - /* Will trigger the reentrancy of bpf_map_update_elem() */
-> + value_size =3D bpf_map__value_size(skel->maps.htab);
-> +
-> + value =3D calloc(1, value_size);
-> + if (!ASSERT_OK_PTR(value, "calloc value"))
-> + goto out;
-> + /*
-> + * First update: plain insert. This should NOT trigger the =
-re-entrancy
-> + * path, because there is no old element to free yet.
-> + */
-> key =3D 0;
-> - value =3D 0;
-> - err =3D bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, =
-&value, 0);
-> - if (!ASSERT_OK(err, "add element"))
-> + err =3D bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, =
-value, BPF_ANY);
-> + if (!ASSERT_OK(err, "first update (insert)"))
-> + goto out;
-> +
-> + /*
-> + * Second update: replace existing element with same key and trigger
-> + * the reentrancy of bpf_map_update_elem().
-> + * check_and_free_fields() calls bpf_obj_free_fields() on the old
-> + * value, which is where fentry program runs and performs a nested
-> + * bpf_map_update_elem(), triggering -EDEADLK.
-> + */
-> + memset(value, 0, value_size);
-> + err =3D bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, =
-value, BPF_ANY);
-> + if (!ASSERT_OK(err, "second update (replace)"))
-> goto out;
->=20
-> - ASSERT_EQ(skel->bss->update_err, -EBUSY, "no reentrancy");
-> + ASSERT_EQ(skel->bss->update_err, -EDEADLK, "no reentrancy");
-> out:
-> htab_update__destroy(skel);
-> }
-> diff --git a/tools/testing/selftests/bpf/progs/htab_update.c =
-b/tools/testing/selftests/bpf/progs/htab_update.c
-> index 7481bb30b29b..195d3b2fba00 100644
-> --- a/tools/testing/selftests/bpf/progs/htab_update.c
-> +++ b/tools/testing/selftests/bpf/progs/htab_update.c
-> @@ -6,24 +6,31 @@
->=20
-> char _license[] SEC("license") =3D "GPL";
->=20
-> +/* Map value type: has BTF-managed field (bpf_timer) */
-> +struct val {
-> + struct bpf_timer t;
-> + __u64 payload;
-> +};
-> +
-> struct {
-> __uint(type, BPF_MAP_TYPE_HASH);
-> __uint(max_entries, 1);
-> - __uint(key_size, sizeof(__u32));
-> - __uint(value_size, sizeof(__u32));
-> + __type(key, __u32);
-> + __type(value, struct val);
-> } htab SEC(".maps");
->=20
-> int pid =3D 0;
-> int update_err =3D 0;
->=20
-> -SEC("?fentry/lookup_elem_raw")
-> -int lookup_elem_raw(void *ctx)
-> +SEC("?fentry/bpf_obj_free_fields")
-> +int bpf_obj_free_fields(void *ctx)
-> {
-> - __u32 key =3D 0, value =3D 1;
-> + __u32 key =3D 0;
-> + struct val value =3D { .payload =3D 1 };
->=20
-> if ((bpf_get_current_pid_tgid() >> 32) !=3D pid)
-> return 0;
->=20
-> - update_err =3D bpf_map_update_elem(&htab, &key, &value, 0);
-> + update_err =3D bpf_map_update_elem(&htab, &key, &value, BPF_ANY);
-> return 0;
-> }
-> --=20
-> 2.51.0
-
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
