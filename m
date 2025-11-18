@@ -1,128 +1,125 @@
-Return-Path: <bpf+bounces-74920-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74921-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B970C68041
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 08:42:02 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85BA3C6819E
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 09:03:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id DB7512A740
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 07:40:12 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A81D8350334
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 07:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227DC306491;
-	Tue, 18 Nov 2025 07:37:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2ACF301718;
+	Tue, 18 Nov 2025 07:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xxzC7TaB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R1KiXERk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f74.google.com (mail-ed1-f74.google.com [209.85.208.74])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3D49305E2E
-	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 07:37:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CCA3257821
+	for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 07:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763451467; cv=none; b=c+A7893EZ3zyNM9VoHB/Y9P0AASeBGcwK8n6VU6fDtAYgA9Zbp71q1vy1/vjQRtrcyxq9axARJRQmVIuFeU5aDbv911F1FLrJBDvGHGeE91Nz84K37vH4FX7v8yB6erHJbH3JH1Q1P4HOIdTuEV1+p8jA8lioxBOqLe4EDc+0eg=
+	t=1763452537; cv=none; b=Rm2Wogi3vUSDv2a22GvDth1edVfCf7wNwpHhSTnuis9gGQPvR1FEtcJpfdUpuKSaEdFSGbI5m65B3zMHr9jFBPgevBBPVZIMjHuPoPC8gUm3uJW979/5Z/XCW6U/OcSvzzzy0rvNSCdFczTNOZSmFlPGLY65y6hYMvDIPcBb6cw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763451467; c=relaxed/simple;
-	bh=XxaPZ5TsJou+sUJHcpnw7uSgLwltBMKydeMLx9XylJ8=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=sf1v9AT3GCBLLAC25kNdYGX9Wqdp8ngUs3P67diQ2fb6gu9EwrFh2FAa/qgIiPoAvffrBUPnQmkBtlz9RpgxOQ33WJaAPuFgiS4RA/+ELDSVTrD0EOOz4NdZBbkfmF703b9Dhl+Kt7Gc+4tDUHh0y6chAg8G8KXfH0HPC/DDIVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xxzC7TaB; arc=none smtp.client-ip=209.85.208.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com
-Received: by mail-ed1-f74.google.com with SMTP id 4fb4d7f45d1cf-6407bd092b6so8431877a12.1
-        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 23:37:45 -0800 (PST)
+	s=arc-20240116; t=1763452537; c=relaxed/simple;
+	bh=zNrkdUuKPfPSpb6Alu7i6kngo7VBT++DuLlMGdoIN38=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=Hj32WvoSoGez7ehtlI08C/MFI4lRYN955KwD4boWrm8LkaoGwIl8vYt5HVtfjGLUeUmBoSnjx/x3k9UehLLC42rGvT7mmXKfH91oaYmXmUwt11B92UsYQQX2w9JqKurKol/I7frsAJSn2bG4ocyLQjSPHHqY+0h6YqKUJfFx56M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R1KiXERk; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-297f35be2ffso73096825ad.2
+        for <bpf@vger.kernel.org>; Mon, 17 Nov 2025 23:55:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1763451464; x=1764056264; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=sKPv+eaKOdXoMPQ/TX2IhQ+KDTwgcoP3pPtyOGlfipU=;
-        b=xxzC7TaBCQAuEqD/o/roRw78mjDItaZzEU9hIV16JY097+qOeePIKtNOWRw8sNvQse
-         cMaE6Ngj2FiXjJBTyM1maGFWN/iSi0k/BJNVn8f8lUI0q95IwlaSTmkqe8jkSHwoajnC
-         3tx3gvWweJwfydeZax0rz9U2LCwlAwYOTvoyeA8/zezFGh07IZceHf8Ir3DzqL5UdhNp
-         r0k7eBUFajlpXgIqv4V3PoW1pNhQeX1Cb/21yxA4uAm+qMm6i7zdI9IfyXM4eIFCmfHa
-         mhe9gmXF5JdmvrthkHE7fOmT4BQzpbyZkHyfDDyxN1vEzCSoaBLjrRFcuE6tSMV+sxLh
-         U/Hw==
+        d=gmail.com; s=20230601; t=1763452535; x=1764057335; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=o7/syqaVN3OFRUvQzya5/mq097BnRjYmCSiy+yZAENc=;
+        b=R1KiXERkLCDyzht7iijvmi3XUwFDeD7BCNHUGvQ+j/pSW4qo9pcNL99mDIJ57xehu1
+         a5IYXNGms2NLLVuGc0LaJmDomeSdl1Ty/+Ot2aDoDwV42PSl0QI9TQPdA6eF05Vhac2y
+         1vcR6x/5apbU2mLjkX/nC7VlFWgfD3Fq5ubQb8euxbO409q1llibUs/PBoZfn23KodgL
+         +AYjWD784nxBNsHvSGjIB7hOP8+2Gb7/TUi09ubXM/coMx0cW5/ZYx0+L+Al8Dde4kwQ
+         ue0LSQWuk/KIMDOcoMlOjROkgk2NVIJom+zP+Gm/eKhrf6CVi2mMxybKtRiClVGwXwvm
+         cxFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763451464; x=1764056264;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sKPv+eaKOdXoMPQ/TX2IhQ+KDTwgcoP3pPtyOGlfipU=;
-        b=GGpgT3FTJMZWLxEWkneF5SbvtSetd1jjF6+xaqig466V3oKLpb69pQJGuNVekjSIi6
-         9QwJD8tZDH/1BmwM285vQxVOEvWBNe9nY8beE21f7TPxCsOdduqR3oBShqcK2OShGo+x
-         ckD/6/0kHzlJp84Hvx+JnAp41hlhfY5Krl7i782LrrlmEJNxNxaJvzwv8+wkQQT3WhOI
-         yMV09VisIrId5JC3iIDkBQ3TbnfDN7LexzgDfD9MWzgKl1QpyqYk0Z0eYNaXZq36LdoH
-         ZCvM3Md5wSr2jflR8LmvzxT7vXNibDQEoEfkl0Esv76QPrOFv5QqYynLHazAjsH+gGXq
-         xeXA==
-X-Gm-Message-State: AOJu0YxbcMqxA4YyPypuex5CWTzDgcTuGO8kJj15FcxmRAJOCEy4HkZZ
-	EKshAkMuUoUtIY5jEYANt/AkhBY4syH+Me9Q8jB6hdw4b0rBZ/1YfJlja3Vj2+RFW912OHpd5zg
-	u2o5O2v+kNkA6bghY4rndETnplcbUapRhRcKmcwglML3i96pPXprP0sKwfjRKn4ckR22zp6EBWg
-	3bnWOD/qyzaLw/H9MTZa6HvP/1TLZAFdPL1jW63H2GkP24dBddB6RHAxTCMoaum6GNvX0Hyg==
-X-Google-Smtp-Source: AGHT+IFra2Fqc2juVFyztrDKoPqJAOgdllghtTOcIwdaqb22hbe5Rj0QmTIIP5lhZd24i/lOAVwtqs3fyAdpCzpYcHm6
-X-Received: from edbin4.prod.google.com ([2002:a05:6402:2084:b0:641:3d42:99b6])
- (user=mattbobrowski job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6402:5c8:b0:63b:f22d:9254 with SMTP id 4fb4d7f45d1cf-64350e8a001mr12193090a12.23.1763451464230;
- Mon, 17 Nov 2025 23:37:44 -0800 (PST)
-Date: Tue, 18 Nov 2025 07:37:34 +0000
+        d=1e100.net; s=20230601; t=1763452535; x=1764057335;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o7/syqaVN3OFRUvQzya5/mq097BnRjYmCSiy+yZAENc=;
+        b=JOivpGflKeyZJ6lccQTT2kvlNxfPSlh1awRLgoSnQScqgCjw0mHCCwmO7r5DJmc3lJ
+         nw2f+SGhm/Mf/R6ZLDNguu91dm73y/YBKuRF45vHzQoHnLGJl6IWDQTPLu9k8sviu4by
+         qPYjuKu8zCoLkZj//OK5tnL8wTNS7AIJ1P62IVJEJTz04GBN1PzujLumBdkOZokgBTos
+         MMCl92VA/Ov1GfJwgbmF4ii8H6M2PHqAw/TAE9ZHgfv1k1nLlv31Vu4hwe7J+sWoOWsY
+         9+h7IgknSjf0mb6JY+la1brB5qws4LFnf9lUFnHECtANi+tscn2FLK7kGYMG5xxtI819
+         a3CQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUdGLNw9gOg5PspeKTCt3aVlW76fxreID+9gb3pWLVj++gLOZXT+BY5JcLaoog39jdei2k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWK7rzeBiOgvEZRU9h+qGtefuZnJFma3YWPTVqM89lg09u69fJ
+	uG0PcFTbvoxx2ahFAHJX3M2Zv2TJyHFdKnlTYLRPC1Xhn8j9o84/+rLJ
+X-Gm-Gg: ASbGncsClWTVl2+dnYlKnOJj8D8fgtGYrtvpYRDkVJ1mzLtvEwWTUwnxjqUNqlw2MAM
+	dzZ/USLYjWuaoQ244iZBnn4km+qdrk/+mbwhBiQ6qgW1tjGEhchCKaHNG4IVOZLl3NF3ZkTt7/u
+	PaNQCAYnxLOJM03gLD2ZSBoFSNB5kTvzILK6MO75jndME47tkITqmWeMC8G/mePcJxr9CB6RVeW
+	Kh3ekgA85oUOWU4fdc0sj5JJ4MacC2sH4BzkzR/Wsg2fCCEKgylZH7OCDJiQPuRP5BFviRQvOWf
+	9jgZN37ro4Du6IWfFQhGJjVbd4i48cgY5Uu9m+hw9rn6HJxeg0aa0WL0p2mtg6dBdZBZ9f2Q3FE
+	tPklSvEM36y3Wn7ewv9gjAUFKO2aHZEJ2z7Q8ZUfI2SH1WCUN9aicPXAC3EkPZLRB5L+9oidhy5
+	uygw==
+X-Google-Smtp-Source: AGHT+IGIAchNoEHFNNrUZtM+TDOe+4ACVDLvPqJloOk/sC0eRCbgmSifY6wNhf27PIzrHEaASBfebw==
+X-Received: by 2002:a17:903:904:b0:295:2276:6704 with SMTP id d9443c01a7336-2986a76821bmr154935035ad.51.1763452535158;
+        Mon, 17 Nov 2025 23:55:35 -0800 (PST)
+Received: from dw-tp ([129.41.58.4])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-345af26d8b1sm764612a91.3.2025.11.17.23.55.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Nov 2025 23:55:34 -0800 (PST)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Misbah Anjum N <misanjum@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org, linux-next@vger.kernel.org
+Subject: Re: [REGRESSION] [next-20251117] ppc64le: WARNING in vmalloc_fix_flags with __GFP_ACCOUNT in BPF/seccomp path
+In-Reply-To: <dbe42ce9543dbc3af95f95d6a6d9540b@linux.ibm.com>
+Date: Tue, 18 Nov 2025 13:21:24 +0530
+Message-ID: <87bjkz3hj7.ritesh.list@gmail.com>
+References: <dbe42ce9543dbc3af95f95d6a6d9540b@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
-Message-ID: <20251118073734.4188710-1-mattbobrowski@google.com>
-Subject: [PATCH bpf-next] selftests/bpf: use ASSERT_STRNEQ to factor in long
- slab cache names
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, ohn Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>
-Content-Type: text/plain; charset="UTF-8"
 
-subtest_kmem_cache_iter_check_slabinfo() fundamentally compares slab
-cache names parsed out from /proc/slabinfo against those stored within
-struct kmem_cache_result. The current problem is that the slab cache
-name within struct kmem_cache_result is stored within a bounded
-fixed-length array (sized to SLAB_NAME_MAX(32)), whereas the name
-parsed out from /proc/slabinfo is not. Meaning, using ASSERT_STREQ()
-can certainly lead to test failures, particularly when dealing with
-slab cache names that are longer than SLAB_NAME_MAX(32)
-bytes. Notably, kmem_cache_create() allows callers to create slab
-caches with somewhat arbitrarily sized names via its __name identifier
-argument, so exceeding the SLAB_NAME_MAX(32) limit that is in place
-now can certainly happen.
+Misbah Anjum N <misanjum@linux.ibm.com> writes:
 
-Make subtest_kmem_cache_iter_check_slabinfo() more reliable by only
-checking up to sizeof(struct kmem_cache_result.name) - 1 using
-ASSERT_STRNEQ().
+> Hi,
+>
+> I'm reporting a regression in linux-next that was introduced between 
+> 20251114 and 20251117.
+>
+> Regression Info:
+> - Working: 6.18.0-rc5-next-20251114
+> - Broken: 6.18.0-rc6-next-20251117
+>
+> Environment:
+> - IBM Power11 pSeries (ppc64le)
+> - Fedora43 Distro
+>
+> Issue:
+> WARNING: mm/vmalloc.c:3937 at vmalloc_fix_flags+0x6c/0xa0
+> "Unexpected gfp: 0x400000 (__GFP_ACCOUNT). Fixing up to gfp: 0xdc0 
+> (GFP_KERNEL|__GFP_ZERO). Fix your code!"
+>
+> Call Trace:
+> [  523.921345] Unexpected gfp: 0x400000 (__GFP_ACCOUNT). Fixing up to 
+> gfp: 0xdc0 (GFP_KERNEL|__GFP_ZERO). Fix your code!
+> [  523.921356] WARNING: mm/vmalloc.c:3937 at 
+> vmalloc_fix_flags+0x6c/0xa0, CPU#69: (ostnamed)/6500
 
-Fixes: a496d0cdc84d ("selftests/bpf: Add a test for kmem_cache_iter")
-Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
----
- tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This was reported here too - 
+https://lore.kernel.org/all/69158bb1.a70a0220.3124cb.001e.GAE@google.com/
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-index 1de14b111931..6e35e13c2022 100644
---- a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-@@ -57,7 +57,8 @@ static void subtest_kmem_cache_iter_check_slabinfo(struct kmem_cache_iter *skel)
- 		if (!ASSERT_OK(ret, "kmem_cache_lookup"))
- 			break;
- 
--		ASSERT_STREQ(r.name, name, "kmem_cache_name");
-+		ASSERT_STRNEQ(r.name, name, sizeof(r.name) - 1,
-+			      "kmem_cache_name");
- 		ASSERT_EQ(r.obj_size, objsize, "kmem_cache_objsize");
- 
- 		seen++;
--- 
-2.52.0.rc1.455.g30608eb744-goog
 
+Looks like it should be fixed with v3, which was posted just
+yesterday... 
+https://lore.kernel.org/all/20251117173530.43293-2-vishal.moola@gmail.com/
+
+So, I guess, latest linux-next should not show this warning on ppc64le either.
+
+-ritesh
 
