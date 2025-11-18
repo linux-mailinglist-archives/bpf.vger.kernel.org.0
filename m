@@ -1,243 +1,146 @@
-Return-Path: <bpf+bounces-74839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-74840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3707AC66D2A
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 02:21:02 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F8C0C66D54
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 02:28:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D19474E2328
-	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 01:21:00 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C8B3934E298
+	for <lists+bpf@lfdr.de>; Tue, 18 Nov 2025 01:27:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3BC330C63B;
-	Tue, 18 Nov 2025 01:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ED6B307496;
+	Tue, 18 Nov 2025 01:27:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O69nt2gG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G8n8wVUb"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198C228C866;
-	Tue, 18 Nov 2025 01:20:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB7621E0BA;
+	Tue, 18 Nov 2025 01:27:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763428854; cv=none; b=tYMsKwIuTUzMM+lH+e8ETWa6fCugaACp5Mz15gBv+yyf7TR3CB/GlxA1FS9cmCHCge2bOqze9xE0EgTixtnzO67B7nwWW85DKhR9KSFt2rA0u4TvZhoIyeKe6zgaQqHFTh6tG/v7B4rEfSD7FU6CGB1iNHuENuT9G0Xx4KwFBUs=
+	t=1763429267; cv=none; b=dPC7dGoQ4EoaNm+h5o07zrhMBbZ7HljavjXPkpKQ9qVEXov9xNCbNTFy2P6iF5AQuSYX0+TBCJSzNL69ERpyUx6RiVqDMZJoWnoqQs9XfBAxLtmTr9V9PIv6YhEQjZYriDoxaNEG8hI2j2WB8R61fZL4vr4Ah4DaRGQjWxUJRvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763428854; c=relaxed/simple;
-	bh=ksPhFiYiWAS4Howtkeo3jSAl6Eyjb9vtA0YhuMynw8g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EVBggHUWb4jhSzyBDfMRlhZqcIr5+EsIxoNFrSn7Exg7v2JcTqz+A/p1H1xWz0Hqv3MTyB9wCOMHj6bf69uZnBgtHaPSD2B+L+HYbtGpAfbCvxNG9vyiZlOkpcA1qbyTYL87Whe0YDYDGqYKQeyrKIbprkqkTJ8JcfwS2GnCKLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O69nt2gG; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1763428845;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WLsdv85RrOb9Dlejp4arhbuTs7ghpPeNtpFV4Kv4wj8=;
-	b=O69nt2gG+mFmtdnQbfYxYQUsgL2cpVE/3wz1NMKwcvhIzw392QdO0BMklx0TCL8uO18T6I
-	IFQj7/sxxwnCzBIP7ILFiRm+BRu2zVORlbXwpNH57ru10WGVVMbzg7EKtAJM/or88KSAzR
-	abNQD7zavFZHcd9PvGwfZ9UrqluY04Y=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: ast@kernel.org, rostedt@goodmis.org,
- Menglong Dong <menglong8.dong@gmail.com>
-Cc: daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, mhiramat@kernel.org,
- mark.rutland@arm.com, mathieu.desnoyers@efficios.com, jiang.biao@linux.dev,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 6/6] bpf: implement "jmp" mode for trampoline
-Date: Tue, 18 Nov 2025 09:20:32 +0800
-Message-ID: <12782324.O9o76ZdvQC@7950hx>
-In-Reply-To: <20251117034906.32036-7-dongml2@chinatelecom.cn>
-References:
- <20251117034906.32036-1-dongml2@chinatelecom.cn>
- <20251117034906.32036-7-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1763429267; c=relaxed/simple;
+	bh=0oteIb+X1fJCyo+Zxr4nkUcxMjcvmBQGKU7OiOe0rpY=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=kn4YlGEzL8ouiZHMgiKSdF+jSI6PYRERN6kj3Bo+liZYmtZt5CpNHX9dd5b/ng3vC0SsuVL5B1zrS+5TMZQFT9rsj6v8v1msWexh2yV/+Hj7S5SagNoGaD4nzt4mUMAyaxAlCpD81qoLJRZgQMQLW2uQF9UyyrfeVOdyp094shY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G8n8wVUb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAB32C2BC9E;
+	Tue, 18 Nov 2025 01:27:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763429267;
+	bh=0oteIb+X1fJCyo+Zxr4nkUcxMjcvmBQGKU7OiOe0rpY=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=G8n8wVUbDy9xMoxpRV8pACQkfp9whBlQYQ78z1mHVC+Tv+BDltUo0t5oda21AUDCY
+	 T5DNkpifz6tSITK5L4rpTl211NX7Bj1hexmjiJ4XK6DOHTZ4Q+KFKt+tcEofcurJwv
+	 i1LLbAZI4MmVtRlBIkWPeNo1GRfaPm60Cv8CmoDYEtU279u8RhX81DoCg4ZuTZv92n
+	 vMWp9X9lpd5LH1IKOrDg4ULRstBc2OAZ7vKF54PSE29eCRV33uUQsyGHtdO5h5GsxU
+	 Um54PFFFXeSQdvMIWVq5baqALXlJuFHx6nOngKATHyhNX2SsBXUgnlMvWYiYf8Kc84
+	 hLa4GMK9a05rA==
+Content-Type: multipart/mixed; boundary="===============1479139858118383586=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-X-Migadu-Flow: FLOW_OUT
+Message-Id: <ad3ea8d7ccb10a7972db01b58d2596b425d60718ec09450a1ed6d7839488af51@mail.kernel.org>
+In-Reply-To: <20251118005305.27058-2-jordan@jrife.io>
+References: <20251118005305.27058-2-jordan@jrife.io>
+Subject: Re: [RFC PATCH bpf-next 1/7] bpf: Set up update_prog scaffolding for bpf_tracing_link_lops
+From: bot+bpf-ci@kernel.org
+To: jordan@jrife.io,bpf@vger.kernel.org
+Cc: jordan@jrife.io,linux-arm-kernel@lists.infradead.org,linux-s390@vger.kernel.org,x86@kernel.org,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,puranjay@kernel.org,iii@linux.ibm.com,mingo@redhat.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Tue, 18 Nov 2025 01:27:45 +0000 (UTC)
 
-On 2025/11/17 11:49, Menglong Dong wrote:
-> Implement the "jmp" mode for the bpf trampoline. For the ftrace_managed
-> case, we need only to set the FTRACE_OPS_FL_JMP on the tr->fops if "jmp"
-> is needed.
-> 
-> For the bpf poke case, we will check the origin poke type with the
-> "origin_flags", and current poke type with "tr->flags". The function
-> bpf_trampoline_update_fentry() is introduced to do the job.
-> 
-> The "jmp" mode will only be enabled with CONFIG_DYNAMIC_FTRACE_WITH_JMP
-> enabled and BPF_TRAMP_F_SHARE_IPMODIFY is not set. With
-> BPF_TRAMP_F_SHARE_IPMODIFY, we need to get the origin call ip from the
-> stack, so we can't use the "jmp" mode.
-> 
-> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> ---
-> v2:
-> - rename bpf_text_poke to bpf_trampoline_update_fentry
-> - remove the BPF_TRAMP_F_JMPED and check the current mode with the origin
->   flags instead.
-> ---
->  kernel/bpf/trampoline.c | 68 ++++++++++++++++++++++++++++++-----------
->  1 file changed, 51 insertions(+), 17 deletions(-)
-> 
+--===============1479139858118383586==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 09d5dc541..23fcbcd26 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+
+[ ... ]
+
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index a2a441185..14dd8be7b 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+
+[ ... ]
+
 > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index 2dcc999a411f..80ab435d6e00 100644
+> index 04104397c..d2fd02e10 100644
 > --- a/kernel/bpf/trampoline.c
 > +++ b/kernel/bpf/trampoline.c
-> @@ -175,24 +175,42 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
->  	return tr;
+> @@ -607,6 +607,35 @@ int bpf_trampoline_link_prog(struct bpf_tramp_link *link,
+>  	return err;
 >  }
->  
-> -static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
-> +static int bpf_trampoline_update_fentry(struct bpf_trampoline *tr, u32 orig_flags,
-> +					void *old_addr, void *new_addr)
->  {
-> +	enum bpf_text_poke_type new_t = BPF_MOD_CALL, old_t = BPF_MOD_CALL;
->  	void *ip = tr->func.addr;
-> +
-> +	if (!new_addr)
-> +		new_t = BPF_MOD_NOP;
-> +	else if (bpf_trampoline_use_jmp(tr->flags))
-> +		new_t = BPF_MOD_JUMP;
-> +
-> +	if (!old_addr)
-> +		old_t = BPF_MOD_NOP;
-> +	else if (bpf_trampoline_use_jmp(orig_flags))
-> +		old_t = BPF_MOD_JUMP;
-> +
-> +	return bpf_arch_text_poke(ip, old_t, new_t, old_addr, new_addr);
+>
+> +static int __bpf_trampoline_update_prog(struct bpf_tramp_link *link,
+> +					struct bpf_prog *new_prog,
+> +					struct bpf_trampoline *tr)
+> +{
+> +	return -ENOTSUPP;
 > +}
 > +
-> +static int unregister_fentry(struct bpf_trampoline *tr, u32 orig_flags,
-> +			     void *old_addr)
+> +int bpf_trampoline_update_prog(struct bpf_tramp_link *link,
+> +			       struct bpf_prog *new_prog,
+> +			       struct bpf_trampoline *tr)
 > +{
->  	int ret;
->  
->  	if (tr->func.ftrace_managed)
->  		ret = unregister_ftrace_direct(tr->fops, (long)old_addr, false);
->  	else
-> -		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, BPF_MOD_NOP,
-> -					 old_addr, NULL);
-> +		ret = bpf_trampoline_update_fentry(tr, orig_flags, old_addr, NULL);
->  
->  	return ret;
->  }
->  
-> -static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void *new_addr,
-> +static int modify_fentry(struct bpf_trampoline *tr, u32 orig_flags,
-> +			 void *old_addr, void *new_addr,
->  			 bool lock_direct_mutex)
->  {
-> -	void *ip = tr->func.addr;
->  	int ret;
->  
->  	if (tr->func.ftrace_managed) {
-> @@ -201,10 +219,8 @@ static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void *new_ad
->  		else
->  			ret = modify_ftrace_direct_nolock(tr->fops, (long)new_addr);
->  	} else {
-> -		ret = bpf_arch_text_poke(ip,
-> -					 old_addr ? BPF_MOD_CALL : BPF_MOD_NOP,
-> -					 new_addr ? BPF_MOD_CALL : BPF_MOD_NOP,
-> -					 old_addr, new_addr);
-> +		ret = bpf_trampoline_update_fentry(tr, orig_flags, old_addr,
-> +						   new_addr);
->  	}
->  	return ret;
->  }
-> @@ -229,8 +245,7 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
->  			return ret;
->  		ret = register_ftrace_direct(tr->fops, (long)new_addr);
->  	} else {
-> -		ret = bpf_arch_text_poke(ip, BPF_MOD_NOP, BPF_MOD_CALL,
-> -					 NULL, new_addr);
-> +		ret = bpf_trampoline_update_fentry(tr, 0, NULL, new_addr);
->  	}
->  
->  	return ret;
-> @@ -416,7 +431,7 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
->  		return PTR_ERR(tlinks);
->  
->  	if (total == 0) {
-> -		err = unregister_fentry(tr, tr->cur_image->image);
-> +		err = unregister_fentry(tr, orig_flags, tr->cur_image->image);
->  		bpf_tramp_image_put(tr->cur_image);
->  		tr->cur_image = NULL;
->  		goto out;
-> @@ -440,9 +455,17 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
->  
->  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
->  again:
-> -	if ((tr->flags & BPF_TRAMP_F_SHARE_IPMODIFY) &&
-> -	    (tr->flags & BPF_TRAMP_F_CALL_ORIG))
-> -		tr->flags |= BPF_TRAMP_F_ORIG_STACK;
-> +	if (tr->flags & BPF_TRAMP_F_CALL_ORIG) {
-> +		if (tr->flags & BPF_TRAMP_F_SHARE_IPMODIFY) {
-> +			tr->flags |= BPF_TRAMP_F_ORIG_STACK;
-> +		} else if (IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_JMP)) {
-> +			/* Use "jmp" instead of "call" for the trampoline
-> +			 * in the origin call case, and we don't need to
-> +			 * skip the frame.
-> +			 */
-> +			tr->flags &= ~BPF_TRAMP_F_SKIP_FRAME;
-> +		}
-> +	}
->  #endif
->  
->  	size = arch_bpf_trampoline_size(&tr->func.model, tr->flags,
-> @@ -473,10 +496,16 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
->  	if (err)
->  		goto out_free;
->  
-> +	if (bpf_trampoline_use_jmp(tr->flags))
-> +		tr->fops->flags |= FTRACE_OPS_FL_JMP;
-> +	else
-> +		tr->fops->flags &= ~FTRACE_OPS_FL_JMP;
-
-This should be wrapped by "#ifdef CONFIG_DYNAMIC_FTRACE_WITH_JMP".
-I'll change it in v3 after more human comments.
-
+> +	struct bpf_prog *old_prog;
+> +	int err;
 > +
->  	WARN_ON(tr->cur_image && total == 0);
->  	if (tr->cur_image)
->  		/* progs already running at this address */
-> -		err = modify_fentry(tr, tr->cur_image->image, im->image, lock_direct_mutex);
-> +		err = modify_fentry(tr, orig_flags, tr->cur_image->image,
-> +				    im->image, lock_direct_mutex);
->  	else
->  		/* first time registering */
->  		err = register_fentry(tr, im->image);
-> @@ -499,8 +528,13 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
->  	tr->cur_image = im;
->  out:
->  	/* If any error happens, restore previous flags */
-> -	if (err)
-> +	if (err) {
->  		tr->flags = orig_flags;
-> +		if (bpf_trampoline_use_jmp(tr->flags))
-> +			tr->fops->flags |= FTRACE_OPS_FL_JMP;
-> +		else
-> +			tr->fops->flags &= ~FTRACE_OPS_FL_JMP;
+> +	mutex_lock(&tr->mutex);
+> +	err = __bpf_trampoline_update_prog(link, new_prog, tr);
+> +	if (!err) {
+> +		/* If a program update was successful, switch the program
+> +		 * in the link before releasing tr->mutex; otherwise, another
+> +		 * operation could come along and update the trampoline with
+> +		 * the link still pointing at the old program.
+> +		 */
+> +		old_prog = xchg(&link->link.prog, new_prog);
+> +		bpf_prog_put(old_prog);
 > +	}
->  	kfree(tlinks);
->  	return err;
->  
-> 
+> +	mutex_unlock(&tr->mutex);
+> +	return err;
+> +}
+> +
+
+Can bpf_prog_put() be called while holding tr->mutex?
+
+When bpf_prog_put()->__bpf_prog_put() drops the program's refcount to
+zero and we're not in IRQ context (which we aren't when holding a regular
+mutex), it directly calls bpf_prog_put_deferred(). This eventually calls
+bpf_trampoline_put(), which takes trampoline_mutex.
+
+The existing code in bpf_trampoline_link_cgroup_shim() carefully unlocks
+tr->mutex before calling bpf_trampoline_put() (see the comment "have to
+release tr while _not_ holding its mutex"). Additionally,
+bpf_trampoline_put() has WARN_ON_ONCE(mutex_is_locked(&tr->mutex)) to
+catch this pattern.
+
+Should bpf_prog_put() be moved after mutex_unlock(&tr->mutex)?
+
+>  static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
+>  					struct bpf_trampoline *tr,
+>  					struct bpf_prog *tgt_prog)
+
+[ ... ]
 
 
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19450205468
 
+--===============1479139858118383586==--
 
