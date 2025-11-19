@@ -1,170 +1,160 @@
-Return-Path: <bpf+bounces-75043-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75044-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE98BC6CAE3
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 05:12:34 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FE0EC6CC2B
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 05:39:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 36F134EBAC5
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 04:11:52 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2987335D90C
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 04:38:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D40F22E7F38;
-	Wed, 19 Nov 2025 04:11:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A9503064BB;
+	Wed, 19 Nov 2025 04:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bh6uJu3u"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="J5WDVEAR"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51E3F1DDA18;
-	Wed, 19 Nov 2025 04:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE94D306B05
+	for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 04:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763525506; cv=none; b=fBvQYLEKYMfNyGzux3KqtDHJceb2wtm+oOr2HeAbBOiFxCkT63FQAbXRbc3P23y5AfStzqIuXkPC5KxXgChm0uDTXUu8KJ9QnCTCKZ8+NJWcjMZH/hG7PcaaFsuG8zWt4ORcnvGjqDnTkEvZR4ophz/6lsRDS5KSNd19G0BYmx8=
+	t=1763527094; cv=none; b=YcVnswLlS0UcDlNAlrnapN+m7TKnK2ACAL7A64XDoXpja0+tjGbVtFqQYCezee5763yvu/bCuil17uvJF2mUh7cLvxMNjIzot7+UU0i6fQV1uAwMaCNuHjlkGBaQZ9TJl9Z9qrbCFsPOjfGUKhowYTxlz8/TS4yjoDA5F0OOZco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763525506; c=relaxed/simple;
-	bh=mEsH2+lbjhS8gwYwdw4P6p6JgksAeLAfQnIuwiEKVZQ=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=is2K1qLC9SuysXRdQUsENg7KPSigV+CioJVjFRth52u8vWJVmblkUGOM5OJmsVUEhHmXnindChQvGLnHi4r/q91USMZi4NDEipUWP8f/LExDJJufgPdm212XZ0rjtf/rAPKo99T3zrMwiz/Dj4OAPTtZ7hEfr6M08FAErmdUZqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bh6uJu3u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA93BC2BCAF;
-	Wed, 19 Nov 2025 04:11:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763525505;
-	bh=mEsH2+lbjhS8gwYwdw4P6p6JgksAeLAfQnIuwiEKVZQ=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=Bh6uJu3u/1vhff6VNyXV3EYIQczW8nMw6OZa0BCyMAkG2AQ1gNNfsRkKCWoU05+WG
-	 aLxWrIaMz77kwcIrbejVklBh3DMBs5fVCeBNu/0tZRsituQSecnVB4xB36do48g97r
-	 xk6toXJC1TdFihxuHSu9Noer2PrgDXoleypZ5lI6bPNwKX0pmx3KDoQyViUz1F1x6K
-	 MWxSglxt+4Bel8k58CT66aSPi8dzEKHOP5SjBw0bIOSngtVbBvZr4E2nqvbGTzpA85
-	 u+6udlUPRv+mBchHO2NZGtEqjDE4K0oQaj5TO20tkDI83NfRgLuBn6RCK0FBKSqxEw
-	 bo7zMaEXELKpA==
-Content-Type: multipart/mixed; boundary="===============8658183863931700979=="
+	s=arc-20240116; t=1763527094; c=relaxed/simple;
+	bh=C5jSsTgvkALL9ejzqmPQgB6rWH7GZHKRGrQ29813rEY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d/4P8XtG+d+7UxnSZDkjH8UHDYq1IOkR41MwH07cYp25uY4+GuZUmELGuqRqUe7UWXh2Hhgtge564gS1kgAsKA65EJah7VMCR9bvTd6qBJL1PVQry+4tth0btASaukU4aQhP2EmEjW4XMGmbJeWoMWN9bsi2jnDOvhk9wwvr5Ok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=J5WDVEAR; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-429ce7e79f8so4387665f8f.0
+        for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 20:38:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1763527091; x=1764131891; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=013VvflcLvdlThJ17BkVnV7aFyDVxc9/Iz9Z2M21yQ4=;
+        b=J5WDVEARPirjQxfx718S3tk+baK5IC76Yit7U174BzHHy5wQB0t00/E5Kvw0fZiM3e
+         I8/fqP6/kdTbOpIbZ9C82GZMExP7cTGrqMpVk8P3oPrWANtbQmQlr2xcDn4Pzy+NiLq2
+         phPDjrDJrPXrJPrrHa7A+Kv5wykA1GSMbS33dUTKytl4SUDjQ+iXPENDa1Y4G7nhNwob
+         7yJ1hScCwhu3CGNgpEK/wOOFlM5f8Cn1/rS8QY9xIAGEf9iFCtFRefsVaoT8NJZFBJ/y
+         ede2nitFyB7yqTbaYMKI2mygFfSftegFrSdL4ILiizPzcAag+I+n5rrr+nTr3RTlp3ii
+         arAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763527091; x=1764131891;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=013VvflcLvdlThJ17BkVnV7aFyDVxc9/Iz9Z2M21yQ4=;
+        b=Ez4jkiGNLwhYJJQtI1O9VRxguxcGsDPFWAcQmhWmxFPFM+pq1O3oP7O9mxwJmoB+Tu
+         wrB4Q187zyya9eeee1AZD43ioZXyFb8T90kLxJWBOkqWsgR5IDCLXWr/B+lKwWcG/fFV
+         bSttFyIltt0sKcyOgodGJug7jJqvnEx1DbY/LlX37bFdepARShxGYz544/Aa0qN2eg8Y
+         veWP/0CBACWcq5UK3THAoZDt5gPR+EEtlGVuz1iBzOkiP/HpTKEUReZrUBdzskiF0BWF
+         zc5hVw2O/X0F1m0z9wZdztlsA+9ltMU+dJxHJNED3TZZAmf8q2tcTFl3A4Ll7Q7c9df4
+         KRlQ==
+X-Gm-Message-State: AOJu0YwtRd/P0iy1K6lFp6YTB/4CBefsedCXkfucEl1XvaCcUV4nlPxa
+	Ns2x57yfYG3/+F/vG3SgOcX0VMoIvN3M6SqqbdMguUWotzAV/HyOlJ1sr/0MzYMYXrucebegjdv
+	dD2E6DvY=
+X-Gm-Gg: ASbGncvnfwGOWrmbWRLHjK4MjewCErmebUq/W55eqVBG+8sjjdcadOkEU4BUV7E9YtB
+	ETqv8BMNCvGQDAp03LiiJvu/6cX7DZ6G/tmnS+qU0fOX+PVTs6jV8TfzYufhpf9LPw/l1cJ8bhD
+	4Qy3QZm3YL4i6ct4UKTTpDXBizI5QtVkGSSq4ZUx3bRsCmuWuM4tXyM9fYljxWW3Vs+uBXXLN8M
+	qJdAdadRmbgT+J2ecWVyZHUqHjHv/nTacGdVwl+uUfyN8BGR0O6Qmvt3McweUt93SThJIoe6oym
+	GhymNPct1+9z7FgrnGMzyLhH2pvwiLX7d5SjfRUfscHxDnx9S+0l/xSWjxGa70H3N4DEP9NdoFm
+	6N+3/OIvPsIfy0NvyHVRDoiyx1gZDqmmZb8gy8eFYjJhlzZ/yPww75PeOhAo9hMUFypSTLViY8Y
+	v65cEeMDK6z9Rnx1eTeOCUI0xggRyXoaX+mbU+ok8PKSwTZuSqo+YNkphcNby/
+X-Google-Smtp-Source: AGHT+IFgiHdEgYchAFUbIZ5BWc3G8XCUjTmDiMfuGUz/BhBLX64rehASsPYNXoMihhYrAXRp+ZdMsg==
+X-Received: by 2002:a05:6000:230d:b0:42b:2dfd:5350 with SMTP id ffacd0b85a97d-42b5939e2afmr16870012f8f.56.1763527090754;
+        Tue, 18 Nov 2025 20:38:10 -0800 (PST)
+Received: from F15.localdomain ([121.167.230.140])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2bf1ddsm192241165ad.92.2025.11.18.20.38.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Nov 2025 20:38:10 -0800 (PST)
+From: Hoyeon Lee <hoyeon.lee@suse.com>
+To: bpf@vger.kernel.org
+Cc: Hoyeon Lee <hoyeon.lee@suse.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [bpf-next] selftests/bpf: propagate LLVM toolchain into runqslower sub-make
+Date: Wed, 19 Nov 2025 13:37:39 +0900
+Message-ID: <20251119043739.1860428-1-hoyeon.lee@suse.com>
+X-Mailer: git-send-email 2.51.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <fac834d1e096215cef3e1211d329e92b2e5eb1efe2c3f06881fc051ecafd743d@mail.kernel.org>
-In-Reply-To: <20251119031531.1817099-5-dolinux.peng@gmail.com>
-References: <20251119031531.1817099-5-dolinux.peng@gmail.com>
-Subject: Re: [RFC PATCH v7 4/7] libbpf: Optimize type lookup with binary search for sorted BTF
-From: bot+bpf-ci@kernel.org
-To: dolinux.peng@gmail.com,ast@kernel.org,andrii.nakryiko@gmail.com
-Cc: eddyz87@gmail.com,zhangxiaoqin@xiaomi.com,linux-kernel@vger.kernel.org,bpf@vger.kernel.org,pengdonglin@xiaomi.com,alan.maguire@oracle.com,song@kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed, 19 Nov 2025 04:11:44 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 
---===============8658183863931700979==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+The runqslower build invokes a nested make, but the selected LLVM
+toolchain (via LLVM=-<version>) is not propagated. This causes the
+sub-make to call the system-default 'clang' and 'llvm-strip' even when
+a specific LLVM version is intended.
 
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index 71d464690..555703b37 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
+    # LLVM=-20 V=1 make -C tools/testing/selftests/bpf
+    ...
+    make -C tools/bpf/runqslower ...
+    clang -g -O2 --target=bpfel -I... -c runqslower.bpf.c -o runqslower.bpf.o && \
+          llvm-strip -g runqslower.bpf.o
+    /bin/sh: 1: clang: not found
 
-[ ... ]
+    (expected: clang-20 and llvm-strip-20)
 
-> @@ -897,44 +903,93 @@ int btf__resolve_type(const struct btf *btf, __u32 type_id)
->  	return type_id;
->  }
->
-> -__s32 btf__find_by_name(const struct btf *btf, const char *type_name)
-> +static __s32 btf_find_type_by_name_bsearch(const struct btf *btf, const char *name,
-> +						__s32 start_id, __s32 end_id)
->  {
-> -	__u32 i, nr_types = btf__type_cnt(btf);
-> +	const struct btf_type *t;
-> +	const char *tname;
-> +	__s32 l, r, m;
-> +
-> +	l = start_id;
-> +	r = end_id;
-> +	while (l <= r) {
-> +		m = l + (r - l) / 2;
-> +		t = btf_type_by_id(btf, m);
-> +		tname = btf__str_by_offset(btf, t->name_off);
-> +		if (strcmp(tname, name) >= 0) {
-                    ^^^^^^
-Can strcmp() handle a NULL tname here? The btf__str_by_offset()
-function returns NULL when offset is out of range (line 1674 returns
-"errno = EINVAL, NULL"), but strcmp() requires non-NULL arguments.
+Propagate CLANG and LLVM_STRIP to the sub-make to ensure LLVM version
+consistency across all builds.
 
-The original linear search code at line 971 checks "if (tname &&
-!strcmp(tname, type_name))" before calling strcmp(). Should the binary
-search path also check for NULL?
-
-> +			if (l == r)
-> +				return r;
-> +			r = m;
-> +		} else {
-> +			l = m + 1;
-> +		}
-> +	}
-> +
-> +	return btf__type_cnt(btf);
-> +}
-> +
-> +static __s32 btf_find_type_by_name_kind(const struct btf *btf, int start_id,
-> +				   const char *type_name, __u32 kind)
-> +{
-> +	const struct btf_type *t;
-> +	const char *tname;
-> +	int err = -ENOENT;
-> +
-> +	if (start_id < btf->start_id) {
-> +		err = btf_find_type_by_name_kind(btf->base_btf, start_id,
-> +			type_name, kind);
-> +		if (err > 0)
-> +			goto out;
-> +		start_id = btf->start_id;
-> +	}
-> +
-> +	if (btf->nr_sorted_types > 0) {
-> +		/* binary search */
-> +		__s32 end_id;
-> +		int idx;
-> +
-> +		end_id = btf->start_id + btf->nr_sorted_types - 1;
-> +		idx = btf_find_type_by_name_bsearch(btf, type_name, start_id, end_id);
-> +		for (; idx <= end_id; idx++) {
-> +			t = btf__type_by_id(btf, idx);
-> +			tname = btf__str_by_offset(btf, t->name_off);
-> +			if (strcmp(tname, type_name))
-                            ^^^^^^
-Same question here - can tname be NULL at this point?
-
-> +				goto out;
-> +			if (kind == -1 || btf_kind(t) == kind)
-> +				return idx;
-> +		}
-> +	} else {
-> +		/* linear search */
-> +		__u32 i, total;
-> +
-> +		total = btf__type_cnt(btf);
-> +		for (i = start_id; i < total; i++) {
-> +			t = btf_type_by_id(btf, i);
-> +			if (kind != -1 && btf_kind(t) != kind)
-> +				continue;
-> +			tname = btf__str_by_offset(btf, t->name_off);
-> +			if (tname && !strcmp(tname, type_name))
-> +				return i;
-> +		}
-> +	}
-
-[ ... ]
-
-
+Signed-off-by: Hoyeon Lee <hoyeon.lee@suse.com>
 ---
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+ tools/testing/selftests/bpf/Makefile | 1 +
+ tools/testing/selftests/lib.mk       | 1 +
+ 2 files changed, 2 insertions(+)
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19488781158
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 34ea23c63bd5..79ab69920dca 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -306,6 +306,7 @@ endif
+ 
+ $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
+ 	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower	       \
++		    CLANG=$(CLANG) LLVM_STRIP=$(LLVM_STRIP)		       \
+ 		    OUTPUT=$(RUNQSLOWER_OUTPUT) VMLINUX_BTF=$(VMLINUX_BTF)     \
+ 		    BPFTOOL_OUTPUT=$(HOST_BUILD_DIR)/bpftool/		       \
+ 		    BPFOBJ_OUTPUT=$(BUILD_DIR)/libbpf/			       \
+diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+index a448fae57831..f14255b2afbd 100644
+--- a/tools/testing/selftests/lib.mk
++++ b/tools/testing/selftests/lib.mk
+@@ -8,6 +8,7 @@ LLVM_SUFFIX := $(LLVM)
+ endif
+ 
+ CLANG := $(LLVM_PREFIX)clang$(LLVM_SUFFIX)
++LLVM_STRIP := $(LLVM_PREFIX)llvm-strip$(LLVM_SUFFIX)
+ 
+ CLANG_TARGET_FLAGS_arm          := arm-linux-gnueabi
+ CLANG_TARGET_FLAGS_arm64        := aarch64-linux-gnu
+-- 
+2.51.1
 
---===============8658183863931700979==--
 
