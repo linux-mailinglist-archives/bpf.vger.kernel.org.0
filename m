@@ -1,303 +1,155 @@
-Return-Path: <bpf+bounces-75108-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75109-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41F82C70E98
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 20:55:47 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC9A5C710EA
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 21:44:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6B9874E1E2D
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 19:54:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id 9AE242B369
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 20:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7132036CDFB;
-	Wed, 19 Nov 2025 19:53:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="eyetexJU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4288362127;
+	Wed, 19 Nov 2025 20:44:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A66C12DC781
-	for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 19:53:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CABEA2698AF
+	for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 20:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763582024; cv=none; b=qkCAB9uKUW3ieIio7hxCGCzuZazPc+Gg+bQ3syGwBGpYwAJeVzRbfbnUIKBKZftKJNuZt1LvOcaK3OnjOIpZjRwimYaVYwsSzQyCFDdplt8GujT/tbUIxWrTfMydOEC2uLZUFFkq+THlz6l2+BFTHmRDgynWuKdTr3dykrmbkEM=
+	t=1763585077; cv=none; b=YueB2+J/hkxWhD4x85uHh4jNbF1wOzsIfE6gtGSabMtrEsoutzMDeQGnl5ryL3TAHEb6897BWIi5nC2NpIaUvtgALL08ETrxOQMTo6ty+n6pu5x21wAxaQoYuUMBlh8gm79MfwdCH/FXVI43z7ZLfwnZTxHoVeuyz9GF3HQ86Sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763582024; c=relaxed/simple;
-	bh=0Akz0+lNh1xHfq2Nl+iVgGPrSVUHVmkhlu32PmBwXjo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=VMFz70x6AjREfiKeDPd6zzGOCfKxcov6WG160KGvHBd5lPAz8kRZl71Vr0r+UP4XcMrI2PYyov9glF+Psvb3MnQAY4pceYdfLTcs5FhLyHLx1tw9D7Uc3Ru4r7SGsV5MEvtOQbWeCTqXkPi9rrMj0QKWs+z0Bwgvxz01Wcwj08g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=eyetexJU; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b7277324054so23701766b.0
-        for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 11:53:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1763582016; x=1764186816; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Aem5xOVJvhgpFL5eZXcfB54MezIBm+m/g090fjqNIPQ=;
-        b=eyetexJU3g7mzl5x8JXkQuaQjuNUJ8y/X25XiRUh1aPv+am+NM5c9fFSidaihuD4Rs
-         owOVN1HPqyroI770CSKz+YQEYz4E6AstmfWvgpXb8WVhtH8XFcmoZd8KoiL/HGk5/rbH
-         9Uimo906Z2sbYO3riSx4KyLLvwwmYQ1R9QkLl/fybEAG2aHiNeOYBDmAzzYNhbxbJ31Z
-         QsroQCrX9ZWu29rrHH+4WUklItbTTb/LbVmw6BgEjW1HNphCT23U/5Bin5qFm6dI+TpH
-         ITe2kEzRBHkMZ3XVwQ08wZZZK3d7gGcu9MBX9AbbWxlkq5bwHxa8rrg6SLyK4Iy0Bgwn
-         WVNA==
+	s=arc-20240116; t=1763585077; c=relaxed/simple;
+	bh=+Z3+bLESk/0SzMVGNvnp7w2sq7gFUw5i0Gc58/GPqxM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=qZsf/A7YaOaD75VNtoL+iI50HinFEO2+hQ3Ievk/aMprpvYfbmwlZw5EcXCX69jC0FVGyAD2xV+5FrUQMI50qoH5Y9siIIYP7B5tEvS/1H6aslo9hLpj1yEntO5OWRRKM4yCuSSzKhIqYLz+/FkqSSWl+/BXD1xORpW3ZLFIE9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-433783ff82aso2557715ab.1
+        for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 12:44:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763582016; x=1764186816;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Aem5xOVJvhgpFL5eZXcfB54MezIBm+m/g090fjqNIPQ=;
-        b=esEyyXKxiA+8Cmi4cI/1xm2D3k8Pb4kw4NyeKEczXNvgLBKvniImhX4Wl47ZxldBTX
-         RDAIQbsxj9E04Ol9nlchd+q/V0epcVJPRzkPQEmJyknwnxmvZ8l93JraDEMcFZRad1X8
-         pnz3RhbhSN1KBo5glafDQECx1xrtcTTRXs+V2uX6iiJEpqetUNm7Aw61WYUBMz0pjoSE
-         rJKWKT9jxAR6cbWAMwtJjUh7YRCB3dq0tsOGDrFW96ufZnl5vVOHnayrKc9/XAjmQrFZ
-         stD3E2TPzw6OQFkbzBtX88WvQ/Pb/IU7ZP8K+dimwaiANWBNu87BfgAF4abpnHi+wCCD
-         pT0Q==
-X-Gm-Message-State: AOJu0YxQuryERVl/pTfZsyoEn8xbQm/C9RZjKn1xmkjqUaLdbsbcNW0j
-	GRm4H0S5o+Vj+tvAxYA7Nh3p+Zv4OuOBPZU3zdF6P5a6KMki9+GR6iKw4TosM7aptlw=
-X-Gm-Gg: ASbGncssiqIY33UTweoqIXwZZ/3F2qDRXqWFzgy3IIkGh/4tLOrpUfSQBusD93d6MH+
-	uf6vybEbB458Q6LZQjFVmE11hbkdWlX1oVz9gW882FRU+D3lvBp2OTWtFJk2gmWPrISlxTba75N
-	/JZVK13ENGCaNS3f9Mp4cetpuQkEHODKO1gFxM+fApoKP7B9NU5iVF1b/OET2oGaOs0BkRu9HUN
-	g/qjks6WqV1/geWqABCz4XKrszMXcflAc/F1A6jNQsh/ycS73TdG63OZmdDPxhcz48sSUmDqep9
-	6LdsHvZ/FcZvIVWwAqpVzEYTjUH/PwvXaSGzYUdNUiYXw/4OfT7K1UJubWTA34y0j0h9ATfSPFt
-	AwBMorOlYrLILQAfHbF3fbbOj1AzSO+7eCVPTYyUI36+88MK48miu+7VR5uyWFk8E2cnyV1h5BK
-	OeEDMTYGkP+IGqfR1n0Pv4aT7K
-X-Google-Smtp-Source: AGHT+IGzw2bAN/LjeUPdPS5iyXmbC02OEZ1xM5G58Srnj8lbxl9efxcDcTwBXx3YJ4DcTxSJ62ipqw==
-X-Received: by 2002:a17:907:c04:b0:b73:7710:fe03 with SMTP id a640c23a62f3a-b76554a52bbmr24911466b.58.1763582016246;
-        Wed, 19 Nov 2025 11:53:36 -0800 (PST)
-Received: from cloudflare.com ([2a09:bac5:5063:2969::420:5c])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b7654fd4f4esm18582566b.45.2025.11.19.11.53.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Nov 2025 11:53:35 -0800 (PST)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: bpf@vger.kernel.org,  John Fastabend <john.fastabend@gmail.com>,  "David
- S. Miller" <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,
-  Jakub Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,
-  Simon Horman <horms@kernel.org>,  Neal Cardwell <ncardwell@google.com>,
-  Kuniyuki Iwashima <kuniyu@google.com>,  David Ahern <dsahern@kernel.org>,
-  Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
- KaFai Lau <martin.lau@linux.dev>,  Eduard Zingerman <eddyz87@gmail.com>,
-  Song Liu <song@kernel.org>,  Yonghong Song <yonghong.song@linux.dev>,  KP
- Singh <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao
- Luo <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>,  Michal Luczaj <mhal@rbox.co>,  Stefano Garzarella
- <sgarzare@redhat.com>,  Cong Wang <cong.wang@bytedance.com>,
-  netdev@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v1 1/3] bpf, sockmap: Fix incorrect copied_seq
- calculation
-In-Reply-To: <20251117110736.293040-2-jiayuan.chen@linux.dev> (Jiayuan Chen's
-	message of "Mon, 17 Nov 2025 19:07:05 +0800")
-References: <20251117110736.293040-1-jiayuan.chen@linux.dev>
-	<20251117110736.293040-2-jiayuan.chen@linux.dev>
-Date: Wed, 19 Nov 2025 20:53:34 +0100
-Message-ID: <87zf8h6bpd.fsf@cloudflare.com>
+        d=1e100.net; s=20230601; t=1763585075; x=1764189875;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fVDtu/Rp+lPQNYcCVr4DUn+/8TyqiaxBRWusv82tbVI=;
+        b=fXAHCn0d1ai/mQ5hpfdIl1glq3q0fH9BN76BX2wozhieliknqwOuRUuFxSJzb7SBYW
+         XSnVIM13bQFNOpi/sLVvCId6PIOlRhBeyCvYHoXVDI5Ua20T4/cSsa3plT2sKrehbiEi
+         eYEnF6hmyjm2ZAuZUQLWA/btW1/OcJotk1AjWyepE42ZuJbUXcBbTjnZRhlIWhfi/dZW
+         o/MjVb/qXHVd7HyhBNpTYPPJ/qV0jhvtcmnua3xKKXitGkuas5ND/6Qxt7SwYFaYWgDF
+         emA8DFqS34sZC8A4x/mA1dNhoJLm4nAHgd0aTB69wEEhwmosR0H8x2ghK+JJia5k+KY8
+         N/4g==
+X-Forwarded-Encrypted: i=1; AJvYcCX3XjEjH1ULPjoTk+Xoi2980iJTkUPigeS49WSlHtDQJaVdLyR/pANwgkb+audRAfRBGyY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzm7zdXyIOEmTsZL6IzIAFE85ev54gAAfRXwN29aYkzWtwoQ50w
+	V1PZAatXVFEwDdAMgHYXeiVH9gJGgOQi7ilBOfRq5orxxTPoYLx+l+UyFtzHNHN17fltQMcOklJ
+	fgHHitus4MlFP0oNFl8I8+LKDcitQD4AUKGl3jRMaLM1/RVVgS9im7DdNtw0=
+X-Google-Smtp-Source: AGHT+IGVn8GrEjKOPtV7FodlXsB1sfK4h090hAQK7DfVmBw3TNv7l6Tq/saj5WGXrhy3MxwrfIft9sd32Xh0dIijXWi6yrZ0cXHV
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6e02:218c:b0:433:7f29:929e with SMTP id
+ e9e14a558f8ab-435a9e19c61mr3797525ab.31.1763585074928; Wed, 19 Nov 2025
+ 12:44:34 -0800 (PST)
+Date: Wed, 19 Nov 2025 12:44:34 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <691e2c32.a70a0220.2ea503.0020.GAE@google.com>
+Subject: [syzbot] [bpf?] WARNING: kmalloc bug in bpf_prog_alloc_no_stats
+From: syzbot <syzbot+d4264133b3e51212ea30@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Nov 17, 2025 at 07:07 PM +08, Jiayuan Chen wrote:
-> A socket using sockmap has its own independent receive queue: ingress_msg.
-> This queue may contain data from its own protocol stack or from other
-> sockets.
->
-> The issue is that when reading from ingress_msg, we update tp->copied_seq
-> by default. However, if the data is not from its own protocol stack,
-> tcp->rcv_nxt is not increased. Later, if we convert this socket to a
-> native socket, reading from this socket may fail because copied_seq might
-> be significantly larger than rcv_nxt.
->
-> This fix also addresses the syzkaller-reported bug referenced in the
-> Closes tag.
->
-> This patch marks the skmsg objects in ingress_msg. When reading, we update
-> copied_seq only if the data is from its own protocol stack.
->
->                                                      FD1:read()
->                                                      --  FD1->copied_seq++
->                                                          |  [read data]
->                                                          |
->                                 [enqueue data]           v
->                   [sockmap]     -> ingress to self ->  ingress_msg queue
-> FD1 native stack  ------>                                 ^
-> -- FD1->rcv_nxt++               -> redirect to other      | [enqueue data]
->                                        |                  |
->                                        |             ingress to FD1
->                                        v                  ^
->                                       ...                 |  [sockmap]
->                                                      FD2 native stack
->
-> Closes: https://syzkaller.appspot.com/bug?extid=06dbd397158ec0ea4983
-> Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
-> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-> ---
->  include/linux/skmsg.h | 25 ++++++++++++++++++++++++-
->  net/core/skmsg.c      | 19 ++++++++++++++++---
->  net/ipv4/tcp_bpf.c    |  5 +++--
->  3 files changed, 43 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index 49847888c287..b7826cb2a388 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -23,6 +23,17 @@ enum __sk_action {
->  	__SK_NONE,
->  };
->  
-> +/* The BPF program sets BPF_F_INGRESS on sk_msg to indicate data needs to be
-> + * redirected to the ingress queue of a specified socket. Since BPF_F_INGRESS is
-> + * defined in UAPI so that we can't extend this enum for our internal flags. We
-> + * define some internal flags here while inheriting BPF_F_INGRESS.
-> + */
-> +enum {
-> +	SK_MSG_F_INGRESS	= BPF_F_INGRESS, /* (1ULL << 0) */
-> +	/* internal flag */
-> +	SK_MSG_F_INGRESS_SELF	= (1ULL << 1)
-> +};
-> +
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    0c1c7a6a83fe Add linux-next specific files for 20251117
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12c86692580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=78555cc0f7025c00
+dashboard link: https://syzkaller.appspot.com/bug?extid=d4264133b3e51212ea30
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/30639e6c3546/disk-0c1c7a6a.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/88fdcd914c22/vmlinux-0c1c7a6a.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/087028e72d0f/bzImage-0c1c7a6a.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d4264133b3e51212ea30@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+Unexpected gfp: 0x400000 (__GFP_ACCOUNT). Fixing up to gfp: 0xdc0 (GFP_KERNEL|__GFP_ZERO). Fix your code!
+WARNING: mm/vmalloc.c:3938 at vmalloc_fix_flags+0x9c/0xe0 mm/vmalloc.c:3937, CPU#1: syz-executor/6076
+Modules linked in:
+CPU: 1 UID: 0 PID: 6076 Comm: syz-executor Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
+RIP: 0010:vmalloc_fix_flags+0x9c/0xe0 mm/vmalloc.c:3937
+Code: 81 e6 1f 52 ee ff 89 74 24 30 81 e3 e0 ad 11 00 89 5c 24 20 90 48 c7 c7 a0 db 96 8b 4c 89 fa 89 d9 4d 89 f0 e8 85 8d 6c ff 90 <0f> 0b 90 90 8b 44 24 20 48 c7 04 24 0e 36 e0 45 4b c7 04 2c 00 00
+RSP: 0018:ffffc900043cfb00 EFLAGS: 00010246
+RAX: a51e1d8e991b0100 RBX: 0000000000000dc0 RCX: ffff888031d2bd00
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000002
+RBP: ffffc900043cfb98 R08: ffffc900043cf827 R09: 1ffff92000879f04
+R10: dffffc0000000000 R11: fffff52000879f05 R12: 1ffff92000879f60
+R13: dffffc0000000000 R14: ffffc900043cfb20 R15: ffffc900043cfb30
+FS:  0000555589c86500(0000) GS:ffff888125b74000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa89645c470 CR3: 0000000079642000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ __vmalloc_noprof+0xf2/0x120 mm/vmalloc.c:4124
+ bpf_prog_alloc_no_stats+0x4a/0x4d0 kernel/bpf/core.c:106
+ bpf_prog_alloc+0x3c/0x1a0 kernel/bpf/core.c:153
+ bpf_prog_create_from_user+0xa7/0x440 net/core/filter.c:1443
+ seccomp_prepare_filter kernel/seccomp.c:701 [inline]
+ seccomp_prepare_user_filter kernel/seccomp.c:738 [inline]
+ seccomp_set_mode_filter kernel/seccomp.c:1990 [inline]
+ do_seccomp+0x7b1/0xd90 kernel/seccomp.c:2110
+ __do_sys_prctl kernel/sys.c:2610 [inline]
+ __se_sys_prctl+0xc3c/0x1830 kernel/sys.c:2518
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fa896590b0d
+Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 18 00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 9d 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 1b 48 8b 54 24 18 64 48 2b 14 25 28 00 00 00
+RSP: 002b:00007ffe0659e8d0 EFLAGS: 00000246 ORIG_RAX: 000000000000009d
+RAX: ffffffffffffffda RBX: 00007fa89662cf80 RCX: 00007fa896590b0d
+RDX: 00007ffe0659e930 RSI: 0000000000000002 RDI: 0000000000000016
+RBP: 00007ffe0659e940 R08: 0000000000000006 R09: 0000000000000071
+R10: 0000000000000071 R11: 0000000000000246 R12: 000000000000006d
+R13: 00007ffe0659ed68 R14: 00007ffe0659efe8 R15: 0000000000000000
+ </TASK>
 
 
-I'm wondering if we need additional state to track this.
-Can we track sk_msg's construted from skb's that were not redirected by
-setting `sk_msg.sk = sk` to indicate that the source socket is us in
-sk_psock_skb_ingress_self()?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-If not, then I'd just offset the internal flags like we do in
-net/core/filter.c, BPF_F_REDIRECT_INTERNAL.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
->  struct sk_msg_sg {
->  	u32				start;
->  	u32				curr;
-> @@ -141,8 +152,20 @@ int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
->  			     struct sk_msg *msg, u32 bytes);
->  int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
->  		   int len, int flags);
-> +int __sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
-> +		     int len, int flags, int *from_self_copied);
->  bool sk_msg_is_readable(struct sock *sk);
->  
-> +static inline bool sk_msg_is_to_self(struct sk_msg *msg)
-> +{
-> +	return msg->flags & SK_MSG_F_INGRESS_SELF;
-> +}
-> +
-> +static inline void sk_msg_set_to_self(struct sk_msg *msg)
-> +{
-> +	msg->flags |= SK_MSG_F_INGRESS_SELF;
-> +}
-> +
->  static inline void sk_msg_check_to_free(struct sk_msg *msg, u32 i, u32 bytes)
->  {
->  	WARN_ON(i == msg->sg.end && bytes);
-> @@ -235,7 +258,7 @@ static inline struct page *sk_msg_page(struct sk_msg *msg, int which)
->  
->  static inline bool sk_msg_to_ingress(const struct sk_msg *msg)
->  {
-> -	return msg->flags & BPF_F_INGRESS;
-> +	return msg->flags & SK_MSG_F_INGRESS;
->  }
->  
->  static inline void sk_msg_compute_data_pointers(struct sk_msg *msg)
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index 2ac7731e1e0a..25d88c2082e9 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -409,14 +409,14 @@ int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
->  }
->  EXPORT_SYMBOL_GPL(sk_msg_memcopy_from_iter);
->  
-> -/* Receive sk_msg from psock->ingress_msg to @msg. */
-> -int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
-> -		   int len, int flags)
-> +int __sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
-> +		     int len, int flags, int *from_self_copied)
->  {
->  	struct iov_iter *iter = &msg->msg_iter;
->  	int peek = flags & MSG_PEEK;
->  	struct sk_msg *msg_rx;
->  	int i, copied = 0;
-> +	bool to_self;
->  
->  	msg_rx = sk_psock_peek_msg(psock);
->  	while (copied != len) {
-> @@ -425,6 +425,7 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
->  		if (unlikely(!msg_rx))
->  			break;
->  
-> +		to_self = sk_msg_is_to_self(msg_rx);
->  		i = msg_rx->sg.start;
->  		do {
->  			struct page *page;
-> @@ -443,6 +444,9 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
->  			}
->  
->  			copied += copy;
-> +			if (to_self && from_self_copied)
-> +				*from_self_copied += copy;
-> +
->  			if (likely(!peek)) {
->  				sge->offset += copy;
->  				sge->length -= copy;
-> @@ -487,6 +491,14 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
->  out:
->  	return copied;
->  }
-> +EXPORT_SYMBOL_GPL(__sk_msg_recvmsg);
-> +
-> +/* Receive sk_msg from psock->ingress_msg to @msg. */
-> +int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
-> +		   int len, int flags)
-> +{
-> +	return __sk_msg_recvmsg(sk, psock, msg, len, flags, NULL);
-> +}
->  EXPORT_SYMBOL_GPL(sk_msg_recvmsg);
->  
->  bool sk_msg_is_readable(struct sock *sk)
-> @@ -616,6 +628,7 @@ static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb
->  	if (unlikely(!msg))
->  		return -EAGAIN;
->  	skb_set_owner_r(skb, sk);
-> +	sk_msg_set_to_self(msg);
->  	err = sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, msg, take_ref);
->  	if (err < 0)
->  		kfree(msg);
-> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-> index a268e1595b22..6332fc36ffe6 100644
-> --- a/net/ipv4/tcp_bpf.c
-> +++ b/net/ipv4/tcp_bpf.c
-> @@ -226,6 +226,7 @@ static int tcp_bpf_recvmsg_parser(struct sock *sk,
->  	int peek = flags & MSG_PEEK;
->  	struct sk_psock *psock;
->  	struct tcp_sock *tcp;
-> +	int from_self_copied = 0;
->  	int copied = 0;
->  	u32 seq;
->  
-> @@ -262,7 +263,7 @@ static int tcp_bpf_recvmsg_parser(struct sock *sk,
->  	}
->  
->  msg_bytes_ready:
-> -	copied = sk_msg_recvmsg(sk, psock, msg, len, flags);
-> +	copied = __sk_msg_recvmsg(sk, psock, msg, len, flags, &from_self_copied);
->  	/* The typical case for EFAULT is the socket was gracefully
->  	 * shutdown with a FIN pkt. So check here the other case is
->  	 * some error on copy_page_to_iter which would be unexpected.
-> @@ -277,7 +278,7 @@ static int tcp_bpf_recvmsg_parser(struct sock *sk,
->  			goto out;
->  		}
->  	}
-> -	seq += copied;
-> +	seq += from_self_copied;
->  	if (!copied) {
->  		long timeo;
->  		int data;
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
