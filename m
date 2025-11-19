@@ -1,89 +1,89 @@
-Return-Path: <bpf+bounces-75106-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75107-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5C90C70E49
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 20:50:01 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C836C70E67
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 20:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 519C73515BF
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 19:48:08 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7418B4E1D8A
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 19:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6259636C0DD;
-	Wed, 19 Nov 2025 19:47:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8898371DF9;
+	Wed, 19 Nov 2025 19:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hwkPEa+w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N+kUnErw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E9A314A7E
-	for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 19:47:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C174F348865
+	for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 19:50:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763581674; cv=none; b=nV3EMJcHQO4jTQV1iDJpIlbAhEjQTsdb9Azflb877BgRNQXTgKzUF+cN8UFlE7lxzWILyQ1PPDufcdlgZ1xGdNejJztvS0U7sXbO0IeXH3T6oVwNm62mPL/OVN2ImSnVfemq/j02Ga/8B6X6Cbif+H0yP6MR5wjSuMBnbgurc7I=
+	t=1763581842; cv=none; b=keElA8Ig2DjUCVlvw+OISuZz+OGnWLQJNSR42ghl2/w+WmB3JAIqumlxFALwatx3xMBnqIy4NBuPelOXDcRXs7IrkDQu5wpepH/t7mMK7Lca/UccgHwGQxRbQpJiay3cz9CnJqeFW2ewCcKukp1li4OBFGRiJKWf8WjmZP3K4WQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763581674; c=relaxed/simple;
-	bh=bsoc8lO2ASxVUv5VnfmMy5oVlydIKxqIaDmTjldR52o=;
+	s=arc-20240116; t=1763581842; c=relaxed/simple;
+	bh=XEiVZypuIrdWVSdJAQwrhrWG2Cpziq1gj3kBNsA1h6E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=me4pYPAVnKguGCiVc9k4GzcsiqksaiFxzl5AMTYpQP4d+z35Iea3U+0WMwA3SlnmcetMkHh36ZOeQCtZts2A3yXH0Uvv2VOQFAy4baZlivf75YQaEgQJpDl6x7An4CxYOhVKonrCunFqFtip7zv+SSIkbC4QM70gEYOuVRx1PC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hwkPEa+w; arc=none smtp.client-ip=209.85.216.47
+	 To:Cc:Content-Type; b=mjY3hWBSYyhT/qe5VX2xVj1XWiS0M6f3aUOfQD58aSnUDQHoeulhhA6SUWP9EiK4WaS/bT1lPCCX/NCNh+gfBEcBIqKckwZ9Dy54nLEkdTWSkCqs35zUd994kY4ZP/bb4Pv70daOsDd2DWwfs0xSFnnMDP22sAt2Wuew9BjQIWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N+kUnErw; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-3434700be69so45157a91.1
-        for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 11:47:51 -0800 (PST)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-34585428e33so34105a91.3
+        for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 11:50:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763581671; x=1764186471; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763581840; x=1764186640; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AMehWEzsChioD/n+GiGtHlkf7h+H/uO6D+LztILkmLs=;
-        b=hwkPEa+wzeKuTp+mQauN+xrwZZLQ4r+z11nMlk2Ph2VvE8yOkdH6eOVk180aXLZNq0
-         LnXwg/xeJxqf8ARdkHCKKdgoVUO+dP/6TgBvUZ/Sxnv7J1tZ4AJ73WBuGv2Tc9MFrH2w
-         Dbdy+BFuOSLrE7Pc0RfNVbcKvRu+Y3eU7EjhU59Jy/gaPZgjOW1A1F6PzMUP6Ys+OKNB
-         baYCcaKJtZMissnZ+LLSp39QMXYydeV0ArYDxWSJ2xyI0T9XtI5wA4uhF6ug4HXNnT4y
-         NXpM3PvrKzK48oKl6n7KBipagU23TkH6cIcPUiHO7ptXPj42HVh+OZXqroiZ1IdSJPqq
-         4F0A==
+        bh=toMLiHC2ccBpYt1K8vCHCNPZFkfzM5CXmueQjOky0ZE=;
+        b=N+kUnErwjCwXh8UZJ9EvbK4Bp5CP8yzjO3UU6mxlR8YaklX78rMsd+ITSvunpu/7TK
+         a20NIiXwaaAU69mGyYXWdpQJxm2WRV+wwRBBkodqXbZeiQNmRVkOg1FljW5SZYluSkCf
+         hN0BeTuCrfDuXZcnakoug3/4zffWd/GRPEQlnLpHj+t7sUWBblK0Bzf4qWfNUOL1CME6
+         QNCiFmSzVPePWHNd0FJ3vz8gq6hO6GvVPyLgsrwzJgsc2OiBZZ0KgHPX+3ZiWyY7/5s4
+         7lRoss0SvTVWV+mjJ8yP3pPGdNHvJ6nlvUnguAin/UoYO3V2sN5FQcYdGEFJVqGu9A7v
+         V6vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763581671; x=1764186471;
+        d=1e100.net; s=20230601; t=1763581840; x=1764186640;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=AMehWEzsChioD/n+GiGtHlkf7h+H/uO6D+LztILkmLs=;
-        b=eIhH4BsxpwVU2EOItf+mlkFP+FTykuORqwZl8ajH9GpfN2vQ7D+r6edPdYRUF3qyTv
-         znrz5OnedRqKbJa6QnFo+dCiKj9DLXCzkn+zBJ0xoM5HmlYhUJoBJyeijslDt6j4jZX2
-         UrCUiqQ6e7ZPE5RzTqLdA7boGTJXNB7F1vA9WJXzblnY56fg9zKqzGF1ZK5e44T58xzM
-         xB445MDm9oTObqqBDyew0d8jqci0GwsdacVglMl6wwBLf0r8AhsxKYqJ2HKvlrUYTegB
-         GT1NFXmDDm0WQ4AycCerpgC3mmotnaEtNh1vzC7HiG7LYZqgn3CwSPleqNFBVl96p326
-         KVIA==
-X-Forwarded-Encrypted: i=1; AJvYcCXTwEWez+w0uEeaxQOFHs6YgzyzytvUtH+v6Ya17DiFXgP9iSMz/ubKAlTemJ4cbGPBClo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzgw9Pf0ZfcEgNeVFhGUij843GZ9faXZQ0kSZdDE2pv8RHBUe5k
-	+dZCpRqVLLxJpiAU+u7CfHonpKxfO+oqNdrF5RgHqRlWFdd9jTvBLElFns1GRsSOnAUlhLgV1eK
-	OALa00GCxykXMVN0kVPbA1VqqxdECNB8=
-X-Gm-Gg: ASbGncs+VEaDjikL/Adbuks3VGB2KUKcqaQqIY0wE1lLtFrxsKKEbAgQKaRyA1K8FNx
-	Ewm4XxvYoIdbgPhvRBnGoyOk9k2CiAKXGhhh1xA3lJ5cdaQQA4yjQ7gr1Ti8F4w4g264KyRgP5q
-	u8EJyldjVyNuc6k01p99tzY5YqJ/odob/+U5lCtXpEi5CRKybwDaBA9oOZWE4jFhxES5LMYGMfV
-	rXwXjUAc9aMHtl/t5zllVyKEdmuBST0y/3qZJ9u7pfs7Tm4vpgkOF4a1X2klZgQrR0sQt6XtKkH
-	vl+UxMO6slmoTBsVUXBYnQ==
-X-Google-Smtp-Source: AGHT+IF7CsHCwDvCWNCR//KNWQlHloELy/XEWRZ/dc/oPasc0IQpZR26FyOwxMe4Q4HRpwFob9472erhXwF9lBueuHc=
-X-Received: by 2002:a17:90b:280d:b0:340:bde5:c9e8 with SMTP id
- 98e67ed59e1d1-34727c4b62amr316870a91.22.1763581670879; Wed, 19 Nov 2025
- 11:47:50 -0800 (PST)
+        bh=toMLiHC2ccBpYt1K8vCHCNPZFkfzM5CXmueQjOky0ZE=;
+        b=RLDbleI91WLWunYdBCA5sRzDBy7Zg6VGKdU3PLHUD+raBr/lRvqVGb+nzAOROCfunC
+         mlM0y0l2W7/eD7KYKs4H0Yjl611WTbcJrWtHhCwYQOrSMaEeRO59iXLzK/KDjxwm9ZzJ
+         /0SMGwsjc2VgPx4VYGHy9dcGLbo+OCmSeL9agXyQlwH7XrbdAXY/n3uhM04GKXbPxA/e
+         +L65fDpg9u/pJaSHkk9OnaW5K1fHIkn4piRQQk9vUBoBV3Uvl2mDWzY2kt9bILt7sOW6
+         C8Nkm7vTjGbcevric/lX2GWWIjnpD+yS2G3W9lByucHiRz0r4QTR0c4Df/y/1oZRXAQe
+         80YA==
+X-Forwarded-Encrypted: i=1; AJvYcCUoU+yeDi6YbUUeTJzt3M/CLouEavkBZWm/KwZYt1HZ73RXxtDmDetHCjLYUJR7zBj9o9s=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzr2k7BPZoRQ7VJWifVkkh0rTZYr33+ctxRBu1/gIvEm2LyvUz4
+	vMlyaUIFwmPLikuLf8QHdNaBIuTA92DgJbav9RZeCBfD6vd1JekL91ARA1ZKlC7UMYQ/SoQFylR
+	8xKksUqSHT42NAL2/VXoQvqEOVstv5mI=
+X-Gm-Gg: ASbGncuTnkOyjZQScFywNdB7rNhdY9moIkkNE7sJaYqJDMdW66FuKeKgTDQGZvW9MLZ
+	36Fy0YcEiiZS0zlLF0dNBTa+z9ZSeT0IKFfKGx4MotBPH6U2ojo5fUhrJ3ptKFikIh2TgG7vOnx
+	K/YCRl8SA4saeqpBGVFlw1UZmERcJmM/hsiOGz0efrG+lnm3DUGEp5+T3lVLyPxcOYNg7IdDNP4
+	MEyOG7IugYBtjh/glyG1H5YsXfNbC9/kKDQKeO2J6/q+rbUwO7TipwXPZVGJlIGg57Ys9WG6F8r
+	SboFK92G7ZQrCgXrlm7G1A==
+X-Google-Smtp-Source: AGHT+IGPIzhWDQKVayD2OOX1Q8gyY8HHW+NagxWlTtoNzhT3VkU2L0XEomrq+J11lFcMVSu8NxoJV6ZcliQttmfbWaE=
+X-Received: by 2002:a17:90b:35c8:b0:340:ff7d:c2e with SMTP id
+ 98e67ed59e1d1-34727c5a420mr303936a91.29.1763581839724; Wed, 19 Nov 2025
+ 11:50:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251119031531.1817099-1-dolinux.peng@gmail.com> <20251119031531.1817099-5-dolinux.peng@gmail.com>
-In-Reply-To: <20251119031531.1817099-5-dolinux.peng@gmail.com>
+References: <20251119031531.1817099-1-dolinux.peng@gmail.com> <20251119031531.1817099-6-dolinux.peng@gmail.com>
+In-Reply-To: <20251119031531.1817099-6-dolinux.peng@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 19 Nov 2025 11:47:38 -0800
-X-Gm-Features: AWmQ_bnrpfHbKFnCfoc6l4AgZlLI_NW1FnamL0_p_p1EmKUQlgeLi3PL7ZokCP0
-Message-ID: <CAEf4BzaT0RR=iVpgnBOXQpHN++6Soz4ECAYex6bpd2zficSCRQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v7 4/7] libbpf: Optimize type lookup with binary
- search for sorted BTF
+Date: Wed, 19 Nov 2025 11:50:27 -0800
+X-Gm-Features: AWmQ_bnI8xYKLex_FU_0RFx44vOSOg5OzCo8eiVpoAetNtA0Lg64XnRo2bb_sC0
+Message-ID: <CAEf4BzYQfHKHUdxv7W7mET1xBXuokvx9v=69HNAkhg_CAPCm-g@mail.gmail.com>
+Subject: Re: [RFC PATCH v7 5/7] libbpf: Implement BTF type sorting validation
+ for binary search optimization
 To: Donglin Peng <dolinux.peng@gmail.com>
 Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
@@ -97,13 +97,8 @@ m> wrote:
 >
 > From: Donglin Peng <pengdonglin@xiaomi.com>
 >
-> This patch introduces binary search optimization for BTF type lookups
-> when the BTF instance contains sorted types.
->
-> The optimization significantly improves performance when searching for
-> types in large BTF instances with sorted type names. For unsorted BTF
-> or when nr_sorted_types is zero, the implementation falls back to
-> the original linear search algorithm.
+> This patch adds validation to verify BTF type name sorting, enabling
+> binary search optimization for lookups.
 >
 > Cc: Eduard Zingerman <eddyz87@gmail.com>
 > Cc: Alexei Starovoitov <ast@kernel.org>
@@ -113,105 +108,50 @@ m> wrote:
 > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
 > Signed-off-by: Donglin Peng <pengdonglin@xiaomi.com>
 > ---
->  tools/lib/bpf/btf.c | 104 ++++++++++++++++++++++++++++++++++----------
->  1 file changed, 81 insertions(+), 23 deletions(-)
+>  tools/lib/bpf/btf.c | 59 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 59 insertions(+)
 >
-
-[...]
-
-> +       const struct btf_type *t;
-> +       const char *tname;
-> +       int err =3D -ENOENT;
-> +
-> +       if (start_id < btf->start_id) {
-> +               err =3D btf_find_type_by_name_kind(btf->base_btf, start_i=
-d,
-> +                       type_name, kind);
-
-nit: align wrapped args on the second line
-
-also, we expect that err will be set to -ENOENT if we didn't find a
-match in the base BTF, right? I'm a bit uneasy about this, I'd rather
-do explicit err =3D -ENOENT setting for each goto out
-
-> +               if (err > 0)
-> +                       goto out;
-> +               start_id =3D btf->start_id;
-> +       }
-> +
-> +       if (btf->nr_sorted_types > 0) {
-> +               /* binary search */
-> +               __s32 end_id;
-> +               int idx;
-> +
-> +               end_id =3D btf->start_id + btf->nr_sorted_types - 1;
-> +               idx =3D btf_find_type_by_name_bsearch(btf, type_name, sta=
-rt_id, end_id);
-> +               for (; idx <=3D end_id; idx++) {
-> +                       t =3D btf__type_by_id(btf, idx);
-> +                       tname =3D btf__str_by_offset(btf, t->name_off);
-> +                       if (strcmp(tname, type_name))
-
-nit: please add explicit !=3D 0 here
-
-also, why not just `return -ENOENT;`?
-
-> +                               goto out;
-> +                       if (kind =3D=3D -1 || btf_kind(t) =3D=3D kind)
-> +                               return idx;
-> +               }
-> +       } else {
-> +               /* linear search */
-> +               __u32 i, total;
->
-> -               if (name && !strcmp(type_name, name))
-> -                       return i;
-> +               total =3D btf__type_cnt(btf);
-> +               for (i =3D start_id; i < total; i++) {
-> +                       t =3D btf_type_by_id(btf, i);
-> +                       if (kind !=3D -1 && btf_kind(t) !=3D kind)
-> +                               continue;
-> +                       tname =3D btf__str_by_offset(btf, t->name_off);
-> +                       if (tname && !strcmp(tname, type_name))
-
-nit: let's do explicit =3D=3D 0 for strcmp, please
-
-> +                               return i;
-> +               }
->         }
->
-> -       return libbpf_err(-ENOENT);
-> +out:
-> +       return err;
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 1d19d95da1d0..d872abff42e1 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -903,6 +903,64 @@ int btf__resolve_type(const struct btf *btf, __u32 t=
+ype_id)
+>         return type_id;
 >  }
 >
->  static __s32 btf_find_by_name_kind(const struct btf *btf, int start_id,
->                                    const char *type_name, __u32 kind)
->  {
-> -       __u32 i, nr_types =3D btf__type_cnt(btf);
-> -
->         if (kind =3D=3D BTF_KIND_UNKN || !strcmp(type_name, "void"))
->                 return 0;
+> +/* Anonymous types (with empty names) are considered greater than named =
+types
+> + * and are sorted after them. Two anonymous types are considered equal. =
+Named
+> + * types are compared lexicographically.
+> + */
+> +static int btf_compare_type_names(const void *a, const void *b, void *pr=
+iv)
+> +{
+> +       struct btf *btf =3D (struct btf *)priv;
+> +       struct btf_type *ta =3D btf_type_by_id(btf, *(__u32 *)a);
+> +       struct btf_type *tb =3D btf_type_by_id(btf, *(__u32 *)b);
+> +       const char *na, *nb;
+> +       bool anon_a, anon_b;
+> +
+> +       na =3D btf__str_by_offset(btf, ta->name_off);
+> +       nb =3D btf__str_by_offset(btf, tb->name_off);
+> +       anon_a =3D str_is_empty(na);
+> +       anon_b =3D str_is_empty(nb);
+> +
+> +       if (anon_a && !anon_b)
+> +               return 1;
+> +       if (!anon_a && anon_b)
+> +               return -1;
+> +       if (anon_a && anon_b)
+> +               return 0;
 
-this is the only thing that btf_find_by_name_kind() does on top of
-what btf_find_type_by_name_kind(), right? Any reason we can't merge
-those and keep only btf_find_by_name_kind()?
-
->
-> -       for (i =3D start_id; i < nr_types; i++) {
-> -               const struct btf_type *t =3D btf__type_by_id(btf, i);
-> -               const char *name;
-> -
-> -               if (btf_kind(t) !=3D kind)
-> -                       continue;
-> -               name =3D btf__name_by_offset(btf, t->name_off);
-> -               if (name && !strcmp(type_name, name))
-> -                       return i;
-> -       }
-> +       return libbpf_err(btf_find_type_by_name_kind(btf, start_id, type_=
-name, kind));
-> +}
->
+any reason to hard-code that anonymous types should come *after* named
+ones? That requires custom comparison logic here and resolve_btfids,
+instead of just relying on btf__str_by_offset() returning valid empty
+string for name_off =3D=3D 0 and then sorting anon types before named
+ones, following normal lexicographical sorting rules?
 
 [...]
 
