@@ -1,426 +1,125 @@
-Return-Path: <bpf+bounces-75102-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75103-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6520EC709FC
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 19:22:21 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F66EC70B85
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 19:56:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sea.lore.kernel.org (Postfix) with ESMTPS id 2005429239
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 18:22:20 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7032D354C88
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 18:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D463148C9;
-	Wed, 19 Nov 2025 18:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D706431354F;
+	Wed, 19 Nov 2025 18:55:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HPKyLB9+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f2y5Z6L+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 047A836E54C
-	for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 18:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28C5223C516
+	for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 18:55:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763576533; cv=none; b=VT+VAXBK0IXUDQNjeEaBcHV41v4UaN43NYexXL9CSwSquBoZsrfn7buixwDiZUE3eV56vE1p51GvO4d9i4i2RCq41Rbp2WeQ4Ux+dpbT4cKAk9MtaBpl9ZCS4JmyThp0CRa2cksw7/8aeM+MpXWnTuaWpFV06BE1cvoZi7yNR+o=
+	t=1763578534; cv=none; b=gY1ZgbnZ9y58tDAslRDcRvQZ0ZaD42dbt6LhA14s1fM+EMixMoe5G6f8dYzsz3qHkfJ5vWaUiAyzoc9tRvDmpAuJtI8sP6FHDDAw+dSb0gOz16Ub6C3nkcR6Vs5dYPVxy2Gcbo5ggdgE05SmHMcsYZFF3V/gqGcu9UiMSi1YeGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763576533; c=relaxed/simple;
-	bh=sBI8JocT/i2WV7Ui0E2C52lirqJT0ntir6ykeEWGk7M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q0SZklwyIV0XQMNd0O76AQEItWLW4pS7LNARkcZgWf8wPFI33TkFov0eWZ2C2ITjwBTgdEN9XxeRnHdf6LZH4vh8xP7dA3m8PbzhxKuJDa3gQvzyf3ebW5matqhzPDsFEcLiO/d07RdNH0p3hC86MScB7hwO9fjBUOnYcIJc6Gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HPKyLB9+; arc=none smtp.client-ip=209.85.214.174
+	s=arc-20240116; t=1763578534; c=relaxed/simple;
+	bh=9v0djC3j4UdC0t5of+7eTF62EBu112vbh4SXSgoEENs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GxB3EiRRqL4Zo/aD/fKQ63fLvnitXlKJ5NAMMl7lRxB9zUWh3i79iBYvV4QnKOyHdZeAAE5lBhzVeHWp+xd/0cdnAiaJYcHOOeedFlN89/afphit3rpxXBsaEPrgIyrRa1ihLEFJxgKa8hp6HTIxUixyF21/H81IyVYGrPEnquY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f2y5Z6L+; arc=none smtp.client-ip=209.85.215.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-298144fb9bcso559215ad.0
-        for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 10:22:05 -0800 (PST)
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b98983bae8eso21517a12.0
+        for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 10:55:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763576525; x=1764181325; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3lDHlhdpQhiIwAGWSFrEd7dKFlBvPPkrLRcdPHfgaK4=;
-        b=HPKyLB9+/I9hWNXHa6sytquycXcNf3CiUq/LVY/0sOcLkUvymkybCaIBm52AqybQlT
-         09I9NXLcktH0AZ/JnkaPIKK0A4dfERh7Kjrs3QN6pLQhGI0oDyjPFqR3J/yYSQqr1S47
-         37S+pq4BVk+XidhtnfXNv1VDxj4sAUw1lnY725oUvIIUYWmEjSN3OU/gOUXEJgop7mRB
-         9rCwCo2EutoUv+1Er118u7Xrhw6239qKPd03KDxWhoCnb/ytz5cF6lh/fWMYypKam6J2
-         nhrkbotGPZkcC1FNuxqGKBblVPLkXnf0f4zZI1JzULmYZQqh9FunqHkOtJHyqZHtztLC
-         88ow==
+        d=gmail.com; s=20230601; t=1763578525; x=1764183325; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=edQ3lAhPLjZZSk1oSVWuvnsvYz+DEp4d1vNMqDu5ED0=;
+        b=f2y5Z6L+kLyXRojnbWggFSxJmrU6qFh1ngJsga7teH3sIzPOFpaUXpg6my3r1GrT+h
+         QYedur5evNIqg2Q9FC+BucBax8qGGC+tHKqaePdntEt5rJICcdXWHGhIrdrw0Vxinfib
+         UsZHYviIGIR/jalPnc6lFmmDRfn4Yw7RtANSccMlOUE/0p1zcjft94WLO3gasEFpcdKz
+         spVFOXGglIrBITjPBrnX9qvOy2nNRcj3CYc8O8TZIt0uRAKuyzkKif2w0pCadaLeotbp
+         DkWZ2V6FjT75381Hw4nTQ4KBgbE/C74XdsZLiziZ3oW5p6GxO6Hi55X4tvcwpkq+vTd9
+         h/HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763576525; x=1764181325;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=3lDHlhdpQhiIwAGWSFrEd7dKFlBvPPkrLRcdPHfgaK4=;
-        b=gedgxviB9P289NmejKUj9N5gPyn9nV5n8oAKMYfk99mfLV1yR6EaD7yK/Eo24wHeer
-         14bmhqIgE9PZBuddP6YVE6vmBjSCCig+nRC5/4MXOUul2gX5d8OnZ856XvaPlljltojY
-         8S7LK3JqOhd0CEhEG11Fv1ORlvX/SUvqm8wmuh0rzul9p1cc559/6xQjHf60qjPgdamE
-         p+G7xu6CA1KDNkXCRkB/AYo4OToAC3kR2olX1kKZmqCASx6y8vrkt20pxzX2SBktz4hw
-         sphfOdNRHH5ZyJOBxH/NiwkL4aFNRGPc6CW60+k0ORGF6qMFBB71ztWUdDgRu3fbAvOa
-         Dcdw==
-X-Forwarded-Encrypted: i=1; AJvYcCV28xLdAQVX4uPSJXvPizZADrwCc3kFgRELii2iiTuqPNCJL+Q7WFeK0IILhYYMFDch15k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUvWWX2GvnIZwVKEG2e5EO4ZszehHXSbCnCD49ZvNXRxYxdddZ
-	QRb4xicF5hfdx8Nwu2ESJHKpe9d7fun302VS2PyKgskaaTIdav+uTklXm87fksVrUKynzopAoHy
-	/ktCAiTwBHidCpDNOTYasu49R5pdSZDpuX9aZC14=
-X-Gm-Gg: ASbGncvadkI4B/giYTtGj7Vytd1eTzqbpkS3szuF3qPUeUhHfeYxq8tBBMOLskx7STR
-	3fUjXW5Vxq1pvFCt4bRCJjbzLzOqUtELNYKFuWs2xi0Atm2yn5bQxm16VgZmHwJ1Sc3SDOjueZi
-	srwte2R1L+QreL6FGn0aOYDDK+NJfpqItxCCSMFdBxWaRgLkgKkw848+mLx1kAFWoWQG1JV0kzd
-	sXwq8pxJA4Iyvrtz/jX5i/oRUfRGl/VfW8kaeuutODDqJ1bNodXdBYc/L6eRnrAYAfj+kNn68vh
-	sDEn79jjI54=
-X-Google-Smtp-Source: AGHT+IFBHdUMPkrgvLcK54E3ETeMG2mor0sNi/h3IPdvoEmgUpK91UGrLsWQkw+qfXXSfS4yBAX57M+wEUOF+MwSfAY=
-X-Received: by 2002:a17:902:e785:b0:295:5d0b:e119 with SMTP id
- d9443c01a7336-29b5b07dddbmr3824315ad.26.1763576524568; Wed, 19 Nov 2025
- 10:22:04 -0800 (PST)
+        d=1e100.net; s=20230601; t=1763578525; x=1764183325;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=edQ3lAhPLjZZSk1oSVWuvnsvYz+DEp4d1vNMqDu5ED0=;
+        b=TcPGfLEozRfaDdts4qYn8vj8c/1x5GavduibRAgIpvQSCqZ62srF2ZVV9U5n/dD3m4
+         /JPBap5GeTOsBibPaFTQOY/lCJ5HhNAggNl5fwXIVT7W0aMxST05fwmZpBi4u5m7GR8D
+         DVML59+SEZurrGmdTIcNXgSc6q3L5qbpHU/f92iJ6jmd9bzLm1kmonu6LlCVkzFJpKAY
+         PfxfebdQ1OMVC8m5pDjxpC8WRavJ2TegyQAQl6qmsHppLTsO5HVaxTa3mZOH1rhX5bRf
+         8PyISeA8KUyA4zqWrqr6v6pL/zFYUdWD8hVZuW2OUCFoDzpqfgfzseImWOYN6DFdvn5q
+         mU8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ+PVI5SK2YwdY7pe0rSjeo43ERWTLE80qUrDlz7rAf3KBhVncbfYoDM7JJeUi7N5GzcM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyVkIIzDepilqUy63DsAId+F9uKnv7QMpNx0pVZntg4xVh3zfT2
+	/TUrDnu725da1VW1yooQTE99hGtJxncCyr9to2gBgTdeOOhsSYYu4vca
+X-Gm-Gg: ASbGnctOo/M26wRHIOfCvYFTnG3QuDsLBdsVLEHfX+reUk9iA4asLR66t+qiC2he1Fh
+	iMsL354id+w/9fJj3rib+Cr0rHSkwoRGV5ifuQQDTTeoYedUBlm6yEdyP6Ass3EJ6yVmDq6WPHU
+	Kj4hPpcxe7rWk0aP/Ism9G603F8cKCeat42Mue/Z0jFDYqn+tQB52q8a6QyJpgJO48+iNG4JwrK
+	05bDIF3/NG7vVPLrW9Fk2iPsgDrrl/gt2rw0IGNZuwv6ZJXuLH6p0D7pJxztYM5Vv2PidwhIKvY
+	S4QGLyx/c42QVRC4O+hfDHV7PnjFf+t0DVUeSCvyvncfdt4V87EbSlRm2JxBWRVkXuZ7FOSOnmV
+	v55boJx74O9yduNhpt3W32vD+AZAChfy8naRhM8TK2KP0jtg6DIcoG8VWzF3NOpkZSgLwt2mg/7
+	gKKWFfGr12KD+OOpMUXKfQL0ISZ+mUyuHiqfcLYxFYx8o=
+X-Google-Smtp-Source: AGHT+IGBQeqSMvGoivhKypewRSEuuSGzQM6EQybj3ad+ID5hnktZP2Z/3EF+i6z/IdXkB6hPA0OLmA==
+X-Received: by 2002:a05:7022:1e11:b0:119:e56b:c754 with SMTP id a92af1059eb24-11c9387cf19mr128055c88.25.1763578524596;
+        Wed, 19 Nov 2025 10:55:24 -0800 (PST)
+Received: from fedora (c-67-164-59-41.hsd1.ca.comcast.net. [67.164.59.41])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-11c93e3e945sm323775c88.6.2025.11.19.10.55.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Nov 2025 10:55:23 -0800 (PST)
+Date: Wed, 19 Nov 2025 10:55:21 -0800
+From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To: Matthew Wilcox <willy@infradead.org>, Christoph Hellwig <hch@lst.de>,
+	linux-xfs@vger.kernel.org
+Cc: Biju Das <biju.das.jz@bp.renesas.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"hch@infradead.org" <hch@infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"urezki@gmail.com" <urezki@gmail.com>
+Subject: Re: [PATCH v3 0/4] make vmalloc gfp flags usage more apparent
+Message-ID: <aR4SmclGax8584IJ@fedora>
+References: <TY3PR01MB11346E8536B69E11A9A9DAB0886D6A@TY3PR01MB11346.jpnprd01.prod.outlook.com>
+ <aRyn7Ibaqa5rlHHx@fedora>
+ <aRzPqYfXc6mtR1U9@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251119031531.1817099-1-dolinux.peng@gmail.com> <20251119031531.1817099-2-dolinux.peng@gmail.com>
-In-Reply-To: <20251119031531.1817099-2-dolinux.peng@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 19 Nov 2025 10:21:50 -0800
-X-Gm-Features: AWmQ_bnxQf8Tsmh3Cs2kFZiU9pPSCiIF9wU9L6AMBdtruwnVbZQ0QTAIQNnbC4U
-Message-ID: <CAEf4Bzb76SfWfNtxP2WVJ44hsVU-GrePmeKKxH25Q8KOn_Mkfw@mail.gmail.com>
-Subject: Re: [RFC PATCH v7 1/7] libbpf: Add BTF permutation support for type reordering
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Donglin Peng <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aRzPqYfXc6mtR1U9@casper.infradead.org>
 
-On Tue, Nov 18, 2025 at 7:21=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.co=
-m> wrote:
->
-> From: Donglin Peng <pengdonglin@xiaomi.com>
->
-> Introduce btf__permute() API to allow in-place rearrangement of BTF types=
-.
-> This function reorganizes BTF type order according to a provided array of
-> type IDs, updating all type references to maintain consistency.
->
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Alan Maguire <alan.maguire@oracle.com>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
-> Signed-off-by: Donglin Peng <pengdonglin@xiaomi.com>
-> ---
->  tools/lib/bpf/btf.c      | 166 +++++++++++++++++++++++++++++++++++++++
->  tools/lib/bpf/btf.h      |  43 ++++++++++
->  tools/lib/bpf/libbpf.map |   1 +
->  3 files changed, 210 insertions(+)
->
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index 18907f0fcf9f..ab95ff19fde3 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -5829,3 +5829,169 @@ int btf__relocate(struct btf *btf, const struct b=
-tf *base_btf)
->                 btf->owns_base =3D false;
->         return libbpf_err(err);
->  }
-> +
-> +struct btf_permute {
-> +       struct btf *btf;
-> +       __u32 *id_map;
-> +};
-> +
-> +/* Callback function to remap individual type ID references */
-> +static int btf_permute_remap_type_id(__u32 *type_id, void *ctx)
-> +{
-> +       struct btf_permute *p =3D ctx;
-> +       __u32 new_type_id =3D *type_id;
-> +
-> +       /* skip references that point into the base BTF or VOID */
-> +       if (new_type_id < p->btf->start_id)
-> +               return 0;
-> +
-> +       /* invalid reference id */
-> +       if (new_type_id >=3D btf__type_cnt(p->btf))
-> +               return -EINVAL;
-> +
-> +       new_type_id =3D p->id_map[new_type_id - p->btf->start_id];
-> +       /* reference a dropped type is not allowed */
-> +       if (new_type_id =3D=3D 0)
-> +               return -EINVAL;
+On Tue, Nov 18, 2025 at 07:57:29PM +0000, Matthew Wilcox wrote:
+> On Tue, Nov 18, 2025 at 09:07:56AM -0800, Vishal Moola (Oracle) wrote:
+> > On Tue, Nov 18, 2025 at 04:14:01PM +0000, Biju Das wrote:
+> > > Hi All,
+> > > 
+> > > I get below warning with today's next. Can you please suggest how to fix this warning?
+> > 
+> > Thanks Biju. This has been fixed and will be in whenever Andrews tree
+> > gets merged again.
+> 
+> I see:
+> 
+> Unexpected gfp: 0x1000000 (__GFP_NOLOCKDEP). Fixing up to gfp: 0x2dc0 (GFP_KERNEL|__GFP_ZERO|__GFP_NOWARN). Fix your code!
+> 
+> I suspect __GFP_NOLOCKDEP should also be permitted by vmalloc.
 
-see below, this shouldn't happen, let's drop redundant check
+As far as I can tell, theres only 1 caller of this.
+Christoph started using vmalloc for this xfs call in commit
+e2874632a621 ("xfs: use vmalloc instead of vm_map_area for buffer backing memory").
 
-> +
-> +       *type_id =3D new_type_id;
-> +       return 0;
-> +}
-> +
-> +int btf__permute(struct btf *btf, __u32 *id_map, __u32 id_map_cnt,
-> +                const struct btf_permute_opts *opts)
-> +{
-> +       struct btf_permute p;
-> +       struct btf_ext *btf_ext;
-> +       void *next_type, *end_type;
-> +       void *nt, *new_types =3D NULL;
-> +       int err =3D 0, i, new_type_len;
-> +       __u32 *order_map =3D NULL;
-> +       __u32 id, new_nr_types =3D 0;
-> +
-> +       if (!OPTS_VALID(opts, btf_permute_opts) || id_map_cnt !=3D btf->n=
-r_types)
-> +               return libbpf_err(-EINVAL);
-> +
-> +       /* used to record the storage sequence of types */
-> +       order_map =3D calloc(btf->nr_types, sizeof(*id_map));
-> +       if (!order_map) {
-> +               err =3D -ENOMEM;
-> +               goto done;
-> +       }
-> +
-> +       new_types =3D calloc(btf->hdr->type_len, 1);
-> +       if (!new_types) {
-> +               err =3D -ENOMEM;
-> +               goto done;
-> +       }
-> +
-> +       if (btf_ensure_modifiable(btf)) {
-> +               err =3D -ENOMEM;
-> +               goto done;
-> +       }
-> +
-> +       for (i =3D 0; i < id_map_cnt; i++) {
-> +               id =3D id_map[i];
-> +               /* Drop the specified type */
-> +               if (id =3D=3D 0)
-> +                       continue;
-
-if we don't allow this (no support for deletion, I wouldn't rush to
-add that right now)...
-
-pw-bot: cr
-
-
-> +               /* Invalid id  */
-
-obvious statement, IMO, please drop the comment
-
-> +               if (id < btf->start_id || id >=3D btf__type_cnt(btf)) {
-> +                       err =3D -EINVAL;
-> +                       goto done;
-> +               }
-> +               id -=3D btf->start_id;
-> +               /* Multiple types cannot be mapped to the same ID */
-> +               if (order_map[id]) {
-> +                       err =3D -EINVAL;
-> +                       goto done;
-> +               }
-> +               order_map[id] =3D i + btf->start_id;
-> +               new_nr_types =3D max(id + 1, new_nr_types);
-> +       }
-> +
-> +       /* Check for missing IDs */
-> +       for (i =3D 0; i < new_nr_types; i++) {
-> +               if (order_map[i] =3D=3D 0) {
-> +                       err =3D -EINVAL;
-> +                       goto done;
-> +               }
-> +       }
-
-... then you won't need this check at all, because we enforced that
-each remapped ID is different and we have exactly nr_types of them.
-Same for new_nr_types calculation above, seems redundant
-
-> +
-> +       p.btf =3D btf;
-> +       p.id_map =3D id_map;
-> +       nt =3D new_types;
-> +       for (i =3D 0; i < new_nr_types; i++) {
-> +               struct btf_field_iter it;
-> +               const struct btf_type *t;
-> +               __u32 *type_id;
-> +               int type_size;
-> +
-> +               id =3D order_map[i];
-> +               /* must be a valid type ID */
-
-redundant comment, please drop
-
-> +               t =3D btf__type_by_id(btf, id);
-> +               if (!t) {
-
-no need to check this, we already validated that all types are valid earlie=
-r
-
-> +                       err =3D -EINVAL;
-> +                       goto done;
-> +               }
-> +               type_size =3D btf_type_size(t);
-> +               memcpy(nt, t, type_size);
-> +
-> +               /* Fix up referenced IDs for BTF */
-> +               err =3D btf_field_iter_init(&it, nt, BTF_FIELD_ITER_IDS);
-> +               if (err)
-> +                       goto done;
-> +               while ((type_id =3D btf_field_iter_next(&it))) {
-> +                       err =3D btf_permute_remap_type_id(type_id, &p);
-> +                       if (err)
-> +                               goto done;
-> +               }
-> +
-> +               nt +=3D type_size;
-> +       }
-> +
-> +       /* Fix up referenced IDs for btf_ext */
-> +       btf_ext =3D OPTS_GET(opts, btf_ext, NULL);
-> +       if (btf_ext) {
-> +               err =3D btf_ext_visit_type_ids(btf_ext, btf_permute_remap=
-_type_id, &p);
-> +               if (err)
-> +                       goto done;
-> +       }
-> +
-> +       new_type_len =3D nt - new_types;
-
-
-new_type_len has to be exactly the same as the old size, this is redundant
-
-> +       next_type =3D new_types;
-> +       end_type =3D next_type + new_type_len;
-> +       i =3D 0;
-> +       while (next_type + sizeof(struct btf_type) <=3D end_type) {
-
-while (next_type < end_type)?
-
-Reference to struct btf_type is confusing, as generally type is bigger
-than just sizeof(struct btf_type). But there is no need for this, with
-correct code next_type < end_type is sufficient check
-
-But really, this can also be written cleanly as a simple for loop
-
-for (i =3D 0; i < nr_types; i++) {
-    btf->type_offs[i] =3D next_type - new_types;
-    next_type +=3D btf_type_size(next_type);
-}
-
-> +               btf->type_offs[i++] =3D next_type - new_types;
-> +               next_type +=3D btf_type_size(next_type);
-> +       }
-> +
-> +       /* Resize */
-
-there cannot be any resizing, drop this, you only need to reassign
-btf->types_data, that's all
-
-> +       if (new_type_len < btf->hdr->type_len) {
-> +               void *tmp_types;
-> +
-> +               tmp_types =3D realloc(new_types, new_type_len);
-> +               if (new_type_len && !tmp_types) {
-> +                       err =3D -ENOMEM;
-> +                       goto done;
-> +               }
-> +               new_types =3D tmp_types;
-> +               btf->nr_types =3D new_nr_types;
-> +               btf->type_offs_cap =3D btf->nr_types;
-> +               btf->types_data_cap =3D new_type_len;
-> +               btf->hdr->type_len =3D new_type_len;
-> +               btf->hdr->str_off =3D new_type_len;
-> +               btf->raw_size =3D btf->hdr->hdr_len + btf->hdr->type_len =
-+ btf->hdr->str_len;
-> +       }
-> +
-> +       free(order_map);
-> +       free(btf->types_data);
-> +       btf->types_data =3D new_types;
-> +       return 0;
-> +
-> +done:
-> +       free(order_map);
-> +       free(new_types);
-> +       return libbpf_err(err);
-> +}
-> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-> index ccfd905f03df..e63dcce531b3 100644
-> --- a/tools/lib/bpf/btf.h
-> +++ b/tools/lib/bpf/btf.h
-> @@ -273,6 +273,49 @@ LIBBPF_API int btf__dedup(struct btf *btf, const str=
-uct btf_dedup_opts *opts);
->   */
->  LIBBPF_API int btf__relocate(struct btf *btf, const struct btf *base_btf=
-);
->
-> +struct btf_permute_opts {
-> +       size_t sz;
-> +       /* optional .BTF.ext info along the main BTF info */
-> +       struct btf_ext *btf_ext;
-> +       size_t :0;
-> +};
-> +#define btf_permute_opts__last_field btf_ext
-> +
-> +/**
-> + * @brief **btf__permute()** performs in-place BTF type rearrangement
-> + * @param btf BTF object to permute
-> + * @param id_map Array mapping original type IDs to new IDs
-> + * @param id_map_cnt Number of elements in @id_map
-> + * @param opts Optional parameters for BTF extension updates
-> + * @return 0 on success, negative error code on failure
-> + *
-> + * **btf__permute()** rearranges BTF types according to the specified ID=
- mapping.
-> + * The @id_map array defines the new type ID for each original type ID.
-> + *
-> + * For **base BTF**:
-> + * - @id_map must include all types from ID 1 to `btf__type_cnt(btf)-1`
-> + * - @id_map_cnt should be `btf__type_cnt(btf) - 1`
-> + * - Mapping uses `id_map[original_id - 1] =3D new_id`
-> + *
-> + * For **split BTF**:
-> + * - @id_map should cover only split types
-> + * - @id_map_cnt should be `btf__type_cnt(btf) - btf__type_cnt(btf__base=
-_btf(btf))`
-> + * - Mapping uses `id_map[original_id - btf__type_cnt(btf__base_btf(btf)=
-)] =3D new_id`
-> + *
-> + * Setting @id_map element to 0 drops the corresponding type. Dropped ty=
-pes must not
-> + * be referenced by any retained types. After permutation, type referenc=
-es in BTF
-> + * data and optional extension are updated automatically.
-
-let's not add deletion support just yet
-
-> + *
-> + * Note: Dropping types may orphan some strings, requiring subsequent **=
-btf__dedup()**
-> + * to clean up unreferenced strings.
-
-one more reason to not add deletion just yet. It's good to have an API
-that can express this, but we don't have to support deletion just yet.
-
-> + *
-> + * On error, returns negative error code and sets errno:
-> + *   - `-EINVAL`: Invalid parameters or ID mapping (duplicates, out-of-r=
-ange)
-> + *   - `-ENOMEM`: Memory allocation failure
-> + */
-> +LIBBPF_API int btf__permute(struct btf *btf, __u32 *id_map, __u32 id_map=
-_cnt,
-> +                           const struct btf_permute_opts *opts);
-> +
->  struct btf_dump;
->
->  struct btf_dump_opts {
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 8ed8749907d4..b778e5a5d0a8 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -451,4 +451,5 @@ LIBBPF_1.7.0 {
->         global:
->                 bpf_map__set_exclusive_program;
->                 bpf_map__exclusive_program;
-> +               btf__permute;
->  } LIBBPF_1.6.0;
-> --
-> 2.34.1
->
+Looks like xfs uses the flag to prevent false positives. Do
+we want to continue this? If so, I'll send a patch adding the flag to
+the whitelist.
 
