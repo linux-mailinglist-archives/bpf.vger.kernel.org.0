@@ -1,48 +1,77 @@
-Return-Path: <bpf+bounces-75047-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75048-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8949EC6CD21
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 06:44:45 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34E8AC6CD3F
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 06:51:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8CEDC35C2A4
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 05:44:41 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTPS id 459AD2C923
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 05:51:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8F13101B7;
-	Wed, 19 Nov 2025 05:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49BFE3115B0;
+	Wed, 19 Nov 2025 05:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Gl1NeohW"
 X-Original-To: bpf@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C659630DED7;
-	Wed, 19 Nov 2025 05:44:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749B62ECD14;
+	Wed, 19 Nov 2025 05:51:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763531074; cv=none; b=nki1pLhMMgwk8UvxMbysRJNnr31QKW8tBaa8J6XWKPbOHLDMUuteo3iEOgy892tvLocCf3Ali1DldPowfotWIIa4J+DcnE/Yaq85C6oVrrKnd5aScpb1MQyxeKjco9i6rz9c9Q+ItRPRvMa68VUVN6OIoTJkI4Db6SjUXg5laS0=
+	t=1763531462; cv=none; b=Q4J/GotFgE1BoIvH0xbmtDqCeY5jRgsm2RqEGmLEqj/MNlikFn1xblnLdMBGZA8TPztZExLL3VwCqvAQU7mdT51Jv0KThv1XVP3y7oYqvohIJHIwCg/tk088oGQMn3lu9UvI+1PFiK6e0ptZ+xZaBlfaY16JEqkfkebPmcWwjDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763531074; c=relaxed/simple;
-	bh=TGnNqb2r1cDMuthDYBk4lgr4HJ549ORduiyXUtwDnS0=;
+	s=arc-20240116; t=1763531462; c=relaxed/simple;
+	bh=zO8zOpKaiSIXJHk0EPgcQ227CLXzPZYpyzntHJwRjdc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e3OjeYlDVzox+SEGFTiaeRgqUeQh0AO7avDFGyctAWwZTx4HD+l5V1djVxX+c4fsh8pabj5Rtr5SwOIGo/xMpGueA0Dw6A/Ra4nJ+WO/jGGV+WHTGNbWmvG1EiCFNE5WCvN1oVCOS4l2Tl3pdE6l9VPVnqQApH1MlEGHbG+Gwb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id D8E6068AFE; Wed, 19 Nov 2025 06:44:28 +0100 (CET)
-Date: Wed, 19 Nov 2025 06:44:28 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	bpf@vger.kernel.org, Uladzislau Rezki <urezki@gmail.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=ebJ2+rqQSZbyVPmScXGnxHIQIgPPz54X0KOsjmlkUtECS20t6/u0Db/RZWucJ8mqjCYgcaqBb6dMJ4go6S1S/Mvxm9IMu3lhT75TOXm75+W5FE5mMfWWKxf+M4pgQrhmonFaAhIPHdGEHssAk2wq9JSIQDBGto5q6jCGhsCzzuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Gl1NeohW; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=oSUCW2aTXazbvbtd8t7tT7TQJ2omNwxbKL/AucooRco=; b=Gl1NeohWW4D63QJy037NIx5AwG
+	0hK0i3ORimeuhGTfy4ed0DNW3HMXWUDMF9+ZtXM6c3JgtTbWP4TzcT7yfS3Jdru/LulygCgwo9jOb
+	MK8+YlbPb6aCLDH269juL/NLJJUPQ+LvPLV1fPDZvftwQ+YSQJ2WqnG0sQqQUqsYb7XQoLgO2UmHG
+	nOl9BEtF/T8Xx+M+E+vnEbw+aD5QzBGs2v0+HNJT4P7BLAbSEqXFxvyM0ckeVaZedGV5irsLEkycD
+	tJBKEhTWOUPiM6pE1MuNBha9J5v7mjdcyemLxC9o1TWST/i1IGn10uxmGvZ8MYINZVW9h4zPO/81a
+	0n9JbTtQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vLb5k-00000002RCL-2l21;
+	Wed, 19 Nov 2025 05:50:56 +0000
+Date: Tue, 18 Nov 2025 21:50:56 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
 	Christoph Hellwig <hch@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@lst.de>, kvmarm@lists.linux.dev
-Subject: Re: [PATCH v3 1/4] mm/vmalloc: warn on invalid vmalloc gfp flags
-Message-ID: <20251119054428.GC19925@lst.de>
-References: <20251117173530.43293-1-vishal.moola@gmail.com> <20251117173530.43293-2-vishal.moola@gmail.com> <20251118224448.GA998046@ax162>
+	"Darrick J. Wong" <djwong@kernel.org>,
+	SHAURYA RANE <ssrane_b23@ee.vjti.ac.in>, akpm@linux-foundation.org,
+	shakeel.butt@linux.dev, eddyz87@gmail.com, andrii@kernel.org,
+	ast@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev,
+	skhan@linuxfoundation.org, david.hunter.linux@gmail.com,
+	khalid@kernel.org,
+	syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] mm/filemap: fix NULL pointer dereference in
+ do_read_cache_folio()
+Message-ID: <aR1awLOhdOXNMl9c@infradead.org>
+References: <20251114193729.251892-1-ssranevjti@gmail.com>
+ <aReUv1kVACh3UKv-@casper.infradead.org>
+ <CANNWa07Y_GPKuYNQ0ncWHGa4KX91QFosz6WGJ9P6-AJQniD3zw@mail.gmail.com>
+ <aRpQ7LTZDP-Xz-Sr@casper.infradead.org>
+ <20251117164155.GB196362@frogsfrogsfrogs>
+ <aRtjfN7sC6_Bv4bx@casper.infradead.org>
+ <CAEf4BzZu+u-F9SjhcY5GN5vumOi6X=3AwUom+KJXeCpvC+-ppQ@mail.gmail.com>
+ <aRxunCkc4VomEUdo@infradead.org>
+ <aRySpQbNuw3Y5DN-@casper.infradead.org>
+ <CAEf4BzY1fu+7pqotaW6DxH_vvwCY8rTuX=+0RO96-baKJDeB_Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -51,25 +80,29 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251118224448.GA998046@ax162>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <CAEf4BzY1fu+7pqotaW6DxH_vvwCY8rTuX=+0RO96-baKJDeB_Q@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Tue, Nov 18, 2025 at 03:44:48PM -0700, Nathan Chancellor wrote:
-> where kvm_arch_alloc_vm() from arch/arm64/kvm/arm.c is
-> 
->   struct kvm *kvm_arch_alloc_vm(void)
->   {
->       size_t sz = sizeof(struct kvm);
-> 
->       if (!has_vhe())
->           return kzalloc(sz, GFP_KERNEL_ACCOUNT);
-> 
->       return __vmalloc(sz, GFP_KERNEL_ACCOUNT | __GFP_HIGHMEM | __GFP_ZERO);
->   }
-> 
-> Should __GFP_HIGHMEM be dropped from the call to __vmalloc?
+On Tue, Nov 18, 2025 at 11:27:47AM -0800, Andrii Nakryiko wrote:
+> Then please help make it better, give us interfaces you think are
+> appropriate. People do use this functionality in production, it's
+> important and we are not going to drop it. In non-sleepable mode it's
+> best-effort, if the requested part of the file is paged in, we'll
+> successfully read data (such as ELF's build ID), and if not, we'll
+> report that to the BPF program as -EFAULT. In sleepable mode, we'll
+> wait for that part of the file to be paged in before proceeding.
+> PROCMAP_QUERY ioctl() is always in sleepable mode, so it will wait for
+> file data to be read.
 
-Yes.  vmalloc uses highmem internally where useful (on arm64 it won't be
-useful of course).
+That's pretty demanding:  "If you don't give me the interface that I want
+I'll just poke into internals and do broken shit" isn't really the
+best way to make friends and win influence.,
 
+> If you don't like the implementation, please help improve it, don't
+> just request dropping it "because BPF folks" or anything like that.
+
+Again, you're trying to put a lot of work you should have done on
+others.  Everyone here is pretty helpful guiding when asking for help,
+but being asked at gunpoint to cleanup the mess your created is not
+going to get everyone drop their work and jump onto your project.
 
