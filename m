@@ -1,202 +1,129 @@
-Return-Path: <bpf+bounces-75091-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75088-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A58E9C70139
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 17:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 07E9BC7003C
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 17:19:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id ABDA54F3008
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 16:14:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7F0AA5008C8
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 16:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 699D534105C;
-	Wed, 19 Nov 2025 16:13:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7C92E7F17;
+	Wed, 19 Nov 2025 16:04:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="LwpZoG9V"
+	dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b="LjTgYk2J"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
+Received: from smtp-o-1.desy.de (smtp-o-1.desy.de [131.169.56.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03EF533A6EE;
-	Wed, 19 Nov 2025 16:13:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DE42D59F7
+	for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 16:04:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.169.56.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763568812; cv=none; b=o6+5bMfTObon4R5g7SYhiR7IKYZgLlIDg97KWhgKvYzZjp/by0QZn73I/Nvq7x3IX+c1AZlq3CIeE/eKG6+tqR8NsxhEaY0j/RJ3TKbDSPKvhz7v69D0rUBt7Adzn1IGLxHCCm6GaJ+R+PTK0kPrc3ghqLxjSLgQkMVoSOHVPmM=
+	t=1763568251; cv=none; b=ircBQuiGtWGHomfQKIRX6Kk86xMERnGTIUVzW8SphgjPqAGFDXnlXVnh09bcZRjG9vdv0kEbqRMNXgBDtkAHRtrK8MgXO/+XiG4HVQKYqnGzRdSsb8h66UuWlpDowOU/90OGN5JZpwoCjGDqEzxyIxZT/ntj9elBBfbvgjVhHOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763568812; c=relaxed/simple;
-	bh=sv1lEpS4atdXcsnCrXZuVdUjX7sP7ulUi6YPy8FSnpg=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:CC:Content-Type; b=eo0/9Vn5HwvVOITckw/ksw21uE9Ttiwju0uegLmhepFKjes3KC4iRV8/jpAxiYFRyko6KUXaQWv4V+PBGg/h8VR27uRkKkRs7O2JWobswzR98uBMMcWhEFxiHHIWiTdQbA0PNvlqSJkeum8Z6RpzkZ1RoN9Eu+Q06M/CgyNaI/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=LwpZoG9V; arc=none smtp.client-ip=148.163.148.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
-Received: from pps.filterd (m0354651.ppops.net [127.0.0.1])
-	by mx0a-00206402.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5AJDSBAh038887;
-	Wed, 19 Nov 2025 15:41:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=cc:content-transfer-encoding:content-type:date:from
-	:message-id:mime-version:subject:to; s=default; bh=sv1lEpS4atdXc
-	snCrXZuVdUjX7sP7ulUi6YPy8FSnpg=; b=LwpZoG9Vh1XRc2iTKTWKg19bdHk1J
-	ygh+GXlck4R1oHrDnSyQ999jWLWWu+DcIE2IPqImaxtb8ry7gY4nRwszOyQroRB4
-	EC8+lZPJF2zKSepa6NjVEA/52ZfqkSsMfTyPow3oXxMHu39K/t9fHJG6XLVXeifd
-	bJXnhZuv1gu6n+546/uDf7HIOGPrCS7x5bcX9SpfM6NZ6IGdGyZV3/H45YXA3jQB
-	5L2b5gqHpMMr/T6MreeuxjpG+ESbxvNWcp/8Rv6AoVITKPqHLq6PClrXglfj5aUc
-	La0pGl8s7EQOjjHw4n52c5ZGtP0GDjfrPWNcEd2CdE4W8Rr2QscWSeJ5A==
-Received: from mail.crowdstrike.com (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
-	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 4ah8hd9mny-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 19 Nov 2025 15:41:34 +0000 (GMT)
-Received: from [10.82.61.38] (10.100.11.122) by 04WPEXCH010.crowdstrike.sys
- (10.100.11.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Wed, 19 Nov
- 2025 15:41:33 +0000
-Message-ID: <0e555733-c670-4e84-b2e6-abb8b84ade38@crowdstrike.com>
-Date: Wed, 19 Nov 2025 10:41:32 -0500
+	s=arc-20240116; t=1763568251; c=relaxed/simple;
+	bh=D1dvfyFZn4fTD9P3L+aKcIof/xv5wKDsxEsuv77eNVs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tUT2BI0+Ds5rmBfj0bDh+OFY+S/7k408CbqQpT5qjdHvfeZg04Uis9aLEErM6IaFNzcG5HkXKvUIB5TPV7SNanBLgc3oNRaU8W5UiSy8gFOkHslB8y2my9JBjJWgJstgdVTk70cH8PX8aqOgf3uz3iVUqtuXhI0YePK7cqrnQjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu; spf=none smtp.mailfrom=mail.desy.de; dkim=pass (1024-bit key) header.d=xfel.eu header.i=@xfel.eu header.b=LjTgYk2J; arc=none smtp.client-ip=131.169.56.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xfel.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mail.desy.de
+Received: from smtp-buf-2.desy.de (smtp-buf-2.desy.de [IPv6:2001:638:700:1038::1:a5])
+	by smtp-o-1.desy.de (Postfix) with ESMTP id 6E49811F74C
+	for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 17:03:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp-o-1.desy.de 6E49811F74C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xfel.eu; s=default;
+	t=1763568238; bh=aXRl5LbIe4SIxI+2jkbPFXSrdC9cHgsePOTDOOLMIW4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=LjTgYk2JNptea4uz75Vz6WF/3FFuNtMjOcMupXj1Vz5g0rRhvurKmPOdx/tXIfzZK
+	 SsRjpk+0qN25IyIpc0IeS1EuyAdSk7OHTgv+GsM8G1jzT+gvXX6qdqrBSpq50SUaqc
+	 HCOE8KOho2kVIUfH6rNfzxSklhDqV/On9ZDuqoQk=
+Received: from smtp-m-1.desy.de (smtp-m-1.desy.de [IPv6:2001:638:700:1038::1:81])
+	by smtp-buf-2.desy.de (Postfix) with ESMTP id 603DF120043;
+	Wed, 19 Nov 2025 17:03:58 +0100 (CET)
+Received: from c1722.mx.srv.dfn.de (c1722.mx.srv.dfn.de [194.95.239.47])
+	by smtp-m-1.desy.de (Postfix) with ESMTP id 51F7A40044;
+	Wed, 19 Nov 2025 17:03:58 +0100 (CET)
+Received: from smtp-intra-1.desy.de (smtp-intra-1.desy.de [IPv6:2001:638:700:1038::1:52])
+	by c1722.mx.srv.dfn.de (Postfix) with ESMTP id 9721D100033;
+	Wed, 19 Nov 2025 17:03:57 +0100 (CET)
+Received: from exflqr30474.desy.de (exflqr30474.desy.de [192.168.177.248])
+	by smtp-intra-1.desy.de (Postfix) with ESMTP id 7738780046;
+	Wed, 19 Nov 2025 17:03:57 +0100 (CET)
+Received: by exflqr30474.desy.de (Postfix, from userid 31112)
+	id 70061201AE; Wed, 19 Nov 2025 17:03:57 +0100 (CET)
+From: Martin Teichmann <martin.teichmann@xfel.eu>
+To: bpf@vger.kernel.org
+Cc: eddyz87@gmail.com,
+	ast@kernel.org,
+	andrii@kernel.org,
+	Martin Teichmann <martin.teichmann@xfel.eu>
+Subject: [PATCH v6 bpf-next 0/4] bpf: properly verify tail call behavior
+Date: Wed, 19 Nov 2025 17:03:51 +0100
+Message-ID: <20251119160355.1160932-1-martin.teichmann@xfel.eu>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <622f4e7645e426ae180e4511877eb90ceb1b1063.camel@gmail.com>
+References: <622f4e7645e426ae180e4511877eb90ceb1b1063.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From: Andrey Grodzovsky <andrey.grodzovsky@crowdstrike.com>
-Subject: BPF fentry/fexit trampolines stall livepatch stalls transition due to
- missing ORC unwind metadata
-To: <bpf@vger.kernel.org>, <live-patching@vger.kernel.org>
-CC: DL Linux Open Source Team <linux-open-source@crowdstrike.com>,
-        Petr Mladek
-	<pmladek@suse.com>, Song Liu <song@kernel.org>,
-        <andrii@kernel.org>, Raja
- Khan <raja.khan@crowdstrike.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: base64
-X-ClientProxiedBy: 04WPEXCH008.crowdstrike.sys (10.100.11.75) To
- 04WPEXCH010.crowdstrike.sys (10.100.11.80)
-X-Disclaimer: USA
-X-Proofpoint-GUID: xheSwFsQIBv69ICHCVjFYRtrwbdc1XfZ
-X-Authority-Analysis: v=2.4 cv=ZvLg6t7G c=1 sm=1 tr=0 ts=691de52e cx=c_pps
- a=1d8vc5iZWYKGYgMGCdbIRA==:117 a=1d8vc5iZWYKGYgMGCdbIRA==:17
- a=EjBHVkixTFsA:10 a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=fxJcL_dCAAAA:8 a=VwQbUJbxAAAA:8
- a=NqsTFSaYDvTC1y74OYsA:9 a=QEXdDO2ut3YA:10 a=-Pd4MGF6sb0A:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE5MDEyNCBTYWx0ZWRfXzUmyhKM40pGw
- r4TZnDZoaklQ2UbBZt7OcXLpZG13Ga1NPzSpkUNqozXR/5IXeAl0RZ+9Rk2vyJW+ZW18maVRQV1
- IXckr2OepBCbwT4vnWGN/5yXwWwiQa17zOvrNHTw8wdEWMS/Inb9g//NlMkAN9hCHDsBoUu4fip
- bFV+Ght4vUNg4YszSpytQuVlaRjtpGiYYx7qkN6bUPOWdWporIBaBOV7XdZvDydEsyFZ22hDZyE
- W+TSFkAYpeeXQgU4m1y9UfUunHJ23I2g2Iz6A0KYFVcj6VoGc3ACyxzv/6v8U3ONwPPapin3pE0
- 7G9T4ytmhlCydGXFYTtq+fAbxDZcNS34Z2dA4Cm/QSSIJ0/H7h5k4QcwCng/XGYFjvbdRl6bCEa
- 3Hm2BO3eGY8KqVE3buVmK1xfZbXmrA==
-X-Proofpoint-ORIG-GUID: xheSwFsQIBv69ICHCVjFYRtrwbdc1XfZ
-X-Proofpoint-Virus-Version: vendor=nai engine=6800 definitions=11618
- signatures=596818
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 malwarescore=0 suspectscore=0 priorityscore=1501 spamscore=0
- impostorscore=0 clxscore=1011 phishscore=0 lowpriorityscore=0 bulkscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2510240001 definitions=main-2511190124
+Content-Transfer-Encoding: 8bit
 
-SGVsbG8gQlBGIGFuZCBsaXZlcGF0Y2ggdGVhbXMsDQoNClRoaXMgaXMgc29tZXdoYXQgYSBm
-b2xsb3d1cCBvbiANCmh0dHBzOi8vbGlzdHMudWJ1bnR1LmNvbS9hcmNoaXZlcy9rZXJuZWwt
-dGVhbS8yMDI1LU9jdG9iZXIvMTYzODgxLmh0bWwgDQphcyB3ZSBjb250aW51ZSBlbmNvdW50
-ZXIgaXNzdWVzIGFuZCBjb25mbGljdHMgYmV0d2VlbiBCUEYgYW5kIGxpdmVwYXRjaC4NCg0K
-V2UndmUgZW5jb3VudGVyZWQgYW4gaXNzdWUgYmV0d2VlbiBCUEYgZmVudHJ5L2ZleGl0IHRy
-YW1wb2xpbmVzIGFuZCANCmtlcm5lbCBsaXZlcGF0Y2hpbmcgKGtwYXRjaC9saXZlcGF0Y2gp
-IG9uIHg4Nl82NCBzeXN0ZW1zIHdpdGggT1JDIA0KdW53aW5kZXIgZW5hYmxlZC4gSSdtIHJl
-YWNoaW5nIG91dCB0byB1bmRlcnN0YW5kIGlmIHRoaXMgaXMgYSBrbm93biANCmxpbWl0YXRp
-b24gYW5kIHRvIGV4cGxvcmUgcG90ZW50aWFsIHNvbHV0aW9ucy4gSSBhc3N1bWUgaXQncyBr
-bm93biBhcyBJIA0Kc2VlIGluZm9ybWF0aW9uIGFsb25nIHRoaXMgbGluZXMgaW4gDQpodHRw
-czovL3d3dy5rZXJuZWwub3JnL2RvYy9Eb2N1bWVudGF0aW9uL2xpdmVwYXRjaC9yZWxpYWJs
-ZS1zdGFja3RyYWNlLnJzdA0KDQpQcm9ibGVtIFN1bW1hcnkNCg0KV2hlbiBCUEYgcHJvZ3Jh
-bXMgYXR0YWNoIHRvIGtlcm5lbCBmdW5jdGlvbnMgdXNpbmcgZmVudHJ5L2ZleGl0IGhvb2tz
-LCANCnRoZSByZXN1bHRpbmcgSklULWNvbXBpbGVkIHRyYW1wb2xpbmVzIGxhY2sgT1JDIHVu
-d2luZCBtZXRhZGF0YS4gVGhpcyANCmNhdXNlcyBsaXZlcGF0Y2ggdHJhbnNpdGlvbiBzdGFs
-bCB3aGVuIHRocmVhZHMgYXJlIGJsb2NrZWQgaW4gaG9va2VkIA0KZnVuY3Rpb25zLCBhcyB0
-aGUgc3RhY2sgYmVjb21lcyB1bnJlbGlhYmxlIGZvciB1bndpbmRpbmcgcHVycG9zZXMuDQoN
-CkluIG91ciBjYXNlIHRoZSBlbnZpcm9ubWVudCBpcw0KDQotIFJIRUwgOS42IChrZXJuZWwg
-NS4xNC4wLTU3MC4xNy4xLmVsOV82Lng4Nl82NCkNCi0gQ09ORklHX1VOV0lOREVSX09SQz15
-DQotIENPTkZJR19CUEZfSklUX0FMV0FZU19PTj15DQotIEJQRiBmZW50cnkvZmV4aXQgaG9v
-a3Mgb24gaW5ldF9yZWN2bXNnKCkNCg0KU2NlbmFyaW86DQoxLiBCUEYgcHJvZ3JhbSBhdHRh
-Y2hlZCB0byBpbmV0X3JlY3Ztc2cgdmlhIGZlbnRyeS9mZXhpdCAoY3JlYXRlcyBCUEYgDQp0
-cmFtcG9saW5lKQ0KMi4gQ0lGUyBmaWxlc3lzdGVtIG1vdW50ZWQgKGNyZWF0ZXMgY2lmc2Qg
-a2VybmVsIHRocmVhZCkNCjMuIGNpZnNkIHRocmVhZCBibG9ja3MgaW4gaW5ldF9yZWN2bXNn
-IOKGkiBCUEYgdHJhbXBvbGluZSBpcyBvbiB0aGUgc3RhY2sNCjQuIEF0dGVtcHQgdG8gbG9h
-ZCBrcGF0Y2ggbW9kdWxlDQo1LiBMaXZlcGF0Y2ggdHJhbnNpdGlvbiBzdGFsbHMgaW5kZWZp
-bml0ZWx5DQoNCkVycm9yIE1lc3NhZ2UgKHJlcGVhdGVkIGV2ZXJ5IH4xIHNlY29uZCk6DQps
-aXZlcGF0Y2g6IGtscF90cnlfc3dpdGNoX3Rhc2s6IGNpZnNkOjI4ODYgaGFzIGFuIHVucmVs
-aWFibGUgc3RhY2sNCg0KU3RhY2sgdHJhY2Ugc2hvd2luZyBCUEYgdHJhbXBvbGluZToNCmNp
-ZnNkICAgICAgICAgICBEICAwICAyODg2DQpDYWxsIFRyYWNlOg0KICB3YWl0X3dva2VuKzB4
-NTAvMHg2MA0KICBza193YWl0X2RhdGErMHgxNzYvMHgxOTANCiAgdGNwX3JlY3Ztc2dfbG9j
-a2VkKzB4MjM0LzB4OTIwDQogIHRjcF9yZWN2bXNnKzB4NzgvMHgyMTANCiAgaW5ldF9yZWN2
-bXNnKzB4NWMvMHgxNDANCiAgYnBmX3RyYW1wb2xpbmVfNjQ0MjQ2OTk4NSsweDg5LzB4MTMw
-ICDihpAgTk8gT1JDIG1ldGFkYXRhDQogIHNvY2tfcmVjdm1zZysweDk1LzB4YTANCiAgY2lm
-c19yZWFkdl9mcm9tX3NvY2tldCsweDFjYS8weDJkMCBbY2lmc10NCiAgLi4uDQoNCkFzIGZh
-ciBhcyBJIHVuZGVyc3RhbmQgYW5kIHBsZWFzZSBjb3JyZWN0IG1lIGlmIGl0J3Mgd3Jvbmcg
-LQ0KDQpUaGUgZmFpbHVyZSBvY2N1cnMgaW4gYXJjaC94ODYva2VybmVsL3Vud2luZF9vcmMu
-Yw0KDQpvcmMgPSBvcmNfZmluZChzdGF0ZS0+c2lnbmFsID8gc3RhdGUtPmlwIDogc3RhdGUt
-PmlwIC0gMSk7DQppZiAoIW9yYykgew0KICAgICAvKg0KICAgICAgKiBBcyBhIGZhbGxiYWNr
-LCB0cnkgdG8gYXNzdW1lIHRoaXMgY29kZSB1c2VzIGEgZnJhbWUgcG9pbnRlci4NCiAgICAg
-ICogVGhpcyBpcyB1c2VmdWwgZm9yIGdlbmVyYXRlZCBjb2RlLCBsaWtlIEJQRiwgd2hpY2gg
-T1JDDQogICAgICAqIGRvZXNuJ3Qga25vdyBhYm91dC4gIFRoaXMgaXMganVzdCBhIGd1ZXNz
-LCBzbyB0aGUgcmVzdCBvZg0KICAgICAgKiB0aGUgdW53aW5kIGlzIG5vIGxvbmdlciBjb25z
-aWRlcmVkIHJlbGlhYmxlLg0KICAgICAgKi8NCiAgICAgb3JjID0gJm9yY19mcF9lbnRyeTsN
-CiAgICAgc3RhdGUtPmVycm9yID0gdHJ1ZTsgIC8vIOKGkCBNYXJrcyBzdGFjayBhcyB1bnJl
-bGlhYmxlDQp9DQoNCldoZW4gb3JjX2ZpbmQoKSByZXR1cm5zIE5VTEwgZm9yIHRoZSBCUEYg
-dHJhbXBvbGluZSBhZGRyZXNzLCB0aGUgDQp1bndpbmRlciBmYWxscyBiYWNrIHRvIGZyYW1l
-IHBvaW50ZXJzIGFuZCBtYXJrcyB0aGUgc3RhY2sgdW5yZWxpYWJsZS4gDQpUaGlzIGNhdXNl
-cyBhcmNoX3N0YWNrX3dhbGtfcmVsaWFibGUoKSB0byBmYWlsLCB3aGljaCBpbiB0dXJuIGNh
-dXNlcyANCmxpdmVwYXRjaCdzIGtscF9jaGVja19zdGFjaygpIHRvIHJldHVybiAtRUlOVkFM
-IGJlZm9yZSBldmVuIGNoZWNraW5nIGlmIA0KdG8tYmUtcGF0Y2hlZCBmdW5jdGlvbnMgYXJl
-IG9uIHRoZSBzdGFjay4NCg0KS2V5IG9ic2VydmF0aW9uczoNCjEuIFRoZSBrZXJuZWwgY29t
-bWVudCBleHBsaWNpdGx5IG1lbnRpb25zICJnZW5lcmF0ZWQgY29kZSwgbGlrZSBCUEYiDQoy
-LiBEb2N1bWVudGF0aW9uL2xpdmVwYXRjaC9yZWxpYWJsZS1zdGFja3RyYWNlLnJzdCBsaXN0
-cyAiRHluYW1pY2FsbHkgDQpnZW5lcmF0ZWQgY29kZSAoZS5nLiBlQlBGKSIgYXMgY2F1c2lu
-ZyB1bnJlbGlhYmxlIHN0YWNrcw0KMy4gTmF0aXZlIGtlcm5lbCBmdW5jdGlvbnMgaGF2ZSBP
-UkMgbWV0YWRhdGEgZnJvbSBvYmp0b29sIGR1cmluZyBidWlsZA0KNC4gRnRyYWNlIHRyYW1w
-b2xpbmVzIGhhdmUgc3BlY2lhbCBPUkMgaGFuZGxpbmcgdmlhIG9yY19mdHJhY2VfZmluZCgp
-DQo1LiBCUEYgSklUIHRyYW1wb2xpbmVzIGhhdmUgbm8gc3VjaCBoYW5kbGluZyAtIElzIHRo
-aXMgY29ycmVjdCA/DQoNCkltcGFjdA0KDQpUaGlzIGFmZmVjdHMgcHJvZHVjdGlvbiBzeXN0
-ZW1zIHdoZXJlOg0KLSBTZWN1cml0eS9vYnNlcnZhYmlsaXR5IHRvb2xzIHVzZSBCUEYgZmVu
-dHJ5L2ZleGl0IGhvb2tzDQotIExpdmUga2VybmVsIHBhdGNoaW5nIGlzIHJlcXVpcmVkIGZv
-ciBzZWN1cml0eSB1cGRhdGVzDQotIEtlcm5lbCB0aHJlYWRzIG1heSBiZSBibG9ja2VkIGlu
-IGhvb2tlZCBuZXR3b3JrL3N0b3JhZ2UgZnVuY3Rpb25zDQoNClRoZSBsaXZlcGF0Y2ggdHJh
-bnNpdGlvbiBjYW4gc3RhbGwgZm9yIDYwKyBzZWNvbmRzIGJlZm9yZSBmYWlsaW5nLCANCmJs
-b2NraW5nIGNyaXRpY2FsIHNlY3VyaXR5IHBhdGNoZXMuDQoNClF1ZXN0aW9ucyBmb3IgdGhl
-IENvbW11bml0eQ0KDQoxLiBJcyB0aGlzIGEga25vd24gbGltaXRhdGlvbiAoSSBhc3N1bWUg
-eWVzKSA/DQoyLiBSdW50aW1lIE9SQyBnZW5lcmF0aW9uPyBDb3VsZCB0aGUgQlBGIEpJVCBn
-ZW5lcmF0ZSBPUkMgdW53aW5kIGVudHJpZXMgDQpmb3IgdHJhbXBvbGluZXMsIHNpbWlsYXIg
-dG8gaG93IGZ0cmFjZSB0cmFtcG9saW5lcyBhcmUgaGFuZGxlZD8NCjMuIFRyYW1wb2xpbmUg
-cmVnaXN0cmF0aW9uPyBDb3VsZCBCUEYgdHJhbXBvbGluZXMgcmVnaXN0ZXIgdGhlaXIgYWRk
-cmVzcyANCnJhbmdlcyB3aXRoIHRoZSBPUkMgdW53aW5kZXIgdG8gYXZvaWQgdGhlICJ1bnJl
-bGlhYmxlIiBtYXJraW5nPw0KNC4gQWx0ZXJuYXRpdmUgdW53aW5kaW5nPyBDb3VsZCBsaXZl
-cGF0Y2ggdXNlIGFuIGFsdGVybmF0aXZlIHVud2luZGluZyANCm1ldGhvZCB3aGVuIEJQRiB0
-cmFtcG9saW5lcyBhcmUgZGV0ZWN0ZWQgKGUuZy4sIGZyYW1lIHBvaW50ZXJzIHdpdGggDQp2
-YWxpZGF0aW9uKT8NCjUuIFdvcmthcm91bmRzPyBJIG1lbnRpb24gb25lIGJlbGxvdyBhbmQg
-SSB3b3VsZCBiZSBoYXBweSB0byBoZWFyIGlmIA0KYW55b25lIGhhcyBhIGJldHRlciBpZGVh
-IHRvIHByb3Bvc2UgPw0KDQpUaGUgb25seSBwb3NzaWJsZSB3b3JrYXJvdW5kIEkgc2VlIGlz
-IHN3aXRjaGluZyBldmVyeXRoaW5nIGZyb20gDQp0cmFtcG9saW5lIGJhc2VkIGhvb2tzIHRv
-IGtwcm9iZSBzaW5jZSBJIGFzc3VtZSBrcHJvYmVzIHdvbid0IGhhdmUgdGhpcyANCmlzc3Vl
-DQoNCkJQRiBrcHJvYmVzIHVzZSB0aGUgZnRyYWNlIGluZnJhc3RydWN0dXJlIHdpdGgga3By
-b2JlX2Z0cmFjZV9oYW5kbGVyLCANCndoaWNoIGhhcyBPUkMgbWV0YWRhdGEgYW5kIHNwZWNp
-YWwgaGFuZGxpbmcgaW4gdGhlIHVud2luZGVyLiBUaGUgc3RhY2sgDQpyZW1haW5zIHJlbGlh
-YmxlOg0KaW5ldF9yZWN2bXNnKzB4NTAvMHgxNDAgIOKGkCBIYXMgT1JDIG1ldGFkYXRhDQpr
-cHJvYmVfZnRyYWNlX2hhbmRsZXIrLi4uIOKGkCBIYXMgT1JDIG1ldGFkYXRhDQoNClByb2Js
-ZW0gd2l0aCBrcHJvYmVzIGlzIG9idmlvdXNseSB0aGVpciBwZXJmb3JtYW5jZSBwZW5hbHR5
-Lg0KDQpBZGRpdGlvbmFsIENvbnRleHQNCg0KIEZyb20gYXJjaC94ODYvbmV0L2JwZl9qaXRf
-Y29tcC5jOjM1NTk6DQpib29sIGJwZl9qaXRfc3VwcG9ydHNfZXhjZXB0aW9ucyh2b2lkKQ0K
-ew0KICAgICAvKiBXZSB1bndpbmQgdGhyb3VnaCBib3RoIGtlcm5lbCBmcmFtZXMgKHN0YXJ0
-aW5nIGZyb20gd2l0aGluIGJwZl90aHJvdw0KICAgICAgKiBjYWxsKSBhbmQgQlBGIGZyYW1l
-cy4gVGhlcmVmb3JlIHdlIHJlcXVpcmUgT1JDIHVud2luZGVyIHRvIGJlIA0KZW5hYmxlZA0K
-ICAgICAgKiB0byB3YWxrIGtlcm5lbCBmcmFtZXMgYW5kIHJlYWNoIEJQRiBmcmFtZXMgaW4g
-dGhlIHN0YWNrIHRyYWNlLg0KICAgICAgKi8NCiAgICAgcmV0dXJuIElTX0VOQUJMRUQoQ09O
-RklHX1VOV0lOREVSX09SQyk7DQp9DQoNClRoaXMgc2hvd3MgdGhhdCBCUEYgYWxyZWFkeSBo
-YXMgc29tZSBpbnRlZ3JhdGlvbiB3aXRoIE9SQyBmb3IgZXhjZXB0aW9uIA0KaGFuZGxpbmcu
-IENvdWxkIHRoaXMgYmUgZXh0ZW5kZWQgdG8gdHJhbXBvbGluZXM/DQoNClJlZmVyZW5jZXMN
-Cg0KLSBLZXJuZWw6IDUuMTQuMC01NzAuMTcuMS5lbDlfNi54ODZfNjQNCi0gQ29kZTogYXJj
-aC94ODYva2VybmVsL3Vud2luZF9vcmMuYzo1MTAtNTE5DQotIERvY3M6IERvY3VtZW50YXRp
-b24vbGl2ZXBhdGNoL3JlbGlhYmxlLXN0YWNrdHJhY2UucnN0IGxpbmVzIDg0LTg1LCAxMTEt
-MTEyDQoNCkkgYXBwcmVjaWF0ZSBhbnkgZ3VpZGFuY2Ugb24gd2hldGhlciB0aGlzIGlzIHNv
-bWV0aGluZyB0aGF0IGNvdWxkIGJlIA0KYWRkcmVzc2VkIGluIHRoZSBrZXJuZWwsIG9yIGlm
-IHdlIHNob3VsZCBmb2N1cyBvbiB1c2VyLXNwYWNlIHdvcmthcm91bmRzLg0KDQpUaGFua3Ms
-DQpBbmRyZXkNCg==
+Hi Eduard, Hi Alexei, Hi List,
+
+thanks for the good feedback.
+
+Some details:
+
+Eduard wrote:
+
+> > +			env->insn_idx--;
+>
+> This insn_idx adjustment is a bit unfortunate, but refactoring getting
+> rid of it is probably out of scope for this series.
+
+Indeed. I tried hard to avoid it but couldn't find a way that would not have
+let this patch explode. Similarly, check_helper_call by now ends with a lot
+of if's checking func_id. This should at some point probably be replaced by
+a switch statement.
+
+Eduard also wrote:
+
+> > +__msg("mark_precise: frame0: parent state regs=r0 stack=:  R0=Pscalar() R6=map_value(map=.data.vals,ks=4,vs=16) R10=fp0")
+>
+> Nit: I'd add a couple more lines to this __msg sequence to check that
+>      backtrack_insn correctly moved one frame down.
+
+I added some more __msg lines where it enters the subprogram, that's where the
+patch changes behavior.
+
+Cheers
+
+Martin
+
+Eduard Zingerman (2):
+  bpf: correct stack liveness for tail calls
+  bpf: test the correct stack liveness of tail calls
+
+Martin Teichmann (2):
+  bpf: properly verify tail call behavior
+  bpf: test the proper verification of tail calls
+
+ include/linux/bpf_verifier.h                  |  5 +-
+ kernel/bpf/liveness.c                         |  7 ++-
+ kernel/bpf/verifier.c                         | 60 +++++++++++++++++--
+ .../selftests/bpf/progs/verifier_live_stack.c | 50 ++++++++++++++++
+ .../selftests/bpf/progs/verifier_sock.c       | 39 +++++++++++-
+ .../bpf/progs/verifier_subprog_precision.c    | 53 ++++++++++++++++
+ 6 files changed, 202 insertions(+), 12 deletions(-)
+
+-- 
+2.43.0
+
 
