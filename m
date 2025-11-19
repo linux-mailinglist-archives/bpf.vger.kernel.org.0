@@ -1,101 +1,128 @@
-Return-Path: <bpf+bounces-75017-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75018-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE462C6C228
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 01:30:59 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6232C6C2BC
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 01:50:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sea.lore.kernel.org (Postfix) with ESMTPS id 733112C5ED
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 00:30:58 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0E729349CFB
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 00:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF261DF27F;
-	Wed, 19 Nov 2025 00:30:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7A821B9FD;
+	Wed, 19 Nov 2025 00:49:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MeOzBcdb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jXWJiPPF"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB9513D891;
-	Wed, 19 Nov 2025 00:30:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A76D31F3BA2
+	for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 00:49:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763512250; cv=none; b=ZnqSYfTzaWqi0/rqB7fYgKOMZ0jeXmyijAv6deiseeS8R9OZ/wgtAv6vvF8wyc0ENjT4bJqwfIOYExQqs/+wNaLh56+v5GmEM+wj0uw5D7fOu1+n6qPl//afNyc6AP6wU5czAd86fXF/Fqjqpy5tPyULpfodhwsCMcQDYS18I6I=
+	t=1763513398; cv=none; b=JhShovunxUK9bwF+BWRLoMtJt5kDX1ZVkijLScSSHtm/2f0S5C95kZ64H/YnNka4qaAdPUnZ2sZ9V7097YIHxaBCJksLOP4vaaAf4Zstib4XKrZl5258G+27rp8zirWjZ5lhw2rXQeq5+cfUhtRFekVgCah5GCzkS7nptovkRXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763512250; c=relaxed/simple;
-	bh=jJrVAPzCdiRtfgezaX7MvBOr9eNzWAqSUxcyKGMn8B0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=r40NpZre/y1YVWCQhiXeRCT88Bx25y/DDMcXSb6AVpu7WtPhQHKBXXasEV5xuYVpdjdBC1F9Ox1DzsaUmnULwsUzr9Q1/FeO89rhTldGzldlM8YejBiKSwvUPtVIGkdNmVG/35vbQXcyWtD26VM3dZumciljhcSOGbi87qirV+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MeOzBcdb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2E05C16AAE;
-	Wed, 19 Nov 2025 00:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763512247;
-	bh=jJrVAPzCdiRtfgezaX7MvBOr9eNzWAqSUxcyKGMn8B0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=MeOzBcdbIcCbAxsSlurZSeJNjBli6zg261tWM4qHlefa+w8Hmyyy0X2em99W519WV
-	 8algJkBKVLcl++yLYKHfP0AB9UMtgWoJf8G4zkutlChrIDf0WPSN7x3f/8Zz6En7gS
-	 CApKKCDBvswiFRAWqmOUDnPYzIcaPC1w5WazAUOnpIZBmdNo1FUGMkiJ0PSOHJHvoM
-	 sXmYswRYPLekQkshC0Jhb4MkX/Oclwq8OHvAdDsxlBfW5JT2LwkMAE1tAMIsj86bST
-	 /T1zISLap2pHgTbDCNOd57lMpt9UlbmnFY9YjZTid+fImngoRbvhBYaqBP6gGXqcZ2
-	 Q01bIIhii4RMg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E25380A94B;
-	Wed, 19 Nov 2025 00:30:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1763513398; c=relaxed/simple;
+	bh=oKXTLH9B+kZojIKvhH48FM80MY3iGUiNLr6BAXfHHf0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G9Y3DE4CSEZ4MMisS6opRR8bzyQICIGD6WCBPKjGFVoToGg+qcvVxqSVayE+CURsvR1HptOwQXnfXyaHpYpppJp3WiDT/IK6OuXPOPEVVKBrg0nwt2QHfvEiTf98MK2VZUl/+nO5CKxlYa4FVH+a/VKgy0wrdqlABRQff+LL9BA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jXWJiPPF; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-343d73d08faso415678a91.0
+        for <bpf@vger.kernel.org>; Tue, 18 Nov 2025 16:49:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763513396; x=1764118196; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=u1JZP4mJOczUNP4pl5LS4F0RC54qpkfUlqRw4pgbJgQ=;
+        b=jXWJiPPF/UyM0htAyQWXtj40Uto5qRz23YbBn/9oqGsaRuEGDnXuQ8Kd0EFJHaBELl
+         TsAbquFUn+QQLSYHIcIAzij4QUoIjTjZ2DOoYzdmY2eKInS0w6FS1fFNZKO5IRz3RwmM
+         NgGJ4yLsxL7rbywK3zRyPFGMYLEYerSAXw879U8rLCWj6QYkTISG8yWHgNy4EwYsjsgA
+         zY+67FuqJG7aRkJzTUyIg50qC44GUGYgol2YVXkRlNp0i4iNlkwFwmDhiHOv77hNxZso
+         LmXpywxxpl1QkOwDDyIS/AK5m8VnKqbc8TwrBYYM2LTt5oKz2pIOduQLk666eR9IaTM6
+         3sMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763513396; x=1764118196;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u1JZP4mJOczUNP4pl5LS4F0RC54qpkfUlqRw4pgbJgQ=;
+        b=xA7mekOuUAcLtUINOV5ub7s2vNc8oIanaFRi6A6k7W2D3/uferQaVgmbcF92LsGh9t
+         BfKquV99+4AzES2nJGmkzMCGgJuOFOgJ5pI6DxNM0Zs+P/+OFDhzPllx+/wQMGC3+QKk
+         ZQ0kmTSjlNfZLid+5b0xIJ9nA7XOJq0m9iKt2c+MOrqoDbGpYAEVCdFZ3mzyCqfQLdd6
+         UDveLxyZgrsvEue+5N/ZDNmB2dbxiD3ag9nZODW4rp2xgDFqk5vmQr3CjLvNBNIobkBt
+         47fekWWID4do3hIGqyCdT5d8XFDTPuiKV0LadJ8Kt6OKxf2RG1e/Tl9h13j9nIPi9/MH
+         uWWw==
+X-Forwarded-Encrypted: i=1; AJvYcCX5NuHDwK/KnpDt6ArgLdrnsGGiX6j7iNlrE7LE5F/k+oh+N/AM+WtAaix3H2VcKdPMqsg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzsJYQ3RvVpDMIifHQVJ8Ad9pApRptbjBGWgV1qxX5HeZVBw2Kw
+	QNfbY868dzqOQBgUu+1HOCJXWM38QHqNLh8B2aTeuIg4xStUE0lpRVfD
+X-Gm-Gg: ASbGncs8lh16S7hkjNP+BPWQRAdHykZs1cgo1cCSMPuIMzalEsU6uOz9udWMAvxTlR2
+	CetYoKUAX6yiY5Z2MabznlitfOQ2l6GHUmcwd0aPkmqw5UznJDO6JJrIE0vDkI5LgrttbZVLdMZ
+	NpE90L0bOpWD+7R+S1H/iBsWyEaLVEzQPvCci2SL/N7H+faPBZ3x8MjMUjXn+sBd0lzoEH+zQL0
+	7DOuHbU7yHh2ssBzJAm7fo2SJ75rCdhi7vMxKn31H/Oi+MqFO24tbE26xdsbN8HnT66PGJweNWX
+	2AzRJCxUhTC9n9w9CUzac1r2w/Tg4DklS0vRIdbD8zSF68T4BCCvYqMbeq0tlFdnd6SLAMcA1dm
+	jmE2cXARUkgFPzGiQ3ZbW+SWNLXgTqq5dCOTl9WlZ1CzV8QrijqKgI8KbRUj3GE93LL0sGlyYcf
+	SqPLsRjQiqQ3+MJ1h/Cc7MKSo/78mkRzeqwqe43g==
+X-Google-Smtp-Source: AGHT+IE8JxmF1L3MBeFjrjhCVliPKr3nWeWpK8dN326PMLP1SXtwFKRVIWLKhkDIZdOHuuTrc26bbg==
+X-Received: by 2002:a17:90b:1345:b0:340:29a3:800f with SMTP id 98e67ed59e1d1-345bd3038cemr513343a91.15.1763513396057;
+        Tue, 18 Nov 2025 16:49:56 -0800 (PST)
+Received: from lima-default ([103.246.102.164])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-345bbfc8d8esm704033a91.2.2025.11.18.16.49.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Nov 2025 16:49:55 -0800 (PST)
+Date: Wed, 19 Nov 2025 11:49:44 +1100
+From: Alessandro Decina <alessandro.d@gmail.com>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: "Loktionov, Aleksandr" <aleksandr.loktionov@intel.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	"Kitszel, Przemyslaw" <przemyslaw.kitszel@intel.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	"Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>,
+	"Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [Intel-wired-lan] [PATCH net v4 1/1] i40e: xsk: advance
+ next_to_clean on status descriptors
+Message-ID: <aR0UKHeilBX5oTg9@lima-default>
+References: <20251118113117.11567-1-alessandro.d@gmail.com>
+ <20251118113117.11567-2-alessandro.d@gmail.com>
+ <IA3PR11MB89867864D4ED892C677CA8CEE5D6A@IA3PR11MB8986.namprd11.prod.outlook.com>
+ <aRy+xA5xSErIb61j@boxer>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 0/4] Replace BPF memory allocator with
- kmalloc_nolock() in local storage
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176351221301.159336.2037240417385610881.git-patchwork-notify@kernel.org>
-Date: Wed, 19 Nov 2025 00:30:13 +0000
-References: <20251114201329.3275875-1-ameryhung@gmail.com>
-In-Reply-To: <20251114201329.3275875-1-ameryhung@gmail.com>
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com,
- andrii@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
- memxor@gmail.com, kpsingh@kernel.org, yonghong.song@linux.dev,
- song@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aRy+xA5xSErIb61j@boxer>
 
-Hello:
+On Tue, Nov 18, 2025 at 07:45:24PM +0100, Maciej Fijalkowski wrote:
+> Repro steps would be nice to have, rest would be rather redundant to me.
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Yeah unfortunately I don't really know how to _manually_ reproduce.
 
-On Fri, 14 Nov 2025 12:13:22 -0800 you wrote:
-> Hi,
-> 
-> This patchset tries to simplify bpf_local_storage.c by adopting
-> kmalloc_nolock(). This removes memory preallocation and reduces the
-> dependency of smap in bpf_selem_free() and bpf_local_storage_free().
-> The later will simplify a future refactor that replaces
-> local_storage->lock and b->lock [1].
-> 
-> [...]
+I don't know why I'm getting these status descriptors, but I'm getting
+them reproducibly every few minutes on ubuntu 24.04 across 3 machines
+where I've hit this bug/tested the fix. The machines are doing ~300Mbps
+of UDP traffic, some of which is done using AF_XDP. The AF_XDP code is
+TX only, so it's executing the build-skb-in-zc-path all the time as all
+the ingress traffic goes to sockets. 
 
-Here is the summary with links:
-  - [v2,bpf-next,1/4] bpf: Always charge/uncharge memory when allocating/unlinking storage elements
-    https://git.kernel.org/bpf/bpf-next/c/0e854e553569
-  - [v2,bpf-next,2/4] bpf: Remove smap argument from bpf_selem_free()
-    https://git.kernel.org/bpf/bpf-next/c/e76a33e1c718
-  - [v2,bpf-next,3/4] bpf: Save memory alloction info in bpf_local_storage
-    https://git.kernel.org/bpf/bpf-next/c/39a460c4253e
-  - [v2,bpf-next,4/4] bpf: Replace bpf memory allocator with kmalloc_nolock() in local storage
-    https://git.kernel.org/bpf/bpf-next/c/f484f4a3e058
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+If you have any idea on how to reliably produce the descriptors I'm
+happy to give it a try. 
 
