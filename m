@@ -1,133 +1,140 @@
-Return-Path: <bpf+bounces-75092-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75093-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5C8CC70316
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 17:46:56 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BA8BC702FE
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 17:45:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 934A2508039
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 16:32:00 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3C9193C25F1
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 16:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2B7365A09;
-	Wed, 19 Nov 2025 16:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A453350288;
+	Wed, 19 Nov 2025 16:33:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xoz4rTHa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Co88x2Zp"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 430502E7BA7;
-	Wed, 19 Nov 2025 16:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE03368288
+	for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 16:33:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763569723; cv=none; b=qZgDFXrBPmpSqGsomoBpDqbR4ixGwV8esVt4Wgg2YaGn8nU55ynn96WCG+z0h+lctma6tljaiHxC1GPNIiKYrW/EITDfb/dvKko26XXOTE0oYI4SS2SmaQuYU1TYVrytdgtxvW7DWvzakJF1m/GTPl011+azEyClrtj2eDGEAMA=
+	t=1763570013; cv=none; b=XFD5ASudqSaoYNdiooyXziiKoiFbwcbJaiDIunA3W2+c6iGYi2uOCkkQsZ4GX9MBpKu6QRKnfxo5VNXnDd5iDb5X0DEMaEOWUFDUpbFCOMkUfbgyiSdLeEPDUKXYDvqQCfrdB7pooaJTJArwVQ7HrMwCto9RF6+TWFBKtSdFf8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763569723; c=relaxed/simple;
-	bh=C57F31zzc3ewD09Pvf2UYOIYTYCT8ektyUBIj8rEEbk=;
-	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=uyyY9BWK/FszqDclNEABcnV96hRlNeTBFQtf1qIxyYxyq4gLTR3H9+lGNojaejlPTD0nrMfttiXxVrJX21ymqhhMpif8ig3p6f0z4CFGKvIHQlKgHFTXQZVgZzvWc68dA21G5h5Tw1QQaH1hC3Q9dmUtUlh2mDReFu3VgX5fJV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xoz4rTHa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DE66C4CEF5;
-	Wed, 19 Nov 2025 16:28:38 +0000 (UTC)
+	s=arc-20240116; t=1763570013; c=relaxed/simple;
+	bh=w4cfnkvwZEHPsKrX0pc52wATt3wOwpFPwCaXk50FUAw=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=J6jEYW8Z7J9xH3qzsBf3LsyagzoOEMz5b2SM3VNNzKWmX9BTI8JgWg2RRBhueqpE6C4W1zah2bsUYilPnEZ555y46Zo3CJsl3W0VwaEB7Nq4K2dWS7XA8tsE935Bhn99PtMpBnl5aROsBlksWpfFiHhdArgZyJrWEMqqpdTAxS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Co88x2Zp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C006C116C6;
+	Wed, 19 Nov 2025 16:33:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763569722;
-	bh=C57F31zzc3ewD09Pvf2UYOIYTYCT8ektyUBIj8rEEbk=;
-	h=Subject:From:To:Cc:Date:From;
-	b=Xoz4rTHaoiD/bDcCUStG2EhisTAyku8EBhRxet5tVNo3nGs64jTKfmC6ZKg7lX6Mh
-	 yJvfNrb+tS8wADFSzzLwUcV3JJEv89bX+1v7AyN9nLh/JZ8Tjw6QFb4SRQ3Uu5lfi7
-	 8QJlu+pgphz7CFgoMkW4wrKioBvsWMoi8KOT5Dgd1AdgkKS5Qu8aZaXDxR9a9UXT7w
-	 oJwvSBblxfeZUOhH4DoGHfKdnpRAhzIJiY+Du3cdYe6D4i//lTcjy/SUuHbfOCOz7g
-	 odVPPRnUqOcSV7DqSWc2keQVRQ9TYN9k4BFKA0I7eLZnTIGE4LBnHNdRNT0st14jXb
-	 jlqvXeKDd+C0g==
-Subject: [PATCH net V1] veth: reduce XDP no_direct return section to fix race
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-To: netdev@vger.kernel.org, bigeasy@linutronix.de
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
- Eric Dumazet <eric.dumazet@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, makita.toshiaki@lab.ntt.co.jp,
- toshiaki.makita1@gmail.com, kernel-team@cloudflare.com,
- mfleming@cloudflare.com, maciej.fijalkowski@intel.com, dtatulea@nvidia.com,
- edumazet@google.com, sdf@fomichev.me, andrew+netdev@lunn.ch,
- john.fastabend@gmail.com, ast@kernel.org, daniel@iogearbox.net
-Date: Wed, 19 Nov 2025 17:28:36 +0100
-Message-ID: <176356963888.337072.4805242001928705046.stgit@firesoul>
-User-Agent: StGit/1.5
+	s=k20201202; t=1763570012;
+	bh=w4cfnkvwZEHPsKrX0pc52wATt3wOwpFPwCaXk50FUAw=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=Co88x2ZpWHe4nPSaHZ7aJ1ETRM6myyMBgwbPxu66V/imczect3qEdEGAufo7rMLfH
+	 S9avsPMsWAI8+kjGBluiFWhLPcpJRBZmFzBSHGN9zcGCsKZ8L6Anc4mzRpuc6/19lQ
+	 dhSaTYDnWwb57sWLkOH0IIH6JMkW/Dc60vYxM3xzAeyZjbjvixIjcCZj8I9i4BCMPC
+	 D3AqFyvH0+rrxZFzsbLZnf2Yu8F1XlBsWl4H7PqFqc1vWby6Nh7fhvbyRoK7rlmJx4
+	 CTCtjrrl7aH4tldR51ob+XZhmJ1j5YJggxoOsn5NmBwbNR1KtO6iRnBAJt6Snr2YSA
+	 o4JBRgt7f0xxA==
+Content-Type: multipart/mixed; boundary="===============8352205405389840840=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Message-Id: <b5ca6d755d9b8e284e8c542cb5d56aab153e8626694867553532042a90442707@mail.kernel.org>
+In-Reply-To: <20251119160355.1160932-4-martin.teichmann@xfel.eu>
+References: <20251119160355.1160932-4-martin.teichmann@xfel.eu>
+Subject: Re: [PATCH v6 bpf-next 3/4] bpf: correct stack liveness for tail calls
+From: bot+bpf-ci@kernel.org
+To: martin.teichmann@xfel.eu,bpf@vger.kernel.org
+Cc: eddyz87@gmail.com,ast@kernel.org,andrii@kernel.org,martin.teichmann@xfel.eu,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Wed, 19 Nov 2025 16:33:32 +0000 (UTC)
+
+--===============8352205405389840840==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-As explain in commit fa349e396e48 ("veth: Fix race with AF_XDP exposing
-old or uninitialized descriptors") for veth there is a chance after
-napi_complete_done() that another CPU can manage start another NAPI
-instance running veth_pool(). For NAPI this is correctly handled as the
-napi_schedule_prep() check will prevent multiple instances from getting
-scheduled, but for the remaining code in veth_pool() this can run
-concurrent with the newly started NAPI instance.
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 5441341f1..8d0b60fa5 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
 
-The problem/race is that xdp_clear_return_frame_no_direct() isn't
-designed to be nested.
+[ ... ]
 
-Prior to commit 401cb7dae813 ("net: Reference bpf_redirect_info via
-task_struct on PREEMPT_RT.") the temporary BPF net context
-bpf_redirect_info was stored per CPU, where this wasn't an issue. Since
-this commit the BPF context is stored in 'current' task_struct. When
-running veth in threaded-NAPI mode, then the kthread becomes the storage
-area. Now a race exists between two concurrent veth_pool() function calls
-one exiting NAPI and one running new NAPI, both using the same BPF net
-context.
+> @@ -652,6 +652,7 @@ struct bpf_subprog_info {
+>  	u32 start; /* insn idx of function entry point */
+>  	u32 linfo_idx; /* The idx to the main_prog->aux->linfo */
+>  	u32 postorder_start; /* The idx to the env->cfg.insn_postorder */
+> +	u32 exit_idx; /* Index of one of the BPF_EXIT instructions in this subprogram */
+>  	u16 stack_depth; /* max. stack depth used by this function */
 
-Race is when another CPU gets within the xdp_set_return_frame_no_direct()
-section before exiting veth_pool() calls the clear-function
-xdp_clear_return_frame_no_direct().
+[ ... ]
 
-Fixes: 401cb7dae8130 ("net: Reference bpf_redirect_info via task_struct on PREEMPT_RT.")
-Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 117a2b1cf..f564150ec 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3555,8 +3555,12 @@ static int check_subprogs(struct bpf_verifier_env *env)
+>  			subprog[cur_subprog].has_ld_abs = true;
+>  		if (BPF_CLASS(code) != BPF_JMP && BPF_CLASS(code) != BPF_JMP32)
+>  			goto next;
+> -		if (BPF_OP(code) == BPF_EXIT || BPF_OP(code) == BPF_CALL)
+> +		if (BPF_OP(code) == BPF_CALL)
+>  			goto next;
+> +		if (BPF_OP(code) == BPF_EXIT) {
+> +			subprog[cur_subprog].exit_idx = i;
+> +			goto next;
+> +		}
+
+[ ... ]
+
+> +static int visit_tailcall_insn(struct bpf_verifier_env *env, int t)
+> +{
+> +	static struct bpf_subprog_info *subprog;
+> +	struct bpf_iarray *jt;
+> +
+> +	if (env->insn_aux_data[t].jt)
+> +		return 0;
+> +
+> +	jt = iarray_realloc(NULL, 2);
+> +	if (!jt)
+> +		return -ENOMEM;
+> +
+> +	subprog = bpf_find_containing_subprog(env, t);
+> +	jt->items[0] = t + 1;
+> +	jt->items[1] = subprog->exit_idx;
+                        ^^^^^^^^^^^^^^^^^^
+
+Can a subprogram with a tail_call have no BPF_EXIT instruction? The
+verifier allows subprograms to end with an unconditional jump instead
+of BPF_EXIT (see check_subprogs() which accepts BPF_JA as the last
+instruction). In check_subprogs(), exit_idx is only set when a BPF_EXIT
+is encountered. For subprograms ending with only jumps (like infinite
+loops with tail_calls), exit_idx remains 0 from the kvzalloc() in
+bpf_check().
+
+If visit_tailcall_insn() uses exit_idx when it's 0, the jump table will
+incorrectly point to instruction 0 instead of the actual exit, potentially
+causing incorrect liveness analysis for stack slots.
+
+> +	env->insn_aux_data[t].jt = jt;
+> +	return 0;
+> +}
+
+
 ---
-We are seeing crashes that looks like UAF in production for an AF_XDP
-application running on veth devices in threaded-NAPI mode.
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-This patch have already been deployed to production and we are anxiously
-waiting to see if it resolves those crashes.
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19508226347
 
-We believe this is a variation over fix in commit fa349e396e48
-described in great details in Cloudflare blogpost:
- https://blog.cloudflare.com/a-debugging-story-corrupt-packets-in-af_xdp-kernel-bug-or-user-error/
----
- drivers/net/veth.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 35dd89aff4a9..cc502bf022d5 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -975,6 +975,9 @@ static int veth_poll(struct napi_struct *napi, int budget)
- 
- 	if (stats.xdp_redirect > 0)
- 		xdp_do_flush();
-+	if (stats.xdp_tx > 0)
-+		veth_xdp_flush(rq, &bq);
-+	xdp_clear_return_frame_no_direct();
- 
- 	if (done < budget && napi_complete_done(napi, done)) {
- 		/* Write rx_notify_masked before reading ptr_ring */
-@@ -987,10 +990,6 @@ static int veth_poll(struct napi_struct *napi, int budget)
- 		}
- 	}
- 
--	if (stats.xdp_tx > 0)
--		veth_xdp_flush(rq, &bq);
--	xdp_clear_return_frame_no_direct();
--
- 	/* Release backpressure per NAPI poll */
- 	smp_rmb(); /* Paired with netif_tx_stop_queue set_bit */
- 	if (peer_txq && netif_tx_queue_stopped(peer_txq)) {
-
-
+--===============8352205405389840840==--
 
