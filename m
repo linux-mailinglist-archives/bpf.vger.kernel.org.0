@@ -1,147 +1,110 @@
-Return-Path: <bpf+bounces-75030-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75031-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F182C6C5B1
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 03:20:02 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1373C6C6E3
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 03:47:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 847984E27EA
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 02:19:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id 88C2F2C7CC
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 02:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A3FE286400;
-	Wed, 19 Nov 2025 02:19:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DBA02C178E;
+	Wed, 19 Nov 2025 02:47:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DCPAIoOJ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="psQLFmmW"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5E21F0E29;
-	Wed, 19 Nov 2025 02:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD30928C2DD
+	for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 02:47:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763518780; cv=none; b=DTrIZBIAS6KADmBnO6TAAJZP274z18Q9jg9M4Jg7+yCpqXafQJYiyXLjxtull0ma/0lrXZ2g68tLbITlpUek+MpzDkyAUNnvsXSl/MAwif25lJQ22aFxk3ED0RNpLEgfnsmZXMSUJ3Bh72YR2Lr8YwZfDnaD2vpiwDVdVB8M2NE=
+	t=1763520462; cv=none; b=X1KIMwji+z4XsFXizyCGSisg3bYwbSZ+Q1oD6EaQnVwHvEEBp+zqmJoFJgJTIhbOqbE6PUFfY+KKhpcs0rUnq4koO8S5+IdR+rlAIPcMw54rTMB0QCqwqSDGAR5FuFG0ru1wZXEMgPoh+Y8/53NUV+IZKcsZW/DhsHQGHnbC9Yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763518780; c=relaxed/simple;
-	bh=r5L1/Q/k/uedwluJ5VJgAYCi+wmAM6JWFGKQTIjpSUY=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=bSC0kd++f7cparqbfYI1EOEDLHOjA3A5AZK3JOUCjwCJ6LvEbWxsnAWkbhU+YOd7xZtotGx4Yw4qw+mhGrf/w0VAWByq1VvdDgDjpA4W4WcWpGlcIWca0snPIB1pUnXbBUPfuzjUfAhGz4kom7g97ooyw2EzN94k66Q2KsM4pbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DCPAIoOJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABA15C4CEFB;
-	Wed, 19 Nov 2025 02:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763518779;
-	bh=r5L1/Q/k/uedwluJ5VJgAYCi+wmAM6JWFGKQTIjpSUY=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=DCPAIoOJSLMi4FmnMqskKe8EdyEYbJIB9hGyWz2qiCrTwgkT7zdJ30VHLCukc++BA
-	 onD6w/3UT5zSVato/En8ON6C5sgBD8KvgJMapI1W6qq4kw73xEblN69oSbXa3EKoNX
-	 JHXkV/7Ark080xqGyoKkC6eXQq6J4I5rH1jbN8DzeiPLrfyPZ/cuDZGFYHX8L4EO4i
-	 ytxF8nSdpVCUgszzZ5e4Zr3q3kzRBJKjbNlGAnzdyQUl9oHK/FIx1JXLQJ4aozRSAy
-	 pQCBd7ypxiUAvwUuoTha2tMAOOBfp1DKIZnsd8FlDP/nBOHQSFft2cWdJmHxJVUbUw
-	 BHgwM6F26X3TQ==
-Content-Type: multipart/mixed; boundary="===============8277338526258858474=="
+	s=arc-20240116; t=1763520462; c=relaxed/simple;
+	bh=8qkxxhQPcQks1IHDKUkvEk1ro7Emwwx0ztqcHyihPFY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KTVGrex2I88qPKDZNH4QuNKr0BilGREGPvzfEW+yYnK4fMfjkOyXhAYLTXcv82SV56Rueukc9ubK/PnrG25hDVTc79CzaCtetPMBbz8ZFrBn9ppubpY5hTKgHXhrVewJ4amSH+MRvQJcq+QR68Jbwxwge8sI92CfRnrmJWBpxH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=psQLFmmW; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1763520452;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8qkxxhQPcQks1IHDKUkvEk1ro7Emwwx0ztqcHyihPFY=;
+	b=psQLFmmWtA1TxsXjZoKnUnflhodtiX/TDRqnab2swyoA39b4Y5kN0m9s0ZDCbWHK8nCFmQ
+	+dMfB2yCIHoiVOzxb/2M/jq2xfpmfS+zMb6rAz2PWeyB5lKJHyIdKvZEvWH38vFG91gbUp
+	G38GmpkvJuZFJtmr+CbhPevSk9i7nMc=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Menglong Dong <menglong8.dong@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Leon Hwang <leon.hwang@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, jiang.biao@linux.dev,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v3 0/6] bpf trampoline support "jmp" mode
+Date: Wed, 19 Nov 2025 10:47:11 +0800
+Message-ID: <8606158.T7Z3S40VBb@7950hx>
+In-Reply-To:
+ <CAADnVQJF5qkT8J=VJW00pPX7=hVdwn2545BzZPEi=mPwFouThw@mail.gmail.com>
+References:
+ <20251118123639.688444-1-dongml2@chinatelecom.cn>
+ <CAADnVQJF5qkT8J=VJW00pPX7=hVdwn2545BzZPEi=mPwFouThw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <cb8b9352ae1c7174e7be81d16fb8cb880b72cb48c76f11c634aade79a601d176@mail.kernel.org>
-In-Reply-To: <0017945a4297a296c87a65d62cc4bd9948f6c20c.1763457705.git.zhuhui@kylinos.cn>
-References: <0017945a4297a296c87a65d62cc4bd9948f6c20c.1763457705.git.zhuhui@kylinos.cn>
-Subject: Re: [RFC PATCH 2/3] selftests/bpf: add memcg eBPF struct ops test
-From: bot+bpf-ci@kernel.org
-To: hui.zhu@linux.dev,akpm@linux-foundation.org,hannes@cmpxchg.org,mhocko@kernel.org,roman.gushchin@linux.dev,shakeel.butt@linux.dev,muchun.song@linux.dev,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,shuah@kernel.org,peterz@infradead.org,ojeda@kernel.org,nathan@kernel.org,kees@kernel.org,tj@kernel.org,jeffxu@chromium.org,mkoutny@suse.com,kernel@jfarr.cc,brauner@kernel.org,rdunlap@infradead.org,brgerst@gmail.com,masahiroy@kernel.org,linux-kernel@vger.kernel.org,linux-mm@kvack.org,cgroups@vger.kernel.org,bpf@vger.kernel.org,linux-kselftest@vger.kernel.org
-Cc: zhuhui@kylinos.cn,geliang@kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed, 19 Nov 2025 02:19:36 +0000 (UTC)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
---===============8277338526258858474==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+On 2025/11/19 08:28, Alexei Starovoitov wrote:
+> On Tue, Nov 18, 2025 at 4:36=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
+> >
+> > As we can see above, the performance of fexit increase from 80.544M/s to
+> > 136.540M/s, and the "fmodret" increase from 78.301M/s to 159.248M/s.
+>=20
+> Nice! Now we're talking.
+>=20
+> I think arm64 CPUs have a similar RSB-like return address predictor.
+> Do we need to do something similar there?
+> The question is not targeted to you, Menglong,
+> just wondering.
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/memcg_ops.c b/tools/testing/selftests/bpf/prog_tests/memcg_ops.c
-> new file mode 100644
-> index 000000000..3f989bcfb
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/memcg_ops.c
+I did some research before, and I find that most arch
+have such RSB-like stuff. I'll have a look at the loongarch
+later(maybe after the LPC, as I'm forcing on the English practice),
+and Leon is following the arm64.
 
-[ ... ]
+=46or the other arch, we don't have the machine, and I think
+it needs some else help.
 
-> +void test_memcg_ops_double_attach(void)
-> +{
-> +	struct bpf_object *obj, *obj2;
-> +	struct bpf_map *map, *map2;
-> +	struct bpf_link *link = NULL, *link2 = NULL;
-> +	int err;
-> +
-> +	obj = bpf_object__open_file("memcg_ops.bpf.o", NULL);
-> +	err = libbpf_get_error(obj);
-> +	if (CHECK_FAIL(err)) {
-> +		obj = NULL;
-> +		goto out;
-> +	}
-> +
-> +	err = bpf_object__load(obj);
-> +	if (CHECK_FAIL(err))
-> +		goto out;
-> +
-> +	map = bpf_object__find_map_by_name(obj, "mcg_ops");
-> +	if (!ASSERT_OK_PTR(map, "bpf_object__find_map_by_name"))
-> +		goto out;
-> +
-> +	link = bpf_map__attach_struct_ops(map);
-> +	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops"))
-> +		goto out;
-> +
-> +	obj2 = bpf_object__open_file("memcg_ops.bpf.o", NULL);
-> +	err = libbpf_get_error(obj2);
-> +	if (CHECK_FAIL(err)) {
-> +		obj2 = NULL;
-> +		goto out;
-> +	}
-> +
-> +	err = bpf_object__load(obj2);
-> +	if (CHECK_FAIL(err))
-> +		goto out;
-> +
-> +	map2 = bpf_object__find_map_by_name(obj2, "mcg_ops");
-> +	if (!ASSERT_OK_PTR(map, "bpf_object__find_map_by_name"))
-                         ^^^
+Thanks!
+Menglong Dong
 
-In test_memcg_ops_double_attach(), the NULL check is validating the wrong
-variable. The code retrieves map2 from obj2, but then checks map (from the
-first object) instead of map2. This means if bpf_object__find_map_by_name()
-returns NULL for map2, the test won't catch it and will proceed to use the
-potentially NULL map2 pointer in the subsequent attach call.
-
-Should this be checking map2 instead?
-
-> +		goto out;
-> +
-> +	link2 = bpf_map__attach_struct_ops(map2);
-> +	if (!ASSERT_ERR_PTR(link2, "bpf_map__attach_struct_ops")) {
-> +		bpf_link__destroy(link2);
-> +		goto out;
-> +	}
-> +
-> +out:
-> +	if (link)
-> +		bpf_link__destroy(link);
-> +	if (obj)
-> +		bpf_object__close(obj);
-> +	if (obj2)
-> +		bpf_object__close(obj2);
-> +}
+>=20
+>=20
 
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19486904708
 
---===============8277338526258858474==--
 
