@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-75077-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75068-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7E2AC6EEAE
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 14:33:50 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFEE9C6F0EF
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 14:54:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3CFAC35DFE0
-	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 13:27:43 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6C790501A22
+	for <lists+bpf@lfdr.de>; Wed, 19 Nov 2025 13:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C1D36655B;
-	Wed, 19 Nov 2025 13:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A66FC35F8D5;
+	Wed, 19 Nov 2025 13:24:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="DhKBmDT7"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="IMBBaG1C"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E9C35CB95;
-	Wed, 19 Nov 2025 13:25:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DBE35F8B8;
+	Wed, 19 Nov 2025 13:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763558711; cv=none; b=phkbbNT+mddB+ZAv/1GmfXO0cQYj1vEeb6R9RJrHJSbghY1rbaSyt2Vv9I0roXNx4RJ9E2lP7yAysFRT/zbKoWJz4HpJGRqktTBauBmHUQJr0h3O8eMqUaISBuO1HyfYIpvBjHf0GYVmHVVIuirx2pxxA1oXDuoffc8kmaMV7OI=
+	t=1763558690; cv=none; b=AndzE8mw2ft1RmMdjHBG6DjPAWAzWZkqg3gtjaBUKLbsic6a1QMD5QELkhF/RtvB8AQDsV/TOnoE8V2+Bb7EFUD4K/B5ctvoVqAjwBWF8MmL4aLYlEWrUFvuWIyrDHcsk1X85wfQvv7JYHENBsAMWOrYFyxR7PsXWsYii6WsdPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763558711; c=relaxed/simple;
-	bh=kLWP0iWgn2+IPtgdNjVRwe0tTNTk+3eKh/zlzgHxszs=;
+	s=arc-20240116; t=1763558690; c=relaxed/simple;
+	bh=e7cAJTzsi4tE5+YrfrDNT5P2LEIP3050gwQ2+qBGgRE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dcXYflEcyK3w+RAIKO1olI55hKxzlnnQ7mb+opkaJ99tdNJVeXl9c4GK5wpL8mDAdKhNVKpuOZEBIWWh9WI4pXVB2O+f6nk4+CDwOnlZGSwdmZSbDlGtmevQs0gI+eAvuwha1AdRstUOKgPTWI/CA/Kp0Pz7lOwt/G6CLNY+5Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=DhKBmDT7; arc=none smtp.client-ip=148.163.156.1
+	 MIME-Version; b=NVvxwNx+ts6IHDpasfKpc3VDM0i6+Af2Yd1xGRThkVBZFPEsuNh9eP4BONS6MFNe40VC4mhHF8VrrbfmTwsCbMMUNwEOLGFGO4r9KKOx7OwzJkCDaZ6byHR3h4gJZ/RC3BCzn4FuvSpwsOm5H6FVeQbiHDdmAxc7o9mKaIkA6cE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=IMBBaG1C; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AJ60KeE005943;
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AJ4tfMT022500;
 	Wed, 19 Nov 2025 13:23:39 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=bilScElAOM4k5WNce
-	rarlTGdLza8WPvlYYI76EOMn9Q=; b=DhKBmDT7uk5uBt6o2BhVF/WCAw3IJOcIh
-	PPfnBJcVMWriX/ermM6bhqFSWlT4YLAg0ELLvit2LNlB4bQJ4qFzb32oYsySyKDt
-	AuO/3/pRfHQZ1PTYtojPzC+wvsS4zLWu8GWmFC+IvjxEpgRsBLShqtGpSP9euwky
-	P6D01SJimV/0mQN7UbQFO7lHFhWQC+SFkupDVSo/SDfNelvXCn9mYrwXzmhLY6w+
-	6SKGWIB92+ECgI/SDavfhJHDHWhFNjrzxawxnRWs4ufhKBgiWop6OkBoXy3KKxHr
-	cHygB9UUmns04+ZYZc9VKqc2pZJJV9f8m5YHJ5WzVkySZw8QDIyyw==
+	:mime-version:references:subject:to; s=pp1; bh=K+dR3ZyUwv8dVIGnn
+	pIFwvKLWWNKM29SKpsuHVAjb7M=; b=IMBBaG1CUhCrayp85t89WIjgRz0JAR5EG
+	5y34/3fhBxMZ3iOMgL4/R64i2jzaxk+IAJZVsLGfwBQNlHsX0vtWLJL9B0DxJz9R
+	XCRYxW518QucDsLwXAiwfDupCj/Sfs30ZFgiR0pv5DUR2mK0T9j7jD1Qa2CIwMDC
+	810v7prkh0+L/ToUA6jIAFJ4iPnRpKYnoJWkAIWiEqaE/jq5YkBXHTDGip7gh/P8
+	Mfrz/v+iunt28Pifz5R5mX02Hc5cAg7tT9Lw6rjPJ0o5eqoP8aOTajv3dQZoliQf
+	ACtFa6suKOFbLTdvbT530fN0TlcnAfNCFeEdeG/8aT/sUW7TXsQwQ==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aejka0jcq-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aejgwys9p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 19 Nov 2025 13:23:39 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5AJDJKpf003034;
+	Wed, 19 Nov 2025 13:23:38 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aejgwys9k-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Wed, 19 Nov 2025 13:23:38 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5AJDLD9b028950;
-	Wed, 19 Nov 2025 13:23:38 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aejka0jcj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 19 Nov 2025 13:23:37 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AJA1pa5010419;
-	Wed, 19 Nov 2025 13:23:36 GMT
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5AJBjY4x022370;
+	Wed, 19 Nov 2025 13:23:37 GMT
 Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4af3us8y53-1
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4af4un0tc3-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 19 Nov 2025 13:23:36 +0000
+	Wed, 19 Nov 2025 13:23:37 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5AJDNX0P25297192
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5AJDNXxh25297200
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
 	Wed, 19 Nov 2025 13:23:33 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E98D320040;
-	Wed, 19 Nov 2025 13:23:32 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 89D8920040;
+	Wed, 19 Nov 2025 13:23:33 +0000 (GMT)
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 68F2820043;
+	by IMSVA (Postfix) with ESMTP id F25F22004B;
 	Wed, 19 Nov 2025 13:23:32 +0000 (GMT)
 Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -104,9 +104,9 @@ Cc: Jens Remus <jremus@linux.ibm.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
         Vlastimil Babka <vbabka@suse.cz>, Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH v12 12/13] unwind_user/sframe: Add .sframe validation option
-Date: Wed, 19 Nov 2025 14:23:22 +0100
-Message-ID: <20251119132323.1281768-13-jremus@linux.ibm.com>
+Subject: [PATCH v12 13/13] unwind_user/sframe: Add prctl() interface for registering .sframe sections
+Date: Wed, 19 Nov 2025 14:23:23 +0100
+Message-ID: <20251119132323.1281768-14-jremus@linux.ibm.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20251119132323.1281768-1-jremus@linux.ibm.com>
 References: <20251119132323.1281768-1-jremus@linux.ibm.com>
@@ -118,39 +118,44 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -ktxfelSEHO1S0-x_8XUubXNlHmX4VLn
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE1MDAzMiBTYWx0ZWRfXxdKepSesuO9q
- yrignO2mA/haT12FscE2kh9D8BmR0a+5iFNzC2cLfmXbCIgr8YMIcGMJ58pWMSzJGm7e1kqBZ8J
- F7H4jSXce859bkoUa7Cs4EKfSws3BAfJB5Vcczt7apv5sSdXF0DD9IOI2ArdOLYUWk/G0eQTcgh
- rvb7lQtn+ZNxiZg7qiOidjHT36dxQi4/wcZ5rGYmN2NXeTvrI8h1ti4dXqk0Bq+3qRKU/PSqZMU
- krRb30d+UObAd4uahOyJu/MSKigoK5G/eIgSX7peNuFjyJJdz27zoblVdEhMqC1c2o+torAx01z
- pKWtAjCUzge6gML6kVDgBS7h00otSmvBN1b4m/iSiIJE5RwI3MfTEoS+DlE4EVoXJLyw/k92I3N
- oPWNU1oQLwI7jLog2qb3+NGmgjxRVA==
-X-Proofpoint-ORIG-GUID: e1BxXyBm0ZA4EiM_3N3mCpNoscNDoDVH
-X-Authority-Analysis: v=2.4 cv=XtL3+FF9 c=1 sm=1 tr=0 ts=691dc4da cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+X-Proofpoint-GUID: 6J6MplQdpeKZP47LAPlrIj_NFVq4GDcH
+X-Authority-Analysis: v=2.4 cv=YqwChoYX c=1 sm=1 tr=0 ts=691dc4db cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
  a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=7d_E57ReAAAA:8
  a=JfrnYn6hAAAA:8 a=yPCof4ZbAAAA:8 a=mDV3o1hIAAAA:8 a=yMhMjlubAAAA:8
  a=VnNF1IyMAAAA:8 a=Z4Rwk6OoAAAA:8 a=20KFwNOVAAAA:8 a=7mOBRU54AAAA:8
- a=meVymXHHAAAA:8 a=RXKZOtKmAAAA:8 a=X__uKv6Ezr3YNgStCWAA:9
- a=jhqOcbufqs7Y1TYCrUUU:22 a=1CNFftbPRP8L7MoqJWF3:22 a=HkZW87K1Qel5hWWM3VKY:22
- a=wa9RWnbW_A1YIeRBVszw:22 a=2JgSa4NbpEOStq-L5dxp:22 a=UFF3uGjEBZWolfm0k6KQ:22
+ a=meVymXHHAAAA:8 a=Xd8byWXf_M4q3N6YhP0A:9 a=jhqOcbufqs7Y1TYCrUUU:22
+ a=1CNFftbPRP8L7MoqJWF3:22 a=HkZW87K1Qel5hWWM3VKY:22 a=wa9RWnbW_A1YIeRBVszw:22
+ a=2JgSa4NbpEOStq-L5dxp:22
+X-Proofpoint-ORIG-GUID: bJ-MNU2r-xDPiDny6twD3DdrKCXmZWqb
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE1MDAzMiBTYWx0ZWRfX0oQzG3jHyknG
+ 4Aydlg4L0A2ti9MTGGKmbT+rpASK1fukvHTSK9/oB5noBy3TWBc7Z1yycWVGJRHcJPg3bVK6PI/
+ mQzaD1NAObtAH6c9fBJ8wtehVUMwVsgUmhgkOjPmEsI3Dbrl5QH6aRsRvtFMKqEJyacNuX9MDYY
+ FvYB4POD6ziMc+UPSrsUDieKur3BmysOSw0ho4l4nbwK8bZ4Q8nsgvoy7SaL5ojSz2Dyjqb4vYb
+ dmahgi7rLIwbNE0iH4tXdv7DKwNfP7KhFE/L09e+sKx9wKJqv0Qqm2iGQJ/7sKG7req/h1DZMA3
+ nHOyS23DvGW1Y6S2gzAnM90XlGeFk5uo/6AulJAwEsVcnBTNpEdfJI3aV7H0V/nqDWOfeiRK0A3
+ Fw3uQ7TDtZGdw5tj/e5LgG7YnQRKuA==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
  definitions=2025-11-19_04,2025-11-18_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 spamscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- adultscore=0 lowpriorityscore=0 phishscore=0 suspectscore=0 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511150032
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 malwarescore=0
+ clxscore=1015 adultscore=0 bulkscore=0 phishscore=0 spamscore=0
+ suspectscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2510240000
+ definitions=main-2511150032
 
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-Add a debug feature to validate all .sframe sections when first loading
-the file rather than on demand.
+The kernel doesn't have direct visibility to the ELF contents of shared
+libraries.  Add some prctl() interfaces which allow glibc to tell the
+kernel where to find .sframe sections.
 
-[ Jens Remus: Add support for PC-relative FDE function start address.
-Adjust to rename of struct sframe_fre to sframe_fre_internal. ]
+[
+  This adds an interface for prctl() for testing loading of sframes for
+  libraries. But this interface should really be a system call. This patch
+  is for testing purposes only and should not be applied to mainline.
+]
 
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
@@ -175,164 +180,59 @@ Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Jens Remus <jremus@linux.ibm.com>
 ---
+ include/uapi/linux/prctl.h | 6 +++++-
+ kernel/sys.c               | 9 +++++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-Notes (jremus):
-    Changes in v12:
-    - Adjust to use internal SFrame FDE representation.
-    - Adjust to rename of struct sframe_fre to sframe_fre_internal.
-    
-    Changes in v11:
-    - Support for SFrame V2 PC-relative FDE function start address.
-
- arch/Kconfig           | 19 +++++++++
- kernel/unwind/sframe.c | 97 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 116 insertions(+)
-
-diff --git a/arch/Kconfig b/arch/Kconfig
-index ab1941ef1411..06c4f909398c 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -493,6 +493,25 @@ config HAVE_UNWIND_USER_SFRAME
- 	bool
- 	select UNWIND_USER
+diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+index 51c4e8c82b1e..91d2c9eb3aa3 100644
+--- a/include/uapi/linux/prctl.h
++++ b/include/uapi/linux/prctl.h
+@@ -368,7 +368,7 @@ struct prctl_mm_map {
+  * configuration.  All bits may be locked via this call, including
+  * undefined bits.
+  */
+-#define PR_LOCK_SHADOW_STACK_STATUS      76
++#define PR_LOCK_SHADOW_STACK_STATUS	76
  
-+config SFRAME_VALIDATION
-+	bool "Enable .sframe section debugging"
-+	depends on HAVE_UNWIND_USER_SFRAME
-+	depends on DYNAMIC_DEBUG
-+	help
-+	  When adding an .sframe section for a task, validate the entire
-+	  section immediately rather than on demand.
-+
-+	  This is a debug feature which is helpful for rooting out .sframe
-+	  section issues.  If the .sframe section is corrupt, it will fail to
-+	  load immediately, with more information provided in dynamic printks.
-+
-+	  This has a significant page cache footprint due to its reading of the
-+	  entire .sframe section for every loaded executable and shared
-+	  library.  Also, it's done for all processes, even those which don't
-+	  get stack traced by the kernel.  Not recommended for general use.
-+
-+	  If unsure, say N.
-+
- config HAVE_PERF_REGS
- 	bool
- 	help
-diff --git a/kernel/unwind/sframe.c b/kernel/unwind/sframe.c
-index 7d3e286c1b23..6465e7a315bc 100644
---- a/kernel/unwind/sframe.c
-+++ b/kernel/unwind/sframe.c
-@@ -351,6 +351,99 @@ int sframe_find(unsigned long ip, struct unwind_user_frame *frame)
- 	return ret;
- }
+ /*
+  * Controls the mode of timer_create() for CRIU restore operations.
+@@ -386,4 +386,8 @@ struct prctl_mm_map {
+ # define PR_FUTEX_HASH_SET_SLOTS	1
+ # define PR_FUTEX_HASH_GET_SLOTS	2
  
-+#ifdef CONFIG_SFRAME_VALIDATION
++/* SFRAME management */
++#define PR_ADD_SFRAME			79
++#define PR_REMOVE_SFRAME		80
 +
-+static int safe_read_fde(struct sframe_section *sec,
-+			 unsigned int fde_num, struct sframe_fde_internal *fde)
-+{
-+	int ret;
-+
-+	if (!user_read_access_begin((void __user *)sec->sframe_start,
-+				    sec->sframe_end - sec->sframe_start))
-+		return -EFAULT;
-+	ret = __read_fde(sec, fde_num, fde);
-+	user_read_access_end();
-+	return ret;
-+}
-+
-+static int safe_read_fre(struct sframe_section *sec,
-+			 struct sframe_fde_internal *fde,
-+			 unsigned long fre_addr,
-+			 struct sframe_fre_internal *fre)
-+{
-+	int ret;
-+
-+	if (!user_read_access_begin((void __user *)sec->sframe_start,
-+				    sec->sframe_end - sec->sframe_start))
-+		return -EFAULT;
-+	ret = __read_fre(sec, fde, fre_addr, fre);
-+	user_read_access_end();
-+	return ret;
-+}
-+
-+static int sframe_validate_section(struct sframe_section *sec)
-+{
-+	unsigned long prev_ip = 0;
-+	unsigned int i;
-+
-+	for (i = 0; i < sec->num_fdes; i++) {
-+		struct sframe_fre_internal *fre, *prev_fre = NULL;
-+		unsigned long ip, fre_addr;
-+		struct sframe_fde_internal fde;
-+		struct sframe_fre_internal fres[2];
-+		bool which = false;
-+		unsigned int j;
-+		int ret;
-+
-+		ret = safe_read_fde(sec, i, &fde);
-+		if (ret)
-+			return ret;
-+
-+		ip = fde.func_start_addr;
-+		if (ip <= prev_ip) {
-+			dbg_sec("fde %u not sorted\n", i);
-+			return -EFAULT;
-+		}
-+		prev_ip = ip;
-+
-+		fre_addr = sec->fres_start + fde.fres_off;
-+		for (j = 0; j < fde.fres_num; j++) {
-+			int ret;
-+
-+			fre = which ? fres : fres + 1;
-+			which = !which;
-+
-+			ret = safe_read_fre(sec, &fde, fre_addr, fre);
-+			if (ret) {
-+				dbg_sec("fde %u: __read_fre(%u) failed\n", i, j);
-+				dbg_sec("FDE: func_start_addr:0x%lx func_size:0x%x fres_off:0x%x fres_num:%d info:%u rep_size:%u\n",
-+					fde.func_start_addr, fde.func_size,
-+					fde.fres_off, fde.fres_num,
-+					fde.info, fde.rep_size);
-+				return ret;
-+			}
-+
-+			fre_addr += fre->size;
-+
-+			if (prev_fre && fre->ip_off <= prev_fre->ip_off) {
-+				dbg_sec("fde %u: fre %u not sorted\n", i, j);
-+				return -EFAULT;
-+			}
-+
-+			prev_fre = fre;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+#else /*  !CONFIG_SFRAME_VALIDATION */
-+
-+static int sframe_validate_section(struct sframe_section *sec) { return 0; }
-+
-+#endif /* !CONFIG_SFRAME_VALIDATION */
-+
-+
- static void free_section(struct sframe_section *sec)
- {
- 	dbg_free(sec);
-@@ -460,6 +553,10 @@ int sframe_add_section(unsigned long sframe_start, unsigned long sframe_end,
- 		goto err_free;
- 	}
+ #endif /* _LINUX_PRCTL_H */
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 8b58eece4e58..ea088b643eb4 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -65,6 +65,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/uidgid.h>
+ #include <linux/cred.h>
++#include <linux/sframe.h>
  
-+	ret = sframe_validate_section(sec);
-+	if (ret)
-+		goto err_free;
-+
- 	ret = mtree_insert_range(sframe_mt, sec->text_start, sec->text_end, sec, GFP_KERNEL);
- 	if (ret) {
- 		dbg_sec("mtree_insert_range failed: text=%lx-%lx\n",
+ #include <linux/nospec.h>
+ 
+@@ -2868,6 +2869,14 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+ 	case PR_FUTEX_HASH:
+ 		error = futex_hash_prctl(arg2, arg3, arg4);
+ 		break;
++	case PR_ADD_SFRAME:
++		error = sframe_add_section(arg2, arg3, arg4, arg5);
++		break;
++	case PR_REMOVE_SFRAME:
++		if (arg3 || arg4 || arg5)
++			return -EINVAL;
++		error = sframe_remove_section(arg2);
++		break;
+ 	default:
+ 		trace_task_prctl_unknown(option, arg2, arg3, arg4, arg5);
+ 		error = -EINVAL;
 -- 
 2.48.1
 
