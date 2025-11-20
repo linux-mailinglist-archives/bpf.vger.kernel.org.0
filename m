@@ -1,123 +1,135 @@
-Return-Path: <bpf+bounces-75181-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75182-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95255C7614A
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 20:29:37 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF3CAC7625E
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 21:12:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id 5A01A29307
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 19:29:35 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 781FF34EFA9
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 20:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF713302CDB;
-	Thu, 20 Nov 2025 19:29:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC60B305E29;
+	Thu, 20 Nov 2025 20:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UKJ8GQiS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bi1WRbFQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39B12FC891
-	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 19:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D07FA2F99B0
+	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 20:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763666968; cv=none; b=Mp60VssvAWenMEFJTY82qD76hjB7FidiEbtrAqzSOvyq4Wxff1A2wH77xSQ0UHHViN2DP5Is1ue0rqIfAycBHuyZ6LX4gPlnzikdmt6VYtSg5O2kKYAlrE0yDjSQ6vPp2ramJxcgPdIZzJfnc7Uogm4Fiags9b5VI3MAc/YnTHU=
+	t=1763669546; cv=none; b=uo1XHD7d9MXTqOwz3ENvLkE+iTdXx6qTf1CrulnthQH0OfM72EYooWOUbTBkb6Ba8QdwT7GOrk15IIqIfiYrebMN2HTWIqLBjQ+dCAr3us3k11VBV12w8xpo2iiGCnTTO/ktNeNwFgrO53NHuE+JWchaqPls7sB4Gv11Fm/cFVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763666968; c=relaxed/simple;
-	bh=oM603E+wuKGu9pYxgD7rLddYDdi0n6wHX5jyyHoVNL8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r3rvda/txZsUDLVljIt/YTqnV7t4tbhQX1uxlA0NltHM12+ePA9XtwYOJ1fV/IKxBjb0LVwEgKHhF6hSaRATH9UoUBBRJc9iw3gMdt2hlSl8ZWJ2QHKhgKowrsJcMl4fqHOjGBpEWU5bMEYSheccU7I+BIPR3FPvbd3LY97U28U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UKJ8GQiS; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f87d1365-a3b6-4307-9d72-91d5f5b2c585@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1763666964;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P5YrGuf+QlTIpQCCFUPLoKxIvO0gBV/wlRIQxdJZXtg=;
-	b=UKJ8GQiSYhkOg4OfvvZuhjYK18S7U0AwN36WczcL9QNKIZDExOy6zQPwdaS8HoI2xWl5q3
-	MV9Fgv6JBYSWlhsSdBy5wldDMdvPbL3w1h/BXjh7cEpU9UaSvJTxxDvJqwzauxhbxsZ6zJ
-	4sFD9I5+wDibX1EmyLGSLSVCbzwWppc=
-Date: Thu, 20 Nov 2025 11:29:17 -0800
+	s=arc-20240116; t=1763669546; c=relaxed/simple;
+	bh=lP6d5dwYL+W6nv5Kz56dzsnhy+cIECD/isjPtt4lNjo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nD6LSOWtJZS2kklaz6vjmKeD2F4ZMRMRgxKWz+UTLgdG5E1WsFiZvgzlvZTbiaiozLVHUEHtFSsY4VmYmYfPE9CIhGF6j4aGJL1Ze8B26madIuhJAKEMroXmp0CVpVzjhfv9hGIYgAPkmHD5ebylnBSKdi5W/D3u6fDe989RXtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bi1WRbFQ; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-787f586532bso12763297b3.1
+        for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 12:12:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763669543; x=1764274343; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ArLBssIhqmPzhIFPuYuwBivCUg4rQV57fxyLID3UDrQ=;
+        b=bi1WRbFQ7sCxsCI+jCTjZn2Mxk7PHMhdp8VrnlosX/Vv7Gq7p66NSBPgKLBY5WxHFJ
+         LG2izDHdvjj9vfpZdbrDJkAoDhMglH/ysyqMMlf3oKuTElc8hMRjG14JdFMEHes4O+9h
+         HMQvldKtgRjHILpT/WKNAEydZXbf/bFTiaxRkb4S8XPeDKCEcRtb4X1K9+ADMl6IT8pt
+         tFbCAWuHYJk8I6GfDqCeI261m+Q8tJ7J05Of0EgVKqujuIfRxdvFyiPN45GrYlFVAUlx
+         wxDLc5OvQEnTFDJ95pQcBpMbJsPfDIlkP5Lzm818ackHF/V+e2JEYPmoIgmGYC6cYlMB
+         0Yjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763669543; x=1764274343;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ArLBssIhqmPzhIFPuYuwBivCUg4rQV57fxyLID3UDrQ=;
+        b=usKxEyEejU+t37GkGWu4HvjDw1UORfSNNyzq4WMc05H+G3v/dnmNz+guvsYJaRDSW3
+         ZOtimlB3rTIsZjFp5nbWAVR248MH7B1HPYzenGZg0OP9Iuag3XvC1qWRd3uuj/A2H8w0
+         1wJwIpKZkjB0UU3Lb2TRqQ8eK7HiYtp/Rc4H3ZjqaLkvl5cZHZlqOnUCXfIhUIU/ovep
+         oa4zy2n+dkcmSgT3s58oZAyxsyEB4rykxctgoXERq7+VfBIR2iQ8cuDYHoI/X430DXkg
+         2QIC7o/uIVtG2vcUR/6+iCD4W7YJvaQ6f1/jldpOEpx6XhOoPaYr3RIbxaCXciz+eGMX
+         D3oA==
+X-Forwarded-Encrypted: i=1; AJvYcCWdRg+FeawD3zwmMRWYh4PKCfMC6DG73HEj21h4Gz/c5oV0Xw3O7CXRkRiA2IVL36Qkuqk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywk2uk2t5bkD63B63m8J0M7kCPvq7vglS45i7US50j5mCE3Uma+
+	XFd4rgvkm4BtDAf8F/qBiPISXIWtQKgjqZDPPfIh/vGLnYumKni2ynZAFQK24qAR0cWC3N0L/+n
+	nqGOjKVrACHlU834ssIMPnxLHaGfCE1s=
+X-Gm-Gg: ASbGncsb6Y88n/tFNUwixI/ovkEFjQI8g72ZtyhR7/C9fsyF3/bybnrq4M1VjtC3oiN
+	i2p3coEui8hfiX7wCvhkmFqod1fh8F/jtsr2YqX6h8gaU97+z/mLsmnJiZn1uz0yB45C7NmfQvS
+	A3g1E8lKETXC5MH7dQjPhaPnL4SXCBgGKXDjPczmCFrOzzXJpmlnL+giWgoRFhcY/MCqp0S/NtO
+	jtprE7RQFw89m6WKsfVean3qr62HL5/dIa0fQ1gWgMUzMgaTUcHV8bvd2QKG6YazL6iW9qgYcS3
+	2Np3kRDnN7E=
+X-Google-Smtp-Source: AGHT+IGHCLO2HZXDfY2Lh2C6v0dezhGL+uyOjdWenNvCCppd3pfq3EZcOR1/4+hPB+0UBNjcVEwv7WmexiAJTCJeKSQ=
+X-Received: by 2002:a05:690c:7243:b0:786:5789:57ce with SMTP id
+ 00721157ae682-78a79607f78mr35271707b3.43.1763669543514; Thu, 20 Nov 2025
+ 12:12:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: Document cfi_stubs and owner fields in struct
- bpf_struct_ops
-To: Nirbhay Sharma <nirbhay.lkd@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, skhan@linuxfoundation.org,
- david.hunter.linux@gmail.com,
- linux-kernel-mentees@lists.linuxfoundation.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20251119062430.997648-2-nirbhay.lkd@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20251119062430.997648-2-nirbhay.lkd@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20251117191515.2934026-1-ameryhung@gmail.com> <CAP01T74CcZqt9W8Y5T3NYheU8HyGataKXFw99cnLC46ZV9oFPQ@mail.gmail.com>
+ <20251118104247.0bf0b17d@pumpkin>
+In-Reply-To: <20251118104247.0bf0b17d@pumpkin>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Thu, 20 Nov 2025 12:12:12 -0800
+X-Gm-Features: AWmQ_bk2-fHm4Nt0R2y5_0QXWfg5bB5o2vYXDx09DXPnSNfJW8icAeGFOBUwRto
+Message-ID: <CAMB2axPqr6bw-MgH-QqSRz+1LOuByytOwHj8KWQc-4cG8ykz7g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/1] bpf: Annotate rqspinlock lock acquiring
+ functions with __must_check
+To: David Laight <david.laight.linux@gmail.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net, 
+	kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Nov 18, 2025 at 2:42=E2=80=AFAM David Laight
+<david.laight.linux@gmail.com> wrote:
+>
+> On Tue, 18 Nov 2025 05:16:50 -0500
+> Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>
+> > On Mon, 17 Nov 2025 at 14:15, Amery Hung <ameryhung@gmail.com> wrote:
+> > >
+> > > Locking a resilient queued spinlock can fail when deadlock or timeout
+> > > happen. Mark the lock acquring functions with __must_check to make su=
+re
+> > > callers always handle the returned error.
+> > >
+> > > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> > > Signed-off-by: Amery Hung <ameryhung@gmail.com>
+> > > ---
+> >
+> > Looks like it's working :)
+> > I would just explicitly ignore with (void) cast the locktorture case.
+>
+> I'm not sure that works - I usually have to try a lot harder to ignore
+> a '__must_check' result.
 
+Thanks for the heads up.
 
-On 11/18/25 10:24 PM, Nirbhay Sharma wrote:
-> Add missing kernel-doc documentation for the cfi_stubs and owner
-> fields in struct bpf_struct_ops to fix the following warnings:
-> 
->    Warning: include/linux/bpf.h:1931 struct member 'cfi_stubs' not
->    described in 'bpf_struct_ops'
->    Warning: include/linux/bpf.h:1931 struct member 'owner' not
->    described in 'bpf_struct_ops'
-> 
-> The cfi_stubs field was added in commit 2cd3e3772e41 ("x86/cfi,bpf:
-> Fix bpf_struct_ops CFI") to provide CFI stub functions for trampolines,
-> and the owner field is used for module reference counting.
-> 
-> Signed-off-by: Nirbhay Sharma <nirbhay.lkd@gmail.com>
-> ---
->   include/linux/bpf.h | 10 ++++++++--
->   1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index d808253f2e94..d39b4b2c8f35 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1905,10 +1905,16 @@ struct btf_member;
->    *	      reason, if this callback is not defined, the check is skipped as
->    *	      the struct_ops map will have final verification performed in
->    *	      @reg.
-> - * @type: BTF type.
-> - * @value_type: Value type.
-> + * @cfi_stubs: Pointer to a structure of stub functions for CFI. These stubs
-> + *	       provide the correct Control Flow Integrity hashes for the
-> + *	       trampolines generated by BPF struct_ops.
-> + * @owner: The module that owns this struct_ops. Used for module reference
-> + *	   counting to ensure the module providing the struct_ops cannot be
-> + *	   unloaded while in use.
->    * @name: The name of the struct bpf_struct_ops object.
->    * @func_models: Func models
-> + * @type: BTF type.
-> + * @value_type: Value type.
->    * @type_id: BTF type id.
->    * @value_id: BTF value id.
+Indeed, gcc still complains about it even casting the return to (void)
+while clang does not.
 
-Please take this chance to remove all doc after func_models. Meaning 
-remove type, value_type, type_id, and value_id. They were removed in 
-commit 4c5763ed996a.
+I have to silence the warning by:
 
-pw-bot: cr
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
+       raw_res_spin_lock(&rqspinlock);
+#pragma GCC diagnostic pop
 
+Thanks!
+Amery
+
+>
+>         David
 
