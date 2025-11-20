@@ -1,91 +1,119 @@
-Return-Path: <bpf+bounces-75133-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75134-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 518AEC71CF4
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 03:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 47BA5C71E50
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 03:51:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1E164348C8E
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 02:20:23 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4AB9C34D453
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 02:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8618C2BE7A6;
-	Thu, 20 Nov 2025 02:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D68E2F5A10;
+	Thu, 20 Nov 2025 02:49:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hho8oJsb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="r6p8/rba"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B6B21C9E5;
-	Thu, 20 Nov 2025 02:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197AC2F363C
+	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 02:49:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763605214; cv=none; b=CB/noGZm3M0KiHzuhb24jhZhtaYHfWnE2zukjx74isVJZ14mpzvURiemD6MeoYKRyS3uagjXbf4gb6aqGRO1sVqy2WKyJW7bWm63BTvEGXH5jvxDx3eMwn/oXAfxOym68lSVoIo4WsQcD2cdfypgH+rmycv4wsCcW/uKcGZDd7Y=
+	t=1763606997; cv=none; b=oLZqMyB57OnKaPKhp9ejhmfa4hmAF2Wp7ZAeGJ1GGkvbepOAF87f0LvxPbD0eqslFKowLou9WnAeHCoYQMPquXMeAwpZ00l6NAWvPGaQUQTGs35XTlsTa0WXUkc3qDMcv+lXhJTihvnGwImeOcr/NfTQ2RqSU16QRJQNEt2wOHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763605214; c=relaxed/simple;
-	bh=9ldWXPvGDb9VCTpzMQ0QVWN29Qlq0RaScpULALAtPQs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kSFMGJQiK9phzAF4iYhBMgGdJFVq+PH0LXyCakVFG5UseXCQSWOYgXy8Y9f/uZsPC48ITSOSo2tWTt+uoK1+h243owekgn7Zz46jP6P48VU61PZp4q+evtPnn6dt7Yz66GHB1k9Woy8cFnHCpxwGUOhkIXCT/vrm1gr49I1SxOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hho8oJsb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCA02C4CEF5;
-	Thu, 20 Nov 2025 02:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763605213;
-	bh=9ldWXPvGDb9VCTpzMQ0QVWN29Qlq0RaScpULALAtPQs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=hho8oJsbwfrFeNav/ZQZISwurCDSDwbmYxWmDy+fwCUdSFczGZ/ljxdPCS7UdkGgA
-	 0xlINAQ91oOrYqe1Et7IV8ZYkBUQPR5RxAaKuBbKv9DUpsguLOknq07Wr+UVtPoz8P
-	 EUHHQHvWhmeQTxazIswcAUiUJOdQjr4OpQd2fjQHX0Q8VwkLjwk3UEILy/XX1sY5Mc
-	 KBZRGnsZwomgJF2k0Shtz9WeRVr0ZIz/oIHn8s43IuYQMYd09xKj6Pm4p3kIOUk/0y
-	 ZcBVAgvFFl5RZvVAdrRkRRuvnRS6mDAZ7/NaSq5PrFX07UX6EzZLg3pT6sMEJ/ozDs
-	 jAcUT733IaYDQ==
-Date: Wed, 19 Nov 2025 18:20:11 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
- razor@blackwall.org, pabeni@redhat.com, willemb@google.com,
- sdf@fomichev.me, john.fastabend@gmail.com, martin.lau@kernel.org,
- jordan@jrife.io, maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
- dw@davidwei.uk, toke@redhat.com, yangzhenze@bytedance.com,
- wangdongdong.6@bytedance.com
-Subject: Re: [PATCH net-next v4 01/14] net: Add bind-queue operation
-Message-ID: <20251119182011.36003fdb@kernel.org>
-In-Reply-To: <2372a3b8-9bb2-4c53-9029-9bd03f56b98a@iogearbox.net>
-References: <20251031212103.310683-1-daniel@iogearbox.net>
-	<20251031212103.310683-2-daniel@iogearbox.net>
-	<20251106163948.0d0d7d54@kernel.org>
-	<2372a3b8-9bb2-4c53-9029-9bd03f56b98a@iogearbox.net>
+	s=arc-20240116; t=1763606997; c=relaxed/simple;
+	bh=lcrVwZLgR5ItAg4hTqw5DCPtnAFmviQlQW6jyyCm6AQ=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=Pr2Vp2wIWKJVRJhBKT0U+OJQNxqKG+y2Nq32HaCUPsV7bkRd6x04ngTq1a3BRiXQFEoZrxMZfDo23OsK7HN4mHGfhjH91QYsHBkx/1LDJlV6XMQ5ir/VN+akSqc1cSOvKBHUffcRbuxdi0CxeEal4D/oCWMg+XV9/Jy6h4RJLmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=r6p8/rba; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1763606993;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rAmlZ19Q2ySJYciDDAnJfVxjnGiyaxmJEvZmZ5AC8SI=;
+	b=r6p8/rbaNJADRrVWiyUBHjV59EDhYdGHQ8MwKzVPpuSpMjcXvSmkRJ4hdHg56OEzMq5dc3
+	Do6Sp1UXC91GFdgK+4vDbM0WonDRKHr1YWnC57sSxMh2USyoD69HX5fih5kOabSc/w3rla
+	o/vnqs2uFFH5whbmB7SP1GxXLOLzk0Q=
+Date: Thu, 20 Nov 2025 02:49:43 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
+Message-ID: <5a66955891ef8db94b7288bbb296efcc0ac357cf@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH bpf-next v1 1/3] bpf, sockmap: Fix incorrect copied_seq
+ calculation
+To: "Jakub Sitnicki" <jakub@cloudflare.com>
+Cc: bpf@vger.kernel.org, "John Fastabend" <john.fastabend@gmail.com>, "David 
+ S. Miller" <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>,
+ "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>,
+ "Simon Horman" <horms@kernel.org>, "Neal Cardwell"
+ <ncardwell@google.com>, "Kuniyuki Iwashima" <kuniyu@google.com>, "David
+ Ahern" <dsahern@kernel.org>, "Alexei Starovoitov" <ast@kernel.org>,
+ "Daniel Borkmann" <daniel@iogearbox.net>, "Andrii Nakryiko"
+ <andrii@kernel.org>, "Martin  KaFai Lau" <martin.lau@linux.dev>, "Eduard
+ Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong
+ Song" <yonghong.song@linux.dev>, "KP  Singh" <kpsingh@kernel.org>,
+ "Stanislav Fomichev" <sdf@fomichev.me>, "Hao  Luo" <haoluo@google.com>,
+ "Jiri Olsa" <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>, "Michal
+ Luczaj" <mhal@rbox.co>, "Stefano Garzarella" <sgarzare@redhat.com>, "Cong
+ Wang" <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+In-Reply-To: <87zf8h6bpd.fsf@cloudflare.com>
+References: <20251117110736.293040-1-jiayuan.chen@linux.dev>
+ <20251117110736.293040-2-jiayuan.chen@linux.dev>
+ <87zf8h6bpd.fsf@cloudflare.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 19 Nov 2025 15:57:29 +0100 Daniel Borkmann wrote:
-> >> diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
-> >> index e00d3fa1c152..1e24c7f76de0 100644
-> >> --- a/Documentation/netlink/specs/netdev.yaml
-> >> +++ b/Documentation/netlink/specs/netdev.yaml
-> >> @@ -561,6 +561,46 @@ attribute-sets:
-> >>           type: u32
-> >>           checks:
-> >>             min: 1
-> >> +  -
-> >> +    name: queue-pair
-> >> +    attributes:  
-> > 
-> > No need to create a "real" attribute set for this.
-> > 
-> > Once the attrs are wrapped in a "lease" nest you'll need a single
-> > triplet, so make this a subset-of: queue (see the queue-id set).
-> > name: ifc-queue-id ?  
-> 
-> Does the below rework look reasonable to you in terms of netdev spec?
+November 20, 2025 at 03:53, "Jakub Sitnicki" <jakub@cloudflare.com mailto=
+:jakub@cloudflare.com?to=3D%22Jakub%20Sitnicki%22%20%3Cjakub%40cloudflare=
+.com%3E > wrote:
 
-LGTM!
+[...]
+> >  +/* The BPF program sets BPF_F_INGRESS on sk_msg to indicate data ne=
+eds to be
+> >  + * redirected to the ingress queue of a specified socket. Since BPF=
+_F_INGRESS is
+> >  + * defined in UAPI so that we can't extend this enum for our intern=
+al flags. We
+> >  + * define some internal flags here while inheriting BPF_F_INGRESS.
+> >  + */
+> >  +enum {
+> >  + SK_MSG_F_INGRESS =3D BPF_F_INGRESS, /* (1ULL << 0) */
+> >  + /* internal flag */
+> >  + SK_MSG_F_INGRESS_SELF =3D (1ULL << 1)
+> >  +};
+> >  +
+> >=20
+>=20I'm wondering if we need additional state to track this.
+> Can we track sk_msg's construted from skb's that were not redirected by
+> setting `sk_msg.sk =3D sk` to indicate that the source socket is us in
+> sk_psock_skb_ingress_self()?
+
+Functionally, that would work. However, in that case, we would have to ho=
+ld
+a reference to sk until the sk_msg is read, which would delay the release=
+ of
+sk. One concern is that if there is a bug in the read-side application, s=
+k
+might never be released.
+
+
+> If not, then I'd just offset the internal flags like we do in
+> net/core/filter.c, BPF_F_REDIRECT_INTERNAL.
+
+I think we can try offsetting the internal flags.
 
