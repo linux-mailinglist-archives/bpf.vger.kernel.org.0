@@ -1,143 +1,205 @@
-Return-Path: <bpf+bounces-75148-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75149-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D92DFC731B8
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 10:25:01 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5092C73332
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 10:34:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B33724E5963
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 09:24:58 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 25FA234A7E6
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 09:33:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2119D3115B0;
-	Thu, 20 Nov 2025 09:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BC7A2D5C74;
+	Thu, 20 Nov 2025 09:30:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kq4ULIoD"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dtDoGHsj"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87F2C3101D3;
-	Thu, 20 Nov 2025 09:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0C83191C3
+	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 09:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763630692; cv=none; b=ClSEEjDxfo3z33HAPsmbM5MpRKSkXWGyIDHCqWrrKSF5FVw+260kxxHEMkA7oC45oYzKtsf3iIsXkGZvyTiskD4OieyZD5xN/1+1WNRfuYvVopa43mxcF/jUcJ89K9Har6uldNKdzERgtWqCSKhtJCqGptt1ouj+Jf4eD1sYbU4=
+	t=1763631004; cv=none; b=iyJWEu1eveOta+UFHu4xKekYB/eqohI+HAz/hPCejUAlTwTCE9yBNyNUC3xDE1IgdfJwMI6XXHwcubv/ahLHZZaS9EwsY61ALltM5HMF2uvZXfEgHntXl1bfhg0C48f3ojRHGUANsHVVRNYUB/EIiJiS8r2sg6ATPZR6t+3C3UQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763630692; c=relaxed/simple;
-	bh=TMWVzmFYWjec4mLQP2TODuChpH7SIx8rCGBCJuEilPc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LAP06y9FRu5GdafHlvO1YiYsSPohWL63ji6ktoNG/gIyNZ3i2FdlNSBhL6uEbUdJdVh8WhhGXHPchr42e19MePbJPf0BxHjvQNXTnAXvnu73qWc7h0hW7mLHK1W0TSoGcy4NzyQGBzSgVdyriuMhNWAbARxQLz2ty9OWA8sUr4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kq4ULIoD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4242EC4CEF1;
-	Thu, 20 Nov 2025 09:24:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763630692;
-	bh=TMWVzmFYWjec4mLQP2TODuChpH7SIx8rCGBCJuEilPc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=kq4ULIoDhepGN29DPe4qVLYN9ASWvyCzPIM154ax4KY1aCamFpPBUIXLBaisMaBAd
-	 D8ml3zfztNKLxGEMUGWWfneYrz36wJNnMgJWkIMYcm9CtmXR80p0ByKTXgHYTSh78f
-	 CEWIb3y3nqN0bd/fy3UEH+wZSLQf8RxXg8wwP0A91CRPjE6Pgla+O8l2j3ncgC/mHR
-	 mwLVo9cBooP7LBV8NFWzOkydWCqa5Vyj5zkQH5ADHuXzdb2a//e53ZyYW91FFxyCPL
-	 CYWgRzN2fid7ParRvmi7auodlaAOocjIlesW8ZtcWKZNMkSLYMmt+d1wnqJYCgkZcC
-	 T7AYOLHGUfojg==
-Message-ID: <fbd98bd0-a89c-4903-af06-fd1f2fb4ae16@kernel.org>
-Date: Thu, 20 Nov 2025 09:24:49 +0000
+	s=arc-20240116; t=1763631004; c=relaxed/simple;
+	bh=AxJxWuRoAy4ZbASVKOsuaDYFGzkRT5fbocxv3KvE9LU=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=BgP/bdoXdruQY6LP3zGw4ZSIzLVDjEkbhLSSZiKAsHqfDLS5GgSaEWmaNurW/3kZse3RqZbOwj6+UbP6nO8sgmRpvfjlq5dm8M/JLt+4Qugg+2q63E4/3+CF1mG/7oya73906rbNhf7wnT1idooyz+RtDytIPVSOQpU72P+wd3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dtDoGHsj; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] bpftool: Build failure due to opensslv.h
-To: Namhyung Kim <namhyung@kernel.org>, Alan Maguire <alan.maguire@oracle.com>
-Cc: KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
- linux-perf-users@vger.kernel.org
-References: <aP7uq6eVieG8v_v4@google.com>
- <2cb226f8-a67c-4bdb-8c59-507c99a46bab@kernel.org>
- <aP-5fUaroYE5xSnw@google.com>
- <d6a63399-361f-4f1c-845c-b69192bfc822@kernel.org>
- <7c86f05f-2ba3-4f63-8d63-49a3b3370360@oracle.com>
- <aR51ZSicusUssXuU@google.com>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <aR51ZSicusUssXuU@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1763630998;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fwimz9cV5XjfDnANvfrVBMpem/qAU7ggyHG03WSRMT8=;
+	b=dtDoGHsjHF0f7eLfgt/72alDvV4DJdD6aK60GYDAs5ZFWzDt7l6gh9O0z/OP5dc+8VUiYl
+	rR5yrsObR0rxNQ1wDXbKE/VMSuEjJHrj7xVlwLv9IIMgKz/F0Mv3GnjF/V0r6FCHXTO3TB
+	e0gZL2EWmB62xNPGB3j1pFtg15MYcP8=
+Date: Thu, 20 Nov 2025 09:29:52 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: hui.zhu@linux.dev
+Message-ID: <895f996653b3385e72763d5b35ccd993b07c6125@linux.dev>
+TLS-Required: No
+Subject: Re: [RFC PATCH 0/3] Memory Controller eBPF support
+To: "Roman Gushchin" <roman.gushchin@linux.dev>
+Cc: "Andrew Morton" <akpm@linux-foundation.org>, "Johannes Weiner"
+ <hannes@cmpxchg.org>, "Michal Hocko" <mhocko@kernel.org>, "Shakeel Butt"
+ <shakeel.butt@linux.dev>, "Muchun Song" <muchun.song@linux.dev>, "Alexei 
+ Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
+ <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>, "Song
+ Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "John 
+ Fastabend" <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>,
+ "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
+ "Jiri  Olsa" <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>, "Peter
+ Zijlstra" <peterz@infradead.org>, "Miguel Ojeda" <ojeda@kernel.org>,
+ "Nathan  Chancellor" <nathan@kernel.org>, "Kees Cook" <kees@kernel.org>,
+ "Tejun Heo" <tj@kernel.org>, "Jeff Xu" <jeffxu@chromium.org>,
+ mkoutny@suse.com, "Jan  Hendrik Farr" <kernel@jfarr.cc>, "Christian
+ Brauner" <brauner@kernel.org>, "Randy Dunlap" <rdunlap@infradead.org>,
+ "Brian Gerst" <brgerst@gmail.com>, "Masahiro Yamada"
+ <masahiroy@kernel.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, "Hui Zhu" <zhuhui@kylinos.cn>
+In-Reply-To: <87ldk1mmk3.fsf@linux.dev>
+References: <cover.1763457705.git.zhuhui@kylinos.cn>
+ <87ldk1mmk3.fsf@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-2025-11-19 17:56 UTC-0800 ~ Namhyung Kim <namhyung@kernel.org>
-> Hello,
-> 
-> On Tue, Oct 28, 2025 at 10:20:22AM +0000, Alan Maguire wrote:
->> On 28/10/2025 09:05, Quentin Monnet wrote:
->>> 2025-10-27 11:27 UTC-0700 ~ Namhyung Kim <namhyung@kernel.org>
->>>> On Mon, Oct 27, 2025 at 11:41:01AM +0000, Quentin Monnet wrote:
->>>>> 2025-10-26 21:01 UTC-0700 ~ Namhyung Kim <namhyung@kernel.org>
->>>>>> Hello,
->>>>>>
->>>>>> I'm seeing a build failure like below in Fedora 40 and others.  I'm not
->>>>>> sure if it's reported already but it failed to build perf tools due to
->>>>>> errors in the bootstrap bpftool.
->>>>>>
->>>>>>     CC      /build/util/bpf_skel/.tmp/bootstrap/sign.o
->>>>>>   sign.c:16:10: fatal error: openssl/opensslv.h: No such file or directory
->>>>>>      16 | #include <openssl/opensslv.h>
->>>>>>         |          ^~~~~~~~~~~~~~~~~~~~
->>>>>>   compilation terminated.
->>>>>>   make[3]: *** [Makefile:256: /build/util/bpf_skel/.tmp/bootstrap/sign.o] Error 1
->>>>>>   make[3]: *** Waiting for unfinished jobs....
->>>>>>   make[2]: *** [Makefile.perf:1213: /build/util/bpf_skel/.tmp/bootstrap/bpftool] Error 2
->>>>>>   make[1]: *** [Makefile.perf:289: sub-make] Error 2
->>>>>>   make: *** [Makefile:76: all] Error 2
->>>>>>
->>>>>> I think it's from the recent signing change.  I'm not familiar with
->>>>>> openssl but I guess there's a proper feature check for it.  Is this a
->>>>>> known issue?
->>>>>
->>>>>
->>>>> Hi Namhyung,
->>>>
->>>> Hello!
->>>>
->>>>>
->>>>> This looks related to the program signing change indeed, commit
->>>>> 40863f4d6ef2 ("bpftool: Add support for signing BPF programs")
->>>>> introduced a dependency on OpenSSL's development headers for bpftool.
->>>>> It's not gated behind a feature check. On Fedora, I think the headers
->>>>> come with openssl-devel, do you have this package installed?
->>>>
->>>> No I don't, but I guess it should be able to build on such systems.  Or
->>>> is it required for bpftool?  Anyway I feel like it should have a feature
->>>> check and appropriate error messages.
->>>>
->>>
->>> +Cc KP
->>>
->>> We usually have feature checks when optional features bring in new
->>> dependencies for bpftool, but we haven't discussed it this time. My
->>> understanding was that program signing is important enough that it
->>> should always be present in newer versions of bpftool, making OpenSSL
->>> one of the required dependencies going forward.
->>>
->>> We don't currently have feature checks to tell when required
->>> dependencies are missing for bpftool (it's just the build failing, in
->>> that case). I know perf does a great job at it, we could look into it
->>> for bpftool, too.
->>>
->>
->> One issue here is that some distros package openssl v3 such that the
->> #include files are in /usr/include/openssl3 and libraries in
->> /usr/lib64/openssl3 so that older versions can co-exist. Maybe we could
->> figure out a feature test that handles that too?
-> 
-> What's the state of this?  Is the fix in the bpf tree now?
+2025=E5=B9=B411=E6=9C=8820=E6=97=A5 11:04, "Roman Gushchin" <roman.gushch=
+in@linux.dev mailto:roman.gushchin@linux.dev?to=3D%22Roman%20Gushchin%22%=
+20%3Croman.gushchin%40linux.dev%3E > =E5=86=99=E5=88=B0:
 
 
-Hi Namhyung, Alan just submitted a v2 of his patch (targetting
-bpf-next), see:
+>=20
+>=20Hui Zhu <hui.zhu@linux.dev> writes:
+>=20
+>=20>=20
+>=20> From: Hui Zhu <zhuhui@kylinos.cn>
+> >=20
+>=20>  This series proposes adding eBPF support to the Linux memory
+> >  controller, enabling dynamic and extensible memory management
+> >  policies at runtime.
+> >=20
+>=20>  Background
+> >=20
+>=20>  The memory controller (memcg) currently provides fixed memory
+> >  accounting and reclamation policies through static kernel code.
+> >  This limits flexibility for specialized workloads and use cases
+> >  that require custom memory management strategies.
+> >=20
+>=20>  By enabling eBPF programs to hook into key memory control
+> >  operations, administrators can implement custom policies without
+> >  recompiling the kernel, while maintaining the safety guarantees
+> >  provided by the BPF verifier.
+> >=20
+>=20>  Use Cases
+> >=20
+>=20>  1. Custom memory reclamation strategies for specialized workloads
+> >  2. Dynamic memory pressure monitoring and telemetry
+> >  3. Memory accounting adjustments based on runtime conditions
+> >  4. Integration with container orchestration systems for
+> >  intelligent resource management
+> >  5. Research and experimentation with novel memory management
+> >  algorithms
+> >=20
+>=20>  Design Overview
+> >=20
+>=20>  This series introduces:
+> >=20
+>=20>  1. A new BPF struct ops type (`memcg_ops`) that allows eBPF
+> >  programs to implement custom behavior for memory charging
+> >  operations.
+> >=20
+>=20>  2. A hook point in the `try_charge_memcg()` fast path that
+> >  invokes registered eBPF programs to determine if custom
+> >  memory management should be applied.
+> >=20
+>=20>  3. The eBPF handler can inspect memory cgroup context and
+> >  optionally modify certain parameters (e.g., `nr_pages` for
+> >  reclamation size).
+> >=20
+>=20>  4. A reference counting mechanism using `percpu_ref` to safely
+> >  manage the lifecycle of registered eBPF struct ops instances.
+> >=20
+>=20Can you please describe how these hooks will be used in practice?
+> What's the problem you can solve with it and can't without?
+>=20
+>=20I generally agree with an idea to use BPF for various memcg-related
+> policies, but I'm not sure how specific callbacks can be used in
+> practice.
 
-https://lore.kernel.org/all/20251120084754.640405-2-alan.maguire@oracle.com/
+Hi Roman,
 
-Quentin
+Following are some ideas that can use ebpf memcg:
+
+Priority=E2=80=91Based Reclaim and Limits in Multi=E2=80=91Tenant Environ=
+ments:
+On a single machine with multiple tenants / namespaces / containers,
+under memory pressure it=E2=80=99s hard to decide =E2=80=9Cwho should be =
+squeezed first=E2=80=9D
+with static policies baked into the kernel.
+Assign a BPF profile to each tenant=E2=80=99s memcg:
+Under high global pressure, BPF can decide:
+Which memcgs=E2=80=99 memory.high should be raised (delaying reclaim),
+Which memcgs should be scanned and reclaimed more aggressively.
+
+Online Profiling / Diagnosing Memory Hotspots:
+A cgroup=E2=80=99s memory keeps growing, but without patching the kernel =
+it=E2=80=99s
+difficult to obtain fine=E2=80=91grained information.
+Attach BPF to the memcg charge/uncharge path:
+Record large allocations (greater than N KB) with call stacks and
+owning file/module, and send them to user space via a BPF ring buffer.
+Based on sampled data, generate:
+=E2=80=9CTop N memory allocation stacks in this container over the last 1=
+0 minutes,=E2=80=9D
+Reports of which objects / call paths are growing fastest.
+This makes it possible to pinpoint the root cause of host memory
+anomalies without changing application code, which is very useful
+in operations/ops scenarios.
+
+SLO=E2=80=91Driven Auto Throttling / Scale=E2=80=91In/Out Signals:
+Use eBPF to observe memory usage slope, frequent reclaim,
+or near=E2=80=91OOM behavior within a memcg.
+When it decides =E2=80=9COOM is imminent,=E2=80=9D instead of just killin=
+g/raising
+limits, it can emit a signal to a control=E2=80=91plane component.
+For example, send an event to a user=E2=80=91space agent to trigger
+automatic scaling, QPS adjustment, or throttling.
+
+Prevent a cgroup from launching a large=E2=80=91scale fork+malloc attack:
+BPF checks per=E2=80=91uid or per=E2=80=91cgroup allocation behavior over=
+ the
+last few seconds during memcg charge.
+
+And I maintain a software project, https://github.com/teawater/mem-agent,
+for specialized memory management and related functions.
+However, I found that implementing certain memory QoS categories
+for memcg solely from user space is rather inefficient,
+as it requires frequent access to values within memcg.
+This is why I want memcg to support eBPF=E2=80=94so that I can place
+custom memory management logic directly into the kernel using eBPF,
+greatly improving efficiency.
+
+Best,
+Hui
+
+>=20
+>=20Thanks!
+>
 
