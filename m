@@ -1,389 +1,308 @@
-Return-Path: <bpf+bounces-75194-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75195-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72483C7662D
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 22:36:07 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4255C76686
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 22:45:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4B2BA4E3E95
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 21:34:48 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5126E3596AD
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 21:44:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F6B2698AF;
-	Thu, 20 Nov 2025 21:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3DE93242A6;
+	Thu, 20 Nov 2025 21:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mtzZcAuf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pr/ooh+V"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227281C84A6
-	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 21:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D9B30BF77;
+	Thu, 20 Nov 2025 21:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763674477; cv=none; b=Q02Oz84W29v7hFnuU3WbkXOphngOUr9Hq3lqiRlS/PToNmka54Nvtk+ELVIhZmEr3m2r/080i8HXwpCU7F2g6TR0uAYri42UtSeHCSBiy/q27GiDYU+nX4ZEHxydGAxgLoQ1IslpBFMjDCrHQQR766EijJqDzFvmQ/TgHXM/BhI=
+	t=1763675070; cv=none; b=NDA2MiL/xQ4gIvPyW8uzjugP1ruFa10eK5xoynERdppDjUeGPfkIIn6DqztigTHVYZn8hlQ9KKDw2Kydc56Bh+fQWem9vNuSNPj45M5/ahRz6dA5qxVdX9hGLFXo8GmoqRlksgOO7i/VOq+aWa+zyZUUmo2q57T2rcpeEbgWigM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763674477; c=relaxed/simple;
-	bh=N7x50i7KcfSScKRxpRjZwtrC3QRyEo9BV+xbqFxd+sY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LbW/fmF6BH/jeK0OfwJ4Ll0MXStX+sX1x7z6PzLYiL6wqX+zucgjWT8xace2ek5caA0aF58MVOmNJCFjWkFXOmwzXXDx8M5DipfY4S+0b2QDhP1ZEFPApsUe/wZy5Q/ve1xSIRV+TkyE3GRwqdZ+dZpzYfVwSDmavlAnBbATI0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mtzZcAuf; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <854f468a-d178-40f4-aa03-e19ff82a1a35@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1763674461;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TY7+IAWtWdlHkX3dX0jOuatNuojKP/f2kh+RpE7l+Og=;
-	b=mtzZcAufNiTyUYfd0Lz//De4gQi+dQ4dxoAYLoL5PZ0ybHAVtY/rvgiJPmI9BKTmt47FpK
-	PLBIm7kOPNO6E6wcpwBeoHZzPjPsdj4Qstwld8ghMWlkeWunk0lekIkDNyl2DaQeyew06h
-	PLA0SLSn/Zzo6IyNN/2ASJZR8BjnSNo=
-Date: Thu, 20 Nov 2025 13:34:14 -0800
+	s=arc-20240116; t=1763675070; c=relaxed/simple;
+	bh=2OMhZo0qqU+XgO0p6psfFq2viIlFEbW4CJY7Y7IoxHs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cgavWPivBcdHr+1f0c7esGf75YIO7Eq5jk3idLdVyuKYXnf2UJ7kiK/yYIE43MfXRZrDIbarEOyTcjjFmU9VdO3xVwoPhichPOl6z/vpOXgZD4zVeLByTuUEnUWTIZJ36dy0ItFkcPHbfI8+H50uak/86W7ZpnojaPkIshSrTaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pr/ooh+V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A0D5C4CEF1;
+	Thu, 20 Nov 2025 21:44:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763675069;
+	bh=2OMhZo0qqU+XgO0p6psfFq2viIlFEbW4CJY7Y7IoxHs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pr/ooh+VceNK429KoU+0r1Ldb4DBzO+Hw9WapUYmtGk4x2hpRamPzFKoYphNtzzEl
+	 Hdv0sqwwkqHlkavjRsxjESxDeNEURi4FnYk+UIovQX2iAY5A2ihidr38blcSwWabwd
+	 qJS4dzSgDCHvQ+Hbme4AYtTg3yIGfNNeMh2RpqidAgT89Mu47xOcMpvZv8Xn7MwvSi
+	 5Z3ukFBMPdYDQUxQDU7OXP9c6N//xyj0aBeNXwzZY/AKJijqENFdmlc1dHYfPBCq3P
+	 OWknhIT1ZoZggm02C6uPMoBASz0FYzu/Z+nV20cLfpIvOxZ7+hKmZZijQuayh+0zB4
+	 ZtHf17BMtlDZw==
+Date: Thu, 20 Nov 2025 13:44:26 -0800
+From: Namhyung Kim <namhyung@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	James Clark <james.clark@linaro.org>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v5 5/6] perf tools: Merge deferred user callchains
+Message-ID: <aR-Luv1UnB1lGXgx@google.com>
+References: <20251120021046.94490-1-namhyung@kernel.org>
+ <20251120021046.94490-6-namhyung@kernel.org>
+ <CAP-5=fXO=QEOcFyRGbZ6AqmcMHwLke=KsDSDR3KcxCECJF3jNA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v7 3/7] tools/resolve_btfids: Add --btf_sort option
- for BTF name sorting
-To: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org,
- andrii.nakryiko@gmail.com
-Cc: eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Donglin Peng <pengdonglin@xiaomi.com>,
- Alan Maguire <alan.maguire@oracle.com>, Song Liu <song@kernel.org>
-References: <20251119031531.1817099-1-dolinux.peng@gmail.com>
- <20251119031531.1817099-4-dolinux.peng@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <20251119031531.1817099-4-dolinux.peng@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fXO=QEOcFyRGbZ6AqmcMHwLke=KsDSDR3KcxCECJF3jNA@mail.gmail.com>
 
-On 11/18/25 7:15 PM, Donglin Peng wrote:
-> From: Donglin Peng <pengdonglin@xiaomi.com>
+On Wed, Nov 19, 2025 at 09:13:50PM -0800, Ian Rogers wrote:
+> On Wed, Nov 19, 2025 at 6:11 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Save samples with deferred callchains in a separate list and deliver
+> > them after merging the user callchains.  If users don't want to merge
+> > they can set tool->merge_deferred_callchains to false to prevent the
+> > behavior.
+> >
+> > With previous result, now perf script will show the merged callchains.
+> >
+> >   $ perf script
+> >   ...
+> >   pwd    2312   121.163435:     249113 cpu/cycles/P:
+> >           ffffffff845b78d8 __build_id_parse.isra.0+0x218 ([kernel.kallsyms])
+> >           ffffffff83bb5bf6 perf_event_mmap+0x2e6 ([kernel.kallsyms])
+> >           ffffffff83c31959 mprotect_fixup+0x1e9 ([kernel.kallsyms])
+> >           ffffffff83c31dc5 do_mprotect_pkey+0x2b5 ([kernel.kallsyms])
+> >           ffffffff83c3206f __x64_sys_mprotect+0x1f ([kernel.kallsyms])
+> >           ffffffff845e6692 do_syscall_64+0x62 ([kernel.kallsyms])
+> >           ffffffff8360012f entry_SYSCALL_64_after_hwframe+0x76 ([kernel.kallsyms])
+> >               7f18fe337fa7 mprotect+0x7 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+> >               7f18fe330e0f _dl_sysdep_start+0x7f (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+> >               7f18fe331448 _dl_start_user+0x0 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+> >   ...
+> >
+> > The old output can be get using --no-merge-callchain option.
+> > Also perf report can get the user callchain entry at the end.
+> >
+> >   $ perf report --no-children --stdio -q -S __build_id_parse.isra.0
+> >   # symbol: __build_id_parse.isra.0
+> >        8.40%  pwd      [kernel.kallsyms]
+> >               |
+> >               ---__build_id_parse.isra.0
+> >                  perf_event_mmap
+> >                  mprotect_fixup
+> >                  do_mprotect_pkey
+> >                  __x64_sys_mprotect
+> >                  do_syscall_64
+> >                  entry_SYSCALL_64_after_hwframe
+> >                  mprotect
+> >                  _dl_sysdep_start
+> >                  _dl_start_user
+> >
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/Documentation/perf-script.txt |  5 ++
+> >  tools/perf/builtin-inject.c              |  1 +
+> >  tools/perf/builtin-report.c              |  1 +
+> >  tools/perf/builtin-script.c              |  4 ++
+> >  tools/perf/util/callchain.c              | 29 ++++++++++
+> >  tools/perf/util/callchain.h              |  3 ++
+> >  tools/perf/util/evlist.c                 |  1 +
+> >  tools/perf/util/evlist.h                 |  2 +
+> >  tools/perf/util/session.c                | 67 +++++++++++++++++++++++-
+> >  tools/perf/util/tool.c                   |  2 +
+> >  tools/perf/util/tool.h                   |  1 +
+> >  11 files changed, 115 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/perf/Documentation/perf-script.txt b/tools/perf/Documentation/perf-script.txt
+> > index 28bec7e78bc858ba..03d1129606328d6d 100644
+> > --- a/tools/perf/Documentation/perf-script.txt
+> > +++ b/tools/perf/Documentation/perf-script.txt
+> > @@ -527,6 +527,11 @@ include::itrace.txt[]
+> >         The known limitations include exception handing such as
+> >         setjmp/longjmp will have calls/returns not match.
+> >
+> > +--merge-callchains::
+> > +       Enable merging deferred user callchains if available.  This is the
+> > +       default behavior.  If you want to see separate CALLCHAIN_DEFERRED
+> > +       records for some reason, use --no-merge-callchains explicitly.
+> > +
+> >  :GMEXAMPLECMD: script
+> >  :GMEXAMPLESUBCMD:
+> >  include::guest-files.txt[]
+> > diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+> > index bd9245d2dd41aa48..51d2721b6db9dccb 100644
+> > --- a/tools/perf/builtin-inject.c
+> > +++ b/tools/perf/builtin-inject.c
+> > @@ -2527,6 +2527,7 @@ int cmd_inject(int argc, const char **argv)
+> >         inject.tool.auxtrace            = perf_event__repipe_auxtrace;
+> >         inject.tool.bpf_metadata        = perf_event__repipe_op2_synth;
+> >         inject.tool.dont_split_sample_group = true;
+> > +       inject.tool.merge_deferred_callchains = false;
+> >         inject.session = __perf_session__new(&data, &inject.tool,
+> >                                              /*trace_event_repipe=*/inject.output.is_pipe,
+> >                                              /*host_env=*/NULL);
+> > diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> > index 2bc269f5fcef8023..add6b1c2aaf04270 100644
+> > --- a/tools/perf/builtin-report.c
+> > +++ b/tools/perf/builtin-report.c
+> > @@ -1614,6 +1614,7 @@ int cmd_report(int argc, const char **argv)
+> >         report.tool.event_update         = perf_event__process_event_update;
+> >         report.tool.feature              = process_feature_event;
+> >         report.tool.ordering_requires_timestamps = true;
+> > +       report.tool.merge_deferred_callchains = !dump_trace;
+> >
+> >         session = perf_session__new(&data, &report.tool);
+> >         if (IS_ERR(session)) {
+> > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> > index 85b42205a71b3993..62e43d3c5ad731a0 100644
+> > --- a/tools/perf/builtin-script.c
+> > +++ b/tools/perf/builtin-script.c
+> > @@ -4009,6 +4009,7 @@ int cmd_script(int argc, const char **argv)
+> >         bool header_only = false;
+> >         bool script_started = false;
+> >         bool unsorted_dump = false;
+> > +       bool merge_deferred_callchains = true;
+> >         char *rec_script_path = NULL;
+> >         char *rep_script_path = NULL;
+> >         struct perf_session *session;
+> > @@ -4162,6 +4163,8 @@ int cmd_script(int argc, const char **argv)
+> >                     "Guest code can be found in hypervisor process"),
+> >         OPT_BOOLEAN('\0', "stitch-lbr", &script.stitch_lbr,
+> >                     "Enable LBR callgraph stitching approach"),
+> > +       OPT_BOOLEAN('\0', "merge-callchains", &merge_deferred_callchains,
+> > +                   "Enable merge deferred user callchains"),
+> >         OPTS_EVSWITCH(&script.evswitch),
+> >         OPT_END()
+> >         };
+> > @@ -4418,6 +4421,7 @@ int cmd_script(int argc, const char **argv)
+> >         script.tool.throttle             = process_throttle_event;
+> >         script.tool.unthrottle           = process_throttle_event;
+> >         script.tool.ordering_requires_timestamps = true;
+> > +       script.tool.merge_deferred_callchains = merge_deferred_callchains;
+> >         session = perf_session__new(&data, &script.tool);
+> >         if (IS_ERR(session))
+> >                 return PTR_ERR(session);
+> > diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
+> > index 2884187ccbbecfdc..71dc5a070065dd2a 100644
+> > --- a/tools/perf/util/callchain.c
+> > +++ b/tools/perf/util/callchain.c
+> > @@ -1838,3 +1838,32 @@ int sample__for_each_callchain_node(struct thread *thread, struct evsel *evsel,
+> >         }
+> >         return 0;
+> >  }
+> > +
+> > +int sample__merge_deferred_callchain(struct perf_sample *sample_orig,
+> > +                                    struct perf_sample *sample_callchain)
+> > +{
+> > +       u64 nr_orig = sample_orig->callchain->nr - 1;
+> > +       u64 nr_deferred = sample_callchain->callchain->nr;
+> > +       struct ip_callchain *callchain;
+> > +
+> > +       if (sample_orig->callchain->nr < 2) {
+> > +               sample_orig->deferred_callchain = false;
+> > +               return -EINVAL;
+> > +       }
+> > +
+> > +       callchain = calloc(1 + nr_orig + nr_deferred, sizeof(u64));
+> > +       if (callchain == NULL) {
+> > +               sample_orig->deferred_callchain = false;
+> > +               return -ENOMEM;
+> > +       }
+> > +
+> > +       callchain->nr = nr_orig + nr_deferred;
+> > +       /* copy original including PERF_CONTEXT_USER_DEFERRED (but the cookie) */
+> > +       memcpy(callchain->ips, sample_orig->callchain->ips, nr_orig * sizeof(u64));
+> > +       /* copy deferred user callchains */
+> > +       memcpy(&callchain->ips[nr_orig], sample_callchain->callchain->ips,
+> > +              nr_deferred * sizeof(u64));
+> > +
+> > +       sample_orig->callchain = callchain;
+> > +       return 0;
+> > +}
+> > diff --git a/tools/perf/util/callchain.h b/tools/perf/util/callchain.h
+> > index d5ae4fbb7ce5fa44..2a52af8c80ace33c 100644
+> > --- a/tools/perf/util/callchain.h
+> > +++ b/tools/perf/util/callchain.h
+> > @@ -318,4 +318,7 @@ int sample__for_each_callchain_node(struct thread *thread, struct evsel *evsel,
+> >                                     struct perf_sample *sample, int max_stack,
+> >                                     bool symbols, callchain_iter_fn cb, void *data);
+> >
+> > +int sample__merge_deferred_callchain(struct perf_sample *sample_orig,
+> > +                                    struct perf_sample *sample_callchain);
+> > +
+> >  #endif /* __PERF_CALLCHAIN_H */
+> > diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> > index e8217efdda5323c6..03674d2cbd015e4f 100644
+> > --- a/tools/perf/util/evlist.c
+> > +++ b/tools/perf/util/evlist.c
+> > @@ -85,6 +85,7 @@ void evlist__init(struct evlist *evlist, struct perf_cpu_map *cpus,
+> >         evlist->ctl_fd.pos = -1;
+> >         evlist->nr_br_cntr = -1;
+> >         metricgroup__rblist_init(&evlist->metric_events);
+> > +       INIT_LIST_HEAD(&evlist->deferred_samples);
+> >  }
+> >
+> >  struct evlist *evlist__new(void)
+> > diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+> > index 5e71e3dc60423079..911834ae7c2a6f76 100644
+> > --- a/tools/perf/util/evlist.h
+> > +++ b/tools/perf/util/evlist.h
+> > @@ -92,6 +92,8 @@ struct evlist {
+> >          * of struct metric_expr.
+> >          */
+> >         struct rblist   metric_events;
+> > +       /* samples with deferred_callchain would wait here. */
+> > +       struct list_head deferred_samples;
+> >  };
+> >
+> >  struct evsel_str_handler {
+> > diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> > index 361e15c1f26a96d0..2e777fd1bcf6707b 100644
+> > --- a/tools/perf/util/session.c
+> > +++ b/tools/perf/util/session.c
+> > @@ -1285,6 +1285,60 @@ static int evlist__deliver_sample(struct evlist *evlist, const struct perf_tool
+> >                                             per_thread);
+> >  }
+> >
+> > +struct deferred_event {
+> > +       struct list_head list;
+> > +       union perf_event *event;
 > 
-> This patch introduces a new --btf_sort option that leverages libbpf's
-> btf__permute interface to reorganize BTF layout. The implementation
-> sorts BTF types by name in ascending order, placing anonymous types at
-> the end to enable efficient binary search lookup.
-> 
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Alan Maguire <alan.maguire@oracle.com>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
-> Signed-off-by: Donglin Peng <pengdonglin@xiaomi.com>
-> ---
->  scripts/Makefile.btf            |   2 +
->  scripts/Makefile.modfinal       |   1 +
->  scripts/link-vmlinux.sh         |   1 +
->  tools/bpf/resolve_btfids/main.c | 200 ++++++++++++++++++++++++++++++++
->  4 files changed, 204 insertions(+)
-> 
-> diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-> index db76335dd917..d5eb4ee70e88 100644
-> --- a/scripts/Makefile.btf
-> +++ b/scripts/Makefile.btf
-> @@ -27,6 +27,7 @@ pahole-flags-$(call test-ge, $(pahole-ver), 130) += --btf_features=attributes
->  
->  ifneq ($(KBUILD_EXTMOD),)
->  module-pahole-flags-$(call test-ge, $(pahole-ver), 128) += --btf_features=distilled_base
-> +module-resolve_btfid-flags-y = --distilled_base
->  endif
->  
->  endif
-> @@ -35,3 +36,4 @@ pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)		+= --lang_exclude=rust
->  
->  export PAHOLE_FLAGS := $(pahole-flags-y)
->  export MODULE_PAHOLE_FLAGS := $(module-pahole-flags-y)
-> +export MODULE_RESOLVE_BTFID_FLAGS := $(module-resolve_btfid-flags-y)
-> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> index 542ba462ed3e..4481dda2f485 100644
-> --- a/scripts/Makefile.modfinal
-> +++ b/scripts/Makefile.modfinal
-> @@ -40,6 +40,7 @@ quiet_cmd_btf_ko = BTF [M] $@
->  		printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
->  	else								\
->  		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) $(MODULE_PAHOLE_FLAGS) --btf_base $(objtree)/vmlinux $@; \
-> +		$(RESOLVE_BTFIDS) -b $(objtree)/vmlinux $(MODULE_RESOLVE_BTFID_FLAGS) --btf_sort $@;	\
->  		$(RESOLVE_BTFIDS) -b $(objtree)/vmlinux $@;		\
->  	fi;
->  
-> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> index 433849ff7529..f21f6300815b 100755
-> --- a/scripts/link-vmlinux.sh
-> +++ b/scripts/link-vmlinux.sh
-> @@ -288,6 +288,7 @@ if is_enabled CONFIG_DEBUG_INFO_BTF; then
->  	if is_enabled CONFIG_WERROR; then
->  		RESOLVE_BTFIDS_ARGS=" --fatal_warnings "
->  	fi
-> +	${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_ARGS} --btf_sort "${VMLINUX}"
->  	${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_ARGS} "${VMLINUX}"
->  fi
->  
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> index d47191c6e55e..dc0badd6f375 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -768,6 +768,195 @@ static int symbols_patch(struct object *obj)
->  	return err < 0 ? -1 : 0;
->  }
->  
-> +/* Anonymous types (with empty names) are considered greater than named types
-> + * and are sorted after them. Two anonymous types are considered equal. Named
-> + * types are compared lexicographically.
-> + */
-> +static int cmp_type_names(const void *a, const void *b, void *priv)
-> +{
-> +	struct btf *btf = (struct btf *)priv;
-> +	const struct btf_type *ta = btf__type_by_id(btf, *(__u32 *)a);
-> +	const struct btf_type *tb = btf__type_by_id(btf, *(__u32 *)b);
-> +	const char *na, *nb;
-> +
-> +	if (!ta->name_off && tb->name_off)
-> +		return 1;
-> +	if (ta->name_off && !tb->name_off)
-> +		return -1;
-> +	if (!ta->name_off && !tb->name_off)
-> +		return 0;
-> +
-> +	na = btf__str_by_offset(btf, ta->name_off);
-> +	nb = btf__str_by_offset(btf, tb->name_off);
-> +	return strcmp(na, nb);
-> +}
-> +
-> +static int update_btf_section(const char *path, const struct btf *btf,
+> Is this the old version of the patch? No comment and it seems the
+> event's memory isn't copied. I'm worried as we have events in stack
+> allocated memory such as:
+> https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/session.c?h=perf-tools-next#n1618
+> or copies:
+> https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/builtin-inject.c?h=perf-tools-next#n336
+> or just because the ring buffer overwrites itself. My belief is that
+> we don't hold events, and the associated parsed sample, longer than
+> the  tool callback because it'll be wrong/corrupt after that. Here the
+> deferred callchain events are all being held longer than a single tool
+> event callback.
 
-Hi Dongling.
+I added the conditional copy in the next patch, but as you said, it'd be
+safer to copy always.  The concern is the performance of perf report
+which is already slow and I don't want to make it worse.  But let's
+start with the simple, safe version and optimize it later.
 
-Thanks for working on this, it's a great optimization. Just want to
-give you a heads up that I am preparing a patchset changing
-resolve_btfids behavior.
-
-In particular, instead of updating the .BTF_ids section (and now with
-your and upcoming changes the .BTF section) *in-place*, resolve_btfids
-will only emit the data for the sections. And then it'll be integrated
-into vmlinux with objcopy and linker. We already do a similar thing
-with .BTF for vmlinux [1].
-
-For your patchset it means that the parts handling ELF update will be
-unnecessary.
-
-Also I think the --btf_sort flag is unnecessary. We probably want
-kernel BTF to always be sorted in this way. And if resolve_btfids will
-be handling more btf2btf transformation, we should avoid adding a
-flags for every one of them.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/scripts/link-vmlinux.sh#n110
-
-
-> +				  const char *btf_secname)
-> +{
-> +	GElf_Shdr shdr_mem, *shdr;
-> +	Elf_Data *btf_data = NULL;
-> +	Elf_Scn *scn = NULL;
-> +	Elf *elf = NULL;
-> +	const void *raw_btf_data;
-> +	uint32_t raw_btf_size;
-> +	int fd, err = -1;
-> +	size_t strndx;
-> +
-> +	fd = open(path, O_RDWR);
-> +	if (fd < 0) {
-> +		pr_err("FAILED to open %s\n", path);
-> +		return -1;
-> +	}
-> +
-> +	if (elf_version(EV_CURRENT) == EV_NONE) {
-> +		pr_err("FAILED to set libelf version");
-> +		goto out;
-> +	}
-> +
-> +	elf = elf_begin(fd, ELF_C_RDWR, NULL);
-> +	if (elf == NULL) {
-> +		pr_err("FAILED to update ELF file");
-> +		goto out;
-> +	}
-> +
-> +	elf_flagelf(elf, ELF_C_SET, ELF_F_LAYOUT);
-> +
-> +	elf_getshdrstrndx(elf, &strndx);
-> +	while ((scn = elf_nextscn(elf, scn)) != NULL) {
-> +		char *secname;
-> +
-> +		shdr = gelf_getshdr(scn, &shdr_mem);
-> +		if (shdr == NULL)
-> +			continue;
-> +		secname = elf_strptr(elf, strndx, shdr->sh_name);
-> +		if (strcmp(secname, btf_secname) == 0) {
-> +			btf_data = elf_getdata(scn, btf_data);
-> +			break;
-> +		}
-> +	}
-> +
-> +	raw_btf_data = btf__raw_data(btf, &raw_btf_size);
-> +
-> +	if (btf_data) {
-> +		if (raw_btf_size != btf_data->d_size) {
-> +			pr_err("FAILED: size mismatch");
-> +			goto out;
-> +		}
-> +
-> +		btf_data->d_buf = (void *)raw_btf_data;
-> +		btf_data->d_type = ELF_T_WORD;
-> +		elf_flagdata(btf_data, ELF_C_SET, ELF_F_DIRTY);
-> +
-> +		if (elf_update(elf, ELF_C_WRITE) >= 0)
-> +			err = 0;
-> +	}
-> +
-> +out:
-> +	if (fd != -1)
-> +		close(fd);
-> +	if (elf)
-> +		elf_end(elf);
-> +	return err;
-> +}
-> +
-> +static int sort_update_btf(struct object *obj, bool distilled_base)
-> +{
-> +	struct btf *base_btf = NULL;
-> +	struct btf *btf = NULL;
-> +	int start_id = 1, nr_types, id;
-> +	int err = 0, i;
-> +	__u32 *permute_ids = NULL, *id_map = NULL, btf_size;
-> +	const void *btf_data;
-> +	int fd;
-> +
-> +	if (obj->base_btf_path) {
-> +		base_btf = btf__parse(obj->base_btf_path, NULL);
-> +		err = libbpf_get_error(base_btf);
-> +		if (err) {
-> +			pr_err("FAILED: load base BTF from %s: %s\n",
-> +			       obj->base_btf_path, strerror(-err));
-> +			return -1;
-> +		}
-> +	}
-> +
-> +	btf = btf__parse_elf_split(obj->path, base_btf);
-> +	err = libbpf_get_error(btf);
-> +	if (err) {
-> +		pr_err("FAILED: load BTF from %s: %s\n", obj->path, strerror(-err));
-> +		goto out;
-> +	}
-> +
-> +	if (base_btf)
-> +		start_id = btf__type_cnt(base_btf);
-> +	nr_types = btf__type_cnt(btf) - start_id;
-> +	if (nr_types < 2)
-> +		goto out;
-> +
-> +	permute_ids = calloc(nr_types, sizeof(*permute_ids));
-> +	if (!permute_ids) {
-> +		err = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	id_map = calloc(nr_types, sizeof(*id_map));
-> +	if (!id_map) {
-> +		err = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	for (i = 0, id = start_id; i < nr_types; i++, id++)
-> +		permute_ids[i] = id;
-> +
-> +	qsort_r(permute_ids, nr_types, sizeof(*permute_ids), cmp_type_names, btf);
-> +
-> +	for (i = 0; i < nr_types; i++) {
-> +		id = permute_ids[i] - start_id;
-> +		id_map[id] = i + start_id;
-> +	}
-> +
-> +	err = btf__permute(btf, id_map, nr_types, NULL);
-> +	if (err) {
-> +		pr_err("FAILED: btf permute: %s\n", strerror(-err));
-> +		goto out;
-> +	}
-> +
-> +	if (distilled_base) {
-> +		struct btf *new_btf = NULL, *distilled_base = NULL;
-> +
-> +		if (btf__distill_base(btf, &distilled_base, &new_btf) < 0) {
-> +			pr_err("FAILED to generate distilled base BTF: %s\n",
-> +				strerror(errno));
-> +			goto out;
-> +		}
-> +
-> +		err = update_btf_section(obj->path, new_btf, BTF_ELF_SEC);
-> +		if (!err) {
-> +			err = update_btf_section(obj->path, distilled_base, BTF_BASE_ELF_SEC);
-> +			if (err < 0)
-> +				pr_err("FAILED to update '%s'\n", BTF_BASE_ELF_SEC);
-> +		} else {
-> +			pr_err("FAILED to update '%s'\n", BTF_ELF_SEC);
-> +		}
-> +
-> +		btf__free(new_btf);
-> +		btf__free(distilled_base);
-> +	} else {
-> +		err = update_btf_section(obj->path, btf, BTF_ELF_SEC);
-> +		if (err < 0) {
-> +			pr_err("FAILED to update '%s'\n", BTF_ELF_SEC);
-> +			goto out;
-> +		}
-> +	}
-> +
-> +out:
-> +	free(permute_ids);
-> +	free(id_map);
-> +	btf__free(base_btf);
-> +	btf__free(btf);
-> +	return err;
-> +}
-> +
->  static const char * const resolve_btfids_usage[] = {
->  	"resolve_btfids [<options>] <ELF object>",
->  	NULL
-> @@ -787,6 +976,8 @@ int main(int argc, const char **argv)
->  		.sets     = RB_ROOT,
->  	};
->  	bool fatal_warnings = false;
-> +	bool btf_sort = false;
-> +	bool distilled_base = false;
->  	struct option btfid_options[] = {
->  		OPT_INCR('v', "verbose", &verbose,
->  			 "be more verbose (show errors, etc)"),
-> @@ -796,6 +987,10 @@ int main(int argc, const char **argv)
->  			   "path of file providing base BTF"),
->  		OPT_BOOLEAN(0, "fatal_warnings", &fatal_warnings,
->  			    "turn warnings into errors"),
-> +		OPT_BOOLEAN(0, "btf_sort", &btf_sort,
-> +			    "sort BTF by name in ascending order"),
-> +		OPT_BOOLEAN(0, "distilled_base", &distilled_base,
-> +			    "distill base"),
->  		OPT_END()
->  	};
->  	int err = -1;
-> @@ -807,6 +1002,11 @@ int main(int argc, const char **argv)
->  
->  	obj.path = argv[0];
->  
-> +	if (btf_sort) {
-> +		err = sort_update_btf(&obj, distilled_base);
-> +		goto out;
-> +	}
-> +
->  	if (elf_collect(&obj))
->  		goto out;
->  
+Thanks,
+Namhyung
 
 
