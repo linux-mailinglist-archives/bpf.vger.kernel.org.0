@@ -1,160 +1,220 @@
-Return-Path: <bpf+bounces-75145-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75147-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 917ACC72F2E
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 09:48:46 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A680FC73043
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 10:06:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by tor.lore.kernel.org (Postfix) with ESMTPS id 943CC2A9F7
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 08:48:45 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9FE4C349E15
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 09:06:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9FC2D6E51;
-	Thu, 20 Nov 2025 08:48:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04C6730F95C;
+	Thu, 20 Nov 2025 09:06:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="jAq2MUiW"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="y5h8XcZe";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uQ2Eblao";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="y5h8XcZe";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uQ2Eblao"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB1B30E0EC
-	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 08:48:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A11CA137923
+	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 09:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763628519; cv=none; b=TY8sHzkfJonbsieExEg7o/af7xjuIKRoapPs1eA5eq5gfEsXC816ZTf4xDIttXyjO/xDuCV09n+llkMKIVi0MDtf/MOz11idVk0Wnh4UGxkOVSZ31Ul7dTrvgro1pc+wxLp7nkX8Rknj1WMvNZ8fU6QcyJZdjg2xzMcGxciepPo=
+	t=1763629580; cv=none; b=IVSWGalVpblBI493Y324OBKnMBDKq4lKQmPqStSyfFhDFDMa+wkw4YpC6QTyhVrsmH5nECBpvsznQiyPCWKSWV9YsA/Ugxz7+WSg4pwYZYeNkVresNxI7doEeZzD2dmy2sQUiYgGg4EzoVV1Eur6bKMBBvgMhR02SPzGLphPc6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763628519; c=relaxed/simple;
-	bh=oIYNxsK94JaO4vdSXnGVterse1TXgNndIoltJZAqvik=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SCF90eT4U9BKJeCCJ5PxauuR4yhat7uAudmPd7Bbg/6B6MDSD1tuNluREqcD9jReOzSVAAOXsy0GvKsJl8a67HsXFkOmzXDX2nNkYYoiV5NbVl8Zgl7IzeOPmSHThVkJ+7y9BRxA2t9jxsmQnWpVMVONNMgMOCZ73PjsFlcSV9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=jAq2MUiW; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AK3MlR0014385;
-	Thu, 20 Nov 2025 08:48:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2025-04-25; bh=PkIxI
-	6pu3U2VDPKkcK98jFjXew8MYkCYuKDhyA76cDo=; b=jAq2MUiW4Kn2Dvco/S7Dv
-	ZmsVZaWsSViGv0hUwoTKdzMqbg2QcMeWGFjlBwXQHoXIrb68RnmqAT763PpOrW0i
-	dbwdnEAmxFQn3yynXDNEuP6YMiLNQGAL924JhF3cGESfYBv0+TQj0TPbsQ3FFvxR
-	DjIS2escV1CV1odAXIbfF4VG1cuiwkUsf+Q5tR+F69AxnIp5XiSY+otINC1+bnq+
-	MCps2ZD+aM8xav7OQrMzjsn45ijMzpWdwKUoJiZY0Z1OXv4KJC5bmoJ21XpPbwXI
-	UeqpliO4gDop07xMdlW51jZxJyGr+Y+42dGTpBXyjLKxDG2K5dXSaj+yQQd+kOiJ
-	A==
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4aej8j8pbu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 20 Nov 2025 08:48:06 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5AK6CNxe002613;
-	Thu, 20 Nov 2025 08:48:05 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4aefybrpag-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 20 Nov 2025 08:48:05 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 5AK8lwDV007208;
-	Thu, 20 Nov 2025 08:48:05 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-154-58-185.vpn.oracle.com [10.154.58.185])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 4aefybrp6k-3;
-	Thu, 20 Nov 2025 08:48:05 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: qmo@kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@kernel.org, sdf@fomichev.me, yonghong.song@linux.dev,
-        song@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        ihor.solodrai@linux.dev, john.fastabend@gmail.com, eddyz87@gmail.com,
-        bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v2 2/2] selftests/bpf: Allow selftests to build with older xxd
-Date: Thu, 20 Nov 2025 08:47:54 +0000
-Message-ID: <20251120084754.640405-3-alan.maguire@oracle.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20251120084754.640405-1-alan.maguire@oracle.com>
-References: <20251120084754.640405-1-alan.maguire@oracle.com>
+	s=arc-20240116; t=1763629580; c=relaxed/simple;
+	bh=nm6n88nu7OQYVsavht02juxlJNgRwSin/OowD8jsfho=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cQGnQEkvA9T0My2vxcTA4UnLx4w7uEZaSkWKY8wWjxH+7++t4J4UW0G+e0ddFo6OI9Pfn0XT1xXDISfxG76XxInNfcVaSHNbEVSqI1BTJJqjgiwO8cQtIuX9Wk2kErmjd0PZC6W9sBQyNlweXVYnLOda3WpunZVANdJLPQAsYYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=y5h8XcZe; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=uQ2Eblao; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=y5h8XcZe; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=uQ2Eblao; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A56F420948;
+	Thu, 20 Nov 2025 09:06:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1763629576; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HnMACFI+lNtydjer9xn7VvtdapGzf7zyfntGkIc5Wd8=;
+	b=y5h8XcZejthatntG3rr82Ggs4jiPogJJQ+gxQceaQG/FZjYN5h/8FCeQvoI7cqgykbMYLA
+	qaw+CjpZ9e8P9HmNE/4+zDFeryM1xbpZwlzblguz1FAMYT/4rtG1AzVLkGcNi8o5BGt36i
+	GskLs/JaTXC1rPfIWJi9ipDg7sL0ZLM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1763629576;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HnMACFI+lNtydjer9xn7VvtdapGzf7zyfntGkIc5Wd8=;
+	b=uQ2Eblao7KJkQ7rE1nQXCo0XycYpufA/tDAB+Q2kUQe4S6datsXuV3a2SkOthdy+dcERmC
+	atrDMEmuJ4gtG8CA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=y5h8XcZe;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=uQ2Eblao
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1763629576; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HnMACFI+lNtydjer9xn7VvtdapGzf7zyfntGkIc5Wd8=;
+	b=y5h8XcZejthatntG3rr82Ggs4jiPogJJQ+gxQceaQG/FZjYN5h/8FCeQvoI7cqgykbMYLA
+	qaw+CjpZ9e8P9HmNE/4+zDFeryM1xbpZwlzblguz1FAMYT/4rtG1AzVLkGcNi8o5BGt36i
+	GskLs/JaTXC1rPfIWJi9ipDg7sL0ZLM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1763629576;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HnMACFI+lNtydjer9xn7VvtdapGzf7zyfntGkIc5Wd8=;
+	b=uQ2Eblao7KJkQ7rE1nQXCo0XycYpufA/tDAB+Q2kUQe4S6datsXuV3a2SkOthdy+dcERmC
+	atrDMEmuJ4gtG8CA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1E2433EA61;
+	Thu, 20 Nov 2025 09:06:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 2oO3AwjaHmkZCwAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Thu, 20 Nov 2025 09:06:16 +0000
+Message-ID: <c7fb0c73-12e9-4a6d-94d9-65f7fc9514ce@suse.de>
+Date: Thu, 20 Nov 2025 10:06:01 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v4] xsk: avoid data corruption on cq descriptor number
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: netdev@vger.kernel.org, csmate@nop.hu, maciej.fijalkowski@intel.com,
+ bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, horms@kernel.org
+References: <20251118124807.3229-1-fmancera@suse.de>
+ <CAL+tcoCthXqJS=z3-HhMSn3nfGzrqt8co3jKru-=YX0iJ2Yd6w@mail.gmail.com>
+Content-Language: en-US
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+In-Reply-To: <CAL+tcoCthXqJS=z3-HhMSn3nfGzrqt8co3jKru-=YX0iJ2Yd6w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-20_03,2025-11-18_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- malwarescore=0 suspectscore=0 bulkscore=0 spamscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2510240000 definitions=main-2511200051
-X-Proofpoint-ORIG-GUID: TyDBCOneHuf7Ki29OI8Y6YlQ44xbtgC5
-X-Proofpoint-GUID: TyDBCOneHuf7Ki29OI8Y6YlQ44xbtgC5
-X-Authority-Analysis: v=2.4 cv=I7xohdgg c=1 sm=1 tr=0 ts=691ed5c6 b=1 cx=c_pps
- a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
- a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
- a=sjjG6lzJni1mwoMb6D4A:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE1MDAzMSBTYWx0ZWRfXzoTbNltNsnik
- /zQKAGJBRpGo28vE+De+Ook235vH8T+SiYDyAWvd8PH6Epp4ZMsAMN/jFP+nup8f04XAZ/NnaRQ
- xomse2B17gpJbUMLzmxksOX2qJPcMBpbfQlSWPekSXKLTYDobOIGSUXHVh3xlme1dYaOxc3F2Q6
- 0AARn0bOC4O/dbJ6zD9+/K94MgW0FdjjXy+4D06KM69AbOZy9l9MI+ANSFt2hQ33fTAecIj0uiS
- calyaL4L16Fu2BFIvNh06DcQrvUUp8PyuACoxHczMfqmiWf939S0m/eESMOkQehKw2JVWbPk17s
- BsyDI2ZchUKXcSoDqGBzEnfMleAVdQtMHa5BIsdWMiqGMKBCTk1CVdfSzKVgV4Xxgj/2T2ztTFo
- QXYIdLPmc8/6cnRlyq7/hmCHnNH0sQ==
+X-Rspamd-Queue-Id: A56F420948
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:url,suse.de:email,suse.de:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -4.51
+X-Spam-Level: 
 
-Currently selftests require xxd with the "-n <name>" option
-which allows the user to specify a name not derived from
-the input object path.  Instead of relying on this newer
-feature, older xxd can be used if we link our desired name
-("test_progs_verification_cert") to the input object.
 
-Many distros ship xxd in vim-common package and do not have
-the latest xxd with -n support.
 
-Fixes: b720903e2b14d ("selftests/bpf: Enable signature verification for some lskel tests")
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- tools/testing/selftests/bpf/.gitignore | 1 +
- tools/testing/selftests/bpf/Makefile   | 6 ++++--
- 2 files changed, 5 insertions(+), 2 deletions(-)
+On 11/20/25 4:07 AM, Jason Xing wrote:
+> On Tue, Nov 18, 2025 at 8:48 PM Fernando Fernandez Mancera
+> <fmancera@suse.de> wrote:
+[...]>> @@ -828,11 +840,20 @@ static struct sk_buff 
+*xsk_build_skb(struct xdp_sock *xs,
+>>                                  goto free_err;
+>>                          }
+>>
+>> -                       xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
+>> -                       if (!xsk_addr) {
+>> -                               __free_page(page);
+>> -                               err = -ENOMEM;
+>> -                               goto free_err;
+>> +                       if (xsk_skb_destructor_is_addr(skb)) {
+>> +                               xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache,
+>> +                                                            GFP_KERNEL);
+>> +                               if (!xsk_addr) {
+>> +                                       __free_page(page);
+>> +                                       err = -ENOMEM;
+>> +                                       goto free_err;
+>> +                               }
+>> +
+>> +                               xsk_addr->num_descs = 1;
+>> +                               xsk_addr->addrs[0] = xsk_skb_destructor_get_addr(skb);
+>> +                               skb_shinfo(skb)->destructor_arg = (void *)xsk_addr;
+>> +                       } else {
+>> +                               xsk_addr = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
+>>                          }
+>>
+>>                          vaddr = kmap_local_page(page);
+>> @@ -842,13 +863,11 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>>                          skb_add_rx_frag(skb, nr_frags, page, 0, len, PAGE_SIZE);
+>>                          refcount_add(PAGE_SIZE, &xs->sk.sk_wmem_alloc);
+>>
+>> -                       xsk_addr->addr = desc->addr;
+>> -                       list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
+>> +                       xsk_addr->addrs[xsk_addr->num_descs] = desc->addr;
+>> +                       xsk_addr->num_descs++;
+> 
+> Wait, it's too late to increment it... Please find below.
+> 
+>>                  }
+>>          }
+>>
+>> -       xsk_inc_num_desc(skb);
+>> -
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index be1ee7ba7ce0..ca557e5668fd 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -23,6 +23,7 @@ test_tcpnotify_user
- test_libbpf
- xdping
- test_cpp
-+test_progs_verification_cert
- *.d
- *.subskel.h
- *.skel.h
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 34ea23c63bd5..bac22265e7ff 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -731,7 +731,8 @@ $(VERIFICATION_CERT) $(PRIVATE_KEY): $(VERIFY_SIG_SETUP)
- 	$(Q)$(VERIFY_SIG_SETUP) genkey $(BUILD_DIR)
- 
- $(VERIFY_SIG_HDR): $(VERIFICATION_CERT)
--	$(Q)xxd -i -n test_progs_verification_cert $< > $@
-+	$(Q)ln -fs $< test_progs_verification_cert && \
-+	xxd -i test_progs_verification_cert > $@
- 
- # Define test_progs test runner.
- TRUNNER_TESTS_DIR := prog_tests
-@@ -905,7 +906,8 @@ EXTRA_CLEAN := $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)			\
- 	$(addprefix $(OUTPUT)/,*.o *.d *.skel.h *.lskel.h *.subskel.h	\
- 			       no_alu32 cpuv4 bpf_gcc			\
- 			       liburandom_read.so)			\
--	$(OUTPUT)/FEATURE-DUMP.selftests
-+	$(OUTPUT)/FEATURE-DUMP.selftests				\
-+	test_progs_verification_cert
- 
- .PHONY: docs docs-clean
- 
--- 
-2.43.5
+
+
+>>          return skb;
+>>
+>>   free_err:
+>> @@ -857,7 +876,6 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>>
+>>          if (err == -EOVERFLOW) {
+>>                  /* Drop the packet */
+>> -               xsk_inc_num_desc(xs->skb);
+> 
+> Why did you remove this line? The error can occur in the above hidden
+> snippet[1] without IFF_TX_SKB_NO_LINEAR setting and then we will fail
+> to increment it by one.
+> 
+>
+That is a good catch. Let me fix this logic.. I missed that the 
+-EOVERFLOW is returned in different moments for xsk_build_skb_zerocopy() 
+and xsk_build_skb(). Keeping the increment logic as it was it is better.
+
+> [1]: https://elixir.bootlin.com/linux/v6.18-rc6/source/net/xdp/xsk.c#L821
+> 
+> Thanks,
+> Jason
 
 
