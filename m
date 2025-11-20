@@ -1,597 +1,152 @@
-Return-Path: <bpf+bounces-75166-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75167-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 411EDC746DC
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 15:05:22 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 952C8C746B9
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 15:04:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 529F54F21DF
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 13:56:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id 518242AC3B
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 14:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF323451BB;
-	Thu, 20 Nov 2025 13:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16843346E5B;
+	Thu, 20 Nov 2025 14:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kPtjns+L"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="o+xUpKA0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD6DA24BBEB
-	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 13:56:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DE2346A06;
+	Thu, 20 Nov 2025 14:04:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763646973; cv=none; b=n434OhuTO49i0e0bmlrI7bI2OygkJo2OfmPYj5HaidM4XoBLn0QPVP/CkIwRByILFb3+LWOWPubt2g7+kek6UFCko8gcjlz8DFBAvlhG7W9JRqXsOpsmz60FYg8S1K+gssK5hv71bWtodYBTUFxfSce/wlwLYwUgi+AogxkKjRU=
+	t=1763647445; cv=none; b=HFF+bjubhJid76yru7wKLqT8wRWJLLwzhRhyw6Q3D2ZFCfNni8SLieW5sWtoBgMU5xfbOhVuH8pUD9VLESObH9C+VSi1LCsBT1+wEQDer8jujTZD38ItCwIMV4ufLveQ/cxUlQxFOKwA1uhAWH1ujwjCCqfzJ7TzzUgxWfBaXvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763646973; c=relaxed/simple;
-	bh=gaMaKSN/3KaHbVZ7MTuM/8elS4w/tEOl6ORpPmUi1nk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N5/zW0JKoBLDvGhnQJb7rAXOfSKi6y5oQ6mELkOIshbqGBW0ktT/mDhXSrmFoQsrLHS2vcGIHp6UfJ6+JaNvL+6p+0BO8XLZG5WnHmF3nljXbyjQTi/OYrdIo3PAAV322u/lt+tncS9KK7tPxD27hxXsJTdU46Zlj2QPIdSPXuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kPtjns+L; arc=none smtp.client-ip=209.85.166.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-43320651e53so3572105ab.3
-        for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 05:56:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763646969; x=1764251769; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KB/GX97yMxHpcGOwuNbllN3LuskQK+dpqC/evipq6hs=;
-        b=kPtjns+LKyyIahwBqnURQUYD8EM/QtIHl+I0XKYVY+TZG0ixUiEcTrpJnbz4Gaha3E
-         e1oUwnipQVLkfgM3Kz0cuzXyeu4sV8w0Uu+G/GAVVaxuTQC1vitqmJ/gilEfJmbEr3ie
-         amjOeTZd5H9JeS8Qrq4OohAY87R3ASU7oWLX617XlT2vhO2oziyDcvB/VyVAo2vmMetu
-         LATj1Tf41KJHDglCRV/xduR4dD0qjysj5PIAaWgOb3qXo6jQIwnNLjcSN012qpurT++J
-         jJlHt0c5Kn2GtFq7wQCMKsOHbd+OUZQ15/X2dps6AD7lU4h7W+8WMS2IWgG98kiW5Ku5
-         rzlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763646969; x=1764251769;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=KB/GX97yMxHpcGOwuNbllN3LuskQK+dpqC/evipq6hs=;
-        b=ud0h+Zlwx5vO9EnSWqdHK5YJ9Y3cJmxKU+MRHH/oxZmk9ZAy9TTT5XxTkQJClWhOxi
-         Y4CANcC0JuoklyQ6RrOYqPWHXXynX5FqD16pNOTrhIjBrMW9tos1zEI6Cz56Xu/ef3oy
-         LlWMgKcXT0KvJl3qV2HtFO98GKzNIJTPXAdU07lCmZqkI1Yxe0DA7QJvIK3E+nZGUQiE
-         idz3O3HLq+q6Mo7gCWgtXYi6X635AZQgch0kxsm3ujEP8jeTipg+3Cm2i2Lzp0Xp53wN
-         n6pSwoKOLTI+ez3Z5vL6wJzR+lgFITldb9BcgMS3C4UV/QA80cCduLiniCotgsVvg1L3
-         uFpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/WaP6WyqwKqzTxc3oU604fN9qi/TNAel57RH5FzR7lsiNhXEVEs5zREfFCpRjCJUgtRs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YythpVNILrnjEkhGXcp+oGBfD27VoOSaIw2QYN7AnOuBWI5/aRU
-	BIVLFVkal2YnNn1btaXx26ij6PcEu1P12L0Ca4N4muzpCILTbwm7EoQvKEHSZswwaQ8Tgv9OyI6
-	UEcvpy7hLDIjTYBSlIxYsUrr2tX5fa2U=
-X-Gm-Gg: ASbGncv94rN595wWNu6/yVw7HDQcVve+6YIvWp0k6OGvDeEV2SzBIZteunjEVirdwrJ
-	HfTybmDpBa41ZXhOy9lAEYwKeVui+/OiNoXy+fs3c85zapiJMOp5WVo69cG+fvhFXFUn4yZfMhE
-	zmRVr1J06SQnjVd8wQwIOOP0qRokjBDModtOEG3JsHDOEmsZsMDyYpTdCsc35wAmkM3t0JJF+3i
-	DN7olBGZreMLNdZFTavHxIDpCH2F357sWo/XDwFQFCq8rwcwWMPE61D0O7dTABfVm1MUlJeJ78=
-X-Google-Smtp-Source: AGHT+IHheGvKmtn5Pd6DBSl7YgWiqTB+jLCZF6SHQRZsVSL9OsdAFJTAF/NCNwD4L5Fv2PTTEau3pwatA9gmrAJogZU=
-X-Received: by 2002:a05:6e02:1fcd:b0:430:c90d:10ae with SMTP id
- e9e14a558f8ab-435a90878f9mr35861065ab.32.1763646968704; Thu, 20 Nov 2025
- 05:56:08 -0800 (PST)
+	s=arc-20240116; t=1763647445; c=relaxed/simple;
+	bh=CI3aKvMENBD6Wx/BMX3Dm6s28G/RCoH+gf+fXWi+F9U=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=PxbBrbKrAaosM7IyDmCeVWlduMz9qdw1WN5CWpLtUvpN0ghQ5t4GoVnBOkDd9CxO8UsGM5H4lPCkDtoB9L18Lc/86fy+C9of80b2iG9qVVXimh77jUROOTkurot7u2nzKkaEnv2jWt/8HBiqgiXLb0kWkr4o+p18KtCA3q7ZrEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=o+xUpKA0; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251120110228.4288-1-fmancera@suse.de> <CAL+tcoDKxaOT7DiLg2=jQPLo+6OJqL7ZkDurXZAGXo-xbxoDWw@mail.gmail.com>
- <01a09fe7-9f58-4fc5-a84d-12d5b4b92bbd@suse.de> <CAL+tcoBueigrGnKASad7XFybXMHvj5jAOcZS8_bY3J-7XVZShQ@mail.gmail.com>
- <c68423d1-d4e6-4d13-973b-44a791a3c806@suse.de>
-In-Reply-To: <c68423d1-d4e6-4d13-973b-44a791a3c806@suse.de>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 20 Nov 2025 21:55:32 +0800
-X-Gm-Features: AWmQ_bnrWMgGoyi9meDKYCLp55F06CieFwcr3HmgH0bzXJCeZjtFNhQkhzBHSVI
-Message-ID: <CAL+tcoAE6_15tOjZFrdif1ixBja3_qeUKL2GUvOyypcimLFJXw@mail.gmail.com>
-Subject: Re: [PATCH net v5] xsk: avoid data corruption on cq descriptor number
-To: Fernando Fernandez Mancera <fmancera@suse.de>
-Cc: netdev@vger.kernel.org, csmate@nop.hu, maciej.fijalkowski@intel.com, 
-	bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, sdf@fomichev.me, 
-	hawk@kernel.org, daniel@iogearbox.net, ast@kernel.org, 
-	john.fastabend@gmail.com, magnus.karlsson@intel.com
-Content-Type: text/plain; charset="UTF-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1763647429;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t2tROtgsicTEps6RWKZs8tKAeJGs/9o7AxPBq2elSzg=;
+	b=o+xUpKA0GTss5Hqr4AOnKIRD0++/yyfuuMREnltWDz/NJroRTWSqaxV9qW8YLNRbTjboLf
+	0ZjKKmP/IQWPRCKVZ7l3LweYSzsrygSlUyM1MRKmqcRIXhvZTNOwPHkkgEA/h+UWA+GtmA
+	Dg5jZq1PklmquRRuCwEQa3Ouw8++Kzg=
+Date: Thu, 20 Nov 2025 14:03:46 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
+Message-ID: <b6c033deb75243e285fa6b028ee666f874b75eb8@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH bpf-next v1 1/3] bpf, sockmap: Fix incorrect copied_seq
+ calculation
+To: "Jakub Sitnicki" <jakub@cloudflare.com>
+Cc: bpf@vger.kernel.org, "John Fastabend" <john.fastabend@gmail.com>, "David
+ S. Miller" <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>,
+ "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>,
+ "Simon Horman" <horms@kernel.org>, "Neal Cardwell"
+ <ncardwell@google.com>, "Kuniyuki Iwashima" <kuniyu@google.com>, "David 
+ Ahern" <dsahern@kernel.org>, "Alexei Starovoitov" <ast@kernel.org>,
+ "Daniel Borkmann" <daniel@iogearbox.net>, "Andrii Nakryiko"
+ <andrii@kernel.org>, "Martin KaFai Lau" <martin.lau@linux.dev>, "Eduard 
+ Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong 
+ Song" <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>,
+ "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
+ "Jiri Olsa" <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>, "Michal
+ Luczaj" <mhal@rbox.co>, "Stefano Garzarella" <sgarzare@redhat.com>, "Cong
+ Wang" <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+In-Reply-To: <87tsyo6ets.fsf@cloudflare.com>
+References: <20251117110736.293040-1-jiayuan.chen@linux.dev>
+ <20251117110736.293040-2-jiayuan.chen@linux.dev>
+ <87zf8h6bpd.fsf@cloudflare.com>
+ <5a66955891ef8db94b7288bbb296efcc0ac357cf@linux.dev>
+ <87tsyo6ets.fsf@cloudflare.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Nov 20, 2025 at 9:47=E2=80=AFPM Fernando Fernandez Mancera
-<fmancera@suse.de> wrote:
->
-> On 11/20/25 2:40 PM, Jason Xing wrote:
-> > On Thu, Nov 20, 2025 at 9:16=E2=80=AFPM Fernando Fernandez Mancera
-> > <fmancera@suse.de> wrote:
-> >>
-> >> On 11/20/25 1:56 PM, Jason Xing wrote:
-> >>> On Thu, Nov 20, 2025 at 7:02=E2=80=AFPM Fernando Fernandez Mancera
-> >>> <fmancera@suse.de> wrote:
-> >>>>
-> >>>> Since commit 30f241fcf52a ("xsk: Fix immature cq descriptor
-> >>>> production"), the descriptor number is stored in skb control block a=
-nd
-> >>>> xsk_cq_submit_addr_locked() relies on it to put the umem addrs onto
-> >>>> pool's completion queue.
-> >>>>
-> >>>> skb control block shouldn't be used for this purpose as after transm=
-it
-> >>>> xsk doesn't have control over it and other subsystems could use it. =
-This
-> >>>> leads to the following kernel panic due to a NULL pointer dereferenc=
-e.
-> >>>>
-> >>>>    BUG: kernel NULL pointer dereference, address: 0000000000000000
-> >>>>    #PF: supervisor read access in kernel mode
-> >>>>    #PF: error_code(0x0000) - not-present page
-> >>>>    PGD 0 P4D 0
-> >>>>    Oops: Oops: 0000 [#1] SMP NOPTI
-> >>>>    CPU: 2 UID: 1 PID: 927 Comm: p4xsk.bin Not tainted 6.16.12+deb14-=
-cloud-amd64 #1 PREEMPT(lazy)  Debian 6.16.12-1
-> >>>>    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.17.=
-0-debian-1.17.0-1 04/01/2014
-> >>>>    RIP: 0010:xsk_destruct_skb+0xd0/0x180
-> >>>>    [...]
-> >>>>    Call Trace:
-> >>>>     <IRQ>
-> >>>>     ? napi_complete_done+0x7a/0x1a0
-> >>>>     ip_rcv_core+0x1bb/0x340
-> >>>>     ip_rcv+0x30/0x1f0
-> >>>>     __netif_receive_skb_one_core+0x85/0xa0
-> >>>>     process_backlog+0x87/0x130
-> >>>>     __napi_poll+0x28/0x180
-> >>>>     net_rx_action+0x339/0x420
-> >>>>     handle_softirqs+0xdc/0x320
-> >>>>     ? handle_edge_irq+0x90/0x1e0
-> >>>>     do_softirq.part.0+0x3b/0x60
-> >>>>     </IRQ>
-> >>>>     <TASK>
-> >>>>     __local_bh_enable_ip+0x60/0x70
-> >>>>     __dev_direct_xmit+0x14e/0x1f0
-> >>>>     __xsk_generic_xmit+0x482/0xb70
-> >>>>     ? __remove_hrtimer+0x41/0xa0
-> >>>>     ? __xsk_generic_xmit+0x51/0xb70
-> >>>>     ? _raw_spin_unlock_irqrestore+0xe/0x40
-> >>>>     xsk_sendmsg+0xda/0x1c0
-> >>>>     __sys_sendto+0x1ee/0x200
-> >>>>     __x64_sys_sendto+0x24/0x30
-> >>>>     do_syscall_64+0x84/0x2f0
-> >>>>     ? __pfx_pollwake+0x10/0x10
-> >>>>     ? __rseq_handle_notify_resume+0xad/0x4c0
-> >>>>     ? restore_fpregs_from_fpstate+0x3c/0x90
-> >>>>     ? switch_fpu_return+0x5b/0xe0
-> >>>>     ? do_syscall_64+0x204/0x2f0
-> >>>>     ? do_syscall_64+0x204/0x2f0
-> >>>>     ? do_syscall_64+0x204/0x2f0
-> >>>>     entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> >>>>     </TASK>
-> >>>>    [...]
-> >>>>    Kernel panic - not syncing: Fatal exception in interrupt
-> >>>>    Kernel Offset: 0x1c000000 from 0xffffffff81000000 (relocation ran=
-ge: 0xffffffff80000000-0xffffffffbfffffff)
-> >>>>
-> >>>> Instead use the skb destructor_arg pointer along with pointer taggin=
-g.
-> >>>> As pointers are always aligned to 8B, use the bottom bit to indicate
-> >>>> whether this a single address or an allocated struct containing seve=
-ral
-> >>>> addresses.
-> >>>>
-> >>>> Fixes: 30f241fcf52a ("xsk: Fix immature cq descriptor production")
-> >>>> Closes: https://lore.kernel.org/netdev/0435b904-f44f-48f8-afb0-68868=
-474bf1c@nop.hu/
-> >>>> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> >>>> Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
-> >>>> ---
-> >>>> v2: remove some leftovers on skb_build and simplify fragmented traff=
-ic
-> >>>> logic
-> >>>>
-> >>>> v3: drop skb extension approach, instead use pointer tagging in
-> >>>> destructor_arg to know whether we have a single address or an alloca=
-ted
-> >>>> struct with multiple ones. Also, move from bpf to net as requested
-> >>>>
-> >>>> v4: repost after rebasing
-> >>>>
-> >>>> v5: fixed increase logic so -EOVERFLOW is handled correctly as
-> >>>> suggested by Jason. Also dropped the acks/reviewed tags as code chan=
-ged.
-> >>>> ---
-> >>>>    net/xdp/xsk.c | 141 ++++++++++++++++++++++++++++++---------------=
------
-> >>>>    1 file changed, 85 insertions(+), 56 deletions(-)
-> >>>>
-> >>>> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> >>>> index 7b0c68a70888..f87cc4c89339 100644
-> >>>> --- a/net/xdp/xsk.c
-> >>>> +++ b/net/xdp/xsk.c
-> >>>> @@ -36,20 +36,13 @@
-> >>>>    #define TX_BATCH_SIZE 32
-> >>>>    #define MAX_PER_SOCKET_BUDGET 32
-> >>>>
-> >>>> -struct xsk_addr_node {
-> >>>> -       u64 addr;
-> >>>> -       struct list_head addr_node;
-> >>>> -};
-> >>>> -
-> >>>> -struct xsk_addr_head {
-> >>>> +struct xsk_addrs {
-> >>>>           u32 num_descs;
-> >>>> -       struct list_head addrs_list;
-> >>>> +       u64 addrs[MAX_SKB_FRAGS + 1];
-> >>>>    };
-> >>>>
-> >>>>    static struct kmem_cache *xsk_tx_generic_cache;
-> >>>>
-> >>>> -#define XSKCB(skb) ((struct xsk_addr_head *)((skb)->cb))
-> >>>> -
-> >>>>    void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
-> >>>>    {
-> >>>>           if (pool->cached_need_wakeup & XDP_WAKEUP_RX)
-> >>>> @@ -558,29 +551,63 @@ static int xsk_cq_reserve_locked(struct xsk_bu=
-ff_pool *pool)
-> >>>>           return ret;
-> >>>>    }
-> >>>>
-> >>>> +static bool xsk_skb_destructor_is_addr(struct sk_buff *skb)
-> >>>> +{
-> >>>> +       return (uintptr_t)skb_shinfo(skb)->destructor_arg & 0x1UL;
-> >>>> +}
-> >>>> +
-> >>>> +static u64 xsk_skb_destructor_get_addr(struct sk_buff *skb)
-> >>>> +{
-> >>>> +       return (u64)((uintptr_t)skb_shinfo(skb)->destructor_arg & ~0=
-x1UL);
-> >>>> +}
-> >>>> +
-> >>>> +static void xsk_inc_num_desc(struct sk_buff *skb)
-> >>>> +{
-> >>>> +       struct xsk_addrs *xsk_addr;
-> >>>> +
-> >>>> +       if (!xsk_skb_destructor_is_addr(skb)) {
-> >>>
-> >>> It's the condition that causes the above issues. Please see the
-> >>> following comment.
-> >>>
-> >>>> +               xsk_addr =3D (struct xsk_addrs *)skb_shinfo(skb)->de=
-structor_arg;
-> >>>> +               xsk_addr->num_descs++;
-> >>>> +       }
-> >>>> +}
-> >>>> +
-> >>>> +static u32 xsk_get_num_desc(struct sk_buff *skb)
-> >>>> +{
-> >>>> +       struct xsk_addrs *xsk_addr;
-> >>>> +
-> >>>> +       if (xsk_skb_destructor_is_addr(skb))
-> >>>> +               return 1;
-> >>>> +
-> >>>> +       xsk_addr =3D (struct xsk_addrs *)skb_shinfo(skb)->destructor=
-_arg;
-> >>>> +
-> >>>> +       return xsk_addr->num_descs;
-> >>>> +}
-> >>>> +
-> >>>>    static void xsk_cq_submit_addr_locked(struct xsk_buff_pool *pool,
-> >>>>                                         struct sk_buff *skb)
-> >>>>    {
-> >>>> -       struct xsk_addr_node *pos, *tmp;
-> >>>> +       u32 num_descs =3D xsk_get_num_desc(skb);
-> >>>> +       struct xsk_addrs *xsk_addr;
-> >>>>           u32 descs_processed =3D 0;
-> >>>>           unsigned long flags;
-> >>>> -       u32 idx;
-> >>>> +       u32 idx, i;
-> >>>>
-> >>>>           spin_lock_irqsave(&pool->cq_lock, flags);
-> >>>>           idx =3D xskq_get_prod(pool->cq);
-> >>>>
-> >>>> -       xskq_prod_write_addr(pool->cq, idx,
-> >>>> -                            (u64)(uintptr_t)skb_shinfo(skb)->destru=
-ctor_arg);
-> >>>> -       descs_processed++;
-> >>>> +       if (unlikely(num_descs > 1)) {
-> >>>> +               xsk_addr =3D (struct xsk_addrs *)skb_shinfo(skb)->de=
-structor_arg;
-> >>>>
-> >>>> -       if (unlikely(XSKCB(skb)->num_descs > 1)) {
-> >>>> -               list_for_each_entry_safe(pos, tmp, &XSKCB(skb)->addr=
-s_list, addr_node) {
-> >>>> +               for (i =3D 0; i < num_descs; i++) {
-> >>>>                           xskq_prod_write_addr(pool->cq, idx + descs=
-_processed,
-> >>>> -                                            pos->addr);
-> >>>> +                                            xsk_addr->addrs[i]);
-> >>>>                           descs_processed++;
-> >>>> -                       list_del(&pos->addr_node);
-> >>>> -                       kmem_cache_free(xsk_tx_generic_cache, pos);
-> >>>>                   }
-> >>>> +               kmem_cache_free(xsk_tx_generic_cache, xsk_addr);
-> >>>> +       } else {
-> >>>> +               xskq_prod_write_addr(pool->cq, idx,
-> >>>> +                                    xsk_skb_destructor_get_addr(skb=
-));
-> >>>> +               descs_processed++;
-> >>>>           }
-> >>>>           xskq_prod_submit_n(pool->cq, descs_processed);
-> >>>>           spin_unlock_irqrestore(&pool->cq_lock, flags);
-> >>>> @@ -595,16 +622,6 @@ static void xsk_cq_cancel_locked(struct xsk_buf=
-f_pool *pool, u32 n)
-> >>>>           spin_unlock_irqrestore(&pool->cq_lock, flags);
-> >>>>    }
-> >>>>
-> >>>> -static void xsk_inc_num_desc(struct sk_buff *skb)
-> >>>> -{
-> >>>> -       XSKCB(skb)->num_descs++;
-> >>>> -}
-> >>>> -
-> >>>> -static u32 xsk_get_num_desc(struct sk_buff *skb)
-> >>>> -{
-> >>>> -       return XSKCB(skb)->num_descs;
-> >>>> -}
-> >>>> -
-> >>>>    static void xsk_destruct_skb(struct sk_buff *skb)
-> >>>>    {
-> >>>>           struct xsk_tx_metadata_compl *compl =3D &skb_shinfo(skb)->=
-xsk_meta;
-> >>>> @@ -621,27 +638,22 @@ static void xsk_destruct_skb(struct sk_buff *s=
-kb)
-> >>>>    static void xsk_skb_init_misc(struct sk_buff *skb, struct xdp_soc=
-k *xs,
-> >>>>                                 u64 addr)
-> >>>>    {
-> >>>> -       BUILD_BUG_ON(sizeof(struct xsk_addr_head) > sizeof(skb->cb))=
-;
-> >>>> -       INIT_LIST_HEAD(&XSKCB(skb)->addrs_list);
-> >>>>           skb->dev =3D xs->dev;
-> >>>>           skb->priority =3D READ_ONCE(xs->sk.sk_priority);
-> >>>>           skb->mark =3D READ_ONCE(xs->sk.sk_mark);
-> >>>> -       XSKCB(skb)->num_descs =3D 0;
-> >>>>           skb->destructor =3D xsk_destruct_skb;
-> >>>> -       skb_shinfo(skb)->destructor_arg =3D (void *)(uintptr_t)addr;
-> >>>> +       skb_shinfo(skb)->destructor_arg =3D (void *)((uintptr_t)addr=
- | 0x1UL);
-> >>>>    }
-> >>>>
-> >>>>    static void xsk_consume_skb(struct sk_buff *skb)
-> >>>>    {
-> >>>>           struct xdp_sock *xs =3D xdp_sk(skb->sk);
-> >>>>           u32 num_descs =3D xsk_get_num_desc(skb);
-> >>>> -       struct xsk_addr_node *pos, *tmp;
-> >>>> +       struct xsk_addrs *xsk_addr;
-> >>>>
-> >>>>           if (unlikely(num_descs > 1)) {
-> >>>> -               list_for_each_entry_safe(pos, tmp, &XSKCB(skb)->addr=
-s_list, addr_node) {
-> >>>> -                       list_del(&pos->addr_node);
-> >>>> -                       kmem_cache_free(xsk_tx_generic_cache, pos);
-> >>>> -               }
-> >>>> +               xsk_addr =3D (struct xsk_addrs *)skb_shinfo(skb)->de=
-structor_arg;
-> >>>> +               kmem_cache_free(xsk_tx_generic_cache, xsk_addr);
-> >>>>           }
-> >>>>
-> >>>>           skb->destructor =3D sock_wfree;
-> >>>> @@ -701,7 +713,6 @@ static struct sk_buff *xsk_build_skb_zerocopy(st=
-ruct xdp_sock *xs,
-> >>>>    {
-> >>>>           struct xsk_buff_pool *pool =3D xs->pool;
-> >>>>           u32 hr, len, ts, offset, copy, copied;
-> >>>> -       struct xsk_addr_node *xsk_addr;
-> >>>>           struct sk_buff *skb =3D xs->skb;
-> >>>>           struct page *page;
-> >>>>           void *buffer;
-> >>>> @@ -727,16 +738,26 @@ static struct sk_buff *xsk_build_skb_zerocopy(=
-struct xdp_sock *xs,
-> >>>>                                   return ERR_PTR(err);
-> >>>>                   }
-> >>>>           } else {
-> >>>> -               xsk_addr =3D kmem_cache_zalloc(xsk_tx_generic_cache,=
- GFP_KERNEL);
-> >>>> -               if (!xsk_addr)
-> >>>> -                       return ERR_PTR(-ENOMEM);
-> >>>> +               struct xsk_addrs *xsk_addr;
-> >>>> +
-> >>>> +               if (xsk_skb_destructor_is_addr(skb)) {
-> >>>> +                       xsk_addr =3D kmem_cache_zalloc(xsk_tx_generi=
-c_cache,
-> >>>> +                                                    GFP_KERNEL);
-> >>>> +                       if (!xsk_addr)
-> >>>> +                               return ERR_PTR(-ENOMEM);
-> >>>> +
-> >>>> +                       xsk_addr->num_descs =3D 1;
-> >>>
-> >>> At this point, actually @num_descs should be equal to 2. I know it
-> >>> will be incremented by one at the end of xsk_build_skb().My concern
-> >>
-> >> Why? if we reach this it means this is the first time we see fragmente=
-d
-> >> traffic therefore we allocate xsk_addrs struct, store the previous ume=
-m
-> >> address in addrs[0] and num_descs =3D 1 and finally if no -EOVERFLOW
-> >> happens then the new desc->addr is added to addrs[num_descs] (which is
-> >> addrs[1]).
-> >>
-> >> Later, at the end of xsk_build_skb() or if -EOVERFLOW happens we
-> >> increase num_descs so if xsk_cq_cancel_locked() or
-> >> xsk_cq_submit_addr_locked() is called we have the right number of
-> >> descriptors.
-> >>
-> >> If we set @num_descs to 2 here, then when do we increase? I do not
-> >> understand that.
-> >
-> > I'm not saying the above logic is not right :)
-> >
-> >>
-> >>> is when skb only carries one descriptor, I don't see any place settin=
+November 20, 2025 at 20:58, "Jakub Sitnicki" <jakub@cloudflare.com mailto=
+:jakub@cloudflare.com?to=3D%22Jakub%20Sitnicki%22%20%3Cjakub%40cloudflare=
+.com%3E > wrote:
+
+
+>=20
+>=20On Thu, Nov 20, 2025 at 02:49 AM GMT, Jiayuan Chen wrote:
+>=20
+>=20>=20
+>=20> November 20, 2025 at 03:53, "Jakub Sitnicki" <jakub@cloudflare.com =
+mailto:jakub@cloudflare.com?to=3D%22Jakub%20Sitnicki%22%20%3Cjakub%40clou=
+dflare.com%3E > wrote:
+> >=20
+>=20>  [...]
+> >=20
+>=20> >=20
+>=20> > > +/* The BPF program sets BPF_F_INGRESS on sk_msg to indicate da=
+ta needs to be
+> > >  > + * redirected to the ingress queue of a specified socket. Since=
+ BPF_F_INGRESS is
+> > >  > + * defined in UAPI so that we can't extend this enum for our in=
+ternal flags. We
+> > >  > + * define some internal flags here while inheriting BPF_F_INGRE=
+SS.
+> > >  > + */
+> > >  > +enum {
+> > >  > + SK_MSG_F_INGRESS =3D BPF_F_INGRESS, /* (1ULL << 0) */
+> > >  > + /* internal flag */
+> > >  > + SK_MSG_F_INGRESS_SELF =3D (1ULL << 1)
+> > >  > +};
+> > >  > +
+> > >  >=20
+>=20> >  I'm wondering if we need additional state to track this.
+> > >  Can we track sk_msg's construted from skb's that were not redirect=
+ed by
+> > >  setting `sk_msg.sk =3D sk` to indicate that the source socket is u=
+s in
+> > >  sk_psock_skb_ingress_self()?
+> > >=20
+>=20>  Functionally, that would work. However, in that case, we would hav=
+e to hold
+> >  a reference to sk until the sk_msg is read, which would delay the re=
+lease of
+> >  sk. One concern is that if there is a bug in the read-side applicati=
+on, sk
+> >  might never be released.
+> >=20
+>=20We don't need to grab a reference to sk if we're talking about settin=
 g
-> >>> @num_descs to 1?
-> >>>
-> >>
-> >> When skb carries only one descriptor i.e traffic isn't segmented then
-> >> xsk_addr struct isn't allocated and destructor_arg is carrying just an
-> >> umem address.
-> >>
-> >> This is why xsk_get_num_desc() returns 1 if destructor_arg is an umem
-> >> address, because it means there is just a single descriptor.
-> >
-> > Here, It's the case that I'm worried about.
-> >
-> > Ah, well, I see your point. I previously thought this function would
-> > return @num_descs directly.
-> >
-> > Surely it works. However, from my perspective I feel it's a bit weird
-> > because when the skb only carries one desc, the @num_descs remains
-> > zero which doesn't reflect the fact. I understand you use that
-> > function to return one instead of reading @num_descs in this case.
-> > Just a bit weird. I'm not sure what Maciej's opinion is here.
-> >
->
-> FWIW, @num_descs isn't zero it just doesn't exist. num_descs is a field
-> of xsk_addr struct which is only allocated for fragmented traffic. This
-> is why xsk_get_num_desc() must be always used.
+> it only in sk_psock_skb_ingress_self(). psock already holds a ref for
+> psock->sk, and we purge psock->ingress_msg queue when destroying the
+> psock before releasing the sock ref in sk_psock_destroy().
 
-Right, I'm totally fine with it. And I don't think you need to repost
-it with that minor change unless Maciej asked you to do so :)
+I see. When it's an ingress to self redirection, the msg.sk would point t=
+o
+the same socket as psock->sk (the socket itself), not to another socket, =
+so
+indeed no additional reference grab is needed.
 
-Thanks,
-Jason
-
->
-> Thanks,
-> Fernando.
->
-> > Anyway, thanks as always for fixing this:
-> > Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
-> >
-> > Thanks,
-> > Jason
-> >
-> >
-> >>
-> >>>> +                       xsk_addr->addrs[0] =3D xsk_skb_destructor_ge=
-t_addr(skb);
-> >>>> +                       skb_shinfo(skb)->destructor_arg =3D (void *)=
-xsk_addr;
-> >>>> +               } else {
-> >>>> +                       xsk_addr =3D (struct xsk_addrs *)skb_shinfo(=
-skb)->destructor_arg;
-> >>>> +               }
-> >>>>
-> >>>>                   /* in case of -EOVERFLOW that could happen below,
-> >>>>                    * xsk_consume_skb() will release this node as who=
-le skb
-> >>>>                    * would be dropped, which implies freeing all lis=
-t elements
-> >>>>                    */
-> >>>> -               xsk_addr->addr =3D desc->addr;
-> >>>> -               list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->add=
-rs_list);
-> >>>> +               xsk_addr->addrs[xsk_addr->num_descs] =3D desc->addr;
-> >>>>           }
-> >>>>
-> >>>>           len =3D desc->len;
-> >>>> @@ -813,10 +834,25 @@ static struct sk_buff *xsk_build_skb(struct xd=
-p_sock *xs,
-> >>>>                           }
-> >>>>                   } else {
-> >>>>                           int nr_frags =3D skb_shinfo(skb)->nr_frags=
-;
-> >>>> -                       struct xsk_addr_node *xsk_addr;
-> >>>> +                       struct xsk_addrs *xsk_addr;
-> >>>>                           struct page *page;
-> >>>>                           u8 *vaddr;
-> >>>>
-> >>>> +                       if (xsk_skb_destructor_is_addr(skb)) {
-> >>>> +                               xsk_addr =3D kmem_cache_zalloc(xsk_t=
-x_generic_cache,
-> >>>> +                                                            GFP_KER=
-NEL);
-> >>>> +                               if (!xsk_addr) {
-> >>>> +                                       err =3D -ENOMEM;
-> >>>> +                                       goto free_err;
-> >>>> +                               }
-> >>>> +
-> >>>> +                               xsk_addr->num_descs =3D 1;
-> >>>
-> >>> same for here.
-> >>>
-> >>>> +                               xsk_addr->addrs[0] =3D xsk_skb_destr=
-uctor_get_addr(skb);
-> >>>> +                               skb_shinfo(skb)->destructor_arg =3D =
-(void *)xsk_addr;
-> >>>> +                       } else {
-> >>>> +                               xsk_addr =3D (struct xsk_addrs *)skb=
-_shinfo(skb)->destructor_arg;
-> >>>> +                       }
-> >>>> +
-> >>>>                           if (unlikely(nr_frags =3D=3D (MAX_SKB_FRAG=
-S - 1) && xp_mb_desc(desc))) {
-> >>>>                                   err =3D -EOVERFLOW;
-> >>>>                                   goto free_err;
-> >>>> @@ -828,13 +864,6 @@ static struct sk_buff *xsk_build_skb(struct xdp=
-_sock *xs,
-> >>>>                                   goto free_err;
-> >>>>                           }
-> >>>>
-> >>>> -                       xsk_addr =3D kmem_cache_zalloc(xsk_tx_generi=
-c_cache, GFP_KERNEL);
-> >>>> -                       if (!xsk_addr) {
-> >>>> -                               __free_page(page);
-> >>>> -                               err =3D -ENOMEM;
-> >>>> -                               goto free_err;
-> >>>> -                       }
-> >>>> -
-> >>>>                           vaddr =3D kmap_local_page(page);
-> >>>>                           memcpy(vaddr, buffer, len);
-> >>>>                           kunmap_local(vaddr);
-> >>>> @@ -842,12 +871,12 @@ static struct sk_buff *xsk_build_skb(struct xd=
-p_sock *xs,
-> >>>>                           skb_add_rx_frag(skb, nr_frags, page, 0, le=
-n, PAGE_SIZE);
-> >>>>                           refcount_add(PAGE_SIZE, &xs->sk.sk_wmem_al=
-loc);
-> >>>>
-> >>>> -                       xsk_addr->addr =3D desc->addr;
-> >>>> -                       list_add_tail(&xsk_addr->addr_node, &XSKCB(s=
-kb)->addrs_list);
-> >>>> +                       xsk_addr->addrs[xsk_addr->num_descs] =3D des=
-c->addr;
-> >>>>                   }
-> >>>>           }
-> >>>>
-> >>>> -       xsk_inc_num_desc(skb);
-> >>>> +       if (!xsk_skb_destructor_is_addr(skb))
-> >>>
-> >>> nit: duplicate if statement
-> >>>
-> >>> IIUC, I'm afraid you have to repost this patch after 24 hour...
-> >>>
-> >>
-> >> Thanks, yes this if statement isn't necessary. Thanks! I will repost
-> >> after 24 hours.
-> >>
-> >>> Thanks,
-> >>> Jason
-> >>>
-> >>>> +               xsk_inc_num_desc(skb);
-> >>>>
-> >>>>           return skb;
-> >>>>
-> >>>> @@ -1904,7 +1933,7 @@ static int __init xsk_init(void)
-> >>>>                   goto out_pernet;
-> >>>>
-> >>>>           xsk_tx_generic_cache =3D kmem_cache_create("xsk_generic_xm=
-it_cache",
-> >>>> -                                                sizeof(struct xsk_a=
-ddr_node),
-> >>>> +                                                sizeof(struct xsk_a=
-ddrs),
-> >>>>                                                    0, SLAB_HWCACHE_A=
-LIGN, NULL);
-> >>>>           if (!xsk_tx_generic_cache) {
-> >>>>                   err =3D -ENOMEM;
-> >>>> --
-> >>>> 2.51.1
-> >>>>
-> >>>
-> >>
+> While there's nothing wrong with an internal flaag, I'm trying to see i=
+f
+> we make things somewhat consistent so as a result sk_msg state is easie=
+r
+> to reason about.
+>=20
+>=20My thinking here is that we already set sk_msg.sk to source socket in
+> sk_psock_msg_verdict() on sendmsg() path, so we know that this is the
+> purpose of that field. We could mimic this on recvmsg() path.
 >
 
