@@ -1,72 +1,66 @@
-Return-Path: <bpf+bounces-75125-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75126-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E5CCC71C54
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 03:11:07 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74C35C71C9F
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 03:12:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sto.lore.kernel.org (Postfix) with ESMTPS id A0D5C299FF
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 02:11:06 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6359C4E54C4
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 02:11:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB7228136C;
-	Thu, 20 Nov 2025 02:10:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 034F929C351;
+	Thu, 20 Nov 2025 02:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fvm5q6kS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZSnB/Pj1"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F8D27FD5A;
-	Thu, 20 Nov 2025 02:10:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B8829293D;
+	Thu, 20 Nov 2025 02:10:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763604644; cv=none; b=EtSiAtxkFncw3IR6NEDiorYm/aILpnuuB9XYH+3txDb5EZQ4LOpMJWCCPBmadJQaallctAObuYv46QPIF7NvQ3CPOUEsZyPCnQfCVePPQNhBbYHFMAmnkQ0Jrp1oxnlOqvmvsIUcSCbhN4pNmUyoHOQxne9nvvHMbJgbVBS3Uq4=
+	t=1763604649; cv=none; b=IzN3INRTVzXqlBOKvV0A36wzEaSf2QJ5OFK9MM3oX4pO6vb1qWZ/Xn1VsEpvfrRRUqRbEXWGGqvGMO1xCCzJjlZIZzx/1cY+ANFAwMvfsUc6LVSt6BQ4lUcW19QOnpaRb+/HfGpYhanCx2NpGWWffkED+5u7kdEXjX4RCgkKhAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763604644; c=relaxed/simple;
-	bh=b+X41mWMAQNr+HIJHBkVEr/hmF18sHzw0a6w5PrI2/I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=f3C/LIJ8qEL6rpSlpOXA3dIVKpzoSut02DxjdYqYWcXoP6fbq1JO3hBKtM9JGU8y4D6wJZKEFA2q/mBsg8rcaQEGR18bl8mJ4bffKI/5g1E4rfDxV7cr3ncV0qA4vNzFxGav/wHyv3B7n3QM+ZyPQbizkM6SB4eBu9LGd2z9khA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fvm5q6kS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65F62C113D0;
-	Thu, 20 Nov 2025 02:10:43 +0000 (UTC)
+	s=arc-20240116; t=1763604649; c=relaxed/simple;
+	bh=wmxKNgOjkxVsjYwcUFsQJIQOmPj8AtmwO5pYfTRRrqY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WdXWkzEDe8dgdz8vF9ZsRz0kNdd46CglrMbxDphq5fK+lwo+391VMxPqpkTkHtp/j+YIbYqZ6f4pEkuAGMYjxL5rKB/Ze5cgt/1a6H2H1GCCb4HT8F2/f8Xu5JwmrlsxzdbpLthyfLYIumZEZ/GDvKhmYgYT3F6JqZgF/oWD9gU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZSnB/Pj1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C9C4C19421;
+	Thu, 20 Nov 2025 02:10:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763604644;
-	bh=b+X41mWMAQNr+HIJHBkVEr/hmF18sHzw0a6w5PrI2/I=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fvm5q6kS6IrzSMTjsx3L0/B3lfqKumepCJiSt8rLqxcf7ZzqbomAT7X0hZO2pLV/Y
-	 eH7XNFThHgvWO/P/ci8/wsUK3BLV1NiRthudh0EWVh73B3U8QrX4Nues5tHMAKklN1
-	 6fDPktG530JrDT8p5zM08x53vMPzFzuGsn91gsO91AIIYTJlUJILpveUHTxqZs/xzZ
-	 GyurMnq+1oZNw0pcb8Rr1aC1qXSnprQbOjPA8M+pj4EVt1i1tlF9/m3/k7DodhKou1
-	 +CgoznOzdUkGH3UnXsqTkgHkPlQumRmWZc6d2S2NoINlyYDSHE0CPEeam/+JVrsMTR
-	 i5fJjNboibo7w==
-From: Jakub Kicinski <kuba@kernel.org>
-To: davem@davemloft.net
-Cc: netdev@vger.kernel.org,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	andrew+netdev@lunn.ch,
-	horms@kernel.org,
-	willemdebruijn.kernel@gmail.com,
-	shuah@kernel.org,
-	sdf@fomichev.me,
-	krakauer@google.com,
-	linux-kselftest@vger.kernel.org,
-	petrm@nvidia.com,
-	matttbe@kernel.org,
-	Jakub Kicinski <kuba@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	hawk@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
+	s=k20201202; t=1763604648;
+	bh=wmxKNgOjkxVsjYwcUFsQJIQOmPj8AtmwO5pYfTRRrqY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ZSnB/Pj111tbOL8O1FQ9VXTrwTnNA+MTx7t2u6C4Zj8AqlYsvJBZr2Iv4G7W+dzlM
+	 G1QtQHCUdbzuUJiQK76S2Hcn7wXoDWrDaVychAPT7ggK85ocGcUugO5Dk3P6qCiqL6
+	 TLq+4G99z0/jS4ZLJ0lNUhyOUrvHwrmWaDgwtuYJW7MjzTDFfjP4Dfa8nhAqE33I0F
+	 iJGCokCCkFQQ+/KQeAH0nsKY/YZvIkkswBDgAQA3AvDn27fQBr5RKPSc9IdgxviyKN
+	 AuplRA0uZGHqZhsIeFAZkz1Ipa/g9BX+SpYiia4b3qRTBG87VWc8TaSy3PV+HZmzXu
+	 7CB9BUFsvZeRA==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	James Clark <james.clark@linaro.org>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-trace-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v3 04/12] selftests: drv-net: xdp: use variants for qstat tests
-Date: Wed, 19 Nov 2025 18:10:16 -0800
-Message-ID: <20251120021024.2944527-5-kuba@kernel.org>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <20251120021024.2944527-1-kuba@kernel.org>
-References: <20251120021024.2944527-1-kuba@kernel.org>
+Subject: [PATCHSET v5 0/6] perf tools: Add deferred callchain support
+Date: Wed, 19 Nov 2025 18:10:40 -0800
+Message-ID: <20251120021046.94490-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,98 +69,121 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use just-added ksft variants for XDP qstat tests.
+Hello,
 
-While at it correct the number of packets, we're sending
-1000 packets now.
+This is a new version of deferred callchain support as the kernel part
+is merged to the tip tree.  Actually this is based on Steve's work (v16).
 
-Reviewed-by: Petr Machata <petrm@nvidia.com>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-cc: hawk@kernel.org
-cc: daniel@iogearbox.net
-cc: ast@kernel.org
-cc: bpf@vger.kernel.org
----
- tools/testing/selftests/drivers/net/xdp.py | 42 ++++++++--------------
- 1 file changed, 14 insertions(+), 28 deletions(-)
+  https://lore.kernel.org/r/20250908175319.841517121@kernel.org
 
-diff --git a/tools/testing/selftests/drivers/net/xdp.py b/tools/testing/selftests/drivers/net/xdp.py
-index 834a37ae7d0d..e54df158dfe9 100755
---- a/tools/testing/selftests/drivers/net/xdp.py
-+++ b/tools/testing/selftests/drivers/net/xdp.py
-@@ -12,6 +12,7 @@ from dataclasses import dataclass
- from enum import Enum
- 
- from lib.py import ksft_run, ksft_exit, ksft_eq, ksft_ge, ksft_ne, ksft_pr
-+from lib.py import KsftNamedVariant, ksft_variants
- from lib.py import KsftFailEx, NetDrvEpEnv
- from lib.py import EthtoolFamily, NetdevFamily, NlError
- from lib.py import bkg, cmd, rand_port, wait_port_listen
-@@ -672,7 +673,18 @@ from lib.py import ip, bpftool, defer
-     _validate_res(res, offset_lst, pkt_sz_lst)
- 
- 
--def _test_xdp_native_ifc_stats(cfg, act):
-+@ksft_variants([
-+    KsftNamedVariant("pass", XDPAction.PASS),
-+    KsftNamedVariant("drop", XDPAction.DROP),
-+    KsftNamedVariant("tx", XDPAction.TX),
-+])
-+def test_xdp_native_qstats(cfg, act):
-+    """
-+    Send 1000 messages. Expect XDP action specified in @act.
-+    Make sure the packets were counted to interface level qstats
-+    (Rx, and Tx if act is TX).
-+    """
-+
-     cfg.require_cmd("socat")
- 
-     bpf_info = BPFProgInfo("xdp_prog", "xdp_native.bpf.o", "xdp", 1500)
-@@ -733,30 +745,6 @@ from lib.py import ip, bpftool, defer
-             ksft_ge(after['tx-packets'], before['tx-packets'])
- 
- 
--def test_xdp_native_qstats_pass(cfg):
--    """
--    Send 2000 messages, expect XDP_PASS, make sure the packets were counted
--    to interface level qstats (Rx).
--    """
--    _test_xdp_native_ifc_stats(cfg, XDPAction.PASS)
--
--
--def test_xdp_native_qstats_drop(cfg):
--    """
--    Send 2000 messages, expect XDP_DROP, make sure the packets were counted
--    to interface level qstats (Rx).
--    """
--    _test_xdp_native_ifc_stats(cfg, XDPAction.DROP)
--
--
--def test_xdp_native_qstats_tx(cfg):
--    """
--    Send 2000 messages, expect XDP_TX, make sure the packets were counted
--    to interface level qstats (Rx and Tx)
--    """
--    _test_xdp_native_ifc_stats(cfg, XDPAction.TX)
--
--
- def main():
-     """
-     Main function to execute the XDP tests.
-@@ -781,9 +769,7 @@ from lib.py import ip, bpftool, defer
-                 test_xdp_native_adjst_tail_shrnk_data,
-                 test_xdp_native_adjst_head_grow_data,
-                 test_xdp_native_adjst_head_shrnk_data,
--                test_xdp_native_qstats_pass,
--                test_xdp_native_qstats_drop,
--                test_xdp_native_qstats_tx,
-+                test_xdp_native_qstats,
-             ],
-             args=(cfg,))
-     ksft_exit()
+v5 changes)
+
+* update delegate tools  (Ian)
+* copy and flush remaining samples  (Ian)
+* add Ian's Reviewed-by tags
+
+v4: https://lore.kernel.org/r/20251115234106.348571-1-namhyung@kernel.org
+
+* add --call-graph fp,defer option   (Ian, Steve)
+* add more comment on the cookie  (Ian)
+* display cookie part in the deferred callchain  (Ian)
+
+v3: https://lore.kernel.org/r/20251114070018.160330-1-namhyung@kernel.org
+
+* handle new attr.defer_output to generate deferred callchains
+* fix crash when cookies don't match  (Steven)
+* disable merging for perf inject
+* fix missing feature detection bug
+* symbolize merged callchains properly
+
+Here's an example session.
+
+  $ perf record --call-graph fp,defer  pwd
+  /home/namhyung/project/linux
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.010 MB perf.data (29 samples) ]
+
+  $ perf evlist -v
+  cpu/cycles/P: type: 0 (PERF_TYPE_HARDWARE), size: 136, config: 0 (PERF_COUNT_HW_CPU_CYCLES),
+  { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CALLCHAIN|PERIOD,
+  read_format: ID|LOST, disabled: 1, inherit: 1, mmap: 1, comm: 1, freq: 1, enable_on_exec: 1,
+  task: 1, sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1, build_id: 1,
+  defer_callchain: 1, defer_output: 1
+
+  $ perf script
+  ...
+  pwd    2312   121.163435:     249113 cpu/cycles/P:
+          ffffffff845b78d8 __build_id_parse.isra.0+0x218 ([kernel.kallsyms])
+          ffffffff83bb5bf6 perf_event_mmap+0x2e6 ([kernel.kallsyms])
+          ffffffff83c31959 mprotect_fixup+0x1e9 ([kernel.kallsyms])
+          ffffffff83c31dc5 do_mprotect_pkey+0x2b5 ([kernel.kallsyms])
+          ffffffff83c3206f __x64_sys_mprotect+0x1f ([kernel.kallsyms])
+          ffffffff845e6692 do_syscall_64+0x62 ([kernel.kallsyms])
+          ffffffff8360012f entry_SYSCALL_64_after_hwframe+0x76 ([kernel.kallsyms])
+              7f18fe337fa7 mprotect+0x7 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+              7f18fe330e0f _dl_sysdep_start+0x7f (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+              7f18fe331448 _dl_start_user+0x0 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+  ...
+
+  $ perf script --no-merge-callchains
+  ...
+  pwd    2312   121.163435:     249113 cpu/cycles/P:
+          ffffffff845b78d8 __build_id_parse.isra.0+0x218 ([kernel.kallsyms])
+          ffffffff83bb5bf6 perf_event_mmap+0x2e6 ([kernel.kallsyms])
+          ffffffff83c31959 mprotect_fixup+0x1e9 ([kernel.kallsyms])
+          ffffffff83c31dc5 do_mprotect_pkey+0x2b5 ([kernel.kallsyms])
+          ffffffff83c3206f __x64_sys_mprotect+0x1f ([kernel.kallsyms])
+          ffffffff845e6692 do_syscall_64+0x62 ([kernel.kallsyms])
+          ffffffff8360012f entry_SYSCALL_64_after_hwframe+0x76 ([kernel.kallsyms])
+                 b00000006 (cookie) ([unknown])
+
+  pwd    2312   121.163447: DEFERRED CALLCHAIN [cookie: b00000006]
+              7f18fe337fa7 mprotect+0x7 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+              7f18fe330e0f _dl_sysdep_start+0x7f (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+              7f18fe331448 _dl_start_user+0x0 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+  ...
+
+The code is available at 'perf/defer-callchain-v5' branch in
+
+  git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (6):
+  tools headers UAPI: Sync linux/perf_event.h for deferred callchains
+  perf tools: Minimal DEFERRED_CALLCHAIN support
+  perf record: Add --call-graph fp,defer option for deferred callchains
+  perf script: Display PERF_RECORD_CALLCHAIN_DEFERRED
+  perf tools: Merge deferred user callchains
+  perf tools: Flush remaining samples w/o deferred callchains
+
+ tools/include/uapi/linux/perf_event.h     |  21 ++-
+ tools/lib/perf/include/perf/event.h       |  13 ++
+ tools/perf/Documentation/perf-config.txt  |   3 +
+ tools/perf/Documentation/perf-record.txt  |   4 +
+ tools/perf/Documentation/perf-script.txt  |   5 +
+ tools/perf/builtin-inject.c               |   1 +
+ tools/perf/builtin-report.c               |   1 +
+ tools/perf/builtin-script.c               |  93 +++++++++++
+ tools/perf/util/callchain.c               |  45 +++++-
+ tools/perf/util/callchain.h               |   4 +
+ tools/perf/util/event.c                   |   1 +
+ tools/perf/util/evlist.c                  |   1 +
+ tools/perf/util/evlist.h                  |   2 +
+ tools/perf/util/evsel.c                   |  50 +++++-
+ tools/perf/util/evsel.h                   |   1 +
+ tools/perf/util/evsel_fprintf.c           |   5 +-
+ tools/perf/util/machine.c                 |   1 +
+ tools/perf/util/perf_event_attr_fprintf.c |   2 +
+ tools/perf/util/sample.h                  |   2 +
+ tools/perf/util/session.c                 | 183 ++++++++++++++++++++++
+ tools/perf/util/tool.c                    |   5 +
+ tools/perf/util/tool.h                    |   4 +-
+ 22 files changed, 439 insertions(+), 8 deletions(-)
+
 -- 
-2.51.1
+2.52.0.rc1.455.g30608eb744-goog
 
 
