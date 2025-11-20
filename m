@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-75191-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75192-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98E8BC765EB
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 22:27:45 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D07DBC765F1
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 22:28:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id BA64A35B4BA
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 21:26:35 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 378EE35BA54
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 21:26:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A863612F9;
-	Thu, 20 Nov 2025 21:25:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80AF5363C6F;
+	Thu, 20 Nov 2025 21:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XRg5qdDt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G5bdWYXb"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 607922ED16B;
-	Thu, 20 Nov 2025 21:25:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E16963242A1;
+	Thu, 20 Nov 2025 21:25:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763673926; cv=none; b=SfoUKpxOeq2LtUQNnn32JREGxJ2DRWbFFkK7muHbIRqi3WacmiA2L4s/c/ulBHp7DUvz4YsNEEdfKnIOTlBjjSXmmuvbLjGLgbr4rJXnwiZSCtOkDwqfGBq7DN3ViboAdKDJ7FJegW8qxCnWOIGiVSqLjkQsgg0E/RlYimzoxIQ=
+	t=1763673937; cv=none; b=KvN1gsYXjuR3m3ZM6iorStMgmrrYz5gACJRnc1SUwjJVc1o/J39XGl0N0YfJ2Gp5l6ObTRyE2FncLQuJsyJ1onQdwRPsVPUmcRWSvDmMw+2p04jyx4ptgE8WVWnld7zH2jbqZcwrg07h/TlDtQpb1Jet543l9Vcu+sw53d5XaUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763673926; c=relaxed/simple;
-	bh=Mqo7EJXWsx+FIdks6hO54RzctmDz89Zob5j/Foh8C5s=;
+	s=arc-20240116; t=1763673937; c=relaxed/simple;
+	bh=tWsIX28eUU09Y+4XW8T9/1bbDivP+CjAgctxdhSf0nM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qZHXEG3wKEG0u87E7uqJzkUzAI0G1L9xJ5a4Isd3VjfrS1yfePESoK2vW5GeD3kmgRgnG0EaLvSLEUKMmOjgoR+F4hLdZWuwu7g+DS1XVLfPqidh0ioV0O7KP0EPrvsxQhGnkI1VZtgQRE09+TasIz5a8B72fxbBfDc1BT6wr3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XRg5qdDt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2804AC4CEF1;
-	Thu, 20 Nov 2025 21:25:22 +0000 (UTC)
+	 MIME-Version; b=J4NgM5pkF+jWujHc9ATYpQcHDNrolWwu3/IAvOHPSrWmPLRJV4yyOX4XGdFUH6qbmHymBQ3/GvTU3NQjPM5d07YalMmwnfh2Uje56PZdKnY65582mSsP6Qfx62rqhHuROYr3E8tO2XX/AGAj/Te33hdq/vXQGkrdOSeQKhjWHLw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G5bdWYXb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 940F6C4CEF1;
+	Thu, 20 Nov 2025 21:25:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763673926;
-	bh=Mqo7EJXWsx+FIdks6hO54RzctmDz89Zob5j/Foh8C5s=;
+	s=k20201202; t=1763673936;
+	bh=tWsIX28eUU09Y+4XW8T9/1bbDivP+CjAgctxdhSf0nM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XRg5qdDtc1bbMIuHUS7oV7q4fVldJSAs/eOXXb7KurtnJxPv9/edGgaZ64jo9BdDF
-	 Qd9z8LAa63AqLrYxBJp+DilczhZFAtY8dQItBTOQs1fNHBF9cFXQaHJUnWGWr0v9CM
-	 izWVLofNcXUz4w5M01+Uwly/Xg6dT1RsyRb8Bx4rRhI1Za0tDaP+lMySoTKAafggbV
-	 1wssL8k2PGjPO7L4FlyPCNz5Xn1h/y5rPJDFzuntWQJJivlsOffHRQqoW/VH9KoAR4
-	 qVrd3Xn7neGlbOF8alonNIyewGVs3p+4zhB3GwTPMQ5AAzwEX2591hbqMSefZ3LeXy
-	 KXI/zGrCUKnGw==
+	b=G5bdWYXbUX7EtiNCcmeVlhB9VsPW+pdJ9kuu2dZxAM15q+VCh9jqvzzI3YvzYjLV7
+	 WyY5d3z1KexwMY14vA19/UaPPX15FsSDX6FpNXEsDEYCyG/sQDY3zicRRnWS1pLzhO
+	 aa2Prrs92VBCtpZ5ZYadyKGTB1kn2Kdq5FDNueFlsU3swjzCOtWaAMhcorraHx1kUa
+	 xqZnOLkg3uejk5h7l1ZbwWY7UqtphvcIemA1lUQRCHV7vCxoLeBbJpI5ROaqleSApi
+	 fr0/L4gigkYqmCUnAguD0B8uXObigT8WS7R/VGoIxChs3B0sKAU+g4gqY0YVpIl8y1
+	 DJ9a8t03RKUGA==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Steven Rostedt <rostedt@kernel.org>,
 	Florent Revest <revest@google.com>,
@@ -54,9 +54,9 @@ Cc: bpf@vger.kernel.org,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Menglong Dong <menglong8.dong@gmail.com>,
 	Song Liu <song@kernel.org>
-Subject: [PATCHv3 bpf-next 7/8] ftrace: Factor ftrace_ops ops_func interface
-Date: Thu, 20 Nov 2025 22:24:01 +0100
-Message-ID: <20251120212402.466524-8-jolsa@kernel.org>
+Subject: [PATCHv3 bpf-next 8/8] bpf, x86: Use single ftrace_ops for direct calls
+Date: Thu, 20 Nov 2025 22:24:02 +0100
+Message-ID: <20251120212402.466524-9-jolsa@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251120212402.466524-1-jolsa@kernel.org>
 References: <20251120212402.466524-1-jolsa@kernel.org>
@@ -68,77 +68,307 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We are going to remove "ftrace_ops->private == bpf_trampoline" setup
-in following changes.
+Using single ftrace_ops for direct calls update instead of allocating
+ftrace_ops object for each trampoline.
 
-Adding ip argument to ftrace_ops_func_t callback function, so we can
-use it to look up the trampoline.
+With single ftrace_ops object we can use update_ftrace_direct_* api
+that allows multiple ip sites updates on single ftrace_ops object.
+
+Adding HAVE_SINGLE_FTRACE_DIRECT_OPS config option to be enabled on
+each arch that supports this.
+
+At the moment we can enable this only on x86 arch, because arm relies
+on ftrace_ops object representing just single trampoline image (stored
+in ftrace_ops::direct_call). Ach that do not support this will continue
+to use *_ftrace_direct api.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/linux/ftrace.h  | 2 +-
- kernel/bpf/trampoline.c | 3 ++-
- kernel/trace/ftrace.c   | 6 +++---
- 3 files changed, 6 insertions(+), 5 deletions(-)
+ arch/x86/Kconfig        |   1 +
+ kernel/bpf/trampoline.c | 172 +++++++++++++++++++++++++++++++++++-----
+ kernel/trace/Kconfig    |   3 +
+ kernel/trace/ftrace.c   |   7 +-
+ 4 files changed, 164 insertions(+), 19 deletions(-)
 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 4e2c0ed769fc..5aa37dec0081 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -402,7 +402,7 @@ enum ftrace_ops_cmd {
-  *        Negative on failure. The return value is dependent on the
-  *        callback.
-  */
--typedef int (*ftrace_ops_func_t)(struct ftrace_ops *op, enum ftrace_ops_cmd cmd);
-+typedef int (*ftrace_ops_func_t)(struct ftrace_ops *op, unsigned long ip, enum ftrace_ops_cmd cmd);
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index fa3b616af03a..65a2fc279b46 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -332,6 +332,7 @@ config X86
+ 	select SCHED_SMT			if SMP
+ 	select ARCH_SUPPORTS_SCHED_CLUSTER	if SMP
+ 	select ARCH_SUPPORTS_SCHED_MC		if SMP
++	select HAVE_SINGLE_FTRACE_DIRECT_OPS	if X86_64 && DYNAMIC_FTRACE_WITH_DIRECT_CALLS
  
- #ifdef CONFIG_DYNAMIC_FTRACE
- 
+ config INSTRUCTION_DECODER
+ 	def_bool y
 diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index f33693061c2e..d8762f7990ed 100644
+index d8762f7990ed..9cc4de215df7 100644
 --- a/kernel/bpf/trampoline.c
 +++ b/kernel/bpf/trampoline.c
-@@ -33,7 +33,8 @@ static DEFINE_MUTEX(trampoline_mutex);
+@@ -33,12 +33,40 @@ static DEFINE_MUTEX(trampoline_mutex);
  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
  static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mutex);
  
--static int bpf_tramp_ftrace_ops_func(struct ftrace_ops *ops, enum ftrace_ops_cmd cmd)
-+static int bpf_tramp_ftrace_ops_func(struct ftrace_ops *ops, unsigned long ip,
-+				     enum ftrace_ops_cmd cmd)
++#ifdef CONFIG_HAVE_SINGLE_FTRACE_DIRECT_OPS
++static struct bpf_trampoline *direct_ops_ip_lookup(struct ftrace_ops *ops, unsigned long ip)
++{
++	struct hlist_head *head_ip;
++	struct bpf_trampoline *tr;
++
++	mutex_lock(&trampoline_mutex);
++	head_ip = &trampoline_ip_table[hash_64(ip, TRAMPOLINE_HASH_BITS)];
++	hlist_for_each_entry(tr, head_ip, hlist_ip) {
++		if (tr->ip == ip)
++			goto out;
++	}
++	tr = NULL;
++out:
++	mutex_unlock(&trampoline_mutex);
++	return tr;
++}
++#else
++static struct bpf_trampoline *direct_ops_ip_lookup(struct ftrace_ops *ops, unsigned long ip)
++{
++	return ops->private;
++}
++#endif /* CONFIG_HAVE_SINGLE_FTRACE_DIRECT_OPS */
++
+ static int bpf_tramp_ftrace_ops_func(struct ftrace_ops *ops, unsigned long ip,
+ 				     enum ftrace_ops_cmd cmd)
  {
- 	struct bpf_trampoline *tr = ops->private;
+-	struct bpf_trampoline *tr = ops->private;
++	struct bpf_trampoline *tr;
  	int ret = 0;
+ 
++	tr = direct_ops_ip_lookup(ops, ip);
++	if (!tr)
++		return -EINVAL;
++
+ 	if (cmd == FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_SELF) {
+ 		/* This is called inside register_ftrace_direct_multi(), so
+ 		 * tr->mutex is already locked.
+@@ -137,6 +165,126 @@ void bpf_image_ksym_del(struct bpf_ksym *ksym)
+ 			   PAGE_SIZE, true, ksym->name);
+ }
+ 
++#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
++#ifdef CONFIG_HAVE_SINGLE_FTRACE_DIRECT_OPS
++/*
++ * We have only single direct_ops which contains all the direct call
++ * sites and is the only global ftrace_ops for all trampolines.
++ *
++ * We use 'update_ftrace_direct_*' api for attachment.
++ */
++struct ftrace_ops direct_ops = {
++	.ops_func = bpf_tramp_ftrace_ops_func,
++};
++
++static int direct_ops_alloc(struct bpf_trampoline *tr)
++{
++	tr->fops = &direct_ops;
++	return 0;
++}
++
++static void direct_ops_free(struct bpf_trampoline *tr) { }
++
++static struct ftrace_hash *hash_from(unsigned long ip, void *addr)
++{
++	struct ftrace_hash *hash;
++
++	ip = ftrace_location(ip);
++	if (!ip)
++		return NULL;
++	hash = alloc_ftrace_hash(FTRACE_HASH_DEFAULT_BITS);
++	if (!hash)
++		return NULL;
++	if (!add_hash_entry_direct(hash, ip, (unsigned long) addr)) {
++		free_ftrace_hash(hash);
++		return NULL;
++	}
++	return hash;
++}
++
++static int direct_ops_add(struct ftrace_ops *ops, unsigned long ip, void *addr)
++{
++	struct ftrace_hash *hash = hash_from(ip, addr);
++	int err = -ENOMEM;
++
++	if (hash)
++		err = update_ftrace_direct_add(ops, hash);
++	free_ftrace_hash(hash);
++	return err;
++}
++
++static int direct_ops_del(struct ftrace_ops *ops, unsigned long ip, void *addr)
++{
++	struct ftrace_hash *hash = hash_from(ip, addr);
++	int err = -ENOMEM;
++
++	if (hash)
++		err = update_ftrace_direct_del(ops, hash);
++	free_ftrace_hash(hash);
++	return err;
++}
++
++static int direct_ops_mod(struct ftrace_ops *ops, unsigned long ip, void *addr, bool lock_direct_mutex)
++{
++	struct ftrace_hash *hash = hash_from(ip, addr);
++	int err = -ENOMEM;
++
++	if (hash)
++		err = update_ftrace_direct_mod(ops, hash, lock_direct_mutex);
++	free_ftrace_hash(hash);
++	return err;
++}
++#else
++/*
++ * We allocate ftrace_ops object for each trampoline and it contains
++ * call site specific for that trampoline.
++ *
++ * We use *_ftrace_direct api for attachment.
++ */
++static int direct_ops_alloc(struct bpf_trampoline *tr)
++{
++	tr->fops = kzalloc(sizeof(struct ftrace_ops), GFP_KERNEL);
++	if (!tr->fops)
++		return -ENOMEM;
++	tr->fops->private = tr;
++	tr->fops->ops_func = bpf_tramp_ftrace_ops_func;
++	return 0;
++}
++
++static void direct_ops_free(struct bpf_trampoline *tr)
++{
++	if (tr->fops) {
++		ftrace_free_filter(tr->fops);
++		kfree(tr->fops);
++	}
++}
++
++static int direct_ops_add(struct ftrace_ops *ops, unsigned long ip, void *addr)
++{
++	int ret;
++
++	ret = ftrace_set_filter_ip(ops, (unsigned long)ip, 0, 1);
++	if (ret)
++		return ret;
++	return register_ftrace_direct(ops, (long)addr);
++}
++
++static int direct_ops_del(struct ftrace_ops *ops, unsigned long ip, void *addr)
++{
++	return unregister_ftrace_direct(ops, (long)addr, false);
++}
++
++static int direct_ops_mod(struct ftrace_ops *ops, unsigned long ip, void *addr, bool lock_direct_mutex)
++{
++	if (lock_direct_mutex)
++		return modify_ftrace_direct(ops, (long)addr);
++	return modify_ftrace_direct_nolock(ops, (long)addr);
++}
++#endif /* CONFIG_HAVE_SINGLE_FTRACE_DIRECT_OPS */
++#else
++static void direct_ops_free(struct bpf_trampoline *tr) { }
++#endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
++
+ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key, unsigned long ip)
+ {
+ 	struct bpf_trampoline *tr;
+@@ -155,14 +303,11 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key, unsigned long ip)
+ 	if (!tr)
+ 		goto out;
+ #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+-	tr->fops = kzalloc(sizeof(struct ftrace_ops), GFP_KERNEL);
+-	if (!tr->fops) {
++	if (direct_ops_alloc(tr)) {
+ 		kfree(tr);
+ 		tr = NULL;
+ 		goto out;
+ 	}
+-	tr->fops->private = tr;
+-	tr->fops->ops_func = bpf_tramp_ftrace_ops_func;
+ #endif
+ 
+ 	tr->key = key;
+@@ -187,7 +332,7 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
+ 	int ret;
+ 
+ 	if (tr->func.ftrace_managed)
+-		ret = unregister_ftrace_direct(tr->fops, (long)old_addr, false);
++		ret = direct_ops_del(tr->fops, tr->ip, old_addr);
+ 	else
+ 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, NULL);
+ 
+@@ -201,10 +346,7 @@ static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void *new_ad
+ 	int ret;
+ 
+ 	if (tr->func.ftrace_managed) {
+-		if (lock_direct_mutex)
+-			ret = modify_ftrace_direct(tr->fops, (long)new_addr);
+-		else
+-			ret = modify_ftrace_direct_nolock(tr->fops, (long)new_addr);
++		ret = direct_ops_mod(tr->fops, tr->ip, new_addr, lock_direct_mutex);
+ 	} else {
+ 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, new_addr);
+ 	}
+@@ -226,10 +368,7 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
+ 	}
+ 
+ 	if (tr->func.ftrace_managed) {
+-		ret = ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 0, 1);
+-		if (ret)
+-			return ret;
+-		ret = register_ftrace_direct(tr->fops, (long)new_addr);
++		ret = direct_ops_add(tr->fops, tr->ip, new_addr);
+ 	} else {
+ 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr);
+ 	}
+@@ -865,10 +1004,7 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
+ 	 */
+ 	hlist_del(&tr->hlist_key);
+ 	hlist_del(&tr->hlist_ip);
+-	if (tr->fops) {
+-		ftrace_free_filter(tr->fops);
+-		kfree(tr->fops);
+-	}
++	direct_ops_free(tr);
+ 	kfree(tr);
+ out:
+ 	mutex_unlock(&trampoline_mutex);
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index d2c79da81e4f..4bf5beb04a5b 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -50,6 +50,9 @@ config HAVE_DYNAMIC_FTRACE_WITH_REGS
+ config HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ 	bool
+ 
++config HAVE_SINGLE_FTRACE_DIRECT_OPS
++	bool
++
+ config HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS
+ 	bool
+ 
 diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 5243aefb6096..b0e4d7a5d47c 100644
+index b0e4d7a5d47c..4380839d2422 100644
 --- a/kernel/trace/ftrace.c
 +++ b/kernel/trace/ftrace.c
-@@ -2049,7 +2049,7 @@ static int __ftrace_hash_update_ipmodify(struct ftrace_ops *ops,
- 				 */
- 				if (!ops->ops_func)
- 					return -EBUSY;
--				ret = ops->ops_func(ops, FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_SELF);
-+				ret = ops->ops_func(ops, rec->ip, FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_SELF);
- 				if (ret)
- 					return ret;
- 			} else if (is_ipmodify) {
-@@ -8976,7 +8976,7 @@ static int prepare_direct_functions_for_ipmodify(struct ftrace_ops *ops)
- 				if (!op->ops_func)
- 					return -EBUSY;
+@@ -2605,8 +2605,13 @@ unsigned long ftrace_find_rec_direct(unsigned long ip)
+ static void call_direct_funcs(unsigned long ip, unsigned long pip,
+ 			      struct ftrace_ops *ops, struct ftrace_regs *fregs)
+ {
+-	unsigned long addr = READ_ONCE(ops->direct_call);
++	unsigned long addr;
  
--				ret = op->ops_func(op, FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_PEER);
-+				ret = op->ops_func(op, ip, FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_PEER);
- 				if (ret)
- 					return ret;
- 			}
-@@ -9023,7 +9023,7 @@ static void cleanup_direct_functions_after_ipmodify(struct ftrace_ops *ops)
++#ifdef CONFIG_HAVE_SINGLE_FTRACE_DIRECT_OPS
++	addr = ftrace_find_rec_direct(ip);
++#else
++	addr = READ_ONCE(ops->direct_call);
++#endif
+ 	if (!addr)
+ 		return;
  
- 			/* The cleanup is optional, ignore any errors */
- 			if (found_op && op->ops_func)
--				op->ops_func(op, FTRACE_OPS_CMD_DISABLE_SHARE_IPMODIFY_PEER);
-+				op->ops_func(op, ip, FTRACE_OPS_CMD_DISABLE_SHARE_IPMODIFY_PEER);
- 		}
- 	}
- 	mutex_unlock(&direct_mutex);
 -- 
 2.51.1
 
