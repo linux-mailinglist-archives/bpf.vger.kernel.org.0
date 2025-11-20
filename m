@@ -1,237 +1,194 @@
-Return-Path: <bpf+bounces-75202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2B9AC76A22
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 00:40:13 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1538FC76A64
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 00:48:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0CE194E2EE0
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 23:40:07 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8D2A535DFE2
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 23:48:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832142F39C7;
-	Thu, 20 Nov 2025 23:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07CA130DEAE;
+	Thu, 20 Nov 2025 23:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EyyvUt+S"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ks5lRGic"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7418C19E97A
-	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 23:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70BBC22AE7A;
+	Thu, 20 Nov 2025 23:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763682000; cv=none; b=hb24BLpf0jJErhL0Dtf41rJlL7wLDz8G/a8EqYv1O7RdSQNeSifNou0lsumScTjkc+KhVXN8x0wGTu+mYleJWKxBv5oZIjRO7IOAq1xErbXtPAM8d7xmvQWaG70rNgTVf7HXLt6pqXtr+U2LmfWEnRwySxX2SvY+Xyh7673uVdI=
+	t=1763682489; cv=none; b=jKoLeFIx2go11KEyVqUa6C60SGviFGUjRw1dBTlUvfx1ILG597qr0OKS6hx+xWo/lJOO2D1TZGu4frB8D6+9pFcZdAuh4ybIAKqkHeoG808zx2AIUUFb51bVtoVI/GxE7zQ+Gue9epagnnBOLzxxRJOgXtZvIfrbfXnlCf2HkJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763682000; c=relaxed/simple;
-	bh=it8K7fKDxsR0fLTFkbbsuy115Bipn4DKeKkk3LYv9bQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=tbiNOR9rlAJ451JwZdKy6drZhMYfGbdfHHEFdmM0kldtesMrtJiBVkUBAmNhIhG/2gjcFthqsnPDDFOSYRQGhGx2priqSyg3SvqcByzB95wzmWF/VypmZte81CH3IoUlDbs3WysClDuMA5qVlRP05/R6Me+Yei/+lDqRrYODuVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EyyvUt+S; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-7b9c17dd591so1359242b3a.3
-        for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 15:39:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763681998; x=1764286798; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/R+I+rLo7v2duLjKRhWjlNirU962QuaOFI4CZRCNOZg=;
-        b=EyyvUt+SKHn5wNoiB+KxrVOhfC0EFj40Zeot805+IpGdVSxMO4ZYdLJ9Bl84o1Gflk
-         QpbVnw45KN2WAQvnxeF410smABkDDpAyTvINB6Vi79vvdqbChsRCUT2cYG+2GtDYHPET
-         H5vsJquZoFLN6F3QSf4sIAO5qeJy5H7DcF2Ac0dKpv6Mx9KpNR4mqpEH5wp5buIoRJwf
-         AzF6kbnkdVYb5dLbxhbGoFdDiwwa/YTqnAMA2003+MzaXjnXFqgTaRHzvv2IN/Y2HUHE
-         xotNTjSoPNFTrwR8QqqNoagZAwwhkqIScVg4cRydu6xJSSAKcNNlsIWmAR3WSnIZ6D9m
-         VFSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763681998; x=1764286798;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/R+I+rLo7v2duLjKRhWjlNirU962QuaOFI4CZRCNOZg=;
-        b=gj8wSUkSqa54q28L2U3Nzcn/H47OUDBtpqNzpk1aa882XO4nJeC5RPc4RX7Usiyhpg
-         Z7jgRJo8gyG8i5MSGEyC8cff7X3na+BW3gMoTpvSKuELiWyNHYryW7F0/CD6ap/T8VZD
-         nx2h+v+YpczsVRi6Me/XgBtXRoB2c7vzng0GBLQOwnjTsTjcw//4HS+6qVtP0il2Pytr
-         AdQYC/LCURpvoot0QBhglYSO1uc8FzBlPa7Upc/eA71jM/rKG74MzsPPs1auuK6N5lH7
-         Sc4GXjsSJYJlSbCyZOMOuTL0PROJDVjzhMZ9ofTBc0T6JAe2nPv2OH8PPQwuQrTuRkmW
-         j3mw==
-X-Forwarded-Encrypted: i=1; AJvYcCUvQG1xspHzy3RUn65PpP5nkPnmNvEnfC/R1vjwwdvchX8rY3juwp+uT5O6g9lVmGTENzo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzoziJ8mP/PJ/p5BxMl6QR/a3ZiyMMB0at+RM/U1ovUlMD+WiF5
-	4wTrXeTytQLRlQ07Mmeum0dczc4uZMQwkWyS72M8HFaH7yyGyX+V72y2
-X-Gm-Gg: ASbGnctT0mFYMfqg/frvG7xNLpAqfUeH+yt4bWEInLDBgCFj+zbtDlGIhs/7K5bAgOW
-	/vkfhxFRC2AAWSoJ2AyFWQEBZSendr0U4tvI84YkX5FXLJHmsw8HCgTyciYvrmuq3oVxCtV09B2
-	R6X+C/QHj+YN1eeEbwninjwnO9GUlDKp62mMI30TFLMmCXGoyIEOmwFxtjgnQujvhggSL+txIu6
-	FToMB2qJ5H85jyF+GSIf/4UbBirtvpt3sv5XbcnAn2cijXDepUzmVZBVfbXYS8ptKShP4/lbXHV
-	EG+jk55OXEhDrHmqmAqda1rOcgrEKUyHt+YYFSbNwPPafAordZS1ohJiAfBJm3etEPDPmYq6+do
-	6/9CZLyf86gQ2fJYMhVXqtmi6VM1cY5Kb+zPIKzzJNWlejL8S2GPrAbOmBi6lGGwos4+lZ2l5LU
-	NzjDsRwZMcqtST2iNzDE9v2cRsxs/5mYZoUsY=
-X-Google-Smtp-Source: AGHT+IHXcLfEpzcLUq8CEzZvMaPdzjLANpfGtvn5idZcnIt7ABGAQP+Ut/iJWOqrME44Yy7RNt/Knw==
-X-Received: by 2002:a05:6a00:2d02:b0:7a2:882b:61b7 with SMTP id d2e1a72fcca58-7c58eb01a7fmr18658b3a.32.1763681997684;
-        Thu, 20 Nov 2025 15:39:57 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:6e69:e358:27f9:ac0? ([2620:10d:c090:500::5:61f3])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7c3f0d65682sm3945924b3a.56.2025.11.20.15.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Nov 2025 15:39:57 -0800 (PST)
-Message-ID: <fdeda8c6ec282fae793799bf5546d7e3b0578e1a.camel@gmail.com>
-Subject: Re: [RFC PATCH v7 2/7] selftests/bpf: Add test cases for
- btf__permute functionality
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, 
-	andrii.nakryiko@gmail.com
-Cc: zhangxiaoqin@xiaomi.com, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org,  Donglin Peng <pengdonglin@xiaomi.com>, Alan Maguire
- <alan.maguire@oracle.com>, Song Liu <song@kernel.org>
-Date: Thu, 20 Nov 2025 15:39:55 -0800
-In-Reply-To: <20251119031531.1817099-3-dolinux.peng@gmail.com>
-References: <20251119031531.1817099-1-dolinux.peng@gmail.com>
-	 <20251119031531.1817099-3-dolinux.peng@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	s=arc-20240116; t=1763682489; c=relaxed/simple;
+	bh=VCitTLNl4pF3HT4SSFNsCGSBjZfQ7YTxcCLL1JOLWjg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pEP0/D6HpPqwHB7kwMmLzQLHEZI2fkoEbLKLYAxQIRtmaakDyIvdeCSKTnfQyrClZa8aQ8mrShEdn0hcS/Y9Sj1u4FLBW2o9o/cybJfGUGnIXIOZdQJfNrniaKWbVsJEhvZnAfCGGzpomt3g3Pk1CWzmYDqGgFwZDFRIg6mFYWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ks5lRGic; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51721C4CEF1;
+	Thu, 20 Nov 2025 23:48:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763682487;
+	bh=VCitTLNl4pF3HT4SSFNsCGSBjZfQ7YTxcCLL1JOLWjg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ks5lRGicUYP9mNqtczq6x91MbGXtoBz+8HdIQ+0C89uk5+yFL5t/Gdd+6iW6Iw0y+
+	 7qVUGFQXeSSd9YDPoeoqwwNcsF66GbsKmXuUIZLpLFhZGJEVuRIgS8uTnjsFqTvYjC
+	 nr8/FuCAYVNUwM+2qt47EoUECZRuHeCtTxkskG/3yIl3xTz4DB27GnGrPSHrBVw+eA
+	 UkoshMBsJS/6QuQNeAvVam20rMkwRS9fH04h4V+71GHPf/SXx1xrPHCZcteDEN7Bkm
+	 x2n3PJSo+eAbE2QTWLYRqkKruPlg/Bt4rlrQHPw3tfJgYCkF6rIOzYOtcHaT4xu3Rc
+	 4il2nfceedllw==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	James Clark <james.clark@linaro.org>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCHSET v6 0/6] perf tools: Add deferred callchain support
+Date: Thu, 20 Nov 2025 15:47:58 -0800
+Message-ID: <20251120234804.156340-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.52.0.rc2.455.g230fcf2819-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Wed, 2025-11-19 at 11:15 +0800, Donglin Peng wrote:
+Hello,
 
-[...]
+This is a new version of deferred callchain support as the kernel part
+is merged to the tip tree.  Actually this is based on Steve's work (v16).
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/btf_permute.c b/tools=
-/testing/selftests/bpf/prog_tests/btf_permute.c
-> new file mode 100644
-> index 000000000000..f67bf89519b3
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/btf_permute.c
-> @@ -0,0 +1,608 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2025 Xiaomi */
-> +
-> +#include <test_progs.h>
-> +#include <bpf/btf.h>
-> +#include "btf_helpers.h"
-> +
-> +/* Ensure btf__permute work as expected with base BTF */
-> +static void test_permute_base(void)
-> +{
-> +	struct btf *btf;
-> +	__u32 permute_ids[6];
-> +	int start_id =3D 1;
-> +	int err;
-> +
-> +	btf =3D btf__new_empty();
-> +	if (!ASSERT_OK_PTR(btf, "empty_main_btf"))
-> +		return;
-> +
-> +	btf__add_int(btf, "int", 4, BTF_INT_SIGNED);	/* [1] int */
-> +	btf__add_ptr(btf, 1);				/* [2] ptr to int */
-> +	btf__add_struct(btf, "s1", 4);			/* [3] struct s1 { */
-> +	btf__add_field(btf, "m", 1, 0, 0);		/*       int m; */
-> +							/* } */
-> +	btf__add_struct(btf, "s2", 4);			/* [4] struct s2 { */
-> +	btf__add_field(btf, "m", 1, 0, 0);		/*       int m; */
-> +							/* } */
-> +	btf__add_func_proto(btf, 1);			/* [5] int (*)(int *p); */
-> +	btf__add_func_param(btf, "p", 2);
-> +	btf__add_func(btf, "f", BTF_FUNC_STATIC, 5);	/* [6] int f(int *p); */
-> +
-> +	VALIDATE_RAW_BTF(
-> +		btf,
-> +		"[1] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED=
-",
-> +		"[2] PTR '(anon)' type_id=3D1",
-> +		"[3] STRUCT 's1' size=3D4 vlen=3D1\n"
-> +		"\t'm' type_id=3D1 bits_offset=3D0",
-> +		"[4] STRUCT 's2' size=3D4 vlen=3D1\n"
-> +		"\t'm' type_id=3D1 bits_offset=3D0",
-> +		"[5] FUNC_PROTO '(anon)' ret_type_id=3D1 vlen=3D1\n"
-> +		"\t'p' type_id=3D2",
-> +		"[6] FUNC 'f' type_id=3D5 linkage=3Dstatic");
-> +
-> +	permute_ids[1 - start_id] =3D 4; /* [1] -> [4] */
-> +	permute_ids[2 - start_id] =3D 3; /* [2] -> [3] */
-> +	permute_ids[3 - start_id] =3D 5; /* [3] -> [5] */
-> +	permute_ids[4 - start_id] =3D 1; /* [4] -> [1] */
-> +	permute_ids[5 - start_id] =3D 6; /* [5] -> [6] */
-> +	permute_ids[6 - start_id] =3D 2; /* [6] -> [2] */
-> +	err =3D btf__permute(btf, permute_ids, ARRAY_SIZE(permute_ids), NULL);
-> +	if (!ASSERT_OK(err, "btf__permute_base"))
-> +		goto done;
-> +
-> +	VALIDATE_RAW_BTF(
-> +		btf,
-> +		"[1] STRUCT 's2' size=3D4 vlen=3D1\n"
-> +		"\t'm' type_id=3D4 bits_offset=3D0",
-> +		"[2] FUNC 'f' type_id=3D6 linkage=3Dstatic",
-> +		"[3] PTR '(anon)' type_id=3D4",
-> +		"[4] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED=
-",
-> +		"[5] STRUCT 's1' size=3D4 vlen=3D1\n"
-> +		"\t'm' type_id=3D4 bits_offset=3D0",
-> +		"[6] FUNC_PROTO '(anon)' ret_type_id=3D4 vlen=3D1\n"
-> +		"\t'p' type_id=3D3");
-> +
-> +	/*
-> +	 * For base BTF, id_map_cnt must equal to the number of types
-> +	 * include VOID type
-> +	 */
-> +	permute_ids[1 - start_id] =3D 4; /* [1] -> [4] */
-> +	permute_ids[2 - start_id] =3D 3; /* [2] -> [3] */
-> +	permute_ids[3 - start_id] =3D 5; /* [3] -> [5] */
-> +	permute_ids[4 - start_id] =3D 1; /* [4] -> [1] */
-> +	permute_ids[5 - start_id] =3D 6; /* [5] -> [6] */
-> +	permute_ids[6 - start_id] =3D 2; /* [6] -> [2] */
-> +	err =3D btf__permute(btf, permute_ids, ARRAY_SIZE(permute_ids) - 1, NUL=
-L);
-> +	if (!ASSERT_ERR(err, "btf__permute_base"))
-> +		goto done;
-> +
-> +	VALIDATE_RAW_BTF(
-> +		btf,
-> +		"[1] STRUCT 's2' size=3D4 vlen=3D1\n"
-> +		"\t'm' type_id=3D4 bits_offset=3D0",
-> +		"[2] FUNC 'f' type_id=3D6 linkage=3Dstatic",
-> +		"[3] PTR '(anon)' type_id=3D4",
-> +		"[4] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED=
-",
-> +		"[5] STRUCT 's1' size=3D4 vlen=3D1\n"
-> +		"\t'm' type_id=3D4 bits_offset=3D0",
-> +		"[6] FUNC_PROTO '(anon)' ret_type_id=3D4 vlen=3D1\n"
-> +		"\t'p' type_id=3D3");
-> +
-> +	/* Multiple types can not be mapped to the same ID */
-> +	permute_ids[1 - start_id] =3D 4;
-> +	permute_ids[2 - start_id] =3D 4;
-> +	permute_ids[3 - start_id] =3D 5;
-> +	permute_ids[4 - start_id] =3D 1;
-> +	permute_ids[5 - start_id] =3D 6;
-> +	permute_ids[6 - start_id] =3D 2;
-> +	err =3D btf__permute(btf, permute_ids, ARRAY_SIZE(permute_ids), NULL);
-> +	if (!ASSERT_ERR(err, "btf__permute_base"))
-> +		goto done;
+  https://lore.kernel.org/r/20250908175319.841517121@kernel.org
 
-Nit: Maybe extract the VALIDATE_RAW_BTF as a function, so that it is
-     not repeated? Otherwise it is a bit harder to tell that you are
-     checking for BTF to be intact if error is returned.
-     Same for the test_permute_split() case.
+v6 changes)
 
-> +
-> +	VALIDATE_RAW_BTF(
-> +		btf,
-> +		"[1] STRUCT 's2' size=3D4 vlen=3D1\n"
-> +		"\t'm' type_id=3D4 bits_offset=3D0",
-> +		"[2] FUNC 'f' type_id=3D6 linkage=3Dstatic",
-> +		"[3] PTR '(anon)' type_id=3D4",
-> +		"[4] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED=
-",
-> +		"[5] STRUCT 's1' size=3D4 vlen=3D1\n"
-> +		"\t'm' type_id=3D4 bits_offset=3D0",
-> +		"[6] FUNC_PROTO '(anon)' ret_type_id=3D4 vlen=3D1\n"
-> +		"\t'p' type_id=3D3");
+* always copy the events  (Ian)
+* add flush in the pipe mode
 
-[...]
+v5: https://lore.kernel.org/r/20251120021046.94490-1-namhyung@kernel.org/
+
+* update delegate tools  (Ian)
+* copy and flush remaining samples  (Ian)
+* add Ian's Reviewed-by tags
+
+v4: https://lore.kernel.org/r/20251115234106.348571-1-namhyung@kernel.org
+
+* add --call-graph fp,defer option   (Ian, Steve)
+* add more comment on the cookie  (Ian)
+* display cookie part in the deferred callchain  (Ian)
+
+v3: https://lore.kernel.org/r/20251114070018.160330-1-namhyung@kernel.org
+
+* handle new attr.defer_output to generate deferred callchains
+* fix crash when cookies don't match  (Steven)
+* disable merging for perf inject
+* fix missing feature detection bug
+* symbolize merged callchains properly
+
+Here's an example session.
+
+  $ perf record --call-graph fp,defer  pwd
+  /home/namhyung/project/linux
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.010 MB perf.data (29 samples) ]
+
+  $ perf evlist -v
+  cpu/cycles/P: type: 0 (PERF_TYPE_HARDWARE), size: 136, config: 0 (PERF_COUNT_HW_CPU_CYCLES),
+  { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CALLCHAIN|PERIOD,
+  read_format: ID|LOST, disabled: 1, inherit: 1, mmap: 1, comm: 1, freq: 1, enable_on_exec: 1,
+  task: 1, sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1, build_id: 1,
+  defer_callchain: 1, defer_output: 1
+
+  $ perf script
+  ...
+  pwd    2312   121.163435:     249113 cpu/cycles/P:
+          ffffffff845b78d8 __build_id_parse.isra.0+0x218 ([kernel.kallsyms])
+          ffffffff83bb5bf6 perf_event_mmap+0x2e6 ([kernel.kallsyms])
+          ffffffff83c31959 mprotect_fixup+0x1e9 ([kernel.kallsyms])
+          ffffffff83c31dc5 do_mprotect_pkey+0x2b5 ([kernel.kallsyms])
+          ffffffff83c3206f __x64_sys_mprotect+0x1f ([kernel.kallsyms])
+          ffffffff845e6692 do_syscall_64+0x62 ([kernel.kallsyms])
+          ffffffff8360012f entry_SYSCALL_64_after_hwframe+0x76 ([kernel.kallsyms])
+              7f18fe337fa7 mprotect+0x7 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+              7f18fe330e0f _dl_sysdep_start+0x7f (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+              7f18fe331448 _dl_start_user+0x0 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+  ...
+
+  $ perf script --no-merge-callchains
+  ...
+  pwd    2312   121.163435:     249113 cpu/cycles/P:
+          ffffffff845b78d8 __build_id_parse.isra.0+0x218 ([kernel.kallsyms])
+          ffffffff83bb5bf6 perf_event_mmap+0x2e6 ([kernel.kallsyms])
+          ffffffff83c31959 mprotect_fixup+0x1e9 ([kernel.kallsyms])
+          ffffffff83c31dc5 do_mprotect_pkey+0x2b5 ([kernel.kallsyms])
+          ffffffff83c3206f __x64_sys_mprotect+0x1f ([kernel.kallsyms])
+          ffffffff845e6692 do_syscall_64+0x62 ([kernel.kallsyms])
+          ffffffff8360012f entry_SYSCALL_64_after_hwframe+0x76 ([kernel.kallsyms])
+                 b00000006 (cookie) ([unknown])
+
+  pwd    2312   121.163447: DEFERRED CALLCHAIN [cookie: b00000006]
+              7f18fe337fa7 mprotect+0x7 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+              7f18fe330e0f _dl_sysdep_start+0x7f (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+              7f18fe331448 _dl_start_user+0x0 (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+  ...
+
+The code is available at 'perf/defer-callchain-v6' branch in
+
+  git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (6):
+  tools headers UAPI: Sync linux/perf_event.h for deferred callchains
+  perf tools: Minimal DEFERRED_CALLCHAIN support
+  perf record: Add --call-graph fp,defer option for deferred callchains
+  perf script: Display PERF_RECORD_CALLCHAIN_DEFERRED
+  perf tools: Merge deferred user callchains
+  perf tools: Flush remaining samples w/o deferred callchains
+
+ tools/include/uapi/linux/perf_event.h     |  21 +++-
+ tools/lib/perf/include/perf/event.h       |  13 ++
+ tools/perf/Documentation/perf-config.txt  |   3 +
+ tools/perf/Documentation/perf-record.txt  |   4 +
+ tools/perf/Documentation/perf-script.txt  |   5 +
+ tools/perf/builtin-inject.c               |   1 +
+ tools/perf/builtin-report.c               |   1 +
+ tools/perf/builtin-script.c               |  93 ++++++++++++++
+ tools/perf/util/callchain.c               |  45 ++++++-
+ tools/perf/util/callchain.h               |   4 +
+ tools/perf/util/event.c                   |   1 +
+ tools/perf/util/evlist.c                  |   1 +
+ tools/perf/util/evlist.h                  |   2 +
+ tools/perf/util/evsel.c                   |  50 +++++++-
+ tools/perf/util/evsel.h                   |   1 +
+ tools/perf/util/evsel_fprintf.c           |   5 +-
+ tools/perf/util/machine.c                 |   1 +
+ tools/perf/util/perf_event_attr_fprintf.c |   2 +
+ tools/perf/util/sample.h                  |   2 +
+ tools/perf/util/session.c                 | 147 ++++++++++++++++++++++
+ tools/perf/util/tool.c                    |   5 +
+ tools/perf/util/tool.h                    |   4 +-
+ 22 files changed, 403 insertions(+), 8 deletions(-)
+
+-- 
+2.52.0.rc2.455.g230fcf2819-goog
+
 
