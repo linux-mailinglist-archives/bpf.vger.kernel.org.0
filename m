@@ -1,66 +1,66 @@
-Return-Path: <bpf+bounces-75146-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75145-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9738C72F37
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 09:49:30 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 917ACC72F2E
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 09:48:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sea.lore.kernel.org (Postfix) with ESMTPS id 82A0E2A2E4
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 08:49:29 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTPS id 943CC2A9F7
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 08:48:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA421279DCA;
-	Thu, 20 Nov 2025 08:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9FC2D6E51;
+	Thu, 20 Nov 2025 08:48:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="W2wM9im3"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="jAq2MUiW"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5272116E0
-	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 08:49:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB1B30E0EC
+	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 08:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763628564; cv=none; b=fNpdLF9ssMIXgCg19oM1H/6+wf/zPTC+u5MUPyUllfsKZx44YUOT3/eYkZS+AK6dfLTizoyzOKP8nE8UU5+uVmZziNxkxlz2IfxEPZgmX7pMe8St0yN3zJx5WP8R02jg+JhKNcWy5EgOX8Ru3iQdBEfR9jNeuojfou07N2q4OBg=
+	t=1763628519; cv=none; b=TY8sHzkfJonbsieExEg7o/af7xjuIKRoapPs1eA5eq5gfEsXC816ZTf4xDIttXyjO/xDuCV09n+llkMKIVi0MDtf/MOz11idVk0Wnh4UGxkOVSZ31Ul7dTrvgro1pc+wxLp7nkX8Rknj1WMvNZ8fU6QcyJZdjg2xzMcGxciepPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763628564; c=relaxed/simple;
-	bh=N5GwQqxAShEuvAMIoSvs16H/P8lmkO9g18m785oNEH4=;
+	s=arc-20240116; t=1763628519; c=relaxed/simple;
+	bh=oIYNxsK94JaO4vdSXnGVterse1TXgNndIoltJZAqvik=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eGAjHkMChSINty71kAwtWHXGD7Lku/JojHAoAZrng8hG0mUtvKsd5BcP8IKfK2g31J4TN2MkBbDR6WEE9ruhdTOwtUFvCD+Y8efdQQaRSx0xht/vfn8xn1yrp3gVKN+dEd0BJYbg0bs68KrV5k4AV4t2MUKPMYcWbtvFVoYn5O0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=W2wM9im3; arc=none smtp.client-ip=205.220.177.32
+	 MIME-Version; b=SCF90eT4U9BKJeCCJ5PxauuR4yhat7uAudmPd7Bbg/6B6MDSD1tuNluREqcD9jReOzSVAAOXsy0GvKsJl8a67HsXFkOmzXDX2nNkYYoiV5NbVl8Zgl7IzeOPmSHThVkJ+7y9BRxA2t9jxsmQnWpVMVONNMgMOCZ73PjsFlcSV9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=jAq2MUiW; arc=none smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AK6RH1p027049;
-	Thu, 20 Nov 2025 08:48:03 GMT
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AK3MlR0014385;
+	Thu, 20 Nov 2025 08:48:07 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2025-04-25; bh=2Dg88
-	uwe2LMmz3u4w6vFlh1F3sCf6A0mBpPEmCh4vO0=; b=W2wM9im3IUmA00Lfafx1/
-	PKO7F0mFobEP4A7agVUhkmtC6Q7pULgzp2AnUMIdfBq7754bJ8a7ZhpEZeD+ziKg
-	GN+8PDHbfmsRcNRTgFiZsVB5bnTZwfA/Zhhzi8IKF0fVTWdbw11EO9n2KQELjQbU
-	zPNSOeCNSDjQJnmDoMZijW9QVD10i/licbp1oWFkqDZyTU1jtrgUtof13tPnvXZO
-	dDUblxJkXjxx8IBRKEF8f7HYv/L3fiTnm0GKTDZtuLLI/UdiRsWRuZ0G0tI6vNrD
-	1tMYwjoAPkYj3wtvjenLgQdIM4iU/lQ782wWo3qaPl+hSIC/xL8IHHPpYDyIC3JW
-	w==
+	:mime-version:references:subject:to; s=corp-2025-04-25; bh=PkIxI
+	6pu3U2VDPKkcK98jFjXew8MYkCYuKDhyA76cDo=; b=jAq2MUiW4Kn2Dvco/S7Dv
+	ZmsVZaWsSViGv0hUwoTKdzMqbg2QcMeWGFjlBwXQHoXIrb68RnmqAT763PpOrW0i
+	dbwdnEAmxFQn3yynXDNEuP6YMiLNQGAL924JhF3cGESfYBv0+TQj0TPbsQ3FFvxR
+	DjIS2escV1CV1odAXIbfF4VG1cuiwkUsf+Q5tR+F69AxnIp5XiSY+otINC1+bnq+
+	MCps2ZD+aM8xav7OQrMzjsn45ijMzpWdwKUoJiZY0Z1OXv4KJC5bmoJ21XpPbwXI
+	UeqpliO4gDop07xMdlW51jZxJyGr+Y+42dGTpBXyjLKxDG2K5dXSaj+yQQd+kOiJ
+	A==
 Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4aejbc0hgm-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4aej8j8pbu-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 20 Nov 2025 08:48:03 +0000 (GMT)
+	Thu, 20 Nov 2025 08:48:06 +0000 (GMT)
 Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5AK6L1ns002520;
-	Thu, 20 Nov 2025 08:48:02 GMT
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5AK6CNxe002613;
+	Thu, 20 Nov 2025 08:48:05 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4aefybrp8t-1
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4aefybrpag-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 20 Nov 2025 08:48:02 +0000
+	Thu, 20 Nov 2025 08:48:05 +0000
 Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 5AK8lwDT007208;
-	Thu, 20 Nov 2025 08:48:01 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 5AK8lwDV007208;
+	Thu, 20 Nov 2025 08:48:05 GMT
 Received: from bpf.uk.oracle.com (dhcp-10-154-58-185.vpn.oracle.com [10.154.58.185])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 4aefybrp6k-2;
-	Thu, 20 Nov 2025 08:48:01 +0000
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 4aefybrp6k-3;
+	Thu, 20 Nov 2025 08:48:05 +0000
 From: Alan Maguire <alan.maguire@oracle.com>
 To: qmo@kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -68,9 +68,9 @@ Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         song@kernel.org, haoluo@google.com, jolsa@kernel.org,
         ihor.solodrai@linux.dev, john.fastabend@gmail.com, eddyz87@gmail.com,
         bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v2 1/2] bpftool: Allow bpftool to build with openssl < 3
-Date: Thu, 20 Nov 2025 08:47:53 +0000
-Message-ID: <20251120084754.640405-2-alan.maguire@oracle.com>
+Subject: [PATCH v2 2/2] selftests/bpf: Allow selftests to build with older xxd
+Date: Thu, 20 Nov 2025 08:47:54 +0000
+Message-ID: <20251120084754.640405-3-alan.maguire@oracle.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20251120084754.640405-1-alan.maguire@oracle.com>
 References: <20251120084754.640405-1-alan.maguire@oracle.com>
@@ -88,54 +88,72 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phis
  malwarescore=0 suspectscore=0 bulkscore=0 spamscore=0 mlxlogscore=999
  mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2510240000 definitions=main-2511200051
-X-Proofpoint-GUID: q-w-8hlufr0RxlwcunPszmC0ZtxC3WGh
-X-Authority-Analysis: v=2.4 cv=JZyxbEKV c=1 sm=1 tr=0 ts=691ed5c3 b=1 cx=c_pps
+X-Proofpoint-ORIG-GUID: TyDBCOneHuf7Ki29OI8Y6YlQ44xbtgC5
+X-Proofpoint-GUID: TyDBCOneHuf7Ki29OI8Y6YlQ44xbtgC5
+X-Authority-Analysis: v=2.4 cv=I7xohdgg c=1 sm=1 tr=0 ts=691ed5c6 b=1 cx=c_pps
  a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
- a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=Ntg_Zx-WAAAA:8 a=yPCof4ZbAAAA:8
- a=VwQbUJbxAAAA:8 a=19R0FJo-S2h8HcoD7-YA:9 a=RUfouJl5KNV7104ufCm4:22
-X-Proofpoint-ORIG-GUID: q-w-8hlufr0RxlwcunPszmC0ZtxC3WGh
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE1MDAzMiBTYWx0ZWRfX2Gu3MdiptbIl
- AL6edmyInFF7djRfu7dpcMbNknbVi4P0alZ/Q/AsMrdhIUjgLYSQXtvZkw5jcLelYYS7IyNlSRB
- EI7fJGjo1pM3C2F1mFGHCH/+N0vtwzWNateBZQ6/I5GbU2j1ssLtb1OYPM+EpwVuuElUPtr+Bom
- CxTFHNdMcvOzamtdMc/6F/gfvQ37ebqY7f07xJkl0LIUzJKEJ/YqkC2ThSsnvGisrpcz92qC8nO
- 9VnYcbryLbq0PALBmh5RHXS/7aOQVgGrsob0BZGN8bkMMGumMLAci2iGacRdwWxWrZzCjJ8TLoP
- iGY13HVNZtv7Ah69nE6sEGabkzV7Us0jFqQZ/lmCF4x6QqBsc0k5qqebUXKZPwqHUr3r55HqghW
- ZFKR2nCugx2Qo6nL+fz6yQkT56qzsQ==
+ a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
+ a=sjjG6lzJni1mwoMb6D4A:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE1MDAzMSBTYWx0ZWRfXzoTbNltNsnik
+ /zQKAGJBRpGo28vE+De+Ook235vH8T+SiYDyAWvd8PH6Epp4ZMsAMN/jFP+nup8f04XAZ/NnaRQ
+ xomse2B17gpJbUMLzmxksOX2qJPcMBpbfQlSWPekSXKLTYDobOIGSUXHVh3xlme1dYaOxc3F2Q6
+ 0AARn0bOC4O/dbJ6zD9+/K94MgW0FdjjXy+4D06KM69AbOZy9l9MI+ANSFt2hQ33fTAecIj0uiS
+ calyaL4L16Fu2BFIvNh06DcQrvUUp8PyuACoxHczMfqmiWf939S0m/eESMOkQehKw2JVWbPk17s
+ BsyDI2ZchUKXcSoDqGBzEnfMleAVdQtMHa5BIsdWMiqGMKBCTk1CVdfSzKVgV4Xxgj/2T2ztTFo
+ QXYIdLPmc8/6cnRlyq7/hmCHnNH0sQ==
 
-ERR_get_error_all()[1] is a openssl v3 API, so to make code
-compatible with openssl v1 utilize ERR_get_err_line_data
-instead.  Since openssl is already a build requirement for
-the kernel (minimum requirement openssl 1.0.0), this will
-allow bpftool to compile where opensslv3 is not available.
-Signing-related BPF selftests pass with openssl v1.
+Currently selftests require xxd with the "-n <name>" option
+which allows the user to specify a name not derived from
+the input object path.  Instead of relying on this newer
+feature, older xxd can be used if we link our desired name
+("test_progs_verification_cert") to the input object.
 
-[1] https://docs.openssl.org/3.4/man3/ERR_get_error/
+Many distros ship xxd in vim-common package and do not have
+the latest xxd with -n support.
 
-Fixes: 40863f4d6ef2 ("bpftool: Add support for signing BPF programs")
+Fixes: b720903e2b14d ("selftests/bpf: Enable signature verification for some lskel tests")
 Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Acked-by: Song Liu <song@kernel.org>
-Acked-by: Quentin Monnet <qmo@kernel.org>
 ---
- tools/bpf/bpftool/sign.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ tools/testing/selftests/bpf/.gitignore | 1 +
+ tools/testing/selftests/bpf/Makefile   | 6 ++++--
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/tools/bpf/bpftool/sign.c b/tools/bpf/bpftool/sign.c
-index b34f74d210e9..f9b742f4bb10 100644
---- a/tools/bpf/bpftool/sign.c
-+++ b/tools/bpf/bpftool/sign.c
-@@ -28,6 +28,12 @@
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index be1ee7ba7ce0..ca557e5668fd 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -23,6 +23,7 @@ test_tcpnotify_user
+ test_libbpf
+ xdping
+ test_cpp
++test_progs_verification_cert
+ *.d
+ *.subskel.h
+ *.skel.h
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 34ea23c63bd5..bac22265e7ff 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -731,7 +731,8 @@ $(VERIFICATION_CERT) $(PRIVATE_KEY): $(VERIFY_SIG_SETUP)
+ 	$(Q)$(VERIFY_SIG_SETUP) genkey $(BUILD_DIR)
  
- #define OPEN_SSL_ERR_BUF_LEN 256
+ $(VERIFY_SIG_HDR): $(VERIFICATION_CERT)
+-	$(Q)xxd -i -n test_progs_verification_cert $< > $@
++	$(Q)ln -fs $< test_progs_verification_cert && \
++	xxd -i test_progs_verification_cert > $@
  
-+/* Use deprecated in 3.0 ERR_get_error_line_data for openssl < 3 */
-+#if !defined(OPENSSL_VERSION_MAJOR) || (OPENSSL_VERSION_MAJOR < 3)
-+#define ERR_get_error_all(file, line, func, data, flags) \
-+	ERR_get_error_line_data(file, line, data, flags)
-+#endif
-+
- static void display_openssl_errors(int l)
- {
- 	char buf[OPEN_SSL_ERR_BUF_LEN];
+ # Define test_progs test runner.
+ TRUNNER_TESTS_DIR := prog_tests
+@@ -905,7 +906,8 @@ EXTRA_CLEAN := $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)			\
+ 	$(addprefix $(OUTPUT)/,*.o *.d *.skel.h *.lskel.h *.subskel.h	\
+ 			       no_alu32 cpuv4 bpf_gcc			\
+ 			       liburandom_read.so)			\
+-	$(OUTPUT)/FEATURE-DUMP.selftests
++	$(OUTPUT)/FEATURE-DUMP.selftests				\
++	test_progs_verification_cert
+ 
+ .PHONY: docs docs-clean
+ 
 -- 
 2.43.5
 
