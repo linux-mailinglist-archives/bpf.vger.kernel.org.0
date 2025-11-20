@@ -1,188 +1,469 @@
-Return-Path: <bpf+bounces-75137-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75138-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8F02C71FC0
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 04:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80098C7238C
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 06:02:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8E2724E331E
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 03:24:50 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 074A24E04D3
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 05:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78018281531;
-	Thu, 20 Nov 2025 03:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF01263F2D;
+	Thu, 20 Nov 2025 05:02:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q0Ra2FYb"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48006256C9E;
-	Thu, 20 Nov 2025 03:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 054CF2356C7
+	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 05:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763609082; cv=none; b=KZ02EphBfjsx8IIOYWsFgbZn2UJ4ZJ3zgv4B7UgvZ4+wkRgLOCF9wg8aaXgqMI8zniRzlV/cYZPphVqIZ83pvgqiUjppW/0GB56+vZjJanGE4j0vr5X1R0cKHitTSWlrDufo8VPPtxoWJeTuvFvzp/BsPGwUWW6U32vIFPzPlLc=
+	t=1763614967; cv=none; b=eu6Cf/dSV3xE45u7iyScMbjO9sBPPk5OK/rxpG15ZY35uVSQnQeTAP7ETf0wovgOoyTUyUVG7tpDQH8hU/7R+iUDPNuwgXb1FSyxkafMFREqG1djKKPtEFFjtAKshyxRgrCHUvT1IUApzdwwbB2/LIO7O9qmxHwtFDRsULKcuqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763609082; c=relaxed/simple;
-	bh=nzp7hEXicszkxmno/Issp9ZXfxDY+fpAtUze3FfjAO4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ekNZL+2+EmOwIyRUeEhI4/NQfh+LB6QPCzzV7VdKIcOUwQUqDEuRU+sp8xPQGcZgwRvcNqoBHxWAuwtD3PDT8NZ9ZttmFu23twd70on5+81EokeyrH4WEybXWgEZVTzZthfGK8gzFROLiQM/wfsayuF+dqLK5TblnykdyMYxog4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dBkGb2TGmzKHMl1;
-	Thu, 20 Nov 2025 11:24:07 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 6BC9C1A1887;
-	Thu, 20 Nov 2025 11:24:36 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP2 (Coremail) with SMTP id Syh0CgBH8XfuiR5p8IpyBQ--.36973S2;
-	Thu, 20 Nov 2025 11:24:32 +0800 (CST)
-Message-ID: <492671cd-eb35-4510-929c-20586c8a6ab6@huaweicloud.com>
-Date: Thu, 20 Nov 2025 11:24:30 +0800
+	s=arc-20240116; t=1763614967; c=relaxed/simple;
+	bh=2EPcLVKiQeUeTYOuVwZU37/gdWpcfb5OtWdrm4Y90N4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jjqYi3Rp/DqJp96wRbTAUZO692SRSXnDhCnnQKCpXVSySCfjFk33Xahld7F2fTp5qymJ0i7DZ+PHYpsMhrKR9zgr9BrpRiLirW8qOm7YO1iCJ81kYUKptZuVnNs3AaRbeB4t584cXGmpzASvqkFlnLcesRPUH3eAgjqaIxiePzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q0Ra2FYb; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b739ef3f739so95030666b.1
+        for <bpf@vger.kernel.org>; Wed, 19 Nov 2025 21:02:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763614963; x=1764219763; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K6s60zgTjflE49DAX9PTA4XOLe9Ruh7oIUyi2/ShA9Y=;
+        b=Q0Ra2FYbpMFi9bgJiyQjP00QAQYg5LTyzjrwzXSSEHKYBDQiAhKoTndyH1kMAcWxKv
+         Fu5+qxeTedJ3OBjdwelsUWBTGK8eBSbeLcuIltVPr1AF5nIop00owNaPVormFbeaEPX4
+         vzpgePAO2YAqoG7BUm5/wnJ8+F8T/oqNFTX8o20D6L0sisoiP/MYQpmdP7A2kFpUfNnf
+         CbHcjfGbBcCScWzb6NbfhfvptjBPtTzOzHDRHF6iyQy/wTkP8b3Rb/sfJy4LQtqn4zXe
+         PtUINM6nNbVJBSvUq+nC00DLYLU6okkglGZCqnprTUGcec5B9D+DrIq1/ndNilphyU28
+         Cd0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763614963; x=1764219763;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=K6s60zgTjflE49DAX9PTA4XOLe9Ruh7oIUyi2/ShA9Y=;
+        b=X3L0QIHyIDpgzS4kpp2uCNzAit0V5IKZYdGIMak9hofzLnFT5OInnGu7mTSc6qTcWL
+         8l/XKHMjb5SryaD9I7O1uXzNi/L/9YPGngHxF/tbHH5yG07g//c2JZ7nt19wcKHA1P88
+         dHDRLT6tbDFyBRwRi/mTme9EQQwCsCB5uNIWGHESykRVCThAVY54CzW3+lC3S6T0AC5R
+         +L1EWXODFheEC1KzMFgRLdmvrpSfPQ5Gtarg8AIh/gsoJLNNCfXpPvatfEAJXE9OZrAM
+         sNl28Br0AmLup80y3hCL6LvH/nrox1CB2gtDDOyfVNbKwZIlFen3Qu9wus8bSPXfZq0s
+         rScg==
+X-Forwarded-Encrypted: i=1; AJvYcCW/Yg1jIzj3VTvKm1CMJthMxK9NN5T3/jV4nFCqhxdgVSrqrt/xVdDK7K97EIc3DNFenTs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6xfattxr0xyVLIG0uy1k1DAwz6pTgIhn5NYfT/Xb6ge4/0oK6
+	CLaHB6wfbL+KZgUYMNcnUHtaR8x62mNmho2oFeNytOmyPQHmXFppp0v6gL6f9EoCxgQnrjGKnkK
+	2XQsep0ZkctFQMMr3dogFe6eb9wVKc4I=
+X-Gm-Gg: ASbGncv0YGOw+XZ7llGsk6jzI6xRUTwcvhk+lFabfgrY2v/oebyWai5lYSxlrbA8huS
+	Jt/HQ2qcUntRjjDLKVRqKe/AQEPIxeSJCLqTr4+nCGyKrsALYmdOhK1IDndSu6679JfEMc1GnSL
+	ven8bR4EI7rZYWCk/HOxG+N9t6DGEBbyK6u+yERmBp8YTgmkcDV7e83+2Ft4cCQg6pnmoMh/Wrp
+	Ap0UVqelQ7jhx0hT5G3nEyyH9P498O/n5g3xQeMaLZNl8IEztyebdQCpWJm+vjUNPPLcs79
+X-Google-Smtp-Source: AGHT+IFgpAxguYf4qd9kkZeGlVNOKZ/RSz2+u4b7Bhfk0hFKVs+N6LAng3AiVtwE0q8CvwNX71mxvcpEzfJfRzD8jY4=
+X-Received: by 2002:a17:907:3da3:b0:b73:870f:fa32 with SMTP id
+ a640c23a62f3a-b7654fe9b58mr224526566b.43.1763614963083; Wed, 19 Nov 2025
+ 21:02:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 0/6] bpf trampoline support "jmp" mode
-Content-Language: en-US
-To: Leon Hwang <leon.hwang@linux.dev>, Menglong Dong
- <menglong.dong@linux.dev>, Menglong Dong <menglong8.dong@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Steven Rostedt
- <rostedt@goodmis.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, jiang.biao@linux.dev,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
-References: <20251118123639.688444-1-dongml2@chinatelecom.cn>
- <CAADnVQJF5qkT8J=VJW00pPX7=hVdwn2545BzZPEi=mPwFouThw@mail.gmail.com>
- <8606158.T7Z3S40VBb@7950hx> <97c8e49c-ca27-40ec-8ff6-18b1b9061240@linux.dev>
- <5f4d0bf9-9c74-44ce-8f29-c43fa5e8810a@huaweicloud.com>
- <e3c8daef-5267-4dda-9009-209a94224374@linux.dev>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <e3c8daef-5267-4dda-9009-209a94224374@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBH8XfuiR5p8IpyBQ--.36973S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGr1fJw4xXw4kKryUuFWUCFg_yoW5ZFW8pa
-	1xJa4YkF4DJrWkCrnFyw48AFySvw47JFZ8Xrn5G348C3s09r97tF1xKryYkFy3ur4F9F12
-	vr4Y934fXF4UZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+References: <20251119031531.1817099-1-dolinux.peng@gmail.com>
+ <20251119031531.1817099-2-dolinux.peng@gmail.com> <CAEf4Bzb76SfWfNtxP2WVJ44hsVU-GrePmeKKxH25Q8KOn_Mkfw@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb76SfWfNtxP2WVJ44hsVU-GrePmeKKxH25Q8KOn_Mkfw@mail.gmail.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Date: Thu, 20 Nov 2025 13:02:31 +0800
+X-Gm-Features: AWmQ_blHE5ppjRSuF57ofxr9EJ-306Izhp32BAawZP2LKQtrfNWs2g6ZaJmrXrs
+Message-ID: <CAErzpmuNav=jVZPYmrJ4-NZ6PApGgJNBGwiQnWe40Rkr6SvYcg@mail.gmail.com>
+Subject: Re: [RFC PATCH v7 1/7] libbpf: Add BTF permutation support for type reordering
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Donglin Peng <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>, 
+	Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/20/2025 10:07 AM, Leon Hwang wrote:
-> 
-> 
-> On 19/11/25 20:36, Xu Kuohai wrote:
->> On 11/19/2025 10:55 AM, Leon Hwang wrote:
->>>
->>>
->>> On 19/11/25 10:47, Menglong Dong wrote:
->>>> On 2025/11/19 08:28, Alexei Starovoitov wrote:
->>>>> On Tue, Nov 18, 2025 at 4:36 AM Menglong Dong
->>>>> <menglong8.dong@gmail.com> wrote:
->>>>>>
->>>>>> As we can see above, the performance of fexit increase from
->>>>>> 80.544M/s to
->>>>>> 136.540M/s, and the "fmodret" increase from 78.301M/s to 159.248M/s.
->>>>>
->>>>> Nice! Now we're talking.
->>>>>
->>>>> I think arm64 CPUs have a similar RSB-like return address predictor.
->>>>> Do we need to do something similar there?
->>>>> The question is not targeted to you, Menglong,
->>>>> just wondering.
->>>>
->>>> I did some research before, and I find that most arch
->>>> have such RSB-like stuff. I'll have a look at the loongarch
->>>> later(maybe after the LPC, as I'm forcing on the English practice),
->>>> and Leon is following the arm64.
->>>
->>> Yep, happy to take this on.
->>>
->>> I'm reviewing the arm64 JIT code now and will experiment with possible
->>> approaches to handle this as well.
->>>
->>
->> Unfortunately, the arm64 trampoline uses a tricky approach to bypass BTI
->> by using ret instruction to invoke the patched function. This conflicts
->> with the current approach, and seems there is no straightforward solution.
->>
-> Hi Kuohai,
-> 
-> Thanks for the explanation.
-> 
-> Do you recall the original reason for using a ret instruction to bypass
-> BTI in the arm64 trampoline? I'm trying to understand whether that
-> constraint is fundamental or historical.
+On Thu, Nov 20, 2025 at 2:22=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Nov 18, 2025 at 7:21=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.=
+com> wrote:
+> >
+> > From: Donglin Peng <pengdonglin@xiaomi.com>
+> >
+> > Introduce btf__permute() API to allow in-place rearrangement of BTF typ=
+es.
+> > This function reorganizes BTF type order according to a provided array =
+of
+> > type IDs, updating all type references to maintain consistency.
+> >
+> > Cc: Eduard Zingerman <eddyz87@gmail.com>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > Cc: Alan Maguire <alan.maguire@oracle.com>
+> > Cc: Song Liu <song@kernel.org>
+> > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+> > Signed-off-by: Donglin Peng <pengdonglin@xiaomi.com>
+> > ---
+> >  tools/lib/bpf/btf.c      | 166 +++++++++++++++++++++++++++++++++++++++
+> >  tools/lib/bpf/btf.h      |  43 ++++++++++
+> >  tools/lib/bpf/libbpf.map |   1 +
+> >  3 files changed, 210 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > index 18907f0fcf9f..ab95ff19fde3 100644
+> > --- a/tools/lib/bpf/btf.c
+> > +++ b/tools/lib/bpf/btf.c
+> > @@ -5829,3 +5829,169 @@ int btf__relocate(struct btf *btf, const struct=
+ btf *base_btf)
+> >                 btf->owns_base =3D false;
+> >         return libbpf_err(err);
+> >  }
+> > +
+> > +struct btf_permute {
+> > +       struct btf *btf;
+> > +       __u32 *id_map;
+> > +};
+> > +
+> > +/* Callback function to remap individual type ID references */
+> > +static int btf_permute_remap_type_id(__u32 *type_id, void *ctx)
+> > +{
+> > +       struct btf_permute *p =3D ctx;
+> > +       __u32 new_type_id =3D *type_id;
+> > +
+> > +       /* skip references that point into the base BTF or VOID */
+> > +       if (new_type_id < p->btf->start_id)
+> > +               return 0;
+> > +
+> > +       /* invalid reference id */
+> > +       if (new_type_id >=3D btf__type_cnt(p->btf))
+> > +               return -EINVAL;
+> > +
+> > +       new_type_id =3D p->id_map[new_type_id - p->btf->start_id];
+> > +       /* reference a dropped type is not allowed */
+> > +       if (new_type_id =3D=3D 0)
+> > +               return -EINVAL;
+>
+> see below, this shouldn't happen, let's drop redundant check
 
-arm64 direct jump instructions (b and bl) support only a ±128 MB range.
-But the distance between the trampoline and the patched function may
-exceed this range. So an indirect jump is required.
+Thanks, I will remove it.
 
-With BTI enabled, indirect jump instructions (br and blr) require a landing
-pad at the jump target. The target is the instruction immediately after
-the call site in the patched function. It may be any instruction, including
-non-landing-pad instructions. If it is ot a landing pad, a BTI exception
-occurs when trampline jump back using BR/BLR.
+>
+> > +
+> > +       *type_id =3D new_type_id;
+> > +       return 0;
+> > +}
+> > +
+> > +int btf__permute(struct btf *btf, __u32 *id_map, __u32 id_map_cnt,
+> > +                const struct btf_permute_opts *opts)
+> > +{
+> > +       struct btf_permute p;
+> > +       struct btf_ext *btf_ext;
+> > +       void *next_type, *end_type;
+> > +       void *nt, *new_types =3D NULL;
+> > +       int err =3D 0, i, new_type_len;
+> > +       __u32 *order_map =3D NULL;
+> > +       __u32 id, new_nr_types =3D 0;
+> > +
+> > +       if (!OPTS_VALID(opts, btf_permute_opts) || id_map_cnt !=3D btf-=
+>nr_types)
+> > +               return libbpf_err(-EINVAL);
+> > +
+> > +       /* used to record the storage sequence of types */
+> > +       order_map =3D calloc(btf->nr_types, sizeof(*id_map));
+> > +       if (!order_map) {
+> > +               err =3D -ENOMEM;
+> > +               goto done;
+> > +       }
+> > +
+> > +       new_types =3D calloc(btf->hdr->type_len, 1);
+> > +       if (!new_types) {
+> > +               err =3D -ENOMEM;
+> > +               goto done;
+> > +       }
+> > +
+> > +       if (btf_ensure_modifiable(btf)) {
+> > +               err =3D -ENOMEM;
+> > +               goto done;
+> > +       }
+> > +
+> > +       for (i =3D 0; i < id_map_cnt; i++) {
+> > +               id =3D id_map[i];
+> > +               /* Drop the specified type */
+> > +               if (id =3D=3D 0)
+> > +                       continue;
+>
+> if we don't allow this (no support for deletion, I wouldn't rush to
+> add that right now)...
 
-Since the RET instruction does not require landing pad, it is chosen to
-return to the patched function.
+Thanks, I will remove it.
 
-See [1] for reference.
+>
+> pw-bot: cr
+>
+>
+> > +               /* Invalid id  */
+>
+> obvious statement, IMO, please drop the comment
 
-[1] https://lore.kernel.org/bpf/20230401234144.3719742-1-xukuohai@huaweicloud.com/
+Thanks, I will remove it.
 
-> I'm wondering if we could structure the control flow like this:
-> 
-> foo "bl" bar -> bar:
->    bar "br" trampoline -> trampoline:
->      trampoline "bl" -> bar func body:
+>
+> > +               if (id < btf->start_id || id >=3D btf__type_cnt(btf)) {
+> > +                       err =3D -EINVAL;
+> > +                       goto done;
+> > +               }
+> > +               id -=3D btf->start_id;
+> > +               /* Multiple types cannot be mapped to the same ID */
+> > +               if (order_map[id]) {
+> > +                       err =3D -EINVAL;
+> > +                       goto done;
+> > +               }
+> > +               order_map[id] =3D i + btf->start_id;
+> > +               new_nr_types =3D max(id + 1, new_nr_types);
+> > +       }
+> > +
+> > +       /* Check for missing IDs */
+> > +       for (i =3D 0; i < new_nr_types; i++) {
+> > +               if (order_map[i] =3D=3D 0) {
+> > +                       err =3D -EINVAL;
+> > +                       goto done;
+> > +               }
+> > +       }
+>
+> ... then you won't need this check at all, because we enforced that
+> each remapped ID is different and we have exactly nr_types of them.
+> Same for new_nr_types calculation above, seems redundant
 
-As mentioned above, the problem is that the bl may be out of range.
+Yes, if we don't support the dropping feature, there's no need to do
+this. I'll remove it.
 
-If blr instruction is used instead, the target instruction must be a landing
-pad when BTI is enabled. One approach is to reserve an extra nop at the call
-site and patch it into a bti instruction at runtime when needed.
+>
+> > +
+> > +       p.btf =3D btf;
+> > +       p.id_map =3D id_map;
+> > +       nt =3D new_types;
+> > +       for (i =3D 0; i < new_nr_types; i++) {
+> > +               struct btf_field_iter it;
+> > +               const struct btf_type *t;
+> > +               __u32 *type_id;
+> > +               int type_size;
+> > +
+> > +               id =3D order_map[i];
+> > +               /* must be a valid type ID */
+>
+> redundant comment, please drop
 
->        bar func body "ret" -> trampoline
->      trampoline "ret" -> foo
-> 
-> This would introduce two "bl"s and two "ret"s, keeping the RAS balanced
-> in a way similar to the x86 approach.
-> 
-> With this structure, we could also shrink the frame layout:
-> 
-> 	 * SP + retaddr_off [ self ip           ]
-> 	 *                  [ FP                ]
-> 
-> And then store the "self" return address elsewhere on the stack.
-> 
-> Do you think something along these lines could work?
-> 
-> Thanks,
-> Leon
+Thanks, I will remove it.
 
+>
+> > +               t =3D btf__type_by_id(btf, id);
+> > +               if (!t) {
+>
+> no need to check this, we already validated that all types are valid earl=
+ier
+
+Thanks, I will remove it.
+
+>
+> > +                       err =3D -EINVAL;
+> > +                       goto done;
+> > +               }
+> > +               type_size =3D btf_type_size(t);
+> > +               memcpy(nt, t, type_size);
+> > +
+> > +               /* Fix up referenced IDs for BTF */
+> > +               err =3D btf_field_iter_init(&it, nt, BTF_FIELD_ITER_IDS=
+);
+> > +               if (err)
+> > +                       goto done;
+> > +               while ((type_id =3D btf_field_iter_next(&it))) {
+> > +                       err =3D btf_permute_remap_type_id(type_id, &p);
+> > +                       if (err)
+> > +                               goto done;
+> > +               }
+> > +
+> > +               nt +=3D type_size;
+> > +       }
+> > +
+> > +       /* Fix up referenced IDs for btf_ext */
+> > +       btf_ext =3D OPTS_GET(opts, btf_ext, NULL);
+> > +       if (btf_ext) {
+> > +               err =3D btf_ext_visit_type_ids(btf_ext, btf_permute_rem=
+ap_type_id, &p);
+> > +               if (err)
+> > +                       goto done;
+> > +       }
+> > +
+> > +       new_type_len =3D nt - new_types;
+>
+>
+> new_type_len has to be exactly the same as the old size, this is redundan=
+t
+
+Yes, if we don't support the dropping feature, there's no need to do
+this. I'll remove it.
+
+>
+> > +       next_type =3D new_types;
+> > +       end_type =3D next_type + new_type_len;
+> > +       i =3D 0;
+> > +       while (next_type + sizeof(struct btf_type) <=3D end_type) {
+>
+> while (next_type < end_type)?
+>
+> Reference to struct btf_type is confusing, as generally type is bigger
+> than just sizeof(struct btf_type). But there is no need for this, with
+> correct code next_type < end_type is sufficient check
+>
+> But really, this can also be written cleanly as a simple for loop
+>
+> for (i =3D 0; i < nr_types; i++) {
+>     btf->type_offs[i] =3D next_type - new_types;
+>     next_type +=3D btf_type_size(next_type);
+> }
+
+Great, thanks.
+
+>
+> > +               btf->type_offs[i++] =3D next_type - new_types;
+> > +               next_type +=3D btf_type_size(next_type);
+> > +       }
+> > +
+> > +       /* Resize */
+>
+> there cannot be any resizing, drop this, you only need to reassign
+> btf->types_data, that's all
+
+Okay, I will do it.
+
+>
+> > +       if (new_type_len < btf->hdr->type_len) {
+> > +               void *tmp_types;
+> > +
+> > +               tmp_types =3D realloc(new_types, new_type_len);
+> > +               if (new_type_len && !tmp_types) {
+> > +                       err =3D -ENOMEM;
+> > +                       goto done;
+> > +               }
+> > +               new_types =3D tmp_types;
+> > +               btf->nr_types =3D new_nr_types;
+> > +               btf->type_offs_cap =3D btf->nr_types;
+> > +               btf->types_data_cap =3D new_type_len;
+> > +               btf->hdr->type_len =3D new_type_len;
+> > +               btf->hdr->str_off =3D new_type_len;
+> > +               btf->raw_size =3D btf->hdr->hdr_len + btf->hdr->type_le=
+n + btf->hdr->str_len;
+> > +       }
+> > +
+> > +       free(order_map);
+> > +       free(btf->types_data);
+> > +       btf->types_data =3D new_types;
+> > +       return 0;
+> > +
+> > +done:
+> > +       free(order_map);
+> > +       free(new_types);
+> > +       return libbpf_err(err);
+> > +}
+> > diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> > index ccfd905f03df..e63dcce531b3 100644
+> > --- a/tools/lib/bpf/btf.h
+> > +++ b/tools/lib/bpf/btf.h
+> > @@ -273,6 +273,49 @@ LIBBPF_API int btf__dedup(struct btf *btf, const s=
+truct btf_dedup_opts *opts);
+> >   */
+> >  LIBBPF_API int btf__relocate(struct btf *btf, const struct btf *base_b=
+tf);
+> >
+> > +struct btf_permute_opts {
+> > +       size_t sz;
+> > +       /* optional .BTF.ext info along the main BTF info */
+> > +       struct btf_ext *btf_ext;
+> > +       size_t :0;
+> > +};
+> > +#define btf_permute_opts__last_field btf_ext
+> > +
+> > +/**
+> > + * @brief **btf__permute()** performs in-place BTF type rearrangement
+> > + * @param btf BTF object to permute
+> > + * @param id_map Array mapping original type IDs to new IDs
+> > + * @param id_map_cnt Number of elements in @id_map
+> > + * @param opts Optional parameters for BTF extension updates
+> > + * @return 0 on success, negative error code on failure
+> > + *
+> > + * **btf__permute()** rearranges BTF types according to the specified =
+ID mapping.
+> > + * The @id_map array defines the new type ID for each original type ID=
+.
+> > + *
+> > + * For **base BTF**:
+> > + * - @id_map must include all types from ID 1 to `btf__type_cnt(btf)-1=
+`
+> > + * - @id_map_cnt should be `btf__type_cnt(btf) - 1`
+> > + * - Mapping uses `id_map[original_id - 1] =3D new_id`
+> > + *
+> > + * For **split BTF**:
+> > + * - @id_map should cover only split types
+> > + * - @id_map_cnt should be `btf__type_cnt(btf) - btf__type_cnt(btf__ba=
+se_btf(btf))`
+> > + * - Mapping uses `id_map[original_id - btf__type_cnt(btf__base_btf(bt=
+f))] =3D new_id`
+> > + *
+> > + * Setting @id_map element to 0 drops the corresponding type. Dropped =
+types must not
+> > + * be referenced by any retained types. After permutation, type refere=
+nces in BTF
+> > + * data and optional extension are updated automatically.
+>
+> let's not add deletion support just yet
+
+Thanks, I will modify the annotations.
+
+>
+> > + *
+> > + * Note: Dropping types may orphan some strings, requiring subsequent =
+**btf__dedup()**
+> > + * to clean up unreferenced strings.
+>
+> one more reason to not add deletion just yet. It's good to have an API
+> that can express this, but we don't have to support deletion just yet.
+
+Thanks, I will remove it.
+
+>
+> > + *
+> > + * On error, returns negative error code and sets errno:
+> > + *   - `-EINVAL`: Invalid parameters or ID mapping (duplicates, out-of=
+-range)
+> > + *   - `-ENOMEM`: Memory allocation failure
+> > + */
+> > +LIBBPF_API int btf__permute(struct btf *btf, __u32 *id_map, __u32 id_m=
+ap_cnt,
+> > +                           const struct btf_permute_opts *opts);
+> > +
+> >  struct btf_dump;
+> >
+> >  struct btf_dump_opts {
+> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > index 8ed8749907d4..b778e5a5d0a8 100644
+> > --- a/tools/lib/bpf/libbpf.map
+> > +++ b/tools/lib/bpf/libbpf.map
+> > @@ -451,4 +451,5 @@ LIBBPF_1.7.0 {
+> >         global:
+> >                 bpf_map__set_exclusive_program;
+> >                 bpf_map__exclusive_program;
+> > +               btf__permute;
+> >  } LIBBPF_1.6.0;
+> > --
+> > 2.34.1
+> >
 
