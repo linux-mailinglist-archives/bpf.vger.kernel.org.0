@@ -1,205 +1,267 @@
-Return-Path: <bpf+bounces-75149-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75150-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5092C73332
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 10:34:24 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEA0CC7338A
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 10:38:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 25FA234A7E6
-	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 09:33:59 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3839635889A
+	for <lists+bpf@lfdr.de>; Thu, 20 Nov 2025 09:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BC7A2D5C74;
-	Thu, 20 Nov 2025 09:30:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89B0313267;
+	Thu, 20 Nov 2025 09:35:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dtDoGHsj"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ULC7janN"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012016.outbound.protection.outlook.com [40.93.195.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0C83191C3
-	for <bpf@vger.kernel.org>; Thu, 20 Nov 2025 09:30:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763631004; cv=none; b=iyJWEu1eveOta+UFHu4xKekYB/eqohI+HAz/hPCejUAlTwTCE9yBNyNUC3xDE1IgdfJwMI6XXHwcubv/ahLHZZaS9EwsY61ALltM5HMF2uvZXfEgHntXl1bfhg0C48f3ojRHGUANsHVVRNYUB/EIiJiS8r2sg6ATPZR6t+3C3UQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763631004; c=relaxed/simple;
-	bh=AxJxWuRoAy4ZbASVKOsuaDYFGzkRT5fbocxv3KvE9LU=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=BgP/bdoXdruQY6LP3zGw4ZSIzLVDjEkbhLSSZiKAsHqfDLS5GgSaEWmaNurW/3kZse3RqZbOwj6+UbP6nO8sgmRpvfjlq5dm8M/JLt+4Qugg+2q63E4/3+CF1mG/7oya73906rbNhf7wnT1idooyz+RtDytIPVSOQpU72P+wd3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dtDoGHsj; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F22AE1CAA85;
+	Thu, 20 Nov 2025 09:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.16
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763631356; cv=fail; b=jgKUZ9zXAr5rk0bCSyUN2KMN7vhu6+s1nuhKooofcUo5VAoaTs5umYqOCAXXsP9h7vRqz2yklVdndJAaUEcs1YkW/hxY83DjpeCYaWqTJsBuJszMhjA6986QtSXcDXK0pE9NZ45zpTDFLS89ZkAltcs/FGWkhBboK7CbJQGItzI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763631356; c=relaxed/simple;
+	bh=tfKk26uWTRBF6Vr94IJXAZ+ZoZPaKShywj2e+VM5004=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=DBcZYvWPsmg0vpdWpaiGrpNp54QYkD6/XG5kH7s1PqW1FYXJyQ7/YJYUDNxadNvoa4pM+GcRtJuWvzfmKjdSZEMVdP5tXYU7K4OljBYeUmv11jfvnCJKwIffOX8ifKbrpYXI6vw6ry/lCpFscwuvqlYE4iPgEWY/Ojr2iANEtWM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ULC7janN; arc=fail smtp.client-ip=40.93.195.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Zi6qcXddJ1EaQz5ymIInzhQONmAQz/JrJiNWMzKYQApuieh64yMxV5nYmPvELqMMyB3t9tZ80rase+TZEeI6AG3Qz4n/dc5VhvKEsYt50ECB8cbqo3A9csSY3Auc15TWqCpbVEw2pBjSh/02Adr+ENo08liKj6zQuprzB2xfcikSKp15S35zgi+yobfhafokgBrNEjwEcDdKSXE4qPv07vgYieZPdUQsGS5cW6NMJfk49vyRi+QaMwOVQa7vhvQslSz6xrdB42k5dHdZS8yMrGo8P31UftQ/Aao+9HjevatJv5qPsB5U9yjxDDSFRBfz7cqUFl+NTPDQKV1apkyM3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Nq/tT0C9o139rb4x5+u6Yyb8ElgXlto4CN0DEnQmnUQ=;
+ b=EvmeH2d0KvKg4OfAxbRaEvrwvwXIjHhtK3eOiTeH5ZMuTxhDYmPWSLXGb7MelV70DmNdcAs8xdvMnxeuK4pHcy7/5LgNubMFIjqSrGItsEuXoWMDdhPWo6q6AnC58ufo7KzFfX+miZ2PLBxgyFCkOO1AIlOt5rupjbwR2KensvtJlRTXTlHydsncmRn9FXYlLXKH318tkSLXYVEe3A71jXOHmwB/ghGGyhXDfobxoNyVnefdfGnSxBrH1YSWhOOe0aaEZuzzfwfIVGNX0mhs+aAfwJ4cj/RHCwhbQypehVg0iLSkbhrRjACk/8aKXtyUL397MH4bmdtZxDJ30UOvSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.21.194) smtp.rcpttodomain=lists.linaro.org smtp.mailfrom=ti.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Nq/tT0C9o139rb4x5+u6Yyb8ElgXlto4CN0DEnQmnUQ=;
+ b=ULC7janNoV7IZJ7sKvleQ5dLUzGSK7Ut4vQ5eJ+oxUp8uD/ss3CbDioQRI0I9J4Bbnxt9Oyyn66ujNTIls0/21r5WvZBjaUAD+Y8sekUvosSKib2OGTZTduYYq/HTZlw9XLUPUuLFXq61sjUpeyL9uHDAcHD9TUTKbWIFnV+AFk=
+Received: from SA1P222CA0089.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:35e::19)
+ by CH0PR10MB4876.namprd10.prod.outlook.com (2603:10b6:610:c9::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.10; Thu, 20 Nov
+ 2025 09:35:51 +0000
+Received: from SN1PEPF0002636C.namprd02.prod.outlook.com
+ (2603:10b6:806:35e:cafe::c) by SA1P222CA0089.outlook.office365.com
+ (2603:10b6:806:35e::19) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9343.11 via Frontend Transport; Thu,
+ 20 Nov 2025 09:35:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.194)
+ smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
+ action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.21.194 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
+Received: from flwvzet200.ext.ti.com (198.47.21.194) by
+ SN1PEPF0002636C.mail.protection.outlook.com (10.167.241.137) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9343.9 via Frontend Transport; Thu, 20 Nov 2025 09:35:50 +0000
+Received: from DFLE202.ent.ti.com (10.64.6.60) by flwvzet200.ext.ti.com
+ (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 20 Nov
+ 2025 03:35:44 -0600
+Received: from DFLE201.ent.ti.com (10.64.6.59) by DFLE202.ent.ti.com
+ (10.64.6.60) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 20 Nov
+ 2025 03:35:44 -0600
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE201.ent.ti.com
+ (10.64.6.59) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
+ Transport; Thu, 20 Nov 2025 03:35:44 -0600
+Received: from [10.24.69.13] (meghana-pc.dhcp.ti.com [10.24.69.13] (may be forged))
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5AK9Zc513447476;
+	Thu, 20 Nov 2025 03:35:39 -0600
+Message-ID: <a35a9e6e-860e-46e0-b124-37fc80c5e48d@ti.com>
+Date: Thu, 20 Nov 2025 15:05:38 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1763630998;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fwimz9cV5XjfDnANvfrVBMpem/qAU7ggyHG03WSRMT8=;
-	b=dtDoGHsjHF0f7eLfgt/72alDvV4DJdD6aK60GYDAs5ZFWzDt7l6gh9O0z/OP5dc+8VUiYl
-	rR5yrsObR0rxNQ1wDXbKE/VMSuEjJHrj7xVlwLv9IIMgKz/F0Mv3GnjF/V0r6FCHXTO3TB
-	e0gZL2EWmB62xNPGB3j1pFtg15MYcP8=
-Date: Thu, 20 Nov 2025 09:29:52 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: hui.zhu@linux.dev
-Message-ID: <895f996653b3385e72763d5b35ccd993b07c6125@linux.dev>
-TLS-Required: No
-Subject: Re: [RFC PATCH 0/3] Memory Controller eBPF support
-To: "Roman Gushchin" <roman.gushchin@linux.dev>
-Cc: "Andrew Morton" <akpm@linux-foundation.org>, "Johannes Weiner"
- <hannes@cmpxchg.org>, "Michal Hocko" <mhocko@kernel.org>, "Shakeel Butt"
- <shakeel.butt@linux.dev>, "Muchun Song" <muchun.song@linux.dev>, "Alexei 
- Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
- "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
- <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>, "Song
- Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "John 
- Fastabend" <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>,
- "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
- "Jiri  Olsa" <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>, "Peter
- Zijlstra" <peterz@infradead.org>, "Miguel Ojeda" <ojeda@kernel.org>,
- "Nathan  Chancellor" <nathan@kernel.org>, "Kees Cook" <kees@kernel.org>,
- "Tejun Heo" <tj@kernel.org>, "Jeff Xu" <jeffxu@chromium.org>,
- mkoutny@suse.com, "Jan  Hendrik Farr" <kernel@jfarr.cc>, "Christian
- Brauner" <brauner@kernel.org>, "Randy Dunlap" <rdunlap@infradead.org>,
- "Brian Gerst" <brgerst@gmail.com>, "Masahiro Yamada"
- <masahiroy@kernel.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- cgroups@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, "Hui Zhu" <zhuhui@kylinos.cn>
-In-Reply-To: <87ldk1mmk3.fsf@linux.dev>
-References: <cover.1763457705.git.zhuhui@kylinos.cn>
- <87ldk1mmk3.fsf@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXTERNAL] [PATCH net-next v2 0/7] net: ethernet: ti: am65-cpsw:
+ add AF_XDP zero copy support
+To: Roger Quadros <rogerq@kernel.org>, Siddharth Vadapalli
+	<s-vadapalli@ti.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, "Jesper Dangaard
+ Brouer" <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, "Sumit
+ Semwal" <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?=
+	<christian.koenig@amd.com>, Stanislav Fomichev <sdf@fomichev.me>, "Simon
+ Horman" <horms@kernel.org>
+CC: <srk@ti.com>, <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>
+References: <20251109-am65-cpsw-xdp-zc-v2-0-858f60a09d12@kernel.org>
+Content-Language: en-US
+From: Meghana Malladi <m-malladi@ti.com>
+In-Reply-To: <20251109-am65-cpsw-xdp-zc-v2-0-858f60a09d12@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002636C:EE_|CH0PR10MB4876:EE_
+X-MS-Office365-Filtering-Correlation-Id: 31cd6ce8-faff-4c20-1fdd-08de28183123
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|82310400026|376014|7416014|36860700013|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?bzVMSFA3MXBjSkEzdVFOaGE2anZEZVRxZnJXTjhLSXdTU3JIdkpVT1BuRHFk?=
+ =?utf-8?B?M1F3QTdMZnhJSi91SnFkaXNnMzVJT3NKS0dNR1RWWWhtRGZheTQ2K0c0VTZI?=
+ =?utf-8?B?Uy85Q200Z09uSkVWQXNjN1R2RTh0UUdrbVRVSmh3eDdybVJkVU1YWFA0VjZJ?=
+ =?utf-8?B?MnFkaDVuNmtzaGVVWFZQem05ejVwM2l6T3Qzamx3ODZQRy9pejZnSmtpWHl4?=
+ =?utf-8?B?YTN4QURRVkxIb04xNloxT3lXbGtXT2J3aFdwMzZMSjRZaUUrU1lzUzRpeFJD?=
+ =?utf-8?B?b0FHMUtLc0pBcFRlSjdaUU4vYjVoYjFxQVNxYzZvZmRqOUJiTkdvQlA4dy9p?=
+ =?utf-8?B?SXJxMllNVEgxVjc4K0F4QjZEaHRuZU9OOVB4Nk52Qm5jb3ZDOGVNZFFVUDNn?=
+ =?utf-8?B?bktkR3llbk1DTDhFNnVLV0M1d2dmTFhxazFWOHhjTTlCZ3h2SWp6cWFRczJH?=
+ =?utf-8?B?M0RiYVBqOTZGeDQxMHQ0ZkIwTzZIMUVFZ2RXSTVSbGNCWVhIaFhzTTkwSDhX?=
+ =?utf-8?B?dFQyejY1SnpieEpJcWdHdURYS3VwdkNzVTMxbFNwUU5MNDZLaTZDYnQ2VFhv?=
+ =?utf-8?B?RUI4UVhSRm9BZU92Z09GM3lDeE5LT2tWODhwc1dQaWR2dk5ydHhVbUdkbTFh?=
+ =?utf-8?B?M09jZmNOek5WUkRLdDBycDAwSDhmSlRvZ3ZZTUhzS21laGtRRzNSNzlTaFZT?=
+ =?utf-8?B?cGNwZzhraGZ1QUNrU1U3SFQrSU1sbkx5Q0EvT2dDNmt5ZGFUaUErRjR0Zjlh?=
+ =?utf-8?B?d3Ztc0VOU1cySUtFUXZKclpESEViUlpHemhQUXJHRnVTVzJZWENyM09oNktY?=
+ =?utf-8?B?dG5XTURLQzRpUzNMMk1Pa2lHTlJjQysrRWtaWkJYU1RmVjdXNHZ2S25mVEJy?=
+ =?utf-8?B?dlNKakFxckhPREd4UTB3UTFsNWFOT3hzQnpPeVlKbitIZis3akNzTVE3K2NK?=
+ =?utf-8?B?MjZnaUJsU2t0OXFHUGNBdEQxM0hvejJpKzc2dDhFNTBHa3FCQUVZN2h1aEhE?=
+ =?utf-8?B?UVp4SjUyYk1ZVndoTklSMW92MEV2cVlyNU9lSkhFUGcyYWlkL0RtQWRqdnFw?=
+ =?utf-8?B?czN6QzdDWG82TEkrdzAxd2QzRGpiRDh3VkNZT3NHMmVkb2JKb2pnbUY2Z2ZD?=
+ =?utf-8?B?dlFpN0h4S3VzQjBHZFBMSGp0OCt2U0t1REhPNG1JOG9aeHBYdG8wNEJWVU9U?=
+ =?utf-8?B?b1JDY3F3Uk5ydWlaRVZLUjlnazZYdlVWOUlFdXduNVBxc1BNVDRzWEVXOU9v?=
+ =?utf-8?B?L0tDWEY2Y211d0RoQlI3L2s3VVhnQ3EvYVNTZFBaOXdieXExcUNScC9uMGpX?=
+ =?utf-8?B?ZUZBVGVDeGZYdEhNSElNb2VLWTlnWWZuTDlFaFZ2aDBlcTRHUEZwdHdZR0Mv?=
+ =?utf-8?B?S1Jzd3lYZ2NWRE1WbW96c2tuZnp0ZHlxakUwNm9ndGI0NDN1NUFHOG9lUy8v?=
+ =?utf-8?B?Vk14bVpFOU5ZZ2VwSlhCTXNaNC9ycHpKN0dza1pET1hZMEJ4d2JvUm5QdHNZ?=
+ =?utf-8?B?cHRVbzh2bXdWbW8ydU16aUJ6aTU2TXhtZmdUditGMTBJcTRtUGhjcUI0bzJI?=
+ =?utf-8?B?R0krczRsZlN3R0RLdHdIcWYwclIxTStyN3BQWU9LbG5ZeHFYYXVNME9lRE1D?=
+ =?utf-8?B?Z3RCNmFnb3lsck94MnZZczZrdHVvV0l2MVBZUWJ4YXBTRSsxSlV2RkNnSkNG?=
+ =?utf-8?B?anpDeVRoOFRMQnBmOUFNbDZHZkFKM3lHeTF6ZHFpWkRyOWI5bkgwdmRtdFdG?=
+ =?utf-8?B?SkUvM0xBU1RBZVlHV3RUaVFTVnplYUxQMHF5WDdVb3o3MUt4TXZHZFFFV3Iz?=
+ =?utf-8?B?YzNoWlJvWkpUSHlQRk5oQ0pLNkUvZExReDJSU1djNTZSajcvTUlRMXg2Zk4v?=
+ =?utf-8?B?VmxvcEFiMzNyYTdiK2xqWUwrSGI3RUhNcmpwdjhFbkh2R21odkU3V0V0ZWhL?=
+ =?utf-8?B?WFhTRGhJS1JNWlNWOGdJM0pldmRrNDNZdkNscTF1MDhXOFBrS1V3aWNhdlVW?=
+ =?utf-8?B?aFlOSU9qeDlJREVpTnBXbTRTRkRLVm9aRG9CZFhYM3phbkZKMG9yUGpsQnRl?=
+ =?utf-8?Q?+7O1AC?=
+X-Forefront-Antispam-Report:
+	CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(7416014)(36860700013)(921020);DIR:OUT;SFP:1101;
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2025 09:35:50.1434
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31cd6ce8-faff-4c20-1fdd-08de28183123
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SN1PEPF0002636C.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB4876
 
-2025=E5=B9=B411=E6=9C=8820=E6=97=A5 11:04, "Roman Gushchin" <roman.gushch=
-in@linux.dev mailto:roman.gushchin@linux.dev?to=3D%22Roman%20Gushchin%22%=
-20%3Croman.gushchin%40linux.dev%3E > =E5=86=99=E5=88=B0:
+Hi Roger,
 
+On 11/10/25 03:07, Roger Quadros wrote:
+> This series adds AF_XDP zero coppy support to am65-cpsw driver. Tests 
+> were performed on AM62x-sk with xdpsock application [1]. A clear 
+> improvement is seen in 64 byte packets on Transmit (txonly) and receive 
+> (rxdrop). 1500 byte test seems to
+> ZjQcmQRYFpfptBannerStart
+> This message was sent from outside of Texas Instruments.
+> Do not click links or open attachments unless you recognize the source 
+> of this email and know the content is safe.
+> Report Suspicious
+> <https://us-phishalarm-ewt.proofpoint.com/EWT/v1/G3vK! 
+> u7dqXRfP1k07KyXOF3NDf8vo0my_AFaH4vPAPLVnKCsqFWj_bXKNsRmhTJBE82Rrr_w736hROV-tgpjEGb6O7cQAClKjG9x9il73ZT70$>
+> ZjQcmQRYFpfptBannerEnd
+> 
+> This series adds AF_XDP zero coppy support to am65-cpsw driver.
+> 
+> Tests were performed on AM62x-sk with xdpsock application [1].
+> 
+> A clear improvement is seen in 64 byte packets on Transmit (txonly)
+> and receive (rxdrop).
+> 1500 byte test seems to be limited by line rate (1G link) so no
+> improvement seen there in packet rate. A test on higher speed link
+> (or PHY-less setup) might be worthwile.
+> 
+> There is some issue during l2fwd with 64 byte packets and benchmark
+> results show 0. This issue needs to be debugged further.
+> A 512 byte l2fwd test result has been added to compare instead.
+> 
+> AF_XDP performance using 64 byte packets in Kpps.
+> Benchmark:	XDP-SKB		XDP-Native	XDP-Native(ZeroCopy)
+> rxdrop		322		491		845
+> txonly		390		394		723
+> l2fwd 		205		257		0
+> 
+> AF_XDP performance using 512 byte packets in Kpps.
+> l2fwd		140		167		231
+> 
+> AF_XDP performance using 1500 byte packets in Kpps.
+> Benchmark:	XDP-SKB		XDP-Native	XDP-Native(ZeroCopy)
+> rxdrop		82		82		82
+> txonly		82		82		82
+> l2fwd 		82		82		82
+> 
+> [1]:https://urldefense.com/v3/__https://github.com/xdp-project/bpf-examples/ 
+> tree/master/AF_XDP-example__;!!G3vK! 
+> SX4J82NfOn_sfwizSTYO-8W3GRuffFIHyCngO1J2CT4Alea18pIGiBI4l5XKFKVUbxESDgb4GkCb$ <https://urldefense.com/v3/__https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-example__;!!G3vK!SX4J82NfOn_sfwizSTYO-8W3GRuffFIHyCngO1J2CT4Alea18pIGiBI4l5XKFKVUbxESDgb4GkCb$>
+> 
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
 
->=20
->=20Hui Zhu <hui.zhu@linux.dev> writes:
->=20
->=20>=20
->=20> From: Hui Zhu <zhuhui@kylinos.cn>
-> >=20
->=20>  This series proposes adding eBPF support to the Linux memory
-> >  controller, enabling dynamic and extensible memory management
-> >  policies at runtime.
-> >=20
->=20>  Background
-> >=20
->=20>  The memory controller (memcg) currently provides fixed memory
-> >  accounting and reclamation policies through static kernel code.
-> >  This limits flexibility for specialized workloads and use cases
-> >  that require custom memory management strategies.
-> >=20
->=20>  By enabling eBPF programs to hook into key memory control
-> >  operations, administrators can implement custom policies without
-> >  recompiling the kernel, while maintaining the safety guarantees
-> >  provided by the BPF verifier.
-> >=20
->=20>  Use Cases
-> >=20
->=20>  1. Custom memory reclamation strategies for specialized workloads
-> >  2. Dynamic memory pressure monitoring and telemetry
-> >  3. Memory accounting adjustments based on runtime conditions
-> >  4. Integration with container orchestration systems for
-> >  intelligent resource management
-> >  5. Research and experimentation with novel memory management
-> >  algorithms
-> >=20
->=20>  Design Overview
-> >=20
->=20>  This series introduces:
-> >=20
->=20>  1. A new BPF struct ops type (`memcg_ops`) that allows eBPF
-> >  programs to implement custom behavior for memory charging
-> >  operations.
-> >=20
->=20>  2. A hook point in the `try_charge_memcg()` fast path that
-> >  invokes registered eBPF programs to determine if custom
-> >  memory management should be applied.
-> >=20
->=20>  3. The eBPF handler can inspect memory cgroup context and
-> >  optionally modify certain parameters (e.g., `nr_pages` for
-> >  reclamation size).
-> >=20
->=20>  4. A reference counting mechanism using `percpu_ref` to safely
-> >  manage the lifecycle of registered eBPF struct ops instances.
-> >=20
->=20Can you please describe how these hooks will be used in practice?
-> What's the problem you can solve with it and can't without?
->=20
->=20I generally agree with an idea to use BPF for various memcg-related
-> policies, but I'm not sure how specific callbacks can be used in
-> practice.
+This series causes nfs boot failure for am62lxx-evm:
+https://gist.github.com/MeghanaMalladiTI/dda232ebe6c24554e933085513ce8b33
 
-Hi Roman,
+Due to descriptor leakage during Rx teardown. I have faced similar 
+problem in ICSSG and a fix similar to this is needed for CPSW as well. 
+Please incorporate this fix as well in your v3: 
+https://gist.github.com/MeghanaMalladiTI/c5467e2a5c9d4ebdc5e71e3720b6524d
 
-Following are some ideas that can use ebpf memcg:
+> Changes in v2:
+> - Prevent crash on systems with 1 of 2 ports disabled in device tree. check
+>    for valid ndev before registering/unregistering XDP RXQ.
+>    Reported-by: Meghana Malladi <m-malladi@ti.com>
+> - Retain page pool on XDP program exchangae so we don't have to re-alloacate
+>    memory.
+> - Fix clearing of irq_disabled flag in am65_cpsw_nuss_rx_poll().
+> - Link to v1:https://urldefense.com/v3/__https://lore.kernel.org/r/20250520-am65- 
+> cpsw-xdp-zc-v1-0-45558024f566@kernel.org__;!!G3vK! 
+> SX4J82NfOn_sfwizSTYO-8W3GRuffFIHyCngO1J2CT4Alea18pIGiBI4l5XKFKVUbxESDgAECR9g$ <https://urldefense.com/v3/__https://lore.kernel.org/r/20250520-am65-cpsw-xdp-zc-v1-0-45558024f566@kernel.org__;!!G3vK!SX4J82NfOn_sfwizSTYO-8W3GRuffFIHyCngO1J2CT4Alea18pIGiBI4l5XKFKVUbxESDgAECR9g$>
+> 
+> ---
+> Roger Quadros (7):
+>        net: ethernet: ti: am65-cpsw: fix BPF Program change on multi-port CPSW
+>        net: ethernet: ti: am65-cpsw: Retain page_pool on XDP program exchange
+>        net: ethernet: ti: am65-cpsw: add XSK pool helpers
+>        net: ethernet: ti: am65-cpsw: Add AF_XDP zero copy for RX
+>        net: ethernet: ti: am65-cpsw: Add AF_XDP zero copy for TX
+>        net: ethernet: ti: am65-cpsw: enable zero copy in XDP features
+>        net: ethernet: ti: am65-cpsw: Fix clearing of irq_disabled flag in rx_poll
+> 
+>   drivers/net/ethernet/ti/Makefile         |   2 +-
+>   drivers/net/ethernet/ti/am65-cpsw-nuss.c | 583 ++++++++++++++++++++++++++-----
+>   drivers/net/ethernet/ti/am65-cpsw-nuss.h |  37 +-
+>   drivers/net/ethernet/ti/am65-cpsw-xdp.c  | 155 ++++++++
+>   4 files changed, 692 insertions(+), 85 deletions(-)
+> ---
+> base-commit: a0c3aefb08cd81864b17c23c25b388dba90b9dad
+> change-id: 20250225-am65-cpsw-xdp-zc-2af9e4be1356
+> 
+> Best regards,
+> -- 
+> Roger Quadros <rogerq@kernel.org>
+> 
 
-Priority=E2=80=91Based Reclaim and Limits in Multi=E2=80=91Tenant Environ=
-ments:
-On a single machine with multiple tenants / namespaces / containers,
-under memory pressure it=E2=80=99s hard to decide =E2=80=9Cwho should be =
-squeezed first=E2=80=9D
-with static policies baked into the kernel.
-Assign a BPF profile to each tenant=E2=80=99s memcg:
-Under high global pressure, BPF can decide:
-Which memcgs=E2=80=99 memory.high should be raised (delaying reclaim),
-Which memcgs should be scanned and reclaimed more aggressively.
-
-Online Profiling / Diagnosing Memory Hotspots:
-A cgroup=E2=80=99s memory keeps growing, but without patching the kernel =
-it=E2=80=99s
-difficult to obtain fine=E2=80=91grained information.
-Attach BPF to the memcg charge/uncharge path:
-Record large allocations (greater than N KB) with call stacks and
-owning file/module, and send them to user space via a BPF ring buffer.
-Based on sampled data, generate:
-=E2=80=9CTop N memory allocation stacks in this container over the last 1=
-0 minutes,=E2=80=9D
-Reports of which objects / call paths are growing fastest.
-This makes it possible to pinpoint the root cause of host memory
-anomalies without changing application code, which is very useful
-in operations/ops scenarios.
-
-SLO=E2=80=91Driven Auto Throttling / Scale=E2=80=91In/Out Signals:
-Use eBPF to observe memory usage slope, frequent reclaim,
-or near=E2=80=91OOM behavior within a memcg.
-When it decides =E2=80=9COOM is imminent,=E2=80=9D instead of just killin=
-g/raising
-limits, it can emit a signal to a control=E2=80=91plane component.
-For example, send an event to a user=E2=80=91space agent to trigger
-automatic scaling, QPS adjustment, or throttling.
-
-Prevent a cgroup from launching a large=E2=80=91scale fork+malloc attack:
-BPF checks per=E2=80=91uid or per=E2=80=91cgroup allocation behavior over=
- the
-last few seconds during memcg charge.
-
-And I maintain a software project, https://github.com/teawater/mem-agent,
-for specialized memory management and related functions.
-However, I found that implementing certain memory QoS categories
-for memcg solely from user space is rather inefficient,
-as it requires frequent access to values within memcg.
-This is why I want memcg to support eBPF=E2=80=94so that I can place
-custom memory management logic directly into the kernel using eBPF,
-greatly improving efficiency.
-
-Best,
-Hui
-
->=20
->=20Thanks!
->
 
