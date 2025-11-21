@@ -1,143 +1,231 @@
-Return-Path: <bpf+bounces-75258-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75259-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAA63C7BC60
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 22:41:03 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13B12C7BD08
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 22:55:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DA52A4E0F48
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 21:40:58 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 71E1A4ED7F7
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 21:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C69993064B9;
-	Fri, 21 Nov 2025 21:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12632FF155;
+	Fri, 21 Nov 2025 21:54:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N96HfCcE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SP2uRQcc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA9F2D780C
-	for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 21:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0B72FA0E9
+	for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 21:54:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763761252; cv=none; b=acAPhzFcZGvytb4HmhflwAf3hIfIQ/MHeW65HpgpfvLbX7zP/LwPKLTG8jH+xspDgxfTSY79s2eSSjEw+67l6lxp1i1irKOCIZdxJVKCMGvAU+908I+IHAWqHcF7/TUi2ihNfB9QF0nmmo9fNsun1ppW66R0HbnsqpRs42zraao=
+	t=1763762080; cv=none; b=YGRScGCGHB5T7tynGIzCY+/o2e/5355zS0q1MwK1W9wV36q93hplL1qx//mM65owIhzQuWzQLzB88YRxgReDuqXWp2yJ92myl61eOAJFRz9p1/NAZ9QDHtVMCRpfEjlHuw5M4dRVty+H8VIvw4HIpN6YsMKf0I7cssLiZaeXWhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763761252; c=relaxed/simple;
-	bh=FRZ50aYUtcrgGU6T19iGqtHp4MvFQNOJJrYNa3+byPE=;
+	s=arc-20240116; t=1763762080; c=relaxed/simple;
+	bh=kxc2ghZkIeKuja4o7j8KUlCiA7Mek4elgg/CODc+eP4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QXbczepQAW1If3/jJCw18atv6UmWVwPECsc7Grbjn6rPdx1evauonKv+10TQYTW/Yxe26lDn9nplRyPZC75v6H7ClZDK+XiqIrfym+CW1umDVhiUfrfXxD4tOdxn7LZcpdUVNvwmrIegn1MUJfuFdKaxBRKcWx2b9NK0utv2adI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N96HfCcE; arc=none smtp.client-ip=209.85.221.47
+	 To:Cc:Content-Type; b=iDTsqyV0wtcYWVLxNm9jwJlF7jUA65LqK8nYtPijZnOot/+6CcJxBzHcIPlE4Uy/KJ2JSGCrpcm5ujjwoaZhx04EB3hPED+W5QA3Wi90x/jmFGWbk9mwi+H8G66hbTwtRy98vING2ohgJTblQZYYLUJrgYQJC/73PDbFava8pIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SP2uRQcc; arc=none smtp.client-ip=209.85.128.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-42bb288c1bfso1550694f8f.2
-        for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 13:40:49 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-787e84ceaf7so27967647b3.2
+        for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 13:54:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763761248; x=1764366048; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763762077; x=1764366877; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=STfVZTvJ5u/1DSHeWAxiKxp8wq8NwPWQjK8gQ1lGFGQ=;
-        b=N96HfCcEcgO5QjIyqMQUjg2k0xeE+XNJltSsta5oAvjz2E1ippNjyqV3LUYQtjPYzK
-         zLcgK5S1YhjYXSrMp01kxBgkJZdkkaYA4rof54Ma2dBjrzM4+qx5tOH8Yu+WHDKa0GJo
-         9cBWUMH17EkqZVsrxr3u2wFFTzqOocz/W6qbCA3SPryQXtaZfm4aDF1Ngi9sSWTFwNZ2
-         mArPkEfUH860ai3mWjK7/kw5JeH0xJ9rXt3ihqsfNsp8VU60/1fM46XVOnSlpcCGe36C
-         zQsFLKB6vwM2EgtNF1P9zY3E0VfIoHznHT3gcc52eykOZlxJ/XtLN2B+8s844JkkVMvt
-         ww2A==
+        bh=KKDKywxsPMgX4FVe6JHQ8TSPWLHfYapoOHUuWm/LY3M=;
+        b=SP2uRQccH+g9xA61zNVDnCaIMzho/v9gE5nhsQywafYLct65mPVaZbX9L9jXUqYSvj
+         j2+eVz9Oc2pI7/2Js/BSUfpDLl7x/GyNxsMSxob8nR18XAza4cfM2q2+GUUpOI35uZdF
+         Pc0JNeCoRzwUmz3wGKHfdcoc/KBKHCseSGhJazcyVQwQcoHr//25rEie4TI5P5ce1+ao
+         n8m3UslaO60ktFcXMYrCu9pCTjbzY1OMrAQl6QHt5SRR6AIYsaKy1TyelYT/FIX8vQZk
+         3CNwhM0FHtdrRAWujOTLyJNOIZa+BxN5iVRELvdd9Od+KHSX8am2I8vOXlFk/9PvBTKJ
+         kkbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763761248; x=1764366048;
+        d=1e100.net; s=20230601; t=1763762077; x=1764366877;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=STfVZTvJ5u/1DSHeWAxiKxp8wq8NwPWQjK8gQ1lGFGQ=;
-        b=lMFx0b1tRpnjDt5mUyKPIaF90C8dE6pNKIYUG1a6O+GUl8h7+24VJ8MCut4DHqn6Cu
-         g9v4YieOuEFr6wYb634KCfanQPGQ4Vu4PvHBpg6wnVopTPiRrGNPAUNd36eJEJVnlpcZ
-         ixh4W7Eld/rBZuEvzQ4guKbC+FqKcZpSdxkTtnqQnBP+QJVP+t2cQFKviTSoIq2Z5jqW
-         +K2IN3N0iTOGi7vzn+1r0r+Qz+z3YEfSzPzOd5uBKBuZvudR1jasQXdZJ9X3t/xVPXjc
-         sC9vh6GGL5je8Qgn6lHA1exd0mJ17wTxKTc1gbIQ6lDvFx6+Cudn4MSUHUx9VuQmgyNl
-         6H8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWaEPH7VUltbisLIEvLODEMJKJ3S+ZMYbacXWphyXUW6I285wbMyVQd/tImhThJDoSaU2U=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywxl2TC5C5jyJvnCyyWR4l3Vr6x3x9ZjdvxDgDOjXz7pBNujVcx
-	sOXFgIe+lyMudep4/5cBKrQT7k/ptA6JL+lAhf1d6fsBHBPsY+9ytbbH8oyQD121L98IWYoCENS
-	P1tXAHV9qG2g2dAUuk4PejsCX8/iU61U=
-X-Gm-Gg: ASbGncsNyBtCB/jSwrXtnaq1xr7lkQgvEugEHp/Ne+jk72Af+9CPlnK7rnUCj+damuw
-	CNUSucFRMzN9+E0XhJSvim/QPeGcbzq3AbWojZe5KMAXGzK92yLLX7PxyZ5uN20BhC9w5ZKX8pl
-	EZANTaaW9m3FYZvKUqgloJcrDrb44zd18llW+kIR0VqK2HF5cDE9+JikPOkYdPTxduMy1y3ZI76
-	W8UUanx5EeT47stPJqm4uQ9MAGkSBDzlHk8Ksc+VKeNqK/ChN7Z3QGyuaRWYDNgeSY61/VSODyP
-	tgbNEcQJWZIA6cS03Ypf3rfqVhNuNXeiWm8G+6c=
-X-Google-Smtp-Source: AGHT+IE57OgXWGpaWjQKE3XKXQ8tZakolTW28uTm/uZoNVLyCv12VeiNDH3vN49WeqmBnI0JM8eSjJVhBSND98wh6f8=
-X-Received: by 2002:a05:6000:2902:b0:425:75c6:7125 with SMTP id
- ffacd0b85a97d-42cc1cbb516mr4005417f8f.16.1763761247743; Fri, 21 Nov 2025
- 13:40:47 -0800 (PST)
+        bh=KKDKywxsPMgX4FVe6JHQ8TSPWLHfYapoOHUuWm/LY3M=;
+        b=WCaURIj2lcoEQyQuGRvYPRMloC5Zhdvk5i6GxzD7JXYtig+QXAuBUwHHMVIoOpBMyh
+         YEmWQSbrsR3UwnuJ4bgg53Tn5tG5A/0Uy1nacRmGVGj/4DWCPvL2M4N9E+2oN1lHKFjk
+         JLxBDcnUhB7CnvsCLKBnyVQX4QEe+NEwpg6aXsc9z6JqDtYMTss3OOdClTD5sYOcLKJ7
+         6wdyvvfASTqxYOVcAyR9xXxQ5Hy3k9j+tSIV7BUs/YxsdrhfOuyjb4OIZVwPJd3vCZjQ
+         HusM5ANaF3Qlm9yesJroaGBQpT3UWKSlEyOARNhhbAg6ImgFQ3RTNbkAG71GcsLnpjL9
+         uw7A==
+X-Gm-Message-State: AOJu0YzpkwROaNAKUk8xJNfgk+LherEnenFc41obAqQUsClB8lAq2u7I
+	XHGY1nMPtnOya91ar39TRgNqO2KBJUw2t+DgOTkmDzXe3+naRLPx2IRhP4x4EElBcexcfTi0bKh
+	8QaTJVZe7qxXFLuw5wwGIMuVMHU7RINM=
+X-Gm-Gg: ASbGnctVayhD2RcwWwL/9Trh6tRtu0cYnzBQF2JVW21eTts0tYSmNwpWAuGBwW6T4+u
+	Ea9oKLRmC1OO1QCvALc/hrUmopC+EU1bhhypqzjN9BjrDPKRPRXM7In0YYYQZIATdCkfzy2H7/v
+	pwQS9ePoANTm+B/s6xt9pmEKUSxV8D2YxvxQe3xmvaRyPjrx1hDT+Q49hk3MY57qm049RXrsUMc
+	QppYtRv797+A1mOJ0SS9/bHZ2pTSqxMeOcWxo4iyIzDNcTg6jsprhir0l7ZYtFDxIXBlF8=
+X-Google-Smtp-Source: AGHT+IFv8lSM7z8+IQSXiRGzjcYlE3VnU8KftfivOThFbyGoAg73pBoXP9yS3Z6IfL30svn9r049Mnf49GZI6lzp1ws=
+X-Received: by 2002:a05:690c:4904:b0:788:1a92:4fec with SMTP id
+ 00721157ae682-78a8b54837fmr28535427b3.69.1763762077432; Fri, 21 Nov 2025
+ 13:54:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251119224140.8616-1-david.laight.linux@gmail.com> <20251119224140.8616-7-david.laight.linux@gmail.com>
-In-Reply-To: <20251119224140.8616-7-david.laight.linux@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 21 Nov 2025 13:40:36 -0800
-X-Gm-Features: AWmQ_bkrDq5Sy9ZDwUnEnBRGSTSoJnIDtxROTDLoYODXJgIZb-Zn1Fl-VND75l8
-Message-ID: <CAADnVQKFPpzbcakNmq2RkYQvm1TsdgO73UNuoaa_F8SCm6suNw@mail.gmail.com>
-Subject: Re: [PATCH 06/44] bpf: Verifier, remove some unusual uses of min_t()
- and max_t()
-To: david.laight.linux@gmail.com
-Cc: LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>
+References: <20251121205724.2934650-1-ameryhung@gmail.com> <e7c311bb305d985c1a9ea19aef3fcd4094c7e03c600dfba9fc83438b285f5946@mail.kernel.org>
+In-Reply-To: <e7c311bb305d985c1a9ea19aef3fcd4094c7e03c600dfba9fc83438b285f5946@mail.kernel.org>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Fri, 21 Nov 2025 13:54:26 -0800
+X-Gm-Features: AWmQ_bncgu_q28NvI6KNCOpod1s-6Ivi2vGsnyRvzUR7pkN4pd0u0iyEnKtfxiw
+Message-ID: <CAMB2axOLh_sJL3FnPFPWr+s3dTjwGn4y+63vfbC3abT8+z2h-A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] rqspinlock: Annotate rqspinlock lock
+ acquiring functions with __must_check
+To: bot+bpf-ci@kernel.org
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, memxor@gmail.com, 
+	david.laight.linux@gmail.com, dave@stgolabs.net, paulmck@kernel.org, 
+	josh@joshtriplett.org, kernel-team@meta.com, ast@kernel.org, 
+	martin.lau@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	clm@meta.com, ihor.solodrai@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 19, 2025 at 2:42=E2=80=AFPM <david.laight.linux@gmail.com> wrot=
-e:
+On Fri, Nov 21, 2025 at 1:27=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
 >
-> From: David Laight <david.laight.linux@gmail.com>
+> > diff --git a/include/asm-generic/rqspinlock.h b/include/asm-generic/rqs=
+pinlock.h
+> > index 6d4244d64..855c09435 100644
+> > --- a/include/asm-generic/rqspinlock.h
+> > +++ b/include/asm-generic/rqspinlock.h
 >
-> min_t() and max_t() are normally used to change the signedness
-> of a positive value to avoid a signed-v-unsigned compare warning.
+> [ ... ]
 >
-> However they are used here to convert an unsigned 64bit pattern
-> to a signed to a 32/64bit signed number.
-> To avoid any confusion use plain min()/max() and explicitely cast
-> the u64 expression to the correct signed value.
+> > @@ -171,7 +171,7 @@ static __always_inline void release_held_lock_entry=
+(void)
+> >   * * -EDEADLK        - Lock acquisition failed because of AA/ABBA dead=
+lock.
+> >   * * -ETIMEDOUT - Lock acquisition failed because of timeout.
+> >   */
+> > -static __always_inline int res_spin_lock(rqspinlock_t *lock)
+> > +static __always_inline __must_check int res_spin_lock(rqspinlock_t *lo=
+ck)
+> >  {
+> >       int val =3D 0;
+> >
+> > @@ -223,27 +223,36 @@ static __always_inline void res_spin_unlock(rqspi=
+nlock_t *lock)
+> >  #define raw_res_spin_lock_init(lock) ({ *(lock) =3D (rqspinlock_t){0};=
+ })
+> >  #endif
+> >
+> > -#define raw_res_spin_lock(lock)                    \
+> > -     ({                                         \
+> > -             int __ret;                         \
+> > -             preempt_disable();                 \
+> > -             __ret =3D res_spin_lock(lock);       \
+> > -             if (__ret)                         \
+> > -                     preempt_enable();          \
+> > -             __ret;                             \
+> > -     })
+> > +static __always_inline __must_check int raw_res_spin_lock(rqspinlock_t=
+ *lock)
+> > +{
+> > +     int ret;
+> > +
+> > +     preempt_disable();
+> > +     ret =3D res_spin_lock(lock);
+> > +     if (ret)
+> > +             preempt_enable();
+> > +
+> > +     return ret;
+> > +}
+> >
+> >  #define raw_res_spin_unlock(lock) ({ res_spin_unlock(lock); preempt_en=
+able(); })
+> >
+> > -#define raw_res_spin_lock_irqsave(lock, flags)    \
+> > -     ({                                        \
+> > -             int __ret;                        \
+> > -             local_irq_save(flags);            \
+> > -             __ret =3D raw_res_spin_lock(lock);  \
+> > -             if (__ret)                        \
+> > -                     local_irq_restore(flags); \
+> > -             __ret;                            \
+> > -     })
+> > +static __always_inline __must_check int
+> > +__raw_res_spin_lock_irqsave(rqspinlock_t *lock, unsigned long *flags)
+> > +{
+> > +     unsigned long __flags;
+> > +     int ret;
+> > +
+> > +     local_irq_save(__flags);
+> > +     ret =3D raw_res_spin_lock(lock);
+> > +     if (ret)
+> > +             local_irq_restore(__flags);
+> > +
+> > +     *flags =3D __flags;
+> > +     return ret;
+> > +}
+> > +
+> > +#define raw_res_spin_lock_irqsave(lock, flags) __raw_res_spin_lock_irq=
+save(lock, &flags)
 >
-> Use a simple max() for the max_pkt_offset calulation and delete the
-> comment about why the cast to u32 is safe.
+> The __must_check annotations will cause compiler warnings in
+> kernel/locking/locktorture.c where torture_raw_res_spin_write_lock()
+> and torture_raw_res_spin_write_lock_irq() ignore lock acquisition
+> failures.
+
+This should be fine. I compiled with gcc and clang and they all seem
+to not propagate the check more than one level.
+
 >
-> Signed-off-by: David Laight <david.laight.linux@gmail.com>
+> When raw_res_spin_lock() returns an error (deadlock or timeout), the
+> torture test functions still return 0 to indicate success. The torture
+> framework then calls the unlock functions, but the lock was never
+> acquired. In res_spin_unlock(), this causes an out-of-bounds array
+> access when computing locks[cnt - 1] with cnt=3D0, potentially corrupting
+> per-CPU memory.
+>
+> Should the torture test handle lock acquisition failures, or use
+> different lock types that cannot fail?
+>
+
+Deadlock should not happen in this case, but for the correctness of
+the code I can send another patch to address it if people find that
+necessary.
+
+Perhaps something like this:
+
+@@ -931,7 +931,11 @@ static int lock_torture_writer(void *arg)
+                if (!skip_main_lock) {
+                        if (acq_writer_lim > 0)
+                                j =3D jiffies;
+-                       cxt.cur_ops->writelock(tid);
++                       err =3D cxt.cur_ops->writelock(tid);
++                       if (WARN_ON_ONCE(err)) {
++                               lwsp->n_lock_fail++;
++                               goto nested_unlock;
++                       }
+                        if (WARN_ON_ONCE(lock_is_write_held))
+                                lwsp->n_lock_fail++;
+                        lock_is_write_held =3D true;
+@@ -951,6 +955,7 @@ static int lock_torture_writer(void *arg)
+                        WRITE_ONCE(last_lock_release, jiffies);
+                        cxt.cur_ops->writeunlock(tid);
+                }
++nested_unlock:
+                if (cxt.cur_ops->nested_unlock)
+                        cxt.cur_ops->nested_unlock(tid, lockset_mask);
+
+>
 > ---
->  kernel/bpf/verifier.c | 29 +++++++++++------------------
->  1 file changed, 11 insertions(+), 18 deletions(-)
+> AI reviewed your patch. Please fix the bug or email reply why it's not a =
+bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/READM=
+E.md
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index ff40e5e65c43..22fa9769fbdb 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -2319,12 +2319,12 @@ static void __update_reg32_bounds(struct bpf_reg_=
-state *reg)
->         struct tnum var32_off =3D tnum_subreg(reg->var_off);
->
->         /* min signed is max(sign bit) | min(other bits) */
-> -       reg->s32_min_value =3D max_t(s32, reg->s32_min_value,
-> -                       var32_off.value | (var32_off.mask & S32_MIN));
-> +       reg->s32_min_value =3D max(reg->s32_min_value,
-> +                       (s32)(var32_off.value | (var32_off.mask & S32_MIN=
-)));
->         /* max signed is min(sign bit) | max(other bits) */
-> -       reg->s32_max_value =3D min_t(s32, reg->s32_max_value,
-> -                       var32_off.value | (var32_off.mask & S32_MAX));
-> -       reg->u32_min_value =3D max_t(u32, reg->u32_min_value, (u32)var32_=
-off.value);
-> +       reg->s32_max_value =3D min(reg->s32_max_value,
-> +                       (s32)(var32_off.value | (var32_off.mask & S32_MAX=
-)));
-
-Nack.
-This is plain ugly for no good reason.
-Leave the code as-is.
-
-pw-bot: cr
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/195835=
+58278
 
