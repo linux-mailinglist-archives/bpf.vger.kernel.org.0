@@ -1,50 +1,70 @@
-Return-Path: <bpf+bounces-75216-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75217-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EDBCC7710B
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 03:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E508EC7718A
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 04:01:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C72B9353024
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 02:50:48 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1CBE2358CD0
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 03:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63B32DA771;
-	Fri, 21 Nov 2025 02:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DGDXDuAT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC931286415;
+	Fri, 21 Nov 2025 03:00:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from localhost.localdomain (unknown [147.136.157.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45D1F36D4E1;
-	Fri, 21 Nov 2025 02:50:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8953F2D77EA;
+	Fri, 21 Nov 2025 03:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.136.157.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763693442; cv=none; b=rhj/0/2N0JR5JYspe3WNCl4oiKu4kqGVBVyEEVjTTprfvhwubxOHkUmfSV6vgeyVw67CTU8sixedZ3dk3Fa+6j63Hk/EE9L3Ipb8pG8Dj/1sp2iZL6GQVGQf0OKkWz8N+BamKSqN2UflCnsvvS992h3I1Zr8I9UT/yrN5ROrMXg=
+	t=1763694025; cv=none; b=NZI0kTdro8kci0wHKSmMsFj/RA86bqNHVFH3+J8NxkQkZxlc65xBJjAr3/UniVzF9K2Ofvx0K3CdI3aSUhX7ejU/BBmeCorzWnxZ0sGrTmbZthRqZkk8jp+ciFoc++mHe5ad1zzJoo5loXfuhROtO11WcT3tXL+HqcP/qp3zO8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763693442; c=relaxed/simple;
-	bh=DJh/dq/qC5eekl0ywcj3ulTiHKyT2JlTQJWnwKJi6M8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=IUibH5ur3SrX6b2OH6WnLkm4O6fvBVjbDTJRDYjUEO+qJfPPZABcc/E9VhXEtehKejwqc00vclsrjijR9vPGYKpOYSZbKlMGouoY875uN2m0fbC0Iuus9W9Mo2MiRmRjU32HiXd7gzDFPA04+vVxW0lBu9AoY3v9unFik+S3l80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DGDXDuAT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6C83C4CEF1;
-	Fri, 21 Nov 2025 02:50:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763693441;
-	bh=DJh/dq/qC5eekl0ywcj3ulTiHKyT2JlTQJWnwKJi6M8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=DGDXDuATJKhDHZtuiz38KC9bw14/U97V3Nm6Qxw2XsMKXUUsOiS4ndXxqLYdtBs+i
-	 USSRI1tUK2h7ZRtqHhSpljYShKnS+hGyUUYeeMc5M63ACKakDpxQBs0mbc8VsIf869
-	 TF+L0ujnFZnzv6Ixmv5kYsmHfHofNWIIiWZF8nrmuTvHvWrWd9/uYsuUUQbpPNkW0o
-	 amYf4JocGfI/XiCx9xowSEwhyvCrarvUR2vYq46t/VxIOFzoALWsYeXu0wZQPrKM5e
-	 QMFgBLqZ1RR807rET1sp0l4myLT3U2CEZWv59fElGAGFm2Tf0QTj6a0MQcjIpAGG0N
-	 FsoA74QTY79Bw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAE363A41003;
-	Fri, 21 Nov 2025 02:50:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1763694025; c=relaxed/simple;
+	bh=BpR73GKKSJHvTtGxGpzHqvLjY1kP0t8z1tlrwz2cO7g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iy0lhQQY63NMevqRMX/fLtId48DPHlD72GoYZJ+I0pHf6hG0NzNHBCkWMumR757ZjrA6EiICxKbuxuFpRT0Lnap2MSo5+yXEgZ8OIdZOJpNBgPmuWvSMoG0xtEpeGdH8uO4gxuyuMQS2IE2CljKVcfCbcnnlI82IPJsx2EX0c1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=none smtp.mailfrom=localhost.localdomain; arc=none smtp.client-ip=147.136.157.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=localhost.localdomain
+Received: by localhost.localdomain (Postfix, from userid 1007)
+	id AACEB8B2A11; Fri, 21 Nov 2025 11:00:15 +0800 (+08)
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Neal Cardwell <ncardwell@google.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	David Ahern <dsahern@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Michal Luczaj <mhal@rbox.co>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	Cong Wang <cong.wang@bytedance.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/3] bpf: Fix FIONREAD and copied_seq issues
+Date: Fri, 21 Nov 2025 10:59:41 +0800
+Message-ID: <20251121030013.60133-1-jiayuan.chen@linux.dev>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,47 +72,76 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net V1] veth: reduce XDP no_direct return section to fix
- race
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176369340676.1872917.10033820911607185315.git-patchwork-notify@kernel.org>
-Date: Fri, 21 Nov 2025 02:50:06 +0000
-References: <176356963888.337072.4805242001928705046.stgit@firesoul>
-In-Reply-To: <176356963888.337072.4805242001928705046.stgit@firesoul>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: netdev@vger.kernel.org, bigeasy@linutronix.de, bpf@vger.kernel.org,
- eric.dumazet@gmail.com, davem@davemloft.net, kuba@kernel.org,
- pabeni@redhat.com, makita.toshiaki@lab.ntt.co.jp, toshiaki.makita1@gmail.com,
- kernel-team@cloudflare.com, mfleming@cloudflare.com,
- maciej.fijalkowski@intel.com, dtatulea@nvidia.com, edumazet@google.com,
- sdf@fomichev.me, andrew+netdev@lunn.ch, john.fastabend@gmail.com,
- ast@kernel.org, daniel@iogearbox.net
 
-Hello:
+syzkaller reported a bug [1] where a socket using sockmap, after being
+unloaded, exposed incorrect copied_seq calculation. The selftest I
+provided can be used to reproduce the issue reported by syzkaller.
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+TCP recvmsg seq # bug 2: copied E92C873, seq E68D125, rcvnxt E7CEB7C, fl 40
+WARNING: CPU: 1 PID: 5997 at net/ipv4/tcp.c:2724 tcp_recvmsg_locked+0xb2f/0x2910 net/ipv4/tcp.c:2724
+Call Trace:
+ <TASK>
+ receive_fallback_to_copy net/ipv4/tcp.c:1968 [inline]
+ tcp_zerocopy_receive+0x131a/0x2120 net/ipv4/tcp.c:2200
+ do_tcp_getsockopt+0xe28/0x26c0 net/ipv4/tcp.c:4713
+ tcp_getsockopt+0xdf/0x100 net/ipv4/tcp.c:4812
+ do_sock_getsockopt+0x34d/0x440 net/socket.c:2421
+ __sys_getsockopt+0x12f/0x260 net/socket.c:2450
+ __do_sys_getsockopt net/socket.c:2457 [inline]
+ __se_sys_getsockopt net/socket.c:2454 [inline]
+ __x64_sys_getsockopt+0xbd/0x160 net/socket.c:2454
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcd/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-On Wed, 19 Nov 2025 17:28:36 +0100 you wrote:
-> As explain in commit fa349e396e48 ("veth: Fix race with AF_XDP exposing
-> old or uninitialized descriptors") for veth there is a chance after
-> napi_complete_done() that another CPU can manage start another NAPI
-> instance running veth_pool(). For NAPI this is correctly handled as the
-> napi_schedule_prep() check will prevent multiple instances from getting
-> scheduled, but for the remaining code in veth_pool() this can run
-> concurrent with the newly started NAPI instance.
-> 
-> [...]
+A sockmap socket maintains its own receive queue (ingress_msg) which may
+contain data from either its own protocol stack or forwarded from other
+sockets.
 
-Here is the summary with links:
-  - [net,V1] veth: reduce XDP no_direct return section to fix race
-    https://git.kernel.org/netdev/net/c/a14602fcae17
+                                                     FD1:read()
+                                                     --  FD1->copied_seq++
+                                                         |  [read data]
+                                                         |
+                                [enqueue data]           v
+                  [sockmap]     -> ingress to self ->  ingress_msg queue
+FD1 native stack  ------>                                 ^
+-- FD1->rcv_nxt++               -> redirect to other      | [enqueue data]
+                                       |                  |
+                                       |             ingress to FD1
+                                       v                  ^
+                                      ...                 |  [sockmap]
+                                                     FD2 native stack
 
-You are awesome, thank you!
+The issue occurs when reading from ingress_msg: we update tp->copied_seq
+by default, but if the data comes from other sockets (not the socket's
+own protocol stack), tcp->rcv_nxt remains unchanged. Later, when
+converting back to a native socket, reads may fail as copied_seq could
+be significantly larger than rcv_nxt.
+
+Additionally, FIONREAD calculation based on copied_seq and rcv_nxt is
+insufficient for sockmap sockets, requiring separate field tracking.
+
+[1] https://syzkaller.appspot.com/bug?extid=06dbd397158ec0ea4983
+
+---
+
+v1 -> v2: Use skmsg.sk instead of extending BPF_F_XXX macro
+v1: https://lore.kernel.org/bpf/20251117110736.293040-1-jiayuan.chen@linux.dev/
+
+Jiayuan Chen (3):
+  bpf, sockmap: Fix incorrect copied_seq calculation
+  bpf, sockmap: Fix FIONREAD for sockmap
+  bpf, selftest: Add tests for FIONREAD and copied_seq
+
+ include/linux/skmsg.h                         |  48 ++++-
+ net/core/skmsg.c                              |  29 ++-
+ net/ipv4/tcp_bpf.c                            |  26 ++-
+ net/ipv4/udp_bpf.c                            |  25 ++-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 203 +++++++++++++++++-
+ .../bpf/progs/test_sockmap_pass_prog.c        |   8 +
+ 6 files changed, 323 insertions(+), 16 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.43.0
 
 
