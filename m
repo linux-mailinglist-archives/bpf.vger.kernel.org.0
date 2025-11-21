@@ -1,444 +1,246 @@
-Return-Path: <bpf+bounces-75239-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53622C7A972
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 16:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A0BB0C7AB58
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 17:06:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id F162E349D2F
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 15:37:16 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A256E361293
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 16:06:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24632D47E1;
-	Fri, 21 Nov 2025 15:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81E62E7BB2;
+	Fri, 21 Nov 2025 16:06:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JEYUNVE0"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TxdrtkYp";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="r8w/kSCQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D5A42DC790
-	for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 15:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2ED528C864
+	for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 16:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763739431; cv=none; b=lD2QpNA2Y3hWdARzBFR4X4U0awoQFMRBG7bsPIjn16XWp3MtGMq71iYRezpNUrnmIRSO9pm9wyeumof/RGhg06DqfqvNX1etvPJSfx7MjxhiXJA/kPkZKB1ZgNTcMQ++2hhwENsDPnuv9D4qWWD5AagVr1CJg3vJNpcbml6kydQ=
+	t=1763741176; cv=none; b=WJarsyAr5pC2UckIGaEbsz4e3mWLyLKpYGpH8tPlw4UwA5gnXRb5ZN8UJvcA5r4d32hAJLhcK7MdhiVRCwDs3dCVTKpfQ2KnsI90Mr6649LaadeY0wXgMrqqcF9mHScCAP5Ihho4X05TMREH1wf8WbZJthCCG7onqw6fYPjJTrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763739431; c=relaxed/simple;
-	bh=2PmbohOF5Q74gGEFQbLTmt9H5YWfsP1DlIYjrSraWk0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PXQsashlWWDJKoSsaYBuKwg33cuqUwEcXUXUQTt3+6ZvtenNZNU0EhXDtYJ1kQntpIaVEUme6GfEvK2ArEfE3KgB3D2+PjnaZ0ZU2XJNyElBt+zzLUjuWMeBdYPyaPsm7iGG9yUMO0gRNRJyvNfKi06qj1xm95ghnMlhQKkhtN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JEYUNVE0; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-64165cd689eso2555087a12.0
-        for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 07:37:08 -0800 (PST)
+	s=arc-20240116; t=1763741176; c=relaxed/simple;
+	bh=aswMdYs/Vr0iM3hCQ82AElwkwQIlk4Q3Md8Sb8eSuVk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=diyUMLEOu2ZVQTMqEPzzBWgHNyRyDSJRJE0LYkdz9nAR7c/LuSoSmmEs2WU+MiKw3eF9WUw2Ebch0pqjLaX5PY0EovodfOk5Td4cEBA7a+q2M0zbCHMLqBKsxeZtwD88KFflPmgFdUsbhS1eXqyAaSvlDMD4yMlzkcE1BdLrplU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TxdrtkYp; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=r8w/kSCQ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1763741173;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rHT7U7qQncnr+CMjMZqEW+bDwFOFz+ggr1axUXIahIA=;
+	b=TxdrtkYpjeFWNnSR1k06qNz2cn71ZBIZYcdrdRoN7FON7AYY44Rinv89cpNpr8Nwncvcsg
+	79GBVQ6S5P1CryP7yxpK/A9k2HywGf0Rw8OkSi3c/R5A2MsO0A/MjI/03Oz3aZ3VDB28L/
+	1dHvaxeXCn2w+4SkBE/OXgrsVZjHEnM=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-231-XnkpqZDgPcOiTzVfTNbLpw-1; Fri, 21 Nov 2025 11:06:11 -0500
+X-MC-Unique: XnkpqZDgPcOiTzVfTNbLpw-1
+X-Mimecast-MFC-AGG-ID: XnkpqZDgPcOiTzVfTNbLpw_1763741170
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-42b2ffe9335so1558042f8f.1
+        for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 08:06:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763739427; x=1764344227; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZV4X4h2RIMNsAciGrWRM00n4I6vK++3NmQB4ne1OCac=;
-        b=JEYUNVE00Nlt4x39ylMKQ2o20tGZtWj/tM6epPX4VZMZrGxHUosmmtxtRKEfefQBpR
-         DOMKjUjZH+gKzmF7ftCzWcSstAfGoT+HNtdLi/e1h6UCkh2Ojni3kINyHaXchzPOLgXF
-         cYpN0fbScqPWSzy+zpwFufbcL7ScLAzsOOaZTG6W4Sa9fJpUEP7GL9/yfCcTNw6H0JBO
-         y6HEhLImcwMNLKa8FhJYZWMhEOTDNAhO5/JvIUy9ar09hQbELaAHpiAOICpQS3v1WPCO
-         uP+EmEvVp/MldSaQcWtiDnoaycbx3okjEl59t4pin7+NwCNo65gwkqW5Ga6/FnGYqdVF
-         1u0g==
+        d=redhat.com; s=google; t=1763741170; x=1764345970; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rHT7U7qQncnr+CMjMZqEW+bDwFOFz+ggr1axUXIahIA=;
+        b=r8w/kSCQbuD6WfHR5+TwoX/walxDfNWncjsHf7d4HYS7LNWMpRlHx1XR67LfRngw/R
+         PS5MuEKji6YOz6dlhGoRWXZzKos7yPrdtjcd50++8z2OJ/okMPbdbiIgC2u+Qid3J96f
+         bXAwuey14EtQ9EAstbjgjwf8ZIeTfy/ToLm1vx5BZp0vXAnF1qmGgU6PpkpzOzUJhhgt
+         5mkWJMAhjlJunKdo/7BzRXzl9BxB1WXL3AP7jBi5pgTfUjMTuPDuc8SME1HH4VUr5eAH
+         NoUgcgUAAAeHLytsfdddZ+QAumgnOJgoAL3fMeNOu16JhywoOMvOy/xDZDBTd+vrNsz6
+         ne5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763739427; x=1764344227;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ZV4X4h2RIMNsAciGrWRM00n4I6vK++3NmQB4ne1OCac=;
-        b=iO4s9hrnCHEEREfcFr7GCLAHk2NtPfiWsaaCvG4Od2yxHoE8No3KILUp9RtCO4Rsa/
-         4jfsTzgAkKK62ADk4VkGa4m+e6fqI+DNACj8Q7cvu6qE7PIMGklUpw4wPTJyfqnPzMlN
-         Igpj8Q2Vl4FL0XMIKLuxBKVTNSUypfx7lglkkzFc8BspEMuKrCJp05+BFF1GUZ4WM5BQ
-         4FGD7quJdd0Fi+OkR5VCeOLszlvbAb2p9TD45DZiqeONvhhfk8acDTR7HzVNW8uw4UF3
-         VVkO4bzB/QMeeXfj16NATdpjw7i6D8awCedb1NLIfSIetk4jKjzN9VDKVhPmsjw7FxPc
-         LuBw==
-X-Forwarded-Encrypted: i=1; AJvYcCVMbnxmtfh0f4XiisTiv/7pNcx2moHiVSPbXdi0onwy58FO7OdZ01rWDk7eiSQVqevAOtI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzufvG4oUmh7da7i5UkskCcpQlA19dyXkzYngZi+2LpL04k5Rtj
-	Bs4RaBLOR7piSv4ngo66Wtb5AABBcR9PlaWJYkJDsypN4KXgKgLjrdheXrv2s9hfZZzS7KnHYzg
-	iz2lUbHIL7UdrMIXXCixdiWcOs0owico=
-X-Gm-Gg: ASbGncteCeNcRG4iqLiVcKewwUIvmBI5N5c3rx1Kgk5xQhJCRvgVsHJAJcXjXmkiXYp
-	IpT0t5h7msSXV4BM8R6GnOeG9qbJeaf/HI1/RII30GuAUMrwgjO2vZlAEmtkRyyW/FusMTy+gSz
-	6uSdmlz6mNWWNKgS1IgE3JzG+tSDSA66BFa4H6H5XK37Z1G9Pfs6qVK7xDP4oV7ZM1HhmyBcxZn
-	PKOIPuz1kTruOA9O3oOoeMfZYH6qSgVBeYNY/LpA8a0/emomPm0loUjyWt/qDnCG01EFwJEKDp+
-	cDen0D8=
-X-Google-Smtp-Source: AGHT+IGJI+XSmd20jjb9Yf88KbnCDN3idos7afRmmq3IOcECg7BkcdnjsqZgPQwv+EPgAb2Nhjf6nqs7ZPAJXNnl/aU=
-X-Received: by 2002:a17:907:9811:b0:b73:1aba:2ebf with SMTP id
- a640c23a62f3a-b766ed83649mr396921566b.2.1763739427192; Fri, 21 Nov 2025
- 07:37:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1763741170; x=1764345970;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rHT7U7qQncnr+CMjMZqEW+bDwFOFz+ggr1axUXIahIA=;
+        b=pBIfPVWscRrcpg/ZT2KY05VIjq2y6se9Qqbb6IyxoLuYtr4tUp6iqwRXrQytdew3+P
+         EML7gs0vt2oMQ9V00/H/nwgNcKj5fMVZefbDcZ23JXTKTMuDZVaqcye1zfH1tVQvZM/4
+         uG2Z9jkqDlY5bh3O2VXk1/Il07Fr7UfVDMEsLawtcw1zs9gHyYoYuoGyoCfVj9JH5vDY
+         TBpT1or5VA2hPOqbkXHumnuDNZJppZv4utszWWQSaKlL8yazgTXTLU/7wLvWhtNWpZFF
+         FbGhnnX1T6uQuKSGjQpYQxYxoYDowt1ytq+cCkHtbgWLGFSXdLJCiJ2IZfSYRBLotLyK
+         P8EQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU86JCzMvhlgtJgtXEOmmNbINa/E4I1StSS1MRyufNK/leUGVIV+ay5HtR/exlBO7NLGi0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YznIOq7uz86pSPlpqeZCSVJU0c7jqoMVIuPaSoJ5r5zoV5PmRax
+	O9MbAuFV4EO92z3sL2tpWxAXew2s3CTG1TurRvLTLCPAcL3Qfkfy1HWJarowmsiwjWJMrTLlHh1
+	h+TpVPOXBKReXjujuHJM9N4H7ECZHw0ym9H+NkQMCuyrdh+RiMLy7
+X-Gm-Gg: ASbGncvrBF030LfK80UGCDSMxgEOJrShN/JvPbVT0i2h90O+GqwfIi9g5nEQoEBL+BC
+	YXT+UNukPKXowbQCgamn0p63cWXdB3rZyXDD7r2aCSyRb8ubQBpVoNorn8lf4idE94fKQSHMBAZ
+	knmoASHKlYwDgsgTBc4PWyrS1k2JGJ4nLyHOdZkOE7+p8AeGsRjA1ltCHPdlJDr5xNI2UtuTrk5
+	pw/2la8eB5YJ+0htUYRcj7Fb3/87Av0pWxt6xp1tRwIXaxvOLM/jfeS04WSIcVWnsas0Zvc+s3j
+	82fx48OoxmxBz4AbKQktnOb+DLep06bzKi6QXX3vHDJFMzwHW0EWUdiOB8oKkrCweml56l5voQi
+	YdH6yiHvktTDFCZxijQPGsSG3xYwyE3V44yhL5LXL3yU=
+X-Received: by 2002:a5d:5f95:0:b0:42b:52c4:663a with SMTP id ffacd0b85a97d-42cc1ac9d17mr3082497f8f.11.1763741169604;
+        Fri, 21 Nov 2025 08:06:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGON2FEwIGaqia60wBxqJtsr7vpj0fOoPfIuTO43FfevLFZybM2n6jgwKP1+iMvYkckySgn5Q==
+X-Received: by 2002:a5d:5f95:0:b0:42b:52c4:663a with SMTP id ffacd0b85a97d-42cc1ac9d17mr3082447f8f.11.1763741169083;
+        Fri, 21 Nov 2025 08:06:09 -0800 (PST)
+Received: from [192.168.0.102] (185-219-167-205-static.vivo.cz. [185.219.167.205])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42cb7fa35b7sm12037358f8f.20.2025.11.21.08.06.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Nov 2025 08:06:07 -0800 (PST)
+Message-ID: <2bcc2005-e124-455e-b4db-b15093463782@redhat.com>
+Date: Fri, 21 Nov 2025 17:06:05 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251119031531.1817099-1-dolinux.peng@gmail.com>
- <20251119031531.1817099-4-dolinux.peng@gmail.com> <854f468a-d178-40f4-aa03-e19ff82a1a35@linux.dev>
-In-Reply-To: <854f468a-d178-40f4-aa03-e19ff82a1a35@linux.dev>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Fri, 21 Nov 2025 23:36:55 +0800
-X-Gm-Features: AWmQ_bkL1Nu9K_11MUau_eVU25o8VJPOti6UJ2LJ2ZHgUaxzrVaTpJhUYl8VNOc
-Message-ID: <CAErzpmvJ+D2c_3pLG-t5ZD2cj7kDJX=JDnJ0CxNUf5pYR24a+g@mail.gmail.com>
-Subject: Re: [RFC PATCH v7 3/7] tools/resolve_btfids: Add --btf_sort option
- for BTF name sorting
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: ast@kernel.org, andrii.nakryiko@gmail.com, eddyz87@gmail.com, 
-	zhangxiaoqin@xiaomi.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Donglin Peng <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 1/4] bpf: crypto: Use the correct destructor
+ kfunc type
+To: Sami Tolvanen <samitolvanen@google.com>, bpf@vger.kernel.org
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
+ Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250728202656.559071-6-samitolvanen@google.com>
+ <20250728202656.559071-7-samitolvanen@google.com>
+From: Viktor Malik <vmalik@redhat.com>
+Content-Language: en-US
+In-Reply-To: <20250728202656.559071-7-samitolvanen@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Nov 21, 2025 at 5:34=E2=80=AFAM Ihor Solodrai <ihor.solodrai@linux.=
-dev> wrote:
->
-> On 11/18/25 7:15 PM, Donglin Peng wrote:
-> > From: Donglin Peng <pengdonglin@xiaomi.com>
-> >
-> > This patch introduces a new --btf_sort option that leverages libbpf's
-> > btf__permute interface to reorganize BTF layout. The implementation
-> > sorts BTF types by name in ascending order, placing anonymous types at
-> > the end to enable efficient binary search lookup.
-> >
-> > Cc: Eduard Zingerman <eddyz87@gmail.com>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Cc: Alan Maguire <alan.maguire@oracle.com>
-> > Cc: Song Liu <song@kernel.org>
-> > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
-> > Signed-off-by: Donglin Peng <pengdonglin@xiaomi.com>
-> > ---
-> >  scripts/Makefile.btf            |   2 +
-> >  scripts/Makefile.modfinal       |   1 +
-> >  scripts/link-vmlinux.sh         |   1 +
-> >  tools/bpf/resolve_btfids/main.c | 200 ++++++++++++++++++++++++++++++++
-> >  4 files changed, 204 insertions(+)
-> >
-> > diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-> > index db76335dd917..d5eb4ee70e88 100644
-> > --- a/scripts/Makefile.btf
-> > +++ b/scripts/Makefile.btf
-> > @@ -27,6 +27,7 @@ pahole-flags-$(call test-ge, $(pahole-ver), 130) +=3D=
- --btf_features=3Dattributes
-> >
-> >  ifneq ($(KBUILD_EXTMOD),)
-> >  module-pahole-flags-$(call test-ge, $(pahole-ver), 128) +=3D --btf_fea=
-tures=3Ddistilled_base
-> > +module-resolve_btfid-flags-y =3D --distilled_base
-> >  endif
-> >
-> >  endif
-> > @@ -35,3 +36,4 @@ pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)       =
-       +=3D --lang_exclude=3Drust
-> >
-> >  export PAHOLE_FLAGS :=3D $(pahole-flags-y)
-> >  export MODULE_PAHOLE_FLAGS :=3D $(module-pahole-flags-y)
-> > +export MODULE_RESOLVE_BTFID_FLAGS :=3D $(module-resolve_btfid-flags-y)
-> > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> > index 542ba462ed3e..4481dda2f485 100644
-> > --- a/scripts/Makefile.modfinal
-> > +++ b/scripts/Makefile.modfinal
-> > @@ -40,6 +40,7 @@ quiet_cmd_btf_ko =3D BTF [M] $@
-> >               printf "Skipping BTF generation for %s due to unavailabil=
-ity of vmlinux\n" $@ 1>&2; \
-> >       else                                                            \
-> >               LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) =
-$(MODULE_PAHOLE_FLAGS) --btf_base $(objtree)/vmlinux $@; \
-> > +             $(RESOLVE_BTFIDS) -b $(objtree)/vmlinux $(MODULE_RESOLVE_=
-BTFID_FLAGS) --btf_sort $@;    \
-> >               $(RESOLVE_BTFIDS) -b $(objtree)/vmlinux $@;             \
-> >       fi;
-> >
-> > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> > index 433849ff7529..f21f6300815b 100755
-> > --- a/scripts/link-vmlinux.sh
-> > +++ b/scripts/link-vmlinux.sh
-> > @@ -288,6 +288,7 @@ if is_enabled CONFIG_DEBUG_INFO_BTF; then
-> >       if is_enabled CONFIG_WERROR; then
-> >               RESOLVE_BTFIDS_ARGS=3D" --fatal_warnings "
-> >       fi
-> > +     ${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_ARGS} --btf_sort "${VMLINUX}"
-> >       ${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_ARGS} "${VMLINUX}"
-> >  fi
-> >
-> > diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids=
-/main.c
-> > index d47191c6e55e..dc0badd6f375 100644
-> > --- a/tools/bpf/resolve_btfids/main.c
-> > +++ b/tools/bpf/resolve_btfids/main.c
-> > @@ -768,6 +768,195 @@ static int symbols_patch(struct object *obj)
-> >       return err < 0 ? -1 : 0;
-> >  }
-> >
-> > +/* Anonymous types (with empty names) are considered greater than name=
-d types
-> > + * and are sorted after them. Two anonymous types are considered equal=
-. Named
-> > + * types are compared lexicographically.
-> > + */
-> > +static int cmp_type_names(const void *a, const void *b, void *priv)
-> > +{
-> > +     struct btf *btf =3D (struct btf *)priv;
-> > +     const struct btf_type *ta =3D btf__type_by_id(btf, *(__u32 *)a);
-> > +     const struct btf_type *tb =3D btf__type_by_id(btf, *(__u32 *)b);
-> > +     const char *na, *nb;
-> > +
-> > +     if (!ta->name_off && tb->name_off)
-> > +             return 1;
-> > +     if (ta->name_off && !tb->name_off)
-> > +             return -1;
-> > +     if (!ta->name_off && !tb->name_off)
-> > +             return 0;
-> > +
-> > +     na =3D btf__str_by_offset(btf, ta->name_off);
-> > +     nb =3D btf__str_by_offset(btf, tb->name_off);
-> > +     return strcmp(na, nb);
-> > +}
-> > +
-> > +static int update_btf_section(const char *path, const struct btf *btf,
->
-> Hi Dongling.
->
-> Thanks for working on this, it's a great optimization. Just want to
-> give you a heads up that I am preparing a patchset changing
-> resolve_btfids behavior.
+On 7/28/25 22:26, Sami Tolvanen wrote:
+> With CONFIG_CFI_CLANG enabled, the kernel strictly enforces that
+> indirect function calls use a function pointer type that matches the
+> target function. I ran into the following type mismatch when running
+> BPF self-tests:
+> 
+>   CFI failure at bpf_obj_free_fields+0x190/0x238 (target:
+>     bpf_crypto_ctx_release+0x0/0x94; expected type: 0xa488ebfc)
+>   Internal error: Oops - CFI: 00000000f2008228 [#1]  SMP
+>   ...
+> 
+> As bpf_crypto_ctx_release() is also used in BPF programs and using
+> a void pointer as the argument would make the verifier unhappy, add
+> a simple stub function with the correct type and register it as the
+> destructor kfunc instead.
 
-Thanks. I'm curious about the new behavior of resolve_btfids. Does it
-replace pahole and generate the sorted .BTF data directly from the
-DWARF data? Also, does its sorting method differ from the cmp_type_names
-approach mentioned above =E2=80=94 specifically, does it place named types
-before all anonymous types? I'm asking because the search method
-needs to be compatible with this sorting approach.
+Hi,
 
->
-> In particular, instead of updating the .BTF_ids section (and now with
-> your and upcoming changes the .BTF section) *in-place*, resolve_btfids
-> will only emit the data for the sections. And then it'll be integrated
-> into vmlinux with objcopy and linker. We already do a similar thing
-> with .BTF for vmlinux [1].
->
-> For your patchset it means that the parts handling ELF update will be
-> unnecessary.
->
-> Also I think the --btf_sort flag is unnecessary. We probably want
-> kernel BTF to always be sorted in this way. And if resolve_btfids will
-> be handling more btf2btf transformation, we should avoid adding a
-> flags for every one of them.
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree=
-/scripts/link-vmlinux.sh#n110
->
->
-> > +                               const char *btf_secname)
-> > +{
-> > +     GElf_Shdr shdr_mem, *shdr;
-> > +     Elf_Data *btf_data =3D NULL;
-> > +     Elf_Scn *scn =3D NULL;
-> > +     Elf *elf =3D NULL;
-> > +     const void *raw_btf_data;
-> > +     uint32_t raw_btf_size;
-> > +     int fd, err =3D -1;
-> > +     size_t strndx;
-> > +
-> > +     fd =3D open(path, O_RDWR);
-> > +     if (fd < 0) {
-> > +             pr_err("FAILED to open %s\n", path);
-> > +             return -1;
-> > +     }
-> > +
-> > +     if (elf_version(EV_CURRENT) =3D=3D EV_NONE) {
-> > +             pr_err("FAILED to set libelf version");
-> > +             goto out;
-> > +     }
-> > +
-> > +     elf =3D elf_begin(fd, ELF_C_RDWR, NULL);
-> > +     if (elf =3D=3D NULL) {
-> > +             pr_err("FAILED to update ELF file");
-> > +             goto out;
-> > +     }
-> > +
-> > +     elf_flagelf(elf, ELF_C_SET, ELF_F_LAYOUT);
-> > +
-> > +     elf_getshdrstrndx(elf, &strndx);
-> > +     while ((scn =3D elf_nextscn(elf, scn)) !=3D NULL) {
-> > +             char *secname;
-> > +
-> > +             shdr =3D gelf_getshdr(scn, &shdr_mem);
-> > +             if (shdr =3D=3D NULL)
-> > +                     continue;
-> > +             secname =3D elf_strptr(elf, strndx, shdr->sh_name);
-> > +             if (strcmp(secname, btf_secname) =3D=3D 0) {
-> > +                     btf_data =3D elf_getdata(scn, btf_data);
-> > +                     break;
-> > +             }
-> > +     }
-> > +
-> > +     raw_btf_data =3D btf__raw_data(btf, &raw_btf_size);
-> > +
-> > +     if (btf_data) {
-> > +             if (raw_btf_size !=3D btf_data->d_size) {
-> > +                     pr_err("FAILED: size mismatch");
-> > +                     goto out;
-> > +             }
-> > +
-> > +             btf_data->d_buf =3D (void *)raw_btf_data;
-> > +             btf_data->d_type =3D ELF_T_WORD;
-> > +             elf_flagdata(btf_data, ELF_C_SET, ELF_F_DIRTY);
-> > +
-> > +             if (elf_update(elf, ELF_C_WRITE) >=3D 0)
-> > +                     err =3D 0;
-> > +     }
-> > +
-> > +out:
-> > +     if (fd !=3D -1)
-> > +             close(fd);
-> > +     if (elf)
-> > +             elf_end(elf);
-> > +     return err;
-> > +}
-> > +
-> > +static int sort_update_btf(struct object *obj, bool distilled_base)
-> > +{
-> > +     struct btf *base_btf =3D NULL;
-> > +     struct btf *btf =3D NULL;
-> > +     int start_id =3D 1, nr_types, id;
-> > +     int err =3D 0, i;
-> > +     __u32 *permute_ids =3D NULL, *id_map =3D NULL, btf_size;
-> > +     const void *btf_data;
-> > +     int fd;
-> > +
-> > +     if (obj->base_btf_path) {
-> > +             base_btf =3D btf__parse(obj->base_btf_path, NULL);
-> > +             err =3D libbpf_get_error(base_btf);
-> > +             if (err) {
-> > +                     pr_err("FAILED: load base BTF from %s: %s\n",
-> > +                            obj->base_btf_path, strerror(-err));
-> > +                     return -1;
-> > +             }
-> > +     }
-> > +
-> > +     btf =3D btf__parse_elf_split(obj->path, base_btf);
-> > +     err =3D libbpf_get_error(btf);
-> > +     if (err) {
-> > +             pr_err("FAILED: load BTF from %s: %s\n", obj->path, strer=
-ror(-err));
-> > +             goto out;
-> > +     }
-> > +
-> > +     if (base_btf)
-> > +             start_id =3D btf__type_cnt(base_btf);
-> > +     nr_types =3D btf__type_cnt(btf) - start_id;
-> > +     if (nr_types < 2)
-> > +             goto out;
-> > +
-> > +     permute_ids =3D calloc(nr_types, sizeof(*permute_ids));
-> > +     if (!permute_ids) {
-> > +             err =3D -ENOMEM;
-> > +             goto out;
-> > +     }
-> > +
-> > +     id_map =3D calloc(nr_types, sizeof(*id_map));
-> > +     if (!id_map) {
-> > +             err =3D -ENOMEM;
-> > +             goto out;
-> > +     }
-> > +
-> > +     for (i =3D 0, id =3D start_id; i < nr_types; i++, id++)
-> > +             permute_ids[i] =3D id;
-> > +
-> > +     qsort_r(permute_ids, nr_types, sizeof(*permute_ids), cmp_type_nam=
-es, btf);
-> > +
-> > +     for (i =3D 0; i < nr_types; i++) {
-> > +             id =3D permute_ids[i] - start_id;
-> > +             id_map[id] =3D i + start_id;
-> > +     }
-> > +
-> > +     err =3D btf__permute(btf, id_map, nr_types, NULL);
-> > +     if (err) {
-> > +             pr_err("FAILED: btf permute: %s\n", strerror(-err));
-> > +             goto out;
-> > +     }
-> > +
-> > +     if (distilled_base) {
-> > +             struct btf *new_btf =3D NULL, *distilled_base =3D NULL;
-> > +
-> > +             if (btf__distill_base(btf, &distilled_base, &new_btf) < 0=
-) {
-> > +                     pr_err("FAILED to generate distilled base BTF: %s=
-\n",
-> > +                             strerror(errno));
-> > +                     goto out;
-> > +             }
-> > +
-> > +             err =3D update_btf_section(obj->path, new_btf, BTF_ELF_SE=
-C);
-> > +             if (!err) {
-> > +                     err =3D update_btf_section(obj->path, distilled_b=
-ase, BTF_BASE_ELF_SEC);
-> > +                     if (err < 0)
-> > +                             pr_err("FAILED to update '%s'\n", BTF_BAS=
-E_ELF_SEC);
-> > +             } else {
-> > +                     pr_err("FAILED to update '%s'\n", BTF_ELF_SEC);
-> > +             }
-> > +
-> > +             btf__free(new_btf);
-> > +             btf__free(distilled_base);
-> > +     } else {
-> > +             err =3D update_btf_section(obj->path, btf, BTF_ELF_SEC);
-> > +             if (err < 0) {
-> > +                     pr_err("FAILED to update '%s'\n", BTF_ELF_SEC);
-> > +                     goto out;
-> > +             }
-> > +     }
-> > +
-> > +out:
-> > +     free(permute_ids);
-> > +     free(id_map);
-> > +     btf__free(base_btf);
-> > +     btf__free(btf);
-> > +     return err;
-> > +}
-> > +
-> >  static const char * const resolve_btfids_usage[] =3D {
-> >       "resolve_btfids [<options>] <ELF object>",
-> >       NULL
-> > @@ -787,6 +976,8 @@ int main(int argc, const char **argv)
-> >               .sets     =3D RB_ROOT,
-> >       };
-> >       bool fatal_warnings =3D false;
-> > +     bool btf_sort =3D false;
-> > +     bool distilled_base =3D false;
-> >       struct option btfid_options[] =3D {
-> >               OPT_INCR('v', "verbose", &verbose,
-> >                        "be more verbose (show errors, etc)"),
-> > @@ -796,6 +987,10 @@ int main(int argc, const char **argv)
-> >                          "path of file providing base BTF"),
-> >               OPT_BOOLEAN(0, "fatal_warnings", &fatal_warnings,
-> >                           "turn warnings into errors"),
-> > +             OPT_BOOLEAN(0, "btf_sort", &btf_sort,
-> > +                         "sort BTF by name in ascending order"),
-> > +             OPT_BOOLEAN(0, "distilled_base", &distilled_base,
-> > +                         "distill base"),
-> >               OPT_END()
-> >       };
-> >       int err =3D -1;
-> > @@ -807,6 +1002,11 @@ int main(int argc, const char **argv)
-> >
-> >       obj.path =3D argv[0];
-> >
-> > +     if (btf_sort) {
-> > +             err =3D sort_update_btf(&obj, distilled_base);
-> > +             goto out;
-> > +     }
-> > +
-> >       if (elf_collect(&obj))
-> >               goto out;
-> >
->
+this patchset got somehow forgotten and I'd like to revive it.
+
+We're hitting kernel oops when running the crypto cases from test_progs
+(`./test_progs -t crypto`) on CPUs with IBT (Indirect Branch Tracking)
+support. I managed to reproduce this on the latest bpf-next, see the
+relevant part of dmesg at the end of this email.
+
+After applying this patch, the oops no longer happens.
+
+It looks like the series is stuck on a sparse warning reported by kernel
+test robot, which seems like a false positive. Could we somehow resolve
+it and proceed with reviewing and merging this?
+
+Since this resolves our issue, adding my tested-by:
+
+Tested-by: Viktor Malik <vmalik@redhat.com>
+
+Thanks!
+Viktor
+
+The relevant part of dmesg:
+
+    [ 1505.054762] Missing ENDBR: bpf_crypto_ctx_release+0x0/0x50 
+    [ 1505.060306] ------------[ cut here ]------------ 
+    [ 1505.064971] kernel BUG at arch/x86/kernel/cet.c:133! 
+    [ 1505.069984] Oops: invalid opcode: 0000 [#1] SMP NOPTI 
+    [ 1505.075085] CPU: 129 UID: 0 PID: 42861 Comm: kworker/u688:24 Tainted: G           OE       6.18.0-rc5+ #3 PREEMPT(voluntary)  
+    [ 1505.086437] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE 
+    [ 1505.091794] Hardware name: Intel Corporation GNR-WS/GNR-WS, BIOS GWS_REL1.IPC.3663.P19.2506271437 06/27/2025 
+    [ 1505.101674] Workqueue: events_unbound bpf_map_free_deferred 
+    [ 1505.107291] RIP: 0010:exc_control_protection+0x19a/0x1a0 
+    [ 1505.112648] Code: d8 b9 09 00 00 00 48 8b 93 80 00 00 00 be 81 00 00 00 48 c7 c7 53 09 b2 a0 e8 c2 74 1c ff 80 a3 8a 00 00 00 fb e9 fb fe ff ff <0f> 0b 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 
+    [ 1505.131474] RSP: 0018:ff714c596fe17ce8 EFLAGS: 00010002 
+    [ 1505.136742] RAX: 000000000000002e RBX: ff714c596fe17d08 RCX: 0000000000000000 
+    [ 1505.143924] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ff2a470fbe458240 
+    [ 1505.151111] RBP: 0000000000000003 R08: 0000000000000000 R09: ff714c596fe17b70 
+    [ 1505.158293] R10: ff2a470fbc07ffa8 R11: 0000000000000003 R12: 0000000000000000 
+    [ 1505.165478] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000 
+    [ 1505.172661] FS:  0000000000000000(0000) GS:ff2a47101c091000(0000) knlGS:0000000000000000 
+    [ 1505.180805] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033 
+    [ 1505.186600] CR2: 00005564968dd250 CR3: 0000001e45a22005 CR4: 0000000000f73ef0 
+    [ 1505.193782] PKRU: 55555554 
+    [ 1505.196533] Call Trace: 
+    [ 1505.199026]  <TASK> 
+    [ 1505.201171]  asm_exc_control_protection+0x26/0x60 
+    [ 1505.205923] RIP: 0010:bpf_crypto_ctx_release+0x0/0x50 
+    [ 1505.211023] Code: 00 eb ee 89 c2 eb d7 31 c0 5b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <0f> 1f 40 d6 0f 1f 44 00 00 48 8d 57 28 b8 ff ff ff ff f0 0f c1 47 
+    [ 1505.229849] RSP: 0018:ff714c596fe17db8 EFLAGS: 00010202 
+    [ 1505.235118] RAX: ffffffff9f7917d0 RBX: ff2a46f0ce98cc20 RCX: 000000008200019e 
+    [ 1505.242301] RDX: 0000000000000001 RSI: ff2a46f0dd55ff30 RDI: ff2a46f0e8662280 
+    [ 1505.249483] RBP: ff2a46f0ce98cc20 R08: 0000000000000000 R09: 0000000000000001 
+    [ 1505.256666] R10: 000000008200019e R11: ff2a46f0c5573bc8 R12: 0000000000000000 
+    [ 1505.263849] R13: ff2a46f0ce98cc00 R14: ff2a46f0dd55ff30 R15: ff2a46f0e8662280 
+    [ 1505.271035]  ? __pfx_bpf_crypto_ctx_release+0x10/0x10 
+    [ 1505.276135]  bpf_obj_free_fields+0x10c/0x230 
+    [ 1505.280451]  array_map_free+0x56/0x140 
+    [ 1505.284243]  bpf_map_free_deferred+0x95/0x180 
+    [ 1505.288646]  process_one_work+0x18b/0x340 
+    [ 1505.292705]  worker_thread+0x256/0x3a0 
+    [ 1505.296497]  ? __pfx_worker_thread+0x10/0x10 
+    [ 1505.300813]  kthread+0xfc/0x240 
+    [ 1505.304000]  ? __pfx_kthread+0x10/0x10 
+    [ 1505.307792]  ? __pfx_kthread+0x10/0x10 
+    [ 1505.311584]  ret_from_fork+0xf0/0x110 
+    [ 1505.315297]  ? __pfx_kthread+0x10/0x10 
+    [ 1505.319089]  ret_from_fork_asm+0x1a/0x30 
+    [ 1505.323059]  </TASK> 
+
+> 
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> ---
+>  kernel/bpf/crypto.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
+> index 94854cd9c4cc..a267d9087d40 100644
+> --- a/kernel/bpf/crypto.c
+> +++ b/kernel/bpf/crypto.c
+> @@ -261,6 +261,12 @@ __bpf_kfunc void bpf_crypto_ctx_release(struct bpf_crypto_ctx *ctx)
+>  		call_rcu(&ctx->rcu, crypto_free_cb);
+>  }
+>  
+> +__bpf_kfunc void bpf_crypto_ctx_release_dtor(void *ctx)
+> +{
+> +	bpf_crypto_ctx_release(ctx);
+> +}
+> +CFI_NOSEAL(bpf_crypto_ctx_release_dtor);
+> +
+>  static int bpf_crypto_crypt(const struct bpf_crypto_ctx *ctx,
+>  			    const struct bpf_dynptr_kern *src,
+>  			    const struct bpf_dynptr_kern *dst,
+> @@ -368,7 +374,7 @@ static const struct btf_kfunc_id_set crypt_kfunc_set = {
+>  
+>  BTF_ID_LIST(bpf_crypto_dtor_ids)
+>  BTF_ID(struct, bpf_crypto_ctx)
+> -BTF_ID(func, bpf_crypto_ctx_release)
+> +BTF_ID(func, bpf_crypto_ctx_release_dtor)
+>  
+>  static int __init crypto_kfunc_init(void)
+>  {
+
 
