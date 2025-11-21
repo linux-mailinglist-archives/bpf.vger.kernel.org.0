@@ -1,165 +1,203 @@
-Return-Path: <bpf+bounces-75230-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75231-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78D8CC79EA6
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 15:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F10B2C7A231
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 15:26:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 444E04EB13B
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 13:56:52 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7B1D14F4F4C
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 14:17:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F29134E763;
-	Fri, 21 Nov 2025 13:53:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 264E534AAF7;
+	Fri, 21 Nov 2025 14:16:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cF/GBOse"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I/zqiqoY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E7F23BD1A
-	for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 13:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3DE92D8766
+	for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 14:16:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763733189; cv=none; b=u1U9mCiE2ywIwTvc2adu4XrjWldkT28npUoSENjJbJ9BfeSxuTAMpugIBZRaY3WLJXmSCdUcR4Tkh/PEZBfTXCKw9bNQd25/+foyZQF2yKHp+EYpVa+nOAmZoD/Pc8ghBh5ynvHkv55DftE1Fw14ZWyS/nO9oOPgd4LBin7qFfk=
+	t=1763734570; cv=none; b=fI6XIBLHMO3W2mZ6Uvw93sNt/lEFTLqLvdA0kgy7D63LsSN40dtmaeFLe89ex9D3j6Q9ARtm4yY1bNEDFd+Hmh2YvZC9dL4DCtfMhpCVVx+69EDRJL5aFtDFO5+4ysEh3L6orEBwiiuOzZKimZ9MSJGhmCCLlgpafov81h7cNgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763733189; c=relaxed/simple;
-	bh=Vs0n9+plsNCzPFHj8LtJuwnYS7N5jF9XX1ybVRqv2Po=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dBkmhEWNFP7yZMADvXg2MNN8x/EmuGfMuABnEjyY7voMRdGyB9Vl05jxydZImS82L9/F81ULT+a0tRQkEUpW7JTgXmLemVTnbtC9e5uf5edMrtGzVMnIJlIYmAUTGcWb7a4s87hWvzQLpLDayEy7Xo56cadZaxLnwuxBa5U1ylI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cF/GBOse; arc=none smtp.client-ip=209.85.128.53
+	s=arc-20240116; t=1763734570; c=relaxed/simple;
+	bh=V6sF5pPGSgry/vEEJwE2Jtlu5MYHyGEOM2QA3weOWD8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GCK+a6gYE1zXwuTw39GZojNSOEtymbRjLXGtlzy5ekIvnDeN2yjbdyLO3Hj9Q/AYfu2ZdNBRcHqZHTL3JLMeau7LBBVOGb2f8LpMWG1w/B9QZfvvy8Audu9YrSR8E7akw9vgbAC1wy6N9/6peV8DeZoct1sgJ2nDMk1ymvmA+mM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I/zqiqoY; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-47790b080e4so11451515e9.3
-        for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 05:53:07 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-64175dfc338so3645255a12.0
+        for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 06:16:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763733186; x=1764337986; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=J9ZHAU96zRwC8rydbydanUtXN3FsFzz3+3+B+AWK6x0=;
-        b=cF/GBOsevcacIQ1JV48DLuklvFOV+eBbikcHVIO1iOk8TGBztjNhb2DJ+r25+nzzEk
-         ICkxPHk/Ao2onluv2xJXyHkaP+vhSYf7uS/tCONjc+s7e+82ZJmSzaNm1n7mBdNONU/z
-         hOvRIsAz6eU1u56qLg4eJ/x91aSVtKHrwA6jVVfAu+Z0XW4nWKcaZfHbUk7XHSuvA6pX
-         6Sfckl6Kycnw5rCGQJGRHmro9vEDcC1sLTAAqYMuetNZy0Qgs4bSkjmtcFi4FI96i9ca
-         SZBeKMr5pA7HA9KaAsQLTuCxoJ9YgJckfyXleuhie/gp3TGm5hx3pjlCS2Duza7vEaCb
-         c0aw==
+        d=gmail.com; s=20230601; t=1763734567; x=1764339367; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1pv6JoU3MZycxscWLFz6XU5qCo+nXmLC2gkKBvAN+L0=;
+        b=I/zqiqoY6eHK//dMkHgAIVMmZ3hsT48eh8vGb1YERv6YNqkvIwJHAM9vxKPUy8FMG9
+         CjH+FBGfhFnZGS8P2/CTYNFQsKCmd9UjRHUDO2lnoObAg88XhyXaexfigZlTntUNStwW
+         6fCrKrrLNZZGmuIbsAffWj6CegSd4d/LyFKUNtQ3ktIO9PSAETuGlv8ZjHE91LLiJpao
+         leIWtbm2V6wI16Ck9MN/uUJd7fAAd8aBOcCzu5Rimvkn7dQz9b/2PDMJquthXw7VK7BU
+         dMYAWMCyYEMys+6Kbr6oZgxW2U+GRaF0dcgJJp4iP58RgadwFtg/eQUYKlTz/RZm5e37
+         p78Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763733186; x=1764337986;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J9ZHAU96zRwC8rydbydanUtXN3FsFzz3+3+B+AWK6x0=;
-        b=V8j1oFwJ52/BvjtDrPLnp2nYpnsaJDuw5AX0UqpZ7Meiwpjgq5fwMUfCl/q0xU8JX2
-         KyqC0czO03d7HHOa3A4/wFFXxlo7zTBbI35uWEWws4JbO05JtnZTNzScfjo3Yxmcv4WM
-         KiIQ1vue8ubr7Pr/iWStsy5tdVPHqZdAzka5WN7eSybn00Rve6iOJw6KwXuMm/W16mrf
-         LGdEJbb/XGNw0jJlrzpSWxbarFNzJGzekL1yGyFBPsHFbqrgY9ZyXbuzeWapJtLlt0fo
-         KyuWD267KUXnyJY8p0cJLvUyBr4zA6ZKARQqNcLPAeWoikeRHWiyMs46FOGNahpNOLuc
-         Hniw==
-X-Forwarded-Encrypted: i=1; AJvYcCUFbI2debklx99b2l56hHk9sqK/joZ243PfdNrmbyJY4azufwoad4lj9qs3T/wN3ZUdNMc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxNWNGRBAhT5pVh0VuxDLF0E4mfWoEh1AMArbEmunJN/6qd8+H
-	zggSUotmiklPVYpIGp88dFvRa80Y1b2uFeASi6faiVbJ9RKXiMsirH9LdRmy6w==
-X-Gm-Gg: ASbGncvKAcjG23Hy3pK04QA5+6/e3qSxn8HdwaFvsDkTam08QBZHWL5CmjKRZ/RChZQ
-	GRuNkbydh5jybdyAIZp22XML34CqDdyiFyy0nlSsjHBuQcZ/IAWgASWFBxbbA2NI0+J6GotXPQz
-	j5pic2UEYgdMg/2qpBoDlTpcJBCzekscvyUdbIuxCSH/FQ9K3grlx6jH6PXr1Rlg/ixwOgCahx2
-	nbDZa0d6xDIIm7lrmRWwlLI6XDbOKdHPSV82Oda3GwUIL2z44Q6XRbJj17hkRT+f/jU8uooVs1J
-	4VKx+iuLaFiqc+nMqAUU5fZKy6+yY6oNR+Bk3nK508Slhq9MmZrnDO1kyai/jU2woOag0cxFuYy
-	U+5NoM7ZZYVPbdVMzSO+XbqSfho5wq8EdOBxhBXij2BmM8ysVblqxkv5iyAHM
-X-Google-Smtp-Source: AGHT+IFuTvsjtGwTRPEN026FC2pczcZ8IxCeMFrd96paI0v/3ChPKOPZkThC91+ughQf8nM8pWwgpg==
-X-Received: by 2002:a05:600c:1caa:b0:477:8b77:155f with SMTP id 5b1f17b1804b1-477c10d4935mr23861215e9.8.1763733185974;
-        Fri, 21 Nov 2025 05:53:05 -0800 (PST)
-Received: from krava ([2a02:8308:a00c:e200::b44f])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477a9dea7fcsm87267315e9.8.2025.11.21.05.53.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Nov 2025 05:53:05 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 21 Nov 2025 14:53:03 +0100
-To: bot+bpf-ci@kernel.org
-Cc: rostedt@kernel.org, revest@google.com, mark.rutland@arm.com,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, menglong8.dong@gmail.com,
-	song@kernel.org, martin.lau@kernel.org, eddyz87@gmail.com,
-	yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
-Subject: Re: [PATCHv3 bpf-next 5/8] ftrace: Add update_ftrace_direct_mod
- function
-Message-ID: <aSBuv8Ab0y8SeAHS@krava>
-References: <20251120212402.466524-6-jolsa@kernel.org>
- <a302c70bc1914835ea69c8b30105741b1d1d06d549ef95b9650d0827e0ca276a@mail.kernel.org>
+        d=1e100.net; s=20230601; t=1763734567; x=1764339367;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=1pv6JoU3MZycxscWLFz6XU5qCo+nXmLC2gkKBvAN+L0=;
+        b=cMG4HMNQNt7GziIiQ8+tameP0poKN/QawnU8PKxdPbjrVfBL4diIuzgpr/tV7XD9eI
+         bSGFDhBK3Mymm5zRDIkaC1BPpUPNYJEkm1zGAZgP+W/QUpknLt8KcWvi5sPa6Wj6DbZw
+         4qT1uWBcEoAa6TP9ImszlZrFpcOarXle9XvmUaoL4zl3nlNAmtIh4Z+/mErMLEjKpkwZ
+         Q7qppGmqsmLGHTs/6kCLHGj9lYmwKpDKUdWHNBj8RfYW8nFcObCV7Y+Y5lNiIbe/muIn
+         rkP7sFWHOykK+GYnw7XU6k5+jji4ZfZ9h//oPC/egQ8PXPv1Uyn7AHrvmK1/tqoMzY3H
+         0/vA==
+X-Forwarded-Encrypted: i=1; AJvYcCWorKb8EFZBoRKAg8PH2CN8VrvA/DCWHDtM/F2pK8BlOiC7YVCOuVqw/633LuX7YQC1wJU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwpprOac7ZmbhFefXD5/ZhilXjfxY3dfsAmzIdszYn4T4BjsIjh
+	n4UvgNsSU5IZuVPsutNLooeWhJEUon35DywLJlRl5Y38vaw2EiYTxOGxAcqZr0S7tI2QsEvfUtk
+	qsWLZ/SIpo5Rob6LJQ7wLriC814fbQtw=
+X-Gm-Gg: ASbGncshBxJiD7v5wJF6zSK1y6YUBolD83EaHiNCz/Ay017eFJM8xirYSOsq6IVAY/7
+	VMfiD6UpQAgpTVGJ0pOb6Vmr05mp5YKvjMOaejMPEqgGedRi7nFAWo6GfO6rudzihf2sJo3b6ZS
+	G3LiveikRLC1YzvehKpUh8O+KmlEs2/a/zH0gNWLmOTxgflpGANYOiJzkVVUhY3nfP/oOw/FG2M
+	8DlTZsL+CVZMzEfz3sCLIlYktgiC7J/gXuIvJmmkleJcFoKTVjKcHuzq939Vb1GMusdAxAo
+X-Google-Smtp-Source: AGHT+IFOY4Mb0rbCwjarYr4/giJ+O7wIO9u49h5cyjcCmcl09q2XSC8vkYNI6/yK7vEGBO1OcRzMuI140rgrZ+3HVuc=
+X-Received: by 2002:a17:906:f5a8:b0:b73:826a:39df with SMTP id
+ a640c23a62f3a-b76719eb78bmr231642966b.61.1763734566340; Fri, 21 Nov 2025
+ 06:16:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a302c70bc1914835ea69c8b30105741b1d1d06d549ef95b9650d0827e0ca276a@mail.kernel.org>
+References: <20251119031531.1817099-1-dolinux.peng@gmail.com>
+ <20251119031531.1817099-2-dolinux.peng@gmail.com> <CAEf4Bzb76SfWfNtxP2WVJ44hsVU-GrePmeKKxH25Q8KOn_Mkfw@mail.gmail.com>
+ <5315c03cd97af176065c86c0640461321c818887.camel@gmail.com>
+In-Reply-To: <5315c03cd97af176065c86c0640461321c818887.camel@gmail.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Date: Fri, 21 Nov 2025 22:15:54 +0800
+X-Gm-Features: AWmQ_blzRFWJZX8u3FJnsWEK5k5TAvcFqWOvg6SHKxcEiy_o7bzvILMAiXR_HQ4
+Message-ID: <CAErzpmv1W69HTB=WjETaB0qz4WJsUE4zSMd7dJ2v7PLmr3mzhg@mail.gmail.com>
+Subject: Re: [RFC PATCH v7 1/7] libbpf: Add BTF permutation support for type reordering
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, ast@kernel.org, zhangxiaoqin@xiaomi.com, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Donglin Peng <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>, 
+	Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 20, 2025 at 10:23:47PM +0000, bot+bpf-ci@kernel.org wrote:
-> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> > index c571deeff..4e2c0ed76 100644
-> > --- a/include/linux/ftrace.h
-> > +++ b/include/linux/ftrace.h
-> 
-> [ ... ]
-> 
-> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> > index cc730a8fd..5243aefb6 100644
-> > --- a/kernel/trace/ftrace.c
-> > +++ b/kernel/trace/ftrace.c
-> 
-> [ ... ]
-> 
-> > @@ -6486,6 +6486,74 @@ int update_ftrace_direct_del(struct ftrace_ops *ops, struct ftrace_hash *hash)
-> >  	return err;
-> >  }
+On Fri, Nov 21, 2025 at 7:21=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Wed, 2025-11-19 at 10:21 -0800, Andrii Nakryiko wrote:
+> > On Tue, Nov 18, 2025 at 7:21=E2=80=AFPM Donglin Peng <dolinux.peng@gmai=
+l.com> wrote:
+>
+> [...]
+>
+> > > +       nt =3D new_types;
+> > > +       for (i =3D 0; i < new_nr_types; i++) {
+> > > +               struct btf_field_iter it;
+> > > +               const struct btf_type *t;
+> > > +               __u32 *type_id;
+> > > +               int type_size;
+> > > +
+> > > +               id =3D order_map[i];
+> > > +               /* must be a valid type ID */
 > >
-> > +int update_ftrace_direct_mod(struct ftrace_ops *ops, struct ftrace_hash *hash, bool do_direct_lock)
-> > +{
-> > +	struct ftrace_hash *orig_hash = ops->func_hash->filter_hash;
->                                              ^^^^^^^^^^^^^^^^
-> 
-> Can this crash if ops->func_hash is NULL?  In update_ftrace_direct_add()
-> and update_ftrace_direct_del(), there's a defensive check:
-> 
->     old_filter_hash = ops->func_hash ? ops->func_hash->filter_hash : NULL;
-> 
-> But update_ftrace_direct_mod() dereferences ops->func_hash before any
-> validation checks occur. The check_direct_multi(ops) validation happens
-> later, but the dereference occurs first at function entry.
+> > redundant comment, please drop
+> >
+> > > +               t =3D btf__type_by_id(btf, id);
+> > > +               if (!t) {
+> >
+> > no need to check this, we already validated that all types are valid ea=
+rlier
+> >
+> > > +                       err =3D -EINVAL;
+> > > +                       goto done;
+> > > +               }
+> > > +               type_size =3D btf_type_size(t);
+> > > +               memcpy(nt, t, type_size);
+> > > +
+> > > +               /* Fix up referenced IDs for BTF */
+> > > +               err =3D btf_field_iter_init(&it, nt, BTF_FIELD_ITER_I=
+DS);
+> > > +               if (err)
+> > > +                       goto done;
+> > > +               while ((type_id =3D btf_field_iter_next(&it))) {
+> > > +                       err =3D btf_permute_remap_type_id(type_id, &p=
+);
+> > > +                       if (err)
+> > > +                               goto done;
+> > > +               }
+> > > +
+> > > +               nt +=3D type_size;
+> > > +       }
+> > > +
+> > > +       /* Fix up referenced IDs for btf_ext */
+> > > +       btf_ext =3D OPTS_GET(opts, btf_ext, NULL);
+> > > +       if (btf_ext) {
+> > > +               err =3D btf_ext_visit_type_ids(btf_ext, btf_permute_r=
+emap_type_id, &p);
+> > > +               if (err)
+> > > +                       goto done;
+> > > +       }
+> > > +
+> > > +       new_type_len =3D nt - new_types;
+> >
+> >
+> > new_type_len has to be exactly the same as the old size, this is redund=
+ant
+> >
+> > > +       next_type =3D new_types;
+> > > +       end_type =3D next_type + new_type_len;
+> > > +       i =3D 0;
+> > > +       while (next_type + sizeof(struct btf_type) <=3D end_type) {
+> >
+> > while (next_type < end_type)?
+> >
+> > Reference to struct btf_type is confusing, as generally type is bigger
+> > than just sizeof(struct btf_type). But there is no need for this, with
+> > correct code next_type < end_type is sufficient check
+> >
+> > But really, this can also be written cleanly as a simple for loop
+> >
+> > for (i =3D 0; i < nr_types; i++) {
+> >     btf->type_offs[i] =3D next_type - new_types;
+> >     next_type +=3D btf_type_size(next_type);
+> > }
+> >
+>
+> Adding to what Andrii says, the whole group of assignments is
+> reducible:
+>
+>   +       new_type_len =3D nt - new_types;
+>   +       next_type =3D new_types;
+>   +       end_type =3D next_type + new_type_len;
+>
+> =3D> end_type =3D new_types + new_type_len; // subst next_type -> new_typ=
+es
+> =3D> end_type =3D new_types + nt - new_types; // subst new_types -> nt - =
+new_types
+> =3D> end_type =3D nt
+>
+> Why recomputing it in such a convoluted way?
 
-update_ftrace_direct_add is called before update_ftrace_direct_mod which
-ensures the existence of the filter_hash, but same as for the update_ftrace_direct_del
-case in the other reply, it's probably better to add the check for future
+Sorry, I referred to the implementation of btf_parse_type_sec and could hav=
+e
+thought more about how to refactor it.
 
-thanks,
-jirka
-
-
-> 
-> > +	struct ftrace_func_entry *entry, *tmp;
-> > +	static struct ftrace_ops tmp_ops = {
-> > +		.func		= ftrace_stub,
-> > +		.flags		= FTRACE_OPS_FL_STUB,
-> > +	};
-> > +	unsigned long size, i;
-> > +	int err;
-> > +
-> > +	if (!hash_count(hash))
-> > +		return -EINVAL;
-> > +	if (check_direct_multi(ops))
-> > +		return -EINVAL;
-> 
-> [ ... ]
-> 
-> 
-> ---
-> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-> 
-> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19552032346
-
+>
+> > > +               btf->type_offs[i++] =3D next_type - new_types;
+> > > +               next_type +=3D btf_type_size(next_type);
+> > > +       }
+> > > +
+>
+> [...]
 
