@@ -1,101 +1,82 @@
-Return-Path: <bpf+bounces-75240-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75241-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0BB0C7AB58
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 17:06:47 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1F73C7ACCD
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 17:19:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A256E361293
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 16:06:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 685194F127B
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 16:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81E62E7BB2;
-	Fri, 21 Nov 2025 16:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F27C293C42;
+	Fri, 21 Nov 2025 16:12:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TxdrtkYp";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="r8w/kSCQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KcHzRxxo"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2ED528C864
-	for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 16:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B80B34C81D
+	for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 16:12:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763741176; cv=none; b=WJarsyAr5pC2UckIGaEbsz4e3mWLyLKpYGpH8tPlw4UwA5gnXRb5ZN8UJvcA5r4d32hAJLhcK7MdhiVRCwDs3dCVTKpfQ2KnsI90Mr6649LaadeY0wXgMrqqcF9mHScCAP5Ihho4X05TMREH1wf8WbZJthCCG7onqw6fYPjJTrc=
+	t=1763741557; cv=none; b=VE5/4d25lpOM6ep+NyBOohDrleY2smOSmRawqzpVxeDlsXaoK1aIoQ7WAGz0FGi2SAhv7vL925NMZaJ0JOGjL5InlI6s14XgM4kkA0ze5GzwqEXN6YhLlrBQptYa2C5PeVAyVeBrLU6rbfXiFxAKe8/7VRH8Kd0kD8pv2cKzVV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763741176; c=relaxed/simple;
-	bh=aswMdYs/Vr0iM3hCQ82AElwkwQIlk4Q3Md8Sb8eSuVk=;
+	s=arc-20240116; t=1763741557; c=relaxed/simple;
+	bh=ZgqPfaK6VWEXZdLqNt0iEnR3nGhXa8URQijIh9dbPo8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=diyUMLEOu2ZVQTMqEPzzBWgHNyRyDSJRJE0LYkdz9nAR7c/LuSoSmmEs2WU+MiKw3eF9WUw2Ebch0pqjLaX5PY0EovodfOk5Td4cEBA7a+q2M0zbCHMLqBKsxeZtwD88KFflPmgFdUsbhS1eXqyAaSvlDMD4yMlzkcE1BdLrplU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TxdrtkYp; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=r8w/kSCQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1763741173;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rHT7U7qQncnr+CMjMZqEW+bDwFOFz+ggr1axUXIahIA=;
-	b=TxdrtkYpjeFWNnSR1k06qNz2cn71ZBIZYcdrdRoN7FON7AYY44Rinv89cpNpr8Nwncvcsg
-	79GBVQ6S5P1CryP7yxpK/A9k2HywGf0Rw8OkSi3c/R5A2MsO0A/MjI/03Oz3aZ3VDB28L/
-	1dHvaxeXCn2w+4SkBE/OXgrsVZjHEnM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-231-XnkpqZDgPcOiTzVfTNbLpw-1; Fri, 21 Nov 2025 11:06:11 -0500
-X-MC-Unique: XnkpqZDgPcOiTzVfTNbLpw-1
-X-Mimecast-MFC-AGG-ID: XnkpqZDgPcOiTzVfTNbLpw_1763741170
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-42b2ffe9335so1558042f8f.1
-        for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 08:06:10 -0800 (PST)
+	 In-Reply-To:Content-Type; b=ZqBMa9RtZQDVXI0ZRAmo8PzpsDYiIoL1pXy6MX12KDweV0SdYvleY9Ez14MFzHvA2z/uqDihdD7ol0le7/wmJXrIunXTqWEBppPUl7DK0NGDMaViGz2KmNTJB/pbcqGd0Nq7HeaH1ulkvAdZ6Nj2ibx4t/ETqv6nxo6AnFtPWcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KcHzRxxo; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-477563e28a3so15646595e9.1
+        for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 08:12:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1763741170; x=1764345970; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
+        d=gmail.com; s=20230601; t=1763741548; x=1764346348; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=rHT7U7qQncnr+CMjMZqEW+bDwFOFz+ggr1axUXIahIA=;
-        b=r8w/kSCQbuD6WfHR5+TwoX/walxDfNWncjsHf7d4HYS7LNWMpRlHx1XR67LfRngw/R
-         PS5MuEKji6YOz6dlhGoRWXZzKos7yPrdtjcd50++8z2OJ/okMPbdbiIgC2u+Qid3J96f
-         bXAwuey14EtQ9EAstbjgjwf8ZIeTfy/ToLm1vx5BZp0vXAnF1qmGgU6PpkpzOzUJhhgt
-         5mkWJMAhjlJunKdo/7BzRXzl9BxB1WXL3AP7jBi5pgTfUjMTuPDuc8SME1HH4VUr5eAH
-         NoUgcgUAAAeHLytsfdddZ+QAumgnOJgoAL3fMeNOu16JhywoOMvOy/xDZDBTd+vrNsz6
-         ne5g==
+        bh=gqIKEwT/rUMqsaYUty5E6HMF8PGsa9QB4kUVO+4IgS8=;
+        b=KcHzRxxoMReSNyiA+xvzcjUUj3J7kziDZadgk9+7b4pZh/0kM/Et09agLfXz9GIK1s
+         Oe5RLS2fwvyZJis70zeRfdyRA3TFDwgtAsHoFwg+1j+UjrB/ljV5z3qmTtJRIXpN2vG9
+         QpApgc6kL8CTFIJLBe5KehLHosvg0LFir/9dWjtbiq2P8oPVa+hJfGt/huBnuebJqjyE
+         kT4mgOWcPZucaF6qBlIQjvo5txadb5YqV6QMAqJRbPTpOhIQXkrsi4Qt6TglFkec6IPr
+         twj7yJ8GKKZ4towtDGH1btEq2Efo7tTyJBeGnzGdzm0a52ucQ1WkafIk8Xyb/0u3iofO
+         Pjcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763741170; x=1764345970;
-        h=content-transfer-encoding:in-reply-to:content-language:from
+        d=1e100.net; s=20230601; t=1763741548; x=1764346348;
+        h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rHT7U7qQncnr+CMjMZqEW+bDwFOFz+ggr1axUXIahIA=;
-        b=pBIfPVWscRrcpg/ZT2KY05VIjq2y6se9Qqbb6IyxoLuYtr4tUp6iqwRXrQytdew3+P
-         EML7gs0vt2oMQ9V00/H/nwgNcKj5fMVZefbDcZ23JXTKTMuDZVaqcye1zfH1tVQvZM/4
-         uG2Z9jkqDlY5bh3O2VXk1/Il07Fr7UfVDMEsLawtcw1zs9gHyYoYuoGyoCfVj9JH5vDY
-         TBpT1or5VA2hPOqbkXHumnuDNZJppZv4utszWWQSaKlL8yazgTXTLU/7wLvWhtNWpZFF
-         FbGhnnX1T6uQuKSGjQpYQxYxoYDowt1ytq+cCkHtbgWLGFSXdLJCiJ2IZfSYRBLotLyK
-         P8EQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU86JCzMvhlgtJgtXEOmmNbINa/E4I1StSS1MRyufNK/leUGVIV+ay5HtR/exlBO7NLGi0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YznIOq7uz86pSPlpqeZCSVJU0c7jqoMVIuPaSoJ5r5zoV5PmRax
-	O9MbAuFV4EO92z3sL2tpWxAXew2s3CTG1TurRvLTLCPAcL3Qfkfy1HWJarowmsiwjWJMrTLlHh1
-	h+TpVPOXBKReXjujuHJM9N4H7ECZHw0ym9H+NkQMCuyrdh+RiMLy7
-X-Gm-Gg: ASbGncvrBF030LfK80UGCDSMxgEOJrShN/JvPbVT0i2h90O+GqwfIi9g5nEQoEBL+BC
-	YXT+UNukPKXowbQCgamn0p63cWXdB3rZyXDD7r2aCSyRb8ubQBpVoNorn8lf4idE94fKQSHMBAZ
-	knmoASHKlYwDgsgTBc4PWyrS1k2JGJ4nLyHOdZkOE7+p8AeGsRjA1ltCHPdlJDr5xNI2UtuTrk5
-	pw/2la8eB5YJ+0htUYRcj7Fb3/87Av0pWxt6xp1tRwIXaxvOLM/jfeS04WSIcVWnsas0Zvc+s3j
-	82fx48OoxmxBz4AbKQktnOb+DLep06bzKi6QXX3vHDJFMzwHW0EWUdiOB8oKkrCweml56l5voQi
-	YdH6yiHvktTDFCZxijQPGsSG3xYwyE3V44yhL5LXL3yU=
-X-Received: by 2002:a5d:5f95:0:b0:42b:52c4:663a with SMTP id ffacd0b85a97d-42cc1ac9d17mr3082497f8f.11.1763741169604;
-        Fri, 21 Nov 2025 08:06:09 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGON2FEwIGaqia60wBxqJtsr7vpj0fOoPfIuTO43FfevLFZybM2n6jgwKP1+iMvYkckySgn5Q==
-X-Received: by 2002:a5d:5f95:0:b0:42b:52c4:663a with SMTP id ffacd0b85a97d-42cc1ac9d17mr3082447f8f.11.1763741169083;
-        Fri, 21 Nov 2025 08:06:09 -0800 (PST)
-Received: from [192.168.0.102] (185-219-167-205-static.vivo.cz. [185.219.167.205])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42cb7fa35b7sm12037358f8f.20.2025.11.21.08.06.06
+        bh=gqIKEwT/rUMqsaYUty5E6HMF8PGsa9QB4kUVO+4IgS8=;
+        b=ri3LqPSKcjPYtTUIzN0i+49C39wV+Qrn8yLiy7arT/WbMEz6SC6YWhaMH5uKgtEUeI
+         zqfdyICWUOH1EOg2VYaaMgc1LnWHtOxDX5ZXJgPC+6MPM3TjtxCT4GZtsHDKySmlAVjF
+         rzjKQoh0eXGVDS3FP2SjKkaa73ejkZV1oDXjttjgo5Ox9kS7q6vL704/gDezAiilw0p5
+         swjnIcA5qp5psQQlafTLvUvBGbdDtewS/M6VpvCGR+VGCdy+tjdQP95mvpfkvNDQIh3L
+         LPSrETl58nhqHzD3RI5fss0riLBdTGFH090ay4zK0d7+0ZBIIRckXJEpgg+qLZ8ZqakX
+         Gq1w==
+X-Forwarded-Encrypted: i=1; AJvYcCXuI7CeXg7EO/Iq5rNRxxnZSdPw86jxQn9anzPNJdBgO3b2Xzy8WFdrhxgI4ZYsi9s9j3k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwyuC+2h6C5yp1sSXPuEnT0MKO+1sNIfUckRqxMt+hbAudXD+Iz
+	ws3nyJFv33cfGcW1hYxg0QZVn870DqHuRuA0qsgFbpYTqu9zWwcN0h5Z
+X-Gm-Gg: ASbGncv15iP3cXeKSSkN0mCcyOPQOxRDbV4AQFoGByeVOHSTxxTEG85x5N2RNvxzMea
+	iXrDUuI/YfFV6nyH7pzTZysSFZMZ21qXbOkx/oUBFEKI0lNZQN3baqtD7wa8SxW1NbMdar5zSb6
+	WSoplBp6d7t7zYRN1jc893affrHFn+MCM6h885lUIzQ0pFysgHhCt34suGo+/tYOhbxF/Co+lrW
+	QjI9zPtC/5ajoLw5aCvR9oqLXiCQuU8k/x6lO8agIQCz7V+LRAbWuiSn4c0oI9WL3/J0Jr9zqDA
+	c6DOK8+ZNgTS/qtQOEKARTMs17zUh2Qo4zJ+F6kGK7Q+4UbtRPm8/r/BMi74UxcTfivQEp+pdo7
+	08kU5Za9p1IfiypgyosG4eJewc/CkOSIsdBjH+c3bxu00YP6I70RmIC9iBnOYtXJMk1kiXO0h4L
+	BROqByZ3IWrTyKOmZPdKA5uzHgLzLKeAWpTTvNMVBhXv0=
+X-Google-Smtp-Source: AGHT+IFlt0JhjSE9IV98wA3TZU9MPZgJtJ2z9Blxl9S9eSJcFCrFmdXcolTY3ZBMyw9cni0ADFDsXg==
+X-Received: by 2002:a05:600c:2155:b0:475:de06:dbaf with SMTP id 5b1f17b1804b1-477b9efe351mr50829945e9.17.1763741547704;
+        Fri, 21 Nov 2025 08:12:27 -0800 (PST)
+Received: from ?IPV6:2620:10d:c096:325:77fd:1068:74c8:af87? ([2620:10d:c092:600::1:7bc2])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477bd1580cbsm29401865e9.2.2025.11.21.08.12.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Nov 2025 08:06:07 -0800 (PST)
-Message-ID: <2bcc2005-e124-455e-b4db-b15093463782@redhat.com>
-Date: Fri, 21 Nov 2025 17:06:05 +0100
+        Fri, 21 Nov 2025 08:12:27 -0800 (PST)
+Message-ID: <1994a586-233a-44cd-813d-b95137c037f0@gmail.com>
+Date: Fri, 21 Nov 2025 16:12:25 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -103,144 +84,81 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 1/4] bpf: crypto: Use the correct destructor
- kfunc type
-To: Sami Tolvanen <samitolvanen@google.com>, bpf@vger.kernel.org
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
- Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250728202656.559071-6-samitolvanen@google.com>
- <20250728202656.559071-7-samitolvanen@google.com>
-From: Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCH v3 10/10] selftests/io_uring: add bpf io_uring selftests
+To: Ming Lei <ming.lei@redhat.com>
+Cc: io-uring@vger.kernel.org, axboe@kernel.dk,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>
+References: <cover.1763031077.git.asml.silence@gmail.com>
+ <6143e4393c645c539fc34dc37eeb6d682ad073b9.1763031077.git.asml.silence@gmail.com>
+ <aRcp5Gi41i-g64ov@fedora> <82fe6ace-2cfe-4351-b7b4-895e9c29cced@gmail.com>
+ <aR5xxLu-3Ylrl2os@fedora>
 Content-Language: en-US
-In-Reply-To: <20250728202656.559071-7-samitolvanen@google.com>
-Content-Type: text/plain; charset=UTF-8
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <aR5xxLu-3Ylrl2os@fedora>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 7/28/25 22:26, Sami Tolvanen wrote:
-> With CONFIG_CFI_CLANG enabled, the kernel strictly enforces that
-> indirect function calls use a function pointer type that matches the
-> target function. I ran into the following type mismatch when running
-> BPF self-tests:
+On 11/20/25 01:41, Ming Lei wrote:
+> On Wed, Nov 19, 2025 at 07:00:41PM +0000, Pavel Begunkov wrote:
+>> On 11/14/25 13:08, Ming Lei wrote:
+>>> On Thu, Nov 13, 2025 at 11:59:47AM +0000, Pavel Begunkov wrote:
+>> ...
+>>>> +	bpf_printk("queue nop request, data %lu\n", (unsigned long)reqs_to_run);
+>>>> +	sqe = &sqes[sq_hdr->tail & (SQ_ENTRIES - 1)];
+>>>> +	sqe->user_data = reqs_to_run;
+>>>> +	sq_hdr->tail++;
+>>>
+>>> Looks this way turns io_uring_enter() into pthread-unsafe, does it need to
+>>> be documented?
+>>
+>> Assuming you mean parallel io_uring_enter() calls modifying the SQ,
+>> it's not different from how it currently is. If you're sharing an
+>> io_uring, threads need to sync the use of SQ/CQ.
 > 
->   CFI failure at bpf_obj_free_fields+0x190/0x238 (target:
->     bpf_crypto_ctx_release+0x0/0x94; expected type: 0xa488ebfc)
->   Internal error: Oops - CFI: 00000000f2008228 [#1]  SMP
->   ...
+> Please see the example:
 > 
-> As bpf_crypto_ctx_release() is also used in BPF programs and using
-> a void pointer as the argument would make the verifier unhappy, add
-> a simple stub function with the correct type and register it as the
-> destructor kfunc instead.
-
-Hi,
-
-this patchset got somehow forgotten and I'd like to revive it.
-
-We're hitting kernel oops when running the crypto cases from test_progs
-(`./test_progs -t crypto`) on CPUs with IBT (Indirect Branch Tracking)
-support. I managed to reproduce this on the latest bpf-next, see the
-relevant part of dmesg at the end of this email.
-
-After applying this patch, the oops no longer happens.
-
-It looks like the series is stuck on a sparse warning reported by kernel
-test robot, which seems like a false positive. Could we somehow resolve
-it and proceed with reviewing and merging this?
-
-Since this resolves our issue, adding my tested-by:
-
-Tested-by: Viktor Malik <vmalik@redhat.com>
-
-Thanks!
-Viktor
-
-The relevant part of dmesg:
-
-    [ 1505.054762] Missing ENDBR: bpf_crypto_ctx_release+0x0/0x50 
-    [ 1505.060306] ------------[ cut here ]------------ 
-    [ 1505.064971] kernel BUG at arch/x86/kernel/cet.c:133! 
-    [ 1505.069984] Oops: invalid opcode: 0000 [#1] SMP NOPTI 
-    [ 1505.075085] CPU: 129 UID: 0 PID: 42861 Comm: kworker/u688:24 Tainted: G           OE       6.18.0-rc5+ #3 PREEMPT(voluntary)  
-    [ 1505.086437] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE 
-    [ 1505.091794] Hardware name: Intel Corporation GNR-WS/GNR-WS, BIOS GWS_REL1.IPC.3663.P19.2506271437 06/27/2025 
-    [ 1505.101674] Workqueue: events_unbound bpf_map_free_deferred 
-    [ 1505.107291] RIP: 0010:exc_control_protection+0x19a/0x1a0 
-    [ 1505.112648] Code: d8 b9 09 00 00 00 48 8b 93 80 00 00 00 be 81 00 00 00 48 c7 c7 53 09 b2 a0 e8 c2 74 1c ff 80 a3 8a 00 00 00 fb e9 fb fe ff ff <0f> 0b 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 
-    [ 1505.131474] RSP: 0018:ff714c596fe17ce8 EFLAGS: 00010002 
-    [ 1505.136742] RAX: 000000000000002e RBX: ff714c596fe17d08 RCX: 0000000000000000 
-    [ 1505.143924] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ff2a470fbe458240 
-    [ 1505.151111] RBP: 0000000000000003 R08: 0000000000000000 R09: ff714c596fe17b70 
-    [ 1505.158293] R10: ff2a470fbc07ffa8 R11: 0000000000000003 R12: 0000000000000000 
-    [ 1505.165478] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000 
-    [ 1505.172661] FS:  0000000000000000(0000) GS:ff2a47101c091000(0000) knlGS:0000000000000000 
-    [ 1505.180805] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033 
-    [ 1505.186600] CR2: 00005564968dd250 CR3: 0000001e45a22005 CR4: 0000000000f73ef0 
-    [ 1505.193782] PKRU: 55555554 
-    [ 1505.196533] Call Trace: 
-    [ 1505.199026]  <TASK> 
-    [ 1505.201171]  asm_exc_control_protection+0x26/0x60 
-    [ 1505.205923] RIP: 0010:bpf_crypto_ctx_release+0x0/0x50 
-    [ 1505.211023] Code: 00 eb ee 89 c2 eb d7 31 c0 5b c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <0f> 1f 40 d6 0f 1f 44 00 00 48 8d 57 28 b8 ff ff ff ff f0 0f c1 47 
-    [ 1505.229849] RSP: 0018:ff714c596fe17db8 EFLAGS: 00010202 
-    [ 1505.235118] RAX: ffffffff9f7917d0 RBX: ff2a46f0ce98cc20 RCX: 000000008200019e 
-    [ 1505.242301] RDX: 0000000000000001 RSI: ff2a46f0dd55ff30 RDI: ff2a46f0e8662280 
-    [ 1505.249483] RBP: ff2a46f0ce98cc20 R08: 0000000000000000 R09: 0000000000000001 
-    [ 1505.256666] R10: 000000008200019e R11: ff2a46f0c5573bc8 R12: 0000000000000000 
-    [ 1505.263849] R13: ff2a46f0ce98cc00 R14: ff2a46f0dd55ff30 R15: ff2a46f0e8662280 
-    [ 1505.271035]  ? __pfx_bpf_crypto_ctx_release+0x10/0x10 
-    [ 1505.276135]  bpf_obj_free_fields+0x10c/0x230 
-    [ 1505.280451]  array_map_free+0x56/0x140 
-    [ 1505.284243]  bpf_map_free_deferred+0x95/0x180 
-    [ 1505.288646]  process_one_work+0x18b/0x340 
-    [ 1505.292705]  worker_thread+0x256/0x3a0 
-    [ 1505.296497]  ? __pfx_worker_thread+0x10/0x10 
-    [ 1505.300813]  kthread+0xfc/0x240 
-    [ 1505.304000]  ? __pfx_kthread+0x10/0x10 
-    [ 1505.307792]  ? __pfx_kthread+0x10/0x10 
-    [ 1505.311584]  ret_from_fork+0xf0/0x110 
-    [ 1505.315297]  ? __pfx_kthread+0x10/0x10 
-    [ 1505.319089]  ret_from_fork_asm+0x1a/0x30 
-    [ 1505.323059]  </TASK> 
-
+> thread_fn(struct io_uring *ring)
+> {
+> 	while (true) {
+> 		pthread_mutex_lock(sqe_mutex);
+> 		sqe = io_uring_get_sqe(ring);
+> 		io_uring_prep_op(sqe);
+> 		pthread_mutex_unlock(sqe_mutex);
 > 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> ---
->  kernel/bpf/crypto.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+> 		io_uring_enter(ring);
 > 
-> diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
-> index 94854cd9c4cc..a267d9087d40 100644
-> --- a/kernel/bpf/crypto.c
-> +++ b/kernel/bpf/crypto.c
-> @@ -261,6 +261,12 @@ __bpf_kfunc void bpf_crypto_ctx_release(struct bpf_crypto_ctx *ctx)
->  		call_rcu(&ctx->rcu, crypto_free_cb);
->  }
->  
-> +__bpf_kfunc void bpf_crypto_ctx_release_dtor(void *ctx)
-> +{
-> +	bpf_crypto_ctx_release(ctx);
-> +}
-> +CFI_NOSEAL(bpf_crypto_ctx_release_dtor);
-> +
->  static int bpf_crypto_crypt(const struct bpf_crypto_ctx *ctx,
->  			    const struct bpf_dynptr_kern *src,
->  			    const struct bpf_dynptr_kern *dst,
-> @@ -368,7 +374,7 @@ static const struct btf_kfunc_id_set crypt_kfunc_set = {
->  
->  BTF_ID_LIST(bpf_crypto_dtor_ids)
->  BTF_ID(struct, bpf_crypto_ctx)
-> -BTF_ID(func, bpf_crypto_ctx_release)
-> +BTF_ID(func, bpf_crypto_ctx_release_dtor)
->  
->  static int __init crypto_kfunc_init(void)
->  {
+> 		pthread_mutex_lock(cqe_mutex);
+> 		io_uring_wait_cqe(ring, &cqe);
+> 		io_uring_cqe_seen(ring, cqe);
+> 		pthread_mutex_unlock(cqe_mutex);
+> 	}
+> }
+> 
+> `thread_fn` is supposed to work concurrently from >1 pthreads:
+> 
+> 1) io_uring_enter() is claimed as pthread safe
+> 
+> 2) because of userspace lock protection, there is single code path for
+> producing sqe for SQ at same time, and single code path for consuming sqe
+> from io_uring_enter().
+> 
+> With bpf controlled io_uring patches, sqe can be produced from io_uring_enter(),
+> and cqe can be consumed in io_uring_enter() too, there will be race between
+> bpf prog(producing sqe, or consuming cqe) and userspace lock-protected
+> code block.
+
+BPF is attached by the same process/user that creates io_uring. The
+guarantees are same as before, the user code (which includes BPF)
+should protect from concurrent mutations.
+
+In this example, just extend the first critical section to
+io_uring_enter(). Concurrent io_uring_enter() will be serialised
+by a mutex anyway. But let me note, that sharing rings is not
+a great pattern in either case.
+
+-- 
+Pavel Begunkov
 
 
