@@ -1,84 +1,96 @@
-Return-Path: <bpf+bounces-75247-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75248-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ED47C7B632
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 19:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6741BC7B6B8
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 20:00:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B27983631F5
-	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 18:53:45 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B4A77342C3F
+	for <lists+bpf@lfdr.de>; Fri, 21 Nov 2025 19:00:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8097E2D9493;
-	Fri, 21 Nov 2025 18:53:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F05DB29E10C;
+	Fri, 21 Nov 2025 19:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="opMSeP94"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L/cBV5XB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29130824BD
-	for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 18:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B528747F;
+	Fri, 21 Nov 2025 19:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763751220; cv=none; b=nsMOm30o4mxKJGpm9xLRqGcU97BjK2JbinaFVQDrm8Y/iBHZtg47+ECTIyjbUnN/9AzuGLALBIIkXIG7rpBUnbcJshKGqWHUljEHddTjDpvUgtryqgHFKanDTHD/eWs2ENO4BWgz10X4CufiXafBalygdtzf4s1R7QJ3Ugv0H4o=
+	t=1763751646; cv=none; b=LdoFmdpNC18MihnlIKu47/naYMmIQ8RQhf9z+YpqmYmerB7tub+ZHY5x5IfVHfrbRozm8c49SOyTixMYCAstaCpBqMeAJFYZ5ewB7ozSt1SaY66DbQI1ztgestcFxGc+tWJ971+ISk+QNxoE64V+UtheQvGarM7vogE7ksYnYYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763751220; c=relaxed/simple;
-	bh=/gR+DD4YHu60vyg4njZqEWkRUdbqNzFbV6dRSuVF/os=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oQFmwRJowO/CjXYTJSq8cDMfcnqzIpOoyT1Zb5jAW55eNoApn8ZKQnyYe/8Zk6ypdGaGr9JYGpaYy8jbbhnE8x/h3JyS+J6kmQ1/04xspPsVQ/aLgEMHEnUoQc4cACBGOwgVpiui63EmRmS1HsJdA9FwQ82jo9KIzGlo6BM/RUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=opMSeP94; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5aee549c-5ae2-45a7-b658-7918d2a918cb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1763751214;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p8onk54l/YwinE/efiEVhku+RvNWF2uzqhskvQpUYCM=;
-	b=opMSeP94T51+vyvAwMHV3MpS5vRx3MrV1l2GLckufWXK6Ie7jT6Nmx3QuYsv4jD4mLl3EA
-	DlSntpip7aUOLW9j0iqOjy9n/ARVe+NQ+TEga7BZ3/XlqXWg0dvnWbMRl1KPXOxwxh60ES
-	5pfORbC91a4Osqp5uqCqD9NsgjGN+uk=
-Date: Fri, 21 Nov 2025 10:53:25 -0800
+	s=arc-20240116; t=1763751646; c=relaxed/simple;
+	bh=247GLdq408z8KKSePiVUvux+tJlYt80LGEkLGIGrbww=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=UzoOFgS4Dfr0AZcXEU1GEUuuK21okU8fp5pRb7x3+2s104HhhqxaYVl6CINJ5v8ZFvaYCpj2kduxsrwCqdlN8eJl8kRiZWamZGtHafGs1P1jMD4W9mBN6rOn+uhmO8jGo5kixBOVG92dK/2R3H/t+/c1awrGpTZr4ZOUSNuM8BA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L/cBV5XB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E91DC116C6;
+	Fri, 21 Nov 2025 19:00:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763751646;
+	bh=247GLdq408z8KKSePiVUvux+tJlYt80LGEkLGIGrbww=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=L/cBV5XBaRuBM3KXPN995zusUhDzeHzw9Rd5Hheh6vpOYhMuU7f3qRY/HIxNAKxxu
+	 pNc9gqJSBx3FKlhoSCblFqVvVRRC1HpQriKltRiRZt3r6b6/AwtqfAbhgxp8BEm9yn
+	 EPeh0gkCZUBS5gQLHo+Y1TQYaMcJkZ22xO+QysWG+PSfpR6YIV4Q0SaZtAuOoVpoo/
+	 loEeuvQ9c8rIHpREZ87lf7jb+T6IPfBoUAfZJ3LZrVOn+mR+BuUGY4mzDg0Zfhmgyp
+	 IhSEfuWBpKSsPjNAYALhBedE86khlE4YXlYOYcQPF2D7Eq2RAhTHJRFsXNEM+nTH9S
+	 eC7IMomI0ObxA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB0AB3A78A5F;
+	Fri, 21 Nov 2025 19:00:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH bpf-next v2 0/2] selftests/bpf: networking test cleanups
-To: Hoyeon Lee <hoyeon.lee@suse.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
- daniel@iogearbox.net, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, Amery Hung <ameryhung@gmail.com>
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176375161076.2547489.744358727920797337.git-patchwork-notify@kernel.org>
+Date: Fri, 21 Nov 2025 19:00:10 +0000
 References: <20251121081332.2309838-1-hoyeon.lee@suse.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
 In-Reply-To: <20251121081332.2309838-1-hoyeon.lee@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+To: Hoyeon Lee <hoyeon.lee@suse.com>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 
+Hello:
 
+This series was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-On 11/21/25 12:13 AM, Hoyeon Lee wrote:
+On Fri, 21 Nov 2025 17:13:30 +0900 you wrote:
 > This series finishes the sockaddr_storage migration in the networking
 > selftests by removing the remaining open-coded IPv4/IPv6 wrappers
 > (addr_port/tuple in cls_redirect, sa46 in select_reuseport). The tests
 > now use sockaddr_storage directly. No other custom socket-address
 > wrappers remain after this series, so the churn stops here and behavior
 > is unchanged.
+> 
+> [...]
 
-I added Amery's Reviewed-by. Please keep the tag in the future when the 
-newer revision doesn't have major changes.
+Here is the summary with links:
+  - [bpf-next,v2,1/2] selftests/bpf: use sockaddr_storage directly in cls_redirect test
+    https://git.kernel.org/bpf/bpf-next/c/fd6ed07a05dc
+  - [bpf-next,v2,2/2] selftests/bpf: use sockaddr_storage instead of sa46 in select_reuseport test
+    https://git.kernel.org/bpf/bpf-next/c/db354a157732
 
-Applied. Thanks.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
