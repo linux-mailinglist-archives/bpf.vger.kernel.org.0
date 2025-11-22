@@ -1,111 +1,98 @@
-Return-Path: <bpf+bounces-75273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64D83C7C046
-	for <lists+bpf@lfdr.de>; Sat, 22 Nov 2025 01:34:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F8D1C7C0A0
+	for <lists+bpf@lfdr.de>; Sat, 22 Nov 2025 01:53:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 433A036353F
-	for <lists+bpf@lfdr.de>; Sat, 22 Nov 2025 00:34:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C4513A672A
+	for <lists+bpf@lfdr.de>; Sat, 22 Nov 2025 00:53:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228B8207A20;
-	Sat, 22 Nov 2025 00:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E37B1DF736;
+	Sat, 22 Nov 2025 00:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OwOF9dFH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MfJBH2ND"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f53.google.com (mail-yx1-f53.google.com [74.125.224.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B16A19067C
-	for <bpf@vger.kernel.org>; Sat, 22 Nov 2025 00:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 357C423E325;
+	Sat, 22 Nov 2025 00:53:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763771679; cv=none; b=oMu3d2F0SNe8riH7PzH8jNhRVKJw1FCX+mDQnoLkyuflW97PO6oo6OHZf8QebGFDwYDVzj1hQiXErWzHMFh8ffBT0GVdKeiRySbHsOT6j1MVB5uUR6Xu+cZ3NIZshdy5ZxKo+OlIJ01r0czxphxRkLPqvInrswiGCP5Y5QNgImY=
+	t=1763772814; cv=none; b=avZLMzJWFy4tYL9H3NN8JEeRCCKc5d4pCS4AWY35eq+Szm9ITfjgrFbj5VKl8PtVgjSAktN3ooG018XHm2SNqQ5BpAN8+f8hs9lMGDoEviboOSyi5tLs2Z9rYrl1nkldJOhsb7npaC3J9XTP1GqNn/M0FD8DeuB32STmEvYYNz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763771679; c=relaxed/simple;
-	bh=Pg/OW9saPiNfnY22pVtquN0LCbn+Lzy9m13QsPz3Yu0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UdA7kFoNQWa+t2+tjVSIUMKSDCvcCxEulRg+RNfiscrIx4oC5XEqXkbOxP4MDN8AB8+hCMJOt/tEHmcWTsCaekh0lw6IHfo+y+nvfQQA6ePVI/rBXSfoQF6muUZO8wQDan9OHT4BSgsbRfcXruZXtJl5pX84IaUQRdZb6icLXKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OwOF9dFH; arc=none smtp.client-ip=74.125.224.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f53.google.com with SMTP id 956f58d0204a3-64306a32ed2so713946d50.2
-        for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 16:34:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763771677; x=1764376477; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dQkS1cETZxYgPThXfkDjdzrQav1uw4NzyFlzBGaLEvk=;
-        b=OwOF9dFHbukf7Xyc6QENaigmMxTzPuAN1YsiLuMf/G0vIf1AT3C5P7kfC0lgsjFIQ+
-         Aa2rD6OnDtHwozQ4QE3UtdRssWi1MGADvbz3Mro062BJ9c4QA1UcmrDzndY2o8cvQ6xE
-         ZPqcbMB58B5bAV44ftYt0pDpEX6E31KTLkJ4cspMvKpVDXplt8TNrJgeul6WO9iDmueW
-         Zo0JPoOlFvPjQkETkfnzlxg5P5zYSAHVKph57vBG/8NLsnQ2S6JRT63EJ3shv5MlZy+h
-         DHiRdtGvyC/OsD3Bmk8PS+7LpKe/YzQLTAYcqBgZuwONoEa26WHwcMPmPdPYWh8npeVD
-         qb/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763771677; x=1764376477;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=dQkS1cETZxYgPThXfkDjdzrQav1uw4NzyFlzBGaLEvk=;
-        b=KSTB/tCJ+TVUvL2UiVposFKOMTIJN0v5CuaPZSyg07js1v6X4rlWjTekyrJJslxdgG
-         DsYjf+SlzY4WSScfRzGwc9kpzQbo8br5pJuBFroweFgF+aWdexkQ/CcgyvB889SFZVHD
-         wJ1Uu5j6wc5CahM/j7XwaXnClsk6x7aRsjGLUHwSuLS+IsyDFOHayp5UM2Yi3dSoiwn+
-         W5WwNbZLulaf2tmj1eSsTc2+gX9xaSD3yrymCcOiCxdkjpfWFU83RWp+yuHTJd1MfbdI
-         TDdPUTwReqSUoIf6Vx6ugPPuIVIsSIWX5X7O89UUT8grya6DvRYMyBPzlNS890b0cL0i
-         1sSw==
-X-Gm-Message-State: AOJu0YxBnaIMZuvZPqLg0gLTcfM8cBwZ22NIrlJQNRsiQR9rnfJGjQGH
-	e9whknY6Mtjh590TtT97G1CUiHKubDnS7hzHJ6am2EaP+3s2iD1+qtR34D4q9c1jKk0OUqm8uSp
-	pdkgCXEevByxnrByHjxRS5fklIZX+g2M=
-X-Gm-Gg: ASbGncvaJ3oLIyB9Ax/kku7q9yag1i0T54IpCwcQJ6ijMGIpn3plCz1l6xgB1W2iFgJ
-	21jmoBQ+vuowk34/zmSuDc4OGETgo3e6SqfHMydhWHhyP8yDs5iZ/Kbu4Um67EvSLiwNsX6v/y4
-	qWHkFfyR2kCaGRY6FSVaqZVU/fIWTvi1ZrIJVOzVbG8RvPYNGtH+wmGVbtOBc6PM5Oa6BG7bsbf
-	NJrJDn9A7r4xsJ6su7qUp/qhRpxaqTlrA8UPkpYqzDlGLR8Bk/BmfUX084MS29ixJTEx/E24Lx6
-	ei8etQ==
-X-Google-Smtp-Source: AGHT+IENwuHlGwwYNW8hhhyKct8eakoXi81jziCzpyiK4XX7FIICIoPiBYfvkNIVVnhWlh4FUD8NXF13qnUYmXDph8g=
-X-Received: by 2002:a05:690e:2008:b0:640:d038:fafb with SMTP id
- 956f58d0204a3-64302ac99e5mr2288195d50.64.1763771677068; Fri, 21 Nov 2025
- 16:34:37 -0800 (PST)
+	s=arc-20240116; t=1763772814; c=relaxed/simple;
+	bh=Wvfr7qC6rGowL1DcF2UQq9PSzHQ+VVTYkpQRpo8VDM4=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=owkIRsO4cghL7PmD4cwyF6abZluNHR8brGm5xAH6JfJBbS5kTVSBSkcwakoZqF0CcpH7V0+OZuQZP1X08vNQT9zL0uu0AZGxU+ObhGdJFAW8/ymEYpIpM06h0OVSWNb/R898gOH+mOAcCbI1sjWCDXlyQvPuM5hO4YYFv7jk+G0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MfJBH2ND; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05BBEC4CEF1;
+	Sat, 22 Nov 2025 00:53:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763772814;
+	bh=Wvfr7qC6rGowL1DcF2UQq9PSzHQ+VVTYkpQRpo8VDM4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=MfJBH2ND/g3Ck4yjD2MDD22cHniHOzW4iiiMDFl6yTBdmHRAbMhnN53fQ800Wu9Qm
+	 NM0718L5nrPQad5aOwdcfeHght7TN+kiB9E98rj7egZOyCoQzxbcFTwEaty0buc7sv
+	 6mlXF47DyejgghHBRfH+Z6vcI9IARSKmTW4SmCnYTkExPyxsttMCEcTeFyWD8JNJaR
+	 C7y+mbill4I04Tdhl0ENDERpd9fwdA2hrKWotVU4uT66NZrPxL8yXsqmN0R1lmKR+4
+	 bSDTOWSDpAsTL3f1mFBwD4CaIXx1E9pG8hWeNmE2+HrHYefs07FARufIO7/XV0xI08
+	 FTiGqeHFKGHjw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADE9B3A78AC8;
+	Sat, 22 Nov 2025 00:52:59 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251121231352.4032020-1-ameryhung@gmail.com> <20251121231352.4032020-5-ameryhung@gmail.com>
- <CAADnVQLeSP654facoQxW9EHJpLBivdM3rm6WpCsimsnXPbYJ1g@mail.gmail.com>
-In-Reply-To: <CAADnVQLeSP654facoQxW9EHJpLBivdM3rm6WpCsimsnXPbYJ1g@mail.gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Fri, 21 Nov 2025 16:34:26 -0800
-X-Gm-Features: AWmQ_bnb_zIJIzTox8-b4QZMvdhPNo0o2MJYofRK2yw3ki7OjQWQ04OPpMbjmVU
-Message-ID: <CAMB2axPpZPD+h_AmKY2ypNomOHViDCsSxoPUYvikEd1EeGtxjg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 4/6] selftests/bpf: Test BPF_PROG_ASSOC_STRUCT_OPS
- command
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Tejun Heo <tj@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] bpf: Plug a potential exclusive map memory leak
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176377277852.2637800.13726063744889483182.git-patchwork-notify@kernel.org>
+Date: Sat, 22 Nov 2025 00:52:58 +0000
+References: <tencent_3F226F882CE56DCC94ACE90EED1ECCFC780A@qq.com>
+In-Reply-To: <tencent_3F226F882CE56DCC94ACE90EED1ECCFC780A@qq.com>
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: syzbot+cf08c551fecea9fd1320@syzkaller.appspotmail.com, andrii@kernel.org,
+ ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
+ haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+ kpsingh@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+ sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com,
+ yonghong.song@linux.dev
 
-On Fri, Nov 21, 2025 at 4:22=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Nov 21, 2025 at 3:13=E2=80=AFPM Amery Hung <ameryhung@gmail.com> =
-wrote:
-> >
-> > +/* Call test_1() of the associated struct_ops map */
-> > +int bpf_kfunc_multi_st_ops_test_1_prog_arg(struct st_ops_args *args, v=
-oid *aux__prog)
-> > +{
-> > +       struct bpf_prog_aux *prog_aux =3D (struct bpf_prog_aux *)aux__p=
-rog;
->
-> Doesn't matter for selftest that much, but it's better to use _impl
-> suffix here like all other kfuncs with implicit args.
+Hello:
 
-Thanks for taking a look. I will add _impl suffix to the function name.
+This patch was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Sun, 16 Nov 2025 22:58:13 +0800 you wrote:
+> When excl_prog_hash is 0 and excl_prog_hash_size is non-zero, the map also
+> needs to be freed. Otherwise, the map memory will not be reclaimed, just
+> like the memory leak problem reported by syzbot [1].
+> 
+> syzbot reported:
+> BUG: memory leak
+>   backtrace (crc 7b9fb9b4):
+>     map_create+0x322/0x11e0 kernel/bpf/syscall.c:1512
+>     __sys_bpf+0x3556/0x3610 kernel/bpf/syscall.c:6131
+> 
+> [...]
+
+Here is the summary with links:
+  - bpf: Plug a potential exclusive map memory leak
+    https://git.kernel.org/bpf/bpf/c/22d70d400556
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
