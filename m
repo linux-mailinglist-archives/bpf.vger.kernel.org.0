@@ -1,177 +1,152 @@
-Return-Path: <bpf+bounces-75290-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75291-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BEEDC7C311
-	for <lists+bpf@lfdr.de>; Sat, 22 Nov 2025 03:40:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70DA7C7C42A
+	for <lists+bpf@lfdr.de>; Sat, 22 Nov 2025 04:17:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2665B4E1187
-	for <lists+bpf@lfdr.de>; Sat, 22 Nov 2025 02:40:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 629EE3A6508
+	for <lists+bpf@lfdr.de>; Sat, 22 Nov 2025 03:17:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D2136D50C;
-	Sat, 22 Nov 2025 02:40:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D1B1FCFEF;
+	Sat, 22 Nov 2025 03:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lQjGRuD9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nc+WfPGm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86660200110
-	for <bpf@vger.kernel.org>; Sat, 22 Nov 2025 02:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22303D544
+	for <bpf@vger.kernel.org>; Sat, 22 Nov 2025 03:17:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763779224; cv=none; b=hA47nq3MD0C9bqRheBPzAZ0mxw9X2xrc7j+ZPl/v9d6h1FBZqDRtXGnpna5gsB2+pS2A+2Br5WPzI+8KQzBo3YJsDuBgPuagMeoyVqO9C/LmustlUZXj6NJO9D2AmCYgI7s2lsyxIYbwxl0osR2zOYD3RaVxVDXPPzW8ZII6UuY=
+	t=1763781470; cv=none; b=UhLpTnHtq1K9lSqErwshRKyCRzxDG574aBWu4eHhTgCRUPy+XBKZ2QLKyWeZFQNxe4kHp1DTsmYQzyLo5Jq6cytbCUy+b9K4vSX9/mDI231WAkM582UXcnWChmDg5U0Ij1CasdnmIpBBO3ypLoL1AxroXgy3T/5S/bcHa8EFY+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763779224; c=relaxed/simple;
-	bh=hrjdyYQlLNn3yGYWYZZiYS5PIq4P3KsmXlPzGfqgGck=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Yhhu62Enqn3Xm1ThTiIV70xOqdEnXTXWS+i7jwrBMpwcaiEL+7JG6wK13CasXBOK06yOJzHd9qhuif0nVXqmHjynGvzxXQQE61ifbq9MimA2Zt8w6D6bICy8BZ6SOQzrgzgT6f3mXYeHHFxEoTf/n5ffwGM9zs2zWTc7t6Bd+ZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lQjGRuD9; arc=none smtp.client-ip=209.85.221.45
+	s=arc-20240116; t=1763781470; c=relaxed/simple;
+	bh=28+WmgM/+CKfCABHq6PC/TsqPLf0JUWaaQiHxzCwkkE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ipcM/TB4h1654TZzOzI3dN1sut71dQd9tydDh2WaCFCb2wncJdjWdBXJDqfBG27bKLgHpynir031HB1FistsVwwxXL1WeD4FigLcQS4Ha1mPHZPxpmHh+MDJUivPJagyYZWDxiX580AHoC/ny2oJnxFcau2ZKHd1lSTYnBvyYY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nc+WfPGm; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-42bb288c17bso1668608f8f.2
-        for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 18:40:22 -0800 (PST)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7b8eff36e3bso3996828b3a.2
+        for <bpf@vger.kernel.org>; Fri, 21 Nov 2025 19:17:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763779221; x=1764384021; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cEl0BN97wjFwQNpva7nBiMdWVD+0kX1mEzg2DvN/RL8=;
-        b=lQjGRuD9lXj5fcHktiMuwQ12NsZatU9Iipv3k39A1WfwA/QGs4MdenRLeTc88ABM25
-         XTA/dKhx6YjJXpSH0wvRUTmWyUgNW2fegyZLUzLcFnXHuIV/w4WqcHCvYMD+xtkWzWed
-         6lWiIEgcepcnO54BdenEvcTxlQ+O3AA8hLkEUqUr2JQluXEzMgwCpv7PuJAb5TpuXBNP
-         Nkr2qYP034bqsw+ycNEmnrc1FmGUXGXmeXuD52K4SW+UU9XjYOAViUeUmRDC4hU4DIfn
-         QAyiRJ/WRlTZDdO830hUoNhcYYA9KyTRYKxG+HpnJDaQCPHDK7JcGXRwiWGW4b0PQ/Sy
-         p51g==
+        d=gmail.com; s=20230601; t=1763781468; x=1764386268; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4Ye4QST3q/cf1iDPtMXXuYLqjmYnlCQ5P5ThZKunQ0s=;
+        b=nc+WfPGm7NCCdNDL39mswK1gSCabgaZ1qfitmCiwsJBfLJ7xhTOkrWeQB2qEDbFALY
+         mSLpkoushA+foaSBsIgrWd2OhU+Os5RJAK+YA1jtUbSOLaSm4yZLYfPPrzAtNYT8dk8j
+         0d8gUTvHuWuNIFqya/MDWnw0r/HPXsqlG8mLL4cMeZHMJVvnZqCNvkjil0sjWfa5wxym
+         WY2hz8LuinNgfpjGor+5G6hrd0sQk2le/pxVzgvWlIiA/EO+UJuAcGuqybupEADhA6Ar
+         B6JhHs7EI37IrHsLdr2rS/RW5AQhp/lAbo0htDdhB23BJ2Kg5yBWSyDuP9fYy4F9tdAg
+         HLrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763779221; x=1764384021;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=cEl0BN97wjFwQNpva7nBiMdWVD+0kX1mEzg2DvN/RL8=;
-        b=XsRcwaLToL2iPFPHpIY5gefr7at9A1m9K8JgqYSX/6l24+LEa/ftPBwzRsaIytfuhZ
-         4KqRsTU7DNyfZ1gM6BOPCrL3Bbgf7wylSnYbn1kGXw438zmGdV5lsxZ4KSE6UgJm8RLD
-         Xrymb+zVkS28i4a3lVcD48IWL7iSH1FbseEld7oxUrkUZyDzvTS8QsV4lJmRoD6nsSve
-         F+xBRb/P9zZ3Qo2WrPy4p5IiVT5DzDLnPuVq5ysQpPpSnOWXNbgB4ciiiNknQew+g7dr
-         g3kzYtZqSmzjtgwZStatrSH5oeHTGiLAErwzZ9g2+jokq8tRaxchdR4pnaKk4BxfU1pq
-         mJ5w==
-X-Gm-Message-State: AOJu0YyWxpF9Kgf/Vaho1EIkKpz79Dhpv2a7tDLjtAN0AdpBJpk9GloQ
-	pI7INuiXgSL6fYh3E2NS7dNjffDuNnaDTrrpxeUUCDKLaDmFptCi3zB9M82SiP4E8HwfWswUFnj
-	u7hGh5GoKHG6G5MnFhHKIUn+lpOn2mBI=
-X-Gm-Gg: ASbGncvHcGyyyG8mnBY96gtiA8PD+hlVSi+BuElkr5img/MTpfiU4RVSFhU55sH7KsA
-	8UM/zn6zFep4CsKSgiTc/7CgH7OzwUmAsq+0A+voRJEDJ5Lg9Oh/SohJ0UaAjAhzw1ufTLN7H9g
-	y+LG3ynQiSKKu7akNuTpTh9QH9ChCfC451J768I7G6Z+k9jWW8HCCDGsu/dV8pgE70oKEazSeLJ
-	68R5zIjpviXGGjxaDKrKGdKcivPE4s7FvDoRrP7zrfHW5X/aHb5RkTQQkzKPO8BGwYzVMckhV0p
-	QfwbeODRJTdE6eSsrSD+zsfwFQRG
-X-Google-Smtp-Source: AGHT+IGwhC0z2f3fnnhVNzJ7UE+nzSJSaxsE09tBPhw1fP1SEI+vcUOTsYfQdfzDSf+dMhU18E7YL7sF1g4BX1ccC4k=
-X-Received: by 2002:a05:6000:2303:b0:429:c14f:5f7d with SMTP id
- ffacd0b85a97d-42cc1cf3b24mr4341898f8f.29.1763779220753; Fri, 21 Nov 2025
- 18:40:20 -0800 (PST)
+        d=1e100.net; s=20230601; t=1763781468; x=1764386268;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4Ye4QST3q/cf1iDPtMXXuYLqjmYnlCQ5P5ThZKunQ0s=;
+        b=sart7ohQRKj+cQWwwzKjSYc6ocAdRhguY7vALjF0Uuxzjj6kRWO07xYs/PznGCZ9JF
+         g6W+qid5Uvs+EbrV2aVX88Rhz220wMCEjUICeIGDXAViMHrMO6NfEePiItbfxlK/oREn
+         pKs2iwalU5WbeZe+a9dNaiyTeqw0Z52Y6z2R/X1cpLL8THr2wUT4gflY375U5OJSpdaB
+         vZCx1bL9AsQ4LW1ADmTtKRydpGQSF7imN6l/aYD2Ttc9z343GHAqnBER/phh+jOqBxPE
+         iUPj32f/ZRFbwnNPPC0yLMmkzYD7X33LJCXKEkCKMa9cww2PLYVb2aLVyeQn7cIeAWaR
+         O7CQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXS74T+kAHEJlNeWCdbXD7rfbwBdHaceyy7WayCzS3eS8GuuFy2J407hCF47zZ28H9ZMEM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwvJ+5q5/+ESkWzYwp/1G9FUyvxlrHYIRjLkkeipZlJkK6jKtex
+	9u8FnGR4F+bM0yL6/V8mUWmlAShO1aPm9XNhxt+iDm0vme7Iq7g1lMbw
+X-Gm-Gg: ASbGncvDZhajHNqOcwISOcl/c9g2ZuT0G9QV9j2oWMBGyO0VLQtfSLA3m1sdCmef/yZ
+	pVApAseOPhWk418U1++ptQ7eJlMq0AznPVm6BQsGJbKjaK90kS8BSvWvTLVLoSuQtisYyjEE+xw
+	S9OE+P+hW5nyevEpotSzqGcMCNOu8hXSpIGM4eWyrabR52fZjpcchBaPLUFl6gYDgPZc4MrBPJr
+	ESwbOZVgrs8jls9j0ZBr3ubd66T8PeMogFXIU4ngUtQmC3ttS2twVtDP5z9tYm/K/rmndxlkSNt
+	g9eCmGdyzUWrQF40emnMmgT5NezNVxU1AJvPhMSO+HDi40e3WERQdzLpK8mepCuGJXPVTwdRlUX
+	ufV4fyCoRLZA6b1ZkNtxVZxIKvJ0elfseCzHjhgipy7bzaiimbFObqUyAVR6VQGa2mgOjWzJk97
+	XKxCpk7Y8=
+X-Google-Smtp-Source: AGHT+IHO4ydTIhSbO2WNmt5oQ8Fe9+lLI3hTdcPFypXFjku1lq/7R/Xw48pDAtfS2vUSo60Sn+NJ4A==
+X-Received: by 2002:a05:6a21:9997:b0:34f:ec32:6a3c with SMTP id adf61e73a8af0-3614edd7f2dmr6332542637.28.1763781468130;
+        Fri, 21 Nov 2025 19:17:48 -0800 (PST)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7c3ed37ab3fsm7571035b3a.22.2025.11.21.19.17.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Nov 2025 19:17:47 -0800 (PST)
+Message-ID: <ef19d394a7b4993a4f42fc063a9e33bf174f7035.camel@gmail.com>
+Subject: Re: [PATCH v2 3/4] libbpf: offset global arena data into the arena
+ if possible
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Emil Tsalapatis <emil@etsalapatis.com>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	memxor@gmail.com, andrii@kernel.org, yonghong.song@linux.dev
+Date: Fri, 21 Nov 2025 19:17:45 -0800
+In-Reply-To: <20251118030058.162967-4-emil@etsalapatis.com>
+References: <20251118030058.162967-1-emil@etsalapatis.com>
+	 <20251118030058.162967-4-emil@etsalapatis.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.1 (3.58.1-1.fc43) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251105090410.1250500-1-a.s.protopopov@gmail.com>
- <20251105090410.1250500-2-a.s.protopopov@gmail.com> <CAADnVQ+MmpDpSsQZW42K3nozcuM5yJMRRZRABjiTiybNQpBJRA@mail.gmail.com>
- <aQxx3Zphpu43l1/p@mail.gmail.com> <CAADnVQJmg17Z9jWWZ8ejCCNWcnSU0YeRiDHSp__+A0C8QtTMvg@mail.gmail.com>
- <aRnKXNPkENDiRcnO@mail.gmail.com>
-In-Reply-To: <aRnKXNPkENDiRcnO@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 21 Nov 2025 18:40:09 -0800
-X-Gm-Features: AWmQ_bmjNXUKgSUmu8fuH-2IlaoYU3hUSFRGkxVXgEUCaYhAp5B6DnKaM4_r94A
-Message-ID: <CAADnVQLTi6-jCxyGub3eQydf00238LuFdM2e_iXx=GtjZedKcQ@mail.gmail.com>
-Subject: Re: [PATCH v11 bpf-next 01/12] bpf, x86: add new map type:
- instructions array
-To: Anton Protopopov <a.s.protopopov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Nov 16, 2025 at 4:51=E2=80=AFAM Anton Protopopov
-<a.s.protopopov@gmail.com> wrote:
->
-> On 25/11/06 09:08AM, Alexei Starovoitov wrote:
-> > On Thu, Nov 6, 2025 at 1:54=E2=80=AFAM Anton Protopopov
-> > <a.s.protopopov@gmail.com> wrote:
-> > >
-> > > On 25/11/05 06:03PM, Alexei Starovoitov wrote:
-> > > > On Wed, Nov 5, 2025 at 12:58=E2=80=AFAM Anton Protopopov
-> > > > <a.s.protopopov@gmail.com> wrote:
-> > > > > @@ -21695,6 +21736,8 @@ static int jit_subprogs(struct bpf_verifi=
-er_env *env)
-> > > > >                 func[i]->aux->jited_linfo =3D prog->aux->jited_li=
-nfo;
-> > > > >                 func[i]->aux->linfo_idx =3D env->subprog_info[i].=
-linfo_idx;
-> > > > >                 func[i]->aux->arena =3D prog->aux->arena;
-> > > > > +               func[i]->aux->used_maps =3D env->used_maps;
-> > > > > +               func[i]->aux->used_map_cnt =3D env->used_map_cnt;
-> > > >
-> > > > ...
-> > > >
-> > > > > It might be called before the used_maps are copied into aux...
-> > > >
-> > > > wat?
-> > >
-> > > It is called from fixup_call_arg() which happens before
-> > > the env->prog->aux->used_maps is populated as a copy of
-> > > env->used_maps.
-> > >
-> > > In any case, I will take a closer look and follow up on
-> > > this after Kubecon (which is the next week).
-> >
-> > Pls look at the diff
-> > and also
-> > line 22074:
-> > func[i]->aux->main_prog_aux =3D prog->aux;
-> > line 22099:
-> > func[i]->aux->used_maps =3D env->used_maps;
->
-> [Sorry for the delay, I was travelling and didn't have access to my lab.]
->
-> I've seen this diff and tested it before sending the previous reply.
-> It didn't work, and it doesn't work now on bpf-next/master: the
-> "./test_progs -a bpf_insn_array/deletions-with-functions" test
-> still breaks.
->
-> The reason is as follows. There are two cases for which JIT is called
-> differently.
->
-> 1) For a program without sub-functions the JIT is called from the
-> bpf_prog_select_runtime() function. By this time
-> aux->main_prog_aux->used_maps are populated and thus
-> aux->main_prog_aux could be used; or just aux, as there is only one
-> prog.
->
-> 2) When program has sub-functions, say one, the jit is called from
-> jit_subprogs() and later the call in bpf_prog_select_runtime() is
-> skipped. The jit_subprogs() is called before the bpf_check()
-> epilogue, and thus not func[i]->aux nor aux->main_prog_aux
-> contain a copy of used_maps, it is only copied later.
->
-> To make two cases look the same ("aux->used_maps is correct"), I've
-> added
->
->     func[i]->aux->used_maps =3D env->used_maps;
->     func[i]->aux->used_map_cnt =3D env->used_map_cnt;
->
-> Note, again, that in case 2, without this copy, no functions will
-> have used_maps set, even main_prog.
+On Mon, 2025-11-17 at 22:00 -0500, Emil Tsalapatis wrote:
+> Currently, libbpf places global arena data at the very beginning of
+> the arena mapping. Stray NULL dereferences into the arena then find
+> valid data and lead to silent corruption instead of causing an arena
+> page fault. The data is placed in the mapping at load time, preventing
+> us from reserving the region using bpf_arena_reserve_pages().
+>=20
+> Adjust the arena logic to attempt placing the data from an offset within
+> the arena (currently 16 pages in) instead of the very beginning. If
+> placing the data at an offset would lead to an allocation failure due
+> to global data being as large as the entire arena, progressively reduce
+> the offset down to 0 until placement succeeds.
+>=20
+> Adjust existing arena tests in the same commit to account for the new
+> global data offset. New tests that explicitly consider the new feature
+> are introduced in the next patch.
+>=20
+> Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
+> ---
 
-I see. Thanks for explaining. That's one more reason to split prog and subp=
-rog.
-Could you please follow up with the patch to clear them back
-after JITing:
-func[i]->aux->used_maps =3D NULL;
+[...]
 
-it's not great to have pointers to freed memory sitting there
-for the lifetime of the program. I suspect it might confuse
-tools like kmemleak that simply scan 8 byte values.
+> @@ -3006,6 +3011,17 @@ static int init_arena_map_data(struct bpf_object *=
+obj, struct bpf_map *map,
+> =C2=A0	memcpy(obj->arena_data, data, data_sz);
+> =C2=A0	obj->arena_data_sz =3D data_sz;
+> =C2=A0
+> +	/*
+> +	 * find the largest offset for global arena variables
+> +	 * where they still fit in the arena
+> +	 */
+> +	for (off_pages =3D max_off_pages; off_pages > 0; off_pages >>=3D 1) {
+> +		if (off_pages * page_sz + data_alloc_sz <=3D mmap_sz)
+> +			break;
+> +	}
+> +
+> +	obj->arena_data_off =3D off_pages * page_sz;
+> +
+> =C2=A0	/* make bpf_map__init_value() work for ARENA maps */
+> =C2=A0	map->mmaped =3D obj->arena_data;
+> =C2=A0
+
+Please correct me if I'm wrong about the goals of this change:
+a. Avoid allocating global data at NULL address
+b. Reserve some space to use by upcoming arena-KASAN functionality.
+
+For (b) wouldn't it be simpler to implicitly increase the arena map
+size by an amount needed for KASAN functionality? Then there would be
+no need to guess the necessary data offset.
+
+For (a), is there a way to move an address of first valid mmaped page
+(from BPF perspective) w/o physically allocating the first page?
+
+[...]
 
