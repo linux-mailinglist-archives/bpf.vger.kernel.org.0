@@ -1,157 +1,155 @@
-Return-Path: <bpf+bounces-75341-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75342-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A372C80B15
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 14:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F6FFC80C4E
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 14:31:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8089D345491
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 13:12:45 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 80D74344ED7
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 13:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C22EA26F467;
-	Mon, 24 Nov 2025 13:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1447D215F42;
+	Mon, 24 Nov 2025 13:29:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fao69M6k"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="P3dODMhB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946E82EB86C
-	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 13:12:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0001DF970
+	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 13:29:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763989958; cv=none; b=WjTzfzoHmk5SdkeRtcffpGyM0jkl9xEhMuwhgSK2mUoyPYNdKgd3LPAlh06TxlfCn0Kc069Z69runud8k5iF0yPk4alk9BX7pQBvshHcMOuuq317ZmC1MlW91O3Qt66cgUd2q2kC7pec42ZIYUqY+/7N7WE17lXPQTlbSnAdzmo=
+	t=1763990956; cv=none; b=J1mfCyLUNnGa5qa3qxotDVsQjnDbVhXcAzJEO13/Ybd8CRIWa5qgdysmGPGhbHEH+X89K/3R2MfNwBj0I9lQzf+n+ZuXYeOdliUN17YmaPtNA9tZ1915vBseyRVihq7qYOtj97GszQhhwr0y64RNjwbo5Ji0K0feGupxrews+IA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763989958; c=relaxed/simple;
-	bh=LVOeGfX/hrncYVszLSmkoVX2bh+Fnz3uRx8/nohuEvM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hv0WLxfs2IdnCOMAIdW+H5sEma8UowPw7PQV0XwrKmics+u5U5MXlftea2NuemiEU9Gj9YN/CGRrdanSKe9ktzuZPRvU7V5kdCGz+11TqGqz3FrBb6uwg4dbH/7jSx5XyWUlKGIyEV0K26Ok2Wopmat1qSSA2d6uWASkaBJuvKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fao69M6k; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-429c4c65485so3499574f8f.0
-        for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 05:12:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763989955; x=1764594755; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K/jAyvXkLX8H+nuUsYcPgHdNHZqUW0ZlRkXZiy2I490=;
-        b=Fao69M6kOSKQRbPpkncvtBfJ76Bg/Yz2iNMbrijD5u/o8gE6CykzW/spmPBqf+3fIl
-         WPKsCMUwWAPECxB9UyD08pLzZxvbEkVKvZqsFjvUkH1POYCYuaVwwpZxvsCQiQK6STj+
-         gT78AMt981ObEoTw/SHxNnFRi3mtq1DYQ9FTzzHeiDk8ZQbCwVibhm1XRLf07XOfmwcV
-         gbGlCOg5w/VM7JqwqqL4YX1b2hR7onzcLBQIC5QfDGulH/wSK1BqJ1OZjeObrDMVUyit
-         7udmEf+wDEwsGowGGJm/ILk112294Amo64GEWdET5SfCPZcB5QKlLNCc8hmeMVIMQhAv
-         i4Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763989955; x=1764594755;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K/jAyvXkLX8H+nuUsYcPgHdNHZqUW0ZlRkXZiy2I490=;
-        b=lkqnikOZCDtA47QY73nDfxdcoaZgcXhmh8DSug1HUU3FFzxvnb2OwaCM+Ff0Xoj6fZ
-         XNhzfV7IkkIzE+HaF4P7ztwW+4G1XTy4A5xJFZ5SKMhGElPdeIuq0Nb6Bfkrki4Rf1B9
-         wRNBus8Rzyoy2+580aZ8PhGSv05zNbBRFJUJ0FWpvWz4SkTSMAlInzROCzAjxvaO+W9+
-         Vzgxo/ou1G2b8W3HDD+xuFTrbY6srCXjP6XlpjtchIkLARl+NxRXWitxFWPWyzjctHO5
-         X08xrnGWqyLaFlJ88J6yyB11OscqXedijDB8W6Eb7Dpp+0fqvAFLItdV9YbJYVInTEKx
-         WW8w==
-X-Forwarded-Encrypted: i=1; AJvYcCXXjShq8cJzcpg1p/c9SfoLYhPtU9ykQM/D3gvlKl0/IfTa3qD2BCKO0/5Jd6xD/HZMWPk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyaz78U1rMrAHqc7q06MF0XFb1PfbWA26Vby7vW419ZbjYwXHgn
-	gYLtN/+1TWENYkWJ6RM6B3ai6LhBa7onxv485UNF/FedCCI1OXQd9PLR
-X-Gm-Gg: ASbGncuEX0GevPdAojuJeQmRc0nugA8LlC4XjkD9qoAv72F+r7NCvUCeyff5hAOeL0r
-	/drliNXClph6uzFen1FR4E2np5Ke8nV0At9tySdTnMNUNYTyfQgVo498CbefSPpi4cwvV+DMviN
-	zKKlyEsvrEhCDGPTpf5MJUXQZEuoPOu9eRVnuknn2frm2F4bbSpXcGHWYTsUT4pRwA3LrlEBioE
-	4OVcg2fsUNoHINgT9aVYEZQp6chBAJbbCHEr6aU8gmamL+5/Uh3brh6YbIFJz+ZHmzjzEZcFTAA
-	jX/QafRgq2r7n/jcmczV+FzLz9/7X+KVM46KD9nk3nCd53RySNdYUto/X1gSRr+5hSATZvZUG/4
-	4YpGF7L8wuhABADYi6vcrFr+5bOdezI5Jd/8UnrMviGjVP2ASRpaBKSAt1P501exIeNFuhkw4uy
-	oYuxIGvNiwRgdTFywsELpVzsix/FLYw7ZK1i0HrmNpH9VaztfZI241zv9kI1vehaT6TpRqZj8d
-X-Google-Smtp-Source: AGHT+IFqiPToSF4N3e+veioRZSYuFb1cST6j6mPnAPjs/4jifICbawVLxJn6G5AnECO7vxqysuoJ7g==
-X-Received: by 2002:a05:6000:290f:b0:429:8bfe:d842 with SMTP id ffacd0b85a97d-42cc1cd8f9fmr13219439f8f.4.1763989954744;
-        Mon, 24 Nov 2025 05:12:34 -0800 (PST)
-Received: from ?IPV6:2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c? ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42cb7f49a7bsm27934717f8f.19.2025.11.24.05.12.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Nov 2025 05:12:34 -0800 (PST)
-Message-ID: <015ee1ee-e0a4-491f-833f-9cef8c5349cc@gmail.com>
-Date: Mon, 24 Nov 2025 13:12:29 +0000
+	s=arc-20240116; t=1763990956; c=relaxed/simple;
+	bh=jZ7Dl0fkH9Xclybjw2cHiajioeW5NfPOu7q0NjTY9Mk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dwutE2aLqEMFQQQ5LM/lw3wTQIsQrUnENvmd2RWkCnSjnBXZW/z/nOnk0BO9u5IOCQj/8KCWuQI89whWVnDTuYg6WZTwTbXT1s38s44j59YU0S626uyJ2BWSaPodbgIik0EcseCLaNurfwqGQHDV2rE0NJotnpBZyuWuL2vIhR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=P3dODMhB; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1763990953;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1Y7Gu0g7KzACy/FQqscAB7DMUDY1Q/tCB7l7mvHVwVM=;
+	b=P3dODMhBxMKNGRN1IZL0JuYfvcVKkWmIpqRdvgSADE2CbNtJJsuNtRXW80pD1/BwZa5f84
+	zXBQy+LjGWjhGxHfOkWYYa8LqjfNalZpM7iEtR7oNfXs8Xda7hVs7x+oI19yT3dnnjfvbF
+	wbmvpc7a/spHAqsvFl4nELHBKQfLDm4=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-622-uGltvYzQOUmnMv8pURrUsg-1; Mon,
+ 24 Nov 2025 08:29:12 -0500
+X-MC-Unique: uGltvYzQOUmnMv8pURrUsg-1
+X-Mimecast-MFC-AGG-ID: uGltvYzQOUmnMv8pURrUsg_1763990951
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AD9051954197;
+	Mon, 24 Nov 2025 13:29:10 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.210])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BBDD81955F1C;
+	Mon, 24 Nov 2025 13:29:05 +0000 (UTC)
+Date: Mon, 24 Nov 2025 21:28:48 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: io-uring@vger.kernel.org, axboe@kernel.dk,
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v3 10/10] selftests/io_uring: add bpf io_uring selftests
+Message-ID: <aSRdkIIP0oRwGrLU@fedora>
+References: <cover.1763031077.git.asml.silence@gmail.com>
+ <6143e4393c645c539fc34dc37eeb6d682ad073b9.1763031077.git.asml.silence@gmail.com>
+ <aRcp5Gi41i-g64ov@fedora>
+ <82fe6ace-2cfe-4351-b7b4-895e9c29cced@gmail.com>
+ <aR5xxLu-3Ylrl2os@fedora>
+ <1994a586-233a-44cd-813d-b95137c037f0@gmail.com>
+ <CAFj5m9KfmOvSQoj0rin+2gk34OqD-Bb0qqbXowyqwj16oFAseg@mail.gmail.com>
+ <f1db3be4-a4a7-4fd7-bd5c-0295a238b695@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 07/10] io_uring/bpf: implement struct_ops registration
-To: Ming Lei <ming.lei@redhat.com>
-Cc: io-uring@vger.kernel.org, axboe@kernel.dk,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>
-References: <cover.1763031077.git.asml.silence@gmail.com>
- <cce6ee02362fe62aefab81de6ec0d26f43c6c22d.1763031077.git.asml.silence@gmail.com>
- <aSPUtMqilzaPui4f@fedora>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <aSPUtMqilzaPui4f@fedora>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f1db3be4-a4a7-4fd7-bd5c-0295a238b695@gmail.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-On 11/24/25 03:44, Ming Lei wrote:
-> On Thu, Nov 13, 2025 at 11:59:44AM +0000, Pavel Begunkov wrote:
->> Add ring_fd to the struct_ops and implement [un]registration.
-...
->> +static int io_install_bpf(struct io_ring_ctx *ctx, struct io_uring_ops *ops)
->> +{
->> +	if (ctx->bpf_ops)
->> +		return -EBUSY;
->> +	ops->priv = ctx;
->> +	ctx->bpf_ops = ops;
->> +	ctx->bpf_installed = 1;
->>   	return 0;
->>   }
->>   
->>   static int bpf_io_reg(void *kdata, struct bpf_link *link)
->>   {
->> -	return -EOPNOTSUPP;
->> +	struct io_uring_ops *ops = kdata;
->> +	struct io_ring_ctx *ctx;
->> +	struct file *file;
->> +	int ret = -EBUSY;
->> +
->> +	file = io_uring_register_get_file(ops->ring_fd, false);
->> +	if (IS_ERR(file))
->> +		return PTR_ERR(file);
->> +	ctx = file->private_data;
->> +
->> +	scoped_guard(mutex, &io_bpf_ctrl_mutex) {
->> +		guard(mutex)(&ctx->uring_lock);
->> +		ret = io_install_bpf(ctx, ops);
->> +	}
+On Mon, Nov 24, 2025 at 11:57:10AM +0000, Pavel Begunkov wrote:
+> On 11/22/25 00:19, Ming Lei wrote:
+> > On Sat, Nov 22, 2025 at 12:12 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+> ...
+> > > > 
+> > > > `thread_fn` is supposed to work concurrently from >1 pthreads:
+> > > > 
+> > > > 1) io_uring_enter() is claimed as pthread safe
+> > > > 
+> > > > 2) because of userspace lock protection, there is single code path for
+> > > > producing sqe for SQ at same time, and single code path for consuming sqe
+> > > > from io_uring_enter().
+> > > > 
+> > > > With bpf controlled io_uring patches, sqe can be produced from io_uring_enter(),
+> > > > and cqe can be consumed in io_uring_enter() too, there will be race between
+> > > > bpf prog(producing sqe, or consuming cqe) and userspace lock-protected
+> > > > code block.
+> > > 
+> > > BPF is attached by the same process/user that creates io_uring. The
+> > > guarantees are same as before, the user code (which includes BPF)
+> > > should protect from concurrent mutations.
+> > > 
+> > > In this example, just extend the first critical section to
+> > > io_uring_enter(). Concurrent io_uring_enter() will be serialised
+> > > by a mutex anyway. But let me note, that sharing rings is not
+> > > a great pattern in either case.
+> > 
+> > If io_uring_enter() needs to be serialised, it becomes pthread-unsafe,
 > 
-> I feel per-io-uring struct_ops is less useful, because it means the io_uring
-> application has to be capable of loading/registering struct_ops prog, which
-> often needs privilege.
+> The BPF program needs to be synchronised _if_ it races. There are
+> different ways to sync, including from within the program, but not
+> racing in the first place is still the preferred option.
 
-I gave it a thought before, there would need to be a way to pass a
-program from one (e.g. privileged) task to another, e.g. by putting
-it into a list on attachment from where it can be imported. That
-can be extended, and I needed to start somewhere.
+Both the bpf program(kernel) and application(userspace) code may
+modify SQ's tail, I don't know how you can sync it within the prog &
+application easily, otherwise bpf prog may become quite complicated or
+implies safety risk.
 
-Furthermore, it might even be nice to have a library of common
-programs, but it's early for that.
+> 
+> > that is why I mentioned this should be documented, because it is one
+> > very big difference introduced in bpf controlled ring.
+> 
+> That can definitely be mentioned as a guide to users, would be a
+> diligent thing to do, but my point is that it doesn't change the
+> contract. SQ/CQ are not protected, and it's the users obligation
+> to synchronise it. With this set it includes BPF programs the
+> user attaches.
 
-> For example of IO link use case you mentioned, why does the application need
-> to get privilege for running IO link?
+bpf prog becomes part of io_uring_enter() which starts to race
+with userspace.
 
-Links are there to compare with existing features. It's more interesting
-to allow arbitrary relations / result propagation between requests. Maybe
-some common patterns can be generalised, but otherwise nothing can be
-done with this without custom tailored bpf programs.
+The interface needs to be clear from beginning:
 
--- 
-Pavel Begunkov
+- who provides the sync between bpf prog and io_uring application wrt.
+  modifying SQ/CQ
+
+- if it is responsibility of bpf prog and application, how to do it?
+
+- otherwise, it is one contract change from syscall pthread safety
+viewpoint, because userspace need to serialize io_uring_enter() syscall
+with userspace code for manipulating SQ/CQ
+
+
+Thanks,
+Ming
 
 
