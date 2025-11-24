@@ -1,227 +1,131 @@
-Return-Path: <bpf+bounces-75339-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75340-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78CB1C80A58
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 14:04:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41E4FC80A9A
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 14:07:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 058624E4C8D
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 13:04:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 627473AD039
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 13:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9454E304BC5;
-	Mon, 24 Nov 2025 13:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B654305E29;
+	Mon, 24 Nov 2025 13:04:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="p93ubr5S";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="ye4ZmiBZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="onaHc4e+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9051427FD40;
-	Mon, 24 Nov 2025 13:03:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763989436; cv=fail; b=ApXlajXB0bpBqpHW5puXNOCy+Pfbixy6M6Umky3Dx2fXJIBMKWaIn0vuDg+bkqskdHMJjACQc0pvmO4rW3eHGnbNQ1x0DaKGqjTagutzaMnj18/1woHrMlqb3VW2whPrEFEjd3I2vW21Jn76irdusl7UT/IWtLGuof63FMRAyrQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763989436; c=relaxed/simple;
-	bh=1u+rEhsEVe63CMJ8tHFfs5xqCzpS3f5OccIzNsmwZuY=;
-	h=To:Cc:Subject:From:In-Reply-To:Message-ID:References:Date:
-	 Content-Type:MIME-Version; b=sf1VKEeySLNRk5oY9pvwDEbr/Ki8IZxaleB1iiWUXUGQvj7tMI64uX8mjsz9vxqOupl7ChwcCy4GTZK4NP53tKaTUzDh9Fa4R25F1IxoKSQJWMKcXOMHCuiVyvOyGXCz7K3hpn6ksouyTWOhSlqJcZ6NiRG9dkusmKWFyJhH1GY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=p93ubr5S; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=ye4ZmiBZ; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5AOCVGvR1038231;
-	Mon, 24 Nov 2025 13:03:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=pRf1nNs+7k7uMH+fRK
-	lnrtUtQCbSbn9CzirmxxZcUlE=; b=p93ubr5SaBTPqBPK5454SWSlcA8LETiW30
-	CYxafFOqK4vEtKOKJJGZZmacklsKsx7VkMpt5nxeNZWikUh2I4BLIX1GIYMwB2JA
-	4Fk2oFBycj1pYgPHqAqe0YNKB+SguSuf++c72a7pJpFwnpyagnQifr2v8fFLI+9g
-	jzL5qpWF8klE8oLSYMZ93LOFRNcR6tly6FELvJU2/x1orN7s+ELM+mSPZi05LUdB
-	Q/Jew7coXDKXCqFzZh+T4KD+rlCo4VOCnCVeZZVOqsnftFLqRZMLVaAoITKr9NPO
-	fhcanqX3JN2X3kxiO/IrhE/Mxp87OLEfpPWif/HRngiPHaiVHFmA==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4ak8fk9yjx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 24 Nov 2025 13:03:24 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5AOCoZf7029743;
-	Mon, 24 Nov 2025 13:03:23 GMT
-Received: from sa9pr02cu001.outbound.protection.outlook.com (mail-southcentralusazon11013008.outbound.protection.outlook.com [40.93.196.8])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4ak3mbkas3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 24 Nov 2025 13:03:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ocwdZi7T9n5A3moXynAVGyAJ3PncdltzKU8GZwHJ6UE6Z9XmM3UEgVYK04fRGlaiY9bptrPxoeRZramf0S5YVCA8vKwJPtiIrilZmVHueNdccRQAivN/AOire/u9e60DAd7bx+eDcMS8anUshB6k5MPKWtss3pEI+tuo4jFemtKCVsYGHIPj8QM2gb3XpYZNmaY1255Of31HIvdoqfIDr4dpsRmMx4RC/WZ8Ae/E/bvQ9TeQ6VJWsTzPruq8Qhkr0lup3JDML3yzLFsmQb39AAR7N2n5mCzCmJd0xn0EEyWQ4VageyExA9Nd7YlLufbtv7tg3OlEvvBosWhZjXYKFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pRf1nNs+7k7uMH+fRKlnrtUtQCbSbn9CzirmxxZcUlE=;
- b=SKnjV6s3o5fmdK9MGzxqBLa6xvCvaNeMjCMj85F6PZoSQGPJLp9CyAAcvXETdfvH/HTT53v7GChrvWtATSvs3ZKLEYfjZt5SH2GHQzoxRwe5npcqLIxxbLCTz3xheBEbzvxH3eBh4eQ0SyguenMYTOjV/eLb+OaDoP8mbekxxJHKOaJALjS/n0maKlJ8jSc1QXDs3YTb/Spgmj7foS8oTwhp1IgbIfwVxxcOIOUcwHy4ZArPhxTS8GUr2VGiVB3L1Pnq11pX+MmAE15oTJ+aDXdmSEThvUssvVFR/5KcR+WQEJfeLWVp2XyV6XsWuFKqK6yf6Cu35fzzYkrVROtBjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pRf1nNs+7k7uMH+fRKlnrtUtQCbSbn9CzirmxxZcUlE=;
- b=ye4ZmiBZIE+0Hq7vnNjBuQ0KJz+jWcOJpncyr9TrL/v4wC5FmPkAdVNLeecypUhm20rVEf4jhTzP//wa5zQJON2uR/4H1rtOQhJamCGR4/JSeWkjLahJHv2PmqsnncZfJ4DdvQ5wfUzLC8Jx+OAY2uky+NQF1SOAmdBC4teZHNU=
-Received: from CH0PR10MB5338.namprd10.prod.outlook.com (2603:10b6:610:cb::8)
- by PH0PR10MB4743.namprd10.prod.outlook.com (2603:10b6:510:3e::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.17; Mon, 24 Nov
- 2025 13:03:20 +0000
-Received: from CH0PR10MB5338.namprd10.prod.outlook.com
- ([fe80::5cca:2bcc:cedb:d9bf]) by CH0PR10MB5338.namprd10.prod.outlook.com
- ([fe80::5cca:2bcc:cedb:d9bf%6]) with mapi id 15.20.9343.016; Mon, 24 Nov 2025
- 13:03:20 +0000
-To: Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Cc: axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
-        song@kernel.org, yukuai@fnnas.com, hch@lst.de, sagi@grimberg.me,
-        kch@nvidia.com, jaegeuk@kernel.org, chao@kernel.org, cem@kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@lists.linux.dev, linux-raid@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH V2 3/5] nvmet: ignore discard return value
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-In-Reply-To: <20251124025737.203571-4-ckulkarnilinux@gmail.com> (Chaitanya
-	Kulkarni's message of "Sun, 23 Nov 2025 18:57:35 -0800")
-Organization: Oracle Corporation
-Message-ID: <yq1fra34m7v.fsf@ca-mkp.ca.oracle.com>
-References: <20251124025737.203571-1-ckulkarnilinux@gmail.com>
-	<20251124025737.203571-4-ckulkarnilinux@gmail.com>
-Date: Mon, 24 Nov 2025 08:03:18 -0500
-Content-Type: text/plain
-X-ClientProxiedBy: YQBP288CA0019.CANP288.PROD.OUTLOOK.COM
- (2603:10b6:c01:6a::25) To CH0PR10MB5338.namprd10.prod.outlook.com
- (2603:10b6:610:cb::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01B003043BD;
+	Mon, 24 Nov 2025 13:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763989467; cv=none; b=Ab7N1PVC0y/0e7XmHCGCuRG4EtGvYRsj3nuv/d2For5dxFtylvDx6nNfKIyvIfd8IXBbnrkfxerGiWNJYD8hCrV0/YcstbhCJH1Hz4sq3GZynp6MSIu53Z9+9/k/mOpuMb2qJq9MMoKBLlmHOaIUDo2p9Eh0JkMOZ1JK/+Tlw5k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763989467; c=relaxed/simple;
+	bh=fAfc3sL0diFNluXrWqpuffMm2lvEFvjiMeiZ1ZMqRqQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vAxX0G8TgWtOT3VBFYc9+15B/UWB/24pDcXS7vf/xsfkxHg8NqhgsH4covMK8ilhy8+xUmqXvN7Q+jHh/VfPQrIR1wQNZU/lg79xJQN3F6wMapUQlXQSeuLE2r2I/MAwtci4ArMtgoat6aHHq5/BbY1cujUzBUBCsaInxdlmaPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=onaHc4e+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED719C116D0;
+	Mon, 24 Nov 2025 13:04:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763989466;
+	bh=fAfc3sL0diFNluXrWqpuffMm2lvEFvjiMeiZ1ZMqRqQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=onaHc4e+nPqx6N3KKvXLKn4LAfyd5Td/wwSAkmoq+r1qOcptY3fw8RL6ke/dQRowc
+	 poZimQo4ZnxSz1Lo0FUNFGgQC/8PLLxgtc6CdnrF8ZpVYk8Ytv73Ok/cBETV06sU80
+	 luRGJzyfHaUYFFqtfpF0MXXoN+uJaH8WYkwE7xdnZRMTffuWNTm44bbMVTs/rGkOmC
+	 EHub9CRKcZwVVJJZCszdy/APSwbcvyEooLgwEhX1aa//MjlrfIcPw+wywzFWO0FZXO
+	 DyIUWyVtT6Xlennrxl250MfN0td6V6ep5pNa5kf/TOSefPUv6+8ELimCq8CLQf+Efw
+	 wrxIJImt5E5sA==
+Date: Mon, 24 Nov 2025 13:04:20 +0000
+From: Will Deacon <will@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Catalin Marinas <catalin.marinas@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
+	frederic@kernel.org
+Subject: Re: [PATCH v2 15/16] srcu: Optimize SRCU-fast-updown for arm64
+Message-ID: <aSRX1HKNdks5pHsd@willie-the-truck>
+References: <bb177afd-eea8-4a2a-9600-e36ada26a500@paulmck-laptop>
+ <20251105203216.2701005-15-paulmck@kernel.org>
+ <aQ9AoauJKLYeYvrn@willie-the-truck>
+ <d53a5852-f84a-4dae-9bf4-312751880452@paulmck-laptop>
+ <aRHLV8lLX0fxQICR@willie-the-truck>
+ <ab6cd1c2-39c5-4b39-9585-6123835a6229@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH0PR10MB5338:EE_|PH0PR10MB4743:EE_
-X-MS-Office365-Filtering-Correlation-Id: cfa03b2e-94ef-400c-df4a-08de2b59d7e0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?wvOciuuXAKTwPBrd/shOklCxs7XZCu3G6EqncRQaPz/fxZm3OlmE2sx3BLce?=
- =?us-ascii?Q?3JKXZzbr6zoGeTHeIPca5g4WIDxGXqeNs6Sar6ZWFkC8uulnYQDZ8+7IasnK?=
- =?us-ascii?Q?4dihEA8WVrAIKkqwLxhgCB942kTpKbL/2gqY6rwuX7dgfGzT96EkiJ1V0G6e?=
- =?us-ascii?Q?fQ7j8cLqp24ya3kfCnyM5TxQ3Uem6iwv4Nisy3arYb4cJ4IC0q2qliex3b7c?=
- =?us-ascii?Q?HlyGFDaaZTWM6tC7nEuqh2bFEoP/yCLltvEKx+BBMpqYOg+b+yW8jrsuz47G?=
- =?us-ascii?Q?OOufYSoOMhhSY5IU7Fu7gooHnz/5/3uBebv9f6FzYhyjXtJGoU6LLXX5o1k9?=
- =?us-ascii?Q?x/60rbhNsdRRi1edN/YP5QA30QMokNnTbrWUt+gjEJdfoIVXdgfE+9NApbgU?=
- =?us-ascii?Q?YLQUFG4eY0AdX56QkpSENuM8/xJ7xqkhqt6YLpOA4I1+ZdRMoEwvUuuwKiXm?=
- =?us-ascii?Q?bgDQOPrP5R44TUQ6jdbgHpk0gpC36+gwSitk8XyKMczCkpOA0kM2WYXNvdSX?=
- =?us-ascii?Q?f5U8b3VvGLYh1b/fem2TTd+e+ACw0OhvJhBsLMn/jC0x/MfSvYpIgcMQi4Vi?=
- =?us-ascii?Q?rOZ25Ydw3bgSTMhSvBWckBKUjXhadhYzboCtnKLX8qQivcC0LwY4FdX0Fru9?=
- =?us-ascii?Q?gQs5H/Zg3OXgqDHc0toeuRxsvvNJTKT1Xc7ipg2wHaWHMjEnsEuwi6VouXmH?=
- =?us-ascii?Q?swwwKgn1tOdLfOors0Sdg860CO53VkRAgFvMI8/hTntYCl5iZKNP0I4OAILy?=
- =?us-ascii?Q?t7j/5F2N6wmyXiCrBwltxfnb0Kp5FVLQ7fyWU8UiQ3RHgyD44ZIvp3L1syTZ?=
- =?us-ascii?Q?3j+YRTVtI65tgLTh27uXRri8fjZ3MVK9ZPzXLEJYoteYUSUCdybQWlGZLdY1?=
- =?us-ascii?Q?QBaX5yI4gfBtrDz2g5diwDTLWP4cRpzVd7OZ964aZ03RZynMhV12sCqcjqWx?=
- =?us-ascii?Q?oMBlFi0bnHlqmuseeB8ArSbuUn9QRWPYvZtnpyN/xgvrUZUQckaEMbqzdczr?=
- =?us-ascii?Q?e2qE/FAnK1MUc+k9ZTS+Ziz4GJcy6B4uvME3/AquZHQBmUGXs+4Bl9iaFyz5?=
- =?us-ascii?Q?7X0GBe2oABD+M0Azh/9vciumX7QY8KmzUUnu7i/Bn+FfMEF2ISxy9uM0rHnj?=
- =?us-ascii?Q?ISCZ023gTXPnoNsQroB7HILKjF5BuN8xp0EssE/1jTPTdg/C26rCChmv7ctd?=
- =?us-ascii?Q?wZNWLyvtHxfQteybBSkj0c3OE3IOwZDdtoGXylTgiwONQldTROXHMajaVhuM?=
- =?us-ascii?Q?1Hr+CvnamahWUpG87GEV6Tq2y5vIddzG2aCCUwYkJC++XEXT1tCxc/iahPro?=
- =?us-ascii?Q?2HDSZw8zfEU8UFYFuY2lhNG/ZdeyFMIsohyG+VPL5AoJsAIzP3PACwgVMpLi?=
- =?us-ascii?Q?qRk4GZ2X1p60pXyetoYzOF588R0xzOzHZLgAIF9/V4mqJ0gwgIslYJZ02qFu?=
- =?us-ascii?Q?J/bYvbQgn2nhR0Tq1SPCkxZ5AJkkjS6S?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR10MB5338.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?YQTOD1C5B9LwWpdhThunoovyaSe5n59LijDoi3iduwppMZCdmC9DugZy0ugR?=
- =?us-ascii?Q?3jZO7PBXDRxJ1vQZkiJyeo4t82Qwg1MddWdKzs3x+h9gWW9ue2lFf+kQHNOM?=
- =?us-ascii?Q?Wvp16EsvnM66tB+irGtUvojH5Ck7w1QWe8iaQUySBxSqVSxRYgRMfvaIh47r?=
- =?us-ascii?Q?GW6xigngU48fzZWd2PslUoRvBu4XYGLRaQs34vqyaGO7rQrorkwuTGMPFU8N?=
- =?us-ascii?Q?vxhlJWhPflfVd+y9QhFK9WFMIEsRVL2vnfj8D0wZNRlt1tsWIdPY6h6mp6fH?=
- =?us-ascii?Q?R/an9jztpllg4S+7NXrGL6ermn8vZrhXOe7M0bjLqhgILL/aUB2gRJjhNDcN?=
- =?us-ascii?Q?R2TCQG1mthctYU1GaZl16k8XoOu5CtGkbS+SZ3dw9M5fnV9nBA5OSGj1IB4T?=
- =?us-ascii?Q?wO3+rN2adP8wRbiO9tjmZObIbjqayTAgqfi6x+OYq6EXeqG39MxX8p3SnswY?=
- =?us-ascii?Q?9/yU9okUHCPswJcowyi4PA9KkaRM+dzNSXcKnl4Iqb6HWjIopMP0qDvBpQTu?=
- =?us-ascii?Q?5uTcQdZdGxw2JL/tsIbi0mNb7t7PFVTS6qBIbjXXc3JiE55Cl2nWkgA1l2at?=
- =?us-ascii?Q?ArkFe8obGVnE6dJImoYBCH3T62KqJcWCSRZeZL2OLgYLTyQnugy595UipTZF?=
- =?us-ascii?Q?mhojBNxgF7UXNw5XyG2s0FpepjlJGmfuP5TXxXi7TPRwA4xGmTxkqLCukFT0?=
- =?us-ascii?Q?r/M21uH/5VxXQTcHPskPyNO3ff5loAlc1DBbtEnW8AUiZleb/l598reCBR8K?=
- =?us-ascii?Q?Rtvyex4v2FRcCyiBGSEArEQ8Vn57bNfdwJktuXJl5WkjLTaRuvcL8PvEFIqL?=
- =?us-ascii?Q?lLCkg4LqrA6zTnmsiP/CVsXd7VmdEa9zcqN8NWVdiRexQXlsmHRZ/uDVKqvf?=
- =?us-ascii?Q?qYVGgXd9N0S0+K3vvlN7yRcyZx6c5IlhlAZnnFnD5E1modtf16z+XAMBPWCW?=
- =?us-ascii?Q?qS5C8Y8Chc5lWfM+qRORn37qMWL3j7BDJs3tj2SsH9UWJ4iNXELMxhibB3UV?=
- =?us-ascii?Q?HY3uvt90cuiRKk7mrhG14sxmOGW2H9pPpiffKGI3Ti+UoDtWliHkAji/XXMA?=
- =?us-ascii?Q?m6vLTuPt+GdiqGne7tlUmj8XlDsixH4OmljiwAfZxjL9bikJBuXReNGL9LR3?=
- =?us-ascii?Q?jte+ECGZ7CDZ96gQoC9SAXfj44ED8m77arWaQlydiTrjx61jDJQJfJ+Oj2GG?=
- =?us-ascii?Q?JSrq/cbZoPUj9OpFnIX3HncLaMO9Er8gw3jJoTY9rBrxTTjJVN8L9kc68kW8?=
- =?us-ascii?Q?2pfsDVzOGOmCLuZ6jxj0rripnSooeMWQ+/91Vhe6dUx1h7QSEa7GiZob685L?=
- =?us-ascii?Q?qUM3qFgK24QsxPELhKhz7XMeSwr/OD8XG2ooTxcU2EQpwOFFVvS0xj+pn+2p?=
- =?us-ascii?Q?KUg9kaXCh77X4St6l3OhF4mUF2v90gQNMyYcq8f0zNzCp9IOp+gLxnxJ7+cv?=
- =?us-ascii?Q?xpEwRTUVnHWSBqsMz2VU1X6x9Vo/+xZFMK8NjpSstpl9vip1cJ9t9ae79s6y?=
- =?us-ascii?Q?N3eT+PwfpDmPnF3YQvZbxFXvVirNUkwhKDMSji7kIgtiCZNjz20Mt+dGMVEB?=
- =?us-ascii?Q?YVAZh+fAAnjJjIQAu6W5grJ0dbRsq3vLgPbyHVIK884gr57KQkm8YT1oxsGS?=
- =?us-ascii?Q?IQ=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	MoguubVr+Yvz3pKHMmB8YUztRv1k1368UXSQtwe3gKW7agBqfpq/q+kWRVfzyyjrVvOecC8kKZC46086fAuIoo+B23mXhBQ4TOJ7qZXKLT51lvxPp0sXFRAP8lRpBW26k/ge2kk9b/jXuhne1IXU/zWEGXKZ5gbIWI41eYCKqHJpFZdf+JLN06+11T3d2KuyEU0AgghMW90pxEUTLDoP7V+oIQpUAm42xeZ6yesSsFm5C/HFYqDaDNZv3H1BXM3PeEN5MHw2ND1dh/JgmfwgT/5j73EFOiLBX4hApVAg70fjL5CAYRYwwQN0ueIsbbQa3xaeHjuNKu+qHgVetcAwCP7gEBsbB5TLMwAWzjjRmuLV8OaM3Ia0WFy2YjrqLFL5KTQfW4xyqbZr6TnEHJiqtak1Era0YYiQPBhytm72Shh3iK0uAuVR4nNJO+OOr1ttYwVjAS7YmQcTc8dMzOMjEjGYJnWVJicso1+tacBPSiTAL9tdH/1nd2LW8c+KHmbXg/TgQn7uLfaISgrZYDEHdCwNS7/kiYXZrl9M4ru9q+qBWpp5UzLyIYCvur39iW+JVaZfwNUQdDs8CApPoxpygWYf3jgbpINLDyUTehy0vpg=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cfa03b2e-94ef-400c-df4a-08de2b59d7e0
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR10MB5338.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2025 13:03:20.8111
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OD2qnCxenQCEQ81BuEnNwmVx4I9jH/mOlsv6vW2UT/caTqP687iAGtzLxCq96/QeQL3z9dCepATiXIOX2e+Zj64tu5KJMk5yEz09buN7o+A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4743
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-24_05,2025-11-21_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2510240000 definitions=main-2511240115
-X-Authority-Analysis: v=2.4 cv=f4RFxeyM c=1 sm=1 tr=0 ts=6924579c b=1 cx=c_pps
- a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=6UeiqGixMTsA:10
- a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
- a=pS1GTPjh-CLonHFnBUIA:9 a=zgiPjhLxNE0A:10 cc=ntf awl=host:12099
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTI0MDExNSBTYWx0ZWRfX7LNuWMxXa81n
- XeyIRHMZpKHJ9OrGgMBnJ8RqxGRhXUO+jPihBLWCpS7ZsDDwGhSe0/j+eOwAkuZr71uO5ulPDr8
- OGKKlbjS3Z1WRuWMqU+FjWfkXGBGhJBlH458QkcGs1639wvRgkm3xHveK3xzaNbk1G1be9vxG0a
- J5ZefXkeusicr/mvpQCz3KhQkACZdZi2v5x6XQAxEqndPp9hNKhv7KIyMo0bW1wcIGIWD3VbeVM
- 6Snfx64hedErznw5Bs4gRrr9drhngVHGwUarphrEFzMedQRpjZ/Yw9AmX9FiJ2wdeVmixcBx3C0
- ven0dONKiLdkImj74+nrayg65UwYcCf+GD2jtks0YfYFCg4Mi8iNj0F2X6iELFowfMOvL+e+ISm
- JSClKK1VlharbcV+TrZ+OZGbZuaF2R78wgnvwGewhCVYcNbiSsg=
-X-Proofpoint-ORIG-GUID: kXQspcN7EkAYx3TIiXbIDq_xRWGDyMdm
-X-Proofpoint-GUID: kXQspcN7EkAYx3TIiXbIDq_xRWGDyMdm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab6cd1c2-39c5-4b39-9585-6123835a6229@paulmck-laptop>
 
+On Mon, Nov 10, 2025 at 09:29:43AM -0800, Paul E. McKenney wrote:
+> On Mon, Nov 10, 2025 at 11:24:07AM +0000, Will Deacon wrote:
+> > On Sat, Nov 08, 2025 at 10:38:32AM -0800, Paul E. McKenney wrote:
+> > > On Sat, Nov 08, 2025 at 01:07:45PM +0000, Will Deacon wrote:
+> > > > On Wed, Nov 05, 2025 at 12:32:15PM -0800, Paul E. McKenney wrote:
+> > > > > Some arm64 platforms have slow per-CPU atomic operations, for example,
+> > > > > the Neoverse V2.  This commit therefore moves SRCU-fast from per-CPU
+> > > > > atomic operations to interrupt-disabled non-read-modify-write-atomic
+> > > > > atomic_read()/atomic_set() operations.  This works because
+> > > > > SRCU-fast-updown is not invoked from read-side primitives, which
+> > > > > means that if srcu_read_unlock_fast() NMI handlers.  This means that
+> > > > > srcu_read_lock_fast_updown() and srcu_read_unlock_fast_updown() can
+> > > > > exclude themselves and each other
+> > > > > 
+> > > > > This reduces the overhead of calls to srcu_read_lock_fast_updown() and
+> > > > > srcu_read_unlock_fast_updown() from about 100ns to about 12ns on an ARM
+> > > > > Neoverse V2.  Although this is not excellent compared to about 2ns on x86,
+> > > > > it sure beats 100ns.
+> > > > > 
+> > > > > This command was used to measure the overhead:
+> > > > > 
+> > > > > tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --configs NOPREEMPT --kconfig "CONFIG_NR_CPUS=64 CONFIG_TASKS_TRACE_RCU=y" --bootargs "refscale.loops=100000 refscale.guest_os_delay=5 refscale.nreaders=64 refscale.holdoff=30 torture.disable_onoff_at_boot refscale.scale_type=srcu-fast-updown refscale.verbose_batched=8 torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=8 refscale.nruns=100" --trust-make
+> > > > > 
+> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > > > Cc: Will Deacon <will@kernel.org>
+> > > > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > > > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > > > > Cc: <linux-arm-kernel@lists.infradead.org>
+> > > > > Cc: <bpf@vger.kernel.org>
+> > > > > ---
+> > > > >  include/linux/srcutree.h | 51 +++++++++++++++++++++++++++++++++++++---
+> > > > >  1 file changed, 48 insertions(+), 3 deletions(-)
+> > > > 
+> > > > I've queued the per-cpu tweak from Catalin in the arm64 fixes tree [1]
+> > > > for 6.18, so please can you drop this SRCU commit from your tree?
+> > > 
+> > > Very good!  Adding Frederic on CC since he is doing the pull request
+> > > for the upcoming merge window.
+> > > 
+> > > But if this doesn't show up in -rc1, we reserve the right to put it
+> > > back in.
+> > > 
+> > > Sorry, couldn't resist!   ;-)
+> > 
+> > I've merged it as a fix, so hopefully it will show up in v6.18-rc6.
+> 
+> Even better, thank you!!!
 
-Chaitanya,
+It landed in Linus' tree here:
 
-> __blkdev_issue_discard() always returns 0, making the error checking
-> in nvmet_bdev_discard_range() dead code.
->
-> Kill the function nvmet_bdev_discard_range() and call
-> __blkdev_issue_discard() directly from nvmet_bdev_execute_discard(),
-> since no error handling is needed anymore for __blkdev_issue_discard()
-> call.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/arm64?id=535fdfc5a228524552ee8810c9175e877e127c27
 
-Looks good.
+Please can you drop the SRCU change from -next? It still shows up in
+20251121.
 
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-
--- 
-Martin K. Petersen
+Will
 
