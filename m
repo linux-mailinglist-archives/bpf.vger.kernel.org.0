@@ -1,89 +1,89 @@
-Return-Path: <bpf+bounces-75376-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75377-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05094C81E7E
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 18:30:48 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74BE6C81EA5
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 18:35:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 777123AAEA4
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 17:29:55 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 546BC4E5824
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 17:35:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3EF83168F7;
-	Mon, 24 Nov 2025 17:29:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D7B274FC2;
+	Mon, 24 Nov 2025 17:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e1YbBki0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OWU6LghC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E762D2D2384
-	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 17:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9CB1FC0A
+	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 17:34:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764005364; cv=none; b=WgAl3L8Pa2QoW6PUKt3admNa1Up6sVkJLn+l/zXnHWyOKxbvlAhSsPN7WMHUgi9FDRSk8KNi6cZOFW7O3Wt7/4FvL+akMUGLBTV+aVGj8LtcLdH9ThEFwjojD5W1RtQ6iQLiW4EY+lQejM47HCmIi3Rt3pXGnbTcfWXW/FattTE=
+	t=1764005701; cv=none; b=HPmmTANYYzi7FIP1dEIlefRm+vQJDfDyId35s1CtWSOYSHo0igJbtqrM6J03GXvKmqdVQHfkRNWTQeFAOCmciQszt5TwneSRd5hrTzOeCXQx0CEi0q+Cts+QU3WZpYD2igsuyO9MPqnMkvF8beEyTA5Yj+Qc3sHf3SIjTSp7k50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764005364; c=relaxed/simple;
-	bh=nVbldNJIQ09d8BWqmwNpLDNQPIgzycozmOoHkvLQXrs=;
+	s=arc-20240116; t=1764005701; c=relaxed/simple;
+	bh=EjmkdVxhLEgUXcp9zFnKYmC7knvhOX8mMcgM2RFf9G8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZIKdfdLxP4uT8Wg0W+Hf/rUror74ML7T+fcR3vzVVx7LZXXJjHfcNnjmG0fBdv1kCv0VooDRLq+OT2qCNqVAyWt6/jWdL07+dqwZaM/SRn8AkUrZ1MStZaQO1VcNezwRJXbvDiojFj9kjE/HtskS0t1GfD3Yi2NrjXks1LXsIU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e1YbBki0; arc=none smtp.client-ip=209.85.214.178
+	 To:Cc:Content-Type; b=g+yaJLHXbH6NwN4IEKVcLEHWwUMJJmtsKs53TUDqe6cIM+lS5E/LV6qXBxZHTSgl/wc4goDTLV7m8nrOTuDNRtFDFHoqM0hEaw5z68EM5TObwTe7t+7td2qQ971mGbRAYW6vHTrZx9A7Z1Thps2a7TDozNsBVMm7Dzew0BOaZUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OWU6LghC; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-29806bd47b5so27798875ad.3
-        for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 09:29:22 -0800 (PST)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b9f1d0126e6so1847312a12.1
+        for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 09:34:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764005362; x=1764610162; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764005699; x=1764610499; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QSWpoeUFars1+SkbzKU64xiyOam01ZvK/v+gwE4gmek=;
-        b=e1YbBki09MDYUdL3edeYb3i78jleQehEnMfxcxmSayrBcOLgz9HMDsX/V+zfBhqsYW
-         Acum2CoCxYUeSMP4LGe03xCXhHvJZDIyxiMWoXz2NawidtF+VTBhjHU7rKlUEmPWQ19L
-         MpEEIecg7nQ2YoHkcTNQNKHUMcb/dhif9afiIR9PqhWRmwcldWZEraPSGul7g93zllUT
-         yKgPRH+4Ht2wTqSkMhHQ8oD2XZCMVA2J8mJjRxhILExn8coELyYBEMfV5yE0g7lbFYjh
-         FpSEZOKVJdCiT/9CxjVsYbg+3VjIDPLv89jRfSCd8+om4+dfV6qaqwBo2g7eHxtdpX2/
-         xFTA==
+        bh=Ny1upLnO8ZhLlG0AsO+HUCdYICvMIJF9F4mzlstaKwc=;
+        b=OWU6LghCNPgDFVHCjgt+IQP3dTrUMOR0sdr1y1NCKohkTjpcnGGGEDZyv7Wa6rZB8z
+         7OHm/a1n35vYOqI8VBIYC+d+Ill3L+45Ej2a3lyh4IWVhTylRY2k/Ob58FamG7g/4kiH
+         wGOkc8V5N2qeK5jcDYiYdEG/JEjHNW1T5JczBSmNYjxo9HIThA++RqUL78DppGssFoHm
+         QKTXDoxR0e2QXV/2fYefKnfgQCGP0WT72jse2f6jde3ltfRvWftFOELraFKsPMldkGeR
+         aqe5gZTNro+eTJUZ/fh9DqmIhaNIf8sqFWfDASy5o95npPDs3FuQIGeWUTCibm/Q7QbN
+         yCRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764005362; x=1764610162;
+        d=1e100.net; s=20230601; t=1764005699; x=1764610499;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=QSWpoeUFars1+SkbzKU64xiyOam01ZvK/v+gwE4gmek=;
-        b=fNeDfQnab4ex4LB5x4Tan4YdalmD3SY79nwjnTEh8hd6TNBnC7sNv5jGfqk0wuguZK
-         paY1MS6kWmsry/Sk+EKTI4IGBiE5JFdQP8LaYspoM8WeRoaq58uVVCnjKo3tOX2Uuhyd
-         0W7tk7cD0QJP0CbO1L1qGAWEWtI88juTkCepgGTOwd1iAy0TNY0I7UQ/SCgZHmatqNDT
-         2LaMnPq35G1ehugK8ALv2SyfHVtBqw2/0fF1QKdEgrsi8GpXglU4p4gltXYLHDACCSvT
-         1H6ILoVdLcU9JOKhyQATizOiahFCoWtAw430m0xBshukj2kK3AIoxQ/k3QR7dyyxxL4G
-         3zZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX7M2MNYLWO1sMbwbjaaFWhuIUG2zYu3jkuaLrXYGDZnwr65hszwIW+k3Bf39JaRtXSM+4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxwa+0BRHOU8Cr2Hw1nXqlgJ80RZBxZqXKiBd2Cg5ajn4ejEkjF
-	Z5l9dmVW6BsH0MWXbSzG0326QL8Nlui+td/gj/sZyp3chbyjx0jY77w4SXn7E8zQMRxCAGooGAB
-	UEDRkUqV8ykTRz1A78CLPrSMKpLcMotQ=
-X-Gm-Gg: ASbGnct/4f6Z+UyJ7GNwIsAH//jO4mt/KQEuKIToxCGWrgWkwwpqTLIuCw7hLwhmus4
-	PgPf4FXqOZOAIjYef8N++0gi58ClT8A9D6irzzdOVzyFu4YFLULD//OCqOqszOkRGHUJGIjfsAy
-	N/2/f4HEK1S4reIMKqaMN12Dp23CFgapXDq4TM4bZMzrtMWmAdh0eDrz4mHS1ewQj8+12qBsSWj
-	lFPO8FxwyleAsYSRj+kxHXQbfySNXRN44NcoWpieUoCeY16BpBbhx3xw0lgEuXaxlhIbOXHkBNT
-	D8uEddAchQ==
-X-Google-Smtp-Source: AGHT+IEHvMGBbvNushYbpqjDlTmTaymEXLXZv59DcbkFPWC7ihP+ZKeRA7im4gTUZpSaLbfezCpAUwRQT/CkLr2wS64=
-X-Received: by 2002:a17:903:1211:b0:297:dabf:9900 with SMTP id
- d9443c01a7336-29b6c0aec00mr154079885ad.0.1764005362165; Mon, 24 Nov 2025
- 09:29:22 -0800 (PST)
+        bh=Ny1upLnO8ZhLlG0AsO+HUCdYICvMIJF9F4mzlstaKwc=;
+        b=ZSpmU6mBZY+qpTyf/MkdScGBX4WmD8gJpnYOGS4sLaLFQyDulIvplkXTHqZkPfWooa
+         A9VBRvLuD1KbuzMNKrQEZ8mvgKde64JcV+nrxvDFl3az46AuWZaQq8HdpLHzNDzxespT
+         UBlcYIOqBnvn6BoJzWE+dk6uRcMI0FqIm5gsK2PQYFM4cuvVx8Q6o50J/Vwzw9nYZnhs
+         ufKA5wHLUFnlTSF4edI11SXXdfgTZ36d6gEoexpSZmYz4XZ9ZW+8QTnyBipzo51R1s8i
+         ctssRPoU57+YSld0oQ5mqWK/XEPYHpH+1QkQDIASrugI2mAnfDHTSSX4m4mJ5asNbjY2
+         rhXg==
+X-Forwarded-Encrypted: i=1; AJvYcCVP17YfUNOIRkiTBwixGj+SlEhpsoHUgITjnoTGG7u8XVLdvKDeITP3I2Pzlu7c/Ibglqc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyaj3nm7KkyCdxgJrXLZ064eVPrSKGwVEBeGjfn05H0ad3ya4Rs
+	5tiob2xkAhrEpHgMLeg8ERnuvobPw7KUy5c3obciWmiC6AhxuNNGtGxw41XtSy7OhmQsYiv5M6z
+	dQu3fGVMEu4G/oDGVgU7dbw6IMSZtdi8=
+X-Gm-Gg: ASbGncsFq6dmMs8PqNEHFvowmku48XkMuWLWgTlRVGl/Y6qrwMEaLV8bucTQwiAqosQ
+	jPPf+s/4knWdVte8AXKUm6gKHvQ8BAuxQUn3BW81WJkDAam9F2YVgjnPTIU7hp5j+0GX3KCQXiK
+	PxrTrjVPNTdKT5sL9dzrkIXn9EndoS3rZrUuLAPPhKK2qyH+0s+vkP3xq0clGHOOII38E3UwJCE
+	Mc1+EThW9dWkBADjKajmOpg2M4DkiKUed98eL522Z8oQI19mu4gppUL77+1GK/BNSfJcrC44jpZ
+	gF9tTMcNOQ==
+X-Google-Smtp-Source: AGHT+IHUGC4jY8dvoaLTAh0kdZtQOPm5tFpTKtPEcSERDrLl57DAxt+KghdKSsQXGOgWiEd1CIdNaM53umEo86DnZvo=
+X-Received: by 2002:a17:90b:37c6:b0:32e:72bd:6d5a with SMTP id
+ 98e67ed59e1d1-347331a773cmr12480244a91.1.1764005699152; Mon, 24 Nov 2025
+ 09:34:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251117083551.517393-1-jolsa@kernel.org> <20251117083551.517393-4-jolsa@kernel.org>
-In-Reply-To: <20251117083551.517393-4-jolsa@kernel.org>
+References: <20251117083551.517393-1-jolsa@kernel.org> <20251117083551.517393-5-jolsa@kernel.org>
+In-Reply-To: <20251117083551.517393-5-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 24 Nov 2025 09:29:09 -0800
-X-Gm-Features: AWmQ_blbLkLvKy3yW9qI-Ms6HOOjTGr3_yF-qJnWAg6MOmvX9UEUfplgzhZZpX0
-Message-ID: <CAEf4BzZg3sWvD7TwP-V=qw78TF5O6SEt=qJB05b0yOs-27fkEw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/4] libbpf: Add support to parse extra info in
- usdt note record
+Date: Mon, 24 Nov 2025 09:34:45 -0800
+X-Gm-Features: AWmQ_bl0CoAUAVjfu93i4hNSrHy6JtvkzTIjJawsUqI0gWboVyryAlILcfksuGU
+Message-ID: <CAEf4Bzb1Du11wwUK=qXeWi0V-nN7qc7VsomGiaOM_8eSH2oHtg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Add test for checking correct
+ nop of optimized usdt
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
@@ -94,134 +94,161 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Nov 17, 2025 at 12:36=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote=
 :
 >
-> Adding support to parse extra info in usdt note record that
-> indicates there's nop,nop5 emitted for probe.
+> Adding test that attaches bpf program on usdt probe in 2 scenarios;
 >
-> We detect this by checking extra zero byte placed in between
-> args zero termination byte and desc data end. Please see [1]
-> for more details.
+> - attach program on top of usdt_1 which is standard nop probe
+>   incidentally followed by nop5. The usdt probe does not have
+>   extra data in elf note record, so we expect the probe to land
+>   on the first nop without being optimized.
 >
-> Together with uprobe syscall feature detection we can decide
-> if we want to place the probe on top of nop or nop5.
+> - attach program on top of usdt_2 which is probe defined on top
+>   of nop,nop5 combo. The extra data in the elf note record and
+>   presence of upeobe syscall ensures that the probe is placed
+>   on top of nop5 and optimized.
 >
-> [1] https://github.com/libbpf/usdt
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/lib/bpf/usdt.c | 27 ++++++++++++++++++++++++++-
->  1 file changed, 26 insertions(+), 1 deletion(-)
+>  tools/testing/selftests/bpf/.gitignore        |  2 +
+>  tools/testing/selftests/bpf/Makefile          |  7 +-
+>  tools/testing/selftests/bpf/prog_tests/usdt.c | 82 +++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/test_usdt.c |  9 ++
+>  tools/testing/selftests/bpf/usdt_1.c          | 14 ++++
+>  tools/testing/selftests/bpf/usdt_2.c          | 13 +++
+>  6 files changed, 126 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/usdt_1.c
+>  create mode 100644 tools/testing/selftests/bpf/usdt_2.c
 >
-> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-> index c174b4086673..5730295e69d3 100644
-> --- a/tools/lib/bpf/usdt.c
-> +++ b/tools/lib/bpf/usdt.c
-> @@ -241,6 +241,7 @@ struct usdt_note {
->         long loc_addr;
->         long base_addr;
->         long sema_addr;
-> +       bool nop_combo;
->  };
+
+can you please add a simple uprobe benchmark so that we can compare
+nop1 vs nop5 performance easily? See below, I'd actually force nop1
+for existing test with custom USDT_NOP override, and assume nop1+nop5
+as a default case for nop5 bench.
+
+> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
+ests/bpf/.gitignore
+> index be1ee7ba7ce0..89f480729a6b 100644
+> --- a/tools/testing/selftests/bpf/.gitignore
+> +++ b/tools/testing/selftests/bpf/.gitignore
+> @@ -45,3 +45,5 @@ xdp_synproxy
+>  xdp_hw_metadata
+>  xdp_features
+>  verification_cert.h
+> +usdt_1
+> +usdt_2
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index 34ea23c63bd5..4a21657e45f7 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -733,6 +733,10 @@ $(VERIFICATION_CERT) $(PRIVATE_KEY): $(VERIFY_SIG_SE=
+TUP)
+>  $(VERIFY_SIG_HDR): $(VERIFICATION_CERT)
+>         $(Q)xxd -i -n test_progs_verification_cert $< > $@
 >
->  struct usdt_target {
-> @@ -262,6 +263,7 @@ struct usdt_manager {
->         bool has_bpf_cookie;
->         bool has_sema_refcnt;
->         bool has_uprobe_multi;
-> +       bool has_uprobe_syscall;
->  };
->
->  struct usdt_manager *usdt_manager_new(struct bpf_object *obj)
-> @@ -301,6 +303,11 @@ struct usdt_manager *usdt_manager_new(struct bpf_obj=
-ect *obj)
->          * usdt probes.
->          */
->         man->has_uprobe_multi =3D kernel_supports(obj, FEAT_UPROBE_MULTI_=
-LINK);
+> +ifeq ($(SRCARCH),$(filter $(SRCARCH),x86))
+> +USDTX :=3D usdt_1.c usdt_2.c
+> +endif
 > +
-> +       /*
-> +        * Detect kernel support for uprobe syscall to be used to pick us=
-dt attach point.
-> +        */
 
-nit: single line comment
+why not compile it unconditionally, why complicating makefile if we
+can do x86-64-specific logic in corresponding files?
 
-but I find the wording confusing, we don't really use uprobe() syscall
-to pick USDT attach point (which is what comment implies in my mind).
-Just say that we detect uprobe() syscall support. It's presence means
-we can take advantage of faster nop5 uprobe handling. Also, please add
-reference commit hash + message, just like for other feature detectors
-here.
-
-> +       man->has_uprobe_syscall =3D kernel_supports(obj, FEAT_UPROBE_SYSC=
-ALL);
->         return man;
+>  # Define test_progs test runner.
+>  TRUNNER_TESTS_DIR :=3D prog_tests
+>  TRUNNER_BPF_PROGS_DIR :=3D progs
+> @@ -754,7 +758,8 @@ TRUNNER_EXTRA_SOURCES :=3D test_progs.c              =
+ \
+>                          json_writer.c          \
+>                          $(VERIFY_SIG_HDR)              \
+>                          flow_dissector_load.h  \
+> -                        ip_check_defrag_frags.h
+> +                        ip_check_defrag_frags.h \
+> +                        $(USDTX)
+>  TRUNNER_LIB_SOURCES :=3D find_bit.c
+>  TRUNNER_EXTRA_FILES :=3D $(OUTPUT)/urandom_read                         =
+ \
+>                        $(OUTPUT)/liburandom_read.so                     \
+> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testin=
+g/selftests/bpf/prog_tests/usdt.c
+> index f4be5269fa90..a8ca2920c009 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/usdt.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
+> @@ -247,6 +247,86 @@ static void subtest_basic_usdt(bool optimized)
+>  #undef TRIGGER
 >  }
 >
-> @@ -784,6 +791,15 @@ static int collect_usdt_targets(struct usdt_manager =
-*man, Elf *elf, const char *
->                 target =3D &targets[target_cnt];
->                 memset(target, 0, sizeof(*target));
->
-> +               /*
-> +                * We have usdt with nop,nop5 instruction and we detected=
- uprobe syscall,
-> +                * so we can place the uprobe directly on nop5 (+1) to ge=
-t it optimized.
-> +                */
-> +               if (note.nop_combo && man->has_uprobe_syscall) {
-> +                       usdt_abs_ip++;
-> +                       usdt_rel_ip++;
-> +               }
+> +#ifdef __x86_64
+> +extern void usdt_1(void);
+> +extern void usdt_2(void);
+> +
+> +/* nop, nop5 */
+> +static unsigned char nop15[6] =3D { 0x90, 0x0f, 0x1f, 0x44, 0x00, 0x00 }=
+;
 
-how hard would it be to check nop5 instruction in ELF file to be extra
-safe? I'm just not sure if I'm 100% comfortable just trusting that
-extra zero byte :)
+nop15 is a very confusing name for this :) nop1_nop5_combo ?
 
 > +
->                 target->abs_ip =3D usdt_abs_ip;
->                 target->rel_ip =3D usdt_rel_ip;
->                 target->sema_off =3D usdt_sema_off;
-> @@ -1144,7 +1160,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct us=
-dt_manager *man, const struct
->  static int parse_usdt_note(GElf_Nhdr *nhdr, const char *data, size_t nam=
-e_off, size_t desc_off,
->                            struct usdt_note *note)
->  {
-> -       const char *provider, *name, *args;
-> +       const char *provider, *name, *args, *end, *extra;
->         long addrs[3];
->         size_t len;
->
-> @@ -1182,6 +1198,15 @@ static int parse_usdt_note(GElf_Nhdr *nhdr, const =
-char *data, size_t name_off, s
->         if (args >=3D data + len) /* missing arguments spec */
->                 return -EINVAL;
->
-> +       extra =3D memchr(args, '\0', data + len - args);
-> +       if (!extra) /* non-zero-terminated args */
-> +               return -EINVAL;
-> +       ++extra;
-> +       end =3D data + len;
+> +static void *find_nop15(void *fn)
+> +{
+> +       int i;
+> +
+> +       for (i =3D 0; i < 10; i++) {
+> +               if (!memcmp(nop15, fn + i, 5))
+> +                       return fn + i;
+> +       }
+> +       return NULL;
+> +}
+> +
 
-end variable just to use it once in the comparison below? Also, how
-about just this:
+[...]
 
-extra++;
-if (extra < data + len & *extra =3D=3D '\0')
-    note->nop_combo =3D true;
+>  char _license[] SEC("license") =3D "GPL";
+> diff --git a/tools/testing/selftests/bpf/usdt_1.c b/tools/testing/selftes=
+ts/bpf/usdt_1.c
+> new file mode 100644
+> index 000000000000..0e00702b1701
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/usdt_1.c
+> @@ -0,0 +1,14 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/*
+> + * Include usdt.h with defined USDT_NOP macro will switch
+> + * off the extra info in usdt probe.
+> + */
+> +#define USDT_NOP .byte 0x90, 0x0f, 0x1f, 0x44, 0x00, 0x00
+> +#include "usdt.h"
 
-?
-
-(why assuming extra is the very last byte, maybe we'll have more
-"extensions" in the future :) )
-
+upstream usdt.h will use nop1+nop5 on x86-64 unconditionally, so I'd
+invert this, and *force* one of the cases to a single nop1 with custom
+USDT_NOP, wdyt?
 
 > +
-> +       /* check if we have one extra byte and if it's zero */
-> +       note->nop_combo =3D (extra + 1) =3D=3D end && *extra =3D=3D 0;
+> +__attribute__((aligned(16)))
+> +void usdt_1(void)
+> +{
+> +       USDT(optimized_attach, usdt_1);
+> +}
+> diff --git a/tools/testing/selftests/bpf/usdt_2.c b/tools/testing/selftes=
+ts/bpf/usdt_2.c
+> new file mode 100644
+> index 000000000000..fcb7417a1953
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/usdt_2.c
+> @@ -0,0 +1,13 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +
->         note->provider =3D provider;
->         note->name =3D name;
->         if (*args =3D=3D '\0' || *args =3D=3D ':')
+> +/*
+> + * Include usdt.h with the extra info in usdt probe and
+> + * nop/nop5 combo for usdt attach point.
+> + */
+> +#include "usdt.h"
+> +
+> +__attribute__((aligned(16)))
+> +void usdt_2(void)
+> +{
+> +       USDT(optimized_attach, usdt_2);
+> +}
 > --
 > 2.51.1
 >
