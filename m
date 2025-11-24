@@ -1,170 +1,168 @@
-Return-Path: <bpf+bounces-75312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A479EC7EE8A
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 04:45:19 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33123C7F09D
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 07:26:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA8D13A56BB
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 03:45:17 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 66F864E29B2
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 06:26:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57DCE28B3E2;
-	Mon, 24 Nov 2025 03:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E8B2BE64A;
+	Mon, 24 Nov 2025 06:26:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MaKyrvnJ"
+	dkim=pass (2048-bit key) header.d=fnnas-com.20200927.dkim.feishu.cn header.i=@fnnas-com.20200927.dkim.feishu.cn header.b="NMaVJ26f"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sg-1-40.ptr.blmpb.com (sg-1-40.ptr.blmpb.com [118.26.132.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C36FC2882B6
-	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 03:45:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B851F1F03EF
+	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 06:26:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=118.26.132.40
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763955912; cv=none; b=gc1Q8WWx+dW9Zu/pSh8bSPCqApbJ4G+Y1F4kHKXptFSWN3LywwnWG3yNsLR0P2F5JZFsKI8CyPfeL91XDDKBvys69VM9Gk1kpzBGUX7Tfk+Z0M6vDuxafqqJVqXXbSTQCodn3TvfF3JXK+PeHA1jImW8dHjJj0paWHSDRimDOGo=
+	t=1763965581; cv=none; b=OGCQ5F2nadCEq3ELT97WcGgBolUI/KoPpe3SubLQF7LNcGohgRBnMDx6JinnTRD4I/Hsjthu4IASqGI9rgjDIDhi8dT2x6XbyD4pPLJFAdbs4oFg1XGWNRkGweIP6OMA4uAz6g7RMZIxTuK6V8jmSAkuhMs2fFtu5YgbvLn+hTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763955912; c=relaxed/simple;
-	bh=1o2HlCkp8Gxx6+sHlXsZujpNQF2rQ6yiE44lkUGHba8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U85Ip37R8sp46CqM6odgeYz0dDtRYRs22VE3VQWedXoP6dPU28Na59iTolHyn4RJ7CcegZgDhamepyJUG++/EnhSKzjZOtCjrz5FOJkNjYS1xm0Mfo4hadx39+rTTrzwaf4o+FYnVUPQSwrKIKI0XXiCwY2abNnVtkY9DFn2xDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MaKyrvnJ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1763955909;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ARcJqa+jKTzy4aJDqYL7yDQMnB/xocT9vkDV5GOIjg=;
-	b=MaKyrvnJAWVP98qAbCvTSflMy4YdaXvViVHCbQQIi8In0OAfBBH0xi7QO1jZp3KDdvVOBj
-	91L+Zdcb/YgM+Dsf6c9FAlA3QrYvqVIYL4ral7TI3fXAFyJSJ8LK4T0GMzRhELf2GlM2rU
-	woqOjTEyqhbaMCtnKA1Xu83j1KOZybA=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-629-vr3TWLC-N0aIw2m6Ok1Rog-1; Sun,
- 23 Nov 2025 22:45:05 -0500
-X-MC-Unique: vr3TWLC-N0aIw2m6Ok1Rog-1
-X-Mimecast-MFC-AGG-ID: vr3TWLC-N0aIw2m6Ok1Rog_1763955904
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3B0B31956088;
-	Mon, 24 Nov 2025 03:45:02 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.227])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 76AE61956056;
-	Mon, 24 Nov 2025 03:44:57 +0000 (UTC)
-Date: Mon, 24 Nov 2025 11:44:52 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: io-uring@vger.kernel.org, axboe@kernel.dk,
-	Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v3 07/10] io_uring/bpf: implement struct_ops registration
-Message-ID: <aSPUtMqilzaPui4f@fedora>
-References: <cover.1763031077.git.asml.silence@gmail.com>
- <cce6ee02362fe62aefab81de6ec0d26f43c6c22d.1763031077.git.asml.silence@gmail.com>
+	s=arc-20240116; t=1763965581; c=relaxed/simple;
+	bh=SkPUzCbU4UnrkhLYBJ4h/u7HrneVKqozjrS7SNDhhFk=;
+	h=Date:Content-Type:In-Reply-To:Subject:Mime-Version:References:To:
+	 Cc:From:Message-Id; b=Rhtf9cRQsDawI+JEZmXhbuCMsHssLNC4bmDV8DumJFO95e1oYyv27eMYujOIIBCm/1Op6k6BLBZ/CKOiLA8Zl8TFoo+rlVlgnKURhICfWkY/wE2Z4L2SY/GUO+u0MmnYKdbN8/9qM6Xn/9Blo93XCed1ezGczraCCYMoa9G6b64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fnnas.com; spf=pass smtp.mailfrom=fnnas.com; dkim=pass (2048-bit key) header.d=fnnas-com.20200927.dkim.feishu.cn header.i=@fnnas-com.20200927.dkim.feishu.cn header.b=NMaVJ26f; arc=none smtp.client-ip=118.26.132.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fnnas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fnnas.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=s1; d=fnnas-com.20200927.dkim.feishu.cn; t=1763965451;
+  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
+ reply-to:content-type:mime-version:in-reply-to:message-id;
+ bh=1v8DjKDZXbkovGdNkFJdKNL/RGUBInSERiXq+wqH6GE=;
+ b=NMaVJ26f6wCqj655OfZfLoFV8HUO5KA8eptMOPpNT59Q0VF84NED7z1T9jKNzaCerL0OU0
+ Nt/skt4isLqE30nJINFcU89+VLzIkhsy1BzaJsFBA0qqUYfBYajIQk4uURYvp+hQkIQTXr
+ wSXtzcxprblu4RivsUKndN7uQ7Hn3jwdNGx799dULSVIrM8/uTiR8NUwabxO5bWgt9WU8L
+ 5ccydH+OW7RoA9qXDY2udcI1niox7gGrCs0jN5CUMUYikBhxik8r4PkILp8Q6aIrP7Wt9C
+ LDAIOg8YNaiOXZ9ZuFngyDKzRBhLWoyBSvEb8AQmiXL+rT2BvUX85HSJIZM/Jw==
+Date: Mon, 24 Nov 2025 14:24:05 +0800
+X-Original-From: Yu Kuai <yukuai@fnnas.com>
+Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20251124025737.203571-3-ckulkarnilinux@gmail.com>
+Subject: Re: [PATCH V2 2/5] dm: ignore discard return value
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cce6ee02362fe62aefab81de6ec0d26f43c6c22d.1763031077.git.asml.silence@gmail.com>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+Mime-Version: 1.0
+References: <20251124025737.203571-1-ckulkarnilinux@gmail.com> <20251124025737.203571-3-ckulkarnilinux@gmail.com>
+User-Agent: Mozilla Thunderbird
+Received: from [192.168.1.104] ([39.182.0.153]) by smtp.feishu.cn with ESMTPS; Mon, 24 Nov 2025 14:24:08 +0800
+Reply-To: yukuai@fnnas.com
+To: "Chaitanya Kulkarni" <ckulkarnilinux@gmail.com>, <axboe@kernel.dk>, 
+	<agk@redhat.com>, <snitzer@kernel.org>, <mpatocka@redhat.com>, 
+	<song@kernel.org>, <hch@lst.de>, <sagi@grimberg.me>, <kch@nvidia.com>, 
+	<jaegeuk@kernel.org>, <chao@kernel.org>, <cem@kernel.org>, 
+	"Yu Kuai" <yukuai@fnnas.com>
+Cc: <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>, 
+	<dm-devel@lists.linux.dev>, <linux-raid@vger.kernel.org>, 
+	<linux-nvme@lists.infradead.org>, 
+	<linux-f2fs-devel@lists.sourceforge.net>, <linux-xfs@vger.kernel.org>, 
+	<bpf@vger.kernel.org>
+From: "Yu Kuai" <yukuai@fnnas.com>
+Message-Id: <d86b820a-46c9-43b6-9fe2-dbd991b76520@fnnas.com>
+Content-Language: en-US
+X-Lms-Return-Path: <lba+26923fa09+05a557+vger.kernel.org+yukuai@fnnas.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 13, 2025 at 11:59:44AM +0000, Pavel Begunkov wrote:
-> Add ring_fd to the struct_ops and implement [un]registration.
-> 
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Hi,
+
+=E5=9C=A8 2025/11/24 10:57, Chaitanya Kulkarni =E5=86=99=E9=81=93:
+> __blkdev_issue_discard() always returns 0, making all error checking
+> at call sites dead code.
+>
+> For dm-thin change issue_discard() return type to void, in
+> passdown_double_checking_shared_status() remove the r assignment from
+> return value of the issue_discard(), for end_discard() hardcod value
+> of r to 0 that matches only value returned from
+> __blkdev_issue_discard().
+>
+> md part is simplified to only check !discard_bio by ignoring the
+> __blkdev_issue_discard() value.
+>
+> Signed-off-by: Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
 > ---
->  include/linux/io_uring_types.h |  2 +
->  io_uring/bpf.c                 | 69 +++++++++++++++++++++++++++++++++-
->  2 files changed, 70 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/io_uring_types.h b/include/linux/io_uring_types.h
-> index 43432a06d177..3a71ed2d05ea 100644
-> --- a/include/linux/io_uring_types.h
-> +++ b/include/linux/io_uring_types.h
-> @@ -274,6 +274,8 @@ struct io_ring_ctx {
->  		unsigned int		compat: 1;
->  		unsigned int		iowq_limits_set : 1;
->  
-> +		unsigned int		bpf_installed: 1;
-> +
->  		struct task_struct	*submitter_task;
->  		struct io_rings		*rings;
->  		struct percpu_ref	refs;
-> diff --git a/io_uring/bpf.c b/io_uring/bpf.c
-> index 24dd2fe9134f..683e87f1a58b 100644
-> --- a/io_uring/bpf.c
-> +++ b/io_uring/bpf.c
-> @@ -4,6 +4,7 @@
->  #include "bpf.h"
->  #include "register.h"
->  
-> +static DEFINE_MUTEX(io_bpf_ctrl_mutex);
->  static const struct btf_type *loop_state_type;
->  
->  static int io_bpf_ops__loop(struct io_ring_ctx *ctx, struct iou_loop_state *ls)
-> @@ -87,20 +88,86 @@ static int bpf_io_init_member(const struct btf_type *t,
->  			       const struct btf_member *member,
->  			       void *kdata, const void *udata)
->  {
-> +	u32 moff = __btf_member_bit_offset(t, member) / 8;
-> +	const struct io_uring_ops *uops = udata;
-> +	struct io_uring_ops *ops = kdata;
-> +
-> +	switch (moff) {
-> +	case offsetof(struct io_uring_ops, ring_fd):
-> +		ops->ring_fd = uops->ring_fd;
-> +		return 1;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int io_install_bpf(struct io_ring_ctx *ctx, struct io_uring_ops *ops)
-> +{
-> +	if (ctx->bpf_ops)
-> +		return -EBUSY;
-> +	ops->priv = ctx;
-> +	ctx->bpf_ops = ops;
-> +	ctx->bpf_installed = 1;
->  	return 0;
->  }
->  
->  static int bpf_io_reg(void *kdata, struct bpf_link *link)
->  {
-> -	return -EOPNOTSUPP;
-> +	struct io_uring_ops *ops = kdata;
-> +	struct io_ring_ctx *ctx;
-> +	struct file *file;
-> +	int ret = -EBUSY;
-> +
-> +	file = io_uring_register_get_file(ops->ring_fd, false);
-> +	if (IS_ERR(file))
-> +		return PTR_ERR(file);
-> +	ctx = file->private_data;
-> +
-> +	scoped_guard(mutex, &io_bpf_ctrl_mutex) {
-> +		guard(mutex)(&ctx->uring_lock);
-> +		ret = io_install_bpf(ctx, ops);
-> +	}
+>   drivers/md/dm-thin.c | 12 +++++-------
+>   drivers/md/md.c      |  4 ++--
+>   2 files changed, 7 insertions(+), 9 deletions(-)
 
-I feel per-io-uring struct_ops is less useful, because it means the io_uring
-application has to be capable of loading/registering struct_ops prog, which
-often needs privilege.
+mdraid and dm are different drivers, please split them.
 
-For example of IO link use case you mentioned, why does the application need
-to get privilege for running IO link?
+>
+> diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
+> index c84149ba4e38..77c76f75c85f 100644
+> --- a/drivers/md/dm-thin.c
+> +++ b/drivers/md/dm-thin.c
+> @@ -395,13 +395,13 @@ static void begin_discard(struct discard_op *op, st=
+ruct thin_c *tc, struct bio *
+>   	op->bio =3D NULL;
+>   }
+>  =20
+> -static int issue_discard(struct discard_op *op, dm_block_t data_b, dm_bl=
+ock_t data_e)
+> +static void issue_discard(struct discard_op *op, dm_block_t data_b, dm_b=
+lock_t data_e)
+>   {
+>   	struct thin_c *tc =3D op->tc;
+>   	sector_t s =3D block_to_sectors(tc->pool, data_b);
+>   	sector_t len =3D block_to_sectors(tc->pool, data_e - data_b);
+>  =20
+> -	return __blkdev_issue_discard(tc->pool_dev->bdev, s, len, GFP_NOIO, &op=
+->bio);
+> +	__blkdev_issue_discard(tc->pool_dev->bdev, s, len, GFP_NOIO, &op->bio);
+>   }
+>  =20
+>   static void end_discard(struct discard_op *op, int r)
+> @@ -1113,9 +1113,7 @@ static void passdown_double_checking_shared_status(=
+struct dm_thin_new_mapping *m
+>   				break;
+>   		}
+>  =20
+> -		r =3D issue_discard(&op, b, e);
+> -		if (r)
+> -			goto out;
+> +		issue_discard(&op, b, e);
+>  =20
+>   		b =3D e;
+>   	}
+> @@ -1188,8 +1186,8 @@ static void process_prepared_discard_passdown_pt1(s=
+truct dm_thin_new_mapping *m)
+>   		struct discard_op op;
+>  =20
+>   		begin_discard(&op, tc, discard_parent);
+> -		r =3D issue_discard(&op, m->data_block, data_end);
+> -		end_discard(&op, r);
+> +		issue_discard(&op, m->data_block, data_end);
+> +		end_discard(&op, 0);
+>   	}
+>   }
+>  =20
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 7b5c5967568f..aeb62df39828 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -9132,8 +9132,8 @@ void md_submit_discard_bio(struct mddev *mddev, str=
+uct md_rdev *rdev,
+>   {
+>   	struct bio *discard_bio =3D NULL;
+>  =20
+> -	if (__blkdev_issue_discard(rdev->bdev, start, size, GFP_NOIO,
+> -			&discard_bio) || !discard_bio)
+> +	__blkdev_issue_discard(rdev->bdev, start, size, GFP_NOIO, &discard_bio)=
+;
+> +	if (!discard_bio)
+>   		return;
+>  =20
+>   	bio_chain(discard_bio, bio);
 
-
+--=20
 Thanks
-Ming
-
+Kuai
 
