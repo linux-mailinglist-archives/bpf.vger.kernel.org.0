@@ -1,88 +1,89 @@
-Return-Path: <bpf+bounces-75375-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75376-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF4E2C81E69
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 18:29:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05094C81E7E
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 18:30:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 777CF3413E5
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 17:29:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 777123AAEA4
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 17:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1DD2C21C7;
-	Mon, 24 Nov 2025 17:29:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3EF83168F7;
+	Mon, 24 Nov 2025 17:29:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mXxP1Gvb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e1YbBki0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAA152C0F78
-	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 17:29:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E762D2D2384
+	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 17:29:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764005361; cv=none; b=svWS+rww2X1qY4T2A5yUvbGXea8bQMr2ytY+clLQJ9O/CnFzecd3nSbq4J549iaFfHM13iZb1s7gGZnwcXqCLWUNAJOB+zBLArnZA5kHHYKLIitPvhOAwGaaB1hIMoHspixADJ3/2s//Y+d6BhmhLoV3W4six4fo4hZoU2qp4yU=
+	t=1764005364; cv=none; b=WgAl3L8Pa2QoW6PUKt3admNa1Up6sVkJLn+l/zXnHWyOKxbvlAhSsPN7WMHUgi9FDRSk8KNi6cZOFW7O3Wt7/4FvL+akMUGLBTV+aVGj8LtcLdH9ThEFwjojD5W1RtQ6iQLiW4EY+lQejM47HCmIi3Rt3pXGnbTcfWXW/FattTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764005361; c=relaxed/simple;
-	bh=FoylFAiO9KowQfkIFKH3vKLbZCgq3ObHmL1ChBnRRzY=;
+	s=arc-20240116; t=1764005364; c=relaxed/simple;
+	bh=nVbldNJIQ09d8BWqmwNpLDNQPIgzycozmOoHkvLQXrs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T1KJRHbldzqSCDXaPsxnc4rz/Wd6nEKpHnk5dmKFDLaWIE7w4KiQXknadwKQIojsNNsOZgHXpnRVgAA5ImqCJZ3wsD80qnBEFSH3JuBFs1ukv4rV2Lw0louIYwHEMMnShRPmv9/YII8WyHjoAjKMfED+q2/Hr5clznAmHuHuJrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mXxP1Gvb; arc=none smtp.client-ip=209.85.214.173
+	 To:Cc:Content-Type; b=ZIKdfdLxP4uT8Wg0W+Hf/rUror74ML7T+fcR3vzVVx7LZXXJjHfcNnjmG0fBdv1kCv0VooDRLq+OT2qCNqVAyWt6/jWdL07+dqwZaM/SRn8AkUrZ1MStZaQO1VcNezwRJXbvDiojFj9kjE/HtskS0t1GfD3Yi2NrjXks1LXsIU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e1YbBki0; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2984dfae043so41253375ad.0
-        for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 09:29:19 -0800 (PST)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-29806bd47b5so27798875ad.3
+        for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 09:29:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764005359; x=1764610159; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764005362; x=1764610162; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a+W4e9tsLLDkjXHZFulNlCiJOde7gp/Rv9ZKDvziLc8=;
-        b=mXxP1GvbRkQ3uXtUnO1XtEl3G0h252o43bRE8qr9A618xgvZV2w5TuhxxOwU4c3qjz
-         /noe93A17WClT1n14D2S1Z3wQCm0QIUGbhkfGRZ/8mccM66tT3jA4hDoue2QHmMTJCGX
-         hmBC6mvHvmV+Ig+wpvfV0nLq3OdEpLxfYOETuY7872hO2GBtx5fa+1kL/435X/OkLScz
-         i+Yru1gYCZjsH5l8aQo6yTMA7VO5A5FQZsoVnYYS++caVCXF5F2ILiwAIA7yXnyF1Nrd
-         q2k80bOrx5zTcvNusn1ViifrNhUCQDNRlh0ZLFutfpuQ2ukQQD7CVC3Gb91gk+N57QBo
-         jQsQ==
+        bh=QSWpoeUFars1+SkbzKU64xiyOam01ZvK/v+gwE4gmek=;
+        b=e1YbBki09MDYUdL3edeYb3i78jleQehEnMfxcxmSayrBcOLgz9HMDsX/V+zfBhqsYW
+         Acum2CoCxYUeSMP4LGe03xCXhHvJZDIyxiMWoXz2NawidtF+VTBhjHU7rKlUEmPWQ19L
+         MpEEIecg7nQ2YoHkcTNQNKHUMcb/dhif9afiIR9PqhWRmwcldWZEraPSGul7g93zllUT
+         yKgPRH+4Ht2wTqSkMhHQ8oD2XZCMVA2J8mJjRxhILExn8coELyYBEMfV5yE0g7lbFYjh
+         FpSEZOKVJdCiT/9CxjVsYbg+3VjIDPLv89jRfSCd8+om4+dfV6qaqwBo2g7eHxtdpX2/
+         xFTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764005359; x=1764610159;
+        d=1e100.net; s=20230601; t=1764005362; x=1764610162;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=a+W4e9tsLLDkjXHZFulNlCiJOde7gp/Rv9ZKDvziLc8=;
-        b=DZpsFIxx73TDVecT5JM+/seLwarawBKVoc0OnTCnnxH3OGliT+dGN+YfsU3UWRAxwY
-         5TNk8pTJhm5Ku21OWIW1s41OJZGJgJ/igS2kvZkMZml5Srxb3FZ/v6jARJyNUwm3ZEOr
-         eVhQgiJOUEcPtsGdB/EqphM+Wb3hPWJ6DBm04CqkqJXOUZBeYaydtOf4EnhK9JNe1xVp
-         FLfOWUVSWwVsOcRn8S/RTxchgi96sZWr+konp4s2q0CVFe76zecg8i7Ju6ZU2wxJ/Hc7
-         vVGhunJZk+A4Q5Jzp01DQJ5PkfLxg7r/qIQ7+7YABlHRG9LD5cFKLcX5MdMQ0wuPn6la
-         kwNw==
-X-Forwarded-Encrypted: i=1; AJvYcCW2fFnafZwcDDsvpDFpIio5zeZyZx1aRqsc7VnXR2VK7akeVHZuoE5bkXzNsQQdDf7G3FA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyCrlsS02aywM9MALCibthTRJvKwGXJF8MsZ6ZjXKjVFND0L5Zq
-	v+givrv5yERSjBwdWCa8VgaqtvSaHUImFfEMtz60N8vcZOnJ6+yjw1+nWSildaXaSKHXdn3Vumi
-	WiGKYA6CmotStBYheYQcNtDE9rsjLqO0=
-X-Gm-Gg: ASbGncuIhCCs5pSACT8sAy1bIarJoBydgTFDgu1AVbQ8ykbN3Nm9wVi2z4HgqFhgN/2
-	SrG8fA7/BI7X0Tc/vk4kjhTcsw5HevXtYLQtZR+NMbFlEGtnB2M6Qzh1Je/6d0QpRRXxqTey0OU
-	wYktFWDTH74tHJtSs6ccGNQwHOuCx3IqXPt5fdk30iHz4ga6/sAOtN091qxrb1zCPBPJK5HiVmg
-	isMHGKDxe0uBbrZGrlbqWE3Wn37MufvkG1Jdxgp1AvceE/+LsL427+8xH498iVKM2/Bk0C/RlyE
-	5DexGIdNXg==
-X-Google-Smtp-Source: AGHT+IFcyL1ClADEA5dEboCZAQK1oIgyZ2Mg8rp8aMYlGLirFt9u6vBIK6YnvuajYKkeKGRbmFXyxY28CKfVC9nhIDU=
-X-Received: by 2002:a17:903:1904:b0:298:616b:b2d with SMTP id
- d9443c01a7336-29b6c6b1bf9mr98990655ad.51.1764005358873; Mon, 24 Nov 2025
- 09:29:18 -0800 (PST)
+        bh=QSWpoeUFars1+SkbzKU64xiyOam01ZvK/v+gwE4gmek=;
+        b=fNeDfQnab4ex4LB5x4Tan4YdalmD3SY79nwjnTEh8hd6TNBnC7sNv5jGfqk0wuguZK
+         paY1MS6kWmsry/Sk+EKTI4IGBiE5JFdQP8LaYspoM8WeRoaq58uVVCnjKo3tOX2Uuhyd
+         0W7tk7cD0QJP0CbO1L1qGAWEWtI88juTkCepgGTOwd1iAy0TNY0I7UQ/SCgZHmatqNDT
+         2LaMnPq35G1ehugK8ALv2SyfHVtBqw2/0fF1QKdEgrsi8GpXglU4p4gltXYLHDACCSvT
+         1H6ILoVdLcU9JOKhyQATizOiahFCoWtAw430m0xBshukj2kK3AIoxQ/k3QR7dyyxxL4G
+         3zZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX7M2MNYLWO1sMbwbjaaFWhuIUG2zYu3jkuaLrXYGDZnwr65hszwIW+k3Bf39JaRtXSM+4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxwa+0BRHOU8Cr2Hw1nXqlgJ80RZBxZqXKiBd2Cg5ajn4ejEkjF
+	Z5l9dmVW6BsH0MWXbSzG0326QL8Nlui+td/gj/sZyp3chbyjx0jY77w4SXn7E8zQMRxCAGooGAB
+	UEDRkUqV8ykTRz1A78CLPrSMKpLcMotQ=
+X-Gm-Gg: ASbGnct/4f6Z+UyJ7GNwIsAH//jO4mt/KQEuKIToxCGWrgWkwwpqTLIuCw7hLwhmus4
+	PgPf4FXqOZOAIjYef8N++0gi58ClT8A9D6irzzdOVzyFu4YFLULD//OCqOqszOkRGHUJGIjfsAy
+	N/2/f4HEK1S4reIMKqaMN12Dp23CFgapXDq4TM4bZMzrtMWmAdh0eDrz4mHS1ewQj8+12qBsSWj
+	lFPO8FxwyleAsYSRj+kxHXQbfySNXRN44NcoWpieUoCeY16BpBbhx3xw0lgEuXaxlhIbOXHkBNT
+	D8uEddAchQ==
+X-Google-Smtp-Source: AGHT+IEHvMGBbvNushYbpqjDlTmTaymEXLXZv59DcbkFPWC7ihP+ZKeRA7im4gTUZpSaLbfezCpAUwRQT/CkLr2wS64=
+X-Received: by 2002:a17:903:1211:b0:297:dabf:9900 with SMTP id
+ d9443c01a7336-29b6c0aec00mr154079885ad.0.1764005362165; Mon, 24 Nov 2025
+ 09:29:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251117083551.517393-1-jolsa@kernel.org> <20251117083551.517393-3-jolsa@kernel.org>
-In-Reply-To: <20251117083551.517393-3-jolsa@kernel.org>
+References: <20251117083551.517393-1-jolsa@kernel.org> <20251117083551.517393-4-jolsa@kernel.org>
+In-Reply-To: <20251117083551.517393-4-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 24 Nov 2025 09:29:05 -0800
-X-Gm-Features: AWmQ_bnSzsniHWAW-fBRzrYdA-6gomZNfUopzRa-9u__Y0W6MXGvqX425Syhag0
-Message-ID: <CAEf4BzaXac7JyAOXA8+cFj7ZgORHdVxCHceFv417t1xqAe94HA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] libbpf: Add uprobe syscall feature detection
+Date: Mon, 24 Nov 2025 09:29:09 -0800
+X-Gm-Features: AWmQ_blbLkLvKy3yW9qI-Ms6HOOjTGr3_yF-qJnWAg6MOmvX9UEUfplgzhZZpX0
+Message-ID: <CAEf4BzZg3sWvD7TwP-V=qw78TF5O6SEt=qJB05b0yOs-27fkEw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] libbpf: Add support to parse extra info in
+ usdt note record
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
@@ -93,87 +94,134 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Nov 17, 2025 at 12:36=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote=
 :
 >
-> Adding uprobe syscall feature detection that will be used
-> in following changes.
+> Adding support to parse extra info in usdt note record that
+> indicates there's nop,nop5 emitted for probe.
 >
+> We detect this by checking extra zero byte placed in between
+> args zero termination byte and desc data end. Please see [1]
+> for more details.
+>
+> Together with uprobe syscall feature detection we can decide
+> if we want to place the probe on top of nop or nop5.
+>
+> [1] https://github.com/libbpf/usdt
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/lib/bpf/features.c        | 22 ++++++++++++++++++++++
->  tools/lib/bpf/libbpf_internal.h |  2 ++
->  2 files changed, 24 insertions(+)
+>  tools/lib/bpf/usdt.c | 27 ++++++++++++++++++++++++++-
+>  1 file changed, 26 insertions(+), 1 deletion(-)
 >
-> diff --git a/tools/lib/bpf/features.c b/tools/lib/bpf/features.c
-> index b842b83e2480..587571c21d2d 100644
-> --- a/tools/lib/bpf/features.c
-> +++ b/tools/lib/bpf/features.c
-> @@ -506,6 +506,25 @@ static int probe_kern_arg_ctx_tag(int token_fd)
->         return probe_fd(prog_fd);
+> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+> index c174b4086673..5730295e69d3 100644
+> --- a/tools/lib/bpf/usdt.c
+> +++ b/tools/lib/bpf/usdt.c
+> @@ -241,6 +241,7 @@ struct usdt_note {
+>         long loc_addr;
+>         long base_addr;
+>         long sema_addr;
+> +       bool nop_combo;
+>  };
+>
+>  struct usdt_target {
+> @@ -262,6 +263,7 @@ struct usdt_manager {
+>         bool has_bpf_cookie;
+>         bool has_sema_refcnt;
+>         bool has_uprobe_multi;
+> +       bool has_uprobe_syscall;
+>  };
+>
+>  struct usdt_manager *usdt_manager_new(struct bpf_object *obj)
+> @@ -301,6 +303,11 @@ struct usdt_manager *usdt_manager_new(struct bpf_obj=
+ect *obj)
+>          * usdt probes.
+>          */
+>         man->has_uprobe_multi =3D kernel_supports(obj, FEAT_UPROBE_MULTI_=
+LINK);
+> +
+> +       /*
+> +        * Detect kernel support for uprobe syscall to be used to pick us=
+dt attach point.
+> +        */
+
+nit: single line comment
+
+but I find the wording confusing, we don't really use uprobe() syscall
+to pick USDT attach point (which is what comment implies in my mind).
+Just say that we detect uprobe() syscall support. It's presence means
+we can take advantage of faster nop5 uprobe handling. Also, please add
+reference commit hash + message, just like for other feature detectors
+here.
+
+> +       man->has_uprobe_syscall =3D kernel_supports(obj, FEAT_UPROBE_SYSC=
+ALL);
+>         return man;
 >  }
 >
-> +#ifdef __x86_64__
+> @@ -784,6 +791,15 @@ static int collect_usdt_targets(struct usdt_manager =
+*man, Elf *elf, const char *
+>                 target =3D &targets[target_cnt];
+>                 memset(target, 0, sizeof(*target));
+>
+> +               /*
+> +                * We have usdt with nop,nop5 instruction and we detected=
+ uprobe syscall,
+> +                * so we can place the uprobe directly on nop5 (+1) to ge=
+t it optimized.
+> +                */
+> +               if (note.nop_combo && man->has_uprobe_syscall) {
+> +                       usdt_abs_ip++;
+> +                       usdt_rel_ip++;
+> +               }
 
-nit: <empty line here>, give the code a bit of breathing room :)
-> +#ifndef __NR_uprobe
-> +#define __NR_uprobe 336
-> +#endif
+how hard would it be to check nop5 instruction in ELF file to be extra
+safe? I'm just not sure if I'm 100% comfortable just trusting that
+extra zero byte :)
 
-<empty line>
-
-> +static int probe_uprobe_syscall(int token_fd)
-> +{
-> +       /*
-> +        * When not executed from executed kernel provided trampoline,
-
-"executed from executed kernel"? Maybe: "If kernel supports uprobe()
-syscall, it will return -ENXIO when called from the outside of a
-kernel-generated uprobe trampoline."? Otherwise it will be -ENOSYS or
-something like this, right?
-
-> +        * the uprobe syscall returns ENXIO error.
-> +        */
-> +       return syscall(__NR_uprobe) =3D=3D -1 && errno =3D=3D ENXIO;
-
-nit: please use < 0 check for consistency with other error checking
-logic everywhere else
-
-
-> +}
-> +#else
-> +static int probe_uprobe_syscall(int token_fd)
-> +{
-> +       return 0;
-> +}
-> +#endif
 > +
->  typedef int (*feature_probe_fn)(int /* token_fd */);
+>                 target->abs_ip =3D usdt_abs_ip;
+>                 target->rel_ip =3D usdt_rel_ip;
+>                 target->sema_off =3D usdt_sema_off;
+> @@ -1144,7 +1160,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct us=
+dt_manager *man, const struct
+>  static int parse_usdt_note(GElf_Nhdr *nhdr, const char *data, size_t nam=
+e_off, size_t desc_off,
+>                            struct usdt_note *note)
+>  {
+> -       const char *provider, *name, *args;
+> +       const char *provider, *name, *args, *end, *extra;
+>         long addrs[3];
+>         size_t len;
 >
->  static struct kern_feature_cache feature_cache;
-> @@ -581,6 +600,9 @@ static struct kern_feature_desc {
->         [FEAT_BTF_QMARK_DATASEC] =3D {
->                 "BTF DATASEC names starting from '?'", probe_kern_btf_qma=
-rk_datasec,
->         },
-> +       [FEAT_UPROBE_SYSCALL] =3D {
-> +               "Kernel supports uprobe syscall", probe_uprobe_syscall,
-> +       },
->  };
+> @@ -1182,6 +1198,15 @@ static int parse_usdt_note(GElf_Nhdr *nhdr, const =
+char *data, size_t name_off, s
+>         if (args >=3D data + len) /* missing arguments spec */
+>                 return -EINVAL;
 >
->  bool feat_supported(struct kern_feature_cache *cache, enum kern_feature_=
-id feat_id)
-> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
-nal.h
-> index fc59b21b51b5..69aa61c038a9 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -392,6 +392,8 @@ enum kern_feature_id {
->         FEAT_ARG_CTX_TAG,
->         /* Kernel supports '?' at the front of datasec names */
->         FEAT_BTF_QMARK_DATASEC,
-> +       /* Kernel supports uprobe syscall */
-> +       FEAT_UPROBE_SYSCALL,
->         __FEAT_CNT,
->  };
->
+> +       extra =3D memchr(args, '\0', data + len - args);
+> +       if (!extra) /* non-zero-terminated args */
+> +               return -EINVAL;
+> +       ++extra;
+> +       end =3D data + len;
+
+end variable just to use it once in the comparison below? Also, how
+about just this:
+
+extra++;
+if (extra < data + len & *extra =3D=3D '\0')
+    note->nop_combo =3D true;
+
+?
+
+(why assuming extra is the very last byte, maybe we'll have more
+"extensions" in the future :) )
+
+
+> +
+> +       /* check if we have one extra byte and if it's zero */
+> +       note->nop_combo =3D (extra + 1) =3D=3D end && *extra =3D=3D 0;
+> +
+>         note->provider =3D provider;
+>         note->name =3D name;
+>         if (*args =3D=3D '\0' || *args =3D=3D ':')
 > --
 > 2.51.1
 >
