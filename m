@@ -1,235 +1,170 @@
-Return-Path: <bpf+bounces-75311-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75312-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98AC8C7EDC8
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 04:00:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A479EC7EE8A
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 04:45:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5D4F3A54C5
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 02:59:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA8D13A56BB
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 03:45:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 274C92C08D4;
-	Mon, 24 Nov 2025 02:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57DCE28B3E2;
+	Mon, 24 Nov 2025 03:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PQ/bF+sK"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MaKyrvnJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dl1-f53.google.com (mail-dl1-f53.google.com [74.125.82.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 199DB29E101
-	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 02:57:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C36FC2882B6
+	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 03:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763953073; cv=none; b=LsE4OAIJ6pSRyPzaX1La+f7XuM4rtysU0YRkxvc3HwSJ2RMzAfOj6W3LgcZnxp7Dc26JQJbeLTtNtFzOET7xB1mFxGN1uWw6E/n/+xk6uyoqn17kIVVWu1/5dmCC3ve4APxsnnuu+O93Nwzele7xi1Lga0JRsiiXabuvB+dOmcU=
+	t=1763955912; cv=none; b=gc1Q8WWx+dW9Zu/pSh8bSPCqApbJ4G+Y1F4kHKXptFSWN3LywwnWG3yNsLR0P2F5JZFsKI8CyPfeL91XDDKBvys69VM9Gk1kpzBGUX7Tfk+Z0M6vDuxafqqJVqXXbSTQCodn3TvfF3JXK+PeHA1jImW8dHjJj0paWHSDRimDOGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763953073; c=relaxed/simple;
-	bh=rrj2tkBOa+tDueLpfke1EhQT6rpNTZ2snUg0Jqjwd8E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fVCxdpoEOwW3QiKOJjyvefb2Hds9zUFa0fAzg5tRyZrPpkN+JTNTfqpM6vloGhDYssdDux2yZ0vvSMHWW7pGBgcIT0fXdBfyo+nKWZtaIMTOPCMSXXQk60f8gaOU7AjwDB86NjSiBVbDJZlGrlC/+gGmzTuoDpj9wSDPBP9OhwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PQ/bF+sK; arc=none smtp.client-ip=74.125.82.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dl1-f53.google.com with SMTP id a92af1059eb24-11beb0a7bd6so4475656c88.1
-        for <bpf@vger.kernel.org>; Sun, 23 Nov 2025 18:57:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763953070; x=1764557870; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7wt4l3Vmobq4GuuMyFPJBgrWPvgmrjYhaZwLaOIoKCQ=;
-        b=PQ/bF+sKOVTPV+FBrh9+gMAXMBO5MVWSsP6S+IvgmpQZH4MtrfojXoB5YGJMNqTZOA
-         ycf8CywrZXBuN3mZFs2XvYzEr2eJ0nEZNjXEzQQ4XV4/tK6WCOGmjlsVbKLEuQKFmooA
-         vOLEXK1/ZMFdHs248T851l92fV6XEXeCtVvCe/wwZPgz+vn3Dk94CEvbOPEuDUns36gY
-         MiBqbfsPIO0uWzi+ZM6Xoj50jvnT9CV3lxEqM9wZyXJAaiTi9kcwELgAeYYLCs5rqGpG
-         CZO3v/SE9T0Mt/VLObVGTt0Jy3Yb9E4rfqx+Ny6sxYWUrVtNgFrZMJ9UASllSB/iuqDE
-         PvYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763953070; x=1764557870;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=7wt4l3Vmobq4GuuMyFPJBgrWPvgmrjYhaZwLaOIoKCQ=;
-        b=Ce8rJ3RSYlqKxKHDXRnCedbRUozPn5C912a8ffFucVywgN4YcbSi3r3zDgLgiyTJOY
-         nOvkqjvvVpXKcCH4PpPj3loxUso316PAB7F8XZ9KuKrds/mgoicq/HQbRkbtHlTPHR5s
-         OExiMSNeln8ORB1f26ajyBq80N3gbMmL4nsveIT5Gpl9sUllPUYTs2+dyYT7QuNHbHm1
-         rmxMDNVZ2eMEkvyndei3tX44z3yYzzxle3WqWkd9fq/aNlJ5jqrKC5so1g4R/F0O3NoD
-         ZSiXPUogEOWrQ7FAn4qrchyv47co21U95ex81IGrrXuo6pNfFne1hcn4nsDb8JkoRnj7
-         iP9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV+Q1uphHQ93is1U/SkV5GzTVP0SBfUII7631PueI8TtbTR1mjzp3k+YXwn+Eayq1mkKLg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx0gJQxuPyV8inobjaGigxQkviQnsOX07nFiZM7a/XNOQCZLiNw
-	IHo8EIjtshgt83OU/dA4DhRfh+B4vjJsXccuxk2sdPNjhBxw+50hz1ze
-X-Gm-Gg: ASbGncteo2idC5+CXoPR8KtHUZnJdA3fhtt6+BYXj6IAr1YdEMy9K9CM4Yb+urJCoJO
-	MaUjoVv2y2S2vMUgx7KIq6sN5pnpTpgN6GiLePOuaFFH5h9ErVSIS8Yp25i3YRxvUQO80SoLJv8
-	kefq8HuQLTDe/F/Yy8ODq5gomZ5H81mBZx1wZNXMZIxpHMv91EJuovKGOAM6ZSYwdxaWajT36ow
-	GCp7nUTAZgn45spaWFocWATnozBG0WC6DIRfqAk95o8tHzfTMGc8WYUAtUGYn1g+HK82XEtMTXv
-	YtKucWZyuZsLR6XSthQqhBzTqubp2klRE1RML32YoxFfeckemWYBCCxXpi22o3ADH1u2nmfYavO
-	LbSWObVJlw/xpzAnVYKLc7J/Zjanid/l9rQLfs4zZyf4cVne+CUB5ve0cQ218LPxUdsmjXyitrh
-	rxv80QOELRbnlrC3vXFPNoTg4tBIIhvHzIm+XpTjyHQjeSUocUjmEzk/Rh1w==
-X-Google-Smtp-Source: AGHT+IFpsDs+kXmQXVU6E1/nGle2v7URUru8XFd/49TW2BQ+0epIeeb7LYLuuNciA5YRvlLXxX79hA==
-X-Received: by 2002:a05:7022:3d0e:b0:11b:3eb7:f9d7 with SMTP id a92af1059eb24-11c94b601c2mr7020409c88.14.1763953070114;
-        Sun, 23 Nov 2025 18:57:50 -0800 (PST)
-Received: from localhost (ip70-175-132-216.oc.oc.cox.net. [70.175.132.216])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-11c93e6da4dsm58917652c88.9.2025.11.23.18.57.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Nov 2025 18:57:49 -0800 (PST)
-From: Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-To: axboe@kernel.dk,
-	agk@redhat.com,
-	snitzer@kernel.org,
-	mpatocka@redhat.com,
-	song@kernel.org,
-	yukuai@fnnas.com,
-	hch@lst.de,
-	sagi@grimberg.me,
-	kch@nvidia.com,
-	jaegeuk@kernel.org,
-	chao@kernel.org,
-	cem@kernel.org
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	dm-devel@lists.linux.dev,
-	linux-raid@vger.kernel.org,
-	linux-nvme@lists.infradead.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-xfs@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: [PATCH V2 5/5] xfs: ignore discard return value
-Date: Sun, 23 Nov 2025 18:57:37 -0800
-Message-Id: <20251124025737.203571-6-ckulkarnilinux@gmail.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20251124025737.203571-1-ckulkarnilinux@gmail.com>
-References: <20251124025737.203571-1-ckulkarnilinux@gmail.com>
+	s=arc-20240116; t=1763955912; c=relaxed/simple;
+	bh=1o2HlCkp8Gxx6+sHlXsZujpNQF2rQ6yiE44lkUGHba8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U85Ip37R8sp46CqM6odgeYz0dDtRYRs22VE3VQWedXoP6dPU28Na59iTolHyn4RJ7CcegZgDhamepyJUG++/EnhSKzjZOtCjrz5FOJkNjYS1xm0Mfo4hadx39+rTTrzwaf4o+FYnVUPQSwrKIKI0XXiCwY2abNnVtkY9DFn2xDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MaKyrvnJ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1763955909;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ARcJqa+jKTzy4aJDqYL7yDQMnB/xocT9vkDV5GOIjg=;
+	b=MaKyrvnJAWVP98qAbCvTSflMy4YdaXvViVHCbQQIi8In0OAfBBH0xi7QO1jZp3KDdvVOBj
+	91L+Zdcb/YgM+Dsf6c9FAlA3QrYvqVIYL4ral7TI3fXAFyJSJ8LK4T0GMzRhELf2GlM2rU
+	woqOjTEyqhbaMCtnKA1Xu83j1KOZybA=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-629-vr3TWLC-N0aIw2m6Ok1Rog-1; Sun,
+ 23 Nov 2025 22:45:05 -0500
+X-MC-Unique: vr3TWLC-N0aIw2m6Ok1Rog-1
+X-Mimecast-MFC-AGG-ID: vr3TWLC-N0aIw2m6Ok1Rog_1763955904
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3B0B31956088;
+	Mon, 24 Nov 2025 03:45:02 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.227])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 76AE61956056;
+	Mon, 24 Nov 2025 03:44:57 +0000 (UTC)
+Date: Mon, 24 Nov 2025 11:44:52 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: io-uring@vger.kernel.org, axboe@kernel.dk,
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v3 07/10] io_uring/bpf: implement struct_ops registration
+Message-ID: <aSPUtMqilzaPui4f@fedora>
+References: <cover.1763031077.git.asml.silence@gmail.com>
+ <cce6ee02362fe62aefab81de6ec0d26f43c6c22d.1763031077.git.asml.silence@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cce6ee02362fe62aefab81de6ec0d26f43c6c22d.1763031077.git.asml.silence@gmail.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-__blkdev_issue_discard() always returns 0, making all error checking
-in XFS discard functions dead code.
+On Thu, Nov 13, 2025 at 11:59:44AM +0000, Pavel Begunkov wrote:
+> Add ring_fd to the struct_ops and implement [un]registration.
+> 
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> ---
+>  include/linux/io_uring_types.h |  2 +
+>  io_uring/bpf.c                 | 69 +++++++++++++++++++++++++++++++++-
+>  2 files changed, 70 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/io_uring_types.h b/include/linux/io_uring_types.h
+> index 43432a06d177..3a71ed2d05ea 100644
+> --- a/include/linux/io_uring_types.h
+> +++ b/include/linux/io_uring_types.h
+> @@ -274,6 +274,8 @@ struct io_ring_ctx {
+>  		unsigned int		compat: 1;
+>  		unsigned int		iowq_limits_set : 1;
+>  
+> +		unsigned int		bpf_installed: 1;
+> +
+>  		struct task_struct	*submitter_task;
+>  		struct io_rings		*rings;
+>  		struct percpu_ref	refs;
+> diff --git a/io_uring/bpf.c b/io_uring/bpf.c
+> index 24dd2fe9134f..683e87f1a58b 100644
+> --- a/io_uring/bpf.c
+> +++ b/io_uring/bpf.c
+> @@ -4,6 +4,7 @@
+>  #include "bpf.h"
+>  #include "register.h"
+>  
+> +static DEFINE_MUTEX(io_bpf_ctrl_mutex);
+>  static const struct btf_type *loop_state_type;
+>  
+>  static int io_bpf_ops__loop(struct io_ring_ctx *ctx, struct iou_loop_state *ls)
+> @@ -87,20 +88,86 @@ static int bpf_io_init_member(const struct btf_type *t,
+>  			       const struct btf_member *member,
+>  			       void *kdata, const void *udata)
+>  {
+> +	u32 moff = __btf_member_bit_offset(t, member) / 8;
+> +	const struct io_uring_ops *uops = udata;
+> +	struct io_uring_ops *ops = kdata;
+> +
+> +	switch (moff) {
+> +	case offsetof(struct io_uring_ops, ring_fd):
+> +		ops->ring_fd = uops->ring_fd;
+> +		return 1;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int io_install_bpf(struct io_ring_ctx *ctx, struct io_uring_ops *ops)
+> +{
+> +	if (ctx->bpf_ops)
+> +		return -EBUSY;
+> +	ops->priv = ctx;
+> +	ctx->bpf_ops = ops;
+> +	ctx->bpf_installed = 1;
+>  	return 0;
+>  }
+>  
+>  static int bpf_io_reg(void *kdata, struct bpf_link *link)
+>  {
+> -	return -EOPNOTSUPP;
+> +	struct io_uring_ops *ops = kdata;
+> +	struct io_ring_ctx *ctx;
+> +	struct file *file;
+> +	int ret = -EBUSY;
+> +
+> +	file = io_uring_register_get_file(ops->ring_fd, false);
+> +	if (IS_ERR(file))
+> +		return PTR_ERR(file);
+> +	ctx = file->private_data;
+> +
+> +	scoped_guard(mutex, &io_bpf_ctrl_mutex) {
+> +		guard(mutex)(&ctx->uring_lock);
+> +		ret = io_install_bpf(ctx, ops);
+> +	}
 
-Change xfs_discard_extents() return type to void, remove error variable,
-error checking, and error logging for the __blkdev_issue_discard() call
-in same function.
+I feel per-io-uring struct_ops is less useful, because it means the io_uring
+application has to be capable of loading/registering struct_ops prog, which
+often needs privilege.
 
-Update xfs_trim_perag_extents() and xfs_trim_rtgroup_extents() to
-ignore the xfs_discard_extents() return value and error checking
-code.
+For example of IO link use case you mentioned, why does the application need
+to get privilege for running IO link?
 
-Update xfs_discard_rtdev_extents() to ignore __blkdev_issue_discard()
-return value and error checking code.
 
-Signed-off-by: Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
----
- fs/xfs/xfs_discard.c | 27 +++++----------------------
- fs/xfs/xfs_discard.h |  2 +-
- 2 files changed, 6 insertions(+), 23 deletions(-)
-
-diff --git a/fs/xfs/xfs_discard.c b/fs/xfs/xfs_discard.c
-index 6917de832191..b6ffe4807a11 100644
---- a/fs/xfs/xfs_discard.c
-+++ b/fs/xfs/xfs_discard.c
-@@ -108,7 +108,7 @@ xfs_discard_endio(
-  * list. We plug and chain the bios so that we only need a single completion
-  * call to clear all the busy extents once the discards are complete.
-  */
--int
-+void
- xfs_discard_extents(
- 	struct xfs_mount	*mp,
- 	struct xfs_busy_extents	*extents)
-@@ -116,7 +116,6 @@ xfs_discard_extents(
- 	struct xfs_extent_busy	*busyp;
- 	struct bio		*bio = NULL;
- 	struct blk_plug		plug;
--	int			error = 0;
- 
- 	blk_start_plug(&plug);
- 	list_for_each_entry(busyp, &extents->extent_list, list) {
-@@ -126,18 +125,10 @@ xfs_discard_extents(
- 
- 		trace_xfs_discard_extent(xg, busyp->bno, busyp->length);
- 
--		error = __blkdev_issue_discard(btp->bt_bdev,
-+		__blkdev_issue_discard(btp->bt_bdev,
- 				xfs_gbno_to_daddr(xg, busyp->bno),
- 				XFS_FSB_TO_BB(mp, busyp->length),
- 				GFP_KERNEL, &bio);
--		if (error && error != -EOPNOTSUPP) {
--			xfs_info(mp,
--	 "discard failed for extent [0x%llx,%u], error %d",
--				 (unsigned long long)busyp->bno,
--				 busyp->length,
--				 error);
--			break;
--		}
- 	}
- 
- 	if (bio) {
-@@ -148,8 +139,6 @@ xfs_discard_extents(
- 		xfs_discard_endio_work(&extents->endio_work);
- 	}
- 	blk_finish_plug(&plug);
--
--	return error;
- }
- 
- /*
-@@ -385,9 +374,7 @@ xfs_trim_perag_extents(
- 		 * list  after this function call, as it may have been freed by
- 		 * the time control returns to us.
- 		 */
--		error = xfs_discard_extents(pag_mount(pag), extents);
--		if (error)
--			break;
-+		xfs_discard_extents(pag_mount(pag), extents);
- 
- 		if (xfs_trim_should_stop())
- 			break;
-@@ -496,12 +483,10 @@ xfs_discard_rtdev_extents(
- 
- 		trace_xfs_discard_rtextent(mp, busyp->bno, busyp->length);
- 
--		error = __blkdev_issue_discard(bdev,
-+		__blkdev_issue_discard(bdev,
- 				xfs_rtb_to_daddr(mp, busyp->bno),
- 				XFS_FSB_TO_BB(mp, busyp->length),
- 				GFP_NOFS, &bio);
--		if (error)
--			break;
- 	}
- 	xfs_discard_free_rtdev_extents(tr);
- 
-@@ -741,9 +726,7 @@ xfs_trim_rtgroup_extents(
- 		 * list  after this function call, as it may have been freed by
- 		 * the time control returns to us.
- 		 */
--		error = xfs_discard_extents(rtg_mount(rtg), tr.extents);
--		if (error)
--			break;
-+		xfs_discard_extents(rtg_mount(rtg), tr.extents);
- 
- 		low = tr.restart_rtx;
- 	} while (!xfs_trim_should_stop() && low <= high);
-diff --git a/fs/xfs/xfs_discard.h b/fs/xfs/xfs_discard.h
-index 2b1a85223a56..8c5cc4af6a07 100644
---- a/fs/xfs/xfs_discard.h
-+++ b/fs/xfs/xfs_discard.h
-@@ -6,7 +6,7 @@ struct fstrim_range;
- struct xfs_mount;
- struct xfs_busy_extents;
- 
--int xfs_discard_extents(struct xfs_mount *mp, struct xfs_busy_extents *busy);
-+void xfs_discard_extents(struct xfs_mount *mp, struct xfs_busy_extents *busy);
- int xfs_ioc_trim(struct xfs_mount *mp, struct fstrim_range __user *fstrim);
- 
- #endif /* XFS_DISCARD_H */
--- 
-2.40.0
+Thanks
+Ming
 
 
