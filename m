@@ -1,107 +1,216 @@
-Return-Path: <bpf+bounces-75381-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75384-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id A12C0C81FF9
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 19:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 55DD2C8200A
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 19:01:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3B2C94E5844
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 18:00:59 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6D1DD4E56D1
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 18:01:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88CDE314B84;
-	Mon, 24 Nov 2025 18:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9416314B61;
+	Mon, 24 Nov 2025 18:01:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dt26Aj70"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gEGmBRJY"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 027662BEC41;
-	Mon, 24 Nov 2025 18:00:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82DF9BA3F
+	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 18:01:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764007253; cv=none; b=MVPUJPLbZ1APBneb7vMRXhq4fAuaWf4xxo2fqkC2R5QIyh0NxOrTlNeNKxzHa/8pRIYJai0bg9jXPiChtCF6Hjo9iv3qVxbL1Yk97ORCd9eLupwrswhsfhX0HE+jBzzvQbpryumURIBDSTQpI4fA+6EcPyxvqTEVhWs/8nXQlVk=
+	t=1764007292; cv=none; b=OU4wrZ+28bdUmUo0IWK2vecsr4hZ3bRcIc1jtmGe0Fb1sVJO/XB5anEx+Ziq+dRLn4w7U4yxTKaQKUPYFLiQnxjbWNYskGlLEyXfWpDKOwlzK1lgMCPXlYyeL+AZPh3xROJi1Q9g2rc8rE3DlvCYRRwDVX9TiBq2erq750uzG0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764007253; c=relaxed/simple;
-	bh=Fs+fOdAmN1Clz0PJjIHz5+puW1Ti2M69nSIhAdynC30=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=gh/IZDWxzS5FXXKMHM5mzNQG5b4ftWJ6Ag3nLQVdnb0DS/T/KZL8OpOKAAl0EFqob0gr2/Sy9LVxHgJldxwOwBalGo8ai0Td71c/cMbiokNK0m+f4E0vmRnsKtFDzglHh+aPYb5bWOVTfPN2DZ/ziGJ2W9LfTJh+sDWlrmjZyow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dt26Aj70; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D6E3C4CEF1;
-	Mon, 24 Nov 2025 18:00:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764007252;
-	bh=Fs+fOdAmN1Clz0PJjIHz5+puW1Ti2M69nSIhAdynC30=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=dt26Aj70GNFKOUpkzi/RSjcSUQ1kAvsyqlyn0Gz9z/8p6i5eSscqGYGAD7KsqVBhG
-	 L2Uluh+pi91lTHCA3n+gm0Ed3ULRKYwKhj5QwmkcUHyvxM1R0fgXJwfC/q0IpSJCng
-	 fe/V+lta7nfrwkynxLLwpf6g2OrPJmwydEGDXuvxrlk9FP8r01/VfdHfQCcYtJdDfq
-	 IWzSflrTTnLr6x/kuTCtVVjPpje+Run0tCTs30K43F8tITQF1AEYjM5FxEUHLn/JWk
-	 qUfq8UmHXtQhvpfKJyMzrqw5+QXbYdo6LWw3djxiV2ktoexGxat/gBuIYKlwPTQFxu
-	 01RfZsvSDyaQg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE1533A86295;
-	Mon, 24 Nov 2025 18:00:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1764007292; c=relaxed/simple;
+	bh=2Ytx+AfbbP8o2otQZvERArwaVjbdh3MIdWrkMwyAhiQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YieXk0HF0UBUbMOL3jtC1oJzoMc6cW1drPGZ+yqXhYhijUyFqdnRwiWmfAjBmw8gO/2Igr6iFmXKrg+aOSTDnZZMaKGNbhftaAszfM2DbkzMHK5mVtnmkhl5b4Y/XKHNceG6Jvbn6V5GkVQZYiZwvsLz9Tstr0xdmgTGCvYQALo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gEGmBRJY; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1764007289;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=viUvJ6Jb1j9XnKCLQYPTYJox6+KrzbpKeENNCfsboHY=;
+	b=gEGmBRJYGY2iDS9M05SG+CtLZbDFuWM8JobD0J3e2jcBHuGwnFg+ltLUIQihS597GuOjA0
+	dpoeXQtn9s4wFfoiSKN7wTjjcpIq0zLibYZm6G7h9B0ibYzJES6tFaEEB9cO8l04/vABIl
+	BJD7ffWZ1SvXErg5aqEidzK3Lti637g=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-29-LlhZ06nDMB2bySU4IiDCOQ-1; Mon,
+ 24 Nov 2025 13:01:24 -0500
+X-MC-Unique: LlhZ06nDMB2bySU4IiDCOQ-1
+X-Mimecast-MFC-AGG-ID: LlhZ06nDMB2bySU4IiDCOQ_1764007282
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EF18E195605B;
+	Mon, 24 Nov 2025 18:01:21 +0000 (UTC)
+Received: from fedora (unknown [10.45.224.27])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id AF1A2195608E;
+	Mon, 24 Nov 2025 18:01:15 +0000 (UTC)
+Received: by fedora (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon, 24 Nov 2025 19:01:21 +0100 (CET)
+Date: Mon, 24 Nov 2025 19:01:14 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	David Laight <David.Laight@aculab.com>
+Subject: Re: [RFC PATCH 5/8] uprobe/x86: Add support to optimize on top of
+ emulated instructions
+Message-ID: <aSSdavSy_unRaEgF@redhat.com>
+References: <20251117124057.687384-1-jolsa@kernel.org>
+ <20251117124057.687384-6-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 0/6] bpf trampoline support "jmp" mode
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176400721551.26255.4099462793867992300.git-patchwork-notify@kernel.org>
-Date: Mon, 24 Nov 2025 18:00:15 +0000
-References: <20251118123639.688444-1-dongml2@chinatelecom.cn>
-In-Reply-To: <20251118123639.688444-1-dongml2@chinatelecom.cn>
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: ast@kernel.org, rostedt@goodmis.org, daniel@iogearbox.net,
- john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- mhiramat@kernel.org, mark.rutland@arm.com, mathieu.desnoyers@efficios.com,
- jiang.biao@linux.dev, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251117124057.687384-6-jolsa@kernel.org>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-Hello:
+Hi Jiri,
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+I am trying to understand this series, will try to read it more carefully
+later...
 
-On Tue, 18 Nov 2025 20:36:28 +0800 you wrote:
-> For now, the bpf trampoline is called by the "call" instruction. However,
-> it break the RSB and introduce extra overhead in x86_64 arch.
-> 
-> For example, we hook the function "foo" with fexit, the call and return
-> logic will be like this:
->   call foo -> call trampoline -> call foo-body ->
->   return foo-body -> return foo
-> 
-> [...]
+(damn why do you always send the patches when I am on PTO? ;)
 
-Here is the summary with links:
-  - [bpf-next,v3,1/6] ftrace: introduce FTRACE_OPS_FL_JMP
-    https://git.kernel.org/bpf/bpf-next/c/25e4e3565d45
-  - [bpf-next,v3,2/6] x86/ftrace: implement DYNAMIC_FTRACE_WITH_JMP
-    https://git.kernel.org/bpf/bpf-next/c/0c3772a8db1f
-  - [bpf-next,v3,3/6] bpf: fix the usage of BPF_TRAMP_F_SKIP_FRAME
-    https://git.kernel.org/bpf/bpf-next/c/47c9214dcbea
-  - [bpf-next,v3,4/6] bpf,x86: adjust the "jmp" mode for bpf trampoline
-    https://git.kernel.org/bpf/bpf-next/c/373f2f44c300
-  - [bpf-next,v3,5/6] bpf: specify the old and new poke_type for bpf_arch_text_poke
-    https://git.kernel.org/bpf/bpf-next/c/ae4a3160d19c
-  - [bpf-next,v3,6/6] bpf: implement "jmp" mode for trampoline
-    https://git.kernel.org/bpf/bpf-next/c/402e44b31e9d
+On 11/17, Jiri Olsa wrote:
+>
+>  struct arch_uprobe {
+>  	union {
+> -		u8			insn[MAX_UINSN_BYTES];
+> +		u8			insn[5*MAX_UINSN_BYTES];
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Hmm. OK, this matches the "for (i = 0; i < 5; i++)" loop in
+opt_setup_xol_ops(), but do we really need this change? Please see
+the question at the end.
 
+> +static int opt_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+> +{
+> +	unsigned long offset = insn->length;
+> +	struct insn insnX;
+> +	int i, ret;
+> +
+> +	if (test_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags))
+> +		return -ENOSYS;
+
+I think this logic needs some cleanups... If ARCH_UPROBE_FLAG_CAN_OPTIMIZE
+is set by the caller, the it doesn't make sense to call xxx_setup_xol_ops(),
+right? But lets forget it for now.
+
+> +	ret = opt_setup_xol_insns(auprobe, &auprobe->opt.xol[0], insn);
+
+I think this should go into the main loop, see below
+
+> +	for (i = 1; i < 5; i++) {
+> +		ret = uprobe_init_insn_offset(auprobe, offset, &insnX, true);
+> +		if (ret)
+> +			break;
+> +		ret = opt_setup_xol_insns(auprobe, &auprobe->opt.xol[i], &insnX);
+> +		if (ret)
+> +			break;
+> +		offset += insnX.length;
+> +		auprobe->opt.cnt++;
+> +		if (offset >= 5)
+> +			goto optimize;
+> +	}
+> +
+> +	return -ENOSYS;
+
+I don't think -ENOSYS makes sense if opt_setup_xol_insns() succeeds at least once.
+IOW, how about
+
+	static int opt_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+	{
+		unsigned long offset = 0;
+		struct insn insnX;
+		int i, ret;
+
+		if (test_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags))
+			return -ENOSYS;
+
+		for (i = 0; i < 5; i++) {
+			ret = opt_setup_xol_insns(auprobe, &auprobe->opt.xol[i], insn);
+			if (ret)
+				break;
+			offset += insn->length;
+			if (offset >= 5)
+				break;
+
+			insn = &insnX;
+			ret = uprobe_init_insn_offset(auprobe, offset, insn, true);
+			if (ret)
+				break;
+		}
+
+		if (!offset)
+			return -ENOSYS;
+
+		if (offset >= 5) {
+			auprobe->opt.cnt = i + 1;
+			auprobe->xol.ops = &opt_xol_ops;
+			set_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags);
+			set_bit(ARCH_UPROBE_FLAG_OPTIMIZE_EMULATE, &auprobe->flags);
+		}
+
+		return 0;
+	}
+
+?
+
+This way the caller, arch_uprobe_analyze_insn(), doesn't need to call
+push/mov/sub/_setup_xol_ops(), and the code looks a bit simpler to me.
+
+No?
+
+> +      * TODO perhaps we could 'emulate' nop, so there would be no need for
+> +      * ARCH_UPROBE_FLAG_OPTIMIZE_EMULATE flag, because we would emulate
+> +      * allways.
+
+Agreed... and this connects to "this logic needs some cleanups" above.
+I guess we need nop_setup_xol_ops() extracted from branch_setup_xol_ops()
+but again, lets forget it for now.
+
+-------------------------------------------------------------------------------
+Now the main question. What if we avoid this change
+
+	-             u8                      insn[MAX_UINSN_BYTES];
+	+             u8                      insn[5*MAX_UINSN_BYTES];
+
+mentioned above, and change opt_setup_xol_ops() to just do
+
+	-	for (i = 0; i < 5; i++)
+	+	for (i = 0;; i++)
+
+?
+
+The main loop stops when offset >= 5 anyway.
+
+And. if auprobe->insn[offset:MAX_UINSN_BYTES] doesn't contain a full/valid
+insn at the start, then uprobe_init_insn_offset()->insn_decode() should fail?
+
+Most probably I missed something, but I can't understand this part.
+
+Oleg.
 
 
