@@ -1,148 +1,243 @@
-Return-Path: <bpf+bounces-75334-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75335-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13A0BC80592
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 13:05:54 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58910C806B9
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 13:16:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76B813A161E
-	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 12:01:57 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1DC034E4C99
+	for <lists+bpf@lfdr.de>; Mon, 24 Nov 2025 12:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69858301716;
-	Mon, 24 Nov 2025 11:57:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FBEC3002A6;
+	Mon, 24 Nov 2025 12:14:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IXO6yPJV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a7jzVKAW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B55301709
-	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 11:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2691A2FE584
+	for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 12:14:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763985439; cv=none; b=g3yZd8giru4xLKYG6j3b06nZttkmZoWWeELSw4dxET3avLkusy2FFs1URsZw77wOKHOsC/Jm1yU6EFBW5gokI8BxzwFidWojmlgfltZr5aSkHhgTR+r5g8AQjydwZBWzZHMLVKFkA8u2KmSrQ1J6XSO95P4mvkDK3UHZTaDR8x0=
+	t=1763986486; cv=none; b=TXI1Dc8Hn9KVAashzPfvFUO+5jbhhyS2Hi04P20bpq/OP09xnCymBkA+gdHiQkcZCMvENoKNevBRiOiyuFa60GWi6R/8LdSMgk4yq4+5VN5rm86TEO2BTTKVviSF7OnS4sFx5qKN4yKpiRPK2HvvZpdAWcyzB1HaaGR+jwICY3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763985439; c=relaxed/simple;
-	bh=e+v7CdcV1TaYkT5kdyH2QFzOE1VmsFJEbzHKYsR48Z8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=krTdjMJ0Xg4T0zdXE+MiH+UvyG3txN5ecLCK3cws9aRgdiNxKWlUpLqx87Q+aY54Xvb0SXivVDvPO9mIkaluya9NbdItmyiAVgcoAqJJtUWczHuAXicvPEfdSo84Rome3yLl9+YBz8Hq23yWL9FiD9gnvcL3Kj6RLc1IChFE8nY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IXO6yPJV; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1763986486; c=relaxed/simple;
+	bh=33+zNkRvY4wagfQZLBALBVE1SwKVJQQNFifdWoyFOkE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=imiDejjD/hUAKncHO5GawnFxr5tt7AMWGkQPprPuC3XMk+9DKy6piO+8tUtcvBIWFCtPai0fvFDEynYwXTiopG9Qz2S1dm1a44vyDUrhwj0FsxXE+EH5/PVJ7U3pfxgc2h8oBxNzAC66uV34a0OeBHuPFynh8VPlwJKD41EMlTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a7jzVKAW; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-477a219db05so25112465e9.2
-        for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 03:57:17 -0800 (PST)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b713c7096f9so644278566b.3
+        for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 04:14:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763985436; x=1764590236; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+6K646kVMCKHQIyUwaCd8T41DsNbqTmzztejn5C3rxY=;
-        b=IXO6yPJVpsPxV4vZSNb0AII2tisvZbojJPQCJ4s40bd0LxrN6vUBU9Jdqixuww+Vgg
-         dsv4UYfmnXUGK/wWRC3es0/5L5nnS8P40qWfSUlPB99vfnKUUMQpGlx+7PPylLlbE/Yp
-         gaikspbksbOW2vAGYZJZhjBvEVtp9LdiPQWj7tLfy42f0tkeO0K/RAnpmks0BnHD4cB6
-         Q9t1Gk1/k3jSL7FkoInd/dGqhO1kfHgbLpCCcXKVyc+PMaz1o9eN+IFXC1QoosxBJKj1
-         5kLABclDEYbLwXfAGfOs/lKX+WjJKHgZWgZNEEJgVSs12CWG6RWKjdRAFVVk1vpzFkH7
-         3KbA==
+        d=gmail.com; s=20230601; t=1763986482; x=1764591282; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u+wZ2XtB8WOozaAIFhu6L5TvlD/Ho8ilDSwC7ipNw/A=;
+        b=a7jzVKAWtFmyPNW7VgVvnVqazL6rbbrbBzBLl9MHhOMvxcJrdNrM191C/iVDfi+sBu
+         uQEbhGoiNJNz6BLU0GEx6AiJXuyRvCiTQvXl03e9Ifus98cFJrgjElzzkdNsJdL6pOH8
+         ANk1BglYSSidYecZYgB9Hyfpm+aBiI+HdLjtvl5eVJiP5ndF+pMp1Ri2JNwT1Dd/2dhf
+         bU0q1+0h7XxpDGSnKlhbzDkrK2jYHgmy2HJZfGO17elIC1Z4NCzVqODBt2JLPkEslZuz
+         QFM0UzSrkOhsHryilvGwVyD1J9VcMedDEOr//+0eCBVz1dR9yYTE4vJWIlt6QfVBCop/
+         VvfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763985436; x=1764590236;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+6K646kVMCKHQIyUwaCd8T41DsNbqTmzztejn5C3rxY=;
-        b=q2lRp4wmYAjyqzbaoTgz58JynImJRiytPGfdUmpk38QUDvFXONYgjHNqsXzbHRJ+Qi
-         3ANL2E5H2gtrOcNYAXV7K08kAMbeJtHD0YxJRjC5aHa6Y/ETEWxN1vUe6I6u2+S9yaFQ
-         YdlhsVXWYwmcnjAiADeMQPhi3swYBiTG695H+nzNpkR8AqJydWqyrhR9GHSfczasZZ1u
-         hkIRRUOOw3bD/77BMY2pt2RV+xG3V9nz8fil8Dd+LA3mqxjOQQ8X/vYj95MmF4VnFaOt
-         NfXsgCwPKxAivsc4nxqYaz6Btz6AAJwvP/i/6hPWaryAGXsQ3goQMdcFgfxYyTlWZiCt
-         GTEg==
-X-Forwarded-Encrypted: i=1; AJvYcCUHifqZoVHFx4lKSUqONvxgCgFQBNZOf7lnMrk/YhUNY2kwJ/a+IPAPS6bxhhez7ImwRmw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxydDCqHhSm5Bqo7/C+DMrB6LopAiSKU5mTvBcCELGItU8tenYi
-	pAkO0q/AzhLQ9BmiQA7zlCLXrY+8lhdcRx81I7zkhBPyNn4G1JvB9Mij
-X-Gm-Gg: ASbGncvjtEhP7zu3m03Thsvixj6geCisIRcp25FW3ARkdAKAlJNOIL8eZ5REgBj5gaN
-	Bl7XsJyjv3Bd0J3zvaT4vrWPI//bmNe0LzNa2EI/Rqi1dZwmHc5G+Q0M9W/XEWWJDuP4MRVg1ZI
-	gdn4EBYiq6P7o3zRc1ugWxqxyP0Y0OujX8dkTFNFSKYn5/FKpMnwYR+ef+NgdF2W6JeU/9dBsUY
-	Wy3rN4pLHuh2wG3QN4tgSlDeX1urBe9Oc8gh4A/W5YLeN55R6WWOmsRaiGYv+Edt+y4fjTBb3Vk
-	YM0eAUtjvJNDZn9slu4zv6mwHQT7S666mBcBsYqtLUNtFSxHbdP3Ix6E1uAuH20/Mb5R2QcBqpV
-	FhaVLQ7tYgbjgzArbAwECSzaQ5HJcpECerx+6zbBWmGqFVMkWPmRlt8U6s6CAQeoONJQWtKLWgA
-	pFbe5c3XKFYidWVgjKHOvqMccGKAt2yqfGOUVcpzGdWhOVNP16ec52VfBSzlH1F3f15F+gMudU
-X-Google-Smtp-Source: AGHT+IE0OSj8JqZ05GjF3Oefxk9wJ+p5QyMka9uBLVg7fNTS2Gs36AgHP69SB66QxOT2H4cSE1QuHA==
-X-Received: by 2002:a05:600c:4f82:b0:477:952d:fc11 with SMTP id 5b1f17b1804b1-477c11175a9mr128273385e9.16.1763985435881;
-        Mon, 24 Nov 2025 03:57:15 -0800 (PST)
-Received: from ?IPV6:2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c? ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477bf227ae2sm192385605e9.9.2025.11.24.03.57.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Nov 2025 03:57:15 -0800 (PST)
-Message-ID: <f1db3be4-a4a7-4fd7-bd5c-0295a238b695@gmail.com>
-Date: Mon, 24 Nov 2025 11:57:10 +0000
+        d=1e100.net; s=20230601; t=1763986482; x=1764591282;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=u+wZ2XtB8WOozaAIFhu6L5TvlD/Ho8ilDSwC7ipNw/A=;
+        b=TQ4OdV8XTBqqqEL448NF0DtNzuFmRASCK6Hz65BRxkK1hdFPOIYSYOZD8hjIQ9xMIY
+         gMvyTd0MKzpE9ln2uL6AKrcHf9PtMKi/FxUclc5O1RfRIDG6iVu+CKr0yhPGlMvXMpuv
+         uviXe33vpxBdhYRZL3h+SpUzgfIhCcZPKwIE6c7t4+gUShgMpP21pW7duRvhVNLtEE4/
+         sgCYsevs+6CbUal8Ab1RyIIotbSvu3WPqo4d84C+wi4+BadNXVkv0EUHNSL/oQhtsNa3
+         eyAkLCIS+e09K5Q77JM3Cp2N8GLntQnzMYZKhr1jjw8gzsRvMWHxyUdvquW/f7nLWzsU
+         8JrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVof7TffU2UhmVpaRjgjb3mhOLhPyo4LgY7dBpsG64GqEjQIFW8T9bekaiZ4y3R0r5G8+Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywbtt4je6H/lAdyozQgmpvlSUId/Q3Gz+waCmw0UcY8oJhXL1t0
+	J+ip9+XwZR5XbMMGnvvLELyAQsFrK+bi4rvJOHJeGfumkHjClRijV8xUI8kLj2ynM7U65ezhgI1
+	0dZLYY2FN0dJJpAXyzpI2eABFypPLpMI=
+X-Gm-Gg: ASbGncuYM1oYzsrcisFaY6j95WvAwSy8PKgoZIojMkwVYtg4wHg+U5Ey2KRqiPndFNW
+	ERSROhSFZWTnQhE2XX96p9lU9lrSUJtq4DDmNBR5wmpHklWqkSP+bQxCb+ZI38GZGs1IKRJukNL
+	H/DraOkhg7DBAa+KWKXqLwiyBsEpvKPS4IoaD1gSdFQa9gBPBTYYPQyEdLC/b11Bdm08ok5esxU
+	CIELF/LljXYrIWwTJMt8QTli95oOCJAJVY3DxjWu6yQrtnrkt7fwEETcBYbYHxANlSsYvNN
+X-Google-Smtp-Source: AGHT+IF+7ohZI4+Op+bel5kJzlaYJCoNPGaL19E0E8nDMig+yzOTXd7qPwYdsC2Z5byMRjddwE70q3vZBJBwvUZI2Cs=
+X-Received: by 2002:a17:906:fe4e:b0:b73:4fd4:814f with SMTP id
+ a640c23a62f3a-b76715ac4afmr1247521066b.21.1763986482237; Mon, 24 Nov 2025
+ 04:14:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 10/10] selftests/io_uring: add bpf io_uring selftests
-To: Ming Lei <ming.lei@redhat.com>
-Cc: io-uring@vger.kernel.org, axboe@kernel.dk,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>
-References: <cover.1763031077.git.asml.silence@gmail.com>
- <6143e4393c645c539fc34dc37eeb6d682ad073b9.1763031077.git.asml.silence@gmail.com>
- <aRcp5Gi41i-g64ov@fedora> <82fe6ace-2cfe-4351-b7b4-895e9c29cced@gmail.com>
- <aR5xxLu-3Ylrl2os@fedora> <1994a586-233a-44cd-813d-b95137c037f0@gmail.com>
- <CAFj5m9KfmOvSQoj0rin+2gk34OqD-Bb0qqbXowyqwj16oFAseg@mail.gmail.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAFj5m9KfmOvSQoj0rin+2gk34OqD-Bb0qqbXowyqwj16oFAseg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20251119031531.1817099-1-dolinux.peng@gmail.com>
+ <20251119031531.1817099-4-dolinux.peng@gmail.com> <7c04a6c3010ce41fc7ad0a6b26c94f43dde82593.camel@gmail.com>
+In-Reply-To: <7c04a6c3010ce41fc7ad0a6b26c94f43dde82593.camel@gmail.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Date: Mon, 24 Nov 2025 20:14:28 +0800
+X-Gm-Features: AWmQ_bnjZNCbMO8UWNOa9qpn7UN2K52BI9FDnTXDUhUChkyMG5VwzhfNTWO1Tns
+Message-ID: <CAErzpmsgWK_RBv-DFa=jBvF8vqxUwU86yJhizXyYKc07k6Ys6w@mail.gmail.com>
+Subject: Re: [RFC PATCH v7 3/7] tools/resolve_btfids: Add --btf_sort option
+ for BTF name sorting
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: ast@kernel.org, andrii.nakryiko@gmail.com, zhangxiaoqin@xiaomi.com, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Donglin Peng <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>, 
+	Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/22/25 00:19, Ming Lei wrote:
-> On Sat, Nov 22, 2025 at 12:12 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
-...
->>>
->>> `thread_fn` is supposed to work concurrently from >1 pthreads:
->>>
->>> 1) io_uring_enter() is claimed as pthread safe
->>>
->>> 2) because of userspace lock protection, there is single code path for
->>> producing sqe for SQ at same time, and single code path for consuming sqe
->>> from io_uring_enter().
->>>
->>> With bpf controlled io_uring patches, sqe can be produced from io_uring_enter(),
->>> and cqe can be consumed in io_uring_enter() too, there will be race between
->>> bpf prog(producing sqe, or consuming cqe) and userspace lock-protected
->>> code block.
->>
->> BPF is attached by the same process/user that creates io_uring. The
->> guarantees are same as before, the user code (which includes BPF)
->> should protect from concurrent mutations.
->>
->> In this example, just extend the first critical section to
->> io_uring_enter(). Concurrent io_uring_enter() will be serialised
->> by a mutex anyway. But let me note, that sharing rings is not
->> a great pattern in either case.
-> 
-> If io_uring_enter() needs to be serialised, it becomes pthread-unsafe,
+On Fri, Nov 21, 2025 at 8:18=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Wed, 2025-11-19 at 11:15 +0800, Donglin Peng wrote:
+>
+> [...]
+>
+> > diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
+> > index db76335dd917..d5eb4ee70e88 100644
+> > --- a/scripts/Makefile.btf
+> > +++ b/scripts/Makefile.btf
+> > @@ -27,6 +27,7 @@ pahole-flags-$(call test-ge, $(pahole-ver), 130) +=3D=
+ --btf_features=3Dattributes
+> >
+> >  ifneq ($(KBUILD_EXTMOD),)
+> >  module-pahole-flags-$(call test-ge, $(pahole-ver), 128) +=3D --btf_fea=
+tures=3Ddistilled_base
+> > +module-resolve_btfid-flags-y =3D --distilled_base
+>                                   ^^^^^^^^^^^^^^^^
+> This flag should be guarded by pahole version as well.  However, I'd
+> suggest not adding this flag at all, but instead modify resolve_btfids
+> to check for BTF_BASE_ELF_SEC section existence and acting accordingly.
 
-The BPF program needs to be synchronised _if_ it races. There are
-different ways to sync, including from within the program, but not
-racing in the first place is still the preferred option.
+Thanks, I will remove it in the next version.
 
-> that is why I mentioned this should be documented, because it is one
-> very big difference introduced in bpf controlled ring.
+>
+> >  endif
+> >
+> >  endif
+> > @@ -35,3 +36,4 @@ pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)       =
+       +=3D --lang_exclude=3Drust
+> >
+> >  export PAHOLE_FLAGS :=3D $(pahole-flags-y)
+> >  export MODULE_PAHOLE_FLAGS :=3D $(module-pahole-flags-y)
+> > +export MODULE_RESOLVE_BTFID_FLAGS :=3D $(module-resolve_btfid-flags-y)
+> > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> > index 542ba462ed3e..4481dda2f485 100644
+> > --- a/scripts/Makefile.modfinal
+> > +++ b/scripts/Makefile.modfinal
+> > @@ -40,6 +40,7 @@ quiet_cmd_btf_ko =3D BTF [M] $@
+> >               printf "Skipping BTF generation for %s due to unavailabil=
+ity of vmlinux\n" $@ 1>&2; \
+> >       else                                                            \
+> >               LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) =
+$(MODULE_PAHOLE_FLAGS) --btf_base $(objtree)/vmlinux $@; \
+> > +             $(RESOLVE_BTFIDS) -b $(objtree)/vmlinux $(MODULE_RESOLVE_=
+BTFID_FLAGS) --btf_sort $@;    \
+>                                                                          =
+     ^^^^^^^^^^
+>                                              Agree with Ihor (and off-lis=
+t discussion with Alexei),
+>                                              this flag appears redundant.=
+ Are there situations when
+>                                              one would like to avoid sort=
+ing kernel/module BTF?
 
-That can definitely be mentioned as a guide to users, would be a
-diligent thing to do, but my point is that it doesn't change the
-contract. SQ/CQ are not protected, and it's the users obligation
-to synchronise it. With this set it includes BPF programs the
-user attaches.
+Thanks, I will make sorting unconditional.
 
--- 
-Pavel Begunkov
+>
+> >               $(RESOLVE_BTFIDS) -b $(objtree)/vmlinux $@;             \
+> >       fi;
+>
+> [...]
+>
+> > diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids=
+/main.c
+> > index d47191c6e55e..dc0badd6f375 100644
+> > --- a/tools/bpf/resolve_btfids/main.c
+> > +++ b/tools/bpf/resolve_btfids/main.c
+>
+> [...]
+>
+> > +static int update_btf_section(const char *path, const struct btf *btf,
+> > +                               const char *btf_secname)
+> > +{
+> > +     GElf_Shdr shdr_mem, *shdr;
+> > +     Elf_Data *btf_data =3D NULL;
+> > +     Elf_Scn *scn =3D NULL;
+> > +     Elf *elf =3D NULL;
+> > +     const void *raw_btf_data;
+> > +     uint32_t raw_btf_size;
+> > +     int fd, err =3D -1;
+> > +     size_t strndx;
+> > +
+> > +     fd =3D open(path, O_RDWR);
+> > +     if (fd < 0) {
+> > +             pr_err("FAILED to open %s\n", path);
+> > +             return -1;
+> > +     }
+> > +
+> > +     if (elf_version(EV_CURRENT) =3D=3D EV_NONE) {
+> > +             pr_err("FAILED to set libelf version");
+> > +             goto out;
+> > +     }
+> > +
+> > +     elf =3D elf_begin(fd, ELF_C_RDWR, NULL);
+> > +     if (elf =3D=3D NULL) {
+> > +             pr_err("FAILED to update ELF file");
+> > +             goto out;
+> > +     }
+> > +
+> > +     elf_flagelf(elf, ELF_C_SET, ELF_F_LAYOUT);
+> > +
+> > +     elf_getshdrstrndx(elf, &strndx);
+> > +     while ((scn =3D elf_nextscn(elf, scn)) !=3D NULL) {
+> > +             char *secname;
+> > +
+> > +             shdr =3D gelf_getshdr(scn, &shdr_mem);
+> > +             if (shdr =3D=3D NULL)
+> > +                     continue;
+> > +             secname =3D elf_strptr(elf, strndx, shdr->sh_name);
+> > +             if (strcmp(secname, btf_secname) =3D=3D 0) {
+> > +                     btf_data =3D elf_getdata(scn, btf_data);
+> > +                     break;
+> > +             }
+> > +     }
+> > +
+> > +     raw_btf_data =3D btf__raw_data(btf, &raw_btf_size);
+>
+> `btf__raw_data()` can return NULL.
 
+Thanks, I will fix it.
+
+>
+> > +
+> > +     if (btf_data) {
+> > +             if (raw_btf_size !=3D btf_data->d_size) {
+> > +                     pr_err("FAILED: size mismatch");
+> > +                     goto out;
+> > +             }
+> > +
+> > +             btf_data->d_buf =3D (void *)raw_btf_data;
+> > +             btf_data->d_type =3D ELF_T_WORD;
+> > +             elf_flagdata(btf_data, ELF_C_SET, ELF_F_DIRTY);
+> > +
+> > +             if (elf_update(elf, ELF_C_WRITE) >=3D 0)
+> > +                     err =3D 0;
+> > +     }
+> > +
+> > +out:
+> > +     if (fd !=3D -1)
+> > +             close(fd);
+> > +     if (elf)
+> > +             elf_end(elf);
+> > +     return err;
+> > +}
+>
+> [...]
 
