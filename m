@@ -1,196 +1,207 @@
-Return-Path: <bpf+bounces-75448-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75449-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4DABC84EDA
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 13:12:23 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E2FAC84EE3
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 13:13:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A8833AB220
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 12:12:20 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 875F1342187
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 12:13:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D319931A7E7;
-	Tue, 25 Nov 2025 12:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E85C319852;
+	Tue, 25 Nov 2025 12:13:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gi4UB975"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Lwsxcfxg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D87D23164B1
-	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 12:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D069331A565
+	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 12:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764072736; cv=none; b=lGO771NQhQhIadpM6XGWuFj/HDTbGzGNdJGWlo06iY63zvoXNAOvMg8cpdMhM1/gvFdqzqUhwwb1PbCdXWMXpRX3urLHYpF5yU002hoSG1jyiZGYCUHZ25TOI7uc4xQOE8Uoq7QKQt/wr1h+TcvrO9rWadvkWilXmYWbtgvgC+o=
+	t=1764072783; cv=none; b=pia3Pr02HLHupdap2Bg5N3xzobZILPOEW1ng7pwiaulC/mxZbamsw5vx3x3tb9yxIHoHuWBc65J0gqjhT+cYScaxGp7qKN9hT94RBKEa2RmEdjf1mRHSLtwDZXRngLVEDTzN6xglMN43ASPK6yTzU0V5vrKfLij9cy/TkxtHilQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764072736; c=relaxed/simple;
-	bh=pev9ogNPYVU30rfQsJXKVeBgv7VxCsPTlgbqVP+huIY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Sg7gh0oCuqeAAgLDo0HCgJnyollP1CA/OG9f2XwNacpGGHucUxPj2SHQmhAdYJ0YBzX5weoA+TyF0E7DVFVteoAJrRMOh4vh2nUlnCsom5F7YJOB2ERRMiTh5/cGW5r76Wbk5W8g9zyTXdX2es/5zvqtSeG72nsad+o5RMC+sPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gi4UB975; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-43326c74911so29606255ab.2
-        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 04:12:14 -0800 (PST)
+	s=arc-20240116; t=1764072783; c=relaxed/simple;
+	bh=CwP644Bw/wTUEOIYembKp5pq5/shG4Vtk2t3qMFJQFs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u6ObL/+NMQ9Z89L49drMbclXLi/+DXy4SE9e/cxgZH1b0b1w6MeQgTKKXCRc5g1aEggmfEtspM2yesSb27A2+ejMkfTwawwDq5AOTL8hU3vzM6AjgY08laB0yPaXFKxYA7a57FThP0dE0pDi6TVNoIn+hLGb3nCCjnbiPO40RXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Lwsxcfxg; arc=none smtp.client-ip=209.85.221.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-42b32a3e78bso4502531f8f.0
+        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 04:13:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764072734; x=1764677534; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZFtGiYxAvztdvwpf+MLgwEOytCgQ2niLK9bm/oK5tVo=;
-        b=Gi4UB975dVOFqyxhSTAWaSPBIYznJF7joWAs/DYsI4S2UytuN0HLmK4+7Fx0LkN5ja
-         HoFfDMeK0X4vLvkO9KQte3aNqA09B5D4C1BmTkR+cf4eYZYbpVPiSN9TD0/CMVIVeJGh
-         ClQwMSBCFrqHepE9Tu69LGTeiptAj8qNlEbTOwoZR3h0lE0Our5g8sRjiGiz9FYa5KRt
-         GcrIZrYMzULjGfASKtnBqElsH2TBXxFHnLxW6ZjXbIVVNIR0aqxpy5SAByD8kVMyDTZ9
-         r+H1WKzgQi2G1ED1qGka3fQKDTAhKqD5KCSOZyhOEr4fZ+qNCfw8/A+/YuwmSsPgXTe1
-         sxsQ==
+        d=suse.com; s=google; t=1764072780; x=1764677580; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dxJGiJOjFGbJrN6TdFxredys8Cq/gwxxT5DnbpdfeGc=;
+        b=LwsxcfxgEAna6Ht0IsaXQmq96Syh21XGEqBc4biKD4skz9U1lvY8HZRfndWJY/MxVJ
+         Kig7AMZSgv7Rqf8TAxp2SGyUDvEJpTT31OSc+LyMj7NGJf1CqQ0Meh2zRJ8gmGor7QtN
+         VzBml2H7l3hiXSUxPhPNwI7lNIs//xTfZdO//116PpR1rpbaCcKGBs4TiQy0RlfORian
+         Vujjt7ztosBg63wPPZyEu2XcbMXzMxLAj9pONHFQoLqfPNVjCL0Haur9SgiiKJqwESJ/
+         x3+y4IE12Ori3zag+w7iOMtPN1Xgv3MWabPOkxkVQWxwTwRYozhyVkSHby/1K1pJUmu0
+         DrVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764072734; x=1764677534;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ZFtGiYxAvztdvwpf+MLgwEOytCgQ2niLK9bm/oK5tVo=;
-        b=uve2zSRDZZae2gJC4pSSWd86kySR+HWVyyKy5ICR9RczeE/4VU3LqD8n9UaqsN8uHy
-         3aYtKzZTyiSTi8H63dKh6xg3gguW7QcocLadvFX7Fcha+aGofjyQJSOAgT8RKZRJgKBI
-         AkEOIUHwhJmCsA3QzYaSjLz5Yp3dZC6RAL5Q4QuNdA6A0WwmxRqLwb1BXgkfYxvVWyqu
-         3PQV2QgFqps6DcJGnesqevDZ9CCbDbPR+0q+b0Bub7UnCHbMcjF9Ru1P6nJJUw8wZeCo
-         0ePaPYUVet1eOmpC3q42eSt32Ko1b/HcLCbn73pImCM3obn+CSN8MASrO/zowYo1g5KD
-         Vnhg==
-X-Forwarded-Encrypted: i=1; AJvYcCVAhcDAZyEu6/S7/8HyjZbqY4I7gCpP4EDoOiuXw1kNXrvEuwff3jgVNiEgVIQCRa7/3kM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHa4iW9zjyIE2YaJ4x22wMru8VOyD/e//dbFbepARXBw3Moyrv
-	qdNCIX9H2DFf5SMR6zWKJgUSs6X/mWBogl/0LJIUATl6n9TpEU4c+lB5jHxWyw4X1wsSzaJPbjX
-	J+gJIITVRXxx/rsyXqujTxVLaUViK12I=
-X-Gm-Gg: ASbGncsrstrfKu4f5hnMu+vJOm3xoPjkpgghFad27AiVfMJCAlkz5fcsdM7DyrBYFAQ
-	AypvNwn9Xa7Pl6V/fAeOmNitX07tdIrI8FigsPIqva6QVzLzjAgCwtqu3kQZv1nU5EWpXgep7EO
-	QDOKrHO6Xv0bL7VDfivYaPwaNgbOlb9fzVETxP4Ykhuh72OYIUGtjozv22f9pVJpffg9h49GsIv
-	OXBUuW63NNAAUlgVtblD7Op2Or/Pb1ZFxlfH5y0Nwok2alYYLp8AvurNaV11z2aYAwXMlk=
-X-Google-Smtp-Source: AGHT+IFj50pWIo6x5iCQL08OOz4JENSFrXwvUdhMVT4I2H6EXAl4ZY2y8JgFZGEiS+8jGITLJJzEYSEaFZzZOXGMqI4=
-X-Received: by 2002:a05:6e02:2684:b0:433:2660:6856 with SMTP id
- e9e14a558f8ab-435dd10563amr23401685ab.31.1764072733966; Tue, 25 Nov 2025
- 04:12:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1764072780; x=1764677580;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dxJGiJOjFGbJrN6TdFxredys8Cq/gwxxT5DnbpdfeGc=;
+        b=v0IBcgy/UDtgDVpo4k8SsRvqaA59YDEZlZLooIKo9ittGZSC0JzNPLafU2etfMuDYo
+         IHUgtLqdLG9J6kKYJSaKE0CGgC2AB96oJL82myU5TSNtjlZI0KL0inGpWgdG3ggBbRGt
+         EuqfMg+rdKRsANEuF0NrQONTKEq4pbIvKfDcRx0ZO1NYeSGspiPdfZK0ugzVrZrAaTtu
+         h+pbS4zKCqzzyusvWxOJ7DLDbcj2SKuNFun3P6UwQD/x19G4Yg8ardBKaN+H7CTdLtpG
+         cKMM9L0TvKGUxdfWcUDPFx4GM/jP1SuE26CLqtNUCsyxwqr8iifDUgajBqJRNf09lOVy
+         MvUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUxa6DlBX9HjgB63RZNuPB9rMKW1DjVpYOSs1Kr6WL72G/NihLz+4C2zIy8R9U5Vl4Q0NQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywn0kGgYSQIk76glJvhiqjx3OZNw2yf8iGYhR8cw1xc8ga2SPLL
+	Dfm9yCFn12mDpXz5r98bUkVK2idjo+cyPVVO5XMcJOejMfurU+qDzFY9XELywSjXJnU=
+X-Gm-Gg: ASbGncvgGgQnjzXO4R7IdS/fi+WNH5RiqA4WoooIiFjSe+bYYf8aDeT/3Ox6GEWt5Jl
+	xLBbGmTro3aYhXoxQrknvsXb7bE20wvixxqlqE5OStDn1YnjUay9QMcxmvq9ykqNU8Oozwllq62
+	U3jbTNCB+g5uxoA4o09q6W9zGFj5PFPi1jJMjypOMamLg1qz2VwJFYBa5DIyJnNspguyummwrgW
+	GLaACrO2CCOYdzQJxyL36YgOk4TLozGDMYLn8CWp31LudU0px1S4EjATCrcoevSM1t5nhxgvmTg
+	lkDd7YLFNdULkwMDkeFRdEaGUH3+S62thRKGeQ2Q46wmBN84LZeqBeIbBdHVZiZOYypu3yKIPcM
+	+UGI6lmZzTE6XLEHSLtorUFc8SG4ZCPhhcb47ttWI4N7rcl1qdhv/Bdys473pFfzElDDnXlD0NA
+	eJ8MpVF+PX35+Y4170Ykj0Lkw1
+X-Google-Smtp-Source: AGHT+IEV2rB8yUe2NCUZIw4moQNsZpTQgAmZgRSSfaXojAIWU3YqaEOZQPUbkzKEE+rrVogbayao5A==
+X-Received: by 2002:a05:6000:22ca:b0:42b:30a6:9c10 with SMTP id ffacd0b85a97d-42cc1d22e12mr16592650f8f.56.1764072780019;
+        Tue, 25 Nov 2025 04:13:00 -0800 (PST)
+Received: from localhost (109-81-29-251.rct.o2.cz. [109.81.29.251])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42cb7fa3a81sm34815638f8f.26.2025.11.25.04.12.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Nov 2025 04:12:59 -0800 (PST)
+Date: Tue, 25 Nov 2025 13:12:58 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: hui.zhu@linux.dev
+Cc: Roman Gushchin <roman.gushchin@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>, Kees Cook <kees@kernel.org>,
+	Tejun Heo <tj@kernel.org>, Jeff Xu <jeffxu@chromium.org>,
+	mkoutny@suse.com, Jan Hendrik Farr <kernel@jfarr.cc>,
+	Christian Brauner <brauner@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Brian Gerst <brgerst@gmail.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, Hui Zhu <zhuhui@kylinos.cn>
+Subject: Re: [RFC PATCH 0/3] Memory Controller eBPF support
+Message-ID: <aSWdSlhU3acQ9Rq1@tiehlicka>
+References: <cover.1763457705.git.zhuhui@kylinos.cn>
+ <87ldk1mmk3.fsf@linux.dev>
+ <895f996653b3385e72763d5b35ccd993b07c6125@linux.dev>
+ <aR9p8n3VzpNHdPFw@tiehlicka>
+ <f5c4c443f8ba855d329a180a6816fc259eb8dfca@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251124171409.3845-1-fmancera@suse.de> <CAL+tcoBKMfVnTtkwBRk9JBGbJtahyJVt4g8swsYRUk1b97LgHQ@mail.gmail.com>
- <955e2de1-32f6-42e3-8358-b8574188ce62@suse.de>
-In-Reply-To: <955e2de1-32f6-42e3-8358-b8574188ce62@suse.de>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 25 Nov 2025 20:11:37 +0800
-X-Gm-Features: AWmQ_bn1HqKxmeMumWdZt2g7hzanQzrhSdI8BQoNsUxohGD9VNYG0HAYg4asP_E
-Message-ID: <CAL+tcoD83=UXpDaLZZFU2_EDKJS9ew2njLmoH9xeXcg5+E3UDQ@mail.gmail.com>
-Subject: Re: [PATCH net v6] xsk: avoid data corruption on cq descriptor number
-To: Fernando Fernandez Mancera <fmancera@suse.de>
-Cc: netdev@vger.kernel.org, csmate@nop.hu, maciej.fijalkowski@intel.com, 
-	bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, sdf@fomichev.me, 
-	hawk@kernel.org, daniel@iogearbox.net, ast@kernel.org, 
-	john.fastabend@gmail.com, magnus.karlsson@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f5c4c443f8ba855d329a180a6816fc259eb8dfca@linux.dev>
 
-On Tue, Nov 25, 2025 at 7:40=E2=80=AFPM Fernando Fernandez Mancera
-<fmancera@suse.de> wrote:
->
-> On 11/25/25 12:41 AM, Jason Xing wrote:
-> > On Tue, Nov 25, 2025 at 1:14=E2=80=AFAM Fernando Fernandez Mancera
-> > <fmancera@suse.de> wrote:
-> >>
-> >> Since commit 30f241fcf52a ("xsk: Fix immature cq descriptor
-> >> production"), the descriptor number is stored in skb control block and
-> >> xsk_cq_submit_addr_locked() relies on it to put the umem addrs onto
-> >> pool's completion queue.
-> >>
-> >> skb control block shouldn't be used for this purpose as after transmit
-> >> xsk doesn't have control over it and other subsystems could use it. Th=
-is
-> >> leads to the following kernel panic due to a NULL pointer dereference.
-> >>
-> >>   BUG: kernel NULL pointer dereference, address: 0000000000000000
-> >>   #PF: supervisor read access in kernel mode
-> >>   #PF: error_code(0x0000) - not-present page
-> >>   PGD 0 P4D 0
-> >>   Oops: Oops: 0000 [#1] SMP NOPTI
-> >>   CPU: 2 UID: 1 PID: 927 Comm: p4xsk.bin Not tainted 6.16.12+deb14-clo=
-ud-amd64 #1 PREEMPT(lazy)  Debian 6.16.12-1
-> >>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.17.0-d=
-ebian-1.17.0-1 04/01/2014
-> >>   RIP: 0010:xsk_destruct_skb+0xd0/0x180
-> >>   [...]
-> >>   Call Trace:
-> >>    <IRQ>
-> >>    ? napi_complete_done+0x7a/0x1a0
-> >>    ip_rcv_core+0x1bb/0x340
-> >>    ip_rcv+0x30/0x1f0
-> >>    __netif_receive_skb_one_core+0x85/0xa0
-> >>    process_backlog+0x87/0x130
-> >>    __napi_poll+0x28/0x180
-> >>    net_rx_action+0x339/0x420
-> >>    handle_softirqs+0xdc/0x320
-> >>    ? handle_edge_irq+0x90/0x1e0
-> >>    do_softirq.part.0+0x3b/0x60
-> >>    </IRQ>
-> >>    <TASK>
-> >>    __local_bh_enable_ip+0x60/0x70
-> >>    __dev_direct_xmit+0x14e/0x1f0
-> >>    __xsk_generic_xmit+0x482/0xb70
-> >>    ? __remove_hrtimer+0x41/0xa0
-> >>    ? __xsk_generic_xmit+0x51/0xb70
-> >>    ? _raw_spin_unlock_irqrestore+0xe/0x40
-> >>    xsk_sendmsg+0xda/0x1c0
-> >>    __sys_sendto+0x1ee/0x200
-> >>    __x64_sys_sendto+0x24/0x30
-> >>    do_syscall_64+0x84/0x2f0
-> >>    ? __pfx_pollwake+0x10/0x10
-> >>    ? __rseq_handle_notify_resume+0xad/0x4c0
-> >>    ? restore_fpregs_from_fpstate+0x3c/0x90
-> >>    ? switch_fpu_return+0x5b/0xe0
-> >>    ? do_syscall_64+0x204/0x2f0
-> >>    ? do_syscall_64+0x204/0x2f0
-> >>    ? do_syscall_64+0x204/0x2f0
-> >>    entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> >>    </TASK>
-> >>   [...]
-> >>   Kernel panic - not syncing: Fatal exception in interrupt
-> >>   Kernel Offset: 0x1c000000 from 0xffffffff81000000 (relocation range:=
- 0xffffffff80000000-0xffffffffbfffffff)
-> >>
-> >> Instead use the skb destructor_arg pointer along with pointer tagging.
-> >> As pointers are always aligned to 8B, use the bottom bit to indicate
-> >> whether this a single address or an allocated struct containing severa=
-l
-> >> addresses.
-> >>
-> >> Fixes: 30f241fcf52a ("xsk: Fix immature cq descriptor production")
-> >> Closes: https://lore.kernel.org/netdev/0435b904-f44f-48f8-afb0-6886847=
-4bf1c@nop.hu/
-> >> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> >> Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
-> >
-> > Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
-> >
-> > Could you also post a patch on top of net-next as it has diverged from
-> > the net tree?
-> >
->
-> I think that is handled by maintainers when merging the branches. A
-> repost would be wrong because linux-next.git and linux.git will have a
-> different variant of the same commit..
+On Fri 21-11-25 02:46:31, hui.zhu@linux.dev wrote:
+> 2025年11月21日 03:20, "Michal Hocko" <mhocko@suse.com mailto:mhocko@suse.com?to=%22Michal%20Hocko%22%20%3Cmhocko%40suse.com%3E > 写到:
+> 
+> 
+> > 
+> > On Thu 20-11-25 09:29:52, hui.zhu@linux.dev wrote:
+> > [...]
+> > 
+> > > 
+> > > I generally agree with an idea to use BPF for various memcg-related
+> > >  policies, but I'm not sure how specific callbacks can be used in
+> > >  practice.
+> > >  
+> > >  Hi Roman,
+> > >  
+> > >  Following are some ideas that can use ebpf memcg:
+> > >  
+> > >  Priority‑Based Reclaim and Limits in Multi‑Tenant Environments:
+> > >  On a single machine with multiple tenants / namespaces / containers,
+> > >  under memory pressure it’s hard to decide “who should be squeezed first”
+> > >  with static policies baked into the kernel.
+> > >  Assign a BPF profile to each tenant’s memcg:
+> > >  Under high global pressure, BPF can decide:
+> > >  Which memcgs’ memory.high should be raised (delaying reclaim),
+> > >  Which memcgs should be scanned and reclaimed more aggressively.
+> > >  
+> > >  Online Profiling / Diagnosing Memory Hotspots:
+> > >  A cgroup’s memory keeps growing, but without patching the kernel it’s
+> > >  difficult to obtain fine‑grained information.
+> > >  Attach BPF to the memcg charge/uncharge path:
+> > >  Record large allocations (greater than N KB) with call stacks and
+> > >  owning file/module, and send them to user space via a BPF ring buffer.
+> > >  Based on sampled data, generate:
+> > >  “Top N memory allocation stacks in this container over the last 10 minutes,”
+> > >  Reports of which objects / call paths are growing fastest.
+> > >  This makes it possible to pinpoint the root cause of host memory
+> > >  anomalies without changing application code, which is very useful
+> > >  in operations/ops scenarios.
+> > >  
+> > >  SLO‑Driven Auto Throttling / Scale‑In/Out Signals:
+> > >  Use eBPF to observe memory usage slope, frequent reclaim,
+> > >  or near‑OOM behavior within a memcg.
+> > >  When it decides “OOM is imminent,” instead of just killing/raising
+> > >  limits, it can emit a signal to a control‑plane component.
+> > >  For example, send an event to a user‑space agent to trigger
+> > >  automatic scaling, QPS adjustment, or throttling.
+> > >  
+> > >  Prevent a cgroup from launching a large‑scale fork+malloc attack:
+> > >  BPF checks per‑uid or per‑cgroup allocation behavior over the
+> > >  last few seconds during memcg charge.
+> > > 
+> > AFAIU, these are just very high level ideas rather than anything you are
+> > trying to target with this patch series, right?
+> > 
+> > All I can see is that you add a reclaim hook but it is not really clear
+> > to me how feasible it is to actually implement a real memory reclaim
+> > strategy this way.
+> > 
+> > In prinicipal I am not really opposed but the memory reclaim process is
+> > rather involved process and I would really like to see there is
+> > something real to be done without exporting all the MM code to BPF for
+> > any practical use. Is there any POC out there?
+> 
+> Hi Michal,
+> 
+> I apologize for not delivering a more substantial POC.
+> 
+> I was hesitant to add extensive eBPF support to memcg
+> because I wasn't certain it aligned with the community's
+> vision—and such support would require introducing many
+> eBPF hooks into memcg.
+> 
+> I will add more eBPF hook to memcg and provide a more
+> meaningful POC in the next version.
 
-But this patch cannot be applied cleanly in the net-next tree...
-
->
-> Please, let me know if I am wrong here.
-
-I'm not quite sure either.
-
-Thanks,
-Jason
-
->
-> Thanks,
-> Fernando.
+Just to make sure we are on the same page. I am not suggesting we need
+more of those hooks. I just want to see how many do we really need in
+order to have a sensible eBPF driven reclaim policy which seems to be
+the main usecase you want to puruse, right?
+-- 
+Michal Hocko
+SUSE Labs
 
