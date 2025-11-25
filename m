@@ -1,191 +1,112 @@
-Return-Path: <bpf+bounces-75465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 248FBC855E5
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 15:21:12 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 097B7C8565C
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 15:24:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 35F584E9B04
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 14:20:40 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BF5F24E9896
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 14:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD26251791;
-	Tue, 25 Nov 2025 14:20:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E063254B8;
+	Tue, 25 Nov 2025 14:24:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BUofbZPJ"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="QF8YmHXR"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8967231BC84
-	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 14:20:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95844320CC9
+	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 14:23:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764080437; cv=none; b=rShrO50yy2+lD2P52rUGXJfQvXE3/+D7o54so/I+/mgVtSTGfIHGCFfGp4qs8LKi4W36ItDLVKWaDEibwdlwaVLJEWbpcAxjnQ1QcaaLGc7e8LyZHty8TiDdJr6YXpVZTIlXh8JdNprv/FYfET14gzaq+FTWIT9WCN7WasmotGU=
+	t=1764080640; cv=none; b=CQa+tb9Y/eeel57f6YnwlHdGCRqewjkBFUe1v2cYfuVlDgSIhAYWjxVzrf6uXuJLRjfCCF7vlemWRRgw5xkkTDyIh1GGBzX7jliDVjcN6k3zmPWk5TQpVdi8AgURtrvOKG5Ss/1Xq6ev87aiPPdLP6H3/SOrbu4xzufrMSPiCvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764080437; c=relaxed/simple;
-	bh=FVWgm6IR64KdZqW5wn34sRh+Agl3EA0xjeErXlSlH8w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LYClk8e61UTqg0Bdv9e3NRWbnfmj7RmFPIo0mAlHxv6ggTCD6qCMfmcFIGkTC2XIIvPPhKbzAqL0EgZXPw2H15glS3uoXnh4oK4W+f8LiP/AggSYINfa1e63O5RoL7DGiTO2aETvGyCClJTrSvBoI+EWlbCIRLtQJU4voZ2m+aU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BUofbZPJ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1764080434;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YuFgUmjsDWh/qL+V41JU00YVr6Y4jXOaLXN3q6tAOfs=;
-	b=BUofbZPJsC/r7/YsfzMoHMbJ9LHswcHw+0sRuQn421XTqlDUUhxw5tXhlXi+aG15PZXSo3
-	oqzSxaVvIbF8v2HsuhtkjIVdAl2sjQQfm4Qwm7os+CfgOkKStZQWWy9xUQ13BfAd4Y5Hly
-	ZfcxO4AQcm9KywHhQ48jgY13C8C8aV0=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-258-yEAsKtFBOZCx9q8ZyxvrtA-1; Tue, 25 Nov 2025 09:20:32 -0500
-X-MC-Unique: yEAsKtFBOZCx9q8ZyxvrtA-1
-X-Mimecast-MFC-AGG-ID: yEAsKtFBOZCx9q8ZyxvrtA_1764080431
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-59436279838so6283085e87.0
-        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 06:20:32 -0800 (PST)
+	s=arc-20240116; t=1764080640; c=relaxed/simple;
+	bh=6LqfH0zJp1SrXC9x7HOD/hDkEmKu/xLJPb3kSuBSxAE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=KM3Dsuxnq/H2giIgvxb77hf/e3je3erQjr4UJiAGbt2sQRKVuV/HzizRyDVc7ORz9ZIiB6MAVRw84XfwscdcvdtPxQmsuCO0ysN4b6YWkhh/XCcYenhscW12cqef+nv4E6AF47jw6V5bLAlyhLDTLWn6Y9tRjwyMGsLDCgw+6/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=QF8YmHXR; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b7277324054so825869666b.0
+        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 06:23:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1764080637; x=1764685437; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6LqfH0zJp1SrXC9x7HOD/hDkEmKu/xLJPb3kSuBSxAE=;
+        b=QF8YmHXRAWwk0dH6yrLCnzq0GFv49raJy1vcOv1Blu+pbbXsfK/mgDx5z2QWsgBl6k
+         7nfVdrhbGI/gH0u7iXWIFqb/WiwIrnJb5vcqLtrMKmWc4m694J2scWRECp8hgtwdmIet
+         HpfkMusoKmG109uW7Ftg00rMvp6ZQaKhO7ithytjblJClmjtLIL7KF3yfZfOltHOgPAd
+         eGgHFiIIat2/xdCdv7nkW1b6+YcHjHrc5llZYzanDfQtWmJC/QzVoNsuaydkdt2xgMQD
+         Q4PQ/Syg9HAwRpFEBsAhSOiy69SVJTbBhNDx2IN0pBy5ndDUEAeK5uk+eHgEMVbYLY17
+         9PbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764080431; x=1764685231;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=YuFgUmjsDWh/qL+V41JU00YVr6Y4jXOaLXN3q6tAOfs=;
-        b=c8LNzLHT7J2QM/frKXcvc2FM1pMJMYVxOGxibv5sDGJ0me2R15b3hgoF0xub/Qi3j3
-         zowDwGyJDc+cMmDQKReO4JSpFoIt6rVHgz1zwUnSAANXvAvyQb1B9V71tC4plEwPoox4
-         dituuuUOT4vPJ196j3ATvpQOlGfmvDJOP23vhQ6EPSj2NwA8ykHcvBfCGwTwVsrhLieu
-         48Rg1gBwFWValEqOwbDowYQTi9DX7AHUitRPeO29ZTTbLVoYfslZ2S1F2MK3gxN4Lsl1
-         dwLtsLzkTxz4HEXR8PXDsSegy2ZMQd8aXgdocTXVKpK+iRdh3kSUtv6ud6PEWBtnZEVI
-         xPdA==
-X-Forwarded-Encrypted: i=1; AJvYcCXCEBLSBxyisHeym6MI9rmX1UzH1B5Y1V7BmmZAW+eA+2gfSssg/i+4lOPLN+vRwBg0944=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxmPLIhEk21USg46BFj6oDxyV2v1kx/PfhUBubKxXunCPvyUhxq
-	ju68LavcaMQiiGRAGdKZztdqVGzZ+6ALxQCD5X6CICeACwzZGRQsJCfjlvlsltom5PwLt4LJgZ1
-	WjVBnXhhqHHXvOWPlxeKnORYS2+cHPQ7Vr/YmLxMmQyGELhwt+gOh+oIKDDMMn9SMs9OQP4HCsH
-	muX+dcU++kUa7TTFZcV1v6qCwGR1Hj
-X-Gm-Gg: ASbGnctuZapQQ6ffvt/TGmNJYQWcZDXhSq1PSo7AzG7H9oyjh6NOFY7gt1ulacdgJYi
-	6NwKIIumPLgiIsOL5dZITto8f4sHzP8nX9Reu9OcB7pXPvZ1ABET41AbMseiipT92Z1OcnedrU2
-	siy1EaKLmquG99pBc6G92mxaDUgkK4DNfq2BRLsiGGxbG3jqpghGIDtXfKlhtiKsGGtg==
-X-Received: by 2002:a05:6512:158f:b0:595:840c:cdd0 with SMTP id 2adb3069b0e04-596a3ea6320mr5165600e87.2.1764080431286;
-        Tue, 25 Nov 2025 06:20:31 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGK7mkjTE8tfDwtcmLLKnCvTrS/LKgN9IW6L4nU8sopNQNGJ5FyT1zqAip/JpWy9Us5ih/Twipu9As0QwWcY3k=
-X-Received: by 2002:a05:6512:158f:b0:595:840c:cdd0 with SMTP id
- 2adb3069b0e04-596a3ea6320mr5165586e87.2.1764080430839; Tue, 25 Nov 2025
- 06:20:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1764080637; x=1764685437;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6LqfH0zJp1SrXC9x7HOD/hDkEmKu/xLJPb3kSuBSxAE=;
+        b=VYf3NcRMHiR3Wbrcum6FmHNr0H9M2FREZKyXLi5HjV7OGE/JTWBQL3CKzIRJLYtpQ5
+         k6v07yDeGWwSSWCfOKBUjSFiobCzvyk9nZuirDFCf4ZCgeislkFogugfGmoeAOFc8TyF
+         rr+TWuJNTxlH2fO6T/EnEBOsjE0IkyWm6Msp6CnACbwUsqmF2stlufohxnENhum+xuwc
+         B9GvVtmAtysuxhN7YohQaWYmXJg1MxpX88rRTx92MOggpOpQij/wccQ1cljHkC7s/6CC
+         8eeUE6onODiDjjB3L3qLO2nIEmMBQHlPCtHr6Lv4lb6j9kKnC4T0tKYNAl1DoAD4uuiy
+         JqNg==
+X-Gm-Message-State: AOJu0Yx/vvVLQJrV10/1zq+QtQ76KEf2Pn/OEVm8oOxhXv7R/Bbhg4wO
+	ITtSrqJeyAIS6FrJd33rjRsHd+Lpowvnlx9AYm+pC36KkdCUgKITYDn5pvizsjOMlG4=
+X-Gm-Gg: ASbGncsJ7VVnpOXacX5huTCqZYui6Ny3WDwh40cfZr79dymtDCnv5y4EH2UQwmEWYLt
+	DbJJx2KhlUZKY3TeTnJaSyny3+j79BgfRSFfk2vaxDpawQ1Q57V6pV6SVA7RqJpFT3jx+C8S9n/
+	5RW9d6VymCCl5P1QfUcA5RMF1xvlJ8t7vUD1lfL28FSvwdOU5Cg2wmJ/86nUBshEbxiINYMaPxU
+	TvIwX/kZj9X7CSg/s3Hl3VghLpHM65+fZQoxOzGpr0Vofa3nExaDmswrjIZJaksaiiyUXzsF/IQ
+	VJKmNxzgNH1rePxe3TptBSv0+F/nbHn+xXUSO+ZJKCl0nMJyRQjb6+DpIq4A50TGci09ZoZfDme
+	U/G0LqgSUNpgDcTpDwJuMVJ+tEEskr1asjYPQRtsYYag3VVjcL9+QA6Zj6UXn9eX1Q/CQWbM2T3
+	DVhaJNgDIChJDiqw==
+X-Google-Smtp-Source: AGHT+IGsyvKHdORKwFth+3NCAwQtMjuvaLmVXYSXCUsqAqneazOk5U0n4dygLYxdjqbi1pYRvYvXyw==
+X-Received: by 2002:a17:906:b4a:b0:b73:53ab:cfa1 with SMTP id a640c23a62f3a-b76715ab9ebmr1277500966b.17.1764080636819;
+        Tue, 25 Nov 2025 06:23:56 -0800 (PST)
+Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:46])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b7654ce15e7sm1627635166b.8.2025.11.25.06.23.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Nov 2025 06:23:56 -0800 (PST)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: bot+bpf-ci@kernel.org
+Cc: bpf@vger.kernel.org,  netdev@vger.kernel.org,
+ kernel-team@cloudflare.com, martin.lau@linux.dev, ast@kernel.org,
+ andrii@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+ eddyz87@gmail.com, yonghong.song@linux.dev, clm@meta.com,
+ ihor.solodrai@linux.dev
+Subject: Re: [PATCH RFC bpf-next 15/15] bpf: Realign skb metadata for TC
+ progs using data_meta
+In-Reply-To: <4d340abe294ac0290710c745f5f48bfb89b12ed3ac2be1c2df6d85848b45724f@mail.kernel.org>
+	(bot's message of "Mon, 24 Nov 2025 16:58:04 +0000 (UTC)")
+References: <20251124-skb-meta-safeproof-netdevs-rx-only-v1-15-8978f5054417@cloudflare.com>
+	<4d340abe294ac0290710c745f5f48bfb89b12ed3ac2be1c2df6d85848b45724f@mail.kernel.org>
+Date: Tue, 25 Nov 2025 15:23:55 +0100
+Message-ID: <87cy565gxw.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251117184409.42831-1-wander@redhat.com> <20251117184409.42831-8-wander@redhat.com>
- <fb5b468b38ac9570a5f3fb948452d1b5b03c9f9c.camel@redhat.com>
-In-Reply-To: <fb5b468b38ac9570a5f3fb948452d1b5b03c9f9c.camel@redhat.com>
-From: Wander Lairson Costa <wander@redhat.com>
-Date: Tue, 25 Nov 2025 11:20:19 -0300
-X-Gm-Features: AWmQ_bmz7MJciJqDQz8Mppekett5WnLxv9QLQUUdHlfTABxmQ5nou0kEG_PqHmM
-Message-ID: <CAAq0SUn=eK+9YZZhdL_bs0S2cfVMhuuV-v8DSRMkTOqoL=SEWA@mail.gmail.com>
-Subject: Re: [rtla 07/13] rtla: Introduce timerlat_restart() helper
-To: Crystal Wood <crwood@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Tomas Glozar <tglozar@redhat.com>, 
-	Ivan Pravdin <ipravdin.official@gmail.com>, John Kacur <jkacur@redhat.com>, 
-	Costa Shulyupin <costa.shul@redhat.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	"open list:Real-time Linux Analysis (RTLA) tools" <linux-trace-kernel@vger.kernel.org>, 
-	open list <linux-kernel@vger.kernel.org>, 
-	"open list:BPF [MISC]:Keyword:(?:\\b|_)bpf(?:\\b|_)" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Mon, Nov 24, 2025 at 9:46=E2=80=AFPM Crystal Wood <crwood@redhat.com> wr=
-ote:
+On Mon, Nov 24, 2025 at 04:58 PM GMT, bot+bpf-ci@kernel.org wrote:
+> This appears to fix the bug introduced by commit 016079023cef ("net:
+> Track skb metadata end separately from MAC offset"). Should this include
+> a Fixes: tag?
 >
-> On Mon, 2025-11-17 at 15:41 -0300, Wander Lairson Costa wrote:
+> The earlier commit message explicitly noted: "Note that this breaks BPF
+> skb metadata access through skb->data_meta when there is a gap between
+> meta_end and skb->data. Following BPF verifier changes address this."
 >
-> > +enum restart_result
-> > +timerlat_restart(const struct osnoise_tool *tool, struct timerlat_para=
-ms *params)
-> > +{
-> > +     actions_perform(&params->common.threshold_actions);
-> > +
-> > +     if (!params->common.threshold_actions.continue_flag)
-> > +             /* continue flag not set, break */
-> > +             return RESTART_STOP;
-> > +
-> > +     /* continue action reached, re-enable tracing */
-> > +     if (tool->record && trace_instance_start(&tool->record->trace))
-> > +             goto err;
-> > +     if (tool->aa && trace_instance_start(&tool->aa->trace))
-> > +             goto err;
-> > +     return RESTART_OK;
-> > +
-> > +err:
-> > +     err_msg("Error restarting trace\n");
-> > +     return RESTART_ERROR;
-> > +}
->
-> The non-BPF functions in common.c have the same logic and should also
-> call this.  This isn't timerlat-specific.
->
+> This commit is one of those follow-up changes that addresses the
+> breakage.
 
-I will replace them here, thanks.
-
->
-> > diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtl=
-a/src/timerlat_hist.c
-> > index 09a3da3f58630..f14fc56c5b4a5 100644
-> > --- a/tools/tracing/rtla/src/timerlat_hist.c
-> > +++ b/tools/tracing/rtla/src/timerlat_hist.c
-> > @@ -1165,18 +1165,19 @@ static int timerlat_hist_bpf_main_loop(struct o=
-snoise_tool *tool)
-> >
-> >               if (!stop_tracing) {
-> >                       /* Threshold overflow, perform actions on thresho=
-ld */
-> > -                     actions_perform(&params->common.threshold_actions=
-);
-> > +                     enum restart_result result;
-> >
-> > -                     if (!params->common.threshold_actions.continue_fl=
-ag)
-> > -                             /* continue flag not set, break */
-> > +                     result =3D timerlat_restart(tool, params);
-> > +                     if (result =3D=3D RESTART_STOP)
-> >                               break;
-> >
-> > -                     /* continue action reached, re-enable tracing */
-> > -                     if (tool->record)
-> > -                             trace_instance_start(&tool->record->trace=
-);
-> > -                     if (tool->aa)
-> > -                             trace_instance_start(&tool->aa->trace);
-> > -                     timerlat_bpf_restart_tracing();
-> > +                     if (result =3D=3D RESTART_ERROR)
-> > +                             return -1;
->
-> Does it matter that we're not detaching on an error here?  Is this
-> something that gets cleaned up automatically (and if so, why do we ever
-> need to do it explicitly)?
->
-
-On process exit, it does.
-
-> > +
-> > +                     if (timerlat_bpf_restart_tracing()) {
-> > +                             err_msg("Error restarting BPF trace\n");
-> > +                             return -1;
-> > +                     }
->
-> [insert rant about not being able to use exceptions in userspace code in
-> the year 2025]
->
-
-I actually find exceptions an anti-pattern. Modern languages like Zig,
-Go and Rust came back to error returning.
-
-> -Crystal
->
-
+False-positive feedback, naturally. Both breaking change and the fix
+belong to the same patch series, so Fixes tagging rules don't apply.
 
