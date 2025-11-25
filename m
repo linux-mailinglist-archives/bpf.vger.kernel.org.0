@@ -1,261 +1,155 @@
-Return-Path: <bpf+bounces-75508-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75509-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EEADC87742
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 00:21:26 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66228C87757
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 00:26:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 017B23B5552
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 23:21:25 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D9C744E40FC
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 23:26:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 954882F068C;
-	Tue, 25 Nov 2025 23:21:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287E32F0676;
+	Tue, 25 Nov 2025 23:26:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CoVFZyZc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fkKNglA1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-yx1-f52.google.com (mail-yx1-f52.google.com [74.125.224.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C90232785
-	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 23:21:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE7E232785
+	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 23:26:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764112879; cv=none; b=lf9lGcTFSEi3BaehcWKSPyAbfsj1TYi7F8qhXedwy8Ommaltj9DXfUKBjhKb30Zz11gxbPv15tZuwLOX0fsXG9vx/PvkrZvhKaTJ1r1wCT4nWpWTCbIhmG8r77bJ9OPlhsCR1t1pHZSEbV8lVDJFzKjin910ox8QFa8N0MSH0T0=
+	t=1764113181; cv=none; b=IBLRenM92Fh/MqRjSd3+KFCpZynTgpACej/Mk+zJl5WL/VjMxgiZNk68QWvfwYNY9z8enNyOqg20tIbZx36+SfRC6rMgvlR0+hGRgDMMW2ZyHLBhvYMj0QMwI09qxj685Ujpbwq2VVghayZsMiX2SnLMxFheC1VMg2gpyQD5ZFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764112879; c=relaxed/simple;
-	bh=ixdjz/lGdTrJVZQtJSefqkGpGRZIOsnVcZFxk7Y/X+A=;
+	s=arc-20240116; t=1764113181; c=relaxed/simple;
+	bh=siFQ1bf0s/fpNy34d93TDtRfWB2PuZZkA0RO/cP3mWQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nQE5llCLmD+32w5yd0W3lDxselLrMxd7xg5hSNqv+NLF6x5HqdcyX0l3VSLmoVwgXeIRHBw1E3xWaXr5U25qrE3kYYzWZBofpEhpyb/jCl4WTqW2AyVIpT6aJrXA3C/e/5TcGDjij7r4Er3aAILSjICsMN1bOg7OfMZM0ex5W+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CoVFZyZc; arc=none smtp.client-ip=209.85.128.46
+	 To:Cc:Content-Type; b=CMHOEdOBClhV/cnKeR2HXhz5AZNljnz1422s0jRuwMgfBWre5u/4wzwFPygljAXHxNB+Vdtk+riKPvIqSEASjBM/DkYMoG3xlIVTyviu+/CFbi4xCzHOz1n6U0QmzoLxo+p8Wk8oiDiwU4lxfomprBOsnlsohgpKr/SuEK06lhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fkKNglA1; arc=none smtp.client-ip=74.125.224.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-477b5e0323bso1755495e9.0
-        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 15:21:17 -0800 (PST)
+Received: by mail-yx1-f52.google.com with SMTP id 956f58d0204a3-642f3bab0c8so4390550d50.0
+        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 15:26:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764112875; x=1764717675; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764113179; x=1764717979; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OkxQBqbD1/JuOSygAWMRrM27Y5Xe0IPLQCwbELxwSlQ=;
-        b=CoVFZyZcNtyndRPVTE1AbiV5HwuwUBS9NWe/59klivKR9Aaww2DmHJCa9ah1wEheAP
-         Cnmlqa3IaTQkiXGyv2JCh/eKH2saMoVyYonGVjAGjGWEmYmPHRd8g8Qz+M+QgG0byrXE
-         uGpmpEUfehoReJxYBEmF9pgf1cUwYSIpDG40KzHq2YzO0u6HinYw5Y4dmo9W6h2T9dZ4
-         cIm7pKoNtk41yHJwaVHlaX41Zlj/kucmweOJNkoGvAeEJ0Lka39jP0wCY9KPIUvfxOPW
-         04nJZnok4iTH8Rlaj3eKouJDRC6ezNZJjfMX6cgSb/l3vq7XCrrO+xyRXbJANeLxX4qD
-         T/Xw==
+        bh=elr8aIjn47xOg/+VM5F97jLdZTnycMz0MA5pcIR09Z0=;
+        b=fkKNglA1mZm5bbjWIsgLOjBFVr1fHDQ8TPNXs0mmnO+SAZIspk2baYKlwUsr+E9QoC
+         4qZHy9f056pVimKfoJ8+NYYiX7IukHhnjwgdOCqJMkUqGIksysQeb33LmPXyiIeROEdR
+         zUZKlMcTOoTdD4d8ZsZ1HKHEsVsthC5XR2fCG8dKWWmNfEPpu2ffARlak0YJ/PApGZGc
+         I7c/LpamIJ5DriJDXM8wgfGq4usSNM9WNJjhyUIgbrmwm1QfuI9vvb4Cg8P6k2E6ev3D
+         T4kpM9G+3plBp+ru0IfSE0LalOVL9a+GV9P4C5/HjGjjoZ+qwMeRVk0eoAvxDmxvIk9x
+         5Phg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764112875; x=1764717675;
+        d=1e100.net; s=20230601; t=1764113179; x=1764717979;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=OkxQBqbD1/JuOSygAWMRrM27Y5Xe0IPLQCwbELxwSlQ=;
-        b=ow8hh6OUjzB7gUzdyKOdoStf6k8XapVHNuBc4DA7WExFYRbH6wblryZVHv8PZ+d1nj
-         I1Qv78xJBoLf9fD67cbTqfr7qVzG8aVVZT4CddedR923LVBU9enkkCBts9QBFlKyepti
-         TUE792LW1v+iGEWNwPeNlueTS1xm65k5s40OqD7o4JvPMTh1QVu16hALhSPrUnqAjp54
-         AlsOFDbB50FnsQFD0VLC4uSpkuwLmjIDyEslNvIiufHiesalsAwyt0KBgDa/r8zAtUJt
-         /EK5MsURViFgfps2I9Lsime6rFfEau7lL680FpA3V7z2ocNkUm2I7+fyuVCdbxZbl/pW
-         p0kQ==
-X-Gm-Message-State: AOJu0Yyx9bXFWxoJEsBxy5N+ASeUHVzVVVYaazkUF75xN2q4M9A8fX/h
-	AGg90N4ulw9vi7LcrTpW0EXGFI09CEdD5cUIWqttBWkZH0LYoYqBIWJBc/VqmwhpmQufbRMCHXf
-	9t1pXI5pgVdpCYPrJ33p6we7FJyyGn14=
-X-Gm-Gg: ASbGncsPOO9obdLhnHX4UifUuTExBWEY8yiMNJXjwMcMGJ+c7Bcapd4GngpndttcOFu
-	/U1wcxPnSk3J5slJ91kbn21h8zj3sfcYeM1DC3J2og588UJIguhbpCqtZ5G9SeDh9yQR9slgk9d
-	VfXsGUbKyCrJu9TKlyy8I17mXuMHsqs9Vvv50DJ80GUG1HQFUxcga4q5eUtFmrcfRLLwZGWHP6J
-	o9hsm/qYOdAamW8WBcZHwMWup4n7r5SyZYSxxfzSWDnals6upYafnB6zTVhXlnz3aWSzgnti38n
-	Q8vj/Qu1YSyz9Wt6e01d0buTAU7b
-X-Google-Smtp-Source: AGHT+IHpsa6m5s+OcFlKFSEdPJn+Zr1doCCS5y/jRcYPMbR2ruY/x2rwTEg2Gp9lw28vekpJgO5KF4Y4qqmH4kVNTRA=
-X-Received: by 2002:a5d:5d88:0:b0:3e7:428f:d33 with SMTP id
- ffacd0b85a97d-42cc135db29mr18718124f8f.16.1764112875269; Tue, 25 Nov 2025
- 15:21:15 -0800 (PST)
+        bh=elr8aIjn47xOg/+VM5F97jLdZTnycMz0MA5pcIR09Z0=;
+        b=OekPdzQI2QU/hddp4irJu7FN31f4iEQqq5g3HnCmIb7nxN/nTlCtNhCeePR06C4BLS
+         3lVPRIu8b97VRhBqJxKaT2ad93WMx1lYRmX+oaHQ4QTZYv4TzuVakaAcuWVso50mXXcX
+         CWqKcV/K0zfLbeFWBu3bo0sPIInk0kCpnVqrXZpFUMBfklU+narmBIsr8zjJ6xyrBXh3
+         qDUqy/67iWuPes0LO9xZpIf+YyksRY6nk8XRObvhdJJLR60fARfpeFe0wDSkTmGa+zDj
+         bmSczmxBO5Vb+IxLwPqt1SHSuq3oPlr4La8PQYCYJyUCBNm5/2P3ByTFkbrbJp6/WIhv
+         2fbA==
+X-Forwarded-Encrypted: i=1; AJvYcCXikZbC+b6SbYlbisr0oandAKInZtWcxCJLHrV1l11VxFEKduJ7HOLQTL32OxxbbRELd9s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxObyVB5ZTJVR3xog+Fot3qihgN/rmeSPmnyJ9QPkQL0kqbD/pq
+	2gEvZE1bNXRCQxQQV823N19MmthujZExfc6LEzJaAsf8qR/U5pLgAIEmjVjPfCE8U1wI4hwO/+c
+	DQE/ik1PSRCnphw/JEQoOdRxW/Vmr9Es=
+X-Gm-Gg: ASbGncv2oiMO5tpG8fF5S1mPlpkCeAQlfLXmboV2m1wT58BGOmd59qchbgQCM6z9TcZ
+	rmgFrlJFufv+o1Ag8hkSjqZmCpQETEwKe7xWs2Gjzp9VFkVnp9tkxX01UxCChuv2YXfpHkyhao4
+	5cuK02EDBNLlbNjk7dxUxRhzrnLGPMTTiVoVBMHnv+hWIN44SPql+MPlKq6Jd92dBRYXs3DLv+b
+	Y6UucgjF5zBOfLjnmUBXzWGqb1yWNMh8516KamRc4OLlg7LsRxmEkc+AHCTcNj+NwAmB6c=
+X-Google-Smtp-Source: AGHT+IE3eCaRjYpZKUWkOF6wFH9GEckxUjQVdkjJcXz+POjmJS+rY4/6g1wD4JITBMKqhJ+TwKhAOsBetH3+KVItBTA=
+X-Received: by 2002:a05:690e:2513:20b0:641:f5bc:696c with SMTP id
+ 956f58d0204a3-64302aed76fmr9794391d50.72.1764113178814; Tue, 25 Nov 2025
+ 15:26:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251125145857.98134-1-leon.hwang@linux.dev> <20251125145857.98134-3-leon.hwang@linux.dev>
-In-Reply-To: <20251125145857.98134-3-leon.hwang@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 25 Nov 2025 15:21:04 -0800
-X-Gm-Features: AWmQ_bmB_4Aa-Z_uNUEFFbiGYz-C8c50-S9BMrQhpOQTRRB7ECxDwHkzQdgzuJU
-Message-ID: <CAADnVQKuWrS57niXtr-xu4daR=GvnZORa+X2gHkDbsDZ3qyveQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v11 2/8] bpf: Introduce BPF_F_CPU and
- BPF_F_ALL_CPUS flags
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Daniel Xu <dxu@dxuuu.xyz>, =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Shuah Khan <shuah@kernel.org>, Jason Xing <kerneljasonxing@gmail.com>, 
-	Tao Chen <chen.dylane@linux.dev>, Willem de Bruijn <willemb@google.com>, 
-	Paul Chaignon <paul.chaignon@gmail.com>, Anton Protopopov <a.s.protopopov@gmail.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>, 
-	Tobias Klauser <tklauser@distanz.ch>, kernel-patches-bot@fb.com, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+References: <1d2d1968.47cd3.19ab9528e94.Coremail.kaiyanm@hust.edu.cn>
+ <CAMB2axMgCapnYS4Qr-PVm6FjPCkF3bi-LNtV5EpFLVtAs_JNGA@mail.gmail.com> <CAADnVQ+fDin56GSBaANBf0P+xiQYGWgcDZFT=2OnRKhCa04Kdg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+fDin56GSBaANBf0P+xiQYGWgcDZFT=2OnRKhCa04Kdg@mail.gmail.com>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Tue, 25 Nov 2025 15:26:07 -0800
+X-Gm-Features: AWmQ_bkGzF6DqeF-pRR9byVwQSClubRQ5N0sN21PCqUsMvH7jV8lxEqBiuGj_m4
+Message-ID: <CAMB2axOHy5FQm4ZvoT6tFOp9jACUh2MZOXsup4TUm1ZL485=fA@mail.gmail.com>
+Subject: Re: bpf: Race condition in inode local storage leads to use-after-free
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: =?UTF-8?B?5qKF5byA5b2m?= <kaiyanm@hust.edu.cn>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Yinhao Hu <dddddd@hust.edu.cn>, dzm91@hust.edu.cn, 
+	hust-os-kernel-patches@googlegroups.com, 
+	Martin KaFai Lau <martin.lau@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 25, 2025 at 6:59=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
+On Tue, Nov 25, 2025 at 3:17=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags and check them for
-> following APIs:
+> On Tue, Nov 25, 2025 at 3:06=E2=80=AFPM Amery Hung <ameryhung@gmail.com> =
+wrote:
+> >
+> > On Mon, Nov 24, 2025 at 8:43=E2=80=AFPM =E6=A2=85=E5=BC=80=E5=BD=A6 <ka=
+iyanm@hust.edu.cn> wrote:
+> > >
+> > > A use-after-free vulnerability was discovered in the `bpf_inode_stora=
+ge_get` helper function. This flaw is caused by a race condition between th=
+e destruction of the anonymous inode that backs the map of type `BPF_MAP_TY=
+PE_INODE_STORAGE` and the execution of a BPF program that attempts to acces=
+s that inode.
+> > >
+> > > Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
+> > > Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
+> > > Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
+> > >
+> > > ## Root Cause
+> > >
+> > > The use-after-free occurs due to improper lifecycle management of the=
+ anonymous inode associated with a `BPF_MAP_TYPE_INODE_STORAGE` map. The pr=
+oblem could be triggered through a race condition:
+> > >
+> > > 1.  A BPF program creates a map of type `BPF_MAP_TYPE_INODE_STORAGE`.=
+ The kernel allocates a file descriptor and an associated anonymous `inode`=
+ to serve as the backing storage.
+> > > 2.  A BPF LSM program is loaded and attached to an LSM hook `bpf_lsm_=
+file_alloc_security`. This program holds a reference to the `inode_storage`=
+ map.
+> > > 3.  The process that created the map exits, causing the kernel to clo=
+se its file descriptor. This decrements the reference count on the `inode`.=
+ When the reference count drops to zero, the `inode` is freed.
+> > > 4.  When another process trys to create the map, the LSM hook is trig=
+gered, causing the attached BPF program to execute.
+> > > 5.  The BPF program calls `bpf_inode_storage_get()`, passing a pointe=
+r to the now-freed `inode`. The function attempts to access fields within t=
+his freed memory region, leading to a use-after-free.
+> > >
+> > > The fundamental problem is that the BPF program's reference to the `b=
+pf_map` does not translate to a reference on the underlying `inode`. This a=
+llows the `inode` to be destroyed while it is still potentially in use by a=
+n active BPF program. The comment in the `bpf_inode_storage_get` function, =
+`/* This helper must only called from where the inode is guaranteed to have=
+ a refcount and cannot be freed. */`, highlights this exact requirement, wh=
+ich is violated by the race condition.
+> >
+> > Thanks for reporting. I found the root cause here a bit hard to
+> > follow, so I also ran your POC on a VM with bpf-next kernel and
+> > confirmed the kernel did panic.
+> >
+> > However, the bug seems to me to be an uninitialized file->f_inode
+> > being passed to bpf_inode_storage_get() in
+> > bpf_lsm_file_alloc_security.
 >
-> * 'map_lookup_elem()'
-> * 'map_update_elem()'
-> * 'generic_map_lookup_batch()'
-> * 'generic_map_update_batch()'
->
-> And, get the correct value size for these APIs.
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> ---
-> v10 -> v11:
->  - Use '(BPF_F_ALL_CPUS << 1) - 1' as allowed_flags in map_update_elem().
->  - Add BPF_EXIST to allowed_flags in generic_map_update_batch().
+> Thanks for the analysis.
+> That's not the first such problematic lsm hook.
+> Let's just add it to bpf_lsm_disabled_hooks[].
 
-It should be mentioned in the commit log.
-Lines after --- don't stay in the log.
-
-> ---
->  include/linux/bpf.h            | 23 +++++++++++++++++++++-
->  include/uapi/linux/bpf.h       |  2 ++
->  kernel/bpf/syscall.c           | 36 ++++++++++++++++++++--------------
->  tools/include/uapi/linux/bpf.h |  2 ++
->  4 files changed, 47 insertions(+), 16 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 6498be4c44f8..d84af3719b59 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -3829,14 +3829,35 @@ bpf_prog_update_insn_ptrs(struct bpf_prog *prog, =
-u32 *offsets, void *image)
->  }
->  #endif
->
-> +static inline bool bpf_map_supports_cpu_flags(enum bpf_map_type map_type=
-)
-> +{
-> +       return false;
-> +}
-> +
->  static inline int bpf_map_check_op_flags(struct bpf_map *map, u64 flags,=
- u64 allowed_flags)
->  {
-> -       if (flags & ~allowed_flags)
-> +       u32 cpu;
-> +
-> +       if ((u32)flags & ~allowed_flags)
->                 return -EINVAL;
->
->         if ((flags & BPF_F_LOCK) && !btf_record_has_field(map->record, BP=
-F_SPIN_LOCK))
->                 return -EINVAL;
->
-> +       if (!(flags & BPF_F_CPU) && flags >> 32)
-> +               return -EINVAL;
-> +
-> +       if (flags & (BPF_F_CPU | BPF_F_ALL_CPUS)) {
-> +               if (!bpf_map_supports_cpu_flags(map->map_type))
-> +                       return -EINVAL;
-> +               if ((flags & BPF_F_CPU) && (flags & BPF_F_ALL_CPUS))
-> +                       return -EINVAL;
-> +
-> +               cpu =3D flags >> 32;
-> +               if ((flags & BPF_F_CPU) && cpu >=3D num_possible_cpus())
-> +                       return -ERANGE;
-> +       }
-> +
->         return 0;
->  }
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index f5713f59ac10..8b6279ca6e66 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1373,6 +1373,8 @@ enum {
->         BPF_NOEXIST     =3D 1, /* create new element if it didn't exist *=
-/
->         BPF_EXIST       =3D 2, /* update existing element */
->         BPF_F_LOCK      =3D 4, /* spin_lock-ed map_lookup/map_update */
-> +       BPF_F_CPU       =3D 8, /* cpu flag for percpu maps, upper 32-bit =
-of flags is a cpu number */
-> +       BPF_F_ALL_CPUS  =3D 16, /* update value across all CPUs for percp=
-u maps */
->  };
->
->  /* flags for BPF_MAP_CREATE command */
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index cef8963d69f9..3c3e3b4095b9 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -133,12 +133,14 @@ bool bpf_map_write_active(const struct bpf_map *map=
-)
->         return atomic64_read(&map->writecnt) !=3D 0;
->  }
->
-> -static u32 bpf_map_value_size(const struct bpf_map *map)
-> -{
-> -       if (map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_HASH ||
-> -           map->map_type =3D=3D BPF_MAP_TYPE_LRU_PERCPU_HASH ||
-> -           map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_ARRAY ||
-> -           map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE)
-> +static u32 bpf_map_value_size(const struct bpf_map *map, u64 flags)
-> +{
-> +       if (flags & (BPF_F_CPU | BPF_F_ALL_CPUS))
-> +               return map->value_size;
-> +       else if (map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_HASH ||
-> +                map->map_type =3D=3D BPF_MAP_TYPE_LRU_PERCPU_HASH ||
-> +                map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_ARRAY ||
-> +                map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE)
->                 return round_up(map->value_size, 8) * num_possible_cpus()=
-;
->         else if (IS_FD_MAP(map))
->                 return sizeof(u32);
-> @@ -1732,7 +1734,7 @@ static int map_lookup_elem(union bpf_attr *attr)
->         if (!(map_get_sys_perms(map, f) & FMODE_CAN_READ))
->                 return -EPERM;
->
-> -       err =3D bpf_map_check_op_flags(map, attr->flags, BPF_F_LOCK);
-> +       err =3D bpf_map_check_op_flags(map, attr->flags, BPF_F_LOCK | BPF=
-_F_CPU);
->         if (err)
->                 return err;
->
-> @@ -1740,7 +1742,7 @@ static int map_lookup_elem(union bpf_attr *attr)
->         if (IS_ERR(key))
->                 return PTR_ERR(key);
->
-> -       value_size =3D bpf_map_value_size(map);
-> +       value_size =3D bpf_map_value_size(map, attr->flags);
->
->         err =3D -ENOMEM;
->         value =3D kvmalloc(value_size, GFP_USER | __GFP_NOWARN);
-> @@ -1781,6 +1783,7 @@ static int map_update_elem(union bpf_attr *attr, bp=
-fptr_t uattr)
->         bpfptr_t uvalue =3D make_bpfptr(attr->value, uattr.is_kernel);
->         struct bpf_map *map;
->         void *key, *value;
-> +       u64 allowed_flags;
->         u32 value_size;
->         int err;
->
-> @@ -1797,7 +1800,8 @@ static int map_update_elem(union bpf_attr *attr, bp=
-fptr_t uattr)
->                 goto err_put;
->         }
->
-> -       err =3D bpf_map_check_op_flags(map, attr->flags, ~0);
-> +       allowed_flags =3D (BPF_F_ALL_CPUS << 1) - 1;
-
-This is cryptic.
-Use
-allowed_flags =3D BPF_NOEXIST | BPF_EXIST | BPF_F_LOCK | BPF_F_CPU |
-BPF_F_ALL_CPUS;
+Got it. Will send a patch disabling bpf_lsm_file_alloc_security.
 
