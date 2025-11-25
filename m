@@ -1,253 +1,179 @@
-Return-Path: <bpf+bounces-75488-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75489-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 789DEC86810
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 19:11:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F2C6C86BCF
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 20:09:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C39DA4E31EC
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 18:11:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F9773AFF7A
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 19:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3302832BF21;
-	Tue, 25 Nov 2025 18:11:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30059224AF2;
+	Tue, 25 Nov 2025 19:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="c0Y87SKi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NlOgYsPb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E21D32B9A6
-	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 18:11:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F6E2F692F
+	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 19:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764094287; cv=none; b=gJBEgz+yK8YT/1FZN0yuV6MQ6AsXekfLSBCpu3SuiC4nxgVSJPhdgeLjhle77ZtG8qxp3EKi6NB4k/WBuw1k/ZTAaY3d9eIzm3hzAyNU9jZWYBGiUBOTlx+vJ2BXqP4TsOKEQBURXjl1TXv4oSGNe6FLjNm+9e7L9eUia5lmGiM=
+	t=1764097779; cv=none; b=i2nfQjY5ifkih+XgG5w2AqCLZDmgLtXc4SOiqtQgTSIWTQ2hvy8sxYKUsg/px/KTxyy4Lwqgbr7PDb3GgkUIAgEgXVpli38MFsHZrsNwUIDQD8BN80v/S90R2UqkCkmOw2gCV0r5/jHJ2CBSdoEBM8LAiFs9/oEzP6mTdB3hsUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764094287; c=relaxed/simple;
-	bh=U2rSoMWdIHahvPRPHVndSBa1Y9sUxsWxAxpVFF2VHB8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iP6NjwnAbhGh2QIelf74b37gc84ZRN8iwTfEHKl1Gv/TR/30E0WcDz/8XDtumMzhbGlRvLV1JIaKa0VUy4DIC7gCGUzU7lJxIrZGLdovit1rxYR2jbbLxv4UIfP5qaSbHFhTLIxN0i3aa0V5iwVuOLxRIYJTSlCPrSCP7og9qlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=c0Y87SKi; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-29800ac4ef3so11658935ad.1
-        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 10:11:26 -0800 (PST)
+	s=arc-20240116; t=1764097779; c=relaxed/simple;
+	bh=WhPVHCJW76FGJUYswsjQFNbMTK7L4YrF4FJlMHrzrPk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GW+shfXmw50fm1ZAgVErli09nYvVBUJDW1KE111YtFLf1zd8FMjmFqYyF96TonUs5XdvlxydrLOy3YvR6yBtw0GLB5My0KT0Cl33AKl8HNfozXuZgBZXSwVLRV9y5Ok+LX3qAUIYEN00TqUgJLzzFVRMvx8R9VtAOLUjjzOdwKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NlOgYsPb; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-297d4a56f97so87574595ad.1
+        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 11:09:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1764094285; x=1764699085; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3+AG7wRpqHMNfnJeCQpOQEh9m5Efqdn4nU5nA0/8ob0=;
-        b=c0Y87SKizU1wwSZEHH1Uzp2nfx+DaszmRC2obXJd201VNGYVnwpIwqcrVFnfEROJ1m
-         2vuLPETXNInWS1vnVlos8gQBhKzrde2cEOEgzjFNWtinIohsaUjrcs3jliwkLzjF/Mz/
-         Uf+dLB2Bo7if0pC5ET69vmnImGXjX/SVfoBV8GhzN5oLa2/+1fyy7qR5uTOv8WVl/NiP
-         nXCaWZZtB/KsUfmITrFYHqBPWIXgCzjFxtbzz7V4PloiERsWnxrpeq234pNqElaUIAc+
-         8DyYv1FnIEyu25kfx5MVZ9efOazjOo/zW+BNS4KQBtr62va+7CSsdg94NmI70I6yJ/JK
-         gHrA==
+        d=gmail.com; s=20230601; t=1764097777; x=1764702577; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KqV4ea26VpNRnNDOYj3v3FWNR4t9iRrjXWCFY4hl9NI=;
+        b=NlOgYsPbCXU9ejFGWz4GDe2nHBW8zxMR8CehaM3nG60xRZqeNQQXfZUlIRkmIFBfbZ
+         mQWQbA7O+kmym/wi4PrFU4ZAQXNrFPiHsXlJhlk1uPhITqoDH67Zp22ytXmSmlj9tEPQ
+         LC7BfDQV6eDnsK7dq9Lxu+YRLW9mOq9my6XatCYFQLcGdGlymd9YZzGwmUaNvMWAWTbK
+         6RvmofRhZd5VLG/eYu7+akPmBR5qKQ8fqVjyxt27WJOmTtBQiL9ae51YLAA0Ax7zzv5+
+         x9kobiSDBPcjegvtSyNJ7g64XdvF9FEjsRef9ExNv194OhegnXLgMN3m9EEuRX7VNDyQ
+         PRWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764094285; x=1764699085;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3+AG7wRpqHMNfnJeCQpOQEh9m5Efqdn4nU5nA0/8ob0=;
-        b=EXU1zO+/wBU0HaRtnx+qf3OSTV47LCfxt2K1VDNRHdXINxUFK/ShSAeXfSySsiPIxo
-         tNs21hzuyNZ/ZI2Ec9p3QYUkUXMzl+5xt2mwxaXEmyRPEI93zohIBy3AFVdh6strqn9q
-         yRZ+qmm7bHd6ksi04WgvZvGYas8W0t7k1jATcki2EaabKp2170/n2OKsvCQeXF5aZYDy
-         mGFl1RN7ZDXGXsnFsVp7w/GT7ddUQ10q1AkOamplBGaZYKpUtiYw9enmhxfIWdS7fQNV
-         arwFSEEWdIZna+dgRmwNoEwpYbKQTA/VjC/jE7eLu7nirXoe4cWB9mgPwtt52iyqNaCY
-         5HaQ==
-X-Gm-Message-State: AOJu0YxrUtjEGvEAFx/Nkx+kvwxboBpz79myC/v8NxeNuy7k2Vvay4fG
-	bg28lmVZeLEncfjmYdNJf7xGmEQittXN8gBw1s1S0PoRUNYQyAJWmwWwFS/xAJdI0aE=
-X-Gm-Gg: ASbGncu4A6JwKyLv/Pv79FmNbwi93A31i+HMi2yiK2kwD3l2Axj42yYOyxXgtRO41SI
-	Jd+SHS2EmKCpH2sfKzxsTNCvKaGmYamKphsXzJxe7UNpFYPimCm99C3u1WCFObrGNqXhtng7hpQ
-	0rpKChgmpNGiWtNi2AmHcgnUqdp604VJ7aORv2FSzYrc6iwW839hhYOSMC/PK36bKhJRoGXg33Z
-	EDFvuGXMbG7tz+YadcY9Q3dfAgclwhcBiCoMuAxVHqcBQ9KsGZqIDG7I3PSHdPwTJRZUHQGrekW
-	gi8yHwtGIoovCpIAyBuglixyKuxEFhNY8/H9MbNjH5EmUQMrSw9Bu/xSuKg4i56IJ69IYA2HjtK
-	5BRh0mJ9Qkh8JbMpiNiINbCRoEA7hZabEt9ha2XNayl2LrVW+1ytV9J/OSRMNKmz/L7pThHty
-X-Google-Smtp-Source: AGHT+IEBGikt6OJ5HWjVqcKpTHFX0gDBgZQ5MqEUP1FjP7tMlbvmRvYkAvH4AF2C4YKp+tr7YiXW9w==
-X-Received: by 2002:a17:902:ef08:b0:266:914a:2e7a with SMTP id d9443c01a7336-29b70255276mr91488805ad.6.1764094285502;
-        Tue, 25 Nov 2025 10:11:25 -0800 (PST)
-Received: from t14 ([2001:5a8:47ec:d700:7dee:b1a1:fd3f:6b76])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29b5b2bf60csm173038775ad.101.2025.11.25.10.11.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Nov 2025 10:11:25 -0800 (PST)
-Date: Tue, 25 Nov 2025 10:11:23 -0800
-From: Jordan Rife <jordan@jrife.io>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-s390@vger.kernel.org, x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Puranjay Mohan <puranjay@kernel.org>, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, Ingo Molnar <mingo@redhat.com>
-Subject: Re: [RFC PATCH bpf-next 1/7] bpf: Set up update_prog scaffolding for
- bpf_tracing_link_lops
-Message-ID: <mlzsxvgexxalfqxgszivdrg2vuiadtxfydg4p4bvfqpj2wqjep@v5tkqwnlfohy>
-References: <20251118005305.27058-1-jordan@jrife.io>
- <20251118005305.27058-2-jordan@jrife.io>
- <aSCUrtsBrfS2iTkB@krava>
+        d=1e100.net; s=20230601; t=1764097777; x=1764702577;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KqV4ea26VpNRnNDOYj3v3FWNR4t9iRrjXWCFY4hl9NI=;
+        b=fLSc6vBBy/uf3/nOmyspElVuXXc9SrkjNVMt5P1GC1xanpBZ+d48aYOaWhdet2S4bR
+         ASshfwJXOHjfaBGRYRO6xzokczrZY237BqYsyD36IhAnVHoy2RN0TzzEwaYgWRMEB11F
+         FfcJH96zJRzEj9DGnW5P1Zye0NWI7mC9C8tYu55exX2OskwFm8miyJXUJcF/4CCoGUCz
+         up7cRPhZsopX7TPuCmFBHPlzHgX8Y2Itclu9zT0yUk1AtCrLHGSEL4HLFc0MwkE3NPSI
+         r4if5VQWm76k5teuudGH/LCPodFChJRuuVzYQhCk/cPxqKZVWuGBVbWQ1w5yEaG/3BCR
+         vhBg==
+X-Forwarded-Encrypted: i=1; AJvYcCXcmM0k+99umjAz+ES+Xc+foOCtTp+oK1z/NQykhd+vDxja4WYo8N1CqPJiIH78P87FwGY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyD7HcuOoRPSlBv2RAgpJVvCKsjUhIc0dilgrU+CkhfSyb4/FMO
+	ecbVJ1XBSZU16aXPCWYD2rOl35virWh2sQOUzetmtOyMtjJM0WUocCQa
+X-Gm-Gg: ASbGncsjIV4tIEfk/BiAN2msHEwuzYDzWwNx1fA4Z/co3DhPEdj7yzRyT/BnrASMIE2
+	tcQvtMPynkDWEGNC83qjmgTfGQ0n1Lf29YY8K1+EOuS1hYEyLfGX2NsUo/2azTYPPyurHM+J+8G
+	hdFXf6ERy9+Vp23wd31WRvJvjPVbsVxRJ/ba7y331JhnO3SmCcWZMj659EQWtku7saHLNvA6HD8
+	03AB/L8tbR9JOZtKM1K7gzbLdJnqY7n2tuwlppmxntWKs5wE6QvAlGrKPQA7rL3bRDt9jkgr2Gu
+	p/Jjmv6rp8HbEdCsyukMxFPyU+2kY78rwHbhvUOX/sjehYRnFGt3VyK/INy7s8Cm1HlhLToQbdp
+	veaoXm0jbxX76NnfuLodA/Owo8ZV8UGpG7MtKEFQoxaG0HkVMM8Swzwyt+qR+UMaMdSMPWY6kFk
+	5LpyLeNkbg6paK1X+9HcgYUqh20Qx5qqdUwTq12unUWQnghxop3zJ5gB1NfELeTFkb
+X-Google-Smtp-Source: AGHT+IHuIf8IdstsNtTBrFtuIhxYayVPP9kbYzco+dRdLBQVBBJBvJGBn5Q65xamj5HkAzoQXFriDQ==
+X-Received: by 2002:a17:903:2acb:b0:294:fc77:f021 with SMTP id d9443c01a7336-29b6c6b32f7mr194870325ad.49.1764097777372;
+        Tue, 25 Nov 2025 11:09:37 -0800 (PST)
+Received: from ?IPV6:2600:8802:b00:9ce0:a9c6:421a:26c5:f914? ([2600:8802:b00:9ce0:a9c6:421a:26c5:f914])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29b5b107cc2sm176518725ad.16.2025.11.25.11.09.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Nov 2025 11:09:37 -0800 (PST)
+Message-ID: <851516d5-a5e8-47dd-82e0-3e34090e600d@gmail.com>
+Date: Tue, 25 Nov 2025 11:09:35 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aSCUrtsBrfS2iTkB@krava>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3 1/6] block: ignore discard return value
+To: Jens Axboe <axboe@kernel.dk>, agk@redhat.com, snitzer@kernel.org,
+ mpatocka@redhat.com, song@kernel.org, yukuai@fnnas.com, hch@lst.de,
+ sagi@grimberg.me, kch@nvidia.com, jaegeuk@kernel.org, chao@kernel.org,
+ cem@kernel.org
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dm-devel@lists.linux.dev, linux-raid@vger.kernel.org,
+ linux-nvme@lists.infradead.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>
+References: <20251124234806.75216-1-ckulkarnilinux@gmail.com>
+ <20251124234806.75216-2-ckulkarnilinux@gmail.com>
+ <e3f09e0c-63f4-4887-8e3a-1fb24963b627@kernel.dk>
+Content-Language: en-US
+From: Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+In-Reply-To: <e3f09e0c-63f4-4887-8e3a-1fb24963b627@kernel.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Nov 21, 2025 at 05:34:54PM +0100, Jiri Olsa wrote:
-> On Mon, Nov 17, 2025 at 04:52:53PM -0800, Jordan Rife wrote:
-> 
-> SNIP
-> 
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index f62d61b6730a..b0da7c428a65 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -63,6 +63,8 @@ static DEFINE_IDR(map_idr);
-> >  static DEFINE_SPINLOCK(map_idr_lock);
-> >  static DEFINE_IDR(link_idr);
-> >  static DEFINE_SPINLOCK(link_idr_lock);
-> > +/* Synchronizes access to prog between link update operations. */
-> > +static DEFINE_MUTEX(trace_link_mutex);
-> >  
-> >  int sysctl_unprivileged_bpf_disabled __read_mostly =
-> >  	IS_BUILTIN(CONFIG_BPF_UNPRIV_DEFAULT_OFF) ? 2 : 0;
-> > @@ -3562,11 +3564,77 @@ static int bpf_tracing_link_fill_link_info(const struct bpf_link *link,
-> >  	return 0;
-> >  }
-> >  
-> > +static int bpf_tracing_link_update_prog(struct bpf_link *link,
-> > +					struct bpf_prog *new_prog,
-> > +					struct bpf_prog *old_prog)
-> > +{
-> > +	struct bpf_tracing_link *tr_link =
-> > +		container_of(link, struct bpf_tracing_link, link.link);
-> > +	struct bpf_attach_target_info tgt_info = {0};
-> > +	int err = 0;
-> > +	u32 btf_id;
-> > +
-> > +	mutex_lock(&trace_link_mutex);
-> 
-> that seems too much, we could add link->mutex
+On 11/25/25 09:38, Jens Axboe wrote:
+> On 11/24/25 4:48 PM, Chaitanya Kulkarni wrote:
+>> __blkdev_issue_discard() always returns 0, making the error check
+>> in blkdev_issue_discard() dead code.
+> Shouldn't it be a void instead then?
+>
+Yes, we have decided to clean up the callers first [1]. Once they are
+merged safely, after rc1 I'll send a patch [2] to make it void since
+it touches many different subsystems.
 
-This penalizes all links though. Scanning through some other link types
-in the kernel, most that I see that support update_prog have opted for a
-global mutex as opposed to a per-link mutex. To me, it seems better to
-go with this since contention is low instead of making link structs
-bigger?
- 
-> > +
-> > +	if (old_prog && link->prog != old_prog) {
-> > +		err = -EPERM;
-> > +		goto out;
-> > +	}
-> > +	old_prog = link->prog;
-> > +	if (old_prog->type != new_prog->type ||
-> > +	    old_prog->expected_attach_type != new_prog->expected_attach_type) {
-> > +		err = -EINVAL;
-> > +		goto out;
-> > +	}
-> > +
-> > +	mutex_lock(&new_prog->aux->dst_mutex);
-> > +
-> > +	if (!new_prog->aux->dst_trampoline ||
-> > +	    new_prog->aux->dst_trampoline->key != tr_link->trampoline->key) {
-> 
-> hum, would be easier (and still usefull) to allow just programs for the same function?
+-ck
 
-This behavior mirrors that of bpf_tracing_prog_attach below. I think
-you'd lose some utility if you required dst_trampoline to match
-trampoline here. A practical use case I can think of would be that you
-might want to reuse the same program for several links or
-detach/reattach the same program. In these scenarios, dst_trampoline
-would have been cleared previously, so you'd need to do the
-compatibility check again.
- 
-> > +		bpf_trampoline_unpack_key(tr_link->trampoline->key, NULL,
-> > +					  &btf_id);
-> > +		/* If there is no saved target, or the target associated with
-> > +		 * this link is different from the destination specified at
-> > +		 * load time, we need to check for compatibility.
-> > +		 */
-> > +		err = bpf_check_attach_target(NULL, new_prog, tr_link->tgt_prog,
-> > +					      btf_id, &tgt_info);
-> > +		if (err)
-> > +			goto out_unlock;
-> > +	}
-> > +
-> > +	err = bpf_trampoline_update_prog(&tr_link->link, new_prog,
-> > +					 tr_link->trampoline);
-> > +	if (err)
-> > +		goto out_unlock;
-> > +
-> > +	/* Clear the trampoline, mod, and target prog from new_prog->aux to make
-> > +	 * sure the original attach destination is not kept alive after a
-> > +	 * program is (re-)attached to another target.
-> > +	 */
-> > +	if (new_prog->aux->dst_prog)
-> > +		bpf_prog_put(new_prog->aux->dst_prog);
-> > +	bpf_trampoline_put(new_prog->aux->dst_trampoline);
-> 
-> would it be possible just to take tr->mutex and unlink/link
-> the programs, something like:
-> 
->         mutex_lock(&tr->mutex);
-> 
-> 	__bpf_trampoline_unlink_prog(old_prog)
-> 	__bpf_trampoline_link_prog(new_prog)
-> 
->         mutex_unlock(&tr->mutex);
+[1]
+https://marc.info/?l=linux-block&m=176405170918235&w=2
+https://marc.info/?l=dm-devel&m=176345232320530&w=2
 
-This is non-atomic though, so there would be some period between unlink
-and link where the link target's trampoline doesn't have the program:
+[2]
+ From abdf4d1863a02d4be816aaab9a789f44bfca568f Mon Sep 17 00:00:00 2001
+From: Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+Date: Tue, 18 Nov 2025 10:35:58 -0800
+Subject: [PATCH 6/6] block: change discar return type to  void
 
-[old_prog]
-[] <-
-[new_prog]
+Now that all callers have been updated to not check the return value
+of __blkdev_issue_discard(), change its return type from int to void
+and remove the return 0 statement.
 
-Maybe it's not such a big deal for pure tracing stuff like fentry/fexit,
-but it could create some weird and unexpected effects with freplace
-links. Unfortunately, to guarantee atomicity, I think you have to push
-the intent to actually update a specific program in a trampoline down a
-layer (i.e. bpf_trampoline_update_prog).
+This completes the cleanup of dead error checking code around
+__blkdev_issue_discard().
+
+Signed-off-by: Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+---
+  block/blk-lib.c        | 3 +--
+  include/linux/blkdev.h | 2 +-
+  2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/block/blk-lib.c b/block/blk-lib.c
+index 19e0203cc18a..0a5f39325b2d 100644
+--- a/block/blk-lib.c
++++ b/block/blk-lib.c
+@@ -60,7 +60,7 @@ struct bio *blk_alloc_discard_bio(struct block_device *bdev,
+  	return bio;
+  }
   
-> I might be missing something but this way we wouldn't need
-> the arch chages in the following patches?
+-int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
++void __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
+  		sector_t nr_sects, gfp_t gfp_mask, struct bio **biop)
+  {
+  	struct bio *bio;
+@@ -68,7 +68,6 @@ int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
+  	while ((bio = blk_alloc_discard_bio(bdev, &sector, &nr_sects,
+  			gfp_mask)))
+  		*biop = bio_chain_and_submit(*biop, bio);
+-	return 0;
+  }
+  EXPORT_SYMBOL(__blkdev_issue_discard);
+  
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index f0ab02e0a673..b05c37d20b09 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1258,7 +1258,7 @@ extern void blk_io_schedule(void);
+  
+  int blkdev_issue_discard(struct block_device *bdev, sector_t sector,
+  		sector_t nr_sects, gfp_t gfp_mask);
+-int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
++void __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
+  		sector_t nr_sects, gfp_t gfp_mask, struct bio **biop);
+  int blkdev_issue_secure_erase(struct block_device *bdev, sector_t sector,
+  		sector_t nr_sects, gfp_t gfp);
+-- 
+2.40.0
 
-Alexei said he doesn't want to support update_prog for fentry/fexit;
-dropping that from this series (patches 3-6) would remove arch-specific
-stuff.
-
-> jirka
-> 
-> 
-> > +	module_put(new_prog->aux->mod);
-> > +
-> > +	new_prog->aux->dst_prog = NULL;
-> > +	new_prog->aux->dst_trampoline = NULL;
-> > +	new_prog->aux->mod = tgt_info.tgt_mod;
-> > +	tgt_info.tgt_mod = NULL; /* Make module_put() below do nothing. */
-> > +out_unlock:
-> > +	mutex_unlock(&new_prog->aux->dst_mutex);
-> > +out:
-> > +	mutex_unlock(&trace_link_mutex);
-> > +	module_put(tgt_info.tgt_mod);
-> > +	return err;
-> > +}
-> > +
-> >  static const struct bpf_link_ops bpf_tracing_link_lops = {
-> >  	.release = bpf_tracing_link_release,
-> >  	.dealloc = bpf_tracing_link_dealloc,
-> >  	.show_fdinfo = bpf_tracing_link_show_fdinfo,
-> >  	.fill_link_info = bpf_tracing_link_fill_link_info,
-> > +	.update_prog = bpf_tracing_link_update_prog,
-> >  };
-> >  
-> 
-> SNIP
-
-Thanks for taking a look!
-
-Jordan
 
