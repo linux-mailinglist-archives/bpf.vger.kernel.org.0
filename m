@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-75455-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EFEAC850DA
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 13:58:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD56C850F0
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 13:59:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D424B3506A6
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 12:58:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81C013A83E7
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 12:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E482D322DCB;
-	Tue, 25 Nov 2025 12:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6034324706;
+	Tue, 25 Nov 2025 12:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=siteground.com header.i=@siteground.com header.b="1SohpI79"
+	dkim=pass (1024-bit key) header.d=siteground.com header.i=@siteground.com header.b="Ksme2MRJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 607F73242CE
-	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 12:57:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83ED5321456
+	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 12:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764075442; cv=none; b=r8kLZw1TCc1XSYAEy2Jbl4qqA1La2H8ngbXn8qmPcrpWSn3Ven1BmGleaH0FPr8R2jaucu4gXm21T83smoWFg4fHh41UFYaV5nokPcSdaQa05ulzBT0YKunQmnKwb3AJXpZq/lFsRssnLcsqGNoLofvSg/7R0BoBqQlR+Tlx0VA=
+	t=1764075443; cv=none; b=g1JgmhWeRx11Zg0f0zceJTG/7cRqPKe/MBDVsmhGnm1CU3pyshKJDNYzxyZAHkiwe3xqgM84GF02a3IKuCkulflsNd+dJbi0FMODpmNM/2L5Y4d5XpxNKqAGf+efj6/AmDMYiy3KhCD7jChaoSBgJuU+Pq18SuNJTLiGCCrtFNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764075442; c=relaxed/simple;
-	bh=7ZzIrxOJRqKzVge6YmQSLIt2yMrPQ0MTt9YgIxQnCkU=;
+	s=arc-20240116; t=1764075443; c=relaxed/simple;
+	bh=FhO8u5gmMIoSErXXCzUX+OW9viQesucKGZB+3Sq2WCc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cWukURztJuYJKhF9mFKJbIovX78LC9AgPpb8NcXBy8cttufn+nZ10HK+eWpTmBV61neZZN+QNRmu8hbM+bpGtp+Ea6zkJYZnGIb5AxiDeS3+0ppR+E4NkwBj9MLM11kcvBNF00OqRrRXj7YcesP+RQw7Q4F200LFvTrS45MmAO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=siteground.com; spf=pass smtp.mailfrom=siteground.com; dkim=pass (1024-bit key) header.d=siteground.com header.i=@siteground.com header.b=1SohpI79; arc=none smtp.client-ip=209.85.128.65
+	 MIME-Version; b=kOsvxs3TCiRRt7ioU4GW7R/UiMwi0aAjRPix4iu4Qh+Iee/vOi+dycVQbBC9c4gBtggY+IIXTAWHRFfHnYUAbCmj7J+KtDm8PkpxVtJHZEuWedlTvwVWBaweeXatEeBOw3eJ7kSnAHyokraWCXeK8ZFQzqoih6ekTKgbebjhKQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=siteground.com; spf=pass smtp.mailfrom=siteground.com; dkim=pass (1024-bit key) header.d=siteground.com header.i=@siteground.com header.b=Ksme2MRJ; arc=none smtp.client-ip=209.85.128.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=siteground.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siteground.com
-Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-47774d3536dso42650605e9.0
-        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 04:57:20 -0800 (PST)
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-4779d47be12so42146345e9.2
+        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 04:57:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=siteground.com; s=google; t=1764075439; x=1764680239; darn=vger.kernel.org;
+        d=siteground.com; s=google; t=1764075440; x=1764680240; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/b8dcB1rfDp626vBsOSSdpwsZBv0krUFZydPEJFKq70=;
-        b=1SohpI79ibtudTNTQq0axG19nnhv3uVe52wYRnGxv2jtNa5oWAIYN72xLSUA8dcmQh
-         3bBg56qDdP0XtTVahln60IP8MVCqpYJMs3TWaA4hTn9J5RmPLzZtA/azrRz+zQV26dHa
-         dX0XKanJ2/WzM/w1ivTWlJfQXnBHPH9qIJBgY=
+        bh=9TEFccKX9xuPOZpBxlNgf/iBmhnWNeKRFu8XB9pJqTc=;
+        b=Ksme2MRJe0bBuTyO9nI5A8yrBB4ihjbDXEDx9XmdedzzyQXGOIGbqXTdBhd2E63ZAX
+         TB3uTCJ9RZd8vRZBTQp4ebHtiuqPfgRKAZG8xTcUTQF9b1QjJfEVYUN6OdSwGn0edfyu
+         tIRoUkeR8YQTGV3Q5CHro2d9nPwCNL6OtJiBU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764075439; x=1764680239;
+        d=1e100.net; s=20230601; t=1764075440; x=1764680240;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=/b8dcB1rfDp626vBsOSSdpwsZBv0krUFZydPEJFKq70=;
-        b=FPWSZJPlGXf+MlyjjjYRM3RknMS0GPt1efV256leavtGjqZmATE1sTOpvQJhhFGJRK
-         Ul4cVOpyWDUvMkORkfDjlaf4W5BJZQjOShFBqsMj5OB3tXjAwmrDoYctS1fbuaD39pup
-         L/YEnXoi2iRxr0xcq8IUn0dhmNp6fMh9Oi7utJy02sDh93B9qowMrWuzr+0XJEe5zPUV
-         6vEMfI6cf4R2JWGiRi+1Te+8NjNbeERY+awXah/oUS5pRuyCZhDGYW8FeTk9qdhkWy0x
-         oQUh1CxRcmTwNZHTT9eqiEJT3qLccwg5ddDcNvU8ANuQ8yShGbC82KUS8opkkITWrNda
-         pj2Q==
-X-Gm-Message-State: AOJu0YzPtbPqxsH57okx+q9UofWzWJlWcWdG9OmJ5743jz+M/zCpZvNU
-	aDs3WWcuCURrDWosMwh2OJdjHbzCQJMDL10+478eFsLAngcp1wf3zmGHTOJcJSAhrnFEYfWt/c5
-	BG7Axtw9+ew==
-X-Gm-Gg: ASbGnct9oDb+FvGTTMjVk0g7C2ajN39l895lHPweVnDymzYCTNv04hZWHGBSGZxb+NC
-	Vd+ciNzgCmb42NyavlO2p+WdaKYM5MonMFwHVYq6gjf+S2AwstnNFSXbo0iocaGSyIAyQmUEJa4
-	ije3zegOQ9V063iL6itc0pxmajCxhGbBFl75vff31THZ2JeH5ZEELC4a8xtycvZCX1c5k6jSjHy
-	I6Occr/y77ewFkoLJ8r/j14dLF4iJFI4OeKchLZYpxzpirOKMElqgNdhHdAr319/PkL0j6UbYSv
-	Aa12t1zUJp3EJQARhaIi/HyhrXa0vIjVMTbukRb+CcGkDsuciOfLcMq+c2bJAjy5DoocD5hIbwB
-	P8N0ATlvc7qJ2QVLYa6+xaHUmvkJmVCaocuaejDK/HsQZdHeoTzN6LFBmQrgD6U6uYtMNXnnJuX
-	skDR6FiWt8sjR2rAhkVyY/KEYxaLPiVFN7gvdGF4lHtNyD9UlsmF7zevhZ0fEixR5/JcWhxzUC
-X-Google-Smtp-Source: AGHT+IG/f3PPLOs8o4Z5f4wvLOAwnDx8nKdhz8R0LtRwkz3WsV8jgNZRZdZB6qQ+FvRhC9uHofZtCw==
-X-Received: by 2002:a05:600c:4685:b0:475:ddad:c3a9 with SMTP id 5b1f17b1804b1-477c052f04bmr163447985e9.13.1764075438644;
-        Tue, 25 Nov 2025 04:57:18 -0800 (PST)
+        bh=9TEFccKX9xuPOZpBxlNgf/iBmhnWNeKRFu8XB9pJqTc=;
+        b=Q7v7HT1k0byCbqYETXT8WvFMnaPvbNPxedEC636Uo4m9OhVelxsomvjfuBrKJlooL3
+         hgIDQ1ee0zbUh2P4vPFIRXXF9csqpDjuYsDkhH3cH2k5dymall8Od81lHhQQX68EbYkN
+         2dex3lFvbJ+2sgHraLANd+5N0vBsfxyIXl+6TqYEnga5LEpvms4VMLx6IpF5LczauZEC
+         U5jdH4tGrt+pCK3XCFVTpRLJ+NBHn/2BFrffhRKXvA7FSPTe/TiwCjoYoDlCbwmxGIGH
+         hmCsqZO1fAhR61J+EjNGMehG35ucn3xjyHov8+VfXFT8l1s9pAKFdNH9p/dH/53l21d/
+         AXeA==
+X-Gm-Message-State: AOJu0Yxrt7lu6QJg2VHjITrAUUCmkdh/fzEeKRG1zZokD8zoSC5ssZ1M
+	mI973PmyMTM2bGbozDDEyGY58oAmYqzYkhMFDPkBgFdO7cnkNxAbkIbOWzViOy1SE0Fw3lY/ysY
+	3RqJnLxPNgg==
+X-Gm-Gg: ASbGncts4n5U8H11nhqGlV5bFvOHHN/KdJsYWB+3SYmnI0GU18beOLvm2hTWYkVSDyS
+	234Ks0gLIAgcCtZajMzwNAkxUj6Plj9jB8vLlUawEAQiwdwac7Kxpl0RW5dttQF26FZ1BCwkDEl
+	hghbgXwHqJ6rufUaCdf+0zNh1ZvKppxaDCFFfoDvspU332CHqIdX94TDS/BCEKKNbjEf8M9+w37
+	BfaIRnICXsLk3YvQMCb5PTSVM0BSxsuI/GXI9gu5pgMnffKYMamFYg75CF38kQOVg1yEtdpL23H
+	gtc2eTqS5SrlxC55pi1u0yFIfS1nc+JUpyignkCSmUTsJtv9iuR8U1y6m8IW2kzn/Tsl9qRROCR
+	sjLjViMI0Bm4CttbH+TEnNP9aZGHO6pVRVQGJBwXdzr1sLZ+nTnHl/63sr732TSa+EzkZVopkEo
+	QcII/EePVPvf45W5rJ6xcIrvn6WTOAcmCSo866dZF+JTmJC+bDMgu3kFPw04irMw==
+X-Google-Smtp-Source: AGHT+IE4lGh+n82afA3kdn/HUp8saVIIFYScl/nP81q2hnYLaL8lZ4vydmz8P/himOWVLZSrWERugQ==
+X-Received: by 2002:a05:600c:3110:b0:477:b734:8c52 with SMTP id 5b1f17b1804b1-477c0185bebmr168313135e9.14.1764075439885;
+        Tue, 25 Nov 2025 04:57:19 -0800 (PST)
 Received: from Dimitar_Kanaliev.sgnet.lan ([82.118.240.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477bf1f3e63sm256668925e9.7.2025.11.25.04.57.17
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477bf1f3e63sm256668925e9.7.2025.11.25.04.57.18
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 25 Nov 2025 04:57:18 -0800 (PST)
+        Tue, 25 Nov 2025 04:57:19 -0800 (PST)
 From: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -88,9 +88,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Mykola Lysenko <mykolal@fb.com>,
 	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
 	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
-Subject: [PATCH v1 2/3] bpf: verifier: Simplify register sign extension with tnum_scast
-Date: Tue, 25 Nov 2025 14:56:33 +0200
-Message-Id: <20251125125634.2671-3-dimitar.kanaliev@siteground.com>
+Subject: [PATCH v1 3/3] selftests/bpf: Add verifier bounds checks for sign extension
+Date: Tue, 25 Nov 2025 14:56:34 +0200
+Message-Id: <20251125125634.2671-4-dimitar.kanaliev@siteground.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20251125125634.2671-1-dimitar.kanaliev@siteground.com>
 References: <20251125125634.2671-1-dimitar.kanaliev@siteground.com>
@@ -102,217 +102,74 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch refactors the verifier's sign-extension logic for narrow
-register values to use the new tnum_scast helper.
+This patch adds a new test cases to validate the improved register bounds
+tracking logic.
 
-Previously, coerce_reg_to_size_sx and coerce_subreg_to_size_sx employed
-manual logic to determine bounds, sometimes falling back to loose ranges
-when sign bits were uncertain.
+We perform the sequence:
 
-We simplify said logic by delegating the bounds calculation to tnum_scast
-+ the existing bounds synchronization logic:
+  call bpf_get_prandom_u32;
+  r1 &= 0x100;
+  r1 = (s8)r1;
 
-1. The register's tnum is updated via tnum_scast()
-2. The signed bounds (smin/smax) are reset to the maximum theoretical
-   range for the target size.
-3. The unsigned bounds are reset to the full register width.
-4. __update_reg_bounds() is called.
+After the bitwise AND, `r1` is either 0 or 256 (0x100).
+If 0: The lower 8 bits are 0.
+If 256: The bit at index 8 is set, but the lower 8 bits are 0.
 
-By invoking __update_reg_bounds(), the verifier automatically calculates
-the intersection between the theoretical signed range and the bitwise info
-in reg->var_off. This ensures bounds are as tight as possible without
-requiring custom logic in the coercion functions.
+Since the cast to s8 only considers bits 0-7, the set bit at index 8 is
+truncated. In both cases, the sign bit (bit 7) is 0, so the
+result is exactly 0.
 
-This commit also removes set_sext64_default_val() and
-set_sext32_default_val() as they are no longer used.
+With the coercion logic before this series:
+  1: (bf) r1 = r0
+    ; R0=scalar(id=1) R1=scalar(id=1)
+  2: (57) r1 &= 256
+    ; R1=scalar(...,var_off=(0x0; 0x100))
+  3: (bf) r1 = (s8)r1
+    ; R1=scalar(smin=smin32=-128,smax=smax32=127)
+
+With our changes:
+  1: (bf) r1 = r0
+    ; R0=scalar(id=1) R1=scalar(id=1)
+  2: (57) r1 &= 256
+    ; R1=scalar(...,var_off=(0x0; 0x100))
+  3: (bf) r1 = (s8)r1
+    ; R1=0
 
 Signed-off-by: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
 ---
- kernel/bpf/verifier.c | 150 +++++++++---------------------------------
- 1 file changed, 30 insertions(+), 120 deletions(-)
+ .../selftests/bpf/progs/verifier_movsx.c      | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 766695491bc5..c9a6bf85b4ad 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -6876,147 +6876,57 @@ static void coerce_reg_to_size(struct bpf_reg_state *reg, int size)
- 	reg_bounds_sync(reg);
+diff --git a/tools/testing/selftests/bpf/progs/verifier_movsx.c b/tools/testing/selftests/bpf/progs/verifier_movsx.c
+index a4d8814eb5ed..df7ad41af172 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_movsx.c
++++ b/tools/testing/selftests/bpf/progs/verifier_movsx.c
+@@ -339,6 +339,25 @@ label_%=: 	                                        \
+ 	: __clobber_all);
  }
  
--static void set_sext64_default_val(struct bpf_reg_state *reg, int size)
--{
--	if (size == 1) {
--		reg->smin_value = reg->s32_min_value = S8_MIN;
--		reg->smax_value = reg->s32_max_value = S8_MAX;
--	} else if (size == 2) {
--		reg->smin_value = reg->s32_min_value = S16_MIN;
--		reg->smax_value = reg->s32_max_value = S16_MAX;
--	} else {
--		/* size == 4 */
--		reg->smin_value = reg->s32_min_value = S32_MIN;
--		reg->smax_value = reg->s32_max_value = S32_MAX;
--	}
--	reg->umin_value = reg->u32_min_value = 0;
--	reg->umax_value = U64_MAX;
--	reg->u32_max_value = U32_MAX;
--	reg->var_off = tnum_unknown;
--}
--
- static void coerce_reg_to_size_sx(struct bpf_reg_state *reg, int size)
- {
--	s64 init_s64_max, init_s64_min, s64_max, s64_min, u64_cval;
--	u64 top_smax_value, top_smin_value;
--	u64 num_bits = size * 8;
-+	s64 smin_value, smax_value;
- 
--	if (tnum_is_const(reg->var_off)) {
--		u64_cval = reg->var_off.value;
--		if (size == 1)
--			reg->var_off = tnum_const((s8)u64_cval);
--		else if (size == 2)
--			reg->var_off = tnum_const((s16)u64_cval);
--		else
--			/* size == 4 */
--			reg->var_off = tnum_const((s32)u64_cval);
--
--		u64_cval = reg->var_off.value;
--		reg->smax_value = reg->smin_value = u64_cval;
--		reg->umax_value = reg->umin_value = u64_cval;
--		reg->s32_max_value = reg->s32_min_value = u64_cval;
--		reg->u32_max_value = reg->u32_min_value = u64_cval;
-+	if (size >= 8)
- 		return;
--	}
- 
--	top_smax_value = ((u64)reg->smax_value >> num_bits) << num_bits;
--	top_smin_value = ((u64)reg->smin_value >> num_bits) << num_bits;
-+	reg->var_off = tnum_scast(reg->var_off, size);
- 
--	if (top_smax_value != top_smin_value)
--		goto out;
-+	smin_value = -(1LL << (size * 8 - 1));
-+	smax_value = (1LL << (size * 8 - 1)) - 1;
- 
--	/* find the s64_min and s64_min after sign extension */
--	if (size == 1) {
--		init_s64_max = (s8)reg->smax_value;
--		init_s64_min = (s8)reg->smin_value;
--	} else if (size == 2) {
--		init_s64_max = (s16)reg->smax_value;
--		init_s64_min = (s16)reg->smin_value;
--	} else {
--		init_s64_max = (s32)reg->smax_value;
--		init_s64_min = (s32)reg->smin_value;
--	}
--
--	s64_max = max(init_s64_max, init_s64_min);
--	s64_min = min(init_s64_max, init_s64_min);
-+	reg->smin_value = smin_value;
-+	reg->smax_value = smax_value;
- 
--	/* both of s64_max/s64_min positive or negative */
--	if ((s64_max >= 0) == (s64_min >= 0)) {
--		reg->s32_min_value = reg->smin_value = s64_min;
--		reg->s32_max_value = reg->smax_value = s64_max;
--		reg->u32_min_value = reg->umin_value = s64_min;
--		reg->u32_max_value = reg->umax_value = s64_max;
--		reg->var_off = tnum_range(s64_min, s64_max);
--		return;
--	}
-+	reg->s32_min_value = (s32)smin_value;
-+	reg->s32_max_value = (s32)smax_value;
- 
--out:
--	set_sext64_default_val(reg, size);
--}
--
--static void set_sext32_default_val(struct bpf_reg_state *reg, int size)
--{
--	if (size == 1) {
--		reg->s32_min_value = S8_MIN;
--		reg->s32_max_value = S8_MAX;
--	} else {
--		/* size == 2 */
--		reg->s32_min_value = S16_MIN;
--		reg->s32_max_value = S16_MAX;
--	}
-+	reg->umin_value = 0;
-+	reg->umax_value = U64_MAX;
- 	reg->u32_min_value = 0;
- 	reg->u32_max_value = U32_MAX;
--	reg->var_off = tnum_subreg(tnum_unknown);
++SEC("socket")
++__description("MOV64SX, S8, upper bits truncation")
++__log_level(2)
++__msg("R1={{P?}}0")
++__success __success_unpriv __retval(0)
++__naked void mov64sx_s8_truncated_range(void)
++{
++	asm volatile ("                                      \
++	call %[bpf_get_prandom_u32];                         \
++	r1 = r0;                                             \
++	r1 &= 0x100;                                         \
++	r1 = (s8)r1;                                         \
++	r0 = 0;                                              \
++	exit;                                                \
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
 +
-+	__update_reg_bounds(reg);
- }
+ #else
  
- static void coerce_subreg_to_size_sx(struct bpf_reg_state *reg, int size)
- {
--	s32 init_s32_max, init_s32_min, s32_max, s32_min, u32_val;
--	u32 top_smax_value, top_smin_value;
--	u32 num_bits = size * 8;
--
--	if (tnum_is_const(reg->var_off)) {
--		u32_val = reg->var_off.value;
--		if (size == 1)
--			reg->var_off = tnum_const((s8)u32_val);
--		else
--			reg->var_off = tnum_const((s16)u32_val);
-+	s32 smin_value, smax_value;
- 
--		u32_val = reg->var_off.value;
--		reg->s32_min_value = reg->s32_max_value = u32_val;
--		reg->u32_min_value = reg->u32_max_value = u32_val;
-+	if (size >= 4)
- 		return;
--	}
- 
--	top_smax_value = ((u32)reg->s32_max_value >> num_bits) << num_bits;
--	top_smin_value = ((u32)reg->s32_min_value >> num_bits) << num_bits;
-+	reg->var_off = tnum_subreg(tnum_scast(reg->var_off, size));
- 
--	if (top_smax_value != top_smin_value)
--		goto out;
-+	smin_value = -(1 << (size * 8 - 1));
-+	smax_value = (1 << (size * 8 - 1)) - 1;
- 
--	/* find the s32_min and s32_min after sign extension */
--	if (size == 1) {
--		init_s32_max = (s8)reg->s32_max_value;
--		init_s32_min = (s8)reg->s32_min_value;
--	} else {
--		/* size == 2 */
--		init_s32_max = (s16)reg->s32_max_value;
--		init_s32_min = (s16)reg->s32_min_value;
--	}
--	s32_max = max(init_s32_max, init_s32_min);
--	s32_min = min(init_s32_max, init_s32_min);
--
--	if ((s32_min >= 0) == (s32_max >= 0)) {
--		reg->s32_min_value = s32_min;
--		reg->s32_max_value = s32_max;
--		reg->u32_min_value = (u32)s32_min;
--		reg->u32_max_value = (u32)s32_max;
--		reg->var_off = tnum_subreg(tnum_range(s32_min, s32_max));
--		return;
--	}
-+	reg->s32_min_value = smin_value;
-+	reg->s32_max_value = smax_value;
- 
--out:
--	set_sext32_default_val(reg, size);
-+	reg->u32_min_value = 0;
-+	reg->u32_max_value = U32_MAX;
-+
-+	__update_reg32_bounds(reg);
-+
-+	reg->umin_value = reg->u32_min_value;
-+	reg->umax_value = reg->u32_max_value;
-+
-+	reg->smin_value = reg->umin_value;
-+	reg->smax_value = reg->umax_value;
- }
- 
- static bool bpf_map_is_rdonly(const struct bpf_map *map)
+ SEC("socket")
 -- 
 2.43.0
 
