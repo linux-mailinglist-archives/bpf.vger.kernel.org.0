@@ -1,179 +1,106 @@
-Return-Path: <bpf+bounces-75510-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75511-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55CACC87775
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 00:32:30 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF3CC87782
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 00:33:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 05C614E3D20
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 23:32:29 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id AF6CB353E7B
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 23:33:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289E42ED17C;
-	Tue, 25 Nov 2025 23:32:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 611162F2607;
+	Tue, 25 Nov 2025 23:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OfiHuEvc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RapJjHXY"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E292586C2
-	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 23:32:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25022F0C66
+	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 23:33:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764113544; cv=none; b=QiQdVDj2rxnzqfM9tiPKJPDcYXn8bVEH5wB0Ucss+B5dTZhqaoodNqM1XlTEygcvrxuRuKZZGbKjz2vxRKNtqZYcQcIwL7sZ9RvEsD/f3qte8SqJX2EUdXnnCZ5LGgPmlcDn/2a9DJD2VfWKeZ7eBQD3ArgklvekUVV3I+HO49o=
+	t=1764113618; cv=none; b=o/efeLh2LsN8CaNKQALkyvBe++tIU1ePJ8NsbXOKp06v+HfeEuIYzTRx+gM8NvscxrL5VkOEKW0PFlS0jeIKmFDoB2mLJ27eoQ7wvOfThLOyjuWhoe8wFS9G6nXa2o5i9CHL8h4LvD5Tp1QSrKX5fNAE6lrRfBas2WL3PLgmC4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764113544; c=relaxed/simple;
-	bh=uixRbDv1kGALghM30hjMsHQ5zIk0iDXcZw9eSeumYZg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NMlhTTmzRt8O7K9oNZgrjuM7JWaXiREzPRN2RXBVS9XkoHRf8IsjpaJQL5q41R6qwH8E76OKNlcs5KyXc774UuZSXLFJmz40kYmnyJ6MMIDkDINQGn1HZ9rnMsuxOb1Ajst8TqgGIQezp1SuilGxNjlSAzMrSm9IatONAQOYebc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OfiHuEvc; arc=none smtp.client-ip=209.85.216.46
+	s=arc-20240116; t=1764113618; c=relaxed/simple;
+	bh=3rkC5tVLIYNbT+NJhSO0xtU9bfDYrwdByb9M2iU+wBw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=aWPqc4kc3b0VXKcfF/gyx58B6V+21dSWd+wQ+C9wfWtSA70kDwLqBxqscCSDO9xLmn+XugWbW4XujR131iWQUYp6zexaFUi1D2rbvfomozzXAK5bhTctbDtLe2IkX6xtvF5mDBq3Ka1HiTMtolsz0M0/PS9h+byWJ7ZMmJLIgz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RapJjHXY; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-341988c720aso5160729a91.3
-        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 15:32:23 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-34101107cc8so5581040a91.0
+        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 15:33:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764113542; x=1764718342; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LPtseTgrU/dQhg5zVqpjcUjeAtrr2+ySKimC4QiGcT0=;
-        b=OfiHuEvcPv8XFtTtdaMz69AOIqmojpKKCgvbB2mvt8FFxrjKAbZtZrI4x4COJ8EwZy
-         GazLTqqvYtiTl/I02o+jkY/5NCMH/4OaputQz/ptJcKmry+cUS1gJl/KvUWbRh9GdGrZ
-         vDqav+vTDpIlEGSKxgbANReFvtqvECM6S562jgfmp+uc3JiS6P3nC/+a5RgEfmfNY21P
-         a0Gkf5fIyzWzGF8HZgtJN3hY2kpGYJsVoNq7KH8a2rbGsdqhoM+7McnyLaT3HR47CAaY
-         W27ECrKplF9kXmOVzRbRb6IRJi5b+IiABQ9VcQV/KLMc7giv5lYu+/DeziyG+z3Vb3OU
-         yIWw==
+        d=gmail.com; s=20230601; t=1764113616; x=1764718416; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3rkC5tVLIYNbT+NJhSO0xtU9bfDYrwdByb9M2iU+wBw=;
+        b=RapJjHXYPOdTLcYLs/FvDuCH+2uk3C4YvOZho6lQ2DUunXzuffgOyrJJdJTT+zKarB
+         Y5bxS7QTjTICzx73EqYjfUkyl0FVw4x9IAxmcOzG0aCf9aVAGcQLF+SDf8po/2gyqqil
+         u+gb4VscO1GMmQtuJOgEikKXerndt1NLulnw2mreQGqo90I/pv4WCBVSlk7wWQqvo0fD
+         8ZxKliCAngF8pEnFcZP66ohQJSs5e4FCjllfn5lHxNKjvERABRh6B4AROdQzHDTgEkH+
+         MWlBTtaGwqr/gZ+ENsb+GNvzwbp76+nYbH4gEUbWlRmpDTMmG7owIjbQdwNz9RDxBy+J
+         8lnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764113542; x=1764718342;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=LPtseTgrU/dQhg5zVqpjcUjeAtrr2+ySKimC4QiGcT0=;
-        b=TVYGFMwx+pp/eDczcoP2TDygkdrWiyAYIWVJZ6pHGj4fUt6tHOriyj33teffgVTybC
-         H80xdBR5/03Hilegks9oaUbBM0yWSvLbEt1eqnNOlRuSVdT83/m0VjEEMArapjKGMTFS
-         J/oS6lEDlVHe85SSwWOGuWoX2jZYROO69osyJgAGLWDxTxzfEGbkurWgrSYjqabIORcc
-         /0T3GyTjwQfd9XWvVCOa0OPgfJ0RPvtkGGWSQiPxyqk8X+YXIgYSLbNvmSFP7k+85+8M
-         Eqrs4lWE2bE3FkVUaJiuIaoebizqLJYUgiF/L33Y1AT9UU/wMe0gew8DoyQH3rLuWGJm
-         iDQA==
-X-Forwarded-Encrypted: i=1; AJvYcCXAI+Y8MBB/b0hESecb9+8XvRM139LU+Vnqo+5d2ya0DZzaGcf75571BUaG1rco9y+3NPc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxiOBm2F9qyFUr5vflksHXDW/uUdI357s2bagIf76MrAR2NWFQC
-	VUzuzaJh5ns3i+lG/QxWzDKt5u4UiXC4v8XqF1oPxDsHHNqXngX1TXEQhqP+ujfJuaFeH/jS5jg
-	D61ihd4GbH0ZGbV5eBJ1qMXDbpjYoFuw=
-X-Gm-Gg: ASbGncv5WjdA45NsnzlkzXbxZFfylYuSU9IgDZ62VTqz+dgkZAPxYrJnkB3ZojLfP9D
-	NvHV6YbsX5XY0kN6SvnV8J2Bq48uVkFdi2qUzsRPgsczUMk5vBcnNBhhpuTw+aX6Un5CkgsFRcI
-	Lyp+9KOOMVd78H6v0FAmajrVpVZ+eomt/FS1OrgP3MKrWK7e+wisEKYwxOXR2IzgpIMbwuBAd2u
-	LgWBSPdgGHTGHVYXvVZOWc1p8SoWaZH6Kl/2mOjRI7G8uD3l4D1JMwcM7e1MH6l6nx7oaK8JQV2
-	5l34eRiqD1U=
-X-Google-Smtp-Source: AGHT+IEsx8zFOOIlNrgCNY0o1v6vGnfF3nJhWnvGuLTzd53z2WsPHkeSzGxVwlaxV98trkWk9lLkSnKDMlJQJJyp+aE=
-X-Received: by 2002:a17:90a:dfcd:b0:340:a961:80c9 with SMTP id
- 98e67ed59e1d1-34733f495ffmr14624216a91.30.1764113542470; Tue, 25 Nov 2025
- 15:32:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1764113616; x=1764718416;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3rkC5tVLIYNbT+NJhSO0xtU9bfDYrwdByb9M2iU+wBw=;
+        b=G55OoSyYij1xEk5jVRIL/8QVBPR6EqWHK1705wua30Onf2VHtTGOSzYqfVg/xD53bG
+         irhUNCKpmPHKfNKvENGKQ+Uqy2hr/l3tJDcMAJNBci7brqbN98dMOd8KdYYEWTEVzsCB
+         PtU7U0gwrfJqHmghYSzWHGIJeDTRbv2hunmJ/hp/0ts1424y+MDzgKALPRhyJcgimHzM
+         lvt/jTOO9goJxnPRCAKuHxwNBKeKr+XLfwFC952UvD3Mm/ZxkkW933D9oJAhLerE9jWU
+         iLtSQeYCl+XWa9ZLWiFb9KxmestbebLBt/dWD+ve3nrn5qP8Wa0icDTZBeiQ9LjdqkFI
+         t0XA==
+X-Forwarded-Encrypted: i=1; AJvYcCUtkJWj6KTF96T6V6CAPCBW57Pr03aFsRB4Vwt++cssEsOSxotyGLzWPxC9t508EOSrvBM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzbQPd9b3Rg9xaexOoObVc93P0UlbEKg7dQ6tM7ytkqG4ABkSQn
+	e3BuU/fKdgqN5rmnT0PKBEyyfoDednmiHzUf2SkRAIWvt/azKoO0eQSc
+X-Gm-Gg: ASbGncvwtLaj0BqKKWwDuLTjpq5Y92WEQWpoVcMZdDM9kjkSQ/e1jrLal6pYoFqQW81
+	nLRQb2hzTtouaCi4tQp8r71UQMNNDhWM/usOYR3olZQ1nt1noNFywfYgvR9wnlMYkT7aC2RJfNQ
+	mtAPuftWFCcuAFHBzxXZwECDfbHOKn2gkhb6LYpNReFeU4C8G3rax9qUmnnS1y6bIMEv6b/4+8J
+	gvAaI+2zzLHAC5UYxXFI89Pl6t0uDrrvqy1LE21UmQoP0SV2qS14EVlw+XdxZpNi1Wuq/1g6xt5
+	fEA7uiTfThgZ2EkqL7Yc5Jflj7IkVEtEvF1weAAPq6Mov+ON29K0T/W8DKX5BTJ0vAvxZTM3kFk
+	K2JsNbLvizNgpbCMgQUVmVJIcoN1r/4YaUYvvQaRWrDD86pgYws80JrzYR1QbY4TpCnl8OcDon5
+	aMOeRpCU0SU9amAm80XZHUI81l+3g=
+X-Google-Smtp-Source: AGHT+IGN2yQvKPDnQSI+rfi8GFgwmIi2Dp/WjRDvh8wa+7M3RBmYm0POoYwrQhejduq1ue9sQHFv6Q==
+X-Received: by 2002:a17:90b:3a4e:b0:33f:ebc2:645 with SMTP id 98e67ed59e1d1-3475ed448a0mr4374100a91.20.1764113616140;
+        Tue, 25 Nov 2025 15:33:36 -0800 (PST)
+Received: from [192.168.0.233] ([159.196.5.243])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3475ff0eae4sm1654152a91.4.2025.11.25.15.33.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Nov 2025 15:33:35 -0800 (PST)
+Message-ID: <2146e663be965ee0d7ef446c7c716d1c77a8a416.camel@gmail.com>
+Subject: Re: [PATCH V2 1/5] block: ignore discard return value
+From: Wilfred Mallawa <wilfred.opensource@gmail.com>
+To: Chaitanya Kulkarni <ckulkarnilinux@gmail.com>, axboe@kernel.dk, 
+	agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com, song@kernel.org, 
+	yukuai@fnnas.com, hch@lst.de, sagi@grimberg.me, kch@nvidia.com,
+ jaegeuk@kernel.org, 	chao@kernel.org, cem@kernel.org
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dm-devel@lists.linux.dev, linux-raid@vger.kernel.org, 
+	linux-nvme@lists.infradead.org, linux-f2fs-devel@lists.sourceforge.net, 
+	linux-xfs@vger.kernel.org, bpf@vger.kernel.org
+Date: Wed, 26 Nov 2025 09:33:26 +1000
+In-Reply-To: <20251124025737.203571-2-ckulkarnilinux@gmail.com>
+References: <20251124025737.203571-1-ckulkarnilinux@gmail.com>
+	 <20251124025737.203571-2-ckulkarnilinux@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.1 (3.58.1-1.fc43) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251118125802.385503-1-chen.dylane@linux.dev> <CAADnVQJ0MDMwrmsUoM1xt_1bMQ2d-Eer7ynD3GVSCuwcpZouLg@mail.gmail.com>
-In-Reply-To: <CAADnVQJ0MDMwrmsUoM1xt_1bMQ2d-Eer7ynD3GVSCuwcpZouLg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 25 Nov 2025 15:32:09 -0800
-X-Gm-Features: AWmQ_bndgc7_ST1zWTW873HwRXDkzRro_6gEZGhITI5zr86wSXFZ04qdFIa1jBA
-Message-ID: <CAEf4BzaXozVSTsC7XZ8Ojkju1szk65nAg8Zc5Y_2OVewKV4heA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add bpf_get_task_cmdline kfunc
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Tao Chen <chen.dylane@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 21, 2025 at 5:17=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Nov 18, 2025 at 4:58=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> =
-wrote:
-> >
-> > Add the bpf_get_task_cmdline kfunc. One use case is as follows: In
-> > production environments, there are often short-lived script tasks execu=
-ted,
-> > and sometimes these tasks may cause stability issues. It is desirable t=
-o
-> > detect these script tasks via eBPF. The common approach is to check
-> > the process name, but it can be difficult to distinguish specific
-> > tasks in some cases. Take the shell as an example: some tasks are
-> > started via bash xxx.sh =E2=80=93 their process name is bash, but the s=
-cript
-> > name of the task can be obtained through the cmdline. Additionally,
-> > myabe this is helpful for security auditing purposes.
->
-> maybe
->
-> >
-> > Signed-off-by: Tao Chen <chen.dylane@linux.dev>
-> > ---
-> >  kernel/bpf/helpers.c | 22 ++++++++++++++++++++++
-> >  1 file changed, 22 insertions(+)
-> >
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index 865b0dae38d..7cac17d58d5 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -2685,6 +2685,27 @@ __bpf_kfunc struct task_struct *bpf_task_from_pi=
-d(s32 pid)
-> >         return p;
-> >  }
-> >
-> > +/*
-> > + * bpf_get_task_cmdline - Get the cmdline to a buffer
-> > + *
-> > + * @task: The task whose cmdline to get.
-> > + * @buffer: The buffer to save cmdline info.
-> > + * @len: The length of the buffer.
-> > + *
-> > + * Return: the size of the cmdline field copied. Note that the copy do=
-es
-> > + * not guarantee an ending NULL byte. A negative error code on failure=
-.
-> > + */
-> > +__bpf_kfunc int bpf_get_task_cmdline(struct task_struct *task, char *b=
-uffer, size_t len)
->
-> 'size_t len' doesn't make the verifier track the size of the buffer.
-> while 'char *buffer' tells the verifier to check that _one_ byte is avail=
-able.
-> So this is buggy.
->
-> In general the kfunc seems useful, but selftest in patch 2 is just bad
->
+Reviewed-by: Wilfred Mallawa <wilfred.mallawa@wdc.com>
 
-Besides that mm->arg_lock spinlock (which I don't think matters all
-that much for BPF programs), is there anything special in
-get_cmdline() that BPF program cannot just implemented? Ultimately,
-it's just copying mm->arg_start and mm->env_start zero-separated
-strings, no? We have bpf_copy_from_user_task_str() and also
-dynptr-based equivalent of it for even more variable-length
-flexibility. That should be all one needs, no?
-
-> + ret =3D bpf_get_task_cmdline(task, buf, sizeof(buf));
-> + if (ret < 0)
-> +    err =3D 1;
-> +
-> + return 0;
-> +}
->
-> it's not testing much.
->
-> Also you must explain the true motivation for the kfunc.
-> "maybe helpful for security" is too vague.
-> Do you have a proprietary bpf-lsm that needs it?
-> What is the exact use case?
->
-> pw-bot: cr
+Regards,
+Wilfred
 
