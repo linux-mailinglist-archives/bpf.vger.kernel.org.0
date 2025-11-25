@@ -1,155 +1,179 @@
-Return-Path: <bpf+bounces-75509-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66228C87757
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 00:26:26 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55CACC87775
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 00:32:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D9C744E40FC
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 23:26:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 05C614E3D20
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 23:32:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287E32F0676;
-	Tue, 25 Nov 2025 23:26:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289E42ED17C;
+	Tue, 25 Nov 2025 23:32:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fkKNglA1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OfiHuEvc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f52.google.com (mail-yx1-f52.google.com [74.125.224.52])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE7E232785
-	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 23:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E292586C2
+	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 23:32:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764113181; cv=none; b=IBLRenM92Fh/MqRjSd3+KFCpZynTgpACej/Mk+zJl5WL/VjMxgiZNk68QWvfwYNY9z8enNyOqg20tIbZx36+SfRC6rMgvlR0+hGRgDMMW2ZyHLBhvYMj0QMwI09qxj685Ujpbwq2VVghayZsMiX2SnLMxFheC1VMg2gpyQD5ZFM=
+	t=1764113544; cv=none; b=QiQdVDj2rxnzqfM9tiPKJPDcYXn8bVEH5wB0Ucss+B5dTZhqaoodNqM1XlTEygcvrxuRuKZZGbKjz2vxRKNtqZYcQcIwL7sZ9RvEsD/f3qte8SqJX2EUdXnnCZ5LGgPmlcDn/2a9DJD2VfWKeZ7eBQD3ArgklvekUVV3I+HO49o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764113181; c=relaxed/simple;
-	bh=siFQ1bf0s/fpNy34d93TDtRfWB2PuZZkA0RO/cP3mWQ=;
+	s=arc-20240116; t=1764113544; c=relaxed/simple;
+	bh=uixRbDv1kGALghM30hjMsHQ5zIk0iDXcZw9eSeumYZg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CMHOEdOBClhV/cnKeR2HXhz5AZNljnz1422s0jRuwMgfBWre5u/4wzwFPygljAXHxNB+Vdtk+riKPvIqSEASjBM/DkYMoG3xlIVTyviu+/CFbi4xCzHOz1n6U0QmzoLxo+p8Wk8oiDiwU4lxfomprBOsnlsohgpKr/SuEK06lhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fkKNglA1; arc=none smtp.client-ip=74.125.224.52
+	 To:Cc:Content-Type; b=NMlhTTmzRt8O7K9oNZgrjuM7JWaXiREzPRN2RXBVS9XkoHRf8IsjpaJQL5q41R6qwH8E76OKNlcs5KyXc774UuZSXLFJmz40kYmnyJ6MMIDkDINQGn1HZ9rnMsuxOb1Ajst8TqgGIQezp1SuilGxNjlSAzMrSm9IatONAQOYebc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OfiHuEvc; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f52.google.com with SMTP id 956f58d0204a3-642f3bab0c8so4390550d50.0
-        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 15:26:19 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-341988c720aso5160729a91.3
+        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 15:32:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764113179; x=1764717979; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764113542; x=1764718342; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=elr8aIjn47xOg/+VM5F97jLdZTnycMz0MA5pcIR09Z0=;
-        b=fkKNglA1mZm5bbjWIsgLOjBFVr1fHDQ8TPNXs0mmnO+SAZIspk2baYKlwUsr+E9QoC
-         4qZHy9f056pVimKfoJ8+NYYiX7IukHhnjwgdOCqJMkUqGIksysQeb33LmPXyiIeROEdR
-         zUZKlMcTOoTdD4d8ZsZ1HKHEsVsthC5XR2fCG8dKWWmNfEPpu2ffARlak0YJ/PApGZGc
-         I7c/LpamIJ5DriJDXM8wgfGq4usSNM9WNJjhyUIgbrmwm1QfuI9vvb4Cg8P6k2E6ev3D
-         T4kpM9G+3plBp+ru0IfSE0LalOVL9a+GV9P4C5/HjGjjoZ+qwMeRVk0eoAvxDmxvIk9x
-         5Phg==
+        bh=LPtseTgrU/dQhg5zVqpjcUjeAtrr2+ySKimC4QiGcT0=;
+        b=OfiHuEvcPv8XFtTtdaMz69AOIqmojpKKCgvbB2mvt8FFxrjKAbZtZrI4x4COJ8EwZy
+         GazLTqqvYtiTl/I02o+jkY/5NCMH/4OaputQz/ptJcKmry+cUS1gJl/KvUWbRh9GdGrZ
+         vDqav+vTDpIlEGSKxgbANReFvtqvECM6S562jgfmp+uc3JiS6P3nC/+a5RgEfmfNY21P
+         a0Gkf5fIyzWzGF8HZgtJN3hY2kpGYJsVoNq7KH8a2rbGsdqhoM+7McnyLaT3HR47CAaY
+         W27ECrKplF9kXmOVzRbRb6IRJi5b+IiABQ9VcQV/KLMc7giv5lYu+/DeziyG+z3Vb3OU
+         yIWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764113179; x=1764717979;
+        d=1e100.net; s=20230601; t=1764113542; x=1764718342;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=elr8aIjn47xOg/+VM5F97jLdZTnycMz0MA5pcIR09Z0=;
-        b=OekPdzQI2QU/hddp4irJu7FN31f4iEQqq5g3HnCmIb7nxN/nTlCtNhCeePR06C4BLS
-         3lVPRIu8b97VRhBqJxKaT2ad93WMx1lYRmX+oaHQ4QTZYv4TzuVakaAcuWVso50mXXcX
-         CWqKcV/K0zfLbeFWBu3bo0sPIInk0kCpnVqrXZpFUMBfklU+narmBIsr8zjJ6xyrBXh3
-         qDUqy/67iWuPes0LO9xZpIf+YyksRY6nk8XRObvhdJJLR60fARfpeFe0wDSkTmGa+zDj
-         bmSczmxBO5Vb+IxLwPqt1SHSuq3oPlr4La8PQYCYJyUCBNm5/2P3ByTFkbrbJp6/WIhv
-         2fbA==
-X-Forwarded-Encrypted: i=1; AJvYcCXikZbC+b6SbYlbisr0oandAKInZtWcxCJLHrV1l11VxFEKduJ7HOLQTL32OxxbbRELd9s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxObyVB5ZTJVR3xog+Fot3qihgN/rmeSPmnyJ9QPkQL0kqbD/pq
-	2gEvZE1bNXRCQxQQV823N19MmthujZExfc6LEzJaAsf8qR/U5pLgAIEmjVjPfCE8U1wI4hwO/+c
-	DQE/ik1PSRCnphw/JEQoOdRxW/Vmr9Es=
-X-Gm-Gg: ASbGncv2oiMO5tpG8fF5S1mPlpkCeAQlfLXmboV2m1wT58BGOmd59qchbgQCM6z9TcZ
-	rmgFrlJFufv+o1Ag8hkSjqZmCpQETEwKe7xWs2Gjzp9VFkVnp9tkxX01UxCChuv2YXfpHkyhao4
-	5cuK02EDBNLlbNjk7dxUxRhzrnLGPMTTiVoVBMHnv+hWIN44SPql+MPlKq6Jd92dBRYXs3DLv+b
-	Y6UucgjF5zBOfLjnmUBXzWGqb1yWNMh8516KamRc4OLlg7LsRxmEkc+AHCTcNj+NwAmB6c=
-X-Google-Smtp-Source: AGHT+IE3eCaRjYpZKUWkOF6wFH9GEckxUjQVdkjJcXz+POjmJS+rY4/6g1wD4JITBMKqhJ+TwKhAOsBetH3+KVItBTA=
-X-Received: by 2002:a05:690e:2513:20b0:641:f5bc:696c with SMTP id
- 956f58d0204a3-64302aed76fmr9794391d50.72.1764113178814; Tue, 25 Nov 2025
- 15:26:18 -0800 (PST)
+        bh=LPtseTgrU/dQhg5zVqpjcUjeAtrr2+ySKimC4QiGcT0=;
+        b=TVYGFMwx+pp/eDczcoP2TDygkdrWiyAYIWVJZ6pHGj4fUt6tHOriyj33teffgVTybC
+         H80xdBR5/03Hilegks9oaUbBM0yWSvLbEt1eqnNOlRuSVdT83/m0VjEEMArapjKGMTFS
+         J/oS6lEDlVHe85SSwWOGuWoX2jZYROO69osyJgAGLWDxTxzfEGbkurWgrSYjqabIORcc
+         /0T3GyTjwQfd9XWvVCOa0OPgfJ0RPvtkGGWSQiPxyqk8X+YXIgYSLbNvmSFP7k+85+8M
+         Eqrs4lWE2bE3FkVUaJiuIaoebizqLJYUgiF/L33Y1AT9UU/wMe0gew8DoyQH3rLuWGJm
+         iDQA==
+X-Forwarded-Encrypted: i=1; AJvYcCXAI+Y8MBB/b0hESecb9+8XvRM139LU+Vnqo+5d2ya0DZzaGcf75571BUaG1rco9y+3NPc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxiOBm2F9qyFUr5vflksHXDW/uUdI357s2bagIf76MrAR2NWFQC
+	VUzuzaJh5ns3i+lG/QxWzDKt5u4UiXC4v8XqF1oPxDsHHNqXngX1TXEQhqP+ujfJuaFeH/jS5jg
+	D61ihd4GbH0ZGbV5eBJ1qMXDbpjYoFuw=
+X-Gm-Gg: ASbGncv5WjdA45NsnzlkzXbxZFfylYuSU9IgDZ62VTqz+dgkZAPxYrJnkB3ZojLfP9D
+	NvHV6YbsX5XY0kN6SvnV8J2Bq48uVkFdi2qUzsRPgsczUMk5vBcnNBhhpuTw+aX6Un5CkgsFRcI
+	Lyp+9KOOMVd78H6v0FAmajrVpVZ+eomt/FS1OrgP3MKrWK7e+wisEKYwxOXR2IzgpIMbwuBAd2u
+	LgWBSPdgGHTGHVYXvVZOWc1p8SoWaZH6Kl/2mOjRI7G8uD3l4D1JMwcM7e1MH6l6nx7oaK8JQV2
+	5l34eRiqD1U=
+X-Google-Smtp-Source: AGHT+IEsx8zFOOIlNrgCNY0o1v6vGnfF3nJhWnvGuLTzd53z2WsPHkeSzGxVwlaxV98trkWk9lLkSnKDMlJQJJyp+aE=
+X-Received: by 2002:a17:90a:dfcd:b0:340:a961:80c9 with SMTP id
+ 98e67ed59e1d1-34733f495ffmr14624216a91.30.1764113542470; Tue, 25 Nov 2025
+ 15:32:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1d2d1968.47cd3.19ab9528e94.Coremail.kaiyanm@hust.edu.cn>
- <CAMB2axMgCapnYS4Qr-PVm6FjPCkF3bi-LNtV5EpFLVtAs_JNGA@mail.gmail.com> <CAADnVQ+fDin56GSBaANBf0P+xiQYGWgcDZFT=2OnRKhCa04Kdg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+fDin56GSBaANBf0P+xiQYGWgcDZFT=2OnRKhCa04Kdg@mail.gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Tue, 25 Nov 2025 15:26:07 -0800
-X-Gm-Features: AWmQ_bkGzF6DqeF-pRR9byVwQSClubRQ5N0sN21PCqUsMvH7jV8lxEqBiuGj_m4
-Message-ID: <CAMB2axOHy5FQm4ZvoT6tFOp9jACUh2MZOXsup4TUm1ZL485=fA@mail.gmail.com>
-Subject: Re: bpf: Race condition in inode local storage leads to use-after-free
+References: <20251118125802.385503-1-chen.dylane@linux.dev> <CAADnVQJ0MDMwrmsUoM1xt_1bMQ2d-Eer7ynD3GVSCuwcpZouLg@mail.gmail.com>
+In-Reply-To: <CAADnVQJ0MDMwrmsUoM1xt_1bMQ2d-Eer7ynD3GVSCuwcpZouLg@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 25 Nov 2025 15:32:09 -0800
+X-Gm-Features: AWmQ_bndgc7_ST1zWTW873HwRXDkzRro_6gEZGhITI5zr86wSXFZ04qdFIa1jBA
+Message-ID: <CAEf4BzaXozVSTsC7XZ8Ojkju1szk65nAg8Zc5Y_2OVewKV4heA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add bpf_get_task_cmdline kfunc
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: =?UTF-8?B?5qKF5byA5b2m?= <kaiyanm@hust.edu.cn>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Yinhao Hu <dddddd@hust.edu.cn>, dzm91@hust.edu.cn, 
-	hust-os-kernel-patches@googlegroups.com, 
-	Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Tao Chen <chen.dylane@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 25, 2025 at 3:17=E2=80=AFPM Alexei Starovoitov
+On Fri, Nov 21, 2025 at 5:17=E2=80=AFPM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Tue, Nov 25, 2025 at 3:06=E2=80=AFPM Amery Hung <ameryhung@gmail.com> =
+> On Tue, Nov 18, 2025 at 4:58=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> =
 wrote:
 > >
-> > On Mon, Nov 24, 2025 at 8:43=E2=80=AFPM =E6=A2=85=E5=BC=80=E5=BD=A6 <ka=
-iyanm@hust.edu.cn> wrote:
-> > >
-> > > A use-after-free vulnerability was discovered in the `bpf_inode_stora=
-ge_get` helper function. This flaw is caused by a race condition between th=
-e destruction of the anonymous inode that backs the map of type `BPF_MAP_TY=
-PE_INODE_STORAGE` and the execution of a BPF program that attempts to acces=
-s that inode.
-> > >
-> > > Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
-> > > Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
-> > > Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
-> > >
-> > > ## Root Cause
-> > >
-> > > The use-after-free occurs due to improper lifecycle management of the=
- anonymous inode associated with a `BPF_MAP_TYPE_INODE_STORAGE` map. The pr=
-oblem could be triggered through a race condition:
-> > >
-> > > 1.  A BPF program creates a map of type `BPF_MAP_TYPE_INODE_STORAGE`.=
- The kernel allocates a file descriptor and an associated anonymous `inode`=
- to serve as the backing storage.
-> > > 2.  A BPF LSM program is loaded and attached to an LSM hook `bpf_lsm_=
-file_alloc_security`. This program holds a reference to the `inode_storage`=
- map.
-> > > 3.  The process that created the map exits, causing the kernel to clo=
-se its file descriptor. This decrements the reference count on the `inode`.=
- When the reference count drops to zero, the `inode` is freed.
-> > > 4.  When another process trys to create the map, the LSM hook is trig=
-gered, causing the attached BPF program to execute.
-> > > 5.  The BPF program calls `bpf_inode_storage_get()`, passing a pointe=
-r to the now-freed `inode`. The function attempts to access fields within t=
-his freed memory region, leading to a use-after-free.
-> > >
-> > > The fundamental problem is that the BPF program's reference to the `b=
-pf_map` does not translate to a reference on the underlying `inode`. This a=
-llows the `inode` to be destroyed while it is still potentially in use by a=
-n active BPF program. The comment in the `bpf_inode_storage_get` function, =
-`/* This helper must only called from where the inode is guaranteed to have=
- a refcount and cannot be freed. */`, highlights this exact requirement, wh=
-ich is violated by the race condition.
-> >
-> > Thanks for reporting. I found the root cause here a bit hard to
-> > follow, so I also ran your POC on a VM with bpf-next kernel and
-> > confirmed the kernel did panic.
-> >
-> > However, the bug seems to me to be an uninitialized file->f_inode
-> > being passed to bpf_inode_storage_get() in
-> > bpf_lsm_file_alloc_security.
+> > Add the bpf_get_task_cmdline kfunc. One use case is as follows: In
+> > production environments, there are often short-lived script tasks execu=
+ted,
+> > and sometimes these tasks may cause stability issues. It is desirable t=
+o
+> > detect these script tasks via eBPF. The common approach is to check
+> > the process name, but it can be difficult to distinguish specific
+> > tasks in some cases. Take the shell as an example: some tasks are
+> > started via bash xxx.sh =E2=80=93 their process name is bash, but the s=
+cript
+> > name of the task can be obtained through the cmdline. Additionally,
+> > myabe this is helpful for security auditing purposes.
 >
-> Thanks for the analysis.
-> That's not the first such problematic lsm hook.
-> Let's just add it to bpf_lsm_disabled_hooks[].
+> maybe
+>
+> >
+> > Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+> > ---
+> >  kernel/bpf/helpers.c | 22 ++++++++++++++++++++++
+> >  1 file changed, 22 insertions(+)
+> >
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 865b0dae38d..7cac17d58d5 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -2685,6 +2685,27 @@ __bpf_kfunc struct task_struct *bpf_task_from_pi=
+d(s32 pid)
+> >         return p;
+> >  }
+> >
+> > +/*
+> > + * bpf_get_task_cmdline - Get the cmdline to a buffer
+> > + *
+> > + * @task: The task whose cmdline to get.
+> > + * @buffer: The buffer to save cmdline info.
+> > + * @len: The length of the buffer.
+> > + *
+> > + * Return: the size of the cmdline field copied. Note that the copy do=
+es
+> > + * not guarantee an ending NULL byte. A negative error code on failure=
+.
+> > + */
+> > +__bpf_kfunc int bpf_get_task_cmdline(struct task_struct *task, char *b=
+uffer, size_t len)
+>
+> 'size_t len' doesn't make the verifier track the size of the buffer.
+> while 'char *buffer' tells the verifier to check that _one_ byte is avail=
+able.
+> So this is buggy.
+>
+> In general the kfunc seems useful, but selftest in patch 2 is just bad
+>
 
-Got it. Will send a patch disabling bpf_lsm_file_alloc_security.
+Besides that mm->arg_lock spinlock (which I don't think matters all
+that much for BPF programs), is there anything special in
+get_cmdline() that BPF program cannot just implemented? Ultimately,
+it's just copying mm->arg_start and mm->env_start zero-separated
+strings, no? We have bpf_copy_from_user_task_str() and also
+dynptr-based equivalent of it for even more variable-length
+flexibility. That should be all one needs, no?
+
+> + ret =3D bpf_get_task_cmdline(task, buf, sizeof(buf));
+> + if (ret < 0)
+> +    err =3D 1;
+> +
+> + return 0;
+> +}
+>
+> it's not testing much.
+>
+> Also you must explain the true motivation for the kfunc.
+> "maybe helpful for security" is too vague.
+> Do you have a proprietary bpf-lsm that needs it?
+> What is the exact use case?
+>
+> pw-bot: cr
 
