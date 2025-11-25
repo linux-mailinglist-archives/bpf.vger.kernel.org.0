@@ -1,131 +1,91 @@
-Return-Path: <bpf+bounces-75463-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75464-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC076C853EE
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 14:50:12 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C412DC855BE
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 15:19:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9CD83B18D9
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 13:50:11 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 068CB4EA872
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 14:18:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC13123EA95;
-	Tue, 25 Nov 2025 13:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BBA2324B2B;
+	Tue, 25 Nov 2025 14:18:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GRcUabGl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oOfDQ2zI"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6B723D7F4
-	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 13:49:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAE9323D29F;
+	Tue, 25 Nov 2025 14:18:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764078601; cv=none; b=Y1Eagi0R1RBSP0hkOgMAKNAP6pfwA8X6C+qfSc2btbnNaJ4g5qYvTrdFSqJG0+LMeKYa8sznIPEkMzNAzIRrGOVArdetTxSgHFrV0dR9k99hCnII6ZcD8YmhYcAVrpa3UU9MhI1bju8cHs8htXN3dGQmjFqpeiIg7NHq3yW4hTI=
+	t=1764080308; cv=none; b=RsrXBnhzhS1/Y5mZV+yXth3C+QnqgHJvXkD5+mxA8E3i94PvLeNcAdIsGPC4N2hwni5Bu8xyvZdtW6pSIZttrxdi/q91wx+5BZRT42XAS+mh5iK4R2tv0GDpxIj785WGuYPBYi8k2VmC4qfFw/nsO2K1I+lQdZSz3P7rCQGm/GE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764078601; c=relaxed/simple;
-	bh=igOW+fPyxFxvlCfmPvcdrUqhCsRNYwHE4m7Ueubr/Ns=;
+	s=arc-20240116; t=1764080308; c=relaxed/simple;
+	bh=oPbcVTTzame3aqqLKrW9RY5mARPG0SFH+InJLmThENE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sugZ5lvTnD/UAREmVX5IYEPIwnaBEqEUPrl/4QXaSypr9ctQV8D3kV6BQ32K0y24a9Kpqm798NM1QKPjrMdcBXT8yNCrnhzOqp4HTUtYJDS+kp0bZdyQlgTWbER3x7ws+GLerYJyCDhgMq+ahN87bJk1OxFD8tbhACuoBto1nj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GRcUabGl; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1764078598;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XN8CLa/8dlj8vakXKNRK1KkqlSNx6IT+QyayqEI84vg=;
-	b=GRcUabGlEnRY/v4ZqgqiVD6SKatTNNGg/RBujJBsJBjX6P0FZyXs+oytk2u9IJtZ3zh+4c
-	VdGNknYdW4dZc1/L4qZAPUuQAEO0bNSlE2bPrC7NC5S1of5i72oc5bDqpoTM8ztxw7tTdr
-	7gSFwvVpyXroVGEix0XwSc4qNkx/9Fk=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-462-CLtErqg-OF68EOTPXYr5YQ-1; Tue,
- 25 Nov 2025 08:49:54 -0500
-X-MC-Unique: CLtErqg-OF68EOTPXYr5YQ-1
-X-Mimecast-MFC-AGG-ID: CLtErqg-OF68EOTPXYr5YQ_1764078593
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CC16F1954B21;
-	Tue, 25 Nov 2025 13:49:52 +0000 (UTC)
-Received: from wcosta-thinkpadt14gen4.rmtbr.csb (unknown [10.22.80.102])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 904683003761;
-	Tue, 25 Nov 2025 13:49:48 +0000 (UTC)
-Date: Tue, 25 Nov 2025 10:49:46 -0300
-From: Wander Lairson Costa <wander@redhat.com>
-To: Costa Shulyupin <costa.shul@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, 
-	Tomas Glozar <tglozar@redhat.com>, Ivan Pravdin <ipravdin.official@gmail.com>, 
-	Crystal Wood <crwood@redhat.com>, John Kacur <jkacur@redhat.com>, 
-	Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	"open list:Real-time Linux Analysis (RTLA) tools" <linux-trace-kernel@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:BPF [MISC]:Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>
-Subject: Re: [rtla 04/13] rtla: Replace atoi() with a robust strtoi()
-Message-ID: <y7jj2z6jmqb3fq4mzsgtwlbfeocumlcocbgtsx64sgkaornbhy@wus4cz33ijla>
-References: <20251117184409.42831-1-wander@redhat.com>
- <20251117184409.42831-5-wander@redhat.com>
- <CADDUTFyAAAv641OfGf_U4hVdegyAVyp5rgruF=NSNd+UPkjOzQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=P4GsAHw3tKmI0WlAXwrVicaxmqbWGr3dUq1rfKHkI0mvQ78uTPaiqlHkrnnsBr5BlHXcaa/vUlJIm5yUQ9tNL+bygvIpRnBjWZzoCwJgi7wjn8myg+XhVHH9UtOpyvpVvDnlVnUpH2qBFFFknWRQYc3Tk5lnaqYEtyi6Z3ykBoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oOfDQ2zI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDC31C4CEF1;
+	Tue, 25 Nov 2025 14:18:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764080308;
+	bh=oPbcVTTzame3aqqLKrW9RY5mARPG0SFH+InJLmThENE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oOfDQ2zIj4Kmlt2P9IQw96sCrerj8kG1dKJbMHH2zRcM4XymK2i3pWtmNojt+nh0p
+	 MKqWGXKQz/Bp/9+cYvya2ZHKnv2PPenJPM0UHAtZvCxOKVZR9MReoMTleixFuG+9hp
+	 lPyuXFfcuvWZybvIyveWMMPkTUNsLNJ96nCjIfe5Owpe0OUcJXB8vCRQ+CHYvrqLca
+	 peE5rTILw0shnU18D+SUqrwnMQJoFJcssoxgC+Zve1sJbhywENac25BcParGTd5PLe
+	 V/d2P7XV6BUe0ElCUttjZFCz2KIRmgO5jUif+C3mnSvdlfna06/uKXLvc7JX9aRnl6
+	 fyspEsSAmsyYA==
+Date: Tue, 25 Nov 2025 15:18:25 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 14/16] srcu: Create an SRCU-fast-updown API
+Message-ID: <aSW6sVkqWh2aGxlK@localhost.localdomain>
+References: <bb177afd-eea8-4a2a-9600-e36ada26a500@paulmck-laptop>
+ <20251105203216.2701005-14-paulmck@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CADDUTFyAAAv641OfGf_U4hVdegyAVyp5rgruF=NSNd+UPkjOzQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251105203216.2701005-14-paulmck@kernel.org>
 
-On Tue, Nov 25, 2025 at 10:35:39AM +0200, Costa Shulyupin wrote:
-> On Mon, 17 Nov 2025 at 20:55, Wander Lairson Costa <wander@redhat.com> wrote:
-> > To address this, introduce a new strtoi() helper function that safely
-> > converts a string to an integer. This function validates the input and
-> > checks for overflows, returning a boolean to indicate success or failure.
+Le Wed, Nov 05, 2025 at 12:32:14PM -0800, Paul E. McKenney a écrit :
+> This commit creates an SRCU-fast-updown API, including
+> DEFINE_SRCU_FAST_UPDOWN(), DEFINE_STATIC_SRCU_FAST_UPDOWN(),
+> __init_srcu_struct_fast_updown(), init_srcu_struct_fast_updown(),
+> srcu_read_lock_fast_updown(), srcu_read_unlock_fast_updown(),
+> __srcu_read_lock_fast_updown(), and __srcu_read_unlock_fast_updown().
 > 
-> Why not use sscanf() for this purpose instead of adding a new utility function?
-> 
+> These are initially identical to their SRCU-fast counterparts, but both
+> SRCU-fast and SRCU-fast-updown will be optimized in different directions
+> by later commits.  SRCU-fast will lack any sort of srcu_down_read() and
+> srcu_up_read() APIs, which will enable extremely efficient NMI safety.
+> For its part, SRCU-fast-updown will not be NMI safe, which will enable
+> reasonably efficient implementations of srcu_down_read_fast() and
+> srcu_up_read_fast().
 
-The strtoi implementation properly detects:
+Doing a last round of reviews before sitting down on a pull request,
+I think the changelog in this one should mention what are the expected
+uses of SRCU-fast-updown, since the RCU-TASK-TRACE conversion bits aren't
+there for this merge window yet.
 
-1. Empty strings - via the !*s check
-2. Conversion errors - via errno from strtol
-3. Trailing garbage - via *end_ptr check ensuring entire string was consumed
-4. Integer overflow/underflow - via explicit lres > INT_MAX || lres < INT_MIN
-   bounds checking
+Thanks.
 
-sscanf has the following limitations:
-
-1. Trailing garbage is silently ignored
-
-   int val;
-   sscanf("123abc", "%d", &val);  /* Returns 1 (success), val=123, "abc" ignored */
-
-   While you could use "%d%n" with character count checking, this becomes
-   cumbersome and defeats the purpose of simplification.
-
-2. Integer overflow has undefined behavior
-
-   sscanf with %d doesn't guarantee overflow detection and may silently wrap
-   values (e.g., 2147483648 -> -2147483648). There's no standard way to detect
-   this has occurred.
-
-3. No detailed error reporting (this is minor, though)
-
-   sscanf only returns match count, not error type. You cannot distinguish
-   "bad format" from "overflow" from "trailing garbage".
-
-> Also, using a boolean to return success or failure does not conform to
-> POSIX standards and is confusing in Linux/POSIX code.
-> 
-
-Ok, I will change it.
-
-> Costa
-> 
-
+-- 
+Frederic Weisbecker
+SUSE Labs
 
