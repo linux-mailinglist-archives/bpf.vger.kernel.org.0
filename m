@@ -1,76 +1,78 @@
-Return-Path: <bpf+bounces-75418-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75419-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5FCBC830F8
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 03:08:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDBFBC830FE
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 03:08:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A45054E36D7
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 02:08:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D0423ADBEB
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 02:08:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D0A19CCF5;
-	Tue, 25 Nov 2025 02:07:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A60A91A0BD0;
+	Tue, 25 Nov 2025 02:07:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W7vxnYSQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hdqZWHFN"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A282AF1D
-	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 02:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8418117A305
+	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 02:07:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764036477; cv=none; b=i+vlcEWy1daIdZrRpyqEJnV6qwXVlZTrQjrlXZmm8z4gjH1RgmJg0CwXqJhVqYSmohyLZogSK512ZFsIyCY8m+hnc6CBYril5p455DJU0XXeFP/xPzOL9Fwb8DIojMznaqHbttkTcqtVsp6MesoIOjTTx3sviMRT0dKkUyO4Pw8=
+	t=1764036478; cv=none; b=TDCUFvooHxMEhLSFz0GD/Xfyr61ORFTetljhhUM6zkyNse3tP4Zietow2KEglUUO950su+LExxTPwJuOGxnhSlv3RqQbM/5r1ehC//0UuqPDqbcbZVjqmKPtJGdtjOrnQvs4sUWKktAjLvzdWd4/Ynkd4GsWL2GY1hA7BYwaSl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764036477; c=relaxed/simple;
-	bh=qzXNCQQ32wh4Pwmht97qoN1N4QOzcA6FZe6Q7D2QVLU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Cb7qhiTnZJ14HhWdtcB+GzI962NAKp8xVYCgsRFw4jETWdmliS5p4flCJDykdcak/qocaRBdMjBBki6gAcBmm9xAzQo+hArLHIAy/bMjko0LUnXVeMiCHzq5t5OamK711wocle7eJBPS/h4/efp/hNdfLC/An8wEwoVdlDFlaIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W7vxnYSQ; arc=none smtp.client-ip=209.85.128.65
+	s=arc-20240116; t=1764036478; c=relaxed/simple;
+	bh=J/+xEX5jLZO1hct3Rz1t5C9Y+qpabzJAc4Lbs2LQUIY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=fO0xGEdeWdpaRTHMxlh5d0EQh8owzcFMLYeCrBV3ZVZhaa5yue/HJJ5OyqsCcnLmvzNQatwED2I/CGMnFZU8ltC+S6BsUnbleABBx40r18GT41T5sEZHAaCK+qrrO1oVl9OpTB6ovQff2KTntD9ykZQjAD+Q2bAkLTlUvGryN14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hdqZWHFN; arc=none smtp.client-ip=209.85.128.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-477563e28a3so33889165e9.1
-        for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 18:07:55 -0800 (PST)
+Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-47774d3536dso38276405e9.0
+        for <bpf@vger.kernel.org>; Mon, 24 Nov 2025 18:07:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764036473; x=1764641273; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qHvVksvpFv9ZGxC9JlTaw+lFET7jsoYLO7qw0Y/E1eQ=;
-        b=W7vxnYSQ14ZiyUBXBwLYlrop/OiEV4/BQe0/yb1htQoP7S5iVAg95nI5gZ0QAeSC4e
-         kT6AKtHCUJTKUowkjK1fpe0UJiwWQqXnkZmaU02aplbkZxv0VlNU7NLT+w6akMgrrgGX
-         iajLrQRLhKu60IPAJpFgH/8JREPee0B38szBM2m949WReZf5UgyYuqkoFKtUxiGPYsp4
-         p45OMXtbvdkmTYmV4yw8WsHUh6rIHIK1H9wF8x6xj3HZNpHolivIYnjEO+OtR31t5t3F
-         CrT6GkJRYqmI5GYAcEUHN8yBN0dQ1lHcxucDM6HZjV5wkgEWEV2VwTNIZSIrB3t5TTeQ
-         Zzsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764036473; x=1764641273;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1764036474; x=1764641274; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qHvVksvpFv9ZGxC9JlTaw+lFET7jsoYLO7qw0Y/E1eQ=;
-        b=igTLsy5XWxh5NcAqzTarPxkKEfOur5d1UsAruWmTedIVz1yBB1gPspenRjDwUUmiYC
-         oNVh6auzoHiq7ovqi+HALvo7iw0RDc4jauxszzLbAx4IaHY9F6/y9FBAvPPZ+qDaRXnr
-         wF0ojrAuq1TZWloGogISCiL5KQZ8UQMTifw0Gv+5Frkt+m++d33fqMSHS93ek20JhPap
-         WAb8lnxJuNtvOjwXJM4XQpiIGxb99Ei1D1U+2vQi59ODhiu7Etw6C8cjoShrxIijsYGQ
-         xCi+SNy75FA8ntO2bjLG2/bl9Zrs/g9ZiUWkaUsFiok8BCV3FRWu6IG3Vgwsb9pGcLXH
-         GYxw==
-X-Gm-Message-State: AOJu0YwnGWctzW4oa9gy7edCTjsJRgrTfDLO+eG67knD1kdkjKXbvMvO
-	4rn7ilAJyZiTgd5x8ou7JcGD3bZEVdsbkfWRaGdTHSrXd5O5Q+YWaRoztrGV9tqX
-X-Gm-Gg: ASbGncsf+SO2uUanNdApsHxz8MMDoXDnp5GeoKOazJRn0O5sn3UOw0pwwWEkZSg2PiA
-	gIONQMNeH/yVgnFA4uayX5csSBumt/oAoTdrmJFabZSMoX0vlveTzsJRJVuzDBKtjo2URVtDv2B
-	SEl8UHwHfoBPn+ORlTC8MsZ9JYWsqkxOUk9yi/3ShhbXomh5I65qxfd5F34IgjsWAqgdz71pAVB
-	Qj/2LMxfJuIeYU58f7yT6K+v3Yo/Fy7om4ZURWXHdCyeYS/+HqdHtCOWNPl6HVZxSXqRdAsyEfQ
-	0kFp0N679VpMIkMUYQSPXSeSX3K+bf6JaxPYVhJ11gCudkYgL8ZHzvSJGokJHeGVsBYqC8H0Z6i
-	sxD2Hqmebmlv+WVYX73OUnUXiW2t+fto2cvdK4aY9FedGQdPqZrw7+ASKxQNPbaa4UpBoGMS1lg
-	BTFTCZMNMLDh+zCwN8fMARdizHGg3Q5dZixnugKCmBahvZUBvWjkiEn9nrii4hOtPj
-X-Google-Smtp-Source: AGHT+IFzqLUXeo7qN7HvEXeEzKxotIwrCCAjd2lrH8HPgAkoc2kakjIp3Uv+bfkkITbh0hD3Pj6UDQ==
-X-Received: by 2002:a05:600c:3b01:b0:475:d9de:952e with SMTP id 5b1f17b1804b1-477c04c357dmr121712065e9.1.1764036473310;
-        Mon, 24 Nov 2025 18:07:53 -0800 (PST)
+        bh=H+XRC13f/VnJUEqcXbO+DUkApiQwoDzDXpjGZdkCbuA=;
+        b=hdqZWHFNXzNYnvdrlu4Kq0hAZbU9hsrI/As/DX3Wo15ft5+uRJoMN7sY9aMYIMf7Ww
+         Rt7VtewVz8wLUpnr6xtP9HidGtRK5mI2OulX2dL4LsqDljlLqVBTXs8zZBsZ9DJvf8dx
+         hDBohbI1k4rqoO43/QM2qxFpGHCbHHjPmjisQCkSRAjqWBKnMBwo5Gd0XCH/K9AhkGvc
+         gfHmoMYU/BUXEjsnhTWnV1I1MqChdqZ7GpmTdmpVY/L3trW6VQfn/VS8xbd8JR88qMff
+         8VILTJE4zE9KHHpnruubHZNX5oNLNSBcLAw9tGkmk3p80ytDWXqJId4naT5uoD9pByOu
+         CprQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764036474; x=1764641274;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=H+XRC13f/VnJUEqcXbO+DUkApiQwoDzDXpjGZdkCbuA=;
+        b=Q/BtvDP6AReZWGLE8xmIiYjYW01rO5U+mcX3SGL2ESTBUEIwBSOQbup3e/9qAvj6GI
+         apGMbthrZM8w24UsY8EVssSkkkOTG4ngMCT2FjKSORk7b51ZpQo7MiYl90W0goKj6wqi
+         r77wOyxV73iPxE3zUZYZDXEXg++nP4vk42AZ2wPUkgwTS/2sUHgxH9YvA5g6Srh6aywb
+         qn/1VrCQJ8j6+beBF8AG5DKM6LoL6UmmlroK0WKMSuEvDp6ovN9r0VbYOeFHnDycQxN3
+         NSYaeav+8FIeGWoEObM1HJoUFd0hjqaxeUTGhTm4iFJksqTFFhAJNMJwN3YI6SMKxmFs
+         9Vsw==
+X-Gm-Message-State: AOJu0YzMYahj5ctUdjETdL726wTsMHbTYPop47W1gTvllVQwH/IT1KhE
+	vb42Jay+WZmi+QJhpGI+tvot0WhANnayUWK/HzIva8sAv2Ky0cXEnai2+7LF4eZI
+X-Gm-Gg: ASbGncvu0jwG4tShdLlwiQrRQjeG5q5uC+5YB8wQc/IL3y1GpydbQ8ypk18lCXlkQsB
+	xcL2QaGD6QP6Rq5UBCBOZOFwp3vYPDNcAk4GRyFKYggVHE7/Cf/FsyDElAkZk7TKLFfNk4ibGD1
+	nQn8WF1tj6Cs5CBYnKQXLIKU5X6iGH2MWOCoIbAi3T6DA92wdOhm/O2AAdv6lYrXjU6+AZoNS9x
+	iJ+hwt2xIowEInhb3qARHDV08orzAEPwu/EDREZPehS2+yMync78H7fwXb11KZeVa0DCcP2y8dI
+	nQgogwsxI0pmdSINvAYJDlttjy5nelGBJXv/idZ0YcDpyd7g1y+CVExRo3zodz00CithGEFW7jQ
+	ipfBQrFcEJy9JXBBJChj2jQm80Fx6IxIOwLewzXrvSQCE51yHFrndf4wd6005JdmIcInvmrLBRR
+	nwBQV2Qwi7hW1pShnRJwvgS23aHSTiggbvAeKJw2A/frIPU62f9rJmG+GwjgMviILU
+X-Google-Smtp-Source: AGHT+IHvbpyuiCKEk//oBfGlGp31r6S5sJqEGN/EJvyOtlw8wKffQ/XPk/pY0NW8WZCK31DDnJhvzg==
+X-Received: by 2002:a05:600c:2e4c:b0:477:9890:4528 with SMTP id 5b1f17b1804b1-477b9ea31e9mr109661465e9.2.1764036474368;
+        Mon, 24 Nov 2025 18:07:54 -0800 (PST)
 Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-477bf3b4eb2sm221949715e9.12.2025.11.24.18.07.52
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-477bf3607b3sm226683445e9.6.2025.11.24.18.07.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Nov 2025 18:07:53 -0800 (PST)
+        Mon, 24 Nov 2025 18:07:54 -0800 (PST)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -80,41 +82,44 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v1 0/3] General enhancements to rqspinlock stress test
-Date: Tue, 25 Nov 2025 02:07:46 +0000
-Message-ID: <20251125020749.2421610-1-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 1/3] selftests/bpf: Relax CPU requirements for rqspinlock stress test
+Date: Tue, 25 Nov 2025 02:07:47 +0000
+Message-ID: <20251125020749.2421610-2-memxor@gmail.com>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251125020749.2421610-1-memxor@gmail.com>
+References: <20251125020749.2421610-1-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1009; i=memxor@gmail.com; h=from:subject; bh=qzXNCQQ32wh4Pwmht97qoN1N4QOzcA6FZe6Q7D2QVLU=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBpJQzujjlLtuOF0BuQ6uX0X3DOyYXFT40eD8YET BV7KuRHBn6JAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaSUM7gAKCRBM4MiGSL8R ygzrD/wOGt77Ee5qi5ldnn0RZQNKUWIALpB50QiXfLIAltAT0SjxXbxo30r0sUED2h7v33p2U15 PCcDPlonJYT4sX0h8+IMm81AUTePcLsgo7ADSOj+V7ZNhJ85sVi5ChQFaVXcNMxErdnOpdENxFS gln23AgDLFBYoj6yf/t3OujFAfv2v2J2o3ZF3mOe0jkKoNUiYttEA1Gh4z/Q313d1iNZKci7rxI vsAZ8AELTZKsraushBGpMFJMTD2fRckR0BYbUo41B6Oq+upU12cUTRpt6XsIWE564icTQ6B43ZX WLqvoLnt38mojTXTf5CO8dmvk8jd7fDrCvqB87xBKlvEY2H15+X2TD3lVzFNf//ZyVMTlATkJ/B m0jx49n4m6/w5sHCC41wqOJweJSiH6/9/trPJWM8SVwwT5C2fQjHE+VBkQxdxx6pPVMJ1rzBtCS eLGlOE9MIQ5HjNJWwOywX7UE2zEgqBzywHAKhQfl0/m8aaeq4m7TnkxCaTFKc82rQw+JXdegbUB sgVBdkgSSBa+XlvC4rVDLMO96husI09vTLIiz8Q1TAxV1xx3SO6jH3xTG/kFyBh8mbU5ZSa6s// +faXt7h78P4UCn4lvekAO6Hcg3WNPMltCOfPXqN2vY0vFF7FCXUWoI2cySAx9mp1MmYwY2l7D6k li3TNAlaIiXBSvg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=895; i=memxor@gmail.com; h=from:subject; bh=J/+xEX5jLZO1hct3Rz1t5C9Y+qpabzJAc4Lbs2LQUIY=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBpJQzuRkftB8/xcp5kPTzAfvsJK8wRjM2mA6ssS mqG8QIQm5CJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaSUM7gAKCRBM4MiGSL8R ytFfEACWP65NVjL7cIsmXldnZFA1GLW/mQSLENZjdxOAoVwmpYFHSeB0uQpYWpZTXp7GiUha2YP x2B+sJUlAoDpHl6gVjBflntcM+TDiVszjScF9heGxYjHWtrehMe9pXd8Ttqkg07zSfBvgE+mHcO lJcEmZKFKe30wcWZThQep2qGx59MVnnpdzMox+8bcGxSl36oU4wRSCPuVq5rVfz5tT0PJOXnS81 IIRhXriI7bRV5UgRgHQsG5HvkK0bKvHZvI9Ee5a+ALkskLvX+yi/l1D4CQEjAIB80nqZePlp3P8 WFvxxFrdt8GwdBMA2KZDTi9dOusZBLJn0b5ngvTgqYezNHj1oQm6fFW72khjigu5fZJqBlFxEZc xl8FXq+VKHx1LUJyU8k1bERztMR59ja2W3g0GdPjuSnGmZj2tz8lJVvQqnI8ZNhuwURmJz4S+XF c9DoWPbUSZWYowOKshzvSCIbxTlPn4InNUgDpcQl4qWEKfVCScjLy2muENPKZa2VQDq1jbRF1jG SSzb2JWcjmO/UsHPMCXVZdx6TJEqlNljAk0mwCjZVSbOMJ83zKi2aocYt+PfEWmcsyZcf5ebXDw CZOjIiFNtcez97Fpd2mQOpb4SmEyQuaVp3sMe6Y8wToWN+NxMRNzcIeSrz0SD1uosfu3yIuvv04 e7nOM6P+dlC9Cww==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Three enchancements, details in commit messages.
+Only require 2 CPUs for AA, 3 for ABBA, 4 for ABBCCA, which is
+calculated nicely by adding to the mode enum. Enables running single CPU
+AA tests.
 
-First, the CPU requirements are 2 for AA, 3 for ABBA, and 4 for ABBCCA,
-hence relax the check during module initialization. Second, add a
-per-CPU histogram to capture lock acquisition times to record which
-buckets these acquisitions fall into for the normal task context and NMI
-context.  Anything below 10ms is not printed in detail, but above that
-displays the full breakdown for each context. Finally, make the delay of
-the NMI and task contexts configurable, set to 10 and 20 ms respectively
-by default.
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+ tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Kumar Kartikeya Dwivedi (3):
-  selftests/bpf: Relax CPU requirements for rqspinlock stress test
-  selftests/bpf: Add lock wait time stats to rqspinlock stress test
-  selftests/bpf: Make CS length configurable for rqspinlock stress test
-
- .../bpf/test_kmods/bpf_test_rqspinlock.c      | 120 +++++++++++++++++-
- 1 file changed, 117 insertions(+), 3 deletions(-)
-
-
-base-commit: 590699d85823f38b74d52a0811ef22ebb61afddc
+diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c b/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c
+index 4cced4bb8af1..8096624cf9c1 100644
+--- a/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c
++++ b/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c
+@@ -182,7 +182,7 @@ static int bpf_test_rqspinlock_init(void)
+ 
+ 	pr_err("Mode = %s\n", rqsl_mode_names[test_mode]);
+ 
+-	if (ncpus < 3)
++	if (ncpus < test_mode + 2)
+ 		return -ENOTSUPP;
+ 
+ 	raw_res_spin_lock_init(&lock_a);
 -- 
 2.51.0
 
