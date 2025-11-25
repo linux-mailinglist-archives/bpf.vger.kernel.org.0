@@ -1,106 +1,147 @@
-Return-Path: <bpf+bounces-75511-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DF3CC87782
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 00:33:46 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7A9FC87799
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 00:35:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id AF6CB353E7B
-	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 23:33:45 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C27974E100D
+	for <lists+bpf@lfdr.de>; Tue, 25 Nov 2025 23:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 611162F2607;
-	Tue, 25 Nov 2025 23:33:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2B322EF64D;
+	Tue, 25 Nov 2025 23:35:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RapJjHXY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GNRme6jH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25022F0C66
-	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 23:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2731B1D61A3
+	for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 23:35:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764113618; cv=none; b=o/efeLh2LsN8CaNKQALkyvBe++tIU1ePJ8NsbXOKp06v+HfeEuIYzTRx+gM8NvscxrL5VkOEKW0PFlS0jeIKmFDoB2mLJ27eoQ7wvOfThLOyjuWhoe8wFS9G6nXa2o5i9CHL8h4LvD5Tp1QSrKX5fNAE6lrRfBas2WL3PLgmC4Q=
+	t=1764113708; cv=none; b=RyfypikgQs4zoVb8hZhtom9MF1BzOmR+OCssAi2W9q0HX4p6/pzo4oIAk3w/AeGQilYaYorBfEocHvoFj7s6LfJ+1z3nTXqV5jEQqDFZ2TPnLwaRVOVrl39I8CUvcXOxF47c1wl8r5u3tAW1Mw9LdFfqirDMgGat0goOalMQPQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764113618; c=relaxed/simple;
-	bh=3rkC5tVLIYNbT+NJhSO0xtU9bfDYrwdByb9M2iU+wBw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=aWPqc4kc3b0VXKcfF/gyx58B6V+21dSWd+wQ+C9wfWtSA70kDwLqBxqscCSDO9xLmn+XugWbW4XujR131iWQUYp6zexaFUi1D2rbvfomozzXAK5bhTctbDtLe2IkX6xtvF5mDBq3Ka1HiTMtolsz0M0/PS9h+byWJ7ZMmJLIgz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RapJjHXY; arc=none smtp.client-ip=209.85.216.46
+	s=arc-20240116; t=1764113708; c=relaxed/simple;
+	bh=C+mZJ7Ei2aBD/P6+5pyK1SNgXoEz8GNxaGMjrFGvhDo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QOl97/b6ldMk+5OVXWhXWYKrF3yN2ZN5buojIYwJ4HSRq5lNJgJuYHuqgSpIaZhc0LFb415HrPyMdvQtexm/XR6AMRt0cJM9HGhshZwYOZ5dsjOq/ILHpjxGsbeMTrhIBC/R7V8dfv2HHj1tCc1tjsHV6Qfhwjq5m/4QYJPRoR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GNRme6jH; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-34101107cc8so5581040a91.0
-        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 15:33:36 -0800 (PST)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-297dc3e299bso60271025ad.1
+        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 15:35:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764113616; x=1764718416; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3rkC5tVLIYNbT+NJhSO0xtU9bfDYrwdByb9M2iU+wBw=;
-        b=RapJjHXYPOdTLcYLs/FvDuCH+2uk3C4YvOZho6lQ2DUunXzuffgOyrJJdJTT+zKarB
-         Y5bxS7QTjTICzx73EqYjfUkyl0FVw4x9IAxmcOzG0aCf9aVAGcQLF+SDf8po/2gyqqil
-         u+gb4VscO1GMmQtuJOgEikKXerndt1NLulnw2mreQGqo90I/pv4WCBVSlk7wWQqvo0fD
-         8ZxKliCAngF8pEnFcZP66ohQJSs5e4FCjllfn5lHxNKjvERABRh6B4AROdQzHDTgEkH+
-         MWlBTtaGwqr/gZ+ENsb+GNvzwbp76+nYbH4gEUbWlRmpDTMmG7owIjbQdwNz9RDxBy+J
-         8lnA==
+        d=gmail.com; s=20230601; t=1764113706; x=1764718506; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZDqsvr1920JjRW/8/NnElCXEKY/tSMm4ImZmdUq0Sf0=;
+        b=GNRme6jHqm/2D1ebs9OEZpUbuRpbs4aHcHakqmZF2RVR5cyz+Iv3+6U1kKo/PmgVvo
+         mcgGith+35+rhaYzgYzOS+9A6r4Mo4gUtZzgpSL/1gfqELJASxuWKE1L5IWfkSJCfPwL
+         Pgoit3q+T6laQJDPrnSy2Z4I75JJArl7vVkc4L7WqGIIFMvT+ruTWSFFBsRUQ46WNhVa
+         QNJ0Rst9zM2BPCsZJaUTQb/Nn/FjtsVD0kRDL66jTBB6wJmON4sMqEU49Bu9vV3J6mxm
+         6T3VomdI4d4zdQg2iAxfJD4z7u4llYQnDcJegHhYvLEVGhRewjnmYVfraOkYhibO5oQQ
+         0c5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764113616; x=1764718416;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3rkC5tVLIYNbT+NJhSO0xtU9bfDYrwdByb9M2iU+wBw=;
-        b=G55OoSyYij1xEk5jVRIL/8QVBPR6EqWHK1705wua30Onf2VHtTGOSzYqfVg/xD53bG
-         irhUNCKpmPHKfNKvENGKQ+Uqy2hr/l3tJDcMAJNBci7brqbN98dMOd8KdYYEWTEVzsCB
-         PtU7U0gwrfJqHmghYSzWHGIJeDTRbv2hunmJ/hp/0ts1424y+MDzgKALPRhyJcgimHzM
-         lvt/jTOO9goJxnPRCAKuHxwNBKeKr+XLfwFC952UvD3Mm/ZxkkW933D9oJAhLerE9jWU
-         iLtSQeYCl+XWa9ZLWiFb9KxmestbebLBt/dWD+ve3nrn5qP8Wa0icDTZBeiQ9LjdqkFI
-         t0XA==
-X-Forwarded-Encrypted: i=1; AJvYcCUtkJWj6KTF96T6V6CAPCBW57Pr03aFsRB4Vwt++cssEsOSxotyGLzWPxC9t508EOSrvBM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzbQPd9b3Rg9xaexOoObVc93P0UlbEKg7dQ6tM7ytkqG4ABkSQn
-	e3BuU/fKdgqN5rmnT0PKBEyyfoDednmiHzUf2SkRAIWvt/azKoO0eQSc
-X-Gm-Gg: ASbGncvwtLaj0BqKKWwDuLTjpq5Y92WEQWpoVcMZdDM9kjkSQ/e1jrLal6pYoFqQW81
-	nLRQb2hzTtouaCi4tQp8r71UQMNNDhWM/usOYR3olZQ1nt1noNFywfYgvR9wnlMYkT7aC2RJfNQ
-	mtAPuftWFCcuAFHBzxXZwECDfbHOKn2gkhb6LYpNReFeU4C8G3rax9qUmnnS1y6bIMEv6b/4+8J
-	gvAaI+2zzLHAC5UYxXFI89Pl6t0uDrrvqy1LE21UmQoP0SV2qS14EVlw+XdxZpNi1Wuq/1g6xt5
-	fEA7uiTfThgZ2EkqL7Yc5Jflj7IkVEtEvF1weAAPq6Mov+ON29K0T/W8DKX5BTJ0vAvxZTM3kFk
-	K2JsNbLvizNgpbCMgQUVmVJIcoN1r/4YaUYvvQaRWrDD86pgYws80JrzYR1QbY4TpCnl8OcDon5
-	aMOeRpCU0SU9amAm80XZHUI81l+3g=
-X-Google-Smtp-Source: AGHT+IGN2yQvKPDnQSI+rfi8GFgwmIi2Dp/WjRDvh8wa+7M3RBmYm0POoYwrQhejduq1ue9sQHFv6Q==
-X-Received: by 2002:a17:90b:3a4e:b0:33f:ebc2:645 with SMTP id 98e67ed59e1d1-3475ed448a0mr4374100a91.20.1764113616140;
-        Tue, 25 Nov 2025 15:33:36 -0800 (PST)
-Received: from [192.168.0.233] ([159.196.5.243])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3475ff0eae4sm1654152a91.4.2025.11.25.15.33.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Nov 2025 15:33:35 -0800 (PST)
-Message-ID: <2146e663be965ee0d7ef446c7c716d1c77a8a416.camel@gmail.com>
-Subject: Re: [PATCH V2 1/5] block: ignore discard return value
-From: Wilfred Mallawa <wilfred.opensource@gmail.com>
-To: Chaitanya Kulkarni <ckulkarnilinux@gmail.com>, axboe@kernel.dk, 
-	agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com, song@kernel.org, 
-	yukuai@fnnas.com, hch@lst.de, sagi@grimberg.me, kch@nvidia.com,
- jaegeuk@kernel.org, 	chao@kernel.org, cem@kernel.org
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	dm-devel@lists.linux.dev, linux-raid@vger.kernel.org, 
-	linux-nvme@lists.infradead.org, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-xfs@vger.kernel.org, bpf@vger.kernel.org
-Date: Wed, 26 Nov 2025 09:33:26 +1000
-In-Reply-To: <20251124025737.203571-2-ckulkarnilinux@gmail.com>
-References: <20251124025737.203571-1-ckulkarnilinux@gmail.com>
-	 <20251124025737.203571-2-ckulkarnilinux@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.1 (3.58.1-1.fc43) 
+        d=1e100.net; s=20230601; t=1764113706; x=1764718506;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ZDqsvr1920JjRW/8/NnElCXEKY/tSMm4ImZmdUq0Sf0=;
+        b=MjOMiWsCPA3FHlyiIjThaaojpwl8n9EFT2z5nZaQW9k/f93H5/XfNP/4ZXnw+AdGud
+         sLGd4tMX6YYP394BrDveS9CywKawmw4cWZjxT6QQa03Pgr6C0E/4lZB7vAAbapZTc7w+
+         PLqPh6oWFBuD0tI9fDSHbB1w64rW5Jw+hBbNbRLITQC3kU+3ifPsBW+0oIRFHSXvop50
+         +Lx3BY2y69RUERqnVIUfub8mHzWy3tTSH6NN+mtqXfKNayw19ULJD9HEF16PdG4rzwUj
+         etYr+6ssMhkOOoUTYJYUmfsOnGulhs8XFk2sqbrDGKayntKWC5Wy48yxZAIGG2uafyp+
+         wo9g==
+X-Forwarded-Encrypted: i=1; AJvYcCUknrsqejn9UZ2w6nF1Q/B89gAdqIi8xEDoPiuO8idlkUHt+ClbAEKMtyrhYgAbfHpO7to=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzEOW+lpfk8O0oOrSxzYdyPNr5SYYvDPoq38O9gk6fJ0Q8PpaXN
+	1K7iVBWWww3e+y9di6n5QZ/VPZjrbQj6H6c+uUKwJiUo3e993WOtxP0r9yGQTxI6dN+ZaumNVYE
+	SlrckY3OLcKtLBK8xwA4chyn7XJmK6/Q=
+X-Gm-Gg: ASbGnctfwTZtqw1e3YAN4pja83C+2Ns3Zop71mABPZHGNtFWWseoWUu2NsllvrydkoJ
+	8UlItvT/I6OPHveG4IMpKt8AMNzosblCGM2NXQbpQuhmDktaeyZo2MMZGsXA/NjEIw05lfU8XZg
+	HDKDuEGB/EYVfOoKZkhbqVElwRzY71Jlgzkc54hHi/CLlXnW2jj73oTBplMsTH2PG5rhJMT6afl
+	40LpeI0zc9keWYSP08ARgj+cVUEwSNh9mYQkfDDhHRCsodxDxbqhEIe0LGu1s/tYFhenUWhCUhi
+	SLj6VNwnRVM=
+X-Google-Smtp-Source: AGHT+IH9ehM7VoPyOY+zY9PcgQ2CgMl+AZnSJmtRRthtdUFnP/8h2w/C0Djuh5wJEQDSTpH/K4RPRQ86kSL7Z6xxjL0=
+X-Received: by 2002:a17:90b:5404:b0:341:124f:474f with SMTP id
+ 98e67ed59e1d1-3475ed6bcffmr4141117a91.32.1764113706243; Tue, 25 Nov 2025
+ 15:35:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251117191515.2934026-1-ameryhung@gmail.com> <CAP01T74CcZqt9W8Y5T3NYheU8HyGataKXFw99cnLC46ZV9oFPQ@mail.gmail.com>
+ <20251118104247.0bf0b17d@pumpkin> <CAMB2axPqr6bw-MgH-QqSRz+1LOuByytOwHj8KWQc-4cG8ykz7g@mail.gmail.com>
+In-Reply-To: <CAMB2axPqr6bw-MgH-QqSRz+1LOuByytOwHj8KWQc-4cG8ykz7g@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 25 Nov 2025 15:34:52 -0800
+X-Gm-Features: AWmQ_blXxGROrL4pjDy8uJxN14iXeiY-DY73x2QGt6MkDuyy383S8RzRc9I57YQ
+Message-ID: <CAEf4BzYmi=wJLpz18_K1Kqc-9Q4UKbq+GsyVH_N+3-+_ka0uwg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/1] bpf: Annotate rqspinlock lock acquiring
+ functions with __must_check
+To: Amery Hung <ameryhung@gmail.com>
+Cc: David Laight <david.laight.linux@gmail.com>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net, 
+	kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Wilfred Mallawa <wilfred.mallawa@wdc.com>
+On Thu, Nov 20, 2025 at 12:12=E2=80=AFPM Amery Hung <ameryhung@gmail.com> w=
+rote:
+>
+> On Tue, Nov 18, 2025 at 2:42=E2=80=AFAM David Laight
+> <david.laight.linux@gmail.com> wrote:
+> >
+> > On Tue, 18 Nov 2025 05:16:50 -0500
+> > Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> >
+> > > On Mon, 17 Nov 2025 at 14:15, Amery Hung <ameryhung@gmail.com> wrote:
+> > > >
+> > > > Locking a resilient queued spinlock can fail when deadlock or timeo=
+ut
+> > > > happen. Mark the lock acquring functions with __must_check to make =
+sure
+> > > > callers always handle the returned error.
+> > > >
+> > > > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > Signed-off-by: Amery Hung <ameryhung@gmail.com>
+> > > > ---
+> > >
+> > > Looks like it's working :)
+> > > I would just explicitly ignore with (void) cast the locktorture case.
+> >
+> > I'm not sure that works - I usually have to try a lot harder to ignore
+> > a '__must_check' result.
+>
+> Thanks for the heads up.
+>
+> Indeed, gcc still complains about it even casting the return to (void)
+> while clang does not.
+>
+> I have to silence the warning by:
+>
+> #pragma GCC diagnostic push
+> #pragma GCC diagnostic ignored "-Wunused-result"
+>        raw_res_spin_lock(&rqspinlock);
+> #pragma GCC diagnostic pop
+>
 
-Regards,
-Wilfred
+For BPF selftests we have
+
+#define __sink(expr) asm volatile("" : "+g"(expr))
+
+Try if that works here?
+
+> Thanks!
+> Amery
+>
+> >
+> >         David
 
