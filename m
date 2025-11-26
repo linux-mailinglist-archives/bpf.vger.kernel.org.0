@@ -1,48 +1,49 @@
-Return-Path: <bpf+bounces-75577-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75578-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0945CC89783
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 12:15:37 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87112C89935
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 12:42:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4375F354D51
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 11:15:22 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0E741356128
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 11:42:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3A231ED81;
-	Wed, 26 Nov 2025 11:15:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5DE3233ED;
+	Wed, 26 Nov 2025 11:42:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DzyG8aWe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M8Hruosi"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B9C2DF154;
-	Wed, 26 Nov 2025 11:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E08F258EC2;
+	Wed, 26 Nov 2025 11:42:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764155711; cv=none; b=KdCrn6Y3XjCAK45EM1/Gqm3Hwtw68POGd8pkKnPJPqtmCkepKQxAD+1skeQdhV569nRinX6nPnAKMdDB8P0qf2PdRqjRCbiUD2kewIMbvRosKYUaCltMZvprwUvSPZS8FVCF6FRP2gW20M59ilUrwcoiwdmVQomAEy+8bLgHf6c=
+	t=1764157339; cv=none; b=XAM/JggVZiW/vYZ8jGWJSMPmqpc/tclcnWYtgc7m5bVEHL8G3qADRhq/hix0ODQ2iE443UN4rji1YRtPjNcqcfkQEM4Uy1vu6va+Eoszn1T+BTy4SF5hIK894s6qeAxRHrOpP8g1MXzAkHxsRrsP8eOXQmCudCxst0uXBAPkQoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764155711; c=relaxed/simple;
-	bh=uneOr7UWZf997xNbwcbBJk5N8EI2Gi/4Wedz6v7jNMo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CLDZ3/zqyxStfNpSznO9Pg/0YOZKR5soNLuHUK55hZJa8A4ukqZZK3lLbiJq9GPqNyukYOU1BZvPjk2U/3L2VD13bOiAsiD+bj7tGRhdlLn4sw0aZ+0hgtC6/l7tsU/2Pv5Aig/I49avhM+KzE7YptvGO4okf+T2N+Ql0VY3rnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DzyG8aWe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 526CBC113D0;
-	Wed, 26 Nov 2025 11:15:08 +0000 (UTC)
+	s=arc-20240116; t=1764157339; c=relaxed/simple;
+	bh=ZnY10zD1Mb41gNbG0bf+pBq1hdEtGoHfH3E9Z9a1sIQ=;
+	h=Content-Type:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To; b=ZkisGvCV6HaNXsah+zFKQspsmIEpxES5oZpRYFNNYxa1WJymMomPOC2caxwNuyQAHyIVGqCegwoOdoQYDufn7u0m4E3Avsj2CgXf5p9DPFKx9QUIQHrheg0l63IRIb70hieH8aoRbRzTkYuwl2UbbR0/M/XsqpmH+Zhz9pV8zik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M8Hruosi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A8CEC113D0;
+	Wed, 26 Nov 2025 11:42:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764155710;
-	bh=uneOr7UWZf997xNbwcbBJk5N8EI2Gi/4Wedz6v7jNMo=;
+	s=k20201202; t=1764157339;
+	bh=ZnY10zD1Mb41gNbG0bf+pBq1hdEtGoHfH3E9Z9a1sIQ=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=DzyG8aWeOR42SDlaOgizksjhLiulP0dpuaaJwm901Gkbm8lIHHWLhcC/htPxtOSzb
-	 u+Exvfor8+3cddjribvlqtDV55x4LbkgV2IF6xtVsfRC7iK1e07WBDgNNka/mTOjTX
-	 x77e0nqaUSg7S3YYpoTFBDnmio6GV8nVewwDI8HCCPD1MJchdFDh7Mg7PBFFQ5K5gL
-	 V6mq/P9Jf8QZihLAbJpD5eyqChjYj0VmGqI6f52s/HuKk3kEf9cUcUduw+NCcFMqai
-	 BtG2sRyEJgw+RL9i5sbgykepmRwb/gQY1Q1ervb7LtEdcpxQjPQ3cFWqYYNa8e0zDZ
-	 RRmjv680yxJxQ==
-Message-ID: <0be119c2-4b5f-4aa6-bb20-b3e8a8b4cf82@kernel.org>
-Date: Wed, 26 Nov 2025 12:15:05 +0100
+	b=M8HruosiZHZVst5/WS2ES7TmYyAlH3LTb9YCDOC6l5G65y9wN+qIaZ2tQWaUakhER
+	 wYuJP0Z1BIl3CZppUjtXxb1SRKXlfCYYvQlqVoXeKOi/L6rcM4N8KJbJHgfHnsy1MD
+	 3T6sBOjZ+vlot7cxLB0h9cRKBFhcLLtbULpuMQATjTVDD9OaQvtgLbiYktp7vO+1Zs
+	 qSlMLrDv9VcCrsWqQsKurdjajULoSpSvE5vrN0Y/dJleKKzV3edKOnhJOM9NwGi8UF
+	 BmWvPw4kL/mKafiyj4dfnjZe4L9oZ72t7+iQ647GtxWhWIpw4eLoXOwZhAmH7rhz86
+	 pMrYVUmolOvFQ==
+Content-Type: multipart/mixed; boundary="------------UWG0vp2NYMBQVi0Be2Vqk0TQ"
+Message-ID: <eb4eee14-7e24-4d1b-b312-e9ea738fefee@kernel.org>
+Date: Wed, 26 Nov 2025 12:42:09 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,19 +51,17 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH net] net: fix propagation of EPERM from tcp_connect()
+Subject: Re: [PATCH net v6] xsk: avoid data corruption on cq descriptor
+ number: manual merge
 Content-Language: en-GB, fr-BE
-To: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc: Linux Network Development Mailing List <netdev@vger.kernel.org>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Lorenzo Colitti <lorenzo@google.com>, Neal Cardwell <ncardwell@google.com>,
- bpf@vger.kernel.org, MPTCP Linux <mptcp@lists.linux.dev>,
- Jakub Kicinski <kuba@kernel.org>
-References: <20251121015933.3618528-1-maze@google.com>
- <CANP3RGeK_NE+U9R59QynCr94B7543VLJnF_Sp3eecKCMCC3XRw@mail.gmail.com>
- <20251121064333.3668e50e@kernel.org>
- <CAHo-OoxLYpbXMZFY+b7Wb8Dh1MNQXb2WEPNnV_+d_MOisipy=A@mail.gmail.com>
+To: Fernando Fernandez Mancera <fmancera@suse.de>, netdev@vger.kernel.org
+Cc: csmate@nop.hu, kerneljasonxing@gmail.com, maciej.fijalkowski@intel.com,
+ bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, sdf@fomichev.me,
+ hawk@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+ john.fastabend@gmail.com, magnus.karlsson@intel.com,
+ Stephen Rothwell <sfr@canb.auug.org.au>, Mark Brown <broonie@kernel.org>
+References: <20251124171409.3845-1-fmancera@suse.de>
 From: Matthieu Baerts <matttbe@kernel.org>
 Autocrypt: addr=matttbe@kernel.org; keydata=
  xsFNBFXj+ekBEADxVr99p2guPcqHFeI/JcFxls6KibzyZD5TQTyfuYlzEp7C7A9swoK5iCvf
@@ -108,97 +107,110 @@ Autocrypt: addr=matttbe@kernel.org; keydata=
  JY6dglzGKnCi/zsmp2+1w559frz4+IC7j/igvJGX4KDDKUs0mlld8J2u2sBXv7CGxdzQoHaz
  lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
 Organization: NGI0 Core
-In-Reply-To: <CAHo-OoxLYpbXMZFY+b7Wb8Dh1MNQXb2WEPNnV_+d_MOisipy=A@mail.gmail.com>
+In-Reply-To: <20251124171409.3845-1-fmancera@suse.de>
+
+This is a multi-part message in MIME format.
+--------------UWG0vp2NYMBQVi0Be2Vqk0TQ
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Hi Maciej,
+Hello,
 
-(+cc MPTCP list)
-
-On 26/11/2025 02:08, Maciej Żenczykowski wrote:
->> FWIW this breaks the mptcp_join.sh test, too:
+On 24/11/2025 18:14, Fernando Fernandez Mancera wrote:
+> Since commit 30f241fcf52a ("xsk: Fix immature cq descriptor
+> production"), the descriptor number is stored in skb control block and
+> xsk_cq_submit_addr_locked() relies on it to put the umem addrs onto
+> pool's completion queue.
 > 
-> What do you mean by 'too', does it break something else as well, or
-> just the quoted mptcp_join?
-> 
->> https://netdev-3.bots.linux.dev/vmksft-mptcp/results/394900/1-mptcp-join-sh/stdout
-> 
-> My still very preliminary investigation is that this is actually
-> correct (though obviously the tests need to be adjusted).
-> 
-> See tools/testing/selftests/net/mptcp/mptcp_join.sh:89
-> 
-> # generated using "nfbpf_compile '(ip && (ip[54] & 0xf0) == 0x30) ||
-> #                                (ip6 && (ip6[74] & 0xf0) == 0x30)'"
-> CBPF_MPTCP_SUBOPTION_ADD_ADDR=...
-> 
-> mptcp_join.sh:365
->       if ! ip netns exec $ns2 $tables -A OUTPUT -p tcp \
->                       -m tcp --tcp-option 30 \
->                       -m bpf --bytecode \
->                       "$CBPF_MPTCP_SUBOPTION_ADD_ADDR" \
->                       -j DROP
-> 
-> So basically this is using iptables -j DROP which presumably
-> propagates to EPERM and thus results in a faster local failure...
+> skb control block shouldn't be used for this purpose as after transmit
+> xsk doesn't have control over it and other subsystems could use it. This
+> leads to the following kernel panic due to a NULL pointer dereference.
 
-I don't think that's what caused the issue: according to the logs, two
-tests have failed: "delete and re-add" and "flush re-add" and they don't
-use the mentioned snippet. Still it might be caused by a Netfilter rule,
-because they both call:
+FYI, and as predicted by Jason, we got a small conflict when merging
+'net' in 'net-next' in the MPTCP tree due to this patch applied in 'net':
 
-  reset_with_tcp_filter "..." ns2 10.0.3.2 REJECT OUTPUT
+  0ebc27a4c67d ("xsk: avoid data corruption on cq descriptor number")
 
-This helper will call:
+and this one from 'net-next':
 
-  iptables -A OUTPUT -s 10.0.3.2 -j REJECT
+  8da7bea7db69 ("xsk: add indirect call for xsk_destruct_skb")
 
-Note that you can easily reproduce the issue by only launching the
-problematic tests with './mptcp_join.sh "<test name or id>"', e.g.
+----- Generic Message -----
+The best is to avoid conflicts between 'net' and 'net-next' trees but if
+they cannot be avoided when preparing patches, a note about how to fix
+them is much appreciated.
 
-  cd tools/testing/selftests/net/mptcp
-  ./mptcp_join.sh "delete and re-add"
+The conflict has been resolved on our side [1] and the resolution we
+suggest is attached to this email. Please report any issues linked to
+this conflict resolution as it might be used by others. If you worked on
+the mentioned patches, don't hesitate to ACK this conflict resolution.
+---------------------------
 
-> Although this is probably trying to replicate packet loss rather than
-> a local error...
-> 
-> So I'm not sure if I should:
-> (a) fix the asserts with new values (presumably easiest by far),
-> or
-> (b) change how it does DROP to make it more like network packet loss
-> (maybe an extra namespace, so the drop is in a diff netns, during
-> forwarding??? not even sure if that would help though, or maybe add
-> drop on other netns INPUT instead of OUTPUT).
-> or
-> (c) introduce some iptables -j DROP_CN type return... (seems like that
-> might be worthwhile anyway)
+Regarding this conflict, the patch from 'net' removed two functions
+above one that has been applied in 'net-next'. I then combined the two
+modifications by removing the two functions and keeping the new
+attributes set to xsk_destruct_skb().
 
-From what I understand, with your RFC patch, a "connect()" (or
-"kernel_connect()") will get an error because of the Netfilter rule. If
-that's normal, then probably the expected results can be adapted, e.g.
-from ...
-
-  join_syn_tx=3 join_connect_err=1 \
-          chk_join_nr 2 2 2
-
-... to ...
-
-  join_connect_err=2 \
-          chk_join_nr 2 2 2
-
-At least that would show the effect of your patch.
-
-An important note: the selftests can be executed on older kernels: if
-your patch is changing the behaviour, and it is a fix that is going to
-be backported to stable, that's fine. If that's not a fix, the selftests
-should continue to work with and without the kernel patch. Then, the
-Netfilter rule should probably be adapted instead, maybe by moving it to
-the other side (ns1) in INPUT if that still makes the tests valid.
+Rerere cache is available in [2].
 
 Cheers,
 Matt
+
+1: https://github.com/multipath-tcp/mptcp_net-next/commit/1caa6b15d784
+2: https://github.com/multipath-tcp/mptcp-upstream-rr-cache/commit/265e1
 -- 
 Sponsored by the NGI0 Core fund.
 
+--------------UWG0vp2NYMBQVi0Be2Vqk0TQ
+Content-Type: text/x-patch; charset=UTF-8;
+ name="1caa6b15d784769d23637d9c5dae18ddc4bd8b39.patch"
+Content-Disposition: attachment;
+ filename="1caa6b15d784769d23637d9c5dae18ddc4bd8b39.patch"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWNjIG5ldC94ZHAveHNrLmMKaW5kZXggYmNmZDQwMGU5Y2Y4LDY5YmJjY2E4YWM3
+NS4uZjA5M2MzNDUzZjY0Ci0tLSBhL25ldC94ZHAveHNrLmMKKysrIGIvbmV0L3hkcC94c2su
+YwpAQEAgLTU2MCw1MCAtNTkxLDQzICs1OTAsNDIgQEBAIHN0YXRpYyB1MzIgeHNrX2dldF9u
+dW1fZGVzYyhzdHJ1Y3Qgc2tfYgogIHN0YXRpYyB2b2lkIHhza19jcV9zdWJtaXRfYWRkcl9s
+b2NrZWQoc3RydWN0IHhza19idWZmX3Bvb2wgKnBvb2wsCiAgCQkJCSAgICAgIHN0cnVjdCBz
+a19idWZmICpza2IpCiAgewotIAlzdHJ1Y3QgeHNrX2FkZHJfbm9kZSAqcG9zLCAqdG1wOwor
+IAl1MzIgbnVtX2Rlc2NzID0geHNrX2dldF9udW1fZGVzYyhza2IpOworIAlzdHJ1Y3QgeHNr
+X2FkZHJzICp4c2tfYWRkcjsKICAJdTMyIGRlc2NzX3Byb2Nlc3NlZCA9IDA7CiAgCXVuc2ln
+bmVkIGxvbmcgZmxhZ3M7Ci0gCXUzMiBpZHg7CisgCXUzMiBpZHgsIGk7CiAgCiAtCXNwaW5f
+bG9ja19pcnFzYXZlKCZwb29sLT5jcV9sb2NrLCBmbGFncyk7CiArCXNwaW5fbG9ja19pcnFz
+YXZlKCZwb29sLT5jcV9wcm9kX2xvY2ssIGZsYWdzKTsKICAJaWR4ID0geHNrcV9nZXRfcHJv
+ZChwb29sLT5jcSk7CiAgCi0gCXhza3FfcHJvZF93cml0ZV9hZGRyKHBvb2wtPmNxLCBpZHgs
+Ci0gCQkJICAgICAodTY0KSh1aW50cHRyX3Qpc2tiX3NoaW5mbyhza2IpLT5kZXN0cnVjdG9y
+X2FyZyk7Ci0gCWRlc2NzX3Byb2Nlc3NlZCsrOworIAlpZiAodW5saWtlbHkobnVtX2Rlc2Nz
+ID4gMSkpIHsKKyAJCXhza19hZGRyID0gKHN0cnVjdCB4c2tfYWRkcnMgKilza2Jfc2hpbmZv
+KHNrYiktPmRlc3RydWN0b3JfYXJnOwogIAotIAlpZiAodW5saWtlbHkoWFNLQ0Ioc2tiKS0+
+bnVtX2Rlc2NzID4gMSkpIHsKLSAJCWxpc3RfZm9yX2VhY2hfZW50cnlfc2FmZShwb3MsIHRt
+cCwgJlhTS0NCKHNrYiktPmFkZHJzX2xpc3QsIGFkZHJfbm9kZSkgeworIAkJZm9yIChpID0g
+MDsgaSA8IG51bV9kZXNjczsgaSsrKSB7CiAgCQkJeHNrcV9wcm9kX3dyaXRlX2FkZHIocG9v
+bC0+Y3EsIGlkeCArIGRlc2NzX3Byb2Nlc3NlZCwKLSAJCQkJCSAgICAgcG9zLT5hZGRyKTsK
+KyAJCQkJCSAgICAgeHNrX2FkZHItPmFkZHJzW2ldKTsKICAJCQlkZXNjc19wcm9jZXNzZWQr
+KzsKLSAJCQlsaXN0X2RlbCgmcG9zLT5hZGRyX25vZGUpOwotIAkJCWttZW1fY2FjaGVfZnJl
+ZSh4c2tfdHhfZ2VuZXJpY19jYWNoZSwgcG9zKTsKICAJCX0KKyAJCWttZW1fY2FjaGVfZnJl
+ZSh4c2tfdHhfZ2VuZXJpY19jYWNoZSwgeHNrX2FkZHIpOworIAl9IGVsc2UgeworIAkJeHNr
+cV9wcm9kX3dyaXRlX2FkZHIocG9vbC0+Y3EsIGlkeCwKKyAJCQkJICAgICB4c2tfc2tiX2Rl
+c3RydWN0b3JfZ2V0X2FkZHIoc2tiKSk7CisgCQlkZXNjc19wcm9jZXNzZWQrKzsKICAJfQog
+IAl4c2txX3Byb2Rfc3VibWl0X24ocG9vbC0+Y3EsIGRlc2NzX3Byb2Nlc3NlZCk7CiAtCXNw
+aW5fdW5sb2NrX2lycXJlc3RvcmUoJnBvb2wtPmNxX2xvY2ssIGZsYWdzKTsKICsJc3Bpbl91
+bmxvY2tfaXJxcmVzdG9yZSgmcG9vbC0+Y3FfcHJvZF9sb2NrLCBmbGFncyk7CiAgfQogIAog
+IHN0YXRpYyB2b2lkIHhza19jcV9jYW5jZWxfbG9ja2VkKHN0cnVjdCB4c2tfYnVmZl9wb29s
+ICpwb29sLCB1MzIgbikKICB7CiAtCXVuc2lnbmVkIGxvbmcgZmxhZ3M7CiAtCiAtCXNwaW5f
+bG9ja19pcnFzYXZlKCZwb29sLT5jcV9sb2NrLCBmbGFncyk7CiArCXNwaW5fbG9jaygmcG9v
+bC0+Y3FfY2FjaGVkX3Byb2RfbG9jayk7CiAgCXhza3FfcHJvZF9jYW5jZWxfbihwb29sLT5j
+cSwgbik7CiAtCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJnBvb2wtPmNxX2xvY2ssIGZsYWdz
+KTsKICsJc3Bpbl91bmxvY2soJnBvb2wtPmNxX2NhY2hlZF9wcm9kX2xvY2spOwogIH0KICAK
+LSBzdGF0aWMgdm9pZCB4c2tfaW5jX251bV9kZXNjKHN0cnVjdCBza19idWZmICpza2IpCi0g
+ewotIAlYU0tDQihza2IpLT5udW1fZGVzY3MrKzsKLSB9Ci0gCi0gc3RhdGljIHUzMiB4c2tf
+Z2V0X251bV9kZXNjKHN0cnVjdCBza19idWZmICpza2IpCi0gewotIAlyZXR1cm4gWFNLQ0Io
+c2tiKS0+bnVtX2Rlc2NzOwotIH0KLSAKIC1zdGF0aWMgdm9pZCB4c2tfZGVzdHJ1Y3Rfc2ti
+KHN0cnVjdCBza19idWZmICpza2IpCiArSU5ESVJFQ1RfQ0FMTEFCTEVfU0NPUEUKICt2b2lk
+IHhza19kZXN0cnVjdF9za2Ioc3RydWN0IHNrX2J1ZmYgKnNrYikKICB7CiAgCXN0cnVjdCB4
+c2tfdHhfbWV0YWRhdGFfY29tcGwgKmNvbXBsID0gJnNrYl9zaGluZm8oc2tiKS0+eHNrX21l
+dGE7CiAgCg==
+
+--------------UWG0vp2NYMBQVi0Be2Vqk0TQ--
 
