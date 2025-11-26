@@ -1,91 +1,90 @@
-Return-Path: <bpf+bounces-75561-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75562-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 183FBC88C7C
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:56:56 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14769C88D37
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 10:04:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B5C33A4DC3
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 08:56:31 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 050033488D7
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:04:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2170831A800;
-	Wed, 26 Nov 2025 08:56:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD5C30BF74;
+	Wed, 26 Nov 2025 09:04:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZDw8FJqx"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KtqACpxc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820CB2DCC03
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 08:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C003019CB
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 09:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764147388; cv=none; b=HWu5NV/4832rfaS+3rEcB6eGjw4ItlJHQFS2cYMESjDQfYfgi7PxvgWVCoF5flaqmrwTmqmocAQrNHPErUO4lNZGmjJcjNPLdoe8VlJXIWxA03bmAM9Fy4c2Dt7xuSRoX8HUN8UrqAYeERfkqADe2AqrPZ/ZhOWaVmtS3HVF+Ew=
+	t=1764147860; cv=none; b=duP5TWAaCV/rbASC0f//fGK7F8QhwAvzFLUh1sf9tm1mjTM6sdhKdFPi67OjwSs+mSG+LNJF3QbnHXHuWQvdFy+4a4w7THdhns0z0mueEpcoobicO4NjEkAYc4ueIS+zR0qDp1ZXEzD2Z0r2MHcOXhcqx/zEpwyhYfy02n2Mq8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764147388; c=relaxed/simple;
-	bh=wRCWcLAf8++kiSWgnxuNZdn8YfU+0EPlLi2265GmYl0=;
+	s=arc-20240116; t=1764147860; c=relaxed/simple;
+	bh=t4zOHoDb1XYT6cH9+BNQodpxhffhcA9268AJWPFsTTY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Me04zYg2qwclDzbwczIMqqnHKZSFzrxirj1MTUUjZdMtOFZzU4u//D0ERLi0v61mFIP/VRxSXi39Evb5zs1LfdE/1HpmQXrkHNMlzoFIhNi4RfMz/lPLjLPq/TQgUYxhbF+N6lzXPaX3qZ5uczC2/T8UI/9UY3Qtq60uW+DPsBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZDw8FJqx; arc=none smtp.client-ip=209.85.128.43
+	 Content-Type:Content-Disposition:In-Reply-To; b=OemUlPnJUCYVVcNQoCvRQHqvlV2CeYCq0VqH99QoGUBuXBjMHq/sqOVkKWIAip7gyKg8CLGrFHkHL0VVz7oVLeIwCWS0QookrhnYPDTS0ljqNR7wW2MrWw7/oMUfOYxLjDqHKCDg7BO3do1G1HxF8IA0nFE2T7pUT+cVtWhdCW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KtqACpxc; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-47796a837c7so42401025e9.0
-        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 00:56:26 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-477b91680f8so50621185e9.0
+        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 01:04:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1764147385; x=1764752185; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1764147851; x=1764752651; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BzXuIKGYzwHSs8w3bNM/80h3tW/yXJducqjbqgZEyho=;
-        b=ZDw8FJqx7alvUN8ndNOxOKx2EVYe7+KCc4vGrqSURkkZQ6gR+cdEPhH4GRKDceG3eQ
-         9VSiU1GwxKtlgvMVAaNiI1+Mjfkj/GDZER3WTcTTgLTKjHp3HbgVPMlRtAW0+sjEvUhW
-         vT4/GHEcGK2Vw+dVmF3wzoB6fQQgT4AP1HexgrHRX4XSMowQwA7kmImVtjMtWvWZx2kt
-         JYoIOfgx03nb7wsCWAg9I35SaihNada/lYbDpsK43rulaFEmq0MRu0OvA/oUXeC9OL30
-         Pq5fjcJy9Gzh8odTh9K2F8ZAiEa/+39DfQQLXySAlbj+gb3oFpv1uaE/P1Dw+OBGD8BX
-         nkZw==
+        bh=FupKmerMUOWllqZV7KgoDEqU3FgckHmxVkwtl+flH/c=;
+        b=KtqACpxcs33NM4wqhGuPH4fvoX0mnp8PB67dOLRS00OckXnQ6ZZGdqfQrUlDlztTZq
+         xErPXwEIH91qfs4ergrHmY/q355GyJNG6XO43eO7FYhluvhyAxkqYet7rPe6CbecBUY5
+         5BUTFMitS8OLnYAspPXwn0mixj2HDW3WzNAUWaaAlnpFaDNHKY3k89acL/SV2EdY/tPH
+         dUFOBGjnpB6Cgie81dM4HmsZDlXtI9Mn/oOhP9GvGqD86r3nqk8jJprG8aLSzQ9cB+cY
+         y5jPlPnL2E4YeER+HQYyFnWvTISSzbKJKWcOgGf4qnEeyqKvC/P2+0fGAIiy9f2yUPfM
+         MVkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764147385; x=1764752185;
+        d=1e100.net; s=20230601; t=1764147851; x=1764752651;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BzXuIKGYzwHSs8w3bNM/80h3tW/yXJducqjbqgZEyho=;
-        b=mBgN/WfmZpHKyG3egEdtpGouND21vdrOc3q04tnuojHtNClWvnZHrP/l1f6siRR9xG
-         ilpYT1no8NSnYylvU3DUyu/h7A3+9S7f/vVNw+Og3Bn4qTDzV7dmUd0fevaGKiOjlOUW
-         LLfzTiah28GoSWPttvp61bWh4VwaFnsl9Tv3t+3bK+HJ5ZR7mZIwJVJZN3DvekNdE7Yd
-         7THGxfHYkW5ZWqfzq1p3uNClfdSQ1UVIpBtUHNntSctAw4s4szUrNE1wJm8E+bCisMe4
-         G9DOaX9c66E7N++oAgaa82pEGmid0LAAlYtSWvspy9JkmUPwaezEScQSdgo4qGb8pFgk
-         Q7gg==
-X-Forwarded-Encrypted: i=1; AJvYcCXI9rR2yZbbGWlwK+pO0GZ0Og8U6RtaS3L28VS4PfiXpa5s3GNJifigDoNd/hl+pG4Fnzs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+hq+/iBGEEVC6TMhY8xBExt4j9lVpiH17WMIUOcP5Qamrxi7g
-	+WVtkXYWfo5m3nSA5ns0WpEA+BkwBz5WqAdf1tdfXP29g2xjubl/1hMhg373ExejHMw=
-X-Gm-Gg: ASbGncsmUgUd6D/02gumKf9hjRpQUjoykSFAfeOcP/MLeGxYw1ZwxkCrBJ7pHxSeIke
-	9us6hRikrMoAuxE6k+rxjb/3fVwapuUqTYL4xHEwZsfsaiieHsO+11wcZ7kUtEPOubNN5PdxXBA
-	TKmH5Uh8nhoIAOFGKvtewLHS3jvzL+fFxPMJbgEPFPUqxQhE+eA3ghYPjPlr+uV5Dzl4Wyt1ZNE
-	DruztVbhy8jGUvke+cQ3kZqmSSHi4BI+zlkan5iMe5I/h6NsyMM0X2b97dAbdqUsXRt3JlmqLs+
-	Nr0lF6DLOdac2nyWQIWJLClKBppCJIhY77ZEJT9bQovjhQFDOJZzkMtdR5bLqg3FYGyWIaxcrWI
-	EdfFdcKzkoDOsdmPH0smMIPECmxc2Ckm7HNgp8mO6/ZCh10xOWXil2sPqx1P2My1MV20xW2T7gm
-	Sc2YQFW62GsOo1aNqdjw==
-X-Google-Smtp-Source: AGHT+IEpghFITW2qTDL+dnB3k1wz/FFgM4k7/ms4P2KautIx4XRzh3igSGrOauhmgW6HPhMiIfhsxQ==
-X-Received: by 2002:a05:600c:1913:b0:477:a977:b8c5 with SMTP id 5b1f17b1804b1-477c01e92f0mr210592215e9.31.1764147384682;
-        Wed, 26 Nov 2025 00:56:24 -0800 (PST)
+        bh=FupKmerMUOWllqZV7KgoDEqU3FgckHmxVkwtl+flH/c=;
+        b=Y3W+1+H/NiNEfov/znDlSD2UK05bGbqb05Gp5Pu5t9kmdECiJf1jaicTreED45lEt1
+         +NB4cBuyfXlM1hRtEt615DMaN1Ls4/u7THv51bdhJ5e/APK5lAJ+hdWcSGTUHkTtGjnz
+         osTIleK0uNVM75buH4tMBb7QYvDsDbmjJzSCP2V5XFDj4o/czgHcu68ZWKLNW+fREyC+
+         olF4lCyJcDtZ6NtpFdBfKDF7NUrNdUi+xQYvf7cQzB67i8uF9iOSnUPK+OkQFGDYkTia
+         BXNK/a1CPu8fQTjWA6pJIQazzgGMPM4y4PyHROXJijwRCQGdKDnmFVOmn8m1SAyZhYRE
+         ub2Q==
+X-Gm-Message-State: AOJu0YzFmMQ5Tj0Oh6ZA+jA+/O08WEdziQ1vl207WA1Dl8JbWC6nWxz3
+	bv6Qr7kxlLGElLfpQxajXhYe+E9gmiGMAVFWULixDQupxg6PZXYELnH+yDNLTi48iHI=
+X-Gm-Gg: ASbGncsc0qVHL7tUrN0rUCsjL3jAxZuNUBnNwsZ4sMxvl3NkPC/b5kOrnrDcES6IdOK
+	qJtbiqJ03VyMKAvbuAWsN66VwzIw5fi5YYjI11Y8roBmyZZecAbkkaaBRtHx6QOirs2dVehTEPw
+	pNev1rFKXgqMYS1V1UoQTmtAnmFyR3iJ6mFQd/totCfZIBS58g2mbzQ/D79y5jWdpc4ucDk/CHP
+	z3e4gnis3wcFDMihkHT6YojDrerlXOo1MUYriwhsIA1DFysgteKeoJy6pTcLVXFccZw6CSElify
+	Xc3dwvhJ5S3CSPeGIK91sP2dFJLAupJp8Li33eJNUw9bRvyhKcGvKwNjvwWTQWclXNIbzq+lbww
+	PO60/QBAb/twrg3cxQraeuuzE9Td+EUhUWvI5JVTjsVGf8iQQPCvkgK0hmtf1qh88BAyblSCjr3
+	xp0rYzKOQ=
+X-Google-Smtp-Source: AGHT+IF08SVDwM+FsUhCoExPKGS6lNLP7/Qw/HxNnBq3PQ6yo++Jswuj02ARZiZAF/v7YkxLMjePEQ==
+X-Received: by 2002:a05:600c:6296:b0:477:5cc6:7e44 with SMTP id 5b1f17b1804b1-477c10d7013mr192712295e9.11.1764147850872;
+        Wed, 26 Nov 2025 01:04:10 -0800 (PST)
 Received: from u94a ([2401:e180:8d00:1d6b:b712:4f62:bc36:6491])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29b787407c0sm127766395ad.49.2025.11.26.00.56.19
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bd760fae9e2sm18673343a12.31.2025.11.26.01.04.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Nov 2025 00:56:24 -0800 (PST)
-Date: Wed, 26 Nov 2025 16:56:14 +0800
+        Wed, 26 Nov 2025 01:04:10 -0800 (PST)
+Date: Wed, 26 Nov 2025 17:04:03 +0800
 From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: dimitar.kanaliev@siteground.com
-Cc: bot+bpf-ci@kernel.org, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	mykolal@fb.com, martin.lau@kernel.org, clm@meta.com, ihor.solodrai@linux.dev
-Subject: Re: [PATCH v1 1/3] bpf: Introduce tnum_scast as a tnum native sign
- extension helper
-Message-ID: <2fb2cuygiz5ljalrbpizk4njnj4dojx53c5fxy36ock5g5w3r7@7pigobi3ymw4>
-References: <20251125125634.2671-2-dimitar.kanaliev@siteground.com>
- <b37af1dcde7b7efb4dfc0329ca3ea1c3f4ede7e9b8eb02a1eabd042d561f00fd@mail.kernel.org>
+To: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>
+Subject: Re: [PATCH v1 0/3] Add tnum_scast helper
+Message-ID: <dc5my7udql3eobrkglwg4rvqakzl76fz3uydlk5zngj4gjnoa6@b7ej77j2ykk2>
+References: <20251125125634.2671-1-dimitar.kanaliev@siteground.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,60 +93,25 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b37af1dcde7b7efb4dfc0329ca3ea1c3f4ede7e9b8eb02a1eabd042d561f00fd@mail.kernel.org>
+In-Reply-To: <20251125125634.2671-1-dimitar.kanaliev@siteground.com>
 
-On Tue, Nov 25, 2025 at 01:22:13PM +0000, bot+bpf-ci@kernel.org wrote:
-> > diff --git a/include/linux/tnum.h b/include/linux/tnum.h
-> > index c52b862da..ed18ee114 100644
-> > --- a/include/linux/tnum.h
-> > +++ b/include/linux/tnum.h
-> > @@ -63,6 +63,9 @@ struct tnum tnum_union(struct tnum t1, struct tnum t2);
-> >  /* Return @a with all but the lowest @size bytes cleared */
-> >  struct tnum tnum_cast(struct tnum a, u8 size);
-> >
-> > +/* Return @a sign-extended from @size bytes */
-> > +struct tnum tnum_scast(struct tnum a, u8 size);
-> > +
-> >  /* Returns true if @a is a known constant */
-> >  static inline bool tnum_is_const(struct tnum a)
-> >  {
-> > diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
-> > index f8e70e9c3..eabcec2eb 100644
-> > --- a/kernel/bpf/tnum.c
-> > +++ b/kernel/bpf/tnum.c
-> > @@ -199,6 +199,19 @@ struct tnum tnum_cast(struct tnum a, u8 size)
-> >  	return a;
-> >  }
-> >
-> > +struct tnum tnum_scast(struct tnum a, u8 size)
-> > +{
-> > +	u8 s = 64 - size * 8;
-> > +	u64 value, mask;
-> > +
-> > +	if (size >= 8)
-> > +		return a;
+On Tue, Nov 25, 2025 at 02:56:31PM +0200, Dimitar Kanaliev wrote:
+[...]
+> Changelog:
+> 	v0 -> v1:
+> 	- Simplified tnum_scast() implementation to use native s64
+> 	arithmetic shifts for sign extension instead of manual bit masking.
+> 	- Refactored coerce_{reg,subreg}_to_size_sx in verifier to rely
+> 	on __update_reg_bounds() instead of the previously introduced
+> 	manual logic. Removed some dead code for set_sext{32,64} values.
 
-The unsigned tnum_cast() doesn't have this check. I think we want to be
-consistent here, either check size in both or none of them.
+Nit: you might want to point out who requested the change in the
+changelog for clarity, e.g.
 
-Given you next patch added the size check in coerce_reg_to_size_sx(), I
-suggest we simply drop this.
+ - Simplified tnum_scast() implementation to use native s64 arithmetic
+   shifts for sign extension instead of manual bit masking (Eduard)
 
-> > +	value = ((s64)a.value << s) >> s;
-> > +	mask = ((s64)a.mask << s) >> s;
->                                     ^^
-> 
-> Can this invoke undefined behavior when size is 0? When size==0,
-> s becomes 64, and shifting a 64-bit value by 64 bits is undefined
-> behavior according to the C standard. The guard only checks size >= 8,
-> allowing size==0 to reach the shift operations.
-> 
-> The similar function tnum_cast() handles size==0 by producing a zero
-> value (since (1ULL << 0) - 1 == 0), which is well-defined. Should
-> tnum_scast() also handle size==0 explicitly, perhaps by adding
-> "size == 0 ||" to the guard condition?
-
-IIUC size should always be one of the values return from
-bpf_size_to_bytes() with either BPF_W, BPF_H, or BPF_B (guaranteed by
-bpf_opcode_in_insntable and check_mem_access), and thus can't be 0.
+> 	- Removed irrelevant tests, added one that fails at base without
+> 	our changes.
+[...]
 
