@@ -1,117 +1,229 @@
-Return-Path: <bpf+bounces-75562-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75563-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14769C88D37
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 10:04:30 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22989C88E3E
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 10:15:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 050033488D7
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:04:29 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 710B34E4412
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:15:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD5C30BF74;
-	Wed, 26 Nov 2025 09:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E072F2EDD40;
+	Wed, 26 Nov 2025 09:14:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KtqACpxc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uy3BemnR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C003019CB
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 09:04:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD258309F02
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 09:14:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764147860; cv=none; b=duP5TWAaCV/rbASC0f//fGK7F8QhwAvzFLUh1sf9tm1mjTM6sdhKdFPi67OjwSs+mSG+LNJF3QbnHXHuWQvdFy+4a4w7THdhns0z0mueEpcoobicO4NjEkAYc4ueIS+zR0qDp1ZXEzD2Z0r2MHcOXhcqx/zEpwyhYfy02n2Mq8o=
+	t=1764148493; cv=none; b=K9qQtZn84hg0Q1nsQQFwwWUu52hmqdSBvLZuTc+SwDBPXccznYQNXW84brmYGmnZWFq1hODBJyPpU1b2HBr8+0KRCrEmm0zQCloWexqxzrbZlinPZJ90Le5lni/sq1UMjUzcYm9j3MdWUWEtZrEbI3DPpY43Cb7LRxfrLwVSErg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764147860; c=relaxed/simple;
-	bh=t4zOHoDb1XYT6cH9+BNQodpxhffhcA9268AJWPFsTTY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OemUlPnJUCYVVcNQoCvRQHqvlV2CeYCq0VqH99QoGUBuXBjMHq/sqOVkKWIAip7gyKg8CLGrFHkHL0VVz7oVLeIwCWS0QookrhnYPDTS0ljqNR7wW2MrWw7/oMUfOYxLjDqHKCDg7BO3do1G1HxF8IA0nFE2T7pUT+cVtWhdCW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KtqACpxc; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-477b91680f8so50621185e9.0
-        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 01:04:14 -0800 (PST)
+	s=arc-20240116; t=1764148493; c=relaxed/simple;
+	bh=C7u5TaIFYxCrpu4dYTWLHkvOWIUo764ll9nIVkmUeUE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MyPlY4I4GyZQ1PCIbXquBNa6c4QXPe6pNQRLrRBURR1UjAVKX4wBjEVkqNE3jm0n5+/w3J6IzKRdnqaQh9b6SzTJ2vZ1D0miyZ533clNnLzN4T1qfsONPqYfev5oXs/BgNyp8CIEl+7UydVdegiKk/VPH5N7SWYVWhZ4qqTObnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Uy3BemnR; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-794e300e20dso374715b3a.1
+        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 01:14:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1764147851; x=1764752651; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FupKmerMUOWllqZV7KgoDEqU3FgckHmxVkwtl+flH/c=;
-        b=KtqACpxcs33NM4wqhGuPH4fvoX0mnp8PB67dOLRS00OckXnQ6ZZGdqfQrUlDlztTZq
-         xErPXwEIH91qfs4ergrHmY/q355GyJNG6XO43eO7FYhluvhyAxkqYet7rPe6CbecBUY5
-         5BUTFMitS8OLnYAspPXwn0mixj2HDW3WzNAUWaaAlnpFaDNHKY3k89acL/SV2EdY/tPH
-         dUFOBGjnpB6Cgie81dM4HmsZDlXtI9Mn/oOhP9GvGqD86r3nqk8jJprG8aLSzQ9cB+cY
-         y5jPlPnL2E4YeER+HQYyFnWvTISSzbKJKWcOgGf4qnEeyqKvC/P2+0fGAIiy9f2yUPfM
-         MVkw==
+        d=gmail.com; s=20230601; t=1764148491; x=1764753291; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FsAxxdgt6IXuSxrdWBozCg8XdMM7lBgDlsl70F68Y1Y=;
+        b=Uy3BemnRhp93t3By2uJPWoAgD4iwm0ztHeTg4uNKLR3KLhfWjKaxtuEssCd6b9jHxl
+         uXBlDm+ZEQtwbfCbhQvjfMa0MDuCJIXuJtLE3CYojhDjeX4p+TI+1Uav2gJT03IulEo7
+         0lzeFgZFnKaq7Rf4+paJpbtf5S2NdewY5c6CIOnGWvluHH7E6rXjdFlXhK5peRtQWusR
+         ylsf9OV3RlQZP5QOogfiPyaRy9nv8QS6vtggDEQIEtzNPDQMb8lCfaEAHlCvjFxV5UVy
+         3AgRdbDazMiOxW/6G8mp420ryyFaWm0bxhmMeu3XGNREY/VXZkTZEJYHeCt+aQTDA/6Q
+         g+nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764147851; x=1764752651;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FupKmerMUOWllqZV7KgoDEqU3FgckHmxVkwtl+flH/c=;
-        b=Y3W+1+H/NiNEfov/znDlSD2UK05bGbqb05Gp5Pu5t9kmdECiJf1jaicTreED45lEt1
-         +NB4cBuyfXlM1hRtEt615DMaN1Ls4/u7THv51bdhJ5e/APK5lAJ+hdWcSGTUHkTtGjnz
-         osTIleK0uNVM75buH4tMBb7QYvDsDbmjJzSCP2V5XFDj4o/czgHcu68ZWKLNW+fREyC+
-         olF4lCyJcDtZ6NtpFdBfKDF7NUrNdUi+xQYvf7cQzB67i8uF9iOSnUPK+OkQFGDYkTia
-         BXNK/a1CPu8fQTjWA6pJIQazzgGMPM4y4PyHROXJijwRCQGdKDnmFVOmn8m1SAyZhYRE
-         ub2Q==
-X-Gm-Message-State: AOJu0YzFmMQ5Tj0Oh6ZA+jA+/O08WEdziQ1vl207WA1Dl8JbWC6nWxz3
-	bv6Qr7kxlLGElLfpQxajXhYe+E9gmiGMAVFWULixDQupxg6PZXYELnH+yDNLTi48iHI=
-X-Gm-Gg: ASbGncsc0qVHL7tUrN0rUCsjL3jAxZuNUBnNwsZ4sMxvl3NkPC/b5kOrnrDcES6IdOK
-	qJtbiqJ03VyMKAvbuAWsN66VwzIw5fi5YYjI11Y8roBmyZZecAbkkaaBRtHx6QOirs2dVehTEPw
-	pNev1rFKXgqMYS1V1UoQTmtAnmFyR3iJ6mFQd/totCfZIBS58g2mbzQ/D79y5jWdpc4ucDk/CHP
-	z3e4gnis3wcFDMihkHT6YojDrerlXOo1MUYriwhsIA1DFysgteKeoJy6pTcLVXFccZw6CSElify
-	Xc3dwvhJ5S3CSPeGIK91sP2dFJLAupJp8Li33eJNUw9bRvyhKcGvKwNjvwWTQWclXNIbzq+lbww
-	PO60/QBAb/twrg3cxQraeuuzE9Td+EUhUWvI5JVTjsVGf8iQQPCvkgK0hmtf1qh88BAyblSCjr3
-	xp0rYzKOQ=
-X-Google-Smtp-Source: AGHT+IF08SVDwM+FsUhCoExPKGS6lNLP7/Qw/HxNnBq3PQ6yo++Jswuj02ARZiZAF/v7YkxLMjePEQ==
-X-Received: by 2002:a05:600c:6296:b0:477:5cc6:7e44 with SMTP id 5b1f17b1804b1-477c10d7013mr192712295e9.11.1764147850872;
-        Wed, 26 Nov 2025 01:04:10 -0800 (PST)
-Received: from u94a ([2401:e180:8d00:1d6b:b712:4f62:bc36:6491])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bd760fae9e2sm18673343a12.31.2025.11.26.01.04.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Nov 2025 01:04:10 -0800 (PST)
-Date: Wed, 26 Nov 2025 17:04:03 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>
-Subject: Re: [PATCH v1 0/3] Add tnum_scast helper
-Message-ID: <dc5my7udql3eobrkglwg4rvqakzl76fz3uydlk5zngj4gjnoa6@b7ej77j2ykk2>
-References: <20251125125634.2671-1-dimitar.kanaliev@siteground.com>
+        d=1e100.net; s=20230601; t=1764148491; x=1764753291;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FsAxxdgt6IXuSxrdWBozCg8XdMM7lBgDlsl70F68Y1Y=;
+        b=qzuf1aacOuaKFK8BtJw2+20swAerE9yXxAyC1IFa6epQ3blH52wPU9LBATDGZhTWqU
+         NnQk+L6G/n2uPK+dFh1vUzwTtlBJRtyHGloI0EFAq26FpDPG1GAdTwSSzZ8nnO8TgDp+
+         w0FHBr7rgVGHVyOAXca3fbCUzIeKGQ6G1odnFxcnaPast7NjDK+t7QIfDpe9ZtGeNXm9
+         lVtcNGaeyvhEEXITbpDfscY1BHrfHnW60ROaixwe6RcEIApWw/3R40xacR5dsF9+URd7
+         p7M2o6vaBLLt2C5RNRvWtlOUReYaS/uff2MFrixAsbDrip6tTS6CB2aMqpTlImJsBUvO
+         93fA==
+X-Forwarded-Encrypted: i=1; AJvYcCXzvonKzBCh9TmzJDRtFdd9Do0zM90aNQTMCvPZ5Rz5DGUdNHSutKEmS9Qu+/9zkHCQxf8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz0gbu0RkpJ+HTsslmygOTClsplSziM6+TvsVaOeNqul80wVasO
+	54KxmicNBYNmtWUgvpZ3gDKh/psDX80rLVT6gq+jyaMULw8hSKwxGD7E
+X-Gm-Gg: ASbGncuRtkQJDJFkvJm4tPYHN52QNVal9ei+jSvUfOBKpHNGFIU+FhvJ+bwZpNyu4NG
+	B9GRUaYfvtvpNJpAQ4TxUdEdhU9AyMmiR/TYprdgZFXgwizgeDebPiN6bAqS2oBdGacVijYwZTE
+	bWzU4UvjIJZ46TlcNA96TWDJ4rynfs5W1O0ruh0mk5GzRz4GAbPW0umQgewUn7mj1YNxGuXBnOk
+	b4VGKsGm6dIXBHCEeT26I2h2YgxZ0BXvcJzyR0Y/Vi4L36N+9PdR89YTaYPsAFHllr/liBc2Pba
+	mjmUXCv/m2RAmWNXTtdYpJOrkGV7XXhKaOFdx+yhVEhg9Tt/+G+lvaFokU/kndDIEKPcLes983D
+	qI8mGntV8HfKhqaAMfU81MZ4nLSgGlUMGBIU08hDa1fccMM2k+sOK1VoTIrwf9jnBOxhGWcU/Ao
+	Osiby2Ha8as+bdEQ+I+rE9/ZKyGvM8zw==
+X-Google-Smtp-Source: AGHT+IGT8gd70TCQi63rsPWx+UIJ4mcNla5iKtS6p8pWOc51DUh5MCPHup9N3N3lGRYqyvIBZTUYDg==
+X-Received: by 2002:a05:6a20:a114:b0:342:fa5:8b20 with SMTP id adf61e73a8af0-3614f5aec2cmr19183971637.30.1764148490926;
+        Wed, 26 Nov 2025 01:14:50 -0800 (PST)
+Received: from [10.189.138.37] ([43.224.245.241])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7c3ecf7d849sm20690335b3a.14.2025.11.26.01.14.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Nov 2025 01:14:50 -0800 (PST)
+Message-ID: <2da95607-9b21-4d21-8926-9463021a6f33@gmail.com>
+Date: Wed, 26 Nov 2025 17:14:44 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251125125634.2671-1-dimitar.kanaliev@siteground.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [f2fs-dev] [PATCH V3 6/6] xfs: ignore discard return value
+To: Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+ Yongpeng Yang <yangyongpeng.storage@gmail.com>,
+ Chaitanya Kulkarni <ckulkarnilinux@gmail.com>,
+ "axboe@kernel.dk" <axboe@kernel.dk>, "agk@redhat.com" <agk@redhat.com>,
+ "snitzer@kernel.org" <snitzer@kernel.org>,
+ "mpatocka@redhat.com" <mpatocka@redhat.com>,
+ "song@kernel.org" <song@kernel.org>, "yukuai@fnnas.com" <yukuai@fnnas.com>,
+ "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
+ "jaegeuk@kernel.org" <jaegeuk@kernel.org>, "chao@kernel.org"
+ <chao@kernel.org>, "cem@kernel.org" <cem@kernel.org>
+Cc: "dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+ Yongpeng Yang <yangyongpeng@xiaomi.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+ "linux-f2fs-devel@lists.sourceforge.net"
+ <linux-f2fs-devel@lists.sourceforge.net>,
+ "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+References: <20251124234806.75216-1-ckulkarnilinux@gmail.com>
+ <20251124234806.75216-7-ckulkarnilinux@gmail.com>
+ <b18c489f-d6ee-4986-94be-a9aade7d3a47@gmail.com>
+ <218f0cd0-61bf-4afa-afb0-a559cd085d4a@nvidia.com>
+Content-Language: en-US
+From: Yongpeng Yang <yangyongpeng.storage@gmail.com>
+In-Reply-To: <218f0cd0-61bf-4afa-afb0-a559cd085d4a@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Nov 25, 2025 at 02:56:31PM +0200, Dimitar Kanaliev wrote:
-[...]
-> Changelog:
-> 	v0 -> v1:
-> 	- Simplified tnum_scast() implementation to use native s64
-> 	arithmetic shifts for sign extension instead of manual bit masking.
-> 	- Refactored coerce_{reg,subreg}_to_size_sx in verifier to rely
-> 	on __update_reg_bounds() instead of the previously introduced
-> 	manual logic. Removed some dead code for set_sext{32,64} values.
+On 11/26/25 16:07, Chaitanya Kulkarni via Linux-f2fs-devel wrote:
+> On 11/25/25 18:37, Yongpeng Yang wrote:
+>>> diff --git a/fs/xfs/xfs_discard.c b/fs/xfs/xfs_discard.c
+>>> index 6917de832191..b6ffe4807a11 100644
+>>> --- a/fs/xfs/xfs_discard.c
+>>> +++ b/fs/xfs/xfs_discard.c
+>>> @@ -108,7 +108,7 @@ xfs_discard_endio(
+>>>     * list. We plug and chain the bios so that we only need a single
+>>> completion
+>>>     * call to clear all the busy extents once the discards are complete.
+>>>     */
+>>> -int
+>>> +void
+>>>    xfs_discard_extents(
+>>>        struct xfs_mount    *mp,
+>>>        struct xfs_busy_extents    *extents)
+>>> @@ -116,7 +116,6 @@ xfs_discard_extents(
+>>>        struct xfs_extent_busy    *busyp;
+>>>        struct bio        *bio = NULL;
+>>>        struct blk_plug        plug;
+>>> -    int            error = 0;
+>>>          blk_start_plug(&plug);
+>>>        list_for_each_entry(busyp, &extents->extent_list, list) {
+>>> @@ -126,18 +125,10 @@ xfs_discard_extents(
+>>>              trace_xfs_discard_extent(xg, busyp->bno, busyp->length);
+>>>    -        error = __blkdev_issue_discard(btp->bt_bdev,
+>>> +        __blkdev_issue_discard(btp->bt_bdev,
+>>>                    xfs_gbno_to_daddr(xg, busyp->bno),
+>>>                    XFS_FSB_TO_BB(mp, busyp->length),
+>>>                    GFP_KERNEL, &bio);
+>>
+>> If blk_alloc_discard_bio() fails to allocate a bio inside
+>> __blkdev_issue_discard(), this may lead to an invalid loop in
+>> list_for_each_entry{}. Instead of using __blkdev_issue_discard(), how
+>> about allocate and submit the discard bios explicitly in
+>> list_for_each_entry{}?
+>>
+>> Yongpeng,
+> 
+> 
+> Calling __blkdev_issue_discard() keeps managing all the bio with the
+> appropriate GFP mask, so the semantics stay the same. You are just
+> moving memory allocation to the caller and potentially looking at
+> implementing retry on bio allocation failure.
+> 
+> The retry for discard bio memory allocation is not desired I think,
+> since it's only a hint to the controller.
 
-Nit: you might want to point out who requested the change in the
-changelog for clarity, e.g.
+Agreed. I'm not trying to retry bio allocation inside the
+list_for_each_entry{} loop. Instead, since blk_alloc_discard_bio()
+returning NULL cannot reliably indicate whether the failure is due to
+bio allocation failure, it could also be caused by 'bio_sects == 0', I'd
+like to allocate the bio explicitly.
 
- - Simplified tnum_scast() implementation to use native s64 arithmetic
-   shifts for sign extension instead of manual bit masking (Eduard)
+> 
+> This patch is simply cleaning up dead error-handling branches at the
+> callers no behavioral changes intended.
+> 
+> What maybe useful is to stop iterating once we fail to allocate the
+> bio [1].
+> 
+> -ck
+> 
+> [1] Potential addition on the top of this to exit early in discard loop
+>       on bio allocation failure.
+> 
+> diff --git a/fs/xfs/xfs_discard.c b/fs/xfs/xfs_discard.c
+> index b6ffe4807a11..1519f708bb79 100644
+> --- a/fs/xfs/xfs_discard.c
+> +++ b/fs/xfs/xfs_discard.c
+> @@ -129,6 +129,13 @@ xfs_discard_extents(
+>                                   xfs_gbno_to_daddr(xg, busyp->bno),
+>                                   XFS_FSB_TO_BB(mp, busyp->length),
+>                                   GFP_KERNEL, &bio);
+> +               /*
+> +                * We failed to allocate bio instead of continuing the loop
+> +                * so it will lead to inconsistent discards to the disk
+> +                * exit early and jump into xfs_discard_busy_clear().
+> +                */
+> +               if (!bio)
+> +                       break;
 
-> 	- Removed irrelevant tests, added one that fails at base without
-> 	our changes.
-[...]
+I noticed that as long as XFS_FSB_TO_BB(mp, busyp->length) is greater
+than 0 and there is no bio allocation failure, __blkdev_issue_discard()
+will never return NULL. I'm not familiar with this part of the xfs, so
+I'm not sure whether there are cases where 'XFS_FSB_TO_BB(mp,
+busyp->length)' could be 0. If such cases do not exist, then
+checking whether the bio is NULL should be sufficient.
+
+Yongpeng,
+
+>           }
+>    
+>           if (bio) {
+> > If we keep looping after the first bio == NULL, the rest of the range is
+> guaranteed to be inconsistent anyways, because every subsequent iteration
+> will fall into one of three cases:
+> 
+> - The allocator keeps returning NULL, so none of the remaining LBAs receive
+>     discard.
+> - Rest of the allocator succeeds, but we’ve already skipped a chunk, leaving
+>     a hole in the discard range.
+> - We get intermittent successes, which produces alternating chunks of
+>     discarded and undiscarded blocks.
+> 
+> In each of those scenarios, the disk ends up with a partially discarded
+> range, so the correct fix is to break out of the loop immediately and
+> proceed to xfs_discard_busy_clear() once the very first allocation fails.
+
+
 
