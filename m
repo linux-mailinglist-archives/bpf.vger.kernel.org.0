@@ -1,670 +1,245 @@
-Return-Path: <bpf+bounces-75541-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75542-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49D9FC886E2
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 08:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 46B6BC8883E
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 08:54:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D798F3AFA96
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 07:34:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EA9A3B354A
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 07:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C45329B8D3;
-	Wed, 26 Nov 2025 07:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1183529E11B;
+	Wed, 26 Nov 2025 07:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UNLPgSW8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bHOmxRGR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D67291864
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 07:34:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF7828B40E
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 07:54:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764142463; cv=none; b=a1QPsco8jfZDwyUckJJ/QfNQ9bDZss2cFisgSlUzxF8zEnf2omj02HGULG/6H5WeLEX6dLDXw1zzoLHBYqFwIfkPYUOA61zmD0H2VKLvEXVqY6Uk32Ogy8Gc+r3VB5uPfyBnWfP281wLMG19ZTTJtT+uMzo+QGpC6x+/cK+qWGs=
+	t=1764143664; cv=none; b=bLLPPUNsumV92F1TsQUFWe8YyZU3t5bMLYt63RetW0RzQ32jAKwH5rCi9NgObXLGLLnDXe3OVjyC0b+ryWy2e1j0BJqXJkPqurEnymIsh3BMoM/vTHfE4pV0B6VbMF9HEJWMCbbU4Qm/UHQaVebsgZtaT+VrL72XSQO8G0Uzp+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764142463; c=relaxed/simple;
-	bh=HZHGEbWf4duCcAC2IFhVoTDYI22CIbFxeNitmSzTs0E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mH/4lkvgY1vl7sDGDGLzam0aCigoKsJffgT4mVb9Ui9jeNtroCEnkJ5NjrZCwzqD4SoCSrUI1IgezDSpCx1aQYjV5XUAOHYAclkWTJLoGZumwiqJMjrnZsc5OBJvordQcDDOTDjYUdk0ofO1y2kAF+NjeQECBmmFfA3akIRWZUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UNLPgSW8; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-47774d3536dso4238375e9.0
-        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 23:34:20 -0800 (PST)
+	s=arc-20240116; t=1764143664; c=relaxed/simple;
+	bh=BLggUwFSSOnSougouiNtDF9tADe2dx8YXPmsLpbiPmM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iynnebu0fAp9GKOwpf8DU+2Ru1mijmTOlzdTqtE3tH9tWeLZRIJGVDftzj+wrc5zkDgfR+pneoc39N0m4Mvm38Ewwfw/tctN/UXOkc0Z3qT4OFCFoDJHrWTOnkwM54J3MdfzUuhgCeHgKYqxjltyr+RZWuLA6kHkPwtD/vevhXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bHOmxRGR; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-42b3c965ca9so3542814f8f.1
+        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 23:54:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1764142458; x=1764747258; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sPEFWx+aW9QC/nVK0x1/EOh/U5whRCkAn5X7jEbwW2g=;
-        b=UNLPgSW8DaMda8t1FwNmLGrtiK7hHUsM8QU1mtaqR4nYHmIvV4FxYEYAzbp+6y1y8a
-         nygzb1QX9mt1P7nE3w/wrGp11x/R3zQlLr140SjHdCOzfcFBVCjE4/7kOZ8kcRIZ7V9j
-         lqeret/TM4t3qCiLNU9VG+E3/09jr/FNyU+fpuW8eOf/C+8vZ8oW8NTrYa3QRVZ97YRW
-         eF8aHcpEBiL+c5uAnV4HXuZEd6iJWkkZqEiZHmzQxT5ZWCHNgPqcQeIrWvHeBk/LTdA0
-         f94xhyKFQ3QFEUbjl+xcMvKnNbT2vixL1xah2xifg4hIMyn72ZYYvGlFvM2bxjd5va9z
-         nxOw==
+        d=gmail.com; s=20230601; t=1764143661; x=1764748461; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NyPTYZiKX4AJg8UqMQQ2+zsdage/O8q7ru0ykIzuE8k=;
+        b=bHOmxRGRXw/zioH6ypV3JRCaUBchEwD0qqwetUkjp2mI6cyxV6M/dUZupqu3MaLPds
+         HSWalDb7T81UzaDlsUvJTXvHj8T3BMvlDk5x91/yzToNbsRzdOBGu5g9F1lT6TueMjbR
+         AjOXk8yCyp6e2j9BGUJhN+6lpsUca6uReXYrhZ87I9qynMSgODh2K4AC8n6eRA94pTpx
+         hkZUM8kL9tFSW7YjhxQGsZft2X85ZNd4BhiiYpiW4c8H1Q2pLK+mGxIJ+k/Xx7yZnYeF
+         xSR4MGnP4jJcVenQ3q1FOfTFgTUrFiEz8MI9/CgDpGF6hE6hpzWemLdRcA41H9B7PMmD
+         aJkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764142458; x=1764747258;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sPEFWx+aW9QC/nVK0x1/EOh/U5whRCkAn5X7jEbwW2g=;
-        b=w/Hw8WrY2us8tq/zM7nsLnm4NYYXcXgGXD8MCkNt1NgrOio21SmM6PWt8jIGjzRx21
-         OuF/Euxr8ua4dWyNo7pArjETr2WrqhUm1rATo94Z+z9OfKxIXr04m69Qo2zeEjbK2YCm
-         f6nFlW74uFUeE0wt7+q9T6tRr9MPg5xcDwLs0/5l1U7A1H6d/B1nqof4IDDpeG9kKK0S
-         jO04UnRwMLgWboL87caCeOA4rpS0mabr9lP74sADgZ3QEtemtc8g1mNbhLHhYVpWLREb
-         uBG2UYX+DpECsKxgKq/Ot8JjFiAeZmIjvMHzrGyOdaoVRgeNDEGubrL+lRWD7pgodQfR
-         t9Mw==
-X-Gm-Message-State: AOJu0YxBuX0/Vli2OFJcoPiRyZ2vI2dsr7yRUpYzwBly6ka+vZ0/Z8Z4
-	VbNKQNsPj6fXMU4nTRcHt5NGsIQV6WHtapgf8LbXZmqZJwCt3bvMJydISGrJnj+BUGN2IH7tyZB
-	8a3BUY6Y=
-X-Gm-Gg: ASbGnculTdXBCCsGgobjK/N+ZGdneiWwHtizDUi9V/3zYJkeIEeqSpKoGA5iQyrAihs
-	8Liun2R+PCCldtC487fK/fbRXjV3CyXbwOMEChbpsZX9P4XSygEDRnfLZF9BeD7r5ziQ57vraNj
-	Zi216/bKVMZDOaLsC5hcJ0GlSrKqGO48xiOgNyOIBUxIb7h60a+3Z+GDbp+rnttIVF1ncRm6nAJ
-	DDEpYdd/4JSZ9z+ovLNfUgAcgZh39L4N5HfzsM5pEOZMv7GxSbEFUDJbqT7yaUH+bvS8DZMcgWx
-	Dvf7oKBKOU5NrCh26nDRayarAMkWK7njbfNm+9Ye0tz8SFHkCKrbQMf0QPgyku7R29iZw0z333V
-	NYFuNgW/AZbLuooCrOjUjZdPR6+lC/oF/A00y3NpEiZQZTQsxPOvSNLVl154U78IdEYjIq2ZWdA
-	9S3BE2Qsr4LsPfIya11ttm8PJpKvdGIwVnNnocZBuYP+3VGX4Lsg==
-X-Google-Smtp-Source: AGHT+IExbNcMrZ8ihgVaZHsrCfvACWEaSJvBZnWNl9nlwlY/Qjpy6FU6zmaHua6tMjGBUq1Hvlg8Yg==
-X-Received: by 2002:a7b:cbd3:0:b0:477:991c:a17c with SMTP id 5b1f17b1804b1-477b9ea90b7mr161854985e9.6.1764142458142;
-        Tue, 25 Nov 2025 23:34:18 -0800 (PST)
-Received: from F15.localdomain ([121.167.230.140])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3476a5603bdsm1603290a91.8.2025.11.25.23.34.12
+        d=1e100.net; s=20230601; t=1764143661; x=1764748461;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NyPTYZiKX4AJg8UqMQQ2+zsdage/O8q7ru0ykIzuE8k=;
+        b=C0SYbmOqdJjJCOFa5Q/QERPkWzCJ57a0df6fzHgmZOp504i3JvLQ7lv+RPkqgOeYM2
+         qnargZjwJEJiF4rkUCy23TPlsEhITpAiJskNt4NP8QHzQcdw4HtJjTm5bebgGTwss/Ue
+         rXU4TyUJNA6tdAE9dQVkAE3Mr6v9TpmSweMQmrJ0MVoKDT8lqUwFMrZ6fO1JNW0+Rxb6
+         P3u2i+QcW+SSgYt1GQGYHqDTaaWWmhtHJh8IGrYPSgkl6xlHpiSTWtzHRj60Ie5bR66f
+         lRTrAyz61IGY+Tinmy3cC/BasT8qQw+tvugGeVDMWixCiUsXzTWtScDvuu2LVgJM+B6l
+         K32Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWshSGnNMkSESrDSti+lx7IVwZR+CgvX/6OxWcFbiL1LR6aGaJbwXBIe4ZTTLDNYI1tNTM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwVGoKD6qHRJMWXEuRu90z2EU+GeP8xE1EGzswSZQFnPqzkvDd+
+	h0c5nh3XX7TdDmQQw9sCMSZIizdoDTvHlWxe6yct0WEx7ORsAGOILYCF
+X-Gm-Gg: ASbGncurYesSSeVTs4ydmOCmHv1ANJ6DPuc2gSoH0l2b6iZNmtnpk24fAGRLhuQffRp
+	i3gpQfVFPJcPNuyXq7E/lC1BDz26oQAam13EF0rzLr7r07o3e4Lmq7g58TQSBCa6r+qp8+AvbSG
+	c4iklaxem1M4r2+lC9ANQ/bmB+Y0iJrc3KO53QG92jT7YtDSlgMdsnzYXIMbRK2Eohbf1cQkWI8
+	OKNpCVnxAcMj3UH6PRCuFlfKKrimNorElX72tY8i87ikTXu0XnRbmVY5HDrPsa3E+WhKHlFkAjt
+	r4LovsfQjl5xqgelXskSYh5QAxWw9JI/2h/1OTgltX50bnUkBIzAmM7jHKLS9b28Dw4siInRQUH
+	euBZmNOY0bURkYoSY1t5HiJ6gMZV0PphbkRZXhSbT7UlC/1N2qqGHp1JSRhRN
+X-Google-Smtp-Source: AGHT+IF3OhJrdZ1YcyFXgQFCx3O4fzXMh5cnWnx31Q+zBL04SChpqKRjEOULsSc/MyGGIyzGtkLnAg==
+X-Received: by 2002:a05:6000:2509:b0:42b:53ad:bbfa with SMTP id ffacd0b85a97d-42cc1d61ae6mr19946482f8f.53.1764143660807;
+        Tue, 25 Nov 2025 23:54:20 -0800 (PST)
+Received: from krava ([2a02:8308:a00c:e200::b44f])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42cb7fb9022sm38826054f8f.36.2025.11.25.23.54.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Nov 2025 23:34:17 -0800 (PST)
-From: Hoyeon Lee <hoyeon.lee@suse.com>
-To: bpf@vger.kernel.org
-Cc: Hoyeon Lee <hoyeon.lee@suse.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
+        Tue, 25 Nov 2025 23:54:20 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 26 Nov 2025 08:54:18 +0100
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Tony Ambardar <tony.ambardar@gmail.com>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] tools: bpf: remove runqslower tool
-Date: Wed, 26 Nov 2025 16:33:00 +0900
-Message-ID: <20251126073308.365432-3-hoyeon.lee@suse.com>
-X-Mailer: git-send-email 2.52.0
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	David Laight <David.Laight@aculab.com>
+Subject: Re: [RFC PATCH 5/8] uprobe/x86: Add support to optimize on top of
+ emulated instructions
+Message-ID: <aSayKtsTNkuyu0TP@krava>
+References: <20251117124057.687384-1-jolsa@kernel.org>
+ <20251117124057.687384-6-jolsa@kernel.org>
+ <aSSdavSy_unRaEgF@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aSSdavSy_unRaEgF@redhat.com>
 
-runqslower was added in commit 9c01546d26d2 ("tools/bpf: Add runqslower
-tool to tools/bpf") as a BCC port to showcase early BPF CO-RE + libbpf
-workflows. runqslower continues to live in BCC (libbpf-tools), so there
-is no need to keep building and maintaining it.
+On Mon, Nov 24, 2025 at 07:01:14PM +0100, Oleg Nesterov wrote:
+> Hi Jiri,
+> 
+> I am trying to understand this series, will try to read it more carefully
+> later...
+> 
+> (damn why do you always send the patches when I am on PTO? ;)
 
-Drop tools/bpf/runqslower and remove all build hooks in tools/bpf and
-selftests accordingly.
+it's more fun that way ;-) thanks for checking on it
 
-Signed-off-by: Hoyeon Lee <hoyeon.lee@suse.com>
----
- tools/bpf/Makefile                            |  13 +-
- tools/bpf/runqslower/.gitignore               |   2 -
- tools/bpf/runqslower/Makefile                 |  91 ----------
- tools/bpf/runqslower/runqslower.bpf.c         | 106 -----------
- tools/bpf/runqslower/runqslower.c             | 171 ------------------
- tools/bpf/runqslower/runqslower.h             |  13 --
- tools/testing/selftests/bpf/.gitignore        |   1 -
- tools/testing/selftests/bpf/Makefile          |  14 --
- .../selftests/bpf/test_bpftool_build.sh       |   4 -
- 9 files changed, 3 insertions(+), 412 deletions(-)
- delete mode 100644 tools/bpf/runqslower/.gitignore
- delete mode 100644 tools/bpf/runqslower/Makefile
- delete mode 100644 tools/bpf/runqslower/runqslower.bpf.c
- delete mode 100644 tools/bpf/runqslower/runqslower.c
- delete mode 100644 tools/bpf/runqslower/runqslower.h
+> 
+> On 11/17, Jiri Olsa wrote:
+> >
+> >  struct arch_uprobe {
+> >  	union {
+> > -		u8			insn[MAX_UINSN_BYTES];
+> > +		u8			insn[5*MAX_UINSN_BYTES];
+> 
+> Hmm. OK, this matches the "for (i = 0; i < 5; i++)" loop in
+> opt_setup_xol_ops(), but do we really need this change? Please see
+> the question at the end.
+> 
+> > +static int opt_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+> > +{
+> > +	unsigned long offset = insn->length;
+> > +	struct insn insnX;
+> > +	int i, ret;
+> > +
+> > +	if (test_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags))
+> > +		return -ENOSYS;
+> 
+> I think this logic needs some cleanups... If ARCH_UPROBE_FLAG_CAN_OPTIMIZE
+> is set by the caller, the it doesn't make sense to call xxx_setup_xol_ops(),
+> right? But lets forget it for now.
+> 
+> > +	ret = opt_setup_xol_insns(auprobe, &auprobe->opt.xol[0], insn);
+> 
+> I think this should go into the main loop, see below
+> 
+> > +	for (i = 1; i < 5; i++) {
+> > +		ret = uprobe_init_insn_offset(auprobe, offset, &insnX, true);
+> > +		if (ret)
+> > +			break;
+> > +		ret = opt_setup_xol_insns(auprobe, &auprobe->opt.xol[i], &insnX);
+> > +		if (ret)
+> > +			break;
+> > +		offset += insnX.length;
+> > +		auprobe->opt.cnt++;
+> > +		if (offset >= 5)
+> > +			goto optimize;
+> > +	}
+> > +
+> > +	return -ENOSYS;
+> 
+> I don't think -ENOSYS makes sense if opt_setup_xol_insns() succeeds at least once.
+> IOW, how about
+> 
+> 	static int opt_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+> 	{
+> 		unsigned long offset = 0;
+> 		struct insn insnX;
+> 		int i, ret;
+> 
+> 		if (test_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags))
+> 			return -ENOSYS;
+> 
+> 		for (i = 0; i < 5; i++) {
+> 			ret = opt_setup_xol_insns(auprobe, &auprobe->opt.xol[i], insn);
+> 			if (ret)
+> 				break;
+> 			offset += insn->length;
+> 			if (offset >= 5)
+> 				break;
+> 
+> 			insn = &insnX;
+> 			ret = uprobe_init_insn_offset(auprobe, offset, insn, true);
+> 			if (ret)
+> 				break;
+> 		}
+> 
+> 		if (!offset)
+> 			return -ENOSYS;
+> 
+> 		if (offset >= 5) {
+> 			auprobe->opt.cnt = i + 1;
+> 			auprobe->xol.ops = &opt_xol_ops;
+> 			set_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags);
+> 			set_bit(ARCH_UPROBE_FLAG_OPTIMIZE_EMULATE, &auprobe->flags);
+> 		}
+> 
+> 		return 0;
+> 	}
+> 
+> ?
+> 
+> This way the caller, arch_uprobe_analyze_insn(), doesn't need to call
+> push/mov/sub/_setup_xol_ops(), and the code looks a bit simpler to me.
 
-diff --git a/tools/bpf/Makefile b/tools/bpf/Makefile
-index 062bbd6cd048..fd2585af1252 100644
---- a/tools/bpf/Makefile
-+++ b/tools/bpf/Makefile
-@@ -32,7 +32,7 @@ FEATURE_TESTS = libbfd disassembler-four-args disassembler-init-styled
- FEATURE_DISPLAY = libbfd
- 
- check_feat := 1
--NON_CHECK_FEAT_TARGETS := clean bpftool_clean runqslower_clean resolve_btfids_clean
-+NON_CHECK_FEAT_TARGETS := clean bpftool_clean resolve_btfids_clean
- ifdef MAKECMDGOALS
- ifeq ($(filter-out $(NON_CHECK_FEAT_TARGETS),$(MAKECMDGOALS)),)
-   check_feat := 0
-@@ -70,7 +70,7 @@ $(OUTPUT)%.lex.o: $(OUTPUT)%.lex.c
- 
- PROGS = $(OUTPUT)bpf_jit_disasm $(OUTPUT)bpf_dbg $(OUTPUT)bpf_asm
- 
--all: $(PROGS) bpftool runqslower
-+all: $(PROGS) bpftool
- 
- $(OUTPUT)bpf_jit_disasm: CFLAGS += -DPACKAGE='bpf_jit_disasm'
- $(OUTPUT)bpf_jit_disasm: $(OUTPUT)bpf_jit_disasm.o
-@@ -86,7 +86,7 @@ $(OUTPUT)bpf_exp.lex.c: $(OUTPUT)bpf_exp.yacc.c
- $(OUTPUT)bpf_exp.yacc.o: $(OUTPUT)bpf_exp.yacc.c
- $(OUTPUT)bpf_exp.lex.o: $(OUTPUT)bpf_exp.lex.c
- 
--clean: bpftool_clean runqslower_clean resolve_btfids_clean
-+clean: bpftool_clean resolve_btfids_clean
- 	$(call QUIET_CLEAN, bpf-progs)
- 	$(Q)$(RM) -r -- $(OUTPUT)*.o $(OUTPUT)bpf_jit_disasm $(OUTPUT)bpf_dbg \
- 	       $(OUTPUT)bpf_asm $(OUTPUT)bpf_exp.yacc.* $(OUTPUT)bpf_exp.lex.*
-@@ -112,12 +112,6 @@ bpftool_install:
- bpftool_clean:
- 	$(call descend,bpftool,clean)
- 
--runqslower:
--	$(call descend,runqslower)
--
--runqslower_clean:
--	$(call descend,runqslower,clean)
--
- resolve_btfids:
- 	$(call descend,resolve_btfids)
- 
-@@ -125,5 +119,4 @@ resolve_btfids_clean:
- 	$(call descend,resolve_btfids,clean)
- 
- .PHONY: all install clean bpftool bpftool_install bpftool_clean \
--	runqslower runqslower_clean \
- 	resolve_btfids resolve_btfids_clean
-diff --git a/tools/bpf/runqslower/.gitignore b/tools/bpf/runqslower/.gitignore
-deleted file mode 100644
-index ffdb70230c8b..000000000000
---- a/tools/bpf/runqslower/.gitignore
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--/.output
-diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
-deleted file mode 100644
-index 78a436c4072e..000000000000
---- a/tools/bpf/runqslower/Makefile
-+++ /dev/null
-@@ -1,91 +0,0 @@
--# SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
--include ../../scripts/Makefile.include
--
--OUTPUT ?= $(abspath .output)/
--
--BPFTOOL_OUTPUT := $(OUTPUT)bpftool/
--DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)bootstrap/bpftool
--BPFTOOL ?= $(DEFAULT_BPFTOOL)
--BPF_TARGET_ENDIAN ?= --target=bpf
--LIBBPF_SRC := $(abspath ../../lib/bpf)
--BPFOBJ_OUTPUT := $(OUTPUT)libbpf/
--BPFOBJ := $(BPFOBJ_OUTPUT)libbpf.a
--BPF_DESTDIR := $(BPFOBJ_OUTPUT)
--BPF_INCLUDE := $(BPF_DESTDIR)/include
--INCLUDES := -I$(OUTPUT) -I$(BPF_INCLUDE) -I$(abspath ../../include/uapi)
--CFLAGS := -g -Wall $(CLANG_CROSS_FLAGS)
--CFLAGS += $(EXTRA_CFLAGS)
--LDFLAGS += $(EXTRA_LDFLAGS)
--LDLIBS += -lelf -lz
--
--# Try to detect best kernel BTF source
--KERNEL_REL := $(shell uname -r)
--VMLINUX_BTF_PATHS := $(if $(O),$(O)/vmlinux)		\
--	$(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux) \
--	../../../vmlinux /sys/kernel/btf/vmlinux	\
--	/boot/vmlinux-$(KERNEL_REL)
--VMLINUX_BTF_PATH := $(or $(VMLINUX_BTF),$(firstword			       \
--					  $(wildcard $(VMLINUX_BTF_PATHS))))
--
--ifneq ($(V),1)
--MAKEFLAGS += --no-print-directory
--submake_extras := feature_display=0
--endif
--
--.DELETE_ON_ERROR:
--
--.PHONY: all clean runqslower libbpf_hdrs
--all: runqslower
--
--runqslower: $(OUTPUT)/runqslower
--
--clean:
--	$(call QUIET_CLEAN, runqslower)
--	$(Q)$(RM) -r $(BPFOBJ_OUTPUT) $(BPFTOOL_OUTPUT)
--	$(Q)$(RM) $(OUTPUT)*.o $(OUTPUT)*.d
--	$(Q)$(RM) $(OUTPUT)*.skel.h $(OUTPUT)vmlinux.h
--	$(Q)$(RM) $(OUTPUT)runqslower
--	$(Q)$(RM) -r .output
--
--libbpf_hdrs: $(BPFOBJ)
--
--$(OUTPUT)/runqslower: $(OUTPUT)/runqslower.o $(BPFOBJ)
--	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
--
--$(OUTPUT)/runqslower.o: runqslower.h $(OUTPUT)/runqslower.skel.h	      \
--			$(OUTPUT)/runqslower.bpf.o | libbpf_hdrs
--
--$(OUTPUT)/runqslower.bpf.o: $(OUTPUT)/vmlinux.h runqslower.h | libbpf_hdrs
--
--$(OUTPUT)/%.skel.h: $(OUTPUT)/%.bpf.o | $(BPFTOOL)
--	$(QUIET_GEN)$(BPFTOOL) gen skeleton $< > $@
--
--$(OUTPUT)/%.bpf.o: %.bpf.c $(BPFOBJ) | $(OUTPUT)
--	$(QUIET_GEN)$(CLANG) -g -O2 $(BPF_TARGET_ENDIAN) $(INCLUDES)	      \
--		 -c $(filter %.c,$^) -o $@ &&				      \
--	$(LLVM_STRIP) -g $@
--
--$(OUTPUT)/%.o: %.c | $(OUTPUT)
--	$(QUIET_CC)$(CC) $(CFLAGS) $(INCLUDES) -c $(filter %.c,$^) -o $@
--
--$(OUTPUT) $(BPFOBJ_OUTPUT) $(BPFTOOL_OUTPUT):
--	$(QUIET_MKDIR)mkdir -p $@
--
--$(OUTPUT)/vmlinux.h: $(VMLINUX_BTF_PATH) | $(OUTPUT) $(BPFTOOL)
--ifeq ($(VMLINUX_H),)
--	$(Q)if [ ! -e "$(VMLINUX_BTF_PATH)" ] ; then \
--		echo "Couldn't find kernel BTF; set VMLINUX_BTF to"	       \
--			"specify its location." >&2;			       \
--		exit 1;\
--	fi
--	$(QUIET_GEN)$(BPFTOOL) btf dump file $(VMLINUX_BTF_PATH) format c > $@
--else
--	$(Q)cp "$(VMLINUX_H)" $@
--endif
--
--$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(BPFOBJ_OUTPUT)
--	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=$(BPFOBJ_OUTPUT) \
--		    DESTDIR=$(BPFOBJ_OUTPUT) prefix= $(abspath $@) install_headers
--
--$(DEFAULT_BPFTOOL): | $(BPFTOOL_OUTPUT)
--	$(Q)$(MAKE) $(submake_extras) -C ../bpftool OUTPUT=$(BPFTOOL_OUTPUT) bootstrap
-diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
-deleted file mode 100644
-index fced54a3adf6..000000000000
---- a/tools/bpf/runqslower/runqslower.bpf.c
-+++ /dev/null
-@@ -1,106 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--// Copyright (c) 2019 Facebook
--#include "vmlinux.h"
--#include <bpf/bpf_helpers.h>
--#include "runqslower.h"
--
--#define TASK_RUNNING 0
--#define BPF_F_CURRENT_CPU 0xffffffffULL
--
--const volatile __u64 min_us = 0;
--const volatile pid_t targ_pid = 0;
--
--struct {
--	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
--	__uint(map_flags, BPF_F_NO_PREALLOC);
--	__type(key, int);
--	__type(value, u64);
--} start SEC(".maps");
--
--struct {
--	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
--	__uint(key_size, sizeof(u32));
--	__uint(value_size, sizeof(u32));
--} events SEC(".maps");
--
--/* record enqueue timestamp */
--__always_inline
--static int trace_enqueue(struct task_struct *t)
--{
--	u32 pid = t->pid;
--	u64 *ptr;
--
--	if (!pid || (targ_pid && targ_pid != pid))
--		return 0;
--
--	ptr = bpf_task_storage_get(&start, t, 0,
--				   BPF_LOCAL_STORAGE_GET_F_CREATE);
--	if (!ptr)
--		return 0;
--
--	*ptr = bpf_ktime_get_ns();
--	return 0;
--}
--
--SEC("tp_btf/sched_wakeup")
--int handle__sched_wakeup(u64 *ctx)
--{
--	/* TP_PROTO(struct task_struct *p) */
--	struct task_struct *p = (void *)ctx[0];
--
--	return trace_enqueue(p);
--}
--
--SEC("tp_btf/sched_wakeup_new")
--int handle__sched_wakeup_new(u64 *ctx)
--{
--	/* TP_PROTO(struct task_struct *p) */
--	struct task_struct *p = (void *)ctx[0];
--
--	return trace_enqueue(p);
--}
--
--SEC("tp_btf/sched_switch")
--int handle__sched_switch(u64 *ctx)
--{
--	/* TP_PROTO(bool preempt, struct task_struct *prev,
--	 *	    struct task_struct *next)
--	 */
--	struct task_struct *prev = (struct task_struct *)ctx[1];
--	struct task_struct *next = (struct task_struct *)ctx[2];
--	struct runq_event event = {};
--	u64 *tsp, delta_us;
--	u32 pid;
--
--	/* ivcsw: treat like an enqueue event and store timestamp */
--	if (prev->__state == TASK_RUNNING)
--		trace_enqueue(prev);
--
--	pid = next->pid;
--
--	/* For pid mismatch, save a bpf_task_storage_get */
--	if (!pid || (targ_pid && targ_pid != pid))
--		return 0;
--
--	/* fetch timestamp and calculate delta */
--	tsp = bpf_task_storage_get(&start, next, 0, 0);
--	if (!tsp)
--		return 0;   /* missed enqueue */
--
--	delta_us = (bpf_ktime_get_ns() - *tsp) / 1000;
--	if (min_us && delta_us <= min_us)
--		return 0;
--
--	event.pid = pid;
--	event.delta_us = delta_us;
--	bpf_get_current_comm(&event.task, sizeof(event.task));
--
--	/* output */
--	bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU,
--			      &event, sizeof(event));
--
--	bpf_task_storage_delete(&start, next);
--	return 0;
--}
--
--char LICENSE[] SEC("license") = "GPL";
-diff --git a/tools/bpf/runqslower/runqslower.c b/tools/bpf/runqslower/runqslower.c
-deleted file mode 100644
-index 83c5993a139a..000000000000
---- a/tools/bpf/runqslower/runqslower.c
-+++ /dev/null
-@@ -1,171 +0,0 @@
--// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
--// Copyright (c) 2019 Facebook
--#include <argp.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <time.h>
--#include <bpf/libbpf.h>
--#include <bpf/bpf.h>
--#include "runqslower.h"
--#include "runqslower.skel.h"
--
--struct env {
--	pid_t pid;
--	__u64 min_us;
--	bool verbose;
--} env = {
--	.min_us = 10000,
--};
--
--const char *argp_program_version = "runqslower 0.1";
--const char *argp_program_bug_address = "<bpf@vger.kernel.org>";
--const char argp_program_doc[] =
--"runqslower    Trace long process scheduling delays.\n"
--"              For Linux, uses eBPF, BPF CO-RE, libbpf, BTF.\n"
--"\n"
--"This script traces high scheduling delays between tasks being\n"
--"ready to run and them running on CPU after that.\n"
--"\n"
--"USAGE: runqslower [-p PID] [min_us]\n"
--"\n"
--"EXAMPLES:\n"
--"    runqslower         # trace run queue latency higher than 10000 us (default)\n"
--"    runqslower 1000    # trace run queue latency higher than 1000 us\n"
--"    runqslower -p 123  # trace pid 123 only\n";
--
--static const struct argp_option opts[] = {
--	{ "pid", 'p', "PID", 0, "Process PID to trace"},
--	{ "verbose", 'v', NULL, 0, "Verbose debug output" },
--	{},
--};
--
--static error_t parse_arg(int key, char *arg, struct argp_state *state)
--{
--	static int pos_args;
--	int pid;
--	long long min_us;
--
--	switch (key) {
--	case 'v':
--		env.verbose = true;
--		break;
--	case 'p':
--		errno = 0;
--		pid = strtol(arg, NULL, 10);
--		if (errno || pid <= 0) {
--			fprintf(stderr, "Invalid PID: %s\n", arg);
--			argp_usage(state);
--		}
--		env.pid = pid;
--		break;
--	case ARGP_KEY_ARG:
--		if (pos_args++) {
--			fprintf(stderr,
--				"Unrecognized positional argument: %s\n", arg);
--			argp_usage(state);
--		}
--		errno = 0;
--		min_us = strtoll(arg, NULL, 10);
--		if (errno || min_us <= 0) {
--			fprintf(stderr, "Invalid delay (in us): %s\n", arg);
--			argp_usage(state);
--		}
--		env.min_us = min_us;
--		break;
--	default:
--		return ARGP_ERR_UNKNOWN;
--	}
--	return 0;
--}
--
--int libbpf_print_fn(enum libbpf_print_level level,
--		    const char *format, va_list args)
--{
--	if (level == LIBBPF_DEBUG && !env.verbose)
--		return 0;
--	return vfprintf(stderr, format, args);
--}
--
--void handle_event(void *ctx, int cpu, void *data, __u32 data_sz)
--{
--	const struct runq_event *e = data;
--	struct tm *tm;
--	char ts[32];
--	time_t t;
--
--	time(&t);
--	tm = localtime(&t);
--	strftime(ts, sizeof(ts), "%H:%M:%S", tm);
--	printf("%-8s %-16s %-6d %14llu\n", ts, e->task, e->pid, e->delta_us);
--}
--
--void handle_lost_events(void *ctx, int cpu, __u64 lost_cnt)
--{
--	printf("Lost %llu events on CPU #%d!\n", lost_cnt, cpu);
--}
--
--int main(int argc, char **argv)
--{
--	static const struct argp argp = {
--		.options = opts,
--		.parser = parse_arg,
--		.doc = argp_program_doc,
--	};
--	struct perf_buffer *pb = NULL;
--	struct runqslower_bpf *obj;
--	int err;
--
--	err = argp_parse(&argp, argc, argv, 0, NULL, NULL);
--	if (err)
--		return err;
--
--	libbpf_set_print(libbpf_print_fn);
--
--	/* Use libbpf 1.0 API mode */
--	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
--
--	obj = runqslower_bpf__open();
--	if (!obj) {
--		fprintf(stderr, "failed to open and/or load BPF object\n");
--		return 1;
--	}
--
--	/* initialize global data (filtering options) */
--	obj->rodata->targ_pid = env.pid;
--	obj->rodata->min_us = env.min_us;
--
--	err = runqslower_bpf__load(obj);
--	if (err) {
--		fprintf(stderr, "failed to load BPF object: %d\n", err);
--		goto cleanup;
--	}
--
--	err = runqslower_bpf__attach(obj);
--	if (err) {
--		fprintf(stderr, "failed to attach BPF programs\n");
--		goto cleanup;
--	}
--
--	printf("Tracing run queue latency higher than %llu us\n", env.min_us);
--	printf("%-8s %-16s %-6s %14s\n", "TIME", "COMM", "PID", "LAT(us)");
--
--	pb = perf_buffer__new(bpf_map__fd(obj->maps.events), 64,
--			      handle_event, handle_lost_events, NULL, NULL);
--	err = libbpf_get_error(pb);
--	if (err) {
--		pb = NULL;
--		fprintf(stderr, "failed to open perf buffer: %d\n", err);
--		goto cleanup;
--	}
--
--	while ((err = perf_buffer__poll(pb, 100)) >= 0)
--		;
--	printf("Error polling perf buffer: %d\n", err);
--
--cleanup:
--	perf_buffer__free(pb);
--	runqslower_bpf__destroy(obj);
--
--	return err != 0;
--}
-diff --git a/tools/bpf/runqslower/runqslower.h b/tools/bpf/runqslower/runqslower.h
-deleted file mode 100644
-index 4f70f07200c2..000000000000
---- a/tools/bpf/runqslower/runqslower.h
-+++ /dev/null
-@@ -1,13 +0,0 @@
--/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
--#ifndef __RUNQSLOWER_H
--#define __RUNQSLOWER_H
--
--#define TASK_COMM_LEN 16
--
--struct runq_event {
--	char task[TASK_COMM_LEN];
--	__u64 delta_us;
--	pid_t pid;
--};
--
--#endif /* __RUNQSLOWER_H */
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index be1ee7ba7ce0..e091809f07a0 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -32,7 +32,6 @@ test_cpp
- /cpuv4
- /host-tools
- /tools
--/runqslower
- /bench
- /veristat
- /sign-file
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index f00587d4ede6..79f9f96d153f 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -127,7 +127,6 @@ TEST_KMOD_TARGETS = $(addprefix $(OUTPUT)/,$(TEST_KMODS))
- TEST_GEN_PROGS_EXTENDED = \
- 	bench \
- 	flow_dissector_load \
--	runqslower \
- 	test_cpp \
- 	test_lirc_mode2_user \
- 	veristat \
-@@ -209,8 +208,6 @@ HOST_INCLUDE_DIR	:= $(INCLUDE_DIR)
- endif
- HOST_BPFOBJ := $(HOST_BUILD_DIR)/libbpf/libbpf.a
- RESOLVE_BTFIDS := $(HOST_BUILD_DIR)/resolve_btfids/resolve_btfids
--RUNQSLOWER_OUTPUT := $(BUILD_DIR)/runqslower/
--
- VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
- 		     $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)	\
- 		     ../../../../vmlinux				\
-@@ -304,17 +301,6 @@ TRUNNER_BPFTOOL := $(DEFAULT_BPFTOOL)
- USE_BOOTSTRAP := "bootstrap/"
- endif
- 
--$(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
--	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower	       \
--		    OUTPUT=$(RUNQSLOWER_OUTPUT) VMLINUX_BTF=$(VMLINUX_BTF)     \
--		    BPFTOOL_OUTPUT=$(HOST_BUILD_DIR)/bpftool/		       \
--		    BPFOBJ_OUTPUT=$(BUILD_DIR)/libbpf/			       \
--		    BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR)		       \
--		    BPF_TARGET_ENDIAN=$(BPF_TARGET_ENDIAN)		       \
--		    EXTRA_CFLAGS='-g $(OPT_FLAGS) $(SAN_CFLAGS) $(EXTRA_CFLAGS)' \
--		    EXTRA_LDFLAGS='$(SAN_LDFLAGS) $(EXTRA_LDFLAGS)' &&	       \
--		    cp $(RUNQSLOWER_OUTPUT)runqslower $@
--
- TEST_GEN_PROGS_EXTENDED += $(TRUNNER_BPFTOOL)
- 
- $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(BPFOBJ)
-diff --git a/tools/testing/selftests/bpf/test_bpftool_build.sh b/tools/testing/selftests/bpf/test_bpftool_build.sh
-index 1453a53ed547..b03a87571592 100755
---- a/tools/testing/selftests/bpf/test_bpftool_build.sh
-+++ b/tools/testing/selftests/bpf/test_bpftool_build.sh
-@@ -90,10 +90,6 @@ echo -e "... through kbuild\n"
- 
- if [ -f ".config" ] ; then
- 	make_and_clean tools/bpf
--	## "make tools/bpf" sets $(OUTPUT) to ...tools/bpf/runqslower for
--	## runqslower, but the default (used for the "clean" target) is .output.
--	## Let's make sure we clean runqslower's directory properly.
--	make -C tools/bpf/runqslower OUTPUT=${KDIR_ROOT_DIR}/tools/bpf/runqslower/ clean
- 
- 	## $OUTPUT is overwritten in kbuild Makefile, and thus cannot be passed
- 	## down from toplevel Makefile to bpftool's Makefile.
--- 
-2.52.0
+ah nice, will try that
 
+> 
+> No?
+> 
+> > +      * TODO perhaps we could 'emulate' nop, so there would be no need for
+> > +      * ARCH_UPROBE_FLAG_OPTIMIZE_EMULATE flag, because we would emulate
+> > +      * allways.
+> 
+> Agreed... and this connects to "this logic needs some cleanups" above.
+> I guess we need nop_setup_xol_ops() extracted from branch_setup_xol_ops()
+> but again, lets forget it for now.
+
+ok, it will hopefully make the code simpler, will check on that
+
+> 
+> -------------------------------------------------------------------------------
+> Now the main question. What if we avoid this change
+> 
+> 	-             u8                      insn[MAX_UINSN_BYTES];
+> 	+             u8                      insn[5*MAX_UINSN_BYTES];
+> 
+> mentioned above, and change opt_setup_xol_ops() to just do
+> 
+> 	-	for (i = 0; i < 5; i++)
+> 	+	for (i = 0;; i++)
+> 
+> ?
+> 
+> The main loop stops when offset >= 5 anyway.
+
+> 
+> And. if auprobe->insn[offset:MAX_UINSN_BYTES] doesn't contain a full/valid
+> insn at the start, then uprobe_init_insn_offset()->insn_decode() should fail?
+> 
+> Most probably I missed something, but I can't understand this part.
+
+no, I think you're right, I did not realize we fit under MAX_UINSN_BYTES
+anyway, call instruction needs only 5 bytes
+
+thanks,
+jirka
 
