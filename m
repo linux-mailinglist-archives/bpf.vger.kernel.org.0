@@ -1,178 +1,190 @@
-Return-Path: <bpf+bounces-75604-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75605-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0EF5C8B73B
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 19:33:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04A74C8B84A
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 20:03:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C06294E665B
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 18:33:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B47483A4B8D
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 19:02:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720E9326D6A;
-	Wed, 26 Nov 2025 18:33:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95BAD33EB1D;
+	Wed, 26 Nov 2025 19:02:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rPR5fPpb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jWv7MUXT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E302E31354A;
-	Wed, 26 Nov 2025 18:33:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B4E3126A2
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 19:02:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764181987; cv=none; b=qBBVnMctWC88oRGgapOfrxopRzSxACb/aOMoPUwo7qbHbdx7a5UJg+EPF1y6clS9ltZ1gsJYxttU7qZrS35q7yw22HbscroJ9XvaAA9UeBxedbpDiLJnO4gJI8BwvIrKyVc0rW+o1JR/UW3QIEEsSA7lEtJJeE5I5dkQoez/t9Y=
+	t=1764183735; cv=none; b=CGII9oHFfzVhBGyV86h7yZ6P+ImOKSoCM5IVniwDS8Xe/u4pHUV2aMQTAL9+98UEE4ZQ8IKgVIiJUIb7RXv4k+7KMgYAc7+H2TadV6RLdqYKRBuNykxM+AGbpxbZGI+JJrStM63m0CKeyZ3QzajXdVVZhhpiMDhvIlnLeRvF+bE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764181987; c=relaxed/simple;
-	bh=5lbC+I0vn4v9DzUXfRkPL4zZLP4snPM35JWc1MAzH3Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kVsQhcWt/a5tFVUOw5XRdxgPRYMzP56CJxSkbiJk59lODLIJyjUsjZgk9GDq7RlmvoiGzUc+grrmiKq9ry+jehQCtWOGO+e7s4iR0CnVx8cUoCUwtI4Fd0uia0mJVgpPLQfJ67tW76+A9eLqjoOl6c8gBxZJHOizttQOMnzam3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rPR5fPpb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 260BCC4CEF7;
-	Wed, 26 Nov 2025 18:33:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764181986;
-	bh=5lbC+I0vn4v9DzUXfRkPL4zZLP4snPM35JWc1MAzH3Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rPR5fPpbSPmE6NfM8m3cCI9zkP+o3OEofSxSoXvPuDcsPNEeyIfi1myEjMBIv2ywr
-	 fuoIeIVqOqFyCaPGaTGDLtkGslxerFd3Q1NZWV+oGUHr4GizUv0ToVmgmhy9T3AvAN
-	 oFGei81TBXqwi+4TZcu6YpvJ7AK9U6QyHN1OTnoqMgE5zJHRLWIMD58lYSyY1QH9oE
-	 qrGgz0reYgFbegj5OMcfzTQ6K/HTXHLTk7hwGnw0mDV2ywvMO5/wlliSFF62TeQQiE
-	 HOJhRvQFvLKU3iaJSPKTRHubr55InDx7aUBnYKkYv8e6WBtLk+bua66Xp/fC1rAvml
-	 9wasdyxjAyADg==
-Date: Wed, 26 Nov 2025 10:33:04 -0800
-From: Namhyung Kim <namhyung@kernel.org>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Quentin Monnet <qmo@kernel.org>, KP Singh <kpsingh@kernel.org>,
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [BUG] bpftool: Build failure due to opensslv.h
-Message-ID: <aSdH4ODr0qSrTqvp@google.com>
-References: <aP7uq6eVieG8v_v4@google.com>
- <2cb226f8-a67c-4bdb-8c59-507c99a46bab@kernel.org>
- <aP-5fUaroYE5xSnw@google.com>
- <d6a63399-361f-4f1c-845c-b69192bfc822@kernel.org>
- <7c86f05f-2ba3-4f63-8d63-49a3b3370360@oracle.com>
- <aR51ZSicusUssXuU@google.com>
- <fbd98bd0-a89c-4903-af06-fd1f2fb4ae16@kernel.org>
- <aSTDLrUqeZ3xwEhA@google.com>
- <2c94add3-3cb6-41e9-8031-619c996aaf18@oracle.com>
+	s=arc-20240116; t=1764183735; c=relaxed/simple;
+	bh=PGb8QzCiz9c4xSY4LPkdirXHsPvgBNAHw9qgYtuKWIg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KSyeB3lSs1eKRxGf32SeEEGrDSyA4mtYmdIrr+nnh0U/NCRhQ2v8ZpUp0PLv08vQZiAyr5eLETmlX3tSdf4qxLlFJqKlsFUkhiG8jkkpS5Xr3Vnt84FwaU4XZ2GLoaOHZHG+4ZSGBzqFoLD6TKtInuBNhhZ+8b4tDj5xD3BbQr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jWv7MUXT; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <362b4519-522f-440b-a2ed-bd233166609b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1764183718;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YF+vsyUPsLX+oIXuhWbF9px0T1obEdHnI8t1Kbok7xs=;
+	b=jWv7MUXTuCuMm5O1dI2pDhkIp7Tos4/paH/uMgfCpFyy0ge38vXNgek8dsVN03YJ9sK9wu
+	DzidIyBE0iGb5GOC9oZXsHrGbjJ+eJ5xD9VKxVosKouOiVVpKfQG9nnCu7vZntPSPhWeZR
+	O5/qXNoXN68Vee2K6QC6hpus+iw3ujw=
+Date: Wed, 26 Nov 2025 11:01:24 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2c94add3-3cb6-41e9-8031-619c996aaf18@oracle.com>
+Subject: Re: [PATCH bpf-next v1 0/4] resolve_btfids: Support for BTF
+ modifications
+To: Alan Maguire <alan.maguire@oracle.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+ Nicolas Schier <nicolas.schier@linux.dev>,
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>
+Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+ Donglin Peng <dolinux.peng@gmail.com>
+References: <20251126012656.3546071-1-ihor.solodrai@linux.dev>
+ <5bd0b578-e9ff-4958-b01c-fa3e9336eecb@oracle.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <5bd0b578-e9ff-4958-b01c-fa3e9336eecb@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
-
-On Tue, Nov 25, 2025 at 09:03:38AM +0000, Alan Maguire wrote:
-> On 24/11/2025 20:42, Namhyung Kim wrote:
-> > On Thu, Nov 20, 2025 at 09:24:49AM +0000, Quentin Monnet wrote:
-> >> 2025-11-19 17:56 UTC-0800 ~ Namhyung Kim <namhyung@kernel.org>
-> >>> Hello,
-> >>>
-> >>> On Tue, Oct 28, 2025 at 10:20:22AM +0000, Alan Maguire wrote:
-> >>>> On 28/10/2025 09:05, Quentin Monnet wrote:
-> >>>>> 2025-10-27 11:27 UTC-0700 ~ Namhyung Kim <namhyung@kernel.org>
-> >>>>>> On Mon, Oct 27, 2025 at 11:41:01AM +0000, Quentin Monnet wrote:
-> >>>>>>> 2025-10-26 21:01 UTC-0700 ~ Namhyung Kim <namhyung@kernel.org>
-> >>>>>>>> Hello,
-> >>>>>>>>
-> >>>>>>>> I'm seeing a build failure like below in Fedora 40 and others.  I'm not
-> >>>>>>>> sure if it's reported already but it failed to build perf tools due to
-> >>>>>>>> errors in the bootstrap bpftool.
-> >>>>>>>>
-> >>>>>>>>     CC      /build/util/bpf_skel/.tmp/bootstrap/sign.o
-> >>>>>>>>   sign.c:16:10: fatal error: openssl/opensslv.h: No such file or directory
-> >>>>>>>>      16 | #include <openssl/opensslv.h>
-> >>>>>>>>         |          ^~~~~~~~~~~~~~~~~~~~
-> >>>>>>>>   compilation terminated.
-> >>>>>>>>   make[3]: *** [Makefile:256: /build/util/bpf_skel/.tmp/bootstrap/sign.o] Error 1
-> >>>>>>>>   make[3]: *** Waiting for unfinished jobs....
-> >>>>>>>>   make[2]: *** [Makefile.perf:1213: /build/util/bpf_skel/.tmp/bootstrap/bpftool] Error 2
-> >>>>>>>>   make[1]: *** [Makefile.perf:289: sub-make] Error 2
-> >>>>>>>>   make: *** [Makefile:76: all] Error 2
-> >>>>>>>>
-> >>>>>>>> I think it's from the recent signing change.  I'm not familiar with
-> >>>>>>>> openssl but I guess there's a proper feature check for it.  Is this a
-> >>>>>>>> known issue?
-> >>>>>>>
-> >>>>>>>
-> >>>>>>> Hi Namhyung,
-> >>>>>>
-> >>>>>> Hello!
-> >>>>>>
-> >>>>>>>
-> >>>>>>> This looks related to the program signing change indeed, commit
-> >>>>>>> 40863f4d6ef2 ("bpftool: Add support for signing BPF programs")
-> >>>>>>> introduced a dependency on OpenSSL's development headers for bpftool.
-> >>>>>>> It's not gated behind a feature check. On Fedora, I think the headers
-> >>>>>>> come with openssl-devel, do you have this package installed?
-> >>>>>>
-> >>>>>> No I don't, but I guess it should be able to build on such systems.  Or
-> >>>>>> is it required for bpftool?  Anyway I feel like it should have a feature
-> >>>>>> check and appropriate error messages.
-> >>>>>>
-> >>>>>
-> >>>>> +Cc KP
-> >>>>>
-> >>>>> We usually have feature checks when optional features bring in new
-> >>>>> dependencies for bpftool, but we haven't discussed it this time. My
-> >>>>> understanding was that program signing is important enough that it
-> >>>>> should always be present in newer versions of bpftool, making OpenSSL
-> >>>>> one of the required dependencies going forward.
-> >>>>>
-> >>>>> We don't currently have feature checks to tell when required
-> >>>>> dependencies are missing for bpftool (it's just the build failing, in
-> >>>>> that case). I know perf does a great job at it, we could look into it
-> >>>>> for bpftool, too.
-> >>>>>
-> >>>>
-> >>>> One issue here is that some distros package openssl v3 such that the
-> >>>> #include files are in /usr/include/openssl3 and libraries in
-> >>>> /usr/lib64/openssl3 so that older versions can co-exist. Maybe we could
-> >>>> figure out a feature test that handles that too?
-> >>>
-> >>> What's the state of this?  Is the fix in the bpf tree now?
-> >>
-> >>
-> >> Hi Namhyung, Alan just submitted a v2 of his patch (targetting
-> >> bpf-next), see:
-> >>
-> >> https://lore.kernel.org/all/20251120084754.640405-2-alan.maguire@oracle.com/
-> >  
-> > Hello Quentin,
-> > 
-> > I'm afraid it doesn't fix my issue.  It seems to fix another problem
-> > about the error API.  But I still see the build failure.
-> >
+On 11/26/25 4:36 AM, Alan Maguire wrote:
+> On 26/11/2025 01:26, Ihor Solodrai wrote:
+>> This series changes resolve_btfids and kernel build scripts to enable
+>> BTF transformations in resolve_btfids. Main motivation for enhancing
+>> resolve_btfids is to reduce dependency of the kernel build on pahole
+>> capabilities [1] and enable BTF features and optimizations [2][3]
+>> particular to the kernel.
+>>
+>> Patches #1-#3 in the series are non-functional refactoring in
+>> resolve_btfids. The last patch (#4) makes significant changes in
+>> resolve_btfids and introduces scripts/gen-btf.sh. Implementation
+>> changes are described in detail in the patch description.
+>>
+>> One RFC item in this patchset is the --distilled_base [4] handling.
+>> Before this patchset .BTF.base was generated and added to target
+>> binary by pahole, based on these conditions [5]:
+>>   * pahole version >=1.28
+>>   * the kernel module is out-of-tree (KBUILD_EXTMOD)
+>>
+>> Since BTF finalization is now done by resolve_btfids, it requires
+>> btf__distill_base() to happen there. However, in my opinion, it is
+>> unnecessary to add and pass through a --distilled_base flag for
+>> resolve_btfids.
+>>
+> hi Ihor,
 > 
-> This header file is delivered by openssl-devel (could be openssl-dev on
-> some distros). Looking at [1], it seems like that package has been a
-> requirement to build kernels from 4.3 on. Is it missing on your system,
-> installed to an unusual path like /usr/include/opensslv3, or is the
-> package perhaps missing some header files?
+> Can you say more about what constitutes BTF finalization and why BTF
+> distillation prior to finalization (i.e. in pahole) isn't workable? Is
+> it the concern that we eliminate types due to filtering, or is it a
+> problem with sorting/tracking type ids? Are there operations we
+> do/anticipate that make prior distillation infeasbile? Thanks!
 
-I think some of my test environments don't have openssl dev packages.
-I didn't know it was required for kernel builds but it wasn't for perf.
-If you guys require it for bpftool, maybe I can make perf disable BPF
-support in case openssl is missing.
+Hi Alan,
 
-Thanks,
-Namhyung
+That's a good question. AFAIU the distillation should be done on the
+final BTF, after all the transformations (sorting, adding/removing BTF
+types) have been applied. At least this way we can be sure that the
+distilled base is valid.
+
+We certainly want BTF generation process to be the same for modules
+and the kernel, which means that BTF modifications in resolve_btfids
+have to be applied to module BTF also.
+
+So the question is whether btf2btf will be safe to do *after*
+distillation, and that of course depends on the specifics.
+
+Let's say pahole generated BTF for a module and a distilled base.  If
+later some types are removed from module BTF, or a new type is added
+(that might refer to a type absent in distilled base), is the btf/base
+pair still valid?
+
+My intuition is that it is more reliable to distill the final-final
+BTF, and so with resolve_btfids taking over kernel BTF finalization it
+makes sense to do it there. Otherwise we may be upfront limiting
+ourselves in how module BTF can be changed in resolve_btfids.
+
+What are the reasons to keep distillation in pahole? It's a simple
+libbpf API call after all. Anything I might be missing?
+
 
 > 
-> Alan
+>> Logically, any split BTF referring to kernel BTF is not very useful
+>> without the .BTF.base, which is why the feature was developed in the
+>> first place. Therefore it makes sense to always emit .BTF.base for all
+>> modules, unconditionally. This is implemented in the series.
+>>
+>> However it might be argued that .BTF.base is redundant for in-tree
+>> modules: it takes space the module ELF and triggers unnecessary
+>> btf__relocate() call on load [6]. It can be avoided by special-casing
+>> in-tree module handling in resolve_btfids either with a flag or by
+>> checking env variables. The trade-off is slight performance impact vs
+>> code complexity.
+>>
 > 
-> [1] https://docs.kernel.org/process/changes.html
+> I would say avoid distillation for in-tree modules if possible, as it
+> imposes runtime costs in relocation/type renumbering on module load. For
+> large modules (amdgpu take a bow) that could be non-trivial time-wise.
+> IMO the build-time costs/complexities are worth paying to avoid a
+> runtime tax on module load.
+
+Acked. I still would like to avoid passing flags around if possible.
+
+Is it reasonable to simply check for KBUILD_EXTMOD env var from
+withing resolve_btfids? Any drawbacks to that?
+
+Thanks.
+
+
 > 
-> > Thanks,
-> > Namhyung
-> > 
-> > 
+>> [1] https://lore.kernel.org/dwarves/ba1650aa-fafd-49a8-bea4-bdddee7c38c9@linux.dev/
+>> [2] https://lore.kernel.org/bpf/20251029190113.3323406-1-ihor.solodrai@linux.dev/
+>> [3] https://lore.kernel.org/bpf/20251119031531.1817099-1-dolinux.peng@gmail.com/
+>> [4] https://docs.kernel.org/bpf/btf.html#btf-base-section
+>> [5] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/tree/scripts/Makefile.btf#n29
+>> [6] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/tree/kernel/bpf/btf.c#n6358
+>>
+>> Ihor Solodrai (4):
+>>   resolve_btfids: rename object btf field to btf_path
+>>   resolve_btfids: factor out load_btf()
+>>   resolve_btfids: introduce enum btf_id_kind
+>>   resolve_btfids: change in-place update with raw binary output
+>>
+>>  MAINTAINERS                     |   1 +
+>>  scripts/Makefile.modfinal       |   5 +-
+>>  scripts/gen-btf.sh              | 166 ++++++++++++++++++++++
+>>  scripts/link-vmlinux.sh         |  42 +-----
+>>  tools/bpf/resolve_btfids/main.c | 234 +++++++++++++++++++++++---------
+>>  5 files changed, 348 insertions(+), 100 deletions(-)
+>>  create mode 100755 scripts/gen-btf.sh
+>>
 > 
+
 
