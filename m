@@ -1,134 +1,133 @@
-Return-Path: <bpf+bounces-75519-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75520-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A039C878EF
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 01:14:12 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E8B1C87A47
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 02:09:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EC4614E0F39
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 00:14:10 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9C3364E8E9F
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 01:08:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F14D8F4A;
-	Wed, 26 Nov 2025 00:14:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE6B2F39CD;
+	Wed, 26 Nov 2025 01:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kiPU4F/8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iGRoUw4w"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F3036B
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 00:14:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9FF61F9F7A
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 01:08:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764116045; cv=none; b=JWbML1SIAxi83MP2/FFuM/xaoBZaH/XQPjEZJHiW5IY/I+tNlczJ5xvlJ3Ner+vYkPCmNuYJS+2C6G4gFnuwiKI+iCqTzJaj5jN3FHoMcs9QK+BopstM164iUg7GYVl2Cssr3VliuLkU9bQ97h2G7eZm/wvRXEbNtrntwtTgO6Q=
+	t=1764119313; cv=none; b=YlNVKvJNHUScF8h3WihBGlN/iKUsYeMxVE4LGmZ2lJn8u4oCVIazJwdAYJH9RhUXwTPuYdqn9YVUsDe0S1DdPDDD6JLzBoQPaBd1TNOHmPshQv3Aw4Pgs4SW4x4hXXdvUlBo2SyBrCh4BF/aFRJ/0xKIIbPTyPSjWd0FzLATasE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764116045; c=relaxed/simple;
-	bh=kWCRRQTEaZU6WxlK3MUwK+2yGBzKdMCQVc5EIhBZiLE=;
+	s=arc-20240116; t=1764119313; c=relaxed/simple;
+	bh=qGR5sefQg32LQ3hhTnRZYyhaV7WKbliA5YNanSMxxwU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XZTHI474NNbBMLkw4GNfz686bB/laYnCBMlx7OTGr3XHHdUKhNNQ1HTlDfEHAHx573YVHoXk5Td9Qld+N4WpLseyNCc2rcoyqzKCejCBatIKeztfNLiZGVMV0qxc/XKJI38Jell0cRIvbhiK/ZW8g15xxp28woIPeCg3h/8+OAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kiPU4F/8; arc=none smtp.client-ip=209.85.216.43
+	 To:Cc:Content-Type; b=s+LfeuZIpRxiyV4Dz14vNg9SmGOoAufgOtB9729mfrnjVAkltYTtxUck5pGtkaGka18GUVVAVDEHft6tFj5g2FJN8VHY0dtTfNtp9chAodS+M29JpPc/MxxUx3BCHUHtZDRj1gE7603rT1yL5ChGneYble6LWGuSUil25K4q6jE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iGRoUw4w; arc=none smtp.client-ip=209.85.167.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-343dfb673a8so6009158a91.0
-        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 16:14:03 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5957db5bdedso6400575e87.2
+        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 17:08:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764116043; x=1764720843; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Y5BnbMRUPkIWgOQRXlfqICk/Wz700YQXtgsPfDT9Z0=;
-        b=kiPU4F/8dgF0mEQgv2WqCbFrIQrFrKnhZA9v8A+MBiKymy62XiMwou6VXBsrBxEMuA
-         wHyFbvYawxDr/SMF2dD9VOmVzsi160OMIk/FVSLZaDQipP9rndBnxYK2FuctM9H2Cird
-         TcIXuMRlztnPIf4iVA9ZKTlJk9YDwK5PkGXWz6M1QZxYm1CAhheQMh7hJKNAD/zw2auR
-         0KwWxCmDgZwNUZ8HUiP7mg8qIZQY44rYYLxuAOYPCMhlOPFZKOp8FfYGuM8DOLvxm2qd
-         T/ZCxUQseOvK/FsVlaluNPR5rS8/BCc/B8EXmywQvn1ffXGTLLua343DgbTQz3WVJp6/
-         xTbQ==
+        d=gmail.com; s=20230601; t=1764119310; x=1764724110; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RPke9ePUWIJpnNLmmVA+cr1L6xKsPBiMVIzyNRr3D9I=;
+        b=iGRoUw4wsYljZyVbOJ7ZCdNoF9ngRojwLLXrLdV4niLovcInNsgBEMRXtjUnFHPoBu
+         g7TX5ARZBJVtstFyVrapqggeG2LgrCut5rmcEk57/mS1uCrhERO1wh4wonX6mcqiCpOu
+         o3+Y9vrPTIBCJ3K6ps2xZdVjiioMC67ZrHLDsW2xue/F1dzhi93D3xSt+QCy90QjvHLq
+         zoIPViJoNzWLWYRLHLrA+Vf1ZOTu2kZBNx2qEmZ1wv8cy8vBy3odlztr68cFciasedQ4
+         om7YQXGqEfQ0xAV3Gp8Wekss4eJ0PwlG+Pn/U/ssezxbwp6ea/ESJ5LihMThsCHFSlT0
+         Vexw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764116043; x=1764720843;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=6Y5BnbMRUPkIWgOQRXlfqICk/Wz700YQXtgsPfDT9Z0=;
-        b=B/Q46+XtGz4VY63q5chsIQuAJpuX+PVClRXf5hjCgdc2sDb3UxO2mk3+mbwP6QKWfC
-         +sQKwNyYNQTcDLAr6ySCHJNcczz1kTJIG5xKnXcnRI4N9jlmr2qILtiRvZPwL1gGw5FH
-         l9VuB40vE8LRWm3kRA5skVle/Ejn4EoGSsWzX1Rj/kVgbu1+fJG89ScUHnLxZEt9IILX
-         RfOb6tWYAzVXF5jw9jZ7iBddd0BQfdo8pbN4ZlUAb6O7kqZMp4/eVtGEQCOniPZZ4Enh
-         HjDzVpc7w0e6+M3/T6RkUtR4YCThkk41UyYGrHPOheRrfgDsjbdow7Mtm4CjpWvajTYD
-         POdg==
-X-Forwarded-Encrypted: i=1; AJvYcCXeecyiHv6BoT9v2nUvBNOTJO2zZ2nITTMUZhfTjuzhpjv+gBm44PlvIvqBqUC9zXGbq5k=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywj//tIu6EkB6F/ukVVDffR4iqf6Jxf+H5RF6EnMmc9CxGWtw+m
-	KNI/5EKb38GqlYfFA/3Gl0yE/XDq9alnBrHkTRr1F95FRUVwe2QW4DQgJZ7FotUWv1hEw3SKlQf
-	qfgPsQekcdpH6fOjJBrKfPlJkRbri2Go=
-X-Gm-Gg: ASbGnctSlJk5pw4xYAOdxWHvKBYYOLb9Ptrh/hWP5zQ3+yndqkHeK7YCKNUS3keAi1N
-	o7/yizLiV7Y9h4kgue+mg+LdmkKx8L1CaeLvGBeJ5owDMfOK6h0mFyHUy0BQPpn0DfsmiU98yOG
-	7IzD2xQ6LVKHAiQqrCRgnhKWDi2DCcZZTrbpG5S8NGHZK0dsGGEJu8+UplPGH1sMRmHjZSIty6Y
-	k16Fr+G7NMEX+RsFaS3SKV9sOtTMm2SIl8xTaJsXRnNRjAhOi/6zocqkJ99tF9bBf4AbQSsLr1V
-	dnttCOlx4xkQviRT+Zjs/Q==
-X-Google-Smtp-Source: AGHT+IHx3rknQb71zAr9KAq/DMcw6zGzf7PPA/SvuP16OAZ8rflD+8ITT5+GBl2JNBPEqZjVZzz2Y0n4Cbmg9lyJass=
-X-Received: by 2002:a17:90b:38c7:b0:340:ec6f:5ac5 with SMTP id
- 98e67ed59e1d1-34733e55021mr12871993a91.2.1764116043117; Tue, 25 Nov 2025
- 16:14:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1764119310; x=1764724110;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RPke9ePUWIJpnNLmmVA+cr1L6xKsPBiMVIzyNRr3D9I=;
+        b=QBq24YQDdmQVAwziRSrhoTVoWxE5Ra9TTWABlBcxCvQfA9yeB5VDdfg4MbgfCBQPlp
+         LKSfgZ0H2cYQ0l6aBzwbJnHStN4rySLRaNie1/JWDduh2kfI1NZGSHNyEXgZVEwAACZu
+         3rwgWL0LUyKOh9wXrkWHJMqXsZ/zH2CAK622eLkYsWqTNKfozFu9X7fTuptf7ASaq2Rg
+         HziJZMbPBM9MH0JDOtU0td09W/9rjanSEhjy969Ab/lg/yzs06Djku+32UgkFHTwh3wN
+         XyDdufoPgge8HFwucd0xNuByvEJV97eksmLCIWgoLdHpZivfNV71vbJPgEcv24/Xx5rb
+         VnRg==
+X-Forwarded-Encrypted: i=1; AJvYcCUbYB2KGgMe2++x+b6cAui8Hom2spif8J9I48RbR/U+bOOZwQb54rakLhlPI1aejn/x6ek=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+3MTDCYOwnehKxdNwq5+1WLIEePMGmZWHMOzFTBF2q8s4MMQC
+	TYnbHZYPcpAWxZ1OzUgfRBFez/NEBzACwR9U1i60Su2gsM0KzEv9694kYstj1SPmG5efJJwzlBT
+	94IHOBu5u1Ch8ndt3OKpfxy3aH1iKG2o=
+X-Gm-Gg: ASbGnctWahjRNeI9Sl8EESA1VpQaa8lzVZe/fqILrKj/+i3Qp/on4N6yCoaHiZVKnTa
+	Aclmef1jmlKgL1KJLGHcKti48BalxEP7s6A1VUlAXc/nF0Qq28zUiwtnEF7K6SYmGpf0VqCShae
+	+ygb/5BAljJXFL82N6QQf8etT1k6zBxn05dALS1c1QWkXBwdzFIgcz17tbl5zvJ6B2KvUPeJxUZ
+	VOeM44iuWhQbm4y5S7MtW7wQlxK8M9RoY4F8YyYe/7BGjZGgsMkz1lptBoWN9yLmYkx1UTtYHiu
+	EE49spc=
+X-Google-Smtp-Source: AGHT+IHE/HsOueEOnqyeixj2onqOHgnn9FMVGbhVt/9pSvUtRuiaOaEnwQmonHOEqIinS/NE0/4Api3s+LV3xZ2ZMT8=
+X-Received: by 2002:a05:6512:ad0:b0:591:c3f1:474d with SMTP id
+ 2adb3069b0e04-596a3eac18bmr4863543e87.15.1764119309708; Tue, 25 Nov 2025
+ 17:08:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251118033025.11804-1-jianyungao89@gmail.com>
-In-Reply-To: <20251118033025.11804-1-jianyungao89@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 25 Nov 2025 16:13:50 -0800
-X-Gm-Features: AWmQ_bk53qL4HtGHz8tQ5jKRxVXJd3XfKvU7Fl2sFlLXvac9YuInUKdax8aqiTQ
-Message-ID: <CAEf4BzYevTS3_BRutFF=AcNtXROQn4d95jg6seQCMpxqpzqdMw@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: fix some incorrect @param descriptions in the
- comment of libbpf.h
-To: Jianyun Gao <jianyungao89@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, 
-	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>
+References: <20251121015933.3618528-1-maze@google.com> <CANP3RGeK_NE+U9R59QynCr94B7543VLJnF_Sp3eecKCMCC3XRw@mail.gmail.com>
+ <20251121064333.3668e50e@kernel.org>
+In-Reply-To: <20251121064333.3668e50e@kernel.org>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Date: Tue, 25 Nov 2025 17:08:17 -0800
+X-Gm-Features: AWmQ_bkqs5856q_ExMgqNAtj115endk8-jgZ3MeYzOr0ypePgHpZa5Y_Vk-wTQE
+Message-ID: <CAHo-OoxLYpbXMZFY+b7Wb8Dh1MNQXb2WEPNnV_+d_MOisipy=A@mail.gmail.com>
+Subject: Re: [PATCH net] net: fix propagation of EPERM from tcp_connect()
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Linux Network Development Mailing List <netdev@vger.kernel.org>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Lorenzo Colitti <lorenzo@google.com>, Neal Cardwell <ncardwell@google.com>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 17, 2025 at 7:30=E2=80=AFPM Jianyun Gao <jianyungao89@gmail.com=
-> wrote:
->
-> There are some incorrect @param descriptions in the comment of libbpf.h
-> file. The following is a case:
->
->   /**
->   * @brief **bpf_link__unpin()** unpins the BPF link from a file
->   * in the BPFFS specified by a path. This decrements the links
->   * reference count.
->   *
->   * The file pinning the BPF link can also be unlinked by a different
->   * process in which case this function will return an error.
->   *
->   * @param prog BPF program to unpin
->   * @param path file path to the pin in a BPF file system
->   * @return 0, on success; negative error code, otherwise
->   */
->   LIBBPF_API int bpf_link__unpin(struct bpf_link *link);
->
-> In the parameters of the bpf_link__unpin() function, there are no 'prog'
-> and 'path' parameters.
->
-> This patch fixes this kind of issues present in the comments of the
-> libbpf.h file.
->
-> Signed-off-by: Jianyun Gao <jianyungao89@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.h | 25 +++++++++++++++----------
->  1 file changed, 15 insertions(+), 10 deletions(-)
->
+> FWIW this breaks the mptcp_join.sh test, too:
 
-applied to bpf-next with some minor adjustments (which is why
-patchworks bot didn't send notification)
+What do you mean by 'too', does it break something else as well, or
+just the quoted mptcp_join?
 
-[...]
+> https://netdev-3.bots.linux.dev/vmksft-mptcp/results/394900/1-mptcp-join-sh/stdout
+
+My still very preliminary investigation is that this is actually
+correct (though obviously the tests need to be adjusted).
+
+See tools/testing/selftests/net/mptcp/mptcp_join.sh:89
+
+# generated using "nfbpf_compile '(ip && (ip[54] & 0xf0) == 0x30) ||
+#                                (ip6 && (ip6[74] & 0xf0) == 0x30)'"
+CBPF_MPTCP_SUBOPTION_ADD_ADDR=...
+
+mptcp_join.sh:365
+      if ! ip netns exec $ns2 $tables -A OUTPUT -p tcp \
+                      -m tcp --tcp-option 30 \
+                      -m bpf --bytecode \
+                      "$CBPF_MPTCP_SUBOPTION_ADD_ADDR" \
+                      -j DROP
+
+So basically this is using iptables -j DROP which presumably
+propagates to EPERM and thus results in a faster local failure...
+
+Although this is probably trying to replicate packet loss rather than
+a local error...
+
+So I'm not sure if I should:
+(a) fix the asserts with new values (presumably easiest by far),
+or
+(b) change how it does DROP to make it more like network packet loss
+(maybe an extra namespace, so the drop is in a diff netns, during
+forwarding??? not even sure if that would help though, or maybe add
+drop on other netns INPUT instead of OUTPUT).
+or
+(c) introduce some iptables -j DROP_CN type return... (seems like that
+might be worthwhile anyway)
+
+I'll think about it.
 
