@@ -1,158 +1,112 @@
-Return-Path: <bpf+bounces-75600-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75601-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38368C8B23C
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 18:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A01BC8B272
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 18:14:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D00213B8FDC
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 17:09:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAFCC3A5A44
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 17:14:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A2A833CEBC;
-	Wed, 26 Nov 2025 17:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D28533EB0B;
+	Wed, 26 Nov 2025 17:14:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fJ924q+F"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CPA3AV+A"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC92A23D7CF;
-	Wed, 26 Nov 2025 17:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B66733A008;
+	Wed, 26 Nov 2025 17:14:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764176956; cv=none; b=YfFms5Cy94CfMWW7JVmsmoa2aLMaaamG40PD90F2msOuujjGI07Y4ZKsH/a8yXKluCe40rpFoRN918Dk0oigHLXhwyfiOzTxt2ojSRpNuSAQKI8DP1k79GEKgIqQOHp/1y8QB2beOfuMCdE9sUvp1XjEkZwTPUajBFtaaPx0cbo=
+	t=1764177263; cv=none; b=uYKCJ1fhNZvAdulvx7XoCiStDxNcdWcyLoC9L3pwMFfAzfWkuj+BnKpNZCSjHrIiCB5vPdayGqLYVZKMZy+wcaByHYAUNuAZ1+rCG6Wq/7pVBnaD18+3iN+pjmff001w883Mc50MswCYNTllZHKfhYJuhiEzCiWdjo6LxSHGhrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764176956; c=relaxed/simple;
-	bh=KFX3HrUItBLEZv0rg0muj3u2zKlko1wUFrN/cQiJ5ac=;
+	s=arc-20240116; t=1764177263; c=relaxed/simple;
+	bh=+GFsOaKbBnJD6LH6GD2KtqnN1pVQGiQU0ZkcYuK3pDs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HmTGhEmzi8lsSQdFyHnbeeO6g2wvwAmlcLzfLmpd2eqWZpPVnhik9oar+tCsqiqbZLxA596Jso/h9/3FYJOm267GxryNbyLhMV05EJCucEHwmEbZw/C1rKr7oP+NpDyfPkNgdMXAsE/gPxg3ViTLnCWTS3fZDtOSpS7hSGlDyrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fJ924q+F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 626CBC4CEF7;
-	Wed, 26 Nov 2025 17:09:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764176956;
-	bh=KFX3HrUItBLEZv0rg0muj3u2zKlko1wUFrN/cQiJ5ac=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=fJ924q+F2SmXNbI6dYh+kEkmDp/JIBnVWc5nz7XkMC0Q6jcwhJTq5qYvdHGWvBZwX
-	 B+gycpR4Xrnmb+sYVnTNdMtKxEbvmmKOb3bvx0vuLNQEt1SmDpY5vTWmvgUu3VK0bN
-	 S0cZfKHBXZtX5LtwEeE9d0mhq3qQ8+lS6n+XN+xmuEh3Gj0hj/Qv6wiLe1a+kZ+7iS
-	 tUFfSSX97/JsU6bAsv6LEbQGFLLgAxawt/h7OoELKaLtFKA9rnULExHS7RPGfLsa/t
-	 04u/qI+jq3f+ZAiOtkSn+hhdfFEEFlRamZ5a7IvVrCaM/JUP/AHMSxdUHPjNfg6QAf
-	 KTMNgahP4sTfQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id EBE03CE0CF0; Wed, 26 Nov 2025 09:09:15 -0800 (PST)
-Date: Wed, 26 Nov 2025 09:09:15 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 14/16] srcu: Create an SRCU-fast-updown API
-Message-ID: <9a91159e-4411-443c-b0cc-e0cbc5426b11@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <bb177afd-eea8-4a2a-9600-e36ada26a500@paulmck-laptop>
- <20251105203216.2701005-14-paulmck@kernel.org>
- <aSW6sVkqWh2aGxlK@localhost.localdomain>
- <66ee4f2d-9885-446a-996f-801a1fe62a68@paulmck-laptop>
- <aScJdsi4QNPd-f_2@localhost.localdomain>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gwpoYFke7GPdNQq1Nsq66bJNPNSZp/3BHvdUGenuXw9FA+QEOWzNQh/kVpO8+pTzXssoM8U9qKDplqSHMjAtxT47pgferLcVvjG58ulj5fxmA4/xnzfQ2WSjyzv+FYFo4Jw2+xmeIglID4tSdwLb1srFvrRyaN0YaOYSdEklLN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CPA3AV+A; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1764177261; x=1795713261;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+GFsOaKbBnJD6LH6GD2KtqnN1pVQGiQU0ZkcYuK3pDs=;
+  b=CPA3AV+AeffXSJVIu5WkSmeCcxspnRtIDEIeVpbLKIQsWgb0nmrP+4Nw
+   3LKc/aXUaDtx1bPvncwSx6ndtaqBnBHFvDWaQ21J3ZjskSacKobomHhOP
+   xlEO0sNn87TnlReGD8gUt1Hy4JxO/JcZaiUdKlGj0LcaH/JVnSDUkWgim
+   XannMNn83NWQP6oqN53zTsSES7iSUjPLvCi6vPe0rlyBleeM9+OURH/Hk
+   MXC6/V3kAoalVVqWrsDuuKTS3JdrYvolTrXjZn4lTKuecYBa4DMFe8hZY
+   c7gla9ZpsI0qCZMCIK90+PNR7EutgQQSmL2S0AyZelpEQUAn6bw4AtdlD
+   Q==;
+X-CSE-ConnectionGUID: S5ZS0Iv5QXiWulVoit+mhg==
+X-CSE-MsgGUID: UFVpAV0rRw+bR/pTldAp+Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11625"; a="65408981"
+X-IronPort-AV: E=Sophos;i="6.20,228,1758610800"; 
+   d="scan'208";a="65408981"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2025 09:14:20 -0800
+X-CSE-ConnectionGUID: sFgbCYpAT0KNK4WS8uC2ag==
+X-CSE-MsgGUID: zU1DriBfQcy6mno888NnDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,228,1758610800"; 
+   d="scan'208";a="192628515"
+Received: from black.igk.intel.com ([10.91.253.5])
+  by fmviesa007.fm.intel.com with ESMTP; 26 Nov 2025 09:14:18 -0800
+Received: by black.igk.intel.com (Postfix, from userid 1003)
+	id 8FCA6A0; Wed, 26 Nov 2025 18:14:16 +0100 (CET)
+Date: Wed, 26 Nov 2025 18:14:16 +0100
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: KP Singh <kpsingh@kernel.org>
+Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+	ast@kernel.org, paul@paul-moore.com, casey@schaufler-ca.com,
+	andrii@kernel.org, keescook@chromium.org, daniel@iogearbox.net,
+	renauld@google.com, revest@chromium.org, song@kernel.org,
+	linux@roeck-us.net, Kui-Feng Lee <sinquersw@gmail.com>,
+	John Johansen <john.johansen@canonical.com>
+Subject: Re: [PATCH v15 3/4] lsm: count the LSMs enabled at compile time
+Message-ID: <aSc1aAdOeSuuoKTH@black.igk.intel.com>
+References: <20240816154307.3031838-1-kpsingh@kernel.org>
+ <20240816154307.3031838-4-kpsingh@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aScJdsi4QNPd-f_2@localhost.localdomain>
+In-Reply-To: <20240816154307.3031838-4-kpsingh@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Nov 26, 2025 at 03:06:46PM +0100, Frederic Weisbecker wrote:
-> Le Tue, Nov 25, 2025 at 07:54:33AM -0800, Paul E. McKenney a écrit :
-> > On Tue, Nov 25, 2025 at 03:18:25PM +0100, Frederic Weisbecker wrote:
-> > > Le Wed, Nov 05, 2025 at 12:32:14PM -0800, Paul E. McKenney a écrit :
-> > > > This commit creates an SRCU-fast-updown API, including
-> > > > DEFINE_SRCU_FAST_UPDOWN(), DEFINE_STATIC_SRCU_FAST_UPDOWN(),
-> > > > __init_srcu_struct_fast_updown(), init_srcu_struct_fast_updown(),
-> > > > srcu_read_lock_fast_updown(), srcu_read_unlock_fast_updown(),
-> > > > __srcu_read_lock_fast_updown(), and __srcu_read_unlock_fast_updown().
-> > > > 
-> > > > These are initially identical to their SRCU-fast counterparts, but both
-> > > > SRCU-fast and SRCU-fast-updown will be optimized in different directions
-> > > > by later commits.  SRCU-fast will lack any sort of srcu_down_read() and
-> > > > srcu_up_read() APIs, which will enable extremely efficient NMI safety.
-> > > > For its part, SRCU-fast-updown will not be NMI safe, which will enable
-> > > > reasonably efficient implementations of srcu_down_read_fast() and
-> > > > srcu_up_read_fast().
-> > > 
-> > > Doing a last round of reviews before sitting down on a pull request,
-> > > I think the changelog in this one should mention what are the expected
-> > > uses of SRCU-fast-updown, since the RCU-TASK-TRACE conversion bits aren't
-> > > there for this merge window yet.
-> > 
-> > The RCU Tasks Trace conversion is helped by RCU-fast.  RCU-fast-updown
-> > is needed for Andrii's uretprobes code in order to get rid of the
-> > read-side memory barriers while still allowing entering the reader at
-> > task level while exiting it in a timer handler.
-> > 
-> > Does any of that help?
-> > 
-> > Oh, and commit-by-commit testing passed this past evening, so still
-> > looking good there!
+On Fri, Aug 16, 2024 at 05:43:06PM +0200, KP Singh wrote:
+> These macros are a clever trick to determine a count of the number of
+> LSMs that are enabled in the config to ascertain the maximum number of
+> static calls that need to be configured per LSM hook.
 > 
-> Ok, here is the new proposed changelog accordingly:
+> Without this one would need to generate static calls for the total
+> number of LSMs in the kernel (even if they are not compiled) times the
+> number of LSM hooks which ends up being quite wasteful.
 
-Looks good to me, thank you!
+...
 
-Nit:  s/usecases/use cases/
+> -/* This counts to 12. Any more, it will return 13th argument. */
+> -#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _n, X...) _n
+> -#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+> +/* This counts to 15. Any more, it will return 16th argument. */
+> +#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _n, X...) _n
+> +#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
 
-							Thanx, Paul
+You forgot to update _12 in the upper comment.
 
-> ----
-> srcu: Create an SRCU-fast-updown API
-> 
-> This commit creates an SRCU-fast-updown API, including
-> DEFINE_SRCU_FAST_UPDOWN(), DEFINE_STATIC_SRCU_FAST_UPDOWN(),
-> __init_srcu_struct_fast_updown(), init_srcu_struct_fast_updown(),
-> srcu_read_lock_fast_updown(), srcu_read_unlock_fast_updown(),
-> __srcu_read_lock_fast_updown(), and __srcu_read_unlock_fast_updown().
-> 
-> These are initially identical to their SRCU-fast counterparts, but both
-> SRCU-fast and SRCU-fast-updown will be optimized in different directions
-> by later commits. SRCU-fast will lack any sort of srcu_down_read() and
-> srcu_up_read() APIs, which will enable extremely efficient NMI safety.
-> For its part, SRCU-fast-updown will not be NMI safe, which will enable
-> reasonably efficient implementations of srcu_down_read_fast() and
-> srcu_up_read_fast().
-> 
-> This API fork happens to meet two different future usecases.
-> 
-> * SRCU-fast will become the reimplementation basis for RCU-TASK-TRACE
->   for consolidation. Since RCU-TASK-TRACE must be NMI safe, SRCU-fast
->   must be as well.
-> 
-> * SRCU-fast-updown will be needed for uretprobes code in order to get
->   rid of the read-side memory barriers while still allowing entering the
->   reader at task level while exiting it in a timer handler.
-> 
-> This commit also adds rcutorture tests for the new APIs.  This
-> (annoyingly) needs to be in the same commit for bisectability.  With this
-> commit, the 0x8 value tests SRCU-fast-updown.  However, most SRCU-fast
-> testing will be via the RCU Tasks Trace wrappers.
-> 
-> [ paulmck: Apply s/0x8/0x4/ missing change per Boqun Feng feedback. ]
-> [ paulmck: Apply Akira Yokosawa feedback. ]
-> 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: <bpf@vger.kernel.org>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> 
-> -- 
-> Frederic Weisbecker
-> SUSE Labs
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
