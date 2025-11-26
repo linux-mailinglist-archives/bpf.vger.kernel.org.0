@@ -1,112 +1,125 @@
-Return-Path: <bpf+bounces-75601-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75602-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A01BC8B272
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 18:14:30 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44BC7C8B6BA
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 19:23:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAFCC3A5A44
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 17:14:25 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D3A9D4E2D32
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 18:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D28533EB0B;
-	Wed, 26 Nov 2025 17:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EEE31283D;
+	Wed, 26 Nov 2025 18:22:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CPA3AV+A"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kBLIQ2D9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B66733A008;
-	Wed, 26 Nov 2025 17:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D70C631282A
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 18:22:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764177263; cv=none; b=uYKCJ1fhNZvAdulvx7XoCiStDxNcdWcyLoC9L3pwMFfAzfWkuj+BnKpNZCSjHrIiCB5vPdayGqLYVZKMZy+wcaByHYAUNuAZ1+rCG6Wq/7pVBnaD18+3iN+pjmff001w883Mc50MswCYNTllZHKfhYJuhiEzCiWdjo6LxSHGhrE=
+	t=1764181365; cv=none; b=ILbDlo2zA9QgBNyL4xcoRfQoSqGFFInw/YdbMQfcLOO4YQjCIkiQMo2cw5gINpLpt2SNtgWx1GwxdtRiFLcB6++8fl9sG4glc/2cM7RVCTJWVlZMHQBBSa8oYD3kF770+7RFkuJuuCoaL+emOqhyU6e+I9AAjysD+LghRQS0bWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764177263; c=relaxed/simple;
-	bh=+GFsOaKbBnJD6LH6GD2KtqnN1pVQGiQU0ZkcYuK3pDs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gwpoYFke7GPdNQq1Nsq66bJNPNSZp/3BHvdUGenuXw9FA+QEOWzNQh/kVpO8+pTzXssoM8U9qKDplqSHMjAtxT47pgferLcVvjG58ulj5fxmA4/xnzfQ2WSjyzv+FYFo4Jw2+xmeIglID4tSdwLb1srFvrRyaN0YaOYSdEklLN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CPA3AV+A; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1764177261; x=1795713261;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+GFsOaKbBnJD6LH6GD2KtqnN1pVQGiQU0ZkcYuK3pDs=;
-  b=CPA3AV+AeffXSJVIu5WkSmeCcxspnRtIDEIeVpbLKIQsWgb0nmrP+4Nw
-   3LKc/aXUaDtx1bPvncwSx6ndtaqBnBHFvDWaQ21J3ZjskSacKobomHhOP
-   xlEO0sNn87TnlReGD8gUt1Hy4JxO/JcZaiUdKlGj0LcaH/JVnSDUkWgim
-   XannMNn83NWQP6oqN53zTsSES7iSUjPLvCi6vPe0rlyBleeM9+OURH/Hk
-   MXC6/V3kAoalVVqWrsDuuKTS3JdrYvolTrXjZn4lTKuecYBa4DMFe8hZY
-   c7gla9ZpsI0qCZMCIK90+PNR7EutgQQSmL2S0AyZelpEQUAn6bw4AtdlD
-   Q==;
-X-CSE-ConnectionGUID: S5ZS0Iv5QXiWulVoit+mhg==
-X-CSE-MsgGUID: UFVpAV0rRw+bR/pTldAp+Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11625"; a="65408981"
-X-IronPort-AV: E=Sophos;i="6.20,228,1758610800"; 
-   d="scan'208";a="65408981"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2025 09:14:20 -0800
-X-CSE-ConnectionGUID: sFgbCYpAT0KNK4WS8uC2ag==
-X-CSE-MsgGUID: zU1DriBfQcy6mno888NnDQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.20,228,1758610800"; 
-   d="scan'208";a="192628515"
-Received: from black.igk.intel.com ([10.91.253.5])
-  by fmviesa007.fm.intel.com with ESMTP; 26 Nov 2025 09:14:18 -0800
-Received: by black.igk.intel.com (Postfix, from userid 1003)
-	id 8FCA6A0; Wed, 26 Nov 2025 18:14:16 +0100 (CET)
-Date: Wed, 26 Nov 2025 18:14:16 +0100
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: KP Singh <kpsingh@kernel.org>
-Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-	ast@kernel.org, paul@paul-moore.com, casey@schaufler-ca.com,
-	andrii@kernel.org, keescook@chromium.org, daniel@iogearbox.net,
-	renauld@google.com, revest@chromium.org, song@kernel.org,
-	linux@roeck-us.net, Kui-Feng Lee <sinquersw@gmail.com>,
-	John Johansen <john.johansen@canonical.com>
-Subject: Re: [PATCH v15 3/4] lsm: count the LSMs enabled at compile time
-Message-ID: <aSc1aAdOeSuuoKTH@black.igk.intel.com>
-References: <20240816154307.3031838-1-kpsingh@kernel.org>
- <20240816154307.3031838-4-kpsingh@kernel.org>
+	s=arc-20240116; t=1764181365; c=relaxed/simple;
+	bh=11+n6ED0oj4GlVfro7776FjNWhcM74GpNCK3Tx4RzU8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AtmZG77nciG9fGw10TVJhW7pajAHr15MBtOkS2Oi7qsej5ZheVWmvnbksdO0+83pWktSWm5Jxro2g8scR2kxhFPJ4mKI5/fNFkWQWyigitL7TiJK5WbIMb3LwdzAfK9QhKzlUUWSiJvxisYzT0sFJxEWnwnlQwI6gTYnTeBMWKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kBLIQ2D9; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <102a3220-2490-4c81-b2c9-6b107d6e4aff@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1764181351;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b5lnVEmMjTQunScWht2/TigkN5EtXsb7CslpuxT4iIY=;
+	b=kBLIQ2D9+46RfxQscZxA2XbmkNw2KlF45o/VXrEzwlTmpM/33kdUcRiUsJBdDj4WKBihIA
+	5060+ffqWI7XBRJMtqScZzGWXxvPTLBi0saW50GcRGyBtl4CVkGy8IZij/jN1OID6IS8WJ
+	lg1zYeyciryXqWZaKfJnBXABvuxWlXI=
+Date: Wed, 26 Nov 2025 10:22:21 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240816154307.3031838-4-kpsingh@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Subject: Re: [PATCH bpf-next v1 4/4] resolve_btfids: change in-place update
+ with raw binary output
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+ Nicolas Schier <nicolas.schier@linux.dev>,
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ bpf@vger.kernel.org, dwarves@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
+References: <20251126012656.3546071-1-ihor.solodrai@linux.dev>
+ <20251126012656.3546071-5-ihor.solodrai@linux.dev>
+ <CAErzpmvaHxLdooTsHt=YKbz9NDw+LXB8462kRrkzbdp-zJ-=2Q@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <CAErzpmvaHxLdooTsHt=YKbz9NDw+LXB8462kRrkzbdp-zJ-=2Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Aug 16, 2024 at 05:43:06PM +0200, KP Singh wrote:
-> These macros are a clever trick to determine a count of the number of
-> LSMs that are enabled in the config to ascertain the maximum number of
-> static calls that need to be configured per LSM hook.
+On 11/25/25 8:46 PM, Donglin Peng wrote:
+> On Wed, Nov 26, 2025 at 9:29 AM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
+>>
+>> [...]
+>> +
+>> +gen_btf_data()
+>> +{
+>> +       info BTF "${ELF_FILE}"
+>> +       btf1="${ELF_FILE}.btf.1"
+>> +       ${PAHOLE} -J ${PAHOLE_FLAGS}                    \
+>> +               ${BTF_BASE:+--btf_base ${BTF_BASE}}     \
+>> +               --btf_encode_detached=${btf1}           \
+>> +               "${ELF_FILE}"
+>> +
+>> +       info BTFIDS "${ELF_FILE}"
+>> +       RESOLVE_BTFIDS_OPTS=""
+>> +       if is_enabled CONFIG_WERROR; then
+>> +               RESOLVE_BTFIDS_OPTS+=" --fatal_warnings "
 > 
-> Without this one would need to generate static calls for the total
-> number of LSMs in the kernel (even if they are not compiled) times the
-> number of LSM hooks which ends up being quite wasteful.
+> In POSIX sh, +=is undefined[1], and I encountered the following error:
+> 
+> ./scripts/gen-btf.sh: 90: RESOLVE_BTFIDS_OPTS+= --fatal_warnings : not found
+> 
+> We should use the following syntax instead:
+> 
+> RESOLVE_BTFIDS_OPTS="${RESOLVE_BTFIDS_OPTS} --fatal_warnings "
 
-...
+Hi Donglin, thanks for taking a look.
 
-> -/* This counts to 12. Any more, it will return 13th argument. */
-> -#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _n, X...) _n
-> -#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-> +/* This counts to 15. Any more, it will return 16th argument. */
-> +#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _n, X...) _n
-> +#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+These and a couple of other bugs have been caught by CI [1].
+I am working on v2.
 
-You forgot to update _12 in the upper comment.
+I changed the script to #!/bin/bash and will run the shellcheck 
+before submitting the next revision [2], when it's ready.
 
--- 
-With Best Regards,
-Andy Shevchenko
+[1] https://github.com/kernel-patches/bpf/actions/runs/19689674975
+[2] https://github.com/kernel-patches/bpf/pull/10370
+
+> 
+> [1] https://www.shellcheck.net/wiki/SC3024
+> 
+> Thanks,
+> Donglin
+>> [...]
 
 
 
