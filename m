@@ -1,129 +1,157 @@
-Return-Path: <bpf+bounces-75617-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75618-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EA61C8C315
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 23:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E0A0EC8C333
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 23:21:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B6EE3B915C
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 22:18:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D02513AC968
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 22:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4504B346765;
-	Wed, 26 Nov 2025 22:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8367F2FB99D;
+	Wed, 26 Nov 2025 22:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XHu6MsOi"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="a+eUVchy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6031C345738
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 22:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A9627E7F0
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 22:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764195459; cv=none; b=OMLSGwrYzcap9Kv3TfIwz9XXqyHd2C911WW2+6NN1SXDyNLbjPvT4PbJNIeJsFTGlpo1TqKDuQwsMXegKfCCMVxPW10Ffb3s6VwyBoYHFi9BgXtq6V9rk6Nmm/8mEV+nYlltPM8aRutVVJ7y2mt3u3Sa600UHsak/PaoPUg9vkI=
+	t=1764195632; cv=none; b=BRecNGgces4hgogoj6kV0IBWdF75kxNOW6kiX2iXxM0bNpD6ws9y6hyBKBH2O6jjqvQzW9jO+U+6r2NimGmtOVePBy/44LA4DYDLa1Q0DHOqSTzhP0PBtFuRmpH9oSK7bzNcXZJ9LgxKTc0XPwLXnZA+vx5/gqjoi37ThfFcMUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764195459; c=relaxed/simple;
-	bh=WoPr0D480sRfz6MWlBIwr0fT3bxHa92NetIHpnkS2K0=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=JVXCpXZBDauCmMiHTbDPR4tS8iuMcfIGU/keNLpuaRZifQhyPpu7HY6jXn1I+mcptKAmIieEyCrayx8Nm7M/HtoN9lOkReqerHyGeHUCrohzn5Ar5etePFicN9HSJuHPB6EQf2FKrMNEW/MRbc5n91C8G1dJBcUI7k8/zTqk72w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XHu6MsOi; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-bc240cdb249so205154a12.3
-        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 14:17:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1764195458; x=1764800258; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rsdGxAHy7+Lr8WP2LpE73bfJe0tYWCB0gy6QVRcQ+0k=;
-        b=XHu6MsOifsF8zdUId5Yss1tWgoaHVYpxURxnb1GugIJichlQ1YwVvPn+sNPvNEYyZJ
-         +ydtAyc1a2b15fD3Yv6PO6UHe4nO7/kxmDMIzxdn6uRB6UF6nU9R9aNWJZR0oMbe02i3
-         li5FYacdBuRQ4DQvngU3WkmRF+4mvB8rsZ9tGf0doAQ1j0VMCiLTzlGqnD7Vpp3iS8zV
-         lh4mhSOch/Vp3Lw3hqZT2S7+S45kV2xNNo46qiFKu/2/ciiknJCDdQmyhDLLa0bPoiKc
-         w1x1Wen5DiENcHNjRjEanoKaiIuiwfSK7wv1V3xuaoTNvWu/23lyLjDu5I/Uwr0eMS4m
-         tkHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764195458; x=1764800258;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rsdGxAHy7+Lr8WP2LpE73bfJe0tYWCB0gy6QVRcQ+0k=;
-        b=FY5OpRIvGsn90m+VESIoBfQA7SlWNtIFFsPh7XykLr6WCFGcPR+Ase/xRn/i39mlkP
-         RJJatuCTc4WHKdaln7FhF6+leermn3WE7j34zmUSVjt49H1bTmmcbVI+SXyfRQoNlkc+
-         JdBySE7btT8MFAcA1kf2ig+MqQiSjF7ALXxfKdC0WnUO1jPGaGZqCmk5kiLEYPMpK2v4
-         3/Hom2h1UMTz7uPUpRg8X4Zld5+TOV9ihfNbttd2Z0m6AoQnQDqryDvqFjMfjPqqq0q4
-         NvOunUaDC5adlFiDK4rLKmB0agTF90IslJPw9r+tyziy0JmPkY50GDtIWLOgjeWpnXQd
-         JE1w==
-X-Gm-Message-State: AOJu0YxdB+2LpXQ+sws1DDRE4h5/xn3vjp2RZ2H8gnEYIRXW3NqzMdYg
-	AG6E4JY4ruVvr7IoKYVikPlbIm7FnIMRz7FiQt9qjD+G8p8de8o1zwP0JS0VMnBTu51nrCgsaC0
-	y8D7onD+HYl+yxCwKcO30sLL3KYxfaYZDfL50QWYNKdaOV6w1BCH+QF7BGmOg82qIJzESPZtPfU
-	iN5UcjQpr1VEMMZXeiptiOPjXxgjkNU6J3Rl0CKTY1bfv4zUawc6HBJWr+GbTsAUN1
-X-Google-Smtp-Source: AGHT+IF+NJvGtMUf7g2ELzHlH7eqyOms5MRbRzRX3sg4jry5QurPb9wZ/lrXsK3lya/WwBfrnvChARM33YajCsYgIpg=
-X-Received: from dyu1.prod.google.com ([2002:a05:693c:8101:b0:2a4:5178:f11f])
- (user=samitolvanen job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:7301:1014:b0:2a4:3593:4664 with SMTP id 5a478bee46e88-2a9413bc7a6mr4857020eec.0.1764195457160;
- Wed, 26 Nov 2025 14:17:37 -0800 (PST)
-Date: Wed, 26 Nov 2025 22:17:29 +0000
-In-Reply-To: <20251126221724.897221-6-samitolvanen@google.com>
+	s=arc-20240116; t=1764195632; c=relaxed/simple;
+	bh=0igFXLYu5hKG2KTGnD2aFnks2+K9FHMeFt/JFeWpnUo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k7tINo2UKsEKVHBggkBB8OEzVX9pz4cQ13XugivDR8c0qWnjnSX+PIz/2NwcoaWMEqmfSK2M36I/rzszwGQEtsdY9cAykcNzzi842pgyPPxlGowcD8r3pw+XTIsGaYS+mtgUw0TpVO+Rq1rl8VN3YQ4meaR/xiSsSkWpxGAkFtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=a+eUVchy; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <68ecc660-1e02-4aa6-9bf1-3e56c3a23da4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1764195617;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9g8i2m3HErDYjYqt4Hkjbxi9Nqmf5HurBqBAwcdaCgg=;
+	b=a+eUVchyxqYdPB5fn1a5mAKno7Fe1PFDLaklkXx+6IgUuL9N7YeUoQ2q4bwctTDgb4sC2Q
+	plRF6ODPCElC5vThuPB8k3x+LzsyeKeKaRYuIiXft9Lkla+sDjpuMalK07JyRfyU8Mkyvy
+	bDsu4clsLu5EIfYRixbFvelcRYKh0NA=
+Date: Wed, 26 Nov 2025 14:20:06 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20251126221724.897221-6-samitolvanen@google.com>
-X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
-X-Developer-Signature: v=1; a=openpgp-sha256; l=898; i=samitolvanen@google.com;
- h=from:subject; bh=WoPr0D480sRfz6MWlBIwr0fT3bxHa92NetIHpnkS2K0=;
- b=owGbwMvMwCUWxa662nLh8irG02pJDJnqNWU2kmKOZhdXtB690uwVv6L7v/qjOgFzz7NXjD6c4
- 70U4b+jo5SFQYyLQVZMkaXl6+qtu787pb76XCQBM4eVCWQIAxenAEykWJjhf+ZlF/E3bzy643Ji
- giKXMGbbsbQEtv3YtzD8QWH2In6FTkaGP2E/gr+r6dbOXqv6v/CVpvabbQ2mapNV+Nzi+m7Z8a5 kBwA=
-X-Mailer: git-send-email 2.52.0.487.g5c8c507ade-goog
-Message-ID: <20251126221724.897221-10-samitolvanen@google.com>
-Subject: [PATCH bpf-next v4 4/4] bpf, btf: Enforce destructor kfunc type with CFI
-From: Sami Tolvanen <samitolvanen@google.com>
-To: bpf@vger.kernel.org
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>, 
-	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, 
-	Viktor Malik <vmalik@redhat.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v12 2/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS
+ flags support for percpu_array maps
+To: Chris Mason <clm@meta.com>, Leon Hwang <leon.hwang@linux.dev>,
+ bot+bpf-ci@kernel.org, bpf@vger.kernel.org
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ jolsa@kernel.org, yonghong.song@linux.dev, song@kernel.org,
+ eddyz87@gmail.com, dxu@dxuuu.xyz, deso@posteo.net, martin.lau@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, shuah@kernel.org, kerneljasonxing@gmail.com,
+ chen.dylane@linux.dev, willemb@google.com, paul.chaignon@gmail.com,
+ a.s.protopopov@gmail.com, memxor@gmail.com, yatsenko@meta.com,
+ tklauser@distanz.ch, kernel-patches-bot@fb.com,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ martin.lau@kernel.org
+References: <20251126145039.15715-3-leon.hwang@linux.dev>
+ <07707b44fc9032398db551041498d6265ccf0a0313ecd8779bd1fa82a7d96409@mail.kernel.org>
+ <4d8120f7-f3b6-4654-9b14-0ee7da5f87ac@linux.dev>
+ <26c4677b-aeff-4516-85f4-87b5d1a9f6ee@meta.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <26c4677b-aeff-4516-85f4-87b5d1a9f6ee@meta.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Ensure that registered destructor kfuncs have the same type
-as btf_dtor_kfunc_t to avoid a kernel panic on systems with
-CONFIG_CFI enabled.
+On 11/26/25 7:56 AM, Chris Mason wrote:
+> 
+> 
+> On 11/26/25 10:24 AM, Leon Hwang wrote:
+>>
+>>
+>> On 2025/11/26 23:11, bot+bpf-ci@kernel.org wrote:
+>>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>>>> index d84af3719..01a99e3a3 100644
+>>>> --- a/include/linux/bpf.h
+>>>> +++ b/include/linux/bpf.h
+>>>
+>>> [ ... ]
+>>>
+>>>> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+>>>> index 1eeb31c5b..67e9e811d 100644
+>>>> --- a/kernel/bpf/arraymap.c
+>>>> +++ b/kernel/bpf/arraymap.c
+>>>
+>>> [ ... ]
+>>>
+>>>> @@ -398,10 +405,11 @@ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
+>>>>  	struct bpf_array *array = container_of(map, struct bpf_array, map);
+>>>>  	u32 index = *(u32 *)key;
+>>>>  	void __percpu *pptr;
+>>>> -	int cpu, off = 0;
+>>>> +	void *ptr, *val;
+>>>>  	u32 size;
+>>>> +	int cpu;
+>>>>
+>>>> -	if (unlikely(map_flags > BPF_EXIST))
+>>>> +	if (unlikely((map_flags & BPF_F_LOCK) || (u32)map_flags > BPF_F_ALL_CPUS))
+>>>>  		/* unknown flags */
+>>>>  		return -EINVAL;
+>>>>
+>>>> @@ -409,7 +417,7 @@ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
+>>>>  		/* all elements were pre-allocated, cannot insert a new one */
+>>>>  		return -E2BIG;
+>>>>
+>>>> -	if (unlikely(map_flags & BPF_NOEXIST))
+>>>> +	if (unlikely(map_flags == BPF_NOEXIST))
+>>>                               ^^
+>>>
+>>
+>> ?
+>>
+>> No such change in this version.
+>>
+>> It seems that this change was inferred from v11 to v12 by AI itself
+> 
+> Thanks for flagging this, I'll try to find this section of the logs to
+> see how the false positive checks failed to catch it.
+> 
+> -chris
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
----
- kernel/bpf/btf.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+AI got confused here, this was not in the diff.
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 0de8fc8a0e0b..0346658172ec 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -8845,6 +8845,13 @@ static int btf_check_dtor_kfuncs(struct btf *btf, const struct btf_id_dtor_kfunc
- 		 */
- 		if (!t || !btf_type_is_ptr(t))
- 			return -EINVAL;
-+
-+		if (IS_ENABLED(CONFIG_CFI_CLANG)) {
-+			/* Ensure the destructor kfunc type matches btf_dtor_kfunc_t */
-+			t = btf_type_by_id(btf, t->type);
-+			if (!btf_type_is_void(t))
-+				return -EINVAL;
-+		}
- 	}
- 	return 0;
- }
--- 
-2.52.0.487.g5c8c507ade-goog
+But it appears it got triggered, because there are these two code
+fragments nearby [1]:
+
+
+	if (unlikely(map_flags & BPF_NOEXIST))
+		/* all elements already exist */
+		return -EEXIST;
+
+and
+
+	if (unlikely(map_flags == BPF_NOEXIST))
+		/* all elements already exist */
+		return -EEXIST;
+
+Which is a good thing to notice even if this is intentional.
+
+Anyone knows if it is?
+
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/bpf/arraymap.c#n356
+
+> 
 
 
