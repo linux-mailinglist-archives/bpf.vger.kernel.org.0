@@ -1,56 +1,56 @@
-Return-Path: <bpf+bounces-75595-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75596-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C51B2C8AA02
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 16:27:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86229C8AAF5
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 16:36:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D232F3A671C
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 15:27:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61C323A6144
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 15:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B503346A3;
-	Wed, 26 Nov 2025 15:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87D9E33B6FA;
+	Wed, 26 Nov 2025 15:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hENwIPBm"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RaKFkPNN"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90DC1331A63;
-	Wed, 26 Nov 2025 15:24:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC59331A44
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 15:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764170688; cv=none; b=jprp02r+7cOv4sHzNBzsNQXKTO9Qxf98Wk/iXzVED1Z3Br4XP2Bdb8hureg7ZD0+Ep2CXAauVyxzmQaBxqgFotx5J2lBobdYNeRV1sC8NQEPbxYJGUe2HqkqbARxLaSfWOyxe75Hl2qt0uODLgafwPbg36PCjGUfTSQJwV5jcPA=
+	t=1764171372; cv=none; b=cruvN9EgCEW3T5MjRJIAAEKMTHudi7XkdvZFETfg3HlybS+6BA6DbQN1fPrc8QoX9qaEqwoas9X/ue8Q0r0ucqONdzcOpJXsSMvtUDLC3C440c0tWDz6M6+sgIQC44PnxZ5/7NTsqUHP19ibXtg1fVIkI8LH2B4DKT1UA8rFY7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764170688; c=relaxed/simple;
-	bh=wAvDKyglR4m9vT8x0sHCs+uKoN8sOn6AnjsZ8Szp+Ns=;
+	s=arc-20240116; t=1764171372; c=relaxed/simple;
+	bh=CXZcCiuzESNaeTzLwW2QktKQ3N4bxI2br7SPZ8krOK4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Lx1q3KV6ncs3nbdgBq2vzAh8ClTIdCPzo4x2ilKQQ210AwFk37JOxBkaJZskBP9OJeM6lg5FYTLSdiD47DfVNTsejEHquo95RH4mRHMtjDekv5cnSM5jhcgrx2l/lj14P4vWMA8xA+IGAdJ94S7ErxN1vmIh50OTl9H+yRtveGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hENwIPBm; arc=none smtp.client-ip=95.215.58.176
+	 In-Reply-To:Content-Type; b=bhETvyw+UZ1ETBtAfc1LKSNJqvA8DoaK4Bf3cn7FcsCNgGghaesrtKdSAeCUb1fAMAsoSminro8KTfo9p2LraGHmwOxD5+PvGwweYh6cWMpTbXQgT1k+R9iVQNGeFqTJ1BZ8+cjZDl0bC76/2/4RVg74GvuDp6AU4asFsmNcLRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RaKFkPNN; arc=none smtp.client-ip=91.218.175.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4d8120f7-f3b6-4654-9b14-0ee7da5f87ac@linux.dev>
+Message-ID: <73cda750-5979-4e4e-aa34-18e460b8b6e3@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764170674;
+	t=1764171367;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JlXVYH2N0uf4TuTCjfA55TOuKuKC8GW35Olp9oQqllc=;
-	b=hENwIPBm43Kfz1cLH0FSUAnRheIQNhinWcOnnLpYijMYsZqYzFdUn/HKhrlKDHl9CPTIf5
-	qMEIJ4cDL9rja3MMzSs6Q3/FpJaooakAvHHmt9RrUTFZfY1fUCRFNNUp7FIp8gZA9r5P4S
-	0xNtqNUpEYQQuqBN0qIWYV9OOGAdqbY=
-Date: Wed, 26 Nov 2025 23:24:09 +0800
+	bh=uYZc95UrAi4/xFTTZF1FyRXrZNMEEA99WkW75EMwNW0=;
+	b=RaKFkPNN5IWJiVQWEgw55A1IJiX6kD+SDSUhb7gH+OvLWzJEDpnTE4wRNr+4k+0DWy5M77
+	lo2eMiIyn3LZuKQ+dKzeWNqQpShldv9nX42DP7+c3E4O4Rq6mXEhQouHeNrpVZ7iIiwb36
+	bR24vYPBsIviRrItthpWBOs3VQbqNt0=
+Date: Wed, 26 Nov 2025 23:35:44 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v12 2/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS
- flags support for percpu_array maps
+Subject: Re: [PATCH bpf-next v12 5/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS
+ flags support for percpu_cgroup_storage maps
 To: bot+bpf-ci@kernel.org, bpf@vger.kernel.org
 Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
  jolsa@kernel.org, yonghong.song@linux.dev, song@kernel.org,
@@ -62,12 +62,12 @@ Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
  tklauser@distanz.ch, kernel-patches-bot@fb.com,
  linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
  martin.lau@kernel.org, clm@meta.com, ihor.solodrai@linux.dev
-References: <20251126145039.15715-3-leon.hwang@linux.dev>
- <07707b44fc9032398db551041498d6265ccf0a0313ecd8779bd1fa82a7d96409@mail.kernel.org>
+References: <20251126145039.15715-6-leon.hwang@linux.dev>
+ <edd9991150f1456a7868025636825d7cf7595802e4a2fe405900c53fc1799ed8@mail.kernel.org>
 Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <07707b44fc9032398db551041498d6265ccf0a0313ecd8779bd1fa82a7d96409@mail.kernel.org>
+In-Reply-To: <edd9991150f1456a7868025636825d7cf7595802e4a2fe405900c53fc1799ed8@mail.kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
@@ -75,67 +75,85 @@ X-Migadu-Flow: FLOW_OUT
 
 
 On 2025/11/26 23:11, bot+bpf-ci@kernel.org wrote:
+>> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+>> index aedf573bd..013f4db99 100644
+>> --- a/include/linux/bpf-cgroup.h
+>> +++ b/include/linux/bpf-cgroup.h
+> 
+> [ ... ]
+> 
 >> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index d84af3719..01a99e3a3 100644
+>> index f79d2ae27..9e756db5e 100644
 >> --- a/include/linux/bpf.h
 >> +++ b/include/linux/bpf.h
 > 
 > [ ... ]
 > 
->> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
->> index 1eeb31c5b..67e9e811d 100644
->> --- a/kernel/bpf/arraymap.c
->> +++ b/kernel/bpf/arraymap.c
+>> diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
+>> index 2ab4b60ff..1ccbf28b2 100644
+>> --- a/kernel/bpf/local_storage.c
+>> +++ b/kernel/bpf/local_storage.c
+>> @@ -180,7 +180,7 @@ static long cgroup_storage_update_elem(struct bpf_map *map, void *key,
+>>  }
+>>
+>>  int bpf_percpu_cgroup_storage_copy(struct bpf_map *_map, void *key,
+>> -				   void *value)
+>> +				   void *value, u64 map_flags)
+>>  {
+>>  	struct bpf_cgroup_storage_map *map = map_to_storage(_map);
+>>  	struct bpf_cgroup_storage *storage;
+>> @@ -198,11 +198,17 @@ int bpf_percpu_cgroup_storage_copy(struct bpf_map *_map, void *key,
+>>  	 * access 'value_size' of them, so copying rounded areas
+>>  	 * will not leak any kernel data
+>>  	 */
+>> +	if (map_flags & BPF_F_CPU) {
+>> +		cpu = map_flags >> 32;
+>> +		copy_map_value(_map, value, per_cpu_ptr(storage->percpu_buf, cpu));
+>> +		goto unlock;
+>> +	}
 > 
-> [ ... ]
-> 
->> @@ -398,10 +405,11 @@ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
->>  	struct bpf_array *array = container_of(map, struct bpf_array, map);
->>  	u32 index = *(u32 *)key;
->>  	void __percpu *pptr;
->> -	int cpu, off = 0;
->> +	void *ptr, *val;
->>  	u32 size;
->> +	int cpu;
->>
->> -	if (unlikely(map_flags > BPF_EXIST))
->> +	if (unlikely((map_flags & BPF_F_LOCK) || (u32)map_flags > BPF_F_ALL_CPUS))
->>  		/* unknown flags */
->>  		return -EINVAL;
->>
->> @@ -409,7 +417,7 @@ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
->>  		/* all elements were pre-allocated, cannot insert a new one */
->>  		return -E2BIG;
->>
->> -	if (unlikely(map_flags & BPF_NOEXIST))
->> +	if (unlikely(map_flags == BPF_NOEXIST))
->                               ^^
+> Should check_and_init_map_value() be called here after copy_map_value()?
 > 
 
-?
-
-No such change in this version.
-
-It seems that this change was inferred from v11 to v12 by AI itself.
+It should not be called, because percpu_cgroup_storage maps do not
+support any special fields.
 
 Thanks,
 Leon
 
-> Does changing this from bitwise-AND to equality break flag combination
-> handling? The old code checked (map_flags & BPF_NOEXIST), which would
-> trigger for any flag combination including BPF_NOEXIST. The new code only
-> checks (map_flags == BPF_NOEXIST), so if userspace passes
-> (BPF_F_CPU | BPF_NOEXIST), the BPF_NOEXIST flag gets silently ignored
-> instead of returning -EEXIST as before.
+> The similar implementations in bpf_percpu_array_copy() and
+> bpf_percpu_hash_copy() both call check_and_init_map_value() after
+> copying a single CPU's value when BPF_F_CPU is set:
 > 
-> While all elements in percpu_array maps are pre-allocated and BPF_NOEXIST
-> should always fail anyway, silently ignoring a flag the user explicitly set
-> seems inconsistent with the principle of rejecting invalid flag combinations
-> at validation time.
+>   bpf_percpu_array_copy():
+>     if (map_flags & BPF_F_CPU) {
+>         cpu = map_flags >> 32;
+>         copy_map_value(map, value, per_cpu_ptr(pptr, cpu));
+>         check_and_init_map_value(map, value);
+>         goto unlock;
+>     }
 > 
->>  		/* all elements already exist */
->>  		return -EEXIST;
->>
+>   bpf_percpu_hash_copy():
+>     if (map_flags & BPF_F_CPU) {
+>         cpu = map_flags >> 32;
+>         copy_map_value(map, value, per_cpu_ptr(pptr, cpu));
+>         check_and_init_map_value(map, value);
+>         goto out;
+>     }
+> 
+> The check_and_init_map_value() call initializes special BTF fields
+> (timers, kptrs, etc.) when copying map values to userspace. Without it,> these fields might not be properly initialized if percpu_cgroup_storage
+> map values contain such fields.
+> 
+>>  	size = round_up(_map->value_size, 8);
+>>  	for_each_possible_cpu(cpu) {
+>>  		copy_map_value_long(_map, value + off, per_cpu_ptr(storage->percpu_buf, cpu));
+>>  		off += size;
+>>  	}
+>> +unlock:
+>>  	rcu_read_unlock();
+>>  	return 0;
+>>  }
 > 
 > [ ... ]
 > 
