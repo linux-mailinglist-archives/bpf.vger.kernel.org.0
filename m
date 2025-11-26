@@ -1,130 +1,154 @@
-Return-Path: <bpf+bounces-75606-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C3EDC8B847
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 20:02:42 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4C94C8B86E
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 20:08:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E8A0F348F9A
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 19:02:36 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 65BE835BEC0
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 19:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E24D3126BC;
-	Wed, 26 Nov 2025 19:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38CDB33EB04;
+	Wed, 26 Nov 2025 19:08:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="TsysUKWx"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NqxbAVFu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACEB0275AF0
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 19:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1806F3126BC
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 19:08:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764183751; cv=none; b=WDQuiri6E00ZhbA7EUpWvHm/j9YhSbuArDoXDOzXeUtq6LpXWJK4eKApH8woKiBIqgKLzfKOiQtjri8VKj7u+Lc3vqC5V3Hs6YxX1c5dsXtzTJ8AehyDPIl70/RCHYgD9W4dlu3H7hjlb62Inyfypgs9IiVp9I4USesiguo3bF4=
+	t=1764184097; cv=none; b=c+6qETeLuyjuyfQd0mvCFdWOvL9luNw5CZygRiiFbaEdCQ4NpGCxOP9B7UkidHiS1sd2qvdHUhafYgIA0Up1z987hJUTwCfY0XqiUG8XW9OLzAFfIBzQ0TWJUHZYWpoobgPvQejGMkCtayjYQbyB/H5lENSMOMa1wFs4Or4XVyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764183751; c=relaxed/simple;
-	bh=W1PUpo6dWXK0rPdCvTUaH9XRtZaF3K1p0u1nxp3Pq1s=;
-	h=From:To:CC:Date:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=EyymG/nCrA7csHQzjRbt/bVea0/o0PWalHwe259p0jt5Ch3LiOGnuz/n6TFTO7LBPwKtyyOg8PgXtSsnzina8Zy/BPMGxO/p/obaWxbzQdY2yIgfMtoa20SdVM7/nC6hDlkVR9mjjaSPfbgt7exO1Bkw5Sy1y/wysxdrwJ94BTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=TsysUKWx; arc=none smtp.client-ip=209.85.219.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-8824ce9812cso905006d6.0
-        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 11:02:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1764183748; x=1764788548; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:user-agent
-         :references:in-reply-to:message-id:date:cc:to:from:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gYB8Y0KQsN9puq6yo3Lr/wYaKvJwald/f9jogb6pOMg=;
-        b=TsysUKWxdUJupq6YIixEQOu5+96IpeBQLyLS6BRCZDgWwlkBBlmOheu+3iL9Ma8CjA
-         uE/JV6FAt9R4h1XMqqBR8exmPTq4vfJn6uVj/vk56TKyN2ibAK1vI6gheOwkn2UMRk2F
-         iMSH+wOZr4RAxw+s3SbgBL5g96AALO7TbLlQCoLtwv+zDsHGcO23N0yZcci2wwU/hdv5
-         paQ+czesmKNWEyq3IL62nI3FsUNTLxw3BQOVQ4dEhb4nz63jLrH4sIHxY/4mhsK844WD
-         +A12cVzXFOw696BRkWdl6iS0Zu+Pi+fHirCzE3JzOePJnYUwBQCXWy5m3Hb7FtWSzv6k
-         cEVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764183748; x=1764788548;
-        h=content-transfer-encoding:mime-version:subject:user-agent
-         :references:in-reply-to:message-id:date:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gYB8Y0KQsN9puq6yo3Lr/wYaKvJwald/f9jogb6pOMg=;
-        b=vQ5xCaKXc2+rOaYzy6FtFDPOk0NBz/vRJpriCEiNt78gPKoi8erVtMR66TaFJ90ViY
-         LR01ZPYOpgpuexoNnqT68EZlvqIxSVTUfLa0Ik6l7fDd/aMY03joP6ia8bDPaJ1XPOhY
-         pkhSc2PgGBiE9oMBXqyvZ1y1qhxYPIY2lEZPYSrAdb43dcrY/ToL3N2+EUzTVi+K6lxV
-         UTGZPzVUQbOhKJ+K4jXQi7ujcapMu20BgCwt3DVuBsxr07Ayic1EBEqwqmGiWhCiAlfK
-         NtVhKZp70q4Tt2I7NAtGet2UnGamEwyF4EJb1drecaMfmxVO24xZdtHGNwLNMh6j8uUW
-         dtPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWASMKlc9AsSfNW6wbiuBzjqW5EzPX0ISSts8pBc/dhNcwGC+33FkeBTz2urk6jqG9DfJw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMnXo52ixociz7ABEKHQJ1EgEmhDVIUDrT31P62dcpAmOwm0op
-	Bo1armCvjLC2nXdyX24OMQSxU+BWDfR7ANYngVQx9iUnGBjQ7qRXURcWhxSgG8wbnQ==
-X-Gm-Gg: ASbGncu5CZegdQmSTTvH58rTP7bZmgSzD3+51iqP/uCbiTWUiUTfGCVs5kRbDKgDPLR
-	QZftxH3mshj0XxKmB0wddJxKL5c+S6ONvh4qyuhHz1nUh4pjoYsfPPjiZymoYhtad8UaOYhi+Rw
-	HWIcPHPQOAIFOmsIvvPwZnZmpxYf7YS68ADM4gXpdNB/Rx2I1DEn8u8dUIchiWOROT00duUv7x6
-	lffJwDHw7biSq7ujQ2lgftB9NjPtWBQ7uOF/S6LzEXGBzLDSKQQNvaiiUZWgC3z03Nod/cz83Ox
-	rh3e6i7nuEjX9/bDk5UWYna8daDm6OxekII7modINYIlYB9e7281+qWWogD2cR4UJHEhj0cP1Wq
-	oGXbxqmmET+UXn10bs5UCcQF9Rp/okEbhrd82E2bFgF3pZ1+mnP7wIqmq3OSUT91WvlRILGgPD3
-	NXFiwYnPr/80QWTdwHRQ==
-X-Google-Smtp-Source: AGHT+IG8T4/wT7NJfYIQjI3dUrJmKBQ4SCJzyLCvci3Qg5iPaR/OrqDzMTS7pfIutp287vkMY/auVQ==
-X-Received: by 2002:a05:6214:c84:b0:87c:a721:42f1 with SMTP id 6a1803df08f44-8847c535a4emr274443916d6.52.1764183747209;
-        Wed, 26 Nov 2025 11:02:27 -0800 (PST)
-Received: from [10.75.85.60] ([99.56.174.99])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8846e573338sm155075726d6.38.2025.11.26.11.02.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Nov 2025 11:02:25 -0800 (PST)
-From: Paul Moore <paul@paul-moore.com>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>, KP Singh <kpsingh@kernel.org>
-CC: <linux-security-module@vger.kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>, <casey@schaufler-ca.com>, <andrii@kernel.org>, <keescook@chromium.org>, <daniel@iogearbox.net>, <renauld@google.com>, <revest@chromium.org>, <song@kernel.org>, <linux@roeck-us.net>, "Kui-Feng Lee" <sinquersw@gmail.com>, John Johansen <john.johansen@canonical.com>
-Date: Wed, 26 Nov 2025 14:02:24 -0500
-Message-ID: <19ac18b9e00.2843.85c95baa4474aabc7814e68940a78392@paul-moore.com>
-In-Reply-To: <aSc1aAdOeSuuoKTH@black.igk.intel.com>
-References: <20240816154307.3031838-1-kpsingh@kernel.org>
- <20240816154307.3031838-4-kpsingh@kernel.org>
- <aSc1aAdOeSuuoKTH@black.igk.intel.com>
-User-Agent: AquaMail/1.55.2 (build: 105502562)
-Subject: Re: [PATCH v15 3/4] lsm: count the LSMs enabled at compile time
+	s=arc-20240116; t=1764184097; c=relaxed/simple;
+	bh=QkrMuFPGwvXJZ5qY/D1AgGZOqbHZcZUqeE2SK3B2p9w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=swq1TpB1YTKU41Fi1RusGG7dszq59r81HAowPXTberihxjKgT9rm3IJ5Yl3vklHSZNt5wvtvgcw8NLPEJhDRwbLl430tvxJWRyajF4g4V38ur1lWfSaxOGIwpiJjzUQzsTEfZ66VAjxKJNQQES8zzK3m2PjPEvCW9HZSfU5/WIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NqxbAVFu; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d91c8ccc-cf5f-4d50-9a8e-944f90e0401a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1764184094;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Q3P5T0GSkwkYYH5jOoeKnyxxs+DIn65xOfHXjhWpU5M=;
+	b=NqxbAVFud7sNqDfhkbP8DgQaySFVpHgOgtZ4wqA0R67NNlFm3wunvqPSZuPZf4EEtHk5sb
+	LyQXIisSmUWXWln1O5pcvLfmjmA+gxOhzDZBFdDBNLeDyRfbojM3a9R2Xm+tDT6+l8ypfS
+	xJykJ3e/ZdRzZZ/S3IgWSDLT6UrQHBc=
+Date: Wed, 26 Nov 2025 11:08:04 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v1 3/4] resolve_btfids: introduce enum
+ btf_id_kind
+To: bot+bpf-ci@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, nathan@kernel.org,
+ nicolas.schier@linux.dev, nick.desaulniers+lkml@gmail.com, morbo@google.com,
+ justinstitt@google.com
+Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+ alan.maguire@oracle.com, dolinux.peng@gmail.com, martin.lau@kernel.org,
+ clm@meta.com
+References: <20251126012656.3546071-4-ihor.solodrai@linux.dev>
+ <3d0b94b9fdd5150c136784b5e6904264e5fb09a00d8512e459ec6c3046ed9abb@mail.kernel.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <3d0b94b9fdd5150c136784b5e6904264e5fb09a00d8512e459ec6c3046ed9abb@mail.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On November 26, 2025 12:14:21 PM Andy Shevchenko 
-<andriy.shevchenko@intel.com> wrote:
-> On Fri, Aug 16, 2024 at 05:43:06PM +0200, KP Singh wrote:
->> These macros are a clever trick to determine a count of the number of
->> LSMs that are enabled in the config to ascertain the maximum number of
->> static calls that need to be configured per LSM hook.
+On 11/25/25 6:09 PM, bot+bpf-ci@kernel.org wrote:
+>> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+>> index b7b44e72e..7f5a9f7dd 100644
+>> --- a/tools/bpf/resolve_btfids/main.c
+>> +++ b/tools/bpf/resolve_btfids/main.c
+> 
+> [ ... ]
+> 
+>> @@ -260,26 +266,33 @@ static char *get_id(const char *prefix_end)
+>>  	return id;
+>>  }
 >>
->> Without this one would need to generate static calls for the total
->> number of LSMs in the kernel (even if they are not compiled) times the
->> number of LSM hooks which ends up being quite wasteful.
->
-> ...
->
->> -/* This counts to 12. Any more, it will return 13th argument. */
->> -#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, 
->> _12, _n, X...) _n
->> -#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 12, 11, 10, 9, 8, 7, 6, 5, 4, 
->> 3, 2, 1, 0)
->> +/* This counts to 15. Any more, it will return 16th argument. */
->> +#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, 
->> _12, _13, _14, _15, _n, X...) _n
->> +#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 15, 14, 13, 12, 11, 10, 9, 8, 
->> 7, 6, 5, 4, 3, 2, 1, 0)
->
-> You forgot to update _12 in the upper comment.
+>> -static struct btf_id *add_set(struct object *obj, char *name, bool is_set8)
+>> +static struct btf_id *add_set(struct object *obj, char *name, enum btf_id_kind kind)
+>>  {
+>>  	/*
+>>  	 * __BTF_ID__set__name
+>>  	 * name =    ^
+>>  	 * id   =         ^
+>>  	 */
+>> -	char *id = name + (is_set8 ? sizeof(BTF_SET8 "__") : sizeof(BTF_SET "__")) - 1;
+>> +	int prefixlen = kind == BTF_ID_KIND_SET8 ? sizeof(BTF_SET8 "__") : sizeof(BTF_SET "__");
+>> +	char *id = name + prefixlen - 1;
+>>  	int len = strlen(name);
+>> +	struct btf_id *btf_id;
+>>
+>>  	if (id >= name + len) {
+>>  		pr_err("FAILED to parse set name: %s\n", name);
+>>  		return NULL;
+>>  	}
+>>
+>> -	return btf_id__add(&obj->sets, id, true);
+>> +	btf_id = btf_id__add(&obj->sets, id, true);
+>> +	if (btf_id)
+>> +		btf_id->kind = kind;
+>> +
+>> +	return btf_id;
+>>  }
+>>
+>>  static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
+>>  {
+>> +	struct btf_id *btf_id;
+>>  	char *id;
+>>
+>>  	id = get_id(name + size);
+>> @@ -288,7 +301,10 @@ static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
+>>  		return NULL;
+>>  	}
+>>
+>> -	return btf_id__add(root, id, false);
+>> +	btf_id = btf_id__add(root, id, false);
+>> +	btf_id->kind = BTF_ID_KIND_SYM;
+>                  ^^^^
+> 
+> Can add_symbol() dereference a NULL pointer here? The function
+> btf_id__add() can return NULL on allocation failure (when zalloc fails),
+> but the new code sets btf_id->kind before checking if btf_id is NULL.
+> 
+> In contrast, add_set() checks for NULL before setting the kind field.
+> Should add_symbol() do the same?
 
-Do you plan to send a patch to fix this?
+We pass unique=false to btf_id__add() and that means that it can only
+return NULL if zalloc() fails, which is unlikely.
 
---
-paul-moore.com
+Checking for NULL here is little too defensive, but won't hurt.
 
-
+> 
+>> +
+>> +	return btf_id;
+>>  }
+> 
+> [ ... ]
+> 
+> 
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+> 
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19689674924
 
 
