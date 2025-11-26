@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-75614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75615-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id D108FC8C2E8
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 23:17:54 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9419EC8C2FA
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 23:18:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A016F35577D
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 22:17:53 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8DDAB4E53A4
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 22:18:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1121034321F;
-	Wed, 26 Nov 2025 22:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 323D63446CA;
+	Wed, 26 Nov 2025 22:17:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yhMN14/b"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PqY/6+CA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE3D2D9EE4
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 22:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11619343D66
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 22:17:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764195454; cv=none; b=tGN95g/RO4wWUR8id6EpyLj9yvMD1ysmsSfbUwBA6sBPoD8Eca5/t7SFmOZiga44oC/kfvohDC14K9Y5ZzM6nE0j8QAlEQIFsbGAJVvWJVG1Jm/iJ8D8cuzolP/TkpDsQAHgq7BAunxIALNbToTbrsEoD1dnlEp3JILdXFqHBjQ=
+	t=1764195456; cv=none; b=pqijd2jBzgr/GZ8PIkF92HlzMQ+HSffqyiGEHrD+yJFvszzhOoZ1AqCv5d8zhN6ysr+m9xjrITV9HbrscQ4JOjtY7kLHqfgK4jbWlq+E4xlifp4w9ik81kOh2QNN6WBo4KTS4awMg1n4tT4O1T8vETKdqzHAPliODe/d5JOKsd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764195454; c=relaxed/simple;
-	bh=8bdhp/XEyRN6TXsJtRAeA96+8FmS2vgEzQfyVsGO/oE=;
+	s=arc-20240116; t=1764195456; c=relaxed/simple;
+	bh=WQcm0EHsw6PYPITVbaCdvvynX9VHge/XcXBmVFGe0zc=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=T6C+0REAeh9ktriio64ieYf1lWWXc2qoCYgWAs4CpLlY+3ztf+DUsidAaqjmAW/ez1Y57aoBbjbJlWFVrIJ1u9JuANWxsjBhbYG+wvGzHmziViZ/03+BwJwY9TQDGzD8XSO1ngb2LrOI8exfAnZlaBrXWAuLEeYfJHsTjNHp54w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yhMN14/b; arc=none smtp.client-ip=209.85.215.201
+	 To:Cc:Content-Type; b=ZvbNwooutEA7j6HGZZqcSZBMTDgFYpqulDf20lRRTmN7p0ThiBhXl15lCj6xJNIhxlHMK5ibtmA82XSYtyQ+j2hsnJ34lbDloji8zhEpz0Z+svapL37eBrjO9U2g1k3Roer9rWxdWTQ9jl/Gq5Ps8xSq7tRGt7B/8YySyfj3alA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PqY/6+CA; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-b9b9e8b0812so338137a12.0
-        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 14:17:32 -0800 (PST)
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-bc0de474d4eso644769a12.0
+        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 14:17:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1764195452; x=1764800252; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1764195454; x=1764800254; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FMHh1Jv6KIP5NP429fH/fqQBwAKNE3Ze+gaNeawP9DU=;
-        b=yhMN14/b85S16kVa31e4O2v6i5zfiObJVc0vE+vuDVo6bmif99DlQdlNqTcOZ9bO3h
-         8mXpUYmaoLRPrsesFe5ADx+9ybD5r19eIfylTbA79HTKr/TEja75+ZNcg+eeObVh3tgJ
-         Br19bWOD6+dOCGTMcyLcQUReyMK2D27WTVNXppL0p/YUBROJyV6k6G6/2ghpr27DrQXX
-         3w+g+tyMZHIF7XzZudV6JxysSgtYNFYvZfSHVs7IWSKn+hozVJAmPlyMJ1+u7sRfPqhs
-         1De4njpan0HlfYw+9bzB+rNPT7zDq3TaEb0qtPeqxEJruOxgcl1DT5D44aFW5JsCJeSE
-         KFvQ==
+        bh=zt/vrs22IFRNV23j1sT0XTLeik6zpTMCFKyG7xgZ91A=;
+        b=PqY/6+CAnpy12IwsGyQKGgcLJytH6cmOKqNp9oSJtcWLknjb4w93p1kwv19YxXFj4c
+         w+CwgbZaBRE3huLJkPluEdMkOAuVm+CUFLMGG9U0ZwJpRpvU+7wC+HelP6q6i/BiTiWa
+         sUre1XTS7JPAyDE5cLhoi/dBoy4W6eN7K2V2Q8jaPx10exbZ3jKhfTGScizo1rOHf1Fy
+         qAsN5L6SLBp+tZhNByOmosj/RLUlvGEb97Sk+VjbyySv0PLpHdPWc5ApRM1flGizMSGT
+         4r9QkGUhH5JRWhwLvNSCF2Ti956xsmJFnnoCRpSCQsvnaiWzlTsq8/Ng8B3zyx52RPrl
+         tkOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764195452; x=1764800252;
+        d=1e100.net; s=20230601; t=1764195454; x=1764800254;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FMHh1Jv6KIP5NP429fH/fqQBwAKNE3Ze+gaNeawP9DU=;
-        b=rSs8TtOFzhjF8bjiEjIC+eqKSJSCCggEZCscdiDc0cpW9Qgp0OA89AQAAkr53cN7UT
-         eyubXFqq752Pr0hWUNOvFErG0HlPb4xqO6DgZ0Y/GOi5f5OmSMolFHW+b+lpcgDKq83X
-         MRogYjFZ9GLC8/rfhxPKdcI1YAeAns2gpQ3kD4pfmDtODgPME5JHezuN2HLDAjfkENaE
-         yNqUcGSRhA9u6MpqsPfJmL5MYQ5Q1bfnQIlNV7LcEmZvEzq0RtIgU9tcrDiGbEyMIbOX
-         SZ6IUpjxWrhPMAbA8FYddCKXoPTRer4836/v1mM7IE7Du/LUuCn7N7rtNIke04wTMcGs
-         dxXQ==
-X-Gm-Message-State: AOJu0YzQMhawE97//TYT6omDlrpnv7dyAJGqMZrhcLgmUohMz0e+03YD
-	Rec6lpFciJ5Zz11UHY+HjYx7o2BeTDtHmeIXsnDRy1UA4n4Tkyu9gR+16EQtJC4NMNZX7xhpqG1
-	myBPAQ2hu3Gw+Ja4WkDlNFl9LZJGBmaIVAAX0Q1+JpAxT7pUC5astFOeypDyqaukUDZ+l20w2eJ
-	c8/dmm0+xG+esSJMzkqkK1HhKHHKY6uS2rHAwA4YX2sIAxJ/z/wm12gyGBUUXgaovC
-X-Google-Smtp-Source: AGHT+IEbnKxY9Xeyzuu5MMGLqSobmE20jDIMb11W+9BVqTdpdxRimEZd6sLMSi1ynNQjKwrc5nixFVWYCFDRJlNQr24=
-X-Received: from dyjh19.prod.google.com ([2002:a05:7300:5613:b0:2a4:603a:d424])
+        bh=zt/vrs22IFRNV23j1sT0XTLeik6zpTMCFKyG7xgZ91A=;
+        b=uhoadSoc4+YP66lOqKeeL+7iGS9vhmlqdGfn9Ap/h+Z0eaatYsfiiVd3w352Exy+Xz
+         segsrlLUhw8lgp3/8O4dyj/ort1F89pxoWVLSQ7Pc9DSuQrVNziZkRw9M+6mDUWwSXTF
+         mWxu7gFOAQWf4M/pYar6Au/pnKKwmQEp1vL1mXfYDOm5GvEvMdTgme5I5YKfjSBCsb5S
+         t99R6z3Hazg5QWUzgode3dQog8SEu54Yxy1tBdPvhW5t/SFy7B4B9m3/XcdimwrH9OSH
+         7CD8Yvq8c37UzHlz7SrdZN9hepXz+qxBxAJ8VMZcnJDVcofr7oDgERImZGCTFsGHJZ2u
+         BepQ==
+X-Gm-Message-State: AOJu0YwOQrafjV52sMVNRtaLKJJGhSMRU8ya1b7m8jSW4L1bQXwu6RD6
+	nmXUlSKlMewQ9vgWQH42hM5ql3hlGRL33MPfdBrjiNR5cHpNerUo7RJUvQVZeIBMhVCUR36GQVP
+	XukN1p1g+RamGErVdSVbynz1ZuY/srnNz2dKUiqbgnUeGMeCWkYayLz/MmkH7Spe6HSqiBoceSJ
+	zhv2sKSmiJgpwXGyvzmF8MmRN/vl/l6szWDx8amvbbNmRgshs0RzkvNiFOKXF24UE5
+X-Google-Smtp-Source: AGHT+IFIz71LhfTwWHL1z2gigA7hdTT4BwNN3sP1QkyaP0YT8yLO1AIMoS4BZJ/uN8VXCBLMXckv46l8r9Qy1fLWBAo=
+X-Received: from dlf18.prod.google.com ([2002:a05:7022:412:b0:119:c6ec:cc42])
  (user=samitolvanen job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:7300:50ef:b0:2a4:7fb3:7a96 with SMTP id 5a478bee46e88-2a7192d82b0mr11685916eec.36.1764195452142;
- Wed, 26 Nov 2025 14:17:32 -0800 (PST)
-Date: Wed, 26 Nov 2025 22:17:26 +0000
+ 2002:a05:7022:6ba8:b0:11b:9386:7ece with SMTP id a92af1059eb24-11cbba58e14mr5798079c88.43.1764195453875;
+ Wed, 26 Nov 2025 14:17:33 -0800 (PST)
+Date: Wed, 26 Nov 2025 22:17:27 +0000
 In-Reply-To: <20251126221724.897221-6-samitolvanen@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,14 +74,15 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20251126221724.897221-6-samitolvanen@google.com>
 X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1790; i=samitolvanen@google.com;
- h=from:subject; bh=8bdhp/XEyRN6TXsJtRAeA96+8FmS2vgEzQfyVsGO/oE=;
- b=owGbwMvMwCUWxa662nLh8irG02pJDJnqNaVP9i9t/HFhytmXb8zmFk+40VvNebqHYzfjlp6N4
- lXvbZcEdJSyMIhxMciKKbK0fF29dfd3p9RXn4skYOawMoEMYeDiFICJFBox/C9w3vbcTf5P0JNO
- 48lH03xMLUNZdbcUytw452s/+aviy8+MDL2NyjoGRo2Mjzz3S7XccW18qN95K1km4L1DlCbDSeX PTAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1442; i=samitolvanen@google.com;
+ h=from:subject; bh=WQcm0EHsw6PYPITVbaCdvvynX9VHge/XcXBmVFGe0zc=;
+ b=owGbwMvMwCUWxa662nLh8irG02pJDJnqNaUG053rjder3zVjlW4vPdJ5pHaVQ9Pt/iLtuP7Jx
+ qn65Uc6SlkYxLgYZMUUWVq+rt66+7tT6qvPRRIwc1iZQIYwcHEKwETU7zEybJns+mHy4+zTJ+U+
+ OG/aWnFd7Z5i07HzfjyvPNob+T6ZeDEydPQdDLx5/ObLqx/6jrd8Ktfcb88me3iO/qma+TP2s3B GMAIA
 X-Mailer: git-send-email 2.52.0.487.g5c8c507ade-goog
-Message-ID: <20251126221724.897221-7-samitolvanen@google.com>
-Subject: [PATCH bpf-next v4 1/4] bpf: crypto: Use the correct destructor kfunc type
+Message-ID: <20251126221724.897221-8-samitolvanen@google.com>
+Subject: [PATCH bpf-next v4 2/4] bpf: net_sched: Use the correct destructor
+ kfunc type
 From: Sami Tolvanen <samitolvanen@google.com>
 To: bpf@vger.kernel.org
 Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
@@ -96,52 +97,43 @@ Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, Alexei Starovoitov <ast@kernel.
 Content-Type: text/plain; charset="UTF-8"
 
 With CONFIG_CFI enabled, the kernel strictly enforces that indirect
-function calls use a function pointer type that matches the target
-function. I ran into the following type mismatch when running BPF
-self-tests:
-
-  CFI failure at bpf_obj_free_fields+0x190/0x238 (target:
-    bpf_crypto_ctx_release+0x0/0x94; expected type: 0xa488ebfc)
-  Internal error: Oops - CFI: 00000000f2008228 [#1]  SMP
-  ...
-
-As bpf_crypto_ctx_release() is also used in BPF programs and using
-a void pointer as the argument would make the verifier unhappy, add
-a simple stub function with the correct type and register it as the
-destructor kfunc instead.
+function calls use a function pointer type that matches the
+target function. As bpf_kfree_skb() signature differs from the
+btf_dtor_kfunc_t pointer type used for the destructor calls in
+bpf_obj_free_fields(), add a stub function with the correct type to
+fix the type mismatch.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Tested-by: Viktor Malik <vmalik@redhat.com>
 ---
- kernel/bpf/crypto.c | 8 +++++++-
+ net/sched/bpf_qdisc.c | 8 +++++++-
  1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
-index 83c4d9943084..1d024fe7248a 100644
---- a/kernel/bpf/crypto.c
-+++ b/kernel/bpf/crypto.c
-@@ -261,6 +261,12 @@ __bpf_kfunc void bpf_crypto_ctx_release(struct bpf_crypto_ctx *ctx)
- 		call_rcu(&ctx->rcu, crypto_free_cb);
+diff --git a/net/sched/bpf_qdisc.c b/net/sched/bpf_qdisc.c
+index adcb618a2bfc..e9bea9890777 100644
+--- a/net/sched/bpf_qdisc.c
++++ b/net/sched/bpf_qdisc.c
+@@ -202,6 +202,12 @@ __bpf_kfunc void bpf_kfree_skb(struct sk_buff *skb)
+ 	kfree_skb(skb);
  }
  
-+__bpf_kfunc void bpf_crypto_ctx_release_dtor(void *ctx)
++__bpf_kfunc void bpf_kfree_skb_dtor(void *skb)
 +{
-+	bpf_crypto_ctx_release(ctx);
++	bpf_kfree_skb(skb);
 +}
-+CFI_NOSEAL(bpf_crypto_ctx_release_dtor);
++CFI_NOSEAL(bpf_kfree_skb_dtor);
 +
- static int bpf_crypto_crypt(const struct bpf_crypto_ctx *ctx,
- 			    const struct bpf_dynptr_kern *src,
- 			    const struct bpf_dynptr_kern *dst,
-@@ -368,7 +374,7 @@ static const struct btf_kfunc_id_set crypt_kfunc_set = {
+ /* bpf_qdisc_skb_drop - Drop an skb by adding it to a deferred free list.
+  * @skb: The skb whose reference to be released and dropped.
+  * @to_free_list: The list of skbs to be dropped.
+@@ -449,7 +455,7 @@ static struct bpf_struct_ops bpf_Qdisc_ops = {
+ 	.owner = THIS_MODULE,
+ };
  
- BTF_ID_LIST(bpf_crypto_dtor_ids)
- BTF_ID(struct, bpf_crypto_ctx)
--BTF_ID(func, bpf_crypto_ctx_release)
-+BTF_ID(func, bpf_crypto_ctx_release_dtor)
+-BTF_ID_LIST_SINGLE(bpf_sk_buff_dtor_ids, func, bpf_kfree_skb)
++BTF_ID_LIST_SINGLE(bpf_sk_buff_dtor_ids, func, bpf_kfree_skb_dtor)
  
- static int __init crypto_kfunc_init(void)
+ static int __init bpf_qdisc_kfunc_init(void)
  {
 -- 
 2.52.0.487.g5c8c507ade-goog
