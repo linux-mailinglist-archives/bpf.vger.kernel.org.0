@@ -1,157 +1,143 @@
-Return-Path: <bpf+bounces-75618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0A0EC8C333
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 23:21:42 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D802C8C65A
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 00:58:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D02513AC968
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 22:20:36 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 265974E4F26
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 23:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8367F2FB99D;
-	Wed, 26 Nov 2025 22:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC5630C611;
+	Wed, 26 Nov 2025 23:58:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="a+eUVchy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IwEpBWXs"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A9627E7F0
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 22:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C493054F5
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 23:58:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764195632; cv=none; b=BRecNGgces4hgogoj6kV0IBWdF75kxNOW6kiX2iXxM0bNpD6ws9y6hyBKBH2O6jjqvQzW9jO+U+6r2NimGmtOVePBy/44LA4DYDLa1Q0DHOqSTzhP0PBtFuRmpH9oSK7bzNcXZJ9LgxKTc0XPwLXnZA+vx5/gqjoi37ThfFcMUY=
+	t=1764201508; cv=none; b=O8v4COPbsxagUFGLS3+1Wpv4Aa9au8DRpvqzWvia8zExg/3QKwZzTg6J/UOIt9mqnjZyzfr7iKzxvfUdCVO8P698d/wzogjC4pvQHPkCH2UWN2iSiLTZKBAKQoXZ6kFK00Ad9p2XUv7dgR61TQtylbvbgDY2nnA58FjQkDhYI3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764195632; c=relaxed/simple;
-	bh=0igFXLYu5hKG2KTGnD2aFnks2+K9FHMeFt/JFeWpnUo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k7tINo2UKsEKVHBggkBB8OEzVX9pz4cQ13XugivDR8c0qWnjnSX+PIz/2NwcoaWMEqmfSK2M36I/rzszwGQEtsdY9cAykcNzzi842pgyPPxlGowcD8r3pw+XTIsGaYS+mtgUw0TpVO+Rq1rl8VN3YQ4meaR/xiSsSkWpxGAkFtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=a+eUVchy; arc=none smtp.client-ip=91.218.175.170
+	s=arc-20240116; t=1764201508; c=relaxed/simple;
+	bh=fqModIZQ9weIdajfx2Law3kUMrQJn4OXAAZVino9I3I=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=s4J8eJxRNd6xvxR/y9pkOqhRR4AGC7OxFCCpZ7hP0hdhbXtJyJPnlMByjzmmxjmt8r/yMc3ioOMTWN6n5rkg5VWcHGFn/VVuaHQf7G1jYykpPDo6yvfwljoMbxJW3D1clBw41LuXlrnwbLKF8TQ8r4VvWKRbm6B1PuenuTONa24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IwEpBWXs; arc=none smtp.client-ip=95.215.58.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <68ecc660-1e02-4aa6-9bf1-3e56c3a23da4@linux.dev>
+Message-ID: <9ac1ab7b-1412-4e81-a993-df95c372c4d8@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764195617;
+	t=1764201493;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9g8i2m3HErDYjYqt4Hkjbxi9Nqmf5HurBqBAwcdaCgg=;
-	b=a+eUVchyxqYdPB5fn1a5mAKno7Fe1PFDLaklkXx+6IgUuL9N7YeUoQ2q4bwctTDgb4sC2Q
-	plRF6ODPCElC5vThuPB8k3x+LzsyeKeKaRYuIiXft9Lkla+sDjpuMalK07JyRfyU8Mkyvy
-	bDsu4clsLu5EIfYRixbFvelcRYKh0NA=
-Date: Wed, 26 Nov 2025 14:20:06 -0800
+	bh=pJsW4MSL8jrZwt1mHNooy6P3uX9Y7YjgeSxiW1DH7p8=;
+	b=IwEpBWXs+DaXxkfjq3hjka/S3m0r2fZlwZ+szIi+PQl7KYPQWdNo4SztZ6Ydhqos6rIPFk
+	02AAmEFhJcA6ctotzRhsdeuP88y8ZQNFc9s02+L0Oad83N5La54CNUlhB6Ptyv+2y/y45Q
+	wKnFL64HtnAY512PdUCeMEAXs+8Fty0=
+Date: Wed, 26 Nov 2025 15:58:01 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v12 2/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS
- flags support for percpu_array maps
-To: Chris Mason <clm@meta.com>, Leon Hwang <leon.hwang@linux.dev>,
- bot+bpf-ci@kernel.org, bpf@vger.kernel.org
-Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- jolsa@kernel.org, yonghong.song@linux.dev, song@kernel.org,
- eddyz87@gmail.com, dxu@dxuuu.xyz, deso@posteo.net, martin.lau@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, shuah@kernel.org, kerneljasonxing@gmail.com,
- chen.dylane@linux.dev, willemb@google.com, paul.chaignon@gmail.com,
- a.s.protopopov@gmail.com, memxor@gmail.com, yatsenko@meta.com,
- tklauser@distanz.ch, kernel-patches-bot@fb.com,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- martin.lau@kernel.org
-References: <20251126145039.15715-3-leon.hwang@linux.dev>
- <07707b44fc9032398db551041498d6265ccf0a0313ecd8779bd1fa82a7d96409@mail.kernel.org>
- <4d8120f7-f3b6-4654-9b14-0ee7da5f87ac@linux.dev>
- <26c4677b-aeff-4516-85f4-87b5d1a9f6ee@meta.com>
-Content-Language: en-US
+Subject: Re: [PATCH bpf-next v1 4/4] resolve_btfids: change in-place update
+ with raw binary output
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <26c4677b-aeff-4516-85f4-87b5d1a9f6ee@meta.com>
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+ Nicolas Schier <nicolas.schier@linux.dev>,
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ bpf@vger.kernel.org, dwarves@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
+References: <20251126012656.3546071-1-ihor.solodrai@linux.dev>
+ <20251126012656.3546071-5-ihor.solodrai@linux.dev>
+ <CAErzpmt7ER171hAjQ2SwbmC9R3dVsKHj02B8VM5gKMViP1iFqA@mail.gmail.com>
+ <6b61c22b-d38c-47c1-8b8f-a37e44866644@linux.dev>
+Content-Language: en-US
+In-Reply-To: <6b61c22b-d38c-47c1-8b8f-a37e44866644@linux.dev>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On 11/26/25 7:56 AM, Chris Mason wrote:
+On 11/26/25 11:13 AM, Ihor Solodrai wrote:
+> On 11/26/25 5:03 AM, Donglin Peng wrote:
+>> On Wed, Nov 26, 2025 at 9:29 AM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
+>>>
+>>> [...]
+>>>
+>>> For the kernel modules creating special .bpf.o file is not necessary,
+>>> and so embedding of sections data produced by resolve_btfids is
+>>> straightforward with the objcopy.
+>>
+>> The Makefile for the bpf selftests also needs be updated too:
+>> https://elixir.bootlin.com/linux/v6.18-rc7/source/tools/testing/selftests/bpf/Makefile#L708
+>>
+>> This results in the self-test for resolve_btfids failing:
+>>  $./vmtest.sh -- ./test_progs -t resolve_btfids -v
+>> ...
+>> test_resolve_btfids:PASS:id_check 0 nsec
+>> test_resolve_btfids:FAIL:id_check wrong ID for S (0 != 3)
 > 
+> Good catch, thanks.
 > 
-> On 11/26/25 10:24 AM, Leon Hwang wrote:
->>
->>
->> On 2025/11/26 23:11, bot+bpf-ci@kernel.org wrote:
->>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->>>> index d84af3719..01a99e3a3 100644
->>>> --- a/include/linux/bpf.h
->>>> +++ b/include/linux/bpf.h
->>>
->>> [ ... ]
->>>
->>>> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
->>>> index 1eeb31c5b..67e9e811d 100644
->>>> --- a/kernel/bpf/arraymap.c
->>>> +++ b/kernel/bpf/arraymap.c
->>>
->>> [ ... ]
->>>
->>>> @@ -398,10 +405,11 @@ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
->>>>  	struct bpf_array *array = container_of(map, struct bpf_array, map);
->>>>  	u32 index = *(u32 *)key;
->>>>  	void __percpu *pptr;
->>>> -	int cpu, off = 0;
->>>> +	void *ptr, *val;
->>>>  	u32 size;
->>>> +	int cpu;
->>>>
->>>> -	if (unlikely(map_flags > BPF_EXIST))
->>>> +	if (unlikely((map_flags & BPF_F_LOCK) || (u32)map_flags > BPF_F_ALL_CPUS))
->>>>  		/* unknown flags */
->>>>  		return -EINVAL;
->>>>
->>>> @@ -409,7 +417,7 @@ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
->>>>  		/* all elements were pre-allocated, cannot insert a new one */
->>>>  		return -E2BIG;
->>>>
->>>> -	if (unlikely(map_flags & BPF_NOEXIST))
->>>> +	if (unlikely(map_flags == BPF_NOEXIST))
->>>                               ^^
->>>
->>
->> ?
->>
->> No such change in this version.
->>
->> It seems that this change was inferred from v11 to v12 by AI itself
+> I remember I noticed this at some point, and then forgot...
 > 
-> Thanks for flagging this, I'll try to find this section of the logs to
-> see how the false positive checks failed to catch it.
+> Interestingly this test passes on CI [1]: 
 > 
-> -chris
+> 2025-11-26T03:09:52.0908317Z #366     reg_bounds_rand_ranges_u64_u64:OK
+> 2025-11-26T03:09:52.0925114Z #367     resolve_btfids:OK
+> 2025-11-26T03:09:52.3904190Z #368/1   res_spin_lock_failure/res_spin_lock_arg:OK
+> 
+> I'll take a closer look.
 
-AI got confused here, this was not in the diff.
+I figured out why this test was flaky.
 
-But it appears it got triggered, because there are these two code
-fragments nearby [1]:
+Even though I removed elf_update() call from resolve_btfids, the ELF
+was opened with:
+
+    elf = elf_begin(fd, ELF_C_RDWR_MMAP, NULL);
+
+And the buffers which resolve_btfids writes to are from Elf_Data
+returned by elf_getdata(). And so the file might actually get written
+to in-place, which is why the resolve_btfids test passed for me with
+no changes to the selftests.
+
+I switched ELF_C_RDWR_MMAP to ELF_C_READ_MMAP_PRIVATE, and then the
+ELF reliably remains intact (and the test fails). From libelf.h:
+
+  ELF_C_READ_MMAP_PRIVATE,	/* Read, but memory is writable, results are
+				   not written to the file.  */
+
+It makes sense to use this for what resolve_btfids is doing.
+
+I'll fix selftests/bpf/Makefile in the next revision.
 
 
-	if (unlikely(map_flags & BPF_NOEXIST))
-		/* all elements already exist */
-		return -EEXIST;
-
-and
-
-	if (unlikely(map_flags == BPF_NOEXIST))
-		/* all elements already exist */
-		return -EEXIST;
-
-Which is a good thing to notice even if this is intentional.
-
-Anyone knows if it is?
-
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/bpf/arraymap.c#n356
-
+> 
+> [1] https://github.com/kernel-patches/bpf/actions/runs/19690981192/job/56406840021
+> 
+>>
+>>
+>>> [...]
+>>>
 > 
 
 
