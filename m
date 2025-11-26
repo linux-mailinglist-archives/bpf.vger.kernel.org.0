@@ -1,154 +1,136 @@
-Return-Path: <bpf+bounces-75533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75534-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23D43C87E69
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 04:04:24 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79C64C87E6C
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 04:05:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B4C5B4E05E2
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 03:04:22 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E8B394E193B
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 03:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686B52FDC30;
-	Wed, 26 Nov 2025 03:04:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17E83090FE;
+	Wed, 26 Nov 2025 03:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LwS2nPoA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Rf/0zDXV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D4E23A562
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 03:04:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261DC23A562
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 03:05:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764126259; cv=none; b=X6++CsB8Dci7A68HZVdtcRyUZYUGNVtEFpypdJOpGh/iCIgmV0SYm17ernJVsfxdDwNEE5JKdhnuxIXsnQbT2HQxYLyIr7E/tG3+BSXm1ncpu4oA7Q/jSYdGRwMcMo/PSQleb1uQ+heGl37gkmkZXDoE1UhsDI7v3ZOjrAbaQ4Q=
+	t=1764126341; cv=none; b=hbJV/M5UlOan/s3WwXHXU9uJUMhjAMlpEC5TEgEPNKy+m00ur4ZASJNpan46Z1O1J2lWhYn2zDgjs3kvqOEcxtFzcu3pQWLbm+eh0Izje60+8xssMi1NWINHHD9ki1wXfOvekdnACnxjUiYo3avL6llcfsuD5WtVc/iohi67JaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764126259; c=relaxed/simple;
-	bh=d/OsOoMVxRXMBKic3leFD4ttAhYfNb0ryZrxApbataQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gTkSurLRlGgmtsYDl8n2dlub99u8kd5qR7y9/hXns7uxQoEW4tPxqS0lKFlanc1apUBfT9ahje/5xc3R/MzVkZ6tI8cKuPXluBlhk5ZIlAnGPxfHh9kjbGaVoBtWllyc/vWm/wC1xS6Pk6wtqLDQBxRyd02QcOErSlkWGNX5yOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LwS2nPoA; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-47789cd2083so36914185e9.2
-        for <bpf@vger.kernel.org>; Tue, 25 Nov 2025 19:04:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764126255; x=1764731055; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+L8IDoxYiHldQ+oIo026ISuZnBpF5JHpkMKgEiO+wyU=;
-        b=LwS2nPoA4fzcRuD1qqS5s7jJIByypQvLuuYYmlXPU6EHMXk/ZNHl8r8XzD2z8k3WIG
-         JARg14pKyQHuOYGNN3uJ/cOkc5qTExVlQRWqLuBMEZHtNqU+DXIGYrqhDtT9fyCo5e74
-         fwnmHlx/FnSs/3RRgcmAL5XlmJ3sxQzp6yLV8Th//2MndtEVOzTlMKdQx1IijgNdb7+Y
-         om8AM7B8Hqgwfo38HiEck92LepbZ9cScYX6d33T4dlkM6NT+Z3H0j6C9jXrmBO1MfZXl
-         Q19XMwFHiUYUnChKuDJ2yBNkgaba//uk8gaL4AuQZwDYQvGXYigr7iMhzaKoT4VxVpYT
-         Z8+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764126255; x=1764731055;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=+L8IDoxYiHldQ+oIo026ISuZnBpF5JHpkMKgEiO+wyU=;
-        b=TjNkzVxpHzFDvg4IputVsmWwLZKKxOsT6wnTXDaLG8mQSZrK+ZgFg3WovlM8rSeUsi
-         gLebQ8AMOnPhW5ttJCfP1lgrNOb+Y95YUY2GX/X9qjbCsQEmrgq89+ZAkD0tvufobT1p
-         s1B2MBn+kFKP1+NgJbsLGQqxjguZfbRVjpAovWhHeLSNOJNGkqJyW3DtiSvEKlzxun0l
-         ADwDNAO8qs77UuD+QPurfnEq8KAnHdeDfOJznh7Y13/VVsn3P5PqGaUmMcFuhZ+J6+gu
-         TmCB4NjQkUXrZhPfcKOqGoFgTnL0UcmOyxkKgzwhW0Jd6oXwzYVahZ4QyhLvQ1K5KvHQ
-         ngBg==
-X-Gm-Message-State: AOJu0YxN5dgyVJpB1cLh04bvJXuoMfv+L1m16rQKm+dOcxhbyghFpaau
-	hKXXNAxRlj8m3Zc8EBrWFkmLtHzMJhmzT/dtmXzgqSGco3Hm1soWFKF3uL+Oq4QlJD91NK3+7kq
-	HOHuelELgg52vm5jy/4A0mcZgBjUbUkg=
-X-Gm-Gg: ASbGncvCK3pr1AzN6zCt0yccs/CIQDy3246BIPrk/f1Mnoubn+rtxn8Srod26E9f8Gx
-	i/Sw8xRmeUVpqBrLUjZQb2TRytG6yOXLn+3xVDUfuf9nqV5aYyG48LrCYW+9v7qxE/uq3fsL997
-	SkhUpYCbQ0ZbQawtVw9S122aKkLLEBhX8aUnY4PyP9bjpAkVsXrc+ZXrK5xoET2FQhrNe9iDG9h
-	/0yhNvYQCLFcGMIP46TReZPAL22Z2e6OWVLwjJypjrSOjFLoSSF9CmSQbbYynvGvXEhCYcTIy3l
-	gCqnIis8t2VmnfDqoTUk58gGP02G
-X-Google-Smtp-Source: AGHT+IHJk/fvaVYr+OKStwKRUG8lTIT66xUxWZjIcegOdXS64yL6CTleODzAou0yxPoBLU6bkhH7HcvMSrMHJKJh78I=
-X-Received: by 2002:a05:6000:22ca:b0:3eb:d906:e553 with SMTP id
- ffacd0b85a97d-42cc1d23c80mr18005083f8f.55.1764126255521; Tue, 25 Nov 2025
- 19:04:15 -0800 (PST)
+	s=arc-20240116; t=1764126341; c=relaxed/simple;
+	bh=NHNwHd3W7m5WUag3yPdajmgu1wOMMkezJgeayIp9/Ow=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=mmd0WURVzp4gnWFecf44n7h1WKdxRj7jf/3tr+taZZJXX+TU3ZsydTlgYhYheiN2sNomSPSSgFyzscsSPsIxZ5QOKb0qVwwIziuQ1edZxBUv9DbcKnhRZjgiwE8yq67jT35OVA9jVlF1rxbsBe4LXiWSG3XYUxmB+YeIalbk0iI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Rf/0zDXV; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251125030858.2485401-1-memxor@gmail.com>
-In-Reply-To: <20251125030858.2485401-1-memxor@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 25 Nov 2025 19:04:04 -0800
-X-Gm-Features: AWmQ_bmF3xg0WDABfY68M38_H8JPaieAGNFMrzEO4iCUkunH6F1BdMlWfx7Szao
-Message-ID: <CAADnVQ+hvw+sMkob_+OYgc9=nkshG=CdXg4x=fDB9js_8BmUNQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1] rqspinlock: Introduce res_spin_trylock
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, 
-	Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1764126336;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a3jgBp1PfnBYXrgF3jUSFmct+uUwYqUAcA/YWm6mwpU=;
+	b=Rf/0zDXV8pBEyrbJgCvi0cWN+tHuwPVBoE7qmSdzYp0RxLX2/9C0eJ/lRaTggE4Jz09mHU
+	q9SeeV7XGll5YyOoq3FbocY1aXFvGpPdgazLV468zQsMUqBGszJHjJqievxz+Ont9mbh8/
+	9uXZQegwa9tzWpJgohYtRx0/ve536GA=
+Date: Wed, 26 Nov 2025 03:05:32 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: hui.zhu@linux.dev
+Message-ID: <87af0c7a8fc35cd96519a4e3f09d39918bdb7370@linux.dev>
+TLS-Required: No
+Subject: Re: [RFC PATCH 0/3] Memory Controller eBPF support
+To: "Michal Hocko" <mhocko@suse.com>
+Cc: "Roman Gushchin" <roman.gushchin@linux.dev>, "Andrew Morton"
+ <akpm@linux-foundation.org>, "Johannes Weiner" <hannes@cmpxchg.org>,
+ "Shakeel Butt" <shakeel.butt@linux.dev>, "Muchun Song"
+ <muchun.song@linux.dev>, "Alexei Starovoitov" <ast@kernel.org>, "Daniel
+ Borkmann" <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>,
+ "Martin KaFai Lau" <martin.lau@linux.dev>, "Eduard Zingerman"
+ <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong Song"
+ <yonghong.song@linux.dev>, "John Fastabend" <john.fastabend@gmail.com>,
+ "KP Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>,
+ "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>, "Shuah
+ Khan" <shuah@kernel.org>, "Peter Zijlstra" <peterz@infradead.org>,
+ "Miguel Ojeda" <ojeda@kernel.org>, "Nathan Chancellor"
+ <nathan@kernel.org>, "Kees Cook" <kees@kernel.org>, "Tejun Heo"
+ <tj@kernel.org>, "Jeff Xu" <jeffxu@chromium.org>, mkoutny@suse.com, "Jan
+ Hendrik Farr" <kernel@jfarr.cc>, "Christian Brauner"
+ <brauner@kernel.org>, "Randy Dunlap" <rdunlap@infradead.org>, "Brian
+ Gerst" <brgerst@gmail.com>, "Masahiro Yamada" <masahiroy@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, "Hui Zhu" <zhuhui@kylinos.cn>
+In-Reply-To: <aSWnPfYXRYxCDXG3@tiehlicka>
+References: <cover.1763457705.git.zhuhui@kylinos.cn>
+ <87ldk1mmk3.fsf@linux.dev>
+ <895f996653b3385e72763d5b35ccd993b07c6125@linux.dev>
+ <aR9p8n3VzpNHdPFw@tiehlicka>
+ <f5c4c443f8ba855d329a180a6816fc259eb8dfca@linux.dev>
+ <aSWdSlhU3acQ9Rq1@tiehlicka>
+ <6ff7dad904bcb27323ea21977e1160ebfa5e283d@linux.dev>
+ <aSWnPfYXRYxCDXG3@tiehlicka>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Nov 24, 2025 at 7:09=E2=80=AFPM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+2025=E5=B9=B411=E6=9C=8825=E6=97=A5 20:55, "Michal Hocko" <mhocko@suse.co=
+m mailto:mhocko@suse.com?to=3D%22Michal%20Hocko%22%20%3Cmhocko%40suse.com=
+%3E > =E5=86=99=E5=88=B0:
+
+
+>=20
+>=20On Tue 25-11-25 12:39:11, hui.zhu@linux.dev wrote:
+>=20
+>=20>=20
+>=20> My goal is implement dynamic memory reclamation for memcgs without =
+limits,
+> >  triggered by specific conditions.
+> >=20=20
+>=20>  For instance, with memcg A and memcg B both unlimited, when memcg =
+A faces
+> >  high PSI pressure, ebpf control memcg B do some memory reclaim work =
+when
+> >  it try charge.
+> >=20
+>=20Understood. Please also think whether this is already possible with
+> existing interfaces and if not what are roadblocks in that direction.
+
+I think it's possible to implement a userspace program using the existing
+PSI userspace interfaces and the control interfaces provided by memcg to
+accomplish this task.
+However, this approach has several limitations:
+the entire process depends on the continuous execution of the userspace
+program, response latency is higher, and we cannot perform fine-grained
+operations on target memcg.
+
+Now that Roman has provided PSI eBPF functionality at
+https://lore.kernel.org/lkml/20251027231727.472628-1-roman.gushchin@linux=
+.dev/
+Maybe we could add eBPF support to memcg as well, allowing us to implemen=
+t
+the entire functionality directly in the kernel through eBPF.
+
+Best,
+Hui
+
+>=20
+>=20Thanks!
+> --=20
+>=20Michal Hocko
+> SUSE Labs
 >
-> A trylock variant for rqspinlock was missing owing to lack of users in
-> the tree thus far, add one now as it would be needed in subsequent
-> patches. Mark as __must_check and __always_inline.
->
-> This essentially copies queued_spin_trylock, but doesn't depend on it as
-> rqspinlock compiles down to a TAS when CONFIG_QUEUED_SPINLOCKS=3Dn.
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  include/asm-generic/rqspinlock.h | 45 ++++++++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
->
-> diff --git a/include/asm-generic/rqspinlock.h b/include/asm-generic/rqspi=
-nlock.h
-> index 6d4244d643df3..a7f4b7c0fb78a 100644
-> --- a/include/asm-generic/rqspinlock.h
-> +++ b/include/asm-generic/rqspinlock.h
-> @@ -217,12 +217,57 @@ static __always_inline void res_spin_unlock(rqspinl=
-ock_t *lock)
->         this_cpu_dec(rqspinlock_held_locks.cnt);
->  }
->
-> +/**
-> + * res_spin_trylock - try to acquire a queued spinlock
-> + * @lock: Pointer to queued spinlock structure
-> + *
-> + * Attempts to acquire the lock without blocking. This function should b=
-e used
-> + * in contexts where blocking is not allowed (e.g., NMI handlers).
-> + *
-> + * Return:
-> + * * 1    - Lock was acquired successfully.
-> + * * 0    - Lock acquisition failed.
-> + */
-> +static __must_check __always_inline int res_spin_trylock(rqspinlock_t *l=
-ock)
-> +{
-> +       int val =3D atomic_read(&lock->val);
-
-This needs a comment why val =3D 0 like res_spin_lock() is doing
-is not enough here.
-
-> +       int ret;
-> +
-> +       if (unlikely(val))
-> +               return 0;
-> +
-> +       ret =3D likely(atomic_try_cmpxchg_acquire(&lock->val, &val, 1));
-> +       if (ret)
-> +               grab_held_lock_entry(lock);
-
-Same issue as with res_spin_lock()...
-
-Overall it makes sense, but let's defer it for now,
-since without users somebody might send a patch to remove it
-as dead code.
-
-pw-bot: cr
 
