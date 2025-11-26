@@ -1,317 +1,224 @@
-Return-Path: <bpf+bounces-75549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BEEBC88BB6
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:48:40 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACF53C88BF5
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:51:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DF3A44E3DDD
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 08:48:34 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 31004345CF2
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 08:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF27031A7F3;
-	Wed, 26 Nov 2025 08:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EAC031AF24;
+	Wed, 26 Nov 2025 08:50:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="KamogAc7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dbyaEBvs"
 X-Original-To: bpf@vger.kernel.org
-Received: from MRWPR03CU001.outbound.protection.outlook.com (mail-francesouthazon11011042.outbound.protection.outlook.com [40.107.130.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95D11219A86;
-	Wed, 26 Nov 2025 08:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.130.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764146909; cv=fail; b=T9dnMDXiX/+BngoT8vHpsvfw/iua6y+8+pQSG9VQfLQrsxUe+KqyhHm6YsP4ByyM1cGS7yL4DMcb0A3ltb2czGh1cHZvGMBpr+Rd+HrWTrlGLxMo7ajq+Li32zA9DcR8nT9YMm6Lx/ua3GI/SWH+Zlb3F/BJJPW5mfHnEPYgfNA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764146909; c=relaxed/simple;
-	bh=AlC8LZ5nBXsYQuxkaN0l3gFxATGznds+rAqqWQtSiZE=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=O3/0i1TzlNnJ9GkE056ShdizzAABV9cUeCDd5iqA5/TjoqpBcfNGqgKifeKaeXF7ZoO9/+miZtt3S3nd0k4zUDku+vQNKZDyXKjAknGt5n8JYhSuHVrEjOoOdQk/3S7PsSTbpaqUvK2gJL5hKyw75GPGMZqciSBPMDXkr+WWLDY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=KamogAc7; arc=fail smtp.client-ip=40.107.130.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=f1nzHjZaoyUlUUiIcaUA4wMvM8K4BWwvJNnx4NjOZOd7D36wE2oGiXLBuLoXfybJhAgwJ1aiSRrCcLJ3G+lJUch5xJbk0J1IlovS3MGmU4gAYQyCEShm+TmcXCa3oUSuQkKklxiBn2NfdCkI7oyb0Lp38gfaAR3vcQcnOwszy9BR6zC7mlJ3UwcyFFMdAA3lb3PVMCWAlbnVzPqiCL31Az0s+nW1rVfSgqQg3GUMhurM2a4PtXhH72k56mzxRGmv3DblhqJB2MeeOqjkP/2UBLako+RPuCBq08YIJ0+GWmPPPVYUjd5dclZYDe8PPf4UuIBhlRkBPGzK3QQm02PUbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PlmdXZk8A6/wRl9V/E8qQNu2oslO0h1ox6QCl0tm8dE=;
- b=jxHezE2i1V//3eNBJdLmb4k+m5zAKapcRJ3qKKsQu/4LBuC/aVIzp9Fyp1NxXBT69MLuzL/pe5KOyEn6Cls6Lfvgx6NFIqWt/DFPYK4fZYtOkSlrUb8NebCaZ+32ORX0m8mf8vi0QE5WRwPVlkJb0I0+Q1mOBOROQXaacE7MNPqSdDbtlqCGD2O4F2edJG9Nel20Bvu2X2bpqvqRtIPDGiAFRUgTYSrlTv18Khkc1t6dvfZHibob3V9qxEDhilR2MGg7PXDTlrcsenE5em7wnqlfhepVH5iqyHJWmWtAfZmjIbGitPE+slT6HOyWOe7deZZ6DfcIEf+Gajaby0tACg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia-bell-labs.com; dmarc=pass action=none
- header.from=nokia-bell-labs.com; dkim=pass header.d=nokia-bell-labs.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PlmdXZk8A6/wRl9V/E8qQNu2oslO0h1ox6QCl0tm8dE=;
- b=KamogAc7qL2AYQK7BBTUHtSnChCubj7U4RMLUzWUl91TlvdQfJRolGplO4MoG+jAVimkip9lEaOXEQ3Xa1YV702yZttO1OGLw67W7X/RBbS417fIC5oEpOTW599RbBJbssBrswEUVfYfXDWasSOTF/GZqm6ZuMzXMNAhmAR08LG1i6qajJE4ZBfCeMLq9HG5m71FdvXiZDbdMF1AVZ75QDa1W8eDIrCIGbmjzLIpBfFoxLP4wpnmqhlxqs8VAlVkphPsyTgqjTdpw3m2m7JfZzj1jZJ7WG8iuMNY0BWvTYEW5VJ5CIZqWCAcz0a5SFmsuEieLYTkZJ07bo61+0xyQA==
-Received: from PAXPR07MB7984.eurprd07.prod.outlook.com (2603:10a6:102:133::12)
- by PAWPR07MB11106.eurprd07.prod.outlook.com (2603:10a6:102:512::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.18; Wed, 26 Nov
- 2025 08:48:21 +0000
-Received: from PAXPR07MB7984.eurprd07.prod.outlook.com
- ([fe80::b7f8:dc0a:7e8d:56]) by PAXPR07MB7984.eurprd07.prod.outlook.com
- ([fe80::b7f8:dc0a:7e8d:56%2]) with mapi id 15.20.9366.009; Wed, 26 Nov 2025
- 08:48:20 +0000
-From: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>
-To: Paolo Abeni <pabeni@redhat.com>, "edumazet@google.com"
-	<edumazet@google.com>, "parav@nvidia.com" <parav@nvidia.com>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "corbet@lwn.net"
-	<corbet@lwn.net>, "horms@kernel.org" <horms@kernel.org>, "dsahern@kernel.org"
-	<dsahern@kernel.org>, "kuniyu@google.com" <kuniyu@google.com>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "dave.taht@gmail.com" <dave.taht@gmail.com>,
-	"jhs@mojatatu.com" <jhs@mojatatu.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"stephen@networkplumber.org" <stephen@networkplumber.org>,
-	"xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>, "jiri@resnulli.us"
-	<jiri@resnulli.us>, "davem@davemloft.net" <davem@davemloft.net>,
-	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, "donald.hunter@gmail.com"
-	<donald.hunter@gmail.com>, "ast@fiberby.net" <ast@fiberby.net>,
-	"liuhangbin@gmail.com" <liuhangbin@gmail.com>, "shuah@kernel.org"
-	<shuah@kernel.org>, "linux-kselftest@vger.kernel.org"
-	<linux-kselftest@vger.kernel.org>, "ij@kernel.org" <ij@kernel.org>,
-	"ncardwell@google.com" <ncardwell@google.com>, "Koen De Schepper (Nokia)"
-	<koen.de_schepper@nokia-bell-labs.com>, "g.white@cablelabs.com"
-	<g.white@cablelabs.com>, "ingemar.s.johansson@ericsson.com"
-	<ingemar.s.johansson@ericsson.com>, "mirja.kuehlewind@ericsson.com"
-	<mirja.kuehlewind@ericsson.com>, cheshire <cheshire@apple.com>,
-	"rs.ietf@gmx.at" <rs.ietf@gmx.at>, "Jason_Livingood@comcast.com"
-	<Jason_Livingood@comcast.com>, Vidhi Goel <vidhi_goel@apple.com>
-Subject: RE: [PATCH v6 net-next 03/14] net: update commnets for
- SKB_GSO_TCP_ECN and SKB_GSO_TCP_ACCECN
-Thread-Topic: [PATCH v6 net-next 03/14] net: update commnets for
- SKB_GSO_TCP_ECN and SKB_GSO_TCP_ACCECN
-Thread-Index: AQHcVTY/Vojp0P94/0mOC8z6JaaJb7T4W/UAgAFx7lCAAAltAIAAAXMAgArOEwA=
-Date: Wed, 26 Nov 2025 08:48:20 +0000
-Message-ID:
- <PAXPR07MB7984B864D41591CC30684028A3DEA@PAXPR07MB7984.eurprd07.prod.outlook.com>
-References: <20251114071345.10769-1-chia-yu.chang@nokia-bell-labs.com>
- <20251114071345.10769-4-chia-yu.chang@nokia-bell-labs.com>
- <d87782d4-567d-4753-8435-fd52cd5b88da@redhat.com>
- <PAXPR07MB79842DF3D2028BB3366F0AF6A3D7A@PAXPR07MB7984.eurprd07.prod.outlook.com>
- <6d4aad6e-ebe0-4c52-a8a4-9ed38ca50774@redhat.com>
- <PAXPR07MB79840A45F8DCE6A6956ABEC2A3D7A@PAXPR07MB7984.eurprd07.prod.outlook.com>
-In-Reply-To:
- <PAXPR07MB79840A45F8DCE6A6956ABEC2A3D7A@PAXPR07MB7984.eurprd07.prod.outlook.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nokia-bell-labs.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAXPR07MB7984:EE_|PAWPR07MB11106:EE_
-x-ms-office365-filtering-correlation-id: ebac6dfb-af1a-4d02-2b04-08de2cc88d06
-x-ld-processed: 5d471751-9675-428d-917b-70f44f9630b0,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|376014|7416014|1800799024|366016|38070700021|921020;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?dTLpC871UgLZBybZsfIm4U/pXsOVz/rmMd47FL66cPy72MX/77vD33csGqxh?=
- =?us-ascii?Q?CpZAG8GDr16SwKz/3IP8WWGuzg+YPHwqTvWnJyCZjHo9mStRyn9vY39lgPD0?=
- =?us-ascii?Q?TCak1FaMzEyd7HG3jtBpdb8X4R3HiN6v6r4b2/LDkNkBFyssCZkz1eOQu6Q4?=
- =?us-ascii?Q?2tZ7zm8PeV7/WLEF2LQvtmCZiZa7Mri6C1JNU1S8d+0Q/oWmPbvwYYJczdfM?=
- =?us-ascii?Q?hWZsS1D5EQ5y8o50rn9Bnkni0a4bvbPLcsHmzKEsxumiRxgTTqOcRuzl6vJR?=
- =?us-ascii?Q?iDeVb14mOVc7HU8XwZOGigpH8amhiieblw4KIBIsEdIa7yvpe6w+Oo38Ddo/?=
- =?us-ascii?Q?8r/R4DE+9Ch2k2A3Igte6RuBhBMeD9vxZykWAqtwMYxVcmBuv/zrkUjzM87I?=
- =?us-ascii?Q?1/NRDQBy4nOu0MXKX+tr/7p79FRUQlNCP2QZoIVuWWFngbqhncwtfgNAKWSL?=
- =?us-ascii?Q?4dkthLKYoPYYBP7GufDcB/OeRlroLhVEH/CYq9x4kH5D3BjxCc396PXmNHwY?=
- =?us-ascii?Q?GcSWAXUUhfaesptRRwWJBbI/ZVPKrFpVvfCTUmPm9iaW+3nm0EXPccjfbhJ5?=
- =?us-ascii?Q?RZDRizO4T5UVrZ+oIV+6U2eYWzgm+lFQjFQ9XUOB1TdT3E4AbBqLhj5Iy5M5?=
- =?us-ascii?Q?kw7J4o5hUC84D5Yr4X0/nO5E0ktEz/979WkYkD82FW/I7+uvj8NT0A8L/CTF?=
- =?us-ascii?Q?QBnlH4ws0RuZd/60Vu1uj0N5c1VQYLX+dmZdbMH80vHXo1nffIJ3xU+A02K7?=
- =?us-ascii?Q?3SWh+T1NyY7+IG1dnVKNFPmKd+s1q+QT+LITbRXvYOt/sK0YojnEwZGSvxil?=
- =?us-ascii?Q?mz/Ra76TZ8GUeamMs+ClnGsYSVNNBl/2u5TbKDLXBKgtkqW7FZk0V5SPvvgN?=
- =?us-ascii?Q?I5B5YJeL9BUxYJci/iwA9XbCm1X2jCcKtLr7ETUCijDIjaUDCfEk7/9GeMuF?=
- =?us-ascii?Q?zxEnj0twO9Qg95TPerwaGE6zotMkOdlM/kz6bFUvQLPLhpbRjYuGjbVFx/fl?=
- =?us-ascii?Q?bxV3nOCnxnOUuMpzx2ozWaJxBVTj63F+iNsm3iCHjhlc1RJEoqGhMzD+I2Ld?=
- =?us-ascii?Q?7HSd+HZinfK/SnjdsG7PJTjwAqkBgz5vLAShnCF8wQtqJaCesjGIETQjQTmt?=
- =?us-ascii?Q?HNFp4qtW63lKV+uQ9h17uMD5gPagbUBOD+HK0uuA//1BWmzOgF5+3qO0gibY?=
- =?us-ascii?Q?7eqqE05Jb8s8e1Qkf7QSxU6wW4LZ+r5MM8ACr/mkPMddiaQ7eL8BDR/YzfZv?=
- =?us-ascii?Q?D0IMiXTcNcbBNNy7s/4f8QcUS+mlSKpNzseATJ614vIHz2wHi/9WV5TdVbGe?=
- =?us-ascii?Q?JBtHFiEt3FOsahVF8tPQATopyFwpokTvXjPWMjPaVEMLoGdkfwvjH4RejGIq?=
- =?us-ascii?Q?eO6shfjOVKJlo/Z8mfz5KLgkrqotFC6EhreAsuMW1uy1lEPhukanv+WtMPze?=
- =?us-ascii?Q?C+fvxMVC1sy1ZFsAg/tsVIzI++upgPlAfPCXgHTbzwqizNSRnKpIzDlvTkUs?=
- =?us-ascii?Q?57VPTp3QYtZ23+ICswupzZLs33T9qgyg4tPJrXrZeKEtqwVBR9VCP3NoUA?=
- =?us-ascii?Q?=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR07MB7984.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016)(38070700021)(921020);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?F0XOb3IU6IV5Xg+LlNq21YB1mG09BzaD9J5AKKVt0jCV4zZFEYKBISk0wU8e?=
- =?us-ascii?Q?IH90GtNaHM/FScplTQCSHXjQBjs2+BZeM+TtDvWaZYB+CY94Hq9YKdVie3+q?=
- =?us-ascii?Q?aGlmYPsScRkobeG8ufbSiP4HuGfklh6Bm8O+pg6IiVDXK9mZ4cWiFpwBAxaC?=
- =?us-ascii?Q?Hy/aIH6QhkEY+b8235jB/0sqGWA6fS8Y9kDby1NaVwRg1mQsEAYW7AdnOlY/?=
- =?us-ascii?Q?pn61lF+30qyJZ5VxD4TzOTG4ObM1PksqGeCrXmaHDrGHhHM5gzOInK4ugEqs?=
- =?us-ascii?Q?6BhCfv/AQ5wGFLBCUePLsZA1SuQdTw+77Axet6bCSZUWXr708FrU46g3Makg?=
- =?us-ascii?Q?tnZsQjXg+J1QxcFX9PZRG9m+cHGrheRc52QQTgF8oN5cTsvgKOcQrxzaV1Y+?=
- =?us-ascii?Q?g7TQNfsebGWsicO9TSS88CtReezFH/nz7KARsdh3Jsw6qFnH814vCY8TfvmE?=
- =?us-ascii?Q?yA4u7HB4mWLCn6nXSVBVM7pCJvf0pG4xyi1qpeLwaAcsHPvIiiBkmt2YJ3lN?=
- =?us-ascii?Q?yaZPSwzpkobj4GfWblkP08nigq/FQH5GaYRkQe2W77JOJ2350MOkNpqHdlNG?=
- =?us-ascii?Q?4iXU/wWrB+fxV8xp925A/+QIRPoYtJGgK6tOeqAxM+o7yGTV2mPiRlz8rcBf?=
- =?us-ascii?Q?dQ4CoU8DyCI6Sx6TiFycgLiwv56gM+K+yoh7LTGgZiab1giQNvPDhg8dLKJp?=
- =?us-ascii?Q?f4IpMIe1ZWLLtDSIRAqQ2FtEAsJt8ErqZ+C9osQ3cZ19wn83zNT2aKlyrfTQ?=
- =?us-ascii?Q?SCAkjdg/KheEeGZIEeiJepfVr8CQaxj7R8B+5TU5QpH4Wv3ugIlVXnpdZtOm?=
- =?us-ascii?Q?73Jd5Rs4+ageLpTdATSV+ylTNib1WfhiEWU8IzaaY6jlKCCcX8ZHuBsQFiNT?=
- =?us-ascii?Q?OSyagO76GYmRzhlXZxr6wnoxqpRADRABgoUeuJa1IxPwShHPuDqasaucAJnN?=
- =?us-ascii?Q?i7tMXDZVUlNlZQlo3I8RrYJv980DZG9Cv+siK0eHqxN1dZGFp3eMsTe6/9R3?=
- =?us-ascii?Q?PetqUIMPeNpd07fwRAxt+Qu6DD37MA6YW1pn2naYT7hfkEmqqML9tNDQGhah?=
- =?us-ascii?Q?5HoP8k/FkqIuswLI+4POrYqwyEwow5wgNm59aUOG/PbcyRkFXWz7I6jaV8/O?=
- =?us-ascii?Q?7urx8l+ERCIdDrHYOheUjdfBLpECZ6JJ/7AEYfMGFJKnY+E1/HR/ggg787m5?=
- =?us-ascii?Q?S/d7Gw5z08j2eC3Pt+I3Bzb3aBCTzIgfI+rmapWNovOOWG0L0Gn5DO9Rn9tJ?=
- =?us-ascii?Q?y/vA/cHee1Hz8LtVZnDvCnV/ias0EqxvT62NQPC72COzVWhdZlj5nvW+szom?=
- =?us-ascii?Q?wFCtjj9NVboJCpLGDVpkoxePKMAzJCSEDvfiV9ecpeICe9Q85L4bWjLmKDuR?=
- =?us-ascii?Q?CE8QFsjanCCi4zaCQOglpPG9gTm5/uhuM525r8vUYqTKtyBCN0oGvuQECRkK?=
- =?us-ascii?Q?5OMki5A//ku0C2BzUU0v4Fy+d+H8xeP8aoTfELktx3bS+z4r9nZkIGMB83NL?=
- =?us-ascii?Q?5GShVNL+6zKs/i3ML39MY6s3oBRNujNwdMGxkimIzQKJtSV4GoiAT9tVRTb0?=
- =?us-ascii?Q?yLSe61E5sElhICiRSFFUrsRvTdIyvFJHOi4GPnXWBH4noeftaihSfOD11BHy?=
- =?us-ascii?Q?FA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3809F31A808
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 08:50:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1764147034; cv=none; b=a8zkbdJ/fBzR45ohIPSdQ2duLJYggj+8u4BOJc5j9k6E058dnLrn+yiLWEhPV3COMObdgwwGf/pB+dNwYb1QK9OaC7p+XcIRIfuaEIKioZ5BgCBJ21kkEgR+765tMO6VDDgw0FEwPQ7ft5oIC82I52/ojzw2GzLlSc6y/TeQT+E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1764147034; c=relaxed/simple;
+	bh=evRz1+RSm19y+i3oY7bdpBtGC57ReMDJiKJsw3sQlM0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N9XLZDWXn692nOyKumt6QS3q2377ydtaXnGnRKm6d1DzJ7B+3ehQljOEryzvE+llMPcd/RLQCPFP2CKMEvfqJ7Vwooh4XbllCc8eY+8F7kr9ZVvyyhLUsLzVuQ4X2kTkimW/t5O646W/IsCoXhEKFe7AXgm0DcdzZR8gv1q+OdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dbyaEBvs; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-7a9cdf62d31so7754801b3a.3
+        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 00:50:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764147032; x=1764751832; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BxNPd6xRith5Tmbdr3Wot2eK29BxDgV+As0Pvo83p7s=;
+        b=dbyaEBvs9sQs4p4BAcalyfiJRwv+fJo6/Byitwms7jvG8lph03fptcGSv7+hS/mmV1
+         7Z6VSwOZTQXCWpANavbHtuVeoQJq3QgKwFYO+76ychExOvj5l55znoeVLbYcFgbVpL7H
+         mR8SPxCfZk5EaaphpB1eH5YNtEvI/ZayjhNmfoCtM5fbej0juHa3wb6QQy5l1edupGIf
+         kdpBNVyZCPAsl+/OD8+G6kD2peu82YukJouN+WpNmdQvd1Z6TZGxSqWishhoY884hXIp
+         ypXH81TNXTTfyEnSmj8GTGINUrXCQFj/3s6RV6zeP+RaenTiV84uERhZQCkntEE42r+k
+         26eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764147032; x=1764751832;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BxNPd6xRith5Tmbdr3Wot2eK29BxDgV+As0Pvo83p7s=;
+        b=QyotVAEEmzaJmxSZGcxOkUHRWH7omxuNa5oUuWlPOSPPSASMw05JSnqdlaxQtU3gf/
+         N/U9S1ojWo/8qVIGZETG+aAw3rQ++Qf7BvKmAyJsOt28rbzBzFloi2Ep/1YJ9GGDetwF
+         oPoM9mNr3X/FeeuaY5bD9NuRApfSxeUyNjCspkf6DdKpsTCeYr0v2wJ+MaDBs4ooejmU
+         wb7F6LnyyvwFmWMEWJGFEf0G9SGzqwRkh6mU8SwO8Xn9HkR9e0VxXeYmFNbMdaHgNKaV
+         OsJpTGHuz34AIsJZCRfNzsLjTcSlaLvJqGe+G4hia35v3431AdgHF51pjfndieYYTix8
+         1+9g==
+X-Forwarded-Encrypted: i=1; AJvYcCU7+B5aUjPQqqjigTDzLZU6mAI50S/OFqQaD1nZDVTdlsh6y3Nox/tJWgBIi62iudrQ6uM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwZo0I3PsYggKiu4TIbuvfurRgwByEW0MNBPpiPLGRFQMfZyCz5
+	y5yBhNqsjH7M2MsSOB32rDXBW7BiGJg1V3sEe857v8CQUcAZmoQzDQ5aZb6/mYU5Ka4=
+X-Gm-Gg: ASbGncsV8Gp3dJMRG9unRUi84tePm3Mt4qle+I4gsZ7Ay+kvTgSf87Gph4bzO5vSt72
+	Smlc4Yi0WLirXsKnA/Iruw6rGnpTMNdmBJQGc8nAV/7Zsyjb+cP5TtOIqbMlqmgtHIsc3WSlIKC
+	Jf3ORnOF+IVKhXtcoc5ty80SA9TISMB8bNwtugwSH6xgXis26Th50jBxEEqN590tIF4c773eOmM
+	9+bT19/tIqJ+9uKexgYeoITrvMJqCbxTH6MntYtbQxLS2zzI3fHoWWpS6Jzdu+faMhunLKjfims
+	DK57gJWBkp2i2KlfLOVPrZzF5OrztDQY4qA9pMvfv/uRlftHXTPbJ6M/8eqT0uKqXqZZNvPPT9F
+	iSFEjJTo7TXBvX7WmmmdaBLXHIKhl00m5lRr8GRjMeO1Auf/76uH9wsp51AQkFaTD8Fy3Bw9QuK
+	LWn0Xj76IVCOGUPU/UygHcW0IGWG8=
+X-Google-Smtp-Source: AGHT+IGwLyfOcKohWhkx4wsLXmUqJy8CxtZzVuBRUWq8FkbjIG+P5Po6itxt7NmRJiyuHIpiKAEfBw==
+X-Received: by 2002:a05:6a00:10c6:b0:7aa:d1d4:bb68 with SMTP id d2e1a72fcca58-7c58e112cb4mr17344571b3a.20.1764147032313;
+        Wed, 26 Nov 2025 00:50:32 -0800 (PST)
+Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7c3f023fd82sm20885721b3a.42.2025.11.26.00.50.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Nov 2025 00:50:31 -0800 (PST)
+From: Donglin Peng <dolinux.peng@gmail.com>
+To: ast@kernel.org,
+	andrii.nakryiko@gmail.com
+Cc: eddyz87@gmail.com,
+	zhangxiaoqin@xiaomi.com,
+	ihor.solodrai@linux.dev,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	pengdonglin <pengdonglin@xiaomi.com>
+Subject: [RFC bpf-next v8 0/9] Improve the performance of BTF type lookups with binary search
+Date: Wed, 26 Nov 2025 16:50:16 +0800
+Message-Id: <20251126085025.784288-1-dolinux.peng@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nokia-bell-labs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR07MB7984.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ebac6dfb-af1a-4d02-2b04-08de2cc88d06
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Nov 2025 08:48:20.4027
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +t1KNgv06/Kk7Hwy2IXtFK7VldaXeA+TCtAR/cHO3UAyMBr7/mCpcDGJYyjE2blm/1x8G7vzHgyrKMNFApHcXixeonYvl6YHDsa2KKXxfE6O1A1iVq0dagIkDgPfdI9I
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR07MB11106
+Content-Transfer-Encoding: 8bit
 
-> -----Original Message-----
-> From: Chia-Yu Chang (Nokia)=20
-> Sent: Wednesday, November 19, 2025 12:22 PM
-> To: 'Paolo Abeni' <pabeni@redhat.com>; edumazet@google.com; parav@nvidia.=
-com; linux-doc@vger.kernel.org; corbet@lwn.net; horms@kernel.org; dsahern@k=
-ernel.org; kuniyu@google.com; bpf@vger.kernel.org; netdev@vger.kernel.org; =
-dave.taht@gmail.com; jhs@mojatatu.com; kuba@kernel.org; stephen@networkplum=
-ber.org; xiyou.wangcong@gmail.com; jiri@resnulli.us; davem@davemloft.net; a=
-ndrew+netdev@lunn.ch; donald.hunter@gmail.com; ast@fiberby.net; liuhangbin@=
-gmail.com; shuah@kernel.org; linux-kselftest@vger.kernel.org; ij@kernel.org=
-; ncardwell@google.com; Koen De Schepper (Nokia) <koen.de_schepper@nokia-be=
-ll-labs.com>; g.white@cablelabs.com; ingemar.s.johansson@ericsson.com; mirj=
-a.kuehlewind@ericsson.com; cheshire <cheshire@apple.com>; rs.ietf@gmx.at; J=
-ason_Livingood@comcast.com; Vidhi Goel <vidhi_goel@apple.com>
-> Subject: RE: [PATCH v6 net-next 03/14] net: update commnets for SKB_GSO_T=
-CP_ECN and SKB_GSO_TCP_ACCECN
->=20
-> > -----Original Message-----
-> > From: Paolo Abeni <pabeni@redhat.com>=20
-> > Sent: Wednesday, November 19, 2025 11:40 AM
-> > To: Chia-Yu Chang (Nokia) <chia-yu.chang@nokia-bell-labs.com>; edumazet=
-@google.com; parav@nvidia.com; linux-doc@vger.kernel.org; corbet@lwn.net; h=
-orms@kernel.org; dsahern@kernel.org; kuniyu@google.com; bpf@vger.kernel.org=
-; netdev@vger.kernel.org; dave.taht@gmail.com; jhs@mojatatu.com; kuba@kerne=
-l.org; stephen@networkplumber.org; xiyou.wangcong@gmail.com; jiri@resnulli.=
-us; davem@davemloft.net; andrew+netdev@lunn.ch; donald.hunter@gmail.com; as=
-t@fiberby.net; liuhangbin@gmail.com; shuah@kernel.org; linux-kselftest@vger=
-.kernel.org; ij@kernel.org; ncardwell@google.com; Koen De Schepper (Nokia) =
-<koen.de_schepper@nokia-bell-labs.com>; g.white@cablelabs.com; ingemar.s.jo=
-hansson@ericsson.com; mirja.kuehlewind@ericsson.com; cheshire <cheshire@app=
-le.com>; rs.ietf@gmx.at; Jason_Livingood@comcast.com; Vidhi Goel <vidhi_goe=
-l@apple.com>
-> > Subject: Re: [PATCH v6 net-next 03/14] net: update commnets for SKB_GSO=
-_TCP_ECN and SKB_GSO_TCP_ACCECN
-> >=20
-> >=20
-> > CAUTION: This is an external email. Please be very careful when clickin=
-g links or opening attachments. See the URL nok.it/ext for additional infor=
-mation.
-> >=20
-> >=20
-> >=20
-> > On 11/19/25 11:24 AM, Chia-Yu Chang (Nokia) wrote:
-> > > I was thinking to totally remove ECN from Rx path,
-> >=20
-> > ??? do you mean you intend to remove the existing virtio_net ECN suppor=
-t? I guess/hope I misread the above.
-> >=20
-> > Note that removing features from virtio_net is an extreme pain at best,=
- and more probably simply impossible - see the UFO removal history.
-> >=20
-> > Please clarify, thanks!
-> >=20
-> > Paolo
->=20
-> This ECN flag on RX path shall not be used in Rx path for forwarding scen=
-ario. But it can still be used on Tx path in virtio_net.
->=20
-> And on RX path, new ACCECN flag shall be used to avoid breaking CWR flag =
-for latter GSO Tx in forwarding scenario.
->=20
-> Let me borrow an example from Ilpo:
->=20
-> SKB_GSO_TCP_ECN will not replicate the same TCP header flags in a forward=
-ing scenario:
-> Segment 1 CWR set
-> Segment 2 CWR set
->=20
-> GRO rx and GSO tx with SKB_GSO_TCP_ECN, after forwarding outputs these se=
-gments:
-> Segment 1 CWR set
-> Segment 2 CWR cleared
->=20
-> Thus, the ACE field in Segment 2 no longer contains the same value as it =
-was sent with.
->=20
->=20
-> So, maybe a table below better represent this?
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
-> |               |   SKB_GSO_TCP_ECN    |     SKB_GSO_TCP_ACCECN    |
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
-> |               | The 1st TCP segment  |   The TCP segment uses    |
-> |    Tx path    | has CWR set and      |  the CWR flag as part of  |
-> |               | suqsequent segments  |  ACE signal, and the CWR  |
-> |               | have CWR cleared.    |   flag is not modified.   |
-> +---------------+----------------------+---------------------------+
-> |    Rx path    | Shall not be used to |  Used to indicate latter  |
-> | of forwarding | avoid potential ACE  |  GSO Tx NOT to clear CWR  |
-> |    scenario   |  signal corruption.  | flag from the 2nd segment |
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
->=20
->=20
-> Chia-Yu
+From: pengdonglin <pengdonglin@xiaomi.com>
 
-Hi Paolo,
+This patch series introduces significant performance improvements (~2855x)
+for BTF type lookups by implementing type permutation and binary search
+optimizations.
 
-I was thinking to move this patch to a latter series in which we would like=
- to add ACCECN flags for virtio_net and replace some existing SKB_GSO_TCP_E=
-CN of RX path.
+The series addresses the performance limitations of linear search in large
+BTFs by:
+1. Adding BTF permutation support
+2. Using resolve_btfids to sort BTF during the build phase
+3. Checking BTF sorting
+4. Using binary search when looking up types
 
-Hope this is ok for you.
+Patch #1 introduces an interface for btf__permute in libbpf to relay out BTF.
+Patch #2 adds test cases to validate the functionality of btf__permute in base
+         and split BTF scenarios.
+Patch #3 introduces a new phase in the resolve_btfids tool to sort BTF by name
+         in ascending order.
+Patches #4-#7 implement the sorting check and binary search.
+Patches #8-#9 optimize type lookup performance of two kernel functions.
 
+Here is a simple performance result [1] to find 60,995 named types in vmlinux
+BTF:
+./vmtest.sh -- ./test_progs -t btf_permute/perf -v
 
-For instance , in mlx5e_shampo_update_ipv4_tcp_hdr() of drivers/net/etherne=
-t/mellanox/mlx5/core/en_rx.c, SKB_GSO_TCP_ECN is still being used for RX no=
-w.
+Results:
+| Condition          | Lookup Time | Improvement  |
+|--------------------|-------------|--------------|
+| Unsorted (Linear)  | 27,697.4 ms | Baseline     |
+| Sorted (Binary)    |      9.7 ms | 2855x faster |
 
-But this needs to be either changed into SKB_GSO_TCP_ACCECN or totally remo=
-ved to avoid potential CWR corruption.
+The binary search implementation reduces lookup time from 27.7 seconds to 9.7
+milliseconds, achieving a **2855x** speedup for large-scale type queries.
 
-For virtio_net RX path, our planned change is to check wither ACCECN is bei=
-ng set first and then translate from VIRTIO_NET_HDR_GSO_ACCECN to SKB_GSO_T=
-CP_ACCECN.
+Changelog:
+v8:  
+- Remove the type dropping feature of btf__permute (Andrii)
+- Refactor the code of btf__permute (Andrii, Eduard)
+- Make the self-test code cleaner (Eduard)
+- Reconstruct the BTF sorting patch based on Ihor's patch series [2]
+- Simplify the sorting logic and place anonymous types before named types
+  (Andrii, Eduard)
+- Optimize type lookup performance of two kernel functions
+- Refactoring the binary search and type lookup logic achieves a 4.2%
+  performance gain, reducing the average lookup time (via the perf test
+  code in [1] for 60,995 named types in vmlinux BTF) from 10,217 us (v7) to
+  9,783 us (v8).
 
-And if VIRTIO_NET_HDR_GSO_ACCECN is not set but VIRTIO_NET_HDR_GSO_ECN is s=
-et, then VIRTIO_NET_HDR_GSO_ECN will be translated into SKB_GSO_TCP_ECN.
+v7:
+- Link: https://lore.kernel.org/all/20251119031531.1817099-1-dolinux.peng@gmail.com/
+- btf__permute API refinement: Adjusted id_map and id_map_cnt parameter
+  usage so that for base BTF, id_map[0] now contains the new id of original
+  type id 1 (instead of VOID type id 0), improving logical consistency
+- Selftest updates: Modified test cases to align with the API usage changes
+- Refactor the code of resolve_btfids
 
-Chia-Yu
+v6:
+- Link: https://lore.kernel.org/all/20251117132623.3807094-1-dolinux.peng@gmail.com/
+- ID Map-based reimplementation of btf__permute (Andrii)
+- Build-time BTF sorting using resolve_btfids (Alexei, Eduard)
+- Binary search method refactoring (Andrii)
+- Enhanced selftest coverage
+
+v5:
+- Link: https://lore.kernel.org/all/20251106131956.1222864-1-dolinux.peng@gmail.com/
+- Refactor binary search implementation for improved efficiency
+  (Thanks to Andrii and Eduard)
+- Extend btf__permute interface with 'ids_sz' parameter to support
+  type dropping feature (suggested by Andrii). Plan subsequent reimplementation of
+  id_map version for comparative analysis with current sequence interface
+- Add comprehensive test coverage for type dropping functionality
+- Enhance function comment clarity and accuracy
+
+v4:
+- Link: https://lore.kernel.org/all/20251104134033.344807-1-dolinux.peng@gmail.com/
+- Abstracted btf_dedup_remap_types logic into a helper function (suggested by Eduard).
+- Removed btf_sort.c and implemented sorting separately for libbpf and kernel (suggested by Andrii).
+- Added test cases for both base BTF and split BTF scenarios (suggested by Eduard).
+- Added validation for name-only sorting of types (suggested by Andrii)
+- Refactored btf__permute implementation to reduce complexity (suggested by Andrii)
+- Add doc comments for btf__permute (suggested by Andrii)
+
+v3:
+- Link: https://lore.kernel.org/all/20251027135423.3098490-1-dolinux.peng@gmail.com/
+- Remove sorting logic from libbpf and provide a generic btf__permute() interface (suggested
+  by Andrii)
+- Omitted the search direction patch to avoid conflicts with base BTF (suggested by Eduard).
+- Include btf_sort.c directly in btf.c to reduce function call overhead
+
+v2:
+- Link: https://lore.kernel.org/all/20251020093941.548058-1-dolinux.peng@gmail.com/
+- Moved sorting to the build phase to reduce overhead (suggested by Alexei).
+- Integrated sorting into btf_dedup_compact_and_sort_types (suggested by Eduard).
+- Added sorting checks during BTF parsing.
+- Consolidated common logic into btf_sort.c for sharing (suggested by Alan).
+
+v1:
+- Link: https://lore.kernel.org/all/20251013131537.1927035-1-dolinux.peng@gmail.com/
+
+[1] https://github.com/pengdonglin137/btf_sort_test
+[2] https://lore.kernel.org/bpf/20251126012656.3546071-1-ihor.solodrai@linux.dev/
+
+pengdonglin (9):
+  libbpf: Add BTF permutation support for type reordering
+  selftests/bpf: Add test cases for btf__permute functionality
+  tools/resolve_btfids: Support BTF sorting feature
+  libbpf: Optimize type lookup with binary search for sorted BTF
+  libbpf: Verify BTF Sorting
+  btf: Optimize type lookup with binary search
+  btf: Verify BTF Sorting
+  bpf: Optimize the performance of find_btf_percpu_datasec
+  bpf: Optimize the performance of find_bpffs_btf_enums
+
+ include/linux/btf.h                           |   1 +
+ kernel/bpf/btf.c                              | 148 +++++++++-
+ kernel/bpf/inode.c                            |  42 ++-
+ kernel/bpf/verifier.c                         |   7 +-
+ tools/bpf/resolve_btfids/main.c               |  68 +++++
+ tools/lib/bpf/btf.c                           | 260 ++++++++++++++++--
+ tools/lib/bpf/btf.h                           |  36 +++
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/btf_permute.c    | 228 +++++++++++++++
+ 9 files changed, 733 insertions(+), 58 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_permute.c
+
+-- 
+2.34.1
+
 
