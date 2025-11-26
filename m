@@ -1,187 +1,161 @@
-Return-Path: <bpf+bounces-75559-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75560-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 558C6C88C3A
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:53:30 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3449EC88C58
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:55:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EFDDB4EC5B3
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 08:52:44 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 80F094ECA8A
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 08:53:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC293233E3;
-	Wed, 26 Nov 2025 08:51:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA77E31A7F6;
+	Wed, 26 Nov 2025 08:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W40X1mE1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O5/NUMYY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADE37322C9D
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 08:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20F431A800
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 08:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764147064; cv=none; b=j7pxwbBr3J6RqK+ideCzIcLV8MTIbm/h/zCCjyQcfnrONz2mYuDw/ZBxdL+ekhfv5Nv7wk1bkIJ0HHQYFw5zFQ4iM7rGxK95Huu5k3rfmPwnkfjPAZ6hJC0b0/a+iuhY1tkGT3WXIK048e+MQDHGNHxEbNdHe4IGFe/I+OMjNOM=
+	t=1764147178; cv=none; b=q0gOg39zjGJp0j2PTOTkZSx9npH1OlOw60o85VdUvgYteo3r2qpo+eJ5i5XCglCXuBGQDSZxa/MjF4XGeqHoeRxu+tLjwCzLsFIwlCJbAFAyqsZ0UzgyMtst+zARTXsK21dsciRNnRt8BiZ+ItELRxJRcIrfa3HqKd+6dF4+RZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764147064; c=relaxed/simple;
-	bh=n+zH9plFFMUYGIEcY3wzYO3Lyz+b74AkBCCdAEyYNdU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BXvW3bdC4dBOiGR81k2SR9KN/uxUnS+mbcxtt4vJIsagoN85k23euJxwEJXoAVpL7KxpMlSlU/hLP3QWS9ZVgvRTizHa3yexf1QLk3BWM4xXBc9JK5+2No4Wh1jHJ6186KvQLr5dli5/4so+7FOe6t1L/KpZj+qYv+zYk5OJX4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W40X1mE1; arc=none smtp.client-ip=209.85.210.174
+	s=arc-20240116; t=1764147178; c=relaxed/simple;
+	bh=J4BoZTcMCIwSrHMIm1Wg115n46MGz6eizwWMi1v8YGA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Rgz3SIRujqoO6oO/1I62pz0vbtyVUhK95Vj52ETw0y6Ir4iw1vOWvFzzNdYlRlUBefnbAY7D/jauenz1DKgzezDZBHfCmRuT4FW6NeKtH3DjzLy2VzSLoYtFhnPSALc/6fSRIw343Ha8YiArPU4m14+BJ39pDhZrFS5jBIfBR10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O5/NUMYY; arc=none smtp.client-ip=209.85.214.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-7b89c1ce9easo7648302b3a.2
-        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 00:51:02 -0800 (PST)
+Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-29812589890so75893055ad.3
+        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 00:52:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764147062; x=1764751862; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FhW1CqQDAMm+jon2EpWEcUDvYwGJtYovETBfwMR4CKg=;
-        b=W40X1mE1wHj00OK86wwq/JvcjMFvIb9GrNK94IItOm6DanbO/vl8X78KBNuGlgrkKv
-         h2uGDVem9XuxbPtfuRY03Nsf08BLxdg/H+6CIIgNDLXSKW4aUGsKiXbwGJTPiPtj1KnU
-         VfAZv6i2hECQTrPG8E/dY2Fi8mME1iFhIMWrQdV+lbEYYQQX/rtZKKW4whm2EYI7Pf3w
-         4PgICSJz0wbijVy9SNOBIaiJVjpc//7Dxqmfa/XSatWj8QSvUygUcd5NeECbgKmf/nic
-         7CAP+1ee+V0YiS4pKMFzztM+y02DK6XRV1K1NofzoGEZAVTBNHNZN7ldpBZgUIMgXNal
-         TH4A==
+        d=gmail.com; s=20230601; t=1764147176; x=1764751976; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jgf6QzPNkLnaNG6eo7VvZMmMgNGAzeOfWslTIH6cEEA=;
+        b=O5/NUMYYTPeuduAqlaPClPrzDrbfkLKttv/VLV6vTviO5yr7ianENsD/ikOOvxJAj/
+         iLlisLfZa5FFqOD0GTgKj2SIIClcdIGJGuBAig/WAqm2139NdTX+mvotQ+Psb6cGQco4
+         JzOOlmYI5Z+ZMw+aksufSjk+BCrDUY80c0pi7ryCWYxHNi9eqp63Nu0SWgEESR0vo9yw
+         1LO8t/x6bofMI/eokskywivT1ySYSY/9tH4au3xfjCGfOpjiQRnad88MjYFTJrQzTmQm
+         d22GkJCYbEzdOs1/hKneuzpx/bZhzRouvTtd2BQSVy2DFebLbgQm1FkEBgKuLqhK9X6P
+         KGdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764147062; x=1764751862;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=FhW1CqQDAMm+jon2EpWEcUDvYwGJtYovETBfwMR4CKg=;
-        b=WyCi7i6/NstHSteFaw6YjrLsp8MAqfOUP5Dyzvh2D90QwDhZNVy7kpM88Kp7kJTldl
-         pXYUWfnqwNuZ93dC652c0oVwGX5FnkZdLQ+dQmJUCC5ICKvHzgw/yk/B+InZD+/zS/rq
-         nZlk3PCQTQrK9Qh0QvR2HKmUB37kEqpanKkKkceUyGy89dlUiEst8rH6jJRBjHXSoWJv
-         dgs32/CTU4irPSbEwwI1pHNHOXKvIDMsWibyDpo26sdCshB6qP4X0CMXhq1v0Fl+HPIg
-         GE8Z1gmt1oj+VwO3oLElKNnXTFeKBB0G4qedcTbugDesVEEWYd8AljdXJ4IH0E9pgP1+
-         dg7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXGxbeuoDa0eprpL8lUWUpfbpFXzcT4MlQyPqcgEcpP7vtmBTKJoHttPIhw87Wkx/8guV8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5lcZvWqfle5dQkBC8Fi3tQPA2JF96vtkRjM6jKpTKjyhhvK4K
-	vxmZoF9EcyrYEeD05+Qs5MEhv6elntSukZm+ncKPueLZ464nI8+Ko/0Q
-X-Gm-Gg: ASbGncs+wl4BBC+lrdhx1jMX4SXdNthxptQKSTGtFJxUsMYQLIuO0GuHqt4xTPMd0u6
-	rC2+XL6x4HSlEcq8XWXmFcMYBBH5LeFA3UEIV65zTAph++1iVm9dYDhEbbL9R6pqf19czfcjw9M
-	6yFpjtahhT86mik8Z8K4IJ/WeWYWFOfdVH8bVEvgf4oL4Qpr0RlG51laH5h6bICsxkyROI4Gim1
-	vjR9Fafgi26XPOSBtaipFEMM9OBisPVXUtED1A6OBiZMVH3ceek5ZCy5OOJIw4pvbeBpAo0G3qX
-	mI1BxRwAwUAbJdip5hhylcZw2Rzv9j2nJw8ORvTImL838hGeWQhSOdu1D3btqRGtJFsZsrAZ5Ml
-	UJcnicYAiCKZdJwhZBFOsb61cqjUfVodmgVJ4rOi5UyhFvgNixrkYrizQLT/fHJaeYlyfmFSop+
-	PS6gwv5KXSCf4YGkQGi9YzobebnwI=
-X-Google-Smtp-Source: AGHT+IEgDYcBhYjre0eraoB995A3V+FOhafJa61gSS23jqt0ReQdbQw0qAwBnAgVbqm2O94A3uyrCA==
-X-Received: by 2002:a05:6a00:1793:b0:7ab:78be:3212 with SMTP id d2e1a72fcca58-7c58e0170admr17529785b3a.19.1764147062054;
-        Wed, 26 Nov 2025 00:51:02 -0800 (PST)
-Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7c3f023fd82sm20885721b3a.42.2025.11.26.00.50.59
+        d=1e100.net; s=20230601; t=1764147176; x=1764751976;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jgf6QzPNkLnaNG6eo7VvZMmMgNGAzeOfWslTIH6cEEA=;
+        b=skacH7iRDlKv6B7n1+HvYypjD7AcPtQp1UrmKcN20b0SgkPxphjVDbA1xCHEZqzJXG
+         TCFXKMCOI4I6+2eRJ647S7hCh8rsPnTtEc2KO8WEAiQ+drgH8xC0SL3+KeHucUadwj1j
+         XUCkezZjSKLHPXRQHzTCrzpnAnIa+EvF3+32NJvazk4RbLxPKZm2Bau2qkmeZt8l271P
+         Xfq4Iw2/k9cG6XE/bN5ZYlRHoghi6sdR94OphKZVsS+UkcuJ88XpxOypdBJAp3VEA7cL
+         5egmGL0x1Kk7i/VywVdb09wTlqCy8kSLj6gCXJRlcJa0zIbCdlHl0bPhTU8PKYnlBDtL
+         Ec1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUYBxoz4c0K6VyM7LxCyu6Eq0G8g1zdyEydbCEX4UtMrW5Jq9mjYCou1OjpL9rBWKNXcz8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxU2sVF7XELGRzU8owiBwedobYCJ6+AEijmCaViFHeqM9JsBpSz
+	1gkkLEUHRPHfUe6bBKEgRyE4Cr1s/CVBHBgFR0GAWX59xmpjv9lpDQPC
+X-Gm-Gg: ASbGncst97QPihWVH+mFm7vK0rbPPK2rfYXyx37B8cqQs3ZHClw82dQ8zaw/5cMgY2d
+	XmIBb9QnAPK0d4wtg/L2WoXSTqJbNwKJ2g3oqslPYOoUj2mrRVK7dWwjrdVv1pa69Pz89CyNcTT
+	vOO2XonPyKnKTRZwXGWG+FzwNsP/KXKJ4+6zALGXwH5I/K4IuWdox/3X4BVGlwIYGBYO4dIUQBm
+	JRMsqIZmKn1ek6LBqoXeGrnlAjfD1OjhDyXNOEcMVPYfpG/qUXunhmnzlpK+abeqcg6OnczKUpt
+	0vWrI3sqZBan7Gjr0mSwWfuR0fOwxl9TY+/C0xksyw/4urgk2BhL9g0Qn0Ho1VlTbqIMIkO04lE
+	Dp8uzmZ6p00qQpOv4GwJ48kSaGuxTNrw4oHAs8ajtKu1dj9cHfRhUxYjokIDsoY7yamYRkfQm7Q
+	etAAFCsto=
+X-Google-Smtp-Source: AGHT+IFOTPUQKLezoW1PtOgUH7V/2VHPRcXFHERr2qyquuXGdL9D0nyn1gqUNf+kzQfWgYx9ll5PSw==
+X-Received: by 2002:a17:903:110c:b0:298:ea9:5732 with SMTP id d9443c01a7336-29b6bf64a07mr88019525ad.41.1764147175929;
+        Wed, 26 Nov 2025 00:52:55 -0800 (PST)
+Received: from 7950hx ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29b5b274d39sm190678305ad.77.2025.11.26.00.52.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Nov 2025 00:51:01 -0800 (PST)
-From: Donglin Peng <dolinux.peng@gmail.com>
-To: ast@kernel.org,
-	andrii.nakryiko@gmail.com
-Cc: eddyz87@gmail.com,
-	zhangxiaoqin@xiaomi.com,
-	ihor.solodrai@linux.dev,
-	linux-kernel@vger.kernel.org,
+        Wed, 26 Nov 2025 00:52:55 -0800 (PST)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: ast@kernel.or,
+	jolsa@kernel.org
+Cc: kpsingh@kernel.org,
+	mattbobrowski@google.com,
+	song@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	jiang.biao@linux.dev,
 	bpf@vger.kernel.org,
-	pengdonglin <pengdonglin@xiaomi.com>,
-	Alan Maguire <alan.maguire@oracle.com>
-Subject: [RFC bpf-next v8 9/9] bpf: Optimize the performance of find_bpffs_btf_enums
-Date: Wed, 26 Nov 2025 16:50:25 +0800
-Message-Id: <20251126085025.784288-10-dolinux.peng@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20251126085025.784288-1-dolinux.peng@gmail.com>
-References: <20251126085025.784288-1-dolinux.peng@gmail.com>
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: make kprobe_multi_link_prog_run always_inline
+Date: Wed, 26 Nov 2025 16:52:46 +0800
+Message-ID: <20251126085246.309942-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: pengdonglin <pengdonglin@xiaomi.com>
+Make kprobe_multi_link_prog_run() always inline to obtain better
+performance. Before this patch, the bench performance is:
 
-Currently, vmlinux BTF is unconditionally sorted during
-the build phase. The function btf_find_by_name_kind
-executes the binary search branch, so find_bpffs_btf_enums
-can be optimized by using btf_find_by_name_kind.
+./bench trig-kprobe-multi
+Setting up benchmark 'trig-kprobe-multi'...
+Benchmark 'trig-kprobe-multi' started.
+Iter   0 ( 95.485us): hits   62.462M/s ( 62.462M/prod), [...]
+Iter   1 (-80.054us): hits   62.486M/s ( 62.486M/prod), [...]
+Iter   2 ( 13.572us): hits   62.287M/s ( 62.287M/prod), [...]
+Iter   3 ( 76.961us): hits   62.293M/s ( 62.293M/prod), [...]
+Iter   4 (-77.698us): hits   62.394M/s ( 62.394M/prod), [...]
+Iter   5 (-13.399us): hits   62.319M/s ( 62.319M/prod), [...]
+Iter   6 ( 77.573us): hits   62.250M/s ( 62.250M/prod), [...]
+Summary: hits   62.338 ± 0.083M/s ( 62.338M/prod)
 
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>
-Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
-Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+And after this patch, the performance is:
+
+Iter   0 (454.148us): hits   66.900M/s ( 66.900M/prod), [...]
+Iter   1 (-435.540us): hits   68.925M/s ( 68.925M/prod), [...]
+Iter   2 (  8.223us): hits   68.795M/s ( 68.795M/prod), [...]
+Iter   3 (-12.347us): hits   68.880M/s ( 68.880M/prod), [...]
+Iter   4 (  2.291us): hits   68.767M/s ( 68.767M/prod), [...]
+Iter   5 ( -1.446us): hits   68.756M/s ( 68.756M/prod), [...]
+Iter   6 ( 13.882us): hits   68.657M/s ( 68.657M/prod), [...]
+Summary: hits   68.792 ± 0.087M/s ( 68.792M/prod)
+
+As we can see, the performance of kprobe-multi increase from 62M/s to
+68M/s.
+
+Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
- kernel/bpf/inode.c | 42 +++++++++++++++++++-----------------------
- 1 file changed, 19 insertions(+), 23 deletions(-)
+ kernel/trace/bpf_trace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index 81780bcf8d25..781c2c3181a4 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -605,10 +605,18 @@ struct bpffs_btf_enums {
- 
- static int find_bpffs_btf_enums(struct bpffs_btf_enums *info)
- {
-+	struct {
-+		const struct btf_type **type;
-+		const char *name;
-+	} btf_enums[] = {
-+		{&info->cmd_t,		"bpf_cmd"},
-+		{&info->map_t,		"bpf_map_type"},
-+		{&info->prog_t,		"bpf_prog_type"},
-+		{&info->attach_t,	"bpf_attach_type"},
-+	};
- 	const struct btf *btf;
- 	const struct btf_type *t;
--	const char *name;
--	int i, n;
-+	int i, id;
- 
- 	memset(info, 0, sizeof(*info));
- 
-@@ -620,30 +628,18 @@ static int find_bpffs_btf_enums(struct bpffs_btf_enums *info)
- 
- 	info->btf = btf;
- 
--	for (i = 1, n = btf_nr_types(btf); i < n; i++) {
--		t = btf_type_by_id(btf, i);
--		if (!btf_type_is_enum(t))
--			continue;
-+	for (i = 0; i < ARRAY_SIZE(btf_enums); i++) {
-+		id = btf_find_by_name_kind(btf, btf_enums[i].name,
-+					   BTF_KIND_ENUM);
-+		if (id < 0)
-+			goto out;
- 
--		name = btf_name_by_offset(btf, t->name_off);
--		if (!name)
--			continue;
--
--		if (strcmp(name, "bpf_cmd") == 0)
--			info->cmd_t = t;
--		else if (strcmp(name, "bpf_map_type") == 0)
--			info->map_t = t;
--		else if (strcmp(name, "bpf_prog_type") == 0)
--			info->prog_t = t;
--		else if (strcmp(name, "bpf_attach_type") == 0)
--			info->attach_t = t;
--		else
--			continue;
--
--		if (info->cmd_t && info->map_t && info->prog_t && info->attach_t)
--			return 0;
-+		t = btf_type_by_id(btf, id);
-+		*btf_enums[i].type = t;
- 	}
- 
-+	return 0;
-+out:
- 	return -ESRCH;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index a795f7afbf3d..d57727abaade 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2529,7 +2529,7 @@ static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
+ 	return run_ctx->entry_ip;
  }
  
+-static int
++static __always_inline int
+ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+ 			   unsigned long entry_ip, struct ftrace_regs *fregs,
+ 			   bool is_return, void *data)
 -- 
-2.34.1
+2.52.0
 
 
