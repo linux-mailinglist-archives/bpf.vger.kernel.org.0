@@ -1,116 +1,119 @@
-Return-Path: <bpf+bounces-75608-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75609-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D5F4C8B8A7
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 20:13:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7582FC8BB1E
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 20:49:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 88D534E6D98
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 19:13:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41A213A21FC
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 19:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE0733F8BB;
-	Wed, 26 Nov 2025 19:13:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BED433FE1F;
+	Wed, 26 Nov 2025 19:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xvW14r6M"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AqwtSScF"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D33311948
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 19:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE2229E110;
+	Wed, 26 Nov 2025 19:44:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764184401; cv=none; b=KcAFZv3gUMf4kWWvESMC7vmAfuO6X+lo+/XBXCK7Z1WXbMtsswKqmRvvMuGhd5SIXe30Mux0cDcl5LyR8DxErF+bmOyfN7SREw5eqMpemStZl1dBt/XJ+4g0T8a/Lvw70ic9Aff6eSkFbqe2PY4cUopYu7VRX30xZDAChqxRN24=
+	t=1764186297; cv=none; b=Qp897cdq63ixeizqe1Yto4/w+q6Ja4cu7E44GJEjYv/GN2ShjmHPJwadN55EPAsV7yX5kNSr40dDs3yQl1i4FMK27ZpLwrOGJprcREb6h60rcHfZfi5Yto1q/sHu8TWoI+mtw89Jk8XRxB8BDA4k5m7vRmsqByKqZKAfHvh62tM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764184401; c=relaxed/simple;
-	bh=N0Zb+RrDajauwjsyN6i28AMVPOJUhfk5DbUUzMwggys=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dzj9du2BXOsCQD0pwH+t8M/6A1QzWflPAcDu7Sg6313JsLjVt6fmnauvb3BrURoQ3dE04jxcl4NxNufg/jzdGU9C0gOd5jIDE89n1zLxqs5x5l44qqq3mtO4MOs0TXcxXPVpVcstOa8fCLTS5B8jQTAblvK8ue4xNTce/2Ye7UI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xvW14r6M; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6b61c22b-d38c-47c1-8b8f-a37e44866644@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764184396;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oj7a/chW6SNwlrR4P2Y5EG7P7Q7f9ZjCmFxdGZ83m2c=;
-	b=xvW14r6MwplzZCEMbwn7A8A5jtx0DN9DcCMJSK0NDmNKOyL8XG8Tv7TwV2bWk44sVCEGbi
-	GAL8rrEGFMQ+esPBU+v0Uc5zM2A4hnwP9Txc+Z1bqMfiEYj/673tCW1sKhwu+S4ce2lRAz
-	IfIA22ebNUlPHWZEylq3zBBIQuW2pFc=
-Date: Wed, 26 Nov 2025 11:13:07 -0800
+	s=arc-20240116; t=1764186297; c=relaxed/simple;
+	bh=CAgoLkcKGmrNOaExZbEqf5/GTNcLuZBZHX4JOfOxTaI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jj4EujSThoyytRFNxq2kv9g3hbRuEaanP0gkQ9u++oAYpc5ClVhAULoOT60rakGMfEohMV0NJLgIaV2gL72gJ0XuY8IK13nCtEj0QSGRaU+gURPjN2zMMhM+m8ENHglAZsP8dnKunei1/JWS/FafS7pAM3tRonSmn4PZVvRiUdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AqwtSScF; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1764186296; x=1795722296;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CAgoLkcKGmrNOaExZbEqf5/GTNcLuZBZHX4JOfOxTaI=;
+  b=AqwtSScFc/yLFWWOm1O5HmstAdVKLX7B7Mhl9lqQKJp9Xkw+AKxDpHPv
+   r83GQgdLHl4KXRhuQF2umg8v9n3xZopEC9GsiV7zadvREZbiSbE0T6AO+
+   y4yzoVu8eERm4jwTUGEf7mbwYAU8XVjsUVsLDl6yEKyp2zXuVjR/zVqZS
+   aFqumaSGGVGJXKPPR74HOAiCUsOOSDsdniy+/eqzEZ3DFyeCnr6qhbLfy
+   74Bx6mxY3T+yQOU92hpCZYN8jcHTvB/RHGjiZAwcYQALTA+1PxAOVGErY
+   qYaZJ2xLhu35ORxKH/eK/y19mSvm/3s84+mUKkNHSTzJtgq8p8Z/WXByg
+   Q==;
+X-CSE-ConnectionGUID: Dq3G1t1qQ9qDQAg7/XD6bg==
+X-CSE-MsgGUID: 1LY1p81UTrWlc+N7yc1Rng==
+X-IronPort-AV: E=McAfee;i="6800,10657,11625"; a="66194208"
+X-IronPort-AV: E=Sophos;i="6.20,229,1758610800"; 
+   d="scan'208";a="66194208"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2025 11:44:55 -0800
+X-CSE-ConnectionGUID: AWoYAO75SFGhOfLf8MVRmw==
+X-CSE-MsgGUID: Kw0A2qbPR1S27QQJKt5ntw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,229,1758610800"; 
+   d="scan'208";a="192285019"
+Received: from rvuia-mobl.ger.corp.intel.com (HELO localhost) ([10.245.245.89])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2025 11:44:51 -0800
+Date: Wed, 26 Nov 2025 21:44:48 +0200
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Paul Moore <paul@paul-moore.com>
+Cc: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org, ast@kernel.org, casey@schaufler-ca.com,
+	andrii@kernel.org, keescook@chromium.org, daniel@iogearbox.net,
+	renauld@google.com, revest@chromium.org, song@kernel.org,
+	linux@roeck-us.net, Kui-Feng Lee <sinquersw@gmail.com>,
+	John Johansen <john.johansen@canonical.com>
+Subject: Re: [PATCH v15 3/4] lsm: count the LSMs enabled at compile time
+Message-ID: <aSdYsPvRhVwvLoHU@smile.fi.intel.com>
+References: <20240816154307.3031838-1-kpsingh@kernel.org>
+ <20240816154307.3031838-4-kpsingh@kernel.org>
+ <aSc1aAdOeSuuoKTH@black.igk.intel.com>
+ <19ac18b9e00.2843.85c95baa4474aabc7814e68940a78392@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 4/4] resolve_btfids: change in-place update
- with raw binary output
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
- Nicolas Schier <nicolas.schier@linux.dev>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- bpf@vger.kernel.org, dwarves@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kbuild@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
-References: <20251126012656.3546071-1-ihor.solodrai@linux.dev>
- <20251126012656.3546071-5-ihor.solodrai@linux.dev>
- <CAErzpmt7ER171hAjQ2SwbmC9R3dVsKHj02B8VM5gKMViP1iFqA@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <CAErzpmt7ER171hAjQ2SwbmC9R3dVsKHj02B8VM5gKMViP1iFqA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19ac18b9e00.2843.85c95baa4474aabc7814e68940a78392@paul-moore.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-On 11/26/25 5:03 AM, Donglin Peng wrote:
-> On Wed, Nov 26, 2025 at 9:29 AM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
->>
->> [...]
->>
->> For the kernel modules creating special .bpf.o file is not necessary,
->> and so embedding of sections data produced by resolve_btfids is
->> straightforward with the objcopy.
+On Wed, Nov 26, 2025 at 02:02:24PM -0500, Paul Moore wrote:
+> On November 26, 2025 12:14:21 PM Andy Shevchenko
+> <andriy.shevchenko@intel.com> wrote:
+> > On Fri, Aug 16, 2024 at 05:43:06PM +0200, KP Singh wrote:
+
+...
+
+> > > -/* This counts to 12. Any more, it will return 13th argument. */
+> > > -#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10,
+> > > _11, _12, _n, X...) _n
+> > > -#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 12, 11, 10, 9, 8, 7,
+> > > 6, 5, 4, 3, 2, 1, 0)
+> > > +/* This counts to 15. Any more, it will return 16th argument. */
+> > > +#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10,
+> > > _11, _12, _13, _14, _15, _n, X...) _n
+> > > +#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 15, 14, 13, 12, 11,
+> > > 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+> > 
+> > You forgot to update _12 in the upper comment.
 > 
-> The Makefile for the bpf selftests also needs be updated too:
-> https://elixir.bootlin.com/linux/v6.18-rc7/source/tools/testing/selftests/bpf/Makefile#L708
-> 
-> This results in the self-test for resolve_btfids failing:
->  $./vmtest.sh -- ./test_progs -t resolve_btfids -v
-> ...
-> test_resolve_btfids:PASS:id_check 0 nsec
-> test_resolve_btfids:FAIL:id_check wrong ID for S (0 != 3)
+> Do you plan to send a patch to fix this?
 
-Good catch, thanks.
+Not really. Too lazy to write a commit message for it.
+Appreciate if you or the initial author or somebody else
+can do that.
 
-I remember I noticed this at some point, and then forgot...
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Interestingly this test passes on CI [1]: 
-
-2025-11-26T03:09:52.0908317Z #366     reg_bounds_rand_ranges_u64_u64:OK
-2025-11-26T03:09:52.0925114Z #367     resolve_btfids:OK
-2025-11-26T03:09:52.3904190Z #368/1   res_spin_lock_failure/res_spin_lock_arg:OK
-
-I'll take a closer look.
-
-[1] https://github.com/kernel-patches/bpf/actions/runs/19690981192/job/56406840021
-
-> 
-> 
->> [...]
->>
 
 
