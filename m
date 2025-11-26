@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-75552-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C835AC88C1C
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:52:23 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3BF6C88C0A
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 312553B716F
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 08:51:22 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 34AD53462DD
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 08:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15BB631D72B;
-	Wed, 26 Nov 2025 08:50:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E8F131E11C;
+	Wed, 26 Nov 2025 08:50:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cPvyhXsn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q6KvvDyn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0BD031BCB8
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 08:50:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53EC31DDB8
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 08:50:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764147041; cv=none; b=NvSp/KqyEgwxv5P0oWUyKR7DZDK4m3EZBR3iggu7xsd7K2s01C6CWIq/Ckz8Ie4Pln/LFkGQqH2TymGGWD47ayqLsuTRGldYZD9rK6rK9k2dnzOjn9SaXP2mAD242s85yS5vNg1p/GPIkmRntR3saXZgmmMktWGysTsnOx7hHLg=
+	t=1764147044; cv=none; b=Ik2mRBRJ3SgWnfI5wGrqeMepMXZASVop03e7qT5tCAQnxsvQr9guvun8zYIHTaZ8Pm3XyY8gD8xlZqTTCbRt/9PWnAgpFSEUyTNsonYtDfnioBX9wfNkq7j3sYvdcA1yzbrew93cAgq1BgOPlpPgw68jS+6E1RppVAqvpsVblJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764147041; c=relaxed/simple;
-	bh=7ngEULL678quRrsmJ39omINLf8wh8oMlVDKhnztkP/E=;
+	s=arc-20240116; t=1764147044; c=relaxed/simple;
+	bh=M/VgPIqfRWvPIYxFG70p0tBc3APY/ResOI4iwLeo1GA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=teknj2gcSYSp69ozWkHzqFjOa7iHTsMcnKD81Pd01rMUwTUzE5yZ+hyGVY0CkvP6ptVZ8CCEoasjiXlddSt2mIm4owRyriTcUrnYayegaCH78n/uIHOXGWa2VC6pSJwBUYdoUI9GIffe0/ChUaQn6I2Gg2ygM3KNYLyMzDcva3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cPvyhXsn; arc=none smtp.client-ip=209.85.210.182
+	 MIME-Version; b=Mk+Pf26pTXuXRcvZQdpvVLBa8gocWRVyFNjh578EtkwHCwjMXDK8hHZNzcSzFl4B7IWNTC5vA5W57KvhDn3zXT1PGv2cZYQGNXhGX0Eg6xoGVDV05QDTb5UuMPcyv2x5XPXSDBEjL/VXMR5a30SrO7U95mKLfld9S4JGH8gI1Cc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q6KvvDyn; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7bc248dc16aso4816854b3a.0
-        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 00:50:39 -0800 (PST)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2981f9ce15cso77935805ad.1
+        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 00:50:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764147039; x=1764751839; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764147042; x=1764751842; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9qbxRcU+iIJswxukru9rEL0qIQsiT5P658wY0LXDT54=;
-        b=cPvyhXsnzE7RioeKynOfRhL8tOXWtpCqlRdEkdyslycqWPZCNN4pubWDC9xnJBFWW4
-         9bdKMU+5tmiWgRJJ5rAdfpWkR8kCVHnyx1EE3+P3zUpogqWFsnEcVU+Nc7uFmJQflq85
-         aqVBBnhO21CWZhDWO+f+jvW4XES8kxJwCbuhzxQrqP+4IqhSwjxBtNj8Qsfr9w+RW/uU
-         qjsZA78pP1kzzLKiCqlRX0bCB6DgpLd29F6mg2w79boTMqqaVpA0gl6zmChEOloK/7yJ
-         m1g58KONwQ+NXAsPQgT6vTGqwDmyOQQ0d3W+Hoo6TN2lJ45drW9V31WukXexVTYyk2c+
-         sf+w==
+        bh=PIDDUYkGHJz7WnHdi/CS+AAzIaF6rwKCgn01mtFAMbA=;
+        b=Q6KvvDynZ3Ig/iK9bEbb3g8Nd4jO+eedRGYggeG6oHDbnnUDMqFBZOlpaZkctxJKKx
+         1Ybnw9TH5LBZEnBcd1zyGwJl1180DM+IhqEmiIGDvALgzefYRcWOV7kBjkeZJoU0Ztm9
+         AYFBgD2AZVnCZfPQl3zKqOYXfGxyNaMKiDwGJC2A+MEOfqimMTyjI6Dt4sJNdaenzF99
+         Jx2feDmgVrNVRq2PKXtbVV383p2a+atdS8xWKTQmzSznOPju/JgPQIn9jjz5cUW1Oqnp
+         NxTPateei+EOEZ5X+CRAM6jtWXnvhDRQ6+ZjLOy+MWBgiFvGw9f3UC2M09zCyR7eZ212
+         hI4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764147039; x=1764751839;
+        d=1e100.net; s=20230601; t=1764147042; x=1764751842;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=9qbxRcU+iIJswxukru9rEL0qIQsiT5P658wY0LXDT54=;
-        b=iJH5F7NVVW0ava0Eqk6gGkKH63vVAdP+Ngz84opG9Gl+F4EruletSVbPQ0/7sNCF8+
-         mQrta/ACLR7HY1ftvdA2cwQAOvVNTJVhm9k2L4DHHZLXy8//d2Zgvwn+UlgpZVnddy/4
-         ILB+smjE/yh+z8A4uoxrkm0o/Wi+HKcwtJWBeh4kBNsQxhHRNm20mBKVoYA2j3tnXIzQ
-         J/SyuGHnesoPTa9i7Yi94hOcnSOg4ChsGKk3MjMZa2R8jMXgrKgQ9gSYUxhsYRGhHOV9
-         DBF8xRmAyeHV8td6yla+MC13cvoqttUwuwPmyNf8ugkBGiDHPGWlY/jsD/g1jaQQ9aQy
-         1iZg==
-X-Forwarded-Encrypted: i=1; AJvYcCWYULIeLleMrEFIba7CCNAlRDcXKa4f4pkRn6VQvuXaZRYEchvqpU1pLvik6DYfhF5whK8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YynBli9ZpcZjWOY9z13yXjAmRHBD0gEt7u+az4tzpGyZWFWxHYE
-	UmBY9djyq0E3xPJKHaOqbNtjhOfnE+aNzgGguP+1/nzavI0ibb40Nm5b7V8798SIUbo=
-X-Gm-Gg: ASbGnctepX137ztG2PQ+LAHZy8YGXZkWxnmpLO9wGVZ2rjHiPOp9nfp9DZlTHd9ucIc
-	b7tVuriCIurd44nEU1sIeFFwmunBXEDAxvHdX1NqIiVGckMXz8JUY6JEEmo64lZ8N/sUudnJeIW
-	ixP6446/JbJBINP6mMMiycIjjmuK6iFMYrqfiVTYHt9Yll90XwR58uA41zxJiK1B6vRiGHR9BDl
-	CWbAQPpzex1L//W0CZaFPxcAZK/6fOb6juri8BMBG6bPrkHehmw59RPxtr91/LCUNBKR8bvFK0y
-	OWCwQ8fIdkS13PV+GwK3JE+yE4k3VE742zpK1e51bBsJP6OvH4klh2Qg/1sgOsoDpEEWF2lmlxr
-	FG2VCQrRqKXSlzw9PbMLwrbJcSVd8RPzzq7O7FFy+9ZvEIGhfzJTQQjXY11w8ofx2nvpqpTpNi6
-	OKeWo90WTcloyTPGKRGHec+WMnMu8=
-X-Google-Smtp-Source: AGHT+IHqvZLYppoBK2yVx1vDc9XKQk7gBLgQKYgen0ASnKXiIzwkQYbXBtvlVFuNZZBz+61W4qzx4w==
-X-Received: by 2002:a05:6a00:c83:b0:7b9:7f18:c716 with SMTP id d2e1a72fcca58-7ca8740ef7emr6830252b3a.1.1764147038864;
-        Wed, 26 Nov 2025 00:50:38 -0800 (PST)
+        bh=PIDDUYkGHJz7WnHdi/CS+AAzIaF6rwKCgn01mtFAMbA=;
+        b=vng3MRcHzwwa4SNZxmCuHO//IrX8bCY1exqUW7qXLgph9GSz6kzc5ex6jbrT+vVS9o
+         Jsk/UkVDqPgLNO6xOR++v3/MM0DNX/Tw9lRoKVCrkyIRr39iNmzUaEIZmdr8dhaXfM09
+         Qoa5H0Xs0h0bCuVIITJrqYStucxpUuL5JEeRX4gsR9tbPdAbSCOu8Q5Ijuj692SISocn
+         L6hTxqR+qpVcBn6FsiarVfpiMJC4Sh1OkJf8E/a0I6Zyw0AQVfJXexDd4AlHwnBYYRxO
+         MfzFYdxra9xeU/Sf/nmcEjQAVs0s0rgRU3yTHhPzv73lTuIGrhXCGDTf7pBLLuP1B4NC
+         ffJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUe5L85SC7njBuko/foBx7qXB35biqh1Dv0yirR11MU65bZ3SWMqwqIlxr/EpQ+R79sEfQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyJUeIEO6/xvSl7+2R65MiUj7jjc0FvcnywcIPnlqaOdXHmuR+x
+	erUJa19Y3BpJWQBb/yhgoPgY9y51a1PcSU5hInwHf2fNAa2ZmIrFIVOl
+X-Gm-Gg: ASbGncteD4XchOvDdQmzSJjxW/B+Zu8/tOdJ0PR/FaLwjshFemQySr0XmNNH/lh7GI3
+	TLMnTl4S40F9tpNeHuBlkBjxjeKRbJSnqQCgYFUZ36MVa/MBVrVch+WtRTYr+KNcN0jDykdmgBJ
+	O0jlzQK42dYS4xg5/Rhdt2IrJ/06m8EkDM32Qhh4N1wFU4Zg2HIFGv3gEF8f4DGW+PWoDWO0bDo
+	zU2R5jAQwNMRW4NBKpD/wubVYLNMCkIBT0X0FroH6+5cut5N6Bqor811tP4lGO46J39CFQC94ch
+	k+ZyP2WOCbWgKA5lEOKB/Y08/qOzs5SmEYA+cWhb6p9Aq3mU1HjgRe9oJDPDrfJaATZLMSNb63h
+	7F+RmG1YkD9TG9OevR46/BMDszabZiTqWcyaohTg51x6Y+IJ18L1CNE0XEqCLu1nL+bkqcVQrEx
+	Uf22cLJKNPcJkIRD0J8jpXtbWXBqI=
+X-Google-Smtp-Source: AGHT+IHvlil1iO59w6L02UVKaswg4buo1LY0f0OcMcJNxORcAcKjg5GLGp3oWtBsyoFormU2mRxlpw==
+X-Received: by 2002:a17:903:11cd:b0:298:68e:4057 with SMTP id d9443c01a7336-29b6bfadca0mr207376675ad.59.1764147042164;
+        Wed, 26 Nov 2025 00:50:42 -0800 (PST)
 Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7c3f023fd82sm20885721b3a.42.2025.11.26.00.50.35
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7c3f023fd82sm20885721b3a.42.2025.11.26.00.50.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Nov 2025 00:50:37 -0800 (PST)
+        Wed, 26 Nov 2025 00:50:41 -0800 (PST)
 From: Donglin Peng <dolinux.peng@gmail.com>
 To: ast@kernel.org,
 	andrii.nakryiko@gmail.com
@@ -84,9 +84,9 @@ Cc: eddyz87@gmail.com,
 	bpf@vger.kernel.org,
 	pengdonglin <pengdonglin@xiaomi.com>,
 	Alan Maguire <alan.maguire@oracle.com>
-Subject: [RFC bpf-next v8 2/9] selftests/bpf: Add test cases for btf__permute functionality
-Date: Wed, 26 Nov 2025 16:50:18 +0800
-Message-Id: <20251126085025.784288-3-dolinux.peng@gmail.com>
+Subject: [RFC bpf-next v8 3/9] tools/resolve_btfids: Support BTF sorting feature
+Date: Wed, 26 Nov 2025 16:50:19 +0800
+Message-Id: <20251126085025.784288-4-dolinux.peng@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251126085025.784288-1-dolinux.peng@gmail.com>
 References: <20251126085025.784288-1-dolinux.peng@gmail.com>
@@ -100,12 +100,9 @@ Content-Transfer-Encoding: 8bit
 
 From: pengdonglin <pengdonglin@xiaomi.com>
 
-This patch introduces test cases for the btf__permute function to ensure
-it works correctly with both base BTF and split BTF scenarios.
-
-The test suite includes:
-- test_permute_base: Validates permutation on base BTF
-- test_permute_split: Tests permutation on split BTF
+This introduces a new BTF sorting phase that specifically sorts
+BTF types by name in ascending order, so that the binary search
+can be used to look up types.
 
 Cc: Eduard Zingerman <eddyz87@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -115,244 +112,95 @@ Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
 Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
 Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
 ---
- .../selftests/bpf/prog_tests/btf_permute.c    | 228 ++++++++++++++++++
- 1 file changed, 228 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_permute.c
+ tools/bpf/resolve_btfids/main.c | 68 +++++++++++++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_permute.c b/tools/testing/selftests/bpf/prog_tests/btf_permute.c
-new file mode 100644
-index 000000000000..9aa71cdf984a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_permute.c
-@@ -0,0 +1,228 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Xiaomi */
-+
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+#include "btf_helpers.h"
-+
-+static void permute_base_check(struct btf *btf)
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index 4faf16b1ba6b..1d2b08bbd8c2 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -857,6 +857,71 @@ static int dump_raw_btf(struct btf *btf, const char *out_path)
+ 	return 0;
+ }
+ 
++/*
++ * Sort types by name in ascending order resulting in all
++ * anonymous types being placed before named types.
++ */
++static int cmp_type_names(const void *a, const void *b, void *priv)
 +{
-+	VALIDATE_RAW_BTF(
-+		btf,
-+		"[1] STRUCT 's2' size=4 vlen=1\n"
-+		"\t'm' type_id=4 bits_offset=0",
-+		"[2] FUNC 'f' type_id=6 linkage=static",
-+		"[3] PTR '(anon)' type_id=4",
-+		"[4] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[5] STRUCT 's1' size=4 vlen=1\n"
-+		"\t'm' type_id=4 bits_offset=0",
-+		"[6] FUNC_PROTO '(anon)' ret_type_id=4 vlen=1\n"
-+		"\t'p' type_id=3");
++	struct btf *btf = (struct btf *)priv;
++	const struct btf_type *ta = btf__type_by_id(btf, *(__u32 *)a);
++	const struct btf_type *tb = btf__type_by_id(btf, *(__u32 *)b);
++	const char *na, *nb;
++
++	na = btf__str_by_offset(btf, ta->name_off);
++	nb = btf__str_by_offset(btf, tb->name_off);
++	return strcmp(na, nb);
 +}
 +
-+/* Ensure btf__permute work as expected with base BTF */
-+static void test_permute_base(void)
++static int sort_btf_by_name(struct btf *btf)
 +{
-+	struct btf *btf;
-+	__u32 permute_ids[6];
-+	int start_id = 1;
-+	int err;
++	__u32 *permute_ids = NULL, *id_map = NULL;
++	int nr_types, i, err = 0;
++	__u32 start_id = 1, id;
 +
-+	btf = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf, "empty_main_btf"))
-+		return;
++	if (btf__base_btf(btf))
++		start_id = btf__type_cnt(btf__base_btf(btf));
++	nr_types = btf__type_cnt(btf) - start_id;
++	if (nr_types < 2)
++		goto out;
 +
-+	btf__add_int(btf, "int", 4, BTF_INT_SIGNED);	/* [1] int */
-+	btf__add_ptr(btf, 1);				/* [2] ptr to int */
-+	btf__add_struct(btf, "s1", 4);			/* [3] struct s1 { */
-+	btf__add_field(btf, "m", 1, 0, 0);		/*       int m; */
-+							/* } */
-+	btf__add_struct(btf, "s2", 4);			/* [4] struct s2 { */
-+	btf__add_field(btf, "m", 1, 0, 0);		/*       int m; */
-+							/* } */
-+	btf__add_func_proto(btf, 1);			/* [5] int (*)(int *p); */
-+	btf__add_func_param(btf, "p", 2);
-+	btf__add_func(btf, "f", BTF_FUNC_STATIC, 5);	/* [6] int f(int *p); */
++	permute_ids = calloc(nr_types, sizeof(*permute_ids));
++	if (!permute_ids) {
++		err = -ENOMEM;
++		goto out;
++	}
 +
-+	VALIDATE_RAW_BTF(
-+		btf,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] PTR '(anon)' type_id=1",
-+		"[3] STRUCT 's1' size=4 vlen=1\n"
-+		"\t'm' type_id=1 bits_offset=0",
-+		"[4] STRUCT 's2' size=4 vlen=1\n"
-+		"\t'm' type_id=1 bits_offset=0",
-+		"[5] FUNC_PROTO '(anon)' ret_type_id=1 vlen=1\n"
-+		"\t'p' type_id=2",
-+		"[6] FUNC 'f' type_id=5 linkage=static");
++	id_map = calloc(nr_types, sizeof(*id_map));
++	if (!id_map) {
++		err = -ENOMEM;
++		goto out;
++	}
 +
-+	permute_ids[1 - start_id] = 4; /* [1] -> [4] */
-+	permute_ids[2 - start_id] = 3; /* [2] -> [3] */
-+	permute_ids[3 - start_id] = 5; /* [3] -> [5] */
-+	permute_ids[4 - start_id] = 1; /* [4] -> [1] */
-+	permute_ids[5 - start_id] = 6; /* [5] -> [6] */
-+	permute_ids[6 - start_id] = 2; /* [6] -> [2] */
-+	err = btf__permute(btf, permute_ids, ARRAY_SIZE(permute_ids), NULL);
-+	if (!ASSERT_OK(err, "btf__permute_base"))
-+		goto done;
-+	permute_base_check(btf);
++	for (i = 0, id = start_id; i < nr_types; i++, id++)
++		permute_ids[i] = id;
 +
-+	/* id_map_cnt is invalid  */
-+	permute_ids[1 - start_id] = 4; /* [1] -> [4] */
-+	permute_ids[2 - start_id] = 3; /* [2] -> [3] */
-+	permute_ids[3 - start_id] = 5; /* [3] -> [5] */
-+	permute_ids[4 - start_id] = 1; /* [4] -> [1] */
-+	permute_ids[5 - start_id] = 6; /* [5] -> [6] */
-+	permute_ids[6 - start_id] = 2; /* [6] -> [2] */
-+	err = btf__permute(btf, permute_ids, ARRAY_SIZE(permute_ids) - 1, NULL);
-+	if (!ASSERT_ERR(err, "btf__permute_base"))
-+		goto done;
-+	/* BTF is not modified */
-+	permute_base_check(btf);
++	qsort_r(permute_ids, nr_types, sizeof(*permute_ids), cmp_type_names, btf);
 +
-+	/* Multiple types can not be mapped to the same ID */
-+	permute_ids[1 - start_id] = 4;
-+	permute_ids[2 - start_id] = 4;
-+	permute_ids[3 - start_id] = 5;
-+	permute_ids[4 - start_id] = 1;
-+	permute_ids[5 - start_id] = 6;
-+	permute_ids[6 - start_id] = 2;
-+	err = btf__permute(btf, permute_ids, ARRAY_SIZE(permute_ids), NULL);
-+	if (!ASSERT_ERR(err, "btf__permute_base"))
-+		goto done;
-+	/* BTF is not modified */
-+	permute_base_check(btf);
++	for (i = 0; i < nr_types; i++) {
++		id = permute_ids[i] - start_id;
++		id_map[id] = i + start_id;
++	}
 +
-+	/* Type ID must be valid */
-+	permute_ids[1 - start_id] = 4;
-+	permute_ids[2 - start_id] = 3;
-+	permute_ids[3 - start_id] = 5;
-+	permute_ids[4 - start_id] = 1;
-+	permute_ids[5 - start_id] = 7;
-+	permute_ids[6 - start_id] = 2;
-+	err = btf__permute(btf, permute_ids, ARRAY_SIZE(permute_ids), NULL);
-+	if (!ASSERT_ERR(err, "btf__permute_base"))
-+		goto done;
-+	/* BTF is not modified */
-+	permute_base_check(btf);
++	err = btf__permute(btf, id_map, nr_types, NULL);
++	if (err)
++		pr_err("FAILED: btf permute: %s\n", strerror(-err));
 +
-+done:
-+	btf__free(btf);
++out:
++	free(permute_ids);
++	free(id_map);
++	return err;
 +}
 +
-+static void permute_split_check(struct btf *btf)
++static int btf2btf(struct object *obj)
 +{
-+	VALIDATE_RAW_BTF(
-+		btf,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] PTR '(anon)' type_id=1",
-+		"[3] STRUCT 's2' size=4 vlen=1\n"
-+		"\t'm' type_id=1 bits_offset=0",
-+		"[4] FUNC 'f' type_id=5 linkage=static",
-+		"[5] FUNC_PROTO '(anon)' ret_type_id=1 vlen=1\n"
-+		"\t'p' type_id=2",
-+		"[6] STRUCT 's1' size=4 vlen=1\n"
-+		"\t'm' type_id=1 bits_offset=0");
++	return sort_btf_by_name(obj->btf);
 +}
 +
-+/* Ensure btf__permute work as expected with split BTF */
-+static void test_permute_split(void)
-+{
-+	struct btf *split_btf = NULL, *base_btf = NULL;
-+	__u32 permute_ids[4];
-+	int err;
-+	int start_id;
+ static const char * const resolve_btfids_usage[] = {
+ 	"resolve_btfids [<options>] <ELF object>",
+ 	NULL
+@@ -900,6 +965,9 @@ int main(int argc, const char **argv)
+ 	if (load_btf(&obj))
+ 		goto out;
+ 
++	if (btf2btf(&obj))
++		goto out;
 +
-+	base_btf = btf__new_empty();
-+	if (!ASSERT_OK_PTR(base_btf, "empty_main_btf"))
-+		return;
-+
-+	btf__add_int(base_btf, "int", 4, BTF_INT_SIGNED);	/* [1] int */
-+	btf__add_ptr(base_btf, 1);				/* [2] ptr to int */
-+	VALIDATE_RAW_BTF(
-+		base_btf,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] PTR '(anon)' type_id=1");
-+	split_btf = btf__new_empty_split(base_btf);
-+	if (!ASSERT_OK_PTR(split_btf, "empty_split_btf"))
-+		goto cleanup;
-+	btf__add_struct(split_btf, "s1", 4);			/* [3] struct s1 { */
-+	btf__add_field(split_btf, "m", 1, 0, 0);		/*   int m; */
-+								/* } */
-+	btf__add_struct(split_btf, "s2", 4);			/* [4] struct s2 { */
-+	btf__add_field(split_btf, "m", 1, 0, 0);		/*   int m; */
-+								/* } */
-+	btf__add_func_proto(split_btf, 1);			/* [5] int (*)(int p); */
-+	btf__add_func_param(split_btf, "p", 2);
-+	btf__add_func(split_btf, "f", BTF_FUNC_STATIC, 5);	/* [6] int f(int *p); */
-+
-+	VALIDATE_RAW_BTF(
-+		split_btf,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] PTR '(anon)' type_id=1",
-+		"[3] STRUCT 's1' size=4 vlen=1\n"
-+		"\t'm' type_id=1 bits_offset=0",
-+		"[4] STRUCT 's2' size=4 vlen=1\n"
-+		"\t'm' type_id=1 bits_offset=0",
-+		"[5] FUNC_PROTO '(anon)' ret_type_id=1 vlen=1\n"
-+		"\t'p' type_id=2",
-+		"[6] FUNC 'f' type_id=5 linkage=static");
-+
-+	start_id = btf__type_cnt(base_btf);
-+	permute_ids[3 - start_id] = 6; /* [3] -> [6] */
-+	permute_ids[4 - start_id] = 3; /* [4] -> [3] */
-+	permute_ids[5 - start_id] = 5; /* [5] -> [5] */
-+	permute_ids[6 - start_id] = 4; /* [6] -> [4] */
-+	err = btf__permute(split_btf, permute_ids, ARRAY_SIZE(permute_ids), NULL);
-+	if (!ASSERT_OK(err, "btf__permute_split"))
-+		goto cleanup;
-+	permute_split_check(split_btf);
-+
-+	/*
-+	 * For split BTF, id_map_cnt must equal to the number of types
-+	 * added on top of base BTF
-+	 */
-+	permute_ids[3 - start_id] = 4;
-+	permute_ids[4 - start_id] = 3;
-+	permute_ids[5 - start_id] = 5;
-+	permute_ids[6 - start_id] = 6;
-+	err = btf__permute(split_btf, permute_ids, 3, NULL);
-+	if (!ASSERT_ERR(err, "btf__permute_split"))
-+		goto cleanup;
-+	/* BTF is not modified */
-+	permute_split_check(split_btf);
-+
-+	/* Multiple types can not be mapped to the same ID */
-+	permute_ids[3 - start_id] = 4;
-+	permute_ids[4 - start_id] = 3;
-+	permute_ids[5 - start_id] = 3;
-+	permute_ids[6 - start_id] = 6;
-+	err = btf__permute(split_btf, permute_ids, 4, NULL);
-+	if (!ASSERT_ERR(err, "btf__permute_split"))
-+		goto cleanup;
-+	/* BTF is not modified */
-+	permute_split_check(split_btf);
-+
-+	/* Can not map to base ID */
-+	permute_ids[3 - start_id] = 4;
-+	permute_ids[4 - start_id] = 2;
-+	permute_ids[5 - start_id] = 5;
-+	permute_ids[6 - start_id] = 6;
-+	err = btf__permute(split_btf, permute_ids, 4, NULL);
-+	if (!ASSERT_ERR(err, "btf__permute_split"))
-+		goto cleanup;
-+	/* BTF is not modified */
-+	permute_split_check(split_btf);
-+
-+cleanup:
-+	btf__free(split_btf);
-+	btf__free(base_btf);
-+}
-+
-+void test_btf_permute(void)
-+{
-+	if (test__start_subtest("permute_base"))
-+		test_permute_base();
-+	if (test__start_subtest("permute_split"))
-+		test_permute_split();
-+}
+ 	if (elf_collect(&obj))
+ 		goto out;
+ 
 -- 
 2.34.1
 
