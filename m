@@ -1,76 +1,78 @@
-Return-Path: <bpf+bounces-75610-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75611-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22112C8BDBF
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 21:29:37 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A84FC8BDC0
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 21:29:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9F0214E2A46
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 20:29:35 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 67BFD4E2349
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 20:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFA533F39F;
-	Wed, 26 Nov 2025 20:29:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F99342158;
+	Wed, 26 Nov 2025 20:29:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CgGJkdTN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WKahpG9F"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78123126BC
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 20:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25653128D7
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 20:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764188970; cv=none; b=rWrFEHuK8EQZZbd8ljO+h2zSZdWuI7+7NxnWDrT+6x7QiFol7msotUNnJIRKsPvd3IJnul/WFPyIniQjxxILELRWfD4w7KGxbObyHbzv3EdxdnLkt3l859ZoJkNyT/Adrl+k/Ad6SDVcizO8Rkf0VmOj412E5bew3MEP2zK7+v0=
+	t=1764188971; cv=none; b=WK+ICD+2T9CGxqEy0jlWmY/GMzluAyoLqn0ezMf2ZVMfxWwj9TRgL4ta74xifbeEBTUu+C0fPpKCrVpz2vQHkKHFzkPmkhzPhbdzipd9dVhpP2Wkvo9uunMQytPo0LqzwREgnHc0j6Kixv21vTCHoadik2q/9ou9RKcfkMhHZj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764188970; c=relaxed/simple;
-	bh=LSvzPVTKBvC3FMkFAMlHH80EywX1GC+VVzzXhKHQBQg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g4vSrmJUtejjByv8amVX82jGcjMmGc/NVpK3pZwk0cbrdmQy1/e9uS0YfF3qEk/kEUTHmrxhtcxmyNqEYORunNoo2X4bofgrE5QwjaII5VxEa8Ph0A7727jchW+Q+WGgIwTf0RfevD6ZzCrLxTU/HRMtbo9mHXlNoCEBFSXixHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CgGJkdTN; arc=none smtp.client-ip=209.85.214.173
+	s=arc-20240116; t=1764188971; c=relaxed/simple;
+	bh=lAAQc7xd6oFsAOROKkH+MEF8DwuLg8BeqVAKNU4oVDk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=U5n+jo+PJgKv+1VJtWeVaflMyjEo27A0lX3KWdJO+bpriC49xVlKIUlxa85ejtpMtp6fEI9/rL6HWGyLeZ1qOQsbkreIWGe/oavlBNmceg5PKn/rmkGfpGyeRyhmQoO7O/ml7NKLI9PSNfmm2+cMhK9L5CdNPCPQRROblaPdep4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WKahpG9F; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-29853ec5b8cso1955645ad.3
-        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 12:29:28 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-341988c720aso116775a91.3
+        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 12:29:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764188968; x=1764793768; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FmNiLi4toDO0VFPhyHUCXzsec6EA/6hKqsFZXKZa3HE=;
-        b=CgGJkdTN6vuVErKcQ9XtBsQDxvrhpFmRDXvdhlWw8OnAUTfBmJfNY70rZMfD7OX3PV
-         T5rfnVwV2eoWhWAxt3Y9lqJfnA+ngWUX0NAduk18CF5SX6gcS/EyIe8mYv7pEm32xk0e
-         l2JUjsg1VGISXSRorc6Js5yZXqKKC05HeyxqJz0dEv/A8EMCPSta0+IjDu/1RaAdYxk0
-         AAxXhbgLMJLvhNmSY7NexkYe/oh35mzMfvVOphMLENvbNrh9TQdtQ9ePDx+5/ImUZRhk
-         CpI5qGD8FJZ+HDrW/W7uBZnE/G57Bd5rx+Yst/+hERok+BsKGHgfP6Yv/0z9J+mGl79r
-         6e+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764188968; x=1764793768;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1764188969; x=1764793769; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FmNiLi4toDO0VFPhyHUCXzsec6EA/6hKqsFZXKZa3HE=;
-        b=DXJ/g1DBo8qEOkW2Llt7yH1nZlGz6gKIGJ9p2z9SwNcdMeXJKuFDCgYoGECOTbTfE3
-         B4TYQbfn5AjPXxxeCQXRkVmSXaR+m0hFFb6NnKP7U5Brh2g/Le+QwZULsz2pLd3L+Ior
-         mIqiNyK2HlAq/q2hGXAHO4ZQRk58KcYpRyzWvKRBDCsiB4pUfVx42BvFD+/jSGdaT9Tq
-         1GTP76cR+jAGJFIVEAZ1CZLXbRqdxw8drT4Rr5uFP9FWcteENCP4MKw3BueLUud620TK
-         cE5YpGAvGmumO1CPsSYiof6gSRai3VCsvJ0JQrWa2YC4HBQT88BKBdEfUBPiQV8/znmb
-         fFjA==
-X-Gm-Message-State: AOJu0YyYJgtaerozi8pvEWj96Lj942KYQeS9lMFrY1BpFUAsXyOxbKUz
-	OluzyuIWYfL/8GsR81HaRUddM46yGinmvHhvq3CELFNTMyDXFw96z2XSLme97g==
-X-Gm-Gg: ASbGncvzx6J5Ajid8kPfbjeYJ2GoGbEP9Y8SGsYjOmXTDPImcEYp8qsL4KsRChk1dez
-	2fOUMFgQQMoMjL7SaR0nK/rIV2+xQv0yk5Q74obj+Bn+1XwcZkJsUirO5gWM3TehJ4GEZLlgTYB
-	xfs3tPV1ZZVZE3ngsSr4VNk5agrNO8WBdF3XOM1QaPaUXrBZIxUTK4hlXoDwZYpgzrrNBSqWWHb
-	jpw+xXo8XVPR5kJ1Ww33JBz+GKN1/9Afbz2MMScxpQuGjIlHhUORzWn1jPx4Qf23X1Ft4EvlF30
-	x8pavr02i2+4pNfXqAUV5r4IN7htsN96Q4m3t6gNjA/a3YEXjBx4Bn+D3XwIyDLSmk67fYVDjwX
-	EKPFTd0Qp6VAdjpaihPEitogDdBA7ophzuTfe7WeTJBTlLI20oK5I/m0S6kIyhLDrjijhruVhMg
-	I1/Pky/Ddfjci/tw==
-X-Google-Smtp-Source: AGHT+IHPXw1Adoz+N+WMC9EjEWTjYHjGOV5oNwbqU0hVtQzVKRShtd/iEURFDFn/3TpOW1n8/byUqA==
-X-Received: by 2002:a17:903:2ec8:b0:24e:3cf2:2453 with SMTP id d9443c01a7336-29b6c6f1d7dmr225169225ad.61.1764188967957;
-        Wed, 26 Nov 2025 12:29:27 -0800 (PST)
-Received: from localhost ([2a03:2880:ff:55::])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29b7874073fsm147070265ad.62.2025.11.26.12.29.27
+        bh=VS/g3RQnyFYr3RVFNbZOZbsdYQEXcQXRpSTyZJjMzUo=;
+        b=WKahpG9FtrEy8I+XyjAY4HRUGZ+dHq3lwpFETHYM1s1wFYuMVwPCleiZQWPpV/GQUU
+         ngBjJ2BfBozRABf3L6wGWCXkJO3X5dfRbpWv6c1OeRDujTUtyqtbew3lwhnoPqPLqwdO
+         uAn8FWxhhUr8U0/YBOnV5r9Zpt2hbS/yk0SCEynPx+Z9Qhwsu8d8mdIS/c85ZDAQ7Yo/
+         jdju7mqNbqjWbG6y62Ok3EdAJDGYf5qehUA+D2JwGjy9UpVWB4rhLRePQOWmsuQ0cLs/
+         AeQgTDIJZcpphAp7FpIsOc72cqmh3G+wkaaCd9fGWELQWtNbvMV31nHaawgJD6qdr85s
+         OHGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764188969; x=1764793769;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=VS/g3RQnyFYr3RVFNbZOZbsdYQEXcQXRpSTyZJjMzUo=;
+        b=cRPnEPn9Xm8wAQTuM4fWmNFHRkHJgUcjT/K6NqvYGPaWAfboRsUock12b/Kn3VDsWm
+         /2BD8CJoTuHI2WqembOL362FZMOjG7LYlzQwi/xc8428jtUbHDgn3R4YN5ECZH4g4env
+         VH/2zeomR0QMmTZmEIqvqUbzyr8327pboaFllcCI4xdUYk1o/ovUOyskQtF2yAsN6L07
+         BVw4ucZ1Xo6d+K9aqXalTL6E+rosWaDjHTduiRoO1I8k9wAHpQw7ZnPuIH7iF33c3VIJ
+         ItMKcuUVamn3/bvejPolVa05AueoEga1DrSaWMju0qBEslbaK5m3tZfQBWqRwxRk+Ven
+         sagw==
+X-Gm-Message-State: AOJu0YxgiMTq3edNQWdE6mXsvGPdFwiplaZHF0y8LylLuFY2khxundq9
+	UOfBNq4al+FzSjGGKiluDP3X6mL7HL3dfgngRHSXiuoEOS5LbNGcO//bb3ZmwQ==
+X-Gm-Gg: ASbGnctmUq+zNrMqheMeuI5yFBmHSCeCMyM3vrG4xRDLhpZ4CKBK+GowbF7I1TYQYnl
+	5fdeV5efVZOEC/jSIoEWFWsS4I9JOtFP497GLWuIds1zK3Alm7MW1k1n03gZB/k/RQHoBgxhY//
+	n+0aFAXoQ6AMJ60xFqAZkg/BNB3ntqRprn5RWYdy75yIBWbipxYzhWLcrxu+ESJpWNVJHxTUcrB
+	tMTvdep1krAnJpjmFzmTLoOdAR36PVTI1DnjFbsMBbLT9+mAE374ayFCEqJFTxkAdRzTjsX/OUl
+	f0JtWxyhjWckJIQDbxuvA1qorP68hRLK5qxGTTHQs9gnTGctgw7R9EvrxDv/RjSXlfxLAy7lE+i
+	m6NlAFH/cD3EyPUZ6mKe7RJuyEqC39n8gsSSFAqDRWRXeJCwDWQDYX7sxT3cp1FVg2Otb+fLx3g
+	xYvSuJVaUx4UV6
+X-Google-Smtp-Source: AGHT+IFQrwmugybzAePXlZbgduyUMXLSYlGTyfkv1o+H/fUNUJ5uK9/lVQdKPgWhnXmTti+WbNQC6Q==
+X-Received: by 2002:a17:90b:268d:b0:32d:dc3e:5575 with SMTP id 98e67ed59e1d1-34733e6cab1mr18221211a91.5.1764188968947;
+        Wed, 26 Nov 2025 12:29:28 -0800 (PST)
+Received: from localhost ([2a03:2880:ff:7::])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3476008a69fsm2578510a91.10.2025.11.26.12.29.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Nov 2025 12:29:27 -0800 (PST)
+        Wed, 26 Nov 2025 12:29:28 -0800 (PST)
 From: Amery Hung <ameryhung@gmail.com>
 To: bpf@vger.kernel.org
 Cc: alexei.starovoitov@gmail.com,
@@ -81,10 +83,12 @@ Cc: alexei.starovoitov@gmail.com,
 	dzm91@hust.edu.cn,
 	ameryhung@gmail.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v1 1/2] bpf: Disable file_alloc_security hook
-Date: Wed, 26 Nov 2025 12:29:26 -0800
-Message-ID: <20251126202927.2584874-1-ameryhung@gmail.com>
+Subject: [PATCH bpf-next v1 2/2] selftests/bpf: Remove usage of lsm/file_alloc_security in selftest
+Date: Wed, 26 Nov 2025 12:29:27 -0800
+Message-ID: <20251126202927.2584874-2-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251126202927.2584874-1-ameryhung@gmail.com>
+References: <20251126202927.2584874-1-ameryhung@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,46 +97,74 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A use-after-free bug may be triggered by calling bpf_inode_storage_get()
-in a BPF LSM program hooked to file_alloc_security. Disable the hook to
-prevent this from happening.
+file_alloc_security hook is disabled. Use other LSM hooks in selftests
+instead.
 
-The cause of the bug is shown in the trace below. In alloc_file(), a
-file struct is first allocated through kmem_cache_alloc(). Then,
-file_alloc_security hook is invoked. Since the zero initialization or
-assignment of f->f_inode happen after this LSM hook, a BPF program may
-get a dangeld inode pointer by walking the file struct.
-
-  alloc_file()
-  -> alloc_empty_file()
-     -> f = kmem_cache_alloc()
-     -> init_file()
-        -> security_file_alloc() // f->f_inode not init-ed yet!
-     -> f->f_inode = NULL;
-  -> file_init_path()
-     -> f->f_inode = path->dentry->d_inode
-
-Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
-Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
-Reported-by: Dongliang Mu <dzm91@hust.edu.cn>
-Closes: https://lore.kernel.org/bpf/1d2d1968.47cd3.19ab9528e94.Coremail.kaiyanm@hust.edu.cn/
 Signed-off-by: Amery Hung <ameryhung@gmail.com>
 ---
- kernel/bpf/bpf_lsm.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/testing/selftests/bpf/prog_tests/test_lsm.c | 2 +-
+ tools/testing/selftests/bpf/progs/lsm_tailcall.c  | 8 ++++----
+ tools/testing/selftests/bpf/progs/verifier_lsm.c  | 4 ++--
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index 0a59df1c550a..7cb6e8d4282c 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -51,6 +51,7 @@ BTF_ID(func, bpf_lsm_key_getsecurity)
- BTF_ID(func, bpf_lsm_audit_rule_match)
- #endif
- BTF_ID(func, bpf_lsm_ismaclabel)
-+BTF_ID(func, bpf_lsm_file_alloc_security)
- BTF_SET_END(bpf_lsm_disabled_hooks)
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_lsm.c b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+index 2a27f3714f5c..bdc4fc06bc5a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_lsm.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+@@ -139,7 +139,7 @@ static void test_lsm_tailcall(void)
+ 	if (CHECK_FAIL(!err))
+ 		goto close_prog;
  
- /* List of LSM hooks that should operate on 'current' cgroup regardless
+-	prog_fd = bpf_program__fd(skel->progs.lsm_file_alloc_security_prog);
++	prog_fd = bpf_program__fd(skel->progs.lsm_kernfs_init_security_prog);
+ 	if (CHECK_FAIL(prog_fd < 0))
+ 		goto close_prog;
+ 
+diff --git a/tools/testing/selftests/bpf/progs/lsm_tailcall.c b/tools/testing/selftests/bpf/progs/lsm_tailcall.c
+index 49c075ce2d4c..6e7e58051e64 100644
+--- a/tools/testing/selftests/bpf/progs/lsm_tailcall.c
++++ b/tools/testing/selftests/bpf/progs/lsm_tailcall.c
+@@ -20,14 +20,14 @@ int lsm_file_permission_prog(void *ctx)
+ 	return 0;
+ }
+ 
+-SEC("lsm/file_alloc_security")
+-int lsm_file_alloc_security_prog(void *ctx)
++SEC("lsm/kernfs_init_security")
++int lsm_kernfs_init_security_prog(void *ctx)
+ {
+ 	return 0;
+ }
+ 
+-SEC("lsm/file_alloc_security")
+-int lsm_file_alloc_security_entry(void *ctx)
++SEC("lsm/kernfs_init_security")
++int lsm_kernfs_init_security_entry(void *ctx)
+ {
+ 	bpf_tail_call_static(ctx, &jmp_table, 0);
+ 	return 0;
+diff --git a/tools/testing/selftests/bpf/progs/verifier_lsm.c b/tools/testing/selftests/bpf/progs/verifier_lsm.c
+index 32e5e779cb96..6af9100a37ff 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_lsm.c
++++ b/tools/testing/selftests/bpf/progs/verifier_lsm.c
+@@ -4,7 +4,7 @@
+ #include <bpf/bpf_helpers.h>
+ #include "bpf_misc.h"
+ 
+-SEC("lsm/file_alloc_security")
++SEC("lsm/file_permission")
+ __description("lsm bpf prog with -4095~0 retval. test 1")
+ __success
+ __naked int errno_zero_retval_test1(void *ctx)
+@@ -15,7 +15,7 @@ __naked int errno_zero_retval_test1(void *ctx)
+ 	::: __clobber_all);
+ }
+ 
+-SEC("lsm/file_alloc_security")
++SEC("lsm/file_permission")
+ __description("lsm bpf prog with -4095~0 retval. test 2")
+ __success
+ __naked int errno_zero_retval_test2(void *ctx)
 -- 
 2.47.3
 
