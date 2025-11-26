@@ -1,147 +1,227 @@
-Return-Path: <bpf+bounces-75582-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75583-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC172C8A263
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 15:06:57 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79801C8A724
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 15:51:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8FE03A7BA4
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 14:06:54 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9B08534647A
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 14:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5392741DF;
-	Wed, 26 Nov 2025 14:06:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC760304BBF;
+	Wed, 26 Nov 2025 14:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eEMp3wsE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FS5BRiMv"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1413226D18;
-	Wed, 26 Nov 2025 14:06:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A302FF641;
+	Wed, 26 Nov 2025 14:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764166009; cv=none; b=pl37AoF6ZML1vGtPFexwWrKMoDYLu0urx8YGj2D2T3NKGmkmKhMHfXfIFILOLYFogHLV1NTFTrE7ghe+lMsKWpT/Tyl4ueW0iCSg9emybADPJ6tda4ZrSAK8GJhWG/j0r4qI2PQLR8bJoMKeV9qDeWx183pw/1OYZMdaBcog4MU=
+	t=1764168691; cv=none; b=QvFvfIRWH9ZJH24muo/d2YToHoBaJV3EeYVYZwTgrlpaBnFxG1XhRWbvyfarN0hLQfMqhhwfnsvGexRT6FjjCIoqSQKUoQwF9YemW6VV1zIqjZDL9DqQc1HzPRUk4ZCTOQvA+LevBW9mEGS+s9I4gknHSNf1u9w8tnpqvNHrNSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764166009; c=relaxed/simple;
-	bh=F7sYG0jsLCGGWs94KYaC0drcNMqHfCxS0ZpCejngkNE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ga49bn4WWTnQyka6x0E4gPGC+4DIaBzwuQSqBGwOOCYH/5S95aoPKQ7V/aMt9ke13iAQahmAFDIhL6RRDlnxF7YeUZ9fm2KXnYTzUcTgxGQMYDaLSkjFuzFtyoxrsAK/kJdilR2irO7t3R+/rfX/k5BvFedk6bt7u1zqW31g2Ok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eEMp3wsE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7929C4CEF7;
-	Wed, 26 Nov 2025 14:06:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764166009;
-	bh=F7sYG0jsLCGGWs94KYaC0drcNMqHfCxS0ZpCejngkNE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eEMp3wsErgin+pMB3AR32dEudVEA1Wx3GJnOB9Y9yQXoDoJzezApUyIFCkwNS5sMS
-	 prPd/w1l+WZHv0XGu4xjEf9ld/gS6luhNOdVOtIuB+WBNvuIe8Fj+3eKUSCuaic7Up
-	 VJIcr3/JfDJt0kN8n8gFtEn7Pw4bul+Q8BATnHwfAdm+UKchH+QWXeDqN91PBUqjz8
-	 hQHDXf6/8KG9OVXREXogC1/uYx2FRyo8nH9a9iQJ7oSa1mOKMQtjHInG23XUxeULoh
-	 Th9Ow5OBHZvptFJeEpkJ6n7KDO1UntBwRFJyUcFSEj0o55a2m20py8/06f8/du1WEk
-	 TlV2TbLHIo3Ng==
-Date: Wed, 26 Nov 2025 15:06:46 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 14/16] srcu: Create an SRCU-fast-updown API
-Message-ID: <aScJdsi4QNPd-f_2@localhost.localdomain>
-References: <bb177afd-eea8-4a2a-9600-e36ada26a500@paulmck-laptop>
- <20251105203216.2701005-14-paulmck@kernel.org>
- <aSW6sVkqWh2aGxlK@localhost.localdomain>
- <66ee4f2d-9885-446a-996f-801a1fe62a68@paulmck-laptop>
+	s=arc-20240116; t=1764168691; c=relaxed/simple;
+	bh=02QvojSFrcAaKk2GJlxxUlKV3j3JVooeR4T4ep+Jba4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rqdSjZXsBrPu9eesqG0inLFJcPrE1J+OGcyUGxOGL8D1Pi3D2M8VIENUu8JCIksnID5ki5yI9HtSF+MgW6F+CNt0rDLNQ4mZS46h5neCZJxtbbKpEG4UnH0FVZDzDpOGhck2DNSa4p+5TMBPxmQldt2fZI6GInxZqiwHmWvbeWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FS5BRiMv; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1764168685;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+4f1EfWHDdgyAFNQV0ld0p0K6Lhj6h1TWL2iG/DJrN0=;
+	b=FS5BRiMvX/WCDQsgK9dOUSeVdVhLAbeqQbOOaAk3QLlmHGlu/FbMYB1WIkH1sMy8KCOCpF
+	drdJeTf7L3ujP6vTvHjHzNSMB1jmyrq0cOzVmz5QA69AXUx70rP0AGZu3QPBrPXPYtjQMj
+	u20rYv3DYvTu7K2YhoUu7sJgQ2cyoBI=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	jolsa@kernel.org,
+	yonghong.song@linux.dev,
+	song@kernel.org,
+	eddyz87@gmail.com,
+	dxu@dxuuu.xyz,
+	deso@posteo.net,
+	martin.lau@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	shuah@kernel.org,
+	kerneljasonxing@gmail.com,
+	chen.dylane@linux.dev,
+	willemb@google.com,
+	paul.chaignon@gmail.com,
+	a.s.protopopov@gmail.com,
+	memxor@gmail.com,
+	yatsenko@meta.com,
+	tklauser@distanz.ch,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v12 0/7] bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for percpu maps
+Date: Wed, 26 Nov 2025 22:50:32 +0800
+Message-ID: <20251126145039.15715-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <66ee4f2d-9885-446a-996f-801a1fe62a68@paulmck-laptop>
+X-Migadu-Flow: FLOW_OUT
 
-Le Tue, Nov 25, 2025 at 07:54:33AM -0800, Paul E. McKenney a écrit :
-> On Tue, Nov 25, 2025 at 03:18:25PM +0100, Frederic Weisbecker wrote:
-> > Le Wed, Nov 05, 2025 at 12:32:14PM -0800, Paul E. McKenney a écrit :
-> > > This commit creates an SRCU-fast-updown API, including
-> > > DEFINE_SRCU_FAST_UPDOWN(), DEFINE_STATIC_SRCU_FAST_UPDOWN(),
-> > > __init_srcu_struct_fast_updown(), init_srcu_struct_fast_updown(),
-> > > srcu_read_lock_fast_updown(), srcu_read_unlock_fast_updown(),
-> > > __srcu_read_lock_fast_updown(), and __srcu_read_unlock_fast_updown().
-> > > 
-> > > These are initially identical to their SRCU-fast counterparts, but both
-> > > SRCU-fast and SRCU-fast-updown will be optimized in different directions
-> > > by later commits.  SRCU-fast will lack any sort of srcu_down_read() and
-> > > srcu_up_read() APIs, which will enable extremely efficient NMI safety.
-> > > For its part, SRCU-fast-updown will not be NMI safe, which will enable
-> > > reasonably efficient implementations of srcu_down_read_fast() and
-> > > srcu_up_read_fast().
-> > 
-> > Doing a last round of reviews before sitting down on a pull request,
-> > I think the changelog in this one should mention what are the expected
-> > uses of SRCU-fast-updown, since the RCU-TASK-TRACE conversion bits aren't
-> > there for this merge window yet.
-> 
-> The RCU Tasks Trace conversion is helped by RCU-fast.  RCU-fast-updown
-> is needed for Andrii's uretprobes code in order to get rid of the
-> read-side memory barriers while still allowing entering the reader at
-> task level while exiting it in a timer handler.
-> 
-> Does any of that help?
-> 
-> Oh, and commit-by-commit testing passed this past evening, so still
-> looking good there!
+This patch set introduces the BPF_F_CPU and BPF_F_ALL_CPUS flags for
+percpu maps, as the requirement of BPF_F_ALL_CPUS flag for percpu_array
+maps was discussed in the thread of
+"[PATCH bpf-next v3 0/4] bpf: Introduce global percpu data"[1].
 
-Ok, here is the new proposed changelog accordingly:
+The goal of BPF_F_ALL_CPUS flag is to reduce data caching overhead in light
+skeletons by allowing a single value to be reused to update values across all
+CPUs. This avoids the M:N problem where M cached values are used to update a
+map on N CPUs kernel.
 
-----
-srcu: Create an SRCU-fast-updown API
+The BPF_F_CPU flag is accompanied by *flags*-embedded cpu info, which
+specifies the target CPU for the operation:
 
-This commit creates an SRCU-fast-updown API, including
-DEFINE_SRCU_FAST_UPDOWN(), DEFINE_STATIC_SRCU_FAST_UPDOWN(),
-__init_srcu_struct_fast_updown(), init_srcu_struct_fast_updown(),
-srcu_read_lock_fast_updown(), srcu_read_unlock_fast_updown(),
-__srcu_read_lock_fast_updown(), and __srcu_read_unlock_fast_updown().
+* For lookup operations: the flag field alongside cpu info enable querying
+  a value on the specified CPU.
+* For update operations: the flag field alongside cpu info enable
+  updating value for specified CPU.
 
-These are initially identical to their SRCU-fast counterparts, but both
-SRCU-fast and SRCU-fast-updown will be optimized in different directions
-by later commits. SRCU-fast will lack any sort of srcu_down_read() and
-srcu_up_read() APIs, which will enable extremely efficient NMI safety.
-For its part, SRCU-fast-updown will not be NMI safe, which will enable
-reasonably efficient implementations of srcu_down_read_fast() and
-srcu_up_read_fast().
+Links:
+[1] https://lore.kernel.org/bpf/20250526162146.24429-1-leon.hwang@linux.dev/
 
-This API fork happens to meet two different future usecases.
+Changes:
+v11 -> v12:
+* Dropped the v11 changes.
+* Stabilized the lru_percpu_hash map test by keeping an extra spare entry,
+  which can be used temporarily during updates to avoid unintended LRU
+  evictions.
 
-* SRCU-fast will become the reimplementation basis for RCU-TASK-TRACE
-  for consolidation. Since RCU-TASK-TRACE must be NMI safe, SRCU-fast
-  must be as well.
+v10 -> v11:
+* Support the combination of BPF_EXIST and BPF_F_CPU/BPF_F_ALL_CPUS for
+  update operations.
+* Fix unstable lru_percpu_hash map test using the combination of
+  BPF_EXIST and BPF_F_CPU/BPF_F_ALL_CPUS to avoid LRU eviction
+  (reported by Alexei).
 
-* SRCU-fast-updown will be needed for uretprobes code in order to get
-  rid of the read-side memory barriers while still allowing entering the
-  reader at task level while exiting it in a timer handler.
+v9 -> v10:
+* Add tests to verify array and hash maps do not support BPF_F_CPU and
+  BPF_F_ALL_CPUS flags.
+* Address comment from Andrii:
+  * Copy map value using copy_map_value_long for percpu_cgroup_storage
+    maps in a separate patch.
 
-This commit also adds rcutorture tests for the new APIs.  This
-(annoyingly) needs to be in the same commit for bisectability.  With this
-commit, the 0x8 value tests SRCU-fast-updown.  However, most SRCU-fast
-testing will be via the RCU Tasks Trace wrappers.
+v8 -> v9:
+* Change value type from u64 to u32 in selftests.
+* Address comments from Andrii:
+  * Keep value_size unaligned and update everywhere for consistency when
+    cpu flags are specified.
+  * Update value by getting pointer for percpu hash and percpu
+    cgroup_storage maps.
 
-[ paulmck: Apply s/0x8/0x4/ missing change per Boqun Feng feedback. ]
-[ paulmck: Apply Akira Yokosawa feedback. ]
+v7 -> v8:
+* Address comments from Andrii:
+  * Check BPF_F_LOCK when update percpu_array, percpu_hash and
+    lru_percpu_hash maps.
+  * Refactor flags check in __htab_map_lookup_and_delete_batch().
+  * Keep value_size unaligned and copy value using copy_map_value() in
+    __htab_map_lookup_and_delete_batch() when BPF_F_CPU is specified.
+  * Update warn message in libbpf's validate_map_op().
+  * Update comment of libbpf's bpf_map__lookup_elem().
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: <bpf@vger.kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+v6 -> v7:
+* Get correct value size for percpu_hash and lru_percpu_hash in
+  update_batch API.
+* Set 'count' as 'max_entries' in test cases for lookup_batch API.
+* Address comment from Alexei:
+  * Move cpu flags check into bpf_map_check_op_flags().
 
--- 
-Frederic Weisbecker
-SUSE Labs
+v5 -> v6:
+* Move bpf_map_check_op_flags() from 'bpf.h' to 'syscall.c'.
+* Address comments from Alexei:
+  * Drop the refactoring code of data copying logic for percpu maps.
+  * Drop bpf_map_check_op_flags() wrappers.
+
+v4 -> v5:
+* Address comments from Andrii:
+  * Refactor data copying logic for all percpu maps.
+  * Drop this_cpu_ptr() micro-optimization.
+  * Drop cpu check in libbpf's validate_map_op().
+  * Enhance bpf_map_check_op_flags() using *allowed flags* instead of
+    'extra_flags_mask'.
+
+v3 -> v4:
+* Address comments from Andrii:
+  * Remove unnecessary map_type check in bpf_map_value_size().
+  * Reduce code churn.
+  * Remove unnecessary do_delete check in
+    __htab_map_lookup_and_delete_batch().
+  * Introduce bpf_percpu_copy_to_user() and bpf_percpu_copy_from_user().
+  * Rename check_map_flags() to bpf_map_check_op_flags() with
+    extra_flags_mask.
+  * Add human-readable pr_warn() explanations in validate_map_op().
+  * Use flags in bpf_map__delete_elem() and
+    bpf_map__lookup_and_delete_elem().
+  * Drop "for alignment reasons".
+v3 link: https://lore.kernel.org/bpf/20250821160817.70285-1-leon.hwang@linux.dev/
+
+v2 -> v3:
+* Address comments from Alexei:
+  * Use BPF_F_ALL_CPUS instead of BPF_ALL_CPUS magic.
+  * Introduce these two cpu flags for all percpu maps.
+* Address comments from Jiri:
+  * Reduce some unnecessary u32 cast.
+  * Refactor more generic map flags check function.
+  * A code style issue.
+v2 link: https://lore.kernel.org/bpf/20250805163017.17015-1-leon.hwang@linux.dev/
+
+v1 -> v2:
+* Address comments from Andrii:
+  * Embed cpu info as high 32 bits of *flags* totally.
+  * Use ERANGE instead of E2BIG.
+  * Few format issues.
+
+Leon Hwang (7):
+  bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags
+  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_array
+    maps
+  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_hash
+    and lru_percpu_hash maps
+  bpf: Copy map value using copy_map_value_long for
+    percpu_cgroup_storage maps
+  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for
+    percpu_cgroup_storage maps
+  libbpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu maps
+  selftests/bpf: Add cases to test BPF_F_CPU and BPF_F_ALL_CPUS flags
+
+ include/linux/bpf-cgroup.h                    |   4 +-
+ include/linux/bpf.h                           |  35 +-
+ include/uapi/linux/bpf.h                      |   2 +
+ kernel/bpf/arraymap.c                         |  29 +-
+ kernel/bpf/hashtab.c                          |  94 +++--
+ kernel/bpf/local_storage.c                    |  27 +-
+ kernel/bpf/syscall.c                          |  37 +-
+ tools/include/uapi/linux/bpf.h                |   2 +
+ tools/lib/bpf/bpf.h                           |   8 +
+ tools/lib/bpf/libbpf.c                        |  26 +-
+ tools/lib/bpf/libbpf.h                        |  21 +-
+ .../selftests/bpf/prog_tests/percpu_alloc.c   | 328 ++++++++++++++++++
+ .../selftests/bpf/progs/percpu_alloc_array.c  |  32 ++
+ 13 files changed, 560 insertions(+), 85 deletions(-)
+
+--
+2.51.2
+
 
