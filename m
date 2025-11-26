@@ -1,101 +1,103 @@
-Return-Path: <bpf+bounces-75567-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75566-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA57CC88F59
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 10:31:05 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E81DC88F3E
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 10:29:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id DDFBE355D51
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:31:03 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 915304E3696
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:29:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B55F72E3AF1;
-	Wed, 26 Nov 2025 09:30:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CACD5313551;
+	Wed, 26 Nov 2025 09:29:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tfamtFo1"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iujxercK"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C7271C84A0;
-	Wed, 26 Nov 2025 09:30:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59FC72D6619
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 09:29:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764149453; cv=none; b=KKyD9gcfE3E+BgVS/iGLHFA2wGHLC9Tl90wpLYXugDE/cszghCbLMJ8Qi0ssfIkc6kqaY0FAHvZ7BnT0Bpj86wNRdwcWNz/qFJf+arfAcz8uS5qRnnasZBv+GkUe1fzN67k8MterONGWzTvVFf86fcBmOtXdt+U17DCMSClO3bw=
+	t=1764149377; cv=none; b=MAlUWPrJBeNmMCiKoCQailEQSe9cGaqkhg3epDd+dd+tI3W5QAOtn4+eQDupz8QQz64k1YQH0NNhB541V8VvN9zb7QeV066+5eE/uFPGSGKgWuonp5cNLgFxyjAlvuaLycwgz2TKh/PT06ds6OhCrvAT4Fy2QdyeLK1hcPcIcSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764149453; c=relaxed/simple;
-	bh=rvAFQp/faQsWmqG5lWB+/qsMqMuI5z5YHmDfU6uEkF8=;
+	s=arc-20240116; t=1764149377; c=relaxed/simple;
+	bh=GC99hb77UWnEnm28EUGHOhrCiQq3dsAhYdNfjDaBqx8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OQz0xZT7IPkQ7Xh3tXS37bA+x2+t/GybNkDoungCFcttSjpOB6Fd5kIKpJZ4diFELZDCwdS5TDcVcKjK7riwBXBzgrqC6J9EWv/3mDwkiMzXw08pjuYXHwbd0xIZLkgdVSv3qcLGApFIeMubSZFpllyINPlQnw+wIeemmCStuQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tfamtFo1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65F28C113D0;
-	Wed, 26 Nov 2025 09:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764149452;
-	bh=rvAFQp/faQsWmqG5lWB+/qsMqMuI5z5YHmDfU6uEkF8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tfamtFo1RaMpb1YTFVTdd+c4JdiuPUAKmY22K0Bh+XtC7jGR9e5K/FItW6P+de8Ca
-	 2xrkw4O2ZmB39hfCmDLis+XMDtlSIKs9cGW8mk7RZLGTUy7GLCEL+7D5hrzbRamwaJ
-	 T8+zsGzGW/+Sxg/LKtfoH6Mk5wSQcRfPYhLoo2KcxiLn3iPqZJ0apjkthqfGtVBW+y
-	 UeY1uy/gVK+RcmZraH3A8sERKIi5Y7XKc4qj2I2yHfDGa17BbRWh/Z607juBkN8MZC
-	 UivIL3OEC4ViCjB1l0qBIeKQUheEiGzY15J7HRY8FCx1iv2/aoIW3iOwpkZG3tDWJx
-	 hbjU2ly4jHJsQ==
-Message-ID: <7cec7231-33f7-44ec-b82e-f12fba15392f@kernel.org>
-Date: Wed, 26 Nov 2025 18:26:39 +0900
+	 In-Reply-To:Content-Type; b=clNuSWy/u6bS8OVj8wjwF3XNN309owtInzFZO3d1NnpN/0ioRVZqF6o+YaLHZseAsQJIF5yeEzzRLDS+6zJQIItPNR9CXVunE1nbu3OK/CAKJFeDglf5ItTX3RLVH8FCfQWGu/VsMYnCzBAz3gmjFggW++p3MHaDOKHo2Nb2/zE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iujxercK; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7b82e322-eab7-4fc2-9de1-d10ad8251378@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1764149363;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cyvxBUAQtvL7MLXjozd2sOG3RxdZ5x/jz3IM+iSQnko=;
+	b=iujxercKX5myW8jvCC8bZIszUqjIHqFuuXCfZjhQ8/+ltO/GjfcaRJ6V8trg2t1uq7E7sP
+	8G7UBYks3QUmsLj5geyeMrer1ubOHYsgrP6jPhERvCivkZzS5lm36sZmrIBr8Xma1wRpxE
+	gfrwCFP5qCS2u5sRXUMNVj0qC+Yb9H0=
+Date: Wed, 26 Nov 2025 17:29:12 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/5] dm: ignore discard return value
-To: Wilfred Mallawa <wilfred.opensource@gmail.com>,
- Chaitanya Kulkarni <ckulkarnilinux@gmail.com>, axboe@kernel.dk,
- agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com, song@kernel.org,
- yukuai@fnnas.com, hch@lst.de, sagi@grimberg.me, kch@nvidia.com,
- jaegeuk@kernel.org, chao@kernel.org, cem@kernel.org
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- dm-devel@lists.linux.dev, linux-raid@vger.kernel.org,
- linux-nvme@lists.infradead.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-xfs@vger.kernel.org, bpf@vger.kernel.org
-References: <20251124025737.203571-1-ckulkarnilinux@gmail.com>
- <20251124025737.203571-3-ckulkarnilinux@gmail.com>
- <2f356d3564524c8c8b314ca759ec9cb07659d42a.camel@gmail.com>
-From: Damien Le Moal <dlemoal@kernel.org>
-Content-Language: en-US
-Organization: Western Digital Research
-In-Reply-To: <2f356d3564524c8c8b314ca759ec9cb07659d42a.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH bpf-next v6 2/2] bpf: Hold the perf callchain entry until
+ used completely
+To: Yonghong Song <yonghong.song@linux.dev>, peterz@infradead.org,
+ mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
+ mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+ irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
+ Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20251112163148.100949-1-chen.dylane@linux.dev>
+ <20251112163148.100949-3-chen.dylane@linux.dev>
+ <c41372ad-1591-4f2b-a786-bc0e19f8425c@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <c41372ad-1591-4f2b-a786-bc0e19f8425c@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 11/26/25 8:41 AM, Wilfred Mallawa wrote:
-> On Sun, 2025-11-23 at 18:57 -0800, Chaitanya Kulkarni wrote:
->> __blkdev_issue_discard() always returns 0, making all error checking
->> at call sites dead code.
+在 2025/11/14 00:01, Yonghong Song 写道:
+> 
+> 
+> On 11/12/25 8:31 AM, Tao Chen wrote:
+>> As Alexei noted, get_perf_callchain() return values may be reused
+>> if a task is preempted after the BPF program enters migrate disable
+>> mode. The perf_callchain_entres has a small stack of entries, and
+>> we can reuse it as follows:
 >>
->> For dm-thin change issue_discard() return type to void, in
->> passdown_double_checking_shared_status() remove the r assignment from
->> return value of the issue_discard(), for end_discard() hardcod value
+>> 1. get the perf callchain entry
+>> 2. BPF use...
+>> 3. put the perf callchain entry
+>>
+>> And Peter suggested that get_recursion_context used with preemption
+>> disabled, so we should disable preemption at BPF side.
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 > 
-> Hey Chaitanya,
-> 
-> Typo here s/hardcod/hardcode. Otherwise, with the split as other have
-> suggested:
-
-s/hardcod/hardcoded
-
-> 
-> 
-> Reviewed-by: Wilfred Mallawa <wilfred.mallawa@wdc.com>
-> 
-> Regards,
-> Wilfred
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
 > 
 
+Hi eBPF maintainers,
+
+This patch appears to have missed the eBPF maintainers on the list, 
+please review it again, thanks.
 
 -- 
-Damien Le Moal
-Western Digital Research
+Best Regards
+Tao Chen
 
