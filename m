@@ -1,683 +1,241 @@
-Return-Path: <bpf+bounces-75568-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75569-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29E63C88FE3
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 10:39:27 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D56AAC8919C
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 10:51:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBD793A8C8B
-	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:39:25 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 71A3F352677
+	for <lists+bpf@lfdr.de>; Wed, 26 Nov 2025 09:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27129302756;
-	Wed, 26 Nov 2025 09:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493C22FC014;
+	Wed, 26 Nov 2025 09:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="J/GAprF4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HC6Hz0oS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E03EA2F0C46
-	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 09:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 686DB2F7468
+	for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 09:48:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764149958; cv=none; b=rDoLteOWa9CmJYRbhKNsabkJs92F3TUmYe8uUg5NTENwR+NHDtQvu0YMe39P76StblGysBcVi4uL9J0iojWou4yGnVB3DUzrmFiMYpJyF8Gtean73rJi9AmC9Hn+QokRvupjTv08ShVQ0KuCgfsARyd8aMZqYenH5epqwtxwcZk=
+	t=1764150517; cv=none; b=uBbPImGI9ZXL+q7Rkjx5FwT/Wo97UdCcmlzXJD263GXjMgcEKU01/i1q+BlWPakHDRHz6lpR7SaDFupJbwez1mVep9KhI8jtQkeUo7vh1NSnhbb4tLiVTlm6Q98YSIz/sb0WrDkLKRkX47xzmruJ4ihYayeZupunHH+EcaHAmbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764149958; c=relaxed/simple;
-	bh=om+eQqL4kIiy2lNyumb4grIHb6MIzuA653l+7ULEiR0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=T93HIX+RGsH+VZ9lYfPZuT2Xi97wzHuLCK15RRLARcCQ/Fax8MgVE6vXz+tRhttUIjLuTbhOgq46C5V6xDVbXCB+aMRUFtYsZuHeXRBHsTrvetJbwKq6Z2Lv+o2zoLDX7LNMmBZEtesM2R4XdzXQIL+lsaKSDUX6Rvjq0VlSsxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=J/GAprF4; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-47774d3536dso5314855e9.0
-        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 01:39:08 -0800 (PST)
+	s=arc-20240116; t=1764150517; c=relaxed/simple;
+	bh=k2LUdK6FS+XQMc9tndp/vVbp22kgK8zFNc0r41qaOW0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DcK6/KsfrjVvGmdfNEt7Am+JAY0fG//WGHrUHN/DuxWUKTyTA6odhwWSW/6IK1I78yFQKxQPJucMb4ohNoE3xc+De0lLUlVehiDJT7sNJQORprmp7BxnXM0/aQWXP7leXfVfRUvdIpaq+geMLBlSXvxr7vX/petRIVvPNMZTiLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HC6Hz0oS; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2956d816c10so75788705ad.1
+        for <bpf@vger.kernel.org>; Wed, 26 Nov 2025 01:48:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1764149946; x=1764754746; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=x+6xmd0GzT9/AUTeRYJ6kJi+uUQG7cdNszXI28WYXXs=;
-        b=J/GAprF4fbY++lnqdNmdFaE6yJjzg9kHTT+tQadeZFbAf3sfD/o9QMncqE1QAbi1+z
-         6LgxzbTP4jEADqke17awRmBh1qM7TQ8WollrM+fh5DJvzKRF58g2UBWLKAYrKBbhrGNV
-         SqzsL8PUpl8b4ZZwB9kVZDVgBj2l7Cj5ShySfuPk8hticQWKVYoQ09sDuTHhL8+I+1AU
-         DYRyS7qEGv5Q5wvk7Px9BncUHXSViH3NFcb0Fx6s7w6IQlNU/kOm+eK4e17dyLFYDLC3
-         gTEyhiaM5U3OaWYx5VyiyNCqVbYF4QSABiJ+oK5wFaWTPqgFeUJs+pC8wFYX5ObKBSY3
-         WS7g==
+        d=gmail.com; s=20230601; t=1764150515; x=1764755315; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8uMB3N5rvsdxpxdbhQ4/rwp3UTr0eB1Bcl9iSw80eIw=;
+        b=HC6Hz0oSWUFRSJ/Sx7xzVOhm8WnqIVXuAalDTXOiC/1cSlrECjlaZ1T92tX8H12GfF
+         2byLkIk2hnHBknOTwVappXtjlWJk1ZNtaENJizwuGfwj0arh5KuMw5tDs9C/cf7q1yrX
+         B7IfyPUzTbjRDLpURSPWdxr5uUXwbJEyXu5RiFlSeo66gEJmK3nq1TLlQaKcV7F8Y/8v
+         BTt7trUdmF+cIUkffSkGGHBi0iieMRKI4mBXQ2Lf+u5J35JPQcux2x+54QKjVpcgvh1C
+         4yyPihkUr4JKccFt0nRJAKThanuQOKhT5Rj0b0RoZBbNYguJfSdJkDTFHYwNAk0i28Em
+         1QHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764149946; x=1764754746;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x+6xmd0GzT9/AUTeRYJ6kJi+uUQG7cdNszXI28WYXXs=;
-        b=vl5P4D+sRmgRbh1JHi5x9NO8TFYPjVm1zFNq113gjtEg4V6uoov/BTQzjtGEwbvwPr
-         5lID5vgBitfehLdWOgqqERBIhpUcxOh/6pMV0KtTDw71tVA/g4mOOeUzaiAqxSVfa2rt
-         obbwOsgk5ubBbvqUtF25tGmz3M/Csg0Vhq4e77on7U+Y2ZYSnui5l4k47EurClXQSROJ
-         vEquNI9Sj0Mcm8f1G291fvkMt/GA3t6g+ZNWWE50h6qsHSHL+0txzOM8VfcYE+wlWlyr
-         62k0lVwpqZqdZxuJaNdEFo6TE2A1j7rj9IIJ3MTx5Y9L+v4SIoVErdFzOAfg1v6m04cH
-         6a8w==
-X-Gm-Message-State: AOJu0YzdToOkN4G1JO6+9xIWSLpZpBftdF3AlUqC/OdCbv0Ne4pWIskB
-	YfwoJbitgOJXbaJl8ZDM1xWvsmlIbUbQQsqeqTe9J6ZERyMS7BvzsZGyyA/DqSm/xXUTjdzUCh4
-	3bLz8Fq4=
-X-Gm-Gg: ASbGncu9zGeauiHEo1hJBks1QMc8LjJgKffuZAbItnBM8/yvHRKb0Y7mK+Mu6UriVfa
-	Q1s0CGEJ/mNKzt4qru4rYUpp8l9VdLv+xztSlZ3UDlFsLWNDqtC5gKjZDV3xyROI+WwJceV2nt7
-	jciAe1yK9987NpSsEyDqrX9RtC6HkY5e9h+cgsLpDUM5Noi8+sSMjAot3ZojkJfdmt7gFcMmy7b
-	hDff5INNRkCeCtkmEeQ0dVT16Id7Ldfpal++9Nz1Z8JjjBcjCy56keU1s33Cjmkdxf+it2NIijF
-	hCuGE+H+UUPJ9Yz6EY1EVNwXvk5x+AG+wrXegKxjQagUDX4o7nZEc/X/0r/cI5d8mojRC8JXojL
-	EjB833vYZouE2FUDutJTelmNzvFflQAgf3FHx4HbBbawOIAW3QoeHa7T7C+wgR2UM7nwer3qSBv
-	dGoU8vfH8L6qlDCdgqvN4jy3+TyGqICprP2bwS/eQ46kc6NohJKw==
-X-Google-Smtp-Source: AGHT+IFhc5zZMh6wyGVDrg/kJjyoGsNNaAWNYZw1h4de4FZXAZS6SfLYWJk0bi/L5azz/8iO79YgQQ==
-X-Received: by 2002:a05:600c:2e4c:b0:477:9890:4528 with SMTP id 5b1f17b1804b1-477b9ea31e9mr141585845e9.2.1764149946038;
-        Wed, 26 Nov 2025 01:39:06 -0800 (PST)
-Received: from F15.localdomain ([121.167.230.140])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3476a7a5d4asm1952757a91.11.2025.11.26.01.39.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Nov 2025 01:39:05 -0800 (PST)
-From: Hoyeon Lee <hoyeon.lee@suse.com>
-To: bpf@vger.kernel.org
-Cc: Hoyeon Lee <hoyeon.lee@suse.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Tony Ambardar <tony.ambardar@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH bpf-next v2] tools: bpf: remove runqslower tool
-Date: Wed, 26 Nov 2025 18:38:11 +0900
-Message-ID: <20251126093821.373291-1-hoyeon.lee@suse.com>
-X-Mailer: git-send-email 2.52.0
+        d=1e100.net; s=20230601; t=1764150515; x=1764755315;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8uMB3N5rvsdxpxdbhQ4/rwp3UTr0eB1Bcl9iSw80eIw=;
+        b=NzfQHfwWlVmsRM7sFGpitkRw9VQBJZwYaOomijV4nt8bEfOu/nPRwQf63kntzm8MyF
+         3MTTaJo+zN/dTBJ31qxNkYCeOv12hai3P6RBID+b+8A6kRavPQLBhQOzOu25gKYk9E4V
+         0XGxEWbqNfw8iQrSXhDXNhHQaBSCiaeHKvnINr76E/bYzJsB89RTIQYS8trq5jK0kIGk
+         k1kyR90otg4REA3W7YKnpcowwBk/Iz3K4K8oHm8GgTF/0nHb0vAATAgeDpqygq96dNA3
+         znjO3CEr2y3U/Rv5HXa1T51k52eaxbfYjmwnG+YazV589AUZWz9YdDXqTuDctl+Co286
+         +iiw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhD3QU/Fwa7yHxMimN/c57+p/JM6rmOfJOm7IKG2zDRQhECFt8tLf9R+V/ADO0Qo2Glbg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw6qE+mf6QDy4gsX/gpef2bNfibjY2H9B67kAX1MSCpaloTq0gY
+	vqiOKm5Hu475fW1SCX7MWF6VXzLP1PwauqYP7AQoqv+PO4nICY/veDtxwkPnQQ==
+X-Gm-Gg: ASbGnctBL0wnvIf4031WIABLY3JjfunqoOLfXkLKSnHnXgW8nPrd87AoENxP/Wv1uhA
+	bPTVlt52iDxm5n8Oxx49zo3m71oyceCkVdvCFzAQvMGi8GnJHBnpeegZP3YDlIpus0uIHpQjczh
+	2nMRct/9Zgo5Us49RqYQe8ZAO+gMshx4EwwxjPcFq83zIHF9j+aJemZc/zIw28V3fT0DzhV28Db
+	BRS1kgrbJlCpvpK2yzEhkdl4rl+n2RFsJT8ggorNacwbLTx9B1rSMN/SXZVM/ZNQNlPkd80Y6Lq
+	c/z2cMtmeqyw8+jFwBBIunPJsG7ElHU74N+uetXCOSJJceht/JuzOD4kNiXJGMw0vvAPbJ8kYLQ
+	RMcZO2dXA0KidU5bn7POAyaJecyLG+l5PvTSOo7nc3M7w3obl/oVYyQk+e+glyHr3w8I8wxkBNL
+	mc9ycp9pRoo8cnti99GCaP7WcIfkcqFJ4+S/qx9Mls
+X-Google-Smtp-Source: AGHT+IF+9FtF7ayQC3G69Yp8vRWGltdYla+KBkYnRAEC4rmaUkKIhqBtAVHy/WEEjGIFeEh9j7Z8hw==
+X-Received: by 2002:a17:90b:2ccc:b0:340:299f:130d with SMTP id 98e67ed59e1d1-34733e60971mr18027499a91.13.1764150514677;
+        Wed, 26 Nov 2025 01:48:34 -0800 (PST)
+Received: from [10.189.138.37] ([43.224.245.241])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3476004dc3dsm1931007a91.9.2025.11.26.01.48.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Nov 2025 01:48:34 -0800 (PST)
+Message-ID: <5a1387fd-4952-42e0-b7a9-e614f7b20325@gmail.com>
+Date: Wed, 26 Nov 2025 17:48:28 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [f2fs-dev] [PATCH V3 6/6] xfs: ignore discard return value
+To: Yongpeng Yang <yangyongpeng.storage@gmail.com>,
+ Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+ Chaitanya Kulkarni <ckulkarnilinux@gmail.com>,
+ "axboe@kernel.dk" <axboe@kernel.dk>, "agk@redhat.com" <agk@redhat.com>,
+ "snitzer@kernel.org" <snitzer@kernel.org>,
+ "mpatocka@redhat.com" <mpatocka@redhat.com>,
+ "song@kernel.org" <song@kernel.org>, "yukuai@fnnas.com" <yukuai@fnnas.com>,
+ "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
+ "jaegeuk@kernel.org" <jaegeuk@kernel.org>, "chao@kernel.org"
+ <chao@kernel.org>, "cem@kernel.org" <cem@kernel.org>
+Cc: "dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
+ "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+ Yongpeng Yang <yangyongpeng@xiaomi.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+ "linux-f2fs-devel@lists.sourceforge.net"
+ <linux-f2fs-devel@lists.sourceforge.net>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+References: <20251124234806.75216-1-ckulkarnilinux@gmail.com>
+ <20251124234806.75216-7-ckulkarnilinux@gmail.com>
+ <b18c489f-d6ee-4986-94be-a9aade7d3a47@gmail.com>
+ <218f0cd0-61bf-4afa-afb0-a559cd085d4a@nvidia.com>
+ <2da95607-9b21-4d21-8926-9463021a6f33@gmail.com>
+Content-Language: en-US
+From: Yongpeng Yang <yangyongpeng.storage@gmail.com>
+In-Reply-To: <2da95607-9b21-4d21-8926-9463021a6f33@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-runqslower was added in commit 9c01546d26d2 "tools/bpf: Add runqslower
-tool to tools/bpf" as a BCC port to showcase early BPF CO-RE + libbpf
-workflows. runqslower continues to live in BCC (libbpf-tools), so there
-is no need to keep building and maintaining it.
+On 11/26/25 17:14, Yongpeng Yang wrote:
+> On 11/26/25 16:07, Chaitanya Kulkarni via Linux-f2fs-devel wrote:
+>> On 11/25/25 18:37, Yongpeng Yang wrote:
+>>>> diff --git a/fs/xfs/xfs_discard.c b/fs/xfs/xfs_discard.c
+>>>> index 6917de832191..b6ffe4807a11 100644
+>>>> --- a/fs/xfs/xfs_discard.c
+>>>> +++ b/fs/xfs/xfs_discard.c
+>>>> @@ -108,7 +108,7 @@ xfs_discard_endio(
+>>>>     * list. We plug and chain the bios so that we only need a single
+>>>> completion
+>>>>     * call to clear all the busy extents once the discards are 
+>>>> complete.
+>>>>     */
+>>>> -int
+>>>> +void
+>>>>    xfs_discard_extents(
+>>>>        struct xfs_mount    *mp,
+>>>>        struct xfs_busy_extents    *extents)
+>>>> @@ -116,7 +116,6 @@ xfs_discard_extents(
+>>>>        struct xfs_extent_busy    *busyp;
+>>>>        struct bio        *bio = NULL;
+>>>>        struct blk_plug        plug;
+>>>> -    int            error = 0;
+>>>>          blk_start_plug(&plug);
+>>>>        list_for_each_entry(busyp, &extents->extent_list, list) {
+>>>> @@ -126,18 +125,10 @@ xfs_discard_extents(
+>>>>              trace_xfs_discard_extent(xg, busyp->bno, busyp->length);
+>>>>    -        error = __blkdev_issue_discard(btp->bt_bdev,
+>>>> +        __blkdev_issue_discard(btp->bt_bdev,
+>>>>                    xfs_gbno_to_daddr(xg, busyp->bno),
+>>>>                    XFS_FSB_TO_BB(mp, busyp->length),
+>>>>                    GFP_KERNEL, &bio);
+>>>
+>>> If blk_alloc_discard_bio() fails to allocate a bio inside
+>>> __blkdev_issue_discard(), this may lead to an invalid loop in
+>>> list_for_each_entry{}. Instead of using __blkdev_issue_discard(), how
+>>> about allocate and submit the discard bios explicitly in
+>>> list_for_each_entry{}?
+>>>
+>>> Yongpeng,
+>>
+>>
+>> Calling __blkdev_issue_discard() keeps managing all the bio with the
+>> appropriate GFP mask, so the semantics stay the same. You are just
+>> moving memory allocation to the caller and potentially looking at
+>> implementing retry on bio allocation failure.
+>>
+>> The retry for discard bio memory allocation is not desired I think,
+>> since it's only a hint to the controller.
+> 
+> Agreed. I'm not trying to retry bio allocation inside the
+> list_for_each_entry{} loop. Instead, since blk_alloc_discard_bio()
+> returning NULL cannot reliably indicate whether the failure is due to
+> bio allocation failure, it could also be caused by 'bio_sects == 0', I'd
+> like to allocate the bio explicitly.
+> 
+>>
+>> This patch is simply cleaning up dead error-handling branches at the
+>> callers no behavioral changes intended.
+>>
+>> What maybe useful is to stop iterating once we fail to allocate the
+>> bio [1].
+>>
+>> -ck
+>>
+>> [1] Potential addition on the top of this to exit early in discard loop
+>>       on bio allocation failure.
+>>
+>> diff --git a/fs/xfs/xfs_discard.c b/fs/xfs/xfs_discard.c
+>> index b6ffe4807a11..1519f708bb79 100644
+>> --- a/fs/xfs/xfs_discard.c
+>> +++ b/fs/xfs/xfs_discard.c
+>> @@ -129,6 +129,13 @@ xfs_discard_extents(
+>>                                   xfs_gbno_to_daddr(xg, busyp->bno),
+>>                                   XFS_FSB_TO_BB(mp, busyp->length),
+>>                                   GFP_KERNEL, &bio);
+>> +               /*
+>> +                * We failed to allocate bio instead of continuing the 
+>> loop
+>> +                * so it will lead to inconsistent discards to the disk
+>> +                * exit early and jump into xfs_discard_busy_clear().
+>> +                */
+>> +               if (!bio)
+>> +                       break;
+> 
+> I noticed that as long as XFS_FSB_TO_BB(mp, busyp->length) is greater
+> than 0 and there is no bio allocation failure, __blkdev_issue_discard()
+> will never return NULL. I'm not familiar with this part of the xfs, so
+> I'm not sure whether there are cases where 'XFS_FSB_TO_BB(mp,
+> busyp->length)' could be 0. If such cases do not exist, then
+> checking whether the bio is NULL should be sufficient.
+> 
+> Yongpeng,
 
-Drop tools/bpf/runqslower and remove all build hooks in tools/bpf and
-selftests accordingly.
+If __blkdev_issue_discard() requires multiple calls to
+blk_alloc_discard_bio(), once the first bio allocation succeeds, it will
+never result in bio == NULL, meaning that any subsequent bio allocation
+failures cannot be detected.
 
-Signed-off-by: Hoyeon Lee <hoyeon.lee@suse.com>
----
-Changes in V2:
-- remove RUNQSLOWER_OUTPUT variable from selftests/bpf Makefile
+Yongpeng,
 
- tools/bpf/Makefile                            |  13 +-
- tools/bpf/runqslower/.gitignore               |   2 -
- tools/bpf/runqslower/Makefile                 |  91 ----------
- tools/bpf/runqslower/runqslower.bpf.c         | 106 -----------
- tools/bpf/runqslower/runqslower.c             | 171 ------------------
- tools/bpf/runqslower/runqslower.h             |  13 --
- tools/testing/selftests/bpf/.gitignore        |   1 -
- tools/testing/selftests/bpf/Makefile          |  16 +-
- .../selftests/bpf/test_bpftool_build.sh       |   4 -
- 9 files changed, 4 insertions(+), 413 deletions(-)
- delete mode 100644 tools/bpf/runqslower/.gitignore
- delete mode 100644 tools/bpf/runqslower/Makefile
- delete mode 100644 tools/bpf/runqslower/runqslower.bpf.c
- delete mode 100644 tools/bpf/runqslower/runqslower.c
- delete mode 100644 tools/bpf/runqslower/runqslower.h
-
-diff --git a/tools/bpf/Makefile b/tools/bpf/Makefile
-index 062bbd6cd048..fd2585af1252 100644
---- a/tools/bpf/Makefile
-+++ b/tools/bpf/Makefile
-@@ -32,7 +32,7 @@ FEATURE_TESTS = libbfd disassembler-four-args disassembler-init-styled
- FEATURE_DISPLAY = libbfd
- 
- check_feat := 1
--NON_CHECK_FEAT_TARGETS := clean bpftool_clean runqslower_clean resolve_btfids_clean
-+NON_CHECK_FEAT_TARGETS := clean bpftool_clean resolve_btfids_clean
- ifdef MAKECMDGOALS
- ifeq ($(filter-out $(NON_CHECK_FEAT_TARGETS),$(MAKECMDGOALS)),)
-   check_feat := 0
-@@ -70,7 +70,7 @@ $(OUTPUT)%.lex.o: $(OUTPUT)%.lex.c
- 
- PROGS = $(OUTPUT)bpf_jit_disasm $(OUTPUT)bpf_dbg $(OUTPUT)bpf_asm
- 
--all: $(PROGS) bpftool runqslower
-+all: $(PROGS) bpftool
- 
- $(OUTPUT)bpf_jit_disasm: CFLAGS += -DPACKAGE='bpf_jit_disasm'
- $(OUTPUT)bpf_jit_disasm: $(OUTPUT)bpf_jit_disasm.o
-@@ -86,7 +86,7 @@ $(OUTPUT)bpf_exp.lex.c: $(OUTPUT)bpf_exp.yacc.c
- $(OUTPUT)bpf_exp.yacc.o: $(OUTPUT)bpf_exp.yacc.c
- $(OUTPUT)bpf_exp.lex.o: $(OUTPUT)bpf_exp.lex.c
- 
--clean: bpftool_clean runqslower_clean resolve_btfids_clean
-+clean: bpftool_clean resolve_btfids_clean
- 	$(call QUIET_CLEAN, bpf-progs)
- 	$(Q)$(RM) -r -- $(OUTPUT)*.o $(OUTPUT)bpf_jit_disasm $(OUTPUT)bpf_dbg \
- 	       $(OUTPUT)bpf_asm $(OUTPUT)bpf_exp.yacc.* $(OUTPUT)bpf_exp.lex.*
-@@ -112,12 +112,6 @@ bpftool_install:
- bpftool_clean:
- 	$(call descend,bpftool,clean)
- 
--runqslower:
--	$(call descend,runqslower)
--
--runqslower_clean:
--	$(call descend,runqslower,clean)
--
- resolve_btfids:
- 	$(call descend,resolve_btfids)
- 
-@@ -125,5 +119,4 @@ resolve_btfids_clean:
- 	$(call descend,resolve_btfids,clean)
- 
- .PHONY: all install clean bpftool bpftool_install bpftool_clean \
--	runqslower runqslower_clean \
- 	resolve_btfids resolve_btfids_clean
-diff --git a/tools/bpf/runqslower/.gitignore b/tools/bpf/runqslower/.gitignore
-deleted file mode 100644
-index ffdb70230c8b..000000000000
---- a/tools/bpf/runqslower/.gitignore
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--/.output
-diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
-deleted file mode 100644
-index 78a436c4072e..000000000000
---- a/tools/bpf/runqslower/Makefile
-+++ /dev/null
-@@ -1,91 +0,0 @@
--# SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
--include ../../scripts/Makefile.include
--
--OUTPUT ?= $(abspath .output)/
--
--BPFTOOL_OUTPUT := $(OUTPUT)bpftool/
--DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)bootstrap/bpftool
--BPFTOOL ?= $(DEFAULT_BPFTOOL)
--BPF_TARGET_ENDIAN ?= --target=bpf
--LIBBPF_SRC := $(abspath ../../lib/bpf)
--BPFOBJ_OUTPUT := $(OUTPUT)libbpf/
--BPFOBJ := $(BPFOBJ_OUTPUT)libbpf.a
--BPF_DESTDIR := $(BPFOBJ_OUTPUT)
--BPF_INCLUDE := $(BPF_DESTDIR)/include
--INCLUDES := -I$(OUTPUT) -I$(BPF_INCLUDE) -I$(abspath ../../include/uapi)
--CFLAGS := -g -Wall $(CLANG_CROSS_FLAGS)
--CFLAGS += $(EXTRA_CFLAGS)
--LDFLAGS += $(EXTRA_LDFLAGS)
--LDLIBS += -lelf -lz
--
--# Try to detect best kernel BTF source
--KERNEL_REL := $(shell uname -r)
--VMLINUX_BTF_PATHS := $(if $(O),$(O)/vmlinux)		\
--	$(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux) \
--	../../../vmlinux /sys/kernel/btf/vmlinux	\
--	/boot/vmlinux-$(KERNEL_REL)
--VMLINUX_BTF_PATH := $(or $(VMLINUX_BTF),$(firstword			       \
--					  $(wildcard $(VMLINUX_BTF_PATHS))))
--
--ifneq ($(V),1)
--MAKEFLAGS += --no-print-directory
--submake_extras := feature_display=0
--endif
--
--.DELETE_ON_ERROR:
--
--.PHONY: all clean runqslower libbpf_hdrs
--all: runqslower
--
--runqslower: $(OUTPUT)/runqslower
--
--clean:
--	$(call QUIET_CLEAN, runqslower)
--	$(Q)$(RM) -r $(BPFOBJ_OUTPUT) $(BPFTOOL_OUTPUT)
--	$(Q)$(RM) $(OUTPUT)*.o $(OUTPUT)*.d
--	$(Q)$(RM) $(OUTPUT)*.skel.h $(OUTPUT)vmlinux.h
--	$(Q)$(RM) $(OUTPUT)runqslower
--	$(Q)$(RM) -r .output
--
--libbpf_hdrs: $(BPFOBJ)
--
--$(OUTPUT)/runqslower: $(OUTPUT)/runqslower.o $(BPFOBJ)
--	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
--
--$(OUTPUT)/runqslower.o: runqslower.h $(OUTPUT)/runqslower.skel.h	      \
--			$(OUTPUT)/runqslower.bpf.o | libbpf_hdrs
--
--$(OUTPUT)/runqslower.bpf.o: $(OUTPUT)/vmlinux.h runqslower.h | libbpf_hdrs
--
--$(OUTPUT)/%.skel.h: $(OUTPUT)/%.bpf.o | $(BPFTOOL)
--	$(QUIET_GEN)$(BPFTOOL) gen skeleton $< > $@
--
--$(OUTPUT)/%.bpf.o: %.bpf.c $(BPFOBJ) | $(OUTPUT)
--	$(QUIET_GEN)$(CLANG) -g -O2 $(BPF_TARGET_ENDIAN) $(INCLUDES)	      \
--		 -c $(filter %.c,$^) -o $@ &&				      \
--	$(LLVM_STRIP) -g $@
--
--$(OUTPUT)/%.o: %.c | $(OUTPUT)
--	$(QUIET_CC)$(CC) $(CFLAGS) $(INCLUDES) -c $(filter %.c,$^) -o $@
--
--$(OUTPUT) $(BPFOBJ_OUTPUT) $(BPFTOOL_OUTPUT):
--	$(QUIET_MKDIR)mkdir -p $@
--
--$(OUTPUT)/vmlinux.h: $(VMLINUX_BTF_PATH) | $(OUTPUT) $(BPFTOOL)
--ifeq ($(VMLINUX_H),)
--	$(Q)if [ ! -e "$(VMLINUX_BTF_PATH)" ] ; then \
--		echo "Couldn't find kernel BTF; set VMLINUX_BTF to"	       \
--			"specify its location." >&2;			       \
--		exit 1;\
--	fi
--	$(QUIET_GEN)$(BPFTOOL) btf dump file $(VMLINUX_BTF_PATH) format c > $@
--else
--	$(Q)cp "$(VMLINUX_H)" $@
--endif
--
--$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(BPFOBJ_OUTPUT)
--	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=$(BPFOBJ_OUTPUT) \
--		    DESTDIR=$(BPFOBJ_OUTPUT) prefix= $(abspath $@) install_headers
--
--$(DEFAULT_BPFTOOL): | $(BPFTOOL_OUTPUT)
--	$(Q)$(MAKE) $(submake_extras) -C ../bpftool OUTPUT=$(BPFTOOL_OUTPUT) bootstrap
-diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
-deleted file mode 100644
-index fced54a3adf6..000000000000
---- a/tools/bpf/runqslower/runqslower.bpf.c
-+++ /dev/null
-@@ -1,106 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--// Copyright (c) 2019 Facebook
--#include "vmlinux.h"
--#include <bpf/bpf_helpers.h>
--#include "runqslower.h"
--
--#define TASK_RUNNING 0
--#define BPF_F_CURRENT_CPU 0xffffffffULL
--
--const volatile __u64 min_us = 0;
--const volatile pid_t targ_pid = 0;
--
--struct {
--	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
--	__uint(map_flags, BPF_F_NO_PREALLOC);
--	__type(key, int);
--	__type(value, u64);
--} start SEC(".maps");
--
--struct {
--	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
--	__uint(key_size, sizeof(u32));
--	__uint(value_size, sizeof(u32));
--} events SEC(".maps");
--
--/* record enqueue timestamp */
--__always_inline
--static int trace_enqueue(struct task_struct *t)
--{
--	u32 pid = t->pid;
--	u64 *ptr;
--
--	if (!pid || (targ_pid && targ_pid != pid))
--		return 0;
--
--	ptr = bpf_task_storage_get(&start, t, 0,
--				   BPF_LOCAL_STORAGE_GET_F_CREATE);
--	if (!ptr)
--		return 0;
--
--	*ptr = bpf_ktime_get_ns();
--	return 0;
--}
--
--SEC("tp_btf/sched_wakeup")
--int handle__sched_wakeup(u64 *ctx)
--{
--	/* TP_PROTO(struct task_struct *p) */
--	struct task_struct *p = (void *)ctx[0];
--
--	return trace_enqueue(p);
--}
--
--SEC("tp_btf/sched_wakeup_new")
--int handle__sched_wakeup_new(u64 *ctx)
--{
--	/* TP_PROTO(struct task_struct *p) */
--	struct task_struct *p = (void *)ctx[0];
--
--	return trace_enqueue(p);
--}
--
--SEC("tp_btf/sched_switch")
--int handle__sched_switch(u64 *ctx)
--{
--	/* TP_PROTO(bool preempt, struct task_struct *prev,
--	 *	    struct task_struct *next)
--	 */
--	struct task_struct *prev = (struct task_struct *)ctx[1];
--	struct task_struct *next = (struct task_struct *)ctx[2];
--	struct runq_event event = {};
--	u64 *tsp, delta_us;
--	u32 pid;
--
--	/* ivcsw: treat like an enqueue event and store timestamp */
--	if (prev->__state == TASK_RUNNING)
--		trace_enqueue(prev);
--
--	pid = next->pid;
--
--	/* For pid mismatch, save a bpf_task_storage_get */
--	if (!pid || (targ_pid && targ_pid != pid))
--		return 0;
--
--	/* fetch timestamp and calculate delta */
--	tsp = bpf_task_storage_get(&start, next, 0, 0);
--	if (!tsp)
--		return 0;   /* missed enqueue */
--
--	delta_us = (bpf_ktime_get_ns() - *tsp) / 1000;
--	if (min_us && delta_us <= min_us)
--		return 0;
--
--	event.pid = pid;
--	event.delta_us = delta_us;
--	bpf_get_current_comm(&event.task, sizeof(event.task));
--
--	/* output */
--	bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU,
--			      &event, sizeof(event));
--
--	bpf_task_storage_delete(&start, next);
--	return 0;
--}
--
--char LICENSE[] SEC("license") = "GPL";
-diff --git a/tools/bpf/runqslower/runqslower.c b/tools/bpf/runqslower/runqslower.c
-deleted file mode 100644
-index 83c5993a139a..000000000000
---- a/tools/bpf/runqslower/runqslower.c
-+++ /dev/null
-@@ -1,171 +0,0 @@
--// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
--// Copyright (c) 2019 Facebook
--#include <argp.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <time.h>
--#include <bpf/libbpf.h>
--#include <bpf/bpf.h>
--#include "runqslower.h"
--#include "runqslower.skel.h"
--
--struct env {
--	pid_t pid;
--	__u64 min_us;
--	bool verbose;
--} env = {
--	.min_us = 10000,
--};
--
--const char *argp_program_version = "runqslower 0.1";
--const char *argp_program_bug_address = "<bpf@vger.kernel.org>";
--const char argp_program_doc[] =
--"runqslower    Trace long process scheduling delays.\n"
--"              For Linux, uses eBPF, BPF CO-RE, libbpf, BTF.\n"
--"\n"
--"This script traces high scheduling delays between tasks being\n"
--"ready to run and them running on CPU after that.\n"
--"\n"
--"USAGE: runqslower [-p PID] [min_us]\n"
--"\n"
--"EXAMPLES:\n"
--"    runqslower         # trace run queue latency higher than 10000 us (default)\n"
--"    runqslower 1000    # trace run queue latency higher than 1000 us\n"
--"    runqslower -p 123  # trace pid 123 only\n";
--
--static const struct argp_option opts[] = {
--	{ "pid", 'p', "PID", 0, "Process PID to trace"},
--	{ "verbose", 'v', NULL, 0, "Verbose debug output" },
--	{},
--};
--
--static error_t parse_arg(int key, char *arg, struct argp_state *state)
--{
--	static int pos_args;
--	int pid;
--	long long min_us;
--
--	switch (key) {
--	case 'v':
--		env.verbose = true;
--		break;
--	case 'p':
--		errno = 0;
--		pid = strtol(arg, NULL, 10);
--		if (errno || pid <= 0) {
--			fprintf(stderr, "Invalid PID: %s\n", arg);
--			argp_usage(state);
--		}
--		env.pid = pid;
--		break;
--	case ARGP_KEY_ARG:
--		if (pos_args++) {
--			fprintf(stderr,
--				"Unrecognized positional argument: %s\n", arg);
--			argp_usage(state);
--		}
--		errno = 0;
--		min_us = strtoll(arg, NULL, 10);
--		if (errno || min_us <= 0) {
--			fprintf(stderr, "Invalid delay (in us): %s\n", arg);
--			argp_usage(state);
--		}
--		env.min_us = min_us;
--		break;
--	default:
--		return ARGP_ERR_UNKNOWN;
--	}
--	return 0;
--}
--
--int libbpf_print_fn(enum libbpf_print_level level,
--		    const char *format, va_list args)
--{
--	if (level == LIBBPF_DEBUG && !env.verbose)
--		return 0;
--	return vfprintf(stderr, format, args);
--}
--
--void handle_event(void *ctx, int cpu, void *data, __u32 data_sz)
--{
--	const struct runq_event *e = data;
--	struct tm *tm;
--	char ts[32];
--	time_t t;
--
--	time(&t);
--	tm = localtime(&t);
--	strftime(ts, sizeof(ts), "%H:%M:%S", tm);
--	printf("%-8s %-16s %-6d %14llu\n", ts, e->task, e->pid, e->delta_us);
--}
--
--void handle_lost_events(void *ctx, int cpu, __u64 lost_cnt)
--{
--	printf("Lost %llu events on CPU #%d!\n", lost_cnt, cpu);
--}
--
--int main(int argc, char **argv)
--{
--	static const struct argp argp = {
--		.options = opts,
--		.parser = parse_arg,
--		.doc = argp_program_doc,
--	};
--	struct perf_buffer *pb = NULL;
--	struct runqslower_bpf *obj;
--	int err;
--
--	err = argp_parse(&argp, argc, argv, 0, NULL, NULL);
--	if (err)
--		return err;
--
--	libbpf_set_print(libbpf_print_fn);
--
--	/* Use libbpf 1.0 API mode */
--	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
--
--	obj = runqslower_bpf__open();
--	if (!obj) {
--		fprintf(stderr, "failed to open and/or load BPF object\n");
--		return 1;
--	}
--
--	/* initialize global data (filtering options) */
--	obj->rodata->targ_pid = env.pid;
--	obj->rodata->min_us = env.min_us;
--
--	err = runqslower_bpf__load(obj);
--	if (err) {
--		fprintf(stderr, "failed to load BPF object: %d\n", err);
--		goto cleanup;
--	}
--
--	err = runqslower_bpf__attach(obj);
--	if (err) {
--		fprintf(stderr, "failed to attach BPF programs\n");
--		goto cleanup;
--	}
--
--	printf("Tracing run queue latency higher than %llu us\n", env.min_us);
--	printf("%-8s %-16s %-6s %14s\n", "TIME", "COMM", "PID", "LAT(us)");
--
--	pb = perf_buffer__new(bpf_map__fd(obj->maps.events), 64,
--			      handle_event, handle_lost_events, NULL, NULL);
--	err = libbpf_get_error(pb);
--	if (err) {
--		pb = NULL;
--		fprintf(stderr, "failed to open perf buffer: %d\n", err);
--		goto cleanup;
--	}
--
--	while ((err = perf_buffer__poll(pb, 100)) >= 0)
--		;
--	printf("Error polling perf buffer: %d\n", err);
--
--cleanup:
--	perf_buffer__free(pb);
--	runqslower_bpf__destroy(obj);
--
--	return err != 0;
--}
-diff --git a/tools/bpf/runqslower/runqslower.h b/tools/bpf/runqslower/runqslower.h
-deleted file mode 100644
-index 4f70f07200c2..000000000000
---- a/tools/bpf/runqslower/runqslower.h
-+++ /dev/null
-@@ -1,13 +0,0 @@
--/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
--#ifndef __RUNQSLOWER_H
--#define __RUNQSLOWER_H
--
--#define TASK_COMM_LEN 16
--
--struct runq_event {
--	char task[TASK_COMM_LEN];
--	__u64 delta_us;
--	pid_t pid;
--};
--
--#endif /* __RUNQSLOWER_H */
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index be1ee7ba7ce0..e091809f07a0 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -32,7 +32,6 @@ test_cpp
- /cpuv4
- /host-tools
- /tools
--/runqslower
- /bench
- /veristat
- /sign-file
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index f00587d4ede6..c102922365f5 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -127,7 +127,6 @@ TEST_KMOD_TARGETS = $(addprefix $(OUTPUT)/,$(TEST_KMODS))
- TEST_GEN_PROGS_EXTENDED = \
- 	bench \
- 	flow_dissector_load \
--	runqslower \
- 	test_cpp \
- 	test_lirc_mode2_user \
- 	veristat \
-@@ -209,8 +208,6 @@ HOST_INCLUDE_DIR	:= $(INCLUDE_DIR)
- endif
- HOST_BPFOBJ := $(HOST_BUILD_DIR)/libbpf/libbpf.a
- RESOLVE_BTFIDS := $(HOST_BUILD_DIR)/resolve_btfids/resolve_btfids
--RUNQSLOWER_OUTPUT := $(BUILD_DIR)/runqslower/
--
- VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
- 		     $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)	\
- 		     ../../../../vmlinux				\
-@@ -232,7 +229,7 @@ $(notdir $(TEST_GEN_PROGS) $(TEST_KMODS)				\
- MAKE_DIRS := $(sort $(BUILD_DIR)/libbpf $(HOST_BUILD_DIR)/libbpf	\
- 	       $(BUILD_DIR)/bpftool $(HOST_BUILD_DIR)/bpftool		\
- 	       $(HOST_BUILD_DIR)/resolve_btfids				\
--	       $(RUNQSLOWER_OUTPUT) $(INCLUDE_DIR))
-+	       $(INCLUDE_DIR))
- $(MAKE_DIRS):
- 	$(call msg,MKDIR,,$@)
- 	$(Q)mkdir -p $@
-@@ -304,17 +301,6 @@ TRUNNER_BPFTOOL := $(DEFAULT_BPFTOOL)
- USE_BOOTSTRAP := "bootstrap/"
- endif
- 
--$(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
--	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower	       \
--		    OUTPUT=$(RUNQSLOWER_OUTPUT) VMLINUX_BTF=$(VMLINUX_BTF)     \
--		    BPFTOOL_OUTPUT=$(HOST_BUILD_DIR)/bpftool/		       \
--		    BPFOBJ_OUTPUT=$(BUILD_DIR)/libbpf/			       \
--		    BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR)		       \
--		    BPF_TARGET_ENDIAN=$(BPF_TARGET_ENDIAN)		       \
--		    EXTRA_CFLAGS='-g $(OPT_FLAGS) $(SAN_CFLAGS) $(EXTRA_CFLAGS)' \
--		    EXTRA_LDFLAGS='$(SAN_LDFLAGS) $(EXTRA_LDFLAGS)' &&	       \
--		    cp $(RUNQSLOWER_OUTPUT)runqslower $@
--
- TEST_GEN_PROGS_EXTENDED += $(TRUNNER_BPFTOOL)
- 
- $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(BPFOBJ)
-diff --git a/tools/testing/selftests/bpf/test_bpftool_build.sh b/tools/testing/selftests/bpf/test_bpftool_build.sh
-index 1453a53ed547..b03a87571592 100755
---- a/tools/testing/selftests/bpf/test_bpftool_build.sh
-+++ b/tools/testing/selftests/bpf/test_bpftool_build.sh
-@@ -90,10 +90,6 @@ echo -e "... through kbuild\n"
- 
- if [ -f ".config" ] ; then
- 	make_and_clean tools/bpf
--	## "make tools/bpf" sets $(OUTPUT) to ...tools/bpf/runqslower for
--	## runqslower, but the default (used for the "clean" target) is .output.
--	## Let's make sure we clean runqslower's directory properly.
--	make -C tools/bpf/runqslower OUTPUT=${KDIR_ROOT_DIR}/tools/bpf/runqslower/ clean
- 
- 	## $OUTPUT is overwritten in kbuild Makefile, and thus cannot be passed
- 	## down from toplevel Makefile to bpftool's Makefile.
--- 
-2.52.0
-
+> 
+>>           }
+>>           if (bio) {
+>> > If we keep looping after the first bio == NULL, the rest of the 
+>> range is
+>> guaranteed to be inconsistent anyways, because every subsequent iteration
+>> will fall into one of three cases:
+>>
+>> - The allocator keeps returning NULL, so none of the remaining LBAs 
+>> receive
+>>     discard.
+>> - Rest of the allocator succeeds, but we’ve already skipped a chunk, 
+>> leaving
+>>     a hole in the discard range.
+>> - We get intermittent successes, which produces alternating chunks of
+>>     discarded and undiscarded blocks.
+>>
+>> In each of those scenarios, the disk ends up with a partially discarded
+>> range, so the correct fix is to break out of the loop immediately and
+>> proceed to xfs_discard_busy_clear() once the very first allocation fails.
 
