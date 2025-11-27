@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-75655-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75654-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C883C8FF25
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 19:53:58 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59B40C8FF1C
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 19:53:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CB243ACCA7
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 18:53:37 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BBE984E435E
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 18:53:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D1D03019CC;
-	Thu, 27 Nov 2025 18:53:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C6A630170B;
+	Thu, 27 Nov 2025 18:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VHgv2UZn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vh/2nFAb"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8B33019D6;
-	Thu, 27 Nov 2025 18:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E39922F4A18
+	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 18:53:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764269610; cv=none; b=p2q2xoW1/I3m/GRjjR7L1J58+xz7OARNWm+KbM9G/ANeVdCXb9hVYCXQMXO7kgjIiHxhtc+gEia2ziI9LmMWXLgX+3O0zhvIVjb+oIJpkomhzqujOHiBhDUHuZ3Gwlj7f4d7PhNw/frS5YTOVIbrjoWen7WDrufYAt0f8/ZdsJQ=
+	t=1764269605; cv=none; b=oRKMnaRh575uhpeGs15doRcGsA1AIkZGtL+HwzF6+0SkcCeymF3PPO1HMtGyHH58hO9ltwwS+j5TsNpQDvgaVDgPUDn1nQaTMbfp7YrTeKusjCekH6qT2GFR+UlxIE6aM6lkey4ZZXr+clVOVS4v0ggvQOSs509Pxz4nXhmxjFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764269610; c=relaxed/simple;
-	bh=2L9UD345rU94AfBtvlI4dQC63bAGeZGywGagB8VUEFI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EPVN+WYZDo1kI91XaZoHnsV1v2vXxgkK65/yC4hmoB3uZpEkvUpVkYe4EU8ZXsKKmgWl249EDASVIa9EdQ8BVtc4RfAnwJuDS2kwI42C0BXLlTfIYiXgb8Ui7PizpYzeodVJF7sGvggZzmyzDRuRj1ziazh72Wj+t/EuoLmq85Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VHgv2UZn; arc=none smtp.client-ip=95.215.58.186
+	s=arc-20240116; t=1764269605; c=relaxed/simple;
+	bh=OGljzmU0DkQ+x9fsECZTDJgZ2OLFsyJKQITIodlLZY4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=fSOCKKyAM5teD9qm34vG/StIM/YPsk31qqZAfkpRwlGjY8e8Yjy2aaz74FpGaAF/jQUsaVR3rakBv0aQ2PUbVRagPainDyOYeNdG4EYlAaenISIV2rRHJvuTnun3abF3T9KnXsu//JTLPeeBCdHTvNSwS1aVJwETP/LsOdO6McE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vh/2nFAb; arc=none smtp.client-ip=95.215.58.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764269595;
+	t=1764269601;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=GniM6YWeq8q57UYAO1fBBln/A1ZwY/HbEQa5QXtzgU4=;
-	b=VHgv2UZnKYhAzLcVEt0ru2xlOmBTctJR6vyVekWuhm8sPwB16OMH731lHhsRuPdh2rMR5Y
-	G2VXWK6ZElw3QjgeB0qPg/WH9JKItJd8XEX0SBkjUtD6AiDHuAZifZ05+frzrw7ipA4lEW
-	+4XCDBwd3quuifFVfL1ze1BA6Os+gig=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GkubKcSTNE4kKDdz7gUmlKO6JRAaq9Yff0unvyM5a5E=;
+	b=vh/2nFAbmvdxajM7iTr61Dj2BLyrmCRbpofhmY4haJZ5bok6qmfLfriiVj0QDQOXPSEbEu
+	F/87xb+qrzA0P+fIfHs+9kr+bXgAFAPuwM0yZaYQJ97Edymn8ZOAckErGLiuGpC44Wcp4X
+	pmk3qXxSxmPSppIp1flbojKpbPLim28=
 From: Ihor Solodrai <ihor.solodrai@linux.dev>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,9 +66,11 @@ Cc: bpf@vger.kernel.org,
 	dwarves@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-kbuild@vger.kernel.org
-Subject: [PATCH bpf-next v2 0/4] resolve_btfids: Support for BTF modifications
-Date: Thu, 27 Nov 2025 10:52:38 -0800
-Message-ID: <20251127185242.3954132-1-ihor.solodrai@linux.dev>
+Subject: [PATCH bpf-next v2 1/4] resolve_btfids: rename object btf field to btf_path
+Date: Thu, 27 Nov 2025 10:52:39 -0800
+Message-ID: <20251127185242.3954132-2-ihor.solodrai@linux.dev>
+In-Reply-To: <20251127185242.3954132-1-ihor.solodrai@linux.dev>
+References: <20251127185242.3954132-1-ihor.solodrai@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,49 +80,52 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-This series changes resolve_btfids and kernel build scripts to enable
-BTF transformations in resolve_btfids. Main motivation for enhancing
-resolve_btfids is to reduce dependency of the kernel build on pahole
-capabilities [1] and enable BTF features and optimizations [2][3]
-particular to the kernel.
+Rename the member of `struct object` holding the path to BTF data if
+provided via --btf arg. `btf_path` is less ambiguous.
 
-Patches #1-#3 in the series are non-functional refactoring in
-resolve_btfids. The last patch (#4) makes significant changes in
-resolve_btfids and introduces scripts/gen-btf.sh. Implementation
-changes are described in detail in the patch description.
-
-[1] https://lore.kernel.org/dwarves/ba1650aa-fafd-49a8-bea4-bdddee7c38c9@linux.dev/
-[2] https://lore.kernel.org/bpf/20251029190113.3323406-1-ihor.solodrai@linux.dev/
-[3] https://lore.kernel.org/bpf/20251119031531.1817099-1-dolinux.peng@gmail.com/
-
+Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
 ---
+ tools/bpf/resolve_btfids/main.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-v1->v2:
-  - gen-btf.sh and other shell script fixes (Donglin)
-  - update selftests build (Donglin)
-  - generate .BTF.base only when KBUILD_EXTMOD is set (Alan)
-  - proper endianness handling for cross-compilation
-  - change elf_begin mode from ELF_C_RDWR_MMAP to ELF_C_READ_MMAP_PRIVATE
-  - remove compressed_section_fix()
-  - nit NULL check in patch #3 (suggested by AI)
-
-v1: https://lore.kernel.org/bpf/20251126012656.3546071-1-ihor.solodrai@linux.dev/
-
-Ihor Solodrai (4):
-  resolve_btfids: rename object btf field to btf_path
-  resolve_btfids: factor out load_btf()
-  resolve_btfids: introduce enum btf_id_kind
-  resolve_btfids: change in-place update with raw binary output
-
- MAINTAINERS                          |   1 +
- scripts/Makefile.modfinal            |   5 +-
- scripts/gen-btf.sh                   | 167 ++++++++++++++
- scripts/link-vmlinux.sh              |  42 +---
- tools/bpf/resolve_btfids/main.c      | 331 +++++++++++++++++----------
- tools/testing/selftests/bpf/Makefile |   5 +
- 6 files changed, 395 insertions(+), 156 deletions(-)
- create mode 100755 scripts/gen-btf.sh
-
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index d47191c6e55e..164f0c941f04 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -113,7 +113,7 @@ struct btf_id {
+ 
+ struct object {
+ 	const char *path;
+-	const char *btf;
++	const char *btf_path;
+ 	const char *base_btf_path;
+ 
+ 	struct {
+@@ -550,11 +550,11 @@ static int symbols_resolve(struct object *obj)
+ 		}
+ 	}
+ 
+-	btf = btf__parse_split(obj->btf ?: obj->path, base_btf);
++	btf = btf__parse_split(obj->btf_path ?: obj->path, base_btf);
+ 	err = libbpf_get_error(btf);
+ 	if (err) {
+ 		pr_err("FAILED: load BTF from %s: %s\n",
+-			obj->btf ?: obj->path, strerror(-err));
++			obj->btf_path ?: obj->path, strerror(-err));
+ 		goto out;
+ 	}
+ 
+@@ -790,8 +790,8 @@ int main(int argc, const char **argv)
+ 	struct option btfid_options[] = {
+ 		OPT_INCR('v', "verbose", &verbose,
+ 			 "be more verbose (show errors, etc)"),
+-		OPT_STRING(0, "btf", &obj.btf, "BTF data",
+-			   "BTF data"),
++		OPT_STRING(0, "btf", &obj.btf_path, "file",
++			   "path to a file with input BTF data"),
+ 		OPT_STRING('b', "btf_base", &obj.base_btf_path, "file",
+ 			   "path of file providing base BTF"),
+ 		OPT_BOOLEAN(0, "fatal_warnings", &fatal_warnings,
 -- 
 2.52.0
 
