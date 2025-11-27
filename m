@@ -1,100 +1,100 @@
-Return-Path: <bpf+bounces-75636-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75637-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77EB4C8E0BC
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 12:29:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9799EC8E101
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 12:36:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5FB2E4E24FC
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 11:29:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDEDB3AA37E
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 11:36:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B9032AACC;
-	Thu, 27 Nov 2025 11:29:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD5432BF25;
+	Thu, 27 Nov 2025 11:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cu7vGoZH";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="mBmxYoFL"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fmFRSgd5";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="IbK6lBvz"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20CF1CA4E
-	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 11:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842003246EC
+	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 11:35:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764242967; cv=none; b=jf749cAQfLVzAY2b/KlXVpWjLX0gyqMPVk1ux9yv3h49voQJsRtNMfTTMRzK6yjUCd2/6nu9YNvvnAEX5KGThUyVobWXfFkEwx8hitA8gKsGkOGw6xy43JPXtlMKRA3tk/8zQSEeCTxOWdFUqhyNZMrbOSCuM/AirZcXpxwtkaI=
+	t=1764243355; cv=none; b=tVAMzRTLj6PxgM9eZMnQ/4AnLNGCYOmVER6tkw1BfTUspC3NmBiSQJxsPpIg+EWyk3n1mQ+1uJX/A0+EcDAqPoTqPXy/gyYBPbwCWLnDTCGMRB4thnozd03hMycKm0haqrk2o72mMQusstfh12zJmmfwJt/DMVw2WF0uN8D1KKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764242967; c=relaxed/simple;
-	bh=Xbjo83qVcjekxim+HDA0ZQ+uPHFdYUuQhXzoPjb23RI=;
+	s=arc-20240116; t=1764243355; c=relaxed/simple;
+	bh=4WI7yCChHQXZkx37ypnImXEbQ0maLcssq2bhKZ7ODlg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IAtNX5FZd+texgmE+Z1kKOb0fj0g0lFk+63H/omcjh3mLjpQAjzKas2i+IQx2f2MBo6sy1WMtd8ceN+tpfGsfGco1oVPEqKiVjyO4l8lM1KIQv4IMYAovC2nAXjhKBVO8oXl3CbCZZuUIpGXUWpXburPFavlDuOVSlwMKLGmxuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cu7vGoZH; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=mBmxYoFL; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=Eft90PHWf2vXTNbiCXvANB2oYYLSg/bxyd/hB6xhukDKTOSTx1LV+KaLEd1dsS/p4SuWL/Dx9pxka+O8a3p15WDr2ackyhYME5KWIuiybRI6Mxgm1Rn2Y8W6oGVJURE2uO6VDBxr6z9ZtjXlKor9eKxYLSmPTNiJxXoaPSzvBA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fmFRSgd5; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=IbK6lBvz; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1764242965;
+	s=mimecast20190719; t=1764243352;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=q226UxpZ2lcekLX30EL32R6ZYbE5y2RkR278GNgRSlg=;
-	b=cu7vGoZHIN1pBQKeT1ilQ3rDSPv9P9Pf9b6EyUloWUqphc0I7UnLNbwNZR8BH5l4qLo0NY
-	AzlaVw2MkfUtoBhN57JAdrz7kzclrKgiRFLJrCXYBmMRCkrAQAw/dEPEDE+KuXUgpGQd+8
-	2H2V5EV9iCOXaEBkqYEhYBFZv4A+2uo=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=TPLeXmZroMIKbU6mJWFaUG0Igc2fFk4vqnIUHWReN0w=;
+	b=fmFRSgd5bCvoA5N7oip/xX4k+woCvJkX88igq8DbWiAON4Yhd4d3VeTIft3tPdIHHU30Q8
+	mwcU6qJOyBpNJ2NPzD+cAPLQJTd9Maev/P+9A5EuvD3ykOJYyZQp8qz58lpzsATMCkCobN
+	yssVgq0aBpZzIwOuJBZaMbSvZqK1w8Q=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-383-BfgxNyMxOyOO-ZXBSyUIEA-1; Thu, 27 Nov 2025 06:29:23 -0500
-X-MC-Unique: BfgxNyMxOyOO-ZXBSyUIEA-1
-X-Mimecast-MFC-AGG-ID: BfgxNyMxOyOO-ZXBSyUIEA_1764242962
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-477c49f273fso5617535e9.3
-        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 03:29:23 -0800 (PST)
+ us-mta-641-QFd7HOlOORqM_fPBFpc3iw-1; Thu, 27 Nov 2025 06:35:50 -0500
+X-MC-Unique: QFd7HOlOORqM_fPBFpc3iw-1
+X-Mimecast-MFC-AGG-ID: QFd7HOlOORqM_fPBFpc3iw_1764243349
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-42b2ffe9335so500672f8f.1
+        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 03:35:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1764242962; x=1764847762; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1764243349; x=1764848149; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=q226UxpZ2lcekLX30EL32R6ZYbE5y2RkR278GNgRSlg=;
-        b=mBmxYoFLYhOoR+NqyMEfbz0XjpEWLPHQAGyNcXETr8LxEezDGaIiL5jdQCMFcT6doE
-         oLZT8/VqmX3UBfDAiBcQiSLQ53T3dXjV0VVdbOm+J8W9K0QqBwc8+jxLtQ5rma3W31vc
-         Fr/d36zbjcOlMU8Mxysul5EDfLikxD602Hdw7s9LyZyZ1bvNGdG+gNasm1kaCycNhYI4
-         LtqSR+IyQ2adS/0URXKDuDAetuyZWNXTWniuRp7boGunavdlntNtD/KCfi0tlF0dUvRw
-         gjH2TAL5eNpXatyo+nr0MTIQ5iIaBR0pkkPx9+lD2Jq9FtKKeokWoiATpIrxS0pR0j1X
-         wxew==
+        bh=TPLeXmZroMIKbU6mJWFaUG0Igc2fFk4vqnIUHWReN0w=;
+        b=IbK6lBvzPLHYjX4sOV1T5CeN6qQIuhO4QcWkq2eO56yqJUzzgY5OvIRBKNniDKdUXA
+         QAsrEu3DIWmg6Qteu2Gw79A0R3Z/jXWFtxYKv+7x4s09aPCCXS/GEeCkS9tedUxAN7E9
+         8ZCxzhhhljGnZl5OtROhOT0zDNu6i2xwzVRTCw5wPv33n3UJcFE4Q6qgFVeBt4e1Uxtl
+         1tPl8zlxCachsWYYgFcetUp79FkQ04BG8OJrV7DsvShjc4R5KwYc3CPOl2P+sBSkddXu
+         TtjV3DL2t6LU9as93+LgPvMUn1XwkMMVk/F6CbvYPWZrdfTpAMavPc8UDO/0ylMrpbqq
+         pnPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764242962; x=1764847762;
+        d=1e100.net; s=20230601; t=1764243349; x=1764848149;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=q226UxpZ2lcekLX30EL32R6ZYbE5y2RkR278GNgRSlg=;
-        b=Elbo6+8Cij3DVrS953qDnhSrsEuTlz4LSjEfc0VQo5oStIbhEWSZVLxPgJzjELE9BR
-         jie73WkTyrNDTQX+fqRj/yPv7FamzSVUIyIvC2TNwHAMjY9D9Iw4uww/QJEO/gyVM1XT
-         s5LwgWIma+LbAUZbjiH6JQCP8Ru/tlynvBFU/1AQyyYhbbuxAc/4wcM4rKdmUoTbdw1X
-         E+5tQxpzP+urkRy8jekeyOis2CpqV76M53HZxQIJIMlutcMCjdAwDYQOHRukrRwGyYNP
-         Y6Mj2k3ZDEoYMNeA6AcU4KOJ1yIJvomPn5Pc+cU+wW115f2TB5OpTDo5voYoQg79bphw
-         zvcg==
-X-Gm-Message-State: AOJu0YzvFgpQWn1BoSa0TY9EEdJtoFKUS3nOVki5HVVUYc08AgCQeTGu
-	b8jxiP848jmT5Jdw5YwOWgKcYw35Hib272h8TW8TOltGwKfF3E5GTXHoT2g0p2sXEB6ad01I+Zy
-	JBU+6U3RpbAn3u1k7eEIyoeBnqaXLOY+5z/0QYrvrf4DDEECZsD5IQw==
-X-Gm-Gg: ASbGncutEV/zXWlqGQSBPsOV2yF2AOK3NCI7yuRoinXURJmJkwgWSD1Zy15M2u1Qbtl
-	9LrLv3I4UVXIN60NNtcWqlGAZUZptRvZV1UKKpBFMJ5MvIlvKlI7TOjBqk87hZQlMuOQP+XN7Fm
-	EhKm0StedI0U2BTtNr7oFPZmGatMcMOE9v9GIbi8udxAjYlTt4d9h5NfoS8SfYBSLiAyDIS9DkC
-	MxgjkCA6ipiCatnLv1r/STfITGhjAqcfHqplns/Xan/pS1bF8Gi/TYbCaz66tG0GUBwjohSvj5z
-	TRQjZQyFK11hqPtRJqkAqSFw93HHToP0vgZAJDhDgEjia2Ql1HTy5wsQo1TpTL0uQkwTutahOru
-	p+gJGkzoOmp3kHg==
-X-Received: by 2002:a05:600c:3110:b0:477:b734:8c52 with SMTP id 5b1f17b1804b1-477c0185bebmr247680725e9.14.1764242962441;
-        Thu, 27 Nov 2025 03:29:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGV57wjUglDLQE7qqkiRaOB2mEMR0gTX1X1M1loqMP9QSzYd01vth1pFvUgzo1XoOBJ3gazqg==
-X-Received: by 2002:a05:600c:3110:b0:477:b734:8c52 with SMTP id 5b1f17b1804b1-477c0185bebmr247680065e9.14.1764242961747;
-        Thu, 27 Nov 2025 03:29:21 -0800 (PST)
+        bh=TPLeXmZroMIKbU6mJWFaUG0Igc2fFk4vqnIUHWReN0w=;
+        b=R6yf7vikEBHkRcH7RPxk0BQheTX4lyvFrXjr5IHuRe7QPsDzHHrAEtSPhhQHhb7DSz
+         ehOhXHAQQcFJZfqi95qJ0l0V/CoT/uEr0SutQPuqDDq+GhMsPjGHJn3vgldl5QFbL8P4
+         Vzh/MdxtrsYJerQWBpn52huvpel5o6fLI5f7JvAdZA5Zyfng96c/coLgLC+MY4xSv9s6
+         ATYoN8DHQnwniH6VC/ngAUMEAiMrPcuxGsTNS7/oTY/snkhd0VIzWSoFsockk3vP4gOv
+         ZuPUlLeaENY1j9tFPdiaFZDkz80NwsVAZihs2E3Dl69t0YYE9/LgEmmTDYMq+qkYSVMF
+         GJsA==
+X-Gm-Message-State: AOJu0Yzitk/qFxH4yKEFaz9R60KS7vFJ6iEldImVJSV+yF3JC+4Bev/M
+	HkNRDST1R5+p69drxDwP0MYfdijOwRea6N0kZySkFDzeaX8HfYQrUfmCKSCm+DIDsyx1AorjuPR
+	TCjBZ7f5GtNg7uWuAZ8WyZhJrZxh70dmyTEWeVLIg1JOyEuYx4+AUZg==
+X-Gm-Gg: ASbGncuffiasaiQQdmtq/08y/CKoxwqgWUJNJFISkOGyijUh9YcSY6WykaLw4w6vPDI
+	iy5103J708dRXSPPhjNIsDHOhegBxqQoJtn4YiVX96uz46qBsbSJ7gLdgJ9ei3FwCM8DHfQ5eoU
+	l0a2cqFBkTuXWQgO7UcQ3FNXxTBdEJNj8QgxgKDOXR7Vwxk6x/NMCJAc5MN1G9PQUPOS+2Z2I6Y
+	UVk4Y8bol1ULiuJx0a4r5yCEYryAy1P82hSVjZ8KH+phy7blDrIG4n+RwXZbwe2EvtGi0gTOd+r
+	OPOPeycNTgeN9jZ2MILT5FOQYoyJMJum3SJM+WpQtLaryGWg1giO3461XjgNAFRi1Qyr9Y2hzUV
+	ELnD/+FrEhAg1Jw==
+X-Received: by 2002:a5d:5e01:0:b0:42b:3131:5435 with SMTP id ffacd0b85a97d-42cc1ac9de0mr24340550f8f.2.1764243349483;
+        Thu, 27 Nov 2025 03:35:49 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHw+losns/EbFf8Iuyd+Ic4CbDitf9tLRbOX3h2FYMV1qJKEuWEEDc8zOqFzENhs0ha+EaT5Q==
+X-Received: by 2002:a5d:5e01:0:b0:42b:3131:5435 with SMTP id ffacd0b85a97d-42cc1ac9de0mr24340515f8f.2.1764243349101;
+        Thu, 27 Nov 2025 03:35:49 -0800 (PST)
 Received: from [192.168.88.32] ([212.105.155.212])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4790add60e2sm92649475e9.6.2025.11.27.03.29.20
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42e1ca1a2easm3317816f8f.23.2025.11.27.03.35.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Nov 2025 03:29:21 -0800 (PST)
-Message-ID: <4c645223-8c52-40d3-889b-f3cf7fa09f89@redhat.com>
-Date: Thu, 27 Nov 2025 12:29:19 +0100
+        Thu, 27 Nov 2025 03:35:48 -0800 (PST)
+Message-ID: <0bcdd667-1811-4bde-8313-1a7e3abe55ad@redhat.com>
+Date: Thu, 27 Nov 2025 12:35:47 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,8 +102,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 3/3] xsk: remove spin lock protection of
- cached_prod
+Subject: Re: [PATCH net-next v2 2/3] xsk: use atomic operations around
+ cached_prod for copy mode
 To: Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net,
  edumazet@google.com, kuba@kernel.org, bjorn@kernel.org,
  magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
@@ -112,49 +112,44 @@ To: Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net,
 Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
  Jason Xing <kernelxing@tencent.com>
 References: <20251125085431.4039-1-kerneljasonxing@gmail.com>
- <20251125085431.4039-4-kerneljasonxing@gmail.com>
+ <20251125085431.4039-3-kerneljasonxing@gmail.com>
 Content-Language: en-US
 From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20251125085431.4039-4-kerneljasonxing@gmail.com>
+In-Reply-To: <20251125085431.4039-3-kerneljasonxing@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 11/25/25 9:54 AM, Jason Xing wrote:
-> From: Jason Xing <kernelxing@tencent.com>
-> 
-> Remove the spin lock protection along with some functions adjusted.
-> 
-> Now cached_prod is fully converted to atomic, which improves the
-> performance by around 5% over different platforms.
-
-I must admit that I'm surprised of the above delta; AFAIK replacing 1to1
-spinlock with atomic should not impact performances measurably, as the
-thread should still see the same contention, and will use the same
-number of atomic operation on the bus.
-
-
-> @@ -585,11 +574,9 @@ static void xsk_cq_submit_addr_locked(struct xsk_buff_pool *pool,
->  	spin_unlock_irqrestore(&pool->cq_prod_lock, flags);
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index 44cc01555c0b..3a023791b273 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -402,13 +402,28 @@ static inline void xskq_prod_cancel_n(struct xsk_queue *q, u32 cnt)
+>  	q->cached_prod -= cnt;
 >  }
 >  
-> -static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
-> +static void xsk_cq_cached_prod_cancel(struct xsk_buff_pool *pool, u32 n)
+> -static inline int xskq_prod_reserve(struct xsk_queue *q)
+> +static inline bool xsk_cq_cached_prod_nb_free(struct xsk_queue *q)
 >  {
-> -	spin_lock(&pool->cq_cached_prod_lock);
->  	atomic_sub(n, &pool->cq->cached_prod_atomic);
+> -	if (xskq_prod_is_full(q))
+> +	u32 cached_prod = atomic_read(&q->cached_prod_atomic);
+> +	u32 free_entries = q->nentries - (cached_prod - q->cached_cons);
+> +
+> +	if (free_entries)
+> +		return true;
+> +
+> +	/* Refresh the local tail pointer */
+> +	q->cached_cons = READ_ONCE(q->ring->consumer);
+> +	free_entries = q->nentries - (cached_prod - q->cached_cons);
+> +
+> +	return free_entries ? true : false;
+> +}
+_If_ different CPUs can call xsk_cq_cached_prod_reserve() simultaneously
+(as the spinlock existence suggests) the above change introduce a race:
 
-It looks like that the spinlock and the protected data are on different
-structs.
-
-I wild guess/suspect the real gain comes from avoiding touching an
-additional cacheline.
-`struct xsk_queue` size is 48 bytes and such struct is allocated via
-kmalloc. Adding up to 16 bytes there will not change the slub used and
-thus the actual memory usage.
-
-I think that moving the cq_cached* spinlock(s) in xsk_queue should give
-the same gain, with much less code churn. Could you please have a look
-at such option?
+xsk_cq_cached_prod_nb_free() can return true when num_free == 1  on
+CPU1, and xsk_cq_cached_prod_reserve increment cached_prod_atomic on
+CPU2 before CPU1 completed xsk_cq_cached_prod_reserve().
 
 /P
 
