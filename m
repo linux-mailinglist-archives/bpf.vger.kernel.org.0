@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-75657-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75658-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AEC8C8FF31
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 19:54:17 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F054C8FF3A
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 19:54:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6AB2E4E6CDA
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 18:53:54 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 629374E7D29
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 18:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6323016E4;
-	Thu, 27 Nov 2025 18:53:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093A52FE062;
+	Thu, 27 Nov 2025 18:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ghYFeHis"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QfQtWx2X"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787E33019BD
-	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 18:53:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9218230277E
+	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 18:53:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764269616; cv=none; b=KraKkWhRPTgEgm8nN3Qra4419pKxUY+Wt1c+qeTUHbcy7asj+zwihnGIdh36s+Qy4oXQjUgWui++UxDqLIZsbuwaBbpZtnBEhGHIzoTgIdcy6He+acDl7lz8wqzfDhXE1ts9keLGx3rzdgIkG1U4/8wMICxnXKUaYHYr/hhbmJI=
+	t=1764269626; cv=none; b=cUagNXbOaVo6XEodV+VNNMu4croDPfbKMef7h2P4DRpFuvilhmb0B5sg81cDgpJLZoKXqOeUzhNbcFtCrG6lwVeTa32+mP8yVaWTAqItJno257BLPPcbiGs0Dy13rGeyHBd7ENb5bKT7m7IgpFHWSnyAWQKeCzSMxiNJ+BZSxoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764269616; c=relaxed/simple;
-	bh=j5XXpTzzdMx3lJGLdsHVgHP8craYMQ5WOsTTtqlKWns=;
+	s=arc-20240116; t=1764269626; c=relaxed/simple;
+	bh=54TYmC4Sf5VJD3ujWj2j7dlSMEm+33X5N6AV/wEKIZ0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=avXdAJZBXapZKZqS7iFBjfKk2Q6xOPpIdvKNzymBC9WGhg+qCFWmLpKXRdrgEjb5eFJf7uVMf2E9xlP58NjEjLggrpcpmsVfpp7ccpaJf2ZBC+9/G5Q9TbwefOWt9aNqrGfV+Za47Jf+GfWqE7Hx3/HjkJRyDoFpg6gut/d+Zk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ghYFeHis; arc=none smtp.client-ip=95.215.58.182
+	 MIME-Version; b=fdySWpMedbzHISx+cz77xTTvTO5WehuPIKeNkWxXJISU7Tzl03u+LSQmyV7UEI02w2JFX6rUEB2L5CVJ4xSOTJUvowKeDluM6daLsTaWRA9Q/uArsvCAGNRYDlenHXtn5al8MLo1W1VrDkHfXdfwEPKGn8LrQBjJLCbSldCT5eM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QfQtWx2X; arc=none smtp.client-ip=95.215.58.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764269612;
+	t=1764269618;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OmAGUFuRPKWCczXyIbvhxa8eaYDKpDkc1HqhWvoVOMI=;
-	b=ghYFeHis+9VIIcviZuBskWl4tcsQ1HYmsLjxfi5DCplimNJw4uwiKJIQ9i5SM6oWAubzOQ
-	3Od4CLymOR3b0kh4KScYonkmST/Jy58Nib4KjkB8sf08QNzgkOeUx9l5UUdoWhLS3RY2CU
-	eyFVGPWfHqIY8UKqqUBDSLB7cA6gTyc=
+	bh=eyeJsCgdndmougTMJwqIY+IApOSyTyaO+F+QWhRkMAU=;
+	b=QfQtWx2Xa1EyAIEOYg8OBPIg9chgT1kjLHclshfCm6r6ltppzb7srQBg4qjb8LtrpgEKMc
+	5skEb7LFQzXk3+S8kWeZb42KnXYtV0dmObCxNsQQEQ2S3ICzFYeoJSk/bEIoA8kzG4sceQ
+	/4WQQ9knPaYLmNv4fss2slzb4krdeaU=
 From: Ihor Solodrai <ihor.solodrai@linux.dev>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -66,9 +66,9 @@ Cc: bpf@vger.kernel.org,
 	dwarves@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-kbuild@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/4] resolve_btfids: introduce enum btf_id_kind
-Date: Thu, 27 Nov 2025 10:52:41 -0800
-Message-ID: <20251127185242.3954132-4-ihor.solodrai@linux.dev>
+Subject: [PATCH bpf-next v2 4/4] resolve_btfids: change in-place update with raw binary output
+Date: Thu, 27 Nov 2025 10:52:42 -0800
+Message-ID: <20251127185242.3954132-5-ihor.solodrai@linux.dev>
 In-Reply-To: <20251127185242.3954132-1-ihor.solodrai@linux.dev>
 References: <20251127185242.3954132-1-ihor.solodrai@linux.dev>
 Precedence: bulk
@@ -80,179 +80,733 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Instead of using multiple flags, make struct btf_id tagged with an
-enum value indicating its kind in the context of resolve_btfids.
+Currently resolve_btfids updates .BTF_ids section of an ELF file
+in-place, based on the contents of provided BTF, usually within the
+same input file, and optionally a BTF base.
+
+This patch changes resolve_btfids behavior to enable BTF
+transformations as part of its main operation. To achieve this
+in-place ELF write in resolve_btfids is replaced with generation of
+the following binaries:
+  * ${1}.btf with .BTF section data
+  * ${1}.distilled_base.btf with .BTF.base section data (for
+    out-of-tree modules)
+  * ${1}.btf_ids with .BTF_ids section data, if it exists in ${1}
+
+The execution of resolve_btfids and consumption of its output is
+orchestrated by scripts/gen-btf.sh introduced in this patch.
+
+The rationale for this approach is that updating ELF in-place with
+libelf API is complicated and bug-prone, especially in the context of
+the kernel build. On the other hand applying objcopy to manipulate ELF
+sections is simpler and more reliable.
+
+There are two distinct paths for BTF generation and resolve_btfids
+application in the kernel build: for vmlinux and for kernel modules.
+
+For the vmlinux binary a .BTF section is added in a roundabout way to
+ensure correct linking (details below). The patch doesn't change this
+approach, only the implementation is a little different.
+
+Before this patch it worked like follows:
+
+  * pahole consumed .tmp_vmlinux1 [1] and added .BTF section with
+    llvm-objcopy [2] to it
+  * then everything except the .BTF section was stripped from .tmp_vmlinux1
+    into a .tmp_vmlinux1.bpf.o object [1], later linked into vmlinux
+  * resolve_btfids was executed later on vmlinux.unstripped [3],
+    updating it in-place
+
+After this patch gen-btf.sh implements the following:
+
+  * pahole consumes .tmp_vmlinux1 and produces a *detached* file with
+    raw BTF data
+  * resolve_btfids consumes .tmp_vmlinux1 and detached BTF to produce
+    (potentially modified) .BTF, and .BTF_ids sections data
+  * a .tmp_vmlinux1.bpf.o object is then produced with objcopy copying
+    BTF output of resolve_btfids
+  * .BTF_ids data gets embedded into vmlinux.unstripped in
+    link-vmlinux.sh by objcopy --update-section
+
+For the kernel modules creating special .bpf.o file is not necessary,
+and so embedding of sections data produced by resolve_btfids is
+straightforward with the objcopy.
+
+With this patch an ELF file becomes effectively read-only within
+resolve_btfids, which allows to delete elf_update() call and satelite
+code (like compressed_section_fix [4]).
+
+Endianness handling of .BTF_ids data is also changed. Previously the
+"flags" part of the section was bswapped in sets_patch() [5], and then
+Elf_Type was modified before elf_update() to signal to libelf that
+bswap may be necessary. With this patch we explicitly bswap entire
+data buffer on load and on dump.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/tree/scripts/link-vmlinux.sh#n115
+[2] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/tree/btf_encoder.c#n1835
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/tree/scripts/link-vmlinux.sh#n285
+[4] https://lore.kernel.org/bpf/20200819092342.259004-1-jolsa@kernel.org/
+[5] https://lore.kernel.org/bpf/cover.1707223196.git.vmalik@redhat.com/
 
 Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
 ---
- tools/bpf/resolve_btfids/main.c | 62 ++++++++++++++++++++++-----------
- 1 file changed, 42 insertions(+), 20 deletions(-)
+ MAINTAINERS                          |   1 +
+ scripts/Makefile.modfinal            |   5 +-
+ scripts/gen-btf.sh                   | 167 ++++++++++++++++++++
+ scripts/link-vmlinux.sh              |  42 +-----
+ tools/bpf/resolve_btfids/main.c      | 218 +++++++++++++++++----------
+ tools/testing/selftests/bpf/Makefile |   5 +
+ 6 files changed, 317 insertions(+), 121 deletions(-)
+ create mode 100755 scripts/gen-btf.sh
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 48aabeeed029..5cd34419d952 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4672,6 +4672,7 @@ F:	net/sched/act_bpf.c
+ F:	net/sched/cls_bpf.c
+ F:	samples/bpf/
+ F:	scripts/bpf_doc.py
++F:	scripts/gen-btf.sh
+ F:	scripts/Makefile.btf
+ F:	scripts/pahole-version.sh
+ F:	tools/bpf/
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index 542ba462ed3e..3862fdfa1267 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -38,9 +38,8 @@ quiet_cmd_btf_ko = BTF [M] $@
+       cmd_btf_ko = 							\
+ 	if [ ! -f $(objtree)/vmlinux ]; then				\
+ 		printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
+-	else								\
+-		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) $(MODULE_PAHOLE_FLAGS) --btf_base $(objtree)/vmlinux $@; \
+-		$(RESOLVE_BTFIDS) -b $(objtree)/vmlinux $@;		\
++	else	\
++		$(srctree)/scripts/gen-btf.sh --btf_base $(objtree)/vmlinux $@; \
+ 	fi;
+ 
+ # Same as newer-prereqs, but allows to exclude specified extra dependencies
+diff --git a/scripts/gen-btf.sh b/scripts/gen-btf.sh
+new file mode 100755
+index 000000000000..2dfb7ab289ca
+--- /dev/null
++++ b/scripts/gen-btf.sh
+@@ -0,0 +1,167 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2025 Meta Platforms, Inc. and affiliates.
++#
++# This script generates BTF data for the provided ELF file.
++#
++# Kernel BTF generation involves these conceptual steps:
++#   1. pahole generates BTF from DWARF data
++#   2. resolve_btfids applies kernel-specific btf2btf
++#      transformations and computes data for .BTF_ids section
++#   3. the result gets linked/objcopied into the target binary
++#
++# How step (3) should be done differs between vmlinux, and
++# kernel modules, which is the primary reason for the existence
++# of this script.
++#
++# For modules the script expects vmlinux passed in as --btf_base.
++# Generated .BTF, .BTF.base and .BTF_ids sections become embedded
++# into the input ELF file with objcopy.
++#
++# For vmlinux the input file remains unchanged and two files are produced:
++#   - ${1}.btf.o ready for linking into vmlinux
++#   - ${1}.btf_ids with .BTF_ids data blob
++# This output is consumed by scripts/link-vmlinux.sh
++
++set -e
++
++usage()
++{
++	echo "Usage: $0 [--btf_base <file>] <target ELF file>"
++	exit 1
++}
++
++BTF_BASE=""
++
++while [ $# -gt 0 ]; do
++	case "$1" in
++	--btf_base)
++		BTF_BASE="$2"
++		shift 2
++		;;
++	-*)
++		echo "Unknown option: $1" >&2
++		usage
++		;;
++	*)
++		break
++		;;
++	esac
++done
++
++if [ $# -ne 1 ]; then
++	usage
++fi
++
++ELF_FILE="$1"
++shift
++
++is_enabled() {
++	grep -q "^$1=y" ${objtree}/include/config/auto.conf
++}
++
++info()
++{
++	printf "  %-7s %s\n" "${1}" "${2}"
++}
++
++case "${KBUILD_VERBOSE}" in
++*1*)
++	set -x
++	;;
++esac
++
++if ! is_enabled CONFIG_DEBUG_INFO_BTF; then
++	exit 0
++fi
++
++gen_btf_data()
++{
++	info BTF "${ELF_FILE}"
++	btf1="${ELF_FILE}.btf.1"
++	${PAHOLE} -J ${PAHOLE_FLAGS}			\
++		${BTF_BASE:+--btf_base ${BTF_BASE}}	\
++		--btf_encode_detached=${btf1}		\
++		"${ELF_FILE}"
++
++	info BTFIDS "${ELF_FILE}"
++	RESOLVE_BTFIDS_OPTS=""
++	if is_enabled CONFIG_WERROR; then
++		RESOLVE_BTFIDS_OPTS+=" --fatal_warnings "
++	fi
++	if [ -n "${KBUILD_VERBOSE}" ]; then
++		RESOLVE_BTFIDS_OPTS+=" -v "
++	fi
++	${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_OPTS}	\
++		${BTF_BASE:+--btf_base ${BTF_BASE}}	\
++		--btf ${btf1} "${ELF_FILE}"
++}
++
++gen_btf_o()
++{
++	local btf_data=${ELF_FILE}.btf.o
++
++	# Create ${btf_data} which contains just .BTF section but no symbols. Add
++	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
++	# deletes all symbols including __start_BTF and __stop_BTF, which will
++	# be redefined in the linker script.
++	info OBJCOPY "${btf_data}"
++	echo "" | ${CC} -c -x c -o ${btf_data} -
++	${OBJCOPY} --add-section .BTF=${ELF_FILE}.btf \
++		--set-section-flags .BTF=alloc,readonly ${btf_data}
++	${OBJCOPY} --only-section=.BTF --strip-all ${btf_data}
++
++	# Change e_type to ET_REL so that it can be used to link final vmlinux.
++	# GNU ld 2.35+ and lld do not allow an ET_EXEC input.
++	if is_enabled CONFIG_CPU_BIG_ENDIAN; then
++		et_rel='\0\1'
++	else
++		et_rel='\1\0'
++	fi
++	printf "${et_rel}" | dd of="${btf_data}" conv=notrunc bs=1 seek=16 status=none
++}
++
++embed_btf_data()
++{
++	info OBJCOPY "${ELF_FILE}"
++	${OBJCOPY} --add-section .BTF=${ELF_FILE}.btf ${ELF_FILE}
++
++	# a module might not have a .BTF_ids or .BTF.base section
++	local btf_base="${ELF_FILE}.distilled_base.btf"
++	if [ -f "${btf_base}" ]; then
++		${OBJCOPY} --add-section .BTF.base=${btf_base} ${ELF_FILE}
++	fi
++	local btf_ids="${ELF_FILE}.btf_ids"
++	if [ -f "${btf_ids}" ]; then
++		${OBJCOPY} --update-section .BTF_ids=${btf_ids} ${ELF_FILE}
++	fi
++}
++
++cleanup()
++{
++	rm -f "${ELF_FILE}.btf.1"
++	rm -f "${ELF_FILE}.btf"
++	if [ "${BTFGEN_MODE}" = "module" ]; then
++		rm -f "${ELF_FILE}.distilled_base.btf"
++		rm -f "${ELF_FILE}.btf_ids"
++	fi
++}
++trap cleanup EXIT
++
++BTFGEN_MODE="vmlinux"
++if [ -n "${BTF_BASE}" ]; then
++	BTFGEN_MODE="module"
++fi
++
++gen_btf_data
++
++case "${BTFGEN_MODE}" in
++vmlinux)
++	gen_btf_o
++	;;
++module)
++	embed_btf_data
++	;;
++esac
++
++exit 0
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 433849ff7529..5bea8795f96d 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -105,34 +105,6 @@ vmlinux_link()
+ 		${kallsymso} ${btf_vmlinux_bin_o} ${arch_vmlinux_o} ${ldlibs}
+ }
+ 
+-# generate .BTF typeinfo from DWARF debuginfo
+-# ${1} - vmlinux image
+-gen_btf()
+-{
+-	local btf_data=${1}.btf.o
+-
+-	info BTF "${btf_data}"
+-	LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} ${1}
+-
+-	# Create ${btf_data} which contains just .BTF section but no symbols. Add
+-	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
+-	# deletes all symbols including __start_BTF and __stop_BTF, which will
+-	# be redefined in the linker script. Add 2>/dev/null to suppress GNU
+-	# objcopy warnings: "empty loadable segment detected at ..."
+-	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
+-		--strip-all ${1} "${btf_data}" 2>/dev/null
+-	# Change e_type to ET_REL so that it can be used to link final vmlinux.
+-	# GNU ld 2.35+ and lld do not allow an ET_EXEC input.
+-	if is_enabled CONFIG_CPU_BIG_ENDIAN; then
+-		et_rel='\0\1'
+-	else
+-		et_rel='\1\0'
+-	fi
+-	printf "${et_rel}" | dd of="${btf_data}" conv=notrunc bs=1 seek=16 status=none
+-
+-	btf_vmlinux_bin_o=${btf_data}
+-}
+-
+ # Create ${2}.o file with all symbols from the ${1} object file
+ kallsyms()
+ {
+@@ -204,6 +176,7 @@ if is_enabled CONFIG_ARCH_WANTS_PRE_LINK_VMLINUX; then
+ fi
+ 
+ btf_vmlinux_bin_o=
++btfids_vmlinux=
+ kallsymso=
+ strip_debug=
+ generate_map=
+@@ -224,11 +197,13 @@ if is_enabled CONFIG_KALLSYMS || is_enabled CONFIG_DEBUG_INFO_BTF; then
+ fi
+ 
+ if is_enabled CONFIG_DEBUG_INFO_BTF; then
+-	if ! gen_btf .tmp_vmlinux1; then
++	if ! ${srctree}/scripts/gen-btf.sh .tmp_vmlinux1; then
+ 		echo >&2 "Failed to generate BTF for vmlinux"
+ 		echo >&2 "Try to disable CONFIG_DEBUG_INFO_BTF"
+ 		exit 1
+ 	fi
++	btf_vmlinux_bin_o=.tmp_vmlinux1.btf.o
++	btfids_vmlinux=.tmp_vmlinux1.btf_ids
+ fi
+ 
+ if is_enabled CONFIG_KALLSYMS; then
+@@ -281,14 +256,9 @@ fi
+ 
+ vmlinux_link "${VMLINUX}"
+ 
+-# fill in BTF IDs
+ if is_enabled CONFIG_DEBUG_INFO_BTF; then
+-	info BTFIDS "${VMLINUX}"
+-	RESOLVE_BTFIDS_ARGS=""
+-	if is_enabled CONFIG_WERROR; then
+-		RESOLVE_BTFIDS_ARGS=" --fatal_warnings "
+-	fi
+-	${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_ARGS} "${VMLINUX}"
++	info OBJCOPY ${btfids_vmlinux}
++	${OBJCOPY} --update-section .BTF_ids=${btfids_vmlinux} ${VMLINUX}
+ fi
+ 
+ mksysmap "${VMLINUX}" System.map
 diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-index b4caae1170dd..c60d303ca6ed 100644
+index c60d303ca6ed..b8df6256e29e 100644
 --- a/tools/bpf/resolve_btfids/main.c
 +++ b/tools/bpf/resolve_btfids/main.c
-@@ -98,6 +98,13 @@
- # error "Unknown machine endianness!"
- #endif
+@@ -71,9 +71,11 @@
+ #include <fcntl.h>
+ #include <errno.h>
+ #include <linux/btf_ids.h>
++#include <linux/kallsyms.h>
+ #include <linux/rbtree.h>
+ #include <linux/zalloc.h>
+ #include <linux/err.h>
++#include <linux/limits.h>
+ #include <bpf/btf.h>
+ #include <bpf/libbpf.h>
+ #include <subcmd/parse-options.h>
+@@ -124,6 +126,7 @@ struct object {
  
-+enum btf_id_kind {
-+	BTF_ID_KIND_NONE,
-+	BTF_ID_KIND_SYM,
-+	BTF_ID_KIND_SET,
-+	BTF_ID_KIND_SET8
-+};
+ 	struct btf *btf;
+ 	struct btf *base_btf;
++	bool distilled_base;
+ 
+ 	struct {
+ 		int		 fd;
+@@ -308,42 +311,16 @@ static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
+ 	return btf_id;
+ }
+ 
+-/* Older libelf.h and glibc elf.h might not yet define the ELF compression types. */
+-#ifndef SHF_COMPRESSED
+-#define SHF_COMPRESSED (1 << 11) /* Section with compressed data. */
+-#endif
+-
+-/*
+- * The data of compressed section should be aligned to 4
+- * (for 32bit) or 8 (for 64 bit) bytes. The binutils ld
+- * sets sh_addralign to 1, which makes libelf fail with
+- * misaligned section error during the update:
+- *    FAILED elf_update(WRITE): invalid section alignment
+- *
+- * While waiting for ld fix, we fix the compressed sections
+- * sh_addralign value manualy.
+- */
+-static int compressed_section_fix(Elf *elf, Elf_Scn *scn, GElf_Shdr *sh)
++static void bswap_32_data(void *data, u32 nr_bytes)
+ {
+-	int expected = gelf_getclass(elf) == ELFCLASS32 ? 4 : 8;
++	u32 cnt, i;
++	u32 *ptr;
+ 
+-	if (!(sh->sh_flags & SHF_COMPRESSED))
+-		return 0;
++	cnt = nr_bytes / sizeof(u32);
++	ptr = data;
+ 
+-	if (sh->sh_addralign == expected)
+-		return 0;
+-
+-	pr_debug2(" - fixing wrong alignment sh_addralign %u, expected %u\n",
+-		  sh->sh_addralign, expected);
+-
+-	sh->sh_addralign = expected;
+-
+-	if (gelf_update_shdr(scn, sh) == 0) {
+-		pr_err("FAILED cannot update section header: %s\n",
+-			elf_errmsg(-1));
+-		return -1;
+-	}
+-	return 0;
++	for (i = 0; i < cnt; i++)
++		ptr[i] = bswap_32(ptr[i]);
+ }
+ 
+ static int elf_collect(struct object *obj)
+@@ -364,7 +341,7 @@ static int elf_collect(struct object *obj)
+ 
+ 	elf_version(EV_CURRENT);
+ 
+-	elf = elf_begin(fd, ELF_C_RDWR_MMAP, NULL);
++	elf = elf_begin(fd, ELF_C_READ_MMAP_PRIVATE, NULL);
+ 	if (!elf) {
+ 		close(fd);
+ 		pr_err("FAILED cannot create ELF descriptor: %s\n",
+@@ -427,21 +404,20 @@ static int elf_collect(struct object *obj)
+ 			obj->efile.symbols_shndx = idx;
+ 			obj->efile.strtabidx     = sh.sh_link;
+ 		} else if (!strcmp(name, BTF_IDS_SECTION)) {
++			/*
++			 * If target endianness differs from host, we need to bswap32
++			 * the .BTF_ids section data on load, because .BTF_ids has
++			 * Elf_Type = ELF_T_BYTE, and so libelf returns data buffer in
++			 * the target endiannes. We repeat this on dump.
++			 */
++			if (obj->efile.encoding != ELFDATANATIVE) {
++				pr_debug("bswap_32 .BTF_ids data from target to host endianness\n");
++				bswap_32_data(data->d_buf, data->d_size);
++			}
+ 			obj->efile.idlist       = data;
+ 			obj->efile.idlist_shndx = idx;
+ 			obj->efile.idlist_addr  = sh.sh_addr;
+-		} else if (!strcmp(name, BTF_BASE_ELF_SEC)) {
+-			/* If a .BTF.base section is found, do not resolve
+-			 * BTF ids relative to vmlinux; resolve relative
+-			 * to the .BTF.base section instead.  btf__parse_split()
+-			 * will take care of this once the base BTF it is
+-			 * passed is NULL.
+-			 */
+-			obj->base_btf_path = NULL;
+ 		}
+-
+-		if (compressed_section_fix(elf, scn, &sh))
+-			return -1;
+ 	}
+ 
+ 	return 0;
+@@ -545,6 +521,13 @@ static int symbols_collect(struct object *obj)
+ 	return 0;
+ }
+ 
++static inline bool is_envvar_set(const char *var_name)
++{
++	const char *value = getenv(var_name);
 +
- struct btf_id {
- 	struct rb_node	 rb_node;
- 	char		*name;
-@@ -105,9 +112,8 @@ struct btf_id {
- 		int	 id;
- 		int	 cnt;
++	return value && value[0] != '\0';
++}
++
+ static int load_btf(struct object *obj)
+ {
+ 	struct btf *base_btf = NULL, *btf = NULL;
+@@ -571,6 +554,20 @@ static int load_btf(struct object *obj)
+ 	obj->base_btf = base_btf;
+ 	obj->btf = btf;
+ 
++	if (obj->base_btf && is_envvar_set("KBUILD_EXTMOD")) {
++		err = btf__distill_base(obj->btf, &base_btf, &btf);
++		if (err) {
++			pr_err("FAILED to distill base BTF: %s\n", strerror(errno));
++			goto out_err;
++		}
++
++		btf__free(obj->btf);
++		btf__free(obj->base_btf);
++		obj->btf = btf;
++		obj->base_btf = base_btf;
++		obj->distilled_base = true;
++	}
++
+ 	return 0;
+ 
+ out_err:
+@@ -744,24 +741,6 @@ static int sets_patch(struct object *obj)
+ 			 */
+ 			BUILD_BUG_ON((u32 *)set8->pairs != &set8->pairs[0].id);
+ 			qsort(set8->pairs, set8->cnt, sizeof(set8->pairs[0]), cmp_id);
+-
+-			/*
+-			 * When ELF endianness does not match endianness of the
+-			 * host, libelf will do the translation when updating
+-			 * the ELF. This, however, corrupts SET8 flags which are
+-			 * already in the target endianness. So, let's bswap
+-			 * them to the host endianness and libelf will then
+-			 * correctly translate everything.
+-			 */
+-			if (obj->efile.encoding != ELFDATANATIVE) {
+-				int i;
+-
+-				set8->flags = bswap_32(set8->flags);
+-				for (i = 0; i < set8->cnt; i++) {
+-					set8->pairs[i].flags =
+-						bswap_32(set8->pairs[i].flags);
+-				}
+-			}
+ 			break;
+ 		case BTF_ID_KIND_SYM:
+ 		default:
+@@ -778,8 +757,6 @@ static int sets_patch(struct object *obj)
+ 
+ static int symbols_patch(struct object *obj)
+ {
+-	off_t err;
+-
+ 	if (__symbols_patch(obj, &obj->structs)  ||
+ 	    __symbols_patch(obj, &obj->unions)   ||
+ 	    __symbols_patch(obj, &obj->typedefs) ||
+@@ -790,20 +767,77 @@ static int symbols_patch(struct object *obj)
+ 	if (sets_patch(obj))
+ 		return -1;
+ 
+-	/* Set type to ensure endian translation occurs. */
+-	obj->efile.idlist->d_type = ELF_T_WORD;
++	return 0;
++}
+ 
+-	elf_flagdata(obj->efile.idlist, ELF_C_SET, ELF_F_DIRTY);
++static int dump_raw_data(const char *out_path, const void *data, u32 size)
++{
++	int fd, ret;
+ 
+-	err = elf_update(obj->efile.elf, ELF_C_WRITE);
+-	if (err < 0) {
+-		pr_err("FAILED elf_update(WRITE): %s\n",
+-			elf_errmsg(-1));
++	fd = open(out_path, O_WRONLY | O_CREAT | O_TRUNC, 0640);
++	if (fd < 0) {
++		pr_err("Couldn't open %s for writing\n", out_path);
++		return fd;
++	}
++
++	ret = write(fd, data, size);
++	if (ret < 0 || ret != size) {
++		pr_err("Failed to write data to %s\n", out_path);
++		close(fd);
++		unlink(out_path);
++		return -1;
++	}
++
++	close(fd);
++	pr_debug("Dumped %lu bytes of data to %s\n", size, out_path);
++
++	return 0;
++}
++
++static int dump_raw_btf_ids(struct object *obj, const char *out_path)
++{
++	Elf_Data *data = obj->efile.idlist;
++	int fd, err;
++
++	if (!data || !data->d_buf) {
++		pr_debug("%s has no BTF_ids data to dump\n", obj->path);
++		return 0;
++	}
++
++	/*
++	 * If target endianness differs from host, we need to bswap32 the
++	 * .BTF_ids section data before dumping so that the output is in
++	 * target endianness.
++	 */
++	if (obj->efile.encoding != ELFDATANATIVE) {
++		pr_debug("bswap_32 .BTF_ids data from host to target endianness\n");
++		bswap_32_data(data->d_buf, data->d_size);
++	}
++
++	err = dump_raw_data(out_path, data->d_buf, data->d_size);
++	if (err)
++		return -1;
++
++	return 0;
++}
++
++static int dump_raw_btf(struct btf *btf, const char *out_path)
++{
++	const void *raw_btf_data;
++	u32 raw_btf_size;
++	int fd, err;
++
++	raw_btf_data = btf__raw_data(btf, &raw_btf_size);
++	if (raw_btf_data == NULL) {
++		pr_err("btf__raw_data() failed\n");
++		return -1;
+ 	}
+ 
+-	pr_debug("update %s for %s\n",
+-		 err >= 0 ? "ok" : "failed", obj->path);
+-	return err < 0 ? -1 : 0;
++	err = dump_raw_data(out_path, raw_btf_data, raw_btf_size);
++	if (err)
++		return -1;
++
++	return 0;
+ }
+ 
+ static const char * const resolve_btfids_usage[] = {
+@@ -824,6 +858,7 @@ int main(int argc, const char **argv)
+ 		.funcs    = RB_ROOT,
+ 		.sets     = RB_ROOT,
  	};
--	int		 addr_cnt;
--	bool		 is_set;
--	bool		 is_set8;
-+	enum btf_id_kind kind:8;
-+	int		 addr_cnt:8;
- 	Elf64_Addr	 addr[ADDR_CNT];
- };
++	char out_path[PATH_MAX];
+ 	bool fatal_warnings = false;
+ 	struct option btfid_options[] = {
+ 		OPT_INCR('v', "verbose", &verbose,
+@@ -836,7 +871,7 @@ int main(int argc, const char **argv)
+ 			    "turn warnings into errors"),
+ 		OPT_END()
+ 	};
+-	int err = -1;
++	int err = -1, path_len;
  
-@@ -260,26 +266,33 @@ static char *get_id(const char *prefix_end)
- 	return id;
- }
+ 	argc = parse_options(argc, argv, btfid_options, resolve_btfids_usage,
+ 			     PARSE_OPT_STOP_AT_NON_OPTION);
+@@ -844,6 +879,11 @@ int main(int argc, const char **argv)
+ 		usage_with_options(resolve_btfids_usage, btfid_options);
  
--static struct btf_id *add_set(struct object *obj, char *name, bool is_set8)
-+static struct btf_id *add_set(struct object *obj, char *name, enum btf_id_kind kind)
- {
- 	/*
- 	 * __BTF_ID__set__name
- 	 * name =    ^
- 	 * id   =         ^
+ 	obj.path = argv[0];
++	strcpy(out_path, obj.path);
++	path_len = strlen(out_path);
++
++	if (load_btf(&obj))
++		goto out;
+ 
+ 	if (elf_collect(&obj))
+ 		goto out;
+@@ -854,23 +894,37 @@ int main(int argc, const char **argv)
  	 */
--	char *id = name + (is_set8 ? sizeof(BTF_SET8 "__") : sizeof(BTF_SET "__")) - 1;
-+	int prefixlen = kind == BTF_ID_KIND_SET8 ? sizeof(BTF_SET8 "__") : sizeof(BTF_SET "__");
-+	char *id = name + prefixlen - 1;
- 	int len = strlen(name);
-+	struct btf_id *btf_id;
- 
- 	if (id >= name + len) {
- 		pr_err("FAILED to parse set name: %s\n", name);
- 		return NULL;
+ 	if (obj.efile.idlist_shndx == -1 ||
+ 	    obj.efile.symbols_shndx == -1) {
+-		pr_debug("Cannot find .BTF_ids or symbols sections, nothing to do\n");
+-		err = 0;
+-		goto out;
++		pr_debug("Cannot find .BTF_ids or symbols sections, skip symbols resolution\n");
++		goto dump_btf;
  	}
  
--	return btf_id__add(&obj->sets, id, true);
-+	btf_id = btf_id__add(&obj->sets, id, true);
-+	if (btf_id)
-+		btf_id->kind = kind;
+ 	if (symbols_collect(&obj))
+ 		goto out;
+ 
+-	if (load_btf(&obj))
+-		goto out;
+-
+ 	if (symbols_resolve(&obj))
+ 		goto out;
+ 
+ 	if (symbols_patch(&obj))
+ 		goto out;
+ 
++	out_path[path_len] = '\0';
++	strcat(out_path, ".btf_ids");
++	if (dump_raw_btf_ids(&obj, out_path))
++		goto out;
 +
-+	return btf_id;
- }
- 
- static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
- {
-+	struct btf_id *btf_id;
- 	char *id;
- 
- 	id = get_id(name + size);
-@@ -288,7 +301,11 @@ static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
- 		return NULL;
- 	}
- 
--	return btf_id__add(root, id, false);
-+	btf_id = btf_id__add(root, id, false);
-+	if (btf_id)
-+		btf_id->kind = BTF_ID_KIND_SYM;
++dump_btf:
++	out_path[path_len] = '\0';
++	strcat(out_path, ".btf");
++	if (dump_raw_btf(obj.btf, out_path))
++		goto out;
 +
-+	return btf_id;
- }
++	if (obj.base_btf && obj.distilled_base) {
++		out_path[path_len] = '\0';
++		strcat(out_path, ".distilled_base.btf");
++		if (dump_raw_btf(obj.base_btf, out_path))
++			goto out;
++	}
++
+ 	if (!(fatal_warnings && warnings))
+ 		err = 0;
+ out:
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index bac22265e7ff..ec7e2a7721c7 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -4,6 +4,7 @@ include ../../../scripts/Makefile.arch
+ include ../../../scripts/Makefile.include
  
- /* Older libelf.h and glibc elf.h might not yet define the ELF compression types. */
-@@ -491,28 +508,24 @@ static int symbols_collect(struct object *obj)
- 			id = add_symbol(&obj->funcs, prefix, sizeof(BTF_FUNC) - 1);
- 		/* set8 */
- 		} else if (!strncmp(prefix, BTF_SET8, sizeof(BTF_SET8) - 1)) {
--			id = add_set(obj, prefix, true);
-+			id = add_set(obj, prefix, BTF_ID_KIND_SET8);
- 			/*
- 			 * SET8 objects store list's count, which is encoded
- 			 * in symbol's size, together with 'cnt' field hence
- 			 * that - 1.
- 			 */
--			if (id) {
-+			if (id)
- 				id->cnt = sym.st_size / sizeof(uint64_t) - 1;
--				id->is_set8 = true;
--			}
- 		/* set */
- 		} else if (!strncmp(prefix, BTF_SET, sizeof(BTF_SET) - 1)) {
--			id = add_set(obj, prefix, false);
-+			id = add_set(obj, prefix, BTF_ID_KIND_SET);
- 			/*
- 			 * SET objects store list's count, which is encoded
- 			 * in symbol's size, together with 'cnt' field hence
- 			 * that - 1.
- 			 */
--			if (id) {
-+			if (id)
- 				id->cnt = sym.st_size / sizeof(int) - 1;
--				id->is_set = true;
--			}
- 		} else {
- 			pr_err("FAILED unsupported prefix %s\n", prefix);
- 			return -1;
-@@ -643,7 +656,7 @@ static int id_patch(struct object *obj, struct btf_id *id)
- 	int i;
+ CXX ?= $(CROSS_COMPILE)g++
++OBJCOPY ?= $(CROSS_COMPILE)objcopy
  
- 	/* For set, set8, id->id may be 0 */
--	if (!id->id && !id->is_set && !id->is_set8) {
-+	if (!id->id && id->kind == BTF_ID_KIND_SYM) {
- 		pr_err("WARN: resolve_btfids: unresolved symbol %s\n", id->name);
- 		warnings++;
- 	}
-@@ -696,6 +709,7 @@ static int sets_patch(struct object *obj)
- {
- 	Elf_Data *data = obj->efile.idlist;
- 	struct rb_node *next;
-+	int cnt;
+ CURDIR := $(abspath .)
+ TOOLSDIR := $(abspath ../../..)
+@@ -716,6 +717,10 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
+ 	$$(call msg,BINARY,,$$@)
+ 	$(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) $$(LLVM_LDLIBS) $$(LDFLAGS) $$(LLVM_LDFLAGS) -o $$@
+ 	$(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@
++	$(Q)if [ -f $$@.btf_ids ]; then \
++		$(OBJCOPY) --update-section .BTF_ids=$$@.btf_ids $$@; \
++	fi
++	$(Q)rm -f $$@.btf_ids $$@.btf
+ 	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/$(USE_BOOTSTRAP)bpftool \
+ 		   $(OUTPUT)/$(if $2,$2/)bpftool
  
- 	next = rb_first(&obj->sets);
- 	while (next) {
-@@ -715,11 +729,15 @@ static int sets_patch(struct object *obj)
- 			return -1;
- 		}
- 
--		if (id->is_set) {
-+		switch (id->kind) {
-+		case BTF_ID_KIND_SET:
- 			set = data->d_buf + off;
-+			cnt = set->cnt;
- 			qsort(set->ids, set->cnt, sizeof(set->ids[0]), cmp_id);
--		} else {
-+			break;
-+		case BTF_ID_KIND_SET8:
- 			set8 = data->d_buf + off;
-+			cnt = set8->cnt;
- 			/*
- 			 * Make sure id is at the beginning of the pairs
- 			 * struct, otherwise the below qsort would not work.
-@@ -744,10 +762,14 @@ static int sets_patch(struct object *obj)
- 						bswap_32(set8->pairs[i].flags);
- 				}
- 			}
-+			break;
-+		case BTF_ID_KIND_SYM:
-+		default:
-+			pr_err("Unexpected btf_id_kind %d for set '%s'\n", id->kind, id->name);
-+			return -1;
- 		}
- 
--		pr_debug("sorting  addr %5lu: cnt %6d [%s]\n",
--			 off, id->is_set ? set->cnt : set8->cnt, id->name);
-+		pr_debug("sorting  addr %5lu: cnt %6d [%s]\n", off, cnt, id->name);
- 
- 		next = rb_next(next);
- 	}
 -- 
 2.52.0
 
