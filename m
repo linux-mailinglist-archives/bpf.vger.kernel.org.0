@@ -1,232 +1,143 @@
-Return-Path: <bpf+bounces-75660-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75661-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E176C8FF95
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 20:03:19 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61800C8FFD7
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 20:07:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 795463A7D20
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 19:02:31 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 51C134E3B0E
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 19:07:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5705303C9B;
-	Thu, 27 Nov 2025 19:02:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE713302779;
+	Thu, 27 Nov 2025 19:07:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=astralinux.ru header.i=@astralinux.ru header.b="xA0/X9lu"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R6bCagyt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-gw02.astralinux.ru (mail-gw02.astralinux.ru [93.188.205.243])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C66F2EBDE3;
-	Thu, 27 Nov 2025 19:02:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.188.205.243
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D66FF23EABB;
+	Thu, 27 Nov 2025 19:07:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764270133; cv=none; b=dy6RSw4fo2Fkw6cUuP59MSY0NA0E0+jILi2RjUNGgnbwT2q5cJ9gGmvjF8VCL2ckZtQxy9m4w+joXncdo0IAy7FMzbWPwauGvgZvtY4uiwhM8YfFzmOBPh7j3QRp6swdhFCjP0gXy30f8fD2ywjRqE2L2nlSkqJXKPNyy0Zw0Is=
+	t=1764270449; cv=none; b=lKZU1mRiNI8nsZoaW1lArrmRoVKjf1whHY29WpGCS6d6jtEmFlliqnxJqG+XlKSkgm5U8hnDQ6lme55TuwR4+rtWv0xQwUIritbVyCPH+gSwRHKRVe77BNtKoPxkKRE7kvonCzC7V2u+TvlztmGiuUFHju2MAKDgJ5htEIu0gxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764270133; c=relaxed/simple;
-	bh=e3nJrTUgDVA0nWzOY1BHx117VKOb/O8OXZ+8oryt2/Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ut+6nTC9zCZlxDhE0G+N7hvDM1NlcWwdt9MHpyfLWO8PJygKkGfqUSvyDd52tcBLko1Jodacz0ty3dNyx9uS6at17rSZbZeEU64tQ5wFmxcgPgM8xf43A1R477mc0xA75PjL/T2vhYPKYZVpbqckwVZzLRep6xt7m1WqNQmQCV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=astralinux.ru; spf=pass smtp.mailfrom=astralinux.ru; dkim=pass (2048-bit key) header.d=astralinux.ru header.i=@astralinux.ru header.b=xA0/X9lu; arc=none smtp.client-ip=93.188.205.243
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=astralinux.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=astralinux.ru
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=astralinux.ru;
-	s=mail; t=1764270127;
-	bh=e3nJrTUgDVA0nWzOY1BHx117VKOb/O8OXZ+8oryt2/Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=xA0/X9lu98ymRsN5Zwe70FlBkqel6y0e/ZeC1bPXNtiftp/kicNMUb3e1BFxn8laF
-	 OwDsAwEXU2jfcJ7JASN8cFCdYTUnrwK6I7Tca2YJr6rQrVP9PIae7St7tP8hX/yGSH
-	 FazALwPDNb6OqDB5rCOMPUoB6bCLwDBRXZ++1GaiSJhnkSZfOkwaOUVvnTh+ZQt3RB
-	 qpBlDrbDChYrLdYL43OMpC5pXblrVLHIPhvAbLmEA+H6Nl6w/7DsfJ6zvz23UaodpO
-	 eYpFx9OUOpkDN3j7tCsMhFyzbfHGyqvSpNveRBC+TD8V9vjBFNkBc47V/Bs9skMje2
-	 IfJ5M7e/iz21Q==
-Received: from gca-msk-a-srv-ksmg01 (localhost [127.0.0.1])
-	by mail-gw02.astralinux.ru (Postfix) with ESMTP id 316001FA2E;
-	Thu, 27 Nov 2025 22:02:07 +0300 (MSK)
-Received: from new-mail.astralinux.ru (unknown [10.205.207.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail-gw02.astralinux.ru (Postfix) with ESMTPS;
-	Thu, 27 Nov 2025 22:02:06 +0300 (MSK)
-Received: from rbta-msk-lt-156703.astralinux.ru.astracloud.ru (unknown [10.198.18.213])
-	by new-mail.astralinux.ru (Postfix) with ESMTPA id 4dHQlZ2VLszwPGg;
-	Thu, 27 Nov 2025 22:02:02 +0300 (MSK)
-From: Alexey Panov <apanov@astralinux.ru>
-To: stable@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Alexey Panov <apanov@astralinux.ru>,
-	Jay Vosburgh <j.vosburgh@gmail.com>,
-	Veaceslav Falico <vfalico@gmail.com>,
-	Andy Gospodarek <andy@greyhouse.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Moni Shoua <monis@Voltaire.COM>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-	bpf@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	syzbot+9dfc3f3348729cc82277@syzkaller.appspotmail.com,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Michal Kubiak <michal.kubiak@intel.com>,
-	Jonathan Toppins <jtoppins@redhat.com>,
-	Jay Vosburgh <jay.vosburgh@canonical.com>
-Subject: [PATCH 5.10 2/2] bonding: restore bond's IFF_SLAVE flag if a non-eth dev enslave fails
-Date: Thu, 27 Nov 2025 22:01:40 +0300
-Message-Id: <20251127190140.346-2-apanov@astralinux.ru>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20251127190140.346-1-apanov@astralinux.ru>
-References: <20251127190140.346-1-apanov@astralinux.ru>
+	s=arc-20240116; t=1764270449; c=relaxed/simple;
+	bh=ibJyM056T8UZwla7AY/4UvkPMuimmJY3SdHg2ySi9xA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cb3wjpleTuTLaP9Yn6qWtKECF3AelvhBESs21vTD5fwZdMb2UEr8CbNm419HFsxkXp1zYBe+NHvHyrepQXHNoEtrla371ZJMv8/fGvGM875qoSI8tD2O2BNoe8JQ7f12MGePUa+ZzWHUaZU0QNIXBpmPcwe7Rq55gEFCbFQ5buU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R6bCagyt; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1764270448; x=1795806448;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ibJyM056T8UZwla7AY/4UvkPMuimmJY3SdHg2ySi9xA=;
+  b=R6bCagytV3qBNZwwBV9i57IR0yc+WtwmZV8WdEsixrk6zEhVyNWzdukd
+   8mcgg60Lm66AXDCthC2uw6lqxC4GiielNHWQ/M9h9G4EVO4mnT4jOeVDr
+   wGfNK2Q1ihgeZBltyKsIJnI7Ar2OUP6MUmwauVs9QGmBXJfT3YET20mm+
+   DPoUk3YZMsXe7R0tfK7psOWK2+inbUsY3rb2Nl+7hdKsug/TE8Q2fopvj
+   18FT0DncVZomMiUHQtsaKyj9xTcRIocv5H8iEs6fWr03ZuKVL/vk8mGCA
+   HI8a1ptTj1fbKmKrIsQ4rwK2oobTKa/wY8aDJT0NjetDv63VNWLcxuV74
+   g==;
+X-CSE-ConnectionGUID: deBUZqSkRBu4y0xMVcn+XQ==
+X-CSE-MsgGUID: uT0VXC+ZTX+I7lJYTYm+JA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11626"; a="66480997"
+X-IronPort-AV: E=Sophos;i="6.20,231,1758610800"; 
+   d="scan'208";a="66480997"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2025 11:07:27 -0800
+X-CSE-ConnectionGUID: XhDSF54NSwaFX6MQUt1kLA==
+X-CSE-MsgGUID: RTFps8NmSXCsxd4DiTWq4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,231,1758610800"; 
+   d="scan'208";a="192550326"
+Received: from lkp-server01.sh.intel.com (HELO 4664bbef4914) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 27 Nov 2025 11:07:23 -0800
+Received: from kbuild by 4664bbef4914 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vOhKr-000000005Xp-2RXc;
+	Thu, 27 Nov 2025 19:07:21 +0000
+Date: Fri, 28 Nov 2025 03:07:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, kernel-team@meta.com,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+	Song Liu <song@kernel.org>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Allow const char * from LSM hooks as
+ kfunc const string arguments
+Message-ID: <202511280214.sckLyHDU-lkp@intel.com>
+References: <20251127005011.1872209-6-song@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-KSMG-AntiPhishing: NotDetected, bases: 2025/11/27 18:21:00
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Envelope-From: apanov@astralinux.ru
-X-KSMG-AntiSpam-Info: LuaCore: 81 0.3.81 2adfceff315e7344370a427642ad41a4cfd99e1f, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, {Tracking_spam_in_reply_from_match_msgid}, astralinux.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;syzkaller.appspot.com:7.1.1,5.0.1;new-mail.astralinux.ru:7.1.1, FromAlignment: s
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiSpam-Lua-Profiles: 198493 [Nov 27 2025]
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Version: 6.1.1.20
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.1.0.7854, bases: 2025/11/27 16:51:00 #27981688
-X-KSMG-AntiVirus-Status: NotDetected, skipped
-X-KSMG-LinksScanning: NotDetected, bases: 2025/11/27 18:21:00
-X-KSMG-Message-Action: skipped
-X-KSMG-Rule-ID: 1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251127005011.1872209-6-song@kernel.org>
 
-From: Nikolay Aleksandrov <razor@blackwall.org>
+Hi Song,
 
-[ Upstream commit e667d469098671261d558be0cd93dca4d285ce1e ]
+kernel test robot noticed the following build warnings:
 
-syzbot reported a warning[1] where the bond device itself is a slave and
-we try to enslave a non-ethernet device as the first slave which fails
-but then in the error path when ether_setup() restores the bond device
-it also clears all flags. In my previous fix[2] I restored the
-IFF_MASTER flag, but I didn't consider the case that the bond device
-itself might also be a slave with IFF_SLAVE set, so we need to restore
-that flag as well. Use the bond_ether_setup helper which does the right
-thing and restores the bond's flags properly.
+[auto build test WARNING on bpf-next/master]
 
-Steps to reproduce using a nlmon dev:
- $ ip l add nlmon0 type nlmon
- $ ip l add bond1 type bond
- $ ip l add bond2 type bond
- $ ip l set bond1 master bond2
- $ ip l set dev nlmon0 master bond1
- $ ip -d l sh dev bond1
- 22: bond1: <BROADCAST,MULTICAST,MASTER> mtu 1500 qdisc noqueue master bond2 state DOWN mode DEFAULT group default qlen 1000
- (now bond1's IFF_SLAVE flag is gone and we'll hit a warning[3] if we
-  try to delete it)
+url:    https://github.com/intel-lab-lkp/linux/commits/Song-Liu/bpf-Allow-const-char-from-LSM-hooks-as-kfunc-const-string-arguments/20251127-125352
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20251127005011.1872209-6-song%40kernel.org
+patch subject: [PATCH bpf-next 1/3] bpf: Allow const char * from LSM hooks as kfunc const string arguments
+config: loongarch-randconfig-001-20251127 (https://download.01.org/0day-ci/archive/20251128/202511280214.sckLyHDU-lkp@intel.com/config)
+compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project b3428bb966f1de8aa48375ffee0eba04ede133b7)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251128/202511280214.sckLyHDU-lkp@intel.com/reproduce)
 
-[1] https://syzkaller.appspot.com/bug?id=391c7b1f6522182899efba27d891f1743e8eb3ef
-[2] commit 7d5cd2ce5292 ("bonding: correctly handle bonding type change on enslave failure")
-[3] example warning:
- [   27.008664] bond1: (slave nlmon0): The slave device specified does not support setting the MAC address
- [   27.008692] bond1: (slave nlmon0): Error -95 calling set_mac_address
- [   32.464639] bond1 (unregistering): Released all slaves
- [   32.464685] ------------[ cut here ]------------
- [   32.464686] WARNING: CPU: 1 PID: 2004 at net/core/dev.c:10829 unregister_netdevice_many+0x72a/0x780
- [   32.464694] Modules linked in: br_netfilter bridge bonding virtio_net
- [   32.464699] CPU: 1 PID: 2004 Comm: ip Kdump: loaded Not tainted 5.18.0-rc3+ #47
- [   32.464703] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.1-2.fc37 04/01/2014
- [   32.464704] RIP: 0010:unregister_netdevice_many+0x72a/0x780
- [   32.464707] Code: 99 fd ff ff ba 90 1a 00 00 48 c7 c6 f4 02 66 96 48 c7 c7 20 4d 35 96 c6 05 fa c7 2b 02 01 e8 be 6f 4a 00 0f 0b e9 73 fd ff ff <0f> 0b e9 5f fd ff ff 80 3d e3 c7 2b 02 00 0f 85 3b fd ff ff ba 59
- [   32.464710] RSP: 0018:ffffa006422d7820 EFLAGS: 00010206
- [   32.464712] RAX: ffff8f6e077140a0 RBX: ffffa006422d7888 RCX: 0000000000000000
- [   32.464714] RDX: ffff8f6e12edbe58 RSI: 0000000000000296 RDI: ffffffff96d4a520
- [   32.464716] RBP: ffff8f6e07714000 R08: ffffffff96d63600 R09: ffffa006422d7728
- [   32.464717] R10: 0000000000000ec0 R11: ffffffff9698c988 R12: ffff8f6e12edb140
- [   32.464719] R13: dead000000000122 R14: dead000000000100 R15: ffff8f6e12edb140
- [   32.464723] FS:  00007f297c2f1740(0000) GS:ffff8f6e5d900000(0000) knlGS:0000000000000000
- [   32.464725] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- [   32.464726] CR2: 00007f297bf1c800 CR3: 00000000115e8000 CR4: 0000000000350ee0
- [   32.464730] Call Trace:
- [   32.464763]  <TASK>
- [   32.464767]  rtnl_dellink+0x13e/0x380
- [   32.464776]  ? cred_has_capability.isra.0+0x68/0x100
- [   32.464780]  ? __rtnl_unlock+0x33/0x60
- [   32.464783]  ? bpf_lsm_capset+0x10/0x10
- [   32.464786]  ? security_capable+0x36/0x50
- [   32.464790]  rtnetlink_rcv_msg+0x14e/0x3b0
- [   32.464792]  ? _copy_to_iter+0xb1/0x790
- [   32.464796]  ? post_alloc_hook+0xa0/0x160
- [   32.464799]  ? rtnl_calcit.isra.0+0x110/0x110
- [   32.464802]  netlink_rcv_skb+0x50/0xf0
- [   32.464806]  netlink_unicast+0x216/0x340
- [   32.464809]  netlink_sendmsg+0x23f/0x480
- [   32.464812]  sock_sendmsg+0x5e/0x60
- [   32.464815]  ____sys_sendmsg+0x22c/0x270
- [   32.464818]  ? import_iovec+0x17/0x20
- [   32.464821]  ? sendmsg_copy_msghdr+0x59/0x90
- [   32.464823]  ? do_set_pte+0xa0/0xe0
- [   32.464828]  ___sys_sendmsg+0x81/0xc0
- [   32.464832]  ? mod_objcg_state+0xc6/0x300
- [   32.464835]  ? refill_obj_stock+0xa9/0x160
- [   32.464838]  ? memcg_slab_free_hook+0x1a5/0x1f0
- [   32.464842]  __sys_sendmsg+0x49/0x80
- [   32.464847]  do_syscall_64+0x3b/0x90
- [   32.464851]  entry_SYSCALL_64_after_hwframe+0x44/0xae
- [   32.464865] RIP: 0033:0x7f297bf2e5e7
- [   32.464868] Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 89 54 24 1c 48 89 74 24 10
- [   32.464869] RSP: 002b:00007ffd96c824c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
- [   32.464872] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f297bf2e5e7
- [   32.464874] RDX: 0000000000000000 RSI: 00007ffd96c82540 RDI: 0000000000000003
- [   32.464875] RBP: 00000000640f19de R08: 0000000000000001 R09: 000000000000007c
- [   32.464876] R10: 00007f297bffabe0 R11: 0000000000000246 R12: 0000000000000001
- [   32.464877] R13: 00007ffd96c82d20 R14: 00007ffd96c82610 R15: 000055bfe38a7020
- [   32.464881]  </TASK>
- [   32.464882] ---[ end trace 0000000000000000 ]---
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202511280214.sckLyHDU-lkp@intel.com/
 
-Fixes: 7d5cd2ce5292 ("bonding: correctly handle bonding type change on enslave failure")
-Reported-by: syzbot+9dfc3f3348729cc82277@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?id=391c7b1f6522182899efba27d891f1743e8eb3ef
-Signed-off-by: Nikolay Aleksandrov <razor@blackwall.org>
-Reviewed-by: Michal Kubiak <michal.kubiak@intel.com>
-Acked-by: Jonathan Toppins <jtoppins@redhat.com>
-Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Alexey Panov <apanov@astralinux.ru>
----
-Backport fix for CVE-2023-53103
-Tested with the syzkaller reproducer for
-https://syzkaller.appspot.com/bug?extid=9dfc3f3348729cc82277:
-the issue triggers on vanilla v5.10.y and no longer reproduces with these
-patches applied.
- drivers/net/bonding/bond_main.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+All warnings (new ones prefixed by >>):
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 127242101c8e..0c5bda75dc60 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -2176,9 +2176,7 @@ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
- 			eth_hw_addr_random(bond_dev);
- 		if (bond_dev->type != ARPHRD_ETHER) {
- 			dev_close(bond_dev);
--			ether_setup(bond_dev);
--			bond_dev->flags |= IFF_MASTER;
--			bond_dev->priv_flags &= ~IFF_TX_SKB_SHARING;
-+			bond_ether_setup(bond_dev);
- 		}
- 	}
- 
+>> kernel/bpf/verifier.c:9655:14: warning: unused variable 'tname' [-Wunused-variable]
+    9655 |         const char *tname;
+         |                     ^~~~~
+   1 warning generated.
+
+
+vim +/tname +9655 kernel/bpf/verifier.c
+
+  9649	
+  9650	/* Check for const string passed in as input to the bpf program. */
+  9651	static int check_reg_const_str_arg(struct bpf_reg_state *reg)
+  9652	{
+  9653		const struct btf *btf;
+  9654		const struct btf_type *t;
+> 9655		const char *tname;
+  9656	
+  9657		if (base_type(reg->type) != PTR_TO_BTF_ID)
+  9658			return -EINVAL;
+  9659	
+  9660		btf = reg->btf;
+  9661		t = btf_type_by_id(btf, reg->btf_id);
+  9662		if (!t)
+  9663			return -EINVAL;
+  9664	
+  9665		if (btf_type_is_const_char_ptr(btf, t))
+  9666			return 0;
+  9667		return -EINVAL;
+  9668	}
+  9669	
+
 -- 
-2.30.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
