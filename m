@@ -1,82 +1,100 @@
-Return-Path: <bpf+bounces-75652-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75653-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1B64C8FC20
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 18:47:55 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D335C8FD1C
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 18:58:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 688EF34F07A
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 17:47:54 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 02B6D34B8AA
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 17:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D69552F39AD;
-	Thu, 27 Nov 2025 17:47:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 211F82F6590;
+	Thu, 27 Nov 2025 17:58:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F0jYaSac"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VoPpntZJ";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="rcquEUCf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DCA82F291D
-	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 17:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47CF2F531A
+	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 17:58:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764265667; cv=none; b=M2U8Gy2jyTLz+0wtFGxiovSsTZvKZXL6hxoL2KsxgP9bHrLOfURR/ulzq7YUsmEw02vNJFfHcInesMzfHrpFzu4MMMplEeD4/T03kvXdIJ7F9FvKN7kQ4UKthyXg8gv6Y0GrxN4ogtrIPSCYUfWJCxtH8/LHF5NaoSubwx3s+qw=
+	t=1764266307; cv=none; b=LORktGW8GvhvUYRx24R+FVhkoJGHgaKSXXk/iQfmArJ99b4yVP+stiGWGr8q5IfJAdjgf/U1bqJ260PHmR5d7EU5CrWz2HG1xGFAeAFWEN6woEZaWGcgXUVZiEZmVYDBAFxgnpW4Y2XEjnMoaVn56kdL8Oa+pIe/uHYwbB6HmRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764265667; c=relaxed/simple;
-	bh=BRI81MYuXb7h8xyD8XLP96rM8Y/COrnSldLvFnFiQlg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ld+M8CuyrtPmr6A7fJHqbPn2s4qDSG1Yfw54MjZf5UVqhNZ3FTAi15h5vPKkRPfGbuMf8cCbqujGI4MSceLkmzywlEvglkb7eDpZVKMZB3kNTwPnpK4u0X4fly1NzE8b24uwRduHDhw5OqiwaTx31M5TUEjTh/jsVS21mX+HhFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F0jYaSac; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-297ef378069so11243295ad.3
-        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 09:47:45 -0800 (PST)
+	s=arc-20240116; t=1764266307; c=relaxed/simple;
+	bh=TPEliOZDbEMTucSchU26H1mgBRnCr+iif0iy/Krl6TE=;
+	h=Content-Type:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To; b=jPU2Yvh4xNg6lfXt6wniMlg1pJ1LPPc97x4BhFR9uMt+nRrRyF3EA1Cxl4T0uqabACW/NI1jvo0Ea8dnIUhd9LVcg4J5fTdmEBwgY9mdsleFOdJrJkNl3ZPfWXVXP2DzL73AJDFKHL3iqWCcyp6UmiNPt895b5Um+dsJKML5Q9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VoPpntZJ; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=rcquEUCf; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1764266304;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DY2OZoOg2Jn10jb874/Zht9ZmafIol/m0aMFjx0QUms=;
+	b=VoPpntZJjWhp2cPUdEj5TmjbaWF40Q3fm5/8X3PFltRzK7HwXcKEfh6U0PSbII2DyyLQki
+	6Tq9UakCS/suoa76magkzh9LpYzWuPo9UeDEiy5+n1rA6YuiL7H828pC6+fO3xDXTZH4Ki
+	fictfay6A252QEnH7KX2LoPkJbtajFU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-152-JmNkpDItMOqtnxEUe0GZGQ-1; Thu, 27 Nov 2025 12:58:23 -0500
+X-MC-Unique: JmNkpDItMOqtnxEUe0GZGQ-1
+X-Mimecast-MFC-AGG-ID: JmNkpDItMOqtnxEUe0GZGQ_1764266302
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-42b366a76ffso741865f8f.1
+        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 09:58:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764265665; x=1764870465; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BRI81MYuXb7h8xyD8XLP96rM8Y/COrnSldLvFnFiQlg=;
-        b=F0jYaSacv9Wwc3reFEH83i4RcNwDcldXqFr4PIQ6HhaltnZhDhWw6Y5FmvrwukO/D0
-         1fUNLubZ/RC0I6Hfb/H5711FkrDBqxN2FMtpG0ay6VMMwlHFr5xCHqfUKL8u9Mj5JgVy
-         bv3HqvYvL2Me+M3XnpwkhPYlDnB0bialuZlBbyzs7Xcaor3j8xwbSLwzNShdoIXMW2Vj
-         pb//UTCjol9NfPB2PM0aV3dP7zvmyDu5YGKvyHI43S084ItDclo7Zs1b4pS5ERoDns8p
-         8boRltxeRXFg7zMEOqhdp+p9ahfxSivosGFbozvZ9rr3dHNqjZ+14vEcXfJhW7wKLm2Y
-         fd2w==
+        d=redhat.com; s=google; t=1764266302; x=1764871102; darn=vger.kernel.org;
+        h=in-reply-to:from:content-language:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DY2OZoOg2Jn10jb874/Zht9ZmafIol/m0aMFjx0QUms=;
+        b=rcquEUCfROmwhFDdhqn8XS+VDCZkL0P9VH9X2ss4CYngPcPIJiAISEDh52TBDCY4B8
+         NV/leAJDoAjgQJd+dRpu7SeYt19H2nyVF8pTb/x07Jp/ZcDLeLcgIeUggRFbDea50N/U
+         PavDwtYrtOCc/yyRbyE4qCkZMnao1YSfd2mJkyfo5JSIuW9J+FgpJAnNumB10aIeIIsT
+         p01fyiLQb19SaO5PjVUIelU0UCUkgQtqklILyUxTp28k9v26tUdY6UiWh6QdcczCM2i9
+         ERsK98vJRzUZ99Et834S/SxXnNvHJw3GejURDZwxebka7/2nyW82Yzd2lLNubzAM5/iK
+         TSSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764265665; x=1764870465;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BRI81MYuXb7h8xyD8XLP96rM8Y/COrnSldLvFnFiQlg=;
-        b=cb05OfJYhsVQgw/DdMCyPBJnxiTiyS1X8ED1jKLlm3VlTir5MnJM2tkhQ7bsXroniw
-         2ycOJ36XhkU01dDcmi+iYcmUPL73hRRLhm6WvphsTR/rEtG4WSEYZ5jq6pBxxZ9C1meh
-         Gxut8e9nUCzDNyC+yorvC5ArRAVlOX7NasFwW9FmHC2rxsu0xdPWwuab6gl1iO+42gUW
-         RCyOrJvDOIoBsTNfwL/B2nDTpER7Hi3jTsFJTkUyaWRf0kUOaEt+BsSVub0s7zaLrAam
-         VZ1Cn5U3bMQmL8hw60Gqh9O+jEmmnxrmGiokhnSyUk2GSX65xyhCs+NbyjUqPUeKefE/
-         o+Gg==
-X-Forwarded-Encrypted: i=1; AJvYcCVzp1y5v7ylgsLrtZuCxM6Zd2/NohXagXj+zQ9zzyYiH/SlV7uoX9y1IEJySszLUlvwsn8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZbJZ+UbsHSCQAWt+VkQJUjIZbEb0/OjBMhGDcx0+lCndN9ERy
-	oph7uR3ZdXinhC5NStBhl+hRif97UL0fVRAqd0xdv50E2pGknNg5V7WW
-X-Gm-Gg: ASbGnctQFg9PWWaWLCZ2PpRinDkJp5t4QIKkJHOHzJn3qLgPNwzvHAOh9etSfTdsOBi
-	zdUa/a5Urg1PZeAIRLv6pCJuuL3h6Pndmu9UyLgcEaAkT98bxRbKD86PeBDvS8XW5Sg1+q1/Tkk
-	AI89MNq0nLmj95qzxElbIsuc4Cnj3D+0Lba8JvTWqshAeA9F0MusmN5LVo53f4Jig6PWFY2yQxY
-	+JjTW9oe/mRlxUu7xpdFxNa5BxM/h5zkDaBwQiR4chsQgD73npJQNcTp4NfObJww+UY5knhfRFy
-	3B15Y6n7AsytpgOWdQesZD5xdZd5R7hMLjr6D/KIwjA+g9Iauowd8ObftAZaYbDU7bPIRVYYxmf
-	ZOtLWD7i978wdC6VZhbAik6Gb/MPyA3qIfdB+wiUNeyHArLxK7ABU/WuBZ5MvEPA/ujWSlFYhLf
-	V7tglBCoSK0tXBYI6Owo8xP2iR8C57idkOJVixSM0Wtk6jZO3VTeOwyEoOtIYrcy5VhAU1oQ==
-X-Google-Smtp-Source: AGHT+IFQMns4p7mYuQDAf8KkttHI4Vx6NTBg4hreeujJapPT/8zqqg74Cep/q2QlnjNERCvMI0q1AQ==
-X-Received: by 2002:a17:903:2ecb:b0:26d:58d6:3fb2 with SMTP id d9443c01a7336-29baae4ee0cmr142565705ad.12.1764265665311;
-        Thu, 27 Nov 2025 09:47:45 -0800 (PST)
-Received: from ?IPV6:2001:ee0:4f4c:210:de47:e88:2ad3:8735? ([2001:ee0:4f4c:210:de47:e88:2ad3:8735])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29bce40a5ffsm23791225ad.18.2025.11.27.09.47.38
+        d=1e100.net; s=20230601; t=1764266302; x=1764871102;
+        h=in-reply-to:from:content-language:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DY2OZoOg2Jn10jb874/Zht9ZmafIol/m0aMFjx0QUms=;
+        b=MnA1a2eDWkNxnGahMZfyBzAw521gH6JhPYy7WfKWX+MHY0PqJgg8C4srIfb2EGKUW4
+         kjADTgYdy8nv2hclV33++N1LUAPQnLaj7QCb2a37EddifNM0fRlClJ21i5g/TY5mF3sn
+         1UrisFVwcNTw83CKlYeqazvMrZgg8c9wD4EkfTaYmtNLLv3ABhDrP/TOg7CMA6t25jkt
+         Sl1Igdwf6OC4R+Am0zJAOKYJQgudAp8R8ZEYYBClAYRe1N9FTq237YfLYTiTbWFr7I8X
+         ylV8yHprZ/rxBhmz07Cc+1aLLaWvpMFTLJMbafqMOXZsb97cP4xKMbpOAxGV5RN4u1+H
+         uAEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVyCOFJGWSl+1tKC8Ik75+sBSaBMnFFXJWIl23ASRDSHmleNOLfYQX9oyoaIQefsoHgyH8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyHjIucbCrFWBxIpzER/bcfROubfduIPb4qGQCKz1QSml9+lDUh
+	BjJqdZXdwas5DXUtYCpNy7KX9JCPms8ZuOHugW3NWE/yEHngZknE82S7sPr0YIQmuRm0LqEo1SK
+	D/nH2PNAymVTG7Qrd2oYioYZsrmphtc/rdAxZjhcDZoNdL7clAxH6Og==
+X-Gm-Gg: ASbGnct8e9DKV3QeezatXHEKZOB6/RsZpm4cyUzD7M0CLr7qSvNcjqbnmFazu8/YqMv
+	q7tqUqW8FYAFxpJn4LpMt2yVNbSSreRi2yFUVPAWAOcxvBw11wMxIpVdBX+toFqpOBfwwPIbVdF
+	3tjuE6c2daRsC15PnWcmv98KpfPfyWbeh/XzOEPRr2Y4Kfea2WbMorVfvLscPk+G18R/OkECrl3
+	M9Y8f0a3MlGdMPZg1YDJZx8jzsmy5ZaQV2YKFiuXwk3MCeGCRbidr8pkNcRbKSutLCFZmK5+py4
+	jgQa2dqPHU2sDNqGncxr58qMLodu726PX298UMizUVZ+jWayz85DqrsdmhALJjOoaH3lrkcqInr
+	tPC9uGBx4zGMbDA==
+X-Received: by 2002:a05:6000:2506:b0:429:b525:6dc2 with SMTP id ffacd0b85a97d-42e0f213901mr12126306f8f.17.1764266301755;
+        Thu, 27 Nov 2025 09:58:21 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGLRSA4nZtw3RbOLioK1qcRhOZy0uuInbULKsyGs0r8xbhY31cwWTMcCnjCEwBSM0N/0WJA6A==
+X-Received: by 2002:a05:6000:2506:b0:429:b525:6dc2 with SMTP id ffacd0b85a97d-42e0f213901mr12126275f8f.17.1764266301322;
+        Thu, 27 Nov 2025 09:58:21 -0800 (PST)
+Received: from [192.168.88.32] ([212.105.155.212])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42e1caa767dsm4882115f8f.38.2025.11.27.09.58.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Nov 2025 09:47:44 -0800 (PST)
-Message-ID: <a61dc7ee-d00b-41b4-b6fd-8a5152c3eae3@gmail.com>
-Date: Fri, 28 Nov 2025 00:47:36 +0700
+        Thu, 27 Nov 2025 09:58:20 -0800 (PST)
+Content-Type: multipart/mixed; boundary="------------YlcUvmJr0yf8fUFaZ0Spby8F"
+Message-ID: <f8d6dbe0-b213-4990-a8af-2f95d25d21be@redhat.com>
+Date: Thu, 27 Nov 2025 18:58:18 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,86 +102,122 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC] virtio_net: gate delayed refill scheduling
-To: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc: Paolo Abeni <pabeni@redhat.com>, Jason Wang <jasowang@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
- <eperezma@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev,
- netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <40af2b73239850e7bf1a81abb71ee99f1b563b9c.1764226734.git.mst@redhat.com>
+Subject: Re: [PATCH net-next v3] xsk: skip validating skb list in xmit path
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+ jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org,
+ Jason Xing <kernelxing@tencent.com>
+References: <20251125115754.46793-1-kerneljasonxing@gmail.com>
+ <b859fd65-d7bb-45bf-b7f8-e6701c418c1f@redhat.com>
+ <CAL+tcoDdntkJ8SFaqjPvkJoCDwiitqsCNeFUq7CYa_fajPQL4A@mail.gmail.com>
 Content-Language: en-US
-From: Bui Quang Minh <minhquangbui99@gmail.com>
-In-Reply-To: <40af2b73239850e7bf1a81abb71ee99f1b563b9c.1764226734.git.mst@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <CAL+tcoDdntkJ8SFaqjPvkJoCDwiitqsCNeFUq7CYa_fajPQL4A@mail.gmail.com>
+
+This is a multi-part message in MIME format.
+--------------YlcUvmJr0yf8fUFaZ0Spby8F
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-I think the the requeue in refill_work is not the problem here. In
-virtnet_rx_pause[_all](), we use cancel_work_sync() which is safe to
-use "even if the work re-queues itself". AFAICS, cancel_work_sync()
-will disable work -> flush work -> enable again. So if the work requeue
-itself in flush work, the requeue will fail because the work is already
-disabled.
+On 11/27/25 1:49 PM, Jason Xing wrote:
+> On Thu, Nov 27, 2025 at 8:02 PM Paolo Abeni <pabeni@redhat.com> wrote:
+>> On 11/25/25 12:57 PM, Jason Xing wrote:
+>>> This patch also removes total ~4% consumption which can be observed
+>>> by perf:
+>>> |--2.97%--validate_xmit_skb
+>>> |          |
+>>> |           --1.76%--netif_skb_features
+>>> |                     |
+>>> |                      --0.65%--skb_network_protocol
+>>> |
+>>> |--1.06%--validate_xmit_xfrm
+>>>
+>>> The above result has been verfied on different NICs, like I40E. I
+>>> managed to see the number is going up by 4%.
+>>
+>> I must admit this delta is surprising, and does not fit my experience in
+>> slightly different scenarios with the plain UDP TX path.
+> 
+> My take is that when the path is extremely hot, even the mathematics
+> calculation could cause unexpected overhead. You can see the pps is
+> now over 2,000,000. The reason why I say this is because I've done a
+> few similar tests to verify this thought.
 
-I think what triggers the deadlock here is a bug in
-virtnet_rx_resume_all(). virtnet_rx_resume_all() calls to
-__virtnet_rx_resume() which calls napi_enable() and may schedule
-refill. It schedules the refill work right after napi_enable the first
-receive queue. The correct way must be napi_enable all receive queues
-before scheduling refill work.
+Uhm... 2M is not that huge. Prior to the H/W vulnerability fallout
+(spectre and friends) reasonable good H/W (2016 old) could do ~2Mpps
+with a single plain UDP socket.
 
-The fix is like this (there are quite duplicated code, I will clean up
-and send patches later if it is correct)
+Also validate_xmit_xfrm() should be basically a no-op, possibly some bad
+luck with icache?
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 8e04adb57f52..892aa0805d1b 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -3482,20 +3482,25 @@ static void __virtnet_rx_resume(struct virtnet_info *vi,
-  static void virtnet_rx_resume_all(struct virtnet_info *vi)
-  {
-      int i;
-+    bool schedule_refill = false;
-+
-+    for (i = 0; i < vi->max_queue_pairs; i++)
-+        __virtnet_rx_resume(vi, &vi->rq[i], false);
+Could you please try the attached patch instead?
 
-      enable_delayed_refill(vi);
--    for (i = 0; i < vi->max_queue_pairs; i++) {
--        if (i < vi->curr_queue_pairs)
--            __virtnet_rx_resume(vi, &vi->rq[i], true);
--        else
--            __virtnet_rx_resume(vi, &vi->rq[i], false);
--    }
-+
-+    for (i = 0; i < vi->curr_queue_pairs; i++)
-+        if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
-+            schedule_refill = true;
-+
-+    if (schedule_refill)
-+        schedule_delayed_work(&vi->refill, 0);
-  }
+Should not be as good as skipping the whole validation but should give
+some measurable gain.
+>>> [1] - analysis of the validate_xmit_skb()
+>>> 1. validate_xmit_unreadable_skb()
+>>>    xsk doesn't initialize skb->unreadable, so the function will not free
+>>>    the skb.
+>>> 2. validate_xmit_vlan()
+>>>    xsk also doesn't initialize skb->vlan_all.
+>>> 3. sk_validate_xmit_skb()
+>>>    skb from xsk_build_skb() doesn't have either sk_validate_xmit_skb or
+>>>    sk_state, so the skb will not be validated.
+>>> 4. netif_needs_gso()
+>>>    af_xdp doesn't support gso/tso.
+>>> 5. skb_needs_linearize() && __skb_linearize()
+>>>    skb doesn't have frag_list as always, so skb_has_frag_list() returns
+>>>    false. In copy mode, skb can put more data in the frags[] that can be
+>>>    found in xsk_build_skb_zerocopy().
+>>
+>> I'm not sure  parse this last sentence correctly, could you please
+>> re-phrase?
+>>
+>> I read it as as the xsk xmit path could build skb with nr_frags > 0.
+>> That in turn will need validation from
+>> validate_xmit_skb()/skb_needs_linearize() depending on the egress device
+>> (lack of NETIF_F_SG), regardless of any other offload required.
+> 
+> There are two paths where the allocation of frags happen:
+> 1) xsk_build_skb() -> xsk_build_skb_zerocopy() -> skb_fill_page_desc()
+> -> shinfo->frags[i]
+> 2) xsk_build_skb() -> skb_add_rx_frag() -> ... -> shinfo->frags[i]
+> 
+> Neither of them touch skb->frag_list, which means frag_list is NULL.
+> IIUC, there is no place where frag_list is used (which actually I
+> tested). we can see skb_needs_linearize() needs to check
+> skb_has_frag_list() first, so it will not proceed after seeing it
+> return false.
+https://elixir.bootlin.com/linux/v6.18-rc7/source/include/linux/skbuff.h#L4322
 
-  static void virtnet_rx_resume(struct virtnet_info *vi, struct receive_queue *rq)
-  {
--    enable_delayed_refill(vi);
-      __virtnet_rx_resume(vi, rq, true);
-+    enable_delayed_refill(vi);
-  }
+return skb_is_nonlinear(skb) &&
+	       ((skb_has_frag_list(skb) && !(features & NETIF_F_FRAGLIST)) ||
+		(skb_shinfo(skb)->nr_frags && !(features & NETIF_F_SG)));
 
-  static int virtnet_rx_resize(struct virtnet_info *vi,
+can return true even if `!skb_has_frag_list(skb)`.
 
-I also move the enable_delayed_refill() after we __virtnet_rx_resume()
-to ensure no refill is scheduled before napi_enable().
+I think you still need to call validate_xmit_skb()
 
-What do you think?
+/P
 
-Thanks,
-Quang Minh
+
+--------------YlcUvmJr0yf8fUFaZ0Spby8F
+Content-Type: text/x-patch; charset=UTF-8; name="sec_path.patch"
+Content-Disposition: attachment; filename="sec_path.patch"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL25ldC9jb3JlL2Rldi5jIGIvbmV0L2NvcmUvZGV2LmMKaW5kZXggOTA5
+NGMwZmI4YzY4Li4zOTUxNmE1NzY2ZTUgMTAwNjQ0Ci0tLSBhL25ldC9jb3JlL2Rldi5jCisr
+KyBiL25ldC9jb3JlL2Rldi5jCkBAIC00MDMwLDcgKzQwMzAsOCBAQCBzdGF0aWMgc3RydWN0
+IHNrX2J1ZmYgKnZhbGlkYXRlX3htaXRfc2tiKHN0cnVjdCBza19idWZmICpza2IsIHN0cnVj
+dCBuZXRfZGV2aWNlCiAJCX0KIAl9CiAKLQlza2IgPSB2YWxpZGF0ZV94bWl0X3hmcm0oc2ti
+LCBmZWF0dXJlcywgYWdhaW4pOworCWlmIChza2Jfc2VjX3BhdGgoc2tiKQorCQlza2IgPSB2
+YWxpZGF0ZV94bWl0X3hmcm0oc2tiLCBmZWF0dXJlcywgYWdhaW4pOwogCiAJcmV0dXJuIHNr
+YjsKIAo=
+
+--------------YlcUvmJr0yf8fUFaZ0Spby8F--
 
 
