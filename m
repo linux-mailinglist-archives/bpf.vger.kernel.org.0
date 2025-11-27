@@ -1,100 +1,48 @@
-Return-Path: <bpf+bounces-75637-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75638-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9799EC8E101
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 12:36:02 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A32F3C8E18B
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 12:48:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDEDB3AA37E
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 11:36:00 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5B8864E34B3
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 11:48:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD5432BF25;
-	Thu, 27 Nov 2025 11:35:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E9B132BF48;
+	Thu, 27 Nov 2025 11:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fmFRSgd5";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="IbK6lBvz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tIlJwzwL"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842003246EC
-	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 11:35:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A05831815D
+	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 11:48:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764243355; cv=none; b=tVAMzRTLj6PxgM9eZMnQ/4AnLNGCYOmVER6tkw1BfTUspC3NmBiSQJxsPpIg+EWyk3n1mQ+1uJX/A0+EcDAqPoTqPXy/gyYBPbwCWLnDTCGMRB4thnozd03hMycKm0haqrk2o72mMQusstfh12zJmmfwJt/DMVw2WF0uN8D1KKo=
+	t=1764244126; cv=none; b=PnchZz5kQ1h+WQHb7xBHdmgBmG8MQSQLTz6AXnKgrhQj87HBpn4LnFq9jZo74xOH23gRGPEjZitj280Ai9GcKiOO+7kpT/7tTFBOswWwH70ZqxMVtWwTYi5/seUHjKn59Fv8YSUZDvg/IL2L8gEW9iSESbas5Gvvhd3rVmg8NSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764243355; c=relaxed/simple;
-	bh=4WI7yCChHQXZkx37ypnImXEbQ0maLcssq2bhKZ7ODlg=;
+	s=arc-20240116; t=1764244126; c=relaxed/simple;
+	bh=w/afnhuYyNZIpCydtL72AbZ9I5In+EX1JoLUP6VMW2A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Eft90PHWf2vXTNbiCXvANB2oYYLSg/bxyd/hB6xhukDKTOSTx1LV+KaLEd1dsS/p4SuWL/Dx9pxka+O8a3p15WDr2ackyhYME5KWIuiybRI6Mxgm1Rn2Y8W6oGVJURE2uO6VDBxr6z9ZtjXlKor9eKxYLSmPTNiJxXoaPSzvBA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fmFRSgd5; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=IbK6lBvz; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1764243352;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TPLeXmZroMIKbU6mJWFaUG0Igc2fFk4vqnIUHWReN0w=;
-	b=fmFRSgd5bCvoA5N7oip/xX4k+woCvJkX88igq8DbWiAON4Yhd4d3VeTIft3tPdIHHU30Q8
-	mwcU6qJOyBpNJ2NPzD+cAPLQJTd9Maev/P+9A5EuvD3ykOJYyZQp8qz58lpzsATMCkCobN
-	yssVgq0aBpZzIwOuJBZaMbSvZqK1w8Q=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-641-QFd7HOlOORqM_fPBFpc3iw-1; Thu, 27 Nov 2025 06:35:50 -0500
-X-MC-Unique: QFd7HOlOORqM_fPBFpc3iw-1
-X-Mimecast-MFC-AGG-ID: QFd7HOlOORqM_fPBFpc3iw_1764243349
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-42b2ffe9335so500672f8f.1
-        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 03:35:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1764243349; x=1764848149; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TPLeXmZroMIKbU6mJWFaUG0Igc2fFk4vqnIUHWReN0w=;
-        b=IbK6lBvzPLHYjX4sOV1T5CeN6qQIuhO4QcWkq2eO56yqJUzzgY5OvIRBKNniDKdUXA
-         QAsrEu3DIWmg6Qteu2Gw79A0R3Z/jXWFtxYKv+7x4s09aPCCXS/GEeCkS9tedUxAN7E9
-         8ZCxzhhhljGnZl5OtROhOT0zDNu6i2xwzVRTCw5wPv33n3UJcFE4Q6qgFVeBt4e1Uxtl
-         1tPl8zlxCachsWYYgFcetUp79FkQ04BG8OJrV7DsvShjc4R5KwYc3CPOl2P+sBSkddXu
-         TtjV3DL2t6LU9as93+LgPvMUn1XwkMMVk/F6CbvYPWZrdfTpAMavPc8UDO/0ylMrpbqq
-         pnPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764243349; x=1764848149;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TPLeXmZroMIKbU6mJWFaUG0Igc2fFk4vqnIUHWReN0w=;
-        b=R6yf7vikEBHkRcH7RPxk0BQheTX4lyvFrXjr5IHuRe7QPsDzHHrAEtSPhhQHhb7DSz
-         ehOhXHAQQcFJZfqi95qJ0l0V/CoT/uEr0SutQPuqDDq+GhMsPjGHJn3vgldl5QFbL8P4
-         Vzh/MdxtrsYJerQWBpn52huvpel5o6fLI5f7JvAdZA5Zyfng96c/coLgLC+MY4xSv9s6
-         ATYoN8DHQnwniH6VC/ngAUMEAiMrPcuxGsTNS7/oTY/snkhd0VIzWSoFsockk3vP4gOv
-         ZuPUlLeaENY1j9tFPdiaFZDkz80NwsVAZihs2E3Dl69t0YYE9/LgEmmTDYMq+qkYSVMF
-         GJsA==
-X-Gm-Message-State: AOJu0Yzitk/qFxH4yKEFaz9R60KS7vFJ6iEldImVJSV+yF3JC+4Bev/M
-	HkNRDST1R5+p69drxDwP0MYfdijOwRea6N0kZySkFDzeaX8HfYQrUfmCKSCm+DIDsyx1AorjuPR
-	TCjBZ7f5GtNg7uWuAZ8WyZhJrZxh70dmyTEWeVLIg1JOyEuYx4+AUZg==
-X-Gm-Gg: ASbGncuffiasaiQQdmtq/08y/CKoxwqgWUJNJFISkOGyijUh9YcSY6WykaLw4w6vPDI
-	iy5103J708dRXSPPhjNIsDHOhegBxqQoJtn4YiVX96uz46qBsbSJ7gLdgJ9ei3FwCM8DHfQ5eoU
-	l0a2cqFBkTuXWQgO7UcQ3FNXxTBdEJNj8QgxgKDOXR7Vwxk6x/NMCJAc5MN1G9PQUPOS+2Z2I6Y
-	UVk4Y8bol1ULiuJx0a4r5yCEYryAy1P82hSVjZ8KH+phy7blDrIG4n+RwXZbwe2EvtGi0gTOd+r
-	OPOPeycNTgeN9jZ2MILT5FOQYoyJMJum3SJM+WpQtLaryGWg1giO3461XjgNAFRi1Qyr9Y2hzUV
-	ELnD/+FrEhAg1Jw==
-X-Received: by 2002:a5d:5e01:0:b0:42b:3131:5435 with SMTP id ffacd0b85a97d-42cc1ac9de0mr24340550f8f.2.1764243349483;
-        Thu, 27 Nov 2025 03:35:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHw+losns/EbFf8Iuyd+Ic4CbDitf9tLRbOX3h2FYMV1qJKEuWEEDc8zOqFzENhs0ha+EaT5Q==
-X-Received: by 2002:a5d:5e01:0:b0:42b:3131:5435 with SMTP id ffacd0b85a97d-42cc1ac9de0mr24340515f8f.2.1764243349101;
-        Thu, 27 Nov 2025 03:35:49 -0800 (PST)
-Received: from [192.168.88.32] ([212.105.155.212])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42e1ca1a2easm3317816f8f.23.2025.11.27.03.35.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Nov 2025 03:35:48 -0800 (PST)
-Message-ID: <0bcdd667-1811-4bde-8313-1a7e3abe55ad@redhat.com>
-Date: Thu, 27 Nov 2025 12:35:47 +0100
+	 In-Reply-To:Content-Type; b=p7XYcqzpeqiUQRgrF1vFq6Z58+Nv+VJ3TtzO+UsQuupT8X+W+PXkDG400nEWV2koPt21lwKHjp0OSqAoHxAnO4iB30Rm3ttJnuldbk+Iy4+wn1H54O1Zxy5/Mv9hXQsp5zj91bVequcYjOLHoxdJsmvVt1pTY/PF3JXecTtrcKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tIlJwzwL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E511C4CEF8;
+	Thu, 27 Nov 2025 11:48:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764244125;
+	bh=w/afnhuYyNZIpCydtL72AbZ9I5In+EX1JoLUP6VMW2A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=tIlJwzwL3cjRTN8mgWo++SdcXe3FjPS+Xlfq613EqGHn+hljGEMsciAyEvGEtxggW
+	 U6hS+CA6VqAl3wDTQT0zY0zuYfoPC2mtD+e63GIsHgyPFYYP14UbAH46cEcp214acs
+	 9g2pl0ho6ilJP/wlcnosybWKcg/b/CkB3rjhDALYYBFYlCEPPYicCoSRLBdaXoZRlk
+	 sEscJ/dCsrWibvkGoY8sLJpFdiH/y6diziI2PGI1ECAtw/CJNC9LMY9b+Y57swmgKH
+	 yrq2DUcTxsXGSC6XhQic1mgvMV5cV5jb7CH+UUatK4u13CX+M3ZW5UstuULer6EIya
+	 fSwxnSiCgEPpg==
+Message-ID: <9f73a5bd-32a0-4d5f-8a3f-7bff8232e408@kernel.org>
+Date: Thu, 27 Nov 2025 12:48:33 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,55 +50,116 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 2/3] xsk: use atomic operations around
- cached_prod for copy mode
-To: Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, bjorn@kernel.org,
- magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
- jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- Jason Xing <kernelxing@tencent.com>
-References: <20251125085431.4039-1-kerneljasonxing@gmail.com>
- <20251125085431.4039-3-kerneljasonxing@gmail.com>
+Subject: Re: [PATCH v12 mm-new 06/10] mm: bpf-thp: add support for global mode
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Yafang Shao <laoar.shao@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Zi Yan <ziy@nvidia.com>,
+ Liam Howlett <Liam.Howlett@oracle.com>, npache@redhat.com,
+ ryan.roberts@arm.com, dev.jain@arm.com, Johannes Weiner
+ <hannes@cmpxchg.org>, usamaarif642@gmail.com,
+ gutierrez.asier@huawei-partners.com, Matthew Wilcox <willy@infradead.org>,
+ Amery Hung <ameryhung@gmail.com>, David Rientjes <rientjes@google.com>,
+ Jonathan Corbet <corbet@lwn.net>, Barry Song <21cnbao@gmail.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Tejun Heo <tj@kernel.org>,
+ lance.yang@linux.dev, Randy Dunlap <rdunlap@infradead.org>,
+ Chris Mason <clm@meta.com>, bpf <bpf@vger.kernel.org>,
+ linux-mm <linux-mm@kvack.org>
+References: <20251026100159.6103-1-laoar.shao@gmail.com>
+ <20251026100159.6103-7-laoar.shao@gmail.com>
+ <CAADnVQKziFmRiVjDpjtYcmxU74VjPg4Pqn2Ax=O2SsfjLLy5Zw@mail.gmail.com>
+ <CALOAHbD+9gxukoZ3OQvH2fNH2Ff+an+Dx-fzx_+mhb=8fZZ+sw@mail.gmail.com>
+ <CAADnVQK9kp_5zh0gYvXdJ=3MSuXTbmZT+cah5uhZiGk5qYfckw@mail.gmail.com>
+From: "David Hildenbrand (Red Hat)" <david@kernel.org>
 Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20251125085431.4039-3-kerneljasonxing@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAADnVQK9kp_5zh0gYvXdJ=3MSuXTbmZT+cah5uhZiGk5qYfckw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 11/25/25 9:54 AM, Jason Xing wrote:
-> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> index 44cc01555c0b..3a023791b273 100644
-> --- a/net/xdp/xsk_queue.h
-> +++ b/net/xdp/xsk_queue.h
-> @@ -402,13 +402,28 @@ static inline void xskq_prod_cancel_n(struct xsk_queue *q, u32 cnt)
->  	q->cached_prod -= cnt;
->  }
->  
-> -static inline int xskq_prod_reserve(struct xsk_queue *q)
-> +static inline bool xsk_cq_cached_prod_nb_free(struct xsk_queue *q)
->  {
-> -	if (xskq_prod_is_full(q))
-> +	u32 cached_prod = atomic_read(&q->cached_prod_atomic);
-> +	u32 free_entries = q->nentries - (cached_prod - q->cached_cons);
-> +
-> +	if (free_entries)
-> +		return true;
-> +
-> +	/* Refresh the local tail pointer */
-> +	q->cached_cons = READ_ONCE(q->ring->consumer);
-> +	free_entries = q->nentries - (cached_prod - q->cached_cons);
-> +
-> +	return free_entries ? true : false;
-> +}
-_If_ different CPUs can call xsk_cq_cached_prod_reserve() simultaneously
-(as the spinlock existence suggests) the above change introduce a race:
+>> To move forward, I'm happy to set the global mode aside for now and
+>> potentially drop it in the next version. I'd really like to hear your
+>> perspective on the per-process mode. Does this implementation meet
+>> your needs?
 
-xsk_cq_cached_prod_nb_free() can return true when num_free == 1  on
-CPU1, and xsk_cq_cached_prod_reserve increment cached_prod_atomic on
-CPU2 before CPU1 completed xsk_cq_cached_prod_reserve().
+I haven't had the capacity to follow the evolution of this patch set 
+unfortunately, just to comment on some points from my perspective.
 
-/P
+First, I agree that the global mode is not what we want, not even as a 
+fallback.
 
+> 
+> Attaching st_ops to task_struct or to mm_struct is a can of worms.
+> With cgroup-bpf we went through painful bugs with lifetime
+> of cgroup vs bpf, dying cgroups, wq deadlock, etc. All these
+> problems are behind us. With st_ops in mm_struct it will be more
+> painful. I'd rather not go that route.
+
+That's valuable information, thanks. I would have hoped that per-MM 
+policies would be easier.
+
+Are there some pointers to explore regarding the "can of worms" you 
+mention when it comes to per-MM policies?
+
+> 
+> And revist cgroup instead, since you were way too quick
+> to accept the pushback because all you wanted is global mode.
+> 
+> The main reason for pushback was:
+> "
+> Cgroup was designed for resource management not for grouping processes and
+> tune those processes
+> "
+> 
+> which was true when cgroup-v2 was designed, but that ship sailed
+> years ago when we introduced cgroup-bpf.
+
+Also valuable information.
+
+Personally I don't have a preference regarding per-mm or per-cgroup. 
+Whatever we can get working reliably. Sounds like cgroup-bpf has sorted 
+out most of the mess.
+
+memcg/cgroup maintainers might disagree, but it's probably worth having 
+that discussion once again.
+
+> None of the progs are doing resource management and lots of infrastructure,
+> container management, and open source projects use cgroup-bpf
+> as a grouping of processes. bpf progs attached to cgroup/hook tuple
+> only care about processes within that cgroup. No resource management.
+> See __cgroup_bpf_check_dev_permission or __cgroup_bpf_run_filter_sysctl
+> and others.
+> The path is current->cgroup->bpf_progs and progs do exactly
+> what cgroup wasn't designed to do. They tune a set of processes.
+> 
+> You should do the same.
+> 
+> Also I really don't see a compelling use case for bpf in THP.
+
+There is a lot more potential there to write fine-tuned policies that 
+thack VMA information into account.
+
+The tests likely reflect what Yafang seems to focus on: IIUC primarily 
+enabling+disabling traditional THPs (e.g., 2M) on a per-process basis.
+
+Some of what Yafang might want to achieve could maybe at this point be 
+maybe achieved through the prctl(PR_SET_THP_DISABLE) support, including 
+extensions we recently added [1].
+
+Systemd support still seems to be in the works [2] for some of that.
+
+
+[1] https://lwn.net/Articles/1032014/
+[2] https://github.com/systemd/systemd/pull/39085
+
+-- 
+Cheers
+
+David
 
