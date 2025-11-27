@@ -1,87 +1,88 @@
-Return-Path: <bpf+bounces-75640-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75641-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB475C8E565
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 13:50:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1165EC8E6BD
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 14:19:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4ABC134E840
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 12:50:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1A383AC8FD
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 13:19:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B86C329E4A;
-	Thu, 27 Nov 2025 12:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D99D1269AE9;
+	Thu, 27 Nov 2025 13:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OHGnda0D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l7+IgnCf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A4B21A425
-	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 12:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB8B1D63F7
+	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 13:19:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764247823; cv=none; b=DWJjT6+/qQB7M5wyEuL67udpRbfr5YR6FPnyg4Eq8rnNLFdBYLJKLLQME5DB7zTea4vXh9WG4HyotA4Lgu2C8Z48zFhlPggliLdS+6vc23tJTOPeVbpl3SVOXkLNTJmHLyIVMYX/UccTSqDGeVR3p5GGjShIEGrRKHdGAVnv+VA=
+	t=1764249569; cv=none; b=M0HUl1JvfBx33OLVx5y4SP18JMBCODSQWxQRbLXfFqRxtw8kRdT7r4sE/XoTldKZTzV75+z4HTb6+iz/SKQ/JX8AVu4+xL0Gvc+9Qh1GjHk23JMJow5c1J/xKOshQNAHv/DEdrfLGQ4foQNrcTrwtCbDbinkWwNYo2ckAlLjuyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764247823; c=relaxed/simple;
-	bh=qEhjYGJekn2sHM36iIdgoMW8GMxqSpDIsz+HWExog4o=;
+	s=arc-20240116; t=1764249569; c=relaxed/simple;
+	bh=ED9Iw7nQWKNLvI4J4Zwk2uO1v5iCGTYPUwXUk54PHHk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=doAS5phLLyG5nRuzKyfSXkjJ188sZqBJ6d13UkWD7Zvhy8aqA8yjOotbLcK7/teHZTjfN7wXvstcWHaIvFPzjz0H868cel+xwI16cnyTpOMaO6pDPEiTRLX23RVZ2/DV8l09r3sUYm9J1/N65nQLF3xX8oMR2ScXwMFkFgLBjvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OHGnda0D; arc=none smtp.client-ip=209.85.166.178
+	 To:Cc:Content-Type; b=mio9hNfgnXCBvwRztMIUPYC8nMN6xy9viatm6NddBPCk2gAaAz/ZJkg+HZWC8pGf3X7ai8Y82ycMlCJDCwfNQShyPo0QZFFrOR5s2w9/q1tBoF+IEFrCy2Av+x6zkysRZtolKscnpuoNHfDbGu1yJM0ERcqiikDGMiTKeswsB64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l7+IgnCf; arc=none smtp.client-ip=209.85.166.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-43380a6fe8cso4603455ab.0
-        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 04:50:21 -0800 (PST)
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-433791d45f5so4418575ab.0
+        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 05:19:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764247821; x=1764852621; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764249567; x=1764854367; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mdUBlaXRTmekXytUhwE5mIKdn4E13yB0O8ecwFhJb8E=;
-        b=OHGnda0DfznBsOg15rVu8Dn3WLs0rTX5gFu2vJyoKU4dWz0hDKZr9Tmj+zeZg0mv6Y
-         Ig9WSOEJEZ5dcNuL5jd92mOvX2SX9dlitXgh2PyzCnIqFg7ka36kC8IRzkDnxKc+abM9
-         SuaTzAkAf1XGJNXeoC8u4VtHo52udkfHdUW5uaWr5L4hwP0wmU2qR1HRKKlNNPmpP+en
-         ukcm/wfOd/mDq7zJ0exW/YBZozLToqUamPtHZK3hRTy1mDxgCesZVcS9rT+oyNdDxCXJ
-         jVJhljwYK0fOul5SzVUjithGCX60fyl8n4TFuYCn8Z1BOazeZykSQiZLcHI91LqOw2zN
-         vQ0g==
+        bh=yCzBPQmriWwNoC+w7AkUbAJ2/r1P5CTIHfbguhPRxvQ=;
+        b=l7+IgnCfYfQmVA0ahf5SJLwobvYpnoQkOcwXSSzYeRsycqvDP7fqxQeebT+MISs8xX
+         SnZcoadmhxmFZ0fbPF6NHIqhs61D4Hs76xIdEyjfZt5XyJ6+eTDh+HVwyn/FjcJmddb9
+         CmGJ4X8JbmQA1md6DUMLi7B4lMi2eUtGCdeglaUQP/F4j6B3iycfTb/CPYcRXU+qISpG
+         /NOFH4vXAzpgTECLeYlw1wQak+FJqGy/hrG7ccBqW513INf4YmjV6f006lBM6Bc2/4ae
+         Y1Do9byfisUxR0QEiHko6PC6bXbQochYeG9M1u8U9Rwglpm1OxeywRAcMkJgAZX5jYXV
+         9D7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764247821; x=1764852621;
+        d=1e100.net; s=20230601; t=1764249567; x=1764854367;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=mdUBlaXRTmekXytUhwE5mIKdn4E13yB0O8ecwFhJb8E=;
-        b=j1pxQxN8JdXlIW1wY3n88hR58rRO0gAAB1QZkRJ4nXP99mwJ56p/AgAjCDHxa6hozb
-         I9eCxFGspc0iUrJXCbOs7OTn1E8xTjXhTaI09TWbpF3bOUx4FEElZi3XlBJfUJcAT70L
-         p8iSRCDIoJ2smK8bRWtLkChqkWZKxTSKfgVA3VkLRmgcUL5AoSrVwQul2vSuNYlH7i+Y
-         epK3pRKnmU8n6jamTobxGCHipyeEVSDk3zJHT9ksxrIfCj0I22hQuX28tVd8Hw4P8Nv9
-         zvqHrbUz+sswTc6VjBIhzuGy+IanCV6nIWEoLt8P9mEE8APXd8m1y2e4sFJiUkwuX4lK
-         lxNw==
-X-Forwarded-Encrypted: i=1; AJvYcCWAP7WLa4aDshy2exyttqfYRejoXdeUahyv8nEPNAu1NnVETDxd/iWFOUmNIztAbgPSsqg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzmDjdMXIb+BTcE36Vlq//0eQYiycMEwrpHFruuEzwAs4uRm5oL
-	qq25BlF0kensKnJJsnVrReZcswyFI3Ux/zdck360d3DamSMoBY3dAtOCAQIqESxqzrZOtwv9age
-	2njzS1UjbIHXlLs9Arm0RwjTCQVALH7c=
-X-Gm-Gg: ASbGncvteYEHZkpn5xbZZU3tQy0qd64ptKWQNgqFt+dwysIfyKl6oF6kLVFNoQ2eKBT
-	AlJgxkHbYS2zowEJbMvHBD+BOfZI8vIVuRiuXPpocwf5HuuBQ8hpDegx8P8TAk3CwqksVehu09R
-	HX95O57Dx9qlCbIytwWbn7eDnOoVreyxef04mkIGaYhP9E670reCVS70MRNCwaZeZgnKR5FtGQd
-	ybKDw/eezfLIlyutNktSfwjhQEMiutWLV+9bmXwRextkx9UYfQHqeZlGekKqTzk+Q/kGQ==
-X-Google-Smtp-Source: AGHT+IFdUv9sOTmCT5IY7wY2U8Dv0pRh8vpsqqPTgWWjsqw02EA1W2e4fi5EcaDPbnAhskBenOejzupDTFu/GQBPybM=
-X-Received: by 2002:a05:6e02:1a06:b0:433:7f13:3a8c with SMTP id
- e9e14a558f8ab-435b8c1224amr206960455ab.16.1764247821115; Thu, 27 Nov 2025
- 04:50:21 -0800 (PST)
+        bh=yCzBPQmriWwNoC+w7AkUbAJ2/r1P5CTIHfbguhPRxvQ=;
+        b=YEAIptj3YOGgAVgKez2sG0kd8PeUPX0O+ZN6dr3306HrH1sjN80hb0kWuvxHsAObOj
+         YuxJJcLIjBeTbOHclR8+YDV1jVGvJ1PyZwcD6Mgt5yeVM+gn+yBqrKfCv1KCBmXl6h1N
+         cmamfu2rWhpDYc7pulGKiwPns5AvHY3UCuyJvfYwDRJBYJHNODu5a+eXowjaYMB/dQ93
+         dSmyNiQOnBwiDBpoAbaCUFcwap+9xokc5yl05T3lefc4FIF/jDw3Pcz/bfhs/mpd1rbo
+         eYCNqzv9sujPTLFoWNPGAJg79m3B7tVTZy5VX3dpMJRY2kBwCF6IgyF4YJaxtBTVhNQY
+         6PAg==
+X-Forwarded-Encrypted: i=1; AJvYcCXbQC7Que2X6Utkt/j18zKevNM6yJWY3MolNNBABT1pqorZ6/acrj+t09d1UJF15E+X4IM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzRXOYbCqezoi7hIEC8SWksK1xOc9QXbTPzKVH1GJBIsjnqs+OQ
+	ZxHclfDXSndKWhgBIUkc4gopNIiI7fCMTBV5VosjwB4XlOHhrLmgQdLEPhPV7i0BJrPMqhuRf4j
+	87XBt44comQRPnTch+0tHR06w1qKX76o=
+X-Gm-Gg: ASbGncvXEFMfKWOedatfy9lf+IP7sVhoGZSyPDM0Sf2Ast9bL8ge39Dm5c0ado6JiTe
+	OU4Z7sdMVp933nvKafMpZOI6DK0eSrk0qJRbhDPUpiGXFgXzBYC3bqUemAh/Hlc6iPj+e5+bPfW
+	eqk/NHhDH9IYwz6jLn9KxZ2O8JWSSDIFaHC8U73FV491NvnWl77ZnMQoJS3WmNXncdROvW5Epvq
+	hvbbfHtQ9/ZjV0VZOPYNbq0q4HraDob+nyjeVrJA11XO9aNoejsWUKuhG2yF1TnKVw7bUk=
+X-Google-Smtp-Source: AGHT+IE4MPYVosxTC2+EJOGxZIxKrRHl5ytzM1bMPnB4+uDlXJz18MUFbQTwVk2VSGwTUC4TMLDXCCCMKpXrlupsIHw=
+X-Received: by 2002:a05:6e02:248f:b0:433:5b75:64d6 with SMTP id
+ e9e14a558f8ab-435b98d77f7mr242863045ab.28.1764249566692; Thu, 27 Nov 2025
+ 05:19:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251125115754.46793-1-kerneljasonxing@gmail.com> <b859fd65-d7bb-45bf-b7f8-e6701c418c1f@redhat.com>
-In-Reply-To: <b859fd65-d7bb-45bf-b7f8-e6701c418c1f@redhat.com>
+References: <20251125085431.4039-1-kerneljasonxing@gmail.com>
+ <20251125085431.4039-4-kerneljasonxing@gmail.com> <4c645223-8c52-40d3-889b-f3cf7fa09f89@redhat.com>
+In-Reply-To: <4c645223-8c52-40d3-889b-f3cf7fa09f89@redhat.com>
 From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 27 Nov 2025 20:49:45 +0800
-X-Gm-Features: AWmQ_blBZXldg_fDFhGmx27J8EnktngNxeOQdAkEJSajcbi6Q1vGsBad76x5bkg
-Message-ID: <CAL+tcoDdntkJ8SFaqjPvkJoCDwiitqsCNeFUq7CYa_fajPQL4A@mail.gmail.com>
-Subject: Re: [PATCH net-next v3] xsk: skip validating skb list in xmit path
+Date: Thu, 27 Nov 2025 21:18:49 +0800
+X-Gm-Features: AWmQ_bkKPR_pnFH29-61JqMam70K4G6NNdS95YVbrn36Ae8NT1OjfixQBrvQSp0
+Message-ID: <CAL+tcoAQZRNnmwCdaH_TNGSmepx1KO93H-4NmVzoUrNfY7pU6A@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 3/3] xsk: remove spin lock protection of cached_prod
 To: Paolo Abeni <pabeni@redhat.com>
 Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
 	bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
@@ -92,70 +93,53 @@ Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 27, 2025 at 8:02=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
+On Thu, Nov 27, 2025 at 7:29=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
 te:
 >
-> On 11/25/25 12:57 PM, Jason Xing wrote:
-> > This patch also removes total ~4% consumption which can be observed
-> > by perf:
-> > |--2.97%--validate_xmit_skb
-> > |          |
-> > |           --1.76%--netif_skb_features
-> > |                     |
-> > |                      --0.65%--skb_network_protocol
-> > |
-> > |--1.06%--validate_xmit_xfrm
+> On 11/25/25 9:54 AM, Jason Xing wrote:
+> > From: Jason Xing <kernelxing@tencent.com>
 > >
-> > The above result has been verfied on different NICs, like I40E. I
-> > managed to see the number is going up by 4%.
+> > Remove the spin lock protection along with some functions adjusted.
+> >
+> > Now cached_prod is fully converted to atomic, which improves the
+> > performance by around 5% over different platforms.
 >
-> I must admit this delta is surprising, and does not fit my experience in
-> slightly different scenarios with the plain UDP TX path.
+> I must admit that I'm surprised of the above delta; AFAIK replacing 1to1
+> spinlock with atomic should not impact performances measurably, as the
+> thread should still see the same contention, and will use the same
+> number of atomic operation on the bus.
 
-My take is that when the path is extremely hot, even the mathematics
-calculation could cause unexpected overhead. You can see the pps is
-now over 2,000,000. The reason why I say this is because I've done a
-few similar tests to verify this thought.
+Interesting point.
 
 >
-> > [1] - analysis of the validate_xmit_skb()
-> > 1. validate_xmit_unreadable_skb()
-> >    xsk doesn't initialize skb->unreadable, so the function will not fre=
-e
-> >    the skb.
-> > 2. validate_xmit_vlan()
-> >    xsk also doesn't initialize skb->vlan_all.
-> > 3. sk_validate_xmit_skb()
-> >    skb from xsk_build_skb() doesn't have either sk_validate_xmit_skb or
-> >    sk_state, so the skb will not be validated.
-> > 4. netif_needs_gso()
-> >    af_xdp doesn't support gso/tso.
-> > 5. skb_needs_linearize() && __skb_linearize()
-> >    skb doesn't have frag_list as always, so skb_has_frag_list() returns
-> >    false. In copy mode, skb can put more data in the frags[] that can b=
-e
-> >    found in xsk_build_skb_zerocopy().
 >
-> I'm not sure  parse this last sentence correctly, could you please
-> re-phrase?
+> > @@ -585,11 +574,9 @@ static void xsk_cq_submit_addr_locked(struct xsk_b=
+uff_pool *pool,
+> >       spin_unlock_irqrestore(&pool->cq_prod_lock, flags);
+> >  }
+> >
+> > -static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
+> > +static void xsk_cq_cached_prod_cancel(struct xsk_buff_pool *pool, u32 =
+n)
+> >  {
+> > -     spin_lock(&pool->cq_cached_prod_lock);
+> >       atomic_sub(n, &pool->cq->cached_prod_atomic);
 >
-> I read it as as the xsk xmit path could build skb with nr_frags > 0.
-> That in turn will need validation from
-> validate_xmit_skb()/skb_needs_linearize() depending on the egress device
-> (lack of NETIF_F_SG), regardless of any other offload required.
+> It looks like that the spinlock and the protected data are on different
+> structs.
+>
+> I wild guess/suspect the real gain comes from avoiding touching an
+> additional cacheline.
+> `struct xsk_queue` size is 48 bytes and such struct is allocated via
+> kmalloc. Adding up to 16 bytes there will not change the slub used and
+> thus the actual memory usage.
+>
+> I think that moving the cq_cached* spinlock(s) in xsk_queue should give
+> the same gain, with much less code churn. Could you please have a look
+> at such option?
 
-There are two paths where the allocation of frags happen:
-1) xsk_build_skb() -> xsk_build_skb_zerocopy() -> skb_fill_page_desc()
--> shinfo->frags[i]
-2) xsk_build_skb() -> skb_add_rx_frag() -> ... -> shinfo->frags[i]
-
-Neither of them touch skb->frag_list, which means frag_list is NULL.
-IIUC, there is no place where frag_list is used (which actually I
-tested). we can see skb_needs_linearize() needs to check
-skb_has_frag_list() first, so it will not proceed after seeing it
-return false.
-
-Does it make sense to you, I wonder?
+I just did some tests and observed the same result as you predicted.
+Thanks for the lesson!
 
 Thanks,
 Jason
