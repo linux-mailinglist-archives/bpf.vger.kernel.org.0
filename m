@@ -1,48 +1,82 @@
-Return-Path: <bpf+bounces-75651-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75652-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DFB7C8FBF0
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 18:44:56 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1B64C8FC20
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 18:47:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 569704E16D4
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 17:44:54 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 688EF34F07A
+	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 17:47:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 755132ED15F;
-	Thu, 27 Nov 2025 17:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D69552F39AD;
+	Thu, 27 Nov 2025 17:47:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oDEn/Y1w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F0jYaSac"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBE79221578;
-	Thu, 27 Nov 2025 17:44:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DCA82F291D
+	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 17:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764265490; cv=none; b=K14AXcDFij7UfclIRmynbadMC0dlszmveX0Y6WeAI+C7az/iuEKOrA4MhTn0keYOFMIH2dfRi32EbuIKEKtEBwi/8/sIrg+JzQ+h1inyGz84SzqLd0kN5fFGRJV9GubBPywr7YloSIMYF7/r6AB4Mc1vr604VpjnqQRXdBzcz3Q=
+	t=1764265667; cv=none; b=M2U8Gy2jyTLz+0wtFGxiovSsTZvKZXL6hxoL2KsxgP9bHrLOfURR/ulzq7YUsmEw02vNJFfHcInesMzfHrpFzu4MMMplEeD4/T03kvXdIJ7F9FvKN7kQ4UKthyXg8gv6Y0GrxN4ogtrIPSCYUfWJCxtH8/LHF5NaoSubwx3s+qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764265490; c=relaxed/simple;
-	bh=PCig0TlE1/7HjSUqQmxYUxonIx5qBBnBYKIG5+S8sDU=;
+	s=arc-20240116; t=1764265667; c=relaxed/simple;
+	bh=BRI81MYuXb7h8xyD8XLP96rM8Y/COrnSldLvFnFiQlg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fUqzPYuQJtvEwrqFSJKHyHuHxoyW7T9nyVsAuIGKAb5mCssRboyK0Qtl6LcniVrRLwy/Ft86TJUPlycFEvlZbAivOOnj8HShlY0uix2DmAu4pBnS+lz68QYjshPwgdVi9gVU2F08zsCdIowXwHuLnpt4Qlv5IfGmg0cOOIPF0BU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oDEn/Y1w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D967C4CEF8;
-	Thu, 27 Nov 2025 17:44:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764265489;
-	bh=PCig0TlE1/7HjSUqQmxYUxonIx5qBBnBYKIG5+S8sDU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=oDEn/Y1wIUJ4/sNue4uFg3GuYGWztvq08+Uc7x+aWXbt6FQP6zfJiTakoI2bw1duw
-	 2y1yD37g/uaAPZCsn3miAk45tlqUjCd3XB/JCjQbOhBn5k5kgC/j4QVvKEeOInfwK7
-	 kZZCwqUq2VLpjCTWBwjqJEluiw0VNn5gEWQ/vRBv+mNP3i3/KreU3N/tnNKjbKSC88
-	 NmQZNbLwaE8YLifr/LAtAAYhK44IwqyaOQKWPCSLxq/QnapS+EyMyTP3aClvPC1hI2
-	 d7xUFaqtXoF0Ol0yV23OeuJhUrEeEi1D18Ei1dxk8U9PKh2cTjU+ErG9oDpRG9JZX9
-	 m92V5W4TAVUnA==
-Message-ID: <e44f70bf-8f50-4a4b-97b8-eaf988aabced@kernel.org>
-Date: Thu, 27 Nov 2025 17:44:47 +0000
+	 In-Reply-To:Content-Type; b=ld+M8CuyrtPmr6A7fJHqbPn2s4qDSG1Yfw54MjZf5UVqhNZ3FTAi15h5vPKkRPfGbuMf8cCbqujGI4MSceLkmzywlEvglkb7eDpZVKMZB3kNTwPnpK4u0X4fly1NzE8b24uwRduHDhw5OqiwaTx31M5TUEjTh/jsVS21mX+HhFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F0jYaSac; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-297ef378069so11243295ad.3
+        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 09:47:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764265665; x=1764870465; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BRI81MYuXb7h8xyD8XLP96rM8Y/COrnSldLvFnFiQlg=;
+        b=F0jYaSacv9Wwc3reFEH83i4RcNwDcldXqFr4PIQ6HhaltnZhDhWw6Y5FmvrwukO/D0
+         1fUNLubZ/RC0I6Hfb/H5711FkrDBqxN2FMtpG0ay6VMMwlHFr5xCHqfUKL8u9Mj5JgVy
+         bv3HqvYvL2Me+M3XnpwkhPYlDnB0bialuZlBbyzs7Xcaor3j8xwbSLwzNShdoIXMW2Vj
+         pb//UTCjol9NfPB2PM0aV3dP7zvmyDu5YGKvyHI43S084ItDclo7Zs1b4pS5ERoDns8p
+         8boRltxeRXFg7zMEOqhdp+p9ahfxSivosGFbozvZ9rr3dHNqjZ+14vEcXfJhW7wKLm2Y
+         fd2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764265665; x=1764870465;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BRI81MYuXb7h8xyD8XLP96rM8Y/COrnSldLvFnFiQlg=;
+        b=cb05OfJYhsVQgw/DdMCyPBJnxiTiyS1X8ED1jKLlm3VlTir5MnJM2tkhQ7bsXroniw
+         2ycOJ36XhkU01dDcmi+iYcmUPL73hRRLhm6WvphsTR/rEtG4WSEYZ5jq6pBxxZ9C1meh
+         Gxut8e9nUCzDNyC+yorvC5ArRAVlOX7NasFwW9FmHC2rxsu0xdPWwuab6gl1iO+42gUW
+         RCyOrJvDOIoBsTNfwL/B2nDTpER7Hi3jTsFJTkUyaWRf0kUOaEt+BsSVub0s7zaLrAam
+         VZ1Cn5U3bMQmL8hw60Gqh9O+jEmmnxrmGiokhnSyUk2GSX65xyhCs+NbyjUqPUeKefE/
+         o+Gg==
+X-Forwarded-Encrypted: i=1; AJvYcCVzp1y5v7ylgsLrtZuCxM6Zd2/NohXagXj+zQ9zzyYiH/SlV7uoX9y1IEJySszLUlvwsn8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZbJZ+UbsHSCQAWt+VkQJUjIZbEb0/OjBMhGDcx0+lCndN9ERy
+	oph7uR3ZdXinhC5NStBhl+hRif97UL0fVRAqd0xdv50E2pGknNg5V7WW
+X-Gm-Gg: ASbGnctQFg9PWWaWLCZ2PpRinDkJp5t4QIKkJHOHzJn3qLgPNwzvHAOh9etSfTdsOBi
+	zdUa/a5Urg1PZeAIRLv6pCJuuL3h6Pndmu9UyLgcEaAkT98bxRbKD86PeBDvS8XW5Sg1+q1/Tkk
+	AI89MNq0nLmj95qzxElbIsuc4Cnj3D+0Lba8JvTWqshAeA9F0MusmN5LVo53f4Jig6PWFY2yQxY
+	+JjTW9oe/mRlxUu7xpdFxNa5BxM/h5zkDaBwQiR4chsQgD73npJQNcTp4NfObJww+UY5knhfRFy
+	3B15Y6n7AsytpgOWdQesZD5xdZd5R7hMLjr6D/KIwjA+g9Iauowd8ObftAZaYbDU7bPIRVYYxmf
+	ZOtLWD7i978wdC6VZhbAik6Gb/MPyA3qIfdB+wiUNeyHArLxK7ABU/WuBZ5MvEPA/ujWSlFYhLf
+	V7tglBCoSK0tXBYI6Owo8xP2iR8C57idkOJVixSM0Wtk6jZO3VTeOwyEoOtIYrcy5VhAU1oQ==
+X-Google-Smtp-Source: AGHT+IFQMns4p7mYuQDAf8KkttHI4Vx6NTBg4hreeujJapPT/8zqqg74Cep/q2QlnjNERCvMI0q1AQ==
+X-Received: by 2002:a17:903:2ecb:b0:26d:58d6:3fb2 with SMTP id d9443c01a7336-29baae4ee0cmr142565705ad.12.1764265665311;
+        Thu, 27 Nov 2025 09:47:45 -0800 (PST)
+Received: from ?IPV6:2001:ee0:4f4c:210:de47:e88:2ad3:8735? ([2001:ee0:4f4c:210:de47:e88:2ad3:8735])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29bce40a5ffsm23791225ad.18.2025.11.27.09.47.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Nov 2025 09:47:44 -0800 (PST)
+Message-ID: <a61dc7ee-d00b-41b4-b6fd-8a5152c3eae3@gmail.com>
+Date: Fri, 28 Nov 2025 00:47:36 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,127 +84,86 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] bpftool: Build failure due to opensslv.h
-To: Namhyung Kim <namhyung@kernel.org>, Alan Maguire <alan.maguire@oracle.com>
-Cc: KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
- linux-perf-users@vger.kernel.org
-References: <aP7uq6eVieG8v_v4@google.com>
- <2cb226f8-a67c-4bdb-8c59-507c99a46bab@kernel.org>
- <aP-5fUaroYE5xSnw@google.com>
- <d6a63399-361f-4f1c-845c-b69192bfc822@kernel.org>
- <7c86f05f-2ba3-4f63-8d63-49a3b3370360@oracle.com>
- <aR51ZSicusUssXuU@google.com>
- <fbd98bd0-a89c-4903-af06-fd1f2fb4ae16@kernel.org>
- <aSTDLrUqeZ3xwEhA@google.com>
- <2c94add3-3cb6-41e9-8031-619c996aaf18@oracle.com>
- <aSdH4ODr0qSrTqvp@google.com>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <aSdH4ODr0qSrTqvp@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH RFC] virtio_net: gate delayed refill scheduling
+To: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
+Cc: Paolo Abeni <pabeni@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
+ <eperezma@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev,
+ netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <40af2b73239850e7bf1a81abb71ee99f1b563b9c.1764226734.git.mst@redhat.com>
+Content-Language: en-US
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <40af2b73239850e7bf1a81abb71ee99f1b563b9c.1764226734.git.mst@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-2025-11-26 10:33 UTC-0800 ~ Namhyung Kim <namhyung@kernel.org>
-> Hello,
-> 
-> On Tue, Nov 25, 2025 at 09:03:38AM +0000, Alan Maguire wrote:
->> On 24/11/2025 20:42, Namhyung Kim wrote:
->>> On Thu, Nov 20, 2025 at 09:24:49AM +0000, Quentin Monnet wrote:
->>>> 2025-11-19 17:56 UTC-0800 ~ Namhyung Kim <namhyung@kernel.org>
->>>>> Hello,
->>>>>
->>>>> On Tue, Oct 28, 2025 at 10:20:22AM +0000, Alan Maguire wrote:
->>>>>> On 28/10/2025 09:05, Quentin Monnet wrote:
->>>>>>> 2025-10-27 11:27 UTC-0700 ~ Namhyung Kim <namhyung@kernel.org>
->>>>>>>> On Mon, Oct 27, 2025 at 11:41:01AM +0000, Quentin Monnet wrote:
->>>>>>>>> 2025-10-26 21:01 UTC-0700 ~ Namhyung Kim <namhyung@kernel.org>
->>>>>>>>>> Hello,
->>>>>>>>>>
->>>>>>>>>> I'm seeing a build failure like below in Fedora 40 and others.  I'm not
->>>>>>>>>> sure if it's reported already but it failed to build perf tools due to
->>>>>>>>>> errors in the bootstrap bpftool.
->>>>>>>>>>
->>>>>>>>>>     CC      /build/util/bpf_skel/.tmp/bootstrap/sign.o
->>>>>>>>>>   sign.c:16:10: fatal error: openssl/opensslv.h: No such file or directory
->>>>>>>>>>      16 | #include <openssl/opensslv.h>
->>>>>>>>>>         |          ^~~~~~~~~~~~~~~~~~~~
->>>>>>>>>>   compilation terminated.
->>>>>>>>>>   make[3]: *** [Makefile:256: /build/util/bpf_skel/.tmp/bootstrap/sign.o] Error 1
->>>>>>>>>>   make[3]: *** Waiting for unfinished jobs....
->>>>>>>>>>   make[2]: *** [Makefile.perf:1213: /build/util/bpf_skel/.tmp/bootstrap/bpftool] Error 2
->>>>>>>>>>   make[1]: *** [Makefile.perf:289: sub-make] Error 2
->>>>>>>>>>   make: *** [Makefile:76: all] Error 2
->>>>>>>>>>
->>>>>>>>>> I think it's from the recent signing change.  I'm not familiar with
->>>>>>>>>> openssl but I guess there's a proper feature check for it.  Is this a
->>>>>>>>>> known issue?
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> Hi Namhyung,
->>>>>>>>
->>>>>>>> Hello!
->>>>>>>>
->>>>>>>>>
->>>>>>>>> This looks related to the program signing change indeed, commit
->>>>>>>>> 40863f4d6ef2 ("bpftool: Add support for signing BPF programs")
->>>>>>>>> introduced a dependency on OpenSSL's development headers for bpftool.
->>>>>>>>> It's not gated behind a feature check. On Fedora, I think the headers
->>>>>>>>> come with openssl-devel, do you have this package installed?
->>>>>>>>
->>>>>>>> No I don't, but I guess it should be able to build on such systems.  Or
->>>>>>>> is it required for bpftool?  Anyway I feel like it should have a feature
->>>>>>>> check and appropriate error messages.
->>>>>>>>
->>>>>>>
->>>>>>> +Cc KP
->>>>>>>
->>>>>>> We usually have feature checks when optional features bring in new
->>>>>>> dependencies for bpftool, but we haven't discussed it this time. My
->>>>>>> understanding was that program signing is important enough that it
->>>>>>> should always be present in newer versions of bpftool, making OpenSSL
->>>>>>> one of the required dependencies going forward.
->>>>>>>
->>>>>>> We don't currently have feature checks to tell when required
->>>>>>> dependencies are missing for bpftool (it's just the build failing, in
->>>>>>> that case). I know perf does a great job at it, we could look into it
->>>>>>> for bpftool, too.
->>>>>>>
->>>>>>
->>>>>> One issue here is that some distros package openssl v3 such that the
->>>>>> #include files are in /usr/include/openssl3 and libraries in
->>>>>> /usr/lib64/openssl3 so that older versions can co-exist. Maybe we could
->>>>>> figure out a feature test that handles that too?
->>>>>
->>>>> What's the state of this?  Is the fix in the bpf tree now?
->>>>
->>>>
->>>> Hi Namhyung, Alan just submitted a v2 of his patch (targetting
->>>> bpf-next), see:
->>>>
->>>> https://lore.kernel.org/all/20251120084754.640405-2-alan.maguire@oracle.com/
->>>  
->>> Hello Quentin,
->>>
->>> I'm afraid it doesn't fix my issue.  It seems to fix another problem
->>> about the error API.  But I still see the build failure.
->>>
->>
->> This header file is delivered by openssl-devel (could be openssl-dev on
->> some distros). Looking at [1], it seems like that package has been a
->> requirement to build kernels from 4.3 on. Is it missing on your system,
->> installed to an unusual path like /usr/include/opensslv3, or is the
->> package perhaps missing some header files?
-> 
-> I think some of my test environments don't have openssl dev packages.
-> I didn't know it was required for kernel builds but it wasn't for perf.
-> If you guys require it for bpftool, maybe I can make perf disable BPF
-> support in case openssl is missing.
+I think the the requeue in refill_work is not the problem here. In
+virtnet_rx_pause[_all](), we use cancel_work_sync() which is safe to
+use "even if the work re-queues itself". AFAICS, cancel_work_sync()
+will disable work -> flush work -> enable again. So if the work requeue
+itself in flush work, the requeue will fail because the work is already
+disabled.
 
+I think what triggers the deadlock here is a bug in
+virtnet_rx_resume_all(). virtnet_rx_resume_all() calls to
+__virtnet_rx_resume() which calls napi_enable() and may schedule
+refill. It schedules the refill work right after napi_enable the first
+receive queue. The correct way must be napi_enable all receive queues
+before scheduling refill work.
 
-Hi, yes OpenSSL is a required dependency for bpftool going forward,
-sorry to hear it doesn't work well with your environment. I think
-there's already an option to turn off BPF skeletons in perf, I'd try
-running the Makefile with BUILD_BPF_SKEL=0 maybe.
+The fix is like this (there are quite duplicated code, I will clean up
+and send patches later if it is correct)
 
-Quentin
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 8e04adb57f52..892aa0805d1b 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -3482,20 +3482,25 @@ static void __virtnet_rx_resume(struct virtnet_info *vi,
+  static void virtnet_rx_resume_all(struct virtnet_info *vi)
+  {
+      int i;
++    bool schedule_refill = false;
++
++    for (i = 0; i < vi->max_queue_pairs; i++)
++        __virtnet_rx_resume(vi, &vi->rq[i], false);
+
+      enable_delayed_refill(vi);
+-    for (i = 0; i < vi->max_queue_pairs; i++) {
+-        if (i < vi->curr_queue_pairs)
+-            __virtnet_rx_resume(vi, &vi->rq[i], true);
+-        else
+-            __virtnet_rx_resume(vi, &vi->rq[i], false);
+-    }
++
++    for (i = 0; i < vi->curr_queue_pairs; i++)
++        if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
++            schedule_refill = true;
++
++    if (schedule_refill)
++        schedule_delayed_work(&vi->refill, 0);
+  }
+
+  static void virtnet_rx_resume(struct virtnet_info *vi, struct receive_queue *rq)
+  {
+-    enable_delayed_refill(vi);
+      __virtnet_rx_resume(vi, rq, true);
++    enable_delayed_refill(vi);
+  }
+
+  static int virtnet_rx_resize(struct virtnet_info *vi,
+
+I also move the enable_delayed_refill() after we __virtnet_rx_resume()
+to ensure no refill is scheduled before napi_enable().
+
+What do you think?
+
+Thanks,
+Quang Minh
+
 
