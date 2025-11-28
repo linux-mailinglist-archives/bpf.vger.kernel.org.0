@@ -1,183 +1,143 @@
-Return-Path: <bpf+bounces-75748-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75749-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFC50C934AA
-	for <lists+bpf@lfdr.de>; Sat, 29 Nov 2025 00:25:16 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE872C934AE
+	for <lists+bpf@lfdr.de>; Sat, 29 Nov 2025 00:28:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 937A84E17B0
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 23:25:15 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0BB824E1173
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 23:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B37A2EA177;
-	Fri, 28 Nov 2025 23:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F2E2F12D3;
+	Fri, 28 Nov 2025 23:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CmxK0Qow"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nJ5lsTot"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206572DC348
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 23:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B46232F12BD
+	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 23:28:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764372311; cv=none; b=AVg1kVzZTfBA6ptXLItmhiMeALkQSTUgUIwMqyBrGA1YhvsR8K00M+zoP6O2laWZ/wixvS/E+sD8q3DmZvSbe+x1+5AZeuNK/Wi4efnLyWgpUVEZkWce+mTDYSgX3HB9nuLuToyDJ8CCXxvqGbJoLfwxoOhWcW9XZD8zLax/vNQ=
+	t=1764372487; cv=none; b=Y0BDZm2uuYMdEPh4C3gtP8P+20jWD1BtZumvg8jG7WN08lg36P8DeYcb/NP6zIGB3QcRheGQMnd03M66ItvTY3jQxItr7hO8I2LIcfm/D+pRVCFh9oCrjcKyiGsY/LQuD1yc7yjYVRiyjgLyjDc9xib1voKqI8CXMsP7PrUyY4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764372311; c=relaxed/simple;
-	bh=V6IGT2D79HJuNztQLm7Fh9vM0R2kykJsTeyidD8Jqdg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fvZ3cTAURl/hwRDpszdDCvaNGFxeWj9U/xMD0Ow9k6Cy2XOpEa9pQttmoOQsM9khdqbiwHjR3B/NyA305NWqC+VR+0S7clV1cqtGE2IzhflSzwic5HNjNytq0SIfmC7o5rrCAkDB3BH/oG7MgOQHeZJ2P7YcHw2WBFhaf3jHaE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CmxK0Qow; arc=none smtp.client-ip=209.85.221.65
+	s=arc-20240116; t=1764372487; c=relaxed/simple;
+	bh=qce1bJWVy9XZMOthFy3QNZjqYtSGZsYTx+qE/SWDYMc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=R2XGUUWTy1Ekmx3+migkHzPdWA54MIwGQoS+oJ9QtcY8t/q+7/KrGPb3SDiHs8lDikkQK4oryUEp8iyK2zy56p8phV6HPyED84qZVIdWhNdS67C4B1U78Opl9PmBEFSer/MVif9wjgGhIPLQ888BFemsNUebqnEFxSkTKkxu88w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nJ5lsTot; arc=none smtp.client-ip=209.85.128.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-42b3108f41fso1496436f8f.3
-        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 15:25:09 -0800 (PST)
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-47774d3536dso18837915e9.0
+        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 15:28:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764372308; x=1764977108; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cJrkyB95D+qvaPknI/YBCWyPAeYVlnueBga5Src5qpY=;
-        b=CmxK0QowEpjdFHxBGVZm0hK6XUgROGAXt4W4mHT1BRGsGbpVEot4XLzLev5XlxKsNj
-         Xpkc6wspz9/snwtMVX7qNcpW+4cOOArFT+jiUfzDz8pbch8ZbWp0r71AUGbpjVgJYk/T
-         SjsSD76uGKAn/xlqcoXLkRxRm+zuxW1AWQ+HbrxyhtgsJsVFFZsiQt8Z+fjlIEryAiUj
-         2k+GmLPLnCFCMQfM3m9B5oySjSIJbANmSzESYrupWTUY/+WY0UFlMagBk6wDEH62OXRj
-         LkvrIK9A/2/7sS7V8e+ngBqDhHF14UYrN8djkzeOs8/aDlnWQ4iKD8rqyw1M543JZvRM
-         6z/Q==
+        d=gmail.com; s=20230601; t=1764372484; x=1764977284; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RQZRM9M44r8tSEveackOFEeZKH3D2GnTasb4Kq502SA=;
+        b=nJ5lsTottrULnX6QuA+bmzaQk9G/a9LHFr64J177wumB3CiUSUwgWzAr9mvHW9O6ey
+         NcZ6PUz2mgI5geXQHi65g2Ond2hDJ4IOf6BOVc1T5UkNT4li8kqeAPIXDSjLPBmai9cA
+         ucqB+6h2wcb6Tl81hEcbAF37cssxCTYaF/UXOJ1arF1uGebGGoLdRhHwGiQD8/JR0kw4
+         PObRth/y91hKqY7FWxS1b8DD4oMJMhOxhre/PvOnWx080vmdBgYpk3cYE+Oqic6/EVg7
+         6wT8kVJe4JdFssGq5uTHhyLaEDuOqrPeOezP+bVZnZTBBZef4N13/1TVnk7IRbNbzaFe
+         6+IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764372308; x=1764977108;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1764372484; x=1764977284;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cJrkyB95D+qvaPknI/YBCWyPAeYVlnueBga5Src5qpY=;
-        b=QrYpQ9/C7MR4e6mNQTKZv7W1EmCTQgXqcgi+p4hopMnkrs2r3W1wtdV4fD8d3s65RY
-         i9CH/qft+nhN7T0WLg1HnPu63dqYJ9Zo9wKCzIKXUC4Ai82TRLOg7lKzfnvAmrex6yNO
-         7KO+go0aT3n29eK9187zIush55cs3sTgP5L51LHehAbRZ6w2DkkSXQoetEylsPFME3xP
-         JButHmqCLLWPuHr3cHr+EiglVUEA9bi3ibSIPtgGhHVTlGe8YyE7fW0NZM0+4MdXGgOG
-         xjQp0d3mxfYRt4rIKh6uc9zEbnFS8/9HcegP26Hj3R0E79RcwGfXtzJupXex+i8eT/E3
-         uHWQ==
-X-Gm-Message-State: AOJu0YwWr8tCdQnDU4k115BP1yFU/f0bch/1iv6UblcUI33zY60HNa8x
-	jERxiOeDXHUI9QZimax4wylybCsVlmIIUlFnMH9VY+zjCZI6AbfeJw0Rp/jLOPXNBbCB8ilwyv5
-	OY/paNQeZy3Oadfw3AVLyiOUbbrhdbFHxVVyR
-X-Gm-Gg: ASbGncvCkxl9FAcPlcitDpHxWRV1FLsY+Hml4zskT29Mq+GvlIxEdxqVLr3qhRhoEEs
-	UgAgtlCLw9JNz7Ckb2JNld7kwRGX0BmznlBuc0jkYPJjUqMQtJsgOg8sIHiSKKBHQgzt3xoJ6TP
-	D7B6QeCOjL/Q2CZUw2d2uWoo3nRQ5vOBN5TWUR4sgXC/zpvIz7BzRzVCtIhf/i8sGhOAvHYjlFe
-	4GCUVfmNuaSMUC8RAVZeh/UNbJ/lNuFzsUVIvEPsHOfJmhvUVzd0JaEf5JBeZ/9+W5T9h/CTln1
-	Kj+5yZCLczyTqtj/FCl+24M/8oxz
-X-Google-Smtp-Source: AGHT+IGSWgjLfyyoBPKnvBZ4cYA+AXi9JdMHEu97/oZ+5CNm5cX1VXo8cORmp10VEg9WGjk6V/n+DyQKFcVtQLTqGAY=
-X-Received: by 2002:a05:6000:4022:b0:42b:3c8d:1932 with SMTP id
- ffacd0b85a97d-42cc1cbd74bmr30118288f8f.23.1764372307878; Fri, 28 Nov 2025
- 15:25:07 -0800 (PST)
+        bh=RQZRM9M44r8tSEveackOFEeZKH3D2GnTasb4Kq502SA=;
+        b=Vwq9TLvJqpbgqRG+GKWapIYt4Zu726I2ZB2Ed+C5k8TFcjxLxwUaMF3IGS0xNrnDmR
+         wJAgIk65aMTw7bqGLEnJivhTeF7WTislMv/Z+7Qq/nB8hC9f9QfxDe1XFno3/56+bpIg
+         zun4x0xxIn/0JPE4NrvkcXInf/pO/vFiHTp58tewsRZUSN/C00VeK6LzIWOLcCN7DSCf
+         4a6GAIQqgr43C0KmIf5QSFE933ogHnEu016ajhVmbXct2SpyOt36tJVHiHokVjoSWRLT
+         vbIa/28LmqFsI8BtF9hfypEhNfenvCQiScolc0yMqrV16pGX9pmNBgNBwcOKWSsoiPvq
+         EhBw==
+X-Gm-Message-State: AOJu0YyOfgV8JtMwuuG1Xr5DrMD8Im5qOVCdzpWQALtmRHXeUqRW/AbM
+	4QF4jR4y7P+R1TOJmX4V4RGyuxkIuREOViTjjHS+Pc6RWN7Lz0851h06PDO9layp
+X-Gm-Gg: ASbGncuvDgE8pQH0iiE8/+J5NxCv6da3JdbCFMP59JPWTU6mwnvlYLRfyS/CdQU8KYN
+	lrBZnPp0zBiHgP7gIKlxa6jh1Juc9aJwYNMLVcGM3NlZx6ePgjnEHxuhTf4Zny0VICGi1xbUauY
+	s+WIIs/UAe5flTDVp4mJH4y+rr0Upe6YEqCPhns6Yq1thmxtvLq/dBBCj5XB5Un8U7cfhSA74K4
+	Gij86x6hJNf8BjLY3e7srjgT4sw3lpC7iZ9Tbiqc2vUdY+3iR4kYnnIt8E/pQgJzXdfG5wToVqj
+	V5DhRF3392rk5ibOE+B5aBkQ++YEUfSHnbCPinCSSyS3utuaZi4dRDQdo/twzH928nJdaYnn1AH
+	wsPxUaZ6p0CACsT34uwhWs+uQNgfV7mAp1krMHPsahBq3yGzPYuDq+Mzl7Fi0kU0JUEQ7IQy+NV
+	YccQbglC40HRPskKlIthqZQtFFBhYKCU5qTezvtcrLyWoAADPpY3mrYeZOlb3R/FmZMgEgvqYVU
+	18=
+X-Google-Smtp-Source: AGHT+IFIK+q+bQMK4R79eUpbg2bkAjEpNkdIyrC7xcHKE0X/WM1a4NmUbPV0AZVfScPWEywgl3NtTw==
+X-Received: by 2002:a05:600c:3549:b0:477:9fa0:7495 with SMTP id 5b1f17b1804b1-477c053069fmr290939735e9.14.1764372483681;
+        Fri, 28 Nov 2025 15:28:03 -0800 (PST)
+Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-479111565a1sm107232365e9.5.2025.11.28.15.28.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Nov 2025 15:28:03 -0800 (PST)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>,
+	Jelle van der Beek <jelle@superluminal.eu>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v2 0/6] Limited queueing in NMI for rqspinlock
+Date: Fri, 28 Nov 2025 23:27:56 +0000
+Message-ID: <20251128232802.1031906-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251128231543.890923-1-memxor@gmail.com> <20251128231543.890923-6-memxor@gmail.com>
-In-Reply-To: <20251128231543.890923-6-memxor@gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Sat, 29 Nov 2025 00:24:31 +0100
-X-Gm-Features: AWmQ_bmkH2Vy8iaayPng8vIumg87mU-LeETVtqgjy16pshJMU2sZ4Lt8YUmwEOw
-Message-ID: <CAP01T7667znOM0DB3tv01QA1wFMiqW4PRN6foUGo3hvoDhbtJA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 5/6] rqspinlock: Precede non-head waiter
- queueing with AA check
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>, 
-	Jelle van der Beek <jelle@superluminal.eu>, kkd@meta.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2044; i=memxor@gmail.com; h=from:subject; bh=qce1bJWVy9XZMOthFy3QNZjqYtSGZsYTx+qE/SWDYMc=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBpKi/wnfGR5RFZ5pZVVsJ8R4Cl7MB9cLBLWk8qc fV1oeolJ36JAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaSov8AAKCRBM4MiGSL8R yhq+EACxG6O6kYAbnEOiohC/e3q5WzsrPTBagFuOddiRwKn1XietSGVUg9k3NU5QPzaNkjK9dSy K+sKi0HFoLgY11439TNJK46p3ou2hN0QTnPyewezMqYNhhhTjkCeIQlMdbMHho4n9z4zU+agF/c no/txQImBDtu38Qm8K4LtnEYcTDFrS/33j38qnmiWLMYWcrWTryaZqzMekQhI6lknTblnE6Y6JL kSpSaqSht1ju2yjaVEGVz70wjK74vKBfyK8OJJgCZgzYmsOeWPBaOLylzHDiut3RVnPzPgqYU0n GX+s9u6Jh3JPAz5HGs8MR7uEigXcl5dFpYUHcc7YLVRWBtmaRjGr0K4Z2BZHfJSwm+7AP0qB1UK JYu7OBcWT2bDZlXinLZuWQIzAkr8X6Gd4bos7FZPKxjooldL/f24TurN3btC9SYy4L5aJf54sl7 9+2Ax1c/x3VJHRU59knaDcTjR5EDVUaMkfGYzIe3MsXLWacXLanTY5hw9ViOE7TfASne4oMCMFs nEHU38VLCuYH5Txo79TrWCtImcBjBgSSZBAlCK1eMsEyLz/0h4O/Dsya2WcUCWueM9eNl68Zn5r OeSEN3sbeDXwjOXcLNoIJ8Sf1OzZ2NKYZIM8JYk+Z0FhzcsKrO0iAyuKVgXaA5uhaMSyqFltECD X2dR6kytAjW5l0g==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 
-On Sat, 29 Nov 2025 at 00:15, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->
-> While previous commits sufficiently address the deadlocks, there are
-> still scenarios where queueing of waiters in NMIs can exacerbate the
-> possibility of timeouts.
->
-> Consider the case below:
->
-> CPU 0
-> <NMI>
-> res_spin_lock(A) -> becomes non-head waiter
-> </NMI>
-> lock owner in CS or pending waiter spinning
->
-> CPU 1
-> res_spin_lock(A) -> head waiter spinning on owner/pending bits
->
-> In such a scenario, the non-head waiter in NMI on CPU 0 will not poll
-> for deadlocks or timeout since it will simply queue behind previous
-> waiter (head on CPU 1), and also not enter the trylock fallback since
-> no rqspinlock queue waiter is active on CPU 0. In such a scenario, the
-> transaction initiated by the head waiter on CPU 1 will timeout,
-> signalling the NMI and ending the cyclic dependency, but it will cost
-> 250 ms of time.
->
-> Instead, the NMI on CPU 0 could simply check for the presence of an AA
-> deadlock and only proceed with queueing on success. Add such a check
-> right before any form of queueing is initiated.
->
-> The reason the AA deadlock check is not used in conjunction with
-> in_nmi() is that a similar case could occur due to a reentrant path
-> in the owner's critical section, and unconditionally checking for AA
-> before entering the queueing path avoids expensive timeouts. Non-NMI
-> reentrancy only happens at controlled points in the slow path (with
-> specific tracepoints which do not impede the forward progress of a
-> waiter loop), or in the owner CS, while NMIs can land anywhere.
->
-> While this check is only needed for non-head waiter queueing, checking
-> whether we are head or not is racy without xchg_tail, and after that
-> point, we are already queued, hence for simplicity we must invoke the
-> check unconditionally.
->
-> Note that a more contrived case could still be constructed by using two
-> locks, and interrupting the progress of the respective owners by
-> non-head waiters of the other lock, in an ABBA fashion, which would
-> still not be covered by the current set of checks and conditions. It
-> would still lead to a timeout though, and not a deadlock. An ABBA check
-> cannot happen optimistically before the queueing, since it can be racy,
-> and needs to be happen continuously during the waiting period, which
-> would then require an unlinking step for queued NMI/reentrant waiters.
-> This is beyond the scope of this patch.
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  kernel/bpf/rqspinlock.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/kernel/bpf/rqspinlock.c b/kernel/bpf/rqspinlock.c
-> index e35b06fcf9ee..7d0a3fe96165 100644
-> --- a/kernel/bpf/rqspinlock.c
-> +++ b/kernel/bpf/rqspinlock.c
-> @@ -437,6 +437,17 @@ int __lockfunc resilient_queued_spin_lock_slowpath(rqspinlock_t *lock, u32 val)
->          * queuing.
->          */
->  queue:
-> +       /*
-> +        * Do not queue if we're a waiter and someone is attempting this lock on
-> +        * the same CPU. In case of NMIs, this prevents long timeouts where we
-> +        * interrupt the pending waiter, and the owner, that will eventually
-> +        * signal the head of our queue, both of which are logically but not
-> +        * physically part of the queue, hence outside the scope of the idx > 0
-> +        * check above for the trylock fallback.
-> +        */
-> +       if (check_deadlock_AA(lock))
-> +               return -EDEADLK;
+Ritesh reported that he was frequently seeing timeouts in cases which
+should have been covered by the AA heuristics. This led to the discovery
+of multiple gaps in the current code that could lead to timeouts when
+AA heuristics could work to prevent them. More details and investigation
+is available in the original threads. [0][1]
 
-Sigh... I forgot to regenerate patches after rolling in the hunk to fix this.
-It should be:
-ret = -EDEADLK;
-goto err_release_entry;
+This set restores the ability for NMI waiters to queue in the slow path,
+and reduces the cases where they would attempt to trylock. However, such
+queueing must not happen when interrupting waiters which the NMI itself
+depends upon for forward progress; in those cases the trylock fallback
+remains, but with a single attempt to avoid aimless attempts to acquire
+the lock.
 
-Resending.
+It also closes a possible window in the lock fast path and the unlock
+path where NMIs landing between cmpxchg and entry creation, or entry
+deletion and unlock would miss the detection of an AA scenario and end
+up timing out.
+
+This virtually eliminates all the cases where existing heuristics can
+prevent timeouts and quickly recover from a deadlock. More details are
+available in the commit logs for each patch.
+
+  [0]: https://lore.kernel.org/bpf/CAH6OuBTjG+N=+GGwcpOUbeDN563oz4iVcU3rbse68egp9wj9_A@mail.gmail.com
+  [1]: https://lore.kernel.org/bpf/20251125203253.3287019-1-memxor@gmail.com
+
+Kumar Kartikeya Dwivedi (6):
+  rqspinlock: Enclose lock/unlock within lock entry acquisitions
+  rqspinlock: Perform AA checks immediately
+  rqspinlock: Use trylock fallback when per-CPU rqnode is busy
+  rqspinlock: Disable spinning for trylock fallback
+  rqspinlock: Precede non-head waiter queueing with AA check
+  selftests/bpf: Add success stats to rqspinlock stress test
+
+ include/asm-generic/rqspinlock.h              | 60 ++++++++--------
+ kernel/bpf/rqspinlock.c                       | 69 +++++++++----------
+ .../bpf/test_kmods/bpf_test_rqspinlock.c      | 55 +++++++++++----
+ 3 files changed, 108 insertions(+), 76 deletions(-)
 
 
-> +
->         lockevent_inc(lock_slowpath);
->         /* Deadlock detection entry already held after failing fast path. */
->         node = this_cpu_ptr(&rqnodes[0].mcs);
-> --
-> 2.51.0
->
+base-commit: 688b745401ab16e2e1a3b504863f0a45fd345638
+-- 
+2.51.0
+
 
