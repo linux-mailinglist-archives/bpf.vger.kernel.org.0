@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-75722-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75723-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86169C9235C
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 15:01:44 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5009FC92350
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 15:01:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E978E3AD6AC
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 14:00:50 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 35C3D4E4540
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 14:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B3232F74A;
-	Fri, 28 Nov 2025 14:00:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F9B32F760;
+	Fri, 28 Nov 2025 14:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UZbypL4L";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="V7F7arhp"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CFx9ZZnj";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CFx9ZZnj"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DA6F32ED40
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 14:00:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15EA232AACE
+	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 14:00:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764338417; cv=none; b=DnGIoFusLBROXKli7MB57JXuqsQChrPlVzx1qnaOScJeyOD4aL2mMybwoRhHK/WJ5tzoT4jiIe9YwdZmLqugJAdSsCojrGuCVuF9iaTieYm/7kRfi5KpgKcgqiNUlStk+aBtJPSmqvlF9xGEXpigzSY2yfH/bD6j4zbE4EHwSdU=
+	t=1764338428; cv=none; b=FLg1fdtsROi1/dp5HUZ54Bd4B23MRLaRbIMSagpwjkOcQY5FdUDAGyLBB9F9Ad2O/kNfh08gwZu7TpJWosTM/ArV/mQzAcCyDtrcz7wHjpuc1W6boHBA8JWzCFJOgtZpCveTu0C7imdff3wv6Y3MqRvcdrlwRhR8MkZGAI4j0w4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764338417; c=relaxed/simple;
-	bh=F5Pds+N66g7N4Rp9cXgOCPs4SkAfIpn1OJikkLIjusw=;
+	s=arc-20240116; t=1764338428; c=relaxed/simple;
+	bh=TQ44JRCm9Z7EU5hhvTiV5kNg21I4fO8mMdgiQbpQehI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ODZdRgiinb8PtH0GTcNB029zyLBi9uv6bLeu9mxYiJqSdi4Pin+SFXiBc3Go0ZBo4gHLg/IP5H8Pt02li+dnS4/lGqRhCOzsgyCcaRB0znNkf8p5OJyzqeH6xwCeMpT9/v38txQnAuqExCQ/FHK8xNVvdA85gNITmhGXMLODGlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UZbypL4L; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=V7F7arhp; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=Hh6FqqrRd5FHS9qcsxg2j9IuyYd4ZoxhBeYhJjO2mrku9d773VIi2Cn0c9YvnzVwFK2Jb1zwk7SWbwFwaIFmhY5iIytalc9+t96yk0au2QyjDV6vyP7cTxHj3YXwWiwLzofc4cZiJH0uQLFjdxOnSu5r8tJXlIms79cs9bfDZh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CFx9ZZnj; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CFx9ZZnj; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from pathway.suse.cz (unknown [IPv6:2a07:de40:b2bf:1b::12bd])
-	by smtp-out2.suse.de (Postfix) with ESMTP id 2DF4C5BD55;
-	Fri, 28 Nov 2025 14:00:12 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTP id 2571E5BE39;
+	Fri, 28 Nov 2025 14:00:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764338413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1764338424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DXn+Ao4LsiEC7RPdi4UpjDJUsDXpi2W8dXd3l42r+bc=;
-	b=UZbypL4LYIp4k6eMcqMe4er9+UlMHErwQFHcUIFqhBXuUgenTzY4x4P1alvvrVkIdbumSm
-	YsXYmUbFYYsVq6o2sjozDkPlgr3m7sSsIj/ouDdyEH4zyPd1GWeAy2NT71CzrbgTuLDRQS
-	XfjDZJh16qGq92Tl7Hj9qz1FwAOUTxY=
+	bh=33dceX869Yxv+fMp/noNAMlIUoMuEUQYg/YIhCE5Vhs=;
+	b=CFx9ZZnjDUv+TRREegkr3iCHrRHPxBpja+l2HlevKMore3/oOCwMMInxlArFI2vxVKteh+
+	EfyP5BJzZb/JTAt2dFkCgw2jeR6rReurovP2y+qomhIjIdWS51Pw0b1jYuA+d2lMHNQjBT
+	6P5ekh98BgoLohs0fpzKPRyPvTTmjAY=
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=V7F7arhp
+	dkim=pass header.d=suse.com header.s=susede1 header.b=CFx9ZZnj
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764338412; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1764338424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DXn+Ao4LsiEC7RPdi4UpjDJUsDXpi2W8dXd3l42r+bc=;
-	b=V7F7arhp2cFCDaR3InsTvE0sul7AtKzLHzsU4LN9ZWLYsYJ5UI9lnEVqpKzxZ00UgRXJYP
-	8PGZC4jxarETqUVyhtMIoEzpx7uE9oCpmOWm27n/KTePaLrrYOZ31YncbAWfZLbCUYqVCo
-	7vZ9IP3WAfHQ9qDstBC7sNTAxDbrCT0=
+	bh=33dceX869Yxv+fMp/noNAMlIUoMuEUQYg/YIhCE5Vhs=;
+	b=CFx9ZZnjDUv+TRREegkr3iCHrRHPxBpja+l2HlevKMore3/oOCwMMInxlArFI2vxVKteh+
+	EfyP5BJzZb/JTAt2dFkCgw2jeR6rReurovP2y+qomhIjIdWS51Pw0b1jYuA+d2lMHNQjBT
+	6P5ekh98BgoLohs0fpzKPRyPvTTmjAY=
 From: Petr Mladek <pmladek@suse.com>
 To: Petr Pavlu <petr.pavlu@suse.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -74,9 +74,9 @@ Cc: Aaron Tomlin <atomlin@atomlin.com>,
 	linux-modules@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	Petr Mladek <pmladek@suse.com>
-Subject: [PATCH v3 4/7] kallsyms: Cleanup code for appending the module buildid
-Date: Fri, 28 Nov 2025 14:59:17 +0100
-Message-ID: <20251128135920.217303-5-pmladek@suse.com>
+Subject: [PATCH v3 5/7] kallsyms/bpf: Rename __bpf_address_lookup() to bpf_address_lookup()
+Date: Fri, 28 Nov 2025 14:59:18 +0100
+Message-ID: <20251128135920.217303-6-pmladek@suse.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20251128135920.217303-1-pmladek@suse.com>
 References: <20251128135920.217303-1-pmladek@suse.com>
@@ -87,7 +87,7 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [15.12 / 50.00];
+X-Spamd-Result: default: False [15.11 / 50.00];
 	SPAM_FLAG(5.00)[];
 	NEURAL_SPAM_LONG(3.50)[1.000];
 	BAYES_HAM(-3.00)[100.00%];
@@ -101,7 +101,7 @@ X-Spamd-Result: default: False [15.12 / 50.00];
 	HFILTER_HELO_NORES_A_OR_MX(0.30)[pathway.suse.cz];
 	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MIME_GOOD(-0.10)[text/plain];
-	NEURAL_HAM_SHORT(-0.07)[-0.366];
+	NEURAL_HAM_SHORT(-0.08)[-0.394];
 	MX_GOOD(-0.01)[];
 	ARC_NA(0.00)[];
 	DIRECT_TO_MX(0.00)[git-send-email 2.52.0];
@@ -123,90 +123,159 @@ X-Spamd-Result: default: False [15.12 / 50.00];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com]
 X-Spamd-Bar: +++++++++++++++
-X-Rspamd-Queue-Id: 2DF4C5BD55
+X-Rspamd-Queue-Id: 2571E5BE39
 X-Spam-Flag: YES
-X-Spam-Score: 15.12
+X-Spam-Score: 15.11
 X-Spam-Level: ***************
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: add header
 X-Spam: Yes
 
-Put the code for appending the optional "buildid" into a helper
-function, It makes __sprint_symbol() better readable.
+bpf_address_lookup() has been used only in kallsyms_lookup_buildid().
+It was supposed to set @modname and @modbuildid when the symbol was
+in a module.
 
-Also print a warning when the "modname" is set and the "buildid" isn't.
-It might catch a situation when some lookup function in
-kallsyms_lookup_buildid() does not handle the "buildid".
+But it always just cleared @modname because BPF symbols were never in
+a module. And it did not clear @modbuildid because the pointer was
+not passed.
 
-Use pr_*_once() to avoid an infinite recursion when the function
-is called from printk(). The recursion is rather theoretical but
-better be on the safe side.
+The wrapper is no longer needed. Both @modname and @modbuildid
+are now always initialized to NULL in kallsyms_lookup_buildid().
 
+Remove the wrapper and rename __bpf_address_lookup() to
+bpf_address_lookup() because this variant is used everywhere.
+
+Fixes: 9294523e3768 ("module: add printk formats to add module build ID to stacktraces")
+Acked-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/kallsyms.c | 42 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 33 insertions(+), 9 deletions(-)
+ arch/arm64/net/bpf_jit_comp.c   |  2 +-
+ arch/powerpc/net/bpf_jit_comp.c |  2 +-
+ include/linux/filter.h          | 26 ++++----------------------
+ kernel/bpf/core.c               |  4 ++--
+ kernel/kallsyms.c               |  5 ++---
+ 5 files changed, 10 insertions(+), 29 deletions(-)
 
-diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index ffb64eaa0505..f25b122397ce 100644
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -432,6 +432,37 @@ int lookup_symbol_name(unsigned long addr, char *symname)
- 	return lookup_module_symbol_name(addr, symname);
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 0c9a50a1e73e..17e6a041ea4d 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -2939,7 +2939,7 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+ 	u64 plt_target = 0ULL;
+ 	bool poking_bpf_entry;
+ 
+-	if (!__bpf_address_lookup((unsigned long)ip, &size, &offset, namebuf))
++	if (!bpf_address_lookup((unsigned long)ip, &size, &offset, namebuf))
+ 		/* Only poking bpf text is supported. Since kernel function
+ 		 * entry is set up by ftrace, we reply on ftrace to poke kernel
+ 		 * functions.
+diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+index 88ad5ba7b87f..21f7f26a5e2f 100644
+--- a/arch/powerpc/net/bpf_jit_comp.c
++++ b/arch/powerpc/net/bpf_jit_comp.c
+@@ -1122,7 +1122,7 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+ 	branch_flags = poke_type == BPF_MOD_CALL ? BRANCH_SET_LINK : 0;
+ 
+ 	/* We currently only support poking bpf programs */
+-	if (!__bpf_address_lookup(bpf_func, &size, &offset, name)) {
++	if (!bpf_address_lookup(bpf_func, &size, &offset, name)) {
+ 		pr_err("%s (0x%lx): kernel/modules are not supported\n", __func__, bpf_func);
+ 		return -EOPNOTSUPP;
+ 	}
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 973233b82dc1..0189f7488044 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1373,24 +1373,13 @@ static inline bool bpf_jit_kallsyms_enabled(void)
+ 	return false;
  }
  
-+#ifdef CONFIG_STACKTRACE_BUILD_ID
-+
-+static int append_buildid(char *buffer,  const char *modname,
-+			  const unsigned char *buildid)
-+{
-+	if (!modname)
-+		return 0;
-+
-+	if (!buildid) {
-+		pr_warn_once("Undefined buildid for the module %s\n", modname);
-+		return 0;
-+	}
-+
-+	/* build ID should match length of sprintf */
-+#ifdef CONFIG_MODULES
-+	static_assert(sizeof(typeof_member(struct module, build_id)) == 20);
-+#endif
-+
-+	return sprintf(buffer, " %20phN", buildid);
-+}
-+
-+#else /* CONFIG_STACKTRACE_BUILD_ID */
-+
-+static int append_buildid(char *buffer,   const char *modname,
-+			  const unsigned char *buildid)
-+{
-+	return 0;
-+}
-+
-+#endif /* CONFIG_STACKTRACE_BUILD_ID */
-+
- /* Look up a kernel symbol and return it in a text buffer. */
- static int __sprint_symbol(char *buffer, unsigned long address,
- 			   int symbol_offset, int add_offset, int add_buildid)
-@@ -454,15 +485,8 @@ static int __sprint_symbol(char *buffer, unsigned long address,
+-int __bpf_address_lookup(unsigned long addr, unsigned long *size,
+-				 unsigned long *off, char *sym);
++int bpf_address_lookup(unsigned long addr, unsigned long *size,
++		       unsigned long *off, char *sym);
+ bool is_bpf_text_address(unsigned long addr);
+ int bpf_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
+ 		    char *sym);
+ struct bpf_prog *bpf_prog_ksym_find(unsigned long addr);
  
- 	if (modname) {
- 		len += sprintf(buffer + len, " [%s", modname);
--#if IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID)
--		if (add_buildid && buildid) {
--			/* build ID should match length of sprintf */
--#if IS_ENABLED(CONFIG_MODULES)
--			static_assert(sizeof(typeof_member(struct module, build_id)) == 20);
--#endif
--			len += sprintf(buffer + len, " %20phN", buildid);
--		}
--#endif
-+		if (add_buildid)
-+			len += append_buildid(buffer + len, modname, buildid);
- 		len += sprintf(buffer + len, "]");
+-static inline int
+-bpf_address_lookup(unsigned long addr, unsigned long *size,
+-		   unsigned long *off, char **modname, char *sym)
+-{
+-	int ret = __bpf_address_lookup(addr, size, off, sym);
+-
+-	if (ret && modname)
+-		*modname = NULL;
+-	return ret;
+-}
+-
+ void bpf_prog_kallsyms_add(struct bpf_prog *fp);
+ void bpf_prog_kallsyms_del(struct bpf_prog *fp);
+ 
+@@ -1429,8 +1418,8 @@ static inline bool bpf_jit_kallsyms_enabled(void)
+ }
+ 
+ static inline int
+-__bpf_address_lookup(unsigned long addr, unsigned long *size,
+-		     unsigned long *off, char *sym)
++bpf_address_lookup(unsigned long addr, unsigned long *size,
++		   unsigned long *off, char *sym)
+ {
+ 	return 0;
+ }
+@@ -1451,13 +1440,6 @@ static inline struct bpf_prog *bpf_prog_ksym_find(unsigned long addr)
+ 	return NULL;
+ }
+ 
+-static inline int
+-bpf_address_lookup(unsigned long addr, unsigned long *size,
+-		   unsigned long *off, char **modname, char *sym)
+-{
+-	return 0;
+-}
+-
+ static inline void bpf_prog_kallsyms_add(struct bpf_prog *fp)
+ {
+ }
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index d595fe512498..c2278f392e93 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -713,8 +713,8 @@ static struct bpf_ksym *bpf_ksym_find(unsigned long addr)
+ 	return n ? container_of(n, struct bpf_ksym, tnode) : NULL;
+ }
+ 
+-int __bpf_address_lookup(unsigned long addr, unsigned long *size,
+-				 unsigned long *off, char *sym)
++int bpf_address_lookup(unsigned long addr, unsigned long *size,
++		       unsigned long *off, char *sym)
+ {
+ 	struct bpf_ksym *ksym;
+ 	int ret = 0;
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index f25b122397ce..97b92fc8871d 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -342,7 +342,7 @@ int kallsyms_lookup_size_offset(unsigned long addr, unsigned long *symbolsize,
+ 		return 1;
  	}
+ 	return !!module_address_lookup(addr, symbolsize, offset, NULL, NULL, namebuf) ||
+-	       !!__bpf_address_lookup(addr, symbolsize, offset, namebuf);
++	       !!bpf_address_lookup(addr, symbolsize, offset, namebuf);
+ }
  
+ static int kallsyms_lookup_buildid(unsigned long addr,
+@@ -383,8 +383,7 @@ static int kallsyms_lookup_buildid(unsigned long addr,
+ 	ret = module_address_lookup(addr, symbolsize, offset,
+ 				    modname, modbuildid, namebuf);
+ 	if (!ret)
+-		ret = bpf_address_lookup(addr, symbolsize,
+-					 offset, modname, namebuf);
++		ret = bpf_address_lookup(addr, symbolsize, offset, namebuf);
+ 
+ 	if (!ret)
+ 		ret = ftrace_mod_address_lookup(addr, symbolsize,
 -- 
 2.52.0
 
