@@ -1,162 +1,109 @@
-Return-Path: <bpf+bounces-75728-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75729-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F166C92604
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 16:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90DF0C927F5
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 17:05:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A41C3AB4D1
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 15:00:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 449933A66DC
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 16:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA19C32D43C;
-	Fri, 28 Nov 2025 14:59:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03EAF288522;
+	Fri, 28 Nov 2025 16:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y6kVHH+T"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="NFV3bS0O"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com [44.246.68.102])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81794288CA6
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 14:59:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 041D2280318;
+	Fri, 28 Nov 2025 16:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.246.68.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764341995; cv=none; b=ipz9lXA0lJ1R6i0NgRdEyfoR9yN6lBsy1DwxFWRfAsyHfQygIGTRECswWOtZGe5vUG4pcUEnoLWq3o4gBhIeSyIrV/mr6RdzZgxjq0wb4f7ck8PjYGAJR3rUBe6plzc/+7QyUHXLUqzmdk8eiDwcGtoP5wQOE2D9VOSLx/8l2GI=
+	t=1764345923; cv=none; b=Vum1TBM1GcLIGLHPZaXFpo3nUK/EhlPvkhS+Tk9nI4vSrkduzPJ7MPVn/QuLaamAV7Exs10BiuvTMbMNncNV99GO6m7W3sviof8Zn1ktgIA5Y7DIcfYs6YhU2tflQvceFbJLRsv403jYazGLMd+CODsQxarl+W72jFyZDlbDRoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764341995; c=relaxed/simple;
-	bh=8dvxLkpsdwPbPVmb69GWY8hAREa1JflLzaFv8IPaxk0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YVgm5h9FLO7xZQAdRBbetOhYWHwQSeW1XDVZ7TdyMMAivkGmwIezR6vA4SgIM1YVTzcxUs51NhlgiQ5OEddkBOczJwheQbUJUejvbo1zOoB7wUFaOlInwHGP+UpsYVTl5zhUtb1F+hsa33MDzSv7HBFu9uiK4ZlDrXsiJXBPZJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y6kVHH+T; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-37b996f6b28so20574461fa.3
-        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 06:59:52 -0800 (PST)
+	s=arc-20240116; t=1764345923; c=relaxed/simple;
+	bh=WUSfGOXek6kXO/ahzPhHX8X+e5SuNLbaeNdNUWkfxIA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tTY8VSV8hJlDvJiowc/WRSKKWhKyXlkCjgfZSljMXTW1BCzLIltce7mEKmOHEzWyWCUq6IgHGmYLKi8o6LxeeSOxR63182f9apIrpptv6Dw6pIrlLBRyAOmrsCAWn3pKms1dLIB9mUTM1YdbzHVCZoTZlLad/AwpgMdOmifYDuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=NFV3bS0O; arc=none smtp.client-ip=44.246.68.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764341990; x=1764946790; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8LFGDQeGag1fC9xZVRk+2PAZum/iU8RBKWZ4jLuZ+Nk=;
-        b=Y6kVHH+TfGr8WVK+zRd1LPXoFRqJUO0NPKMsNF/S2VwekYg6BqwRErrUCahwpbpTNz
-         ri2Gzl4Juwm/78Rs7dwfi9ZgNDN/ts6tHXojRW49adtpnI1T6JKk7r6CNyvYGr2/oOMY
-         p3wTH7jtdfaIxXX17so7260SDtQvWy69o/tcZF+sH/30yq759C75NLMpHcjgGMToB9bX
-         vUPudmtzJGSaohUEkZtfRlj2I+QbwHIlfNiEWUcpPphZ085IYPNSQwkmpikHMIk0jcDV
-         V7ttBhWn9tniO/O+w1Yvk/cEcoja3431QKy4YSyMXpENrzuwnEavx9260c9T5pB6qJFn
-         0jFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764341990; x=1764946790;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=8LFGDQeGag1fC9xZVRk+2PAZum/iU8RBKWZ4jLuZ+Nk=;
-        b=juHTyz3Z86fVCLAyWl+xrUIJuy3HQy2MzW9/XSYj7QwlqEZsQOLNqCVoH3iuV9Z5Cu
-         3xZWFGB2xDHhjkYOkw853ZOtFD/aFaWqKXg5stdL4SYnfVb1znqMyRTe2kejntMurk84
-         vOxlDhcTJ+KQwW4R7jDQGMqnZ9KX6AYkPLW0DNQjx54szP/lTMg+/oji0dT7kih5Lzue
-         nNGI1MLm6waL223dgo9m4HNmv4fm/We8XmuzDgcJLmo1HcEz+no53+MdNMwAWJmtyiQI
-         o+5638ZWGhFr6+aqUVT67YufqG2Mp2hx/l/LZperJISkatOBMwf6+l1nCl0rxaKbnaLb
-         WzOA==
-X-Gm-Message-State: AOJu0YzEPL/OlHEgvfPUQLv44N4NLPEHnsj+j27lC8mVd3o9GEvj/uiO
-	cPfHmm3EQGxKrBT6Gu7JeHTkZIujw/HZ4JNY3JuS2aYjgubD6xHmlsdmzMybS6K7Y6HIqr5A
-X-Gm-Gg: ASbGncsZM2sZXvNg0aHPAxwgDzQJBCXQF254cewibKAy7+4wrK5gM2tMm8qB2tDQgZ1
-	Y0gAjAJgZwOfnWgVWbJqhVbu37ySB5os7nGiwCb3mohLCVmAEsczhTIGHXYG4VqtxjyqwD5SBH4
-	wuyxWlrOpj+C+oniNA0tNcA19Sin6gafmTjKv/esWAxvIb7cifQCv8EhoTBsRE4vY/k1tBCKvzB
-	38L/wWjK/FYB9ms6rcFiBKYrCAUhDH99kVy5zwLR0EThXJshQj/nCSB2rWGahZt5bypTqdiJsOY
-	vnbTNBpbnXByUjdXqTP/Dh1ALazcsVSkvkWaA7OacQC+xC4BEujXuvb6EFgDLDAGtNCUNGvH1ed
-	K1JcTZ5GG/jSLUJc3ZwWtzY+GMyKhYGVwDyqSbuUgd2IIpHVWdwc8avDXHxjMUGHTPaE3FrOxL+
-	x6iVHZdCYnukuHysdOekdprQ==
-X-Google-Smtp-Source: AGHT+IEVofIfgFsY+VlfcrQEGcurbAwqJgijPppQLMQUo13lcIL6Bol2salv9cHflZ0j8CH4lQdd6Q==
-X-Received: by 2002:a05:651c:3043:b0:37b:aa93:613d with SMTP id 38308e7fff4ca-37cd919f5c1mr64634661fa.12.1764341989993;
-        Fri, 28 Nov 2025 06:59:49 -0800 (PST)
-Received: from localhost ([188.234.148.119])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-37d24103d77sm10254641fa.42.2025.11.28.06.59.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Nov 2025 06:59:49 -0800 (PST)
-From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-To: bpf@vger.kernel.org
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	netdev@vger.kernel.org,
-	fweimer@redhat.com,
-	Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Subject: [PATCH v2 bpf-next] tools/lib/bpf: fix -Wdiscarded-qualifiers under C23
-Date: Fri, 28 Nov 2025 19:59:45 +0500
-Message-ID: <fa4ec6c228a314a9f0995f80225a4c0e4d8ac2c9.1764341791.git.mikhail.v.gavrilov@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20251128002205.1167572-1-mikhail.v.gavrilov@gmail.com>
-References: <20251128002205.1167572-1-mikhail.v.gavrilov@gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1764345922; x=1795881922;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=mT7+/9Q/P3EOLCcSyseZ/1663J1tCLxnRWyZm+KTF+Y=;
+  b=NFV3bS0O7XiEB7lf7iQ2y73AFP7Er9KXJaXN3EtVjvtS/qXeJFZk0yYt
+   QRjvmmoj82ljmZOeaJAyHyhucMQa4CTBewTOqmBTINlC/LaTGerEtUb6Q
+   cRWoUDGsKiLyLXkbXzf/ONJqcyOhzQPiyaDOE94dWg9p1lz/xCUVR1aOA
+   P69T9hHjXx3+0y/NS/b3RBeNWvOisypYtPzAL3ZEzG1+jAs7R2eicgUPO
+   NyEVPLojhmvOpD/qoJBQ5n6JJRUhlw1GNiwGosyg+XJ52KXesT0RrcOqQ
+   iK0jpAV3pX4xw5WMU69CWzMhdea7egM/Dkj5i1mPjPdTdZJOm2uzNX+sl
+   A==;
+X-CSE-ConnectionGUID: c1jPkwT/SeyWqUlh8fS4Eg==
+X-CSE-MsgGUID: wtXHq+54RU6w1wSCkpWX1Q==
+X-IronPort-AV: E=Sophos;i="6.20,234,1758585600"; 
+   d="scan'208";a="8031299"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2025 16:05:19 +0000
+Received: from EX19MTAUWB002.ant.amazon.com [205.251.233.111:6869]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.3.165:2525] with esmtp (Farcaster)
+ id 6d8b7411-2d5b-4fd7-92e1-6756c1308f5e; Fri, 28 Nov 2025 16:05:19 +0000 (UTC)
+X-Farcaster-Flow-ID: 6d8b7411-2d5b-4fd7-92e1-6756c1308f5e
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
+ Fri, 28 Nov 2025 16:05:18 +0000
+Received: from b0be8375a521.amazon.com (10.37.245.8) by
+ EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
+ Fri, 28 Nov 2025 16:05:15 +0000
+From: Kohei Enju <enjuk@amazon.com>
+To: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, "Jakub
+ Kicinski" <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, "John
+ Fastabend" <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>,
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, "Yonghong
+ Song" <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Lorenzo Bianconi
+	<lorenzo@kernel.org>, Shuah Khan <shuah@kernel.org>, <kohei.enju@gmail.com>,
+	Kohei Enju <enjuk@amazon.com>
+Subject: [PATCH bpf v1 0/2] bpf: cpumap: fix error propagation in
+Date: Sat, 29 Nov 2025 01:04:53 +0900
+Message-ID: <20251128160504.57844-1-enjuk@amazon.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D037UWC001.ant.amazon.com (10.13.139.197) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 
-glibc ≥ 2.42 (GCC 15) defaults to -std=gnu23, which promotes
--Wdiscarded-qualifiers to an error in the default hardening flags
-of Fedora Rawhide, Arch Linux, openSUSE Tumbleweed, Gentoo, etc.
+This series fixes incorrect error propagation in cpumap and adds
+selftests that cover the failure cases.
 
-In C23, strstr() and strchr() return "const char *" in most cases,
-making previous implicit casts invalid.
+Currently, failures returned from __cpu_map_entry_alloc() are ignored
+and always converted to -ENOMEM by cpu_map_update_elem(). This series
+ensures the correct error propagation and adds selftests.
 
-This breaks the build of tools/bpf/resolve_btfids on pristine
-upstream kernel when using GCC 15 + glibc 2.42+.
+Kohei Enju (2):
+  bpf: cpumap: propagate underlying error in cpu_map_update_elem()
+  selftests/bpf: add tests for attaching invalid fd
 
-Fix the three remaining instances with explicit casts.
+ kernel/bpf/cpumap.c                           | 21 ++++++++++++-------
+ .../bpf/prog_tests/xdp_cpumap_attach.c        | 19 +++++++++++++++--
+ 2 files changed, 30 insertions(+), 10 deletions(-)
 
-No functional changes.
-
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=2417601
-Suggested-by: Florian Weimer <fweimer@redhat.com>
-Signed-off-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-
----
-v2:
-- Declare `res` as `const char *` — never modified.
-- Keep `sym_sfx` as `char *` and cast — it is advanced in the loop.
-- Cast `next_path` — declared as `char *` earlier in the function.
-  Changing it to const would require refactoring the whole function,
-  which is not justified for a tools/ file.
----
- tools/lib/bpf/libbpf.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index dd3b2f57082d..22ccd50e9978 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8245,7 +8245,7 @@ static int kallsyms_cb(unsigned long long sym_addr, char sym_type,
- 	struct bpf_object *obj = ctx;
- 	const struct btf_type *t;
- 	struct extern_desc *ext;
--	char *res;
-+	const char *res;
- 
- 	res = strstr(sym_name, ".llvm.");
- 	if (sym_type == 'd' && res)
-@@ -11576,7 +11576,7 @@ static int avail_kallsyms_cb(unsigned long long sym_addr, char sym_type,
- 		 */
- 		char sym_trim[256], *psym_trim = sym_trim, *sym_sfx;
- 
--		if (!(sym_sfx = strstr(sym_name, ".llvm.")))
-+		if (!(sym_sfx = (char *)strstr(sym_name, ".llvm.")))  /* needs mutation */
- 			return 0;
- 
- 		/* psym_trim vs sym_trim dance is done to avoid pointer vs array
-@@ -12164,7 +12164,7 @@ static int resolve_full_path(const char *file, char *result, size_t result_sz)
- 
- 			if (s[0] == ':')
- 				s++;
--			next_path = strchr(s, ':');
-+			next_path = (char *)strchr(s, ':');   /* declared as char * above */
- 			seg_len = next_path ? next_path - s : strlen(s);
- 			if (!seg_len)
- 				continue;
 -- 
-2.52.0
+2.51.0
 
 
