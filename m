@@ -1,166 +1,154 @@
-Return-Path: <bpf+bounces-75667-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75668-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC8D9C905C3
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 00:48:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA422C9062F
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 01:04:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D9CA14E3A73
-	for <lists+bpf@lfdr.de>; Thu, 27 Nov 2025 23:48:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FA2A3A932C
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 00:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2284B327BE6;
-	Thu, 27 Nov 2025 23:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3539A937;
+	Fri, 28 Nov 2025 00:04:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OliMPUV1"
+	dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b="V6pWVqvq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80FA63277B8
-	for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 23:48:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 742509475
+	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 00:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764287329; cv=none; b=R00HeAvPWgLFauDVJdgbqTFBur4QmiAZsMXQ/z+eRH5/EHa/fQPPyvr5ZATVZ2/xyfAglEp1A4hyDu7lfx/334OOgUK7OXPTxB4iRy9QK/TaLg5V4K342rKMOX9hH/stVnBWH1Oduce2WWpXCrVUHpLYAMuB6n9XSFYD7NcaEHg=
+	t=1764288287; cv=none; b=cjfjksaQtps/8johZ4CBO0Ul+L+P2N2tPCJqZ1rskGNR4ybJw3jnpb5skkBiJxBvA4F0mf3namPI3g0557/dEJHWaIfHZmWtFFF3TpwIUGwn2KmHuSJflbO+cc8ksu1ZragJyZrZ2IZeXGt+VJWkRLI+6HtbaMv/pFYNNx83lxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764287329; c=relaxed/simple;
-	bh=YsduwoMsD8hIAekUKDxK/MSUACtfE2yvVw+moofjTR0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rvI9ALMXEZ2dFSBwvSi2RchzNTXU1oI9zumgFkM2Bs90s/mNtS2BTCtm4XuDs4oh+uvQPgqTWKKHc+oArQqtCIQLWPppqfkXGTUnPBPmA/Og43zN+uC6SJzwJiM1P7wAjTvPTfNrS3HrUpslZnqpBUyc5/9TSMpHR88QoWU9HUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OliMPUV1; arc=none smtp.client-ip=209.85.166.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-43479d86958so7017305ab.0
-        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 15:48:45 -0800 (PST)
+	s=arc-20240116; t=1764288287; c=relaxed/simple;
+	bh=Rq6hPtU29mVWc08CgQ7jD+lv67qy1fRmI3I5be7NTwY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Wc0rShX8lbuHO7jlRxg3g7Gi1DpRx7FQQ7dhQ6hZMsdNHLkW0dECT8/Z4sJBmyNXDjAuKwzYG1opb64mB4J/tij5iHqrn3czKLyDqRYzPtmY03gO0Oo4Dss9sJ1NlPaVr6NVPPXOpLUqlyo/G1b3tcQRcOzC/v7rZIItU7jKJdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu; spf=pass smtp.mailfrom=superluminal.eu; dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b=V6pWVqvq; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=superluminal.eu
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-64198771a9bso2537737a12.2
+        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 16:04:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764287324; x=1764892124; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3PW1RKfkdQpyyU5Qki8GTuvVDzxfLQHQ2GUmA7S/TM0=;
-        b=OliMPUV1wIXEINDdZB099CUtUlBCtuTFKdc91JsJxdPwQUe/DlqJlZ06d5sAlVWKm+
-         Fm848SmymRHSMbd9XoGStDA15UMBL1YMhlusIMLvMbBww8piShgUhicNN6kUtfueQxtV
-         pH+0N4BAPWwT6OtIONY6fAXx4dEHc1NhV9jsvKjZb4xaSHGKUT8DWD4RYSdIhGEm9vRH
-         bOeB1gl39Wzyf34aiYk8LR+Whs3gVhi9ttgCaS7UDjR6a+Ic8pbhLqKpe4qOfd6VVVIb
-         rk2u45/4o907/qQWTQMLbMD9acIhVB4FynW05cKmKMnx0q49Kj9KsHvw2+2+KrJz7mmV
-         TaPw==
+        d=superluminal.eu; s=google; t=1764288282; x=1764893082; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mqfelh/GX+xBJmjeQjVwThJYuAe8oVQEYJ4JAP468m0=;
+        b=V6pWVqvq6POawXwYWR9lowb1IJxrLCbCXkN+jBSLdCcsBgSb7qRc97vocXASLzfDEP
+         bzCU0rBe3Git3pE1adSQjqqcB8ehJpwcEeORJXp+qyM5l224d8K41UDtkDPzF0FuMNd6
+         kqeoGDb+gQTX01IKx7jWmU/ZWYLfN73x7+S7UYlcFQV1WlnNwvsRx0/LO1nKmqQwcHu+
+         EP00H66el3H3Fnks/J8p0Xo2fDHcCR/683wJBVLYZFJN4qUVTI3KPizp6Kt6yx11eTPE
+         kci0HlOg/qU4XudaIqyKTXfSuJ48AwZzZ1iY4hhTXzoo5S9GVu8vVH8UuJbKU0cEPxrD
+         JR7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764287324; x=1764892124;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=3PW1RKfkdQpyyU5Qki8GTuvVDzxfLQHQ2GUmA7S/TM0=;
-        b=Uzn6oq3nURbjCP7cdU57wfKljzGCMOwOc6KdtEWsbcpc32xWBQPIfiuGffqHOodzCW
-         hSBZz0vHwa9sc1LMGwNSGdcnlVWcK40ZQ58OieJdL55OtUtb9AsNWCNXYhYXrgN8GBql
-         jjtauxtoz+wxZqzHlKHjgkblfrGDjmYRRmy0SSOXTQXYJfGuo5jMtyxShk7qfp9zEjmR
-         NKo7jULIZsuSa8ya4KAbOek/kGyk2jMiQ6833Z+UvHrw0V7ctsZKwn5wXx7GJB+2fRhM
-         i9ckqwRsVU1Gzux30VdDIPV09cpohtPB0/6DyKjyJGSJTTo/T/k7QwZpF2QPx1v56uuM
-         jvjw==
-X-Forwarded-Encrypted: i=1; AJvYcCUpERdprks9HyHg+Dj/v+2xughra4oFYAHNC8P2SNcaEa23vNtAg790hrsx98I4mw4lhBc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzmnQTZe1zy1cD88RzAYIkmenYOtp3+L5dpuE+3s/sZhNPXtIxl
-	yfG/gjW0wChq3tG+/iQcx4/jyJ85jvAu64WQEwjC/W+WNtgqO5QbvOJhd0TqT81CKggM3ebf9Cf
-	ds2vkAhwOaLkD8Nea3vkILo1hS1sjs2c=
-X-Gm-Gg: ASbGncskl9XS9Mlam41uTEB6BJ9vi2Ey9W9wOGpL/gImETGiEGkxinfjMCABttZsYUj
-	S9w29ffhBgwjJhYIxC4S2mOtATwlwBFml0A4fL1m5tTryw5aT3L4t/AD4A9OgrCYlpYnbzns59W
-	TQEto4+z1xjrGFG++lGoZSZa+Wx5JgU6hnf75ooOi2oUOJphJegQz1az8n/BCEThs1jmZOkGEIi
-	+ku9vhYUhGqhuhxZ0KWWw1/BMKTzPvU6BkfYbgMrqBWq9n3pOkgBIQ0WumWlEnvY3HBjz8=
-X-Google-Smtp-Source: AGHT+IGSeOl1abZhEz6haRZS6F363yMwLkHnsQeAmDxWQ4dsIqhIhX11adSgTwjP6ka+EDTNz6LBI6qqtHbCVW6VAs8=
-X-Received: by 2002:a05:6e02:2389:b0:433:5a5c:5d75 with SMTP id
- e9e14a558f8ab-435dd06a9f3mr103094115ab.18.1764287324153; Thu, 27 Nov 2025
- 15:48:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1764288282; x=1764893082;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mqfelh/GX+xBJmjeQjVwThJYuAe8oVQEYJ4JAP468m0=;
+        b=PgyrzVxvpLsQiFFJ0pLrUV3GqHk6stwfPSR87dW2GxTpi84EgaarUIHAr5el9bKtmN
+         5sunfX+8L3k0XXS1s2xnpREaueqn1GFiR2ddy24/u6ArbWUDUEN6RMn7y3IH5an1DEcj
+         36Dhol1RoV7G80VA4LOTtaeDiDIV6+a6RoyR/PGBwmnnjBX5xmEKJpHltYTaEerFMU5l
+         e8nBWXROvuvjuwZdmw3vPQfPl4IXCYbKnwoA1f+8y66DUX4I8w/ofI/haiWZPzy+b93E
+         tEkHZKv21SOabrQaM7d8IjdE+OwXHbQBgxToB09NXzqs69q64JVHO9pJGv6Cw5AHkveB
+         vCyA==
+X-Gm-Message-State: AOJu0YwQnajKNVD6dQybG8MFz+R6jm42PG33bOyp1aIo3n3BAhGp7hga
+	rbQQ2OAP085KLK00TkvtcnSWRYTrBWFbHF5JRM6EMJagQubrfVho428Y26O1/ITnYQ6gG3ssPRW
+	ySpNC
+X-Gm-Gg: ASbGncvK2rphuFPbOgxK4EVtamfZscdAyD1uDpLj5yx86TystZma8EoE7VrhnJHgDAN
+	95JRl3B3tsxnbVYdz5jiXy08gBzg8XG2nwPbiZouM24WGJzwCMpZ8HQKuKJ+dHXLQGgLOgCnEbB
+	hrv0yPhHYfUIwX9fX+7M9+HTB4AGy5C+eERsc53TfLUJx/ci/X2qhk5nB4zyBHCz9ck8BQykYPh
+	bolEuCAD2CcItf5VLviF0pAWW7FwEB5AgHkpxmdTwoNQoDFGpTZUwQU5aAMcNqMqXsCmNRPyAhi
+	fDeZnh0sPxtw0RAigF5slcEtm6G/Ex2uYTomouCQtosU6Zog7Wfi779gqx2WAycE7kbVPUkfGak
+	y3+RT2f29vir36z+qRAED17Y0hRqBmmvDfMfQhiWePxLP+ikXZtRqCu9Rh2SH3uzKM8fdB9Q1HH
+	Cb70PQf5tPKVfTQ1Myra4ZVzIB9AqOYRG/+EjsD5BaX9PVf7HwwXzTynsjTjBC48un9GuHg+BD
+X-Google-Smtp-Source: AGHT+IHyAZ7sLzD1W1HU2LvKBM4uXOfEIajqtKrFs5YCyredoiSPBhPH9ZK2QPwg6vuVanCil+5JHg==
+X-Received: by 2002:a17:907:72d1:b0:b73:5c12:3f8a with SMTP id a640c23a62f3a-b767158cbe7mr2959377266b.18.1764288281501;
+        Thu, 27 Nov 2025 16:04:41 -0800 (PST)
+Received: from ritesh-fedora.localdomain (228-244-145-85.ftth.glasoperator.nl. [85.145.244.228])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b76f59aece0sm286581766b.32.2025.11.27.16.04.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Nov 2025 16:04:41 -0800 (PST)
+From: Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	houtao@huaweicloud.com,
+	jelle@superluminal.eu,
+	Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>
+Subject: [PATCH bpf-next] bpf: optimize bpf_map_update_elem() for map-in-map types
+Date: Fri, 28 Nov 2025 01:02:35 +0100
+Message-ID: <20251128000422.20462-1-ritesh@superluminal.eu>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251125085431.4039-1-kerneljasonxing@gmail.com>
- <20251125085431.4039-3-kerneljasonxing@gmail.com> <0bcdd667-1811-4bde-8313-1a7e3abe55ad@redhat.com>
- <CAL+tcoCy9vkAmreAvtm2FhgL0bfjZ_kJm2p9JxyaCd1aTSiHew@mail.gmail.com> <f4ca72ea-e975-431e-9b7a-e32c449248ca@redhat.com>
-In-Reply-To: <f4ca72ea-e975-431e-9b7a-e32c449248ca@redhat.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Fri, 28 Nov 2025 07:48:07 +0800
-X-Gm-Features: AWmQ_bn1RrO6F9wHfjxgTzZoV5sAqGSoQ2rFYDySfa4EFa9ImHxo6OumszU2P8M
-Message-ID: <CAL+tcoA7ZMsw1f6e=3WtpoyaT53cM9ryumcxT-b40VaUfuj-jw@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 2/3] xsk: use atomic operations around
- cached_prod for copy mode
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
-	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 27, 2025 at 11:32=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wr=
-ote:
->
-> On 11/27/25 2:55 PM, Jason Xing wrote:
-> > On Thu, Nov 27, 2025 at 7:35=E2=80=AFPM Paolo Abeni <pabeni@redhat.com>=
- wrote:
-> >> On 11/25/25 9:54 AM, Jason Xing wrote:
-> >>> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> >>> index 44cc01555c0b..3a023791b273 100644
-> >>> --- a/net/xdp/xsk_queue.h
-> >>> +++ b/net/xdp/xsk_queue.h
-> >>> @@ -402,13 +402,28 @@ static inline void xskq_prod_cancel_n(struct xs=
-k_queue *q, u32 cnt)
-> >>>       q->cached_prod -=3D cnt;
-> >>>  }
-> >>>
-> >>> -static inline int xskq_prod_reserve(struct xsk_queue *q)
-> >>> +static inline bool xsk_cq_cached_prod_nb_free(struct xsk_queue *q)
-> >>>  {
-> >>> -     if (xskq_prod_is_full(q))
-> >>> +     u32 cached_prod =3D atomic_read(&q->cached_prod_atomic);
-> >>> +     u32 free_entries =3D q->nentries - (cached_prod - q->cached_con=
-s);
-> >>> +
-> >>> +     if (free_entries)
-> >>> +             return true;
-> >>> +
-> >>> +     /* Refresh the local tail pointer */
-> >>> +     q->cached_cons =3D READ_ONCE(q->ring->consumer);
-> >>> +     free_entries =3D q->nentries - (cached_prod - q->cached_cons);
-> >>> +
-> >>> +     return free_entries ? true : false;
-> >>> +}
-> >> _If_ different CPUs can call xsk_cq_cached_prod_reserve() simultaneous=
-ly
-> >> (as the spinlock existence suggests) the above change introduce a race=
-:
-> >>
-> >> xsk_cq_cached_prod_nb_free() can return true when num_free =3D=3D 1  o=
-n
-> >> CPU1, and xsk_cq_cached_prod_reserve increment cached_prod_atomic on
-> >> CPU2 before CPU1 completed xsk_cq_cached_prod_reserve().
-> >
-> > I think you're right... I will give it more thought tomorrow morning.
-> >
-> > I presume using try_cmpxchg() should work as it can detect if another
-> > process changes @cached_prod simultaneously. They both work similarly.
-> > But does it make any difference compared to spin lock? I don't have
-> > any handy benchmark to stably measure two xsk sharing the same umem,
-> > probably going to implement one.
-> >
-> > Or like what you suggested in another thread, move that lock to struct
-> > xsk_queue?
->
-> I think moving the lock should be preferable: I think it makes sense
-> from a maintenance perspective to bundle the lock in the structure it
-> protects, and I hope it should make the whole patch simpler.
+Updating a BPF_MAP_TYPE_HASH_OF_MAPS or BPF_MAP_TYPE_ARRAY_OF_MAPS via
+bpf_map_update_elem() is very expensive.
 
-Agreed. At least so far I cannot see the benefits of using
-try_cmpxchg() instead as the protected area is really small. Probably
-in the future I will try a better way after successfully spotting the
-contention causing the performance problem.
+In one of our workloads, we're inserting ~1400 maps of type
+BPF_MAP_TYPE_ARRAY into a BPF_MAP_TYPE_ARRAY_OF_MAPS. This takes ~21
+seconds on a single thread, with an average of ~15ms per call:
 
-I'm going to add your suggested-by tag since you provide this good
-idea :) Thanks!
+Function Name:    map_update_elem
+Number of calls:  1369
+Total time:       21s 182ms 966µs
+Maximum:          47ms 937µs
+Average:          15ms 473µs
+Minimum:          7µs
 
-Thanks,
-Jason
+Profiling shows that nearly all of this time is going to synchronize_rcu(),
+via maybe_wait_bpf_programs() in map_update_elem().
+
+The call to synchronize_rcu() is done to ensure that after
+bpf_map_update_elem() returns, no BPF programs are still looking at the old
+value of the map, per commit 1ae80cf31938 ("bpf: wait for running BPF
+programs when updating map-in-map").
+
+As discussed on the bpf mailing list, replace synchronize_rcu() with
+synchronize_rcu_expedited(). This is 175x faster: it now takes an average
+of 88 microseconds per call, for a total of 127 milliseconds in the same
+benchmark:
+
+Function Name:    map_update_elem
+Number of calls:  1439
+Total time:       127ms 626µs
+Maximum:          445µs
+Average:          88µs
+Minimum:          10µs
+
+Link: https://lore.kernel.org/bpf/CAH6OuBR=w2kybK6u7aH_35B=Bo1PCukeMZefR=7V4Z2tJNK--Q@mail.gmail.com/
+
+Signed-off-by: Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>
+---
+ kernel/bpf/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index d5851800b3de..ea4c19ae3edc 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -158,7 +158,7 @@ static void maybe_wait_bpf_programs(struct bpf_map *map)
+ 	 */
+ 	if (map->map_type == BPF_MAP_TYPE_HASH_OF_MAPS ||
+ 	    map->map_type == BPF_MAP_TYPE_ARRAY_OF_MAPS)
+-		synchronize_rcu();
++		synchronize_rcu_expedited();
+ }
+ 
+ static void unpin_uptr_kaddr(void *kaddr)
+-- 
+2.52.0
+
 
