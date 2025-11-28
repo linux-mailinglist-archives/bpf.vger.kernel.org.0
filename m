@@ -1,139 +1,142 @@
-Return-Path: <bpf+bounces-75736-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75737-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1BC5C93423
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 23:29:01 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05315C9347B
+	for <lists+bpf@lfdr.de>; Sat, 29 Nov 2025 00:15:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 661CA34AABE
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 22:28:45 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9DCD14E102D
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 23:15:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A032F746C;
-	Fri, 28 Nov 2025 22:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA8F233704;
+	Fri, 28 Nov 2025 23:15:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="0UuSSr2/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EVcFspGJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE082F12D6
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 22:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4457225F7A9
+	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 23:15:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764368863; cv=none; b=adqyRpBUeO6UL5kr0DHnntZVUsma8sa8wT9DiEyjkknr9Fm3AelVMzkHC0ZMVvPjCCDyCNVZ3iWrt9FlKc+7gf7jDbuRXXsJTcLIi5a4vTLorp/jfNxAhLcKJkfcJp36txADOS36RcouS+aneDoJ046H8Kgppxdxba2PXELClEo=
+	t=1764371749; cv=none; b=rJIeu8yYe7BV1rqi3HqTsvPBI4fzAcrFEI1t3/v7e/XFLGeGtPFgsOfSphr08NbpLxRh9GTtfG2pOh9rL4NFyEkaHZ1ciE3OGHCIDd9/mHiel+T77r6Sb8L2dnxxR1DHh03uJdmMdOLGRzNHENVUQ2IwbT32aZNl9GoUmdXqVz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764368863; c=relaxed/simple;
-	bh=kmh6ENzofXIt4PAXZH0Z7jfrbDrhfbIKRSttu04afiU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=r4qvBoH/GwgY1C8QN2IWbUk9oqqJaeWDuZGFQ82vAmhYGi/LXUvHDnKLw+7Posoji+cP1oNrlqYJxWm2mFzXOR7sm8AgCV/rldhuxG0AhSwzb+rjPG90XSNgNwWzjcVu3mo8Ft80bgYh78Nh7L2HNXm9iWiroLafrIChZdGABXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=0UuSSr2/; arc=none smtp.client-ip=185.171.202.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id BDB0DC15D7D;
-	Fri, 28 Nov 2025 22:27:16 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id AFE8E60706;
-	Fri, 28 Nov 2025 22:27:39 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 064D810B02592;
-	Fri, 28 Nov 2025 23:27:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1764368858; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=NbJJlFsehdI9InaPGxFPtlAMd7ghBkNRbJp1O6wK1xY=;
-	b=0UuSSr2/hkGVdCZldRlsE+zz8BwXcaukxPw1hFaOfFV5kGckmpBvvzS5m/o9T4do33b/UZ
-	eWCtdktbpcJojSoLLtPwyz4bOPsyIi52X1Zyss6/OThTBX/mhWW/hIl6t+pRU2gO4cUfCT
-	qUmapUjwNx9Y1RKIrSmSxFUEBtXp2MwnsqKMPSegPpkbIdYtRmArXCUWHN/lDMi8J3OsZe
-	ZdETLYrSvAhr5oGHWf9Z5cnRTU+7OCM+E6IEJgM0Cl7F64MyMGu22u7DNqBfRMIp4BDV8J
-	JVHXnSH1XQY6tIqQKDdg4tO/wPFjXIoGUWPuRWv5KSQyZEbt4YPpx/tY+d1O5g==
-From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Fri, 28 Nov 2025 23:27:21 +0100
-Subject: [PATCH bpf-next v2 4/4] selftests/bpf: do not hardcode target rate
- in test_tc_edt BPF program
+	s=arc-20240116; t=1764371749; c=relaxed/simple;
+	bh=keruzwDSvWDu/kUJKCToJsGsSZVyVDLp7caPlYe+0XQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=S0a/NOptrQ8pOUHYnO3SHytOgXcOENB/BS4B0k6KjxUgPGBz04w1m168vJg6hM96UtlkQWUOt9z9dPoOijbHmDxniCiou3DC6qcK0SgVD2xFEXx8vaM/9wuFBwDxtcj7au9JJ9LxOqWfzCeZ36rey+RkwzEwfE4wqOLZU40eWTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EVcFspGJ; arc=none smtp.client-ip=209.85.128.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-4779a4fc95aso22617145e9.1
+        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 15:15:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764371745; x=1764976545; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9R+2lNVxnl/8OosIbXyK16HD/6wbvcxsInG8E8NzAn0=;
+        b=EVcFspGJIDpGglkb4rGuXftsCJ6MWkvRThkgEZ4QLU9WruKXeeEvcVOV5H35jWeTH3
+         oFBHs6xar0WvPJT7ytog3M4fKQZxjzy2nuOW5VM1XQfj9c+ZdLrGuHsWtGsD8uAcWhLg
+         d/9PkCEXuOGwizKIdcpvIhfOJgLL7Xb+fXkb73TtC6I2Yj1oPtXuPqNVUYg4bFRXTkEZ
+         LCnuhqvgJJ/8aCIUyTVyTSU6wUFFbVtJVfP0WCGs/74leyB4pdxRTBY6JTiWCyQFecRe
+         WI/eAoCZ4cgm77ARrXN9GJQJmhAhwJyLou+xLi3t4ucSGdcRYnlkFhnFr+OyFZ5QJw0V
+         nLQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764371745; x=1764976545;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9R+2lNVxnl/8OosIbXyK16HD/6wbvcxsInG8E8NzAn0=;
+        b=PZwvg0ltOLG6Nx7kL/+ALKT4TTHyjLyAp813f469GxL0+Ah1k47agt5chXwG+CnfPP
+         UUc/eW/AqSEeeHjPqfBfrlw3syi1S42b7xpJHFiQaPJJ1feBSjbbQpogGtKZWP/oMM2u
+         c4HecDcMl6boG6nYb0Qkvi5Sbw9FIUfNoE+My8VXy342vZdkGO9DINwt6YEf2FDomSat
+         RRlwJ9k3SAYQbE0iGNJR6wpVTzL1pAzt5x/kxby+pHPrTELviZENfLzImpJqQgHTAsup
+         6NQ5R2e0X2E12UlbMO+P8sVqOmn74o8njLGHySaTS0p7aIQ2960hNqZJiBSBcgvd9Bko
+         ZDdw==
+X-Gm-Message-State: AOJu0YzGkN1d4obVm5p9xxRCzwKB+RVdKMEUCtuwhWg1HYjrFIgRTUpO
+	hoZqsmMLKaWqOgl/XnlD02+ZFligsOM0mgTZ9uPaljG7jr7IYpdf18bVFMONKdNz
+X-Gm-Gg: ASbGncsyIZD3SB63kxDgb3B4pg/PSfsSBllFIK+of6zAugI8OgyPDdejTmaJ4ItFkeJ
+	I/9QoTu++APQx7s+slKTepdj6tiIm0rYGsOc2hM20hgb/MwCfmLqJhduK6+RglrmcfTIjUGk0/9
+	joFNgB/Lm87VMbXWy9Ivhsm5u4OKPi4tPDXKrUdUBOBSslNmizOOyGbp6lOsj6zxUDhS2JSqHyQ
+	s+CTYdE2B7629MQyY7KHBqu8ovkvHvP0oqXPUwSgsnKtggty7BxByYi4IZAWTk64qZ1zKaTgDa4
+	/J6YMiahg8MvsSH+m0pE3Lenqpzs9GLa58CiqdouJKkHOIa8sgJmou+ThJlPICASnorfz94LDol
+	4CEPeZ4f2BDLfqtZfY5U8rmfGeejY76UUxy3ikEhsSdNddWrNunpevZJ9xIRXzWPYllBUE7rZrT
+	WPsl4r2cGhIF7mWNeWxCDlUi7dA3O+e36Br4T1NIFZl1cv1sXxVHaqYKl/6ROiyVaW
+X-Google-Smtp-Source: AGHT+IFZ987aBP3hIHHMb4At8Xe4FJtf/TSd5GMJp2SZ3b87q3WBz5wYTqj2/iY7RtnWKoussof5wQ==
+X-Received: by 2002:a05:600c:444f:b0:471:665:e688 with SMTP id 5b1f17b1804b1-4791529a337mr60696305e9.17.1764371744990;
+        Fri, 28 Nov 2025 15:15:44 -0800 (PST)
+Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-4790b0cc39csm180891915e9.14.2025.11.28.15.15.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Nov 2025 15:15:44 -0800 (PST)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>,
+	Jelle van der Beek <jelle@superluminal.eu>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v1 0/6] Limited queueing in NMI for rqspinlock
+Date: Fri, 28 Nov 2025 23:15:37 +0000
+Message-ID: <20251128231543.890923-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2045; i=memxor@gmail.com; h=from:subject; bh=keruzwDSvWDu/kUJKCToJsGsSZVyVDLp7caPlYe+0XQ=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBpKiyMlwG8kkxTjjpQjPw1jYmUpzLHDioF+2sIe iIFQym7YmCJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaSosjAAKCRBM4MiGSL8R yj9kEAC65t81fcTEgBNbUQSvc5ljU725V8i6DKajxTITJDk8TyWLqUGYtRiz98UrJ1Bjs6GnUGB R+/bJkjKsj6N9A2L/NRVSMwldiGOg+e5zW3ZoMgZGTdEacC/AxO0MUufgzGObSmvOeN7l+GkzG4 rjmZFTs0uDORC23uLKoQKMDbSofrWl2Kxv6n4teuFf0GnIxdRm6/w2oEhnva/kAs3bkzmCqEQsE lNv79aDMrvMRJ1zrj27h0hzhCrRdLHe5ZtYAxrEphyg1UVFW4Gp5MnLDtNfJ+TSAjOZAxk9ULYu plpSBpA683T74n95DABicYVpegYjr5Zhk4YGLebjG95FFRG3fR5txYbG6jtlJKt/Mh8/wT6TvLX mXVoDHNlbf8PPx1xIaMWTXXTpG4TUzR2Z2Gcg2n/0TzIPE29YTzKB8d9eOUMTCJwSqLw2F9dOS+ 4/PQlozfHneiPjttWLKg3C0529oESXIS5lgStBx1RBJAJk7pO3teXAKpl2Nzyr+AAeO4R6AbpJ8 iH96n86ng5krww4mR+zgp/Nxks9aBVIDsVqAk5RdT62XvBai1HlJjTW8gaZcj60ARIC2RsK9l/q BhOAJKBDQ1LhqD8pLXMk+kOgs9Lxm5PqePlQu5UMIZWpeEv4ViP2QgMoq77B9Eq9XvE2ZVIcDOY xCBaPmxPDWKwijw==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
-Message-Id: <20251128-tc_edt-v2-4-26db48373e73@bootlin.com>
-References: <20251128-tc_edt-v2-0-26db48373e73@bootlin.com>
-In-Reply-To: <20251128-tc_edt-v2-0-26db48373e73@bootlin.com>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, 
- Bastien Curutchet <bastien.curutchet@bootlin.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
 
-test_tc_edt currently defines the target rate in both the userspace and
-BPF parts. This value could be defined once in the userspace part if we
-make it able to configure the BPF program before starting the test.
+Ritesh reported that he was frequently seeing timeouts in cases which
+should have been covered by the AA heuristics. This led to the discovery
+of multiple gaps in the current code that could lead to timeouts when
+AA heuristics could work to prevent them. More details and investigation
+is available in the original threads. [0][1]
 
-Add a target_rate variable in the BPF part, and make the userspace part
-set it to the desired rate before attaching the shaping program.
+This set restores the ability for NMI waiters to queue in the slow path,
+and reduces the cases where they would attempt to trylock. However, such
+queueing must not happen when interrupting waiters which the NMI itself
+depends upon for forward progress; in those cases the trylock fallback
+remains, but with a single attempt to avoid aimless attempts to acquire
+the lock.
 
-Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
----
- tools/testing/selftests/bpf/prog_tests/test_tc_edt.c | 1 +
- tools/testing/selftests/bpf/progs/test_tc_edt.c      | 6 +++---
- 2 files changed, 4 insertions(+), 3 deletions(-)
+It also closes a possible window in the lock fast path and the unlock
+path where NMIs landing between cmpxchg and entry creation, or entry
+deletion and unlock would miss the detection of an AA scenario and end
+up timing out.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tc_edt.c b/tools/testing/selftests/bpf/prog_tests/test_tc_edt.c
-index 9ba69398eec4..462512fb191f 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_tc_edt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tc_edt.c
-@@ -66,6 +66,7 @@ static int setup(struct test_tc_edt *skel)
- 	ret = tc_prog_attach("veth2", -1, bpf_program__fd(skel->progs.tc_prog));
- 	if (!ASSERT_OK(ret, "attach bpf prog"))
- 		goto fail_close_server_ns;
-+	skel->bss->target_rate = TARGET_RATE_MBPS * 1000 * 1000;
- 	close_netns(nstoken_server);
- 	close_netns(nstoken_client);
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_edt.c b/tools/testing/selftests/bpf/progs/test_tc_edt.c
-index d31058cf4eca..4f6f03122d61 100644
---- a/tools/testing/selftests/bpf/progs/test_tc_edt.c
-+++ b/tools/testing/selftests/bpf/progs/test_tc_edt.c
-@@ -14,7 +14,6 @@
- #define TIME_HORIZON_NS (2000 * 1000 * 1000)
- #define NS_PER_SEC 1000000000
- #define ECN_HORIZON_NS 5000000
--#define THROTTLE_RATE_BPS (5 * 1000 * 1000)
- 
- /* flow_key => last_tstamp timestamp used */
- struct {
-@@ -24,12 +23,13 @@ struct {
- 	__uint(max_entries, 1);
- } flow_map SEC(".maps");
- 
-+__uint64_t target_rate;
-+
- static inline int throttle_flow(struct __sk_buff *skb)
- {
- 	int key = 0;
- 	uint64_t *last_tstamp = bpf_map_lookup_elem(&flow_map, &key);
--	uint64_t delay_ns = ((uint64_t)skb->len) * NS_PER_SEC /
--			THROTTLE_RATE_BPS;
-+	uint64_t delay_ns = ((uint64_t)skb->len) * NS_PER_SEC / target_rate;
- 	uint64_t now = bpf_ktime_get_ns();
- 	uint64_t tstamp, next_tstamp = 0;
- 
+This virtually eliminates all the cases where existing heuristics can
+prevent timeouts and quickly recover from a deadlock. More details are
+available in the commit logs for each patch.
 
+  [0]: https://lore.kernel.org/bpf/CAH6OuBTjG+N=+GGwcpOUbeDN563oz4iVcU3rbse68egp9wj9_A@mail.gmail.com
+  [1]: https://lore.kernel.org/bpf/20251125203253.3287019-1-memxor@gmail.com
+
+Kumar Kartikeya Dwivedi (6):
+  rqspinlock: Enclose lock/unlock within lock entry acquisitions
+  rqspinlock: Perform AA checks immediately
+  rqspinlock: Use trylock fallback when per-CPU rqnode is busy
+  rqspinlock: Disable spinning for trylock fallback
+  rqspinlock: Precede non-head waiter queueing with AA check
+  selftests/bpf: Add success stats to rqspinlock stress test
+
+ include/asm-generic/rqspinlock.h              | 60 +++++++++--------
+ kernel/bpf/rqspinlock.c                       | 67 +++++++++----------
+ .../bpf/test_kmods/bpf_test_rqspinlock.c      | 55 +++++++++++----
+ 3 files changed, 106 insertions(+), 76 deletions(-)
+
+
+base-commit: 688b745401ab16e2e1a3b504863f0a45fd345638
 -- 
-2.51.2
+2.51.0
 
 
