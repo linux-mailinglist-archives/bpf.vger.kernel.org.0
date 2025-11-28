@@ -1,85 +1,85 @@
-Return-Path: <bpf+bounces-75680-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75681-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB612C90F03
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 07:26:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2666C90F06
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 07:26:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 757904E2341
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 06:26:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABAFB3ACBCD
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 06:26:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 829BC2C3259;
-	Fri, 28 Nov 2025 06:26:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E7062D0622;
+	Fri, 28 Nov 2025 06:26:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D0C84aJy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IPi0JWYi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 452DF168BD
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 06:26:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56FA1168BD
+	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 06:26:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764311178; cv=none; b=gvfyfRWhMImGCSobxDtjDUdHvm44XQroNDP6bcdW03GZZ2Epzs/CdBwu/oaOuc/kl6h6uhsuZCPNDVgV3SRwfLojHEVLS0UtzJV+wIqfGIkBe59Qb+tL872Wzcm3nzQIvEcxUPTFd4dgiV5Uqy3MXO6sy5cCeHvR47IgM3f6cBU=
+	t=1764311182; cv=none; b=t+5imdZsQdSfEmI4Kx45P8i7NxaOddVioD0gdTbkCuxonySs8+73n1WSSMW0slbm00JLrtmrncMvkfxO+OWu0LMMIvVu0x8s35PD6q8mkc6nIQYkTpfCpz1Nj+7mF+WqOm5CA5uMsRUNURgYKP0eMQgBjgObDJj4bEtzH6rePFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764311178; c=relaxed/simple;
-	bh=+taU4Lw6+zQToOoUS/uTdzZRAMV0E3XXwmP/P4+8GjI=;
+	s=arc-20240116; t=1764311182; c=relaxed/simple;
+	bh=CRtBOxsvowIsrG9IIZjD+TNQdinAURq5wnzAWd9Dxno=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DTpL0NQXjbm5frdmcKz6F8a70FkrEhJWZZZOh0Fuh8aKzarNGF8lcLmV9u2Yp1XuopnW/E2rOTeqQB0qpNyW52QntpQXX6qlLgTe/LuvaXZJmgfFY6Z+1GcyDF6eEiWUvSEhh+hJm3qay0U3VDXztMCn4F0jGzpAL6h/OBr1qsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D0C84aJy; arc=none smtp.client-ip=209.85.128.44
+	 MIME-Version; b=chPnGtIE6YlN8FHuwnGpBE3NBkhrlf2sSL+WTrFULIBk6mk9ScQTaQ7hbrGx0cIeWwvbIVhTwf0UzKC+6sCO09oQrSjYtlQ9j9+90AN4qHkyIu+Pi48/zN+e6BvjE3rmwGepNvz19DhZKXnqvwQLkIgktj/hU3pS3k7EWRQ3zEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IPi0JWYi; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4779ce2a624so13724845e9.2
-        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 22:26:15 -0800 (PST)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-477619f8ae5so8735835e9.3
+        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 22:26:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764311174; x=1764915974; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764311178; x=1764915978; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z31GEYqAM3hIfqJVhaBUlFjuQeS8bbTkycJEKDbCOxE=;
-        b=D0C84aJy1+cIq9uVYmSjXPT+vd2GrO9O2nIfxqSPIP7JoxrrJSTScnnyRQGdL+BCOP
-         bF8Rn4Zz1qaf3+PABPWuxJZMGTxyjEXhYRbuBwPAJ+SzB0WOwrYcLcRvpTMIaIDIBqzx
-         +wIr5sBgk0xHhiNA6a84jJYAcZGY3JcWW13i2e4xAW3CyVQ0c6V11uLj/uk80iKNSxCl
-         SM9AhQlhj0E5YkqOiD5cY1GfKLftd8+jsXzeETYLGxDmLXSvgLxO26bg4kWEwUcVwMgt
-         T15CSeOEqNdtb4YUzmZSM1Kvs9+1pmBLrTH2HBogNRmDW+DXUhpc+cc9NklybE1r5TNt
-         ppLQ==
+        bh=UB5GYR2Y9gT++pcCe5c3Az2yczxHavHJBHiuIl3EX6M=;
+        b=IPi0JWYiSIRNZniMS22ofVTsJGJIGjvCS/XSTHFziTwNqJdWRfTa2DJq3JM9IRixKI
+         dgx8yMVEDgBw9lgBIzAmsUm/hfciLWGPWnUOmJjEaa83v3407RJSHdvc5ihuXTiNIdMf
+         Ru3hXTUljq5dUgoyNjxib5kJRqgkPKUd3GWstVvwcMCAYB79S5sFgEPvwozFw82hERuf
+         YJ7tUSHs7TJMxsksT/nYpQ9VyWp0AS74udJgafLitbfbFNGdlZFzci4I+F1mVs9ZfgK5
+         +g1EC1aRP4qZa7ionMoIUEOm8N5I3uXC896Q0DfVerVrlMeMWGsEZTdLVH9TD0K1TQdF
+         6Fcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764311174; x=1764915974;
+        d=1e100.net; s=20230601; t=1764311178; x=1764915978;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=z31GEYqAM3hIfqJVhaBUlFjuQeS8bbTkycJEKDbCOxE=;
-        b=HtIq323CD9FBbi+eqUJGMzbLKSRLaKKo9jTRz/XczDttsxMaKN6FCV/lmxdkcqS32g
-         yB47jZSLhk4CmAlK34T1Wluf3DKZzrkQRTImETKXCF2eTIA7e/6oj/Bu3a92cvsdWhHW
-         Hg2GsMztgaKF8pYoiFNp24m+Oj4sBeVXotIJ0AWQTpgQMf37qWSB9meCzW/rRvbTWkj4
-         ih6bHe5EUaRuzCbT914A378ZterNUYRnMHlGxoSzFiLNclDj4vhx5HPybWWnvgqdZHf4
-         V0ysFw3t7EptZkBmnbfg0jHDkfQswsdrp7tsBc2O83GLbZ2QXbg2vAlrkDQuoJkQSZ7A
-         RtlA==
-X-Gm-Message-State: AOJu0YzLksvc3Nw89+FcWvqtAFWYZS7Bm/37G5tCW5BuTaGGlB3XqKgr
-	9orN7hy1YIm6r5bZLKJr1VtzQRbmOn7kbwqWI8hB3q48gWaWYSz/k8yl4b3nEw==
-X-Gm-Gg: ASbGnctDPAc/ppUUANuVxQTjtwvUzCWjEuTywnz+jPT4SczUz5beuBa7MSVa0C5Aqxk
-	fP0mXdYxzkNTtzkVELPyW64RUWjRyX/gaDsBr5S/cqSbiC+2H8P3zVIuq0Bhnv7lqw0K69fZ4CA
-	GJy13RRU5wv1+1qopmd91V3moQ2OuU92kI9Zmk8vHVVz6j2J9HB+azDS5c29WvlN+b+v/4YBqqo
-	R3JN5Ib0BTznzhYh3hiYd/lxffC+m/pKhRrVq1XEgAY24xwMKxxQ4IxRMSwKRksWTxxmAXkqCYW
-	1CChwH6E8i6ZmRYpZaw2Cc17pfRCnVHme2fMqp7lCEEJpkJd65VT4Opv6aZlAk81hC7GBc4jMoO
-	bDdclO1OAPDtjnAqd102uvSW9gbPEZBXSND8ghHi9TwyFC4wl7d7Fv7LkYGGTVdvscICi8lTywW
-	qsQZXDxGidHhOE0b7fuoTOfW6duiy5cA==
-X-Google-Smtp-Source: AGHT+IE2l3xlLw91WovPt8qQPJi+wMPlaiM/GcwhEm77qHymCryWgZs9KjelkVkS2fCbXrECdoTIqA==
-X-Received: by 2002:a05:600c:1554:b0:46e:7e22:ff6a with SMTP id 5b1f17b1804b1-47904aebeb2mr154536355e9.15.1764311174089;
-        Thu, 27 Nov 2025 22:26:14 -0800 (PST)
+        bh=UB5GYR2Y9gT++pcCe5c3Az2yczxHavHJBHiuIl3EX6M=;
+        b=BNifrhfRvJYNjAD8xh/UC38uVDHRhpYy/oHv/m3exnLNYzUAaadciidbM4rpy/008c
+         vO5vvZn6Yz2ZtRRnxv73vHoRsMGFaYiqfOPI3VteKzgq0Pzb1HI61c0xR4m8KfABn4Sh
+         QzEVk/a6EBehblJ4gdbdfM4PWJkLytlLIdanN1LFO/8Vp31hrDmbidJKlhVtjvxwSNeu
+         TPNZ3Q3JZ8zMzFvtx4ZgdpLOuMfSxqtIeFy9l8BxTIB0Ukl5ynOApp9Q7908JeWshlQa
+         QV+EZJ514p6aRnmUVOnGJiWTKFaLYGGxtg1cJc2MU22Xsgk98CfUU+JgPOIffOa14CBP
+         nCvg==
+X-Gm-Message-State: AOJu0YyFp7nNXywDTJk+YTxEoTzqQuqrobn7Cxpv2BtBcasKkBuKHK0V
+	je9cppJctW68tE51HcjuY6Fv/kWNHkOOH+3o1tHaesmNd0J4PpD6KZsWOQIRgw==
+X-Gm-Gg: ASbGncs36rJl3vlm04SxJvoBOqAMwWS/9ADa33PINHzdOqHHdwmLe64HJcczujD6in9
+	davrAeaUxWVljFdYQRmatIc1H7da48/NXA8vxHh8JTJOed0MYQqpmexjVSi4derGyM2jY226oSb
+	Ebxdn/yr4Hb89POIhoqplkc2hSbd0/j96fyZZIvplTQfPsVMw4nkJ93pfzyCsS58cM82xtzQ/ZO
+	fi7t4Ht40/zGfj/w71tbP6pOwmPbyseRc8L4QjFiqlZnmMMbY0gpxQn6J11R3Dwwd0GIeV/AYxP
+	RHp7LK5B95MvMvN0XLJ1PJ3Y0cd5Nbzl0G56fujYDxi9kag6NNPcRN4rGN9aH/QGdjgg7LTx413
+	vD2AYm9Gnims9bsCBa28QiR3o4lp2z1wA+QbXmZ5jdV/Za6yOTAFeFlvJH1DtEEEE7rfkWNAJpE
+	PKcJidjJ6z+gfKEFm0vN3RG0/QtMMJhg==
+X-Google-Smtp-Source: AGHT+IGovjaQ5vLsQynusCO5l26JM5kYXgGoeafhKOCj/rk1h9WGdu/NivmV/8bMJEKtUwLBLHPEFg==
+X-Received: by 2002:a05:600c:1c85:b0:471:9da:524c with SMTP id 5b1f17b1804b1-477c016eab5mr307279215e9.12.1764311175832;
+        Thu, 27 Nov 2025 22:26:15 -0800 (PST)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47906cb9715sm84784575e9.2.2025.11.27.22.26.13
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47906cb9715sm84784575e9.2.2025.11.27.22.26.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Nov 2025 22:26:13 -0800 (PST)
+        Thu, 27 Nov 2025 22:26:15 -0800 (PST)
 From: Anton Protopopov <a.s.protopopov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Anton Protopopov <a.s.protopopov@gmail.com>,
 	Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH bpf-next 1/2] bpf: force BPF_F_RDONLY_PROG on insn array creation
-Date: Fri, 28 Nov 2025 06:32:23 +0000
-Message-Id: <20251128063224.1305482-2-a.s.protopopov@gmail.com>
+Subject: [PATCH bpf-next 2/2] bpf: check for insn arrays in check_ptr_alignment
+Date: Fri, 28 Nov 2025 06:32:24 +0000
+Message-Id: <20251128063224.1305482-3-a.s.protopopov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251128063224.1305482-1-a.s.protopopov@gmail.com>
 References: <20251128063224.1305482-1-a.s.protopopov@gmail.com>
@@ -91,81 +91,46 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The original implementation added a hack to check_mem_access()
-to prevent programs from writing into insn arrays. To get rid
-of this hack, enforce BPF_F_RDONLY_PROG on map creation.
-
-Also fix the corresponding selftest, as the error message changes
-with this patch.
+Do not abuse the strict_alignment_once flag, and check if the map is
+an instruction array inside the check_ptr_alignment() function.
 
 Suggested-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 ---
- kernel/bpf/bpf_insn_array.c                        |  3 +++
- kernel/bpf/verifier.c                              | 13 ++++++-------
- tools/testing/selftests/bpf/progs/verifier_gotox.c |  2 +-
- 3 files changed, 10 insertions(+), 8 deletions(-)
+ kernel/bpf/verifier.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/bpf_insn_array.c b/kernel/bpf/bpf_insn_array.c
-index 61ce52882632..c96630cb75bf 100644
---- a/kernel/bpf/bpf_insn_array.c
-+++ b/kernel/bpf/bpf_insn_array.c
-@@ -55,6 +55,9 @@ static struct bpf_map *insn_array_alloc(union bpf_attr *attr)
- 
- 	bpf_map_init_from_attr(&insn_array->map, attr);
- 
-+	/* BPF programs aren't allowed to write to the map */
-+	insn_array->map.map_flags |= BPF_F_RDONLY_PROG;
-+
- 	return &insn_array->map;
- }
- 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d865848b789d..58f99557ba38 100644
+index 58f99557ba38..ddc68273d29f 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -7565,11 +7565,6 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 			verbose(env, "R%d leaks addr into map\n", value_regno);
- 			return -EACCES;
- 		}
--		if (t == BPF_WRITE && insn_array) {
--			verbose(env, "writes into insn_array not allowed\n");
--			return -EACCES;
--		}
--
- 		err = check_map_access_type(env, regno, off, size, t);
- 		if (err)
- 			return err;
-@@ -7584,10 +7579,14 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 		} else if (t == BPF_READ && value_regno >= 0) {
- 			struct bpf_map *map = reg->map_ptr;
- 
--			/* if map is read-only, track its contents as scalars */
-+			/*
-+			 * If map is read-only, track its contents as scalars,
-+			 * unless it is an insn array (see the special case below)
-+			 */
- 			if (tnum_is_const(reg->var_off) &&
- 			    bpf_map_is_rdonly(map) &&
--			    map->ops->map_direct_value_addr) {
-+			    map->ops->map_direct_value_addr &&
-+			    map->map_type != BPF_MAP_TYPE_INSN_ARRAY) {
- 				int map_off = off + reg->var_off.value;
- 				u64 val = 0;
- 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_gotox.c b/tools/testing/selftests/bpf/progs/verifier_gotox.c
-index 536c9f3e2170..607dad058ca1 100644
---- a/tools/testing/selftests/bpf/progs/verifier_gotox.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_gotox.c
-@@ -244,7 +244,7 @@ jt0_%=:								\
- }
- 
- SEC("socket")
--__failure __msg("writes into insn_array not allowed")
-+__failure __msg("write into map forbidden, value_size=16 off=8 size=8")
- __naked void jump_table_no_writes(void)
+@@ -6482,6 +6482,8 @@ static int check_ptr_alignment(struct bpf_verifier_env *env,
+ 		break;
+ 	case PTR_TO_MAP_VALUE:
+ 		pointer_desc = "value ";
++		if (reg->map_ptr->map_type == BPF_MAP_TYPE_INSN_ARRAY)
++			strict = true;
+ 		break;
+ 	case PTR_TO_CTX:
+ 		pointer_desc = "context ";
+@@ -7529,8 +7531,6 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
  {
- 	asm volatile ("						\
+ 	struct bpf_reg_state *regs = cur_regs(env);
+ 	struct bpf_reg_state *reg = regs + regno;
+-	bool insn_array = reg->type == PTR_TO_MAP_VALUE &&
+-			  reg->map_ptr->map_type == BPF_MAP_TYPE_INSN_ARRAY;
+ 	int size, err = 0;
+ 
+ 	size = bpf_size_to_bytes(bpf_size);
+@@ -7538,7 +7538,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 		return size;
+ 
+ 	/* alignment checks will add in reg->off themselves */
+-	err = check_ptr_alignment(env, reg, off, size, strict_alignment_once || insn_array);
++	err = check_ptr_alignment(env, reg, off, size, strict_alignment_once);
+ 	if (err)
+ 		return err;
+ 
 -- 
 2.34.1
 
