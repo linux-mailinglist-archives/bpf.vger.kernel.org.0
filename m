@@ -1,48 +1,101 @@
-Return-Path: <bpf+bounces-75688-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75689-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BEBCC91433
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 09:43:44 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95F1FC91472
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 09:45:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 989814E72E3
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 08:39:23 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EE9594ECE2C
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 08:41:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C80DA2E8B8E;
-	Fri, 28 Nov 2025 08:39:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B81D2F9D8C;
+	Fri, 28 Nov 2025 08:40:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UUD92oud"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gFwyM+vG";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="RUp1JPjx"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CDB52E7F25
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 08:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5AD2EBDF2
+	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 08:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764319160; cv=none; b=uOJLbFMLWzyoHuThgsVd/3ujGwEtZkUhuK11yREA938oXMq++FV6M5qUE2F0ioRILDdF/zt9ovDKWe8Cac6K6sOz6gMkR2mgr0Ya5B18U00I3K4HLMvfwCRfC8h6BUL4Bg/+2a7nUyI3J34WapvEFDmiPnD9SGmCmugDf3Upil0=
+	t=1764319233; cv=none; b=KyelQ9hwd7vCrOgIdNxkIVf05mXTqexbPBH+rIpInho2kNzc3W4ucJy5DYqHnMuOnU2rfQ1fVykydPzrIhREF/ep/V/Jw3YL9r0YhyqOThINdAevXbU/3KWTnia/eo4sM9mu9eU0AHPT/OFKAgi5VrsGXeMRU0ULq4uSzJn6IF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764319160; c=relaxed/simple;
-	bh=emweKubAm92oT2D1EO70r45t37gZ6Qzd9aHduwcG1jk=;
+	s=arc-20240116; t=1764319233; c=relaxed/simple;
+	bh=FAr/GGpauPyMQGkemE6ZZD1cchU8P44wQZ64H/RgQSc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dFLK7lIkg0CDUxm2PBGW5Eigu23wlyYgEWZFVf5QGbuCW6Zi0B8ozKcNOpSC5AncwxWIWNjN2jbVfpof6ZkzPAVJ7pqVX63s/qxleOiueagwg/2dvC2r6edhMJ/T4t1AxW936jdiKAbW9rnVJRxtnQCgMzCbFDqVv7SpSK/+4Vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UUD92oud; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA901C4CEF1;
-	Fri, 28 Nov 2025 08:39:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764319159;
-	bh=emweKubAm92oT2D1EO70r45t37gZ6Qzd9aHduwcG1jk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=UUD92oudvVRiptW+fkQhAqZxu8ZE/Bh1gFsXnoqwYdARGRc2ccvI3eXNieYFyVuEp
-	 uvvcXfX0Xrpvyp3fc8Wzv3tCUPwryr/fZHwX/JLPS4bT5FVnF+xejTfXCJgyXKrYlZ
-	 sEs7G8/jgAH0yz80dxHWKP/rwdIAIg33mcwOIOB/gMSQBVFYQwh4rB9SOK5Px/5Yey
-	 9CfFgdbviGUy6nS/xiaSUXdTR6zt6r5H1RUafvKtTcDRY/HIprBax6fR7/6l8R5TeZ
-	 ER5Ja6qPPgrEdu/rUyfdMbZAhl1PaxL6KNKV5ydtcxuhhACPEbhwYSr9izr9iheig1
-	 MS2X/VGvfZ/jg==
-Message-ID: <e52bf30d-e63b-44ed-9808-ee3e612e0ba1@kernel.org>
-Date: Fri, 28 Nov 2025 09:39:06 +0100
+	 In-Reply-To:Content-Type; b=Yxb3oE3eeQ0xNJEVMjx52IibV4UnR93xkRanC2iFel097edzYPLiHI5AFkXAXR9MgRBO5Wf5FjYhD5TXPQdAPcqywpjEZLBwtBE8nBMd42doSTuGgN1YW83Svebovxak69ABV9ZI5Ciwynh+C3Ny/iPjMriILyX/2wrE4xvwG0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gFwyM+vG; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=RUp1JPjx; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1764319225;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JOXCyi+N+bccxvaPF3v4Z/F/wizbKPeceUefBWj6M50=;
+	b=gFwyM+vGZgjgsIvyW0yUCLKmezdmEoGscp8mIGaiU2fM1wwyYn2F41OiETk7iHRuGbaL2O
+	l3wUv2nmnGhOPtLryAz2kZijO3VC0dwTRZ2LpCyX8UPw7B6fHVm9o/DPpm6GGFiHi0j/u/
+	KCiCNJvUQ7K/6xuOJFAT4mjNNMItEzg=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-528-wDof4KrQNoS5hWANe8vklA-1; Fri, 28 Nov 2025 03:40:21 -0500
+X-MC-Unique: wDof4KrQNoS5hWANe8vklA-1
+X-Mimecast-MFC-AGG-ID: wDof4KrQNoS5hWANe8vklA_1764319220
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-477a1e2b372so11189695e9.2
+        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 00:40:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1764319220; x=1764924020; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JOXCyi+N+bccxvaPF3v4Z/F/wizbKPeceUefBWj6M50=;
+        b=RUp1JPjxLc2QvlSfGlJcvPfsStR0TDGxWdwlKorle1aiRS3rPt+IIXRt6GGYx74u5v
+         hN50NNYHKlI+UcHWidE21bg3IOWrVlE+Jjh3mVNFFHxRwCCYO6vCZ67WkzVZuW3TQBm3
+         CDLefF6DDB0sJ1tZIghzmc1ZeBFfHlN50qvYL0K/QMmBJgZj2NQot35Ff5nPPZ368Hd6
+         0RF7O6QFwC+45Xpq7Oiunk2eJTdg+XTxPb63cP8rpTMeZpjntzlHZTApwE25X69Dnd02
+         3myfP9UZXgAEu4sILKaPQHXbiiG8iDde2PmZm0kEtmEC9l+O1JGQa716ZiLAMqzHUTiW
+         arzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764319220; x=1764924020;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JOXCyi+N+bccxvaPF3v4Z/F/wizbKPeceUefBWj6M50=;
+        b=UD4NxWUx7KSwEmnQKP3gYxTSXpWp613qqFCBbijMLLun9mvxfjOYfOL4kcGhYXb+Wb
+         jns8UcAuTlagqRnpWlraPXp9Z+qghqUizr+jZLQhlwfHCYaS9FdHXkgkBmtIg9oiyZ6w
+         wGtWv7X2affXLuSLki4f+Mq5U80G9FszkEnX83YrGYQl5CI7zcMFKHk39qZ1AwxU8vRT
+         tMFH7XjvLWC1GViDTBrTeCYfWk8wTiRHo418mzIWOaLrn/YQ++ZBgiWAKq8FEKaVDmja
+         5tgWqmahmv2x2u8js0x16PYEnTADHC0DHrRC5kez1pwS2Q2mc+Yv7BL4BeR5g1SHoEQx
+         KJOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUna8WFfKSUBjQtw6GKIQJxGfyIuww3mwKqlqRyZxtW3tU67T6ngV3ap4zBbgVHPNs6QFY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwL5TI5Hmdry2qOqtoGNn4qi5wZpxegjJ4K/3tmev1PmR81oY/Z
+	nOyS9rOWBlG7KI+viLqbpNUagS3nx6/4I9NWvdaLXXA0lOO1ALaHALhv820VxXUh5INF5afS1JV
+	r/SDUGS0+PeZ1/EdC/9kJakX1jac/0vcPL2Gq79J536Xhd4P936kc3A==
+X-Gm-Gg: ASbGncuGLo7CcfOiaWjb6PrOjCPlehXPmjSgub7Su1NR3mGBiRnfOLjdu1Q1Vdv3tvh
+	asgN85VjS2vrDw8G0QMrNBVPlqKyx6ei/pHeZxwlUlyiHDmti88VDLiQoUPFYs5+zIPp79IIWyq
+	/Lora5goOqAQZ46yiPAz0aCQxpLfI2qP/XWzdhX896pn7x1zaKtnXS5rk2wKSxYhDmsydH5raej
+	C67XPnZ9764PByywwmZocig8Q1+YvSBpt0fnJV6NlnpNk3U3jcShYG9zlIveagsdqKkEj3KxPWS
+	paUJnVSZvzUnq1T57WTCGb4hwk5FvpJhSQwuv7GrGYq+BS4nTPdyCrf8f2lVLQxoKgvYQZtNxqz
+	VNRN0LAcfOyOosg==
+X-Received: by 2002:a05:600c:470d:b0:471:1717:411 with SMTP id 5b1f17b1804b1-477c01edab1mr330071485e9.24.1764319220212;
+        Fri, 28 Nov 2025 00:40:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGc0xj3JcNVsG3D1+mRDnvoXzRumm+1p3khoPuro2XJiejhlWvTPbmuCWFmwSqh/cpTWZ4R1A==
+X-Received: by 2002:a05:600c:470d:b0:471:1717:411 with SMTP id 5b1f17b1804b1-477c01edab1mr330070905e9.24.1764319219730;
+        Fri, 28 Nov 2025 00:40:19 -0800 (PST)
+Received: from [192.168.88.32] ([212.105.155.212])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47913870b38sm23292005e9.15.2025.11.28.00.40.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Nov 2025 00:40:19 -0800 (PST)
+Message-ID: <66f0659a-c7f1-4ebd-8f75-98e053c9f390@redhat.com>
+Date: Fri, 28 Nov 2025 09:40:17 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,140 +103,98 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 mm-new 06/10] mm: bpf-thp: add support for global mode
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Zi Yan <ziy@nvidia.com>,
- Liam Howlett <Liam.Howlett@oracle.com>, npache@redhat.com,
- ryan.roberts@arm.com, dev.jain@arm.com, Johannes Weiner
- <hannes@cmpxchg.org>, usamaarif642@gmail.com,
- gutierrez.asier@huawei-partners.com, Matthew Wilcox <willy@infradead.org>,
- Amery Hung <ameryhung@gmail.com>, David Rientjes <rientjes@google.com>,
- Jonathan Corbet <corbet@lwn.net>, Barry Song <21cnbao@gmail.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Tejun Heo <tj@kernel.org>,
- lance.yang@linux.dev, Randy Dunlap <rdunlap@infradead.org>,
- Chris Mason <clm@meta.com>, bpf <bpf@vger.kernel.org>,
- linux-mm <linux-mm@kvack.org>
-References: <20251026100159.6103-1-laoar.shao@gmail.com>
- <20251026100159.6103-7-laoar.shao@gmail.com>
- <CAADnVQKziFmRiVjDpjtYcmxU74VjPg4Pqn2Ax=O2SsfjLLy5Zw@mail.gmail.com>
- <CALOAHbD+9gxukoZ3OQvH2fNH2Ff+an+Dx-fzx_+mhb=8fZZ+sw@mail.gmail.com>
- <CAADnVQK9kp_5zh0gYvXdJ=3MSuXTbmZT+cah5uhZiGk5qYfckw@mail.gmail.com>
- <9f73a5bd-32a0-4d5f-8a3f-7bff8232e408@kernel.org>
- <CALOAHbCR3Y=GCpX8S9CctONO=Emh4RvYAibHU=ZQyLP1s0MOVQ@mail.gmail.com>
-From: "David Hildenbrand (Red Hat)" <david@kernel.org>
+Subject: Re: [PATCH net-next v3] xsk: skip validating skb list in xmit path
+To: Jason Xing <kerneljasonxing@gmail.com>, edumazet@google.com
+Cc: davem@davemloft.net, kuba@kernel.org, bjorn@kernel.org,
+ magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+ jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org,
+ Jason Xing <kernelxing@tencent.com>
+References: <20251125115754.46793-1-kerneljasonxing@gmail.com>
+ <b859fd65-d7bb-45bf-b7f8-e6701c418c1f@redhat.com>
+ <CAL+tcoDdntkJ8SFaqjPvkJoCDwiitqsCNeFUq7CYa_fajPQL4A@mail.gmail.com>
+ <f8d6dbe0-b213-4990-a8af-2f95d25d21be@redhat.com>
+ <CAL+tcoAY5uaYRC2EyMQTn+Hjb62KKD1DRyymW+M27BT=n+MUOw@mail.gmail.com>
 Content-Language: en-US
-In-Reply-To: <CALOAHbCR3Y=GCpX8S9CctONO=Emh4RvYAibHU=ZQyLP1s0MOVQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <CAL+tcoAY5uaYRC2EyMQTn+Hjb62KKD1DRyymW+M27BT=n+MUOw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 11/28/25 03:53, Yafang Shao wrote:
-> On Thu, Nov 27, 2025 at 7:48 PM David Hildenbrand (Red Hat)
-> <david@kernel.org> wrote:
-
-Lorenzo commented on the upstream topic, let me mostly comment on the 
-other parts:
->>> Attaching st_ops to task_struct or to mm_struct is a can of worms.
->>> With cgroup-bpf we went through painful bugs with lifetime
->>> of cgroup vs bpf, dying cgroups, wq deadlock, etc. All these
->>> problems are behind us. With st_ops in mm_struct it will be more
->>> painful. I'd rather not go that route.
+On 11/28/25 2:44 AM, Jason Xing wrote:
+> On Fri, Nov 28, 2025 at 1:58 AM Paolo Abeni <pabeni@redhat.com> wrote:
+>> On 11/27/25 1:49 PM, Jason Xing wrote:
+>>> On Thu, Nov 27, 2025 at 8:02 PM Paolo Abeni <pabeni@redhat.com> wrote:
+>>>> On 11/25/25 12:57 PM, Jason Xing wrote:
+>>>>> This patch also removes total ~4% consumption which can be observed
+>>>>> by perf:
+>>>>> |--2.97%--validate_xmit_skb
+>>>>> |          |
+>>>>> |           --1.76%--netif_skb_features
+>>>>> |                     |
+>>>>> |                      --0.65%--skb_network_protocol
+>>>>> |
+>>>>> |--1.06%--validate_xmit_xfrm
+>>>>>
+>>>>> The above result has been verfied on different NICs, like I40E. I
+>>>>> managed to see the number is going up by 4%.
+>>>>
+>>>> I must admit this delta is surprising, and does not fit my experience in
+>>>> slightly different scenarios with the plain UDP TX path.
+>>>
+>>> My take is that when the path is extremely hot, even the mathematics
+>>> calculation could cause unexpected overhead. You can see the pps is
+>>> now over 2,000,000. The reason why I say this is because I've done a
+>>> few similar tests to verify this thought.
 >>
->> That's valuable information, thanks. I would have hoped that per-MM
->> policies would be easier.
+>> Uhm... 2M is not that huge. Prior to the H/W vulnerability fallout
+>> (spectre and friends) reasonable good H/W (2016 old) could do ~2Mpps
+>> with a single plain UDP socket.
 > 
-> The per-MM approach has a performance advantage over per-MEMCG
-> policies. This is because it accesses the policy hook directly via
+> Interesting number that I'm not aware of. Thanks.
 > 
->    vma->vm_mm->bpf_mm->policy_hook()
+> But for now it's really hard for xsk (in copy mode) to reach over 2M
+> pps even with some recent optimizations applied. I wonder how you test
+> UDP? Could you share the benchmark here?
 > 
-> whereas the per-MEMCG method requires a more expensive lookup:
-> 
->    memcg = get_mem_cgroup_from_mm(vma->vm_mm);
->    memcg->bpf_memcg->policy_hook();
-> > This lookup could be a concern in a critical path. However, this
-> performance issue in the per-MEMCG mode can be mitigated. For
-> instance, when a task is added to a new memcg, we can cache the hook
-> pointer:
-> 
->    task->mm->bpf_mm->policy_hook = memcg->bpf_memcg->policy_hook
-> 
-> Ultimately, we might still introduce a mm_struct:bpf_mm field to
-> provide an efficient interface.
+> IMHO, xsk should not be slower than a plain UDP socket. So I think it
+> should be a huge room for xsk to improve...
 
-Right, caching is what I would have proposed. I would expect some 
-headakes with lifetime, but probably nothing unsolvable.
+I can agree with that. Do you have baseline UDP figures for your H/W?
 
-
->> Sounds like cgroup-bpf has sorted
->> out most of the mess.
+>> Also validate_xmit_xfrm() should be basically a no-op, possibly some bad
+>> luck with icache?
 > 
-> No, the attach-based cgroup-bpf has proven to be ... a "can of worms"
-> in practice ...
->   (I welcome corrections from the BPF maintainers if my assessment is
-> inaccurate.)
-
-I don't know what's right or wrong here, as Alexei said the "mm_struct" 
-based one would be a can of worms and that the the cgroup-based one 
-apparently solved these issues ("All these problems are behind us."), 
-that's why I asked for some clarifications. :)
-
-[...]
-
+> Maybe. I strongly feel that I need to work on the layout of those structures.
 >>
->> Some of what Yafang might want to achieve could maybe at this point be
->> maybe achieved through the prctl(PR_SET_THP_DISABLE) support, including
->> extensions we recently added [1].
->>
->> Systemd support still seems to be in the works [2] for some of that.
->>
->>
->> [1] https://lwn.net/Articles/1032014/
->> [2] https://github.com/systemd/systemd/pull/39085
+>> Could you please try the attached patch instead?
 > 
-> Thank you for sharing this.
-> However, BPF-THP is already deployed across our server fleet and both
-> our users and my boss are satisfied with it. As such, we are not
-> considering a switch. The current solution also offers us a valuable
-> opportunity to experiment with additional policies in production.
+> Yep, and I didn't manage to see any improvement.
 
-Just to emphasize: we usually don't add two mechanisms to achieve the 
-very same end goal. There really must be something delivering more value 
-for us to accept something more complex. Focusing on solving a solved 
-problem is not good.
+That is unexpected. At very least that 1% due to validate_xmit_xfrm()
+should go away. Could you please share the exact perf command line you
+are using? Sometimes I see weird artifacts in perf reports that go away
+adding the ":ppp" modifier on the command line, i.e.:
 
-If some company went with a downstream-only approach they might be stuck 
-having to maintain that forever.
+perf record -ag cycles:ppp <workload>
 
-That's why other companies prefer upstream-first :)
+>> I think you still need to call validate_xmit_skb()
+> 
+> I can simplify the whole logic as much as possible that is only
+> suitable for xsk: only keeping the linear check. That is the only
+> place that xsk could run into.
+What about checksum offload? If I read correctly xsk could build
+CSUM_PARTIAL skbs, and they will need skb_csum_hwoffload_help().
 
+Generally speaking if validate_xmit_skb() takes a relevant slice of time
+for frequently generated traffic, I guess we should try to optimize it.
 
-Having that said, the original reason why I agreed that having bpf for 
-THP can be valuable is that I see a lot more value for rapid prototyping 
-and policies once you can actually control on a per-VMA basis (using vma 
-size, flags, anon-vma names etc) where specific folio orders could be 
-valuable, and where not. But also, possibly where we would want to waste 
-memory and where not.
+@Eric: if you have the data handy, do you see validate_xmit_skb() as a
+relevant cost in your UDP xmit tests?
 
-As we are speaking I have a customer running into issues [1] with 
-virtio-balloon discarding pages in a VM and khugepaged undoing part of 
-that work in the hypervisor. The workaround of telling khugepaged to not 
-waste memory in all of the system really feels suboptimal when we know 
-that it's only the VM memory of such VMs (with balloon deflation 
-enabled) where we would not want to waste memory but still use THPs.
+Thanks,
 
-[1] https://issues.redhat.com/browse/RHEL-121177
+Paolo
 
--- 
-Cheers
-
-David
 
