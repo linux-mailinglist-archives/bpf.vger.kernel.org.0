@@ -1,121 +1,186 @@
-Return-Path: <bpf+bounces-75717-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FF14C922ED
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 14:53:11 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34563C92323
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 14:59:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 14CB834C3E2
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 13:53:11 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 155834E29CB
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 13:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C5B8241114;
-	Fri, 28 Nov 2025 13:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0FAF3090F7;
+	Fri, 28 Nov 2025 13:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YRS3PbHj"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="J71V3TZo";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="J71V3TZo"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9B617A2F6
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 13:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85CF91C701F
+	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 13:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764337986; cv=none; b=B55xYeUBKICUm6f1hS5kWpt8rphL/Fknsqf/30+au75BZJtrdnkuOP39wUYeO0Yrk5nB1sYtVJ29LGbBJyMXxZdWphTkwLq6p0D6SM+EDWSufjT8mqpIR//wIsqfgwKiJfTHGWeML2leXs9qAS/vvHYTp8mk2LT2zy1LOmPtO4U=
+	t=1764338378; cv=none; b=SBKil+Ch4X8E/oTkxHX8ajwGAqgUtPLaawWkkec4io8Q8+EgXWqenaRVyLoae936FqgvRssOSBumo0vwfvgwvf5tGyR2UYmutwxkHa0dn1pJrRDQQ35jVS8bRWwaFVboOg/44ePSkKPFZWM8AgicfjQL6pR4NUi+AEqcS06qzPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764337986; c=relaxed/simple;
-	bh=pbBawiQmtNJdVZxeYvEt9G/XaBTVKaR9xIboieApa7U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mgVNwfoBZLm4tju75/PGhXo4O6NdxdZ3ZgDquVzS2jAbziCfmI4OK4PXjRog1NIUu48yTD8P4wphlVnU0BUJMFWId87gKDtS+Y0tjS8XQtOMC9BEiLtj0RkL4izR3dSRs/Y6jfqZJa/AmfL+Xu1BrBYvTVyyJNISYboQv/LKI3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YRS3PbHj; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1764337984;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pbBawiQmtNJdVZxeYvEt9G/XaBTVKaR9xIboieApa7U=;
-	b=YRS3PbHj+7O97VPNDsTTUg68MEaW4KrnK0QbuDQr+VSqs7t6MTcSAfXlAFgYIuNKgl/CGE
-	AEppqgvLmKJV50QCsN3MEZqS0WVvtMmwYTGU6PBUXnCKtOZSudOiD0HcjNKc0La6l24SEZ
-	e/GpOU6FzoFbu8W3NIavNsZoOyEKing=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-686-yRGj3X2XPK-x98fqMCSXAA-1; Fri, 28 Nov 2025 08:53:02 -0500
-X-MC-Unique: yRGj3X2XPK-x98fqMCSXAA-1
-X-Mimecast-MFC-AGG-ID: yRGj3X2XPK-x98fqMCSXAA_1764337981
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-595892a393eso1197400e87.3
-        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 05:53:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764337981; x=1764942781;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=pbBawiQmtNJdVZxeYvEt9G/XaBTVKaR9xIboieApa7U=;
-        b=LEYujbuZspHvk+uQ33zbMA7yGc3IQBXPug8cmI5vio/96agkJWKLjPCpdKzg6kxZJO
-         oKrGXf9bRJ9oMUzSOrAETbn8vqDZoEtj7YN2ytD7bUc+OYnNYD4DTi6Qdngxitx38yoW
-         /It+ZCgoNayECNLI6YzxIJtrqkJ1s52LYg6j2hPJxGO/LxHl8g5cxt+naophNy10cpIu
-         GCq00ZZPSngx7CfOx2GVljzG0epfUYv4g5rzT4UFe2zOlAybOsPTa2gOfoRqFDsH/JF6
-         gBIGJWi1I0+K6e13sXGWxvY4krbetVXH1vGs+nyf0ilDrO29CPcb3xp9Bnk07jpv8iu3
-         G37g==
-X-Forwarded-Encrypted: i=1; AJvYcCXOHljdit4RpuFkADwQ9hXRXYSaqtzrJ3yX2xOnoLnP1j3Lwf87k9ncvujSmi/FTj+Vaj4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBNzPIq0dB6XEy3G++/ndDCg/Pc+naJzFv6ZLby5LHyAFQ/YvJ
-	YThsNCILs6EDyMhvCwHyB8US4YrLOSL742FBKHyRqnNLGQhgmqQpJKQ7juFf6sjHZuxnuB/bn9Y
-	WdgxoBSNK8wYIEj3dH5d6FqPFur28WOzaGvUG5aXndhd05WRdDxmGe6ChQCkSBmgt4DRFPvB/At
-	s3jCDxC45Vh1dIAEulw5NWiQh19Y0C
-X-Gm-Gg: ASbGncsf+xStRmF7k02YXuyGJ2ag5idv05I03V7W7jfk4A7e+XmiYC7C5KK/wu7TrBI
-	INSmvpj2SFvauA947uekxIGMT9hoAnJg2nsdbvDfFGvi3wnr6PfVbPH8moiqkI9OjtKa//upY/W
-	Q8febEu1QZwCR/mvHjR0j/heUzAGVE323rJYetd5Q3zT9xRttUW+9dHBVe1GNmgH/IYg==
-X-Received: by 2002:a05:6512:110a:b0:594:2df2:84c8 with SMTP id 2adb3069b0e04-596a3ecf652mr8065922e87.33.1764337981164;
-        Fri, 28 Nov 2025 05:53:01 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGxr/p6KFwbxmBeYyfFkOgez8vD9eAT2uUP849jN8015e5rnJowKoYbVC9lcjOKCZyBvhu+4pGX0/eZBkRGR8U=
-X-Received: by 2002:a05:6512:110a:b0:594:2df2:84c8 with SMTP id
- 2adb3069b0e04-596a3ecf652mr8065918e87.33.1764337980757; Fri, 28 Nov 2025
- 05:53:00 -0800 (PST)
+	s=arc-20240116; t=1764338378; c=relaxed/simple;
+	bh=y7MGR3TiuYXzQGOBsWXv2gEUuADCNMhyD/vJITxbwpI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PzYZjRDFAs781o2ZKV6EMZBndEE3Ubik8ZGrerJJPo2JRECMY+u65gsgIP5475XW3URtTIH39oltYwd53ScjdG6lwmhyOtWJXtJKVcSHUQ5zuJ4XM0x9WF/HsmRLUPEpGJOH44a2DC4yWSnHwPOt4I0OO7kgaQUOqe1wIRU1tRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=J71V3TZo; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=J71V3TZo; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from pathway.suse.cz (unknown [IPv6:2a07:de40:b2bf:1b::12bd])
+	by smtp-out2.suse.de (Postfix) with ESMTP id 1C22B5BDC1;
+	Fri, 28 Nov 2025 13:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1764338367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=HOcG+jrPa6OGfVHEEKDIojvHtUAzk3DbcK43E7DAYo8=;
+	b=J71V3TZoTu1Zisce46aIKy0DFNQhNFxLK+SsbhJDT3wgAVQ6HLA7J5UVhzS5dLBNDYKd5Q
+	+SKtwRpUYX1QuuQZtM/aOamHwbKkn1yjtaZ5TJBDoIvHEfZiQApr13WJnYyhwGHGtAHTw1
+	P+ibyDAKNK0SujnrYeRO1LqU0MQatjs=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=J71V3TZo
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1764338367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=HOcG+jrPa6OGfVHEEKDIojvHtUAzk3DbcK43E7DAYo8=;
+	b=J71V3TZoTu1Zisce46aIKy0DFNQhNFxLK+SsbhJDT3wgAVQ6HLA7J5UVhzS5dLBNDYKd5Q
+	+SKtwRpUYX1QuuQZtM/aOamHwbKkn1yjtaZ5TJBDoIvHEfZiQApr13WJnYyhwGHGtAHTw1
+	P+ibyDAKNK0SujnrYeRO1LqU0MQatjs=
+From: Petr Mladek <pmladek@suse.com>
+To: Petr Pavlu <petr.pavlu@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <kees@kernel.org>
+Cc: Aaron Tomlin <atomlin@atomlin.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Daniel Gomez <da.gomez@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-modules@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Petr Mladek <pmladek@suse.com>
+Subject: [PATCH v3 0/7] kallsyms: Prevent invalid access when showing module buildid
+Date: Fri, 28 Nov 2025 14:59:13 +0100
+Message-ID: <20251128135920.217303-1-pmladek@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251117184409.42831-1-wander@redhat.com> <20251117184409.42831-2-wander@redhat.com>
- <CADDUTFwK=TuhMcfr9C4NXOEQc89wBvdZtv+DtYFuHfc9wh5R=A@mail.gmail.com>
-In-Reply-To: <CADDUTFwK=TuhMcfr9C4NXOEQc89wBvdZtv+DtYFuHfc9wh5R=A@mail.gmail.com>
-From: Wander Lairson Costa <wander@redhat.com>
-Date: Fri, 28 Nov 2025 10:52:49 -0300
-X-Gm-Features: AWmQ_bkeS6Y54WrCji-DPm62oeGH0r4pGKqlqBcxo7rjyOZqWF3Uwi0VtVBxrd0
-Message-ID: <CAAq0SUnYnopSwd2ir_J1roFU31SzK5SQkv1L+WhP=T=Xbq479A@mail.gmail.com>
-Subject: Re: [rtla 01/13] rtla: Check for memory allocation failures
-To: Costa Shulyupin <costa.shul@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Tomas Glozar <tglozar@redhat.com>, 
-	Ivan Pravdin <ipravdin.official@gmail.com>, Crystal Wood <crwood@redhat.com>, 
-	John Kacur <jkacur@redhat.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	"open list:Real-time Linux Analysis (RTLA) tools" <linux-trace-kernel@vger.kernel.org>, 
-	open list <linux-kernel@vger.kernel.org>, 
-	"open list:BPF [MISC]:Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [15.13 / 50.00];
+	SPAM_FLAG(5.00)[];
+	NEURAL_SPAM_LONG(3.50)[1.000];
+	BAYES_HAM(-3.00)[99.99%];
+	HFILTER_HOSTNAME_UNKNOWN(2.50)[];
+	RDNS_NONE(2.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ONCE_RECEIVED(1.20)[];
+	MID_CONTAINS_FROM(1.00)[];
+	HFILTER_HELO_IP_A(1.00)[pathway.suse.cz];
+	R_MISSING_CHARSET(0.50)[];
+	HFILTER_HELO_NORES_A_OR_MX(0.30)[pathway.suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	MIME_GOOD(-0.10)[text/plain];
+	NEURAL_HAM_SHORT(-0.06)[-0.285];
+	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_EQ_ENVFROM(0.00)[];
+	DIRECT_TO_MX(0.00)[git-send-email 2.52.0];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TAGGED_RCPT(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_CC(0.00)[atomlin.com,iogearbox.net,gmail.com,kernel.org,arm.com,google.com,vger.kernel.org,suse.com];
+	DKIM_TRACE(0.00)[suse.com:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim];
+	RCVD_COUNT_ZERO(0.00)[0];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b2bf:1b::12bd:from];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com]
+X-Spamd-Bar: +++++++++++++++
+X-Rspamd-Queue-Id: 1C22B5BDC1
+X-Spam-Flag: YES
+X-Spam-Score: 15.13
+X-Spam-Level: ***************
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: add header
+X-Spam: Yes
 
-On Fri, Nov 28, 2025 at 10:30=E2=80=AFAM Costa Shulyupin <costa.shul@redhat=
-.com> wrote:
->
-> On Mon, 17 Nov 2025 at 20:54, Wander Lairson Costa <wander@redhat.com> wr=
-ote:
-> > Add checks for the return value of memory allocation functions
-> > and return an error in case of failure. Update the callers to
-> > handle the error properly.
->
-> Would you like to consider using fatal("Out of memory") instead of
-> returning an error code?
-> Anyway there is no work around for out of memory.
->
+This patchset is cleaning up kallsyms code related to module buildid.
+It is fixing an invalid access when printing backtraces, see [v1] for
+more details:
 
-Good idea. I am going to update the patches.
+  + 1st..4th patches are preparatory.
 
-> Costa
->
+  + 5th and 6th patches are fixing bpf and ftrace related APIs.
+
+  + 7th patch prevents a potential race.
+
+
+Changes against [v2]:
+
+  + Fixed typos in commit message [Alexei]
+
+  + Added Acks [Alexei]
+
+
+Changes against [v1]:
+
+  + Added existing Reviewed-by tags.
+
+  + Shuffled patches to update the kallsyms_lookup_buildid() initialization
+    code 1st.
+
+  + Initialized also *modname and *modbuildid in kallsyms_lookup_buildid().
+
+  + Renamed __bpf_address_lookup() to bpf_address_lookup() and used it
+    in kallsyms_lookup_buildid(). Did this instead of passing @modbuildid
+    parameter just to clear it.
+
+
+[v1] https://lore.kernel.org/r/20251105142319.1139183-1-pmladek@suse.com
+[v2] https://lore.kernel.org/r/20251112142003.182062-1-pmladek@suse.com
+
+
+Petr Mladek (7):
+  kallsyms: Clean up @namebuf initialization in
+    kallsyms_lookup_buildid()
+  kallsyms: Clean up modname and modbuildid initialization in
+    kallsyms_lookup_buildid()
+  module: Add helper function for reading module_buildid()
+  kallsyms: Cleanup code for appending the module buildid
+  kallsyms/bpf: Rename __bpf_address_lookup() to bpf_address_lookup()
+  kallsyms/ftrace: Set module buildid in ftrace_mod_address_lookup()
+  kallsyms: Prevent module removal when printing module name and buildid
+
+ arch/arm64/net/bpf_jit_comp.c   |  2 +-
+ arch/powerpc/net/bpf_jit_comp.c |  2 +-
+ include/linux/filter.h          | 26 ++----------
+ include/linux/ftrace.h          |  6 ++-
+ include/linux/module.h          |  9 ++++
+ kernel/bpf/core.c               |  4 +-
+ kernel/kallsyms.c               | 73 ++++++++++++++++++++++++---------
+ kernel/module/kallsyms.c        |  9 +---
+ kernel/trace/ftrace.c           |  5 ++-
+ 9 files changed, 81 insertions(+), 55 deletions(-)
+
+-- 
+2.52.0
 
 
