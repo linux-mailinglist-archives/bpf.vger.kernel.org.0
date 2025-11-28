@@ -1,149 +1,213 @@
-Return-Path: <bpf+bounces-75670-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75671-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7313C90648
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 01:22:22 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F410C90869
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 02:45:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 014B14E3229
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 00:22:20 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 890DD34F0EA
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 01:45:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B812F1F8908;
-	Fri, 28 Nov 2025 00:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE8E11FC0EF;
+	Fri, 28 Nov 2025 01:45:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OWY91VvW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Owfm+QZ1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FF31E3DDE
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 00:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC791149C7B
+	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 01:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764289336; cv=none; b=Uuu7kH0sXWVP6A1N76+lGGkmyaZgmgmR3nJwmvr/bnNtCjgMpa9V/+a/PHQMLTsUQLVzlCCnnGdLvSt5MKCfE8gRSfz4fEswQtPFEFyIQvv0GW9XzwGwGZooyrYcHx+N+Zu//9DNgT5uFOGHNQlHAjEci2t1kpYWQE9JWbzlvrE=
+	t=1764294328; cv=none; b=aTU+AvaJZjHj4GrqgnNV04mdK7Ecw4P9iWeIuN5wb8lASPGIFUaCAJg/dzZP6zplU2czcLCJoY08pLDw6HxHZzOBSPJIU/79ACuJf3zj88dMwqWtLmseHQO7ajEtKeQp3ixUPBCJIQVuPQaoxFsrO5IWpZft+2iIRioWBZY4hcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764289336; c=relaxed/simple;
-	bh=uqb/L/q3aY7qhk1wEM4sR3q7k+W+i/F66aMpMLso4Cc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=U9lSeYd08J1FLR1k5nQnhl2QX6Xpp8yfey4+FaV0JKZaITUNdZ/oExv5Zv+bzTSAEeQeSh1TEv8M31BPn9F8w6of87AwmIafaAMgsJXCia+/fNkH8zJL0XFCzrfcDFV6+WLn05NGjGRyrbtMt4eFLYy6kqjXKMnAEOVGAQjq4D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OWY91VvW; arc=none smtp.client-ip=209.85.208.176
+	s=arc-20240116; t=1764294328; c=relaxed/simple;
+	bh=w0zib1ythtvHXUMpM2pXhvYsEPH0d3PAQM8wUU6Yai0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NXjddo9TKkQExpiaVc7viSIYfzSH1wudDOfS5iIaB4F73pk0zzVTdyOqPOwH4wpSWxy0OxkbVg6aN10LKWgejCTPoMlAqDTrCDkMG7iUwU12pRVd3MzH1nrzlxpRdQUhJGRS+xOT+7k6U06HyclK1+8WZjTjlWvzKR024m9lvmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Owfm+QZ1; arc=none smtp.client-ip=209.85.166.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-37a2dcc52aeso12786481fa.0
-        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 16:22:14 -0800 (PST)
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-43376624a8fso7511185ab.0
+        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 17:45:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764289332; x=1764894132; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zf6N60/mMdoTovxxehc7oTOUR+OA9D6npRAoGA+CQCo=;
-        b=OWY91VvWaATLp6ISzZv8k3zefRR7LM77xrzVMHk7k9G33mMLkceLm1snG/iK+m0iLD
-         xknVfOZOLu/06YSgSB4Go8go5LZ7zPrzk5uE7eNHJevSFhPEerJL7L55Hz2ZeYUSXnB8
-         D7CrhwlHRHeIztdBaAxaolpzN0DC8rS37MguRBIPyI4yTno+1+VkOm7mEhLG698vuPGB
-         AgauAxdEMUJXFX8qAuwnt1aFD3vJaOxHltVsFMQrtq9ba/cpBnfzVjAtB3lgPx8KQCLs
-         ZHZxJjFeeUeU2CMQEzj5ViG8ydLkNlcFsLN+9ZCjBOHuTFXmX5GR7eIaHDme5FMRHSNL
-         pPgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764289332; x=1764894132;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1764294326; x=1764899126; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Zf6N60/mMdoTovxxehc7oTOUR+OA9D6npRAoGA+CQCo=;
-        b=ePlCfjN/uA2Mlp7nnNzpqgNOeHUX1G5A6B6K2eIV32fj86PU9CxgW7dyVD96akHdma
-         abLWQp1A8WhNYGPWL3sWSG+6Hcu4IoqTFwTyYIXtBurKYKUKSXSfSS4JtyPKEEr1T19Y
-         0Hvqbx3PicGntM51dVkFwFsaPTiOZHJ35W7g+MZMUbDYwOFmNfg4C/5n+l+q9oOmrK2P
-         0us5DuSBST/K1y+KuBBW5Tkm0u/J8xOaTo31y1kVd1FwAcC+2sKL301F1l4zK6C7Fihj
-         VOqWj8ZoNkAnTsej1yc8eg3pnB2YHRntqXVovejjmRru6BgNg1OUI3BE9pqYFbzx25HA
-         e9Fw==
-X-Gm-Message-State: AOJu0YysiQ+yrzsAYRelAsi6BBN8o3V5Or0Tqnl1Of8ZcRes004ES1F9
-	lqG7CGAkLSMEJ9AWG4py2bOFLzwHtD0DMhUVTsFzj3l3fgd+7Ta+F47Y4Kz8hOLWsMZyqDA3
-X-Gm-Gg: ASbGncsGyGxrGNEEFWytmwXxOOBLL6HsljHo9IifdRtwoIV5y/5RkawZuk64SRc0t/q
-	WChR1lpdQeYAwRS0jT4cAjEDuLNZtKBp7ai+PfRHy97AWbg0B0XABvPe1bsQ0dyCDtsScuwAyKc
-	gEO1EpkrCln+uIU8ri1Gmd+l+1WSwsHB8WTqeFUqD69+82cgPA7k6DBzqzqaqgD6yCjSoKQUDWV
-	tFl/mx/fQ2F8ykDC7o47111NBIyHw5q4k+kFMeAjDH/mlHiRtr0FG6zruMqT06iBqrDRxgTj2zT
-	CSbTuEEo8oE3iP+68zR17eRJLeawp0lYaY05bSC+gy/lbxMAawSyi0SyEV0zjIFvdAg1ZduVoIm
-	GsQiGIQbofVXcLaIpt9IfJ6MR7FGVoOVCQbr/1gN2UXuDxC/3egENUHiZ3vOKRkyJtHprsUHocx
-	xf4lTTSZNYIB1nrn1dsOyxWHEuZi00kXsg
-X-Google-Smtp-Source: AGHT+IG5Lh6pz2F5iqFt6VoinpQe18k4/POJqvOw9W50U6/e5NJ8ro1yH+njl0Uf0CWi3in2pYmOoQ==
-X-Received: by 2002:a05:651c:4394:20b0:37b:8bee:87f6 with SMTP id 38308e7fff4ca-37d07985d9amr30935611fa.38.1764289332296;
-        Thu, 27 Nov 2025 16:22:12 -0800 (PST)
-Received: from localhost ([188.234.148.119])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-37d236dd782sm5949731fa.15.2025.11.27.16.22.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Nov 2025 16:22:11 -0800 (PST)
-From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-To: bpf@vger.kernel.org
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	quentin@monnetweb.net,
-	netdev@vger.kernel.org,
-	Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Subject: [PATCH] tools/lib/bpf: fix -Wdiscarded-qualifiers under C23
-Date: Fri, 28 Nov 2025 05:22:05 +0500
-Message-ID: <20251128002205.1167572-1-mikhail.v.gavrilov@gmail.com>
-X-Mailer: git-send-email 2.52.0
+        bh=oQum3my8b/C4JwlaTjim4TDiqYwzaFLaURlhWLt3NcA=;
+        b=Owfm+QZ1CkjhhTrrdJd1KpZPy3itmU49PB0rniYYagHjR3NTll9fW+MmHag7Ovw/Sk
+         5j9fYOszL37CRTpdC4ouxKLdZ2PxxFYYxDEbttVEywmnPYHJ+8It+0qKw3RviPcO+KtP
+         QJQBxI7KM00FpyU8pyAEaqc+LgV45zgdOcc4SeoVsnaY+Kga96i1GciEYfSNFBoQXJDy
+         M236AGA+WHWD9WIA+7cEscMcl/zn7oUNXRV/735bqkp7F3EwUajmRHe3mlnIJNQcdeCB
+         VSPFgCIAWdW/puqjmflUqxcWztXrlUYCQjVQPEUPrcMXA73rXuyzACiFa3pSiZuaF6W1
+         4k+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764294326; x=1764899126;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=oQum3my8b/C4JwlaTjim4TDiqYwzaFLaURlhWLt3NcA=;
+        b=FQgPVJP1+MPg4Ykglg3UM1NjTE9Pw/K34Aw2wVHdXnXVW2B59PA3gZoZtIj6chh4e6
+         mTSdC2xDj1Qa4lRV09LBQrfKTqJzzi+6ABMB6hwmRwcKi9YebVmGTcNc8LnmrebvSgYn
+         tEv6Wln+DDUr4jBvIMxOp9sEvXsJbLq4DKwhQ5OLsCsfKoM5kVM7560LgeShg2SnoN6c
+         d48IV0TGXpjgqLq+UOsfbJOv/N/5XJlaQC1w7ttlFbtYBwoJkZOMsYIoBlXH5V7Pi1RQ
+         vl7yjeycdL7BpJHg35PTuCh/31k9iNtCqMsPV4fuv+QxtYQp51nvS2rEMcyTHrxZE9Oy
+         EY+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWTvVN2HfaX5a0c6sECy4gVB32NLHKayoO9xORW1qsjNXlzm5nY3ELVLctIkXfTvGKbX7k=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzazio1yqDqWa5duektDUugBf8eziZJ+2UVV4ymzGTUCJkvEHkK
+	ujJJvrbeU3aBhwBxXOL6/id1tDD8E8DhveovT9IVPvrS+Mf1f02y3Q4qFqsYUnqR2uaINLmw5mr
+	O2JzANBhjVUE5jRPrGBndEfiP32yE1nE=
+X-Gm-Gg: ASbGncvtRuC/H4b5eGqISrukn3BDSDqy4S4brPyVGIgEMp2Hca9TBW29B25ZxV7SEWQ
+	LEJI45/vXs4dbDYaTZvFERaSLsSFZ9xRFWQBbC7+mRqOQ2HJMkKyemtnrkJ1o0NhSqlP6OtHmHP
+	18ki82OaM5AtDkpZL5rrXVj3LU8kHcw8NCXVL2i+gem0Vy7WuMdwHtd5YxmYeXWMgzQbybI79x+
+	53ZNeNsVECBXPbqsM7BgqDw/wX+MNe2+xxPdZ0ZaRix9Qti4aXMPRph6HWIiOmr6R9Wlak=
+X-Google-Smtp-Source: AGHT+IGdEzYE1sBcDMVLgtO62NHYPsOi0ddf6d/CJXYvch1Vt7CQ0M2uHWRoV6ebXbYw3IpDysEFY/09VxSulLxhhTA=
+X-Received: by 2002:a92:4a12:0:b0:434:a88d:f819 with SMTP id
+ e9e14a558f8ab-435dd043b40mr96641795ab.2.1764294325842; Thu, 27 Nov 2025
+ 17:45:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20251125115754.46793-1-kerneljasonxing@gmail.com>
+ <b859fd65-d7bb-45bf-b7f8-e6701c418c1f@redhat.com> <CAL+tcoDdntkJ8SFaqjPvkJoCDwiitqsCNeFUq7CYa_fajPQL4A@mail.gmail.com>
+ <f8d6dbe0-b213-4990-a8af-2f95d25d21be@redhat.com>
+In-Reply-To: <f8d6dbe0-b213-4990-a8af-2f95d25d21be@redhat.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Fri, 28 Nov 2025 09:44:49 +0800
+X-Gm-Features: AWmQ_bkUYcerIs8U4CrLfJsh8DBflPxy2QghT5jN_y43S0d05LeeeH-n1yjxm3I
+Message-ID: <CAL+tcoAY5uaYRC2EyMQTn+Hjb62KKD1DRyymW+M27BT=n+MUOw@mail.gmail.com>
+Subject: Re: [PATCH net-next v3] xsk: skip validating skb list in xmit path
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
+	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
+	bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-glibc ≥ 2.42 (GCC 15) defaults to -std=gnu23, which promotes
--Wdiscarded-qualifiers to an error in the default hardening flags
-of Fedora Rawhide, Arch Linux, openSUSE Tumbleweed, Gentoo, etc.
+On Fri, Nov 28, 2025 at 1:58=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wro=
+te:
+>
+> On 11/27/25 1:49 PM, Jason Xing wrote:
+> > On Thu, Nov 27, 2025 at 8:02=E2=80=AFPM Paolo Abeni <pabeni@redhat.com>=
+ wrote:
+> >> On 11/25/25 12:57 PM, Jason Xing wrote:
+> >>> This patch also removes total ~4% consumption which can be observed
+> >>> by perf:
+> >>> |--2.97%--validate_xmit_skb
+> >>> |          |
+> >>> |           --1.76%--netif_skb_features
+> >>> |                     |
+> >>> |                      --0.65%--skb_network_protocol
+> >>> |
+> >>> |--1.06%--validate_xmit_xfrm
+> >>>
+> >>> The above result has been verfied on different NICs, like I40E. I
+> >>> managed to see the number is going up by 4%.
+> >>
+> >> I must admit this delta is surprising, and does not fit my experience =
+in
+> >> slightly different scenarios with the plain UDP TX path.
+> >
+> > My take is that when the path is extremely hot, even the mathematics
+> > calculation could cause unexpected overhead. You can see the pps is
+> > now over 2,000,000. The reason why I say this is because I've done a
+> > few similar tests to verify this thought.
+>
+> Uhm... 2M is not that huge. Prior to the H/W vulnerability fallout
+> (spectre and friends) reasonable good H/W (2016 old) could do ~2Mpps
+> with a single plain UDP socket.
 
-In C23, strstr() and strchr() return "const char *" in most cases,
-making implicit casts from const to non-const invalid.
+Interesting number that I'm not aware of. Thanks.
 
-This breaks the build of tools/bpf/resolve_btfids on pristine
-upstream kernel when using GCC 15 + glibc 2.42+.
+But for now it's really hard for xsk (in copy mode) to reach over 2M
+pps even with some recent optimizations applied. I wonder how you test
+UDP? Could you share the benchmark here?
 
-Fix the three remaining instances with explicit casts.
+IMHO, xsk should not be slower than a plain UDP socket. So I think it
+should be a huge room for xsk to improve...
 
-No functional changes.
+>
+> Also validate_xmit_xfrm() should be basically a no-op, possibly some bad
+> luck with icache?
 
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=2417601
-Signed-off-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
----
- tools/lib/bpf/libbpf.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Maybe. I strongly feel that I need to work on the layout of those structure=
+s.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index dd3b2f57082d..dd11feef3adf 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8247,7 +8247,7 @@ static int kallsyms_cb(unsigned long long sym_addr, char sym_type,
- 	struct extern_desc *ext;
- 	char *res;
- 
--	res = strstr(sym_name, ".llvm.");
-+	res = (char *)strstr(sym_name, ".llvm.");
- 	if (sym_type == 'd' && res)
- 		ext = find_extern_by_name_with_len(obj, sym_name, res - sym_name);
- 	else
-@@ -11576,7 +11576,7 @@ static int avail_kallsyms_cb(unsigned long long sym_addr, char sym_type,
- 		 */
- 		char sym_trim[256], *psym_trim = sym_trim, *sym_sfx;
- 
--		if (!(sym_sfx = strstr(sym_name, ".llvm.")))
-+		if (!(sym_sfx = (char *)strstr(sym_name, ".llvm.")))
- 			return 0;
- 
- 		/* psym_trim vs sym_trim dance is done to avoid pointer vs array
-@@ -12164,7 +12164,7 @@ static int resolve_full_path(const char *file, char *result, size_t result_sz)
- 
- 			if (s[0] == ':')
- 				s++;
--			next_path = strchr(s, ':');
-+			next_path = (char *)strchr(s, ':');
- 			seg_len = next_path ? next_path - s : strlen(s);
- 			if (!seg_len)
- 				continue;
--- 
-2.52.0
+>
+> Could you please try the attached patch instead?
 
+Yep, and I didn't manage to see any improvement.
+
+>
+> Should not be as good as skipping the whole validation but should give
+> some measurable gain.
+> >>> [1] - analysis of the validate_xmit_skb()
+> >>> 1. validate_xmit_unreadable_skb()
+> >>>    xsk doesn't initialize skb->unreadable, so the function will not f=
+ree
+> >>>    the skb.
+> >>> 2. validate_xmit_vlan()
+> >>>    xsk also doesn't initialize skb->vlan_all.
+> >>> 3. sk_validate_xmit_skb()
+> >>>    skb from xsk_build_skb() doesn't have either sk_validate_xmit_skb =
+or
+> >>>    sk_state, so the skb will not be validated.
+> >>> 4. netif_needs_gso()
+> >>>    af_xdp doesn't support gso/tso.
+> >>> 5. skb_needs_linearize() && __skb_linearize()
+> >>>    skb doesn't have frag_list as always, so skb_has_frag_list() retur=
+ns
+> >>>    false. In copy mode, skb can put more data in the frags[] that can=
+ be
+> >>>    found in xsk_build_skb_zerocopy().
+> >>
+> >> I'm not sure  parse this last sentence correctly, could you please
+> >> re-phrase?
+> >>
+> >> I read it as as the xsk xmit path could build skb with nr_frags > 0.
+> >> That in turn will need validation from
+> >> validate_xmit_skb()/skb_needs_linearize() depending on the egress devi=
+ce
+> >> (lack of NETIF_F_SG), regardless of any other offload required.
+> >
+> > There are two paths where the allocation of frags happen:
+> > 1) xsk_build_skb() -> xsk_build_skb_zerocopy() -> skb_fill_page_desc()
+> > -> shinfo->frags[i]
+> > 2) xsk_build_skb() -> skb_add_rx_frag() -> ... -> shinfo->frags[i]
+> >
+> > Neither of them touch skb->frag_list, which means frag_list is NULL.
+> > IIUC, there is no place where frag_list is used (which actually I
+> > tested). we can see skb_needs_linearize() needs to check
+> > skb_has_frag_list() first, so it will not proceed after seeing it
+> > return false.
+> https://elixir.bootlin.com/linux/v6.18-rc7/source/include/linux/skbuff.h#=
+L4322
+>
+> return skb_is_nonlinear(skb) &&
+>                ((skb_has_frag_list(skb) && !(features & NETIF_F_FRAGLIST)=
+) ||
+>                 (skb_shinfo(skb)->nr_frags && !(features & NETIF_F_SG)));
+>
+> can return true even if `!skb_has_frag_list(skb)`.
+
+Oh well, indeed, I missed the nr_frags condition.
+
+> I think you still need to call validate_xmit_skb()
+
+I can simplify the whole logic as much as possible that is only
+suitable for xsk: only keeping the linear check. That is the only
+place that xsk could run into.
+
+Thanks,
+Jason
 
