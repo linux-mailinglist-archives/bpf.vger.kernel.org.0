@@ -1,95 +1,138 @@
-Return-Path: <bpf+bounces-75712-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75713-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13331C92272
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 14:38:48 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7437DC922BA
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 14:46:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 09FA4343878
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 13:38:36 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7EE5A4E42A5
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 13:46:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C27332E748;
-	Fri, 28 Nov 2025 13:38:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD8922A4F8;
+	Fri, 28 Nov 2025 13:46:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EPX//QtM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Co7jCS2B"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9243132B9A9
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 13:38:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB461C701F
+	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 13:46:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764337108; cv=none; b=maSgJ5fV7807wwgDExLzzYun2OEsFVCEtDBjVUYqQmFCOHpuPP5vF4C/dfsDMPPI63Wr+uqjiPvOOVH/Dr4LzH1aT3RB1pMeEhLdQRh2dmGMB+OwWOZGnq6KEuEpoGETfZJBoptPN5eNo9iBjenISzXahiAzTei7ZH5zHN8T0dE=
+	t=1764337571; cv=none; b=D96CRPqwdqFvtD9gYmKPYjHGMFinVuYx+ieD+e8vcBWHSO98QWfE0nEuR8MT5CiRtHM5AuhPN4apGmJhuLNo0juMM+jZAhV1SciA1e351RwiCpSwu/2nj2rbgJgrGFZgwf7P/6lGOaGhNb9mOlCrZSfVdguoxWxjGOMuFLYF9jE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764337108; c=relaxed/simple;
-	bh=9Bz3iHL0GEwZT6cEvu2wIvJWs5QIKjgMMa/gzhHcFR4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=QgQrELNy3ILJRZS6AYAJlbZuQWmrO2D6LPHO6Y1WBDRVAjeSb4V73UOBIav86LIH0WPrDMBvVEvBmLqxWhzohLEMgcYZ2lkh5KTUAC8zXP0t1z17HVe/9r6dJCbOMmMhAJJhbSsGMZPf5yXY2grVQhjOUnLZKdrWc9dEzTTZZJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EPX//QtM; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1764337105;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0Dso5+9f+79YJFdxfA0L+riU15R66TbnRBDWdbELo6U=;
-	b=EPX//QtMDWpTb+b29PmW5oIUwLEISiJ4sKoX5WQNsj0RnMK4CooQ4uzGzmbQWgLTI7Vk2f
-	ZgtAamr1EqNBa5pZ7ZHcOw2BEDiRC5tzWlY7IAWUYL2MZmYcI7cJdBDr7Zy2hb5Tn5L322
-	xdGqb+9aclaJ1Jq6gYPh0ZKZ4PljhZI=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-274-k87frsTQMKaJiWOa7XcPlQ-1; Fri,
- 28 Nov 2025 08:38:21 -0500
-X-MC-Unique: k87frsTQMKaJiWOa7XcPlQ-1
-X-Mimecast-MFC-AGG-ID: k87frsTQMKaJiWOa7XcPlQ_1764337100
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6740D180123B;
-	Fri, 28 Nov 2025 13:38:20 +0000 (UTC)
-Received: from fweimer-oldenburg.csb.redhat.com (unknown [10.2.16.49])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5D7B91800451;
-	Fri, 28 Nov 2025 13:38:18 +0000 (UTC)
-From: Florian Weimer <fweimer@redhat.com>
-To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Cc: bpf@vger.kernel.org,  andrii@kernel.org,  ast@kernel.org,
-  daniel@iogearbox.net,  netdev@vger.kernel.org
-Subject: Re: [PATCH v2 bpf-next] tools/lib/bpf: fix -Wdiscarded-qualifiers
- under C23
-In-Reply-To: <1531b195c4cb7af96304341e7cbcaf7aba78e4b3.1764334686.git.mikhail.v.gavrilov@gmail.com>
-	(Mikhail Gavrilov's message of "Fri, 28 Nov 2025 18:26:19 +0500")
-References: <20251128002205.1167572-1-mikhail.v.gavrilov@gmail.com>
-	<1531b195c4cb7af96304341e7cbcaf7aba78e4b3.1764334686.git.mikhail.v.gavrilov@gmail.com>
-Date: Fri, 28 Nov 2025 14:38:15 +0100
-Message-ID: <lhufr9y6zw8.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1764337571; c=relaxed/simple;
+	bh=p0ADxgELml2VPbzCCTU7ZXu2bCx24MiqDSUdinmk0YI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BeKFvuj4EpL1Fpy16ssxu2CaXbweHmEEaB1FT/6+Uu/Od3BS6HQfAEvQgZoutu13w/rZXB87xXuRWgpOhRUY/iBa3POS13S/FdrNriB4n3jVc3xWFBHaGbTdcgwvyeNLdgkG6tfHHHfjPjN1IHzUFF0CJWXuCut3SGHfVm2NLYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Co7jCS2B; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2984dfae043so16789015ad.0
+        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 05:46:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764337569; x=1764942369; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZS0gzAbiofcFysS17aHiM5lNIPZOsMD2u3cRdekkqDw=;
+        b=Co7jCS2BAkpq3tSsrMYs9QjuCYFIAy3bZiMdqW94nONQzRBHFej4OxW7ot17US7Fxq
+         PNuEed2KCqdqD/rPuc7PgcapRYN9RNkb12HGo0clvvTuIRbJ6Fs9/ptK+yyrYwtE4GOV
+         0z11WIojBHdAlxbzkWl4SgpWWEjTPMzvWy5pAcfHWEcrh9L6zJjRP4nbKc4TBrY3tBXC
+         K7r9HCFkNqnpGkcRtwFp1EVzkXcgXXEVWY0zgTBBUUwMzPMybbZBfb/ZAE0MaLLuUkV6
+         p2xfPqxEKIBhqWfftZHtg20NxmQlSQQMccHspTR9rjyQuoDyJQJ+NOlyOsJbPkJT62Nn
+         J/2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764337569; x=1764942369;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZS0gzAbiofcFysS17aHiM5lNIPZOsMD2u3cRdekkqDw=;
+        b=sXBg8CCb+gKI04C+UvL215mi4KdB6G3EaKCinNIswOif4TGoVaYaFBSBsshyN9OGOK
+         WLrQA967eNrPc0c0xvBtBN1VIPxraCyWOb6Jo7GzVljR6t7nNvB7XEI1dHbduifs5NtL
+         m5IcZRufgwZcUV/unCa2yXo1hUI8fTW5XAcNqf6e4JIVYwcqeOQSN6pfknGgRYXb+wRM
+         PM9aGYLoxH4MhaHj78W/2TINbncgj6/W0JwlANZ2rNM/+YhDisso2vV6ObQXpiPIivwi
+         mtK4chzQM8K7rVhYzZtspWORjO126kHX8qVV86rqjreFskSIK07KszSNYr16wvTP/O5N
+         uZvw==
+X-Gm-Message-State: AOJu0YyyREOArIvewhY8MmlcrsjzUcOu/6JmINGikOTXI5Y2ZJUv0g/6
+	+MSFVPnYAJSmJwM5EjwEU9h7MKly415m8X4GmRu9pty3t9Zc7IvEabv0
+X-Gm-Gg: ASbGncud3TqpKpV4VoPBwrNh2l4I2K92GXoNPHMALQ6gWB/P8sCQq05FyieeiM5cfIL
+	VmIphVdQZULvx3X+/tmvAiL4vOr6/2MAQ2goln95jHEzuE3M/qjhKl6nwBCp3dAJzMJjJWOZsXy
+	yVxYorBlp8ankP9t6EtaruIiEI/0veS51aaaZUD+0srBLH2ELbt5g0OKptpVT1ZwUKkp2nM8jRd
+	Fklb35ASjIMKay4hTENxzmm+0iONTfxXYZYJUIO4kJvn6awywVtoTUblUQQ12HT2QZgn6dqwava
+	2dmIq4Y2lO8DVsqlk0OGyKZglQAEsfbQk0T3L/Mzng4oQr40NHjH6M8Esch9HG2p4PXAoiWdrJQ
+	0jk77t3geD7oDUQuOq9tuhyVhwXWutJjW1hIGW62AxnOb9DjhOJvPGQDpzlru4MgQA27HgrgO/a
+	jSA70Zx5SyErQUwATSC2BmgBR9Uq+mZo0NHn37QvCPJwSCjPDl
+X-Google-Smtp-Source: AGHT+IGgctN9Wd6iSyVed/+REI0U1Vd3bPRvJ8n1hCHIDY86Z3XYTmOAY81YE+Nggw5+MGqOpJ/Hjg==
+X-Received: by 2002:a17:903:98d:b0:294:f1fa:9097 with SMTP id d9443c01a7336-29b6c571ba4mr304092995ad.34.1764337568765;
+        Fri, 28 Nov 2025 05:46:08 -0800 (PST)
+Received: from KERNELXING-MC1.tencent.com ([114.253.35.215])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-be4fbde37d7sm4792674a12.13.2025.11.28.05.46.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Nov 2025 05:46:08 -0800 (PST)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	sdf@fomichev.me,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	horms@kernel.org,
+	andrew+netdev@lunn.ch
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH net-next v3 0/3] xsk: introduce atomic for cq in generic path
+Date: Fri, 28 Nov 2025 21:45:58 +0800
+Message-Id: <20251128134601.54678-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+Content-Transfer-Encoding: 8bit
 
-* Mikhail Gavrilov:
+From: Jason Xing <kernelxing@tencent.com>
 
-> - Use explicit casts instead of changing variable types to const char *,
->   because the variables are already declared as char * earlier in the
->   functions and used in contexts requiring mutability.
->   This is common practice in the kernel when full const-correctness
->   cannot be preserved without major refactoring.
+This series tries to replace cq_cached_prod_lock spin lock with atomic
+operations to get better performance.
 
-What kind of mutability is this about?  Obviously char *const won't
-work, but const char * seems to be fine for these variables?
+---
+v3
+Link: https://lore.kernel.org/all/20251125085431.4039-1-kerneljasonxing@gmail.com/
+1. fix one race issue that cannot be resolved by simple seperated atomic
+operations. So this revision only updates patch [2/3] and tries to use
+try_cmpxchg method to avoid that problem. (paolo)
+2. update commit log accordingly.
 
-Thanks,
-Florian
+V2
+Link: https://lore.kernel.org/all/20251124080858.89593-1-kerneljasonxing@gmail.com/
+1. use separate functions rather than branches within shared routines. (Maciej)
+2. make each patch as simple as possible for easier review
+
+
+Jason Xing (3):
+  xsk: add atomic cached_prod for copy mode
+  xsk: use atomic operations around cached_prod for copy mode
+  xsk: remove spin lock protection of cached_prod
+
+ include/net/xsk_buff_pool.h |  5 -----
+ net/xdp/xsk.c               | 23 +++++------------------
+ net/xdp/xsk_buff_pool.c     |  1 -
+ net/xdp/xsk_queue.h         | 23 +++++++++++++++++------
+ 4 files changed, 22 insertions(+), 30 deletions(-)
+
+-- 
+2.41.3
 
 
