@@ -1,222 +1,121 @@
-Return-Path: <bpf+bounces-75716-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75717-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F8F2C922CF
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 14:47:01 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF14C922ED
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 14:53:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2DC9D4E60D2
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 13:46:36 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 14CB834C3E2
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 13:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C624023D7F5;
-	Fri, 28 Nov 2025 13:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C5B8241114;
+	Fri, 28 Nov 2025 13:53:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UMvD/KVB"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YRS3PbHj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64D31C701F
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 13:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9B617A2F6
+	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 13:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764337586; cv=none; b=tcy46HU32LN/jsCxU2OUjdjCvfxAhFSnUSRFTaVRr9Q3LVoGfOuBMqIfVzzyoZsPfhN1mjpDfd+lGGs1nFr7y+uACTp4y8F4+Us0Tet6IO4y2AC8KwXSW2IWw8U5bFvSv4XZ+Ee8qhRk2RKqD9FeRKJ0bIfe15blHTEs78hlbAc=
+	t=1764337986; cv=none; b=B55xYeUBKICUm6f1hS5kWpt8rphL/Fknsqf/30+au75BZJtrdnkuOP39wUYeO0Yrk5nB1sYtVJ29LGbBJyMXxZdWphTkwLq6p0D6SM+EDWSufjT8mqpIR//wIsqfgwKiJfTHGWeML2leXs9qAS/vvHYTp8mk2LT2zy1LOmPtO4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764337586; c=relaxed/simple;
-	bh=KR4grrT8SD955/MgFQUYQtPvjQ/NO97IWPVFe4EfgGI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SHag6NBi8cM56Zmier//uycv6IS0WE/rPMEDacVGO47QPXIJRVhlcK89pzl1ASQA4dAWg4qQi4QqUCyUlto50ncfU5Ytc8a3H4AiZAooTG0gPILHfUZkCBHALLDHuClGOEM2DguJdKVIozr+hVv7U1zjhfaPcBscteeVLlaTP0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UMvD/KVB; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7aace33b75bso1820061b3a.1
-        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 05:46:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764337584; x=1764942384; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WpxD35MumNPzTl+ELYmx5t3jmJ1EzXuG/pCsj8wGD00=;
-        b=UMvD/KVBtn86VuMdmnsGZxewjXBSAcF5YelKQJP4LZYeS6QrM3PO9mnwC5467jYmhV
-         LxrI7/rg18wcPW3utRaW1zLZgzjqWubuOpXZ8R1bSrSwaSs5IxVnue/HoMVqt6gqpg5e
-         1GWtU0umLyYT5yjFZsWOAESTH5+HmeaqHEcXPRUdymxRutoGF2PaHsITCIxKI1pTggev
-         EO0FeGqblxnJJJMKKbwpo00FuirWES489Eo4ZZGuGksYbDOYub/e/hdjPrJxU85hTO2N
-         54r9HS8Ot1vSTjtOBq9F3Rmm3SbGwgzbfDaUvXn1H7y2QBL4aEOQ8HkCQBSPGRc0U42u
-         cHYw==
+	s=arc-20240116; t=1764337986; c=relaxed/simple;
+	bh=pbBawiQmtNJdVZxeYvEt9G/XaBTVKaR9xIboieApa7U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mgVNwfoBZLm4tju75/PGhXo4O6NdxdZ3ZgDquVzS2jAbziCfmI4OK4PXjRog1NIUu48yTD8P4wphlVnU0BUJMFWId87gKDtS+Y0tjS8XQtOMC9BEiLtj0RkL4izR3dSRs/Y6jfqZJa/AmfL+Xu1BrBYvTVyyJNISYboQv/LKI3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YRS3PbHj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1764337984;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pbBawiQmtNJdVZxeYvEt9G/XaBTVKaR9xIboieApa7U=;
+	b=YRS3PbHj+7O97VPNDsTTUg68MEaW4KrnK0QbuDQr+VSqs7t6MTcSAfXlAFgYIuNKgl/CGE
+	AEppqgvLmKJV50QCsN3MEZqS0WVvtMmwYTGU6PBUXnCKtOZSudOiD0HcjNKc0La6l24SEZ
+	e/GpOU6FzoFbu8W3NIavNsZoOyEKing=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-686-yRGj3X2XPK-x98fqMCSXAA-1; Fri, 28 Nov 2025 08:53:02 -0500
+X-MC-Unique: yRGj3X2XPK-x98fqMCSXAA-1
+X-Mimecast-MFC-AGG-ID: yRGj3X2XPK-x98fqMCSXAA_1764337981
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-595892a393eso1197400e87.3
+        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 05:53:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764337584; x=1764942384;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20230601; t=1764337981; x=1764942781;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=WpxD35MumNPzTl+ELYmx5t3jmJ1EzXuG/pCsj8wGD00=;
-        b=kIFQoq4lYPOYdz3ifpz+grfukPdHVIIQYOds7vmI3WuzW+z4HzbHMPRD9ohOuYoM0G
-         7wQbG2iJH5wd1GG0eEIUTfsG6ABHLXhurwzVCPRuv9119lHHHmKViRgNUbgoPt2PJcwh
-         rEtLaG6cOEeARqyiEphVVV2W2sch8bk770DnR1L8p4d+VT7/tS5XEBdaqAV+RwZAoYkc
-         CPovTnk/Ebzb7Qk06P/+UFGqX5rgB10z6/281A+e+plj6Q6Oyk5UUsgI+ewNYbFoqkMp
-         vDzzabZ1fuFcv50UG/8xHcjA4DHuugLzIkp2343BG7Xw3mg8e85WckSeAmHxap+QYbkv
-         GN8g==
-X-Gm-Message-State: AOJu0YwTd7UX0O0WV0GzsHAsPYPENPX4wGRfX/EM3EmpY8FiirhSy472
-	f5IKzCMZsiNYY2O0O8sEEaMGIU6nrM75NXMS1bjuJfMJN1Z5Mn0bNquO
-X-Gm-Gg: ASbGncslJVuX5gxCxvHo/xHh7O8zSmWaNxOfgumhzUUdVqFJUlQwiJIIDUkf/4r/n3l
-	FkCbnZqxu809JGyY35keWkjasqMhvTFNVBXjNxlEpV6bzzmraaXELdQYjLK4MswJzjpOv444eL/
-	3adCpK7WxBAmFPlhKth9O6JYzmgLh+rNlxNzlbIr0A5shde3dkvolXNuH7AZKLoqmDjQ3xvLo0Y
-	FWQtht5G3DpoRqGaIpgjAOJHa6VN1UolA1nY9gnDitFTWdhkSx++Ox7MppZUkpfodhVKNXdqo64
-	ZT/v8vGnjiSfzwEuqP2CFED+35v98mRm/x8Racwwo8myyBNJKEEIoWR6VZXwt7vtmJQQhWlqyum
-	BDLA6wwKVNvgKoJRolgBE9xsslQNJE78bomhB0ZbRgRR7eWY0oZTckn4uc0Ob1lW0yZqZZ65HU+
-	Vj5UUW+N+bx4ifJFbLEo4GKQsLkwmtAcb4fkSJPmS7UImt8qb281vSrUJfDEA=
-X-Google-Smtp-Source: AGHT+IH1Xp/RilpJaPDY23Ob1bPvy5Lw52/NTeRatwcDcPJ5Jh5g/Sv8tRwJSmrQj6zb2SgjnwP7GQ==
-X-Received: by 2002:a05:6300:8b0f:b0:35f:9743:f4a with SMTP id adf61e73a8af0-36150ea9786mr31081390637.26.1764337584044;
-        Fri, 28 Nov 2025 05:46:24 -0800 (PST)
-Received: from KERNELXING-MC1.tencent.com ([114.253.35.215])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-be4fbde37d7sm4792674a12.13.2025.11.28.05.46.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Nov 2025 05:46:23 -0800 (PST)
-From: Jason Xing <kerneljasonxing@gmail.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	bjorn@kernel.org,
-	magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com,
-	jonathan.lemon@gmail.com,
-	sdf@fomichev.me,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	horms@kernel.org,
-	andrew+netdev@lunn.ch
-Cc: bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next v3 3/3] xsk: remove spin lock protection of cached_prod
-Date: Fri, 28 Nov 2025 21:46:01 +0800
-Message-Id: <20251128134601.54678-4-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20251128134601.54678-1-kerneljasonxing@gmail.com>
-References: <20251128134601.54678-1-kerneljasonxing@gmail.com>
+        bh=pbBawiQmtNJdVZxeYvEt9G/XaBTVKaR9xIboieApa7U=;
+        b=LEYujbuZspHvk+uQ33zbMA7yGc3IQBXPug8cmI5vio/96agkJWKLjPCpdKzg6kxZJO
+         oKrGXf9bRJ9oMUzSOrAETbn8vqDZoEtj7YN2ytD7bUc+OYnNYD4DTi6Qdngxitx38yoW
+         /It+ZCgoNayECNLI6YzxIJtrqkJ1s52LYg6j2hPJxGO/LxHl8g5cxt+naophNy10cpIu
+         GCq00ZZPSngx7CfOx2GVljzG0epfUYv4g5rzT4UFe2zOlAybOsPTa2gOfoRqFDsH/JF6
+         gBIGJWi1I0+K6e13sXGWxvY4krbetVXH1vGs+nyf0ilDrO29CPcb3xp9Bnk07jpv8iu3
+         G37g==
+X-Forwarded-Encrypted: i=1; AJvYcCXOHljdit4RpuFkADwQ9hXRXYSaqtzrJ3yX2xOnoLnP1j3Lwf87k9ncvujSmi/FTj+Vaj4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwBNzPIq0dB6XEy3G++/ndDCg/Pc+naJzFv6ZLby5LHyAFQ/YvJ
+	YThsNCILs6EDyMhvCwHyB8US4YrLOSL742FBKHyRqnNLGQhgmqQpJKQ7juFf6sjHZuxnuB/bn9Y
+	WdgxoBSNK8wYIEj3dH5d6FqPFur28WOzaGvUG5aXndhd05WRdDxmGe6ChQCkSBmgt4DRFPvB/At
+	s3jCDxC45Vh1dIAEulw5NWiQh19Y0C
+X-Gm-Gg: ASbGncsf+xStRmF7k02YXuyGJ2ag5idv05I03V7W7jfk4A7e+XmiYC7C5KK/wu7TrBI
+	INSmvpj2SFvauA947uekxIGMT9hoAnJg2nsdbvDfFGvi3wnr6PfVbPH8moiqkI9OjtKa//upY/W
+	Q8febEu1QZwCR/mvHjR0j/heUzAGVE323rJYetd5Q3zT9xRttUW+9dHBVe1GNmgH/IYg==
+X-Received: by 2002:a05:6512:110a:b0:594:2df2:84c8 with SMTP id 2adb3069b0e04-596a3ecf652mr8065922e87.33.1764337981164;
+        Fri, 28 Nov 2025 05:53:01 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGxr/p6KFwbxmBeYyfFkOgez8vD9eAT2uUP849jN8015e5rnJowKoYbVC9lcjOKCZyBvhu+4pGX0/eZBkRGR8U=
+X-Received: by 2002:a05:6512:110a:b0:594:2df2:84c8 with SMTP id
+ 2adb3069b0e04-596a3ecf652mr8065918e87.33.1764337980757; Fri, 28 Nov 2025
+ 05:53:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20251117184409.42831-1-wander@redhat.com> <20251117184409.42831-2-wander@redhat.com>
+ <CADDUTFwK=TuhMcfr9C4NXOEQc89wBvdZtv+DtYFuHfc9wh5R=A@mail.gmail.com>
+In-Reply-To: <CADDUTFwK=TuhMcfr9C4NXOEQc89wBvdZtv+DtYFuHfc9wh5R=A@mail.gmail.com>
+From: Wander Lairson Costa <wander@redhat.com>
+Date: Fri, 28 Nov 2025 10:52:49 -0300
+X-Gm-Features: AWmQ_bkeS6Y54WrCji-DPm62oeGH0r4pGKqlqBcxo7rjyOZqWF3Uwi0VtVBxrd0
+Message-ID: <CAAq0SUnYnopSwd2ir_J1roFU31SzK5SQkv1L+WhP=T=Xbq479A@mail.gmail.com>
+Subject: Re: [rtla 01/13] rtla: Check for memory allocation failures
+To: Costa Shulyupin <costa.shul@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Tomas Glozar <tglozar@redhat.com>, 
+	Ivan Pravdin <ipravdin.official@gmail.com>, Crystal Wood <crwood@redhat.com>, 
+	John Kacur <jkacur@redhat.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	"open list:Real-time Linux Analysis (RTLA) tools" <linux-trace-kernel@vger.kernel.org>, 
+	open list <linux-kernel@vger.kernel.org>, 
+	"open list:BPF [MISC]:Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Jason Xing <kernelxing@tencent.com>
+On Fri, Nov 28, 2025 at 10:30=E2=80=AFAM Costa Shulyupin <costa.shul@redhat=
+.com> wrote:
+>
+> On Mon, 17 Nov 2025 at 20:54, Wander Lairson Costa <wander@redhat.com> wr=
+ote:
+> > Add checks for the return value of memory allocation functions
+> > and return an error in case of failure. Update the callers to
+> > handle the error properly.
+>
+> Would you like to consider using fatal("Out of memory") instead of
+> returning an error code?
+> Anyway there is no work around for out of memory.
+>
 
-Remove the spin lock protection along with some functions adjusted.
+Good idea. I am going to update the patches.
 
-Now cached_prod is fully converted to atomic, which does help in the
-contended case where umem is shared between xsks.
-
-Removing that lock can avoid manipulating one extra cacheline in the
-extremely hot path which directly improves the performance by around
-5% over different platforms as Paolo found[1].
-
-[1]: https://lore.kernel.org/all/4c645223-8c52-40d3-889b-f3cf7fa09f89@redhat.com/
-
-Signed-off-by: Jason Xing <kernelxing@tencent.com>
----
- include/net/xsk_buff_pool.h |  5 -----
- net/xdp/xsk.c               | 21 ++++-----------------
- net/xdp/xsk_buff_pool.c     |  1 -
- 3 files changed, 4 insertions(+), 23 deletions(-)
-
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index 92a2358c6ce3..0b1abdb99c9e 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -90,11 +90,6 @@ struct xsk_buff_pool {
- 	 * destructor callback.
- 	 */
- 	spinlock_t cq_prod_lock;
--	/* Mutual exclusion of the completion ring in the SKB mode.
--	 * Protect: when sockets share a single cq when the same netdev
--	 * and queue id is shared.
--	 */
--	spinlock_t cq_cached_prod_lock;
- 	struct xdp_buff_xsk *free_heads[];
- };
- 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index b63409b1422e..ae8a92c168b8 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -546,17 +546,6 @@ static int xsk_wakeup(struct xdp_sock *xs, u8 flags)
- 	return dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
- }
- 
--static int xsk_cq_reserve_locked(struct xsk_buff_pool *pool)
--{
--	int ret;
--
--	spin_lock(&pool->cq_cached_prod_lock);
--	ret = xsk_cq_cached_prod_reserve(pool->cq);
--	spin_unlock(&pool->cq_cached_prod_lock);
--
--	return ret;
--}
--
- static void xsk_cq_submit_addr_locked(struct xsk_buff_pool *pool,
- 				      struct sk_buff *skb)
- {
-@@ -585,11 +574,9 @@ static void xsk_cq_submit_addr_locked(struct xsk_buff_pool *pool,
- 	spin_unlock_irqrestore(&pool->cq_prod_lock, flags);
- }
- 
--static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
-+static void xsk_cq_cached_prod_cancel(struct xsk_buff_pool *pool, u32 n)
- {
--	spin_lock(&pool->cq_cached_prod_lock);
- 	atomic_sub(n, &pool->cq->cached_prod_atomic);
--	spin_unlock(&pool->cq_cached_prod_lock);
- }
- 
- static void xsk_inc_num_desc(struct sk_buff *skb)
-@@ -643,7 +630,7 @@ static void xsk_consume_skb(struct sk_buff *skb)
- 	}
- 
- 	skb->destructor = sock_wfree;
--	xsk_cq_cancel_locked(xs->pool, num_descs);
-+	xsk_cq_cached_prod_cancel(xs->pool, num_descs);
- 	/* Free skb without triggering the perf drop trace */
- 	consume_skb(skb);
- 	xs->skb = NULL;
-@@ -860,7 +847,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 		xskq_cons_release(xs->tx);
- 	} else {
- 		/* Let application retry */
--		xsk_cq_cancel_locked(xs->pool, 1);
-+		xsk_cq_cached_prod_cancel(xs->pool, 1);
- 	}
- 
- 	return ERR_PTR(err);
-@@ -898,7 +885,7 @@ static int __xsk_generic_xmit(struct sock *sk)
- 		 * if there is space in it. This avoids having to implement
- 		 * any buffering in the Tx path.
- 		 */
--		err = xsk_cq_reserve_locked(xs->pool);
-+		err = xsk_cq_cached_prod_reserve(xs->pool->cq);
- 		if (err) {
- 			err = -EAGAIN;
- 			goto out;
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index 51526034c42a..9539f121b290 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -91,7 +91,6 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
- 	INIT_LIST_HEAD(&pool->xsk_tx_list);
- 	spin_lock_init(&pool->xsk_tx_list_lock);
- 	spin_lock_init(&pool->cq_prod_lock);
--	spin_lock_init(&pool->cq_cached_prod_lock);
- 	refcount_set(&pool->users, 1);
- 
- 	pool->fq = xs->fq_tmp;
--- 
-2.41.3
+> Costa
+>
 
 
