@@ -1,123 +1,116 @@
-Return-Path: <bpf+bounces-75710-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75711-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA949C9220F
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 14:30:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63071C92221
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 14:30:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 48D833495D2
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 13:30:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20F0B3A70EA
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 13:30:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 354042FFDEC;
-	Fri, 28 Nov 2025 13:30:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D5832E727;
+	Fri, 28 Nov 2025 13:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="de0Bh3ga";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="JGevnfS7"
+	dkim=pass (2048-bit key) header.d=astralinux.ru header.i=@astralinux.ru header.b="nt2PhpbI"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mail-gw02.astralinux.ru (mail-gw02.astralinux.ru [93.188.205.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E8E1684A4
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 13:30:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720D01E32A2;
+	Fri, 28 Nov 2025 13:30:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.188.205.243
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764336616; cv=none; b=soJzAdYTXRZCzvUrdQO5iYNyZVO2zh7VtLn9F3+Av/QsGv/nyTNwtOWuJ4ej7Es6Syp+9l5XrFvRcKY9LFGnKPQ+oqhGaFXvIRFm5mChnXWVl8of9tVJQws/7rt3XIJ6t8aZD1+apYnCnyCm23JINafj62RCvBK3pq3nfJC4+34=
+	t=1764336633; cv=none; b=OWvSv4gHB9AkBaj341DbM6CgWQOVR3S8uaDlFKofyR/Hw3D0hsWp9qiVsO5XokM7LY91BAVBxV8WT61a+lnq91Wddo8unJafQkVDx1qfV10yXLEg+6JtO4P07qeEPwqWfqdHkL/64L/N/glQ1KcSIJdwpyHDKNeTrErLGQ0Tgpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764336616; c=relaxed/simple;
-	bh=r7FouT1x2dRUs6nM6oG0TeKmKc+zDhX8H6XwS8+nAwQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kdPIXLG76h9gaB8zagXsgRXpVUVUnaiVRFngqLPF+h+xGdVLlhZEJswm0g6q1JJ9bbDUl740nJVXB3elSEAJ7RfkYQvcbQ7cmSTgvvJZ2Pqh26abkL0g3BMRFx/WR1VIQ6Zj1yfqPW9ndWRBt3/huO9G/qbOSaGpu44A3FyS1yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=de0Bh3ga; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=JGevnfS7; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1764336614;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r7FouT1x2dRUs6nM6oG0TeKmKc+zDhX8H6XwS8+nAwQ=;
-	b=de0Bh3ga846stEZoABwj7OelwkR4GZDujdfx+7PBSpwi+DLoWRjWgsh86r5GQ04ioANWgj
-	crcOlbU7Ne0v1G9Yn3sVGp9pLYkjEIoDamH6ylDnWYQwlhJfp+JPEOLh5MRbInfEf18Vae
-	+2zx55b17ZZFxTyz5RAMw8EmmEO0eew=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-689-xyKtqS6rP5u-3Kgr0ABOnA-1; Fri, 28 Nov 2025 08:30:12 -0500
-X-MC-Unique: xyKtqS6rP5u-3Kgr0ABOnA-1
-X-Mimecast-MFC-AGG-ID: xyKtqS6rP5u-3Kgr0ABOnA_1764336611
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-b70b1778687so139570766b.0
-        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 05:30:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1764336611; x=1764941411; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=r7FouT1x2dRUs6nM6oG0TeKmKc+zDhX8H6XwS8+nAwQ=;
-        b=JGevnfS7Q4zj8wXKdHxGGVePrgsrL0YbocLclI8+2P3stqTS8IAVOeFyyTpUI4TVkk
-         loiEIWTxlJABf6zQQUCrXKg5J87b5qRIda71+WM6aEYFLHX/lj+B25D4/kTuMH4Qz+0a
-         H12TVftf8z69Tzi1RY4leOOsvs6uz7t+Fhragr0zO2GWQiXph+lm8QXiMlRZqPQIZyHD
-         XOawYiwv3pVFVKSKoTGx3qDGjLBxi3DNu+rWFMQsNshKr0Kutp9gxU2Jaigkvu9qc2J2
-         dQmeJdd4hYaXAMSkmOCaB3+9g7evXUi18Uiyn0AwNk6c7RMswiHR6dx7A6oRO7nBO6aT
-         B/FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764336611; x=1764941411;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r7FouT1x2dRUs6nM6oG0TeKmKc+zDhX8H6XwS8+nAwQ=;
-        b=vYjcyl5IFengyqRx25L3WMZAR4/CJb79q9vhPtq4R5hqAdkRt2h9V10zdxG4q4c+eW
-         eLsVwBk7uquGjoBUIJ2BcQb3cbxHnUCl0M84nQJQi9XP1bS1a0SyCZcikmv35jhhJJj+
-         YpEln/SwbVx11L7S5/Kxj8Jyt261cww/g6PYNePvjmp3FnYlNeZvVSdNOXJIg80bmt1X
-         7649g5xneXm6Mje3MOwXjk7OI7lK4wDP4h2Oe/MoqV9FEsKaIh4sl/yZHxKUuGV9xv8L
-         8sSSAMgtQp2F/PrgXHckgO/i6p4JImkgRGk9eltlYgd44W6MQlRlGcTQy+TFAkx2bpkq
-         yu+w==
-X-Forwarded-Encrypted: i=1; AJvYcCWw24SGl22u9OvWcQDJG8/gSAoFtC6r7avDK2SiIdC510gNFFqFy8QuuCqR59ruZCkZsAw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzwl39HwrB4U8MDwrpTekrHH0iBGPjntBnLgs79+sgPo8b39fL7
-	+Vp8D7fCb2L5yx3uqmRWAJnvRV8xlz5rYvqMB7Js76GdW9suMJr0iysDiJkjcjnhkjPCe/bK1fL
-	1ACa5zy3hJwQqshgiR2PoON42NZ6Zpx7H/jkudzFTvVHAo6IpRCaiRCklGi1ieOnbwuGD+9XLqO
-	WyVmk2xjtfWQi4YbGhv0bnOzbpve+Z
-X-Gm-Gg: ASbGncvB9akcC4Ku95IqkjlQho2xe5pqmVdBOCZ7jXG6MJ75G468z7zRipZSW6ckQGz
-	354Egpw3V936us9vpk+dfR698bfue+DlLXbAXIIlivKPufCKy0DFNQtrF2m8meqhIRAfolreMrP
-	LBdt1c0hQ3frLZszFJZDvz+uTlBVFJlAhylKSry1FiPhNr/Ryr4VYdVJGm6Y/Vl0+WHGRpf0pNQ
-	1JSpr0pU39UNnCbI+z2vkwR2VwV
-X-Received: by 2002:a17:907:3f9c:b0:b6d:5bc3:e158 with SMTP id a640c23a62f3a-b76715abd36mr3024375466b.17.1764336611324;
-        Fri, 28 Nov 2025 05:30:11 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEQBMc+jdR6VKe7qvu+OoNY3CTuO3aeqFl+E2pE3HNfuJdzO5dLePN/skocMuCUXp+HXT3tyPTBQ5sE12XnkZc=
-X-Received: by 2002:a17:907:3f9c:b0:b6d:5bc3:e158 with SMTP id
- a640c23a62f3a-b76715abd36mr3024371466b.17.1764336610818; Fri, 28 Nov 2025
- 05:30:10 -0800 (PST)
+	s=arc-20240116; t=1764336633; c=relaxed/simple;
+	bh=vUh/7k2pNcs1qKtAadocXz/3E+juXBsA3fyjDgDAYpA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g7xMgbwGpSs6af43S+ktWHPJV94otKtwbC9NaLbW2Bi19K9J++SCQIPJvTD2tXyt9MDIJZ6HjFGCDbr8Tm/BnYJ2mW0zJTyxeFLeemfjkNaqkv+S9Lo55iccQjlC6qDsQZW8O0u+7HGZ3EHuOVGDhFwYPyPCV8n+MdK2FfWHOEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=astralinux.ru; spf=pass smtp.mailfrom=astralinux.ru; dkim=pass (2048-bit key) header.d=astralinux.ru header.i=@astralinux.ru header.b=nt2PhpbI; arc=none smtp.client-ip=93.188.205.243
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=astralinux.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=astralinux.ru
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=astralinux.ru;
+	s=mail; t=1764336628;
+	bh=vUh/7k2pNcs1qKtAadocXz/3E+juXBsA3fyjDgDAYpA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=nt2PhpbIr2pwtrWu1/j5I4KBUiKfEHpY/p6Fq6qkN9a7wD6DotZ1r1tsvUaTinItq
+	 F8h3/V7sccTzxh6QCB//D4NKa3NQVPyiN6Dn1REhpxig8T2DlbsoTlL58FK+PRQEGh
+	 8/8yJvz2Fe5TjBOL+3wYdqTni+ot8BIHjop9poxjKmD0jKsOJVR576jvKus3Kz0yA1
+	 d1NnT2M0nB1CV9E8WpwXQqBCRjG+IU9cTlHT3RxJs4tT7IkEfymWzMVeSN0L0HbTZn
+	 LXSHJbL//8pHQPJN9sr5ZGqpJs7d9HROp0P4e+6zLRzvmkj1a2DSOCF4iOucOzbT4f
+	 vMU/h83fvzeIg==
+Received: from gca-msk-a-srv-ksmg01 (localhost [127.0.0.1])
+	by mail-gw02.astralinux.ru (Postfix) with ESMTP id 24A901F97D;
+	Fri, 28 Nov 2025 16:30:28 +0300 (MSK)
+Received: from new-mail.astralinux.ru (unknown [10.205.207.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail-gw02.astralinux.ru (Postfix) with ESMTPS;
+	Fri, 28 Nov 2025 16:30:22 +0300 (MSK)
+Received: from [10.198.57.41] (rbta-msk-lt-156703.astralinux.ru [10.198.57.41])
+	by new-mail.astralinux.ru (Postfix) with ESMTPA id 4dHvKk2DPGz2xBj;
+	Fri, 28 Nov 2025 16:29:46 +0300 (MSK)
+Message-ID: <8c5bbb80-3d28-422e-9dc7-0caebb699986@astralinux.ru>
+Date: Fri, 28 Nov 2025 16:29:36 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251117184409.42831-1-wander@redhat.com> <20251117184409.42831-2-wander@redhat.com>
-In-Reply-To: <20251117184409.42831-2-wander@redhat.com>
-From: Costa Shulyupin <costa.shul@redhat.com>
-Date: Fri, 28 Nov 2025 15:29:34 +0200
-X-Gm-Features: AWmQ_bke2XaKTo8AW04BHiRxXmDpA26pbLYoxGuxq-b6dvmBNgbC2XPMHD4669I
-Message-ID: <CADDUTFwK=TuhMcfr9C4NXOEQc89wBvdZtv+DtYFuHfc9wh5R=A@mail.gmail.com>
-Subject: Re: [rtla 01/13] rtla: Check for memory allocation failures
-To: Wander Lairson Costa <wander@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Tomas Glozar <tglozar@redhat.com>, 
-	Ivan Pravdin <ipravdin.official@gmail.com>, Crystal Wood <crwood@redhat.com>, 
-	John Kacur <jkacur@redhat.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	"open list:Real-time Linux Analysis (RTLA) tools" <linux-trace-kernel@vger.kernel.org>, 
-	open list <linux-kernel@vger.kernel.org>, 
-	"open list:BPF [MISC]:Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: RuPost Desktop
+Subject: Re: [PATCH 5.10 1/2] bonding: restore IFF_MASTER/SLAVE flags on bond
+ enslave ether type change
+Content-Language: ru
+To: Fedor Pchelkin <pchelkin@ispras.ru>
+Cc: stable@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Song Liu <songliubraving@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+ lvc-project@linuxtesting.org, Daniel Borkmann <daniel@iogearbox.net>,
+ Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+ Jay Vosburgh <j.vosburgh@gmail.com>,
+ Nikolay Aleksandrov <razor@blackwall.org>,
+ John Fastabend <john.fastabend@gmail.com>, linux-kernel@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+ Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+ Veaceslav Falico <vfalico@gmail.com>, Moni Shoua <monis@voltaire.com>,
+ KP Singh <kpsingh@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+ bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Andy Gospodarek <andy@greyhouse.net>
+References: <20251127190140.346-1-apanov@astralinux.ru>
+ <20251128114704-2369311bf17518b70a95dcb7-pchelkin@ispras>
+From: Alexey Panov <apanov@astralinux.ru>
+In-Reply-To: <20251128114704-2369311bf17518b70a95dcb7-pchelkin@ispras>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-KSMG-AntiPhishing: NotDetected
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Envelope-From: apanov@astralinux.ru
+X-KSMG-AntiSpam-Info: LuaCore: 81 0.3.81 2adfceff315e7344370a427642ad41a4cfd99e1f, {Tracking_arrow_text}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;astralinux.ru:7.1.1;new-mail.astralinux.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiSpam-Lua-Profiles: 198520 [Nov 28 2025]
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Version: 6.1.1.20
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.1.0.7854, bases: 2025/11/28 12:43:00 #27986045
+X-KSMG-AntiVirus-Status: NotDetected, skipped
+X-KSMG-LinksScanning: NotDetected
+X-KSMG-Message-Action: skipped
+X-KSMG-Rule-ID: 1
 
-On Mon, 17 Nov 2025 at 20:54, Wander Lairson Costa <wander@redhat.com> wrote:
-> Add checks for the return value of memory allocation functions
-> and return an error in case of failure. Update the callers to
-> handle the error properly.
+28/11/25 11:50, Fedor Pchelkin wrote:
+>> [ Upstream commit 9ec7eb60dcbcb6c41076defbc5df7bbd95ceaba5 ]
+> 
+> c484fcc058ba ("bonding: Fix memory leak when changing bond type to
+> Ethernet") has a Fixes tag pointing to the above-mentioned commit so
+> should be ported as well I think.
 
-Would you like to consider using fatal("Out of memory") instead of
-returning an error code?
-Anyway there is no work around for out of memory.
+Thanks for the suggestion. I've added this patch to v3.
 
-Costa
+--
+Alexey
 
 
