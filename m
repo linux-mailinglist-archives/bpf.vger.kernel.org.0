@@ -1,213 +1,218 @@
-Return-Path: <bpf+bounces-75671-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75672-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F410C90869
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 02:45:36 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD3BAC909C7
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 03:20:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 890DD34F0EA
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 01:45:35 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C175D348FAE
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 02:20:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE8E11FC0EF;
-	Fri, 28 Nov 2025 01:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CECC272805;
+	Fri, 28 Nov 2025 02:20:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Owfm+QZ1"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YtayZEB/";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="B02qwrLb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC791149C7B
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 01:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A472236FC
+	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 02:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764294328; cv=none; b=aTU+AvaJZjHj4GrqgnNV04mdK7Ecw4P9iWeIuN5wb8lASPGIFUaCAJg/dzZP6zplU2czcLCJoY08pLDw6HxHZzOBSPJIU/79ACuJf3zj88dMwqWtLmseHQO7ajEtKeQp3ixUPBCJIQVuPQaoxFsrO5IWpZft+2iIRioWBZY4hcE=
+	t=1764296439; cv=none; b=IkwbCSAyNCRXDAE5iGdQmgb+oIdR+mRxvLsXnJBpx/Ry6umAPjPKal2ze9cseApdFzfQbJKjFreXeRc4J4mxbd9GtFUJDKR7sc5ab8Rg+nRWzfqQOjAkJvj/OK3JcEPl2u9AyCZ79Hw7cHc7XuHLGVExxhD7MOm4nUVG/3x4M8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764294328; c=relaxed/simple;
-	bh=w0zib1ythtvHXUMpM2pXhvYsEPH0d3PAQM8wUU6Yai0=;
+	s=arc-20240116; t=1764296439; c=relaxed/simple;
+	bh=juuT2szlDhnZah03azTXrfo8JNzsr8IYomevmrOodCw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NXjddo9TKkQExpiaVc7viSIYfzSH1wudDOfS5iIaB4F73pk0zzVTdyOqPOwH4wpSWxy0OxkbVg6aN10LKWgejCTPoMlAqDTrCDkMG7iUwU12pRVd3MzH1nrzlxpRdQUhJGRS+xOT+7k6U06HyclK1+8WZjTjlWvzKR024m9lvmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Owfm+QZ1; arc=none smtp.client-ip=209.85.166.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-43376624a8fso7511185ab.0
-        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 17:45:26 -0800 (PST)
+	 To:Cc:Content-Type; b=shmzG9P/+Kvo/h7OnuJxx+e8Q95v3ODTmi2IoRx0bkz9s2dTa14bNfavfXZk63u5RUEEIPbeghNXO6KktuzRKG4jZfop252r0pcIZKv2x3P+7ZytGaMIpRqoX0zorTNh0LS5JEoxNHk+SZCT5SCqp6asOJNJXBw9mkOst+oUoNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YtayZEB/; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=B02qwrLb; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1764296437;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gYccDo2j+1D3EXgLNM4B1dXCh8l3NXcIw8nBRY7Khlg=;
+	b=YtayZEB/+YjqB89mnp4TEoxhNisoD2sfXCKw8/wPZheDi2g5cTFdmdEEFaPRNaUT9VYOQB
+	0zJVCCEgfIIKy0pJRXcoP3/Q72UiWgiwd8WAO3dXShPpTSrn7MPqLx5UG143ghBKgB5Sye
+	ydnyTPkWjb4nvyXY7K51vIedLxORfyA=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-590-JmPHPz0gN7iAfKN08QEh3Q-1; Thu, 27 Nov 2025 21:20:34 -0500
+X-MC-Unique: JmPHPz0gN7iAfKN08QEh3Q-1
+X-Mimecast-MFC-AGG-ID: JmPHPz0gN7iAfKN08QEh3Q_1764296433
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-340c07119bfso2048884a91.2
+        for <bpf@vger.kernel.org>; Thu, 27 Nov 2025 18:20:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764294326; x=1764899126; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1764296433; x=1764901233; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oQum3my8b/C4JwlaTjim4TDiqYwzaFLaURlhWLt3NcA=;
-        b=Owfm+QZ1CkjhhTrrdJd1KpZPy3itmU49PB0rniYYagHjR3NTll9fW+MmHag7Ovw/Sk
-         5j9fYOszL37CRTpdC4ouxKLdZ2PxxFYYxDEbttVEywmnPYHJ+8It+0qKw3RviPcO+KtP
-         QJQBxI7KM00FpyU8pyAEaqc+LgV45zgdOcc4SeoVsnaY+Kga96i1GciEYfSNFBoQXJDy
-         M236AGA+WHWD9WIA+7cEscMcl/zn7oUNXRV/735bqkp7F3EwUajmRHe3mlnIJNQcdeCB
-         VSPFgCIAWdW/puqjmflUqxcWztXrlUYCQjVQPEUPrcMXA73rXuyzACiFa3pSiZuaF6W1
-         4k+Q==
+        bh=gYccDo2j+1D3EXgLNM4B1dXCh8l3NXcIw8nBRY7Khlg=;
+        b=B02qwrLb5nhgd4pMuoFjAfOlr+HCondXLOpVNI4lQ2Vh/7U3F/7jfxzETDRiIOGpsZ
+         tigohUpVBlQILpKhfZsj15HDFRZld6kzMkKB8wL5+a9kmDtafBw1o49tz7eCm/OEI+qC
+         a89rRfpEzXXrbhaIxzYHYfmQtgaRcLJZMB7FxPkBe6moM9LCwIKOkw3ctmjxUmFaLD1f
+         BBtDGCRFSmQ8BXgmhnTzWzW3sUGW2H6Upcc6mXVGIFEo7F5RvIyuHF1PjaT6W86Bxok6
+         ragXWyqT6WrO83SLjG/Dldk5BO8raVsjYNMj4lSV4OaArbVynEDeOhaej11xqCwrKpox
+         gxTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764294326; x=1764899126;
+        d=1e100.net; s=20230601; t=1764296433; x=1764901233;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=oQum3my8b/C4JwlaTjim4TDiqYwzaFLaURlhWLt3NcA=;
-        b=FQgPVJP1+MPg4Ykglg3UM1NjTE9Pw/K34Aw2wVHdXnXVW2B59PA3gZoZtIj6chh4e6
-         mTSdC2xDj1Qa4lRV09LBQrfKTqJzzi+6ABMB6hwmRwcKi9YebVmGTcNc8LnmrebvSgYn
-         tEv6Wln+DDUr4jBvIMxOp9sEvXsJbLq4DKwhQ5OLsCsfKoM5kVM7560LgeShg2SnoN6c
-         d48IV0TGXpjgqLq+UOsfbJOv/N/5XJlaQC1w7ttlFbtYBwoJkZOMsYIoBlXH5V7Pi1RQ
-         vl7yjeycdL7BpJHg35PTuCh/31k9iNtCqMsPV4fuv+QxtYQp51nvS2rEMcyTHrxZE9Oy
-         EY+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWTvVN2HfaX5a0c6sECy4gVB32NLHKayoO9xORW1qsjNXlzm5nY3ELVLctIkXfTvGKbX7k=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzazio1yqDqWa5duektDUugBf8eziZJ+2UVV4ymzGTUCJkvEHkK
-	ujJJvrbeU3aBhwBxXOL6/id1tDD8E8DhveovT9IVPvrS+Mf1f02y3Q4qFqsYUnqR2uaINLmw5mr
-	O2JzANBhjVUE5jRPrGBndEfiP32yE1nE=
-X-Gm-Gg: ASbGncvtRuC/H4b5eGqISrukn3BDSDqy4S4brPyVGIgEMp2Hca9TBW29B25ZxV7SEWQ
-	LEJI45/vXs4dbDYaTZvFERaSLsSFZ9xRFWQBbC7+mRqOQ2HJMkKyemtnrkJ1o0NhSqlP6OtHmHP
-	18ki82OaM5AtDkpZL5rrXVj3LU8kHcw8NCXVL2i+gem0Vy7WuMdwHtd5YxmYeXWMgzQbybI79x+
-	53ZNeNsVECBXPbqsM7BgqDw/wX+MNe2+xxPdZ0ZaRix9Qti4aXMPRph6HWIiOmr6R9Wlak=
-X-Google-Smtp-Source: AGHT+IGdEzYE1sBcDMVLgtO62NHYPsOi0ddf6d/CJXYvch1Vt7CQ0M2uHWRoV6ebXbYw3IpDysEFY/09VxSulLxhhTA=
-X-Received: by 2002:a92:4a12:0:b0:434:a88d:f819 with SMTP id
- e9e14a558f8ab-435dd043b40mr96641795ab.2.1764294325842; Thu, 27 Nov 2025
- 17:45:25 -0800 (PST)
+        bh=gYccDo2j+1D3EXgLNM4B1dXCh8l3NXcIw8nBRY7Khlg=;
+        b=O+jfKQV51LA9hWesHwZUjafkjaitIgx6sTZUtGps9piRzjwynuvV0Jw1p41WaPFPhK
+         3gI6GWFNJFYjEhzNHbX8Lqbg8qNiMt3cksSy4hqEKeqQuP5X3mJ8pxCw6tMzlL5SRNST
+         XNTBKo0FAN+0poAMBpK9otWB72ER8zVNqDRxCDToV4l22kHvqOcbvxee++3f6K6T5gZA
+         p+3zxS9/QftxQnBcfu0VLJ82VrFde9yILWO0WDMZeVXpO/BGqMCevfGnanGc61xMdRhA
+         vyV/zpbwiU+EWWHHmq3WattuXiqI49H/tGv7hDt2G/Pk6ZSxLmbDCCQ/9NvOeN6nVNK+
+         SyDw==
+X-Forwarded-Encrypted: i=1; AJvYcCWJT6JvsWx0ib9vZ2CAlcHJZCXTBnQGO18pXDoA5JNMo8MYI261XAKxmThb34Oi2PZTpnc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwHE3U4n0Zm73XnxhHsx0VaNX1uoTA8CvU8yEBfAwJoPdjn3PWq
+	dINVYT1CqxPMOYcpTkTibXf1O7u598F/5aUt4vtd16U01m6PLVcHWFHRy0hT9rqCi6BVqkQdNx6
+	tHYrohufbuUfvuZ/Ji5+Vwjzp2fMBHBm/2G8OUhCBURqhyXLhWJDDyRzYcszXkwLpIu/44DIqkv
+	35pjzL7IkrU669P8oxjZNMLWVhXpH3
+X-Gm-Gg: ASbGncvtuRVO6A+xlkMQ/v5dBEagO3DQQ8I+TFMTwz1DY+JGeFC1X6xQJ+AJBC8a4lN
+	cMaAPxh8t+SIKaunZLpfH9fDeGKUdIgIf3l0Mdel10jPJjrzgXjvWB1s434YwCyAK8t8d0xd/eu
+	gsXxgDu9q4AHJPr/MjWjTQlhjb27tIht5CnWo65j715rtLF54AB4Fc4sQvAUvuhZe9
+X-Received: by 2002:a17:90b:544b:b0:338:3d07:5174 with SMTP id 98e67ed59e1d1-34733e4cd33mr24799060a91.5.1764296433351;
+        Thu, 27 Nov 2025 18:20:33 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHv94V6EgbFiEIs81QepFX0mRMFn3g2NyGux1CLfN5JgtlXv14IqI7OOH8tWGprrDA/aklgfN72ym5w+o80QPw=
+X-Received: by 2002:a17:90b:544b:b0:338:3d07:5174 with SMTP id
+ 98e67ed59e1d1-34733e4cd33mr24799030a91.5.1764296432936; Thu, 27 Nov 2025
+ 18:20:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251125115754.46793-1-kerneljasonxing@gmail.com>
- <b859fd65-d7bb-45bf-b7f8-e6701c418c1f@redhat.com> <CAL+tcoDdntkJ8SFaqjPvkJoCDwiitqsCNeFUq7CYa_fajPQL4A@mail.gmail.com>
- <f8d6dbe0-b213-4990-a8af-2f95d25d21be@redhat.com>
-In-Reply-To: <f8d6dbe0-b213-4990-a8af-2f95d25d21be@redhat.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Fri, 28 Nov 2025 09:44:49 +0800
-X-Gm-Features: AWmQ_bkUYcerIs8U4CrLfJsh8DBflPxy2QghT5jN_y43S0d05LeeeH-n1yjxm3I
-Message-ID: <CAL+tcoAY5uaYRC2EyMQTn+Hjb62KKD1DRyymW+M27BT=n+MUOw@mail.gmail.com>
-Subject: Re: [PATCH net-next v3] xsk: skip validating skb list in xmit path
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
-	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
+References: <40af2b73239850e7bf1a81abb71ee99f1b563b9c.1764226734.git.mst@redhat.com>
+ <a61dc7ee-d00b-41b4-b6fd-8a5152c3eae3@gmail.com>
+In-Reply-To: <a61dc7ee-d00b-41b4-b6fd-8a5152c3eae3@gmail.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Fri, 28 Nov 2025 10:20:21 +0800
+X-Gm-Features: AWmQ_bkpiNIqEJYMSebVvAaf2aLCflDbTnLMVmn819Q7sJ2u-A2teXvBbKmJ7ag
+Message-ID: <CACGkMEuJFVUDQ7SKt93mCVkbDHxK+A74Bs9URpdGR+0mtjxmAg@mail.gmail.com>
+Subject: Re: [PATCH RFC] virtio_net: gate delayed refill scheduling
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, 
+	Paolo Abeni <pabeni@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 28, 2025 at 1:58=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wro=
-te:
+On Fri, Nov 28, 2025 at 1:47=E2=80=AFAM Bui Quang Minh <minhquangbui99@gmai=
+l.com> wrote:
 >
-> On 11/27/25 1:49 PM, Jason Xing wrote:
-> > On Thu, Nov 27, 2025 at 8:02=E2=80=AFPM Paolo Abeni <pabeni@redhat.com>=
- wrote:
-> >> On 11/25/25 12:57 PM, Jason Xing wrote:
-> >>> This patch also removes total ~4% consumption which can be observed
-> >>> by perf:
-> >>> |--2.97%--validate_xmit_skb
-> >>> |          |
-> >>> |           --1.76%--netif_skb_features
-> >>> |                     |
-> >>> |                      --0.65%--skb_network_protocol
-> >>> |
-> >>> |--1.06%--validate_xmit_xfrm
-> >>>
-> >>> The above result has been verfied on different NICs, like I40E. I
-> >>> managed to see the number is going up by 4%.
-> >>
-> >> I must admit this delta is surprising, and does not fit my experience =
-in
-> >> slightly different scenarios with the plain UDP TX path.
-> >
-> > My take is that when the path is extremely hot, even the mathematics
-> > calculation could cause unexpected overhead. You can see the pps is
-> > now over 2,000,000. The reason why I say this is because I've done a
-> > few similar tests to verify this thought.
->
-> Uhm... 2M is not that huge. Prior to the H/W vulnerability fallout
-> (spectre and friends) reasonable good H/W (2016 old) could do ~2Mpps
-> with a single plain UDP socket.
+> I think the the requeue in refill_work is not the problem here. In
+> virtnet_rx_pause[_all](), we use cancel_work_sync() which is safe to
+> use "even if the work re-queues itself". AFAICS, cancel_work_sync()
+> will disable work -> flush work -> enable again. So if the work requeue
+> itself in flush work, the requeue will fail because the work is already
+> disabled.
 
-Interesting number that I'm not aware of. Thanks.
-
-But for now it's really hard for xsk (in copy mode) to reach over 2M
-pps even with some recent optimizations applied. I wonder how you test
-UDP? Could you share the benchmark here?
-
-IMHO, xsk should not be slower than a plain UDP socket. So I think it
-should be a huge room for xsk to improve...
+Right.
 
 >
-> Also validate_xmit_xfrm() should be basically a no-op, possibly some bad
-> luck with icache?
+> I think what triggers the deadlock here is a bug in
+> virtnet_rx_resume_all(). virtnet_rx_resume_all() calls to
+> __virtnet_rx_resume() which calls napi_enable() and may schedule
+> refill. It schedules the refill work right after napi_enable the first
+> receive queue. The correct way must be napi_enable all receive queues
+> before scheduling refill work.
 
-Maybe. I strongly feel that I need to work on the layout of those structure=
-s.
+So what you meant is that the napi_disable() is called for a queue
+whose NAPI has been disabled?
+
+cpu0] enable_delayed_refill()
+cpu0] napi_enable(queue0)
+cpu0] schedule_delayed_work(&vi->refill)
+cpu1] napi_disable(queue0)
+cpu1] napi_enable(queue0)
+cpu1] napi_disable(queue1)
+
+In this case cpu1 waits forever while holding the netdev lock. This
+looks like a bug since the netdev_lock 413f0271f3966 ("net: protect
+NAPI enablement with netdev_lock()")?
 
 >
-> Could you please try the attached patch instead?
+> The fix is like this (there are quite duplicated code, I will clean up
+> and send patches later if it is correct)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 8e04adb57f52..892aa0805d1b 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -3482,20 +3482,25 @@ static void __virtnet_rx_resume(struct virtnet_in=
+fo *vi,
+>   static void virtnet_rx_resume_all(struct virtnet_info *vi)
+>   {
+>       int i;
+> +    bool schedule_refill =3D false;
+> +
+> +    for (i =3D 0; i < vi->max_queue_pairs; i++)
+> +        __virtnet_rx_resume(vi, &vi->rq[i], false);
+>
+>       enable_delayed_refill(vi);
+> -    for (i =3D 0; i < vi->max_queue_pairs; i++) {
+> -        if (i < vi->curr_queue_pairs)
+> -            __virtnet_rx_resume(vi, &vi->rq[i], true);
+> -        else
+> -            __virtnet_rx_resume(vi, &vi->rq[i], false);
+> -    }
+> +
+> +    for (i =3D 0; i < vi->curr_queue_pairs; i++)
+> +        if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
+> +            schedule_refill =3D true;
+> +
+> +    if (schedule_refill)
+> +        schedule_delayed_work(&vi->refill, 0);
+>   }
+>
+>   static void virtnet_rx_resume(struct virtnet_info *vi, struct receive_q=
+ueue *rq)
+>   {
+> -    enable_delayed_refill(vi);
+>       __virtnet_rx_resume(vi, rq, true);
+> +    enable_delayed_refill(vi);
 
-Yep, and I didn't manage to see any improvement.
+This seems to be odd. I think at least we need to move this before:
+
+> +    if (schedule_refill)
+> +        schedule_delayed_work(&vi->refill, 0);
+
+?
+
+>   }
+>
+>   static int virtnet_rx_resize(struct virtnet_info *vi,
+>
+> I also move the enable_delayed_refill() after we __virtnet_rx_resume()
+> to ensure no refill is scheduled before napi_enable().
+>
+> What do you think?
+
+This has been implemented in your patch or I may miss something.
+
+Thanks
 
 >
-> Should not be as good as skipping the whole validation but should give
-> some measurable gain.
-> >>> [1] - analysis of the validate_xmit_skb()
-> >>> 1. validate_xmit_unreadable_skb()
-> >>>    xsk doesn't initialize skb->unreadable, so the function will not f=
-ree
-> >>>    the skb.
-> >>> 2. validate_xmit_vlan()
-> >>>    xsk also doesn't initialize skb->vlan_all.
-> >>> 3. sk_validate_xmit_skb()
-> >>>    skb from xsk_build_skb() doesn't have either sk_validate_xmit_skb =
-or
-> >>>    sk_state, so the skb will not be validated.
-> >>> 4. netif_needs_gso()
-> >>>    af_xdp doesn't support gso/tso.
-> >>> 5. skb_needs_linearize() && __skb_linearize()
-> >>>    skb doesn't have frag_list as always, so skb_has_frag_list() retur=
-ns
-> >>>    false. In copy mode, skb can put more data in the frags[] that can=
- be
-> >>>    found in xsk_build_skb_zerocopy().
-> >>
-> >> I'm not sure  parse this last sentence correctly, could you please
-> >> re-phrase?
-> >>
-> >> I read it as as the xsk xmit path could build skb with nr_frags > 0.
-> >> That in turn will need validation from
-> >> validate_xmit_skb()/skb_needs_linearize() depending on the egress devi=
-ce
-> >> (lack of NETIF_F_SG), regardless of any other offload required.
-> >
-> > There are two paths where the allocation of frags happen:
-> > 1) xsk_build_skb() -> xsk_build_skb_zerocopy() -> skb_fill_page_desc()
-> > -> shinfo->frags[i]
-> > 2) xsk_build_skb() -> skb_add_rx_frag() -> ... -> shinfo->frags[i]
-> >
-> > Neither of them touch skb->frag_list, which means frag_list is NULL.
-> > IIUC, there is no place where frag_list is used (which actually I
-> > tested). we can see skb_needs_linearize() needs to check
-> > skb_has_frag_list() first, so it will not proceed after seeing it
-> > return false.
-> https://elixir.bootlin.com/linux/v6.18-rc7/source/include/linux/skbuff.h#=
-L4322
+> Thanks,
+> Quang Minh
 >
-> return skb_is_nonlinear(skb) &&
->                ((skb_has_frag_list(skb) && !(features & NETIF_F_FRAGLIST)=
-) ||
->                 (skb_shinfo(skb)->nr_frags && !(features & NETIF_F_SG)));
->
-> can return true even if `!skb_has_frag_list(skb)`.
 
-Oh well, indeed, I missed the nr_frags condition.
-
-> I think you still need to call validate_xmit_skb()
-
-I can simplify the whole logic as much as possible that is only
-suitable for xsk: only keeping the linear check. That is the only
-place that xsk could run into.
-
-Thanks,
-Jason
 
