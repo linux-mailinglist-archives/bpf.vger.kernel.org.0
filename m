@@ -1,165 +1,136 @@
-Return-Path: <bpf+bounces-75725-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75726-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 585E6C92371
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 15:02:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BBBEC92392
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 15:05:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 413A735314F
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 14:01:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B210F3A4600
+	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 14:04:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40EA8244687;
-	Fri, 28 Nov 2025 14:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D9A430FC08;
+	Fri, 28 Nov 2025 14:04:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KB7iHEr7";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="idDsK9Ht"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bf5D8tor"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1228D3043A9
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 14:00:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BD01C701F
+	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 14:04:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764338456; cv=none; b=ZQBvDiS9synT6dO/p+fTWhSnXI3RC8qGwYht8JS0XyW1JCM5CYnOXhu0wgZKbwE/WrrPelGIGLMvDnbqIFGlMLnlbSRvsF7VnRPKs8mQPiaLMswAUtzEN1wcki37IHL53P4YmB594n4tWzPNk1eCoaSMjIYLPllZ8oNlNM4UhYU=
+	t=1764338680; cv=none; b=RApv87wEvDkdfakrLIN6I7AcW3kAUSWOThX5OLdamMKmips0xigFvLSVnrPhB/Xt07NqtRRPcBMsqw3anUllk2gNynz6AowbiBggt62qubua1el+lIZE2IvubdIWVUIHR6zj+1KgK8SornViBvfPj6oNG0sW67zEWp1a2Yjd7eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764338456; c=relaxed/simple;
-	bh=/b6oiUSdkAC7r0PXy4PCn7idBfGLvrD/tieVHb+t+gg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LjVnVTJWHVwnQoYHYUouWa0KAv7ZoonUT33BAVfBQ5IN56LG5lHhJrNf37eP1AqO1A5t7Z0/Qg3qXFBEAZZsUEvLE77Bmso9Kr6eqop3dRFMRbrkCKgpsN+09QYkwlWeRg7+ZrxQLAzL3JJBpFv0qWXgv/BA9b6xzOcFDKvvXfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KB7iHEr7; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=idDsK9Ht; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from pathway.suse.cz (unknown [IPv6:2a07:de40:b2bf:1b::12bd])
-	by smtp-out2.suse.de (Postfix) with ESMTP id EDE045BED2;
-	Fri, 28 Nov 2025 14:00:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764338453; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
+	s=arc-20240116; t=1764338680; c=relaxed/simple;
+	bh=8BUy/DlnXFwDpANRZOOtzUxjbSJftZsc9GiewZUjuuY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BmLzGtoACdFr3PVMR89XZxjjmDY6ubbPq0+JF4Y+nQgIgKy0mLIsfV83WwnhNpYXhyzBB8zhO1dVjerwlFCVsWE3dQjmMHGUq2qcgChZ40qSZRaYYtaKYJWeg1/3l7lI97N+QRy/wLys9TxaHqr9DiAud28LPFja67QutrTh3yg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bf5D8tor; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1764338678;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ah68JRZAkYtiOi50cXOHf5n/v9ykgtc02Rb05ZD2x3A=;
-	b=KB7iHEr7n8o/0Eo5B6UezaVaVEdc+TxWLJyN74y/tiTQhTWGwRT19PlQzpYM1d+51DWQb6
-	HsasaTjnf4YTWzQ4YvqXegdkt7dzWFOKDQEob4aRz+LiLeTakRQ4GQH4K0ZdP2Hx02voSh
-	Lx4KGAH+DPHJBccEM9JKvWqcr39PXUk=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=idDsK9Ht
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764338452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ah68JRZAkYtiOi50cXOHf5n/v9ykgtc02Rb05ZD2x3A=;
-	b=idDsK9HtLL0GmmiLlXxzQyHibz/wSeTyNLqqFDSMFbL+JNxAKIMrkj4NkV21HB1xsIpVQU
-	+66AxwQttp5jazE0I8d6nIGYQq0vGXsZGI35X8WfSs/w/ExkpDKID6XGOM6wlibldDhhJx
-	n7pToOnHv++hyVkBT1RevXmA5j/53TM=
-From: Petr Mladek <pmladek@suse.com>
-To: Petr Pavlu <petr.pavlu@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <kees@kernel.org>
-Cc: Aaron Tomlin <atomlin@atomlin.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Daniel Gomez <da.gomez@kernel.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-modules@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Petr Mladek <pmladek@suse.com>
-Subject: [PATCH v3 7/7] kallsyms: Prevent module removal when printing module name and buildid
-Date: Fri, 28 Nov 2025 14:59:20 +0100
-Message-ID: <20251128135920.217303-8-pmladek@suse.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20251128135920.217303-1-pmladek@suse.com>
-References: <20251128135920.217303-1-pmladek@suse.com>
+	bh=2aYbQOviV9G6U7vQC1wZCjsv5aDiytW/O4hn4aGzwt0=;
+	b=bf5D8tor/A1Wq4XBvUt1KEdNqVCjpPcJcbNNtT3z474QXOZDJlaQ5q+xVOuUK3C6gEs95Y
+	LtYlUJTFMVg1ZfT8f08ZoNdQnlq+ZwjmJHoLoNhReUMq9N5ry1E23+VBDalHWze0bxDYhW
+	ykpnznrxeoiD+yO7AqEuy3VzRBZRWqI=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-644-ssVJcb4qMdCDsYrzBK8Sgg-1; Fri, 28 Nov 2025 09:04:36 -0500
+X-MC-Unique: ssVJcb4qMdCDsYrzBK8Sgg-1
+X-Mimecast-MFC-AGG-ID: ssVJcb4qMdCDsYrzBK8Sgg_1764338675
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-59427500731so1210397e87.0
+        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 06:04:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764338675; x=1764943475;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=2aYbQOviV9G6U7vQC1wZCjsv5aDiytW/O4hn4aGzwt0=;
+        b=UxXFRPFH4X3ufclQOkZxs0L2NCerWWa6PH+A16cIgXqTC11nFxJ7NGsgdgzlODUqQA
+         36OXUzqY/GBjJxON+ApqjGUVQ2gtzs02NhTjrCFFQNQu0b94fcGr9V/Sp5LKNJUqIS8L
+         Ux39n1zKQiDF2FEcsomjouj/bsgG/FMhLjG5cCF/hoUfqK1R/uVpJ+/LImM94p/M0MLk
+         SA4UK0k15OXMMsF+CEM7i0n2uzaHepMGzOSgID5Mi5Mw3rFD9g6P9WV+JTc6X1eMxqFv
+         MviYfLzWqVQkJt1fiEZbd9llyvryywDfMqmDKI4LeJHW8MQFKK4OSTBB37Rdy2tBUyxo
+         zbeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUE9xJhJO5ydHi/OwpxxxO/OCrgxsjg1GSAWcKaWL8P1EyXxjwxR/6Sp+jKWUZ4FHdOnSo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzT6jHY+CU4QiKLTppVvOj1P9m1HvN49WjWsYvcfEEr/JlzKyOv
+	mYxw/Q0B3ZHwSrvrmx9fLOg4BUarXDytcGUTyNQjj80Sb+RM93CgAJBqK7V/05QYuXNptXIQi9k
+	iI6P5J7WBD4pl/+9BfA2o0e2r9oLUneDN4IpYMnm7iofxDpEMG5GFRtdeWUZVoJT/EQXJW4Fh+P
+	nBjEn5r1Pt+nfcnqre7U+YfjrfYKFp
+X-Gm-Gg: ASbGncs7GJSYA/yPFoPpyVHEu2CUG76uh+gRv0iZuSlXCzPJfk1cFpAczXXymkwqzg3
+	Bfk50Z3AfUF/6lmDvLMozuGFCrJhnYlnXxuYeHj309fw8qW4PK2v8wuOfwPuEy0fRB7YiZRVKc8
+	YeuOPTxLWesTSIB6Ol3BeIDB8y/LxdOI6fXMZTjSp19kq0W0s3bbByoviS0HXOI1pl/g==
+X-Received: by 2002:a05:6512:3c98:b0:595:7c47:cd47 with SMTP id 2adb3069b0e04-596a3e983camr10042582e87.2.1764338674896;
+        Fri, 28 Nov 2025 06:04:34 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGz66R88yyrnFnHjZ3XK8T/KldcTjOaeEpw5lXyP8wGGA8SNJySTlDwLR+bs2xmbBIFPh69rhXpxTJeYQlaS0s=
+X-Received: by 2002:a05:6512:3c98:b0:595:7c47:cd47 with SMTP id
+ 2adb3069b0e04-596a3e983camr10042564e87.2.1764338674340; Fri, 28 Nov 2025
+ 06:04:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [15.13 / 50.00];
-	SPAM_FLAG(5.00)[];
-	NEURAL_SPAM_LONG(3.50)[1.000];
-	BAYES_HAM(-3.00)[100.00%];
-	HFILTER_HOSTNAME_UNKNOWN(2.50)[];
-	RDNS_NONE(2.00)[];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ONCE_RECEIVED(1.20)[];
-	HFILTER_HELO_IP_A(1.00)[pathway.suse.cz];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	HFILTER_HELO_NORES_A_OR_MX(0.30)[pathway.suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	MIME_GOOD(-0.10)[text/plain];
-	NEURAL_HAM_SHORT(-0.06)[-0.318];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	DIRECT_TO_MX(0.00)[git-send-email 2.52.0];
-	FROM_EQ_ENVFROM(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_COUNT_ZERO(0.00)[0];
-	TAGGED_RCPT(0.00)[];
-	FREEMAIL_CC(0.00)[atomlin.com,iogearbox.net,gmail.com,kernel.org,arm.com,google.com,vger.kernel.org,suse.com];
-	DKIM_TRACE(0.00)[suse.com:+];
-	R_RATELIMIT(0.00)[to_ip_from(RL6jpahug3dm5x93mmnjuwit91)];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[atomlin.com:email,suse.com:mid,suse.com:dkim,suse.com:email,pathway.suse.cz:helo];
-	TO_DN_SOME(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b2bf:1b::12bd:from];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b2bf:1b::12bd:from];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com]
-X-Spamd-Bar: +++++++++++++++
-X-Rspamd-Queue-Id: EDE045BED2
-X-Spam-Flag: YES
-X-Spam-Score: 15.13
-X-Spam-Level: ***************
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: add header
-X-Spam: Yes
+References: <20251117184409.42831-1-wander@redhat.com> <20251117184409.42831-9-wander@redhat.com>
+ <CADDUTFz_gU0C8uqwDS3ewFRUxk7nbkGv1UU09Omjy0Ew2wB5VQ@mail.gmail.com>
+In-Reply-To: <CADDUTFz_gU0C8uqwDS3ewFRUxk7nbkGv1UU09Omjy0Ew2wB5VQ@mail.gmail.com>
+From: Wander Lairson Costa <wander@redhat.com>
+Date: Fri, 28 Nov 2025 11:04:23 -0300
+X-Gm-Features: AWmQ_blHLGrvmJS-VExLZPhZncF8FW2knptR9rNbECwrzHFDz6oKpDascdVpK0c
+Message-ID: <CAAq0SUmsdk=uQ7NcjWHZDetm__q5CPxe+H-U01GefJXASN=6HQ@mail.gmail.com>
+Subject: Re: [rtla 08/13] rtla: Use standard exit codes for result enum
+To: Costa Shulyupin <costa.shul@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Tomas Glozar <tglozar@redhat.com>, 
+	Ivan Pravdin <ipravdin.official@gmail.com>, Crystal Wood <crwood@redhat.com>, 
+	John Kacur <jkacur@redhat.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	"open list:Real-time Linux Analysis (RTLA) tools" <linux-trace-kernel@vger.kernel.org>, 
+	open list <linux-kernel@vger.kernel.org>, 
+	"open list:BPF [MISC]:Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-kallsyms_lookup_buildid() copies the symbol name into the given buffer
-so that it can be safely read anytime later. But it just copies pointers
-to mod->name and mod->build_id which might get reused after the related
-struct module gets removed.
+On Fri, Nov 28, 2025 at 10:18=E2=80=AFAM Costa Shulyupin <costa.shul@redhat=
+.com> wrote:
+>
+> On Mon, 17 Nov 2025 at 20:56, Wander Lairson Costa <wander@redhat.com> wr=
+ote:
+> >
+> >
+> > -       PASSED =3D 0, /* same as EXIT_SUCCESS */
+> > -       ERROR =3D 1,  /* same as EXIT_FAILURE, an error in arguments */
+> > -       FAILED =3D 2, /* test hit the stop tracing condition */
+> > +       PASSED  =3D EXIT_SUCCESS,
+> > +       ERROR   =3D EXIT_FAILURE,
+> > +       FAILED, /* test hit the stop tracing condition */
+>
+> The exit codes are defined as numbers internationally because it provides=
+ direct translation from numbers to codes and vice versa. Additional indire=
+ction doesn't add to readability.
+>
 
-The lifetime of struct module is synchronized using RCU. Take the rcu
-read lock for the entire __sprint_symbol().
+I believe that where it is written "internationally" reads
+"intentionally" (happens to me all the time). The main motivation is
+to use the standard C library exit codes when calling exit().
 
-Reviewed-by: Aaron Tomlin <atomlin@atomlin.com>
-Signed-off-by: Petr Mladek <pmladek@suse.com>
----
- kernel/kallsyms.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index 5bc1646f8639..202d39f5493a 100644
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -471,6 +471,9 @@ static int __sprint_symbol(char *buffer, unsigned long address,
- 	unsigned long offset, size;
- 	int len;
- 
-+	/* Prevent module removal until modname and modbuildid are printed */
-+	guard(rcu)();
-+
- 	address += symbol_offset;
- 	len = kallsyms_lookup_buildid(address, &size, &offset, &modname, &buildid,
- 				       buffer);
--- 
-2.52.0
+> Costa
+>
+>
+> ________________________________
+> Hi Wander,
+>
+> Additional indirection does not add to readability.
+>
+> Thanks,
+> Costa
 
 
