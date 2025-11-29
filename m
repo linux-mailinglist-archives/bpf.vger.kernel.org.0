@@ -1,233 +1,145 @@
-Return-Path: <bpf+bounces-75755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1B89C934C2
-	for <lists+bpf@lfdr.de>; Sat, 29 Nov 2025 00:28:34 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id E30CDC93568
+	for <lists+bpf@lfdr.de>; Sat, 29 Nov 2025 01:56:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 248B03A94B1
-	for <lists+bpf@lfdr.de>; Fri, 28 Nov 2025 23:28:29 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2BB46348433
+	for <lists+bpf@lfdr.de>; Sat, 29 Nov 2025 00:56:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC6B2F60C1;
-	Fri, 28 Nov 2025 23:28:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 822B91946AA;
+	Sat, 29 Nov 2025 00:56:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G47pfJls"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MtCYJ9NV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6051D2F3C2A
-	for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 23:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 969E315624B
+	for <bpf@vger.kernel.org>; Sat, 29 Nov 2025 00:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764372494; cv=none; b=CDF9MbOh8fKUu2i1doHjmRswcZR6mMwhNuHBVuRWU4fUx4fSeMOcSU+aRKISW9ZKDNIS/z1xOA/9SImI8qPsgFFyzi3De+f9KKu5mU+IM3ccmEPb1mRbibWH/4z9IK3fD4/WMup6PpwsGjKIG8nrvA1JFeWf/LyLn3iFbQRdD+Q=
+	t=1764377782; cv=none; b=rgvDE2Jqttssdr+KB0GXx4unTbzYu3W7xYNqVG7SpngPVzOLj3wBcMZN0z3t40i6iqRZpKJkRQ7yclu29yVaIee3wTTDEiMuSwdwGfhmoyctxs5ytkV/NCQmxtlq8aKhM26+VdABfnXl33K0OHyJthH9D3hpHefBP2QztA4xA6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764372494; c=relaxed/simple;
-	bh=QMCJK4fPNJoANX0nTroINnUWsKFwJRZb4SH4XDpD2wg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eZRPIyH3tJ8PseDuTpG5slXTVZmVqas46FdP/fMPKwKQRhfYHDCQ20i++klNrW6y3V5k2Tj/TQ7dCbBsEw+MbsKXHIkBRgSQOzTrR26yGenCX/+JQOHHPh22EdIuuBsbAs6CjN2Lnax3vmV5SrfwaOT587VSBjfrTR6wa4yVw5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G47pfJls; arc=none smtp.client-ip=209.85.128.66
+	s=arc-20240116; t=1764377782; c=relaxed/simple;
+	bh=4MTjHcSRUlbHrOJ+f9Ulvhi4iA2FkdPdg3sEPmZy/jo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XUxF39G7/DW0T4bM8xyElep3B/AiD4dTt/qE3vxq0toASRMpt8CWgwbcTnyLJHfgNQiscSRu+PynE4kBCL8WSCnmQBIIDl4WvDieR3ErjwlXWAWyxGq/v/BUOqq6Kf49p42IXclLejTH4nj0bgXKjZOCN6mPh9vHFN4FmgwMg6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MtCYJ9NV; arc=none smtp.client-ip=209.85.166.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-47778b23f64so13288785e9.0
-        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 15:28:12 -0800 (PST)
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-433217b58d9so11964545ab.1
+        for <bpf@vger.kernel.org>; Fri, 28 Nov 2025 16:56:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764372490; x=1764977290; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1764377780; x=1764982580; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wxqLZL28Ppaox8tsOa1qySRq1fbpY+EejLK2u0zwo04=;
-        b=G47pfJlsx2PUmzGssKny6/8DKsfPkNKG6xi3THfHu55VoRT4Rf9w1EY4N5IXPnbzRI
-         a2z8cz2IU/noZ2/oqyMwnXbSYNZ7soX6UtTzoSYDW4Pzwf1g7t6NQNyDDJX/vUdZAAOW
-         FZIJukwROP/315S2GUNM5Yj84vnypWirI2MJItkph9E/sGITGhabdAJ2OUuOTQ92RI1o
-         eo5fXESNlos82vzdj89B5MMLcPO97gjYM1GMBESbR7rTfawGrDtdY3oEF3JSzOt86/qc
-         YqULmKtwSXuoULyvsUdMx2ZQnQ8kzQhzqC+f6GTHTkhDVORjycZgQNtT1W7LbRp1LVoX
-         wuAQ==
+        bh=4MTjHcSRUlbHrOJ+f9Ulvhi4iA2FkdPdg3sEPmZy/jo=;
+        b=MtCYJ9NV6OJlVgIqy/QbqPEU21+oOQM824YkZNIFao6qTp2iiRjFeNh/i7/BGtK/YB
+         i61xQfqJlhOcl2j/+T28s4j2B/kL86Hs8jy6Oflmk0wlYlP7y7eZnwkLiSJC47H3Q6rN
+         IS9H2jAeYxFAm/XXtqfPF/dCVwiM2NuvE1tE9oKx8K0mfuntMS4KbD1VBq2DYeqxHxfl
+         j2jFBSDaS/Urxd1qM++LiCcuGU9H3P5DFjYpIfWezeCpG4tNmedxqSirXqW56jwNbihl
+         FaDdcQ9KSTdEjQ6XmRmjf1U8aP25JBOj0oRjw0upB24WPKsvF5WcQdzbtnbsTcO41PRm
+         1jOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764372490; x=1764977290;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20230601; t=1764377780; x=1764982580;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=wxqLZL28Ppaox8tsOa1qySRq1fbpY+EejLK2u0zwo04=;
-        b=HnAtY3dBWGZZ6SLRoQx+VNMGUNP7nSiS9CTLe5au9S3d5CRcpww3qzQjQkuRjFef2n
-         7tDM+b0ZzH4qLZcBzGDe6GI++Ruv9F8janRfSj41jXERute9T8zKuXi/uvHQdpxxD91c
-         axrnjfnbUdAaeF543cXIvlI5PvvdHsexRsyBLN2eLjIroKPxCHPhxpfVFTSSyIsvt/vq
-         DSQ5z2npHR2lxIGE+iqvJomHD/FoVXalUNdSekEvHCnr0wS8nnt2NSzvOuJDAbN3H9Fc
-         kMpgp1xDxvgD55Daps+mYeq8LDiYt9yJfYjzO7i/zletah+gaJX+90WAyFVQZ7tupAR7
-         Ftiw==
-X-Gm-Message-State: AOJu0YzAb8Uw1s6lv+wWEiu1pcvVsyjnUVo9MBfWFjNs7Nepce0K3QfL
-	My0pCP5nj9X+qEL2XK18fPiGnYtZ+qHpfKyGTfuVttUh39Wy8Pe/8Luk/ptLw4SK
-X-Gm-Gg: ASbGncuLWXHJsOhSKqNYE4lDJuZwtyIxsMwNhlLpfljaWRX3elfuU+EPki8tp1yQfoB
-	sVDsI4CZY0YrgQV2kbzRLKCMBCN1GtyUZjbGDbf8/+U42J/r/MpfovCFK1tU9tZZFr13NC5y1KQ
-	pOgO12HuA6PkXaH7kCe0qR+C+hoRyFA9dEstIVpjPPhh94cEOepsn7Xqq13mFKNZe4gAF/lOi2m
-	7d0lsEIxDsufj2suhbEUJOQF5eJ1pcqe3Gt4nyoGKjJibep1LwzOzhxxX+EnZlzhAU/VP8qOzqo
-	sj2jOWkiHIkfjrQ1hBYzDUrB7sVIXbjxSdTnk2J4/QCDsZDbynDbCfD9Je0LXjdpM2bSDshhVlm
-	BHVaN5qsenLHxd+AlsRpJGuNMZ27Bjgc9E9X0LAWSLcCFdFcZmtXJVMPCKicl6piEjlMH7JdHUg
-	I3ut6hKx6A55YI4ZCypwWt8O0sat1x7Jv55sjXP7v8FOQVYViY1pSIkAgdHog8qZig
-X-Google-Smtp-Source: AGHT+IGenhlXQojLO4A8snuodIELpz/s6UvZ4WXH6vmgEgP5RHjjATF0F/R2rvjoEPjbKZb2jgjwBg==
-X-Received: by 2002:a05:600c:4691:b0:477:8a2a:1244 with SMTP id 5b1f17b1804b1-477c110e521mr301001765e9.11.1764372490115;
-        Fri, 28 Nov 2025 15:28:10 -0800 (PST)
-Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-479052c9621sm103603185e9.5.2025.11.28.15.28.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Nov 2025 15:28:09 -0800 (PST)
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>,
-	Jelle van der Beek <jelle@superluminal.eu>,
-	kkd@meta.com,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next v2 6/6] selftests/bpf: Add success stats to rqspinlock stress test
-Date: Fri, 28 Nov 2025 23:28:02 +0000
-Message-ID: <20251128232802.1031906-7-memxor@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251128232802.1031906-1-memxor@gmail.com>
-References: <20251128232802.1031906-1-memxor@gmail.com>
+        bh=4MTjHcSRUlbHrOJ+f9Ulvhi4iA2FkdPdg3sEPmZy/jo=;
+        b=wymCkBGWFjjmp3YDF8mxwc70hmAwb5YseQSnFHSu4Rw9Bm2WpgLJSlcaMorKz2q/03
+         GsNnifWDrE72SmhrPnv+/aYJ9C5YVqSXCAMzQBxWuqkHW66JFsQem3ma49/5HD5n2DDa
+         40HuvPFerBOKIhFFbqvmbDaDFbhbU6wsdPITpJl/tuKjOSHaA0CeTrjbTwdufa2Q+lfo
+         09LbjJzqUXc028a6eq4VAsHMs/J8H5QWdnULUEqfByFdnGFljD2zuh0SFVI0XaPnSb/K
+         gIhhT+dkQlm4av/3iLcMOIEwYc5Pm0q9ejnvKUXXwhCZrtz0WkmxX24YC9I4FMcE7Z74
+         Rf+w==
+X-Forwarded-Encrypted: i=1; AJvYcCWybrULMwYqAV6F8rFXAKbeS9E+rFOvItYHj4+uzSuiHxaLlE06zLwMpg80RBA36xUkbdo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+mwE977MdiL6CDQFopKQUomzJ4ixjFsdkAeKqDt7PEv0TnKPT
+	zjzf2uMwQIVXewvJanQH9JJrPASdNSSpOKwtVAKirEEANv20FOZiJIgV897R9t7Yr3lXnYwnrm9
+	FU3E0CFaIm/i32Aj8u8dKtG03Wi7exuU=
+X-Gm-Gg: ASbGncsODny7KmMIS9GN+novgXTjglQjN7obCYwOS3D81k5rZThBHhzrPaGfMHbGePi
+	rifF+RKyDBZangM/rphI5liBBv9iUq5W7ke5Lb9nXGfz8y5ergj6t+FnW//pFQz6AGS3SmIjfWU
+	DOvd2Yfzy3mzfZF2cJwb6J3dz7vQf+23Cklc2NgwmRfyANmzxmpweS6H35kYt290t6h7fYHfbYI
+	oHcir/8inqko74+ngjOXTgtjKu2iU49ZRWPO0hl226I4EB769wkg8cYbBKS57nIGcD3SXE=
+X-Google-Smtp-Source: AGHT+IHPjbVAykb9MFmYGfmY7NmyQ1c7NjGqXVwVjBgP4bb5koTULIIqFOMtmlAggPYv8GKzUVTstIoTjsVyXn2Czp4=
+X-Received: by 2002:a05:6e02:1521:b0:433:8347:2e80 with SMTP id
+ e9e14a558f8ab-435dd06e961mr119740435ab.10.1764377779669; Fri, 28 Nov 2025
+ 16:56:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5089; i=memxor@gmail.com; h=from:subject; bh=QMCJK4fPNJoANX0nTroINnUWsKFwJRZb4SH4XDpD2wg=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBpKi/ynA+PQEKmEpNE/kRU8RI1Ir+4WTk+6VJdV aiA62itWAWJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaSov8gAKCRBM4MiGSL8R yj5mD/9zmBpsqJJzUZx0oF3/2WMI0POe2txBvvwJWXHeP9sskTwIJ27aqOTQgt4NFhJZfxwfOgK oJ8j6gZnXelR1coRk35JFW5yYUeFwag1RZ6tGkzaampUuDGWS0gXkb6az0+ikxISE0Iefna8YEi Fh6C6s4vUnWRD+5WN7ulbf/KrlcGuJEvSDPz4cLGoSnO4GOkFEQvsZJS9ZdiKHtcLsKPSgmw5Cc ON15MMv015nIhn7uCLYTdgIM4PR6TyIKIXKj80p8xfeBvSPW1P2t9MapR72dwnoTuntIHII4m+3 sQan/PJQUzZqwG2UyQ2Geotj9fNPNOxTR3jEhMArg6K/mA7AgObcWl9PaZ2L+9w1NDB7cSibGRE ZpdZKUS39jRIrW7++5l8uzpYmAPlC8SlGTRsJXSUfALuZWoR2jD1D03hJrZjj2fQvSrHNzomqd7 lLxKIjiU9okof0IdkXnLEHktZiGrYdMQVBl2cQhUhYrasY8kzPBWrP3ePHzp4+LqptaRdKwiWuN W3l7ng/Ep9nadXi4Q+oJWsnJA6wZqP5BJ++aqZEDA+Woi9VpYnib2RLY5eXci0jG9LQRmL4UYup rv/u329yJWEj0MiN9l3a3p5a3NpnrA98dWfppVfA3k44ows4IRbUPEmZYiknDFoAOrJ6lmdSDzz 7oWOr4xH6fRX/iw==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+References: <20251128134601.54678-1-kerneljasonxing@gmail.com>
+ <20251128134601.54678-3-kerneljasonxing@gmail.com> <8fa70565-0f4a-4a73-a464-5530b2e29fa5@redhat.com>
+In-Reply-To: <8fa70565-0f4a-4a73-a464-5530b2e29fa5@redhat.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Sat, 29 Nov 2025 08:55:43 +0800
+X-Gm-Features: AWmQ_bl2KUotuXts1CzGyhn6XYDGMJ3tNHO-0829YWUwnVp1JfoAvn-7jJwUIqE
+Message-ID: <CAL+tcoDk0f+p2mRV=2auuYfTLA-cPPe-1az7NfEnw+FFaPR5kA@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 2/3] xsk: use atomic operations around
+ cached_prod for copy mode
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
+	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
+	horms@kernel.org, andrew+netdev@lunn.ch, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add stats to observe the success and failure rate of lock acquisition
-attempts in various contexts.
+On Fri, Nov 28, 2025 at 10:20=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wr=
+ote:
+>
+> On 11/28/25 2:46 PM, Jason Xing wrote:
+> > From: Jason Xing <kernelxing@tencent.com>
+> >
+> > Use atomic_try_cmpxchg operations to replace spin lock. Technically
+> > CAS (Compare And Swap) is better than a coarse way like spin-lock
+> > especially when we only need to perform a few simple operations.
+> > Similar idea can also be found in the recent commit 100dfa74cad9
+> > ("net: dev_queue_xmit() llist adoption") that implements the lockless
+> > logic with the help of try_cmpxchg.
+> >
+> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> > ---
+> > Paolo, sorry that I didn't try to move the lock to struct xsk_queue
+> > because after investigation I reckon try_cmpxchg can add less overhead
+> > when multiple xsks contend at this point. So I hope this approach
+> > can be adopted.
+>
+> I still think that moving the lock would be preferable, because it makes
+> sense also from a maintenance perspective.
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../bpf/test_kmods/bpf_test_rqspinlock.c      | 55 +++++++++++++++----
- 1 file changed, 43 insertions(+), 12 deletions(-)
+I can see your point here. Sure, moving the lock is relatively easier
+to understand. But my take is that atomic changes here are not that
+hard to read :) It has the same effect as spin lock because it will
+atomically check, compare and set in try_cmpxchg().
 
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c b/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c
-index e8dd3fbc6ea5..7b4ae5e81d32 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_test_rqspinlock.c
-@@ -33,9 +33,16 @@ static const unsigned int rqsl_hist_ms[] = {
- };
- #define RQSL_NR_HIST_BUCKETS ARRAY_SIZE(rqsl_hist_ms)
- 
-+enum rqsl_context {
-+	RQSL_CTX_NORMAL = 0,
-+	RQSL_CTX_NMI,
-+	RQSL_CTX_MAX,
-+};
-+
- struct rqsl_cpu_hist {
--	atomic64_t normal[RQSL_NR_HIST_BUCKETS];
--	atomic64_t nmi[RQSL_NR_HIST_BUCKETS];
-+	atomic64_t hist[RQSL_CTX_MAX][RQSL_NR_HIST_BUCKETS];
-+	atomic64_t success[RQSL_CTX_MAX];
-+	atomic64_t failure[RQSL_CTX_MAX];
- };
- 
- static DEFINE_PER_CPU(struct rqsl_cpu_hist, rqsl_cpu_hists);
-@@ -117,14 +124,18 @@ static u32 rqsl_hist_bucket_idx(u32 delta_ms)
- 	return RQSL_NR_HIST_BUCKETS - 1;
- }
- 
--static void rqsl_record_lock_time(u64 delta_ns, bool is_nmi)
-+static void rqsl_record_lock_result(u64 delta_ns, enum rqsl_context ctx, int ret)
- {
- 	struct rqsl_cpu_hist *hist = this_cpu_ptr(&rqsl_cpu_hists);
- 	u32 delta_ms = DIV_ROUND_UP_ULL(delta_ns, NSEC_PER_MSEC);
- 	u32 bucket = rqsl_hist_bucket_idx(delta_ms);
--	atomic64_t *buckets = is_nmi ? hist->nmi : hist->normal;
-+	atomic64_t *buckets = hist->hist[ctx];
- 
- 	atomic64_inc(&buckets[bucket]);
-+	if (!ret)
-+		atomic64_inc(&hist->success[ctx]);
-+	else
-+		atomic64_inc(&hist->failure[ctx]);
- }
- 
- static int rqspinlock_worker_fn(void *arg)
-@@ -147,7 +158,8 @@ static int rqspinlock_worker_fn(void *arg)
- 			}
- 			start_ns = ktime_get_mono_fast_ns();
- 			ret = raw_res_spin_lock_irqsave(worker_lock, flags);
--			rqsl_record_lock_time(ktime_get_mono_fast_ns() - start_ns, false);
-+			rqsl_record_lock_result(ktime_get_mono_fast_ns() - start_ns,
-+						RQSL_CTX_NORMAL, ret);
- 			mdelay(normal_delay);
- 			if (!ret)
- 				raw_res_spin_unlock_irqrestore(worker_lock, flags);
-@@ -190,7 +202,8 @@ static void nmi_cb(struct perf_event *event, struct perf_sample_data *data,
- 	locks = rqsl_get_lock_pair(cpu);
- 	start_ns = ktime_get_mono_fast_ns();
- 	ret = raw_res_spin_lock_irqsave(locks.nmi_lock, flags);
--	rqsl_record_lock_time(ktime_get_mono_fast_ns() - start_ns, true);
-+	rqsl_record_lock_result(ktime_get_mono_fast_ns() - start_ns,
-+				RQSL_CTX_NMI, ret);
- 
- 	mdelay(nmi_delay);
- 
-@@ -300,12 +313,14 @@ static void rqsl_print_histograms(void)
- 		u64 norm_counts[RQSL_NR_HIST_BUCKETS];
- 		u64 nmi_counts[RQSL_NR_HIST_BUCKETS];
- 		u64 total_counts[RQSL_NR_HIST_BUCKETS];
-+		u64 norm_success, nmi_success, success_total;
-+		u64 norm_failure, nmi_failure, failure_total;
- 		u64 norm_total = 0, nmi_total = 0, total = 0;
- 		bool has_slow = false;
- 
- 		for (i = 0; i < RQSL_NR_HIST_BUCKETS; i++) {
--			norm_counts[i] = atomic64_read(&hist->normal[i]);
--			nmi_counts[i] = atomic64_read(&hist->nmi[i]);
-+			norm_counts[i] = atomic64_read(&hist->hist[RQSL_CTX_NORMAL][i]);
-+			nmi_counts[i] = atomic64_read(&hist->hist[RQSL_CTX_NMI][i]);
- 			total_counts[i] = norm_counts[i] + nmi_counts[i];
- 			norm_total += norm_counts[i];
- 			nmi_total += nmi_counts[i];
-@@ -315,17 +330,33 @@ static void rqsl_print_histograms(void)
- 				has_slow = true;
- 		}
- 
-+		norm_success = atomic64_read(&hist->success[RQSL_CTX_NORMAL]);
-+		nmi_success = atomic64_read(&hist->success[RQSL_CTX_NMI]);
-+		norm_failure = atomic64_read(&hist->failure[RQSL_CTX_NORMAL]);
-+		nmi_failure = atomic64_read(&hist->failure[RQSL_CTX_NMI]);
-+		success_total = norm_success + nmi_success;
-+		failure_total = norm_failure + nmi_failure;
-+
- 		if (!total)
- 			continue;
- 
- 		if (!has_slow) {
--			pr_err(" cpu%d: total %llu (normal %llu, nmi %llu), all within 0-%ums\n",
--			       cpu, total, norm_total, nmi_total, RQSL_SLOW_THRESHOLD_MS);
-+			pr_err(" cpu%d: total %llu (normal %llu, nmi %llu) | "
-+			       "success %llu (normal %llu, nmi %llu) | "
-+			       "failure %llu (normal %llu, nmi %llu), all within 0-%ums\n",
-+			       cpu, total, norm_total, nmi_total,
-+			       success_total, norm_success, nmi_success,
-+			       failure_total, norm_failure, nmi_failure,
-+			       RQSL_SLOW_THRESHOLD_MS);
- 			continue;
- 		}
- 
--		pr_err(" cpu%d: total %llu (normal %llu, nmi %llu)\n",
--		       cpu, total, norm_total, nmi_total);
-+		pr_err(" cpu%d: total %llu (normal %llu, nmi %llu) | "
-+		       "success %llu (normal %llu, nmi %llu) | "
-+		       "failure %llu (normal %llu, nmi %llu)\n",
-+		       cpu, total, norm_total, nmi_total,
-+		       success_total, norm_success, nmi_success,
-+		       failure_total, norm_failure, nmi_failure);
- 		for (i = 0; i < RQSL_NR_HIST_BUCKETS; i++) {
- 			unsigned int start_ms;
- 
--- 
-2.51.0
+> Can you report the difference
+> you measure atomics vs moving the spin lock?
 
+No problem, hopefully I will give a detailed report next week because
+I'm going to apply it directly in production where we have multiple
+xsk sharing the same umem.
+
+IMHO, in theory, atomics is way better than spin lock in contended
+cases since the protected area is small and fast.
+
+>
+> Have you tried moving cq_prod_lock, too?
+
+Not yet, thanks for reminding me. It should not affect the sending
+rate but the tx completion time, I think.
+
+I'll also test this as well next week :)
+
+Thanks,
+Jason
 
