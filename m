@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-75789-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75790-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6FC9C956CF
-	for <lists+bpf@lfdr.de>; Mon, 01 Dec 2025 00:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 16511C956DE
+	for <lists+bpf@lfdr.de>; Mon, 01 Dec 2025 00:39:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB99D3A2113
-	for <lists+bpf@lfdr.de>; Sun, 30 Nov 2025 23:37:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAD233A2FCD
+	for <lists+bpf@lfdr.de>; Sun, 30 Nov 2025 23:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFA83301460;
-	Sun, 30 Nov 2025 23:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF88302160;
+	Sun, 30 Nov 2025 23:35:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VaXsnjVu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N+0soFpq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 450A4301035
-	for <bpf@vger.kernel.org>; Sun, 30 Nov 2025 23:35:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED9C72FE072
+	for <bpf@vger.kernel.org>; Sun, 30 Nov 2025 23:35:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764545745; cv=none; b=trVaevg0FlzMd31Wrcvx0QhDF7MeillWtyFg2su6NQJCRyEUja1hmhpMtuz3durgCw79ztVzZ7pzDz7XirjTANPReULdG8RBRvZddTI5kIUhT6ImmHzUjVHlq9RxGpw3QPWY51aBBbI4s4IT3oVylpYxsc8+ElYYBdbyRXq9d+w=
+	t=1764545747; cv=none; b=qp485ePMEo+5XSzAdqjBrwgCA3JxiKEKXOrrNMMQrAY4MbTZR4X76/VbXfqaWyY3KN0PCtBGpgrzV7MA7TN3SX0J0X38/EHPOnZ1SvGmUjSgYdhLF4FITuYf6RXUzq5PEZobBoPdNi/yds/6Crgzon4Y38Yh4qjdnvwn9aBB4Yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764545745; c=relaxed/simple;
-	bh=o4iyw2832atNMAZQImPFBGA5yCK+ZgPjuVFT1OuNVO4=;
+	s=arc-20240116; t=1764545747; c=relaxed/simple;
+	bh=yKCm3JWX46w3TSeS1HDjGDEN8Lb+RgGnnDzf1hIzpyg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oefGenBKtabUugelVkBO4VEO7gLuaI7Ly2aeErBjuukauBdEN4ORge2GjMrYZZkOx/OwkSy8I7hU3GoFkuV5a6NbWktqb2Jv5vO6smBKqBPMxi+Cy/KwGMsRtJAvFano7DhHMf7y58NysnGT/dUgQ7lV2p5mZPnNcCk7ZZjqEWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VaXsnjVu; arc=none smtp.client-ip=209.85.128.46
+	 MIME-Version; b=puvO5ad1KbVqf6JrmzEgT/66N3tC22CWYMq8mccZgdXlLYDtOE3CzVbUnQddTEPYjWE1tI7LTes8OFhwIEeYDTZeqKAM6mixNGqZqiZOuLQhXW6fSg8NnW0FQrhRb+/dIYY0PgLeU/5Yv7AV8qYsasyShSbaWHH3m3tkGsoWvbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N+0soFpq; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4775ae77516so36805325e9.1
-        for <bpf@vger.kernel.org>; Sun, 30 Nov 2025 15:35:43 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-477ba2c1ca2so41966085e9.2
+        for <bpf@vger.kernel.org>; Sun, 30 Nov 2025 15:35:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764545742; x=1765150542; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764545743; x=1765150543; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WQMylrLW4Im9C3RrLyVskL4uzKLnQ4lYGDfbJ+ntA2k=;
-        b=VaXsnjVufNs3gclDiScMqSFHNBjJVUDmV81FXsfFlmxopyAqW5eDl8ll1a/2R3De9B
-         Rp4YRozymaxW3NV70+Gvvr2t6WdvDZlA8THrJ3tUp7Bc7JoK1xSGdUgUxbSZkxbtOBi2
-         yIUdh5zzbIYcvfLhKgc6B+ltCaNIOsxUsyZhDibKKENqENs5EEOHjAfj0APfKj8Rw2HL
-         zYbzTZg7CWmWsOKMBVkohX1FOVMhM2qeVDEz3GU2DYNkqjO9NdySbyDvpsb9yp0YnAKe
-         eE9sDC0B02Q4cUSHHZnIoM+3YPVuupTYV30DeabL4z4b30epxpDoDfKKl5eYgID8dzdy
-         yQKQ==
+        bh=HX9L7y9TUVKUZMrEe/EUsMICdbihgCRR79vdhXFo/qA=;
+        b=N+0soFpqHul603HIj5zHoSIfWc5W9GiN6vklkHMVCs+W4/neQtP3pzS0yfITiq28bG
+         1izqBmz0Vq+fFKQ90rZEKWfeAmlDKPBAVTfnKXldC1ZylLjyioNEh0rQ6vIW6bjHxWwb
+         dXc16NPNkz+eQ3kl80Ti+ATMzdbzHq/OZvtcgJ0eCzm3zsHw6eedbvvEogje1iB8l+oI
+         inpqFusTXLkC/LWcYbmtLwuFDBKMJ/1tXQRoaDHMXWgrEEoHrkJjEig8DI316DClAjP5
+         5iNp8pL5Ib8wkKyjZvbfl27mruFlb4/Lv1r3nw4lqegb/2efQpLsdF6pEzuG6v8b2Pwv
+         13Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764545742; x=1765150542;
+        d=1e100.net; s=20230601; t=1764545743; x=1765150543;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=WQMylrLW4Im9C3RrLyVskL4uzKLnQ4lYGDfbJ+ntA2k=;
-        b=vomocTng0hiliILmHvaYosUUIhRAN7VkVROdEi6VvmUnzcabEeEg0jzQIBG/xx7PkE
-         vIzbBDxD2WRs0lJoyduI151HZEG/CYOrzBX3A4b+JfVI7d6o5j9uF2WwfZZGtyBp5zGU
-         XuiVPvrOf7uHiMxv8NRHkSPkSo4pahlyatuh/WrFG+h53OWyvBV0vEo7cA5p5fwTtfad
-         GG80e+UtBLIFNJOZ72asLXPdzIRyZbyqsvYEUQnrtRE5RWomtT1HDF/f+Of/ReEWtzwT
-         23WXjn2YqFxWf9B55wZUg8xcN5llQuBndUy90MHpd0EDyK7htv5yCsdK/tN6DHt0vm/n
-         kZIg==
-X-Forwarded-Encrypted: i=1; AJvYcCXoaNpJQFVxb4VuUC+zT93w9SrusjUr6cz8CLgKAKnQUPdYSouvSGEeFE5KOFOxZA9p4M8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJ1YDruxImdqKlKCyRHyLXkFErEhgibT0cKfZtzKRJi7Yyo045
-	qFL4ZlFqXrd8bJCyd2jmWgfzan688T1stJ/EuaqYU1hAG0/DYMCexFCc
-X-Gm-Gg: ASbGncsCfKkVzHGyyVuwM5k/k9RfZYAwlFFAGYQTPh1x9sFGIPi5GpvWF26yk7CQm3t
-	JfONKtE7V8CON8RF/OqzqjZ31yI79cSKnXMPq26ZgCQCWqVwTGFsr0iK3U7vWKBhRebo02TbHcd
-	rHnkFpf/rZzfHQ8wfA6woGido+DFiw8V8wv8vFGcEcf46vYDQcHTgUw9Un8aW405oXZcxTvYtWU
-	VUXFwy3lJGEDqPbrT14IVkUwhruQp5bMimAJ7ZMAy9e/VfURBwwBauFv9bTUxXESpojLQeTZmTa
-	1xKpyyavgN6vyAZY+tHoF1YZ4VR5lcPgrl+Si8GYXWIYoiY2hNQQpdFYXdLa8ZlgVWSgu6gJxTX
-	7lvLEBhiTQfP777WLITGKCmwRjVwSpikR5LUPuVluZehvKcArxk2CYOHH3NgHepSilcLLy13ZyO
-	2vKxxBpbtWuppZ5EKkF/5yk7pR7qRvvfQ9uVcbdDVGztakjW2zVX8fPl4rTX62IZsUgQhfMgUTs
-	aVIUri6DMwwsrdZ
-X-Google-Smtp-Source: AGHT+IFRNy69yAJEtLTkHqjePuEbcPuedCzCBZDYARz00zxMJbUrkfp5Acqq1qnoxF/x8wIlVCZ83w==
-X-Received: by 2002:a05:600c:1c29:b0:477:639d:bca2 with SMTP id 5b1f17b1804b1-477c10c85e2mr406364115e9.4.1764545741617;
-        Sun, 30 Nov 2025 15:35:41 -0800 (PST)
+        bh=HX9L7y9TUVKUZMrEe/EUsMICdbihgCRR79vdhXFo/qA=;
+        b=P2mQ+dc5cf/SmmjhR4chTDWUH5nBaH5ah/lITOqm93qI43aJwDZLqehfpOxyTtu86z
+         a1nYc3lixbpiUpLyEOurYE5hsa3N/r86TGMfDuKQbU8m5YhZN63RtJD+KX43QB0Ac0Yr
+         HMgNkBZlC0vTRibsYdmL0WRqTiNPYB/VI6MPtgytNkBY9kYz1/eSFEMAiYZuN43dIW7v
+         yQUyPbWiFXh5IjjGf8GpYklUSk91veBWzkkhsaIfEgf9RldA9Z4m6hluVHJt1mtV97cU
+         0pwBicFfJ2l8r5UyOtk3F+lmKIvTW9nd0C7w8UoxmtFIIx4ViGwEZpR47m0YxyEOux6x
+         Nrmg==
+X-Forwarded-Encrypted: i=1; AJvYcCV+jjduQq5XvqZyEfffPKOxZbRs2KLLX9WKpWUhUmgfZE1O7jvDdwCHPItb2Ws4eT+vwJw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz6gjYsz2RYClAHK80dq52doPJ3urRd8KE5G0Yp9jPf09XDHNIv
+	CYq4vSRNg+DiqKA6xPv69FCx1GsNTmaqzOgDOf5jIF5+b6y57UgoJN6J
+X-Gm-Gg: ASbGncuDhR8ChMqOZ5Pd2VQL2ja/fb9hlIMZ0msPL7HjcnMAlTD9I5qt179NJHK5bcp
+	Sxw6u1f02ZS5I9IHsCh/ndUTudjcr04ug4bPKgP+2/Vgco4zNA/oDg6pej12i5+C9GEXKWHU04Q
+	v+kUuB6+fMUrznYHOAXX/5DxeVlqfPXTx1AgvPV0jmU46Cz6aAqZYSwdYIngM6en5SWt2vsevSw
+	PZUk/V9n64f/7v6VrtT2Are69tS7EZh7PUi2YCyZiCsl4KYyVVZHrvP2Tyb/ICEcPzgHYPh/nnH
+	5pzayhpRU06zpNWIHwL3PPLLBUx0E+RyRPbxRUpyDJGe8DRMPiR1FEbxL2pqyOH3rBcbzoxiDso
+	esWOeX6sfE9IO4RHnjssicp6W4AsXYyTo6wkKgpQ6KTyfYZPjdsMPebNUSstNTn5/RVlTRmWrH3
+	kSlaZcg+QDPpHYTA51yKDsD+YXwh1OfjyA9MiHRsk4wvwg7i0pjf/y4NDry2VU1OPZVXlK3UnyP
+	+MPbno2YHEvkXhw
+X-Google-Smtp-Source: AGHT+IEXud9v2I+TjLUDj/xk+alqLhuWUdH7fEpxpL99N2ZrU2hz5Df/0YCDMBC9pg3l3cG4o9WBpg==
+X-Received: by 2002:a05:600c:4e91:b0:477:7a95:b971 with SMTP id 5b1f17b1804b1-47904b2c3dfmr250016755e9.31.1764545742979;
+        Sun, 30 Nov 2025 15:35:42 -0800 (PST)
 Received: from 127.mynet ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-479040b3092sm142722075e9.1.2025.11.30.15.35.39
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-479040b3092sm142722075e9.1.2025.11.30.15.35.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Nov 2025 15:35:39 -0800 (PST)
+        Sun, 30 Nov 2025 15:35:42 -0800 (PST)
 From: Pavel Begunkov <asml.silence@gmail.com>
 To: netdev@vger.kernel.org
 Cc: "David S . Miller" <davem@davemloft.net>,
@@ -107,9 +107,9 @@ Cc: "David S . Miller" <davem@davemloft.net>,
 	linux-kselftest@vger.kernel.org,
 	io-uring@vger.kernel.org,
 	dtatulea@nvidia.com
-Subject: [PATCH net-next v7 6/9] eth: bnxt: adjust the fill level of agg queues with larger buffers
-Date: Sun, 30 Nov 2025 23:35:21 +0000
-Message-ID: <df309468ba5127fc91dc4fcba9056fab826812bf.1764542851.git.asml.silence@gmail.com>
+Subject: [PATCH net-next v7 7/9] eth: bnxt: allow providers to set rx buf size
+Date: Sun, 30 Nov 2025 23:35:22 +0000
+Message-ID: <95566e5d1b75abcaefe3dca9a52015c2b5f04933.1764542851.git.asml.silence@gmail.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <cover.1764542851.git.asml.silence@gmail.com>
 References: <cover.1764542851.git.asml.silence@gmail.com>
@@ -121,82 +121,103 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Jakub Kicinski <kuba@kernel.org>
+Implement NDO_QUEUE_RX_BUF_SIZE and take the rx buf size from the memory
+providers.
 
-The driver tries to provision more agg buffers than header buffers
-since multiple agg segments can reuse the same header. The calculation
-/ heuristic tries to provide enough pages for 65k of data for each header
-(or 4 frags per header if the result is too big). This calculation is
-currently global to the adapter. If we increase the buffer sizes 8x
-we don't want 8x the amount of memory sitting on the rings.
-Luckily we don't have to fill the rings completely, adjust
-the fill level dynamically in case particular queue has buffers
-larger than the global size.
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-[pavel: rebase on top of agg_size_fac, assert agg_size_fac]
 Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 28 +++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 34 +++++++++++++++++++++++
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h |  1 +
+ 2 files changed, 35 insertions(+)
 
 diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index f4c2ec243e9a..e9840165c7d0 100644
+index e9840165c7d0..0eff527c267b 100644
 --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -3816,16 +3816,34 @@ static void bnxt_free_rx_rings(struct bnxt *bp)
- 	}
- }
+@@ -15932,16 +15932,46 @@ static const struct netdev_stat_ops bnxt_stat_ops = {
+ 	.get_base_stats		= bnxt_get_base_stats,
+ };
  
-+static int bnxt_rx_agg_ring_fill_level(struct bnxt *bp,
-+				       struct bnxt_rx_ring_info *rxr)
++static ssize_t bnxt_get_rx_buf_size(struct bnxt *bp, int rxq_idx)
 +{
-+	/* User may have chosen larger than default rx_page_size,
-+	 * we keep the ring sizes uniform and also want uniform amount
-+	 * of bytes consumed per ring, so cap how much of the rings we fill.
++	struct netdev_rx_queue *rxq = __netif_get_rx_queue(bp->dev, rxq_idx);
++	size_t rx_buf_size;
++
++	rx_buf_size = rxq->mp_params.rx_buf_len;
++	if (!rx_buf_size)
++		return BNXT_RX_PAGE_SIZE;
++
++	/* Older chips need MSS calc so rx_buf_len is not supported,
++	 * but we don't set queue ops for them so we should never get here.
 +	 */
-+	int fill_level = bp->rx_agg_ring_size;
++	if (!(bp->flags & BNXT_FLAG_CHIP_P5_PLUS))
++		return -EINVAL;
 +
-+	if (rxr->rx_page_size > BNXT_RX_PAGE_SIZE)
-+		fill_level /= rxr->rx_page_size / BNXT_RX_PAGE_SIZE;
++	if (!is_power_of_2(rx_buf_size))
++		return -ERANGE;
 +
-+	return fill_level;
++	if (rx_buf_size < BNXT_RX_PAGE_SIZE ||
++	    rx_buf_size > BNXT_MAX_RX_PAGE_SIZE)
++		return -ERANGE;
++
++	return rx_buf_size;
 +}
 +
- static int bnxt_alloc_rx_page_pool(struct bnxt *bp,
- 				   struct bnxt_rx_ring_info *rxr,
- 				   int numa_node)
+ static int bnxt_queue_mem_alloc(struct net_device *dev, void *qmem, int idx)
  {
--	const unsigned int agg_size_fac = PAGE_SIZE / BNXT_RX_PAGE_SIZE;
-+	unsigned int agg_size_fac = rxr->rx_page_size / BNXT_RX_PAGE_SIZE;
- 	const unsigned int rx_size_fac = PAGE_SIZE / SZ_4K;
- 	struct page_pool_params pp = { 0 };
- 	struct page_pool *pool;
+ 	struct bnxt_rx_ring_info *rxr, *clone;
+ 	struct bnxt *bp = netdev_priv(dev);
+ 	struct bnxt_ring_struct *ring;
++	ssize_t rx_buf_size;
+ 	int rc;
  
--	pp.pool_size = bp->rx_agg_ring_size / agg_size_fac;
-+	if (WARN_ON_ONCE(agg_size_fac == 0))
-+		agg_size_fac = 1;
+ 	if (!bp->rx_ring)
+ 		return -ENETDOWN;
+ 
++	rx_buf_size = bnxt_get_rx_buf_size(bp, idx);
++	if (rx_buf_size < 0)
++		return rx_buf_size;
 +
-+	pp.pool_size = bnxt_rx_agg_ring_fill_level(bp, rxr) / agg_size_fac;
- 	if (BNXT_RX_PAGE_MODE(bp))
- 		pp.pool_size += bp->rx_ring_size / rx_size_fac;
+ 	rxr = &bp->rx_ring[idx];
+ 	clone = qmem;
+ 	memcpy(clone, rxr, sizeof(*rxr));
+@@ -15953,6 +15983,7 @@ static int bnxt_queue_mem_alloc(struct net_device *dev, void *qmem, int idx)
+ 	clone->rx_sw_agg_prod = 0;
+ 	clone->rx_next_cons = 0;
+ 	clone->need_head_pool = false;
++	clone->rx_page_size = rx_buf_size;
  
-@@ -4403,11 +4421,13 @@ static void bnxt_alloc_one_rx_ring_netmem(struct bnxt *bp,
- 					  struct bnxt_rx_ring_info *rxr,
- 					  int ring_nr)
- {
-+	int fill_level, i;
- 	u32 prod;
--	int i;
+ 	rc = bnxt_alloc_rx_page_pool(bp, clone, rxr->page_pool->p.nid);
+ 	if (rc)
+@@ -16079,6 +16110,8 @@ static void bnxt_copy_rx_ring(struct bnxt *bp,
+ 	src_ring = &src->rx_agg_ring_struct;
+ 	src_rmem = &src_ring->ring_mem;
+ 
++	dst->rx_page_size = src->rx_page_size;
 +
-+	fill_level = bnxt_rx_agg_ring_fill_level(bp, rxr);
+ 	WARN_ON(dst_rmem->nr_pages != src_rmem->nr_pages);
+ 	WARN_ON(dst_rmem->page_size != src_rmem->page_size);
+ 	WARN_ON(dst_rmem->flags != src_rmem->flags);
+@@ -16231,6 +16264,7 @@ static const struct netdev_queue_mgmt_ops bnxt_queue_mgmt_ops = {
+ 	.ndo_queue_mem_free	= bnxt_queue_mem_free,
+ 	.ndo_queue_start	= bnxt_queue_start,
+ 	.ndo_queue_stop		= bnxt_queue_stop,
++	.supported_params	= NDO_QUEUE_RX_BUF_SIZE,
+ };
  
- 	prod = rxr->rx_agg_prod;
--	for (i = 0; i < bp->rx_agg_ring_size; i++) {
-+	for (i = 0; i < fill_level; i++) {
- 		if (bnxt_alloc_rx_netmem(bp, rxr, prod, GFP_KERNEL)) {
- 			netdev_warn(bp->dev, "init'ed rx ring %d with %d/%d pages only\n",
- 				    ring_nr, i, bp->rx_agg_ring_size);
+ static void bnxt_remove_one(struct pci_dev *pdev)
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
+index 4c880a9fba92..d245eefbbdda 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
+@@ -760,6 +760,7 @@ struct nqe_cn {
+ #endif
+ 
+ #define BNXT_RX_PAGE_SIZE (1 << BNXT_RX_PAGE_SHIFT)
++#define BNXT_MAX_RX_PAGE_SIZE BIT(15)
+ 
+ #define BNXT_MAX_MTU		9500
+ 
 -- 
 2.52.0
 
