@@ -1,150 +1,217 @@
-Return-Path: <bpf+bounces-75782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8CCBC95579
-	for <lists+bpf@lfdr.de>; Sun, 30 Nov 2025 23:34:04 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95BAEC95648
+	for <lists+bpf@lfdr.de>; Mon, 01 Dec 2025 00:35:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DA9C94E01BF
-	for <lists+bpf@lfdr.de>; Sun, 30 Nov 2025 22:34:02 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5CBFD341809
+	for <lists+bpf@lfdr.de>; Sun, 30 Nov 2025 23:35:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19114247289;
-	Sun, 30 Nov 2025 22:33:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BFBF2FE059;
+	Sun, 30 Nov 2025 23:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="L7wR2Ldr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h4f8V7nv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 390EC1B142D;
-	Sun, 30 Nov 2025 22:33:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E9DC23B615
+	for <bpf@vger.kernel.org>; Sun, 30 Nov 2025 23:35:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764542034; cv=none; b=NXCreQae48NPGQQ25btrfQ8xrxkVfdmkMbvQLUI2SpkkBFCRpckjWd9jBYDGw8Rr7vTvm4xNHJseIEnUB02oxoCOxZKSVvYEWnF25Zkwin8k5fTvF3XzvOX4agatClRcWEIc6ctKEULmdMM/sl5ZK3nOfp4nO7W+tQ8KeviCG9s=
+	t=1764545734; cv=none; b=INBaS+KjVWUjvqWMcgfaJmqJqpJx6r/8lQqs+v8SI1ruBlqg0nrfmrbv84qeOrRnHcktdRfCwWd8Wz/Pn37zBGcBLYLFkrbuLsAs/ebgSUCeXM00M/RoFKhA+XYrTzZTLVf2MyaMtYR6Xm8sKl64utI7Rdfa7RO2iuSsYjUCT6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764542034; c=relaxed/simple;
-	bh=aI2Fjh0EuTgp06sWFPtjxV496etyQtSHdlELtSsfuUg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Z/QL8+11B3Ld4Y90kVEAFXMhN2EG8X4ZejvSBXYUpMmwoRn5luQ9DRMqrheZ/5/B3VMO+nDeAgVhTsKzmHF82x4fFD/Cy4lSuWpvsmi0rDbylEyiHhYR42q6Pkcwmau6tWg3bbaNfQr5jBppYCelcaC53gzyO8R1MRM588rQiyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=L7wR2Ldr; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=202503; t=1764542026;
-	bh=cYbQRbqRxs7AFwZkYvZ2Rbg+w/wWCE2C0/Vz0z8ZdW8=;
-	h=Date:From:To:Cc:Subject:From;
-	b=L7wR2LdrqrFm62drylRcdgxkzu/nWZWppsHI3WT7ZUqVKI/ih7rT+9MrGsZxmxkTU
-	 JX7DxdOy4bHFkHcNIKE/KA2/remMcHEbxTdV4d5ti4evAjYGyO8qSZbKZXj5G2eY2v
-	 PF37bQVQWnKQ/iHpmOxiya2vE6Yp27rU9DMnCH5NQZ0vrAlVWxrmGOkDmbqKXROEtA
-	 /ooTL4lmu2HMupq2qq2T8I3bGBHn7b8G//IlPS3NZW56cnFvDoC71yG3BY76f6PAEt
-	 WxfYwsxBb6VcfLzCSpxwKlMbHR1iciUqM5ysYySRRxPwHHQYyZgcgk4zk9IlGJu3iD
-	 +FAzvJnIrBmEg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange secp256r1 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4dKMJT0YCtz4wCm;
-	Mon, 01 Dec 2025 09:33:44 +1100 (AEDT)
-Date: Mon, 1 Dec 2025 09:33:43 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexei
- Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Cc: Menglong Dong <dongml2@chinatelecom.cn>, Menglong Dong
- <menglong8.dong@gmail.com>, bpf <bpf@vger.kernel.org>, Networking
- <netdev@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the ftrace tree with the bpf-next tree
-Message-ID: <20251201093343.63ef2596@canb.auug.org.au>
+	s=arc-20240116; t=1764545734; c=relaxed/simple;
+	bh=avO1UeedN/STJoSnCOQ5Xr9OSRYW37NwH27coYDpseQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HN82Z2onz8b3P4SWXNRiEqRG4+lmFti+GinO1H3vxDjjaKjO7ehfAJXqT2Regm5BOUmAD5RhO6JC8f4nSbLk9Ad2asDIDuchF/6/+DURU0zT39sfyEAhkVonCRY4nMsp4Dd7nyrPqxxSLPZjewSHczHvydJYk6/dQ2oFny+E+XE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h4f8V7nv; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-477619f8ae5so22853055e9.3
+        for <bpf@vger.kernel.org>; Sun, 30 Nov 2025 15:35:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764545730; x=1765150530; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ALyiArP9r0l0ZpA0zLf3NyzsTN9+4HjumhR11AEukHk=;
+        b=h4f8V7nvPWWoMVa68CRM2LO+qo+XByujMWOZ5O7binnC5OBl2uVh5CRq/ZxhwA4pOJ
+         sVBFdhnPUKGj/49+CrUa+p7MbZ2MVV2jHG6tZr7QZei1fe6iHaq8nqGdoIYItbAQ0Ht/
+         Gvy7nSwxZJWiC4kBX6IBd0swsU33v6O7We9GUk2bV60PJ/jCgeCKPb7VaCPYoJRYNmsC
+         SfeKrHsavZTmfhwxjfpJLXLM3eNE2JOQ2Yenhgyy7+52FQl7aRyNqatsSmqmDVuOZ6l+
+         IcAP0hxvk+nhGJDPI5NYBv19nBce+1ytyN/4KYgeNq+qmV0ttr8VpQ3YDIuGQDSi1aBz
+         wJRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764545730; x=1765150530;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ALyiArP9r0l0ZpA0zLf3NyzsTN9+4HjumhR11AEukHk=;
+        b=v1HXSwuM/fihhBX9qad9dVWl8ntDgYQurIKwleSJ9GIrnyu7l0icaqNF+nqyh7YVDp
+         0nragJYHuEwRriGqPFCffDoXWLtLKZ9G8RO+QKOUw0fQTyvpkjkf1O5mp5moZg075c5i
+         3tNF9A1WrZnnLvm9gADRKEO4S9AYb/7FPVt4hSxZLuq+ASsVkFAu+64ABogBtU00QX5y
+         PxwDrd+y0MTEZVg6Ym5IK+dI/JZIefNsyV7a758PBOwdqmyxBZOsAB/RLLHYSqSZcUnR
+         DCnrY76L7hZxmsSf2iXeNrDrOcXdHfaD9DsEyD+pvv3knTwC+D4JYbNthPkt9H+7+VzZ
+         jPXg==
+X-Forwarded-Encrypted: i=1; AJvYcCXv9K9M5uUPyqeHG85Nr97OCqK0MgWD7AAmQX+VSTZU4iwPDpkT0K0h5HYnu2PwJeNcLv8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzPAh8KDuM/eo7uWhk3ec0mHhXIu0ODc2YBdXDQRlxmira/AlgF
+	pasmIH8YhmVUlNjpBa8NBXI10Grz/ZL7UJWx4/dgBaw/m6PkIw7DVY1q
+X-Gm-Gg: ASbGnctC1qB+JsInSgF1ovNsuJsl+ydN43i438PeYhhaiODBlGalZal4yM9IX6ooZRK
+	zbt0bYiU+gS2WPpBuCHHmz26Xnk3HfTpVA2OffzpJck8B+W+Ym11UiI7fkjCBwEyfdfpMS0/wfQ
+	bG4jiwVgG+pgcDFhCm8WidMYXxAgq58c1BER6nLpzZ0vNOu6j7+bII9GTaPjXCsSR+KP4ljoCdl
+	kI6t43lFyWoHjlLjRenNEcDLiN85ths4v//xB5RnDXtnhmG/XdXZYbE5z0ntvBLR2hZHrZTcjwk
+	pTp8oWWpBPjUbSAohs7MB+mJNWSMdVqp6lw+UPjRZJmsdpK5H5jFQo8ZxkfGCckj5LtNQ1Ubf2t
+	Ugn/HFwMw4FD1L2laoOnUSbInH0I4Ye+iViKkidgXkOxz/0DfmZPxgRn6lJ2D25njWPyREPR80e
+	SdiAn87ZpafaQDoCM13HYk0twmJ9nTPkvNGIcgk5mSaGimOrGb0+SzNekuBdEmz1Uj0PuCxZzoQ
+	qTncxAo/nDrtZgM
+X-Google-Smtp-Source: AGHT+IEsn3y7t81hF2sQhBQPO/kczdL3fkFMA/jNBZwT0LAhZBVzEYImw+yrGW7ekTwLlt8XRlDFBQ==
+X-Received: by 2002:a05:600c:1d0e:b0:477:89d5:fdb2 with SMTP id 5b1f17b1804b1-477c017d9damr362894825e9.14.1764545730116;
+        Sun, 30 Nov 2025 15:35:30 -0800 (PST)
+Received: from 127.mynet ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-479040b3092sm142722075e9.1.2025.11.30.15.35.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Nov 2025 15:35:28 -0800 (PST)
+From: Pavel Begunkov <asml.silence@gmail.com>
+To: netdev@vger.kernel.org
+Cc: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Michael Chan <michael.chan@broadcom.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Mina Almasry <almasrymina@google.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Yue Haibing <yuehaibing@huawei.com>,
+	David Wei <dw@davidwei.uk>,
+	Haiyue Wang <haiyuewa@163.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Joe Damato <jdamato@fastly.com>,
+	Simon Horman <horms@kernel.org>,
+	Vishwanath Seshagiri <vishs@fb.com>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	io-uring@vger.kernel.org,
+	dtatulea@nvidia.com
+Subject: [PATCH net-next v7 0/9] Add support for providers with large rx buffer
+Date: Sun, 30 Nov 2025 23:35:15 +0000
+Message-ID: <cover.1764542851.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iS7vxE.ekFe8CJNQF9TLIBJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 
---Sig_/iS7vxE.ekFe8CJNQF9TLIBJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Note: it's net/ only bits and doesn't include changes, which shoulf be
+merged separately and are posted separately. The full branch for
+convenience is at [1], and the patch is here:
 
-Hi all,
+https://lore.kernel.org/io-uring/7486ab32e99be1f614b3ef8d0e9bc77015b173f7.1764265323.git.asml.silence@gmail.com
 
-Today's linux-next merge of the ftrace tree got a conflict in:
+Many modern NICs support configurable receive buffer lengths, and zcrx and
+memory providers can use buffers larger than 4K/PAGE_SIZE on x86 to improve
+performance. When paired with hw-gro larger rx buffer sizes can drastically
+reduce the number of buffers traversing the stack and save a lot of processing
+time. It also allows to give to users larger contiguous chunks of data. The
+idea was first floated around by Saeed during netdev conf 2024 and was
+asked about by a few folks.
 
-  kernel/trace/Kconfig
+Single stream benchmarks showed up to ~30% CPU util improvement.
+E.g. comparison for 4K vs 32K buffers using a 200Gbit NIC:
 
-between commit:
+packets=23987040 (MB=2745098), rps=199559 (MB/s=22837)
+CPU    %usr   %nice    %sys %iowait    %irq   %soft   %idle
+  0    1.53    0.00   27.78    2.72    1.31   66.45    0.22
+packets=24078368 (MB=2755550), rps=200319 (MB/s=22924)
+CPU    %usr   %nice    %sys %iowait    %irq   %soft   %idle
+  0    0.69    0.00    8.26   31.65    1.83   57.00    0.57
 
-  25e4e3565d45 ("ftrace: Introduce FTRACE_OPS_FL_JMP")
+This series adds net infrastructure for memory providers configuring
+the size and implements it for bnxt. It's an opt-in feature for drivers,
+they should advertise support for the parameter in the qops and must check
+if the hardware supports the given size. It's limited to memory providers
+as it drastically simplifies implementation. It doesn't affect the fast
+path zcrx uAPI, and the sizes is defined in zcrx terms, which allows it
+to be flexible and adjusted in the future, see Patch 8 for details.
 
-from the bpf-next tree and commit:
+A liburing example can be found at [2]
 
-  f93a7d0caccd ("ftrace: Allow tracing of some of the tracing code")
+full branch:
+[1] https://github.com/isilence/linux.git zcrx/large-buffers-v7
+Liburing example:
+[2] https://github.com/isilence/liburing.git zcrx/rx-buf-len
 
-from the ftrace tree.
+v7: - Add xa_destroy
+    - Rebase
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+v6: - Update docs and add a selftest
 
---=20
-Cheers,
-Stephen Rothwell
+v5: https://lore.kernel.org/netdev/cover.1760440268.git.asml.silence@gmail.com/
+    - Remove all unnecessary bits like configuration via netlink, and
+      multi-stage queue configuration.
 
-diff --cc kernel/trace/Kconfig
-index 4661b9e606e0,e1214b9dc990..000000000000
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@@ -336,12 -330,20 +336,26 @@@ config DYNAMIC_FTRACE_WITH_ARG
-  	depends on DYNAMIC_FTRACE
-  	depends on HAVE_DYNAMIC_FTRACE_WITH_ARGS
- =20
- +config DYNAMIC_FTRACE_WITH_JMP
- +	def_bool y
- +	depends on DYNAMIC_FTRACE
- +	depends on DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- +	depends on HAVE_DYNAMIC_FTRACE_WITH_JMP
- +
-+ config FUNCTION_SELF_TRACING
-+ 	bool "Function trace tracing code"
-+ 	depends on FUNCTION_TRACER
-+ 	help
-+ 	  Normally all the tracing code is set to notrace, where the function
-+ 	  tracer will ignore all the tracing functions. Sometimes it is useful
-+ 	  for debugging to trace some of the tracing infratructure itself.
-+ 	  Enable this to allow some of the tracing infrastructure to be traced
-+ 	  by the function tracer. Note, this will likely add noise to function
-+ 	  tracing if events and other tracing features are enabled along with
-+ 	  function tracing.
-+=20
-+ 	  If unsure, say N.
-+=20
-  config FPROBE
-  	bool "Kernel Function Probe (fprobe)"
-  	depends on HAVE_FUNCTION_GRAPH_FREGS && HAVE_FTRACE_GRAPH_FUNC
+v4: https://lore.kernel.org/all/cover.1760364551.git.asml.silence@gmail.com/
+    - Update fbnic qops
+    - Propagate max buf len for hns3
+    - Use configured buf size in __bnxt_alloc_rx_netmem
+    - Minor stylistic changes
+v3: https://lore.kernel.org/all/cover.1755499375.git.asml.silence@gmail.com/
+    - Rebased, excluded zcrx specific patches
+    - Set agg_size_fac to 1 on warning
+v2: https://lore.kernel.org/all/cover.1754657711.git.asml.silence@gmail.com/
+    - Add MAX_PAGE_ORDER check on pp init
+    - Applied comments rewording
+    - Adjust pp.max_len based on order
+    - Patch up mlx5 queue callbacks after rebase
+    - Minor ->queue_mgmt_ops refactoring
+    - Rebased to account for both fill level and agg_size_fac
+    - Pass providers buf length in struct pp_memory_provider_params and
+      apply it in __netdev_queue_confi().
+    - Use ->supported_ring_params to validate drivers support of set
+      qcfg parameters.
 
---Sig_/iS7vxE.ekFe8CJNQF9TLIBJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Jakub Kicinski (1):
+  eth: bnxt: adjust the fill level of agg queues with larger buffers
 
------BEGIN PGP SIGNATURE-----
+Pavel Begunkov (8):
+  net: page pool: xa init with destroy on pp init
+  net: page_pool: sanitise allocation order
+  net: memzero mp params when closing a queue
+  net: let pp memory provider to specify rx buf len
+  eth: bnxt: store rx buffer size per queue
+  eth: bnxt: allow providers to set rx buf size
+  io_uring/zcrx: document area chunking parameter
+  selftests: iou-zcrx: test large chunk sizes
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmksxkcACgkQAVBC80lX
-0GzsYAf/bC8k6CqMic4MYcWrv09d9J/PUzka+bJsjsucLZcdt0WGgZ6Tb02IRJUE
-J17ihYlGocqjaIXM82xmGgRfceqLmnjcS81N43bMlxGmjHeho7SsgTtELTZPuWpC
-Bywr5095cb6O2QhJrGx1qZ/rRCb5DyzemH0CvcrLouTW+zUA2+mVE9jUj/u7J9CD
-G//38nr4L0Z0/RRSGGw0EKD/Qkrx7yfXW+TqwX/BL51331vElW/nou/hhdoRcFR8
-PQkMamgEVisiGmFr8Ogmiy7CQfmBLKNLzhl5pF7gPxmeVI3+bQrP3+Cyi8qpd9Z0
-7TDmaZ5gTuR41Z2HzZoMk1ZKSOArGA==
-=MNus
------END PGP SIGNATURE-----
+ Documentation/networking/iou-zcrx.rst         |  20 +++
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     | 118 ++++++++++++++----
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h     |   2 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |   6 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h |   2 +-
+ include/net/netdev_queues.h                   |   9 ++
+ include/net/page_pool/types.h                 |   1 +
+ net/core/netdev_rx_queue.c                    |  14 ++-
+ net/core/page_pool.c                          |   4 +
+ .../selftests/drivers/net/hw/iou-zcrx.c       |  72 +++++++++--
+ .../selftests/drivers/net/hw/iou-zcrx.py      |  37 ++++++
+ 11 files changed, 236 insertions(+), 49 deletions(-)
 
---Sig_/iS7vxE.ekFe8CJNQF9TLIBJ--
+-- 
+2.52.0
+
 
