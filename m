@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-75829-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75830-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0DCCC98D2F
-	for <lists+bpf@lfdr.de>; Mon, 01 Dec 2025 20:17:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CA2FC98D83
+	for <lists+bpf@lfdr.de>; Mon, 01 Dec 2025 20:23:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 527F23A5200
-	for <lists+bpf@lfdr.de>; Mon,  1 Dec 2025 19:17:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A4353A4CEE
+	for <lists+bpf@lfdr.de>; Mon,  1 Dec 2025 19:23:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8596246BB9;
-	Mon,  1 Dec 2025 19:17:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8146925392C;
+	Mon,  1 Dec 2025 19:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="y+yNRVJj"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fHytndiy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D25C245019
-	for <bpf@vger.kernel.org>; Mon,  1 Dec 2025 19:17:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B6EF244661
+	for <bpf@vger.kernel.org>; Mon,  1 Dec 2025 19:22:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764616624; cv=none; b=stPAPk/I+2LYJ2fmHh6+nWG6XG3KQ43EfpH2GiPQQBBKpKJQrWPzCR5uUWokwT77QEpCFvjY3DxM039auA0VuIVOhnvQABenqC0goE4tBQTXRkXm8fKF89HyT5zdE2NpRnTEtiZCIF6OyBrKTpbfNnI1qWc57b0N3MzjQ9d2TBM=
+	t=1764616963; cv=none; b=APV/SwIWHF15YoRy1+RlVtAtAHE7j1dzu+UilHxxxjAvzTO+bwVMv13GNqklZ9lkSRY/F0IESSmUfVTuojxdIuJJ4nyaEAtGCu0Dx+gvbspZeMk8bVPaFEQfFINDO/a+uhVThxY8E4io467bNdq1iu/QrbMyk5thREoT9md9YCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764616624; c=relaxed/simple;
-	bh=lNk43apg7AFNGLzXw14VhSY2OU5GiJ0VzJmGRc3lljY=;
+	s=arc-20240116; t=1764616963; c=relaxed/simple;
+	bh=6bGmfSg9pFxFWCQ2lBH9/70lRpBBtellr+mx+SjLue8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TSeYP19AXTxx/HZJaW28p/asKXIrGF0kc0q5A4ZoeUUBLngt/07UVnctgLFyBLhJL/MwM6UL04zjvflm1tRcvyiFM4BwXBkKRAQLCzoGC3DzmzL1qDD3DHP8UqC/ni6P9fIIFKXXEPQ5m6VxsKShIcGE3iEanmaeSYGUeWbTky4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=y+yNRVJj; arc=none smtp.client-ip=209.85.218.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=NAYo6rQAFDn9lWq3Sf4FMNzP/p382iyv+rmE9Elkj2BaPFoosk9GHIRoGsp6VO3co3L1RWphTMPrbq4tZtCBd3q5MJ+doBCTRp5UCfLucQq4WDCQXgSgtpCU2nhy5ijDZ0W0EnTrXFqJYarrSv6OlCCyztMhr13TnRmiaiC19nE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fHytndiy; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b735e278fa1so177630266b.0
-        for <bpf@vger.kernel.org>; Mon, 01 Dec 2025 11:17:02 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-640ca678745so7989811a12.2
+        for <bpf@vger.kernel.org>; Mon, 01 Dec 2025 11:22:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1764616621; x=1765221421; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1764616959; x=1765221759; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nL1ek/sF4svl8idObYnvvFBp1pJ9SdL29UX5xP7uR4w=;
-        b=y+yNRVJjeIUf/+IEpUMHT3s0GQdTzqJStrkfqe7fzmLPLz0dS3L+DMKELoZVnRIppW
-         CZQtYeAyOPWFagurv6+RlOR+SBaU4LIxpTSXP05qUJVE3efKsIquPIeDCqTQlH0bsE6C
-         69tLO3685eYKJ1qkUJ71MF6o5qvPckX9bCYA+lNsOIl/Il0ezzXJdyCyRAjO0IhG8o+v
-         cKtgRIroEOFCrx4JvMVBej8FrHB3Fu46sayjA8GMFCkhZQcQI8rh/kFuZH5mS4du9GBN
-         JBtcZyzSWOcx6D5Mp8wkPFj2Ic6Hua4OurYJk87Lr9Ovpt9iX3lu+RwZS3BZNjUp9/VW
-         4gVg==
+        bh=Z59nUw0HuPHZG3Lmu1RiiXJwza3oOV4CrE+d6R1LGsw=;
+        b=fHytndiyVGErJBS9twJOur9xegsonwVPMvvm43AofXqqfNNkG2ovdU11ylj4d14hDW
+         F50+mse2Znh1kFPNxgqIpK5Fb0A+BmoO3lCaemKkWLbO2il5Gux9hk8nT2fZMvswgNGQ
+         VeTsJ1tKmS3H6bXFZa8EugqoI05IA0T4DDpaISuKfCGcLzlHWBpOjSbDoI317b1rcjzx
+         d/6e+KHN6xeBFY5jKfoAjf/S9a10WTF++gYpw/ZSQjOVdyLFf2fMzWsjJGvvbo/xPz46
+         MoYQsfmLeg3pOfDmyOwrrqdtZlt4Sbbb2q91xVl+TBLxprn2ByTNYhY0LsuCI3zeyZO5
+         eamg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764616621; x=1765221421;
+        d=1e100.net; s=20230601; t=1764616959; x=1765221759;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nL1ek/sF4svl8idObYnvvFBp1pJ9SdL29UX5xP7uR4w=;
-        b=frs0kHW7i4OStX7b87PgfxkSJBrHKW0HTHVgvAa1ywWoHMA41B5uYVHTzWAcYTddxV
-         yxm8+kdSvM9jv96+GebxT7Puu9ht0jTE121BJtBTblKC7vI+k2g4mGIfn1/XmWOyrcMD
-         f6+IFwHbIOcWxDa6K7fni1faLzkYqtGCogqk7MhY9hgmofeAPtZ9qO/o5L/G9MQ78Ayx
-         hlAZHJevfzD9FmKb4MKPSq9YGbD/qUiRJ8HvfGF4oB+xo1yENo9yP9hTBd5N6m6uXeIh
-         8euw2yED3pt8h1W5bIAHWqcpMmtV5Nd9gFK7PCflwRBeaKFvvlYU91sW8aujqG2LIqY2
-         JYog==
-X-Forwarded-Encrypted: i=1; AJvYcCUFCzBanXg7E0hb2BOoCbIyDhao7nzLRCfIL02euY0mcPBRzWSy1WPNz3GmaPB9DJzHkK4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUVxjc2pwwxDleriv4nDO/CmEoL8+/p/oVi0fyBXyryJkkD47j
-	1/IuWkMhN69TW84r41TP7COLFjBcq/ZJhG0jwVfu4Xhx31oIqob68ESrFqN5XXVSJQ==
-X-Gm-Gg: ASbGncsudUq8CpPUdlHH8Zvl15PNIFuclQZZq++xwxqksxPR/UTDNgXyqdRTRx3EGYa
-	NnVtHabbmC+OMWrGuBAJlT4F/BsRnvSUOh3qaio2D28q9mkiyEf3VnHHtYLr1UO2Kvl3HWHB0ix
-	009wlLgfDUk+XzJ2Ji73UcNoDfCez8SEzdMAMgHlS2ubtZivVwRsYHdiNSe0QLhwqBio7kUBbY5
-	ymM+4XIL0DBWwGX+ofWJhu71jVB/4rskU/MCSDkmrM8BaFWQfJKh6R6np4/JsB+A6FIGx6wI5pl
-	2mG53Be4nDpu7sSWGmljeT1nflwlpxCvWf6nK3iH82HIuLJmSKW+NItxnZwB0usijsp0swnjK3x
-	8Z0xeU4PqqZooKORV/cP0i66GYdrtlxnenoiVXTha3zoH5XNZvkcK87poGoNAfQtiJfAGkABzHl
-	RHN2gbLffKif5TmuOLSqSB44+N/p5xkrvtD2ZvORzyovEvvXM8ocLUsU+16zY=
-X-Google-Smtp-Source: AGHT+IHEnW+KAQVBRRWo/sP1tuQq4+YuSexSYvAgD3ZQW+Uk1hhu0eSXu61P0LbdLU0EfCdTk/o99w==
-X-Received: by 2002:a17:906:7311:b0:b72:af1f:af7d with SMTP id a640c23a62f3a-b76c55f402cmr3192681366b.29.1764616620584;
-        Mon, 01 Dec 2025 11:17:00 -0800 (PST)
+        bh=Z59nUw0HuPHZG3Lmu1RiiXJwza3oOV4CrE+d6R1LGsw=;
+        b=Ip0uMKnmH8b3yQRv9CxCBLAPuq0eTx+bJZ/UWF8iwi47IabkwAQVe9a4Ru5OU4pVKf
+         TjN2xlWoR0q7ldrc0DukuvgcgkKIgDXuh2UNQ+qULtErgSdHZphzD6NUAt8ZpdzdPxZu
+         fMEmQ4YOQr3rGg+L9sP3pQlBzIwVJDfCBV2EEhAXOTwGt1g2t6NhkHu01+rY8cxP9EnA
+         Y2nD2qPEFcSdSdgvYpd95A4OQ+u396hfcRyWn3xLhQWP+DAVONu2N7WF3a2Tl+p4x4dM
+         R6FjWlFHWWbeE2w5l5JeRvKiKbd0FhrYKeBINnwNqvDzpGZMqPu33jAyeYeqKwezFgG0
+         DXCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVjYYC5BuPsPua6wRip322KVroNfx6vEwFy8UTid5Ub+aODCRLHVJwu3MFO2O5kiYwA7PQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7h3AmEgq/bWpGtPzwGJhWvBA9MG9zlHfExmf3GNOGQz9KoXiY
+	Ijg1kt0pMDLiJ4ZexZs1apNBEye1R6kUb62jXLVkKuVw19c3vmv3NXUi5ArMYClQ2A==
+X-Gm-Gg: ASbGncudn6O4BAANYqm+eCb87Li3P/smSzUHzmN5ClxXw7AnmpAmC6xRc2A9feai7ek
+	hBMlqkk/HqAtTENsXRiBM+YSxSpfj+u6FpPpmUdGo1PSmLqNQU6NxfOZxp97ep76E/51hjUU/D7
+	M3YhlNChMKWtrNP4caV/vy5QK0+1S0/QTfHZE+roGQcMW7Pi5q9UUMAnuUhT8xHfFRfqf27lHI6
+	Sp+HFiie4L+pch4uvHqbs93kroLJoHO9NEa2cjHyYFFhleSR0P7IYLV9B5QV0LL/NV1oUGIFvQm
+	82Y0I5xlTZzxQSkDp7Q8LOc3o4EqTscsVTw4Yy6OqSk7vx8Xk52JWOHjysGSosTPmtqkI0XUdFp
+	wv/1zoOnP9LU8O1TSGhHhIEYmqTrzvS/AW2Kz3Ut5gSy/yW0tyY1qnmsi04O+OQb8mz9hqMXBph
+	2vrXS3MD//RdM8FjhIg77Ku2uCYYydCU5LVp3Vo348L3uP36AF0PpSr7VfZQU=
+X-Google-Smtp-Source: AGHT+IG34UoQT3kUqLvNKu43Fndn2m4sH7w76ErF20Sd8BMOLDE8kvp8ODO7XKQ+MuwlmC5TvMcJ6w==
+X-Received: by 2002:a05:6402:2696:b0:641:54ce:1bf9 with SMTP id 4fb4d7f45d1cf-64555ba1ff3mr38828154a12.14.1764616959243;
+        Mon, 01 Dec 2025 11:22:39 -0800 (PST)
 Received: from google.com (155.217.141.34.bc.googleusercontent.com. [34.141.217.155])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b76f516a6c1sm1285135766b.13.2025.12.01.11.16.59
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-647510519efsm13127899a12.29.2025.12.01.11.22.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Dec 2025 11:17:00 -0800 (PST)
-Date: Mon, 1 Dec 2025 19:16:56 +0000
+        Mon, 01 Dec 2025 11:22:38 -0800 (PST)
+Date: Mon, 1 Dec 2025 19:22:35 +0000
 From: Matt Bobrowski <mattbobrowski@google.com>
 To: Shuran Liu <electronlsr@gmail.com>
 Cc: song@kernel.org, bpf@vger.kernel.org, ast@kernel.org,
@@ -82,14 +82,10 @@ Cc: song@kernel.org, bpf@vger.kernel.org, ast@kernel.org,
 	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
 	haoluo@google.com, jolsa@kernel.org, rostedt@goodmis.org,
 	mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Zesen Liu <ftyg@live.com>, Peili Gao <gplhust955@gmail.com>,
-	Haoran Ni <haoran.ni.cs@gmail.com>
-Subject: Re: [PATCH bpf 2/2] selftests/bpf: add regression test for
- bpf_d_path()
-Message-ID: <aS3pqFCze_gmYq0y@google.com>
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf 0/2] bpf: fix bpf_d_path() helper prototype
+Message-ID: <aS3q-wLcRFuCGuUG@google.com>
 References: <20251201143813.5212-1-electronlsr@gmail.com>
- <20251201143813.5212-3-electronlsr@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,133 +94,67 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251201143813.5212-3-electronlsr@gmail.com>
+In-Reply-To: <20251201143813.5212-1-electronlsr@gmail.com>
 
-On Mon, Dec 01, 2025 at 10:38:13PM +0800, Shuran Liu wrote:
-> Add a simple LSM BPF program and a corresponding test_progs test case
-> to exercise bpf_d_path() and ensure that prefix comparisons on the
-> returned path keep working.
+On Mon, Dec 01, 2025 at 10:38:11PM +0800, Shuran Liu wrote:
+> Hi,
 > 
-n> The LSM program hooks bprm_check_security, calls bpf_d_path() on the
-> binary being executed, and compares the returned path against the
-> "/tmp/" prefix. The result is recorded in an array map.
+> this series fixes a verifier regression for bpf_d_path() introduced by
+> commit 37cce22dbd51 ("bpf: verifier: Refactor helper access type
+> tracking") and adds a small selftest to exercise the helper from an
+> LSM program.
 > 
-> The user space test runs /tmp/bpf_d_path_test (copied from /bin/true)
-> and checks that the BPF program records a successful prefix match.
+> Commit 37cce22dbd51 started distinguishing read vs write accesses
+> performed by helpers. bpf_d_path()'s buffer argument was left as
+> ARG_PTR_TO_MEM without MEM_WRITE, so the verifier could incorrectly
+> assume that the buffer contents are unchanged across the helper call
+> and base its optimizations on this wrong assumption.
 > 
-> Without the preceding fix to bpf_d_path()'s helper prototype, the
-> test can fail due to the verifier incorrectly assuming that the
-> buffer contents are unchanged across the helper call and misoptimizing
-> the program. With the fix applied, the test passes.
+> In practice this showed up as a misbehaving LSM BPF program that calls
+> bpf_d_path() and then does a simple prefix comparison on the returned
+> path: the program would sometimes take the "mismatch" branch even
+> though both bytes being compared were actually equal.
+
+FTR, I strongly encourage any new BPF LSM implementation to consider
+using the newer BPF kfunc alternative instead, being
+bpf_path_d_path().
+
+> Patch 1 fixes bpf_d_path()'s helper prototype by marking the buffer
+> argument as ARG_PTR_TO_MEM | MEM_WRITE, so that the verifier correctly
+> models the write to the caller-provided buffer.
+
+This is the correct thing to do, appreciate you sending through the
+fix.
+
+> Patch 2 adds a minimal selftest under tools/testing/selftests/bpf that
+> hooks bprm_check_security, calls bpf_d_path() on a binary under /tmp/,
+> and verifies that the prefix comparison on the returned path keeps
+> working.
+
+Makes sense to add a test for this regression, but please also see my
+comments against this patch.
+
+> On my local setup, tools/testing/selftests/bpf does not build fully
+> due to unrelated tests using newer helpers. I validated this series by
+> manually reproducing the issue with a small LSM program and by
+> building and running only the new d_path_lsm test on kernels with and
+> without patch 1 applied.
 > 
-> Co-developed-by: Zesen Liu <ftyg@live.com>
-> Signed-off-by: Zesen Liu <ftyg@live.com>
-> Co-developed-by: Peili Gao <gplhust955@gmail.com>
-> Signed-off-by: Peili Gao <gplhust955@gmail.com>
-> Co-developed-by: Haoran Ni <haoran.ni.cs@gmail.com>
-> Signed-off-by: Haoran Ni <haoran.ni.cs@gmail.com>
-> Signed-off-by: Shuran Liu <electronlsr@gmail.com>
-> ---
+> Thanks,
+> Shuran Liu
+> 
+> Shuran Liu (2):
+>   bpf: mark bpf_d_path() buffer as writeable
+>   selftests/bpf: add regression test for bpf_d_path()
+> 
+>  kernel/trace/bpf_trace.c                      |  2 +-
 >  .../selftests/bpf/prog_tests/d_path_lsm.c     | 27 ++++++++++++
 >  .../selftests/bpf/progs/d_path_lsm.bpf.c      | 43 +++++++++++++++++++
->  2 files changed, 70 insertions(+)
+>  3 files changed, 71 insertions(+), 1 deletion(-)
 >  create mode 100644 tools/testing/selftests/bpf/prog_tests/d_path_lsm.c
 >  create mode 100644 tools/testing/selftests/bpf/progs/d_path_lsm.bpf.c
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/d_path_lsm.c b/tools/testing/selftests/bpf/prog_tests/d_path_lsm.c
-> new file mode 100644
-> index 000000000000..92aad744ed12
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/d_path_lsm.c
-
-I don't see why adding yet another new bpf_d_path() related test to
-prog_tests is warranted here. Why not simply incorporate this
-additional test case into the preexisting bpf_d_path() related
-prog_tests source file i.e. tools/testing/selftests/bpf/d_path.c?
-
-> @@ -0,0 +1,27 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include <test_progs.h>
-> +#include "d_path_lsm.skel.h"
-> +
-> +void test_d_path_lsm(void)
-> +{
-> +	struct d_path_lsm *skel = NULL;
-> +	int err, map_fd, key = 0, val = 0;
-> +
-> +	skel = d_path_lsm__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-> +		return;
-> +
-> +	err = d_path_lsm__attach(skel);
-> +	if (!ASSERT_OK(err, "attach"))
-> +		goto out;
-> +
-> +	system("cp /bin/true /tmp/bpf_d_path_test 2>/dev/null || :");
-> +	system("/tmp/bpf_d_path_test >/dev/null 2>&1");
-> +
-> +	map_fd = bpf_map__fd(skel->maps.result);
-> +	err = bpf_map_lookup_elem(map_fd, &key, &val);
-> +	ASSERT_OK(err, "lookup_result");
-> +	ASSERT_EQ(val, 1, "prefix_match");
-> +out:
-> +	d_path_lsm__destroy(skel);
-> +}
->
-> diff --git a/tools/testing/selftests/bpf/progs/d_path_lsm.bpf.c b/tools/testing/selftests/bpf/progs/d_path_lsm.bpf.c
-> new file mode 100644
-> index 000000000000..36f9ff37e817
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/d_path_lsm.bpf.c
-> @@ -0,0 +1,43 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char LICENSE[] SEC("license") = "GPL";
-> +
-> +#define FILENAME_MAX_SIZE 256
-> +#define TARGET_DIR "/tmp/"
-> +#define TARGET_DIR_LEN 5
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> +	__uint(max_entries, 1);
-> +	__type(key, int);
-> +	__type(value, int);
-> +} result SEC(".maps");
-> +
-> +SEC("lsm/bprm_check_security")
-> +int BPF_PROG(d_path_lsm_prog, struct linux_binprm *bprm)
-> +{
-> +	char path[FILENAME_MAX_SIZE] = {};
-> +	long len;
-> +	int key = 0;
-> +	int val = 0;
-> +
-> +	len = bpf_d_path(&bprm->file->f_path, path, sizeof(path));
-> +	if (len < 0)
-> +		return 0;
-> +
-> +#pragma unroll
-> +	for (int i = 0; i < TARGET_DIR_LEN; i++) {
-> +		if ((u8)path[i] != (u8)TARGET_DIR[i]) {
-> +			val = -1; /* mismatch */
-> +			bpf_map_update_elem(&result, &key, &val, BPF_ANY);
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	val = 1; /* prefix match */
-> +	bpf_map_update_elem(&result, &key, &val, BPF_ANY);
-> +	return 0;
-
-Will this not flake, like, maybe a lot? Mismatches are being reported
-for every non-matched prefix. Meaning, other threads that are racing
-alongside your system(3) invocations and going through
-security_bprm_check() could very well reset your BPF_MAP_TYPE_ARRAY
-element value back to -1 before your userspace code even has a chance
-to assert it? Perhaps you can make this test a little more
-deterministic by filtering by the expected PID?
+> -- 
+> 2.52.0
+> 
 
