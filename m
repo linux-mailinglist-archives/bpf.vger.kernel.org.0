@@ -1,299 +1,277 @@
-Return-Path: <bpf+bounces-75843-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75844-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1EABC9969C
-	for <lists+bpf@lfdr.de>; Mon, 01 Dec 2025 23:45:50 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0674FC99744
+	for <lists+bpf@lfdr.de>; Mon, 01 Dec 2025 23:55:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6ED77344B9C
-	for <lists+bpf@lfdr.de>; Mon,  1 Dec 2025 22:45:47 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 529EC3435FC
+	for <lists+bpf@lfdr.de>; Mon,  1 Dec 2025 22:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43E3729346F;
-	Mon,  1 Dec 2025 22:45:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97CCD2882B2;
+	Mon,  1 Dec 2025 22:55:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lqCJWW1d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W4gml9IV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28643245005
-	for <bpf@vger.kernel.org>; Mon,  1 Dec 2025 22:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 847F9287268
+	for <bpf@vger.kernel.org>; Mon,  1 Dec 2025 22:55:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764629132; cv=none; b=GKglhxzpg86NN/Y72DNHNqR5+kFS7ltZqG8nWJCO02TBFaUAUxyUOo93hLX4hb4C7zaj/4UZcAMa0uMKWd+ULgdb54+3Kn0fGmL28Z5m5uPiD1PglicMtc64rtNrwwyhpbPnyWd+iHAuGgl9PInX/TB+5CZxBdR7vqyKr2m63zg=
+	t=1764629720; cv=none; b=Z283gDNNFMOVosjCzqFzuHg98FY0pFfjEWj0Lx5sHIlP1V842L3YHxWChrbvrmfUxjFx/5H26zUMkHbK6ZTHcNX9lgBjTIWmPFEY2MDjxKCgSDDY3RsneOA3yfuu8MTn3WF8GHS3Ve3D1RcDOIMdVkBqA0xHXmp2cBz+gCqjJZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764629132; c=relaxed/simple;
-	bh=nfvq4iJOmtxzxA25MF2lDiapNf1y8Xvjd/aE5reohwk=;
+	s=arc-20240116; t=1764629720; c=relaxed/simple;
+	bh=HwNquq7SV5NMtRUJ+wo7BsQT4sO68o+idkpf3nWzIqc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HL0DBhfdaOXwjOasu2XmfJNkOuuRcAqiffqDfinyaGyfcnz2dWBpY4+TypLLD8LNr81GvELso//hMG+rQMb9AjnwAi/kG/NXXAU/NV1PZdRehP13kdHyOWml/1rjGf9WmcZDoUsCoMfT5pc6DAp5/OJDWgBE7Gu9s1KBLPFSlDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lqCJWW1d; arc=none smtp.client-ip=209.85.216.51
+	 To:Cc:Content-Type; b=umMFguef758KLUxeuJpoNmu8Fyxc3eUPozlEBYhXC537fAYzxq34UY5ozkd+cUchyBpxArxIUA6Rm/drW67O2b7mvhBug4+M/oIPzwgMUZEnlwUyXvZdAcUaY2PQhzpfmkRXxGVmC31KkC2h9pL9nhuFhLH+zrblrVivY6xCMx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W4gml9IV; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-3438231df5fso5482372a91.2
-        for <bpf@vger.kernel.org>; Mon, 01 Dec 2025 14:45:30 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-298144fb9bcso47037085ad.0
+        for <bpf@vger.kernel.org>; Mon, 01 Dec 2025 14:55:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764629130; x=1765233930; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764629718; x=1765234518; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XraticQtOObDgNMtXk44M1uUjdW7zYSpr1YoDnS3tYQ=;
-        b=lqCJWW1dsQJh7t8sGL3TTqlWvtCt26bL4aDvavxinPzZFulcl/K/35WOa2kkJAP2fC
-         VsIGLsNj7hIfIgQemSCJBQAJ85YRmNlWSXfqfFU7km7ao9vMJEx0tcni3ffbjnHDspYP
-         h5edOnJ17suGiEyy2VM9ARX3JkM/HPJnxlbrYLYpIMJHwDTCFBhUTzMJgCWhctunw1b0
-         eNOT6KlDAto3m4CgOsUzaiuJ36ozdBDNrr8sZD07TlCRHaR8bMcQ8xGpd2g4lutadjqd
-         GYGhyc3ZtJuFaS0RqYqXeMtEAxV2VNOFH8OkQdNOocokktLPSEJiKEf4E8/6/HKSi4+u
-         EWcA==
+        bh=q3bg2WOkLoWG2atLwWkBEDRTRImwryuSczkORkA7j+I=;
+        b=W4gml9IVJUJiqlV1iAlJPRp/Pnon7grMfUM/C87Ha6/VfMn2/juc4l7P+DTW0TmsTH
+         QSTADkLLgrAoWvHUoEPFVsvFdHAoNneU/GsmNSX+Q4PjsjRP9vwyyG5TMBZmqRoT7Smm
+         1fcU40iT/W1MdhaZrMJRJ/POYvobrl1IhAkPUMpwhVJ2cLYZB+KtBdFWRaRHn6j+bOpS
+         fj/dz0JMQw3im604mMwZA4KTp2XcpJxEREylk7OQMNpbiFl6IgtehHvrwrrxa96sznKr
+         M6+0ugu+HlU7JeTRC1Vco8RFYts5iilAoUQIJ0CPCbDTt7hhpFlQN35YQIV7oK0Vga+A
+         Pr+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764629130; x=1765233930;
+        d=1e100.net; s=20230601; t=1764629718; x=1765234518;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=XraticQtOObDgNMtXk44M1uUjdW7zYSpr1YoDnS3tYQ=;
-        b=jEdkQcgLEBF7u7RAJbGl5mnr4wFDn125ghxaf4J9tIORZtdCZ4bwg1tGIvNivBUsAU
-         Jaw9YE5crRuyftMr9chjqT0Vlh3Xc952tP5D3nhoS/WRdJp/NZVgSVXlN0JHMTeK7puO
-         TQmCkCHSFW0zTkmFsZUMRjD8A96Ks4LhISNlyjvFx1lN7FwXqmIPOOoKGO4HNsGQO87r
-         KxQrL0CCQjr+0PAWGk2tYW9Glc3quqodptI4IsrJLdf3gG99SGKhbdAwDljBjyA2QIBi
-         5TfZoPKO/igwSjLph5MFTl8souxMyGimycE3bUVJGP68GtGb3xpZK+nF2eU8k5I+C2jv
-         JUKQ==
-X-Gm-Message-State: AOJu0YyTaF3kzAhVRYBhUu470QXbnAA5UAFwFuFrkrP3549jOQsB0Tcb
-	DepxuIXlCI/fxvy1KcAKBy6YXH7btVMScauePCgVIpinZcxvngS1yKLPjW3G1dVxptWmkTXfPIM
-	7ygZMzMtc46UgTjGg5mxIhXrK9INGp4Y=
-X-Gm-Gg: ASbGncs59o18RoQ0yUa+1KQpfOJzQW+89XLvk68MtT0lQ8KlEUpYDlcOi5sK+3LorAt
-	Sf14fNyXxxv2IzAMtdqvjfWecdH4rw7p7sTB/BQBGa/BuBVynAE4RxExS75kz1s8/wnZdE0UgAp
-	Gt8/vAnurR5wMa4dqbKUwDg+tntYeao4aUCeI7ZAsO/Siy7mrXkrORsgheTX5Coo/Xz2xdRD90P
-	UR5KbkLhXLgZVoEX/VkP0yWIm7RYSay+ZcAVHgS+Sm6P/23nGb5vU3QKba2DkNZegn+8cRrnwSn
-	qIKCLlWV0kODgXNiOz5Klg==
-X-Google-Smtp-Source: AGHT+IG4P/E7tBn2OSAvPjZLo7Q2tebpeNllf9JDnQYAer7ePP0wYXUoPEWrpjk9O7PAKHsXBK8WD0DIoUQznutO21o=
-X-Received: by 2002:a17:90b:4a51:b0:341:3ea2:b615 with SMTP id
- 98e67ed59e1d1-3475ebe854dmr29402239a91.15.1764629130259; Mon, 01 Dec 2025
- 14:45:30 -0800 (PST)
+        bh=q3bg2WOkLoWG2atLwWkBEDRTRImwryuSczkORkA7j+I=;
+        b=Ufhr40WFsjPsHEFm09zACB6bdfsdwiHPhgFTK7b79fMt7Jy5crxsTqZyRyn8oW6Jpt
+         VbhFxAXxqx+8cOw1XEyiGhn4Mfpjsgin/tyGoh7RS7IH6NF0hQQwljHk5JQ+ekcu5AjU
+         +N73XT2kx5fKuwfglEJkBkyDwlXAL4weaK5O6S4FTPq7SQ+FAXLUsubGmkJ8Z5FyQv7t
+         WEaTcjQyV0n6NTjm4aWgzARlt7Sh/EC9Cr8ip6jdlh9s/YJ45bEs/J5H+Vncjk+ivYhB
+         oxCskcOU/0HN8+ev34Gytju4qvEuYUgJtD03eboW18r4LWNUFK2xXGbBI9c4OIMU18lU
+         K7QQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVRAQwXMrg33XWJtp7cgLdDPM9VaufFHBNFPkyJmxj5NOrvPnwT7xvYQor+V+XyLdwgPi8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxkzm2LL40I+a9P/ujVmoU8ziHZEyxV+T7OeGLLmce7FqVEFu52
+	pjrW8WAAbmdtj0K+r2Zm9fgFqCXg85MV8HI5DgrLc3xZL/zOKKwKm3vx53l8mBFurK7z0nfinR9
+	yO3ADMm0vNr/83ZsW2MYtuuxLWhj6Ldk=
+X-Gm-Gg: ASbGncutbAoX9Tvmjfu+z6AY8cfoWDeuoI0kF9ygFHipjUyZ1q3FymVwJ93a8uOrpvg
+	yS8bkfHMiIVZtJTEIDUdFfV975NJv+Pvh3P9L02pOBmsuAHHPgyx09/zIGVXiwo0NWL0lYoVBAf
+	zL3Np23jwdaD8mtuSiUoVaeBgQgnVlWFwkwGad+xuKWhFcCy8VUt+6zJVZb/kCouscyRZvaNP7a
+	IR3qScAdVYMjRpqOVHZj8YzfFQrmYVeXEwuYPIYMWVlRVQORAhopGxcWq/2WP5sS6/PWA/ERqMj
+	E1vKJcliXhs=
+X-Google-Smtp-Source: AGHT+IHrCBzcziOVvQf63cGtcrHI8gYDJvZzhwG0bZktE8khOW88tmclb9VBMu25R7j47pXgQ1T+HM7lGdg7CIKfNAY=
+X-Received: by 2002:a17:90b:4a88:b0:340:2f48:b51a with SMTP id
+ 98e67ed59e1d1-3475ec0dc4fmr29588284a91.15.1764629717771; Mon, 01 Dec 2025
+ 14:55:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251118030058.162967-1-emil@etsalapatis.com> <20251118030058.162967-4-emil@etsalapatis.com>
- <CAEf4BzZC_3D8__a_j+A9bBJaKoHXP0Z3V+vmoDkg5gmhFnm5PA@mail.gmail.com> <CABFh=a72sdfoH2RJ7BmqyhBoK2P+=eXy21VrmM5H0nw=4m2Y4A@mail.gmail.com>
-In-Reply-To: <CABFh=a72sdfoH2RJ7BmqyhBoK2P+=eXy21VrmM5H0nw=4m2Y4A@mail.gmail.com>
+References: <20251120224256.51313-1-alan.maguire@oracle.com>
+ <CAEf4BzaDx52argxexyaG3AbvsfQzjmftqrT=xWNuRqfvORM9-Q@mail.gmail.com> <a4199316-fe85-4145-b69c-f97e881ebbcc@oracle.com>
+In-Reply-To: <a4199316-fe85-4145-b69c-f97e881ebbcc@oracle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 1 Dec 2025 14:45:17 -0800
-X-Gm-Features: AWmQ_bnWPnhQAPW3pV3xOyPiUcSRQLm9xiuXH1LxXUoCJj1hOcG_Bm3CKok1hno
-Message-ID: <CAEf4BzYCnPUiyT2JpDPFYtUdJbbnOCk5ufD5gtc6LY90-qgdPQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] libbpf: offset global arena data into the arena if possible
-To: Emil Tsalapatis <emil@etsalapatis.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	john.fastabend@gmail.com, memxor@gmail.com, andrii@kernel.org, 
-	eddyz87@gmail.com, yonghong.song@linux.dev
+Date: Mon, 1 Dec 2025 14:55:05 -0800
+X-Gm-Features: AWmQ_bkrFH3QZvjkPLHE4KZtcqgQMmOIW9qYgn2OzalKnxxobocqgK9QGe4I1K4
+Message-ID: <CAEf4BzbPL7T2ZzvHMD2iwhMS87GE1uCGL3H43MHktqcN2Cf_6A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Add debug messaging in dedup
+ equivalence/identity matching
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 1, 2025 at 12:41=E2=80=AFPM Emil Tsalapatis <emil@etsalapatis.c=
+On Thu, Nov 27, 2025 at 2:26=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
 om> wrote:
 >
-> On Tue, Nov 25, 2025 at 5:12=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On 25/11/2025 23:00, Andrii Nakryiko wrote:
+> > On Thu, Nov 20, 2025 at 2:43=E2=80=AFPM Alan Maguire <alan.maguire@orac=
+le.com> wrote:
+> >>
+> >> We have seen a number of issues like [1]; failures to deduplicate
+> >> key kernel data structures like task_struct.  These are often hard
+> >> to debug from pahole even with verbose output, especially when
+> >> identity/equivalence checks fail deep in a nested struct comparison.
+> >>
+> >> Here we add debug messages of the form
+> >>
+> >> libbpf: struct 'task_struct' (size 2560 vlen 194) appears equivalent b=
+ut differs for 23-indexed cand/canon member 'sched_class'/'sched_class': 0
+> >>
+> >> These will be emitted during dedup from pahole when --verbose/-V
+> >> is specified.  This greatly helps identify exactly where dedup
+> >> failures are experienced.
+> >>
+> >> [1] https://lore.kernel.org/bpf/b8e8b560-bce5-414b-846d-0da6d22a9983@o=
+racle.com/
+> >>
+> >> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> >> ---
+> >>  tools/lib/bpf/btf.c | 36 +++++++++++++++++++++++++++++++-----
+> >>  1 file changed, 31 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> >> index 84a4b0abc8be..c220ba1fbcab 100644
+> >> --- a/tools/lib/bpf/btf.c
+> >> +++ b/tools/lib/bpf/btf.c
+> >> @@ -4431,11 +4431,14 @@ static bool btf_dedup_identical_types(struct b=
+tf_dedup *d, __u32 id1, __u32 id2,
+> >>         struct btf_type *t1, *t2;
+> >>         int k1, k2;
+> >>  recur:
+> >> -       if (depth <=3D 0)
+> >> -               return false;
+> >> -
+> >>         t1 =3D btf_type_by_id(d->btf, id1);
+> >>         t2 =3D btf_type_by_id(d->btf, id2);
+> >> +       if (depth <=3D 0) {
+> >> +               pr_debug("Reached depth limit for identical type compa=
+rison for '%s'/'%s'\n",
+> >> +                        btf__name_by_offset(d->btf, t1->name_off),
+> >> +                        btf__name_by_offset(d->btf, t2->name_off));
+> >> +               return false;
+> >> +       }
+> >>
+> >>         k1 =3D btf_kind(t1);
+> >>         k2 =3D btf_kind(t2);
+> >> @@ -4497,8 +4500,18 @@ static bool btf_dedup_identical_types(struct bt=
+f_dedup *d, __u32 id1, __u32 id2,
+> >>                 for (i =3D 0, n =3D btf_vlen(t1); i < n; i++, m1++, m2=
+++) {
+> >>                         if (m1->type =3D=3D m2->type)
+> >>                                 continue;
+> >> -                       if (!btf_dedup_identical_types(d, m1->type, m2=
+->type, depth - 1))
+> >> +                       if (!btf_dedup_identical_types(d, m1->type, m2=
+->type, depth - 1)) {
+> >> +                               /* provide debug message for named typ=
+es. */
+> >> +                               if (t1->name_off) {
+> >> +                                       pr_debug("%s '%s' (size %d vle=
+n %d) appears equal but differs for %d-indexed members '%s'/'%s'\n",
 > >
-> > On Mon, Nov 17, 2025 at 7:01=E2=80=AFPM Emil Tsalapatis <emil@etsalapat=
-is.com> wrote:
-> > >
-> > > Currently, libbpf places global arena data at the very beginning of
-> > > the arena mapping. Stray NULL dereferences into the arena then find
-> > > valid data and lead to silent corruption instead of causing an arena
-> > > page fault. The data is placed in the mapping at load time, preventin=
-g
-> > > us from reserving the region using bpf_arena_reserve_pages().
-> > >
-> > > Adjust the arena logic to attempt placing the data from an offset wit=
-hin
-> > > the arena (currently 16 pages in) instead of the very beginning. If
-> > > placing the data at an offset would lead to an allocation failure due
-> > > to global data being as large as the entire arena, progressively redu=
-ce
-> > > the offset down to 0 until placement succeeds.
-> > >
+> > Honestly, reading this message in the commit description above I was a
+> > bit confused about what it actually means... "appears equal" refers to
+> > shallow equality check passing, right? Given this is for debugging,
+> > just use consistent terminology here, maybe? It's for you, me, Eduard,
+> > Ihor, maybe a few more people, so we don't have to invent UX-friendly
+> > allegories here :) Just say "are shallow-equal" or something like
+> > that, maybe? As for "%d-indexed", IMO, "field #%d" would be
+> > unambiguous.
 > >
->
-> Hi Andrii,
->
-> > I'm not a big fan of adding a single-purpose bpf_map__data_offset(),
-> > tbh, and the whole "let's try to place it within the first 16 pages"
-> > logic also looks a bit random...
-> >
->
-> Giving it some thought, I think we can get away with removing the new API=
- call.
-> The intended use is for userspace to know where the global data is placed
-> within the arena. For example, we've had sched-ext code in the past
-> that allocated
-> arena pages from userspace using read faults, and that code had to start =
-in the
-> had to start in the middle of the arena to avoid conflicting with globals=
-.
->
-> I think it is reasonable to have users call mincore(2) into the
-> mapping to find which
-> pages were populated by libbpf when loading the globals in the arena.
-> I can't think
-> of any other use cases for the API call, so we can remove it. Does
-> this make sense?
-
-I don't know if I agree that it's reasonable to expect users to use
-mincore() to learn where libbpf put global variables. Most natural
-location is at the beginning of arena map, but if that doesn't work,
-then I expected that at the very end of arena would be ok.
-
->
-> For the 16 pages rule I chose 16 as a sane default because we don't
-> want users choosing
-> it themselves. The logic is to make sure there's no "false negatives" wrt=
- to
-> relocation, to add as many guard pages as we can in case the arena is sma=
-ll.
-
-I tried to understand what you are saying about false negatives, but
-I'm not sure I get it, sorry. I do agree that asking users to choose
-the offset is suboptimal, though.
-
->
-> Is it the number or the logic for choosing the offset that looks random?
-
-The offset you chose is a bit random, plus that piece of logic where
-you will be shifting from 16 down to 0 pages, if you happen to fail to
-mmap.
-
-> How would you like to simplify it? Possible ways I see are:
->
-> 1) Choose a different number, maybe just a single page. That does open up=
- the
-> possibility of very large offsets added to NULL pointers ending up in
-> the globals
-> regions, and 1 isn't really any less arbitrary than 16 or any other choic=
-e.
-
-Yeah, I was guessing you didn't choose just one page because you
-wanted to catch large field offsets added to NULL. (but yes, 1 is way
-less arbitrary than 16, but that's beside the point)
-
->
-> 2) Simplify the logic for choosing the offset. Right now it's just
-> exponential backoff
-> from 16 all the way to 0, in which case we fall back to existing
-> behavior. We can
-> make it that relocation either succeeds at an offset or fails, and avoid =
-trying
-> intermediate offsets.
-
-Yes, if we absolutely have to go with 16 page offset instead of
-putting globals at the end, I'd just fix the offset and it either
-works or not. It still feels wrong to hard-code 16 as part of API,
-though.
-
->
-> Unless the code is very confusing (I don't think it is, but it's my
-> own code so I'm
-> not exactly impartial :) ) I don't think removing the backoff gets us muc=
-h.
->
-> > Can't we just say that arena-based global variables are always placed
-> > at the end of the arena? Obviously, page aligned all that stuff, so
-> > it's deterministic and well-defined. Seems like we always expect
-> > BPF_MAP_TYPE_ARENA arena explicitly defined in BPF object file with
-> > max_entries set, so that should always work as expected?
+> >  Also, I saw you reply to Eduard, but I still think that if I were to
+> > debug this I'd like to know original type IDs of structs involved to
+> > be able to look at raw BTF dump and dive deeper? We have consistent
+> > "[%u] %s" pattern for referring to BTF types, let's use that here to
+> > identify two structs/unions involved?
 > >
 >
-> The main problem I see with this is that it will cause complications
-> with the arena shadow
-> map. Putting the global variables at the end requires us to either
-> forfeit the possibility of
-> applying ASAN to them, or to complicate the mapping function. The
-> latter will have implications
-> for performance and code complexity, since it will add a conditional
-> jump on every ASAN
-> check.
+> Sure; how about this format:
+>
+> libbpf: STRUCT 'task_struct' size=3D2560 vlen=3D194 cand_id[54222]
+> canon_id[102820] shallow-equal but not equiv for field#23 'sched_class': =
+0
 >
 
-So maybe elaborate a bit on this? I can't say to understand why
-locating globals at the end of arena would change anything for your
-ASAN logic. Wouldn't ASAN have to track data at any possible location
-anyways? I'm sure you have a good answer here, but please lay it out.
+lgtm
 
-> > And also, I don't think we need to change anything about skeleton
-> > generation logic for the arena. That padding is not necessary, libbpf
-> > should be able to point arena struct to the beginning of arena global
-> > variables, no? As you implemented patch #2, it breaks backwards compat
-> > for no good reason.
-> >
-> > WDYT?
+>
+> > Also, is size/vlen really useful? I bet you'd still be looking at raw
+> > BTF output to check details about the struct/union, and there the
+> > size/vlen is readily available. Just curious if it's really that
+> > useful to have it here.
 > >
 >
-> IIUC you mean modifying the address returned by the arena to point
-> where the globals are
-> placed instead of the guard region, right? I considered it at first
-> but I think it has its own set
-> of caveats, mainly that it assumes the program never wants to access
-> the region below the
-> globals.
-
-Hm... I guess it depends on how we look at that *arena pointer. I was
-thinking about it as more of pointer to arena-placed global variables,
-not some sort of generic way to access any place within the arena. So
-in that sense it's natural for that *arena pointer to point to just
-global variables, wherever within the arena data area it might be
-located.
-
-If user needs to work with other arena pages, they can fetch
-memory-mapped memory for arena map itself through
-bpf_map__initial_value(skel->maps.arena). I.e., they take `struct
-bpf_map` object, ask libbpf where its data is, and then work with it
-in "untyped" way.
-
+> In the above form we can basically take the
 >
-> Right now the patch makes the assumption that the program will set a
-> guard region themselves.
-> It may not do so and instead use the zero page to store data. In that
-> case, accessing the page
-> requires a negative offset on the arena page. It also breaks the
-> mincore(2) trick I describe
-> above for finding the offset into the arena without a new API call.
-> AFAICT expanding the
-> libbpf API is the bigger problem of the two, but I am not sure.
-
-It just feels like we are exposing way too much implementation details
-here. See my point above about using bpf_map__initial_value() (the
-name is not great, but it's used to get memory-mapped area for
-mmap-able BPF maps).
-
+> STRUCT 'task_struct' size=3D2560 vlen=3D194
 >
-> If we'd like both to avoid the extra API and to avoid the padding, we
-> can always set up the guard
-> mapping by default in libbpf at load time. Would that be acceptable?
-> It does take away control
-> from the user, but unless they have very good reason to constrain
-> arena size to a handful of pages
-> I don't see how the extra guard mapping can be a problem.
+> and grep for those details. Useful if we have name-conflicted types. In
+> a dedup failure we could potentially have such ambiguites where CUs have
+> different views of structs with different fields compiled in, so while I
+> didn't strictly need it this time I suspect it will be helpful in
+> clarifying exactly which object we're talking about.
 >
 
-Again, I'm only guessing what you are trying to say here. Please be
-more specific.
+ok
 
+>
+>
 > > pw-bot: cr
 > >
 > >
-> > > Adjust existing arena tests in the same commit to account for the new
-> > > global data offset. New tests that explicitly consider the new featur=
-e
-> > > are introduced in the next patch.
-> > >
-> > > Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
-> > > ---
-> > >  tools/lib/bpf/libbpf.c                        | 30 +++++++++++++++--=
---
-> > >  .../bpf/progs/verifier_arena_large.c          | 14 +++++++--
-> > >  2 files changed, 37 insertions(+), 7 deletions(-)
-> > >
+> >> +                                                k1 =3D=3D BTF_KIND_ST=
+RUCT ? "struct" : "union",
+> >> +                                                btf__name_by_offset(d=
+->btf, t1->name_off),
+> >> +                                                t1->size, btf_vlen(t1=
+), i,
+> >> +                                                btf__name_by_offset(d=
+->btf, m1->name_off),
+> >> +                                                btf__name_by_offset(d=
+->btf, m2->name_off));
 > >
-> > [...]
+> > field names will be identical, guaranteed by shallow-equal check, why
+> > logging twice?
+>
+> yep, good point, will remove.
+>
+> >
+> >> +                               }
+> >>                                 return false;
+> >> +                       }
+> >>                 }
+> >>                 return true;
+> >>         }
+> >> @@ -4739,8 +4752,21 @@ static int btf_dedup_is_equiv(struct btf_dedup =
+*d, __u32 cand_id,
+> >>                 canon_m =3D btf_members(canon_type);
+> >>                 for (i =3D 0; i < vlen; i++) {
+> >>                         eq =3D btf_dedup_is_equiv(d, cand_m->type, can=
+on_m->type);
+> >> -                       if (eq <=3D 0)
+> >> +                       if (eq <=3D 0) {
+> >> +                               /* provide debug message for named typ=
+es only;
+> >
+> > please use more "canonical" comment style
+> >
+> >> +                                * too many anon struct/unions match.
+> >> +                                */
+> >> +                               if (cand_type->name_off) {
+> >> +                                       pr_debug("%s '%s' (size %d vle=
+n %d) appears equivalent but differs for %d-indexed cand/canon member '%s'/=
+'%s': %d\n",
+> >> +                                                cand_kind =3D=3D BTF_=
+KIND_STRUCT ? "struct" : "union",
+> >> +                                                btf__name_by_offset(d=
+->btf, cand_type->name_off),
+> >> +                                                vlen, cand_type->size=
+, i,
+> >> +                                                btf__name_by_offset(d=
+->btf, cand_m->name_off),
+> >> +                                                btf__name_by_offset(d=
+->btf, canon_m->name_off),
+> >
+> > same question about field names, can they be different here ever?
+> >
+>
+> My read of shallow equality means name equivalence is guaranteed; will
+> remove.
+>
+> Will send a v2 if the above proposed format looks good. Thanks!
+>
+> Alan
 
