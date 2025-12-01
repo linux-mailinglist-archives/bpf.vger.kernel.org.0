@@ -1,330 +1,210 @@
-Return-Path: <bpf+bounces-75792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FFDFC956DB
-	for <lists+bpf@lfdr.de>; Mon, 01 Dec 2025 00:38:56 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09D68C957EE
+	for <lists+bpf@lfdr.de>; Mon, 01 Dec 2025 02:27:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E21874E20A2
-	for <lists+bpf@lfdr.de>; Sun, 30 Nov 2025 23:38:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C4BA64E0428
+	for <lists+bpf@lfdr.de>; Mon,  1 Dec 2025 01:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF97303A30;
-	Sun, 30 Nov 2025 23:35:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2C813E41A;
+	Mon,  1 Dec 2025 01:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K4C57Jqn"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ryyy4KeX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D00B3302743
-	for <bpf@vger.kernel.org>; Sun, 30 Nov 2025 23:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18DF533987
+	for <bpf@vger.kernel.org>; Mon,  1 Dec 2025 01:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764545751; cv=none; b=onE2aSFiEpSj710++mak2EPYp0ZekZfE37n46DLyRJCB7IIZm5LBYPgcRT3PC4cYwQYw7vLbk5ZoGzl1fBZ475D16+WvleSXnoaZCdJjh24xFs0BmrcEjs4qju1MLPpn1PcN/9vfbCTrgwrSO0AiQXHmpzDMpizM8T8RR/Q5+EQ=
+	t=1764552465; cv=none; b=GiQaqNy1wC0ayMH/6MGe524sEJas3b1pWkYzFMBpaJgQhMg0YMRtJ0c9A+6BHGS7fPgsCPywdqQc2jqKPiviD5aCPjeXIjzJJyaRDRxQ9/Z3kM0vjASs5sSnQw9DakxWzzNuTAVfpotNlb6R1HsAhstJwUNni1yMY2YWPua0R9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764545751; c=relaxed/simple;
-	bh=/jxCrpK8l6glGcqt49LNeHrXzbo3WZk9EY0AmmIwENo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MYVfcGis4Hf2p/EfDyceg8nFc+3mW1IdpKNDjoY8bEKky2DdcylqkRNSWeMBcPOBKDhMJH/OKCYRfrd21cc7Xx2ZDCeG+4n8CqhxqZMYRuYF3B6CVBy56WjHeWEvMQg+AfH95sH8qgtiTTzyC4qy/3wKVkx4N2ynthTvUzWP3dI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K4C57Jqn; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4775ae77516so36805655e9.1
-        for <bpf@vger.kernel.org>; Sun, 30 Nov 2025 15:35:48 -0800 (PST)
+	s=arc-20240116; t=1764552465; c=relaxed/simple;
+	bh=hRqTviMO1FHidgSeW5rEOVfdL+47yZuaWT+X/2K/q7U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mI6dHdiEKEp4V8rDzN54QxgUKhjQwcv8gEjIEsfthfo+7ok15yJ6eQdenjTS695rF1cHM3u6C4S5xhWvbHIdluvaVdLJF/lKZLmBwxKUKwfBLvFWx3b8/xqDJkcmHLPpYH+7iOxE2ceie6mwfZYy40IRQop0meyiSLsszG47eRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ryyy4KeX; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-59434b28624so22297e87.1
+        for <bpf@vger.kernel.org>; Sun, 30 Nov 2025 17:27:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764545747; x=1765150547; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1764552460; x=1765157260; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WJRC4dPidxMIa9vqar4Y3LK2OFHt6WzESXNCWKhLD0s=;
-        b=K4C57JqneyOxdD+kcxOXNpAtHCFPZDZ4ziofb7b6ea+Y5GVoCFxSbm7+jof8fDJCPT
-         RzLjLX3oitW4dXH7lTRxBco/3yQ8N2meGswMXf9aS/ZlylTtKbRiR/RlXsxTWjVj9tvy
-         XLGC/dkShYW7RecqSdBQOiS7EXSzeWin1aNR9QvsQWQUGnqd9TXVNyOdnfn5JSMkF/z5
-         2iZN3vIe1zaaTbRws2GJIsdfvR4O8RSAzvLX63Eo20FNTa2w0Um66CwqSPj06w6F88Lw
-         vOkBnHkWF6BuWnNxxwsKJfBDOlw6nUvkK44ZZyL7H+F79sl6FFu1v9j727Un1B3tyRle
-         y6YA==
+        bh=ehYGc97IwrLDHQvpTuRv7v/3RImO4vhIDaHvlIMcxcE=;
+        b=Ryyy4KeXIVT/HzvtUjPS6FXGUxflVTNArEFZmNby8QcP/Q547xVBdlnzcI7NFVfjVJ
+         yVcT1mfpWFU2/ovf8lXvR6EEnZN/VogTDHoaCmu0KxdD17xDXcoLswmqkAfHhYk0ufUQ
+         FpernAN9xi+8RGw6rMD48ZvETKIbEDp3z3HUdBK3NPcDeQ5k35NFQev3ZAaa3UfofGGu
+         1t3Lvx9kuolUqWPjvRLGJnHCzu7Hluft4J9WtvCzK0Sv6M4MHgCU/9CYmVVdY+S5GGFU
+         OdC3rFJUF6/dJxTnRBs+j1HK/OYB6xUZKDSYwkfLnzCrta1C1GgErETJilMWuBgGZdbF
+         HXEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764545747; x=1765150547;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20230601; t=1764552460; x=1765157260;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=WJRC4dPidxMIa9vqar4Y3LK2OFHt6WzESXNCWKhLD0s=;
-        b=fg/jW1fyT40HVAhrUoWm9eiPFoGF/OVYDZQdIWQMoiMas/u8QYiUamFFp/eBBOz9Wi
-         NKs6UqwYCgrPi4nSlctxecpdPtfGvHf3j27c3IH4/i40LebtzoLzLlBKPUVeypiUE9sE
-         rP1Guw5PtBIjj09+vcXVDmhKKh5vK7RZ3vb6/198AeDMPesyk2EA/Iiitp+f1bLMzFVu
-         lKt/iv+h17aXjIyKo57XctKG9Tx5eZqBPwSfhC+V7IOtbytQRcmBwNYiIfqbtjOF0BG8
-         8Ydd60M6jRNOcxYn7aRTP8u1sMwfsyK+4O5zgsEt5Mml5PMQDOMT7/hFfHzjUNmksN7o
-         YNTg==
-X-Forwarded-Encrypted: i=1; AJvYcCXRwWlr8xv+eiZYcpr9GKCrVBggheHhHoGfeFz+qRaDeN3IeGk7VG+K+MTOAv2KDDMe4HQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxrn+LXzmMvhhm26h3gNz/Qsjw59RWnKTIH75tj7pbn9qepZPLP
-	PFQzBoF82NLusWopMQoUGdfMGKBROR+pEq8yxNDWltg/86cPGOOrd6H8
-X-Gm-Gg: ASbGncvhKpEqn6KLm230vAb/DlB5LIF3XD7VVnShcU7n0PcR44vpJusIDFdBmgKnr3w
-	KCXQPUygljwnJtVb3Nj980A7gMzEEeEU3XlgDIUdmQXU3k/nehIA7bRIO+rDwLnSi7KQouBbudk
-	Jvb22uJVjd+aCIQrkoHI4B7OtP2SdcWw06LdGLDDm1c09JLjNZ72VT+mJ+yDBI4qKQ/wgtW5++U
-	XinL9JzlUhe7qg5KffxDyTtx+OoXczl7m81rj7EJyJ+DVQDpN4kLu+A9dC/4UXNGzgyHFdQrRPi
-	uhuq4FtVcR+FD9KnmCwo+ljt1Db+ugJV8ECnFhXtTuJYkCkgINGqpqhzu9+7/XF0e3oW56xLHH3
-	3foRGLMAWMzfyi3jBGHjHjYHXh/orm3D9Jto2+DWnWS2p65RxtgC7LChRpkp/csHZOu5CA9mUgY
-	yz+/IbTLfYhhIhab59x8MdzQATqR2TdJ5gs5o1/tbYaaLz3ledOLDVZz7U4xkT4tAsDPx5myU3v
-	7XMbPY+y4oCLGML
-X-Google-Smtp-Source: AGHT+IF1C3BU+0TmVLhFFFLC7lJAEa9+OLBtLvpfXcpFjqpVlWK06cPRlsUJhKHpdqODVbDSNRV+FQ==
-X-Received: by 2002:a05:600c:8b35:b0:475:d8b3:a9d5 with SMTP id 5b1f17b1804b1-477c10d6fdamr359420355e9.10.1764545747159;
-        Sun, 30 Nov 2025 15:35:47 -0800 (PST)
-Received: from 127.mynet ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-479040b3092sm142722075e9.1.2025.11.30.15.35.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Nov 2025 15:35:46 -0800 (PST)
-From: Pavel Begunkov <asml.silence@gmail.com>
-To: netdev@vger.kernel.org
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Pavan Chebbi <pavan.chebbi@broadcom.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Mina Almasry <almasrymina@google.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Yue Haibing <yuehaibing@huawei.com>,
-	David Wei <dw@davidwei.uk>,
-	Haiyue Wang <haiyuewa@163.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Joe Damato <jdamato@fastly.com>,
-	Simon Horman <horms@kernel.org>,
-	Vishwanath Seshagiri <vishs@fb.com>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	io-uring@vger.kernel.org,
-	dtatulea@nvidia.com
-Subject: [PATCH net-next v7 9/9] selftests: iou-zcrx: test large chunk sizes
-Date: Sun, 30 Nov 2025 23:35:24 +0000
-Message-ID: <0339cb58a22925687ce66dbeb1efec7f13bdd7c3.1764542851.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1764542851.git.asml.silence@gmail.com>
-References: <cover.1764542851.git.asml.silence@gmail.com>
+        bh=ehYGc97IwrLDHQvpTuRv7v/3RImO4vhIDaHvlIMcxcE=;
+        b=JoPztsGptqlFfQA2lHNHo5cBN9OI56ttyXIFhaCsHfsDkH+iL5MMkaD+X/crpTshmJ
+         c8Gt1Jtc2fLltrsdpup3AbuOM6520hbN4TSz9yEAC/42Y6OqzNBV1iAq/5TVZ6ddS3H8
+         ZHEvb80viWlwCRlXhcU+R2lu9yW9+DDLsTyaIcybRDp0W8rr4CL33eBIir20D0LvOi9G
+         XaRwj7dI0c+zAjA1R7Txgx8Fp6ybbZRAuogMQYgD5b7log1sJE6sNOzAPuoWNP7HpieB
+         P2lK3v45s5E8v+KRj4S8oHqahJxWK12AfMNMfzJDX7AfuOE62n37LRcVOdhYKD3kPy31
+         wJ9w==
+X-Forwarded-Encrypted: i=1; AJvYcCWLHc2AKy9v+lxyXqZzD42buN0mMehTmrnihVY/SKlFrM024QxahAhIwH9c4lxOj/ZaY7I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxnCJRK+GWtF5iqFClPSuP6H9llzGpW6lCrUdzRlUFs2z7MM7G1
+	mm8gmN720nOiQGl8pqFdoKJguKH/q/P/gML7JuXmaNT1T0fyz1dvOlPAQSTrrd8UADKD0Acm8yi
+	RmuhQ9FSBOVF72ZT//xSRNRjSvJXZUaIV6YchfWvi
+X-Gm-Gg: ASbGnctxSxy1weEEpdajX3zjBwXhcwGfhTsGG3okUQwIHRpQ6/Kc8kWyyVsAOAXwE0b
+	H1p0jrnQoVO6sPvegn62yY/P1oJIRhljSxQL1Y6QkyV0dGgcyi4kzB9GM2kWTkp53FvkNLCk1Il
+	yCG4Tvh3D4qV8ssjgEBPsT3BDtIwB2OxbWobYCxscF3SvkXqaR5zZOACZ2syzGG2DwDZ5FqcLLV
+	lbWzKlcslL6INrmi+caPud/vt0we+wRHYn+uJatac4C10gtwE24yFCdh1hF/rzEk/PIFh0=
+X-Google-Smtp-Source: AGHT+IGUtxtVROoFL9XWjzu7VOF6oLjMb/cN+4biEc3EnHVPC3Y1fSDYFJip1ZsrUhL2CHurERDtTpPY0GeOtj8Rxik=
+X-Received: by 2002:a05:6512:1343:b0:596:9b1c:95da with SMTP id
+ 2adb3069b0e04-596bdce2767mr186845e87.17.1764552460026; Sun, 30 Nov 2025
+ 17:27:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20251122140839.3922015-1-almasrymina@google.com> <DS4PPF7551E6552ECCF95AE9C177DEF07F8E5D0A@DS4PPF7551E6552.namprd11.prod.outlook.com>
+In-Reply-To: <DS4PPF7551E6552ECCF95AE9C177DEF07F8E5D0A@DS4PPF7551E6552.namprd11.prod.outlook.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Sun, 30 Nov 2025 19:27:26 -0600
+X-Gm-Features: AWmQ_bntuE3GnpzJMZaG9Cr3R1vpsBmf3PJosTlld9e_VcSuzfSnUowwDbN3jGY
+Message-ID: <CAHS8izOjZxEgBmYEhZanp57ukCYU5i5FdWfx5HO5+Ua2V3Owsg@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH net-next v1] idpf: export RX hardware
+ timestamping information to XDP
+To: "Loktionov, Aleksandr" <aleksandr.loktionov@intel.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, YiFei Zhu <zhuyifei@google.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@fomichev.me>, "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>, 
+	"Kitszel, Przemyslaw" <przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	"Lobakin, Aleksander" <aleksander.lobakin@intel.com>, Richard Cochran <richardcochran@gmail.com>, 
+	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add a test using large chunks for zcrx memory area.
+On Mon, Nov 24, 2025 at 2:33=E2=80=AFAM Loktionov, Aleksandr
+<aleksandr.loktionov@intel.com> wrote:
+>
+>
+>
+> > -----Original Message-----
+> > From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf
+> > Of Mina Almasry
+> > Sent: Saturday, November 22, 2025 3:09 PM
+> > To: netdev@vger.kernel.org; bpf@vger.kernel.org; linux-
+> > kernel@vger.kernel.org
+> > Cc: YiFei Zhu <zhuyifei@google.com>; Alexei Starovoitov
+> > <ast@kernel.org>; Daniel Borkmann <daniel@iogearbox.net>; David S.
+> > Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; Jesper
+> > Dangaard Brouer <hawk@kernel.org>; John Fastabend
+> > <john.fastabend@gmail.com>; Stanislav Fomichev <sdf@fomichev.me>;
+> > Nguyen, Anthony L <anthony.l.nguyen@intel.com>; Kitszel, Przemyslaw
+> > <przemyslaw.kitszel@intel.com>; Andrew Lunn <andrew+netdev@lunn.ch>;
+> > Eric Dumazet <edumazet@google.com>; Paolo Abeni <pabeni@redhat.com>;
+> > Lobakin, Aleksander <aleksander.lobakin@intel.com>; Richard Cochran
+> > <richardcochran@gmail.com>; intel-wired-lan@lists.osuosl.org; Mina
+> > Almasry <almasrymina@google.com>
+> > Subject: [Intel-wired-lan] [PATCH net-next v1] idpf: export RX
+> > hardware timestamping information to XDP
+> >
+> > From: YiFei Zhu <zhuyifei@google.com>
+> >
+> > The logic is similar to idpf_rx_hwtstamp, but the data is exported as
+> > a BPF kfunc instead of appended to an skb.
+> >
+> > A idpf_queue_has(PTP, rxq) condition is added to check the queue
+> > supports PTP similar to idpf_rx_process_skb_fields.
+> >
+> > Cc: intel-wired-lan@lists.osuosl.org
+> >
+> > Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> > ---
+> >  drivers/net/ethernet/intel/idpf/xdp.c | 27
+> > +++++++++++++++++++++++++++
+> >  1 file changed, 27 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/intel/idpf/xdp.c
+> > b/drivers/net/ethernet/intel/idpf/xdp.c
+> > index 21ce25b0567f..850389ca66b6 100644
+> > --- a/drivers/net/ethernet/intel/idpf/xdp.c
+> > +++ b/drivers/net/ethernet/intel/idpf/xdp.c
+> > @@ -2,6 +2,7 @@
+> >  /* Copyright (C) 2025 Intel Corporation */
+> >
+> >  #include "idpf.h"
+> > +#include "idpf_ptp.h"
+> >  #include "idpf_virtchnl.h"
+> >  #include "xdp.h"
+> >  #include "xsk.h"
+> > @@ -369,6 +370,31 @@ int idpf_xdp_xmit(struct net_device *dev, int n,
+> > struct xdp_frame **frames,
+> >                                      idpf_xdp_tx_finalize);
+> >  }
+> >
+> > +static int idpf_xdpmo_rx_timestamp(const struct xdp_md *ctx, u64
+> > +*timestamp) {
+> > +     const struct virtchnl2_rx_flex_desc_adv_nic_3 *rx_desc;
+> > +     const struct libeth_xdp_buff *xdp =3D (typeof(xdp))ctx;
+> > +     const struct idpf_rx_queue *rxq;
+> > +     u64 cached_time, ts_ns;
+> > +     u32 ts_high;
+> > +
+> > +     rx_desc =3D xdp->desc;
+> > +     rxq =3D libeth_xdp_buff_to_rq(xdp, typeof(*rxq), xdp_rxq);
+> > +
+> > +     if (!idpf_queue_has(PTP, rxq))
+> > +             return -ENODATA;
+> > +     if (!(rx_desc->ts_low & VIRTCHNL2_RX_FLEX_TSTAMP_VALID))
+> > +             return -ENODATA;
+> RX flex desc fields are little=E2=80=91endian.
+> You already convert ts_high with le32_to_cpu(), but test ts_low directly =
+against the mask.
+> On big=E2=80=91endian this can misdetect the bit and spuriously return -E=
+NODATA.
+> Please convert ts_low to host order before the bit test.
+> See existing IDPF/ICE patterns where descriptor words are leXX_to_cpu()=
+=E2=80=91converted prior to FIELD_GET() / bit checks.
+> Also, per the XDP RX metadata kfunc docs, -ENODATA must reflect true abse=
+nce of per=E2=80=91packet metadata; endianness=E2=80=91correct testing is r=
+equired to uphold the semantic.
+>
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- .../selftests/drivers/net/hw/iou-zcrx.c       | 72 +++++++++++++++----
- .../selftests/drivers/net/hw/iou-zcrx.py      | 37 ++++++++++
- 2 files changed, 97 insertions(+), 12 deletions(-)
+Hey, sorry for the late reply. Initially when I read the reply, I
+thought: "why not, lets add a leXX_to_cpu".
 
-diff --git a/tools/testing/selftests/drivers/net/hw/iou-zcrx.c b/tools/testing/selftests/drivers/net/hw/iou-zcrx.c
-index 62456df947bc..0a19b573f4f5 100644
---- a/tools/testing/selftests/drivers/net/hw/iou-zcrx.c
-+++ b/tools/testing/selftests/drivers/net/hw/iou-zcrx.c
-@@ -12,6 +12,7 @@
- #include <unistd.h>
- 
- #include <arpa/inet.h>
-+#include <linux/mman.h>
- #include <linux/errqueue.h>
- #include <linux/if_packet.h>
- #include <linux/ipv6.h>
-@@ -37,6 +38,23 @@
- 
- #include <liburing.h>
- 
-+#define SKIP_CODE	42
-+
-+struct t_io_uring_zcrx_ifq_reg {
-+	__u32	if_idx;
-+	__u32	if_rxq;
-+	__u32	rq_entries;
-+	__u32	flags;
-+
-+	__u64	area_ptr; /* pointer to struct io_uring_zcrx_area_reg */
-+	__u64	region_ptr; /* struct io_uring_region_desc * */
-+
-+	struct io_uring_zcrx_offsets offsets;
-+	__u32	zcrx_id;
-+	__u32	rx_buf_len;
-+	__u64	__resv[3];
-+};
-+
- static long page_size;
- #define AREA_SIZE (8192 * page_size)
- #define SEND_SIZE (512 * 4096)
-@@ -65,6 +83,8 @@ static bool cfg_oneshot;
- static int cfg_oneshot_recvs;
- static int cfg_send_size = SEND_SIZE;
- static struct sockaddr_in6 cfg_addr;
-+static unsigned cfg_rx_buf_len;
-+static bool cfg_dry_run;
- 
- static char *payload;
- static void *area_ptr;
-@@ -128,14 +148,28 @@ static void setup_zcrx(struct io_uring *ring)
- 	if (!ifindex)
- 		error(1, 0, "bad interface name: %s", cfg_ifname);
- 
--	area_ptr = mmap(NULL,
--			AREA_SIZE,
--			PROT_READ | PROT_WRITE,
--			MAP_ANONYMOUS | MAP_PRIVATE,
--			0,
--			0);
--	if (area_ptr == MAP_FAILED)
--		error(1, 0, "mmap(): zero copy area");
-+	if (cfg_rx_buf_len && cfg_rx_buf_len != page_size) {
-+		area_ptr = mmap(NULL,
-+				AREA_SIZE,
-+				PROT_READ | PROT_WRITE,
-+				MAP_ANONYMOUS | MAP_PRIVATE |
-+				MAP_HUGETLB | MAP_HUGE_2MB,
-+				-1,
-+				0);
-+		if (area_ptr == MAP_FAILED) {
-+			printf("Can't allocate huge pages\n");
-+			exit(SKIP_CODE);
-+		}
-+	} else {
-+		area_ptr = mmap(NULL,
-+				AREA_SIZE,
-+				PROT_READ | PROT_WRITE,
-+				MAP_ANONYMOUS | MAP_PRIVATE,
-+				0,
-+				0);
-+		if (area_ptr == MAP_FAILED)
-+			error(1, 0, "mmap(): zero copy area");
-+	}
- 
- 	ring_size = get_refill_ring_size(rq_entries);
- 	ring_ptr = mmap(NULL,
-@@ -157,17 +191,23 @@ static void setup_zcrx(struct io_uring *ring)
- 		.flags = 0,
- 	};
- 
--	struct io_uring_zcrx_ifq_reg reg = {
-+	struct t_io_uring_zcrx_ifq_reg reg = {
- 		.if_idx = ifindex,
- 		.if_rxq = cfg_queue_id,
- 		.rq_entries = rq_entries,
- 		.area_ptr = (__u64)(unsigned long)&area_reg,
- 		.region_ptr = (__u64)(unsigned long)&region_reg,
-+		.rx_buf_len = cfg_rx_buf_len,
- 	};
- 
--	ret = io_uring_register_ifq(ring, &reg);
--	if (ret)
-+	ret = io_uring_register_ifq(ring, (void *)&reg);
-+	if (cfg_rx_buf_len && (ret == -EINVAL || ret == -EOPNOTSUPP ||
-+			       ret == -ERANGE)) {
-+		printf("Large chunks are not supported %i\n", ret);
-+		exit(SKIP_CODE);
-+	} else if (ret) {
- 		error(1, 0, "io_uring_register_ifq(): %d", ret);
-+	}
- 
- 	rq_ring.khead = (unsigned int *)((char *)ring_ptr + reg.offsets.head);
- 	rq_ring.ktail = (unsigned int *)((char *)ring_ptr + reg.offsets.tail);
-@@ -323,6 +363,8 @@ static void run_server(void)
- 	io_uring_queue_init(512, &ring, flags);
- 
- 	setup_zcrx(&ring);
-+	if (cfg_dry_run)
-+		return;
- 
- 	add_accept(&ring, fd);
- 
-@@ -383,7 +425,7 @@ static void parse_opts(int argc, char **argv)
- 		usage(argv[0]);
- 	cfg_payload_len = max_payload_len;
- 
--	while ((c = getopt(argc, argv, "sch:p:l:i:q:o:z:")) != -1) {
-+	while ((c = getopt(argc, argv, "sch:p:l:i:q:o:z:x:d")) != -1) {
- 		switch (c) {
- 		case 's':
- 			if (cfg_client)
-@@ -418,6 +460,12 @@ static void parse_opts(int argc, char **argv)
- 		case 'z':
- 			cfg_send_size = strtoul(optarg, NULL, 0);
- 			break;
-+		case 'x':
-+			cfg_rx_buf_len = page_size * strtoul(optarg, NULL, 0);
-+			break;
-+		case 'd':
-+			cfg_dry_run = true;
-+			break;
- 		}
- 	}
- 
-diff --git a/tools/testing/selftests/drivers/net/hw/iou-zcrx.py b/tools/testing/selftests/drivers/net/hw/iou-zcrx.py
-index 712c806508b5..83061b27f2f2 100755
---- a/tools/testing/selftests/drivers/net/hw/iou-zcrx.py
-+++ b/tools/testing/selftests/drivers/net/hw/iou-zcrx.py
-@@ -7,6 +7,7 @@ from lib.py import ksft_run, ksft_exit, KsftSkipEx
- from lib.py import NetDrvEpEnv
- from lib.py import bkg, cmd, defer, ethtool, rand_port, wait_port_listen
- 
-+SKIP_CODE = 42
- 
- def _get_current_settings(cfg):
-     output = ethtool(f"-g {cfg.ifname}", json=True)[0]
-@@ -132,6 +133,42 @@ def test_zcrx_rss(cfg) -> None:
-         cmd(tx_cmd, host=cfg.remote)
- 
- 
-+def test_zcrx_large_chunks(cfg) -> None:
-+    cfg.require_ipver('6')
-+
-+    combined_chans = _get_combined_channels(cfg)
-+    if combined_chans < 2:
-+        raise KsftSkipEx('at least 2 combined channels required')
-+    (rx_ring, hds_thresh) = _get_current_settings(cfg)
-+    port = rand_port()
-+
-+    ethtool(f"-G {cfg.ifname} tcp-data-split on")
-+    defer(ethtool, f"-G {cfg.ifname} tcp-data-split auto")
-+
-+    ethtool(f"-G {cfg.ifname} hds-thresh 0")
-+    defer(ethtool, f"-G {cfg.ifname} hds-thresh {hds_thresh}")
-+
-+    ethtool(f"-G {cfg.ifname} rx 64")
-+    defer(ethtool, f"-G {cfg.ifname} rx {rx_ring}")
-+
-+    ethtool(f"-X {cfg.ifname} equal {combined_chans - 1}")
-+    defer(ethtool, f"-X {cfg.ifname} default")
-+
-+    flow_rule_id = _set_flow_rule(cfg, port, combined_chans - 1)
-+    defer(ethtool, f"-N {cfg.ifname} delete {flow_rule_id}")
-+
-+    rx_cmd = f"{cfg.bin_local} -s -p {port} -i {cfg.ifname} -q {combined_chans - 1} -x 2"
-+    tx_cmd = f"{cfg.bin_remote} -c -h {cfg.addr_v['6']} -p {port} -l 12840"
-+
-+    probe = cmd(rx_cmd + " -d", fail=False)
-+    if probe.ret == SKIP_CODE:
-+        raise KsftSkipEx(probe.stdout)
-+
-+    with bkg(rx_cmd, exit_wait=True):
-+        wait_port_listen(port, proto="tcp")
-+        cmd(tx_cmd, host=cfg.remote)
-+
-+
- def main() -> None:
-     with NetDrvEpEnv(__file__) as cfg:
-         cfg.bin_local = path.abspath(path.dirname(__file__) + "/../../../drivers/net/hw/iou-zcrx")
--- 
-2.52.0
+But now that I look closer to implement the change and submit v2, it
+looks correct as written. ts_low is defined as a u8:
 
+```
+struct virtchnl2_rx_flex_desc_adv_nic_3 {
+...
+u8 ts_low;
+```
+
+So it should not be fed into any leXX_to_cpu() functions, no?
+
+I also looked at other u8 members in this struct like `u8
+status_err0_qw0` and `u8 status_err0_qw1`, and both are used in
+existing code without a conversion. So it seems correct as written.
+Can you reconsdirer?
+
+If you insist some change is required, can you elaborate more on what
+needs to be changed? There is no le8_to_cpu, unless a trivial one that
+does nothing (one byte struct cannot be little or big endian).
 
