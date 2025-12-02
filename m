@@ -1,123 +1,148 @@
-Return-Path: <bpf+bounces-75904-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75905-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDADBC9C69A
-	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 18:35:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0FF7C9C718
+	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 18:44:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DA18F4E3311
-	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 17:35:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D3D03A6451
+	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 17:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874812C027E;
-	Tue,  2 Dec 2025 17:35:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2CD32C21C9;
+	Tue,  2 Dec 2025 17:44:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jFoARJmx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EYUpz3BH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yx1-f41.google.com (mail-yx1-f41.google.com [74.125.224.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08A66257AD1;
-	Tue,  2 Dec 2025 17:35:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5FF82C1788
+	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 17:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764696937; cv=none; b=cmCkcHQjciENNG+v6Zm679YnxjeTit3sP9EANYfX3ClT+x4Ezk+P3q9i6F8WRiT9NxmwGjGVpbgZ8iw0s2kkWUIWIOWL08ZU3Buzf7/npCPnQwF2pbo73WoLlhrViaydhu1mMnOlh9ZGG4xMDO35/GnuDcKGLU7NmHnsWKxbg28=
+	t=1764697481; cv=none; b=OaDCUBmHxBH1EWO6zndt4s+CpGNg3RAi/AQ6r5NeQ7ldmqz4uu73iLpM6u9ZP0aDxhNd9mjQk02ydmNMvI+d5ijboKFxJD7/P4ZPzsD843Ocr0OHw3g4lPpGPyBSNV4d7LOlnSui/+fzrmfP8IQyJyg0eKUFeHcgGX/pjwsrkFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764696937; c=relaxed/simple;
-	bh=sMJyCKb0Kki65z+BAhXWZmxiCaqZb6FZukt4DZH8U3s=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=BQVhXF/8+nFbqu5C6R1/b4OzgbcJlPMYSE/4qFWH/CXnKL7RJG59eSLpK4fRsTJehuXeLriFdYy4g8y4PnhMYRP5lMpLeqLgbs/aGxpSjiHA64W19tK7CxooeLzoO6PvHpVEQ2xVrCLhEeX3YUexfUbm9in0K73TZbqBF6Lmavk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jFoARJmx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9569BC4CEF1;
-	Tue,  2 Dec 2025 17:35:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764696936;
-	bh=sMJyCKb0Kki65z+BAhXWZmxiCaqZb6FZukt4DZH8U3s=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=jFoARJmxI/c5l9oTgHrmTwfj9acs0AH092KG5/6yiSCvsLVLnLPul3grZh2bq1PL5
-	 wemBfLi8+bqNKua/g36qj2TJOvrxpOBJOmsTGszBRHtiCJxKr5cOwduNPQyxpzpTHh
-	 Q3Lrwr7rTq69ZBGMP1LYuEPZh2rrzVuWKTcsrbS3WZPnbIx8Ds3ItvJrLKy/4iMAhf
-	 iP1X8w3I4NtdhTwMkt5dowBaO3KTyn6jhJSD/R9483tGnnechELt/Fjcq33rqLza2a
-	 goKwSh5hklq+8sztgykrC3E1o+TQplMFb/txU9nHvu35RFa5fTL93YJVsohUS8ddjA
-	 Y2OJ0U4FaWmFg==
-Content-Type: multipart/mixed; boundary="===============2761046317332136558=="
+	s=arc-20240116; t=1764697481; c=relaxed/simple;
+	bh=saK7OctyxgWhisy+qF8s5lx1yaFhDmsKK8qlbKzyuWE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=L9F9fO1nDN4Ipjzk6X9EAEycPVvZj+mdOfkyprmDZlnbnZ9uNy6DbwozNd8AARzP9mtVwnUuXKoZpiu5zzE4fi2KgSwSvD8FvXmlsolsDf7VjX1+/NB+wqsrMLaFfTUM/AdanO/+fCa6G03cauND4kKOBBIQNcZu/c/f3HykDgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EYUpz3BH; arc=none smtp.client-ip=74.125.224.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yx1-f41.google.com with SMTP id 956f58d0204a3-63f97ab5cfcso4721758d50.0
+        for <bpf@vger.kernel.org>; Tue, 02 Dec 2025 09:44:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764697478; x=1765302278; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f1QXCWStMxfmVW47fiVgRuxVCfQyLhwauTimKRg96bI=;
+        b=EYUpz3BHxGKJy6h+H32v9YGW3xEuPyBMFZh2HmiAMrGiyu4HiPRrpZahfcabUIuTss
+         zRCPklywF8Ge4QhjiVcEok/91OLh/IV/F1sJIn++JoxaI0UQ7bDKbo+p+LWLpUe3xRZn
+         IUFg+w8rM8jM0qYTb+cFgDTnPPySa62fF35sCDJZkmlqjMgzfXCCTs/hDZNQEGHalmFt
+         ZpvnOAdeT+M/TvUywgyALp0EYMojDkeyVB6AnMIkNlEFxx0yDmD6m53YhiApY6cyeoU5
+         HxXaldaG/NY5/eV9+Bl+Wq5dcqYe2eJ0snTZ1CiFHdSuSMHPudl3GCjPz7ZxHkRrnzZx
+         c8sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764697478; x=1765302278;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=f1QXCWStMxfmVW47fiVgRuxVCfQyLhwauTimKRg96bI=;
+        b=VfM8R+YeetAFzEUpDRxAwUgZNpdOyA2wtJr/xx6I0EvlEX3PzOQKUiEW9jhH0Bkcla
+         dmlGtK7GhyiL03wGlZSDNdv8DLY7dh9E9HI7JXkW+EY3ZmSX4+YaKj+o0ft3kxxU/Cwt
+         sfsJwxioKUp3w9kmePPef9VXCm1uOzHe+A0BCY5chyUrhT83ta2DvWoBEZTj+sDMEjyB
+         MVj5V0AcZpse3T+bC6+PYvoi0c+/Op5DW3ChUDIcUVYwkqUKkNgwjx/PjKShx/aKghGE
+         N7Kuntf7ekFhrVa9oYiEj3gg8zFwFMHhxmiy0r6nZ7I5kmZq/P/tuqoWrk34RijU/dgc
+         UpWg==
+X-Gm-Message-State: AOJu0YzdyNl7tADERdcIfuZMIj0CX7H/3gDlYVjsbGN6lGHTnBJnGLbV
+	VBYAZG8Y7FdajQgYBPZDL0OGMOjY/qGUlRWaAyM71zNSYBin3eKj2bEHJmTatUeclq/QIUT//G6
+	/1DSjaMYklUJZshdqVyhJ7E5uEGUg/XE=
+X-Gm-Gg: ASbGncs+sZpTVxDr2D+K6kFjLDpPAUf2kVBSlzDeV6DHSHEMZT0nWUKNWUIpDkTPYe3
+	5u5vzLiCCNk0XWD8PEEH5TYZFQjBHdXjHUN+OcJoMbeqiRvUS9iN32gEshbz29scvbwQitF08JX
+	xQlVvJilz/x7nheY320ai7wNGJVtHB8XTm/35Ug0mqrjDnK1FANDGzqYnJCsToem/ko2ykRdlVM
+	KMS7vVEQDfYE0IWT1Uss8zT6Zn7ng7PakSfJMCV/GH25L9ER/vTsPc2/RZsRR7oTWut3J9sUe4+
+	OIqtz7Mxfi4=
+X-Google-Smtp-Source: AGHT+IF3T7gonVEzDbMH1IjvcZAcl2do8qpFUbUVbAiGLDEWU32llXfeCPujEBw+pJANdPjzkmUbRgZcUQJ0kyPObxc=
+X-Received: by 2002:a05:690e:191d:b0:63f:c019:23ee with SMTP id
+ 956f58d0204a3-64329320b2fmr20274229d50.21.1764697477976; Tue, 02 Dec 2025
+ 09:44:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <b52396ff5028256639d3e9721b0976e28be6b721cec0e36cfe190e30884e189f@mail.kernel.org>
-In-Reply-To: <20251202171615.1027536-1-ameryhung@gmail.com>
-References: <20251202171615.1027536-1-ameryhung@gmail.com>
-Subject: Re: [PATCH bpf v2 1/2] bpf: Disallow tail call to programs that use cgroup storage
-From: bot+bpf-ci@kernel.org
-To: ameryhung@gmail.com,bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,alexei.starovoitov@gmail.com,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,ameryhung@gmail.com,kernel-team@meta.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Tue,  2 Dec 2025 17:35:35 +0000 (UTC)
+References: <20251202171615.1027536-1-ameryhung@gmail.com> <CAADnVQKvRYnKME8-Q24=CqaNz24ibqfbczrRB4_BJxbNcj2oNQ@mail.gmail.com>
+In-Reply-To: <CAADnVQKvRYnKME8-Q24=CqaNz24ibqfbczrRB4_BJxbNcj2oNQ@mail.gmail.com>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Tue, 2 Dec 2025 09:44:27 -0800
+X-Gm-Features: AWmQ_bkeUgvkkC8TtxSkopI-F7dx1MlUMA8yZ5Hhz__NeAUN7rXeWM3a2PJkCis
+Message-ID: <CAMB2axN3ZyvvRLAD=xUE_VO9a9aAAYq5DV6_vym5wRTy+xNi+Q@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 1/2] bpf: Disallow tail call to programs that use
+ cgroup storage
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
---===============2761046317332136558==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> index 80b1765a3..fbfc45ed9 100644
-> --- a/kernel/bpf/arraymap.c
-> +++ b/kernel/bpf/arraymap.c
-> @@ -892,8 +892,9 @@ int bpf_fd_array_map_update_elem(struct bpf_map *map, struct file *map_file,
->  				 void *key, void *value, u64 map_flags)
->  {
->  	struct bpf_array *array = container_of(map, struct bpf_array, map);
-> +	u32 i, index = *(u32 *)key, ufd;
->  	void *new_ptr, *old_ptr;
-> -	u32 index = *(u32 *)key, ufd;
-> +	struct bpf_prog *prog;
+On Tue, Dec 2, 2025 at 9:32=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
->  	if (map_flags != BPF_ANY)
->  		return -EINVAL;
-> @@ -906,6 +907,14 @@ int bpf_fd_array_map_update_elem(struct bpf_map *map, struct file *map_file,
->  	if (IS_ERR(new_ptr))
->  		return PTR_ERR(new_ptr);
+> On Tue, Dec 2, 2025 at 9:16=E2=80=AFAM Amery Hung <ameryhung@gmail.com> w=
+rote:
+> >
+> > Mitigate a possible NULL pointer dereference in bpf_get_local_storage()
+> > by disallowing tail call to programs that use cgroup storage. Cgroup
+> > storage is allocated lazily when attaching a cgroup bpf program. With
+> > tail call, it is possible for a callee BPF program to see a NULL
+> > storage pointer if the caller prorgam does not use cgroup storage.
+> >
+> > Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
+> > Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
+> > Reported-by: Dongliang Mu <dzm91@hust.edu.cn>
+> > Closes: https://lore.kernel.org/bpf/c9ac63d7-73be-49c5-a4ac-eb07f7521ad=
+b@hust.edu.cn/
+> > Signed-off-by: Amery Hung <ameryhung@gmail.com>
+> > ---
+> >  kernel/bpf/arraymap.c | 11 ++++++++++-
+> >  1 file changed, 10 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> > index 1eeb31c5b317..9c3f86ef9d16 100644
+> > --- a/kernel/bpf/arraymap.c
+> > +++ b/kernel/bpf/arraymap.c
+> > @@ -884,8 +884,9 @@ int bpf_fd_array_map_update_elem(struct bpf_map *ma=
+p, struct file *map_file,
+> >                                  void *key, void *value, u64 map_flags)
+> >  {
+> >         struct bpf_array *array =3D container_of(map, struct bpf_array,=
+ map);
+> > +       u32 i, index =3D *(u32 *)key, ufd;
+> >         void *new_ptr, *old_ptr;
+> > -       u32 index =3D *(u32 *)key, ufd;
+> > +       struct bpf_prog *prog;
+> >
+> >         if (map_flags !=3D BPF_ANY)
+> >                 return -EINVAL;
+> > @@ -898,6 +899,14 @@ int bpf_fd_array_map_update_elem(struct bpf_map *m=
+ap, struct file *map_file,
+> >         if (IS_ERR(new_ptr))
+> >                 return PTR_ERR(new_ptr);
+> >
+> > +       if (map->map_type =3D=3D BPF_MAP_TYPE_PROG_ARRAY) {
+> > +               prog =3D (struct bpf_prog *)new_ptr;
+> > +
+> > +               for_each_cgroup_storage_type(i)
+> > +                       if (prog->aux->cgroup_storage[i])
+> > +                               return -EINVAL;
 >
-> +	if (map->map_type == BPF_MAP_TYPE_PROG_ARRAY) {
-> +		prog = (struct bpf_prog *)new_ptr;
-> +
-> +		for_each_cgroup_storage_type(i)
-> +			if (prog->aux->cgroup_storage[i])
-> +				return -EINVAL;
-> +	}
-> +
+> hmm. I think AI was right that prog refcnt is leaked.
 
-Does this leak the program reference acquired from map_fd_get_ptr()?
-
-In bpf_fd_array_map_update_elem(), the call to map->ops->map_fd_get_ptr()
-at line 906 acquires a reference to the program. Looking at
-prog_fd_array_get_ptr(), this increments both the program refcount via
-bpf_prog_get() and prog->aux->prog_array_member_cnt.
-
-When returning -EINVAL after the cgroup storage check, shouldn't the code
-call map->ops->map_fd_put_ptr(map, new_ptr, true) to properly release
-these resources? The normal cleanup path at the end of the function calls
-map_fd_put_ptr() for old_ptr, and prog_fd_array_put_ptr() decrements
-both prog_array_member_cnt and calls bpf_prog_put().
-
-Without this cleanup, the program would have a leaked reference and an
-incorrect prog_array_member_cnt value.
-
->  	if (map->ops->map_poke_run) {
->  		mutex_lock(&array->aux->poke_mutex);
->  		old_ptr = xchg(array->ptrs + index, new_ptr);
-
-[ ... ]
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19867449786
-
---===============2761046317332136558==--
+Ah right. I forgot to map_fd_put_ptr(). Will fix it in the next respin.
 
