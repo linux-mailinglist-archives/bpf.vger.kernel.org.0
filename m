@@ -1,168 +1,265 @@
-Return-Path: <bpf+bounces-75915-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75916-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A86B1C9CAA0
-	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 19:38:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D439C9CAA9
+	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 19:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 29C4F342446
-	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 18:38:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56B643A1846
+	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 18:39:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F7AF2C3265;
-	Tue,  2 Dec 2025 18:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B1A2D0C9F;
+	Tue,  2 Dec 2025 18:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bIbzuMBe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IR6zjH4I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 352E21EB5CE
-	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 18:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C2928C00C
+	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 18:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764700674; cv=none; b=a+T6+Zot8tCy0CMJJLPT1rsys8CXf8TC1UFc7ypN0NPmWeMJgfUW0CDSTwczmCr5bLh8GyNFcEic/dYgqxidWadQzYokbT6AEvz51Y9vfzKf00c+uowWy1JUPqeBQafN/H3lEQzkkJlBh1fYHGsD6BWVaKPKjPFuWVcUW5pMUOo=
+	t=1764700759; cv=none; b=W+H3eufi+Xw0xndcANEo0G5PykepTma8NsDTEw13bs4goUWBIIWvs4kmxi89ASd3IVkDZHhZ4bXlS1Rws3+F9mDGBeAjYgqlAB9JDQjCkjTRUvcZIDxhxOc90HpzHD4Uf2Z2crNiXzk0GgcpsNBjTCGZjIF8AtUzmYsZlviaD+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764700674; c=relaxed/simple;
-	bh=GnlE4BUxEgEszX3Rd8HFrIVxrRs/MgEFgw9SVZ+Y29A=;
+	s=arc-20240116; t=1764700759; c=relaxed/simple;
+	bh=NarFwfdOUx1r8tMxSWM3oCoFBOaud6nyVOUYyHiIAk0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ht5g/fo9p9ZnoHhp6mU+WO+LWEiko6cfyOaihVsCGr5HPR8R67RmjL2ZZhjjJvmkUjM6bKHSw5S4V29GWvhaT7PIsfK98quuIPAfItCaTqSVLVncUsFLQijCviNBYRChxt8gotsmuVJletb0nyrGxqqRvKPbJU9vmmTw7SGcRTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bIbzuMBe; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-787e7aa1631so1919707b3.1
-        for <bpf@vger.kernel.org>; Tue, 02 Dec 2025 10:37:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764700672; x=1765305472; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=013H9LWKQxOenYGa2r/1ESrD1I2f7WW6c9h6ClwsUZo=;
-        b=bIbzuMBepGB9gTuGxfb49vzuqm1Ae4MQL0OHleKXHRORgqM4UD8xbRSweJPbpxkOlp
-         7/dH4k+Lpm26+QeHp1LteQjxlCZJ2CYVpvYhung912Sh58qb5RcDybCNMNlpJ8dromek
-         Ak/akMvTGB7z3tE5dd5Hppk/FEBAaeUuqqRvLZOnaeLaYbidHuue+JOU0OZaFL/09cuP
-         2cvuT/vbIN0BnbQglU8W2vhV0fyGIIlqhPpPT//36FctDVeCpwpTTw+vfx9yOJyLz+lN
-         yZ82lyQ967SFy9+w3KLl3jnILFZ6gVD8Nm6OYynBZe0SwYYm1RGTBftMXMPQLi5j+/vm
-         aJSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764700672; x=1765305472;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=013H9LWKQxOenYGa2r/1ESrD1I2f7WW6c9h6ClwsUZo=;
-        b=eFWcpZRRx1G2gfa1vpPhtuCMQ9viTBynETDcKrFtDpbD9/ICSgwcTrMHIWKVN4NOv9
-         ESW00XhiCbpGqkFYhtNibjSoN0RTvPDvlZCVQKURvfREasjrmydoT9gU8RPR4trmt/6x
-         thCTJVPIxOSHWoL5AYWHwUKeNiwpMeIgoj/r6wFuFeYGCJczNavilX7okg4HXqNIsume
-         FTRAnmUtbnXFy2Ti9MVwyJDkrx+q5ivHf4hyMvLzO7nx94+RDDzCfIY1lQEKtQTzRjVG
-         HZ3S4GV4nm2xVcPSNlxu6PKZ57y79spenyymKChyquYB+SnqOdnuNj5/1Iluy2xx8KAG
-         3xpg==
-X-Gm-Message-State: AOJu0YwenktHDtNRDQpIT37jW44WZarVGhpksOT/kKiElRh877hmGHgW
-	yCgnIBXOX3uTPbr+640igWYbCZhA+v5z72K27IyzSTGJhtmsKC9lJq/vMA7sEgbTngZnngqobLT
-	KR5b6LCDyDK0gee4msfdB1PaPGcc2oPs=
-X-Gm-Gg: ASbGncv1wq/3TPOjuRQklnkfcFow4nCQNVY3SmZbfSvlsrCwaK/h/MAcvVNydHLAGiB
-	w52S2AibiGEuXMp/FyFxwAADY9ldt5mjjiCO2tgmLPKjBda3rBluT3fvdVBOpc4eUWaJBUR/hte
-	VfKHEeRM7ZR/GsdpX0ZV3V/hCaifd48XnjRFrIKfYGaxzueuoGlFuWdbsxe6HIkgUJ55h4QsUoR
-	gFVOu0XmVUKN36bHu3icJz3QFhNbBm0eWdkXwgypMaMKlufJ5jWtPqzVVDKInrx9LQYkZRTJ060
-	l/2U/+qEVUI=
-X-Google-Smtp-Source: AGHT+IGxQUGJcsowxZp15tmwe0+PAQoOg6ajEAefLY24giso4wnRkk38jhbCVDDhKMXGevpjzv/Cv8rRbpV8wrCzypU=
-X-Received: by 2002:a05:690e:418f:b0:63f:c019:23b2 with SMTP id
- 956f58d0204a3-6442f1af4camr3358088d50.28.1764700672147; Tue, 02 Dec 2025
- 10:37:52 -0800 (PST)
+	 To:Cc:Content-Type; b=SFiy2wI5sno8Bwy+v2mHI8PaeLaDnozNNlBaQFi+wp88kTgF3bhExB1t1UPpJ0n9MKAL40th8bfvneQbJze3weiOEGmhKnke4ZxEKFtFfV1pCUeBSZvJ+UTpGn2oDXV49LYwSLxY3Dxi3NDYBq5z4Wbr6vB2WevTGZo5uJoeRlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IR6zjH4I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D12FC116D0
+	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 18:39:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764700759;
+	bh=NarFwfdOUx1r8tMxSWM3oCoFBOaud6nyVOUYyHiIAk0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=IR6zjH4IBjKx94hKooRWAa16+08CpmljD2+TOiBcrtZMjhF3LYj65z9IZWNzGPjYT
+	 huMuW/s3Il/VbkRS0HeewDb32zYeL1+tQllq8s/cSEAcEt5aH40KsFZBCTwsNwa6yK
+	 pjugVrural2UcCOKXncuvvrLoEJAxIoRIJsL21UgVWy8VGFkUH+oCy4SEu81HpuxIF
+	 qm7BNBh/sYpya5+55pd0HMcJVZT/TSWsOYdCJqa90DlHo4Fh/RcbLxdHol5MmektgD
+	 KM58nMivZ2YQoE9hsIFxtZbZ97BHJCs/FQl2iw9oNBooConFxBAget8Y8fKyIlg5fV
+	 IYUoJRmPSKumA==
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-4ee158187aaso60276441cf.0
+        for <bpf@vger.kernel.org>; Tue, 02 Dec 2025 10:39:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV4Von/QTVXUliQNaWzXAebhAZeIJjqbeTJ3M3aN2q4fRml6Ud1R4YBum+Dq8UCi7CbtrY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwhSqhDLYMpw5bcdNFefMlhCyuvnqgSoCPIdH9tFgX2EIhnNPlM
+	abMoGLLCTUoRcwbUupKkyhf7fHzeWw0Jqh/Qim019t5+G5Qhg7THOEKpLtsgJdd14DLZW1hVRal
+	dzmNk3BO231fyAhlAdFqJD4UUrQTtt4E=
+X-Google-Smtp-Source: AGHT+IHhbCn+TTOAJLh9WzTfONoJ1GBmAu7YoMOxTXbUzIFPofSjaLBl/gPoHpmvPol7KmCE+Idv2oLSPyU99bnuq1k=
+X-Received: by 2002:a05:622a:1108:b0:4ee:18e7:c4de with SMTP id
+ d75a77b69052e-4ee589423camr660571871cf.78.1764700758338; Tue, 02 Dec 2025
+ 10:39:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251202171615.1027536-1-ameryhung@gmail.com> <CAP01T75C+Zj12g08q3XE2X+TV8Qwx_dua=s489w71or2bu64gg@mail.gmail.com>
-In-Reply-To: <CAP01T75C+Zj12g08q3XE2X+TV8Qwx_dua=s489w71or2bu64gg@mail.gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Tue, 2 Dec 2025 10:37:39 -0800
-X-Gm-Features: AWmQ_bkgITNbuXnGNW37tpgOdmT6IZiYZShj5hFi_14YXOZX6TE3EYnqKz6vjMo
-Message-ID: <CAMB2axOQDKrobzTVZhdafPks4fqYAN2HUrm_Asq3FG_GPSVw8A@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 1/2] bpf: Disallow tail call to programs that use
- cgroup storage
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org, 
-	eddyz87@gmail.com, kernel-team@meta.com
+References: <20251202141944.2209-1-electronlsr@gmail.com> <20251202141944.2209-3-electronlsr@gmail.com>
+In-Reply-To: <20251202141944.2209-3-electronlsr@gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 2 Dec 2025 10:39:06 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6hmKjJF5gYvp=9Jue2N6oW8-Mj-LdFbGnQVwW1bTB=qg@mail.gmail.com>
+X-Gm-Features: AWmQ_bmhtewh3Kki7Aq1wOtsV8Cr2mT_pAmwWnBYRYrtsqgtHIZ3VYu3xo1z0z8
+Message-ID: <CAPhsuW6hmKjJF5gYvp=9Jue2N6oW8-Mj-LdFbGnQVwW1bTB=qg@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 2/2] selftests/bpf: fix and consolidate d_path LSM
+ regression test
+To: Shuran Liu <electronlsr@gmail.com>
+Cc: mattbobrowski@google.com, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, yonghong.song@linux.dev, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
+	rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	dxu@dxuuu.xyz, linux-kselftest@vger.kernel.org, shuah@kernel.org, 
+	Zesen Liu <ftyg@live.com>, Peili Gao <gplhust955@gmail.com>, Haoran Ni <haoran.ni.cs@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 2, 2025 at 9:27=E2=80=AFAM Kumar Kartikeya Dwivedi <memxor@gmai=
-l.com> wrote:
+On Tue, Dec 2, 2025 at 6:20=E2=80=AFAM Shuran Liu <electronlsr@gmail.com> w=
+rote:
 >
-> On Tue, 2 Dec 2025 at 18:16, Amery Hung <ameryhung@gmail.com> wrote:
-> >
-> > Mitigate a possible NULL pointer dereference in bpf_get_local_storage()
-> > by disallowing tail call to programs that use cgroup storage. Cgroup
-> > storage is allocated lazily when attaching a cgroup bpf program. With
-> > tail call, it is possible for a callee BPF program to see a NULL
-> > storage pointer if the caller prorgam does not use cgroup storage.
-> >
-> > Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
-> > Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
-> > Reported-by: Dongliang Mu <dzm91@hust.edu.cn>
-> > Closes: https://lore.kernel.org/bpf/c9ac63d7-73be-49c5-a4ac-eb07f7521ad=
-b@hust.edu.cn/
-> > Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> > ---
-> >  kernel/bpf/arraymap.c | 11 ++++++++++-
-> >  1 file changed, 10 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> > index 1eeb31c5b317..9c3f86ef9d16 100644
-> > --- a/kernel/bpf/arraymap.c
-> > +++ b/kernel/bpf/arraymap.c
-> > @@ -884,8 +884,9 @@ int bpf_fd_array_map_update_elem(struct bpf_map *ma=
-p, struct file *map_file,
-> >                                  void *key, void *value, u64 map_flags)
-> >  {
-> >         struct bpf_array *array =3D container_of(map, struct bpf_array,=
- map);
-> > +       u32 i, index =3D *(u32 *)key, ufd;
-> >         void *new_ptr, *old_ptr;
-> > -       u32 index =3D *(u32 *)key, ufd;
-> > +       struct bpf_prog *prog;
-> >
-> >         if (map_flags !=3D BPF_ANY)
-> >                 return -EINVAL;
-> > @@ -898,6 +899,14 @@ int bpf_fd_array_map_update_elem(struct bpf_map *m=
-ap, struct file *map_file,
-> >         if (IS_ERR(new_ptr))
-> >                 return PTR_ERR(new_ptr);
-> >
-> > +       if (map->map_type =3D=3D BPF_MAP_TYPE_PROG_ARRAY) {
-> > +               prog =3D (struct bpf_prog *)new_ptr;
-> > +
-> > +               for_each_cgroup_storage_type(i)
-> > +                       if (prog->aux->cgroup_storage[i])
-> > +                               return -EINVAL;
-> > +       }
->
-> Would a similar check be needed for extension programs (BPF_PROG_TYPE_EXT=
-)?
+> Add a regression test for bpf_d_path() when invoked from an LSM program.
+> The test attaches to the bprm_check_security hook, calls bpf_d_path() on
+> the binary being executed, and verifies that a simple prefix comparison o=
+n
+> the returned pathname behaves correctly after the fix in patch 1.
 
-I think BPF_PROG_TYPE_EXT should be free from this NULL pointer
-dereference bug. Since tail callee cannot be extended and extended
-program cannot be tailcalled, an extension program calling
-bpf_get_local_storage() must be directly called from a cgroup program
-with a valid storage pointer.
-
-However, I guess we also need to do something similar to [0] to
-extension programs as well.
-
-[0] https://lore.kernel.org/all/20250730234733.530041-4-daniel@iogearbox.ne=
-t/
+I don't get why we add this selftest here. It doesn't appear to be related =
+to
+patch 1/2.
 
 >
-> > +
-> >         if (map->ops->map_poke_run) {
-> >                 mutex_lock(&array->aux->poke_mutex);
-> >                 old_ptr =3D xchg(array->ptrs + index, new_ptr);
-> > --
-> > 2.47.3
-> >
-> >
+> To avoid nondeterminism, the LSM program now filters based on the
+> expected PID, which is populated from userspace before the test binary is
+> executed. This prevents unrelated processes that also trigger the
+> bprm_check_security LSM hook from overwriting test results. Parent and
+> child processes are synchronized through a pipe to ensure the PID is set
+> before the child execs the test binary.
+
+The paragraph above is not really necessary. Just curious, did some AI
+write it?
+
+>
+> Per review feedback, the new LSM coverage is merged into the existing
+> d_path selftest rather than adding new prog_tests/ or progs/ files. The
+> loop that checks the pathname prefix now uses bpf_for(), which is a
+> verifier-friendly way to express a small, fixed-iteration loop, and the
+> temporary /tmp/bpf_d_path_test binary is removed in the test cleanup
+> path.
+>
+> Co-developed-by: Zesen Liu <ftyg@live.com>
+> Signed-off-by: Zesen Liu <ftyg@live.com>
+> Co-developed-by: Peili Gao <gplhust955@gmail.com>
+> Signed-off-by: Peili Gao <gplhust955@gmail.com>
+> Co-developed-by: Haoran Ni <haoran.ni.cs@gmail.com>
+> Signed-off-by: Haoran Ni <haoran.ni.cs@gmail.com>
+> Signed-off-by: Shuran Liu <electronlsr@gmail.com>
+> Reviewed-by: Matt Bobrowski <mattbobrowski@google.com>
+> ---
+>  .../testing/selftests/bpf/prog_tests/d_path.c | 65 +++++++++++++++++++
+>  .../testing/selftests/bpf/progs/test_d_path.c | 33 ++++++++++
+>  2 files changed, 98 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/test=
+ing/selftests/bpf/prog_tests/d_path.c
+> index ccc768592e66..202b44e6f482 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/d_path.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
+> @@ -195,6 +195,68 @@ static void test_d_path_check_types(void)
+>         test_d_path_check_types__destroy(skel);
+>  }
+>
+> +static void test_d_path_lsm(void)
+> +{
+> +       struct test_d_path *skel;
+> +       int err;
+> +       int pipefd[2];
+> +       pid_t pid;
+> +
+> +       skel =3D test_d_path__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "d_path skeleton failed"))
+> +               return;
+> +
+> +       err =3D test_d_path__attach(skel);
+> +       if (!ASSERT_OK(err, "attach failed"))
+> +               goto cleanup;
+> +
+> +       /* Prepare the test binary */
+> +       system("cp /bin/true /tmp/bpf_d_path_test 2>/dev/null || :");
+> +
+> +       if (!ASSERT_OK(pipe(pipefd), "pipe failed"))
+> +               goto cleanup;
+> +
+> +       pid =3D fork();
+> +       if (!ASSERT_GE(pid, 0, "fork failed")) {
+> +               close(pipefd[0]);
+> +               close(pipefd[1]);
+> +               goto cleanup;
+> +       }
+> +
+> +       if (pid =3D=3D 0) {
+> +               /* Child */
+> +               char buf;
+> +
+> +               close(pipefd[1]);
+> +               /* Wait for parent to set PID in BPF map */
+> +               if (read(pipefd[0], &buf, 1) !=3D 1)
+> +                       exit(1);
+> +               close(pipefd[0]);
+> +               execl("/tmp/bpf_d_path_test", "/tmp/bpf_d_path_test", NUL=
+L);
+> +               exit(1);
+> +       }
+> +
+> +       /* Parent */
+> +       close(pipefd[0]);
+> +
+> +       /* Update BPF map with child PID */
+> +       skel->bss->my_pid =3D pid;
+> +
+> +       /* Signal child to proceed */
+> +       write(pipefd[1], "G", 1);
+> +       close(pipefd[1]);
+> +
+> +       /* Wait for child */
+> +       waitpid(pid, NULL, 0);
+> +
+> +       ASSERT_EQ(skel->bss->called_lsm, 1, "lsm hook called");
+> +       ASSERT_EQ(skel->bss->lsm_match, 1, "lsm match");
+> +
+> +cleanup:
+> +       unlink("/tmp/bpf_d_path_test");
+> +       test_d_path__destroy(skel);
+> +}
+> +
+>  void test_d_path(void)
+>  {
+>         if (test__start_subtest("basic"))
+> @@ -205,4 +267,7 @@ void test_d_path(void)
+>
+>         if (test__start_subtest("check_alloc_mem"))
+>                 test_d_path_check_types();
+> +
+> +       if (test__start_subtest("lsm"))
+> +               test_d_path_lsm();
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/test=
+ing/selftests/bpf/progs/test_d_path.c
+> index 84e1f883f97b..9ae36eabcd07 100644
+> --- a/tools/testing/selftests/bpf/progs/test_d_path.c
+> +++ b/tools/testing/selftests/bpf/progs/test_d_path.c
+> @@ -17,6 +17,8 @@ int rets_close[MAX_FILES] =3D {};
+>
+>  int called_stat =3D 0;
+>  int called_close =3D 0;
+> +int called_lsm =3D 0;
+> +int lsm_match =3D 0;
+>
+>  SEC("fentry/security_inode_getattr")
+>  int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
+> @@ -62,4 +64,35 @@ int BPF_PROG(prog_close, struct file *file, void *id)
+>         return 0;
+>  }
+>
+> +SEC("lsm/bprm_check_security")
+> +int BPF_PROG(prog_lsm, struct linux_binprm *bprm)
+> +{
+> +       pid_t pid =3D bpf_get_current_pid_tgid() >> 32;
+> +       char path[MAX_PATH_LEN] =3D {};
+> +       int ret;
+> +
+> +       if (pid !=3D my_pid)
+> +               return 0;
+> +
+> +       called_lsm =3D 1;
+> +       ret =3D bpf_d_path(&bprm->file->f_path, path, MAX_PATH_LEN);
+> +       if (ret < 0)
+> +               return 0;
+> +
+> +       {
+
+This {} block is not necessary.
+
+> +               static const char target_dir[] =3D "/tmp/";
+> +               int i;
+> +
+> +               bpf_for(i, 0, sizeof(target_dir) - 1) {
+> +                       if (path[i] !=3D target_dir[i]) {
+> +                               lsm_match =3D -1; /* mismatch */
+> +                               return 0;
+> +                       }
+> +               }
+> +       }
+> +
+> +       lsm_match =3D 1; /* prefix match */
+> +       return 0;
+> +}
+> +
+>  char _license[] SEC("license") =3D "GPL";
+> --
+> 2.52.0
+>
 
